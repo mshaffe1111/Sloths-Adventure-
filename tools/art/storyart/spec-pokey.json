@@ -1,17 +1,17 @@
 {
  "tag": "pokey",
  "loras": {
-  "style": [
-   "mshaffe111/slothadv-style-lora",
-   "slothadv_style_v1.safetensors"
-  ],
   "pokey": [
    "mshaffe111/pokey-qwen-lora",
    "pokey_qwen_v1.safetensors"
+  ],
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
   ]
  },
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/",
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/tools/art/hfbatch/starts/storyart/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b27b29f827b2793531717cfea465ed5fe6b21857/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b27b29f827b2793531717cfea465ed5fe6b21857/tools/art/hfbatch/starts/storyart/",
  "items": [
   {
    "name": "pokey-alarm-s55",

@@ -1,0 +1,2082 @@
+{
+ "tag": "meeca",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "meeca": [
+   "mshaffe111/meeca-qwen-lora",
+   "meeca_qwen_v1.safetensors"
+  ]
+ },
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b27b29f827b2793531717cfea465ed5fe6b21857/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b27b29f827b2793531717cfea465ed5fe6b21857/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "meeca-idle-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     806,
+     463,
+     144,
+     213
+    ],
+    "scale": 4.0,
+    "ox": 260,
+    "oy": 86,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-blink-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     145,
+     241,
+     139,
+     218
+    ],
+    "scale": 4.0,
+    "ox": 272,
+    "oy": 66,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-tilt-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     747,
+     241,
+     138,
+     216
+    ],
+    "scale": 4.0,
+    "ox": 278,
+    "oy": 58,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-look_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     411,
+     463,
+     125,
+     214
+    ],
+    "scale": 4.0,
+    "ox": 280,
+    "oy": 82,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-glad-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     288,
+     241,
+     139,
+     217
+    ],
+    "scale": 4.0,
+    "ox": 276,
+    "oy": 54,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-idle_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     0,
+     241,
+     141,
+     218
+    ],
+    "scale": 4.0,
+    "ox": 184,
+    "oy": 66,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-sing-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     570,
+     0,
+     192,
+     225
+    ],
+    "scale": 4.0,
+    "ox": 172,
+    "oy": 38,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-breathe-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     1044,
+     0,
+     175,
+     221
+    ],
+    "scale": 4.0,
+    "ox": 200,
+    "oy": 54,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-look_up-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     143,
+     463,
+     121,
+     215
+    ],
+    "scale": 4.0,
+    "ox": 240,
+    "oy": 78,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-alarm-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     1021,
+     899,
+     198,
+     201
+    ],
+    "scale": 4.0,
+    "ox": 72,
+    "oy": 118,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-sad-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     275,
+     1113,
+     102,
+     199
+    ],
+    "scale": 4.0,
+    "ox": 304,
+    "oy": 126,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-wipe-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     0,
+     1317,
+     119,
+     193
+    ],
+    "scale": 4.0,
+    "ox": 328,
+    "oy": 150,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-slump-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     1006,
+     1317,
+     126,
+     166
+    ],
+    "scale": 4.0,
+    "ox": 264,
+    "oy": 258,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-sob-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     711,
+     1317,
+     173,
+     186
+    ],
+    "scale": 4.0,
+    "ox": 332,
+    "oy": 178,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-lament-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     888,
+     1317,
+     114,
+     182
+    ],
+    "scale": 4.0,
+    "ox": 320,
+    "oy": 194,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-scared-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     170,
+     1113,
+     101,
+     199
+    ],
+    "scale": 4.0,
+    "ox": 288,
+    "oy": 126,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-shiver-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     468,
+     1317,
+     100,
+     190
+    ],
+    "scale": 4.0,
+    "ox": 352,
+    "oy": 162,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-look_l-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     381,
+     1113,
+     129,
+     197
+    ],
+    "scale": 4.0,
+    "ox": 272,
+    "oy": 134,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-panic_up-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     812,
+     1113,
+     191,
+     196
+    ],
+    "scale": 4.0,
+    "ox": 212,
+    "oy": 138,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-crouch-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     0,
+     1113,
+     166,
+     200
+    ],
+    "scale": 4.0,
+    "ox": 176,
+    "oy": 138,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-jump_up-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     0,
+     899,
+     170,
+     210
+    ],
+    "scale": 4.0,
+    "ox": 384,
+    "oy": 98,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-leap-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     828,
+     899,
+     189,
+     206
+    ],
+    "scale": 4.0,
+    "ox": 292,
+    "oy": 114,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-jump_fall-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     174,
+     899,
+     188,
+     210
+    ],
+    "scale": 4.0,
+    "ox": -8,
+    "oy": 98,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-land_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     514,
+     1113,
+     128,
+     196
+    ],
+    "scale": 4.0,
+    "ox": 320,
+    "oy": 154,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-jump_tuck-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     932,
+     682,
+     119,
+     211
+    ],
+    "scale": 4.0,
+    "ox": 356,
+    "oy": 94,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-wave-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     1007,
+     1113,
+     150,
+     194
+    ],
+    "scale": 4.0,
+    "ox": 292,
+    "oy": 146,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-walk_0-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     540,
+     463,
+     147,
+     214
+    ],
+    "scale": 4.0,
+    "ox": 152,
+    "oy": 82,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-run_0-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     1055,
+     682,
+     174,
+     210
+    ],
+    "scale": 4.0,
+    "ox": 68,
+    "oy": 98,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-dwalk_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     333,
+     1317,
+     131,
+     191
+    ],
+    "scale": 4.0,
+    "ox": 396,
+    "oy": 158,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-land_c-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     431,
+     241,
+     150,
+     217
+    ],
+    "scale": 4.0,
+    "ox": 232,
+    "oy": 70,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-climb_0-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     0,
+     0,
+     112,
+     237
+    ],
+    "scale": 4.0,
+    "ox": 324,
+    "oy": -10,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-climb_1-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     116,
+     0,
+     152,
+     234
+    ],
+    "scale": 4.0,
+    "ox": 348,
+    "oy": 2,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-climb_2-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     272,
+     0,
+     136,
+     228
+    ],
+    "scale": 4.0,
+    "ox": 284,
+    "oy": 26,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-climb_3-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     766,
+     0,
+     155,
+     225
+    ],
+    "scale": 4.0,
+    "ox": 364,
+    "oy": 38,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-climb_4-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     412,
+     0,
+     154,
+     226
+    ],
+    "scale": 4.0,
+    "ox": 224,
+    "oy": 34,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-climb_5-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     925,
+     0,
+     115,
+     224
+    ],
+    "scale": 4.0,
+    "ox": 200,
+    "oy": 42,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-hurt_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     1123,
+     241,
+     147,
+     216
+    ],
+    "scale": 4.0,
+    "ox": 308,
+    "oy": 74,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-hurt_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     585,
+     241,
+     158,
+     217
+    ],
+    "scale": 4.0,
+    "ox": 248,
+    "oy": 70,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-knock_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     545,
+     899,
+     154,
+     209
+    ],
+    "scale": 4.0,
+    "ox": 128,
+    "oy": 102,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-knock_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     123,
+     1317,
+     206,
+     191
+    ],
+    "scale": 4.0,
+    "ox": -128,
+    "oy": 174,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-kneel_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     646,
+     1113,
+     162,
+     196
+    ],
+    "scale": 4.0,
+    "ox": 140,
+    "oy": 154,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-lie-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     0,
+     1514,
+     207,
+     151
+    ],
+    "scale": 4.0,
+    "ox": -56,
+    "oy": 334,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-prone_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     211,
+     1514,
+     211,
+     110
+    ],
+    "scale": 4.0,
+    "ox": -40,
+    "oy": 498,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-pickup-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     703,
+     899,
+     121,
+     207
+    ],
+    "scale": 4.0,
+    "ox": 300,
+    "oy": 106,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-sleepy-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     0,
+     463,
+     139,
+     215
+    ],
+    "scale": 4.0,
+    "ox": 280,
+    "oy": 62,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-walk_1-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     954,
+     463,
+     110,
+     213
+    ],
+    "scale": 4.0,
+    "ox": 244,
+    "oy": 86,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-walk_2-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     889,
+     241,
+     114,
+     216
+    ],
+    "scale": 4.0,
+    "ox": 228,
+    "oy": 74,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-walk_3-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     364,
+     682,
+     135,
+     212
+    ],
+    "scale": 4.0,
+    "ox": 156,
+    "oy": 90,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-walk_4-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     1068,
+     463,
+     120,
+     213
+    ],
+    "scale": 4.0,
+    "ox": 192,
+    "oy": 86,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-walk_5-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     691,
+     463,
+     111,
+     214
+    ],
+    "scale": 4.0,
+    "ox": 260,
+    "oy": 82,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-walk_6-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     1007,
+     241,
+     112,
+     216
+    ],
+    "scale": 4.0,
+    "ox": 292,
+    "oy": 74,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-walk_7-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     503,
+     682,
+     123,
+     212
+    ],
+    "scale": 4.0,
+    "ox": 164,
+    "oy": 90,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-run_1-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     0,
+     682,
+     177,
+     213
+    ],
+    "scale": 4.0,
+    "ox": 28,
+    "oy": 86,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-run_2-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     366,
+     899,
+     175,
+     209
+    ],
+    "scale": 4.0,
+    "ox": 252,
+    "oy": 102,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-run_3-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     268,
+     463,
+     139,
+     215
+    ],
+    "scale": 4.0,
+    "ox": 160,
+    "oy": 78,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-run_4-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     630,
+     682,
+     120,
+     212
+    ],
+    "scale": 4.0,
+    "ox": 228,
+    "oy": 74,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-run_5-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     754,
+     682,
+     174,
+     211
+    ],
+    "scale": 4.0,
+    "ox": 44,
+    "oy": 94,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-run_6-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     181,
+     682,
+     179,
+     213
+    ],
+    "scale": 4.0,
+    "ox": 292,
+    "oy": 86,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "meeca-dwalk_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/meeca-standard.webp",
+     572,
+     1317,
+     135,
+     188
+    ],
+    "scale": 4.0,
+    "ox": 220,
+    "oy": 170,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  }
+ ]
+}
