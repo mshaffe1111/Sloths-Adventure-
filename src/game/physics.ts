@@ -51,6 +51,17 @@ export function easeAssist(m: number): number {
   return Math.max(0, Math.min(1, 1 - (m - 1) / 24));
 }
 /** the early-stage help, as the numbers it changes: longer to still jump after leaving a ledge, a longer memory for a jump pressed just early, a stronger second jump, and a wider landing */
+/**
+ * Standing at the end of a ledge (engine.ts edgeStepBack). His standing picture is about 53 px wide (heroSprite.ts), so with his middle
+ * `inset` px inside the end about a quarter of him is past it. Standing still further out, he steps back at `stepV` px/s; within
+ * `teeterPx` of that line he teeters. Only standing still: walking off, running jumps, coyote time and the landing forgiveness are as before.
+ */
+export const EDGE = {
+  inset: 12,
+  stepV: 70,
+  teeterPx: 3,
+};
+
 export const ASSIST = {
   coyote: 0.08,
   buffer: 0.1,

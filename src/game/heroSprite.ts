@@ -392,6 +392,8 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   }
   // the rope ends at his feet, so a vine swing turns the whole body about them
   if (ch.swing !== undefined) ctx.rotate(ch.swing);
+  // standing right at the end of a ledge: a slow teeter out over it and back, about his feet (engine.ts edgeStepBack)
+  if (p.teeter && p.grounded) ctx.rotate(p.teeter * (0.03 + 0.03 * Math.sin(time * 5)));
   const q = ch.squash ?? 1;
   ctx.scale(p.facing * (1 + (p.squashX - 1) * q), 1 + (p.squashY - 1) * q);
   if (ch.trail) {

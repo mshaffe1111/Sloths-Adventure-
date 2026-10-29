@@ -92,6 +92,8 @@ export interface LevelConfig {
 }
 
 export interface PlayerState {
+  /** standing still right at the end of a ledge, facing out over it this way (1 its right end, -1 its left; engine.ts edgeStepBack) */
+  teeter?: -1 | 0 | 1;
   /** leaning into a log that moves (the push clip, heroClips.ts) */
   pushing?: boolean;
   /** game time he reached the exit, while the cheer plays before the stage clears (heroClips.ts) */
