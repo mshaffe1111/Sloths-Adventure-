@@ -68,15 +68,15 @@ def img(sha):
     print(len(items), 'items')
 
 
-def seam(sha):
+def seam(sha, keys=('floor', 'wall-roots', 'wall-glyph'), strengths=(0.4, 0.5), tag='w7slide-seam'):
     """repaint the rolled textures (seamstarts.py) at a low strength; cut.py keeps the repaint only over the seam lines"""
     base = BASE.format(sha=sha)
-    prompts = {n: p for n, _, _, _, p in JOBS}
+    prompts = {n: p for n, _, _, _, p in JOBS + JOBS2}
     items = [{'name': f'seam-{k}-s{round(st * 100)}', 'start': f'roll-{k}.jpg', 'lora': 'style', 'prompt': prompts[k], 'strength': st,
-              'seed': 5, 'w': 1024, 'h': 1024} for k in ('floor', 'wall-roots', 'wall-glyph') for st in (0.4, 0.5)]
-    spec = {'tag': 'w7slide-seam', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+              'seed': 5, 'w': 1024, 'h': 1024} for k in keys for st in strengths]
+    spec = {'tag': tag, 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
             'items': items, 'base': base}
-    (H / 'spec-seam.json').write_text(json.dumps(spec, indent=1))
+    (H / f'spec-{tag[8:]}.json').write_text(json.dumps(spec, indent=1))
     print(len(items), 'items')
 
 
@@ -169,4 +169,4 @@ def args(spec, sha):
 
 
 if __name__ == '__main__':
-    {'img': lambda: img(sys.argv[2]), 'seam': lambda: seam(sys.argv[2]), 'img2': lambda: img2(sys.argv[2]), 'img3': lambda: img3(sys.argv[2]), 'clips': lambda: clips(json.loads(sys.argv[2])), 'args': lambda: args(sys.argv[2], sys.argv[3])}[sys.argv[1]]()
+    {'img': lambda: img(sys.argv[2]), 'seam': lambda: seam(sys.argv[2]), 'seam2': lambda: seam(sys.argv[2], ('floor2', 'ceiling'), (0.5, 0.62), 'w7slide-seam2'), 'img2': lambda: img2(sys.argv[2]), 'img3': lambda: img3(sys.argv[2]), 'clips': lambda: clips(json.loads(sys.argv[2])), 'args': lambda: args(sys.argv[2], sys.argv[3])}[sys.argv[1]]()

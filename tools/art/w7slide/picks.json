@@ -11,7 +11,12 @@
  "pokey": {},
  "seam": {
   "floor": "seam-floor-s50",
-  "wall-roots": "seam-wall-roots-s50",
+  "wall-roots": "seam-wall-roots-s65",
   "wall-glyph": "seam-wall-glyph-s50"
- }
+ },
+ "floor2": "floor2-s70-5",
+ "ceiling": "ceiling-s70-5",
+ "mouth-bright": "mouth-bright-s72-5",
+ "obstacles2": "obstacles2-s65-17",
+ "crumble": "crumble-s45-5"
 }
