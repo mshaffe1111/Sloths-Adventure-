@@ -17,7 +17,7 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Better look-alike measure (Matt chose it over relaxing the rule) | cloud session_01FhBbYKxYezKsEn4iBnvKHP | gen2-lookalike | era + curate share one measure; W7/W8 switch on merge |
 | Art pickup: HF creatures + Gemini sheets cut-in | local helper (worktree) | art-pickup | no new HF spend |
 | Swimming (Matt: build it, first swim in 6-7's well; calm water from w6/water.jpg) | cloud session_01FhBbYJzbeg3VTVJMDHy4EK | swim | dirty/fast stays deadly |
-| Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | |
+| Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | v3 reviewed 12:20 PM ET: web patch + swing ring PASS; falls FAIL (straight cyan pillars, no lip, clash with backdrop). Waiting on Matt's Gemini falls sheet (prompt: reference/prop-sheets/gemini-prompts/w4-waterfalls.md) |
 | 7-4 The Slide (W7 special; Matt: NOT a climb: side-on run, floor crumbles, behind-the-back slide, steer and jump; art: slomatt/02_sliding-from-behind) | cloud session_01FhBbYJXeB8XaDrrUgxfuHR | w7-slide | mock-up first |
 | Polish A1: picture and screens (VI-2, AN-4, VI-3, VI-4, VI-7, ST-1 code, UI-1, UI-3, UI-11, UI-14, LV-1) | cloud session_01FhBbYLAhepkzSTfrwKHSBm | polish-a1 | reference/polish-report/PLAN.md |
 | Polish A2: levels, sound (LV-6/9/11/12/13, CT-8 step 1, CT-20, SN-2/5/6/7, AN-9; its Dot items moved to the Dot helper) | cloud session_01FhBbYPEyi9ZZvvRqRyf8wK | polish-a2 | |
