@@ -47,9 +47,33 @@ function forStage(stage: number, s: SectionTemplate): boolean {
   return !only || only.includes(stage);
 }
 
+/**
+ * World 8's falls (the lead, 2026-10-29: "on Normal, a fall from a LIT bough costs a life"): the world's pit is 'void' (the canopy floor far
+ * below; Easy's are all soft, as the pipeline has it), and these gaps keep a soft pit (`soft`): every gap inside a dark stretch (between a
+ * section's darkFrom and darkTo pieces: a deadly fall in the dark would be a blind jump), and every second-jump and glide gap (STAGE-RULES
+ * §6: the first-timer drowns at second-jump gaps over a deadly fall; a glide's pit climbs back anyway), and a start section's gaps
+ */
+export function w8Falls(t: SectionTemplate): SectionTemplate {
+  const keys = t.pieces.map((p) => p.key);
+  const from = keys.indexOf(t.sockets.find((k) => k.id === 'darkFrom')?.on ?? '');
+  const to = keys.indexOf(t.sockets.find((k) => k.id === 'darkTo')?.on ?? '');
+  const dark = (i: number) => from >= 0 && to >= 0 && i > from && i <= to;
+  let changed = false;
+  const pieces = t.pieces.map((p, i) => {
+    const pl = p.place;
+    if (pl.kind !== 'jump' && pl.kind !== 'double' && pl.kind !== 'pit' && pl.kind !== 'land') return p;
+    // (and a start's gaps: nothing can hurt in a stage's opening seconds, STAGE-RULES §2)
+    const soft = dark(i) || t.phases.includes('start') || pl.kind === 'double' || (pl.kind === 'pit' && pl.jump !== 'jump');
+    if (!soft || pl.water) return p;
+    changed = true;
+    return { ...p, place: { ...pl, soft: true } };
+  });
+  return changed ? { ...t, pieces } : t;
+}
+
 /** World 8's kit for one stage as the game plays it on `difficulty` */
 export function w8GameKit(stage: number, difficulty: Difficulty = 'normal'): WorldKit {
   const k = w8Kit(stage);
-  const sections = [...W8_SECTIONS, ...W8_SWING_SECTIONS].filter((s) => forStage(stage, s));
-  return { ...k, manifest: { ...k.manifest, sections: [...sections, ...w8RoomsFor(stage, difficulty)], required: W8_REQUIRED } };
+  const sections = [...W8_SECTIONS, ...W8_SWING_SECTIONS].filter((s) => forStage(stage, s)).map(w8Falls);
+  return { ...k, manifest: { ...k.manifest, sections: [...sections, ...w8RoomsFor(stage, difficulty).map(w8Falls)], required: W8_REQUIRED } };
 }

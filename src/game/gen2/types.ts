@@ -181,16 +181,18 @@ export interface LianaSwing {
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
  * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
+ * A gap rule with `soft: true` has a soft pit under it whatever the world's falls (World 8: in a world whose falls cost a life, its gaps in
+ * the dark keep a soft floor, so no jump in the dark is blind)
  */
 export type PlaceRule =
   | { kind: 'start' }
   | { kind: 'walk'; after: string; dy?: Range }
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean }
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
-  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean }
+  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range };
 
 export interface SectionPiece {

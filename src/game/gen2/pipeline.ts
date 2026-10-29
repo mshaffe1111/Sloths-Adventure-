@@ -357,6 +357,9 @@ interface LocalGap {
   pit: boolean;
   /** a section's water gap (the rule's `water`): nothing laid under it, whatever the world's falls */
   water?: boolean;
+  /** a section's soft gap (the rule's `soft`): a soft pit under it, whatever the world's falls (World 8's gaps in the dark, where a
+   *  deadly fall would be a blind jump) */
+  soft?: boolean;
   /** a gap under a liana (a `land` perch past it), or a glide gap: its soft pit climbs back to the take-off ledge (`lips`: that ledge's top, the
    *  perch's), never forward to the perch */
   back?: { lips: [number, number] };
@@ -487,7 +490,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + dy;
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
       const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit', ...(pl.water ? { water: true } : {}), ...back });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -512,7 +515,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const minFor = (dy: number) => {
         const perchY = a.y + dy;
         let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage) + 20;
-        if (budget.pit === 'soft' && !pl.water) {
+        if ((budget.pit === 'soft' || pl.soft) && !pl.water) {
           const pit = backPit(a.x + a.w, a.x + a.w + 4000, a.y, perchY, lo.pitDepth ?? 0, riseLimit(false, budget.riseShare) * PIT.hop);
           for (const st of [{ x: a.x + a.w, top: pit.floor, w: 0 }, ...pit.steps]) {
             const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage);
@@ -543,7 +546,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + dy;
       lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, { x, y, w }, budget.difficulty);
       lv.hang.gap = [a.x + a.w, x];
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
@@ -606,7 +609,7 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
   spawn: { x: number; y: number; piece: Platform };
@@ -700,8 +703,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const gaps: Laid['gaps'] = [];
   const vines: Vine[] = [];
   const zones: Zone[] = [];
-  const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false) => {
-    if (budget.pit !== 'soft' || x1 - x0 < 20) return;
+  const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
+    if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
     if (back) {
       const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
@@ -894,12 +897,12 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}) };
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
         if (g.pit && !g.water) {
           const before = platforms.length;
-          if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true);
-          else pitUnder(g0.x0, g0.x1, g0.y, g0.y);
+          if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
+          else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
           placed.seam.push(...platforms.slice(before));
         }
       }
@@ -1569,7 +1572,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     modelled: { typical: 0, fast: 0 },
     errors: [],
     barren: filled.barren,
-    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : budget.pit) as PitKind })),
+    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })),
   };
   const stage: Gen2Stage = {
     config,

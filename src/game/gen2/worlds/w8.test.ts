@@ -13,7 +13,7 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { buildGen2Stage, layLocal, planBudget, rngFor } from '../pipeline.ts';
 import type { SectionTemplate } from '../types.ts';
 import { W8_CREATURES, W8_GEN2_STAGES, W8_MANIFEST, W8_NEW_LINES, W8_PROPS, W8_TIPS, w8Finish } from './w8.ts';
-import { W8_DARK_REQUIRED, W8_GAME_STAGES, W8_REQUIRED, w8GameKit } from './w8Game.ts';
+import { W8_DARK_REQUIRED, W8_GAME_STAGES, W8_REQUIRED, w8Falls, w8GameKit } from './w8Game.ts';
 import { W8_SECTIONS, W8_THEME } from './w8Sections.ts';
 import { W8_SWING_SECTIONS } from './w8Swing.ts';
 import { W8R_NEW_LINES } from './w8Rooms.ts';
@@ -28,7 +28,20 @@ test('the manifest: ids unique, every socket asks for something the world has, e
   assert.ok(ids(W8_PROPS) && ids(W8_CREATURES) && ids(ALL));
   assert.deepEqual([...W8_GEN2_STAGES], [...W8_GAME_STAGES]);
   assert.deepEqual(W8_MANIFEST.handBuilt, ['8-7', '8-10']);
-  assert.equal(W8_MANIFEST.pit, 'soft');
+  // (a fall from a lit bough costs a life on Normal: the world's pit is 'void'; the dark's, second-jump, glide and start gaps stay soft)
+  assert.equal(W8_MANIFEST.pit, 'void');
+  for (const t of ALL.map(w8Falls)) {
+    const keys = t.pieces.map((p) => p.key);
+    const from = keys.indexOf(t.sockets.find((k) => k.id === 'darkFrom')?.on ?? '');
+    const to = keys.indexOf(t.sockets.find((k) => k.id === 'darkTo')?.on ?? '');
+    t.pieces.forEach((p, i) => {
+      const pl = p.place as { kind: string; soft?: boolean; jump?: string };
+      if (!['jump', 'double', 'pit', 'land'].includes(pl.kind)) return;
+      if (from >= 0 && to >= 0 && i > from && i <= to) assert.equal(pl.soft, true, `${t.id}.${p.key}: a gap in the dark is soft`);
+      if (pl.kind === 'double' || pl.jump === 'double' || pl.jump === 'glide') assert.equal(pl.soft, true, `${t.id}.${p.key}: a second-jump or glide gap is soft`);
+      if (t.phases.includes('start')) assert.equal(pl.soft, true, `${t.id}.${p.key}: a start's gap is soft`);
+    });
+  }
   const tags = new Set([...W8_PROPS.flatMap((p) => p.tags), ...W8_PROPS.map((p) => p.id)]);
   const creatures = new Set(W8_CREATURES.flatMap((c) => [c.id, ...(c.tags ?? [])]));
   for (const s of ALL) {

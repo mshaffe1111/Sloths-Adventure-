@@ -14,9 +14,11 @@
  *   decor       src/assets/w6to10/props-made/w8b, w8c, w8var and kits/w8 (named by their cells; not packed into an atlas yet).
  *   light       dusk (8-1, 8-2), night (8-3 to 8-6), the deep night of the Monarch's wood (8-8, 8-9): stageBackdrops' w8sunset, w8night.
  *
- * Falls are soft (a lower bough and a step out: a miss costs a climb, never a life), so no water in World 8: a gap in the dark is never a
- * blind jump into something deadly (STAGE-RULES §6), and the dark can hold real jumps, lianas and climbs. Nothing stands in the dark (no
- * animal, no flag: levelCheck), so each dark stretch steps down from a lit bough and up onto another.
+ * Falls (the lead, 2026-10-29): on Normal a fall from a lit bough costs a life (the canopy floor is far below: pit 'void'), so World 8
+ * sits above World 7 on the band; Dot warns before the first deadly drop (w8Finish). Every gap inside a dark stretch keeps a soft pit (a
+ * lower bough and a step out: a deadly fall in the dark would be a blind jump, STAGE-RULES §6), and so do the second-jump and glide gaps
+ * (w8Game.ts w8Falls). Easy's falls are all soft. No water in World 8. Nothing stands in the dark (no animal, no flag: levelCheck), so each
+ * dark stretch steps down from a lit bough and up onto another.
  *
  * Pure data and pure functions (no canvas, no engine), like w6.ts.
  */
@@ -62,6 +64,8 @@ export const W8_LESSON = {
   fight: 'w8:fight',
   /** the night harpy, taught where first laid in 8-8 and 8-9 (w8Finish) */
   harpy: 'harpy',
+  /** the first deadly drop from a lit bough (Normal: w8Finish says it before the first) */
+  drop: 'w8:drop',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -121,9 +125,10 @@ export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.hunt]: "The shrine's shut. Drive the hunters off first!", // (new, needs Matt's approval)
   [W8_LESSON.fight]: "The shrine's shut. Fight through to open it.", // (new for World 8: World 6's line, needs Matt's approval there)
   [W8_LESSON.harpy]: 'A harpy! It slides, then stomps. Jump clear.',
+  [W8_LESSON.drop]: "Careful! It's a long way down.", // (new, needs Matt's approval)
 };
 /** the lines that are new in World 8 (the report lists them for Matt) */
-export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt]];
+export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop]];
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -135,7 +140,9 @@ export const W8_MANIFEST: WorldManifest = {
   name: 'Twilight Treetops',
   moves: ['double', 'punch', 'swing', 'climb', 'rope', 'glide'],
   ground: { y: W8_GROUND.y, bankH: W8_GROUND.bankH, style: 'log' },
-  pit: 'soft',
+  // (a fall from a lit bough costs a life on Normal (the lead, 2026-10-29); the dark's gaps, the second-jump and the glide gaps keep a soft
+  // pit: w8Game.ts w8Falls. Easy's falls are all soft)
+  pit: 'void',
   pitDepth: W8_GROUND.pitDepth,
   corridor: { top: G - 180, bottom: G + 80, soft: 60 },
   creatures: W8_CREATURES,
@@ -273,6 +280,9 @@ export function w8Kit(stage: number): WorldKit {
   return { manifest: { ...W8_MANIFEST, creatures }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage) };
 }
 
+/** Dot's warning comes this far before the first deadly drop's lip (px), as the water's (types.ts WATER_WARN.lead) */
+export const DROP_LEAD = 480;
+
 /** how far a climbing vine stands out in front of the bough it leads up to (px): Pokey's half-width (21) and a little */
 export const CLIMB_CLEAR = 26;
 
@@ -283,8 +293,16 @@ export const W8_HARPY_LESSON = 8;
  * The stage as the engine plays it: the pits' blocks drawn as boughs (below); in 8-8, Dot's harpy line W8_MEET_LEAD px before the first night harpy (fillSockets writes
  * proto.hints after the spawn hook runs, so the line is added here). Calling it twice changes nothing.
  */
-export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; vines?: Vine[]; config?: { miniIndex: number }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
+export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; vines?: Vine[]; gen2?: { falls?: Array<{ x0: number; x1: number; kind: string }> }; config?: { miniIndex: number }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
   const w8 = st.proto?.gen2?.w8 as W8Extras | undefined;
+  // (the first deadly drop from a lit bough: Dot's line DROP_LEAD px before its lip, once a stage (Normal; Easy's falls are soft))
+  const drops = (st.gen2?.falls ?? []).filter((f) => f.kind === 'void').sort((a, b) => a.x0 - b.x0);
+  if (st.proto && drops.length) {
+    const hints = (st.proto.hints ??= []);
+    const text = W8_TIPS[W8_LESSON.drop];
+    if (!hints.some((h) => h.text === text)) hints.push({ x: R(Math.max((st.spawnX ?? 0) + 40, drops[0].x0 - DROP_LEAD)), text, pad: text, keys: text, passX: R(drops[0].x1) });
+    hints.sort((a, b) => a.x - b.x);
+  }
   // (the soft pits' floors and their steps out are the pipeline's 'moss_stone' blocks, drawn as pale stone pillars in the treetops: they
   // are lower boughs here, in the kit's bark, each reaching down like a bough (its top unchanged, so nothing the check walks moves))
   for (const p of st.platforms ?? []) {

@@ -925,3 +925,31 @@ test('a glide gap (World 8): past the double jump on Normal, never past what lev
   // (its soft pit climbs back to the take-off, never out on the far side: the leaf is the only way over)
   assert.deepEqual(L.gaps[0].back?.lips, [0, 0]);
 });
+
+test("a soft gap (World 8's dark): in a world whose falls cost a life, a gap rule with `soft` keeps a soft pit; the others stay deadly", () => {
+  const tpl: SectionTemplate = {
+    id: 'soft-test', name: 'soft', archetypes: 'any', phases: ['ki'], difficulty: 3, exitDy: 0, sockets: [], mirrorable: false,
+    pieces: [
+      { key: 'a', shape: 'bank', w: 300, place: { kind: 'start' } },
+      { key: 'b', shape: 'bank', w: 300, place: { kind: 'pit', after: 'a', jump: 'jump', share: 0.8, soft: true } },
+      { key: 'c', shape: 'bank', w: 300, place: { kind: 'pit', after: 'b', jump: 'jump', share: 0.8 } },
+    ],
+    entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'c', kind: 'ground' },
+  };
+  const voidWorld = { ...manifest, pit: 'void' as const };
+  const b = planBudget(cfg('8-1', 'sprint'), voidWorld, 'normal');
+  assert.equal(b.pit, 'void');
+  const L = layLocal(tpl, b, rngFor(1));
+  assert.equal(L.gaps[0].soft, true);
+  assert.ok(!L.gaps[1].soft);
+  // (laid in a stage: the soft gap has a floor and reads soft; the other falls through and reads void)
+  const st = buildGen2Stage({ config: cfg('8-1', 'sprint'), kit: { ...kit, manifest: { ...voidWorld, sections: [...voidWorld.sections, tpl], required: { '8-1': [{ section: 'soft-test' }] } } }, seed: 3, difficulty: 'normal' });
+  const placed = st.gen2.sections.find((s) => s.template === 'soft-test')!;
+  const falls = (st.gen2.falls ?? []).filter((f) => f.x0 >= placed.x0 - 1 && f.x1 <= placed.x1 + 1);
+  assert.deepEqual(falls.map((f) => f.kind), ['soft', 'void']);
+  const under = (f: { x0: number; x1: number; y: number }) => st.platforms.some((p) => p.x < f.x1 && p.x + p.width > f.x0 && p.y > f.y);
+  assert.ok(under(falls[0]), 'a floor under the soft gap');
+  assert.ok(!under(falls[1]), 'nothing under the deadly one');
+  // (Easy's falls are all soft, as ever)
+  assert.equal(planBudget(cfg('8-1', 'sprint'), voidWorld, 'easy').pit, 'soft');
+});

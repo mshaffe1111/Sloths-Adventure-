@@ -28,8 +28,16 @@ export function checkW8Roll(st: Played, at: string, id: string): void {
     const tip = said(st, W8_TIPS[W8_LESSON.dark]);
     assert.ok(tip.length === 1 && lit && tip[0] < lit.x0, `${at}: the dark is not taught before ${lit?.x0}`);
   }
-  // (no water in World 8: soft falls)
+  // (no water in World 8; a fall from a lit bough costs a life on Normal, never on Easy, and Dot warns before the first)
   assert.equal(st.waterY, undefined, `${at}: water`);
+  const drops = (st.gen2!.falls ?? []).filter((f) => f.kind === 'void').sort((a, b) => a.x0 - b.x0);
+  if (st.gen2!.budget.difficulty === 'easy') assert.equal(drops.length, 0, `${at}: a deadly fall on Easy`);
+  if (drops.length) {
+    const tip = said(st, W8_TIPS[W8_LESSON.drop]);
+    assert.ok(tip.length === 1 && tip[0] < drops[0].x0, `${at}: the deadly drop at ${drops[0].x0} is not warned first`);
+  }
+  // (every fall inside a dark stretch is soft: never a blind jump)
+  for (const f of st.gen2!.falls ?? []) if (darks.some((z) => f.x0 >= z.x0 && f.x1 <= z.x1)) assert.equal(f.kind, 'soft', `${at}: a deadly fall in the dark at ${f.x0}`);
   const R = pickRoute(st.config.objectiveType, st as never);
   assert.notEqual(R.used.route.traced, 'failed', at);
   assert.ok(R.quick.time >= 120, `${at}: ${R.quick.time.toFixed(0)} s for the quick player`);
