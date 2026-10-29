@@ -553,7 +553,8 @@ export const EASY_ENEMY_SHARE = 0.6;
  */
 export const WATER_WARN = { lead: 480, every: 12 } as const;
 /** Dot's warning line, when the manifest has none (`tips.water`): Matt's words, approved 2026-10-28 */
-export const WATER_LINE = 'Careful, water! Flick up and over.';
+/** Dot's warning before gen2 water (Worlds 6-10: Pokey can swim by then, so the deadly water is dirty or fast; Matt approved, 2026-10-29) */
+export const WATER_LINE = "Careful! That water's dirty and fast. Flick up and over.";
 /** the quiet a stretch may have before it is dead time (§2 / E2) */
 export const QUIET = { easy: 3.0, normal: 2.0, rest: 4.0 } as const;
 /**
