@@ -11,6 +11,8 @@ import { drawBadWater } from './badWaterArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
 import { drawW5Box, w5ArtReady } from './w5Art.ts';
 import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
+import { drawFx } from './bossFx.ts';
+import { drawLeafBit } from './leafSprites.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -218,27 +220,22 @@ function drawGust(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof 
   ctx.beginPath();
   ctx.rect(z.x0, band.top, w, h);
   ctx.clip();
-  ctx.lineCap = 'round';
-  // streaks racing along the band, longer and faster the harder it blows: light and thin, fading out toward the band's top and bottom
-  const n = level > 0 ? Math.max(8, Math.round((w * h) / 5200)) : 0;
+  // the painted wind (the gust strip, bossFx.ts) racing along the band, more and faster the harder it blows, fading out toward the
+  // band's top and bottom and in and out at its ends (no stroked lines: Matt 2026-10-29, repeating effects are painted)
+  const n = level > 0 ? Math.max(4, Math.round((w * h) / 16000)) : 0;
   const speed = z.force * (st.phase === 'active' ? 2.6 : 1.1);
   for (let i = 0; i < n; i++) {
     const sx = hash(i * 2.1 + z.x0 * 0.01);
     const sy = hash(i * 5.3 + z.x1 * 0.01);
-    const len = 40 + sx * 80 * (0.4 + level);
-    const travel = (t * speed * (0.7 + sy * 0.6) + sx * (w + 200)) % (w + 200);
-    const x = z.dir === 1 ? z.x0 - 100 + travel : z.x1 + 100 - travel;
+    const len = 110 + sx * 110 * (0.4 + level);
+    const travel = (t * speed * (0.7 + sy * 0.6) + sx * (w + 260)) % (w + 260);
+    const x = z.dir === 1 ? z.x0 - 130 + travel : z.x1 + 130 - travel;
     const y = band.top + 14 + sy * (h - 28) + Math.sin(t * 2 + i) * 4;
-    const fade = Math.sin(Math.PI * Math.min(1, Math.max(0, (y - band.top) / h)));
-    const a = level * fade * (0.5 + sy * 0.5);
-    ctx.strokeStyle = i % 3 === 0 ? `rgba(240, 253, 250, ${0.42 * a})` : `rgba(204, 251, 241, ${0.26 * a})`;
-    ctx.lineWidth = 1.5 + sy * 1.6;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.quadraticCurveTo(x + z.dir * len * 0.5, y - 5 * Math.sin(t * 3 + i), x + z.dir * len, y);
-    ctx.stroke();
+    const fade = Math.sin(Math.PI * Math.min(1, Math.max(0, (y - band.top) / h))) * Math.min(1, travel / 90, (w + 260 - travel) / 90);
+    const a = level * fade * (0.45 + sy * 0.4);
+    drawFx(ctx, 'gust', x, y, len, { h: len * 0.16, alpha: a, flipX: z.dir === -1 });
   }
-  // leaves tumbling with it
+  // painted leaves tumbling with it
   const leaves = level > 0 ? Math.round(w / 90) + 2 : 0;
   for (let i = 0; i < leaves; i++) {
     const sx = hash(i * 9.9 + z.x0 * 0.02);
@@ -246,37 +243,15 @@ function drawGust(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof 
     const travel = (t * speed * (0.55 + sy * 0.4) + sx * (w + 160)) % (w + 160);
     const x = z.dir === 1 ? z.x0 - 80 + travel : z.x1 + 80 - travel;
     const y = band.top + 30 + sy * (h - 60) + Math.sin(t * 3.4 + i * 2) * 14;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(t * (2 + sx * 3) * z.dir + i);
-    ctx.fillStyle = `rgba(${i % 2 ? '134, 239, 172' : '74, 222, 128'}, ${Math.min(0.85, 0.1 + level * 0.75)})`;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 10, 4.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    drawLeafBit(ctx, i % 4 === 3 ? 'warm' : 'green', sx, x, y, 18 + sy * 6, t * (2 + sx * 3) * z.dir + i, Math.cos(t * 4 + i * 1.7), Math.min(0.95, 0.1 + level * 0.85));
   }
   ctx.restore();
-  // chevrons that say which way it blows: they pulse in the warning and stay solid while it blows
+  // which way it blows: the painted arrow, pale, pulsing in the warning and steady while it blows
   if (st.phase !== 'idle') {
-    const a = st.phase === 'warn' ? 0.3 + 0.5 * Math.abs(Math.sin(st.u * Math.PI * 6)) : 0.85 * st.strength;
+    const a = st.phase === 'warn' ? 0.35 + 0.5 * Math.abs(Math.sin(st.u * Math.PI * 6)) : 0.85 * st.strength;
     const cx = (z.x0 + z.x1) / 2;
     const cy = gustBand(z).top + 34;
-    ctx.save();
-    ctx.strokeStyle = `rgba(255, 255, 255, ${a})`;
-    ctx.shadowColor = 'rgba(15, 23, 42, 0.8)';
-    ctx.shadowBlur = 4;
-    ctx.lineWidth = 5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    for (let k = -1; k <= 1; k++) {
-      const x = cx + k * 34;
-      ctx.beginPath();
-      ctx.moveTo(x - z.dir * 9, cy - 13);
-      ctx.lineTo(x + z.dir * 9, cy);
-      ctx.lineTo(x - z.dir * 9, cy + 13);
-      ctx.stroke();
-    }
-    ctx.restore();
+    drawFx(ctx, 'warnArrow', cx, cy, 78, { alpha: a, flipX: z.dir === -1, recolor: '#e6fffa' });
   }
 }
 

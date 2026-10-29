@@ -249,3 +249,19 @@ export function drawFallsPillar(ctx: CanvasRenderingContext2D, cx: number, w: nu
   ctx.restore();
   return true;
 }
+
+/**
+ * One piece of the waterfall set on its own, `w` wide with its foot's middle at (cx, bottom) (its own shape kept; `h` stretches it), for
+ * the small water effects: 4-8's run-off along the shelf (a splash strip). False until the
+ * sheet has loaded.
+ */
+export function drawFallsBit(ctx: CanvasRenderingContext2D, n: 'plume' | 'mist1' | 'mist2' | 'splash1' | 'splash2', cx: number, bottom: number, w: number, o: { h?: number; alpha?: number; flip?: boolean } = {}): boolean {
+  if (!fallsArtReady()) return false;
+  const f = FALL_FRAMES[n];
+  const h = o.h ?? (w * f.h) / f.w;
+  ctx.save();
+  if (o.alpha !== undefined) ctx.globalAlpha *= Math.max(0, Math.min(1, o.alpha));
+  blit(ctx, n, cx - w / 2, bottom - h, w, h, o.flip);
+  ctx.restore();
+  return true;
+}

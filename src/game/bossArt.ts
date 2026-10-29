@@ -3,6 +3,7 @@
  * and everything its attacks throw into the arena.
  */
 import type { BossEntity } from './types.ts';
+import { drawGritBit } from './w4Grit.ts';
 import type { BossHazard } from './bossAI.ts';
 import type { BossDef, MoveDef } from './bossAI.ts';
 import { EASY_OPEN_MUL, openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
@@ -460,20 +461,21 @@ export function drawHazards(ctx: CanvasRenderingContext2D, list: BossHazard[], t
   }
 }
 
-/** grit trickling down over the spot a stone is about to fall on (World 4's warning), thickening as it comes */
+/** grit trickling down over the spot a stone is about to fall on (World 4's warning), thickening as it comes: the painted chips and
+ *  pebbles (w4Grit.ts), each spinning, its own size, fading in at the top and out at the floor */
 function drawGrit(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const u = 1 - h.warn / Math.max(0.01, h.warnMax || 1);
   const top = h.floorY - 520;
   const span = 520;
   const n = 6 + Math.round(12 * u);
   ctx.save();
-  ctx.globalAlpha = 0.6 + 0.4 * u;
+  ctx.globalAlpha = 0.7 + 0.3 * u;
   for (let k = 0; k < n; k++) {
-    const gx = h.x - 14 + ((k * 7 + h.seed) % 28);
+    const gx = h.x - 14 + ((k * 7 + h.seed) % 28) + Math.sin(k * 2.3 + h.seed) * 3;
     const gy = top + ((time * 380 + k * (span / n) + h.seed * 3) % span);
-    const sz = 3 + (k % 3) * 2;
-    ctx.fillStyle = k % 2 ? '#a8a29e' : '#78716c';
-    ctx.fillRect(gx, gy, sz, sz);
+    const end = Math.min(1, (gy - top) / 60, (h.floorY - gy) / 30);
+    if (end <= 0) continue;
+    drawGritBit(ctx, ((k * 0.137 + h.seed * 0.0711) % 1), gx, gy, 6 + (k % 3) * 2.5, time * (k % 2 ? 6 : -5) + k, end);
   }
   ctx.restore();
 }
