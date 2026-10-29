@@ -145,12 +145,15 @@ test("a gen2 stage loads World 5's sheets before it starts: the kit, its dressin
   assert.deepEqual(stageSheets(lv('5-7'), { ...on, hand: false }), stageSheets(lv('5-7'), on));
 });
 
-test("a World 6 gen2 stage loads World 6's kit, the clip sheets of the cats in its shipped rolls, and the kit pieces for its room or its water signs", () => {
+test("a World 6 gen2 stage loads World 6's kit, the kit pieces for its room, and its water's signs and painted water", () => {
   const on = { hand: true, paint: true, ctest: false };
   for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('6-'))) {
     const sheets = stageSheets(lv(id), on);
     assert.deepEqual(sheets.slice(0, 2), ['kit:1', 'kit:6'], id);
-    assert.equal(sheets.includes('kit-pieces'), (W6_ROOM_STAGES as readonly string[]).includes(id) || gen2Water(id), `${id}: the kit pieces exactly when it has a room or water signs`);
+    assert.equal(sheets.includes('kit-pieces'), (W6_ROOM_STAGES as readonly string[]).includes(id), `${id}: the kit pieces exactly when it has a room`);
+    // (the water signs and the dirty, fast water have sheets of their own: stageSheets.ts water-signs, bad-water)
+    assert.equal(sheets.includes('water-signs'), gen2Water(id), `${id}: the water signs exactly when it has water`);
+    assert.equal(sheets.includes('bad-water'), gen2Water(id), `${id}: the dirty water exactly when it has water`);
     assert.deepEqual(stageSheets(lv(id), { ...on, hand: false }), sheets, `${id}: whatever the hand-built switch`);
   }
 });
