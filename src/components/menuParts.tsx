@@ -202,6 +202,15 @@ export const ControlsSetting: React.FC = () => {
           />
         </div>
       )}
+      <small className="pm-polish-note">
+        {style === 'pad'
+          ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.'
+          : help === 'off'
+            ? 'No buttons: slide, flick and tap anywhere on the screen. A tap punches and every jump is a move up. The second jump needs a quick flick up.'
+            : help === 'keep'
+              ? 'No buttons: slide, flick and tap anywhere. A tap punches and every jump is a move up. In the air a short slide up (or a wiggle of your thumb) is the second jump.'
+              : 'Like On, and the second jump also pushes Pokey forward the way he faces, so one thumb can jump twice and cross a gap. Push the other way to brake. A first jump is always just a jump.'}
+      </small>
       {style === 'screen' && (
         <div className="pm-sound-h" style={{ marginTop: 8 }}>
           <span className="pm-polish-note" style={{ margin: 0 }}>
@@ -271,15 +280,6 @@ export const ControlsSetting: React.FC = () => {
           {noBuzz ? " This phone doesn't buzz for web games, so the marks are your feedback." : ''}
         </small>
       )}
-      <small className="pm-polish-note">
-        {style === 'pad'
-          ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.'
-          : help === 'off'
-            ? 'No buttons: slide, flick and tap anywhere on the screen. A tap punches and every jump is a move up. The second jump needs a quick flick up.'
-            : help === 'keep'
-              ? 'No buttons: slide, flick and tap anywhere. A tap punches and every jump is a move up. In the air a short slide up (or a wiggle of your thumb) is the second jump.'
-              : 'Like On, and the second jump also pushes Pokey forward the way he faces, so one thumb can jump twice and cross a gap. Push the other way to brake. A first jump is always just a jump.'}
-      </small>
     </div>
   );
 };
