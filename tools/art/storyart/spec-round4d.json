@@ -14,7 +14,7 @@
    "meeca_qwen_v1.safetensors"
   ]
  },
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5d2300264ed39e8ccf8a8e27e5248b7ec02d2f50/tools/art/hfbatch/starts/storyart/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/89a2637ac74d0ccc06ae249f26439afcf8a78364/tools/art/hfbatch/starts/storyart/",
  "items": [
   {
    "name": "cel-da.kneel_tie-pa3",
@@ -228,7 +228,7 @@
   }
  ],
  "q": 92,
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5d2300264ed39e8ccf8a8e27e5248b7ec02d2f50/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/89a2637ac74d0ccc06ae249f26439afcf8a78364/",
  "keep": [
   "cel-da.kneel_tie-pa3",
   "cel-da.kneel_tie-pi3",
