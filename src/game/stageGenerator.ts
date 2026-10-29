@@ -87,6 +87,8 @@ export interface GeneratedStage {
   kit?: import('./puzzleKit.ts').KitExtras;
   /** the goal Easy keeps: the stage's own quota, before goals.ts raised it to Normal's share of what the stage holds */
   easyGoal?: number;
+  /** Normal's goal, set with easyGoal (goals.ts withGoals): Easy scales it to the animals it keeps (easyMode.ts) */
+  normalGoal?: number;
   /** what the generator built (for tests and debugging) */
   meta?: {
     attempt: number;

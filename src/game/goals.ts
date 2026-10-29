@@ -89,6 +89,7 @@ export function withGoals<T extends GeneratedStage>(st: T): T {
   const g = normalGoal(st as Stage);
   if (g === null) return st;
   st.easyGoal = easyGoalFor(g, goalHave(st as Stage) ?? g);
+  st.normalGoal = g;
   st.config = { ...st.config, targetCount: g };
   return st;
 }
