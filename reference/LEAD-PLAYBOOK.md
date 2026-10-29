@@ -36,6 +36,14 @@ goes onto the Docs roadmap and, if it is a rule, into STAGE-RULES.md or CLAUDE.m
    **on more than one roll**; the deliverables (screenshots upright and sideways, before/after numbers, notes); "update the ledger
    rows you change and add a §6 lesson if you learn one"; don't push, don't publish the test link.
 4. Add it to STATUS.md (what, branch, files, started).
+5. **The lead owns the helper's result (Matt, 2026-10-29: "I hold you responsible for these helpers... when they fail, I see this as a
+   failure from you").** A brief for anything that changes the look or adds a mode must carry the art direction, not just the mechanics:
+   the reference picture to match, the lighting (STAGE-RULES §4: where the light comes from, what's dark, what must stay readable), the
+   mood beat by beat, and what "bad" looks like (stretched textures, flat lighting, copy-pasted pieces). A brief for a stage or mode must
+   say that every move it teaches is REQUIRED somewhere (an obstacle you can steer round is not a jump). The lead reviews every mock-up
+   against Matt's bar (his polish rule, his reference pictures) before showing it to him, and sends it back if it falls short. Never pass
+   a mock-up on just because the helper finished it. (Lesson: 7-4's first slide mock-up went to Matt with flat stretched walls and no move
+   that needed a jump: "that looks horrible".)
 
 ## 3b. Cloud sessions (separate machines; Matt, 2026-10-28: "use extra as soon as possible so we run at capacity")
 
