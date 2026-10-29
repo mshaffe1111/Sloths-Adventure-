@@ -503,6 +503,11 @@ const QUOTES: Record<TuneName, Quote> = {
   march: { mode: 'harmonicMinor', bars: lullaby('sq', { scale: 'harmonicMinor' }), roots: [0, 0, 5, 4, 3, 1, 4, 0], deltas: [1, 1], from: { end: 0, top: 8 }, doms: 'none' },
 };
 
+/** the tunes a world in three can quote, in their own counting: the lullaby in 6/8, as Meeca sang it (World 8, the treetops lullaby) */
+const QUOTES12: Partial<Record<TuneName, Quote>> = {
+  lullaby: { ...QUOTES.lullaby, bars: lullaby('68') },
+};
+
 const PC: Record<string, number> = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
 
 // ───────────────────────────────────────────── grooves ─────────────────────────────────────────────
@@ -585,11 +590,11 @@ export interface Composed {
 }
 
 /** the lowest and highest note of some bars of melody, as written (MIDI) */
-function extentOf(bars: string[], tonicMidi: number, scale: number[]): [number, number] {
+function extentOf(bars: string[], tonicMidi: number, scale: number[], steps: 12 | 16 = 16): [number, number] {
   let lo = 999;
   let hi = -999;
   for (const b of bars) {
-    for (const n of parseMelodyBar(b, tonicMidi, scale, 16)) {
+    for (const n of parseMelodyBar(b, tonicMidi, scale, steps)) {
       if (n.midi === null) continue;
       lo = Math.min(lo, n.midi);
       hi = Math.max(hi, n.midi);
@@ -627,9 +632,10 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
   const bpm = Math.round(style.bpm[0] + r() * (style.bpm[1] - style.bpm[0]));
   // some stages open with one of the story's tunes, and then the stage is in that tune's mode
   // (a world in three or six has no quotes: the story's tunes are written in four)
+  // (a world in three quotes a tune only in its own counting: Meeca's lullaby as she sang it, in 6/8. The others are written in four)
   const rolled = rollTune(r, card.tunes);
-  const tune = style.meter === 12 ? null : rolled;
-  const quote = tune ? QUOTES[tune] : undefined;
+  const tune = style.meter === 12 ? (rolled && QUOTES12[rolled] ? rolled : null) : rolled;
+  const quote = tune ? (style.meter === 12 ? QUOTES12[tune] : QUOTES[tune]) : undefined;
   const mode = quote ? quote.mode : card.mode;
   const scale = SCALES[mode];
   const first = Math.floor(r() * card.leads.length);
@@ -648,7 +654,7 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     for (const inst of order) {
       for (let k = 0; k < card.tonics.length && !placed; k++) {
         const name = card.tonics[(start + k) % card.tonics.length];
-        const [tlo, thi] = extentOf(quote.bars, tonicOf(name), scale);
+        const [tlo, thi] = extentOf(quote.bars, tonicOf(name), scale, style.meter);
         const s = fitShift(inst, tlo, thi);
         if (s !== null) {
           tonicName = name;
@@ -661,7 +667,7 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     }
     if (!placed) {
       // no lead of the world's can take it in any of its keys: the nearest instrument that can
-      const [tlo, thi] = extentOf(quote.bars, tonicOf(tonicName0), scale);
+      const [tlo, thi] = extentOf(quote.bars, tonicOf(tonicName0), scale, style.meter);
       for (const inst of Object.keys(LEAD_BAND)) {
         const s = fitShift(inst, tlo, thi);
         if (s !== null) {
@@ -683,7 +689,7 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     return m;
   })();
   const tonicStr = `${noteName(tonicPc, flats)}${Math.floor(tonicMidi / 12) - 1}`;
-  const tuneRange = quote ? extentOf(quote.bars, tonicMidi, scale) : null;
+  const tuneRange = quote ? extentOf(quote.bars, tonicMidi, scale, style.meter) : null;
   const slow = !quote && r() < style.slow;
   const h = harmony16(r, mode, tonicPc, { slow, seventh: card.seventh, tune: quote });
 
@@ -1049,7 +1055,8 @@ const STORY: Record<StoryKind, () => StorySpec> = {
       { name: 'theme', bars: 8, roots: [0, 4, 5, 3, 0, 4, 3, 4], layers: ['strings', 'harp', 'leadA', 'bass'], melody: 'hero', lead: 'leadA' },
       { name: 'theme again', bars: 8, roots: [0, 4, 5, 3, 0, 4, 3, 4], layers: ['strings', 'harp', 'leadB', 'bass', 'bell', 'choir'], melody: 'hero', lead: 'leadB' },
       { name: 'her theme', bars: 8, roots: [5, 3, 0, 4, 5, 3, 1, 4], layers: ['strings', 'harp', 'leadA', 'counter', 'choir', 'bass', 'timp'], melody: 'B', lead: 'leadA' },
-      { name: 'together', bars: 8, roots: [0, 4, 5, 3, 0, 4, 3, 0], layers: ['strings', 'choir', 'harp', 'leadB', 'counter', 'bass', 'bell', 'timp', 'taiko', 'crash'], melody: 'hero', lead: 'leadB' },
+      // (the game's last statement of Pokey's tune is World 1's flute, where it all began: the finale resolves on it, the lead 2026-10-29)
+      { name: 'together', bars: 8, roots: [0, 4, 5, 3, 0, 4, 3, 0], layers: ['strings', 'choir', 'harp', 'leadA', 'counter', 'bass', 'bell', 'timp', 'taiko', 'crash'], melody: 'hero', lead: 'leadA' },
       { name: 'glow', bars: 4, roots: [3, 0, 3, 0], layers: ['strings', 'harp', 'bell', 'choir'], melody: 'none' },
     ],
   }),

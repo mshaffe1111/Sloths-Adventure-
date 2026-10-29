@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { ACT_MIX, ACTS, actOfThemeId, actOfWorld, fitShift, LEAD_BAND, LEAD_SIT, MIN_BPM, leadWindow } from './acts.ts';
 import { composeStageFull, composeStage } from './composer.ts';
 import { orchestrate, PACES } from './orchestrate.ts';
-import { BOSS_THEME, THEMES } from './themes.ts';
+import { BOSS_THEME, THEMES, themeById } from './themes.ts';
 import { stageMusic } from './scenes.ts';
 import { lullaby, stepBy } from './motifs.ts';
 import { STYLES } from './styles.ts';
@@ -64,12 +64,13 @@ test('the story\'s own tunes are quoted exactly, each in its own act and mode', 
       assert.ok(t.acts.includes(actOfWorld(w)), `world ${w} quotes ${info.tune}`);
       assert.equal(theme.scale, t.mode);
       const lead = theme.tracks.find((k) => k.name === 'lead') as MelodyTrack;
-      assert.deepEqual(lead.bars.slice(0, 8), t.bars, `${theme.id}: the first eight bars are the ${info.tune} tune`);
+      // (a world in three sings the lullaby in its own 6/8 counting: World 8)
+      const want = theme.stepsPerBar === 12 && info.tune === 'lullaby' ? lullaby('68') : t.bars;
+      assert.deepEqual(lead.bars.slice(0, 8), want, `${theme.id}: the first eight bars are the ${info.tune} tune`);
       assert.equal(lead.bars.length, 16);
     }
   }
-  // (World 8 is a lullaby in three now, styles.ts, and the lullaby quote is written in four: it waits for a version in three)
-  assert.deepEqual([...seen].sort(), ['lament', 'march', 'pokey']);
+  assert.deepEqual([...seen].sort(), ['lament', 'lullaby', 'march', 'pokey']);
 });
 
 test('the lament is the lullaby\'s own notes in the relative minor, and the march is the lullaby with its third and sixth lowered', () => {
@@ -189,10 +190,17 @@ test('the dressing leaves the tune to the fuller orchestra: no second set of dou
 test('only Act I falls back to a written world theme; the later acts always get their own composed sound', () => {
   let trailWritten = 0;
   for (let i = 0; i < 400; i++) {
-    for (const w of [1, 2, 3]) if (/^world\d+~/.test(stageMusic(w, `lvl-${i}`, 3, 0, undefined).id)) trailWritten++;
+    // (dressed in the world's own style: 'world2s-<seed>'; World 3, in 6/8, always composes its own)
+    for (const w of [1, 2]) if (/^world\ds-\d+$/.test(stageMusic(w, `lvl-${i}`, 3, 0, undefined).id)) trailWritten++;
+    assert.match(stageMusic(3, `lvl-${i}`, 3, 0, undefined).id, /^gen-/);
     for (const w of [4, 5, 6, 7, 8, 9, 10]) assert.match(stageMusic(w, `lvl-${i}`, 3, 0, undefined).id, /^gen-/, `world ${w}`);
   }
-  assert.ok(trailWritten > 100, `${trailWritten} written themes in Act I`);
+  assert.ok(trailWritten > 70, `${trailWritten} written themes in Act I`);
+  for (const id of ['world1s-123', 'world2s-456']) {
+    const t = themeById(id)!;
+    assert.ok(t.chain && t.form, id);
+    assert.equal((t.tracks.find((k) => k.name === 'lead') as MelodyTrack).inst, id.startsWith('world1') ? 'flute' : 'clarinet', `${id}: on the world's own lead`);
+  }
 });
 
 test('each act\'s mix thins or thickens the orchestra the way its sound needs', () => {

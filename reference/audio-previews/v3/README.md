@@ -68,3 +68,12 @@ about $0.19 of the $6 (see `../v1/HF-LOG.md`).
 - The one-in-five early stages that play a world's written tune keep that tune's old instruments.
 - The finale ending on World 1's flute is story music: not done.
 - Nothing is wired into the game until you've listened.
+
+## Finished for merge (after your OK on v3)
+
+- **`finish-w8-lullaby.mp3`** (45 s): Meeca's lullaby is back in World 8, now sung in 6/8 as she sang it, on the violins over the
+  treetops' harp waltz (about two World 8 stages in five open with it).
+- **`finish-w1-written.mp3`** (45 s): the one-in-five first-act stages that play their world's written tune now play it in the world's own
+  style: here World 1's tune on the flute over the jungle groove. (World 3 is in 6/8 and its written tune in four, so its stages always
+  compose their own.)
+- **`finish-ending.mp3`** (2.5 min): the ending's last statement of Pokey's tune is now World 1's flute, where it all began.

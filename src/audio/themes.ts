@@ -10,8 +10,11 @@
  * Each bar must add up to 16 sixteenths (12 in 3/4); the unit test checks every bar of every theme.
  * A `null` bar is composed on the fly by the melody generator (in key, on the chord, repeatable).
  */
-import type { DrumName, DrumTrack, Theme, Track } from './music.ts';
-import { composeStory, themeFromId } from './composer.ts';
+import type { DrumName, DrumTrack, MelodyTrack, Theme, Track } from './music.ts';
+import { composeStage, composeStory, themeFromId } from './composer.ts';
+import { autoForm } from './form.ts';
+import { fitShift } from './acts.ts';
+import { noteMidi, parseMelodyBar, SCALES } from './theory.ts';
 import { orchestrate, paceFromCode } from './orchestrate.ts';
 import { scoreById } from './score.ts';
 
@@ -611,7 +614,35 @@ function orchestratedById(id: string): Theme | null {
   const world = m[1] === 'world' ? Number(m[2]) : FLAVOUR_OF[m[1]] ?? 1;
   return { ...orchestrate(base, { world, pace, seed: 0 }), id };
 }
-export const themeById = (id: string): Theme | null => THEMES[id] ?? signatureById(id) ?? themeFromId(id) ?? orchestratedById(id) ?? scoreById(id);
+/**
+ * 'world2s-<seed>': a world's written tune (one stage in five of the first act plays it) dressed in that world's own style (styles.ts): its
+ * lead, groove, bass and texture from a composed stage of the same seed, the written tune and chords in place of the composed ones, laid
+ * out as chained chunks (form.ts autoForm). A world in three cannot take a tune written in four: null.
+ */
+function styledWrittenById(id: string): Theme | null {
+  const m = /^world(\d{1,2})s-(\d{1,10})$/.exec(id);
+  if (!m) return null;
+  const w = Number(m[1]);
+  const seed = Number(m[2]);
+  const base = THEMES[`world${w}`];
+  if (!base) return null;
+  const styled = composeStage(w, seed);
+  if ((styled.stepsPerBar ?? 16) !== (base.stepsPerBar ?? 16)) return null;
+  const written = base.tracks.find((t): t is MelodyTrack => t.kind === 'melody' && t.bars.some((b) => b !== null));
+  const lead = styled.tracks.find((t): t is MelodyTrack => t.kind === 'melody' && t.name === 'lead');
+  if (!written || !lead) return null;
+  // the written tune on the world's lead, at the octave its range takes it
+  const tonic = noteMidi(base.tonic);
+  const notes = written.bars.flatMap((b) => (b === null ? [] : parseMelodyBar(b, tonic + (written.shift ?? 0), SCALES[base.scale], base.stepsPerBar ?? 16))).flatMap((n) => (n.midi === null ? [] : [n.midi]));
+  const shift = (written.shift ?? 0) + (fitShift(lead.inst, Math.min(...notes), Math.max(...notes), 0) ?? lead.shift ?? 0);
+  const tracks = styled.tracks.map((t) => (t === lead ? ({ ...lead, bars: written.bars, gen: written.gen, shift, altInst: undefined } as MelodyTrack) : t));
+  const theme: Theme = { ...styled, id, tonic: base.tonic, scale: base.scale, chords: base.chords, form: undefined, chain: undefined, tracks };
+  const form = autoForm(theme, seed);
+  return form ? { ...theme, form, chain: true } : theme;
+}
+
+export const themeById = (id: string): Theme | null =>
+  THEMES[id] ?? signatureById(id) ?? styledWrittenById(id) ?? themeFromId(id) ?? orchestratedById(id) ?? scoreById(id);
 
 /** which theme plays for each world (1..10) and for its boss */
 export const WORLD_THEME = (world: number) => `world${Math.max(1, Math.min(10, world))}`;

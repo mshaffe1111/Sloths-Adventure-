@@ -168,7 +168,8 @@ export function stageMusic(world: number, levelId: string, mini: number, salt = 
   if (!levelId) return { id: WORLD_THEME(world), intensity: 0.35, seed, tempo, form: true };
   // about one in five stages of the first act plays the world's written theme, so Pokey's signature tunes still turn up; the later acts have
   // their own sounds (composer.ts) and never fall back to a tune written for another mood
-  if (actOfWorld(world) === 'trail' && (seed >>> 5) % 5 === 0) return { id: `${WORLD_THEME(world)}~${PACE_CODE[pace]}`, intensity: 0.35, seed, tempo, form: true };
+  // (dressed in the world's own style: themes.ts styledWrittenById. A world in three cannot take a tune written in four, and composes its own)
+  if (actOfWorld(world) === 'trail' && (seed >>> 5) % 5 === 0 && STYLES[world]?.meter !== 12) return { id: `${WORLD_THEME(world)}s-${seed}`, intensity: 0.35, seed, tempo, form: true };
   return { id: stageThemeId(world, seed, pace), intensity: 0.35, seed, tempo, form: true };
 }
 
