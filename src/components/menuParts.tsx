@@ -243,8 +243,8 @@ export const ControlsSetting: React.FC = () => {
           <Seg
             value={side}
             options={[
-              { id: 'right', label: 'Right' },
               { id: 'left', label: 'Left' },
+              { id: 'right', label: 'Right' },
             ]}
             onPick={(v) => {
               setPadSide(v);
@@ -274,7 +274,7 @@ export const ControlsSetting: React.FC = () => {
       )}
       <small className="pm-polish-note">
         {style === 'pad'
-          ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.'
+          ? 'A pad for running under your left thumb, and Jump, Punch and Kick buttons on the other side. Flip it to run with your right thumb.'
           : help === 'off'
             ? 'No buttons: slide, flick and tap anywhere on the screen. A tap punches and every jump is a move up. The second jump needs a quick flick up.'
             : help === 'keep'

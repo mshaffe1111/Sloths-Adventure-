@@ -488,6 +488,8 @@ export interface InputState {
    * (touchGestures.ts); 0 or unset for a straight-up flick, a key or the pad. Letting go of a vine or a trunk leaps that way.
    */
   jumpLean?: -1 | 0 | 1;
+  /** … and leaned 35 degrees or more, this way: a standing jump carries him that way (touchGestures.ts slantOf, CT-27) */
+  jumpSlant?: -1 | 0 | 1;
   jumpHeld: boolean;
   punchPressed: boolean;
   /** take back a punch pressed a moment ago, if its swing has not struck yet (a touch jab the finger outran, CT-17) */

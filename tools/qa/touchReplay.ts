@@ -107,7 +107,9 @@ for (const parts of sessions.values()) {
   const sink: GestureSink = {
     move: (d) => current?.did.push(`move:${d}`),
     duck: (on) => current?.did.push(on ? 'duck' : 'duckOff'),
-    jumpPress: () => {
+    jumpPress: (_lean, slant) => {
+      // (a standing flick leaning 35 degrees or more now carries him: CT-27)
+      if (slant && state === 'g' && jumpsSinceGround === 0) current?.did.push(`slant:${slant}`);
       jumpsSinceGround++;
       if (onVineNow()) current?.did.push('jumpV');
       else current?.did.push('jump');
@@ -368,5 +370,19 @@ for (const k of ['all', ...PLAYERS, 'others']) {
     const back = mine.reduce((a, tc) => a + tc.did.filter((d) => d === 'jabX').length, 0);
     if (!mine.length) continue;
     console.log(`| ${k} | ${taps.length} | ${q(waits, 0.5)} | ${q(waits, 0.9)} | ${other.length} | ${both.length} (${other.length ? ((100 * both.length) / other.length).toFixed(1) : 0}%) | ${back} |`);
+  }
+}
+
+// CT-27: standing first jumps from a lone or second finger, and how many leaned 35 degrees or more (now carried that way at 0.75 of a run)
+{
+  console.log('\nCT-27: standing jumps that leaned 35 degrees or more (carried)\n');
+  console.log('| who | standing jumps, nothing steering | slanted, carried |');
+  console.log('|---|---|---|');
+  for (const k of order) {
+    // (only a lone finger that was not steering: with a thumb steering the run carries him anyway, and the engine adds nothing)
+    const mine = touches.filter((tc) => (k === 'all' || tc.who === k || tc.held === k) && tc.st0 === 'g' && !tc.second && tc.did.some((d) => d === 'jump') && !tc.did.slice(0, tc.did.indexOf('jump')).some((d) => d.startsWith('move:') && d !== 'move:none'));
+    if (!mine.length) continue;
+    const sl = mine.filter((tc) => tc.did.some((d) => d.startsWith('slant:'))).length;
+    console.log(`| ${k} | ${mine.length} | ${sl} (${((100 * sl) / mine.length).toFixed(1)}%) |`);
   }
 }
