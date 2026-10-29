@@ -14,6 +14,7 @@ import { VINE } from '../../src/game/thornVine.ts';
 import { skillHeldAt } from '../../src/game/skills.ts';
 import { roomBox, type RoomSpec } from '../../src/game/puzzleKit.ts';
 import { CLIMB, RUN, type Route, type Seg } from './route.ts';
+import { moveKind } from './lookalike.ts';
 import type { Stage } from './stages.ts';
 
 export type Letter = 'W' | 'h' | 'J' | 'V' | 'C' | 'Z' | 'P';
@@ -33,6 +34,8 @@ export interface Beat {
   /** 1, or 0.5 for a half beat (a pickup arc over a gap off the route) */
   count: number;
   what: string;
+  /** a move's kind for the look-alike measure (lookalike.ts moveKind: the jump's size, height and what is under it; the swing's kind) */
+  k?: string;
 }
 
 export interface Sample { x: number; y: number; base: number; seg: Seg }
@@ -105,7 +108,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     const s = route.segs[si];
     // a move keeps him busy while it lasts; a climb only for its first 2.5 s (a long plain climb past that is quiet)
     const busy = s.kind === 'climb' ? Math.min(2.5, s.dt + (route.segs[si + 1]?.kind === 'climb' ? route.segs[si + 1].dt : 0)) : s.kind === 'lift' ? 0.5 : s.dt;
-    const at = { base: t, dur: 0, act: busy, x: s.x0, y: s.y0, count: 1 };
+    const at = { base: t, dur: 0, act: busy, x: s.x0, y: s.y0, count: 1, k: moveKind(stage, s, glideHeld) ?? undefined };
     switch (s.kind) {
       case 'hop': raw.push({ ...at, letter: 'h', what: s.y1 < s.y0 - 16 ? 'hop up a step' : 'small hop' }); break;
       case 'jump': raw.push({ ...at, letter: 'J', what: s.y1 < s.y0 - 100 ? 'big jump up' : 'jump over a gap' }); break;

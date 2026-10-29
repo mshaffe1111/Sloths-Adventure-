@@ -22,6 +22,8 @@
  * sections as `BuildRequest.recent`, the list is written with the seeds (the game passes the same list, so a seed builds the same
  * stage), and the share of sections the two stages' shipped sets have in common is reported; with `--max-shared` (default 0.7, worlds
  * of 12 sections or more) a roll whose sections are more than that share the neighbour's is dropped.
+ * With `--apart`, a roll that shares a 20 s stretch that plays alike with any shipped roll of another stage of its world is dropped
+ * (STAGE-RULES §2 "Sameness"; the look-alike measure, tools/inspect/lookalike.ts, the same one era.ts reports with).
  * The band score is bands.ts's stageScore on the inspector's parts only (hardest jumps for the noisy bot, dead time, length): the
  * first-timer bot builds stages by id through the game, which builds gen2 stages only after the hook-up (DESIGN.md B10 piece G).
  */
@@ -34,7 +36,8 @@ import { JUMP_CLEAR, measureStage } from '../../src/game/stageMetrics.ts';
 import type { Gen2Stage, WorldKit } from '../../src/game/gen2/types.ts';
 import type { Gen2StageSeeds, Gen2Seed } from '../../src/game/gen2/seeds.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
-import { actionTokens, closestWindows, cosine, deadTime, EASY_GAP, NORMAL_GAP, profile, tokenString, windows, type Dead, type Win } from '../inspect/analyze.ts';
+import { actionTokens, cosine, deadTime, EASY_GAP, NORMAL_GAP, profile, tokenString, type Dead } from '../inspect/analyze.ts';
+import { looksAlike, lookWindows, type LookWin } from '../inspect/lookalike.ts';
 import { stageScore } from '../inspect/bands.ts';
 import { rollVariants } from '../inspect/era.ts';
 import { pickRoute, RULES } from '../inspect/eraRoll.ts';
@@ -98,7 +101,7 @@ export interface RollMeasure {
   action: string;
   prof: Map<string, number>;
   /** its 20 s windows (Normal), as era.ts compares stages of a world */
-  wins: Win[];
+  wins: LookWin[];
   /** why it was dropped (empty: it passed the filters) */
   fails: string[];
   quality: number;
@@ -120,7 +123,7 @@ export interface CurateOptions {
   recent: string[];
   neighbour: Set<string> | null;
   /** the world's other gen2 stages' shipped rolls, by their 20 s windows (era.ts's look-alike rule across a world's stages) */
-  others?: Array<{ key: string; wins: Win[][] }>;
+  others?: Array<{ key: string; wins: LookWin[][] }>;
   /** drop a roll that shares a 20 s stretch with one of `others`' shipped rolls (`--apart`) */
   apart?: boolean;
   log: (s: string) => void;
@@ -232,7 +235,7 @@ export function measureRoll(stage: CurateStage, seed: number, recent: string[], 
     easy: E.side,
     action: tokenString(tokens).replace(/W/g, ''),
     prof: profile(tokens),
-    wins: windows(tokens, N.beats.total),
+    wins: lookWindows(N.beats.beats, N.beats.total),
     fails: [],
     quality: 0,
   };
@@ -354,11 +357,12 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
     measures.push(m);
     if ((i + 1) % 25 === 0) opt.log(`  ${stage.key}: ${i + 1}/${seeds.length} rolls, ${measures.filter((x) => !x.fails.length).length} pass  (${((Date.now() - t0) / 1000).toFixed(0)} s)`);
   }
-  // (era.ts's look-alike rule across a world's stages: any 20 s window of the roll against any of the other stage's shipped rolls')
+  // (era.ts's look-alike rule across a world's stages, on the one measure both import (inspect/lookalike.ts): any 20 s window of the
+  // roll against any of the other stage's shipped rolls')
   const alikeOf = new Map<RollMeasure, string[]>();
   for (const m of measures) {
     if (m.fails.length) continue;
-    const keys = (opt.others ?? []).filter((o) => o.wins.some((w) => { const c = closestWindows(m.wins, w); return !!c && c.d < RULES.window; })).map((o) => o.key);
+    const keys = (opt.others ?? []).filter((o) => o.wins.some((w) => looksAlike(m.wins, w, RULES.window))).map((o) => o.key);
     alikeOf.set(m, keys);
     if (opt.apart) for (const k of keys) m.fails.push(`shares a 20 s stretch with ${k}`);
   }
@@ -599,7 +603,7 @@ async function main() {
     const recent = prevPicks ? closingSections(prevPicks) : prev ? closingSectionsOf(prev) : [];
     const neighbour = prevPicks ? new Set(prevPicks.flatMap((p) => p.plan.map((t) => t.replace(/~$/, '')))) : prev ? new Set(prev.seeds.flatMap((s) => s.sections.split(' ').map((t) => t.replace(/~$/, '')))) : null;
     // (the world's other gen2 stages, curated now or before: their shipped rolls' windows, for the look-alike rule across stages)
-    const others: Array<{ key: string; wins: Win[][] }> = [];
+    const others: Array<{ key: string; wins: LookWin[][] }> = [];
     if (!opt.toy) {
       for (const [k, e] of Object.entries(existing)) {
         if (k === key || k.split('-')[0] !== key.split('-')[0]) continue;

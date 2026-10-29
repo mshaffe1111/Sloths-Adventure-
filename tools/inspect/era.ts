@@ -19,7 +19,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { closestWindows, cosine, winDistance, type Win } from './analyze.ts';
+import { cosine } from './analyze.ts';
+import { closestLook, lookDistance, type LookWin } from './lookalike.ts';
 import type { Letter } from './beats.ts';
 import { judgedBy, NOT_JUDGED, type RollResult } from './eraRoll.ts';
 
@@ -144,12 +145,12 @@ const nonWalk = (a: string) => a.replace(/W/g, '');
 export const sequenceOf = (a: string) => nonWalk(a).replace(/h/g, 'J').replace(/(.)\1+/g, '$1');
 
 /** the distance between the same 20 s of two rolls: each window of one against the other's window nearest in time (within 6 s) */
-export function alignedWindows(a: Win[], b: Win[]): number | null {
+export function alignedWindows(a: LookWin[], b: LookWin[]): number | null {
   let sum = 0, n = 0;
   for (const x of a) {
-    let best: Win | null = null;
+    let best: LookWin | null = null;
     for (const y of b) if (Math.abs(y.t - x.t) <= 6 && (!best || Math.abs(y.t - x.t) < Math.abs(best.t - x.t))) best = y;
-    if (best) { sum += winDistance(x, best); n++; }
+    if (best) { sum += lookDistance(x, best); n++; }
   }
   return n ? sum / n : null;
 }
@@ -345,7 +346,7 @@ async function main() {
     const ra = byId.get(a.id)!, rb = byId.get(b.id)!;
     for (const i of lookAt) {
       const c = cosine(new Map(ra[i].prof), new Map(rb[i].prof));
-      const w = closestWindows(ra[i].wins, rb[i].wins);
+      const w = closestLook(ra[i].wins, rb[i].wins, RULES.window);
       const mixAlike = c > RULES.cosine, winAlike = !!w && w.d < RULES.window;
       if (mixAlike || winAlike) {
         for (const [s, o] of [[a, b], [b, a]] as const) {

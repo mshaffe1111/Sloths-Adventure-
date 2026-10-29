@@ -229,8 +229,8 @@ for a seed, so Easy and Normal fill alike: seeds curated before it must be curat
 stages). The picks go to `gen2/seeds.ts`: `GEN2_SEEDS['5-7'] = [ ... ]`; at play the layout variant chooses among them
 (`variant % n`): a retry keeps the roll, a fresh entry changes it, every shipped roll is verified. A stage whose sections include puzzle
 rooms ships them in at least half its set (`--rooms N`; the pipeline rolls rooms rarely, and the greedy pick never chose one). Each roll is
-also compared with the world's other gen2 stages' shipped rolls by era.ts's 20 s window rule (reported; `--apart` drops a roll that
-matches: World 5's stages all share its moves, so nearly every roll matches, hand-built ones too).
+also compared with the world's other gen2 stages' shipped rolls by era.ts's 20 s window rule, on the look-alike measure both share
+(`tools/inspect/lookalike.ts`: each beat by its kind; reported; `--apart` drops a roll that matches).
 
 ### B9. A world's building blocks (authoring)
 
