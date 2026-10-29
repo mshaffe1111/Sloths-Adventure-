@@ -33,15 +33,37 @@ test('World 4 on Normal: quicker Sovereign, stronger gusts, rocks more often; th
         if (i === 0) assert.equal(z.force, was[0].force, `${id}: the first gust as taught`);
         assert.ok(z.force <= 160 && idleTime(z) > 2, `${id}: within the level check's limits`);
       });
-      const rocks = [...(st.proto.w4?.rocks ?? [])].sort((a, b) => a.x - b.x);
+      // (the rocks it had, matched by place: the pairs below may add more)
+      const rocks = st.proto.w4?.rocks ?? [];
       const r0 = [...(before.proto.w4?.rocks ?? [])].sort((a, b) => a.x - b.x);
-      rocks.forEach((r, i) => {
-        assert.equal(r.warn, r0[i].warn, `${id}: every rock keeps its warning`);
-        if (i === 0) assert.equal(r.every, r0[0].every, `${id}: the first rock as taught`);
-        else assert.ok(r.every <= r0[i].every, `${id}: rocks more often`);
+      r0.forEach((w, i) => {
+        const r = rocks.find((q) => q.x === w.x && q.land === w.land)!;
+        assert.ok(r, `${id}: rock at ${w.x} still there`);
+        assert.equal(r.warn, w.warn, `${id}: every rock keeps its warning`);
+        if (i === 0) assert.equal(r.every, w.every, `${id}: the first rock as taught`);
+        else assert.ok(r.every <= w.every, `${id}: rocks more often`);
       });
+      for (const r of rocks) assert.ok(r.warn >= 1.4, `${id}: every rock warned`);
       assert.ok(validateStage(st).errors.length <= validateStage(before).errors.length, `${id} roll ${s}: nothing new for the level check`);
     }
+  }
+});
+
+test('taught moves together (option A): gusts over the plain jumps of 4-2, rocks over the landings of 4-8, in each second half', () => {
+  for (const [id, kind] of [['4-2', 'gusts'], ['4-8', 'rocks']] as const) {
+    let added = 0;
+    for (const s of [1, 2, 3, 4, 5]) {
+      const before = build(id, s);
+      const st = w4Normal(build(id, s));
+      const half = (st.spawnX + st.exitTotemX) / 2;
+      const zs = (st.zones ?? []).slice((before.zones ?? []).length);
+      const rs = (st.proto.w4?.rocks ?? []).slice((before.proto.w4?.rocks ?? []).length);
+      for (const z of zs) assert.ok(z.kind === 'wind' && z.x0 > half - 200, `${id}: a gust in the second half`);
+      for (const r of rs) assert.ok(r.x > half && r.warn >= 1.4 && !r.air, `${id}: a warned rock on a landing in the second half`);
+      added += kind === 'gusts' ? zs.length : rs.length;
+      assert.ok(validateStage(st).errors.length <= validateStage(before).errors.length, `${id} roll ${s}`);
+    }
+    assert.ok(added >= 3, `${id}: ${added} ${kind} over five rolls`);
   }
 });
 
