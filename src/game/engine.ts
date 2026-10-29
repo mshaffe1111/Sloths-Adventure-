@@ -75,7 +75,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
-import { drawKitDecor } from './puzzleArt.ts';
+import { drawKitArt, drawKitDecor, kitSize } from './puzzleArt.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
@@ -586,7 +586,8 @@ export class GameEngine {
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
     this.forgive = isEasy() ? FORGIVE.easy : FORGIVE.normal;
-    this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config))) : withGoals(generateStage(config));
+    // (a gen2 stage, gen2/game.ts, is laid for Easy by its own pipeline: the difficulty goes in with the build)
+    this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
@@ -4566,6 +4567,30 @@ export class GameEngine {
         ctx.beginPath();
         ctx.arc(0, -60, 60, 0, Math.PI * 2);
         ctx.fill();
+      }
+      ctx.restore();
+    }
+    // the new generator's water warnings (gen2 proto.gen2.waterWarnings): a sign at the water's edge, the puzzle kit's signpost with a
+    // wave on its board until the sign's own art lands (a plain post while the kit's sheet loads)
+    for (const w of this.proto?.gen2?.waterWarnings ?? []) {
+      if (w.x < x0 - 80 || w.x > x1 + 80) continue;
+      const drew = drawKitArt(ctx, 'sign', w.x, w.y + 3);
+      const cy = w.y - (drew ? kitSize('sign').h * 0.72 : 50);
+      ctx.save();
+      if (!drew) {
+        ctx.fillStyle = '#7c5a32';
+        ctx.fillRect(w.x - 3, w.y - 40, 6, 40);
+        ctx.fillRect(w.x - 18, cy - 12, 36, 24);
+      }
+      ctx.strokeStyle = '#1d4ed8';
+      ctx.lineWidth = 3.5;
+      ctx.lineCap = 'round';
+      for (const dy of [-5, 4]) {
+        ctx.beginPath();
+        ctx.moveTo(w.x - 12, cy + dy);
+        ctx.quadraticCurveTo(w.x - 6, cy + dy - 5, w.x, cy + dy);
+        ctx.quadraticCurveTo(w.x + 6, cy + dy + 5, w.x + 12, cy + dy);
+        ctx.stroke();
       }
       ctx.restore();
     }

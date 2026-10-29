@@ -74,7 +74,7 @@ export interface StageReport {
   name: string;
   type: string;
   goalText: string;
-  source: 'hand' | 'generated';
+  source: 'hand' | 'gen2' | 'generated';
   traced: string;
   presumedHops: number;
   /** goal stops the route visited, of those asked */

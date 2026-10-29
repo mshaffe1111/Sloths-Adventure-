@@ -2,8 +2,9 @@
  * One roll of one stage, measured for the 200-roll tool (era.ts). A development tool: nothing in src/ ships it, and it only reads src/game.
  *
  * A roll is built the way the game builds a stage on entry (App.tsx startLevel -> engine.ts): the layout number goes in with
- * setLayoutVariant, then generateStage (the hand-built stages take the number as their seed; the generated ones, 5-6 to 5-9 and on,
- * search attempts from it until the validator passes: variantAttemptFor), then withGoals. headlessDom gives it the `location` a
+ * setLayoutVariant, then generateStage (the hand-built stages take the number as their seed; the new generator's, 5-7 and 5-9, play
+ * one of their 16 curated rolls, `number % 16`, built on the difficulty played; the old generator's, 5-6, 5-8 and on, search attempts
+ * from it until the validator passes: variantAttemptFor), then withGoals. headlessDom gives it the `location` a
  * browser has, so generateStage takes the browser's path (outside a browser it would build the old generated stage for every id).
  * In the game `?layout=N` replays the roll with layout number N + 1 (stageGenerator.ts rollLayoutVariant).
  */
@@ -92,7 +93,8 @@ export const isClimb = (cfg: LevelConfig, st: Stage) => cfg.objectiveType === 'a
 export function buildRoll(cfg: LevelConfig, variant: number, easy = false): Stage {
   setLayoutVariant(variant);
   try {
-    const st = withGoals(generateStage({ ...cfg, unlocked: true })) as Stage;
+    // (a gen2 stage, src/game/gen2/game.ts, is laid for Easy by its own pipeline: the difficulty goes in with the build, as engine.ts does)
+    const st = withGoals(generateStage({ ...cfg, unlocked: true }, easy ? 'easy' : 'normal')) as Stage;
     return easy ? (easyStage(st) as Stage) : st;
   } finally {
     setLayoutVariant(null);

@@ -113,6 +113,8 @@ export interface ProtoExtras {
   w4?: import('./w4Play.ts').W4Extras;
   /** World 5's chairs, cakes, teapots, threads, sheets, orchids, cocoons, carvings and spiders (w5Kit.ts, run by w5Play.ts) */
   w5?: import('./w5Kit.ts').W5Extras;
+  /** the new generator's own extras (gen2/pipeline.ts fillSockets): the water-warning signs at the water's edge */
+  gen2?: { waterWarnings?: Array<{ x: number; y: number }> };
   /** Meeca's stage (5-M, after 5-5): the column, the trees she carves, the ferns and the guards' rhythms (meecaStage.ts, run by meecaPlay.ts) */
   meeca?: import('./meecaStage.ts').MeecaStage;
   /** World 3's sleeping thorn vines (3-5: thornVine.ts) */

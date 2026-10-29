@@ -4,6 +4,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { buildStage, generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
+import { isGen2Stage } from './gen2/game.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 
 const levels = generateAllLevels();
@@ -17,7 +18,11 @@ test('every shipped level passes the reachability validator', () => {
 });
 
 test('the seed table is complete and not stale', () => {
-  for (const l of levels) assert.notEqual(LEVEL_ATTEMPTS[l.id], undefined, `missing seed for ${l.id}`);
+  // (the new generator's stages ship their own curated rolls, gen2/seeds.ts: the old table has no entry for them)
+  for (const l of levels) {
+    if (isGen2Stage(l)) assert.equal(LEVEL_ATTEMPTS[l.id], undefined, `${l.id} is built by gen2: no old seed`);
+    else assert.notEqual(LEVEL_ATTEMPTS[l.id], undefined, `missing seed for ${l.id}`);
+  }
 });
 
 test('generation is deterministic', () => {
@@ -50,9 +55,16 @@ test('every level has a flag every ~1500px (never more than 2300 apart) and a li
     const s = generateStage(l);
     const cps = s.checkpoints ?? [];
     let prev = 0;
-    for (const c of cps) { assert.ok(c.x - prev < 2300, `${l.id} flag gap ${c.x - prev}`); prev = c.x; }
-    assert.ok(s.exitTotemX - prev < 2000, `${l.id} last flag too far from goal`);
-    assert.ok(s.waterY !== undefined && s.waterY > s.spawnY, `${l.id} has water below the spawn`);
+    // (the old generator's spacing; a gen2 stage lays its flags by the clock, at its rests and every 35 s, as far apart as the
+    // hand-built stages have them: gen2/game.test.ts)
+    if (!isGen2Stage(l)) {
+      for (const c of cps) { assert.ok(c.x - prev < 2300, `${l.id} flag gap ${c.x - prev}`); prev = c.x; }
+      assert.ok(s.exitTotemX - prev < 2000, `${l.id} last flag too far from goal`);
+    }
+    // (a gen2 stage of a world whose pits are soft has no water at all: a fall lands in a mossy pit with a step out, gen2/DESIGN.md B1)
+    const soft = isGen2Stage(l) && (s as { gen2?: { budget: { pit: string } } }).gen2?.budget.pit === 'soft';
+    if (soft) assert.equal(s.waterY, undefined, `${l.id}: soft pits, no water`);
+    else assert.ok(s.waterY !== undefined && s.waterY > s.spawnY, `${l.id} has water below the spawn`);
   }
 });
 
