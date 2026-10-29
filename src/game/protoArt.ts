@@ -571,7 +571,12 @@ export function drawBankArt(
   ctx.clip();
   drawLip(ctx, w, la, lb, p.y, view);
   ctx.restore();
-  const end = (right: boolean, step?: number) => drawEnd(ctx, w, right ? p.x + p.width : p.x, p.y, right, step === undefined ? undefined : step + 26);
+  const end = (right: boolean, step?: number) => {
+    const x = right ? p.x + p.width : p.x;
+    // (only an end on screen: a long bank's far end is thousands of units off)
+    if (view && (x < view.x0 - 260 || x > view.x1 + 260)) return;
+    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : step + 26);
+  };
   if (open.right) end(true, open.rightStep);
   if (open.left) end(false, open.leftStep);
   return true;

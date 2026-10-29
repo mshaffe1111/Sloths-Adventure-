@@ -42,6 +42,7 @@ import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
 import { perfNote } from './perfLog.ts';
 import { groundUrl, hasGround, warmGround } from './groundPaint.ts';
+import { DRESS_URL, dressReady } from './dressArt.ts';
 import type { LevelConfig } from './types.ts';
 
 type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
@@ -78,6 +79,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'kit-pieces') {
       kitArtReady();
       urls.push(KIT_ART_URL);
+    } else if (k === 'dress') {
+      dressReady();
+      urls.push(DRESS_URL);
     } else if (k === 'water-signs') {
       warmWaterSigns();
       urls.push(WATER_SIGN_URL);

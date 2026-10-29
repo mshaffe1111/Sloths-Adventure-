@@ -17,7 +17,7 @@ for (const spec of stages) {
     await p.evaluate(([i, l]) => window.__play(i, l === undefined ? undefined : +l), [id, layout]);
     await p.waitForTimeout(3500);
     if (+dx) await p.evaluate((d) => { let e = window.__engine; if (typeof e === "function") e = e(); const pl = e.player; pl.x += d; if (pl.position) pl.position.x += d; }, +dx);
-    await p.waitForTimeout(2500);
+    await p.waitForTimeout(+(process.env.SETTLE ?? 2500));
     await p.screenshot({ path: `${out}/${tag}-${idl.replace('@', 'L')}${+dx ? '-x' + dx : ''}-${o}.jpg`, type: 'jpeg', quality: 80 });
     await ctx.close();
   }

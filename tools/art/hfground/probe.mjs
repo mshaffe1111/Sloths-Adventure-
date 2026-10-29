@@ -14,6 +14,7 @@ const out = await p.evaluate(() => {
   const c = e.camera;
   return {
     cam: [c.x, c.y, c.viewportWidth, c.viewportHeight],
+    dress: (e.proto?.dress ?? []).map((q) => q.n + "@" + Math.round(q.x) + "," + Math.round(q.b)),
     plats: e.platforms.filter((q) => q.x < c.x + c.viewportWidth + 200 && q.x + q.width > c.x - 200).map((q) => ({ id: q.id, x: Math.round(q.x), y: Math.round(q.y), w: Math.round(q.width), h: Math.round(q.height), type: q.type, style: q.style, art: q.art, push: !!q.push })),
   };
 });

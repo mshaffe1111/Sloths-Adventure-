@@ -130,8 +130,8 @@ export function drawSoil(ctx: C, w: number, x0: number, x1: number, top: number,
   const deep = g.deep;
   const vt = viewTop ?? viewBottom - 900;
   const y0 = vt + (viewBottom - vt) * 0.5;
-  if (typeof ctx.createLinearGradient === 'function' && bottom > y0) {
-    const gr = ctx.createLinearGradient(0, y0, 0, viewBottom);
+  const gr = bottom > y0 && typeof ctx.createLinearGradient === 'function' ? ctx.createLinearGradient(0, y0, 0, viewBottom) : null;
+  if (gr) {
     gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
     gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`);
     ctx.fillStyle = gr;
