@@ -19,6 +19,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
 import { clipPick, heroClipsAreLive, heroClipsLive } from './heroClips.ts';
 import { drawVineHang } from './heroVine.ts';
+import { drawRopeHang } from './heroRope.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -271,6 +272,8 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   events.track(p, time);
   // holding a vine: Matt's vine-swing pictures, his hands round the real liana (heroVine.ts)
   if (p.isVineSwinging && drawVineHang(ctx, p, 1, time)) return true;
+  // on a shimmy rope: Matt's hand-over-hand pictures, his paws round the painted rope (heroRope.ts)
+  if (p.hanging && drawRopeHang(ctx, p, time, events.ropeTravel)) return true;
   // the standard hero (heroStandard.ts), when switched on and loaded, draws every pose it has a frame for
   const stdImg = standardAtlas();
   // a moving clip (heroClips.ts, test): when one fits this moment it draws in the standard hero's place
