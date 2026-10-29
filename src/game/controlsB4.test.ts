@@ -5,6 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { TouchRig, stroke } from './touchRig.ts';
+import { padSideFrom } from './controlPrefs.ts';
 
 const G = 2000;
 const TRUNK = { id: 7, x: 600, topY: 1500, bottomY: 2000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as const;
@@ -36,4 +37,13 @@ test('CT-5: on a trunk, the second thumb\'s straight flick up climbs, the steeri
   lean.push([...stroke(1, [[0, 200, 700], [900, 201, 701]]), ...stroke(2, [[200, 700, 700], [260, 746, 620]])]);
   lean.run(900);
   assert.ok(!lean.p.climbing, `a 30 degree flick leaps off: ${lean.words().join(' ')}`);
+});
+
+// ───────────────────────────── CT-19: the Pad's default side ─────────────────────────────
+
+test('CT-19: the Pad puts movement on the left unless a side was chosen; a chosen side is kept', () => {
+  assert.equal(padSideFrom(null), 'left', 'never chosen: the new default');
+  assert.equal(padSideFrom('right'), 'right', 'chose right: kept');
+  assert.equal(padSideFrom('left'), 'left', 'chose left: kept');
+  assert.equal(padSideFrom('junk'), 'left');
 });
