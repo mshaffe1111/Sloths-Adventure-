@@ -196,6 +196,9 @@ export const TUNING = {
   lockSlant: 1.5,
   lockTrailMs: 60,
   lockAfterJumpMs: 120,
+  /** on a trunk a steer starts only on a stroke this far sideways (px), at least twice as far across as up or down, this quick (px per ms) */
+  trunkSidePx: 40,
+  trunkSideSpeed: 0.3,
 } as const;
 
 /** what the recogniser may ask the game: is jump help on, and is he in the air with a second jump to spare */
@@ -647,6 +650,12 @@ export class TouchGestures {
 
   // ───────────────────────────── steering ─────────────────────────────
 
+  /** on a trunk: the finger's last moments are a fresh, clearly sideways stroke (trunkSidePx, twice as far across as up or down, quick) */
+  private trunkSide(f: Finger): boolean {
+    const { mx, my, ms } = this.recent(f);
+    return Math.abs(mx) >= TUNING.trunkSidePx && Math.abs(mx) >= 2 * Math.abs(my) && Math.abs(mx) / ms >= TUNING.trunkSideSpeed;
+  }
+
   /** the steering thumb's run keeps its way until then (its jump a moment ago: the intent lock) */
   private lockUntil = -1e9;
   /** the steering thumb is flicking up right now (the intent lock): quick, and mostly up, over its last moments */
@@ -678,6 +687,12 @@ export class TouchGestures {
     }
     // hysteresis: starting needs the full dead zone, stopping needs the finger well back inside it
     const stop = TUNING.moveDead * 0.6;
+    // on a trunk a steer (which, held, hops him off) starts only on a fresh, clearly sideways stroke: a climbing stroke drifts sideways
+    // too, and that steer dropped him off the trunk the moment the thumb stopped (CT-4)
+    if (this.vine() && !this.env?.onSwing?.() && !this.trunkSide(f)) {
+      if (this.heldDir === 'none') dx = Math.max(-TUNING.moveDead, Math.min(TUNING.moveDead, dx));
+      else if ((this.heldDir === 'right' ? -dx : dx) > TUNING.moveDead) dx = 0;
+    }
     // the intent lock: a running thumb flicking up (or that has just jumped) keeps the run's way; the anchor comes along, so the thumb's arc
     // back toward the palm is not read as a stop or a turn once the lock ends either
     if (this.heldDir !== 'none' && !this.vine() && (this.now < this.lockUntil || this.flickingUp(f))) {

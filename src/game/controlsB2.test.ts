@@ -352,3 +352,18 @@ test('CT-12: a quick flick jumps the same height whatever the frame phase, and a
     assert.ok(h >= Math.min(...hs) - 2, `a ${f} ms hitstop after the flick: ${h.toFixed(0)} px against ${Math.min(...hs).toFixed(0)}`);
   }
 });
+
+test('CT-4: a fresh, clearly sideways stroke on a trunk, held, still steps him off that way', () => {
+  for (const dir of [-1, 1]) {
+    const rig = vineRig();
+    rig.r.climb(rig.r.vines[0], 1900);
+    rig.clear();
+    rig.run(400);
+    rig.push(stroke(1, [[0, 300, 700], [120, 300 + 70 * dir, 704], [900, 300 + 72 * dir, 704]]));
+    let off = 0;
+    rig.run(900, () => {
+      if (!off && !rig.p.climbing) off = Math.sign(rig.p.vx);
+    });
+    assert.equal(off, dir, `stroke ${dir > 0 ? 'right' : 'left'}: ${rig.words().join(' ')}`);
+  }
+});
