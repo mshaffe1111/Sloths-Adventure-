@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
-import { PAD, padIntent, followAnchor, clampKnob } from '../game/padControl.ts';
+import { PAD, PadInput, followAnchor, clampKnob } from '../game/padControl.ts';
 import type { PadSide } from '../game/controlPrefs.ts';
 import { Icon } from './icons/index.tsx';
 
@@ -30,47 +30,17 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
     padId: -1,
     ax: 0,
     ay: 0,
-    move: 'none' as 'left' | 'right' | 'none',
-    duck: false,
-    jumpSrc: new Set<string>(),
     megaTimer: 0,
     megaFired: false,
   });
-
-  const jumpSet = (src: string, on: boolean) => {
-    const s = st.current.jumpSrc;
-    const before = s.size > 0;
-    if (on) s.add(src);
-    else s.delete(src);
-    const after = s.size > 0;
-    if (!before && after) {
-      inputEngine.triggerTouchUp();
-      inputEngine.triggerHaptic(15);
-    } else if (before && !after) inputEngine.releaseTouchUp();
-  };
-
-  const padApply = (dx: number, dy: number) => {
-    const s = st.current;
-    const it = padIntent(dx, dy);
-    if (it.move !== s.move) {
-      s.move = it.move;
-      inputEngine.triggerTouchMove(it.move);
-    }
-    if (it.duck !== s.duck) {
-      s.duck = it.duck;
-      inputEngine.triggerTouchDuck(it.duck);
-    }
-    jumpSet('pad', it.up);
-  };
+  // what the pad and the Jump button mean (padControl.ts PadInput)
+  const drive = useRef<PadInput | null>(null);
+  if (!drive.current) drive.current = new PadInput(inputEngine);
+  const P = drive.current;
 
   const padRelease = () => {
-    const s = st.current;
-    s.padId = -1;
-    s.move = 'none';
-    s.duck = false;
-    inputEngine.triggerTouchMove('none');
-    inputEngine.triggerTouchDuck(false);
-    jumpSet('pad', false);
+    st.current.padId = -1;
+    P.padUp();
     setPad(null);
   };
 
@@ -79,7 +49,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
     window.clearTimeout(s.megaTimer);
     s.megaFired = false;
     padRelease();
-    jumpSet('btn', false);
+    P.jumpButton(false);
     setDown(new Set());
   };
 
@@ -132,7 +102,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
       s.ax = followAnchor(s.ax, t.clientX);
       const dx = t.clientX - s.ax;
       const dy = t.clientY - s.ay;
-      padApply(dx, dy);
+      P.pad(dx, dy);
       const k = clampKnob(dx, dy);
       setPad({ ax: s.ax, ay: s.ay, kx: k.x, ky: k.y });
     }
@@ -146,7 +116,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
     e.stopPropagation();
     mark(b, true);
     const s = st.current;
-    if (b === 'jump') jumpSet('btn', true);
+    if (b === 'jump') P.jumpButton(true);
     else if (b === 'kick') {
       inputEngine.triggerTouchKick(0);
       inputEngine.triggerHaptic(25);
@@ -165,7 +135,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
     e.stopPropagation();
     mark(b, false);
     const s = st.current;
-    if (b === 'jump') jumpSet('btn', false);
+    if (b === 'jump') P.jumpButton(false);
     else if (b === 'punch') {
       inputEngine.setHold('pad', false);
       window.clearTimeout(s.megaTimer);

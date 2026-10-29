@@ -6,6 +6,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { TouchRig, stroke, type TouchEv } from './touchRig.ts';
+import { PadInput } from './padControl.ts';
 
 const G = 2000;
 /** a bare floor, Pokey standing on it at x */
@@ -60,5 +61,126 @@ test('CT-11: a flick that arcs back toward the palm as it rises keeps the run go
       const d = runningJump(o, false, arcX);
       assert.ok(d >= 165, `arc ${arcX} px, phase ${o} ms: ${d.toFixed(0)} px`);
     }
+  }
+});
+
+// ───────────────────────────── CT-2: the Pad on a trunk or a liana ─────────────────────────────
+
+const TRUNK = { id: 7, x: 600, topY: 1500, bottomY: 2000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as const;
+const LIANA = { id: 8, x: 1400, topY: 1600, bottomY: 1860, swaySpeed: 0, swayPhase: 0, vineType: 'swing_liana' } as const;
+function vineRig(): TouchRig {
+  const rig = new TouchRig('1-1', 1);
+  rig.r.bare([{ id: 1, x: 0, y: G, width: 20000, height: 300, type: 'solid' } as never], [{ ...TRUNK }, { ...LIANA }] as never);
+  return rig;
+}
+/** the Pad, as PadController.tsx drives it */
+function padOf(rig: TouchRig): PadInput {
+  rig.input.source = 'pad';
+  return new PadInput(rig.input);
+}
+
+test('CT-2: on a trunk, the Pad pushed up climbs, let go and pushed up again still climbs, and never leaps off', () => {
+  const rig = vineRig();
+  const pad = padOf(rig);
+  rig.r.climb(rig.r.vines[0], 1990);
+  rig.clear();
+  rig.run(100); // (the engine tells the input he is on a trunk on its next frame)
+  let y = rig.p.y;
+  for (let i = 0; i < 3; i++) {
+    pad.pad(0, -45);
+    rig.run(250);
+    assert.ok(rig.p.climbing, `push ${i + 1}: still on the trunk`);
+    assert.ok(rig.p.y < y - 40, `push ${i + 1}: climbed (${y.toFixed(0)} -> ${rig.p.y.toFixed(0)})`);
+    y = rig.p.y;
+    pad.padUp();
+    rig.run(300);
+    assert.ok(rig.p.climbing, `let go ${i + 1}: still on the trunk`);
+  }
+  // down climbs down
+  y = rig.p.y;
+  pad.pad(0, 45);
+  rig.run(300);
+  assert.ok(rig.p.climbing && rig.p.y > y + 20, 'down climbs down');
+  pad.padUp();
+});
+
+test('CT-2: on a liana, the Pad pushed up climbs and never lets go', () => {
+  const rig = vineRig();
+  const pad = padOf(rig);
+  rig.r.swing(rig.r.vines[1], { angle: 0, omega: 0.5, len: 200 });
+  rig.clear();
+  rig.run(100);
+  const len = rig.p.swingLength!;
+  for (let i = 0; i < 3; i++) {
+    pad.pad(4, -45);
+    rig.run(500);
+    assert.ok(rig.p.isVineSwinging, `push ${i + 1}: still on the liana`);
+    pad.padUp();
+    rig.run(200);
+  }
+  assert.ok(rig.p.swingLength! < len - 20, `climbed the liana (${len.toFixed(0)} -> ${rig.p.swingLength!.toFixed(0)})`);
+});
+
+test('CT-2: off a trunk, the Pad leaps only on the Jump button or a push 45 degrees over with 38 px up, the way it leans', () => {
+  for (const how of ['button', 'diagonal'] as const) {
+    const rig = vineRig();
+    const pad = padOf(rig);
+    rig.r.climb(rig.r.vines[0], 1800);
+    rig.clear();
+    rig.run(400); // past the grab's grace
+    if (how === 'button') {
+      pad.pad(-30, 0); // steering left (no hop off, CT-4)
+      pad.jumpButton(true);
+    } else pad.pad(-45, -42);
+    rig.run(200);
+    assert.ok(!rig.p.climbing, `${how}: leapt off`);
+    assert.ok(rig.p.vx < -200, `${how}: leapt left (${rig.p.vx.toFixed(0)})`);
+    pad.padUp();
+    pad.jumpButton(false);
+  }
+});
+
+test('CT-2: keyboard and game controller: on a trunk or a liana Up climbs and only Space or A leaps; off one, Up still jumps', () => {
+  const rig = vineRig();
+  const inp = rig.input;
+  const keys = inp as unknown as Record<'handleKeyDown' | 'handleKeyUp', (e: unknown) => void>;
+  const key = (code: string, down = true) => keys[down ? 'handleKeyDown' : 'handleKeyUp']({ code, repeat: false, preventDefault() {} });
+  inp.onVine = true;
+  key('ArrowUp');
+  assert.ok(inp.state.up && !inp.state.jumpPressed, 'Up on a trunk: climb, no jump');
+  key('ArrowUp', false);
+  key('Space');
+  assert.ok(inp.state.jumpPressed, 'Space on a trunk: a leap');
+  key('Space', false);
+  inp.clearAll();
+  inp.onVine = false;
+  key('ArrowUp');
+  assert.ok(inp.state.jumpPressed, 'Up off a trunk: a jump, as before');
+  key('ArrowUp', false);
+  inp.clearAll();
+
+  // a game controller: stick up, then A
+  const pads: { axes: number[]; buttons: { pressed: boolean }[] }[] = [{ axes: [0, 0], buttons: Array.from({ length: 16 }, () => ({ pressed: false })) }];
+  const nav = globalThis as unknown as { navigator?: unknown };
+  const had = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+  Object.defineProperty(globalThis, 'navigator', { value: { getGamepads: () => pads }, configurable: true });
+  try {
+    inp.onVine = true;
+    pads[0].axes[1] = -1;
+    inp.update(1 / 30);
+    assert.ok(inp.state.up && !inp.state.jumpPressed && !inp.state.jumpHeld, 'stick up on a trunk: climb');
+    pads[0].buttons[0].pressed = true;
+    inp.update(1 / 30);
+    assert.ok(inp.state.jumpPressed, 'A on a trunk: a leap');
+    pads[0].buttons[0].pressed = false;
+    pads[0].axes[1] = 0;
+    inp.update(1 / 30);
+    inp.onVine = false;
+    pads[0].axes[1] = -1;
+    inp.update(1 / 30);
+    assert.ok(inp.state.jumpPressed, 'stick up off a trunk: a jump, as before');
+  } finally {
+    if (had) Object.defineProperty(globalThis, 'navigator', had);
+    else delete nav.navigator;
   }
 });
