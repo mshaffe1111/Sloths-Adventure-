@@ -94,3 +94,18 @@ hfboss-r4     6ae396a55ddcdc08302647b4 rtx-pro-6000 18:55:33Z-19:01:52Z (6.3 min
   (fine, thinner); croc-props s62 (start shapes too plain), s75-23 (boat on a flat slab); fx3 s85-7 (screech grew an arrowhead), s72-23
   (stray flecks), s85-23's pennants (spear tips doubling the pole).
 total ~32.5 min on rtx-pro-6000 = ~$1.49 of the $10 cap.
+
+# polish-sfx (2026-10-29, the recorded effect set; all CPU, no GPU; cap $8)
+sfx-scan-a/b/c  6ae3a61ac78863f9c62dcaa4 / 6ae3a61c0e0338d1bb7c1e1c / 6ae3a61f0e0338d1bb7c1e20 cpu-upgrade 20:01Z-20:04:40Z (3 x 3.2 min):
+  tools/audio/sfxv1/fsscan.py pass 1 over laion/freesound-commercially-permissive-subset-with-captions shards 0, 4, 8: CC0 clips by caption
+  -> bucket hfbatch/sfx/carriers (carrier-a/b/c-*.png).
+sfx-scan-d/e    6ae3a7740e0338d1bb7c1faa / 6ae3a7760e0338d1bb7c1fad cpu-upgrade 20:07Z-20:10:33Z (2.6 + 3.3 min): pass 2 (rocks, crumble, logs,
+  wood/grass/stone steps, flaps, rope, jungle/night/cave beds), shards 1-3 and 5-7, 9.
+sfx-scan-f      6ae3a8fbc78863f9c62dce1b cpu-upgrade 20:13Z-20:16Z (~2.5 min): pass 3 (rain, lava, fire, creature words, mallets, chimes, drums).
+sfx-scan-g      6ae3b23ac78863f9c62dd9df cpu-upgrade 20:53Z-20:58Z (5.0 min): pass 4 (animal voices as the captions word them).
+sfx-licheck     6ae3b1bbc78863f9c62dd950 cpu-upgrade 20:51Z, CANCELED after ~2.5 min (the dataset mount fetched whole 450 MB files).
+sfx-licheck2    6ae3b265c78863f9c62dda08 cpu-upgrade 20:54Z-21:12:41Z (18.7 min): licheck.py, every scanned id (2095) against
+  benjamin-paine/freesound-laion-640k by range reads -> hfbatch/sfx/licences.json: all 2095 found.
+sfx-licheck3    6ae3b978c78863f9c62de338 cpu-upgrade 21:24Z-~21:45Z (~20 min): the same for the 115 ids the build touched (with pass 4's)
+  -> hfbatch/sfx/licences-used.json.
+total ~65 min on cpu-upgrade = ~$0.05 of the $8 cap (no GPU used; Stable Audio Open is gated for this account and was not run).
