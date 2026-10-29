@@ -48,6 +48,40 @@ def seamless(im, band=0.22):
     return Image.fromarray((a * wgt + r * (1 - wgt)).clip(0, 255).astype(np.uint8))
 
 
+def seamless_periodic(im, P=512, m=96):
+    """for the walls: their starts were a 512 px panel tiled 2 x 2, so the paint repeats about every 512 px. Near each far edge fade
+    into the copy one period back, so the last column leads on into the first with no seam and no half-roll ghosting in the middle"""
+    a = np.asarray(im).astype(np.float32)
+    h, w = a.shape[:2]
+    t = (np.arange(m) + 1) / m
+    t = (t * t * (3 - 2 * t))
+    for axis, n in ((1, w), (0, h)):
+        idx = np.arange(n - m, n)
+        cur = np.take(a, idx, axis=axis)
+        back = np.take(a, idx - P, axis=axis)
+        shape = [1, 1, 1]; shape[axis] = m
+        blend = cur * (1 - t.reshape(shape)) + back * t.reshape(shape)
+        if axis == 1:
+            a[:, n - m:] = blend
+        else:
+            a[n - m:] = blend
+    # the last row/column is now the one a period back from the end; the first is a period's start, so the wrap reads as the interior
+    return Image.fromarray(a.clip(0, 255).astype(np.uint8))
+
+
+def patch_floor(im, half=100, rows=130):
+    """the chamber's start had the chute groove in the middle of its floor strip, which the paint kept as a pale block: cover it with
+    the floor just left of it, feathered in"""
+    a = np.asarray(im).astype(np.float32)
+    h, w = a.shape[:2]
+    cx = w // 2
+    src = a[h - rows:, cx - 3 * half:cx - half].copy()
+    dst = a[h - rows:, cx - half:cx + half]
+    f = np.clip(np.minimum(np.arange(2 * half), np.arange(2 * half)[::-1]) / 30, 0, 1)[None, :, None]
+    a[h - rows:, cx - half:cx + half] = src * f + dst * (1 - f)
+    return Image.fromarray(a.clip(0, 255).astype(np.uint8))
+
+
 def tiled(im, n=3, scale=0.5):
     t = im.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS)
     out = Image.new('RGB', (t.width * n + 2 * 16, t.height * n + 2 * 16), DARK)
@@ -150,6 +184,7 @@ def on_dark(pieces, tw=300, cols=3, title=''):
         k = min((tw - 16) / p.width, (th - 16) / p.height)
         q = p.resize((max(1, round(p.width * k)), max(1, round(p.height * k))), Image.LANCZOS)
         x, y = (i % cols) * tw, 24 + (i // cols) * (th + 18)
+        q = q.convert('RGBA')
         S.paste(q, (x + (tw - q.width) // 2, y + 18 + (th - q.height) // 2), q)
         d.text((x + 4, y + 2), n, fill=(255, 220, 120))
     return S
@@ -168,7 +203,16 @@ def main():
            'takes': PICKS, 'files': {}}
     prev = []
     for key, fn in (('floor', 'chute-floor'), ('wall-roots', 'chute-wall-roots'), ('wall-glyph', 'chute-wall-glyph')):
-        im = seamless(raw(PICKS[key]))
+        if key == 'floor':
+            im = seamless(raw(PICKS[key]))
+        else:
+            # the walls' starts were one kit panel tiled 2 x 2, and the panel's own edges show as a line through the middle of the
+            # painting: make one 512 quarter seamless on its own, then lay it 2 x 2 again
+            q = seamless(raw(PICKS[key]).crop(tuple(PICKS.get('quarter', {}).get(key, (0, 0, 512, 512)))), band=0.16)
+            im = Image.new('RGB', (1024, 1024))
+            for y in (0, 512):
+                for x in (0, 512):
+                    im.paste(q, (x, y))
         sz = save_webp(im, OUT / f'{fn}.webp')
         t = tiled(im)
         t.save(QA / f'{fn}-tiled3x.jpg', quality=86)
@@ -181,7 +225,7 @@ def main():
     man['files']['chute-mouth.webp'] = {'w': m.width, 'h': m.height, 'bytes': save_webp(m, OUT / 'chute-mouth.webp'),
                                         'use': 'backdrop at the far end of the chute (the vanishing point is about x 0.5, y 0.42)'}
     prev.append(('chute-mouth', m))
-    c = raw(PICKS['chamber'])
+    c = patch_floor(raw(PICKS['chamber']))
     c = c.resize((2048, round(c.height * 2048 / c.width)), Image.LANCZOS)
     man['files']['chamber.webp'] = {'w': c.width, 'h': c.height, 'bytes': save_webp(c, OUT / 'chamber.webp'),
                                     'use': 'side-on backdrop of the chamber at the end of the slide; its stone floor is the bottom ~15%'}

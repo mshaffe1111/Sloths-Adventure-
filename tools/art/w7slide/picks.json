@@ -1,0 +1,10 @@
+{
+ "floor": "floor-s70-5",
+ "wall-roots": "wall-roots-s60-17",
+ "wall-glyph": "wall-glyph-s70-17",
+ "mouth": "mouth-s60-17",
+ "chamber": "chamber-s65-5",
+ "obstacles": "obstacles-s65-17",
+ "obstacle_overrides": {"statue-head": "obstacles-s50-17"},
+ "pokey": {}
+}
