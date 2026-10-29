@@ -52,6 +52,8 @@ export interface Zone {
    * the shutter opens again (the kit sets it each frame)
    */
   shut?: boolean;
+  /** webs: a web bridge strung over a gap (painted as the silk bridge, zoneArt.ts), not a patch on the ground */
+  bridge?: boolean;
 }
 
 export type ZonePhase = 'idle' | 'warn' | 'active';

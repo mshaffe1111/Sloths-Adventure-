@@ -11,6 +11,7 @@
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
 import { drawW4, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
+import { drawLogArt } from './protoArt.ts';
 import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
@@ -1035,11 +1036,27 @@ function drawPool(ctx: CanvasRenderingContext2D, cx: number, pool: Pool, level: 
   ctx.restore();
 }
 
-/** the log floating on a pool (a plain drawn log: it rides up and down on the water) */
+/** the log floating on a pool (the painted log, bobbing as it rides up and down on the water; a plain drawn one while the kit loads) */
 function drawFloatLog(ctx: CanvasRenderingContext2D, p: Platform, t: number) {
   const { width: w, height: h } = p;
   const x = p.x;
-  const y = p.y + Math.sin(t * 2.2 + p.x) * 1.5;
+  const bob = Math.sin(t * 2.2 + p.x) * 1.5;
+  const y = p.y + bob;
+  ctx.save();
+  ctx.translate(0, bob);
+  const painted = drawLogArt(ctx, p, false);
+  ctx.restore();
+  if (painted) {
+    // ripples where it sits in the water
+    ctx.save();
+    ctx.strokeStyle = 'rgba(224,242,254,0.8)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(x + w / 2, y + h - 2, w * 0.6 + Math.sin(t * 3) * 4, 5, 0, 0, Math.PI);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
   const r = h / 2;
   ctx.save();
   const g = ctx.createLinearGradient(0, y, 0, y + h);

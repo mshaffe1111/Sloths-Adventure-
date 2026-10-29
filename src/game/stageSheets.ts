@@ -5,7 +5,8 @@
  *
  * Only what that one stage needs (atlasLoader.ts: a decoded sheet is 10 to 46 MB, and a world's sheets are let go when play moves on):
  *   kit:<w>        the painted platforms: World 1's atlas (every piece) and the world's own kit (engine.ts paintKit)
- *   w2/w3/w4/w5-props a hand-built World 2, 3, 4 or 5 stage's dressing (riverArt.ts, w3Art.ts, w4Art.ts, w5Art.ts)
+ *   w2/w3/w4/w5-props a hand-built World 2, 3, 4 or 5 stage's dressing (riverArt.ts, w3Art.ts, w4Art.ts, w5Art.ts), and a generated
+ *                  World 3 or 5 stage's spore mushrooms and webs (zoneArt.ts)
  *   dot            Dot's flight (4-D): her pieces, her frames and the four paintings behind the netting (dotFlightArt.ts)
  *   Meeca's stage (5-M): World 5's kit and dressing, the puzzle kit's pieces, her own sheets (meeca-standard, her carving and the
  *                  blanket, and the night sheet of her new poses and the stage's props, meecaNightArt.ts), and Pell's and the soldiers'
@@ -146,6 +147,9 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   else if (isGen2Stage(cfg) && w >= 6) out.push(...genFoes(w).map((f) => `foe:${f}`), 'props2');
   else if (sw.ctest && cfg.id === CTEST_STAGE_ID) out.push(...CTEST_FOES.map((f) => `foe:${f}`), 'props2');
   else out.push(...(STAGE_DRAWS[cfg.id] ?? []));
+  // (a generated World 3 or 5 stage's zones: its spore mushrooms and its webs are Matt's painted pieces, zoneArt.ts; as
+  // stageGenerator.ts decides which stages get zones)
+  if (!built && (w === 3 || w === 5) && !cfg.secret && cfg.objectiveType !== 'boss_lair' && cfg.objectiveType !== 'ascent') out.push(`w${w}-props`);
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
   // (World 1's rooms: 1-4's lift, 1-6's seesaw, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
