@@ -36,9 +36,10 @@ function played(id: string, variant: number, easy: boolean): Played {
   }
 }
 
-test('gen2 builds 5-7 and 5-9 (5-8 stays the old way), each from the kit its 16 shipped rolls were curated on', () => {
-  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9']);
+test('gen2 builds 5-7, 5-9 and World 6 but 6-8 (5-8 and 6-8 stay the old way), each from the kit its 16 shipped rolls were curated on', () => {
+  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9']);
   assert.equal(isGen2Stage(lv('5-8')), false);
+  assert.equal(isGen2Stage(lv('6-8')), false);
   for (const id of Object.keys(GEN2_STAGES)) {
     const e = GEN2_SEEDS[id];
     assert.ok(e, `${id}: no curated rolls in seeds.ts`);
@@ -73,7 +74,8 @@ test('every shipped roll, Normal and Easy, as the game plays it: the checker pas
         assert.equal(st.gen2!.budget.difficulty, easy ? 'easy' : 'normal', at);
         assert.deepEqual(validateStage(st).errors, [], at);
         if (easy) assert.deepEqual(easyHoldCheck(st), [], `${at}: a ~70% hold finishes it`);
-        assert.ok(st.proto?.w5, `${at}: World 5's extras reach the engine`);
+        if (st.config.worldIndex === 5) assert.ok(st.proto?.w5, `${at}: World 5's extras reach the engine`);
+        if (st.config.worldIndex === 6) assert.ok((st.proto?.gen2 as { w6?: unknown } | undefined)?.w6, `${at}: World 6's extras reach the engine`);
         // (a gauntlet's goal: Normal's share of what the stage holds, Easy's lower; every animal it counts stands before the shrine)
         if (st.config.objectiveType === 'gauntlet') {
           const before = st.enemies.filter((e) => e.x <= st.exitTotemX + 35).length;
@@ -106,7 +108,9 @@ test('Easy is not softened twice: easyStage leaves gen2\'s animals and ledges as
     const st = easyStage(raw) as Played;
     assert.deepEqual(st.enemies.map((e) => `${e.type}@${e.x}:${e.attackCooldown}`), enemies, `${id}: no animal cut, no second longer tell`);
     assert.ok(st.platforms.length >= platforms && st.platforms.length <= platforms + 2, `${id}: no stones laid over gen2's Easy jumps`);
-    assert.ok(st.enemies.length < normal.enemies.length, `${id}: Easy holds fewer animals than Normal (the pipeline's share)`);
+    // (a swing stage holds a handful of animals: Easy keeps the first of each kind, so it can hold as many)
+    if (normal.enemies.length >= 6) assert.ok(st.enemies.length < normal.enemies.length, `${id}: Easy holds fewer animals than Normal (the pipeline's share)`);
+    else assert.ok(st.enemies.length <= normal.enemies.length, `${id}: Easy never holds more animals than Normal`);
     if (goal !== undefined) assert.equal(st.config.targetCount, goal, `${id}: Easy's own goal`);
     // a gen2 stage built for Normal cannot be made Easy afterwards: it is built again for Easy
     assert.throws(() => easyStage(normal), /built for Normal/);
@@ -140,24 +144,38 @@ test("a gen2 stage loads World 5's sheets before it starts: the kit, its dressin
   assert.deepEqual(stageSheets(lv('5-7'), { ...on, hand: false }), stageSheets(lv('5-7'), on));
 });
 
-test('every shipped roll holds the jumping spiders its sheet list loads, and draws no water sign where there is no water', () => {
+test("a World 6 gen2 stage loads World 6's kit, the clip sheets of the cats in its shipped rolls, and the kit pieces for its room or its water signs", () => {
+  const on = { hand: true, paint: true, ctest: false };
+  for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('6-'))) {
+    const sheets = stageSheets(lv(id), on);
+    assert.deepEqual(sheets.slice(0, 2), ['kit:1', 'kit:6'], id);
+    assert.ok(sheets.includes('kit-pieces'), `${id}: its room or its water signs`);
+    assert.deepEqual(stageSheets(lv(id), { ...on, hand: false }), sheets, `${id}: whatever the hand-built switch`);
+  }
+});
+
+test('every shipped roll holds the clip-sheet animals its sheet list loads, and a water sign exactly where there is water', () => {
+  const on = { hand: true, paint: true, ctest: false };
   for (const id of Object.keys(GEN2_STAGES)) {
+    const anims = stageSheets(lv(id), on).filter((k) => k.startsWith('anim:')).map((k) => k.slice(5));
     for (let i = 0; i < GEN2_SEEDS[id].seeds.length; i += 5) {
       const st = played(id, i, false);
-      assert.ok(st.enemies.some((e) => e.type === 'spider'), `${id} roll ${i}: spiders`);
-      // (World 5's pits are soft: no water, so no warning sign and no Dot's water line)
-      assert.equal(st.waterY, undefined);
-      assert.equal(st.proto?.gen2?.waterWarnings?.length ?? 0, 0);
+      // (World 5: the jumping spiders in every roll; a sheet listed is an animal the roll holds)
+      if (id.startsWith('5-')) assert.ok(st.enemies.some((e) => e.type === 'spider'), `${id} roll ${i}: spiders`);
+      for (const a of anims) assert.ok(st.enemies.some((e) => e.type === a), `${id} roll ${i}: no ${a} for its sheet`);
+      // (World 5's pits are soft: no water. World 6's creeks: a sign at the first, Dot's line before it)
+      const water = (st.gen2?.falls ?? []).some((f) => f.kind === 'water');
+      assert.equal(st.waterY !== undefined, water, `${id} roll ${i}: the water line`);
+      assert.equal((st.proto?.gen2?.waterWarnings?.length ?? 0) > 0, water, `${id} roll ${i}: the water signs`);
     }
   }
 });
 
 test('the pipeline\'s flags: on 30 raw rolls of each gen2 stage, Normal and Easy, never more than FLAG_SPAN.max px without one, and every flag clear of the animals', () => {
   for (const id of Object.keys(GEN2_STAGES)) {
-    const kit = GEN2_STAGES[id].kit('normal');
     for (let seed = 1; seed <= 30; seed++) {
       for (const difficulty of ['normal', 'easy'] as const) {
-        const st = buildGen2Stage({ config: lv(id), kit, seed, difficulty });
+        const st = buildGen2Stage({ config: lv(id), kit: GEN2_STAGES[id].kit(difficulty), seed, difficulty });
         const xs = [st.spawnX, ...(st.checkpoints ?? []).map((c) => c.x).sort((p, q) => p - q), st.exitTotemX];
         for (let k = 1; k < xs.length; k++) assert.ok(xs[k] - xs[k - 1] <= FLAG_SPAN.max, `${id} seed ${seed} ${difficulty}: ${xs[k] - xs[k - 1]} px from ${xs[k - 1]} with no flag`);
         assert.deepEqual(validateStage(st).errors.filter((e) => /safe spot|flag|checkpoint/.test(e)), [], `${id} seed ${seed} ${difficulty}`);
