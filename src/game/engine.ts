@@ -701,7 +701,7 @@ export class GameEngine {
       const painted = paintedPlatforms(this.platforms);
       this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown && !pl.art);
       this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
-      this.protoScene = { brokeAt: new Map(), movedAt: new Map() };
+      this.protoScene = { brokeAt: new Map(), movedAt: new Map(), pillars: !!this.proto?.w4?.pillarTrunks };
       protoArtReady(); // start loading the props
     }
     if (perfEnabled()) {

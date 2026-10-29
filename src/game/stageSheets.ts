@@ -8,6 +8,7 @@
  *   w2/w3/w4/w5-props a hand-built World 2, 3, 4 or 5 stage's dressing (riverArt.ts, w3Art.ts, w4Art.ts, w5Art.ts), and a generated
  *                  World 3 or 5 stage's spore mushrooms and webs (zoneArt.ts)
  *   dot            Dot's flight (4-D): her pieces, her frames and the four paintings behind the netting (dotFlightArt.ts)
+ *   w4-falls       World 4's painted waterfall set (w4FallsArt.ts), for the stages with falls (W4_FALL_STAGES)
  *   dot-props      her pieces alone, for a generated World 5 stage's web patches (zoneArt.ts strings them with her silk)
  *   Meeca's stage (5-M): World 5's kit and dressing, the puzzle kit's pieces, her own sheets (meeca-standard, her carving and the
  *                  blanket, and the night sheet of her new poses and the stage's props, meecaNightArt.ts), and Pell's and the soldiers'
@@ -113,6 +114,9 @@ const BOSS_MINIONS: Record<number, readonly string[]> = { 1: ['goldsnake'], 5: [
 /** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms) */
 const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W6_ROOM_STAGES]);
 
+/** World 4's stages with waterfalls (w4Play.ts: the painted waterfall set, w4FallsArt.ts) */
+export const W4_FALL_STAGES: ReadonlySet<string> = new Set(['4-3', '4-5', '4-8', '4-9']);
+
 /** World 1's stages with puzzle rooms (protoStage.ts: the squirrels' lift, the seesaw, the acorn meadow) */
 const W1_ROOMS: ReadonlySet<string> = new Set(['1-4', '1-6', '1-7']);
 
@@ -141,6 +145,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
     if (w !== 1 && hasKit) out.push(`kit:${w}`);
   }
   if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
+  if (built && W4_FALL_STAGES.has(cfg.id)) out.push('w4-falls');
   // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
   // the creatures it can draw, and their sheets (see foe: above)

@@ -33,6 +33,7 @@ import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
+import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
 import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
@@ -85,6 +86,9 @@ function start(keys: readonly string[]): string[] {
       jennifurSpriteReady();
       warmMeecaArt();
       urls.push(MEECA_STANDARD_URL, MEECA_CARVE_URL, MEECA_BLANKET_URL);
+    } else if (k === 'w4-falls') {
+      fallsArtReady();
+      urls.push(W4_FALLS_URL);
     } else if (k === 'dot-props') {
       dotPropsReady();
       urls.push(DOT_PROPS_URL);

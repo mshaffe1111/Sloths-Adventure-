@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { STAGE_DRAWS, genFoes, stageSheets } from './stageSheets.ts';
+import { STAGE_DRAWS, W4_FALL_STAGES, genFoes, stageSheets } from './stageSheets.ts';
 import { buildProtoStage, HAND_STAGES, type ProtoExtras } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { generateAllLevels } from './worldsData.ts';
@@ -18,6 +18,7 @@ const lvl = (id: string) => levels.find((l) => l.id === id)!;
 
 test('4-2 gets World 4 ready: both kit sheets, the World 4 props and the puzzle sheets it is dressed with, nothing else', () => {
   assert.deepEqual(stageSheets(lvl('4-2'), on), ['kit:1', 'kit:4', 'w4-props', 'kit-pieces', 'perch']);
+  assert.deepEqual(stageSheets(lvl('4-3'), on).slice(0, 4), ['kit:1', 'kit:4', 'w4-props', 'w4-falls']);
 });
 
 test('every hand-built World 3 stage gets the World 3 props and kit; 3-3 its cats too', () => {
@@ -55,6 +56,7 @@ test('every sheet a built stage draws is in its preload list, for every stage an
   const misses: string[] = [];
   // what each hand-built stage draws over its three rolls (STAGE_DRAWS should be just that: no sheet loaded for nothing)
   const drawn = new Map<string, Set<string>>();
+  const withFalls = new Set<string>();
   try {
     for (const l of [...levels, THORNBARK_LEVEL]) {
       const list = new Set(stageSheets(l, on));
@@ -73,8 +75,12 @@ test('every sheet a built stage draws is in its preload list, for every stage an
             if (z.kind === 'web') hazards.add(z.bridge ? 'w5-props' : 'dot-props');
           }
           if (st.platforms.some((p) => p.art === 'poolLog')) hazards.add('kit:1');
-          // (World 4's falls pour the painted lip's water, w4Play.ts drawPouring)
-          if ((st as { proto?: ProtoExtras }).proto?.w4?.falls?.length) hazards.add('w4-props');
+          // (World 4's falls are the painted waterfall set, w4FallsArt.ts; their stand-in lips are on World 4's sheet)
+          if ((st as { proto?: ProtoExtras }).proto?.w4?.falls?.length) {
+            hazards.add('w4-props');
+            hazards.add('w4-falls');
+            withFalls.add(l.id);
+          }
           for (const k of hazards) if (!list.has(k)) misses.push(`${l.id} roll ${v} ${d}: ${k} (a painted hazard)`);
           // (World 6 on gen2 on asks for its world's whole set, stageSheets.ts: its animals change from roll to roll)
           if (!l.secret && (HAND_STAGES[l.id] || W2_STAGES[l.id] || (isGen2Stage(l) && l.worldIndex < 6))) {
@@ -90,6 +96,8 @@ test('every sheet a built stage draws is in its preload list, for every stage an
     if (!had) delete g.location;
   }
   assert.deepEqual(misses, []);
+  // (and the waterfall set is asked for by no stage without falls)
+  assert.deepEqual([...W4_FALL_STAGES].sort(), [...withFalls].sort(), 'W4_FALL_STAGES: the stages with falls');
   for (const [id, set] of drawn) assert.deepEqual([...(STAGE_DRAWS[id] ?? [])].sort(), [...set].sort(), `${id}: STAGE_DRAWS lists more than it draws`);
   // every creature named has painted-pose sheets the preload knows how to ask for
   for (const keys of [...Object.values(STAGE_DRAWS), ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((w) => genFoes(w).map((f) => `foe:${f}`))]) {

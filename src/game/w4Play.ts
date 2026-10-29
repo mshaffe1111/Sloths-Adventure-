@@ -6,12 +6,13 @@
  * a field, a step call and two draw calls rather than seven mechanics.
  *
  * The pieces are painted (w4Art.ts, art batches 1 and 2); each draw keeps a plain-shape stand-in for the moment before the atlas loads.
- * The falling water is the painted lip's own pour (w4Art.ts drawW4Pour) laid in scrolling columns, so it can pour, ease and dry; the
- * foam, the mist and the spray where it lands are small code touches.
+ * The falls are the painted waterfall set (w4FallsArt.ts) laid on each fall's box: its lip, its bodies pouring, easing and drying, and
+ * the white water and mist where it lands.
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
-import { drawW4, drawW4Pour, pourAspect, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
+import { drawW4, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
+import { drawFallBodies, drawFallFoot, drawFallLips } from './w4FallsArt.ts';
 import { drawLogArt } from './protoArt.ts';
 import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
@@ -88,6 +89,8 @@ export interface W4Extras {
   /** 4-3: the tree up to the shelf beside a fall (the fall's id, the trunk's x): standing at the foot of the pouring fall, the
    *  view turns to show the tree too, so it is on screen when Dot says to climb it, held upright as well (QA 2026-10-29) */
   fallTrees?: Array<{ fall: number; x: number }>;
+  /** the climb trunks are the waterfall set's wet stone pillar, with the trunk's vine on it (4-3, beside its falls: protoArt.ts) */
+  pillarTrunks?: boolean;
   /** 4-3: what Dot says as the first boulder stops its fall, in place of the plain line (its dry steps are each a double jump up) */
   dryTip?: string;
   /** 4-6: sleeping eaglets (eaglet.ts) */
@@ -812,22 +815,30 @@ function drawSettleGlow(ctx: CanvasRenderingContext2D, s: PatienceSpot, reveal: 
   ctx.restore();
 }
 
-/** a fall: its water, then the painted lip it pours over */
+/**
+ * A fall: the painted waterfall set (w4FallsArt.ts) on its box, its bodies, the lip along its top edge and the white water and mist at
+ * its foot; the old shapes and World 4's lip pieces as the stand-in while the set loads
+ */
 function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
+  if (drawFallBodies(ctx, w, flow, t)) {
+    drawFallLips(ctx, w, flow);
+    drawFallFoot(ctx, w, flow, t);
+    return;
+  }
   drawFallWater(ctx, w, flow, t);
   drawLip(ctx, w, flow);
 }
 
 /**
- * the painted lips over a fall: one for about every `span` px of its width (a wide fall pours off a row of them), each `pad` px wider
- * than its share so they overlap, their rock's underside `below` px down the water (hiding where it starts)
+ * the stand-in's lips over a fall: one for about every `span` px of its width (a wide fall pours off a row of them), each `pad` px
+ * wider than its share so they overlap, their rock's underside `below` px down the water (hiding where it starts)
  */
 const LIP = { span: 300, pad: 50, below: 40 };
 
 /**
- * The painted lip at a fall's top: the rock pouring a full fall while it flows, the same rock trickling once it is stopped, the one
- * fading into the other with the flow. Only the lip: the water under it is drawn by drawFallWater. A fall a boulder plugs already
- * pours out of its painted channel (the stage's decor), so it gets none. Nothing before the atlas loads.
+ * The stand-in's lip at a fall's top (World 4's lip pieces): the rock pouring a full fall while it flows, the same rock trickling once
+ * it is stopped, the one fading into the other with the flow. A fall a boulder plugs already pours out of its painted channel (the
+ * stage's decor), so it gets none. Nothing before the atlas loads.
  */
 function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
   if (w.plug || !w4ArtReady()) return;
@@ -841,118 +852,12 @@ function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
   }
 }
 
-/** a fall's painted water falls about this fast (px/s) */
-const POUR_SPEED = 380;
-
-/** the painted water fades in over this many px below a fall's top, so it spills from the lip with no hard edge */
-const POUR_FADE_IN = 60;
-
-/**
- * A wide fall is a curtain of separate streams with gaps between them, never one sheet: each stream about `min`..`max` wide, the gaps
- * `gapMin`..`gapMax`; a fall up to `one` wide is a single stream. A stream up to `half` wide is the whole strip stretched, a wider one
- * two strips back to back (each with its rim facing out), so the strip is never stretched much.
- */
-const STREAM = { min: 44, max: 96, gapMin: 26, gapMax: 64, one: 100, half: 60 };
-/** 4-5's curtain (140 wide, in front of him): finer streams closer together, so it still hides him but reads as falling water */
-const CURTAIN: typeof STREAM = { min: 28, max: 46, gapMin: 10, gapMax: 22, one: 50, half: 60 };
-
-interface Stream { x: number; w: number; k: number }
-/** a fall's streams across [x0, x0 + width], the same every frame (from its place), the first on its left edge and the last on its right */
-function fallStreams(x0: number, width: number, S: typeof STREAM): Stream[] {
-  if (width <= S.one) return [{ x: x0, w: width, k: 0 }];
-  const out: Stream[] = [];
-  const x1 = x0 + width;
-  for (let cx = x0, k = 0; cx < x1 - 1; k++) {
-    const r = (k * 0.618034 + x0 * 0.00137) % 1;
-    const g = (k * 0.754877 + x0 * 0.00071) % 1;
-    let sw = S.min + (S.max - S.min) * r;
-    // (the last stream runs on to the fall's edge rather than leave a sliver)
-    if (x1 - (cx + sw) < S.min + S.gapMin) sw = x1 - cx;
-    out.push({ x: cx, w: sw, k });
-    cx += sw + S.gapMin + (S.gapMax - S.gapMin) * g;
-  }
-  return out;
-}
-
-/**
- * The painted water pouring down a fall between x0 and x0 + width, from `top` to `bottom`: its streams (fallStreams), each the lip's
- * own falling water (w4Art.ts drawW4Pour) scrolling down at its own pace and fading in at the top, `scale` of its full width (a fall
- * easing off narrows each stream about its middle). `each(x, w)` then draws whatever goes with a stream (its spill and its foam). False
- * until the atlas has loaded.
- */
-function drawStreams(
-  ctx: CanvasRenderingContext2D, x0: number, width: number, top: number, bottom: number, t: number, scale: number,
-  each: (x: number, w: number) => void = () => {}, spec: typeof STREAM = STREAM,
-): boolean {
-  if (!w4ArtReady()) return false;
-  const base = ctx.globalAlpha;
-  const list = fallStreams(x0, width, spec);
-  for (const st of list) {
-    const sw = st.w * scale;
-    const sx = st.x + (st.w - sw) / 2;
-    const two = sw > spec.half;
-    const pw = two ? sw / 2 : sw;
-    const th = pw * pourAspect(two ? 'edge' : 'full');
-    const r1 = (st.k * 0.618034 + x0 * 0.0013) % 1;
-    const r2 = (st.k * 0.414214 + x0 * 0.0007) % 1;
-    const off = (t * POUR_SPEED * (0.85 + 0.3 * r1) + r2 * th) % th;
-    /** the stream's tiles that fall in [y0, y1], at `fade` of its strength */
-    const band = (y0: number, y1: number, fade: number): boolean => {
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(sx, y0, sw, y1 - y0);
-      ctx.clip();
-      ctx.globalAlpha = base * fade;
-      // (edge to edge, no overlap: the water is see-through, so an overlap would show as a darker line)
-      const first = top - th + off + Math.max(0, Math.floor((y0 - (top - th + off)) / th)) * th;
-      let ok = true;
-      for (let y = first; y < y1 && ok; y += th) {
-        if (!two) ok = drawW4Pour(ctx, sx, y, sw, th, 'full');
-        else {
-          ok = drawW4Pour(ctx, sx, y, pw, th, 'edge');
-          // (the right half is the left one turned round, so both rims face out)
-          ctx.save();
-          ctx.translate(2 * (sx + pw) + pw, 0);
-          ctx.scale(-1, 1);
-          ok = ok && drawW4Pour(ctx, sx + pw, y, pw, th, 'edge');
-          ctx.restore();
-        }
-      }
-      ctx.restore();
-      return ok;
-    };
-    const fadeTo = Math.min(bottom, top + POUR_FADE_IN);
-    const steps = 6;
-    for (let i = 0; i < steps; i++) {
-      if (!band(top + ((fadeTo - top) * i) / steps, top + ((fadeTo - top) * (i + 1)) / steps, (i + 0.5) / steps)) return false;
-    }
-    if (fadeTo < bottom && !band(fadeTo, bottom, 1)) return false;
-    ctx.globalAlpha = base;
-    each(sx, sw);
-  }
-  return true;
-}
-
+/** the stand-in's water: a see-through sheet with streaks running down it and foam at its foot */
 function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
   if (flow <= 0.02) return;
   ctx.save();
-  // the painted streams, a little see-through (the steps behind them show), thicker and wider the harder it pours, each spilling white
-  // over the lip and churning where it lands
-  ctx.globalAlpha = 0.55 + 0.35 * flow;
-  const painted = drawStreams(ctx, w.x, w.width, w.top, w.bottom, t, 0.25 + 0.75 * flow, (sx, sw) => {
-    const a = ctx.globalAlpha;
-    ctx.globalAlpha = 1;
-    drawSpill(ctx, sx, sw, w.top, flow, t);
-    drawFoot(ctx, sx, sw, w.bottom, flow, t);
-    ctx.globalAlpha = a;
-  });
-  if (painted) {
-    ctx.restore();
-    return;
-  }
   const width = w.width * (0.25 + 0.75 * flow);
   const x = w.x + (w.width - width) / 2;
-  // (the shapes below are the stand-in while the World 4 sheet loads)
   ctx.globalAlpha = 0.25 + 0.4 * flow; // (see-through: the steps behind the water show)
   const g = ctx.createLinearGradient(x, 0, x + width, 0);
   g.addColorStop(0, '#93c5fd');
@@ -973,83 +878,28 @@ function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number
     }
     ctx.stroke();
   }
-  drawFoot(ctx, x, width, w.bottom, flow, t);
-  ctx.restore();
-}
-
-/** a soft white puff, painted once and drawn scaled: the foam where a fall lands */
-let foamPic: HTMLCanvasElement | null = null;
-function foam(): HTMLCanvasElement | null {
-  if (foamPic || typeof document === 'undefined') return foamPic;
-  const cv = document.createElement('canvas');
-  cv.width = cv.height = 64;
-  const g = cv.getContext('2d');
-  if (!g) return null;
-  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  gr.addColorStop(0, 'rgba(255,255,255,0.95)');
-  gr.addColorStop(0.55, 'rgba(240,250,255,0.6)');
-  gr.addColorStop(1, 'rgba(240,250,255,0)');
-  g.fillStyle = gr;
-  g.fillRect(0, 0, 64, 64);
-  foamPic = cv;
-  return cv;
-}
-
-/** white water where a fall spills over its lip: a thin line of soft puffs along its top, smaller than the foot's */
-function drawSpill(ctx: CanvasRenderingContext2D, x: number, width: number, top: number, flow: number, t: number) {
-  const pic = foam();
-  if (!pic) return;
-  const n = Math.max(4, Math.round(width / 30));
-  ctx.save();
-  for (let k = 0; k < n; k++) {
-    const sd = (k * 0.381966) % 1;
-    const r = (8 + 6 * sd) * (0.5 + 0.5 * flow) * (1 + 0.15 * Math.sin(t * (6 + 2 * sd) + k * 2.1));
-    const cx = x + ((k + 0.5) / n) * width;
-    ctx.globalAlpha = 0.65 * Math.min(1, flow * 1.5);
-    ctx.drawImage(pic, cx - r * 1.6, top + 4 - r * 0.6, r * 3.2, r * 1.4);
-  }
-  ctx.restore();
-}
-
-/** foam churning where a fall lands: soft puffs along its foot, each swelling and settling on its own beat */
-function drawFoot(ctx: CanvasRenderingContext2D, x: number, width: number, bottom: number, flow: number, t: number) {
-  const pic = foam();
-  const n = Math.max(6, Math.round(width / 36));
-  if (!pic) return;
-  ctx.save();
-  for (let k = 0; k < n; k++) {
-    const sd = (k * 0.618034) % 1;
-    const r = (14 + 12 * sd) * (0.5 + 0.5 * flow) * (1 + 0.18 * Math.sin(t * (5 + 3 * sd) + k * 1.7));
-    const cx = x + ((k + 0.5) / n) * width + Math.sin(t * 2 + k) * 4;
-    ctx.globalAlpha = 0.8 * Math.min(1, flow * 1.5);
-    ctx.drawImage(pic, cx - r * 1.4, bottom - 6 - r * 0.9, r * 2.8, r * 1.6);
+  // foam at the foot
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  for (let k = 0; k < 6; k++) {
+    ctx.beginPath();
+    ctx.arc(x + (k / 5) * width, w.bottom - 4 + Math.sin(t * 8 + k) * 3, 8 * flow + 3, 0, Math.PI * 2);
+    ctx.fill();
   }
   ctx.restore();
 }
 
 /**
- * a curtain of water in front of him (4-5): a sheet with rippling edges, thicker at its sides and thin enough in the middle to see him
- * standing behind it, streaks pouring down it, and spray and mist where it lands on the path
+ * a curtain of water in front of him (4-5): the painted set's bodies see-through enough to show him standing behind it, its lip up on
+ * the cliff and its white water and mist on the path; the old sheet with rippling edges as the stand-in while the set loads
  */
 function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
-  const x0 = w.x, x1 = w.x + w.width, top = w.top, bot = w.bottom;
-  ctx.save();
-  // the painted pour, see-through enough that he shows standing behind it
-  ctx.globalAlpha = 0.75;
-  const painted = drawStreams(ctx, x0, w.width, top, bot, t, 1, (sx, sw) => {
-    const a = ctx.globalAlpha;
-    ctx.globalAlpha = 1;
-    drawFoot(ctx, sx, sw, bot, 1, t);
-    ctx.globalAlpha = a;
-  }, CURTAIN);
-  ctx.globalAlpha = 1;
-  if (painted) {
-    // (each stream churns at its foot; the spray bouncing off the stone, without the stand-in's cloud of mist)
-    drawVeilFoot(ctx, w, t, false);
-    ctx.restore();
+  if (drawFallBodies(ctx, w, 1, t, 0.8)) {
+    drawFallLips(ctx, w, 1);
+    drawFallFoot(ctx, w, 1, t);
     return;
   }
-  // (the shapes below are the stand-in while the World 4 sheet loads)
+  const x0 = w.x, x1 = w.x + w.width, top = w.top, bot = w.bottom;
+  ctx.save();
   ctx.beginPath();
   ctx.moveTo(x0, top);
   for (let y = top; y < bot; y += 28) ctx.lineTo(x0 + 5 * Math.sin(y * 0.045 + t * 5), y);
@@ -1083,24 +933,15 @@ function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
     }
     ctx.stroke();
   }
-  drawVeilFoot(ctx, w, t);
-  ctx.restore();
-}
-
-/** where a curtain lands: spray bouncing up off the stone, and (`withMist`, the stand-in) a cloud of mist */
-function drawVeilFoot(ctx: CanvasRenderingContext2D, w: Waterfall, t: number, withMist = true) {
-  const x0 = w.x, x1 = w.x + w.width, bot = w.bottom;
-  ctx.save();
+  // where it lands: a cloud of mist, and spray bouncing up off the stone
   const cx = (x0 + x1) / 2;
-  if (withMist) {
-    const mist = ctx.createRadialGradient(cx, bot - 10, 10, cx, bot - 10, w.width);
-    mist.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
-    mist.addColorStop(1, 'rgba(255, 255, 255, 0)');
-    ctx.fillStyle = mist;
-    ctx.beginPath();
-    ctx.ellipse(cx, bot - 12, w.width * 0.95, 46, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  const mist = ctx.createRadialGradient(cx, bot - 10, 10, cx, bot - 10, w.width);
+  mist.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
+  mist.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.fillStyle = mist;
+  ctx.beginPath();
+  ctx.ellipse(cx, bot - 12, w.width * 0.95, 46, 0, 0, Math.PI * 2);
+  ctx.fill();
   ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
   for (let k = 0; k < 8; k++) {
     const u = (t * 1.6 + k * 0.37) % 1;
