@@ -184,3 +184,54 @@ test('CT-2: keyboard and game controller: on a trunk or a liana Up climbs and on
     else delete nav.navigator;
   }
 });
+
+// ───────────────────────────── CT-3: climbing strokes that lean a little ─────────────────────────────
+
+/** a stroke up from (x, y) that leans `deg` off straight up (+ right), `len` px long at `speed` px per ms; `pre`: climbing straight first */
+function lean(deg: number, len: number, speed: number, pre = 0): Array<[number, number, number]> {
+  const r = (deg * Math.PI) / 180;
+  const pts: Array<[number, number, number]> = [[0, 300, 700]];
+  let t = 0, x = 300, y = 700;
+  if (pre) {
+    t += pre / 0.3;
+    y -= pre;
+    pts.push([t, x, y]);
+  }
+  t += len / speed;
+  pts.push([t, x + Math.sin(r) * len, y - Math.cos(r) * len]);
+  return pts;
+}
+
+/** on a trunk (or a liana), one stroke: did he let go? */
+function strokeLetsGo(pts: Array<[number, number, number]>, swing = false): boolean {
+  const rig = vineRig();
+  if (swing) rig.r.swing(rig.r.vines[1], { angle: 0, omega: 0.5, len: 150 });
+  else rig.r.climb(rig.r.vines[0], 1980);
+  rig.clear();
+  rig.run(400);
+  rig.push(stroke(1, pts));
+  rig.run(pts[pts.length - 1][0] + 300);
+  return rig.words().some((w) => w.startsWith('jump:'));
+}
+
+test('CT-3: ordinary climbing strokes 15 to 27 degrees off straight up climb, slow or brisk, and never let go', () => {
+  for (const swing of [false, true]) {
+    for (const [deg, speed] of [[15, 0.3], [22, 0.3], [25, 0.4], [-22, 0.4], [27, 0.5], [20, 0.9], [-25, 0.55]] as const) {
+      for (const len of [60, 110]) {
+        assert.ok(!strokeLetsGo(lean(deg, len, speed), swing), `${swing ? 'liana' : 'trunk'}: ${deg} degrees, ${len} px at ${speed} px/ms let go`);
+      }
+    }
+  }
+});
+
+test('CT-3: a climb that bends over as it goes is still a climb (it was already climbing)', () => {
+  for (const deg of [30, 35, -32]) assert.ok(!strokeLetsGo(lean(deg, 60, 0.7, 50)), `climb 50 px, then ${deg} degrees at 0.7 px/ms let go`);
+});
+
+test('CT-3: a fresh flick up and over lets go: 28 degrees or more at 0.6 px/ms, or 22 degrees or more at 1 px/ms or faster', () => {
+  for (const swing of [false, true]) {
+    for (const [deg, speed] of [[30, 0.7], [-35, 0.8], [45, 1.0], [24, 1.2], [-23, 1.4], [55, 1.5]] as const) {
+      assert.ok(strokeLetsGo(lean(deg, 70, speed), swing), `${swing ? 'liana' : 'trunk'}: ${deg} degrees at ${speed} px/ms did not let go`);
+    }
+  }
+});

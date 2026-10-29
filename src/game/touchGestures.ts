@@ -125,8 +125,23 @@ export const TUNING = {
    * p90), and her quickest ones about 47: 45 degrees lost three of her 48 real let-goes, 50 loses none.
    */
   vineLeapMaxSlant: 1.2,
-  /** the leap's rise must happen within this long (ms): a slow creep up and over is climbing, not a flick */
-  vineLeapMs: 160,
+  /**
+   * a leap off a vine is a FRESH flick (polish report CT-3: thumbs and index fingers climb 15 to 30 degrees off vertical, and those strokes
+   * let go). Over the finger's last `vineFreshMs` it rose more than jumpDy at `vineLeapSpeed` px per ms or faster (along its path), leaning `vineLeapDeg` or
+   * more off straight up (`vineLeapFastDeg` at `vineLeapFast` px per ms or faster); and in the `vineClimbedMs` before that it was not
+   * climbing (rising `vineClimbedPx` or more, slower than a flick): a climb that bends over as it goes is still a climb, while a quick
+   * flick that starts straight and bends over (most of them, in the recordings) lets go. Anything else climbs.
+   */
+  vineFreshMs: 120,
+  vineLeapSpeed: 0.58,
+  /** … and it rises at this many px per ms or faster (a flick well over rises slower than it travels) */
+  vineLeapRiseSpeed: 0.38,
+  vineLeapDeg: 26.5,
+  vineLeapFast: 0.95,
+  vineLeapFastDeg: 21.5,
+  vineClimbedMs: 60,
+  /** … "climbing" there is rising this far (px) */
+  vineClimbedPx: 8,
   /**
    * on a vine, a liana or a trunk: a whole touch that is one quick stroke up and over, put down and lifted within this long (ms), lets go
    * when it lifts, however far over it leans (only not straight up: vineLeapSlant). Matt's flicks off a liana (control test, 2026-10-26
@@ -497,7 +512,10 @@ export class TouchGestures {
     if (this.vine()) {
       if (
         el <= TUNING.vineFlickMs && rise >= TUNING.vineFlickRise && Math.abs(dx) >= rise * TUNING.vineLeapSlant &&
-        f.sx <= Math.abs(dx) * 1.3 && Math.hypot(dx, rise) / el >= TUNING.vineFlickSpeed
+        f.sx <= Math.abs(dx) * 1.3 && Math.hypot(dx, rise) / el >= TUNING.vineFlickSpeed &&
+        // (and under 45 degrees over, where climbing strokes lean, the same test as a flick while the finger is down: a short climbing stroke
+        // that lifted is a climb, CT-3)
+        (Math.abs(dx) >= rise || this.vineLeans(dx, rise, Math.hypot(dx, rise) / el, rise / el))
       ) {
         this.setClimb(0);
         this.fireJump(f, false, this.leanOf(dx, rise));
@@ -755,13 +773,12 @@ export class TouchGestures {
       f.ay = f.y + reach;
       dy = -reach;
     }
-    // the last ~150 ms of movement: a quick flick up and over (not straight up, not mostly sideways) jumps off
-    // (the slant is measured on all the sideways travel in that time, so a pumping stroke that turns round as it bows up is not a flick)
-    const { mx, my, ms, sx } = this.recent(f);
-    const rise = -my;
-    if (!f.jumped && rise > TUNING.jumpDy && ms <= TUNING.vineLeapMs && Math.abs(mx) >= rise * TUNING.vineLeapSlant && sx <= rise * TUNING.vineLeapMaxSlant) {
+    // a fresh, quick flick up and over (not straight up, not mostly sideways) jumps off (vineFreshMs and the rest: CT-3)
+    // (the slant is also measured on all the sideways travel in the last moments, so a pumping stroke that turns round as it bows up is not a flick)
+    const w = f.jumped ? null : this.vineFlick(f);
+    if (w) {
       this.setClimb(0);
-      this.fireJump(f, false, this.leanOf(mx, rise));
+      this.fireJump(f, false, this.leanOf(w.mx, w.rise));
       return;
     }
     if (f.jumped && dy > -TUNING.jumpDy * 0.4) {
@@ -769,6 +786,43 @@ export class TouchGestures {
       this.sink.jumpRelease();
     }
     this.setClimb(dy < -16 ? -1 : dy > 16 ? 1 : 0);
+  }
+
+  /** a flick off a vine that went `across` while rising `rise`, `speed` px per ms along its path, leans far enough over to let go (CT-3's buckets) */
+  private vineLeans(across: number, rise: number, speed: number, riseSpeed = Infinity): boolean {
+    if (speed < TUNING.vineLeapSpeed || riseSpeed < TUNING.vineLeapRiseSpeed) return false;
+    const deg = speed >= TUNING.vineLeapFast ? TUNING.vineLeapFastDeg : TUNING.vineLeapDeg;
+    return Math.abs(across) >= rise * Math.tan((deg * Math.PI) / 180);
+  }
+  /**
+   * a fresh flick up and over that lets go of the vine: from some point of its path in the last `vineFreshMs` to now (a quick flick that
+   * starts straight and bends over is judged on its bend), how far up and across. Null when there is none.
+   */
+  private vineFlick(f: Finger): { rise: number; mx: number } | null {
+    const tr = f.trail;
+    let sx = 0;
+    for (let i = tr.length - 2; i >= 0 && this.now - tr[i].t <= TUNING.vineFreshMs; i--) {
+      sx += Math.abs(tr[i + 1].x - tr[i].x);
+      const rise = tr[i].y - f.y;
+      const mx = f.x - tr[i].x;
+      const ms = Math.max(1, this.now - tr[i].t);
+      if (rise > TUNING.jumpDy && this.vineLeans(mx, rise, Math.hypot(mx, rise) / ms, rise / ms) && sx <= rise * TUNING.vineLeapMaxSlant && !this.climbedBefore(f, tr[i].t)) {
+        return { rise, mx };
+      }
+    }
+    return null;
+  }
+  /** in the `vineClimbedMs` before `t0` the finger was climbing: rising, slower than a flick moves (a climb that bends over, not a fresh flick) */
+  private climbedBefore(f: Finger, t0: number): boolean {
+    const tr = f.trail;
+    let a = -1, b = -1;
+    for (let k = 0; k < tr.length; k++) {
+      if (a < 0 && tr[k].t >= t0 - TUNING.vineClimbedMs) a = k;
+      if (tr[k].t <= t0) b = k;
+    }
+    if (a < 0 || b <= a) return false;
+    const rise = tr[a].y - tr[b].y;
+    return rise >= TUNING.vineClimbedPx && Math.hypot(tr[b].x - tr[a].x, rise) / Math.max(1, tr[b].t - tr[a].t) < TUNING.vineLeapSpeed;
   }
 
   // ───────────────────────────── flicks, taps, holds, and undecided fingers ─────────────────────────────
