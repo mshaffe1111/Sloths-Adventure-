@@ -8,6 +8,7 @@ import { RealPlay } from './realPlay.ts';
 import { HANG_DROP, ropeYAt } from './rope.ts';
 import type { Rope } from './types.ts';
 import { TouchGestures, TUNING } from './touchGestures.ts';
+import { PadInput } from './padControl.ts';
 
 const G = 2000;
 
@@ -112,4 +113,23 @@ test('CT-22: a still press too long for a tap and too short for a mega punches, 
   for (let ms = 30; ms <= 700; ms += 30) t.g.tick(1000 + ms);
   t.g.up(1, 200, 600, 1710);
   assert.deepEqual(t.log, [], t.log.join(' '));
+});
+
+// ───────────────────────────── CT-26: the Pad's Jump while the pad is held up ─────────────────────────────
+
+test('CT-26: pressing Jump while the pad is held up is a fresh jump press (the second jump), off a vine too', () => {
+  const presses: number[] = [];
+  const inp = {
+    onVine: false, source: 'pad',
+    triggerTouchMove() {}, triggerTouchDuck() {}, triggerTouchClimb() {}, releaseTouchUp() {}, triggerHaptic() {},
+    triggerTouchUp(lean?: -1 | 0 | 1) { presses.push(lean ?? 0); },
+  };
+  const pad = new PadInput(inp);
+  pad.pad(0, -45); // up: the first jump
+  assert.equal(presses.length, 1);
+  pad.jumpButton(true); // the second jump, the pad still held up
+  assert.equal(presses.length, 2, 'Jump pressed while the pad is up is a new press');
+  pad.jumpButton(false);
+  pad.jumpButton(true);
+  assert.equal(presses.length, 3, 'and again');
 });

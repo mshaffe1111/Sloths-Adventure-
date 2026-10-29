@@ -149,8 +149,14 @@ export class PadInput {
 
   /** the Jump button pressed or let go */
   jumpButton(on: boolean) {
-    // (on a trunk or a liana the pad held up from before the grab must not swallow the button's press: CT-26)
-    if (on && this.inp.onVine && this.jumpSrc.delete('pad') && this.jumpSrc.size === 0) this.inp.releaseTouchUp();
+    // a press of the button is always a new jump press, even while the pad is held up (the second jump; or a leap off a trunk the pad
+    // held up from before the grab): the pad holding Jump down swallowed it (polish report CT-26)
+    if (on && this.jumpSrc.size > 0 && !this.jumpSrc.has('btn')) {
+      this.jumpSrc.add('btn');
+      this.inp.triggerTouchUp();
+      this.inp.triggerHaptic(15);
+      return;
+    }
     this.jumpSet('btn', on);
   }
 }
