@@ -10,6 +10,8 @@
 import type { Difficulty, SectionTemplate, WorldKit, WorldManifest } from '../types.ts';
 import { w9Falls, w9Kit } from './w9.ts';
 import { W9_GROUND_SECTIONS, W9_STAGE_ONLY, W9_THEME, type W9Theme } from './w9Ground.ts';
+import { W9_ROOM_SECTIONS, W9R_STAGE, w9RoomsFor } from './w9Rooms.ts';
+import { W9_SWING_SECTIONS } from './w9Swing.ts';
 
 /** the stages of World 9 the game builds with gen2 */
 export const W9_GAME_STAGES = ['9-1', '9-3', '9-4', '9-5', '9-6', '9-8', '9-9'] as const;
@@ -17,7 +19,12 @@ export const W9_GAME_STAGES = ['9-1', '9-3', '9-4', '9-5', '9-6', '9-8', '9-9'] 
 /** each stage's must-haves: 9-1 the geysers' lesson (in its first Ki slot) */
 export const W9_REQUIRED: NonNullable<WorldManifest['required']> = {
   '9-1': [{ section: 'w9-first-geyser', phase: 'ki' }],
+  // (each stage's puzzle room, on every roll: w9Rooms.ts W9R_STAGE, 9-3 the chain lift, 9-5 the hot plates, 9-8 the plate that holds the gate)
+  ...Object.fromEntries(W9_ROOM_SECTIONS.map((s) => [W9R_STAGE[s.id], [{ section: s.id }]])),
 };
+
+/** the vine stage (9-3 Ember Canopy) holds the chains (w9Swing.ts); no other stage does */
+export const W9_SWING_STAGES: readonly number[] = [3];
 
 /** which stage holds which sections (STAGE-RULES §2 "Sameness"): w9Ground's W9_STAGE_ONLY, the rest by archetype; the first geyser is 9-1's */
 const forStage = (stage: number, id: string): boolean => (id === 'w9-first-geyser' ? stage === 1 : !W9_STAGE_ONLY[id] || W9_STAGE_ONLY[id].includes(stage));
@@ -57,5 +64,6 @@ export function w9GameKit(stage: number, _difficulty: Difficulty = 'normal'): Wo
     .map((s) => themed(stage, s))
     .filter((s): s is SectionTemplate => !!s)
     .map(w9Falls);
-  return { ...k, manifest: { ...k.manifest, sections, required: W9_REQUIRED } };
+  const swings = W9_SWING_STAGES.includes(stage) ? W9_SWING_SECTIONS.map(w9Falls) : [];
+  return { ...k, manifest: { ...k.manifest, sections: [...sections, ...swings, ...w9RoomsFor(stage, _difficulty)], required: W9_REQUIRED } };
 }
