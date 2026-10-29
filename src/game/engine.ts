@@ -1,9 +1,11 @@
 import { buzz } from './haptics.ts';
 import { SlowWatch } from './slowTip.ts';
+import { drawW7Chairs } from './w7ChairsArt.ts';
+import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
-import { bindSent, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
+import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
@@ -2631,7 +2633,10 @@ export class GameEngine {
         // said once per stage on this device: not again on a replay or a retry (tipMemory.ts)
         const id = `tip:${h.text}`;
         if (tipHeard(this.currentStage.config.id, id)) continue;
+        // (a lesson line, once on this device whichever stage reaches it first: StageHint.firstOf)
+        if (h.firstOf && tipHeard(FIRST_OF_STAGE, h.firstOf)) continue;
         markTipHeard(this.currentStage.config.id, id);
+        if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
         this.guide(said, 3.6);
@@ -5751,6 +5756,9 @@ export class GameEngine {
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
+    // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
+    const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
+    if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
@@ -5909,6 +5917,8 @@ export class GameEngine {
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
+          // (World 7's Stone Sentry: a prowler's body, the sentry's painted clips)
+          if (enemy.look === 'sentry' && drawSentrySprite(ctx, enemy, this.gameTime)) return;
           if (!drawOcelotSprite(ctx, enemy, this.gameTime)) drawOcelot(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);

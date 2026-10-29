@@ -142,15 +142,12 @@ test('a stage keeps its thin platforms whatever the scene seed, and different st
   assert.notEqual(planStage(ps, 2, 1).order.join(), planStage(other, 2, 1).order.join());
 });
 
-test('World 7 crumbling tiles stay cracked-slab or timber that the engine cracks too, and a trail of them is never one repeated shape', () => {
+test("World 7's crumbling tiles take no kit look: Matt's painted crumble frames draw them (crumbleArt.ts), and the plan's mix leaves them out", () => {
   const trail: Platform[] = [];
   for (let i = 0; i < 24; i++) trail.push(plat(500 + i * 130, 560, 100, 26, { type: 'fragile', style: 'moss_stone', crumbleAfter: 1.2 }));
-  const plan = planStage(trail, 7, 9);
-  assert.ok(longestRun(plan.order) <= 2, `a trail has ${longestRun(plan.order)} identical looks in a row`);
-  const s = lookShares(plan.order);
-  assert.ok(s.maxShare <= 0.6, `${s.maxLook} is ${Math.round(s.maxShare * 100)}% of the trail`);
-  assert.ok(s.distinct >= 3);
-  for (const look of plan.order) assert.ok(['ruin', 'lashed', 'slices'].includes(look), `a crumbling tile became ${look}`);
+  const plan = planStage([...trail, ...thinRow(6, 'branch')], 7, 9);
+  assert.equal(plan.order.length, 6, 'only the branches are in the mix');
+  for (const t of trail) assert.equal(plan.thin.get(t), undefined);
 });
 
 test('adjacent ground stretches never share a treatment, and the choice is repeatable', () => {

@@ -1,7 +1,7 @@
 {
  "sheet": "temple-walls.webp",
  "size": {
-  "w": 896,
+  "w": 1120,
   "h": 900
  },
  "anchor": "none: each strip tiles top to bottom (900 px period) and sits beside any other strip",
@@ -9,7 +9,8 @@
   "wall-1": "w7walls-b-s62-17",
   "wall-2": "w7walls-b-s62-17",
   "wall-3": "w7walls-b-s68-17",
-  "wall-4": "w7walls-b-s62-17"
+  "wall-4": "w7walls-b-s62-17",
+  "wall-5": "w7wall5-s58-17"
  },
  "method": "img2img (Qwen-Image + slothadv style model) from blockstart.py w7walls; cut at two dark joint rows, the overlap cross-faded into the top",
  "frames": {
@@ -56,6 +57,14 @@
     64,
     1054
    ]
+  },
+  "wall-5": {
+   "x": 900,
+   "y": 0,
+   "w": 220,
+   "h": 900,
+   "tile": "vertical",
+   "note": "plain, no root: the strip between the others"
   }
  }
 }

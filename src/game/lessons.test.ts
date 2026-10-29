@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CARD_SAFE, DONE_LESSONS, LESSONS, cardSafe, lessonDone, lessonOfLine, lessonStale, pickLesson, type CardSafety, type LessonId, type LessonScene } from './lessons.ts';
+import { CARD_SAFE, DONE_LESSONS, LESSONS, cardSafe, lessonDone, lessonDotLine, lessonOfLine, lessonSaidBy, lessonStale, pickLesson, type CardSafety, type LessonId, type LessonScene } from './lessons.ts';
 import { isSaveKey } from './saveFile.ts';
 
 const none: ReadonlySet<LessonId> = new Set();
@@ -151,4 +151,14 @@ test('a lesson whose thing he has done already is not said: 5 flowers picked, no
   assert.equal(pickLesson(scene({ enemies: [{ type: 'snake', x: 600, y: 500, defeated: true }, { type: 'snake', x: 1200, y: 500, defeated: false }] }), none), null);
   assert.equal(lessonOfLine({ key: 'lesson:fruit:0', source: 'lesson' }), 'fruit');
   assert.equal(lessonOfLine({ key: 'lesson:fruit:0', source: 'engine' }), null);
+});
+
+test('a lesson is said by whoever is with Pokey: Dot, or his own thought while she is away (all of World 7)', async () => {
+  const { dotPresent } = await import('./wayside.ts');
+  const l = lessonDotLine('swing', 'screen')!;
+  assert.ok(l);
+  assert.equal(lessonSaidBy(l, dotPresent(4, 6)).who, 'Dot');
+  const w7 = lessonSaidBy(l, dotPresent(7, 5));
+  for (let x: typeof w7 | undefined = w7; x; x = x.next) assert.equal(x.who, 'Pokey', x.text);
+  assert.equal(w7.text, l.text);
 });

@@ -92,6 +92,12 @@ export interface StageHint {
    * goes, done or not (engine.ts; QA 5-1, 2026-10-26: "Wide gap!" stayed up from the gap on to the next stumps)
    */
   passX?: number;
+  /**
+   * the thing this line teaches the first time (a mechanic, a creature, a hazard): said once on this device, in the first stage that
+   * reaches it, never again in a later stage (Matt's rule: a lesson line is said once per save). Without it the line is the stage's own
+   * (said the first time that stage is played)
+   */
+  firstOf?: string;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }

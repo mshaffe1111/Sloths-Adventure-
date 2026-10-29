@@ -79,3 +79,6 @@ export function forgetSent(): void {
   byText.clear();
   pending = [];
 }
+
+/** the lesson lines heard on this device, whichever stage said them (StageHint.firstOf: a lesson is said once per save) */
+export const FIRST_OF_STAGE = 'first-of';

@@ -9,6 +9,12 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
+import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
+import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
+import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
+import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
+import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
+import { W7_TEMPLE_URLS, w7TempleReady } from './w7TempleArt.ts';
 import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
@@ -94,6 +100,18 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(BAD_WATER_URL);
+    } else if (k === 'sentry') {
+      sentryReady();
+      urls.push(...SENTRY_URLS);
+    } else if (k === 'chairs') {
+      w7ChairsReady();
+      urls.push(W7_CHAIRS_URL);
+    } else if (k === 'crumble') {
+      crumbleArtReady();
+      w7FaceReady();
+      w7PuzzleReady();
+      w7TempleReady();
+      urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
     } else if (k === 'w6-stilt') {
       stiltArtReady();
       urls.push(...STILT_ART_URLS);

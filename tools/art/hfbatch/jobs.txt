@@ -69,6 +69,22 @@ hfb-blocking-b 6ae386955ddcdc0830263868 rtx-pro-6000 17:47:01Z-17:52:50Z (5.8 mi
   w6wedge-b-s58-17 KEPT (a round log wedged between two arching stilt roots; ledge cell and the first perch cell).
     s58-29/s68-29 THROWN: the roots turned into stumps with the log on top; s68-17 squared the log into a beam.
 running total ~12.8 min on rtx-pro-6000 = ~$0.59 of the $10 cap.
+World 7 wall-5 (2026-10-29, the lead's round-4 review: one plain root-free temple strip, two takes, cap $0.50), branch gen2-w7:
+start make_wall5.py (wall-1 rows 345-900 over wall-4 rows 0-345, the kit's own root-free stone, 2x), spec spec-hfb-w7wall5.json, cut
+wall5cut.py (220 wide, its last 60 rows cross-faded into its top so it repeats, graded to wall-2's mean tone, set at x 896 in
+src/assets/w7/temple-walls.webp). Results in the bucket under hfbatch/w7wall5/props/.
+hfb-w7wall5 6ae398dcad9610e5cb315e42 rtx-pro-6000 19:05:00Z-19:06:18Z (1.3 min, ~$0.06): s58 x seeds 17/29 from start-w7wall5
+  w7wall5-s58-17 KEPT as wall-5 (grey-green like the kit, mixed blocks, two carved bands, a little moss, no root). s58-29 not used:
+  browner than the other four strips.
+World 7 temple wall as one built wall (2026-10-29, the lead's round-5 review: strips butted side by side kept showing joins), gen2-w7.
+hfb-w7walltile 6ae3ade9c78863f9c62dd445 rtx-pro-6000 20:34:49Z-~20:37Z (~2 min, ~$0.09): groundgpu.py "tile" from start-w7walltile
+  (make_walltile.py: the strips side by side). THROWN: the start's column joints survived s50/s60, and seam.brick's blend ghosted
+  the masonry (double roots, half-faded bands).
+hfb-w7wallrun 6ae3ae99c78863f9c62dd52a rtx-pro-6000 20:37:45Z-~20:44Z (~5 min, ~$0.23): groundgpu.py "strip" (periodic left to
+  right) from start-w7wallrun (make_wallrun.py: courses laid the whole width from the strips' own course bands, a running bond),
+  s1 0.55/0.65, s2 0.52. w7wallrun-s55-v3 and -v5 KEPT as src/assets/w7/temple-run.webp (wallruncut.py: graded to one tone, stacked);
+  the base not used (wrap_x's blend ghosted its cracks), the s65 set not used (s55 already clean).
+running total for World 7 walls ~$0.38.
 
 Boss art (2026-10-29, cap $10 after the lead's correction from $14), branch hf-art-bosses: starts bossstarts.py / bossstarts2.py /
 venomstart.py, specs make_spec.py / make_spec2.py / make_spec3.py, cut bosscut.py / venomcut.py, dot bridges dotbridge.py (no GPU).

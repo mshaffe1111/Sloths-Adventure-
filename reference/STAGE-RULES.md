@@ -345,6 +345,69 @@ plan); never ship the rough version as finished.
     `jumpEdges`), and curation drops any roll with an animal by a jump (7770de7). The lesson: every rule a full-suite test holds a stage
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
+- **A narrow wall is glided through in the check** (World 7's brown vines, 2026-10-29): levelCheck measures a jump from ledge edge to
+  ledge edge and never sees a wall standing between, so a 220-280 px wall with a vine up it read as a glide from its foot to the floor
+  past it; the quick route walked past half the climbs (and World 6's `vineWall` and `swingClimb` have the same shape). A climb only
+  counts where the wall's top is a walk wider than the glide from the vine's foot (530 px or more on the flat, about 600 dropping 80 px,
+  790 dropping 230 px), its top stands more than a double jump plus 40 over every ledge beside it, and a section coming down off a wall
+  ends on a ledge 260 px or more. The same blind spot from below: a ledge just past a perch, within a double jump (plus 40) of the soft
+  pit's floor under the swing, is "jumped" to through the perch, and the swing reads as optional. Proof: the quick route swings every
+  liana and climbs every vine (`w7SwingRoute.test.ts`). And a long wall top is a quiet 4 s unless it carries a hop (a plinth or two).
+- **World 7 on gen2: what the ruins taught** (2026-10-29; the checklist is `src/game/gen2/DESIGN.md` B12):
+  - *Crumbling tiles were the only way over* in the old generator's ruins (a run of tiles over a drop), against §1. On gen2 a tile is a
+    piece flag (`SectionPiece.crumble`: a tile's width, never main, its own crumble zone), always laid over a sunken hall whose floor walks
+    on under the tiles with two hops out (`w7Ground.ts` `hall`). The tiles are the hurry; standing still drops him into the hall (soft).
+    And it is proven, not trusted: `pipeline.ts` `checkStage` validates every stage with its tiles taken away (only a petal or a heart
+    over a tile may go out of reach), so the repair loop, curation and the tests all hold the rule (any world, not only World 7).
+  - *A zone that reaches below its own pieces swallows the floor under them.* The old ruins zone ran 40 px under the tiles; levelCheck
+    keeps animals 60 px clear of a zone's bottom, so the hall's animals counted as standing inside it. The crumble zone ends at the
+    tiles' underside, and the hall is 120 px down (84 px of headroom under a tile for Pokey).
+  - *A puzzle room on one long floor reads quiet.* The inspector counts a room as one beat where it starts, so a 1,100 px level room was
+    a 4.5-5 s quiet stretch on most rolls of 7-3. The rooms step down to the plate's floor (a walk, so carrying needs no jump) and hop up
+    and over a plinth past the door (`w7Rooms.ts` `roomPieces`).
+  - *Hunt themes that all lean on animals read alike* (7-5 and 7-9: 0.15 apart on raw rolls). Each hunt theme leans on its own other move
+    too: the cats on plinths, the boas in tiled halls, the harpies at brown-vine walls (0.30 raw, 0.47 shipped).
+  - *An animal waited where a climb tops out* (screenshots, 7-9): the purge's top-up lays its animals on the widest main pieces, and a
+    wall top a vine climbs onto is one, but `JUMP_CLEAR` only knows jumps. Wall tops are not main pieces (`w7Ground.ts` `wall`), so no
+    top-up animal stands there; look at the screenshots, not only the numbers.
+  - *A row of petals squeezed onto a tile mixed its flowers* (the full suite's "a row is one species"): gen2 rolled each flower's look
+    from its own spot, and a 110 px tile squeezed a row of three into 70 px. A row and an arc now take one look (`pipeline.ts` `lookAt`),
+    and a tile carries one petal.
+  - *A world's new animal needs its sheet listed* (the full suite's preload test, 7-1: the frog): a gen2 World 6-10 stage now asks for
+    every animal its manifest can lay (`gen2/game.ts` `gen2Creatures`), not only the old generator's set.
+  - *A relic socket laid a relic in a sprint* (the second builder's finding: the walls never shipped). gen2 gave a section with no share of
+    a quota one objective by default, so every wall top of 7-1 held a relic, overlapping its petals: the check failed and the roll was
+    re-rolled away, every time. A section lays objectives only from its node's quota (`pipeline.ts` `graphObjectives`, 0 by default).
+    Count what each roll holds by section (`count.ts`-style tallies), not only whether it passes: a section that never ships is a bug.
+  - *Soft falls put a world below the one before* (the first-timer bands, 2026-10-29): with every chasm soft, World 7's Normal middle
+    was about 25 against World 6's 45, because the bands read the first-timer's lives and World 6's came from swings over water. Third-
+    of-a-jump drains don't kill him. World 7's chasms are deep on Normal (soft on Easy, the pipeline's rule): 50-51. Measure the band with
+    `--firsttimer` early, not at the end.
+  - *Art and collider must agree* (§5b item 3): the painted crumble slab is drawn 46 px deep, so the tile's collider is 40 px (not the old
+    26) and the hall under it keeps 80 px of headroom; a thick painted piece over a thin collider lets Pokey's head into the stone.
+  - *A landmark in a repeated strip shows twice* (the sleeping stone head in World 7's near strip, mirrored every other copy): a strip
+    that carries one big landmark is drawn larger (`scenery.ts` `STRIP_GROW`) so one repeat is wider than a sideways screen.
+  - *Code-drawn decor repeated on every ledge reads as something else* (World 7's `figroot`: pale strokes read as ribs). Out of World 7's
+    scatter; the painted pieces (w7c fig roots, columns, statues) are set into the bank faces instead (`w7FaceArt.ts`).
+  - *Dot is gone (Matt, §1):* Pokey's lines are the sections' tips and the rooms' tips; `wayside.ts dotPresent` already draws every
+    World 7 line as his thought, and the tests hold every hint of every roll to his list.
+  - *A wall face is a run of banks, not one bank* (World 7's temple walls, 2026-10-29): a wall's top is several banks touching, 30 to 40
+    px apart, so "is this a high ledge" asks of the whole run (touching banks under 90 px apart) against the floor beside it, and the strips
+    sit on one grid through the stage at the world's height, not each bank's, or every step shows a seam (`w7TempleArt.ts`). Read an art
+    piece's edges before tiling it: wall-4's root runs off both edges, which the art notes gave as one.
+  - *A wall made of strips shows its strips* (World 7, rounds 3-5): narrow wall strips butted side by side, however they are graded or
+    cross-faded, show their joins at phone size (the courses step, the tones differ, a cross-fade of two unrelated textures reads as a
+    double exposure, and any alpha in the blend lets the backdrop through). A built wall is one wide picture whose courses run level all
+    the way across, periodic left to right only and hung from its run's top (`w7TempleArt.ts`, temple-run.webp); to make one on Hugging
+    Face, start from courses laid the whole width (make_wallrun.py), never from columns, and repaint hard enough (s2 ~0.5) to take out
+    seam.wrap_x's blend. A plinth step (under 60 px) ends cut clean at the lower bank's top, never faded into the air.
+  - *Line shots: one fresh page per line* (`tools/art/w7/lines.mjs`): hints are said once a device, a line due while another is up is used
+    up unseen, and hints are not stored in x order (w7Finish now sorts them). Teleporting between spots in one page loses most of them.
+
+## 7. Where things are
+
+- Stage code (World 7 on gen2 too: 7-1, 7-3, 7-5, 7-6, 7-7, 7-9 in `gen2/worlds/w7*.ts`; its ascents 7-2, 7-4, 7-8 are hand-built later): World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's
+  stage (`5-M`) via `extraStages.ts`; 5-7 and 5-9 from the new generator (`src/game/gen2/`, its 16 curated rolls each: `gen2/game.ts`); 5-6, 5-8 and
 - **A runner where everything can be steered round teaches one move** (7-4 v1, 2026-10-29, Matt: "Everything can be done just by
   avoiding objects. You don't have to jump anything because nothing goes the whole way across"). Every section past the opening needs
   things across the whole width (barriers and gaps to jump, beams to duck), and pairs (a steer, then a jump or a duck straight after).
