@@ -14,11 +14,12 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | World 8 kit, ground/darkness, hook-up, curation | cloud session_01FhBbYL7oX9aYPA1U8CKGQ9 | gen2-w8 | lantern + fireflies |
 | World 8 swings + rooms | cloud session_01FhBbYM8NXWsJ1fXfGP892s | gen2-w8-swing | merges into gen2-w8 before curation |
 | QA leftovers 2-6 (tip timing, plank ends), 3-3 counter | cloud session_01FhBbYMWcFJmuZ592k3J1vs | qa-fix-w123b | |
+| Better look-alike measure (Matt chose it over relaxing the rule) | cloud session_01FhBbYKxYezKsEn4iBnvKHP | gen2-lookalike | era + curate share one measure; W7/W8 switch on merge |
 | Art pickup: HF creatures + Gemini sheets cut-in | local helper (worktree) | art-pickup | no new HF spend |
 | Audit: major looks still drawn in code; first swim in clean water | local read-only | none | list goes to Matt |
 
 Left for later: the hand-built ascents 7-4 and 8-4 (after Matt approves the 6-8 mock-up pattern), the bosses 6-10, 7-10 and 8-10 (Matt: all together later),
-the rope traverse (waits on Matt's Gemini hand-over-hand sheet), the look-alike rule (question for Matt).
+the rope traverse (waits on Matt's Gemini hand-over-hand sheet).
 
 ## STANDSTILL, earlier (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
 
