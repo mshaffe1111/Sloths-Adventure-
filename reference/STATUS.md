@@ -16,7 +16,15 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | QA leftovers 2-6 (tip timing, plank ends), 3-3 counter | cloud session_01FhBbYMWcFJmuZ592k3J1vs | qa-fix-w123b | |
 | Better look-alike measure (Matt chose it over relaxing the rule) | cloud session_01FhBbYKxYezKsEn4iBnvKHP | gen2-lookalike | era + curate share one measure; W7/W8 switch on merge |
 | Art pickup: HF creatures + Gemini sheets cut-in | local helper (worktree) | art-pickup | no new HF spend |
-| Audit: major looks still drawn in code; first swim in clean water | local read-only | none | list goes to Matt |
+| Rope traverse: Matt's Gemini hand-over-hand sheet + HF in-betweens (<= $2) + painted rope | local helper (worktree) | rope-traverse | frame 8 unusable (not holding) |
+| Audit: major looks still drawn in code (DONE) | local read-only | none | findings below |
+
+Audit findings (2026-10-29), most visible first: W6 tide drawn clean teal (FIXED: painted fast water, tide-w6-painted.png); W9 lava
+geysers and W10 lightning (no art); boss rage strips, lairs and attacks (bosses later); pit water in W1-W5 hand stages (code water; W2 rivers
+painted); rope traverse (helper running); W4 waterfalls (code on purpose); web patches 5-6/5-8 (painted silk exists, unused); spore mushrooms
+(painted mushrooms exist, unused); wind; crumble tiles W7 (kit has no ruin tile: HF list); silk swing lines W5; bounce mushrooms (all worlds,
+no art: HF list); 4-3's pool log (painted log exists, unused). SWIMMING DOES NOT EXIST in the game yet (pokey-swim sheets are in
+reference/animation-sheets/pokey-swim/, not wired); question to Matt.
 
 Hugging Face: about $12 left (Matt, 2026-10-29: "any art that we need, use that"). Plan: one run for the props/creatures/backdrops the
 World 7 and 8 builders and the code-drawn-looks audit list (img2img from the world kits, as the W6-10 prop run); Pokey and story characters
