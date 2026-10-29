@@ -45,27 +45,27 @@ test('goals: free every animal there is to free; beat about three quarters of th
   assert.equal(normalGoal(stageOf(cfg('sprint', 1), []) as never), null, 'a stage with no count keeps none');
 });
 
-test('goals: Normal gets its share; Easy asks round(Normal x 0.65), never under 60% of what is there nor under today\'s goal (LV-6), and its gentler beat-the-animals goal', () => {
+test('goals: Normal gets its share; Easy asks round(Normal x 0.65), never under today\'s goal (LV-6), and its gentler beat-the-animals goal', () => {
   const fl = Array.from({ length: 20 }, (_, i) => flower(i + 1, 100 + i * 150));
   const st = withGoals(stageOf(cfg('harvest', 9), fl));
   assert.equal(st.config.targetCount, 18);
-  assert.equal(st.easyGoal, 12, 'round(18 x 0.65) = 12 = 60% of 20: the stage\'s own quota of 9 no longer lowers it');
+  assert.equal(st.easyGoal, 12, 'round(18 x 0.65): the stage\'s own quota of 9 no longer lowers it');
   assert.equal(withGoals(st).config.targetCount, 18, 'set once');
   // never under the goal Easy had before (the stage's quota, at most 80% of Normal: 14)
   assert.equal(withGoals(stageOf(cfg('harvest', 19), fl)).easyGoal, 14);
   const easy = easyStage(withGoals(stageOf(cfg('harvest', 9), fl)) as never);
   assert.equal(easy.config.targetCount, 12);
-  // the rule alone: 65% of Normal, the 60% floor, today's goal, never over Normal
-  assert.equal(easyGoalFor(20, 21), 13, '65% of 20');
-  assert.equal(easyGoalFor(10, 30), 10, '60% of 30 is over Normal: Normal');
-  assert.equal(easyGoalFor(16, 21), 13, '60% of 21 lifts round(10.4)');
-  assert.equal(easyGoalFor(16, 21, 15), 15, 'never under today\'s goal');
-  assert.equal(easyGoalFor(1, 1), 1);
+  // the rule alone: 65% of Normal, today's goal, never over Normal
+  assert.equal(easyGoalFor(20), 13, '65% of 20');
+  assert.equal(easyGoalFor(16), 10);
+  assert.equal(easyGoalFor(16, 15), 15, 'never under today\'s goal');
+  assert.equal(easyGoalFor(5, 9), 5, 'never over Normal');
+  assert.equal(easyGoalFor(1), 1);
   const foes = Array.from({ length: 10 }, (_, i) => ({ id: i, type: i % 2 ? 'snake' : 'ocelot', x: 300 + i * 300, y: 560, attackCooldown: 1 }) as unknown as Enemy);
   const purge = easyStage(withGoals(stageOf(cfg('purge', 6), [], [ground], foes)) as never);
   const kept = purge.enemies.length;
   assert.ok(kept < 10, 'Easy holds fewer animals');
-  assert.ok(purge.config.targetCount >= Math.ceil(kept * 0.6) && purge.config.targetCount <= kept, `Easy: ${purge.config.targetCount} of ${kept}`);
+  assert.ok(purge.config.targetCount >= 1 && purge.config.targetCount <= kept, `Easy: ${purge.config.targetCount} of ${kept}`);
 });
 
 test('goals: every hand-built stage of Worlds 1-4 with a count lands in Matt\'s band on Normal (small counts round as near as they can)', () => {
