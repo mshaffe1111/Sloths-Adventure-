@@ -102,3 +102,13 @@ hfsky-pilot1  6ae3a77ec78863f9c62dcc62 rtx-pro-6000 20:07:26Z-20:11:50Z (4.4 min
   patch on the w3 cave roof.
 hfsky-pilot2  6ae3a88bc78863f9c62dcda5 rtx-pro-6000 20:11:55Z-20:14:10Z (2.3 min, ~$0.11, cancelled): textured start (the strip's top
   quarter turned over). Img2img on the short canvas paints a whole new scene, a stone ledge where the strip's top was: thrown.
+hfsky-pilot3  6ae3a96b0e0338d1bb7c21f3 rtx-pro-6000 20:15:39Z-20:20:11Z (4.5 min, ~$0.21): inpaint (QwenImageInpaintPipeline) the rows
+  above with the strip as context, s92. Good canopy (w1kapok) and cave roof (w3), but a hard seam at the join and "game background"
+  in the prompt painted a stone ledge row (w5dusk2); the middle-strip try on magenta came back as a pink haze.
+hfsky-pilot4  6ae3aac4c78863f9c62dd051 rtx-pro-6000 cancelled before it ran (prompt fix came first).
+hfsky-pilot5  6ae3aaecc78863f9c62dd08a rtx-pro-6000 20:22:04Z-20:28:50Z (6.8 min, ~$0.31, cancelled): s100, no "game" wording, a
+  negative prompt. Skies clean of ledges, but the start's shapes came through as see-through ghost branches (the pipeline blends the
+  start in): the start is now its colours only. The pipeline binarizes the mask half way down its ramp: the sky file ends there.
+  Middle strips (w1-midtop): whole new misty scenes at the wrong scale in a pink haze, not keyable: dropped; the middle strips with a
+  solid top fade out over their top 7% instead (defringe.py --topfade).
+pilots ~18 min = ~$0.83
