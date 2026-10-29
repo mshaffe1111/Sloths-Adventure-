@@ -85,7 +85,9 @@ test("the lava's rule: deadly on Normal, soft on Easy, soft at every second-jump
     else assert.ok(falls.some((f) => f.kind === 'void'), `${tag}: no lava at all`);
     // (a gap wider than one jump (a second-jump or a glide gap) keeps its crust: no deadly gap needs more than one jump)
     const one = maxGap(0, false, st.gen2.budget.margin) + 12;
-    for (const f of falls) if (f.kind === 'void') assert.ok(f.x1 - f.x0 <= one, `${tag}: a ${f.x1 - f.x0} px lava gap at ${f.x0}, past one jump`);
+    // (a chain over the lava is the swing's: 9-3's, the way over is the chain)
+    const swung = (f: { x0: number; x1: number }) => st.vines.some((v) => v.vineType === 'swing_liana' && v.x > f.x0 - 260 && v.x < f.x1);
+    for (const f of falls) if (f.kind === 'void' && !swung(f)) assert.ok(f.x1 - f.x0 <= one, `${tag}: a ${f.x1 - f.x0} px lava gap at ${f.x0}, past one jump`);
     const gs = (st.zones ?? []).filter((z) => z.kind === 'geyser').sort((a, b) => a.x0 - b.x0);
     for (const z of gs) {
       for (const e of st.enemies) assert.ok(!(e.x > z.x0 - 30 && e.x < z.x1 + 30 && e.y > z.baseY - 150 && e.y < z.bottom + 60), `${tag}: an animal in the geyser at ${z.x0}`);
