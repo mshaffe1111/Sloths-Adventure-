@@ -1,0 +1,237 @@
+{
+ "note": "VI-2 native-resolution strips, tools/art/hfbatch/striphdgpu.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w2-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w2-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a riverbank: tall cattail reeds and grasses, orange flowers, a wooden post tied with rope, smooth brown river stones, broad leaves",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w2-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a riverbank: tall cattail reeds and grasses, orange flowers, a wooden post tied with rope, smooth brown river stones, broad leaves",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w2-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a sloth village: thatched round huts in and under big trees, rope bridges between the trees, palms, a long bench, a dirt bank with round wooden doors and little signs",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w2-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a sloth village: thatched round huts in and under big trees, rope bridges between the trees, palms, a long bench, a dirt bank with round wooden doors and little signs",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w3-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark mossy grotto floor at night: dark ferns and leaves, wet stones, a little stream, small glowing teal mushrooms",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w3-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark mossy grotto floor at night: dark ferns and leaves, wet stones, a little stream, small glowing teal mushrooms",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w3-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark cave mouth with mossy rock arches, twisting dark roots, dark leaves, glowworm threads hanging from the cave roof with tiny glowing dots",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w3-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark cave mouth with mossy rock arches, twisting dark roots, dark leaves, glowworm threads hanging from the cave roof with tiny glowing dots",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w4-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. misty mountain ledges: grey slate rocks, a thin waterfall stream, dark ferns, a white feather on the rocks",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w4-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. misty mountain ledges: grey slate rocks, a thin waterfall stream, dark ferns, a white feather on the rocks",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w4-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. grey cliff crags with waterfalls, wind-bent small trees on top of the rocks, a twig nest on a tall rock pillar",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w4-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. grey cliff crags with waterfalls, wind-bent small trees on top of the rocks, a twig nest on a tall rock pillar",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w5-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a mossy golden orchid grove floor: twisted roots, ferns, white and pink orchids, small white flowers, falling pink petals",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w5-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a mossy golden orchid grove floor: twisted roots, ferns, white and pink orchids, small white flowers, falling pink petals",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w5-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. tall golden-barked trees covered in big white and pink orchids, spider webs strung between the trees, ferns at their feet, moss",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w5-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. tall golden-barked trees covered in big white and pink orchids, spider webs strung between the trees, ferns at their feet, moss",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

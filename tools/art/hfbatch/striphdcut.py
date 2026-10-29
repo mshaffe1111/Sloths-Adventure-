@@ -59,12 +59,25 @@ def cut(old_p, new_p, out_p, grow=4):
     print(out_p, W, H, round(os.path.getsize(out_p) / 1048576, 2), 'MiB')
 
 
-def cut2(old_p, new_p, alpha_p, out_p, bg=(128, 128, 128)):
+def cut2(old_p, new_p, alpha_p, out_p, pre_p=None, mode='paint', bg=(128, 128, 128)):
     """the repaint was made on flat grey, and the shape is the old strip's alpha sharpened by Real-ESRGAN (striphdgpu.py alpha-*): no
     keying at all, so the repaint can neither add nor drop a shape. The colour on the soft rim is unmixed from the grey; a faint rim
-    pixel the unmix cannot save takes the old colour."""
+    pixel the unmix cannot save takes the old colour.
+    With pre_p (the Real-ESRGAN start the repaint was made from), the outline band (the outer 5 px of every shape) is the start's,
+    because the repaint moves an edge a pixel or two off the sharpened alpha and the outline came out ragged; mode 'grain' also keeps
+    the start's broad colour blocks inside (the repaint softened the cel-shaded leaf clumps) and adds only the repaint's brushwork:
+    start + (repaint - blur(repaint))."""
     new = np.asarray(Image.open(new_p).convert('RGB')).astype(np.float32)
     H, W = new.shape[:2]
+    if pre_p:
+        pre = np.asarray(Image.open(pre_p).convert('RGB')).astype(np.float32)
+        if mode == 'grain':
+            blur = lambda v: ndimage.gaussian_filter(v, (2.5, 2.5, 0))
+            new = np.clip(pre + (new - blur(new)), 0, 255)
+        solid = np.asarray(Image.open(alpha_p).convert('L')).astype(np.float32) > 250
+        dist = ndimage.distance_transform_edt(solid)
+        w = np.clip((dist - 2) / 4, 0, 1)[..., None]
+        new = new * w + pre * (1 - w)
     a = np.asarray(Image.open(alpha_p).convert('L').resize((W, H), Image.LANCZOS)).astype(np.float32) / 255
     # (the old shape at this size, to keep the sharpened one honest: never more than the old one grown by 2 px)
     oldim = Image.open(old_p).convert('RGBA')
@@ -78,6 +91,20 @@ def cut2(old_p, new_p, alpha_p, out_p, bg=(128, 128, 128)):
     oc = np.where(oa > 0.6, o[..., :3], k(pm) / np.maximum(k(oa), 1e-3))
     oc = np.asarray(Image.fromarray(np.clip(oc, 0, 255).astype(np.uint8)).resize((W, H), Image.LANCZOS)).astype(np.float32)
     B = np.array(bg, np.float32)
+    # (the repaint moves an edge by a pixel or two, so on the rim the sharpened alpha can cover bare grey, a pale halo; and now and
+    # then it paints a thin leaf tip over in grey. How much paint each rim pixel really holds: its colour projected onto the line from
+    # the grey to the old colour there. Where there is less paint than the alpha says: off the old shape that is a halo, so the alpha
+    # comes down; on the old shape (a0 high) it is a lost tip, so it keeps the old colour.)
+    d = oc - B
+    dd = (d * d).sum(-1)
+    proj = np.where(dd > 1600, np.clip(((new - B) * d).sum(-1) / np.maximum(dd, 1), 0, 1), 1)
+    proj = ndimage.uniform_filter(proj, 3)
+    near_rim = ndimage.binary_dilation(a < 0.98, iterations=2)
+    short = near_rim & (proj < a * 0.7)
+    lost = short & (a0 >= 0.3)
+    halo = short & ~lost
+    a = np.where(halo, proj, np.where(lost, np.minimum(a, np.maximum(a0, proj)), a))
+    new = np.where(lost[..., None], oc * a[..., None] + B * (1 - a[..., None]), new)
     am = np.maximum(a, 0.05)[..., None]
     c = np.clip((new - (1 - am) * B) / am, 0, 255)
     rim = a < 0.98
@@ -137,8 +164,8 @@ if __name__ == '__main__':
     cmd = sys.argv[1]
     if cmd == 'cut':
         cut(*sys.argv[2:5])
-    elif cmd == 'cut2':
-        cut2(*sys.argv[2:6])
+    elif cmd == 'cut2':  # old new alpha out [pre [mode]]
+        cut2(*sys.argv[2:8])
     elif cmd == 'crops':
         crops(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], [float(x) for x in sys.argv[6:]] or [0.15, 0.6])
     elif cmd == 'seam':

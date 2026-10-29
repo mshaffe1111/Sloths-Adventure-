@@ -1,0 +1,14 @@
+VI-2 native-resolution backdrop strips (2026-10-29, cap $10), branch hf-art-backdrops. GPU striphdgpu.py, spec make_striphd_spec.py,
+cut + phone crops striphdcut.py. Run time x ~$2.75/h on rtx-pro-6000.
+
+hfb-striphd-w1a 6ae384325ddcdc08302635ce rtx-pro-6000 17:36:50Z-17:41:33Z (4.7 min, ~$0.22): w1 near/mid, Lanczos-scaled start on
+  magenta, s30/s45. THROWN: s30 adds no detail (still the soft upscale); s45 changes things (a new petal, mushroom shapes) and is
+  still soft; on magenta the thin vines turn dark-purple and the key cut gaps into them.
+hfb-striphd-w1b 6ae3866fad9610e5cb31496f rtx-pro-6000 17:46:23Z-17:47:18Z (0.9 min, ~$0.04): FAILED, pip refused spandrel (PEP 668).
+hfb-striphd-w1c 6ae3878cad9610e5cb314aaa rtx-pro-6000 17:51:08Z-17:55:27Z (4.3 min, ~$0.20): w1 near/mid, Real-ESRGAN anime 6B start
+  on flat grey (the alpha sharpened the same way), s25/s35. KEPT w1-near-s25-7 and w1-mid-s25-7 as src/assets/backdrops-hd/w1-near.webp
+  (3214x1736, 0.19 MiB) and w1-mid.webp (2442x1302, 0.25 MiB), cut2 'paint' (the repaint inside, the start's outline on the outer
+  5 px: the repaint moved edges a pixel and the outline came out ragged; on the old shape a rim the repaint lost to grey keeps the old
+  colour, off it the grey halo is cut). s35 not used: mushroom stems melt a little at the foot, the line shifts. The mid's leaf clumps
+  come out a little softer than the start's cel blocks (named in the review).
+running total ~9.9 min = ~$0.45. Review: reference/prop-sheets/qa-notes/hf-art-backdrops/w1-*.jpg
