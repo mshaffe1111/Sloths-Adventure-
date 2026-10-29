@@ -643,6 +643,21 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
  * A figure painted on Matt's story sheets (storyCels.ts): the frame the pose timeline names, its feet on the ground line (hovering when placed above it), a contact shadow,
  * a slow breath. Nothing is drawn while its atlas is still loading, which the draw itself starts.
  */
+/** how tall (scene units) the melting bottom of the tallest bust in the picture is, over every frame it plays (0: no bust) */
+function bustBand(scene: StoryScene): number {
+  let m = 0;
+  for (const a of scene.actors) {
+    if (a.kind !== 'cel' || !a.seq) continue;
+    for (const key of a.seq) {
+      for (const f of Array.isArray(key.frame) ? key.frame : key.frame ? [key.frame] : []) {
+        const c = CELS[f];
+        if (c?.c === 'b') m = Math.max(m, 0.2 * c.h * CEL_K * (a.scale ?? 1) * (key.sc ?? 1));
+      }
+    }
+  }
+  return m;
+}
+
 function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
   if (!a.seq || !a.seq.length) return;
   const pose = poseAt(a.seq, t);
@@ -1293,8 +1308,11 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   const z = capStoryZoom(cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1)), devScale(ctx), big);
   const fx = Math.min(w - w / (2 * z), Math.max(w / (2 * z), (cam ? cam.fx : scene.focusX ?? 0.5) * w));
   const fy = Math.min(h - h / (2 * z), Math.max(h / (2 * z), (cam ? cam.fy : scene.focusY ?? 0.62) * h));
-  // (the feet: where the ground lands in the view through this camera, raised clear of the words box)
-  lift = liftForFeet((groundOf(scene) * h - fy) * z + h / 2, h, feetMax, lift);
+  // (the feet: where the ground lands in the view through this camera, raised clear of the words box; but a figure painted cut off
+  // below the chest, a bust, melts away over its bottom fifth, and that melt must stay behind the box, not stand see-through over the
+  // picture: then the ground goes as far under the box top as the melt is tall)
+  const band = feetMax < 0.9 ? bustBand(scene) : 0;
+  lift = liftForFeet((groundOf(scene) * h - fy) * z + h / 2, h, band ? feetMax + 0.06 + (band * z) / h : feetMax, lift);
   ctx.translate(0, -lift * h);
   const [shx, shy] = shakeAt(scene.fx, t);
   ctx.translate(shx, shy);
