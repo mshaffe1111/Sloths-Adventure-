@@ -221,3 +221,18 @@ Earlier read of the same log, kept for the details:
 - Variety: real in 1-7 (canopy secret, acorn tree, double-jump spot 53% vs 63%) and 4-5 (opening line, flag); 3-1's cave mouth
   changes but the deadly gap is the same in both; 2-6's opening was the same in both as far as reached (rule 6).
 - Memory: peaks to 42/84 MB at 3-1 v7's end, back to 15 MB after; no page errors.
+
+# Next batch (not sent yet)
+
+## E. 2026-10-29: vine retest (PR #45) and four new players (sheet rows 2195-2400)
+1. [PASS, by state, PR #45 fa5d173, upright] Vines on 1-6, 2-4, 2-7, 4-4, 5-4: 16 lianas held for 20 s each with the thumb pumping
+   left/right. Pokey stayed on his own vine every time (no other vine taken), no position jumps over 24 px, swings 0.21-0.45 rad.
+   (Some lianas the script's drop didn't catch; none of those that caught misbehaved.) Not on a real iPhone.
+2. [lead, rule 11] Age, iPhone, iOS 26.7, Facebook's in-app browser (session 347v): Pokey never moved in 37 s. Steer, taps and a
+   jump all reached the game (move right, jump inputs logged) but his position stayed x 140; a "skip" offer had come up at 2.8 s.
+   A minute later Age reopened in Safari (jr4a) and played fine (finished, 6 hurts). Jane in the same Facebook browser played fine,
+   so it isn't every Facebook open. Worth a look at what the skip offer does to touch in an in-app browser.
+3. [pattern, rule 3/4] All four new players looped through "Short hops > Long jumps" several times before getting on (Jane 111 s,
+   CAnn 73 s, Age 67 s, Logan 28 s); Jane's survey: hardest "Long jumps"; Age: "Hide from the eagle"; Logan: "Running".
+4. [rule 11] All on iPhones, frame rate 21-30 (median 25-30). Logan (Safari 18) had 8 stalls of 130-220 ms after the eagle and snake
+   sheets loaded mid-run (blank-wait family, B2). CAnn's phone is small (320 x 485), on Easy, 2.4 min.
