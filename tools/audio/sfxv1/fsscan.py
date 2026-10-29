@@ -110,6 +110,14 @@ CATS4 = {
     'click': ([r'\b(insect|beetle|bug|cricket|grasshopper|cicada|mantis)\b'], 4, 20),
     'wingbeat': ([r'\b(wings?|wingbeats?|flapping|takes? off|taking off|flutter\w*)\b', r'\b(bird|pigeon|dove|crow|owl|bat|duck|goose)\w*\b'], 4, 20),
 }
+# PASS=ids: exactly the clips tagscan.py picked by their uploaders' tags (hfbatch/sfx/tagpicks.json), whatever their captions say
+IDPICK = {}
+if os.environ.get('PASS') == 'ids':
+    AMBCATS = {'rainforest', 'forest_birds', 'stream', 'waterfall', 'cave', 'night', 'swamp', 'wind', 'rain', 'lava', 'fire'}
+    for cat, rows in json.load(open('/out/hfbatch/sfx/tagpicks.json')).items():
+        for r in rows[: (12 if cat in AMBCATS else 30)]:   # (the carriers stay ~80 MB)
+            IDPICK.setdefault(int(r[0]), cat)
+    CATS = {c: ('.', 30 if c in AMBCATS else 6, 400 if c in AMBCATS else 30) for c in set(IDPICK.values())}
 if os.environ.get('PASS') == '4':
     CATS = CATS4
 if os.environ.get('PASS') == '2':
@@ -160,6 +168,21 @@ for sh in os.environ['SHARDS'].split(','):
             except Exception: continue
             lic[(j.get('license'), j.get('attribution_required'))] = lic.get((j.get('license'), j.get('attribution_required')), 0) + 1
             if j.get('attribution_required') != 0: continue
+            if IDPICK:
+                cat = IDPICK.get(int(j.get('freesound_id') or -1))
+                if not cat:
+                    continue
+                maxs = CATS[cat][1]
+                o = enc(rec['mp3'], maxs, (j.get('silence_at_beginning_ms') or 0) / 1000 * 0.9)
+                if not o:
+                    continue
+                name = f'{cat}__{j.get("freesound_id")}.ogg'
+                cap = ' '.join(str(x) for x in [j.get('comprehensive_caption') or ''])
+                meta.append({'file': name, 'cat': cat, 'freesound_id': j.get('freesound_id'), 'user': j.get('username'), 'license': j.get('license'),
+                             'dur': (j.get('duration_ms') or 0) / 1000, 'caption': cap[:200]})
+                if size + len(o) > 6_300_000: flush()
+                files.append((name, o)); size += len(o)
+                continue
             cap = ' '.join(str(x) for x in [j.get('comprehensive_caption') or '', (j.get('Flash 2.5 Annotation') or {}).get('caption') or ''])
             dur = (j.get('duration_ms') or 0) / 1000
             for cat, rx in RX.items():
