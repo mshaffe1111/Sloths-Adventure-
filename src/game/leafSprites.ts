@@ -110,3 +110,24 @@ export function drawGlideSprite(ctx: CanvasRenderingContext2D, x: number, y: num
   ctx.restore();
   return true;
 }
+
+/**
+ * One small painted leaf flying loose (a double jump's burst, a knocked-out creature's leaves): from the `set`'s leaves, picked by `c`,
+ * `size` px across, turned `rot` and flipped over by `flip` (1 face on, 0 edge on). False until the sheet has loaded.
+ */
+export function drawLeafBit(ctx: CanvasRenderingContext2D, set: 'green' | 'warm', c: number, x: number, y: number, size: number, rot: number, flip: number, alpha: number): boolean {
+  load();
+  if (!ready || !atlas) return false;
+  const list = BY_SET[set].length ? BY_SET[set] : BY_SET.green;
+  const f = LEAF_FRAMES[list[Math.floor(Math.abs(c) * 1000) % list.length]];
+  if (!f) return false;
+  const k = size / Math.max(f.w, f.h);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.scale(Math.max(0.15, Math.abs(flip)), 1);
+  ctx.globalAlpha *= Math.max(0, Math.min(1, alpha));
+  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  ctx.restore();
+  return true;
+}

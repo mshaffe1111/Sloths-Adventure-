@@ -17,6 +17,7 @@ import { plateImage, preloadPlates, releasePlates } from './plates.ts';
 import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
 import { CEL_K, CELS, drawCel, warmCels } from './storyCels.ts';
 import { capStoryZoom, liftForFeet } from './storyFrame.ts';
+import { FONT_READ } from './fonts.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
@@ -44,7 +45,7 @@ function makeBoss(angry: boolean, beaten: boolean): BossEntity {
     facing: 1, patrolMinX: 0, patrolMaxX: 0, attackCooldown: 0, telegraphTimer: 0,
     isAttacking: angry, animTimer: 0, hitFlashTimer: 0, defeated: beaten, koTimer: 0,
     behaviorTimer: 0, phase: 1, phaseMax: 3, specialAttackTimer: 0, shieldActive: false,
-    dialogueIntro: '', dialogueDefeat: '',
+    dialogueIntro: '',
   } as unknown as BossEntity;
 }
 
@@ -576,7 +577,7 @@ function drawPhotoCard(ctx: CanvasRenderingContext2D, ph: ScenePhoto, w: number,
   ctx.strokeRect(-pw / 2, -chh / 2 + padTop, pw, ph_);
   if (ph.caption) {
     ctx.fillStyle = '#3b2f22';
-    ctx.font = 'italic 24px Georgia, "Times New Roman", serif';
+    ctx.font = `italic 24px ${FONT_READ}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(ph.caption, 0, chh / 2 - padBot / 2 + 2);

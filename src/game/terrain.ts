@@ -19,14 +19,17 @@ import { getSceneSeed } from './sceneSeed.ts';
 import { fillCapWindy, windShear, lightBody, dapples, surfaceRoots, restShadow, liveBlades, soilGlints } from './terrainPolish.ts';
 import { planStage, baseLook, VARIANTS, type StagePlan, type ThinPlan } from './platformPlan.ts';
 import { drawThin } from './platformArt.ts';
-import { drawBounce, drawRaftLive, shakeOffset } from './spanArt.ts';
+import { drawRaftLive, shakeOffset } from './spanArt.ts';
+import { drawBounce } from './bounceArt.ts';
+import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import './shelfArt.ts';
 import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
-import { drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
+import { bankPainted, drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
 import { drawBadWater } from './badWaterArt.ts';
+import { drawPitWater } from './stageArt.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
 let curWorld = 1;
@@ -1340,11 +1343,12 @@ export function renderWorldObjects(
     ctx.save();
     if (p.type === 'bouncy') {
       const tp = thinPlanFor(plan, p);
-      drawBounce(ctx, p, look, worldId, tp.look === 'parasol' || tp.look === 'bloom' ? tp.look : 'toadstool', tp.variant, time, bounceBottom);
+      drawBounce(ctx, p, worldId, tp.variant, time, bounceBottom);
     } else if (p.type === 'fragile') {
       const tp = thinPlanFor(plan, p);
       const [dx, dy] = shakeOffset(p, time);
-      if (!drawThin(ctx, p, look, worldId, tp, dy, dx)) drawPlanks(ctx, p, look, r);
+      // (World 7's crumbling tiles: Matt's painted crumble frames, crumbleArt.ts; the kit plank until the sheet loads)
+      if (!drawCrumbleTile(ctx, p, time, dx, dy) && !drawThin(ctx, p, look, worldId, tp, dy, dx)) drawPlanks(ctx, p, look, r);
     } else if (p.type === 'drift' && p.drift) {
       // a log rides between its banks, bobbing; clipped to the river so it slides out from under one bank and under the other
       ctx.beginPath();
@@ -1357,6 +1361,10 @@ export function renderWorldObjects(
       else drawRaft(ctx, p, look, time, r);
     } else if (p.style === 'canopy_bridge') {
       if (!drawThin(ctx, p, look, worldId, thinPlanFor(plan, p))) drawBridge(ctx, p, look, time, r);
+    } else if ((p.height >= 50 || p.soil) && bankPainted(p)) {
+      // the painted ground covers this bank (protoArt.ts drawBankArt, its face undercut where it drops away): only what grows on top
+      // (and nothing on a pit's wall, which stands under a bank)
+      if (p.height >= 50) topDecor(ctx, p, look, r, time);
     } else if (p.height >= 50) {
       const gp = curRig ? undefined : plan.ground.get(p);
       if (gp && gp.role === 'ground') {
@@ -1418,6 +1426,18 @@ function stagePlan(platforms: Platform[], world: number): StagePlan {
 }
 
 /** a thin platform's plan, with a deterministic fallback for any platform the plan did not see */
+/** the bounce plants' caps and cues over the painted ground (the plants themselves are drawn with the platforms, behind it) */
+export function drawBounceCaps(ctx: CanvasRenderingContext2D, worldId: number, platforms: Platform[], cam: Cam, time: number) {
+  const plan = stagePlan(platforms, worldId);
+  const left = cam.x - 160;
+  const right = cam.x + cam.viewportWidth + 160;
+  for (const p of platforms) {
+    if (p.type !== 'bouncy' || p.broken || p.x + p.width < left || p.x > right) continue;
+    const tp = thinPlanFor(plan, p);
+    drawBounce(ctx, p, worldId, tp.variant, time, 0, 'cap');
+  }
+}
+
 function thinPlanFor(plan: StagePlan, p: Platform): ThinPlan {
   const hit = plan.thin.get(p);
   if (hit) return hit;
@@ -1426,8 +1446,10 @@ function thinPlanFor(plan: StagePlan, p: Platform): ThinPlan {
 }
 
 export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: number, x1: number, waterY: number, bottom: number, time: number) {
-  // Worlds 6-10: Matt's painted dirty, fast water (badWaterArt.ts); the drawn version below until it loads
+  // Worlds 6-10: Matt's painted dirty, fast water (badWaterArt.ts); Worlds 1, 3, 4 and 5: their painted pit water (stageArt.ts, VI-9).
+  // The drawn version below is World 2's pit water (its rivers are painted: riverArt.ts) and the stand-in while a sheet loads.
   if (worldId >= 6 && drawBadWater(ctx, x0, x1, waterY, bottom, time)) return;
+  if (drawPitWater(ctx, worldId, x0, x1, waterY, bottom, time)) return;
   const look = lookFor(worldId);
   const w = look.water;
   const g = ctx.createLinearGradient(0, waterY, 0, bottom);

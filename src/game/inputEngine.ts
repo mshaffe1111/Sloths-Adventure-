@@ -1,3 +1,4 @@
+import { vibrate } from './haptics.ts';
 import type { InputState } from './types.ts';
 import { isEasy } from './difficulty.ts';
 import { FORGIVE } from './physics.ts';
@@ -93,6 +94,8 @@ export class InputEngine {
   }
   /** game seconds a touch or Pad jump must still be held (counted in update, from the take-off: noteTakeOff) */
   private touchHold = 0;
+  /** this press's minimum hold from the take-off (s) */
+  private touchHoldMin = MIN_TOUCH_JUMP_HOLD_MS / 1000;
   /** the finger let go of the jump, and the release waits for touchHold */
   private releaseWanted = false;
 
@@ -252,14 +255,21 @@ export class InputEngine {
 
   public clearAll() {
     this.carried = null;
+    // (the engine's flags too: the input lives for the whole app, and a carving spot, a swing or a bush must not outlive their stage, CT-20)
+    this.carveSpot = false;
+    this.onSwing = false;
+    this.inCover = false;
     this.state.left = false;
     this.state.right = false;
     this.state.up = false;
     this.state.down = false;
     this.state.jumpPressed = false;
     this.state.jumpLean = 0;
+    this.state.jumpSlant = 0;
     this.state.jumpHeld = false;
     this.state.punchPressed = false;
+    this.state.punchCancel = false;
+    this.state.punchHold = 0;
     this.state.kickPressed = false;
     this.state.kickDir = 0;
     this.state.megaPunchPressed = false;
@@ -303,12 +313,16 @@ export class InputEngine {
    * - Jump pressing up
    * - Double jump pressing up twice
    */
-  public triggerTouchUp(lean: -1 | 0 | 1 = 0) {
+  public triggerTouchUp(lean: -1 | 0 | 1 = 0, holdMs = MIN_TOUCH_JUMP_HOLD_MS, slant: -1 | 0 | 1 = 0) {
     this.fresh();
-    // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir)
+    // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir; leaning 35 degrees or more, a
+    // standing jump carries him that way, CT-27)
     this.state.jumpLean = lean;
-    // (held at least MIN_TOUCH_JUMP_HOLD_MS from the take-off; until he takes off, as long as the press can wait to be used as well)
-    this.touchHold = MIN_TOUCH_JUMP_HOLD_MS / 1000 + pressKeep();
+    this.state.jumpSlant = slant;
+    // (held at least `holdMs` from the take-off, MIN_TOUCH_JUMP_HOLD_MS unless the press says (the Pad's Jump button: a tap is a hop);
+    // until he takes off, as long as the press can wait to be used as well)
+    this.touchHoldMin = holdMs / 1000;
+    this.touchHold = this.touchHoldMin + pressKeep();
     this.releaseWanted = false;
     this.state.up = true;
     this.state.jumpPressed = true;
@@ -352,7 +366,7 @@ export class InputEngine {
 
   /** the engine: he just took off (a jump or a double jump). A touch or Pad jump's minimum hold counts from here, in game time */
   public noteTakeOff() {
-    if (this.touchHold > 0) this.touchHold = MIN_TOUCH_JUMP_HOLD_MS / 1000;
+    if (this.touchHold > 0) this.touchHold = Math.max(0.001, this.touchHoldMin);
   }
 
   /**
@@ -368,10 +382,18 @@ export class InputEngine {
    * Touch Gesture:
    * - Tap to punch
    */
-  public triggerTouchPunch() {
+  public triggerTouchPunch(holdMs = 0) {
     this.fresh();
     this.state.punchPressed = true;
+    this.state.punchHold = holdMs / 1000;
     this.punchBufferTimer = 0.12;
+  }
+
+  /** a jab thrown as a finger landed, taken back: the finger moved off as a flick or a swipe (touchGestures.ts jabMoved, CT-17) */
+  public triggerTouchPunchCancel() {
+    this.state.punchPressed = false;
+    this.punchBufferTimer = 0;
+    this.state.punchCancel = true;
   }
 
   /**
@@ -518,12 +540,9 @@ export class InputEngine {
     this.state.layerSwitchPressed = false;
   }
 
+  /** a buzz, when the Vibration setting is on (haptics.ts) */
   public triggerHaptic(durationMs = 15) {
-    try {
-      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-        navigator.vibrate(durationMs);
-      }
-    } catch {}
+    vibrate(durationMs);
   }
 
   public destroy() {

@@ -120,9 +120,23 @@ export const DOUBLES: Record<string, Doubling[]> = {
     { inst: 'flute', oct: 12, frac: 0.3, gate: [0.4, 0.9], lite: true },
     { inst: 'clarinet', oct: 0, frac: 0.38, gate: [0.45, 0.9], harm: true, lite: true },
   ],
+  // the low leads are doubled an octave up, softly and from the start: a phone's small speaker loses a cello, a bassoon or a trombone's
+  // body, and the octave is what it carries
   cello: [
-    { inst: 'violas', oct: 12, frac: 0.45, gate: [0.2, 0.65] },
+    { inst: 'violas', oct: 12, frac: 0.4, gate: [0, 0.3] },
     { inst: 'bassoon', oct: 0, frac: 0.4, gate: [0.3, 0.8], lite: true },
+  ],
+  bassoon: [
+    { inst: 'violas', oct: 12, frac: 0.38, gate: [0, 0.3] },
+    { inst: 'cello', oct: 0, frac: 0.4, gate: [0.3, 0.8], lite: true },
+  ],
+  trombone: [
+    { inst: 'horn', oct: 12, frac: 0.38, gate: [0, 0.3] },
+    { inst: 'violas', oct: 12, frac: 0.3, gate: [0.4, 0.85], lite: true },
+  ],
+  harp: [
+    { inst: 'violins', oct: 0, frac: 0.3, gate: [0.35, 0.8] },
+    { inst: 'flute', oct: 0, frac: 0.3, gate: [0.5, 0.95], lite: true },
   ],
   horn: [
     { inst: 'violas', oct: 0, frac: 0.42, gate: [0.2, 0.7] },
@@ -162,6 +176,9 @@ const mergeGate = (a: [number, number] | undefined, b: [number, number]): [numbe
  */
 export function fullOrchestra(theme: Theme): Track[] {
   const out: Track[] = [];
+  // a world's style says how much orchestra it wants (styles.ts): the cave has none, the light worlds a low bed and one double
+  const amount = theme.orch ?? 'full';
+  if (amount === 'none') return out;
   const act = actOfThemeId(theme.id);
   const mix = act ? ACT_MIX[act] : NEUTRAL_MIX;
   const cue = theme.id.startsWith('score_');
@@ -170,6 +187,7 @@ export function fullOrchestra(theme: Theme): Track[] {
   const ref = lead ? (lead.gain * trimOf(lead.inst)) / trim(realVoice(lead)) : 0.6;
   const shiftGate = (g: [number, number], by: number): [number, number] => [Math.max(0, Math.min(0.95, g[0] + by)), Math.max(0.05, Math.min(1, g[1] + by))];
   for (const b of BEDS) {
+    if (amount === 'light' && b.key !== 'low' && b.key !== 'strings') continue;
     const has = theme.tracks.some((t) => t.kind === 'chords' && b.like.includes(realVoice(t)));
     const bed: ChordTrack = {
       kind: 'chords',
@@ -179,7 +197,7 @@ export function fullOrchestra(theme: Theme): Track[] {
       hi: b.hi,
       voices: b.voices,
       mask: undefined,
-      gain: Math.round(ref * b.frac * mix.bed[b.key] * (has ? 0.5 : 1) * (cue ? 0.8 : 1) * trim(b.inst) * 1000) / 1000,
+      gain: Math.round(ref * b.frac * mix.bed[b.key] * (has ? 0.5 : 1) * (cue ? 0.8 : 1) * (amount === 'light' ? 0.6 : 1) * trim(b.inst) * 1000) / 1000,
       rev: b.rev,
       gate: b.key === 'winds' || b.key === 'horns' ? shiftGate(b.gate, mix.join[b.key]) : b.gate,
       ...(b.lite ? { lite: true } : {}),
@@ -189,7 +207,7 @@ export function fullOrchestra(theme: Theme): Track[] {
   if (lead && !cue) {
     const leadReal = realVoice(lead);
     const players = [...(DOUBLES[leadReal] ?? []).filter((d) => !mix.drop.includes(d.inst)), ...(mix.extra[leadReal] ?? [])];
-    for (const d of players) {
+    for (const d of amount === 'light' ? players.filter((x) => !x.lite).slice(0, 1) : players) {
       out.push({
         kind: 'melody',
         name: `${lead.name}+${d.inst}${d.harm ? 'H' : ''}`,

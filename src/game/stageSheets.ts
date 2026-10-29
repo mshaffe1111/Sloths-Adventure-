@@ -21,13 +21,22 @@
  *                  STAGE_DRAWS (the same in every roll: its animals, a ring's drop-ins and the eagle over a watched stretch); a generated
  *                  stage's are rolled with it, so it gets every creature its world's generator can place (GEN_FOES), and a boss lair
  *                  the minions its boss calls in (BOSS_MINIONS)
- *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water
+ *   dress          Worlds 1, 2 and 5's dressing sets (dressArt.ts, artDress.ts dressSets), for a built stage
+ *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
+ *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
+ *   chairs         7-3 Ten Chairs' ring of stone chairs (w7ChairsArt.ts)
+ *   crumble        World 7's painted crumbling tiles (crumbleArt.ts), bank-face dressing (w7FaceArt.ts), temple walls and lianas (w7TempleArt.ts) and puzzle pieces
+ *                  (w7PuzzleArt.ts), every World 7 stage but the
+ *                  guardian's lair
  *   swim           the calm water Pokey swims in and his swim sheets (calmWaterArt.ts, heroSwim.ts), for a stage with calm water
  *   anim:<name>    a clip sheet on its own (Meeca's stage: Pell and the soldiers)
  *   props2         World 1's second sheet (bushes, trunk hollows: protoArt.ts PROTO2_URL), for the stages that have them (STAGE_DRAWS)
  *   perch          Dot's perched poses (components/hud/painted.tsx), in every stage she flies in
+ *   stage-art      the painted checkpoint post, hearts, power-ups, Thorn Gate, story finds and 4-8's netting (stageArt.ts): every stage
+ *   gate:<w>       the world's painted exit gate, shut and open (stageArt.ts): every stage
+ *   pit-water:<w>  Worlds 1, 3, 4 and 5's painted pit water (stageArt.ts): every stage in those worlds
  *
  * (QA 2026-10-29, Android Chrome: 'blank wait' at 80 s and 179 s for the golden snake's heads and the snake sheet, at 201 s for the
  * eagle, at 650 s for Dot's perch: those sheets were asked for only when each first came on screen. stageSheets.test.ts builds every
@@ -42,9 +51,10 @@ import { SLIDE_STAGE_ID } from './w7Slide.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
-import { gen2Water, isGen2Stage } from './gen2/game.ts';
+import { gen2Creatures, gen2Water, isGen2Stage } from './gen2/game.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
+import { W7_ROOM_STAGES, W7_SENTRY_STAGE } from './gen2/worlds/w7.ts';
 import { W6_SWIM_STAGES } from './gen2/worlds/w6Rooms.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -135,8 +145,8 @@ export function genFoes(world: number): string[] {
 /** the minions a world's boss calls into its lair mid-fight (bossDefs.ts spawnMinion / dropMinion) */
 const BOSS_MINIONS: Record<number, readonly string[]> = { 1: ['goldsnake'], 5: ['spider'], 6: ['tayra'], 10: ['ocelot'] };
 
-/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms) */
-const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W6_ROOM_STAGES]);
+/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms; 7-3 and 7-7's) */
+const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W6_ROOM_STAGES, ...W7_ROOM_STAGES]);
 
 /** World 4's stages with waterfalls (w4Play.ts: the painted waterfall set, w4FallsArt.ts) */
 export const W4_FALL_STAGES: ReadonlySet<string> = new Set(['4-3', '4-5', '4-8', '4-9']);
@@ -157,12 +167,12 @@ export interface SheetSwitches {
 
 export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>, sw: SheetSwitches): string[] {
   // the puzzle kit's test room: World 1's painted ground, the kit's pieces, and World 4's sheet for the trade room's capuchin
-  if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch'];
+  if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch', ...everyStage(1)];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   // 7-4's slide (w7Slide.ts): World 7's kit for the hall and the chamber (the slide's own pictures load as it starts: w7SlideArt.ts
   // warmSlide), and Dot's perch as on every stage (her guide is still the engine's, though World 7 gives her no lines)
-  if (cfg.id === SLIDE_STAGE_ID && sw.hand && !cfg.secret) return ['kit:1', 'kit:7', 'perch'];
-  if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier', 'anim:flicker'];
+  if (cfg.id === SLIDE_STAGE_ID && sw.hand && !cfg.secret) return ['kit:1', 'kit:7', 'perch', ...everyStage(7)];
+  if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier', 'anim:flicker', ...everyStage(5)];
   const w = cfg.worldIndex;
   // (a gen2 stage is built like a hand-built one, with World 5's dressing, whatever the switch: gen2/game.ts)
   const built = !cfg.secret && ((sw.ctest && cfg.id === CTEST_STAGE_ID) || (sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])) || isGen2Stage(cfg));
@@ -174,14 +184,17 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
     if (w !== 1 && hasKit) out.push(`kit:${w}`);
   }
   if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
+  // (Worlds 1, 2 and 5: the dressing sets' sheet, artDress.ts dressSets)
+  if (built && (w === 1 || w === 2 || w === 5) && cfg.objectiveType !== 'boss_lair') out.push('dress');
   if (built && W4_FALL_STAGES.has(cfg.id)) out.push('w4-falls');
   // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
   // the creatures it can draw, and their sheets (see foe: above)
   if (cfg.objectiveType === 'boss_lair') for (const f of BOSS_MINIONS[w] ?? []) out.push(`foe:${f}`);
   else if (!built) for (const f of genFoes(w)) out.push(`foe:${f}`);
-  // (World 6 on gen2 on: a stage's animals, the eagle and the bushes change from roll to roll, so it asks for the world's whole set)
-  else if (isGen2Stage(cfg) && w >= 6) out.push(...genFoes(w).map((f) => `foe:${f}`), 'props2');
+  // (World 6 on gen2 on: a stage's animals, the eagle and the bushes change from roll to roll, so it asks for the world's whole set:
+  // the old generator's, and every animal the gen2 world's manifest can lay, World 7's frog among them)
+  else if (isGen2Stage(cfg) && w >= 6) out.push(...[...new Set([...genFoes(w), ...gen2Creatures(cfg.id)])].map((f) => `foe:${f}`), 'props2');
   else if (sw.ctest && cfg.id === CTEST_STAGE_ID) {
     const m = sw.mix ? ctestMixDraws(sw.mix) : { foes: CTEST_FOES, props2: true };
     out.push(...m.foes.map((f) => `foe:${f}`));
@@ -196,14 +209,28 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (World 1's rooms: 1-4's lift, 1-6's seesaw, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
   if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
-  if (isGen2Stage(cfg) && gen2Water(cfg.id)) out.push('water-signs');
+  // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)
+  if (isGen2Stage(cfg) ? gen2Water(cfg.id) : cfg.objectiveType !== 'boss_lair' && [1, 2, 3, 5].includes(w)) out.push('water-signs');
   // (World 6 on: its creeks and its tide are the dirty, fast water)
   if (isGen2Stage(cfg) && w >= 6) out.push('bad-water');
+  if (w === 7 && cfg.objectiveType !== 'boss_lair' && !cfg.secret) out.push('crumble');
+  if (isGen2Stage(cfg) && cfg.id === `7-${W7_SENTRY_STAGE}`) out.push('sentry');
+  if (isGen2Stage(cfg) && cfg.id === '7-3') out.push('chairs');
   // 6-8 Stilt Climb: its rising tide is the painted dirty water, and its ledges and shelves are World 6's pieces (w6StiltArt.ts)
   if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
   out.push('perch');
+  out.push(...everyStage(w));
   return out;
 }
+
+/** the painted pieces every stage shows (stageArt.ts): the shared sheet, the world's exit gate and, in Worlds 1, 3, 4 and 5, its pit water */
+export function everyStage(w: number): string[] {
+  const out = ['stage-art', `gate:${Math.max(1, Math.min(10, w))}`];
+  if (PIT_WATER_WORLDS.includes(w)) out.push(`pit-water:${w}`);
+  return out;
+}
+/** the worlds with painted pit water of their own (World 2 has its rivers, Worlds 6-10 the dirty water) */
+export const PIT_WATER_WORLDS: readonly number[] = [1, 3, 4, 5];

@@ -1701,20 +1701,34 @@ export const STRIP_FIT: Record<'far' | 'mid' | 'near', { k: number; a: number; a
   near: { k: 1.05, a: 0.72, at: 0.63 },
 };
 
+/**
+ * A world whose strip carries one big landmark (World 7's near strip: the sleeping stone head) draws it larger, so one repeat is wider
+ * than a sideways phone screen and the landmark never shows twice in one view (STAGE-RULES §5b item 2, QA 2026-10-29)
+ */
+const STRIP_GROW: Partial<Record<number, Partial<Record<keyof typeof STRIP_FIT, number>>>> = { 7: { near: 1.75 } };
+
 /** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT. The strip files are made seamless
  * (scripts/strip-seamless.py: the right edge crossfaded into the left), so every copy is drawn the same way round: no mirrored
  * twins (polish report VI-4). */
+/** a strip's placement (drawStrip): STRIP_FIT, grown where the world's strip carries a landmark (STRIP_GROW) */
+const stripFit = (part: keyof typeof STRIP_FIT, world: number) => {
+  const g = STRIP_GROW[world]?.[part] ?? 1;
+  return g === 1 ? STRIP_FIT[part] : { ...STRIP_FIT[part], k: STRIP_FIT[part].k * g };
+};
 /** where a strip's top edge sits on screen (drawStrip) */
-const stripTop = (part: keyof typeof STRIP_FIT, vh: number, s: number, yOff: number) => vh * STRIP_FIT[part].at - STRIP_FIT[part].a * H * s * STRIP_FIT[part].k + yOff;
+const stripTop = (part: keyof typeof STRIP_FIT, vh: number, s: number, yOff: number, world = 0) => {
+  const f = stripFit(part, world);
+  return vh * f.at - f.a * H * s * f.k + yOff;
+};
 
-function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0) {
-  const f = STRIP_FIT[part];
+function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, world = 0) {
+  const f = stripFit(part, world);
   const dh = H * s * f.k;
   const iw = layerWpx(img);
   const ih = layerH(img);
   const pitch = tileW(img) * s * f.k;
   const k = devScale(ctx);
-  const top = snapDev(stripTop(part, vh, s, yOff), k);
+  const top = snapDev(stripTop(part, vh, s, yOff, world), k);
   let x0 = -((camX * par) % pitch);
   if (x0 > 0) x0 -= pitch;
   for (let x = x0; x < vw; x += pitch) {
@@ -1867,7 +1881,7 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     if (k < 0.99 && rk < 0.99) {
       ctx.globalAlpha = (1 - k) * fa * (1 - rk);
       drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo);
+      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo, world);
       ctx.globalAlpha = 1;
     }
     if (cano && k > 0.01 && rk < 0.99) {

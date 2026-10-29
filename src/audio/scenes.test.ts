@@ -9,7 +9,7 @@ import { INTRO_PANELS, WORLD_STORIES, ENDING_PANELS, bossPanels } from '../game/
 import { noteMidi, parseChord, parseMelodyBar, SCALES } from './theory.ts';
 
 test('every screen that should have music maps to a real piece', () => {
-  for (const screen of ['title', 'world_map', 'playing', 'paused', 'victory', 'game_over', 'story_ending']) {
+  for (const screen of ['title', 'world_map', 'playing', 'victory', 'game_over', 'story_ending']) {
     for (let w = 1; w <= 10; w++) {
       for (const boss of [false, true]) {
         const s = sceneForScreen(screen, w, boss);
@@ -22,12 +22,14 @@ test('every screen that should have music maps to a real piece', () => {
   for (const screen of ['story_cutscene', 'world_story', 'boss_intro', 'boss_defeat', 'ending_story']) assert.equal(sceneForScreen(screen, 1, false), null);
 });
 
-test('the title screen and the pause menu play the first stage\'s tune, whatever world is behind them', () => {
-  assert.equal(MENU_THEME, 'world1');
+test("the title screen plays the game's signature, whatever world is behind it (never a world's tune); the pause menu keeps the stage's own (SN-6); the map hands the tune to the world's lead", () => {
+  assert.equal(MENU_THEME, 'signature');
   for (let w = 1; w <= 10; w++) {
-    assert.equal(sceneForScreen('title', w, false)?.id, 'world1');
-    assert.equal(sceneForScreen('paused', w, false)?.id, 'world1');
-    assert.equal(sceneForScreen('paused', w, true, 'lvl', 3)?.id, 'world1');
+    assert.equal(sceneForScreen('title', w, false)?.id, 'signature');
+    assert.equal(sceneForScreen('world_map', w, false)?.id, `map-${w}`);
+    assert.equal(sceneForScreen('trophy', w, false)?.id, 'menu');
+    assert.equal(sceneForScreen('paused', w, false), null, 'paused: the tune in play goes on');
+    assert.equal(sceneForScreen('paused', w, true, 'lvl', 3), null);
     assert.notEqual(sceneForScreen('playing', w, false, 'lvl', 3)?.id, 'world1', 'a stage in play has its own music');
   }
 });

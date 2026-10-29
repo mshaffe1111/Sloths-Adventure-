@@ -70,11 +70,52 @@ export interface PadInputTarget {
   onVine: boolean;
   triggerTouchMove(d: 'left' | 'right' | 'none'): void;
   triggerTouchDuck(on: boolean): void;
-  triggerTouchUp(lean?: -1 | 0 | 1): void;
+  triggerTouchUp(lean?: -1 | 0 | 1, holdMs?: number): void;
   releaseTouchUp(): void;
   triggerTouchClimb(dir: -1 | 0 | 1): void;
   triggerHaptic(ms?: number): void;
+  triggerTouchPunch(): void;
+  triggerTouchMega(): void;
+  setHold(src: string, on: boolean): void;
 }
+
+/** a Pad button on screen: its centre and radius (px) */
+export interface PadButtonSpot<B extends string = string> {
+  b: B;
+  cx: number;
+  cy: number;
+  r: number;
+}
+
+/** each button answers a touch this much bigger than it is drawn (polish report CT-18) */
+export const BUTTON_REACH = 1.3;
+
+/**
+ * Which button a touch in the buttons' half of the screen presses (polish report CT-18: a touch that missed by a few px did nothing, and
+ * the gap between Jump and Kick is 15-22 px): one inside a button's reach (BUTTON_REACH) presses it; anywhere else in that half, the
+ * nearest button, measured from its edge, so the big Jump keeps its share.
+ */
+export function pickButton<B extends string>(x: number, y: number, spots: PadButtonSpot<B>[]): B | null {
+  let best: B | null = null;
+  let bestD = Infinity;
+  for (const s of spots) {
+    const d = Math.hypot(x - s.cx, y - s.cy) - s.r * BUTTON_REACH;
+    if (d < bestD) {
+      bestD = d;
+      best = s.b;
+    }
+  }
+  return best;
+}
+
+/**
+ * the Jump button's minimum hold (ms): a quick tap is a short hop (62 px), held it goes full height (98 px), as the Pad lesson says
+ * (Matt, 2026-10-29, polish report CT-13 / CT-27). Every tap up to about 120 ms gives the same hop; touch jumps keep their 220 ms
+ */
+export const PAD_HOP_MS = 80;
+
+/** the Punch button held this long upgrades its punch to the mega (ms) */
+export const MEGA_HOLD_MS = 320;
 
 /**
  * The Pad's thumb pad and Jump button, turned into input (PadController.tsx draws them and feeds this). Pure apart from the input it
@@ -98,7 +139,7 @@ export class PadInput {
     else s.delete(src);
     const after = s.size > 0;
     if (!before && after) {
-      this.inp.triggerTouchUp(lean);
+      this.inp.triggerTouchUp(lean, src === 'btn' ? PAD_HOP_MS : undefined);
       this.inp.triggerHaptic(15);
     } else if (before && !after) this.inp.releaseTouchUp();
   }
@@ -149,8 +190,31 @@ export class PadInput {
 
   /** the Jump button pressed or let go */
   jumpButton(on: boolean) {
-    // (on a trunk or a liana the pad held up from before the grab must not swallow the button's press: CT-26)
-    if (on && this.inp.onVine && this.jumpSrc.delete('pad') && this.jumpSrc.size === 0) this.inp.releaseTouchUp();
+    // a press of the button is always a new jump press, even while the pad is held up (the second jump; or a leap off a trunk the pad
+    // held up from before the grab): the pad holding Jump down swallowed it (polish report CT-26)
+    if (on && this.jumpSrc.size > 0 && !this.jumpSrc.has('btn')) {
+      this.jumpSrc.add('btn');
+      this.inp.triggerTouchUp(0, PAD_HOP_MS);
+      this.inp.triggerHaptic(15);
+      return;
+    }
     this.jumpSet('btn', on);
+  }
+
+  private megaTimer = 0;
+  /**
+   * the Punch button pressed or let go. It punches as it is pressed, and held MEGA_HOLD_MS upgrades to the mega; it used to wait for the
+   * release, so every punch came a whole press late (polish report CT-17)
+   */
+  punchButton(on: boolean) {
+    window.clearTimeout(this.megaTimer);
+    this.inp.setHold('pad', on);
+    if (!on) return;
+    this.inp.triggerTouchPunch();
+    this.inp.triggerHaptic(20);
+    this.megaTimer = window.setTimeout(() => {
+      this.inp.triggerTouchMega();
+      this.inp.triggerHaptic(35);
+    }, MEGA_HOLD_MS);
   }
 }

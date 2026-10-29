@@ -69,6 +69,22 @@ hfb-blocking-b 6ae386955ddcdc0830263868 rtx-pro-6000 17:47:01Z-17:52:50Z (5.8 mi
   w6wedge-b-s58-17 KEPT (a round log wedged between two arching stilt roots; ledge cell and the first perch cell).
     s58-29/s68-29 THROWN: the roots turned into stumps with the log on top; s68-17 squared the log into a beam.
 running total ~12.8 min on rtx-pro-6000 = ~$0.59 of the $10 cap.
+World 7 wall-5 (2026-10-29, the lead's round-4 review: one plain root-free temple strip, two takes, cap $0.50), branch gen2-w7:
+start make_wall5.py (wall-1 rows 345-900 over wall-4 rows 0-345, the kit's own root-free stone, 2x), spec spec-hfb-w7wall5.json, cut
+wall5cut.py (220 wide, its last 60 rows cross-faded into its top so it repeats, graded to wall-2's mean tone, set at x 896 in
+src/assets/w7/temple-walls.webp). Results in the bucket under hfbatch/w7wall5/props/.
+hfb-w7wall5 6ae398dcad9610e5cb315e42 rtx-pro-6000 19:05:00Z-19:06:18Z (1.3 min, ~$0.06): s58 x seeds 17/29 from start-w7wall5
+  w7wall5-s58-17 KEPT as wall-5 (grey-green like the kit, mixed blocks, two carved bands, a little moss, no root). s58-29 not used:
+  browner than the other four strips.
+World 7 temple wall as one built wall (2026-10-29, the lead's round-5 review: strips butted side by side kept showing joins), gen2-w7.
+hfb-w7walltile 6ae3ade9c78863f9c62dd445 rtx-pro-6000 20:34:49Z-~20:37Z (~2 min, ~$0.09): groundgpu.py "tile" from start-w7walltile
+  (make_walltile.py: the strips side by side). THROWN: the start's column joints survived s50/s60, and seam.brick's blend ghosted
+  the masonry (double roots, half-faded bands).
+hfb-w7wallrun 6ae3ae99c78863f9c62dd52a rtx-pro-6000 20:37:45Z-~20:44Z (~5 min, ~$0.23): groundgpu.py "strip" (periodic left to
+  right) from start-w7wallrun (make_wallrun.py: courses laid the whole width from the strips' own course bands, a running bond),
+  s1 0.55/0.65, s2 0.52. w7wallrun-s55-v3 and -v5 KEPT as src/assets/w7/temple-run.webp (wallruncut.py: graded to one tone, stacked);
+  the base not used (wrap_x's blend ghosted its cracks), the s65 set not used (s55 already clean).
+running total for World 7 walls ~$0.38.
 
 Boss art (2026-10-29, cap $10 after the lead's correction from $14), branch hf-art-bosses: starts bossstarts.py / bossstarts2.py /
 venomstart.py, specs make_spec.py / make_spec2.py / make_spec3.py, cut bosscut.py / venomcut.py, dot bridges dotbridge.py (no GPU).
@@ -94,3 +110,35 @@ hfboss-r4     6ae396a55ddcdc08302647b4 rtx-pro-6000 18:55:33Z-19:01:52Z (6.3 min
   (fine, thinner); croc-props s62 (start shapes too plain), s75-23 (boat on a flat slab); fx3 s85-7 (screech grew an arrowhead), s72-23
   (stray flecks), s85-23's pennants (spear tips doubling the pole).
 total ~32.5 min on rtx-pro-6000 = ~$1.49 of the $10 cap.
+Every-stage pieces (2026-10-29, cap $14), branch hf-art-stage: starts stagestarts.py, spec make_stage_spec.py, cut stagecut.py
+(stage-picks.json), wired by src/game/stageArt.ts. Raw takes in the bucket under hfbatch/stage/props/.
+hfb-stage-0 6ae38205ad9610e5cb314420 rtx-pro-6000 17:27:33Z-17:39:31Z (12.0 min, ~$0.55): the 9 gate pairs (W1-4, W6-10), s55/s70 x seeds 7/23.
+  Shut halves KEPT (w1 s55-23, w2 s70-23, w3 s70-23, w4 s70-7, w6 s70-23, w7 s70-7, w8 s70-23, w9 s70-7, w10 s70-7). Every open
+  half THROWN: they kept the start's flat cone of light, which reads as drawn; s55 takes also painted rain streaks on the key.
+hfb-stage-1 6ae38208ad9610e5cb314426 rtx-pro-6000 17:27:36Z-17:34:24Z (6.8 min, ~$0.31): flag, pit water W1/3/4/5, pickups, Thorn
+  Gate, netting, finds. KEPT flag-s70-7 (s55 takes smear the pennant's tip pink), pickups-s70-23, thorn-s70-23, net-s70-7,
+  finds-s55-23 (plain column; the lit frames are re-lit from it so they line up), water w1-s55-7, w3-s70-7, w4-s70-23, w5-s55-23.
+hfb-stage-2 6ae3858a5ddcdc083026376e rtx-pro-6000 17:42:34Z-17:49:13Z (6.65 min, ~$0.30): open gates from each picked shut take
+  (start-gateopen-w<N>: door gone, a dark way with a soft light), s45/s60 x 7/23, and World 5's gate from its totem (s42/s55).
+  KEPT gateopen-w<N>-s60-7 for all nine (a painted passage with its own light; the s45 takes keep the start's flat rectangle),
+  gate-w5-s55-7.
+total ~25.5 min on rtx-pro-6000 = ~$1.17 of the $14 cap. Reviews: reference/prop-sheets/qa-notes/hf-art-stage/.
+Round 3 (the lead's review: the open door read as a dark hole; World 5's water repeated every ~210 px):
+hfb-stage-3 6ae39f625ddcdc08302650d1 rtx-pro-6000 19:32:50Z-19:39:27Z (6.6 min, ~$0.30): the open gates lit from inside
+  (start-gatelit-w<N>: the round-2 pick's way through filled with the world beyond, faint, in the world's own light; World 10's floor
+  spikes put back from the first round's open half), s40/s52 x 7/23, all ten worlds; World 4 and 5's water from uneven starts
+  (start-water2-w<N>), s55/s65 x 7/23. KEPT gatelit s52: w1-23, w2-7, w3-23, w4-7, w5-7, w6-23, w7-23, w8-23, w9-7, w10-7 (s40 keeps too
+  much of the start's flat fill). water2-w4-s55-7 KEPT (uneven flecks); water2-w5-s55-23 KEPT (petals scattered, no beat); the -7 takes
+  THROWN (the start's piece seams show as vertical lines).
+running total ~32.1 min on rtx-pro-6000 = ~$1.47 of the $14 cap.
+
+Repeating hazard animations (2026-10-29, cap $5), branch hazard-anim: start pebblestart.py (16 bits of World 4's own rock, rockMoss,
+shardA-D, boulderSmall, boulderRound pieces), spec make_pebbles_spec.py, cut tools/art/hazard/gritcut.py -> src/assets/props/w4-grit.webp.
+hfb-w4pebbles 6ae3a561c78863f9c62dc965 rtx-pro-6000 19:58:25Z-20:00:15Z (1.8 min, ~$0.08): 4 takes, s50/s66 x seeds 7/23, 1024 x 1024.
+  KEPT: w4pebbles-s50-7 (11 pebbles: all but cell 8, a green leaf), w4pebbles-s66-7 (8 pebbles: cells 0,1,3,4,5,6,9,10; the chips of
+  gravel cells 12-14), w4pebbles-s50-23 (the chips of gravel cells 13, 15). Not used: s50-23's pebbles (smeared, soft, the dark ones
+  blurred into moss), s66-7 cells 7/8/11 (a split pod, a green splat, a magenta crack), all of s66-23 (pink cast through its gravel).
+  The chips came out pink-tinged with a red rim from the key: gritcut.py despills every piece and takes the chips to their own
+  brightness in a warm grey. 19 pebbles + 20 chips; review sheet reference/prop-sheets/qa-notes/hazard-anim/grit-review.jpg.
+total ~1.8 min on rtx-pro-6000 = ~$0.08 of the $5 cap. Stopped there: everything else reuses painted pieces already in the game
+  (boss-fx dust, spark, splash, gust, warnArrow and feather; the leaves atlas; the waterfall set).

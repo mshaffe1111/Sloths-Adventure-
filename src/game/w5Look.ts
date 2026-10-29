@@ -16,6 +16,7 @@ import { shakyLetters, type Carving } from './w5Kit.ts';
 import { drawButlerPose, type ButlerPose } from './w5Creatures.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
 import { drawScratch, drawW5, drawW5Box, drawW5Orchid, steamPuff, w5ArtReady, w5Height, w5Width, type W5Piece as ArtPiece } from './w5Art.ts';
+import { FONT_READ, FONT_UI } from './fonts.ts';
 
 export type W5Piece =
   | 'table' | 'chair' | 'chairLilac' | 'wrappedChair' | 'wrappedStool' | 'cake' | 'cakePlate' | 'teapot' | 'cup' | 'card'
@@ -305,7 +306,7 @@ export function drawCard(
   if (alpha <= 0.01) return null;
   ctx.save();
   ctx.globalAlpha *= alpha;
-  ctx.font = 'italic 600 15px Georgia, serif';
+  ctx.font = `italic 600 15px ${FONT_READ}`;
   const words = text.split(' ');
   const lines: string[] = [];
   let cur = '';
@@ -1398,7 +1399,7 @@ export function drawShrineArt(ctx: CanvasRenderingContext2D, x: number, ground: 
   // the prompt, a little over his head (as the plain shrine has it)
   const y = ground - 118 + Math.sin(t * 5) * 4;
   ctx.save();
-  ctx.font = 'bold 15px Fredoka, sans-serif';
+  ctx.font = `bold 15px ${FONT_UI}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineWidth = 4;

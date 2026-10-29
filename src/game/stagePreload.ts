@@ -9,6 +9,12 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
+import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
+import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
+import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
+import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
+import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
+import { W7_TEMPLE_URLS, w7TempleReady } from './w7TempleArt.ts';
 import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
@@ -19,6 +25,7 @@ import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
+import { W4_GRIT_URL, w4GritReady } from './w4Grit.ts';
 import { W5_PROPS_URL, w5ArtReady } from './w5Art.ts';
 import { KIT_ART_URL, kitArtReady } from './puzzleArt.ts';
 import { NIGHT_ART_URL, nightArtReady } from './meecaNightArt.ts';
@@ -45,6 +52,9 @@ import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
 import { BOSS_FX_URL, warmBossFx } from './bossFx.ts';
 import { perfNote } from './perfLog.ts';
+import { groundUrl, hasGround, warmGround } from './groundPaint.ts';
+import { DRESS_URL, dressReady } from './dressArt.ts';
+import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stageArtReady } from './stageArt.ts';
 import type { LevelConfig } from './types.ts';
 
 type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
@@ -52,6 +62,15 @@ type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
 /** start the loads for these sheet keys; the addresses to wait for */
 function start(keys: readonly string[]): string[] {
   const urls: string[] = [];
+  // (the painted ground goes with the stage's own kit: the highest kit asked for, World 1's only when it is the only one)
+  const kits = keys.filter((k) => k.startsWith('kit:')).map((k) => Number(k.slice(4)));
+  if (kits.length) {
+    const gw = Math.max(...kits);
+    if (hasGround(gw)) {
+      warmGround(gw);
+      urls.push(groundUrl(gw));
+    }
+  }
   for (const k of keys) {
     if (k.startsWith('kit:')) {
       const w = Number(k.slice(4));
@@ -72,12 +91,27 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'kit-pieces') {
       kitArtReady();
       urls.push(KIT_ART_URL);
+    } else if (k === 'dress') {
+      dressReady();
+      urls.push(DRESS_URL);
     } else if (k === 'water-signs') {
       warmWaterSigns();
       urls.push(WATER_SIGN_URL);
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(BAD_WATER_URL);
+    } else if (k === 'sentry') {
+      sentryReady();
+      urls.push(...SENTRY_URLS);
+    } else if (k === 'chairs') {
+      w7ChairsReady();
+      urls.push(W7_CHAIRS_URL);
+    } else if (k === 'crumble') {
+      crumbleArtReady();
+      w7FaceReady();
+      w7PuzzleReady();
+      w7TempleReady();
+      urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
     } else if (k === 'w6-stilt') {
       stiltArtReady();
       urls.push(...STILT_ART_URLS);
@@ -114,6 +148,20 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'perch') {
       perchArtReady();
       urls.push(DOT_PERCH_URL);
+    } else if (k === 'stage-art') {
+      stageArtReady();
+      urls.push(STAGE_ART_URL);
+    } else if (k.startsWith('gate:')) {
+      const w = Number(k.slice(5));
+      gateArtReady(w);
+      urls.push(gateUrl(w));
+    } else if (k.startsWith('pit-water:')) {
+      const w = Number(k.slice(10));
+      const u = pitWaterUrl(w);
+      if (u) {
+        pitWaterReady(w);
+        urls.push(u);
+      }
     } else if (k.startsWith('anim:')) {
       const n = k.slice(5);
       warmCreatureAnims([n]);
@@ -165,6 +213,9 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     // (and the painted effects: every stage's dust puffs and hit sparks, and a boss fight's warnings and hazards)
     warmBossFx();
     urls.push(BOSS_FX_URL);
+    // (and the painted grit every stage's crumbling ledges and breaking pillars throw: small, and asked for everywhere)
+    w4GritReady();
+    urls.push(W4_GRIT_URL);
   }
   // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode; and the canopy
   // strips of a stage played up in the trees, which used to load on first use and pop in a second time)

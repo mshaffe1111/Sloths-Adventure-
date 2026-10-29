@@ -6,6 +6,7 @@ import { BOSS_THEME, WORLD_THEME } from './themes.ts';
 import { composeStageFull, stageThemeId } from './composer.ts';
 import { PACE_CODE, PACE_TEMPO, paceFor } from './orchestrate.ts';
 import { actOfWorld } from './acts.ts';
+import { STYLES } from './styles.ts';
 import { cueId } from './score.ts';
 import type { StoryCue } from '../game/story.ts';
 
@@ -17,6 +18,8 @@ export interface SceneChoice {
   seed?: number;
   /** playing speed, 1 = as written */
   tempo?: number;
+  /** play it as a form, sections and all (form.ts): the stage music */
+  form?: boolean;
 }
 
 /** how fast a stage plays: later stages of a world are a touch quicker, and each stage gets its own small nudge; bosses are as written */
@@ -149,7 +152,7 @@ export function meecaStageMusic(): SceneChoice {
     if (c.info.lead === 'clarinet') pick = seed;
   }
   const seed = pick ?? any ?? 1;
-  meecaPick = { id: stageThemeId(5, seed, 'sneak'), intensity: 0.26, seed, tempo: 0.86 };
+  meecaPick = { id: stageThemeId(5, seed, 'sneak'), intensity: 0.26, seed, tempo: 0.86, form: true };
   return meecaPick;
 }
 
@@ -158,27 +161,39 @@ export function stageMusic(world: number, levelId: string, mini: number, salt = 
   const seed = (levelId ? hashStr(levelId) ^ (salt >>> 0) : 0) >>> 0;
   // what the stage is about sets how the music moves: a run, a fight, a climb, a sneak (see orchestrate.ts)
   const pace = paceFor(objective);
-  const tempo = levelId ? Math.round(stageTempo(seed, mini) * PACE_TEMPO[pace] * 10000) / 10000 : 1;
-  if (!levelId) return { id: WORLD_THEME(world), intensity: 0.35, seed, tempo };
+  // a stage's speed may move only a little from its world's own (styles.ts paceRoom): the tempo is part of a world's identity
+  const room = STYLES[Math.max(1, Math.min(10, world))]?.paceRoom ?? 0.03;
+  const nudge = levelId ? stageTempo(seed, mini) * PACE_TEMPO[pace] - 1 : 0;
+  const tempo = Math.round((1 + Math.max(-room, Math.min(room, nudge))) * 10000) / 10000;
+  if (!levelId) return { id: WORLD_THEME(world), intensity: 0.35, seed, tempo, form: true };
   // about one in five stages of the first act plays the world's written theme, so Pokey's signature tunes still turn up; the later acts have
   // their own sounds (composer.ts) and never fall back to a tune written for another mood
-  if (actOfWorld(world) === 'trail' && (seed >>> 5) % 5 === 0) return { id: `${WORLD_THEME(world)}~${PACE_CODE[pace]}`, intensity: 0.35, seed, tempo };
-  return { id: stageThemeId(world, seed, pace), intensity: 0.35, seed, tempo };
+  // (dressed in the world's own style: themes.ts styledWrittenById. A world in three cannot take a tune written in four, and composes its own)
+  if (actOfWorld(world) === 'trail' && (seed >>> 5) % 5 === 0 && STYLES[world]?.meter !== 12) return { id: `${WORLD_THEME(world)}s-${seed}`, intensity: 0.35, seed, tempo, form: true };
+  return { id: stageThemeId(world, seed, pace), intensity: 0.35, seed, tempo, form: true };
 }
 
-/** the piece the title screen and the pause menu play: the first stage's own tune, as it was written */
-export const MENU_THEME = 'world1';
+/**
+ * The piece the title screen plays: the game's signature (signature.ts, Matt 2026-10-29: "bold and unique"), Pokey's tune as the hook.
+ * It used to be the first stage's own tune.
+ */
+export const MENU_THEME = 'signature';
 
 /** music for the non-cutscene screens; null means "leave it to the cutscene player" */
 export function sceneForScreen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string): SceneChoice | null {
   switch (screen) {
     case 'title':
-      // the menus play the sound of the first stage: the tune the game is known by
-      return { id: MENU_THEME, intensity: 0.6 };
+      return { id: MENU_THEME, intensity: 0.7 };
+    case 'trophy':
+      // the journal, badges and library: the signature's lighter loop, which does not tire however long it plays
+      return { id: 'menu', intensity: 0.45 };
     case 'world_map':
-      return { id: 'map~r', intensity: 0.55 };
+      // the same light loop with the tune on the lead of the world Pokey is on: moving between worlds changes the voice
+      return { id: `map-${Math.max(1, Math.min(10, world || 1))}`, intensity: 0.5 };
     case 'paused':
-      return { id: MENU_THEME, intensity: 0.45 };
+      // the stage's own tune goes on under the pause menu, quieter and muffled (conductor.ts setPaused): it used to switch to the World
+      // 1 tune (SN-6). null: keep what is playing
+      return null;
     case 'playing':
     {
       if (isBoss) return { id: `${BOSS_THEME(world)}~b`, intensity: 0.6, seed: levelId ? hashStr(levelId) : 0, tempo: 1 };

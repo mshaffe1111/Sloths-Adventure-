@@ -23,11 +23,12 @@
  *     rise is within 15 degrees of vertical (straight) or more slanted but slower or shallower than that (slanted), should only climb. A
  *     quick stroke that a slow climb led straight into (rising 8 px or more in the 100 ms before, slower than 0.44 px/ms) is a climb that
  *     bends over, which should climb too (the report's CT-3). A second finger's straight stroke is counted apart (CT-5 waits for Matt's call).
+ *   - second jumps: a touch that fired two jumps; how many of the second came off a rise slower than 0.3 px/ms (a thumb drifting, CT-24).
  *   - rests: a second finger held still half a second or more (a resting thumb): how many threw a mega, and how many of the flicks up
  *     that the same finger then made did not jump.
  */
-import { readFileSync } from 'node:fs';
-import { TouchGestures, TUNING, type GestureSink } from '../../src/game/touchGestures.ts';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { TouchGestures, TUNING, type GestureSink, applyTouchSensitivity } from '../../src/game/touchGestures.ts';
 
 type Line = (string | number)[];
 interface Row { arrived: string; who: string; session: string; part: number; device: string; build: string; lines: Line[] }
@@ -39,6 +40,8 @@ if (!file) throw new Error('usage: touchReplay.ts <decoded.json> [since]');
 const rows: Row[] = JSON.parse(readFileSync(file, 'utf8'));
 /** TUNE='{"vineLeapDeg":26}' tries other numbers in the touch rules (for tuning by replay) */
 if (process.env.TUNE) Object.assign(TUNING, JSON.parse(process.env.TUNE));
+/** SENS=1.35 replays at another touch sensitivity (the menu's slider, CT-28) */
+if (process.env.SENS) applyTouchSensitivity(Number(process.env.SENS));
 
 const PLAYERS = ['Mike', 'yana', 'Cheddarbob', 'Jane', 'Steph', 'Matt', 'Sasa', 'Sally', 'Jen'];
 const nameOf = (w: string) => {
@@ -55,6 +58,10 @@ interface Touch {
   cancelled?: boolean;
   /** decisions the replayed rules made for this finger */
   did: string[];
+  /** when each of its jumps fired */
+  jt: number[];
+  /** when each of its punches fired (a jab cancelled as the finger moved off is taken back: CT-17) */
+  pt: number[];
   /** Pokey's state when it went down, and at its best flick */
   st0: string;
   held: 'portrait' | 'landscape';
@@ -90,7 +97,7 @@ for (const parts of sessions.values()) {
   const lines = parts.flatMap((p) => p.lines.map((l) => ({ l, dev: p.device }))).sort((a, b) => (a.l[1] as number) - (b.l[1] as number));
   const devOf = (dev: string) => {
     const m = /(\d+)x(\d+)\s+(portrait|landscape)/.exec(dev);
-    return m ? { w: Number(m[1]), held: m[3] as 'portrait' | 'landscape' } : { w: 400, held: 'portrait' as const };
+    return m ? { w: Number(m[1]), h: Number(m[2]), held: m[3] as 'portrait' | 'landscape' } : { w: 400, h: 800, held: 'portrait' as const };
   };
   let dev = devOf(parts[0].device);
   let state = 'g';
@@ -100,14 +107,27 @@ for (const parts of sessions.values()) {
   const sink: GestureSink = {
     move: (d) => current?.did.push(`move:${d}`),
     duck: (on) => current?.did.push(on ? 'duck' : 'duckOff'),
-    jumpPress: () => {
+    jumpPress: (_lean, slant) => {
+      // (a standing flick leaning 35 degrees or more now carries him: CT-27)
+      if (slant && state === 'g' && jumpsSinceGround === 0) current?.did.push(`slant:${slant}`);
       jumpsSinceGround++;
       if (onVineNow()) current?.did.push('jumpV');
       else current?.did.push('jump');
+      current?.jt.push(clockT);
       vineHold = '';
     },
     jumpRelease: () => {},
-    punch: () => current?.did.push('punch'),
+    punch: () => {
+      current?.did.push('punch');
+      current?.pt.push(clockT);
+    },
+    punchCancel: () => {
+      const i = current ? current.did.lastIndexOf('punch') : -1;
+      if (i >= 0) {
+        current!.did.splice(i, 1, 'jabX');
+        current!.pt.pop();
+      }
+    },
     kick: () => current?.did.push('kick'),
     mega: () => current?.did.push('mega'),
     climb: (d) => current?.did.push(`climb:${d}`),
@@ -116,6 +136,7 @@ for (const parts of sessions.values()) {
   // the state is the recording's, and the old live rules sometimes let go of a vine where the replayed ones would not: while a finger that
   // went down on the vine is still down and the replayed rules have not let go, he is still on it ('c' or 's'; '' when not held)
   let vineHold = '';
+  let clockT = 0;
   const onVineNow = () => state === 'c' || state === 's' || vineHold !== '';
   const g = new TouchGestures(sink, () => dev.w, {
     assist: () => true,
@@ -131,6 +152,7 @@ for (const parts of sessions.values()) {
   let nextTick = 0;
   for (const { l, dev: d } of lines) {
     const t = l[1] as number;
+    clockT = t;
     // the 30 ms clock that drives holds and undecided fingers (TouchController.tsx)
     while (g.active && nextTick <= t) {
       // (a tick's decision belongs to the undecided or second finger: the steering one only acts on its own moves)
@@ -150,8 +172,10 @@ for (const parts of sessions.values()) {
     const id = l[2] as number;
     if (l[0] === 'd') {
       dev = devOf(d);
+      // (the device line is noted once a part: a phone turned during it shows touches past its width, and it is sideways now)
+      if ((l[3] as number) > dev.w) dev = { w: dev.h, h: dev.w, held: dev.held === 'portrait' ? 'landscape' : 'portrait' };
       if (state === 'c' || state === 's') vineHold = state;
-      const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0 };
+      const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], jt: [], pt: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0 };
       live.set(id, tch);
       touches.push(tch);
       current = tch;
@@ -180,6 +204,12 @@ for (const parts of sessions.values()) {
   }
 }
 
+/** LIST=<file> writes every touch's decisions, one line each, to compare two versions of the rules */
+if (process.env.LIST) {
+  const out = touches.map((tc, i) => `${i} ${tc.who} ${tc.second ? 2 : 1} ${tc.did.join(',')} | ${tc.pts.slice(0, 14).map((p) => `${Math.round(p.t - tc.pts[0].t)}:${Math.round(p.x - tc.pts[0].x)},${Math.round(p.y - tc.pts[0].y)}`).join(' ')}`);
+  writeFileSync(process.env.LIST, out.join('\n'));
+}
+
 // ───────────────────────────── counting ─────────────────────────────
 
 interface Tally { n: number; miss: number; punch: number }
@@ -189,7 +219,7 @@ const groups = new Map<string, Record<string, Tally>>();
 const dump = process.env.DUMP;
 let dumped = 0;
 const bump = (key: string, cat: string, miss: boolean, punch: boolean, tc?: Touch) => {
-  if (tc && key === 'all' && cat === dump && miss && dumped++ < Number(process.env.DUMP_N ?? 12)) {
+  if (tc && key === 'all' && cat === dump && (process.env.DUMP_OK ? !miss : miss) && dumped++ < Number(process.env.DUMP_N ?? 12)) {
     const p0 = tc.pts[0];
     const path = tc.pts.map((p) => `${Math.round(p.t - p0.t)}:${Math.round(p.x - p0.x)},${Math.round(p.y - p0.y)}`).join(' ');
     console.log(`[${cat}] ${tc.who} ${tc.held} st=${tc.st0} second=${tc.second} did=${tc.did.join(',')} | ${path}`);
@@ -272,6 +302,16 @@ for (const tc of touches) {
       for (const k of keys) bump(k, cat, miss, false, tc);
     }
   }
+  // a second jump from the same touch: was the rise that fired it quick (a wiggle or a flick on purpose) or slow (a thumb drifting)?
+  if (tc.jt.length >= 2) {
+    const t2 = tc.jt[1];
+    const pts = tc.pts.filter((q) => q.t <= t2 && q.t >= t2 - 150);
+    let lo = pts[0];
+    for (const q of pts) if (q.y >= (lo?.y ?? -Infinity)) lo = q;
+    const end = tc.pts.filter((q) => q.t <= t2).pop();
+    const v = lo && end ? (lo.y - end.y) / Math.max(1, end.t - lo.t) : 0;
+    for (const k of keys) bump(k, 'dbl', v < 0.3, false, tc);
+  }
   // a resting second finger (still for 460 ms or more before it moved)
   if (tc.second) {
     const p0 = tc.pts[0];
@@ -293,14 +333,18 @@ for (const tc of touches) {
 const pct = (t?: Tally) => (t && t.n ? `${((100 * t.miss) / t.n).toFixed(1)}% (${t.miss}/${t.n})` : '-');
 const order = ['all', ...PLAYERS, 'others', 'portrait', 'landscape'];
 console.log(`Replay of the control tests sheet, recordings from ${since}: ${sessions.size} sessions, ${touches.length} touches\n`);
-console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | never rose 12 px, but jumped | vine straight climb (let go) | vine slanted climb (let go) | vine climb that bends over (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) |');
-console.log('|---|---|---|---|---|---|---|---|---|---|---|---|');
+{
+  const n = (w: string) => touches.reduce((a, tc) => a + tc.did.filter((d) => d === w || d.startsWith(w + ':')).length, 0);
+  console.log(`Decisions in all: ${n('jump') + n('jumpV')} jumps, ${n('punch')} punches, ${n('kick')} kicks, ${n('mega')} megas\n`);
+}
+console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | never rose 12 px, but jumped | vine straight climb (let go) | vine slanted climb (let go) | vine climb that bends over (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) | second jumps from one touch (on a slow rise) |');
+console.log('|---|---|---|---|---|---|---|---|---|---|---|---|---|');
 for (const k of order) {
   const g = groups.get(k);
   if (!g) continue;
   const punch = (g.clear?.punch ?? 0) + (g.short?.punch ?? 0);
   const fl = (g.clear?.n ?? 0) + (g.short?.n ?? 0);
-  console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.falseJump)} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vBent)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} |`);
+  console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.falseJump)} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vBent)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} | ${pct(g.dbl)} |`);
 }
 console.log('\nBy player and how the phone was held: every clear gesture misread (ground flicks clear and short, the three vine kinds, rests)\n');
 console.log('| who | portrait | landscape | both |');
@@ -308,4 +352,37 @@ console.log('|---|---|---|---|');
 for (const k of ['all', ...PLAYERS, 'others']) {
   const cell = (key: string) => pct(groups.get(key)?.any);
   console.log(`| ${k} | ${cell(k === 'all' ? 'portrait' : `${k} portrait`)} | ${cell(k === 'all' ? 'landscape' : `${k} landscape`)} | ${cell(k)} |`);
+}
+
+// CT-17: how long a punch waits. A tap (a touch that punched and did nothing else) punched this long after the finger went down; and how
+// many touches that jumped, kicked or threw a mega also threw a punch they did not mean (a jab on press the finger then outran)
+{
+  const q = (a: number[], f: number) => (a.length ? Math.round(a[Math.min(a.length - 1, Math.floor(a.length * f))]) : NaN);
+  console.log('\nCT-17: taps, how long after the finger went down the punch came (ms), and punches thrown by touches that meant something else\n');
+  console.log('| who | taps | median wait | 90% within | touches that jumped, kicked or megaed | ... and punched too | jabs taken back |');
+  console.log('|---|---|---|---|---|---|---|');
+  for (const k of order) {
+    const mine = touches.filter((tc) => k === 'all' || tc.who === k || tc.held === k);
+    const taps = mine.filter((tc) => tc.pt.length && !tc.did.some((d) => d.startsWith('jump') || d === 'kick' || d === 'mega'));
+    const waits = taps.map((tc) => tc.pt[0] - tc.pts[0].t).sort((a, b) => a - b);
+    const other = mine.filter((tc) => tc.did.some((d) => d.startsWith('jump') || d === 'kick' || d === 'mega'));
+    const both = other.filter((tc) => tc.pt.length);
+    const back = mine.reduce((a, tc) => a + tc.did.filter((d) => d === 'jabX').length, 0);
+    if (!mine.length) continue;
+    console.log(`| ${k} | ${taps.length} | ${q(waits, 0.5)} | ${q(waits, 0.9)} | ${other.length} | ${both.length} (${other.length ? ((100 * both.length) / other.length).toFixed(1) : 0}%) | ${back} |`);
+  }
+}
+
+// CT-27: standing first jumps from a lone or second finger, and how many leaned 35 degrees or more (now carried that way at 0.75 of a run)
+{
+  console.log('\nCT-27: standing jumps that leaned 35 degrees or more (carried)\n');
+  console.log('| who | standing jumps, nothing steering | slanted, carried |');
+  console.log('|---|---|---|');
+  for (const k of order) {
+    // (only a lone finger that was not steering: with a thumb steering the run carries him anyway, and the engine adds nothing)
+    const mine = touches.filter((tc) => (k === 'all' || tc.who === k || tc.held === k) && tc.st0 === 'g' && !tc.second && tc.did.some((d) => d === 'jump') && !tc.did.slice(0, tc.did.indexOf('jump')).some((d) => d.startsWith('move:') && d !== 'move:none'));
+    if (!mine.length) continue;
+    const sl = mine.filter((tc) => tc.did.some((d) => d.startsWith('slant:'))).length;
+    console.log(`| ${k} | ${mine.length} | ${sl} (${((100 * sl) / mine.length).toFixed(1)}%) |`);
+  }
 }

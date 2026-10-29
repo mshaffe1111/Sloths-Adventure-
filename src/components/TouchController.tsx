@@ -1,10 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
-import { TouchGestures } from '../game/touchGestures.ts';
+import { TouchGestures, applyTouchSensitivity } from '../game/touchGestures.ts';
+import { steerHand, subscribeControls, touchSensitivity } from '../game/controlPrefs.ts';
 import { jumpHelp } from '../game/jumpHelp.ts';
 import { recorder } from '../game/playRecorder.ts';
 import { refinedControls } from '../game/refinedControls.ts';
 import { CircleTrace } from '../game/circleTrace.ts';
+import { TouchMarks, touchMarksOn, showTouches, subscribeShowTouches } from '../game/touchMarks.ts';
+import { TouchFeedback } from './TouchFeedback.tsx';
 
 /**
  * The whole screen is the controller. There are no buttons.
@@ -19,9 +22,15 @@ import { CircleTrace } from '../game/circleTrace.ts';
 
 interface TouchControllerProps {
   inputEngine: InputEngine;
+  /** the world being played: "Show touches" on Auto shows the marks in World 1 (touchMarks.ts) */
+  world: number;
 }
 
-export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine }) => {
+export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, world }) => {
+  // the marks under the fingers (CT-14)
+  const marks = useRef(new TouchMarks());
+  const [show, setShow] = React.useState(() => showTouches());
+  useEffect(() => subscribeShowTouches(() => setShow(showTouches())), []);
   // the recogniser holds all the rules (see touchGestures.ts); this component only feeds it fingers
   const gestures = useRef<TouchGestures | null>(null);
   if (!gestures.current) {
@@ -30,23 +39,30 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
         // each decision also goes to the control-test recorder (it does nothing unless the test is running)
         move: (d) => { recorder.intent('move', d); inputEngine.triggerTouchMove(d); },
         duck: (on) => { recorder.intent('duck', on ? 1 : 0); inputEngine.triggerTouchDuck(on); },
-        jumpPress: (lean) => { recorder.intent('jump'); inputEngine.triggerTouchUp(lean ?? 0); },
+        jumpPress: (lean, slant) => { recorder.intent('jump'); inputEngine.triggerTouchUp(lean ?? 0, undefined, slant ?? 0); },
         jumpRelease: () => { recorder.intent('jumpUp'); inputEngine.releaseTouchUp(); },
-        punch: () => { recorder.intent('punch'); inputEngine.triggerTouchPunch(); },
+        punch: (hold) => { recorder.intent('punch'); inputEngine.triggerTouchPunch(hold); },
+        punchCancel: () => { recorder.intent('punchCancel'); inputEngine.triggerTouchPunchCancel(); marks.current.takeBack('punch'); },
         kick: (dir) => { recorder.intent('kick', dir ?? 0); inputEngine.triggerTouchKick(dir ?? 0); },
         mega: () => { recorder.intent('mega'); inputEngine.triggerTouchMega(); },
         climb: (d) => { recorder.intent('climb', d); inputEngine.triggerTouchClimb(d); },
-        feedback: (kind) => {
+        feedback: (kind, x, y) => {
+          if (x !== undefined && y !== undefined) marks.current.add(kind, x, y, performance.now());
           const haptic = { jump: 15, duck: 0, punch: 20, kick: 25, mega: 35 }[kind];
           if (haptic) inputEngine.triggerHaptic(haptic);
         },
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope, inCover: () => inputEngine.inCover },
+      { steerHand, assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope, inCover: () => inputEngine.inCover },
     );
   }
   const G = gestures.current;
+  // the sensitivity chosen in the menu scales the recogniser's distances (CT-28)
+  useEffect(() => {
+    applyTouchSensitivity(touchSensitivity());
+    return subscribeControls(() => applyTouchSensitivity(touchSensitivity()));
+  }, []);
   // a finger tracing a circle at a carving spot (Meeca's stage): once it is a circle it is the carving's, not the slide's
   const trace = useRef(new CircleTrace());
 
@@ -105,6 +121,8 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   const onStart = (e: React.TouchEvent) => {
     inputEngine.source = 'gesture';
     const now = stamp(e);
+    // (a finger whose lift was never reported is let go: it must not hold the steering, CT-16)
+    G.keepOnly(Array.from(e.touches, (t) => t.identifier), now);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       recorder.touch('d', t.identifier, t.clientX, t.clientY, now, Math.max((t as unknown as { radiusX?: number }).radiusX || 0, (t as unknown as { radiusY?: number }).radiusY || 0));
@@ -156,6 +174,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       className="fixed inset-0 pointer-events-auto z-30 select-none touch-none"
       style={{ touchAction: 'none', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
     >
+      {touchMarksOn(world, show) && <TouchFeedback gestures={G} marks={marks.current} />}
     </div>
   );
 };
