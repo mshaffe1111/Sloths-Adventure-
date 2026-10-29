@@ -5,7 +5,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CALM, GUIDE, GuideQueue, showFor, type GuideLine, type MoveId, type TickEnv } from './dotGuide.ts';
+import { CALM, GUIDE, GuideQueue, type GuideLine, type MoveId, type TickEnv } from './dotGuide.ts';
 import { knownMoveTip, markMoveDone, movesDone } from './dotGuideHelp.ts';
 
 const line = (key: string, text: string, o: Partial<GuideLine> = {}): GuideLine => ({ key, text, kind: 'info', who: 'Dot', source: 'engine', ...o });
@@ -116,27 +116,4 @@ test('a stage tip for a move done in an earlier stage is cut; first-time lessons
   markMoveDone('climb', s);
   markMoveDone('climb', s);
   assert.deepEqual([...movesDone(s)], ['climb']);
-});
-
-test('DOT-7: the reading clock starts when the bubble shows, not when the line leaves the queue', () => {
-  const q = new GuideQueue();
-  const env = { danger: false, moveCount: () => 0 };
-  const l = line('a', 'A flag! Fall, and you start again here.');
-  q.push(l, 0);
-  q.tick(1000, env);
-  const n = q.cur!.n;
-  // Dot flies in for 600 ms, then the bubble goes up
-  q.shown(n, 1600);
-  q.shown(n, 2500); // (only the first call counts)
-  const end = 1600 + showFor(l);
-  q.tick(end - 50, env);
-  assert.equal(q.cur?.line.key, 'a', 'still up just before its full reading time from the bubble');
-  q.tick(end + 1, env);
-  assert.equal(q.cur, null, 'and down after it');
-  // the lag counted is at most 2 s (a bubble that never shows does not hold the line forever)
-  const q2 = new GuideQueue();
-  q2.push(l, 0);
-  q2.tick(0, env);
-  q2.shown(q2.cur!.n, 9000);
-  assert.equal(q2.cur!.startedAt, GUIDE.showLagMaxMs);
 });

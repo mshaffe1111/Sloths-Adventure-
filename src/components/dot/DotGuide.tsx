@@ -586,11 +586,10 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       return a;
     };
 
-    /** the bubble is up: the reading clock starts now (DOT-7), and Dot chirps, once per line (SN-7) */
+    /** the bubble is up: Dot chirps, once per line (SN-7) */
     const bubbleUp = () => {
       const s = run.show;
       if (!s) return;
-      run.queue.shown(s.n, run.clock);
       if (s.line.who === 'Dot' && run.chirpN !== s.n) {
         run.chirpN = s.n;
         sound.dotChirp();
