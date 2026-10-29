@@ -133,7 +133,6 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["boss.venom.2", "1-10", "boss", "info", "Little snakes! Punch them, and keep an eye on Venom Fang.", "Little snakes! Punch them!", null, null, "little snakes"],
   ["boss.venom.3", "1-10", "boss", "info", "The stump is cracking now. Don't stay on it too long!", "The stump's cracking! Don't stay!", null, null, "stump"],
   ["float.boss.venomAim", "1-10", "float", "info", "HIT HIS HEAD WHEN IT IS DOWN!", "HIT HIS HEAD WHILE IT'S DOWN!", null, null, "Venom Fang's head"],
-  ["hint.1-9.ring", "1-9", "stage hint", "lock", "Snakes from above! Clear them all to open the way", null, null, null, null],
   ["lock.ring.snakes", "1-9", "guide", "lock", "Snakes from above! Clear them all to open the way", "Snakes! Clear them all to open the way.", null, null, "thorn gate"],
   ["hint.1-6.fell", "1-6", "stage hint", "help", "Fell? Climb the next tree back up", "Fell? Climb the next tree back up", null, null, "next trunk"],
   ["way.1.hurt0", "", "wayside", "story", "Pokey's down! Wait... up again. Good. Carry on.", "Pokey's down! Wait... up again. Good. Carry on.", null, null, null],
