@@ -60,12 +60,11 @@ const CARD_MS = 2600;
 const FPS = 30;
 
 /** Full-screen cinematic: the stage scenery behind the actors, a title card for each chapter, and a dialogue panel. */
-/** upright the picture is a 4:3 window just above the words (it was 16:9, centred, a third of the screen with a dark band under it) */
-const UPRIGHT_ASPECT = 0.75;
-/** its height on this screen: never so tall the words lose their room (about 300 px for the box and the top chips) */
+/** upright the picture fills the screen from the top down to the words (it was a 4:3 window with dark empty screen above it: Matt,
+ * 2026-10-29); the scene keeps its width and the room above it shows the top of the painting (storyArt.ts drawStoryScene `top`) */
 /** the room kept for the words under it */
 const UPRIGHT_WORDS = 290;
-const uprightH = (v: { w: number; h: number }) => Math.round(Math.min(v.w * UPRIGHT_ASPECT, Math.max(160, v.h - UPRIGHT_WORDS - 60)));
+const uprightH = (v: { w: number; h: number }) => Math.round(Math.max(160, v.h - UPRIGHT_WORDS));
 
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
   // a picture the player plays with their thumbs needs a touch screen; without one it reads as a picture, with the narration that says
@@ -278,9 +277,11 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     ctx.imageSmoothingQuality = 'high';
     // scene space: 540 tall; as wide as the screen needs
     const sh = SCENE_H;
-    // (upright the window is 4:3, so the scene shows 720 units across: the narrowest a sideways screen already shows)
+    // (upright the scene shows 720 units across, the narrowest a sideways screen already shows, and the room the tall screen has over
+    // its 540 is `top`, painted by the plate's top or the backdrop)
     const sw = Math.max(720, Math.min(1500, sh * (cssW / cssH)));
-    const sc = canvas.height / sh;
+    const sc = canvas.width / sw;
+    const top = Math.max(0, canvas.height / sc - sh);
     const lift = wide ? 0.09 : 0;
     const t0 = performance.now();
     let raf = 0;
@@ -291,17 +292,17 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       last = now;
       // (while the player holds on, every roll of thunder shakes the picture a little, and the one that breaks shakes it hard)
       const sk = hold ? thunderShake(now - t0, breakAt.current ? now - breakAt.current : null) : { dx: 0, dy: 0, flash: 0 };
-      ctx.setTransform(sc, 0, 0, sc, sk.dx * sc, sk.dy * sc);
-      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, feetRef.current);
+      ctx.setTransform(sc, 0, 0, sc, sk.dx * sc, (top + sk.dy) * sc);
+      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, feetRef.current, top);
       if (sk.flash > 0) {
         ctx.fillStyle = `rgba(235,240,255,${sk.flash})`;
-        ctx.fillRect(-20, -20, sw + 40, sh + 40);
+        ctx.fillRect(-20, -top - 20, sw + 40, sh + top + 40);
       }
       // dip in from dark at every new picture
       const k = Math.max(0, 1 - (now - startRef.current) / 520);
       if (k > 0) {
         ctx.fillStyle = `rgba(6,10,8,${k * 0.9})`;
-        ctx.fillRect(0, 0, sw, sh);
+        ctx.fillRect(0, -top, sw, sh + top);
       }
     };
     raf = requestAnimationFrame(loop);
@@ -402,8 +403,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       {wide ? (
         <canvas ref={canvasRef} onClick={next} className="absolute inset-0 w-full h-full cursor-pointer" />
       ) : (
-        <div className="flex-1 min-h-0 flex items-end pt-12" style={{ background: 'radial-gradient(ellipse at 50% 45%, rgba(40,70,48,.55), rgba(7,13,9,1) 70%)' }}>
-          <canvas ref={canvasRef} onClick={next} className="w-full cursor-pointer shadow-2xl" style={{ height: uprightH(view) }} />
+        <div className="relative shrink-0">
+          <canvas ref={canvasRef} onClick={next} className="block w-full cursor-pointer" style={{ height: uprightH(view) }} />
+          {/* (the picture melts into the words panel instead of stopping at a hard edge) */}
+          <div className="absolute inset-x-0 bottom-0 h-10 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(7,13,9,1), rgba(7,13,9,0))' }} />
         </div>
       )}
       {wide && <div className="absolute inset-x-0 bottom-0 h-[44%] pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' }} />}
@@ -424,7 +427,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       )}
 
       {hold && (
-        <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(uprightH(view) * 0.42) + 48 }}>
+        <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(uprightH(view) * 0.42) }}>
           <div className="sp-hold-thumbs" aria-hidden="true">
             <span className={`sp-thumb ${thumbs >= 1 ? 'on' : ''}`} />
             <span className={`sp-thumb ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`} />

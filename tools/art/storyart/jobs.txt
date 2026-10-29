@@ -1,0 +1,9 @@
+story-art (2026-10-29, branch story-art, cap $15): repainted story plates and cels. Starts tools/art/storyart/starts.py (force-added under
+tools/art/hfbatch/starts/storyart/), specs make_spec.py, GPU storygpu.py (Qwen-Image img2img/inpaint + Qwen-Image-Edit-2509), results in
+the bucket mshaffe111/w5-xfer under storyart/out/. Cost: run time x ~$2.75/h (rtx-pro-6000).
+storyart-calib 6ae39e25ad9610e5cb31649c 19:27Z-19:35Z (~8 min incl. model download, ~$0.37): Pokey 4 frames x strengths 0.35/0.5,
+  General 3 frames x 0.55/0.7, courtyard extended (inpaint) + tiled 2560 pass, W1 ground from the old branch.
+  Verdicts: Pokey 0.5 clean but still soft (upscaled blur carried through); General 0.7 unchanged (no coat: the war-look model wins,
+  needs the edit model); courtyard tiled 2560 pass looks right, but the inpainted top is a different place (a second tower) with a seam;
+  ground from the old branch is flat and dull (thrown; next from each world's own near-backdrop floor).
+running total ~$0.37

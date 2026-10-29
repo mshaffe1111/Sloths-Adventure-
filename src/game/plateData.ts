@@ -11,6 +11,8 @@ export interface PlateInfo {
   ground: number;
   /** what the picture is, for the scene notes */
   what: string;
+  /** where its light falls from, a direction out of the picture toward it (the figures' rim light, storyArt.ts drawFigures) */
+  light?: [number, number];
 }
 
 export const PLATES: Record<string, PlateInfo> = {

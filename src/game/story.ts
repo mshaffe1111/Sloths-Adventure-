@@ -87,6 +87,8 @@ export interface StoryScene {
   world: number;
   mood: SceneMood;
   actors: SceneActor[];
+  /** where the light on the figures comes from, a direction (x, y) out of the picture toward it: upper left (-0.7, -0.7) when unset (or the plate's own) */
+  light?: [number, number];
   /** falling petals / sparkles */
   particles?: 'petals' | 'sparkles' | 'rain' | 'embers' | 'none';
   /** camera x offset in px to pick a different slice of the backdrop */
