@@ -360,9 +360,9 @@
 .sk-blurb { color: var(--gx-ink); }
 .sk-chip { color: #fff4d8; background: var(--gx-wood-grain), linear-gradient(180deg, #5a3618, #452812); border: 2px solid #2a1608; }
 .sk-or { color: #f3d9a6; }
-/* out of lives: the same card, the parchment gone grey-blue at dusk */
+/* out of lives: the same parchment as every card, in the dusk light (UI-12: it was a flat pale grey, the one card off the kit) */
 .clr-card.lost { border-color: transparent;
-  background: radial-gradient(ellipse at 50% 30%, #eef0ea 0%, #d9ddd2 62%, #b9c0b4 100%) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #7a6a5a, #4f4236) border-box;
+  background: radial-gradient(ellipse at 50% 30%, #f6ead0 0%, #e6d3ad 60%, #c8b088 100%) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #7a6a5a, #4f4236) border-box;
   box-shadow: 0 0 0 3px #1e1812, inset 0 0 30px rgba(60, 70, 80, .3), 0 20px 56px rgba(0, 0, 0, .65);
 }
 .clr-card.lost .clr-stage { color: #4a5560; }
