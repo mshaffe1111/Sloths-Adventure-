@@ -7,7 +7,8 @@
  *   - World 4, the Mist Cascades: WIND gusts. A gust pushes everything in the lane to one side, helping or hindering a jump.
  *
  *   - World 9, the Volcanic Jungle: lava GEYSERS. Vents rumble, then erupt in a column that burns anything standing in it.
- *   - World 10, the Stormy Highlands: LIGHTNING. Rods charge, then a bolt strikes down the same column.
+ *   - World 10, the Stormy Highlands: LIGHTNING. Rods charge, then a bolt strikes down the same column. And iron SPIKES: a spike bed on
+ *     the floor of a pit (always on: it hurts whoever stands in it, as a column does while firing).
  *   - World 5, the Orchid Sanctuary: sticky WEBS. Patches and web bridges that slow you to a crawl (always on).
  *   - World 6, the Deep Mangrove: the TIDE. A mudflat you can cross at low tide; when it rises it sweeps you back.
  *   - World 7, the Ancient Ruins: CRUMBLING tiles (see `crumble*` below and the platform's `crumbleAfter`).
@@ -17,7 +18,7 @@
  * a zone is doing at any moment.
  */
 
-export type ZoneKind = 'spore' | 'wind' | 'geyser' | 'bolt' | 'web' | 'tide' | 'dark' | 'crumble';
+export type ZoneKind = 'spore' | 'wind' | 'geyser' | 'bolt' | 'web' | 'tide' | 'dark' | 'crumble' | 'spikes';
 
 export interface Zone {
   kind: ZoneKind;
@@ -78,8 +79,8 @@ export const GLOW_STILL = 0.7;
 /** World 3: sleeping glowworms this far ahead of him (and a little behind) wake when he stands still, the far ones a moment later */
 export const GLOW_REACH = { back: 260, ahead: 1050, speed: 900, fade: 0.6 } as const;
 
-/** webs, darkness and crumbling ruins never change: they are simply on */
-export const isStatic = (z: Pick<Zone, 'kind'>) => z.kind === 'web' || z.kind === 'dark' || z.kind === 'crumble';
+/** webs, darkness, crumbling ruins and spike beds never change: they are simply on */
+export const isStatic = (z: Pick<Zone, 'kind'>) => z.kind === 'web' || z.kind === 'dark' || z.kind === 'crumble' || z.kind === 'spikes';
 
 export function zoneState(z: Zone, t: number): ZoneState {
   if (z.shut) return { phase: 'idle', u: 0, strength: 0, untilActive: Infinity };
@@ -120,8 +121,8 @@ export function zoneEffect(zones: readonly Zone[] | undefined, kind: ZoneKind, x
 // Columns (Worlds 9 and 10)
 // ---------------------------------------------------------------------------
 
-/** geysers and bolts hurt: a zone of these kinds burns whoever is inside it while it is firing */
-export const isDamaging = (z: Pick<Zone, 'kind'>) => z.kind === 'geyser' || z.kind === 'bolt';
+/** geysers and bolts hurt: a zone of these kinds burns whoever is inside it while it is firing (a spike bed always) */
+export const isDamaging = (z: Pick<Zone, 'kind'>) => z.kind === 'geyser' || z.kind === 'bolt' || z.kind === 'spikes';
 
 /** a column is dangerous once it is at least this far into its burst (so the first instant of the ramp is a grace) */
 export const COLUMN_HOT = 0.5;

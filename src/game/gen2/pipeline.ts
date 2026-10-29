@@ -24,7 +24,7 @@ import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
-import { tideCrossTime, type Zone } from '../zones.ts';
+import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import {
   EASY_ENEMY_SHARE,
@@ -33,6 +33,8 @@ import {
   MARGIN,
   QUIET,
   TIDE,
+  BOLT,
+  WIND,
   versionKey,
   WATER_LINE,
   WATER_WARN,
@@ -84,6 +86,9 @@ export function rngFor(seed: number, ...salts: number[]): Rng {
 export const roll = (rng: Rng, r: Range): number => (typeof r === 'number' ? r : r[0] + (r[1] - r[0]) * rng());
 const mid = (r: Range): number => (typeof r === 'number' ? r : (r[0] + r[1]) / 2);
 const R = Math.round;
+/** a crumbling ruin tile's thickness: the painted slab's (crumbleArt.ts draws it 46 px deep, its hanging moss not solid), so nothing
+ *  stands in the air under it or clips through it */
+const CRUMBLE_H = 40;
 
 // ───────────────────────────── the jump envelope ─────────────────────────────
 
@@ -97,6 +102,17 @@ export function maxGap(dyUp: number, dbl: boolean, margin: number): number {
   if (phys < 0) return -1;
   const accept = Math.max(reachJump(dyUp, false), reachJump(dyUp, true)) * 0.97 - TAKEOFF_SLACK - 4;
   return Math.max(-1, Math.min(margin * phys, accept));
+}
+/**
+ * The widest gap a required leaf glide may have (World 8's moonlight glides): `margin` of the glide's physical reach off a double jump
+ * (reachGlide), never more than what levelCheck links on that stage (jumpLinkGap, which counts the glide once every player has it), and
+ * never less than a double jump's own envelope (a stage before the glide is guaranteed gets a double-jump gap).
+ */
+export function glideGap(dyUp: number, budget: Pick<StageBudget, 'margin' | 'world' | 'stage'>): number {
+  const dbl = maxGap(dyUp, true, budget.margin);
+  const link = jumpLinkGap(dyUp, budget.world, budget.stage) - 4;
+  const g = reachGlide(dyUp, true);
+  return g < 0 ? dbl : Math.max(dbl, Math.min(budget.margin * g, link));
 }
 /** the highest a required rise may be (px): `share` of a jump's height (one jump or two) */
 export const riseLimit = (dbl: boolean, share: number): number => share * (dbl ? DOUBLE_RISE : JUMP_RISE);
@@ -336,6 +352,8 @@ interface LocalPiece {
   landing: boolean;
   /** an obstacle to hop (an `on` block): a beat */
   hop: boolean;
+  /** a crumbling ruin tile (SectionPiece.crumble) */
+  crumble?: boolean;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
 }
@@ -346,9 +364,14 @@ interface LocalGap {
   pit: boolean;
   /** a section's water gap (the rule's `water`): nothing laid under it, whatever the world's falls */
   water?: boolean;
-  /** a gap under a liana (a `land` perch past it): its soft pit climbs back to the swing's ledge (`lips`: that ledge's top, the
+  /** a section's soft gap (the rule's `soft`): a soft pit under it, whatever the world's falls (World 8's gaps in the dark, where a
+   *  deadly fall would be a blind jump) */
+  soft?: boolean;
+  /** a gap under a liana (a `land` perch past it), or a glide gap: its soft pit climbs back to the take-off ledge (`lips`: that ledge's top, the
    *  perch's), never forward to the perch */
   back?: { lips: [number, number] };
+  /** an iron spike bed (the rule's `spikes`, World 10): a soft pit whose floor is spikes on Normal (zones.ts 'spikes') */
+  spikes?: boolean;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 export interface LocalLayout {
@@ -465,15 +488,20 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + Math.max(-riseLimit(false, budget.riseShare) * 0.9, dy);
     } else if (pl.kind === 'jump' || pl.kind === 'double' || pl.kind === 'pit') {
       const a = ref(pl.after);
-      const dbl = (pl.kind === 'pit' ? pl.jump === 'double' : pl.kind === 'double') && dblOK;
+      const glide = pl.kind === 'pit' && pl.jump === 'glide' && budget.moves.includes('glide') && dblOK;
+      const dbl = (pl.kind === 'pit' ? pl.jump !== 'jump' : pl.kind === 'double') && dblOK;
       let dy = pl.kind === 'pit' || pl.dy === undefined ? 0 : roll(rng, pl.dy);
       dy = Math.max(-riseLimit(dbl, budget.riseShare) * 0.95, dy);
-      const g = maxGap(-dy, dbl, budget.margin);
+      const g = glide ? glideGap(-dy, budget) : maxGap(-dy, dbl, budget.margin);
       const share = shareFor(pl.share);
       const gap = Math.max(60, R(share * (g > 0 ? g : 60)));
       x = a.x + a.w + gap;
       y = a.y + dy;
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit', ...(pl.water ? { water: true } : {}) });
+      // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
+      const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
+      // (an iron spike bed, World 10: a soft pit whose floor bristles with spikes on Normal, a plain soft pit on Easy)
+      const spikes = !!pl.spikes && !pl.water;
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft || spikes, ...(pl.water ? { water: true } : {}), ...((pl.soft || spikes) && !pl.water ? { soft: true } : {}), ...(spikes ? { spikes } : {}), ...back });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -498,7 +526,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const minFor = (dy: number) => {
         const perchY = a.y + dy;
         let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage) + 20;
-        if (budget.pit === 'soft' && !pl.water) {
+        if ((budget.pit === 'soft' || pl.soft) && !pl.water) {
           const pit = backPit(a.x + a.w, a.x + a.w + 4000, a.y, perchY, lo.pitDepth ?? 0, riseLimit(false, budget.riseShare) * PIT.hop);
           for (const st of [{ x: a.x + a.w, top: pit.floor, w: 0 }, ...pit.steps]) {
             const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage);
@@ -529,7 +557,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + dy;
       lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, { x, y, w }, budget.difficulty);
       lv.hang.gap = [a.x + a.w, x];
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
@@ -549,9 +577,15 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = a.x + roll(rng, pl.at) * a.w;
       y = a.y + roll(rng, pl.dy);
     }
-    const landing = (!!pc.landing || pl.kind === 'land') && pl.kind !== 'start' && !hang;
+    // (a crumbling tile is a tile's width whatever the roll or Easy's pad: levelCheck holds every tile to it; never main, never needed)
+    const crumble = !!pc.crumble && !hang;
+    const landing = (!!pc.landing || pl.kind === 'land') && pl.kind !== 'start' && !hang && !crumble;
     if (landing) w += budget.landingPad;
-    const p: LocalPiece = { key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(hang ? { hang } : {}) };
+    if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
+    const p: LocalPiece = {
+      key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}),
+    };
     by.set(pc.key, p);
     out.push(p);
   }
@@ -592,7 +626,7 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
   spawn: { x: number; y: number; piece: Platform };
@@ -670,24 +704,26 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const platforms: Platform[] = [];
   let pid = 1;
   const baseline = M.corridor.bottom + M.ground.bankH;
-  const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style']): Platform => {
-    const p: Platform = {
-      id: pid++,
-      x: R(x),
-      y: R(y),
-      width: R(w),
-      height: shape === 'bank' ? Math.max(M.ground.bankH, R(baseline - y)) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : R(h),
-      type: shape === 'bouncy' ? 'bouncy' : 'solid',
-      style: style ?? (shape === 'bank' ? M.ground.style : shape === 'branch' ? 'branch' : 'moss_stone'),
-    };
+  const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style'], crumble = false): Platform => {
+    const p: Platform = crumble
+      ? { id: pid++, x: R(x), y: R(y), width: CRUMBLE_TILE_W, height: CRUMBLE_H, type: 'fragile', crumbleAfter: crumbleTime(budget.stage), style: 'ruin' }
+      : {
+          id: pid++,
+          x: R(x),
+          y: R(y),
+          width: R(w),
+          height: shape === 'bank' ? Math.max(M.ground.bankH, R(baseline - y)) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : R(h),
+          type: shape === 'bouncy' ? 'bouncy' : 'solid',
+          style: style ?? (shape === 'bank' ? M.ground.style : shape === 'branch' ? 'branch' : 'moss_stone'),
+        };
     platforms.push(p);
     return p;
   };
   const gaps: Laid['gaps'] = [];
   const vines: Vine[] = [];
   const zones: Zone[] = [];
-  const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false) => {
-    if (budget.pit !== 'soft' || x1 - x0 < 20) return;
+  const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
+    if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
     if (back) {
       const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
@@ -869,7 +905,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });
           continue;
         }
-        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style);
+        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
       }
       const pieceOf = (k: string) => {
@@ -880,13 +916,19 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}) };
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
         if (g.pit && !g.water) {
           const before = platforms.length;
-          if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true);
-          else pitUnder(g0.x0, g0.x1, g0.y, g0.y);
+          if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
+          else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
           placed.seam.push(...platforms.slice(before));
+          // (an iron spike bed: the pit's floor up to its first step bristles on Normal; Easy's falls stay soft, so its pit is plain)
+          if (g.spikes && budget.difficulty !== 'easy' && platforms.length > before) {
+            const [floor, ...steps] = platforms.slice(before);
+            const end = Math.min(floor.x + floor.width, ...steps.map((st) => st.x));
+            if (end - floor.x > 40) zones.push({ kind: 'spikes', x0: floor.x + 6, x1: R(end - 6), top: floor.y - 60, bottom: floor.y + 14, baseY: floor.y, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0 });
+          }
         }
       }
       // the sockets, bound to their piece (t along its top, dn above it)
@@ -908,7 +950,40 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           const period = low + warn + active;
           zones.push({ kind: 'tide', x0: mud.x, x1: mud.x + mud.width, top: mud.y - 210, bottom: mud.y + 14, baseY: mud.y, dir: -1, period, warn, active, offset: R(srng() * period * 10) / 10, force: z.force ?? TIDE.force });
           placed.beats.push({ x: mud.x, letter: 'S' });
+        } else if (z.kind === 'bolt') {
+          // a lightning rod on the piece `on` (World 10): it charges for `warn` s, then the bolt strikes its column for `active` s, on its
+          // own beat (levelCheck: >= 1.1 s warning, <= 1.2 s strike, >= 2 s quiet, 110 px to the next column)
+          const p = pieceOf(z.on);
+          const t0 = Math.max(0, Math.min(1, roll(srng, z.at)));
+          const cx = p.x + (mirrored ? 1 - t0 : t0) * p.width;
+          const easy = budget.difficulty === 'easy';
+          const warn = easy ? BOLT.warnEasy : BOLT.warn;
+          const period = roll(srng, z.period ?? BOLT.period) + (easy ? BOLT.easySlower : 0);
+          zones.push({ kind: 'bolt', x0: R(cx - BOLT.w / 2), x1: R(cx + BOLT.w / 2), top: p.y - BOLT.height, bottom: p.y + 14, baseY: p.y, dir: 1, period, warn, active: BOLT.active, offset: R(srng() * period * 10) / 10, force: 0 });
+          placed.beats.push({ x: R(cx), letter: 'S' });
+        } else if (z.kind === 'wind') {
+          // a gust lane over the gap from `from` to `to` (World 10's storm, World 4's gusts): it blows on a beat, helping or hindering the jump
+          const a = pieceOf(z.from);
+          const b = pieceOf(z.to);
+          const lo = Math.min(a.x + a.width, b.x + b.width) === a.x + a.width ? a : b;
+          const hi = lo === a ? b : a;
+          const easy = budget.difficulty === 'easy';
+          const warn = WIND.warn;
+          const period = roll(srng, WIND.period);
+          const dir = (mirrored ? -z.dir : z.dir) as 1 | -1;
+          zones.push({ kind: 'wind', x0: R(lo.x + lo.width - WIND.pad), x1: R(hi.x + WIND.pad), top: Math.min(lo.y, hi.y) - 230, bottom: Math.max(lo.y, hi.y) + 70, baseY: Math.max(lo.y, hi.y), dir, period, warn, active: WIND.active, offset: R(srng() * period * 10) / 10, force: easy ? WIND.forceEasy : WIND.force });
+          placed.beats.push({ x: R(lo.x + lo.width), letter: 'S' });
         }
+      }
+      // (its crumbling tiles, one crumble zone over them: levelCheck's tile rules hold inside it, and nothing stands in it; it ends at
+      // the tiles' underside, so the hall walked under them is not in it)
+      const tiles = placed.pieces.filter((pp) => pp.platform.type === 'fragile').map((pp) => pp.platform);
+      if (tiles.length) {
+        const x0 = Math.min(...tiles.map((t) => t.x));
+        const x1 = Math.max(...tiles.map((t) => t.x + t.width));
+        const top = Math.min(...tiles.map((t) => t.y));
+        const low = Math.max(...tiles.map((t) => t.y));
+        zones.push({ kind: 'crumble', x0, x1, top: top - 200, bottom: low + CRUMBLE_H, baseY: low, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0 });
       }
       for (const g of L.gaps) placed.beats.push({ x: ox + g.x0, letter: 'J' });
       for (const lp of L.pieces) if (lp.hop) placed.beats.push({ x: ox + lp.x, letter: 'h' });
@@ -1060,10 +1135,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const checkpoints: Filled['checkpoints'] = [];
   const hints: StageHint[] = [];
   const C = sink.collectibles;
-  const flower = (x: number, y: number) => {
+  /** a flower's look from a spot (its own, or its row's first: a row or an arc of flowers is one species, stageQuality.test.ts) */
+  const lookAt = (x: number, y: number) => M.flowers[Math.floor(rngFor(seed, 29, R(x), R(y))() * M.flowers.length)];
+  const flower = (x: number, y: number, rowLook?: (typeof M.flowers)[number]) => {
     if (C.some((c) => Math.hypot(c.x - x, c.y - y) < 40)) return;
     // (its look from its own spot, not the shared stream: a flower skipped for overlapping must not move every roll after it)
-    const look = M.flowers[Math.floor(rngFor(seed, 29, R(x), R(y))() * M.flowers.length)];
+    const look = rowLook ?? lookAt(x, y);
     C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   };
   const tipsSaid = new Set<string>();
@@ -1197,9 +1274,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (!want) continue;
         const n = s.count ?? 1;
         const span = Math.min(s.span ?? 0, k.piece.width - 40);
+        const rowLook = lookAt(k.x, k.y);
         for (let i = 0; i < n; i++) {
           const x = n === 1 ? k.x : k.x - span / 2 + (span * i) / (n - 1);
-          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP));
+          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook);
         }
         fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what: 'flower', x: k.x, y: k.y });
       } else if (s.role === 'objective') {
@@ -1260,9 +1338,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   for (const [gi, g] of laid.gaps.entries()) {
     const arc = rngFor(seed, 31, gi)() <= 0.7;
     if (g.x1 - g.x0 < 90 || !arc) continue;
+    const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
-      flower(g.x0 + (g.x1 - g.x0) * tt, g.y - 70 - 50 * Math.sin(Math.PI * tt));
+      flower(g.x0 + (g.x1 - g.x0) * tt, g.y - 70 - 50 * Math.sin(Math.PI * tt), arcLook);
     }
   }
   if (budget.archetype === 'harvest') {
@@ -1278,7 +1357,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // water (Matt, 2026-10-28): a fall into it costs a life on Easy too, so it is warned: Dot's line WATER_WARN.lead px before the lip
   // (gone once he is past it) and a sign at the edge (proto.gen2.waterWarnings, for the world's art). Normal warns at the first water
   // only (the teaching rule); Easy at every water gap once WATER_WARN.every seconds of walking passed since the last warning.
-  const wet = laid.gaps.filter((g) => budget.pit === 'water' || g.water);
+  // (a deep chasm, a world's `void` falls on Normal, costs a life the same way: it shows the world's dirty water far below as its line,
+  // painted, and is warned the same way)
+  const wet = laid.gaps.filter((g) => budget.pit === 'water' || budget.pit === 'void' || g.water);
   if (wet.length) {
     const every = WATER_WARN.every * budget.walkSpeed;
     const text = M.tips?.water ?? WATER_LINE;
@@ -1306,7 +1387,8 @@ const flagInZone = (zones: readonly Zone[], x: number, y: number) => zones.some(
 /** the quota items a section's node asks for, shared out among the node's sections in turn */
 function graphObjectives(laid: Laid, sec: PlacedSection): number {
   const meta = laid as Laid & { objectives?: Map<string, number> };
-  return meta.objectives?.get(sec.uid) ?? 1;
+  // (a section with no share of a quota lays none: a relic socket in a sprint stays empty)
+  return meta.objectives?.get(sec.uid) ?? 0;
 }
 
 const terrainOK = (c: CreatureDef, p: Platform) => (c.terrain === 'air' ? true : c.terrain === 'flat' ? p.width >= c.minGround : p.width >= c.minGround);
@@ -1555,7 +1637,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     modelled: { typical: 0, fast: 0 },
     errors: [],
     barren: filled.barren,
-    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : budget.pit) as PitKind })),
+    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })),
   };
   const stage: Gen2Stage = {
     config,
@@ -1571,7 +1653,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     exitTotemX: laid.exit.x,
     exitTotemY: laid.exit.y,
     checkpoints: filled.checkpoints,
-    ...(budget.pit === 'water' || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
+    ...(budget.pit === 'water' || budget.pit === 'void' || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
@@ -1587,7 +1669,14 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
  */
 export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<typeof validateStage> {
   const cfg = st.config;
-  return validateStage(budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } });
+  const held = budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } };
+  const res = validateStage(held);
+  // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
+  // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
+  if (!st.platforms.some((p) => p.type === 'fragile')) return res;
+  const bare = validateStage({ ...held, platforms: held.platforms.filter((p) => p.type !== 'fragile') });
+  const need = bare.errors.filter((e) => !/^(flower|leaf|heart) #/.test(e)).map((e) => `crumbling tiles needed: ${e}`);
+  return need.length ? { ...res, ok: false, errors: [...res.errors, ...need] } : res;
 }
 
 /** what the validation pass decided */

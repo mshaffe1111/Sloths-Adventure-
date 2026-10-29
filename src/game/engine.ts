@@ -1429,6 +1429,8 @@ export class GameEngine {
       for (const z of zones) {
         if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
         this.zoneHinted[z.kind] = true;
+        // (World 10's storm is taught by Pokey's own thoughts, gen2 w10.ts W10_TIPS: no floating label over them)
+        if (this.currentStage.config.worldIndex === 10 && this.proto?.gen2) continue;
         const hint: Record<string, [string, string]> = {
           web: ['STICKY WEBS SLOW YOU. GO ABOVE THEM OR PUSH THROUGH', '#e2e8f0'],
           tide: ['THE TIDE RISES ON A BEAT. CROSS WHILE IT IS LOW', '#7dd3fc'],
@@ -1438,6 +1440,7 @@ export class GameEngine {
           wind: ['GUSTS BLOW ON A BEAT. WATCH THE LEAVES', '#99f6e4'],
           geyser: ['VENTS ERUPT ON A BEAT. STAND BETWEEN THEM', '#fdba74'],
           bolt: ['LIGHTNING STRIKES WHERE THE RODS CHARGE', '#bae6fd'],
+          spikes: ['IRON SPIKES. JUMP CLEAR', '#fca5a5'],
         };
         if (z.kind === 'dark' && z.lights?.some((l) => l.sleep)) {
           this.addFloatingText('TOO DARK. STAND STILL AND LISTEN', p.x, p.y - 100, '#99f6e4');
