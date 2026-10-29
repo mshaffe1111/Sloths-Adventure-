@@ -874,7 +874,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     // (LV-11, polish report 2026-10-29: a 72 px step at the foot of the bank, so the floor before it is never a dip with no way out:
     // the scripted player fell back 6-7 times at this 200 px wall. From the step the bank is a double jump; the post is still the
     // easy way up)
-    P.push({ id: pid++, x: x - 96, y: G - 72, width: 96, height: 72 + BANK_H, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: x - 96, y: G - 72, width: 96, height: 72 + BANK_H, type: 'solid', style: 'log' });
     close();
     open(x, G - 200);
     // (too high to jump: the only way up is the post. A short stretch on top: at 340-370 px the walk from the post's top to the drop

@@ -1,15 +1,16 @@
 LV-13: 4-5 The Sovereign's Dive, the eagle's strikes on the first-timer bot (tools/inspect --firsttimer), two runs per seed and setting.
 
                      before                                    after
-eagle hits, 12 runs  46                                        16
-first strike         pass 2-6, nearest bush 194-215 px          pass 2-3 mostly, the bot already at a bush ("going for a bush",
-                     every seed ("while going for a bush")      no distance: within reach); one in a dip (Easy seed 3, "no bush
-                                                                at his level")
-farthest spot from cover under her eye, 8 seeds: 335-386 px  ->  185-219 px (in every hop run between two covers: about 100 px)
+eagle hits, 12 runs  46                                        14
+first strike         pass 2-6, nearest bush 194-215 px          7 of 10 within reach of a bush ("going for a bush", no distance
+                     every seed ("while going for a bush")      given); seed 2's three at 176 px, by the lookout's tree (the spot
+                                                                a fern would make the lookout's fruit trick a choice)
+farthest spot from cover under her eye, 8 seeds: 335-386 px  ->  180-206 px, at the lookouts' trees; in every hop run between two
+                                                                 covers about 100 px
 
-What changed: under her eye, every hop run between two places to hide has a fern (or, in the waterfall row, a curtain of water) right
-behind its rock, every ~350 px; on a lookout's stretch always a fern, never a curtain (a curtain hides him from the lookout too, and
-its fruit trick must stay needed). Her first strike of the stage gets Dot's "Hide in the bush!" (new line, needs Matt's approval)
+What changed: under her eye, every hop run between two places to hide has a fern (or, in the waterfall row, a curtain of water) on the
+flat just past its rock, spread evenly, about one each 330 px; on a lookout's stretch always a fern, never a curtain (a curtain hides
+him from the lookout too, and its fruit trick must stay needed; in a fern he is hidden only crouched and still). Her first strike of the stage gets Dot's "Hide in the bush!" (new line, needs Matt's approval)
 the moment she sees him, 0.75 s before the dive lands (when the seen tip has already been heard; the bush named only when one is
 within 200 px, else the approved water line).
 

@@ -4080,20 +4080,27 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     function hopRun(len: number) {
       const end = x + len;
       if (dense) {
-        // (LV-13: in the stage's first stretches under her eye a rock to hop and a fern behind it every ~350 px, so no spot is more
+        // (LV-13: under her eye a rock to hop and a fern just past it, about every 330 px, so no spot of a hop run is more
         // than about 100 px from a place to hide when her first strike comes; QA: 11 hurts at "Hide from the eagle" since 2026-10-26,
         // and the first-timer's first strike landed 194-215 px from the nearest bush on every seed)
-        while (end - x > 330) {
-          run(Math.max(60, Math.min(90, (end - x - 330) / 2 + 60)));
+        // (spread evenly over the stretch, each fern's rock just before it: n of them, about one each 330 px)
+        const x0 = x;
+        const len = end - x0;
+        const n = Math.max(1, Math.round(len / 330) - 1);
+        for (let i = 1; i <= n; i++) {
+          const k: Cover = lookoutFern ? 'fern' : denseKind;
+          const cw = k === 'fall' ? VEIL_W : BUSH_W[k];
+          const mid = x0 + (len * i) / (n + 1);
+          const rockAt = mid - cw / 2 - 12 - 96;
+          if (rockAt > x) run(rockAt - x);
           const ra = x;
           logHop();
           // (a petal of the stretch's row that the rock now stands on goes: the rock carries its own on top)
-          for (let i = C.length - 1; i >= 0; i--) if (C[i].type === 'flower' && C[i].y > G - 50 && C[i].x > ra - 24 && C[i].x < x + 24) C.splice(i, 1);
-          run(36);
-          // (the kind of cover the row teaches: a curtain of water in the waterfall row, so the water is still what hides him there)
-          const k: Cover = lookoutFern ? 'fern' : denseKind;
+          for (let j = C.length - 1; j >= 0; j--) if (C[j].type === 'flower' && C[j].y > G - 50 && C[j].x > ra - 24 && C[j].x < x + 24) C.splice(j, 1);
+          // (the kind of cover the row teaches: a curtain of water in the waterfall row, so the water is still what hides him there; on
+          // the flat just past the rock, clear of it, so it reads as growing there and hides him on the ground)
+          if (mid > x) run(mid - x);
           cover(k);
-          run(k === 'fall' ? VEIL_W / 2 : BUSH_W[k] / 2);
         }
         if (x < end) run(end - x);
         return;

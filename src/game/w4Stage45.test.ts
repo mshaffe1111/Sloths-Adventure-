@@ -184,7 +184,7 @@ test('4-5 (LV-13): under her eye, every hop run between two places to hide has c
         worst = Math.max(worst, Math.min(...covers.map(([a, b]) => (x < a ? a - x : x > b ? x - b : 0))));
       }
     }
-    assert.ok(worst <= 230, `seed ${s}: ${Math.round(worst)} px from cover under her eye`);
+    assert.ok(worst <= 215, `seed ${s}: ${Math.round(worst)} px from cover under her eye`);
   }
   // her first strike's call is a warning: it comes at once, over anything else Dot is saying
   const { engineGuideLine } = await import('./dotLines.ts');
