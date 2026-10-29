@@ -5,8 +5,9 @@ review pictures to reference/prop-sheets/qa-notes/hf-art-backdrops/:
   wN-<part>-zoom.jpg   a 1:1 device-pixel close-up: old | Real-ESRGAN only | the repaint
   wN-<part>-diff.jpg   the whole strip, old above and new below, the six most changed cells boxed
   wN-<part>-seam.jpg   the strip's right end running into its left end (old above, new below), a red tick at the join
-    python3 -I tools/art/hfbatch/striphdfinish.py <raw dir> <take> [<take> ...]     e.g. <raw> w1-near-s25-7 w1-mid-s25-7
-The cut is striphdcut.py cut2 in 'paint' mode: the repaint inside, the Real-ESRGAN start's clean outline on the outer 5 px.
+    python3 -I tools/art/hfbatch/striphdfinish.py <raw dir> <take>[:<mode>] ...     e.g. <raw> w1-near-s25-7 w1-mid-s25-7:mix5
+The cut is striphdcut.py cut2 with the start: 'paint' (the default) is the repaint inside and the Real-ESRGAN start's clean outline on
+the outer 5 px; 'mix5' is half the repaint and half the start inside (the mid strips: there the repaint washed out the inner lines).
 <raw dir> holds the unpacked takes (<take>.webp, pre-<take>.webp, alpha-<stem>.webp)."""
 import os, subprocess, sys
 from PIL import Image
@@ -24,12 +25,14 @@ def run(*a):
     subprocess.run(['python3', '-I', *a], check=True)
 
 
-for take in sys.argv[2:]:
+for arg in sys.argv[2:]:
+    take, _, mode = arg.partition(':')
+    mode = mode or 'paint'
     stem = take.split('-s')[0]
     part = stem.rsplit('-', 1)[1]
     old = os.path.join(R, 'src/assets/backdrops', stem + '.webp')
     new = os.path.join(OUT, stem + '.webp')
-    run(f'{H}/striphdcut.py', 'cut2', old, f'{raw}/{take}.webp', f'{raw}/alpha-{stem}.webp', new, f'{raw}/pre-{take}.webp', 'paint')
+    run(f'{H}/striphdcut.py', 'cut2', old, f'{raw}/{take}.webp', f'{raw}/alpha-{stem}.webp', new, f'{raw}/pre-{take}.webp', mode)
     run(f'{H}/striphdcut.py', 'seam', new)
     pre = f'{tmp}/pre-{stem}.webp'
     run(f'{H}/striphdcut.py', 'cut2', old, f'{raw}/pre-{take}.webp', f'{raw}/alpha-{stem}.webp', pre)

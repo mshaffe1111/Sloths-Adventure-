@@ -12,3 +12,10 @@ hfb-striphd-w1c 6ae3878cad9610e5cb314aaa rtx-pro-6000 17:51:08Z-17:55:27Z (4.3 m
   colour, off it the grey halo is cut). s35 not used: mushroom stems melt a little at the foot, the line shifts. The mid's leaf clumps
   come out a little softer than the start's cel blocks (named in the review).
 running total ~9.9 min = ~$0.45. Review: reference/prop-sheets/qa-notes/hf-art-backdrops/w1-*.jpg
+w1-mid re-cut as cut2 'mix5' (half repaint, half Real-ESRGAN start inside): the plain repaint had softened the cel-shaded leaf clumps.
+hfb-striphd-w2to5 6ae38bdbad9610e5cb314f37 rtx-pro-6000 18:09:31Z-18:23:52Z (14.4 min, ~$0.66): w2-w5 near/mid, s25/s35, the w1c way.
+  KEPT (all s25): w2-near 'paint', w2-mid 'mix5', w3-near 'mix5' (the plain repaint dimmed the glowing mushroom caps), w3-mid 'mix5',
+  w4-near 'paint', w5-near 'paint', w5-mid 'mix5'. s35 not used anywhere: white specks (w4-near water), a pale blob in the reeds
+  (w2-near), darker mushroom caps (w3-near), more drawn-over lines. w4-mid HELD: both repaints draw a second set of thin crack lines
+  beside the old ones (ghost cracks), mix5 too; a lower-strength retry follows.
+running total ~29.2 min = ~$1.34

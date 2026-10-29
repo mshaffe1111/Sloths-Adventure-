@@ -71,6 +71,9 @@ def cut2(old_p, new_p, alpha_p, out_p, pre_p=None, mode='paint', bg=(128, 128, 1
     H, W = new.shape[:2]
     if pre_p:
         pre = np.asarray(Image.open(pre_p).convert('RGB')).astype(np.float32)
+        if mode.startswith('mix'):  # mix<k>: k tenths of the repaint, the rest the start (where the repaint washes out the inner lines)
+            k = int(mode[3:] or 5) / 10
+            new = new * k + pre * (1 - k)
         if mode == 'grain':
             blur = lambda v: ndimage.gaussian_filter(v, (2.5, 2.5, 0))
             new = np.clip(pre + (new - blur(new)), 0, 255)
