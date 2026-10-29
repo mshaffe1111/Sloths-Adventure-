@@ -6260,13 +6260,17 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       }
     }
   }
-  // 2-6's knots: a mailbox on its post, its box facing out over the drop (the post stands 6% of the picture right of its middle: flipped,
-  // as far left)
-  for (const k of villageKnots) {
+  // 2-6's knots: a mailbox on its post (its post 6% of the picture right of its middle: flipped, as far left), facing either way, and
+  // every third a signpost (its post in the middle), so some fifty of them never read as one piece repeated (STAGE-RULES §5b)
+  villageKnots.forEach((k, i) => {
     k.art = 'post';
-    const left = P.some((q) => q.height === 24 && q.y === k.y + k.height && q.x === k.x);
-    decor.push({ n: 'mailbox', x: Math.round(k.x + k.width / 2 + (left ? 2 : -2)), b: k.y + k.height + 2, w: 38, flip: left });
-  }
+    const b = k.y + k.height + 2, cx = k.x + k.width / 2;
+    if (i % 3 === 2) decor.push({ n: 'sign', x: Math.round(cx), b, w: 50 });
+    else {
+      const flip = (i + Math.floor(i / 3)) % 2 === 1;
+      decor.push({ n: 'mailbox', x: Math.round(cx + (flip ? 2 : -2)), b, w: 38, flip });
+    }
+  });
   return out;
 }
 

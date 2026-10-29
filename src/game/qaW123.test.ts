@@ -385,40 +385,39 @@ test('2-6: a plain walk to a porch\'s dead end stops there: no fall of 400 px or
   assert.deepEqual(bad, []);
 });
 
-// QA 7 (polish): 2-6 ?layout=7 at about 9%: Pokey stood a few px past a porch's end, in the air. World 2's plank is painted on the middle
-// 15-86% of its picture (its walking row: Worlds 3, 6, 9 and 10 the same), and the picture was drawn edge to edge on the collider, so the
-// painted plank ended 30-40 px short of where he could stand. Now the measured walking row is fitted to the collider, BRANCH_OVERHANG past
-// each end, and he cannot stand further out than that.
-test('the painted plank runs under Pokey as far out as he can stand on a branch (the walking row fitted to the collider)', async () => {
-  const { paintSpan, branchBox, BRANCH_OVERHANG } = await import('./protoArt.ts');
-  // (a picture 100 x 20 whose rows from 4 down are painted from 15 to 86 across: World 2's plank, kits/w2.webp)
-  const w = 100, h = 20, a = new Uint8ClampedArray(w * h * 4);
-  for (let y = 4; y < h; y++) for (let x = 15; x < 86; x++) a[(y * w + x) * 4 + 3] = 255;
-  const span = paintSpan(a, w, h)!;
-  assert.deepEqual(span, { top: 0.2, l: 0.15, r: 0.86 });
-  for (const p of [{ x: 600, width: 170 }, { x: 1373, width: 342 }, { x: 0, width: 600 }]) {
-    const box = branchBox(p, span);
-    const l = box.x + span.l * box.w, r = box.x + span.r * box.w;
-    assert.ok(Math.abs(l - (p.x - BRANCH_OVERHANG)) < 0.01 && Math.abs(r - (p.x + p.width + BRANCH_OVERHANG)) < 0.01, `a ${p.width} px plank: paint ${l}-${r}`);
+// QA 7 (polish): 2-6 ?layout=7 at about 9%: Pokey stood a few px past a porch's end, in the air. World 2's plank is a deck seen a little
+// from above: its top edge (where his feet are drawn) runs over 15-87% of the picture, its front edge the whole width, and the picture was
+// stretched edge to edge on the collider, so the top edge ended 20-90 px short of each end (it grew with the plank). Fitting the top edge
+// to the collider instead ran the front edges 40-60 px past each end and closed the 55-85 px hop gaps on screen (the lead's polish
+// screenshots). Now the ends keep their painted size, only the middle stretches, and the collider's end sits halfway along the slant:
+// on any plank length the top edge stops at most 14 px short of the end and the front edge at most 14 px past, so a 55 px hop gap still
+// shows 27 px of air at the front.
+test("the painted plank's slanted ends sit on the collider's ends: no 20-90 px of air at a porch's end, and a hop gap still shows", async () => {
+  const { paintSpan, branchSlices } = await import('./protoArt.ts');
+  // (a picture 100 x 40: empty above row 4; row 4, the top edge, painted 15 to 86; widening row by row to the whole width at row 36)
+  const w = 100, h = 40, a = new Uint8ClampedArray(w * h * 4);
+  for (let y = 4; y < 37; y++) {
+    const u = (y - 4) / 32;
+    for (let x = Math.round(15 * (1 - u)); x < Math.round(86 + 14 * u); x++) a[(y * w + x) * 4 + 3] = 255;
   }
-  // (no measure, as on a device with no canvas to measure on: the whole picture fitted, BRANCH_OVERHANG past each end)
-  assert.deepEqual(branchBox({ x: 100, width: 200 }, null), { x: 100 - BRANCH_OVERHANG, w: 200 + 2 * BRANCH_OVERHANG });
-  // he stands on a branch with his middle at most BRANCH_OVERHANG past its end (the engine's footing): past that, he is falling
-  setDifficulty('normal');
-  for (const s of [1, 7]) {
-    const r = new RealPlay('2-6', s);
-    for (const br of r.platforms.filter((p) => p.height === 24 && p.width >= 150).slice(1, 14)) {
-      for (const side of [-1, 1] as const) {
-        let far = 0;
-        for (let d = 0; d <= 40; d++) {
-          r.stand(side > 0 ? br.x + br.width + d : br.x - d, br.y);
-          for (let i = 0; i < 3; i++) r.frame({});
-          if (r.p.grounded && Math.abs(r.p.y - br.y) < 2) far = d;
-        }
-        assert.ok(far <= BRANCH_OVERHANG, `roll ${s}: he stands ${far} px past the ${side > 0 ? 'right' : 'left'} end of the porch at ${br.x}`);
-      }
-    }
+  assert.deepEqual(paintSpan(a, w, h), { top: 0.1, l: 0.15, r: 0.86, L: 0, R: 1 });
+  // World 2's plank as measured from kits/w2.webp (594 x 187), drawn 54 tall
+  const span = { top: 0.032, l: 0.153, r: 0.865, L: 0.002, R: 1 };
+  const at = (cs: ReturnType<typeof branchSlices>, share: number) => {
+    const c = cs.find((q) => share >= q.sx - 1e-9 && share <= q.sx + q.sw + 1e-9)!;
+    return c.dx + ((share - c.sx) / c.sw) * c.dw;
+  };
+  for (const width of [170, 190, 330, 600]) {
+    const p = { x: 1000, width };
+    const cs = branchSlices(p, span, 594, 187, 54);
+    const topL = at(cs, span.l), topR = at(cs, span.r), frontL = at(cs, span.L), frontR = at(cs, span.R);
+    assert.ok(topL - p.x <= 14 && p.x + width - topR <= 14, `a ${width} px plank: its top edge ${Math.round(topL - p.x)} / ${Math.round(p.x + width - topR)} px short of the ends`);
+    assert.ok(p.x - frontL <= 14 && frontR - (p.x + width) <= 14, `a ${width} px plank: its front edge ${Math.round(p.x - frontL)} / ${Math.round(frontR - p.x - width)} px past the ends`);
+    // the pieces join with no hole and no overlap
+    for (let i = 1; i < cs.length; i++) assert.ok(Math.abs(cs[i].dx - (cs[i - 1].dx + cs[i - 1].dw)) < 0.01 && Math.abs(cs[i].sx - (cs[i - 1].sx + cs[i - 1].sw)) < 1e-9);
   }
+  // (no measure, as on a device with no canvas to measure on: the whole picture, as before)
+  assert.deepEqual(branchSlices({ x: 100, width: 200 }, null, 594, 187, 54), [{ sx: 0, sw: 1, dx: 94, dw: 212 }]);
 });
 
 // QA 8 (unverified, 3-3 Easy: "0 of 7 predators" never moved while taps scored): the counter counts knock-outs (engine.ts knockOut, the

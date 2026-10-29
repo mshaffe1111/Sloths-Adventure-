@@ -352,13 +352,17 @@ export function drawCurtainArt(ctx: CanvasRenderingContext2D, x: number, y: numb
   return true;
 }
 
-/** where a painted piece's solid top starts (`top`, a share of its height) and the share of its width that row covers (`l` to `r`) */
-export interface PaintSpan { top: number; l: number; r: number }
+/**
+ * Where a painted piece's solid top starts (`top`, a share of its height), the share of its width that row covers (`l` to `r`), and the
+ * widest the body below it runs (`L` to `R`: a plank seen a little from above is a deck, its top edge narrower than its front edge)
+ */
+export interface PaintSpan { top: number; l: number; r: number; L: number; R: number }
 /**
  * The solid top of a picture from its alpha (w x h, RGBA): the first row it fills across most of its width, and where that row's
- * paint starts and ends. Null when no row is that full.
+ * paint starts and ends; and the widest the body below runs (rows filled across a third of the width or more). Null when no row is full.
  */
 export function paintSpan(a: ArrayLike<number>, w: number, h: number): PaintSpan | null {
+  let out: PaintSpan | null = null;
   for (let y = 0; y < h; y++) {
     let n = 0, l = -1, r = -1;
     for (let x = 0; x < w; x++) {
@@ -367,9 +371,14 @@ export function paintSpan(a: ArrayLike<number>, w: number, h: number): PaintSpan
       if (l < 0) l = x;
       r = x + 1;
     }
-    if (n > w * 0.6) return { top: y / h, l: l / w, r: r / w };
+    if (!out) {
+      if (n > w * 0.6) out = { top: y / h, l: l / w, r: r / w, L: l / w, R: r / w };
+    } else if (n > w / 3) {
+      out.L = Math.min(out.L, l / w);
+      out.R = Math.max(out.R, r / w);
+    }
   }
-  return null;
+  return out;
 }
 const spanCache = new Map<string, PaintSpan | null>();
 function measure(n: Name): PaintSpan | null {
@@ -400,18 +409,35 @@ function solidTop(n: Name, fallback: number): number {
   return measure(n)?.top ?? fallback;
 }
 
-/** how far the painted walking top runs past each end of a branch's collider (px): he still stands with his middle up to 13 px past
- *  the end (the engine's footing), so he stands on paint there too */
-export const BRANCH_OVERHANG = 16;
+/** one slice of a picture drawn into a box: from share `sx` of its width, `sw` wide, to x `dx`, `dw` wide */
+export interface Slice { sx: number; sw: number; dx: number; dw: number }
 /**
- * The box a branch picture is drawn in, so the row he walks on (`span`, measured from the picture) runs from one end of the collider to
- * the other, BRANCH_OVERHANG past each. (QA 2026-10-29, 2-6 ?layout=7: World 2's plank is painted on the middle 15-86% of its picture,
- * so drawn edge to edge on the collider he stood 30-40 px past a plank's painted end, in the air; Worlds 3, 6, 9 and 10 the same.)
+ * How a branch picture (fw x fh, drawn h tall) is laid along a collider, so its painted ends sit on the collider's ends. (QA 2026-10-29,
+ * 2-6 ?layout=7: Pokey stood a few px past a plank's end, in the air. World 2's plank is a deck seen a little from above: its top edge
+ * runs over 15-87% of the picture, its front edge the whole width. Stretched edge to edge on the collider, the top edge, where his feet
+ * are drawn, ended 20-90 px short of each end; fitted to the top edge instead, the front edges ran 40-60 px past and closed the 55-85 px
+ * hop gaps on screen.) The two ends keep their painted shape (drawn at the picture's own scale, h / fh, whatever the plank's length:
+ * stretched, a long plank's slanted end grew with it) and only the middle stretches; the collider's end sits halfway along the slant,
+ * between the top edge and the front edge, so at the end he stands on the slant and a hop gap shows (about 13 px of slant each side
+ * on World 2's plank). With no measure, the whole picture as before, 6 px past each end.
  */
-export function branchBox(p: Pick<Platform, 'x' | 'width'>, span: Pick<PaintSpan, 'l' | 'r'> | null): { x: number; w: number } {
-  const l = span?.l ?? 0, r = span?.r ?? 1;
-  const w = (p.width + 2 * BRANCH_OVERHANG) / Math.max(0.3, r - l);
-  return { x: p.x - BRANCH_OVERHANG - l * w, w };
+export function branchSlices(p: Pick<Platform, 'x' | 'width'>, span: PaintSpan | null, fw: number, fh: number, h: number): Slice[] {
+  if (!span) return [{ sx: 0, sw: 1, dx: p.x - 6, dw: p.width + 12 }];
+  const k = (fw * h) / fh; // px drawn per share of the picture's width, at its own scale
+  const mL = (span.l + span.L) / 2, mR = (span.r + span.R) / 2;
+  const cL = Math.min(0.35, span.l + 0.03), cR = Math.min(0.35, 1 - span.r + 0.03);
+  const x0 = p.x - mL * k, x1 = p.x + p.width + (1 - mR) * k;
+  const mid = x1 - cR * k - (x0 + cL * k);
+  if (mid < 0.1 * (1 - cL - cR) * k) {
+    // (a plank too short for its two ends at their own size: the whole picture, the slant's middle on the collider's ends)
+    const w = p.width / Math.max(0.3, mR - mL);
+    return [{ sx: 0, sw: 1, dx: p.x - mL * w, dw: w }];
+  }
+  return [
+    { sx: 0, sw: cL, dx: x0, dw: cL * k },
+    { sx: cL, sw: 1 - cL - cR, dx: x0 + cL * k, dw: mid },
+    { sx: 1 - cR, sw: cR, dx: x1 - cR * k, dw: cR * k },
+  ];
 }
 
 export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state: 'whole' | 'creak' | 'snapped', since: number): boolean {
@@ -440,8 +466,9 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
     ctx.restore();
     return true;
   }
-  const box = branchBox(p, measure(name));
-  blit(ctx, name, box.x, y, box.w, h);
+  const { img, f: fr } = frameOf(name);
+  // (each slice 0.5 px wider, so no hairline of background shows between them)
+  for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c.sx * fr.w, fr.y, c.sw * fr.w, fr.h, c.dx, y, c.dw + 0.5, h);
   return true;
 }
 
