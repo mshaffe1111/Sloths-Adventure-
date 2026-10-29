@@ -13,15 +13,16 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { buildGen2Stage, layLocal, planBudget, rngFor } from '../pipeline.ts';
 import type { SectionTemplate } from '../types.ts';
 import { W8_CREATURES, W8_GEN2_STAGES, W8_MANIFEST, W8_NEW_LINES, W8_PROPS, W8_TIPS, w8Finish } from './w8.ts';
-import { W8_DARK_REQUIRED, W8_GAME_STAGES, W8_REQUIRED, w8Falls, w8GameKit } from './w8Game.ts';
+import { W8_DARK_REQUIRED, W8_GAME_STAGES, W8_REQUIRED, W8_SWING_STAGES, w8Falls, w8GameKit } from './w8Game.ts';
 import { W8_SECTIONS, W8_THEME } from './w8Sections.ts';
+import { W8_BRANCH_SECTIONS } from './w8Branch.ts';
 import { W8_SWING_SECTIONS } from './w8Swing.ts';
 import { W8R_NEW_LINES } from './w8Rooms.ts';
 
 const LEVELS = generateAllLevels();
 const cfgOf = (id: string) => ({ ...LEVELS.find((c) => c.id === id)!, unlocked: true });
 const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
-const ALL: SectionTemplate[] = [...W8_SECTIONS, ...W8_SWING_SECTIONS];
+const ALL: SectionTemplate[] = [...W8_SECTIONS, ...W8_SWING_SECTIONS, ...W8_BRANCH_SECTIONS];
 
 test('the manifest: ids unique, every socket asks for something the world has, every tip has a short line', () => {
   const ids = (xs: Array<{ id: string }>) => new Set(xs.map((x) => x.id)).size === xs.length;
@@ -92,14 +93,17 @@ test('each stage: the themes its sections use are opened by its gates, it holds 
     const M = w8GameKit(n).manifest;
     const mine = (s: SectionTemplate) => s.archetypes === 'any' || s.archetypes.includes(cfgOf(id).objectiveType as never);
     const opened = new Set(M.sections.flatMap((s) => (s.phases.includes('start') && s.teaches && mine(s) ? [s.teaches] : [])));
-    assert.ok(opened.size >= 3, `${id}: ${opened.size} gates`);
+    // (the vine stages' kind of swing is their theme: 8-3's chains or hunters' swings, 8-5's swings to a trunk, kept apart: w8Game.ts)
+    // (and the fight stages' animals: 8-8 hunts the harpies and the small cats, 8-9 the jaguars and the boa guards, w8.ts W8_STAGE_FOES)
+    // (8-1's and 8-6's lit trunks went to 8-5: 8-1's themes are the leaps and the night, 8-6's the hunters' glides and the leaps)
+    assert.ok(opened.size >= (W8_SWING_STAGES.includes(n) ? 1 : n === 2 ? 3 : 2), `${id}: ${opened.size} gates`);
     // (each theme a gate opens has sections of its own to carry the roll; a filler of a theme the stage never opens just sits unused)
     for (const t of opened) if (themes.has(t)) assert.ok(M.sections.filter((s) => s.uses?.includes(t)).length >= 2, `${id}: the ${t} theme has under two sections`);
     assert.ok(M.sections.some((s) => s.sockets.some((k) => k.id === 'darkFrom')), `${id}: no dark`);
     for (const r of W8_REQUIRED[id]) assert.ok(M.sections.some((s) => s.id === r.section), `${id}: ${r.section} is not in its kit`);
     if (W8_DARK_REQUIRED[id]) assert.ok(W8_REQUIRED[id].some((r) => r.section === W8_DARK_REQUIRED[id]), id);
     // (the night harpy hunts 8-8 and 8-9 only; the lianas are the vine stages')
-    assert.equal(M.creatures.some((c) => c.id === 'harpy'), n === 8 || n === 9, id);
+    assert.equal(M.creatures.some((c) => c.id === 'harpy'), n === 8, id);
     assert.equal(M.sections.some((s) => s.pieces.some((p) => p.shape === 'liana')), n === 3 || n === 5, id);
   }
 });

@@ -25,8 +25,9 @@ import { W8_LESSON } from './w8.ts';
 export const W8_THEME = {
   /** 8-2: blooms on the high boughs (climbs) */
   highBlooms: 'w8:high-blooms',
-  /** 8-2: blooms in the dark */
-  darkBlooms: 'w8:dark-blooms',
+  /** 8-2: blooms by the bat roosts (hide while they look: the roosts went from 8-4, now the hand-built Lantern Run, to 8-2; 8-2's
+   *  blooms in the dark read alike 8-1's night on the look-alike measure) */
+  roostBlooms: 'w8:roost-blooms',
   /** 8-2: blooms over the wide gaps (jumps, arcs) */
   gapBlooms: 'w8:gap-blooms',
   /** 8-4: tree hollows on long boughs (the roost and the cats) */
@@ -55,10 +56,13 @@ export const W8_THEME = {
 
 /** the themes each lit stage's gate may open (the themed stages' gates are their own: blooms, roosts, hunts) */
 export const W8_LIT_THEMES: Readonly<Record<number, ReadonlyArray<keyof typeof W8_THEME>>> = {
-  1: ['climbers', 'leapers', 'night'],
-  6: ['climbers', 'prowlers', 'leapers'],
-  3: ['climbers', 'prowlers', 'chains'],
-  5: ['climbers', 'prowlers', 'chains'],
+  // (8-1's climbs are its dark trunks only: the lit trunks are 8-5's stretches, the look-alike measure)
+  1: ['leapers', 'night'],
+  // (8-6's trunks went to 8-5: a trunk, a glide and a trunk read as 8-5's climbing on the look-alike measure)
+  6: ['prowlers', 'leapers'],
+  // (the vine stages apart, STAGE-RULES §6 "Sameness": 8-3's lianas chain over the gaps, 8-5's lead to trunks to climb)
+  3: ['prowlers', 'chains'],
+  5: ['climbers'],
 };
 
 const SHARED = 0.3;
@@ -205,6 +209,56 @@ const restFork = section({
   pieces: [bank('a', [160, 190]), up('r1', 'a', 36, [150, 170]), up('r2', 'r1', 32, [180, 210]), down('r3', 'r2', 32, [130, 150]), up('k', 'r3', 30, [130, 150]), down('c', 'k', 66, [160, 190])],
   last: 'c',
   sockets: [petals('r1', 'r1', 0.5, 1), flag('r2', 0.5), petals('r3', 'r3', 0.5, 1), petals('k', 'k', 0.5, 1), scenery('fungus', 'c', [0.4, 0.6])],
+  mirrorable: true,
+});
+
+/**
+ * 8-6's rests (STAGE-RULES §6 "Sameness": a stage's rest is about a third of a 20 s stretch, and the plain boughs' rests made 8-1, 8-6
+ * and 8-9 read alike on the look-alike measure): a short glide over a soft gap; the plain boughs' rests are the other stages', but 8-5's
+ */
+/** 8-5's rests: a low trunk to rest by (8-5 is the climbing stage; the plain boughs' rests read alike 8-3's) */
+const restTrunk = section({
+  id: 'w8-rest-trunk',
+  name: 'a low trunk to rest by',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 1,
+  pieces: [bank('a', [220, 260]), ...climbWall('v', 'a', 'wall', 220, [200, 230]), down('b', 'wall', 220, [220, 260])],
+  last: 'b',
+  sockets: [scenery('fungus', 'a', [0.2, 0.4]), petals('wall', 'wall', 0.5, 2, 90), flag('b', 0.5), scenery('nest', 'b', [0.6, 0.8], 0.5)],
+  mirrorable: false,
+});
+const restTrunkKnot = section({
+  id: 'w8-rest-trunk-knot',
+  name: 'a knot and a low trunk',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 2,
+  pieces: [bank('a', [160, 190]), up('k', 'a', 32, [140, 160]), down('b', 'k', 32, [180, 210]), ...climbWall('v', 'b', 'wall', 220, [200, 230]), down('c', 'wall', 220, [200, 240])],
+  last: 'c',
+  sockets: [petals('k', 'k', 0.5, 1), petals('wall', 'wall', 0.5, 2, 90), flag('c', 0.5)],
+  mirrorable: false,
+});
+const restGlide = section({
+  id: 'w8-rest-glide',
+  name: 'a short glide to rest',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 2,
+  pieces: [bank('a', [240, 280]), glide('b', 'a', [260, 300], [0.66, 0.74]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 210])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.4, 2, 80), flag('b', 0.5), petals('k', 'k', 0.5, 1), scenery('fungus', 'c', [0.4, 0.6])],
+  mirrorable: true,
+});
+const restGlideFork = section({
+  id: 'w8-rest-glide-fork',
+  name: 'up the fork, a short glide off it',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 2,
+  pieces: [bank('a', [180, 210]), up('r1', 'a', 34, [180, 210]), glide('b', 'r1', [220, 260], [0.66, 0.74]), down('c', 'b', 34, [200, 230])],
+  last: 'c',
+  sockets: [petals('r1', 'r1', 0.5, 1), flag('b', 0.5), petals('c', 'c', 0.5, 1), scenery('nest', 'c', [0.5, 0.7], 0.5)],
   mirrorable: true,
 });
 
@@ -447,7 +501,7 @@ const nightSections = [nightOf(darkBoughs, 'w8-night-boughs'), nightOf(darkGap, 
 // ───────────────────────────── 8-2 Night Blooms: the harvest ─────────────────────────────
 
 /** a harvest gate: the night blooms' first bough (no animal), and the roll's theme opens */
-const bloomGate = (theme: 'highBlooms' | 'darkBlooms' | 'gapBlooms', name: string, extra: Socket[] = []): SectionTemplate =>
+const bloomGate = (theme: 'highBlooms' | 'gapBlooms', name: string, extra: Socket[] = []): SectionTemplate =>
   section({
     id: `w8-bloom-gate-${theme}`,
     name: `night blooms: ${name} (pickups)`,
@@ -456,14 +510,14 @@ const bloomGate = (theme: 'highBlooms' | 'darkBlooms' | 'gapBlooms', name: strin
     difficulty: 1,
     teaches: W8_THEME[theme],
     weight: 6,
-    pieces: [bank('a', [200, 240]), up('k', 'a', 34, [150, 170]), down('b', 'k', 34, [240, 280]), up('k2', 'b', 30, [140, 160]), down('c', 'k2', 30, [200, 240])],
+    // (8-2's blooms grow by the bat roosts, every stretch of them: the roosts are the stage's own, and Dot teaches them at the gate)
+    pieces: [bank('a', [200, 240]), up('k', 'a', 34, [150, 170]), down('b', 'k', 34, [260, 300]), up('k2', 'b', 30, [140, 160]), down('c', 'k2', 30, [220, 260])],
     last: 'c',
-    sockets: [petals('a', 'a', 0.6, 2, 80), petals('k', 'k', 0.5, 1), petals('b', 'b', 0.5, 3, 140), petals('k2', 'k2', 0.5, 1), ...extra],
+    sockets: [tip(ROOST, 'a', 0.2), petals('a', 'a', 0.6, 2, 80), petals('k', 'k', 0.5, 1), roost('b', 0.03, 'roostLesson'), hideAt('h1', 'b', 0.55), petals('b', 'b', 0.3, 2, 80), petals('k2', 'k2', 0.5, 1), hideAt('h2', 'c', 0.5), ...extra],
     mirrorable: false,
   });
 const bloomGates = [
   bloomGate('highBlooms', 'the high boughs', [scenery('nest', 'c', [0.5, 0.7], 0.8)]),
-  bloomGate('darkBlooms', 'in the dark'),
   bloomGate('gapBlooms', 'over the gaps', [scenery('fungus', 'c', [0.5, 0.7], 0.8)]),
 ];
 
@@ -485,7 +539,7 @@ const bloomClimb = section({
     down('c', 'k', 34, [150, 180]),
   ],
   last: 'c',
-  sockets: [petals('a', 'a', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 100), petals('wk', 'wk', 0.5, 1), petals('w2', 'w2', 0.5, 2, 90), foe('foe', 'b', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 }), petals('k', 'k', 0.5, 1)],
+  sockets: [petals('a', 'a', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 100), petals('wk', 'wk', 0.5, 1), petals('w2', 'w2', 0.5, 2, 90), roost('b', 0.03, 'roostHere1'), hideAt('h1', 'b', 0.45), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 }), petals('k', 'k', 0.5, 1)],
   mirrorable: false,
 });
 
@@ -499,7 +553,7 @@ const bloomHigh = section({
   uses: [W8_THEME.highBlooms],
   pieces: [bank('a', [180, 220]), up('b', 'a', 50, [180, 220]), up('b2', 'b', 46, [160, 190]), up('k', 'b2', 30, [140, 160]), down('c', 'k', 30, [320, 350]), down('d', 'c', 96, [150, 170]), up('k2', 'd', 30, [130, 150]), down('e', 'k2', 30, [150, 170])],
   last: 'e',
-  sockets: [petals('b', 'b', 0.5, 2, 80), petals('b2', 'b2', 0.5, 2, 80), petals('k', 'k', 0.5, 1), foe('foe', 'c', [0.5, 0.6], [...CATS, 'boa'], 5, { phases: HOT, chance: 0.7 })],
+  sockets: [petals('b', 'b', 0.5, 2, 80), petals('b2', 'b2', 0.5, 2, 80), petals('k', 'k', 0.5, 1), roost('c', 0.03, 'roostHere1'), hideAt('h1', 'c', 0.5), foe('foe', 'e', [0.4, 0.6], [...CATS, 'boa'], 5, { phases: HOT, chance: 0.7 })],
   mirrorable: false,
 });
 
@@ -527,33 +581,6 @@ const bloomDark = section({
   mirrorable: false,
 });
 
-/** dark blooms: the dark boughs again, a bloom on every knot (the dark-blooms roll's second dark stretch) */
-const bloomNight: SectionTemplate = { ...darkBoughs, id: 'w8-bloom-night', name: 'blooms on the dark boughs (pickups, run)', archetypes: ['harvest'], uses: [W8_THEME.darkBlooms], weight: 1 };
-
-/** dark blooms: a dark trunk with blooms up it */
-const bloomDarkClimb = section({
-  id: 'w8-bloom-dark-climb',
-  name: 'blooms up the dark trunk (pickups, run)',
-  archetypes: ['harvest'],
-  phases: ['ki', 'sho', 'ten', 'ketsu'],
-  difficulty: 6,
-  teaches: DARK,
-  uses: [W8_THEME.darkBlooms],
-  pieces: [
-    bank('in', [180, 210]),
-    down('a', 'in', 30, [200, 240]),
-    ...climbWall('v', 'a', 'wall', 210, [170, 190]),
-    up('wk', 'wall', 30, [120, 140]),
-    down('w2', 'wk', 30, [140, 160]),
-    down('c', 'w2', 210, [170, 200]),
-    hop('d', 'c', [200, 240]),
-    up('out', 'd', 30, [200, 230]),
-  ],
-  last: 'out',
-  sockets: [darkTip('in'), ...darkEnds('a', 'd'), petals('a', 'a', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), petals('w2', 'w2', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
-  mirrorable: false,
-});
-
 /** gap blooms: wide gaps with blooms on the far boughs, a hunter on the last */
 const bloomGaps = section({
   id: 'w8-bloom-gaps',
@@ -564,7 +591,7 @@ const bloomGaps = section({
   uses: [W8_THEME.gapBlooms],
   pieces: [bank('a', [220, 260]), wide('b', 'a', [200, 240]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [160, 190]), wide('d', 'c', [320, 350]), up('k2', 'd', 30, [130, 150]), down('e', 'k2', 30, [150, 170])],
   last: 'e',
-  sockets: [petals('a', 'a', 0.5, 2, 80), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1), foe('foe', 'd', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.7 }), petals('d', 'd', 0.85, 1)],
+  sockets: [roost('a', 0.03, 'roostHere1'), hideAt('h1', 'a', 0.45), petals('a', 'a', 0.75, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1), foe('foe', 'd', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.7 }), petals('d', 'd', 0.85, 1)],
   mirrorable: true,
 });
 
@@ -579,7 +606,7 @@ const bloomLeap = section({
   uses: [W8_THEME.gapBlooms],
   pieces: [bank('a', [220, 260]), leap('b', 'a', [320, 350]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [160, 190]), hop('d', 'c', [200, 240])],
   last: 'd',
-  sockets: [petals('a', 'a', 0.5, 2, 80), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.2, 2, 80), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
+  sockets: [roost('a', 0.03, 'roostHere1'), hideAt('h1', 'a', 0.45), petals('a', 'a', 0.8, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.2, 2, 80), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
   mirrorable: true,
 });
 
@@ -768,6 +795,16 @@ const roostLong = section({
   mirrorable: true,
 });
 
+/** 8-2's roost blooms: the roosts' gate and stretches as a harvest (blooms by the roosts), the roost theme's own in 8-2 */
+const asBlooms = (t: SectionTemplate, id: string): SectionTemplate => ({ ...t, id, name: `${t.name.replace(' (cover)', '')}: blooms (pickups)`, archetypes: ['harvest'], uses: [W8_THEME.roostBlooms] });
+const roostBlooms: SectionTemplate[] = [
+  { ...asBlooms(roostGates[0], 'w8-bloom-gate-roostBlooms'), uses: undefined, teaches: W8_THEME.roostBlooms },
+  asBlooms(roostHollows, 'w8-bloom-roost-hollows'),
+  asBlooms(roostCurtains, 'w8-bloom-roost-curtains'),
+  asBlooms(roostLong, 'w8-bloom-roost-long'),
+  asBlooms(roostCurtainGaps, 'w8-bloom-roost-gaps'),
+];
+
 // ───────────────────────────── 8-6 Glide by Moonlight ─────────────────────────────
 
 /** the first moonlight glide: a long run-up, one gap only the leaf crosses (Dot's line), a broad bough past it */
@@ -790,7 +827,7 @@ const glidePair = section({
   id: 'w8-glide-pair',
   name: 'two moonlight glides (run)',
   archetypes: ['sprint'],
-  phases: ['sho', 'ten', 'ketsu'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [GLIDE, W8_THEME.leapers],
   pieces: [bank('a', [220, 260]), glide('b', 'a', [180, 220]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [180, 220]), glide('d', 'c', [260, 300])],
@@ -851,6 +888,35 @@ const glideDark = section({
   mirrorable: false,
 });
 
+/** leapers: a gap only the second jump crosses, a knot, then a glide (8-6 holds no plain jumps' sections: each of its stretches glides) */
+const glideLeap = section({
+  id: 'w8-glide-leap',
+  name: 'second jump, then glide (run)',
+  archetypes: ['sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  needs: ['double'],
+  uses: [GLIDE, W8_THEME.leapers],
+  pieces: [bank('a', [220, 260]), leap('b', 'a', [200, 240]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [180, 220]), glide('d', 'c', [240, 280])],
+  last: 'd',
+  sockets: [petals('a', 'a', 0.5, 2, 80), petals('k', 'k', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
+  mirrorable: true,
+});
+
+/** prowlers: a hunter's long bough, a knot, then a glide over to the next */
+const glideProwl = section({
+  id: 'w8-glide-prowl',
+  name: 'past the hunter, then glide (run)',
+  archetypes: ['sprint'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  uses: [GLIDE, W8_THEME.prowlers],
+  pieces: [bank('a', [320, 350]), up('k', 'a', 34, [140, 160]), down('b', 'k', 34, [180, 220]), glide('c', 'b', [240, 280]), up('k2', 'c', 30, [130, 150]), down('d', 'k2', 30, [160, 190])],
+  last: 'd',
+  sockets: [foe('foe', 'a', [0.5, 0.6], SMALL, 3, { phases: LIVE }), petals('k', 'k', 0.5, 1), petals('c', 'c', 0.5, 2, 80), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: true,
+});
+
 // ───────────────────────────── 8-8 Night Hunters and 8-9 Monarch's Wood: the hunters' boughs ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
@@ -871,7 +937,8 @@ const huntGate = (theme: 'cats' | 'harpies' | 'guards', line: 'hunt' | 'fight'):
     mirrorable: false,
   });
 };
-const huntGates = (['cats', 'harpies', 'guards'] as const).flatMap((t) => (['hunt', 'fight'] as const).map((l) => huntGate(t, l)));
+// (8-8 hunts the harpies and the small cats, 8-9 fights the jaguars and the boa guards: w8.ts W8_STAGE_FOES)
+const huntGates = [huntGate('cats', 'hunt'), huntGate('harpies', 'hunt'), huntGate('cats', 'fight'), huntGate('guards', 'fight')];
 
 const hunterK = knots('', 'a', 2, [320, 350]);
 /** any hunt: a bough over two knots with hunters along it */
@@ -1133,12 +1200,12 @@ const monarchGuards: SectionTemplate = { ...nightOf(darkBoughs, 'w8-monarch-guar
 // ───────────────────────────── the list, and which stage holds which ─────────────────────────────
 
 export const W8_SECTIONS: SectionTemplate[] = [
-  ...litGates, restBough, restFork,
+  ...litGates, restBough, restFork, restTrunk, restTrunkKnot, restGlide, restGlideFork,
   knotHops, boughGap, doubleGap, trunkClimb, rise, drop, climbRun, prowlBough,
   darkBoughs, darkGap, darkClimb, darkLong, ...nightSections,
-  ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomNight, bloomDarkClimb, bloomGaps, bloomLeap,
+  ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms,
   ...roostGates, roostHollows, roostHollowGap, roostCurtains, roostCurtainGaps, roostCurtainLeap, roostProwl, roostClimb, roostTrunks, roostDark, roostLong,
-  glideFirst, glidePair, glideTrunk, glideHunter, glideDark,
+  glideFirst, glidePair, glideTrunk, glideHunter, glideDark, glideLeap, glideProwl,
   ...huntGates, hunterBough, sunkenFork, catBoughs, catTrunks, jaguarHigh, harpyBough, harpyGaps, harpyLeap, boaKnots, guardDark, guardNight, guardKnots,
   monarchDark, monarchCats, monarchHarpies, monarchGuards, monarchGuardPosts,
 ];
@@ -1150,8 +1217,17 @@ const DARKS = ['w8-dark-boughs', 'w8-dark-gap', 'w8-dark-climb', 'w8-dark-long']
 
 /** section id -> the stages of World 8 that may hold it (unlisted: any stage its archetype and phases allow) */
 export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
-  ...Object.fromEntries(FILLERS.map((id) => [id, [1, 3, 5, 6]])),
-  ...Object.fromEntries(DARKS.map((id) => [id, [1, 3, 5, 6]])),
+  // (the lit boughs' fillers and dark stretches are 8-1's alone: 8-3 and 8-5 swing, 8-6 glides, and a 20 s stretch of plain boughs
+  // shared between them read alike on the look-alike measure, STAGE-RULES §6 "Sameness")
+  ...Object.fromEntries(FILLERS.map((id) => [id, [1]])),
+  // (each stage's rests: 8-5's at a trunk, 8-6's with a glide, the plain boughs' the others')
+  'w8-rest-bough': [1, 2, 3, 8, 9],
+  'w8-rest-fork': [1, 2, 3, 8, 9],
+  'w8-rest-trunk': [5],
+  'w8-rest-trunk-knot': [5],
+  'w8-rest-glide': [6],
+  'w8-rest-glide-fork': [6],
+  ...Object.fromEntries(DARKS.map((id) => [id, [1]])),
   // (the long dark is 8-1's; each lit gate its stages')
   'w8-dark-long': [1],
   // (the shared arenas made every fight theme read alike: the themes carry 8-8 and 8-9; kept for no stage today)
@@ -1166,10 +1242,13 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   'w8-guard-knots': [8],
   'w8-guard-dark': [8],
   'w8-jaguar-high': [9],
-  'w8-harpy-leap': [9],
   'w8-guard-night': [9],
+  // (8-9 has no harpies, and its dark is its own: the Monarch's guards' dark boughs read as 8-1's night)
+  'w8-harpy-leap': [],
+  'w8-monarch-harpies': [],
+  'w8-monarch-guard-dark': [],
   // (the moonlight glides are 8-6's: Glide by Moonlight)
-  ...Object.fromEntries(['w8-glide-first', 'w8-glide-pair', 'w8-glide-trunk', 'w8-glide-hunter', 'w8-glide-dark'].map((id) => [id, [6]])),
+  ...Object.fromEntries(['w8-glide-first', 'w8-glide-pair', 'w8-glide-trunk', 'w8-glide-hunter', 'w8-glide-dark', 'w8-glide-leap', 'w8-glide-prowl'].map((id) => [id, [6]])),
   ...Object.fromEntries(nightSections.map((t) => [t.id, [1]])),
   ...Object.fromEntries((['climbers', 'prowlers', 'leapers', 'chains', 'night'] as const).map((t) => [`w8-gate-${t}`, Object.keys(W8_LIT_THEMES).map(Number).filter((st) => W8_LIT_THEMES[st].includes(t))])),
 };

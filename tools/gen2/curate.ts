@@ -160,7 +160,7 @@ function silkLight(st: Stage): ((d: Dead) => number) | undefined {
   };
 }
 
-function measureSide(st: Gen2Stage, type: string, setting: Setting) {
+export function measureSide(st: Gen2Stage, type: string, setting: Setting) {
   const s = st as unknown as Stage;
   // (as this difficulty plays it: an Easy purge or gauntlet is held to its play-time goal, pipeline.ts checkStage)
   const res = checkStage(st, st.gen2.budget);

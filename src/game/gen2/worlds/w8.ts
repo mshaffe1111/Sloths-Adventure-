@@ -82,8 +82,23 @@ export const W8_CREATURES: CreatureDef[] = [
   { id: W8_CREATURE.harpy, enemy: 'harpy', threat: 4, terrain: 'flat', minGround: 260, w: 48, h: 36, hp: 2, footY: 16, tags: ['harpy', 'hunter', 'big', 'night', 'topup'] },
 ];
 
-/** the stages the night harpy hunts in (Night Hunters, the Monarch's wood) */
-export const W8_HARPY_STAGES: readonly number[] = [8, 9];
+/** the stages the night harpy hunts in (Night Hunters) */
+export const W8_HARPY_STAGES: readonly number[] = [8];
+
+/**
+ * The fight stages' own animals (STAGE-RULES §6 "Sameness": on the look-alike measure an animal is its kind, and 8-8 and 8-9 sharing
+ * every kind read alike): 8-8 Night Hunters the night harpy and the small hunters, 8-9 Monarch's Wood the jaguars and the boa guards
+ */
+export const W8_STAGE_FOES: Readonly<Record<number, readonly string[]>> = {
+  // (and the night blooms' and the glides' animals apart from the hunters': 8-2 the boas and the ocelots, 8-6 the jaguars and the boas)
+  2: [W8_CREATURE.boa, W8_CREATURE.ocelot],
+  // (the vine stages too: 8-3's lianas over the ocelots' boughs, 8-5's trunks with a tayra at the foot of each)
+  3: [W8_CREATURE.ocelot, W8_CREATURE.boa],
+  5: [W8_CREATURE.tayra, W8_CREATURE.jaguar],
+  6: [W8_CREATURE.jaguar, W8_CREATURE.boa],
+  8: [W8_CREATURE.ocelot, W8_CREATURE.tayra, W8_CREATURE.harpy],
+  9: [W8_CREATURE.jaguar, W8_CREATURE.boa],
+};
 
 // ───────────────────────────── the props ─────────────────────────────
 
@@ -128,8 +143,8 @@ export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.drop]: "Careful! It's a long way down.", // (new, needs Matt's approval)
 };
 /** the lines that are new in World 8 (the report lists them for Matt) */
-// (the roost line went with 8-4, now the hand-built Lantern Run: its sections stay in w8Sections.ts, held by no gen2 stage today)
-export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop]];
+// (the roosts moved from 8-4, now the hand-built Lantern Run, to 8-2's roost blooms)
+export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop]];
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -155,8 +170,8 @@ export const W8_MANIFEST: WorldManifest = {
   flowers: ['lotus'],
   sections: [],
   handBuilt: ['8-4', '8-7', '8-10'],
-  // (the dark is 8-1's, the roosts 8-4's (dormant: 8-4 is hand-built now), the moonlight glides 8-6's; the shut shrine is said in each fight stage's own gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-4', [W8_LESSON.glide]: '8-6' },
+  // (the dark is 8-1's, the roosts 8-2's (8-4 is hand-built now), the moonlight glides 8-6's; the shut shrine is said in each fight stage's own gate)
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-2', [W8_LESSON.glide]: '8-6' },
   tips: W8_TIPS,
 };
 
@@ -277,7 +292,8 @@ export const W8_MEET_LEAD = 520;
 
 /** World 8's base kit for one stage (the sections are added by w8Game.ts) */
 export function w8Kit(stage: number): WorldKit {
-  const creatures = W8_HARPY_STAGES.includes(stage) ? W8_CREATURES : W8_CREATURES.filter((c) => c.id !== W8_CREATURE.harpy);
+  const own = W8_STAGE_FOES[stage];
+  const creatures = own ? W8_CREATURES.filter((c) => own.includes(c.id)) : W8_CREATURES.filter((c) => c.id !== W8_CREATURE.harpy);
   return { manifest: { ...W8_MANIFEST, creatures }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage) };
 }
 

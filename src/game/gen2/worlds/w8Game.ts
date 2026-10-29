@@ -8,6 +8,7 @@
  */
 import type { Difficulty, SectionTemplate, WorldKit, WorldManifest } from '../types.ts';
 import { w8Kit } from './w8.ts';
+import { W8_BRANCH_SECTIONS } from './w8Branch.ts';
 import { W8_ROOM_SECTIONS, W8R_STAGE, w8RoomsFor } from './w8Rooms.ts';
 import { W8_SECTIONS, W8_STAGE_ONLY } from './w8Sections.ts';
 import { W8_SWING_SECTIONS } from './w8Swing.ts';
@@ -23,7 +24,7 @@ export const W8_GAME_STAGES = ['8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9'] 
 export const W8_DARK_REQUIRED: Readonly<Record<string, string>> = {
   '8-2': 'w8-bloom-dark',
   '8-3': 'w8s-dark-swing',
-  '8-5': 'w8s-dark-swing',
+  '8-5': 'w8b-dark-branch',
   '8-6': 'w8-glide-dark',
   '8-8': 'w8-guard-dark',
   '8-9': 'w8-monarch-dark',
@@ -40,9 +41,20 @@ export const W8_REQUIRED: NonNullable<WorldManifest['required']> = Object.fromEn
 /** the vine stages (8-3 Long Swings, 8-5 Next Branch) hold the lianas; no other stage does */
 export const W8_SWING_STAGES: readonly number[] = [3, 5];
 
-/** which stage holds which section: the lianas the vine stages', the listed ones their stages' (w8Sections W8_STAGE_ONLY) */
+/**
+ * The vine stages' lianas, kept apart (STAGE-RULES §6 "Sameness": on the look-alike measure two stretches of lianas read alike whatever
+ * the section): 8-3 Long Swings has the chains and the hunters' swings, 8-5 Next Branch the climbers' (each liana leads to a trunk: these
+ * and w8Branch.ts's own)
+ */
+export const W8_SWINGS_OF: Readonly<Record<number, readonly string[]>> = {
+  3: ['w8s-first-swing', 'w8s-swing-pair', 'w8s-swing-chain', 'w8s-swing-hunter', 'w8s-knots-swing', 'w8s-swing-run', 'w8s-dark-swing', 'w8s-dark-swing-pair'],
+  5: ['w8s-swing-climb', 'w8s-swing-drop-climb', 'w8s-dark-swing-climb'],
+};
+
+/** which stage holds which section: the lianas their vine stage's, 8-5's own its, the listed ones their stages' (w8Sections W8_STAGE_ONLY) */
 function forStage(stage: number, s: SectionTemplate): boolean {
-  if (W8_SWING_SECTIONS.includes(s)) return W8_SWING_STAGES.includes(stage);
+  if (W8_SWING_SECTIONS.includes(s)) return W8_SWING_STAGES.includes(stage) && (W8_SWINGS_OF[stage] ?? []).includes(s.id);
+  if (W8_BRANCH_SECTIONS.includes(s)) return stage === 5;
   const only = W8_STAGE_ONLY[s.id];
   return !only || only.includes(stage);
 }
@@ -74,6 +86,6 @@ export function w8Falls(t: SectionTemplate): SectionTemplate {
 /** World 8's kit for one stage as the game plays it on `difficulty` */
 export function w8GameKit(stage: number, difficulty: Difficulty = 'normal'): WorldKit {
   const k = w8Kit(stage);
-  const sections = [...W8_SECTIONS, ...W8_SWING_SECTIONS].filter((s) => forStage(stage, s)).map(w8Falls);
+  const sections = [...W8_SECTIONS, ...W8_SWING_SECTIONS, ...W8_BRANCH_SECTIONS].filter((s) => forStage(stage, s)).map(w8Falls);
   return { ...k, manifest: { ...k.manifest, sections: [...sections, ...w8RoomsFor(stage, difficulty).map(w8Falls)], required: W8_REQUIRED } };
 }
