@@ -1,0 +1,162 @@
+{
+ "rock-single": {
+  "old": {
+   "flatness": 0.034,
+   "pitched": 0.813,
+   "hf6k": 3.45,
+   "centroid": 573,
+   "peak": -0.0,
+   "lufs": -16.1,
+   "dur": 1.17
+  },
+  "new": {
+   "flatness": 0.075,
+   "pitched": 0.0,
+   "hf6k": 0.28,
+   "centroid": 780,
+   "peak": -8.1,
+   "lufs": -20.7,
+   "dur": 1.1
+  }
+ },
+ "rock-burst": {
+  "old": {
+   "flatness": 0.024,
+   "pitched": 0.315,
+   "hf6k": 0.67,
+   "centroid": 479,
+   "peak": -0.0,
+   "lufs": -11.5,
+   "dur": 2.69
+  },
+  "new": {
+   "flatness": 0.043,
+   "pitched": 0.074,
+   "hf6k": 0.28,
+   "centroid": 649,
+   "peak": -4.6,
+   "lufs": -17.4,
+   "dur": 1.51
+  }
+ },
+ "petal-trail": {
+  "old": {
+   "flatness": 0.009,
+   "pitched": 0.892,
+   "hf6k": 5.11,
+   "centroid": 2188,
+   "peak": -0.2,
+   "lufs": -9.0,
+   "dur": 2.89
+  },
+  "new": {
+   "flatness": 0.002,
+   "pitched": 0.765,
+   "hf6k": 0.0,
+   "centroid": 693,
+   "peak": -4.3,
+   "lufs": -13.4,
+   "dur": 1.81
+  }
+ },
+ "steps-moss": {
+  "old": {
+   "flatness": 0.089,
+   "pitched": 0.0,
+   "hf6k": 1.75,
+   "centroid": 760,
+   "peak": -0.0,
+   "lufs": -18.5,
+   "dur": 3.19
+  },
+  "new": {
+   "flatness": 0.043,
+   "pitched": 0.003,
+   "hf6k": 0.31,
+   "centroid": 861,
+   "peak": -0.0,
+   "lufs": -17.4,
+   "dur": 2.91
+  }
+ },
+ "steps-wood": {
+  "old": {
+   "flatness": 0.103,
+   "pitched": 0.005,
+   "hf6k": 2.04,
+   "centroid": 845,
+   "peak": -0.0,
+   "lufs": -18.1,
+   "dur": 3.19
+  },
+  "new": {
+   "flatness": 0.036,
+   "pitched": 0.02,
+   "hf6k": 0.3,
+   "centroid": 838,
+   "peak": -0.0,
+   "lufs": -18.1,
+   "dur": 2.89
+  }
+ },
+ "steps-stone": {
+  "old": {
+   "flatness": 0.089,
+   "pitched": 0.002,
+   "hf6k": 1.71,
+   "centroid": 756,
+   "peak": -0.0,
+   "lufs": -18.4,
+   "dur": 3.26
+  },
+  "new": {
+   "flatness": 0.068,
+   "pitched": 0.027,
+   "hf6k": 0.5,
+   "centroid": 1389,
+   "peak": -0.1,
+   "lufs": -19.0,
+   "dur": 2.9
+  }
+ },
+ "mix-4-4": {
+  "old": {
+   "flatness": 0.013,
+   "pitched": 0.824,
+   "hf6k": 0.45,
+   "centroid": 841,
+   "peak": -0.0,
+   "lufs": -7.2,
+   "dur": 29.98,
+   "per_min": 272.0
+  },
+  "new": {
+   "flatness": 0.138,
+   "pitched": 0.156,
+   "hf6k": 5.0,
+   "centroid": 1482,
+   "peak": -0.0,
+   "lufs": -14.1,
+   "dur": 29.99,
+   "per_min": 256.0
+  },
+  "old_fx_only": {
+   "flatness": 0.009,
+   "pitched": 0.827,
+   "hf6k": 0.34,
+   "centroid": 913,
+   "peak": -0.0,
+   "lufs": -6.7,
+   "dur": 29.95
+  },
+  "new_fx_only": {
+   "flatness": 0.056,
+   "pitched": 0.172,
+   "hf6k": 0.55,
+   "centroid": 1008,
+   "peak": -0.0,
+   "lufs": -14.3,
+   "dur": 29.95
+  }
+ }
+}

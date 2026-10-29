@@ -289,19 +289,192 @@ def windChime():
     return level(out, -27)
 
 
+def creatureHits():
+    """a hit landing, one kind per body (combat.ts MATERIALS), three takes each, light then heavy versions:
+    fur (a punch into a pelt), scale (a slap on hide), chitin (a crack of shell), feather (a thump in a burst of feathers),
+    armor (stone and iron bosses: a stone thud), generic (a soft body thump). No shared generic hit any more."""
+    punch = [trim(src(320628), maxdur=0.3), trim(src(522548), maxdur=0.3), trim(src(390557), maxdur=0.3)]
+    slap = [trim(src(552432), maxdur=0.25), trim(src(418530), maxdur=0.25), trim(src(496696), maxdur=0.25)]
+    crack = [trim(src(434832), maxdur=0.2), trim(src(10118), maxdur=0.2), trim(src(456475), maxdur=0.2)]
+    body = [trim(src(290349), maxdur=0.4), trim(src(559309), maxdur=0.4), trim(src(552900), maxdur=0.3)]
+    feath = [trim(src(319614), maxdur=0.3), seg(src(528250), 0.4, 0.3), seg(src(528250), 1.4, 0.3)]
+    fur = slices(260503, 0.15, 0.3, 0.05)
+    stone = [trim(seg(src(9028), 0, 1.0)), trim(src(290093)), trim(src(498584), maxdur=0.4)]
+    out = {}
+    for mat in ['generic', 'fur', 'scale', 'chitin', 'feather', 'armor']:
+        takes = []
+        for heavy in (0, 1):
+            for i in range(3):
+                r = rng.uniform(0.95, 1.05) * (0.86 if heavy else 1.0)
+                b = sat(lp(rate(body[i], r), 2400), 1.5 + heavy)
+                if mat == 'fur':
+                    x = mix((lp(hp(rate(punch[i], r), 120), 4000), 0, 0), (b, 0, -4), (lp(hp(fur[i % len(fur)], 500), 5000), 0.005, -12))
+                elif mat == 'scale':
+                    x = mix((lp(hp(rate(slap[i], r), 200), 5000), 0, 0), (b, 0.002, -5))
+                elif mat == 'chitin':
+                    x = mix((lp(hp(rate(crack[i], r), 400), 5500), 0, -2), (b, 0, -6))
+                elif mat == 'feather':
+                    f = fade(lp(hp(feath[i], 400), 5000), 0.005, 0.12)
+                    x = mix((b, 0, 0), (f, 0.01, -6))
+                elif mat == 'armor':
+                    st = sat(lp(rate(stone[i], r * 0.92), 2200, 4), 1.6)
+                    x = mix((env_decay(st, 0.14), 0, 0), (b, 0, -6))
+                else:
+                    x = mix((b, 0, 0), (lp(hp(rate(punch[(i + 1) % 3], r), 150), 3500), 0, -6))
+                if heavy:
+                    x = mix((x, 0, 0), (lp(rate(body[(i + 1) % 3], 0.8), 900), 0.005, -3))
+                takes.append(fade(x, 0.001, 0.08))
+        out[f'hit_{mat}'] = level(takes[:3], -24) + level(takes[3:], -20)
+    return out
+
+
+def loudest(x, dur, hop=0.02, at=False):
+    """the `dur` s stretch of a recording with the most energy (the call itself, not the room around it); at=True also gives where"""
+    n, h = int(dur * SR), int(hop * SR)
+    if len(x) <= n:
+        return (x, 0) if at else x
+    e = np.convolve(x.astype(np.float64) ** 2, np.ones(n), 'valid')[::h]
+    i = int(np.argmax(e)) * h
+    return (x[i: i + n], i) if at else x[i: i + n]
+
+
+# each creature's knock-out: its own voice (Freesound ids, how long a cut, the rate it plays at), then the body falling
+KO = {
+    'snake':   ([363796, 401499, 363796], 0.45, 0.95),   # (293778 was tried: a steam whistle, not a hiss)
+    'boa':     ([401499, 363796, 401499], 0.55, 0.8),
+    'eagle':   ([75162, 75162, 237107], 0.4, 1.0),
+    'harpy':   ([75162, 554250, 75162], 0.5, 0.85),
+    'ocelot':  ([588624, 607243, 471880], 0.5, 1.0),
+    'jaguar':  ([483821, 447074, 242195], 0.8, 0.95),
+    'caiman':  ([584409, 584409, 476354], 0.7, 0.9),
+    'tayra':   ([438260, 616662, 576401], 0.4, 1.05),
+    'frog':    ([491923, 374737, 620572], 0.45, 1.0),
+    'spider':  ([434022, 434022, 434022], 0.3, 1.0),
+    'ant':     ([434022, 434022, 434022], 0.25, 1.2),
+    'boss':    ([516679, 221688, 483821], 0.9, 0.85),
+}
+
+
+def knockouts():
+    flop = [trim(src(290349), maxdur=0.4), trim(src(559309), maxdur=0.4), trim(src(552900), maxdur=0.3)]
+    puff = slices(532133, 0.25, 0.2) + slices(407186, 0.25, 0.2)
+    crack = [trim(src(434832), maxdur=0.2), trim(src(10118), maxdur=0.2), trim(src(456475), maxdur=0.2)]
+    out = {}
+    for kind, (ids, dur, r) in KO.items():
+        takes = []
+        taken = {}
+        for i, fid in enumerate(ids):
+            x = src(fid)
+            # the same recording again: the stretch already taken is blanked, so the next take is another moment of it
+            for a0, b0 in taken.get(fid, []):
+                x[a0:b0] = 0
+            if kind in ('spider', 'ant'):
+                a0 = (i * 0.15) % max(0.01, len(x) / SR - dur)
+                v = mix((lp(hp(seg(x, a0, dur), 800), 6000), 0, -4), (lp(hp(crack[i], 400), 5500), 0.0, 0))
+            else:
+                v, at = loudest(hp(x, 120), dur, at=True)
+                taken.setdefault(fid, []).append((at, at + len(v)))
+            v = fade(lp(rate(v, r * rng.uniform(0.96, 1.04)), 4200 if kind not in ('eagle', 'harpy', 'tayra') else 5500), 0.01, min(0.15, dur / 3))
+            fl = fade(sat(lp(flop[i % 3], 2200), 1.4), 0.001, 0.08)
+            pf = fade(lp(hp(puff[(i * 2) % len(puff)], 500), 4500), 0.002, 0.08)
+            land = len(v) / SR * 0.7
+            takes.append(fade(mix((v, 0, 0), (fl, land, -5), (pf, land + 0.005, -11)), 0.001, 0.1))
+        out[f'ko_{kind}'] = level(takes, -22 if kind != 'boss' else -18)
+    return out
+
+
+def bossSlam():
+    """the boss card's name landing (SN-10): a huge low impact, the wood of the card slapping down, and a far roll of thunder after"""
+    out = []
+    for big, rum in ((522406, 430204), (569425, 166971)):   # (297426 was tried: it rings like a tuned drum)
+        b = sat(lp(trim(src(big), maxdur=2.0), 2500), 1.4)
+        slap = lp(hp(trim(src(498584), maxdur=0.4), 150), 5000)
+        r = fade(lp(hp(seg(src(rum), 0.3, 2.6), 40), 1200), 0.4, 1.2)
+        out.append(fade(mix((b, 0, 0), (slap, 0, -4), (r, 0.25, -8)), 0.001, 0.6))
+    return level(out, -14)
+
+
+# ------------------------------------------------------------------------------------------------- the world beds (SN-9)
+
+LOOP = 20.0
+
+
+def loop(x, length=LOOP, xf=2.0, start=0.0):
+    """a seamless loop of `length` s: the stretch after it is crossfaded (equal power) into its own start"""
+    x = seg(x, start, length + xf)
+    if len(x) < (length + xf) * SR:
+        x = np.concatenate([x, x])[: int((length + xf) * SR)]
+    n, k = int(length * SR), int(xf * SR)
+    y = x[:n].copy()
+    w = np.linspace(0, np.pi / 2, k)
+    y[:k] = y[:k] * np.sin(w) + x[n: n + k] * np.cos(w)
+    return y.astype(np.float32)
+
+
+def bedmix(*layers):
+    """layers: (signal, gain dB, hp, lp): each made a loop, filtered, summed"""
+    out = np.zeros(int(LOOP * SR), np.float32)
+    for x, g, h, l in layers:
+        y = x
+        if h:
+            y = hp(y, h)
+        if l:
+            y = lp(y, l)
+        out += y[: len(out)] * db(g)
+    return out
+
+
+# (tried and dropped: 573829, a cave hum, is a pitched drone; 459391, fire and bubbling, has a steady whistle at 2.2 kHz; 67121's
+# bubbling and 564788's crackle glide like a whistle)
+BEDS = {
+    # world: ([(freesound id, start s, gain dB, hp Hz, lp Hz)], one-shot sources [(id, kind)], loudness)
+    1: ([(353311, 2, 0, 200, 9000), (396665, 0, -6, 80, 3000)], [(464787, 'birds')], -30),
+    2: ([(523313, 1, 0, 100, 7000), (516620, 0, -8, 600, 9000)], [(464787, 'birds')], -28),
+    3: ([(554780, 2, -10, 60, 900), (541231, 4, -2, 300, 7000)], [(534192, 'drips'), (365287, 'drips')], -31),
+    4: ([(427878, 2, 0, 120, 4500), (396665, 5, -8, 80, 2500)], [(353311, 'birds')], -27),
+    5: ([(464787, 4, 0, 300, 6500), (578004, 0, -4, 400, 6500), (177672, 3, -12, 2000, 6000)], [(353311, 'birds')], -29),
+    6: ([(391437, 2, 0, 150, 6000), (580664, 3, -6, 60, 3000), (445984, 0, -10, 1500, 7000)], [(438646, 'croaks')], -29),
+    7: ([(267013, 2, -2, 80, 2500), (396665, 8, -4, 80, 3500)], [(464787, 'birds')], -31),
+    8: ([(445984, 2, 0, 400, 7500), (424356, 5, -6, 600, 7500), (469021, 0, -12, 150, 4000)], [], -30),
+    9: ([(459393, 2, 0, 50, 3500), (554780, 6, -8, 40, 500)], [], -28),
+    10: ([(327778, 2, 0, 150, 8000), (267013, 4, -6, 60, 2500)], [], -25),
+}
+
+
+def beds():
+    out = {}
+    for w, (layers, shots, target) in BEDS.items():
+        ls = [(loop(src(f), start=a), g, h, l) for f, a, g, h, l in layers]
+        out[f'bed{w}'] = [to_lufs(bedmix(*ls), target, -3)]
+    return out
+
+
 EFFECTS = {f.__name__: f for f in [rock, rockWarn, flower, stepMoss, stepWood, stepStone, stepWater, jump, doubleJump, glide, landing, vine, swish,
-                                   splash, checkpoint, windChime]}
+                                   splash, checkpoint, windChime, bossSlam]}
 
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
     report = {}
-    for name, fn in EFFECTS.items():
-        if ONLY and name not in ONLY:
+    jobs = dict(EFFECTS)
+    if not ONLY or 'hits' in ONLY:
+        for k, v in creatureHits().items():
+            jobs[k] = (lambda v=v: v)
+    if not ONLY or 'kos' in ONLY:
+        for k, v in knockouts().items():
+            jobs[k] = (lambda v=v: v)
+    if not ONLY or 'beds' in ONLY:
+        for k, v in beds().items():
+            jobs[k] = (lambda v=v: v)
+    for name, fn in jobs.items():
+        if ONLY and name not in ONLY and not (name.startswith('bed') and 'beds' in ONLY) and not (name.startswith('hit_') and 'hits' in ONLY) and not (name.startswith('ko_') and 'kos' in ONLY):
             continue
         takes = fn()
         for i, t in enumerate(takes):
             write_wav(os.path.join(OUT, f'{name}_{i}.wav'), t)
-            write_mp3(os.path.join(OUT, f'{name}_{i}.mp3'), t)
+            if name.startswith('bed'):
+                write_mp3(os.path.join(OUT, f'{name}_{i}.mp3'), t, kbps=40, sr=24000)   # (the beds are long: smaller)
+            else:
+                write_mp3(os.path.join(OUT, f'{name}_{i}.mp3'), t)
         report[name] = len(takes)
         print(name, len(takes), 'takes', flush=True)
     used_path = os.path.join(OUT, 'sources.json')

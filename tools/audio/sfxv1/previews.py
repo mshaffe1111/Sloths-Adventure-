@@ -14,7 +14,7 @@ from measure import load, stats, lufs
 TAKES, FXC, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
 ONLY = set(sys.argv[4:])
 HERE = os.path.dirname(os.path.abspath(__file__))
-TMP = os.path.join(OUT, '.wav')
+TMP = os.environ.get('SFX_TMP', '/tmp/claude-0/sfx/wav')   # (the full-size renders stay out of the repo)
 os.makedirs(TMP, exist_ok=True)
 rnd = random.Random(29)
 # each take's gain (dB) from calib.py: the take sits where SN-2 put the old effect it replaces
