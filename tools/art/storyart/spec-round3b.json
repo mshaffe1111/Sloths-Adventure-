@@ -14,8 +14,8 @@
    "meeca_qwen_v1.safetensors"
   ]
  },
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/tools/art/hfbatch/starts/storyart/",
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/3cd34a2b3ba2b8336e2ff126ed93853d124aa2f3/tools/art/hfbatch/starts/storyart/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/3cd34a2b3ba2b8336e2ff126ed93853d124aa2f3/",
  "items": [
   {
    "name": "gr-w1-s40",
