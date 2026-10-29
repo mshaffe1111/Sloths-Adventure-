@@ -15,6 +15,7 @@ magenta spill. Every cut-out strip (near, mid, canopy) goes through this before 
   --unmix R,G,B  the strip was keyed off this light colour (the W1 canopy: white): un-mix it from the edge pixels first
   --px S       the strip has S x the pixels per screen point of a 2048 x 868 one (the native-resolution strips: 2 for a near,
                1.5 for a mid): the ink line and its rules scale with it
+  --topfade F  fade the strip's top F of its height out (a middle strip whose top is solid paint: upright that top is on screen)
   --grade      World 4 (VI-18): saturation +12%, highlights warmed (grade.py does the same to an opaque far strip)
   --q          WebP quality (default 90, what the strips were saved at)
 
@@ -188,7 +189,7 @@ def ink_line(rgb, alpha, width=1.6, k=0.42, px=1.0):
     return rgb * f[..., None]
 
 
-def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despill=False, keep_line=False, veil=None, key=None, do_grade=False, px=1.0):
+def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despill=False, keep_line=False, veil=None, key=None, do_grade=False, px=1.0, topfade=0.0):
     rgb = src_rgba[..., :3].astype(np.float32)
     alpha = src_rgba[..., 3].astype(np.float32) / 255
     info = {}
@@ -249,6 +250,12 @@ def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despi
         a2 = a  # no erode: it would thin the painted line
     if ink:
         big = ink_line(big, a2, px=px)
+    if topfade > 0:
+        # a middle strip whose top is solid paint: its top rows fade out (sideways they are always off screen; upright the trees
+        # dissolve into the far strip's painted sky instead of ending in a straight cut)
+        n = max(1, int(round(a2.shape[0] * topfade)))
+        tt = np.linspace(0, 1, n, dtype=np.float32)
+        a2[:n] *= (tt * tt * (3 - 2 * tt))[:, None]
     # past 6 px into the transparent area the colour is never sampled: black there costs nothing in the file
     far = ndimage.distance_transform_edt(a2 < 0.01) > 6
     big[far] = 0
@@ -268,12 +275,13 @@ def main():
     ap.add_argument('--keep-line', action='store_true')
     ap.add_argument('--grade', action='store_true')
     ap.add_argument('--px', type=float, default=1.0)
+    ap.add_argument('--topfade', type=float, default=0.0)
     ap.add_argument('--unveil', type=float, default=None)
     ap.add_argument('--unmix', default=None, help='r,g,b of a light key to take out of the edge pixels')
     ap.add_argument('--q', type=int, default=90)
     o = ap.parse_args()
     src = np.asarray(Image.open(o.src).convert('RGBA'))
-    out, info = process(src, o.scale, o.esrgan, o.ring, o.ink, o.despill, o.keep_line, o.unveil, None if o.unmix is None else [float(v) for v in o.unmix.split(",")], o.grade, o.px)
+    out, info = process(src, o.scale, o.esrgan, o.ring, o.ink, o.despill, o.keep_line, o.unveil, None if o.unmix is None else [float(v) for v in o.unmix.split(",")], o.grade, o.px, o.topfade)
     Image.fromarray(out, 'RGBA').save(o.dst, 'WEBP', quality=o.q, method=6)
     before, after = edge_stats(src), edge_stats(np.asarray(Image.open(o.dst).convert('RGBA')))
     print(f'{Path(o.dst).name}: {out.shape[1]}x{out.shape[0]} {Path(o.dst).stat().st_size} B  edge {before[0]:.2f} -> {after[0]:.2f}'

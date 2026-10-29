@@ -39,9 +39,6 @@ export interface PaintedSet {
   /** the painted sky above the far strip (<stem>-sky.webp, tools/art/hfbatch/skygpu.py), seen only upright, where the strips are drawn
    * at the size sideways uses and the view runs taller than the far strip (scenery.ts drawStrip) */
   sky: HTMLImageElement | null;
-  /** the middle strip carried on upward (<stem>-midtop.webp), for a middle strip whose trees or cave roof run off its top: upright that
-   * top is on screen */
-  midtop: HTMLImageElement | null;
   /** when it finished decoding (performance.now()): the scenery fades a set in over FADE_IN_MS from then */
   at: number;
 }
@@ -53,11 +50,11 @@ export const FADE_IN_MS = 280;
 const now = (): number => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 
 type Part = keyof PaintedSet;
-const PARTS: Part[] = ['far', 'mid', 'near', 'sky', 'midtop'];
+const PARTS: Part[] = ['far', 'mid', 'near', 'sky'];
 
 function urlFor(stem: string, part: Part): string | null {
   const own = FILES[`../assets/backdrops/${stem}-${part}.webp`];
-  if (own || part === 'sky') return own ?? null; // (the sky goes with its own far strip, never borrowed; a midtop with the middle strip)
+  if (own || part === 'sky') return own ?? null; // (the sky goes with its own far strip, never borrowed)
   // a far-only set (Worlds 1-4 through the day, stageBackdrops.ts) borrows its world's middle and near strips
   if (part !== 'far' && FAR_ONLY.includes(stem)) return FILES[`../assets/backdrops/w${worldOf(stem)}-${part}.webp`] ?? null;
   return null;
@@ -143,7 +140,7 @@ function loadSet(stem: string) {
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
     .then(() => {
       const at = (p: Part) => imgs[parts.indexOf(p)] ?? null;
-      ready.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near'), sky: at('sky'), midtop: at('midtop'), at: now() });
+      ready.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near'), sky: at('sky'), at: now() });
       listeners.forEach((fn) => fn(world));
       trim(stem);
     })
@@ -250,15 +247,13 @@ export const decodedSets = (): string[] => [...ready.keys()];
 export interface CanopySet {
   mid: HTMLImageElement;
   near: HTMLImageElement;
-  /** the canopy's middle strip carried on upward (w<N>c-midtop.webp), as PaintedSet.midtop */
-  midtop: HTMLImageElement | null;
   /** when it finished decoding (the scenery fades it in over FADE_IN_MS) */
   at: number;
 }
 const canopyReady = new Map<number, CanopySet>();
 const canopyLoading = new Map<number, Promise<void>>();
 const canopyFailed = new Set<number>();
-const canopyUrl = (world: number, part: 'mid' | 'near' | 'midtop') => FILES[`../assets/backdrops/w${world}c-${part}.webp`] ?? null;
+const canopyUrl = (world: number, part: 'mid' | 'near') => FILES[`../assets/backdrops/w${world}c-${part}.webp`] ?? null;
 
 /** the canopy strips for a world if it has them and they are decoded; otherwise null (and they start loading) */
 export function canopyFor(world: number): CanopySet | null {
@@ -283,15 +278,8 @@ function loadCanopy(world: number, stem = stemFor(world)): Promise<void> {
   near.decoding = 'async';
   mid.src = mu;
   near.src = nu;
-  // (and the canopy's middle strip carried on upward, when it has one: its leaves run off the top, which is on screen upright)
-  const tu = canopyUrl(world, 'midtop');
-  const top = tu ? new Image() : null;
-  if (top && tu) {
-    top.decoding = 'async';
-    top.src = tu;
-  }
-  const p = Promise.all([mid, near, ...(top ? [top] : [])].map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => { if ([...ready.keys()].some((q) => worldOf(q) === world && ownMid(q))) canopyReady.set(world, { mid, near, midtop: top, at: now() }); })
+  const p = Promise.all([mid, near].map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
+    .then(() => { if ([...ready.keys()].some((q) => worldOf(q) === world && ownMid(q))) canopyReady.set(world, { mid, near, at: now() }); })
     .catch(() => { canopyFailed.add(world); /* the ground strips stay */ })
     .finally(() => canopyLoading.delete(world));
   canopyLoading.set(world, p);
@@ -315,9 +303,7 @@ export function revealSet(parts: { far: string; mid: string; near: string }): Pa
   if (urls.some((u) => !u)) return null;
   // (and the far strip's own painted sky, for the upright view, when it has one)
   const skyUrl = FILES[`../assets/backdrops/${parts.far.replace(/-far$/, '-sky')}.webp`];
-  const topUrl = FILES[`../assets/backdrops/${parts.mid.replace(/-mid$/, '-midtop')}.webp`];
-  const extra = [skyUrl, topUrl];
-  urls.push(...extra.filter((u): u is string => !!u));
+  if (skyUrl) urls.push(skyUrl);
   revealLoading.add(key);
   const imgs = urls.map((u) => {
     const im = new Image();
@@ -326,12 +312,7 @@ export function revealSet(parts: { far: string; mid: string; near: string }): Pa
     return im;
   });
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => {
-      let i = 3;
-      const sky = skyUrl ? imgs[i++] : null;
-      const midtop = topUrl ? imgs[i++] : null;
-      reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2], sky, midtop, at: typeof performance !== 'undefined' ? performance.now() : 0 });
-    })
+    .then(() => reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2], sky: imgs[3] ?? null, at: typeof performance !== 'undefined' ? performance.now() : 0 }))
     .catch(() => { /* no reveal: the world's own strips stay */ })
     .finally(() => revealLoading.delete(key));
   return null;

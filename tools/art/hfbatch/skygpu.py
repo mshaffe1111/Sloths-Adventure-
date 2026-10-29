@@ -11,7 +11,8 @@ striphdgpu.py), so the sky repeats left to right like the strip. Results to the 
   start-<name>.jpg     the start it painted from
   carrier-<TAG>-<k>.png the webps packed byte for byte into greyscale PNGs under 6 MB (tools/art/w5/unpack_carrier.py)
 env SPEC = the spec's bucket path: {"loras": {"style": [repo, file, scale]}, "neg", "tw", "items": [{"name", "src" (url), "prompt",
-"strength", "seed", "steps"?, "ext"?, "ctx"?, "bg"? (a cut-out's key colour)}]}; SUB; TAG. The token reaches the job only as the secret HF_TOKEN.
+"strength", "seed", "steps"?, "ext"?, "ctx"?}]}; SUB; TAG. (Tried on the middle strips too, to carry their trees on up: on a key colour the
+model painted whole new misty scenes in a pink haze that would not key, pilot 5; they fade out at the top instead, defringe.py --topfade.) The token reaches the job only as the secret HF_TOKEN.
 """
 import io, json, math, os, time, urllib.request
 from pathlib import Path
@@ -116,9 +117,7 @@ for it in SPEC['items']:
         with urllib.request.urlopen(it['src'], timeout=60) as r:
             im = Image.open(io.BytesIO(r.read())).convert('RGBA')
         a = np.asarray(im).astype(np.float32)
-        # a cut-out (a middle strip) is painted on flat magenta, and keyed again afterwards (skycut.py)
-        BG = np.array(it.get('bg', [255, 0, 255]), np.float32)
-        rgb = a[..., :3] * (a[..., 3:4] / 255) + BG * (1 - a[..., 3:4] / 255)
+        rgb = a[..., :3]
         H, W, _ = rgb.shape
         E = int(round(H * it.get('ext', 0.5) / 16) * 16)
         O = int(round(H * 0.16 / 16) * 16)  # what skycut.py takes of the strip's own rows

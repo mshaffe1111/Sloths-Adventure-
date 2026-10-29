@@ -41,6 +41,10 @@ RECIPES = [
     (['w5gold2', 'w5dusk1', 'w5dusk2', 'w5twi1', 'w5twi2'], '8c1f0ab', ['--scale', '1', '--keep-line', '--despill', '--q', '82']),
     (['w5night'], '1baf7ca', ['--scale', '1', '--keep-line', '--despill', '--q', '82']),
 ]
+# the middle strips whose top edge is solid paint (trees, the cave roof run off it): upright that edge is on screen, so their top 7% fades
+# out into the far strip's painted sky (sideways those rows are always above the screen). Measured: alpha in their top rows.
+TOPFADE = {'w1', 'w1c', 'w3', 'w5', 'w5gold2', 'w5dusk1', 'w5dusk2', 'w5twi1', 'w5twi2', 'w5night', 'w7'}
+
 # (before the native-resolution strips, 2026-10-29, Worlds 1-4, 6, 7 and 10 came from the 1024 px originals at 18bedcc^ with
 # ['--scale', '2', '--esrgan', '--ink'], and Worlds 8-9 from 9f2dbfe with ['--scale', '1', '--esrgan', '--ring', '2', '--ink'])
 
@@ -90,6 +94,8 @@ def main():
                     src.write_bytes(subprocess.run(['git', 'show', f'{rev}:{x.get("dir", BACK)}/{name}.webp'], cwd=ROOT, check=True,
                                                    capture_output=True).stdout)
                     args = [a for a in opts + x.get('part', {}).get(part, []) if not (o.clean and a == '--ink')]
+                    if part == 'mid' and stem in TOPFADE:
+                        args += ['--topfade', '0.07']
                     if name in PRE:
                         spec = importlib.util.spec_from_file_location(PRE[name], Path(__file__).with_name(f'{PRE[name]}.py'))
                         mod = importlib.util.module_from_spec(spec)
