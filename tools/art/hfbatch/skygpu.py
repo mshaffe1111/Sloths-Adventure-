@@ -83,6 +83,21 @@ def blur_x(a, s):
     return a
 
 
+def start_flat(rgb, E, C, seed):
+    """the plain start (round 2): the strip's top row carried straight up, easing into the average colour of its top tenth, a little
+    noise; no shapes at all, so the model cannot copy a second landscape from it (round 1 stacked one over w6, w7, w9dawn)"""
+    H, W, _ = rgb.shape
+    near = blur_x(rgb[:3].mean(0, keepdims=True), 8)
+    far = blur_x(rgb[: max(4, H // 10)].mean(0, keepdims=True), 200)
+    y = np.arange(E, dtype=np.float32)[:, None, None]
+    t = np.clip((E - 1 - y) / (E * 0.4), 0, 1)
+    t = t * t * (3 - 2 * t)
+    up = near * (1 - t) + far * t
+    rng = np.random.default_rng(seed)
+    up = up + blur_x(rng.normal(0, 1, (E, W, 1)).astype(np.float32), 3) * 14
+    return np.clip(np.concatenate([up, rgb[:C]], 0), 0, 255)
+
+
 def start(rgb, E, C, seed):
     """the canvas the model paints from: the strip's own top O rows at the bottom; above, the strip's top quarter (its sky, canopy or
     cave roof) turned over, stretched up and shifted along, so there is painted texture of the right kind everywhere for the model to
@@ -125,7 +140,7 @@ for it in SPEC['items']:
         E = int(round(H * it.get('ext', 0.5) / 16) * 16)
         O = int(round(H * 0.16 / 16) * 16)  # what skycut.py takes of the strip's own rows
         C = int(round(H * it.get('ctx', 0.45) / 16) * 16)  # the strip shown below, for the model to carry on from
-        cv = start(rgb, E, C, it.get('seed', 7))
+        cv = (start_flat if it.get('start') == 'flat' else start)(rgb, E, C, it.get('seed', 7))
         b = io.BytesIO(); Image.fromarray(cv.astype(np.uint8)).save(b, 'JPEG', quality=85)
         put(f"start-{it['name']}.jpg", b.getvalue())
         CH = E + C
@@ -136,7 +151,7 @@ for it in SPEC['items']:
         mask[:E] = 255
         mask[E:E + R] = np.linspace(255, 0, R, dtype=np.float32)[:, None].astype(np.uint8)
         mimg = Image.fromarray(mask, 'L')
-        n = math.ceil(W / (TW - 256))
+        n = math.ceil(W / (TW - it.get('ov', 256)))
         acc = np.zeros((CH, W, 3), np.float64)
         wsum = np.zeros((1, W, 1), np.float64)
         for i in range(n):
