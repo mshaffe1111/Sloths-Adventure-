@@ -22,7 +22,7 @@
  */
 import { G } from '../../protoStage.ts';
 import type { StageHint } from '../../protoStage.ts';
-import type { Enemy, Platform } from '../../types.ts';
+import type { Enemy, Platform, Vine } from '../../types.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
 import type { CreatureDef, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W6S_EMIT, W6S_PROPS } from './w6Swing.ts';
@@ -273,6 +273,9 @@ export function w8Kit(stage: number): WorldKit {
   return { manifest: { ...W8_MANIFEST, creatures }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage) };
 }
 
+/** how far a climbing vine stands out in front of the bough it leads up to (px): Pokey's half-width (21) and a little */
+export const CLIMB_CLEAR = 26;
+
 /** the stage that teaches the night harpy (8-8 Night Hunters; 8-9 comes after it, so it is not taught twice) */
 export const W8_HARPY_LESSON = 8;
 
@@ -280,7 +283,7 @@ export const W8_HARPY_LESSON = 8;
  * The stage as the engine plays it: the pits' blocks drawn as boughs (below); in 8-8, Dot's harpy line W8_MEET_LEAD px before the first night harpy (fillSockets writes
  * proto.hints after the spawn hook runs, so the line is added here). Calling it twice changes nothing.
  */
-export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; config?: { miniIndex: number }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
+export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; vines?: Vine[]; config?: { miniIndex: number }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
   const w8 = st.proto?.gen2?.w8 as W8Extras | undefined;
   // (the soft pits' floors and their steps out are the pipeline's 'moss_stone' blocks, drawn as pale stone pillars in the treetops: they
   // are lower boughs here, in the kit's bark, each reaching down like a bough (its top unchanged, so nothing the check walks moves))
@@ -288,6 +291,15 @@ export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; co
     if (p.type !== 'solid' || p.style !== 'moss_stone') continue;
     p.style = 'log';
     p.height = Math.max(p.height, W8_GROUND.bankH + 70);
+  }
+  // (a climbing vine stands on the face of the bough it leads up to (a section's `over` on a vine starts at the vine), so Pokey, snapped
+  // to the vine, hung 21 px inside it: climbing back down and hopping off, he went up through the bough's one-way top and fell out of the
+  // bottom of its body: a life, in the first seconds of 8-3, 8-4, 8-5 and 8-9 for the first-timer bot. The vine stands CLIMB_CLEAR px out
+  // in front of the face; the vault off its top still lands on the bough)
+  for (const v of st.vines ?? []) {
+    if (v.vineType !== 'tree_climb') continue;
+    const face = (st.platforms ?? []).find((p) => p.type === 'solid' && Math.abs(p.y - v.topY) <= 2 && (Math.abs(p.x - v.x) <= 2 || Math.abs(p.x + p.width - v.x) <= 2));
+    if (face) v.x += Math.abs(face.x - v.x) <= 2 ? -CLIMB_CLEAR : CLIMB_CLEAR;
   }
   if (st.proto && w8?.meets?.length && st.config?.miniIndex === W8_HARPY_LESSON) {
     const hints = (st.proto.hints ??= []);
