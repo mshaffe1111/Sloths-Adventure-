@@ -269,11 +269,10 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     hopUp(j(140, 160), j(55, 65), 300);
     rootUp(j(330, 350), 440);
     flag();
-    hint(cur.x + cur.width / 2, cur.y, 'The water stops at the flags. Breathe.'); // (new, needs Matt's approval)
   });
   // 3. DEVELOP: lianas up (two stacked lianas keep their heights apart, or their swings shrink: physics.ts swingSetup)
   section('Develop: lianas up', () => {
-    hint(cur.x + cur.width / 2, cur.y, 'Wait for the swing. Let go at the top.'); // (new, needs Matt's approval)
+    // (no line: lianas are taught in 6-1, and a guide doesn't re-teach a move (STAGE-RULES §1, Dot is a guide, not a narrator))
     liana(80, 260, true);
     rootUp(j(420, 440), 300);
     liana(80, 260);

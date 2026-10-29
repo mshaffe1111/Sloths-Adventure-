@@ -411,8 +411,9 @@ export class GameEngine {
   /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey, the puzzle part and what it works all fit (puzzleCamera.ts:
    * never below 0.75 sideways, further upright, roomFloor) */
   private roomZoom = 1;
-  /** 6-8's crown: the view pulls back as he stands on it (1: no pull; proto.reveal) */
+  /** 6-8's crown: the view pulls back as he stands on it (1: no pull; proto.reveal), and its chime has sounded */
   private revealZoom = 1;
+  private revealHeard = false;
   /** the zoom a room pulls back from (css px per world px: the usual framing, applyZoom) */
   private roomUsual = 1;
   /** how far the room's framing is blended in (0 outside, 1 inside a room), and where it last aimed (the view's middle) */
@@ -477,8 +478,6 @@ export class GameEngine {
   private tideSet: TideSetting = TIDE.normal;
   private tideWarned = Infinity;
   private tideChurn = 0;
-  /** when the tide's last surge began (game time): its foam pulse */
-  private tideSurgeAt = -9;
   /** where the eagle's shadow falls this frame (drawn after the bushes and the front grass), or null */
   private watchShadowAt: { x: number; a: number } | null = null;
   /** World 3: the watcher is a pair of eyes in the dark, not an eagle (where they are this frame, world px; drawn over the darkness) */
@@ -648,6 +647,7 @@ export class GameEngine {
     this.chaseNext = 0;
     this.tide = this.proto?.tide ? newTide(this.proto.tide) : null;
     this.revealZoom = 1;
+    this.revealHeard = false;
     setReveal(0, null);
     this.tideSet = isEasy() ? TIDE.easy : TIDE.normal;
     this.tideWarned = Infinity;
@@ -5540,7 +5540,6 @@ export class GameEngine {
     if (this.tide?.on) this.drawTideFront(ctx);
     ctx.restore(); // end world transform
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
-    if (this.tide) this.drawTideEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
     if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
@@ -6141,7 +6140,6 @@ export class GameEngine {
     const ev = stepTide(t, plan, this.tideSet, dt, p.y, resting);
     if (ev === 'surge') {
       // a surge: a pulse of foam along the line, splashes, a low rush
-      this.tideSurgeAt = this.gameTime;
       for (let i = 0; i < 3; i++) this.spawnWaterSplash(this.camera.x + ((i + 0.2 + Math.random() * 0.6) / 3) * this.camera.viewportWidth, t.y);
       if (t.y - p.y < this.tideSet.band + 200) sound.playWhoosh();
     }
@@ -6177,6 +6175,11 @@ export class GameEngine {
     const strips = p.y < rv.load ? revealSet(rv.strips) : null;
     setReveal((rv.from - p.y) / (rv.from - rv.full), strips);
     const onCrown = p.grounded && Math.abs(p.y - rv.crown) < 6;
+    // the first step onto the crown: a chime of discovery as the view opens (once a run)
+    if (onCrown && !this.revealHeard) {
+      this.revealHeard = true;
+      sound.playRelicFound();
+    }
     const want = onCrown ? 0.72 : 1;
     const prev = this.revealZoom;
     this.revealZoom += (want - this.revealZoom) * Math.min(1, dt * 1.2);
@@ -6198,8 +6201,7 @@ export class GameEngine {
     drawBadWater(ctx, x0, x1, t.y, bottom, this.gameTime);
     ctx.restore();
     // the foam: brightest as a surge comes in, a soft glow otherwise
-    const since = this.gameTime - this.tideSurgeAt;
-    const flare = t.warn > 0 ? 0.6 + 0.4 * Math.sin(this.gameTime * 14) : surging(t, this.tideSet) ? Math.max(0, 1 - since / 1.2) : 0;
+    const flare = t.warn > 0 ? 0.6 + 0.4 * Math.sin(this.gameTime * 14) : surging(t, this.tideSet);
     const a = 0.18 + 0.5 * flare;
     const g = ctx.createLinearGradient(0, t.y - 16, 0, t.y + 12);
     g.addColorStop(0, 'rgba(236, 232, 214, 0)');
@@ -6207,21 +6209,6 @@ export class GameEngine {
     g.addColorStop(1, 'rgba(236, 232, 214, 0)');
     ctx.fillStyle = g;
     ctx.fillRect(x0, t.y - 16, x1 - x0, 28);
-  }
-
-  /** 6-8's tide on the screen: the bottom edge darkens with murky water as it closes in (or while it is below the view) */
-  private drawTideEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
-    const t = this.tide!;
-    if (!t.on) return;
-    const k = Math.max(0, Math.min(1, (this.tideSet.band + 150 - (t.y - this.player.y)) / 500));
-    if (k <= 0.02) return;
-    const h = vh * 0.18;
-    const pulse = 0.8 + 0.2 * Math.sin(this.gameTime * (t.warn > 0 ? 12 : 4));
-    const g = ctx.createLinearGradient(0, vh, 0, vh - h);
-    g.addColorStop(0, `rgba(58, 52, 36, ${0.6 * k * pulse})`);
-    g.addColorStop(1, 'rgba(58, 52, 36, 0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, vh - h, vw, h);
   }
 
   /** caught on the long branch: one heart, back at the flag with the branch whole again from there, the collapse waiting a moment */

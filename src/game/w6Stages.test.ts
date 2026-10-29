@@ -7,7 +7,7 @@ import { buildStiltClimb, STILT_COLUMN, STILT_CREATURES, STILT_VIEW } from './w6
 import { STILT_FRAMES, STILT_PIECES } from './w6StiltArt.ts';
 import { findForStage } from './finds.ts';
 import { readFileSync, existsSync } from 'node:fs';
-import { newTide, restartTide, stepTide, TIDE, type TideSetting } from './risingTide.ts';
+import { newTide, restartTide, stepTide, swell, TIDE, type TideSetting } from './risingTide.ts';
 import { lianaRelease, VINE } from './gen2/pipeline.ts';
 import { LIANA, WATER_LINE } from './gen2/types.ts';
 import { W6_CREATURES } from './gen2/worlds/w6.ts';
@@ -130,7 +130,9 @@ test('6-8: Dot says the water line on the mudflat before any water can reach him
     const water = st.proto.hints.find((h) => h.text === WATER_LINE)!;
     assert.ok(water && water.x < 500 && water.aboveY! >= st.spawnY, `seed ${s}: the water line on the mudflat`);
     for (const h of st.proto.hints) if (h.text !== WATER_LINE) assert.ok(words(h.text) < 10, `seed ${s}: "${h.text}"`);
-    for (const re of [/stops at the flags/, /Wait for the swing/, /Spring tide/, /Stone towers/]) assert.ok(st.proto.hints.some((h) => re.test(h.text)), `seed ${s}: ${re}`);
+    for (const re of [/Spring tide/, /Stone towers/]) assert.ok(st.proto.hints.some((h) => re.test(h.text)), `seed ${s}: ${re}`);
+    assert.ok(!st.proto.hints.some((h) => /Wait for the swing|stops at the flags/.test(h.text)), 'a guide, not a narrator: no re-teaching the liana, no nagging');
+    assert.ok(!st.proto.hints.some((h) => /Wait for the swing|stops at the flags/.test(h.text)), 'no re-teaching, no nagging');
     const tide = st.proto.tide!;
     assert.ok(tide.low > st.spawnY + 30, 'the water starts under the mudflat');
     assert.ok(tide.turnAbove < st.spawnY - 300, 'it turns once he is up the first root');
@@ -355,10 +357,19 @@ test('6-8 the crown: the top of the canopy, the whole width, the shrine at its f
   }
 });
 
-test('6-8 the tide comes in surges that average out to its own rise (so the careful-player margins hold)', () => {
+test('6-8 the tide comes in surges that swell and ease smoothly and average out to its own rise (so the careful-player margins hold)', () => {
   for (const set of [TIDE.normal, TIDE.easy]) {
-    const { every, len, up, down } = set.surge;
-    assert.ok(Math.abs((len * up + (every - len) * down) / every - 1) < 1e-9);
-    assert.ok(up > 1.5 && down > 0.3, 'a surge you can see, and still rising between them');
+    let sum = 0, prev = swell(set, 0), jump = 0;
+    const n = 600;
+    for (let i = 0; i < n; i++) {
+      const k = swell(set, (i / n) * set.surge.every);
+      sum += k / n;
+      jump = Math.max(jump, Math.abs(k - prev));
+      prev = k;
+    }
+    assert.ok(Math.abs(sum - 1) < 1e-6, `average ${sum}`);
+    assert.ok(swell(set, 0) > 1.6 && swell(set, set.surge.every / 2) < 0.4, 'a surge you can see');
+    assert.ok(swell(set, set.surge.every / 2) > 0, 'still rising between them');
+    assert.ok(jump < 0.05, 'never a jerk');
   }
 });

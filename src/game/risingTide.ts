@@ -34,15 +34,15 @@ export interface TideSetting {
   /** the warning line: the water this close under him (px; inside `close`, so only a stop between flags brings it) */
   near: number;
   /**
-   * it comes in surges, not a steady creep: every `every` s a surge of `len` s at `up` times its own rise, and between them `down`
-   * times it (on average its own rise: len * up + (every - len) * down = every). Only its own rise surges; catching up and creeping don't
+   * it comes in surges, not a steady creep: its own rise swells and eases every `every` s, 1 + `depth` times at the top of a surge and
+   * 1 - `depth` between (a cosine, so it never jerks; on average its own rise). Only its own rise surges; catching up and creeping don't
    */
-  surge: { every: number; len: number; up: number; down: number };
+  surge: { every: number; depth: number };
 }
 
 export const TIDE: Record<'normal' | 'easy', TideSetting> = {
-  normal: { speed: 24, spring: 31, band: 400, catch: 90, close: 320, creep: 6, hold: 6, warn: 2, under: 560, wait: 3, near: 280, surge: { every: 4, len: 1.4, up: 2, down: (4 - 1.4 * 2) / (4 - 1.4) } },
-  easy: { speed: 16, spring: 21, band: 460, catch: 60, close: 380, creep: 3, hold: 10, warn: 3, under: 640, wait: 5, near: 340, surge: { every: 5, len: 1.6, up: 2, down: (5 - 1.6 * 2) / (5 - 1.6) } },
+  normal: { speed: 24, spring: 31, band: 400, catch: 90, close: 320, creep: 6, hold: 6, warn: 2, under: 560, wait: 3, near: 280, surge: { every: 4, depth: 0.85 } },
+  easy: { speed: 16, spring: 21, band: 460, catch: 60, close: 380, creep: 3, hold: 10, warn: 3, under: 640, wait: 5, near: 340, surge: { every: 5, depth: 0.85 } },
 };
 
 export interface TidePlan {
@@ -73,12 +73,16 @@ export function newTide(plan: TidePlan): TideState {
   return { y: plan.low, on: false, warn: 0, hold: 0, beat: 0 };
 }
 
-/** is it surging now (in the first `surge.len` s of its beat)? */
-export const surging = (s: TideState, set: TideSetting): boolean => s.on && s.warn <= 0 && s.hold <= 0 && s.beat < set.surge.len;
+/** how strongly it surges `beat` s into its swell: 1 + depth at the top (beat 0), 1 - depth between */
+export const swell = (set: TideSetting, beat: number): number => 1 + set.surge.depth * Math.cos((2 * Math.PI * beat) / set.surge.every);
 
-/** how fast it rises with him `gap` px above it, his feet at `feet`, `beat` s into its surge */
-export function tideSpeed(plan: TidePlan, set: TideSetting, gap: number, feet: number, beat = set.surge.len): number {
-  const own = (feet < plan.springAbove ? set.spring : set.speed) * (beat < set.surge.len ? set.surge.up : set.surge.down);
+/** how much of a surge is on now (0 to 1: the foam's flare), while it rises */
+export const surging = (s: TideState, set: TideSetting): number =>
+  s.on && s.warn <= 0 && s.hold <= 0 ? Math.max(0, (swell(set, s.beat) - 1) / set.surge.depth) : 0;
+
+/** how fast it rises with him `gap` px above it, his feet at `feet`, `beat` s into its swell */
+export function tideSpeed(plan: TidePlan, set: TideSetting, gap: number, feet: number, beat = set.surge.every / 4): number {
+  const own = (feet < plan.springAbove ? set.spring : set.speed) * swell(set, beat);
   if (gap > set.band) return Math.max(own, set.catch);
   return gap < set.close ? set.creep : own;
 }
