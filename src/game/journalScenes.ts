@@ -13,6 +13,8 @@ import { demoPlayer } from './miloVariants.ts';
 import { drawHeroDemo } from './heroSprite.ts';
 import { drawBankArt, drawBranchArt, drawBushArt, drawKitPiece, drawLogArt, drawSwingLianaArt } from './protoArt.ts';
 import { VINE_HANG } from './heroVine.ts';
+import { drawRopeAlong } from './ropeArt.ts';
+import { HANG_DROP } from './rope.ts';
 import { drawGoldSnake } from './goldSnake.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawHazardEntity } from './creatures.ts';
@@ -466,16 +468,26 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       ground(ctx, 260, SCENE_W + 10);
       pit(ctx, 40, 260);
       const ry = 38;
-      ctx.save();
-      ctx.strokeStyle = '#8b6a3a';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(-10, ry);
-      ctx.quadraticCurveTo(SCENE_W / 2, ry + 10, SCENE_W + 10, ry);
-      ctx.stroke();
-      ctx.restore();
+      // the painted rope (ropeArt.ts), sagging a little; his paws on it (heroRope.ts hangs him HANG_DROP above his feet)
+      const ropeY = (x: number) => ry + 20 * ((x + 10) / (SCENE_W + 20)) * (1 - (x + 10) / (SCENE_W + 20));
+      const pts: Array<[number, number]> = [];
+      for (let i = 0; i <= 40; i++) {
+        const rx = -10 + ((SCENE_W + 20) * i) / 40;
+        pts.push([rx, ropeY(rx)]);
+      }
+      if (!drawRopeAlong(ctx, pts)) {
+        ctx.save();
+        ctx.strokeStyle = '#9a7656';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        pts.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
+        ctx.stroke();
+        ctx.restore();
+      }
       const x = lerp(30, 270, clamp01((t - 0.3) / 3));
-      pokey(ctx, now, x, ry + 64, { hanging: true, grounded: false, vx: 80, walkCycle: t * 5, facing: 1 });
+      // (walkCycle grows 0.08 per px crept, as on a real rope: 80 px/s here)
+      const moving = t > 0.3 && t < 3.3;
+      pokey(ctx, now, x, ropeY(x) + HANG_DROP, { hanging: true, grounded: false, vx: moving ? 80 : 0, walkCycle: Math.max(0, x - 30) * 0.08, facing: 1 });
       break;
     }
     case 'hide': {

@@ -1,0 +1,156 @@
+{
+ "tag": "w6to10-monarch",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "hover": "hover",
+  "fly": "fl_2",
+  "glide": "glide",
+  "screech": "screech",
+  "dive": "diveprep",
+  "hurt": "hurt",
+  "fall": "deadfall",
+  "roost": "perched"
+ },
+ "clips": [
+  {
+   "name": "w6t-monarch-hover-s3",
+   "src": "../stills/w8m-hover.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, hovers in place beating its wide leathery wings in big slow strokes, its body bobbing gently, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-hover-s11",
+   "src": "../stills/w8m-hover.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, hovers in place beating its wide leathery wings in big slow strokes, its body bobbing gently, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-fly-s3",
+   "src": "../stills/w8m-fl_2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, flies forward in place, beating its wings hard in big clear strokes, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-fly-s11",
+   "src": "../stills/w8m-fl_2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, flies forward in place, beating its wings hard in big clear strokes, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-glide-s3",
+   "src": "../stills/w8m-glide.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, glides forward with its wings spread wide, tilting gently and flapping once, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-glide-s11",
+   "src": "../stills/w8m-glide.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, glides forward with its wings spread wide, tilting gently and flapping once, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-screech-s3",
+   "src": "../stills/w8m-screech.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, spreads its wings wide and holds, then opens its mouth wide and screeches, its whole body shaking, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-screech-s11",
+   "src": "../stills/w8m-screech.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, spreads its wings wide and holds, then opens its mouth wide and screeches, its whole body shaking, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-dive-s3",
+   "src": "../stills/w8m-diveprep.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, pulls its wings up and holds, then swoops down and forward in a steep dive and pulls back up, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-dive-s11",
+   "src": "../stills/w8m-diveprep.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, pulls its wings up and holds, then swoops down and forward in a steep dive and pulls back up, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-hurt-s3",
+   "src": "../stills/w8m-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, jolts back in the air from a hit, wings crumpling, then flaps and steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-hurt-s11",
+   "src": "../stills/w8m-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, jolts back in the air from a hit, wings crumpling, then flaps and steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-fall-s3",
+   "src": "../stills/w8m-deadfall.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, goes limp, folds its wings and tumbles down, landing in a crumpled heap on the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-fall-s11",
+   "src": "../stills/w8m-deadfall.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, goes limp, folds its wings and tumbles down, landing in a crumpled heap on the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-roost-s3",
+   "src": "../stills/w8m-perched.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, hangs upside down wrapped in its wings, breathing slowly, then opens its red eyes and stretches its wings, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-monarch-roost-s11",
+   "src": "../stills/w8m-perched.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey bat with wide leathery dark wings, big pointed ears and glowing red eyes, hangs upside down wrapped in its wings, breathing slowly, then opens its red eyes and stretches its wings, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  }
+ ]
+}

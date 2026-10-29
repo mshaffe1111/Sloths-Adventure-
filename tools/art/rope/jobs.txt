@@ -1,0 +1,12 @@
+rope traverse jobs, 2026-10-29 (cap for this task $2 of Matt's last ~$12 on Hugging Face)
+rope-hoh 6ae350623fb22a235dd5bd96 rtx-pro-6000 created 13:55:46Z: ropegpu.py, 3 clips from Gemini cell 1 (both paws on the rope), last frame pinned
+  to the first, motion model 1.0: rope-hoh-s3-n49, rope-hoh-s11-n49, rope-hoh-s7-n33 (bucket mshaffe111/w5-xfer rope/clips/)
+rope-hoh finished 14:06:43Z (10.9 min, ~$0.50). s3: turns his back to the camera from frame 8 (off model); s7: turns to face front then back
+  (off model); s11: a real hand-over-hand (reach forward, grip ahead, bring the other paw up) but his reaching wrist loses its wrap, his
+  body stretches long through the reach and a stub of a tail appears (drift)
+rope-hoh2 6ae353b641e90535df78df1a rtx-pro-6000 created 14:09:58Z: PASS=2, the wraps, a short round body and no tail in the prompt
+  (and tail/long body/bare wrists/back view in the negative), seeds 11 and 19, 41 frames, last frame pinned
+rope-hoh2 finished 14:17:24Z (7.4 min, ~$0.34). s11: the arm flails back and down and comes back, little travel, a smeared arm
+  (frames 3-11); s19: turns his back to the camera (frames 4-15). Neither on model.
+total 18.3 min on rtx-pro-6000 at ~$2.75/h = ~$0.84 of the $2 cap. Verdict: every clip drifted off model, so the game uses the Gemini
+  cells alone, timed (picks.json); the first pass's s11 frames are shown in reference/prop-sheets/qa-notes/rope/hf-clip-s11-rejected.jpg

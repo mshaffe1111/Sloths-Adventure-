@@ -31,11 +31,19 @@ goes onto the Docs roadmap and, if it is a rule, into STAGE-RULES.md or CLAUDE.m
 2. **As many helpers at once as there are separate jobs** (Matt, 2026-10-28: he would rather run twice as many to finish sooner),
    but only on separate files, and a helper that needs another's result waits for it. Split big jobs into pieces that own separate
    (new) files with agreed interfaces.
-3. **The brief must include:** the goal in Matt's words; "read reference/STAGE-RULES.md and reference/GEMINI-LEDGER.md first" and the
+3. **The brief must include:** the polish bar (STAGE-RULES §5b) and the Polish check it must report; the goal in Matt's words; "read reference/STAGE-RULES.md and reference/GEMINI-LEDGER.md first" and the
    sections that apply; the files it owns and the files other helpers own right now; the exact checks it must run (STAGE-RULES §5),
    **on more than one roll**; the deliverables (screenshots upright and sideways, before/after numbers, notes); "update the ledger
    rows you change and add a §6 lesson if you learn one"; don't push, don't publish the test link.
 4. Add it to STATUS.md (what, branch, files, started).
+5. **The lead owns the helper's result (Matt, 2026-10-29: "I hold you responsible for these helpers... when they fail, I see this as a
+   failure from you").** A brief for anything that changes the look or adds a mode must carry the art direction, not just the mechanics:
+   the reference picture to match, the lighting (STAGE-RULES §4: where the light comes from, what's dark, what must stay readable), the
+   mood beat by beat, and what "bad" looks like (stretched textures, flat lighting, copy-pasted pieces). A brief for a stage or mode must
+   say that every move it teaches is REQUIRED somewhere (an obstacle you can steer round is not a jump). The lead reviews every mock-up
+   against Matt's bar (his polish rule, his reference pictures) before showing it to him, and sends it back if it falls short. Never pass
+   a mock-up on just because the helper finished it. (Lesson: 7-4's first slide mock-up went to Matt with flat stretched walls and no move
+   that needed a jump: "that looks horrible".)
 
 ## 3b. Cloud sessions (separate machines; Matt, 2026-10-28: "use extra as soon as possible so we run at capacity")
 
@@ -94,6 +102,8 @@ check the deploy and the Android build, update STATUS.md and the roadmap, tell t
 Make the notes do the thinking: a brief points at the exact files, rules and commands (STAGE-RULES §8 is the quick start), so a helper
 spends its tokens on the job, not on finding its way around. When a helper had to work something out that the next one will need,
 add it to the notes.
+
+**(Lifted 2026-10-29: Matt got a usage reset, "run as we did yesterday": full capacity, two builders per world. Use this mode again when he says the budget is tight.)**
 
 **Lowest cost, not sloppy (Matt, 2026-10-28: "keep this down to the cheapest cost now that we have things set up... I don't want it to
 get sloppy"):**
