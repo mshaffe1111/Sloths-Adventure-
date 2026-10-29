@@ -1832,9 +1832,7 @@ export class GameEngine {
             if (!this.facingLocked()) p.facing = dir as 1 | -1;
             const reversing = Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
             const acc = (p.grounded ? PHYS.groundAcc : PHYS.airAcc) * speedMult + (reversing ? (p.grounded ? PHYS.turnBonus : PHYS.airTurn) : 0);
-            // (at exactly run speed too: with `<` he bled 17 px/s every other frame, 285 then 268, so a running take-off was one or the
-            // other by frame parity and the same jump carried 170 or 181 px, polish report CT-1)
-            if (dir * p.vx <= maxSpeed) {
+            if (dir * p.vx < maxSpeed) {
               p.vx += dir * acc * dt;
               if (dir * p.vx > maxSpeed) p.vx = dir * maxSpeed;
             } else {
