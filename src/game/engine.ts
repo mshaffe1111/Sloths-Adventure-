@@ -154,6 +154,7 @@ import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
 import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
+import { shakeOffset } from './screenShake.ts';
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -5262,10 +5263,9 @@ export class GameEngine {
       return;
     }
 
-    // Apply Screen Shake (Trauma squared for punchy feel)
-    const shakeMag = this.camera.trauma * this.camera.trauma * 16;
-    const shakeX = (Math.random() - 0.5) * shakeMag;
-    const shakeY = (Math.random() - 0.5) * shakeMag;
+    // the screen shake: a smooth wobble that dies away with the trauma, turned down or off in the settings (screenShake.ts, AN-10)
+    // (on the real clock: in a hit's freeze the game clock stops, and the shake must keep settling, not hang off to one side)
+    const { x: shakeX, y: shakeY } = shakeOffset(this.camera.trauma, performance.now() / 1000, 16);
 
     // 1. Render Multi-Layer Parallax Background
     // a boss with its own lair: either the backdrop is darkened and re-lit, or (lairOwnsScene) the lair paints all of it itself
@@ -5273,7 +5273,8 @@ export class GameEngine {
     const ownScene = !!lair && lairOwnsScene(lair);
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
     setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
-    if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    // (the backdrop shakes with the world, each layer by its own depth, so the layers never slide against each other)
+    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
     if (this.proto?.w4?.deepFall !== undefined) {
       const lipY = this.camLedge?.y ?? this.player.y;
@@ -5969,8 +5970,7 @@ export class GameEngine {
   }
 
   private renderDot(ctx: CanvasRenderingContext2D, dpr: number) {
-    const shakeMag = this.camera.trauma * this.camera.trauma * 14;
-    const shake = { x: (Math.random() - 0.5) * shakeMag, y: (Math.random() - 0.5) * shakeMag };
+    const shake = shakeOffset(this.camera.trauma, performance.now() / 1000, 14);
     // her panel: held sideways it sits under the hearts and lives (GameHUD.tsx), left; upright, the top is full (the stage card, Dot's banner), so it sits bottom left
     const portrait = this.viewCssH > this.viewCssW;
     // a short landscape screen has the compact HUD (index.css): her panel shrinks too and sits right under the hearts and lives
