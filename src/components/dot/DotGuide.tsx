@@ -5,7 +5,7 @@ import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
 import { lessonDotLine, lessonOfLine, lessonStale, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
-import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
+import { calmFor, countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, knownMoveTip, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
@@ -200,7 +200,7 @@ class GuideRun {
     this.H = wasShown(this.world, this.mini, 'H');
     this.F = wasShown(this.world, this.mini, 'F');
     this.lastGuide = guideN;
-    this.queue = new GuideQueue(CALM_WORLDS.has(this.world) && !/-D$/.test(level.id));
+    this.queue = new GuideQueue(calmFor(this.world, level.id));
   }
 
   /** queue a line if Dot's help lets it through */
@@ -233,8 +233,6 @@ class GuideRun {
 }
 
 const storyKey = (f: WayFlag) => `story:${f}`;
-/** the worlds where Dot is toned down (Matt, 2026-10-28) */
-const CALM_WORLDS = new Set([1, 2, 3, 4]);
 /** a move tip about one of these is over once none of them is in view (dotGuide.ts CALM.goneMs) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 const MOVE_IDS: MoveId[] = ['run', 'jump', 'double', 'grab', 'climb', 'leap', 'glide', 'punch', 'kick', 'crouch', 'push', 'bounce'];

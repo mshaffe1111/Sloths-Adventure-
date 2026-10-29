@@ -5,7 +5,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CALM, GUIDE, GuideQueue, showFor, type GuideLine, type MoveId, type TickEnv } from './dotGuide.ts';
+import { CALM, GUIDE, GuideQueue, calmFor, showFor, type GuideLine, type MoveId, type TickEnv } from './dotGuide.ts';
 import { knownMoveTip, markMoveDone, movesDone } from './dotGuideHelp.ts';
 
 const line = (key: string, text: string, o: Partial<GuideLine> = {}): GuideLine => ({ key, text, kind: 'info', who: 'Dot', source: 'engine', ...o });
@@ -139,4 +139,11 @@ test('DOT-7: the reading clock starts when the bubble shows, not when the line l
   q2.tick(0, env);
   q2.shown(q2.cur!.n, 9000);
   assert.equal(q2.cur!.startedAt, GUIDE.showLagMaxMs);
+});
+
+test('DOT-8: World 5 gets the calm rules too (not a boss stage)', () => {
+  for (const w of [1, 2, 3, 4, 5]) assert.equal(calmFor(w, `${w}-2`), true, `world ${w}`);
+  assert.equal(calmFor(5, '5-M'), true);
+  assert.equal(calmFor(4, '4-D'), false);
+  assert.equal(calmFor(6, '6-1'), false);
 });

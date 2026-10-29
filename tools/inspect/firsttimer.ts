@@ -30,7 +30,7 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { GameEngine } from '../../src/game/engine.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
-import { GuideQueue, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
+import { GuideQueue, calmFor, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
 import { engineGuideLine } from '../../src/game/dotLines.ts';
 import { lessonDotLine, type LessonId } from '../../src/game/lessons.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../src/game/dotGuideWatch.ts';
@@ -289,7 +289,7 @@ class DotShadow {
   private prevJR = 0;
   constructor(readonly stageId: string) {
     const w = Number(stageId.split('-')[0]);
-    this.queue = new GuideQueue(w >= 1 && w <= 4 && !/-D$/.test(stageId));
+    this.queue = new GuideQueue(calmFor(w, stageId));
   }
   private say(l: GuideLine | null | undefined) {
     if (l) this.queue.push(l, this.clock);

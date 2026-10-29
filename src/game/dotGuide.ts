@@ -138,6 +138,10 @@ export const GUIDE = {
  * A first-time lesson may also come in over a plain information line already up, and any tip over a story aside (the line cut comes
  * back once, after it): a stage's opening words held the gap's lesson back past 2-2's first river.
  */
+/** the worlds where Dot is toned down (Matt, 2026-10-28; World 5 added 2026-10-29, DOT-8: its move tips stayed up to 20 s and came back,
+ *  a median 7.9 s between lines). Not a boss stage (-D). World 7 has no Dot (Pokey teaches himself). */
+export const CALM_WORLDS: ReadonlySet<number> = new Set([1, 2, 3, 4, 5]);
+export const calmFor = (world: number, stageId: string): boolean => CALM_WORLDS.has(world) && !/-D$/.test(stageId);
 export const CALM = { startMs: 2500, gapMs: 10000, repeatMax: 2, moveCapMs: 12000, goneMs: 2500, nearMs: 30000 } as const;
 
 /**
