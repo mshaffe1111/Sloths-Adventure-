@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
 import { PAD, PadInput, followAnchor, clampKnob } from '../game/padControl.ts';
 import type { PadSide } from '../game/controlPrefs.ts';
@@ -23,7 +23,20 @@ type Btn = 'jump' | 'punch' | 'kick';
 const MEGA_HOLD_MS = 320;
 
 export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
-  const [pad, setPad] = useState<{ ax: number; ay: number; kx: number; ky: number } | null>(null);
+  // the pad under the thumb: shown or not is React state, but where it and its knob are moves through refs and a CSS transform, so a
+  // touchmove re-renders nothing (it re-rendered the whole controller on every move: polish report CT-25)
+  const [shown, setShown] = useState(false);
+  const geo = useRef({ ax: 0, ay: 0, kx: 0, ky: 0 });
+  const ringRef = useRef<HTMLDivElement | null>(null);
+  const knobRef = useRef<HTMLDivElement | null>(null);
+  const place = () => {
+    const g = geo.current;
+    if (ringRef.current) ringRef.current.style.transform = `translate3d(${g.ax - PAD.radius - 14}px, ${g.ay - PAD.radius - 14}px, 0)`;
+    if (knobRef.current) knobRef.current.style.transform = `translate3d(${g.ax + g.kx - 26}px, ${g.ay + g.ky - 26}px, 0)`;
+  };
+  useLayoutEffect(() => {
+    if (shown) place();
+  }, [shown]);
   const [down, setDown] = useState<Set<Btn>>(new Set());
 
   const st = useRef({
@@ -41,7 +54,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
   const padRelease = () => {
     st.current.padId = -1;
     P.padUp();
-    setPad(null);
+    setShown(false);
   };
 
   const releaseAll = () => {
@@ -92,7 +105,8 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
     s.padId = t.identifier;
     s.ax = t.clientX;
     s.ay = t.clientY;
-    setPad({ ax: s.ax, ay: s.ay, kx: 0, ky: 0 });
+    geo.current = { ax: s.ax, ay: s.ay, kx: 0, ky: 0 };
+    setShown(true);
   };
   const padMove = (e: React.TouchEvent) => {
     const s = st.current;
@@ -104,7 +118,8 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
       const dy = t.clientY - s.ay;
       P.pad(dx, dy);
       const k = clampKnob(dx, dy);
-      setPad({ ax: s.ax, ay: s.ay, kx: k.x, ky: k.y });
+      geo.current = { ax: s.ax, ay: s.ay, kx: k.x, ky: k.y };
+      place();
     }
   };
   const padEnd = (e: React.TouchEvent) => {
@@ -173,7 +188,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
         {/* the ghost pad that shows where to put a thumb. It stays mounted (and never takes a touch) because a touch that began on an element which then unmounts stops reporting its moves */}
         <div
           className="absolute left-1/2 bottom-[18%] -translate-x-1/2 grid place-items-center rounded-full border-2 border-white/30 bg-white/10 text-white/50 font-black pointer-events-none transition-opacity"
-          style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, opacity: pad ? 0 : 1 }}
+          style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, opacity: shown ? 0 : 1 }}
         >
           <span className="inline-flex items-center gap-3" aria-hidden="true">
             <Icon name="arrow" size={18} rotate={180} />
@@ -181,10 +196,10 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
           </span>
         </div>
       </div>
-      {pad && (
+      {shown && (
         <>
-          <div className="fixed rounded-full border-[3px] border-white/55 bg-white/15 pointer-events-none" style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, left: pad.ax - PAD.radius - 14, top: pad.ay - PAD.radius - 14 }} />
-          <div className="fixed rounded-full bg-white/80 shadow-lg pointer-events-none" style={{ width: 52, height: 52, left: pad.ax + pad.kx - 26, top: pad.ay + pad.ky - 26 }} />
+          <div ref={ringRef} className="fixed left-0 top-0 rounded-full border-[3px] border-white/55 bg-white/15 pointer-events-none" style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, willChange: 'transform' }} />
+          <div ref={knobRef} className="fixed left-0 top-0 rounded-full bg-white/80 shadow-lg pointer-events-none" style={{ width: 52, height: 52, willChange: 'transform' }} />
         </>
       )}
 
