@@ -4,8 +4,8 @@ drawn upright at the size sideways uses, which leaves room above the far strip).
 running off the top (trunks, branches, cave roof, smoke) carry on.
 
 Per strip: a canvas E + O rows tall (E = half the strip's height, the new sky; O = its top rows, the context and the cross-fade):
-the bottom O rows are the strip's own top, the E rows above start as its top rows carried upward and eased into the average colour of
-its sky, with a little noise for the model to paint into. Run in overlapping full-height tiles round the strip as a circle (as
+the bottom O rows are the strip's own top, the E rows above start as its top quarter turned over, stretched and shifted along (start()),
+with its top row carried straight on just above the join. Run in overlapping full-height tiles round the strip as a circle (as
 striphdgpu.py), so the sky repeats left to right like the strip. Results to the bucket mshaffe111/w5-xfer, under <SUB>/:
   <name>.webp          the painted canvas (E + O rows, the strip's width), q95
   start-<name>.jpg     the start it painted from
@@ -75,18 +75,21 @@ def blur_x(a, s):
 
 
 def start(rgb, E, O, seed):
-    """the canvas the model paints from: the strip's own top O rows at the bottom, its top rows carried up and eased into its sky"""
+    """the canvas the model paints from: the strip's own top O rows at the bottom; above, the strip's top quarter (its sky, canopy or
+    cave roof) turned over, stretched up and shifted along, so there is painted texture of the right kind everywhere for the model to
+    repaint (a flat colour came back flat, pilot 2026-10-29); just above the strip its top row carried straight on, so the join is
+    continuous"""
     H, W, _ = rgb.shape
-    top = rgb[:6].mean(0, keepdims=True)  # the strip's top row (a few rows, for noise)
-    near = blur_x(top, 3)  # shapes running off the top carry straight on, just above
-    far = blur_x(top, 160)  # higher up: the sky's own colour, without the shapes
+    band = rgb[: max(16, H // 4)][::-1]  # the top quarter, turned over: its top row now meets the strip's top row
+    tex = np.asarray(Image.fromarray(band.astype(np.uint8)).resize((W, E), Image.BICUBIC)).astype(np.float32)[::-1]
+    tex = np.roll(tex, int(W * 0.37), axis=1)  # shifted along, so it is no mirror of the strip below
+    near = blur_x(rgb[:4].mean(0, keepdims=True), 3)
     y = np.arange(E, dtype=np.float32)[:, None, None]
-    t = np.clip((E - 1 - y) / (E * 0.55), 0, 1)  # 0 at the strip's top, 1 from about half way up
+    t = np.clip((E - 1 - y) / (E * 0.22), 0, 1)  # 0 at the strip's top, 1 a fifth of the way up
     t = t * t * (3 - 2 * t)
-    up = near * (1 - t) + far * t
+    up = near * (1 - t) + tex * t
     rng = np.random.default_rng(seed)
-    noise = blur_x(rng.normal(0, 1, (E, W, 1)).astype(np.float32), 6) * 18
-    up = up + noise
+    up = up + blur_x(rng.normal(0, 1, (E, W, 1)).astype(np.float32), 4) * 10
     return np.clip(np.concatenate([up, rgb[:O]], 0), 0, 255)
 
 
