@@ -42,9 +42,14 @@ def hits(x, thr=0.2, mingap=0.12, n=128):
     return out
 
 
+def seg_id(fid, start, dur):
+    """a stretch of a recording by id, for slices()"""
+    return seg(src(fid), start, dur)
+
+
 def slices(fid, dur=0.3, thr=0.2, mingap=0.15, pre=0.006):
-    """each separate event of a recording, cut to `dur` (or to the next event) with a short fade"""
-    x = src(fid)
+    """each separate event of a recording (by id, or a signal already cut), cut to `dur` (or to the next event) with a short fade"""
+    x = src(fid) if not isinstance(fid, np.ndarray) else fid
     on = hits(x, thr, mingap)
     out = []
     for i, t in enumerate(on):
@@ -340,8 +345,8 @@ def loudest(x, dur, hop=0.02, at=False):
 
 # each creature's knock-out: its own voice (Freesound ids, how long a cut, the rate it plays at), then the body falling
 KO = {
-    'snake':   ([363796, 401499, 363796], 0.45, 0.95),   # (293778 was tried: a steam whistle, not a hiss)
-    'boa':     ([401499, 363796, 401499], 0.55, 0.8),
+    'snake':   ([363796, 401499, 401499], 0.45, 0.95),   # (293778 was tried: a steam whistle, not a hiss)
+    'boa':     ([401499, 401499, 363796], 0.55, 0.8),
     'eagle':   ([75162, 75162, 237107], 0.4, 1.0),
     'harpy':   ([75162, 554250, 75162], 0.5, 0.85),
     'ocelot':  ([588624, 607243, 471880], 0.5, 1.0),
@@ -394,6 +399,204 @@ def bossSlam():
     return level(out, -14)
 
 
+# ------------------------------------------------------------------------------------------------- pickups, rewards, the rest
+
+def bellnote(m, dur=0.7, tau=0.25, lpf=2400):
+    """a warm note at MIDI m: the bell tone 8487 (fundamental 410 Hz), its upper partials rolled off"""
+    b = trim(src(8487), thr_db=-20, back=0.002)
+    y = rate(b, 440 * 2 ** ((m - 69) / 12) / 410.0)[: int(dur * SR)]
+    return fade(env_decay(lp(hp(y, 150), lpf, 4), tau), 0.004, min(0.2, dur / 3))
+
+
+def toks():
+    x = src(555240)
+    on = hits(x, 0.25, 0.08)
+    return [seg(x, t - 0.003, 0.2) for t in on]
+
+
+def tok(i, m=None):
+    """a marimba tap (wood), optionally moved to MIDI m from its own ~72"""
+    t = toks()[i % 20]
+    if m is not None:
+        t = rate(t, 2 ** ((m - 72) / 12))
+    return fade(env_decay(lp(hp(t, 200), 3000, 4), 0.06), 0.002, 0.05)
+
+
+def leafy(i, dur=0.25, lpf=4500):
+    rs = slices(461460, dur, 0.2) + slices(386202, dur, 0.2) + slices(624094, dur, 0.2)
+    return fade(lp(hp(rs[i % len(rs)], 700), lpf), 0.004, 0.08)
+
+
+def figure(notes, gap, tau=0.3, extra=()):
+    """a warm figure: bell notes with marimba taps on their onsets"""
+    layers = []
+    for k, m in enumerate(notes):
+        layers.append((bellnote(m, 0.9, tau), k * gap, -k * 0.5))
+        layers.append((tok(k * 3, m), k * gap, -8))
+    return fade(mix(*layers, *extra), 0.001, 0.25)
+
+
+def leaf():
+    """a leaf picked up: a soft brush of leaves, no note"""
+    return level([leafy(i, 0.3) for i in range(6)], -30)
+
+
+def fruit():
+    """a fruit: a bite, and one warm low note"""
+    bites = [trim(src(391899), maxdur=0.25), seg(src(84150), 0.0, 0.3), seg(src(419780), 0.4, 0.3)]
+    out = []
+    for i, m in enumerate([64, 67, 62, 69]):
+        b = fade(lp(hp(trim(bites[i % 3], thr_db=-24), 300), 5000), 0.002, 0.08)
+        out.append(mix((b, 0, 0), (bellnote(m, 0.5, 0.18), 0.03, -8)))
+    return level(out, -25)
+
+
+def heart():
+    """a heart: two warm notes, low, and a breath"""
+    out = []
+    for i, (a_, b_) in enumerate([(60, 67), (62, 69), (57, 64)]):
+        br = fade(lp(hp(whooshes()[i], 300), 2500), 0.05, 0.2)
+        out.append(mix((bellnote(a_, 0.8, 0.3), 0, 0), (bellnote(b_, 0.8, 0.3), 0.12, -2), (br, 0, -14)))
+    return level(out, -23)
+
+
+def superHeart():
+    """the super heart: a bigger moment, a rising figure over a swell of leaves"""
+    sw = fade(lp(hp(seg(src(461460), 0.2, 1.2), 600), 4000), 0.4, 0.5)
+    return level([figure([60, 64, 67, 72], 0.11, 0.4, ((sw, 0, -12),)), figure([62, 66, 69, 74], 0.11, 0.4, ((sw, 0, -12),))], -18)
+
+
+def power():
+    """the power-ups, 0 speed (a gust and quick taps), 1 invincible (a warm swell and leaves), 2 magnet (a low warm hum of notes)"""
+    gust = fade(lp(hp(trim(src(552774), thr_db=-24, maxdur=0.8), 200), 4000), 0.02, 0.2)
+    sp = mix((gust, 0, -4), *[(tok(k * 2, 72 + 2 * k), 0.05 + 0.06 * k, -2) for k in range(5)])
+    inv = figure([60, 67, 72, 76], 0.08, 0.5, ((fade(lp(hp(seg(src(386202), 0.3, 1.0), 800), 4500), 0.2, 0.4), 0, -10),))
+    mag = mix(*[(bellnote(m, 1.2, 0.6, 1600), 0.04 * k, -2) for k, m in enumerate([48, 55, 60])], (gust, 0.1, -12))
+    return level([fade(sp, 0.001, 0.15), inv, fade(mag, 0.001, 0.3)], -19)
+
+
+def relic():
+    """a relic found: a warm rising figure, a soft swell"""
+    return level([figure([62, 67, 71, 74], 0.13, 0.45), figure([60, 64, 69, 72], 0.13, 0.45)], -18)
+
+
+def oneUp():
+    return level([figure([60, 64, 67, 72], 0.09, 0.35)], -18)
+
+
+def star():
+    """the Stage Cleared stars, a warm note each, rising (star 0, 1, 2)"""
+    return level([figure([m], 0.1, 0.4) for m in (67, 71, 74)], -20)
+
+
+def critter():
+    """a critter freed: its happy chirp and a rustle as it scampers off"""
+    ch = [trim(src(616662), maxdur=0.4), trim(src(576401), maxdur=0.35), seg(src(438260), 1.0, 0.4)]
+    return level([mix((fade(lp(hp(rate(c, 1.1), 400), 6000), 0.005, 0.1), 0, 0), (leafy(i + 2, 0.3), 0.15, -8)) for i, c in enumerate(ch)], -22)
+
+
+def hurt():
+    """Pokey hurt: a body thump, a shake of leaves and the air knocked out of him (no synth voice)"""
+    out = []
+    for i, b in enumerate([trim(src(290349), maxdur=0.4), trim(src(559309), maxdur=0.4), trim(src(552900), maxdur=0.3)]):
+        out.append(mix((sat(lp(b, 2400), 1.6), 0, 0), (leafy(i, 0.3), 0.01, -6), (fade(lp(hp(whooshes()[i + 3], 300), 3000)[: int(0.25 * SR)], 0.01, 0.1), 0.03, -10)))
+    return level(out, -18)
+
+
+def climb():
+    """claws on bark: a short gritty scratch (5 takes)"""
+    out = []
+    for i, (f, a0) in enumerate([(377866, 0.1), (485324, 0.0), (377866, 0.5), (485324, 0.3), (450381, 0.4)]):
+        out.append(fade(lp(hp(seg(src(f), a0, 0.22), 400), 5000), 0.01, 0.08))
+    return level(out, -30)
+
+
+def eagle():
+    """a bird of prey's screech (the eagle's dive)"""
+    x = src(75162)
+    return level([fade(lp(hp(s_, 500), 6000), 0.005, 0.15) for s_ in slices(x, 0.6, 0.3, 0.3)[:3]], -20)
+
+
+def ui():
+    """the menus, to match the wooden HUD: a soft wooden tap, a confirm (two taps rising), back (a leaf rustle), pause (leaves closing),
+    unpause (opening)"""
+    taps = [trim(src(342542), maxdur=0.15), trim(seg(src(434552), 1.2, 0.5), maxdur=0.15), trim(src(422855), maxdur=0.15)]   # (168414 was a crash drum)
+    tp = [fade(lp(hp(rate(t, r), 250), 3500), 0.001, 0.05) for t in taps for r in (1.0, 1.12)]
+    conf = [mix((tp[0], 0, 0), (rate(tp[2], 1.25), 0.07, 0)), mix((tp[1], 0, 0), (rate(tp[3], 1.25), 0.07, 0))]
+    rust = [fade(lp(hp(trim(src(f), maxdur=0.35), 500), 4500), 0.005, 0.1) for f in (385171, 552235, 217334)]
+    closing = fade(lp(hp(seg(src(461460), 0.1, 0.45), 600), 3500), 0.05, 0.2)
+    return {'uiTap': level(tp, -30), 'uiConfirm': level(conf, -28), 'uiBack': level(rust, -30),
+            'pauseIn': [to_lufs(closing, -30)], 'pauseOut': [to_lufs(closing[::-1].copy(), -30)]}
+
+
+def megaPunch():
+    air = whooshes()
+    return level([mix((fade(lp(hp(rate(air[i], 1.05), 200), 4500)[: int(0.35 * SR)], 0.003, 0.1), 0, 0),
+                      (sat(lp(trim(src(290093), maxdur=0.4), 2000), 1.8), 0.15, -4)) for i in range(3)], -22)
+
+
+def bounce():
+    """a mushroom bounce: a soft, fleshy squash and a rising "bwomp" (a body thump bent upward in pitch), never a metal spring"""
+    out = []
+    for i, (b, sq) in enumerate([(290349, 468199), (559309, 429547), (552900, 468199)]):
+        x = lp(trim(src(b), maxdur=0.35), 1800)
+        # bend the pitch up across the take: a squashed cap springing back
+        n = len(x)
+        r = np.linspace(0.75, 1.35, n)
+        pos = np.cumsum(r)
+        pos = pos[pos < n - 1]
+        y = np.interp(pos, np.arange(n), x).astype(np.float32)
+        s_ = fade(lp(hp(trim(src(sq), maxdur=0.25), 150), 3500), 0.002, 0.08)
+        out.append(fade(mix((sat(y, 1.4), 0, 0), (s_, 0, -4)), 0.001, 0.08))
+    return level(out, -22)
+
+
+def world():
+    """world things: a log knocked or landing, stone crumbling, a thorn bush, a wooden gate opening"""
+    log = [trim(seg(src(434552), a0, 0.6)) for a0 in (0.0, 1.2, 2.3)] + [trim(src(239906), maxdur=0.4)]
+    logs = [fade(mix((sat(lp(rate(x, 0.9), 2500), 1.4), 0, 0), (lp(trim(src(290349), maxdur=0.3), 1500), 0, -6)), 0.001, 0.1) for x in log[:3]]
+    crum = [fade(mix((lp(hp(trim(src(378614), maxdur=0.6), 300), 5000), 0, 0), (fade(lp(hp(seg(src(137247), a0, 0.8), 600), 5000), 0.05, 0.3), 0.1, -6)), 0.001, 0.2) for a0 in (0.4, 1.6)]
+    thorn = [fade(mix((lp(hp(seg(src(485290), a0, 0.35), 900), 5500), 0, -2), (leafy(i, 0.3), 0, -4)), 0.01, 0.1) for i, a0 in enumerate((0.2, 0.9, 1.5))]
+    gate = [fade(mix((lp(hp(trim(src(271025), maxdur=0.8), 150), 4000), 0, 0), (lp(trim(src(514729), maxdur=0.3), 3000), 0.6, -3)), 0.01, 0.15),
+            fade(mix((lp(hp(seg(src(562603), 0.5, 0.9), 120), 2500), 0, 0), (lp(trim(seg(src(434552), 0, 0.6)), 3000), 0.75, -3)), 0.05, 0.15)]   # (559246 was keys: metal)
+    return {'log': level(logs, -22), 'crumble': level(crum, -22), 'thorns': level(thorn, -26), 'gate': level(gate, -22)}
+
+
+def puzzle():
+    """the twelve puzzle sounds (polish-audio's PUZZLE_SOUNDS), from real wood, stone, rope and leaves"""
+    taps = [fade(lp(hp(trim(src(342542), maxdur=0.15), 250), 3500), 0.001, 0.05)]
+    rope = [fade(lp(hp(seg(src(562603), a0, 0.5), 120), 2500), 0.05, 0.15) for a0 in (0.2, 1.4)]
+    stone = fade(lp(hp(seg(src(377866), 0.1, 0.6), 200), 4000), 0.04, 0.2)
+    click = fade(lp(trim(src(514729), maxdur=0.3), 3500), 0.001, 0.1)   # (559246 was keys: metal)
+    clunk = fade(lp(trim(src(514729), maxdur=0.35), 3500), 0.001, 0.08)
+    thud = fade(sat(lp(trim(src(290349), maxdur=0.3), 2200), 1.4), 0.001, 0.06)
+    air = whooshes()
+    P = {
+        'pick': mix((leafy(0), 0, 0), (taps[0], 0.02, -4)),
+        'drop': mix((thud, 0, 0), (leafy(1), 0.01, -8)),
+        'wrap': mix((rope[0], 0, 0), (lp(hp(trim(src(266783)), 300), 4000), 0.05, -4)),
+        'reset': mix((fade(lp(hp(air[1], 300), 3000)[: int(0.4 * SR)], 0.05, 0.15), 0, -2), (taps[0], 0.3, -2)),
+        'press': mix((click, 0, 0), (thud, 0.05, -6)),
+        'lift': mix((rope[1], 0, 0), (leafy(2), 0.1, -10)),
+        'gate': None,
+        'lever': mix((rope[0], 0, -4), (clunk, 0.25, 0)),
+        'throw': fade(lp(hp(rate(air[2], 1.2), 300), 4500)[: int(0.3 * SR)], 0.003, 0.1),
+        'chime': None,
+        'shift': mix((stone, 0, 0), (thud, 0.45, -6)),
+        'solved': figure([67, 72, 76], 0.1, 0.4, ((leafy(3, 0.5), 0, -10),)),
+    }
+    out = {}
+    for k, v in P.items():
+        if v is not None:
+            out[f'pz_{k}'] = [to_lufs(fade(v, 0.001, 0.1), -24 if k != 'solved' else -20)]
+    return out
+
+
+def respawn():
+    """Pokey coming back after a lost life: a soft puff of leaves and two warm notes rising"""
+    return level([mix((leafy(4, 0.4), 0, -6), (bellnote(64, 0.7, 0.25), 0.05, 0), (bellnote(69, 0.7, 0.25), 0.18, -1))], -22)
+
+
 # ------------------------------------------------------------------------------------------------- the world beds (SN-9)
 
 LOOP = 20.0
@@ -428,17 +631,29 @@ def bedmix(*layers):
 # bubbling and 564788's crackle glide like a whistle)
 BEDS = {
     # world: ([(freesound id, start s, gain dB, hp Hz, lp Hz)], one-shot sources [(id, kind)], loudness)
-    1: ([(353311, 2, 0, 200, 9000), (396665, 0, -6, 80, 3000)], [(464787, 'birds')], -30),
-    2: ([(523313, 1, 0, 100, 7000), (516620, 0, -8, 600, 9000)], [(464787, 'birds')], -28),
-    3: ([(554780, 2, -10, 60, 900), (541231, 4, -2, 300, 7000)], [(534192, 'drips'), (365287, 'drips')], -31),
-    4: ([(427878, 2, 0, 120, 4500), (396665, 5, -8, 80, 2500)], [(353311, 'birds')], -27),
-    5: ([(464787, 4, 0, 300, 6500), (578004, 0, -4, 400, 6500), (177672, 3, -12, 2000, 6000)], [(353311, 'birds')], -29),
-    6: ([(391437, 2, 0, 150, 6000), (580664, 3, -6, 60, 3000), (445984, 0, -10, 1500, 7000)], [(438646, 'croaks')], -29),
-    7: ([(267013, 2, -2, 80, 2500), (396665, 8, -4, 80, 3500)], [(464787, 'birds')], -31),
+    1: ([(353311, 2, 0, 200, 9000), (396665, 0, -6, 80, 3000)], ['birds'], -30),
+    2: ([(523313, 1, 0, 100, 7000), (516620, 0, -8, 600, 9000)], ['birds'], -28),
+    3: ([(554780, 2, -10, 60, 900), (541231, 4, -2, 300, 7000)], ['drips'], -31),
+    4: ([(427878, 2, 0, 120, 4500), (396665, 5, -8, 80, 2500)], ['birds'], -27),
+    5: ([(464787, 4, 0, 300, 6500), (578004, 0, -4, 400, 6500), (177672, 3, -12, 2000, 6000)], ['birds'], -29),
+    6: ([(391437, 2, 0, 150, 6000), (580664, 3, -6, 60, 3000), (445984, 0, -10, 1500, 7000)], ['croaks'], -29),
+    7: ([(267013, 2, -2, 80, 2500), (396665, 8, -4, 80, 3500)], ['birdsFar'], -31),
     8: ([(445984, 2, 0, 400, 7500), (424356, 5, -6, 600, 7500), (469021, 0, -12, 150, 4000)], [], -30),
     9: ([(459393, 2, 0, 50, 3500), (554780, 6, -8, 40, 500)], [], -28),
-    10: ([(327778, 2, 0, 150, 8000), (267013, 4, -6, 60, 2500)], [], -25),
+    10: ([(327778, 2, 0, 150, 8000), (267013, 4, -6, 60, 2500)], ['thunder'], -25),
 }
+
+
+def shots():
+    """the one-shots a bed scatters at random over its loop, so it never sounds like a loop: bird phrases, cave drips, frog croaks,
+    far thunder"""
+    birds = [fade(lp(hp(x, 600), 7000), 0.01, 0.15) for x in slices(464787, 1.2, 0.3, 0.6)]
+    far = [fade(lp(hp(x, 600), 3200), 0.02, 0.2) for x in slices(464787, 1.2, 0.3, 0.6)]
+    drips = [fade(lp(hp(x, 300), 6000), 0.001, 0.05) for x in slices(534192, 0.25, 0.3, 0.3)]
+    croaks = [fade(lp(hp(x, 120), 4500), 0.005, 0.08) for x in slices(seg_id(438646, 0, 1.6), 0.4, 0.25, 0.2)]
+    thunder = [fade(lp(hp(loudest(src(f), 2.6), 30), 2500), 0.2, 0.9) for f in (472479, 518120)]
+    return {'shotBirds': level(birds[:6], -30), 'shotBirdsFar': level(far[:6], -36), 'shotDrips': level(drips[:6], -34),
+            'shotCroaks': level(croaks[:6], -30), 'shotThunder': level(thunder, -24)}
 
 
 def beds():
@@ -452,30 +667,35 @@ def beds():
 EFFECTS = {f.__name__: f for f in [rock, rockWarn, flower, stepMoss, stepWood, stepStone, stepWater, jump, doubleJump, glide, landing, vine, swish,
                                    splash, checkpoint, windChime, bossSlam]}
 
+def seed(name):
+    """every effect draws its jitter from its own seed, so building one never changes another"""
+    global rng
+    import zlib
+    rng = np.random.default_rng(zlib.crc32(name.encode()))
+
+
+GROUPS = {'hits': creatureHits, 'kos': knockouts, 'beds': lambda: {**beds(), **shots()}, 'rest': lambda: {**ui(), **world(), **puzzle()}}
+SINGLE_REST = [leaf, fruit, heart, superHeart, power, relic, oneUp, star, critter, hurt, climb, eagle, megaPunch, bounce, respawn]
+
+
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
-    report = {}
-    jobs = dict(EFFECTS)
-    if not ONLY or 'hits' in ONLY:
-        for k, v in creatureHits().items():
-            jobs[k] = (lambda v=v: v)
-    if not ONLY or 'kos' in ONLY:
-        for k, v in knockouts().items():
-            jobs[k] = (lambda v=v: v)
-    if not ONLY or 'beds' in ONLY:
-        for k, v in beds().items():
-            jobs[k] = (lambda v=v: v)
-    for name, fn in jobs.items():
-        if ONLY and name not in ONLY and not (name.startswith('bed') and 'beds' in ONLY) and not (name.startswith('hit_') and 'hits' in ONLY) and not (name.startswith('ko_') and 'kos' in ONLY):
-            continue
-        takes = fn()
+    jobs = {}
+    for name, fn in list(EFFECTS.items()) + [(f.__name__, f) for f in SINGLE_REST]:
+        if not ONLY or name in ONLY or (fn in SINGLE_REST and 'rest' in ONLY):
+            seed(name)
+            jobs[name] = fn()
+    for g, fn in GROUPS.items():
+        if not ONLY or g in ONLY:
+            seed(g)
+            jobs.update(fn())
+    for name, takes in jobs.items():
         for i, t in enumerate(takes):
             write_wav(os.path.join(OUT, f'{name}_{i}.wav'), t)
             if name.startswith('bed'):
                 write_mp3(os.path.join(OUT, f'{name}_{i}.mp3'), t, kbps=40, sr=24000)   # (the beds are long: smaller)
             else:
                 write_mp3(os.path.join(OUT, f'{name}_{i}.mp3'), t)
-        report[name] = len(takes)
         print(name, len(takes), 'takes', flush=True)
     used_path = os.path.join(OUT, 'sources.json')
     old = json.load(open(used_path)) if os.path.exists(used_path) else {}

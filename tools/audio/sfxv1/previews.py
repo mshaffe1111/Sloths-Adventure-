@@ -102,11 +102,19 @@ def numbers(w, per_min=None):
 RESULTS = json.load(open(os.path.join(OUT, 'numbers.json'))) if os.path.exists(os.path.join(OUT, 'numbers.json')) else {}
 
 
-def pair(name, old_events, new_events, dur, amb=None, old_extra=None, per_min=None):
+def pair(name, old_events, new_events, dur, amb=None, old_extra=None, per_min=None, world=None):
+    """old and new; with a world, the new side has that world's recorded bed and its one-shots where the old has its synthesized
+    ambience"""
     if ONLY and name not in ONLY:
         return
     wo = render(4304, {'dur': dur, 'amb': amb, 'events': old_events}, f'{name}-old')
-    wn = render(4303, {'dur': dur, 'amb': amb, 'events': new_events}, f'{name}-new')
+    if world:
+        g = LEVELS.get('beds', {}).get(str(world), 0.0)
+        spec = {'dur': dur, 'events': new_events + bed_events(world, dur, g),
+                'bed': {'file': os.path.join(TAKES, f'bed{world}_0.mp3'), 'gain': round(10 ** (g / 20), 4)}}
+    else:
+        spec = {'dur': dur, 'amb': amb, 'events': new_events}
+    wn = render(4303, spec, f'{name}-new')
     RESULTS[name] = {'old': numbers(wo, per_min and per_min[0]), 'new': numbers(wn, per_min and per_min[1])}
     if amb:
         # the effects alone too, so the bed does not blur the numbers (not published)
@@ -179,6 +187,103 @@ def map_new(pl, fx, arg, at, t, world):
 
 
 PLAYER['landing'] = dict(takes=('landing', 6), db=0, gap=0.08, cap=2, pj=0.04, gj=1.5)
+MATS = ['generic', 'fur', 'scale', 'chitin', 'feather', 'armor']
+ENEMIES = ['snake', 'eagle', 'ocelot', 'jaguar', 'boa', 'caiman', 'tayra', 'frog', 'spider', 'ant', 'boss', 'harpy']
+for _m in MATS:
+    PLAYER[f'hit_{_m}'] = dict(takes=(f'hit_{_m}', 6), db=0, gap=0.04, cap=3, pj=0.05, gj=1.5)
+for _e in ENEMIES:
+    PLAYER[f'ko_{_e}'] = dict(takes=(f'ko_{_e}', 3), db=0, gap=0.1, cap=2, pj=0.03, gj=1)
+PLAYER['bossSlam'] = dict(takes=('bossSlam', 2), db=0, gap=1, cap=1, pj=0, gj=0)
+for _k, _n in (('shotBirds', 6), ('shotBirdsFar', 6), ('shotDrips', 3), ('shotCroaks', 3), ('shotThunder', 2)):
+    PLAYER[_k] = dict(takes=(_k, _n), db=0, gap=0.5, cap=1, pj=0.05, gj=2)
+
+
+def landing_pair():
+    """three landings: a small hop, a jump, a long drop"""
+    pl = Player()
+    ts, ss = [0.3, 1.3, 2.3], [0.2, 0.5, 0.95]
+    new = [pl.play('landing', t, sub=[[0, 1], [2, 3], [4, 5]][i]) for i, t in enumerate(ts)]
+    pair('landing', [{'t': t, 'fx': 'landing', 'arg': a} for t, a in zip(ts, ss)], new, 3.4)
+
+
+def vine_pair():
+    """four vine grabs, as in a liana chain (0.7 s apart)"""
+    pl = Player()
+    ts = [0.3 + 0.7 * i for i in range(4)]
+    pair('vine-grab', [{'t': t, 'fx': 'vine'} for t in ts], [pl.play('vine', t) for t in ts], 3.3)
+
+
+def creatures_pair():
+    """four fights, each two light hits, a heavy one and the knock-out: an ocelot (fur), a snake (scale), a spider (shell),
+    an eagle (feathers)"""
+    pl = Player()
+    old, new = [], []
+    t = 0.3
+    for enemy, mat in (('ocelot', 'fur'), ('snake', 'scale'), ('spider', 'chitin'), ('eagle', 'feather')):
+        m, e = MATS.index(mat), ENEMIES.index(enemy)
+        for heavy, dt in ((0, 0.35), (0, 0.4), (1, 0.45)):
+            old.append({'t': t, 'fx': 'hit', 'arg': 2 * m + heavy})
+            new.append(pl.play(f'hit_{mat}', t, sub=[3, 4, 5] if heavy else [0, 1, 2]))
+            t += dt
+        old.append({'t': t, 'fx': 'defeat', 'arg': e})
+        new.append(pl.play(f'ko_{enemy}', t))
+        t += 1.2
+    pair('creature-hits', old, [e for e in new if e], t + 0.5)
+
+
+def slam_pair():
+    """the boss card's name landing (SN-10)"""
+    pl = Player()
+    pair('boss-slam', [{'t': 0.3, 'fx': 'bossAppear', 'arg': 1}], [pl.play('bossSlam', 0.3)], 4.0)
+
+
+def water_steps():
+    ts = [0.3 + 0.3 * i for i in range(10)]
+    pl = Player()
+    pair('steps-water', [{'t': t, 'fx': 'step'} for t in ts], [e for t in ts if (e := pl.play('stepWater', t))], 3.6)
+
+
+AMB = {1: 'gentle_breeze', 2: 'river_flow', 3: 'deep_cave', 4: 'waterfall', 5: 'tropical_birds', 6: 'swamp_croaks', 7: 'ancient_echo',
+       8: 'twilight_crickets', 9: 'volcanic_hum', 10: 'thunderstorm'}
+SHOTS = {1: ('shotBirds', 3, 8), 2: ('shotBirds', 4, 9), 3: ('shotDrips', 1.2, 3.5, -6), 4: ('shotBirds', 6, 12), 5: ('shotBirds', 2, 5),
+         6: ('shotCroaks', 2, 6), 7: ('shotBirdsFar', 5, 10), 10: ('shotThunder', 7, 13)}
+
+
+def bed_events(w, dur, gain_db):
+    pl = Player()
+    ev = []
+    if w in SHOTS:
+        k, lo, hi, sdb = (SHOTS[w] + (0,))[:4]
+        t = rnd.uniform(0.8, lo)
+        while t < dur - 1.5:
+            e = pl.play(k, t, db=gain_db + sdb)
+            if e:
+                e['pan'] = round(rnd.uniform(-0.6, 0.6), 2)
+                ev.append(e)
+            t += rnd.uniform(lo, hi)
+    return ev
+
+
+def beds_pairs(worlds=range(1, 11), dur=20.0):
+    """one bed per world, 20 s: the old synthesized ambience, and the recorded bed with its one-shots, levelled to the old one"""
+    for w in worlds:
+        name = f'bed-w{w}'
+        if ONLY and name not in ONLY and 'beds' not in ONLY:
+            continue
+        wo = render(4304, {'dur': dur, 'amb': AMB[w], 'events': []}, f'{name}-old')
+        target = lufs(load(wo, sr=48000, channels=2), 48000)
+        g = 0.0
+        bed = os.path.join(TAKES, f'bed{w}_0.mp3')
+        for _ in range(3):
+            spec = {'dur': dur, 'events': bed_events(w, dur, g), 'bed': {'file': bed, 'gain': round(10 ** (g / 20), 4)}}
+            wn = render(4303, spec, f'{name}-new')
+            got = lufs(load(wn, sr=48000, channels=2), 48000)
+            if abs(target - got) < 0.5:
+                break
+            g += target - got
+        LEVELS.setdefault('beds', {})[str(w)] = round(g, 2)
+        RESULTS[name] = {'old': numbers(wo), 'new': numbers(wn)}
+        print(name, json.dumps(RESULTS[name]), flush=True)
 PLAYER['glide'] = dict(takes=('glide', 5), db=0, gap=0.03, cap=2, pj=0.03, gj=1)
 
 
@@ -199,10 +304,16 @@ def stage_mix(stage, start, dur, world, amb, rocks=None, kick_keep=0.35):
         for e in (pl.play('rockWarn', t - 1.4, db=-3), pl.play('rock', t)):
             if e:
                 new.append(e)
-    pair(f'mix-{stage}', old, new, dur, amb=amb, per_min=(len(old) * 60 / dur, len(new) * 60 / dur))
+    pair(f'mix-{stage}', old, new, dur, amb=amb, per_min=(len(old) * 60 / dur, len(new) * 60 / dur), world=world)
 
 
 if __name__ == '__main__':
+    landing_pair()
+    vine_pair()
+    creatures_pair()
+    slam_pair()
+    water_steps()
+    beds_pairs()
     rock_single()
     rock_burst()
     petal_trail()
@@ -210,4 +321,7 @@ if __name__ == '__main__':
     # 4-4: the bot's own minute (its chimes, steps, jumps, vines and glides) from 10 s, with the rock drops the stage really has where he
     # passes its three drop points (each every 5-5.6 s, two in reach at once): seven rocks in the 30 s
     stage_mix('4-4', 10, 30, 4, 'waterfall', rocks=[5.2, 9.0, 10.3, 14.6, 15.4, 20.2, 25.8])
+    # 1-2 The Petal Trail: the bot's own run from 15 s (petals, steps on the forest floor and along branches, jumps)
+    stage_mix('1-2', 15, 30, 1, 'gentle_breeze')
     json.dump(RESULTS, open(os.path.join(OUT, 'numbers.json'), 'w'), indent=1)
+    json.dump(LEVELS, open(os.path.join(HERE, 'levels.json'), 'w'), indent=1)
