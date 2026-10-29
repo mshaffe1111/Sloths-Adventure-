@@ -618,7 +618,8 @@ function drawMemoryWash(ctx: CanvasRenderingContext2D, w: number, h: number, t: 
   ctx.fillRect(0, 0, w, h);
   ctx.globalCompositeOperation = 'source-over';
   ctx.globalAlpha = 1;
-  const g = ctx.createRadialGradient(w / 2, h / 2, h * 0.36, w / 2, h / 2, w * 0.6);
+  // (an old photograph's paper edge, round the picture whatever its shape: upright it is taller than wide)
+  const g = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.36, w / 2, h / 2, Math.hypot(w, h) * 0.5);
   g.addColorStop(0, 'rgba(250, 232, 190, 0)');
   g.addColorStop(0.68, 'rgba(250, 232, 190, 0.34)');
   g.addColorStop(1, 'rgba(238, 210, 156, 0.92)');
