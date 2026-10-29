@@ -784,8 +784,12 @@ export function drawProtoScene(
     const ur = !p.soil && !p.mound && under('r') ? 60 : 0;
     const box = ul || ur ? { ...p, x: p.x - ul, width: p.width + ul + ur } : p;
     // (World 5's raised beds a touch lighter and warmer than the bank they stand on, so they don't read dull beside the garden: the lead)
+    // (and only down to its own foot: a bank's soil runs on to the bottom of the view, and the mound's showed as a lighter column)
     if (p.mound) {
       ctx.save();
+      ctx.beginPath();
+      ctx.rect(p.x - 80, p.y - 80, p.width + 160, p.height + 84);
+      ctx.clip();
       ctx.filter = 'brightness(1.16) saturate(1.12)';
     }
     drawBankArt(ctx, box, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);
