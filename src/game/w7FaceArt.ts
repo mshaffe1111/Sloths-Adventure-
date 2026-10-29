@@ -20,6 +20,8 @@ const FRAMES: ReadonlyArray<Record<'figs' | 'column' | 'statue', F>> = [
 /** about how far apart the pieces stand along a bank (px), and how far under the floor's top the face starts */
 const FACE_EVERY = 520;
 const FACE_TOP = 64;
+/** a tall bank's next row of pieces this far under the one above */
+const ROW_EVERY = 300;
 
 const imgs: Array<HTMLImageElement | null> = [null, null];
 const ready = [false, false];
@@ -56,35 +58,42 @@ const hash01 = (x: number, salt: number): number => {
 
 /** the pieces set into one bank's face between view.x0 and view.x1, down to `bottom` */
 export function drawW7Face(ctx: CanvasRenderingContext2D, p: Platform, bottom: number, view?: { x0: number; x1: number }) {
-  if (!w7FaceReady() || p.width < 260) return;
+  if (!w7FaceReady() || p.width < 150) return;
   const top = p.y + FACE_TOP;
   if (bottom - top < 120) return;
   ctx.save();
   ctx.beginPath();
   ctx.rect(p.x + 8, top, p.width - 16, bottom - top);
   ctx.clip();
-  // (slots along the bank, from its own left end, so a bank always carries the same pieces)
-  for (let sx = p.x + 60; sx < p.x + p.width - 120; sx += FACE_EVERY) {
-    const at = Math.round(sx);
-    const r = hash01(at, 3);
-    if (r < 0.2) continue;
-    const x = sx + hash01(at, 5) * (FACE_EVERY - 260);
-    if (view && (x > view.x1 + 260 || x < view.x0 - 260)) continue;
-    const look = hash01(at, 7) < 0.5 ? 0 : 1;
-    const img = imgs[look]!;
-    const flip = hash01(at, 9) < 0.5;
-    const kind = r < 0.55 ? 'figs' : r < 0.85 ? 'column' : 'statue';
-    const f = FRAMES[look][kind];
-    // fig roots hang from just under the floor's lip; a column lies sunk a little lower; a statue is buried to its chest
-    const w = kind === 'figs' ? 230 : kind === 'column' ? 210 : 110;
-    const h = (w * f.h) / f.w;
-    const y = kind === 'figs' ? top - 30 : kind === 'column' ? top + 40 + hash01(at, 11) * 50 : top + 30;
-    ctx.save();
-    ctx.globalAlpha = kind === 'figs' ? 0.95 : 0.85;
-    ctx.translate(x + w / 2, y);
-    if (flip) ctx.scale(-1, 1);
-    ctx.drawImage(img, f.x, f.y, f.w, f.h, -w / 2, 0, w, h);
-    ctx.restore();
+  // (slots along the bank, from its own left end, so a bank always carries the same pieces; a tall bank, a wall under a high ledge,
+  // carries a row more every ROW_EVERY px down it, never the same piece above itself)
+  const rows = Math.max(1, Math.min(3, Math.floor((bottom - top) / ROW_EVERY)));
+  const narrow = p.width < FACE_EVERY;
+  for (let sx = p.x + (narrow ? p.width / 2 - 60 : 60); sx < p.x + p.width - (narrow ? 0 : 120); sx += FACE_EVERY) {
+    for (let row = 0; row < rows; row++) {
+      const at = Math.round(sx) + row * 7919;
+      const r = hash01(at, 3);
+      // (a narrow bank, a wall under a ledge, carries a piece only one time in two: never one on every bank in view)
+      if (r < (row ? 0.35 : 0.2) || (narrow && hash01(at, 13) < 0.5)) continue;
+      const x = narrow ? sx - 40 + hash01(at, 5) * 40 : sx + hash01(at, 5) * (FACE_EVERY - 260);
+      if (view && (x > view.x1 + 260 || x < view.x0 - 260)) continue;
+      const look = hash01(at, 7) < 0.5 ? 0 : 1;
+      const img = imgs[look]!;
+      const flip = hash01(at, 9) < 0.5;
+      // (fig roots only under the floor's lip; lower down a column or a statue)
+      const kind = row === 0 ? (r < 0.45 ? 'figs' : r < 0.8 ? 'column' : 'statue') : r < 0.7 ? 'column' : 'statue';
+      const f = FRAMES[look][kind];
+      // fig roots hang from just under the floor's lip; a column lies sunk a little lower; a statue is buried to its chest
+      const w = Math.min(kind === 'figs' ? 230 : kind === 'column' ? 210 : 110, p.width - 30);
+      const h = (w * f.h) / f.w;
+      const base = top + row * ROW_EVERY;
+      const y = kind === 'figs' ? base - 30 : kind === 'column' ? base + 40 + hash01(at, 11) * 50 : base + 30;
+      ctx.save();
+      ctx.translate(x + w / 2, y);
+      if (flip) ctx.scale(-1, 1);
+      ctx.drawImage(img, f.x, f.y, f.w, f.h, -w / 2, 0, w, h);
+      ctx.restore();
+    }
   }
   ctx.restore();
 }

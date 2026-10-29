@@ -3,7 +3,7 @@
  * and 7-9, Normal and Easy, built through the game's own entry (generateStage, withGoals, easyStage). Each roll holds its required
  * sections (7-1's first tiles, 7-3's and 7-7's rooms); the check passes, and passes without the crumbling tiles (never needed); 2:00 or
  * more for the inspector's quick player; nothing hurts in the first 5 s; the tiles are taught (Pokey's line) before the first one in
- * 7-1; every line is Pokey's (no Dot in World 7); each vine climbs straight up and down (a trunk, never a swing); flags at most
+ * 7-1; every line is Pokey's (no Dot in World 7); every brown vine is climbed and every liana swung by the quick route; flags at most
  * FLAG_SPAN.max apart; no animal by a jump.
  */
 import '../headlessDom.ts';
@@ -93,7 +93,14 @@ test("every shipped roll: nothing hurts in the first 5 s, the tiles taught first
     }
     const creek = (st.gen2!.falls ?? []).filter((f) => f.kind === 'water').sort((a, b) => a.x0 - b.x0)[0];
     if (creek) assert.ok(hints.some((h) => h.x < creek.x0 && h.text === W7_TIPS.water), `${at}: no warning before the drain at ${creek.x0}`);
-    for (const v of st.vines) assert.equal(v.vineType, 'tree_climb', `${at}: a vine at ${v.x} that is not a climb`);
+    // (a brown vine is the engine's trunk climb, straight up and down; a liana (the halls, w7Swing.ts) swings by itself; each one is
+    // needed: the quick route climbs every vine and swings every liana)
+    const segs = pickRoute(st.config.objectiveType, st as never).used.route.segs;
+    for (const v of st.vines) {
+      assert.ok(v.vineType === 'tree_climb' || v.vineType === 'swing_liana', `${at}: a vine at ${v.x} that is neither a climb nor a liana`);
+      const kind = v.vineType === 'swing_liana' ? 'swing' : 'climb';
+      assert.ok(segs.some((g) => g.kind === kind && Math.min(g.x0, g.x1) <= v.x + 40 && Math.max(g.x0, g.x1) >= v.x - 40), `${at}: the ${kind} at ${v.x} is walked past`);
+    }
     const xs = [st.spawnX, ...(st.checkpoints ?? []).map((c) => c.x).sort((a, b) => a - b), st.exitTotemX];
     for (let k = 1; k < xs.length; k++) assert.ok(xs[k] - xs[k - 1] <= FLAG_SPAN.max, `${at}: ${xs[k] - xs[k - 1]} px with no flag`);
   });

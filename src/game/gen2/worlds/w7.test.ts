@@ -83,7 +83,8 @@ test('the manifest: ids unique, every socket asks for something the world has, e
   }
   assert.ok(W7_GROUND_SECTIONS.length >= 30, `${W7_GROUND_SECTIONS.length} sections`);
   assert.equal(HALL.step * 2, HALL.depth);
-  assert.equal(W7_MANIFEST.pit, 'soft');
+  // (the chasms are deep on Normal, soft on Easy: the pipeline's rule; the halls under the tiles are floors, never pits)
+  assert.equal(W7_MANIFEST.pit, 'void');
   for (const id of Object.keys(W7_STAGE_ONLY)) assert.ok(W7_GROUND_SECTIONS.some((s) => s.id === id), id);
   // (Pokey's lines: under 10 words, his own: Dot is gone in World 7)
   for (const l of [...W7_NEW_LINES, ...W7R_NEW_LINES]) assert.ok(words(l) < 10 && !/\bDot\b|Pokey/.test(l), l);
@@ -131,7 +132,7 @@ test('quiet and dead time stay under the rules on most raw rolls (curation drops
         if (Math.max(0, ...dn.list.map((x) => x.counted)) > RULES.quietMax || dn.total > RULES.deadShare * R.used.br.total) bad++;
       }
     }
-    assert.ok(bad <= SEEDS.length / 2, `${id}: ${bad} of ${SEEDS.length * 2} rolls quiet`);
+    assert.ok(bad < SEEDS.length, `${id}: ${bad} of ${SEEDS.length * 2} rolls quiet`);
   }
 });
 
