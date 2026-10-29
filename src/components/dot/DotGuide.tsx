@@ -3,7 +3,7 @@ import type { LevelConfig } from '../../game/types.ts';
 import type { GameEngine } from '../../game/engine.ts';
 import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
-import { lessonDotLine, lessonOfLine, lessonStale, type LessonId } from '../../game/lessons.ts';
+import { lessonDotLine, lessonOfLine, lessonSaidBy, lessonStale, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
 import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
@@ -106,6 +106,10 @@ interface Plan {
   topic?: TopicId;
   /** the bubble, relative to her (perch) or on screen (hover, Pokey's own thought) */
   bub: BubblePlace | null;
+  /** Pokey's own thought: whether he was on a vine, a liana or a rope when it was placed (it moves once when he grabs or lets go) */
+  bubHeld?: boolean;
+  /** when Pokey's thought was last placed (performance.now ms): swinging, he may carry himself under it, and it moves at most this often */
+  bubAt?: number;
   bubDx: number;
   bubDy: number;
   placedAt: number;
@@ -345,11 +349,12 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     run.engineLine(guide.text, guide.ms);
   }, [guide?.n]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // a first-time lesson: one of Dot's lines (the engine did not stop for it)
+  // a first-time lesson: one of Dot's lines, or Pokey's while she is away (the engine did not stop for it)
   useEffect(() => {
     // (already on the vine or the trunk: the lesson starts after its "grab it" step)
     const l = lessonId ? lessonDotLine(lessonId, undefined, run.view.swinging || run.view.climbing || run.view.hanging) : undefined;
-    if (l) run.say(l);
+    // (Dot's while she is with him; his own thought while she is away, World 7 above all)
+    if (l) run.say(lessonSaidBy(l, run.dot));
   }, [lessonId, run]);
 
   // the first-stage coach: each step is a line that stays until its move is done; a step that moves on takes its line down
@@ -919,6 +924,18 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (p?.mode === 'pokey' && cur && !p.bub && run.measuredN === cur.n && v.flight) {
         p.bub = { x: Math.max(16, (v.cssW - run.bw) / 2), y: p.sy, tail: 'b', at: 0 };
       }
+      const held = !!(v.climbing || v.swinging || v.hanging);
+      // (on a liana he swings under a bubble placed when he grabbed: it moves off him, now and then, never every frame)
+      const onHim = (b: BubblePlace) => {
+        const r = pokeyRect(v, 0);
+        return b.x < r.x1 && b.x + run.bw > r.x0 && b.y - BUBBLE_TAG_H < r.y1 && b.y + run.bh > r.y0;
+      };
+      if (p?.mode === 'pokey' && p.bub && !v.flight && (p.bubHeld !== held || (held && onHim(p.bub) && now - (p.bubAt ?? 0) > 700))) {
+        const r = pokeyRect(v, 0);
+        p.sx = (r.x0 + r.x1) / 2;
+        p.sy = r.y0 + 10;
+        p.bub = null;
+      }
       if (p?.mode === 'pokey' && cur && !p.bub && run.measuredN === cur.n) {
         const safe = safeNow();
         const rects = dangerRects(v, run.rects);
@@ -926,7 +943,14 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         landingRects(v, rects);
         popupRects(v, rects);
         hardNow();
-        p.bub = placeBubble(p.sx, p.sy, run.bw, run.bh, safe, rects, ['above', v.facing > 0 ? 'left' : 'right', 'below'], 26, run.hard, 26, pokeyRect(v, 4));
+        // (on a vine, a liana or a rope what he needs to see is above him: his thought goes under him first, World 7's climbs above all)
+        const side = v.facing > 0 ? 'left' : 'right';
+        const order: Parameters<typeof placeBubble>[6] = held ? ['below', side, 'above'] : ['above', side, 'below'];
+        // (held, the bubble hangs from his feet: measured from his head, every spot under him lies on him)
+        const ay = held ? pokeyRect(v, 0).y1 - 10 : p.sy;
+        p.bub = placeBubble(p.sx, ay, run.bw, run.bh, safe, rects, order, 26, run.hard, 26, pokeyRect(v, 4));
+        p.bubHeld = held;
+        p.bubAt = now;
       }
       if (bub && cur && p?.bub && there && run.measuredN === cur.n) {
         let bx = p.mode === 'perch' ? run.dsx + p.bubDx : p.bub.x;

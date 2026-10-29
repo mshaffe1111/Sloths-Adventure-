@@ -531,3 +531,12 @@ export function lessonDotLine(id: LessonId, mode: InputMode = lessonInputMode(),
   }
   return lessonStep(id, d.ids, 0, mode);
 }
+
+/**
+ * the lesson said by whoever is with Pokey: Dot's lines are hers while she is there, his own thought while she is away (wayside.ts
+ * dotPresent: the second half of World 6, all of World 7, World 10). A lesson card said by Dot in World 7 broke Matt's rule (STAGE-RULES §1)
+ */
+export function lessonSaidBy(l: GuideLine, dot: boolean): GuideLine {
+  if (dot) return l;
+  return { ...l, who: 'Pokey', next: l.next ? lessonSaidBy(l.next, dot) : undefined };
+}
