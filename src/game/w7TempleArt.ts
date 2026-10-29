@@ -1,10 +1,10 @@
 /**
  * w7TempleArt — World 7's old temple stone and its lianas, from the Hugging Face set (lead review 2026-10-29, src/assets/w7):
- *   temple-walls.webp   four carved wall strips 220 x 900, each repeating top to bottom, any two side by side. They face every high
- *                       ledge (a run of banks standing HIGH_LEDGE px or more over the floor beside it) in place of the plain stacked
- *                       bricks, on one grid through the stage (stripAt): never the same strip twice side by side, the carved sloth face
- *                       (wall-3) at most once a wall and never again down its own column, and wall-4 (its root runs off both its edges)
- *                       only on a lone bank one strip wide.
+ *   temple-run.webp     the temple wall as one wide built wall (2048 x 1024, its courses level all the way across), in three variants
+ *                       sharing their edges, made on Hugging Face from the kit's own strips (the lead's round-5 review: strips butted
+ *                       side by side showed hard joins however they were cross-faded). It faces every high ledge (a run of banks
+ *                       standing HIGH_LEDGE px or more over the floor beside it), repeating left to right on the world's grid and hung
+ *                       from its run's top, so a run is one wall; it ends a little under the floor beside it, fading into the soil.
  *   vine-anchors.webp   four stone lintels each with a knotted liana (300 x 220: ax, ay where the liana leaves the frame), each with its
  *                       own liana as a repeating run (liana-a1..a4), and six spare brown runs (liana-1..6). A swinging liana hangs from a
  *                       lintel on its own run, in place of the leafy clump; the brown vines down the old walls are the spare runs.
@@ -14,20 +14,16 @@ import { trackAtlas } from './atlasLoader.ts';
 import { drawSoil } from './groundPaint.ts';
 import type { Platform } from './types.ts';
 
-export const W7_TEMPLE_URLS = [new URL('../assets/w7/temple-walls.webp', import.meta.url).href, new URL('../assets/w7/vine-anchors.webp', import.meta.url).href] as const;
+export const W7_TEMPLE_URLS = [new URL('../assets/w7/temple-run.webp', import.meta.url).href, new URL('../assets/w7/vine-anchors.webp', import.meta.url).href] as const;
 type F = { x: number; y: number; w: number; h: number; ax?: number; ay?: number };
-/** temple-walls.json */
-const WALLS: readonly F[] = [
-  { x: 0, y: 0, w: 220, h: 900 },
-  { x: 224, y: 0, w: 220, h: 900 },
-  { x: 448, y: 0, w: 220, h: 900 },
-  { x: 672, y: 0, w: 220, h: 900 },
-  { x: 896, y: 0, w: 220, h: 900 },
-];
-/** the carved sloth face, the strip whose root runs off both its edges, and the plain one (wall-5, no root: hfb-w7wall5) */
-const FACE = 2;
-const ROOTED = 3;
-const PLAIN = 4;
+/**
+ * temple-run.webp (hfb-w7wallrun, tools/art/hfbatch/make_wallrun.py): the temple wall as one wide built wall, RUN_W x RUN_H, its
+ * courses level all the way across, in three variants that share their left and right edges, so any of them repeats next to any other
+ * with no join
+ */
+const RUN: readonly F[] = [{x: 0, y: 0, w: 2048, h: 1024}, {x: 0, y: 1024, w: 2048, h: 1024}];
+const RUN_W = 2048;
+const RUN_H = 1024;
 /** vine-anchors.json: each lintel and its own liana run */
 const ANCHORS: ReadonlyArray<{ a: F; run: F }> = [
   { a: { x: 0, y: 0, w: 300, h: 220, ax: 251.3, ay: 220 }, run: { x: 304, y: 0, w: 68, h: 42, ax: 33.9 } },
@@ -105,125 +101,82 @@ export function isHighLedge(p: Platform, banks: readonly Platform[]): boolean {
 }
 /** a high ledge's foot: the top of the highest floor beside its run that it stands HIGH_LEDGE px or more over (undefined: not one) */
 export function highLedgeFoot(p: Platform, banks: readonly Platform[]): number | undefined {
+  return highLedge(p, banks)?.foot;
+}
+/** a high ledge's foot, and the top of its run's highest bank (where its wall hangs from) */
+export function highLedge(p: Platform, banks: readonly Platform[]): { foot: number; runTop: number } | undefined {
   const run = runOf(p, banks);
   const a = run[0], z = run[run.length - 1];
   const left = banks.filter((q) => !run.includes(q) && q.x + q.width <= a.x + 2 && q.x + q.width > a.x - 400).sort((u, v) => v.x - u.x)[0];
   const right = banks.filter((q) => !run.includes(q) && q.x >= z.x + z.width - 2 && q.x < z.x + z.width + 400).sort((u, v) => u.x - v.x)[0];
   const feet = [left, right].filter((q): q is Platform => !!q && q.y - p.y >= HIGH_LEDGE).map((q) => q.y);
-  return feet.length ? Math.min(...feet) : undefined;
+  return feet.length ? { foot: Math.min(...feet), runTop: Math.min(...run.map((q) => q.y)) } : undefined;
 }
 
-/**
- * The strip of wall column n (columns of COL px on a grid through the whole stage, so touching banks are one wall), and whether it is
- * mirrored: the odd columns wall-2, the even ones the plain wall-5 or now and then wall-1, each mirrored by its spot, and the carved
- * sloth face (wall-3) on an even column a FACE_EVERY'th of the time, so it never shows twice on a wall a phone screen wide or stands
- * beside itself. Exported for its test.
- */
-export function stripAt(n: number): { s: number; flip: boolean } {
-  const h = hash01(n, 17);
-  // (wall-1 carries a root: the plain wall-5 takes two of every three of its columns, so the root is not back every other column)
-  const s = n % 2 !== 0 ? 1 : n % FACE_EVERY === 0 && h < 0.6 ? FACE : h < 0.66 ? PLAIN : 0;
-  return { s, flip: hash01(n, 29) < 0.5 };
-}
-/** the wall columns' width, and how many columns apart the sloth face can come */
-const COL = 220;
-const FACE_EVERY = 8;
-
-/** how far a wall column fades in over the one on its left (px) */
-const FEATHER = 28;
 /** a high ledge's wall runs this far under the floor beside it, the soil coming back over its last FOOT_FADE px */
 const FOOT_DEEP = 150;
 const FOOT_FADE = 110;
-const feathers = new Map<string, HTMLCanvasElement | null>();
-/**
- * A strip as a canvas FEATHER px wider on its left, that extra band (the strip's own far edge, mirrored back) fading in from nothing,
- * so drawn over the column to its left it cross-fades into it. Made once per strip and side.
- */
-function feathered(img: HTMLImageElement, si: number, flip: boolean): HTMLCanvasElement | null {
-  const key = `${si}${flip ? 'f' : ''}`;
-  if (feathers.has(key)) return feathers.get(key)!;
-  let c: HTMLCanvasElement | null = null;
-  try {
-    const f = WALLS[si];
-    c = document.createElement('canvas');
-    c.width = COL + FEATHER;
-    c.height = 900;
-    const g = c.getContext('2d')!;
-    g.save();
-    if (flip) {
-      g.translate(FEATHER + COL, 0);
-      g.scale(-1, 1);
-      g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, COL, 900);
-    } else g.drawImage(img, f.x, f.y, f.w, f.h, FEATHER, 0, COL, 900);
-    g.restore();
-    // (the band left of the strip: its first FEATHER columns mirrored out, so the fade is the strip's own stone)
-    g.save();
-    g.translate(FEATHER, 0);
-    g.scale(-1, 1);
-    g.drawImage(c, FEATHER, 0, FEATHER, 900, 0, 0, FEATHER, 900);
-    g.restore();
-    g.globalCompositeOperation = 'destination-in';
-    const gr = g.createLinearGradient(0, 0, FEATHER * 2, 0);
-    gr.addColorStop(0, 'rgba(0,0,0,0)');
-    gr.addColorStop(1, 'rgba(0,0,0,1)');
-    g.fillStyle = gr;
-    g.fillRect(0, 0, COL + FEATHER, 900);
-  } catch {
-    c = null;
-  }
-  feathers.set(key, c);
-  return c;
-}
+/** how wide the soil wraps round a high ledge's corner (px), give or take its wobble */
+const WRAP_W = 26;
 
 /**
- * a high ledge's face, from under its top band down to `bottom`, between view.x0 and view.x1; `alone`: no other bank touches it (a lone
- * ledge one strip wide carries wall-4, whose root runs off both its edges)
+ * a high ledge's face, from under its top band down to `bottom` (or to FOOT_DEEP under the floor beside it, `foot`), between view.x0
+ * and view.x1: the composed temple wall laid on the world's grid, so every bank of a run shows one wall and its courses carry on from
+ * bank to bank
  */
 export function drawW7TempleWall(
-  ctx: CanvasRenderingContext2D, p: Platform, bottom: number, view?: { x0: number; x1: number; y0?: number }, alone = false, foot?: number, viewBottom = bottom,
+  ctx: CanvasRenderingContext2D, p: Platform, bottom: number, view?: { x0: number; x1: number; y0?: number }, foot?: number, viewBottom = bottom, runTop = p.y,
+  wrap: { left?: boolean; right?: boolean } = {},
 ): boolean {
   if (!w7TempleReady()) return false;
+  const img = imgs[0]!;
   const top = p.y + WALL_TOP;
   // (the wall stands from the ledge down to a little under the floor beside it, then the soil takes over: underground the ledge is the
   // same ground as the floor, with no straight seam between them down the screen)
   const end = foot === undefined ? bottom : Math.min(bottom, foot + FOOT_DEEP);
   if (end <= top) return true;
-  const img = imgs[0]!;
+  // (to the bank's own edges: the painted end wraps the soil round its corner afterwards)
+  const x0 = view ? Math.max(p.x, view.x0 - 20) : p.x, x1 = view ? Math.min(p.x + p.width, view.x1 + 20) : p.x + p.width;
+  if (x1 <= x0) return true;
   ctx.save();
   ctx.beginPath();
-  ctx.rect(p.x, top, p.width, end - top + 2);
+  ctx.rect(x0, top, x1 - x0, end - top + 2);
   ctx.clip();
-  const lone = alone && p.width <= COL + 20;
-  const n0 = Math.floor(p.x / COL), n1 = Math.floor((p.x + p.width - 1) / COL);
-  for (let n = n0; n <= n1; n++) {
-    const x = lone ? p.x + p.width / 2 - COL / 2 : n * COL;
-    if (view && (x > view.x1 + 20 || x + COL < view.x0 - 20)) continue;
-    const { s, flip } = lone ? { s: ROOTED, flip: hash01(n, 29) < 0.5 } : stripAt(n);
-    // (each column at its own height in its strip, so the joints don't run in one line across the wall; that height is the world's, not
-    // the bank's, so a column shared by two banks of a run, their tops a step apart, carries on unbroken)
-    const phase = Math.floor(hash01(n, 23) * 898);
-    for (let k = 0, y = top - ((((top - phase) % 898) + 898) % 898); y < bottom; k++, y += 898) {
-      // (the sloth face once: below its first repeat its column carries wall-1)
-      const si = s === FACE && k > 0 ? PLAIN : s;
-      // (a column fades in over the one on its left across FEATHER px, so no straight joint runs down the wall; the lone strip and a
-      // bank's first column have nothing to fade into)
-      const strip = !lone && n > n0 ? feathered(img, si, flip) : null;
-      if (strip) ctx.drawImage(strip, x - FEATHER, y, COL + FEATHER, 900);
-      else {
-        const f = WALLS[si];
-        ctx.save();
-        ctx.translate(x + COL / 2, y);
-        if (flip) ctx.scale(-1, 1);
-        ctx.drawImage(img, f.x, f.y, f.w, f.h, -COL / 2, 0, COL, 900);
-        ctx.restore();
-      }
-    }
-    if (lone) break;
+  // (one picture tall, hung from the run's top: every bank of a run, its tops a step apart, shows the same courses; across, the world's
+  // repeat of RUN_W, each repeat one of the three variants by its place)
+  const y0 = runTop + WALL_TOP;
+  for (let tx = Math.floor(x0 / RUN_W) * RUN_W; tx < x1; tx += RUN_W) {
+    const f = RUN[Math.floor(hash01(tx / RUN_W, 41) * RUN.length) % RUN.length];
+    for (let ty = y0; ty < end; ty += RUN_H) ctx.drawImage(img, f.x, f.y, f.w, f.h, tx, ty, RUN_W + 0.5, RUN_H);
   }
   ctx.restore();
+  // (where the ledge drops to a floor, the soil wraps round the wall's corner: a band of it down the stone's edge, its inner edge wobbling,
+  // outlined thin and dark like the painted kit, never a ruler-straight cut)
+  for (const right of [false, true]) {
+    if (!(right ? wrap.right : wrap.left)) continue;
+    const edge = right ? p.x + p.width : p.x, d = right ? -1 : 1;
+    const pts: Array<[number, number]> = [];
+    for (let y = p.y - 4; y <= end + 24; y += 24) pts.push([edge + d * (WRAP_W + 9 * Math.sin(y * 0.031 + edge) + 6 * Math.sin(y * 0.083 + edge * 0.7)), y]);
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(edge, p.y - 4);
+    for (const q of pts) ctx.lineTo(q[0], q[1]);
+    ctx.lineTo(edge, end + 24);
+    ctx.closePath();
+    ctx.clip();
+    drawSoil(ctx, 7, Math.min(edge, edge + d * (WRAP_W + 16)), Math.max(edge, edge + d * (WRAP_W + 16)), p.y - 4, end + 24, viewBottom, view?.y0);
+    ctx.restore();
+    ctx.save();
+    ctx.strokeStyle = 'rgba(22, 18, 12, 0.85)';
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    pts.forEach((q, i) => (i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])));
+    ctx.stroke();
+    ctx.restore();
+  }
   // (the soil comes back over the wall's last FOOT_FADE px, in steps of rising strength)
   if (end < bottom) {
-    const x0 = view ? Math.max(p.x, view.x0 - 20) : p.x, x1 = view ? Math.min(p.x + p.width, view.x1 + 20) : p.x + p.width;
     // (the last step at full strength, overlapping the wall's end by a few px: no trace of the wall below it)
     const N = 10, h = FOOT_FADE / N;
     for (let i = 0; i < N; i++) {

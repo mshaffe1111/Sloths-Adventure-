@@ -189,8 +189,8 @@ const cutEnds = new Map<string, HTMLCanvasElement | null>();
  * The end piece faded out toward `cut` units below its top (a step down to a lower bank: the lower bank's lip takes over there). Baked
  * once per world and cut (to 8 units), so a step's end has no hard line where it stops.
  */
-function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: number): HTMLCanvasElement | null {
-  const key = `${w}:${Math.round(cut / 8)}`;
+function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: number, fade = 46): HTMLCanvasElement | null {
+  const key = `${w}:${Math.round(cut / 8)}:${fade}`;
   if (cutEnds.has(key)) return cutEnds.get(key)!;
   let c: HTMLCanvasElement | null = null;
   try {
@@ -201,7 +201,8 @@ function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: 
     g.drawImage(img, e.x, e.y, e.w, e.h, 0, 0, e.w, e.h);
     g.globalCompositeOperation = 'destination-in';
     const k = e.h / END_H;
-    const y1 = Math.max(1, Math.min(e.h, cut * k)), y0 = Math.max(0, y1 - 46 * k);
+    // (fade 0: cut clean, for a short step whose lower bank's lip covers the cut)
+    const y1 = Math.max(1, Math.min(e.h, cut * k)), y0 = Math.max(0, y1 - Math.max(0.5, fade * k));
     const gr = g.createLinearGradient(0, y0, 0, y1);
     gr.addColorStop(0, 'rgba(0,0,0,1)');
     gr.addColorStop(1, 'rgba(0,0,0,0)');
@@ -214,15 +215,18 @@ function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: 
   return c;
 }
 
-/** the bank end piece at a right (or, mirrored, left) end x with the walking line at y; `cutAt`: faded out by that height (a step) */
-export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean, cutAt?: number): boolean {
+/**
+ * the bank end piece at a right (or, mirrored, left) end x with the walking line at y; `cutAt`: faded out by that height (a step) over
+ * `fade` px (0: cut clean, a short step)
+ */
+export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean, cutAt?: number, fade?: number): boolean {
   const s = sheet(w);
   if (!s) return false;
   const e = s.g.end;
   const k = END_H / e.h;
   const ew = e.w * k;
   const top = y - e.surf * END_H;
-  const faded = cutAt !== undefined ? endFaded(s.img, e, w, cutAt - top) : null;
+  const faded = cutAt !== undefined ? endFaded(s.img, e, w, cutAt - top, fade) : null;
   if (cutAt !== undefined && !faded) return true;
   ctx.save();
   ctx.translate(x, 0);

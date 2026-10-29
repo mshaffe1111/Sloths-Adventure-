@@ -76,3 +76,12 @@ src/assets/w7/temple-walls.webp). Results in the bucket under hfbatch/w7wall5/pr
 hfb-w7wall5 6ae398dcad9610e5cb315e42 rtx-pro-6000 19:05:00Z-19:06:18Z (1.3 min, ~$0.06): s58 x seeds 17/29 from start-w7wall5
   w7wall5-s58-17 KEPT as wall-5 (grey-green like the kit, mixed blocks, two carved bands, a little moss, no root). s58-29 not used:
   browner than the other four strips.
+World 7 temple wall as one built wall (2026-10-29, the lead's round-5 review: strips butted side by side kept showing joins), gen2-w7.
+hfb-w7walltile 6ae3ade9c78863f9c62dd445 rtx-pro-6000 20:34:49Z-~20:37Z (~2 min, ~$0.09): groundgpu.py "tile" from start-w7walltile
+  (make_walltile.py: the strips side by side). THROWN: the start's column joints survived s50/s60, and seam.brick's blend ghosted
+  the masonry (double roots, half-faded bands).
+hfb-w7wallrun 6ae3ae99c78863f9c62dd52a rtx-pro-6000 20:37:45Z-~20:44Z (~5 min, ~$0.23): groundgpu.py "strip" (periodic left to
+  right) from start-w7wallrun (make_wallrun.py: courses laid the whole width from the strips' own course bands, a running bond),
+  s1 0.55/0.65, s2 0.52. w7wallrun-s55-v3 and -v5 KEPT as src/assets/w7/temple-run.webp (wallruncut.py: graded to one tone, stacked);
+  the base not used (wrap_x's blend ghosted its cracks), the s65 set not used (s55 already clean).
+running total for World 7 walls ~$0.38.
