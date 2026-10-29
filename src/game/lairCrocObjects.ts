@@ -10,6 +10,7 @@
  * Nothing here changes a box: every shape sits on the platform's own rectangle (top edge = p.y).
  */
 import type { Platform, TreeStructure, Vine } from './types.ts';
+import { drawLairRope, drawLairRopeLine } from './ropeArt.ts';
 
 interface Cam {
   x: number;
@@ -337,22 +338,7 @@ function drawHangingLog(ctx: CanvasRenderingContext2D, p: Platform, cam: Cam, ti
   const ax = (p.baseX ?? p.x) + p.width / 2;
   // two ropes, meeting high above, so the log swings like a pendulum
   ctx.lineCap = 'round';
-  for (const [dx, ex] of [[16, -26], [p.width - 16, 26]] as const) {
-    ctx.strokeStyle = '#0a0705';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(p.x + dx, p.y + 4);
-    ctx.lineTo(ax + ex, top);
-    ctx.stroke();
-    ctx.strokeStyle = '#b8a070';
-    ctx.lineWidth = 4.4;
-    ctx.stroke();
-    ctx.strokeStyle = '#5a4a2c';
-    ctx.lineWidth = 1.6;
-    ctx.setLineDash([5, 8]);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
+  for (const [dx, ex] of [[16, -26], [p.width - 16, 26]] as const) drawLairRopeLine(ctx, p.x + dx, p.y + 4, ax + ex, top, 7, null, '#b8a070');
   // the log: a rounded trunk, bark ridges, grain rings on the ends, rope lashings
   const w = p.width;
   const h = p.height;
@@ -545,20 +531,7 @@ function drawRopeLadder(ctx: CanvasRenderingContext2D, v: Vine, time: number) {
   ctx.lineWidth = 24;
   trace(ctx, at, N);
   ctx.stroke();
-  ctx.strokeStyle = '#0a0705';
-  ctx.lineWidth = 9;
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.strokeStyle = '#c9b184';
-  ctx.lineWidth = 5.6;
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.strokeStyle = '#6a5630';
-  ctx.lineWidth = 1.8;
-  ctx.setLineDash([5, 7]);
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.setLineDash([]);
+  drawLairRope(ctx, at, N, 9, null, '#c9b184');
   // rungs
   for (let i = 1; i < N; i += 4) {
     const p = at(i / N);
@@ -587,15 +560,7 @@ function drawRopeSwing(ctx: CanvasRenderingContext2D, v: Vine, cam: Cam, time: n
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   const topEdge = cam.y - 30;
-  ctx.strokeStyle = '#0a0705';
-  ctx.lineWidth = 9;
-  ctx.beginPath();
-  ctx.moveTo(v.x, v.topY);
-  ctx.lineTo(v.x, topEdge);
-  ctx.stroke();
-  ctx.strokeStyle = '#8f7a52';
-  ctx.lineWidth = 5;
-  ctx.stroke();
+  drawLairRopeLine(ctx, v.x, v.topY, v.x, topEdge, 8, '#c8b8a0', '#8f7a52');
   // an iron ring where the rope joins the cable
   ctx.strokeStyle = '#94a3b8';
   ctx.lineWidth = 3.4;
@@ -607,20 +572,7 @@ function drawRopeSwing(ctx: CanvasRenderingContext2D, v: Vine, cam: Cam, time: n
   ctx.lineWidth = 22;
   trace(ctx, at, N);
   ctx.stroke();
-  ctx.strokeStyle = '#0a0705';
-  ctx.lineWidth = 10;
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.strokeStyle = '#c9b184';
-  ctx.lineWidth = 6.4;
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.strokeStyle = '#6a5630';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([5, 8]);
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.setLineDash([]);
+  drawLairRope(ctx, at, N, 10, null, '#c9b184');
   // knots
   ctx.fillStyle = '#b39a68';
   ctx.strokeStyle = '#0a0705';

@@ -16,6 +16,7 @@ __pycache__/
 testlink/dist/
 testlink/dist-prev/
 testlink/filesmap.json
+testlink/work-index.html
 art/gen/clips/
 art/gen/stills/
 art/reanim/in/

@@ -53,26 +53,61 @@ function facesOf(plats: Platform[]): Face[] {
 }
 
 /** steer right up to the face, lift, one straight flick (leaning `lean` by chance): on top of it after? */
-function flickUp(sim: RealPlay, f: Face, lean: -1 | 0): boolean {
+function flickUp(sim: RealPlay, f: Face, lean: -1 | 0): 'climbed' | 'past' | false {
   sim.stand(f.x - 70, f.floorY);
   sim.p.facing = 1;
+  // (the hazards count here: a carried-past landing must be safe ground, so he can be hurt and the hurt is noticed)
+  sim.safe = false;
+  sim.p.invincibleTimer = 0;
+  const hp0 = sim.p.hp;
   let hold = 0;
   let flicked = false;
-  for (let i = 0; i < 30 * 3; i++) {
-    const p = sim.p;
-    let press = false;
-    if (!flicked && p.grounded && p.x + 19 >= f.x - 3) {
-      press = true;
-      flicked = true;
-      hold = 7;
-      (sim.input.state as unknown as { jumpLean: number }).jumpLean = lean;
+  try {
+    for (let i = 0; i < 30 * 3; i++) {
+      const p = sim.p;
+      let press = false;
+      if (!flicked && p.grounded && p.x + 19 >= f.x - 3) {
+        press = true;
+        flicked = true;
+        hold = 7;
+        (sim.input.state as unknown as { jumpLean: number }).jumpLean = lean;
+      }
+      sim.frame({ right: !flicked, press, jump: hold > 0 });
+      hold--;
+      if (sim.died || sim.p.hp < hp0) return false;
+      // (a vine or trunk over the step caught him on the way up: that is a way up too)
+      if (sim.p.climbing || sim.p.isVineSwinging || sim.p.hanging) return 'climbed';
+      if (flicked && hold < 0 && sim.p.grounded) {
+        // (on top of it; or, for a flick that leaned away, up on a step behind him: the help takes the lean first, as in World 5)
+        if (lean ? sim.p.y <= f.floorY - STEP_UP.min : sim.p.y <= f.top + 1 && sim.p.x > f.x) return 'climbed';
+        // carried past it (CT-1, polish report 2026-10-29: a one-thumb running flick keeps its run speed, so it can sail over a step
+        // narrower than a jump): fine on safe ground beyond it, never a pit, water or thorns (died or hurt, above) or by an animal
+        if (sim.p.x > f.x && safeGround(sim)) return 'past';
+        return false;
+      }
     }
-    sim.frame({ right: !flicked, press, jump: hold > 0 });
-    hold--;
-    // (a vine or trunk over the step caught him on the way up: that is a way up too)
+    return false;
+  } finally {
+    sim.safe = true;
+  }
+}
+
+/** no animal within 120 px of him (an animal's clearance), at about his height */
+function safeGround(sim: RealPlay): boolean {
+  const p = sim.p;
+  const enemies = (sim.e.enemies ?? []) as Array<{ x: number; y: number; defeated?: boolean; hp?: number }>;
+  return !enemies.some((e) => !e.defeated && (e.hp ?? 1) > 0 && Math.abs(e.x - p.x) < 120 && Math.abs(e.y - p.y) < 90);
+}
+
+/** the step climbed another way: from standing flush at its face, steer on into it and flick up (a thumb kept on the glass) */
+function climbFromFace(sim: RealPlay, f: Face): boolean {
+  sim.stand(f.x - 24, f.floorY);
+  sim.p.facing = 1;
+  for (let i = 0; i < 30 * 2; i++) {
+    sim.frame({ right: true, press: i === 0, jump: i < 7 });
+    if (sim.died) return false;
     if (sim.p.climbing || sim.p.isVineSwinging || sim.p.hanging) return true;
-    // (on top of it; or, for a flick that leaned away, up on a step behind him: the help takes the lean first, as in World 5)
-    if (flicked && hold < 0 && sim.p.grounded) return lean ? sim.p.y <= f.floorY - STEP_UP.min : sim.p.y <= f.top + 1 && sim.p.x > f.x;
+    if (i > 3 && sim.p.grounded && sim.p.y <= f.top + 1 && sim.p.x > f.x) return true;
   }
   return false;
 }
@@ -123,7 +158,7 @@ function leaveDip(sim: RealPlay, d: Platform): number {
   return -1;
 }
 
-test('one-jump steps: a straight flick with the thumb lifted climbs every one (leaning either way), in Worlds 1 and 2, three rolls', () => {
+test('one-jump steps: a straight flick with the thumb lifted climbs every one or carries him past it onto safe ground, and every one climbs from its face (leaning either way), in Worlds 1 and 2, three rolls', () => {
   const bad: string[] = [];
   let n = 0;
   for (const id of STAGES) {
@@ -131,7 +166,12 @@ test('one-jump steps: a straight flick with the thumb lifted climbs every one (l
       const sim = touchPlay(id, seed);
       for (const f of facesOf(sim.platforms)) {
         n++;
-        for (const lean of [0, -1] as const) if (!flickUp(sim, f, lean)) bad.push(`${id} seed ${seed}: the ${f.rise} px step at x ${Math.round(f.x)}${lean ? ', the flick leaning away' : ''}`);
+        for (const lean of [0, -1] as const) {
+          const how = flickUp(sim, f, lean);
+          if (!how) bad.push(`${id} seed ${seed}: the ${f.rise} px step at x ${Math.round(f.x)}${lean ? ', the flick leaning away' : ''}`);
+          // (a step the flick carried him past must still be climbable another way: no step may be the only way up that fails)
+          else if (how === 'past' && !climbFromFace(sim, f)) bad.push(`${id} seed ${seed}: the ${f.rise} px step at x ${Math.round(f.x)} is carried past and cannot be climbed from its face`);
+        }
       }
     }
   }

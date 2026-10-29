@@ -1138,7 +1138,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       run.prevHp = v.hp;
 
       // story asides (the "Story lines in stages" switch; Dot's help does not silence them)
-      if (run.applies && run.storyOn && run.clock >= run.nextStoryCheck) {
+      // (not on 7-4's slide: an aside in the banner would cover the flume ahead; its line is in the hall, before it)
+      if (run.applies && run.storyOn && !v.slide && run.clock >= run.nextStoryCheck) {
         run.nextStoryCheck = run.clock + 200;
         if (run.hurtAt >= 0 && run.clock - run.hurtAt > HURT_WINDOW_MS) run.hurtAt = -1;
         const due = dueLine({

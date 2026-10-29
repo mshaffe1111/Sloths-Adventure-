@@ -1,0 +1,53 @@
+{
+ "note": "hfboss-venom: Venom Fang body strip, hf-art-bosses, 2026-10-29",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/8e42aaaeed995d4a37f1ba3bb16945d358332771/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "venombody-s50-7",
+   "start": "start-venombody.webp",
+   "prompt": "slothadv style, a long straight horizontal strip of a giant cartoon jungle snake's body seen from the side, filling the strip from the left edge to the right edge with no head and no tail: glossy teal-green scales on its back with a lighter highlight, a row of pale jagged markings along the top, a smooth cream belly with brown-edged belly plates along the bottom, a thin dark outline along the top and the bottom. Soft cel shading, light from the upper left, painted storybook illustration. Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "head, eyes, tail, coil, curve, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, shadow",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1536,
+   "h": 256
+  },
+  {
+   "name": "venombody-s50-23",
+   "start": "start-venombody.webp",
+   "prompt": "slothadv style, a long straight horizontal strip of a giant cartoon jungle snake's body seen from the side, filling the strip from the left edge to the right edge with no head and no tail: glossy teal-green scales on its back with a lighter highlight, a row of pale jagged markings along the top, a smooth cream belly with brown-edged belly plates along the bottom, a thin dark outline along the top and the bottom. Soft cel shading, light from the upper left, painted storybook illustration. Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "head, eyes, tail, coil, curve, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, shadow",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1536,
+   "h": 256
+  },
+  {
+   "name": "venombody-s62-7",
+   "start": "start-venombody.webp",
+   "prompt": "slothadv style, a long straight horizontal strip of a giant cartoon jungle snake's body seen from the side, filling the strip from the left edge to the right edge with no head and no tail: glossy teal-green scales on its back with a lighter highlight, a row of pale jagged markings along the top, a smooth cream belly with brown-edged belly plates along the bottom, a thin dark outline along the top and the bottom. Soft cel shading, light from the upper left, painted storybook illustration. Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "head, eyes, tail, coil, curve, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, shadow",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 256
+  },
+  {
+   "name": "venombody-s62-23",
+   "start": "start-venombody.webp",
+   "prompt": "slothadv style, a long straight horizontal strip of a giant cartoon jungle snake's body seen from the side, filling the strip from the left edge to the right edge with no head and no tail: glossy teal-green scales on its back with a lighter highlight, a row of pale jagged markings along the top, a smooth cream belly with brown-edged belly plates along the bottom, a thin dark outline along the top and the bottom. Soft cel shading, light from the upper left, painted storybook illustration. Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "head, eyes, tail, coil, curve, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, shadow",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 256
+  }
+ ]
+}

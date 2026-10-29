@@ -1,0 +1,273 @@
+{
+ "tag": "w7slide-img2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "floor2-s55-5",
+   "start": "floor2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth, two shallow carved grooves running straight down it dividing it into three lanes, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "floor2-s55-17",
+   "start": "floor2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth, two shallow carved grooves running straight down it dividing it into three lanes, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "floor2-s70-5",
+   "start": "floor2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth, two shallow carved grooves running straight down it dividing it into three lanes, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "floor2-s70-17",
+   "start": "floor2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth, two shallow carved grooves running straight down it dividing it into three lanes, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "ceiling-s55-5",
+   "start": "ceiling.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a dark stone temple ceiling seen from directly below: big dark fitted stone slabs in shadow, brown strangler-fig roots running across them and hanging down, a little moss in the joints, dim warm light, ancient overgrown temple ruins, dark brown and grey stone, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "ceiling-s55-17",
+   "start": "ceiling.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a dark stone temple ceiling seen from directly below: big dark fitted stone slabs in shadow, brown strangler-fig roots running across them and hanging down, a little moss in the joints, dim warm light, ancient overgrown temple ruins, dark brown and grey stone, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "ceiling-s70-5",
+   "start": "ceiling.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a dark stone temple ceiling seen from directly below: big dark fitted stone slabs in shadow, brown strangler-fig roots running across them and hanging down, a little moss in the joints, dim warm light, ancient overgrown temple ruins, dark brown and grey stone, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "ceiling-s70-17",
+   "start": "ceiling.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a dark stone temple ceiling seen from directly below: big dark fitted stone slabs in shadow, brown strangler-fig roots running across them and hanging down, a little moss in the joints, dim warm light, ancient overgrown temple ruins, dark brown and grey stone, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mouth-bright-s60-5",
+   "start": "mouth-bright.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, looking straight down a long ancient stone slide chute inside a temple toward its end: the smooth stone floor with two grooves and carved walls with fig roots running away to a bright opening of daylight, green jungle leaves hanging round the bright opening, warm sunlight pouring in along the floor and walls, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, no people, no characters",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mouth-bright-s60-17",
+   "start": "mouth-bright.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, looking straight down a long ancient stone slide chute inside a temple toward its end: the smooth stone floor with two grooves and carved walls with fig roots running away to a bright opening of daylight, green jungle leaves hanging round the bright opening, warm sunlight pouring in along the floor and walls, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, no people, no characters",
+   "strength": 0.6,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mouth-bright-s72-5",
+   "start": "mouth-bright.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, looking straight down a long ancient stone slide chute inside a temple toward its end: the smooth stone floor with two grooves and carved walls with fig roots running away to a bright opening of daylight, green jungle leaves hanging round the bright opening, warm sunlight pouring in along the floor and walls, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, no people, no characters",
+   "strength": 0.72,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mouth-bright-s72-17",
+   "start": "mouth-bright.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, looking straight down a long ancient stone slide chute inside a temple toward its end: the smooth stone floor with two grooves and carved walls with fig roots running away to a bright opening of daylight, green jungle leaves hanging round the bright opening, warm sunlight pouring in along the floor and walls, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, no people, no characters",
+   "strength": 0.72,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "obstacles2-s50-5",
+   "start": "obstacles2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a sheet of six separate game obstacles in a 3 by 2 grid for a slide game, each seen from the front: two carved stone lintels held up on two stone posts wrapped in fig vines, with open space under them, two low wide heaps of broken stone blocks with moss, the broken edge of a stone floor with darkness beyond it, and the broken front face of a stone floor slab above a dark drop. ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots. Every obstacle alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "obstacles2-s50-17",
+   "start": "obstacles2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a sheet of six separate game obstacles in a 3 by 2 grid for a slide game, each seen from the front: two carved stone lintels held up on two stone posts wrapped in fig vines, with open space under them, two low wide heaps of broken stone blocks with moss, the broken edge of a stone floor with darkness beyond it, and the broken front face of a stone floor slab above a dark drop. ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots. Every obstacle alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.5,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "obstacles2-s65-5",
+   "start": "obstacles2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a sheet of six separate game obstacles in a 3 by 2 grid for a slide game, each seen from the front: two carved stone lintels held up on two stone posts wrapped in fig vines, with open space under them, two low wide heaps of broken stone blocks with moss, the broken edge of a stone floor with darkness beyond it, and the broken front face of a stone floor slab above a dark drop. ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots. Every obstacle alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.65,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "obstacles2-s65-17",
+   "start": "obstacles2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a sheet of six separate game obstacles in a 3 by 2 grid for a slide game, each seen from the front: two carved stone lintels held up on two stone posts wrapped in fig vines, with open space under them, two low wide heaps of broken stone blocks with moss, the broken edge of a stone floor with darkness beyond it, and the broken front face of a stone floor slab above a dark drop. ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots. Every obstacle alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.65,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "crumble-s45-5",
+   "start": "crumble.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, four frames side by side of the same section of carved temple floor seen from the side: whole, then cracked, then breaking into three chunks, then the chunks falling with small stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game sprite sheet, each frame alone with space around it, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "strength": 0.45,
+   "seed": 5,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "crumble-s45-17",
+   "start": "crumble.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, four frames side by side of the same section of carved temple floor seen from the side: whole, then cracked, then breaking into three chunks, then the chunks falling with small stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game sprite sheet, each frame alone with space around it, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "strength": 0.45,
+   "seed": 17,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "crumble-s60-5",
+   "start": "crumble.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, four frames side by side of the same section of carved temple floor seen from the side: whole, then cracked, then breaking into three chunks, then the chunks falling with small stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game sprite sheet, each frame alone with space around it, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "crumble-s60-17",
+   "start": "crumble.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, four frames side by side of the same section of carved temple floor seen from the side: whole, then cracked, then breaking into three chunks, then the chunks falling with small stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game sprite sheet, each frame alone with space around it, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "strength": 0.6,
+   "seed": 17,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "chamber2-s50-5",
+   "start": "chamber2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber: high in the left wall the round dark mouth of a stone slide chute with a carved stone spout under it, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber2-s50-17",
+   "start": "chamber2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber: high in the left wall the round dark mouth of a stone slide chute with a carved stone spout under it, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.5,
+   "seed": 17,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber2-s62-5",
+   "start": "chamber2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber: high in the left wall the round dark mouth of a stone slide chute with a carved stone spout under it, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber2-s62-17",
+   "start": "chamber2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber: high in the left wall the round dark mouth of a stone slide chute with a carved stone spout under it, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "seam-wall-roots-s65",
+   "start": "roll-wall-roots.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved geometric meander patterns and glyphs in the stone blocks, brown strangler-fig roots creeping over it, patches of moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.65,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-wall-roots-s80",
+   "start": "roll-wall-roots.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved geometric meander patterns and glyphs in the stone blocks, brown strangler-fig roots creeping over it, patches of moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.8,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b5c8a5a3c787b654307ec330445d42a684cc5057/reference/prop-sheets/qa-notes/7-4-slide-art/starts/"
+}

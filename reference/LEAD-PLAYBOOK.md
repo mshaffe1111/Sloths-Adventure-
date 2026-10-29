@@ -120,3 +120,17 @@ get sloppy"):**
 - Check one roll only for a quick look; the full checks only at §4.
 - Don't re-read big files that are already summarised in STATUS.md or the rulebook.
 - Ask Matt before anything big that he didn't ask for.
+
+## 3.6 Helpers get their own cloud machine (Matt, 2026-10-29)
+
+Matt: "How come you didn't give people their own virtual machine? Or their own cloud? Like we did yesterday." Every helper runs in its own
+cloud session (create_session), never as a local agent in the lead's container: six local art agents plus the lead's gate on one machine
+slowed every test run to 30+ minutes and filled the disk. Cloud sessions have the Hugging Face MCP tools too (the audio helper confirmed
+it), so art jobs go there as well. Local agents only for a few-minute lookup.
+
+
+## Review rule: repeating animations (Matt, 2026-10-29 4:02 PM ET)
+Anything that plays over and over (warnings, grit, splashes, sparks, debris) gets the same painted bar as a major look. When reviewing, play the stage and watch every repeating effect up close in video, not only stills; code squares, outlined rects or flat blobs are a fail. The 4-4 rock grit slipped through the 10-29 code-drawn audit because it only shows during a warning.
+
+## Review rule: walk the stages, not the spots (Matt, 2026-10-29 4:08 PM ET)
+Once tools/inspect/walk.mjs + the seam detector land (polish-clean), every helper that changes a look attaches a clean walk of the stages it touched (upright and sideways, the detector's counts before/after). No walk, no merge. The lead looks at the whole contact sheet and the clip, not only the helper's chosen shots.
