@@ -16,6 +16,12 @@ Last updated: 2026-10-28 (Hugging Face art run started).
   plus Matt's Gemini sheets in reference/prop-sheets/gemini-batch-2026-10-28/: w6-hides-arches, w9w10-bridges, queen-collar-off (crop labels),
   reaver-walk-take2 (still no walk: use 2-3 poses for a code-driven walk). The art-hf worktree has the creature scripts uncommitted.
 
+## Rope traverse looks awful (Matt, 2026-10-28 ~23:55 ET; screenshot reference/prop-sheets/qa-notes/rope-traverse-2026-10-28.png)
+
+- Pokey hangs in one stiff pose under a rope drawn as a dashed yellow line. Fix tomorrow: Matt's Gemini hand-over-hand sheet (prompt given:
+  8 poses, 2 rows) → a cycle while moving, a sway while still; the rope drawn as a painted rope (W2 rope texture) with a little sag. Not HF:
+  Pokey drifts off model there and the last HF money is on the creatures.
+
 ## Cost mode (Matt, 2026-10-28 ~22:45 ET): one builder per world, cheaper effort for routine work, tests once at the end and one gate
 per merge batch, QA once per world; never skip a rule (LEAD-PLAYBOOK §7).
 
