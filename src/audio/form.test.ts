@@ -146,3 +146,21 @@ test('a chained stage plays its sections in the order it chose', () => {
   }
   assert.deepEqual(seen.slice(0, 5), pb.chunks.slice(0, 5));
 });
+
+test("the signature, the menu loop and the map's ten variations are valid notation, and the hook is Pokey's own tune", async () => {
+  const { signatureTheme, menuTheme, mapTheme } = await import('./signature.ts');
+  const { SLOMATT_A } = await import('./tunes.ts');
+  for (const th of [signatureTheme(), menuTheme(), ...Array.from({ length: 10 }, (_, i) => mapTheme(i + 1))]) {
+    for (const p of th.form!) {
+      for (const lines of Object.values(p.lines ?? {})) for (const b of lines) if (b) assert.equal(len(b), 16, `${th.id} ${p.name}: ${b}`);
+      for (const c of p.chords) parseChord(c);
+    }
+    const pb = new Playback(new AudioCore(fakeCtx(), { lightRoom: true }), th, 0, undefined, false, { seed: 3 });
+    pb.update(120);
+  }
+  const sig = signatureTheme();
+  assert.deepEqual(sig.form!.find((p) => p.name === 'A')!.lines!.hook, SLOMATT_A);
+  assert.ok(formBars(sig.form!) * (240 / sig.bpm) >= 60 && formBars(sig.form!) * (240 / sig.bpm) <= 100, 'the statement runs 60-100 s');
+  assert.ok(menuTheme().chain && !sig.chain);
+  assert.notEqual(mapTheme(1).tracks.find((t) => t.name === 'tune')!.kind === 'melody' && (mapTheme(1).tracks.find((t) => t.name === 'tune') as { inst: string }).inst, (mapTheme(9).tracks.find((t) => t.name === 'tune') as { inst: string }).inst);
+});

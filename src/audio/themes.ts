@@ -20,6 +20,7 @@ import { scoreById } from './score.ts';
 // ---------------------------------------------------------------------------------------------
 
 export { SLOMATT_A, IRON_CLAW } from './tunes.ts';
+import { signatureById } from './signature.ts';
 import { SLOMATT_A, IRON_CLAW } from './tunes.ts';
 
 const nulls = (n: number) => Array.from({ length: n }, () => null);
@@ -610,7 +611,7 @@ function orchestratedById(id: string): Theme | null {
   const world = m[1] === 'world' ? Number(m[2]) : FLAVOUR_OF[m[1]] ?? 1;
   return { ...orchestrate(base, { world, pace, seed: 0 }), id };
 }
-export const themeById = (id: string): Theme | null => THEMES[id] ?? themeFromId(id) ?? orchestratedById(id) ?? scoreById(id);
+export const themeById = (id: string): Theme | null => THEMES[id] ?? signatureById(id) ?? themeFromId(id) ?? orchestratedById(id) ?? scoreById(id);
 
 /** which theme plays for each world (1..10) and for its boss */
 export const WORLD_THEME = (world: number) => `world${Math.max(1, Math.min(10, world))}`;

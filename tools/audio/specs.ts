@@ -4,7 +4,7 @@ import { themeById } from '../../src/audio/themes.ts';
 import { autoForm } from '../../src/audio/form.ts';
 import fs from 'node:fs';
 
-const which = process.argv[2] === 'after' ? 'after' : process.argv[2] === 'v2' ? 'v2' : 'before';
+const which = process.argv[2] === 'after' ? 'after' : process.argv[2] === 'v2' ? 'v2' : process.argv[2] === 'menus' ? 'menus' : 'before';
 const after = which === 'after';
 const v2 = which === 'v2';
 const OBJ: Record<number, string | undefined> = { 1: undefined, 2: undefined, 3: 'climb', 4: undefined, 5: 'sneak', 6: undefined, 7: undefined, 8: 'climb', 9: undefined, 10: 'defeat' };
@@ -134,6 +134,17 @@ if (v2) {
   // (World 2's 4th stage is one of the one-in-five that play its written tune, with the old instruments: the reel takes its 5th)
   for (let w = 2; w <= 10; w++) reel.push({ t: (w - 1) * 60, music: m(w, w === 2 ? 5 : 4), amb: AMB[w] });
   specs['leads-reel'] = { seconds: 600, music: m(1, 4), events: reel };
+}
+if (which === 'menus') {
+  // the title and menu music (v4-menus): the start screen, the menu loop, a walk across the map, and the old title for comparison
+  for (const k of Object.keys(specs)) delete specs[k];
+  specs['title'] = { seconds: 90, music: { id: 'signature', intensity: 0.7 }, events: [{ t: 0, amb: 'gentle_breeze' }] };
+  specs['menu-loop'] = { seconds: 120, music: { id: 'menu', intensity: 0.45, seed: 11 }, events: [{ t: 0, amb: 'gentle_breeze' }] };
+  specs['map-walk'] = {
+    seconds: 80, music: { id: 'map-1', intensity: 0.5, seed: 1 },
+    events: [{ t: 0, amb: 'gentle_breeze' }, { t: 20, music: { id: 'map-3', intensity: 0.5, seed: 3 } }, { t: 40, music: { id: 'map-7', intensity: 0.5, seed: 7 } }, { t: 60, music: { id: 'map-9', intensity: 0.5, seed: 9 } }],
+  };
+  specs['old-title'] = { seconds: 40, music: { id: 'world1', intensity: 0.6 }, events: [{ t: 0, amb: 'gentle_breeze' }] };
 }
 console.log(JSON.stringify(specs, null, 1));
 if (after && process.env.TIMELINE) fs.writeFileSync(process.env.TIMELINE, JSON.stringify(timeline, null, 1));

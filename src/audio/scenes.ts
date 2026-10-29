@@ -172,17 +172,23 @@ export function stageMusic(world: number, levelId: string, mini: number, salt = 
   return { id: stageThemeId(world, seed, pace), intensity: 0.35, seed, tempo, form: true };
 }
 
-/** the piece the title screen plays: the first stage's own tune, as it was written */
-export const MENU_THEME = 'world1';
+/**
+ * The piece the title screen plays: the game's signature (signature.ts, Matt 2026-10-29: "bold and unique"), Pokey's tune as the hook.
+ * It used to be the first stage's own tune.
+ */
+export const MENU_THEME = 'signature';
 
 /** music for the non-cutscene screens; null means "leave it to the cutscene player" */
 export function sceneForScreen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string): SceneChoice | null {
   switch (screen) {
     case 'title':
-      // the menus play the sound of the first stage: the tune the game is known by
-      return { id: MENU_THEME, intensity: 0.6 };
+      return { id: MENU_THEME, intensity: 0.7 };
+    case 'trophy':
+      // the journal, badges and library: the signature's lighter loop, which does not tire however long it plays
+      return { id: 'menu', intensity: 0.45 };
     case 'world_map':
-      return { id: 'map~r', intensity: 0.55 };
+      // the same light loop with the tune on the lead of the world Pokey is on: moving between worlds changes the voice
+      return { id: `map-${Math.max(1, Math.min(10, world || 1))}`, intensity: 0.5 };
     case 'paused':
       // the stage's own tune goes on under the pause menu, quieter and muffled (conductor.ts setPaused): it used to switch to the World
       // 1 tune (SN-6). null: keep what is playing
