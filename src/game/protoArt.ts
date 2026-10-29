@@ -505,10 +505,9 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * The part of a world's bank piece that tiles cleanly (source pixels, from the piece's own corner). World 6's piece ends in a grey stone
  * slab (its bottom 60 rows, saturation 0.06 against 0.34 for the soil), which drew as a grey seam along every bank; World 5's has darker
  * columns at both ends (brightness 71 against 90 in its middle), a vertical step at every join in 5-7 (polish report VI-7). Measured
- * on kits/w5.webp and kits/w6.webp. World 9's piece is whole (its full 250 rows): listed so its bottom rows fade into the columns under
- * it, where its hard bottom edge drew a line across every bank (gen2-w9 stills).
+ * on kits/w5.webp and kits/w6.webp.
  */
-const BANK_CROP: Record<number, { x0?: number; x1?: number; h?: number }> = { 5: { x0: 14, x1: 546 }, 6: { h: 296 }, 9: { h: 250 } };
+const BANK_CROP: Record<number, { x0?: number; x1?: number; h?: number }> = { 5: { x0: 14, x1: 546 }, 6: { h: 296 } };
 /** the same for the bank's end piece: World 6's carries the slab in its bottom 43 rows */
 const BANK_END_ROWS: Record<number, number> = { 6: 322 };
 /**
@@ -576,9 +575,10 @@ export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { 
   const from = p.x - (open.left ? 18 : 0);
   const { start, end } = stripSpan(Math.floor(from / step) * step, p.x + p.width + 18, step + 2, view?.x0, view?.x1);
   const y0 = p.y - (moss ? 14 : 18);
-  // (a cropped bank ends in plain soil, a hard line on the fill under it: its last rows fade part way into the fill instead; not all
-  // the way, or the lit bevel of the fill piece under it shows through: VI-8)
-  const fade = crop?.h ? 6 : 0;
+  // (a bank ends in a hard line on the fill under it, its own painted bottom edge or a crop's plain soil: its last rows fade part way into
+  // the fill instead, in every world whose kit has its own fill under the bank; not all the way, or the lit bevel of the fill piece under
+  // it shows through: VI-8. World 1 has no fill of its own, so its bank keeps its edge)
+  const fade = !moss && ownKit() && KIT_FRAMES[kitWorld]?.fill ? 6 : 0;
   const fh = fade ? Math.round(sf.h * 0.14) : 0;
   const ga = ctx.globalAlpha;
   for (let x = start; x < end; x += step) {

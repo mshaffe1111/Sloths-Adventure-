@@ -43,16 +43,15 @@ const BOAS = ['w9-boa-vents', 'w9-boa-knobs'];
  * them, so a vents roll of 9-1 is geysers and a chasms roll is jumps, all the way through. 9-3 (the lianas) keeps them all.
  */
 const STAGE_THEMES: Readonly<Record<number, ReadonlyArray<[W9Theme, readonly string[]]>>> = {
-  1: [[W9_THEME.vents, GEYSERS], [W9_THEME.chasms, LAVA], [W9_THEME.basalt, BASALT]],
+  1: [[W9_THEME.vents, GEYSERS], [W9_THEME.chasms, [...LAVA, ...HUNT]], [W9_THEME.basalt, BASALT]],
   4: [[W9_THEME.spires, [...LAVA, ...HUNT]], [W9_THEME.ferns, [...GEYSERS, ...BASALT]], [W9_THEME.coils, ['w9-boa-knobs', 'w9-boa-vents']]],
   5: [[W9_THEME.glides, [...LAVA, ...BASALT]], [W9_THEME.bursts, [...GEYSERS, ...HUNT]]],
   6: [[W9_THEME.cats, [...LAVA, ...HUNT, ...CATS]], [W9_THEME.harpies, [...BASALT, ...HARPIES]], [W9_THEME.boas, [...GEYSERS, ...BOAS]]],
   8: [[W9_THEME.ledges, [...LAVA, ...HUNT]], [W9_THEME.channels, [...BASALT, ...GEYSERS]]],
   9: [[W9_THEME.cats, [...LAVA, ...HUNT, ...CATS]], [W9_THEME.harpies, [...BASALT, ...HARPIES]], [W9_THEME.boas, [...GEYSERS, ...BOAS]]],
 };
-/** a shared section given to the stage's theme that leans on it (it then waits for that theme's gate); 9-1 has no hunters */
+/** a shared section given to the stage's theme that leans on it (it then waits for that theme's gate) */
 function themed(stage: number, s: SectionTemplate): SectionTemplate | null {
-  if (stage === 1 && HUNT.includes(s.id)) return null;
   const t = STAGE_THEMES[stage]?.find(([, ids]) => ids.includes(s.id));
   return t ? { ...s, uses: [...(s.uses ?? []), t[0]], weight: 1 } : s;
 }

@@ -79,15 +79,19 @@ export const W9_LESSON = {
 
 // ───────────────────────────── the creatures ─────────────────────────────
 
-/** the old generator's bodies (stageGenerator.ts ocelot(), jaguar(), boa(), tayra(), harpy()): size, hp, feet */
+/**
+ * the old generator's bodies (stageGenerator.ts ocelot(), jaguar(), boa(), tayra(), harpy()): size, hp, feet. Their threat costs are
+ * World 9's own, lower than World 6's and 8's (the lead, 2026-10-29: World 9 clears World 8's band with more hunters on the flats, every
+ * one already met): a section's budget buys more of them
+ */
 export const W9_CREATURES: CreatureDef[] = [
-  { id: W9_CREATURE.ocelot, enemy: 'ocelot', threat: 3, terrain: 'flat', minGround: 220, w: 48, h: 28, hp: 2, footY: 18, tags: ['ocelot', W9_TAG.hunter, W9_TAG.small, 'topup'] },
+  { id: W9_CREATURE.ocelot, enemy: 'ocelot', threat: 2, terrain: 'flat', minGround: 220, w: 48, h: 28, hp: 2, footY: 18, tags: ['ocelot', W9_TAG.hunter, W9_TAG.small, 'topup'] },
   // (the volcano's big cat: World 9's hardest ground animal, so Easy keeps one, softened)
-  { id: W9_CREATURE.jaguar, enemy: 'jaguar', threat: 5, terrain: 'flat', minGround: 300, w: 64, h: 38, hp: 3, footY: 24, easyFirst: true, tags: ['jaguar', W9_TAG.hunter, W9_TAG.big, 'topup'] },
+  { id: W9_CREATURE.jaguar, enemy: 'jaguar', threat: 3.5, terrain: 'flat', minGround: 300, w: 64, h: 38, hp: 3, footY: 24, easyFirst: true, tags: ['jaguar', W9_TAG.hunter, W9_TAG.big, 'topup'] },
   // (the coiled guard: it holds its spot and strikes, 1-9's lesson; never walks)
-  { id: W9_CREATURE.boa, enemy: 'boa', threat: 3, terrain: 'flat', minGround: 200, w: 58, h: 26, hp: 3, footY: 16, extra: { speed: 1 }, tags: ['boa', W9_TAG.still, 'topup'] },
-  { id: W9_CREATURE.tayra, enemy: 'tayra', threat: 2.5, terrain: 'flat', minGround: 200, w: 46, h: 24, hp: 1, footY: 15, tags: ['tayra', W9_TAG.hunter, W9_TAG.small, W9_TAG.quick, 'topup'] },
-  { id: W9_CREATURE.harpy, enemy: 'harpy', threat: 4, terrain: 'flat', minGround: 260, w: 48, h: 36, hp: 2, footY: 16, tags: ['harpy', W9_TAG.hunter, W9_TAG.big, 'topup'] },
+  { id: W9_CREATURE.boa, enemy: 'boa', threat: 2, terrain: 'flat', minGround: 200, w: 58, h: 26, hp: 3, footY: 16, extra: { speed: 1 }, tags: ['boa', W9_TAG.still, 'topup'] },
+  { id: W9_CREATURE.tayra, enemy: 'tayra', threat: 1.5, terrain: 'flat', minGround: 200, w: 46, h: 24, hp: 1, footY: 15, tags: ['tayra', W9_TAG.hunter, W9_TAG.small, W9_TAG.quick, 'topup'] },
+  { id: W9_CREATURE.harpy, enemy: 'harpy', threat: 3, terrain: 'flat', minGround: 260, w: 48, h: 36, hp: 2, footY: 16, tags: ['harpy', W9_TAG.hunter, W9_TAG.big, 'topup'] },
 ];
 
 // ───────────────────────────── the props ─────────────────────────────
@@ -192,15 +196,15 @@ const pieceAt = (out: StageSink, x: number, y: number): Platform | undefined =>
 
 /**
  * A geyser's column (zones.ts geyser, the old generator's numbers: 72 px wide, 250 tall, 1.3 s of rumble): its quiet spell shrinks
- * through the world (2.4 s at 9-1 to 2.0 s at 9-9: World 9 sits above World 8), never under the level check's 2 s; the lesson's (a socket
- * named `geyserLesson`) is a long 4 s, so the first one is watched before it is crossed. Active 1.0-1.1 s, never over the check's 1.2.
+ * through the world (2.2 s at 9-1 to 2.0 s at 9-9: World 9 sits above World 8), never under the level check's 2 s; the lesson's (a socket
+ * named `geyserLesson`) is a long 4 s, so the first one is watched before it is crossed. Active 1.1 s, never over the check's 1.2.
  */
 export const GEYSER = { w: 72, h: 250, warn: 1.3, lessonIdle: 4.0 } as const;
 export function geyserBeat(stage: number, lesson: boolean): { idle: number; active: number } {
   if (lesson) return { idle: GEYSER.lessonIdle, active: 0.9 };
-  // (World 9 sits above World 8: 2.4 s at 9-1 down to the check's floor of 2.0 at 9-9)
+  // (World 9 sits above World 8: 2.2 s at 9-1 down to the check's floor of 2.0 at 9-9)
   const k = Math.max(0, Math.min(1, (stage - 1) / 8));
-  return { idle: Math.round((2.4 - 0.4 * k) * 10) / 10, active: stage >= 6 ? 1.1 : 1.0 };
+  return { idle: Math.round((2.2 - 0.2 * k) * 10) / 10, active: 1.1 };
 }
 /** a vent in a chasm: a short column (its top under the lip, so the eruption never reaches the route) on a slow, lazy beat */
 export const VENT = { w: 80, h: 70, warn: 1.3, idle: 3.2, active: 0.9 } as const;
