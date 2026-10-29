@@ -1,0 +1,405 @@
+{
+ "tag": "pokey-edit1",
+ "upscale": [
+  {
+   "name": "sheet5-pokey-behind",
+   "src": "gh:67ae3a9d95fb3c8ca7004a38b08f968f29f32834:reference/prop-sheets/gemini-batch-2026-10-29/7-4-slide/sheet5-pokey-behind.jpg"
+  },
+  {
+   "name": "sheet6-pokey-falling",
+   "src": "gh:67ae3a9d95fb3c8ca7004a38b08f968f29f32834:reference/prop-sheets/gemini-batch-2026-10-29/7-4-slide/sheet6-pokey-falling.jpg"
+  },
+  {
+   "name": "sheet1-flume",
+   "src": "gh:67ae3a9d95fb3c8ca7004a38b08f968f29f32834:reference/prop-sheets/gemini-batch-2026-10-29/7-4-slide/sheet1-flume.jpg"
+  }
+ ],
+ "edits": [
+  {
+   "name": "tread-start",
+   "src": "b:w6swim/clips/w6-pokey-tread-tread-22-s3-start.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-stand-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his far shoulder running diagonally down across his chest and round belly, and a small brown leather flap bag with a little brass button resting on his near hip at the front, below his paddling paws. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "tread-start-lora",
+   "src": "b:w6swim/clips/w6-pokey-tread-tread-22-s3-start.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-stand-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his far shoulder running diagonally down across his chest and round belly, and a small brown leather flap bag with a little brass button resting on his near hip at the front, below his paddling paws. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1,
+    2
+   ],
+   "w": 1024,
+   "h": 1024,
+   "lora": 0.7
+  },
+  {
+   "name": "under-start",
+   "src": "b:w6swim/stills/under-44.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "w": 1248,
+   "h": 720
+  },
+  {
+   "name": "under-start-lora",
+   "src": "b:w6swim/stills/under-44.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1,
+    2
+   ],
+   "w": 1248,
+   "h": 720,
+   "lora": 0.7
+  },
+  {
+   "name": "tread-f018",
+   "src": "z:w6swim/clips/w6-pokey-tread-tread-22-s3.zip#w6-pokey-tread-tread-22-s3_018.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-stand-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his far shoulder running diagonally down across his chest and round belly, and a small brown leather flap bag with a little brass button resting on his near hip at the front, below his paddling paws. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1024,
+   "h": 1024,
+   "steps": 30
+  },
+  {
+   "name": "tread-f021",
+   "src": "z:w6swim/clips/w6-pokey-tread-tread-22-s3.zip#w6-pokey-tread-tread-22-s3_021.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-stand-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his far shoulder running diagonally down across his chest and round belly, and a small brown leather flap bag with a little brass button resting on his near hip at the front, below his paddling paws. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1024,
+   "h": 1024,
+   "steps": 30
+  },
+  {
+   "name": "tread-f024",
+   "src": "z:w6swim/clips/w6-pokey-tread-tread-22-s3.zip#w6-pokey-tread-tread-22-s3_024.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-stand-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his far shoulder running diagonally down across his chest and round belly, and a small brown leather flap bag with a little brass button resting on his near hip at the front, below his paddling paws. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1024,
+   "h": 1024,
+   "steps": 30
+  },
+  {
+   "name": "tread-f027",
+   "src": "z:w6swim/clips/w6-pokey-tread-tread-22-s3.zip#w6-pokey-tread-tread-22-s3_027.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-stand-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his far shoulder running diagonally down across his chest and round belly, and a small brown leather flap bag with a little brass button resting on his near hip at the front, below his paddling paws. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1024,
+   "h": 1024,
+   "steps": 30
+  },
+  {
+   "name": "tread-f031",
+   "src": "z:w6swim/clips/w6-pokey-tread-tread-22-s3.zip#w6-pokey-tread-tread-22-s3_031.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-stand-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his far shoulder running diagonally down across his chest and round belly, and a small brown leather flap bag with a little brass button resting on his near hip at the front, below his paddling paws. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1024,
+   "h": 1024,
+   "steps": 30
+  },
+  {
+   "name": "tread-f035",
+   "src": "z:w6swim/clips/w6-pokey-tread-tread-22-s3.zip#w6-pokey-tread-tread-22-s3_035.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-stand-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his far shoulder running diagonally down across his chest and round belly, and a small brown leather flap bag with a little brass button resting on his near hip at the front, below his paddling paws. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1024,
+   "h": 1024,
+   "steps": 30
+  },
+  {
+   "name": "under-f022",
+   "src": "z:w6swim/clips/w6-pokey-under-under-44-s11.zip#w6-pokey-under-under-44-s11_022.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1248,
+   "h": 720,
+   "steps": 30
+  },
+  {
+   "name": "under-f025",
+   "src": "z:w6swim/clips/w6-pokey-under-under-44-s11.zip#w6-pokey-under-under-44-s11_025.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1248,
+   "h": 720,
+   "steps": 30
+  },
+  {
+   "name": "under-f028",
+   "src": "z:w6swim/clips/w6-pokey-under-under-44-s11.zip#w6-pokey-under-under-44-s11_028.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1248,
+   "h": 720,
+   "steps": 30
+  },
+  {
+   "name": "under-f031",
+   "src": "z:w6swim/clips/w6-pokey-under-under-44-s11.zip#w6-pokey-under-under-44-s11_031.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1248,
+   "h": 720,
+   "steps": 30
+  },
+  {
+   "name": "under-f034",
+   "src": "z:w6swim/clips/w6-pokey-under-under-44-s11.zip#w6-pokey-under-under-44-s11_034.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1248,
+   "h": 720,
+   "steps": 30
+  },
+  {
+   "name": "under-f037",
+   "src": "z:w6swim/clips/w6-pokey-under-under-44-s11.zip#w6-pokey-under-under-44-s11_037.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1248,
+   "h": 720,
+   "steps": 30
+  },
+  {
+   "name": "under-f040",
+   "src": "z:w6swim/clips/w6-pokey-under-under-44-s11.zip#w6-pokey-under-under-44-s11_040.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1248,
+   "h": 720,
+   "steps": 30
+  },
+  {
+   "name": "under-f043",
+   "src": "z:w6swim/clips/w6-pokey-under-under-44-s11.zip#w6-pokey-under-under-44-s11_043.png",
+   "refs": [
+    "gh:d04cafef062914477d4d6195b94428d64154a8f0:tools/art/hfpokey/starts/ref-surf-satchel.png"
+   ],
+   "prompt": "Add to the sloth in Picture 1 the brown leather satchel that the swimming sloth in Picture 2 wears, worn the same way: a thin brown leather strap over his shoulder running diagonally across his chest under his outstretched arms, and the small brown leather flap bag resting on top of his back at the hip. He is still swimming underwater with puffed cheeks. Keep everything else exactly the same: the same sloth, the same pose, the same face and eyes, the same paws and claws, the same bandage wrist wraps, the same fur colours, the same thin dark outline, the same soft painted cartoon style and the same flat plain grey background.",
+   "neg": "extra limbs, extra arms, extra paws, extra sloth, changed face, different eyes, open mouth, missing wrist wraps, water, bubbles, background scenery, photo, 3d render, text, watermark, blurry, two bags, backpack",
+   "seeds": [
+    1
+   ],
+   "w": 1248,
+   "h": 720,
+   "steps": 30
+  },
+  {
+   "name": "slide-grip",
+   "src": "b:hfpokey/up/sheet5-pokey-behind.png",
+   "crop": [
+    0,
+    0,
+    512,
+    559
+   ],
+   "prompt": "Remove the two tall wooden poles from Picture 1 completely, so only the flat magenta background is where they stood. The sloth, seen from behind, no longer holds anything: his arms hang relaxed at his sides and each empty paw is a soft brown paw with three pale curved claws and a pale bandage wrap round the wrist. Keep the sloth seen from behind, his fur, his body, his legs and feet, the brown leather satchel strap from his left shoulder down to the bag on the right, the colours, the outline, the painted cartoon style and the flat magenta background exactly the same.",
+   "neg": "wooden poles, sticks, posts, rails, holding a stick, extra limbs, extra arms, face, photo, 3d render, text, watermark, blurry",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "w": 1024,
+   "h": 1120
+  },
+  {
+   "name": "slide-grip2",
+   "src": "b:hfpokey/up/sheet5-pokey-behind.png",
+   "crop": [
+    512,
+    0,
+    1024,
+    559
+   ],
+   "prompt": "Remove the two tall wooden poles from Picture 1 completely, so only the flat magenta background is where they stood. The sloth, seen from behind, no longer holds anything: his arms hang relaxed at his sides and each empty paw is a soft brown paw with three pale curved claws and a pale bandage wrap round the wrist. Keep the sloth seen from behind, his fur, his body, his legs and feet, the brown leather satchel strap from his left shoulder down to the bag on the right, the colours, the outline, the painted cartoon style and the flat magenta background exactly the same.",
+   "neg": "wooden poles, sticks, posts, rails, holding a stick, extra limbs, extra arms, face, photo, 3d render, text, watermark, blurry",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "w": 1024,
+   "h": 1120
+  },
+  {
+   "name": "slide-leanR",
+   "src": "b:hfpokey/up/sheet5-pokey-behind.png",
+   "crop": [
+    1536,
+    0,
+    2048,
+    559
+   ],
+   "prompt": "Remove the two tall wooden poles from Picture 1 completely, so only the flat magenta background is where they stood. The sloth, seen from behind, no longer holds anything: his arms hang relaxed at his sides and each empty paw is a soft brown paw with three pale curved claws and a pale bandage wrap round the wrist. Keep the sloth seen from behind, his fur, his body, his legs and feet, the brown leather satchel strap from his left shoulder down to the bag on the right, the colours, the outline, the painted cartoon style and the flat magenta background exactly the same.",
+   "neg": "wooden poles, sticks, posts, rails, holding a stick, extra limbs, extra arms, face, photo, 3d render, text, watermark, blurry",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "w": 1024,
+   "h": 1120
+  }
+ ],
+ "carry": [
+  [
+   "edit1-swimstarts",
+   [
+    "edits/tread-start-s1.png",
+    "edits/tread-start-s2.png",
+    "edits/tread-start-s3.png",
+    "edits/tread-start-lora-s1.png",
+    "edits/tread-start-lora-s2.png",
+    "edits/under-start-s1.png",
+    "edits/under-start-s2.png",
+    "edits/under-start-s3.png",
+    "edits/under-start-lora-s1.png",
+    "edits/under-start-lora-s2.png"
+   ]
+  ],
+  [
+   "edit1-tread",
+   [
+    "edits/tread-f018-s1.png",
+    "edits/tread-f021-s1.png",
+    "edits/tread-f024-s1.png",
+    "edits/tread-f027-s1.png",
+    "edits/tread-f031-s1.png",
+    "edits/tread-f035-s1.png"
+   ]
+  ],
+  [
+   "edit1-under",
+   [
+    "edits/under-f022-s1.png",
+    "edits/under-f025-s1.png",
+    "edits/under-f028-s1.png",
+    "edits/under-f031-s1.png",
+    "edits/under-f034-s1.png",
+    "edits/under-f037-s1.png",
+    "edits/under-f040-s1.png",
+    "edits/under-f043-s1.png"
+   ]
+  ],
+  [
+   "edit1-slide",
+   [
+    "edits/slide-grip-s1.png",
+    "edits/slide-grip-s2.png",
+    "edits/slide-grip-s3.png",
+    "edits/slide-grip2-s1.png",
+    "edits/slide-grip2-s2.png",
+    "edits/slide-grip2-s3.png",
+    "edits/slide-leanR-s1.png",
+    "edits/slide-leanR-s2.png",
+    "edits/slide-leanR-s3.png"
+   ]
+  ]
+ ]
+}
