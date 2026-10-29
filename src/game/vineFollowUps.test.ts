@@ -21,6 +21,7 @@ import { lessonDotLine, pickLesson, type LessonId, type LessonScene } from './le
 import { landingAhead } from './cameraFollow.ts';
 import { GuideQueue } from './dotGuide.ts';
 import type { Platform, Vine } from './types.ts';
+import { asQaBuildForTest } from './playRecorder.ts';
 
 // ───────────────────────────── 1. the automatic landing ─────────────────────────────
 
@@ -164,6 +165,8 @@ test("the control test's swing stretch: pumping its lianas at full length never 
   const was = { hash: loc.hash, search: loc.search };
   let checked = 0;
   try {
+    // (the control test opens only in a QA build: UI-15)
+    asQaBuildForTest(true);
     loc.hash = '#ctest';
     for (let mix = 1; mix <= 60 && checked < 6; mix++) {
       loc.search = `?mix=${mix}`;
@@ -187,6 +190,7 @@ test("the control test's swing stretch: pumping its lianas at full length never 
       }
     }
   } finally {
+    asQaBuildForTest(false);
     loc.hash = was.hash;
     loc.search = was.search;
   }

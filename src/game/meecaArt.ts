@@ -28,6 +28,7 @@ import type { NightArtName } from './meecaNightData.ts';
 import type { KitPlay } from './puzzlePlay.ts';
 import { CHAIR } from './puzzleKit.ts';
 import type { PlayerState as Player } from './types.ts';
+import { FONT_READ, FONT_UI } from './fonts.ts';
 
 const INK = '#3a2414';
 type Box = { x0: number; y0: number; x1: number; y1: number };
@@ -381,7 +382,7 @@ export function drawCamp(ctx: CanvasRenderingContext2D, st: MeecaStage, view: { 
       ctx.save();
       ctx.globalAlpha = 0.7 * Math.sin(u * Math.PI);
       ctx.fillStyle = '#dcd6ff';
-      ctx.font = `700 ${11 + u * 6}px Fredoka, sans-serif`;
+      ctx.font = `700 ${11 + u * 6}px ${FONT_UI}`;
       ctx.fillText('z', c.x + 14 + u * 16, c.y - 70 - u * 34);
       ctx.restore();
     }
@@ -726,7 +727,7 @@ function cloud(ctx: CanvasRenderingContext2D, cx: number, cy: number, rx: number
 export function drawThought(ctx: CanvasRenderingContext2D, text: string, headX: number, headY: number, W: number, H: number, top: number, a: number, avoid?: Box | null) {
   const fs = W < 360 ? 14 : 15;
   ctx.save();
-  ctx.font = `600 ${fs}px Fredoka, sans-serif`;
+  ctx.font = `600 ${fs}px ${FONT_UI}`;
   const maxW = Math.min(250, W - 70);
   let lines = wrap(ctx, text, maxW - 36);
   // balanced: the narrowest box that keeps the same number of lines (no word left alone on the last)
@@ -797,7 +798,7 @@ export function drawThought(ctx: CanvasRenderingContext2D, text: string, headX: 
 export function drawSay(ctx: CanvasRenderingContext2D, who: Speaker, text: string, x: number, y: number, W: number, H: number, top: number, a = 1, avoid?: { x: number; y: number; w: number; h: number } | null) {
   ctx.save();
   ctx.globalAlpha = a;
-  ctx.font = `600 13px Fredoka, sans-serif`;
+  ctx.font = `600 13px ${FONT_UI}`;
   const lines = wrap(ctx, text, Math.min(210, W - 40));
   const w = Math.max(...lines.map((l) => ctx.measureText(l).width)) + 22;
   const h = lines.length * 16 + 26;
@@ -819,11 +820,11 @@ export function drawSay(ctx: CanvasRenderingContext2D, who: Speaker, text: strin
   ctx.fill();
   ctx.stroke();
   ctx.fillStyle = edge;
-  ctx.font = `700 10px Fredoka, sans-serif`;
+  ctx.font = `700 10px ${FONT_UI}`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillText(name, bx + 10, by + 10);
-  ctx.font = `600 13px Fredoka, sans-serif`;
+  ctx.font = `600 13px ${FONT_UI}`;
   ctx.fillStyle = '#f3efe6';
   ctx.textAlign = 'center';
   lines.forEach((l, i) => ctx.fillText(l, bx + w / 2, by + 26 + i * 16));
@@ -857,19 +858,19 @@ export function drawTitleCard(ctx: CanvasRenderingContext2D, W: number, H: numbe
   const cy = land ? big * 1.75 + 10 : H * 0.26;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `700 ${Math.round(big * 0.25)}px Fredoka, sans-serif`;
+  ctx.font = `700 ${Math.round(big * 0.25)}px ${FONT_UI}`;
   ctx.fillStyle = '#ffb9d8';
   const kick = MEECA_CARD.kicker.split('').join(' ');
   ctx.fillText(kick, cx, cy - big * 1.55);
-  ctx.font = `700 ${Math.round(big)}px Fredoka, sans-serif`;
+  ctx.font = `700 ${Math.round(big)}px ${FONT_UI}`;
   ctx.shadowColor = 'rgba(0,0,0,0.6)';
   ctx.shadowBlur = 24;
   MEECA_CARD.title.forEach((l, i) => inked(ctx, l, cx, cy - big * 0.5 + i * big * 1.05, big * 0.14, '#fff3c4', 'rgba(34, 14, 40, 0.94)'));
   ctx.shadowBlur = 0;
-  ctx.font = `500 ${Math.round(Math.max(13, big * 0.3))}px 'Atkinson Read', sans-serif`;
+  ctx.font = `500 ${Math.round(Math.max(13, big * 0.3))}px ${FONT_READ}`;
   ctx.fillStyle = '#f1def0';
   MEECA_CARD.sub.forEach((l, i) => ctx.fillText(l, cx, cy + big * 1.3 + i * big * 0.44));
-  ctx.font = `700 ${Math.round(Math.max(11, big * 0.23))}px Fredoka, sans-serif`;
+  ctx.font = `700 ${Math.round(Math.max(11, big * 0.23))}px ${FONT_UI}`;
   ctx.globalAlpha = a * (0.55 + 0.25 * Math.sin(t * 3));
   ctx.fillStyle = 'rgba(255, 220, 240, 1)';
   ctx.fillText(MEECA_CARD.tap.split('').join(' '), cx, cy + big * 2.55);
@@ -886,9 +887,9 @@ export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number
   const fs = land ? (H < 360 ? 16 : 18) : W < 360 ? 17 : 19;
   ctx.save();
   ctx.globalAlpha = a;
-  ctx.font = `500 ${fs}px 'Atkinson Read', sans-serif`;
+  ctx.font = `500 ${fs}px ${FONT_READ}`;
   // (Flicker says his very small)
-  if (l.beat === 'small') ctx.font = `italic 500 ${Math.round(fs * 0.82)}px 'Atkinson Read', sans-serif`;
+  if (l.beat === 'small') ctx.font = `italic 500 ${Math.round(fs * 0.82)}px ${FONT_READ}`;
   const lines = wrap(ctx, l.text, bw - 34);
   const bh = 26 + lines.length * fs * 1.45 + 44;
   const bx = (W - bw) / 2;
@@ -908,7 +909,7 @@ export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number
   ctx.stroke();
   // the name
   const dot = l.who === 'Meeca' ? PINK : l.who === 'Flicker' ? '#d9f99d' : '#9aa3ad';
-  ctx.font = `700 14px Fredoka, sans-serif`;
+  ctx.font = `700 14px ${FONT_UI}`;
   const nw = ctx.measureText(l.who).width + 40;
   const ng = ctx.createLinearGradient(0, by - 14, 0, by + 14);
   ng.addColorStop(0, '#4a2e5a');
@@ -927,7 +928,7 @@ export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number
   ctx.textBaseline = 'middle';
   ctx.fillText(l.who, bx + 42, by + 1);
   // the words
-  ctx.font = l.beat === 'small' ? `italic 500 ${Math.round(fs * 0.82)}px 'Atkinson Read', sans-serif` : `500 ${fs}px 'Atkinson Read', sans-serif`;
+  ctx.font = l.beat === 'small' ? `italic 500 ${Math.round(fs * 0.82)}px ${FONT_READ}` : `500 ${fs}px ${FONT_READ}`;
   ctx.fillStyle = '#fbf4de';
   ctx.textBaseline = 'alphabetic';
   lines.forEach((s, i) => ctx.fillText(s, bx + 16, by + 26 + fs + i * fs * 1.45));
@@ -943,7 +944,7 @@ export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number
     dx += (on ? 22 : 6) + 6;
   }
   const label = line === scene.length - 1 ? 'Done' : 'Next ›';
-  ctx.font = `700 15px Fredoka, sans-serif`;
+  ctx.font = `700 15px ${FONT_UI}`;
   const lw = ctx.measureText(label).width + 36;
   const nx = bx + bw - lw - 14;
   ctx.fillStyle = '#a85c00';

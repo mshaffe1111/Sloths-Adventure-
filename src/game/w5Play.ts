@@ -24,6 +24,7 @@ import { drawSeamstress, drawW5Spider, seamHeadDx, seamTop, warmW5Butler, warmW5
 import { W5_FRAMES } from './w5PropsData.ts';
 import { drawAura } from './readable.ts';
 import type { Collectible, Enemy, Platform, PlayerState as Player, Vine } from './types.ts';
+import { FONT_UI } from './fonts.ts';
 
 /** what the engine lends World 5 each frame */
 export interface W5Host {
@@ -625,7 +626,7 @@ export class W5Play {
       if (g.phase === 'calm' && g.dozing) {
         const u = (t * 0.7 + e.id * 0.3) % 1;
         ctx.globalAlpha = 1 - u;
-        ctx.font = `700 ${11 + u * 8}px Fredoka, sans-serif`;
+        ctx.font = `700 ${11 + u * 8}px ${FONT_UI}`;
         ctx.fillStyle = '#ede9fe';
         ctx.strokeStyle = 'rgba(30, 20, 50, 0.7)';
         ctx.lineWidth = 3;
@@ -681,7 +682,7 @@ export class W5Play {
   drawWarnings(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; zoom?: number }) {
     const k = cardScale(view.zoom ?? CARD_READ_ZOOM);
     const bang = (x: number, y: number, size: number) => {
-      ctx.font = `800 ${Math.round(size * k)}px Fredoka, sans-serif`;
+      ctx.font = `800 ${Math.round(size * k)}px ${FONT_UI}`;
       ctx.lineWidth = 4 * k;
       ctx.lineJoin = 'round';
       ctx.strokeStyle = 'rgba(40, 10, 20, 0.85)';

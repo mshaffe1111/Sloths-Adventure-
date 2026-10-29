@@ -8,6 +8,7 @@ import type { BossDef, MoveDef } from './bossAI.ts';
 import { EASY_OPEN_MUL, openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
 import { isEasy } from './difficulty.ts';
 import { drawBossEntity } from './vectorArt.ts';
+import { withHurtFlash } from './hurtFlash.ts';
 import { demoPlayer, drawMilo } from './miloVariants.ts';
 import { queenSprite } from './queenSprite.ts';
 import type { PaintedBoss } from './paintedBoss.ts';
@@ -23,6 +24,7 @@ import { golemSprite } from './golemSprite.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawW4 } from './w4Art.ts';
 import { drawSkyPush } from './sovereignArt.ts';
+import { FONT_UI } from './fonts.ts';
 import { drawFx, drawFxRun } from './bossFx.ts';
 
 /** the bosses that have a painted version */
@@ -220,10 +222,15 @@ function poseFor(b: BossEntity, m: MoveDef | null, time: number): PoseXf {
 }
 
 /** the boss itself, posed for what it is doing, standing on `floor` */
+/** the drawn boss (while the painted one loads), with the shared white flash when hit (hurtFlash.ts, AN-6): it is drawn 1.5x round its middle */
+function drawFallbackBoss(ctx: CanvasRenderingContext2D, b: BossEntity, time: number, world: number) {
+  withHurtFlash(ctx, b.hitFlashTimer > 0, b.x - 280, b.y - 300, 560, 420, (c) => drawBossEntity(c, b, time, world));
+}
+
 export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, world: number, floor: number) {
   const br = b.ai;
   if (!br) {
-    drawBossEntity(ctx, b, time, world);
+    drawFallbackBoss(ctx, b, time, world);
     return;
   }
   const m = br.move ? def.moves[br.move] ?? null : null;
@@ -290,7 +297,7 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
     // painted boss
   } else {
     const art: BossEntity = { ...b, y: feetY - ART_FEET + def.artDy };
-    drawBossEntity(ctx, art, time, world);
+    drawFallbackBoss(ctx, art, time, world);
   }
   ctx.restore();
 
@@ -510,7 +517,7 @@ function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, 
     ctx.globalAlpha = strength * (0.8 + 0.2 * pulse);
     for (const d of [-1, 1]) drawFx(ctx, 'warnArrow', h.x + d * (rw * 1.25 + 26 + 5 * pulse), fl - 16, 46, { flipX: d < 0 });
     ctx.globalAlpha = strength;
-    ctx.font = '800 22px Fredoka, sans-serif';
+    ctx.font = `800 22px ${FONT_UI}`;
     ctx.textAlign = 'center';
     ctx.lineWidth = 5;
     ctx.strokeStyle = '#7f1d1d';

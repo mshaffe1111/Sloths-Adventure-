@@ -24,6 +24,7 @@ import { zoneState, type Zone } from './zones.ts';
 import { nestWind, type CliffNest } from './w4Nests.ts';
 import { TIMED } from './physics.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
+import { FONT_UI } from './fonts.ts';
 
 /** a fruit hanging in a tree: punch near it and it drops to `ground`, where a capuchin can smell it; it grows back after a while */
 export interface FruitTree {
@@ -1557,7 +1558,7 @@ function drawMonkey(ctx: CanvasRenderingContext2D, m: Capuchin, s: CapState, t: 
     if (s.mode === 'stare') {
       ctx.save();
       ctx.fillStyle = '#fbbf24';
-      ctx.font = 'bold 20px sans-serif';
+      ctx.font = `bold 20px ${FONT_UI}`;
       ctx.fillText('?', s.x - 5, s.y - 82);
       ctx.restore();
     }
@@ -1598,7 +1599,7 @@ function drawMonkey(ctx: CanvasRenderingContext2D, m: Capuchin, s: CapState, t: 
   }
   if (s.mode === 'stare' || s.mode === 'screech') {
     ctx.fillStyle = s.mode === 'screech' ? '#ef4444' : '#fbbf24';
-    ctx.font = 'bold 18px sans-serif';
+    ctx.font = `bold 18px ${FONT_UI}`;
     ctx.fillText(s.mode === 'screech' ? '!!' : '?', 0, -60);
   }
   if (m.job === 'guard' && s.mode === 'pace') {
@@ -1705,7 +1706,7 @@ function drawNest(ctx: CanvasRenderingContext2D, n: Nest, t: number, sinceBlow: 
   // (over the painted eaglet's head, which stands taller than the stand-in's, and higher still over it flying)
   else ctx.translate(0, phase === 'look' ? -84 : -48);
   // what they are doing, over their heads
-  ctx.font = 'bold 22px sans-serif';
+  ctx.font = `bold 22px ${FONT_UI}`;
   ctx.textAlign = 'center';
   if (phase === 'sleep') {
     const z = (t * 0.8) % 1;
