@@ -368,6 +368,8 @@ interface LayerSet {
   mid: Layer;
   /** null only for a painted world whose near strip is still to come */
   near: Layer | null;
+  /** the painted sky above a painted far strip (seen upright only: drawStrip) */
+  sky?: Layer | null;
   front: HTMLCanvasElement;
   /** the world's painted strips are in use */
   painted?: boolean;
@@ -1520,7 +1522,7 @@ function ensure(world: number): LayerSet {
   const painted = paintedFor(world, bakeScale > THUMB_BAKE);
   if (painted) {
     const set: LayerSet = {
-      world, seed: getSceneSeed(), far: painted.far, hills: null, mid: painted.mid, near: painted.near,
+      world, seed: getSceneSeed(), far: painted.far, hills: null, mid: painted.mid, near: painted.near, sky: painted.sky,
       front: buildFront(look, world, false), clouds: [], hazed: true, painted: true, at: painted.at,
     };
     sets.set(key, set);
@@ -1654,23 +1656,71 @@ export const STRIP_FIT: Record<'far' | 'mid' | 'near', { k: number; a: number; a
 };
 
 /**
+ * The scale the painted strips are drawn at: `stripVh` / H. Sideways that is the view's own height; upright the engine passes the
+ * height sideways would show for the same width of world (Matt, 2026-10-29: fitted to the tall upright view the strips were drawn 2.2x
+ * closer than sideways, a soft crop of their misty middle, and the screen read faded). The strips keep their ground line (STRIP_FIT
+ * `at`, a share of the real view height), and the room upright leaves above the far strip is its painted sky.
+ */
+export function stripTop(part: keyof typeof STRIP_FIT, vh: number, s: number, yOff = 0): { top: number; dh: number } {
+  const f = STRIP_FIT[part];
+  const dh = H * s * f.k;
+  return { top: vh * f.at - f.a * dh + yOff, dh };
+}
+
+/** how much of its far strip a sky overlaps at the bottom, fading into it (tools/art/hfbatch/skycut.py makes them so). The middle strips
+ * whose top is solid paint fade out over their top 7% in the file instead (tools/art/edges/defringe.py --topfade): sideways those rows
+ * are always off screen, upright the trees dissolve into the far strip's sky */
+export const SKY_OVERLAP = 0.05;
+
+/** how tall a strip's painted sky is drawn: its rows at the strip's own scale */
+const skyRows = (sky: Layer, strip: Layer, dh: number): number => (dh * layerH(sky)) / layerH(strip);
+
+/**
+ * Where the painted far layer (the far strip, and its sky above when it has one) starts covering the view: everything below this is
+ * opaque paint, so the drawn sky (renderSky) is needed only above it (none when it is <= 0). The one place this is worked out, so
+ * anything that skips work under the far strip follows the upright fit (`s` is the strips' scale, renderScenery's ps).
+ */
+export function farCoverTop(far: Layer, sky: Layer | null | undefined, vh: number, s: number, yOff: number): number {
+  s = farScale(sky, vh, s, yOff);
+  const pl = stripTop('far', vh, s, yOff);
+  return sky && pl.top > 0 ? pl.top + pl.dh * SKY_OVERLAP - skyRows(sky, far, pl.dh) : pl.top;
+}
+
+/**
+ * The far strip's scale: the strips' own (`s`) when it has a painted sky to fill the room above it; without one (a set whose sky did not
+ * pass review), just large enough that its top reaches the top of the view (upright only: sideways it always does), so the view is
+ * never the drawn gradient over a painted scene. About 1.2x the sideways size on a phone, against 1.76x when everything was fitted to
+ * the tall view.
+ */
+export function farScale(sky: Layer | null | undefined, vh: number, s: number, yOff: number): number {
+  if (sky) return s;
+  const f = STRIP_FIT.far;
+  // top = vh * at - a * H * s * k + yOff <= 0
+  return Math.max(s, (vh * f.at + yOff) / (f.a * H * f.k));
+}
+
+/**
  * A world whose strip carries one big landmark (World 7's near strip: the sleeping stone head) draws it larger, so one repeat is wider
  * than a sideways phone screen and the landmark never shows twice in one view (STAGE-RULES §5b item 2, QA 2026-10-29)
  */
 const STRIP_GROW: Partial<Record<number, Partial<Record<keyof typeof STRIP_FIT, number>>>> = { 7: { near: 1.75 } };
+const grown = (world: number, part: keyof typeof STRIP_FIT, s: number) => s * (STRIP_GROW[world]?.[part] ?? 1);
 
 /** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT. The strip files are made seamless
  * (scripts/strip-seamless.py: the right edge crossfaded into the left), so every copy is drawn the same way round: no mirrored
- * twins (polish report VI-4). */
-function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, world = 0) {
-  const g = STRIP_GROW[world]?.[part] ?? 1;
-  const f = g === 1 ? STRIP_FIT[part] : { ...STRIP_FIT[part], k: STRIP_FIT[part].k * g };
-  const dh = H * s * f.k;
+ * twins (polish report VI-4). A far strip with its painted sky `above` has it drawn above when there is room (upright), as wide as
+ * the strip and at the same scale: its bottom SKY_OVERLAP of the strip's height lies over the strip's top and fades into it. */
+function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, above: Layer | null = null) {
+  const pl = stripTop(part, vh, s, yOff);
+  const dh = pl.dh;
   const iw = layerWpx(img);
   const ih = layerH(img);
-  const pitch = tileW(img) * s * f.k;
+  const pitch = tileW(img) * s * STRIP_FIT[part].k;
   const k = devScale(ctx);
-  const top = snapDev(vh * f.at - f.a * dh + yOff, k);
+  const top = snapDev(pl.top, k);
+  // the sky, when the strip leaves room above it (upright): its rows at the strip's own scale
+  const sh = above && top > 0 ? skyRows(above, img, dh) : 0;
+  const skyTop = top + dh * SKY_OVERLAP - sh;
   let x0 = -((camX * par) % pitch);
   if (x0 > 0) x0 -= pitch;
   for (let x = x0; x < vw; x += pitch) {
@@ -1678,6 +1728,12 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
     const px = snapDev(x, k);
     const pw = snapDev(x + pitch, k) - px + 1 / k;
     ctx.drawImage(img, 0, 0, iw, ih, px, top, pw, dh);
+    if (sh > 0 && above) {
+      const sw = layerWpx(above), skh = layerH(above);
+      ctx.drawImage(above, 0, 0, sw, skh, px, skyTop, pw, sh);
+      // (a screen taller than any phone: the sky's top row carries on up to the edge)
+      if (skyTop > 0) ctx.drawImage(above, 0, 0, sw, 1, px, 0, pw, skyTop + 1 / k);
+    }
     // the strip is fitted to end a little above the bottom of the view, where the ground usually covers it; up a climb (1-4, the
     // ascents) the camera is in the air and that band showed the bare sky, so the strip's last rows carry on down to the edge
     const gap = vh - (top + dh);
@@ -1781,13 +1837,16 @@ export function setReveal(k: number, strips: PaintedSet | null): void {
   revealStrips = strips;
 }
 
-export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX: number, camY: number, vw: number, vh: number, time: number, lite = false) {
+/** `stripVh`: the view height the painted strips are fitted to (stripTop); upright the engine passes the sideways one */
+export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX: number, camY: number, vw: number, vh: number, time: number, lite = false, stripVh = vh) {
   const look = lookFor(world);
   const set = ensure(world);
   const s = vh / H;
+  // (the painted strips' scale: s sideways, the sideways scale upright)
+  const ps = set.painted ? Math.min(vh, stripVh) / H : s;
   renderSky(ctx, world, vw, vh, time, camX);
   // how far the layers slide with the climb: gentle, so the stretch that keeps their edges covered stays unnoticeable
-  const yo = -Math.min(30, Math.max(-30, camY * 0.03)) * s;
+  const yo = -Math.min(30, Math.max(-30, camY * 0.03)) * ps;
   // the polish pass (prototype, off by default): per-stage layer shifts/flips, wind, mist and light shafts
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
@@ -1795,14 +1854,15 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   if (set.painted) {
     // (strips that decoded a moment ago, after the stage was already on screen, fade in over the stand-in sky: VI-3)
     const fa = fadeIn(set.at);
+    // (the stand-in sky is a plain gradient: it still fills the whole view, at the view's own scale)
     if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
     ctx.globalAlpha = fa;
-    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null);
     const rv = revealK > 0.01 && revealStrips ? revealStrips : null;
     const rk = rv ? revealK : 0;
     if (rv) {
       ctx.globalAlpha = rk;
-      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, farScale(rv.sky, vh, ps, yo * 0.3), yo * 0.3, rv.sky);
       ctx.globalAlpha = 1;
     }
     // high in the trees the middle and near strips fade over to the canopy ones (setCanopy: 1-8's branch, the top of 1-4's climb)
@@ -1810,20 +1870,20 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     const k = cano ? canopyK * fadeIn(cano.at) : 0;
     if (k < 0.99 && rk < 0.99) {
       ctx.globalAlpha = (1 - k) * fa * (1 - rk);
-      drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo, world);
+      drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, ps, yo * 0.8);
+      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, grown(world, 'near', ps), yo);
       ctx.globalAlpha = 1;
     }
     if (cano && k > 0.01 && rk < 0.99) {
       ctx.globalAlpha = k * fa * (1 - rk);
-      drawStrip(ctx, cano.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-      drawStrip(ctx, cano.near, 'near', 0.42, camX, vw, vh, s, yo);
+      drawStrip(ctx, cano.mid, 'mid', 0.2, camX, vw, vh, ps, yo * 0.8);
+      drawStrip(ctx, cano.near, 'near', 0.42, camX, vw, vh, ps, yo);
       ctx.globalAlpha = 1;
     }
     if (rv) {
       ctx.globalAlpha = rk;
-      drawStrip(ctx, rv.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-      if (rv.near) drawStrip(ctx, rv.near, 'near', 0.42, camX, vw, vh, s, yo);
+      drawStrip(ctx, rv.mid, 'mid', 0.2, camX, vw, vh, ps, yo * 0.8);
+      if (rv.near) drawStrip(ctx, rv.near, 'near', 0.42, camX, vw, vh, ps, yo);
       ctx.globalAlpha = 1;
     }
     ctx.fillStyle = rgba(look.grade[0], look.grade[1] * (1 - rk));
