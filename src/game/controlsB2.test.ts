@@ -353,6 +353,35 @@ test('CT-12: a quick flick jumps the same height whatever the frame phase, and a
   }
 });
 
+// ───────────────────────────── CT-10: a jump beside a trunk ─────────────────────────────
+
+/** standing `side` px from the trunk (negative: left of it), these fingers: did he grab the trunk within the next second */
+function besideTrunk(side: number, evs: TouchEv[]): { grabbed: boolean; words: string } {
+  const rig = vineRig();
+  rig.r.stand(TRUNK.x + side, G);
+  rig.clear();
+  rig.run(100);
+  rig.push(evs);
+  let grabbed = false;
+  rig.run(1000, () => (grabbed ||= rig.p.climbing));
+  return { grabbed, words: rig.words().join(' ') };
+}
+/** a flick up from (800, 700) leaning `deg` (+ right), 70 px in 60 ms, lifted */
+const leanFlick = (deg: number, t0 = 0, id = 1) => upFlick(id, 800, 700, 70 * Math.cos((deg * Math.PI) / 180), 60, t0, 70 * Math.sin((deg * Math.PI) / 180));
+
+test('CT-10: beside a trunk, a jump straight up or toward it grabs it; one leaning or steering away is a jump', () => {
+  for (const side of [-30, 30]) {
+    const toward = side < 0 ? 1 : -1;
+    assert.ok(besideTrunk(side, leanFlick(0)).grabbed, `${side}: straight up grabs`);
+    assert.ok(besideTrunk(side, leanFlick(35 * toward)).grabbed, `${side}: leaning toward grabs`);
+    const away = besideTrunk(side, leanFlick(-35 * toward));
+    assert.ok(!away.grabbed, `${side}: leaning away grabbed the trunk: ${away.words}`);
+    // the left thumb steering away, the right thumb flicking straight up
+    const steerAway = besideTrunk(side, [...stroke(2, [[0, 200, 700], [80, 200 - 40 * toward, 700], [900, 200 - 42 * toward, 700]]), ...leanFlick(0, 90)]);
+    assert.ok(!steerAway.grabbed, `${side}: steering away grabbed the trunk: ${steerAway.words}`);
+  }
+});
+
 test('CT-4: a fresh, clearly sideways stroke on a trunk, held, still steps him off that way', () => {
   for (const dir of [-1, 1]) {
     const rig = vineRig();

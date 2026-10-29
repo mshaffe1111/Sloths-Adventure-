@@ -1486,7 +1486,18 @@ export class GameEngine {
     // so a jump that touches a trunk grabs it even if the thumb has already left the glass
     if (this.input.state.jumpPressed) this.upIntent = 0.35;
     else this.upIntent = Math.max(0, this.upIntent - dt);
-    const wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down);
+    let wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down);
+    // (only a jump straight up or toward the trunk grabs it, and not while steering away; in the air, only moving toward it or holding up
+    // or down without leaning or steering away: any jump within reach grabbed it, so a leap away from beside a trunk stuck to it, CT-10)
+    if (wantGrab && nearTreeVine && !p.climbing) {
+      const toward = Math.abs(nearTreeVine.x - p.x) < 8 ? 0 : Math.sign(nearTreeVine.x - p.x);
+      const st = this.input.state;
+      const steer = st.left ? -1 : st.right ? 1 : 0;
+      const lean = this.upIntent > 0 ? (st.jumpLean ?? 0) : 0;
+      const aimedAway = toward !== 0 && (lean === -toward || steer === -toward);
+      const movingToward = toward !== 0 && p.vx * toward > 20;
+      wantGrab = p.grounded ? !aimedAway : movingToward || !aimedAway;
+    }
     const onRope = this.updateRope(dt);
     this.updateRopeLoad(dt);
     if (onRope) {
