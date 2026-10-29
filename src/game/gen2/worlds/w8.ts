@@ -128,12 +128,13 @@ export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.drop]: "Careful! It's a long way down.", // (new, needs Matt's approval)
 };
 /** the lines that are new in World 8 (the report lists them for Matt) */
-export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop]];
+// (the roost line went with 8-4, now the hand-built Lantern Run: its sections stay in w8Sections.ts, held by no gen2 stage today)
+export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop]];
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
 /** the stages of World 8 gen2 builds (8-7 The Tallest Tree is an ascent, hand-built; 8-10 is the Night-Wing Monarch's lair) */
-export const W8_GEN2_STAGES = ['8-1', '8-2', '8-3', '8-4', '8-5', '8-6', '8-8', '8-9'] as const;
+export const W8_GEN2_STAGES = ['8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9'] as const;
 
 export const W8_MANIFEST: WorldManifest = {
   world: 8,
@@ -153,8 +154,8 @@ export const W8_MANIFEST: WorldManifest = {
   // species mixed the rows, stageQuality's one-species rule)
   flowers: ['lotus'],
   sections: [],
-  handBuilt: ['8-7', '8-10'],
-  // (the dark is 8-1's, the roosts 8-4's, the moonlight glides 8-6's; the shut shrine is said in each fight stage's own gate)
+  handBuilt: ['8-4', '8-7', '8-10'],
+  // (the dark is 8-1's, the roosts 8-4's (dormant: 8-4 is hand-built now), the moonlight glides 8-6's; the shut shrine is said in each fight stage's own gate)
   lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-4', [W8_LESSON.glide]: '8-6' },
   tips: W8_TIPS,
 };

@@ -56,14 +56,9 @@ export function checkW8Roll(st: Played, at: string, id: string): void {
     assert.ok(tip.length === 1 && tip[0] < Math.min(...harpies) - 300, `${at}: the harpy is not taught before ${Math.min(...harpies)}`);
   }
   if (!['8-8', '8-9'].includes(id)) assert.equal(harpies.length, 0, `${at}: a harpy outside the Monarch's hunt`);
-  // (the shut shrine, the roosts and the glides: Dot's line before the first)
+  // (the shut shrine and the glides: Dot's line before the first)
   const gate = { '8-8': W8_LESSON.hunt, '8-9': W8_LESSON.fight } as Record<string, string>;
   if (gate[id]) assert.equal(said(st, W8_TIPS[gate[id]]).length, 1, `${at}: the shut shrine is not explained`);
-  if (id === '8-4') {
-    const roost = Math.min(...(st.proto?.watch ?? []).map((z) => z.x0));
-    const tip = said(st, W8_TIPS[W8_LESSON.roost]);
-    assert.ok(tip.length === 1 && tip[0] < roost, `${at}: the roosts are not taught before ${roost}`);
-  }
   if (id === '8-6') {
     const glides = st.gen2!.sections.filter((s) => s.template.startsWith('w8-glide-')).map((s) => s.x0);
     const tip = said(st, W8_TIPS[W8_LESSON.glide]);

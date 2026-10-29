@@ -1,8 +1,8 @@
 /**
- * World 8 as the game plays it (DESIGN.md B12 step 6, gen2/game.ts, worlds/w8Game.ts): every shipped roll of 8-1 to 8-6, 8-8 and 8-9,
+ * World 8 as the game plays it (DESIGN.md B12 step 6, gen2/game.ts, worlds/w8Game.ts): every shipped roll of 8-1 to 8-3, 8-5, 8-6, 8-8 and 8-9,
  * Normal and Easy, built through the game's own entry (generateStage, withGoals, easyStage). Each roll holds its stage's room (8-1, 8-2,
  * 8-5) and its dark stretch; the dark is lit over every gap and holds no animal and no flag (levelCheck); the inspector's quick route
- * swings every liana; nothing can hurt in the opening seconds; the dark, the roosts, the glides, the shut shrine and the night harpy are
+ * swings every liana; nothing can hurt in the opening seconds; the dark, the glides, the shut shrine and the night harpy are
  * each taught before they are met (Dot's line); a crumbling piece is never on the way; each vine climbs straight up and down; flags are
  * at most FLAG_SPAN.max px apart; the quick player takes 2:00 or more. No water anywhere in World 8 (soft falls).
  */

@@ -12,8 +12,9 @@ import { W8_ROOM_SECTIONS, W8R_STAGE, w8RoomsFor } from './w8Rooms.ts';
 import { W8_SECTIONS, W8_STAGE_ONLY } from './w8Sections.ts';
 import { W8_SWING_SECTIONS } from './w8Swing.ts';
 
-/** the stages of World 8 the game builds with gen2 (8-7 The Tallest Tree is an ascent, hand-built; 8-10 is the guardian's lair) */
-export const W8_GAME_STAGES = ['8-1', '8-2', '8-3', '8-4', '8-5', '8-6', '8-8', '8-9'] as const;
+/** the stages of World 8 the game builds with gen2 (8-4 Lantern Run is the world's special, hand-built: w8Lantern.ts, Matt's pick;
+ *  8-7 The Tallest Tree is an ascent, hand-built; 8-10 is the guardian's lair) */
+export const W8_GAME_STAGES = ['8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9'] as const;
 
 /**
  * The dark on every roll of every stage (the Twilight Treetops are dark: zones.ts), each with Dot's line on its lit first bough: 8-1's
@@ -22,7 +23,6 @@ export const W8_GAME_STAGES = ['8-1', '8-2', '8-3', '8-4', '8-5', '8-6', '8-8', 
 export const W8_DARK_REQUIRED: Readonly<Record<string, string>> = {
   '8-2': 'w8-bloom-dark',
   '8-3': 'w8s-dark-swing',
-  '8-4': 'w8-roost-dark',
   '8-5': 'w8s-dark-swing',
   '8-6': 'w8-glide-dark',
   '8-8': 'w8-guard-dark',

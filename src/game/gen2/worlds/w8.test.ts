@@ -27,7 +27,7 @@ test('the manifest: ids unique, every socket asks for something the world has, e
   const ids = (xs: Array<{ id: string }>) => new Set(xs.map((x) => x.id)).size === xs.length;
   assert.ok(ids(W8_PROPS) && ids(W8_CREATURES) && ids(ALL));
   assert.deepEqual([...W8_GEN2_STAGES], [...W8_GAME_STAGES]);
-  assert.deepEqual(W8_MANIFEST.handBuilt, ['8-7', '8-10']);
+  assert.deepEqual(W8_MANIFEST.handBuilt, ['8-4', '8-7', '8-10']);
   // (a fall from a lit bough costs a life on Normal: the world's pit is 'void'; the dark's, second-jump, glide and start gaps stay soft)
   assert.equal(W8_MANIFEST.pit, 'void');
   for (const t of ALL.map(w8Falls)) {
@@ -105,7 +105,7 @@ test('each stage: the themes its sections use are opened by its gates, it holds 
 });
 
 test('Easy is the same stage as Normal under kinder rules: the same sections, never more animals', () => {
-  for (const id of ['8-1', '8-4', '8-8']) {
+  for (const id of ['8-1', '8-6', '8-8']) {
     for (let seed = 1; seed <= 4; seed++) {
       const n = w8Finish(buildGen2Stage({ config: cfgOf(id), kit: w8GameKit(Number(id.split('-')[1]), 'normal'), seed, difficulty: 'normal' }));
       const e = w8Finish(buildGen2Stage({ config: cfgOf(id), kit: w8GameKit(Number(id.split('-')[1]), 'easy'), seed, difficulty: 'easy' }));

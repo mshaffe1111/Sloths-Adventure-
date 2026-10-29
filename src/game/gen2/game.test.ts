@@ -38,10 +38,11 @@ function played(id: string, variant: number, easy: boolean): Played {
   }
 }
 
-test('gen2 builds 5-7, 5-9, World 6 but 6-8 and World 8 but 8-7 (5-8, 6-8 and 8-7 stay the old way), each from the kit its 16 shipped rolls were curated on', () => {
-  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '8-1', '8-2', '8-3', '8-4', '8-5', '8-6', '8-8', '8-9']);
+test('gen2 builds 5-7, 5-9, World 6 but 6-8 and World 8 but 8-4, 8-7 and 8-10 (5-8, 6-8, 8-4 Lantern Run and 8-7 are built by hand), each from the kit its 16 shipped rolls were curated on', () => {
+  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9']);
   assert.equal(isGen2Stage(lv('5-8')), false);
   assert.equal(isGen2Stage(lv('6-8')), false);
+  assert.equal(isGen2Stage(lv('8-4')), false);
   assert.equal(isGen2Stage(lv('8-7')), false);
   for (const id of Object.keys(GEN2_STAGES)) {
     const e = GEN2_SEEDS[id];
