@@ -1254,7 +1254,10 @@ export class FirstTimerRun {
       const ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
       if (!ahead) {
         const on = this.prog.target(p, 160);
-        const drops = on && on.y > p.y + 50;
+        // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
+        // walked off a plank into the river six times because the route dropped down past the next bank)
+        const across = this.sim.platforms.some((q) => !q.broken && q.type !== 'drift' && Math.abs(q.y - p.y) < 50 && (dir > 0 ? q.x > p.x && q.x - p.x < 150 + who.edgeAim : q.x + q.width < p.x && p.x - (q.x + q.width) < 150 + who.edgeAim) && !this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40));
+        const drops = on && on.y > p.y + 50 && !across;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
         const here = this.floorAt(p.x, p.y, 6);
         if (!drops && here && here.type !== 'drift' && here.type !== 'moving') {
