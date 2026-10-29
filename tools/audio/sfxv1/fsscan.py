@@ -65,7 +65,25 @@ CATS = {
     'paper': (r'(paper|page|parchment) (rustl|flip|turn)|turning (a )?page', 2, 10),
     'pop': (r'\b(pop\w*|cork|bubble\w*)\b', 2, 10),
 }
-RX = {k: re.compile(v[0], re.I) for k, v in CATS.items()}
+# a second pass (SHARDS of the rest) looks only for the gaps: every pattern in a list must match
+CATS2 = {
+    'rock_impact': ([r'\b(rocks?|stones?|boulders?|pebbles?|bricks?|cobbles?)\b', r'\b(fall\w*|drop\w*|impact\w*|hit\w*|land\w*|thud\w*|tumbl\w*|roll\w*|crash\w*|clack\w*|knock\w*|collid\w*|smash\w*|thrown|toss\w*|bang\w*)\b'], 4, 20),
+    'crumble': ([r'\b(crumbl\w*|collaps\w*|rubble|debris|avalanche|rockslide|landslide|cave-in|masonry)\b'], 5, 25),
+    'log': ([r'\b(logs?|tree trunk|timber|firewood|lumber|tree fall\w*|falling tree)\b'], 4, 20),
+    'step_wood': ([r'\b(footsteps?|steps|walking|walks)\b', r'\b(wood\w*|plank\w*|floorboards?|deck|bridge|stairs)\b'], 4, 30),
+    'step_grass': ([r'\b(footsteps?|steps|walking|walks)\b', r'\b(grass\w*|leaves|leaf|forest|dirt|soil|mud|earth|moss|undergrowth|twigs)\b'], 4, 30),
+    'step_stone': ([r'\b(footsteps?|steps|walking|walks)\b', r'\b(stone|rock|gravel|pebbles?|concrete|cobble\w*)\b'], 4, 30),
+    'flap': ([r'\b(wings?|flapping|flutter\w*|flaps?)\b'], 3, 15),
+    'rope': ([r'\b(ropes?|vines?|cords?)\b'], 4, 20),
+    'jungle': ([r'\b(rainforest|rain forest|jungle|tropical|amazon\w*|costa rica|borneo|panama)\b'], 30, 300),
+    'night': ([r'\b(night|nocturnal|evening)\b', r'\b(forest|insects?|crickets?|frogs?|owl|ambien\w*)\b'], 30, 300),
+    'cave': ([r'\b(cave|cavern|grotto|tunnel|underground)\b'], 30, 120),
+    'bounce': ([r'\b(bounc\w*|boing\w*|springy|trampoline|rubber ball)\b'], 3, 10),
+    'land': ([r'\b(jump\w* (down|off|onto)|land\w* on|body (fall|drop|hit)\w*|falls? (on|to) the (ground|floor))\b'], 3, 15),
+}
+if os.environ.get('PASS') == '2':
+    CATS = CATS2
+RX = {k: [re.compile(x, re.I) for x in (v[0] if isinstance(v[0], list) else [v[0]])] for k, v in CATS.items()}
 count = {k: 0 for k in CATS}
 files, size, kpack = [], 0, 0
 meta = []
@@ -113,7 +131,7 @@ for sh in os.environ['SHARDS'].split(','):
             dur = (j.get('duration_ms') or 0) / 1000
             for cat, rx in RX.items():
                 maxs, maxdur = CATS[cat][1], CATS[cat][2]
-                if count[cat] >= (PER if maxs < 10 else AMB) * NSH or not rx.search(cap): continue
+                if count[cat] >= (PER if maxs < 10 else AMB) * NSH or not all(r.search(cap) for r in rx): continue
                 if dur > maxdur or dur < 0.15: continue
                 o = enc(rec['mp3'], maxs, (j.get('silence_at_beginning_ms') or 0) / 1000 * 0.9)
                 if not o: break
