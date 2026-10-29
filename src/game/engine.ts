@@ -161,6 +161,7 @@ import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, 
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawSoldierSprite } from './soldierSprite.ts';
 import { drawW10Dressing, drawW10Hide, type W10Dressing } from './w10Art.ts';
+import { drawW10SkyBolt, setW10Stage } from './w10HazardArt.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
@@ -856,6 +857,7 @@ export class GameEngine {
       : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
+    setW10Stage(config.worldIndex === 10);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)
     setBackdropStage(config.id);
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
@@ -6921,9 +6923,11 @@ export class GameEngine {
     const width = vw * 0.22;
     const fromLeft = w.dir === 1;
     const g = ctx.createLinearGradient(fromLeft ? 0 : vw, 0, fromLeft ? width : vw - width, 0);
-    g.addColorStop(0, `rgba(245, 158, 11, ${0.8 * k})`);
-    g.addColorStop(0.35, `rgba(251, 191, 36, ${0.35 * k})`);
-    g.addColorStop(1, 'rgba(251, 191, 36, 0)');
+    // (World 10's storm comes as a cold light; the eagle's warning is amber)
+    const cold = this.currentStage.config.worldIndex === 10;
+    g.addColorStop(0, cold ? `rgba(186, 230, 253, ${0.7 * k})` : `rgba(245, 158, 11, ${0.8 * k})`);
+    g.addColorStop(0.35, cold ? `rgba(186, 230, 253, ${0.3 * k})` : `rgba(251, 191, 36, ${0.35 * k})`);
+    g.addColorStop(1, cold ? 'rgba(186, 230, 253, 0)' : 'rgba(251, 191, 36, 0)');
     ctx.fillStyle = g;
     ctx.fillRect(fromLeft ? 0 : vw - width, 0, width, vh);
   }
@@ -6963,7 +6967,9 @@ export class GameEngine {
     // World 4's watcher is the Sky Sovereign (4-5), and the water of a pouring fall hides him from her as well as a bush does
     const cliffs = this.currentStage.config.worldIndex === 4;
     const water = !!this.w4?.behindFall(p.x, p.y);
-    const cry = (phase: 0 | 2) => (grotto ? sound.playPredator('jaguar', phase) : sound.playEagleScreech());
+    // World 10's watcher is the storm (10-3 Thunder): no cry, the strike's crack when it finds him; crate stacks to hide behind
+    const storm = this.currentStage.config.worldIndex === 10;
+    const cry = (phase: 0 | 2) => (storm ? phase === 2 && sound.playHitImpact(true, 'armor') : grotto ? sound.playPredator('jaguar', phase) : sound.playEagleScreech());
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
       cry(0);
@@ -6974,13 +6980,15 @@ export class GameEngine {
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
         const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
-        this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
-      } else if (this.watchVoiced < 3 && !hidden(bushes, { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging }) && (this.watch.passes <= 2 || this.watchCaught)) {
+        // (Pokey's own line in the storm: the danger, not the move; the move only once it has caught him, below)
+        if (storm) this.guide('Thunder. And the flash is coming this way.', 3);
+        else this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
+      } else if (this.watchVoiced < 3 && !hidden(bushes, { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging }) && (storm ? this.watchCaught : this.watch.passes <= 2 || this.watchCaught)) {
         // (three times a stage at most: the first-timer bot heard it six times in 1-7; the sign over his head stays every pass)
         this.watchVoiced++;
         // (the sign over his head was in the world only: Dot says it too, for the next two passes and after any pass that caught him,
         // when he is out in the open. QA 2026-10-28)
-        this.guide(cliffs ? 'Hide! Water or a bush!' : `Hide! Into a ${hide}!`, 2.4);
+        this.guide(storm ? 'Down behind the crates.' : cliffs ? 'Hide! Water or a bush!' : `Hide! Into a ${hide}!`, 2.4);
       }
       this.watchCaught = false;
     }
@@ -6993,7 +7001,7 @@ export class GameEngine {
         cry(2);
         if (!tipHeard(id, 'watch:seen')) {
           markTipHeard(id, 'watch:seen');
-          this.guide(grotto ? 'It saw you! Get into a fern before it reaches you' : cliffs ? 'She saw you! Get behind the water or into a bush, quick' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
+          this.guide(storm ? "It's lit me up. Crates, quick." : grotto ? 'It saw you! Get into a fern before it reaches you' : cliffs ? 'She saw you! Get behind the water or into a bush, quick' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
         }
       }
       // the strike: unless he made it into a bush (or behind the water) in time
@@ -7047,6 +7055,35 @@ export class GameEngine {
         this.watchEyes = { x: sx, y: cam.y + 175, s: 1.3, a: 1, narrow: 0 };
         this.watchShadowAt = { x: sx, a: 0.5 };
       }
+      return;
+    }
+    if (this.currentStage.config.worldIndex === 10) {
+      // 10-3 Thunder: the storm itself watches the wall. Quiet (calm); thunder and a cold light building at the edge it comes from (warn);
+      // then the flash sweeps across the wall, a bolt over it (pass): anyone out in the open where it lights is seen, and the next bolt
+      // finds him (the dive). Painted bolts (w10HazardArt.ts); the light on the wall is a code glow (a light source)
+      const cam = this.camera;
+      if (w.phase === 'calm') return;
+      if (w.phase === 'warn') {
+        const u = w.t / WATCH.warn;
+        this.watchShadowAt = { x: w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30, a: 0.18 + 0.3 * u };
+        // (far flickers at that edge, closer and brighter as it comes)
+        if (Math.sin(this.gameTime * 9 + u * 7) > 0.55) {
+          const fx = w.dir === 1 ? cam.x + 40 + 80 * u : cam.x + cam.viewportWidth - 40 - 80 * u;
+          drawW10SkyBolt(ctx, fx, cam.y + 20, cam.y + 150 + 60 * u, Math.floor(this.gameTime * 3), 0.35 + 0.4 * u);
+        }
+        return;
+      }
+      const sx = this.shadowX(w, cam.x, cam.viewportWidth);
+      if (w.seen) {
+        // the strike on him: a moment's charge, then the bolt (a harmless first pass strikes beside him)
+        const u = Math.min(1, w.diveT / WATCH.dive);
+        const off = harmlessPass(w) ? 90 * w.dir : 0;
+        if (u > 0.55 && w.diveT < WATCH.dive + 0.35) drawW10SkyBolt(ctx, this.player.x + off, cam.y - 20, this.player.y + 2, w.passes * 7 + 3, 1, true);
+        this.watchShadowAt = { x: this.player.x + off, a: 0.3 + 0.4 * u };
+        return;
+      }
+      this.watchShadowAt = { x: sx, a: 0.5 };
+      if (Math.sin(this.gameTime * 13 + sx * 0.01) > 0.2) drawW10SkyBolt(ctx, sx, cam.y - 20, cam.y + 170, Math.floor(this.gameTime * 4), 0.75);
       return;
     }
     if (!this.watchEagle) {
@@ -7137,6 +7174,20 @@ export class GameEngine {
     for (const pl of this.platforms) {
       if (x < pl.x || x > pl.x + pl.width || pl.y < top || pl.y > this.camera.y + this.camera.viewportHeight + 60) continue;
       if (pl.y < best) { best = pl.y; gy = pl.y; }
+    }
+    if (this.currentStage.config.worldIndex === 10) {
+      // the storm's flash: a cold pool of light on the wall where it looks
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const g = ctx.createRadialGradient(x, gy - 30, 10, x, gy - 30, 170);
+      g.addColorStop(0, `rgba(190, 225, 255, ${a * 0.6})`);
+      g.addColorStop(1, 'rgba(190, 225, 255, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(x, gy - 30, 170, 70, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      return;
     }
     if (this.currentStage.config.worldIndex === 3) {
       // the eyes' gaze: a pool of amber light on the floor

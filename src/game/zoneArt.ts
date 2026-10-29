@@ -9,6 +9,7 @@ import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
+import { drawW10Bolt, drawW10Rod, drawW10Spikes } from './w10HazardArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
 import { drawW5Box, w5ArtReady } from './w5Art.ts';
 import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
@@ -55,6 +56,8 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
     if (!visible(z, cam)) continue;
     if (z.kind === 'geyser') { drawVent(ctx, z, zoneState(z, t), t); continue; }
     if (z.kind === 'bolt') { drawRod(ctx, z, zoneState(z, t), t); continue; }
+    // (an iron spike bed: painted only, w10HazardArt.ts; nothing is drawn for the moment its sheet loads)
+    if (z.kind === 'spikes') { drawW10Spikes(ctx, z); continue; }
     if (z.kind === 'web') { drawWebBack(ctx, z); continue; }
     if (z.kind !== 'spore' || !z.emit) continue;
     const st = zoneState(z, t);
@@ -370,6 +373,8 @@ function drawEruption(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: 
 
 /** a short metal rod with an orb that charges up */
 function drawRod(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  // (World 10's painted rods, w10HazardArt.ts; the shapes below are the stand-in while the sheet loads)
+  if (drawW10Rod(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const charge = st.phase === 'warn' ? 0.25 + 0.75 * st.u : st.phase === 'active' ? 1 : 0.1;
   ctx.save();
@@ -407,6 +412,7 @@ function drawRod(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numbe
 }
 
 function drawBolt(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  if (drawW10Bolt(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const top = z.top;
   if (st.phase === 'warn') {

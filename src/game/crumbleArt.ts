@@ -12,6 +12,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { regrowDelay } from './regrow.ts';
+import { drawW10Slab, w10RampartStage, w10SlabReady } from './w10HazardArt.ts';
 import type { Platform } from './types.ts';
 
 export const CRUMBLE_ART_URL = new URL('../assets/w7/crumble.webp', import.meta.url).href;
@@ -48,6 +49,8 @@ function load() {
 }
 /** whether the sheet has loaded (starts the load) */
 export function crumbleArtReady(): boolean {
+  // (World 10's crumbling tiles are its rampart slabs: w10HazardArt.ts)
+  if (w10RampartStage()) return w10SlabReady();
   load();
   return ready && !!img;
 }
@@ -66,6 +69,7 @@ function blit(ctx: CanvasRenderingContext2D, n: keyof typeof FRAMES, x: number, 
  * shakeOffset). Returns false when the sheet is not loaded yet (or the tile is not a crumbling one).
  */
 export function drawCrumbleTile(ctx: CanvasRenderingContext2D, p: Platform, time: number, dx = 0, dy = 0): boolean {
+  if (w10RampartStage()) return drawW10Slab(ctx, p, time, dx, dy);
   if (p.crumbleAfter === undefined || !crumbleArtReady()) return false;
   const w = p.width + 6;
   const x = p.x - 3 + dx;

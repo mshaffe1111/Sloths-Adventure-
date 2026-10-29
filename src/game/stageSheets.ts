@@ -23,6 +23,7 @@
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   dress          Worlds 1, 2 and 5's dressing sets (dressArt.ts, artDress.ts dressSets), for a built stage
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
+ *   w10-hazards    World 10's painted rods, bolts, spike beds and rampart slabs (w10HazardArt.ts), every stage but the lair
  *   w10            World 10's gen2 dressing and cover (w10Art.ts) and the General's soldiers (soldierSprite.ts)
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
@@ -226,6 +227,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
+  // (World 10's storm: its painted rods, bolts, spike beds and rampart slabs, every stage but the General's lair: w10HazardArt.ts)
+  if (w === 10 && cfg.objectiveType !== 'boss_lair') out.push('w10-hazards');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
   out.push('perch');
   out.push(...everyStage(w));
