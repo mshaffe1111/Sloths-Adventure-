@@ -1,0 +1,50 @@
+{
+ "note": "hf-art-stage every-stage pieces by img2img from stagestarts.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/cf56303b01d1654672a5132aec89d0b12d967fbd/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "gate-w5-s42-7",
+   "start": "start-gate-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, two versions of the very same object side by side, identical in shape and size, a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a big pink orchid in bloom on top and the little door open onto a dark inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1536,
+   "h": 960
+  },
+  {
+   "name": "gate-w5-s42-23",
+   "start": "start-gate-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, two versions of the very same object side by side, identical in shape and size, a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a big pink orchid in bloom on top and the little door open onto a dark inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.42,
+   "seed": 23,
+   "w": 1536,
+   "h": 960
+  },
+  {
+   "name": "gate-w5-s55-7",
+   "start": "start-gate-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, two versions of the very same object side by side, identical in shape and size, a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a big pink orchid in bloom on top and the little door open onto a dark inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1536,
+   "h": 960
+  },
+  {
+   "name": "gate-w5-s55-23",
+   "start": "start-gate-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, two versions of the very same object side by side, identical in shape and size, a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a big pink orchid in bloom on top and the little door open onto a dark inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1536,
+   "h": 960
+  }
+ ]
+}
