@@ -86,3 +86,24 @@ def crisp(im):
     rgb = im.convert('RGB').filter(ImageFilter.UnsharpMask(radius=1.4, percent=55, threshold=2))
     rgb.putalpha(a)
     return rgb
+
+
+def pokey_tone(im, s_to=0.65, v_to=0.68, s_from=0.75, v_from=0.72):
+    """Pokey's fur in the pair cels to the orange of his own story frames (the pair repaints came out brighter and more saturated:
+    median saturation 0.75 and value 0.72 against 0.58 and 0.62 in storyHd pokey pages, whose lit fur reads like 0.65 and 0.68 by eye
+    side by side, the target here). Only a strong orange moves, and smoothly by how
+    strong it is, so Meeca's softer brown, her pink and the satchel's dark leather stay as they are."""
+    a = np.asarray(im.convert('RGBA')).astype(np.float32) / 255
+    rgb = a[..., :3]
+    mx, mn = rgb.max(-1), rgb.min(-1)
+    s = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1e-6), 0)
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    hue = np.where(mx == r, ((g - b) / np.maximum(mx - mn, 1e-6)) % 6, 0) / 6
+    w = np.clip((s - 0.5) / 0.15, 0, 1) * ((hue > 0.03) & (hue < 0.12)) * (mx == r)
+    ks, kv = 1 + w * (s_to / s_from - 1), 1 + w * (v_to / v_from - 1)
+    # scale saturation about the pixel's value, then the value
+    v = mx
+    out = v[..., None] - (v[..., None] - rgb) * ks[..., None]
+    out = out * kv[..., None]
+    a[..., :3] = np.clip(out, 0, 1)
+    return Image.fromarray((a * 255).astype(np.uint8), 'RGBA')

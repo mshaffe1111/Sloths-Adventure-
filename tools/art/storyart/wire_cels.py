@@ -11,7 +11,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from cut import cut_figure, on_dark  # noqa: E402
+from cut import cut_figure, on_dark, pokey_tone  # noqa: E402
 from pack import pack  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
@@ -75,6 +75,9 @@ def main():
             mg = 0
         else:
             im, mg = cut_figure(gen, m, old, HD, rect_margin=30 if general else 6, limit=not general, drop_grey=take.startswith('new-'))
+        if re.search(r'-p[si]\d*$', take):
+            # (the pair repaints: Pokey's orange brought to his story frames')
+            im = pokey_tone(im)
         figs[key] = im
         info[key] = (face, cut_c, mg, old)
     pages, places = pack(figs, max_w=2048, max_h=2048)
