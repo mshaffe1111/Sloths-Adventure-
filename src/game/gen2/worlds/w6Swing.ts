@@ -164,11 +164,18 @@ const humpRun: SectionTemplate = {
  *  can lie past the leaf glide's reach with the release window kept) */
 const liana = (key: string, after: string): SectionPiece => ({ key, shape: 'liana', w: 0, place: { kind: 'swing', after, top: [400, 420] } });
 /**
+ * How far a perch sits above its swing's ledge (dy, up is negative): 80 px (the lead, 2026-10-29, from gen2-core 842a81c under vine-fix's
+ * calmer swing). A level perch past the leaf glide's 477 px is out of the calmer swing's reach (levelCheck links 480-510 px at most);
+ * raised 80 px, the glide reaches only ~307 px and the swing links 440-480 px. Each raised perch steps back down after it (`down`), so a
+ * section ends level with where it began.
+ */
+const RAISE = -80;
+/**
  * the perch past a liana (`dy` from the swing's ledge), a landing (Easy widens it). The gap under the swing is black water (core
  * `water: true`): a soft pit there would let him walk under the liana and out the far side, and the swing would be optional (the lead,
  * 2026-10-28; Matt on Meeca's stage). So the swing is the only way on, and a miss costs a life, warned by Dot first (WATER_WARN)
  */
-const perch = (key: string, after: string, w: SectionPiece['w'], dy: SectionPiece['w'] = 0): SectionPiece => bank(key, w, { kind: 'land', after, dy, water: true }, { landing: true });
+const perch = (key: string, after: string, w: SectionPiece['w'], dy: SectionPiece['w'] = RAISE): SectionPiece => bank(key, w, { kind: 'land', after, dy, water: true }, { landing: true });
 /** a climbing vine at the end of `on`, `h` px tall, and the root wall it leads up onto (a whole bank: out of a double jump's reach) */
 const climbWall = (vine: string, on: string, wall: string, h: number, w: SectionPiece['w']): SectionPiece[] => [
   { key: vine, shape: 'vine', w: 0, place: { kind: 'climb', on, at: 1, h } },
@@ -182,7 +189,7 @@ const firstSwing: SectionTemplate = {
   archetypes: ['vine_runner', 'sprint'],
   phases: ['ki', 'sho'],
   difficulty: 3,
-  pieces: [bank('a', [200, 240]), liana('l1', 'a'), perch('b', 'l1', [240, 290]), up('knee', 'b', 40, [110, 140]), down('c', 'knee', 40, [180, 220])],
+  pieces: [bank('a', [200, 240]), liana('l1', 'a'), perch('b', 'l1', [240, 290]), up('knee', 'b', 40, [110, 140]), down('c', 'knee', 40 - RAISE, [180, 220])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
@@ -198,9 +205,17 @@ const swingPair: SectionTemplate = {
   archetypes: ['vine_runner', 'sprint'],
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
-  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('p1', 'l1', [180, 230], [-15, 0]), liana('l2', 'p1'), perch('b', 'l2', [300, 380], [-10, 0])],
+  pieces: [
+    bank('a', [180, 220]),
+    liana('l1', 'a'),
+    perch('p1', 'l1', [180, 230]),
+    down('p1d', 'p1', -RAISE, [140, 170]),
+    liana('l2', 'p1d'),
+    perch('b', 'l2', [200, 240]),
+    down('c', 'b', -RAISE, [180, 220]),
+  ],
   entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'b', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.3, 2, 90), foe('foe', 'b', [0.7, 0.9], ['frog'], 1.5, { phases: ['ten', 'ketsu'], chance: 0.5 })],
   weight: 2,
@@ -215,16 +230,19 @@ const swingChain: SectionTemplate = {
   phases: ['ten', 'ketsu'],
   difficulty: 7,
   pieces: [
-    bank('a', [160, 200]),
+    bank('a', [140, 170]),
     liana('l1', 'a'),
-    perch('p1', 'l1', [210, 250], [-10, 0]),
-    liana('l2', 'p1'),
-    perch('p2', 'l2', [210, 250], [-8, 0]),
-    liana('l3', 'p2'),
-    perch('b', 'l3', [260, 320], [-7, 0]),
+    perch('p1', 'l1', [150, 180]),
+    down('p1d', 'p1', -RAISE, [110, 130]),
+    liana('l2', 'p1d'),
+    perch('p2', 'l2', [150, 180]),
+    down('p2d', 'p2', -RAISE, [110, 130]),
+    liana('l3', 'p2d'),
+    perch('b', 'l3', [160, 190]),
+    down('c', 'b', -RAISE, [140, 170]),
   ],
   entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'b', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), petals('b', 'b', 0.4, 2, 90)],
   weight: 2,
@@ -244,7 +262,7 @@ const swingClimb: SectionTemplate = {
     liana('l1', 'a'),
     perch('b', 'l1', [260, 320]),
     ...climbWall('v', 'b', 'wall', 230, [220, 260]),
-    down('c', 'wall', 230, [240, 300]),
+    down('c', 'wall', 230 - RAISE, [240, 300]),
   ],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
@@ -277,7 +295,7 @@ const swingWatch: SectionTemplate = {
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [WATCH],
-  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('b', 'l1', [380, 440]), up('mid', 'b', 40, [110, 140]), down('b2', 'mid', 40, [280, 340]), up('knee', 'b2', 40, [130, 160]), down('c', 'knee', 40, [160, 200])],
+  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('b', 'l1', [380, 440]), up('mid', 'b', 40, [110, 140]), down('b2', 'mid', 40, [280, 340]), up('knee', 'b2', 40, [130, 160]), down('c', 'knee', 40 - RAISE, [160, 200])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
@@ -293,7 +311,7 @@ const kneesSwing: SectionTemplate = {
   archetypes: ['vine_runner', 'sprint'],
   phases: ['sho', 'ten'],
   difficulty: 5,
-  pieces: [bank('a', [130, 160]), hop('k1', 'a', [140, 170]), hop('k2', 'k1', [160, 190]), liana('l1', 'k2'), perch('b', 'l1', [190, 220]), down('b2', 'b', 35, [120, 150]), up('c', 'b2', 35, [180, 220])],
+  pieces: [bank('a', [130, 160]), hop('k1', 'a', [140, 170]), hop('k2', 'k1', [160, 190]), liana('l1', 'k2'), perch('b', 'l1', [190, 220]), down('b2', 'b', 35 - RAISE, [120, 150]), up('c', 'b2', 35, [180, 220])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
@@ -309,9 +327,9 @@ const swingHunter: SectionTemplate = {
   archetypes: ['vine_runner', 'sprint'],
   phases: ['ten', 'ketsu'],
   difficulty: 6,
-  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('b', 'l1', [460, 540]), hop('c', 'b', [220, 260])],
+  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('b', 'l1', [460, 540]), hop('c', 'b', [160, 200]), down('d', 'c', -RAISE, [160, 200])],
   entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'c', kind: 'ground' },
+  exit: { piece: 'd', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('b', 'b', 0.2, 2, 80), foe('foe', 'b', [0.55, 0.75], ['tayra', 'ocelot', 'frog'], 3), petals('c', 'c', 0.5, 1)],
   weight: 2,
@@ -330,7 +348,7 @@ const swingDropClimb: SectionTemplate = {
     bank('a', [180, 220]),
     liana('l1', 'a'),
     perch('b', 'l1', [200, 240]),
-    down('b2', 'b', 80, [140, 170]),
+    down('b2', 'b', 80 - RAISE, [140, 170]),
     ...climbWall('v', 'b2', 'wall', 200, [200, 240]),
     down('c', 'wall', 120, [200, 240]),
   ],
@@ -354,7 +372,7 @@ const swingRun: SectionTemplate = {
     liana('l1', 'a'),
     perch('b', 'l1', [200, 240]),
     up('k1', 'b', 45, [100, 130]),
-    down('c', 'k1', 45, [120, 150]),
+    down('c', 'k1', 45 - RAISE, [120, 150]),
     hop('d', 'c', [150, 180]),
     hop('e', 'd', [220, 260]),
   ],
