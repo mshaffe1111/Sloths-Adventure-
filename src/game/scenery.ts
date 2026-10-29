@@ -14,7 +14,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
+import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, FADE_IN_MS } from './paintedBackdrops.ts';
 import { w5Mood, type W5Mood } from './w5Backdrop.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
@@ -371,6 +371,8 @@ interface LayerSet {
   front: HTMLCanvasElement;
   /** the world's painted strips are in use */
   painted?: boolean;
+  /** when the painted strips decoded: they fade in from the stand-in sky over FADE_IN_MS when that was just now */
+  at?: number;
   /** a painted world whose strips are still decoding: a plain sky stands in (the drawn layers are never built for it, they would only be thrown away) */
   waiting?: boolean;
   clouds: HTMLCanvasElement[];
@@ -395,7 +397,10 @@ onPaintedReady((world) => {
 });
 
 /** a sky-coloured stand-in for a painted world whose strips are still decoding: a few pixels wide, drawn stretched across the tile */
+const skies = new WeakMap<Look, HTMLCanvasElement>();
 function waitingSky(look: Look): HTMLCanvasElement {
+  const hit = skies.get(look);
+  if (hit) return hit;
   const cv = document.createElement('canvas');
   cv.width = 4;
   cv.height = H;
@@ -405,8 +410,16 @@ function waitingSky(look: Look): HTMLCanvasElement {
   g.addColorStop(1, look.sky[look.sky.length - 1]);
   c.fillStyle = g;
   c.fillRect(0, 0, 4, H);
+  skies.set(look, cv);
   return cv;
 }
+
+/** how far a painted set (or canopy) that decoded at `at` has faded in: 0 just in, 1 after FADE_IN_MS (VI-3: no pop-in) */
+const fadeIn = (at: number | undefined): number => {
+  if (at === undefined) return 1;
+  const t = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - at;
+  return t >= FADE_IN_MS ? 1 : Math.max(0, t / FADE_IN_MS);
+};
 const clearStrip = (() => {
   let cv: HTMLCanvasElement | null = null;
   return () => {
@@ -1508,7 +1521,7 @@ function ensure(world: number): LayerSet {
   if (painted) {
     const set: LayerSet = {
       world, seed: getSceneSeed(), far: painted.far, hills: null, mid: painted.mid, near: painted.near,
-      front: buildFront(look, world, false), clouds: [], hazed: true, painted: true,
+      front: buildFront(look, world, false), clouds: [], hazed: true, painted: true, at: painted.at,
     };
     sets.set(key, set);
     return set;
@@ -1762,18 +1775,22 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
   const live = !lite && !set.hazed;
   if (set.painted) {
+    // (strips that decoded a moment ago, after the stage was already on screen, fade in over the stand-in sky: VI-3)
+    const fa = fadeIn(set.at);
+    if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+    ctx.globalAlpha = fa;
     drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
     // high in the trees the middle and near strips fade over to the canopy ones (setCanopy: 1-8's branch, the top of 1-4's climb)
     const cano = canopyK > 0.01 && !set.waiting ? canopyFor(world) : null;
-    const k = cano ? canopyK : 0;
+    const k = cano ? canopyK * fadeIn(cano.at) : 0;
     if (k < 0.99) {
-      ctx.globalAlpha = 1 - k;
+      ctx.globalAlpha = (1 - k) * fa;
       drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
       if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo);
       ctx.globalAlpha = 1;
     }
     if (cano && k > 0.01) {
-      ctx.globalAlpha = k;
+      ctx.globalAlpha = k * fa;
       drawStrip(ctx, cano.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
       drawStrip(ctx, cano.near, 'near', 0.42, camX, vw, vh, s, yo);
       ctx.globalAlpha = 1;
