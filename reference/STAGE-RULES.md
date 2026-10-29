@@ -297,6 +297,31 @@ test link, the QA testers or a release until the lead has re-run them, on more t
     `jumpEdges`), and curation drops any roll with an animal by a jump (7770de7). The lesson: every rule a full-suite test holds a stage
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
+- **World 8 on gen2: what the Twilight Treetops taught** (2026-10-29, branch gen2-w8; the checklist is DESIGN.md B12):
+  - *Lit stages need a theme too* (8-1, 8-3, 8-5, 8-6 have no stage gate of their own). With the fillers drawn by weight, 8-1's rolls
+    read 0.17-0.24 alike; a start gate per roll (`w8-gate-*`) that opens one theme, each leaning on its own move (climbers: trunks, V;
+    leapers: wide and second-jump gaps, J; night: dark stretch after dark stretch, Z), moved it to 0.40.
+  - *A theme the stage can't pay for reads like no theme*. 8-1 sits at the bottom of the band (threat 2.3 a section), under every World 8
+    animal's cost (2.5-5), so its "prowlers" laid no animal and read like the hop theme (0.07 apart). Pick each stage's themes from what
+    its budget can buy.
+  - *Neighbouring fight stages can't share their arenas* (8-8 then 8-9). Curation's `--max-shared` (0.7) dropped every 8-9 roll: both
+    drew the same arena sections. Split each theme's sections between the two (`W8_STAGE_ONLY`) and give the later one its own required
+    dark (`w8-monarch-dark`).
+  - *The world's mechanic on every roll is `required`, not weight*. World 8 is dark: each stage requires one dark section
+    (`W8_DARK_REQUIRED`), unthemed (a required section that uses a theme can't be laid on the other themes' rolls: the build throws).
+  - *A room can wait for its lesson*. 8-1's dark hollow room was placed before the first dark stretch (its dark untaught); `uses:
+    [the dark]` on the room makes the plan place it after the first section that teaches it.
+  - *Dead time: a beat every 2 s*. Plain flats of 400+ px, a flat with an animal that Easy (or the roll) left out, and a watcher right
+    after a climb (a wait with nothing to do: 3.5 s) put whole themes over a fifth dead. Flats 350 px at most, a knot after every animal's
+    flat, no roost on top of a climb.
+  - *A harpy needs 500 px of flat* (its 260 plus JUMP_CLEAR each side); on a shorter flat it is dropped without a word and the flat goes
+    quiet. And a fight theme with no long flats leaves its top-up nowhere to stand: the length loop grew 8-9's guards rolls to 8 minutes
+    (470-490 s) until the theme got its guard posts (three 340-370 px flats).
+  - *A glide gap* (8-6 Glide by Moonlight): the pipeline's `pit` rule takes `jump: 'glide'` (`pipeline.ts` `glideGap`): Normal 445 px on
+    the flat, past the double jump's 230, so the leaf is the way over; Easy 353. Easy's 70% hold still crosses (`easyHoldCheck`, 10 rolls
+    a stage). Curation's filters do not run `easyHoldCheck` (game.test.ts does, on the shipped rolls): check it while authoring.
+  - *Size the sections against the test before curating*. Five World 8 sections ran 1,800-2,500 px on their widest rolls (a dark
+    stretch with a guard's flat at each lit end); a size test written after the first curation run cost a second run.
 
 ## 7. Where things are
 

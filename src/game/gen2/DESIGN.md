@@ -379,6 +379,16 @@ Follow these steps in order. Each one points at World 6, which did all of them, 
     - screenshots of every stage upright (390x844) and sideways (844x390).
     Then add what you learned to STAGE-RULES §6.
 
+World 8 (the Twilight Treetops, branch gen2-w8) added, in the order the steps meet them (STAGE-RULES §6 "World 8 on gen2"):
+- step 1: the world's mechanic on every roll goes in `required` (unthemed), like the rooms; a stage whose budget is too low for the
+  world's animals (stage 1) needs themes that lean on moves, not animals;
+- step 2: a section size test (600-1800 px, +370 a liana, +250 a glide: `w8.test.ts`) before the first curation; flats of 350 px at most
+  and a knot after every animal's flat; a harpy needs 500 px of flat; no watcher on the top of a climb;
+- step 3: a room that needs a lesson first `uses` it, so the plan lays it after the teaching section;
+- step 4: a start gate per roll in every stage (lit stages too), and two fight stages in a row split their arena sections;
+- step 8: curation's filters do not include `easyHoldCheck`; run it on raw rolls while authoring (glides above all).
+The pipeline gained a glide gap (`pit` with `jump: 'glide'`, `glideGap`).
+
 ---
 
 ## Part C. Matt's decisions (answered 2026-10-28)

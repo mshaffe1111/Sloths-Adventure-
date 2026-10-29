@@ -21,6 +21,7 @@ import { buildGen2Stage, FLAG_SPAN } from './pipeline.ts';
 import { GEN2_SEEDS } from './seeds.ts';
 import type { Gen2Stage } from './types.ts';
 import { W6_ROOM_STAGES } from './worlds/w6.ts';
+import { W8_ROOM_STAGES } from './worlds/w8Rooms.ts';
 
 const levels = generateAllLevels();
 const lv = (id: string): LevelConfig => ({ ...levels.find((l) => l.id === id)!, unlocked: true });
@@ -37,10 +38,11 @@ function played(id: string, variant: number, easy: boolean): Played {
   }
 }
 
-test('gen2 builds 5-7, 5-9 and World 6 but 6-8 (5-8 and 6-8 stay the old way), each from the kit its 16 shipped rolls were curated on', () => {
-  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9']);
+test('gen2 builds 5-7, 5-9, World 6 but 6-8 and World 8 but 8-7 (5-8, 6-8 and 8-7 stay the old way), each from the kit its 16 shipped rolls were curated on', () => {
+  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '8-1', '8-2', '8-3', '8-4', '8-5', '8-6', '8-8', '8-9']);
   assert.equal(isGen2Stage(lv('5-8')), false);
   assert.equal(isGen2Stage(lv('6-8')), false);
+  assert.equal(isGen2Stage(lv('8-7')), false);
   for (const id of Object.keys(GEN2_STAGES)) {
     const e = GEN2_SEEDS[id];
     assert.ok(e, `${id}: no curated rolls in seeds.ts`);
@@ -77,6 +79,7 @@ test('every shipped roll, Normal and Easy, as the game plays it: the checker pas
         if (easy) assert.deepEqual(easyHoldCheck(st), [], `${at}: a ~70% hold finishes it`);
         if (st.config.worldIndex === 5) assert.ok(st.proto?.w5, `${at}: World 5's extras reach the engine`);
         if (st.config.worldIndex === 6) assert.ok((st.proto?.gen2 as { w6?: unknown } | undefined)?.w6, `${at}: World 6's extras reach the engine`);
+        if (st.config.worldIndex === 8) assert.ok((st.proto?.gen2 as { w8?: unknown } | undefined)?.w8, `${at}: World 8's extras reach the engine`);
         // (a gauntlet's goal: Normal's share of what the stage holds, Easy's lower; every animal it counts stands before the shrine)
         if (st.config.objectiveType === 'gauntlet') {
           const before = st.enemies.filter((e) => e.x <= st.exitTotemX + 35).length;
@@ -155,6 +158,17 @@ test("a World 6 gen2 stage loads World 6's kit, the kit pieces for its room, and
     assert.equal(sheets.includes('water-signs'), gen2Water(id), `${id}: the water signs exactly when it has water`);
     assert.equal(sheets.includes('bad-water'), gen2Water(id), `${id}: the dirty water exactly when it has water`);
     assert.deepEqual(stageSheets(lv(id), { ...on, hand: false }), sheets, `${id}: whatever the hand-built switch`);
+  }
+});
+
+test("a World 8 gen2 stage loads World 8's kit, the world's animals, and the kit pieces exactly for its room (8-1, 8-2, 8-5); no water", () => {
+  const on = { hand: true, paint: true, ctest: false };
+  for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('8-'))) {
+    const sheets = stageSheets(lv(id), on);
+    assert.deepEqual(sheets.slice(0, 2), ['kit:1', 'kit:8'], id);
+    assert.equal(sheets.includes('kit-pieces'), (W8_ROOM_STAGES as readonly string[]).includes(id), `${id}: the kit pieces exactly when it has a room`);
+    assert.ok(!sheets.includes('water-signs') && !sheets.includes('bad-water') && !gen2Water(id), `${id}: no water in the treetops`);
+    for (const f of ['ocelot', 'jaguar', 'boa', 'tayra', 'harpy']) assert.ok(sheets.includes(`foe:${f}`), `${id}: foe:${f}`);
   }
 });
 

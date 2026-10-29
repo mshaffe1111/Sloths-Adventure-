@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage, type CheckGraph } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds, VINE } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, glideGap, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds, VINE } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
@@ -898,4 +898,28 @@ test("a stage's required sections come up on every roll (placed by the plan, nev
   // a required section that fits no node of the stage is named
   const bad: WorldKit = { ...k, manifest: { ...k.manifest, required: { '5-7': [{ section: 'toy-rare', phase: 'ketsu' }] } } };
   assert.throws(() => buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: bad, seed: 1, difficulty: 'normal' }), /required section toy-rare fits no node/);
+});
+
+test('a glide gap (World 8): past the double jump on Normal, never past what levelCheck links, laid within it on both settings', () => {
+  for (const d of ['normal', 'easy'] as const) {
+    const margin = MARGIN[d];
+    for (const dy of [0, -60, 40]) {
+      const g = glideGap(dy, { margin, world: 8, stage: 6 });
+      assert.ok(g >= maxGap(dy, true, margin), `${d} ${dy}: ${g} under the double jump's envelope`);
+      assert.ok(g <= jumpLinkGap(dy, 8, 6), `${d} ${dy}: ${g} past what levelCheck links`);
+    }
+  }
+  // (Normal's flat glide is past a double jump's physical reach: the leaf is the way over)
+  assert.ok(glideGap(0, { margin: MARGIN.normal, world: 8, stage: 6 }) > physics.reachJump(0, true));
+  // (a section's `pit` with `jump: 'glide'` lays its gap from glideGap)
+  const tpl: SectionTemplate = {
+    id: 'glide-test', name: 'glide', archetypes: 'any', phases: ['ki'], difficulty: 3, exitDy: 0, sockets: [], mirrorable: false,
+    pieces: [{ key: 'a', shape: 'bank', w: 300, place: { kind: 'start' } }, { key: 'b', shape: 'bank', w: 300, place: { kind: 'pit', after: 'a', jump: 'glide', share: 0.9 } }],
+    entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'b', kind: 'ground' },
+  };
+  const c8 = { ...cfg('8-6', 'sprint'), worldIndex: 8, miniIndex: 6 };
+  const b = planBudget(c8, { ...manifest, moves: ['double', 'glide'] }, 'normal');
+  const L = layLocal(tpl, b, rngFor(1));
+  const gap = L.gaps[0].x1 - L.gaps[0].x0;
+  assert.ok(Math.abs(gap - 0.9 * glideGap(0, b)) <= 1, `${gap} px`);
 });
