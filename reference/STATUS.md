@@ -2,12 +2,42 @@
 
 Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
 
-## Running (2026-10-29 ~08:10 ET; Matt: "Let's start 7" and "start World 6's special stage")
+## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
 
-- 6-8 Stilt Climb (World 6's special stage, hand-built): cloud session_01FhBbYMt17qa4tAv8V6jvxN, branch w6-stilt-climb. Step 1 is a
-  mock-up for Matt (layout plan + blockout screenshots), then it stops; build only after Matt approves.
-- World 7 on gen2 (one builder, B12 checklist): cloud session (see below), branch gen2-w7. Matt: Pokey teaches himself in World 7
-  (Dot is gone in the story); STAGE-RULES §1.
+Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as on 2026-10-28. Effort levels still by job (LEAD-PLAYBOOK §7).
+
+| Job | Who | Branch | Notes |
+|---|---|---|---|
+| 6-8 Stilt Climb (W6 special, hand-built) | cloud session_01FhBbYMt17qa4tAv8V6jvxN | w6-stilt-climb | mock-up first, then stops for Matt |
+| World 7 kit, ground/crumble, hook-up, curation | cloud session_01FhBbYNKK8iPP5FQajUs6u5 | gen2-w7 | Pokey teaches himself (Dot absent) |
+| World 7 swings + rooms | cloud session_01FhBbYL6bqh18b851MMeCgA | gen2-w7-swing | merges into gen2-w7 before curation |
+| World 8 kit, ground/darkness, hook-up, curation | cloud session_01FhBbYL7oX9aYPA1U8CKGQ9 | gen2-w8 | lantern + fireflies |
+| World 8 swings + rooms | cloud session_01FhBbYM8NXWsJ1fXfGP892s | gen2-w8-swing | merges into gen2-w8 before curation |
+| QA leftovers 2-6 (tip timing, plank ends), 3-3 counter | cloud session_01FhBbYMWcFJmuZ592k3J1vs | qa-fix-w123b | |
+| Better look-alike measure (Matt chose it over relaxing the rule) | cloud session_01FhBbYKxYezKsEn4iBnvKHP | gen2-lookalike | era + curate share one measure; W7/W8 switch on merge |
+| Art pickup: HF creatures + Gemini sheets cut-in | local helper (worktree) | art-pickup | no new HF spend |
+| Swimming (Matt: build it, first swim in 6-7's well; calm water from w6/water.jpg) | cloud session_01FhBbYJzbeg3VTVJMDHy4EK | swim | dirty/fast stays deadly |
+| Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | |
+| 7-4 The Slide (W7 special; Matt: NOT a climb: side-on run, floor crumbles, behind-the-back slide, steer and jump; art: slomatt/02_sliding-from-behind) | cloud session_01FhBbYJXeB8XaDrrUgxfuHR | w7-slide | mock-up first |
+| Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
+| Audit: major looks still drawn in code (DONE) | local read-only | none | findings below |
+
+Audit findings (2026-10-29), most visible first: W6 tide drawn clean teal (FIXED: painted fast water, tide-w6-painted.png); W9 lava
+geysers and W10 lightning (no art); boss rage strips, lairs and attacks (bosses later); pit water in W1-W5 hand stages (code water; W2 rivers
+painted); rope traverse (helper running); W4 waterfalls (code on purpose); web patches 5-6/5-8 (painted silk exists, unused); spore mushrooms
+(painted mushrooms exist, unused); wind; crumble tiles W7 (kit has no ruin tile: HF list); silk swing lines W5; bounce mushrooms (all worlds,
+no art: HF list); 4-3's pool log (painted log exists, unused). SWIMMING DOES NOT EXIST in the game yet (pokey-swim sheets are in
+reference/animation-sheets/pokey-swim/, not wired); question to Matt.
+
+Hugging Face: about $12 left (Matt, 2026-10-29: "any art that we need, use that"). Plan: one run for the props/creatures/backdrops the
+World 7 and 8 builders and the code-drawn-looks audit list (img2img from the world kits, as the W6-10 prop run); Pokey and story characters
+stay Gemini (Pokey drifts off model on HF). Stop new jobs at $1 left.
+
+Art pickup MERGED (0cf6bae): HF creature defeat/attack clips and the 10-28 Gemini sheets cut and packed, not drawn yet (manifest only);
+owl defeat dropped (redo on HF); crab, piranha, sentry, beetle were never generated (HF list).
+
+Left for later: 8-4 (Matt: specials should not just go up high; ask him for 8-4's idea), the bosses 6-10, 7-10 and 8-10 (Matt: all together later),
+the rope traverse (waits on Matt's Gemini hand-over-hand sheet).
 
 ## STANDSTILL, earlier (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
 
@@ -28,6 +58,9 @@ Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
   tomorrow's art pickup below; list the major code-drawn looks that hurt Pokey for painted sheets (polish rule).
 
 ## Live (main)
+
+- PR #46 (2026-10-29 08:53 UTC, Matt merged): World 6 on gen2 (6-1..6-7, 6-9), the animal clearance fix, painted dirty/fast water W6-10,
+  QA fixes, W3 r2, W4 r3-r7, 5-7/5-9 on gen2. Deploy run 40845383242 and APK run 40845383232 both succeeded.
 
 - PR #39 (2026-10-28): Worlds 1-2 rebuilt, iPhone sound fix, Worlds 1-4 groundwork.
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in

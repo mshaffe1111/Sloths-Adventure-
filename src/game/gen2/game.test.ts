@@ -156,7 +156,7 @@ test("a World 6 gen2 stage loads World 6's kit, the kit pieces for its room, and
     assert.equal(sheets.includes('kit-pieces'), (W6_ROOM_STAGES as readonly string[]).includes(id), `${id}: the kit pieces exactly when it has a room`);
     // (the water signs and the dirty, fast water have sheets of their own: stageSheets.ts water-signs, bad-water)
     assert.equal(sheets.includes('water-signs'), gen2Water(id), `${id}: the water signs exactly when it has water`);
-    assert.equal(sheets.includes('bad-water'), gen2Water(id), `${id}: the dirty water exactly when it has water`);
+    assert.ok(sheets.includes('bad-water'), `${id}: the dirty, fast water (its creeks and its tide)`);
     assert.deepEqual(stageSheets(lv(id), { ...on, hand: false }), sheets, `${id}: whatever the hand-built switch`);
   }
 });

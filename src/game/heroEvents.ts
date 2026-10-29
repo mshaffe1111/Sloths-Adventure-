@@ -16,7 +16,14 @@ export interface HeroEventState {
   hp: number;
   grounded: boolean;
   vy: number;
+  /** on a shimmy rope: whether he is creeping (vx) and how far he has gone (walkCycle, which the rope advances: heroRope.ts) */
+  hanging?: boolean;
+  vx?: number;
+  walkCycle?: number;
 }
+
+/** the engine's walkCycle grows by this much per px he creeps along a rope (engine.ts updateRope) */
+const ROPE_WALK_PER_PX = 0.08;
 
 export class HeroEvents {
   private lastHp = -1;
@@ -28,6 +35,11 @@ export class HeroEvents {
   hardLandUntil = 0;
   /** the fastest downward speed of the current fall (the engine zeroes vy on touchdown, so it has to be remembered) */
   private fallSpeed = 0;
+  /** creeping along a rope: whether he was last frame, and the walkCycle when this creep began (so each creep starts its cycle afresh) */
+  private ropeMoving = false;
+  private ropeFrom = 0;
+  /** how far (world units) he has crept along the rope since this creep began; 0 while he hangs still */
+  ropeTravel = 0;
 
   reset() {
     this.lastHp = -1;
@@ -36,6 +48,8 @@ export class HeroEvents {
     this.landUntil = 0;
     this.hardLandUntil = 0;
     this.fallSpeed = 0;
+    this.ropeMoving = false;
+    this.ropeTravel = 0;
   }
 
   track(p: HeroEventState, time: number) {
@@ -53,6 +67,10 @@ export class HeroEvents {
     }
     if (p.grounded) this.fallSpeed = 0;
     this.wasGrounded = p.grounded;
+    const creeping = !!p.hanging && Math.abs(p.vx ?? 0) > 10;
+    if (creeping && !this.ropeMoving) this.ropeFrom = p.walkCycle ?? 0;
+    this.ropeMoving = creeping;
+    this.ropeTravel = creeping ? Math.max(0, ((p.walkCycle ?? 0) - this.ropeFrom) / ROPE_WALK_PER_PX) : 0;
     // belt and braces: a timer can never be further ahead than it was ever set to
     if (this.hurtUntil - time > HURT_TIME + 0.01) this.hurtUntil = time;
     if (this.landUntil - time > LAND_TIME_HARD + 0.01) this.landUntil = time;
