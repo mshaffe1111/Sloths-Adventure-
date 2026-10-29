@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage, type CheckGraph } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
@@ -668,7 +668,8 @@ test('a liana swings by itself and its perch is sized from the release window (E
     }
     // (the same roll, the same liana on Easy and Normal: its swing is the stage's, only the perch moves)
     const nb = planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, 'normal');
-    assert.deepEqual(layLocal(swingSec, b, rngFor(7)).pieces[1].hang, layLocal(swingSec, nb, rngFor(7)).pieces[1].hang);
+    const hung = (L: ReturnType<typeof layLocal>) => ({ x: L.pieces[1].x, y: L.pieces[1].y, h: L.pieces[1].h, swing: L.pieces[1].hang!.swing });
+    assert.deepEqual(hung(layLocal(swingSec, b, rngFor(7))), hung(layLocal(swingSec, nb, rngFor(7))));
   }
   // built, with nothing under the gaps (a void world on Normal: the swing is the only way over) and on Easy (soft floors)
   let swings = 0;
@@ -796,4 +797,44 @@ test("a soft pit under a liana climbs back to the swing's ledge, never forward t
     }
   }
   assert.ok(pits > 0);
+});
+
+test("a liana costs what a self-swinging swing takes (wait for the window, ride it), so a liana-heavy stage holds the inspector's 2:00", () => {
+  const swingy: SectionTemplate = {
+    ...swingSec, id: 'toy-swingy', phases: ['ki', 'sho', 'ten', 'ketsu'], weight: 30, sockets: [],
+    pieces: [swingSec.pieces[0], swingSec.pieces[1], { key: 'far', shape: 'bank', w: [300, 400], place: { kind: 'land', after: 'rope', water: true } }],
+  };
+  const k: WorldKit = { ...kit, manifest: { ...manifest, moves: [...manifest.moves, 'swing'], sections: [...manifest.sections, swingy] } };
+  for (let seed = 1; seed <= 4; seed++) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg('6-1', 'sprint'), kit: k, seed, difficulty: d });
+      const what = `seed ${seed} ${d}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      const lianas = (st.proto as { gen2?: { lianas?: Array<{ amp: number; period: number; window: number; x0: number; x1: number }> } }).gen2!.lianas!;
+      assert.ok(lianas.length >= 10, `${what}: ${lianas.length} lianas`);
+      for (const l of lianas) assert.ok(l.window >= LIANA.window[d] && l.x1 > l.x0 && lianaSeconds(l, l.window) < l.period, what);
+      // the model tracks the inspector's quick route (within QUICK's ratio), and the loop holds that route to 2:00
+      const q = pickRoute('sprint', st).quick.time;
+      assert.ok(q >= QUICK.seconds, `${what}: the inspector's quick player ${q.toFixed(0)} s`);
+      assert.ok(q / st.gen2.modelled.fast >= QUICK.ratio && q / st.gen2.modelled.fast <= 1.15, `${what}: quick ${q.toFixed(0)} s against the model's ${st.gen2.modelled.fast} s`);
+    }
+  }
+});
+
+test("a perch past a liana too narrow or too high for the release window is widened, then levelled, rather than refused", () => {
+  const b = planBudget(cfg('6-1', 'sprint'), { ...manifest, moves: [...manifest.moves, 'swing'] }, 'easy');
+  for (const [dy, w] of [[-150, 60], [-100, 80], [-400, 300]] as const) {
+    const sec: SectionTemplate = {
+      ...swingSec, mirrorable: false, sockets: [],
+      pieces: [swingSec.pieces[0], swingSec.pieces[1], { key: 'far', shape: 'branch', w, place: { kind: 'land', after: 'rope', dy, water: true } }],
+    };
+    for (let i = 1; i <= 3; i++) {
+      const L = layLocal(sec, b, rngFor(i));
+      const [near, rope, far] = L.pieces;
+      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, rope.hang!.swing!, near.y, { x: far.x, y: far.y, w: far.w });
+      assert.ok(win >= LIANA.window.easy, `dy ${dy} w ${w} roll ${i}: a ${(win * 1000).toFixed(0)} ms window`);
+      assert.ok(far.w > w + b.landingPad || far.y - near.y > dy, `dy ${dy} w ${w} roll ${i}: widened or levelled`);
+      assert.ok(far.y - near.y >= dy && far.y - near.y <= 0);
+    }
+  }
 });

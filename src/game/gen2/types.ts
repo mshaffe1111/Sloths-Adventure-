@@ -420,7 +420,7 @@ export interface PlacedSection {
   /** platforms the stitcher laid before it (a pit's floor and walls, a helper stone) */
   seam: Platform[];
   /** its hanging pieces (lianas and climbing vines), by key; a liana carries its own swing */
-  vines: Array<{ key: string; vine: Vine; swing?: LianaSwing }>;
+  vines: Array<{ key: string; vine: Vine; swing?: LianaSwing; window?: number; gap?: [number, number] }>;
   /** the sockets resolved to world points (filled in pass 4) */
   sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform }>;
   room?: RoomSpec;

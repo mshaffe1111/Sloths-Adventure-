@@ -282,6 +282,12 @@ and a section's entry and exit are always ledges):
   swing is the way over, not a choice. **A soft pit under a liana climbs back** to the swing's ledge (`backPit`: steps of the
   narrowest tread against the near wall), never forward: the perch's face stands more than a double jump (plus 40 px) over its
   floor, and no step of it is within a jump of the perch. (Easy's falls stay soft: a miss costs a climb back and another go.)
+  A perch too narrow or too high for the window is widened (up to 400 px), then levelled toward the swing's ledge (half its rise,
+  then level), until the window fits; only a section where none does is refused, by name.
+- **Time**: a self-swinging liana costs `lianaSeconds` = (period - window) / 2 (the wait for the swing to come round) + period / 2
+  (the ride). `gen2Model` is stageTime's `modelStage` with each liana (`proto.gen2.lianas` carries `window`, `x0`, `x1` too) costing
+  that in place of walking its gap plus `TIME.swingExtra` (2.5 s, a pumped swing's cost: it ran a 17-liana 6-1 roll at 0.68 of the
+  inspector's quick route). The length loop and `Gen2Meta.modelled` read `gen2Model`; stageTime is unchanged for Worlds 1-5.
 - **Chains**: levelCheck follows ledge -> liana -> ledge, never liana -> liana, so a chain has a perch between every two swings
   (liana, land, liana, land). levelCheck was not changed.
 - `{ shape: 'vine', place: { kind: 'climb', on, at, h } }`: a climbing vine standing on `on`, `at` along it, `h` px tall (the

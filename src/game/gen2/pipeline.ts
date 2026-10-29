@@ -21,7 +21,7 @@ import { skillGuaranteedAt } from '../skills.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
-import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, walkSpeed } from '../stageTime.ts';
+import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
 import { tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
@@ -198,6 +198,28 @@ export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vin
 export const QUICK = { seconds: 120, ratio: 0.84 } as const;
 
 /**
+ * The seconds a self-swinging liana costs (Matt, 2026-10-28): on average he waits half of what is not its release window for the
+ * swing to come round, then rides half a swing across: (period - window) / 2 + period / 2. stageTime's model gives every liana a flat
+ * TIME.swingExtra (2.5 s) over walking its gap, the cost of a pumped swing, which ran a liana-heavy stage a minute over what the
+ * inspector's quick route takes (6-1: 0.68 of the model with 17 lianas).
+ */
+export const lianaSeconds = (swing: LianaSwing, window: number): number => (swing.period - window) / 2 + swing.period / 2;
+
+/**
+ * The time model on a gen2 stage: stageTime's modelStage, with each of its lianas (proto.gen2.lianas: swing, release window, gap)
+ * costing lianaSeconds in place of walking its gap plus TIME.swingExtra. What the length loop and Gen2Meta.modelled read.
+ */
+export function gen2Model(st: GeneratedStage & { proto?: ProtoExtras }, P: ModelParams): number {
+  let t = modelStage(st, P).total;
+  const lianas = ((st.proto as { gen2?: { lianas?: Array<LianaSwing & { window?: number; x0?: number; x1?: number }> } } | undefined)?.gen2?.lianas ?? []);
+  for (const l of lianas) {
+    if (l.window === undefined || l.x0 === undefined || l.x1 === undefined) continue;
+    t += lianaSeconds(l, l.window) - (l.x1 - l.x0) / walkSpeed(P) - TIME.swingExtra;
+  }
+  return t;
+}
+
+/**
  * Each world's difficulty band (§1b), in D units: Gemini's D_base from 10 (World 1) to 65 (World 10), the band from 1.5 under it to
  * 7.5 over it. Neighbours overlap by about 3 (less than a world); the next world's middle (D_base + 9.1) stays above this world's top.
  */
@@ -325,7 +347,7 @@ interface LocalPiece {
   /** an obstacle to hop (an `on` block): a beat */
   hop: boolean;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
-  hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string };
+  hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
 }
 interface LocalGap {
   x0: number;
@@ -478,22 +500,42 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const lv = ref(pl.after);
       if (lv.hang?.kind !== 'liana') throw new Error(`gen2 section ${tpl.id}: ${pc.key} lands from ${pl.after}, which is not a liana`);
       const a = ref(lv.hang.from!);
-      const dy = pl.dy === undefined ? 0 : roll(rng, pl.dy);
+      const dy0 = pl.dy === undefined ? 0 : roll(rng, pl.dy);
       const share = shareFor(pl.share);
+      const need = LIANA.window[budget.difficulty];
       // (past every jump: from the swing's ledge, and from every step of the soft pit under it, whose climb goes back to that ledge)
-      const perchY = a.y + dy;
-      let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage) + 20;
-      if (budget.pit === 'soft' && !pl.water) {
-        const pit = backPit(a.x + a.w, a.x + a.w + 4000, a.y, perchY, lo.pitDepth ?? 0, riseLimit(false, budget.riseShare) * PIT.hop);
-        for (const st of [{ x: a.x + a.w, top: pit.floor, w: 0 }, ...pit.steps]) {
-          const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage);
-          if (g >= 0) min = Math.max(min, st.x + st.w + g + 20);
+      const minFor = (dy: number) => {
+        const perchY = a.y + dy;
+        let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage) + 20;
+        if (budget.pit === 'soft' && !pl.water) {
+          const pit = backPit(a.x + a.w, a.x + a.w + 4000, a.y, perchY, lo.pitDepth ?? 0, riseLimit(false, budget.riseShare) * PIT.hop);
+          for (const st of [{ x: a.x + a.w, top: pit.floor, w: 0 }, ...pit.steps]) {
+            const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage);
+            if (g >= 0) min = Math.max(min, st.x + st.w + g + 20);
+          }
         }
+        return min;
+      };
+      // (a perch too narrow or too high for the window is widened, then levelled toward the swing's ledge, until the window fits;
+      // only when none does is the section named)
+      let band: [number, number] | null = null;
+      let dy = dy0;
+      for (const d of [...new Set([dy0, dy0 / 2, 0])]) {
+        for (const extra of [0, 100, 200, 400]) {
+          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra, need, minFor(d));
+          if (band) {
+            dy = d;
+            w += extra;
+            break;
+          }
+        }
+        if (band) break;
       }
-      const band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, dy, w, LIANA.window[budget.difficulty], min);
-      if (!band) throw new Error(`gen2 section ${tpl.id}: no perch past the liana ${pl.after} both lies past every jump (${R(min - a.x - a.w)} px out) and has a release window of ${LIANA.window[budget.difficulty]} s`);
+      if (!band) throw new Error(`gen2 section ${tpl.id}: no perch past the liana ${pl.after}, however wide or level, both lies past every jump (${R(minFor(0) - a.x - a.w)} px out) and leaves a release window of ${need} s`);
       x = band[0] + share * (band[1] - band[0]);
       y = a.y + dy;
+      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, a.y, { x, y, w });
+      lv.hang.gap = [a.x + a.w, x];
       gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
@@ -538,6 +580,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
   for (const p of out) {
     p.x -= ox;
     p.y -= oy;
+    if (p.hang?.gap) p.hang.gap = [p.hang.gap[0] - ox, p.hang.gap[1] - ox];
   }
   for (const g of gaps) {
     g.x0 -= ox;
@@ -810,7 +853,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
             vineType: liana ? 'swing_liana' : 'tree_climb', ...(liana ? { isSwingingVine: true } : {}),
           };
           vines.push(v);
-          placed.vines.push({ key: lp.key, vine: v, ...(lp.hang.swing ? { swing: lp.hang.swing } : {}) });
+          const h = lp.hang;
+          placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });
           continue;
         }
         const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style);
@@ -1424,7 +1468,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     nextEnemyId: () => eid++,
   };
   // (each liana's own swing, for the engine's self-swinging vines: proto.gen2.lianas, by vine id)
-  const lianas = laid.sections.flatMap((s) => s.vines.flatMap((v) => (v.swing ? [{ vine: v.vine.id, amp: v.swing.amp, period: v.swing.period }] : [])));
+  const lianas = laid.sections.flatMap((s) => s.vines.flatMap((v) => (v.swing ? [{ vine: v.vine.id, amp: v.swing.amp, period: v.swing.period, ...(v.window !== undefined ? { window: Math.round(v.window * 1000) / 1000 } : {}), ...(v.gap ? { x0: v.gap[0], x1: v.gap[1] } : {}) }] : [])));
   if (lianas.length) sink.extras.lianas = lianas;
   const filled = fillSockets(laid, budget, req.kit, seed, sink, normalFoes);
   const looks = dress(laid, budget, req.kit, seed, sink);
@@ -1577,8 +1621,8 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
     const b = assemble(req, budget, graph, n.gen2.seed, { plan: n.gen2.plan }, keptFoes(n));
     const v = checkAndRepair(b, budget, repairs, new Set());
     const st = b.stage;
-    const fast = modelStage(st, MODEL_FAST).total;
-    st.gen2.modelled = { typical: Math.round(modelStage(st, MODEL_TYPICAL).total * 10) / 10, fast: Math.round(fast * 10) / 10 };
+    const fast = gen2Model(st, MODEL_FAST);
+    st.gen2.modelled = { typical: Math.round(gen2Model(st, MODEL_TYPICAL) * 10) / 10, fast: Math.round(fast * 10) / 10 };
     st.gen2.rerolls = n.gen2.rerolls;
     st.gen2.repairs = repairs;
     if (v.ok && fast >= budget.seconds.fastFloor) return st;
@@ -1648,9 +1692,9 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
       }
       // the clock (§1: at least 2 minutes for a quick player, every roll): the time model, typical and fast, and Easy's quick player
       // on the same plan (Easy has fewer animals, so it runs shorter)
-      const typical = modelStage(st, MODEL_TYPICAL).total;
-      const fast = modelStage(st, MODEL_FAST).total;
-      const easyFast = modelStage(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)).stage, MODEL_FAST).total;
+      const typical = gen2Model(st, MODEL_TYPICAL);
+      const fast = gen2Model(st, MODEL_FAST);
+      const easyFast = gen2Model(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)).stage, MODEL_FAST);
       st.gen2.modelled = { typical: Math.round(typical * 10) / 10, fast: Math.round(fast * 10) / 10 };
       const short = typical < budget.seconds.target || fast < budget.seconds.fastFloor || easyFast < easyBudget.seconds.fastFloor;
       const over = typical > budget.seconds.max;
