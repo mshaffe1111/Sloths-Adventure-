@@ -19,6 +19,7 @@ import { FALLS, fallPush, fallWall, inColumn, inFall, plugged, poolLogY, stepFlo
 import { chimeLean, dotAtKnot, DOT_HELP, KNOT_TEACH, knotMark, knotSpotX, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
 import { zoneState, type Zone } from './zones.ts';
 import { nestWind, type CliffNest } from './w4Nests.ts';
+import { TIMED } from './physics.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
 
 /** a fruit hanging in a tree: punch near it and it drops to `ground`, where a capuchin can smell it; it grows back after a while */
@@ -157,6 +158,8 @@ export class W4Play {
   private flow: number[];
   private pool: number[];
   private knots: Array<KnotState & { freedAt?: number }>;
+  /** a knotted vine's own swing (physics.ts swingSetup), kept while it hangs tied up and still */
+  private vineSwing = new Map<number, number>();
   /** the host's clock at the last step (s) */
   private clock = 0;
   private vineFull = new Map<number, number>();
@@ -211,6 +214,9 @@ export class W4Play {
       this.vineFull.set(v.id, v.bottomY);
       v.bottomY = tiedBottom(v.topY, v.bottomY, k.y);
       this.vineTied.set(v.id, v.bottomY);
+      // (tied up it hangs still: the self-swing, physics.ts, starts as Dot frees it, growing to the swing the stage gave it)
+      this.vineSwing.set(v.id, v.swingAmp ?? TIMED.amp);
+      v.swingAmp = 0;
     }
   }
 
@@ -260,7 +266,13 @@ export class W4Play {
         this.rockWarned = true;
         if (w4.rockTip) h.tip(`tip:${w4.rockTip}`, w4.rockTip, 3.6);
       }
-      if (!r.air && !this.rockWarned) return;
+      // (round 4's rocks down the climbs, 2026-10-28: an air rock in a stage with a rock tip is taught the same way, its grit warning near
+      // him says the tip, and it does not hurt before that: Dot's queue once held the stage's line back past the first climb rock)
+      if (r.air && w4.rockTip && s.phase === 'warn' && Math.abs(r.x - p.x) < 520 && p.y > r.top - 160 && p.y < r.land + 40) {
+        this.rockWarned = true;
+        h.tip(`tip:${w4.rockTip}`, w4.rockTip, 3.6);
+      }
+      if ((!r.air || w4.rockTip) && !this.rockWarned) return;
       if (!this.rockHit.has(cycle) && p.invincibleTimer <= 0 && rockHits(r, h.t, p.x, p.y, 64)) {
         this.rockHit.add(cycle);
         // in the air (4-7's glides) a rock costs a heart, never the ledge: he keeps the way and the speed he was gliding. It knocked him
@@ -400,6 +412,8 @@ export class W4Play {
         if (v && full !== undefined && tied !== undefined) {
           const u = Math.min(1, (h.t - now.freedAt) / KNOT_DROP);
           v.bottomY = tied + (full - tied) * u * u;
+          // its swing grows as it drops, from hanging still to the vine's own (the default) once it is down
+          v.swingAmp = (this.vineSwing.get(v.id) ?? TIMED.amp) * u * u;
         }
       }
     });

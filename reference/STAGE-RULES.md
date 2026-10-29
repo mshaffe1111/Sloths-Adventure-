@@ -58,10 +58,11 @@ Last updated 2026-10-28.
 | Tension | Aim: a sawtooth across the stage (Part 1 §4): build, a breather in the middle, the climax near the end, an easy walk out. Not flat, not front-loaded. | inspector `pacing.ts` (tension in 9 parts) |
 | Difficulty bands | §1b, measured: a 0-100 score per stage and setting (first-timer lives lost a minute, the noisy bot's hardest jumps, peak stress, the narrowest input window, dead time, length); each world's spread is its band. | inspector `bands.ts` (the band chart) |
 | Sameness | No two stages of a world alike: cosine of weighted action 3-grams under ~0.78, and no matching 20-second stretch. | inspector `similar` |
-| Variety across rolls | Two rolls of the same stage must really differ: diversity (mean 1 - cosine between rolls) about 0.35 or more. Today most hand stages are 0.87-1.00 alike between rolls: that is the next big job. Set pieces with no variety target (the lead, 2026-10-28): 4-3 Waterfall Steps and 4-7 The Long Drop; every other rule still holds for them. | `tools/inspect/era.ts` over 200 rolls |
+| Variety across rolls | Two rolls of the same stage must really differ: diversity (mean 1 - cosine between rolls) about 0.35 or more. Today most hand stages are 0.87-1.00 alike between rolls: that is the next big job. Set pieces with no variety target (the lead, 2026-10-28): 4-3 Waterfall Steps and 4-7 The Long Drop; every other rule still holds for them. Accepted below the target (the lead, 2026-10-29): 4-6 Mist Kapok at about 0.20 (its mist, nest and pinwheel lessons are a fixed spine, and most wide ledges sit in the mist or by a flag or a nest, so a flavour has little room of its own) and 4-9 The Aerie at about 0.27 (World 4's finale reprises every idea, each taught part on every roll, so about half the stage is shared); the taught spine stays. | `tools/inspect/era.ts` over 200 rolls |
 | Opening seconds | Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches. | first-timer bot |
 | Plain walk | No step, lip or dip that stops a plain walk dead; every dip has a one-jump way out; a jump into a face carries over its lip. | first-timer bot, kid bot |
 | Jump forgiveness (30 fps) | Coyote time ~133 ms Normal / 167 ms Easy; jump buffer ~133 / 200 ms; ledge-landing forgiveness; head-bonk and shin-mantle corner correction. | engine; first-timer bot |
+| Falls in climbs | A miss at a hop gap of a climb falls at most about one trunk section (450 px at the most): a catch branch under the gap, a double jump back up to its lower plank, or the gap closed into a step (Matt: catch ledges under high planks in tall climbs). A catch is never a shortcut: the level check's way is no shorter with it. | `w4Catch.test.ts` (4-1, 4-6, 4-3, 4-9, 50 rolls) |
 | Easy jumps | No Easy jump needs a full hold: every Easy stage is finishable with a ~70% hold (Gemini G8). Easy softens the place, it doesn't remove the jump: a wider landing, a step halfway up, or a catch ledge (`easyMode.ts easyHoldSoften`). | validator `easyHoldCheck`; gate `easyMode.test.ts`, rolls 1-3 |
 | Hotspots | No jump the kid bot (Easy, noisy thumb ~N(+90 ms, 65 ms) reaction) makes under 85% of the time, or the adult bot (Normal) under 70%. | inspector bots |
 | Goals | Enough reachable pickups and enemies that Normal's goal is fair, not a perfect run. | inspector `goal` |
@@ -219,6 +220,19 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 - **Skills come from the save, not the hero** (2026-10-28): Meeca ran on Pokey's skill set, so anyone who had cleared 4-1 could open
   Pokey's leaf as her and glide over her gullies, and the validator (World 5: glide guaranteed) agreed. She has no leaf now
   (`meecaPlay.ts` filter) and her check walks her as at 4-6 (`meecaCheckStage`). Any stage played as someone else: check what it inherits.
+- **"The vines swing wildly"** (iPhone tester, 2026-10-28). Not the frame rate: through the engine's 30 fps gate at 120 Hz, 60 Hz,
+  uneven 8-50 ms frames and 100-250 ms stalls, with a thumb pumping, flicking or climbing, the old swing held 0.83-0.84 rad every time.
+  Two real causes. (1) While he swung, the engine took the first vine in its list within reach as his own, so on a long grip near the
+  next liana of a chain (1-6's gorge pair) it threw him between the two vines' pivots: on the old engine every chain of 1-6 gave 80-170
+  jumps of 60-1000 px in 20 s of hanging on. His own vine now stays his. (2) The swing itself: ±47° at 1.9 s, pushed back up to full
+  size after every catch. Now every liana swings on its own (Matt: Donkey Kong Country), from the vines' clock (`physics.ts`
+  `vineAngle`), never from forces: up and down climb, left and right only turn him, letting go is the only choice; slower (2.85 s, Easy
+  3.3 s) and calmer (at most 0.45 rad). `swingSetup` gives each vine its swing when a stage starts: no bigger than keeps it clear of the
+  vines beside it with Pokey's body and a margin (`swingClearance`), and its own phase (the next liana of a chain `chainPhase` ahead, the
+  widest leap window, never in step). Rules for anything with lianas: a leap from one vine to the next carries the swing's clock through
+  the flight (`canGrabSwing(x, y, v, t)`); a jump from a ledge can wait for the vine; the sweet spot and the let-go are shares of each
+  vine's own swing; measure release windows with `pressWindow` (the engine's early/late forgiveness included). Proof:
+  `vineSelfSwing.test.ts` (no overlap; every liana-to-liana and liana-to-ledge jump at least 167 ms a swing on Normal, 300 ms on Easy).
 
 ## 7. Where things are
 

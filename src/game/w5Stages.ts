@@ -121,13 +121,17 @@ const COCOON_SECONDS = 1.4;
 const EARLY = 900;
 /** the rest branch: how high (one hop from its mossy stump) */
 const REST_UP = 92;
-/** the high web: the silk line's top and bottom, how far past it the branch starts, and how high the branch is (above any jump) */
-const WEB_TOP = 480;
-const WEB_LOW = 80;
+/**
+ * the high web: the silk line's top and bottom, how far past it the branch starts, and how high the branch is (above any jump). The
+ * calmer swing of 2026-10-28 lets go 70 px lower at the front of its swing: the line hangs 20 px higher and the branch 15 px lower
+ * (still 20 px above a double jump) so a leap from it lands there again.
+ */
+const WEB_TOP = 500;
+const WEB_LOW = 100;
 const WEB_OFF = 190;
 /** the silk line hangs this far short of the pit's lip */
 const WEB_LIP = 20;
-const WEB_UP = 220;
+const WEB_UP = 205;
 
 /** what the tests read back about the stage (ids and x's) */
 export interface W5Info {

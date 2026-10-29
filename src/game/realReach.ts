@@ -21,7 +21,7 @@
  * target has a list of moves, best guesses first: the result is what the engine allowed with those moves, never more.
  */
 import { DT, RealPlay, type Pad } from './realPlay.ts';
-import { PHYS, reachGlide, reachJump, inSweetSpot, swingStep } from './physics.ts';
+import { PHYS, reachGlide, reachJump, inSweetSpot, swingStep, TIMED } from './physics.ts';
 import { HANG_DROP, ropeYAt } from './rope.ts';
 import type { Collectible, Platform, Vine } from './types.ts';
 import { ORCHID, orchidAt, type Orchid } from './w5Kit.ts';
@@ -115,7 +115,12 @@ interface MoveSpec {
   up?: boolean;
   /** go by way of this warm air (4-7): glide into it, ride it up, then drift to the aim */
   via?: number;
+  /** set off when the vines' swing is this far through a swing (a share of a period: a player waits for the liana he jumps for) */
+  clock?: number;
 }
+
+/** how many moments of the vines' swing a move toward a liana is tried at */
+const SWING_MOMENTS = 6;
 
 const MAX_FRAMES = 150;
 const MAX_FRAMES_VIA = 330;
@@ -331,6 +336,7 @@ export class RealReach {
     const sim = this.sim;
     this.trials++;
     this.placeAt(from, m);
+    if (m.clock !== undefined) sim.vineClock = m.clock * TIMED.period;
     const p = sim.p;
     const startVine = from.kind === 'v' || from.kind === 'l' ? from.id : -1;
     const startY = p.y;
@@ -561,8 +567,20 @@ export class RealReach {
     return this.boundPlain(a, t) || this.viaDrafts(a, t).length > 0;
   }
 
-  /** the moves to try from a place toward a target, best guesses first */
+  /**
+   * the moves to try from a place toward a target, best guesses first. Toward a liana from anywhere but another liana, each move is tried
+   * at several moments of the vines' swing (they swing on their own, physics.ts: a player waits for the vine to come); from a liana the
+   * swing's own clock carries over, and the moments to let go are the choice
+   */
   private moves(a: Anchor, t: Target): MoveSpec[] {
+    const raw = this.movesFrom(a, t);
+    if (t.kind !== 'l' || a.kind === 'l') return raw;
+    const out: MoveSpec[] = [];
+    for (const m of raw) for (let k = 0; k < SWING_MOMENTS; k++) out.push({ ...m, clock: k / SWING_MOMENTS });
+    return out;
+  }
+
+  private movesFrom(a: Anchor, t: Target): MoveSpec[] {
     const out: MoveSpec[] = [];
     const glides = this.hasGlide ? [true, false] : [false];
     const sim = this.sim;
@@ -653,7 +671,8 @@ export class RealReach {
       const dir: -1 | 1 = cx >= v.x ? 1 : -1;
       // the moments to let go, the sweet spot first (the swing is stepped on a copy to find them)
       const waits: Array<{ w: number; sweet: boolean }> = [];
-      for (let w = 0; w < 60; w += 2) {
+      // (over a whole swing of the vine)
+      for (let w = 0; w < Math.round(TIMED.period / DT); w += 2) {
         const s = { ...a.swing! };
         for (let i = 0; i < w + 8; i++) swingStep(s, v, DT, dir);
         waits.push({ w, sweet: inSweetSpot(s, dir) });
