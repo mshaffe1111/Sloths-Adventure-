@@ -10,14 +10,15 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import { checkLanes, validateStage } from './levelCheck.ts';
 import { measureStage } from './stageMetrics.ts';
 import { isGen2Stage } from './gen2/game.ts';
+import { gen2Model } from './gen2/pipeline.ts';
 import { fastFloor, FLOOR_FAST, FLOOR_TYPICAL, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from './stageTime.ts';
 
 const levels = generateAllLevels().filter((l) => l.objectiveType !== 'boss_lair');
 const horizontal = levels.filter((l) => l.objectiveType !== 'ascent');
 const ascents = levels.filter((l) => l.objectiveType === 'ascent');
 /**
- * the old generator's stages (its forks, corridors, flag spacing and platform styles): the new generator's (gen2/game.ts: 5-7, 5-9) are
- * built from sections instead, and held to STAGE-RULES by src/game/gen2's tests and the inspector
+ * the old generator's stages (its forks, corridors, flag spacing and platform styles): the new generator's (gen2/game.ts: 5-7, 5-9, World 6)
+ * are built from sections instead, and held to STAGE-RULES by src/game/gen2's tests and the inspector
  */
 const oldGen = horizontal.filter((l) => !isGen2Stage(l));
 
@@ -47,7 +48,8 @@ test('every ordinary stage takes the typical player at least 125 s and the quick
 
 test('stages grow from about two and a quarter minutes in World 1 to about four in World 10, and none runs past five', () => {
   const med = (w: number) => {
-    const xs = levels.filter((l) => l.worldIndex === w).map((l) => modelStage(stage(l, null), MODEL_TYPICAL).total).sort((a, b) => a - b);
+    // (each generator's own time model: a gen2 stage's lianas cost a self-swinging swing's time, gen2Model, as its length loop reads it)
+    const xs = levels.filter((l) => l.worldIndex === w).map((l) => (isGen2Stage(l) ? gen2Model(stage(l, null), MODEL_TYPICAL) : modelStage(stage(l, null), MODEL_TYPICAL).total)).sort((a, b) => a - b);
     return xs[xs.length >> 1];
   };
   const m1 = med(1);
@@ -162,7 +164,8 @@ test('skills are respected on the lanes: no swing before the swing is taught, no
 
 test('every stage shows nine kinds of piece at least, never the same kind twice in a row, and no kind over a quarter of the length', () => {
   const bad: string[] = [];
-  for (const l of horizontal) {
+  // (the old generator's platform styles: a gen2 stage's pieces are its sections', held by src/game/gen2's tests)
+  for (const l of oldGen) {
     for (const v of VARIANTS) {
       const m = measureStage(stage(l, v));
       if (m.distinctKinds < 9) bad.push(`${l.id}@${v}: ${m.distinctKinds} kinds`);
@@ -174,7 +177,7 @@ test('every stage shows nine kinds of piece at least, never the same kind twice 
 });
 
 test('fight stages are not flat yards: plain ground is under 45% of them, with relief, ledges and tiers', () => {
-  const rows = horizontal.filter((l) => l.objectiveType === 'purge' || l.objectiveType === 'gauntlet');
+  const rows = oldGen.filter((l) => l.objectiveType === 'purge' || l.objectiveType === 'gauntlet');
   let over = 0;
   for (const l of rows) for (const v of VARIANTS) if (measureStage(stage(l, v)).plainShare >= 0.45) over++;
   assert.ok(over <= Math.ceil(rows.length * VARIANTS.length * 0.1), `${over} fight stages are at least 45% plain ground`);
