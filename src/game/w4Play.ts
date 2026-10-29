@@ -845,47 +845,62 @@ function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
 const POUR_COL = 64;
 const POUR_SPEED = 380;
 
+/** the painted water fades in over this many px below a fall's top, so it spills from the lip with no hard edge */
+const POUR_FADE_IN = 60;
+
 /**
  * The painted water pouring down the box (x, top) to (x + width, bottom): the lip's own falling water (w4Art.ts drawW4Pour) in columns
- * side by side, each scrolling down at its own pace so the sheet never reads as a grid; `alphaAt(u)` how solid it is across it (0 left
- * edge .. 1 right edge). False until the atlas has loaded.
+ * side by side, each scrolling down at its own pace so the sheet never reads as a grid, fading in at the top; `alphaAt(u)` how solid
+ * it is across it (0 left edge .. 1 right edge). False until the atlas has loaded.
  */
 function drawPouring(ctx: CanvasRenderingContext2D, x: number, top: number, width: number, bottom: number, t: number, alphaAt: (u: number) => number): boolean {
   if (!w4ArtReady()) return false;
   const n = Math.max(1, Math.round(width / POUR_COL));
   const cw = width / n;
   const base = ctx.globalAlpha;
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(x, top, width, bottom - top);
-  ctx.clip();
-  for (let k = 0; k < n; k++) {
-    // (the white rims only at the fall's two edges: inside it the columns run into each other)
-    const strip = n === 1 ? 'full' : k === 0 || k === n - 1 ? 'edge' : 'core';
-    const right = n > 1 && k === n - 1;
-    const th = cw * pourAspect(strip);
-    const r1 = (k * 0.618034 + x * 0.0013) % 1;
-    const r2 = (k * 0.414214 + x * 0.0007) % 1;
-    const off = (t * POUR_SPEED * (0.85 + 0.3 * r1) + r2 * th) % th;
-    ctx.globalAlpha = base * alphaAt((k + 0.5) / n);
-    // (edge to edge, no overlap: the water is see-through, so an overlap would show as a darker line)
-    for (let y = top - th + off; y < bottom; y += th) {
-      // (a fall's right edge is its left one turned round, so both rims face out)
-      if (right) {
-        ctx.save();
-        ctx.translate(2 * (x + k * cw) + cw, 0);
-        ctx.scale(-1, 1);
-      }
-      const drawn = drawW4Pour(ctx, x + k * cw, y, cw, th, strip);
-      if (right) ctx.restore();
-      if (!drawn) {
-        ctx.restore();
-        return false;
+  /** the columns' tiles that fall in [y0, y1], at `fade` of their strength */
+  const band = (y0: number, y1: number, fade: number): boolean => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y0, width, y1 - y0);
+    ctx.clip();
+    for (let k = 0; k < n; k++) {
+      // (the white rims only at the fall's two edges: inside it the columns run into each other)
+      const strip = n === 1 ? 'full' : k === 0 || k === n - 1 ? 'edge' : 'core';
+      const right = n > 1 && k === n - 1;
+      const th = cw * pourAspect(strip);
+      const r1 = (k * 0.618034 + x * 0.0013) % 1;
+      const r2 = (k * 0.414214 + x * 0.0007) % 1;
+      const off = (t * POUR_SPEED * (0.85 + 0.3 * r1) + r2 * th) % th;
+      ctx.globalAlpha = base * fade * alphaAt((k + 0.5) / n);
+      // (edge to edge, no overlap: the water is see-through, so an overlap would show as a darker line)
+      const first = top - th + off + Math.max(0, Math.floor((y0 - (top - th + off)) / th)) * th;
+      for (let y = first; y < y1; y += th) {
+        // (a fall's right edge is its left one turned round, so both rims face out)
+        if (right) {
+          ctx.save();
+          ctx.translate(2 * (x + k * cw) + cw, 0);
+          ctx.scale(-1, 1);
+        }
+        const drawn = drawW4Pour(ctx, x + k * cw, y, cw, th, strip);
+        if (right) ctx.restore();
+        if (!drawn) {
+          ctx.restore();
+          return false;
+        }
       }
     }
+    ctx.restore();
+    return true;
+  };
+  const fadeTo = Math.min(bottom, top + POUR_FADE_IN);
+  const steps = 6;
+  for (let i = 0; i < steps; i++) {
+    const y0 = top + ((fadeTo - top) * i) / steps;
+    const y1 = top + ((fadeTo - top) * (i + 1)) / steps;
+    if (!band(y0, y1, (i + 0.5) / steps)) return false;
   }
-  ctx.restore();
-  return true;
+  return fadeTo >= bottom || band(fadeTo, bottom, 1);
 }
 
 function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
@@ -897,6 +912,7 @@ function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number
   ctx.globalAlpha = 0.3 + 0.4 * flow;
   if (drawPouring(ctx, x, w.top, width, w.bottom, t, () => 1)) {
     ctx.globalAlpha = 1;
+    drawSpill(ctx, x, width, w.top, flow, t);
     drawFoot(ctx, x, width, w.bottom, flow, t);
     ctx.restore();
     return;
@@ -942,6 +958,22 @@ function foam(): HTMLCanvasElement | null {
   g.fillRect(0, 0, 64, 64);
   foamPic = cv;
   return cv;
+}
+
+/** white water where a fall spills over its lip: a thin line of soft puffs along its top, smaller than the foot's */
+function drawSpill(ctx: CanvasRenderingContext2D, x: number, width: number, top: number, flow: number, t: number) {
+  const pic = foam();
+  if (!pic) return;
+  const n = Math.max(4, Math.round(width / 30));
+  ctx.save();
+  for (let k = 0; k < n; k++) {
+    const sd = (k * 0.381966) % 1;
+    const r = (8 + 6 * sd) * (0.5 + 0.5 * flow) * (1 + 0.15 * Math.sin(t * (6 + 2 * sd) + k * 2.1));
+    const cx = x + ((k + 0.5) / n) * width;
+    ctx.globalAlpha = 0.65 * Math.min(1, flow * 1.5);
+    ctx.drawImage(pic, cx - r * 1.6, top + 4 - r * 0.6, r * 3.2, r * 1.4);
+  }
+  ctx.restore();
 }
 
 /** foam churning where a fall lands: soft puffs along its foot, each swelling and settling on its own beat */
