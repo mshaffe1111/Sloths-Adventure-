@@ -21,6 +21,7 @@
  *   - vine strokes: Pokey on a trunk or a liana, a touch that rose 34 px or more. One with a quick flick anywhere in it (28 to 60 degrees
  *     over at 0.6 px/ms or faster, or 22 to 60 at 1 px/ms or faster: the polish report's CT-3 envelope) should let go; one without, whose
  *     best rise is within 15 degrees of vertical (straight) or 15 to 28 slower than 1 px/ms (slanted), should only climb. A second finger's straight stroke is counted apart (CT-5 waits for Matt's call).
+ *   - second jumps: a touch that fired two jumps; how many of the second came off a rise slower than 0.3 px/ms (a thumb drifting, CT-24).
  *   - rests: a second finger held still half a second or more (a resting thumb): how many threw a mega, and how many of the flicks up
  *     that the same finger then made did not jump.
  */
@@ -53,6 +54,8 @@ interface Touch {
   cancelled?: boolean;
   /** decisions the replayed rules made for this finger */
   did: string[];
+  /** when each of its jumps fired */
+  jt: number[];
   /** Pokey's state when it went down, and at its best flick */
   st0: string;
   held: 'portrait' | 'landscape';
@@ -102,6 +105,7 @@ for (const parts of sessions.values()) {
       jumpsSinceGround++;
       if (onVineNow()) current?.did.push('jumpV');
       else current?.did.push('jump');
+      current?.jt.push(clockT);
       vineHold = '';
     },
     jumpRelease: () => {},
@@ -114,6 +118,7 @@ for (const parts of sessions.values()) {
   // the state is the recording's, and the old live rules sometimes let go of a vine where the replayed ones would not: while a finger that
   // went down on the vine is still down and the replayed rules have not let go, he is still on it ('c' or 's'; '' when not held)
   let vineHold = '';
+  let clockT = 0;
   const onVineNow = () => state === 'c' || state === 's' || vineHold !== '';
   const g = new TouchGestures(sink, () => dev.w, {
     assist: () => true,
@@ -129,6 +134,7 @@ for (const parts of sessions.values()) {
   let nextTick = 0;
   for (const { l, dev: d } of lines) {
     const t = l[1] as number;
+    clockT = t;
     // the 30 ms clock that drives holds and undecided fingers (TouchController.tsx)
     while (g.active && nextTick <= t) {
       // (a tick's decision belongs to the undecided or second finger: the steering one only acts on its own moves)
@@ -149,7 +155,7 @@ for (const parts of sessions.values()) {
     if (l[0] === 'd') {
       dev = devOf(d);
       if (state === 'c' || state === 's') vineHold = state;
-      const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0 };
+      const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], jt: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0 };
       live.set(id, tch);
       touches.push(tch);
       current = tch;
@@ -187,7 +193,7 @@ const groups = new Map<string, Record<string, Tally>>();
 const dump = process.env.DUMP;
 let dumped = 0;
 const bump = (key: string, cat: string, miss: boolean, punch: boolean, tc?: Touch) => {
-  if (tc && key === 'all' && cat === dump && miss && dumped++ < Number(process.env.DUMP_N ?? 12)) {
+  if (tc && key === 'all' && cat === dump && (process.env.DUMP_OK ? !miss : miss) && dumped++ < Number(process.env.DUMP_N ?? 12)) {
     const p0 = tc.pts[0];
     const path = tc.pts.map((p) => `${Math.round(p.t - p0.t)}:${Math.round(p.x - p0.x)},${Math.round(p.y - p0.y)}`).join(' ');
     console.log(`[${cat}] ${tc.who} ${tc.held} st=${tc.st0} second=${tc.second} did=${tc.did.join(',')} | ${path}`);
@@ -254,6 +260,16 @@ for (const tc of touches) {
       for (const k of keys) bump(k, cat, miss, false, tc);
     }
   }
+  // a second jump from the same touch: was the rise that fired it quick (a wiggle or a flick on purpose) or slow (a thumb drifting)?
+  if (tc.jt.length >= 2) {
+    const t2 = tc.jt[1];
+    const pts = tc.pts.filter((q) => q.t <= t2 && q.t >= t2 - 150);
+    let lo = pts[0];
+    for (const q of pts) if (q.y >= (lo?.y ?? -Infinity)) lo = q;
+    const end = tc.pts.filter((q) => q.t <= t2).pop();
+    const v = lo && end ? (lo.y - end.y) / Math.max(1, end.t - lo.t) : 0;
+    for (const k of keys) bump(k, 'dbl', v < 0.3, false, tc);
+  }
   // a resting second finger (still for 460 ms or more before it moved)
   if (tc.second) {
     const p0 = tc.pts[0];
@@ -275,14 +291,14 @@ for (const tc of touches) {
 const pct = (t?: Tally) => (t && t.n ? `${((100 * t.miss) / t.n).toFixed(1)}% (${t.miss}/${t.n})` : '-');
 const order = ['all', ...PLAYERS, 'others', 'portrait', 'landscape'];
 console.log(`Replay of the control tests sheet, recordings from ${since}: ${sessions.size} sessions, ${touches.length} touches\n`);
-console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | never rose 12 px, but jumped | vine straight climb (let go) | vine slanted climb (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) |');
-console.log('|---|---|---|---|---|---|---|---|---|---|---|');
+console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | never rose 12 px, but jumped | vine straight climb (let go) | vine slanted climb (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) | second jumps from one touch (on a slow rise) |');
+console.log('|---|---|---|---|---|---|---|---|---|---|---|---|');
 for (const k of order) {
   const g = groups.get(k);
   if (!g) continue;
   const punch = (g.clear?.punch ?? 0) + (g.short?.punch ?? 0);
   const fl = (g.clear?.n ?? 0) + (g.short?.n ?? 0);
-  console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.falseJump)} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} |`);
+  console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.falseJump)} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} | ${pct(g.dbl)} |`);
 }
 console.log('\nBy player and how the phone was held: every clear gesture misread (ground flicks clear and short, the three vine kinds, rests)\n');
 console.log('| who | portrait | landscape | both |');

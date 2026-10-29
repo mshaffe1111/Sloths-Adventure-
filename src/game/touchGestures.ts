@@ -106,7 +106,14 @@ export const TUNING = {
   /** … or on a wiggle: down this far, then up this far, no faster than this (px per ms) */
   pumpDown: 12,
   pumpUp: 20,
-  pumpSpeed: 0.1,
+  /**
+   * (0.1 let a thumb drifting down and back up as it rested be a second jump: 0.25 now, polish report CT-24. The report also asked for a
+   * 16 px dip; replaying the testers' touches, that lost seven deliberate double jumps, big second strokes after a 12-13 px dip, and
+   * stopped only four more slow ones than the speed alone, so the dip stays 12)
+   */
+  pumpSpeed: 0.25,
+  /** the other thumb's sink-and-flick again (airAgain) must rise at least this fast (px per ms) over its last moments (CT-24) */
+  againSpeed: 0.3,
   leanSlant: 0.364,
   /**
    * … and go no more than this far sideways for each px it rises (1.2 is 50 degrees over): a mostly sideways or downward slide on a vine,
@@ -580,7 +587,14 @@ export class TouchGestures {
       return;
     }
     const up = f.tr - f.y;
-    if (this.canAir() && f.tr - f.pk >= TUNING.pumpDown && up >= TUNING.pumpUp && up >= Math.abs(f.x - f.trX) * 0.85) {
+    // (quick, over its last moments: a thumb resting on the glass that sinks and creeps back up is not flicking, CT-24)
+    let r0 = f.hist[0];
+    for (let i = f.hist.length - 1; i >= 0; i--) {
+      r0 = f.hist[i];
+      if (this.now - r0.t >= 60) break;
+    }
+    const vNow = (r0.y - f.y) / Math.max(1, this.now - r0.t);
+    if (this.canAir() && f.tr - f.pk >= TUNING.pumpDown && up >= TUNING.pumpUp && up >= Math.abs(f.x - f.trX) * 0.85 && vNow >= TUNING.againSpeed) {
       this.fireJump(f, true, this.leanOf(f.x - f.trX, up));
     }
   }

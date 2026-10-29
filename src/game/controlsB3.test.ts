@@ -71,3 +71,26 @@ test('CT-23: one 20 degree lean: the flick that carries a lean and the least lea
   assert.equal((TUNING as Record<string, unknown>).vineLeapSlant, undefined);
   assert.ok(Math.abs(TUNING.leanSlant - Math.tan((20 * Math.PI) / 180)) < 0.001);
 });
+
+// ───────────────────────────── CT-24: accidental double jumps ─────────────────────────────
+
+test('CT-24: a thumb drifting slowly down and up after a jump is no second jump; a real wiggle or flick still is', () => {
+  // the steering thumb: runs, flicks up (the jump), then in the air drifts down 14 px and back up 22 px slowly (0.12 px/ms)
+  const slow = gestures({ air: true });
+  slow.path(1, [[200, 600], [230, 600], [250, 600], [252, 570], [254, 540], [254, 540], [254, 547], [254, 554], [254, 554], [254, 549], [254, 544], [254, 539], [254, 534], [254, 532]], 30, false);
+  assert.equal(slow.log.filter((l) => l.startsWith('jump')).length, 1, `steering thumb, slow drift: ${slow.log.join(' ')}`);
+  // the same thumb wiggling on purpose: down 18 px, up 26 px at 0.5 px/ms
+  const quick = gestures({ air: true });
+  quick.path(1, [[200, 600], [230, 600], [250, 600], [252, 570], [254, 540], ...Array.from({ length: 8 }, () => [254, 540] as [number, number]), [254, 549], [254, 558], [254, 545], [254, 532]], 20, false);
+  assert.equal(quick.log.filter((l) => l.startsWith('jump')).length, 2, `steering thumb, a quick wiggle: ${quick.log.join(' ')}`);
+  // the other thumb: its flick jumped, it stays on the glass, sinks 20 px and slides back up 25 px slowly (0.15 px/ms): no second jump
+  const two = gestures({ air: true });
+  two.path(1, [[100, 600], [140, 600]], 16, false);
+  two.path(2, [[600, 600], [600, 570], [600, 540], [600, 540], [600, 550], [600, 560], [600, 560], [600, 555], [600, 550], [600, 545], [600, 540], [600, 535]], 33, false);
+  assert.equal(two.log.filter((l) => l.startsWith('jump')).length, 1, `other thumb, slow re-rise: ${two.log.join(' ')}`);
+  // … and a quick re-flick of it is the second jump
+  const two2 = gestures({ air: true });
+  two2.path(1, [[100, 600], [140, 600]], 16, false);
+  two2.path(2, [[600, 600], [600, 570], [600, 540], ...Array.from({ length: 8 }, () => [600, 540] as [number, number]), [600, 550], [600, 560], [600, 545], [600, 530], [600, 515]], 25, false);
+  assert.equal(two2.log.filter((l) => l.startsWith('jump')).length, 2, `other thumb, quick re-flick: ${two2.log.join(' ')}`);
+});
