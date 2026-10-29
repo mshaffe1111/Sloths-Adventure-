@@ -6875,7 +6875,7 @@ export class GameEngine {
   private drawWatchEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
     const w = this.watch;
     if (w.phase !== 'warn') return;
-    const u = Math.min(1, w.t / WATCH.warn);
+    const u = Math.min(1, w.t / w.dur);
     const k = (0.35 + 0.65 * u) * (0.6 + 0.4 * Math.sin(this.gameTime * 11));
     const width = vw * 0.22;
     const fromLeft = w.dir === 1;
@@ -6994,7 +6994,7 @@ export class GameEngine {
         const blink = Math.sin(this.gameTime * 1.3) > 0.97 ? 0.15 : 1;
         this.watchEyes = { x: cam.x + cam.viewportWidth * (0.5 + 0.36 * Math.cos(a)), y: cam.y + 160 + 12 * Math.sin(a * 1.7), s: 0.6, a: 0.5 * blink, narrow: 0 };
       } else if (w.phase === 'warn') {
-        const u = w.t / WATCH.warn;
+        const u = w.t / w.dur;
         this.watchEyes = { x: w.dir === 1 ? cam.x + 40 + 30 * u : cam.x + cam.viewportWidth - 40 - 30 * u, y: cam.y + 175, s: 0.8 + 0.5 * u, a: 0.5 + 0.5 * u, narrow: 0 };
         this.watchShadowAt = { x: w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30, a: 0.18 + 0.3 * u };
       } else if (w.seen) {
@@ -7028,7 +7028,7 @@ export class GameEngine {
       alpha = 0.55;
     } else if (w.phase === 'warn') {
       // it turns for its run: at the edge, flaring, and its shadow starts to show there
-      const u = w.t / WATCH.warn;
+      const u = w.t / w.dur;
       // (in from the edge to well inside the view, all of it on screen by the screech's end: upright, it sat half off the edge with
       // only its "!" showing, QA 2026-10-28)
       const inX = Math.min(130, cam.viewportWidth * 0.2);

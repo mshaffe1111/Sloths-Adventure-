@@ -1,3 +1,4 @@
+import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
@@ -2811,7 +2812,11 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   if (config.id === MEECA_STAGE_ID) return meecaGeneratedStage(config, layoutVariant ?? 1);
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
-  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+  // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
+  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+    return difficulty === 'normal' ? w4Normal(st) : st;
+  }
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
   if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) {
     const st = flagsCapped(buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]));
