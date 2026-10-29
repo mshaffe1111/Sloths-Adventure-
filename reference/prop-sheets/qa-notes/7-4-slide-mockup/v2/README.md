@@ -86,6 +86,10 @@ Measured in the game's own loop (`tools/art/slide74/live.mjs`, 180 frames of sli
 
 ## The lead's v3 review, fixed (v4)
 
+(The lead, 2026-10-29, after v4: Matt has stopped making Gemini sheets; all art now comes from Hugging Face. Items 2 and 6, the pole stubs
+and the upscale, go to the art helper on `hf-art-pokey`, whose frames drop in through `tools/art/slide74/cut.py`; Sheet 5b in
+`GEMINI-PROMPTS.md` is kept only as a description of the frames wanted.)
+
 1. **The crumble** no longer uses the rubble panel (its straight edges, the root-wall column and the standing tiles are gone). While he
    stands there the floor is the hall's own: jagged cracks run across it from under him, middle first, then along the foot of its top
    face, faster as it shakes, with grit trickling. When it goes, the very floor he stood on (copied from the screen the frame before)

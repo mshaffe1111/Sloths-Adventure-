@@ -87,6 +87,9 @@ a pose reference too.
 
 ## Sheet 5b: Pokey sliding with empty paws, from behind (v4; attach Sheet 5 and `src/assets/hero/hero-standard.webp`)
 
+(Superseded the same day: Matt stopped making Gemini sheets, and the Hugging Face art helper on `hf-art-pokey` paints out the poles
+instead. Kept as the description of what the frames should show.)
+
 The flume is three lanes wide, so the poles he grips in Sheet 5 frames 1, 2 and 4 can't stay; painted out, his paws go with them. This
 redoes those three with nothing in his hands.
 
