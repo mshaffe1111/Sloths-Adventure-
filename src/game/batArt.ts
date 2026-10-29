@@ -5,11 +5,12 @@
  *               flipped: hanging still while the roost is calm, the wing flutter (the clip's frames 00-04) while it wakes (the watcher's
  *               warning) and while it sweeps
  *   the sweep   one bat with its wings open (frames 00-03, back and forth) flies the watcher's pass and dives as the eagle did
- * Stand-ins until the Hugging Face batch lands (the lead, 2026-10-29, branch hf-batch-w7w8): an asleep hanging bat (eyes shut: the calm
- * roost will use it), a flying cycle (the sweep), and the roost bough (drawn here in code, a plain dark branch, until then).
+ * The bough is the World 8 kit's painted branch. Stand-ins until the Hugging Face batch lands (the lead, 2026-10-29, branch hf-batch-w7w8):
+ * an asleep hanging bat (eyes shut: the calm roost will use it) and a flying cycle (the sweep).
  * Everything draws false while the sheet loads, so the eagle stands in for the sweep.
  */
 import { makeCreatureAnim } from './creatureAnim.ts';
+import { drawKitPiece } from './protoArt.ts';
 import { FRUITBAT_ANIM, FRUITBAT_ANIM_UP, FRUITBAT_ANIM_URL, FRUITBAT_SEQ } from './fruitbatAnimData.ts';
 
 const ANIM = makeCreatureAnim(FRUITBAT_ANIM_URL, FRUITBAT_ANIM, FRUITBAT_SEQ, FRUITBAT_ANIM_UP);
@@ -37,17 +38,10 @@ export const warmBats = (): boolean => ANIM.ready();
 export function drawRoost(ctx: CanvasRenderingContext2D, x: number, groundY: number, waking: number, t: number): boolean {
   if (!ANIM.ready()) return false;
   const y = groundY - ROOST.up;
-  // (the stand-in bough: a plain dark branch, thicker at its root, until the sheet's roost bough comes)
-  ctx.save();
-  ctx.fillStyle = '#2b2140';
-  ctx.beginPath();
-  ctx.moveTo(x - 40, y - 8);
-  ctx.quadraticCurveTo(x + ROOST.bough / 2, y - 18, x + ROOST.bough, y - 4);
-  ctx.lineTo(x + ROOST.bough, y + 2);
-  ctx.quadraticCurveTo(x + ROOST.bough / 2, y - 6, x - 40, y + 10);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
+  // (the bough: the World 8 kit's painted branch (kits/w8 'branch', 578 x 198), its top a little over the bats' grip; with no kit
+  // loaded the bats hang from the dark alone, never from a code-drawn branch)
+  const bw = ROOST.bough + 80;
+  drawKitPiece(ctx, 'branch', x - 50, y - 22, bw, (bw * 198) / 578);
   const n = 3 + Math.floor(hash01(x, 1) * 3);
   for (let i = 0; i < n; i++) {
     const bx = x + 30 + i * ROOST.apart + (hash01(x, 10 + i) - 0.5) * 16;
