@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { STAGE_DRAWS, genFoes, stageSheets } from './stageSheets.ts';
-import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
+import { buildProtoStage, HAND_STAGES, type ProtoExtras } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, dotStageConfig } from './extraStages.ts';
@@ -41,8 +41,8 @@ test('a boss lair and a generated stage get only what they draw', () => {
   const five = stageSheets(lvl('5-8'), on);
   assert.deepEqual(five, ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'perch']);
   assert.deepEqual(stageSheets(lvl('5-8'), { ...on, paint: false }), [...genFoes(5).map((f) => `foe:${f}`), 'perch']);
-  // (5-6 has webs, 5-8 is a climb with none: World 5's sheet too, for its painted silk)
-  assert.deepEqual(stageSheets(lvl('5-6'), on), ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'w5-props', 'perch']);
+  // (5-6 has webs, 5-8 is a climb with none: World 5's sheet too for its silk bridges, and Dot's pieces for its web patches)
+  assert.deepEqual(stageSheets(lvl('5-6'), on), ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'w5-props', 'dot-props', 'perch']);
   // with the hand-built stages switched off (?proto=0), 3-1 is a generated stage: no World 3 props
   assert.deepEqual(stageSheets(lvl('3-1'), { ...on, hand: false }).slice(0, 3), ['kit:1', 'kit:3', 'foe:goldsnake']);
 });
@@ -66,13 +66,15 @@ test('every sheet a built stage draws is in its preload list, for every stage an
           const st = generateStage(l, d);
           const keys = [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : [])];
           for (const k of keys) if (!list.has(k)) misses.push(`${l.id} roll ${v} ${d}: ${k}`);
-          // the painted hazards (zoneArt.ts, w4Play.ts): spore mushrooms on World 3's sheet, webs on World 5's, 4-3's pool log on the kit
+          // the painted hazards (zoneArt.ts, w4Play.ts): spore mushrooms on World 3's sheet, web bridges on World 5's and web patches on Dot's, 4-3's pool log on the kit, World 4's falls on its sheet
           const hazards = new Set<string>();
           for (const z of st.zones ?? []) {
             if (z.kind === 'spore' && z.emit?.length) hazards.add('w3-props');
-            if (z.kind === 'web') hazards.add('w5-props');
+            if (z.kind === 'web') hazards.add(z.bridge ? 'w5-props' : 'dot-props');
           }
           if (st.platforms.some((p) => p.art === 'poolLog')) hazards.add('kit:1');
+          // (World 4's falls pour the painted lip's water, w4Play.ts drawPouring)
+          if ((st as { proto?: ProtoExtras }).proto?.w4?.falls?.length) hazards.add('w4-props');
           for (const k of hazards) if (!list.has(k)) misses.push(`${l.id} roll ${v} ${d}: ${k} (a painted hazard)`);
           // (World 6 on gen2 on asks for its world's whole set, stageSheets.ts: its animals change from roll to roll)
           if (!l.secret && (HAND_STAGES[l.id] || W2_STAGES[l.id] || (isGen2Stage(l) && l.worldIndex < 6))) {

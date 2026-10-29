@@ -8,6 +8,7 @@
  *   w2/w3/w4/w5-props a hand-built World 2, 3, 4 or 5 stage's dressing (riverArt.ts, w3Art.ts, w4Art.ts, w5Art.ts), and a generated
  *                  World 3 or 5 stage's spore mushrooms and webs (zoneArt.ts)
  *   dot            Dot's flight (4-D): her pieces, her frames and the four paintings behind the netting (dotFlightArt.ts)
+ *   dot-props      her pieces alone, for a generated World 5 stage's web patches (zoneArt.ts strings them with her silk)
  *   Meeca's stage (5-M): World 5's kit and dressing, the puzzle kit's pieces, her own sheets (meeca-standard, her carving and the
  *                  blanket, and the night sheet of her new poses and the stage's props, meecaNightArt.ts), and Pell's and the soldiers'
  *                  clip sheets, and Flicker's (meecaArt.ts)
@@ -149,7 +150,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   else out.push(...(STAGE_DRAWS[cfg.id] ?? []));
   // (a generated World 3 or 5 stage's zones: its spore mushrooms and its webs are Matt's painted pieces, zoneArt.ts; as
   // stageGenerator.ts decides which stages get zones)
-  if (!built && (w === 3 || w === 5) && !cfg.secret && cfg.objectiveType !== 'boss_lair' && cfg.objectiveType !== 'ascent') out.push(`w${w}-props`);
+  // (a web patch is strung with Dot's silk, from her prop sheet alone)
+  if (!built && (w === 3 || w === 5) && !cfg.secret && cfg.objectiveType !== 'boss_lair' && cfg.objectiveType !== 'ascent') out.push(`w${w}-props`, ...(w === 5 ? ['dot-props'] : []));
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
   // (World 1's rooms: 1-4's lift, 1-6's seesaw, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)

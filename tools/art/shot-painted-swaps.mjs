@@ -1,14 +1,20 @@
-// node tools/art/shot-painted-swaps.mjs <tag> [only]: the painted hazard swaps (3-1's spore mushrooms, 5-6's web patch and bridge,
-// 4-3's pool log), upright and sideways, from the dev server on :4301 -> reference/prop-sheets/qa-notes/painted-swaps/<name>-<tag>-*.png
+// node tools/art/shot-painted-swaps.mjs <tag> [only] [subdir]: the painted hazard swaps (3-1's spore mushrooms, 5-6's web patch and
+// bridge, 4-3's pool log, World 4's falls), upright and sideways, from the dev server on :4301 ->
+// reference/prop-sheets/qa-notes/painted-swaps/[subdir/]<name>-<tag>-*.png
 import { chromium } from 'playwright';
 const tag = process.argv[2];
-const out = new URL('../../reference/prop-sheets/qa-notes/painted-swaps/', import.meta.url).pathname;
-const only = process.argv[3];
+const only = process.argv[3] || '';
+const out = new URL(`../../reference/prop-sheets/qa-notes/painted-swaps/${process.argv[4] ? process.argv[4] + '/' : ''}`, import.meta.url).pathname;
 const jobs = [
   // [name, stage, find target {x,y} in the engine]
   ['spore', '3-1', `(() => { const z = e.currentStage.zones.find((z) => z.kind === 'spore' && z.emit); return { x: z.emit[0] + 60, y: z.baseY, z }; })()`],
   ['web-patch', '5-6', `(() => { const z = e.currentStage.zones.find((z) => z.kind === 'web' && z.bottom === z.baseY + 16); return z && { x: (z.x0 + z.x1) / 2 - 60, y: z.baseY }; })()`],
   ['web-bridge', '5-6', `(() => { const z = e.currentStage.zones.find((z) => z.kind === 'web' && z.bottom === z.baseY + 18); return z && { x: (z.x0 + z.x1) / 2 - 60, y: z.baseY }; })()`],
+  ['falls-wide', '4-3', `(() => { const f = e.currentStage.proto.w4.falls.find((w) => w.width > 1000); return f && { x: f.x - 140, y: f.bottom }; })()`],
+  ['falls-plug', '4-3', `(() => { const f = e.currentStage.proto.w4.falls.find((w) => w.plug); return f && { x: f.x - 140, y: f.bottom }; })()`],
+  ['falls-curtain', '4-5', `(() => { const f = e.currentStage.proto.w4.falls.find((w) => w.veil); return f && { x: f.x + f.width / 2, y: f.bottom }; })()`],
+  ['falls-48', '4-8', `(() => { const f = e.currentStage.proto.w4.falls[0]; return f && { x: f.x - 140, y: f.bottom }; })()`],
+  ['falls-49', '4-9', `(() => { const f = e.currentStage.proto.w4.falls[0]; return f && { x: f.x - 140, y: f.bottom }; })()`],
   ['poollog', '4-3', `(() => { const p = e.platforms.find((q) => q.art === 'poolLog'); return p && { x: p.x + p.width / 2, y: p.y }; })()`],
 ];
 const b = await chromium.launch();

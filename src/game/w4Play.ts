@@ -6,11 +6,12 @@
  * a field, a step call and two draw calls rather than seven mechanics.
  *
  * The pieces are painted (w4Art.ts, art batches 1 and 2); each draw keeps a plain-shape stand-in for the moment before the atlas loads.
- * The falling water itself stays drawn here, because it has to pour, ease and dry; only the lip it pours over is painted.
+ * The falling water is the painted lip's own pour (w4Art.ts drawW4Pour) laid in scrolling columns, so it can pour, ease and dry; the
+ * foam, the mist and the spray where it lands are small code touches.
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
-import { drawW4, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
+import { drawW4, drawW4Pour, POUR_ASPECT, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
 import { drawLogArt } from './protoArt.ts';
 import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
@@ -840,11 +841,50 @@ function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
   }
 }
 
+/** a fall's painted water: columns of the lip's pour about this wide side by side, falling about this fast (px/s) */
+const POUR_COL = 64;
+const POUR_SPEED = 380;
+
+/**
+ * The painted water pouring down the box (x, top) to (x + width, bottom): the lip's own falling water (w4Art.ts drawW4Pour) in columns
+ * side by side, each scrolling down at its own pace so the sheet never reads as a grid; `alphaAt(u)` how solid it is across it (0 left
+ * edge .. 1 right edge). False until the atlas has loaded.
+ */
+function drawPouring(ctx: CanvasRenderingContext2D, x: number, top: number, width: number, bottom: number, t: number, alphaAt: (u: number) => number): boolean {
+  if (!w4ArtReady()) return false;
+  const n = Math.max(1, Math.round(width / POUR_COL));
+  const cw = width / n;
+  const th = (cw + 2) * POUR_ASPECT;
+  const base = ctx.globalAlpha;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, top, width, bottom - top);
+  ctx.clip();
+  for (let k = 0; k < n; k++) {
+    const r1 = (k * 0.618034 + x * 0.0013) % 1;
+    const r2 = (k * 0.414214 + x * 0.0007) % 1;
+    const off = (t * POUR_SPEED * (0.85 + 0.3 * r1) + r2 * th) % th;
+    ctx.globalAlpha = base * alphaAt((k + 0.5) / n);
+    for (let y = top - th + off; y < bottom; y += th - 1) drawW4Pour(ctx, x + k * cw - 1, y, cw + 2, th);
+  }
+  ctx.restore();
+  return true;
+}
+
 function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
   if (flow <= 0.02) return;
   ctx.save();
   const width = w.width * (0.25 + 0.75 * flow);
   const x = w.x + (w.width - width) / 2;
+  // (see-through: the steps behind the water show; thicker the harder it pours)
+  ctx.globalAlpha = 0.35 + 0.5 * flow;
+  if (drawPouring(ctx, x, w.top, width, w.bottom, t, () => 1)) {
+    ctx.globalAlpha = 1;
+    drawFoot(ctx, x, width, w.bottom, flow, t);
+    ctx.restore();
+    return;
+  }
+  // (the shapes below are the stand-in while the World 4 sheet loads)
   ctx.globalAlpha = 0.25 + 0.4 * flow; // (see-through: the steps behind the water show)
   const g = ctx.createLinearGradient(x, 0, x + width, 0);
   g.addColorStop(0, '#93c5fd');
@@ -865,14 +905,19 @@ function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number
     }
     ctx.stroke();
   }
-  // foam at the foot
+  drawFoot(ctx, x, width, w.bottom, flow, t);
+  ctx.restore();
+}
+
+/** foam churning where a fall lands */
+function drawFoot(ctx: CanvasRenderingContext2D, x: number, width: number, bottom: number, flow: number, t: number) {
   ctx.fillStyle = 'rgba(255,255,255,0.8)';
-  for (let k = 0; k < 6; k++) {
+  const n = Math.max(6, Math.round(width / 40));
+  for (let k = 0; k < n; k++) {
     ctx.beginPath();
-    ctx.arc(x + (k / 5) * width, w.bottom - 4 + Math.sin(t * 8 + k) * 3, 8 * flow + 3, 0, Math.PI * 2);
+    ctx.arc(x + (k / (n - 1)) * width, bottom - 4 + Math.sin(t * 8 + k) * 3, 8 * flow + 3, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.restore();
 }
 
 /**
@@ -882,6 +927,13 @@ function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number
 function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
   const x0 = w.x, x1 = w.x + w.width, top = w.top, bot = w.bottom;
   ctx.save();
+  // the painted pour, thicker at its sides and thin in the middle, so he shows standing behind it
+  if (drawPouring(ctx, x0, top, w.width, bot, t, (u) => 0.45 + 0.45 * Math.abs(2 * u - 1))) {
+    drawVeilFoot(ctx, w, t);
+    ctx.restore();
+    return;
+  }
+  // (the shapes below are the stand-in while the World 4 sheet loads)
   ctx.beginPath();
   ctx.moveTo(x0, top);
   for (let y = top; y < bot; y += 28) ctx.lineTo(x0 + 5 * Math.sin(y * 0.045 + t * 5), y);
@@ -915,7 +967,14 @@ function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
     }
     ctx.stroke();
   }
-  // where it lands: a cloud of mist, and spray bouncing up off the stone
+  drawVeilFoot(ctx, w, t);
+  ctx.restore();
+}
+
+/** where a curtain lands: a cloud of mist, and spray bouncing up off the stone */
+function drawVeilFoot(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
+  const x0 = w.x, x1 = w.x + w.width, bot = w.bottom;
+  ctx.save();
   const cx = (x0 + x1) / 2;
   const mist = ctx.createRadialGradient(cx, bot - 10, 10, cx, bot - 10, w.width);
   mist.addColorStop(0, 'rgba(255, 255, 255, 0.55)');

@@ -11,7 +11,7 @@
  */
 import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
-import { BACK_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
+import { BACK_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
 import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
@@ -77,6 +77,9 @@ function start(keys: readonly string[]): string[] {
       jennifurSpriteReady();
       warmMeecaArt();
       urls.push(MEECA_STANDARD_URL, MEECA_CARVE_URL, MEECA_BLANKET_URL);
+    } else if (k === 'dot-props') {
+      dotPropsReady();
+      urls.push(DOT_PROPS_URL);
     } else if (k === 'dot') {
       warmDotSheets();
       urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, ...Object.values(BACK_URL));

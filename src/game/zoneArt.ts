@@ -9,7 +9,8 @@ import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
-import { drawW5Box, w5ArtReady, w5Width } from './w5Art.ts';
+import { drawW5Box, w5ArtReady } from './w5Art.ts';
+import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -500,38 +501,42 @@ function drawBolt(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
 /** the silk bridge's picture (w5PropsData.ts 'silkBridge'): its planks run this far down it, and its height is kept to this at the most */
 const BRIDGE_DECK = 0.62;
 const BRIDGE_MAX_H = 150;
-/** the silk sheets hung along a patch: from this far over the ground (the branch over it) to a little into it */
-const PATCH_RISE = 84;
+/** a patch's webs: Dot's see-through silk strung low across the path ('silkWide'), about this wide and this far apart */
+const PATCH_WEB = { w: 96, step: 70 } as const;
 
-/** Matt's painted silk behind Pokey: the silk bridge strung over the gap, or silk sheets draped from the branch over a patch */
+/** Matt's painted silk behind Pokey: the silk bridge strung over the gap, or the back row of a patch's webs */
 function drawWebBack(ctx: CanvasRenderingContext2D, z: Zone) {
-  if (!w5ArtReady()) return;
   if (z.bridge) {
+    if (!w5ArtReady()) return;
     const x0 = z.x0 - 14, w = z.x1 - z.x0 + 28;
     const h = Math.min(BRIDGE_MAX_H, (w * 122) / 412);
     drawW5Box(ctx, 'silkBridge', x0, z.baseY - h * BRIDGE_DECK, w, h);
     return;
   }
-  drawPatchSheets(ctx, z);
+  drawPatchWebs(ctx, z, 0, 0.85);
 }
 
-function drawPatchSheets(ctx: CanvasRenderingContext2D, z: Zone) {
+/**
+ * one row of a patch's webs, standing on the ground along it (`row` 0 the back one, 1 the front one, set half a step along and a
+ * little smaller), mirrored in turn so the row doesn't repeat; the path shows through the strands. False until the sheet has loaded.
+ */
+function drawPatchWebs(ctx: CanvasRenderingContext2D, z: Zone, row: 0 | 1, alpha: number): boolean {
+  if (!dotPropsReady()) return false;
   const w = z.x1 - z.x0;
-  const hh = PATCH_RISE + 6;
-  const n = Math.max(1, Math.round(w / w5Width('silkSheet', hh)));
-  const sw = w / n;
-  for (let i = 0; i < n; i++) drawW5Box(ctx, 'silkSheet', z.x0 + i * sw - 4, z.baseY - PATCH_RISE, sw + 8, hh, (i + Math.round(z.x0 / 97)) % 2 === 1);
+  const n = Math.max(1, Math.round((w - PATCH_WEB.w * 0.5) / PATCH_WEB.step));
+  const step = (w - PATCH_WEB.w * 0.6) / n;
+  const ww = PATCH_WEB.w * (row ? 0.85 : 1);
+  for (let i = 0; i <= n - row; i++) {
+    const x = z.x0 + PATCH_WEB.w * 0.3 + (i + row * 0.5) * step;
+    const sd = hash(i * 4.3 + row * 9.1 + z.x0 * 0.01);
+    drawPiece(ctx, 'silkWide', x, z.baseY + 4, ww * (0.9 + 0.2 * sd), { ay: 1, flip: (i + row) % 2 === 1, alpha });
+  }
+  return true;
 }
 
 function drawWeb(ctx: CanvasRenderingContext2D, z: Zone, t: number) {
-  if (w5ArtReady()) {
-    // over him: the patch's silk again, faint, so he is in it (the bridge he walks on top of), and the dew catching the light
-    if (!z.bridge) {
-      ctx.save();
-      ctx.globalAlpha = 0.35;
-      drawPatchSheets(ctx, z);
-      ctx.restore();
-    }
+  // over him: a patch's front row of webs, so he is in them (the bridge he walks on top of), and the dew catching the light
+  if (z.bridge ? w5ArtReady() : drawPatchWebs(ctx, z, 1, 0.55)) {
     drawDew(ctx, z, Math.max(4, Math.round((z.x1 - z.x0) / 34)), z.bridge ? 40 : 60);
     return;
   }

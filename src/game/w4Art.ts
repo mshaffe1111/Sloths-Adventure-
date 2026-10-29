@@ -52,6 +52,22 @@ export function drawW4(ctx: CanvasRenderingContext2D, n: W4Piece, x: number, bot
   return true;
 }
 
+/**
+ * The water pouring off the painted lip ('lipPour'), cut out on its own (its place in that piece): a strip of falling water, the same
+ * from top to bottom, that the falls are built from (w4Play.ts drawFallWater, drawVeil), so the water under a lip is the lip's own
+ */
+const POUR = { x: 128, y: 38, w: 35, h: 72 };
+/** the strip's height for its width */
+export const POUR_ASPECT = POUR.h / POUR.w;
+
+/** the lip's falling water stretched to the box (x, y, w, h). False until the atlas has loaded. */
+export function drawW4Pour(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): boolean {
+  if (!w4ArtReady()) return false;
+  const f = W4_FRAMES.lipPour;
+  ctx.drawImage(img!, f.x + POUR.x, f.y + POUR.y, POUR.w, POUR.h, x, y, w, h);
+  return true;
+}
+
 /** the painted cover for each kind of hiding bush in World 4, and how much wider than its hiding box it is drawn */
 const COVER: Record<'tall' | 'wide' | 'fern' | 'grotto', { n: W4Piece; k: number }> = {
   tall: { n: 'coverStump', k: 1.3 },
