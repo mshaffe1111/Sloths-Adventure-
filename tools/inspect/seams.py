@@ -740,6 +740,43 @@ def crop(img_pil, box, path, colour=(255, 40, 40), others=()):
     c.save(path, quality=85)
 
 
+def _boxes(f):
+    return f.get('boxes') or ([f['box']] if 'box' in f else [])
+
+
+def postfilter(fs):
+    """drops what reads as drawn on purpose: the joints of a block wall (thin dark lines or steps that meet another line at a
+    corner or a T, so they outline blocks: mortar, not seams) and flat areas under no piece at all (a smooth sky).
+    Works on one frame's findings, before or after they are grouped (a grouped finding lists its boxes)."""
+    lines = [(f, b) for f in fs if f['kind'] == 'line' and ('dark line' in f['sub'] or 'step' in f['sub']) for b in _boxes(f)]
+    hv = [(b, 'horizontal' in f['sub']) for f, b in lines]
+
+    def joined(b, horiz):
+        # its two ends: does a line the other way pass within 6 px of either?
+        ends = [(b[0], (b[1] + b[3]) / 2), (b[2], (b[1] + b[3]) / 2)] if horiz else [((b[0] + b[2]) / 2, b[1]), ((b[0] + b[2]) / 2, b[3])]
+        for o, oh in hv:
+            if oh == horiz:
+                continue
+            for x, y in ends:
+                if o[0] - 6 <= x <= o[2] + 6 and o[1] - 6 <= y <= o[3] + 6:
+                    return True
+        return False
+
+    out = []
+    for f in fs:
+        if f['kind'] == 'shape' and f['sub'] == 'flat area' and f['cause'].endswith('under unknown'):
+            continue
+        if f['kind'] == 'line' and ('dark line' in f['sub'] or 'step' in f['sub']):
+            horiz = 'horizontal' in f['sub']
+            keep = [b for b in _boxes(f) if not joined(b, horiz)]
+            if not keep:
+                continue
+            if f.get('boxes'):
+                f = dict(f, boxes=keep, box=keep[0], spots=len(keep))
+        out.append(f)
+    return out
+
+
 _ASSETS = {}
 
 
@@ -775,6 +812,7 @@ def frame_finds(job):
         fs += find_floating(meta, assets)
     if 'hud' in kinds:
         fs += find_hud(meta)
+    fs = postfilter(fs)
     # one finding per cause in a frame: its spots under it, the biggest one shown
     groups = defaultdict(list)
     for f in fs:
