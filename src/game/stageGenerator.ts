@@ -1313,7 +1313,7 @@ export class Gen {
       this.closeBank();
       const x0 = this.cx;
       this.plat({ x: x0, y: g0, width: len, height: 26, type: 'solid'}, 'bridge');
-      zones.push({ ...base, x0, x1: x0 + len, top: g0 - 130, bottom: g0 + 18, baseY: g0, offset: 0 });
+      zones.push({ ...base, x0, x1: x0 + len, top: g0 - 130, bottom: g0 + 18, baseY: g0, offset: 0, bridge: true });
       this.row(x0 + 50, x0 + len - 50, g0 - 40, Math.max(3, Math.round(len / 80)));
       this.cx = x0 + len;
       this.openBank();
