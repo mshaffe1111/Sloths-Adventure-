@@ -4693,7 +4693,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const BW = 100, BH = 84;
       const boulder: Platform = { id: pid++, x: tX + 70, y: sy - BH, width: BW, height: BH, type: 'solid', style: 'moss_stone', push: { min: tX + 60, max: shelfEnd } };
       P.push(boulder);
-      const gap = Math.round(R.r(220, 240));
+      // (LV-12, polish report 2026-10-29: 220-240 failed every scripted try from the boulder's top in both modes. In the real engine,
+      // from the boulder's 100 px top, 8 of 252 presses landed, all full holds at the very edge; 15% shorter, 76. So both: 15% shorter
+      // and the landing 40 px nearer)
+      const gap = Math.round(R.r(187, 204)) - 40;
       // (the water lands on the shelf's last stretch too, where the boulder stops; it starts higher than a double jump off the boulder)
       FALLS8.push({ id: FALLS8.length + 1, x: shelfEnd - FALL_LIP, width: gap + FALL_LIP, top: sy - FALL_HEAD, bottom: G, plug: { platformId: boulder.id, atX: shelfEnd - BW } });
       const nl = branch(shelfEnd + gap, shelfEnd + gap + Math.round(R.r(200, 240)), sy + Math.round(R.r(0, 16)));
