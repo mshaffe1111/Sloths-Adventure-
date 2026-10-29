@@ -1,0 +1,88 @@
+{
+ "tag": "w6to10-dozer",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "idle": "idle",
+  "move": "move",
+  "attack": "tell",
+  "hurt": "hurt"
+ },
+ "clips": [
+  {
+   "name": "w6t-dozer-idle-s3",
+   "src": "../stills/w5dz-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac and cream moth with big soft wings with purple eye spots, feathery antennae and sleepy closed eyes, hovers sleepily in place, beating its soft wings slowly up and down, bobbing gently, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dozer-idle-s11",
+   "src": "../stills/w5dz-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac and cream moth with big soft wings with purple eye spots, feathery antennae and sleepy closed eyes, hovers sleepily in place, beating its soft wings slowly up and down, bobbing gently, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dozer-move-s3",
+   "src": "../stills/w5dz-move.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac and cream moth with big soft wings with purple eye spots, feathery antennae and sleepy closed eyes, flies forward in place, beating its wings in big clear strokes, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dozer-move-s11",
+   "src": "../stills/w5dz-move.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac and cream moth with big soft wings with purple eye spots, feathery antennae and sleepy closed eyes, flies forward in place, beating its wings in big clear strokes, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dozer-attack-s3",
+   "src": "../stills/w5dz-tell.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac and cream moth with big soft wings with purple eye spots, feathery antennae and sleepy closed eyes, puffs up and holds still, then blows a cloud of glittering golden sleep dust forward, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dozer-attack-s11",
+   "src": "../stills/w5dz-tell.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac and cream moth with big soft wings with purple eye spots, feathery antennae and sleepy closed eyes, puffs up and holds still, then blows a cloud of glittering golden sleep dust forward, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dozer-hurt-s3",
+   "src": "../stills/w5dz-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac and cream moth with big soft wings with purple eye spots, feathery antennae and sleepy closed eyes, jolts back in the air from a hit, wings crumpling, then flutters and steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dozer-hurt-s11",
+   "src": "../stills/w5dz-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac and cream moth with big soft wings with purple eye spots, feathery antennae and sleepy closed eyes, jolts back in the air from a hit, wings crumpling, then flutters and steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  }
+ ]
+}

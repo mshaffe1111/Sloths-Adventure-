@@ -1,0 +1,190 @@
+{
+ "tag": "w6to10-drake",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "idle": "idle",
+  "walk": "idle",
+  "breath": "jawsnap",
+  "tail": "tailcrush",
+  "stomp": "stomp",
+  "leap": "leapprep",
+  "roar": "enrage",
+  "hurt": "recoil",
+  "stunned": "stunned",
+  "defeat": "knockback"
+ },
+ "clips": [
+  {
+   "name": "w6t-drake-idle-s3",
+   "src": "../stills/w9d-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, stands in place on four legs breathing slowly, its sides heaving and its tail swaying, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-idle-s11",
+   "src": "../stills/w9d-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, stands in place on four legs breathing slowly, its sides heaving and its tail swaying, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-walk-s3",
+   "src": "../stills/w9d-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, walks forward in place on four heavy legs with a slow powerful lizard gait, its tail swaying, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-walk-s11",
+   "src": "../stills/w9d-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, walks forward in place on four heavy legs with a slow powerful lizard gait, its tail swaying, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-breath-s3",
+   "src": "../stills/w9d-jawsnap.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, rears its head back with its jaws wide open and holds, then breathes a long stream of orange fire straight forward, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-breath-s11",
+   "src": "../stills/w9d-jawsnap.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, rears its head back with its jaws wide open and holds, then breathes a long stream of orange fire straight forward, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-tail-s3",
+   "src": "../stills/w9d-tailcrush.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, lifts its long tail high behind it and holds it there, then whips it down hard onto the ground behind it, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-tail-s11",
+   "src": "../stills/w9d-tailcrush.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, lifts its long tail high behind it and holds it there, then whips it down hard onto the ground behind it, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-stomp-s3",
+   "src": "../stills/w9d-stomp.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, rears up on its hind legs and holds, then stamps both front feet down hard, rocks bursting up from the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-stomp-s11",
+   "src": "../stills/w9d-stomp.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, rears up on its hind legs and holds, then stamps both front feet down hard, rocks bursting up from the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-leap-s3",
+   "src": "../stills/w9d-leapprep.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, crouches low and holds, then leaps up and forward and lands heavily, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-leap-s11",
+   "src": "../stills/w9d-leapprep.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, crouches low and holds, then leaps up and forward and lands heavily, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-roar-s3",
+   "src": "../stills/w9d-enrage.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, raises its head and roars, the spikes on its back glowing bright yellow-orange, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-roar-s11",
+   "src": "../stills/w9d-enrage.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, raises its head and roars, the spikes on its back glowing bright yellow-orange, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-hurt-s3",
+   "src": "../stills/w9d-recoil.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, jolts back from a hit, flinching, then steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-hurt-s11",
+   "src": "../stills/w9d-recoil.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, jolts back from a hit, flinching, then steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-stunned-s3",
+   "src": "../stills/w9d-stunned.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, stands dazed and dizzy, swaying its head from side to side, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-stunned-s11",
+   "src": "../stills/w9d-stunned.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, stands dazed and dizzy, swaying its head from side to side, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-defeat-s3",
+   "src": "../stills/w9d-knockback.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, topples over onto its side, its legs kick weakly, then it lies still, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-drake-defeat-s11",
+   "src": "../stills/w9d-knockback.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a huge dark green armoured lizard drake with a row of pale bony spikes down its back, a long thick tail and glowing yellow eyes, topples over onto its side, its legs kick weakly, then it lies still, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}

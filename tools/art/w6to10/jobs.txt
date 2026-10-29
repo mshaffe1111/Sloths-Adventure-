@@ -1,0 +1,53 @@
+w6to10 jobs, 2026-10-28 (round 1 cap $40, whole run $65; ledger with exact minutes in reference/ART-PLAN.md section 3)
+w6to10-starts        6ae2376e3fb22a235dd45b9c  cpu-upgrade  cancelled at once (timeout given as "1h30m" read as 1 s; use "90m")
+w6to10-starts        6ae2377c3fb22a235dd45ba6  cpu-upgrade  17:57-18:06 cancelled: Real-ESRGAN on CPU is 1.5-3 min a frame (56 frames)
+w6to10-starts-w5c    6ae2383a3fb22a235dd45d1a  cpu-upgrade  18:00- the W5 creatures' 16 starts on CPU (left running)
+w6to10-starts-gpu    6ae2399641e90535df779658  l4x1         18:06- the six guardians' 56 starts, upscaled on the GPU (gpustarts.py)
+w6to10-starts-gpu    6ae2399641e90535df779658  l4x1         cancelled while waiting for hardware (no L4 free)
+w6to10-starts-gpu    6ae239c53fb22a235dd45f5f  rtx-pro-6000 18:07- the six guardians' 56 starts (pytorch image)
+w6to10-ironclaw      6ae23a3f41e90535df779750  rtx-pro-6000 18:09- 20 clips (bossgpu.py BOSS=ironclaw)
+w6to10-golem         6ae23a4141e90535df779754  rtx-pro-6000 18:09- 20 clips
+w6to10-drake         6ae23a4341e90535df77975c  rtx-pro-6000 18:09- 20 clips
+w6to10-reaver        6ae23a4541e90535df779760  rtx-pro-6000 18:09- 20 clips
+w6to10-thornbark     6ae23a4741e90535df779766  rtx-pro-6000 18:09- 20 clips
+w6to10-monarch       6ae23a493fb22a235dd4602f  rtx-pro-6000 18:09- 16 clips (704x704)
+w6to10-starts-gpu    6ae239c53fb22a235dd45f5f  rtx-pro-6000 18:07-18:10:35 failed: pytorch 2.4/cu121 has no kernels for the RTX Pro 6000 (Blackwell); use the aitoolkit image
+w6to10-starts-gpu2   6ae23aac3fb22a235dd460ea  rtx-pro-6000 18:10- the six guardians' starts, aitoolkit image
+w6to10-starts-gpu2   6ae23aac3fb22a235dd460ea  rtx-pro-6000 18:10- failed at once: pip refuses system installs in the aitoolkit image (PEP 668)
+w6to10-starts-gpu3   6ae23aca3fb22a235dd46116  rtx-pro-6000 18:11- same with env PIP_BREAK_SYSTEM_PACKAGES
+w6to10-starts-w5c    6ae2383a3fb22a235dd45d1a  cpu-upgrade  18:00-18:12 cancelled after 5 of 16 frames (CPU too slow); redone on GPU
+w6to10-starts-w5c-gpu 6ae23b0441e90535df779883 rtx-pro-6000 18:12- the W5 creatures' 16 starts (gpustarts.py)
+w6to10-w5c-0         6ae23b0741e90535df779887  rtx-pro-6000 18:12- W5 creatures, clips 0,2,4.. of 32
+w6to10-w5c-1         6ae23b083fb22a235dd4617c  rtx-pro-6000 18:12- W5 creatures, clips 1,3,5.. of 32
+w6to10-stills-0      6ae23b523fb22a235dd461f2  rtx-pro-6000 18:13- round 2 stills, items 0,2,4.. of 108 (make_stills.py + stillsgpu.py)
+w6to10-stills-1      6ae23b5441e90535df7798e9  rtx-pro-6000 18:13- round 2 stills, items 1,3,5.. of 108
+w6to10-flicker-0     6ae2404041e90535df779f4e  rtx-pro-6000 18:34- Flicker (Matt's new priority): 14 moves x 2 seeds from his own cells, clips 0,2,4..
+w6to10-flicker-1     6ae240423fb22a235dd46891  rtx-pro-6000 18:34- Flicker, clips 1,3,5..
+w6to10-preview-a     6ae24c6b3fb22a235dd47573  cpu-upgrade  19:26- previews/checks: drake + the four W5 creatures
+w6to10-title-0       6ae2509e41e90535df77b060  rtx-pro-6000 19:44- title pair (Matt's new top priority): 6 moves x 2 seeds, clips 0,3,6,9
+w6to10-title-1       6ae250a141e90535df77b066  rtx-pro-6000 19:44- title pair, clips 1,4,7,10
+w6to10-title-2       6ae250a33fb22a235dd47b6b  rtx-pro-6000 19:44- title pair, clips 2,5,8,11
+w6to10-title-idle2-m0 6ae253633fb22a235dd47f4f rtx-pro-6000 19:56- title idles retry (first try walked): no motion model, seeds 3,11 (titleidle2.py)
+w6to10-title-idle2-m5 6ae253643fb22a235dd47f54 rtx-pro-6000 19:56- title idles retry, motion model at 0.5, seed 3
+w6to10-preview-b     6ae250bf3fb22a235dd47ba8  cpu-upgrade  19:45- previews: ironclaw, golem, reaver
+w6to10-preview-c     6ae250c13fb22a235dd47bc4  cpu-upgrade  19:45- previews: thornbark, monarch, flicker
+w6to10-redo-1        6ae2539a41e90535df77b471  rtx-pro-6000 19:57- re-runs of broken clips: ironclaw slash2, golem slam2, reaver advance2, dangler attack2 (spec-w6to10-redo.json)
+w6to10-titleup       6ae2578541e90535df77ba26  rtx-pro-6000 20:13- the 8 picked title clips, 4x Real-ESRGAN then 1.25x the clip size (titleup.py), so they pack at 640 px a character
+w6to10-preview-d     6ae25cbb41e90535df77c0ad  cpu-upgrade  20:36- previews: the re-runs and the title clips
+w6to10-pair2-m10     6ae25cdf3fb22a235dd48cd5  rtx-pro-6000 20:36- title pair, second try: last frame pinned to the first, 33 frames, motion model 1.0, seeds 3,11 (pairgpu.py)
+w6to10-pair2-m0      6ae25ce141e90535df77c0de  rtx-pro-6000 20:36- same without the motion model
+w6to10-titleup-pair2 6ae25f963fb22a235dd490ac  rtx-pro-6000 20:48-20:49 sharpen the pair redo
+w6to10-preview-e     6ae2642541e90535df77c966  cpu-upgrade  21:07- previews again for ironclaw/golem/reaver/dangler/title (preview-d's group names overwrote their sheets)
+--- round 2 ---
+w6to10-starts2       6ae264773fb22a235dd496b9  rtx-pro-6000 21:09- starts for boss batch 2 (tags <tag>b)
+w6to10-bosses2-0/1/2 6ae2647f3fb22a235dd496c8 / 6ae264813fb22a235dd496cd / 6ae2648341e90535df77c9bb  rtx-pro-6000 21:09- boss batch 2: 4 more moves x 6 guardians x 2 seeds = 48 clips
+w6to10-plates        6ae264b441e90535df77ca10  rtx-pro-6000 21:10- moving lair plates, 6 clips, no motion model
+w6to10-stills2       6ae264cc41e90535df77ca2e  rtx-pro-6000 21:10- water's-edge signs (W5 + jungle, 3 takes each) and side-on prop retries
+w6to10-preview-all   6ae2754341e90535df77d9a7  cpu-upgrade  22:20- previews of every clip for the gallery
+w6to10-redo2-pin     6ae28eef3fb22a235dd4cca5  rtx-pro-6000 00:10- re-runs, last frame pinned: Flicker lead3/dart3, Reaver walk3 (pingpu.py)
+w6to10-redo2-m5      6ae28ef041e90535df77f9bd  rtx-pro-6000 00:10- re-runs: Monarch hover3/fly3 with the motion model at 0.5
+--- cut-in (2026-10-29) ---
+w6to10-cutpack a/b/c 6ae2909e.. / 6ae2909f.. / 6ae290a1..  cpu-upgrade  cancelled after 1-2 min: bash ate GROUPS (every job ran every group)
+w6to10-cutpack-a     6ae290f73fb22a235dd4cf3f  cpu-upgrade  00:19- Flicker, the four W5 creatures, water signs, far strips, props (cutpack2.py PACKS=...)
+w6to10-cutpack-b     6ae290f941e90535df77fcb9  cpu-upgrade  00:19- Iron-Claw, Golem, Drake sheets
+w6to10-cutpack-c     6ae290fb41e90535df77fcbd  cpu-upgrade  00:19- Reaver, Thornbark, Monarch sheets, lair plates, lairs, collar, collars off

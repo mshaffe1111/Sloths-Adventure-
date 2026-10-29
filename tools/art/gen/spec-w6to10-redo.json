@@ -1,0 +1,78 @@
+{
+ "note": "re-runs of the clips judged broken in round 1 (2026-10-28), same compact form as spec-w6to10-bosses.json, run with bossgpu.py BOSS=ironclaw,golem,reaver,dangler",
+ "M": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, ",
+ "END": ", side view facing right the whole time, it stays in the middle of the frame",
+ "seeds": [
+  3,
+  11
+ ],
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "bosses": {
+  "ironclaw": {
+   "tag": "w10ic",
+   "who": "a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, ",
+   "moves": {
+    "slash2": [
+     "idle",
+     [
+      832,
+      576
+     ],
+     "swings the club down from his shoulder in one big sideways arc in front of him, holds the follow-through for a moment, then lifts the club back onto his shoulder, standing his ground"
+    ]
+   }
+  },
+  "golem": {
+   "tag": "w7g",
+   "who": "a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, ",
+   "moves": {
+    "slam2": [
+     "march2",
+     [
+      832,
+      576
+     ],
+     "lifts the huge stone hammer up over its head with both hands, holds it there, then smashes it down onto the ground in front of it, standing its ground"
+    ]
+   }
+  },
+  "reaver": {
+   "tag": "w6r",
+   "who": "a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, ",
+   "moves": {
+    "advance2": [
+     "idle",
+     [
+      832,
+      576
+     ],
+     "walks forward in place on his hind legs with steady heavy steps, holding the spear level in front of him, his tail swaying, a smooth repeating walking cycle"
+    ]
+   }
+  },
+  "dangler": {
+   "tag": "w5dg",
+   "who": "a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, ",
+   "moves": {
+    "attack2": [
+     "idle",
+     [
+      832,
+      480
+     ],
+     "rears up raising its front legs and holds still, then pounces forward and snaps its fangs, then settles back down"
+    ]
+   }
+  }
+ }
+}

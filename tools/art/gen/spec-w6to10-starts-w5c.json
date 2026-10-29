@@ -1,0 +1,51 @@
+{
+ "tag": "w6to10-starts-w5c",
+ "script": "tools/art/w6to10/cpuwrap.py",
+ "flavor": "cpu-upgrade",
+ "tasks": [
+  {
+   "do": "starts",
+   "atlas": "dangler",
+   "tag": "w5dg",
+   "frames": [
+    "hurt",
+    "idle",
+    "move",
+    "tell"
+   ]
+  },
+  {
+   "do": "starts",
+   "atlas": "seamstress",
+   "tag": "w5sm",
+   "frames": [
+    "hurt",
+    "idle",
+    "move",
+    "tell"
+   ]
+  },
+  {
+   "do": "starts",
+   "atlas": "mantis",
+   "tag": "w5mt",
+   "frames": [
+    "hurt",
+    "idle",
+    "move",
+    "tell"
+   ]
+  },
+  {
+   "do": "starts",
+   "atlas": "dozer",
+   "tag": "w5dz",
+   "frames": [
+    "hurt",
+    "idle",
+    "move",
+    "tell"
+   ]
+  }
+ ]
+}

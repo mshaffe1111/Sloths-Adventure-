@@ -1,0 +1,190 @@
+{
+ "tag": "w6to10-ironclaw",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "idle": "idle",
+  "march": "march1",
+  "charge": "charge",
+  "slam": "overhead1",
+  "slash": "armed",
+  "roar": "roar",
+  "stomp": "stomp1",
+  "hurt": "hurt",
+  "stunned": "stunned",
+  "defeat": "knockback"
+ },
+ "clips": [
+  {
+   "name": "w6t-ironclaw-idle-s3",
+   "src": "../stills/w10ic-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, stands in place breathing heavily and glaring, the club resting on his shoulder, his cape stirring, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-idle-s11",
+   "src": "../stills/w10ic-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, stands in place breathing heavily and glaring, the club resting on his shoulder, his cape stirring, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-march-s3",
+   "src": "../stills/w10ic-march1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, marches forward in place with heavy stomping steps, swinging the club at his side, his cape swaying, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-march-s11",
+   "src": "../stills/w10ic-march1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, marches forward in place with heavy stomping steps, swinging the club at his side, his cape swaying, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-charge-s3",
+   "src": "../stills/w10ic-charge.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, charges forward in place, running hard with his head down and the club held low, his cape flying behind him, a smooth repeating running cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-ironclaw-charge-s11",
+   "src": "../stills/w10ic-charge.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, charges forward in place, running hard with his head down and the club held low, his cape flying behind him, a smooth repeating running cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-ironclaw-slam-s3",
+   "src": "../stills/w10ic-overhead1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, holds the spiked club raised high over his head, holds perfectly still for a moment, then slams it straight down hard onto the ground in front of him, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-slam-s11",
+   "src": "../stills/w10ic-overhead1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, holds the spiked club raised high over his head, holds perfectly still for a moment, then slams it straight down hard onto the ground in front of him, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-slash-s3",
+   "src": "../stills/w10ic-armed.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, draws the club back slowly behind him and holds it there, then swings it in a wide fast sideways slash in front of him and follows through, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-ironclaw-slash-s11",
+   "src": "../stills/w10ic-armed.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, draws the club back slowly behind him and holds it there, then swings it in a wide fast sideways slash in front of him and follows through, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-ironclaw-roar-s3",
+   "src": "../stills/w10ic-roar.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, throws his head back and roars a furious war cry, his arms spread wide and his cape flaring out, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-roar-s11",
+   "src": "../stills/w10ic-roar.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, throws his head back and roars a furious war cry, his arms spread wide and his cape flaring out, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-stomp-s3",
+   "src": "../stills/w10ic-stomp1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, lifts one foot high and holds it there, then stomps it down hard on the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-stomp-s11",
+   "src": "../stills/w10ic-stomp1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, lifts one foot high and holds it there, then stomps it down hard on the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-hurt-s3",
+   "src": "../stills/w10ic-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, jolts back from a hit, flinching and grimacing, then steadies himself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-hurt-s11",
+   "src": "../stills/w10ic-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, jolts back from a hit, flinching and grimacing, then steadies himself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-stunned-s3",
+   "src": "../stills/w10ic-stunned.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, stands dazed and dizzy, swaying and wobbling while leaning on his club, his eyes unfocused, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-stunned-s11",
+   "src": "../stills/w10ic-stunned.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, stands dazed and dizzy, swaying and wobbling while leaning on his club, his eyes unfocused, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-ironclaw-defeat-s3",
+   "src": "../stills/w10ic-knockback.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, is knocked backwards, staggers, falls flat onto his back on the ground and lies still, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-ironclaw-defeat-s11",
+   "src": "../stills/w10ic-knockback.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big stocky brown sloth warlord with glowing red eyes, a spiked silver shoulder plate, a red scarf and a long torn crimson cape, holding a spiked wooden club, is knocked backwards, staggers, falls flat onto his back on the ground and lies still, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}
