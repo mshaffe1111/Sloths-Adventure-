@@ -140,5 +140,5 @@ X-16 hdset    6ae3afb40e0338d1bb7c2945 rtx-pro-6000 20:42:28Z-21:31:58Z (49.5 mi
   second landscape stacked above w6/w7/w9dawn/w3sinkhole, tile-panel ghosts on w1sunrise/w2/w5dusk2/w9, dark streaks on w5twi):
   redone in round 2.
 X-16 skies r2 6ae3bc140e0338d1bb7c35e5 rtx-pro-6000 started 21:35:16Z: the 16, plain start, overlap 512, sky-only prompt, 2 seeds.
-  r2 CANCELLED at 21:50Z (~15 min, ~$0.69): "no frame, no panel" in the positive prompt painted frames, panels and a sloth. Thrown.
-X-16 skies r3: round 1's prompt (negatives only in the negative prompt, sloth added), plain start, overlap 384, 2 seeds.
+  r2 CANCELLED at 21:39Z (~4 min, ~$0.18): "no frame, no panel" in the positive prompt painted frames, panels and a sloth. Thrown.
+X-16 skies r3 6ae3bd320e0338d1bb7c3687 started 21:40:02Z: round 1's prompt (negatives only in the negative prompt, sloth added), plain start, overlap 384, 2 seeds.
