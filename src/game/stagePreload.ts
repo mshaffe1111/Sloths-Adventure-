@@ -12,6 +12,7 @@
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
+import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
 import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
@@ -77,6 +78,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(BAD_WATER_URL);
+    } else if (k === 'sentry') {
+      sentryReady();
+      urls.push(...SENTRY_URLS);
     } else if (k === 'crumble') {
       crumbleArtReady();
       w7FaceReady();

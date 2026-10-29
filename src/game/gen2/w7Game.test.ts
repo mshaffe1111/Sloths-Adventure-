@@ -87,6 +87,10 @@ test("every shipped roll: nothing hurts in the first 5 s, the tiles taught first
     // (Dot is gone in World 7: every stage line is Pokey's own, and the room lines too)
     for (const h of hints) assert.ok(lines.has(h.text), `${at}: "${h.text}"`);
     for (const r of st.kit?.rooms ?? []) for (const t of Object.values(r.tips ?? {})) assert.ok(lines.has(t as string), `${at}: room line "${t}"`);
+    // (7-5's Stone Sentries: new, so Pokey's line comes before the first one, w7Finish)
+    const sentries = st.enemies.filter((e) => e.look === 'sentry').map((e) => e.patrolMinX);
+    if (id === '7-5') assert.ok(sentries.length > 0, `${at}: no Stone Sentry in the sentries' stage`);
+    if (sentries.length) assert.ok(hints.some((h) => h.text === W7_TIPS.sentry && h.x < Math.min(...sentries) - 300), `${at}: the sentry is not taught first`);
     if (id === '7-1') {
       const first = Math.min(...st.platforms.filter((p) => p.type === 'fragile').map((p) => p.x));
       assert.ok(hints.some((h) => h.text === W7_TIPS.crumble && h.x < first - 150), `${at}: the tiles are not taught before ${first}`);

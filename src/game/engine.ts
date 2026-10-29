@@ -1,4 +1,5 @@
 import { SlowWatch } from './slowTip.ts';
+import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
@@ -5473,6 +5474,8 @@ export class GameEngine {
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
+          // (World 7's Stone Sentry: a prowler's body, the sentry's painted clips)
+          if (enemy.look === 'sentry' && drawSentrySprite(ctx, enemy, this.gameTime)) return;
           if (!drawOcelotSprite(ctx, enemy, this.gameTime)) drawOcelot(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);

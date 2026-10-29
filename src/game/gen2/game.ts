@@ -21,6 +21,7 @@ import { w5ArenaKit } from './worlds/w5Arena.ts';
 import { w6Finish } from './worlds/w6.ts';
 import { W6_GAME_STAGES, w6GameKit } from './worlds/w6Game.ts';
 import { W7_GAME_STAGES, w7GameKit } from './worlds/w7Game.ts';
+import { w7Finish } from './worlds/w7.ts';
 
 export interface Gen2Entry {
   /**
@@ -47,11 +48,12 @@ const w6Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
   ...o,
 });
 
-/** World 7's stages (w7Game.ts): its sections and the stage's room in one kit, on the difficulty played (no finish: every animal was
- *  taught in an earlier world, and Pokey's lines are the sections' own tips) */
+/** World 7's stages (w7Game.ts): its sections and the stage's room in one kit, on the difficulty played; w7Finish puts Pokey's line
+ *  before 7-5's first Stone Sentry (the other animals were taught in earlier worlds) */
 const w7Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
   kit: (d) => w7GameKit(stage, d ?? 'normal'),
   kitName: `w7Game.ts:w7GameKit(${stage})`,
+  finish: w7Finish,
   ...o,
 });
 
@@ -77,7 +79,7 @@ export const isGen2Stage = (cfg: Pick<LevelConfig, 'id' | 'secret'>): boolean =>
 export function gen2Water(id: string): boolean {
   const M = GEN2_STAGES[id]?.kit('normal').manifest;
   if (!M) return false;
-  return M.pit === 'water' || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
+  return M.pit === 'water' || M.pit === 'void' || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
 }
 
 /** the creature sheets a gen2 stage's world can lay (its manifest's animals, by clip-sheet name: a snake draws the golden snake's) */

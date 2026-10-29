@@ -183,7 +183,8 @@ test('every shipped roll holds the clip-sheet animals its sheet list loads, and 
       if (id.startsWith('5-')) assert.ok(st.enemies.some((e) => e.type === 'spider'), `${id} roll ${i}: spiders`);
       for (const a of anims) assert.ok(st.enemies.some((e) => e.type === a), `${id} roll ${i}: no ${a} for its sheet`);
       // (World 5's pits are soft: no water. World 6's creeks: a sign at the first, Dot's line before it)
-      const water = (st.gen2?.falls ?? []).some((f) => f.kind === 'water');
+      // (a deep chasm, World 7's on Normal, shows the dirty water far below and is warned and signed like a creek)
+      const water = (st.gen2?.falls ?? []).some((f) => f.kind === 'water' || f.kind === 'void');
       assert.equal(st.waterY !== undefined, water, `${id} roll ${i}: the water line`);
       assert.equal((st.proto?.gen2?.waterWarnings?.length ?? 0) > 0, water, `${id} roll ${i}: the water signs`);
     }

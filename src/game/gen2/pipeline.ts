@@ -1305,7 +1305,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // water (Matt, 2026-10-28): a fall into it costs a life on Easy too, so it is warned: Dot's line WATER_WARN.lead px before the lip
   // (gone once he is past it) and a sign at the edge (proto.gen2.waterWarnings, for the world's art). Normal warns at the first water
   // only (the teaching rule); Easy at every water gap once WATER_WARN.every seconds of walking passed since the last warning.
-  const wet = laid.gaps.filter((g) => budget.pit === 'water' || g.water);
+  // (a deep chasm, a world's `void` falls on Normal, costs a life the same way: it shows the world's dirty water far below as its line,
+  // painted, and is warned the same way)
+  const wet = laid.gaps.filter((g) => budget.pit === 'water' || budget.pit === 'void' || g.water);
   if (wet.length) {
     const every = WATER_WARN.every * budget.walkSpeed;
     const text = M.tips?.water ?? WATER_LINE;
@@ -1599,7 +1601,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     exitTotemX: laid.exit.x,
     exitTotemY: laid.exit.y,
     checkpoints: filled.checkpoints,
-    ...(budget.pit === 'water' || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
+    ...(budget.pit === 'water' || budget.pit === 'void' || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),

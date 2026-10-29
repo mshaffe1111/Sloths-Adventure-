@@ -27,6 +27,7 @@
  * Pure data and pure functions (no canvas, no engine), like w6.ts.
  */
 import { G } from '../../protoStage.ts';
+import type { StageHint } from '../../protoStage.ts';
 import type { Enemy } from '../../types.ts';
 import type { CreatureDef, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W7_GROUND_SECTIONS } from './w7Ground.ts';
@@ -69,6 +70,8 @@ export const W7_LESSON = {
   fight: 'fight',
   /** the brown vines up the old walls (climbing was taught long ago: this is the story's line on the first one) */
   brown: 'brown',
+  /** 7-5's Stone Sentries (new: Pokey's line before the first one, w7Finish) */
+  sentry: 'sentry',
   water: 'water',
 } as const;
 
@@ -84,6 +87,27 @@ export const W7_CREATURES: CreatureDef[] = [
   { id: W7_CREATURE.harpy, enemy: 'harpy', threat: 4, terrain: 'flat', minGround: 260, w: 48, h: 36, hp: 2, footY: 16, tags: ['harpy', W7_TAG.hunter, W7_TAG.big] },
   { id: W7_CREATURE.frog, enemy: 'frog', threat: 1.5, terrain: 'flat', minGround: 120, w: 36, h: 24, hp: 1, footY: 14, tags: ['frog', W7_TAG.still, 'topup'] },
 ];
+
+/**
+ * 7-5 Stone Sentries: the halls' guards are the Stone Sentry (Matt's HF creature, sentrySprite.ts). Each fights as the prowler it stands
+ * in for (an ocelot enemy, so its brain, score and every check are the proven ones) and wears the sentry's look; the sockets keep their
+ * creature ids (a hall's ocelot, jaguar or boa socket holds a sentry), so the sections need no change. Its collider is a sentry's size.
+ */
+export const W7_SENTRY_STAGE = 5;
+export const sentryOf = (c: CreatureDef): CreatureDef => ({
+  ...c,
+  enemy: 'ocelot',
+  w: 56,
+  h: 80,
+  footY: 40,
+  hp: c.id === W7_CREATURE.jaguar ? 4 : 3,
+  minGround: Math.max(c.minGround, 240),
+  extra: { look: 'sentry' },
+  tags: [...(c.tags ?? []), 'sentry'],
+});
+const SENTRY_IDS = new Set<string>([W7_CREATURE.ocelot, W7_CREATURE.jaguar, W7_CREATURE.boa]);
+/** the stage's creatures: 7-5's hall guards are sentries */
+export const w7Creatures = (stage: number): CreatureDef[] => (stage === W7_SENTRY_STAGE ? W7_CREATURES.map((c) => (SENTRY_IDS.has(c.id) ? sentryOf(c) : c)) : W7_CREATURES);
 
 // ───────────────────────────── the props ─────────────────────────────
 
@@ -119,6 +143,7 @@ export const W7_TIPS: Record<string, string> = {
   [W7_LESSON.fight]: "Shut tight. I'll have to fight through.", // (new, needs Matt's approval)
   [W7_LESSON.brown]: 'Brown vines. Still strong enough to climb.', // (new, needs Matt's approval)
   [W7_LESSON.water]: "Dirty water down there. Hop it, don't touch.", // (new, needs Matt's approval)
+  [W7_LESSON.sentry]: 'A stone sentry. Hit it before it jabs.', // (new, needs Matt's approval)
 };
 export const W7_NEW_LINES: readonly string[] = Object.values(W7_TIPS);
 
@@ -211,5 +236,23 @@ export function w7Spawn(): NonNullable<WorldKit['spawn']> {
 
 /** World 7's kit for one stage (its number sets the light; the game's kit, w7Game.ts, chooses the sections) */
 export function w7Kit(stage = 1): WorldKit {
-  return { manifest: W7_MANIFEST, emit: w7Emitters(stage), decorate: w7Decorate(stage), spawn: w7Spawn() };
+  return { manifest: { ...W7_MANIFEST, creatures: w7Creatures(stage) }, emit: w7Emitters(stage), decorate: w7Decorate(stage), spawn: w7Spawn() };
+}
+
+/** Pokey's line comes this far before the first sentry (px): read before it can reach him */
+export const MEET_LEAD = 520;
+
+/**
+ * The stage as the engine plays it: Pokey's first line for the Stone Sentry MEET_LEAD px before the first one (fillSockets writes
+ * proto.hints after the spawn hook runs, so it is added here, as World 6's w6Finish does). Calling it twice changes nothing.
+ */
+export function w7Finish<S extends { spawnX?: number; enemies?: Enemy[]; proto?: { hints?: StageHint[] } }>(st: S): S {
+  const first = Math.min(...(st.enemies ?? []).filter((e) => e.look === 'sentry').map((e) => e.patrolMinX));
+  const text = W7_TIPS[W7_LESSON.sentry];
+  if (st.proto && Number.isFinite(first) && !(st.proto.hints ?? []).some((h) => h.text === text)) {
+    const hints = (st.proto.hints ??= []);
+    hints.push({ x: R(Math.max((st.spawnX ?? 0) + 40, first - MEET_LEAD)), text, pad: text, keys: text });
+    hints.sort((a, b) => a.x - b.x);
+  }
+  return st;
 }
