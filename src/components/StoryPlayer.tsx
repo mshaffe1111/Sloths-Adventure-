@@ -75,7 +75,12 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     () => (touchy ? script.filter((p) => !p.narratedOnly) : script.map((p) => (p.hold ? { ...p, hold: undefined } : p))),
     [script, touchy],
   );
-  const [idx, setIdx] = useState(0);
+  // dev only: `?storyAt=N` opens a story on its Nth picture (for before/after screenshots)
+  const [idx, setIdx] = useState(() => {
+    if (!import.meta.env.DEV || typeof window === 'undefined') return 0;
+    const n = Number(new URLSearchParams(window.location.search).get('storyAt') ?? 0);
+    return Number.isFinite(n) ? Math.max(0, Math.min(panels.length - 1, Math.floor(n))) : 0;
+  });
   // the photographs and backdrops of the next panels: start loading them now (only a few ahead: holding every picture of a story at
   // once came to about 300 MB, memory audit 2026-10-25)
   useEffect(() => {
