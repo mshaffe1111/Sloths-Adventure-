@@ -17,7 +17,7 @@ def bg_colour(arr):
     return np.median(edge, 0)
 
 
-def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_margin=None, limit=True):
+def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_margin=None, limit=True, drop_grey=False):
     g = np.asarray(gen.convert('RGB'), np.float32)
     H, W = g.shape[:2]
     bg = bg_colour(g)
@@ -39,6 +39,10 @@ def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_m
         rim = (np.asarray(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(9)), np.float32) / 255) < 0.5
         pale = (g.min(-1) > 200) & ((g.max(-1) - g.min(-1)) < 30)
         a = np.where(rim & pale & (a > 0), 0, a)
+    if drop_grey:
+        # (a painted floor shadow: grey, close to the background's brightness, no colour)
+        lum = g.mean(-1)
+        a = np.where(((g.max(-1) - g.min(-1)) < 16) & (np.abs(lum - bg.mean()) < 60), 0, a)
     # un-premultiply the grey out of the edge
     aa = np.maximum(a, 0.18)[..., None]
     rgb = np.clip(bg + (g - bg) / aa, 0, 255)

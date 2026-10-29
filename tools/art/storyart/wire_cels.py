@@ -60,7 +60,7 @@ def main():
             im = gen.convert('RGBA').crop((ox, oy, round(ox + old.width * s), round(oy + old.height * s))).resize((round(old.width * HD), round(old.height * HD)), Image.LANCZOS)
             mg = 0
         else:
-            im, mg = cut_figure(gen, m, old, HD, rect_margin=30 if general else 6, limit=not general)
+            im, mg = cut_figure(gen, m, old, HD, rect_margin=30 if general else 6, limit=not general, drop_grey=take.startswith('new-'))
         figs[key] = im
         info[key] = (face, cut_c, mg, old)
     pages, places = pack(figs, max_w=2048, max_h=2048)
