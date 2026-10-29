@@ -192,7 +192,7 @@ Last updated: 2026-10-29 2:35 PM ET.
 | X-6 | 7-3 ring of chairs | HF | hf-w7-chairs, then gen2-w7 wires | art MERGED into ccr; wiring with gen2-w7 |
 | X-7 | Stone Sentry guard for 7-5 | HF (exists) | gen2-w7 | cutting in |
 | X-8 | Floating capital-letter lesson labels; no speech box over Pokey | | polish-dot | in progress |
-| X-9 | Music: varied songs per world, adaptive, Hugging Face models allowed | HF | polish-audio | v1 REJECTED by Matt 2:45 PM ET ("I can't tell the difference"); v2: new lead instrument + tempo + groove per world, new tunes per stage in shuffled 8-bar chunks, obvious danger/dark/exit layers, HF pilot (World 3 chunks) |
+| X-9 | Music: varied songs per world, adaptive, Hugging Face models allowed | HF | polish-audio | v1 REJECTED by Matt 2:45 PM ET ("I can't tell the difference"); v2: new lead instrument + tempo + groove per world, new tunes per stage in shuffled 8-bar chunks, obvious danger/dark/exit layers, HF pilot (Worlds 1, 3, 9 chunks). Matt: worlds must sound like new places; reference = a mix of Donkey Kong Country (genre + groove per world) and Ori (emotional orchestral). Each world its own style, not new settings |
 | X-13 | Classic-family effects redo (no orchestra), tuned to each stage's key, checkpoint hiss gone | | polish-audio | built; held to send with music v2 (fix two clipping peaks) |
 | X-10 | QA batch E: replay 2 fps (survey no longer draws; root cause needs an Android replay), Facebook iPhone blur dropped steering (FIXED), load stutters (FIXED) | | qa-fix-e | MERGED into ccr 1:45 PM ET |
 | X-12 | Control-test opening too hard for first-timers: Matt chose Easy gaps sized to Easy reach + two more flags (2026-10-29) | | qa-fix-e | in progress |
