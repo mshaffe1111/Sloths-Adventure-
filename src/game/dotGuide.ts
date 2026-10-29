@@ -119,6 +119,8 @@ export const GUIDE = {
   bossLineMs: 6000,
   /** a tip about a thing (GuideLine.thing) has had a fair look after this long, and gives way to the next thing's tip (ms) */
   thingYieldMs: 3000,
+  /** the reading clock moves to when the bubble shows (Dot's flight in), at most this late (ms; DOT-7) */
+  showLagMaxMs: 2000,
 } as const;
 
 /**
@@ -197,6 +199,8 @@ export interface Showing {
   base: number;
   /** a new number for each line put up (the view keys on it) */
   n: number;
+  /** the bubble is up (the view said so: queue.shown): the clocks run from then */
+  shown?: boolean;
 }
 
 export interface TickEnv {
@@ -468,6 +472,19 @@ export class GuideQueue {
     this.waiting.splice(this.waiting.indexOf(b), 1);
     this.begin(b.line, now, b.line.move ? env.moveCount(b.line.move) : 0);
     return this.cur;
+  }
+
+  /**
+   * The view put line `n`'s bubble up (DOT-7): its clocks (reading time, minimum time, caps) start now, not when it left the queue.
+   * Dot flies in first (600 ms, about 1.2 s if she re-flies), and a 4 s line was up about 3 s. Only the first call counts.
+   */
+  shown(n: number, now: number): void {
+    const c = this.cur;
+    if (!c || c.n !== n || c.shown) return;
+    c.shown = true;
+    const lag = Math.max(0, Math.min(GUIDE.showLagMaxMs, now - c.startedAt));
+    if (this.startedAt === c.startedAt) this.startedAt += lag;
+    c.startedAt += lag;
   }
 
   /** take the events since the last call */

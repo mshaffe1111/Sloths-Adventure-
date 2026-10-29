@@ -591,6 +591,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.sx = c.dot.x;
       p.sy = c.dot.y;
       p.placedAt = run.clock;
+      if (run.show) run.queue.shown(run.show.n, run.clock);
     };
 
     const placeBub = (p: Plan) => {
@@ -632,6 +633,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.bubDy = p.bub.y - spot.y;
       p.ko = koCover(p.bub.x, p.bub.y);
       p.placedAt = run.clock;
+      // the bubble is up: the reading clock starts now (DOT-7)
+      if (run.show) run.queue.shown(run.show.n, run.clock);
     };
 
     const startLine = (s: Showing) => {
