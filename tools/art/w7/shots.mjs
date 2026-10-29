@@ -41,7 +41,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
         e.player.y = y - 2;
         e.player.vx = 0;
         e.player.vy = 0;
-        e.player.invincibleTimer = 999;
+        e.player.invincibleTimer = 0;
       }, [x, y]);
       await p.waitForTimeout(1800);
       await p.screenshot({ path: `${out}/${id}-${name}-${size}.png` });
