@@ -203,6 +203,10 @@ export const PIT_ESCAPE = 170;
 export const PIT_CLIMB = 100;
 /** the tallest stump one jump from the ground climbs with room to spare */
 const STUMP_REACH = 90;
+/** the control test's line before its first two-jump gap (its words for the new look: dotLinesData.ts ctest.gap3) */
+export const CTEST_GAP3 = 'This one needs two jumps: jump, then jump again in the air';
+/** the long jumps' own tip (dotLinesData.ts ctest.gaps) */
+const CTEST_GAPS = 'Jump the gaps. The last two need a second jump';
 /** before the second jump is taught (1-1's stepping stones): how far below a stone's lower side a gap's floor sits, an easy single hop */
 export const PLAIN_CLIMB = 75;
 /** 1-1's practice shelf for the second jump: this far past the start of the twist (the tip is said at 60), and this high above the path */
@@ -889,6 +893,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       // a flag on the far bank once the single jumps are done, and another before the last gap, so a missed double jump starts again
       // just before it (there was none for 2,100 px on Normal)
       if (k === 1 || k === 2) checkpoints.push({ x: far + 70, y: G, reached: false });
+      // and Dot teaches the second jump on the bank before the first gap that needs it, once he stands on it (never mid-jump: belowY
+      // waits for him on the ground), the first time on this phone (Matt, 2026-10-29: the kids missed gaps 3 and 4 with one jump)
+      // (the stretch's own tip, on the same move, comes down there, or it held the bubble until after his try at the gap: passX)
+      if (k === 1) {
+        const intro = hints.find((h) => h.text === CTEST_GAPS);
+        if (intro) intro.passX = far + 20;
+        hint(far + 20, CTEST_GAP3, CTEST_GAP3, CTEST_GAP3, G - 4);
+      }
       run(R.r(260, 320));
     });
     expert += (x - x0) / RUN + 2;
@@ -2229,7 +2241,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       flag();
     });
     beat('Long jumps', () => {
-      hint(x + 60, 'Jump the gaps. The last two need a second jump');
+      hint(x + 60, CTEST_GAPS);
       gaps();
       flag();
     });
