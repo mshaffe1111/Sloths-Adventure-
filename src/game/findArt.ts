@@ -1,73 +1,21 @@
 /**
- * The two things that carry the story finds, drawn in code (placeholders for painted art):
+ * The two things that carry the story finds, painted (stageArt.ts, hf-art-stage 2026-10-29, VI-16):
  *  - the Hush Fern: a clump of fronds that hides a book or a keepsake. Crouch beside it and a ring fills over it.
  *  - the Keeper's Bell: Meeca's pink bell flower, which carries her notes and is just touched.
- * Both are drawn with the origin at the item's centre, 26 px above the ground it stands on.
+ * Both are drawn with the origin at the item's centre, 26 px above the ground it stands on. Code adds only the small touches: the motes
+ * of light drifting up out of the fern, its wink, and the search ring.
  */
 import type { Collectible } from './types.ts';
 import { FONT_UI } from './fonts.ts';
+import { drawBellArt, drawFernArt } from './stageArt.ts';
 
 const GROUND = 26;
 
-function frond(ctx: CanvasRenderingContext2D, lean: number, len: number, wid: number, fill: string, sway: number) {
-  ctx.save();
-  ctx.rotate(lean + sway);
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.bezierCurveTo(-wid, -len * 0.3, -wid * 0.7, -len * 0.8, 0, -len);
-  ctx.bezierCurveTo(wid * 0.7, -len * 0.8, wid, -len * 0.3, 0, 0);
-  ctx.fillStyle = fill;
-  ctx.fill();
-  ctx.strokeStyle = '#1f4a22';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.restore();
-}
-
 export function drawHushFern(ctx: CanvasRenderingContext2D, item: Collectible, time: number) {
   const search = item.search ?? 0;
-
-  // a faint golden glow that breathes: the clump reads as different from the foliage behind it, but it is never a beacon
-  ctx.save();
-  ctx.translate(0, GROUND - 30);
-  const breathe = 0.5 + 0.5 * Math.sin(time * 2.4 + item.id);
-  const R = 44 + breathe * 6;
-  const glow = ctx.createRadialGradient(0, 0, 4, 0, 0, R);
-  glow.addColorStop(0, `rgba(255, 236, 150, ${0.16 + 0.1 * breathe + 0.3 * search})`);
-  glow.addColorStop(0.55, `rgba(255, 220, 120, ${0.05 + 0.04 * breathe})`);
-  glow.addColorStop(1, 'rgba(255, 220, 120, 0)');
-  ctx.fillStyle = glow;
-  ctx.beginPath();
-  ctx.arc(0, 0, R, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-
+  if (!drawFernArt(ctx, GROUND, time, item.id, search)) return;
   ctx.save();
   ctx.translate(0, GROUND);
-  // every few seconds the whole clump gives a quick shiver on its own: movement is what the eye finds first
-  const rustle = Math.max(0, Math.sin(time * 1.1 + item.id * 2.3) - 0.78) / 0.22;
-  const sway = Math.sin(time * 1.6 + item.id) * 0.03;
-  // while searched the fronds shiver harder
-  const shake = (search > 0 ? Math.sin(time * 38) * 0.035 * search : 0) + Math.sin(time * 31) * 0.028 * rustle;
-  ctx.fillStyle = 'rgba(0,0,0,0.22)';
-  ctx.beginPath();
-  ctx.ellipse(0, 1, 34, 6, 0, 0, Math.PI * 2);
-  ctx.fill();
-  // minty, silvery fronds with pale tips: a different green from the jungle, so it does not melt into it
-  const blades: Array<[number, number, number, string]> = [
-    [-0.95, 38, 13, '#62c3a0'], [0.95, 38, 13, '#62c3a0'], [-0.5, 50, 14, '#78d6b2'], [0.5, 50, 14, '#78d6b2'], [0, 60, 15, '#9be9c6'],
-  ];
-  for (const [lean, len, wid, fill] of blades) frond(ctx, lean, len, wid, fill, sway + shake);
-  // golden tips on the three tallest fronds
-  ctx.fillStyle = '#ffe9a0';
-  for (const [lean, len] of [[-0.5, 50], [0.5, 50], [0, 60]] as Array<[number, number]>) {
-    ctx.save();
-    ctx.rotate(lean + sway + shake);
-    ctx.beginPath();
-    ctx.arc(0, -len + 3, 3.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
   // motes of light drifting up out of it
   for (let k = 0; k < 4; k++) {
     const ph = (time * 0.35 + k * 0.25 + item.id * 0.13) % 1;
@@ -79,7 +27,6 @@ export function drawHushFern(ctx: CanvasRenderingContext2D, item: Collectible, t
     ctx.arc(mx, my, 2.1 - ph * 0.8, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.globalAlpha = 1;
   // a bright wink of light so a careful player notices it
   const wink = Math.max(0, Math.sin(time * 2.4 + item.id * 1.7));
   ctx.globalAlpha = 0.35 + 0.65 * wink * wink;
@@ -133,52 +80,7 @@ export function drawSearchHint(ctx: CanvasRenderingContext2D, item: Collectible,
   }
 }
 
+/** the Keeper's Bell, painted, swaying on its stem */
 export function drawKeepersBell(ctx: CanvasRenderingContext2D, item: Collectible, time: number) {
-  ctx.save();
-  const sway = Math.sin(time * 2 + item.id) * 0.1;
-  ctx.translate(0, GROUND);
-  ctx.scale(1.3, 1.3);
-  // stem and leaf
-  ctx.strokeStyle = '#3f8a3c';
-  ctx.lineWidth = 4;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.quadraticCurveTo(-3, -16, 0, -30);
-  ctx.stroke();
-  ctx.fillStyle = '#4f9a48';
-  ctx.beginPath();
-  ctx.moveTo(-1, -10);
-  ctx.bezierCurveTo(-16, -18, -26, -12, -30, -18);
-  ctx.bezierCurveTo(-18, -26, -8, -22, -1, -14);
-  ctx.fill();
-  // the bell
-  ctx.translate(0, -34);
-  ctx.rotate(sway);
-  const g = ctx.createRadialGradient(0, -2, 2, 0, 0, 22);
-  g.addColorStop(0, 'rgba(255, 220, 235, 0.55)');
-  g.addColorStop(1, 'rgba(255, 220, 235, 0)');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.arc(0, 0, 22, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(-12, 4);
-  ctx.bezierCurveTo(-16, -14, -6, -18, 0, -18);
-  ctx.bezierCurveTo(6, -18, 16, -14, 12, 4);
-  ctx.bezierCurveTo(6, 8, -6, 8, -12, 4);
-  ctx.fillStyle = '#e9a0b4';
-  ctx.fill();
-  ctx.strokeStyle = '#8a4a60';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.fillStyle = '#f6c9d6';
-  ctx.beginPath();
-  ctx.ellipse(0, 4, 11, 4, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#e8c46a';
-  ctx.beginPath();
-  ctx.ellipse(0, 9, 3, 4, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+  drawBellArt(ctx, GROUND, time, item.id);
 }

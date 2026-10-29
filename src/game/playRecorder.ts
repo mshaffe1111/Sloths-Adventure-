@@ -40,8 +40,8 @@ type Line = (string | number)[];
 
 let mixSeed = 0;
 /**
- * The control test's layout seed. A new one each run (Start, Play again: newMix), the same one for a retry inside the run, so every run
- * is a different mix of stretches (protoStage.ts). `?mix=<seed>` in the address builds that one run again.
+ * The control test's layout seed. A new one each run (chosen on the front page, and as the questions after a run come up: newMix, so
+ * its sheets load behind them), the same one for a retry inside the run, so every run is a different mix of stretches (protoStage.ts). `?mix=<seed>` in the address builds that one run again.
  */
 export function ctestSeed(): number {
   try {
@@ -153,7 +153,8 @@ class PlayRecorder {
 
   start(who: string) {
     if (this.on) return;
-    newMix();
+    // (the mix the front page already loaded the sheets for, App.tsx; a new one only if none was chosen)
+    if (!mixSeed) newMix();
     this.who = who.trim().slice(0, 40) || 'anonymous';
     try {
       localStorage.setItem(NAME_KEY, this.who);

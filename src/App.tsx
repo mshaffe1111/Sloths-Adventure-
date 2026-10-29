@@ -47,6 +47,7 @@ import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
 import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
+import { guardBack } from './game/backGuard.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { midSceneAfter } from './game/midScene.ts';
@@ -270,6 +271,8 @@ export default function App() {
   // Initialize Input Engine once
   useEffect(() => {
     inputEngineRef.current = new InputEngine();
+    // (the control test: a blur that came while a finger was down, and was let pass: inputEngine.ts handleBlur)
+    inputEngineRef.current.onBlurKept = () => recorder.glitch('blurKept', `fingers ${inputEngineRef.current?.touchesDown ?? 0}`);
     return () => {
       inputEngineRef.current?.destroy();
     };
@@ -539,7 +542,8 @@ export default function App() {
     };
   }
 
-  // dev only: the running engine, for screenshots and tests
+  // dev only: the running engine, for screenshots and tests (the one hook: the engine used to set window.__engine to itself as it was
+  // made, which replaced this function with an engine object, so a script's __engine() threw after a Play again)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __engine?: () => unknown }).__engine = () => engineRef.current;
   }
@@ -592,6 +596,30 @@ export default function App() {
     else if (screen === 'world_story' || screen === 'boss_intro') void preloadStage(activeLevel, canvasRef.current, inPlay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeLevel.id]);
+
+  // the control test's stage: 1-2, asking only to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
+  const ctestLevel = (): LevelConfig | null => {
+    const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
+    return base ? { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 } : null;
+  };
+  // and its sheets, loaded, decoded and drawn once while the tester reads the front page and types a name: started only at Start, a slow
+  // connection had the eagle's and the snakes' sheets arrive mid-run and stall the frames they first drew in (QA 2026-10-29, Safari 18,
+  // 130-220 ms right after each 'sheet' line)
+  useEffect(() => {
+    if (!ctestGate) return;
+    const lvl = ctestLevel();
+    if (lvl) void preloadStage(lvl, canvasRef.current, inPlay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctestGate]);
+
+  // the questions after a control-test run are up: the next run's mix is chosen now, and its sheets loaded while they are answered (the
+  // last mix's creatures that this one does not draw are let go first: stagePreload.ts)
+  useEffect(() => {
+    if (!ctestDone) return;
+    newMix();
+    void preloadStage(ctestDone, canvasRef.current, inPlay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctestDone]);
 
   // World 8's flashback (the promise) plays inside its world card: it counts as seen once that card opens
   useEffect(() => {
@@ -711,7 +739,10 @@ export default function App() {
             setScore(finalScore);
 
             // the control test is over at its shrine: thank the tester (nothing is saved, and the game does not go on to 1-3)
+            // (and the stage stops: under the questions it kept drawing 30 times a second for as long as they took, minutes, and on Sally's
+            // Android the frames there slowed and the picture dropped to its lightest before the replay, QA 2026-10-29)
             if (ctestEnabled() && lvl.id === CTEST_STAGE_ID) {
+              engine.stop();
               setCtestDone(lvl);
               return;
             }
@@ -824,6 +855,14 @@ export default function App() {
     if (screen === 'title') leaveWideMode();
   }, [screen]);
 
+  // a back swipe from the screen's edge pauses the stage instead of leaving the game (backGuard.ts, polish report CT-6)
+  const onBackSwipe = useRef<() => void>(() => {});
+  onBackSwipe.current = () => {
+    if (screen === 'playing') pauseGame();
+  };
+  const onStage = screen === 'playing' || screen === 'paused';
+  useEffect(() => (onStage ? guardBack(() => onBackSwipe.current()) : undefined), [onStage]);
+
   // the new HUD (beta) flies a pickup from Pokey into its counter
   const heroPoint = useCallback(() => engineRef.current?.heroScreenPoint() ?? null, []);
 
@@ -910,9 +949,7 @@ export default function App() {
           onStart={() => {
             setCtestGate(false);
             setRecording(true);
-            const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
-            // the test only asks him to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
-            const lvl = base && { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 };
+            const lvl = ctestLevel();
             if (lvl) {
               setActiveLevel(lvl);
               setSelectedWorldId(lvl.worldIndex);
@@ -926,7 +963,7 @@ export default function App() {
           onDone={() => {
             // ending early: note where he was, stop the stage, and go to the questions
             recorder.event('quit');
-            engineRef.current?.pause();
+            engineRef.current?.stop();
             setCtestDone(activeLevel);
           }}
         />
@@ -938,8 +975,7 @@ export default function App() {
             const lvl = ctestDone;
             setCtestDone(null);
             recorder.event('playAgain');
-            // a new mix of stretches for the next run
-            newMix();
+            // (the new mix was chosen, and its sheets loaded, while the questions were up: the effect below)
             launchEngine(lvl);
           }}
         />
@@ -1225,7 +1261,7 @@ export default function App() {
             />
           )}
           {inputEngineRef.current && (
-            <ControlSwitch inputEngine={inputEngineRef.current} />
+            <ControlSwitch inputEngine={inputEngineRef.current} world={activeLevel.worldIndex} />
           )}
         </>
       )}

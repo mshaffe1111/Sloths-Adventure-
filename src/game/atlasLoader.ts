@@ -62,24 +62,45 @@ interface Held {
 const held = new Set<Held>();
 let heldWorld = 0;
 
+function letGo(h: Held) {
+  h.gone = true;
+  h.img.onload = null;
+  h.img.onerror = null;
+  const sh = sheets.get(h.url);
+  if (sh?.img === h.img) dropSheet(h.url, sh);
+  try {
+    h.forget();
+  } catch {
+    /* a module that fails to reset just keeps its sheet */
+  }
+}
+
 /** let go of every world sheet (the pictures are freed once nothing else holds them) */
 export function releaseWorldArt(): number {
   let n = 0;
   for (const h of held) {
-    h.gone = true;
-    h.img.onload = null;
-    h.img.onerror = null;
-    const sh = sheets.get(h.url);
-    if (sh?.img === h.img) dropSheet(h.url, sh);
-    try {
-      h.forget();
-    } catch {
-      /* a module that fails to reset just keeps its sheet */
-    }
+    letGo(h);
     n++;
   }
   held.clear();
   if (n) perfNote(`let go of ${n} sheets from the last world`);
+  return n;
+}
+
+/**
+ * let go of just these sheets (by address), the way a change of world does: the control test's next mix does not draw the last one's
+ * creatures, and a phone kept every creature's sheets any mix had drawn (stagePreload.ts). Only while no stage draws them.
+ */
+export function releaseSheets(urls: Iterable<string>): number {
+  const set = new Set(urls);
+  let n = 0;
+  for (const h of [...held]) {
+    if (!set.has(h.url)) continue;
+    letGo(h);
+    held.delete(h);
+    n++;
+  }
+  if (n) perfNote(`let go of ${n} sheets the next stage does not draw`);
   return n;
 }
 

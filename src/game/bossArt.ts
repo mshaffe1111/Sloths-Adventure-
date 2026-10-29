@@ -25,6 +25,7 @@ import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawW4 } from './w4Art.ts';
 import { drawSkyPush } from './sovereignArt.ts';
 import { FONT_UI } from './fonts.ts';
+import { drawFx, drawFxRun } from './bossFx.ts';
 
 /** the bosses that have a painted version */
 const PAINTED: Record<number, PaintedBoss> = { 1: venomRig, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 5: queenSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
@@ -477,7 +478,12 @@ function drawGrit(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   ctx.restore();
 }
 
-/** a pulsing mark on the floor: something lands or erupts here very soon */
+/**
+ * A pulsing mark on the floor: something lands or erupts here very soon. Every boss uses the same painted marker (bossFx.ts): the
+ * cracked ring of glowing earth on the ground, filling in brighter as the moment comes, and the painted "lands here" arrow bobbing over
+ * it; a locked mark adds the two "get out" arrows pointing off it both ways and GET OFF! over it. A column or a drop also lights the
+ * space above the mark with a soft red glow (a code touch) so the whole danger zone reads.
+ */
 function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, strength: number) {
   const total = Math.max(0.01, h.warnMax || 1);
   const u = h.warn > 0 ? 1 - h.warn / total : 1;
@@ -485,79 +491,44 @@ function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, 
   const rw = Math.max(40, h.w) * 0.75;
   const pulse = 0.6 + 0.4 * Math.sin(time * (14 + u * 22));
 
-  // the danger zone itself: a red pillar that fills in as the moment gets closer
+  // the danger zone itself: a red glow that fills in as the moment gets closer
   if (h.kind === 'column' || h.kind === 'drop') {
     const zh = h.kind === 'column' ? h.h : 340;
     const zw = Math.max(34, h.w);
     const g = ctx.createLinearGradient(0, fl - zh, 0, fl);
     g.addColorStop(0, 'rgba(239,68,68,0)');
     g.addColorStop(1, 'rgba(239,68,68,1)');
-    ctx.globalAlpha = (0.22 + 0.4 * u) * strength * (0.85 + 0.15 * pulse);
+    ctx.globalAlpha = (0.18 + 0.32 * u) * strength * (0.85 + 0.15 * pulse);
     ctx.fillStyle = g;
     ctx.fillRect(h.x - zw / 2, fl - zh, zw, zh);
-    ctx.globalAlpha = (0.35 + 0.45 * u) * strength;
-    ctx.strokeStyle = '#fecaca';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([6, 5]);
-    ctx.beginPath();
-    ctx.moveTo(h.x - zw / 2, fl);
-    ctx.lineTo(h.x - zw / 2, fl - zh);
-    ctx.moveTo(h.x + zw / 2, fl);
-    ctx.lineTo(h.x + zw / 2, fl - zh);
-    ctx.stroke();
-    ctx.setLineDash([]);
   }
 
-  ctx.globalAlpha = (0.45 + 0.45 * u) * strength * (h.kind === 'mark' ? pulse : 0.75 + 0.25 * pulse);
-  ctx.fillStyle = '#ef4444';
-  ctx.beginPath();
-  ctx.ellipse(h.x, fl - 3, rw, 8, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = (0.6 + 0.4 * u) * strength;
-  ctx.strokeStyle = '#fecaca';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  ctx.ellipse(h.x, fl - 3, rw * (1.3 - 0.3 * u), 9 * (1.3 - 0.3 * u), 0, 0, Math.PI * 2);
-  ctx.stroke();
-  // a locked mark says so: arrows out of it both ways and GET OFF! over it (a mark that follows him has none)
+  // the painted ring on the ground: it swells a little and brightens as the moment comes
+  const ringW = rw * 2.5 * (1.12 - 0.12 * u);
+  ctx.globalAlpha = (0.55 + 0.45 * u) * strength * (h.kind === 'mark' ? 0.8 + 0.2 * pulse : 0.88 + 0.12 * pulse);
+  if (!drawFx(ctx, 'warnRing', h.x, fl - 2, ringW, { h: Math.max(18, ringW * 0.2) })) {
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.ellipse(h.x, fl - 3, rw, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // a locked mark says so: the painted arrows out of it both ways and GET OFF! over it (a mark that follows him has none)
   if (h.kind === 'mark' && h.locked) {
-    ctx.globalAlpha = strength * (0.75 + 0.25 * pulse);
-    ctx.strokeStyle = '#ffffff';
-    ctx.fillStyle = '#ffffff';
-    ctx.lineWidth = 4;
-    for (const d of [-1, 1]) {
-      const x0 = h.x + d * (rw + 10);
-      ctx.beginPath();
-      ctx.moveTo(x0, fl - 14);
-      ctx.lineTo(x0 + d * 26, fl - 14);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(x0 + d * 36, fl - 14);
-      ctx.lineTo(x0 + d * 24, fl - 23);
-      ctx.lineTo(x0 + d * 24, fl - 5);
-      ctx.closePath();
-      ctx.fill();
-    }
+    ctx.globalAlpha = strength * (0.8 + 0.2 * pulse);
+    for (const d of [-1, 1]) drawFx(ctx, 'warnArrow', h.x + d * (rw * 1.25 + 26 + 5 * pulse), fl - 16, 46, { flipX: d < 0 });
+    ctx.globalAlpha = strength;
     ctx.font = `800 22px ${FONT_UI}`;
     ctx.textAlign = 'center';
     ctx.lineWidth = 5;
     ctx.strokeStyle = '#7f1d1d';
-    ctx.strokeText('GET OFF!', h.x, fl - 48);
+    ctx.strokeText('GET OFF!', h.x, fl - 52);
     ctx.fillStyle = '#fee2e2';
-    ctx.fillText('GET OFF!', h.x, fl - 48);
+    ctx.fillText('GET OFF!', h.x, fl - 52);
+    return;
   }
-  // chevrons pointing at where it lands or erupts
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 3;
-  for (let i = 0; i < 2; i++) {
-    const yy = fl - 22 - i * 15 - ((time * 40) % 15);
-    ctx.globalAlpha = (0.85 - i * 0.3) * strength * u;
-    ctx.beginPath();
-    ctx.moveTo(h.x - 9, yy + 6);
-    ctx.lineTo(h.x, yy - 3);
-    ctx.lineTo(h.x + 9, yy + 6);
-    ctx.stroke();
-  }
+  // the painted arrow over it, bobbing down at where it lands or erupts
+  ctx.globalAlpha = strength * Math.min(1, 0.35 + u);
+  drawFx(ctx, 'warnDown', h.x, fl - 30 - 6 * Math.abs(Math.sin(time * 6)), 26, { ay: 1 });
 }
 
 function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
@@ -639,6 +610,8 @@ function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) 
       break;
     }
     case 'web': {
+      // the painted splat of web the strands rise out of
+      drawFx(ctx, 'webSplat', x, fl + 1, 76, { ay: 0.75, alpha: fade });
       ctx.strokeStyle = h.color;
       ctx.lineWidth = 3;
       ctx.globalAlpha = fade * 0.9;
@@ -873,8 +846,16 @@ function drawDrop(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     // a roost bat folding its wings and dropping head first
     ctx.rotate(Math.PI * 0.5);
     drawMiniBat(ctx, Math.sin(time * 26 + h.seed) * 0.35 - 0.45, s * 1.6, h.color2, h.color);
+  } else if (h.look === 'cocoon' && drawFx(ctx, 'cocoon', 0, 0, s * 1.15, { ay: 0.55 })) {
+    // the painted cocoon on its thread
+    ctx.strokeStyle = 'rgba(226, 232, 248, 0.7)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 1.2);
+    ctx.lineTo(0, -s * 9);
+    ctx.stroke();
   } else if (h.look === 'cocoon') {
-    // a silk-wrapped cocoon falling on its thread, bands of silk round it and something dark inside
+    // (the sheet is still loading: a cocoon drawn in code for the moment)
     ctx.strokeStyle = 'rgba(226, 232, 248, 0.7)';
     ctx.lineWidth = 1.6;
     ctx.beginPath();
@@ -974,6 +955,8 @@ function drawGlob(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
 
 function drawWebShot(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const r = h.w * 0.5;
+  // the painted silk ball, turning as it flies
+  if (drawFx(ctx, 'silkBall', h.x, h.y, r * 2.4, { rot: time * 6 })) return;
   ctx.translate(h.x, h.y);
   ctx.rotate(time * 6);
   ctx.strokeStyle = h.color;
@@ -1036,6 +1019,12 @@ function drawShock(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
 
 function drawWave(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const fade = clamp01(h.life / 0.5);
+  // the painted ones: Crocus Rex's breaking wave of mud, the Tarantula Queen's ripple of silk, rolling the way they run
+  if (h.look === 'mud' || h.look === 'silk') {
+    const w = h.look === 'mud' ? h.h * 1.5 : h.w * 2.2;
+    const wob = 1 + 0.04 * Math.sin(time * 18);
+    if (drawFx(ctx, h.look === 'mud' ? 'mudWave' : 'silkRipple', h.x, h.floorY + 2, w * wob, { ay: 1, flipX: h.dir < 0, alpha: fade })) return;
+  }
   ctx.translate(h.x, h.y);
   ctx.scale(h.dir, 1);
   ctx.lineCap = 'round';
@@ -1111,6 +1100,8 @@ function drawBeam(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
       ctx.closePath();
       ctx.fill();
     }
+  } else if (h.look === 'venom' && drawFx(ctx, 'venomJet', 0, 0, Math.max(40, len), { ax: 0, h: th * 1.3 })) {
+    // the Queen's painted venom jet, sprayed out to its full length
   } else if (h.look === 'jab') {
     // the painted spear is already in the picture: just a pale streak so the reach of the thrust reads
     const g = ctx.createLinearGradient(0, 0, len, 0);
@@ -1230,6 +1221,8 @@ function drawBolt(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     // a roost bat in a flock, beating its wings; it flies sideways, so it is never drawn upside down
     if (Math.abs(ang) > Math.PI / 2) ctx.scale(1, -1);
     drawMiniBat(ctx, Math.sin(time * 22 + h.id * 1.7), 58, '#3b1a78', h.color);
+  } else if (h.look === 'feather' && drawFx(ctx, 'feather', 0, 0, 34)) {
+    // the Sky Sovereign's painted feather dart
   } else if (h.look === 'feather') {
     ctx.fillStyle = h.color2;
     ctx.beginPath();
@@ -1267,19 +1260,11 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   if (!r || !br || br.state === 'dying' || b.defeated) return;
   const open = weakOpen(b, def);
   if (def.weakAt) {
-    // a head that comes down to be hit: only a ring round it while it is open (the head itself says where; no ember up high)
+    // a head that comes down to be hit: only the painted gold ring round it while it is open (the head itself says where; no ember up high)
     if (!open) return;
     const pulse = 0.5 + 0.5 * Math.sin(time * 9);
-    ctx.save();
-    ctx.globalAlpha = 0.55 + 0.35 * pulse;
-    ctx.strokeStyle = '#fde047';
-    ctx.lineWidth = 3 + 2 * pulse;
-    ctx.setLineDash([14, 9]);
-    ctx.lineDashOffset = -time * 40;
-    ctx.beginPath();
-    ctx.ellipse(r.x + r.w / 2, r.y + r.h * 0.55, r.w * 0.58 + 6 * pulse, r.h * 0.62 + 4 * pulse, 0, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.restore();
+    const rw = (r.w * 0.58 + 6 * pulse) * 2.3;
+    drawFx(ctx, 'weakRing', r.x + r.w / 2, r.y + r.h * 0.55, rw, { h: (r.h * 0.62 + 4 * pulse) * 2.3, alpha: 0.85 + 0.15 * pulse });
     return;
   }
   const cx = r.x + r.w / 2;
@@ -1315,64 +1300,13 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   ctx.arc(cx, cy, rad * 1.5, 0, Math.PI * 2);
   ctx.fill();
   ctx.globalAlpha = 1;
-  ctx.strokeStyle = '#fff7ed';
-  ctx.lineWidth = 4;
-  ctx.shadowColor = '#fde047';
-  ctx.shadowBlur = 14;
-  ctx.beginPath();
-  ctx.arc(cx, cy, rad * (0.8 + 0.12 * pulse), 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-    ctx.moveTo(cx + dx * rad * 0.45, cy + dy * rad * 0.45);
-    ctx.lineTo(cx + dx * rad * 1.15, cy + dy * rad * 1.15);
-  }
-  ctx.stroke();
+  // the painted gold target ring (boss-fx.webp 'weakRing'), breathing and turning slowly
+  const d = rad * 2.6 * (0.9 + 0.1 * pulse);
+  drawFx(ctx, 'weakRing', cx, cy, d, { rot: time * 0.8 });
   ctx.restore();
 }
 
 /** a piranha caught in a leap: grey back, red belly, a mouth of teeth. Drawn at the origin facing right */
-function drawPiranha(ctx: CanvasRenderingContext2D) {
-  ctx.fillStyle = '#475569';
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 11, 5.5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#f87171';
-  ctx.beginPath();
-  ctx.ellipse(1, 2.2, 9, 3, 0, 0, Math.PI);
-  ctx.fill();
-  ctx.fillStyle = '#334155';
-  ctx.beginPath();
-  ctx.moveTo(-9, 0);
-  ctx.lineTo(-17, -6);
-  ctx.lineTo(-17, 6);
-  ctx.closePath();
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(-3, -5);
-  ctx.lineTo(2, -9);
-  ctx.lineTo(4, -5);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillStyle = '#fef9c3';
-  ctx.beginPath();
-  ctx.arc(6, -1.6, 2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#0f172a';
-  ctx.beginPath();
-  ctx.arc(6.6, -1.6, 0.9, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#fff';
-  for (let i = 0; i < 3; i++) {
-    ctx.beginPath();
-    ctx.moveTo(8 + i * 1.6, 2);
-    ctx.lineTo(9.2 + i * 1.6, 5);
-    ctx.lineTo(10.4 + i * 1.6, 2);
-    ctx.fill();
-  }
-}
-
 /** the river flooding in along the floor from the arena edge: a rippling warning first, then dark water full of leaping piranhas */
 function drawFlood(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const fl = h.floorY;
@@ -1404,34 +1338,8 @@ function drawFlood(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   }
   const x0 = Math.min(edge, edge + dir * h.w);
   ctx.globalAlpha = 1;
-  const g = ctx.createLinearGradient(0, fl - 18, 0, fl);
-  g.addColorStop(0, '#5fb5a8');
-  g.addColorStop(0.35, h.color);
-  g.addColorStop(1, h.color2);
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.moveTo(x0, fl);
-  for (let x = x0; x <= x0 + h.w + 8; x += 8) ctx.lineTo(Math.min(x, x0 + h.w), fl - 16 + Math.sin(x * 0.09 + time * 3) * 2.2 + Math.sin(x * 0.04 - time * 2) * 1.6);
-  ctx.lineTo(x0 + h.w, fl);
-  ctx.closePath();
-  ctx.fill();
-  // foam crest and moonlit glints
-  ctx.strokeStyle = 'rgba(209, 250, 229, 0.85)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  for (let x = x0; x <= x0 + h.w; x += 8) {
-    const y = fl - 16 + Math.sin(x * 0.09 + time * 3) * 2.2 + Math.sin(x * 0.04 - time * 2) * 1.6;
-    if (x === x0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-  ctx.fillStyle = 'rgba(241, 245, 249, 0.7)';
-  for (let x = x0 + 10; x < x0 + h.w - 6; x += 26) {
-    const tw = 0.5 + 0.5 * Math.sin(time * 4 + x);
-    ctx.globalAlpha = 0.5 * tw;
-    ctx.fillRect(x, fl - 11 + ((x * 7) % 5), 8, 2);
-  }
-  ctx.globalAlpha = 1;
+  // the painted river water (a strip, mirrored copy to copy so the joins match), sliding a little as it laps
+  drawFxRun(ctx, 'flood', x0, x0 + h.w, fl + 2, 30, { ay: 1, offset: Math.sin(time * 1.3) * 10 + time * 14 });
   // the piranhas, each leaping in turn
   const n = Math.max(1, Math.floor(h.w / 70));
   for (let i = 0; i < n; i++) {
@@ -1442,21 +1350,9 @@ function drawFlood(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     const px = x0 + (h.w * (i + 0.5 + Math.sin(h.seed * 9 + i) * 0.25)) / n;
     const py = fl - 14 - Math.sin(u * Math.PI) * (13 + (i % 3) * 5);
     const ang = -Math.cos(u * Math.PI) * 0.9 * -dir;
-    ctx.save();
-    ctx.translate(px, py);
-    ctx.scale(dir, 1);
-    ctx.rotate(ang * dir * -1);
-    drawPiranha(ctx);
-    ctx.restore();
+    drawFx(ctx, 'piranha', px, py, 36, { flipX: dir < 0, rot: -ang });
     // the splash where it goes in and comes out
-    if (u < 0.12 || u > 0.88) {
-      ctx.fillStyle = 'rgba(209, 250, 229, 0.8)';
-      for (let d = -1; d <= 1; d += 2) {
-        ctx.beginPath();
-        ctx.arc(px + d * 6, fl - 18, 2.2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
+    if (u < 0.14 || u > 0.86) drawFx(ctx, 'splash', px, fl - 12, 30, { ay: 1, alpha: 0.9 });
   }
 }
 
@@ -1466,17 +1362,9 @@ function drawStorm(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const dir = h.dir || 1;
   const edge = h.ox ?? h.x;
   const full = h.growTo ?? h.w;
-  const cloud = (cx: number, cy: number, r: number, a: number) => {
-    ctx.fillStyle = `rgba(46, 34, 84, ${a})`;
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.arc(cx - r * 0.9, cy + r * 0.25, r * 0.78, 0, Math.PI * 2);
-    ctx.arc(cx + r * 0.9, cy + r * 0.25, r * 0.78, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = `rgba(110, 92, 170, ${a * 0.5})`;
-    ctx.beginPath();
-    ctx.arc(cx - r * 0.15, cy - r * 0.3, r * 0.6, 0, Math.PI * 2);
-    ctx.fill();
+  // a painted thundercloud (three different ones, taken in turn), centred on (cx, cy), r its half-height
+  const cloud = (cx: number, cy: number, r: number, a: number, k: number) => {
+    drawFx(ctx, `storm${((k % 3) + 3) % 3}`, cx, cy, r * 3.4, { alpha: a });
   };
   if (h.warn > 0) {
     // the warning: a violet haze thickens along where the storm is going to reach, with now and then a flicker
@@ -1489,7 +1377,7 @@ function drawStorm(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     ctx.fillStyle = g;
     ctx.fillRect(Math.min(edge, edge + dir * full), fl - 12, full, 12);
     ctx.globalAlpha = 1;
-    for (let i = 0; i < 3; i++) cloud(edge + dir * (full * (0.2 + i * 0.3)), fl - 14, 16 + 8 * u, 0.4 * u);
+    for (let i = 0; i < 3; i++) cloud(edge + dir * (full * (0.2 + i * 0.3)), fl - 14, 16 + 8 * u, 0.4 * u, i);
     return;
   }
   const x0 = Math.min(edge, edge + dir * h.w);
@@ -1497,25 +1385,16 @@ function drawStorm(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const n = Math.max(2, Math.floor(h.w / 34));
   for (let i = 0; i < n; i++) {
     const cx = x0 + (h.w * (i + 0.5)) / n;
-    cloud(cx, fl - 14 + Math.sin(time * 2 + i * 1.7 + h.seed * 7) * 2.4, 17 + (i % 3) * 3, 0.95);
+    cloud(cx, fl - 14 + Math.sin(time * 2 + i * 1.7 + h.seed * 7) * 2.4, 17 + (i % 3) * 3, 1, i);
   }
-  // lightning forking down from the bank, flickering at a different rate along its length
-  ctx.strokeStyle = '#efe9ff';
-  ctx.lineWidth = 2.2;
-  ctx.lineJoin = 'round';
-  for (let i = 0; i < Math.max(1, Math.floor(h.w / 90)); i++) {
+  // lightning forking down from the bank (the painted bolt), flickering at a different rate along its length
+  const nb = Math.max(1, Math.floor(h.w / 90));
+  for (let i = 0; i < nb; i++) {
     const ph = (time * (1.7 + (i % 3) * 0.4) + i * 0.37 + h.seed) % 1;
     if (ph > 0.22) continue;
-    const bx = x0 + (h.w * (i + 0.5 + Math.sin(h.seed * 9 + i) * 0.25)) / Math.max(1, Math.floor(h.w / 90));
-    ctx.globalAlpha = 1 - ph / 0.22;
-    ctx.beginPath();
-    ctx.moveTo(bx, fl - 26);
-    ctx.lineTo(bx - 5, fl - 17);
-    ctx.lineTo(bx + 4, fl - 11);
-    ctx.lineTo(bx - 3, fl - 3);
-    ctx.stroke();
+    const bx = x0 + (h.w * (i + 0.5 + Math.sin(h.seed * 9 + i) * 0.25)) / nb;
+    drawFx(ctx, 'bolt', bx, fl - 1, 16, { ay: 1, h: 34, alpha: 1 - ph / 0.22, flipX: i % 2 === 1 });
   }
-  ctx.globalAlpha = 1;
 }
 
 /** a burning palisade creeping in from the arena edge: a haze of heat first, then a row of charred stakes with flames licking up them */

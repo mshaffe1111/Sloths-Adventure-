@@ -1,0 +1,133 @@
+{
+ "note": "hfboss-r4: moss, croc props, pennants, screech, weak point; hf-art-bosses, 2026-10-29",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/4afdbca0ddce3852c75ff2800fa31efd89846669/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "fg-moss-s70-7",
+   "start": "start-fg-moss.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game at night: a gnarled dark mangrove branch runs along the top edge, and from it hang soft ragged curtains of Spanish moss, long wispy grey-green strands in loose bunches of different lengths, swaying, with a few small dark leaves at the branch. Soft and stringy like hair, never pointed. Nothing below them. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 2048,
+   "h": 384
+  },
+  {
+   "name": "fg-moss-s70-23",
+   "start": "start-fg-moss.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game at night: a gnarled dark mangrove branch runs along the top edge, and from it hang soft ragged curtains of Spanish moss, long wispy grey-green strands in loose bunches of different lengths, swaying, with a few small dark leaves at the branch. Soft and stringy like hair, never pointed. Nothing below them. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 2048,
+   "h": 384
+  },
+  {
+   "name": "fg-moss-s82-7",
+   "start": "start-fg-moss.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game at night: a gnarled dark mangrove branch runs along the top edge, and from it hang soft ragged curtains of Spanish moss, long wispy grey-green strands in loose bunches of different lengths, swaying, with a few small dark leaves at the branch. Soft and stringy like hair, never pointed. Nothing below them. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.82,
+   "seed": 7,
+   "w": 2048,
+   "h": 384
+  },
+  {
+   "name": "fg-moss-s82-23",
+   "start": "start-fg-moss.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game at night: a gnarled dark mangrove branch runs along the top edge, and from it hang soft ragged curtains of Spanish moss, long wispy grey-green strands in loose bunches of different lengths, swaying, with a few small dark leaves at the branch. Soft and stringy like hair, never pointed. Nothing below them. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.82,
+   "seed": 23,
+   "w": 2048,
+   "h": 384
+  },
+  {
+   "name": "croc-props-s62-7",
+   "start": "start-croc-props.webp",
+   "prompt": "slothadv style, a sheet of four separate game props for a crocodile king's swamp bank at night, side view: top left an old wooden rowboat half sunk in brown mud, tilted, a split plank in its side and a snapped oar sticking up; top right a weathered wooden warning sign on a post with a blue wave picture crossed out by a red no-entry ring, a bite torn out of its top corner; bottom left a heap of old dented metal knight helmets with a rusty bucket and two white bones on a patch of mud; bottom right two clumps of tall swamp reeds and bulrushes with brown cattail heads. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "croc-props-s62-23",
+   "start": "start-croc-props.webp",
+   "prompt": "slothadv style, a sheet of four separate game props for a crocodile king's swamp bank at night, side view: top left an old wooden rowboat half sunk in brown mud, tilted, a split plank in its side and a snapped oar sticking up; top right a weathered wooden warning sign on a post with a blue wave picture crossed out by a red no-entry ring, a bite torn out of its top corner; bottom left a heap of old dented metal knight helmets with a rusty bucket and two white bones on a patch of mud; bottom right two clumps of tall swamp reeds and bulrushes with brown cattail heads. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "croc-props-s75-7",
+   "start": "start-croc-props.webp",
+   "prompt": "slothadv style, a sheet of four separate game props for a crocodile king's swamp bank at night, side view: top left an old wooden rowboat half sunk in brown mud, tilted, a split plank in its side and a snapped oar sticking up; top right a weathered wooden warning sign on a post with a blue wave picture crossed out by a red no-entry ring, a bite torn out of its top corner; bottom left a heap of old dented metal knight helmets with a rusty bucket and two white bones on a patch of mud; bottom right two clumps of tall swamp reeds and bulrushes with brown cattail heads. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "croc-props-s75-23",
+   "start": "start-croc-props.webp",
+   "prompt": "slothadv style, a sheet of four separate game props for a crocodile king's swamp bank at night, side view: top left an old wooden rowboat half sunk in brown mud, tilted, a split plank in its side and a snapped oar sticking up; top right a weathered wooden warning sign on a post with a blue wave picture crossed out by a red no-entry ring, a bite torn out of its top corner; bottom left a heap of old dented metal knight helmets with a rusty bucket and two white bones on a patch of mud; bottom right two clumps of tall swamp reeds and bulrushes with brown cattail heads. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "fx3-s72-7",
+   "start": "start-fx3.webp",
+   "prompt": "slothadv style, a sheet of separate game pieces: along the top three tattered cream cloth pennant flags, each with three long tails streaming to the right in the wind with soft folds, fixed to a short golden hem on the left; on the far right a tall thin wooden flag pole with a round gold knob on top; in the middle a long curved glowing band of white and pale cyan sound and wind, a shockwave of swirling air tapering to points at both ends; at the bottom a glowing golden ring of light with four short bright golden rays pointing in toward its middle, a target mark. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.72,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "fx3-s72-23",
+   "start": "start-fx3.webp",
+   "prompt": "slothadv style, a sheet of separate game pieces: along the top three tattered cream cloth pennant flags, each with three long tails streaming to the right in the wind with soft folds, fixed to a short golden hem on the left; on the far right a tall thin wooden flag pole with a round gold knob on top; in the middle a long curved glowing band of white and pale cyan sound and wind, a shockwave of swirling air tapering to points at both ends; at the bottom a glowing golden ring of light with four short bright golden rays pointing in toward its middle, a target mark. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.72,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "fx3-s85-7",
+   "start": "start-fx3.webp",
+   "prompt": "slothadv style, a sheet of separate game pieces: along the top three tattered cream cloth pennant flags, each with three long tails streaming to the right in the wind with soft folds, fixed to a short golden hem on the left; on the far right a tall thin wooden flag pole with a round gold knob on top; in the middle a long curved glowing band of white and pale cyan sound and wind, a shockwave of swirling air tapering to points at both ends; at the bottom a glowing golden ring of light with four short bright golden rays pointing in toward its middle, a target mark. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.85,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "fx3-s85-23",
+   "start": "start-fx3.webp",
+   "prompt": "slothadv style, a sheet of separate game pieces: along the top three tattered cream cloth pennant flags, each with three long tails streaming to the right in the wind with soft folds, fixed to a short golden hem on the left; on the far right a tall thin wooden flag pole with a round gold knob on top; in the middle a long curved glowing band of white and pale cyan sound and wind, a shockwave of swirling air tapering to points at both ends; at the bottom a glowing golden ring of light with four short bright golden rays pointing in toward its middle, a target mark. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character, icicles, spikes",
+   "strength": 0.85,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  }
+ ]
+}

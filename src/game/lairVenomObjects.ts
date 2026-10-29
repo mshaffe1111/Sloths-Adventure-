@@ -10,6 +10,7 @@
  */
 import { glowPic } from './glow.ts';
 import type { Platform, TreeStructure, Vine } from './types.ts';
+import { drawLairRope, drawLairRopeLine } from './ropeArt.ts';
 
 interface Cam {
   x: number;
@@ -183,20 +184,7 @@ function drawCradle(ctx: CanvasRenderingContext2D, p: Platform, cam: Cam, time: 
   ctx.lineCap = 'round';
   for (const u of cables) {
     const cx = p.x + w * u;
-    ctx.strokeStyle = '#0a0d05';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(cx, p.y + 4);
-    ctx.lineTo(cx + sway, topEdge);
-    ctx.stroke();
-    ctx.strokeStyle = '#3a4a1c';
-    ctx.lineWidth = 4.5;
-    ctx.stroke();
-    ctx.strokeStyle = 'rgba(190, 242, 100, 0.4)';
-    ctx.lineWidth = 1.4;
-    ctx.setLineDash([6, 12]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    drawLairRopeLine(ctx, cx, p.y + 4, cx + sway, topEdge, 7, '#9ccf5a', '#3a4a1c');
   }
 
   // the cradle: knotted root underneath, thick moss on top
@@ -512,20 +500,7 @@ function drawClimbLiana(ctx: CanvasRenderingContext2D, v: Vine, time: number) {
   ctx.lineWidth = 22;
   trace();
   ctx.stroke();
-  ctx.strokeStyle = '#06100a';
-  ctx.lineWidth = 13;
-  trace();
-  ctx.stroke();
-  ctx.strokeStyle = '#3f7a1c';
-  ctx.lineWidth = 9;
-  trace();
-  ctx.stroke();
-  ctx.strokeStyle = '#a3e635';
-  ctx.lineWidth = 3;
-  ctx.setLineDash([9, 7]);
-  trace();
-  ctx.stroke();
-  ctx.setLineDash([]);
+  drawLairRope(ctx, at, N, 12, '#9ccf5a', '#3f7a1c');
   // leaf pairs and glowing buds
   for (let i = 1; i < N; i += 3) {
     const u = i / N;
@@ -593,26 +568,7 @@ function drawSwingLiana(ctx: CanvasRenderingContext2D, v: Vine, cam: Cam, time: 
   ctx.lineWidth = 20;
   trace();
   ctx.stroke();
-  ctx.strokeStyle = '#06100a';
-  ctx.lineWidth = 12;
-  trace();
-  ctx.stroke();
-  ctx.strokeStyle = '#4a6a20';
-  ctx.lineWidth = 8;
-  trace();
-  ctx.stroke();
-  // a plaited look: two light strands twisting along it
-  ctx.strokeStyle = '#bef264';
-  ctx.lineWidth = 2.6;
-  ctx.setLineDash([8, 9]);
-  trace();
-  ctx.stroke();
-  ctx.strokeStyle = '#1f3a10';
-  ctx.lineDashOffset = 8;
-  trace();
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.lineDashOffset = 0;
+  drawLairRope(ctx, at, N, 11, '#9ccf5a', '#4a6a20');
 
   // the seed pod at the end: a glowing teardrop with two leaves
   const glow = 0.55 + 0.45 * Math.sin(time * 2.4);

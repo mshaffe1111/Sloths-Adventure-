@@ -15,6 +15,46 @@ import { drawDotFrame, flyFrame, warmDot } from './dotSprite.ts';
 import { BLOOM, DOT, MIST, TOP, gustState, openingY, type BackName, type DotStage, type Nectar, type NetWall, type Thorn } from './dotFlightStage.ts';
 import type { DotFlight } from './dotFlight.ts';
 import { FONT_UI } from './fonts.ts';
+import { hudArtImage } from '../components/hud/painted.tsx';
+import { HUD_PIECES } from './hudAtlasData.ts';
+
+/**
+ * Her panels sit on the wood HUD's own plate (the goal counter's carved slab, hud-atlas.webp), drawn as three slices so its bark ends and
+ * leaves keep their shape and only the middle stretches. A dark rounded box stands in for the moment the sheet is still loading.
+ */
+function woodPanel(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+  const im = hudArtImage();
+  if (!im) {
+    ctx.fillStyle = 'rgba(40, 22, 10, 0.7)';
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, Math.min(14, h / 2));
+    ctx.fill();
+    return;
+  }
+  const p = HUD_PIECES.goalPlate;
+  // (the slab's painted face is a little inside the piece: it is drawn a touch larger than the panel so the face fills it)
+  const padY = h * 0.16;
+  const ph = h + padY * 2;
+  const k = ph / p.h;
+  const cap = Math.min(w / 2, 150 * k);
+  const capSrc = cap / k;
+  const top = y - padY;
+  const left = x - 6;
+  const right = x + w + 6;
+  ctx.drawImage(im, p.x, p.y, capSrc, p.h, left, top, cap, ph);
+  ctx.drawImage(im, p.x + capSrc, p.y, p.w - capSrc * 2, p.h, left + cap - 0.5, top, right - left - cap * 2 + 1, ph);
+  ctx.drawImage(im, p.x + p.w - capSrc, p.y, capSrc, p.h, right - cap, top, cap, ph);
+}
+
+/** cream lettering with an ink edge, as on the wood HUD's numbers */
+function woodText(ctx: CanvasRenderingContext2D, s: string, x: number, y: number) {
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#2b160a';
+  ctx.strokeText(s, x, y);
+  ctx.fillStyle = '#fdf0cf';
+  ctx.fillText(s, x, y);
+}
 
 export type DotPiece = keyof typeof DOT_PROP_FRAMES;
 
@@ -50,11 +90,35 @@ function back(n: BackName): HTMLImageElement | null {
   return b.ok ? b.im : null;
 }
 
+/** whether her pieces have loaded (starts the load): World 5's web patches draw her silk too (zoneArt.ts) */
+export function dotPropsReady(): boolean {
+  load();
+  return ready && !!img;
+}
+
+/**
+ * The rope bridges of the two far paintings, lifted out of them (tools/art/hfbosses/dotbridge.py) and laid back over the haze with a
+ * soft shadow line under each, so a bridge reads as a bridge and not as more mist (VI-18). Same size and place as the painting / 2.
+ */
+export const DOT_BRIDGES_URL = new URL('../assets/props/dot-bridges.webp', import.meta.url).href;
+const BRIDGE_FRAMES: Partial<Record<BackName, { x: number; sx: number }>> = { far1: { x: 0, sx: 768 }, far2: { x: 1536, sx: 2304 } };
+const bridges: { im: HTMLImageElement | null; ok: boolean } = { im: null, ok: false };
+function bridgePic(): HTMLImageElement | null {
+  if (!bridges.im) {
+    if (typeof Image === 'undefined') return null;
+    const im = new Image();
+    bridges.im = im;
+    trackAtlas(im, DOT_BRIDGES_URL, () => { bridges.ok = true; }, () => { bridges.im = null; }, () => { bridges.im = null; bridges.ok = false; });
+  }
+  return bridges.ok ? bridges.im : null;
+}
+
 /** start loading her pieces, her frames and the paintings the stage uses */
 export function warmDotFlight(st: DotStage) {
   load();
   warmDot();
   for (const [, n] of st.backs) back(n);
+  bridgePic();
 }
 
 /** her pieces, her frames and every painting her flight can use (each stage roll uses all four), before the stage starts */
@@ -62,6 +126,7 @@ export function warmDotSheets() {
   load();
   warmDot();
   for (const n of Object.keys(BACK_URL) as BackName[]) back(n);
+  bridgePic();
 }
 
 /**
@@ -226,6 +291,7 @@ export function drawDotBackdrop(ctx: CanvasRenderingContext2D, st: DotStage, cam
   ctx.fillRect(0, 0, vw, vh);
   const mid = camX + vw / 2;
   const blend = 500;
+  const lift: Array<{ n: BackName; a: number; x: number; y: number; w: number; h: number }> = [];
   for (let i = 0; i < st.backs.length; i++) {
     const [x0, n] = st.backs[i];
     const x1 = st.backs[i + 1]?.[0] ?? st.width + 2000;
@@ -242,6 +308,7 @@ export function drawDotBackdrop(ctx: CanvasRenderingContext2D, st: DotStage, cam
     const v = Math.max(0, Math.min(1, camY / Math.max(1, DOT_VIEW_SLACK)));
     ctx.globalAlpha = a;
     ctx.drawImage(im, -(w - vw) * u, -(h - vh) * v, w, h);
+    if (BRIDGE_FRAMES[n]) lift.push({ n, a, x: -(w - vw) * u, y: -(h - vh) * v, w, h });
   }
   ctx.globalAlpha = 1;
   // haze: the paintings sit back behind the netting and the thorns (the near ones are busy, with their own netting in them)
@@ -251,6 +318,18 @@ export function drawDotBackdrop(ctx: CanvasRenderingContext2D, st: DotStage, cam
   hz.addColorStop(1, 'rgba(236, 240, 244, 0.5)');
   ctx.fillStyle = hz;
   ctx.fillRect(0, 0, vw, vh);
+  // the bridges back out of the haze, each with its shadow line a little under it
+  const bp = lift.length ? bridgePic() : null;
+  if (bp) {
+    for (const L of lift) {
+      const f = BRIDGE_FRAMES[L.n]!;
+      ctx.globalAlpha = L.a * 0.9;
+      ctx.drawImage(bp, f.sx, 0, 768, 512, L.x, L.y + L.h * 0.012, L.w, L.h);
+      ctx.globalAlpha = L.a * 0.85;
+      ctx.drawImage(bp, f.x, 0, 768, 512, L.x, L.y, L.w, L.h);
+    }
+    ctx.globalAlpha = 1;
+  }
   // the low sun's rays, slowly breathing
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
@@ -947,14 +1026,11 @@ function drawSlimHud(ctx: CanvasRenderingContext2D, fl: DotFlight, t: number, at
   const w = 128;
   const h = 22;
   ctx.save();
-  ctx.fillStyle = 'rgba(10, 30, 22, 0.62)';
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, 11);
-  ctx.fill();
+  woodPanel(ctx, x, y, w, h);
   drawPiece(ctx, 'dew', x + 10, y + h / 2, 9);
   const u = fl.energy / DOT.energy;
   const bw = w - 62;
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+  ctx.fillStyle = 'rgba(30, 14, 4, 0.55)';
   ctx.beginPath();
   ctx.roundRect(x + 19, y + 7, bw, 8, 4);
   ctx.fill();
@@ -964,7 +1040,7 @@ function drawSlimHud(ctx: CanvasRenderingContext2D, fl: DotFlight, t: number, at
   ctx.fill();
   // the scratches: a mark and the count
   const sx = x + 19 + bw + 9;
-  ctx.strokeStyle = fl.scratches > 0 ? '#fb7185' : 'rgba(255, 255, 255, 0.4)';
+  ctx.strokeStyle = fl.scratches > 0 ? '#fb7185' : 'rgba(253, 240, 207, 0.55)';
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(sx, y + 16);
@@ -974,8 +1050,7 @@ function drawSlimHud(ctx: CanvasRenderingContext2D, fl: DotFlight, t: number, at
   ctx.stroke();
   ctx.font = `700 12px ${FONT_UI}`;
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#ffe4e6';
-  ctx.fillText(String(fl.scratches), sx + 13, y + h / 2 + 1);
+  woodText(ctx, String(fl.scratches), sx + 13, y + h / 2 + 1);
   ctx.restore();
 }
 
@@ -995,17 +1070,11 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
   ctx.save();
   ctx.translate(at.x, at.y);
   if (at.scale && at.scale !== 1) ctx.scale(at.scale, at.scale);
-  ctx.fillStyle = 'rgba(10, 30, 22, 0.62)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, 14);
-  ctx.fill();
-  ctx.stroke();
+  woodPanel(ctx, x, y, w, h);
   // nectar: a drop and a bar
   const u = fl.energy / DOT.energy;
   drawPiece(ctx, 'dew', x + 14, y + 15, 12);
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+  ctx.fillStyle = 'rgba(30, 14, 4, 0.55)';
   ctx.beginPath();
   ctx.roundRect(x + 26, y + 10, w - 36, 10, 5);
   ctx.fill();
@@ -1015,14 +1084,13 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
   ctx.roundRect(x + 26, y + 10, Math.max(4, (w - 36) * u), 10, 5);
   ctx.fill();
   // scratches: nine little marks
-  ctx.font = `600 11px ${FONT_UI}`;
-  ctx.fillStyle = '#d1fae5';
+  ctx.font = `700 11px ${FONT_UI}`;
   ctx.textBaseline = 'middle';
-  ctx.fillText('Scratches', x + 9, y + 36);
+  woodText(ctx, 'Scratches', x + 9, y + 36);
   const tx = x + 66;
   for (let i = 0; i < 9; i++) {
     const got = i < fl.scratches;
-    ctx.strokeStyle = got ? '#fb7185' : 'rgba(255, 255, 255, 0.25)';
+    ctx.strokeStyle = got ? '#fb7185' : 'rgba(253, 240, 207, 0.4)';
     ctx.lineWidth = got ? 2.4 : 1.6;
     ctx.beginPath();
     const sx = tx + i * 7 + (i >= 5 ? 3 : 0);
@@ -1031,19 +1099,14 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
     ctx.stroke();
   }
   if (fl.scratches > 9) {
-    ctx.fillStyle = '#fb7185';
-    ctx.fillText(`+${fl.scratches - 9}`, tx + 68, y + 36);
+    woodText(ctx, `+${fl.scratches - 9}`, tx + 68, y + 36);
   }
   // silk: shown once one is found (it is the secret)
   if (fl.silkGot.size > 0) {
-    ctx.fillStyle = 'rgba(10, 30, 22, 0.62)';
-    ctx.beginPath();
-    ctx.roundRect(x + w + 6, y, 62, h, 14);
-    ctx.fill();
-    drawPiece(ctx, 'silkWide', x + w + 24, y + 25, 28);
+    woodPanel(ctx, x + w + 14, y, 62, h);
+    drawPiece(ctx, 'silkWide', x + w + 32, y + 25, 28);
     ctx.font = `700 14px ${FONT_UI}`;
-    ctx.fillStyle = '#e0f2fe';
-    ctx.fillText(`${fl.silkGot.size}/${fl.stage.silk.length}`, x + w + 40, y + 26);
+    woodText(ctx, `${fl.silkGot.size}/${fl.stage.silk.length}`, x + w + 48, y + 26);
   }
   ctx.restore();
 }

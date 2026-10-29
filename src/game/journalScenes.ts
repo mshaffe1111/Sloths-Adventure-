@@ -30,6 +30,17 @@ import { newBrain } from './bossAI.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
+import { gateArtReady, stageArtReady } from './stageArt.ts';
+
+/**
+ * Start loading the painted sheets the scenes draw from (the journal opens: HowToPlay.tsx): the backdrop, World 1's exit gate and the
+ * shared sheet with the heart, the power-ups and the finds (stageArt.ts). Without it they came in a moment after a page opened.
+ */
+export function warmJournalArt(): void {
+  stageArtReady();
+  gateArtReady(1);
+  loadBackdrop();
+}
 
 export const SCENE_W = 300;
 export const SCENE_H = 187.5;
@@ -51,11 +62,14 @@ export const SCENE_LEN: Record<DemoId, number> = {
 const BG_URL = new URL('../assets/backdrops/w1c-mid.webp', import.meta.url).href;
 let bg: HTMLImageElement | null = null;
 let bgReady = false;
-function backdrop(ctx: CanvasRenderingContext2D) {
+function loadBackdrop() {
   if (!bg && typeof Image !== 'undefined') {
     bg = new Image();
     trackAtlas(bg, BG_URL, () => { bgReady = true; }, () => { bg = null; });
   }
+}
+function backdrop(ctx: CanvasRenderingContext2D) {
+  loadBackdrop();
   const g = ctx.createLinearGradient(0, 0, 0, SCENE_H);
   g.addColorStop(0, '#2f5a3a');
   g.addColorStop(1, '#173323');

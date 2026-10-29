@@ -840,7 +840,7 @@ function inked(ctx: CanvasRenderingContext2D, text: string, x: number, y: number
   ctx.fillText(text, x, y);
 }
 
-/** the "On the March North" card over the opening shot: the game's chapter card at night (upright on the top half, sideways on the left) */
+/** the "On the March North" card over the opening shot: the game's chapter card at night (upright on the top half, sideways high on the left) */
 export function drawTitleCard(ctx: CanvasRenderingContext2D, W: number, H: number, a: number, t: number) {
   if (a <= 0) return;
   const land = W > H;
@@ -852,9 +852,10 @@ export function drawTitleCard(ctx: CanvasRenderingContext2D, W: number, H: numbe
   sh.addColorStop(land ? 0.7 : 0.62, 'rgba(14, 6, 22, 0)');
   ctx.fillStyle = sh;
   ctx.fillRect(0, 0, W, H);
-  const cx = land ? W * 0.26 : W / 2;
-  const cy = land ? H * 0.5 : H * 0.26;
-  const big = Math.min(land ? 56 : 52, (land ? W * 0.5 : W) / 7.2, H / (land ? 6.4 : 14));
+  // sideways the card sits high on the left, its last line above the camp's sleepers (QA VI-18: at mid-height it ran into them)
+  const big = Math.min(land ? 48 : 52, (land ? W * 0.5 : W) / 7.2, H / (land ? 8.4 : 14));
+  const cx = land ? W * 0.24 : W / 2;
+  const cy = land ? big * 1.75 + 10 : H * 0.26;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = `700 ${Math.round(big * 0.25)}px ${FONT_UI}`;

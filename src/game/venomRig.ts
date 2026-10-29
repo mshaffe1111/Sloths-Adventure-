@@ -8,6 +8,7 @@ import type { BossEntity } from './types.ts';
 import type { BossDef } from './bossAI.ts';
 import type { PaintedBoss } from './paintedBoss.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { drawFx, drawFxRun } from './bossFx.ts';
 import { VENOM2_FRAMES, VENOM2_PX, type VenomFrame } from './venom2AtlasData.ts';
 import { VENOM_FRAMES } from './venomAtlasData.ts';
 import { NECK, VF, coilCut, coilTop, venomPose, type CoilPose, type HeadPose } from './venomFang.ts';
@@ -16,13 +17,25 @@ import { withHurtFlash } from './hurtFlash.ts';
 const URL_ATLAS = new URL('../assets/enemies/venom2-atlas.webp', import.meta.url).href;
 const K = VF.S / VENOM2_PX;
 
+/** his painted body, a tile that repeats along the neck (Hugging Face img2img of his own colours, tools/art/hfbosses/venomcut.py) */
+const URL_BODY = new URL('../assets/enemies/venom-body.webp', import.meta.url).href;
+
 let atlas: HTMLImageElement | null = null;
 let ready = false;
+let body: HTMLImageElement | null = null;
+let bodyReady = false;
 function load() {
-  if (atlas || typeof Image === 'undefined') return;
-  const img = new Image();
-  atlas = img;
-  trackAtlas(img, URL_ATLAS, () => { ready = true; }, () => { atlas = null; }, () => { atlas = null; ready = false; });
+  if (typeof Image === 'undefined') return;
+  if (!atlas) {
+    const img = new Image();
+    atlas = img;
+    trackAtlas(img, URL_ATLAS, () => { ready = true; }, () => { atlas = null; }, () => { atlas = null; ready = false; });
+  }
+  if (!body) {
+    const img = new Image();
+    body = img;
+    trackAtlas(img, URL_BODY, () => { bodyReady = true; }, () => { body = null; }, () => { body = null; bodyReady = false; });
+  }
 }
 
 /** a piece drawn with its anchor at (x, y) of the current frame */
@@ -71,45 +84,46 @@ function resample(pts: Array<[number, number]>, step: number): Array<[number, nu
 }
 
 /**
- * The neck, painted along the spine (local points) in the body's own colours: so it bends cleanly at any angle (slices of the
- * painted tile fanned out into teeth on the outside of a bend). Belly to the right of the way it runs.
+ * The neck: his painted body tile laid along the spine (local points) in short slices, so it bends with the spine and its scales run on
+ * along the length; belly to the right of the way it runs. A plain two-tone tube stands in for the moment the tile is still loading.
  */
 function neck(ctx: CanvasRenderingContext2D, raw: Array<[number, number]>, cap: CanvasLineCap = 'round') {
   if (raw.length < 2) return;
-  const pts = resample(raw, 4);
+  const pts = resample(raw, 6);
   const W = NECK;
+  if (bodyReady && body) {
+    const im = body;
+    const th = W + 6;
+    const k = th / im.naturalHeight;
+    const tileLen = im.naturalWidth * k;
+    let u = 0;
+    for (let i = 1; i < pts.length; i++) {
+      const [ax, ay] = pts[i - 1];
+      const [bx, by] = pts[i];
+      const len = Math.hypot(bx - ax, by - ay);
+      if (len < 0.01) continue;
+      ctx.save();
+      ctx.translate(ax, ay);
+      ctx.rotate(Math.atan2(by - ay, bx - ax));
+      let done = 0;
+      while (done < len - 0.001) {
+        const at = (u + done) % tileLen;
+        const part = Math.min(len - done, tileLen - at);
+        // (a hair of overlap into the next slice, so the outside of a bend shows no gap)
+        ctx.drawImage(im, at / k, 0, part / k, im.naturalHeight, done, -th / 2, part + 2, th);
+        done += part;
+      }
+      ctx.restore();
+      u += len;
+    }
+    return;
+  }
   ctx.save();
   ctx.lineCap = cap;
   ctx.lineJoin = 'round';
   stroke(ctx, pts, W + 4, COL.line);
   stroke(ctx, pts, W, COL.back);
-  stroke(ctx, offset(pts, -W * 0.22), W * 0.12, COL.backHi);
   stroke(ctx, offset(pts, W * 0.3), W * 0.4, COL.belly);
-  stroke(ctx, offset(pts, W * 0.42), W * 0.14, COL.bellyLo);
-  stroke(ctx, offset(pts, W * 0.09), 1.8, 'rgba(29,18,16,0.75)');
-  // the belly plates and the pale jagged markings
-  const inner = offset(pts, W * 0.1);
-  const outer = offset(pts, W * 0.49);
-  ctx.strokeStyle = COL.plate;
-  ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  for (let i = 2; i < pts.length - 2; i += 3) {
-    ctx.moveTo(inner[i][0], inner[i][1]);
-    ctx.lineTo(outer[i][0], outer[i][1]);
-  }
-  ctx.stroke();
-  const top = offset(pts, -W * 0.46);
-  const mid = offset(pts, -W * 0.12);
-  ctx.strokeStyle = COL.mark;
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  for (let i = 5; i < pts.length - 6; i += 11) {
-    const k = i % 2 ? 1 : 0.7;
-    ctx.moveTo(top[i][0], top[i][1]);
-    ctx.lineTo(mid[i + 1][0] * k + top[i + 1][0] * (1 - k), mid[i + 1][1] * k + top[i + 1][1] * (1 - k));
-    ctx.lineTo(top[i + 3][0], top[i + 3][1]);
-  }
-  ctx.stroke();
   ctx.restore();
 }
 
@@ -125,31 +139,25 @@ function extendSpine(pts: Array<[number, number]>, into: number): Array<[number,
   return [[ax - ((bx - ax) / la) * 10, ay - ((by - ay) / la) * 10], ...pts, [dx + ((dx - cx) / lb) * into, dy + ((dy - cy) / lb) * into]];
 }
 
-/** the warning: a line flashing along the floor where the head will sweep (local, from x0 to x1) */
+/**
+ * The warning: where the head will sweep (local, from x0 to x1), with the shared painted marker pieces (bossFx.ts): a low glow over the
+ * floor (a code touch), the painted scratch trail along it and the painted arrows racing the way the head will go.
+ */
 function warnLine(ctx: CanvasRenderingContext2D, x0: number, x1: number, u: number, time: number) {
-  const a = (0.35 + 0.45 * u) * (0.7 + 0.3 * Math.sin(time * 22));
+  const a = (0.45 + 0.45 * u) * (0.75 + 0.25 * Math.sin(time * 22));
   ctx.save();
   ctx.globalAlpha = a;
-  const g = ctx.createLinearGradient(0, -26, 0, 4);
+  const g = ctx.createLinearGradient(0, -30, 0, 4);
   g.addColorStop(0, 'rgba(250,204,21,0)');
-  g.addColorStop(0.6, 'rgba(250,204,21,0.55)');
-  g.addColorStop(1, 'rgba(254,240,138,0.95)');
+  g.addColorStop(1, 'rgba(254,200,90,0.6)');
   ctx.fillStyle = g;
-  ctx.fillRect(Math.min(x0, x1), -26, Math.abs(x1 - x0), 30);
-  // chevrons running the way the head will go
-  ctx.fillStyle = '#fef08a';
+  ctx.fillRect(Math.min(x0, x1), -30, Math.abs(x1 - x0), 34);
+  drawFxRun(ctx, 'dashTrail', Math.min(x0, x1), Math.max(x0, x1), -3, 20);
   const dir = Math.sign(x1 - x0) || 1;
-  const step = 70;
+  const step = 110;
   const shift = ((time * 260) % step) * dir;
-  for (let x = x0 + shift; dir > 0 ? x < x1 : x > x1; x += step * dir) {
-    ctx.beginPath();
-    ctx.moveTo(x, -16);
-    ctx.lineTo(x + 14 * dir, -8);
-    ctx.lineTo(x, 0);
-    ctx.lineTo(x + 6 * dir, -8);
-    ctx.closePath();
-    ctx.fill();
-  }
+  ctx.globalAlpha = Math.min(1, a + 0.2);
+  for (let x = x0 + shift; dir > 0 ? x < x1 : x > x1; x += step * dir) drawFx(ctx, 'warnArrow', x, -20, 40, { flipX: dir < 0 });
   ctx.restore();
 }
 
@@ -204,6 +212,34 @@ function stillSpine(coil: CoilPose, head: HeadPose): { pts: Array<[number, numbe
   return { pts, jx, jy };
 }
 
+/**
+ * His body along the floor in a lunge (AN-7: it was a stiff straight tube): humps rising off the floor in a wave that runs back from the
+ * head as he slides, settling to the ground at both ends so the joins at the coil and the head never move. Drawing only: the boxes that
+ * hurt are venomFang.ts's and do not change.
+ */
+function slither(pts: Array<[number, number]>, head: HeadPose, time: number): Array<[number, number]> {
+  if (head !== 'strike' && head !== 'dazed') return pts;
+  const floorY = -NECK / 2;
+  const first = pts.findIndex(([, y]) => Math.abs(y - floorY) < 3);
+  if (first < 0 || first >= pts.length - 2) return pts;
+  const x0 = pts[first][0];
+  const x1 = pts[pts.length - 1][0];
+  const span = x1 - x0;
+  if (Math.abs(span) < 60) return pts;
+  const amp = head === 'strike' ? 16 : 7;
+  const out = pts.slice(0, first);
+  // (resampled finely so the humps are round, not a few kinks)
+  const n = Math.max(8, Math.ceil(Math.abs(span) / 12));
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    const x = x0 + span * t;
+    const env = Math.sin(Math.PI * t);
+    const wave = Math.sin(t * Math.PI * 2 * Math.max(1, Math.abs(span) / 260) + time * 9) ** 2;
+    out.push([x, floorY - amp * env * wave]);
+  }
+  return out;
+}
+
 export const venomRig: PaintedBoss & { rig: true } = {
   rig: true,
   active() {
@@ -225,7 +261,7 @@ export const venomRig: PaintedBoss & { rig: true } = {
     const f = b.facing < 0 ? -1 : 1;
     const p = venomPose(b, feetY, time);
     const toLocal = (wx: number, wy: number): [number, number] => [(wx - b.x) * f, wy - feetY];
-    const spine = p.spine.map(([x, y]) => toLocal(x, y));
+    const spine = slither(p.spine.map(([x, y]) => toLocal(x, y)), p.head, time);
     const [jx, jy] = toLocal(p.jx, p.jy);
     ctx.save();
     ctx.translate(b.x, feetY);
