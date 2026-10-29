@@ -37,6 +37,8 @@ export const W9_THEME = {
   spires: 'w9:t-spires',
   /** 9-4: the watched doorstep in the ash ferns, with geysers */
   ferns: 'w9:t-ferns',
+  /** 9-4: the Drake's coiled guards on the doorstep (the boas), fewer eyes above */
+  coils: 'w9:t-coils',
   /** 9-5: glides over the vents */
   glides: 'w9:t-glides',
   /** 9-5: a run of geysers between the glides */
@@ -237,6 +239,60 @@ const restOhia = section({
   last: ohiaK.last,
   sockets: [scenery('ohia', 'a', [0.3, 0.5], 1), petals('k1', 'k1', 0.5, 1), flag('f1', 0.55), petals('k2', 'k2', 0.5, 1), scenery('smoke', 'f2', [0.5, 0.7], 0.5)],
   mirrorable: true,
+});
+
+/** 9-4's breather: a nook among the ash ferns below the doorstep (no eye above it), a knob in and out */
+const restNook = section({
+  id: 'w9-rest-nook',
+  name: 'fern nook',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 1,
+  pieces: [bank('a', [180, 220]), down('nook', 'a', 40, [260, 300]), up('k', 'nook', 32, [140, 160]), up('b', 'k', 8, [160, 200])],
+  last: 'b',
+  exitDy: 0,
+  sockets: [scenery('ohia', 'a', [0.3, 0.5], 0.8), flag('nook', 0.5), petals('nook', 'nook', 0.2, 1), petals('k', 'k', 0.5, 1), scenery('smoke', 'b', [0.5, 0.7], 0.5)],
+  mirrorable: false,
+});
+
+/** 9-5's breather: a warm shelf over a smoke crack, up a step and down two */
+const restWarm = section({
+  id: 'w9-rest-warm',
+  name: 'warm shelf',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 1,
+  pieces: [bank('a', [180, 220]), up('shelf', 'a', 44, [280, 320]), down('s', 'shelf', 22, [140, 160]), down('b', 's', 22, [180, 220])],
+  last: 'b',
+  sockets: [scenery('smoke', 'a', [0.4, 0.6], 1), flag('shelf', 0.5), petals('s1', 'shelf', 0.2, 1), petals('s', 's', 0.5, 1)],
+  mirrorable: false,
+});
+
+const ashK = knobs('', 'a', 2, [160, 190], [30, 36]);
+/** 9-6's and 9-9's breather: a bank of ash by a charred log, two knobs */
+const restAsh = section({
+  id: 'w9-rest-ash',
+  name: 'ash bank',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 1,
+  pieces: [bank('a', [200, 240]), ...ashK.pieces],
+  last: ashK.last,
+  sockets: [scenery('log', 'a', [0.4, 0.6], 1), petals('k1', 'k1', 0.5, 1), flag('f1', 0.5), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** 9-8's breather: up two basalt steps to a lookout ledge (the flag), and down the far side */
+const restLedge = section({
+  id: 'w9-rest-ledge',
+  name: 'lookout ledge',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 1,
+  pieces: [bank('a', [160, 200]), up('s1', 'a', 36, [140, 160]), up('top', 's1', 36, [240, 280]), down('s2', 'top', 36, [140, 160]), down('b', 's2', 36, [160, 200])],
+  last: 'b',
+  sockets: [petals('s1', 's1', 0.5, 1), flag('top', 0.5), scenery('ohia', 'top', [0.8, 0.9], 0.7), petals('s2', 's2', 0.5, 1)],
+  mirrorable: false,
 });
 
 // ───────────────────────────── shared Ki to Ketsu (they weigh little) ─────────────────────────────
@@ -500,7 +556,6 @@ const ventLanding = section({
   mirrorable: true,
 });
 
-const chasmStepsK = knobs('', 'c', 1, [380, 420]);
 /** chasms: three chasms with a rise and a fall, basalt of 360+ between */
 const chasmChain = section({
   id: 'w9-chasm-chain',
@@ -509,9 +564,9 @@ const chasmChain = section({
   phases: ALL,
   difficulty: 7,
   uses: [W9_THEME.chasms],
-  pieces: [bank('a', [360, 400]), lava('b', 'a', [380, 420]), lavaUp('c', 'b', [-48, -36], [380, 420]), ...chasmStepsK.pieces, lava('d', chasmStepsK.last, [380, 420], [0.38, 0.54])],
+  pieces: [bank('a', [280, 320]), lava('b', 'a', [360, 380]), lavaUp('c', 'b', [-48, -36], [360, 380]), lava('d', 'c', [360, 400], [0.38, 0.54])],
   last: 'd',
-  sockets: [petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('k1', 'k1', 0.5, 1), foe('foe', 'd', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.5 })],
+  sockets: [petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.3, 1)],
   exitDy: -42,
   mirrorable: false,
 });
@@ -546,8 +601,8 @@ const basaltLong = section({
   mirrorable: true,
 });
 
-const bas4 = channel('x', 'b', [2, 3]);
-/** basalt: a lava chasm, then a channel with two runs of slabs */
+const bas4 = channel('x', 'b', [3]);
+/** basalt: a lava chasm, then a channel with a run of slabs over it */
 const basaltChasm = section({
   id: 'w9-basalt-chasm',
   name: 'chasm and cracked basalt',
@@ -555,9 +610,9 @@ const basaltChasm = section({
   phases: LIVE,
   difficulty: 7,
   uses: [W9_THEME.basalt, W9_LESSON.basalt],
-  pieces: [bank('a', [360, 400]), lava('b', 'a', [380, 420]), ...bas4.pieces],
+  pieces: [bank('a', [300, 340]), lava('b', 'a', [360, 400]), ...bas4.pieces],
   last: bas4.last,
-  sockets: [petals('a', 'a', 0.5, 1), petals('t1', 'xt1', 0.5, 1, 0, { dn: 40 }), petals('slab', 'xslab1', 0.5, 1, 0, { dn: 40 }), petals('t4', 'xt4', 0.5, 1, 0, { dn: 40 })],
+  sockets: [petals('a', 'a', 0.5, 1), petals('t1', 'xt1', 0.5, 1, 0, { dn: 40 }), petals('t2', 'xt2', 0.5, 1, 0, { dn: 40 })],
   mirrorable: true,
 });
 
@@ -565,7 +620,7 @@ const basaltChasm = section({
 
 const shore = knobs('s', 'step', 2, [220, 260], [28, 32], [150, 170]);
 /** a stealth gate: Dot's line, then a long watched run with cover in reach, a long calm before the first pass, no animal */
-const watchGate = (theme: 'spires' | 'ferns', name: string, extra: Socket[] = []): SectionTemplate =>
+const watchGate = (theme: 'spires' | 'ferns' | 'coils', name: string, extra: Socket[] = []): SectionTemplate =>
   section({
     id: `w9-watch-gate-${theme}`,
     name: `the doorstep: ${name} (cover)`,
@@ -591,7 +646,11 @@ const watchGate = (theme: 'spires' | 'ferns', name: string, extra: Socket[] = []
     ],
     mirrorable: false,
   });
-const watchGates = [watchGate('spires', 'the obsidian spires', [scenery('smoke', 'a', [0.5, 0.6], 0.8)]), watchGate('ferns', 'the ash ferns', [scenery('ohia', 'a', [0.5, 0.6], 0.8)])];
+const watchGates = [
+  watchGate('spires', 'the obsidian spires', [scenery('smoke', 'a', [0.5, 0.6], 0.8)]),
+  watchGate('ferns', 'the ash ferns', [scenery('ohia', 'a', [0.5, 0.6], 0.8)]),
+  watchGate('coils', 'the coiled guards', [scenery('log', 'a', [0.5, 0.6], 0.8)]),
+];
 
 const spireK = knobs('', 'a', 2, [320, 360], [30, 36]);
 /** spires: a long watched run of three flats over knobs, a spire on each */
@@ -761,7 +820,6 @@ const catDen = section({
   archetypes: ['purge', 'gauntlet'],
   phases: ALL,
   difficulty: 6,
-  uses: [W9_THEME.cats],
   pieces: [bank('a', [500, 540]), ...catDenK.pieces],
   last: catDenK.last,
   sockets: [foe('f1', 'a', [0.5, 0.6], CATS, 5), petals('k1', 'k1', 0.5, 1), foe('f2', 'f1', [0.45, 0.55], CATS, 5, { phases: LIVE })],
@@ -775,7 +833,6 @@ const jaguarLeap = section({
   archetypes: ['purge', 'gauntlet'],
   phases: LIVE,
   difficulty: 8,
-  uses: [W9_THEME.cats],
   pieces: [bank('a', [380, 420]), lava('b', 'a', [560, 600], [0.36, 0.5], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), foe('jag', 'b', [0.55, 0.65], ['jaguar'], 5), petals('k', 'k', 0.5, 1)],
@@ -789,7 +846,6 @@ const harpyField = section({
   archetypes: ['purge', 'gauntlet'],
   phases: ALL,
   difficulty: 7,
-  uses: [W9_THEME.harpies],
   pieces: [bank('a', [540, 580]), up('k', 'a', 34, [140, 160]), down('b', 'k', 34, [480, 520])],
   last: 'b',
   sockets: [foe('harpy', 'a', [0.5, 0.6], ['harpy'], 4), petals('k', 'k', 0.5, 1), foe('small', 'b', [0.45, 0.55], SMALL, 3, { phases: LIVE })],
@@ -803,7 +859,6 @@ const harpyGap = section({
   archetypes: ['purge', 'gauntlet'],
   phases: HOT,
   difficulty: 8,
-  uses: [W9_THEME.harpies],
   pieces: [bank('a', [540, 580]), wide('b', 'a', [540, 580])],
   last: 'b',
   sockets: [foe('h1', 'a', [0.45, 0.55], ['harpy', 'jaguar'], 5), foe('h2', 'b', [0.5, 0.6], ['harpy', 'tayra'], 4, { phases: HOT })],
@@ -814,10 +869,10 @@ const harpyGap = section({
 const boaVents = section({
   id: 'w9-boa-vents',
   name: 'boa between the geysers',
-  archetypes: ['purge', 'gauntlet'],
+  archetypes: ['purge', 'gauntlet', 'stealth'],
   phases: LIVE,
   difficulty: 7,
-  uses: [W9_THEME.boas, GEYSER],
+  uses: [GEYSER],
   extraSeconds: GEYSER_WAIT * 2,
   pieces: [bank('a', [300, 340]), up('k', 'a', 32, [140, 160]), down('boa', 'k', 32, [460, 500]), up('k2', 'boa', 34, [140, 160]), down('c', 'k2', 34, [300, 340])],
   last: 'c',
@@ -830,10 +885,9 @@ const boaK = knobs('', 'a', 2, [440, 480]);
 const boaKnobs = section({
   id: 'w9-boa-knobs',
   name: 'coiled boas',
-  archetypes: ['purge', 'gauntlet'],
+  archetypes: ['purge', 'gauntlet', 'stealth'],
   phases: ALL,
   difficulty: 6,
-  uses: [W9_THEME.boas],
   pieces: [bank('a', [440, 480]), ...boaK.pieces],
   last: boaK.last,
   sockets: [foe('b1', 'a', [0.5, 0.6], ['boa'], 3), petals('k1', 'k1', 0.5, 1), foe('b2', 'f1', [0.45, 0.55], ['boa', 'tayra'], 3, { phases: LIVE }), petals('k2', 'k2', 0.5, 1), foe('t', 'f2', [0.5, 0.6], ['tayra', 'ocelot'], 3, { phases: HOT, chance: 0.7 })],
@@ -926,6 +980,10 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
   landing,
   restSteps,
   restOhia,
+  restNook,
+  restWarm,
+  restAsh,
+  restLedge,
   lavaHop,
   lavaRise,
   crustGaps,
@@ -980,7 +1038,15 @@ export const W9_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object
   ...[...watchGates, spireRun, spireChasm, fernVents, fernGap].map((s) => [s.id, [4]] as const),
   ...[...threadGates, highLedge, overLedge, channelThread, ventThread].map((s) => [s.id, [8]] as const),
   ...huntGates.map((s) => [s.id, s.archetypes.includes('purge') ? [6] : [9]] as const),
-  ...[catDen, jaguarLeap, harpyField, harpyGap, boaVents, boaKnobs].map((s) => [s.id, [6, 9]] as const),
+  ...[catDen, jaguarLeap, harpyField, harpyGap].map((s) => [s.id, [6, 9]] as const),
+  // (the coiled boas are 9-4's third theme too: its guards on the doorstep)
+  ...[boaVents, boaKnobs].map((s) => [s.id, [4, 6, 9]] as const),
+  // (each stage rests in its own place, so two stages never share their breathers)
+  ...[restSteps, restOhia].map((s) => [s.id, [1, 3]] as const),
+  [restNook.id, [4]] as const,
+  [restWarm.id, [5]] as const,
+  [restAsh.id, [6, 9]] as const,
+  [restLedge.id, [8]] as const,
   // (the start of the vine stage only: every other stage starts at its gate)
   [landing.id, [3]] as const,
 ]);
