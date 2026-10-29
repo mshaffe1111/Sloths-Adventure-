@@ -13,6 +13,7 @@ import { MODEL_TYPICAL, walkSpeed } from '../stageTime.ts';
 import { buildGen2Stage, FLAG_SPAN, layLocal, maxGap, planBudget, rngFor } from './pipeline.ts';
 import type { Gen2Stage } from './types.ts';
 import { cfg9, w9StandIn } from './w9SwingHarness.ts';
+import { w9RoomsFor } from './worlds/w9Rooms.ts';
 import { RAISE, W9_SWING_SECTIONS } from './worlds/w9Swing.ts';
 import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
 
@@ -50,17 +51,18 @@ test('the chain sections: laid in their own space (600-1700 px, 370 more a chain
 const cache = new Map<string, Gen2Stage>();
 const build = (seed: number, difficulty: 'easy' | 'normal') => {
   const k = `${seed}:${difficulty}`;
-  if (!cache.has(k)) cache.set(k, buildGen2Stage({ config: cfg9('9-3', 'vine_runner'), kit: w9StandIn(3, difficulty), seed, difficulty }));
+  if (!cache.has(k)) cache.set(k, buildGen2Stage({ config: cfg9('9-3', 'vine_runner'), kit: w9StandIn(3, difficulty, w9RoomsFor(3, difficulty)), seed, difficulty }));
   return cache.get(k)!;
 };
 
-test('9-3 on 20 raw rolls, Normal and Easy: levelCheck, every chain swung, 2:00 or more, nothing crumbles, a quiet opening, flags close enough, the lava only on Normal', () => {
+test('9-3 on 20 raw rolls, Normal and Easy: levelCheck (its bucket room solved, once), every chain swung, 2:00 or more, nothing crumbles, a quiet opening, flags close enough, the lava only on Normal', () => {
   const seen = new Set<string>();
   for (const difficulty of ['normal', 'easy'] as const) {
     for (const seed of SEEDS) {
       const st = build(seed, difficulty);
       const at = `9-3 seed ${seed} (${difficulty})`;
       assert.deepEqual(validateStage(st).errors, [], at);
+      assert.equal(st.gen2.sections.filter((s) => s.template === 'w9r-room-bucket').length, 1, `${at}: the bucket room once`);
       const R = pickRoute('vine_runner', st as never);
       assert.notEqual(R.used.route.traced, 'failed', at);
       assert.ok(R.quick.time >= 120, `${at}: ${R.quick.time.toFixed(0)} s for the quick player`);
