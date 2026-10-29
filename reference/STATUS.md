@@ -1,6 +1,24 @@
 # Status board (the lead session keeps this current; see reference/LEAD-PLAYBOOK.md)
 
-Last updated: 2026-10-28 (Hugging Face art run started).
+Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
+
+## STANDSTILL (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
+
+- Nothing is running. W6 cloud sessions (gen2-w6, gen2-w6-swing) archived; the wind-down check-in is disabled.
+- Release PR ccr → main is open for Matt to merge (everything since PR #45): World 6 on gen2 (6-1..6-7, 6-9; 6-8 hand-built and the
+  6-10 boss later), the animal clearance fix, Matt's painted dirty/fast water for Worlds 6-10 (badWaterArt.ts) and Dot's water line,
+  qa-fix-w123 (3-1, 2-2, 1-7, part of 2-6), qa-fix-dot, qa-fix-meeca (17 lines + nudges approved), W3 r2, W4 r3-r7, 5-7/5-9 on gen2,
+  Matt's Gemini sheets saved, the polish rule. After the merge: check the deploy run and the APK, tell QA.
+- Why the animal clearance bug was missed (82 hops by animals on 6-2/6-5/6-9): the 120 px rule lived only in the old generator's
+  stageQuality test; the gen2 pipeline and curation didn't know it, and cost mode ran the full suite only at the end. Fixed at the source
+  (JUMP_CLEAR in the pipeline, curation drops bad rolls); lesson in STAGE-RULES §6 and DESIGN.md B12. Also: CLAUDE.md's suite command
+  misses src/game/gen2/, so run the gen2 tests too.
+- World 6 gen2 stages preload the world's whole creature set (their animals vary by roll).
+- Waiting on Matt (one question at a time): the look-alike rule (§2 "no 20 s stretch alike between stages") can't be met in World 6
+  (the measure's alphabet is too small): better measure, or relax it? Then World 7 when he says.
+- Leftovers: qa-fix-w123's 3-3 and the rest of 2-6 (helper interrupted 03:01); rope traverse (Gemini sheet); first swim in clean water;
+  the rest of the dirty-water sheet (log, warning post, reeds, pipe waterfall, scum, splash) in reference/prop-sheets/gemini-batch-2026-10-29/;
+  tomorrow's art pickup below; list the major code-drawn looks that hurt Pokey for painted sheets (polish rule).
 
 ## Live (main)
 
