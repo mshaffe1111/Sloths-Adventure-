@@ -1441,7 +1441,450 @@
      ]
     },
     "pairs": []
+   },
+   "w8roost": {
+    "title": "World 8 bat roost: two short mossy roost branches (draw about 260 x 60), a seed pod, a pile, an open pod, a small pile (pods about 60 px)",
+    "data": "props-made/w8roost.json",
+    "sheet": "props-made/w8roost.webp",
+    "frames": {
+     "roost-branch": [
+      477,
+      151
+     ],
+     "roost-branch-b": [
+      484,
+      152
+     ],
+     "seed-pod": [
+      219,
+      397
+     ],
+     "seed-pile": [
+      448,
+      293
+     ],
+     "seed-pod-open": [
+      223,
+      384
+     ],
+     "seed-pile-small": [
+      410,
+      181
+     ]
+    },
+    "pairs": []
+   },
+   "w8roost-b": {
+    "title": "World 8 bat roost, second look (the other img2img take of the same pieces)",
+    "data": "props-made/w8roost-b.json",
+    "sheet": "props-made/w8roost-b.webp",
+    "frames": {
+     "roost-branch": [
+      471,
+      131
+     ],
+     "roost-branch-b": [
+      479,
+      131
+     ],
+     "seed-pod": [
+      218,
+      378
+     ],
+     "seed-pile": [
+      463,
+      296
+     ],
+     "seed-pod-open": [
+      221,
+      387
+     ],
+     "seed-pile-small": [
+      398,
+      176
+     ]
+    },
+    "pairs": []
    }
   }
- }
+ },
+ "creatures": {
+  "capuchin": {
+   "sheets": [
+    "capuchin-anim.webp"
+   ],
+   "json": "capuchin.json",
+   "moves": {
+    "defeat": 25
+   },
+   "source": {
+    "defeat": "nc-capuchin-defeat-s5"
+   }
+  },
+  "fruitbat": {
+   "sheets": [
+    "fruitbat-anim.webp"
+   ],
+   "json": "fruitbat.json",
+   "moves": {
+    "defeat": 25,
+    "roost": 25
+   },
+   "source": {
+    "defeat": "nc-fruitbat-defeat-s5",
+    "roost": "nc-fruitbat-roost-s17"
+   }
+  },
+  "howler": {
+   "sheets": [
+    "howler-anim.webp"
+   ],
+   "json": "howler.json",
+   "moves": {
+    "defeat": 25
+   },
+   "source": {
+    "defeat": "nc-howler-defeat-s17"
+   }
+  },
+  "lavalizard": {
+   "sheets": [
+    "lavalizard-anim.webp"
+   ],
+   "json": "lavalizard.json",
+   "moves": {
+    "defeat": 25
+   },
+   "source": {
+    "defeat": "nc-lavalizard-defeat-s17"
+   }
+  },
+  "soldier": {
+   "sheets": [
+    "soldier-anim-0.webp",
+    "soldier-anim-1.webp"
+   ],
+   "json": "soldier.json",
+   "moves": {
+    "attack_a": 25,
+    "hurt_a": 25,
+    "down_a": 25,
+    "attack_b": 25,
+    "hurt_b": 25,
+    "down_b": 25
+   },
+   "source": {
+    "attack_a": "nc-soldiera-attack-s17",
+    "hurt_a": "nc-soldiera-hurt-s5",
+    "down_a": "nc-soldiera-down-s17",
+    "attack_b": "nc-soldierb-attack-s5",
+    "hurt_b": "nc-soldierb-hurt-s17",
+    "down_b": "nc-soldierb-down-s17"
+   }
+  },
+  "fruitbat-w8": {
+   "sheets": [
+    "fruitbat-w8-anim.webp"
+   ],
+   "json": "fruitbat-w8.json",
+   "moves": {
+    "doze": 12,
+    "sleep": 13
+   },
+   "source": {
+    "doze": "hfb-bat-sleep-s5",
+    "sleep": "hfb-bat-sleep-s5"
+   }
+  },
+  "fruitbat-fly": {
+   "sheets": [
+    "fruitbat-fly-anim.webp"
+   ],
+   "json": "fruitbat-fly.json",
+   "moves": {
+    "fly": 6
+   },
+   "source": {
+    "fly": "cr-fruitbat-fly-s21"
+   }
+  },
+  "crab": {
+   "sheets": [
+    "crab-anim.webp"
+   ],
+   "json": "crab.json",
+   "moves": {
+    "idle": 25,
+    "walk": 7,
+    "attack": 8,
+    "hurt": 16,
+    "defeat": 22
+   },
+   "source": {
+    "idle": "cr-crab-idle-s7",
+    "walk": "m1k-crab-walk-s3",
+    "attack": "m1k-crab-snap-s29",
+    "hurt": "cr-crab-hurt-s21",
+    "defeat": "hfb-crab-defeat-s17"
+   }
+  },
+  "piranha": {
+   "sheets": [
+    "piranha-anim.webp"
+   ],
+   "json": "piranha.json",
+   "moves": {
+    "idle": 11,
+    "attack": 11,
+    "hurt": 6,
+    "defeat": 25
+   },
+   "source": {
+    "idle": "m1k-piranha-chomp-s3",
+    "attack": "cr-piranha-leap-s7",
+    "hurt": "cr-piranha-hurt-s21",
+    "defeat": "hfb-piranha-defeat-s5"
+   }
+  },
+  "sentry": {
+   "sheets": [
+    "sentry-anim-0.webp",
+    "sentry-anim-1.webp"
+   ],
+   "json": "sentry.json",
+   "moves": {
+    "idle": 25,
+    "walk": 25,
+    "attack": 19,
+    "hurt": 9,
+    "defeat": 25
+   },
+   "source": {
+    "idle": "cr-sentry-idle-s21",
+    "walk": "m1k-sentry-walk-s11",
+    "attack": "cr-sentry-jab-s21",
+    "hurt": "hfb-sentry-hurt-s5",
+    "defeat": "cr-sentry-crumble-s21"
+   }
+  },
+  "beetle": {
+   "sheets": [
+    "beetle-anim-0.webp",
+    "beetle-anim-1.webp"
+   ],
+   "json": "beetle.json",
+   "moves": {
+    "idle": 25,
+    "walk": 25,
+    "attack": 25,
+    "hurt": 25,
+    "defeat": 25
+   },
+   "source": {
+    "idle": "cr-beetle-idle-s21",
+    "walk": "m1k-beetle-walk-s11",
+    "attack": "m1k-beetle-charge-s3",
+    "hurt": "cr-beetle-flip-s21",
+    "defeat": "hfb-beetle-defeat-s17"
+   }
+  },
+  "owl": {
+   "sheets": [
+    "owl-anim.webp"
+   ],
+   "json": "owl.json",
+   "moves": {
+    "defeat": 25
+   },
+   "source": {
+    "defeat": "hfb-owl-defeat-s11"
+   }
+  }
+ },
+ "creaturesNote": "creatures-new clips (2026-10-29, cutnew.py): frames face RIGHT, ax/ay = the middle of the feet on the ground, one anchor per clip (locked camera); soldier frames at soldier-anim.webp scale (draw at SOLDIER_K / up).",
+ "gemini2": {
+  "note": "Matt's Gemini sheets of 2026-10-28, cut 2026-10-29 (tools/art/w6to10/geminicut2.py); nothing draws them yet",
+  "cutouts": {
+   "story18-squirrels": {
+    "sheet": "gemini/story18-squirrels.webp",
+    "json": "gemini/story18-squirrels.json",
+    "frames": [
+     "shocked",
+     "laughing",
+     "hammering",
+     "kids",
+     "sign"
+    ]
+   },
+   "story21-dot-flour": {
+    "sheet": "gemini/story21-dot-flour.webp",
+    "json": "gemini/story21-dot-flour.json",
+    "frames": [
+     "puff",
+     "sneeze",
+     "stand",
+     "sulk"
+    ]
+   },
+   "w2-cages": {
+    "sheet": "gemini/w2-cages.webp",
+    "json": "gemini/w2-cages.json",
+    "frames": [
+     "whole",
+     "cracked",
+     "burst"
+    ]
+   },
+   "river-king-peek": {
+    "sheet": "gemini/river-king-peek.webp",
+    "json": "gemini/river-king-peek.json",
+    "frames": [
+     "proud",
+     "flustered",
+     "surprised"
+    ]
+   },
+   "grandma-things": {
+    "sheet": "gemini/grandma-things.webp",
+    "json": "gemini/grandma-things.json",
+    "frames": [
+     "medal",
+     "teacup",
+     "spectacles",
+     "wool",
+     "seed-pouch",
+     "thimble"
+    ]
+   },
+   "secret-cracks": {
+    "sheet": "gemini/secret-cracks.webp",
+    "json": "gemini/secret-cracks.json",
+    "frames": [
+     "floor-crack",
+     "floor-broken",
+     "wall-crack",
+     "wall-net"
+    ]
+   },
+   "secret-roots-glow-water": {
+    "sheet": "gemini/secret-roots-glow-water.webp",
+    "json": "gemini/secret-roots-glow-water.json",
+    "frames": [
+     "root-hanger",
+     "root-net",
+     "glowworms-lit",
+     "glowworms-asleep",
+     "flooded-strip",
+     "sunk-stone"
+    ]
+   },
+   "secret-tunnel-kit": {
+    "sheet": "gemini/secret-tunnel-kit.webp",
+    "json": "gemini/secret-tunnel-kit.json",
+    "frames": [
+     "tunnel-floor",
+     "tunnel-ledge",
+     "tunnel-wall",
+     "stump-pillar",
+     "wall-shelf",
+     "rubble"
+    ]
+   },
+   "w6-hides-arches": {
+    "sheet": "gemini/w6-hides-arches.webp",
+    "json": "gemini/w6-hides-arches.json",
+    "frames": [
+     "reed-hide",
+     "moss-hide",
+     "log-hide",
+     "moss-arch",
+     "root-arch",
+     "root-mound"
+    ]
+   },
+   "w9w10-bridges": {
+    "sheet": "gemini/w9w10-bridges.webp",
+    "json": "gemini/w9w10-bridges.json",
+    "frames": [
+     "plank-ring",
+     "plank-hanging",
+     "chain-bridge",
+     "rope-bridge",
+     "ember-slab",
+     "charred-log"
+    ]
+   },
+   "pokey-climb-back": {
+    "sheet": "gemini/pokey-climb-back.webp",
+    "json": "gemini/pokey-climb-back.json",
+    "frames": [
+     "climb-0",
+     "climb-1",
+     "climb-2",
+     "climb-3",
+     "climb-4",
+     "climb-5",
+     "climb-6",
+     "climb-7"
+    ]
+   },
+   "queen-collar-off": {
+    "sheet": "gemini/queen-collar-off.webp",
+    "json": "gemini/queen-collar-off.json",
+    "frames": [
+     "stand",
+     "bow",
+     "wave",
+     "settle",
+     "look-up",
+     "look-back",
+     "hop",
+     "rest"
+    ]
+   }
+  },
+  "panels": {
+   "raft": {
+    "file": "story/raft.webp",
+    "from": "story19-raft.jpg",
+    "size": [
+     1024,
+     572
+    ]
+   },
+   "dot-gorge": {
+    "file": "story/dot-gorge.webp",
+    "from": "story20-dot-gorge.jpg",
+    "size": [
+     1024,
+     572
+    ]
+   },
+   "parents-storm": {
+    "file": "story/parents-storm.webp",
+    "from": "story22-parents-storm.jpg",
+    "size": [
+     1024,
+     572
+    ]
+   },
+   "secret-meeca-note": {
+    "file": "story/secret-meeca-note.webp",
+    "from": "secret-meeca-note.jpg",
+    "size": [
+     1024,
+     572
+    ]
+   },
+   "secret-pokey-note": {
+    "file": "story/secret-pokey-note.webp",
+    "from": "secret-pokey-note.jpg",
+    "size": [
+     1024,
+     572
+    ]
+   }
+  }
+ },
+ "creaturesHfbNote": "hf-batch-w7w8 (2026-10-29, tools/art/hfbatch/cutbatch.py): crab, piranha, sentry, beetle, owl and the World 8 bat (fruitbat-w8: doze, sleep, fly) from the old cr-/m1k- clips plus this batch; frames face RIGHT, up 1, one canvas anchor per creature (each json says which). Nothing draws them yet."
 }

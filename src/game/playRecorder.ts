@@ -40,8 +40,8 @@ type Line = (string | number)[];
 
 let mixSeed = 0;
 /**
- * The control test's layout seed. A new one each run (Start, Play again: newMix), the same one for a retry inside the run, so every run
- * is a different mix of stretches (protoStage.ts). `?mix=<seed>` in the address builds that one run again.
+ * The control test's layout seed. A new one each run (chosen on the front page, and as the questions after a run come up: newMix, so
+ * its sheets load behind them), the same one for a retry inside the run, so every run is a different mix of stretches (protoStage.ts). `?mix=<seed>` in the address builds that one run again.
  */
 export function ctestSeed(): number {
   try {
@@ -57,10 +57,29 @@ export function newMix() {
   mixSeed = 1 + Math.floor(Math.random() * 999999);
 }
 
-/** the control test is on: #ctest in the address (the only part a shared Claude link passes on), or ?ctest=1 */
+/**
+ * A build for the QA team: the dev server and dev builds (the QA harness, tools/qa), and Matt's test link
+ * (tools/testlink/vite.testlink.config.ts sets VITE_QA_BUILD). Never the shipped game (UI-15).
+ */
+let qaForTest = false;
+/** a unit test that plays the control test stands in for a QA build (the shipped game never calls this) */
+export function asQaBuildForTest(on: boolean): void {
+  qaForTest = on;
+}
+export function qaBuild(): boolean {
+  if (qaForTest) return true;
+  try {
+    return !!import.meta.env.DEV || import.meta.env.VITE_QA_BUILD === '1';
+  } catch {
+    // (no import.meta.env outside a Vite build: the unit tests)
+    return false;
+  }
+}
+
+/** the control test is on: a QA build (qaBuild), and #ctest in the address (the only part a shared Claude link passes on) or ?ctest=1 */
 export function ctestEnabled(): boolean {
   try {
-    return typeof location !== 'undefined' && (/(^#|[#&])ctest\b/.test(location.hash) || /[?&]ctest=1\b/.test(location.search));
+    return qaBuild() && typeof location !== 'undefined' && (/(^#|[#&])ctest\b/.test(location.hash) || /[?&]ctest=1\b/.test(location.search));
   } catch {
     return false;
   }
@@ -134,7 +153,8 @@ class PlayRecorder {
 
   start(who: string) {
     if (this.on) return;
-    newMix();
+    // (the mix the front page already loaded the sheets for, App.tsx; a new one only if none was chosen)
+    if (!mixSeed) newMix();
     this.who = who.trim().slice(0, 40) || 'anonymous';
     try {
       localStorage.setItem(NAME_KEY, this.who);

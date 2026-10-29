@@ -5,6 +5,7 @@
  * almost fully lit with flaring eyes once he winds up and while he strikes, so every attack is seen coming in the dark, on a phone held
  * either way (it is drawn in the world, so the camera framing both fighters is what puts it on screen).
  */
+import { drawFx, drawFxRun } from './bossFx.ts';
 import type { BossEntity } from './types.ts';
 import type { BossDef } from './bossAI.ts';
 import { weakOpen } from './bossAI.ts';
@@ -74,34 +75,12 @@ export function drawPounceRing(ctx: CanvasRenderingContext2D, b: BossEntity, def
   ctx.arc(x, floor - 2, rw, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
+  // the shared painted warning ring, wide as the landing, and the painted arrows off it both ways: get out this way
   ctx.save();
+  ctx.globalAlpha = alpha * (0.85 + 0.15 * pulse);
+  drawFx(ctx, 'warnRing', x, floor - 2, rw * 2.1, { h: Math.max(30, rw * 0.36) });
   ctx.globalAlpha = alpha;
-  ctx.shadowColor = '#7dffe0';
-  ctx.shadowBlur = 16;
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 6 + 2 * pulse;
-  ctx.beginPath();
-  ctx.ellipse(x, floor - 2, rw, 30, 0, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.strokeStyle = '#ff6b6b';
-  ctx.lineWidth = 3;
-  ctx.setLineDash([16, 10]);
-  ctx.lineDashOffset = -time * 70;
-  ctx.beginPath();
-  ctx.ellipse(x, floor - 2, rw - 14, 22, 0, 0, Math.PI * 2);
-  ctx.stroke();
-  // chevrons over the edges, pointing out: get out this way
-  ctx.setLineDash([]);
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 5;
-  for (const d of [-1, 1]) {
-    const cx = x + d * (rw + 26 + 8 * pulse);
-    ctx.beginPath();
-    ctx.moveTo(cx - d * 12, floor - 34);
-    ctx.lineTo(cx, floor - 22);
-    ctx.lineTo(cx - d * 12, floor - 10);
-    ctx.stroke();
-  }
+  for (const d of [-1, 1]) drawFx(ctx, 'warnArrow', x + d * (rw + 34 + 8 * pulse), floor - 22, 52, { flipX: d < 0 });
   ctx.restore();
 }
 
@@ -120,30 +99,17 @@ export function drawDashLine(ctx: CanvasRenderingContext2D, b: BossEntity, def: 
   const xe = x0 + (x1 - x0) * u;
   ctx.save();
   ctx.globalAlpha = alpha * (0.85 + 0.15 * Math.sin(time * 22));
+  // a low red glow over the floor it will cross (a code touch), then the painted claw-scratch trail along it
   const g = ctx.createLinearGradient(0, floor - DASH_HIGH, 0, floor);
-  g.addColorStop(0, 'rgba(255, 90, 90, 0.05)');
-  g.addColorStop(1, 'rgba(255, 90, 90, 0.8)');
+  g.addColorStop(0, 'rgba(255, 90, 90, 0)');
+  g.addColorStop(1, 'rgba(255, 90, 90, 0.55)');
   ctx.fillStyle = g;
   ctx.fillRect(Math.min(x0, xe), floor - DASH_HIGH, Math.abs(xe - x0), DASH_HIGH);
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 7;
-  ctx.shadowColor = '#ff6b6b';
-  ctx.shadowBlur = 14;
-  ctx.beginPath();
-  ctx.moveTo(x0, floor - 3);
-  ctx.lineTo(xe, floor - 3);
-  ctx.stroke();
-  // arrows racing the way he will go
-  ctx.lineWidth = 6;
-  const gap = 90;
+  drawFxRun(ctx, 'dashTrail', Math.min(x0, xe), Math.max(x0, xe), floor - 4, 22);
+  // the painted arrows racing the way he will go
+  const gap = 110;
   const off = ((time * 420) % gap) * f;
-  for (let x = x0 + off; f > 0 ? x < xe : x > xe; x += f * gap) {
-    ctx.beginPath();
-    ctx.moveTo(x - f * 12, floor - 34);
-    ctx.lineTo(x, floor - 22);
-    ctx.lineTo(x - f * 12, floor - 10);
-    ctx.stroke();
-  }
+  for (let x = x0 + off; f > 0 ? x < xe : x > xe; x += f * gap) drawFx(ctx, 'warnArrow', x, floor - 24, 40, { flipX: f < 0 });
   ctx.restore();
 }
 

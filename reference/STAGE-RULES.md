@@ -6,7 +6,7 @@ recommendation with its status in the game and what is next), and every mistake 
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
-Last updated 2026-10-29.
+Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
 
 ---
 
@@ -26,6 +26,15 @@ Last updated 2026-10-29.
 - **New replaces old.** A rebuilt stage replaces the old one outright: no switch, the old code is deleted.
 - **Show first.** Big screen changes are shown to Matt (screenshots, mock-ups) before they are built in.
 - **Story.** Stage names, story beats and goal text stay as approved. Any new line is marked "(new, needs Matt's approval)".
+
+- **World 7: Pokey teaches himself (Matt, 2026-10-29).** Dot is gone for all of World 7 (the story's "Alone" chapter; she comes back in
+  World 8). Pokey says the teaching lines and explains any locked exit himself, in his own voice, under 10 words ("Cracked tiles.
+  Don't stand still."). No Dot perch, no Dot lines in World 7 stages.
+
+- **Dot is a guide, not a narrator (Matt, 2026-10-29: "it feels like she's constantly nagging me... we give away the puzzle").** On Tips she
+  speaks only for a first-time mechanic, creature or hazard (once per save), the water warning, a locked exit, and real struggle (two deaths
+  in one spot, two failed tries); at least 30 s between non-urgent lines. Puzzle rooms never give the answer on entry; nudges escalate only
+  on struggle. No code-drawn highlight boxes, rings or arrows: to point, Dot flies to the actual object.
 
 ## 1b. The game gets harder as it goes (Matt, 2026-10-28)
 
@@ -92,6 +101,12 @@ Last updated 2026-10-29.
   fill to his painted sheet: "Sometimes quick fixes just don't work. That's the difference between a good game and a bad game. It
   takes the immersion out of the game if what you're looking at doesn't really feel like the rest of the game."
   (Before and after: `reference/prop-sheets/qa-notes/water-w6-painted.png`.)
+- **Light underground and in the dark comes from sources (Matt, 2026-10-29: "if he's underground, it's not going to be bright").**
+  Ambient is low and cool (deep blue-teal to near black); only torches/lanterns (warm, flickering), glowing fungi (small green or purple
+  pools), glowworms and the way out give light; depth fades INTO darkness, never into haze. Fairness first: every obstacle and gap carries
+  its own light or a lit rim and reads at least 1 s ahead on Normal (1.6 s Easy); Pokey never vanishes (a warm key from the light he passes,
+  a cool rim, a contact shadow, never under ~60% brightness). Props are painted evenly lit so the game can light them; light sources are
+  painted bright and separate so they can glow. Code glow (pre-rendered radial light sprites, additive) is a small touch and allowed.
 - **Use what Matt made.** Every prop, state frame and backdrop from his sheets has a place in the game. A piece packed but never
   drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.
@@ -134,9 +149,37 @@ test link, the QA testers or a release until the lead has re-run them, on more t
    per jump, minimum input window, peak stress, backtracking), and names the rule each finding breaks (HANDOFF §6, "Pre-QA pass").
 4. The puzzle validator and the real-engine play-through tests for every room.
 5. The full suite: `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts`.
-6. `npx vite build` (nothing over 4 MiB). Before committing: `git checkout -- dev-dist; rm -f dev-dist/registerSW.js`.
+6. `npx vite build` (nothing over 4 MiB).
 7. Screenshots of what changed, upright 390x844 and sideways 844x390 (a dev-hooks build, `NODE_ENV=development npx vite build`,
    lets you place Pokey in a room). Then the test link (HANDOFF §6), then the QA testers.
+
+## 5b. The polish bar (Matt, 2026-10-29: "it's not just getting it done, but it should have polish")
+
+Working is the floor, not the finish. Before any report, the helper reviews its own upright (390x844) and sideways (844x390) screenshots
+and a short video, at phone size, against every line below, and writes a **Polish check** in the report: each item, pass or fixed, with
+the screenshot that shows it. The lead checks it again before Matt sees anything. Compare against the best of the game (Matt's Gemini
+sheets, World 2's painted river, the painted dirty water, the painted rope) and his reference pictures.
+
+1. **Painted, not drawn.** No major look or hazard drawn in code (§4): no flat rectangles, see-through panes, gradient blobs, dashed lines
+   or placeholder boxes on screen. Code is only for small touches (glow, sparkle, dust).
+2. **Nothing looks copy-pasted.** No visible tile seams, no texture stretched in strips, no single piece repeated until it reads as a
+   pattern. Mix pieces, sizes and heights; set dressing in front and behind.
+3. **Art matches what it is.** A web looks like web, water like water, a hazard looks dangerous, a safe thing looks safe. Art lines up
+   with its collider: nobody stands in the air, sinks into a ledge or clips through a wall.
+4. **Light fits the place** (§4): underground and night scenes are dark with light from sources; every obstacle stays readable.
+5. **Pokey and the cast on model.** Right size, right colours, satchel on the correct side (strap over his left shoulder, bag on his right
+   hip), wrist wraps; no off-model frames, no popping between frames. Big enough to read on a phone.
+6. **Framing works both ways.** Upright and sideways each show the action, not half a screen of empty backdrop; the camera leads where
+   the player needs to look.
+7. **Text stays out of the way.** Speech boxes are short (under 10 words), don't cover the jump or the hazard, and the right character
+   speaks (Dot where she's present; Pokey only where she's away: the second half of World 6 and World 7, `wayside.ts dotPresent()`).
+8. **Every move it teaches is needed.** An obstacle you can just walk or steer round doesn't teach a jump.
+9. **Moments feel like moments.** A first time (first swim, a reveal, a crumble) gets a beat: sound, a pause, the camera, an animation, not
+   only a caption.
+10. **Motion is smooth.** No jitter, snapping, frozen poses where something should move, or animations playing at the wrong speed.
+
+If something can't meet the bar with the art that exists, say exactly what art is missing and give the Gemini prompt (or the Hugging Face
+plan); never ship the rough version as finished.
 
 ## 6. Mistakes we already paid for (don't repeat them)
 
@@ -250,6 +293,15 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   §3's "not a clock", in Meeca's stage only; Matt confirmed it on both settings, 2026-10-28): QA stood 32 s in a room and nothing was said. Flicker nudges after about 20 s with
   nothing new done in a room (or at a trunk not carved), and more strongly at about 40 s; anything the room has not seen yet starts
   the clock again; the nudges point at the piece, never the whole answer (`meecaPlay.ts stepNudge`, `FLICKER_NUDGES`).
+- **A painted plank is a deck, not a line** (2-6, QA 2026-10-29: "stands a few px past a plank's end, in the air"). World 2's plank is
+  seen a little from above: its top edge (where his feet are drawn) runs over 15-87% of the picture, its front edge the whole width
+  (Worlds 3, 6, 9 and 10 alike). Stretched edge to edge on the collider, the top edge ended 20-90 px short (the slant grew with the
+  plank's length); fitted to the top edge instead, the front edges ran 40-60 px past and closed the 55-85 px hop gaps on screen (caught
+  only in the before/after screenshots). Now the ends keep their painted size, only the middle stretches, and the collider's end sits
+  halfway along the slant: about 13 px each way (`protoArt.ts` `branchSlices`). Measure the art, never assume it fills its box, and
+  look at the gaps as well as the ends. A dead end's fall is where a walk off *lands*: he carries on 100-200 px past the end as he
+  falls, over porches a check 30 and 80 px out says will catch him, and down onto the knot at a lower porch's end, off which he walks on
+  (`walkOff` in `protoStage.ts` `knots`; proof `qaW123.test.ts`, a plain walk off every porch both ways in the real engine).
 - **What a counter counts needs its word** ("M. 1/5" read as "my mark didn't count"): Meeca's HUD says "Warnings 1/5" (`goalInfo.word`).
 - **World 6 on gen2: what the swing and creek stages taught** (2026-10-28/29; carry every one of these into Worlds 7-10, the checklist
   is `src/game/gen2/DESIGN.md` "Building a new world on gen2"):
@@ -293,11 +345,65 @@ test link, the QA testers or a release until the lead has re-run them, on more t
     `jumpEdges`), and curation drops any roll with an animal by a jump (7770de7). The lesson: every rule a full-suite test holds a stage
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
+- **A runner where everything can be steered round teaches one move** (7-4 v1, 2026-10-29, Matt: "Everything can be done just by
+  avoiding objects. You don't have to jump anything because nothing goes the whole way across"). Every section past the opening needs
+  things across the whole width (barriers and gaps to jump, beams to duck), and pairs (a steer, then a jump or a duck straight after).
+  Test it with a player who only steers: they must be hit (`w7Slide.test.ts`).
+- **Dark and underground stages are lit from their sources** (7-4 v2, Matt 2026-10-29: "If he's underground, it's not going to be
+  bright"). Ambient near black and cool (#142430), light only from torches, lanterns, fungus and the way out; depth goes into darkness,
+  never haze. Every obstacle brings its own light, so it still reads a second ahead (1.6 s on Easy): test it from the scene's light list
+  (each obstacle in every lane at least twice the ambient). Pokey is never below 60% (a warm key from the light he passes, a cool rim).
+  Ask Gemini for props **evenly lit** (the game lights them) with the light sources painted bright on their own. Cheap at 30 fps: a
+  half-size light map, light sprites made once, multiplied over the scene (`w7SlideArt.ts`, under 24 ms a frame at a 4x CPU slow-down).
+- **Textures stretched in strips look copy-pasted** (7-4 v1: "It looks like we just copied and pasted a couple things in there").
+  A pseudo-3D floor, wall or ceiling is laid one screen row or column at a time in true perspective, and the look comes from painted
+  pieces at every depth, not from the surfaces; straight edges of a painted layer far away are feathered into the dark.
+- **A speech bubble over the player's head in a behind-the-back view covers the road ahead** (7-4 v2): put it below him, on the empty
+  near floor.
+
+- **A vertical climb with water under it: every fall is the water** (6-8 Stilt Climb, 2026-10-29). The first build kept the rising tide
+  about 240 px under Pokey, and the first-timer bot drowned 2-6 times a minute: not the tide catching a still player, but missed hops and
+  lianas falling a row or two into it, plus walking off the outer end of a shelf past its root. What fixed it (World 6's band, 0.2 lives a
+  minute on Easy, 1.2-1.7 on Normal): the water waits more than a row below him and only creeps when close (`risingTide.ts`); a catch
+  under every hop's gap and every liana (a root back up to the liana's own ledge, never a short cut: `w6Stages.test.ts`); shelves run on
+  past the root at their end, to the stage's edge when it is near. And two placement traps a 2-D zig-zag sets that a left-to-right stage
+  never does: a liana's anchor at the height of a shelf above (pressing up there for a root grabs the liana instead), and two roots in
+  line (holding up runs on past the shelf into the next one). The stage's tests check both, and play every root and hop in the real
+  engine. The first-timer bot doesn't climb back out of a catch, so on climbs (4-1 too) it runs out its 6 minutes: read its lives a minute
+  and its stuck spots, not whether it finished.
+- **Ledges in the air: nothing floats** (6-8 v4, the lead's review, 2026-10-29). A stump, root arch or den (and any slab on spreading
+  roots) grows out of the ground: hung in mid-air it looks wrong, however varied the pieces. It goes only where its own roots stand on
+  the ledge under it or it stands on stilt posts (two, never one balanced pole); every stretch of a plank or log is held by a climbing
+  root, a post, a brace to a trunk or a rope. Don't run a post from every plank down to the water: about 90 poles a stage read as a
+  cage. Short holds to what is near, long posts only where nothing is (the crown). Check it in `w6Stages.test.ts` ("nothing floats").
+  Posts are the ledge set's own lashed stilts, never the plain gauge post: those read as grey pipes, all one width (v5).
+  World 6's ledge set (`src/assets/w6/ledges.webp`) has the supports painted on: lay its tall piece cut off where the supports reach
+  the ledge under it (`SET_ROWS` says where they are at each depth), so one picture fits any drop.
+
+- **A way out of a dip can be a shortcut past a climb** (LV-11, 2026-10-29): a 72 px step at the foot of World 2's mooring-post bank
+  let the double jump skip the rope climb, and 2-2's quick route lost its climbs (50 of 200 rolls over the dead-time limit). The step
+  stays in 2-3 only. Before adding a way out, check the 200-roll tool on every stage that uses the piece, not only the one asked about.
+
+- **A warning worded like a move tip was dropped** (LV-8, 2026-10-29): "Careful, water! Flick up and over." read as a jump tip, and the
+  guide drops a move tip for a move he has already done, so the water warning went unsaid on any stage where he had jumped once (gen2's
+  too). Warnings are danger lines by their words (`dotGuide.ts classifyLine`); check a new warning reaches the screen in the first-timer's
+  Dot log, not only that it is in the stage.
+- **A stage's own tip can expire behind its opening line** (3-5, 3-7: the thorn vine's teaching line waited behind the story line and was
+  dropped unsaid; the first lash came with no warning). The first meeting must not rest on one queued line: the hazard warns for itself
+  as he walks up (`vine:freeze`), and its first strike is harmless (LV-14). Read the first-timer's `dot.lines`, not the stage's hints.
+- **A wall that doesn't reach the floor is a hidden pit** (5-6, old generator): a raised log drawn as solid bank down to the floor had
+  open water under its collider, so walking "into the wall" drowned him 4 s in. Walls reach the ground (§6 above, the push log); a
+  teaching pool catches it now (`waterTeach.ts`), the real fix is the rebuild.
+- **Measuring Easy against Normal** (LV-4/5): compare lives per full run (lives / share of the stage reached), not raw lives: the kid on
+  Easy often reaches the shrine where the adult on Normal runs out of time. And the first-timer only puts itself past a spot after three
+  lives lost there, so anything that costs no life (Easy's soft falls) has to count as a setback in the bot too (`softFalls`), or it loops.
+- **One time model can be wrong by a world** (LV-15): stageTime.ts's old model gave 4-7 84 s (it doesn't model glide descents) while the
+  200-roll tool's quick route says 3:07 at its shortest and the bots take 4-8 minutes. Check a length claim with era.ts and the bots.
 
 ## 7. Where things are
 
 - Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's
-  stage (`5-M`) via `extraStages.ts`; 5-7 and 5-9 from the new generator (`src/game/gen2/`, its 16 curated rolls each: `gen2/game.ts`); 5-6, 5-8 and
+  stage (`5-M`) via `extraStages.ts`; 6-8 Stilt Climb in `src/game/w6Stages.ts` (its rising tide: `risingTide.ts`); 5-7 and 5-9 from the new generator (`src/game/gen2/`, its 16 curated rolls each: `gen2/game.ts`); 5-6, 5-8 and
   Worlds 6-10 from the old `stageGenerator.ts` (to be replaced by the new generator). Stage names and goals: `stagePlan.ts`. The validator: `levelCheck.ts`. Stage length: `stageTime.ts`.
 - The inspector: `tools/inspect/` (README in `tools/README.md`). Matt's art sheets: `reference/prop-sheets/`. Story:
   `reference/STORY-REVIEW-2026-10-27.md`, `reference/VOICE.md`. Everything else: `reference/HANDOFF.md`.

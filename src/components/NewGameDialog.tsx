@@ -6,7 +6,8 @@ import { DIFFICULTY_LABEL, difficulty, setDifficulty, type Difficulty } from '..
 
 /**
  * Start a new adventure. With progress on this device it says what will be erased (and points at the backup
- * file first); either way it asks whether to play the story or skip it, so nobody has to sit through cutscenes.
+ * file first); either way it asks Easy or Normal (nothing picked for a first game: LV-1) and whether to play the story or skip it,
+ * so nobody has to sit through cutscenes.
  */
 interface Props {
   onClose: () => void;
@@ -26,10 +27,12 @@ export const NewGameDialog: React.FC<Props> = ({ onClose, onStarted, onBackup })
   })();
   const hasProgress = !!current && (current.summary.stagesCleared > 0 || current.summary.stars > 0);
 
-  // a brand-new player starts on Easy; someone starting over keeps what they had
-  const [level, setLevel] = React.useState<Difficulty>(() => (hasProgress ? difficulty() : 'easy'));
+  // a brand-new player picks Easy or Normal themselves (LV-1: a new game used to start on Easy without saying so); someone starting
+  // over starts with what they had, and can change it here
+  const [level, setLevel] = React.useState<Difficulty | null>(() => (hasProgress ? difficulty() : null));
 
   const begin = (skipStory: boolean) => {
+    if (!level) return;
     try {
       resetProgress(browserStore(), { skipStory });
     } catch {
@@ -84,12 +87,14 @@ export const NewGameDialog: React.FC<Props> = ({ onClose, onStarted, onBackup })
               </button>
             ))}
           </div>
-          <p className="ui-copy ng-diff-note">You can change this any time in the menu.</p>
+          <p className={`ui-copy ng-diff-note${level ? '' : ' ng-diff-ask'}`} aria-live="polite">
+            {level ? 'You can change this any time in the menu.' : 'Pick Easy or Normal to start.'}
+          </p>
           <div className="ui-row">
-            <button type="button" className="ui-btn ui-btn-gold" onClick={() => begin(false)}>
+            <button type="button" className="ui-btn ui-btn-gold" onClick={() => begin(false)} disabled={!level}>
               {hasProgress ? 'Start over, with the story' : 'Start with the story'}
             </button>
-            <button type="button" className="ui-btn ui-btn-green" onClick={() => begin(true)}>
+            <button type="button" className="ui-btn ui-btn-green" onClick={() => begin(true)} disabled={!level}>
               {hasProgress ? 'Start over, skip the story' : 'Skip the story'}
             </button>
             <button type="button" className="ui-btn ui-btn-plain" onClick={onClose}>

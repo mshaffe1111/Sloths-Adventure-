@@ -1,0 +1,88 @@
+{
+ "note": "7-3 ring of chairs by img2img from tools/art/hfbatch/chairstart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/hf-w7-chairs/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w7chairs-s55-5",
+   "start": "start-w7chairs.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten carved stone chairs in an ancient ruined jungle temple, standing in a shallow arc on a mossy stone floor ledge, each chair seen from the side with a tall carved back slab, a seat and a square stone leg, the chairs face the middle of the ring, one chair knocked over lying on the floor, and at the far right end an eleventh chair, plain, uncarved and smaller. Grey-green weathered temple stone with carved key patterns, soft green moss on the seats and capstones, thin dry brown roots creeping over the stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w7chairs-s55-17",
+   "start": "start-w7chairs.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten carved stone chairs in an ancient ruined jungle temple, standing in a shallow arc on a mossy stone floor ledge, each chair seen from the side with a tall carved back slab, a seat and a square stone leg, the chairs face the middle of the ring, one chair knocked over lying on the floor, and at the far right end an eleventh chair, plain, uncarved and smaller. Grey-green weathered temple stone with carved key patterns, soft green moss on the seats and capstones, thin dry brown roots creeping over the stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w7chairs-s72-5",
+   "start": "start-w7chairs.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten carved stone chairs in an ancient ruined jungle temple, standing in a shallow arc on a mossy stone floor ledge, each chair seen from the side with a tall carved back slab, a seat and a square stone leg, the chairs face the middle of the ring, one chair knocked over lying on the floor, and at the far right end an eleventh chair, plain, uncarved and smaller. Grey-green weathered temple stone with carved key patterns, soft green moss on the seats and capstones, thin dry brown roots creeping over the stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.72,
+   "seed": 5,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w7chairs-s72-17",
+   "start": "start-w7chairs.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten carved stone chairs in an ancient ruined jungle temple, standing in a shallow arc on a mossy stone floor ledge, each chair seen from the side with a tall carved back slab, a seat and a square stone leg, the chairs face the middle of the ring, one chair knocked over lying on the floor, and at the far right end an eleventh chair, plain, uncarved and smaller. Grey-green weathered temple stone with carved key patterns, soft green moss on the seats and capstones, thin dry brown roots creeping over the stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.72,
+   "seed": 17,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w7chairs-b-s62-17",
+   "start": "start-w7chairs-b.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten carved stone chairs in an ancient ruined jungle temple, standing in a shallow arc on a mossy stone floor ledge, each chair seen from the side with a tall carved back slab, a seat and a square stone leg, the chairs face the middle of the ring, one chair knocked over lying on the floor, and at the far right end an eleventh chair, plain, uncarved and smaller. Grey-green weathered temple stone with carved key patterns, soft green moss on the seats and capstones, thin dry brown roots creeping over the stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w7chairs-b-s62-29",
+   "start": "start-w7chairs-b.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten carved stone chairs in an ancient ruined jungle temple, standing in a shallow arc on a mossy stone floor ledge, each chair seen from the side with a tall carved back slab, a seat and a square stone leg, the chairs face the middle of the ring, one chair knocked over lying on the floor, and at the far right end an eleventh chair, plain, uncarved and smaller. Grey-green weathered temple stone with carved key patterns, soft green moss on the seats and capstones, thin dry brown roots creeping over the stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.62,
+   "seed": 29,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w7chairs-c-s60-29",
+   "start": "start-w7chairs-c.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten old carved stone chairs on the mossy floor of a ruined jungle temple, the ring curving away from us: the chairs at both ends near and large, the middle chairs far away, smaller and standing further back on the floor. Every chair different: one with its back broken off halfway, one with a cracked top, two with a carved stone sloth-face crest, one leaning, one missing its armrest, one wrapped in a thick brown root, one nearly bare. One chair knocked over lying on the floor. At the far right, set apart, an eleventh chair, small, plain, smooth uncarved stone. Grey-green weathered temple stone, soft green moss, thin dry brown roots. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, living animal, identical chairs, repeated pattern",
+   "strength": 0.6,
+   "seed": 29,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w7chairs-c-s60-41",
+   "start": "start-w7chairs-c.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten old carved stone chairs on the mossy floor of a ruined jungle temple, the ring curving away from us: the chairs at both ends near and large, the middle chairs far away, smaller and standing further back on the floor. Every chair different: one with its back broken off halfway, one with a cracked top, two with a carved stone sloth-face crest, one leaning, one missing its armrest, one wrapped in a thick brown root, one nearly bare. One chair knocked over lying on the floor. At the far right, set apart, an eleventh chair, small, plain, smooth uncarved stone. Grey-green weathered temple stone, soft green moss, thin dry brown roots. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, living animal, identical chairs, repeated pattern",
+   "strength": 0.6,
+   "seed": 41,
+   "w": 1536,
+   "h": 416
+  }
+ ]
+}

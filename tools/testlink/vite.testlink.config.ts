@@ -16,7 +16,8 @@ const t = (() => {
 export default defineConfig({
   base: './',
   // the new HUD and Dot (beta) is on by default here, off on the real game (src/game/newLook.ts)
-  define: { __BUILD_TIME__: JSON.stringify(t) },
+  // (a QA build: the control test, #ctest, opens here and not in the shipped game: src/game/playRecorder.ts qaBuild, UI-15)
+  define: { __BUILD_TIME__: JSON.stringify(t), 'import.meta.env.VITE_QA_BUILD': JSON.stringify('1') },
   plugins: [react(), tailwindcss()],
   build: { outDir: 'tools/testlink/dist', emptyOutDir: true },
 });

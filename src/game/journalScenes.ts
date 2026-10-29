@@ -13,6 +13,8 @@ import { demoPlayer } from './miloVariants.ts';
 import { drawHeroDemo } from './heroSprite.ts';
 import { drawBankArt, drawBranchArt, drawBushArt, drawKitPiece, drawLogArt, drawSwingLianaArt } from './protoArt.ts';
 import { VINE_HANG } from './heroVine.ts';
+import { drawRopeAlong } from './ropeArt.ts';
+import { HANG_DROP } from './rope.ts';
 import { drawGoldSnake } from './goldSnake.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawHazardEntity } from './creatures.ts';
@@ -26,6 +28,19 @@ import { drawGlideSprite } from './leafSprites.ts';
 import { venomRig } from './venomRig.ts';
 import { newBrain } from './bossAI.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { FONT_UI } from './fonts.ts';
+import { withHurtFlash } from './hurtFlash.ts';
+import { gateArtReady, stageArtReady } from './stageArt.ts';
+
+/**
+ * Start loading the painted sheets the scenes draw from (the journal opens: HowToPlay.tsx): the backdrop, World 1's exit gate and the
+ * shared sheet with the heart, the power-ups and the finds (stageArt.ts). Without it they came in a moment after a page opened.
+ */
+export function warmJournalArt(): void {
+  stageArtReady();
+  gateArtReady(1);
+  loadBackdrop();
+}
 
 export const SCENE_W = 300;
 export const SCENE_H = 187.5;
@@ -47,11 +62,14 @@ export const SCENE_LEN: Record<DemoId, number> = {
 const BG_URL = new URL('../assets/backdrops/w1c-mid.webp', import.meta.url).href;
 let bg: HTMLImageElement | null = null;
 let bgReady = false;
-function backdrop(ctx: CanvasRenderingContext2D) {
+function loadBackdrop() {
   if (!bg && typeof Image !== 'undefined') {
     bg = new Image();
     trackAtlas(bg, BG_URL, () => { bgReady = true; }, () => { bg = null; });
   }
+}
+function backdrop(ctx: CanvasRenderingContext2D) {
+  loadBackdrop();
   const g = ctx.createLinearGradient(0, 0, 0, SCENE_H);
   g.addColorStop(0, '#2f5a3a');
   g.addColorStop(1, '#173323');
@@ -302,13 +320,16 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       if (ko < 0 || ko < 0.8) {
         ctx.save();
         if (ko > 0) ctx.globalAlpha = Math.max(0, 1 - ko / 0.8);
-        if (id === 'nostomp') {
-          const e = foe('spider', enemyX, FLOOR, 34, 22, { hitFlashTimer: flash, facing: -1 });
-          if (!drawSpiderSprite(ctx, e, now, 140)) drawHazardEntity(ctx, e, now);
-        } else if (big) {
-          const e = foe('boa', enemyX, FLOOR, 58, 26, { hp: 3, maxHp: 3, hitFlashTimer: flash, facing: -1 });
-          if (!drawBoaSprite(ctx, e, now)) drawBoa(ctx, e, now);
-        } else snake(ctx, now, foe('snake', enemyX, FLOOR, 38, 22, { hitFlashTimer: flash }));
+        // (the white flash on each hit, as in play: hurtFlash.ts)
+        withHurtFlash(ctx, flash > 0, enemyX - 90, FLOOR - 110, 180, 130, (ctx) => {
+          if (id === 'nostomp') {
+            const e = foe('spider', enemyX, FLOOR, 34, 22, { hitFlashTimer: flash, facing: -1 });
+            if (!drawSpiderSprite(ctx, e, now, 140)) drawHazardEntity(ctx, e, now);
+          } else if (big) {
+            const e = foe('boa', enemyX, FLOOR, 58, 26, { hp: 3, maxHp: 3, hitFlashTimer: flash, facing: -1 });
+            if (!drawBoaSprite(ctx, e, now)) drawBoa(ctx, e, now);
+          } else snake(ctx, now, foe('snake', enemyX, FLOOR, 38, 22, { hitFlashTimer: flash }));
+        });
         ctx.restore();
       }
       hits.forEach((h) => bang(ctx, 142, FLOOR - 16, (t - h - 0.1) / 0.3));
@@ -337,7 +358,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
         ctx.scale(1, squashed ? 0.35 : 1);
         ctx.translate(-sx, -FLOOR);
         if (squashed) ctx.globalAlpha = Math.max(0, 1 - (t - 1.3) / 0.9);
-        snake(ctx, now, foe('snake', sx, FLOOR, 38, 22, { hitFlashTimer: squashed ? 0.1 : 0 }));
+        withHurtFlash(ctx, squashed, sx - 70, FLOOR - 80, 140, 100, (c) => snake(c, now, foe('snake', sx, FLOOR, 38, 22, { hitFlashTimer: squashed ? 0.1 : 0 })));
         ctx.restore();
       }
       bang(ctx, sx, FLOOR - 24, (t - 1.3) / 0.35);
@@ -466,16 +487,26 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       ground(ctx, 260, SCENE_W + 10);
       pit(ctx, 40, 260);
       const ry = 38;
-      ctx.save();
-      ctx.strokeStyle = '#8b6a3a';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(-10, ry);
-      ctx.quadraticCurveTo(SCENE_W / 2, ry + 10, SCENE_W + 10, ry);
-      ctx.stroke();
-      ctx.restore();
+      // the painted rope (ropeArt.ts), sagging a little; his paws on it (heroRope.ts hangs him HANG_DROP above his feet)
+      const ropeY = (x: number) => ry + 20 * ((x + 10) / (SCENE_W + 20)) * (1 - (x + 10) / (SCENE_W + 20));
+      const pts: Array<[number, number]> = [];
+      for (let i = 0; i <= 40; i++) {
+        const rx = -10 + ((SCENE_W + 20) * i) / 40;
+        pts.push([rx, ropeY(rx)]);
+      }
+      if (!drawRopeAlong(ctx, pts)) {
+        ctx.save();
+        ctx.strokeStyle = '#9a7656';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        pts.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
+        ctx.stroke();
+        ctx.restore();
+      }
       const x = lerp(30, 270, clamp01((t - 0.3) / 3));
-      pokey(ctx, now, x, ry + 64, { hanging: true, grounded: false, vx: 80, walkCycle: t * 5, facing: 1 });
+      // (walkCycle grows 0.08 per px crept, as on a real rope: 80 px/s here)
+      const moving = t > 0.3 && t < 3.3;
+      pokey(ctx, now, x, ropeY(x) + HANG_DROP, { hanging: true, grounded: false, vx: moving ? 80 : 0, walkCycle: Math.max(0, x - 30) * 0.08, facing: 1 });
       break;
     }
     case 'hide': {
@@ -523,7 +554,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       if (ko < 0) {
         ctx.save();
         ctx.fillStyle = '#e8f5ff';
-        ctx.font = '700 12px Fredoka, sans-serif';
+        ctx.font = `700 12px ${FONT_UI}`;
         const z = (now * 0.8) % 1;
         ctx.globalAlpha = 1 - z;
         ctx.fillText('z', sx + 12 + z * 10, FLOOR - 26 - z * 18);
@@ -670,7 +701,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       ctx.roundRect(SCENE_W - 92, 8, 84, 24, 8);
       ctx.fill();
       ctx.fillStyle = '#fcd34d';
-      ctx.font = '700 15px Outfit, sans-serif';
+      ctx.font = `700 15px ${FONT_UI}`;
       ctx.textAlign = 'center';
       ctx.fillText(`${got} / 4 petals`, SCENE_W - 50, 25);
       ctx.restore();
@@ -700,7 +731,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
         ctx.save();
         ctx.globalAlpha = 1 - (t - 1.1);
         ctx.fillStyle = '#fda4af';
-        ctx.font = '700 16px Fredoka, sans-serif';
+        ctx.font = `700 16px ${FONT_UI}`;
         ctx.fillText('+1', ix - 8, FLOOR - 50 - (t - 1.1) * 20);
         ctx.restore();
       }

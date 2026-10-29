@@ -11,6 +11,8 @@ import type { GoalInfo } from './goalInfo.ts';
 import { GoalPic } from './hudArt.tsx';
 import { readMs, type HudMode, type LaneRect } from './hudLayout.ts';
 import { fillStyle, useHudArt } from './painted.tsx';
+import { ModeChip } from '../ModeChip.tsx';
+import { easeInLine } from '../../game/difficulty.ts';
 
 /** stages whose full card has been shown this session (a retry gets the short one) */
 const SEEN = new Set<string>();
@@ -60,7 +62,9 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
     const root = document.documentElement;
     root.dataset.hudCard = '1';
     // (the reading time of its main line, 1.5 s + 0.5 s a word: about 4 s, never past 4.5 s)
-    const hold = quick ? 900 : Math.min(4500, readMs(info.line, 3000));
+    // (and a moment more for the easing's line, LV-7)
+    const ease = easeInLine(stageId);
+    const hold = quick ? 900 : Math.min(ease ? 6000 : 4500, readMs(ease ? `${info.line} ${ease}` : info.line, 3000));
     const t0 = window.setTimeout(() => setPhase('hold'), 30);
     const t1 = window.setTimeout(shrink, hold);
     // the first move (a touch anywhere, or a key) sends it to the counter, once it has been seen for a moment
@@ -119,6 +123,8 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
   const icon = short ? 34 : 42;
   const count = info.kind === 'count';
   const words = info.line.replace(/^This stage:\s*/, '');
+  // (the first stage after a switch from Easy to Normal says the help fades out, in place of the goal's small line: LV-7)
+  const ease = easeInLine(stageId);
 
   return (
     <div ref={ref} className={`vh-card ${quick ? 'quick' : ''} ${phase}${art ? ' painted' : ''}`} style={style} role="status" aria-live="polite" aria-label={info.line} data-hud-keepout="">
@@ -131,13 +137,15 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
         </div>
       ) : (
         <>
-          <div className="vh-card-label">{label}</div>
+          <div className="vh-card-label">
+            {label} <ModeChip />
+          </div>
           <div className="vh-card-row">
             <GoalPic icon={info.icon} size={icon} />
             <div className="vh-card-text">
               <span className="vh-card-pre">This stage:</span>
               <span className="vh-card-big">{words}</span>
-              {info.sub && !short && <span className="vh-card-sub">{info.sub}</span>}
+              {ease ? <span className="vh-card-sub ease">{ease}</span> : info.sub && !short && <span className="vh-card-sub">{info.sub}</span>}
             </div>
           </div>
         </>

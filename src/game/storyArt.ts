@@ -2,7 +2,7 @@ import type { BossEntity, PlayerState } from './types.ts';
 import { drawPaintedCardBoss, drawPaintedBossFrame } from './bossArt.ts';
 import { POKEY, drawPokeyFace, VISEMES, warmStoryHero } from './heroStory.ts';
 import { cameraAt, drawFx, flashAt, poseAt, shakeAt } from './storyShots.ts';
-import { renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
+import { devScale, renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
 import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
 import { MEECA } from './jennifurSprite.ts';
 import { actorDx, footing, followScroll, GROUNDED, groundOf, shadowFor, showActor, type StoryCharacter } from './storyActors.ts';
@@ -16,6 +16,8 @@ import { photoUrl } from './photos.ts';
 import { plateImage, preloadPlates, releasePlates } from './plates.ts';
 import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
 import { CEL_K, CELS, drawCel, warmCels } from './storyCels.ts';
+import { capStoryZoom, liftForFeet } from './storyFrame.ts';
+import { FONT_READ } from './fonts.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
@@ -575,7 +577,7 @@ function drawPhotoCard(ctx: CanvasRenderingContext2D, ph: ScenePhoto, w: number,
   ctx.strokeRect(-pw / 2, -chh / 2 + padTop, pw, ph_);
   if (ph.caption) {
     ctx.fillStyle = '#3b2f22';
-    ctx.font = 'italic 24px Georgia, "Times New Roman", serif';
+    ctx.font = `italic 24px ${FONT_READ}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(ph.caption, 0, chh / 2 - padBot / 2 + 2);
@@ -642,6 +644,21 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
  * A figure painted on Matt's story sheets (storyCels.ts): the frame the pose timeline names, its feet on the ground line (hovering when placed above it), a contact shadow,
  * a slow breath. Nothing is drawn while its atlas is still loading, which the draw itself starts.
  */
+/** how tall (scene units) the melting bottom of the tallest bust in the picture is, over every frame it plays (0: no bust) */
+function bustBand(scene: StoryScene): number {
+  let m = 0;
+  for (const a of scene.actors) {
+    if (a.kind !== 'cel' || !a.seq) continue;
+    for (const key of a.seq) {
+      for (const f of Array.isArray(key.frame) ? key.frame : key.frame ? [key.frame] : []) {
+        const c = CELS[f];
+        if (c?.c === 'b') m = Math.max(m, 0.2 * c.h * CEL_K * (a.scale ?? 1) * (key.sc ?? 1));
+      }
+    }
+  }
+  return m;
+}
+
 function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
   if (!a.seq || !a.seq.length) return;
   const pose = poseAt(a.seq, t);
@@ -1193,8 +1210,13 @@ function paintFinish(ctx: CanvasRenderingContext2D, w: number, h: number, mood: 
     const g = glowCanvas.getContext('2d')!;
     g.globalCompositeOperation = 'copy';
     g.drawImage(cv, 0, 0, gw, gh);
+    // only the highlights glow (ST-1: a 0.34 bloom of the whole picture washed every scene out): the small copy multiplied by itself,
+    // twice over, is its brightness to the fourth, so mid-tones fall away (0.5 to 0.06) and the lights stay (0.9 to 0.66)
+    g.globalCompositeOperation = 'multiply';
+    g.drawImage(glowCanvas, 0, 0);
+    g.drawImage(glowCanvas, 0, 0);
     ctx.globalCompositeOperation = 'screen';
-    ctx.globalAlpha = mood === 'storm' || mood === 'night' ? 0.22 : 0.34;
+    ctx.globalAlpha = mood === 'storm' || mood === 'night' ? 0.15 : 0.2;
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(glowCanvas, 0, 0, cv.width, cv.height);
   }
@@ -1275,18 +1297,24 @@ const STORY_BAKE = 0.55;
 
 /**
  * Draw one story picture into a w x h scene space (the canvas is expected to be scaled to it). `lift` raises the
- * whole picture by that fraction of the height, so a dialogue bar over the bottom of the screen hides scenery
- * instead of the characters' feet.
+ * whole picture by at least that fraction of the height, and more if need be so the ground sits above `feetMax` of
+ * the view: a dialogue bar over the bottom of the screen hides scenery instead of the characters' feet.
  */
-export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number, w = SCENE_W, h = SCENE_H, lift = 0) {
+export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number, w = SCENE_W, h = SCENE_H, lift = 0, feetMax = 1) {
   ctx.save();
   ctx.clearRect(0, 0, w, h);
-  ctx.translate(0, -lift * h);
   // camera: close-up zoom with a slow push-in
   const cam = scene.camera ? cameraAt(scene.camera, t) : null;
-  const z = cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1));
+  const big = scene.actors.reduce((m, a) => Math.max(m, a.scale ?? 1), 1);
+  const z = capStoryZoom(cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1)), devScale(ctx), big);
   const fx = Math.min(w - w / (2 * z), Math.max(w / (2 * z), (cam ? cam.fx : scene.focusX ?? 0.5) * w));
   const fy = Math.min(h - h / (2 * z), Math.max(h / (2 * z), (cam ? cam.fy : scene.focusY ?? 0.62) * h));
+  // (the feet: where the ground lands in the view through this camera, raised clear of the words box; but a figure painted cut off
+  // below the chest, a bust, melts away over its bottom fifth, and that melt must stay behind the box, not stand see-through over the
+  // picture: then the ground goes as far under the box top as the melt is tall)
+  const band = feetMax < 0.9 ? bustBand(scene) : 0;
+  lift = liftForFeet((groundOf(scene) * h - fy) * z + h / 2, h, band ? feetMax + 0.06 + (band * z) / h : feetMax, lift);
+  ctx.translate(0, -lift * h);
   const [shx, shy] = shakeAt(scene.fx, t);
   ctx.translate(shx, shy);
   ctx.translate(w / 2, h / 2);

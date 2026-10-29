@@ -15,11 +15,12 @@
  * many vines each chain has, how far apart and how high they hang, the length of every stretch, the snakes, and the order inside a beat.
  * Every rolled piece is checked against the shared physics (protoCheck.ts) and rolled again if it fails (see protoStage.test.ts).
  */
+import { teachWater } from './waterTeach.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
-import { DOUBLE_RISE, JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
 import { validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
@@ -38,6 +39,8 @@ import { DOT_HELP, KNOT_TEACH, type Chime, type DotKnot } from './w4Kit.ts';
 import { buildWaterfallSteps } from './w4Stage43.ts';
 import type { CliffNest, NestKind } from './w4Nests.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
+import { buildStiltClimb } from './w6Stages.ts';
+import { buildSlideStage } from './w7Slide.ts';
 import { buildAerie } from './w4Stage49.ts';
 import { buildW5Stage } from './w5Stages.ts';
 import { buildW5Stage54 } from './w5Stage54.ts';
@@ -52,10 +55,12 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
+// 7-4 The Way Down (Matt, 2026-10-29: not a climb; the floor crumbles into a slide seen from behind: w7Slide.ts)
+HAND_STAGES['7-4'] = '7-4';
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -107,6 +112,19 @@ export interface ProtoExtras {
   ring?: { x0: number; x1: number; wallId: number; waves: Array<Array<{ x: number; surface: number; kind: 'snake' | 'boa' | 'ocelot' | 'jaguar' }>> };
   /** the collapse that chases him along the long branch (1-8: chase.ts) */
   chase?: import('./chase.ts').ChasePlan;
+  /** the dirty tide that comes in under him as he climbs (6-8: risingTide.ts) */
+  tide?: import('./risingTide.ts').TidePlan;
+  /**
+   * the top of a climb opening onto the next world (6-8: the ruins of World 7): from height `from` to `full` (world y) the backdrop turns
+   * to `strips` (backdrop stems) in golden light, loaded once he is above `load`; standing on the crown (`crown`, its top) the view pulls back
+   */
+  reveal?: { from: number; full: number; load: number; crown: number; strips: { far: string; mid: string; near: string } };
+  /** 6-8's dressing from Matt's painted World 6 pieces: hides and arches on the shelves, the root wall behind (w6StiltArt.ts) */
+  stilt?: import('./w6StiltArt.ts').StiltDecor[];
+  /** 6-8's ledges painted in Matt's other World 6 pieces (their platforms are art 'stilt': w6StiltArt.ts) */
+  stiltLedges?: import('./w6StiltArt.ts').StiltLedge[];
+  /** a stage that shows more of the world than usual (engine applyZoom: world px tall sideways, wide upright), as 4-7's w4.view */
+  view?: { land: number; port: number };
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
   bushes?: import('./watcher.ts').Bush[];
   watch?: import('./watcher.ts').WatchZone[];
@@ -118,6 +136,8 @@ export interface ProtoExtras {
   gen2?: { waterWarnings?: Array<{ x: number; y: number }> };
   /** Meeca's stage (5-M, after 5-5): the column, the trees she carves, the ferns and the guards' rhythms (meecaStage.ts, run by meecaPlay.ts) */
   meeca?: import('./meecaStage.ts').MeecaStage;
+  /** 7-4's slide (w7Slide.ts): the crumble, the chute's courses and the chamber (run by w7SlideRun.ts) */
+  slide?: import('./w7Slide.ts').SlideStage;
   /** World 3's sleeping thorn vines (3-5: thornVine.ts) */
   thorns?: import('./thornVine.ts').ThornVine[];
   /** World 3's painted dressing: stalactites, glowworm threads, ferns, the grotto mouth (protoStage.ts, drawn by w3Art.ts) */
@@ -203,6 +223,11 @@ export const PIT_ESCAPE = 170;
 export const PIT_CLIMB = 100;
 /** the tallest stump one jump from the ground climbs with room to spare */
 const STUMP_REACH = 90;
+/** the control test's line before its first two-jump gap (its words for the new look: dotLinesData.ts ctest.gap3) */
+export const CTEST_GAP3 = 'This one needs two jumps: jump, then jump again in the air';
+/** the long jumps' own tip, on the single jumps (dotLinesData.ts ctest.gaps; Matt, 2026-10-29: one line for each move, the second jump's
+ * at gap 3) */
+const CTEST_GAPS = 'Jump across the gaps';
 /** before the second jump is taught (1-1's stepping stones): how far below a stone's lower side a gap's floor sits, an easy single hop */
 export const PLAIN_CLIMB = 75;
 /** 1-1's practice shelf for the second jump: this far past the start of the twist (the tip is said at 60), and this high above the path */
@@ -277,6 +302,7 @@ export const STAGE_SECONDS: Record<string, number> = {
   '5-3': 175, // closing orchids: a harvest from the orchids' cups as they open and shut, closing sooner as it goes on
   '5-4': 170, // silk bridges: the first dusk, the silk lines and the sheets (w5Stage54.ts)
   '5-M': 315, // Meeca's stage, the first of World 5: the night camp, five puzzle rooms, the clearing (meecaStage.ts meecaSeconds: 5:00 to 5:30)
+  '7-4': 141, // the slide (w7Slide.ts slideSeconds): the hall, the crumble, about 110 s down the chute, the chamber
   '5-5': 190, // caught in silk: the cocoons, the pouch scene at the rest branch, the silk line up to the high web
 };
 export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_SECONDS;
@@ -291,28 +317,32 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * where the snakes sit, the order of the pieces inside a beat, and the dressing. Every rolled piece is checked against the physics
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
-export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
-  const st = buildPlan(config, seed, plan);
+export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
+  const st = buildPlan(config, seed, plan, easy);
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
   const w = config.worldIndex;
   if ((w === 3 || w === 4) && /^[34]-[1-9]$/.test(plan) || (w === 1 && /^1-[467]$/.test(config.id))) {
     const kd = dressStage({ world: w, stage: config.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
     if (kd.length) st.proto.kitDecor = kd;
   }
-  return st;
+  // water taught before it costs a life (LV-8)
+  return teachWater(st);
 }
 
-function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): GeneratedStage & { proto: ProtoExtras } {
+/** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
+function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = false): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
   if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
   if (plan === '4-7') return buildLongDrop(config, seed);
+  if (plan === '7-4') return buildSlideStage(config, seed);
   if (plan === '4-9') return buildAerie(config, seed);
   if (plan === '5-1' || plan === '5-2' || plan === '5-3') return buildW5Stage(config, seed, plan);
   if (plan === '5-4') return buildW5Stage54(config, seed);
   if (plan === '5-5') return buildW5Stage(config, seed, plan);
+  if (plan === '6-8') return buildStiltClimb(config, seed);
   if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
@@ -872,16 +902,32 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   function gaps() {
     const x0 = x;
     run(R.r(200, 260));
-    const one = reachJump(0, false), two = reachJump(0, true);
-    for (const w of [one * 0.5, one * 0.75, two * 0.7, two * 0.85]) {
+    // (Easy's own reach, a thumb that lets go at about 70%, physics.ts EASY_HOLD: 73 / 109 / 200 / 242 px where Normal's are 87 / 131 /
+    // 219 / 267, which on Easy were 90% of a single jump and 94% of a double; QA batch E, 2026-10-29, every new player fell back here, and
+    // Matt chose this with the flags below)
+    const reach = easy ? reachJumpHeld : reachJump;
+    const one = reach(0, false), two = reach(0, true);
+    const ws = [one * 0.5, one * 0.75, two * 0.7, two * 0.85];
+    ws.forEach((w, k) => {
       const edge = x;
       close();
       const far = Math.round(edge + w);
       softPit(edge, far);
       flower(edge + w / 2, G - 120, 'hibiscus');
       open(far);
+      // a flag on the far bank once the single jumps are done, and another before the last gap, so a missed double jump starts again
+      // just before it (there was none for 2,100 px on Normal)
+      if (k === 1 || k === 2) checkpoints.push({ x: far + 70, y: G, reached: false });
+      // and Dot teaches the second jump on the bank before the first gap that needs it, once he stands on it (never mid-jump: belowY
+      // waits for him on the ground), the first time on this phone (Matt, 2026-10-29: the kids missed gaps 3 and 4 with one jump)
+      // (the stretch's own tip, on the same move, comes down there, or it held the bubble until after his try at the gap: passX)
+      if (k === 1) {
+        const intro = hints.find((h) => h.text === CTEST_GAPS);
+        if (intro) intro.passX = far + 20;
+        hint(far + 20, CTEST_GAP3, CTEST_GAP3, CTEST_GAP3, G - 4);
+      }
       run(R.r(260, 320));
-    }
+    });
     expert += (x - x0) / RUN + 2;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
@@ -2220,7 +2266,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
     });
     beat('Long jumps', () => {
-      hint(x + 60, 'Jump the gaps. The last two need a second jump');
+      hint(x + 60, CTEST_GAPS);
       gaps();
       flag();
     });
@@ -4060,6 +4106,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     type Cover = Bush['kind'] | 'fall';
     /** a place to hide, centred on the cursor */
     const cover = (kind: Cover) => (kind === 'fall' ? veil(x) : bush(x - BUSH_W[kind] / 2, kind));
+    /** the opening stretches under her eye, where her first strike comes: cover close all along (hopRun, LV-13) */
+    let dense = false;
+    let denseKind: Cover = 'fern';
+    let lookoutFern = false;
     /**
      * a bush at the end of her stretch: a pass that starts as he leaves it sweeps on past its end, and with the last cover 500-1200 px
      * back it caught him in the open (2026-10-28, the first-timer bot: first strikes at 27-173 s)
@@ -4075,6 +4125,32 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
      */
     function hopRun(len: number) {
       const end = x + len;
+      if (dense) {
+        // (LV-13: under her eye a rock to hop and a fern just past it, about every 330 px, so no spot of a hop run is more
+        // than about 100 px from a place to hide when her first strike comes; QA: 11 hurts at "Hide from the eagle" since 2026-10-26,
+        // and the first-timer's first strike landed 194-215 px from the nearest bush on every seed)
+        // (spread evenly over the stretch, each fern's rock just before it: n of them, about one each 330 px)
+        const x0 = x;
+        const len = end - x0;
+        const n = Math.max(1, Math.round(len / 330) - 1);
+        for (let i = 1; i <= n; i++) {
+          const k: Cover = lookoutFern ? 'fern' : denseKind;
+          const cw = k === 'fall' ? VEIL_W : BUSH_W[k];
+          const mid = x0 + (len * i) / (n + 1);
+          const rockAt = mid - cw / 2 - 12 - 96;
+          if (rockAt > x) run(rockAt - x);
+          const ra = x;
+          logHop();
+          // (a petal of the stretch's row that the rock now stands on goes: the rock carries its own on top)
+          for (let j = C.length - 1; j >= 0; j--) if (C[j].type === 'flower' && C[j].y > G - 50 && C[j].x > ra - 24 && C[j].x < x + 24) C.splice(j, 1);
+          // (the kind of cover the row teaches: a curtain of water in the waterfall row, so the water is still what hides him there; on
+          // the flat just past the rock, clear of it, so it reads as growing there and hides him on the ground)
+          if (mid > x) run(mid - x);
+          cover(k);
+        }
+        if (x < end) run(end - x);
+        return;
+      }
       let k = Math.floor(len / 300);
       while (k-- > 0) {
         run(Math.max(70, (end - x) / (k + 2) - 60));
@@ -4090,6 +4166,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       for (let k = 0; k < n; k++) {
         const g = R.r(gap[0], gap[1]);
         if (k > 0) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
+        denseKind = kinds[k % kinds.length];
         if (k > 0) hopRun(g);
         // (the first place to hide is a short run into the row: her first pass can come as he walks in, 2026-10-28)
         else run(Math.min(g, R.r(160, 220)));
@@ -4114,6 +4191,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
      */
     function lookoutRun(kinds: Cover[], gap: [number, number], calm: [number, number]) {
       const x0 = x;
+      // (on a lookout's stretch the extra cover is a fern, never a curtain: a curtain hides him from the lookout too, and its fruit
+      // trick would be a choice; in a fern he is hidden only crouched and still, and the lookout sees him run on, LV-13)
+      const wasFern = lookoutFern;
+      lookoutFern = true;
       // a bush on the way in, short of the fruit tree: with it, no stretch of a lookout's run is more than ~700 px from a place to hide,
       // so her pass always has cover within the 2 s warning (2026-10-28, the first-timer: her first strike at ~23 s, cover 680-1490 px off)
       run(R.r(110, 150));
@@ -4136,6 +4217,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 1.5;
       pieces.push({ k: 'rest', x0, x1: x });
+      lookoutFern = wasFern;
     }
     /**
      * two lookouts in a row: the first one's fruit is the old trick, and its stretch ends in a curtain of water. The second one's tree
@@ -4143,6 +4225,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
      */
     function lookoutPair(calm: [number, number]) {
       const x0 = x;
+      // (on a lookout's stretch the extra cover is a fern, never a curtain: a curtain hides him from the lookout too, and its fruit
+      // trick would be a choice; in a fern he is hidden only crouched and still, and the lookout sees him run on, LV-13)
+      const wasFern = lookoutFern;
+      lookoutFern = true;
       // (a bush on the way in, as in lookoutRun)
       run(R.r(110, 150));
       cover(R.pick(['tall', 'fern'] as const));
@@ -4171,6 +4257,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 3;
       pieces.push({ k: 'rest', x0, x1: x });
+      lookoutFern = wasFern;
     }
     /**
      * the secret: one curtain hides a trunk in the hollow behind it, up to a branch path behind leaves with a golden seed at its end.
@@ -4208,6 +4295,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
     });
     beat('Learn: under cover', () => {
+      dense = true;
       hint(x + 20, 'Her shadow! Slide down inside a bush to hide', 'Her shadow! Hold down inside a bush to hide', 'Her shadow! Hold down inside a bush to hide');
       coverRow(3, [380, 460], ['tall', 'wide', 'fern'], [7.5, 9]);
       hint(x + 20, 'Stand behind a waterfall. She cannot see you through the water');
@@ -4693,7 +4781,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const BW = 100, BH = 84;
       const boulder: Platform = { id: pid++, x: tX + 70, y: sy - BH, width: BW, height: BH, type: 'solid', style: 'moss_stone', push: { min: tX + 60, max: shelfEnd } };
       P.push(boulder);
-      const gap = Math.round(R.r(220, 240));
+      // (LV-12, polish report 2026-10-29: 220-240 failed every scripted try from the boulder's top in both modes. In the real engine,
+      // from the boulder's 100 px top, 8 of 252 presses landed, all full holds at the very edge; 15% shorter, 76. So both: 15% shorter
+      // and the landing 40 px nearer)
+      const gap = Math.round(R.r(187, 204)) - 40;
       // (the water lands on the shelf's last stretch too, where the boulder stops; it starts higher than a double jump off the boulder)
       FALLS8.push({ id: FALLS8.length + 1, x: shelfEnd - FALL_LIP, width: gap + FALL_LIP, top: sy - FALL_HEAD, bottom: G, plug: { platformId: boulder.id, atX: shelfEnd - BW } });
       const nl = branch(shelfEnd + gap, shelfEnd + gap + Math.round(R.r(200, 240)), sy + Math.round(R.r(0, 16)));
@@ -5987,11 +6078,38 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     if (firstRock) hint(ROCKS_LOOSE, ROCKS_LOOSE, ROCKS_LOOSE, firstRock.land + 280);
   }
 
-  // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
-  // a knot of wood stands at each such end, a little wall, so he cannot walk off into a ten-second fall (he can still hop over it). And
-  // a trail of petals along the floor leads back to the one trunk that climbs up from it.
-  if (mist) {
-    const LIP = { w: 18, h: 56, drop: 600 };
+  /**
+   * A knot of wood at each end of a high branch where a step too far drops him `drop` px or more (or at a rope's post), so a plain walk
+   * stops there instead of carrying him into a long fall; he can still hop over it. Returns the knots. `floor` (2-6): the drop is where
+   * a walk off lands (walkOff), and an end onto the floor gets one too; `doubt`: every knot is listed there for the level check to judge
+   * (one that saves a move goes), and knots under a ledge a double jump off their top might reach are made anyway (2-6: a knot's top was
+   * a step up to a porch 180 px up and 130 px across, a double jump the kid bot made 78% of the time).
+   */
+  const knots = (drop: number, o: { floor?: boolean; doubt?: Platform[] } = {}): Platform[] => {
+    const LIP = { w: 18, h: 56 };
+    const made: Platform[] = [];
+    /**
+     * Where a walk off the end of p lands (`floor`, 2-6): the arc of a walk off at a run, held on the way it was going (he carries on
+     * well past the end as he falls: 30 and 80 px past it missed porches below that he sails over), and how far down that is. An end
+     * that drops him to the floor gets a knot however short the fall.
+     */
+    const walkOff = (p: Platform, end: number, side: 1 | -1): { drop: number; floor: boolean } => {
+      let y = 0, vy = 0;
+      for (let t = 0; t < 4; t += 1 / 60) {
+        const x = end + side * (8 + PHYS.maxRun * t);
+        const y1 = y + vy / 60;
+        vy = Math.min(PHYS.maxFall, vy + PHYS.gravDown / 60);
+        // (a landing within 60 px of a porch's end counts as a miss: he comes down on the knot there, half his body past it, and walks on
+        // off it)
+        const hit = P.filter((q) => q !== p && !q.lip && q.y - p.y > y && q.y - p.y <= y1 && q.x + 60 <= x && q.x + q.width - 60 >= x);
+        if (hit.length) {
+          const q = hit.reduce((a, b) => (b.y < a.y ? b : a));
+          return { drop: q.y - p.y, floor: q === P[0] };
+        }
+        y = y1;
+      }
+      return { drop: Infinity, floor: false };
+    };
     const dropAt = (p: Platform, x: number) => {
       const under = P.filter((q) => q !== p && q.y > p.y && q.x <= x + 19 && q.x + q.width >= x - 19);
       return under.length ? Math.min(...under.map((q) => q.y)) - p.y : Infinity;
@@ -6003,20 +6121,41 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         // (and at an end where a rope's post stands: walking up to the post he used to run past it and off the end, 44 px on, before
         // he could jump up to the rope; the knot stops him at the post. Hanging, he passes over it, and he steps off the rope beyond it)
         const post = ROPES.some((q) => (side > 0 ? Math.abs(q.x0 + 44 - end) < 2 : Math.abs(q.x1 - 44 - end) < 2) && Math.abs(q.g0 - p.y) < 2);
-        if (!post && Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < LIP.drop) continue;
+        const off = o.floor ? walkOff(p, end, side) : null;
+        if (!post && (off ? off.drop < drop && !off.floor : Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < drop)) continue;
         // (never under a ledge a double jump off the knot's top would reach: under a mist column's top it was a step up past the hidden
         // ledges, a 150 px jump straight up that the kid bot made 54-65% of the time, 2026-10-28. A fall here costs a climb, not a life)
         // (a knot under a rope's post stays: the post needs it; the engine's walls are 50 px or taller, so it cannot be made lower)
         const lx = side < 0 ? end : end - LIP.w;
         const over = P.some((q) => q !== p && q.y < p.y && p.y - LIP.h - q.y < DOUBLE_RISE + 30 && q.x < lx + LIP.w + 60 && q.x + q.width > lx - 60);
-        if (over && !post) continue;
+        // (`doubt`: kept for now, and the level check takes it away if it saves a move, as it does the catch branches below)
+        if (over && !post && !o.doubt) continue;
         // (nor where the next branch is a hop away at about the same height, round 4: a knot at both ends of a 70 px gap made the hop clear
         // two walls, a 100 ms press on Easy; a slip into that gap drops to a branch or the floor, the climb again, never a life)
         const hopNext = P.some((q) => q !== p && q.height === 24 && Math.abs(q.y - p.y) < 90 && (side > 0 ? q.x >= end && q.x - end < 200 : end >= q.x + q.width && end - (q.x + q.width) < 200));
         if (hopNext && !post) continue;
-        P.push({ id: pid++, x: lx, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true });
+        const knot: Platform = { id: pid++, x: lx, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true };
+        P.push(knot);
+        made.push(knot);
+        o.doubt?.push(knot);
       }
     }
+    return made;
+  };
+
+  // 2-6 (QA 2026-10-29, ?layout=1: "plank ends walk you off to the floor"): the same knots at the porches' dead ends where a step too far
+  // drops him past the porch below (400 px or more: a climb back is one ladder, a fall past it a long way back) or onto the floor (where
+  // he walked off along the bank, away from the ladders); each is a mailbox on its post (the World 2 sheet: placed once the level check
+  // has had its say, below)
+  /** the knots for the level check to judge (it keeps only those that save no move) */
+  const doubtKnots: Platform[] = [];
+  const villageKnots = village ? knots(400, { floor: true, doubt: doubtKnots }) : [];
+
+  // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
+  // a knot of wood stands at each such end, a little wall, so he cannot walk off into a ten-second fall (he can still hop over it). And
+  // a trail of petals along the floor leads back to the one trunk that climbs up from it.
+  if (mist) {
+    knots(600);
     for (let x = firstTrunkX + 260; x < W - KAPOK_MARGIN - 60; x += 300) flower(x, P[0].y - 34, 'hibiscus');
     // (round 4, harder but still safe: rocks down the trunks above the mist, Dot's 4-1 line when he first climbs toward one)
     const firstMist = mistSpots.reduce((m, q) => Math.max(m, q.y), -Infinity);
@@ -6169,13 +6308,17 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     },
   };
   // (the catch branches, judged by the level check itself: one that lets any place be reached in fewer moves than without the catches
-  // is taken away, and its gap closed instead where it can be. The rules above keep most clear; this catches the rest)
-  if (catches.length) {
+  // is taken away, and its gap closed instead where it can be. The rules above keep most clear; this catches the rest. 2-6's knots the
+  // same way: one that saves a move is taken away)
+  if (catches.length || doubtKnots.length) {
     let g: CheckGraph | null = null;
     validateStage(out as unknown as GeneratedStage, { inspect: (q) => (g = q) });
     const graph = g as CheckGraph | null;
     if (graph) {
-      const ck = new Map(catches.map((c) => [graph.key(P.find((p) => p.id === c.plat)!), c]));
+      const ck = new Map<string, { plat: number; planks?: [number, number] }>([
+        ...catches.map((c) => [graph.key(P.find((p) => p.id === c.plat)!), c] as const),
+        ...doubtKnots.map((k) => [graph.key(k), { plat: k.id }] as const),
+      ]);
       const start = graph.key(P[0]);
       const bfs = (skip: (k: string) => boolean) => {
         const d = new Map<string, number>([[start, 0]]);
@@ -6198,12 +6341,27 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       for (const k of gone) {
         const c = ck.get(k)!;
         P.splice(P.findIndex((p) => p.id === c.plat), 1);
-        catches.splice(catches.indexOf(c), 1);
+        if (!c.planks) {
+          villageKnots.splice(villageKnots.findIndex((q) => q.id === c.plat), 1);
+          continue;
+        }
+        catches.splice(catches.indexOf(c as (typeof catches)[number]), 1);
         const [a, b] = c.planks.map((id) => P.find((p) => p.id === id)!);
         closeGap(a, b);
       }
     }
   }
+  // 2-6's knots: a mailbox on its post (its post 6% of the picture right of its middle: flipped, as far left), facing either way, and
+  // every third a signpost (its post in the middle), so some fifty of them never read as one piece repeated (STAGE-RULES §5b)
+  villageKnots.forEach((k, i) => {
+    k.art = 'post';
+    const b = k.y + k.height + 2, cx = k.x + k.width / 2;
+    if (i % 3 === 2) decor.push({ n: 'sign', x: Math.round(cx), b, w: 50 });
+    else {
+      const flip = (i + Math.floor(i / 3)) % 2 === 1;
+      decor.push({ n: 'mailbox', x: Math.round(cx + (flip ? 2 : -2)), b, w: 38, flip });
+    }
+  });
   return out;
 }
 

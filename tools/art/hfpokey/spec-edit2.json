@@ -1,0 +1,72 @@
+{
+ "tag": "pokey-edit2",
+ "edits": [
+  {
+   "name": "slide2-grip",
+   "src": "b:hfpokey/up/sheet5-pokey-behind.png",
+   "crop": [
+    0,
+    0,
+    512,
+    559
+   ],
+   "prompt": "Remove the two tall wooden poles from Picture 1 completely, so only the flat magenta background is where they stood. Keep the sloth exactly as he is: the same pose, the same body upright, his arms in exactly the same place; only his paws change: where they were wrapped round the poles, each paw is now closed into a soft empty brown fist with pale claws curled in, holding nothing, with the pale bandage wrap round the wrist. Keep his fur, legs and feet, the brown leather satchel strap from his left shoulder down to the bag on the right, the colours, the outline, the painted cartoon style and the flat magenta background exactly the same.",
+   "neg": "wooden poles, sticks, posts, rails, holding a stick, extra limbs, extra arms, face, photo, 3d render, text, watermark, blurry",
+   "seeds": [
+    1,
+    2
+   ],
+   "w": 1024,
+   "h": 1120
+  },
+  {
+   "name": "slide2-grip2",
+   "src": "b:hfpokey/up/sheet5-pokey-behind.png",
+   "crop": [
+    512,
+    0,
+    1024,
+    559
+   ],
+   "prompt": "Remove the two tall wooden poles from Picture 1 completely, so only the flat magenta background is where they stood. Keep the sloth exactly as he is: the same pose, the same body upright, his arms in exactly the same place; only his paws change: where they were wrapped round the poles, each paw is now closed into a soft empty brown fist with pale claws curled in, holding nothing, with the pale bandage wrap round the wrist. Keep his fur, legs and feet, the brown leather satchel strap from his left shoulder down to the bag on the right, the colours, the outline, the painted cartoon style and the flat magenta background exactly the same.",
+   "neg": "wooden poles, sticks, posts, rails, holding a stick, extra limbs, extra arms, face, photo, 3d render, text, watermark, blurry",
+   "seeds": [
+    1,
+    2
+   ],
+   "w": 1024,
+   "h": 1120
+  },
+  {
+   "name": "slide2-leanR",
+   "src": "b:hfpokey/up/sheet5-pokey-behind.png",
+   "crop": [
+    1536,
+    0,
+    2048,
+    559
+   ],
+   "prompt": "Remove the two tall wooden poles from Picture 1 completely, so only the flat magenta background is where they stood. Keep the sloth exactly as he is: the same pose, the same body tilted and leaning to the right, his arms in exactly the same place; only his paws change: where they were wrapped round the poles, each paw is now closed into a soft empty brown fist with pale claws curled in, holding nothing, with the pale bandage wrap round the wrist. Keep his fur, legs and feet, the brown leather satchel strap from his left shoulder down to the bag on the right, the colours, the outline, the painted cartoon style and the flat magenta background exactly the same.",
+   "neg": "wooden poles, sticks, posts, rails, holding a stick, extra limbs, extra arms, face, photo, 3d render, text, watermark, blurry",
+   "seeds": [
+    1,
+    2
+   ],
+   "w": 1024,
+   "h": 1120
+  }
+ ],
+ "carry": [
+  [
+   "edit2-slide",
+   [
+    "edits/slide2-grip-s1.png",
+    "edits/slide2-grip-s2.png",
+    "edits/slide2-grip2-s1.png",
+    "edits/slide2-grip2-s2.png",
+    "edits/slide2-leanR-s1.png",
+    "edits/slide2-leanR-s2.png"
+   ]
+  ]
+ ]
+}

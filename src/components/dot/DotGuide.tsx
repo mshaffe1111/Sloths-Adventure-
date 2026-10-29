@@ -1,3 +1,4 @@
+import { sound } from '../../game/audio.ts';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { LevelConfig } from '../../game/types.ts';
 import type { GameEngine } from '../../game/engine.ts';
@@ -125,6 +126,8 @@ class GuideRun {
   movesMarked = new Set<string>();
   moves = new MoveWatch();
   struggle = new StruggleWatch();
+  /** the line Dot last chirped for (SN-7: once per line) */
+  chirpN = -1;
   clock = 0;
   lastT = -1;
   help = dotHelp();
@@ -583,6 +586,16 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       return a;
     };
 
+    /** the bubble is up: Dot chirps, once per line (SN-7) */
+    const bubbleUp = () => {
+      const s = run.show;
+      if (!s) return;
+      if (s.line.who === 'Dot' && run.chirpN !== s.n) {
+        run.chirpN = s.n;
+        sound.dotChirp();
+      }
+    };
+
     /** a boss fight: the corner band (and her spot beside it) */
     const placeCorner = (p: Plan) => {
       hardNow();
@@ -591,6 +604,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.sx = c.dot.x;
       p.sy = c.dot.y;
       p.placedAt = run.clock;
+      bubbleUp();
     };
 
     const placeBub = (p: Plan) => {
@@ -632,6 +646,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.bubDy = p.bub.y - spot.y;
       p.ko = koCover(p.bub.x, p.bub.y);
       p.placedAt = run.clock;
+      bubbleUp();
     };
 
     const startLine = (s: Showing) => {
@@ -1138,7 +1153,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       run.prevHp = v.hp;
 
       // story asides (the "Story lines in stages" switch; Dot's help does not silence them)
-      if (run.applies && run.storyOn && run.clock >= run.nextStoryCheck) {
+      // (not on 7-4's slide: an aside in the banner would cover the flume ahead; its line is in the hall, before it)
+      if (run.applies && run.storyOn && !v.slide && run.clock >= run.nextStoryCheck) {
         run.nextStoryCheck = run.clock + 200;
         if (run.hurtAt >= 0 && run.clock - run.hurtAt > HURT_WINDOW_MS) run.hurtAt = -1;
         const due = dueLine({

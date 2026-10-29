@@ -17,6 +17,8 @@ function rig(world: { air?: boolean; vine?: boolean; swing?: boolean } = {}) {
     jumpPress: () => log.push('jump'),
     jumpRelease: () => log.push('jumpUp'),
     punch: () => log.push('punch'),
+    // (a jab thrown as a finger landed and taken back as it flicked off was never a punch: CT-17)
+    punchCancel: () => void (log.includes('punch') && log.splice(log.lastIndexOf('punch'), 1)),
     kick: () => log.push('kick'),
     mega: () => log.push('mega'),
     climb: (d) => log.push(`climb:${d}`),
@@ -136,7 +138,7 @@ test('on a vine: straight up climbs; up and forward (27 to 50 degrees over, as t
     t.drag(1, 120, 520, 120 + Math.sin(deg(a)) * 80, 520 - Math.cos(deg(a)) * 80, 90, 4);
     assert.equal(t.count('jump'), 0, `${a} degrees: ${t.log.join(' ')}`);
   }
-  assert.ok(TUNING.vineLeapSlant < Math.tan(deg(27)) && TUNING.vineLeapSlant > Math.tan(deg(14)));
+  assert.ok(TUNING.leanSlant < Math.tan(deg(27)) && TUNING.leanSlant > Math.tan(deg(14)));
   assert.ok(TUNING.vineLeapMaxSlant >= Math.tan(deg(48)) && TUNING.vineLeapMaxSlant <= Math.tan(deg(50.5)));
 });
 

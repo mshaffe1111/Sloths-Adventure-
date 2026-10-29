@@ -1,0 +1,600 @@
+{
+ "_note": "seq: [clip, Wan frame numbers (even, 8 fps)]. Old clips from the 2026-10-28 overnight run (cr-/m1k-), new from hf-batch-w7w8 (hfb-).",
+ "fruitbat-w8": {
+  "anchor": "roost",
+  "derim": 6,
+  "anchorClip": "nc-fruitbat-roost-s17",
+  "seq": {
+   "doze": [
+    "hfb-bat-sleep-s5",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22
+    ]
+   ],
+   "sleep": [
+    "hfb-bat-sleep-s5",
+    [
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ]
+  },
+  "loop": [
+   "sleep"
+  ],
+  "note": "doze: from roost_24 (eyes open) the eyes close; sleep: eyes shut, wings wrapped, slow breathing (play it ping-pong). Same canvas anchor as fruitbat.json's roost, so they swap in place for roost frames at the same draw scale."
+ },
+ "fruitbat-fly": {
+  "anchor": "middle",
+  "derim": 6,
+  "seq": {
+   "fly": [
+    "cr-fruitbat-fly-s21",
+    [
+     36,
+     38,
+     40,
+     42,
+     44,
+     46
+    ]
+   ]
+  },
+  "loop": [
+   "fly"
+  ],
+  "note": "side-on flight cycle facing right, the same bat design and paint as fruitbat.json, at clip size (about 2x the 200 x 140 asked: draw at half scale for that size). Anchor: the middle of the body box."
+ },
+ "owl": {
+  "anchor": "middle",
+  "derim": 6,
+  "seq": {
+   "defeat": [
+    "hfb-owl-defeat-s11",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ]
+  },
+  "note": "the owl defeat redo from new-owl-505: knocked out of the air, wings fold, it drops and lies flat with its eyes shut (closed lids, not swirly X's: Wan would not draw the X's). Anchor: the middle of the flying owl's box in frame 0, so it starts where the flier was."
+ },
+ "crab": {
+  "anchor": "ground",
+  "loop": [
+   "idle",
+   "walk"
+  ],
+  "seq": {
+   "idle": [
+    "cr-crab-idle-s7",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ],
+   "walk": [
+    "m1k-crab-walk-s3",
+    [
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34
+    ]
+   ],
+   "attack": [
+    "m1k-crab-snap-s29",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14
+    ]
+   ],
+   "hurt": [
+    "cr-crab-hurt-s21",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30
+    ]
+   ],
+   "defeat": [
+    "hfb-crab-defeat-s17",
+    [
+     0,
+     2,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ]
+  }
+ },
+ "piranha": {
+  "anchor": "middle",
+  "mainOnly": true,
+  "loop": [
+   "idle"
+  ],
+  "seq": {
+   "idle": [
+    "m1k-piranha-chomp-s3",
+    [
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34
+    ]
+   ],
+   "attack": [
+    "cr-piranha-leap-s7",
+    [
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28
+    ]
+   ],
+   "hurt": [
+    "cr-piranha-hurt-s21",
+    [
+     2,
+     4,
+     6,
+     8,
+     10,
+     12
+    ]
+   ],
+   "defeat": [
+    "hfb-piranha-defeat-s5",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ]
+  }
+ },
+ "sentry": {
+  "anchor": "ground",
+  "derim": 14,
+  "whitePockets": 15,
+  "loop": [
+   "idle",
+   "walk"
+  ],
+  "seq": {
+   "idle": [
+    "cr-sentry-idle-s21",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ],
+   "walk": [
+    "m1k-sentry-walk-s11",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ],
+   "attack": [
+    "cr-sentry-jab-s21",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36
+    ]
+   ],
+   "hurt": [
+    "hfb-sentry-hurt-s5",
+    [
+     0,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24
+    ]
+   ],
+   "defeat": [
+    "cr-sentry-crumble-s21",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ]
+  }
+ },
+ "beetle": {
+  "anchor": "ground",
+  "derim": 8,
+  "loop": [
+   "idle",
+   "walk"
+  ],
+  "seq": {
+   "idle": [
+    "cr-beetle-idle-s21",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ],
+   "walk": [
+    "m1k-beetle-walk-s11",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ],
+   "attack": [
+    "m1k-beetle-charge-s3",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ],
+   "hurt": [
+    "cr-beetle-flip-s21",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ],
+   "defeat": [
+    "hfb-beetle-defeat-s17",
+    [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24,
+     26,
+     28,
+     30,
+     32,
+     34,
+     36,
+     38,
+     40,
+     42,
+     44,
+     46,
+     48
+    ]
+   ]
+  }
+ }
+}

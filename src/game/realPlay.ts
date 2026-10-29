@@ -176,7 +176,7 @@ export class RealPlay {
     const p = this.p;
     Object.assign(p, {
       vx: 0, vy: 0, climbing: false, isVineSwinging: false, hanging: false, ducking: false, jumpsLeft: 2, isDoubleJumping: false,
-      punching: false, kicking: false, pushing: false, bounce: undefined,
+      punching: false, kicking: false, pushing: false, bounce: undefined, swim: undefined,
     });
     p.invincibleTimer = this.safe ? 1e9 : 0;
     Object.assign(e, {

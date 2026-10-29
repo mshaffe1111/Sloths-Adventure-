@@ -1,0 +1,73 @@
+{
+ "tag": "w7slide-seam",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "seam-floor-s40",
+   "start": "roll-floor.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth by water, a shallow carved groove running straight down the middle, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.4,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-floor-s50",
+   "start": "roll-floor.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth by water, a shallow carved groove running straight down the middle, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-wall-roots-s40",
+   "start": "roll-wall-roots.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved geometric meander patterns and glyphs in the stone blocks, brown strangler-fig roots creeping over it, patches of moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.4,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-wall-roots-s50",
+   "start": "roll-wall-roots.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved geometric meander patterns and glyphs in the stone blocks, brown strangler-fig roots creeping over it, patches of moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-wall-glyph-s40",
+   "start": "roll-wall-glyph.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved stone tablets of maze glyphs set into fitted amber stone blocks, a carved band of geometric pattern, a little moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.4,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-wall-glyph-s50",
+   "start": "roll-wall-glyph.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved stone tablets of maze glyphs set into fitted amber stone blocks, a carved band of geometric pattern, a little moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2da2da3e63eed21cd398439f2c935941269af2d7/reference/prop-sheets/qa-notes/7-4-slide-art/starts/"
+}
