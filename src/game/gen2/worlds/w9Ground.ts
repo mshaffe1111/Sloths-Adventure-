@@ -293,7 +293,7 @@ const restLedge = section({
   difficulty: 1,
   pieces: [bank('a', [140, 170]), up('s1', 'a', 36, [130, 150]), up('top', 's1', 36, [220, 250]), down('s2', 'top', 36, [130, 150]), down('b', 's2', 36, [120, 140]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [140, 160])],
   last: 'c',
-  sockets: [petals('s1', 's1', 0.5, 1), flag('top', 0.5), scenery('ohia', 'top', [0.8, 0.9], 0.7), petals('s2', 's2', 0.5, 1)],
+  sockets: [petals('s1', 's1', 0.5, 1), flag('top', 0.5), scenery('ohia', 'top', [0.8, 0.9], 0.7), petals('s2', 's2', 0.5, 1), thread('r', 'c', 0.5)],
   mirrorable: false,
 });
 
@@ -309,7 +309,7 @@ const lavaHop = section({
   weight: SHARED,
   pieces: [bank('a', [300, 340]), lava('b', 'a', [300, 340]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [180, 220])],
   last: 'c',
-  sockets: [petals('a', 'a', 0.5, 2, 80), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), scenery('smoke', 'c', [0.4, 0.6], 0.5)],
+  sockets: [petals('a', 'a', 0.5, 2, 80), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), scenery('smoke', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
   mirrorable: true,
 });
 
@@ -323,7 +323,7 @@ const lavaRise = section({
   weight: SHARED,
   pieces: [bank('a', [360, 400]), lavaUp('b', 'a', [-56, -44], [380, 420]), up('k', 'b', 30, [140, 160]), down('b2', 'k', 30, [200, 240]), lava('c', 'b2', [380, 420], BRINK)],
   last: 'c',
-  sockets: [petals('a', 'a', 0.45, 2, 90), petals('k', 'k', 0.5, 1), petals('b2', 'b2', 0.5, 1), foe('foe', 'c', [0.5, 0.6], ANY, 3, { phases: HOT, chance: 0.6 })],
+  sockets: [petals('a', 'a', 0.45, 2, 90), petals('k', 'k', 0.5, 1), petals('b2', 'b2', 0.5, 1), foe('foe', 'c', [0.5, 0.6], ANY, 3, { phases: HOT, chance: 0.6 }), thread('r', 'c', 0.5)],
   mirrorable: true,
 });
 
@@ -337,7 +337,7 @@ const crustGaps = section({
   weight: SHARED,
   pieces: [bank('a', [260, 300]), wide('b', 'a', [300, 340]), leap('c', 'b', [300, 340]), up('k', 'c', 32, [140, 160]), down('d', 'k', 32, [160, 200])],
   last: 'd',
-  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 90), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 }), petals('k', 'k', 0.5, 1)],
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 90), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 }), petals('k', 'k', 0.5, 1), thread('r', 'd', 0.5)],
   mirrorable: true,
 });
 
@@ -352,7 +352,7 @@ const lavaDrop = section({
   pieces: [bank('a', [220, 260]), down('b', 'a', 48, [200, 240]), up('k', 'b', 32, [140, 160]), down('b2', 'k', 32, [380, 420]), lava('c', 'b2', [380, 420])],
   last: 'c',
   exitDy: 48,
-  sockets: [petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), foe('foe', 'b2', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 }), scenery('log', 'c', [0.4, 0.6], 0.5)],
+  sockets: [petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), foe('foe', 'b2', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 }), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
   mirrorable: false,
 });
 
@@ -388,7 +388,7 @@ const geyserPair = section({
   extraSeconds: GEYSER_WAIT * 2,
   pieces: [bank('a', [200, 240]), up('k', 'a', 32, [140, 160]), down('field', 'k', 32, [560, 600]), up('k2', 'field', 36, [140, 160]), down('b', 'k2', 36, [200, 240])],
   last: 'b',
-  sockets: [petals('k', 'k', 0.5, 1), geyser('g1', 'field', 0.3), geyser('g2', 'field', 0.72), petals('mid', 'field', 0.51, 1), petals('k2', 'k2', 0.5, 1)],
+  sockets: [petals('k', 'k', 0.5, 1), geyser('g1', 'field', 0.3), geyser('g2', 'field', 0.72), petals('mid', 'field', 0.51, 1), petals('k2', 'k2', 0.5, 1), thread('r', 'b', 0.5)],
   mirrorable: true,
 });
 
@@ -403,7 +403,7 @@ const geyserRow = section({
   extraSeconds: GEYSER_WAIT * 3,
   pieces: [bank('a', [200, 240]), up('k', 'a', 34, [140, 160]), down('field', 'k', 34, [760, 800]), up('k2', 'field', 30, [140, 160]), down('b', 'k2', 30, [180, 220])],
   last: 'b',
-  sockets: [geyser('g1', 'field', 0.2), geyser('g2', 'field', 0.5), geyser('g3', 'field', 0.8), petals('p1', 'field', 0.35, 1), petals('p2', 'field', 0.65, 1), petals('k2', 'k2', 0.5, 1)],
+  sockets: [geyser('g1', 'field', 0.2), geyser('g2', 'field', 0.5), geyser('g3', 'field', 0.8), petals('p1', 'field', 0.35, 1), petals('p2', 'field', 0.65, 1), petals('k2', 'k2', 0.5, 1), thread('r', 'b', 0.5)],
   mirrorable: true,
 });
 
@@ -418,7 +418,7 @@ const geyserChasm = section({
   extraSeconds: GEYSER_WAIT * 2,
   pieces: [bank('a', [420, 460]), lava('b', 'a', [420, 460], BRINK), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
   last: 'c',
-  sockets: [geyser('g1', 'a', 0.72), petals('a', 'a', 0.3, 1), geyser('g2', 'b', 0.3), petals('b', 'b', 0.7, 1), petals('k', 'k', 0.5, 1)],
+  sockets: [geyser('g1', 'a', 0.72), petals('a', 'a', 0.3, 1), geyser('g2', 'b', 0.3), petals('b', 'b', 0.7, 1), petals('k', 'k', 0.5, 1), thread('r', 'c', 0.5)],
   mirrorable: true,
 });
 
@@ -433,7 +433,7 @@ const geyserLedge = section({
   extraSeconds: GEYSER_WAIT,
   pieces: [bank('a', [240, 280]), up('ledge', 'a', 56, [440, 480]), down('b', 'ledge', 28, [180, 220]), up('k', 'b', 34, [140, 160]), down('c', 'k', 62, [220, 260])],
   last: 'c',
-  sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'ledge', 0.5), petals('l1', 'ledge', 0.15, 1), petals('l2', 'ledge', 0.85, 1), petals('k', 'k', 0.5, 1), scenery('ohia', 'c', [0.5, 0.7], 0.5)],
+  sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'ledge', 0.5), petals('l1', 'ledge', 0.15, 1), petals('l2', 'ledge', 0.85, 1), petals('k', 'k', 0.5, 1), scenery('ohia', 'c', [0.5, 0.7], 0.5), thread('r', 'c', 0.5)],
   exitDy: 0,
   mirrorable: true,
 });
@@ -449,7 +449,7 @@ const geyserBrink = section({
   extraSeconds: GEYSER_WAIT,
   pieces: [bank('a', [300, 340]), lava('b', 'a', [440, 480], BRINK, true), lava('c', 'b', [300, 340], [0.62, 0.8])],
   last: 'c',
-  sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'b', 0.42), petals('b', 'b', 0.85, 1), petals('c', 'c', 0.5, 1)],
+  sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'b', 0.42), petals('b', 'b', 0.85, 1), petals('c', 'c', 0.5, 1), thread('r', 'c', 0.5)],
   mirrorable: true,
 });
 
@@ -467,7 +467,7 @@ const basaltRun = section({
   maxPerStage: 2,
   pieces: [bank('a', [240, 280]), ...ch1.pieces],
   last: ch1.last,
-  sockets: [tip(W9_LESSON.basalt, 'a', 0.2), petals('t2', 't2', 0.5, 1, 0, { dn: 40 }), petals('ch', 'ch', 0.5, 2, 90), scenery('smoke', 'b', [0.5, 0.7], 0.5)],
+  sockets: [tip(W9_LESSON.basalt, 'a', 0.2), petals('t2', 't2', 0.5, 1, 0, { dn: 40 }), petals('ch', 'ch', 0.5, 2, 90), scenery('smoke', 'b', [0.5, 0.7], 0.5), thread('r', 'b', 0.5)],
   mirrorable: false,
 });
 
@@ -482,7 +482,7 @@ const basaltTwin = section({
   uses: [W9_LESSON.basalt],
   pieces: [bank('a', [240, 280]), ...ch2.pieces],
   last: ch2.last,
-  sockets: [petals('t2', 't2', 0.5, 1, 0, { dn: 40 }), petals('slab', 'slab1', 0.5, 1, 0, { dn: 40 }), foe('foe', 'ch', [0.45, 0.55], SMALL, 3, { phases: HOT, chance: 0.6 }), petals('t4', 't4', 0.5, 1, 0, { dn: 40 })],
+  sockets: [petals('t2', 't2', 0.5, 1, 0, { dn: 40 }), petals('slab', 'slab1', 0.5, 1, 0, { dn: 40 }), foe('foe', 'ch', [0.45, 0.55], SMALL, 3, { phases: HOT, chance: 0.6 }), petals('t4', 't4', 0.5, 1, 0, { dn: 40 }), thread('r', 'b', 0.5)],
   mirrorable: true,
 });
 
@@ -499,7 +499,7 @@ const hunterRun = section({
   weight: SHARED,
   pieces: [bank('a', [440, 470]), ...huntK.pieces],
   last: huntK.last,
-  sockets: [foe('f1', 'a', [0.5, 0.6], SMALL, 3), petals('k1', 'k1', 0.5, 1), foe('f2', 'f1', [0.45, 0.55], ANY, 3, { phases: LIVE, chance: 0.7 }), petals('k2', 'k2', 0.5, 1), foe('f3', 'f2', [0.5, 0.6], CATS, 5, { phases: HOT, chance: 0.6 })],
+  sockets: [foe('f1', 'a', [0.5, 0.6], SMALL, 3), petals('k1', 'k1', 0.5, 1), foe('f2', 'f1', [0.45, 0.55], ANY, 3, { phases: LIVE, chance: 0.7 }), petals('k2', 'k2', 0.5, 1), foe('f3', 'f2', [0.5, 0.6], CATS, 5, { phases: HOT, chance: 0.6 }), thread('r', 'f2', 0.5)],
   mirrorable: true,
 });
 
@@ -513,7 +513,7 @@ const catChasm = section({
   weight: SHARED,
   pieces: [bank('a', [520, 560]), lava('b', 'a', [480, 520], BRINK), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
   last: 'c',
-  sockets: [foe('cat', 'a', [0.4, 0.5], CATS, 5), petals('a', 'a', 0.85, 1), foe('small', 'b', [0.45, 0.55], SMALL, 3, { phases: HOT, chance: 0.7 }), petals('k', 'k', 0.5, 1)],
+  sockets: [foe('cat', 'a', [0.4, 0.5], CATS, 5), petals('a', 'a', 0.85, 1), foe('small', 'b', [0.45, 0.55], SMALL, 3, { phases: HOT, chance: 0.7 }), petals('k', 'k', 0.5, 1), thread('r', 'c', 0.5)],
   mirrorable: true,
 });
 
@@ -526,7 +526,7 @@ const hunterBrink = section({
   difficulty: 8,
   pieces: [bank('a', [300, 340]), lava('b', 'a', [520, 560], BRINK, true), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [180, 220])],
   last: 'c',
-  sockets: [petals('a', 'a', 0.5, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5), petals('k', 'k', 0.5, 1)],
+  sockets: [petals('a', 'a', 0.5, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5), petals('k', 'k', 0.5, 1), thread('r', 'c', 0.5)],
   mirrorable: true,
 });
 
