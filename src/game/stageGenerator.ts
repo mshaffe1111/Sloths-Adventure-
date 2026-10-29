@@ -1,7 +1,7 @@
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
-import { heartBy } from './easyMode.ts';
+import { capFlagSpans, heartBy } from './easyMode.ts';
 import type { Difficulty } from './difficulty.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
@@ -2776,6 +2776,11 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
  * laid by the pipeline itself, the same stage under Easy's rules); every other stage is built once and made gentler by
  * easyMode.easyStage, as before.
  */
+const flagsCapped = (st: GeneratedStage): GeneratedStage => {
+  capFlagSpans(st as never);
+  return st;
+};
+
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
@@ -2785,9 +2790,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);
   if (config.id === MEECA_STAGE_ID) return meecaGeneratedStage(config, layoutVariant ?? 1);
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
-  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]);
+  // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
+  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
-  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]);
+  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) return flagsCapped(buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]));
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below
   if (isGen2Stage(config)) {
     const stage = buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
