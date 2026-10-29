@@ -68,6 +68,25 @@ def edit1(commit):
     print(len(ed), 'edit items', sum(len(e['seeds']) for e in ed), 'images')
 
 
+FISTS = ('Remove the two tall wooden poles from Picture 1 completely, so only the flat magenta background is where they stood. Keep the '
+         'sloth exactly as he is: the same pose, the same body {lean}, his arms in exactly the same place; only his paws change: where '
+         'they were wrapped round the poles, each paw is now closed into a soft empty brown fist with pale claws curled in, holding '
+         'nothing, with the pale bandage wrap round the wrist. Keep his fur, legs and feet, the brown leather satchel strap from his '
+         'left shoulder down to the bag on the right, the colours, the outline, the painted cartoon style and the flat magenta '
+         'background exactly the same.')
+
+
+def edit2():
+    """7-4 second pass: the poles out but the pose kept (fists where the paws gripped), so the lean stays a lean"""
+    ed = []
+    for n, c, lean in (('grip', 0, 'upright'), ('grip2', 1, 'upright'), ('leanR', 3, 'tilted and leaning to the right')):
+        ed.append({'name': f'slide2-{n}', 'src': 'b:hfpokey/up/sheet5-pokey-behind.png', 'crop': [512 * c, 0, 512 * (c + 1), 559],
+                   'prompt': FISTS.format(lean=lean), 'neg': POLES_NEG, 'seeds': [1, 2], 'w': 1024, 'h': 1120})
+    names = [f"edits/{e['name']}-s{s}.png" for e in ed for s in e['seeds']]
+    (H / 'spec-edit2.json').write_text(json.dumps({'tag': 'pokey-edit2', 'edits': ed, 'carry': [['edit2-slide', names]]}, indent=1))
+    print(len(names), 'images')
+
+
 def clips1(picks):
     """Wan 2.2 clips re-run from the edited starts, exactly as the swim set (tools/art/w6/swim/make_specs.py CLIPS, M, P, MOTION)"""
     sys.path.insert(0, str(H.parents[0] / 'w6' / 'swim'))
@@ -99,6 +118,8 @@ def args(spec, commit):
 if __name__ == '__main__':
     if sys.argv[1] == 'edit1':
         edit1(sys.argv[2])
+    elif sys.argv[1] == 'edit2':
+        edit2()
     elif sys.argv[1] == 'clips1':
         clips1([('tread', 'edits/tread-start-s1.png', [3, 11]), ('under', 'edits/under-start-s2.png', [11, 3])])
     else:
