@@ -187,7 +187,7 @@ export interface W7Extras {
   mood: W7Mood;
   scenery?: Array<{ n: string; x: number; b: number; w: number; flip?: boolean }>;
   decor?: Array<{ n: string; x: number; b: number; w: number; flip?: boolean }>;
-  /** 7-3's ring of ten stone chairs and a plain eleventh, centred at x on the ground b (art to come: the report's Gemini prompt) */
+  /** 7-3's ring of ten stone chairs and a plain eleventh, centred at x on the ground b (drawn by w7ChairsArt.ts) */
   chairs?: Array<{ x: number; b: number; w: number }>;
 }
 

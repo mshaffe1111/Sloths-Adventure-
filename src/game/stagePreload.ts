@@ -13,6 +13,7 @@ import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
 import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
+import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
 import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
@@ -81,6 +82,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'sentry') {
       sentryReady();
       urls.push(...SENTRY_URLS);
+    } else if (k === 'chairs') {
+      w7ChairsReady();
+      urls.push(W7_CHAIRS_URL);
     } else if (k === 'crumble') {
       crumbleArtReady();
       w7FaceReady();

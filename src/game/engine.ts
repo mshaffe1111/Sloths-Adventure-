@@ -1,4 +1,5 @@
 import { SlowWatch } from './slowTip.ts';
+import { drawW7Chairs } from './w7ChairsArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
@@ -5333,6 +5334,9 @@ export class GameEngine {
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
+    // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
+    const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
+    if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)

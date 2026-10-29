@@ -21,6 +21,7 @@
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water
  *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
+ *   chairs         7-3 Ten Chairs' ring of stone chairs (w7ChairsArt.ts)
  *   crumble        World 7's painted crumbling tiles (crumbleArt.ts), bank-face dressing (w7FaceArt.ts) and puzzle pieces
  *                  (w7PuzzleArt.ts), every World 7 stage but the
  *                  guardian's lair
@@ -163,6 +164,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (isGen2Stage(cfg) && w >= 6) out.push('bad-water');
   if (w === 7 && cfg.objectiveType !== 'boss_lair' && !cfg.secret) out.push('crumble');
   if (isGen2Stage(cfg) && cfg.id === `7-${W7_SENTRY_STAGE}`) out.push('sentry');
+  if (isGen2Stage(cfg) && cfg.id === '7-3') out.push('chairs');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
