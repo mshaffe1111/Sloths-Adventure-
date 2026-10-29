@@ -1,6 +1,6 @@
 # Status board (the lead session keeps this current; see reference/LEAD-PLAYBOOK.md)
 
-Last updated: 2026-10-29 3:00 PM ET (supervision round).
+Last updated: 2026-10-29 3:45 PM ET (supervision round; next 4:25 PM ET). Matt's QA session is blocked on his approval of a send_message (Build 1 push request).
 
 Every polish-report item, with its owner and status: reference/polish-report/TRACKER.md (keep it current with this board).
 ## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
