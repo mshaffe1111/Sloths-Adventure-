@@ -964,6 +964,10 @@ LOOK = {5: 'a deep violet-blue orchid forest at dusk, silver spider webs, mossy 
         9: 'a scorched black volcanic valley, black basalt, glowing lava cracks, red pompom flowers', 10: 'a dark mountain fortress at night, wet stone and black iron'}
 for w, ns in VAR.items():
     SHEETS[f'w{w}var'] = ('yellow' if w == 5 else 'magenta', LOOK[w] + ', a second painted version of each piece (platform variants)', [(f'{n}-b', var_cell(w, n), 'raw') for n in ns])
+# (second looks of Matt's own Gemini sets, so a world's rooms can take turns between two paints: artRoll.ts rollLook)
+for sheet, cells, words in (('w10c-set-dressing', ['banner', 'weapon-rack', 'brazier', 'cage', 'crates', 'spout'], LOOK[10]),
+                            ('w6b-water-room-take2', ['raft', 'sluice-wheel', 'gauge-post', 'seesaw', 'stone', 'lily-pads'], LOOK[6])):
+    SHEETS[sheet[:3] + 'alt'] = ('magenta', words + ', a second painted version of each prop', [(f'{n}-b', place(fit(gem(sheet, n), w=440, h=420)), 'raw') for n in cells])
 KEYS = {'magenta': (255, 0, 255), 'yellow': (255, 255, 0)}
 index = {}
 for name, (key, words, cells) in SHEETS.items():

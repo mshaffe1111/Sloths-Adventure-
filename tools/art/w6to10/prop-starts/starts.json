@@ -214,5 +214,29 @@
    "branch-b",
    "fill-b"
   ]
+ },
+ "w10alt": {
+  "key": "magenta",
+  "words": "a dark mountain fortress at night, wet stone and black iron, a second painted version of each prop",
+  "cells": [
+   "banner-b",
+   "weapon-rack-b",
+   "brazier-b",
+   "cage-b",
+   "crates-b",
+   "spout-b"
+  ]
+ },
+ "w6balt": {
+  "key": "magenta",
+  "words": "a grey misty mangrove swamp, pale grey-green roots, dark mud, a second painted version of each prop",
+  "cells": [
+   "raft-b",
+   "sluice-wheel-b",
+   "gauge-post-b",
+   "seesaw-b",
+   "stone-b",
+   "lily-pads-b"
+  ]
  }
 }
