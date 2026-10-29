@@ -5,16 +5,20 @@ import type { Platform } from './types.ts';
 
 test("World 7's temple wall strips: never the same strip side by side, the sloth face never within 8 columns of itself, wall-4 never on the grid", () => {
   let lastFace = -Infinity;
+  let roots = 0;
   for (let n = -400; n < 400; n++) {
     const { s } = stripAt(n);
     assert.notEqual(s, stripAt(n + 1).s, `columns ${n} and ${n + 1}`);
     assert.notEqual(s, 3);
+    if (s === 0) roots++;
     if (s === 2) {
       assert.ok(n - lastFace >= 8, `faces at ${lastFace} and ${n}`);
       lastFace = n;
     }
   }
   assert.ok(lastFace > -Infinity, 'the face shows somewhere');
+  // (wall-1's root on under a fifth of the columns: the plain wall-5 takes most of its places)
+  assert.ok(roots < 800 * 0.2, `wall-1 on ${roots} of 800 columns`);
 });
 
 test('a high ledge is a bank 90 px or more over the bank beside it', () => {

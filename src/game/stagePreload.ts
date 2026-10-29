@@ -47,6 +47,8 @@ import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
 import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
 import { perfNote } from './perfLog.ts';
+import { groundUrl, hasGround, warmGround } from './groundPaint.ts';
+import { DRESS_URL, dressReady } from './dressArt.ts';
 import type { LevelConfig } from './types.ts';
 
 type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
@@ -54,6 +56,15 @@ type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
 /** start the loads for these sheet keys; the addresses to wait for */
 function start(keys: readonly string[]): string[] {
   const urls: string[] = [];
+  // (the painted ground goes with the stage's own kit: the highest kit asked for, World 1's only when it is the only one)
+  const kits = keys.filter((k) => k.startsWith('kit:')).map((k) => Number(k.slice(4)));
+  if (kits.length) {
+    const gw = Math.max(...kits);
+    if (hasGround(gw)) {
+      warmGround(gw);
+      urls.push(groundUrl(gw));
+    }
+  }
   for (const k of keys) {
     if (k.startsWith('kit:')) {
       const w = Number(k.slice(4));
@@ -74,6 +85,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'kit-pieces') {
       kitArtReady();
       urls.push(KIT_ART_URL);
+    } else if (k === 'dress') {
+      dressReady();
+      urls.push(DRESS_URL);
     } else if (k === 'water-signs') {
       warmWaterSigns();
       urls.push(WATER_SIGN_URL);

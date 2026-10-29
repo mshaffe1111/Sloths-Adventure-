@@ -1,5 +1,5 @@
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
-import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
+import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { heartBy } from './easyMode.ts';
 import type { Difficulty } from './difficulty.ts';
@@ -2787,7 +2787,11 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]);
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
-  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]);
+  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) {
+    const st = buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]);
+    addDress(st, layoutVariant ?? 1);
+    return st;
+  }
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below
   if (isGen2Stage(config)) {
     const stage = buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
@@ -2798,7 +2802,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
     [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
-    return finishStage(stage, validateStage(stage).reachableIds);
+    const done = finishStage(stage, validateStage(stage).reachableIds);
+    // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
+    addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
+    return done;
   }
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {

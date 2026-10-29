@@ -18,6 +18,7 @@
  *                  STAGE_DRAWS (the same in every roll: its animals, a ring's drop-ins and the eagle over a watched stretch); a generated
  *                  stage's are rolled with it, so it gets every creature its world's generator can place (GEN_FOES), and a boss lair
  *                  the minions its boss calls in (BOSS_MINIONS)
+ *   dress          Worlds 1, 2 and 5's dressing sets (dressArt.ts, artDress.ts dressSets), for a built stage
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water
  *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
@@ -145,6 +146,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
     if (w !== 1 && hasKit) out.push(`kit:${w}`);
   }
   if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
+  // (Worlds 1, 2 and 5: the dressing sets' sheet, artDress.ts dressSets)
+  if (built && (w === 1 || w === 2 || w === 5) && cfg.objectiveType !== 'boss_lair') out.push('dress');
   // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
   // the creatures it can draw, and their sheets (see foe: above)

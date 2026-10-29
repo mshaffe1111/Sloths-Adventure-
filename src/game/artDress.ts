@@ -23,6 +23,8 @@ import type { KitArtName } from './puzzleAtlasData.ts';
 import type { W3Decor } from './w3Art.ts';
 import type { Collectible, Platform } from './types.ts';
 import type { RoomSpec } from './puzzleKit.ts';
+import { dressSize, type DressPiece } from './dressArt.ts';
+import type { DressName } from './dressAtlasData.ts';
 
 export interface DressInput {
   world: number;
@@ -163,4 +165,121 @@ function bridges(d: DressInput, out: KitDecor[], inRoom: (x: number, pad: number
     if (!near) return;
     out.push({ n: set === 'broken' ? 'bridgeBroken' : 'bridge', x, b: near.y - 330, scale: 1.4, far: 0.7, alpha: 0.5, flip: u > 0.5 });
   }
+}
+
+/*
+ * Worlds 1, 2 and 5 (hf-art-ground, 2026-10-29; polish report VI-17: "World 1 and World 5 look the same every visit"): three dressing
+ * jobs, each with two sets the roll takes turns between (rollLook: a retry keeps the look, the next stage wears the other), drawn from
+ * one small sheet (dressArt.ts). World 5's pieces are new, painted on Hugging Face from its own props; Worlds 1 and 2 have new hanging
+ * moss and their own painted pieces otherwise.
+ *   bank     a set of three where a bank drops away, along its lip by the edge
+ *   hang     moss, roots or orchids hanging under the thin ledges, where there is clear air below
+ *   clutter  small things lying along the long floors
+ * Pictures only, like the rest of this file: never a platform or a pickup, and no draw from the stage's own random stream.
+ */
+export const DRESS_SETS: Record<1 | 2 | 5, Record<'bank' | 'hang' | 'clutter', DressName[][]>> = {
+  1: {
+    bank: [['w1Fern', 'w1Mushroom', 'w1Pebble'], ['w1Stump', 'w1Acorns', 'w1Sprig']],
+    hang: [['w1Hang1', 'w1Hang2'], ['w1Hang2', 'w1Hang1']],
+    clutter: [['w1Acorns', 'w1Pinecone', 'w1Pebble'], ['w1Stones', 'w1MushroomDim', 'w1Fiddle']],
+  },
+  2: {
+    bank: [['w2ReedTall', 'w2ReedShort', 'w2ReedLean'], ['w2Log', 'w2ReedShort', 'w2Stone']],
+    hang: [['w2Hang1', 'w2Hang2'], ['w2Hang2', 'w2Hang1']],
+    clutter: [['w2RiverStone', 'w2ReedLean', 'w2Stone'], ['w2Stones', 'w2Fern', 'w2Stone']],
+  },
+  5: {
+    bank: [['w5BankA1', 'w5BankA2', 'w5BankA3'], ['w5BankB1', 'w5BankB2', 'w5BankB3']],
+    hang: [['w5Hang1', 'w5Hang2'], ['w5Hang2', 'w5Hang1']],
+    clutter: [['w5ClutA1', 'w5ClutA2', 'w5ClutA3'], ['w5ClutB1', 'w5ClutB2', 'w5ClutB3']],
+  },
+};
+/** the worlds dressed this way */
+export const DRESS_WORLDS = [1, 2, 5] as const;
+
+/** the dressing sets laid in a stage of World 1, 2 or 5 (empty for any other world) */
+export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }[] }): DressPiece[] {
+  const sets = DRESS_SETS[d.world as 1 | 2 | 5];
+  if (!sets) return [];
+  const out: DressPiece[] = [];
+  const boxes: Box[] = d.rooms.map((r) => roomBox(r, d.platforms));
+  const inRoom = (x: number, pad: number) => boxes.some((b) => x > b.x0 - pad && x < b.x1 + pad);
+  const clear = (x: number, w: number) =>
+    !inRoom(x, 80) && !d.collectibles.some((c) => Math.abs(c.x - x) < w / 2 + 50) && !(d.checkpoints ?? []).some((c) => Math.abs(c.x - x) < w / 2 + 70);
+  const pick = (job: 'bank' | 'hang' | 'clutter', salt: number) => rollLook(sets[job], d.stage, d.seed, salt + d.world * 11);
+  const banks = d.platforms.filter((p) => p.type === 'solid' && p.height >= 90 && !p.art && !p.push).sort((a, b) => a.x - b.x);
+  const touches = (p: Platform, right: boolean) =>
+    banks.some((q) => q !== p && q.y <= p.y + 2 && (right ? Math.abs(p.x + p.width - q.x) < 2 : Math.abs(q.x + q.width - p.x) < 2));
+  // bank: a set of three along the lip by each end that drops away, laid inward from the edge
+  const bankSet = pick('bank', 51);
+  let lastBank = -Infinity;
+  for (const p of banks) {
+    if (p.width < 240) continue;
+    for (const right of [false, true]) {
+      if (touches(p, right) || out.length >= 18) continue;
+      const edge = right ? p.x + p.width : p.x;
+      if (Math.abs(edge - lastBank) < 700) continue;
+      const dir = right ? -1 : 1;
+      let at = edge + dir * 34;
+      const laid: DressPiece[] = [];
+      for (const n of bankSet) {
+        const w = dressSize(n).w;
+        const x = at + (dir * w) / 2;
+        if (!clear(x, w)) break;
+        laid.push({ n, x, b: p.y + 5, flip: lookHash(d.seed + Math.round(x), 17) < 0.5 });
+        at += dir * (w * 0.78 + 6);
+      }
+      if (laid.length === bankSet.length) {
+        out.push(...laid);
+        lastBank = edge;
+      }
+    }
+  }
+  // hang: under a thin ledge with clear air below it (the nearest ground at least 230 units down)
+  const hangSet = pick('hang', 53);
+  let lastHang = -Infinity;
+  let hangs = 0;
+  const ledges = d.platforms
+    .filter((p) => p.height < 50 && p.width >= 110 && (p.type === 'solid' || p.type === 'fragile') && !p.art && !p.push)
+    .sort((a, b) => a.x - b.x);
+  for (const p of ledges) {
+    if (hangs >= 6 || p.x - lastHang < 520 || inRoom(p.x + p.width / 2, 60)) continue;
+    const under = p.y + p.height;
+    const below = d.platforms.filter((q) => q !== p && q.x < p.x + p.width && q.x + q.width > p.x && q.y > under).reduce((m, q) => Math.min(m, q.y), Infinity);
+    if (below - under < 230) continue;
+    // (and well up off the ground: a log lying across a gap at ground level is no place to hang moss from)
+    const ground = banks.filter((q) => q.x < p.x + p.width + 400 && q.x + q.width > p.x - 400).reduce((m, q) => Math.min(m, q.y), Infinity);
+    if (ground - p.y < 150) continue;
+    const n = hangSet[hangs % hangSet.length];
+    const w = dressSize(n).w;
+    if (w > p.width - 20) continue;
+    const u = 0.28 + lookHash(d.seed + Math.round(p.x), 19) * 0.44;
+    out.push({ n, x: p.x + p.width * u, b: under - 4, flip: lookHash(d.seed + Math.round(p.x), 23) < 0.5 });
+    lastHang = p.x;
+    hangs++;
+  }
+  // clutter: a small set lying along each long floor, every 820 or so, away from its ends and the bank sets
+  const clutSet = pick('clutter', 57);
+  const bankXs = out.map((q) => q.x);
+  let sets3 = 0;
+  for (const p of banks) {
+    if (p.width < 420) continue;
+    for (let x = p.x + 200 + lookHash(d.seed + Math.round(p.x), 29) * 200; x < p.x + p.width - 260 && sets3 < 8; x += 820) {
+      if (bankXs.some((bx) => Math.abs(bx - x) < 260)) continue;
+      let at = x;
+      const laid: DressPiece[] = [];
+      for (const n of clutSet) {
+        const w = dressSize(n).w;
+        const cx = at + w / 2;
+        if (!clear(cx, w)) break;
+        laid.push({ n, x: cx, b: p.y + 6, flip: lookHash(d.seed + Math.round(cx), 31) < 0.5 });
+        at += w + 26 + lookHash(d.seed + Math.round(cx), 37) * 40;
+      }
+      if (laid.length === clutSet.length) {
+        out.push(...laid);
+        sets3++;
+      }
+    }
+  }
+  return out;
 }
