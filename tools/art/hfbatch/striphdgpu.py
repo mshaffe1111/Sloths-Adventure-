@@ -62,6 +62,41 @@ pipe.set_adapters(['style'], adapter_weights=[scale])
 NEG = SPEC.get('neg', 'blurry, soft focus, smeared, low detail, jpeg artifacts, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth')
 TW = SPEC.get('tw', 1024)
 MAG = np.array([255, 0, 255], np.float32)
+
+
+def esrgan():
+    # Real-ESRGAN anime 6B (as titlegpu.py): crisp lines to start from, so the repaint adds paint texture on sharp shapes, not on a blur
+    try:
+        import spandrel  # noqa: F401
+    except ImportError:
+        import subprocess, sys
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'spandrel'], check=True)
+    from spandrel import ModelLoader
+    pth = Path('/tmp/anime6b.pth')
+    if not pth.exists():
+        urllib.request.urlretrieve('https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth', pth)
+    model = ModelLoader().load_from_file(str(pth)).eval().to('cuda')
+
+    def run(rgb):  # float HxWx3 0-255, wrapped round left to right so the seam stays a seam; tiles of 512, 32 overlap
+        P = 32
+        x = np.concatenate([rgb[:, -P:], rgb, rgb[:, :P]], 1) / 255
+        h, w = x.shape[:2]
+        out = np.zeros((h * 4, w * 4, 3), np.float32)
+        T = 512
+        for y0 in range(0, h, T - 2 * P):
+            for x0 in range(0, w, T - 2 * P):
+                ya, xa = max(0, min(y0, h - T)), max(0, min(x0, w - T))
+                t = torch.from_numpy(np.ascontiguousarray(x[ya:ya + T, xa:xa + T])).permute(2, 0, 1).unsqueeze(0).float().cuda()
+                with torch.no_grad():
+                    o = model(t).float().clamp(0, 1)[0].permute(1, 2, 0).cpu().numpy()
+                # keep the middle of each tile (its own P border is dropped unless it is the picture's edge)
+                l = 0 if xa == 0 else P; tp = 0 if ya == 0 else P
+                out[(ya + tp) * 4:(ya + T) * 4, (xa + l) * 4:(xa + T) * 4] = o[tp * 4:, l * 4:]
+        return out[:, P * 4:(w - P) * 4] * 255
+    return run
+
+
+UP = esrgan() if any(it.get('pre') == 'esrgan' for it in SPEC['items']) else None
 srcs = {}
 done = []
 for it in SPEC['items']:
@@ -73,9 +108,17 @@ for it in SPEC['items']:
         im = srcs[it['src']]
         H = it['h']
         W = round(im.width * H / im.height)
-        a = np.asarray(im.resize((W, H), Image.LANCZOS)).astype(np.float32)
-        al = a[..., 3:4] / 255
-        rgb = a[..., :3] * al + MAG * (1 - al)
+        if it.get('pre') == 'esrgan':
+            a = np.asarray(im).astype(np.float32)
+            al = a[..., 3:4] / 255
+            big = UP(a[..., :3] * al + MAG * (1 - al))
+            rgb = np.asarray(Image.fromarray(np.clip(big, 0, 255).astype(np.uint8)).resize((W, H), Image.LANCZOS)).astype(np.float32)
+            b = io.BytesIO(); Image.fromarray(rgb.astype(np.uint8)).save(b, 'WEBP', quality=95, method=4)
+            put(f"pre-{it['name']}.webp", b.getvalue())
+        else:
+            a = np.asarray(im.resize((W, H), Image.LANCZOS)).astype(np.float32)
+            al = a[..., 3:4] / 255
+            rgb = a[..., :3] * al + MAG * (1 - al)
         H16 = math.ceil(H / 16) * 16
         if H16 > H:
             rgb = np.concatenate([rgb, np.repeat(rgb[-1:], H16 - H, 0)], 0)
@@ -102,6 +145,8 @@ for it in SPEC['items']:
         b = io.BytesIO(); out.crop((cx, 0, cx + 1024, H)).save(b, 'JPEG', quality=88)
         put(f"crop-{it['name']}.jpg", b.getvalue())
         done.append((f"{it['name']}.webp", (OUT / f"{it['name']}.webp").read_bytes()))
+        if it.get('pre') == 'esrgan':
+            done.append((f"pre-{it['name']}.webp", (OUT / f"pre-{it['name']}.webp").read_bytes()))
         print('DONE', it['name'], W, H, round(time.time() - t1), flush=True)
     except Exception as e:
         import traceback; traceback.print_exc()

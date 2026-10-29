@@ -1,6 +1,7 @@
 """Write the spec for striphdgpu.py (VI-2 native-resolution backdrop strips, 2026-10-29).
     python3 tools/art/hfbatch/make_striphd_spec.py <out.json> <commit> <item> [<item> ...]
-item = <file stem>:<strength>:<seed>, e.g. w1-near:0.35:7. The source is the strip at <commit> on GitHub (src/assets/backdrops/), so
+item = <file stem>:<strength>:<seed>[:<pre>], e.g. w1-near:0.35:7 (pre: esrgan, the default, a Real-ESRGAN anime 6B pass
+first so the repaint starts from crisp lines; none: a plain Lanczos scale, the first try, which stayed soft). The source is the strip at <commit> on GitHub (src/assets/backdrops/), so
 the strip as it was before the edges rebuild; near strips go to 1736 px tall, mid strips to 1302 (the game draws strips by height)."""
 import json, sys
 
@@ -21,9 +22,9 @@ WHAT = {
 }
 
 
-def item(stem, strength, seed, commit):
+def item(stem, strength, seed, commit, pre='esrgan'):
     world, part = stem.rsplit('-', 1)
-    return {'name': f'{stem}-s{round(float(strength) * 100)}-{seed}',
+    return {'name': f'{stem}-s{round(float(strength) * 100)}-{seed}' + ('' if pre == 'esrgan' else '-' + pre), 'pre': pre,
             'src': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/src/assets/backdrops/{stem}.webp',
             'h': 1736 if part == 'near' else 1302, 'strength': float(strength), 'seed': int(seed),
             'prompt': f'{STYLE}. {WHAT[stem]}'}
