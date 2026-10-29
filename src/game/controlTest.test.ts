@@ -95,7 +95,7 @@ test('control test: every roll passes the stage check on Easy too, with a 70% ho
   const { setDifficulty } = await import('./difficulty.ts');
   const { EASY_HOLD } = await import('./physics.ts');
   // (as the stage check above: the log already pushed against its wall)
-  const check = (a: ReturnType<typeof buildProtoStage>, hold?: number) => {
+  const check = (a: Parameters<typeof validateStage>[0], hold?: number) => {
     const pushed = a.platforms.map((p) => (p.push ? { ...p, x: p.push.max - p.width } : p));
     const res = validateStage({ ...a, platforms: pushed, config: { ...a.config, miniIndex: 9 } }, hold ? { hold } : {});
     const logIds = new Set(a.platforms.filter((p) => p.push).map((p) => `platform ${p.id}`));
