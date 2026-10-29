@@ -3,6 +3,7 @@ import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
+import { showTouches, setShowTouches, type ShowTouches } from '../game/touchMarks.ts';
 import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
 import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
@@ -140,6 +141,9 @@ export const ControlsSetting: React.FC = () => {
   const [style, setStyle] = React.useState<ControlStyle>(() => controlStyle());
   const [side, setSide] = React.useState<PadSide>(() => padSide());
   const [help, setHelp] = React.useState<JumpHelp>(() => jumpHelp());
+  const [marks, setMarks] = React.useState<ShowTouches>(() => showTouches());
+  // (iPhones never buzz for a web page: there the marks are the only feedback a touch gets, CT-14)
+  const noBuzz = typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function';
   return (
     <div className="pm-sound">
       <div className="pm-sound-h">
@@ -195,6 +199,31 @@ export const ControlsSetting: React.FC = () => {
             }}
           />
         </div>
+      )}
+      {style === 'screen' && (
+        <div className="pm-sound-h" style={{ marginTop: 8 }}>
+          <span className="pm-polish-note" style={{ margin: 0 }}>
+            Show touches
+          </span>
+          <Seg
+            value={marks}
+            options={[
+              { id: 'auto', label: 'Auto' },
+              { id: 'on', label: 'On' },
+              { id: 'off', label: 'Off' },
+            ]}
+            onPick={(v) => {
+              setShowTouches(v);
+              setMarks(v);
+            }}
+          />
+        </div>
+      )}
+      {style === 'screen' && (
+        <small className="pm-polish-note">
+          {marks === 'off' ? 'No marks under your fingers.' : `A ring shows where your steering thumb is, and each move flashes its name${marks === 'auto' ? ' (in World 1, while the moves are new)' : ''}.`}
+          {noBuzz ? " This phone doesn't buzz for web games, so the marks are your feedback." : ''}
+        </small>
       )}
       <small className="pm-polish-note">
         {style === 'pad'

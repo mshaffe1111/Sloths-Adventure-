@@ -10,6 +10,7 @@ import type { Rope } from './types.ts';
 import { TouchGestures, TUNING } from './touchGestures.ts';
 import { PadInput, pickButton, BUTTON_REACH, type PadButtonSpot } from './padControl.ts';
 import { TouchRig, stroke, type TouchEv } from './touchRig.ts';
+import { TouchMarks, touchMarksOn, MARK } from './touchMarks.ts';
 
 const G = 2000;
 /** a bare floor, Pokey standing on it at x, the whole touch chain wired (touchRig.ts) */
@@ -44,11 +45,12 @@ test('CT-21: hopping off a shimmy rope goes the way the flick leaned, even again
 /** the recogniser on its own, with what the game tells it; every decision in order */
 function gestures(world: { rope?: boolean; vine?: boolean; air?: boolean } = {}) {
   const log: string[] = [];
+  const marks: Array<{ k: string; x?: number; y?: number }> = [];
   const g = new TouchGestures(
     {
       move: (d) => log.push(`move:${d}`), duck: (on) => log.push(on ? 'duck' : 'duckOff'), jumpPress: (l) => log.push(`jump:${l ?? 0}`),
       jumpRelease: () => log.push('jumpUp'), punch: () => log.push('punch'), kick: (d) => log.push(`kick:${d ?? 0}`), mega: () => log.push('mega'),
-      climb: (d) => log.push(`climb:${d}`), feedback: () => {},
+      climb: (d) => log.push(`climb:${d}`), feedback: (k, x, y) => marks.push({ k, x, y }),
     },
     () => 844,
     { assist: () => true, air: () => !!world.air, refined: () => true, kickNear: () => false, onVine: () => !!world.vine, onRope: () => !!world.rope },
@@ -62,7 +64,7 @@ function gestures(world: { rope?: boolean; vine?: boolean; air?: boolean } = {})
     }
     if (lift) g.up(id, pts[pts.length - 1][0], pts[pts.length - 1][1], (now += 8));
   };
-  return { g, log, path, wait: (ms: number) => { const end = now + ms; while (now < end) { now += 30; g.tick(now); } }, at: () => now };
+  return { g, log, marks, path, wait: (ms: number) => { const end = now + ms; while (now < end) { now += 30; g.tick(now); } }, at: () => now };
 }
 
 test('CT-21: on a rope the steering thumb\'s flick up and back lets go of the steer (no intent lock there), and leans that way', () => {
@@ -287,4 +289,37 @@ test('CT-18: a touch that misses a Pad button by a few px still presses it, and 
   assert.equal(pickButton(100, 300, spots), 'kick');
   // out to the right, by Punch
   assert.equal(pickButton(by('punch').cx + 80, by('punch').cy, spots), 'punch');
+});
+
+// ───────────────────────────── CT-14: marks under the fingers in Screen mode ─────────────────────────────
+
+test('CT-14: every move a touch makes is reported where the finger is, and the steering thumb\'s anchor and run direction are there to draw', () => {
+  const t = gestures();
+  // steer right with the left thumb, held down
+  t.path(1, [[200, 600], [215, 600], [235, 600], [255, 600]], 16, false);
+  const s = t.g.steerMark();
+  assert.ok(s, 'a steering mark while the thumb steers');
+  assert.equal(s!.dir, 1);
+  assert.ok(Math.abs(s!.y - 600) < 1 && s!.x >= 200 && s!.x <= 255, `anchored at ${s!.x},${s!.y}`);
+  // a second thumb: a tap, then a flick up
+  t.path(2, [[700, 600], [701, 600]]);
+  t.wait(300);
+  t.path(3, [[700, 650], [700, 630], [700, 600], [700, 570]]);
+  const kinds = t.marks.map((m) => m.k);
+  assert.ok(kinds.includes('punch') && kinds.includes('jump'), kinds.join(' '));
+  for (const m of t.marks) assert.ok(m.x !== undefined && m.x >= 650 && m.y !== undefined, `${m.k} marked at ${m.x},${m.y}`);
+  t.g.up(1, 255, 600, t.at() + 10);
+  assert.equal(t.g.steerMark(), null, 'no ring once the thumb lifts');
+});
+
+test('CT-14: a mark flashes, its label fades by 450 ms, and a jab taken back leaves no mark; Auto shows them in World 1 only', () => {
+  const m = new TouchMarks();
+  m.add('jump', 10, 10, 0);
+  m.add('punch', 20, 20, 50);
+  assert.equal(m.live(100).length, 2);
+  m.takeBack('punch');
+  assert.deepEqual(m.live(100).map((x) => x.kind), ['jump']);
+  assert.equal(m.live(MARK.labelMs + 1).length, 0);
+  assert.ok(touchMarksOn(1, 'auto') && !touchMarksOn(2, 'auto'));
+  assert.ok(touchMarksOn(7, 'on') && !touchMarksOn(1, 'off'));
 });

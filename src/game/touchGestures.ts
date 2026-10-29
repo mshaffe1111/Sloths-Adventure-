@@ -43,8 +43,8 @@ export interface GestureSink {
   mega(): void;
   /** hold climbing up (-1), down (1) or stop (0) on a vine or trunk, with no jump and no duck (refined controls) */
   climb?(dir: -1 | 0 | 1): void;
-  /** a label for the little pill on screen, plus haptics */
-  feedback(kind: 'jump' | 'duck' | 'punch' | 'kick' | 'mega'): void;
+  /** what a touch just did, and where the finger is (the mark on screen, touchMarks.ts; and a buzz where the phone gives one) */
+  feedback(kind: 'jump' | 'duck' | 'punch' | 'kick' | 'mega', x?: number, y?: number): void;
 }
 
 export const TUNING = {
@@ -387,7 +387,7 @@ export class TouchGestures {
     f.tr = f.y;
     f.trX = f.x;
     if (air) this.lastAir = this.now;
-    this.sink.feedback('jump');
+    this.sink.feedback('jump', f.x, f.y);
     this.sink.jumpPress(lean);
   }
 
@@ -421,7 +421,7 @@ export class TouchGestures {
     // the action finger punches as it lands (CT-17); a flick or swipe takes it back within the jab's wind-up (jabMoved)
     if (f.role === 'action') {
       f.jabT = t;
-      this.sink.feedback('punch');
+      this.sink.feedback('punch', f.x, f.y);
       this.sink.punch(TUNING.jabCancelMs);
     }
   }
@@ -552,10 +552,10 @@ export class TouchGestures {
       const eel = Math.max(1, t - f.t0);
       const flicked = !this.noKick() && !f.jumped && !f.ducked && eel <= TUNING.flickLiftMs && Math.abs(edx) >= TUNING.flickPx && Math.abs(edx) >= Math.abs(f.y - f.y0) && Math.abs(edx) / eel >= (f.early ? TUNING.flickLiftSpeed : TUNING.steerFlickSpeed);
       if (flicked) {
-        this.sink.feedback('kick');
+        this.sink.feedback('kick', f.x, f.y);
         this.sink.kick(edx < 0 ? -1 : 1);
       }
-      if (stillTap && !wasReplant && f.jabT === undefined) this.tapAct();
+      if (stillTap && !wasReplant && f.jabT === undefined) this.tapAct(f);
       if (!wasTap && !flicked) {
         this.lastMoverUp = t;
         this.lastMoverUpX = f.x;
@@ -600,7 +600,7 @@ export class TouchGestures {
       const replant = f.tapT0 >= this.lastMoverUp && f.tapT0 - this.lastMoverUp < TUNING.replantMs &&
         Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;
       if (replant) return;
-      this.tapAct();
+      this.tapAct(f);
     }
   }
 
@@ -676,8 +676,8 @@ export class TouchGestures {
   }
 
   /** a tap: always a punch (the fight turns one in the air into a jump kick) */
-  private tapAct() {
-    this.sink.feedback('punch');
+  private tapAct(f: Finger) {
+    this.sink.feedback('punch', f.x, f.y);
     this.sink.punch();
   }
 
@@ -734,6 +734,13 @@ export class TouchGestures {
 
   get active(): boolean {
     return this.fingers.size > 0;
+  }
+
+  /** where the steering thumb is anchored, and the way it runs him (-1 left, 0 standing, 1 right): the ring on screen (CT-14) */
+  steerMark(): { x: number; y: number; dir: -1 | 0 | 1 } | null {
+    const m = this.mover();
+    if (!m) return null;
+    return { x: m.ax, y: m.ay, dir: this.heldDir === 'left' ? -1 : this.heldDir === 'right' ? 1 : 0 };
   }
 
   // ───────────────────────────── steering ─────────────────────────────
@@ -882,7 +889,7 @@ export class TouchGestures {
         this.lastAir = this.now;
         f.pk = f.y;
         f.tr = f.y;
-        this.sink.feedback('jump');
+        this.sink.feedback('jump', f.x, f.y);
         this.sink.jumpPress();
       } else if (f.y < f.pk && f.tr - f.pk < TUNING.pumpDown) {
         // still on the way up (not yet sunk): the peak follows the thumb
@@ -1058,7 +1065,7 @@ export class TouchGestures {
           this.fireJump(f, this.canAir(), this.leanOf(dx, -dy));
         } else {
           f.ducked = true;
-          this.sink.feedback('duck');
+          this.sink.feedback('duck', f.x, f.y);
           this.sink.duck(true);
         }
         return true;
@@ -1090,7 +1097,7 @@ export class TouchGestures {
           return false;
         }
         f.consumed = true;
-        this.sink.feedback('kick');
+        this.sink.feedback('kick', f.x, f.y);
         this.sink.kick(dx < 0 ? -1 : 1);
         return true;
       }
@@ -1134,7 +1141,7 @@ export class TouchGestures {
       f.megaDone = true;
       // the mega never uses the finger up: a thumb that was only resting can still steer if it slides, and still jump if it flicks (a
       // second thumb used to be spent until lifted, so the flick after a rest did nothing: CT-7)
-      this.sink.feedback('mega');
+      this.sink.feedback('mega', f.x, f.y);
       this.sink.mega();
       return true;
     }
