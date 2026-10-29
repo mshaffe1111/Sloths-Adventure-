@@ -1831,10 +1831,19 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   const s = vh / H;
   // how far the layers slide with the climb: gentle, so the stretch that keeps their edges covered stays unnoticeable
   const yo = -Math.min(30, Math.max(-30, camY * 0.03)) * s;
-  // a painted world's far strip is opaque and covers the whole view once its top is above the screen's (drawStrip runs its last rows on
-  // to the bottom and its copies across), so once it has faded in, the sky under it never shows: skipping it saves a full-screen
-  // gradient, the sun's full-screen glow and the clouds every frame (PF-1)
-  if (!set.painted || fadeIn(set.at) < 1 || stripTop('far', vh, s, yo * 0.3) > 0) renderSky(ctx, world, vw, vh, time, camX);
+  // a painted world's far strip is opaque and covers the view from its top edge down (drawStrip runs its last rows on to the bottom and its
+  // copies across), so once it has faded in, the sky shows only above that edge: it is drawn there alone, or not at all when the strip
+  // starts above the screen (a full-screen gradient, the sun's full-screen glow and the clouds every frame: PF-1)
+  const skyTo = set.painted && fadeIn(set.at) >= 1 ? Math.min(vh, Math.ceil(stripTop('far', vh, s, yo * 0.3)) + 1) : vh;
+  if (skyTo >= vh) renderSky(ctx, world, vw, vh, time, camX);
+  else if (skyTo > 0) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, vw, skyTo);
+    ctx.clip();
+    renderSky(ctx, world, vw, vh, time, camX);
+    ctx.restore();
+  }
   // the polish pass (prototype, off by default): per-stage layer shifts/flips, wind, mist and light shafts
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
