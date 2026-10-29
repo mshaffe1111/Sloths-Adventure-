@@ -197,6 +197,7 @@ Last updated: 2026-10-29 2:35 PM ET.
 | X-15 | 6-8 Stilt Climb (W6 special) | HF ledge set | w6-stilt-climb | PASSED review 3:00 PM ET; merge after the gate |
 | X-16 | Upright looks faded next to sideways: the strips are fitted to the view height, about 3.5x blow-up upright against 1.6x sideways (Matt 3:45 PM ET) | HF + code | polish-edges (with the backdrops-hd swap) | sent 3:47 PM ET; Matt: build it, no mock-up |
 | X-17 | Sound effects "pings everywhere, sounds like pinball", worst the falling rocks (Matt 4:00 PM ET): real stone/wood/water sounds, varied, capped repeats, pickups softer | HF/CC0 audio | polish-audio | sent 4:01 PM ET; old/new previews first (reference/audio-previews/sfx-v1/) |
+| X-18 | Falling-rock warning drawn as grey squares (grit, hopping stones, trickle) and flat ellipse shadows; sweep all repeating effects drawn as code shapes (Matt 4:02 PM ET) | HF + code | hazard-anim | started 4:03 PM ET |
 | X-13 | Classic-family effects redo (no orchestra), tuned to each stage's key, checkpoint hiss gone | | polish-audio | built; held to send with music v2 (fix two clipping peaks) |
 | X-10 | QA batch E: replay 2 fps (survey no longer draws; root cause needs an Android replay), Facebook iPhone blur dropped steering (FIXED), load stutters (FIXED) | | qa-fix-e | MERGED into ccr 1:45 PM ET |
 | X-12 | Control-test opening too hard for first-timers: Matt chose Easy gaps sized to Easy reach + two more flags (2026-10-29) | | qa-fix-e | in progress |

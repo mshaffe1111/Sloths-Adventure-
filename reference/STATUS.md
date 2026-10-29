@@ -37,6 +37,7 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Polish B1: controls never misread (CT-1..4, 6, 7, 9, 10, 12; CT-5 waits for Matt) | cloud session_01FhBbYKmJjBAbBHVVVBnhLE | polish-controls | replay tester touches |
 | Polish B2: clean backdrop edges (VI-1, VI-5, VI-6) + the backdrops-hd swap + X-16 upright fade (Matt 3:45 PM ET, "just build it"): strips sized as sideways, sky outpainted upward on HF (~$2) | cloud session_01FhBbYNmvX29Yt9L2XxEWqJ | polish-edges | X-16 sent 3:47 PM ET |
 | Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
+| Falling rocks + repeating hazard animations painted and done right (Matt 4:02 PM ET: "it puts squares where it's going to fall... doing it lazy again"): painted grit/pebbles, boss-fx dust, soft shadow, impact, then sweep every repeating effect drawn as code shapes ($5) | cloud session_01FhBbYKvc5dMeVNeehSxNyt | hazard-anim | started 4:03 PM ET; video proof required |
 | Audit: major looks still drawn in code (DONE) | local read-only | none | findings below |
 
 Audit findings (2026-10-29), most visible first: W6 tide drawn clean teal (FIXED: painted fast water, tide-w6-painted.png); W9 lava
