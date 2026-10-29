@@ -155,6 +155,8 @@ import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedF
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
+import { drawSoldierSprite } from './soldierSprite.ts';
+import { drawW10Dressing, drawW10Hide, type W10Dressing } from './w10Art.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
@@ -5732,6 +5734,8 @@ export class GameEngine {
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
+    // World 10's banners, braziers, racks and cages along the walls (w10Art.ts, gen2 w10.ts)
+    if (this.proto?.gen2?.w10) drawW10Dressing(ctx, this.proto.gen2.w10 as W10Dressing, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     // Matt's World 3 and 4 puzzle sheets set in as dressing (artDress.ts)
     if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x, false, (id) => this.kit?.roomDone(id) ?? {});
     // World 3's sleeping thorn vines (thornVine.ts)
@@ -5857,6 +5861,8 @@ export class GameEngine {
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
+          // (World 10's soldiers: a prowler's body, the soldier's painted clips)
+          if (enemy.look === 'soldier' && drawSoldierSprite(ctx, enemy, this.gameTime)) return;
           if (!drawOcelotSprite(ctx, enemy, this.gameTime)) drawOcelot(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
@@ -7468,6 +7474,8 @@ export class GameEngine {
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
       // (World 4 has its own painted cover: w4Art.ts)
       if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      // (World 10's cover is a crate stack: w10Art.ts)
+      if (this.proto?.gen2?.w10 && !b.hanging && drawW10Hide(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });

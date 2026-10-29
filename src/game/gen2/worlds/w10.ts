@@ -125,12 +125,13 @@ export const W10_PROPS: PropDef[] = [
 
 // ───────────────────────────── the decor ─────────────────────────────
 
-/** Matt's World 10 set dressing (w10alt, w10c), rotated by the roll (artRoll.ts rollLook) */
+/** Matt's World 10 set dressing (w10alt, w10c), rotated by the roll (artRoll.ts rollLook): all of it stands on the walls (nothing
+ *  hangs in the air: STAGE-RULES §6, nothing floats) */
 export const W10_DECOR: WorldManifest['decor'] = [
-  { id: 'w10-banners', job: 'bank', items: [{ n: 'banner', w: [50, 70] }, { n: 'brazier', w: [60, 80] }, { n: 'crates', w: [120, 160] }], every: [260, 380] },
-  { id: 'w10-armoury', job: 'bank', items: [{ n: 'rack', w: [110, 140] }, { n: 'spout', w: [60, 80] }, { n: 'banner', w: [50, 70] }], every: [280, 400] },
-  { id: 'w10-chains', job: 'hanging', items: [{ n: 'chain', w: [30, 40] }, { n: 'hook', w: [30, 40] }], every: [600, 900] },
-  { id: 'w10-cages', job: 'hanging', items: [{ n: 'cage', w: [80, 100] }, { n: 'chain', w: [30, 40] }], every: [800, 1200] },
+  { id: 'w10-banners', job: 'bank', items: [{ n: 'banner', w: [50, 66] }, { n: 'brazier', w: [56, 70] }, { n: 'crates', w: [110, 140] }], every: [280, 420] },
+  { id: 'w10-armoury', job: 'bank', items: [{ n: 'rack', w: [96, 120] }, { n: 'crates', w: [110, 140] }, { n: 'banner', w: [50, 66] }], every: [300, 440] },
+  { id: 'w10-cages', job: 'bank', items: [{ n: 'cage', w: [76, 92] }, { n: 'brazier', w: [56, 70] }, { n: 'rack', w: [96, 120] }], every: [320, 460] },
+  { id: 'w10-braziers', job: 'bank', items: [{ n: 'brazier', w: [56, 70] }, { n: 'banner', w: [50, 66] }, { n: 'cage', w: [76, 92] }], every: [300, 440] },
 ];
 
 // ───────────────────────────── Pokey's lines ─────────────────────────────
@@ -140,12 +141,12 @@ export const W10_DECOR: WorldManifest['decor'] = [
  * (reference/VOICE.md). In-stage lines are approved by the lead (LEAD-PLAYBOOK, Matt 2026-10-29).
  */
 export const W10_TIPS: Record<string, string> = {
-  [W10_LESSON.bolt]: 'The rod glows, then it strikes. Wait it out.',
+  [W10_LESSON.bolt]: "That rod's calling the lightning down.",
   [W10_LESSON.spikes]: "Spikes down there. I'd rather not.",
   [W10_LESSON.rampart]: "Old ramparts. They won't hold me long.",
-  [W10_LESSON.wind]: 'Wind on the gaps. Jump between gusts.',
-  [W10_LESSON.storm]: 'The storm lights the wall. Get behind something.',
-  [W10_LESSON.soldier]: 'One of the General\'s. Hit first.',
+  [W10_LESSON.wind]: 'Wind across the gap. Strong, too.',
+  [W10_LESSON.storm]: 'Every flash lights the wall. And me.',
+  [W10_LESSON.soldier]: "A soldier. The General's, by the coat.",
   [W10_LESSON.hunt]: "Gate's shut. The guards have to go.",
   [W10_LESSON.fight]: "Shut tight. I'll fight my way through.",
   [W10_LESSON.drop]: "Long way down. Let's not.",
@@ -270,7 +271,12 @@ export function w10Decorate(stage: number): NonNullable<WorldKit['decorate']> {
   return (items, out) => {
     clipStorm(out);
     const decor = (w10Of(out, stage).decor ??= []);
-    for (const it of items) decor.push({ n: it.n, x: it.x, b: it.y, w: it.w, ...(hash01(it.x, 11) < 0.5 ? { flip: true } : {}) });
+    // (clear of the hazards and the cover: nothing stands in a rod's column, a gust lane or behind a crate stack, so each reads alone)
+    const busy = [...out.zones.map((z) => [z.x0 - 50, z.x1 + 50]), ...(out.proto.bushes ?? []).map((b) => [b.x - 40, b.x + b.w + 40])];
+    for (const it of items) {
+      if (busy.some(([a, c]) => it.x + it.w / 2 > a && it.x - it.w / 2 < c)) continue;
+      decor.push({ n: it.n, x: it.x, b: it.y, w: it.w, ...(hash01(it.x, 11) < 0.5 ? { flip: true } : {}) });
+    }
   };
 }
 

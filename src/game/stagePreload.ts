@@ -9,6 +9,8 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
+import { W10_ART_URLS, w10ArtReady } from './w10Art.ts';
+import { SOLDIER_URLS, soldierReady } from './soldierSprite.ts';
 import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
@@ -80,6 +82,10 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(BAD_WATER_URL);
+    } else if (k === 'w10') {
+      w10ArtReady();
+      soldierReady();
+      urls.push(...W10_ART_URLS, ...SOLDIER_URLS);
     } else if (k === 'w6-stilt') {
       stiltArtReady();
       urls.push(...STILT_ART_URLS);

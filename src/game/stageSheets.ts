@@ -22,6 +22,7 @@
  *                  stage's are rolled with it, so it gets every creature its world's generator can place (GEN_FOES), and a boss lair
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
+ *   w10            World 10's gen2 dressing and cover (w10Art.ts) and the General's soldiers (soldierSprite.ts)
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
  *   swim           the calm water Pokey swims in and his swim sheets (calmWaterArt.ts, heroSwim.ts), for a stage with calm water
@@ -135,6 +136,9 @@ export function genFoes(world: number): string[] {
   return [...out];
 }
 
+/** the hunters World 10's gen2 stages lay besides the soldiers (gen2/worlds/w10.ts W10_CREATURES; the soldiers are the 'w10' sheets) */
+const W10_FOES: readonly string[] = ['ocelot', 'jaguar', 'tayra', 'harpy'];
+
 /** the minions a world's boss calls into its lair mid-fight (bossDefs.ts spawnMinion / dropMinion) */
 const BOSS_MINIONS: Record<number, readonly string[]> = { 1: ['goldsnake'], 5: ['spider'], 6: ['tayra'], 10: ['ocelot'] };
 
@@ -184,6 +188,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (cfg.objectiveType === 'boss_lair') for (const f of BOSS_MINIONS[w] ?? []) out.push(`foe:${f}`);
   else if (!built) for (const f of genFoes(w)) out.push(`foe:${f}`);
   // (World 6 on gen2 on: a stage's animals, the eagle and the bushes change from roll to roll, so it asks for the world's whole set)
+  // (World 10 on gen2: its own animals, the hunters met before and the General's soldiers, its dressing and its cover: w10Art.ts)
+  else if (isGen2Stage(cfg) && w === 10) out.push(...W10_FOES.map((f) => `foe:${f}`), 'w10');
   else if (isGen2Stage(cfg) && w >= 6) out.push(...genFoes(w).map((f) => `foe:${f}`), 'props2');
   else if (sw.ctest && cfg.id === CTEST_STAGE_ID) {
     const m = sw.mix ? ctestMixDraws(sw.mix) : { foes: CTEST_FOES, props2: true };

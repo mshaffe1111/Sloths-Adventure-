@@ -16,7 +16,16 @@ DARK, GREY = (20, 16, 24), (128, 128, 128)
 
 
 def key_magenta(im):
-    sp = cut_cell(im.convert('RGB'), 'magenta', {})
+    """full-canvas key (cut_cell crops to its bbox; two 7 px marker blocks in the corners of an 8 px key margin pin that bbox to the
+    padded canvas, and the margin is cut off again, so coordinates stay those of the input)"""
+    W, H = im.size
+    pad = Image.new('RGB', (W + 16, H + 16), (255, 0, 255))
+    pad.paste(im.convert('RGB'), (8, 8))
+    d = ImageDraw.Draw(pad)
+    d.rectangle((0, 0, 6, 6), fill=(60, 60, 60)); d.rectangle((W + 9, H + 9, W + 15, H + 15), fill=(60, 60, 60))
+    sp = cut_cell(pad, 'magenta', {})
+    assert sp.size == pad.size, (sp.size, pad.size)
+    sp = sp.crop((8, 8, W + 8, H + 8))
     a = np.asarray(sp).astype(np.float32)
     band = ndimage.binary_dilation(a[..., 3] < 128, iterations=4) & (a[..., 3] > 0)
     ex = np.clip(np.minimum(a[..., 0], a[..., 2]) - a[..., 1] - 6, 0, None) * band
@@ -35,6 +44,20 @@ def key_black(im, floor=10, gain=1.0):
     al = np.clip((m - floor) / (255 - floor) * gain, 0, 1)
     rgb = np.where(al[..., None] > 0.004, np.clip(a / np.maximum(al[..., None] * 255, 1) * 255, 0, 255), 0)
     return Image.fromarray(np.dstack([rgb, al * 255]).astype(np.uint8), 'RGBA')
+
+
+def edge_fade(im, px, sides='lr'):
+    """fade alpha to 0 over px at the given sides (l r t b), so a crop out of a painted glow has no hard edge"""
+    a = np.asarray(im).astype(np.float32)
+    H, W = a.shape[:2]
+    m = np.ones((H, W), np.float32)
+    r = lambda n: np.clip(np.arange(n) / px, 0, 1)
+    if 'l' in sides: m *= r(W)[None, :]
+    if 'r' in sides: m *= r(W)[::-1][None, :]
+    if 't' in sides: m *= r(H)[:, None]
+    if 'b' in sides: m *= r(H)[::-1][:, None]
+    a[..., 3] *= m * m * (3 - 2 * m)
+    return Image.fromarray(a.astype(np.uint8), 'RGBA')
 
 
 def trim(im, th=4):
