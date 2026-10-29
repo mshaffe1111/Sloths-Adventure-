@@ -14,6 +14,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+sys.dont_write_bytecode = True  # (it imports scripts/strip-seamless.py: no __pycache__ left in scripts/)
 ROOT = Path(__file__).resolve().parents[3]
 BACK = 'src/assets/backdrops'
 
