@@ -89,3 +89,34 @@ test("control test, Easy: the long jumps are sized to Easy's own jump (Matt, 202
     }
   }
 });
+
+test('control test: every roll passes the stage check on Easy too, with a 70% hold (and Normal on the QA rolls)', async () => {
+  const { easyStage } = await import('./easyMode.ts');
+  const { setDifficulty } = await import('./difficulty.ts');
+  const { EASY_HOLD } = await import('./physics.ts');
+  // (as the stage check above: the log already pushed against its wall)
+  const check = (a: ReturnType<typeof buildProtoStage>, hold?: number) => {
+    const pushed = a.platforms.map((p) => (p.push ? { ...p, x: p.push.max - p.width } : p));
+    const res = validateStage({ ...a, platforms: pushed, config: { ...a.config, miniIndex: 9 } }, hold ? { hold } : {});
+    const logIds = new Set(a.platforms.filter((p) => p.push).map((p) => `platform ${p.id}`));
+    return res.errors.filter((e) => ![...logIds].some((id) => e.endsWith(id)));
+  };
+  // (QA batch E's rolls: a river bank Easy grew out over the water, 681171; a step Easy built over a flower, 44053)
+  const qa = [681171, 44053, 56672, 1, 7920];
+  const bad: string[] = [];
+  try {
+    setDifficulty('easy');
+    for (const s of [...qa, ...SEEDS]) {
+      const e = check(easyStage(buildProtoStage(cfg, s, 'ctest', true)), EASY_HOLD);
+      if (e.length) bad.push(`Easy ${s}: ${e.join('; ')}`);
+    }
+    setDifficulty('normal');
+    for (const s of qa) {
+      const e = check(buildProtoStage(cfg, s, 'ctest'));
+      if (e.length) bad.push(`Normal ${s}: ${e.join('; ')}`);
+    }
+  } finally {
+    setDifficulty('normal');
+  }
+  assert.equal(bad.length, 0, bad.join('\n'));
+});
