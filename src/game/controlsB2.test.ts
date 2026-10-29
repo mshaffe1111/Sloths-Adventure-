@@ -214,9 +214,11 @@ function strokeLetsGo(pts: Array<[number, number, number]>, swing = false): bool
   return rig.words().some((w) => w.startsWith('jump:'));
 }
 
-test('CT-3: ordinary climbing strokes 15 to 27 degrees off straight up climb, slow or brisk, and never let go', () => {
+test('CT-3: ordinary climbing strokes climb, slanted and slow (the report\'s 22 and 25 degree strokes) or near-straight and brisk, and never let go', () => {
   for (const swing of [false, true]) {
-    for (const [deg, speed] of [[15, 0.3], [22, 0.3], [25, 0.4], [-22, 0.4], [27, 0.5], [20, 0.9], [-25, 0.55]] as const) {
+    // (a stroke 21 degrees or more over at 0.44 px/ms is a let-go: Steph's flicks off a liana are 20 to 48 degrees at 0.5 px/ms and
+    // more, swingSlide.test.ts. So the slanted strokes that must climb are the slow ones)
+    for (const [deg, speed] of [[15, 0.3], [22, 0.3], [25, 0.4], [-22, 0.4], [28, 0.35], [18, 0.9], [-19, 0.7]] as const) {
       for (const len of [60, 110]) {
         assert.ok(!strokeLetsGo(lean(deg, len, speed), swing), `${swing ? 'liana' : 'trunk'}: ${deg} degrees, ${len} px at ${speed} px/ms let go`);
       }
@@ -228,9 +230,9 @@ test('CT-3: a climb that bends over as it goes is still a climb (it was already 
   for (const deg of [30, 35, -32]) assert.ok(!strokeLetsGo(lean(deg, 60, 0.7, 50)), `climb 50 px, then ${deg} degrees at 0.7 px/ms let go`);
 });
 
-test('CT-3: a fresh flick up and over lets go: 28 degrees or more at 0.6 px/ms, or 22 degrees or more at 1 px/ms or faster', () => {
+test('CT-3: a fresh flick up and over lets go: 21 degrees or more at 0.44 px/ms or faster', () => {
   for (const swing of [false, true]) {
-    for (const [deg, speed] of [[30, 0.7], [-35, 0.8], [45, 1.0], [24, 1.2], [-23, 1.4], [55, 1.5]] as const) {
+    for (const [deg, speed] of [[30, 0.7], [-35, 0.8], [45, 1.0], [24, 1.2], [-23, 1.4], [55, 1.5], [22, 0.55], [-27, 0.5]] as const) {
       assert.ok(strokeLetsGo(lean(deg, 70, speed), swing), `${swing ? 'liana' : 'trunk'}: ${deg} degrees at ${speed} px/ms did not let go`);
     }
   }
