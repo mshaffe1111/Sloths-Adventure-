@@ -10,3 +10,7 @@ phone.
 - `contact-*.jpg`: every new figure on dark, named.
 - `*-old-new-*.jpg`: each figure's old frame (scaled up) next to its repaint.
 - `face-check.jpg`: each character's new story paintings next to the game's own sprite of them.
+
+Compare sheets: `compare-prologue`, `compare-tower` (the finale, with the wet steps), `compare-worlds-1-5`, `compare-worlds-6-10`,
+`compare-guardians-1-5`, `compare-guardians-6-10`, `compare-memories-1`, `compare-memories-2`. Before = origin/story-a 1b78695 (the old art,
+the 4:3 upright window); after = story-art with the lead's branch merged.
