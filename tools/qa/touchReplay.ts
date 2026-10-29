@@ -198,7 +198,14 @@ const bump = (key: string, cat: string, miss: boolean, punch: boolean, tc?: Touc
   g[cat].n++;
   if (miss) g[cat].miss++;
   if (punch) g[cat].punch++;
+  // every clear gesture together: one number per player and grip (the watch columns, false jumps and CT-5, stay out)
+  if (ANY.has(cat)) {
+    g.any ??= tally();
+    g.any.n++;
+    if (miss) g.any.miss++;
+  }
 };
+const ANY = new Set(['clear', 'short', 'vStraight', 'vSlant', 'vFlick', 'rest']);
 
 for (const tc of touches) {
   if (tc.cancelled || tc.up === undefined) continue;
@@ -277,15 +284,10 @@ for (const k of order) {
   const fl = (g.clear?.n ?? 0) + (g.short?.n ?? 0);
   console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.falseJump)} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} |`);
 }
-console.log('\nBy player and how the phone was held (ground flicks, clear + short: missed)\n');
-console.log('| who | portrait | landscape |');
-console.log('|---|---|---|');
-for (const k of [...PLAYERS, 'others']) {
-  const row = (['portrait', 'landscape'] as const).map((h) => {
-    const g = groups.get(`${k} ${h}`);
-    if (!g) return '-';
-    const t = { n: (g.clear?.n ?? 0) + (g.short?.n ?? 0), miss: (g.clear?.miss ?? 0) + (g.short?.miss ?? 0), punch: 0 };
-    return pct(t);
-  });
-  console.log(`| ${k} | ${row[0]} | ${row[1]} |`);
+console.log('\nBy player and how the phone was held: every clear gesture misread (ground flicks clear and short, the three vine kinds, rests)\n');
+console.log('| who | portrait | landscape | both |');
+console.log('|---|---|---|---|');
+for (const k of ['all', ...PLAYERS, 'others']) {
+  const cell = (key: string) => pct(groups.get(key)?.any);
+  console.log(`| ${k} | ${cell(k === 'all' ? 'portrait' : `${k} portrait`)} | ${cell(k === 'all' ? 'landscape' : `${k} landscape`)} | ${cell(k)} |`);
 }
