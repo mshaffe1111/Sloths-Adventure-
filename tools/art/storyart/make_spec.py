@@ -488,6 +488,39 @@ def round4c(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': ['pl-grandma-door']}
 
 
+PAIR_FIX = {
+    # cel: [(mask, who, words)]: the figure in the wrong clothes painted again in place, on its own character model
+    'da.kneel_tie': [('r', 'pokey', 'kneeling, holding out his bandaged wrist to her'), ('l', 'meeca', 'kneeling, tying a small petal on his wrist')],
+    'db.side_by_side': [('l', 'meeca', 'standing beside him, looking at him')],
+    'db.tie_stand': [('l', 'meeca', 'standing, reaching out to tie a small petal on his wrist')],
+    'hug.hug_a': [('r', 'meeca', 'hugging him happily, her eyes closed')],
+}
+
+
+def round4d(commit):
+    """the last four pair cels: the figure in the wrong clothes (Pokey in her running kit, or a second Pokey where Meeca should be, or Meeca
+    gone grey) inpainted in place on its own character model, two seeds each"""
+    it = []
+    for key, fixes in PAIR_FIX.items():
+        for sd in (3, 8):
+            prev = None
+            for i, (side, who, words) in enumerate(fixes):
+                last = i == len(fixes) - 1
+                name = f'cel-{key}-pi{sd}' if last else f'cel-{key}-pa{sd}'
+                look = (POKEY.replace('warm orange-brown fur', 'warm muted caramel-brown fur') + 'no clothes, ') if who == 'pokey' else MEECA
+                x = {'name': name, 'mask': f'pairmask-{key}-{side}.png', 'prompt': look + words + END, 'neg': NEG_FIG + SOFT, 'strength': 0.9,
+                     'seed': sd, 'w': 1024, 'h': 1024, 'loras': [[who, 1.0], ['style', 0.35]]}
+                if prev:
+                    x['then'] = prev
+                else:
+                    x['start'] = f'bucket:storyart/r4b/out/cel-{key}-ps.png'
+                it.append(x)
+                prev = name
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r4d', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca')}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
