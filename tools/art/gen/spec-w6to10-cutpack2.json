@@ -1,0 +1,7 @@
+{"note": "Part A re-runs cut on this machine (tools/art/w6to10/cutpack.py with OUT pointed at the clips unpacked from their carriers, PIPINSTALL=0): Flicker's lead (pinned, s3) and dart (pinned, s11, its first 13 frames: the dash, before it stops dead), the Monarch's hover and fly at motion 0.5 (s11)",
+ "groups": {
+  "flicker2": {"kind": "clips", "target": 110, "anchor": "middle", "key": "default", "step": 2, "sheetH": 7000,
+   "seqs": {"lead": ["w6t-flicker-lead3-s3", "", 0, 48], "dart": ["w6t-flicker-dart3-s11", "", 0, 12]}},
+  "monarch2": {"kind": "clips", "up": 1.25, "key": "tight", "anchor": "meta", "step": 2, "sheetH": 7000,
+   "seqs": {"hover": ["w6t-monarch-hover3-s11", "w8m-meta.json:monarch-hover", 0, 48], "fly": ["w6t-monarch-fly3-s11", "w8m-meta.json:monarch-fl_2", 0, 48]}}
+ }}

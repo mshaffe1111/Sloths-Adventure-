@@ -1,0 +1,105 @@
+{
+ "tag": "w6to10-starts",
+ "script": "tools/art/w5/w5cpu.py",
+ "flavor": "cpu-upgrade",
+ "tasks": [
+  {
+   "do": "starts",
+   "atlas": "ironclaw",
+   "tag": "w10ic",
+   "frames": [
+    "armed",
+    "charge",
+    "hurt",
+    "idle",
+    "knockback",
+    "march1",
+    "overhead1",
+    "roar",
+    "stomp1",
+    "stunned"
+   ]
+  },
+  {
+   "do": "starts",
+   "atlas": "golem",
+   "tag": "w7g",
+   "frames": [
+    "charge2",
+    "defeat1",
+    "hurt",
+    "idle",
+    "march2",
+    "overhead",
+    "roar",
+    "shards",
+    "stunned",
+    "tremor"
+   ]
+  },
+  {
+   "do": "starts",
+   "atlas": "drake",
+   "tag": "w9d",
+   "frames": [
+    "enrage",
+    "idle",
+    "jawsnap",
+    "knockback",
+    "leapprep",
+    "recoil",
+    "stomp",
+    "stunned",
+    "tailcrush"
+   ]
+  },
+  {
+   "do": "starts",
+   "atlas": "reaver",
+   "tag": "w6r",
+   "frames": [
+    "adv_1",
+    "guard",
+    "hurt",
+    "idle",
+    "mudsling",
+    "roar",
+    "stunned",
+    "swipe",
+    "vault"
+   ]
+  },
+  {
+   "do": "starts",
+   "atlas": "thornbark",
+   "tag": "wtb",
+   "frames": [
+    "block",
+    "claw",
+    "gallop1",
+    "hook",
+    "idle",
+    "leapprep",
+    "march2",
+    "overhead",
+    "rest",
+    "roar"
+   ]
+  },
+  {
+   "do": "starts",
+   "atlas": "monarch",
+   "tag": "w8m",
+   "frames": [
+    "deadfall",
+    "diveprep",
+    "fl_2",
+    "glide",
+    "hover",
+    "hurt",
+    "perched",
+    "screech"
+   ]
+  }
+ ]
+}

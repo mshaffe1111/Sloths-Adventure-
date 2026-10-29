@@ -1,0 +1,190 @@
+{
+ "tag": "w6to10-golem",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "awaken": "idle",
+  "march": "march2",
+  "charge": "charge2",
+  "slam": "overhead",
+  "roar": "roar",
+  "beam": "shards",
+  "quake": "tremor",
+  "hurt": "hurt",
+  "stunned": "stunned",
+  "defeat": "defeat1"
+ },
+ "clips": [
+  {
+   "name": "w6t-golem-awaken-s3",
+   "src": "../stills/w7g-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, sits dormant and still, covered in moss, then its blue eyes light up, its stones crack and it slowly rises up to stand tall, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-awaken-s11",
+   "src": "../stills/w7g-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, sits dormant and still, covered in moss, then its blue eyes light up, its stones crack and it slowly rises up to stand tall, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-march-s3",
+   "src": "../stills/w7g-march2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, lumbers forward in place with slow heavy stone steps, its hammer in one hand, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-golem-march-s11",
+   "src": "../stills/w7g-march2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, lumbers forward in place with slow heavy stone steps, its hammer in one hand, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-golem-charge-s3",
+   "src": "../stills/w7g-charge2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, rushes forward in place in heavy pounding strides, leaning forward, a smooth repeating running cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-charge-s11",
+   "src": "../stills/w7g-charge2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, rushes forward in place in heavy pounding strides, leaning forward, a smooth repeating running cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-slam-s3",
+   "src": "../stills/w7g-overhead.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, lifts its huge stone hammer high overhead and holds it there, then slams it down onto the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-slam-s11",
+   "src": "../stills/w7g-overhead.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, lifts its huge stone hammer high overhead and holds it there, then slams it down onto the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-roar-s3",
+   "src": "../stills/w7g-roar.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, throws its arms wide and roars, the blue runes on its body blazing brighter, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-golem-roar-s11",
+   "src": "../stills/w7g-roar.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, throws its arms wide and roars, the blue runes on its body blazing brighter, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-golem-beam-s3",
+   "src": "../stills/w7g-shards.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, slowly raises one arm and points it forward, holds still, then blasts a beam of bright blue light from its hand, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-beam-s11",
+   "src": "../stills/w7g-shards.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, slowly raises one arm and points it forward, holds still, then blasts a beam of bright blue light from its hand, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-quake-s3",
+   "src": "../stills/w7g-tremor.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, lifts one huge foot and holds it up, then stamps it down sending a shockwave along the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-quake-s11",
+   "src": "../stills/w7g-tremor.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, lifts one huge foot and holds it up, then stamps it down sending a shockwave along the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-hurt-s3",
+   "src": "../stills/w7g-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, jolts back from a hit, chips of stone flying off it, then steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-hurt-s11",
+   "src": "../stills/w7g-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, jolts back from a hit, chips of stone flying off it, then steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-stunned-s3",
+   "src": "../stills/w7g-stunned.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, stands dazed, swaying and wobbling, its blue glow flickering dimly, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-golem-stunned-s11",
+   "src": "../stills/w7g-stunned.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, stands dazed, swaying and wobbling, its blue glow flickering dimly, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-golem-defeat-s3",
+   "src": "../stills/w7g-defeat1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, slumps forward, its blue glow fading out, and crumbles down into a heap of mossy stone blocks, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-golem-defeat-s11",
+   "src": "../stills/w7g-defeat1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant stone golem built of mossy grey carved blocks with glowing blue runes and glowing blue eyes, holding a huge stone hammer, slumps forward, its blue glow fading out, and crumbles down into a heap of mossy stone blocks, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}

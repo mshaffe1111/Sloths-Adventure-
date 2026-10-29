@@ -152,7 +152,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // in as their dressing, artDress.ts)
   if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
   if (isGen2Stage(cfg) && gen2Water(cfg.id)) out.push('water-signs');
-  if (isGen2Stage(cfg) && gen2Water(cfg.id) && w >= 6) out.push('bad-water');
+  // (World 6 on: its creeks and its tide are the dirty, fast water)
+  if (isGen2Stage(cfg) && w >= 6) out.push('bad-water');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
   out.push('perch');
   return out;
