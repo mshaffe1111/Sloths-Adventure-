@@ -1,0 +1,20 @@
+{
+ "flag": "flag-s70-7",
+ "pickups": "pickups-s70-23",
+ "thorn": "thorn-s70-23",
+ "net": "net-s70-7",
+ "finds": "finds-s55-23",
+ "water-w1": "water-w1-s55-7",
+ "water-w3": "water-w3-s70-7",
+ "water-w4": "water-w4-s70-23",
+ "water-w5": "water-w5-s55-23",
+ "gate-w1": "gate-w1-s55-23",
+ "gate-w2": "gate-w2-s70-23",
+ "gate-w3": "gate-w3-s70-23",
+ "gate-w4": "gate-w4-s70-7",
+ "gate-w6": "gate-w6-s70-23",
+ "gate-w7": "gate-w7-s70-7",
+ "gate-w8": "gate-w8-s70-23",
+ "gate-w9": "gate-w9-s70-7",
+ "gate-w10": "gate-w10-s70-7"
+}

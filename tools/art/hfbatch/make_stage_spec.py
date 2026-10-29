@@ -101,6 +101,18 @@ for st in (0.42, 0.55):
         items2.append({'name': f'gate-w5-s{round(st * 100)}-{sd}', 'start': 'start-gate-w5.webp', 'prompt': W5P, 'strength': st, 'seed': sd,
                        'w': 1536, 'h': 960})
 
+# (round 2: each world's open gate from its picked shut take, start-gateopen-w<N>.webp: stagestarts.py gate_open_from: the first open
+# takes kept the start's flat cone of light, which reads as drawn)
+OPEN_P = {w: p.split('Left:')[0].strip() for w, p in GATES.items()}
+for w, p in OPEN_P.items():
+    pr = (S + 'a game exit gate for a side-scrolling platformer, ' + p + ' The gate stands open: no door, the way through is a dark '
+          'passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. '
+          + STYLE + KEYM)
+    for st in (0.45, 0.6):
+        for sd in (7, 23):
+            items2.append({'name': f'gateopen-w{w}-s{round(st * 100)}-{sd}', 'start': f'start-gateopen-w{w}.webp', 'prompt': pr,
+                           'strength': st, 'seed': sd, 'w': 768, 'h': 960})
+
 NEG = ('perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, '
        '3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal')
 here = Path(__file__).resolve().parent

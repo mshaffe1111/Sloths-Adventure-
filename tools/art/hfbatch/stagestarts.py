@@ -12,7 +12,7 @@ game's own painted art on a flat key colour, for img2img (w6to10/img2imggpu.py, 
   start-finds.webp        the Hush Fern and the Keeper's Bell (World 5's painted fern and bell), plain and glowing (1024 x 1024, cyan)
     python3 -I tools/art/hfbatch/stagestarts.py
 """
-import json, math, re
+import json, math, re, sys
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -140,6 +140,42 @@ def gate_half(world, open_):
     bp = piece(world, 'bank' if world != 1 else 'bank')
     c.alpha_composite(fit(bp, W - 80, 150), (40, H - 165))
     return c
+
+
+def door_rect(world):
+    """where gate_half put the door way (x0, x1, y0, y1 in a 768 x 960 half)"""
+    pil = GATE[world][0]
+    p = piece(world, pil)
+    if pil == 'perch':
+        p = p.crop((0, 0, max(40, round(p.width * 0.42)), p.height))
+    pw = max(min(170, 720 * p.width / p.height), 120)
+    return 120 + pw - 10, 768 - 120 - pw + 10, 240, 840
+
+
+def fill_door_gaps(im, world, col=(30, 22, 16)):
+    """the key showing through between the door and the pillars (slivers the pillar pieces' soft edges left): filled with the door
+    way's dark, key-coloured pixels only, so the painted pillars are untouched"""
+    a = np.asarray(im.convert('RGB')).astype(np.float32)
+    x0, x1, y0, y1 = (round(v) for v in door_rect(world))
+    x0, x1, y0 = x0 - 40, x1 + 40, y0 - 30
+    reg = a[y0:y1, x0:x1]
+    key = (np.minimum(reg[..., 0], reg[..., 2]) - reg[..., 1]) > 90
+    reg[key] = col
+    return Image.fromarray(a.astype(np.uint8))
+
+
+def gate_open_from(world, take):
+    """round 2 (the first open takes kept the start's flat cone of light): the open gate from the picked take's own shut half (its
+    painted pillars, lintel and step), the door gone, the way through dark with a soft warm light deep inside"""
+    src = Image.open(take).convert('RGB').crop((0, 0, 768, 960))
+    x0, x1, y0, y1 = (round(v) for v in door_rect(world))
+    c = src.convert('RGBA')
+    d = Image.new('RGBA', (x1 - x0, y1 - y0), (24, 17, 12, 255))
+    w, h = d.size
+    d.alpha_composite(glow(d.size, w / 2, h * 0.55, w * 0.9, (150, 104, 56), 0.9))
+    d.alpha_composite(glow(d.size, w / 2, h * 0.5, w * 0.45, (255, 214, 140), 0.8))
+    c.alpha_composite(d, (x0, y0))
+    return fill_door_gaps(c, world)
 
 
 def gate(world):
@@ -414,6 +450,17 @@ def finds():
             s.alpha_composite(c, (k * 512, row * 512))
     return s
 
+
+if __name__ == '__main__' and len(sys.argv) > 2 and sys.argv[1] == 'open':
+    # round 2: python3 -I tools/art/hfbatch/stagestarts.py open <takes dir>  (the open gates from the picked shut takes)
+    picks = json.loads((Path(__file__).resolve().parent / 'stage-picks.json').read_text())
+    for k, v in picks.items():
+        if k.startswith('gate-w') and int(k[6:]) in GATE:
+            w = int(k[6:])
+            im = gate_open_from(w, Path(sys.argv[2]) / f'{v}.webp')
+            im.save(OUT / f'start-gateopen-w{w}.webp', 'WEBP', quality=92)
+            print(OUT / f'start-gateopen-w{w}.webp')
+    sys.exit(0)
 
 if __name__ == '__main__':
     OUT.mkdir(parents=True, exist_ok=True)
