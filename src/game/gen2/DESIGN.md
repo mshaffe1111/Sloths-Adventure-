@@ -313,6 +313,12 @@ first water, Easy again whenever 12 s of walking passed) with a sign's spot in `
 - Nothing stands in a zone (levelCheck): creature sockets and top-up animals inside one stay empty, and a flag inside one is not
   raised (or is taken down when an emitter's zone comes to cover it).
 
+**Required sections** (`WorldManifest.required`, stage id -> `[{ section, phase? }]`: 6-7's water room, 6-6's dark hollow, every
+World 6 room): every roll of that stage holds each once, placed by the plan, never drawn by weight: at the first slot of the first
+node it fits (of `phase` when given) with the route inside the corridor. A roll whose required section fails its check is rolled
+again (never swapped out), the length loop never trims one, Easy lays Normal's plan so it has them too, and a required section that
+fits no node of the stage is an authoring mistake the build names. Other stages draw the section by weight as usual.
+
 ---
 
 ## Part C. Matt's decisions (answered 2026-10-28)

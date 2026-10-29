@@ -787,6 +787,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const aim = (opt.aim ?? 1) * Math.max(0.4, (budget.seconds.target - reserve) / budget.seconds.target);
   let slot = 0;
   const bags = new Map<string, ShuffleBag<SectionTemplate>>();
+  const must = M.required?.[budget.id] ?? [];
+  const placedReq = new Set<string>();
 
   const fits = (t: SectionTemplate, n: MissionNode, i: number) =>
     t.phases.includes(n.phase) &&
@@ -799,7 +801,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     !opt.bans?.get(-1)?.has(t.id);
 
   const choose = (n: MissionNode, i: number): SectionTemplate => {
-    const cands = M.sections.filter((t) => fits(t, n, i));
+    // (a section this stage must hold comes first, at the first slot of the first node it fits: placed by the plan, not by weight)
+    for (const r of must) {
+      const t = byId.get(r.section);
+      if (!t) throw new Error(`gen2 ${budget.id}: the required section ${r.section} is not in the world`);
+      // (inside the corridor, like any pick: a later slot takes it otherwise)
+      const endY = cur.y + t.exitDy;
+      if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && fits(t, n, i) && endY >= M.corridor.top && endY <= M.corridor.bottom) return t;
+    }
+    // (a required section is never drawn by weight: it comes once, where the plan puts it)
+    const cands = M.sections.filter((t) => fits(t, n, i) && !must.some((r) => r.section === t.id));
     if (!cands.length) throw new Error(`gen2 ${budget.id}: no section fits node ${n.id} (${n.phase})`);
     const want = (budget.band[0] + (budget.band[1] - budget.band[0]) * n.tension - budget.band[0]) / (budget.band[1] - budget.band[0]);
     const room = M.corridor;
@@ -971,12 +982,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       plan.push({ template: tpl.id, mirrored, node: n.id, join, ...(Object.keys(L.versions).length ? { versions: L.versions } : {}), ...(salt ? { salt } : {}) });
       cool.use(tpl.id);
       used.set(tpl.id, (used.get(tpl.id) ?? 0) + 1);
+      if (must.some((r) => r.section === tpl.id)) placedReq.add(tpl.id);
       if (tpl.teaches) taught.add(tpl.teaches);
       const exitP = pieceOf(L.exit.piece);
       cur = { x: ox + L.exit.x, y: oy + L.exit.y, kind: L.exit.kind, piece: exitP };
       if (n.phase === 'start' || n.phase === 'goal') break;
     }
   }
+  for (const r of must) if (!placedReq.has(r.section)) throw new Error(`gen2 ${budget.id}: the required section ${r.section} fits no node of the stage${r.phase ? ` (${r.phase})` : ''}`);
   // the shrine's bank (a walk on from the last section)
   const shrine = mk(cur.x, cur.y, SHRINE_BANK, 'bank', 0);
   const exitX = R(shrine.x + 300);
@@ -1694,6 +1707,7 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
   const easyReq: BuildRequest = { ...req, difficulty: 'easy' };
   const easyBudget = req.difficulty === 'easy' ? budget : planBudget(req.config, M, 'easy');
   const byId = new Map(M.sections.map((t) => [t.id, t]));
+  const required = new Set((M.required?.[req.config.id] ?? []).map((r) => r.section));
   for (let rr = 0; rr <= maxRerolls; rr++) {
     const seed = rr === 0 ? req.seed : req.seed * 1009 + rr * 7919;
     const repairs: Repair[] = [];
@@ -1730,6 +1744,11 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
         if (lastMeeting) return lastMeeting;
         // (the goal's animals need room: one more section; the goal itself stays as designed)
         if (v.short && grow("room for the goal's animals: one more section")) continue;
+        // (a required section is never swapped out: the whole roll goes instead)
+        if (v.swap !== undefined && b.laid.plan[v.swap] && required.has(b.laid.plan[v.swap].template)) {
+          repairs.push({ kind: 'reroll', note: `${b.laid.plan[v.swap].template} is required here and failed: rolled again` });
+          break;
+        }
         if (v.swap !== undefined && b.laid.plan[v.swap]) {
           const tpl = b.laid.plan[v.swap].template;
           const set = bans.get(v.swap) ?? new Set<string>();
@@ -1765,7 +1784,7 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
         return lastMeeting!;
       }
       if (over && !grew) {
-        const t = trimPlan(b.laid.plan, graph, byId);
+        const t = trimPlan(b.laid.plan, graph, byId, required);
         if (t) {
           lastMeeting = st;
           plan = t;
@@ -1794,9 +1813,9 @@ export function growPlan(plan: readonly PlanSlot[], graph: MissionGraph): { plan
 
 /**
  * The plan less its last section before the shrine's node, from a node that keeps another (never the start, never a section that
- * teaches what one after it uses, never a room); null when nothing can go
+ * teaches what one after it uses, never a room, never one in `keep`: the stage's required sections); null when nothing can go
  */
-export function trimPlan(plan: readonly PlanSlot[], graph: MissionGraph, byId: ReadonlyMap<string, SectionTemplate>): PlanSlot[] | null {
+export function trimPlan(plan: readonly PlanSlot[], graph: MissionGraph, byId: ReadonlyMap<string, SectionTemplate>, keep: ReadonlySet<string> = new Set()): PlanSlot[] | null {
   const goal = graph.nodes[graph.nodes.length - 1].id;
   const start = graph.nodes[0].id;
   let end = plan.findIndex((p) => p.node === goal);
@@ -1805,7 +1824,7 @@ export function trimPlan(plan: readonly PlanSlot[], graph: MissionGraph, byId: R
     const p = plan[i];
     if (p.node === start || plan.filter((q) => q.node === p.node).length < 2) continue;
     const t = byId.get(p.template);
-    if (!t || t.room) continue;
+    if (!t || t.room || keep.has(t.id)) continue;
     if (t.teaches && plan.slice(i + 1).some((q) => byId.get(q.template)?.uses?.includes(t.teaches!))) continue;
     return [...plan.slice(0, i), ...plan.slice(i + 1)];
   }

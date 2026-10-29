@@ -130,6 +130,12 @@ export interface WorldManifest {
   themeShare?: Range;
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
+  /**
+   * stage id -> sections every roll of that stage holds once (6-7's water room): placed by the plan, never drawn by weight, at the
+   * first slot of the first node they fit (of `phase`, when given) inside the corridor; never swapped out (a roll whose required section fails is rolled again) nor
+   * trimmed. A required section that fits no node of the stage is an authoring mistake, and the build says so
+   */
+  required?: Record<string, Array<{ section: string; phase?: Phase }>>;
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
   lessons?: Record<string, string>;
   /** mechanic -> Dot's line for a 'tip' socket (under 10 words; a new line is marked "(new, needs Matt's approval)" until he says yes) */

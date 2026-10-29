@@ -874,3 +874,37 @@ test("gen2's liana model is the engine's (vine-fix): the same swing numbers and 
     }
   }
 });
+
+test("a stage's required sections come up on every roll (placed by the plan, never swapped or trimmed away), on Easy too", () => {
+  // a rare section (weight 0.01) the toy 5-7 must hold, in its Ten, and the carry room in its Sho
+  const rare: SectionTemplate = { ...stumps, id: 'toy-rare', weight: 0.01, phases: ['sho', 'ten'] };
+  const k: WorldKit = {
+    ...kit,
+    manifest: { ...manifest, sections: [...manifest.sections, rare], required: { '5-7': [{ section: 'toy-rare', phase: 'ten' }, { section: 'toy-carry' }] } },
+  };
+  let elsewhere = 0;
+  for (let seed = 1; seed <= 20; seed++) {
+    const n = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'normal' });
+    const e = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'easy' });
+    for (const [st, d] of [[n, 'normal'], [e, 'easy']] as const) {
+      const what = `seed ${seed} ${d}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      const rares = st.gen2.sections.filter((s) => s.template === 'toy-rare');
+      assert.ok(rares.length === 1 && rares[0].phase === 'ten', `${what}: the required section ${rares.length} times, in ${rares[0]?.phase}`);
+      assert.equal(st.gen2.sections.filter((s) => s.template === 'toy-carry').length, 1, `${what}: the carry room`);
+    }
+    // (a stage that doesn't require it draws it by weight, as any section)
+    elsewhere += buildGen2Stage({ config: cfg('5-4', 'vine_runner'), kit: k, seed, difficulty: 'normal' }).gen2.sections.filter((s) => s.template === 'toy-rare').length;
+  }
+  assert.ok(elsewhere > 0, 'the section is still in the world\'s bag for other stages');
+  // the trim never takes a required section
+  const b = planBudget(cfg('5-7', 'stealth'), k.manifest, 'normal');
+  const graph = missionGraph(b);
+  const plan = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed: 1, difficulty: 'normal' }).gen2.plan;
+  const byId = new Map(k.manifest.sections.map((t) => [t.id, t]));
+  let p: typeof plan | null = plan;
+  while ((p = trimPlan(p, graph, byId, new Set(['toy-rare', 'toy-carry'])))) assert.ok(p.some((q) => q.template === 'toy-rare'));
+  // a required section that fits no node of the stage is named
+  const bad: WorldKit = { ...k, manifest: { ...k.manifest, required: { '5-7': [{ section: 'toy-rare', phase: 'ketsu' }] } } };
+  assert.throws(() => buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: bad, seed: 1, difficulty: 'normal' }), /required section toy-rare fits no node/);
+});
