@@ -134,7 +134,7 @@ Earlier read of the same log, kept for the details:
 9. [polish] 1-7: the eagle sits on Pokey when it hits; Dot overlaps him; after the rope the camera leaves Pokey at the right edge;
    sideways at about 23% Dot was drawn inside the dirt.
 
-# Next batch (not sent yet)
+# Batch sent 2026-10-29 (B, C, D, on Matt's "send")
 
 ## B. Matt's own play, 2026-10-28 (sheet rows 2064-2194; build 11:59 ET release; Chrome 151, Android, Adreno 730, not software)
 1. [UNFAIR, out of band, rule 3/4] 2-2 (Normal, upright): Matt (expert) lost 14 lives, all water, and finished in 6:23. No hurts,
