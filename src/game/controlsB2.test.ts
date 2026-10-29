@@ -316,3 +316,14 @@ test('CT-9: a tap still punches, and a quick 12 to 18 px flick up neither punche
     assert.ok(!half.punched && !half.jumped, `15 px in 30 ms at x ${x}: ${half.words}`);
   }
 });
+
+// ───────────────────────────── CT-7: a resting action thumb ─────────────────────────────
+
+test('CT-7: a second thumb resting on the glass, then flicking up, jumps; a rest under 550 ms throws no mega, and a longer one still lets the flick jump', () => {
+  for (const rest of [460, 540, 800]) {
+    const s = standing([...stroke(1, [[0, 200, 700], [1600, 202, 700]]), ...stroke(2, [[200, 800, 700], [200 + rest, 801, 701], [200 + rest + 60, 802, 641]])]);
+    assert.ok(s.jumped, `rest ${rest} ms, then a 60 px flick: ${s.words}`);
+    if (rest < 550) assert.ok(!s.words.includes('mega'), `rest ${rest} ms threw a mega: ${s.words}`);
+    else assert.ok(s.words.includes('mega'), `a deliberate hold of ${rest} ms is still the mega: ${s.words}`);
+  }
+});

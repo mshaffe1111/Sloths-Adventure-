@@ -75,7 +75,8 @@ export const TUNING = {
   dragPx: 18,
   tapMs: 420,
   tapPx: 22,
-  holdMs: 460,
+  /** a still finger held this long throws the mega (it was 460: a two-thumb player's resting thumb threw one every rest, CT-7) */
+  holdMs: 550,
   holdPx: 20,
   /**
    * a tap that begins this soon after the steering finger lifted is the thumb bouncing back onto the glass, not a punch. It was 190 ms,
@@ -847,6 +848,14 @@ export class TouchGestures {
     if (rise < TUNING.liftFlickPx || rise / el < TUNING.liftFlickSpeed || rise < sx * TUNING.liftFlickSlant) return null;
     return { lean: this.leanOf(f.x - tr[lo].x, rise) };
   }
+  /** the finger is at rest right now: under 6 px of travel in its last 50 ms (a flick just starting is no hold: CT-7) */
+  private stillNow(f: Finger): boolean {
+    let d = 0;
+    const tr = f.trail;
+    for (let k = tr.length - 1; k > 0 && this.now - tr[k - 1].t <= 50; k--) d += Math.hypot(tr[k].x - tr[k - 1].x, tr[k].y - tr[k - 1].y);
+    return d < 6;
+  }
+
   /** the touch was quick and rose: not a tap (CT-9: an 18 px flick used to punch) */
   private flickedUp(f: Finger): boolean {
     let peak = 0;
@@ -1002,11 +1011,11 @@ export class TouchGestures {
     }
     // a long drag by an action finger while steering is going on elsewhere is just a wobble: let it be
     // a still finger held down: mega (but not while the last one is still cooling down: the thumb waits, and it goes off the moment it can)
-    if (!f.megaDone && el >= TUNING.holdMs && Math.hypot(dx, dy) <= TUNING.holdPx) {
+    if (!f.megaDone && el >= TUNING.holdMs && Math.hypot(dx, dy) <= TUNING.holdPx && this.stillNow(f)) {
       if (this.env?.megaReady && !this.env.megaReady()) return false;
       f.megaDone = true;
-      // a lone thumb that was only resting is not used up: if it then slides, it steers (it used to be stuck, unable to steer until lifted)
-      if (f.role !== 'pending') f.consumed = true;
+      // the mega never uses the finger up: a thumb that was only resting can still steer if it slides, and still jump if it flicks (a
+      // second thumb used to be spent until lifted, so the flick after a rest did nothing: CT-7)
       this.sink.feedback('mega');
       this.sink.mega();
       return true;
