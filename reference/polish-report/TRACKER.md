@@ -193,11 +193,28 @@ Last updated: 2026-10-29 1:45 PM ET.
 | X-7 | Stone Sentry guard for 7-5 | HF (exists) | gen2-w7 | cutting in |
 | X-8 | Floating capital-letter lesson labels; no speech box over Pokey | | polish-dot | in progress |
 | X-9 | Music: varied songs per world, adaptive, Hugging Face models allowed | HF | polish-audio | in progress |
-| X-10 | QA batch E: replay 2 fps, Facebook frozen start, opening difficulty (Matt decides), load stutters | | qa-fix-e | in progress |
+| X-10 | QA batch E: replay 2 fps (survey no longer draws; root cause needs an Android replay), Facebook iPhone blur dropped steering (FIXED), load stutters (FIXED) | | qa-fix-e | MERGED into ccr 1:45 PM ET |
+| X-12 | Control-test opening too hard for first-timers: Matt chose Easy gaps sized to Easy reach + two more flags (2026-10-29) | | qa-fix-e | in progress |
 | X-11 | Spider webs and swing glow (painted-swaps) | | painted-swaps | PASSED review; merges with X-2 |
 
-## Story (Matt's story review, arriving 2026-10-29)
+## Story (Matt's story report "the road to A+", 2026-10-29: reference/story-report/story-road-to-A-plus-2026-10-29.txt)
+
+Matt's seven calls (2026-10-29, "Yes, all seven"): slowness costs once at the World 6 tea; Pokey's parents in one painted background with no
+words; add Dot's lost pocket; the player's thumb does the let-go; three keepsakes in the finale, the rest in the satchel; the garden hub later
+(after steps 1-8); a playable prologue morning if there's time. Missing: the SR-1 to SR-43 list the report points to (asked Matt for it).
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| S-? | (added as Matt sends them) | | | |
+| S-1 | Step 1: every written-out line edit, file by file (SR-pointer rows wait for the SR list) | | story-a | started 2:05 PM ET |
+| S-2 | Step 2: the three new scenes (the reunion, Pokey's answer to Dot, the General's motive in three layers) | | story-a | started 2:05 PM ET |
+| S-3 | Step 3: the new finale running order, keepsakes cut to three (the rest to the satchel later) | | story-a | started 2:05 PM ET |
+| S-4 | Step 4: the played let-go in the tower (thumbs) | | story-a, after 1-3 | queued |
+| S-5 | Step 5: Dot's ~80 in-stage lines and SR-38 to SR-43 | | — | HOLD: check with Matt against "Dot nags" first |
+| S-6 | Step 6: the satchel screen and Pokey's journal | | — | queued |
+| S-7 | Step 7: ending cards for every character (painted cards) | HF | — | queued |
+| S-8 | Step 8: Dot's lost pocket, The Notch, the Under the Ruins note, the snail | HF (small finds) | — | queued |
+| S-9 | Step 9: the garden hub, the map warming up, guardian relics, the council chamber scene | HF | — | later (Matt: after 1-8) |
+| S-10 | Step 10: the playable prologue morning, story coats, the General counting real falls | | — | later, if time |
+| S-11 | Pokey's parents: one painted background behind the singing-storm memory, two sloths on far branches, sky turning | HF | — | queued |
+| S-12 | Flicker plan (STORY-REVIEW-2026-10-27.md items 7-10) with the mother's-jealousy lines and his stuttering light | | story-a (text) | in S-1/S-2 |
+| S-13 | Cast Bible fixes: Dot is "she"; add Flicker's entry | | story-a | in S-1 |
