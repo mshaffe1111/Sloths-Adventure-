@@ -98,14 +98,14 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| ST-1 | Story scenes are blurry, stand on a code-drawn strip, and sometimes don't match the words | HF | polish-a1 (code part MERGED) + story pass (repainted plates) | code done; art waits for the story review |
-| ST-2 | Characters aren't lit like the scene, and their shadows are weak | HF | — | story pass (waits for Matt's story review) |
+| ST-1 | Story scenes are blurry, stand on a code-drawn strip, and sometimes don't match the words | HF | polish-a1 (code part MERGED) + story-art (HF: plates, cels, upright framing) | code done; art started 3:15 PM ET (Matt: "our very first concept arts... still stuck in there") |
+| ST-2 | Characters aren't lit like the scene, and their shadows are weak | HF | story-art (cloud session_01FhBbYMSNFxnWxPbZJPdRan) | started 3:15 PM ET |
 | ST-3 | Meeca's carvings never pay off |  | — | story pass (waits for Matt's story review) |
-| ST-4 | The Stage Cleared clue repeats every world |  | — | story pass (waits for Matt's story review) |
+| ST-4 | The Stage Cleared clue repeats every world |  | story-a | started 3:20 PM ET (Matt: "placeholders are out") |
 | ST-5 | The exit has three names and the same victory line everywhere |  | Build 1 (Matt's other session, polish-build1) | built, waiting for that session to push to GitHub |
-| ST-6 | Boss quotes and aim text read as placeholder |  | — | story pass (waits for Matt's story review) |
-| ST-7 | The ending card's copy is out of date |  | — | story pass (waits for Matt's story review) |
-| ST-8 | Placeholder stage names |  | — | story pass (waits for Matt's story review) |
+| ST-6 | Boss quotes and aim text read as placeholder |  | story-a | started 3:20 PM ET (Matt: "placeholders are out") |
+| ST-7 | The ending card's copy is out of date |  | story-a | started 3:20 PM ET (Matt: "placeholders are out") |
+| ST-8 | Placeholder stage names |  | story-a | started 3:20 PM ET (Matt: "placeholders are out") |
 
 ## Dot (17)
 
