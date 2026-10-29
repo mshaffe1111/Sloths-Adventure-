@@ -43,10 +43,10 @@ for grp in ('fg-moss', 'croc-props', 'fx3'):
 MOSS = 'fg-moss-s70-23'
 im = take(MOSS)
 moss = cut(im, 'magenta', crumbs=30, trim=False).resize((2048, 288), Image.LANCZOS)
-# (the grey strands took a lilac cast from the key: re-grade every pixel to the Mire's grey-green by its own lightness)
+# (the grey strands took a lilac cast from the key: re-grade every pixel to a moonlit grey-green by its own lightness)
 a = np.asarray(moss).astype(np.float32)
 L = a[..., :3].mean(axis=2)
-a[..., 0], a[..., 1], a[..., 2] = L * 0.84, L * 1.02, L * 0.9
+a[..., 0], a[..., 1], a[..., 2] = L * 1.15, L * 1.4, L * 1.3
 moss = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'RGBA')
 old = Image.open(GAME / 'src/assets/lairs/fg-croc.webp').convert('RGBA')
 reeds = old.crop((0, round(old.height * 0.45), old.width, old.height))

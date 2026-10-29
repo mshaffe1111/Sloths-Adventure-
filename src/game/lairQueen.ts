@@ -51,6 +51,8 @@ const PLATE = new LairPlate({
   widthK: 1.2,
   drift: 0.22,
   fill: '#07100e',
+  // the top of the painting is the canopy: a tall screen grows it to fit rather than show the canopy mirrored
+  cover: true,
 });
 
 export function drawQueenBack(ctx: CanvasRenderingContext2D, v: LairView, a: LairArena, time: number, bossX: number, phase: number) {

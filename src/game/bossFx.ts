@@ -131,7 +131,7 @@ export function drawFxWave(ctx: CanvasRenderingContext2D, name: FxName, x: numbe
   load();
   if (!ready || !img) return false;
   const src = tint ? tintedPiece(name, tint) : null;
-  const N = 14;
+  const N = 32;
   for (let i = 0; i < N; i++) {
     const u0 = i / N;
     const sw = f.w / N;

@@ -1257,7 +1257,7 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
     if (!open) return;
     const pulse = 0.5 + 0.5 * Math.sin(time * 9);
     const rw = (r.w * 0.58 + 6 * pulse) * 2.3;
-    drawFx(ctx, 'weakRing', r.x + r.w / 2, r.y + r.h * 0.55, rw, { h: (r.h * 0.62 + 4 * pulse) * 2.3, alpha: 0.7 + 0.3 * pulse });
+    drawFx(ctx, 'weakRing', r.x + r.w / 2, r.y + r.h * 0.55, rw, { h: (r.h * 0.62 + 4 * pulse) * 2.3, alpha: 0.85 + 0.15 * pulse });
     return;
   }
   const cx = r.x + r.w / 2;

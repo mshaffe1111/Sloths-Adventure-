@@ -45,6 +45,11 @@ export interface PlateSpec {
    * moon twice on a tall screen.
    */
   skyTop?: boolean;
+  /**
+   * Where the view reaches above the painting, grow it (about its floor line) until its top meets the top of the view, rather than
+   * showing a mirror image: for a painting whose top is a canopy or a cave roof, where a mirror shows as a seam.
+   */
+  cover?: boolean;
 }
 
 export class LairPlate {
@@ -64,8 +69,16 @@ export class LairPlate {
     const r = rage > 0.01 ? this.rage.get() : null;
     const base = c ?? r;
     if (!base) return;
-    const dw = (a.right - a.left) * s.widthK;
-    const dh = (dw * base.naturalHeight) / base.naturalWidth;
+    let dw = (a.right - a.left) * s.widthK;
+    let dh = (dw * base.naturalHeight) / base.naturalWidth;
+    if (s.cover) {
+      // (from the view's height, not where the floor sits in it, so the painting never breathes as the camera rises and falls)
+      const need = (v.vh * 0.85) / s.floorAt;
+      if (need > dh) {
+        dw *= need / dh;
+        dh = need;
+      }
+    }
     const mid = (a.left + a.right) / 2;
     const camMid = v.x + v.vw / 2;
     // upright (taller than wide), slide the focus onto the screen and let the plate follow the camera more so it stays there

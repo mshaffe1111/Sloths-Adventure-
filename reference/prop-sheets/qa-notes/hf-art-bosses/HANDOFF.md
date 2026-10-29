@@ -1,4 +1,19 @@
-# hf-art-bosses: handoff (2026-10-29, moved to a cloud machine mid-task)
+# hf-art-bosses: handoff (2026-10-29, moved to a cloud machine mid-task; round 4 finished there)
+
+## Round 4 (cloud helper, 2026-10-29)
+- Job `hfboss-r4` (6.3 min, ~$0.29; total ~$1.49 of $10): starts `bossstarts4.py`, spec `make_spec4.py`, cut `bosscut4.py` (run after
+  bosscut.py; shared keying/review in `bosscut_lib.py`). Review: `review-r4-pieces.jpg`, `review-r4-fg.jpg`, `review-r4-takes-*.jpg`.
+- Moonlit Mire upright: `LairPlate` got `focusX` (upright, the plate slides so the moon, its road and the lantern are on screen and follows
+  the camera more) and `skyTop` (above the plate its own top band is stretched up, so no mirrored second moon). Silk Hollow got `cover`
+  (upright, the plate grows to the view's top instead of showing the canopy mirrored as chevrons).
+- Mire moss repainted (Spanish moss off a branch, moonlit grey-green) over the round-1 reeds in `fg-croc.webp` (now 2048x570, split 288/570).
+- Painted, code drawing deleted: Crocus Rex's rowboat, crossed-out wave sign, helmet heap, cattail clumps (`lairCroc.ts drawCrocWorld`);
+  the Sovereign's pennants (pole + three pale cloths tinted and rippled in slices, `drawFxWave`); her screech arcs (`screech` laid along
+  each arc, `drawFxAlong`); the weak-point ring and cross-hair (`weakRing`, `bossArt.ts drawWeakPoint`). All in `boss-fx.webp` (512 KB).
+- The Queen's `pour` and `sit` clips play in her entrance (her tea): revealed pouring, rising from her seat (sit backwards), then the roar
+  (`BossBrain.intro`, set by `engine.stepEntrance`; `queenSprite.ts`). Her fight has no other tea moves.
+- Shots: `after/` (all five fights both ways, the Queen's entrance, 4-D, 5-M), side by side with `before/` in `compare/` (`compare.py`).
+
 
 Branch `hf-art-bosses` (from `ccr-0d59a91c-oy3imz`). Brief: VI-14 lairs, VI-15 boss effects, AN-5 dust/sparks, AN-7 Venom lunge, AN-8 Queen
 clips, VI-11 ropes, VI-18 small ones. Cap $10 (lead's correction from $14).
