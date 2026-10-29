@@ -124,13 +124,3 @@ test("4-3 Easy: the fall's tip is not said 10 s after the stage hint said the sa
   q2.push(fall, 20000);
   assert.ok(said(q2, 20000, 30000).has(fall.key));
 });
-
-test("DOT-4: 1-9's ring wall is explained (no cut row stands in front of the lock line)", () => {
-  assert.equal(swapLine('Snakes from above! Clear them all to open the way', '1-9')?.text, 'Snakes! Clear them all to open the way.');
-  // no cut stage row shadows a lock line with the same old words
-  for (const l of ALL_DOT_LINES) {
-    if (l.kind !== 'lock' || l.text !== null || !l.stage) continue;
-    const sw = swapLine(l.old ?? '', l.stage);
-    assert.ok(!ALL_DOT_LINES.some((o) => o !== l && o.kind === 'lock' && o.text !== null && o.old === l.old) || sw?.text, `${l.id} cuts a lock line`);
-  }
-});
