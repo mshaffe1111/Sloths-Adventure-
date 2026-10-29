@@ -3,7 +3,8 @@
  * writes the shipped table, src/game/gen2/seeds.ts.
  *
  *   npx tsx tools/gen2/curate.ts --stages 5-7,5-9 [--rolls 400] [--keep 16] [--out src/game/gen2/seeds.ts] [--waive quiet,dead]
- *     [--band 50-65] [--max-shared 0.7] [--rooms 8] [--apart] [--json out.json] [--report out.md] [--salt 20261028]
+ *     [--band 50-65] [--max-shared 0.7] [--rooms 8] [--apart | --apart-near [--apart-cap 0.2]] [--json out.json] [--report out.md]
+ *     [--salt 20261028]
  *   npx tsx tools/gen2/curate.ts --stages toy-3,toy-4,toy-7 --rolls 400 --keep 16 --waive quiet,dead   (the toy world: tools/gen2/toySeeds.ts)
  *
  * For each stage: `--rolls` layout seeds (era.ts's rollVariants) are built through `buildGen2Stage` on Normal and on Easy (the same
@@ -23,7 +24,9 @@
  * stage), and the share of sections the two stages' shipped sets have in common is reported; with `--max-shared` (default 0.7, worlds
  * of 12 sections or more) a roll whose sections are more than that share the neighbour's is dropped.
  * With `--apart`, a roll that shares a 20 s stretch that plays alike with any shipped roll of another stage of its world is dropped
- * (STAGE-RULES §2 "Sameness"; the look-alike measure, tools/inspect/lookalike.ts, the same one era.ts reports with).
+ * (STAGE-RULES §2 "Sameness"; the look-alike measure, tools/inspect/lookalike.ts, the same one era.ts reports with). With `--apart-near`
+ * (Matt's rule for now, 2026-10-29 6:25 PM ET) that holds against the stage's neighbours in play (the gen2 stages of its world just
+ * before and after it), and against every other stage of the world a capped share of the shipped set may (`--apart-cap`, 1 in 5).
  * The band score is bands.ts's stageScore on the inspector's parts only (hardest jumps for the noisy bot, dead time, length): the
  * first-timer bot builds stages by id through the game, which builds gen2 stages only after the hook-up (DESIGN.md B10 piece G).
  */
@@ -123,9 +126,12 @@ export interface CurateOptions {
   recent: string[];
   neighbour: Set<string> | null;
   /** the world's other gen2 stages' shipped rolls, by their 20 s windows (era.ts's look-alike rule across a world's stages) */
-  others?: Array<{ key: string; wins: LookWin[][] }>;
+  others?: Array<{ key: string; wins: LookWin[][]; near?: boolean }>;
   /** drop a roll that shares a 20 s stretch with one of `others`' shipped rolls (`--apart`) */
   apart?: boolean;
+  /** `--apart-near`: drop a roll that shares a 20 s stretch with a neighbour's (`others` marked near) shipped rolls, and ship at most this
+   *  share of the set sharing one with any other stage's */
+  apartCap?: number;
   log: (s: string) => void;
 }
 
@@ -337,6 +343,19 @@ export function pickSpread(pool: RollMeasure[], keep: number, accept: (m: RollMe
   return { picks, spread, refused };
 }
 
+/**
+ * The look-alike cap (`--apart-near`): of the `keep` rolls shipped, at most `cap` of them (a share: 1 in 5) may share a 20 s stretch
+ * with any one other stage's shipped set. `fits` says whether a roll can still be picked, `take` counts a picked one.
+ */
+export function apartCapper(alikeOf: ReadonlyMap<RollMeasure, readonly string[]>, cap: number, keep: number) {
+  const most = Math.floor(cap * keep + 1e-9);
+  const have = new Map<string, number>();
+  return {
+    fits: (m: RollMeasure) => (alikeOf.get(m) ?? []).every((k) => (have.get(k) ?? 0) < most),
+    take: (m: RollMeasure) => { for (const k of alikeOf.get(m) ?? []) have.set(k, (have.get(k) ?? 0) + 1); },
+  };
+}
+
 /** the closing sections a stage ships most (its picks' last four sections before the shrine, most often first): the next stage's `recent` */
 export function closingSections(picks: RollMeasure[], n = 4): string[] {
   const count = new Map<string, number>();
@@ -365,7 +384,9 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
     const keys = (opt.others ?? []).filter((o) => o.wins.some((w) => looksAlike(m.wins, w, RULES.window))).map((o) => o.key);
     alikeOf.set(m, keys);
     if (opt.apart) for (const k of keys) m.fails.push(`shares a 20 s stretch with ${k}`);
+    else if (opt.apartCap !== undefined) for (const k of keys) if (opt.others!.find((o) => o.key === k)?.near) m.fails.push(`shares a 20 s stretch with ${k} (a neighbour)`);
   }
+  const capped = opt.apartCap !== undefined && !opt.apart ? apartCapper(alikeOf, opt.apartCap, opt.keep) : null;
   const dropped: Record<string, number> = {};
   for (const m of measures) for (const f of m.fails) dropped[f] = (dropped[f] ?? 0) + 1;
   const pool = measures.filter((m) => !m.fails.length);
@@ -376,6 +397,10 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
   const quota: RoomQuota | null = rooms.length && roomPool ? { n: Math.min(opt.rooms ?? Math.ceil(opt.keep / 2), roomPool), rooms } : null;
   if (quota) opt.log(`  ${stage.key}: ${roomPool} passing rolls hold a puzzle room (${rooms.join(', ')}); the set ships at least ${quota.n}`);
   const { picks, spread, refused } = pickSpread(pool, opt.keep, (m) => {
+    if (capped && !capped.fits(m)) {
+      dropped['over the 1-in-5 look-alike cap'] = (dropped['over the 1-in-5 look-alike cap'] ?? 0) + 1;
+      return false;
+    }
     const b = botCheck(stage, m, opt.recent);
     m.bots = b;
     m.band = b.band;
@@ -388,6 +413,7 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
     if (!why.length) {
       const worst = Math.min(b.worstKid ?? 1, b.worstAdult ?? 1);
       m.quality = Math.round((m.quality * 0.85 + 0.15 * worst) * 1000) / 1000;
+      capped?.take(m);
     }
     return !why.length;
   }, quota);
@@ -460,6 +486,16 @@ export async function worldKits(world: number, override?: string, stage = 1): Pr
 }
 
 /** the stage before in its world (`toy-8` -> `toy-7`, `5-8` -> `5-7`) */
+/** a stage's neighbours in play for the look-alike rule: the gen2 stages of its world just before and after it (a hand-built stage
+ *  between is skipped: the player still meets the two one after the other in the world) */
+export async function playNeighbours(key: string): Promise<string[]> {
+  const { GEN2_STAGES } = await import('../../src/game/gen2/game.ts');
+  const [w] = key.split('-');
+  const ids = Object.keys(GEN2_STAGES).filter((k) => k.split('-')[0] === w).sort((a, b) => Number(a.split('-')[1]) - Number(b.split('-')[1]));
+  const i = ids.indexOf(key);
+  return i < 0 ? [] : [ids[i - 1], ids[i + 1]].filter((k): k is string => !!k);
+}
+
 export const neighbourKey = (key: string) => key.replace(/(\d+)$/, (s) => String(Number(s) - 1));
 
 // ───────────────────────────── the seed table ─────────────────────────────
@@ -528,6 +564,7 @@ function args(argv: string[]) {
     maxShared: Number(get('--max-shared') ?? 0.7),
     rooms: get('--rooms') === undefined ? undefined : Math.max(0, Number(get('--rooms'))),
     apart: argv.includes('--apart'),
+    apartCap: argv.includes('--apart-near') ? Number(get('--apart-cap') ?? 0.2) : undefined,
     kit: get('--kit'),
     out: get('--out') ?? (toy ? path.join(here, 'toySeeds.ts') : path.join(root, 'src', 'game', 'gen2', 'seeds.ts')),
     json: get('--json'),
@@ -603,14 +640,15 @@ async function main() {
     const recent = prevPicks ? closingSections(prevPicks) : prev ? closingSectionsOf(prev) : [];
     const neighbour = prevPicks ? new Set(prevPicks.flatMap((p) => p.plan.map((t) => t.replace(/~$/, '')))) : prev ? new Set(prev.seeds.flatMap((s) => s.sections.split(' ').map((t) => t.replace(/~$/, '')))) : null;
     // (the world's other gen2 stages, curated now or before: their shipped rolls' windows, for the look-alike rule across stages)
-    const others: Array<{ key: string; wins: LookWin[][] }> = [];
+    const others: Array<{ key: string; wins: LookWin[][]; near?: boolean }> = [];
     if (!opt.toy) {
+      const near = await playNeighbours(key);
       for (const [k, e] of Object.entries(existing)) {
         if (k === key || k.split('-')[0] !== key.split('-')[0]) continue;
         const done = results.find((r) => r.stage.key === k);
-        if (done) { others.push({ key: k, wins: done.picks.map((p) => p.wins) }); continue; }
+        if (done) { others.push({ key: k, wins: done.picks.map((p) => p.wins), near: near.includes(k) }); continue; }
         const st = await resolveStage(k, e.kit);
-        others.push({ key: k, wins: e.seeds.map((x) => measureRoll(st, x.seed, e.recent, []).wins) });
+        others.push({ key: k, wins: e.seeds.map((x) => measureRoll(st, x.seed, e.recent, []).wins), near: near.includes(k) });
       }
     }
     log(`${key} (${stage.config.objectiveType}, ${stage.kitName}): ${opt.rolls} rolls${recent.length ? `, recent ${recent.join(',')}` : ''}${opt.waive.length ? `, waived ${opt.waive.join(',')}` : ''}`);
