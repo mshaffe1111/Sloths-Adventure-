@@ -83,6 +83,12 @@ Last updated 2026-10-29.
 
 ## 4. Using the art (so each world and each replay looks fresh)
 
+- **Painted art, not code drawings (Matt, 2026-10-29).** Anything the player looks at for more than a moment (water, ropes, ground,
+  props, creatures, effects) is painted art from Matt's Gemini sheets or the Hugging Face pipeline. Shapes drawn in code are a
+  stand-in only while the picture loads, or for a day until the sheet arrives, never the finished look. When something needs a new
+  look, give Matt the Gemini prompt straight away instead of drawing it in code first. His words, after the World 6 water went from
+  a code-drawn murky fill to his painted sheet: "This is the type of polish we need. Sometimes quick fixes just don't work. That's
+  the difference between a good game and a bad game." (Before and after: `reference/prop-sheets/qa-notes/water-w6-painted.png`.)
 - **Use what Matt made.** Every prop, state frame and backdrop from his sheets has a place in the game. A piece packed but never
   drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.
