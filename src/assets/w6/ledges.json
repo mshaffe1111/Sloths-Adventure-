@@ -1,0 +1,189 @@
+{
+ "sheet": "ledges.webp",
+ "size": {
+  "w": 2048,
+  "h": 1735
+ },
+ "anchor": "ax, ay: middle of the walkable top (put the collider top there). <name>: the asked shape (ledges 3:1, perches 1.3:1) with the supports cut straight at the frame foot, running on below; <name>-tall: the whole piece",
+ "takes": {
+  "root-shelf-ledge": "w6ledges-a-s68-17",
+  "root-shelf-ledge-tall": "w6ledges-a-s68-17",
+  "stilt-deck-ledge": "w6ledges-a-s68-17",
+  "stilt-deck-ledge-tall": "w6ledges-a-s68-17",
+  "boardwalk-ledge": "w6ledges-a-s68-17",
+  "boardwalk-ledge-tall": "w6ledges-a-s68-17",
+  "wedged-branch-ledge": "w6wedge-b-s58-17",
+  "wedged-branch-ledge-tall": "w6wedge-b-s58-17",
+  "root-shelf-perch": "w6perches-a-s55-17",
+  "root-shelf-perch-tall": "w6perches-a-s55-17",
+  "stilt-deck-perch": "w6perches-a-s55-17",
+  "stilt-deck-perch-tall": "w6perches-a-s55-17",
+  "boardwalk-perch": "w6perches-a-s55-17",
+  "boardwalk-perch-tall": "w6perches-a-s55-17",
+  "wedged-branch-perch": "w6wedge-b-s58-17@0",
+  "wedged-branch-perch-tall": "w6wedge-b-s58-17@0"
+ },
+ "method": "img2img (Qwen-Image + slothadv style model) from blockstart.py w6ledges / w6perches (W6 kit wood and roots)",
+ "frames": {
+  "root-shelf-ledge": {
+   "x": 0,
+   "y": 0,
+   "w": 600,
+   "h": 200,
+   "ax": 300.0,
+   "ay": 12.2,
+   "walkTop": 12.2,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "root-shelf-ledge-tall": {
+   "x": 604,
+   "y": 0,
+   "w": 600,
+   "h": 377,
+   "ax": 300.0,
+   "ay": 12.2,
+   "walkTop": 12.2,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "stilt-deck-ledge": {
+   "x": 1208,
+   "y": 0,
+   "w": 600,
+   "h": 200,
+   "ax": 300.0,
+   "ay": 25.7,
+   "walkTop": 25.7,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "stilt-deck-ledge-tall": {
+   "x": 0,
+   "y": 381,
+   "w": 600,
+   "h": 385,
+   "ax": 300.0,
+   "ay": 25.7,
+   "walkTop": 25.7,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "boardwalk-ledge": {
+   "x": 604,
+   "y": 381,
+   "w": 600,
+   "h": 200,
+   "ax": 300.0,
+   "ay": 21.0,
+   "walkTop": 21.0,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "boardwalk-ledge-tall": {
+   "x": 1208,
+   "y": 381,
+   "w": 600,
+   "h": 350,
+   "ax": 300.0,
+   "ay": 21.0,
+   "walkTop": 21.0,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "wedged-branch-ledge": {
+   "x": 0,
+   "y": 770,
+   "w": 600,
+   "h": 200,
+   "ax": 300.0,
+   "ay": 51.3,
+   "walkTop": 51.3,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "wedged-branch-ledge-tall": {
+   "x": 604,
+   "y": 770,
+   "w": 600,
+   "h": 272,
+   "ax": 300.0,
+   "ay": 51.3,
+   "walkTop": 51.3,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "root-shelf-perch": {
+   "x": 1208,
+   "y": 770,
+   "w": 260,
+   "h": 200,
+   "ax": 130.0,
+   "ay": 18.6,
+   "walkTop": 18.6,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "root-shelf-perch-tall": {
+   "x": 1472,
+   "y": 770,
+   "w": 260,
+   "h": 497,
+   "ax": 130.0,
+   "ay": 18.6,
+   "walkTop": 18.6,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "stilt-deck-perch": {
+   "x": 1736,
+   "y": 770,
+   "w": 260,
+   "h": 200,
+   "ax": 130.0,
+   "ay": 24.6,
+   "walkTop": 24.6,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "stilt-deck-perch-tall": {
+   "x": 0,
+   "y": 1271,
+   "w": 260,
+   "h": 464,
+   "ax": 130.0,
+   "ay": 24.6,
+   "walkTop": 24.6,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "boardwalk-perch": {
+   "x": 264,
+   "y": 1271,
+   "w": 260,
+   "h": 200,
+   "ax": 130.0,
+   "ay": 28.8,
+   "walkTop": 28.8,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "boardwalk-perch-tall": {
+   "x": 528,
+   "y": 1271,
+   "w": 260,
+   "h": 455,
+   "ax": 130.0,
+   "ay": 28.8,
+   "walkTop": 28.8,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "wedged-branch-perch": {
+   "x": 792,
+   "y": 1271,
+   "w": 260,
+   "h": 200,
+   "ax": 130.0,
+   "ay": 31.4,
+   "walkTop": 31.4,
+   "note": "ax, ay: the middle of the flat walkable top"
+  },
+  "wedged-branch-perch-tall": {
+   "x": 1056,
+   "y": 1271,
+   "w": 260,
+   "h": 408,
+   "ax": 130.0,
+   "ay": 31.4,
+   "walkTop": 31.4,
+   "note": "ax, ay: the middle of the flat walkable top"
+  }
+ }
+}
