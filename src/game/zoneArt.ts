@@ -7,6 +7,7 @@
  */
 import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
+import { drawBadWater } from './badWaterArt.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -540,7 +541,11 @@ function drawTide(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
       ctx.fill();
     }
   }
-  if (level > 0.01) {
+  // the tide is fast water (Matt, 2026-10-29: from World 6 the deadly water is dirty or fast): Matt's painted sheet, rushing toward the
+  // bank it sweeps you to; the drawn water below only until the sheet has loaded
+  if (level > 0.01 && drawBadWater(ctx, z.x0, z.x1, surface, bottom, t, z.dir < 0 ? -1 : 1)) {
+    // (painted)
+  } else if (level > 0.01) {
     const wave = (x: number) => surface + Math.sin(x * 0.045 + t * 2.4) * 3 + Math.sin(x * 0.11 - t * 1.7) * 1.6;
     const g = ctx.createLinearGradient(0, surface, 0, bottom);
     g.addColorStop(0, 'rgba(70, 170, 190, 0.62)');
