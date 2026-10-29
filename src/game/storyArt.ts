@@ -12,6 +12,8 @@ import type { StoryScene, SceneActor, ScenePhoto, BloomStage } from './story.ts'
 import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 import { drawPaintedBird } from './birdSprites.ts';
 import { drawDotFrame, poseFrame, warmDot } from './dotSprite.ts';
+import { FLICKER_CLIPS } from './flickerClips.ts';
+import { FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP } from './flickerAnimData.ts';
 import { photoUrl } from './photos.ts';
 import { plateImage, preloadPlates, releasePlates } from './plates.ts';
 import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
@@ -639,6 +641,61 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
   }
 }
 
+/** Flicker's height in scene units at scale 1 (a firefly: well under Dot's size) */
+const FLICKER_H = 44;
+/** the light's stutter, a second and a half around: when it is dark (his tell: he is not telling the whole truth) */
+const STUTTER: readonly [number, number][] = [[0.0, 0.07], [0.14, 0.2], [0.62, 0.7], [0.76, 0.8]];
+export function flickerLit(t: number, stutter: boolean): number {
+  if (!stutter) return 1;
+  const p = (t % 1.5) / 1.5;
+  return STUTTER.some(([a, b]) => p >= a && p < b) ? 0.12 : 1;
+}
+
+function lightGlow(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number) {
+  if (a <= 0.01) return;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, `rgba(226, 255, 160, ${0.6 * a})`);
+  g.addColorStop(0.4, `rgba(200, 255, 140, ${0.22 * a})`);
+  g.addColorStop(1, 'rgba(200, 255, 140, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/** Flicker: his painted clip hovering in place, the warm halo of his light around him (stuttering when `stutter` is set) */
+function drawFlickerActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, scroll = 0) {
+  const sc = a.scale ?? 1;
+  const x = a.x * w + Math.sin(t * 1.3 + a.x * 5) * 4 * sc - scroll;
+  const y = (a.y ?? 0.5) * h + Math.sin(t * 2.6) * 4 * sc;
+  const face = a.facing === -1 ? -1 : 1;
+  const lit = flickerLit(t, !!a.stutter);
+  const clip = a.clip ?? 'blink';
+  const glowR = (clip === 'glow' ? 120 : clip === 'doze' ? 60 : 92) * sc;
+  lightGlow(ctx, x - face * 8 * sc, y + 6 * sc, glowR, (clip === 'doze' ? 0.45 : 0.8) * lit);
+  ctx.save();
+  ctx.globalAlpha *= 0.82 + 0.18 * lit;
+  let drew = false;
+  if (FLICKER_CLIPS.ready()) {
+    ctx.translate(x, y);
+    // (his clips face right: mirrored to face left)
+    ctx.scale(face, 1);
+    drew = FLICKER_CLIPS.draw(ctx, FLICKER_CLIPS.ping(clip, t, FLICKER_ANIM_FPS), (FLICKER_H * sc / FLICKER_ANIM_H) * FLICKER_ANIM_UP);
+  }
+  ctx.restore();
+  if (!drew) {
+    ctx.fillStyle = '#6b4320';
+    ctx.beginPath();
+    ctx.arc(x, y, 9 * sc, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // the bright point of his tail
+  lightGlow(ctx, x - face * 10 * sc, y + 8 * sc, 18 * sc, lit);
+}
+
 /**
  * A figure painted on Matt's story sheets (storyCels.ts): the frame the pose timeline names, its feet on the ground line (hovering when placed above it), a contact shadow,
  * a slow breath. Nothing is drawn while its atlas is still loading, which the draw itself starts.
@@ -687,6 +744,7 @@ function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
 
 function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
   if (a.kind === 'dot') { drawDot(ctx, a, w, h, t, scroll); return; }
+  if (a.kind === 'flicker') { drawFlickerActor(ctx, a, w, h, t, scroll); return; }
   if (a.kind === 'cel') { drawCelActor(ctx, a, w, h, t, ground, scroll); return; }
   // Pokey and Meeca: the painted characters, one engine (moods, moves, ground, shadow)
   if (a.kind === 'milo' && a.portrait) { drawPortrait(ctx, a, w, h, t, ground, scroll); return; }

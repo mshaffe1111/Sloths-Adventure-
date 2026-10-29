@@ -6,7 +6,7 @@
  *   Act III The Iron Road (8-10) rest, loss, mercy and the last climb.
  * The guardians' fights and what comes after them are in storyBosses.ts and storyChapters.ts.
  */
-import { chapter, D, M, N, OFF, P, pan, say } from './storyDsl.ts';
+import { chapter, D, FL, M, N, OFF, P, pan, say } from './storyDsl.ts';
 import { PROMISE_PANELS } from './storyChapters.ts';
 import type { StoryPanel } from './story.ts';
 
@@ -49,15 +49,16 @@ const W1 = chapter({ name: C1, w: 1, m: 'day', cue: 'journey', i: 0.4, base: { p
   SQ('North! At that speed? See you next year!', 'P:idle@.42'),
   N('Somewhere behind the squirrel, a lot of smaller squirrels laughed.', 'P:idle@.42', { sting: 'laugh' }),
   P('I\'ll write.', 'P:walk@.42', { cue: 'journey', i: 0.4 }),
-  N('The first petal was stuck to the bark of a kapok tree, pressed flat, at about the height of someone being marched past. Pokey peeled it off with one claw and held it in both hands.',
+  N('The first petal was stuck to the bark of a kapok tree, pressed flat, at about the height of someone being marched past. Pokey peeled it off with one claw and held it like it might wake up.',
     'P:idle@.3', { p: pan(1.1, 0.4, 0.5, 1.25, 0.5, 0.58, 8) }),
   P('She pressed it flat. With a soldier on each arm.', 'P:talk@.3', { cue: 'tender', i: 0.4 }),
   D('Pokey! Pokey, there you are, oh, thank goodness. Don\'t move. Don\'t you move.', 'P:surprised@.3 D:yelp@.64^.4', { cue: 'comedy', i: 0.45 }),
+  P('Historically, not a problem.', 'P:talk@.3 D:yelp@.64^.4'),
   D('Do you know how many pink things there are in this forest? Do you have any idea? I followed the petals for two days, and one of them was a hibiscus, which is a completely different pink, and I went all the way around a hill for it, a big hill, and—',
     'P:surprised@.3 D:yelp@.64^.4'),
   P('You said you\'d be straight back.', 'P:talk@.3 D@.64^.4', { cue: 'sorrow', i: 0.3 }),
   N('Dot\'s wing went to the pouch at her side.', 'P:idle@.3 D:sad@.64^.4'),
-  D('I know what I said. I know what I said. And I said don\'t you go anywhere without me, and here you are. Going.', 'P:idle@.3 D@.64^.4'),
+  D('I know what I said, I know, and I also said don\'t you go anywhere without me, and I come back and here you are, going, at your speed, which is barely going, but it\'s the principle.', 'P:idle@.3 D@.64^.4'),
   P('Not very fast.', 'P:happy@.3 D@.64^.4', { sting: 'laugh' }),
   P('Did you see her? Is she okay?', 'P:worried@.3 D@.64^.4', { cue: 'tender', i: 0.35 }),
   D('She\'s okay. She\'s okay. They took her all the way up to the Highlands, Pokey, to the fortress, the big one up in the clouds, and she walked the whole way with her chin up like she was on her way to a party. She thanked them for the march. She thanked every one of them.',
@@ -69,11 +70,10 @@ const W1 = chapter({ name: C1, w: 1, m: 'day', cue: 'journey', i: 0.4, base: { p
   D('Notes go out. Nothing goes in. I tried to carry one in. Twice. Same thorn, both times.', '='),
   P('So I can\'t tell her I\'m coming.', 'P:worried@.3 D@.64^.4'),
   D('She knows you\'re coming.', 'P:worried@.3 D@.64^.4', { cue: 'tender', i: 0.4 }),
-  N('Pokey didn\'t say anything to that.', 'PF:worried@.4', { cue: 'hush', i: 0.2 }),
   D('She\'s already gotten two notes out through it. I\'ve got both. This is the first one.', 'P:idle@.3 D@.64^.4', { cue: 'tender', i: 0.35 }),
   D('"Pokey. If you have this, you found the petal. I put it low so you wouldn\'t have to look up. I saw you run. I didn\'t know you could do that. Don\'t you listen to a word he said. And don\'t stand in the rain and think about it. Follow the petals. Love, M."',
     'P:happy@.3 D@.64^.4', { cue: 'meeca', i: 0.4 }),
-  N('Pokey read it again himself, slowly, the part about running. Then he put it in the satchel.', 'PX:read_a@.4', { cue: 'tender', i: 0.4 }),
+  N('Pokey read it again himself, slowly, the part about running.', 'PX:read_a@.4', { cue: 'tender', i: 0.4 }),
   P('Which way?', 'P:determined@.3 D@.64^.4', { cue: 'resolve', i: 0.4 }),
   D('North. Everything\'s north. The petals go north.', 'P:determined@.3 D@.64^.4'),
   N('On a branch above them, something long shifted its weight. It had been told to look fearsome and had been doing it since breakfast. It was a warm morning, and it was tired.',
@@ -130,9 +130,10 @@ const W2_MID = chapter({ name: MID[2], w: 2, m: 'day', cue: 'comedy', i: 0.4, ba
   P('The snake said his collar itched. I thought it was just a collar.', 'P:talk@.3 D@.6^.4'),
   D('It isn\'t just a collar.', '=', { cue: 'dread', i: 0.35 }),
   N('Down on the bank, a sloth carefully fitted the first log of the raft into place, stepped back, and looked at it for a long time.', 'P:idle@.24 PO:carry_stand@.66*.9', { cue: 'comedy', i: 0.3 }),
-  P('She wants me to be nice to the ones trying to bite me.', 'P:talk@.3 D@.6^.4', { cue: 'tender', i: 0.4 }),
-  D('That\'s her whole thing. Mostly it works.', '=', { sting: 'laugh' }),
-  N('Pokey watched them fit the second log. His foot started tapping again. He held it still with his hand.', 'P:determined@.3 D@.6^.4', { cue: 'resolve', i: 0.4 }),
+  P('She wants me to be nice to the snake.', 'P:talk@.3 D@.6^.4', { cue: 'tender', i: 0.4 }),
+  D('She was nice to a wasp once. Now it visits. It brings friends.', '=', { sting: 'laugh' }),
+  P('What\'s in the pouch?', 'P:talk@.3 D@.6^.4', { cue: 'sorrow', i: 0.3 }),
+  D('It\'s a thing. It isn\'t for you.', 'P:idle@.3 D:flinch@.6^.4'),
 ]);
 
 const W3 = chapter({ name: C3, w: 3, m: 'night', cue: 'dread', i: 0.25, base: { particles: 'sparkles' } }, [
@@ -141,6 +142,7 @@ const W3 = chapter({ name: C3, w: 3, m: 'night', cue: 'dread', i: 0.25, base: { 
   D('I don\'t do dark, Pokey. I do daylight. I\'ll do a little dusk if I have to. This isn\'t dusk. This is the inside of a boot.', 'P:idle@.3 D:flinch@.62^.4', { cue: 'comedy', i: 0.4 }),
   P('Stay close. I\'m dim, but I\'m steady.', 'P:happy@.3 D@.62^.4'),
   D('Dim and steady. Fine. Don\'t let go of me.', '='),
+  D('Have you got everything? Petal? Satchel? Ears?', 'P:happy@.3 D:puzzled@.62^.4'),
   N('Pokey stopped to listen to the glowworms, and the glowworms noticed. One at a time, over his head, they turned up, until he stood in a warm yellow light that hadn\'t been there a minute before.', 'P:happy@.3 D@.62^.4', { cue: 'bloom', i: 0.4 }),
   N('Between the stalactites hung the old thorn vines that Meeca\'s grandma always said were asleep. One of them moved.', 'P:idle@.3 D@.62^.4', { cue: 'dread', i: 0.3 }),
   N('On the floor, in the mud, were footprints. Each one was as wide as Pokey was tall. They went once around the two of them, in a perfect circle, and stopped.',
@@ -181,7 +183,6 @@ const W4_ACT = chapter({ name: 'ACT II · THE COST', w: 4, m: 'day', cue: 'dread
   P('That wasn\'t the Prowler. That was the General. He used the Prowler like a hand.', 'P:talk@.3 D@.64^.45', { cue: 'dread', i: 0.4 }),
   D('I know.', 'P:worried@.3 D:sad@.64^.45', { cue: 'hush', i: 0.2 }),
   P('The Prowler said sorry. Twice.', 'P:worried@.3 D@.64^.45', { cue: 'sorrow', i: 0.35 }),
-  N('He still had hold of the vine. Both hands.', 'P:duck@.3 D@.64^.45'),
   P('That was a loud horn.', 'P:duck@.3 D@.64^.45', { cue: 'dread', i: 0.35 }),
   D('It was a horn, Pokey. Horns have somebody on the other end. Thunder doesn\'t. I always listen for which one it is. Every time.', 'P:duck@.3 D:perch@.64^.45', { cue: 'tender', i: 0.35 }),
 ]);
@@ -207,7 +208,6 @@ const W4_MID = chapter({ name: MID[4], w: 4, m: 'day', cue: 'tender', i: 0.35, b
   D('Two words weigh nothing. I checked. I weighed it against a berry, and the berry won. I was really thorough about it.', 'P:surprised@.3 D@.62^.4', { cue: 'tender', i: 0.5 }),
   P('Oh, Dot.', 'P:happy@.3 D@.62^.4'),
   D('Don\'t. I\'ll cry, and I can\'t afford the water weight.', '='),
-  N('Pokey read the note twice. Then he put it in the satchel, on top, where it wouldn\'t get squashed.', 'P:idle@.3 D@.62^.4', { cue: 'tender', i: 0.4 }),
 ]);
 
 const W5 = chapter({ name: C5, w: 5, m: 'day', cue: 'comedy', i: 0.4, base: { particles: 'sparkles' } }, [
@@ -231,7 +231,7 @@ const W5 = chapter({ name: C5, w: 5, m: 'day', cue: 'comedy', i: 0.4, base: { pa
 
 const W5_MID = chapter({ name: MID[5], w: 5, m: 'dusk', cue: 'tender', i: 0.3, base: { particles: 'petals' } }, [
   N('They stopped to rest on a branch where the orchids hung in rows. Pokey stood, because the note said so. Dot touched the pouch at her side. Then she touched it again.', 'P:tired@.3 D@.62^.45', { cue: 'tender', i: 0.3 }),
-  P('You keep checking that pouch.', 'P:talk@.3 D@.62^.45'),
+  P('You\'re still checking that pouch.', 'P:talk@.3 D@.62^.45'),
   D('It\'s a thing. It isn\'t for you.', '=', { cue: 'sorrow', i: 0.3 }),
   P('Who\'s it for?', 'P:talk@.3 D@.62^.45'),
   D('Somebody I\'m scared of.', 'P:worried@.3 D@.62^.45'),
@@ -243,7 +243,6 @@ const W5_MID = chapter({ name: MID[5], w: 5, m: 'dusk', cue: 'tender', i: 0.3, b
   P('Slow isn\'t stopped.', 'P:happy@.3 D@.62^.45', { cue: 'grandma', i: 0.4 }),
   D('Is that true, or is that just something you say?', 'P:happy@.3 D@.62^.45'),
   P('I don\'t know yet. It hasn\'t been wrong.', 'P:happy@.3 D@.62^.45', { cue: 'tender', i: 0.4 }),
-  N('Dot let go of the pouch. A minute later her wing was back on it.', 'P:happy@.3 D@.62^.45', { cue: 'sorrow', i: 0.3 }),
 ]);
 
 const W6 = chapter({ name: C6, w: 6, m: 'day', cue: 'dread', i: 0.3, base: { particles: 'sparkles' } }, [
@@ -252,7 +251,7 @@ const W6 = chapter({ name: C6, w: 6, m: 'day', cue: 'dread', i: 0.3, base: { par
   N('Out of the black water, a spear rose, slowly. It turned to look at them. Then it sank again.', 'P:worried@.3 D@.62^.4 B6~@.88<', { cue: 'dread', i: 0.4, sting: 'darkness' }),
   D('Did the water just look at us?', '=', { cue: 'comedy', i: 0.35 }),
   P('Somebody\'s holding it.', 'P:worried@.3 D@.62^.4 B6~@.88<'),
-  D('That\'s worse. I\'m fine. I\'m completely fine. I\'ve backed up about nine feet. I\'m just over here!', 'P:worried@.3 D:flinch@.78^.36 B6~@.88<'),
+  D('That\'s worse, that\'s so much worse, I\'m fine, I\'ve backed up about nine feet, I\'m going to stay over here and be fine from a distance!', 'P:worried@.3 D:flinch@.78^.36 B6~@.88<'),
   D('"Pokey, the Reaver eats lunch at noon. Do NOT meet him at noon." That\'s all it says. There\'s no second line. There\'s a stain.', 'P:idle@.3 D@.62^.4', { sting: 'laugh' }),
   P('What time is it?', 'P:worried@.3 D@.62^.4'),
   D('Noon. It\'s noon. I can see the sun, right there, straight down through the roots. Pokey, it is directly overhead.', '=', { cue: 'dread', i: 0.4, sting: 'cliffhanger' }),
@@ -261,7 +260,10 @@ const W6 = chapter({ name: C6, w: 6, m: 'day', cue: 'dread', i: 0.3, base: { par
 const W6_MID = chapter({ name: MID[6], w: 6, m: 'dusk', cue: 'sorrow', i: 0.3, base: { particles: 'petals' } }, [
   D('Pokey. I have to tell you something. I tried to make it funny the whole way over. I got as far as a pelican, and then I couldn\'t.', 'P:tired@.3 D:sad@.62^.4', { cue: 'sorrow', i: 0.3 }),
   P('Go on.', 'P:talk@.3 D@.62^.4'),
-  D('That was the last note I can get out. They found the gap and closed it. Somebody told the General. I\'ve been all the way around twice looking for another way in. I checked it with my face.', '=', { cue: 'dread', i: 0.35 }),
+  D('That was the last note I can get out. They sewed the gap shut the night before I got there. One night, Pokey.', '=', { cue: 'dread', i: 0.35 }),
+  P('We stopped for tea.', 'PF:worried@.4', { cue: 'sorrow', i: 0.3 }),
+  D('We stopped for tea.', 'P:sad@.3 D:sad@.62^.4'),
+  D('I\'ve been all the way around twice looking for another way in. I checked it with my face.', 'P:sad@.3 D@.62^.4', { cue: 'dread', i: 0.3 }),
   D('She gave me three at the end. The lunch one was the silly one. There\'s one I\'m not supposed to give you at all, so I\'m going to leave it somewhere you\'ll find it by accident. And this one\'s sealed.', 'P:worried@.3 D@.62^.4'),
   D('She wrote it on a really bad day, and she made me swear to give it to you only when you need it.', '='),
   P('How will I know when I need it?', 'P:talk@.3 D@.62^.4'),
@@ -271,28 +273,40 @@ const W6_MID = chapter({ name: MID[6], w: 6, m: 'dusk', cue: 'sorrow', i: 0.3, b
   D('I\'m going around. There\'s always a seam. I\'ll find the one that\'s open, and I\'ll be back before you\'ve... before you\'ve even— I\'ll be early, Pokey. Watch me.', 'P:sad@.3 D@.62^.4', { cue: 'resolve', i: 0.4 }),
   P('We never agreed on a time.', 'P:happy@.3 D@.62^.4', { cue: 'tender', i: 0.4 }),
   N('Dot went up through the roots. One leaf kept shivering after she was gone.', 'P:sad@.3', { cue: 'sorrow', i: 0.4 }),
+  // Flicker (STORY-REVIEW-2026-10-27.md item 7): he followed Meeca's carvings out of the orchids and has been behind Pokey since
+  N('The leaf kept shivering. Then a small light came down through the roots and sat on it.', 'P:sad@.3 FL@.62^.5', { cue: 'tender', i: 0.3 }),
+  FL('You\'re Pokey.', 'P:surprised@.3 FL:talk@.62^.5'),
+  P('Most days.', 'P:talk@.3 FL@.62^.5'),
+  FL('Your name\'s on a tree back in the orchids. I\'ve been behind you ever since.', 'P:idle@.3 FL:talk@.62^.5'),
+  P('Can you get a note to her? Over the net?', 'P:talk@.3 FL@.62^.5'),
+  FL('I tried. It hums when anything touches it. They come running.', 'P:worried@.3 FL:worried@.62^.5'),
+  P('Who are you?', 'P:talk@.3 FL@.62^.5'),
+  FL('Flicker. Just passing.', 'P:idle@.3 FL:stutter@.62^.5'),
+  P('You\'ve been passing since the orchids.', 'P:talk@.3 FL:stutter@.62^.5'),
+  FL('Somebody who owes her.', 'P:idle@.3 FL:sad@.62^.5', { cue: 'sorrow', i: 0.3 }),
+  N('He didn\'t say any more. He came and sat on the satchel strap.', 'P:idle@.3 FL@.35^.5*.8>', { cue: 'tender', i: 0.3 }),
 ]);
 
 const W7 = chapter({ name: C7, w: 7, m: 'dusk', cue: 'reveal', i: 0.3, base: { plate: 'ruins', particles: 'sparkles' } }, [
-  N('The temple door stood slightly open. Meeca had come through here. So, by the look of the floor, had something heavy.', 'P:idle@.3', { p: pan(1.05, 0.5, 0.35, 1.3, 0.55, 0.6, 8) }),
-  N('The vines on the old walls hung brown. When he touched one, it didn\'t move.', 'P:tired@.3', { cue: 'dread', i: 0.25 }),
-  N('He turned to say something to Dot. The air by his shoulder was empty.', 'P:sad@.3', { cue: 'sorrow', i: 0.3 }),
+  N('The temple door stood slightly open. Meeca had come through here. So, by the look of the floor, had something heavy.', 'P:idle@.3 FL@.385^.44*.8>', { p: pan(1.05, 0.5, 0.35, 1.3, 0.55, 0.6, 8) }),
+  N('The vines on the old walls hung brown. When he touched one, it didn\'t move.', 'P:tired@.3 FL@.385^.44*.8>', { cue: 'dread', i: 0.25 }),
+  N('He turned to say something to Dot. There was only Flicker, which wasn\'t the same.', 'P:sad@.3 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.3 }),
   N('In the first courtyard, ten stone chairs stood in a ring around a cracked floor where a faint sigil still glowed. Each one had a creature carved into its back: a panther, a crocodile, an owl.',
-    'P:worried@.3', { cue: 'reveal', i: 0.35, p: { zoom: 1.5, focusX: 0.4 } }),
+    'P:worried@.3 FL@.385^.44*.8>', { cue: 'reveal', i: 0.35, p: { zoom: 1.5, focusX: 0.4 } }),
   N('An eleventh chair stood a little apart from the ring, plain, with no carving at all. Dry leaves lay on the seat. In the middle was a deep dent, worn by someone who\'d sat there often, and then stopped.',
     '=', { cue: 'dread', i: 0.35 }),
-  P('Ten, and him.', 'P:talk@.3', { cue: 'sorrow', i: 0.3 }),
-  N('From the shadows, something very large began to speak. It took four minutes to say good morning.', 'P:idle@.3 B7~@.84<', { cue: 'comedy', i: 0.4, sting: 'laugh' }),
+  P('Ten, and him.', 'P:talk@.3 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.3 }),
+  N('From the shadows, something very large began to speak. It took four minutes to say good morning.', 'P:idle@.3 B7~@.84< FL@.385^.44*.8>', { cue: 'comedy', i: 0.4, sting: 'laugh' }),
 ]);
 
 const W7_MID = chapter({ name: MID[7], w: 7, m: 'dusk', cue: 'sorrow', i: 0.3, base: { particles: 'sparkles' } }, [
-  P('Excuse me. Do you know the way up?', 'P:talk@.3', { cue: 'comedy', i: 0.3 }),
-  N('The statue said nothing.', 'P:idle@.3'),
-  P('Thanks for not interrupting.', 'P:happy@.3', { sting: 'laugh' }),
-  N('Further in, he stopped to listen to the quiet.', 'P:tired@.3', { cue: 'sorrow', i: 0.3 }),
-  P('Dot would say this place is older than the river, and she\'d have a number. She\'d have it written down.', 'P:talk@.3', { cue: 'tender', i: 0.3 }),
-  N('He left a gap after it, for the answer.', 'P:tired@.3'),
-  N('He hummed to fill it, badly.', 'P:determined@.3', { cue: 'resolve', i: 0.35 }),
+  P('Excuse me. Do you know the way up?', 'P:talk@.3 FL@.385^.44*.8>', { cue: 'comedy', i: 0.3 }),
+  N('The statue said nothing.', 'P:idle@.3 FL@.385^.44*.8>'),
+  P('Thanks for not interrupting.', 'P:happy@.3 FL@.385^.44*.8>', { sting: 'laugh' }),
+  N('Further in, he stopped to listen to the quiet.', 'P:tired@.3 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.3 }),
+  P('Dot would say this place is older than the river, and she\'d have a number. She\'d have it written down.', 'P:talk@.3 FL@.385^.44*.8>', { cue: 'tender', i: 0.3 }),
+  N('He left a gap after it, for the answer. Flicker didn\'t fill it.', 'P:tired@.3 FL@.385^.44*.8>'),
+  N('He hummed to fill it, badly.', 'P:determined@.3 FL@.385^.44*.8>', { cue: 'resolve', i: 0.35 }),
 ]);
 
 // ═════════════════════════════════ ACT III · THE IRON ROAD ═════════════════════════════════
@@ -303,7 +317,7 @@ const W8_ACT = chapter({ name: 'ACT III · THE IRON ROAD', w: 8, m: 'dusk', cue:
 ]);
 
 const W8_A = chapter({ name: C8, w: 8, m: 'night', cue: 'dread', i: 0.2, base: { particles: 'sparkles' } }, [
-  N('The fireflies came out as the light went. Pokey kept going. Meeca was somewhere ahead in the dark, and so was something with enormous wings.',
+  N('Flicker went on ahead, and the fireflies came out to meet him as the light went. Pokey kept going. Meeca was somewhere ahead in the dark, and so was something with enormous wings.',
     'P:tired@.3 B8~@.86<', { p: pan(1.05, 0.5, 0.35, 1.25, 0.45, 0.6, 8) }),
   N('He sat down on a branch to rest his eyes. He was asleep before he\'d finished sitting.', 'PF:tired+calm_closed@.4', { cue: 'tender', i: 0.2, p: { zoom: 1.3, focusX: 0.4 } }),
 ]);
@@ -312,102 +326,134 @@ const W8_A = chapter({ name: C8, w: 8, m: 'night', cue: 'dread', i: 0.2, base: {
 const W8_B = chapter({ name: 'WORLD 8 · WAKE UP', w: 8, m: 'night', cue: 'tender', i: 0.4, base: { particles: 'sparkles' } }, [
   D('Wake up, wake up, wake up. You were mumbling, mostly about a petal. I\'ve been flying for three days, and I would like to sit down on something that isn\'t air. Is this branch taken? Pokey? Pokey!',
     'P:tired@.3 D@.62^.4'),
+  // Dot meets Flicker (STORY-REVIEW-2026-10-27.md item 9), and the jealousy is a mother's
+  N('Dot stopped. There was a light on Pokey\'s satchel strap, and it was looking at her.', 'P:tired@.3 D:puzzled@.62^.4 FL@.385^.44*.8>'),
+  D('Pokey. There\'s a bug on you. A glowing one.', '='),
+  FL('Flicker. Hello.', 'P:tired@.3 D:puzzled@.62^.4 FL:talk@.385^.44*.8>'),
+  D('How long has it been glowing at you?', 'P:tired@.3 D:puzzled@.62^.4 FL@.385^.44*.8>'),
+  FL('Since the mangrove. And I\'m a he.', 'P:tired@.3 D:flinch@.62^.4 FL:smug@.385^.44*.8>'),
+  D('Since the mangrove. That\'s a long time to be glowing at somebody.', 'P:tired@.3 D@.62^.4 FL@.385^.44*.8>'),
+  D('I\'ve been doing this his whole life. You\'ve been doing it since a mangrove.', 'P:tired@.3 D:yelp@.62^.4 FL@.385^.44*.8>'),
+  FL('Then you\'ll know where he keeps the snacks.', 'P:tired@.3 D:yelp@.62^.4 FL:talk@.385^.44*.8>', { sting: 'laugh' }),
   P('Dot. You came back. You\'re bleeding.', 'P:surprised@.3 D@.62^.45', { cue: 'sorrow', i: 0.4, p: { memory: false } }),
-  D('It\'s fine. It\'s nothing. I found a seam in the net, behind some kind of cookhouse, that was just a little narrower than me, and I went through it anyway. Then I went up the wall to her window. It has bars. I fit between them, mostly. Here.',
+  D('Never mind me, look at you, you\'ve lost weight, have you been eating, you haven\'t, I can tell from here.', '=', { cue: 'tender', i: 0.45 }),
+  D('I found a seam in the net, behind some kind of cookhouse, that was just a little narrower than me, and I went through it anyway. Then I went up the wall to her window. It has bars. I fit between them, mostly. Here.',
     '=', { cue: 'tender', i: 0.45 }),
   D('"Pokey, I bet you\'re asleep right now. It\'s fine. I would be too. Keep going. I\'m still here. And I\'ve figured out who he is. I\'ll tell you when I can look at you."',
-    'P:talk@.3 D@.62^.45', { cue: 'reveal', i: 0.4 }),
-  P('She knows. Meeca knows.', 'P:worried@.3 D@.62^.45'),
+    'P:talk@.3 D@.62^.45 FL@.385^.44*.8>', { cue: 'reveal', i: 0.4 }),
+  P('She knows. Meeca knows.', 'P:worried@.3 D@.62^.45 FL@.385^.44*.8>'),
   D('She worked it out by herself, up there, in the dark. She said she tried being angry for an afternoon, and it didn\'t fit. She gave me six more notes. I\'m going to leave some of them where you\'ll find them, so you\'ve got something to look forward to.', '=', { cue: 'sorrow', i: 0.4 }),
-  P('Dot, sit down. I have to tell you something.', 'P:talk@.3 D@.62^.45', { cue: 'tender', i: 0.3 }),
+  P('Dot, sit down. I have to tell you something.', 'P:talk@.3 D@.62^.45 FL@.385^.44*.8>', { cue: 'tender', i: 0.3 }),
   D('I\'m sitting. It\'s hover-sitting. It takes core.', '='),
-  P('The General is her grandfather. I found the photograph in the ruins.', 'P:talk@.3 D@.62^.45', { cue: 'reveal', i: 0.35 }),
+  P('The General is her grandfather. I found the photograph in the ruins.', 'P:talk@.3 D@.62^.45 FL@.385^.44*.8>', { cue: 'reveal', i: 0.35 }),
   D('I know. I\'ve known since the morning he left. I saw which way he went. And I was there the night her grandma died.', '=', { cue: 'sorrow', i: 0.4 }),
-  N('Dot landed on the branch. Pokey couldn\'t remember the last time he\'d seen her feet touch anything.', 'P:sad@.3 D:perch@.62^.55', { cue: 'sorrow', i: 0.4 }),
-  P('You never said.', 'P:surprised@.3 D:perch@.62^.55'),
-  D('I can\'t tell you half of it. Grandma gave me a letter for him that night. I was late with it, and I still have it, and I\'m going to say the rest once, to him.', 'P:surprised@.3 D:perch@.62^.55', { i: 0.35 }),
-  P('She\'s been up there by herself with all of it.', 'P:worried@.3 D:perch@.62^.55', { cue: 'resolve', i: 0.4 }),
+  N('Dot landed on the branch. Pokey couldn\'t remember the last time he\'d seen her feet touch anything.', 'P:sad@.3 D:perch@.62^.55 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.4 }),
+  P('You never said.', 'P:surprised@.3 D:perch@.62^.55 FL@.385^.44*.8>'),
+  D('I can\'t tell you half of it. Grandma gave me a letter for him that night. I was late with it, and I still have it, and I\'m going to say the rest once, to him.', 'P:surprised@.3 D:perch@.62^.55 FL@.385^.44*.8>', { i: 0.35 }),
+  P('She\'s been up there by herself with all of it.', 'P:worried@.3 D:perch@.62^.55 FL@.385^.44*.8>', { cue: 'resolve', i: 0.4 }),
   D('Yes.', '=', { cue: 'sorrow', i: 0.3 }),
-  P('Then we should go.', 'P:determined@.3 D@.62^.45', { cue: 'resolve', i: 0.5 }),
+  P('Then we should go.', 'P:determined@.3 D@.62^.45 FL@.385^.44*.8>', { cue: 'resolve', i: 0.5 }),
 ]);
 
 const W8_MID = chapter({ name: MID[8], w: 8, m: 'night', cue: 'tender', i: 0.3, base: { particles: 'sparkles' } }, [
-  P('Dot, you\'re humming.', 'P:talk@.3 D@.62^.4', { cue: 'comedy', i: 0.3 }),
-  D('I\'m vibrating. It happens when I don\'t sleep. It\'s worse.', '=', { sting: 'laugh' }),
-  D('Pokey. A question. It\'s the middle of the night, I\'m asking it out loud, and I\'d like you to not repeat it.', 'P:idle@.3 D@.62^.4'),
-  P('Okay.', 'P:talk@.3 D@.62^.4'),
-  D('It\'s about a bird. Not me. A bird who\'s nearly somewhere, and also a day behind, and I\'d like to know what you\'d say to her.', 'P:idle@.3 D@.62^.4', { cue: 'sorrow', i: 0.3 }),
-  P('Next branch.', 'P:talk@.3 D@.62^.4', { cue: 'grandma', i: 0.35 }),
+  N('Flicker lit the branch ahead before Dot could say which one.', 'P:idle@.3 D@.62^.4 FL:glow@.48^.5', { cue: 'comedy', i: 0.3 }),
+  D('I was going to say that one.', 'P:idle@.3 D:puzzled@.62^.4 FL@.48^.5'),
+  FL('You can say the next one.', 'P:idle@.3 D@.62^.4 FL:talk@.48^.5'),
+  P('Dot, you\'re humming.', 'P:talk@.3 D@.62^.4 FL@.385^.44*.8>'),
+  D('I\'m not humming. I\'m vibrating. Humming is on purpose.', '=', { sting: 'laugh' }),
+  D('Pokey. A question. It\'s the middle of the night, I\'m asking it out loud, and I\'d like you to not repeat it.', 'P:idle@.3 D@.62^.4 FL@.385^.44*.8>'),
+  P('Okay.', 'P:talk@.3 D@.62^.4 FL@.385^.44*.8>'),
+  D('It\'s about a bird. Not me. A bird who\'s nearly somewhere, and also a day behind, and I\'d like to know what you\'d say to her.', 'P:idle@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.3 }),
+  P('Next branch.', 'P:talk@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'grandma', i: 0.35 }),
   D('That\'s it?', '='),
-  P('That\'s all I ever do. Then the one after.', 'P:talk@.3 D@.62^.4', { cue: 'tender', i: 0.35 }),
+  P('That\'s all I ever do. Then the one after.', 'P:talk@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'tender', i: 0.35 }),
   D('Huh.', '=', { cue: 'tender', i: 0.4 }),
-  N('Dot stopped vibrating somewhere around the next branch. Neither of them mentioned it.', 'P:happy@.3 D@.62^.4', { cue: 'tender', i: 0.4 }),
+  N('Dot stopped vibrating somewhere around the next branch.', 'P:happy@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'tender', i: 0.4 }),
 ]);
 
 const W9 = chapter({ name: C9, w: 9, m: 'dusk', cue: 'comedy', i: 0.4, base: { particles: 'embers' } }, [
   N('The Volcanic Jungle glowed from underneath. The air tasted like pepper. Up ahead, something enormous was clearing its throat.',
-    'P:idle@.3 D@.62^.4 B9~@.88<', { p: pan(1.05, 0.5, 0.35, 1.3, 0.5, 0.6, 8) }),
+    'P:idle@.3 D@.62^.4 B9~@.88< FL@.385^.44*.8>', { p: pan(1.05, 0.5, 0.35, 1.3, 0.5, 0.6, 8) }),
   N('A voice boomed, "A visitor!" There was a pause. Then, much smaller, it said, "Intruder."', '=', { sting: 'laugh' }),
   D('"It\'s cold. I\'m fine. He sent up another blanket. Please don\'t tell him I said thank you." That\'s the last one I\'m reading out loud. The rest are the other kind. They\'re yours.',
     '=', { cue: 'tender', i: 0.4 }),
-  P('She said thank you to him?', 'P:surprised@.3 D@.62^.4'),
+  P('She said thank you to him?', 'P:surprised@.3 D@.62^.4 FL@.385^.44*.8>'),
   D('She says thank you to everybody. She said it to a thorn once. It had been trying to snag her sleeve, and it just stopped.', '=', { sting: 'laugh' }),
-  N('Behind the smoke, the fortress stood up out of the thunder. Pokey put the note in the satchel, on top.',
-    'P:idle@.3 D@.62^.4', { cue: 'dread', i: 0.4, p: pan(1.1, 0.7, 0.4, 1.1, 0.4, 0.6, 7) }),
+  N('Behind the smoke, the fortress stood up out of the thunder.',
+    'P:idle@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'dread', i: 0.4, p: pan(1.1, 0.7, 0.4, 1.1, 0.4, 0.6, 7) }),
 ]);
 
 const W9_MID = chapter({ name: MID[9], w: 9, m: 'dusk', cue: 'comedy', i: 0.35, base: { particles: 'embers' } }, [
-  N('The lantern was back, held low to the ground, which hadn\'t fooled anybody the first time.', 'P:idle@.26 D@.56^.4 LP:lantern@.88*.9', { sting: 'laugh' }),
-  OFF('I am so sorry. It is me again. I told the kitchen I was out buying thread. I have bought a great deal of thread. I have been ordered to sew the seam shut, and I have done six stitches, and I am afraid five of them are in the wrong place.', 'P:idle@.26 D@.56^.4 LP:mend_coat@.86*.9'),
-  D('Pell! I forgive you for the seam.', 'P:idle@.26 D:cheer@.56^.4 LP:cap_in_hand@.86*.9', { cue: 'comedy', i: 0.45 }),
+  N('The lantern was back, held low to the ground, which hadn\'t fooled anybody the first time.', 'P:idle@.26 D@.56^.4 LP:lantern@.88*.9 FL@.345^.44*.8>', { sting: 'laugh' }),
+  OFF('I am so sorry. It is me again. I told the kitchen I was out buying thread. I have bought a great deal of thread. I have been ordered to sew the seam shut, and I have done six stitches, and I am afraid five of them are in the wrong place.', 'P:idle@.26 D@.56^.4 LP:mend_coat@.86*.9 FL@.345^.44*.8>'),
+  D('Pell! I forgive you for the seam.', 'P:idle@.26 D:cheer@.56^.4 LP:cap_in_hand@.86*.9 FL@.345^.44*.8>', { cue: 'comedy', i: 0.45 }),
   OFF('Miss Meeca asked me to tell you one thing. She says, "Tell Pokey I\'m knitting him a scarf. It\'s going to be very long. He\'ll have time to get here."',
-    'P:idle@.26 D@.56^.4 LP:hopeful@.86*.9', { cue: 'tender', i: 0.45 }),
-  P('Tell her I\'ll wear it.', 'P:happy@.26 D@.56^.4 LP:hopeful@.86*.9'),
-  OFF('I shall. Sir. Everyone. I am so sorry. I really must go.', 'P:happy@.26 D@.56^.4 LP:salute_nervous@.86*.9', { sting: 'laugh' }),
-  D('Pokey, you\'ve been quiet for two hours. I counted. It was two hours and seven minutes. You\'re worrying. I can tell. You do a thing with your eyebrow.', 'P:tired@.3 D@.62^.4', { cue: 'comedy', i: 0.35 }),
-  P('I\'m thinking about Meeca\'s grandfather.', 'P:talk@.3 D@.62^.4', { cue: 'sorrow', i: 0.35 }),
-  D('What about him?', 'P:worried@.3 D@.62^.4'),
+    'P:idle@.26 D@.56^.4 LP:hopeful@.86*.9 FL@.345^.44*.8>', { cue: 'tender', i: 0.45 }),
+  P('Tell her I\'ll wear it.', 'P:happy@.26 D@.56^.4 LP:hopeful@.86*.9 FL@.345^.44*.8>'),
+  OFF('I shall. Sir. Everyone. I am so sorry. I really must go.', 'P:happy@.26 D@.56^.4 LP:salute_nervous@.86*.9 FL@.345^.44*.8>', { sting: 'laugh' }),
+  D('Pokey, you\'ve been quiet since the lava, which is long even for you, and you\'re doing the thing with your eyebrow.', 'P:tired@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'comedy', i: 0.35 }),
+  P('I\'m thinking about Meeca\'s grandfather.', 'P:talk@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.35 }),
+  D('What about him?', 'P:worried@.3 D@.62^.4 FL@.385^.44*.8>'),
   P('Do you think he sleeps?', '=', { cue: 'tender', i: 0.4 }),
-  D('No.', 'P:worried@.3 D@.62^.4', { cue: 'sorrow', i: 0.3 }),
-  P('He ate four bowls of the wrong soup. Somebody who does that isn\'t sleeping.', 'P:talk@.3 D@.62^.4'),
-  D('You\'re going to go up there and ask him, aren\'t you? Nicely. With your words. In front of all those spikes.', 'P:happy@.3 D@.62^.4', { cue: 'tender', i: 0.45 }),
-  P('I thought I\'d start there.', 'P:determined@.3 D@.62^.4'),
+  D('No.', 'P:worried@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.3 }),
+  P('He ate four bowls of the wrong soup. Somebody who does that isn\'t sleeping.', 'P:talk@.3 D@.62^.4 FL@.385^.44*.8>'),
+  D('You\'re going to go up there and ask him, aren\'t you? Nicely. With your words. In front of all those spikes.', 'P:happy@.3 D@.62^.4 FL@.385^.44*.8>', { cue: 'tender', i: 0.45 }),
+  P('I thought I\'d start there.', 'P:determined@.3 D@.62^.4 FL@.385^.44*.8>'),
 ]);
 
 const W10 = chapter({ name: C10, w: 10, m: 'storm', cue: 'dread', i: 0.4, base: { particles: 'rain' } }, [
-  N('The Stormy Highlands began where the trees stopped, and after that the rain had nothing to hit but rock. A thousand steps went up the mountain. The Highland Fortress sat on the last of them with one window lit.', 'P:idle@.3 D@.62^.4', { p: pan(1.1, 0.3, 0.5, 1.2, 0.7, 0.4, 9) }),
-  N('The netting was back at the foot of the mountain. Iron thorns, floor to cloud, humming faintly in the wind. In front of the first step it had folded away into a doorway. It was exactly one sloth wide.', 'P:worried@.3 D@.62^.4', { sting: 'door' }),
-  D('He measured you.', 'P:worried@.3 D@.62^.45', { cue: 'dread', i: 0.4 }),
-  P('Dot. This is where you go home.', 'P:talk@.3 D@.62^.45', { cue: 'sorrow', i: 0.4 }),
+  N('The Stormy Highlands began where the trees stopped, and after that the rain had nothing to hit but rock. A thousand steps went up the mountain. The Highland Fortress sat on the last of them with one window lit.', 'P:idle@.3 D@.62^.4 FL@.385^.44*.8>', { p: pan(1.1, 0.3, 0.5, 1.2, 0.7, 0.4, 9) }),
+  N('The netting was back at the foot of the mountain. Iron thorns, floor to cloud, humming faintly in the wind. In front of the first step it had folded away into a doorway. It was exactly one sloth wide.', 'P:worried@.3 D@.62^.4 FL@.385^.44*.8>', { sting: 'door' }),
+  D('He measured you.', 'P:worried@.3 D@.62^.45 FL@.385^.44*.8>', { cue: 'dread', i: 0.4 }),
+  P('Dot. This is where you go home.', 'P:talk@.3 D@.62^.45 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.4 }),
   D('No.', '=', { cue: 'resolve', i: 0.5 }),
-  P('The door fits one. You heard the Lieutenant. They\'ve probably sewn the seam shut by now.', 'P:talk@.3 D@.62^.45'),
+  P('The door fits one. You heard the Lieutenant. They\'ve probably sewn the seam shut by now.', 'P:talk@.3 D@.62^.45 FL@.385^.44*.8>'),
   D('He said he\'d sew it badly. He was a tailor\'s apprentice, and he was terrible. It\'s the one thing I\'m sure of up here.', '='),
-  P('He\'s been practicing.', 'P:talk@.3 D@.62^.45'),
-  N('Thunder came down the mountain, long and low. Pokey took hold of the nearest rock with both hands. Dot watched him do it.', 'P:duck@.3 D@.62^.45', { m: 'storm', cue: 'dread', i: 0.5, p: { fx: [{ at: 0.3, kind: 'flash', dur: 0.4, amount: 0.6 }, { at: 0.3, kind: 'shake', amount: 6, dur: 0.6 }] } }),
-  P('It\'s only weather.', 'P:duck@.3 D@.62^.45'),
+  P('He\'s been practicing.', 'P:talk@.3 D@.62^.45 FL@.385^.44*.8>'),
+  N('Thunder came down the mountain, long and low. Pokey took hold of the nearest rock with both hands. Dot watched him do it.', 'P:duck@.3 D@.62^.45 FL@.385^.44*.8>', { m: 'storm', cue: 'dread', i: 0.5, p: { fx: [{ at: 0.3, kind: 'flash', dur: 0.4, amount: 0.6 }, { at: 0.3, kind: 'shake', amount: 6, dur: 0.6 }] } }),
+  P('It\'s only weather.', 'P:duck@.3 D@.62^.45 FL@.385^.44*.8>'),
   N('The thunder came again. His hands stayed where they were.', '=', { cue: 'hush', i: 0.3 }),
   P('I\'m afraid of thunder.', 'PF:worried@.4', { cue: 'resolve', i: 0.3 }),
-  D('I know. Everybody knows. You hold things. You held a teacup for forty minutes at Meeca\'s birthday because a cloud went over. A teacup, Pokey. It was empty.', 'P:duck@.3 D@.62^.45', { cue: 'tender', i: 0.4 }),
-  N('Dot waited for him to laugh. He didn\'t, and neither did she. She put a wing over the pouch at her side and left it there.', 'P:duck@.3 D:sad@.62^.5', { cue: 'sorrow', i: 0.4 }),
+  D('I know. Everybody knows. You hold things. You held a teacup for forty minutes at Meeca\'s birthday because a cloud went over. A teacup, Pokey. It was empty.', 'P:duck@.3 D@.62^.45 FL@.385^.44*.8>', { cue: 'tender', i: 0.4 }),
+  N('Dot waited for him to laugh. He didn\'t, and neither did she. She put a wing over the pouch at her side and left it there.', 'P:duck@.3 D:sad@.62^.5 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.4 }),
+  N('Flicker, on the rock beside them, didn\'t look away.', 'P:duck@.3 D:sad@.62^.5 FL:worried@.44^.66*.8', { cue: 'hush', i: 0.25 }),
   // ART HOOK: the nest-in-the-storm plate (see STORM in storyMemories.ts), and Matt's painting of Pokey's parents going out, belong on these two beats
-  D('Pokey. The night your parents went out. There was a warning to give. The storm had turned early, and I was the one who was supposed to fly it around the nests. And I took the wrong river. I took the wrong... I was late, Pokey. For them.', 'P:worried@.3 D:sad@.62^.5', { cue: 'sorrow', i: 0.5, sting: 'reveal' }),
+  D('Pokey. The night your parents went out. There was a warning to give. The storm had turned early, and I was the one who was supposed to fly it around the nests. And I took the wrong river. I took the wrong... I was late, Pokey. For them.', 'P:worried@.3 D:sad@.62^.5 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.5, sting: 'reveal' }),
   D('They were already out on the far branches. I\'ve never told anybody. I tell myself it wouldn\'t have mattered. I say it every night, and it doesn\'t take. And I showed up at your branch every morning after that, and you thought I was just being nice.', '=', { cue: 'hush', i: 0.3 }),
   N('Pokey didn\'t say anything. He looked at his hands on the rock, and then at Dot.', 'PF:worried@.4', { cue: 'hush', i: 0.2 }),
-  D('You don\'t have to answer. I\'m going in. I\'m going to be early for something, once. I\'m going to be so early that—', 'P:worried@.3 D@.62^.5', { cue: 'resolve', i: 0.5 }),
-  P('Dot—', 'P:urgent@.3 D@.62^.5', { i: 0.5 }),
-  N('Dot pushed three folded notes into the satchel with one foot, and then she was gone along the netting, around the black shoulder of the mountain, toward a badly sewn seam Pokey couldn\'t see.', 'P:sad@.3', { cue: 'hush', i: 0.2 }),
-  N('Up the mountain, a flash, and something metal fell over. Then nothing at all.', 'P:urgent@.3', { cue: 'hush', sting: 'darkness', p: { fx: [{ at: 0.5, kind: 'flash', dur: 0.4 }, { at: 0.5, kind: 'shake', amount: 10, dur: 0.6 }] } }),
+  D('You don\'t have to answer. I need a minute. Don\'t wait for me.', 'P:worried@.3 D:sad@.62^.5 FL@.385^.44*.8>', { cue: 'sorrow', i: 0.4 }),
+  P('Dot—', 'P:urgent@.3 D@.62^.5 FL@.385^.44*.8>', { i: 0.5 }),
+  N('Dot pushed three folded notes into the satchel with one foot, and then she was gone into the rain.', 'P:sad@.3 FL@.385^.44*.8>', { cue: 'hush', i: 0.2 }),
   P('Dot?', 'PF:worried@.4', { cue: 'hush' }),
-  N('The thorns hummed in the wind. Pokey stood in the rain for a long time. Then he went through the door that had been made for him. It was exactly his width.', 'P:sad@.3', { cue: 'resolve', i: 0.5, p: { camera: pan(1.2, 0.3, 0.6, 1.0, 0.6, 0.35, 8).camera } }),
+  N('The thorns hummed in the wind. Pokey stood in the rain for a long time. Then he went through the door that had been made for him. It was exactly his width.', 'P:sad@.3 FL@.385^.44*.8>', { cue: 'resolve', i: 0.5, p: { camera: pan(1.2, 0.3, 0.6, 1.0, 0.6, 0.35, 8).camera } }),
+  N('Flicker came and sat on his wrist, next to the petal, and lit the first step.', 'P:determined@.3 FL:glow@.4^.64*.8', { cue: 'resolve', i: 0.45 }),
 ]);
 
 /** the singing from the tower, halfway up the last mountain */
 const W10_MID = chapter({ name: MID[10], w: 10, m: 'storm', cue: 'sorrow', i: 0.3, base: { particles: 'rain' } }, [
-  N('Halfway up the mountain, the thunder stopped for a while. In the gap, from far above, Pokey heard something that wasn\'t thunder.', 'P:tired@.3', { cue: 'hush', i: 0.15, p: pan(1.1, 0.3, 0.6, 1.3, 0.5, 0.3, 8) }),
+  N('Halfway up the mountain, the thunder stopped for a while. In the gap, from far above, Pokey heard something that wasn\'t thunder.', 'P:tired@.3 FL@.385^.44*.8>', { cue: 'hush', i: 0.15, p: pan(1.1, 0.3, 0.6, 1.3, 0.5, 0.3, 8) }),
   N('It was a voice, singing softly, and the tune was one he knew.', 'PF:surprised@.4', { cue: 'meeca', i: 0.4, sting: 'bloom' }),
   N('At a barred window at the top of the mountain, Meeca was singing with her eyes closed and her back straight. She had sung it every night since they brought her up.', 'MF:drowsy+weary@.5', { cue: 'meeca', i: 0.5 }),
   P('Meeca.', 'PF:happy@.4', { cue: 'meeca', i: 0.5 }),
-  N('He couldn\'t make out the words from this far away. He took the next step, and the next, and found that he was humming. Up on the wall, one collar went dark for a moment, and came on again.', 'P:determined@.3', { cue: 'resolve', i: 0.6, p: { particles: 'petals' } }),
+  N('He couldn\'t make out the words from this far away. He took the next step, and the next, and found that he was humming. Up on the wall, one collar went dark for a moment, and came on again.', 'P:determined@.3 FL@.385^.44*.8>', { cue: 'resolve', i: 0.6, p: { particles: 'petals' } }),
+  // Dot comes back halfway up (STORY-REVIEW-2026-10-27.md item 10): the night before, she asked Flicker not to let her stop halfway
+  N('Something small came down out of the rain and landed on the step in front of him. It was soaked flat, and it was Dot.', 'P:surprised@.3 D:dizzy@.6^.62 FL@.4^.58*.8', { cue: 'tender', i: 0.35 }),
+  FL('You said not to let you stop halfway.', 'P:surprised@.3 D:sad@.6^.62 FL:talk@.4^.58*.8'),
+  D('I know what I said. I know what I said.', 'P:idle@.3 D:sad@.6^.6 FL@.4^.58*.8', { cue: 'sorrow', i: 0.35 }),
+  D('I got as far as the ridge. I sat there. I\'m not doing that again. I\'m not going to be late for this one.', 'P:idle@.3 D@.58^.5 FL@.4^.58*.8', { cue: 'resolve', i: 0.4 }),
+  N('Flicker\'s light had gone dim in the rain. Dot moved over and held a wing above it, and it came back up.', 'P:idle@.3 D:perch@.44^.5 FL:doze@.42^.58*.8', { cue: 'tender', i: 0.4, p: { zoom: 1.5, focusX: 0.42 } }),
+  P('Next step.', 'P:determined@.3 D@.5^.42 FL:glow@.4^.58*.8', { cue: 'resolve', i: 0.5 }),
+  D('Next step.', '='),
+]);
+
+/** at the fortress gate, after 10-9 and before the General (STORY-REVIEW-2026-10-27.md item 10): Dot goes around, and hands Flicker the job */
+const W10_GATE = chapter({ name: 'WORLD 10 · THE GATE', w: 10, m: 'storm', cue: 'sorrow', i: 0.35, base: { particles: 'rain' } }, [
+  D('This is where I go around. The cookhouse seam. I\'m going to be at her window before you\'re at the top. Early. For something, once.', 'P:idle@.3 D@.6^.42 FL@.4^.58*.8', { cue: 'resolve', i: 0.4 }),
+  P('Dot.', 'P:worried@.3 D@.6^.42 FL@.4^.58*.8', { cue: 'sorrow', i: 0.35 }),
+  D('Don\'t. Go in the front. Flicker, stay with him.', 'P:worried@.3 D:sad@.6^.42 FL@.4^.58*.8'),
+  FL('I will.', 'P:worried@.3 D:sad@.6^.42 FL:glow@.4^.58*.8', { cue: 'tender', i: 0.4 }),
+  N('Then she was gone along the wall. Up above, a flash, and something metal fell over. Then nothing at all.', 'P:urgent@.3 FL@.4^.58*.8', { cue: 'hush', sting: 'darkness', p: { fx: [{ at: 0.5, kind: 'flash', dur: 0.4 }, { at: 0.5, kind: 'shake', amount: 10, dur: 0.6 }] } }),
+  P('Dot?', 'PF:worried@.4', { cue: 'hush' }),
 ]);
 
 const W8 = [...W8_ACT, ...W8_A, ...PROMISE_PANELS, ...W8_B];
@@ -422,11 +468,14 @@ export const WORLD_STORIES: Record<number, WorldStory> = {
   7: { teaser: 'Ten stone chairs in a ring, and an eleventh with a dent in it.', panels: W7 },
   8: { teaser: 'Fireflies, moonlight, and a monarch of the night.', panels: W8 },
   9: { teaser: 'Lava rivers, and a dragon who is bad at visitors.', panels: W9 },
-  10: { teaser: 'The Highland Fortress. Meeca is close.', panels: W10 },
+  10: { teaser: 'A thousand steps, one lit window, and no hummingbird.', panels: W10 },
 };
 
 /** a short scene halfway through a world (after its fifth stage): Dot, a note, a little more of the story */
 export const WORLD_MID: Record<number, StoryPanel[]> = {
   1: W1_MID, 2: W2_MID, 3: W3_MID, 4: W4_MID, 5: W5_MID, 6: W6_MID, 7: W7_MID, 8: W8_MID, 9: W9_MID, 10: W10_MID,
 };
+
+/** a short scene after a world's ninth stage, at the guardian's door (World 10 only: the fortress gate), played once */
+export const WORLD_GATE: Record<number, StoryPanel[]> = { 10: W10_GATE };
 

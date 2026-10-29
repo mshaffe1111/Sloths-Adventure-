@@ -20,6 +20,8 @@ export type ActorKind =
   | 'bloom'
   /** Dot, the hummingbird courier: hovers, scale is its size */
   | 'dot'
+  /** Flicker the firefly: hovers, his painted clips (`clip`), his light steady or stuttering */
+  | 'flicker'
   /** a painted figure from Matt's story sheets (Grandma, Lieutenant Pell, the General's forms, the pairs...): its frames come from `seq`; see storyCels.ts */
   | 'cel';
 
@@ -57,6 +59,10 @@ export interface SceneActor {
   seq?: PoseKey[];
   /** dot only: what he is doing (hovering when unset); see DotPose in dotSprite.ts */
   dotPose?: DotPose;
+  /** flicker only: which of his clips plays (flickerAnimData.ts FLICKER_SEQ; 'blink' when unset) */
+  clip?: string;
+  /** flicker only: his light stutters, his tell when he is not telling the whole truth */
+  stutter?: boolean;
   /** cel only: the cast code ('GR' is Grandma); the names it answers to when it is the one speaking are in storyCels.ts */
   cel?: string;
   /** milo only: a big face portrait instead of the body ('face_calm', 'face_wink'...; `seq` can change the expression), drawn `scale` times the usual size */
@@ -151,11 +157,28 @@ export interface StoryPanel {
   intensity?: number;
   /** a one-off sound as the picture appears */
   sting?: StorySting;
+  /** a picture the player plays with their thumbs (StoryPlayer, on a touch screen); without touch it reads as a plain picture */
+  hold?: StoryHold;
+  /** only read where the picture before it could not be played (no touch screen): it narrates what the player's thumbs would have done */
+  narratedOnly?: boolean;
+}
+
+/**
+ * The let-go in the tower (2026-10-29 story report): the player holds the wall with both thumbs while it thunders, lifts one to reach
+ * out, and keeps it up through the thunder. Putting it back down only grabs the wall again: no fail, no timer, no words.
+ */
+export interface StoryHold {
+  kind: 'letgo';
+  /** the prompts (Easy keeps them; Normal lets them fade after the first try) */
+  both: string;
+  lift: string;
+  /** the picture while one thumb is up: his hand off the wall, reaching */
+  reach: StoryScene;
 }
 
 // the script itself lives in the story*.ts files next to this one (see storyDsl.ts for how a scene is written)
 export { INTRO_PANELS } from './storyIntro.ts';
-export { WORLD_STORIES, WORLD_MID } from './storyWorlds.ts';
+export { WORLD_STORIES, WORLD_MID, WORLD_GATE } from './storyWorlds.ts';
 export type { WorldStory } from './storyWorlds.ts';
 
 export { BOSS_STORIES, bossPanels, thornbarkPanels } from './storyBosses.ts';

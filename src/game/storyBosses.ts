@@ -38,7 +38,9 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'Wait till the neighbors hear.', sting: 'laugh' },
       { speaker: 'Venom Fang', text: 'If anyone asks, I tied myself in this knot on purpose.' },
       { speaker: 'Pokey', text: 'Sure you did.' },
-      { speaker: 'Venom Fang', text: 'Don\'t look at the collar. It itches. It always itches. She went north, toward the river. She thanked me too, on the way past. Nobody thanks me. The king at the river has a crown now. Don\'t laugh at it.', boss: 'calm', cue: 'tender', intensity: 0.4 },
+      { speaker: 'Venom Fang', text: 'Don\'t look at the collar. It itches. It always itches. She thanked me too, on the way past. Nobody thanks me. The king at the river has a crown now. Don\'t laugh at it.', boss: 'calm', cue: 'tender', intensity: 0.4 },
+      { speaker: 'Pokey', text: 'May I go past now?' },
+      { speaker: 'Venom Fang', text: 'You asked. Nobody asks.', boss: 'calm' },
     ],
     tip: 'Venom Fang strikes after a red ring flashes. Jump over the lunge, then punch his head.',
   },
@@ -80,6 +82,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'I\'m going to get Meeca back.', pokey: 'determined' },
       { speaker: 'Sky Sovereign', text: 'I saw her. She waved. I have orders concerning whatever follows her. You\'re the one who went off the ledge in the gorge. Nothing climbs out of that gorge. How?', boss: 'calm' },
       { speaker: 'Pokey', text: 'Slowly.', sting: 'laugh' },
+      { speaker: 'Dot', text: 'He\'s very polite, he gets that from me, I mean he doesn\'t, I\'m a bird, but he gets it from me.' },
       { speaker: 'Sky Sovereign', text: 'The cat says you outwaited him. Cats lie.' },
     ],
     defeat: [
@@ -88,7 +91,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Dot', text: 'I\'m telling everybody.', sting: 'laugh' },
       { speaker: 'Sky Sovereign', text: 'The cat did not lie, then. The cliff is yours. I am relieved, if you must know. Do not repeat that. And I did not cut your ledge. I will not have it said that I did.', boss: 'calm' },
       { speaker: 'Pokey', text: 'I know. I heard who did.' },
-      { speaker: 'Sky Sovereign', text: 'Good. Take the wind lane to the orchids, and watch the next collar. The General\'s hand is on every one of them, and it does not ask.', boss: 'calm' },
+      { speaker: 'Sky Sovereign', text: 'Good. Watch the next collar. The General\'s hand is on every one of them, and it does not ask.', boss: 'calm' },
     ],
     tip: 'Sky Sovereign dives from above. Dodge sideways, then punch her as she pulls out of the dive.',
   },
@@ -117,7 +120,8 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     defeat: [
       { speaker: 'Marsh Reaver', text: 'You waded in at LUNCH and won. Nobody wins at lunch. The runners are going to sing about this.' },
       { speaker: 'Pokey', text: 'Your lunch is getting cold.' },
-      { speaker: 'Marsh Reaver', text: 'It is cold now. Hrmph. Keep your feet. The ruins are past the reeds, and the third root is a crocodile. Go.', boss: 'calm', sting: 'laugh' },
+      { speaker: 'Marsh Reaver', text: 'It is cold now. Hrmph. Go.', boss: 'calm', sting: 'laugh' },
+      { speaker: 'Narrator', text: 'When Pokey looked back, the Reaver had left half his lunch on a root, facing the path. He was pretending he hadn\'t.', boss: 'calm', cue: 'tender', intensity: 0.35 },
     ],
     tip: 'The Reaver smashes the ground to send out mud waves. Jump on the beat, duck the spear thrust, then punch him while he recovers.',
   },
@@ -144,14 +148,14 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Night-Wing Monarch', text: 'Good evening, little climber. They say you have beaten seven of us. I hoped you would take the long way, through the dreams.', boss: 'calm' },
       { speaker: 'Pokey', text: 'I\'m going to get Meeca back.', pokey: 'determined' },
       { speaker: 'Night-Wing Monarch', text: 'I am told to stop you. I will try to do it softly. You talk in your sleep, you know. I was on the branch above you, writing it down. Then the bird woke you in the middle, and I have been wondering since where the petal was going.', boss: 'calm' },
-      { speaker: 'Pokey', text: 'I didn\'t know anybody was up there.', pokey: 'determined' },
+      { speaker: 'Pokey', text: 'I hope I said something nice.', sting: 'laugh' },
     ],
     defeat: [
       { speaker: 'Night-Wing Monarch', text: 'Hm. I was asked to stop you softly. I am not sure that counts.' },
       { speaker: 'Pokey', text: 'You were very soft about it.', sting: 'laugh' },
       { speaker: 'Night-Wing Monarch', text: 'Will you tell me how it ends? The dream. The bird woke you before the petal got anywhere.', boss: 'calm' },
       { speaker: 'Pokey', text: 'It ends with me getting there.', pokey: 'determined' },
-      { speaker: 'Night-Wing Monarch', text: 'Ah. A good ending. Then take the lava road. The Drake lives on it. He is bad at visitors. Be patient with the fire.', boss: 'calm' },
+      { speaker: 'Night-Wing Monarch', text: 'Ah. A good ending. The Drake is next. He is bad at visitors. Be patient with the fire.', boss: 'calm' },
     ],
     tip: 'The Monarch swoops in the dark. Listen for the screech, dodge, then punch as she turns.',
   },
@@ -159,13 +163,13 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     intro: [
       { speaker: 'Magma Drake', text: 'You came. Eight of them said you would, and I did not tidy. I am to burn you. There is a speech that goes with it. I have lost my place.', boss: 'calm' },
       { speaker: 'Pokey', text: 'It starts with "I am to burn you." You did that part.', sting: 'laugh' },
-      { speaker: 'Magma Drake', text: 'Don\'t be— what is that? On your wrist. It glows. Is it for me?', boss: 'calm' },
+      { speaker: 'Magma Drake', text: 'Don\'t be... What is that? On your wrist. It glows. Is it for me?', boss: 'calm' },
       { speaker: 'Pokey', text: 'No.' },
       { speaker: 'Magma Drake', text: 'No. Of course not. Then we will see what it can do.' },
     ],
     defeat: [
       { speaker: 'Magma Drake', text: 'My fire. A hundred years I kept that going, and the first visitor puts it out.' },
-      { speaker: 'Pokey', text: 'You sound terrible. Drink some water.' },
+      { speaker: 'Pokey', text: 'You sound terrible. Have some water. Actually, don\'t.' },
       { speaker: 'Magma Drake', text: 'Will you come back? After. Bring tea. Two cups.', boss: 'calm', cue: 'tender', intensity: 0.4 },
       { speaker: 'Pokey', text: 'Maybe. If you tidy.', sting: 'laugh' },
       { speaker: 'Magma Drake', text: 'Go. Now. Before I say something nice.', boss: 'calm' },
@@ -174,11 +178,15 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   },
   10: {
     intro: [
-      { speaker: 'General Iron-Claw', text: 'Nine hundred and ninety-nine steps. I counted. Still slow, boy.' },
+      { speaker: 'General Iron-Claw', text: 'Nine hundred and ninety-nine steps. One more. The General has broken stronger things than a sloth. Still slow, boy.' },
       { speaker: 'Pokey', text: 'Still here, sir. I\'ve come for Meeca. Where\'s Dot?', pokey: 'determined', cue: 'resolve', intensity: 0.5 },
-      { speaker: 'General Iron-Claw', text: 'I do not know where your bird is, and I find that I mind. You did not hurry once, boy. I watched for it. Slow gets people killed.', cue: 'war', intensity: 0.7 },
-      { speaker: 'Pokey', text: 'I know it does, sir. My folks went out in a storm when I was little. The warning came late. Tonight I found out whose warning it was. She\'s my best friend, sir. She\'s been late my whole life. She came back every time.', cue: 'hush', intensity: 0.3 },
-      { speaker: 'General Iron-Claw', text: 'Then you know what it costs. I buried her because help was late. Not again.', sting: 'blow' },
+      { speaker: 'General Iron-Claw', text: 'I do not know where your bird is, and I find that I mind. You stopped for tea, boy. The General counted.', cue: 'war', intensity: 0.6 },
+      { speaker: 'Pokey', text: 'It was very good tea, sir.', pokey: 'determined' },
+      { speaker: 'General Iron-Claw', text: 'Slow gets people killed.', cue: 'war', intensity: 0.7 },
+      { speaker: 'Pokey', text: 'I know it does, sir. My folks went out in a storm when I was little. The warning came late. Tonight I found out whose.', cue: 'hush', intensity: 0.3 },
+      { speaker: 'General Iron-Claw', text: 'Then you know what it costs. I buried her because help was late. Not again.' },
+      { speaker: 'Pokey', text: 'I\'ve had a long time to work out who to blame, sir. It was a storm.', pokey: 'determined', cue: 'hush', intensity: 0.25 },
+      { speaker: 'General Iron-Claw', text: 'The General does not lose twice.', cue: 'war', intensity: 0.8, sting: 'blow' },
     ],
     defeat: [
       { speaker: 'General Iron-Claw', text: 'You climbed every step. Why did you not turn back?', cue: 'hush', intensity: 0.2 },
@@ -193,6 +201,8 @@ export const BOSS_STORIES: Record<number, BossStory> = {
 const BOSS_MOODS: Record<number, SceneMood> = { 3: 'night', 6: 'dusk', 8: 'night', 9: 'dusk', 10: 'storm' };
 /** Dot travels with Pokey in every world except the ones where she has gone to find a way in (6 and 7) and the last, where she is lost in the thorns */
 const DOT_WITH = new Set([1, 2, 3, 4, 5, 8, 9]);
+/** Flicker is with him from the mangrove on (he arrives as Dot leaves, halfway through World 6) */
+const FLICKER_WITH = new Set([6, 7, 8, 9, 10]);
 
 /**
  * The cutscene panels for a boss encounter (before the fight) or its defeat (after).
@@ -206,7 +216,7 @@ export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: st
     const bossTalks = line.speaker === bossSpeaker;
     const angry = kind === 'intro' && bossTalks && line.boss !== 'calm' || line.boss === 'angry';
     const pokey = line.pokey ?? (line.speaker === 'Pokey' ? (kind === 'defeat' ? 'happy' : 'talk') : 'idle');
-    const dot = DOT_WITH.has(world) ? ' D@.44^.38*.85' : '';
+    const dot = (DOT_WITH.has(world) ? ' D@.44^.38*.85' : '') + (FLICKER_WITH.has(world) ? ' FL@.325^.44*.8>' : '');
     const boss = `B${world}${angry ? '!' : ''}${kind === 'defeat' ? '#' : ''}@.72<`;
     const b: Beat = { s: line.speaker, t: line.text, c: `P:${pokey}@.24${dot} ${boss}` };
     if (line.cue) b.cue = line.cue;

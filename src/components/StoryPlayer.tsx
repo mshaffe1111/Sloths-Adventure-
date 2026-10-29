@@ -1,5 +1,7 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { StoryPanel } from '../game/story.ts';
+import { isEasy } from '../game/difficulty.ts';
+import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
 import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
@@ -22,6 +24,7 @@ const SPEAKERS: Record<string, { dot: string }> = {
   Meeca: { dot: '#f58ab4' },
   Narrator: { dot: '#8fd3f0' },
   Dot: { dot: '#4fd18b' },
+  Flicker: { dot: '#d8f27a' },
   Grandma: { dot: '#c9a8e8' },
   'Lieutenant Pell': { dot: '#9aa3ad' },
   Squirrel: { dot: '#c98a4b' },
@@ -64,7 +67,14 @@ const UPRIGHT_ASPECT = 0.75;
 const UPRIGHT_WORDS = 290;
 const uprightH = (v: { w: number; h: number }) => Math.round(Math.min(v.w * UPRIGHT_ASPECT, Math.max(160, v.h - UPRIGHT_WORDS - 60)));
 
-export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
+export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
+  // a picture the player plays with their thumbs needs a touch screen; without one it reads as a picture, with the narration that says
+  // what the thumbs would have done
+  const touchy = useMemo(() => typeof window !== 'undefined' && ('ontouchstart' in window || (navigator.maxTouchPoints ?? 0) > 0), []);
+  const panels = useMemo(
+    () => (touchy ? script.filter((p) => !p.narratedOnly) : script.map((p) => (p.hold ? { ...p, hold: undefined } : p))),
+    [script, touchy],
+  );
   const [idx, setIdx] = useState(0);
   // the photographs and backdrops of the next panels: start loading them now (only a few ahead: holding every picture of a story at
   // once came to about 300 MB, memory audit 2026-10-25)
@@ -182,6 +192,72 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
     startRef.current = performance.now();
   }, [idx, cardUp]);
 
+  // ── a picture the player plays (the let-go in the tower): how many thumbs are down, and where the scene is
+  const hold = !cardUp ? panel.hold : undefined;
+  const [thumbs, setThumbs] = useState(0);
+  const [phase, setPhase] = useState<HoldPhase>('grip');
+  const tries = useRef(0);
+  /** when the thunder breaks over him (performance.now ms), once one thumb is up; 0 while it has not */
+  const breakAt = useRef(0);
+  useEffect(() => {
+    setPhase('grip');
+    breakAt.current = 0;
+  }, [idx]);
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || !hold) return;
+    const count = (e: TouchEvent) => {
+      // (the thumbs are the hands: no tap goes through to the Next button or the picture while they are down)
+      if (e.cancelable) e.preventDefault();
+      setThumbs(e.touches.length);
+    };
+    const opts = { passive: false } as const;
+    for (const ev of ['touchstart', 'touchmove', 'touchend', 'touchcancel'] as const) el.addEventListener(ev, count, opts);
+    return () => {
+      for (const ev of ['touchstart', 'touchmove', 'touchend', 'touchcancel'] as const) el.removeEventListener(ev, count);
+    };
+  }, [hold]);
+  useEffect(() => {
+    if (!hold) return;
+    const step = holdStep(phase, thumbs);
+    if (step.phase === phase) return;
+    if (phase === 'reach') tries.current++;
+    if (step.phase === 'reach') breakAt.current = performance.now() + LETGO.breakMs;
+    else breakAt.current = 0;
+    setPhase(step.phase);
+  }, [hold, thumbs, phase]);
+  // both thumbs held a moment: the second prompt; one thumb kept up through the thunder: the song (the next picture)
+  useEffect(() => {
+    if (!hold) return;
+    if (phase === 'held') {
+      const id = window.setTimeout(() => setPhase((p) => (p === 'held' ? 'lift' : p)), LETGO.liftPromptMs);
+      return () => clearTimeout(id);
+    }
+    if (phase === 'reach') {
+      const boom = window.setTimeout(() => {
+        sound.storySting('blow');
+        try {
+          navigator.vibrate?.(140);
+        } catch {
+          /* no vibration here */
+        }
+      }, LETGO.breakMs);
+      const done = window.setTimeout(() => setIdx((i) => Math.min(panels.length - 1, i + 1)), LETGO.breakMs + LETGO.afterBreakMs);
+      return () => {
+        clearTimeout(boom);
+        clearTimeout(done);
+      };
+    }
+  }, [hold, phase, panels.length]);
+  // the storm is in the room while he holds on
+  useEffect(() => {
+    if (!hold) return;
+    sound.setAmbient('thunderstorm');
+    return () => sound.setAmbient('gentle_breeze');
+  }, [hold]);
+  const scene = hold && phase === 'reach' ? hold.reach : panel.scene;
+  const showPrompt = !!hold && phase !== 'reach' && (isEasy() || tries.current === 0);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -208,8 +284,14 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
       raf = requestAnimationFrame(loop);
       if (now - last < 1000 / FPS) return;
       last = now;
-      ctx.setTransform(sc, 0, 0, sc, 0, 0);
-      drawStoryScene(ctx, panel.scene, (now - t0) / 1000, sw, sh, lift, feetRef.current);
+      // (while the player holds on, every roll of thunder shakes the picture a little, and the one that breaks shakes it hard)
+      const sk = hold ? thunderShake(now - t0, breakAt.current ? now - breakAt.current : null) : { dx: 0, dy: 0, flash: 0 };
+      ctx.setTransform(sc, 0, 0, sc, sk.dx * sc, sk.dy * sc);
+      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, feetRef.current);
+      if (sk.flash > 0) {
+        ctx.fillStyle = `rgba(235,240,255,${sk.flash})`;
+        ctx.fillRect(-20, -20, sw + 40, sh + 40);
+      }
       // dip in from dark at every new picture
       const k = Math.max(0, 1 - (now - startRef.current) / 520);
       if (k > 0) {
@@ -219,9 +301,11 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [panel.scene, wide, view.w, view.h, cardUp]);
+  }, [scene, hold, wide, view.w, view.h, cardUp]);
 
   const next = useCallback(() => {
+    // (a played picture moves on when it is played, not on a tap)
+    if (hold) return;
     if (cardUp) {
       setCardUp(false);
       return;
@@ -232,7 +316,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
     }
     if (last) onFinish();
     else setIdx((i) => i + 1);
-  }, [cardUp, done, last, onFinish, panel.text.length]);
+  }, [hold, cardUp, done, last, onFinish, panel.text.length]);
 
   const back = useCallback(() => setIdx((i) => Math.max(0, i - 1)), []);
 
@@ -292,7 +376,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
               <Icon name="arrow" size={13} rotate={180} /> Back
             </button>
           )}
-          <button type="button" className="sp-next" onClick={(e) => { e.stopPropagation(); next(); }}>
+          {!hold && <button type="button" className="sp-next" onClick={(e) => { e.stopPropagation(); next(); }}>
             {last && done ? (
               <>
                 {finishLabel} <Icon name={finishIcon} size={15} />
@@ -302,7 +386,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
                 Next <Icon name="arrow" size={15} />
               </>
             )}
-          </button>
+          </button>}
         </div>
       </div>
     </div>
@@ -331,6 +415,16 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
       {wide && !cardUp && (
         <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
           {box}
+        </div>
+      )}
+
+      {hold && (
+        <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(uprightH(view) * 0.42) + 48 }}>
+          <div className="sp-hold-thumbs" aria-hidden="true">
+            <span className={`sp-thumb ${thumbs >= 1 ? 'on' : ''}`} />
+            <span className={`sp-thumb ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`} />
+          </div>
+          <div className="sp-hold-say">{phase === 'lift' || phase === 'reach' ? hold.lift : hold.both}</div>
         </div>
       )}
 

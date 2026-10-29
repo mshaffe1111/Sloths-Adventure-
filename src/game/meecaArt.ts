@@ -21,7 +21,8 @@ import { carvingTrunk, drawCarving } from './w5Look.ts';
 import { shakyLetters } from './w5Kit.ts';
 import { LOOK_S, type Guard, type MeecaPlay } from './meecaPlay.ts';
 import { FLICKER_HINTS, MEECA_CARD, MEECA_SAY, type MeecaSceneLine, type Speaker } from './meecaLines.ts';
-import { FLICKER_ANIM, FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP, FLICKER_ANIM_URL, FLICKER_SEQ } from './flickerAnimData.ts';
+import { FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP, FLICKER_SEQ } from './flickerAnimData.ts';
+import { FLICKER_CLIPS } from './flickerClips.ts';
 import type { MeecaStage, MeecaTrunk } from './meecaStage.ts';
 import { drawGlow, drawNightPiece, nightArtReady } from './meecaNightArt.ts';
 import type { NightArtName } from './meecaNightData.ts';
@@ -165,14 +166,13 @@ export const MEECA_HOLDS_PAINTED = true;
 
 // ───────────────────────────── Flicker ─────────────────────────────
 
-/**
- * Flicker's clips (flicker-anim.webp, 2026-10-29: his own painted frames made into short clips with the motion model, every one of them
+/*
+ * Flicker's clips (FLICKER_CLIPS, flickerClips.ts: flicker-anim.webp, 2026-10-29: his own painted frames made into short clips with the motion model, every one of them
  * him hovering in place): blinking while he keeps her company, talking, smug the first time he speaks, a shrug when he has nothing to
  * add, glowing brighter at a trunk to carve, startled then worried when Pell steps out, happy at the moonflower, sad and small once he
  * says the light was his, dozing off when she stands still a while, a turn when he swaps sides, leading the way (a look ahead) as he
  * flies with her, and a dash when he darts off to a trunk. His frames face right.
  */
-const FLICKER_CLIPS = makeCreatureAnim(FLICKER_ANIM_URL, FLICKER_ANIM, FLICKER_SEQ, FLICKER_ANIM_UP);
 /** how tall he is drawn, world px (his old frames stood about 38 tall), and how far over his perch his middle sits */
 export const FLICKER_DRAW_H = 40;
 const FLICKER_MID = -5;

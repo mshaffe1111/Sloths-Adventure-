@@ -16,7 +16,9 @@
  *   M  Meeca (kind 'daisy').  :mood is her mood (idle, talk, happy, laugh, sing, think, surprised, sad, sob, scared, scaredwave, cheer,
  *      walk, run, hurt, ko)
  *   G  General Iron-Claw (the world-10 painted boss).   B<n>  the guardian of world n (B3 = Shadow Prowler)
- *   D  Dot the hummingbird, :pose is what she does (hover, perch, yelp, flinch, dizzy, cheer, puzzled, sad, gasp, sleep).   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
+ *   D  Dot the hummingbird, :pose is what she does (hover, perch, yelp, flinch, dizzy, cheer, puzzled, sad, gasp, sleep).
+ *   FL Flicker the firefly, :clip is one of his clips (blink, talk, glow, happy, sad, doze, smug, startled, worried, shrug, lead), or :stutter
+ *      (talking, his light going off and on: his tell when he is not telling the whole truth).   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
  *   The story sheets (storyCels.ts has every pose; a bad pose name throws, so the tests catch it):
  *   GR Grandma   LP Lieutenant Pell   TC the town crier   PO the mail carrier   GN the General in his war look (GN:ready, GN:soften, GN:morph into GV)   GV the General as himself, a plain sloth   GY the grandfather, young (the same plain sloth)   GC the grandfather leading the cub Meeca by the hand (one picture, two figures)   GB/GP busts of the war look and the plain face
  *   MS Meeca's story poses (pink #07: faces, emotion, music box, the tower)   MF Meeca's face bust, :a+b+c changes expression   PN Pokey (satchel)   PV the cub (pink bow, satchel strap)   PX Pokey bandaged   PA PB Pokey and Meeca together   PH Pokey and Meeca hugging   e.g.  GR:water@.4  PH:hug_a@.5
@@ -28,6 +30,7 @@ import { DOT_POSES, isDotPose, type DotPose } from './dotSprite.ts';
 import { CEL_CAST, celPoses, celTrack, isCelCode } from './storyCels.ts';
 import type { SceneActor, SceneMood, ScenePhoto, StoryCue, StoryPanel, StoryScene, StorySting } from './story.ts';
 import { PLATES, isPlate } from './plateData.ts';
+import { FLICKER_SEQ } from './flickerAnimData.ts';
 
 export interface Beat {
   /** who speaks ('Narrator' for the storyteller) */
@@ -51,6 +54,10 @@ export interface Beat {
   tip?: string;
   /** a photograph held up over the picture: key, caption, size (share of the width), lean */
   ph?: [key: string, caption?: string, size?: number, tilt?: number];
+  /** a picture the player plays (the tower's let-go): the prompts, and the cast and camera while one thumb is up */
+  hold?: { both: string; lift: string; reach: string; p?: Partial<StoryScene> };
+  /** read only on a screen that could not play the picture before it */
+  narratedOnly?: boolean;
 }
 
 export interface ChapterSpec {
@@ -78,6 +85,7 @@ export const GEN = say('General Iron-Claw');
 /** the General once the war look has let go: his badge is the plain face, and Meeca's word for him */
 export const GF = say('Grandfather');
 export const OFF = say('Lieutenant Pell');
+export const FL = say('Flicker');
 
 /** a slow camera move: from (zoom, focus x, focus y) to (zoom, x, y) over `dur` seconds */
 export function pan(z0: number, x0: number, y0: number, z1: number, x1: number, y1: number, dur: number) {
@@ -180,6 +188,14 @@ function actor(tok: string): SceneActor {
       if (m.mood && m.mood !== 'hover') a.dotPose = m.mood as DotPose;
       return a;
     }
+    case 'FL': {
+      const stutter = m.mood === 'stutter';
+      const clip = stutter ? 'talk' : m.mood ?? 'blink';
+      if (!FLICKER_SEQ[clip] || clip === 'turn' || clip === 'dart') throw new Error(`cast "${tok}": ${clip} is not a Flicker clip`);
+      const a: SceneActor = { kind: 'flicker', x: m.x ?? 0.5, y: m.y ?? 0.5, scale, facing: m.face ?? -1, clip };
+      if (stutter) a.stutter = true;
+      return a;
+    }
     case 'H': {
       const stage = m.mood ?? 'bloom';
       if (!BLOOM_STAGES.has(stage)) throw new Error(`cast "${tok}": ${stage} is not a Heartbloom stage`);
@@ -216,6 +232,7 @@ function speaks(a: SceneActor, speaker: string): boolean {
     case 'Pokey': return a.kind === 'milo';
     case 'Meeca': return a.kind === 'daisy' || a.kind === 'daisy_wave';
     case 'Dot': return a.kind === 'dot';
+    case 'Flicker': return a.kind === 'flicker';
     case 'Thornbark': return a.kind === 'thornbark';
     default: {
       const w = GUARDIAN_WORLD[speaker];
@@ -254,7 +271,7 @@ export function chapter(spec: ChapterSpec, beats: Beat[]): StoryPanel[] {
     if (actors.some((a) => a.portrait)) {
       framed.zoom = 1.2;
     } else if (actors.length) {
-      const many = actors.filter((a) => a.kind !== 'bloom' && a.kind !== 'dot').length >= 3;
+      const many = actors.filter((a) => a.kind !== 'bloom' && a.kind !== 'dot' && a.kind !== 'flicker').length >= 3;
       framed.zoom = talker ? (many ? 1.35 : 1.5) : many ? 1.15 : 1.3;
       framed.focusX = talker ? clamp(talker.x, 0.28, 0.72) : clamp(actors.reduce((s, a) => s + a.x, 0) / actors.length, 0.3, 0.7);
       framed.focusY = 0.58;
@@ -274,6 +291,16 @@ export function chapter(spec: ChapterSpec, beats: Beat[]): StoryPanel[] {
     if (cue) panel.cue = cue;
     if (intensity !== undefined) panel.intensity = intensity;
     if (b.sting) panel.sting = b.sting;
+    if (b.narratedOnly) panel.narratedOnly = true;
+    if (b.hold) {
+      let reach: SceneActor[];
+      try {
+        reach = cast(b.hold.reach);
+      } catch (e) {
+        throw new Error(`${spec.name} beat ${n + 1} (the hold): ${(e as Error).message}`);
+      }
+      panel.hold = { kind: 'letgo', both: b.hold.both, lift: b.hold.lift, reach: { ...scene, ...b.hold.p, actors: reach } };
+    }
     return panel;
   });
 }
