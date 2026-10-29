@@ -45,6 +45,9 @@ const writeStr = (k: string, v: string) => {
   }
 };
 
+/** the music under the pause menu: this share of its level, through the low-pass (SN-6) */
+export const PAUSED_MUSIC = 0.45;
+
 export interface SceneOptions {
   /** crossfade length in seconds */
   fade?: number;
@@ -344,6 +347,9 @@ export class Conductor {
     const open = Math.min(20000, core.ctx.sampleRate / 2 - 100);
     core.musicFilter.frequency.cancelScheduledValues(t);
     core.musicFilter.frequency.setTargetAtTime(p ? 650 : open, t, p ? 0.05 : 0.12);
+    // (the world's tune goes on under the pause menu at 45%, muffled: SN-6)
+    core.musicDuck.gain.cancelScheduledValues(t);
+    core.musicDuck.gain.setTargetAtTime(p ? PAUSED_MUSIC : 1, t, p ? 0.05 : 0.12);
     core.amb.gain.cancelScheduledValues(t);
     core.amb.gain.setTargetAtTime(p ? 0.18 * this.sfxVol : 0.6 * this.sfxVol, t, 0.1);
   }
