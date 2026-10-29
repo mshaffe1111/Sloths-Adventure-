@@ -18,6 +18,10 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Art pickup: HF creatures + Gemini sheets cut-in | local helper (worktree) | art-pickup | no new HF spend |
 | Audit: major looks still drawn in code; first swim in clean water | local read-only | none | list goes to Matt |
 
+Hugging Face: about $12 left (Matt, 2026-10-29: "any art that we need, use that"). Plan: one run for the props/creatures/backdrops the
+World 7 and 8 builders and the code-drawn-looks audit list (img2img from the world kits, as the W6-10 prop run); Pokey and story characters
+stay Gemini (Pokey drifts off model on HF). Stop new jobs at $1 left.
+
 Left for later: the hand-built ascents 7-4 and 8-4 (after Matt approves the 6-8 mock-up pattern), the bosses 6-10, 7-10 and 8-10 (Matt: all together later),
 the rope traverse (waits on Matt's Gemini hand-over-hand sheet).
 
