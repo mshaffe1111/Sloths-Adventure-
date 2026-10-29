@@ -723,6 +723,8 @@ export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly 
 // ---------------------------------------------------------------------------
 
 let darkCanvas: HTMLCanvasElement | null = null;
+/** pixels per CSS pixel the dark veil is painted at (drawDarkness) */
+const DARK_RES = 0.5;
 
 /**
  * The dark itself, drawn over the finished scene in screen space: a near-black veil with soft holes cut out for Pokey's lantern
@@ -735,7 +737,9 @@ export function drawDarkness(
 ) {
   if (level <= 0.01 || typeof document === 'undefined') return;
   if (!darkCanvas) darkCanvas = document.createElement('canvas');
-  const dpr = (ctx.getTransform?.().a ?? 1) || 1;
+  // the veil is all soft edges, so it is painted at half the CSS resolution and stretched over the screen: a phone used to fill, cut and
+  // blend a canvas the size of the whole screen every frame (PF-1)
+  const dpr = Math.min(DARK_RES, (ctx.getTransform?.().a ?? 1) || 1);
   const cw = Math.max(1, Math.round(vw * dpr));
   const ch = Math.max(1, Math.round(vh * dpr));
   if (darkCanvas.width !== cw || darkCanvas.height !== ch) { darkCanvas.width = cw; darkCanvas.height = ch; }
@@ -766,9 +770,10 @@ export function drawDarkness(
   }
   d.globalCompositeOperation = 'source-over';
   ctx.save();
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.globalAlpha = 0.9 * level;
-  ctx.drawImage(darkCanvas, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'low';
+  ctx.drawImage(darkCanvas, 0, 0, cw, ch, 0, 0, vw, vh);
   ctx.restore();
   // the fireflies themselves: small warm points in each light (World 3's lights are glowworms, drawn by the stage)
   if (opts.fireflies === false) return;
