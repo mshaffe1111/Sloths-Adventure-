@@ -46,3 +46,4 @@
 .clr-starrow { display: flex; align-items: flex-end; justify-content: center; gap: 10px; }
 .clr-starrow .clr-mini { flex: none; margin-bottom: -2px; }
 @media (max-width: 640px) and (min-height: 521px) { .clr-won .clr-chip span { letter-spacing: 0.3px; white-space: nowrap; } }
+@media (max-height: 520px) { .clr-chips.sm .clr-chip span { white-space: nowrap; letter-spacing: 0.4px; } }

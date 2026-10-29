@@ -54,6 +54,10 @@ const UPRIGHT_ORDER = ['Time', 'Score', 'Best', 'Your best', 'Flowers', 'Hits ta
 const uprightChips = (chips: ChipSpec[]): ChipSpec[] =>
   [...chips].sort((a, b) => UPRIGHT_ORDER.indexOf(a.label) - UPRIGHT_ORDER.indexOf(b.label)).slice(0, 6);
 
+/** sideways, seven chips share one row: the two-word labels are cut to one, so none wraps at 12 px (UI-14) */
+const SHORT_LABEL: Record<string, string> = { 'Hits taken': 'Hits', 'Best combo': 'Combo', 'Lives lost': 'Lives', 'Your best': 'Best' };
+const shortLabel = (c: ChipSpec): ChipSpec => (SHORT_LABEL[c.label] ? { ...c, label: SHORT_LABEL[c.label] } : c);
+
 const CONFETTI_PATH: Record<ConfettiPiece['kind'], React.ReactNode> = {
   star: <path d="M12 2l2.6 6.3 6.8.6-5.2 4.4 1.6 6.7L12 16.4 6.2 20l1.6-6.7L2.6 8.9l6.8-.6z" />,
   leaf: <ellipse cx="12" cy="12" rx="10" ry="5" />,
@@ -173,7 +177,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
             ];
             // on a phone held sideways everything goes in one row to save height; upright, two rows of three (UI-1)
             if (upright) return <ClrChips chips={uprightChips([...main, ...extra])} cols={3} />;
-            return short ? <ClrChips chips={[...main, ...extra]} small /> : (
+            return short ? <ClrChips chips={[...main, ...extra].map(shortLabel)} small /> : (
               <>
                 <ClrChips chips={main} />
                 {extra.length > 0 && <ClrChips chips={extra} small />}

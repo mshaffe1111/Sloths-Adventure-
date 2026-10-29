@@ -233,7 +233,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           </button>
         </div>
       </div>
-      <p className="relative z-10 text-center font-sans text-[11px] sm:text-xs text-emerald-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.7)] px-4 truncate">{curWorld.subtitle}</p>
+      <p className="relative z-10 text-center font-sans text-xs text-emerald-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.7)] px-4 truncate">{curWorld.subtitle}</p>
 
       {/* the trail */}
       <div ref={trailRef} className="relative z-10 flex-1 min-h-0">
