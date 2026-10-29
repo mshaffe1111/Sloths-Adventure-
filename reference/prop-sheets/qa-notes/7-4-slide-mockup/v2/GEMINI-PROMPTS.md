@@ -85,6 +85,20 @@ a pose reference too.
 > side with space between: (1) the floor has just gone, he is dropping, arms and legs up, eyes wide, mouth open in an "oh!"; (2)
 > falling a moment later, curled up tight, eyes shut. No scenery.
 
+## Sheet 5b: Pokey sliding with empty paws, from behind (v4; attach Sheet 5 and `src/assets/hero/hero-standard.webp`)
+
+The flume is three lanes wide, so the poles he grips in Sheet 5 frames 1, 2 and 4 can't stay; painted out, his paws go with them. This
+redoes those three with nothing in his hands.
+
+> In exactly the same style as the attached pictures, the same little brown three-toed sloth, seen from directly behind, sitting as he
+> slides down a wooden chute, holding nothing: no poles, no rails, no ropes. His brown satchel strap goes over his left shoulder (on the
+> left of the picture, since we see his back) and down across his back to the bag, which sits on his right hip (on the right of the
+> picture); keep the satchel exactly there in every pose. Bandages on both forearms. Three poses side by side, the same size as in the
+> attached sheet, each on its own with plenty of space around it, on a plain flat magenta (#FF00FF) background, no chute, no ground, no
+> captions, no frames, evenly lit. We see only his back and the back of his head. (1) sliding straight, arms held a little out to the
+> sides for balance, paws open and empty, claws showing; (2) the same a moment later, bumped up a little, arms a little higher; (3)
+> leaning right, his weight to the right, his right arm low and out, his left arm up for balance, paws empty.
+
 ---
 
 Cutting: `tools/art/w5puzzle/cut.py` (magenta key), then check the cuts on a dark background. Until each sheet arrives, the build uses

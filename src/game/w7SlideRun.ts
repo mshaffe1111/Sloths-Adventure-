@@ -8,6 +8,7 @@
 import { CRUMBLE_X0, CRUMBLE_X1, HALL_G, SlideSim, type SlideStage } from './w7Slide.ts';
 import { drawCrumble, drawFall, drawHallLight, drawSlide, warmSlide } from './w7SlideArt.ts';
 import type { InputState } from './types.ts';
+import { sound } from './audio.ts';
 
 export interface SlideHost {
   easy: boolean;
@@ -40,6 +41,8 @@ export class SlideRun {
   say: { text: string; t: number } | null = null;
   /** the hall's own lines, said once */
   private hallSaid = new Set<string>();
+  private cracks = 0;
+  private scrapeT = 0;
 
   constructor(st: SlideStage, host: SlideHost) {
     this.st = st;
@@ -59,8 +62,8 @@ export class SlideRun {
 
   /**
    * Side-on, every step: watches for the crumble and plays the beat. Returns true while the controls are not his (the engine clears
-   * the input before his own step). The beat starts once, at the crumble's line, whatever he is doing (in the air too): the back wall
-   * stops him going on, and the floor under the whole crumble drops, so he can't be left standing on it.
+   * the input before his own step). The beat starts once, at the crumble's line, whatever he is doing (in the air too): the controls
+   * stop, and the floor under the whole crumble drops, so he can't be left standing on it or walk on past it.
    */
   side(dt: number, p: { x: number; y: number; vx: number; grounded: boolean }, inp: InputState): boolean {
     if (this.say) this.say.t -= dt;
@@ -76,17 +79,30 @@ export class SlideRun {
         this.t = 0;
         this.line('Uh oh. This floor...', 1.6);
         this.host.shake(0.5);
+        // the rumble and the crack (SOUNDS in the README: classic effects, for the sound helper to tune)
+        sound.playLand(1);
+        sound.playHitImpact(true, 'chitin');
+        this.cracks = 0;
       }
       return false;
     }
     this.t += dt;
     if (this.phase === 'crack') {
       p.vx *= 0.7;
+      // the floor cracking on, twice more as it shakes
+      if (this.cracks < 2 && this.t > 0.4 + this.cracks * 0.35) {
+        this.cracks++;
+        sound.playHitImpact(false, 'chitin');
+      }
       if (this.t >= CRACK_S) {
         this.phase = 'fall';
         this.t = 0;
         this.host.dropFloor(this.st.crumbleIds);
         this.host.shake(0.8);
+        // the floor goes: a heavy crash, and the whoosh of the drop
+        sound.playLand(1);
+        sound.playHitImpact(true, 'chitin');
+        sound.playWhoosh();
       }
     } else if (this.phase === 'fall' && this.t >= FALL_S) {
       this.phase = 'slide';
@@ -102,21 +118,38 @@ export class SlideRun {
     if (this.say) this.say.t -= dt;
     const s = this.sim;
     s.step(dt, inp);
+    // the wooden scrape of the slide, a soft loop while he is on the boards
+    if (s.outT < 0 && s.grounded) {
+      this.scrapeT -= dt;
+      if (this.scrapeT <= 0) {
+        this.scrapeT = 0.42 + Math.random() * 0.08;
+        sound.playTreeClimb();
+      }
+    }
     for (const e of s.events) {
       if (e.k === 'line') this.line(e.text, e.seconds);
-      else if (e.k === 'petal') this.host.score(10);
+      else if (e.k === 'petal') {
+        this.host.score(10);
+        sound.playFlowerPickup();
+      } else if (e.k === 'jump') sound.playJump();
+      else if (e.k === 'land') sound.playLand(0.5);
+      else if (e.k === 'flag') sound.playCheckpoint();
       else if (e.k === 'hit') {
         this.host.shake(e.taught ? 0.25 : 0.55);
+        sound.playHitImpact(!e.taught, 'generic');
+        if (!e.taught) sound.playPlayerHurt();
         if (!e.taught) {
           this.host.loseHeart();
           if (s.hits === 1) this.line('Ow. Eyes ahead, Pokey.', 2.2);
         }
       } else if (e.k === 'fall') {
         this.host.shake(0.6);
+        sound.playPlayerHurt();
         this.host.loseHeart();
       } else if (e.k === 'out') {
         this.phase = 'out';
         this.host.comeOut(this.st.outAt.x, this.st.outAt.y);
+        sound.playLevelStart();
         this.cameOut();
       }
     }
@@ -133,7 +166,7 @@ export class SlideRun {
   }
 
   /**
-   * Side-on, in the world (the engine's hero step): the floor's painted break (the art helper's four crumble frames) over the crumbling
+   * Side-on, in the world (the engine's hero step): the floor cracking and breaking (its own picture, in chunks) at the crumbling
    * floor, and while he falls, Matt's falling poses instead of his usual drawing. True when Pokey is drawn here.
    */
   drawHero(ctx: CanvasRenderingContext2D, p: { x: number; y: number; width: number }): boolean {
@@ -146,8 +179,7 @@ export class SlideRun {
   }
 
   /**
-   * Side-on, over the engine's picture (css px): the cracks running through the floor as it goes (a stand-in: the painted crumble
-   * frames replace it), the fade to dark as he falls, and his bubble over him. `at` turns a world point into css px.
+   * Side-on, over the engine's picture (css px): the hall's light shafts, the fade to dark as he falls, and his bubble over him. `at` turns a world point into css px.
    */
   overlay(ctx: CanvasRenderingContext2D, dpr: number, W: number, H: number, at: (x: number, y: number) => [number, number], head: [number, number]) {
     ctx.save();

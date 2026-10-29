@@ -1,4 +1,4 @@
-# 7-4 mock-up, v2 (with the lead's v3 fixes): Matt's flume, every move needed, lit from its own lights
+# 7-4 mock-up, v2 (with the lead's v3 and v4 fixes): Matt's flume, every move needed, lit from its own lights
 
 Matt on v1 (2026-10-29): "Everything can be done just by avoiding objects... The floor looks like trash... The actual mechanism of it
 going down looks good." Then his concept picture, his six Gemini sheets (`reference/prop-sheets/gemini-batch-2026-10-29/7-4-slide/`),
@@ -10,7 +10,7 @@ crumble, the drop, three lanes, steering, a hit costs a heart); the moves, the a
 | Picture | Beat |
 |---|---|
 | `1-hall` | the temple hall: gold shafts of daylight through the cracked roof; *"No Dot. Just me, then."* |
-| `2-crumble`, `2b-fall` | the crumble (the art helper's four painted break frames) and the fall (Matt's falling poses, Sheet 6) |
+| `2a-crumble-crack` ... `2f-crumble-dark` | the crumble across its frames: cracks start under him, spread, run along the floor's face; the top face breaks into chunks that tip and drop into a dark hole with dust (his "oh!" pose, Sheet 6); he curls and falls; dark |
 | `a-drop-dark` | the drop: near-black for a moment, the first torch blooming ahead |
 | `b-torch-flume-statues`, `c-torch-flume-planks` | the torch-lit flume: statues to steer round, a plank barrier to jump |
 | `d-fungus-gap`, `e-fungus-beam` | the fungus cavern (green and purple): a gap to jump, a low beam to duck |
@@ -84,23 +84,72 @@ Measured (`tools/art/slide74/perf.mjs`, after warm-up): a frame takes 3-4 ms, an
    every kind of prop placed by chance a metre rather than on a beat; the far rock is darker, so the ribs and props carry the look.
 5. **The lean left** is subtler (10 degrees, a small weight shift); every frame's satchel checked again on dark.
 
-## Polish check (STAGE-RULES §5b)
+## The lead's v3 review, fixed (v4)
+
+1. **The crumble** no longer uses the rubble panel (its straight edges, the root-wall column and the standing tiles are gone). While he
+   stands there the floor is the hall's own: jagged cracks run across it from under him, middle first, then along the foot of its top
+   face, faster as it shakes, with grit trickling. When it goes, the very floor he stood on (copied from the screen the frame before)
+   breaks along those cracks into five chunks of its top face, each with clean edges and a darker broken underside; they tip and drop
+   a moment apart into a hole whose sides are ragged and soft, black below, with small pieces and a puff of dust. See `2a` to `2f`.
+2. **The pole stubs**: the poles are cleared from their inner edge outward in every row of the grip, bump and lean-right frames, and
+   the arm ends fade over 14 px into the dark, so his paws hold nothing. **Rough spot**: his paws themselves went with the poles (the
+   paws were wrapped round them), so his arms end in a soft fade at his sides, not in paws. On a phone at game size this reads as his
+   arms held out to the sides; up close it is not a hand. A Gemini prompt for a clean redo is in `GEMINI-PROMPTS.md` (Sheet 5b).
+3. **The side wall edges**: the straight vertical lines in the dark were thin gaps, not art. The far rock's strips read a box from
+   the rock picture that, at each panel's end, ran past the picture's edge, and the browser cut the strip short, so the dark showed
+   through down the whole wall; the roof did the same across its rows. Fixed by keeping every source box inside its picture. Also:
+   the rock and roof repeat mirrored back and forth, so panels always meet on matching edges; the change from one picture size to the
+   next is a blend, not a step; the eyes' rock and roots fade at their edges. Checked at 3x brightness: no straight edge left.
+4. **7-4's wayside line** is shown at the start, in the hall; while sliding, no story line comes up in Dot's banner.
+5. **Sounds** (the game's classic effects, `src/audio`, not the orchestral set), see the table below.
+6. **Softness**: Pokey is not regenerated; the frames to upscale are listed below.
+7. **Checks**: typecheck, the full suite and the build re-run after the renderer changes (below).
+
+### Sounds used
+
+| Moment | Effect (classic set) |
+|---|---|
+| the floor starts to crack | `playLand(1)` (a heavy thud as the rumble) + `playHitImpact(true, 'chitin')` (the crack) |
+| two more cracks as it shakes | `playHitImpact(false, 'chitin')` |
+| it gives way | `playLand(1)` + `playHitImpact(true, 'chitin')` + `playWhoosh()` (the drop) |
+| sliding | `playTreeClimb()` repeated every 0.42-0.5 s while he is on the boards (a soft wooden scrape) |
+| a jump / landing back on the boards | `playJump()` / `playLand(0.5)` (the thump) |
+| a flower | `playFlowerPickup()` |
+| a flag | `playCheckpoint()` |
+| a hit | `playHitImpact(true, 'generic')` + `playPlayerHurt()`; the first of each kind is a harmless stumble: `playHitImpact(false, 'generic')` alone |
+| falling into a gap | `playPlayerHurt()` |
+| shooting out at the way out | `playLevelStart()` |
+
+### Frames to upscale (2x, Real-ESRGAN anime, on Hugging Face)
+
+From `reference/prop-sheets/gemini-batch-2026-10-29/7-4-slide/`, whole sheets in (the cutter reads the grid, so the same layout comes
+back at twice the size, and `cut.py` cuts them as before):
+
+| Sheet | Frames used in the game | Why |
+|---|---|---|
+| `sheet5-pokey-behind.jpg` | 1 (grip), 2 (bump), 4 (lean right), 5 (jump), 6 (duck), 7 (hurt), 8 (cheer); 3 is not used | he is drawn from about 190 px, the softest thing on a big phone |
+| `sheet6-pokey-falling.jpg` | both (oh!, curled) | the fall, side-on, drawn larger than the sheet |
+| `sheet1-flume.jpg` (if time) | all eight | the near boards and barriers are magnified most |
+| `sheet2`-`sheet4` (optional) | all | they are seen smaller; an upscale helps only the near ribs and torches |
+
+## Polish check (STAGE-RULES §5b), v4
 
 | # | Item | Result | Shows it |
 |---|---|---|---|
-| 1 | Painted, not drawn | **Pass**: the flume, trestles, barriers, beams, crates, broken ends, cave ribs and mouths, every prop and light source, the crumble and Pokey are painted (Matt's sheets; the art helper's crumble, cave rock and way out; World 7's statue). Code draws only small touches: the light, the eye pinpoints, the speed streaks, his shadow, the hall's light shafts. The pickups are the game's painted flowers. | `side-c-torch-flume-planks`, `up-d-fungus-gap` |
-| 2 | Nothing copy-pasted | **Fixed**: the v1 strips are gone; the troughs mix plain and mossy boards (the right one mirrored); the ribs, single walls and props come at irregular spacing with rolled sizes and mirrors; the cave layers' straight edges are feathered into the dark; no pixel steps or shimmer (v3 fix 1). | `side-b-torch-flume-statues`, `side-f-narrow-dark` |
+| 1 | Painted, not drawn | **Pass**: the flume, trestles, barriers, beams, crates, broken ends, cave ribs and mouths, every prop and light source, Pokey, and the hall's own painted floor that breaks are painted (Matt's sheets; the art helper's cave rock and way out; World 7's statue and hall). Code draws only small touches: the light, the eye pinpoints, the speed streaks, his shadow, the hall's light shafts, the cracks' lines, the dust and the hole's dark. The pickups are the game's painted flowers. | `side-c-torch-flume-planks`, `side-2d-crumble-breaking` |
+| 2 | Nothing copy-pasted | **Fixed** (v4 item 3): the straight lines down the far rock and across the roof were gaps from source boxes running past the picture's edge; gone. The rock and roof now repeat mirrored, blend between picture sizes, and the eyes' boxes fade. The troughs mix plain and mossy boards; ribs, walls and props come at irregular spacing with rolled sizes and mirrors. | `side-f-narrow-dark`, `side-a-drop-dark` |
 | 3 | Art matches what it is | **Pass**: the barrier's top is the height a jump must clear, the beam's underside the height he must duck under, the crate piles the jump height; statues and crate towers are drawn 1.85 m tall (he jumps 1.3 m), so they read as steer-round; a gap is the flume broken off with the drop below. | `up-c-torch-flume-planks`, `up-e-fungus-beam` |
 | 4 | Light fits the place | **Pass**: dark ambient, light only from sources, depth into darkness; tested: every obstacle at least twice the ambient in every lane it fills (rolls 1-3, both settings). | `up-f-narrow-dark` |
-| 5 | Pokey on model | **Pass, rough spots named**: satchel right in every frame used (strap from the screen-left shoulder to a bag at screen-right; the hurt frame flipped to make it right). The lean left is frame 1 tipped 12 degrees with his weight shifted (the lead's call: Sheet 5's lean left and Matt's re-do both have the satchel mirrored). **Rough spot**: where the poles were painted out his hands close on short stubs; and the sheets came 1024 px wide, so he is drawn from about 190 px (soft on a big phone). | `side-h-lean-left`, `side-i-the-end-cheer` |
+| 5 | Pokey on model | **Pass, rough spots named** (v4 item 2): no stubs; nothing in his paws. Satchel right in every frame used (strap from the screen-left shoulder to a bag at screen-right; the hurt and cheer frames flipped to make it right). **Rough spot**: his paws went with the poles, so his arms fade off at his sides (Gemini Sheet 5b would give real empty paws); and he is drawn from about 190 px, soft on a big phone (the upscale list, v4 item 6). | `side-b-torch-flume-statues`, `side-h-lean-left`, `side-i-the-end-cheer` |
 | 6 | Framing works both ways | **Fixed**: upright showed the flume in a band across the middle with dark above and below; the upright camera is now narrower with a higher horizon, so the flume ahead fills the screen. | `up-*` against `side-*` |
-| 7 | Text stays out of the way | **Fixed**: his bubble sat over the flume ahead, where the next obstacle comes up; it now sits on the flume just below him, tail up. All lines under 10 words, Pokey's own (World 7: no Dot). **Still open**: 7-4's wayside story line shows in Dot's banner over the slide (hidden in these pictures); in the full build it belongs in the hall only. | `side-c-torch-flume-planks` |
+| 7 | Text stays out of the way | **Fixed** (v4 item 4): 7-4's wayside story line now shows at the start in the hall, and no story line comes up during the slide. His bubble sits on the flume just below him, tail up. All lines under 10 words, Pokey's own (World 7: no Dot). | `side-1-hall`, `side-c-torch-flume-planks` |
 | 8 | Every move it teaches is needed | **Pass**: tested: a player who only steers is hit by the barriers, gaps and beams (rolls 1-3, both settings); at least 40% of the obstacles are across the whole flume. | the clip |
-| 9 | Moments feel like moments | **Pass for the crumble**: a shake, the floor's painted break, his "oh!" pose and his line, the screen going dark, a second of black, then the first torch blooming. The way out grows and flashes white. **Not yet**: sounds (a crack, a whoosh, the torch crackle) are not wired. | `side-2-crumble`, `side-2b-fall`, `side-a-drop-dark` |
+| 9 | Moments feel like moments | **Pass** (v4 items 1 and 5): the crumble cracks under him, shakes, breaks into chunks of the real floor that drop into a ragged dark hole with dust, with a rumble and cracks, a whoosh on the drop; a second of black, then the first torch blooming; the boards scrape under him, a thump on each landing; the way out grows and flashes white with a fanfare. | `side-2a` to `side-2f`, the clip |
 | 10 | Motion is smooth | **Mostly**: the slide runs on the engine's 30 fps step (a frame is 14-18 ms at a 4x CPU slow-down); the grip pose alternates two frames; lights flicker slowly. **Rough spot**: his poses are held stills with no in-betweens (the Hugging Face in-between clips all drifted off model), so the switch from grip to jump to duck is a cut. | the clip |
 
 ## What's still needed for the full build
 
 - A painted lean left from behind with the satchel right, if Gemini can be made to keep the bag on the far side (two takes so far put it on the lean side).
-- A sharper pass of the sheets (they came 1024 px wide): an upscale, or a re-run at a bigger size.
-- Sounds for the crumble, the drop, the slide and the torches.
+- A sharper pass of the sheets (they came 1024 px wide): the 2x upscale above.
+- Pokey's sliding frames without poles (Sheet 5b in `GEMINI-PROMPTS.md`), so his paws are real paws.
+- The torch crackle (no classic effect fits; left silent rather than wrong).

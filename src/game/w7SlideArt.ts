@@ -31,7 +31,6 @@ const URLS = {
   roof: U('chute-ceiling.webp'),
   end: U('chute-end-light.webp'),
   w7c: new URL('../assets/w6to10/props-made/w7c.webp', import.meta.url).href,
-  crumble: U('crumble.webp'),
 };
 type Key = keyof typeof URLS;
 /** every piece by name: its sheet and its box */
@@ -40,7 +39,6 @@ const PIECE: Record<string, [Key, number, number, number, number]> = {
   // (the way out: the middle of the art helper's painting, where the daylight is)
   end: ['end', 200, 160, 624, 600],
 };
-for (let i = 0; i < 4; i++) PIECE[`crumble${i}`] = ['crumble', i * 386, 0, 382, 296];
 for (const [sheet, frames] of Object.entries(FLUME_SHEETS)) for (const [n, b] of Object.entries(frames)) PIECE[n] = [sheet as Key, b[0], b[1], b[2], b[3]];
 /** a piece's width for a height of 1 */
 const aspect = (n: string) => PIECE[n][3] / PIECE[n][4];
@@ -122,6 +120,13 @@ function troughStrips(): HTMLCanvasElement[][] | null {
 function pick(levels: HTMLCanvasElement[], shrink: number): { c: HTMLCanvasElement; k: number } {
   const L = Math.min(levels.length - 1, Math.max(0, Math.floor(Math.log2(Math.max(1, shrink)))));
   return { c: levels[L], k: levels[L].width / levels[0].width };
+}
+/** the same, with the next smaller level and how far toward it this strip is (0-1): the rock and roof blend the two, so where the
+ * level changes across the wall there is no straight line (the lead's review of v3, 2026-10-29) */
+function pick2(levels: HTMLCanvasElement[], shrink: number): { c: HTMLCanvasElement; k: number; c2: HTMLCanvasElement; k2: number; t: number } {
+  const lg = Math.max(0, Math.log2(Math.max(1, shrink)));
+  const L = Math.min(levels.length - 1, Math.floor(lg)), L2 = Math.min(levels.length - 1, L + 1);
+  return { c: levels[L], k: levels[L].width / levels[0].width, c2: levels[L2], k2: levels[L2].width / levels[0].width, t: L2 > L ? lg - L : 0 };
 }
 
 export function warmSlide() {
@@ -216,6 +221,10 @@ const FEATHER: Record<string, [number, number, number, number]> = {
   ceiling: [0.15, 0.15, 0.45, 0],
   mouth: [0.2, 0.2, 0.25, 0.25],
   end: [0.2, 0.2, 0.2, 0.2],
+  // (the eyes in the dark: the rock and roots round them fade out, no box edge in the narrow dark)
+  eyesHole: [0.2, 0.2, 0.2, 0.2],
+  eyesRoots: [0.15, 0.15, 0.15, 0.15],
+  eyesThorns: [0.15, 0.15, 0.15, 0.15],
   // (the gaps' broken ends: their dark drop fades into the dark under the flume)
   brokenBack: [0, 0, 0, 0.5],
   brokenFront: [0, 0, 0, 0.5],
@@ -343,12 +352,23 @@ export function drawSlide(ctx: CanvasRenderingContext2D, sim: SlideSim, W: numbe
         const z = v.camZ + dz;
         const top = v.hy + (v.camY - CAVE_ROOF) * s, bot = v.hy + (v.camY - ROCK_LOW) * s;
         const du = (Math.abs(dz2 - dz) / ROCK_PANEL) * rock.width;
-        const m = pick(mip, Math.max(du / (st * dpr), rock.height / ((bot - top) * dpr)));
-        let u = ((((z / ROCK_PANEL) % 1) + 1) % 1) * m.c.width;
-        if (side > 0) u = m.c.width - 1 - u;
-        // (solid strips: half-see-through ones overlapping would show as fine lines; the rock is darkened in one pass below)
-        ctx.globalAlpha = fadeIn(dz);
-        ctx.drawImage(m.c, Math.max(0, Math.min(m.c.width - 1, u)), 0, Math.max(1, du * m.k), m.c.height, x + (side < 0 ? -st : 0), top - 4, st + 0.5, bot - top + 4);
+        const m = pick2(mip, Math.max(du / (st * dpr), rock.height / ((bot - top) * dpr)));
+        // (the picture's left and right edges don't match, so it repeats mirrored back and forth: a plain repeat showed a straight seam
+        // down the wall at every panel)
+        const p2 = (((z / ROCK_PANEL) % 2) + 2) % 2, ph = p2 > 1 ? 2 - p2 : p2;
+        // (solid strips: half-see-through ones overlapping would show as fine lines; the rock is darkened in one pass below. The next
+        // smaller level is laid over at its share, so the change of level is a blend, not an edge.)
+        const a0 = fadeIn(dz);
+        for (const [lc, lk, la] of [[m.c, m.k, a0], [m.c2, m.k2, a0 * m.t]] as const) {
+          if (la < 0.02) continue;
+          let u = ph * lc.width;
+          if (side > 0) u = lc.width - 1 - u;
+          ctx.globalAlpha = la;
+          // (the source box kept inside the picture: one that ran past its edge was cropped by the browser, leaving a thin dark gap down
+          // the wall at every panel, the straight lines in the lead's review of v3)
+          const sw = Math.min(lc.width, Math.max(1, du * lk));
+          ctx.drawImage(lc, Math.max(0, Math.min(lc.width - sw, u)), 0, sw, lc.height, x + (side < 0 ? -st : 0), top - 4, st + 0.5, bot - top + 4);
+        }
       }
       // the rock darker than its picture (it is far back in the cave): one fill over the wall's shape
       ctx.globalAlpha = 0.3;
@@ -365,11 +385,17 @@ export function drawSlide(ctx: CanvasRenderingContext2D, sim: SlideSim, W: numbe
       const st = Math.max(0.75, stepWide((yFar - y) / v.hy) * 0.6);
       const dz = (up * v.f) / (v.hy - y), dz2 = (up * v.f) / Math.max(0.01, v.hy - y - st);
       const z = v.camZ + dz, s = v.f / dz;
-      const m = pick(mip, Math.max(((dz2 - dz) / ROOF_TILE) * roof.height / (st * dpr), roof.width / (2 * CAVE_X * s * dpr)));
-      const tv = ((((z / ROOF_TILE) % 1) + 1) % 1) * m.c.height;
-      const th = Math.min(Math.max(1, ((dz2 - dz) / ROOF_TILE) * m.c.height), m.c.height - tv);
-      ctx.globalAlpha = fadeIn(dz);
-      ctx.drawImage(m.c, 0, tv, m.c.width, th, v.cx + (-CAVE_X - v.camX) * s, y, 2 * CAVE_X * s, st + 0.5);
+      const m = pick2(mip, Math.max(((dz2 - dz) / ROOF_TILE) * roof.height / (st * dpr), roof.width / (2 * CAVE_X * s * dpr)));
+      // (mirrored back and forth too, so the tiles meet on matching edges)
+      const p2 = (((z / ROOF_TILE) % 2) + 2) % 2, ph = p2 > 1 ? 2 - p2 : p2;
+      const a0 = fadeIn(dz);
+      for (const [lc, la] of [[m.c, a0], [m.c2, a0 * m.t]] as const) {
+        if (la < 0.02) continue;
+        const tv = ph * lc.height;
+        const th = Math.min(lc.height, Math.max(1, ((dz2 - dz) / ROOF_TILE) * lc.height));
+        ctx.globalAlpha = la;
+        ctx.drawImage(lc, 0, Math.min(tv, lc.height - th), lc.width, th, v.cx + (-CAVE_X - v.camX) * s, y, 2 * CAVE_X * s, st + 0.5);
+      }
       y += st;
     }
     ctx.globalAlpha = 0.2;
@@ -778,21 +804,216 @@ function drawBubble(ctx: CanvasRenderingContext2D, text: string, x: number, y: n
 
 // ── the side-on beat (the hall and the crumble: w7SlideRun.ts) ──
 
-/** the crumbling floor (world px, the engine's own transform): whole, cracked, breaking, then falling away into the dark */
-export function drawCrumble(ctx: CanvasRenderingContext2D, at: { x0: number; x1: number; top: number }, phase: string, t: number, crackS: number, fallS: number) {
-  const w = at.x1 - at.x0;
-  const h = w / aspect('crumble0');
-  let frame = 0, drop = 0;
-  if (phase === 'crack') frame = t < crackS * 0.45 ? 0 : 1;
-  else {
-    frame = t < fallS * 0.3 ? 2 : 3;
-    drop = 900 * t * t;
+/**
+ * The dark of the hole the floor falls into (made once): its sides broken and ragged, not straight, narrowing a little as it goes down,
+ * a soft rim into the floor either side, and black below.
+ */
+let holeSprite: HTMLCanvasElement | null = null;
+function hole(): HTMLCanvasElement | null {
+  if (holeSprite) return holeSprite;
+  const W0 = 128, H0 = 256;
+  const c = canvas(W0, H0);
+  if (!c) return null;
+  const g = c.getContext('2d')!;
+  const img = g.createImageData(W0, H0);
+  // (each side's broken edge: how far in from the sprite's side it sits, row by row, a few bumps of different sizes)
+  const edge = (y: number, side: number) =>
+    18 + (y / H0) * 10 + Math.sin(y * 0.11 + side * 2) * 5 + Math.sin(y * 0.37 + side * 5) * 2.5 + (hash(Math.floor(y / 9) * 3.1 + side) - 0.5) * 6;
+  for (let y = 0; y < H0; y++) {
+    const eL = edge(y, 0), eR = edge(y, 1);
+    for (let x = 0; x < W0; x++) {
+      const d = Math.min(x - eL, W0 - 1 - x - eR); // inside the hole from its broken side
+      const sx = Math.max(0, Math.min(1, (d + 8) / 16));
+      const sy = Math.max(0, Math.min(1, y / 12)); // a soft lip at the top
+      const a = sx * sx * (3 - 2 * sx) * sy * sy * (3 - 2 * sy);
+      const i = (y * W0 + x) * 4;
+      img.data[i] = 4;
+      img.data[i + 1] = 6;
+      img.data[i + 2] = 8;
+      img.data[i + 3] = Math.round(a * 250);
+    }
   }
+  g.putImageData(img, 0, 0);
+  holeSprite = c;
+  return c;
+}
+
+/**
+ * The break's lines (made once per crumble, in world px from the crumble's left): four jagged seams running down the floor's face from
+ * its top, and one along the foot of the top face. They are the cracks while it shakes, then the edges the chunks break along.
+ */
+const BREAK_T = 64;
+type Seam = Array<[number, number]>;
+function seams(w: number): { down: Seam[]; foot: Seam } {
+  const down: Seam[] = [];
+  for (let i = 1; i < 5; i++) {
+    const s: Seam = [];
+    const base = (w * i) / 5 + (hash(i * 4.7) - 0.5) * w * 0.08;
+    for (let k = 0; k <= 6; k++) s.push([base + (hash(i * 13.1 + k * 2.3) - 0.5) * 16 + (k ? 0 : 0), (BREAK_T * k) / 6]);
+    down.push(s);
+  }
+  const foot: Seam = [];
+  for (let k = 0; k <= 16; k++) foot.push([(w * k) / 16, BREAK_T * (0.78 + 0.22 * hash(k * 3.9))]);
+  return { down, foot };
+}
+const footAt = (foot: Seam, x: number) => {
+  for (let k = 1; k < foot.length; k++) if (x <= foot[k][0]) {
+    const [ax, ay] = foot[k - 1], [bx, by] = foot[k];
+    return ay + ((by - ay) * (x - ax)) / Math.max(1e-6, bx - ax);
+  }
+  return foot[foot.length - 1][1];
+};
+/** a seam drawn as a crack, the first share of it: a dark line with a pale lip on its lower side */
+function crackLine(ctx: CanvasRenderingContext2D, ox: number, oy: number, seam: Seam, share: number, wide: number) {
+  if (share <= 0) return;
+  const n = (seam.length - 1) * Math.min(1, share);
+  const path = (dx: number, dy: number) => {
+    ctx.beginPath();
+    ctx.moveTo(ox + seam[0][0] + dx, oy + seam[0][1] + dy);
+    for (let k = 1; k <= Math.ceil(n); k++) {
+      const f = Math.min(1, n - (k - 1));
+      const [ax, ay] = seam[k - 1], [bx, by] = seam[k];
+      ctx.lineTo(ox + ax + (bx - ax) * f + dx, oy + ay + (by - ay) * f + dy);
+    }
+    ctx.stroke();
+  };
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'rgba(200, 188, 165, 0.35)';
+  ctx.lineWidth = wide * 0.7;
+  path(0.8, 1.2);
+  ctx.strokeStyle = 'rgba(14, 10, 8, 0.85)';
+  ctx.lineWidth = wide;
+  path(0, 0);
+}
+
+/**
+ * The break: the hall's own floor, copied from the screen the frame before it goes (so the chunks are the very floor he stood on, not
+ * another picture), cut along the seams into five chunks of its top face, each its own picture with clean edges.
+ */
+let breakFor = -1;
+let chunks: Array<{ c: HTMLCanvasElement; cx: number; cy: number }> = [];
+function snapFloor(ctx: CanvasRenderingContext2D, x0: number, top: number, w: number) {
+  const m = ctx.getTransform();
+  const k = Math.hypot(m.a, m.b);
+  const sx = m.a * x0 + m.c * top + m.e, sy = m.b * x0 + m.d * top + m.f;
+  const dw = Math.max(1, Math.round(w * k)), dh = Math.max(1, Math.round((BREAK_T + 4) * k));
+  const snap = canvas(dw, dh);
+  if (!snap) return;
+  snap.getContext('2d')!.drawImage(ctx.canvas, sx, sy, dw, dh, 0, 0, dw, dh);
+  const { down, foot } = seams(w);
+  const edges: Seam[] = [[[0, 0], [0, BREAK_T]], ...down, [[w, 0], [w, BREAK_T]]];
+  chunks = [];
+  for (let i = 0; i < 5; i++) {
+    const c = canvas(dw, dh)!;
+    const g = c.getContext('2d')!;
+    g.scale(k, k);
+    g.beginPath();
+    const L = edges[i], R = edges[i + 1];
+    g.moveTo(L[0][0], 0);
+    g.lineTo(R[0][0], 0);
+    for (const [x, y] of R) if (y < footAt(foot, x)) g.lineTo(x, y);
+    const xr = R[R.length - 1][0], xl = L[L.length - 1][0];
+    for (let q = 0; q <= 8; q++) {
+      const x = xr + ((xl - xr) * q) / 8;
+      g.lineTo(x, footAt(foot, x));
+    }
+    for (let j = L.length - 1; j >= 0; j--) if (L[j][1] < footAt(foot, L[j][0])) g.lineTo(L[j][0], L[j][1]);
+    g.closePath();
+    g.fillStyle = '#000';
+    g.fill();
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.globalCompositeOperation = 'source-in';
+    g.drawImage(snap, 0, 0);
+    // (its broken underside a little darker, so each chunk reads as a slab, not a cut-out)
+    g.globalCompositeOperation = 'source-atop';
+    const gr = g.createLinearGradient(0, dh * 0.45, 0, dh);
+    gr.addColorStop(0, 'rgba(10, 8, 6, 0)');
+    gr.addColorStop(1, 'rgba(10, 8, 6, 0.55)');
+    g.fillStyle = gr;
+    g.fillRect(0, 0, dw, dh);
+    chunks.push({ c, cx: (L[0][0] + R[0][0]) / 2, cy: BREAK_T * 0.45 });
+  }
+}
+
+/**
+ * The crumbling floor (world px, the engine's own transform). While he stands on it, the floor is the engine's own and cracks run
+ * across it along the seams it will break on, faster as it shakes. When it goes, its top face breaks along them into five chunks (the
+ * hall's own floor) that tip and drop into a hole that goes dark below, with small pieces and dust.
+ */
+export function drawCrumble(ctx: CanvasRenderingContext2D, at: { x0: number; x1: number; top: number }, phase: string, t: number, crackS: number, fallS: number) {
+  const w = at.x1 - at.x0 + 40;
+  const x0 = at.x0 - 20;
   ctx.save();
-  ctx.globalAlpha = phase === 'fall' ? Math.max(0, 1 - t / fallS) : 1;
-  // (a little shake as it goes)
-  const jx = phase === 'crack' ? Math.sin(t * 60) * 2 * (t / crackS) : 0;
-  piece(ctx, `crumble${frame}`, at.x0 + jx, at.top - h * 0.18 + drop, w, h);
+  if (phase === 'crack') {
+    const k = Math.min(1, t / crackS);
+    // the floor as drawn this frame, kept for the break (copied before the cracks go on, so the chunks crack along their edges only)
+    snapFloor(ctx, x0, at.top, w);
+    breakFor = at.x0;
+    const jx = Math.sin(t * 57) * 1.5 * k;
+    const { down, foot } = seams(w);
+    // the cracks: the middle seams first, then the outer ones, then along the foot of the face
+    down.forEach((sm, i) => crackLine(ctx, x0 + jx, at.top, sm, (k - [0.25, 0, 0.1, 0.35][i]) * 2.2, 2.2));
+    crackLine(ctx, x0 + jx, at.top, foot, (k - 0.55) * 2.4, 1.8);
+    // grit trickling from the cracks
+    ctx.fillStyle = 'rgba(120, 108, 90, 0.8)';
+    for (let i = 0; i < 10; i++) {
+      const gx = x0 + w * (0.1 + 0.8 * hash(i * 3.3)), gt = (t * 1.6 + hash(i)) % 1;
+      ctx.globalAlpha = k * (1 - gt);
+      ctx.fillRect(gx, at.top + BREAK_T * 0.8 + gt * 90, 2.5, 2.5);
+    }
+  } else {
+    // the hole, dark below, its sides soft into the floor either side
+    const h = hole();
+    if (h) {
+      ctx.globalAlpha = Math.min(1, t / 0.12);
+      ctx.drawImage(h, x0 - 30, at.top - 8, w + 60, 900);
+    }
+    // the top face in its five chunks, each tipping and dropping a moment after the next, darkening as it falls into the hole
+    if (breakFor === at.x0 && chunks.length) {
+      const kk = chunks[0].c.width / w;
+      chunks.forEach((ch, i) => {
+        const delay = [0.06, 0.02, 0, 0.03, 0.08][i];
+        const tt = Math.max(0, t - delay);
+        const drop = 0.5 * 1500 * tt * tt;
+        const spin = (i < 2 ? -1 : i > 2 ? 1 : (hash(3.3) - 0.5)) * (0.5 + hash(i * 6.1) * 0.6) * tt * 2.4;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - drop / 380);
+        ctx.translate(x0 + ch.cx + (i - 2) * 22 * tt, at.top + ch.cy + drop);
+        ctx.rotate(spin);
+        ctx.drawImage(ch.c, -ch.cx, -ch.cy, ch.c.width / kk, ch.c.height / kk);
+        ctx.restore();
+      });
+      // small pieces breaking off, falling faster and spinning (bits of the same floor)
+      const src = chunks[2].c;
+      for (let i = 0; i < 9; i++) {
+        const tt = Math.max(0, t - hash(i * 7.1) * 0.15);
+        const drop = 0.5 * 1900 * tt * tt;
+        const sz = 8 + hash(i * 2.3) * 12;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - drop / 420);
+        ctx.translate(x0 + w * (0.05 + 0.9 * hash(i * 5.7)) + (hash(i) - 0.5) * 120 * tt, at.top + BREAK_T * 0.7 + drop);
+        ctx.rotate(tt * (6 + i));
+        ctx.drawImage(src, src.width * 0.3 + hash(i * 9.1) * src.width * 0.05, src.height * (0.2 + hash(i * 4.4) * 0.4), sz * kk, sz * kk, -sz / 2, -sz / 2, sz, sz);
+        ctx.restore();
+      }
+    }
+  }
+  // dust: billowing up from the floor as it cracks, a big puff as it goes
+  const n = phase === 'crack' ? 8 : 22;
+  for (let i = 0; i < n; i++) {
+    const life = phase === 'crack' ? ((t * 0.8 + hash(i * 1.9)) % 1) : Math.min(1, t / (0.5 + hash(i) * 0.4));
+    const px = x0 + w * hash(i * 3.7) + (hash(i * 6.1) - 0.5) * 140 * life;
+    const py = at.top - 6 - life * (40 + hash(i * 8.3) * 90);
+    const r = 10 + life * (26 + hash(i * 2.9) * 30);
+    const g = ctx.createRadialGradient(px, py, 0, px, py, r);
+    const a = (phase === 'crack' ? 0.18 : 0.32) * (1 - life);
+    g.addColorStop(0, `rgba(196, 184, 160, ${a})`);
+    g.addColorStop(1, 'rgba(196, 184, 160, 0)');
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = g;
+    ctx.fillRect(px - r, py - r, r * 2, r * 2);
+  }
   ctx.restore();
 }
 

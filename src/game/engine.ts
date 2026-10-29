@@ -4944,6 +4944,7 @@ export class GameEngine {
     const cfg = this.currentStage.config;
     out.live = !this.isGameOver;
     out.flight = !!this.dotRun;
+    out.slide = !!this.slideRun?.sliding;
     out.stageId = cfg.id;
     out.t = this.gameTime;
     out.paused = this.isPaused;

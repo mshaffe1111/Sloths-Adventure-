@@ -57,26 +57,41 @@ def depink(img):
 def remove_poles(img):
     """Paint out the two vertical poles in a sheet-5 grip frame. The poles are the same brown as his fur, so they are found by shape:
     in each row, the outermost run of solid pixels on each side, when it is narrow and has background between it and his body, is pole.
-    Where his hand closes round a pole the runs join; that short piece stays, under his hand (he grips it like a handle)."""
+    Their inner edges give each pole's band; then everything from that band outward is cleared in every row, where his paws close round
+    the pole too, so nothing is left in his hands (the lead's review, 2026-10-29: the stubs read as glitches)."""
     a = np.asarray(img).astype(np.float32)
     h, w = a.shape[:2]
     solid = a[..., 3] > 100
     out = a.copy()
+    inner = {0: [], 1: []}
     for y in range(h):
         xs = np.nonzero(solid[y])[0]
         if len(xs) == 0:
             continue
-        # runs of solid pixels in this row
         cuts = np.nonzero(np.diff(xs) > 2)[0]
         starts = np.concatenate([[xs[0]], xs[cuts + 1]])
         ends = np.concatenate([xs[cuts], [xs[-1]]])
         if len(starts) < 2:
             continue
-        for i in (0, len(starts) - 1):
+        for side, i in ((0, 0), (1, len(starts) - 1)):
             width = ends[i] - starts[i] + 1
-            outer = starts[i] < w * 0.3 if i == 0 else ends[i] > w * 0.7
+            outer = starts[i] < w * 0.3 if side == 0 else ends[i] > w * 0.7
             if width <= max(30, w * 0.12) and outer:
-                out[y, max(0, starts[i] - 2):ends[i] + 3, 3] = 0
+                inner[side].append(ends[i] if side == 0 else starts[i])
+    for side in (0, 1):
+        if not inner[side]:
+            continue
+        edge = int(np.percentile(inner[side], 90 if side == 0 else 10))
+        # cleared from the band outward, then faded over 14 px so the arm ends round off into the dark, not a straight cut
+        ramp = np.linspace(0, 1, 14)
+        if side == 0:
+            out[:, : edge + 3, 3] = 0
+            x0 = edge + 3
+            out[:, x0:x0 + 14, 3] *= ramp[None, : max(0, min(14, w - x0))]
+        else:
+            x1 = max(0, edge - 2)
+            out[:, x1:, 3] = 0
+            out[:, max(0, x1 - 14):x1, 3] *= ramp[::-1][None, 14 - (x1 - max(0, x1 - 14)):]
     # what is left of the poles above and below his body: bits not joined to him
     solid = out[..., 3] > 40
     lab, n = ndimage.label(solid)

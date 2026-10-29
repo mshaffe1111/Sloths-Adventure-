@@ -93,13 +93,14 @@ test('a hit costs one heart and a moment of safety, not a life; a life lost goes
   assert.ok(r.safeT > SLIDE.safe);
 });
 
-test('7-4 side-on: the crumble drops into the chute, a back wall stops him walking past, a catch floor under it, the shrine in the chamber', () => {
+test('7-4 side-on: the crumble drops into the chute, the hall floor runs on past it, a hidden catch floor under it, the shrine in the chamber', () => {
   const st = buildSlideStage(cfg, 1);
   const slide = st.proto.slide!;
   const crumble = st.platforms.filter((p) => slide.crumbleIds.includes(p.id));
   assert.equal(crumble.length, 2);
   assert.ok(crumble.every((p) => p.x >= CRUMBLE_X0 && p.x + p.width <= CRUMBLE_X1));
-  assert.ok(st.platforms.some((p) => p.x === CRUMBLE_X1 && p.height > 400), 'the back wall');
+  assert.ok(st.platforms.some((p) => p.x === CRUMBLE_X1 && p.y === 580), 'the hall floor runs on past the crumble (no cut-out back wall)');
+  assert.ok(st.platforms.some((p) => p.art === 'hidden' && p.y > 580), 'the catch floor, never drawn');
   assert.ok(st.platforms.some((p) => p.x < CRUMBLE_X0 && p.x + p.width > CRUMBLE_X1 && p.y > 580), 'the catch floor');
   assert.ok(st.exitTotemX > slide.outAt.x);
   assert.equal(st.config.objectiveType, 'sprint');

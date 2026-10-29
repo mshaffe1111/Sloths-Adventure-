@@ -18,12 +18,16 @@ const E = (fn, arg) => p.evaluate(([f, a]) => { const e = window.__engine(); ret
 await E('e.player.x = 1500; e.player.y = 580;');
 await p.waitForTimeout(1500);
 await p.screenshot({ path: out + `${mode}-1-hall.jpg`, type: 'jpeg', quality: 82 });
-await E('e.player.x = 3310; e.player.y = 580; e.player.vx = 0;');
-await p.waitForTimeout(700);
-await p.screenshot({ path: out + `${mode}-2-crumble.jpg`, type: 'jpeg', quality: 82 });
-for (let i = 0; i < 30; i++) { const s = await E('return e.slideRun.phase'); if (s === 'fall') break; await p.waitForTimeout(60); }
-await p.waitForTimeout(120);
-await p.screenshot({ path: out + `${mode}-2b-fall.jpg`, type: 'jpeg', quality: 82 });
+// the crumble, frame by frame (the page's own loop stopped, the engine stepped at its 30 fps): three as it cracks, three as it goes
+await E('e.player.x = 3305; e.player.y = 580; e.player.vx = 0; e.isPaused = true;');
+const stepTo = (n) => E(`for (let i = 0; i < ${n}; i++) e.update(1 / 30); e.render();`);
+let at = 0;
+for (const [name, f] of [['2a-crumble-crack', 6], ['2b-crumble-cracking', 20], ['2c-crumble-about-to-go', 32], ['2d-crumble-breaking', 40], ['2e-crumble-falling', 48], ['2f-crumble-dark', 56]]) {
+  await stepTo(f - at);
+  at = f;
+  await p.screenshot({ path: out + `${mode}-${name}.jpg`, type: 'jpeg', quality: 82 });
+}
+await E('e.isPaused = false;');
 for (let i = 0; i < 40; i++) { const s = await E('return e.slideRun.phase'); if (s === 'slide') break; await p.waitForTimeout(300); }
 console.log('phase', await E('return e.slideRun.phase'));
 const shots = JSON.parse(process.argv[3] ?? '[]');

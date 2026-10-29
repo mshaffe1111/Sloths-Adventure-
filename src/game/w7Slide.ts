@@ -577,7 +577,7 @@ export class SlideSim {
 
 /** the hall's floor height, and the side-on numbers the engine uses */
 export const HALL_G = 580;
-/** where the crumble begins (the floor from here to the back wall drops), and the back wall */
+/** where the crumbling floor begins and ends (the hall's floor runs on past it) */
 export const CRUMBLE_X0 = 3300;
 export const CRUMBLE_X1 = 3700;
 /** the chamber at the bottom: he comes out of the chute's mouth here (side-on), and the shrine */
@@ -632,12 +632,13 @@ export function buildSlideStage(config: LevelConfig, seed = 1): GeneratedStage &
   plat(2760, CRUMBLE_X0, G);
   for (const x of [990, 1895, 2680]) for (let i = -1; i <= 1; i++) flower(x + i * 50, G - 170 - (i === 0 ? 30 : 0));
   for (let x = 400; x < 800; x += 80) flower(x, G - 40);
-  // the floor that crumbles (two pieces), and the back wall: past it there is no way on but down
+  // the floor that crumbles (two pieces), the hall's floor running on past it (he never gets there: the floor goes under him first)
   const c1 = plat(CRUMBLE_X0, CRUMBLE_X0 + 200, G);
   const c2 = plat(CRUMBLE_X0 + 200, CRUMBLE_X1, G);
-  plat(CRUMBLE_X1, CRUMBLE_X1 + 160, G - 520, 610);
-  // a catch floor far below the crumble (the slide starts before he reaches it; it is only there so nothing can strand him)
-  plat(CRUMBLE_X0 - 100, CRUMBLE_X1 + 100, G + 380, 60);
+  plat(CRUMBLE_X1, CRUMBLE_X1 + 900, G);
+  // a catch floor far below the crumble, never drawn (the slide starts before he reaches it; it is only there so nothing can strand him)
+  const catchFloor = plat(CRUMBLE_X0 - 100, CRUMBLE_X1 + 100, G + 380, 60);
+  catchFloor.art = 'hidden';
   // the chamber at the bottom: the chute's mouth high in its left wall, a walk with two steps, the shrine
   plat(CHAMBER_X0 - 160, CHAMBER_X0, G - 520, 610); // its left wall (the chute's mouth is in it)
   const floor = plat(CHAMBER_X0, 6200, G);
