@@ -2,6 +2,7 @@ import React from 'react';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
+import { canBuzz, hapticsOn, setHaptics, vibrate } from '../game/haptics.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
@@ -118,6 +119,35 @@ export const WaysideToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Now and then Dot, Pokey or the petal says a short line while you play. They never pause the game. Turn them off if you would rather just play.</small>
+    </div>
+  );
+};
+
+/** the phone's buzz for a hurt, a hard landing, a boss's slam, a flag and a clear, and the button presses (AN-9; on unless turned off) */
+export const HapticsToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => hapticsOn());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <SetIcon name="bolt" />
+          Vibration
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setHaptics(v);
+            setOn(v);
+            if (v) vibrate(20);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">{canBuzz() ? 'A buzz when Pokey is hurt, lands hard, a boss slams, at a flag and at the shrine.' : 'This browser cannot buzz the phone (iPhones never do).'}</small>
     </div>
   );
 };

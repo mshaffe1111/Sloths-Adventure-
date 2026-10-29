@@ -17,6 +17,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
 import { EASY_HOLD } from './physics.ts';
+import { easyGoalFor, goalHave } from './goals.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
 /** a drop is this deep (or has no floor at all) before a far jump over it gets a stone */
@@ -231,6 +232,95 @@ export function heartBy(stage: Stage, cp: { x: number; y: number }, next: () => 
   }
 }
 
+/** a flag's ledge: a wide still solid ledge he can reach, with no animal close and out of the spore and wind zones (Easy's and LV-9's) */
+function flagLedge(stage: Stage, p: Platform, reach: ReadonlySet<number>, x = p.x + p.width / 2): boolean {
+  if (!still(p) || p.type !== 'solid' || p.width < 180 || !reach.has(p.id)) return false;
+  return flagSpot(stage, x, p.y);
+}
+/** no animal close to a flag at (x, y), and out of the zones */
+/** a flag's respawn needs a run-up to the water ahead (LV-9, 2026-10-29: a flag 134 px short of 2-5's log river put Easy's first-timer
+ *  back in the water again and again, and it beat fewer snappers before the shrine than with no flag there) */
+export const FLAG_WATER_RUNUP = 320;
+/** (a river stage with no ledge that far from the water takes the best it has, at least this much) */
+export const FLAG_WATER_RUNUP_MIN = 200;
+const clearOfWater = (stage: Stage, x: number, runup = FLAG_WATER_RUNUP) => !(stage.rivers ?? []).some((r) => x > r.x0 - runup && x < r.x1 + 40);
+const flagSpot = (stage: Stage, x: number, y: number) =>
+  !animalNear(stage, x, y) && !(stage.zones ?? []).some((z) => x > z.x0 - 40 && x < z.x1 + 40 && y > z.top - 40 && y < z.bottom + 40);
+
+/** the most px between flags on Normal, the start and the shrine counted (LV-9, polish report 2026-10-29: hand-built stages ran to 7-14k) */
+export const FLAG_SPAN_MAX = 4000;
+
+/**
+ * LV-9: no more than FLAG_SPAN_MAX px between flags on a hand-built stage that runs across (not a climb or a chase). Where a stretch is
+ * longer, a flag goes on the safe flat nearest the even split, and again until every stretch is short enough or no flat is left in it.
+ * Changes the stage's flags and returns how many it added.
+ */
+export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readonly number[]): number {
+  const kind = stage.config.objectiveType;
+  if (kind === 'ascent' || kind === 'boss_lair' || stage.boss) return 0;
+  // (a chase's branch is whole again at every restart from a flag, chase.ts restartAt: it may hold one)
+  const chase = !!stage.proto?.chase;
+  const cps = (stage.checkpoints ??= []);
+  const marks = () => [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
+  let m = marks();
+  if (m.every((x, i) => i === 0 || x - m[i - 1] <= max)) return 0;
+  // (reached with the double jump: the early World 1 stages teach it now, hint.1-1.double, while the validator still keeps it from
+  // them, levelCheck.ts doubleAllowed, and 1-1 read as unfinishable past its first double-jump wall)
+  const reach = new Set(reached ?? validateStage({ ...stage, config: { ...stage.config, miniIndex: Math.max(stage.config.miniIndex, 6) } }).reachableIds);
+  // (and past where the check stops, the trail's own banks: the check never follows a swing from vine to vine, so a liana chain reads
+  // as the end of the stage, STAGE-RULES §6. A bank at the trail's ground level, or a knee on it, never a pit floor or a plank above)
+  const byY = new Map<number, number>();
+  for (const p of stage.platforms) if (p.height >= 60 && still(p)) byY.set(p.y, (byY.get(p.y) ?? 0) + p.width);
+  const trail = [...byY].sort((a, b) => b[1] - a[1])[0]?.[0];
+  let frontier = -Infinity;
+  for (const p of stage.platforms) if (reach.has(p.id)) frontier = Math.max(frontier, p.x + p.width);
+  if (trail !== undefined) for (const p of stage.platforms) if (p.x > frontier && p.y <= trail && p.y >= trail - 25 && p.height >= 60) reach.add(p.id);
+  // (World 2's islands are banks of three short pieces, 110-180 px each: a piece of 140 holds a flag)
+  const ledges = stage.platforms.filter((p) => (still(p) || (chase && p.chase && !p.broken)) && p.type === 'solid' && p.width >= 140 && reach.has(p.id));
+  let added = 0;
+  for (let guard = 0; guard < 40; guard++) {
+    m = marks();
+    let done = true;
+    for (let i = 0; i + 1 < m.length; i++) {
+      const [x0, x1] = [m[i], m[i + 1]];
+      if (x1 - x0 <= max) continue;
+      // the even split for the flags this stretch needs; the first of them
+      const want = x0 + (x1 - x0) / Math.ceil((x1 - x0) / max);
+      let best: Platform | null = null;
+      let bestX = 0;
+      // (clear of the water by a full run-up if any ledge is; a river stage with none takes the best it has)
+      for (const runup of [FLAG_WATER_RUNUP, FLAG_WATER_RUNUP_MIN]) {
+        if (best) break;
+        for (const p of ledges) {
+          // (the spot on the ledge nearest the split, 60 px in from its ends, with no animal close: a long bank can hold a patrol at
+          // one end and a safe flag at the other)
+          const a = Math.max(p.x + 60, x0 + 400);
+          const b = Math.min(p.x + p.width - 60, x1 - 400, x0 + max);
+          if (a > b) continue;
+          const c = Math.max(a, Math.min(b, want));
+          for (let d = 0; d <= b - a; d += 40) {
+            const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y) && clearOfWater(stage, q, runup));
+            if (x === undefined) continue;
+            if (!best || Math.abs(x - want) < Math.abs(bestX - want)) {
+              best = p;
+              bestX = x;
+            }
+            break;
+          }
+        }
+      }
+      if (!best) continue;
+      cps.push({ x: Math.round(bestX), y: best.y, reached: false });
+      added++;
+      done = false;
+      break;
+    }
+    if (done) break;
+  }
+  cps.sort((a, b) => a.x - b.x);
+  return added;
+}
+
 /** Easy's version of a built stage (the stage passed in is changed and returned) */
 export function easyStage(stage: Stage): Stage {
   const kind = stage.config.objectiveType;
@@ -279,11 +369,22 @@ export function easyStage(stage: Stage): Stage {
   // fewer animals, and a beat-the-animals goal that asks for fewer (gen2 laid Easy's share already, with the longer tell)
   if (!gen2) {
     const keep = easyKeep(stage.enemies);
-    const before = stage.enemies.length;
+    const before = goalHave(stage as never) ?? 0;
+    const enemiesBefore = stage.enemies.length;
     stage.enemies = stage.enemies.filter((e) => keep.has(e));
+    const ring = stage.proto?.ring;
+    if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
     if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
-      const target = Math.max(1, Math.min(stage.enemies.length, Math.round(stage.config.targetCount * 0.6)));
-      stage.config = { ...stage.config, targetCount: target };
+      // (LV-6: Normal's goal scaled to the animals Easy keeps, then Easy's share of that (65%), never under the goal this fight had
+      // before (0.6 of the old Easy goal). Not a share of Easy's goal for the whole stage: that asked 2-5's kids for 16 of the 21
+      // snappers Easy keeps)
+      const have = goalHave(stage as never) ?? 0;
+      const normal = stage.normalGoal ?? stage.config.targetCount;
+      // (today's: 0.6 of the old Easy goal when the stage had animals to cut; a fight of guards only, 4-9, kept the old goal whole)
+      const old = stage.easyToday ?? stage.config.targetCount;
+      const today = enemiesBefore > 0 ? Math.max(1, Math.min(stage.enemies.length, Math.round(old * 0.6))) : old;
+      const target = Math.min(have, easyGoalFor(Math.round((normal * have) / before), today));
+      stage.config = { ...stage.config, targetCount: Math.max(1, target) };
     }
     for (const e of stage.enemies) e.attackCooldown = Math.max(e.attackCooldown, 0) * 1.5;
   } else if ((kind === 'purge' || kind === 'gauntlet') && stage.enemies.length) {
@@ -291,8 +392,10 @@ export function easyStage(stage: Stage): Stage {
     const target = Math.max(1, Math.min(stage.config.targetCount, stage.gen2!.budget.quota.check, stage.enemies.length));
     stage.config = { ...stage.config, targetCount: target };
   }
-  const ring = stage.proto?.ring;
-  if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
+  if (gen2) {
+    const ring = stage.proto?.ring;
+    if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
+  }
 
   // a pickup a piece Easy added now stands in sits on its top instead (a step built over a flower, 2026-10-29: 'flower inside platform')
   for (const c of stage.collectibles) {
@@ -314,10 +417,9 @@ export function easyStage(stage: Stage): Stage {
       // a wide still ledge near the middle that he can reach, with no animal close
       let best: Platform | null = null;
       for (const p of stage.platforms) {
-        if (!still(p) || p.type !== 'solid' || p.width < 180 || !reach.has(p.id)) continue;
+        if (!flagLedge(stage, p, reach)) continue;
         const cx = p.x + p.width / 2;
-        if (cx < x0 + 400 || cx > x1 - 400 || animalNear(stage, cx, p.y)) continue;
-        if ((stage.zones ?? []).some((z) => cx > z.x0 - 40 && cx < z.x1 + 40 && p.y > z.top - 40 && p.y < z.bottom + 40)) continue;
+        if (cx < x0 + 400 || cx > x1 - 400) continue;
         if (!best || Math.abs(cx - want) < Math.abs(best.x + best.width / 2 - want)) best = p;
       }
       if (best) cps.push({ x: Math.round(best.x + best.width / 2), y: best.y, reached: false });

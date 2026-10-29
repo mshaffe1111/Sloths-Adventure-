@@ -12,6 +12,7 @@
 import { runFx as runClassic } from './sfxClassic.ts';
 import { AudioCore, envelope } from './core.ts';
 import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock, type NoteVoice } from './instruments.ts';
+import { fxGain } from './sfxMix.ts';
 import { CLASSIC_WITH_BELLS, hopNote, isPingySample, landNote, orchSfxEnabled, PING_FLOOR_HZ, playFigure, soften, swapMallet, type MalletKind } from './sfxOrch.ts';
 import type { KeyInfo } from './music.ts';
 import { unpackHit, roarPitch, streakStage, type Material } from './combat.ts';
@@ -1063,12 +1064,6 @@ export const SFX: Record<string, Fx> = {
 
 export type SfxName = keyof typeof SFX;
 
-/** loudness trims measured offline so that frequent sounds sit low and big moments sit high without clipping */
-const TRIMS: Record<string, number> = {
-  jump: 1.45, doubleJump: 0.67, glide: 1.0, punch: 0.32, megaPunch: 0.42, kick: 0.35, whoosh: 0.41, hit: 0.85, flower: 1.45, fruit: 0.75, heart: 0.75, superHeart: 0.5,
-  power: 0.55, vine: 0.58, climb: 0.7, shrine: 0.45, relic: 0.45, hurt: 0.76, eagle: 2.0, roar: 0.75, land: 0.83, step: 0.88, checkpoint: 0.55, oneUp: 0.55,
-};
-
 
 /** which version of the effect to play and how long the combo is: both change the sound a little */
 export interface FxVariation {
@@ -1120,7 +1115,7 @@ export function runFx(name: string, core: AudioCore, key: KeyInfo, arg?: number,
     runClassic(name, core, key, arg, v);
     return;
   }
-  TRIM = TRIMS[name] ?? 1;
+  TRIM = fxGain(name);
   ORCH = orch;
   VAR = Math.max(0, Math.floor(v.variant ?? 0));
   STREAK = Math.max(0, Math.floor(v.streak ?? 0));

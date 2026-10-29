@@ -95,7 +95,8 @@ test('a thumb flick that is quick out and quick off is a kick even at phone-real
   t.drag(1, 600, 250, 668, 250, 150, 5); // 68 px in 150 ms
   t.up(1, 668, 250);
   assert.equal(t.count('kick'), 1);
-  assert.ok(!t.has('move:right'));
+  // (the early drag starts a run on a clear sideways slide, Jump help on or off since CT-8; the flick's kick stops it: never left running)
+  assert.equal(t.log.filter((l) => l.startsWith('move:')).pop() ?? 'move:none', 'move:none', 'not left running');
 });
 
 test('a short slow nudge is neither a kick nor a punch', () => {
