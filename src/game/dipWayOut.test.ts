@@ -1,6 +1,6 @@
 /**
- * LV-11 (polish report 1, 2026-10-29): a way out of the dips the scripted player got stuck in. 2-3 (and every World 2 stage with a mooring
- * post): a 60-80 px step at the foot of the post's high bank. 5-8: no spot of the floor under its first stairs more than 300 px from a
+ * LV-11 (polish report 1, 2026-10-29): a way out of the dips the scripted player got stuck in. 2-3 (its mooring posts only; elsewhere
+ * the step skipped the climb): a 60-80 px step at the foot of the post's high bank. 5-8: no spot of the floor under its first stairs more than 300 px from a
  * way back up (a stair one jump up, or a climb trunk standing on the floor).
  */
 import test from 'node:test';

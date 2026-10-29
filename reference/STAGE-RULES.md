@@ -332,6 +332,10 @@ plan); never ship the rough version as finished.
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
 
+- **A way out of a dip can be a shortcut past a climb** (LV-11, 2026-10-29): a 72 px step at the foot of World 2's mooring-post bank
+  let the double jump skip the rope climb, and 2-2's quick route lost its climbs (50 of 200 rolls over the dead-time limit). The step
+  stays in 2-3 only. Before adding a way out, check the 200-roll tool on every stage that uses the piece, not only the one asked about.
+
 ## 7. Where things are
 
 - Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's
