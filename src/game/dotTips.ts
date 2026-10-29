@@ -97,7 +97,130 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   'hint.5-4.chain': 'silk',
   'w5.spider': 'spider',
   'w5.seamstress': 'seamstress',
+  'w5.hummed': 'hum',
+  'w5.steam': 'pot',
+  // World 6 (gen2: its lines have no rows, so they are keyed by their words)
+  'Poison frog. Stomp it, never touch it.': 'poisonFrog',
+  "The water's watching. Duck into the roots!": 'waterWatch',
+  'A tayra! Quick, so punch it early.': 'tayra',
+  'Mud! Cross while the tide is out.': 'tide',
+  "The roots go dark. Stay in the firefly's light.": 'firefly',
+  'Too high. Stay close to the firefly, Pokey.': 'firefly',
+  'High water swells that root door shut.': 'w6water',
+  // (the zones' first lines, engine.ts ZONE_LINE: the same things the stage hints teach, so each is said once)
+  'Sticky webs slow you. Go above them.': 'web',
+  'The tide rises on a beat. Cross when low.': 'tide',
+  'So dark. Follow the fireflies.': 'firefly',
+  'Too dark to see. Stand still and listen...': 'dark',
+  'These tiles crumble. Keep moving!': 'crumbleTiles',
+  'Spores puff on a beat. Wait them out.': 'spores',
+  'Gusts blow on a beat. Watch the leaves.': 'gusts',
+  'Vents erupt on a beat. Stand between them.': 'vents',
+  'Lightning strikes where the rods charge.': 'lightning',
+  'Head-on it hides. Flick sideways to kick!': 'snapper',
+  'Head-on he blocks. Flick sideways to kick!': 'spearGuard',
 };
+
+/**
+ * The stage lines that are reminders of a thing taught before (by the thing): Help says a reminder only for a thing taught in an
+ * earlier stage, never twice in one stage (Matt, 2026-10-29); Tips never. Keyed by the line's id, or its words when it has no row.
+ * A line in neither table is about the moment ("That vine is too high"): Help says it, Tips does not.
+ */
+export const REMINDS_OF: Readonly<Record<string, string>> = {
+  // World 1
+  'hint.1-5.creaky': 'lesson:crumble',
+  'hint.1-6.shiny': 'golden',
+  'hint.1-7.ropeBush': 'watcher',
+  'Hide! Into a bush!': 'watcher',
+  // World 2
+  'hint.2-1.deep': 'lesson:water',
+  'hint.2-8.deep': 'lesson:water',
+  'hint.2-5.row': 'snapper',
+  'hint.2-5.kick': 'snapper',
+  'hint.2-9.court': 'spearGuard',
+  'hint.2-9.kick': 'spearGuard',
+  // World 3
+  'hint.3-2.dark': 'dark',
+  'hint.3-2.fern': 'eyes',
+  'Hide! Into a fern!': 'eyes',
+  'hint.3-6.dark': 'glowworms',
+  'hint.3-7.eyes': 'eyes',
+  'hint.3-7.still': 'thornVine',
+  'hint.3-7.search': 'hushFern',
+  'hint.3-8.landing': 'thornVineSwing',
+  'hint.3-8.leap': 'thornVineSwing',
+  'hint.3-9.two': 'prowler',
+  // World 4
+  'hint.4-2.ride': 'chimes',
+  'hint.4-2.turn': 'chimes',
+  'hint.4-4.wind': 'chimes',
+  'hint.4-9.wind': 'chimes',
+  'hint.4-4.head': 'headwind',
+  'hint.4-4.both': 'headwind',
+  'hint.4-3.another': 'fallPlug',
+  'hint.4-3.rocks': 'rocks',
+  'hint.4-4.rocks': 'rocks',
+  'hint.4-9.rocks': 'rocks',
+  'hint.4-3.comes': 'surge',
+  'hint.4-3.gap': 'surge',
+  'hint.4-3.twoFalls': 'surge',
+  'w4.surge': 'surge',
+  'hint.4-3.monkey': 'thief',
+  'hint.4-4.knotSeed': 'knot',
+  'hint.4-9.knotSeed': 'knot',
+  'hint.4-9.knot': 'knot',
+  'hint.4-8.dotFirst': 'knot',
+  'hint.4-5.shadow': 'sovereign',
+  'Hide! Water or a bush!': 'veil',
+  'hint.4-5.two': 'lookout',
+  'w4.mist': 'mist',
+  'hint.4-6.mist2': 'mist',
+  'hint.4-9.mist': 'mist',
+  'hint.4-6.eagletsMist': 'eaglets',
+  'hint.4-7.cave2': 'caveDrop',
+  'hint.4-7.turn': 'caveDrop',
+  'hint.4-7.turn2': 'caveDrop',
+  'hint.4-7.rock': 'warmAir',
+  'hint.4-9.warm': 'warmAir',
+  'hint.4-9.grit': 'grit',
+  'hint.4-8.shiny': 'golden',
+  'hint.4-8.guard2': 'capuchin',
+  'hint.4-8.perch': 'capuchin',
+  'w4.blowOff': 'capuchin',
+  'hint.4-9.back': 'capuchin',
+  'hint.4-9.edge': 'capuchin',
+  'hint.4-9.pacing': 'capuchin',
+  'hint.4-9.topGuard': 'capuchin',
+  'hint.4-9.twoGuards': 'capuchin',
+  'hint.4-9.guardRocks': 'capuchin',
+};
+
+/** the thing a line is about, for Help's once-a-stage rule: what it teaches, or what it reminds of */
+export function thingOf(l: { key: string; mech?: string; move?: string; kind: string; source: string; skill?: string }): string | undefined {
+  if (l.mech) return `mech:${l.mech}`;
+  const id = l.key.startsWith('engine:') ? l.key.slice('engine:'.length) : l.key;
+  const r = REMINDS_OF[id];
+  if (r) return r.startsWith('lesson:') ? r : `mech:${r}`;
+  if (l.source === 'lesson') return l.skill?.split(':').slice(0, 2).join(':');
+  if (l.kind === 'teach' && l.move && l.source === 'engine') return `move:${l.move}`;
+  return undefined;
+}
+
+/** the first time each kind of zone is close (engine.ts): in Dot's bubble, short and in normal case, not as words floating in the world */
+export const ZONE_LINE: Readonly<Record<string, string>> = {
+  web: 'Sticky webs slow you. Go above them.',
+  tide: 'The tide rises on a beat. Cross when low.',
+  dark: 'So dark. Follow the fireflies.',
+  darkStill: 'Too dark to see. Stand still and listen...',
+  crumble: 'These tiles crumble. Keep moving!',
+  spore: 'Spores puff on a beat. Wait them out.',
+  wind: 'Gusts blow on a beat. Watch the leaves.',
+  geyser: 'Vents erupt on a beat. Stand between them.',
+  bolt: 'Lightning strikes where the rods charge.',
+};
+
+/** the Hush Fern, once its search has been taught: after he has walked past it twice (DOT-14) */
+export const FERN_HMM = 'Hmm, that fern...';
 
 /** the thing a stage line introduces (Tips says it once per save), or undefined for a reminder or chatter */
 export function firstOf(lineId: string): string | undefined {
@@ -126,6 +249,8 @@ export const PUZZLE_STEPS: Readonly<Record<string, PuzzleSteps>> = {
   'hint.4-3.pool': { nudge: 'That log floats. Could it lift you?', move: "Flick up twice from the log's near end.", topic: 'log' },
   // 4-3, the tide pool: the log at its highest is the way up
   'hint.4-3.lift': { nudge: 'The log rises while the water pours.', move: "Flick up twice when it's at the top.", topic: 'log' },
+  // 4-5, two lookouts: the second can't see behind the falls
+  'hint.4-5.two': { nudge: "Behind the falls, she can't see you.", move: 'Knock the second fruit down from behind the falls.' },
 };
 
 /** the lines that belong to a puzzle's later steps: they are never said as he walks up (the struggle watch says them) */

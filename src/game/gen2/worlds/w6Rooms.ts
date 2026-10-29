@@ -114,6 +114,9 @@ export const waterRoomSpec: LocalRoomSpec = {
     enter: 'High water swells that root door shut.', // (new, needs Matt's approval)
     hold: "I left you my root-stone! Plate's below.", // (new, needs Matt's approval)
     open: 'Water down, door open. Through!', // (new, needs Matt's approval)
+    // (on struggle: a nudge at the piece, then on Help the move; the Dot rework, dotTips.ts)
+    nudge: 'That wheel moves the water.',
+    move: 'Stone on the plate, then let the water down.',
   },
 };
 
@@ -150,7 +153,7 @@ export const waterRoom: SectionTemplate = {
 export const waterRoomSpecEasy: LocalRoomSpec = {
   ...waterRoomSpec,
   pieces: waterRoomSpec.pieces.map((p) => (p.kind === 'gate' ? { ...p, open: 'plate' } : p)),
-  tips: { ...waterRoomSpec.tips, enter: 'That root door needs a weight on its plate.' }, // (new, needs Matt's approval)
+  tips: { ...waterRoomSpec.tips, enter: 'That root door is shut tight.', nudge: 'Its plate needs a weight.', move: 'Set the root-stone on the plate.' },
 };
 export const waterRoomEasy: SectionTemplate = { ...waterRoom, room: waterRoomSpecEasy };
 
@@ -193,6 +196,8 @@ export const seesawRoomSpec: LocalRoomSpec = {
     enter: 'Too high. That root tips, though.', // (new, needs Matt's approval)
     hold: 'One stone is not enough. Try two.', // (new, needs Matt's approval)
     open: 'It holds! Up the root you go.', // (new, needs Matt's approval)
+    nudge: 'Something heavy on the low end?',
+    move: 'Two stones on the near end.',
   },
 };
 
@@ -266,6 +271,8 @@ export const darkRoomSpec: LocalRoomSpec = {
     enter: 'Too high. Stay close to the firefly, Pokey.', // (new, needs Matt's approval)
     lit: 'A step! It only shows in the light.', // (new, needs Matt's approval)
     open: 'A moonflower. Now we can see everything.', // (new, needs Matt's approval)
+    nudge: "The firefly's light finds steps.",
+    move: 'Walk with the firefly. Climb what it lights.',
   },
 };
 

@@ -1,5 +1,8 @@
 # Dot curbed: the preview (1-6 and 4-3)
 
+> **Superseded by [../final/README.md](../final/README.md)** (the full rework, 2026-10-29). The clips linked below are the final
+> ones, re-recorded on the finished code; the numbers on this page are the show-first preview's.
+
 A show-first preview for Matt before the full rework (branch `polish-dot`). Nothing here is released.
 
 Matt, 2026-10-29: *"When I'm playing through, it feels like she's constantly nagging me... we're drawing a weird blue box around
@@ -162,14 +165,14 @@ Each clip has today's game on top and the new one underneath, in step.
 
 | Stage | Setting | Stretch | Clip (before on top, after below) |
 |---|---|---|---|
-| 1-6 | Tips | the start (0-40 s) | [1-6-tips-a-opening.mp4](clips/1-6-tips-a-opening.mp4) |
-| 1-6 | Tips | the log and the three seesaw rooms (44-100 s) | [1-6-tips-b-log-and-seesaws.mp4](clips/1-6-tips-b-log-and-seesaws.mp4) |
-| 1-6 | Help | the start (0-40 s) | [1-6-help-a-opening.mp4](clips/1-6-help-a-opening.mp4) |
-| 1-6 | Help | the log and the three seesaw rooms (44-100 s) | [1-6-help-b-log-and-seesaws.mp4](clips/1-6-help-b-log-and-seesaws.mp4) |
-| 4-3 | Tips | the first falls and the monkey (0-45 s) | [4-3-tips-a-first-falls.mp4](clips/4-3-tips-a-first-falls.mp4) |
-| 4-3 | Tips | the pool and the tide pool (40-100 s) | [4-3-tips-b-pools.mp4](clips/4-3-tips-b-pools.mp4) |
-| 4-3 | Help | the first falls and the monkey (0-45 s) | [4-3-help-a-first-falls.mp4](clips/4-3-help-a-first-falls.mp4) |
-| 4-3 | Help | the pool and the tide pool (40-100 s) | [4-3-help-b-pools.mp4](clips/4-3-help-b-pools.mp4) |
+| 1-6 | Tips | the start (0-40 s) | [1-6-tips-a-opening.mp4](../final/clips/1-6-tips-a-opening.mp4) |
+| 1-6 | Tips | the log and the three seesaw rooms (44-100 s) | [1-6-tips-b-log-and-seesaws.mp4](../final/clips/1-6-tips-b-log-and-seesaws.mp4) |
+| 1-6 | Help | the start (0-40 s) | [1-6-help-a-opening.mp4](../final/clips/1-6-help-a-opening.mp4) |
+| 1-6 | Help | the log and the three seesaw rooms (44-100 s) | [1-6-help-b-log-and-seesaws.mp4](../final/clips/1-6-help-b-log-and-seesaws.mp4) |
+| 4-3 | Tips | the first falls and the monkey (0-45 s) | [4-3-tips-a-first-falls.mp4](../final/clips/4-3-tips-a-first-falls.mp4) |
+| 4-3 | Tips | the pool and the tide pool (40-100 s) | [4-3-tips-b-pools.mp4](../final/clips/4-3-tips-b-pools.mp4) |
+| 4-3 | Help | the first falls and the monkey (0-45 s) | [4-3-help-a-first-falls.mp4](../final/clips/4-3-help-a-first-falls.mp4) |
+| 4-3 | Help | the pool and the tide pool (40-100 s) | [4-3-help-b-pools.mp4](../final/clips/4-3-help-b-pools.mp4) |
 
 ## Pointing after struggle (Help), and why the old ring was off
 

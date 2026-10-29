@@ -27,12 +27,17 @@ const store = (): Mem | null => {
   }
 };
 
+/**
+ * the setting: what the player picked, or by the difficulty picked at New Game (Matt, 2026-10-29): Help on Easy (the newcomer's pick),
+ * Tips on Normal
+ */
 export function dotHelp(s: Pick<Storage, 'getItem'> | null = store()): DotHelp {
   try {
     const v = s?.getItem(HELP_KEY);
-    return v === 'reminders' || v === 'quiet' ? v : 'teach';
+    if (v === 'teach' || v === 'reminders' || v === 'quiet') return v;
+    return s?.getItem('sloth_difficulty') === 'easy' ? 'teach' : 'reminders';
   } catch {
-    return 'teach';
+    return 'reminders';
   }
 }
 export function setDotHelp(v: DotHelp, s: Pick<Storage, 'setItem'> | null = store()): void {
@@ -113,6 +118,8 @@ export function helpAllows(l: TipsLine, help: DotHelp, seen: ReadonlySet<string>
   if (l.kind === 'story') return storyOn && (l.source === 'story' || help === 'teach');
   if (l.kind === 'must') return true;
   if (help === 'quiet') return false;
+  // (the shrine opening: the other half of why an exit is locked, on Tips too)
+  if (l.key === 'goal:done') return true;
   // (a puzzle's move itself is only ever for Help, and only after struggle)
   if (l.step === 'move') return help === 'teach';
   if (help === 'teach') return true;

@@ -134,6 +134,8 @@ export interface RoomTips {
   nudge?: TipLine;
   /** after more struggle, and only on "Dot's help: Help": the move itself */
   move?: TipLine;
+  /** the thing this room teaches for the first time, when the room is built by a helper that takes only its tips (RoomSpec.mech) */
+  mech?: string;
   /** the beetle fell asleep off every plate (the room needs starting again: the post) */
   stuck?: string;
   // ── phase 2b's moments (each the first time it comes) ──

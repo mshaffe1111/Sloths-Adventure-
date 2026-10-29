@@ -1,3 +1,4 @@
+// @ts-nocheck (a measuring harness that loads either build by path: see README)
 /**
  * Dot's pacing, in order on one save, on a help setting, for the code at ROOT (old or new).
  *   ROOT=/path npx tsx pace2.ts --help teach|reminders [--worlds 1,2] [--fresh] [--list 1-6,4-3] [--json out.json]

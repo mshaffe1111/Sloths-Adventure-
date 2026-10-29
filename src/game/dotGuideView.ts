@@ -99,6 +99,8 @@ export interface GuideView {
   kickNear: boolean;
   boss: boolean;
   chase: boolean;
+  /** the camera is showing something (a puzzle room's far gate, a boss's entrance, a stage's reveal): lines that can wait, wait */
+  reveal: boolean;
   /** Dot's own flight stage (she is the player: no perch, no ring, and Pokey's state means nothing) */
   flight: boolean;
   levelH: number;
@@ -161,6 +163,7 @@ export function emptyGuideView(): GuideView {
     kickNear: false,
     boss: false,
     chase: false,
+    reveal: false,
     flight: false,
     levelH: 900,
     enemies: NONE,

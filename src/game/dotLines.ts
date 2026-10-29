@@ -213,7 +213,7 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
   const id = sw?.line.id ?? '';
   const step: GuideLine['step'] = room?.step ?? (PUZZLE_STEPS[id] ? 'name' : PUZZLE_LATER.has(id) ? 'move' : undefined);
   // (a boss's line is about that boss's attack: Tips says each one the first time, as a new hazard)
-  const mech = room ? room.mech : firstOf(id) ?? PUZZLE_STEPS[id]?.mech ?? (o.boss && !o.flight ? `boss:${id || text}` : undefined);
+  const mech = room?.mech ?? firstOf(id || text) ?? PUZZLE_STEPS[id]?.mech ?? (o.boss && !o.flight ? `boss:${id || text}` : undefined);
   if (room) {
     // (a room's lines are about its pieces: she perches by the one that matters now, or by the log a line names)
     topic = topicOf(said) === 'log' ? 'log' : 'puzzle';

@@ -1,0 +1,2997 @@
+[
+ {
+  "id": "1-1",
+  "world": 1,
+  "seconds": 133,
+  "n": 5,
+  "perMin": 2.25,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 12.8,
+    "text": "A flag! Fall, and you start again here.",
+    "kind": "info",
+    "key": "lesson:checkpoint:0",
+    "n": 1
+   },
+   {
+    "t": 15.6,
+    "text": "Flick up just before the edge.",
+    "kind": "teach",
+    "key": "lesson:gap:0",
+    "n": 2
+   },
+   {
+    "t": 27.8,
+    "text": "Flick up onto the mushroom to bounce.",
+    "kind": "teach",
+    "key": "lesson:bounce:0",
+    "n": 3
+   },
+   {
+    "t": 42.8,
+    "text": "Flick up again midair to jump twice.",
+    "kind": "teach",
+    "key": "engine:hint.1-1.double",
+    "n": 4
+   },
+   {
+    "t": 132.2,
+    "text": "Reach the shrine to finish the stage.",
+    "kind": "info",
+    "key": "lesson:shrine:0",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "1-2",
+  "world": 1,
+  "seconds": 139,
+  "n": 5,
+  "perMin": 2.15,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Follow the petals",
+    "kind": "info",
+    "key": "engine:hint.1-2.follow",
+    "n": 1
+   },
+   {
+    "t": 4.4,
+    "text": "Flick up just before the edge.",
+    "kind": "teach",
+    "key": "lesson:gap:0",
+    "n": 2
+   },
+   {
+    "t": 40.3,
+    "text": "Stay on the petals, high or low",
+    "kind": "info",
+    "key": "engine:hint.1-2.highlow",
+    "n": 3
+   },
+   {
+    "t": 96.4,
+    "text": "Still 77 petals to collect!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 4
+   },
+   {
+    "t": 139.3,
+    "text": "It's sealed. Collect 67 more petals first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "1-3",
+  "world": 1,
+  "seconds": 109,
+  "n": 6,
+  "perMin": 3.32,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 8.8,
+    "text": "Tap to punch it when it's close.",
+    "kind": "teach",
+    "key": "lesson:foe:0",
+    "n": 1
+   },
+   {
+    "t": 21.4,
+    "text": "Tap to punch the sleeping snake.",
+    "kind": "teach",
+    "key": "engine:hint.1-3.sleeper",
+    "n": 2
+   },
+   {
+    "t": 34,
+    "text": "Flick up onto the mushroom to bounce.",
+    "kind": "teach",
+    "key": "engine:ctest.bounce",
+    "n": 3
+   },
+   {
+    "t": 49.8,
+    "text": "A snake guards the rope",
+    "kind": "info",
+    "key": "engine:hint.1-3.ropeGuard",
+    "n": 4
+   },
+   {
+    "t": 76,
+    "text": "Still 16 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 5
+   },
+   {
+    "t": 108.5,
+    "text": "It's sealed. Defeat 16 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 6
+   }
+  ]
+ },
+ {
+  "id": "1-4",
+  "world": 1,
+  "seconds": 99,
+  "n": 8,
+  "perMin": 4.86,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.6,
+    "text": "Flick up into the trunk to grab it.",
+    "kind": "teach",
+    "key": "lesson:climb:0",
+    "n": 1
+   },
+   {
+    "t": 5.9,
+    "text": "Slide your thumb up to climb.",
+    "kind": "teach",
+    "key": "lesson:climb:1",
+    "n": 2
+   },
+   {
+    "t": 15.4,
+    "text": "Flick up by the post to grab on.",
+    "kind": "teach",
+    "key": "lesson:rope:0",
+    "n": 3
+   },
+   {
+    "t": 19.2,
+    "text": "Slide your thumb to creep along.",
+    "kind": "teach",
+    "key": "lesson:rope:1",
+    "n": 4
+   },
+   {
+    "t": 31.8,
+    "text": "The squirrels' lift! It won't rise.",
+    "kind": "teach",
+    "key": "engine:The squirrels' lift! It won't rise.",
+    "n": 5
+   },
+   {
+    "t": 42,
+    "text": "Flick up just before the edge.",
+    "kind": "teach",
+    "key": "lesson:gap:0",
+    "n": 6
+   },
+   {
+    "t": 87.9,
+    "text": "A long way across. Keep sliding",
+    "kind": "teach",
+    "key": "engine:hint.1-4.longRope",
+    "n": 7
+   },
+   {
+    "t": 90.1,
+    "text": "The basket hangs high this time.",
+    "kind": "teach",
+    "key": "engine:The basket hangs high this time.",
+    "n": 8
+   }
+  ]
+ },
+ {
+  "id": "1-5",
+  "world": 1,
+  "seconds": 128,
+  "n": 5,
+  "perMin": 2.34,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 3.4,
+    "text": "Flick up onto the mushroom to bounce.",
+    "kind": "teach",
+    "key": "engine:ctest.bounce",
+    "n": 1
+   },
+   {
+    "t": 33.8,
+    "text": "Creaky branches! Grab the petals and keep moving",
+    "kind": "info",
+    "key": "engine:hint.1-5.creaky",
+    "n": 2
+   },
+   {
+    "t": 89.3,
+    "text": "Still 82 petals to collect!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 3
+   },
+   {
+    "t": 118.5,
+    "text": "Something shiny, far away... too far, for now.",
+    "kind": "info",
+    "key": "engine:hint.1-5.shiny",
+    "n": 4
+   },
+   {
+    "t": 128.3,
+    "text": "It's sealed. Collect 72 more petals first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "1-6",
+  "world": 1,
+  "seconds": 122,
+  "n": 9,
+  "perMin": 4.42,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 2.6,
+    "text": "Flick up into the vine to grab it.",
+    "kind": "teach",
+    "key": "lesson:swing:0",
+    "n": 1
+   },
+   {
+    "t": 4.7,
+    "text": "Flick up as you swing forward to leap.",
+    "kind": "teach",
+    "key": "lesson:swing:1",
+    "n": 2
+   },
+   {
+    "t": 23.3,
+    "text": "That vine is too high. Climb the tree!",
+    "kind": "info",
+    "key": "engine:hint.1-6.tooHigh",
+    "n": 3
+   },
+   {
+    "t": 32.6,
+    "text": "Flick up at the trunk, then slide up.",
+    "kind": "teach",
+    "key": "engine:hint.1-6.trunk",
+    "n": 4
+   },
+   {
+    "t": 47.1,
+    "text": "Keep sliding into the log to push it",
+    "kind": "teach",
+    "key": "engine:hint.1-6.log",
+    "n": 5
+   },
+   {
+    "t": 53.5,
+    "text": "See? The log holds that end down.",
+    "kind": "teach",
+    "key": "engine:See? The log holds that end down.",
+    "n": 6
+   },
+   {
+    "t": 59.2,
+    "text": "Too high! That log could help.",
+    "kind": "teach",
+    "key": "engine:Too high! That log could help.",
+    "n": 7
+   },
+   {
+    "t": 77.1,
+    "text": "Fell? Slide up the next tree.",
+    "kind": "struggle",
+    "key": "engine:hint.1-6.fell",
+    "n": 8
+   },
+   {
+    "t": 94.9,
+    "text": "The log's moved. Hmm, that won't tip now.",
+    "kind": "teach",
+    "key": "engine:The log's moved. Hmm, that won't tip now.",
+    "n": 9
+   }
+  ]
+ },
+ {
+  "id": "1-7",
+  "world": 1,
+  "seconds": 181,
+  "n": 6,
+  "perMin": 1.99,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Slide down in a bush to hide.",
+    "kind": "teach",
+    "key": "engine:hint.1-7.hide",
+    "n": 1
+   },
+   {
+    "t": 17.5,
+    "text": "Run when it has gone by",
+    "kind": "info",
+    "key": "engine:hint.1-7.go",
+    "n": 2
+   },
+   {
+    "t": 37.2,
+    "text": "Slide down in a bush to hide!",
+    "kind": "danger",
+    "key": "engine:eng.watch.hide.bush",
+    "n": 3
+   },
+   {
+    "t": 42.9,
+    "text": "The squirrels' acorn tree, and that eagle!",
+    "kind": "teach",
+    "key": "engine:The squirrels' acorn tree, and that eagle!",
+    "n": 4
+   },
+   {
+    "t": 48.5,
+    "text": "Too far to run without an acorn.",
+    "kind": "teach",
+    "key": "engine:Too far to run without an acorn.",
+    "n": 5
+   },
+   {
+    "t": 68.9,
+    "text": "Hide! Into a bush!",
+    "kind": "danger",
+    "key": "engine:Hide! Into a bush!",
+    "n": 6
+   }
+  ]
+ },
+ {
+  "id": "1-8",
+  "world": 1,
+  "seconds": 137,
+  "n": 4,
+  "perMin": 1.76,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "This branch goes on and on",
+    "kind": "story",
+    "key": "engine:hint.1-8.long",
+    "n": 1
+   },
+   {
+    "t": 6.5,
+    "text": "Slide down beside the fern to search it.",
+    "kind": "teach",
+    "key": "engine:eng.fern.near",
+    "n": 2
+   },
+   {
+    "t": 13.9,
+    "text": "It's breaking behind us! Keep moving!",
+    "kind": "must",
+    "key": "engine:eng.chase",
+    "n": 3
+   },
+   {
+    "t": 126.3,
+    "text": "It's all coming down! Get to the vine!",
+    "kind": "info",
+    "key": "engine:hint.1-8.vine",
+    "n": 4
+   }
+  ]
+ },
+ {
+  "id": "1-9",
+  "world": 1,
+  "seconds": 77,
+  "n": 4,
+  "perMin": 3.13,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 4.6,
+    "text": "Tap to punch it after it strikes.",
+    "kind": "teach",
+    "key": "engine:hint.1-9.guard",
+    "n": 1
+   },
+   {
+    "t": 42.7,
+    "text": "Snakes! Clear them all to open the way.",
+    "kind": "must",
+    "key": "engine:lock.ring.snakes",
+    "n": 2
+   },
+   {
+    "t": 57.7,
+    "text": "Still 20 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 3
+   },
+   {
+    "t": 76.5,
+    "text": "It's sealed. Defeat 20 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 4
+   }
+  ]
+ },
+ {
+  "id": "2-1",
+  "world": 2,
+  "seconds": 104,
+  "n": 3,
+  "perMin": 1.73,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 2.6,
+    "text": "Flick up when a log drifts close.",
+    "kind": "teach",
+    "key": "lesson:water:0",
+    "n": 1
+   },
+   {
+    "t": 17.6,
+    "text": "Missed? Splash! Try again from the bank.",
+    "kind": "struggle",
+    "key": "engine:hint.2-1.missed",
+    "n": 2
+   },
+   {
+    "t": 33.8,
+    "text": "Upstream! Wait for a log, then flick up.",
+    "kind": "teach",
+    "key": "engine:hint.2-1.upstream",
+    "n": 3
+   }
+  ]
+ },
+ {
+  "id": "2-2",
+  "world": 2,
+  "seconds": 105,
+  "n": 5,
+  "perMin": 2.87,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 3.4,
+    "text": "Flick up when a log drifts close.",
+    "kind": "teach",
+    "key": "lesson:water:0",
+    "n": 1
+   },
+   {
+    "t": 37.7,
+    "text": "A raft across the river! Find the lever.",
+    "kind": "info",
+    "key": "engine:A raft across the river! Find the lever.",
+    "n": 2
+   },
+   {
+    "t": 39.9,
+    "text": "A raft! How do we untie it?",
+    "kind": "teach",
+    "key": "engine:A raft! How do we untie it?",
+    "n": 3
+   },
+   {
+    "t": 74.1,
+    "text": "Still 79 flowers to collect!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 4
+   },
+   {
+    "t": 104.6,
+    "text": "It's sealed. Collect 54 more flowers first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "2-3",
+  "world": 2,
+  "seconds": 117,
+  "n": 7,
+  "perMin": 3.61,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "A little one, in a cage on a rope!",
+    "kind": "teach",
+    "key": "engine:A little one, in a cage on a rope!",
+    "n": 1
+   },
+   {
+    "t": 9.2,
+    "text": "Tap twice to break the cage.",
+    "kind": "teach",
+    "key": "lesson:cage:0",
+    "n": 2
+   },
+   {
+    "t": 19,
+    "text": "A heavy one! It barely moves.",
+    "kind": "teach",
+    "key": "engine:A heavy one! It barely moves.",
+    "n": 3
+   },
+   {
+    "t": 25.9,
+    "text": "The stones are on the island.",
+    "kind": "teach",
+    "key": "engine:The stones are on the island.",
+    "n": 4
+   },
+   {
+    "t": 42.3,
+    "text": "The basket hangs high.",
+    "kind": "teach",
+    "key": "engine:The basket hangs high.",
+    "n": 5
+   },
+   {
+    "t": 79.4,
+    "text": "Still 5 animals to free!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 6
+   },
+   {
+    "t": 116.4,
+    "text": "It's sealed. Free 5 more animals first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 7
+   }
+  ]
+ },
+ {
+  "id": "2-4",
+  "world": 2,
+  "seconds": 168,
+  "n": 3,
+  "perMin": 1.07,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 2.6,
+    "text": "Flick up when a log drifts close.",
+    "kind": "teach",
+    "key": "lesson:water:0",
+    "n": 1
+   },
+   {
+    "t": 17.6,
+    "text": "Missed? Splash! Try again from the bank.",
+    "kind": "struggle",
+    "key": "engine:hint.2-4.missed",
+    "n": 2
+   },
+   {
+    "t": 32.6,
+    "text": "Swing to the island, then ride the logs!",
+    "kind": "info",
+    "key": "engine:hint.2-4.island",
+    "n": 3
+   }
+  ]
+ },
+ {
+  "id": "2-5",
+  "world": 2,
+  "seconds": 77,
+  "n": 3,
+  "perMin": 2.35,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Snappers! Hit one from behind, or jump on it.",
+    "kind": "info",
+    "key": "engine:hint.2-5.snappers",
+    "n": 1
+   },
+   {
+    "t": 53.2,
+    "text": "Still 32 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 2
+   },
+   {
+    "t": 76.6,
+    "text": "It's sealed. Defeat 32 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 3
+   }
+  ]
+ },
+ {
+  "id": "2-6",
+  "world": 2,
+  "seconds": 140,
+  "n": 1,
+  "perMin": 0.43,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 119.3,
+    "text": "A long way across. Keep sliding",
+    "kind": "teach",
+    "key": "engine:hint.1-4.longRope",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "2-7",
+  "world": 2,
+  "seconds": 151,
+  "n": 5,
+  "perMin": 1.99,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Hop along the porches",
+    "kind": "info",
+    "key": "engine:hint.2-7.porches",
+    "n": 1
+   },
+   {
+    "t": 17.5,
+    "text": "Deep water now. Stay on the logs!",
+    "kind": "info",
+    "key": "engine:hint.2-1.deep",
+    "n": 2
+   },
+   {
+    "t": 26.2,
+    "text": "Step into the basket. It carries you up!",
+    "kind": "info",
+    "key": "engine:hint.2-7.basket",
+    "n": 3
+   },
+   {
+    "t": 27.7,
+    "text": "Flick up when it swings close.",
+    "kind": "teach",
+    "key": "lesson:moving:0",
+    "n": 4
+   },
+   {
+    "t": 47.5,
+    "text": "Swing across on the rope frames!",
+    "kind": "info",
+    "key": "engine:hint.2-7.frames",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "2-8",
+  "world": 2,
+  "seconds": 99,
+  "n": 6,
+  "perMin": 3.65,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 1.5,
+    "text": "The water's rising! Free them, then back to the bank!",
+    "kind": "must",
+    "key": "engine:eng.flood",
+    "n": 1
+   },
+   {
+    "t": 8.7,
+    "text": "The water's rising round that cage!",
+    "kind": "teach",
+    "key": "engine:The water's rising round that cage!",
+    "n": 2
+   },
+   {
+    "t": 29.8,
+    "text": "Stepping stones. Hop, hop, hop!",
+    "kind": "info",
+    "key": "engine:Stepping stones. Hop, hop, hop!",
+    "n": 3
+   },
+   {
+    "t": 41.1,
+    "text": "The stones are on the next island.",
+    "kind": "teach",
+    "key": "engine:The stones are on the next island.",
+    "n": 4
+   },
+   {
+    "t": 69.7,
+    "text": "Still 10 animals to free!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 5
+   },
+   {
+    "t": 98.7,
+    "text": "It's sealed. Free 10 more animals first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 6
+   }
+  ]
+ },
+ {
+  "id": "2-9",
+  "world": 2,
+  "seconds": 79,
+  "n": 6,
+  "perMin": 4.54,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "The court gate's shut.",
+    "kind": "teach",
+    "key": "engine:The court gate's shut.",
+    "n": 1
+   },
+   {
+    "t": 7.2,
+    "text": "Head-on he blocks. Hit him from behind, or kick him!",
+    "kind": "teach",
+    "key": "engine:Head-on he blocks. Hit him from behind, or kick him!",
+    "n": 2
+   },
+   {
+    "t": 33.4,
+    "text": "Up to the gallery! Ring the bell, and come down behind the guards.",
+    "kind": "info",
+    "key": "engine:Up to the gallery! Ring the bell, and come down behind the guards.",
+    "n": 3
+   },
+   {
+    "t": 35.5,
+    "text": "Too many guards. Can we distract them?",
+    "kind": "teach",
+    "key": "engine:Too many guards. Can we distract them?",
+    "n": 4
+   },
+   {
+    "t": 56.5,
+    "text": "Still 23 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 5
+   },
+   {
+    "t": 79.3,
+    "text": "It's sealed. Defeat 23 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 6
+   }
+  ]
+ },
+ {
+  "id": "3-1",
+  "world": 3,
+  "seconds": 154,
+  "n": 4,
+  "perMin": 1.56,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 17.2,
+    "text": "No moss down there. Jump true!",
+    "kind": "info",
+    "key": "engine:No moss down there. Jump true!",
+    "n": 1
+   },
+   {
+    "t": 23.5,
+    "text": "Spores puff on a beat. Wait them out.",
+    "kind": "info",
+    "key": "engine:Spores puff on a beat. Wait them out.",
+    "n": 2
+   },
+   {
+    "t": 40.2,
+    "text": "Too dark to see. Stand still and listen...",
+    "kind": "info",
+    "key": "engine:hint.3-1.dark",
+    "n": 3
+   },
+   {
+    "t": 42.4,
+    "text": "Glowworms! They light up when you stand still.",
+    "kind": "danger",
+    "key": "engine:eng.glow.woke",
+    "n": 4
+   }
+  ]
+ },
+ {
+  "id": "3-2",
+  "world": 3,
+  "seconds": 146,
+  "n": 7,
+  "perMin": 2.89,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 3.4,
+    "text": "Too dark to see. Stand still and listen...",
+    "kind": "info",
+    "key": "engine:hint.3-1.dark",
+    "n": 1
+   },
+   {
+    "t": 5.1,
+    "text": "Glowworms! They light up when you stand still.",
+    "kind": "danger",
+    "key": "engine:eng.glow.woke",
+    "n": 2
+   },
+   {
+    "t": 16.5,
+    "text": "Too dark, and that bank is too high.",
+    "kind": "teach",
+    "key": "engine:Too dark, and that bank is too high.",
+    "n": 3
+   },
+   {
+    "t": 23.5,
+    "text": "Eyes! Slide down in a fern to hide.",
+    "kind": "danger",
+    "key": "engine:hint.3-2.eyes",
+    "n": 4
+   },
+   {
+    "t": 46.3,
+    "text": "Roots! Stepping off the plate shuts them.",
+    "kind": "teach",
+    "key": "engine:Roots! Stepping off the plate shuts them.",
+    "n": 5
+   },
+   {
+    "t": 52.3,
+    "text": "Somewhere up there, out of the light.",
+    "kind": "teach",
+    "key": "engine:Somewhere up there, out of the light.",
+    "n": 6
+   },
+   {
+    "t": 67.3,
+    "text": "No moss down there. Jump true!",
+    "kind": "info",
+    "key": "engine:No moss down there. Jump true!",
+    "n": 7
+   }
+  ]
+ },
+ {
+  "id": "3-3",
+  "world": 3,
+  "seconds": 142,
+  "n": 7,
+  "perMin": 2.96,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Footprints... a prowler is near",
+    "kind": "story",
+    "key": "engine:hint.3-3.prints",
+    "n": 1
+   },
+   {
+    "t": 4,
+    "text": "A prowler! Tap twice, or flick to kick.",
+    "kind": "teach",
+    "key": "engine:hint.3-3.prowler",
+    "n": 2
+   },
+   {
+    "t": 48.8,
+    "text": "Flick up when it crouches. Three hits!",
+    "kind": "teach",
+    "key": "engine:hint.3-3.jaguar",
+    "n": 3
+   },
+   {
+    "t": 63.2,
+    "text": "Glowworms! They light up when you stand still.",
+    "kind": "danger",
+    "key": "engine:eng.glow.woke",
+    "n": 4
+   },
+   {
+    "t": 98.7,
+    "text": "Still 14 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 5
+   },
+   {
+    "t": 130,
+    "text": "No moss down there. Jump true!",
+    "kind": "info",
+    "key": "engine:No moss down there. Jump true!",
+    "n": 6
+   },
+   {
+    "t": 141.9,
+    "text": "It's sealed. Defeat 14 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 7
+   }
+  ]
+ },
+ {
+  "id": "3-4",
+  "world": 3,
+  "seconds": 126,
+  "n": 3,
+  "perMin": 1.43,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 7.4,
+    "text": "Lift your thumb and freeze! A vine's waking.",
+    "kind": "danger",
+    "key": "engine:eng.vine.stir.ground",
+    "n": 1
+   },
+   {
+    "t": 26.7,
+    "text": "A thorn vine! Freeze while it looks, go while it sleeps",
+    "kind": "info",
+    "key": "engine:A thorn vine! Freeze while it looks, go while it sleeps",
+    "n": 2
+   },
+   {
+    "t": 103.3,
+    "text": "A long way across. Keep sliding",
+    "kind": "teach",
+    "key": "engine:hint.1-4.longRope",
+    "n": 3
+   }
+  ]
+ },
+ {
+  "id": "3-5",
+  "world": 3,
+  "seconds": 105,
+  "n": 7,
+  "perMin": 4.01,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Grandma said the old thorn vines were asleep...",
+    "kind": "story",
+    "key": "engine:hint.3-5.grandma",
+    "n": 1
+   },
+   {
+    "t": 23.9,
+    "text": "Lift your thumb and freeze! A vine's waking.",
+    "kind": "danger",
+    "key": "engine:eng.vine.stir.ground",
+    "n": 2
+   },
+   {
+    "t": 33.9,
+    "text": "This old vine is wide awake. Nobody gets by.",
+    "kind": "teach",
+    "key": "engine:This old vine is wide awake. Nobody gets by.",
+    "n": 3
+   },
+   {
+    "t": 46.1,
+    "text": "Glowworms! They light up when you stand still.",
+    "kind": "danger",
+    "key": "engine:eng.glow.woke",
+    "n": 4
+   },
+   {
+    "t": 53.9,
+    "text": "Another one awake, and no bell this time.",
+    "kind": "teach",
+    "key": "engine:Another one awake, and no bell this time.",
+    "n": 5
+   },
+   {
+    "t": 60.1,
+    "text": "Two of them, both awake.",
+    "kind": "teach",
+    "key": "engine:Two of them, both awake.",
+    "n": 6
+   },
+   {
+    "t": 76.2,
+    "text": "No moss down there. Jump true!",
+    "kind": "info",
+    "key": "engine:No moss down there. Jump true!",
+    "n": 7
+   }
+  ]
+ },
+ {
+  "id": "3-6",
+  "world": 3,
+  "seconds": 132,
+  "n": 6,
+  "perMin": 2.72,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Slide down by a rustling fern to search.",
+    "kind": "teach",
+    "key": "engine:hint.3-6.search",
+    "n": 1
+   },
+   {
+    "t": 24.2,
+    "text": "Spores puff on a beat. Wait them out.",
+    "kind": "info",
+    "key": "engine:Spores puff on a beat. Wait them out.",
+    "n": 2
+   },
+   {
+    "t": 34.1,
+    "text": "Glowworms! They light up when you stand still.",
+    "kind": "danger",
+    "key": "engine:eng.glow.woke",
+    "n": 3
+   },
+   {
+    "t": 49.2,
+    "text": "No moss down there. Jump true!",
+    "kind": "info",
+    "key": "engine:No moss down there. Jump true!",
+    "n": 4
+   },
+   {
+    "t": 90.9,
+    "text": "Still 5 keepsakes to find!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 5
+   },
+   {
+    "t": 132,
+    "text": "It's sealed. Find 5 more keepsakes first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 6
+   }
+  ]
+ },
+ {
+  "id": "3-7",
+  "world": 3,
+  "seconds": 159,
+  "n": 10,
+  "perMin": 3.77,
+  "busiest": 5,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "More! Slide down by a rustling fern.",
+    "kind": "teach",
+    "key": "engine:hint.3-7.search",
+    "n": 1
+   },
+   {
+    "t": 15.7,
+    "text": "Lift your thumb and freeze! A vine's waking.",
+    "kind": "danger",
+    "key": "engine:eng.vine.stir.ground",
+    "n": 2
+   },
+   {
+    "t": 21.8,
+    "text": "Glowworms! They light up when you stand still.",
+    "kind": "danger",
+    "key": "engine:eng.glow.woke",
+    "n": 3
+   },
+   {
+    "t": 27.3,
+    "text": "The eyes are back. Search between their looks.",
+    "kind": "danger",
+    "key": "engine:hint.3-7.eyes",
+    "n": 4
+   },
+   {
+    "t": 32.8,
+    "text": "Slide down in a fern to hide!",
+    "kind": "danger",
+    "key": "engine:eng.watch.hide.fern",
+    "n": 5
+   },
+   {
+    "t": 38.5,
+    "text": "I marked the right fern with a stone.",
+    "kind": "teach",
+    "key": "engine:I marked the right fern with a stone.",
+    "n": 6
+   },
+   {
+    "t": 57.4,
+    "text": "Here, crouching by a fern does three things at once.",
+    "kind": "info",
+    "key": "engine:hint.3-7.three",
+    "n": 7
+   },
+   {
+    "t": 71.9,
+    "text": "I marked this one too.",
+    "kind": "teach",
+    "key": "engine:I marked this one too.",
+    "n": 8
+   },
+   {
+    "t": 108,
+    "text": "Still 6 keepsakes to find!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 9
+   },
+   {
+    "t": 159.3,
+    "text": "It's sealed. Find 6 more keepsakes first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 10
+   }
+  ]
+ },
+ {
+  "id": "3-8",
+  "world": 3,
+  "seconds": 126,
+  "n": 3,
+  "perMin": 1.43,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Thorn vines between the lianas. Don't touch the thorns!",
+    "kind": "info",
+    "key": "engine:hint.3-8.thorns",
+    "n": 1
+   },
+   {
+    "t": 16.6,
+    "text": "Lift your thumb and freeze! A vine's waking.",
+    "kind": "danger",
+    "key": "engine:eng.vine.stir.ground",
+    "n": 2
+   },
+   {
+    "t": 31.6,
+    "text": "No moss down there. Jump true!",
+    "kind": "info",
+    "key": "engine:No moss down there. Jump true!",
+    "n": 3
+   }
+  ]
+ },
+ {
+  "id": "3-9",
+  "world": 3,
+  "seconds": 162,
+  "n": 6,
+  "perMin": 2.22,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Pawprints in a circle, and they all go one way...",
+    "kind": "story",
+    "key": "engine:hint.3-9.prints",
+    "n": 1
+   },
+   {
+    "t": 28,
+    "text": "Big ones take several hits. Step back when it rears.",
+    "kind": "info",
+    "key": "lesson:tough:0",
+    "n": 2
+   },
+   {
+    "t": 43,
+    "text": "No moss down there. Jump true!",
+    "kind": "info",
+    "key": "engine:No moss down there. Jump true!",
+    "n": 3
+   },
+   {
+    "t": 51,
+    "text": "Prowlers! Drive them all off to open the way.",
+    "kind": "must",
+    "key": "engine:lock.ring.prowlers",
+    "n": 4
+   },
+   {
+    "t": 111.7,
+    "text": "Still 21 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 5
+   },
+   {
+    "t": 162.2,
+    "text": "It's sealed. Defeat 21 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 6
+   }
+  ]
+ },
+ {
+  "id": "4-1",
+  "world": 4,
+  "seconds": 139,
+  "n": 5,
+  "perMin": 2.17,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 6,
+    "text": "Rocks! Stop at the shadow. Go once it falls.",
+    "kind": "info",
+    "key": "engine:hint.4-1.rocks",
+    "n": 1
+   },
+   {
+    "t": 24.9,
+    "text": "Ouch! Lift your thumb before the shadow.",
+    "kind": "danger",
+    "key": "engine:w4.rockHit",
+    "n": 2
+   },
+   {
+    "t": 38,
+    "text": "I knotted us a pulley!",
+    "kind": "teach",
+    "key": "engine:I knotted us a pulley!",
+    "n": 3
+   },
+   {
+    "t": 115.8,
+    "text": "A long way across. Keep sliding",
+    "kind": "teach",
+    "key": "engine:hint.1-4.longRope",
+    "n": 4
+   },
+   {
+    "t": 135.4,
+    "text": "A curled fern. Stand still beside it and wait.",
+    "kind": "info",
+    "key": "engine:hint.4-1.frond",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "4-2",
+  "world": 4,
+  "seconds": 157,
+  "n": 5,
+  "perMin": 1.91,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 4.3,
+    "text": "Flick up, keep your thumb on the glass.",
+    "kind": "teach",
+    "key": "engine:hint.4-2.leaf",
+    "n": 1
+   },
+   {
+    "t": 11.1,
+    "text": "Gusts blow on a beat. Watch the leaves.",
+    "kind": "info",
+    "key": "engine:Gusts blow on a beat. Watch the leaves.",
+    "n": 2
+   },
+   {
+    "t": 17.2,
+    "text": "Chimes! Wind's coming. Jump with it behind you.",
+    "kind": "info",
+    "key": "engine:w4.chime",
+    "n": 3
+   },
+   {
+    "t": 34.3,
+    "text": "Chimes swinging at you? Headwind. Wait for it to drop.",
+    "kind": "info",
+    "key": "engine:hint.4-2.head",
+    "n": 4
+   },
+   {
+    "t": 49.3,
+    "text": "Something shiny out there... too far, for now.",
+    "kind": "info",
+    "key": "engine:hint.3-9.shiny",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "4-3",
+  "world": 4,
+  "seconds": 168,
+  "n": 7,
+  "perMin": 2.5,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 11.2,
+    "text": "The water pushes you down. Climb up and stop it.",
+    "kind": "info",
+    "key": "engine:hint.4-3.push",
+    "n": 1
+   },
+   {
+    "t": 30.1,
+    "text": "Monkey by that petal! If it grabs it, chase it.",
+    "kind": "info",
+    "key": "engine:hint.4-3.thiefWarn",
+    "n": 2
+   },
+   {
+    "t": 45.3,
+    "text": "That shelf's too high. Hmm.",
+    "kind": "teach",
+    "key": "engine:hint.4-3.pool",
+    "n": 3
+   },
+   {
+    "t": 60.3,
+    "text": "Rocks again! Stop at the shadow. Go once it falls.",
+    "kind": "info",
+    "key": "engine:hint.4-3.rocks",
+    "n": 4
+   },
+   {
+    "t": 67.5,
+    "text": "Climb when it goes quiet. Wait in the cave.",
+    "kind": "info",
+    "key": "engine:hint.4-3.quiet",
+    "n": 5
+   },
+   {
+    "t": 80.6,
+    "text": "That ledge is out of reach. Hmm.",
+    "kind": "teach",
+    "key": "engine:hint.4-3.lift",
+    "n": 6
+   },
+   {
+    "t": 95,
+    "text": "Ouch! Lift your thumb before the shadow.",
+    "kind": "danger",
+    "key": "engine:w4.rockHit",
+    "n": 7
+   }
+  ]
+ },
+ {
+  "id": "4-4",
+  "world": 4,
+  "seconds": 146,
+  "n": 5,
+  "perMin": 2.06,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Wind crosses the gorges here. Listen for the chimes.",
+    "kind": "info",
+    "key": "engine:hint.4-4.wind",
+    "n": 1
+   },
+   {
+    "t": 11.6,
+    "text": "No wind? Flick up again as you fly.",
+    "kind": "teach",
+    "key": "engine:hint.4-4.noWind",
+    "n": 2
+   },
+   {
+    "t": 31.4,
+    "text": "Tied too high! Stand on the glowing spot. I'll untie it.",
+    "kind": "info",
+    "key": "engine:w4.knot",
+    "n": 3
+   },
+   {
+    "t": 58.3,
+    "text": "Rocks on the landing! Hang on till one falls, then go.",
+    "kind": "info",
+    "key": "engine:hint.4-4.rocks",
+    "n": 4
+   },
+   {
+    "t": 74.9,
+    "text": "Headwind and rocks! Hang on for both.",
+    "kind": "info",
+    "key": "engine:hint.4-4.both",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "4-5",
+  "world": 4,
+  "seconds": 140,
+  "n": 5,
+  "perMin": 2.15,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "The Sky Sovereign is hunting. Stay under cover!",
+    "kind": "info",
+    "key": "engine:hint.4-5.hunting",
+    "n": 1
+   },
+   {
+    "t": 4.2,
+    "text": "Her shadow! Slide down in a bush.",
+    "kind": "danger",
+    "key": "engine:hint.4-5.shadow",
+    "n": 2
+   },
+   {
+    "t": 9.3,
+    "text": "Slide down in a bush. Or behind falls!",
+    "kind": "danger",
+    "key": "engine:eng.watch.hide.cliffs",
+    "n": 3
+   },
+   {
+    "t": 32.5,
+    "text": "Tap to knock its fruit down. It'll eat.",
+    "kind": "teach",
+    "key": "engine:hint.4-5.lookout",
+    "n": 4
+   },
+   {
+    "t": 53.2,
+    "text": "Two lookouts. One can't see the falls.",
+    "kind": "teach",
+    "key": "engine:hint.4-5.two",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "4-D",
+  "world": 4,
+  "seconds": 0,
+  "n": 1,
+  "perMin": null,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 1.5,
+    "text": "Slide to fly me. Flick up to flap.",
+    "kind": "teach",
+    "key": "engine:flight.open",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "4-6",
+  "world": 4,
+  "seconds": 157,
+  "n": 8,
+  "perMin": 3.06,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 5.7,
+    "text": "Gusts blow on a beat. Watch the leaves.",
+    "kind": "info",
+    "key": "engine:Gusts blow on a beat. Watch the leaves.",
+    "n": 1
+   },
+   {
+    "t": 9.7,
+    "text": "The lift needs winding. No wind in here.",
+    "kind": "teach",
+    "key": "engine:The lift needs winding. No wind in here.",
+    "n": 2
+   },
+   {
+    "t": 15.8,
+    "text": "Snakes! Tap to punch, or hop over.",
+    "kind": "teach",
+    "key": "engine:hint.4-6.snakes",
+    "n": 3
+   },
+   {
+    "t": 80,
+    "text": "Thick mist! Stand still and it shows the ledges. Remember them.",
+    "kind": "info",
+    "key": "engine:hint.4-6.mist",
+    "n": 4
+   },
+   {
+    "t": 95,
+    "text": "Rocks! Stop at the shadow. Go once it falls.",
+    "kind": "info",
+    "key": "engine:hint.4-1.rocks",
+    "n": 5
+   },
+   {
+    "t": 98.1,
+    "text": "Ouch! Lift your thumb before the shadow.",
+    "kind": "danger",
+    "key": "engine:w4.rockHit",
+    "n": 6
+   },
+   {
+    "t": 113.1,
+    "text": "Across the tree, rope after rope!",
+    "kind": "info",
+    "key": "engine:hint.4-6.acrossSnakes",
+    "n": 7
+   },
+   {
+    "t": 144.2,
+    "text": "Stop on this ledge too. The mist above settles.",
+    "kind": "info",
+    "key": "engine:hint.4-6.halfway",
+    "n": 8
+   }
+  ]
+ },
+ {
+  "id": "4-7",
+  "world": 4,
+  "seconds": 202,
+  "n": 8,
+  "perMin": 2.38,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Flick up, keep your thumb on the glass.",
+    "kind": "teach",
+    "key": "engine:hint.4-7.glide",
+    "n": 1
+   },
+   {
+    "t": 19.2,
+    "text": "Slipped? Flick up and hold. Your leaf opens.",
+    "kind": "struggle",
+    "key": "engine:hint.4-7.slipped",
+    "n": 2
+   },
+   {
+    "t": 34.7,
+    "text": "Rocks drop through the gaps. Watch for grit, then go.",
+    "kind": "info",
+    "key": "engine:hint.4-7.grit",
+    "n": 3
+   },
+   {
+    "t": 56.2,
+    "text": "A cave below! Step off, turn round, drop in.",
+    "kind": "info",
+    "key": "engine:hint.4-7.cave",
+    "n": 4
+   },
+   {
+    "t": 68,
+    "text": "Ouch! Lift your thumb before the shadow.",
+    "kind": "danger",
+    "key": "engine:w4.rockHit",
+    "n": 5
+   },
+   {
+    "t": 73.7,
+    "text": "Warm air! Glide into it and it lifts you.",
+    "kind": "info",
+    "key": "engine:hint.4-7.warm",
+    "n": 6
+   },
+   {
+    "t": 147.3,
+    "text": "Too far even for the leaf. Rise in the warm air first.",
+    "kind": "info",
+    "key": "engine:hint.4-7.tooFar",
+    "n": 7
+   },
+   {
+    "t": 180.6,
+    "text": "The deepest drops now. Glide and aim for each ledge.",
+    "kind": "info",
+    "key": "engine:hint.4-7.foot",
+    "n": 8
+   }
+  ]
+ },
+ {
+  "id": "4-8",
+  "world": 4,
+  "seconds": 138,
+  "n": 9,
+  "perMin": 3.9,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 4,
+    "text": "Tap twice to tear the netting",
+    "kind": "teach",
+    "key": "engine:hint.4-8.tear",
+    "n": 1
+   },
+   {
+    "t": 19,
+    "text": "The water pushes you back. Stop it at the top!",
+    "kind": "info",
+    "key": "engine:w4.fall",
+    "n": 2
+   },
+   {
+    "t": 34,
+    "text": "Gusts blow on a beat. Watch the leaves.",
+    "kind": "info",
+    "key": "engine:Gusts blow on a beat. Watch the leaves.",
+    "n": 3
+   },
+   {
+    "t": 64.6,
+    "text": "Me first, then your leaf. The nest's a glide away.",
+    "kind": "info",
+    "key": "engine:hint.4-8.dotFirst",
+    "n": 4
+   },
+   {
+    "t": 79.7,
+    "text": "Another guard, another knot. Me first, then the chimes.",
+    "kind": "info",
+    "key": "engine:hint.4-8.guard2",
+    "n": 5
+   },
+   {
+    "t": 96.4,
+    "text": "Still 20 animals to free!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 6
+   },
+   {
+    "t": 111.8,
+    "text": "The capuchin took our stone!",
+    "kind": "teach",
+    "key": "engine:The capuchin took our stone!",
+    "n": 7
+   },
+   {
+    "t": 129.4,
+    "text": "Something shiny, far out past that nest...",
+    "kind": "info",
+    "key": "engine:hint.4-8.shiny",
+    "n": 8
+   },
+   {
+    "t": 138.3,
+    "text": "It's sealed. Free 20 more animals first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 9
+   }
+  ]
+ },
+ {
+  "id": "4-9",
+  "world": 4,
+  "seconds": 198,
+  "n": 10,
+  "perMin": 3.04,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "There, Pokey. That heap of sticks up top. Her aerie.",
+    "kind": "story",
+    "key": "engine:hint.4-9.aerie",
+    "n": 1
+   },
+   {
+    "t": 17.5,
+    "text": "8 guards stand between us and her.",
+    "kind": "goal",
+    "key": "engine:hint.4-9.guards",
+    "n": 2
+   },
+   {
+    "t": 27.9,
+    "text": "It won't let you pass. Wait for the wind.",
+    "kind": "info",
+    "key": "engine:w4.guard",
+    "n": 3
+   },
+   {
+    "t": 42.9,
+    "text": "That was her. She's up there. Keep low.",
+    "kind": "story",
+    "key": "engine:hint.4-9.her",
+    "n": 4
+   },
+   {
+    "t": 58,
+    "text": "Another tied-up vine on bare cliff... what's it for?",
+    "kind": "info",
+    "key": "engine:hint.4-9.knotSeed",
+    "n": 5
+   },
+   {
+    "t": 73,
+    "text": "Grit! A rock's coming. Let it pass, then glide.",
+    "kind": "info",
+    "key": "engine:hint.4-9.grit",
+    "n": 6
+   },
+   {
+    "t": 100.8,
+    "text": "Mist again! Stand still and it shows the ledges.",
+    "kind": "info",
+    "key": "engine:hint.4-9.mist",
+    "n": 7
+   },
+   {
+    "t": 115.8,
+    "text": "That feather was hers. She's not far now.",
+    "kind": "story",
+    "key": "engine:hint.4-9.feather",
+    "n": 8
+   },
+   {
+    "t": 120.6,
+    "text": "Ouch! Lift your thumb before the shadow.",
+    "kind": "danger",
+    "key": "engine:w4.rockHit",
+    "n": 9
+   },
+   {
+    "t": 196.2,
+    "text": "Her aerie's right above us. I'm staying beside you. All the way.",
+    "kind": "story",
+    "key": "engine:hint.4-9.above",
+    "n": 10
+   }
+  ]
+ },
+ {
+  "id": "5-M",
+  "world": 5,
+  "seconds": 1,
+  "n": 0,
+  "perMin": 0,
+  "busiest": 0,
+  "lines": []
+ },
+ {
+  "id": "5-1",
+  "world": 5,
+  "seconds": 144,
+  "n": 7,
+  "perMin": 2.92,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "The loveliest place on the road. Don't stop.",
+    "kind": "info",
+    "key": "engine:hint.5-1.start",
+    "n": 1
+   },
+   {
+    "t": 7.8,
+    "text": "Slide past the chairs. Never sit.",
+    "kind": "teach",
+    "key": "engine:w5.chair",
+    "n": 2
+   },
+   {
+    "t": 16,
+    "text": "Tap to punch the spider, or stomp it.",
+    "kind": "teach",
+    "key": "engine:w5.spider",
+    "n": 3
+   },
+   {
+    "t": 32.5,
+    "text": "Wide gap! Flick up again midair.",
+    "kind": "teach",
+    "key": "engine:hint.5-1.double",
+    "n": 4
+   },
+   {
+    "t": 52.6,
+    "text": "She carved it with a hairpin. So resourceful.",
+    "kind": "story",
+    "key": "engine:hint.5-1.carving",
+    "n": 5
+   },
+   {
+    "t": 67.6,
+    "text": "Those were guests. They sat down.",
+    "kind": "story",
+    "key": "engine:hint.5-1.guests",
+    "n": 6
+   },
+   {
+    "t": 134.8,
+    "text": "Nearly through. Don't slow down now.",
+    "kind": "info",
+    "key": "engine:hint.5-1.end",
+    "n": 7
+   }
+  ]
+ },
+ {
+  "id": "5-2",
+  "world": 5,
+  "seconds": 176,
+  "n": 10,
+  "perMin": 3.41,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Don't sit. That's the one on the tree.",
+    "kind": "teach",
+    "key": "engine:hint.5-2.rules",
+    "n": 1
+   },
+   {
+    "t": 7.8,
+    "text": "Sleeping spiders. Flick up over them. Shh.",
+    "kind": "teach",
+    "key": "engine:hint.5-2.doze",
+    "n": 2
+   },
+   {
+    "t": 11.5,
+    "text": "Tap to punch the spider, or stomp it.",
+    "kind": "teach",
+    "key": "engine:w5.spider",
+    "n": 3
+   },
+   {
+    "t": 16.1,
+    "text": "It hummed! Spiders coming!",
+    "kind": "danger",
+    "key": "engine:w5.hummed",
+    "n": 4
+   },
+   {
+    "t": 37.8,
+    "text": "Cakes make you slow! Flick up over them.",
+    "kind": "teach",
+    "key": "engine:w5.cake",
+    "n": 5
+   },
+   {
+    "t": 41.5,
+    "text": "A butler! Tap to punch his tray away.",
+    "kind": "teach",
+    "key": "engine:w5.butler",
+    "n": 6
+   },
+   {
+    "t": 48,
+    "text": "Slide past the chairs. Never sit.",
+    "kind": "teach",
+    "key": "engine:w5.chair",
+    "n": 7
+   },
+   {
+    "t": 67.8,
+    "text": "Another wide one. Flick up again midair.",
+    "kind": "teach",
+    "key": "engine:hint.5-2.double",
+    "n": 8
+   },
+   {
+    "t": 87.9,
+    "text": "You'd be a chair. Forever, a very still chair.",
+    "kind": "story",
+    "key": "engine:hint.5-2.chair",
+    "n": 9
+   },
+   {
+    "t": 170.9,
+    "text": "Nearly out. Keep moving.",
+    "kind": "info",
+    "key": "engine:hint.5-2.end",
+    "n": 10
+   }
+  ]
+ },
+ {
+  "id": "5-3",
+  "world": 5,
+  "seconds": 141,
+  "n": 8,
+  "perMin": 3.41,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 7,
+    "text": "Quick! Flick up before the orchid shuts!",
+    "kind": "teach",
+    "key": "engine:w5.orchid",
+    "n": 1
+   },
+   {
+    "t": 21.2,
+    "text": "Cakes make you slow! Flick up over them.",
+    "kind": "teach",
+    "key": "engine:w5.cake",
+    "n": 2
+   },
+   {
+    "t": 24.8,
+    "text": "That cake made you slow. Keep sliding.",
+    "kind": "teach",
+    "key": "engine:w5.ate",
+    "n": 3
+   },
+   {
+    "t": 37,
+    "text": "Tap to punch the spider, or stomp it.",
+    "kind": "teach",
+    "key": "engine:w5.spider",
+    "n": 4
+   },
+   {
+    "t": 51.2,
+    "text": "Slide past the chairs. Never sit.",
+    "kind": "teach",
+    "key": "engine:w5.chair",
+    "n": 5
+   },
+   {
+    "t": 98.9,
+    "text": "Still 109 flowers to collect!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 6
+   },
+   {
+    "t": 129.9,
+    "text": "The last orchids. Nearly through.",
+    "kind": "info",
+    "key": "engine:hint.5-3.end",
+    "n": 7
+   },
+   {
+    "t": 140.7,
+    "text": "It's sealed. Collect 83 more flowers first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 8
+   }
+  ]
+ },
+ {
+  "id": "5-4",
+  "world": 5,
+  "seconds": 167,
+  "n": 8,
+  "perMin": 2.88,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Getting late. Swing on the silk.",
+    "kind": "info",
+    "key": "engine:hint.5-4.start",
+    "n": 1
+   },
+   {
+    "t": 7.5,
+    "text": "Flick up into the silk to swing.",
+    "kind": "teach",
+    "key": "engine:w5.silk",
+    "n": 2
+   },
+   {
+    "t": 13.6,
+    "text": "Then flick up and forward to let go.",
+    "kind": "must",
+    "key": "engine:w5.silk:then",
+    "n": 3
+   },
+   {
+    "t": 32.5,
+    "text": "Slide straight past the silk. Don't look.",
+    "kind": "teach",
+    "key": "engine:w5.sheet",
+    "n": 4
+   },
+   {
+    "t": 37.5,
+    "text": "The Seamstress! Slide past before she looks up.",
+    "kind": "teach",
+    "key": "engine:w5.seamstress",
+    "n": 5
+   },
+   {
+    "t": 52.6,
+    "text": "Hop up high. A branch below catches misses.",
+    "kind": "info",
+    "key": "engine:hint.5-4.high",
+    "n": 6
+   },
+   {
+    "t": 62.5,
+    "text": "Tap to punch the spider, or stomp it.",
+    "kind": "teach",
+    "key": "engine:w5.spider",
+    "n": 7
+   },
+   {
+    "t": 153.9,
+    "text": "Nearly across. Don't look back at it.",
+    "kind": "info",
+    "key": "engine:hint.5-4.end",
+    "n": 8
+   }
+  ]
+ },
+ {
+  "id": "5-5",
+  "world": 5,
+  "seconds": 150,
+  "n": 8,
+  "perMin": 3.2,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 7.3,
+    "text": "Somebody's in there! Tap to punch it open.",
+    "kind": "teach",
+    "key": "engine:w5.cocoon",
+    "n": 1
+   },
+   {
+    "t": 22.3,
+    "text": "They stopped to rest where the orchids hung in rows.",
+    "kind": "story",
+    "key": "engine:scene.5-5.pouch.n1",
+    "n": 2
+   },
+   {
+    "t": 29.4,
+    "text": "Tap to punch the spider, or stomp it.",
+    "kind": "teach",
+    "key": "engine:w5.spider",
+    "n": 3
+   },
+   {
+    "t": 38.2,
+    "text": "It hummed! Spiders coming!",
+    "kind": "danger",
+    "key": "engine:w5.hummed",
+    "n": 5
+   },
+   {
+    "t": 59.4,
+    "text": "Pokey stood, because the note said so.",
+    "kind": "story",
+    "key": "engine:scene.5-5.pouch.n2",
+    "n": 6
+   },
+   {
+    "t": 64.4,
+    "text": "Slide past the chairs. Never sit.",
+    "kind": "teach",
+    "key": "engine:w5.chair",
+    "n": 7
+   },
+   {
+    "t": 104.9,
+    "text": "Still 20 animals to free!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 8
+   },
+   {
+    "t": 149.7,
+    "text": "It's sealed. Free 20 more animals first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 9
+   }
+  ]
+ },
+ {
+  "id": "5-6",
+  "world": 5,
+  "seconds": 97,
+  "n": 5,
+  "perMin": 3.11,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 6.8,
+    "text": "Slide down to duck under its dive.",
+    "kind": "teach",
+    "key": "lesson:eagle:0",
+    "n": 1
+   },
+   {
+    "t": 13.5,
+    "text": "Sticky webs slow you. Go above them.",
+    "kind": "info",
+    "key": "engine:Sticky webs slow you. Go above them.",
+    "n": 2
+   },
+   {
+    "t": 19.1,
+    "text": "Some stages hide things up high. Have a look.",
+    "kind": "info",
+    "key": "lesson:idol:0",
+    "n": 3
+   },
+   {
+    "t": 68,
+    "text": "Still 3 messages to find!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 4
+   },
+   {
+    "t": 95.3,
+    "text": "It's sealed. Find 3 more messages first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "5-7",
+  "world": 5,
+  "seconds": 121,
+  "n": 8,
+  "perMin": 3.96,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 6.8,
+    "text": "Cakes make you slow! Flick up over them.",
+    "kind": "teach",
+    "key": "engine:w5.cake",
+    "n": 1
+   },
+   {
+    "t": 10.5,
+    "text": "That cake made you slow. Keep sliding.",
+    "kind": "teach",
+    "key": "engine:w5.ate",
+    "n": 2
+   },
+   {
+    "t": 14.1,
+    "text": "Slide past the chairs. Never sit.",
+    "kind": "teach",
+    "key": "engine:w5.chair",
+    "n": 3
+   },
+   {
+    "t": 33,
+    "text": "It hummed! Spiders coming!",
+    "kind": "danger",
+    "key": "engine:w5.hummed",
+    "n": 4
+   },
+   {
+    "t": 40.5,
+    "text": "Tap to punch the spider, or stomp it.",
+    "kind": "teach",
+    "key": "engine:w5.spider",
+    "n": 5
+   },
+   {
+    "t": 47.3,
+    "text": "Slide straight past the silk. Don't look.",
+    "kind": "teach",
+    "key": "engine:w5.sheet",
+    "n": 6
+   },
+   {
+    "t": 64.3,
+    "text": "The Seamstress! Slide past before she looks up.",
+    "kind": "teach",
+    "key": "engine:w5.seamstress",
+    "n": 7
+   },
+   {
+    "t": 100.9,
+    "text": "A butler! Tap to punch his tray away.",
+    "kind": "teach",
+    "key": "engine:w5.butler",
+    "n": 8
+   }
+  ]
+ },
+ {
+  "id": "5-8",
+  "world": 5,
+  "seconds": 102,
+  "n": 1,
+  "perMin": 0.59,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 91,
+    "text": "Shaky branches drop. Don't stop on them!",
+    "kind": "info",
+    "key": "lesson:crumble:0",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "5-9",
+  "world": 5,
+  "seconds": 102,
+  "n": 9,
+  "perMin": 5.29,
+  "busiest": 4,
+  "lines": [
+   {
+    "t": 2.3,
+    "text": "The shrine's shut. Beat the spiders to open it.",
+    "kind": "must",
+    "key": "engine:The shrine's shut. Beat the spiders to open it.",
+    "n": 1
+   },
+   {
+    "t": 9,
+    "text": "Tap to punch the spider, or stomp it.",
+    "kind": "teach",
+    "key": "engine:w5.spider",
+    "n": 2
+   },
+   {
+    "t": 15.3,
+    "text": "Slide past the chairs. Never sit.",
+    "kind": "teach",
+    "key": "engine:w5.chair",
+    "n": 3
+   },
+   {
+    "t": 17.9,
+    "text": "It hummed! Spiders coming!",
+    "kind": "danger",
+    "key": "engine:w5.hummed",
+    "n": 4
+   },
+   {
+    "t": 57.2,
+    "text": "He won't move. He's too polite.",
+    "kind": "teach",
+    "key": "engine:He won't move. He's too polite.",
+    "n": 5
+   },
+   {
+    "t": 72.3,
+    "text": "Still 21 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 6
+   },
+   {
+    "t": 76.9,
+    "text": "A butler! Tap to punch his tray away.",
+    "kind": "teach",
+    "key": "engine:w5.butler",
+    "n": 7
+   },
+   {
+    "t": 87.3,
+    "text": "Sleepy steam! Slide past between puffs.",
+    "kind": "struggle",
+    "key": "engine:w5.steam",
+    "n": 8
+   },
+   {
+    "t": 101.9,
+    "text": "It's sealed. Defeat 21 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 9
+   }
+  ]
+ },
+ {
+  "id": "6-1",
+  "world": 6,
+  "seconds": 143,
+  "n": 1,
+  "perMin": 0.42,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 102,
+    "text": "Poison frog. Stomp it, never touch it.",
+    "kind": "info",
+    "key": "engine:Poison frog. Stomp it, never touch it.",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "6-2",
+  "world": 6,
+  "seconds": 154,
+  "n": 4,
+  "perMin": 1.56,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "The water's watching. Duck into the roots!",
+    "kind": "teach",
+    "key": "engine:The water's watching. Duck into the roots!",
+    "n": 1
+   },
+   {
+    "t": 15.2,
+    "text": "Slide down in a bush to hide!",
+    "kind": "danger",
+    "key": "engine:eng.watch.hide.bush",
+    "n": 2
+   },
+   {
+    "t": 91.7,
+    "text": "Hide! Into a bush!",
+    "kind": "danger",
+    "key": "engine:Hide! Into a bush!",
+    "n": 3
+   },
+   {
+    "t": 118.2,
+    "text": "Hide! Into a bush!",
+    "kind": "danger",
+    "key": "engine:Hide! Into a bush!",
+    "n": 4
+   }
+  ]
+ },
+ {
+  "id": "6-3",
+  "world": 6,
+  "seconds": 145,
+  "n": 5,
+  "perMin": 2.06,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 27.4,
+    "text": "Too high. That root tips, though.",
+    "kind": "teach",
+    "key": "engine:Too high. That root tips, though.",
+    "n": 1
+   },
+   {
+    "t": 42.5,
+    "text": "Poison frog. Stomp it, never touch it.",
+    "kind": "info",
+    "key": "engine:Poison frog. Stomp it, never touch it.",
+    "n": 2
+   },
+   {
+    "t": 56.5,
+    "text": "A tayra! Quick, so punch it early.",
+    "kind": "info",
+    "key": "engine:A tayra! Quick, so punch it early.",
+    "n": 3
+   },
+   {
+    "t": 98.5,
+    "text": "Slide down in a bush to hide!",
+    "kind": "danger",
+    "key": "engine:eng.watch.hide.bush",
+    "n": 4
+   },
+   {
+    "t": 132.3,
+    "text": "Hide! Into a bush!",
+    "kind": "danger",
+    "key": "engine:Hide! Into a bush!",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "6-4",
+  "world": 6,
+  "seconds": 118,
+  "n": 2,
+  "perMin": 1.02,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 2.5,
+    "text": "Mud! Cross while the tide is out.",
+    "kind": "info",
+    "key": "engine:Mud! Cross while the tide is out.",
+    "n": 1
+   },
+   {
+    "t": 27.8,
+    "text": "Poison frog. Stomp it, never touch it.",
+    "kind": "info",
+    "key": "engine:Poison frog. Stomp it, never touch it.",
+    "n": 2
+   }
+  ]
+ },
+ {
+  "id": "6-5",
+  "world": 6,
+  "seconds": 80,
+  "n": 4,
+  "perMin": 2.99,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 2,
+    "text": "The shrine's shut. Chase the hunters off first!",
+    "kind": "must",
+    "key": "engine:The shrine's shut. Chase the hunters off first!",
+    "n": 1
+   },
+   {
+    "t": 17,
+    "text": "Poison frog. Stomp it, never touch it.",
+    "kind": "info",
+    "key": "engine:Poison frog. Stomp it, never touch it.",
+    "n": 2
+   },
+   {
+    "t": 56.4,
+    "text": "Still 17 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 3
+   },
+   {
+    "t": 80.3,
+    "text": "It's sealed. Defeat 17 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 4
+   }
+  ]
+ },
+ {
+  "id": "6-6",
+  "world": 6,
+  "seconds": 142,
+  "n": 3,
+  "perMin": 1.27,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 23.3,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   },
+   {
+    "t": 27.9,
+    "text": "Too high. Stay close to the firefly, Pokey.",
+    "kind": "teach",
+    "key": "engine:Too high. Stay close to the firefly, Pokey.",
+    "n": 2
+   },
+   {
+    "t": 95.8,
+    "text": "Poison frog. Stomp it, never touch it.",
+    "kind": "info",
+    "key": "engine:Poison frog. Stomp it, never touch it.",
+    "n": 3
+   }
+  ]
+ },
+ {
+  "id": "6-7",
+  "world": 6,
+  "seconds": 143,
+  "n": 5,
+  "perMin": 2.09,
+  "busiest": 3,
+  "lines": [
+   {
+    "t": 26.3,
+    "text": "High water swells that root door shut.",
+    "kind": "teach",
+    "key": "engine:High water swells that root door shut.",
+    "n": 1
+   },
+   {
+    "t": 36.2,
+    "text": "Slide down in a bush to hide!",
+    "kind": "danger",
+    "key": "engine:eng.watch.hide.bush",
+    "n": 2
+   },
+   {
+    "t": 52.3,
+    "text": "Poison frog. Stomp it, never touch it.",
+    "kind": "info",
+    "key": "engine:Poison frog. Stomp it, never touch it.",
+    "n": 3
+   },
+   {
+    "t": 72.1,
+    "text": "A tayra! Quick, so punch it early.",
+    "kind": "info",
+    "key": "engine:A tayra! Quick, so punch it early.",
+    "n": 4
+   },
+   {
+    "t": 93,
+    "text": "Hide! Into a bush!",
+    "kind": "danger",
+    "key": "engine:Hide! Into a bush!",
+    "n": 5
+   }
+  ]
+ },
+ {
+  "id": "6-8",
+  "world": 6,
+  "seconds": 117,
+  "n": 0,
+  "perMin": 0,
+  "busiest": 0,
+  "lines": []
+ },
+ {
+  "id": "6-9",
+  "world": 6,
+  "seconds": 88,
+  "n": 4,
+  "perMin": 2.73,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 1.9,
+    "text": "The shrine's shut. Fight through to open it.",
+    "kind": "must",
+    "key": "engine:The shrine's shut. Fight through to open it.",
+    "n": 1
+   },
+   {
+    "t": 17,
+    "text": "A tayra! Quick, so punch it early.",
+    "kind": "info",
+    "key": "engine:A tayra! Quick, so punch it early.",
+    "n": 2
+   },
+   {
+    "t": 61.3,
+    "text": "Still 23 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 3
+   },
+   {
+    "t": 87.7,
+    "text": "It's sealed. Defeat 23 more predators first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 4
+   }
+  ]
+ },
+ {
+  "id": "7-1",
+  "world": 7,
+  "seconds": 116,
+  "n": 2,
+  "perMin": 1.04,
+  "busiest": 2,
+  "lines": [
+   {
+    "t": 44.4,
+    "text": "These tiles crumble. Keep moving!",
+    "kind": "info",
+    "key": "engine:These tiles crumble. Keep moving!",
+    "n": 1
+   },
+   {
+    "t": 59.6,
+    "text": "Flick up when it swings close.",
+    "kind": "teach",
+    "key": "lesson:moving:0",
+    "n": 2
+   }
+  ]
+ },
+ {
+  "id": "7-2",
+  "world": 7,
+  "seconds": 139,
+  "n": 0,
+  "perMin": 0,
+  "busiest": 0,
+  "lines": []
+ },
+ {
+  "id": "7-3",
+  "world": 7,
+  "seconds": 105,
+  "n": 2,
+  "perMin": 1.14,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 35.4,
+    "text": "These tiles crumble. Keep moving!",
+    "kind": "info",
+    "key": "engine:These tiles crumble. Keep moving!",
+    "n": 1
+   },
+   {
+    "t": 75.3,
+    "text": "Still 4 relics to find!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 2
+   }
+  ]
+ },
+ {
+  "id": "7-4",
+  "world": 7,
+  "seconds": 122,
+  "n": 0,
+  "perMin": 0,
+  "busiest": 0,
+  "lines": []
+ },
+ {
+  "id": "7-5",
+  "world": 7,
+  "seconds": 87,
+  "n": 2,
+  "perMin": 1.38,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 28.1,
+    "text": "These tiles crumble. Keep moving!",
+    "kind": "info",
+    "key": "engine:These tiles crumble. Keep moving!",
+    "n": 1
+   },
+   {
+    "t": 61,
+    "text": "Still 20 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 2
+   }
+  ]
+ },
+ {
+  "id": "7-6",
+  "world": 7,
+  "seconds": 97,
+  "n": 1,
+  "perMin": 0.62,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 33.4,
+    "text": "These tiles crumble. Keep moving!",
+    "kind": "info",
+    "key": "engine:These tiles crumble. Keep moving!",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "7-7",
+  "world": 7,
+  "seconds": 105,
+  "n": 3,
+  "perMin": 1.72,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 28.7,
+    "text": "These tiles crumble. Keep moving!",
+    "kind": "info",
+    "key": "engine:These tiles crumble. Keep moving!",
+    "n": 1
+   },
+   {
+    "t": 71.7,
+    "text": "Still 3 relics to find!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 2
+   },
+   {
+    "t": 104.5,
+    "text": "It's sealed. Find 3 more relics first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 3
+   }
+  ]
+ },
+ {
+  "id": "7-8",
+  "world": 7,
+  "seconds": 123,
+  "n": 0,
+  "perMin": 0,
+  "busiest": 0,
+  "lines": []
+ },
+ {
+  "id": "7-9",
+  "world": 7,
+  "seconds": 100,
+  "n": 2,
+  "perMin": 1.2,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 30.8,
+    "text": "These tiles crumble. Keep moving!",
+    "kind": "info",
+    "key": "engine:These tiles crumble. Keep moving!",
+    "n": 1
+   },
+   {
+    "t": 71.1,
+    "text": "Still 18 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 2
+   }
+  ]
+ },
+ {
+  "id": "8-1",
+  "world": 8,
+  "seconds": 111,
+  "n": 1,
+  "perMin": 0.54,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 29.9,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "8-2",
+  "world": 8,
+  "seconds": 110,
+  "n": 3,
+  "perMin": 1.63,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 32.7,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   },
+   {
+    "t": 68,
+    "text": "Still 71 night blooms to collect!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 2
+   },
+   {
+    "t": 107.9,
+    "text": "It's sealed. Collect 64 more night blooms first.",
+    "kind": "must",
+    "key": "engine:lock.sealed",
+    "n": 3
+   }
+  ]
+ },
+ {
+  "id": "8-3",
+  "world": 8,
+  "seconds": 118,
+  "n": 1,
+  "perMin": 0.51,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 42,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "8-4",
+  "world": 8,
+  "seconds": 139,
+  "n": 1,
+  "perMin": 0.43,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 53.4,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "8-5",
+  "world": 8,
+  "seconds": 112,
+  "n": 1,
+  "perMin": 0.53,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 26.1,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "8-6",
+  "world": 8,
+  "seconds": 103,
+  "n": 1,
+  "perMin": 0.58,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 23.6,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "8-7",
+  "world": 8,
+  "seconds": 125,
+  "n": 0,
+  "perMin": 0,
+  "busiest": 0,
+  "lines": []
+ },
+ {
+  "id": "8-8",
+  "world": 8,
+  "seconds": 100,
+  "n": 2,
+  "perMin": 1.19,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 22.7,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   },
+   {
+    "t": 70.2,
+    "text": "Still 19 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 2
+   }
+  ]
+ },
+ {
+  "id": "8-9",
+  "world": 8,
+  "seconds": 104,
+  "n": 2,
+  "perMin": 1.16,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 28.6,
+    "text": "So dark. Follow the fireflies.",
+    "kind": "info",
+    "key": "engine:So dark. Follow the fireflies.",
+    "n": 1
+   },
+   {
+    "t": 75.6,
+    "text": "Still 23 predators to defeat!",
+    "kind": "goal",
+    "key": "engine:goal.late",
+    "n": 2
+   }
+  ]
+ }
+]

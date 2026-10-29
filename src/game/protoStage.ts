@@ -1871,8 +1871,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         // first stretch is crossable without it, the second only with it: the first room says what an acorn is for, the second that
         // this time it is needed. Both lines new, need Matt's approval)
         tips: first
-          ? { enter: 'The squirrels\' acorn tree! An acorn can fool the eagle.', hold: 'When it screeches, flick up to throw it. Keep running!' }
-          : { enter: 'Too far to run this time. Take an acorn!' },
+          ? { enter: "The squirrels' acorn tree, and that eagle!", hold: 'When it screeches, flick up to throw it.', nudge: 'An acorn could fool that eagle.', move: 'Take an acorn. Throw it when it screeches.' }
+          : { enter: 'Too far to run without an acorn.', nudge: 'That acorn tree again. Hmm.', move: 'Take an acorn!' },
+        // (Dot's lines: the problem on walking in, a nudge on struggle, the move only on Help: dotTips.ts)
+        mech: first ? 'acornDecoy' : undefined,
       });
       flower(oakX + 300, G - 34, 'hibiscus');
       // the rest of the stretch: a rock or two to hop once his hands are free, then the next bush
@@ -2690,8 +2692,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       left: onP(before, door - 30), right: onP(floor, door + span - 10), above: 400, below: 60,
       pieces: parts, exit: `roots${n}`, beyond: onP(floor, door + span - 30), ground,
       tips: two
-        ? { enter: 'Two stone plates this time.', hold: 'One pebble each. Tap to set it down.' }
-        : { enter: 'Roots! That stone plate opens them. Stepping off shuts them.', hold: 'Pebbles are heavy enough. Tap to set it down.', open: 'Held open!' },
+        ? { enter: 'Two stone plates this time.', hold: 'Tap to set it down.', nudge: 'Two plates. Two pebbles?', move: 'One pebble on each plate.' }
+        : { enter: 'Roots! Stepping off the plate shuts them.', hold: 'Tap to set it down.', open: 'Held open!', nudge: 'Something heavy could hold the plate.', move: 'Set a pebble on the plate.' },
+      mech: two ? undefined : 'plate',
     });
     run(R.r(90, 130));
     logHop(R.i(34, 44));
@@ -2755,8 +2758,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       left: onP(before, door - 30), right: { on: top.id, at: 0, dx: 80 }, above: high ? 520 : 440, below: 60,
       pieces: parts, exit: `way${n}`, beyond: { on: top.id, at: 0.35 }, ground,
       tips: high
-        ? { enter: 'The way up is up there somewhere, out of the light.', hold: 'From down here its light only reaches so high.', open: 'There it is!' }
-        : { enter: 'No glowworms down here, and that bank is too high. That little mushroom glows, though.', hold: 'It lights wherever it goes. Tap to set it down.', open: 'A ledge, in the light!' },
+        ? { enter: 'Somewhere up there, out of the light.', hold: 'From down here its light only reaches so high.', open: 'There it is!', nudge: 'Its light needs to be higher.', move: 'Carry it up onto the stone.' }
+        : { enter: 'Too dark, and that bank is too high.', hold: 'Tap to set it down.', open: 'A ledge, in the light!', nudge: 'That little mushroom glows.', move: 'Carry the mushroom. Its light finds ledges.' },
+      mech: high ? undefined : 'glow',
     });
     // the room's own dark, a glowworm by the door and one over the bank (standing still wakes them, but only the mushroom finds a ledge)
     roomDark(door - 140, top.x + 240, [[door + 30, G - 175], [top.x + 150, top.y - 170]]);
@@ -3177,9 +3181,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const rock = block(past, past + 120, 40);
     flower(past + 60, G - 74, 'hibiscus');
     const tips: RoomSpec['tips'] =
-      kind === 'bell' ? { enter: "This old vine is wide awake. It won't let anyone by." }
-        : kind === 'pebble' ? { enter: 'Another one awake, and no bell this time.', hold: 'Pebbles clack when they land.' }
-          : { enter: 'Two of them, both awake.' };
+      kind === 'bell' ? { enter: 'This old vine is wide awake. Nobody gets by.', nudge: 'That bell looks loud.', move: 'Ring the bell. The vine turns to look.' }
+        : kind === 'pebble' ? { enter: 'Another one awake, and no bell this time.', hold: 'Pebbles clack when they land.', nudge: 'Any noise turns its head.', move: 'Throw a pebble past it. Then go.' }
+          : { enter: 'Two of them, both awake.', nudge: 'One clack each?', move: 'Throw a pebble past each one.' };
     ROOMS.push({
       id: `${kind === 'bell' ? 'vineBell' : kind === 'pebble' ? 'pebbles' : 'pebblesTwo'}-${n}`,
       // (the room ends past the last vine's reach: narrow enough for an upright phone)
@@ -3428,8 +3432,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       left: onP(before, door - 30), right: onP(floor, door + 830), above: 420, below: 60,
       pieces: parts, exit: `shroom${n}`, beyond: onP(floor, door + 820), ground: [floor.id],
       tips: first
-        ? { enter: 'Oh! I marked the right fern with a stone. A stone just like that one.', hold: 'Its light shows the stones. Find the twin.' }
-        : { enter: 'I marked this one too. Same kind of stone as the one by the door.' },
+        ? { enter: 'I marked the right fern with a stone.', hold: 'Its light shows the stones.', nudge: 'Look at the stone by the door.', move: 'Find its twin by a fern. Search there.' }
+        : { enter: 'I marked this one too.', nudge: 'Same stone as the one by the door.', move: 'Find its twin by a fern. Search there.' },
     });
     roomDark(door - 140, door + 900, [[door + 40, G - 175], [door + 560, G - 190]]);
     // (out of the room, a stone to hop)
@@ -4814,7 +4818,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         exit: `lift${n}`,
         beyond: { on: top.id, at: 0.5 },
         ground: [floor.id, well.id],
-        tips: { enter: 'The capuchin took our stone. It loves mangoes!', hold: 'Tap by the capuchin to offer it.', open: 'Stone in, up you go!' },
+        tips: { enter: 'The capuchin took our stone!', hold: 'Tap by the capuchin to offer it.', open: 'Stone in, up you go!', nudge: 'Hmm. It looks hungry.', move: 'Bring it a mango. Tap by it.' },
+        mech: 'trader',
       });
       row(top.x + 60, top.x + 130, top.y - 34, 2, 'orchid');
       nest(top.x + top.width - 70, top, 'trade');
@@ -5106,7 +5111,7 @@ const MIST_LEAVES = 160;
 interface KnotPulley { tips: RoomTips; plats: number[] }
 /** 4-6: the seconds of the climb across the tree that its second pinwheel lift takes the place of (2026-10-28) */
 const PINWHEEL_AGAIN = 16;
-export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley! Fill the basket.', hold: 'Stand on the lift. Tap to drop it in.', open: 'Up you go!' };
+export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley!', hold: 'Stand on the lift. Tap to drop it in.', open: 'Up you go!', nudge: 'That basket looks empty.', move: 'Fill the basket to raise the lift.' };
 
 /**
  * 1-4 Up the Kapok: going up. Learn: climb a trunk to its branch, twice, straight up from the floor. Test: a zigzag of rope, branch and
@@ -5330,8 +5335,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       beyond: { on: up.id, at: 0.5 },
       ground: [floor.id, well.id],
       tips: knot?.tips ?? (high
-        ? { enter: 'The basket hangs high this time.', hold: 'Stand on the lift. Flick up to throw!' }
-        : { enter: "The squirrels' lift! Fill the basket to raise it.", hold: 'Stand on the lift. Tap to drop it in.' }),
+        ? { enter: 'The basket hangs high this time.', hold: 'Stand on the lift. Flick up to throw!', nudge: 'Too high to reach. Throw?', move: 'Stand on the lift. Throw stones in.' }
+        : { enter: "The squirrels' lift! It won't rise.", hold: 'Stand on the lift. Tap to drop it in.', nudge: 'That basket looks empty.', move: 'Fill the basket to raise it.' }),
+      mech: knot || high ? undefined : 'pulley',
     });
     knot?.plats.push(floor.id, well.id, up.id);
     row(near(150), near(250), y - 34, 2, 'hibiscus');
@@ -5493,7 +5499,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       exit: `lift${n}`,
       beyond: { on: up.id, at: 0.5 },
       ground: [floor.id, well.id],
-      tips: { enter: 'The shutter stops the wind. Pinwheels wind lifts!', open: 'Wound right up!' },
+      tips: { enter: 'The lift needs winding. No wind in here.', open: 'Wound right up!', nudge: 'That shutter holds the wind back.', move: 'Pull the lever. Let the wind in.' },
+      mech: 'pinwheel',
     });
     row(up.x + 70, up.x + up.width - 70, up.y - 34, 3, 'orchid');
     // (a quick player: the walk in, the lever, and two or three gusts on the lift while the winch takes him up)

@@ -44,10 +44,14 @@ export interface Paced {
   busiest: number;
 }
 
-/** the most lines that start in any `win` seconds */
-export function busiestIn(lines: ReadonlyArray<{ t: number }>, win = 30): number {
+/** a lesson's next step ("Slide your thumb up to climb" after "Flick up into the trunk"): one lesson, said in two beats */
+const nextStep = (l: { key?: string }) => /^lesson:.+:[1-9]\d*$/.test(l.key ?? '');
+
+/** the most lines that start in any `win` seconds (a lesson's next step counted with its lesson) */
+export function busiestIn(lines: ReadonlyArray<{ t: number; key?: string }>, win = 30): number {
+  const ls = lines.filter((l) => !nextStep(l));
   let most = 0;
-  for (const l of lines) most = Math.max(most, lines.filter((m) => m.t >= l.t && m.t < l.t + win).length);
+  for (const l of ls) most = Math.max(most, ls.filter((m) => m.t >= l.t && m.t < l.t + win).length);
   return most;
 }
 

@@ -302,8 +302,8 @@ export interface LessonScene {
   py: number;
   /** the part of the world on screen */
   view: { x0: number; x1: number; y0: number; y1: number };
-  enemies: { type: string; x: number; y: number; defeated: boolean }[];
-  collectibles: { type: string; x: number; y: number; collected: boolean }[];
+  enemies: { type: string; x: number; y: number; defeated: boolean; stompable?: boolean }[];
+  collectibles: { type: string; x: number; y: number; collected: boolean; hidden?: boolean }[];
   vines: { x: number; topY: number; bottomY: number; vineType?: string }[];
   platforms: { x: number; y: number; width: number; type: string; broken?: boolean }[];
   /** the flags; `reached` once he has run past one (the checkpoint card comes on the flag, not on the way to it) */
@@ -315,6 +315,9 @@ export interface LessonScene {
    *  said it at 5 of 5 hearts). Left out: treated as full health */
   hp?: number;
   maxHp?: number;
+  /** the puzzle rooms' spans: no jump's lesson at a room's set pieces (a "Flick up just before the edge" at 8-2's hammock well read
+   *  as the answer to the puzzle; World 8 builder, 2026-10-29) */
+  rooms?: readonly { x0: number; x1: number }[];
 }
 
 /** what a lesson's done-check reads: the stage's things (their collected and defeated flags) and his hearts */
@@ -393,7 +396,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
     if (e.defeated || e.type === 'boss' || !near(e.x, e.y, NEAR.foe)) continue;
     if (want('foe')) return 'foe';
     if (e.type === 'eagle' && want('eagle')) return 'eagle';
-    if (NO_STOMP.has(e.type) && want('nostomp')) return 'nostomp';
+    // (not World 5's ground spiders, which a stomp does beat: Dot had just said "or stomp it" when this said "Don't stomp this one")
+    if (NO_STOMP.has(e.type) && !e.stompable && want('nostomp')) return 'nostomp';
     if (TOUGH.has(e.type) && want('tough')) return 'tough';
   }
   // (a swinging vine before the gap: the gap it hangs over is crossed by the vine, and the lesson that crossing needs is the swing's)
@@ -404,6 +408,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
       const edge = ps[i].x + ps[i].width;
       // (not a gap a swinging vine hangs over: that one is crossed on the vine, and its lesson is the swing's)
       if (s.vines.some((v) => v.vineType !== 'tree_climb' && v.x > edge && v.x < ps[i + 1].x)) continue;
+      // (not at a puzzle room's pieces: a jump's lesson there points at the answer)
+      if ((s.rooms ?? []).some((r) => edge >= r.x0 - 40 && edge <= r.x1 + 40)) continue;
       if (ps[i + 1].x - edge > 60 && edge >= s.px && edge - s.px <= NEAR.thing && onScreen(edge, s.py)) return 'gap';
     }
   }
@@ -423,7 +429,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
   if (want('power') && col(POWERS)) return 'power';
   // (only when he is hurt: at full health a heart cannot be taken, and the lesson waits for the next heart after a hit)
   if (want('heart') && lessonHurt(s) && col(HEARTS)) return 'heart';
-  if (want('idol') && col(['relic'])) return 'idol';
+  // (a relic he can see, up high, as the lesson says: not one hidden in a fern, which 3-6's lesson pointed at, DOT-15)
+  if (want('idol') && s.collectibles.some((c) => !c.collected && !c.hidden && c.type === 'relic' && c.y < s.py - 80 && near(c.x, c.y, NEAR.thing + 120))) return 'idol';
   if (want('fruit') && col(FRUIT)) return 'fruit';
   if (want('checkpoint') && s.checkpoints.some((c) => c.reached && near(c.x, c.y, NEAR.thing))) return 'checkpoint';
   if (want('shrine') && col(['exit_totem'])) return 'shrine';
@@ -532,4 +539,13 @@ export function lessonDotLine(id: LessonId, mode: InputMode = lessonInputMode(),
     if (own && l) return { ...l, text: own, next: undefined };
   }
   return lessonStep(id, d.ids, 0, mode);
+}
+
+/**
+ * the lesson said by whoever is with Pokey: Dot's lines are hers while she is there, his own thought while she is away (wayside.ts
+ * dotPresent: the second half of World 6, all of World 7, World 10). A lesson card said by Dot in World 7 broke Matt's rule (STAGE-RULES §1)
+ */
+export function lessonSaidBy(l: GuideLine, dot: boolean): GuideLine {
+  if (dot) return l;
+  return { ...l, who: 'Pokey', next: l.next ? lessonSaidBy(l.next, dot) : undefined };
 }

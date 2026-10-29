@@ -623,7 +623,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       // the first sluice: the water costs nothing here
       k.ferryRoom({
         safe: true, flowers: 6,
-        tips: { enter: 'The raft is tied up over there. Pull the lever to let the river run!', open: 'Here comes the raft. Hop on and ride!' },
+        tips: { enter: 'A raft! How do we untie it?', open: 'Here comes the raft. Hop on and ride!', nudge: 'That lever works the sluice.', move: 'Pull the lever to let the river run!', mech: 'sluice' },
       });
       k.heart(k.x - 50, k.G - 60);
       // (a flag past the ferry: the room and two crossings were 5000 px with none, QA 2026-10-29)
@@ -667,10 +667,10 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       const critter = critters[i % 3];
       const first = !told.has(c === 'high1' ? 'high' : c);
       told.add(c === 'high1' ? 'high' : c);
-      if (c === 'heavy') k.cageRoom({ need: STONE * 2, mode: 'bank', critter, tips: first ? { enter: 'A heavy one! One stone lifts it halfway.' } : undefined });
+      if (c === 'heavy') k.cageRoom({ need: STONE * 2, mode: 'bank', critter, tips: first ? { enter: 'A heavy one! It barely moves.', nudge: 'One stone lifts it halfway.', move: 'Two stones in the basket.' } : undefined });
       else if (c === 'across')
-        k.cageRoom({ need: STONE, mode: 'across', critter, tips: first ? { enter: 'The stones are on the island. Throw one over!', hold: 'Hands full! Flick toward the bank to throw it.' } : undefined });
-      else k.cageRoom({ need: c === 'high' ? STONE * 2 : STONE, mode: 'high', critter, tips: first ? { enter: 'The basket hangs high. Flick up to throw!' } : undefined });
+        k.cageRoom({ need: STONE, mode: 'across', critter, tips: first ? { enter: 'The stones are on the island.', hold: 'Hands full! Flick toward the bank to throw it.', nudge: 'Too far to carry it over.', move: 'Throw one over to the bank.' } : undefined });
+      else k.cageRoom({ need: c === 'high' ? STONE * 2 : STONE, mode: 'high', critter, tips: first ? { enter: 'The basket hangs high.', nudge: 'Too high to drop it in.', move: 'Flick up to throw!' } : undefined });
     };
     /** the reeds between two cages, by the roll */
     const kinds: Record<string, Kind[]> = {
@@ -687,7 +687,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       k.hint(150, 'Little ones are stuck in reed cages. Free them!');
       k.cageRoom({
         need: STONE, mode: 'bank', safe: true, critter: critters[0],
-        tips: { enter: 'A cage on a rope! Stones in the basket lift it.', hold: 'Tap by the basket to drop it in.', open: 'Up it comes! The little one is free!' },
+        tips: { enter: 'A little one, in a cage on a rope!', hold: 'Tap by the basket to drop it in.', open: 'Up it comes! The little one is free!', nudge: 'That basket pulls the rope.', move: 'Drop a stone in the basket.', mech: 'cageLift' },
       });
       k.breath();
       // the reeds' first way across costs no life
@@ -1011,7 +1011,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     k.beat('Learn: the water rises', () => {
       k.run(R.r(200, 240));
       k.hint(180, 'More little ones in the reeds! Free them before the water rises.');
-      k.floodBasin(2, [1], 30, { safe: true, tips: { enter: 'A stone in the basket lifts the cage. Before the water rises!' } });
+      k.floodBasin(2, [1], 30, { safe: true, tips: { enter: "The water's rising round that cage!", nudge: 'The basket lifts the cage.', move: 'A stone in the basket. Quick!', mech: 'flood' } });
       k.hint(k.x - 220, 'Back on the bank before the islands go under!');
       k.breath();
       k.floodBasin(3, [0, 2], 30, { safe: true });
@@ -1028,7 +1028,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     });
     k.beat('Twist: stones across the water', () => {
       k.breath();
-      k.floodBasin(3, [1], 26, { across: true, tips: { enter: 'The stones are on the next island. Throw one over!', hold: 'Flick toward the cage’s island to throw it.' } });
+      k.floodBasin(3, [1], 26, { across: true, tips: { enter: 'The stones are on the next island.', hold: 'Flick toward the cage’s island to throw it.', nudge: 'Too far to carry it over.', move: 'Throw one over to the cage’s island.' } });
       k.heart(k.x - 40, k.G - 60);
       go(turns.next(), 3);
       k.breath();
@@ -1117,7 +1117,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       k.hint(120, 'The river king’s court! The gate opens to the bell.');
       k.piece('sign', 120, k.G + 4, 132, { text: ['THE KING’S', 'COURT'] });
       // the court gate: the bell beside it (the first bell: no guard this side of the gate, and nothing to fall in)
-      const g = k.bellGate({ enter: 'Ring the court bell. Tap it!', open: 'Dong! The gate opens. The guards come to look at a bell.' });
+      const g = k.bellGate({ enter: "The court gate's shut.", open: 'Dong! The gate opens. The guards come looking.', nudge: 'That bell, by the gate.', move: 'Ring the court bell. Tap it!', mech: 'bellGate' });
       // the first guard, past the gate: near enough to hear the bell, and come to look
       // (the guard's tip before the first guard: it was said 240 px past him, after the first jab, the first-timer bot 2026-10-28)
       // (and further back, by the bell: the tip 360 px short of the guard was up only after his first jab, 2026-10-28)

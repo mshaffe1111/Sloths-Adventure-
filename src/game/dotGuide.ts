@@ -149,6 +149,11 @@ export const CALM = { startMs: 2500, gapMs: 10000, repeatMax: 2, moveCapMs: 1200
 /** "Tips" (dotTips.ts): at least this long from one line's start to the next's, for everything but the urgent lines (a warning, the
  *  locked exit, a first-time hazard about to hit, a lesson's next step) */
 export const TIPS_GAP_MS = 30000;
+/** "Tips": the most lines that start in any 30 s (the polish target: 2 in the busiest 30 s), a warning or the locked exit aside */
+export const TIPS_BUSY = 2;
+/** "Help": the most in any 30 s (Help says more, but not a line every few seconds: 5-9 had 7 in 30 s) */
+export const HELP_BUSY = 3;
+const BUSY_WINDOW_MS = 30000;
 
 /**
  * Lines that say the same thing as another line of the same stage in other words: once one of a pair has been said, the other is not said
@@ -161,9 +166,11 @@ const SAME_TIPS: readonly (readonly string[])[] = [
   ['hint.4-3.quiet', 'w4.surge'],
   ['hint.4-4.knot', 'w4.knot'],
   ['hint.4-5.fall', 'w4.veil'],
-  ['hint.1-7.hide', 'eng.watch.hide.bush'],
-  ['hint.3-2.eyes', 'eng.watch.hide.fern'],
+  // (and a watcher's pass: one call to hide is enough; 1-7 on Help said three in 15 s, in three wordings)
+  ['hint.1-7.hide', 'eng.watch.hide.bush', 'eng.watch.seen.bush', 'Hide! Into a bush!'],
+  ['hint.3-2.eyes', 'eng.watch.hide.fern', 'eng.watch.seen.fern', 'Hide! Into a fern!'],
   ['hint.3-6.search', 'eng.fern.near'],
+  ['eng.watch.hide.cliffs', 'eng.watch.seen.cliffs', 'Hide! Water or a bush!'],
   ['hint.1-1.double', 'eng.stuck.wall'],
 ];
 export const SAME_TIP = new Map<string, readonly string[]>();
@@ -229,7 +236,15 @@ export interface TickEnv {
    * heart's lesson once he is back to full health): a waiting line for it is dropped unsaid, with its next step (QA 2026-10-29, 2-2)
    */
   stale?(l: GuideLine): boolean;
+  /**
+   * not now: the line keeps waiting (its usual wait) but does not start. Inside a puzzle room only the room's own lines, the warnings,
+   * the locked exit, a lesson and a new thing's first line are said: no chatter while he thinks (World 8 builder, 2026-10-29)
+   */
+  hush?(l: GuideLine): boolean;
 }
+
+/** inside a puzzle room: the lines that may still be said there (the rest wait, or are old news when he leaves) */
+export const roomMaySay = (l: GuideLine): boolean => isUrgent(l) || !!l.step || l.source === 'lesson' || !!l.mech || (l.kind === 'struggle' && l.source === 'struggle' && l.key.startsWith('struggle:death'));
 
 /**
  * a line that must wait for now: a tip about jumping a gap in the ground while he swings on a liana. Its jump cannot be done from there,
@@ -250,6 +265,8 @@ export class GuideQueue {
   repeatWarn = Infinity;
   /** (calm) when the last line started, and the words said this stage: how often, and the move count when last said */
   private startedAt = -1e9;
+  /** when the lines of the last 30 s started (Tips' TIPS_BUSY) */
+  private starts: number[] = [];
   private heard = new Map<string, { n: number; base: number }>();
   /** (calm) when each line was last started, by key (for SAME_TIP) */
   private saidAt = new Map<string, number>();
@@ -297,6 +314,9 @@ export class GuideQueue {
 
   push(line: GuideLine, now: number): void {
     if (!line.text || this.has(line.key, line.text)) return;
+    // (calm: a warning said often enough this stage, or one saying what another said a moment ago, is not said: tick's rules, here
+    // too, for a warning that cuts in at once. 1-7's "Hide! Into a bush!" came 10 s after "Slide down in a bush to hide!")
+    if (this.calm && line.kind === 'danger' && ((this.heard.get(norm(line.text))?.n ?? 0) >= this.repeatWarn || SAME_TIP.get(line.key)?.some((k) => now - (this.saidAt.get(k) ?? -1e9) < CALM.nearMs))) return;
     const cur = this.cur;
     const lessonCut = this.cutsIn(line, now);
     if (cur && ((isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) || lessonCut)) {
@@ -350,7 +370,7 @@ export class GuideQueue {
   private best(now: number, env?: TickEnv): Waiting | null {
     let best: Waiting | null = null;
     for (const w of this.waiting) {
-      if (heldBack(w.line, env)) continue;
+      if (heldBack(w.line, env) || env?.hush?.(w.line)) continue;
       if (!best || PRIORITY[w.line.kind] > PRIORITY[best.line.kind] || (PRIORITY[w.line.kind] === PRIORITY[best.line.kind] && w.seq < best.seq)) best = w;
     }
     void now;
@@ -360,6 +380,7 @@ export class GuideQueue {
   private begin(line: GuideLine, now: number, base: number): void {
     this.cur = { line, startedAt: now, base, n: ++this.n };
     this.startedAt = now;
+    this.starts = [...this.starts.filter((t) => now - t < BUSY_WINDOW_MS), now];
     this.goneSince = -1;
     const k = norm(line.text);
     this.heard.set(k, { n: (this.heard.get(k)?.n ?? 0) + 1, base });
@@ -382,6 +403,8 @@ export class GuideQueue {
       // (calm) words said often enough this stage, or a move tip whose move he has done since it was said, are not said again
       // (calm) the same warning again and again as the eagle passes is nagging: at most repeatWarn times a stage
       if (this.calm && w.line.kind === 'danger' && (this.heard.get(norm(w.line.text))?.n ?? 0) >= this.repeatWarn) return false;
+      // (nor a warning that says what another said a moment ago, in other words: SAME_TIP's watcher calls)
+      if (this.calm && w.line.kind === 'danger' && SAME_TIP.get(w.line.key)?.some((k) => now - (this.saidAt.get(k) ?? -1e9) < CALM.nearMs)) return false;
       if (this.calm && !isUrgent(w.line)) {
         const h = this.heard.get(norm(w.line.text));
         if (h && (h.n >= this.repeatMax || (w.line.move && env.moveCount(w.line.move) > h.base))) {
@@ -393,6 +416,10 @@ export class GuideQueue {
       }
       const m = w.line.move;
       if (!m || w.line.thing) return now <= w.until;
+      // (a first-time hazard or a new thing is not taught by a jump made somewhere else: 2-1's first river lost the water's lesson
+      // because he had jumped a bank before it came. It waits as a line does, and once up stays until he does the move. A tip whose
+      // thing is the move itself, the double jump's, is learned by doing it: QA v189)
+      if ((w.line.soon || w.line.mech) && w.line.mech !== m && (w.base === undefined || w.base < 0)) return now <= w.until;
       if (w.base === undefined || w.base < 0) {
         if (env.moveCount(m) > 0) {
           if (w.line.next) skipped.push(w.line.next);
@@ -490,6 +517,9 @@ export class GuideQueue {
       const exempt = this.gapMs >= TIPS_GAP_MS ? tipsFirst : tipsFirst || teach;
       const gap = exempt ? 0 : this.gapMs;
       if (now - this.startedAt < gap) return null;
+      // (at most TIPS_BUSY lines start in any 30 s on Tips, HELP_BUSY on Help; only a first-time hazard about to hit may make one more)
+      const busy = this.gapMs >= TIPS_GAP_MS ? TIPS_BUSY : HELP_BUSY;
+      if (!b.line.soon && this.starts.filter((t) => now - t < BUSY_WINDOW_MS).length >= busy) return null;
     }
     this.waiting.splice(this.waiting.indexOf(b), 1);
     this.begin(b.line, now, b.line.move ? env.moveCount(b.line.move) : 0);
@@ -536,7 +566,7 @@ export function noteSaid(l: GuideLine): void {
  */
 export function classifyLine(text: string, inBoss = false): Pick<GuideLine, 'kind' | 'move' | 'topic' | 'glyph' | 'skill'> {
   const t = text.trim();
-  if (/^Sealed:|Finish the goal/i.test(t)) return { kind: 'must', topic: 'exit' };
+  if (/^Sealed:|Finish the goal|^The shrine's shut/i.test(t)) return { kind: 'must', topic: 'exit' };
   if (/The water is rising|breaking behind us|The ring!|Drive them all off|Clear them all to open the way/i.test(t)) return { kind: 'must' };
   if (inBoss) return { kind: 'danger' };
   // (World 5: the silk creeping up him, the wrap itself and a thread's hum come in at once, over whatever is being read: the creep is the

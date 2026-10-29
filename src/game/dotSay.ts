@@ -7,7 +7,8 @@
  *   - a line counts as heard once it has been up GUIDE.minShowMs (DOT-1): only then are its stage tip, its lesson and the thing it
  *     teaches written down, so a line the setting dropped, or that waited until it was old news, is taught another time.
  */
-import { CALM, GUIDE, TIPS_GAP_MS, type GuideLine, type GuideQueue } from './dotGuide.ts';
+import { CALM, GUIDE, TIPS_GAP_MS, isUrgent, type GuideLine, type GuideQueue } from './dotGuide.ts';
+import { thingOf } from './dotTips.ts';
 import { helpAllows, knownMoveTip, markSkillSeen, tipsSkill, type DotHelp } from './dotGuideHelp.ts';
 import { confirmHeard } from './tipMemory.ts';
 import { lessonOfLine, markLessonSeen } from './lessons.ts';
@@ -21,6 +22,8 @@ export const gapFor = (help: DotHelp): number => (help === 'reminders' ? TIPS_GA
 export class DotSay {
   /** the line (its n) whose minimum time has been seen to */
   private keptN = -1;
+  /** the things said in this run of the stage (Help says each once: dotTips.ts thingOf) */
+  readonly stageThings = new Set<string>();
   constructor(
     readonly queue: GuideQueue,
     public help: DotHelp,
@@ -43,8 +46,15 @@ export class DotSay {
   /** may this line be said now? */
   allows(l: GuideLine): boolean {
     if (!helpAllows(l, this.help, this.seen, this.storyOn)) return false;
-    // (toned down: not a stage tip for a move already done in an earlier stage)
-    if (this.queue.calm && knownMoveTip(l, this.movesBefore)) return false;
+    // (Tips: not a stage tip for a move already done in an earlier stage)
+    if (this.help !== 'teach' && this.queue.calm && knownMoveTip(l, this.movesBefore)) return false;
+    // Help: a thing once a stage, its first time or one reminder of it from an earlier stage, never twice (Matt, 2026-10-29). Not the
+    // warnings (a second eagle pass may still be warned of, at most twice: REPEAT.warn), nor a lesson's next step, nor a puzzle's
+    // nudge and move
+    if (this.help === 'teach' && !isUrgent(l) && !l.step && !/:\d+$/.test(l.key)) {
+      const t = thingOf(l);
+      if (t && this.stageThings.has(t)) return false;
+    }
     return true;
   }
 
@@ -70,6 +80,13 @@ export class DotSay {
     if (lesson && l.move) this.mark(`move:${l.move}`);
     const k = tipsSkill(l);
     if (k) this.mark(k);
+    // (said in this stage: Help does not say it again here, and another line about it waiting behind this one goes)
+    const t = thingOf(l);
+    if (t) {
+      this.stageThings.add(t);
+      if (lesson && l.move) this.stageThings.add(`move:${l.move}`);
+      if (this.help === 'teach' && !isUrgent(l)) this.queue.dropWaiting((w) => !isUrgent(w) && !w.step && thingOf(w) === t);
+    }
     // (Tips: another line about the same new thing, waiting behind this one, has nothing new to say)
     if (l.mech && this.help === 'reminders') this.queue.dropWaiting((w) => w.mech === l.mech && w.kind !== 'must');
   }

@@ -1093,7 +1093,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
         { kind: 'item', id: `pebble${ri}`, variant: 'pebble', source: `pile${ri}` },
       ],
       exit: `bell${ri}`, beyond: at(path, gal.px - 20), ground: [path.id],
-      tips: { enter: 'Ring the bell. The guards will come and look!', hold: 'Throw it back along the court. Clack!' },
+      tips: { enter: 'Too many guards. Can we distract them?', hold: 'Throw it back along the court. Clack!', nudge: 'That bell up there is loud.', move: 'Ring the bell. The guards come to look.' },
     });
     expert += guards * 2.4 + 2;
     pieces.push({ k: 'gallery', x0, x1: x });

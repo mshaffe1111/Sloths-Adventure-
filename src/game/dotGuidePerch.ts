@@ -132,7 +132,7 @@ export function findTarget(topic: TopicId | undefined, v: GuideView): Target | n
       for (const c of v.collectibles) if (!c.collected && c.type.startsWith('powerup')) consider(c.x, c.y, 24);
       break;
     case 'relic':
-      for (const c of v.collectibles) if (!c.collected && c.type === 'relic') consider(c.x, c.y, 24);
+      for (const c of v.collectibles) if (!c.collected && !c.hidden && c.type === 'relic') consider(c.x, c.y, 24);
       break;
     case 'exit':
       for (const c of v.collectibles) if (c.type === 'exit_totem') consider(c.x, c.y - 40, 44);

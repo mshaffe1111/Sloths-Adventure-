@@ -289,6 +289,15 @@ export class KitPlay {
   private held: { room: number; item: number } | null = null;
   private pose: Pose = null;
   private pan: { x: number; y: number; t: number } | null = null;
+  /** the camera is panning to a far gate (Dot holds her lines that can wait) */
+  get panning(): boolean {
+    return !!this.pan;
+  }
+  /** each room's span (world x), for the lessons: no jump's lesson at a room's pieces (lessons.ts LessonScene.rooms) */
+  get roomSpans(): ReadonlyArray<{ x0: number; x1: number }> {
+    return (this.spans ??= this.rooms.map((r) => r.box));
+  }
+  private spans?: ReadonlyArray<{ x0: number; x1: number }>;
   /** the puzzle piece Dot points at (GuideView.kit): the active part while he is in a room, nothing outside one */
   readonly guideThings: Array<{ x: number; y: number; r: number }> = [];
   private focusPt: Focus = { x: 0, y: 0, r: 30 };
@@ -322,7 +331,13 @@ export class KitPlay {
     this.night = !!world.night;
     kit.rooms.forEach((spec, ri) => {
       // (Dot's guide reads which step of the room a line is from its words: dotTips.ts)
-      for (const [k, line] of Object.entries(spec.tips ?? {})) if (line) noteRoomLine(tipText(line), { step: ROOM_STEP[k] ?? 'event', mech: k === 'enter' ? spec.mech : undefined });
+      // (the first time he carries or throws, its hold line teaches the control: Tips says that one, once per save)
+      for (const [k, line] of Object.entries(spec.tips ?? {})) {
+        if (!line || k === 'mech') continue;
+        const t = tipText(line as TipLine);
+        const mech = k === 'enter' ? spec.mech ?? spec.tips?.mech : k === 'hold' ? (/throw|flick/i.test(t) ? 'throw' : /\btap\b/i.test(t) ? 'carry' : undefined) : undefined;
+        noteRoomLine(t, { step: ROOM_STEP[k] ?? 'event', mech });
+      }
       const at = (pc: PieceSpec) => ('at' in pc && pc.at ? anchorAt(pc.at, byId) : null);
       const room: RoomRun = {
         spec, ri, box: roomBox(spec, byId), beyond: anchorAt(spec.beyond, byId), items: [], plates: [], gates: [], levers: [], baskets: [], lifts: [], beetles: [], sources: [], resets: [],
@@ -674,7 +689,8 @@ export class KitPlay {
       }));
       // (a trader asked with empty hands: Dot says what it wants)
       room.traders.forEach((t) => {
-        if (!t.done) consider(t.x, t.y, () => h.float(`IT WANTS A ${t.spec.wants.toUpperCase()}`, t.x, t.y - 120, '#fde68a'));
+        // (what it wants is the room's nudge, in Dot's bubble: no words floating in the world)
+        if (!t.done) consider(t.x, t.y, () => h.float('?', t.x, t.y - 120, '#fde68a'));
       });
       room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h, platforms)));
       // a teapot: a tap by it tips it over (rude), for good
@@ -947,7 +963,7 @@ export class KitPlay {
     this.inRoom = this.rooms.findIndex((r) => p.x >= r.box.x0 && p.x <= r.box.x1 && p.y >= r.box.y0 && p.y <= r.box.y1);
     // out of a room: its lines are old news (one still waiting must not come in the next room)
     // (one a frame: the app keeps only the engine's last line of a frame)
-    if (was >= 0 && was !== this.inRoom) for (const text of Object.values(this.rooms[was].spec.tips ?? {})) if (text) this.passing.push(tipText(text));
+    if (was >= 0 && was !== this.inRoom) for (const [k, text] of Object.entries(this.rooms[was].spec.tips ?? {})) if (text && k !== 'mech') this.passing.push(tipText(text as TipLine));
     const next = this.passing.shift();
     if (next) h.passTip?.(next);
     for (const room of this.rooms) this.stepRoom(room, dt, h, platforms);
@@ -1272,7 +1288,6 @@ export class KitPlay {
         // (in Meeca's night the ledge's own glow and Flicker's line say it: no floating word over her dark room)
         if (lit && !room.told.has('lit')) {
           room.told.add('lit');
-          if (!this.night) h.float('A LEDGE!', l.plat.x + l.plat.width / 2, l.plat.y - 40, '#a7f3d0');
         }
       }
       l.show += ((l.lit ? 1 : 0) - l.show) * Math.min(1, dt * 5);

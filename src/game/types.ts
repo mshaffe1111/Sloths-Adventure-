@@ -407,6 +407,9 @@ export interface Collectible {
   hidden?: boolean;
   /** how far the search has got, 0..1 (hidden finds) */
   search?: number;
+  /** a Hush Fern: he is walking by it now, and how many times he has walked past it (Dot's "Hmm, that fern...", DOT-14) */
+  fernBy?: boolean;
+  fernPasses?: number;
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
   /**

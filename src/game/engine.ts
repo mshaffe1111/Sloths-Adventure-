@@ -3,6 +3,7 @@ import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
 import { bindSent, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
+import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
@@ -147,7 +148,7 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
-import { dotHelp } from './dotGuideHelp.ts';
+import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
@@ -288,6 +289,8 @@ export class GameEngine {
   private bossDef: BossDef | null = null;
   private bossCtx: BossCtx | null = null;
   private bossIntro = false;
+  /** a stage's own reveal (a camera move to show something, 6-8's crown) runs until this game time: Dot's lines that can wait, wait */
+  public revealUntil = -1;
   /** a giant's entrance while it plays (the fight and the player wait) */
   private entrance: { t: number; total: number; roared: boolean; named: boolean } | null = null;
   private entranceDone = false;
@@ -1263,8 +1266,8 @@ export class GameEngine {
     if (!this.riverHinted && this.currentStage.rivers?.length) {
       const r0 = this.currentStage.rivers[0];
       if (p.x > r0.x0 - 380 && p.x < r0.x1) {
+        // (no words floating in the world: the water's lesson says it in Dot's bubble, the Dot rework 2026-10-29)
         this.riverHinted = true;
-        this.addFloatingText('LOGS DRIFT! HOP ON AND RIDE', p.x, p.y - 90, '#7dd3fc');
       }
     }
 
@@ -1274,7 +1277,6 @@ export class GameEngine {
       const bodyY = p.y - 30;
       const level = drowsyLevel(zoneEffect(zones, 'spore', p.x, bodyY, this.gameTime).strength);
       if (level > 0 && this.drowsy <= 0) {
-        if (!this.zoneHinted.sleepy) this.addFloatingText('SLEEPY SPORES...', p.x, p.y - 80, '#c4b5fd');
         this.zoneHinted.sleepy = true;
         this.zzzTimer = 0.3;
       }
@@ -1285,7 +1287,6 @@ export class GameEngine {
       this.dragJump = drag.jump;
       if (drag.speed < 0.5 && !this.zoneHinted.stuck && zones.some((z) => z.kind === 'web' && inZone(z, p.x, bodyY))) {
         this.zoneHinted.stuck = true;
-        this.addFloatingText('STUCK IN THE WEB!', p.x, p.y - 80, '#e2e8f0');
       }
       // lava geysers and lightning (Worlds 9 and 10): a firing column burns whoever stands in it
       const hot = columnHit(zones, p.x - 14, p.y - 64, 28, 64, this.gameTime);
@@ -1297,21 +1298,14 @@ export class GameEngine {
       for (const z of zones) {
         if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
         this.zoneHinted[z.kind] = true;
-        const hint: Record<string, [string, string]> = {
-          web: ['STICKY WEBS SLOW YOU. GO ABOVE THEM OR PUSH THROUGH', '#e2e8f0'],
-          tide: ['THE TIDE RISES ON A BEAT. CROSS WHILE IT IS LOW', '#7dd3fc'],
-          dark: ['IT IS DARK. FOLLOW THE FIREFLIES', '#fde68a'],
-          crumble: ['THESE TILES CRUMBLE. KEEP MOVING', '#fdba74'],
-          spore: ['SPORES PUFF ON A BEAT. WAIT FOR THEM TO CLEAR', '#c4b5fd'],
-          wind: ['GUSTS BLOW ON A BEAT. WATCH THE LEAVES', '#99f6e4'],
-          geyser: ['VENTS ERUPT ON A BEAT. STAND BETWEEN THEM', '#fdba74'],
-          bolt: ['LIGHTNING STRIKES WHERE THE RODS CHARGE', '#bae6fd'],
-        };
-        if (z.kind === 'dark' && z.lights?.some((l) => l.sleep)) {
-          this.addFloatingText('TOO DARK. STAND STILL AND LISTEN', p.x, p.y - 100, '#99f6e4');
-          continue;
+        // (said in Dot's bubble, or Pokey's thought when she is away, once a stage: no words floating in the world, the Dot rework
+        // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
+        const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;
+        const zid = this.currentStage.config.id;
+        if (ZONE_LINE[kind] && !tipHeard(zid, `zone:${kind}`)) {
+          markTipHeard(zid, `zone:${kind}`);
+          this.guide(ZONE_LINE[kind], 3.6);
         }
-        this.addFloatingText(hint[z.kind][0], p.x, p.y - 100, hint[z.kind][1]);
       }
     } else {
       this.windV = 0;
@@ -1891,7 +1885,7 @@ export class GameEngine {
           p.vy = glideLift(p.vy, dt);
           if (!this.zoneHinted.lift) {
             this.zoneHinted.lift = true;
-            this.addFloatingText('WARM AIR! HOLD THE LEAF OPEN TO RISE', p.x, p.y - 80, '#fdba74');
+            // (warm air is taught in Dot's bubble by 4-7's own line)
           }
         }
         this.glideOpen += ((this.glide.on ? 1 : 0) - this.glideOpen) * Math.min(1, dt * 16);
@@ -2074,7 +2068,7 @@ export class GameEngine {
               if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
               if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
                 this.zoneHinted.crumble = true;
-                this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
+                // (the crumble is taught by its lesson, in Dot's bubble)
               }
             }
           }
@@ -2088,7 +2082,7 @@ export class GameEngine {
         // a teaching river (2-1): a splash and back to the bank to try again, no life lost
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
-        this.addFloatingText('SPLASH! TRY AGAIN', p.x, river.surfaceY - 40, '#7dd3fc');
+        this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         p.x = river.safe.backX;
         p.y = river.safe.backY;
         p.vx = 0;
@@ -2437,12 +2431,20 @@ export class GameEngine {
         const close = Math.abs(p.x - c.x) < 54 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
         c.near = close && !p.ducking;
         // the stage's opening line says one plant here looks different; beside it, the first time, Dot says what to do with it
-        if (!close && !p.ducking && p.grounded && Math.abs(p.x - c.x) < 150 && Math.abs(p.y - (c.y + 26)) < 26) {
+        // (once the search has been taught on this save, only a "Hmm, that fern..." after he has walked past it twice: DOT-14)
+        const by = !close && !p.ducking && p.grounded && Math.abs(p.x - c.x) < 150 && Math.abs(p.y - (c.y + 26)) < 26;
+        if (!by && c.fernBy) c.fernPasses = (c.fernPasses ?? 0) + 1;
+        c.fernBy = by;
+        if (by) {
           const stageId = this.currentStage.config.id;
-          if (!tipHeard(stageId, 'fern:near')) {
+          const taught = seenSkills().has('mech:hushFern');
+          if (!taught && !tipHeard(stageId, 'fern:near')) {
             markTipHeard(stageId, 'fern:near');
             const mode = lessonInputMode();
             this.guide(mode === 'screen' ? 'That fern looks different! Stand beside it and slide your thumb down to crouch and search it' : 'That fern looks different! Stand beside it and hold down to crouch and search it', 4.2);
+          } else if (taught && (c.fernPasses ?? 0) >= 2 && !tipHeard(stageId, 'fern:hmm')) {
+            markTipHeard(stageId, 'fern:hmm');
+            this.guide(FERN_HMM, 3);
           }
         }
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
@@ -2497,7 +2499,7 @@ export class GameEngine {
         if (c.type === 'heart' && p.hp >= p.maxHp) {
           if (!this.zoneHinted.fullHeart) {
             this.zoneHinted.fullHeart = true;
-            this.addFloatingText('FULL HEALTH! SAVE IT FOR LATER', c.x, c.y - 30, '#fda4af', 1.6);
+            // (the heart's lesson says when a heart can be taken)
           }
           continue;
         }
@@ -2620,7 +2622,7 @@ export class GameEngine {
       this.wasQuotaMet = true;
       sound.playShrineUnlocked();
       this.spawnSparkBurst(p.x, p.y - 40, '#facc15');
-      this.addFloatingText('✨ SHRINE UNSEALED! ENTER TO CLEAR! ✨', p.x, p.y - 65, '#facc15');
+      // (Dot says it in her bubble: goal.done)
       this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
     }
 
@@ -3019,7 +3021,7 @@ export class GameEngine {
           this.bossShove = v;
           this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, 0.35));
           this.addFloatingText(p.ducking && p.grounded ? 'HOLD ON!' : 'BLOWN BACK!', p.x, p.y - 80, '#bae6fd');
-        } else if (free) this.addFloatingText('SAFE BEHIND THE ROCK!', p.x, p.y - 80, '#bbf7d0');
+        }
       } else if (h.look === 'gust' && free) {
         gust = gustPush({ ps, srcX: src, dir, phase: b.phase, px: p.x, bodyTop, floor, grounded: p.grounded, gliding: this.glide.on });
       }
@@ -3588,7 +3590,7 @@ export class GameEngine {
       a.hits.add(1_000_000 + c.id);
       // (a reed cage hung over the water, World 2: too tough to break, the pulley lifts it out: puzzlePlay.ts)
       if (this.kit?.holdsCage(c)) {
-        this.addFloatingText('LIFT IT OUT!', c.x, c.y - 40, '#fde68a');
+        // (the cage room's own lines say the basket lifts it)
         continue;
       }
       a.connected = true;
@@ -3642,11 +3644,11 @@ export class GameEngine {
           e.vx = 0;
           if (e.royal) {
             // the river king's guard blocks with his spear
-            if (!this.guardTold) this.addFloatingText('BLOCKED! GET BEHIND HIM, OR KICK HIM', e.x, e.y - 60, '#cbd5e1');
+            if (!this.guardTold) this.guide('Head-on he blocks. Flick sideways to kick!', 3);
             else this.addFloatingText('CLANK!', e.x, e.y - 50, '#cbd5e1');
             this.guardTold = true;
           } else {
-            if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
+            if (!this.turtleTold) this.guide('Head-on it hides. Flick sideways to kick!', 3);
             else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
             this.turtleTold = true;
           }
@@ -4904,6 +4906,7 @@ export class GameEngine {
         ropes: this.skills.has('shimmy') ? this.ropes : [],
         hp: p.hp,
         maxHp: p.maxHp,
+        rooms: this.kit?.roomSpans,
       },
       seen,
     );
@@ -4969,6 +4972,7 @@ export class GameEngine {
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
     out.chase = !!this.chase;
+    out.reveal = !!this.kit?.panning || !!this.entrance || this.gameTime < this.revealUntil;
     out.levelH = cfg.levelHeight;
     out.enemies = this.enemies;
     out.platforms = this.platforms;
@@ -6216,8 +6220,9 @@ export class GameEngine {
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
       cry(0);
-      // every pass is called out, not only the first: a word over his head and a buzz on a phone (many play with the sound off)
-      this.addFloatingText(cliffs ? 'HIDE! WATER OR BUSH' : `HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
+      // every pass is called out, not only the first: an alarm mark over his head and a buzz on a phone (many play with the sound off);
+      // the words are Dot's, in her bubble (no words floating in the world, the Dot rework 2026-10-29)
+      this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
       this.input.triggerHaptic(120);
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
@@ -6564,7 +6569,7 @@ export class GameEngine {
           this.watch.t = 0;
           this.watch.dur = WATCH.warn;
           sound.playEagleScreech();
-          this.addFloatingText('HIDE!', p.x, p.y - 96, '#fbbf24');
+          this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
           this.input.triggerHaptic(120);
         }
       },

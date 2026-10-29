@@ -149,13 +149,42 @@ test('a New Game, or "Hear Dot\'s tips again", teaches it all again', () => {
   assert.equal(lessonsSeen().size, 0);
   assert.equal(seenSkills().size, 0);
   assert.equal(localStorage.getItem('sloth_dot_moves'), null);
-  assert.equal(localStorage.getItem('sloth_dot_help'), 'reminders', 'the setting is the device\'s, and stays');
+  assert.equal(localStorage.getItem('sloth_dot_help'), null, 'a new save starts on the difficulty\'s setting');
   assert.equal(localStorage.getItem('sloth_music_vol'), '0.5');
   // the menu button
+  localStorage.setItem('sloth_dot_help', 'reminders');
   localStorage.setItem('sloth_tips_2-2', JSON.stringify(['tip:b']));
   localStorage.setItem('sloth_lessons', JSON.stringify(['swing']));
   hearTipsAgain();
   assert.equal(localStorage.getItem('sloth_tips_2-2'), null);
   assert.equal(lessonsSeen().size, 0);
   assert.equal(localStorage.getItem('sloth_dot_help'), 'reminders');
+});
+
+test('Tips: no more than two lines start in any 30 s, a warning or a first-time hazard about to hit aside', () => {
+  const t = (k: string, o: Partial<GuideLine> = {}) => line(k, `Something new here, ${k}.`, { kind: 'teach', mech: k, ...o });
+  const evs = play('reminders', 60000, [[3000, t('a')], [5000, t('b')], [7000, t('c')], [8000, line('d', 'Look out!', { kind: 'danger', mech: 'd' })]]);
+  const at = (k: string) => evs.find((e) => e.key === k)?.at ?? -1;
+  assert.ok(at('d') >= 0 && at('d') < 12000, 'the warning at once');
+  const c = at('c');
+  assert.ok(c < 0 || c - at('a') >= TIPS_GAP_MS, `the third waits for the first to be 30 s old (${c})`);
+  // a first-time hazard about to hit is never held back by it
+  const soon = play('reminders', 30000, [[3000, t('a')], [5000, t('b')], [7000, t('c', { soon: true })]]);
+  assert.ok(soon.some((e) => e.key === 'c' && e.at < 20000));
+});
+
+test("a watcher's pass: one call to hide, not three in other words, even when the warning would cut in over a tip", () => {
+  const q = new GuideQueue(true);
+  const env = { danger: false, moveCount: (_m: MoveId) => 0 };
+  const warn = (text: string) => engineGuideLine(text, '1-7', { dot: true })!;
+  q.push(warn('Here it comes! Slide down inside a bush to hide'), 3000);
+  q.tick(3000, env);
+  q.push(line('room', 'The squirrels\' acorn tree, and that eagle!', { kind: 'teach' }), 9000);
+  q.tick(9000, env);
+  q.push(warn('Hide! Into a bush!'), 12000);
+  q.tick(12000, env);
+  assert.notEqual(q.cur?.line.text, 'Hide! Into a bush!', 'not 9 s after the first call');
+  q.push(warn('Hide! Into a bush!'), 45000);
+  q.tick(45000, env);
+  assert.equal(q.cur?.line.text, 'Hide! Into a bush!', 'the next pass, half a minute on');
 });

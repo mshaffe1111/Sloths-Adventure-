@@ -147,8 +147,11 @@ test('Skip tips: offered once per device, never on 1-1 or the coach (DOT-5); tap
   markSkipOffered(s);
   assert.equal(offersSkip(tip('teach'), 'teach', '1-2', s), false);
   assert.equal(offersSkip(tip('info'), 'teach', '1-2', s), false);
-  // not tapped: the setting stays
-  assert.equal(dotHelp(s), 'teach');
+  // not tapped: the setting stays (nothing picked: Tips on Normal, Help on Easy)
+  assert.equal(dotHelp(s), 'reminders');
+  const easy = memStore();
+  easy.setItem('sloth_difficulty', 'easy');
+  assert.equal(dotHelp(easy), 'teach');
   // tapped (on another fresh phone): Quiet, and still offered only once
   const s2 = memStore();
   assert.equal(offersSkip(tip('teach'), 'teach', '1-3', s2), true);

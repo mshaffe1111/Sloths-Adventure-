@@ -190,7 +190,8 @@ const KEEP_ON_NEW_GAME = /^sloth_(music_vol|sfx_vol|game_muted)$/;
  * With `skipStory` every world's story beat is marked as seen, so the game goes straight to play.
  */
 export function resetProgress(store: Store, opts: { skipStory?: boolean } = {}) {
-  for (const k of store.keys()) if ((isSaveKey(k) && !KEEP_ON_NEW_GAME.test(k)) || DOT_MEMORY.test(k)) store.removeItem(k);
+  // (and Dot's help setting: a new save starts on Help for Easy and Tips for Normal, dotGuideHelp.ts dotHelp)
+  for (const k of store.keys()) if ((isSaveKey(k) && !KEEP_ON_NEW_GAME.test(k)) || DOT_MEMORY.test(k) || k === 'sloth_dot_help') store.removeItem(k);
   forgetDotSession();
   reloadDifficulty();
   if (opts.skipStory) {

@@ -305,7 +305,6 @@ export class W4Play {
         const pl = h.platforms.find((q) => q.id === s.platformId);
         if (pl) pl.broken = false;
         h.sfx('frond');
-        h.float('SLOW IS NOT STOPPED', p.x, p.y - 100, '#bbf7d0');
       }
       // the mist rising again after it has shown him the way: Dot says to remember it (once)
       if (s.kind === 'mist' && was.level >= 0.99 && now.level < was.level) h.tip('w4:mist', 'The mist is coming back! Remember where the ledges were', 3.2);
