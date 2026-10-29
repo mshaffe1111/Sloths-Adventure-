@@ -22,6 +22,7 @@ def table(path, var):
         if depth == 0:
             break
     js = re.sub(r"([{,]\s*)'?([A-Za-z_][A-Za-z0-9_.]*)'?\s*:", r'\1"\2":', src[j:k])
+    js = re.sub(r":\s*'([^']*)'", r': "\1"', js)
     return json.loads(re.sub(r",\s*}", "}", js))
 
 

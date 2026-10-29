@@ -32,3 +32,4 @@ storyart-r4a 6ae3aeb9c78863f9c62dd558 20:38Z-20:53Z (~15 min, ~$0.69): 9 Pokey r
 storyart-r4b 6ae3b3a00e0338d1bb7c2dcc from 20:59Z: the parents plate (two grown sloths going out along the branch), the empty nest,
   the courtyard with wet steps, and the pair cels with Pokey out of her running kit (edit, then 0.28 on both models).
 running total ~$11.7 of $15 (r3c ~$3.4 when it ends, r4b ~$1.3 estimated).
+r4c 6ae3b8680e0338d1bb7c3352 grandma-door lit (edit + tiled)
