@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildProtoStage, HAND_STAGES, stageSeconds } from './protoStage.ts';
-import { buildWaterfallSteps, POOL, ROCK_TIP, ROCK_WARN, SURGE_CLIMB, WET, type FallInfo } from './w4Stage43.ts';
+import { buildWaterfallSteps, DRY_STEPS, POOL, ROCK_TIP, ROCK_WARN, SURGE_CLIMB, WET, type FallInfo } from './w4Stage43.ts';
+import { W4Play } from './w4Play.ts';
 import { validateStage } from './levelCheck.ts';
-import { PHYS, reachJump } from './physics.ts';
+import { JUMP_RISE, PHYS, reachJump } from './physics.ts';
 import { FALLS } from './waterfalls.ts';
 import { rockFits } from './rockfall.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -403,4 +404,35 @@ test('4-3: every rock warns for ROCK_WARN seconds, and Dot\'s rock line is the o
     assert.equal(st.proto.w4!.rockTip, ROCK_TIP);
     assert.ok(st.proto.hints.some((h) => h.text === ROCK_TIP), `seed ${s}`);
   }
+});
+
+test('4-3: at the foot of the first fall, held upright, the view turns to show the tree as well as him (QA 2026-10-29)', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const w4 = st.proto.w4!;
+    assert.equal(w4.fallTrees?.length, 1, `seed ${s}`);
+    const ft = w4.fallTrees![0];
+    const fall = w4.falls!.find((q) => q.id === ft.fall)!;
+    assert.ok(fall.plug && fall.x - ft.x <= 360, `seed ${s}: the tree is ${fall.x - ft.x} px from its fall`);
+    const play = new W4Play(w4, st.platforms, st.vines);
+    // standing (or jumping) at the foot of the pouring water: an upright view, 440 px across, centred where it looks, shows both
+    for (const lift of [0, 120]) {
+      const px = fall.x - 10;
+      const look = play.look(px, fall.bottom - lift);
+      assert.ok(look && look.u === 1, `seed ${s}: the view does not turn`);
+      const x0 = look.x - 220;
+      assert.ok(ft.x - 38 > x0 + 8 && px + 20 < x0 + 440, `seed ${s}: the tree at ${ft.x} or he at ${px} is out of the view ${Math.round(x0)}-${Math.round(x0 + 440)}`);
+    }
+    // close by the tree, it is in view anyway: the view does not turn
+    assert.equal(play.look(ft.x + 60, fall.bottom), null, `seed ${s}`);
+  }
+});
+
+test("4-3: the first fall's steps are each a double jump up, and the line as its boulder goes in says so, before he is down at them", () => {
+  assert.ok(WET.rise > JUMP_RISE, 'a wet step is a single jump: the tip is not needed');
+  for (const s of SEEDS) {
+    const st = build(s);
+    assert.equal(st.proto.w4!.dryTip, DRY_STEPS, `seed ${s}`);
+  }
+  assert.match(DRY_STEPS, /jump twice/i);
 });
