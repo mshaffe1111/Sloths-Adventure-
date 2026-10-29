@@ -138,7 +138,7 @@ if (v2) {
 if (which === 'menus') {
   // the title and menu music (v4-menus): the start screen, the menu loop, a walk across the map, and the old title for comparison
   for (const k of Object.keys(specs)) delete specs[k];
-  specs['title'] = { seconds: 90, music: { id: 'signature', intensity: 0.7 }, events: [{ t: 0, amb: 'gentle_breeze' }] };
+  specs['title'] = { seconds: 75, music: { id: 'signature', intensity: 0.7 }, events: [{ t: 0, amb: 'gentle_breeze' }] };
   specs['menu-loop'] = { seconds: 120, music: { id: 'menu', intensity: 0.45, seed: 11 }, events: [{ t: 0, amb: 'gentle_breeze' }] };
   specs['map-walk'] = {
     seconds: 80, music: { id: 'map-1', intensity: 0.5, seed: 1 },

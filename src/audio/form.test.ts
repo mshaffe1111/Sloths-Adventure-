@@ -147,20 +147,25 @@ test('a chained stage plays its sections in the order it chose', () => {
   assert.deepEqual(seen.slice(0, 5), pb.chunks.slice(0, 5));
 });
 
-test("the signature, the menu loop and the map's ten variations are valid notation, and the hook is Pokey's own tune", async () => {
+test("the signature, the menu loop and the map's ten variations are valid notation; the hook opens with Pokey's motif, in a key and meter no world has", async () => {
   const { signatureTheme, menuTheme, mapTheme } = await import('./signature.ts');
-  const { SLOMATT_A } = await import('./tunes.ts');
+  const { STYLES } = await import('./styles.ts');
   for (const th of [signatureTheme(), menuTheme(), ...Array.from({ length: 10 }, (_, i) => mapTheme(i + 1))]) {
     for (const p of th.form!) {
-      for (const lines of Object.values(p.lines ?? {})) for (const b of lines) if (b) assert.equal(len(b), 16, `${th.id} ${p.name}: ${b}`);
+      for (const lines of Object.values(p.lines ?? {})) for (const b of lines) if (b) assert.equal(len(b), th.stepsPerBar ?? 16, `${th.id} ${p.name}: ${b}`);
       for (const c of p.chords) parseChord(c);
     }
     const pb = new Playback(new AudioCore(fakeCtx(), { lightRoom: true }), th, 0, undefined, false, { seed: 3 });
     pb.update(120);
   }
   const sig = signatureTheme();
-  assert.deepEqual(sig.form!.find((p) => p.name === 'A')!.lines!.hook, SLOMATT_A);
-  assert.ok(formBars(sig.form!) * (240 / sig.bpm) >= 60 && formBars(sig.form!) * (240 / sig.bpm) <= 100, 'the statement runs 60-100 s');
+  assert.deepEqual((sig.form!.find((p) => p.name === 'A')!.lines!.hook as string[]).slice(0, 2), POKEY_MOTIF12);
+  const secs = formBars(sig.form!) * (60 / sig.bpm) * 12 / 4;
+  assert.ok(secs >= 45 && secs <= 100, `the statement runs ${secs.toFixed(0)} s`);
   assert.ok(menuTheme().chain && !sig.chain);
-  assert.notEqual(mapTheme(1).tracks.find((t) => t.name === 'tune')!.kind === 'melody' && (mapTheme(1).tracks.find((t) => t.name === 'tune') as { inst: string }).inst, (mapTheme(9).tracks.find((t) => t.name === 'tune') as { inst: string }).inst);
+  // its own key and groove: no world is in B-flat, and no world is in 12/8 at a pace like it
+  for (let w = 1; w <= 10; w++) assert.ok(!(STYLES[w].meter === 12 && STYLES[w].bpm[1] >= 100), `world ${w}`);
+  assert.equal(sig.tonic, 'Bb3');
+  const lead = (w: number) => (mapTheme(w).tracks.find((t) => t.name === 'tune') as { inst: string }).inst;
+  assert.notEqual(lead(1), lead(9));
 });
