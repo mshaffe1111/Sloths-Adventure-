@@ -7,6 +7,29 @@
 //   text   words drawn on the canvas
 // The seam detector (seams.py) checks the finished frame against these: a hard line exactly where two pictures meet, a code shape
 // that is still showing, a picture drawn far bigger than its pixels, a prop with nothing under it.
+// which function made a canvas (the build is unminified for the walk, so the names are the source's): the first two callers
+// outside this file, at its first getContext
+const __wWho = () => {
+  const lines = String(new Error().stack || '').split('\n').slice(1);
+  const names = [];
+  for (const l of lines) {
+    const m = /at (?:new )?([A-Za-z0-9_$.]+) /.exec(l);
+    if (!m || /__w|walkHook|getContext|Object\.|HTMLCanvasElement/.test(m[1])) continue;
+    names.push(m[1].replace(/^.*\./, ''));
+    if (names.length >= 2) break;
+  }
+  return names.join('<');
+};
+for (const C of [typeof HTMLCanvasElement !== 'undefined' && HTMLCanvasElement, typeof OffscreenCanvas !== 'undefined' && OffscreenCanvas]) {
+  if (!C) continue;
+  const o = C.prototype.getContext;
+  C.prototype.getContext = function (...a) {
+    if (!this.__who) {
+      try { this.__who = __wWho(); } catch {}
+    }
+    return o.apply(this, a);
+  };
+}
 const __wInstall = (P) => {
   const on = (ctx) => window.__wlog && ctx.canvas === window.__wmain;
   // a cache canvas filled by code says so (a ground column built from fills and a pattern)
@@ -22,10 +45,11 @@ const __wInstall = (P) => {
       const s = img.currentSrc || img.src || '';
       return s.startsWith('data:') ? 'data:' + s.length : s.replace(/^.*\/assets\//, '').replace(/^https?:\/\/[^/]+\//, '');
     }
-    if (img.__srcs && img.__srcs.size) return 'cache[' + [...img.__srcs].slice(0, 4).join('+') + ']';
-    if (img.__codeFills) return `codecanvas:${img.width}x${img.height}`;
-    if (typeof HTMLCanvasElement !== 'undefined' && img instanceof HTMLCanvasElement) return 'canvas';
-    if (typeof OffscreenCanvas !== 'undefined' && img instanceof OffscreenCanvas) return 'offscreen';
+    const who = img.__who ? `(${img.__who})` : '';
+    if (img.__srcs && img.__srcs.size) return 'cache[' + [...img.__srcs].slice(0, 4).join('+') + ']' + who;
+    if (img.__codeFills) return `codecanvas${who}:${img.width}x${img.height}`;
+    if (typeof HTMLCanvasElement !== 'undefined' && img instanceof HTMLCanvasElement) return 'canvas' + who;
+    if (typeof OffscreenCanvas !== 'undefined' && img instanceof OffscreenCanvas) return 'offscreen' + who;
     if (typeof ImageBitmap !== 'undefined' && img instanceof ImageBitmap) return 'bitmap';
     return 'other';
   };

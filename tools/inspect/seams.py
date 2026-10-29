@@ -52,9 +52,10 @@ STRIP = re.compile(r'(^|[-_/])(far|mid|near|sky|strip|backdrop|canopy)([-_.]|$)|
 
 
 def short(name):
-    """an asset name without the build hash: props-atlas-CwPSMzgp.webp -> props-atlas.webp"""
+    """an asset name without the build hash: props-atlas-CwPSMzgp.webp -> props-atlas.webp (a code-made canvas: without its size)"""
     if not name:
         return '?'
+    name = re.sub(r'^((?:codecanvas|canvas|offscreen)(?:\([^)]*\))?):\d+x\d+$', r'\1', name)
     n = re.sub(r'-[A-Za-z0-9_]{8}\.(webp|png|jpg|jpeg|avif)$', r'.\1', name)
     return n[-70:]
 
@@ -269,7 +270,7 @@ def actor_mask(meta, W, H, hard=True):
             continue
         bw, bh = d['b'][2] - d['b'][0], d['b'][3] - d['b'][1]
         tiny = bw * bh < 0.06 * W * H
-        small_code = d['k'] == 'img' and d.get('n', '').startswith('codecanvas:') and max(d['s'][2], d['s'][3]) <= 160 and tiny
+        small_code = d['k'] == 'img' and d.get('n', '').startswith('codecanvas') and max(d['s'][2], d['s'][3]) <= 160 and tiny
         glow = d['k'] == 'fill' and str(d.get('style', '')).startswith('grad:rad') and tiny
         if (d['k'] in ('img',) and ACTOR.search(d.get('n', '')) or d['k'] == 'text') if hard else (small_code or glow):
             b = d['b']
@@ -464,7 +465,7 @@ def find_shapes(img, meta, actors, soft_mask=None):
     for i, d in enumerate(draws):
         st = str(d.get('style', ''))
         code_pat = d['k'] == 'fill' and st.startswith('pattern:codecanvas')
-        code_img = d['k'] == 'img' and d.get('n', '').startswith('codecanvas:') and d.get('w') and max(d['s'][2], d['s'][3]) > 160
+        code_img = d['k'] == 'img' and d.get('n', '').startswith('codecanvas') and d.get('w') and max(d['s'][2], d['s'][3]) > 160
         if not (code_pat or code_img) or not d.get('b') or d.get('a', 1) < 0.5:
             continue
         x0, y0, x1, y1 = [int(round(v)) for v in eff(d)]
@@ -484,7 +485,7 @@ def find_shapes(img, meta, actors, soft_mask=None):
         n = int(vis.sum())
         if n < (24 * dpr) ** 2 or n < 0.25 * vis.size:
             continue
-        name = st[8:] if code_pat else d['n']
+        name = short(st[8:] if code_pat else d['n'])
         out.append({'kind': 'shape', 'sub': 'code texture', 'conf': 'edge', 'box': [cx0, cy0, cx1, cy1], 'cause': f"code-made texture {name}",
                     'draw': d, 'share': round(n / vis.size, 2)})
         seen[cy0:cy1, cx0:cx1] |= vis
@@ -588,7 +589,7 @@ def find_repeats(img, meta, actors):
     for d in meta['draws']:
         if d['k'] != 'img' or ACTOR.search(d.get('n', '')) or STRIP.search(d.get('n', '')):
             continue
-        if d.get('n', '').startswith('codecanvas:') and max(d['s'][2], d['s'][3]) <= 160:
+        if d.get('n', '').startswith('codecanvas') and max(d['s'][2], d['s'][3]) <= 160:
             continue
         b = d['b']
         bw = b[2] - b[0]

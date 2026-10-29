@@ -78,7 +78,13 @@ let dist = arg('dist') ? resolve(arg('dist')) : undefined;
 if (!dist || !existsSync(join(dist, 'index.html'))) {
   dist = dist || join(OUT, '_build');
   console.log(`building a development build into ${dist} ...`);
-  execFileSync('npx', ['vite', 'build', '--outDir', dist, '--emptyOutDir'], { cwd: ROOT, stdio: 'ignore', env: { ...process.env, NODE_ENV: 'development' } });
+  // (unminified, so the log can name the function that made each code-drawn canvas; the offline-cache step then refuses the big
+  // unminified bundle and the build exits with an error after the game itself is written, which is all a walk needs)
+  try {
+    execFileSync('npx', ['vite', 'build', '--minify', 'false', '--outDir', dist, '--emptyOutDir'], { cwd: ROOT, stdio: 'ignore', env: { ...process.env, NODE_ENV: 'development' } });
+  } catch (err) {
+    if (!existsSync(join(dist, 'index.html'))) throw err;
+  }
 }
 mkdirSync(OUT, { recursive: true });
 const server = spawn(join(ROOT, 'node_modules', '.bin', 'vite'), ['preview', '--outDir', dist, '--port', String(PORT), '--strictPort'], { cwd: ROOT, stdio: 'ignore' });
