@@ -24,7 +24,7 @@ import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
-import { tideCrossTime, type Zone } from '../zones.ts';
+import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import {
   EASY_ENEMY_SHARE,
@@ -84,6 +84,8 @@ export function rngFor(seed: number, ...salts: number[]): Rng {
 export const roll = (rng: Rng, r: Range): number => (typeof r === 'number' ? r : r[0] + (r[1] - r[0]) * rng());
 const mid = (r: Range): number => (typeof r === 'number' ? r : (r[0] + r[1]) / 2);
 const R = Math.round;
+/** a crumbling ruin tile's thickness (the old generator's: stageGenerator.ts ruins) */
+const CRUMBLE_H = 26;
 
 // ───────────────────────────── the jump envelope ─────────────────────────────
 
@@ -336,6 +338,8 @@ interface LocalPiece {
   landing: boolean;
   /** an obstacle to hop (an `on` block): a beat */
   hop: boolean;
+  /** a crumbling ruin tile (SectionPiece.crumble) */
+  crumble?: boolean;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
 }
@@ -549,9 +553,15 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       x = a.x + roll(rng, pl.at) * a.w;
       y = a.y + roll(rng, pl.dy);
     }
-    const landing = (!!pc.landing || pl.kind === 'land') && pl.kind !== 'start' && !hang;
+    // (a crumbling tile is a tile's width whatever the roll or Easy's pad: levelCheck holds every tile to it; never main, never needed)
+    const crumble = !!pc.crumble && !hang;
+    const landing = (!!pc.landing || pl.kind === 'land') && pl.kind !== 'start' && !hang && !crumble;
     if (landing) w += budget.landingPad;
-    const p: LocalPiece = { key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(hang ? { hang } : {}) };
+    if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
+    const p: LocalPiece = {
+      key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}),
+    };
     by.set(pc.key, p);
     out.push(p);
   }
@@ -670,16 +680,18 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const platforms: Platform[] = [];
   let pid = 1;
   const baseline = M.corridor.bottom + M.ground.bankH;
-  const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style']): Platform => {
-    const p: Platform = {
-      id: pid++,
-      x: R(x),
-      y: R(y),
-      width: R(w),
-      height: shape === 'bank' ? Math.max(M.ground.bankH, R(baseline - y)) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : R(h),
-      type: shape === 'bouncy' ? 'bouncy' : 'solid',
-      style: style ?? (shape === 'bank' ? M.ground.style : shape === 'branch' ? 'branch' : 'moss_stone'),
-    };
+  const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style'], crumble = false): Platform => {
+    const p: Platform = crumble
+      ? { id: pid++, x: R(x), y: R(y), width: CRUMBLE_TILE_W, height: CRUMBLE_H, type: 'fragile', crumbleAfter: crumbleTime(budget.stage), style: 'ruin' }
+      : {
+          id: pid++,
+          x: R(x),
+          y: R(y),
+          width: R(w),
+          height: shape === 'bank' ? Math.max(M.ground.bankH, R(baseline - y)) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : R(h),
+          type: shape === 'bouncy' ? 'bouncy' : 'solid',
+          style: style ?? (shape === 'bank' ? M.ground.style : shape === 'branch' ? 'branch' : 'moss_stone'),
+        };
     platforms.push(p);
     return p;
   };
@@ -869,7 +881,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });
           continue;
         }
-        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style);
+        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
       }
       const pieceOf = (k: string) => {
@@ -909,6 +921,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           zones.push({ kind: 'tide', x0: mud.x, x1: mud.x + mud.width, top: mud.y - 210, bottom: mud.y + 14, baseY: mud.y, dir: -1, period, warn, active, offset: R(srng() * period * 10) / 10, force: z.force ?? TIDE.force });
           placed.beats.push({ x: mud.x, letter: 'S' });
         }
+      }
+      // (its crumbling tiles, one crumble zone over them: levelCheck's tile rules hold inside it, and nothing stands in it; it ends at
+      // the tiles' underside, so the hall walked under them is not in it)
+      const tiles = placed.pieces.filter((pp) => pp.platform.type === 'fragile').map((pp) => pp.platform);
+      if (tiles.length) {
+        const x0 = Math.min(...tiles.map((t) => t.x));
+        const x1 = Math.max(...tiles.map((t) => t.x + t.width));
+        const top = Math.min(...tiles.map((t) => t.y));
+        const low = Math.max(...tiles.map((t) => t.y));
+        zones.push({ kind: 'crumble', x0, x1, top: top - 200, bottom: low + CRUMBLE_H, baseY: low, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0 });
       }
       for (const g of L.gaps) placed.beats.push({ x: ox + g.x0, letter: 'J' });
       for (const lp of L.pieces) if (lp.hop) placed.beats.push({ x: ox + lp.x, letter: 'h' });
@@ -1587,7 +1609,14 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
  */
 export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<typeof validateStage> {
   const cfg = st.config;
-  return validateStage(budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } });
+  const held = budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } };
+  const res = validateStage(held);
+  // (crumbling tiles are never needed, STAGE-RULES §1: the stage with every tile gone still reaches the shrine and its goal. Only a
+  // petal or a heart over a tile may be out of reach without them: it is a tile's reward)
+  if (!st.platforms.some((p) => p.type === 'fragile')) return res;
+  const bare = validateStage({ ...held, platforms: held.platforms.filter((p) => p.type !== 'fragile') });
+  const need = bare.errors.filter((e) => !/^(flower|leaf|heart) #/.test(e)).map((e) => `crumbling tiles needed: ${e}`);
+  return need.length ? { ...res, ok: false, errors: [...res.errors, ...need] } : res;
 }
 
 /** what the validation pass decided */
