@@ -13,7 +13,7 @@ try {
 }
 
 /** the walk line on each world's strip (share of its height) */
-export const GROUND_LINE: Record<number, number> = { 1: 0.3, 2: 0.3, 3: 0.3, 4: 0.3, 5: 0.3, 6: 0.3, 7: 0.3, 8: 0.3, 9: 0.3, 10: 0.3 };
+export const GROUND_LINE: Record<number, number> = { 1: 0.402, 2: 0.402, 3: 0.412, 4: 0.479, 5: 0.607, 6: 0.402, 7: 0.402, 8: 0.598, 9: 0.404, 10: 0.457 };
 
 const imgs = new Map<number, HTMLImageElement>();
 export function groundUrl(world: number): string | null {
