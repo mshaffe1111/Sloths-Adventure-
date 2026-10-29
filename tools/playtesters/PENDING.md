@@ -222,7 +222,7 @@ Earlier read of the same log, kept for the details:
   changes but the deadly gap is the same in both; 2-6's opening was the same in both as far as reached (rule 6).
 - Memory: peaks to 42/84 MB at 3-1 v7's end, back to 15 MB after; no page errors.
 
-# Next batch (not sent yet)
+# Batch sent 2026-10-29 (E, on Matt's "send")
 
 ## E. 2026-10-29: vine retest (PR #45) and four new players (sheet rows 2195-2400)
 1. [PASS, by state, PR #45 fa5d173, upright] Vines on 1-6, 2-4, 2-7, 4-4, 5-4: 16 lianas held for 20 s each with the thumb pumping
