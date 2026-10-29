@@ -12,6 +12,7 @@ import { withGoals } from './goals.ts';
 import { reachJump } from './physics.ts';
 import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
+import { pickLesson } from './lessons.ts';
 import type { LevelConfig, Platform } from './types.ts';
 
 const cfg = (id: string, type: LevelConfig['objectiveType']): LevelConfig =>
@@ -169,5 +170,55 @@ test('2-2: in the real engine, a hop from each lily pad lands on the next and st
       }
     }
     assert.ok(tried > 20, `roll ${s}: pads tried`);
+  }
+});
+
+// QA 3 (rule 2): 1-7 at 17% and 25%: "Flick up into the trunk to grab it" did nothing at the tall root stump (six tries); the spring
+// mushroom beside it is the way. The tip was Dot's climb lesson, fired on the ground beside the secret bush's trunk, hidden in the
+// leaves; the next thing the player saw was the stump. The stage's way up the stump is the mushroom, so the lesson no longer fires for
+// the hidden trunk (its vine starts a hop up), and a flick up from inside the bush still climbs to the secret path.
+test('1-7: Dot\'s climb lesson never fires on the ground for the trunk hidden in the secret bush, and a flick up inside it still climbs', () => {
+  for (const s of ROLLS) {
+    const st = buildProtoStage(cfg('1-7', 'stealth'), s, '1-7');
+    const bushes = st.proto.bushes ?? [];
+    for (const v of st.vines.filter((q) => q.vineType === 'tree_climb')) {
+      if (!bushes.some((b) => !b.hanging && v.x > b.x && v.x < b.x + b.w)) continue;
+      for (const dx of [-160, -60, 0, 60, 160]) {
+        const scene = {
+          px: v.x + dx, py: G, view: { x0: v.x - 300, x1: v.x + 300, y0: G - 600, y1: G + 100 }, enemies: [], collectibles: [], platforms: [],
+          vines: [v], checkpoints: [], rivers: [],
+        };
+        assert.notEqual(pickLesson(scene, new Set()), 'climb', `roll ${s}: the climb lesson fires ${dx} px from the hidden trunk at ${v.x}`);
+      }
+    }
+  }
+  setDifficulty('normal');
+  for (const s of [1, 2, 3]) {
+    const r = new RealPlay('1-7', s);
+    const bushes = (r.e as { proto: { bushes: Array<{ x: number; w: number; hanging?: boolean }> } }).proto.bushes;
+    const v = r.vines.find((q) => q.vineType === 'tree_climb' && bushes.some((b) => !b.hanging && q.x > b.x && q.x < b.x + b.w))!;
+    r.stand(v.x - 10, G);
+    let held = 0;
+    for (let i = 0; i < 90; i++) {
+      const pad: Record<string, boolean> = { up: true };
+      if (i === 0) pad.press = pad.jump = true;
+      else if (held < 0.15) pad.jump = true;
+      held += 1 / 30;
+      r.frame(pad);
+    }
+    assert.ok(r.p.y <= v.topY + 10, `roll ${s}: up the hidden trunk to its branch (at ${Math.round(r.p.y)}, branch ${v.topY})`);
+  }
+});
+
+// QA 6 (rule 7): 1-7's "The squirrels' acorn tree! Carry one out with you." read as a must; the bot never got an acorn and walked on.
+// The first stretch can be crossed without one, the second only with one: the lines say so.
+test('1-7: the acorn rooms say what an acorn is for, and that the long stretch needs one', () => {
+  for (const s of ROLLS) {
+    const st = buildProtoStage(cfg('1-7', 'stealth'), s, '1-7');
+    const rooms = (st.kit?.rooms ?? []).filter((r) => r.id.startsWith('acorns-'));
+    assert.equal(rooms.length, 2, `roll ${s}: two acorn rooms`);
+    assert.doesNotMatch(String(rooms[0].tips?.enter ?? ''), /Carry one out/, `roll ${s}: the first room's line is not an order`);
+    assert.match(String(rooms[0].tips?.enter ?? ''), /eagle/, `roll ${s}: the first room says what an acorn does`);
+    assert.match(String(rooms[1].tips?.enter ?? ''), /acorn/i, `roll ${s}: the second room says one is needed`);
   }
 });

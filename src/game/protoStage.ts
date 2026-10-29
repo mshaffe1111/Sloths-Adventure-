@@ -185,6 +185,11 @@ export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: num
 
 /** the floor under a teaching swing: soft moss, high enough above the water that a miss costs a hop, not a life */
 const HOLLOW_Y = 710;
+/**
+ * 1-7's secret bush: its trunk's climbing vine starts this far above the ground (over the 90 px under a vine's foot where Dot's climb
+ * lesson finds a trunk, lessons.ts pickLesson; within a flick's rise of the 25 px the engine catches a trunk from)
+ */
+export const SECRET_VINE_UP = 96;
 /** the step out of a soft pit: the pit is 130 deep and one jump rises about 108, so 55 up and then 75 up, each an easy single jump */
 const PIT_STEP = 55;
 /** the width of a step at a soft pit's near wall (4-2's lesson drops: the way back up to try the leaf again) */
@@ -1768,6 +1773,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const tX = Math.round(b.x + b.w / 2);
     const perchY = Math.round(G - 160);
     trunk(tX, G, perchY);
+    // (its climbing vine starts a hop up the trunk, QA 2026-10-29, 1-7: Dot's climb lesson, "Flick up into the trunk to grab it", fired
+    // here on the ground, for a trunk hidden in the leaves; the player saw no trunk, walked on to the next wall and flicked up into it six
+    // times, where the spring mushroom is the way. A flick up from inside the bush still catches it: the secret stays a secret)
+    V[V.length - 1].bottomY = G - SECRET_VINE_UP;
     const end = tX + Math.round(R.r(360, 420));
     branch(tX - 40, end, perchY);
     row(tX + 70, end - 90, perchY - 34, 3, 'hibiscus');
@@ -1839,7 +1848,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
           { kind: 'item', id: `acorn${n}`, variant: 'acorn', source: `oak${n}` },
         ],
         exit: `acorn${n}`, beyond: onP(floor, oakX + 620), ground: [floor.id],
-        ...(first ? { tips: { enter: 'The squirrels\' acorn tree! Carry one out with you.', hold: 'When it screeches, flick up to throw it. Keep running!' } } : {}),
+        // (QA 2026-10-29, 1-7: "Carry one out with you" read as a must, and a player who walked on without one was left wondering. The
+        // first stretch is crossable without it, the second only with it: the first room says what an acorn is for, the second that
+        // this time it is needed. Both lines new, need Matt's approval)
+        tips: first
+          ? { enter: 'The squirrels\' acorn tree! An acorn can fool the eagle.', hold: 'When it screeches, flick up to throw it. Keep running!' }
+          : { enter: 'Too far to run this time. Take an acorn!' },
       });
       flower(oakX + 300, G - 34, 'hibiscus');
       // the rest of the stretch: a rock or two to hop once his hands are free, then the next bush
