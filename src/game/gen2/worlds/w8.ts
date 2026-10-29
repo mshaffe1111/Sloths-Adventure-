@@ -142,7 +142,9 @@ export const W8_MANIFEST: WorldManifest = {
   props: W8_PROPS,
   pairs: [],
   decor: W8_DECOR,
-  flowers: ['lotus', 'orchid'],
+  // (one species: the pale night bloom of 8-2, "Gather {n} pale night blooms"; the pipeline picks a flower's look per spot, so a second
+  // species mixed the rows, stageQuality's one-species rule)
+  flowers: ['lotus'],
   sections: [],
   handBuilt: ['8-7', '8-10'],
   // (the dark is 8-1's, the roosts 8-4's, the moonlight glides 8-6's; the shut shrine is said in each fight stage's own gate)

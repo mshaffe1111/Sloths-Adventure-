@@ -183,7 +183,9 @@ test('every dark stretch has a firefly swarm on each of its gaps, and the dark n
     const gaps = darkRecipes(l.miniIndex).reduce((n, p) => n + p.count, 0);
     const zs = s.zones ?? [];
     for (const z of zs) assert.ok(isStatic(z) && !isDamaging(z));
-    if (zs.length) assert.ok(zs.reduce((n, z) => n + (z.lights ?? []).length, 0) >= gaps, `${l.id}: fewer swarms than gaps`);
+    // (the old generator's dark recipes; a gen2 stage's dark stretches are its sections', each gap lit by levelCheck's rule)
+    if (zs.length && !isGen2Stage(l)) assert.ok(zs.reduce((n, z) => n + (z.lights ?? []).length, 0) >= gaps, `${l.id}: fewer swarms than gaps`);
+    if (isGen2Stage(l)) assert.deepEqual(validateStage(s).errors.filter((e) => /no light on it/.test(e)), [], `${l.id}: a gap in the dark with no light`);
   }
 });
 

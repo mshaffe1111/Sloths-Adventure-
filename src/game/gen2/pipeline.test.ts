@@ -922,4 +922,6 @@ test('a glide gap (World 8): past the double jump on Normal, never past what lev
   const L = layLocal(tpl, b, rngFor(1));
   const gap = L.gaps[0].x1 - L.gaps[0].x0;
   assert.ok(Math.abs(gap - 0.9 * glideGap(0, b)) <= 1, `${gap} px`);
+  // (its soft pit climbs back to the take-off, never out on the far side: the leaf is the only way over)
+  assert.deepEqual(L.gaps[0].back?.lips, [0, 0]);
 });
