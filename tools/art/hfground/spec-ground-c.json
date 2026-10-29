@@ -8,7 +8,7 @@
   ]
  },
  "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/999e0670f6c1b9e80975d40b842b3da05286c9cb/tools/art/hfground/starts/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/3074b40e238ff93ef6bc6afb2b112f0f6d5f687b/tools/art/hfground/starts/",
  "items": [
   {
    "kind": "tile",
