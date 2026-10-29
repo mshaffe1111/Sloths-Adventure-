@@ -38,7 +38,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'Wait till the neighbors hear.', sting: 'laugh' },
       { speaker: 'Venom Fang', text: 'If anyone asks, I tied myself in this knot on purpose.' },
       { speaker: 'Pokey', text: 'Sure you did.' },
-      { speaker: 'Venom Fang', text: 'Don\'t look at the collar. It itches. It always itches. She thanked me too, on the way past. Nobody thanks me. The king at the river has a crown now. Don\'t laugh at it.', boss: 'calm', cue: 'tender', intensity: 0.4 },
+      { speaker: 'Venom Fang', text: 'Don\'t look at the collar. It itches. It always itches. She thanked me too, on the way past. I am not often thanked. The king at the river has a crown now. Don\'t laugh at it.', boss: 'calm', cue: 'tender', intensity: 0.4 },
       { speaker: 'Pokey', text: 'May I go past now?' },
       { speaker: 'Venom Fang', text: 'You asked. Nobody asks.', boss: 'calm' },
     ],
@@ -66,7 +66,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Shadow Prowler', text: 'Word came down the river that the snake lost to a sloth. I did not believe it. I still do not.', boss: 'calm' },
       { speaker: 'Shadow Prowler', text: 'You will not hit what you cannot find, little sloth. I am the dark between the threads. I try to be.' },
       { speaker: 'Pokey', text: 'I can wait.' },
-      { speaker: 'Shadow Prowler', text: 'Everyone says that. Then they hurry. Everyone hurries. Nobody has ever lasted me past the second hour.', boss: 'calm' },
+      { speaker: 'Shadow Prowler', text: 'Everyone says that. Then they hurry. Everyone hurries. Not one has lasted me past the second hour.', boss: 'calm' },
       { speaker: 'Pokey', text: 'I never learned how to hurry.', pokey: 'determined' },
     ],
     defeat: [
@@ -118,7 +118,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'I\'m taller upside down.', sting: 'laugh' },
     ],
     defeat: [
-      { speaker: 'Marsh Reaver', text: 'You waded in at LUNCH and won. Nobody wins at lunch. The runners are going to sing about this.' },
+      { speaker: 'Marsh Reaver', text: 'You waded in at LUNCH and won. Lunch has never lost. The runners are going to sing about this.' },
       { speaker: 'Pokey', text: 'Your lunch is getting cold.' },
       { speaker: 'Marsh Reaver', text: 'It is cold now. Hrmph. Go.', boss: 'calm', sting: 'laugh' },
       { speaker: 'Narrator', text: 'When Pokey looked back, the Reaver had left half his lunch on a root, facing the path. He was pretending he hadn\'t.', boss: 'calm', cue: 'tender', intensity: 0.35 },
@@ -257,7 +257,7 @@ export function thornbarkPanels(kind: 'intro' | 'defeat'): StoryPanel[] {
     { speaker: 'Thornbark', text: 'A sloth. They sent a sloth? No. Nobody sent you.' },
     { speaker: 'Pokey', text: 'I didn\'t beat them. I just kept coming back until they got tired of me.' },
     { speaker: 'Pokey', text: 'You were right, you know. Not to kneel.' },
-    { speaker: 'Thornbark', text: 'Nobody has said that to me since the Pact. The keeper before her sat in my roots through the long afternoons, humming. Your Meeca hums the same song. Tell her an old tree is listening.' },
+    { speaker: 'Thornbark', text: 'I have not heard that since the Pact. The keeper before her sat in my roots through the long afternoons, humming. Your Meeca hums the same song. Tell her an old tree is listening.' },
     { speaker: 'Thornbark', text: 'Take this Thorn Heart. Go and bring your Meeca home.' },
   ];
   const lines = kind === 'intro' ? intro : defeat;

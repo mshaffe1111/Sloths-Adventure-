@@ -260,6 +260,8 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     N('Home was exactly the way they\'d left it, except that the Heartbloom was open, and a snail who had set off across the garden path on the morning they took Meeca was half an inch from the finish line.', 'PH:arm_around@.34*1.1 H:epic@.68^.8', { cue: 'tender', i: 0.5, p: { zoom: 1.2 } }),
     P('He\'s gonna make it. He trained for it.', 'PH:cheek_glad@.34*1.1 H:epic@.68^.8', { sting: 'laugh' }),
     N('Meeca sat down on the garden path beside the snail. After a while, Pokey sat down too.', 'PH:sit_hug@.4*1.1 H:epic@.7^.8', { cue: 'finale', i: 0.8, sting: 'bloom', p: { zoom: 1.2 } }),
+    // SR-36: her prologue snacks, and her "early for something, once": the game ends on a laugh, and on Dot healed
+    N('Dot went to get snacks. She was back before they\'d finished sitting down.', 'PH:sit_hug@.4*1.1 H:epic@.7^.8 D:cheer@.62^.46', { sting: 'laugh', p: { zoom: 1.15 } }),
   ]);
 
   return [...tower, ...seam, ...morning, ...end];

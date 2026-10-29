@@ -82,7 +82,7 @@ const W1 = chapter({ name: C1, w: 1, m: 'day', cue: 'journey', i: 0.4, base: { p
 
 const W1_MID = chapter({ name: MID[1], w: 1, m: 'day', cue: 'tender', i: 0.35, base: { particles: 'petals' } }, [
   D('I\'ve got another one. I was saving it. You looked like you needed it.', 'P:tired@.3 D@.62^.4'),
-  D('"Pokey. I\'m fine. I have a window, a chair, a blanket that smells like mothballs, and a lieutenant who says sorry every time he brings the oatmeal. Nobody has been unkind. I am fine. Love, M."',
+  D('"Pokey. I\'m fine. I have a window, a chair, a blanket that smells like mothballs, and a lieutenant who says sorry every time he brings the oatmeal. Everyone is very polite. I am fine. Love, M."',
     'P:happy@.3 D@.62^.4', { cue: 'tender', i: 0.4 }),
   N('Far away, in a tower, a sloth sat up straight at a desk by a window. She had been sitting that way for an hour.', 'MS:wait@.5', { w: 10, m: 'dusk', cue: 'tender', i: 0.35, p: { particles: 'none', zoom: 1.35, focusX: 0.5 } }),
   P('Let me see it.', 'P:talk@.3 D@.62^.4', { w: 1, m: 'day', p: { particles: 'petals' } }),
@@ -125,7 +125,7 @@ const W2_MID = chapter({ name: MID[2], w: 2, m: 'day', cue: 'comedy', i: 0.4, ba
   P('Is this what it\'s like for everybody else?', 'P:talk@.3 D@.6^.4', { cue: 'tender', i: 0.4 }),
   D('Every single day.', 'P:idle@.3 D:perch@.6^.48', { cue: 'tender', i: 0.4 }),
   D('I went back to the netting last night. There was a new one. It\'s not a good one, and I need you to stay calm. Which you will. You always do. It\'s the rest of us who— Here.', 'P:idle@.3 D@.6^.4', { cue: 'dread', i: 0.3 }),
-  D('"Every guardian wears an iron collar with thorns on the inside. They scratch at them when they think nobody\'s looking. I don\'t think they chose this. Be kind to them. But please win. Love, M."',
+  D('"Every guardian wears an iron collar with thorns on the inside. They scratch at them when they think they\'re alone. I don\'t think they chose this. Be kind to them. But please win. Love, M."',
     'P:worried@.3 D@.6^.4', { cue: 'reveal', i: 0.35 }),
   P('The snake kept scratching at his. I thought he had fleas.', 'P:talk@.3 D@.6^.4'),
   D('Snakes don\'t get fleas, Pokey.', '=', { cue: 'dread', i: 0.35 }),
