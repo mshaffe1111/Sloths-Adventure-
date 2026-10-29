@@ -12,7 +12,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'emerald_canopy',
     bossName: 'Venom Fang',
     bossTitle: 'Emerald Boa Monarch',
-    bossQuote: 'Sssilly sloth... your journey endsss before the sun setsss!',
+    bossQuote: 'Ssloth. What are you doing on my branch?',
     ambientType: 'gentle_breeze',
     palette: {
       skyTop: '#38bdf8',
@@ -36,7 +36,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'sunlit_river',
     bossName: 'Crocus Rex',
     bossTitle: 'River Terror',
-    bossQuote: 'These waters belong to me! Prepare to be dragged under!',
+    bossQuote: 'The toll is one traveler. Today, my friend, you are it.',
     ambientType: 'river_flow',
     palette: {
       skyTop: '#0ea5e9',
@@ -60,7 +60,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'mossy_grotto',
     bossName: 'Shadow Prowler',
     bossTitle: 'The Night Jaguar',
-    bossQuote: 'You cannot punch what you cannot catch, little sloth!',
+    bossQuote: 'I am the dark between the threads. I try to be.',
     ambientType: 'deep_cave',
     palette: {
       skyTop: '#064e3b',
@@ -84,7 +84,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'mist_cascades',
     bossName: 'Sky Sovereign',
     bossTitle: 'Harpy Eagle Matriarch',
-    bossQuote: 'My skies, my prey! Dive-bombing your hopes into feathers!',
+    bossQuote: 'State your business, sloth, and keep it short. I was mid-dive.',
     ambientType: 'waterfall',
     palette: {
       skyTop: '#0284c7',
@@ -108,7 +108,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'orchid_sanctuary',
     bossName: 'Tarantula Queen',
     bossTitle: 'Jeweled Web Spinner',
-    bossQuote: 'A delicious sloth snack caught neatly in my silky web!',
+    bossQuote: 'Do stay awhile, darling. Everyone does. Eventually.',
     ambientType: 'tropical_birds',
     palette: {
       skyTop: '#d946ef',
@@ -132,7 +132,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'deep_mangrove',
     bossName: 'Marsh Reaver',
     bossTitle: 'Reaver of the Blackwater',
-    bossQuote: 'The blackwater keeps what I take, slow traveler! Your footsteps are already mine!',
+    bossQuote: 'Nobody wades at noon. It is LUNCH.',
     ambientType: 'swamp_croaks',
     palette: {
       skyTop: '#1e293b',
@@ -156,7 +156,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'ancient_ruins',
     bossName: 'Stone Idol Golem',
     bossTitle: 'Monolith Protector',
-    bossQuote: 'AWAKENED TO CRUSH ALL INTRUDERS UNDER STONE FISTS!',
+    bossQuote: 'None... may... pass. Take... your time.',
     ambientType: 'ancient_echo',
     palette: {
       skyTop: '#475569',
@@ -180,7 +180,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'twilight_treetops',
     bossName: 'Night-Wing Monarch',
     bossTitle: 'Giant Spectral Bat',
-    bossQuote: 'The darkness is my domain! You shall wander lost forever!',
+    bossQuote: 'I am told to stop you. I will try to do it softly.',
     ambientType: 'twilight_crickets',
     palette: {
       skyTop: '#312e81',
@@ -204,7 +204,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'volcanic_jungle',
     bossName: 'Magma Drake',
     bossTitle: 'Primeval Fire Lizard',
-    bossQuote: 'Turn to ash, furry intruder! The heat here is too much for you!',
+    bossQuote: 'I am to burn you. There is a speech. I have lost my place.',
     ambientType: 'volcanic_hum',
     palette: {
       skyTop: '#7f1d1d',
@@ -228,7 +228,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     theme: 'stormy_highlands',
     bossName: 'General Iron-Claw',
     bossTitle: 'The Warlord Sloth General',
-    bossQuote: 'Gwahaha! You made it this far, Sloth? Meeca will never leave my tower!',
+    bossQuote: 'Still slow, boy.',
     ambientType: 'thunderstorm',
     palette: {
       skyTop: '#090d16',

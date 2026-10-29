@@ -7,20 +7,16 @@
  * never call this the bank simply stays empty.
  */
 import type { AudioCore, OrchSample } from './core.ts';
+import { LOOP_LEN, parseOrchName } from './orchNames.ts';
 import { bytesOf } from './sampleLoader.ts';
 import type { Theme } from './music.ts';
 import { fullOrchestra, realVoice } from './realize.ts';
+import { layerTracks } from './adaptive.ts';
 
 const files = import.meta.glob('../assets/orch/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
-/** how long a looped steady stretch is, in seconds (prepOrch.py's LOOP_LEN) */
-const LOOP_LEN = 1.8;
 
-/** "cello_50_1300.mp3" -> instrument, MIDI note, loop start in seconds */
-export function parseOrchName(path: string): { inst: string; midi: number; loop: number } | null {
-  const m = /\/([A-Za-z]+)_(\d+)_(\d+)\.mp3$/.exec(path);
-  return m ? { inst: m[1], midi: Number(m[2]), loop: Number(m[3]) / 1000 } : null;
-}
+export { parseOrchName } from './orchNames.ts';
 
 const started = new WeakMap<AudioCore, Map<string, Promise<void>>>();
 
@@ -64,9 +60,9 @@ async function decodeFor(core: AudioCore, inst: string, bytes: ArrayBuffer): Pro
   return core.ctx.decodeAudioData(bytes);
 }
 
-function store(core: AudioCore, inst: string, midi: number, loop: number, buf: AudioBuffer) {
+function store(core: AudioCore, inst: string, midi: number, loop: number, buf: AudioBuffer, len = LOOP_LEN) {
   const list = core.orch.get(inst) ?? [];
-  list.push({ buf, midi, loopStart: loop, loopEnd: loop > 0 ? Math.min(buf.duration, loop + LOOP_LEN) : 0 });
+  list.push({ buf, midi, loopStart: loop, loopEnd: loop > 0 ? Math.min(buf.duration, loop + len) : 0 });
   list.sort((a, b) => a.midi - b.midi);
   core.orch.set(inst, list);
 }
@@ -85,7 +81,7 @@ export function loadOrch(core: AudioCore, insts: Iterable<string>): Promise<void
             const n = parseOrchName(path);
             if (!n || n.inst !== inst) return;
             try {
-              store(core, inst, n.midi, n.loop, await decodeFor(core, inst, await bytesOf(url)));
+              store(core, inst, n.midi, n.loop, await decodeFor(core, inst, await bytesOf(url)), n.len);
             } catch {
               /* a note that will not decode is just missing: the nearest one is used instead */
             }
@@ -103,7 +99,7 @@ export function loadOrch(core: AudioCore, insts: Iterable<string>): Promise<void
 export async function loadOrchFrom(core: AudioCore, data: Record<string, ArrayBuffer>): Promise<void> {
   for (const [path, bytes] of Object.entries(data)) {
     const n = parseOrchName('/' + path);
-    if (n) store(core, n.inst, n.midi, n.loop, await core.ctx.decodeAudioData(bytes.slice(0)));
+    if (n) store(core, n.inst, n.midi, n.loop, await core.ctx.decodeAudioData(bytes.slice(0)), n.len);
   }
 }
 
@@ -123,13 +119,17 @@ export const VOICE_GROUPS: Record<string, string[]> = {
 /** the instruments a piece will need */
 export function groupsFor(theme: Theme, real = true): string[] {
   const out = new Set<string>();
-  for (const t of real ? [...theme.tracks, ...fullOrchestra(theme)] : theme.tracks) {
+  for (const t of [...(real ? [...theme.tracks, ...fullOrchestra(theme)] : theme.tracks), ...(theme.still ? [] : layerTracks(theme))]) {
     const key = t.kind === 'drums' ? t.voice : t.kind === 'melody' ? [t.inst, t.altInst ?? ''] : t.inst;
     for (const k of Array.isArray(key) ? key : [key]) {
       // the voice the music really plays (see realize.ts)
       const v = !real || !k ? k : realVoice(t, k);
       for (const g of VOICE_GROUPS[v] ?? []) out.add(g);
     }
+  }
+  // the instruments a form's sections hand the tune to
+  for (const part of theme.form ?? []) {
+    for (const inst of Object.values(part.inst ?? {})) for (const g of VOICE_GROUPS[real ? realVoice({ kind: 'melody' }, inst) : inst] ?? []) out.add(g);
   }
   // the breakdown's crash and its drum roll, and the bell that answers the lead on the lift pass
   out.add('cymbal');

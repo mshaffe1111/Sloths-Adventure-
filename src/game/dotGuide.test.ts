@@ -265,26 +265,35 @@ test('the pause menu keeps her last three lines', () => {
   assert.deepEqual(q.history.map((h) => h.key), ['l4', 'l3', 'l2']);
 });
 
-test("Dot's help: Teach me says it all, Just reminders skips what this phone has seen, Quiet keeps only the must-know and opted-in story", () => {
-  const seen = new Set(['move:jump']);
-  const kinds = {
-    must: { kind: 'must' as const },
-    danger: { kind: 'danger' as const },
-    goal: { kind: 'goal' as const },
-    struggle: { kind: 'struggle' as const },
-    newTip: { kind: 'teach' as const, skill: 'move:glide' },
-    oldTip: { kind: 'teach' as const, skill: 'move:jump' },
-    info: { kind: 'info' as const },
-    newInfoLesson: { kind: 'info' as const, skill: 'lesson:fruit' },
-    journal: { kind: 'journal' as const },
-    story: { kind: 'story' as const },
+test("Dot's help: Help says it all; Tips only what is new, a new hazard, the locked exit and real struggle; Quiet only the must-know and opted-in story", () => {
+  const seen = new Set(['move:jump', 'mech:rocks']);
+  const kinds: Record<string, Parameters<typeof helpAllows>[0]> = {
+    must: { kind: 'must' },
+    newHazard: { kind: 'danger', mech: 'thornVine' },
+    hazardAgain: { kind: 'danger', key: 'engine:Hide! Into a bush!' },
+    goal: { kind: 'goal' },
+    deaths: { kind: 'struggle', source: 'struggle', key: 'struggle:death:12' },
+    stuckClock: { kind: 'struggle', source: 'struggle', key: 'struggle:stuck:40' },
+    nudge: { kind: 'struggle', step: 'nudge', source: 'engine' },
+    move: { kind: 'struggle', step: 'move', source: 'engine' },
+    roomName: { kind: 'info', step: 'name', source: 'engine' },
+    newRoomName: { kind: 'info', step: 'name', mech: 'seesaw', source: 'engine' },
+    newTip: { kind: 'teach', move: 'glide', skill: 'move:glide', source: 'engine' },
+    oldTip: { kind: 'teach', move: 'jump', skill: 'move:jump', source: 'engine' },
+    newThing: { kind: 'info', mech: 'fallPlug', source: 'engine' },
+    oldThing: { kind: 'info', mech: 'rocks', source: 'engine' },
+    info: { kind: 'info', source: 'engine' },
+    newLesson: { kind: 'info', skill: 'lesson:fruit', source: 'lesson' },
+    journal: { kind: 'journal' },
+    story: { kind: 'story', source: 'story' },
+    stageStory: { kind: 'story', source: 'engine' },
   };
   const allowed = (help: 'teach' | 'reminders' | 'quiet', storyOn = true) =>
     Object.entries(kinds)
       .filter(([, l]) => helpAllows(l, help, seen, storyOn))
       .map(([k]) => k);
   assert.deepEqual(allowed('teach'), Object.keys(kinds));
-  assert.deepEqual(allowed('reminders'), ['must', 'danger', 'goal', 'struggle', 'newTip', 'newInfoLesson', 'story']);
+  assert.deepEqual(allowed('reminders'), ['must', 'newHazard', 'deaths', 'nudge', 'newRoomName', 'newTip', 'newThing', 'newLesson', 'story']);
   assert.deepEqual(allowed('quiet'), ['must', 'story']);
   assert.deepEqual(allowed('quiet', false), ['must']);
   assert.deepEqual(allowed('teach', false).includes('story'), false);
@@ -347,27 +356,34 @@ test('struggle: two deaths at the same spot give one help line about what got hi
   assert.equal(s.death(3050, 480, 'foe')?.text, STRUGGLE_LINES['death-foe']);
 });
 
-test('struggle: stuck means no progress for 15 s while a thumb is on the glass', () => {
+test('struggle: stuck is back and forth with no progress, never a clock (DOT-11)', () => {
   const s = new StruggleWatch();
   s.restart(100, 500);
-  // no thumb on the glass: putting the phone down is not being stuck
-  for (let t = 0; t < 30000; t += 100) assert.equal(s.step(100, 100, 500, false), null);
+  // standing still to think, however long, is not being stuck
+  for (let t = 0; t < 120000; t += 100) assert.equal(s.step(100, 100, 500), null);
+  // back and forth over the same ground: stuck after STRUGGLE.turns turns
   let got: ReturnType<StruggleWatch['step']> = null;
-  let at = 0;
-  for (let t = 100; t <= 20000 && !got; t += 100) {
-    got = s.step(100, 110, 500, true);
-    at = t;
+  let turns = 0;
+  for (let leg = 0; leg < 20 && !got; leg++) {
+    const to = leg % 2 ? 100 : 40;
+    for (let k = 0; k < 10 && !got; k++) got = s.step(100, leg % 2 ? 40 + k * 6 : 100 - k * 6, 500);
+    void to;
+    turns = leg;
   }
   assert.equal(got?.kind, 'stuck');
-  assert.ok(at >= STRUGGLE.stuckMs && at < STRUGGLE.stuckMs + 300, `at ${at}`);
+  assert.ok(turns >= STRUGGLE.turns, `after ${turns} turns`);
+  // a twitch of the thumb is not a turn
+  const s1 = new StruggleWatch();
+  s1.restart(100, 500);
+  for (let i = 0; i < 400; i++) assert.equal(s1.step(100, 100 + (i % 2) * 10, 500), null);
   // progress resets it
   const s2 = new StruggleWatch();
   s2.restart(100, 500);
-  for (let t = 0; t < 40000; t += 100) assert.equal(s2.step(100, 100 + t / 50, 500, true), null);
+  for (let t = 0; t < 40000; t += 100) assert.equal(s2.step(100, 100 + t / 50, 500), null);
   // climbing up counts as progress too
   const s3 = new StruggleWatch();
   s3.restart(100, 2000);
-  for (let t = 0; t < 40000; t += 100) assert.equal(s3.step(100, 100, 2000 - t / 40, true), null);
+  for (let t = 0; t < 40000; t += 100) assert.equal(s3.step(100, 100, 2000 - t / 40), null);
 });
 
 test('struggle: three kicks in a row with nothing in reach is a thumb that meant to run', () => {

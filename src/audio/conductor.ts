@@ -14,6 +14,9 @@ import { SFX, runFx } from './sfx.ts';
 import { speechBlip } from './speech.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { themeById } from './themes.ts';
+import { CALM, type MusicState } from './adaptive.ts';
+import { CUE_DUCK, playCue, type CueName } from './cues.ts';
+import { GAME_SFX, playGameFx } from './sfxGame.ts';
 
 // how far ahead of the audio clock the music is scheduled: long enough to ride out a stalled main thread
 // (a level loading, a garbage collection) without the music dropping out and then firing in one burst
@@ -63,10 +66,12 @@ export interface SceneOptions {
   seed?: number;
   /** playing speed, 1 = as written */
   tempo?: number;
+  /** lay a piece written as one loop out as a form (the stage music; see form.ts) */
+  form?: boolean;
 }
 
 /** minimum seconds between two plays of the same effect, so a held button or a coin spray never machine-guns */
-const MIN_GAP: Record<string, number> = { step: 0.17, flower: 0.035, leaf: 0.04, fruit: 0.05, whoosh: 0.07, jump: 0.06, hit: 0.04, climb: 0.3, land: 0.08, uiTap: 0.04, glide: 0.03 };
+const MIN_GAP: Record<string, number> = { step: 0.17, flower: 0.035, leaf: 0.04, fruit: 0.05, whoosh: 0.07, jump: 0.06, hit: 0.04, climb: 0.3, land: 0.08, landing: 0.08, uiTap: 0.04, glide: 0.03 };
 
 export class Conductor {
   private ctx: AudioContext | null = null;
@@ -80,6 +85,8 @@ export class Conductor {
   private wantOpts: SceneOptions = {};
   private wantAmbient: AmbientType | null = null;
   private intensity = 0.4;
+  /** the game's state the music follows (adaptive.ts) */
+  private mstate: MusicState = CALM;
   private paused = false;
   private lowHealth = false;
   private nextHeartbeat = 0;
@@ -150,7 +157,6 @@ export class Conductor {
       ctx.onstatechange = this.announce;
       // the recorded sounds load in the background; until they are ready the effects use their synthesized layers
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
-      this.warmOrchSfx();
       this.amb = new Ambience(this.core);
       // every phone plays the lighter arrangement (fewer voices at once): the full one was too much for a busy phone's sound
       this.lite = PHONE;
@@ -168,15 +174,6 @@ export class Conductor {
     // anything asked for before audio was allowed
     if (this.core && !this.playback && this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
     if (this.core && this.wantAmbient && this.amb && !this.amb.type) this.amb.start(this.wantAmbient);
-  }
-
-  /** the orchestral effects (sfxOrch.ts) play the music's own recordings: fetch them when that set is on (until they arrive the synthesized stand-ins play) */
-  warmOrchSfx() {
-    const core = this.core;
-    if (!core) return;
-    void Promise.all([import('./orchLoader.ts'), import('./sfxOrch.ts')])
-      .then(([m, o]) => (o.orchSfxEnabled() ? m.loadOrch(core, o.ORCH_SFX_GROUPS) : undefined))
-      .catch(() => {});
   }
 
   private stingsWarm = false;
@@ -231,9 +228,10 @@ export class Conductor {
     const theme = themeById(id);
     if (!theme) return;
     const begin = () => {
-      const pb = new Playback(core, theme, core.ctx.currentTime + 0.08, undefined, !first || !!old, { seed: opts.seed, tempo: opts.tempo });
+      const pb = new Playback(core, theme, core.ctx.currentTime + 0.08, undefined, !first || !!old, { seed: opts.seed, tempo: opts.tempo, form: opts.form });
       pb.liteMode = this.lite;
       pb.setIntensity(opts.intensity ?? this.intensity, true);
+      pb.setState(this.mstate, true);
       this.playback = pb;
       pb.update(core.ctx.currentTime + LOOKAHEAD);
     };
@@ -258,6 +256,31 @@ export class Conductor {
   setIntensity(v: number) {
     this.intensity = Math.max(0, Math.min(1, v));
     this.playback?.setIntensity(this.intensity);
+  }
+
+  /**
+   * What is happening in the stage, for the music to follow (adaptive.ts): danger, dark, the exit, a puzzle room, a boss's phase, a story
+   * beat's mood. Only the fields given change; the music answers on its next bar line, with fades.
+   */
+  setMusicState(s: Partial<MusicState>) {
+    this.mstate = { ...this.mstate, ...s };
+    this.playback?.setState(s);
+  }
+
+  get musicState(): MusicState {
+    return this.mstate;
+  }
+
+  /** an in-key stinger over the music (cues.ts), placed on the music's next eighth note; the music dips a little under it */
+  cue(name: CueName) {
+    const core = this.core;
+    if (!core || this.muted || core.ctx.state !== 'running') return 0;
+    const now = core.ctx.currentTime + 0.03;
+    const pb = this.playback;
+    const t = pb ? pb.gridAfter(now) : now;
+    const dur = playCue(core, name, this.key(), t, pb?.beatDur ?? 0.5);
+    this.duck(CUE_DUCK[name], Math.max(0.2, dur * 0.6), 0.8);
+    return dur;
   }
 
   /** speed the music up or down (1 = as written); eases in over a few bars. Used when a boss enrages. */
@@ -295,14 +318,14 @@ export class Conductor {
   fx(name: string, arg?: number) {
     const core = this.core;
     if (!core || this.muted || !core.ctx || core.ctx.state !== 'running') return;
-    if (!SFX[name]) return;
+    if (!SFX[name] && !GAME_SFX[name]) return;
     const now = core.ctx.currentTime;
     const gap = MIN_GAP[name] ?? 0.02;
     if (now - (this.lastFx.get(name) ?? -1) < gap) return;
     this.lastFx.set(name, now);
     // a voice budget: in a frantic moment, drop the least important sounds first
     this.recentFx = this.recentFx.filter((x) => now - x < 0.12);
-    const trivial = name === 'step' || name === 'leaf' || name === 'climb' || name === 'land';
+    const trivial = name === 'step' || name === 'leaf' || name === 'climb' || name === 'land' || name === 'landing';
     if (this.recentFx.length > (trivial ? 5 : 12)) return;
     this.recentFx.push(now);
     // a different version each time (never the same twice in a row), and a combo counter for landed hits
@@ -314,7 +337,7 @@ export class Conductor {
     } else if (name === 'defeat' && now - this.lastHitAt >= COMBO_WINDOW) {
       this.streak = 0;
     }
-    runFx(name, core, this.key(), arg, { variant, streak: this.streak });
+    if (!playGameFx(name, core, this.key(), arg)) runFx(name, core, this.key(), arg, { variant, streak: this.streak });
   }
 
   /** a piece of written music over the top; the music underneath ducks */
@@ -449,6 +472,8 @@ export class Conductor {
       time: this.ctx?.currentTime ?? 0,
       scene: this.wantTheme,
       playing: this.playback?.theme.id ?? null,
+      section: this.playback?.section ?? '',
+      musicState: this.mstate,
       seed: this.playback?.seed ?? null,
       tempo: this.playback?.tempo ?? null,
       ambient: this.amb?.type ?? null,

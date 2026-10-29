@@ -1,3 +1,4 @@
+import type { GuideFeed } from './dot/DotGuide.tsx';
 import React from 'react';
 import type { LevelConfig } from '../game/types.ts';
 import { DotGuide, type DotGuideProps } from './dot/DotGuide.tsx';
@@ -11,7 +12,7 @@ interface Props {
   hp: number;
   /** a guiding line from the engine (a stage tip, the goal, a reminder, the sealed door); `n` counts up with each new one */
   /** `passed`: the moment of this line has passed (he is past its spot): take it down if it is still up or waiting */
-  guide?: { text: string; ms: number; n: number; passed?: boolean } | null;
+  guide?: GuideFeed | null;
   /** what Dot's guide needs besides */
   dot: Pick<DotGuideProps, 'engine' | 'playing' | 'coachStep' | 'coachStyle' | 'lessonId' | 'count'>;
 }

@@ -122,3 +122,42 @@ cost). No job is running.
 - Rough spots seen, not mine to fix here:
   - a flat green code-drawn block in 5-1's pit (a rock platform, x about 7700);
   - the lips are thin (a 22-30 unit moss band). LIP_W in groundPaint.ts can be raised to about 700 if Matt wants a heavier lip.
+
+## Cloud round (2026-10-29, ~3:30 PM ET)
+- Dressing (VI-17) checked over every World 1/2/5 stage, 8 rolls each (`work/dresscheck.ts`, git-ignored): nothing floats; fixed
+  pieces standing in bounce pads, steps and walls (`free()`), hanging moss in front of a pickup, hanging moss under logs lying at ground
+  level across wide water (now the two nearest banks, any distance), two bank sets facing each other across a pit (600+ apart now), the
+  same piece twice side by side (clutter keeps 440/700 clear of bank sets), and each set laid in a turned order. Left: the fern always
+  stands half in front of the mushroom in World 1's bank set A (by design: a cluster).
+- 5-6 and 5-8 are the old generator and get no dressing (no `proto`).
+- LIP_W 560 -> 700 (`work/lip-*.jpg` compared 560/700/840; 840 covered his feet in World 9's stone).
+- World 10 soil redone: new start (`starts3.py`, broken blocks), job hfg-ground-d, pick fill-w10-c swapped in by `packfill.py`.
+  `review-w10-redo.jpg`.
+- Water signs: gen2 stood the sign at the higher of a gap's two lips, so on 6-1 it hung 80 units in the air; it now stands on the near
+  lip (gen2/pipeline.ts). `after-6-1-sign-*.jpg`.
+- Before/after: `ba-<stage>.jpg` (upright and sideways, before above, after below).
+
+## Round 3 (2026-10-29, ~4:45 PM ET; the lead's review)
+- World 5 soil retaken: start `starts4.py` fill-w5r (World 1's soil warmed), job hfg-art4, pick fill-w5-r (packfill.py).
+  `review-w5-soil-redo.jpg`, `r3-5-1-x2000.jpg`, `r3-5-4-x1500.jpg`, `r3-5-7-x3000.jpg`.
+- The green blocks in 5-1's and 1-2's pits were the soft pit's low step (moss_stone, 55 tall) drawn by terrain's code body. The step
+  and the pit walls now carry `soil: true` (protoStage, w5Stages, w5Stage54): the step is painted as soil (bare: no end pieces, lip to
+  its ends), the walls are left to the bank above them; drawProtoScene draws the lowest pieces first and closes a bank's end where a
+  piece stands on it. `r3-1-2-x4250.jpg`, `r3-1-2-x11500.jpg`, `r3-5-1-x7300.jpg`.
+- The white bar in 10-1 was the code-drawn toadstool's stalk. The bounce plants are painted now (job hfg-art4 stalks, hfg-art5 caps;
+  `packbounce.py`, `picks-bounce.json`, `src/assets/props/bounce.webp`, `bounceArt.ts`); spanArt.ts's drawBounce is deleted. The stalk
+  darkens downward; the cap and cue draw again over the painted ground (terrain.ts drawBounceCaps). `r3-10-1-x500.jpg`,
+  `r3-1-2L4-x11600.jpg`, `review-bounce-caps.jpg`, `bounce-packed-*.jpg`.
+
+## Round 4 (2026-10-29, ~5:30 PM ET): pits in shadow
+- protoArt.ts drawProtoScene finds each pit (a piece with a bank 60+ higher on either side, the opening 20-700 wide) and shades its
+  inside (pitShade) after the pieces in it and before the banks: cool, from nothing at the lips to darkest on each stretch of its
+  surface (floor or step, each to its own top), darker toward the walls, feathered 40 units under the banks' faces (a soft contact
+  shadow where a face curves in), fading out just under the surface (the soil below is the banks' own). In every world.
+- 1-2's narrow pits: the step's straight lip ends and the root blob now sit in the pit's shadow.
+- World 3 (3-3): its kit drew the pit walls (44 tall, under the banks) as stone slabs floating in the soil; thinKit skips soil pieces.
+- `r4-pit-5-1-x7300.jpg`, `r4-pit-1-2-x11380.jpg`, `r4-pit-3-3-x330.jpg` (before 5114dea above, after below).
+- Not touched: the see-through boxes in 5-1 x7300 are World 5's painted silk sheets (w5Look.ts drawSilkSheet), panels side by side.
+- Bounce plants per world (Matt, 4:58 PM ET): starts5.py tints the round-3 caps toward each world, job hfg-art6 (10 caps x 2 seeds,
+  10 stalks, ~$0.22), picks in picks-bounce.json (w1..w10, each with its span), packed by packbounce.py; bounceArt.ts draws the world's
+  own (cap-w<N>). `review-bounce-worlds.jpg` (all 10, both seeds, on dark and grey), `r5-bounce-*.jpg` (Worlds 1, 7, 9, 10 in game).

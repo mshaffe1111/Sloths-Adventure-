@@ -37,6 +37,7 @@ test('after the fighting lesson, each new kind of foe teaches its own thing once
   const seen = new Set<LessonId>(['foe']);
   assert.equal(pickLesson(scene({ enemies: [{ type: 'eagle', x: 1200, y: 400, defeated: false }] }), seen), 'eagle');
   assert.equal(pickLesson(scene({ enemies: [{ type: 'spider', x: 1200, y: 500, defeated: false }] }), seen), 'nostomp');
+  assert.equal(pickLesson(scene({ enemies: [{ type: 'spider', x: 1200, y: 500, defeated: false, stompable: true }] }), seen), null, 'a spider a stomp beats (World 5)');
   assert.equal(pickLesson(scene({ enemies: [{ type: 'caiman', x: 1200, y: 500, defeated: false }] }), seen), 'tough');
   assert.equal(pickLesson(scene({ enemies: [{ type: 'snake', x: 1200, y: 500, defeated: false }] }), seen), null);
   seen.add('eagle');
@@ -65,7 +66,10 @@ test('pick-ups and the exit: one lesson each, the cage before the fruit beside i
   assert.equal(pickLesson(col('fruit'), none), 'fruit');
   assert.equal(pickLesson({ ...col('heart'), hp: 4, maxHp: 5 }, none), 'heart');
   assert.equal(pickLesson(col('cage'), none), 'cage');
-  assert.equal(pickLesson(col('relic'), none), 'idol');
+  // the relic lesson is for one he can see, high above him (a relic beside him he just takes)
+  assert.equal(pickLesson(col('relic'), none), null);
+  assert.equal(pickLesson(scene({ collectibles: [{ type: 'relic', x: 1150, y: 300, collected: false }] }), none), 'idol');
+  assert.equal(pickLesson(scene({ collectibles: [{ type: 'relic', x: 1150, y: 300, collected: false, hidden: true }] }), none), null, 'not a hidden one');
   assert.equal(pickLesson(col('powerup_magnet'), none), 'power');
   assert.equal(pickLesson(col('exit_totem'), none), 'shrine');
   assert.equal(pickLesson(scene({ collectibles: [{ type: 'fruit', x: 1150, y: 480, collected: true }] }), none), null, 'already taken');

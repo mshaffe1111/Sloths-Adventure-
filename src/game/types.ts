@@ -258,7 +258,6 @@ export interface BossEntity extends Enemy {
   specialAttackTimer: number;
   shieldActive: boolean;
   dialogueIntro: string;
-  dialogueDefeat: string;
   /** the move-by-move brain (bossAI.ts) */
   ai?: import('./bossAI.ts').BossBrain;
 }
@@ -303,6 +302,9 @@ export interface Platform {
   /** a knot of wood standing at the end of a high branch (4-6; a mailbox post on 2-6's porches): a little wall, so he cannot walk off it
    *  into a very long fall */
   lip?: boolean;
+  /** a small piece of the ground under 90 tall (a soft pit's low step, or its walls under the banks): painted as the soil like a bank, or
+   *  (a wall under a bank) left to that bank's soil, never drawn as a platform (protoArt.ts drawProtoScene, terrain.ts) */
+  soil?: boolean;
 }
 
 /**
@@ -417,6 +419,9 @@ export interface Collectible {
   hidden?: boolean;
   /** how far the search has got, 0..1 (hidden finds) */
   search?: number;
+  /** a Hush Fern: he is walking by it now, and how many times he has walked past it (Dot's "Hmm, that fern...", DOT-14) */
+  fernBy?: boolean;
+  fernPasses?: number;
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
   /**
@@ -486,6 +491,8 @@ export interface InputState {
    * (touchGestures.ts); 0 or unset for a straight-up flick, a key or the pad. Letting go of a vine or a trunk leaps that way.
    */
   jumpLean?: -1 | 0 | 1;
+  /** … and leaned 35 degrees or more, this way: a standing jump carries him that way (touchGestures.ts slantOf, CT-27) */
+  jumpSlant?: -1 | 0 | 1;
   jumpHeld: boolean;
   punchPressed: boolean;
   /** take back a punch pressed a moment ago, if its swing has not struck yet (a touch jab the finger outran, CT-17) */

@@ -1,0 +1,236 @@
+{
+ "w1_calm": {
+  "bpm": 127.81999999999957,
+  "bars_per_chunk": 5,
+  "beats_per_bar": 4,
+  "chunks": [
+   {
+    "file": "w1_calm_0.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_calm_1.ogg",
+    "len": 9.388166666666667
+   },
+   {
+    "file": "w1_calm_2.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_calm_3.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_calm_4.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_calm_5.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_calm_6.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_calm_7.ogg",
+    "len": 9.388208333333333
+   }
+  ]
+ },
+ "w1_danger": {
+  "bpm": 127.81999999999957,
+  "bars_per_chunk": 5,
+  "beats_per_bar": 4,
+  "chunks": [
+   {
+    "file": "w1_danger_0.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_danger_1.ogg",
+    "len": 9.388166666666667
+   },
+   {
+    "file": "w1_danger_2.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_danger_3.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_danger_4.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_danger_5.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_danger_6.ogg",
+    "len": 9.388208333333333
+   },
+   {
+    "file": "w1_danger_7.ogg",
+    "len": 9.388208333333333
+   }
+  ]
+ },
+ "w3_calm": {
+  "bpm": 67.77999999999999,
+  "bars_per_chunk": 2,
+  "beats_per_bar": 6,
+  "chunks": [
+   {
+    "file": "w3_calm_0.ogg",
+    "len": 10.622625
+   },
+   {
+    "file": "w3_calm_1.ogg",
+    "len": 10.622583333333333
+   },
+   {
+    "file": "w3_calm_2.ogg",
+    "len": 10.622625
+   },
+   {
+    "file": "w3_calm_3.ogg",
+    "len": 10.622583333333333
+   },
+   {
+    "file": "w3_calm_4.ogg",
+    "len": 10.622625
+   },
+   {
+    "file": "w3_calm_5.ogg",
+    "len": 10.622583333333333
+   },
+   {
+    "file": "w3_calm_6.ogg",
+    "len": 10.622583333333333
+   },
+   {
+    "file": "w3_calm_7.ogg",
+    "len": 10.622625
+   }
+  ]
+ },
+ "w3_danger": {
+  "bpm": 69.4299999999999,
+  "bars_per_chunk": 2,
+  "beats_per_bar": 6,
+  "chunks": [
+   {
+    "file": "w3_danger_0.ogg",
+    "len": 10.370166666666666
+   },
+   {
+    "file": "w3_danger_1.ogg",
+    "len": 10.370125
+   },
+   {
+    "file": "w3_danger_2.ogg",
+    "len": 10.370166666666666
+   },
+   {
+    "file": "w3_danger_3.ogg",
+    "len": 10.370166666666666
+   },
+   {
+    "file": "w3_danger_4.ogg",
+    "len": 10.370166666666666
+   },
+   {
+    "file": "w3_danger_5.ogg",
+    "len": 10.370125
+   },
+   {
+    "file": "w3_danger_6.ogg",
+    "len": 10.370166666666666
+   },
+   {
+    "file": "w3_danger_7.ogg",
+    "len": 10.370166666666666
+   }
+  ]
+ },
+ "w9_calm": {
+  "bpm": 117.18999999999953,
+  "bars_per_chunk": 5,
+  "beats_per_bar": 4,
+  "chunks": [
+   {
+    "file": "w9_calm_0.ogg",
+    "len": 10.239791666666667
+   },
+   {
+    "file": "w9_calm_1.ogg",
+    "len": 10.23975
+   },
+   {
+    "file": "w9_calm_2.ogg",
+    "len": 10.239791666666667
+   },
+   {
+    "file": "w9_calm_3.ogg",
+    "len": 10.239791666666667
+   },
+   {
+    "file": "w9_calm_4.ogg",
+    "len": 10.239791666666667
+   },
+   {
+    "file": "w9_calm_5.ogg",
+    "len": 10.23975
+   },
+   {
+    "file": "w9_calm_6.ogg",
+    "len": 10.239791666666667
+   },
+   {
+    "file": "w9_calm_7.ogg",
+    "len": 10.239791666666667
+   }
+  ]
+ },
+ "w9_danger": {
+  "bpm": 114.78999999999967,
+  "bars_per_chunk": 5,
+  "beats_per_bar": 4,
+  "chunks": [
+   {
+    "file": "w9_danger_0.ogg",
+    "len": 10.453875
+   },
+   {
+    "file": "w9_danger_1.ogg",
+    "len": 10.453833333333334
+   },
+   {
+    "file": "w9_danger_2.ogg",
+    "len": 10.453875
+   },
+   {
+    "file": "w9_danger_3.ogg",
+    "len": 10.453875
+   },
+   {
+    "file": "w9_danger_4.ogg",
+    "len": 10.453875
+   },
+   {
+    "file": "w9_danger_5.ogg",
+    "len": 10.453875
+   },
+   {
+    "file": "w9_danger_6.ogg",
+    "len": 10.453875
+   },
+   {
+    "file": "w9_danger_7.ogg",
+    "len": 10.453875
+   }
+  ]
+ }
+}

@@ -206,13 +206,24 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   const inRoom = (x: number, pad: number) => boxes.some((b) => x > b.x0 - pad && x < b.x1 + pad);
   const clear = (x: number, w: number) =>
     !inRoom(x, 80) && !d.collectibles.some((c) => Math.abs(c.x - x) < w / 2 + 50) && !(d.checkpoints ?? []).some((c) => Math.abs(c.x - x) < w / 2 + 70);
+  // (and nothing else stands where it would: a bounce pad, a step or a stone on the bank, or a wall rising from it)
+  const free = (n: DressName, x: number, b: number, on: Platform) => {
+    const { w, h } = dressSize(n);
+    return !d.platforms.some((q) => q !== on && q.x < x + w / 2 + 12 && q.x + q.width > x - w / 2 - 12 && q.y < b - 4 && q.y + q.height > b - h - 12);
+  };
   const pick = (job: 'bank' | 'hang' | 'clutter', salt: number) => rollLook(sets[job], d.stage, d.seed, salt + d.world * 11);
+  // (each set laid in a turned order, so the same three in the same order do not come round bank after bank)
+  const turn = (set: DressName[], k: number) => {
+    const i = Math.floor(lookHash(d.seed + k, 41) * set.length);
+    return [...set.slice(i), ...set.slice(0, i)];
+  };
   const banks = d.platforms.filter((p) => p.type === 'solid' && p.height >= 90 && !p.art && !p.push).sort((a, b) => a.x - b.x);
   const touches = (p: Platform, right: boolean) =>
     banks.some((q) => q !== p && q.y <= p.y + 2 && (right ? Math.abs(p.x + p.width - q.x) < 2 : Math.abs(q.x + q.width - p.x) < 2));
   // bank: a set of three along the lip by each end that drops away, laid inward from the edge
   const bankSet = pick('bank', 51);
   let lastBank = -Infinity;
+  let lastSet = -Infinity;
   for (const p of banks) {
     if (p.width < 240) continue;
     for (const right of [false, true]) {
@@ -222,16 +233,20 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
       const dir = right ? -1 : 1;
       let at = edge + dir * 34;
       const laid: DressPiece[] = [];
-      for (const n of bankSet) {
+      for (const n of turn(bankSet, out.length + Math.round(edge))) {
         const w = dressSize(n).w;
         const x = at + (dir * w) / 2;
-        if (!clear(x, w)) break;
+        if (!clear(x, w) || !free(n, x, p.y + 5, p)) break;
         laid.push({ n, x, b: p.y + 5, flip: lookHash(d.seed + Math.round(x), 17) < 0.5 });
         at += dir * (w * 0.78 + 6);
       }
-      if (laid.length === bankSet.length) {
+      // (and 600 or more clear of the last set: sets laid inward from two edges facing each other met in the middle, the same piece
+      // twice side by side)
+      const near = Math.min(...laid.map((q) => q.x));
+      if (laid.length === bankSet.length && near - lastSet >= 600) {
         out.push(...laid);
         lastBank = edge;
+        lastSet = Math.max(...laid.map((q) => q.x));
       }
     }
   }
@@ -248,12 +263,16 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
     const below = d.platforms.filter((q) => q !== p && q.x < p.x + p.width && q.x + q.width > p.x && q.y > under).reduce((m, q) => Math.min(m, q.y), Infinity);
     if (below - under < 230) continue;
     // (and well up off the ground: a log lying across a gap at ground level is no place to hang moss from)
-    const ground = banks.filter((q) => q.x < p.x + p.width + 400 && q.x + q.width > p.x - 400).reduce((m, q) => Math.min(m, q.y), Infinity);
+    // (the two nearest banks, however far: a log across a wide river has no bank within reach and still lies at ground level)
+    const dist = (q: Platform) => Math.max(0, q.x - (p.x + p.width), p.x - (q.x + q.width));
+    const ground = [...banks].sort((a, b) => dist(a) - dist(b)).slice(0, 2).reduce((m, q) => Math.min(m, q.y), Infinity);
     if (ground - p.y < 150) continue;
     const n = hangSet[hangs % hangSet.length];
     const w = dressSize(n).w;
     if (w > p.width - 20) continue;
     const u = 0.28 + lookHash(d.seed + Math.round(p.x), 19) * 0.44;
+    // (never in front of a pickup hanging under the ledge)
+    if (d.collectibles.some((c) => Math.abs(c.x - (p.x + p.width * u)) < w / 2 + 40 && c.y > under - 40 && c.y < under + dressSize(n).h + 40)) continue;
     out.push({ n, x: p.x + p.width * u, b: under - 4, flip: lookHash(d.seed + Math.round(p.x), 23) < 0.5 });
     lastHang = p.x;
     hangs++;
@@ -265,13 +284,13 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   for (const p of banks) {
     if (p.width < 420) continue;
     for (let x = p.x + 200 + lookHash(d.seed + Math.round(p.x), 29) * 200; x < p.x + p.width - 260 && sets3 < 8; x += 820) {
-      if (bankXs.some((bx) => Math.abs(bx - x) < 260)) continue;
+      if (bankXs.some((bx) => bx > x - 440 && bx < x + 700)) continue;
       let at = x;
       const laid: DressPiece[] = [];
-      for (const n of clutSet) {
+      for (const n of turn(clutSet, sets3 + Math.round(x))) {
         const w = dressSize(n).w;
         const cx = at + w / 2;
-        if (!clear(cx, w)) break;
+        if (!clear(cx, w) || !free(n, cx, p.y + 6, p)) break;
         laid.push({ n, x: cx, b: p.y + 6, flip: lookHash(d.seed + Math.round(cx), 31) < 0.5 });
         at += w + 26 + lookHash(d.seed + Math.round(cx), 37) * 40;
       }
