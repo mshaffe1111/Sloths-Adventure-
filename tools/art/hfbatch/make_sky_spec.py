@@ -1,5 +1,6 @@
 """Write the spec for skygpu.py (the painted sky above each far strip, upright view, 2026-10-29).
-    python3 tools/art/hfbatch/make_sky_spec.py <out.json> <commit> <strength> <seed> [<stem> ...]   (no stems: every far strip)
+    python3 tools/art/hfbatch/make_sky_spec.py <out.json> <commit> <strength> <seed> [<stem> ...]
+(no stems: every far strip and every middle strip in MID; <stem>:mid is a middle strip)
 The source is src/assets/backdrops/<stem>-far.webp at <commit> on GitHub."""
 import json, sys
 from pathlib import Path
@@ -46,15 +47,41 @@ WHAT = {
 }
 
 
+# the middle strips whose trees, roots or cave roof run off their top edge (upright that edge is on screen): carried on upward on flat
+# magenta, keyed by skycut.py into <stem>-midtop.webp
+CUT = ('slothadv style, painted storybook illustration, a cut-out layer of a side-scrolling game background, soft cel shading, thin '
+       'dark outline, hand-painted gouache brushwork, the same colours and light as below, on one flat plain magenta background, no '
+       'sky, no text')
+MID = {
+    'w1': 'the tall mossy rainforest trees carry on up: trunks, spreading leafy green canopy, hanging lianas and little orchids',
+    'w1c': 'the dense leafy green rainforest canopy carries on up: leaves, branches, hanging lianas',
+    'w3': 'the dark cave roof carries on up: dark mossy rock, twisting roots, glowworm threads with tiny glowing dots',
+    'w5': 'the tall golden orchid trees carry on up: trunks and branches with big white and pink orchids, fine spider webs',
+    'w5gold2': 'the tall golden orchid trees carry on up: trunks and branches with big white and pink orchids, fine spider webs',
+    'w5dusk1': 'the tall purple-barked orchid trees carry on up: trunks and branches with big white and pink orchids, fine spider webs',
+    'w5dusk2': 'the tall purple-barked orchid trees carry on up: trunks and branches with big white and pink orchids, fine spider webs',
+    'w5twi1': 'the tall violet orchid trees carry on up: trunks and dark branches with pale orchids, fine spider webs',
+    'w5twi2': 'the tall violet orchid trees carry on up: trunks and dark branches with pale orchids, fine spider webs',
+    'w5night': 'the tall dark blue trees carry on up: trunks and branches with blue orchids',
+    'w6': 'the grey-green mangrove tree tops carry on up: branches and hanging grey moss',
+    'w7': 'the ruined jungle temple carries on up: the tops of carved stone towers, hanging roots and red vines',
+}
+
+
 def item(stem, strength, seed, commit):
-    return {'name': f'{stem}-sky-s{round(float(strength) * 100)}-{seed}', 'strength': float(strength), 'seed': int(seed),
-            'src': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/src/assets/backdrops/{stem}-far.webp',
+    st = round(float(strength) * 100)
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/src/assets/backdrops/'
+    if stem.endswith(':mid'):
+        w = stem[:-4]
+        return {'name': f'{w}-midtop-s{st}-{seed}', 'strength': float(strength), 'seed': int(seed), 'src': f'{base}{w}-mid.webp',
+                'prompt': f'{CUT}. {MID[w]}', 'bg': [255, 0, 255], 'ext': 0.45}
+    return {'name': f'{stem}-sky-s{st}-{seed}', 'strength': float(strength), 'seed': int(seed), 'src': f'{base}{stem}-far.webp',
             'prompt': f'{STYLE}. {WHAT[stem]}'}
 
 
 if __name__ == '__main__':
     out, commit, strength, seed, *stems = sys.argv[1:]
-    stems = stems or sorted(WHAT)
+    stems = stems or sorted(WHAT) + [f'{m}:mid' for m in sorted(MID)]
     missing = [p.name for p in Path('src/assets/backdrops').glob('w*-far.webp') if p.name[:-9] not in WHAT]
     assert not missing, missing
     spec = {'note': 'painted sky above the far strips, tools/art/hfbatch/skygpu.py, 2026-10-29',
