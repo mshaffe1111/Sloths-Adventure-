@@ -1,20 +1,8 @@
-/* Dot's guide, the new look (DotGuide.tsx): Dot perched or hovering, her painted parchment bubble, and the ring and arrow on the thing she
-   teaches. Nothing here takes a touch: the whole layer is pointer-events: none (a tap is a punch). */
+/* Dot's guide, the new look (DotGuide.tsx): Dot perched or hovering beside the thing she teaches, and her painted parchment bubble (no
+   ring and no arrow: Matt, 2026-10-29). Nothing here takes a touch: the whole layer is pointer-events: none (a tap is a punch). */
 .dg-root { position: fixed; inset: 0; z-index: 34; pointer-events: none; overflow: hidden; contain: strict; }
 .dg-root[data-off='1'] { display: none; }
-.dg-fx { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; }
-.dg-ring { fill: none; stroke: rgba(255, 240, 170, .95); stroke-width: 3; filter: drop-shadow(0 0 5px rgba(255, 226, 120, .9)) drop-shadow(0 0 10px rgba(255, 210, 90, .55)); }
-.dg-ring2 { fill: none; stroke: rgba(255, 240, 170, .7); stroke-width: 2; stroke-dasharray: 6 6; }
-.dg-ringg { opacity: 0; transition: opacity .25s ease; }
-.dg-ringg.on { opacity: 1; }
-.dg-ringg.on .dg-ring2 { animation: dg-spin 6s linear infinite; transform-box: fill-box; transform-origin: center; }
-.dg-ringg.on .dg-ring { animation: dg-pulse 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes dg-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.09); } }
-@keyframes dg-spin { to { transform: rotate(360deg); } }
-.dg-arrow { fill: none; stroke: #fff4d8; stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 1 9; }
-.dg-arrow-sh { fill: none; stroke: #3a200c; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1 9; opacity: .7; }
-.dg-arrowg { opacity: 0; transition: opacity .25s ease; }
-.dg-arrowg.on { opacity: 1; }
 .dg-trail { fill: none; stroke: #fff6c0; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 7; filter: drop-shadow(0 0 3px rgba(255, 240, 170, .9)); transition: opacity .4s ease; }
 
 /* Dot herself: the sharp frame over two blurred wing positions while she flies (the hummingbird blur), with her glow */
@@ -40,7 +28,7 @@
 .dg-bub p { margin: 0; min-width: 0; font-family: var(--font-read, system-ui, sans-serif); font-weight: 600; font-size: 16px; line-height: 1.28; letter-spacing: .005em; text-wrap: pretty; }
 .dg-bub.story p { font-weight: 500; font-style: italic; }
 .dg-bub.narr p { color: #5a2a3c; }
-.dg-tag { position: absolute; top: -14px; left: 10px; display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-heading, sans-serif); font-weight: 700; font-size: 13px; color: #f4ffe9;
+.dg-tag { position: absolute; top: -14px; left: 10px; display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-ui); font-weight: 700; font-size: 13px; color: #f4ffe9;
   padding: 1px 10px 2px 9px; border-radius: 4px 13px 4px 13px; border: 2px solid #1d4a1b; background: linear-gradient(180deg, #5fb24a, #3a8a2e);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 2px 0 #133512; text-shadow: 0 1px 0 #1d4a1b; white-space: nowrap; }
 .dg-tag.pokey { border-color: #6b3a07; background: linear-gradient(180deg, #f2a43a, #c8761a); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 2px 0 #4a2804; text-shadow: 0 1px 0 #6b3a07; }
@@ -58,7 +46,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .dg-bub.in { animation: none; opacity: 1; }
-  .dg-ringg.on .dg-ring, .dg-ringg.on .dg-ring2 { animation: none; }
+  .dg-twinkle.on::before { animation: none; }
 }
 
 /* the painted pieces (hud/painted.tsx), once their sheet has loaded */
@@ -70,15 +58,13 @@
 .dg-bub.painted .dg-tag { top: -11px; left: 14px; z-index: 2; }
 .dg-bub-art { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .dg-ptail { position: absolute; z-index: -1; display: block; }
-/* her pieces on the thing she teaches: the teal ring (pulsing, the dashed one turning slowly round it) and the arrow (nudging in) */
-.dg-pring, .dg-parrow { position: absolute; left: 0; top: 0; opacity: 0; transition: opacity .25s ease; will-change: transform; pointer-events: none; }
-.dg-pring.on, .dg-parrow.on { opacity: 1; }
-.dg-pring-a, .dg-pring-b, .dg-parrow-in { position: absolute; left: 0; top: 0; display: block; }
-.dg-pring-b { opacity: .55; }
-.dg-pring.on .dg-pring-a { animation: dg-pulse 1.4s ease-in-out infinite; }
-.dg-pring.on .dg-pring-b { animation: dg-spin 9s linear infinite; }
-.dg-parrow.on .dg-parrow-in { animation: dg-nudge .9s ease-in-out infinite; }
-@keyframes dg-nudge { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(2px); } }
+/* when she points after struggle: a small sparkle twinkling on the thing itself (a small touch, code-drawn is fine) */
+.dg-twinkle { position: absolute; left: 0; top: 0; width: 30px; height: 30px; margin: -15px 0 0 -15px; opacity: 0; transition: opacity .3s ease; will-change: transform; }
+.dg-twinkle.on { opacity: 1; }
+.dg-twinkle::before { content: ''; position: absolute; inset: 0; background: #fffbe0; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  filter: drop-shadow(0 0 3px #ffe58a) drop-shadow(0 0 9px rgba(255, 214, 90, .95)); }
+.dg-twinkle.on::before { animation: dg-twinkle 1.6s ease-in-out infinite; }
+@keyframes dg-twinkle { 0%, 100% { transform: scale(.55) rotate(0deg); opacity: .5; } 50% { transform: scale(1) rotate(45deg); opacity: 1; } }
 /* Dot perched, in her painted poses (her feet on the same spot in each) */
 .dg-perch { position: absolute; left: 0; top: 0; background-repeat: no-repeat; opacity: 0; will-change: transform; transform-origin: 50% 50%;
   filter: drop-shadow(0 0 4px rgba(205, 255, 215, .7)) drop-shadow(0 2px 1.5px rgba(20, 10, 0, .4)); }
@@ -86,7 +72,7 @@
 /* Skip tips, on her very first tip: a real button (at least 44 pt), and the short note after it */
 .dg-skip { pointer-events: auto; align-self: flex-end; min-width: 96px; min-height: 44px; margin: -4px -8px -8px 0; padding: 0; border: 0; background: none;
   cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; }
-.dg-skip span { display: inline-block; padding: 6px 13px 7px; border-radius: 13px; font: 700 14px/1 var(--font-heading, system-ui, sans-serif); color: #fff3d6;
+.dg-skip span { display: inline-block; padding: 6px 13px 7px; border-radius: 13px; font: 700 14px/1 var(--font-ui); color: #fff3d6;
   background: linear-gradient(180deg, #8a5a2c, #5e3a18); border: 2px solid #3a2414; box-shadow: inset 0 1px 0 rgba(255, 230, 190, .35), 0 2px 0 #2a1608; }
 .dg-skip:active span { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255, 230, 190, .35); }
 /* (its first moments: faded, and a touch there goes to the game, so a tap meant for a punch never turns the tips off) */
@@ -98,7 +84,4 @@
 @media (max-height: 430px) and (orientation: landscape) {
   .dg-bub.painted { padding: 17px 16px 11px 15px; }
   .dg-skip span { font-size: 13px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .dg-pring.on .dg-pring-a, .dg-pring.on .dg-pring-b, .dg-parrow.on .dg-parrow-in { animation: none; }
 }

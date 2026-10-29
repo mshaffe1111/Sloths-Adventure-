@@ -1,0 +1,1820 @@
+{
+ "meeca-idle": {
+  "scale": 4.0,
+  "ox": 260,
+  "oy": 86,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   806,
+   463,
+   144,
+   213
+  ],
+  "frame": {
+   "x": 806,
+   "y": 463,
+   "w": 144,
+   "h": 213,
+   "ax": 63.0,
+   "ay": 209.0,
+   "hx": 71.0,
+   "bib": [
+    54,
+    117,
+    35,
+    25
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-blink": {
+  "scale": 4.0,
+  "ox": 272,
+  "oy": 66,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   145,
+   241,
+   139,
+   218
+  ],
+  "frame": {
+   "x": 145,
+   "y": 241,
+   "w": 139,
+   "h": 218,
+   "ax": 60.0,
+   "ay": 214.0,
+   "hx": 71.0,
+   "bib": [
+    68,
+    115,
+    34,
+    26
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-tilt": {
+  "scale": 4.0,
+  "ox": 278,
+  "oy": 58,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   747,
+   241,
+   138,
+   216
+  ],
+  "frame": {
+   "x": 747,
+   "y": 241,
+   "w": 138,
+   "h": 216,
+   "ax": 58.5,
+   "ay": 216.0,
+   "hx": 69.0,
+   "bib": [
+    68,
+    116,
+    33,
+    26
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-look_a": {
+  "scale": 4.0,
+  "ox": 280,
+  "oy": 82,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   411,
+   463,
+   125,
+   214
+  ],
+  "frame": {
+   "x": 411,
+   "y": 463,
+   "w": 125,
+   "h": 214,
+   "ax": 58.0,
+   "ay": 210.0,
+   "hx": 66.0,
+   "bib": [
+    63,
+    113,
+    33,
+    26
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-glad": {
+  "scale": 4.0,
+  "ox": 276,
+  "oy": 54,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   288,
+   241,
+   139,
+   217
+  ],
+  "frame": {
+   "x": 288,
+   "y": 241,
+   "w": 139,
+   "h": 217,
+   "ax": 59.0,
+   "ay": 217.0,
+   "hx": 65.0,
+   "bib": [
+    68,
+    117,
+    33,
+    26
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-idle_b": {
+  "scale": 4.0,
+  "ox": 184,
+  "oy": 66,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   0,
+   241,
+   141,
+   218
+  ],
+  "frame": {
+   "x": 0,
+   "y": 241,
+   "w": 141,
+   "h": 218,
+   "ax": 82.0,
+   "ay": 214.0,
+   "hx": 72.0,
+   "bib": [
+    66,
+    116,
+    33,
+    26
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-sing": {
+  "scale": 4.0,
+  "ox": 172,
+  "oy": 38,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   570,
+   0,
+   192,
+   225
+  ],
+  "frame": {
+   "x": 570,
+   "y": 0,
+   "w": 192,
+   "h": 225,
+   "ax": 85.0,
+   "ay": 221.0,
+   "hx": 97.0,
+   "bib": [
+    94,
+    117,
+    36,
+    28
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-breathe": {
+  "scale": 4.0,
+  "ox": 200,
+  "oy": 54,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   1044,
+   0,
+   175,
+   221
+  ],
+  "frame": {
+   "x": 1044,
+   "y": 0,
+   "w": 175,
+   "h": 221,
+   "ax": 78.0,
+   "ay": 217.0,
+   "hx": 88.0,
+   "bib": [
+    86,
+    115,
+    35,
+    28
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-look_up": {
+  "scale": 4.0,
+  "ox": 240,
+  "oy": 78,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   143,
+   463,
+   121,
+   215
+  ],
+  "frame": {
+   "x": 143,
+   "y": 463,
+   "w": 121,
+   "h": 215,
+   "ax": 68.0,
+   "ay": 211.0,
+   "hx": 53.0,
+   "bib": [
+    26,
+    113,
+    30,
+    27
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-alarm": {
+  "scale": 4.0,
+  "ox": 72,
+  "oy": 118,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   1021,
+   899,
+   198,
+   201
+  ],
+  "frame": {
+   "x": 1021,
+   "y": 899,
+   "w": 198,
+   "h": 201,
+   "ax": 110.0,
+   "ay": 201.0,
+   "hx": 105.0,
+   "bib": [
+    95,
+    109,
+    33,
+    23
+   ],
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-sad": {
+  "scale": 4.0,
+  "ox": 304,
+  "oy": 126,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   275,
+   1113,
+   102,
+   199
+  ],
+  "frame": {
+   "x": 275,
+   "y": 1113,
+   "w": 102,
+   "h": 199,
+   "ax": 52.0,
+   "ay": 199.0,
+   "hx": 52.0,
+   "bib": [
+    44,
+    106,
+    34,
+    25
+   ],
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-wipe": {
+  "scale": 4.0,
+  "ox": 328,
+  "oy": 150,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   0,
+   1317,
+   119,
+   193
+  ],
+  "frame": {
+   "x": 0,
+   "y": 1317,
+   "w": 119,
+   "h": 193,
+   "ax": 46.0,
+   "ay": 193.0,
+   "hx": 56.0,
+   "bib": [
+    46,
+    104,
+    32,
+    24
+   ],
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-slump": {
+  "scale": 4.0,
+  "ox": 264,
+  "oy": 258,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   1006,
+   1317,
+   126,
+   166
+  ],
+  "frame": {
+   "x": 1006,
+   "y": 1317,
+   "w": 126,
+   "h": 166,
+   "ax": 62.0,
+   "ay": 166.0,
+   "hx": 68.0,
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-sob": {
+  "scale": 4.0,
+  "ox": 332,
+  "oy": 178,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   711,
+   1317,
+   173,
+   186
+  ],
+  "frame": {
+   "x": 711,
+   "y": 1317,
+   "w": 173,
+   "h": 186,
+   "ax": 45.0,
+   "ay": 186.0,
+   "hx": 65.0,
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-lament": {
+  "scale": 4.0,
+  "ox": 320,
+  "oy": 194,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   888,
+   1317,
+   114,
+   182
+  ],
+  "frame": {
+   "x": 888,
+   "y": 1317,
+   "w": 114,
+   "h": 182,
+   "ax": 48.0,
+   "ay": 182.0,
+   "hx": 69.0,
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-scared": {
+  "scale": 4.0,
+  "ox": 288,
+  "oy": 126,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   170,
+   1113,
+   101,
+   199
+  ],
+  "frame": {
+   "x": 170,
+   "y": 1113,
+   "w": 101,
+   "h": 199,
+   "ax": 56.0,
+   "ay": 199.0,
+   "hx": 50.0,
+   "bib": [
+    40,
+    105,
+    32,
+    23
+   ],
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-shiver": {
+  "scale": 4.0,
+  "ox": 352,
+  "oy": 162,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   468,
+   1317,
+   100,
+   190
+  ],
+  "frame": {
+   "x": 468,
+   "y": 1317,
+   "w": 100,
+   "h": 190,
+   "ax": 40.0,
+   "ay": 190.0,
+   "hx": 56.0,
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-look_l": {
+  "scale": 4.0,
+  "ox": 272,
+  "oy": 134,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   381,
+   1113,
+   129,
+   197
+  ],
+  "frame": {
+   "x": 381,
+   "y": 1113,
+   "w": 129,
+   "h": 197,
+   "ax": 60.0,
+   "ay": 197.0,
+   "hx": 56.0,
+   "bib": [
+    43,
+    101,
+    32,
+    29
+   ],
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-panic_up": {
+  "scale": 4.0,
+  "ox": 212,
+  "oy": 138,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   812,
+   1113,
+   191,
+   196
+  ],
+  "frame": {
+   "x": 812,
+   "y": 1113,
+   "w": 191,
+   "h": 196,
+   "ax": 75.0,
+   "ay": 196.0,
+   "hx": 100.0,
+   "bib": [
+    95,
+    103,
+    32,
+    25
+   ],
+   "air": 1,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-crouch": {
+  "scale": 4.0,
+  "ox": 176,
+  "oy": 138,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   0,
+   1113,
+   166,
+   200
+  ],
+  "frame": {
+   "x": 0,
+   "y": 1113,
+   "w": 166,
+   "h": 200,
+   "ax": 84.0,
+   "ay": 196.0,
+   "hx": 110.0,
+   "bib": [
+    93,
+    117,
+    30,
+    21
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-jump_up": {
+  "scale": 4.0,
+  "ox": 384,
+  "oy": 98,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   0,
+   899,
+   170,
+   210
+  ],
+  "frame": {
+   "x": 0,
+   "y": 899,
+   "w": 170,
+   "h": 210,
+   "ax": 32.0,
+   "ay": 206.0,
+   "hx": 89.0,
+   "bib": [
+    87,
+    113,
+    30,
+    25
+   ],
+   "air": 1,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-leap": {
+  "scale": 4.0,
+  "ox": 292,
+  "oy": 114,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   828,
+   899,
+   189,
+   206
+  ],
+  "frame": {
+   "x": 828,
+   "y": 899,
+   "w": 189,
+   "h": 206,
+   "ax": 55.0,
+   "ay": 202.0,
+   "hx": 100.0,
+   "bib": [
+    94,
+    117,
+    29,
+    24
+   ],
+   "air": 1,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-jump_fall": {
+  "scale": 4.0,
+  "ox": -8,
+  "oy": 98,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   174,
+   899,
+   188,
+   210
+  ],
+  "frame": {
+   "x": 174,
+   "y": 899,
+   "w": 188,
+   "h": 210,
+   "ax": 130.0,
+   "ay": 206.0,
+   "hx": 109.0,
+   "bib": [
+    104,
+    114,
+    25,
+    23
+   ],
+   "air": 1,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-land_b": {
+  "scale": 4.0,
+  "ox": 320,
+  "oy": 154,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   514,
+   1113,
+   128,
+   196
+  ],
+  "frame": {
+   "x": 514,
+   "y": 1113,
+   "w": 128,
+   "h": 196,
+   "ax": 48.0,
+   "ay": 192.0,
+   "hx": 70.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-jump_tuck": {
+  "scale": 4.0,
+  "ox": 356,
+  "oy": 94,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   932,
+   682,
+   119,
+   211
+  ],
+  "frame": {
+   "x": 932,
+   "y": 682,
+   "w": 119,
+   "h": 211,
+   "ax": 39.0,
+   "ay": 207.0,
+   "hx": 58.0,
+   "bib": [
+    66,
+    113,
+    27,
+    25
+   ],
+   "air": 1,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-wave": {
+  "scale": 4.0,
+  "ox": 292,
+  "oy": 146,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   1007,
+   1113,
+   150,
+   194
+  ],
+  "frame": {
+   "x": 1007,
+   "y": 1113,
+   "w": 150,
+   "h": 194,
+   "ax": 55.0,
+   "ay": 194.0,
+   "hx": 64.0,
+   "bib": [
+    62,
+    102,
+    31,
+    24
+   ],
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-walk_0": {
+  "scale": 4.0,
+  "ox": 152,
+  "oy": 82,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   540,
+   463,
+   147,
+   214
+  ],
+  "frame": {
+   "x": 540,
+   "y": 463,
+   "w": 147,
+   "h": 214,
+   "ax": 90.0,
+   "ay": 210.0,
+   "hx": 75.0,
+   "fx": 25.9,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-run_0": {
+  "scale": 4.0,
+  "ox": 68,
+  "oy": 98,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   1055,
+   682,
+   174,
+   210
+  ],
+  "frame": {
+   "x": 1055,
+   "y": 682,
+   "w": 174,
+   "h": 210,
+   "ax": 111.0,
+   "ay": 206.0,
+   "hx": 87.0,
+   "fx": 33.4,
+   "bib": [
+    86,
+    115,
+    31,
+    25
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-dwalk_a": {
+  "scale": 4.0,
+  "ox": 396,
+  "oy": 158,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   333,
+   1317,
+   131,
+   191
+  ],
+  "frame": {
+   "x": 333,
+   "y": 1317,
+   "w": 131,
+   "h": 191,
+   "ax": 29.0,
+   "ay": 191.0,
+   "hx": 86.0,
+   "bib": [
+    54,
+    96,
+    32,
+    23
+   ],
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-land_c": {
+  "scale": 4.0,
+  "ox": 232,
+  "oy": 70,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   431,
+   241,
+   150,
+   217
+  ],
+  "frame": {
+   "x": 431,
+   "y": 241,
+   "w": 150,
+   "h": 217,
+   "ax": 70.0,
+   "ay": 213.0,
+   "hx": 79.0,
+   "bib": [
+    82,
+    115,
+    27,
+    24
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-climb_0": {
+  "scale": 4.0,
+  "ox": 324,
+  "oy": -10,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   0,
+   0,
+   112,
+   237
+  ],
+  "frame": {
+   "x": 0,
+   "y": 0,
+   "w": 112,
+   "h": 237,
+   "ax": 47.0,
+   "ay": 233.0,
+   "hx": 55.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-climb_1": {
+  "scale": 4.0,
+  "ox": 348,
+  "oy": 2,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   116,
+   0,
+   152,
+   234
+  ],
+  "frame": {
+   "x": 116,
+   "y": 0,
+   "w": 152,
+   "h": 234,
+   "ax": 41.0,
+   "ay": 230.0,
+   "hx": 53.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-climb_2": {
+  "scale": 4.0,
+  "ox": 284,
+  "oy": 26,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   272,
+   0,
+   136,
+   228
+  ],
+  "frame": {
+   "x": 272,
+   "y": 0,
+   "w": 136,
+   "h": 228,
+   "ax": 57.0,
+   "ay": 224.0,
+   "hx": 57.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-climb_3": {
+  "scale": 4.0,
+  "ox": 364,
+  "oy": 38,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   766,
+   0,
+   155,
+   225
+  ],
+  "frame": {
+   "x": 766,
+   "y": 0,
+   "w": 155,
+   "h": 225,
+   "ax": 37.0,
+   "ay": 221.0,
+   "hx": 60.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-climb_4": {
+  "scale": 4.0,
+  "ox": 224,
+  "oy": 34,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   412,
+   0,
+   154,
+   226
+  ],
+  "frame": {
+   "x": 412,
+   "y": 0,
+   "w": 154,
+   "h": 226,
+   "ax": 72.0,
+   "ay": 222.0,
+   "hx": 75.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-climb_5": {
+  "scale": 4.0,
+  "ox": 200,
+  "oy": 42,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   925,
+   0,
+   115,
+   224
+  ],
+  "frame": {
+   "x": 925,
+   "y": 0,
+   "w": 115,
+   "h": 224,
+   "ax": 78.0,
+   "ay": 220.0,
+   "hx": 58.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-hurt_a": {
+  "scale": 4.0,
+  "ox": 308,
+  "oy": 74,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   1123,
+   241,
+   147,
+   216
+  ],
+  "frame": {
+   "x": 1123,
+   "y": 241,
+   "w": 147,
+   "h": 216,
+   "ax": 51.0,
+   "ay": 212.0,
+   "hx": 54.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-hurt_b": {
+  "scale": 4.0,
+  "ox": 248,
+  "oy": 70,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   585,
+   241,
+   158,
+   217
+  ],
+  "frame": {
+   "x": 585,
+   "y": 241,
+   "w": 158,
+   "h": 217,
+   "ax": 66.0,
+   "ay": 213.0,
+   "hx": 54.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-knock_a": {
+  "scale": 4.0,
+  "ox": 128,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   545,
+   899,
+   154,
+   209
+  ],
+  "frame": {
+   "x": 545,
+   "y": 899,
+   "w": 154,
+   "h": 209,
+   "ax": 96.0,
+   "ay": 205.0,
+   "hx": 54.0,
+   "air": 1,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-knock_b": {
+  "scale": 4.0,
+  "ox": -128,
+  "oy": 174,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   123,
+   1317,
+   206,
+   191
+  ],
+  "frame": {
+   "x": 123,
+   "y": 1317,
+   "w": 206,
+   "h": 191,
+   "ax": 160.0,
+   "ay": 187.0,
+   "hx": 80.0,
+   "bib": [
+    114,
+    88,
+    31,
+    33
+   ],
+   "air": 1,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-kneel_a": {
+  "scale": 4.0,
+  "ox": 140,
+  "oy": 154,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   646,
+   1113,
+   162,
+   196
+  ],
+  "frame": {
+   "x": 646,
+   "y": 1113,
+   "w": 162,
+   "h": 196,
+   "ax": 93.0,
+   "ay": 192.0,
+   "hx": 109.0,
+   "bib": [
+    82,
+    108,
+    31,
+    23
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-lie": {
+  "scale": 4.0,
+  "ox": -56,
+  "oy": 334,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   0,
+   1514,
+   207,
+   151
+  ],
+  "frame": {
+   "x": 0,
+   "y": 1514,
+   "w": 207,
+   "h": 151,
+   "ax": 142.0,
+   "ay": 147.0,
+   "hx": 51.0,
+   "bib": [
+    93,
+    61,
+    33,
+    22
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-prone_a": {
+  "scale": 4.0,
+  "ox": -40,
+  "oy": 498,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   211,
+   1514,
+   211,
+   110
+  ],
+  "frame": {
+   "x": 211,
+   "y": 1514,
+   "w": 211,
+   "h": 110,
+   "ax": 138.0,
+   "ay": 106.0,
+   "hx": 160.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-pickup": {
+  "scale": 4.0,
+  "ox": 300,
+  "oy": 106,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   703,
+   899,
+   121,
+   207
+  ],
+  "frame": {
+   "x": 703,
+   "y": 899,
+   "w": 121,
+   "h": 207,
+   "ax": 53.0,
+   "ay": 204.0,
+   "hx": 64.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-sleepy": {
+  "scale": 4.0,
+  "ox": 280,
+  "oy": 62,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   0,
+   463,
+   139,
+   215
+  ],
+  "frame": {
+   "x": 0,
+   "y": 463,
+   "w": 139,
+   "h": 215,
+   "ax": 58.0,
+   "ay": 215.0,
+   "hx": 69.0,
+   "bib": [
+    68,
+    116,
+    34,
+    25
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-walk_1": {
+  "scale": 4.0,
+  "ox": 244,
+  "oy": 86,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   954,
+   463,
+   110,
+   213
+  ],
+  "frame": {
+   "x": 954,
+   "y": 463,
+   "w": 110,
+   "h": 213,
+   "ax": 67.0,
+   "ay": 209.0,
+   "hx": 53.0,
+   "fx": 20.8,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-walk_2": {
+  "scale": 4.0,
+  "ox": 228,
+  "oy": 74,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   889,
+   241,
+   114,
+   216
+  ],
+  "frame": {
+   "x": 889,
+   "y": 241,
+   "w": 114,
+   "h": 216,
+   "ax": 71.0,
+   "ay": 212.0,
+   "hx": 56.0,
+   "fx": -32.9,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-walk_3": {
+  "scale": 4.0,
+  "ox": 156,
+  "oy": 90,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   364,
+   682,
+   135,
+   212
+  ],
+  "frame": {
+   "x": 364,
+   "y": 682,
+   "w": 135,
+   "h": 212,
+   "ax": 89.0,
+   "ay": 208.0,
+   "hx": 70.0,
+   "fx": 29.2,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-walk_4": {
+  "scale": 4.0,
+  "ox": 192,
+  "oy": 86,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   1068,
+   463,
+   120,
+   213
+  ],
+  "frame": {
+   "x": 1068,
+   "y": 463,
+   "w": 120,
+   "h": 213,
+   "ax": 80.0,
+   "ay": 209.0,
+   "hx": 62.0,
+   "fx": 29.1,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-walk_5": {
+  "scale": 4.0,
+  "ox": 260,
+  "oy": 82,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   691,
+   463,
+   111,
+   214
+  ],
+  "frame": {
+   "x": 691,
+   "y": 463,
+   "w": 111,
+   "h": 214,
+   "ax": 63.0,
+   "ay": 210.0,
+   "hx": 53.0,
+   "fx": -2.2,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-walk_6": {
+  "scale": 4.0,
+  "ox": 292,
+  "oy": 74,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   1007,
+   241,
+   112,
+   216
+  ],
+  "frame": {
+   "x": 1007,
+   "y": 241,
+   "w": 112,
+   "h": 216,
+   "ax": 55.0,
+   "ay": 212.0,
+   "hx": 54.0,
+   "fx": -1.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-walk_7": {
+  "scale": 4.0,
+  "ox": 164,
+  "oy": 90,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   503,
+   682,
+   123,
+   212
+  ],
+  "frame": {
+   "x": 503,
+   "y": 682,
+   "w": 123,
+   "h": 212,
+   "ax": 87.0,
+   "ay": 208.0,
+   "hx": 65.0,
+   "fx": -34.0,
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-run_1": {
+  "scale": 4.0,
+  "ox": 28,
+  "oy": 86,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   0,
+   682,
+   177,
+   213
+  ],
+  "frame": {
+   "x": 0,
+   "y": 682,
+   "w": 177,
+   "h": 213,
+   "ax": 121.0,
+   "ay": 209.0,
+   "hx": 89.0,
+   "fx": 33.3,
+   "bib": [
+    94,
+    115,
+    26,
+    24
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-run_2": {
+  "scale": 4.0,
+  "ox": 252,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   366,
+   899,
+   175,
+   209
+  ],
+  "frame": {
+   "x": 366,
+   "y": 899,
+   "w": 175,
+   "h": 209,
+   "ax": 65.0,
+   "ay": 205.0,
+   "hx": 90.0,
+   "fx": 42.2,
+   "bib": [
+    94,
+    116,
+    28,
+    25
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-run_3": {
+  "scale": 4.0,
+  "ox": 160,
+  "oy": 78,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   268,
+   463,
+   139,
+   215
+  ],
+  "frame": {
+   "x": 268,
+   "y": 463,
+   "w": 139,
+   "h": 215,
+   "ax": 88.0,
+   "ay": 211.0,
+   "hx": 79.0,
+   "fx": -2.7,
+   "bib": [
+    82,
+    115,
+    30,
+    25
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-run_4": {
+  "scale": 4.0,
+  "ox": 228,
+  "oy": 74,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   630,
+   682,
+   120,
+   212
+  ],
+  "frame": {
+   "x": 630,
+   "y": 682,
+   "w": 120,
+   "h": 212,
+   "ax": 71.0,
+   "ay": 212.0,
+   "hx": 60.0,
+   "fx": 17.5,
+   "bib": [
+    65,
+    114,
+    29,
+    25
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-run_5": {
+  "scale": 4.0,
+  "ox": 44,
+  "oy": 94,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   754,
+   682,
+   174,
+   211
+  ],
+  "frame": {
+   "x": 754,
+   "y": 682,
+   "w": 174,
+   "h": 211,
+   "ax": 117.0,
+   "ay": 207.0,
+   "hx": 92.0,
+   "fx": 34.6,
+   "bib": [
+    88,
+    115,
+    31,
+    27
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-run_6": {
+  "scale": 4.0,
+  "ox": 292,
+  "oy": 86,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   181,
+   682,
+   179,
+   213
+  ],
+  "frame": {
+   "x": 181,
+   "y": 682,
+   "w": 179,
+   "h": 213,
+   "ax": 55.0,
+   "ay": 209.0,
+   "hx": 90.0,
+   "fx": -38.0,
+   "bib": [
+    53,
+    114,
+    27,
+    26
+   ],
+   "air": 0,
+   "s": 1.0
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "meeca-dwalk_b": {
+  "scale": 4.0,
+  "ox": 220,
+  "oy": 170,
+  "src": [
+   "src/assets/characters/meeca-standard.webp",
+   572,
+   1317,
+   135,
+   188
+  ],
+  "frame": {
+   "x": 572,
+   "y": 1317,
+   "w": 135,
+   "h": 188,
+   "ax": 73.0,
+   "ay": 188.0,
+   "hx": 91.0,
+   "bib": [
+    59,
+    96,
+    31,
+    23
+   ],
+   "air": 0,
+   "s": 1.0352
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ }
+}

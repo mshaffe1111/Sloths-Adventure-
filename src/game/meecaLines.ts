@@ -102,7 +102,7 @@ export const FLICKER_NUDGES: Record<string, readonly [string, string]> = {
  */
 export const ROOM_LINES = {
   sit: {
-    enter: 'Too high. Ooh, a chair. A step!',
+    enter: 'Too high. A chair! Somebody thinks of everything.',
     chair: "It's holding me! Wiggle, wiggle!",
     climb: 'A sapling. Slide up to climb.',
     /** the practice pinecone at the top of the ledge, picked up (Matt approved, 2026-10-28) */
@@ -114,7 +114,7 @@ export const ROOM_LINES = {
     hold: 'Tap to set it down.',
   },
   silk: {
-    enter: 'A rope! Up I go.',
+    enter: 'A rope. Test it first, Grandma says. Testing.',
     silk: 'Sticky! Let go, let go!',
     hold: 'Flick up to throw it.',
   },

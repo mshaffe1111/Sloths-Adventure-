@@ -69,6 +69,22 @@ hfb-blocking-b 6ae386955ddcdc0830263868 rtx-pro-6000 17:47:01Z-17:52:50Z (5.8 mi
   w6wedge-b-s58-17 KEPT (a round log wedged between two arching stilt roots; ledge cell and the first perch cell).
     s58-29/s68-29 THROWN: the roots turned into stumps with the log on top; s68-17 squared the log into a beam.
 running total ~12.8 min on rtx-pro-6000 = ~$0.59 of the $10 cap.
+World 7 wall-5 (2026-10-29, the lead's round-4 review: one plain root-free temple strip, two takes, cap $0.50), branch gen2-w7:
+start make_wall5.py (wall-1 rows 345-900 over wall-4 rows 0-345, the kit's own root-free stone, 2x), spec spec-hfb-w7wall5.json, cut
+wall5cut.py (220 wide, its last 60 rows cross-faded into its top so it repeats, graded to wall-2's mean tone, set at x 896 in
+src/assets/w7/temple-walls.webp). Results in the bucket under hfbatch/w7wall5/props/.
+hfb-w7wall5 6ae398dcad9610e5cb315e42 rtx-pro-6000 19:05:00Z-19:06:18Z (1.3 min, ~$0.06): s58 x seeds 17/29 from start-w7wall5
+  w7wall5-s58-17 KEPT as wall-5 (grey-green like the kit, mixed blocks, two carved bands, a little moss, no root). s58-29 not used:
+  browner than the other four strips.
+World 7 temple wall as one built wall (2026-10-29, the lead's round-5 review: strips butted side by side kept showing joins), gen2-w7.
+hfb-w7walltile 6ae3ade9c78863f9c62dd445 rtx-pro-6000 20:34:49Z-~20:37Z (~2 min, ~$0.09): groundgpu.py "tile" from start-w7walltile
+  (make_walltile.py: the strips side by side). THROWN: the start's column joints survived s50/s60, and seam.brick's blend ghosted
+  the masonry (double roots, half-faded bands).
+hfb-w7wallrun 6ae3ae99c78863f9c62dd52a rtx-pro-6000 20:37:45Z-~20:44Z (~5 min, ~$0.23): groundgpu.py "strip" (periodic left to
+  right) from start-w7wallrun (make_wallrun.py: courses laid the whole width from the strips' own course bands, a running bond),
+  s1 0.55/0.65, s2 0.52. w7wallrun-s55-v3 and -v5 KEPT as src/assets/w7/temple-run.webp (wallruncut.py: graded to one tone, stacked);
+  the base not used (wrap_x's blend ghosted its cracks), the s65 set not used (s55 already clean).
+running total for World 7 walls ~$0.38.
 
 Boss art (2026-10-29, cap $10 after the lead's correction from $14), branch hf-art-bosses: starts bossstarts.py / bossstarts2.py /
 venomstart.py, specs make_spec.py / make_spec2.py / make_spec3.py, cut bosscut.py / venomcut.py, dot bridges dotbridge.py (no GPU).
@@ -116,6 +132,46 @@ hfb-stage-3 6ae39f625ddcdc08302650d1 rtx-pro-6000 19:32:50Z-19:39:27Z (6.6 min, 
   THROWN (the start's piece seams show as vertical lines).
 running total ~32.1 min on rtx-pro-6000 = ~$1.47 of the $14 cap.
 
+Repeating hazard animations (2026-10-29, cap $5), branch hazard-anim: start pebblestart.py (16 bits of World 4's own rock, rockMoss,
+shardA-D, boulderSmall, boulderRound pieces), spec make_pebbles_spec.py, cut tools/art/hazard/gritcut.py -> src/assets/props/w4-grit.webp.
+hfb-w4pebbles 6ae3a561c78863f9c62dc965 rtx-pro-6000 19:58:25Z-20:00:15Z (1.8 min, ~$0.08): 4 takes, s50/s66 x seeds 7/23, 1024 x 1024.
+  KEPT: w4pebbles-s50-7 (11 pebbles: all but cell 8, a green leaf), w4pebbles-s66-7 (8 pebbles: cells 0,1,3,4,5,6,9,10; the chips of
+  gravel cells 12-14), w4pebbles-s50-23 (the chips of gravel cells 13, 15). Not used: s50-23's pebbles (smeared, soft, the dark ones
+  blurred into moss), s66-7 cells 7/8/11 (a split pod, a green splat, a magenta crack), all of s66-23 (pink cast through its gravel).
+  The chips came out pink-tinged with a red rim from the key: gritcut.py despills every piece and takes the chips to their own
+  brightness in a warm grey. 19 pebbles + 20 chips; review sheet reference/prop-sheets/qa-notes/hazard-anim/grit-review.jpg.
+total ~1.8 min on rtx-pro-6000 = ~$0.08 of the $5 cap. Stopped there: everything else reuses painted pieces already in the game
+  (boss-fx dust, spark, splash, gust, warnArrow and feather; the leaves atlas; the waterfall set).
+Painted sky above the far strips and the middle strips carried on up, for the upright view (polish-edges, Matt 2026-10-29: "upright looks
+faded next to sideways"; budget ~$2). GPU tools/art/hfbatch/skygpu.py, spec make_sky_spec.py, cut skycut.py. Bucket hfbatch/sky/.
+hfsky-pilot1  6ae3a77ec78863f9c62dcc62 rtx-pro-6000 20:07:26Z-20:11:50Z (4.4 min, ~$0.20, cancelled): img2img from a flat start at
+  s75/s88. s75 leaves the start flat with a hard band; s88 paints a good open sky (w1) but a flat green block on w1kapok and a flat
+  patch on the w3 cave roof.
+hfsky-pilot2  6ae3a88bc78863f9c62dcda5 rtx-pro-6000 20:11:55Z-20:14:10Z (2.3 min, ~$0.11, cancelled): textured start (the strip's top
+  quarter turned over). Img2img on the short canvas paints a whole new scene, a stone ledge where the strip's top was: thrown.
+hfsky-pilot3  6ae3a96b0e0338d1bb7c21f3 rtx-pro-6000 20:15:39Z-20:20:11Z (4.5 min, ~$0.21): inpaint (QwenImageInpaintPipeline) the rows
+  above with the strip as context, s92. Good canopy (w1kapok) and cave roof (w3), but a hard seam at the join and "game background"
+  in the prompt painted a stone ledge row (w5dusk2); the middle-strip try on magenta came back as a pink haze.
+hfsky-pilot4  6ae3aac4c78863f9c62dd051 rtx-pro-6000 cancelled before it ran (prompt fix came first).
+hfsky-pilot5  6ae3aaecc78863f9c62dd08a rtx-pro-6000 20:22:04Z-20:28:50Z (6.8 min, ~$0.31, cancelled): s100, no "game" wording, a
+  negative prompt. Skies clean of ledges, but the start's shapes came through as see-through ghost branches (the pipeline blends the
+  start in): the start is now its colours only. The pipeline binarizes the mask half way down its ramp: the sky file ends there.
+  Middle strips (w1-midtop): whole new misty scenes at the wrong scale in a pink haze, not keyable: dropped; the middle strips with a
+  solid top fade out over their top 7% instead (defringe.py --topfade).
+pilots ~18 min = ~$0.83
+hfsky-all     6ae3acd4c78863f9c62dd2c1 rtx-pro-6000 cancelled at start (Matt 4:20 PM ET: no upscaling/outpaint from the low-res strips).
+X-16 hdset    6ae3afb40e0338d1bb7c2945 rtx-pro-6000 20:42:28Z-21:31:58Z (49.5 min, ~$2.27): ONE batched job (hdset.sh): all 34 far
+  strips and the 14 World 5 mood / W1 canopy middle and near strips repainted at native resolution (striphdgpu.py, s25, the HD near/mid
+  way), then the sky above each new far strip (skygpu.py, inpaint s100). KEPT: all 48 strips; 18 skies. 16 skies failed review (a
+  second landscape stacked above w6/w7/w9dawn/w3sinkhole, tile-panel ghosts on w1sunrise/w2/w5dusk2/w9, dark streaks on w5twi):
+  redone in round 2.
+X-16 skies r2 6ae3bc140e0338d1bb7c35e5 rtx-pro-6000 started 21:35:16Z: the 16, plain start, overlap 512, sky-only prompt, 2 seeds.
+  r2 CANCELLED at 21:39Z (~4 min, ~$0.18): "no frame, no panel" in the positive prompt painted frames, panels and a sloth. Thrown.
+X-16 skies r3 6ae3bd320e0338d1bb7c3687 started 21:40:02Z: round 1's prompt (negatives only in the negative prompt, sloth added), plain start, overlap 384, 2 seeds.
+  r3 6ae3bd320e0338d1bb7c3687 CANCELLED 21:46Z (~6 min, ~$0.28): still framed panels (w1sunrise), grass at the horizon (w1kapok).
+X-16 skies r4 6ae3cdb10e0338d1bb7c4633 rtx-pro-6000 started 22:50:25Z (the lead's go): tallstart.py, each native far strip with a sky
+  stacked above (a passed sky of the same world recoloured where the light fits, else a smooth gradient of the strip's own top), one
+  img2img pass over the whole tall picture at s30/s38 (striphdgpu.py, full-height tiles), 32 takes.
 # polish-sfx (2026-10-29, the recorded effect set; all CPU, no GPU; cap $8)
 sfx-scan-a/b/c  6ae3a61ac78863f9c62dcaa4 / 6ae3a61c0e0338d1bb7c1e1c / 6ae3a61f0e0338d1bb7c1e20 cpu-upgrade 20:01Z-20:04:40Z (3 x 3.2 min):
   tools/audio/sfxv1/fsscan.py pass 1 over laion/freesound-commercially-permissive-subset-with-captions shards 0, 4, 8: CC0 clips by caption

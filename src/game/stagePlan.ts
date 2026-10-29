@@ -26,15 +26,15 @@ const S = (type: StageSpec['type'], name: string, desc?: string): StageSpec => (
 export const STAGE_PLAN: Record<number, StageSpec[]> = {
   // ACT I · THE TRAIL
   1: [
-    S('sprint', 'Into the Canopy', 'Run the high branches of the kapok trees and reach the Exit Shrine.'),
+    S('sprint', 'Into the Canopy', 'Run the high branches of the kapok trees and reach the shrine.'),
     S('harvest', 'The Petal Trail', 'Meeca left a trail of petals. Gather {n} of them.'),
     S('purge', 'Branch Snakes', 'Clear {n} snakes off the branches with your Claw Punches.'),
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
-    S('harvest', 'More Petals', 'The petals go on. Gather {n} more.'),
+    S('harvest', 'Where She Walked', 'The petals go on. Gather {n} more.'),
     S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
-    S('sprint', 'The Long Branch', 'Race the long branch to the Exit Shrine.'),
-    S('gauntlet', "The Boa's Branches", "Fight through the boa's guards. Defeat {n} and reach the exit."),
+    S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
+    S('gauntlet', "The Boa's Branches", "Fight through the boa's guards. Defeat {n} and reach the shrine."),
   ],
   2: [
     S('sprint', 'Down to the River', 'Hop the drifting logs down to the riverbank village.'),
@@ -44,8 +44,8 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('purge', 'River Snappers', 'Chase off {n} snappers along the bank.'),
     S('ascent', 'Up the Bank Houses', 'Climb up through the village houses dug into the bank.'),
     S('sprint', "The Mailman's Route", 'Take the long way round the river, past every door marked PLEASE BE PATIENT.'),
-    S('rescue', 'Reed Cages', 'Free {n} more little ones before the water rises.'),
-    S('gauntlet', "The River King's Court", "Fight through the river king's court. Defeat {n} and reach the exit."),
+    S('rescue', 'Before the Water Rises', 'Free {n} more little ones before the water rises.'),
+    S('gauntlet', "The River King's Court", "Fight through the river king's court. Defeat {n} and reach the shrine."),
   ],
   3: [
     S('sprint', 'Into the Grotto', 'Follow the glowworm light down into the grotto.'),
@@ -56,19 +56,19 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('relic_hunt', "Grandma's Things", "Dot hid Grandma's things in the ferns. Find {n} of them."),
     S('relic_hunt', 'Which Fern?', 'All ferns look alike. Find {n} more of Grandma\'s things.'),
     S('vine_runner', 'Thorn Vine Swing', 'Swing past the thorn vines without touching the thorns.'),
-    S('gauntlet', "The Prowler's Ring", "Break out of the Prowler's ring. Defeat {n} and reach the exit."),
+    S('gauntlet', "The Prowler's Ring", "Break out of the Prowler's ring. Defeat {n} and reach the shrine."),
   ],
   // ACT II · THE COST
   4: [
     S('ascent', 'The Broken Ledge', 'The ledge fell away. Climb back up out of the mist.'),
-    S('sprint', 'First Glide', 'Open your leaf and drift across the falls to the Exit Shrine.'),
+    S('sprint', 'First Glide', 'Open your leaf and drift across the falls to the shrine.'),
     S('ascent', 'Waterfall Steps', 'Climb the wet steps beside the waterfall.'),
     S('vine_runner', 'Crosswind', 'Swing across the gaps while the wind pushes you.'),
     S('stealth', "The Sovereign's Dive", 'The Sky Sovereign is hunting. Stay under cover.'),
     S('ascent', 'Above the Mist', 'Climb above the mist to the eagle nests.'),
-    S('sprint', 'The Long Drop', 'Glide down the long drops to the Exit Shrine.'),
+    S('sprint', 'The Long Drop', 'Glide down the long drops to the shrine.'),
     S('rescue', 'Nests on the Cliff', 'Free {n} little ones caught on the cliff.'),
-    S('gauntlet', 'The Aerie', "Fight through the Sovereign's aerie. Defeat {n} and reach the exit."),
+    S('gauntlet', 'The Aerie', "Fight through the Sovereign's aerie. Defeat {n} and reach the shrine."),
   ],
   5: [
     S('sprint', 'The Loveliest Place', 'Run through the loveliest place on the road. Do not stop.'),
@@ -79,7 +79,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('relic_hunt', 'Where She Ran', 'She got away from them here, for one night. Follow where she ran.'),
     S('stealth', "Don't Touch the Silk", 'Every thread hums. Keep out of sight.'),
     S('ascent', 'Up the Bloom Trees', 'Climb the bloom trees above the webs.'),
-    S('gauntlet', "The Queen's Garden", "Fight through the Queen's garden. Defeat {n} and reach the exit."),
+    S('gauntlet', "The Queen's Garden", "Fight through the Queen's garden. Defeat {n} and reach the shrine."),
   ],
   6: [
     S('vine_runner', 'The Root Maze', 'Swing root to root over the black water.'),
@@ -90,7 +90,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('sprint', 'Lights in the Roots', 'The roots go dark. Let the firefly light the way.'),
     S('vine_runner', 'Through the Roots', 'Raise the water, lower the water, and find what Dot left you.'),
     S('ascent', 'Stilt Climb', 'Climb the stilt roots up out of the swamp.'),
-    S('gauntlet', 'Blackwater', 'Fight through the blackwater. Defeat {n} and reach the exit.'),
+    S('gauntlet', 'Blackwater', 'Fight through the blackwater. Defeat {n} and reach the shrine.'),
   ],
   7: [
     S('sprint', 'The Open Door', 'The temple door stands open. Go in.'),
@@ -101,7 +101,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('sprint', 'Falling Floors', 'Run before the old floors crumble.'),
     S('relic_hunt', 'The Photograph', 'Search the ruins. Something here was left for Meeca\'s family. Find {n} relics.'),
     S('ascent', 'The Upper Temple', 'Climb to the top of the temple.'),
-    S('gauntlet', "The Golem's Hall", "Fight through the Golem's hall. Defeat {n} and reach the exit."),
+    S('gauntlet', "The Golem's Hall", "Fight through the Golem's hall. Defeat {n} and reach the shrine."),
   ],
   // ACT III · THE IRON ROAD
   8: [
@@ -113,7 +113,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('sprint', 'Glide by Moonlight', 'Glide from tree to tree by moonlight.'),
     S('ascent', 'The Tallest Tree', 'Climb the tallest tree to see the way ahead.'),
     S('purge', 'Night Hunters', 'Drive off {n} night hunters.'),
-    S('gauntlet', "Monarch's Wood", "Fight through the Monarch's wood. Defeat {n} and reach the exit."),
+    S('gauntlet', "Monarch's Wood", "Fight through the Monarch's wood. Defeat {n} and reach the shrine."),
   ],
   9: [
     S('sprint', 'Pepper Air', 'Run through the hot, peppery air of the volcanic jungle.'),
@@ -124,7 +124,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('purge', 'Ash Fields', 'Clear {n} hunters off the ash fields.'),
     S('ascent', 'Lava Steps', 'Climb the cooled lava steps.'),
     S('relic_hunt', "Pell's Thread", 'The lieutenant keeps dropping bits of his thread. Find {n} of them.'),
-    S('gauntlet', "The Drake's Hoard", "Fight through the Drake's hoard. Defeat {n} and reach the exit."),
+    S('gauntlet', "The Drake's Hoard", "Fight through the Drake's hoard. Defeat {n} and reach the shrine."),
   ],
   10: [
     S('sprint', 'The Door Made for Him', 'Go through the door in the netting. It is exactly your width.'),
@@ -135,7 +135,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('vine_runner', 'The Iron Netting', 'Swing along the iron netting.'),
     S('purge', 'The Walls', 'Clear {n} guards off the walls.'),
     S('ascent', 'The Last Steps', 'The last of the thousand steps.'),
-    S('gauntlet', 'The Fortress Gate', 'Fight through the fortress gate. Defeat {n} and reach the exit.'),
+    S('gauntlet', 'The Fortress Gate', 'Fight through the fortress gate. Defeat {n} and reach the shrine.'),
   ],
 };
 

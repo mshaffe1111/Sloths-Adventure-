@@ -7,7 +7,8 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import type { Platform } from './types.ts';
-import { drawCel, warmCels } from './storyCels.ts';
+import { CELS, drawCel, warmCels } from './storyCels.ts';
+import { FONT_DISPLAY } from './fonts.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -194,8 +195,8 @@ export function drawW2Decor(ctx: CanvasRenderingContext2D, items: W2Decor[], x0:
     if (d.cel) {
       const wk = walkerAt(d, t);
       if (wk.x < x0 - 200 || wk.x > x1 + 200) continue;
-      warmCels([2]);
       const pose = wk.moving && d.celWalk ? d.celWalk : d.cel;
+      if (CELS[pose]) warmCels([CELS[pose].a]);
       const bob = wk.moving ? Math.abs(Math.sin(t * 3)) * 1.5 : 0;
       drawCel(ctx, pose, wk.x, d.b - bob, d.k ?? 0.42, wk.face);
       continue;
@@ -220,7 +221,7 @@ export function drawW2Decor(ctx: CanvasRenderingContext2D, items: W2Decor[], x0:
       ctx.textBaseline = 'middle';
       const lines = d.text;
       const size = Math.min(18, ((w * 0.78) / Math.max(...lines.map((l) => l.length))) * 1.75);
-      ctx.font = `${Math.round(size)}px "Cherry Bomb One", "Trebuchet MS", sans-serif`;
+      ctx.font = `${Math.round(size)}px ${FONT_DISPLAY}`;
       const top = d.b - h;
       const mid = top + h * 0.28;
       lines.forEach((l, i) => ctx.fillText(l, d.x, mid + (i - (lines.length - 1) / 2) * size * 1.15));

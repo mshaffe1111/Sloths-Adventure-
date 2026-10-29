@@ -14,9 +14,11 @@ export const RELEASING_SCREENS: readonly GameScreen[] = [
   'story_cutscene',
   'world_story',
   'world_mid',
+  'world_gate',
   'boss_intro',
   'boss_defeat',
   'ending_story',
+  'ending_tag',
   'memory',
 ];
 

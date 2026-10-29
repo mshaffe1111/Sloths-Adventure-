@@ -1,0 +1,80 @@
+{
+ "note": "hf-art-ground job 3: carved water signs, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "thick black outline, black lines, sticker, comic, cartoon outline, painted picture, blue paint, blue water, words, letters, text, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/073e1fddfd74d9ef52ae1cb47b0b5c9add10118a/tools/art/hfground/starts/",
+ "items": [
+  {
+   "kind": "plain",
+   "name": "sign2-jungle-s62-7",
+   "start": "sign2-jungle.webp",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 448,
+   "h": 640,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, painted picture, blue paint, blue water, words, letters, text, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal",
+   "prompt": "slothadv style, painted storybook illustration, a hand-carved wooden warning sign on a post for a side-scrolling platform game, side-on: a board of three planks held by iron nails, three wavy water lines carved deep into the wood as grooves, the top one curling over, the grooves darker than the board with lit lower edges, warm brown weathered wood, a green vine winding up the post, painted in soft cel shading with no black outline, the edges drawn in a darker shade of the wood, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "sign2-jungle-s72-19",
+   "start": "sign2-jungle.webp",
+   "strength": 0.72,
+   "seed": 19,
+   "w": 448,
+   "h": 640,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, painted picture, blue paint, blue water, words, letters, text, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal",
+   "prompt": "slothadv style, painted storybook illustration, a hand-carved wooden warning sign on a post for a side-scrolling platform game, side-on: a board of three planks held by iron nails, three wavy water lines carved deep into the wood as grooves, the top one curling over, the grooves darker than the board with lit lower edges, warm brown weathered wood, a green vine winding up the post, painted in soft cel shading with no black outline, the edges drawn in a darker shade of the wood, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "sign2-jungle-s80-29",
+   "start": "sign2-jungle.webp",
+   "strength": 0.8,
+   "seed": 29,
+   "w": 448,
+   "h": 640,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, painted picture, blue paint, blue water, words, letters, text, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal",
+   "prompt": "slothadv style, painted storybook illustration, a hand-carved wooden warning sign on a post for a side-scrolling platform game, side-on: a board of three planks held by iron nails, three wavy water lines carved deep into the wood as grooves, the top one curling over, the grooves darker than the board with lit lower edges, warm brown weathered wood, a green vine winding up the post, painted in soft cel shading with no black outline, the edges drawn in a darker shade of the wood, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "sign2-w5-s62-7",
+   "start": "sign2-w5.webp",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 448,
+   "h": 640,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, painted picture, blue paint, blue water, words, letters, text, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal",
+   "prompt": "slothadv style, painted storybook illustration, a hand-carved wooden warning sign on a post for a side-scrolling platform game, side-on: a board of three planks held by iron nails, three wavy water lines carved deep into the wood as grooves, the top one curling over, the grooves darker than the board with lit lower edges, pale silver-grey weathered wood, a twist of white silk and one white orchid on the post, soft purple garden grass at its foot, painted in soft cel shading with no black outline, the edges drawn in a darker shade of the wood, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "sign2-w5-s72-19",
+   "start": "sign2-w5.webp",
+   "strength": 0.72,
+   "seed": 19,
+   "w": 448,
+   "h": 640,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, painted picture, blue paint, blue water, words, letters, text, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal",
+   "prompt": "slothadv style, painted storybook illustration, a hand-carved wooden warning sign on a post for a side-scrolling platform game, side-on: a board of three planks held by iron nails, three wavy water lines carved deep into the wood as grooves, the top one curling over, the grooves darker than the board with lit lower edges, pale silver-grey weathered wood, a twist of white silk and one white orchid on the post, soft purple garden grass at its foot, painted in soft cel shading with no black outline, the edges drawn in a darker shade of the wood, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "sign2-w5-s80-29",
+   "start": "sign2-w5.webp",
+   "strength": 0.8,
+   "seed": 29,
+   "w": 448,
+   "h": 640,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, painted picture, blue paint, blue water, words, letters, text, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal",
+   "prompt": "slothadv style, painted storybook illustration, a hand-carved wooden warning sign on a post for a side-scrolling platform game, side-on: a board of three planks held by iron nails, three wavy water lines carved deep into the wood as grooves, the top one curling over, the grooves darker than the board with lit lower edges, pale silver-grey weathered wood, a twist of white silk and one white orchid on the post, soft purple garden grass at its foot, painted in soft cel shading with no black outline, the edges drawn in a darker shade of the wood, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  }
+ ]
+}

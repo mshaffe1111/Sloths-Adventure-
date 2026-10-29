@@ -1,6 +1,7 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
+import { setShakeLevel, shakeLevel, type ShakeLevel } from '../game/screenShake.ts';
 import { canBuzz, hapticsOn, setHaptics, vibrate } from '../game/haptics.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, steerHand, setSteerHand, touchSensitivity, setTouchSensitivity, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 import { showTouches, setShowTouches, type ShowTouches } from '../game/touchMarks.ts';
@@ -11,12 +12,14 @@ import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, ty
 import { DIFFICULTY_LABEL, difficulty, switchDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGuideHelp.ts';
 import { dotSaid } from '../game/dotGuide.ts';
+import { hearTipsAgain } from '../game/dotMemory.ts';
 import { DotFace } from './DotFace.tsx';
 import { Icon as Glyph, type IconName } from './icons/index.tsx';
 
-/** "Dot's help" (the new look): Teach me / Just reminders / Quiet, with her last three lines under it */
+/** "Dot's help" (the new look): Help / Tips / Quiet, "Hear Dot's tips again", and her last three lines under it */
 export const DotHelpSetting: React.FC = () => {
   const [help, setHelp] = React.useState<DotHelp>(() => dotHelp());
+  const [again, setAgain] = React.useState(false);
   const said = dotSaid();
   return (
     <div className="pm-sound">
@@ -39,6 +42,17 @@ export const DotHelpSetting: React.FC = () => {
         />
       </div>
       <small className="pm-polish-note">{DOT_HELP_LABEL[help].blurb} A locked exit is always explained.</small>
+      <button
+        type="button"
+        className="pm-mute pm-dot-again"
+        disabled={again}
+        onClick={() => {
+          hearTipsAgain();
+          setAgain(true);
+        }}
+      >
+        {again ? 'Dot will teach it all again' : "Hear Dot's tips again"}
+      </button>
       {said.length > 0 && (
         <div className="pm-dotsaid" aria-label="Dot said">
           <small className="pm-polish-note" style={{ fontWeight: 700 }}>
@@ -123,6 +137,33 @@ export const WaysideToggle: React.FC = () => {
   );
 };
 
+/** how hard the screen shakes on a big hit or a boss's slam (AN-10); Gentle to start with where the phone asks for less motion */
+export const ShakeSetting: React.FC = () => {
+  const [v, setV] = React.useState<ShakeLevel>(() => shakeLevel());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <SetIcon name="burst" />
+          Screen shake
+        </span>
+        <Seg<ShakeLevel>
+          value={v}
+          options={[
+            { id: 'full', label: 'Full' },
+            { id: 'gentle', label: 'Gentle' },
+            { id: 'off', label: 'Off' },
+          ]}
+          onPick={(n) => {
+            setShakeLevel(n);
+            setV(n);
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
 /** the phone's buzz for a hurt, a hard landing, a boss's slam, a flag and a clear, and the button presses (AN-9; on unless turned off) */
 export const HapticsToggle: React.FC = () => {
   const [on, setOn] = React.useState(() => hapticsOn());
@@ -202,8 +243,8 @@ export const ControlsSetting: React.FC = () => {
           <Seg
             value={side}
             options={[
-              { id: 'right', label: 'Right' },
               { id: 'left', label: 'Left' },
+              { id: 'right', label: 'Right' },
             ]}
             onPick={(v) => {
               setPadSide(v);
@@ -233,7 +274,7 @@ export const ControlsSetting: React.FC = () => {
       )}
       <small className="pm-polish-note">
         {style === 'pad'
-          ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.'
+          ? 'A pad for running under your left thumb, and Jump, Punch and Kick buttons on the other side. Flip it to run with your right thumb.'
           : help === 'off'
             ? 'No buttons: slide, flick and tap anywhere on the screen. A tap punches and every jump is a move up. The second jump needs a quick flick up.'
             : help === 'keep'
