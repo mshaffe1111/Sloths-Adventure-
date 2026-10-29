@@ -59,9 +59,8 @@ for look, (x0, x1, tip) in (('a', (120, 400, (256, 66))), ('b', (630, 910, (768,
         al |= states[st][..., 3][:, x0:x1] > 128
     ys, xs = np.nonzero(al)
     bx0, by0, bx1, by1 = xs.min() + x0 - 2, ys.min() - 2, xs.max() + x0 + 3, ys.max() + 3
-    # foot: the middle of the footing's bottom row
-    bot = np.nonzero(dull[by1 - 4, :, 3][x0:x1] > 128)[0]
-    fx = (bot.min() + bot.max()) / 2 + x0
+    # foot: on the rod's axis, at the footing's bottom
+    fx = tip[0]  # the rod's own axis (the footing's rough bottom is lopsided), so a bolt meets the tip straight above the anchor
     for st in ('dull', 'charge', 'spent'):
         im = scale(Image.fromarray(np.clip(states[st][by0:by1, bx0:bx1], 0, 255).astype(np.uint8), 'RGBA'))
         frames.append((f'rod-{look}-{st}', im, (fx - bx0) * K, (by1 - 3 - by0) * K))
@@ -76,7 +75,7 @@ for name, (c0, c1, ax, ay) in (('halo-a', (0, 256, 128, 150)), ('halo-b', (256, 
     frames.append((name, im, (ax - c0) * K - bb[0], ay * K - bb[1]))
 write(OUT, 'rods', frames, {'tips': tips, 'note': (
     'World 10 lightning rods (HF img2img, tools/art/w10/cut2.py). rod-a (spear) and rod-b (crown + coil), states dull/charge/spent; '
-    'the three states of a look share size and anchor (ax/ay = middle of the footing\'s bottom). "tips" = where the tip is in a rod '
+    'the three states of a look share size and anchor (ax = the rod\'s axis, ay = the footing\'s bottom). "tips" = where the tip is in a rod '
     'frame, for placing halo-a/halo-b (anchor = the halo\'s centre) and afterglow while charging/spent, and smoke-0/1 (anchor = the '
     'wisp\'s base) after a strike. halo/afterglow/smoke were painted on black: draw them with "lighter".')})
 # review: the three states side by side per look, with the fx placed
@@ -106,6 +105,11 @@ SX0, SY0, SX1, SY1 = 30, 38, 692, 322
 whole = np.asarray(key_magenta(load(PICK['ramp']))).astype(np.float32)
 crack = np.asarray(key_magenta(load(PICK['crack']))).astype(np.float32)
 top_y = 40  # the slab's top surface row in the takes
+# (at phone size the repaint's cracks were too faint to tell cracked from whole: where the cracked take is clearly darker than the whole
+# one (the crack lines), darken it further)
+dL = whole[..., :3].mean(2) - crack[..., :3].mean(2)
+cm = ndimage.gaussian_filter(np.clip((dL - 18) / 40, 0, 1), 0.7)[..., None] * (crack[..., 3:] > 128)
+crack[..., :3] *= 1 - 0.55 * cm
 fr = []
 for st, src in (('whole', whole), ('cracked', crack)):
     im = scale(Image.fromarray(src[SY0:SY1, SX0:SX1].astype(np.uint8), 'RGBA'))
@@ -148,6 +152,10 @@ for i in range(4):
     m = (labels == i)
     m = ndimage.binary_erosion(m, iterations=3)  # a gap opens along each crack
     piece = cr.copy(); piece[..., 3] *= m
+    # (a thin dark outline along the new broken edge, like the painting's own outline, so a piece doesn't look scissor-cut)
+    rim = m & ~ndimage.binary_erosion(m, iterations=3) & ndimage.binary_erosion(cr[..., 3] > 128, iterations=4)
+    soft = ndimage.gaussian_filter(rim.astype(np.float32), 0.8)[..., None] * 0.9
+    piece[..., :3] = piece[..., :3] * (1 - soft) + np.array([22, 18, 20]) * soft
     pim = Image.fromarray(piece.astype(np.uint8), 'RGBA')
     cx = np.nonzero(m.any(0))[0].mean()
     dx, dy, deg = drop[i]

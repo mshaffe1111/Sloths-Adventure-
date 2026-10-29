@@ -10,7 +10,7 @@
    "y": 0,
    "w": 126,
    "h": 577,
-   "ax": 81.0,
+   "ax": 63.0,
    "ay": 575.5
   },
   "rod-a-charge": {
@@ -18,7 +18,7 @@
    "y": 0,
    "w": 126,
    "h": 577,
-   "ax": 81.0,
+   "ax": 63.0,
    "ay": 575.5
   },
   "rod-a-spent": {
@@ -26,7 +26,7 @@
    "y": 0,
    "w": 126,
    "h": 577,
-   "ax": 81.0,
+   "ax": 63.0,
    "ay": 575.5
   },
   "rod-b-dull": {
@@ -34,7 +34,7 @@
    "y": 0,
    "w": 126,
    "h": 560,
-   "ax": 81.0,
+   "ax": 62.0,
    "ay": 558.5
   },
   "rod-b-charge": {
@@ -42,7 +42,7 @@
    "y": 0,
    "w": 126,
    "h": 560,
-   "ax": 81.0,
+   "ax": 62.0,
    "ay": 558.5
   },
   "rod-b-spent": {
@@ -50,7 +50,7 @@
    "y": 0,
    "w": 126,
    "h": 560,
-   "ax": 81.0,
+   "ax": 62.0,
    "ay": 558.5
   },
   "halo-a": {
@@ -104,5 +104,5 @@
    26.5
   ]
  },
- "note": "World 10 lightning rods (HF img2img, tools/art/w10/cut2.py). rod-a (spear) and rod-b (crown + coil), states dull/charge/spent; the three states of a look share size and anchor (ax/ay = middle of the footing's bottom). \"tips\" = where the tip is in a rod frame, for placing halo-a/halo-b (anchor = the halo's centre) and afterglow while charging/spent, and smoke-0/1 (anchor = the wisp's base) after a strike. halo/afterglow/smoke were painted on black: draw them with \"lighter\"."
+ "note": "World 10 lightning rods (HF img2img, tools/art/w10/cut2.py). rod-a (spear) and rod-b (crown + coil), states dull/charge/spent; the three states of a look share size and anchor (ax = the rod's axis, ay = the footing's bottom). \"tips\" = where the tip is in a rod frame, for placing halo-a/halo-b (anchor = the halo's centre) and afterglow while charging/spent, and smoke-0/1 (anchor = the wisp's base) after a strike. halo/afterglow/smoke were painted on black: draw them with \"lighter\"."
 }
