@@ -98,6 +98,17 @@ export function maxGap(dyUp: number, dbl: boolean, margin: number): number {
   const accept = Math.max(reachJump(dyUp, false), reachJump(dyUp, true)) * 0.97 - TAKEOFF_SLACK - 4;
   return Math.max(-1, Math.min(margin * phys, accept));
 }
+/**
+ * The widest gap a required leaf glide may have (World 8's moonlight glides): `margin` of the glide's physical reach off a double jump
+ * (reachGlide), never more than what levelCheck links on that stage (jumpLinkGap, which counts the glide once every player has it), and
+ * never less than a double jump's own envelope (a stage before the glide is guaranteed gets a double-jump gap).
+ */
+export function glideGap(dyUp: number, budget: Pick<StageBudget, 'margin' | 'world' | 'stage'>): number {
+  const dbl = maxGap(dyUp, true, budget.margin);
+  const link = jumpLinkGap(dyUp, budget.world, budget.stage) - 4;
+  const g = reachGlide(dyUp, true);
+  return g < 0 ? dbl : Math.max(dbl, Math.min(budget.margin * g, link));
+}
 /** the highest a required rise may be (px): `share` of a jump's height (one jump or two) */
 export const riseLimit = (dbl: boolean, share: number): number => share * (dbl ? DOUBLE_RISE : JUMP_RISE);
 
@@ -465,10 +476,11 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y + Math.max(-riseLimit(false, budget.riseShare) * 0.9, dy);
     } else if (pl.kind === 'jump' || pl.kind === 'double' || pl.kind === 'pit') {
       const a = ref(pl.after);
-      const dbl = (pl.kind === 'pit' ? pl.jump === 'double' : pl.kind === 'double') && dblOK;
+      const glide = pl.kind === 'pit' && pl.jump === 'glide' && budget.moves.includes('glide') && dblOK;
+      const dbl = (pl.kind === 'pit' ? pl.jump !== 'jump' : pl.kind === 'double') && dblOK;
       let dy = pl.kind === 'pit' || pl.dy === undefined ? 0 : roll(rng, pl.dy);
       dy = Math.max(-riseLimit(dbl, budget.riseShare) * 0.95, dy);
-      const g = maxGap(-dy, dbl, budget.margin);
+      const g = glide ? glideGap(-dy, budget) : maxGap(-dy, dbl, budget.margin);
       const share = shareFor(pl.share);
       const gap = Math.max(60, R(share * (g > 0 ? g : 60)));
       x = a.x + a.w + gap;
