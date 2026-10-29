@@ -16,7 +16,7 @@ import { DOZER_ANIM, DOZER_ANIM_SIZE, DOZER_ANIM_URL, DOZER_SEQ } from './dozerA
 import { FLICKER_ANIM, FLICKER_ANIM_SIZE, FLICKER_ANIM_URL, FLICKER_SEQ } from './flickerAnimData.ts';
 import { WATER_SIGN_FRAMES, WATER_SIGN_SIZE, WATER_SIGN_URL } from './waterSignData.ts';
 import { seamClipAt } from './w5Creatures.ts';
-import { waterSignFor } from './waterSign.ts';
+import { signRattle, waterSignFor } from './waterSign.ts';
 import { FLICKER_DOZE_S, FLICKER_LEAD_V, flickerFrame, flickerMove, type FlickerMove } from './meecaArt.ts';
 import { MEECA_SAY, FLICKER_HINTS } from './meecaLines.ts';
 import { stageSheets } from './stageSheets.ts';
@@ -113,17 +113,22 @@ test("the Seamstress's tell is the first 60% of her attack clip (needles up), th
   assert.equal(seamClipAt('idle', 0.5), 0);
 });
 
-test("each world stands its own water's-edge sign, the two takes in turn; the sheet's frames lie inside it", () => {
+test("each world stands its own carved water's-edge sign, still and rattled; the sheet's frames lie inside it", () => {
   assert.equal(waterSignFor(5), 'sign-w5');
-  assert.equal(waterSignFor(5, 1), 'sign-w5-b');
-  for (const w of [6, 7, 8, 9, 10]) assert.equal(waterSignFor(w, 2), 'sign-jungle');
+  assert.equal(waterSignFor(5, true), 'sign-w5-rattle');
+  for (const w of [6, 7, 8, 9, 10]) assert.equal(waterSignFor(w), 'sign-jungle');
   const file = fileURLToPath(WATER_SIGN_URL);
   assert.deepEqual(webpSize(file), WATER_SIGN_SIZE);
   for (const [n, f] of Object.entries(WATER_SIGN_FRAMES)) {
     assert.ok(f.x >= 0 && f.y >= 0 && f.x + f.w <= WATER_SIGN_SIZE.w && f.y + f.h <= WATER_SIGN_SIZE.h, n);
     assert.ok(Math.abs(f.ax - f.w / 2) < 1 && f.ay === f.h, `${n}: anchored at the foot of its post`);
   }
-  for (const w of [5, 6, 10]) for (const i of [0, 1]) assert.ok(WATER_SIGN_FRAMES[waterSignFor(w, i)], `${w}/${i}`);
+  for (const w of [5, 6, 10]) for (const r of [false, true]) assert.ok(WATER_SIGN_FRAMES[waterSignFor(w, r)], `${w}/${r}`);
+  // it rattles for a moment as he comes near, then stands still
+  assert.equal(signRattle(undefined), false);
+  assert.equal(signRattle(0), true);
+  assert.ok([0.05, 0.15, 0.25, 0.35].some((t) => !signRattle(t)), 'the board knocks back and forth');
+  assert.equal(signRattle(2), false);
 });
 
 test('the art made ready for the worlds being built: every file the manifest names is there, none over the asset limit', () => {

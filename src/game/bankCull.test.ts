@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { drawBankArt, protoArtReady, stripSpan } from './protoArt.ts';
+import { warmGround } from './groundPaint.ts';
 import { buildProtoStage } from './protoStage.ts';
 import { generateAllLevels } from './worldsData.ts';
 import type { Platform } from './types.ts';
@@ -50,8 +51,10 @@ test("1-2's long ground bank draws a handful of pieces a frame at a narrow phone
   g.Image = FakeImage;
   try {
     protoArtReady();
+    warmGround(1);
     await new Promise((r) => setTimeout(r, 0));
     assert.ok(protoArtReady(), 'the kit is ready');
+    assert.ok(warmGround(1), "World 1's painted ground is ready");
     const lvl = generateAllLevels().find((l) => l.id === '1-2')!;
     const st = buildProtoStage(lvl, 1, '1-2');
     const banks = st.platforms.filter((p: Platform) => p.height >= 90 && !p.push && !p.broken && !p.art);
@@ -63,8 +66,9 @@ test("1-2's long ground bank draws a handful of pieces a frame at a narrow phone
     for (let x0 = bank.x - 300; x0 < bank.x + bank.width; x0 += 97) {
       n = 0;
       drawBankArt(ctx, bank, { left: true, right: true }, false, 0, { x0, x1: x0 + 440 });
-      // the top edge's repeats on screen (4 at most) and the two end caps
-      assert.ok(n <= 7, `view at ${x0}: ${n} pieces drawn`);
+      // (hf-art-ground 2026-10-29) the soil tiles on screen (600 units each: 2 across, 2 rows at most), the darkening field (2 at most),
+      // the top lip's repeats (700 each: 4 at most) and an end on screen
+      assert.ok(n <= 10, `view at ${x0}: ${n} pieces drawn`);
     }
     // the whole bank, with no view given: every repeat, as the journal's scenes draw it
     n = 0;

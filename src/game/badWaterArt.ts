@@ -1,25 +1,27 @@
 /**
  * badWaterArt — Matt's dirty, fast water sheet (Gemini, 2026-10-29) for Worlds 6-10, where Pokey can swim and the water that still costs a
  * life has to look unswimmable: the choppy murky strip repeated along the water and rushing left to right, pale current streaks racing
- * through it and clumps of dead leaves riding the current. Cut by hand from reference/prop-sheets/gemini-batch-2026-10-29/; the strips'
- * ends were cross-faded so copies meet with no seam.
+ * through it and clumps of dead leaves riding the current. Cut by hand from reference/prop-sheets/gemini-batch-2026-10-29/, then
+ * repainted at 1024 px on Hugging Face (hf-art-ground 2026-10-29), the strip made periodic left to right so copies meet with no seam.
  *
  * drawBadWater returns false until the sheet has loaded, and the caller then draws the old shapes.
  */
 import { trackAtlas } from './atlasLoader.ts';
 
 export const BAD_WATER_URL = new URL('../assets/props/w6-water.webp', import.meta.url).href;
+// (hf-art-ground 2026-10-29, polish report VI-18: the strip was 183 px wide; repainted on Hugging Face at 1024 from Matt's, the same
+// three parts, tools/art/hfground/packwater.py)
 const FRAMES = {
-  chop: { x: 0, y: 158, w: 183, h: 86 },
-  leaves: { x: 0, y: 246, w: 170, h: 72 },
-  streaks: { x: 0, y: 320, w: 180, h: 50 },
+  chop: { x: 0, y: 0, w: 1024, h: 528 },
+  leaves: { x: 0, y: 541, w: 512, h: 213 },
+  streaks: { x: 512, y: 530, w: 512, h: 142 },
 };
 /** the deep water under the strip (its bottom row) */
-const DEEP = '#2d302d';
+const DEEP = '#30312c';
 /** one repeat of the strip, in world units */
 const TILE = 300;
 /** how far down the choppy strip its surface line sits */
-const SURFACE = 0.14;
+const SURFACE = 0.178;
 
 let img: HTMLImageElement | null = null;
 let ready = false;
