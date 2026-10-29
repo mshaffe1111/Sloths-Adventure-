@@ -166,8 +166,24 @@ Round 1 = items 1-7 (~$30-32 of the $40 cap). Round 2 = items 10-15 in that orde
 
 Painted logo: cancelled by Matt before it ran, $0.
 
-Total: **$56.99** (round 1 enemies + Flicker $35.6; the title pair $5.0, inside the same cap; round 2 $14.1; Part A re-runs $2.31;
+| 6ae2a4a241e90535df780ec6 | props round 1: 11 start sheets x 2 strengths x 2 seeds, img2img (44 sheets) | rtx-pro-6000 | 14.3 | 0.65 |
+| 6ae2a8c93fb22a235dd4e7a1 | props round 2: World 6 sections' props + 7 sheets again at higher strength (32) | rtx-pro-6000 | 14.5 | 0.66 |
+| 6ae2ab9341e90535df7814b6 | props round 3: platform variants, Worlds 5-10 (24) | rtx-pro-6000 | 8.5 | 0.39 |
+| 6ae2ad3e41e90535df78167c | props round 4: second looks of the set dressing, W6 water room and W10 dressing (20) | rtx-pro-6000 | 8.7 | 0.40 |
+
+Total before the prop run: **$56.99** (round 1 enemies + Flicker $35.6; the title pair $5.0, inside the same cap; round 2 $14.1; Part A re-runs $2.31;
 packing on CPU about 3 cents).
+
+Prop run (2026-10-29, Matt: "make props that we can use to fill out the game"): **$2.10** (four jobs above, 45.9 GPU minutes), so
+**$59.09** in all. Matt said $18 was left when it started, so about **$15.90 is still on his Hugging Face balance** (the connector
+cannot read the balance: worked out from job times). Method: img2img (Qwen-Image + the style model) over flat side-on start sheets
+pasted up from each world's own kit pieces and Matt's Gemini sprites (tools/art/w6to10/propstarts.py), never a bare text prompt;
+cut with propcut.py, put in with propsin.py (src/assets/w6to10/props-made, 26 sheets, 2.6 MB). The World 7 plate needed no GPU: the
+kit's own carved slab, raised on its mossy edge and sunk flush.
+What came out poorly and was left out: World 10's drawbridge plank (stayed a flat texture strip), the first World 9 scorched bridge
+(a ladder), and the low-strength (0.45-0.62) takes of the set-dressing sheets (still flat paste-ups); those sheets went in from the
+0.75-0.85 takes instead. A few kept pieces have quirks worth a look before use: World 8's shelf fungus kept a sliver of blue bark at
+its left, the World 5 web is faint on light grounds, World 9's smoke-crack second look lost its smoke.
 
 Part A re-runs (2026-10-29), what came out:
 - **Monarch hover and fly, motion model at 0.5: fixed** in the s11 takes (hover3-s11, fly3-s11: flapping in place at a steady size; the

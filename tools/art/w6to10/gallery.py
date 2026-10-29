@@ -94,6 +94,28 @@ def main(dirs):
             continue
         cards = ''.join(card(n, f'{n}.webp', n[len(k) + 1:]) for n in ns)
         sec.append(f'<section id="{k}"><h2>{html.escape(t)}</h2><p class="sub">{html.escape(d)}</p><div class="grid wide">{cards}</div></section>')
+    # the props made on 29 October (Matt's Gemini sheets cut into sprites, and the img2img sets): each world sheet's cut sprites on a
+    # checker, from PROPS (a folder of check-<sheet>.jpg and props.json: {sheet: [title, words]})
+    import os
+    pd = Path(os.environ['PROPS']) if os.environ.get('PROPS') else None
+    if pd and (pd / 'props.json').exists():
+        meta = json.loads((pd / 'props.json').read_text())
+        cards = []
+        for k, (t, d) in meta.items():
+            src = pd / f'check-{k}.jpg'
+            if not src.exists():
+                continue
+            im = Image.open(src).convert('RGB')
+            sc = min(1.0, 1400 / im.width)
+            im.resize((round(im.width * sc), round(im.height * sc)), Image.LANCZOS).save(IMG / f'props-{k}.webp', 'WEBP', quality=82, method=6)
+            cards.append(f'<figure class="card"><img loading="lazy" src="img/props-{html.escape(k)}.webp" alt="{html.escape(t)}">'
+                         f'<figcaption><b>{html.escape(t)}</b><span class=v>{html.escape(d)}</span></figcaption></figure>')
+        if cards:
+            nav += '<a href="#props29">Props, 29 October</a>'
+            sec.append('<section id="props29"><h2>Props, 29 October</h2><p class="sub">Cut into sprites on a checker, ready for the stages: '
+                       'your Gemini sheets, and sets painted with the style model over flat side-on starts built from each world\'s own kit '
+                       '(so they stay side-on). Paired states (lever, plate, door) share one size and anchor.</p>'
+                       f'<div class="grid wide one">{"".join(cards)}</div></section>')
     (OUT / 'index.html').write_text(PAGE.replace('{nav}', nav).replace('{body}', ''.join(sec)).replace('{n}', str(len(clips))).replace('{s}', str(len(still_names))))
     tot = sum(p.stat().st_size for p in IMG.iterdir())
     big = max((p.stat().st_size, p.name) for p in IMG.iterdir())
@@ -120,6 +142,7 @@ section { background:var(--panel); border:1px solid var(--line); border-radius:1
 .sub { color:var(--muted); margin:2px 0 6px; font-size:14px; }
 .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap:10px; }
 .grid.wide { grid-template-columns:repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+.grid.one { grid-template-columns:1fr; }
 @media (max-width: 700px) { nav { position: static; } }
 .card { margin:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#7f7f7f; }
 .card img { display:block; width:100%; height:auto; }

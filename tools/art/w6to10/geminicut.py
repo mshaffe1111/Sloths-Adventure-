@@ -15,8 +15,6 @@ import numpy as np
 from PIL import Image
 from scipy import ndimage
 
-SRC, OUT = Path(sys.argv[1]), Path(sys.argv[2])
-OUT.mkdir(parents=True, exist_ok=True)
 
 # sheet: (key, cells in reading order (None skips a cell), pairs, options per cell)
 SHEETS = {
@@ -32,12 +30,12 @@ SHEETS = {
                    {'gate-open': {'pockets': False}}),
     'w10c-set-dressing': ('magenta', ['banner', 'weapon-rack', 'brazier', 'cage', 'crates', 'spout'], [], {}),
 }
-KEYS = {'magenta': (255, 0, 255), 'cyan': (0, 255, 255)}
+KEYS = {'magenta': (255, 0, 255), 'cyan': (0, 255, 255), 'yellow': (255, 255, 0)}
 
 
 def keyness(rgb, key):
     r, g, b = [rgb[..., i].astype(np.float32) for i in range(3)]
-    return (np.minimum(r, b) - g) if key == 'magenta' else (np.minimum(g, b) - r)
+    return {'magenta': np.minimum(r, b) - g, 'cyan': np.minimum(g, b) - r, 'yellow': np.minimum(r, g) - b}[key]
 
 
 def cut_cell(cell, key, opts):
@@ -78,6 +76,9 @@ def cut_cell(cell, key, opts):
     if key == 'magenta':
         m = np.minimum(a[..., 0], a[..., 2]); ex = np.clip(m - a[..., 1] - 20, 0, None) * rim
         a[..., 0] -= ex; a[..., 2] -= ex
+    elif key == 'yellow':
+        m = np.minimum(a[..., 0], a[..., 1]); ex = np.clip(m - a[..., 2] - 20, 0, None) * rim
+        a[..., 0] -= ex; a[..., 1] -= ex
     else:
         m = np.minimum(a[..., 1], a[..., 2]); ex = np.clip(m - a[..., 0] - 20, 0, None) * rim
         a[..., 1] -= ex; a[..., 2] -= ex
@@ -124,25 +125,11 @@ def checker(im):
     return c.convert('RGB')
 
 
-report = {}
-for name, (key, cells, pairs, opts) in SHEETS.items():
-    sheet = Image.open(SRC / f'{name}.jpg').convert('RGB')
-    W, H = sheet.size
-    cw, ch = W / 3, H / 2
-    sprites, anchors = {}, {}
-    for i, cn in enumerate(cells):
-        if not cn:
-            continue
-        cx, cy = i % 3, i // 3
-        m = 7
-        cell = sheet.crop((round(cx * cw) + m, round(cy * ch) + m, round((cx + 1) * cw) - m, round((cy + 1) * ch) - m))
-        im = cut_cell(cell, key, opts.get(cn, {}))
-        if im is None:
-            print('EMPTY', name, cn); continue
-        sprites[cn] = im
-        anchors[cn] = (foot_x(im), im.height)
-    # (paired states on one shared canvas, feet lined up)
+def pair_up(sprites, anchors, pairs):
+    """paired states on one shared canvas, feet lined up"""
     for a_, b_ in pairs:
+        if a_ not in sprites or b_ not in sprites:
+            continue
         A, B = sprites[a_], sprites[b_]
         fa, fb = anchors[a_][0], anchors[b_][0]
         left = max(fa, fb); right = max(A.width - fa, B.width - fb)
@@ -153,49 +140,87 @@ for name, (key, cells, pairs, opts) in SHEETS.items():
             c.paste(im, (round(left - f), h - im.height))
             sprites[n] = c
             anchors[n] = (round(left, 1), h)
-    atlas, place = pack(sprites)
-    atlas.save(OUT / f'{name}.webp', 'WEBP', quality=90, method=6)
-    frames = {n: {'x': place[n][0], 'y': place[n][1], 'w': im.width, 'h': im.height, 'ax': round(float(anchors[n][0]), 1), 'ay': anchors[n][1]}
-              for n, im in sprites.items()}
-    (OUT / f'{name}.json').write_text(json.dumps({'sheet': f'{name}.webp', 'size': {'w': atlas.width, 'h': atlas.height},
-                                                  'anchor': 'middle of the foot', 'pairs': pairs, 'frames': frames}, indent=1))
-    checker(atlas).save(OUT / f'check-{name}.jpg', quality=85)
-    report[name] = {'size': atlas.size, 'bytes': (OUT / f'{name}.webp').stat().st_size, 'frames': {n: (f['w'], f['h']) for n, f in frames.items()}}
-    print(name, atlas.size, (OUT / f'{name}.webp').stat().st_size, {n: (f['w'], f['h']) for n, f in frames.items()})
 
-# ── the General with his armour off, 8 poses (4 x 2 on grey): keyed off the grey, trimmed, at one scale, feet at the bottom middle ──
-g = Image.open(SRC / 'general-armour-off.jpg').convert('RGB')
-a = np.asarray(g).astype(np.float32)
-bgc = np.median(np.concatenate([a[:6].reshape(-1, 3), a[-6:].reshape(-1, 3), a[:, :6].reshape(-1, 3), a[:, -6:].reshape(-1, 3)]), axis=0)
-names = ['stand', 'bow', 'offer', 'hand-on-heart', 'eyes-shut', 'sit', 'laugh', 'open-arms']
-W, H = g.size
-poses = {}
-for i, n in enumerate(names):
-    cx, cy = i % 4, i // 4
-    c = a[round(cy * H / 2): round((cy + 1) * H / 2), round(cx * W / 4): round((cx + 1) * W / 4)]
-    d = np.sqrt(((c - bgc) ** 2).sum(axis=2))
-    # (his fur is grey-brown, near the grey: flood from the border only, a gentle threshold, then a soft rim)
-    near = d < 16
-    lab, _ = ndimage.label(near)
-    edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
-    bg = np.isin(lab, list(edge))
-    bg = ndimage.binary_opening(bg, iterations=1) | (bg & (d < 8))
-    alpha = (~bg).astype(np.float32)
-    rim = ndimage.binary_dilation(bg, iterations=1) & ~bg
-    alpha = np.where(rim, np.clip((d - 8) / 20, 0, 1), alpha)
-    lab, k = ndimage.label(alpha > 0.5)
-    if k > 1:
-        sizes = ndimage.sum(np.ones_like(alpha), lab, range(1, k + 1))
-        keep = 1 + int(np.argmax(sizes))
-        alpha[(lab != keep) & (lab > 0)] = 0
-    im = Image.fromarray(np.dstack([c, alpha * 255]).astype(np.uint8), 'RGBA')
-    im = im.crop(im.getchannel('A').point(lambda v: 255 if v > 24 else 0).getbbox())
-    poses[n] = im
-fx = {n: foot_x(im) for n, im in poses.items()}
-atlas, place = pack(poses)
-atlas.save(OUT / 'general-armour-off.webp', 'WEBP', quality=90, method=6)
-frames = {n: {'x': place[n][0], 'y': place[n][1], 'w': im.width, 'h': im.height, 'ax': round(float(fx[n]), 1), 'ay': im.height} for n, im in poses.items()}
-(OUT / 'general-armour-off.json').write_text(json.dumps({'sheet': 'general-armour-off.webp', 'size': {'w': atlas.width, 'h': atlas.height},
-                                                        'anchor': 'middle of the feet', 'scale': 'one scale for all eight (as painted)', 'frames': frames}, indent=1))
-checker(atlas).save(OUT / 'check-general-armour-off.jpg', quality=85)
-print('general-armour-off', atlas.size, (OUT / 'general-armour-off.webp').stat().st_size, {n: (f['w'], f['h']) for n, f in frames.items()})
+
+def main():
+  SRC, OUT = Path(sys.argv[1]), Path(sys.argv[2])
+  OUT.mkdir(parents=True, exist_ok=True)
+  report = {}
+  for name, (key, cells, pairs, opts) in SHEETS.items():
+      sheet = Image.open(SRC / f'{name}.jpg').convert('RGB')
+      W, H = sheet.size
+      cw, ch = W / 3, H / 2
+      sprites, anchors = {}, {}
+      for i, cn in enumerate(cells):
+          if not cn:
+              continue
+          cx, cy = i % 3, i // 3
+          m = 7
+          cell = sheet.crop((round(cx * cw) + m, round(cy * ch) + m, round((cx + 1) * cw) - m, round((cy + 1) * ch) - m))
+          im = cut_cell(cell, key, opts.get(cn, {}))
+          if im is None:
+              print('EMPTY', name, cn); continue
+          sprites[cn] = im
+          anchors[cn] = (foot_x(im), im.height)
+      # (paired states on one shared canvas, feet lined up)
+      for a_, b_ in pairs:
+          A, B = sprites[a_], sprites[b_]
+          fa, fb = anchors[a_][0], anchors[b_][0]
+          left = max(fa, fb); right = max(A.width - fa, B.width - fb)
+          h = max(A.height, B.height)
+          w = int(np.ceil(left + right))
+          for n, im, f in ((a_, A, fa), (b_, B, fb)):
+              c = Image.new('RGBA', (w, h))
+              c.paste(im, (round(left - f), h - im.height))
+              sprites[n] = c
+              anchors[n] = (round(left, 1), h)
+      atlas, place = pack(sprites)
+      atlas.save(OUT / f'{name}.webp', 'WEBP', quality=90, method=6)
+      frames = {n: {'x': place[n][0], 'y': place[n][1], 'w': im.width, 'h': im.height, 'ax': round(float(anchors[n][0]), 1), 'ay': anchors[n][1]}
+                for n, im in sprites.items()}
+      (OUT / f'{name}.json').write_text(json.dumps({'sheet': f'{name}.webp', 'size': {'w': atlas.width, 'h': atlas.height},
+                                                    'anchor': 'middle of the foot', 'pairs': pairs, 'frames': frames}, indent=1))
+      checker(atlas).save(OUT / f'check-{name}.jpg', quality=85)
+      report[name] = {'size': atlas.size, 'bytes': (OUT / f'{name}.webp').stat().st_size, 'frames': {n: (f['w'], f['h']) for n, f in frames.items()}}
+      print(name, atlas.size, (OUT / f'{name}.webp').stat().st_size, {n: (f['w'], f['h']) for n, f in frames.items()})
+
+  # ── the General with his armour off, 8 poses (4 x 2 on grey): keyed off the grey, trimmed, at one scale, feet at the bottom middle ──
+  g = Image.open(SRC / 'general-armour-off.jpg').convert('RGB')
+  a = np.asarray(g).astype(np.float32)
+  bgc = np.median(np.concatenate([a[:6].reshape(-1, 3), a[-6:].reshape(-1, 3), a[:, :6].reshape(-1, 3), a[:, -6:].reshape(-1, 3)]), axis=0)
+  names = ['stand', 'bow', 'offer', 'hand-on-heart', 'eyes-shut', 'sit', 'laugh', 'open-arms']
+  W, H = g.size
+  poses = {}
+  for i, n in enumerate(names):
+      cx, cy = i % 4, i // 4
+      c = a[round(cy * H / 2): round((cy + 1) * H / 2), round(cx * W / 4): round((cx + 1) * W / 4)]
+      d = np.sqrt(((c - bgc) ** 2).sum(axis=2))
+      # (his fur is grey-brown, near the grey: flood from the border only, a gentle threshold, then a soft rim)
+      near = d < 16
+      lab, _ = ndimage.label(near)
+      edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
+      bg = np.isin(lab, list(edge))
+      bg = ndimage.binary_opening(bg, iterations=1) | (bg & (d < 8))
+      alpha = (~bg).astype(np.float32)
+      rim = ndimage.binary_dilation(bg, iterations=1) & ~bg
+      alpha = np.where(rim, np.clip((d - 8) / 20, 0, 1), alpha)
+      lab, k = ndimage.label(alpha > 0.5)
+      if k > 1:
+          sizes = ndimage.sum(np.ones_like(alpha), lab, range(1, k + 1))
+          keep = 1 + int(np.argmax(sizes))
+          alpha[(lab != keep) & (lab > 0)] = 0
+      im = Image.fromarray(np.dstack([c, alpha * 255]).astype(np.uint8), 'RGBA')
+      im = im.crop(im.getchannel('A').point(lambda v: 255 if v > 24 else 0).getbbox())
+      poses[n] = im
+  fx = {n: foot_x(im) for n, im in poses.items()}
+  atlas, place = pack(poses)
+  atlas.save(OUT / 'general-armour-off.webp', 'WEBP', quality=90, method=6)
+  frames = {n: {'x': place[n][0], 'y': place[n][1], 'w': im.width, 'h': im.height, 'ax': round(float(fx[n]), 1), 'ay': im.height} for n, im in poses.items()}
+  (OUT / 'general-armour-off.json').write_text(json.dumps({'sheet': 'general-armour-off.webp', 'size': {'w': atlas.width, 'h': atlas.height},
+                                                          'anchor': 'middle of the feet', 'scale': 'one scale for all eight (as painted)', 'frames': frames}, indent=1))
+  checker(atlas).save(OUT / 'check-general-armour-off.jpg', quality=85)
+  print('general-armour-off', atlas.size, (OUT / 'general-armour-off.webp').stat().st_size, {n: (f['w'], f['h']) for n, f in frames.items()})
+
+
+if __name__ == '__main__':
+    main()
