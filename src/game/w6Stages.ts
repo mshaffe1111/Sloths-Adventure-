@@ -328,6 +328,10 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   });
   // 7. FINISH: the tallest root, up through the canopy to the crown
   let crownWalk: 1 | -1 = 1;
+  let crownExit = 0;
+  /** the crown's higher half, where the shrine stands */
+  let crownTop: Platform = flat;
+  const CROWN_WALK = 1000;
   section('Finish: the crown and the ruins', () => {
     flag();
     rootUp(560, 900);
@@ -337,7 +341,18 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     const top = V[V.length - 1].x;
     crownWalk = top < (L + Rt) / 2 ? 1 : -1;
     hint(top + crownWalk * 160, cur.y, 'Stone towers. Past the trees.'); // (new, needs Matt's approval)
-    expert += Math.abs((crownWalk > 0 ? Rt - 160 : L + 160) - top) / RUN + 1;
+    // (the shrine at most CROWN_WALK on from the root: the walk out with the ruins opening up stays under the 4 s quiet limit)
+    crownExit = crownWalk > 0 ? Math.min(Rt - 160, top + CROWN_WALK) : Math.max(L + 160, top - CROWN_WALK);
+    expert += Math.abs(crownExit - top) / RUN + 1;
+    // (halfway to the shrine the crown steps up one plain hop: a long flat carries a knee, or the walk out reads as a quiet stretch,
+    // STAGE-RULES §6 World 6; the shrine stands on the higher part)
+    const mid = r((top + crownExit) / 2);
+    const lo = cur;
+    if (crownWalk > 0) lo.width = mid - lo.x;
+    else { lo.width = lo.x + lo.width - mid; lo.x = mid; }
+    crownTop = crownWalk > 0 ? ledge(mid, Rt, lo.y - 45) : ledge(L, mid, lo.y - 45);
+    flower(mid, lo.y - 110);
+    expert += 0.7;
   });
   const crown = cur;
 
@@ -517,8 +532,8 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   const lowWater = floorY + 60;
   const H = floorY + 500;
   const W = Rt + 20;
-  const exitX = r(crownWalk > 0 ? crown.x + crown.width - 160 : crown.x + 160);
-  C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crown.y - 30, collected: false, bobPhase: 0 });
+  const exitX = r(crownExit);
+  C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crownTop.y - 30, collected: false, bobPhase: 0 });
   cid = heartsAtFlags(C, checkpoints, cid);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C);
   const tide: TidePlan = { low: lowWater, turnAbove: turnAbove + shift, springAbove: springAbove + shift, holds };
@@ -535,7 +550,7 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     spawnX: 220,
     spawnY: floorY,
     exitTotemX: exitX,
-    exitTotemY: crown.y,
+    exitTotemY: crownTop.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
     waterY: lowWater,
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },

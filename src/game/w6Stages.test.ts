@@ -58,7 +58,7 @@ test('6-8: hand-built, an ascent; every roll can be climbed on Normal and on Eas
     assert.ok(st.stilt68.expert >= 120 && st.stilt68.expert <= 170, `seed ${s}: ${Math.round(st.stilt68.expert)} s`);
     assert.ok((st.proto.movedPickups ?? 0) <= 2, `seed ${s}: ${st.proto.movedPickups} pickups moved`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
-    assert.ok(Math.abs(st.exitTotemY - st.stilt68.crown) < 2, 'the shrine is on the crown');
+    assert.ok(Math.abs(st.exitTotemY - (st.stilt68.crown - 45)) < 2, 'the shrine is on the crown, a hop up from where the root tops out');
   }
 });
 
@@ -385,8 +385,11 @@ test('6-8 the crown: the top of the canopy, the whole width, the shrine at its f
   for (const s of SEEDS.slice(0, 6)) {
     const st = build(s);
     const crown = st.platforms.find((p) => p.y === st.stilt68.crown)!;
-    assert.deepEqual([crown.x, crown.x + crown.width], [STILT_COLUMN.x0, STILT_COLUMN.x1]);
+    const step = st.platforms.find((p) => p.y === st.stilt68.crown - 45)!;
+    // (the two halves of the crown, a hop apart, span the column)
+    assert.deepEqual([Math.min(crown.x, step.x), Math.max(crown.x + crown.width, step.x + step.width)], [STILT_COLUMN.x0, STILT_COLUMN.x1]);
     const root = st.vines.find((v) => v.vineType === 'tree_climb' && Math.abs(v.topY + 2 - crown.y) < 4)!;
+    assert.ok(Math.abs(st.exitTotemX - root.x) <= 1000, `seed ${s}: the walk out is short`);
     assert.ok(Math.abs(st.exitTotemX - root.x) > 600, `seed ${s}: a walk across the crown to the shrine`);
     const rv = st.proto.reveal!;
     assert.ok(rv.from > rv.full && rv.full > rv.crown && rv.crown === crown.y && rv.load > rv.from, `seed ${s}`);
@@ -410,4 +413,18 @@ test('6-8 the tide comes in surges that swell and ease smoothly and average out 
     assert.ok(swell(set, set.surge.every / 2) > 0, 'still rising between them');
     assert.ok(jump < 0.05, 'never a jerk');
   }
+});
+
+test('6-8 in the real engine: on the crown he has made it: the tide drains away below him, and the view pulls back for the ruins', () => {
+  const rp = new RealPlay('6-8', 1);
+  const e = rp.e as unknown as { tide: { y: number; on: boolean; warn: number; hold: number }; revealZoom: number; currentStage: { waterY: number } };
+  const st = rp.stage as Stage;
+  const crown = st.platforms.find((p) => p.y === st.stilt68.crown)!;
+  rp.stand(crown.x + crown.width / 2, crown.y);
+  Object.assign(e.tide, { on: true, warn: 0, hold: 0, y: crown.y + 300 });
+  rp.wait(3);
+  assert.ok(e.tide.y > crown.y + 600, `the tide drains (${Math.round(e.tide.y - crown.y)} px under him)`);
+  assert.equal(e.currentStage.waterY, e.tide.y);
+  assert.ok(e.revealZoom < 1, 'the view pulls back');
+  assert.equal(rp.died, false);
 });

@@ -6139,6 +6139,13 @@ export class GameEngine {
     const p = this.player;
     const atFlag = p.grounded && (this.currentStage.checkpoints ?? []).some((c) => Math.abs(p.y - c.y) < 6 && Math.abs(p.x - c.x) < 160);
     const resting = atFlag || onHeld(plan, p.x, p.y, p.grounded);
+    // up the last root (the reveal): he has made it, and the tide drains away below him instead of rising
+    const rv = this.proto?.reveal;
+    if (rv && p.y < rv.from && t.on) {
+      t.y = Math.min(plan.low, t.y + 140 * dt);
+      this.currentStage.waterY = t.y;
+      return;
+    }
     const ev = stepTide(t, plan, this.tideSet, dt, p.y, resting);
     if (ev === 'surge') {
       // a surge: a pulse of foam along the line, splashes, a low rush
@@ -6176,7 +6183,7 @@ export class GameEngine {
     const p = this.player;
     const strips = p.y < rv.load ? revealSet(rv.strips) : null;
     setReveal((rv.from - p.y) / (rv.from - rv.full), strips);
-    const onCrown = p.grounded && Math.abs(p.y - rv.crown) < 6;
+    const onCrown = p.grounded && p.y < rv.crown + 6;
     // the first step onto the crown: a chime of discovery as the view opens (once a run)
     if (onCrown && !this.revealHeard) {
       this.revealHeard = true;
