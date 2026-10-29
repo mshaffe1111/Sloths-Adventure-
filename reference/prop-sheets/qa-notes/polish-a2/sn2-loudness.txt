@@ -1,0 +1,79 @@
+SN-2: loudness, before and after (2026-10-29). Measured by tools/audio/sfx_loudness.py: BS.1770 K-weighted, short-term (the loudest 3 s,
+or for an effect shorter than that, the effect itself from its first to its last sound within 40 dB of its peak); true peak 4x oversampled.
+
+1. The 151 recorded effects (src/assets/sfx), per group: loudness range of its versions (LUFS), how far apart, highest true peak (dBTP).
+   Normalised to -16 LUFS, true peak <= -1 dBTP, the versions of a group together. A group whose sharp hits would need more than 3 dB of
+   peak limiting to reach -16 sits lower (one gain for its versions, at most 3 dB of limiting on any file): the effects that use them are
+   levelled in step 2, so where a group sits does not change the mix.
+
+group      | before: range, apart, peak         | after: range, apart, peak         | limiting
+bellH      |  -25.5.. -19.4   6.1   -0.9 |  -24.3.. -23.6   0.8   -1.9 | 3.0 dB
+cloth      |  -24.4.. -19.8   4.6   -0.9 |  -23.0.. -22.4   0.6   -1.9 | 3.0 dB
+coins      |  -26.3.. -19.4   6.9   -0.5 |  -26.5.. -26.0   0.5   -1.8 | 3.0 dB
+creak      |  -16.7.. -13.5   3.2   -0.9 |  -16.2.. -16.0   0.2   -1.9 | 1.7 dB
+genL       |  -22.6.. -18.9   3.7   -0.8 |  -22.7.. -22.2   0.5   -1.9 | 3.0 dB
+glassL     |  -17.1.. -15.9   1.1   -0.8 |  -17.4.. -16.8   0.6   -1.9 | 3.0 dB
+leather    |  -22.0.. -21.1   0.9   -0.9 |  -21.5.. -20.9   0.6   -1.9 | 3.0 dB
+metalH     |  -23.8.. -20.9   2.8   -0.9 |  -25.9.. -25.4   0.5   -1.9 | 3.0 dB
+metalM     |  -20.1.. -18.0   2.0   -0.9 |  -21.8.. -20.9   0.9   -1.9 | 3.0 dB
+mining     |  -23.5.. -20.4   3.1   -1.0 |  -22.6.. -21.9   0.7   -1.9 | 3.0 dB
+pep        |  -12.6.. -10.3   2.3   -1.0 |  -16.0.. -16.0   0.0   -4.4 | 0.0 dB
+plank      |  -19.4.. -16.4   3.0   -0.8 |  -19.5.. -18.6   0.9   -1.9 | 3.0 dB
+plateH     |  -25.6.. -20.8   4.9   -0.7 |  -24.8.. -24.1   0.8   -1.9 | 3.0 dB
+plateM     |  -25.0.. -22.4   2.6   -0.7 |  -24.9.. -24.2   0.7   -1.9 | 3.0 dB
+powerUp    |  -12.6..  -9.4   3.1   -0.7 |  -16.0.. -16.0   0.0   -4.4 | 0.0 dB
+punchH     |  -18.1.. -16.6   1.5   -1.0 |  -17.9.. -17.0   1.0   -1.9 | 3.0 dB
+punchM     |  -17.5.. -16.6   0.9   -0.9 |  -17.6.. -16.9   0.8   -1.9 | 3.0 dB
+softH      |  -19.8.. -18.8   1.0   -1.0 |  -19.4.. -18.9   0.5   -1.9 | 3.0 dB
+softM      |  -18.1.. -16.9   1.2   -1.0 |  -17.9.. -17.2   0.7   -1.9 | 3.0 dB
+stepGrass  |  -23.7.. -21.8   1.9   -0.9 |  -24.0.. -23.1   0.9   -1.9 | 3.0 dB
+swishD     |  -24.0.. -14.8   9.1   -0.6 |  -23.5.. -23.0   0.5   -1.9 | 3.0 dB
+swishK     |  -16.0.. -14.5   1.5   -0.8 |  -16.2.. -16.0   0.2   -1.7 | 1.0 dB
+tinM       |  -23.6.. -21.2   2.4   -0.7 |  -24.7.. -23.9   0.8   -1.9 | 3.0 dB
+uiBack     |  -19.8.. -16.0   3.8   -0.2 |  -19.4.. -18.8   0.7   -1.9 | 3.0 dB
+uiClick    |  -17.2.. -11.8   5.4    0.5 |  -18.1.. -17.4   0.7   -1.9 | 3.0 dB
+uiClose    |  -15.3.. -12.4   2.9   -1.0 |  -16.0.. -16.0   0.1   -1.4 | 0.0 dB
+uiConfirm  |  -13.1.. -11.1   1.9   -0.9 |  -16.0.. -16.0   0.0   -3.9 | 0.0 dB
+uiDrop     |  -17.1.. -16.0   1.1   -1.0 |  -17.6.. -17.1   0.4   -1.9 | 3.0 dB
+uiGlass    |  -16.2.. -13.2   3.0    0.2 |  -16.4.. -16.0   0.4   -1.8 | 3.0 dB
+uiOpen     |  -15.0.. -12.5   2.5   -0.5 |  -16.2.. -15.9   0.3   -1.8 | 0.3 dB
+uiPluck    |  -18.3.. -18.1   0.2   -1.1 |  -18.6.. -18.5   0.1   -1.7 | 3.0 dB
+uiSelect   |  -15.4.. -12.8   2.7   -0.8 |  -16.2.. -16.0   0.3   -1.9 | 0.3 dB
+uiTick     |  -14.5.. -12.8   1.7   -0.9 |  -16.0.. -15.9   0.1   -2.6 | 0.0 dB
+woodH      |  -22.5.. -20.0   2.5   -1.0 |  -22.5.. -22.1   0.3   -1.9 | 3.0 dB
+woodL      |  -20.2.. -17.8   2.4   -0.9 |  -21.7.. -21.2   0.5   -1.9 | 3.0 dB
+
+all files: before -26.3 to -9.4 LUFS (16.9 dB), peaks up to +0.5 dBTP (uiClick_3, uiGlass_3 over 0);
+           after  -26.5 to -15.9 LUFS, every group's versions within 1.0 dB, peaks at most -1.4 dBTP.
+
+2. The game's effects as heard (rendered offline through the whole master chain, four versions each: tools/audio/sfx_render.mjs).
+   Each is brought to -18 LUFS by its own measured loudness (sfxMix.ts FX_LOUDNESS), then trimmed (sfxMix.ts FX_MIX, the old TRIMS).
+
+effect       | trim old -> new | before (LUFS)                   | after (LUFS)                    | aim
+jump         | 1.45 -> 0.50 |  -24.7 (versions 1.8 dB apart) |  -24.8 (versions 0.7 dB apart) | aim  -24.0
+flower       | 1.45 -> 0.50 |  -17.8 (versions 0.4 dB apart) |  -23.7 (versions 0.8 dB apart) | aim  -24.0
+climb        | 0.70 -> 0.60 |  -28.2 (versions 0.2 dB apart) |  -22.7 (versions 0.4 dB apart) | aim  -22.4
+step         | 0.88 -> 0.55 |  -26.3 (versions 4.3 dB apart) |  -22.0 (versions 3.5 dB apart) | aim  -23.2
+hit          | 0.85 -> 0.75 |  -27.1 (versions 0.8 dB apart) |  -20.9 (versions 0.6 dB apart) | aim  -20.5
+whoosh       | 0.41 -> 0.80 |  -24.3 (versions 3.0 dB apart) |  -20.4 (versions 1.7 dB apart) | aim  -19.9
+vine         | 0.58 -> 0.80 |  -26.2 (versions 1.0 dB apart) |  -20.3 (versions 0.4 dB apart) | aim  -19.9
+glide        | 1.00 -> 0.80 |  -21.1 (versions 0.5 dB apart) |  -20.3 (versions 1.0 dB apart) | aim  -19.9
+doubleJump   | 0.67 -> 0.80 |  -18.5 (versions 0.4 dB apart) |  -19.7 (versions 0.8 dB apart) | aim  -19.9
+land@0.9     | 0.83 -> 0.80 |  -19.3 (versions 0.8 dB apart) |  -19.4 (versions 0.6 dB apart) | aim  -19.9
+kick         | 0.35 -> 0.90 |  -22.0 (versions 0.9 dB apart) |  -19.4 (versions 0.9 dB apart) | aim  -18.9
+heart        | 0.75 -> 0.90 |  -18.8 (versions 0.4 dB apart) |  -18.8 (versions 0.3 dB apart) | aim  -18.9
+fruit        | 0.75 -> 0.85 |  -17.4 (versions 0.6 dB apart) |  -18.8 (versions 0.7 dB apart) | aim  -19.4
+punch        | 0.32 -> 0.90 |  -21.3 (versions 1.9 dB apart) |  -18.6 (versions 2.1 dB apart) | aim  -18.9
+megaPunch    | 0.42 -> 1.05 |  -18.4 (versions 0.5 dB apart) |  -18.1 (versions 2.0 dB apart) | aim  -17.6
+hurt         | 0.76 -> 1.10 |  -20.9 (versions 1.0 dB apart) |  -18.0 (versions 1.7 dB apart) | aim  -17.2
+power        | 0.55 -> 1.05 |  -16.8 (versions 1.0 dB apart) |  -17.8 (versions 0.3 dB apart) | aim  -17.6
+superHeart   | 0.50 -> 1.05 |  -17.7 (versions 0.2 dB apart) |  -17.5 (versions 0.6 dB apart) | aim  -17.6
+checkpoint   | 0.55 -> 1.10 |  -17.8 (versions 0.6 dB apart) |  -17.4 (versions 0.1 dB apart) | aim  -17.2
+roar         | 0.75 -> 1.10 |  -17.4 (versions 0.2 dB apart) |  -17.1 (versions 0.3 dB apart) | aim  -17.2
+eagle        | 2.00 -> 1.10 |  -16.4 (versions 5.5 dB apart) |  -17.1 (versions 5.5 dB apart) | aim  -17.2
+relic        | 0.45 -> 1.15 |  -15.8 (versions 1.1 dB apart) |  -16.6 (versions 0.3 dB apart) | aim  -16.8
+shrine       | 0.45 -> 1.20 |  -16.7 (versions 0.1 dB apart) |  -16.5 (versions 0.4 dB apart) | aim  -16.4
+oneUp        | 0.55 -> 1.15 |  -15.0 (versions 0.2 dB apart) |  -16.5 (versions 0.2 dB apart) | aim  -16.8
+
+Still apart: eagle's four versions are 5.5 dB apart before and after (its versions are different synthesized cries, not recordings);
+the footstep's 3.5 (its recipe changes with the step's speed). The default effect set is unchanged (SN-1 waits for Matt).

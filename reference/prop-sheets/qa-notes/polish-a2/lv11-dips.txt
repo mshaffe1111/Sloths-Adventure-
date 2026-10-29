@@ -1,0 +1,13 @@
+LV-11: ways out of the dips (first-timer bot, tools/inspect --firsttimer, seed 1, two runs each setting)
+
+2-3: the floor at the foot of a mooring post's 200 px bank. A 72 px earth step now stands at the bank's foot (2-3 only:
+in 2-2 the double jump off it skipped the rope climb, and 50 of 200 rolls went over the dead-time limit; 2-3 itself has 5 of 200). From the step the bank is a double jump; the post's rope is still the easy way up.
+  before: 8-9 places per run "a 200 px wall ahead, in a dip 200 px deep", fell back 5-8 times each
+  after:  0 such flags (Easy and Normal)
+
+5-8 (the old generator's ascent): the floor under the first stairs, 196-338 px below them. A short climbing trunk from the floor up to
+a stair wherever the floor is more than 300 px from a way back up (dipWayOut.ts; layout 1 one trunk, layout 3 two, layout 2 has no
+such stairs).
+  fall-backs into dips, per run   seed 1: 36 37 34 64 -> 16 6 13 16      seed 3: 19 17 70 63 -> 21 26 13 30
+  Not fixed here, named plainly: the first-timer runs out its 6 minutes on 5-8 in every run, before and after (it is the old generator's
+  stage, waiting on its gen2 build); its other loops are "nothing in the way the bot can see" on the high stairs.

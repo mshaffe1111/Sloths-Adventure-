@@ -1,9 +1,15 @@
+import { vibrate } from './haptics.ts';
 import type { InputState } from './types.ts';
 import { isEasy } from './difficulty.ts';
 import { FORGIVE } from './physics.ts';
 import { parseTouchVector } from './rules.ts';
 
-/** a touch jump is held at least this long: a jump stops rising the moment the press is let go, and the level builder assumes a full jump (about 216 ms of rising), so a flick must give a full one, not the three-quarters a 130 ms press gave */
+/**
+ * a touch jump is held at least this long: a jump stops rising the moment the press is let go, and the level builder assumes a full jump
+ * (about 216 ms of rising), so a flick must give a full one, not the three-quarters a 130 ms press gave. It is game time from the take-off
+ * (polish report CT-12): timed on the wall clock from the press, take-off 0 to 33 ms later made heights jitter, and a hitstop or a slow
+ * frame (the engine frozen, the clock running) cut a flick to half height
+ */
 export const MIN_TOUCH_JUMP_HOLD_MS = 220;
 
 /**
@@ -68,7 +74,7 @@ export class InputEngine {
   public moves = 0;
   /** what resume() put back as held (carry): taken away again at the first fresh input */
   private carried: { jump: boolean; dir: -1 | 0 | 1 } | null = null;
-  private padPrev = { left: false, right: false, up: false, down: false, punch: false, kick: false, mega: false };
+  private padPrev = { left: false, right: false, up: false, down: false, jump: false, punch: false, kick: false, mega: false };
   /** Meeca stands at a carving spot (the engine sets it each frame): only there does a finger tracing a circle carve (circleTrace.ts) */
   public carveSpot = false;
   /** a finger traced this far round a circle (radians): the engine takes it each frame (state.circle) */
@@ -86,8 +92,10 @@ export class InputEngine {
     if (on) this.fresh();
     this.state.hold = this.holds.touch || this.holds.keys || this.holds.pad || this.holds.gamepad;
   }
-  private touchUpAt = 0;
-  private upReleaseTimer: number | undefined;
+  /** game seconds a touch or Pad jump must still be held (counted in update, from the take-off: noteTakeOff) */
+  private touchHold = 0;
+  /** the finger let go of the jump, and the release waits for touchHold */
+  private releaseWanted = false;
 
   constructor() {
     this.bindKeyboardEvents();
@@ -127,6 +135,11 @@ export class InputEngine {
       this.state.right = true;
     }
 
+    // on a trunk or a liana Up climbs and only Space leaps (Matt's vine rule; it was a jump, so pressing Up again leapt off: CT-2)
+    if ((key === 'ArrowUp' || key === 'KeyW') && this.onVine) {
+      this.state.up = true;
+      return;
+    }
     // Up / Jump (Pressing up triggers jump, pressing up twice triggers double jump!)
     if (key === 'ArrowUp' || key === 'KeyW' || key === 'Space') {
       const now = performance.now();
@@ -240,6 +253,10 @@ export class InputEngine {
 
   public clearAll() {
     this.carried = null;
+    // (the engine's flags too: the input lives for the whole app, and a carving spot, a swing or a bush must not outlive their stage, CT-20)
+    this.carveSpot = false;
+    this.onSwing = false;
+    this.inCover = false;
     this.state.left = false;
     this.state.right = false;
     this.state.up = false;
@@ -248,16 +265,20 @@ export class InputEngine {
     this.state.jumpLean = 0;
     this.state.jumpHeld = false;
     this.state.punchPressed = false;
+    this.state.punchCancel = false;
+    this.state.punchHold = 0;
     this.state.kickPressed = false;
     this.state.kickDir = 0;
     this.state.megaPunchPressed = false;
     this.state.layerSwitchPressed = false;
     this.state.touchJoystickAngle = null;
     this.state.touchJoystickMagnitude = 0;
+    this.touchClimb = 0;
+    this.climbStop = false;
     this.holds = { touch: false, keys: false, pad: false, gamepad: false };
     this.state.hold = false;
-    if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
-    this.upReleaseTimer = undefined;
+    this.touchHold = 0;
+    this.releaseWanted = false;
     this.jumpBufferTimer = 0;
     this.punchBufferTimer = 0;
     this.kickBufferTimer = 0;
@@ -293,37 +314,52 @@ export class InputEngine {
     this.fresh();
     // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir)
     this.state.jumpLean = lean;
-    if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
-    this.upReleaseTimer = undefined;
-    this.touchUpAt = performance.now();
+    // (held at least MIN_TOUCH_JUMP_HOLD_MS from the take-off; until he takes off, as long as the press can wait to be used as well)
+    this.touchHold = MIN_TOUCH_JUMP_HOLD_MS / 1000 + pressKeep();
+    this.releaseWanted = false;
     this.state.up = true;
     this.state.jumpPressed = true;
     this.state.jumpHeld = true;
     this.jumpBufferTimer = pressKeep();
   }
 
+  /** climbing by touch or the Pad (-1 up, 1 down): a jump let go meanwhile must not stop the climb (releaseTouchUp) */
+  private touchClimb: -1 | 0 | 1 = 0;
+  /** a touch or Pad climb was just stopped on purpose: the engine ends the grab's carry (takeClimbStop) */
+  private climbStop = false;
+  /** the engine asks once a frame: was a climb stopped on purpose since it last asked? */
+  public takeClimbStop(): boolean {
+    const s = this.climbStop;
+    this.climbStop = false;
+    return s;
+  }
   /** climbing on a vine or trunk by touch: hold up or down with no jump (refined controls) */
   public triggerTouchClimb(dir: -1 | 0 | 1) {
     this.fresh();
+    if (dir === 0 && this.touchClimb !== 0) this.climbStop = true;
+    this.touchClimb = dir;
     this.state.up = dir < 0;
     this.state.down = dir > 0;
   }
 
   public releaseTouchUp() {
-    // a quick flick lifts the finger almost at once, and an instant release would cut the jump to a hop:
-    // the press counts for at least this long
-    const wait = MIN_TOUCH_JUMP_HOLD_MS - (performance.now() - this.touchUpAt);
-    if (wait > 4) {
-      if (this.upReleaseTimer === undefined) {
-        this.upReleaseTimer = window.setTimeout(() => {
-          this.upReleaseTimer = undefined;
-          this.releaseTouchUp();
-        }, wait);
-      }
+    // a quick flick lifts the finger almost at once, and an instant release would cut the jump to a hop: the press counts for at least
+    // MIN_TOUCH_JUMP_HOLD_MS of game time after the take-off (update lets go then)
+    if (this.touchHold > 0) {
+      this.releaseWanted = true;
       return;
     }
-    this.state.up = false;
+    this.letGoOfJump();
+  }
+  private letGoOfJump() {
+    this.releaseWanted = false;
+    this.state.up = this.touchClimb < 0;
     this.state.jumpHeld = false;
+  }
+
+  /** the engine: he just took off (a jump or a double jump). A touch or Pad jump's minimum hold counts from here, in game time */
+  public noteTakeOff() {
+    if (this.touchHold > 0) this.touchHold = MIN_TOUCH_JUMP_HOLD_MS / 1000;
   }
 
   /**
@@ -339,10 +375,18 @@ export class InputEngine {
    * Touch Gesture:
    * - Tap to punch
    */
-  public triggerTouchPunch() {
+  public triggerTouchPunch(holdMs = 0) {
     this.fresh();
     this.state.punchPressed = true;
+    this.state.punchHold = holdMs / 1000;
     this.punchBufferTimer = 0.12;
+  }
+
+  /** a jab thrown as a finger landed, taken back: the finger moved off as a flick or a swipe (touchGestures.ts jabMoved, CT-17) */
+  public triggerTouchPunchCancel() {
+    this.state.punchPressed = false;
+    this.punchBufferTimer = 0;
+    this.state.punchCancel = true;
   }
 
   /**
@@ -379,7 +423,7 @@ export class InputEngine {
       if (typeof navigator !== 'undefined' && typeof navigator.getGamepads === 'function') {
         const gamepads = navigator.getGamepads();
         // what the pads hold right now, all pads together
-        const now = { left: false, right: false, up: false, down: false, punch: false, kick: false, mega: false };
+        const now = { left: false, right: false, up: false, down: false, jump: false, punch: false, kick: false, mega: false };
         for (let i = 0; i < gamepads.length; i++) {
           const gp = gamepads[i];
           if (!gp) continue;
@@ -388,8 +432,10 @@ export class InputEngine {
           // D-Pad buttons (standard mapping: 12=up, 13=down, 14=left, 15=right)
           if (axisX < -0.35 || gp.buttons[14]?.pressed) now.left = true;
           if (axisX > 0.35 || gp.buttons[15]?.pressed) now.right = true;
-          // Up / Climb / Jump (D-pad up or A button - index 0)
-          if (axisY < -0.4 || gp.buttons[12]?.pressed || gp.buttons[0]?.pressed) now.up = true;
+          // Up / Climb (stick or D-pad up) and Jump (A button - index 0): off a trunk or a liana either jumps; on one, up climbs and only A
+          // leaps (CT-2)
+          if (axisY < -0.4 || gp.buttons[12]?.pressed) now.up = true;
+          if (gp.buttons[0]?.pressed) now.jump = true;
           if (axisY > 0.4 || gp.buttons[13]?.pressed) now.down = true;
           // Punch: X (2) or Y (3). Kick: B (1). Mega: bumpers / triggers (4-7)
           if (gp.buttons[2]?.pressed || gp.buttons[3]?.pressed) now.punch = true;
@@ -398,7 +444,7 @@ export class InputEngine {
         }
         const prev = this.padPrev;
         if ((Object.keys(now) as (keyof typeof now)[]).some((k) => now[k] !== prev[k])) this.fresh();
-        if (now.left || now.right || now.up || now.down || now.punch || now.kick || now.mega) this.source = 'pad';
+        if (now.left || now.right || now.up || now.down || now.jump || now.punch || now.kick || now.mega) this.source = 'pad';
         // directions follow the pad both ways: letting go of the stick lets go of the direction
         if (now.left) this.state.left = true;
         else if (prev.left) this.state.left = false;
@@ -406,15 +452,19 @@ export class InputEngine {
         else if (prev.right) this.state.right = false;
         if (now.down) this.state.down = true;
         else if (prev.down) this.state.down = false;
-        if (now.up) {
+        const upJumps = now.up && !this.onVine;
+        const jumpNow = now.jump || upJumps;
+        // a new press: A going down, or up going down off a trunk (up held from a climb as he leaves the trunk at the top is none)
+        const fresh = (now.jump && !prev.jump) || (upJumps && !prev.up);
+        if (now.up || now.jump) {
           this.state.up = true;
-          if (!prev.up) {
+          if (fresh) {
             this.state.jumpPressed = true;
             this.state.jumpLean = 0;
             this.jumpBufferTimer = pressKeep();
           }
-          this.state.jumpHeld = true;
-        } else if (prev.up) {
+          this.state.jumpHeld = jumpNow;
+        } else if (prev.up || prev.jump) {
           this.state.up = false;
           this.state.jumpHeld = false;
         }
@@ -436,6 +486,15 @@ export class InputEngine {
         this.padPrev = now;
       }
     } catch {}
+
+    // the touch jump's minimum hold, in game time (a hitstop or a capped slow frame does not run it down)
+    if (this.touchHold > 0) {
+      this.touchHold -= dt;
+      if (this.touchHold <= 0) {
+        this.touchHold = 0;
+        if (this.releaseWanted) this.letGoOfJump();
+      }
+    }
 
     if (this.jumpBufferTimer > 0) {
       this.jumpBufferTimer -= dt;
@@ -474,12 +533,9 @@ export class InputEngine {
     this.state.layerSwitchPressed = false;
   }
 
+  /** a buzz, when the Vibration setting is on (haptics.ts) */
   public triggerHaptic(durationMs = 15) {
-    try {
-      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-        navigator.vibrate(durationMs);
-      }
-    } catch {}
+    vibrate(durationMs);
   }
 
   public destroy() {

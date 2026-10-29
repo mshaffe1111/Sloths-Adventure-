@@ -1,3 +1,4 @@
+import { FONT_UI } from './fonts.ts';
 /**
  * A giant boss makes an entrance. The first time you meet it in a session it takes about five seconds: the screen goes dark under
  * two black bars, a pair of eyes opens in the dark, the boss is revealed, it roars, and its name slams down. Trying again after a
@@ -32,13 +33,21 @@ const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 const ease = (x: number) => 1 - Math.pow(1 - clamp01(x), 3);
 const seg = (u: number, a: number, b: number) => clamp01((u - a) / (b - a));
 
-/** the five beats, as fractions of the whole so the short version is the same shape, just quicker */
-export function entranceBeat(t: number, total: number): Beat {
+/** when a tea entrance (`tea`) has her poured and risen: the pour fills TEA_POUR, the rise runs to TEA_RISE, then the usual roar at 0.62 */
+export const TEA_POUR: [number, number] = [0.34, 0.54];
+export const TEA_RISE = 0.62;
+
+/**
+ * the five beats, as fractions of the whole so the short version is the same shape, just quicker. A tea entrance (`tea`) is lit
+ * early: after the eyes the boss is shown at once and the dark lifts by half, so the cup and the pot read while she pours.
+ */
+export function entranceBeat(t: number, total: number, tea = false): Beat {
   const u = clamp01(t / Math.max(0.01, total));
   const bars = Math.min(ease(seg(u, 0, 0.1)), 1 - ease(seg(u, 0.93, 1)));
-  const dark = ease(seg(u, 0, 0.18)) * 0.78 * (1 - ease(seg(u, 0.62, 0.78)));
-  const eyes = seg(u, 0.2, 0.3) * (1 - seg(u, 0.5, 0.6));
-  const reveal = ease(seg(u, 0.4, 0.62));
+  const lift = tea ? 1 - 0.55 * ease(seg(u, 0.28, 0.36)) : 1;
+  const dark = ease(seg(u, 0, 0.18)) * 0.78 * lift * (1 - ease(seg(u, 0.62, 0.78)));
+  const eyes = seg(u, 0.2, 0.3) * (1 - seg(u, tea ? 0.3 : 0.5, tea ? 0.36 : 0.6));
+  const reveal = tea ? ease(seg(u, 0.28, 0.36)) : ease(seg(u, 0.4, 0.62));
   const roaring = u >= 0.62 && u < 0.7;
   const nameIn = 1 - ease(seg(u, 0.78, 0.84));
   const nameAlpha = seg(u, 0.78, 0.8) * (1 - seg(u, 0.93, 1));
@@ -95,30 +104,61 @@ export function drawEntrance(ctx: CanvasRenderingContext2D, v: EntranceView, b: 
   }
   // the name, slamming down from huge and landing with a flash
   if (b.nameAlpha > 0) {
-    const size = Math.min(v.vw * 0.11, 96);
+    const text = v.name.toUpperCase();
+    const { lines, size } = fitName(ctx, text, v.vw - 2 * NAME_MARGIN, Math.min(v.vw * 0.11, 96));
     const s = 1 + b.nameIn * 1.4;
     ctx.translate(v.vw / 2, v.vh * 0.47);
     ctx.scale(s, s);
     ctx.globalAlpha = b.nameAlpha;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = `bold ${size}px Fredoka, sans-serif`;
-    const text = v.name.toUpperCase();
+    ctx.font = `bold ${size}px ${FONT_UI}`;
     ctx.lineJoin = 'round';
     ctx.lineWidth = size * 0.16;
-    ctx.strokeStyle = 'rgba(0,0,0,.85)';
-    ctx.strokeText(text, 0, 0);
-    ctx.shadowColor = v.color;
-    ctx.shadowBlur = 24;
-    ctx.fillStyle = '#fff7ed';
-    ctx.fillText(text, 0, 0);
+    const lh = size * 1.05;
+    const y0 = (-(lines.length - 1) * lh) / 2;
+    lines.forEach((ln, i) => {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(0,0,0,.85)';
+      ctx.strokeText(ln, 0, y0 + i * lh);
+      ctx.shadowColor = v.color;
+      ctx.shadowBlur = 24;
+      ctx.fillStyle = '#fff7ed';
+      ctx.fillText(ln, 0, y0 + i * lh);
+      ctx.restore();
+    });
     if (b.nameIn < 0.05) {
       ctx.globalAlpha = b.nameAlpha * 0.5;
       ctx.fillStyle = v.color;
-      ctx.fillRect(-v.vw, size * 0.62, v.vw * 2, 3);
+      ctx.fillRect(-v.vw, y0 + (lines.length - 1) * lh + size * 0.62, v.vw * 2, 3);
     }
   }
   ctx.restore();
+}
+
+/** the name card keeps at least this far from each side of the view */
+export const NAME_MARGIN = 16;
+
+/**
+ * The name's lines and font size so it fits `room` wide (its outline included): one line at the full size if it fits, else two lines
+ * (split at the space nearest the middle) when that lets it stay bigger, shrunk as far as it must.
+ */
+export function fitName(ctx: Pick<CanvasRenderingContext2D, 'font' | 'measureText'>, text: string, room: number, full: number): { lines: string[]; size: number } {
+  const widest = (lines: string[], size: number) => {
+    ctx.font = `bold ${size}px ${FONT_UI}`;
+    return Math.max(...lines.map((l) => ctx.measureText(l).width)) + size * 0.16;
+  };
+  const fit = (lines: string[]) => ({ lines, size: Math.min(full, (full * room) / Math.max(1, widest(lines, full))) });
+  const one = fit([text]);
+  const words = text.split(' ');
+  if (one.size >= full || words.length < 2) return one;
+  let best = 1;
+  for (let i = 1; i < words.length; i++) {
+    const d = Math.abs(words.slice(0, i).join(' ').length - words.slice(i).join(' ').length);
+    if (d < Math.abs(words.slice(0, best).join(' ').length - words.slice(best).join(' ').length)) best = i;
+  }
+  const two = fit([words.slice(0, best).join(' '), words.slice(best).join(' ')]);
+  return two.size > one.size ? two : one;
 }
 
 const seen = new Set<string>();

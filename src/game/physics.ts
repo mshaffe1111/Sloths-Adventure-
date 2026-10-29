@@ -50,6 +50,18 @@ export type Forgive = (typeof FORGIVE)['normal' | 'easy'];
 export function easeAssist(m: number): number {
   return Math.max(0, Math.min(1, 1 - (m - 1) / 24));
 }
+/**
+ * Standing at the end of a ledge (engine.ts edgeOffset). His standing picture is about 53-57 px wide (heroSprite.ts), so drawn with his
+ * middle `inset` px inside the end about a quarter of him is past it. Standing still further out, he is DRAWN stepping back at `stepV`
+ * px/s and teeters there; moving or jumping, the picture rejoins his footing at `snapV` px/s. Only the picture: where he stands, walks
+ * off, jumps from, coyote time and the landing forgiveness are as before.
+ */
+export const EDGE = {
+  inset: 12,
+  stepV: 80,
+  snapV: 600,
+};
+
 /** the early-stage help, as the numbers it changes: longer to still jump after leaving a ledge, a longer memory for a jump pressed just early, a stronger second jump, and a wider landing */
 export const ASSIST = {
   coyote: 0.08,

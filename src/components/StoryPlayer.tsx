@@ -414,7 +414,8 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       )}
       {wide && <div className="absolute inset-x-0 bottom-0 h-[44%] pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' }} />}
 
-      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
+      {/* (above the world's title card, which used to dim Skip into the dark: UI-12) */}
+      <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
         <span className={`ui-chip transition-opacity duration-300 ${cardUp ? 'opacity-0' : 'opacity-100'}`}>{panel.chapter}</span>
         <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn">
           {skipLabel} <Icon name="arrow" size={13} />

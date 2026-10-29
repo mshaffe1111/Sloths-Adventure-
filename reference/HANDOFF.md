@@ -204,7 +204,7 @@ npx tsx --test tools/inspect/*.test.ts                    # the inspector's own 
 
 - **How much rolls change** (the 200-roll tool, Gemini's expressive range analysis): `npx tsx tools/inspect/era.ts --worlds 1-5 --rolls 200` builds every stage 200 times as the game does on entry and reports, per stage, how alike the rolls are (target: variety 0.35+), two heat maps, and how many rolls break a rule of `reference/STAGE-RULES.md` §2, with the worst rolls as `?layout=N` (`tools/README.md`). `src/game/rollGuard.test.ts` keeps a 10-roll sample of Worlds 1-4 honest in the suite.
 - **Tests**: run them with `npx tsx --test …`, as CI does; that way everything passes. Plain `node --test` reports one failure in `touchCoach.test.ts`. That isn't a bug: Node's built-in TypeScript stripping can't read a class parameter property in code the test imports. Under tsx it passes 6/6.
-- **Housekeeping**: running the dev server rewrites `dev-dist/`. Before committing: `git checkout -- dev-dist; rm -f dev-dist/registerSW.js`.
+- **Housekeeping**: the dev server no longer writes a service worker (`dev-dist/` is gone and ignored, PF-3), so there is nothing to clean before committing.
 - **Dev hooks** (dev server only):
   - `window.__play('2-5')` starts a stage.
   - `window.__engine()` returns the live engine (player, enemies, camera).
@@ -282,7 +282,7 @@ Only after Matt says "push".
    - the CI test command
    - `npx vite build` (all files under 4 MiB)
    - screenshots of what changed
-3. Commit, ending the message with the attribution lines the session asks for. Clean `dev-dist/` first.
+3. Commit, ending the message with the attribution lines the session asks for.
 4. `git fetch origin && git rebase origin/main`, then `git push origin <branch>`.
 5. Open the PR:
    ```
@@ -312,10 +312,10 @@ Only after Matt says "push".
   - the refined touch controls.
 - **Next**: World 4 (Mist Cascades, the leaf glide). It needs hand-built stages like Worlds 1-3, using `stagePlan.ts` and the World 4 art from the overnight run. Then animated clips for the frog, spider, tayra, caiman and harpy when their worlds come.
 - **Code review leads** (unverified unless marked):
-  - **Verified**: creature sheets are never released from memory. `creatureAnim.ts` is the one place to add releasing for the new sheets; keep the single-pose fallback so nothing disappears.
-  - **Verified**: the offline precache is about 52 MB (503 files). Audio and late-world art could be cached on demand instead.
-  - **Verified**: `@google/genai`, `express` and `dotenv` are template leftovers; nothing in `src/` imports the first two.
+  - **Done**: creature sheets are now released per world (`creatureAnim.ts`), with the single-pose fallback kept so nothing disappears.
+  - **Verified** (polish report, 2026-10-29): the offline precache is about 76 MB (574 files), Worlds 5-10 included. Audio and late-world art could be cached on demand instead (PF-2).
+  - **Done** (PF-3): the template leftovers (`@google/genai`, `express`, `dotenv`, `lucide-react`, `motion`, AI Studio's metadata and `.env.example`) are removed; the package is named `sloths-rainforest-adventures`.
   - Possible duplicate story plates.
   - The 2.1 MB main JS bundle.
-  - The control-test page (`#ctest`) was meant to be temporary.
+  - **Done** (UI-15): the control-test page (`#ctest`) opens only in a QA build (the dev server, `NODE_ENV=development` builds and the test link), never the shipped game.
   - Look for per-frame allocations and listeners or timers that outlive a stage.

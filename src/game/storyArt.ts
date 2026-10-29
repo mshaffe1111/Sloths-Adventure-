@@ -21,6 +21,7 @@ import { CEL_HD, CEL_K, CELS, drawCel, releaseCels, warmCels } from './storyCels
 import { capStoryZoom, liftForFeet } from './storyFrame.ts';
 import { GROUND_LINE, groundImage } from './storyGround.ts';
 import { isPlate, PLATES } from './plateData.ts';
+import { FONT_READ } from './fonts.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
@@ -670,7 +671,7 @@ function drawPhotoCard(ctx: CanvasRenderingContext2D, ph: ScenePhoto, w: number,
   ctx.strokeRect(-pw / 2, -chh / 2 + padTop, pw, ph_);
   if (ph.caption) {
     ctx.fillStyle = '#3b2f22';
-    ctx.font = 'italic 24px Georgia, "Times New Roman", serif';
+    ctx.font = `italic 24px ${FONT_READ}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(ph.caption, 0, chh / 2 - padBot / 2 + 2);

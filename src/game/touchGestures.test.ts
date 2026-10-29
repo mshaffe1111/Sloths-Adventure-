@@ -11,6 +11,8 @@ function rig() {
     jumpPress: () => log.push('jump'),
     jumpRelease: () => log.push('jumpUp'),
     punch: () => log.push('punch'),
+    // (a jab thrown as a finger landed and taken back as it flicked off was never a punch: CT-17)
+    punchCancel: () => void (log.includes('punch') && log.splice(log.lastIndexOf('punch'), 1)),
     kick: () => log.push('kick'),
     mega: () => log.push('mega'),
     feedback: () => {},
@@ -95,7 +97,8 @@ test('a thumb flick that is quick out and quick off is a kick even at phone-real
   t.drag(1, 600, 250, 668, 250, 150, 5); // 68 px in 150 ms
   t.up(1, 668, 250);
   assert.equal(t.count('kick'), 1);
-  assert.ok(!t.has('move:right'));
+  // (the early drag starts a run on a clear sideways slide, Jump help on or off since CT-8; the flick's kick stops it: never left running)
+  assert.equal(t.log.filter((l) => l.startsWith('move:')).pop() ?? 'move:none', 'move:none', 'not left running');
 });
 
 test('a short slow nudge is neither a kick nor a punch', () => {
@@ -183,9 +186,9 @@ test('a second finger planted on top of the steering thumb is ignored', () => {
   const t = rig();
   t.down(1, 200, 250);
   t.drag(1, 200, 250, 280, 250, 300);
-  t.down(2, 230, 270); // knuckle / other finger of the same hand
+  t.down(2, 250, 270); // knuckle / other finger of the same hand (36 px away: within palmPx since CT-15 made it 45)
   t.wait(60);
-  t.up(2, 230, 270);
+  t.up(2, 250, 270);
   assert.ok(!t.has('punch'));
 });
 
@@ -285,6 +288,8 @@ function rigEnv(env: { megaReady?: () => boolean } = {}) {
     jumpPress: () => log.push('jump'),
     jumpRelease: () => log.push('jumpUp'),
     punch: () => log.push('punch'),
+    // (a jab thrown as a finger landed and taken back as it flicked off was never a punch: CT-17)
+    punchCancel: () => void (log.includes('punch') && log.splice(log.lastIndexOf('punch'), 1)),
     kick: () => log.push('kick'),
     mega: () => log.push('mega'),
     feedback: (k) => log.push(`fb:${k}`),

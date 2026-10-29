@@ -52,27 +52,34 @@ export const PARTS = {
 export type PartId = keyof typeof PARTS;
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
+/** the anchors each part reads its top against (LV-2 round 2): lives a minute (1 - e^(-x/K)), the bots' miss share, burst stress, restarts */
+export const LIVES_K = 4;
+export const JUMP_TOP = 0.15;
+export const STRESS_TOP = 3;
+export const RESTARTS_TOP = 12;
 
 /** each part as 0 (easy) .. 1 (hard), on fixed anchors so scores compare across runs, seeds and settings */
 export function parts(i: BandInput): Partial<Record<PartId, number>> {
   const out: Partial<Record<PartId, number>> = {};
-  // 0.8 lives a minute reads as two-thirds of the way to brutal
-  if (i.livesPerMin !== null) out.lives = clamp(1 - Math.exp(-i.livesPerMin / 0.8));
-  // the mean miss share of the three hardest jumps, against a 60% miss as the top
+  // (the anchors, LV-2 round 2, 2026-10-29: on the first ones the score topped out about 52, so Worlds 8-10 could not read harder than
+  // World 2: lives were full by 4 a minute, the bots' hardest jumps never missed 60%, and no burst came near a stress of 6)
+  // 4 lives a minute reads as two-thirds of the way to brutal (W1 0, W2 about 3, W9 6-11 on the first-timer)
+  if (i.livesPerMin !== null) out.lives = clamp(1 - Math.exp(-i.livesPerMin / LIVES_K));
+  // the mean miss share of the three hardest jumps, against a 15% miss as the top (the noisy bots miss 0-7% today)
   const miss = i.jumpRates.map((r) => 1 - r).sort((a, b) => b - a).slice(0, 3);
-  out.jump = miss.length ? clamp(miss.reduce((s, v) => s + v, 0) / miss.length / 0.6) : 0;
-  if (i.peakStress !== null) out.stress = clamp(i.peakStress / 6);
+  out.jump = miss.length ? clamp(miss.reduce((s, v) => s + v, 0) / miss.length / JUMP_TOP) : 0;
+  if (i.peakStress !== null) out.stress = clamp(i.peakStress / STRESS_TOP);
   // 500 ms or more is no squeeze at all, 100 ms is the tightest
   if (i.minWindowMs !== null) out.window = clamp((500 - i.minWindowMs) / 400);
   // half the stage quiet is as calm as it gets
   out.busy = clamp(1 - i.deadShare / 0.5);
   // 2 minutes is the floor (STAGE-RULES §1), 6 minutes long
   out.length = clamp((i.time - 120) / 240);
-  // (twelve hazards or animals a minute, every press tight, or three restarts a minute each read as the top; the mean of what was measured)
+  // (twelve hazards or animals a minute, every press tight, or twelve restarts a minute each read as the top; the mean of what was measured)
   const press = [
     i.hazardsPerMin == null ? null : clamp(i.hazardsPerMin / 12),
     i.tightShare == null ? null : clamp(i.tightShare),
-    i.restartsPerMin == null ? null : clamp(i.restartsPerMin / 3),
+    i.restartsPerMin == null ? null : clamp(i.restartsPerMin / RESTARTS_TOP),
   ].filter((v): v is number => v !== null);
   if (press.length) out.pressure = press.reduce((a, b) => a + b, 0) / press.length;
   return out;
@@ -91,7 +98,7 @@ export interface Band { world: number; setting: Setting; n: number; min: number;
 
 export interface BandFlag {
   sev: number;
-  kind: 'world-below' | 'above-next' | 'below-prev' | 'floor' | 'ramp';
+  kind: 'world-below' | 'above-next' | 'below-prev' | 'floor' | 'ramp' | 'gate';
   id: string | null;
   world: number;
   setting: Setting;
@@ -122,6 +129,26 @@ export function worldBands(scored: Scored[]): Band[] {
 const SET = (s: Setting) => (s === 'easy' ? 'Easy' : 'Normal');
 /** the stage's number within its world ("2-8" is 8), for the ramp check */
 const stageNo = (id: string) => Number(id.split('-')[1]);
+
+/**
+ * The bands as a gate (LV-2, polish report 2026-10-29: "make the bands tool a gate"), Normal, on the round-2 anchors: each world's
+ * middle at least its floor here, and none below the world before it. `--gate` makes the inspector exit 1 when one fails (it needs
+ * --firsttimer and the worlds either side in the same run). Today's curve (2026-10-29) fails it: that is LV-2's work, not a broken gate.
+ */
+export const BAND_GATE: Record<number, number> = { 3: 32, 4: 37, 5: 42 };
+
+/** the gate's failures (bandGate): each a flag of kind 'gate' */
+export function bandGate(bands: Band[]): BandFlag[] {
+  const mine = bands.filter((b) => b.setting === 'normal');
+  const out: BandFlag[] = [];
+  for (const b of mine) {
+    const floor = BAND_GATE[b.world];
+    if (floor !== undefined && b.mid < floor) out.push({ sev: 90, kind: 'gate', id: null, world: b.world, setting: 'normal', ref: 'STAGE-RULES §1b; LV-2', what: `World ${b.world}'s middle on Normal is ${b.mid}, under its gate of ${floor}` });
+    const prev = mine.find((q) => q.world === b.world - 1);
+    if (prev && b.mid < prev.mid) out.push({ sev: 90, kind: 'gate', id: null, world: b.world, setting: 'normal', ref: 'STAGE-RULES §1b; LV-2', what: `World ${b.world}'s middle on Normal (${b.mid}) is under World ${prev.world}'s (${prev.mid})` });
+  }
+  return out;
+}
 
 /** §1b's flags from the bands */
 export function bandFlags(scored: Scored[], bands: Band[]): BandFlag[] {
@@ -218,7 +245,7 @@ export function computeBands(reports: StageReport[], ft?: FirstTimerPass): Bands
   }
   const scored: Scored[] = inputs.map((i) => ({ id: i.id, world: i.world, setting: i.setting, ...stageScore(i) }));
   const bands = worldBands(scored);
-  return { firstTimer: !!ft, inputs, scored, bands, flags: [...bandFlags(scored, bands), ...floorFlags(inputs)].sort((a, b) => b.sev - a.sev) };
+  return { firstTimer: !!ft, inputs, scored, bands, flags: [...bandFlags(scored, bands), ...floorFlags(inputs), ...(ft ? bandGate(bands) : [])].sort((a, b) => b.sev - a.sev) };
 }
 
 // ───────────────────────────── the report's part ─────────────────────────────

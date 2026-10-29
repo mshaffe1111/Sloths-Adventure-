@@ -2,7 +2,6 @@ import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import './index.css';
-import './gameUi.css';
 import { checkForUpdate, markUpdateAvailable } from './game/updates.ts';
 import { armFullscreen } from './game/fullscreen.ts';
 

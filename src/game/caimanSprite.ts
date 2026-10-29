@@ -109,7 +109,6 @@ export function drawCaimanSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
     ctx.ellipse(-18, 1, 54, 3.8, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   ctx.scale(sx, sy);
   const dx = name === 'dead' ? 0 : NOSE;
   ctx.drawImage(atlas, f.x, f.y, f.w, f.h, dx - f.ax * K, -f.ay * K, f.w * K, f.h * K);

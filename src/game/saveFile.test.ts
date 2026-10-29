@@ -69,7 +69,7 @@ test('unknown keys inside a save are never written', () => {
 });
 
 test('only game entries count as save keys', () => {
-  for (const k of ['sloth_lvl_1-1', 'sloth_lvl_10-10', 'sloth_lvl_S-1', 'sloth_story_w3', 'sloth_story_n1', 'sloth_secret_gate', 'sloth_game_muted']) assert.ok(isSaveKey(k), k);
+  for (const k of ['sloth_lvl_1-1', 'sloth_lvl_10-10', 'sloth_lvl_S-1', 'sloth_story_w3', 'sloth_story_n1', 'sloth_story_g1', 'sloth_story_g11', 'sloth_secret_gate', 'sloth_game_muted']) assert.ok(isSaveKey(k), k);
   for (const k of ['sloth_hint_v3', 'sloth_lvl_', 'sloth_lvl_1-1; drop', 'token', '__proto__']) assert.ok(!isSaveKey(k), k);
 });
 

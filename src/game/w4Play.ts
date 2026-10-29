@@ -5,22 +5,29 @@
  * run, steps them against Pokey each frame, and draws them. The engine only hands it what it needs through `W4Host`, so engine.ts gains
  * a field, a step call and two draw calls rather than seven mechanics.
  *
- * The pieces are painted (w4Art.ts, art batches 1 and 2); each draw keeps a plain-shape stand-in for the moment before the atlas loads.
- * The falling water itself stays drawn here, because it has to pour, ease and dry; only the lip it pours over is painted.
+ * The pieces are painted (w4Art.ts, art batches 1 and 2); each draw keeps a plain-shape stand-in for the moment before the atlas loads,
+ * except the falling rocks (w4Grit.ts), which are only ever painted: their sheets are decoded before the stage starts.
+ * The falls are the painted waterfall set (w4FallsArt.ts) laid on each fall's box: its lip, its bodies pouring, easing and drying, and
+ * the white water and mist where it lands.
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
 import { drawW4, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
+import { drawFallBodies, drawFallFoot, drawFallLips, drawFallsBit } from './w4FallsArt.ts';
+import { drawFx } from './bossFx.ts';
+import { drawLogArt } from './protoArt.ts';
 import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
-import { ROCK, rockAt, rockHits, type RockDrop } from './rockfall.ts';
+import { rockAt, rockHits, type RockDrop } from './rockfall.ts';
+import { drawRockFx, drawSoftColumn, drawSoftShadow, rockShake } from './w4Grit.ts';
 import { FALLS, fallPush, fallWall, inColumn, inFall, plugged, poolLogY, stepFlow, stepPool, type Pool, type Waterfall } from './waterfalls.ts';
 import { chimeLean, dotAtKnot, DOT_HELP, KNOT_TEACH, knotMark, knotSpotX, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
 import { zoneState, type Zone } from './zones.ts';
 import { nestWind, type CliffNest } from './w4Nests.ts';
 import { TIMED } from './physics.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
+import { FONT_UI } from './fonts.ts';
 
 /** a fruit hanging in a tree: punch near it and it drops to `ground`, where a capuchin can smell it; it grows back after a while */
 export interface FruitTree {
@@ -86,6 +93,8 @@ export interface W4Extras {
   /** 4-3: the tree up to the shelf beside a fall (the fall's id, the trunk's x): standing at the foot of the pouring fall, the
    *  view turns to show the tree too, so it is on screen when Dot says to climb it, held upright as well (QA 2026-10-29) */
   fallTrees?: Array<{ fall: number; x: number }>;
+  /** the climb trunks are the waterfall set's wet stone pillar, with the trunk's vine on it (4-3, beside its falls: protoArt.ts) */
+  pillarTrunks?: boolean;
   /** 4-3: what Dot says as the first boulder stops its fall, in place of the plain line (its dry steps are each a double jump up) */
   dryTip?: string;
   /** 4-6: sleeping eaglets (eaglet.ts) */
@@ -122,6 +131,8 @@ export interface W4Host {
   float(text: string, x: number, y: number, color: string): void;
   /** a lookout called the Sovereign */
   screech(x: number): void;
+  /** a nudge of the camera (0..1 of trauma), for a rock landing close by */
+  shake?(amount: number): void;
   sfx(kind: 'rock' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash' | 'gust' | 'cry'): void;
   /** he fell into the mist (deepFall) */
   fellOff?(): void;
@@ -266,6 +277,9 @@ export class W4Play {
       if (s.phase === 'shatter' && !this.rockHit.has(cycle + 's')) {
         this.rockHit.add(cycle + 's');
         if (Math.abs(r.x - p.x) < 700) h.sfx('rock');
+        // (and a small nudge of the camera when it lands close to him: w4Grit.ts rockShake)
+        const k = rockShake(r, p.x, p.y);
+        if (k > 0) h.shake?.(k);
       }
       // the warning, shown to him: a rock on the ground he is on (or nearly), not far ahead, while it is in its warning. The first time,
       // Dot says what it means (the stage's own hint, said here if it was not said already)
@@ -559,7 +573,7 @@ export class W4Play {
       if (near(c.x)) drawChime(ctx, c, z ? chimeLean(z, t).angle : 0);
     });
     for (const u of w4.updrafts ?? []) if (near((u.x0 + u.x1) / 2)) drawUpdraft(ctx, u, t);
-    for (const r of w4.rocks ?? []) if (near(r.x)) drawRock(ctx, r, t);
+    for (const r of w4.rocks ?? []) if (near(r.x)) drawRockFx(ctx, r, t);
     (w4.patience ?? []).forEach((s, i) => {
       if (s.kind === 'frond' && near(s.x1)) drawFrond(ctx, s, this.patience[i], platforms);
     });
@@ -810,22 +824,30 @@ function drawSettleGlow(ctx: CanvasRenderingContext2D, s: PatienceSpot, reveal: 
   ctx.restore();
 }
 
-/** a fall: its water, then the painted lip it pours over */
+/**
+ * A fall: the painted waterfall set (w4FallsArt.ts) on its box, its bodies, the lip along its top edge and the white water and mist at
+ * its foot; the old shapes and World 4's lip pieces as the stand-in while the set loads
+ */
 function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
+  if (drawFallBodies(ctx, w, flow, t)) {
+    drawFallLips(ctx, w, flow);
+    drawFallFoot(ctx, w, flow, t);
+    return;
+  }
   drawFallWater(ctx, w, flow, t);
   drawLip(ctx, w, flow);
 }
 
 /**
- * the painted lips over a fall: one for about every `span` px of its width (a wide fall pours off a row of them), each `pad` px wider
- * than its share so they overlap, their rock's underside `below` px down the water (hiding where it starts)
+ * the stand-in's lips over a fall: one for about every `span` px of its width (a wide fall pours off a row of them), each `pad` px
+ * wider than its share so they overlap, their rock's underside `below` px down the water (hiding where it starts)
  */
 const LIP = { span: 300, pad: 50, below: 40 };
 
 /**
- * The painted lip at a fall's top: the rock pouring a full fall while it flows, the same rock trickling once it is stopped, the one
- * fading into the other with the flow. Only the lip: the water under it is drawn by drawFallWater. A fall a boulder plugs already
- * pours out of its painted channel (the stage's decor), so it gets none. Nothing before the atlas loads.
+ * The stand-in's lip at a fall's top (World 4's lip pieces): the rock pouring a full fall while it flows, the same rock trickling once
+ * it is stopped, the one fading into the other with the flow. A fall a boulder plugs already pours out of its painted channel (the
+ * stage's decor), so it gets none. Nothing before the atlas loads.
  */
 function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
   if (w.plug || !w4ArtReady()) return;
@@ -839,6 +861,7 @@ function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
   }
 }
 
+/** the stand-in's water: a see-through sheet with streaks running down it and foam at its foot */
 function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
   if (flow <= 0.02) return;
   ctx.save();
@@ -875,10 +898,15 @@ function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number
 }
 
 /**
- * a curtain of water in front of him (4-5): a sheet with rippling edges, thicker at its sides and thin enough in the middle to see him
- * standing behind it, streaks pouring down it, and spray and mist where it lands on the path
+ * a curtain of water in front of him (4-5): the painted set's bodies see-through enough to show him standing behind it, its lip up on
+ * the cliff and its white water and mist on the path; the old sheet with rippling edges as the stand-in while the set loads
  */
 function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
+  if (drawFallBodies(ctx, w, 1, t, 0.8)) {
+    drawFallLips(ctx, w, 1);
+    drawFallFoot(ctx, w, 1, t);
+    return;
+  }
   const x0 = w.x, x1 = w.x + w.width, top = w.top, bot = w.bottom;
   ctx.save();
   ctx.beginPath();
@@ -1035,11 +1063,27 @@ function drawPool(ctx: CanvasRenderingContext2D, cx: number, pool: Pool, level: 
   ctx.restore();
 }
 
-/** the log floating on a pool (a plain drawn log: it rides up and down on the water) */
+/** the log floating on a pool (the painted log, bobbing as it rides up and down on the water; a plain drawn one while the kit loads) */
 function drawFloatLog(ctx: CanvasRenderingContext2D, p: Platform, t: number) {
   const { width: w, height: h } = p;
   const x = p.x;
-  const y = p.y + Math.sin(t * 2.2 + p.x) * 1.5;
+  const bob = Math.sin(t * 2.2 + p.x) * 1.5;
+  const y = p.y + bob;
+  ctx.save();
+  ctx.translate(0, bob);
+  const painted = drawLogArt(ctx, p, false);
+  ctx.restore();
+  if (painted) {
+    // ripples where it sits in the water
+    ctx.save();
+    ctx.strokeStyle = 'rgba(224,242,254,0.8)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(x + w / 2, y + h - 2, w * 0.6 + Math.sin(t * 3) * 4, 5, 0, 0, Math.PI);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
   const r = h / 2;
   ctx.save();
   const g = ctx.createLinearGradient(0, y, 0, y + h);
@@ -1132,134 +1176,19 @@ function drawChime(ctx: CanvasRenderingContext2D, c: Chime, angle: number) {
   ctx.restore();
 }
 
-const SHARDS: W4Piece[] = ['shardA', 'shardB', 'shardC', 'shardD'];
-
-function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
-  const s = rockAt(r, t);
-  ctx.save();
-  const painted = s.phase === 'fall' ? drawW4(ctx, r.x % 2 ? 'rockMoss' : 'rock', r.x, s.y, ROCK.radius * 2.4, { rot: s.u * 2.5 }) : false;
-  if (s.phase === 'shatter' && SHARDS.every((n, k) => drawW4(ctx, n, r.x + (k - 1.5) * (14 + 50 * s.u), r.land - 30 * Math.sin(Math.PI * Math.min(1, s.u * 1.4)) * (k % 2 ? 1 : 0.6), 20, { rot: s.u * (k - 1.5) * 3, alpha: 1 - s.u }))) {
-    ctx.restore();
-    return;
-  }
-  if ((s.phase === 'warn' || s.phase === 'fall') && !r.air) {
-    // the shadow on the ground grows as the rock comes: plain from the first moment of the warning (dark, and as wide as the rock),
-    // with a pale ring round it so it reads on dark rock as well as pale
-    const u = s.phase === 'warn' ? 0.35 + 0.35 * s.u : 0.7 + 0.3 * s.u;
-    ctx.fillStyle = `rgba(255, 251, 235, ${0.4 + 0.3 * u})`;
-    ctx.beginPath();
-    ctx.ellipse(r.x, r.land - 2, 30 + 24 * u, 10 + 6 * u, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = `rgba(15,23,42,${0.5 + 0.4 * u})`;
-    ctx.beginPath();
-    ctx.ellipse(r.x, r.land - 2, 24 + 22 * u, 7 + 6 * u, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  if (s.phase === 'warn' && !r.air) {
-    // grit pattering down onto the spot, through the last stretch above it (in view on a phone held either way, however far up the
-    // rock lets go), and little stones hopping where it lands
-    const span = Math.min(260, r.land - r.top);
-    const n = 8 + Math.round(10 * s.u);
-    ctx.strokeStyle = 'rgba(30, 27, 24, 0.85)';
-    ctx.lineWidth = 1.5;
-    for (let k = 0; k < n; k++) {
-      const gx = r.x - 14 + ((k * 7) % 28);
-      const gy = r.land - span + ((t * 330 + k * (span / n)) % span);
-      const sz = 5 + (k % 3) * 2;
-      ctx.fillStyle = k % 2 ? '#d6d3d1' : '#78716c';
-      ctx.fillRect(gx, gy, sz, sz);
-      ctx.strokeRect(gx, gy, sz, sz);
-    }
-    for (let k = 0; k < 3; k++) {
-      const h = Math.abs(Math.sin(t * 9 + k * 2.1)) * (4 + 4 * s.u);
-      ctx.fillStyle = '#d6d3d1';
-      ctx.fillRect(r.x - 18 + k * 16, r.land - 7 - h, 6, 6);
-    }
-  }
-  if (s.phase === 'warn') {
-    ctx.fillStyle = '#9ca3af';
-    if (r.air) {
-      // through open air: a pale band down the whole of its path with grit streaming through it, so the warning is in view on any
-      // screen and reads against grey rock as well as pale mist; it thickens as the rock comes
-      // (the band fades out at its sides and at both ends: a hard-edged bright strip read as a seam in the backdrop, testers
-      // 2026-10-25; and the grit is little round stones and dust, not grey squares)
-      const span = r.land - r.top;
-      const band = ctx.createLinearGradient(r.x - 30, 0, r.x + 30, 0);
-      const a = 0.12 + 0.2 * s.u;
-      band.addColorStop(0, 'rgba(255,251,235,0)');
-      band.addColorStop(0.5, `rgba(255,251,235,${a.toFixed(3)})`);
-      band.addColorStop(1, 'rgba(255,251,235,0)');
-      ctx.fillStyle = band;
-      ctx.fillRect(r.x - 30, r.top + 40, 60, span - 80);
-      const n = 8 + Math.round(14 * s.u);
-      for (let k = 0; k < n; k++) {
-        const gx = r.x + Math.sin(k * 2.3) * 11;
-        const gy = r.top + ((t * 360 + k * (span / n)) % span);
-        // (fading in and out at the ends of its fall)
-        const end = Math.min(1, (gy - r.top) / 60, (r.land - gy) / 60);
-        if (end <= 0) continue;
-        const rad = 1.6 + (k % 3) * 0.9;
-        ctx.globalAlpha = end;
-        ctx.fillStyle = k % 3 === 0 ? 'rgba(214,211,209,0.55)' : k % 2 ? '#57534e' : '#78716c';
-        ctx.beginPath();
-        ctx.ellipse(gx, gy, k % 3 === 0 ? rad * 2.2 : rad, k % 3 === 0 ? rad * 1.4 : rad * 1.15, k * 0.7, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.globalAlpha = 1;
-    } else {
-      // grit trickling from the ledge above
-      for (let k = 0; k < 4; k++) ctx.fillRect(r.x - 8 + k * 5, r.top + ((t * 300 + k * 40) % 90), 3, 3);
-    }
-  }
-  if (s.phase === 'fall' && !painted) {
-    ctx.fillStyle = '#6b7280';
-    ctx.strokeStyle = '#1f2937';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(r.x, s.y - ROCK.radius, ROCK.radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = '#84cc16';
-    ctx.beginPath();
-    ctx.arc(r.x - 4, s.y - ROCK.radius * 1.6, ROCK.radius * 0.5, Math.PI, 0);
-    ctx.fill();
-  }
-  if (s.phase === 'shatter') {
-    ctx.fillStyle = '#6b7280';
-    ctx.globalAlpha = 1 - s.u;
-    for (let k = 0; k < 6; k++) {
-      const a = (k / 6) * Math.PI;
-      const d = 10 + 40 * s.u;
-      ctx.beginPath();
-      ctx.arc(r.x + Math.cos(a) * d * (k % 2 ? 1 : -1), r.land - Math.sin(a) * d * (1 - s.u) - 4, 4 + (k % 2), 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-  ctx.restore();
-}
-
 function drawUpdraft(ctx: CanvasRenderingContext2D, u: Updraft, t: number) {
-  // a faint warm glow up the column (soft at its sides and ends), and pale wisps rising, thicker in the middle of it
-  ctx.save();
+  // a faint warm glow up the column, and pale wisps of air rising in it, thicker in the middle: each a soft streak (the same soft sprite
+  // as the glow, faded on every side, so none reads as a shape), fading in at the bottom and out at the top
   const w = u.x1 - u.x0;
-  const glow = ctx.createLinearGradient(u.x0, 0, u.x1, 0);
-  glow.addColorStop(0, 'rgba(253,230,190,0)');
-  glow.addColorStop(0.5, 'rgba(253,230,190,0.16)');
-  glow.addColorStop(1, 'rgba(253,230,190,0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(u.x0, u.top + 60, w, u.bottom - u.top - 60);
+  const span = u.bottom - u.top;
+  drawSoftColumn(ctx, u.x0, u.top + 30, w, span - 30, 0.32);
   for (let k = 0; k < 9; k++) {
     const x = u.x0 + w * ((k + 0.5) / 9) + Math.sin(t * 1.7 + k) * 8;
-    const span = u.bottom - u.top;
     const y = u.bottom - ((t * 160 + k * 97) % span);
-    const a = (0.22 + 0.2 * Math.sin((Math.PI * (k + 0.5)) / 9)) * Math.min(1, (y - u.top) / 80);
+    const a = (0.45 + 0.35 * Math.sin((Math.PI * (k + 0.5)) / 9)) * Math.min(1, (y - u.top) / 80, (u.bottom - y) / 60);
     if (a <= 0) continue;
-    ctx.fillStyle = `rgba(255, 247, 237, ${a.toFixed(3)})`;
-    ctx.beginPath();
-    ctx.ellipse(x, y, 7, 26, 0, 0, Math.PI * 2);
-    ctx.fill();
+    drawSoftColumn(ctx, x - 9, y - 40, 18, 80 + (k % 3) * 14, a);
   }
-  ctx.restore();
 }
 
 function drawFrond(ctx: CanvasRenderingContext2D, s: PatienceSpot, st: PatienceState, platforms: Platform[]) {
@@ -1442,40 +1371,22 @@ function drawCliffVine(ctx: CanvasRenderingContext2D, v: Vine, t: number) {
  */
 function drawSpout(ctx: CanvasRenderingContext2D, b: Platform, w: Waterfall, flow: number, t: number) {
   const sx = w.x + 40;
-  if (!drawW4(ctx, 'channelFall', sx, w.top + 40, 150, { flip: true })) {
-    ctx.save();
-    ctx.fillStyle = '#57534e';
-    ctx.fillRect(sx - 70, w.top - 30, 140, 34);
-    ctx.restore();
-  }
+  drawW4(ctx, 'channelFall', sx, w.top + 40, 150, { flip: true });
   const off = 1 - flow;
   if (off < 0.05) return;
   const top = b.y;
+  // the water from the spout onto the boulder, painted: a narrow stream of the waterfall set's falling water, its white water on the
+  // boulder's top, and the run-off spreading away left along the shelf (a low strip of the set's white water, flowing)
+  const box = { x: sx - 18, width: 36, top: w.top + 20, bottom: top + 6 };
+  drawFallBodies(ctx, box, off, t, off);
   ctx.save();
   ctx.globalAlpha = off;
-  // a thin stream from the spout onto the boulder
-  ctx.fillStyle = 'rgba(186, 230, 253, 0.8)';
-  ctx.fillRect(sx - 14, w.top + 20, 28, top - w.top - 16);
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-  ctx.lineWidth = 2;
+  drawFallFoot(ctx, { x: sx - 14, width: 28, top: box.top, bottom: top - 4 }, off, t);
+  const y = b.y + b.height + 6;
   for (let k = 0; k < 3; k++) {
-    const y = w.top + 20 + ((t * 380 + k * 70) % Math.max(1, top - w.top - 40));
-    ctx.beginPath();
-    ctx.moveTo(sx - 6 + k * 6, y);
-    ctx.lineTo(sx - 6 + k * 6, y + 30);
-    ctx.stroke();
+    const cx = b.x - 40 - k * 68 - ((t * 30) % 68);
+    drawFallsBit(ctx, k % 2 ? 'splash2' : 'splash1', cx, y, 92, { h: 22, alpha: 0.75 * Math.min(1, (cx - (b.x - 240)) / 60), flip: k % 2 === 1 });
   }
-  // spray off the boulder's top, and the water running away left along the shelf
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-  for (let k = 0; k < 5; k++) {
-    const u = (t * 1.8 + k * 0.23) % 1;
-    ctx.beginPath();
-    ctx.arc(sx - u * 50, top - 4 - Math.sin(u * Math.PI) * 18, 3 + 2 * (1 - u), 0, Math.PI * 2);
-    ctx.fill();
-  }
-  const y = b.y + b.height;
-  ctx.fillStyle = 'rgba(125, 211, 252, 0.85)';
-  ctx.fillRect(b.x - 220, y - 6, 220, 6);
   ctx.restore();
 }
 
@@ -1522,7 +1433,7 @@ function drawMonkey(ctx: CanvasRenderingContext2D, m: Capuchin, s: CapState, t: 
     if (s.mode === 'stare') {
       ctx.save();
       ctx.fillStyle = '#fbbf24';
-      ctx.font = 'bold 20px sans-serif';
+      ctx.font = `bold 20px ${FONT_UI}`;
       ctx.fillText('?', s.x - 5, s.y - 82);
       ctx.restore();
     }
@@ -1563,7 +1474,7 @@ function drawMonkey(ctx: CanvasRenderingContext2D, m: Capuchin, s: CapState, t: 
   }
   if (s.mode === 'stare' || s.mode === 'screech') {
     ctx.fillStyle = s.mode === 'screech' ? '#ef4444' : '#fbbf24';
-    ctx.font = 'bold 18px sans-serif';
+    ctx.font = `bold 18px ${FONT_UI}`;
     ctx.fillText(s.mode === 'screech' ? '!!' : '?', 0, -60);
   }
   if (m.job === 'guard' && s.mode === 'pace') {
@@ -1649,13 +1560,7 @@ export function drawLandingShadow(ctx: CanvasRenderingContext2D, x: number, feet
   const h = ledgeY - feet;
   if (h < 30) return;
   const u = Math.max(0, 1 - h / 700);
-  ctx.save();
-  ctx.globalAlpha = 0.18 + 0.4 * u;
-  ctx.fillStyle = '#0f172a';
-  ctx.beginPath();
-  ctx.ellipse(x, ledgeY + 2, 16 + 16 * u, 4 + 3 * u, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+  drawSoftShadow(ctx, x, ledgeY + 2, 44 + 44 * u, 12 + 9 * u, 0.3 + 0.55 * u);
 }
 
 /** a nest of harpy eaglets: asleep (heads tucked, a z), one stirring (a head up), both looking about, and a flurry of wings */
@@ -1670,7 +1575,7 @@ function drawNest(ctx: CanvasRenderingContext2D, n: Nest, t: number, sinceBlow: 
   // (over the painted eaglet's head, which stands taller than the stand-in's, and higher still over it flying)
   else ctx.translate(0, phase === 'look' ? -84 : -48);
   // what they are doing, over their heads
-  ctx.font = 'bold 22px sans-serif';
+  ctx.font = `bold 22px ${FONT_UI}`;
   ctx.textAlign = 'center';
   if (phase === 'sleep') {
     const z = (t * 0.8) % 1;
@@ -1858,17 +1763,9 @@ function drawSovereignPass(ctx: CanvasRenderingContext2D, view: { x0: number; x1
   const y = y0 + (tall ? (y1 - y0) * 0.4 : Math.max(130, (y1 - y0) * 0.3)) + Math.sin(u * Math.PI) * 16;
   const fade = Math.min(1, Math.sin(Math.PI * u) * 2.5);
   if (fade <= 0.01) return;
-  // her shadow on the ledge: a long dark oval racing ahead of where he stands
-  ctx.save();
-  ctx.fillStyle = `rgba(8, 12, 8, ${(0.42 * fade).toFixed(3)})`;
-  ctx.beginPath();
-  ctx.ellipse(x, o.y - 3, 110, 15, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = `rgba(8, 12, 8, ${(0.25 * fade).toFixed(3)})`;
-  ctx.beginPath();
-  ctx.ellipse(x, o.y - 3, 170, 24, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+  // her shadow on the ledge: a long soft dark shape racing ahead of where he stands (the soft shadow sprite: no hard oval edge)
+  drawSoftShadow(ctx, x, o.y - 3, 380, 56, 0.6 * fade);
+  drawSoftShadow(ctx, x, o.y - 3, 250, 34, 0.75 * fade);
   // her, gliding
   const size = Math.max(0.42, Math.min(0.6, span / 1500));
   ctx.save();
@@ -1899,7 +1796,8 @@ function drawSovereignPass(ctx: CanvasRenderingContext2D, view: { x0: number; x1
   ctx.restore();
 }
 
-/** 4-9: one of the Sovereign's feathers, drifting down from high above him, rocking as it falls, and lying on the ledge a while */
+/** 4-9: one of the Sovereign's feathers (the painted feather, bossFx.ts), drifting down from high above him, rocking as it falls, and
+ *  lying on the ledge a while */
 function drawFeather(ctx: CanvasRenderingContext2D, o: Omen, since: number) {
   const u = Math.min(1, since / OMEN.feather);
   const fall = 520;
@@ -1907,42 +1805,5 @@ function drawFeather(ctx: CanvasRenderingContext2D, o: Omen, since: number) {
   const x = o.x + 120 + Math.sin(since * 1.7) * 46 * (1 - u) - 60 * u;
   const rot = u < 1 ? Math.sin(since * 1.7 + 0.6) * 0.7 : 1.45;
   const a = since > OMEN.feather + OMEN.rest - 1 ? Math.max(0, OMEN.feather + OMEN.rest - since) : 1;
-  ctx.save();
-  ctx.globalAlpha = a;
-  ctx.translate(x, y);
-  ctx.rotate(rot);
-  // the vane: dark brown, barred, a pale tip; the quill down its middle
-  ctx.fillStyle = '#4a3423';
-  ctx.strokeStyle = '#1c1917';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(0, -30);
-  ctx.quadraticCurveTo(12, -12, 6, 22);
-  ctx.lineTo(0, 26);
-  ctx.lineTo(-6, 22);
-  ctx.quadraticCurveTo(-12, -12, 0, -30);
-  ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = '#e7e5e4';
-  ctx.beginPath();
-  ctx.moveTo(0, -30);
-  ctx.quadraticCurveTo(7, -22, 6, -16);
-  ctx.lineTo(-6, -16);
-  ctx.quadraticCurveTo(-7, -22, 0, -30);
-  ctx.fill();
-  ctx.strokeStyle = '#2b1d14';
-  ctx.lineWidth = 2;
-  for (let k = 0; k < 3; k++) {
-    ctx.beginPath();
-    ctx.moveTo(-8, -6 + k * 9);
-    ctx.lineTo(8, -2 + k * 9);
-    ctx.stroke();
-  }
-  ctx.strokeStyle = '#f5f5f4';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(0, -28);
-  ctx.lineTo(0, 34);
-  ctx.stroke();
-  ctx.restore();
+  drawFx(ctx, 'feather', x, y, 30, { rot, alpha: a, ay: 0.5 });
 }

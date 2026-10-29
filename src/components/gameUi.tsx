@@ -3,7 +3,7 @@ import { Icon } from './icons/index.tsx';
 import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
 
 /**
- * The round wooden full-screen token (its style is in gameUi.css). The title's carved name is title/CarvedLogo.tsx, and Pokey and Meeca
+ * The round wooden full-screen token (its style is in index.css, .gx-token). The title's carved name is title/CarvedLogo.tsx, and Pokey and Meeca
  * on the title are drawn by the title scene, title/TitleScene.tsx.
  */
 

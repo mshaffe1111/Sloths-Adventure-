@@ -10,6 +10,7 @@
  * hatches (queenBrood in lairQueen.ts).
  */
 import type { Platform, TreeStructure, Vine } from './types.ts';
+import { drawLairRope, drawLairRopeLine } from './ropeArt.ts';
 import { glowRgb, queenBrood } from './lairQueen.ts';
 import { rand, stamp } from './lairKit.ts';
 
@@ -403,35 +404,13 @@ function drawSilkRope(ctx: CanvasRenderingContext2D, v: Vine, cam: Cam, time: nu
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   if (swing) {
-    ctx.strokeStyle = 'rgba(30, 34, 50, 0.8)';
-    ctx.lineWidth = 7;
-    ctx.beginPath();
-    ctx.moveTo(v.x, v.topY);
-    ctx.lineTo(v.x, cam.y - 30);
-    ctx.stroke();
-    ctx.strokeStyle = SILK;
-    ctx.lineWidth = 3.6;
-    ctx.stroke();
+    drawLairRopeLine(ctx, v.x, v.topY, v.x, cam.y - 30, 6, '#e4e6f4', SILK);
   }
   ctx.strokeStyle = 'rgba(214, 222, 240, 0.12)';
   ctx.lineWidth = 20;
   trace(ctx, at, N);
   ctx.stroke();
-  ctx.strokeStyle = '#1a1d2a';
-  ctx.lineWidth = 9.5;
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.strokeStyle = SILK;
-  ctx.lineWidth = 6;
-  trace(ctx, at, N);
-  ctx.stroke();
-  // twist
-  ctx.strokeStyle = '#7f88a4';
-  ctx.lineWidth = 1.8;
-  ctx.setLineDash([3, 6]);
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.setLineDash([]);
+  drawLairRope(ctx, at, N, 9.5, '#f0f2ff', SILK);
   // wrapped knots, so a climbing rope reads as something to grab, and dew
   for (let i = 2; i < N - 1; i += swing ? 7 : 4) {
     const p = at(i / N);

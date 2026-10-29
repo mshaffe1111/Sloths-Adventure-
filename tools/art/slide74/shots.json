@@ -1,0 +1,8 @@
+[["3-drop", "s.z = 9; e.slideRun.line('Whoa! Lean left, lean right!', 3); s.x = -0.6; s.lean = -1;"],
+ ["4-heads", "at('head', 6, 5); s.x = 1.2;"],
+ ["5-rubble", "at('rubble', 0, 6); e.slideRun.line('Rubble. Flick up, jump it!', 3);"],
+ ["6-column-jump", "at('column', 0, 3.5); s.y = 0.75; s.vy = 0.3; e.slideRun.line('Fallen column. Jump it, or go round.', 3);"],
+ ["7-gap", "at('gap', 1, 9); e.slideRun.line('No floor! Jump!', 3);"],
+ ["8-beam", "at('beam', 0, 4); s.duckT = 0.5; e.slideRun.line('Low beam! Thumb down, duck!', 3);"],
+ ["9-climax", "at('head', 16, 7);"],
+ ["10-light", "s.z = s.c.length - 12;"]]

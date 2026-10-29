@@ -78,9 +78,9 @@ export default defineConfig(() => {
             },
           ],
         },
+        // (no service worker on the dev server: it rewrote dev-dist/ on every run, polish report PF-3)
         devOptions: {
-          enabled: true,
-          type: 'module',
+          enabled: false,
         },
       }),
     ],
