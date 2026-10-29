@@ -6201,6 +6201,8 @@ export class GameEngine {
   private watchCaught = false;
   /** how many of the watcher's later warnings Dot has said this stage (watchCaught) */
   private watchVoiced = 0;
+  /** the eagle has struck him this stage (her first strike gets Dot's call the moment she sees him: LV-13) */
+  private watchStruck = false;
 
   private updateWatch(dt: number) {
     const p = this.player;
@@ -6238,12 +6240,18 @@ export class GameEngine {
     if (this.watch.phase === 'pass') {
       const sx = this.shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
       if (!water && sees(this.watch, sx, bushes, me)) {
+        const first = !this.watch.seen;
         this.watch.seen = true;
         this.watchFrom = { x: sx, y: this.camera.y + 125 };
         cry(2);
         if (!tipHeard(id, 'watch:seen')) {
           markTipHeard(id, 'watch:seen');
           this.guide(grotto ? 'It saw you! Get into a fern before it reaches you' : cliffs ? 'She saw you! Get behind the water or into a bush, quick' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
+        } else if (cliffs && first && !this.watchStruck && !harmlessPass(this.watch)) {
+          // (LV-13: her first strike of the stage gets Dot's call a beat before it lands, the bush beside him named; QA: 11 hurts at
+          // 4-5's "Hide from the eagle" since 2026-10-26, the first strike with the nearest bush 196 px off)
+          const bush = bushes.some((b) => Math.abs(b.x + b.w / 2 - p.x) < 200);
+          this.guide(bush ? 'Hide in the bush!' : 'She saw you! Get behind the water or into a bush, quick', 1.5);
         }
       }
       // the strike: unless he made it into a bush (or behind the water) in time
@@ -6256,6 +6264,7 @@ export class GameEngine {
         } else {
           this.damagePlayer(1);
           this.watchCaught = true;
+          this.watchStruck = true;
         }
       }
     }
