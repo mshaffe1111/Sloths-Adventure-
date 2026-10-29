@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { animOf, ArrivalWarm, stageAnims, stageExtras } from './sheetWarm.ts';
-import { trackAtlas, releaseWorldArt } from './atlasLoader.ts';
+import { trackAtlas, releaseSheets, releaseWorldArt } from './atlasLoader.ts';
 import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { stageSheets } from './stageSheets.ts';
 import { generateAllLevels } from './worldsData.ts';
@@ -84,4 +84,30 @@ test('a sheet that arrives during play is drawn once the next frame, one a frame
   for (let i = 0; i < 5; i++) warm.frame(ctx);
   assert.equal(draws.length, 2, 'each only once');
   releaseWorldArt();
+});
+
+test("a control-test mix asks for its own creatures only: every one the built stage draws (Normal and Easy), and fewer than all four", async () => {
+  const { easyStage } = await import('./easyMode.ts');
+  const { CTEST_FOES } = await import('./stageSheets.ts');
+  const ct = { ...levels.find((l) => l.id === '1-2')!, objectiveType: 'sprint' as const, targetCount: 1 };
+  let saved = 0;
+  for (let s = 1; s <= 40; s++) {
+    const keys = new Set(stageSheets(ct, { hand: true, paint: true, ctest: true, mix: s }));
+    for (const st of [buildProtoStage(ct, s, 'ctest'), easyStage(buildProtoStage(ct, s, 'ctest'))]) {
+      for (const n of stageAnims(st)) if (CTEST_FOES.includes(n)) assert.ok(keys.has(`foe:${n}`), `seed ${s}: ${n}`);
+      if (stageExtras(st).props2) assert.ok(keys.has('props2'), `seed ${s}: the bushes' sheet`);
+    }
+    saved += CTEST_FOES.filter((f) => !keys.has(`foe:${f}`)).length;
+  }
+  // (QA 2026-10-29: every mix decoded all four creatures' sheets, about 175 MB)
+  assert.ok(saved >= 40, `creature sets left out over 40 mixes: ${saved}`);
+});
+
+test('releaseSheets lets go of just the sheets named: each one forgets its picture, the rest stay', () => {
+  releaseWorldArt();
+  const gone: string[] = [];
+  for (const u of ['x-anim.webp', 'y-anim.webp', 'z-anim.webp']) trackAtlas(fakeImage(), u, () => {}, () => {}, () => gone.push(u));
+  assert.equal(releaseSheets(['y-anim.webp', 'nope.webp']), 1);
+  assert.deepEqual(gone, ['y-anim.webp']);
+  assert.equal(releaseWorldArt(), 2);
 });

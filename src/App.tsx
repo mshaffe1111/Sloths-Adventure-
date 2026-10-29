@@ -514,7 +514,8 @@ export default function App() {
     };
   }
 
-  // dev only: the running engine, for screenshots and tests
+  // dev only: the running engine, for screenshots and tests (the one hook: the engine used to set window.__engine to itself as it was
+  // made, which replaced this function with an engine object, so a script's __engine() threw after a Play again)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __engine?: () => unknown }).__engine = () => engineRef.current;
   }
@@ -579,6 +580,15 @@ export default function App() {
     if (lvl) void preloadStage(lvl, canvasRef.current, inPlay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctestGate]);
+
+  // the questions after a control-test run are up: the next run's mix is chosen now, and its sheets loaded while they are answered (the
+  // last mix's creatures that this one does not draw are let go first: stagePreload.ts)
+  useEffect(() => {
+    if (!ctestDone) return;
+    newMix();
+    void preloadStage(ctestDone, canvasRef.current, inPlay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctestDone]);
 
   // World 8's flashback (the promise) plays inside its world card: it counts as seen once that card opens
   useEffect(() => {
@@ -934,8 +944,7 @@ export default function App() {
             const lvl = ctestDone;
             setCtestDone(null);
             recorder.event('playAgain');
-            // a new mix of stretches for the next run
-            newMix();
+            // (the new mix was chosen, and its sheets loaded, while the questions were up: the effect below)
             launchEngine(lvl);
           }}
         />

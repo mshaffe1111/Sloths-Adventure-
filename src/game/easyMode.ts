@@ -121,6 +121,7 @@ export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>, out?:
   // (a ledge Easy may widen: plain ground, not a pushed log, a painted piece or a pad)
   const widenable = (p: Platform) => (p.type === 'solid' || p.type === 'fragile') && !p.push && !p.art && !p.lily && !p.crown;
   let id = Math.max(0, ...stage.platforms.map((p) => p.id)) + 1;
+  const rivers = stage.rivers ?? [];
   let n = 0;
   for (const B of [...stage.platforms]) {
     if (B.broken || heldIds.has(B.id) || !fullIds.has(B.id) || B.type === 'drift' || B.type === 'moving' || B.push) continue;
@@ -146,7 +147,10 @@ export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>, out?:
     if (!best) continue;
     const { A, gap, side, room } = best;
     const others = stage.platforms.filter((q) => q !== B && q.id !== A.id && !q.broken);
-    if (room >= 0 && side !== 0 && widenable(B)) {
+    // (never the edge of a bank where a river begins or ends: it grew out over the water, the bank no longer stood where the water stops,
+    // and the river check failed on 110 of 200 control-test rolls on Easy, 2026-10-29; a catch ledge below does the job instead)
+    const riverEdge = side === 1 ? rivers.some((r) => Math.abs(B.x - r.x1) <= 2) : side === -1 ? rivers.some((r) => Math.abs(B.x + B.width - r.x0) <= 2) : false;
+    if (room >= 0 && side !== 0 && widenable(B) && !riverEdge) {
       // a wider landing: the ledge reaches toward him, as far as the held jump needs (and never past the gap)
       const d = Math.min(Math.max(0, gap - 4), Math.ceil(gap - room) + 6);
       // (the strip it grows by must be clear: nothing standing up through its top there)
@@ -238,6 +242,8 @@ export function easyStage(stage: Stage): Stage {
   if (gen2 && stage.gen2!.budget.difficulty !== 'easy') throw new Error(`easyStage: ${stage.config.id} is a gen2 stage built for Normal; build it with generateStage(config, 'easy')`);
   // Easy keeps the stage's own lower bar (goals.ts raised Normal's to its share of what the stage holds)
   if (stage.easyGoal !== undefined) stage.config = { ...stage.config, targetCount: stage.easyGoal };
+  // (the pieces Easy adds from here on: stones, steps and catch ledges, numbered after the stage's own)
+  const firstAdded = Math.max(0, ...stage.platforms.map((p) => p.id)) + 1;
 
   // (World 2's lily pads 40 px wider on Easy, QA 2026-10-29: a kid's hop that came down past a pad's middle ran on off its far end; the
   // gaps between them shrink to match, and Easy's other ledge widening leaves pads alone)
@@ -287,6 +293,12 @@ export function easyStage(stage: Stage): Stage {
   }
   const ring = stage.proto?.ring;
   if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
+
+  // a pickup a piece Easy added now stands in sits on its top instead (a step built over a flower, 2026-10-29: 'flower inside platform')
+  for (const c of stage.collectibles) {
+    const q = stage.platforms.find((p) => p.id >= firstAdded && c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2);
+    if (q) c.y = q.y - 34;
+  }
 
   // flags, and a heart at every flag
   let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;

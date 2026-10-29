@@ -9,13 +9,13 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
-import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
+import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
 import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
-import { ctestEnabled } from './playRecorder.ts';
+import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
@@ -27,8 +27,9 @@ import { MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
 import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
-import { stageSheets } from './stageSheets.ts';
-import { warmSprites } from './spriteSheets.ts';
+import { CTEST_FOES, ctestMixDraws, stageSheets } from './stageSheets.ts';
+import { SPRITES, warmSprites } from './spriteSheets.ts';
+import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
@@ -136,10 +137,14 @@ let pending: { id: string; done: Promise<void> } | null = null;
  */
 export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean = () => false, ms = 8000): Promise<void> {
   if (typeof Image === 'undefined' || !preloadEnabled()) return Promise.resolve();
-  if (pending?.id === cfg.id) return pending.done;
+  // (the control test: the mix about to be played, so only its creatures are asked for, and the others' sheets are let go)
+  const mix = ctestEnabled() && cfg.id === CTEST_STAGE_ID ? ctestSeed() : undefined;
+  const id = mix ? `${cfg.id}#${mix}` : cfg.id;
+  if (pending?.id === id) return pending.done;
   // (a stage in another world: the last world's sheets go first, as starting the stage would do)
   enterWorld(cfg.worldIndex);
-  const keys = stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled() });
+  if (mix && !live()) releaseCtestFoes(ctestMixDraws(mix).foes);
+  const keys = stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled(), mix });
   const urls = start(keys);
   // (and two small sheets nearly every stage draws: the falling leaves, and Pokey hanging from a liana; QA's 'blank wait leaves-atlas'
   // a second into a stage, 'wait hero-vine' at the first swing)
@@ -162,12 +167,24 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     const drawn = live() ? 0 : warmSheets(urls, ctx);
     perfNote(`preloaded ${cfg.id}: ${n}/${urls.length} sheets ready, ${drawn} drawn once, ${Math.round(performance.now() - t0)} ms`);
   });
-  const mine = { id: cfg.id, done };
+  const mine = { id, done };
   pending = mine;
   void done.then(() => {
     if (pending === mine) pending = null;
   });
   return done;
+}
+
+/** the control test's creature sheets that this mix does not draw: let go (a decoded clip sheet is 13 to 20 MB) */
+function releaseCtestFoes(keep: readonly string[]) {
+  const urls: string[] = [];
+  for (const n of CTEST_FOES) {
+    if (keep.includes(n)) continue;
+    const u = creatureAnimUrl(n);
+    if (u) urls.push(u);
+    urls.push(...(SPRITES[n]?.urls() ?? []));
+  }
+  releaseSheets(urls);
 }
 
 /**

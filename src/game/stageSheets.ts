@@ -33,7 +33,8 @@
  * stage on rolls 1-3 and fails when a sheet it draws is not in its list.) The engine still asks for the built stage's own creatures
  * as it starts (sheetWarm.ts warmStageSheets), for a roll that holds something these lists did not foresee.
  */
-import { HAND_STAGES, W3_PUZZLES } from './protoStage.ts';
+import { buildProtoStage, HAND_STAGES, W3_PUZZLES } from './protoStage.ts';
+import { stageAnims, stageExtras } from './sheetWarm.ts';
 import { W2_PUZZLES, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID } from './extraStages.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
@@ -82,7 +83,27 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
 };
 
 /** the control test's mixes (1-2 with the control test on): every creature any of them holds */
-const CTEST_FOES: readonly string[] = ['boa', 'eagle', 'goldsnake', 'turtle'];
+export const CTEST_FOES: readonly string[] = ['boa', 'eagle', 'goldsnake', 'turtle'];
+
+/**
+ * What one control-test mix draws (its seed: playRecorder.ts ctestSeed): the creatures its six stretches hold, and whether it has bushes
+ * (props2). Built as the engine will build it (13 to 44 ms; the last few kept). A mix holds one to three of the four creatures, so asking
+ * for all four decoded about 175 MB a run for a phone to hold (QA 2026-10-29: an Android in Facebook's browser fell to 2 fps on a replay).
+ */
+const mixDraws = new Map<number, { foes: string[]; props2: boolean }>();
+export function ctestMixDraws(seed: number): { foes: string[]; props2: boolean } {
+  const hit = mixDraws.get(seed);
+  if (hit) return hit;
+  const cfg = {
+    worldIndex: 1, miniIndex: 2, id: CTEST_STAGE_ID, name: 'Control Test', objectiveType: 'sprint', targetCount: 1, timeLimit: 270,
+    levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
+  } as LevelConfig;
+  const st = buildProtoStage(cfg, seed, 'ctest');
+  const v = { foes: stageAnims(st).filter((n) => CTEST_FOES.includes(n)), props2: stageExtras(st).props2 };
+  if (mixDraws.size > 4) mixDraws.delete(mixDraws.keys().next().value!);
+  mixDraws.set(seed, v);
+  return v;
+}
 
 /**
  * Every creature the old generator can place in a world (stageGenerator.ts: a snake or, from World 4, a tayra in a plain slot; the
@@ -127,6 +148,8 @@ export interface SheetSwitches {
   paint: boolean;
   /** the control test is on (its 1-2 is the hand-built test stage) */
   ctest: boolean;
+  /** the control test's mix about to be played (its seed): only its creatures are asked for; left out, every creature any mix holds */
+  mix?: number;
 }
 
 export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>, sw: SheetSwitches): string[] {
@@ -153,7 +176,11 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   else if (!built) for (const f of genFoes(w)) out.push(`foe:${f}`);
   // (World 6 on gen2 on: a stage's animals, the eagle and the bushes change from roll to roll, so it asks for the world's whole set)
   else if (isGen2Stage(cfg) && w >= 6) out.push(...genFoes(w).map((f) => `foe:${f}`), 'props2');
-  else if (sw.ctest && cfg.id === CTEST_STAGE_ID) out.push(...CTEST_FOES.map((f) => `foe:${f}`), 'props2');
+  else if (sw.ctest && cfg.id === CTEST_STAGE_ID) {
+    const m = sw.mix ? ctestMixDraws(sw.mix) : { foes: CTEST_FOES, props2: true };
+    out.push(...m.foes.map((f) => `foe:${f}`));
+    if (m.props2) out.push('props2');
+  }
   else out.push(...(STAGE_DRAWS[cfg.id] ?? []));
   // (a generated World 3 or 5 stage's zones: its spore mushrooms and its webs are Matt's painted pieces, zoneArt.ts; as
   // stageGenerator.ts decides which stages get zones)
