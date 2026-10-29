@@ -21,6 +21,21 @@ items = [{'name': f'w7chairs-s{round(st * 100)}-{sd}', 'start': 'start-w7chairs.
 # the fallen chair flat on its back. One pair, between the two first strengths.)
 items += [{'name': f'w7chairs-b-s62-{sd}', 'start': 'start-w7chairs-b.webp', 'prompt': P, 'strength': 0.62, 'seed': sd, 'w': 1536,
            'h': 416} for sd in (17, 29)]
+# (round 3, after the lead's review: the b take's nine identical chairs in a straight row read as copy-pasted. start-w7chairs-c
+# (chairstart2.py) makes every chair its own and builds the arc with depth: near ends big and low, the middle small and higher on a
+# floor that curves away. Its own prompt and negative: the crest is a carved sloth face, so 'sloth' is not in the negative.)
+P3 = ("slothadv style, painted storybook illustration, a wide side-on strip for a side-scrolling platform game: a ring of ten old "
+      "carved stone chairs on the mossy floor of a ruined jungle temple, the ring curving away from us: the chairs at both ends near "
+      "and large, the middle chairs far away, smaller and standing further back on the floor. Every chair different: one with its back "
+      "broken off halfway, one with a cracked top, two with a carved stone sloth-face crest, one leaning, one missing its armrest, one "
+      "wrapped in a thick brown root, one nearly bare. One chair knocked over lying on the floor. At the far right, set apart, an "
+      "eleventh chair, small, plain, smooth uncarved stone. Grey-green weathered temple stone, soft green moss, thin dry brown roots. "
+      "Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, "
+      "no shadow, no text")
+NEG3 = ('isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, '
+        'gradient background, sky, cast shadow, people, living animal, identical chairs, repeated pattern')
+items += [{'name': f'w7chairs-c-s60-{sd}', 'start': 'start-w7chairs-c.webp', 'prompt': P3, 'neg': NEG3, 'strength': 0.6, 'seed': sd,
+           'w': 1536, 'h': 416} for sd in (29, 41)]
 spec_all = {'note': '7-3 ring of chairs by img2img from tools/art/hfbatch/chairstart.py, 2026-10-29',
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
         'neg': ('perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, '
@@ -31,4 +46,7 @@ p.write_text(json.dumps(spec_all, indent=1))
 p2 = p.with_name('spec-hfb-chairs-b.json')
 p2.write_text(json.dumps({**spec_all, 'items': [it for it in items if it['start'] == 'start-w7chairs-b.webp']}, indent=1))
 print(p2)
+p3 = p.with_name('spec-hfb-chairs-c.json')
+p3.write_text(json.dumps({**spec_all, 'items': [it for it in items if it['start'] == 'start-w7chairs-c.webp']}, indent=1))
+print(p3)
 print(p)
