@@ -121,12 +121,21 @@ function hall(p: string, after: string, runs: number[], stair = false, bW: W = [
   return { pieces: out, last: `${p}b`, tiles };
 }
 
-/** a brown vine up an old wall at the end of `on` (the wall a whole bank, out of a double jump's reach), and down off its far side */
-const wall = (vine: string, on: string, top: string, h: number, w: W, after: string, afterW: W): SectionPiece[] => [
-  { key: vine, shape: 'vine', w: 0, place: { kind: 'climb', on, at: 1, h } },
-  // (not main: the purge's top-up lays its animals on main pieces, and none may wait where the climb tops out)
-  bank(top, w, { kind: 'over', on: vine, at: 0, dy: 0 }, { main: false }),
-  down(after, top, h, afterW),
+/** how high an old wall stands over the floor its vine starts on: more than a double jump, plus 40 */
+export const WALL = 230;
+/**
+ * A brown vine up an old wall at the end of `on` (the wall a whole bank, out of a double jump's reach), along its top and down off its
+ * far side onto `after` (260 px or more). The top is the wall (`top`), a plinth on it (`${top}k`, a hop) and the wall again (`${top}2`):
+ * 530 px or more, wider than the leaf glide from the vine's foot, so levelCheck (which measures a jump ledge edge to ledge edge and never
+ * sees the wall between) can't glide past the climb (STAGE-RULES §6, the second World 7 builder's finding). The top is not main: the
+ * purge's top-up lays its animals on main pieces, and none may wait where the climb tops out.
+ */
+const wall = (vine: string, on: string, top: string, after: string, afterW: W = [260, 300]): SectionPiece[] => [
+  { key: vine, shape: 'vine', w: 0, place: { kind: 'climb', on, at: 1, h: WALL } },
+  bank(top, [200, 230], { kind: 'over', on: vine, at: 0, dy: 0 }, { main: false }),
+  bank(`${top}k`, [130, 160], { kind: 'walk', after: top, dy: -40 }, { main: false }),
+  bank(`${top}2`, [200, 230], { kind: 'walk', after: `${top}k`, dy: 40 }, { main: false }),
+  down(after, `${top}2`, WALL, afterW),
 ];
 
 const petals = (id: string, on: string, t: Socket['t'], count = 2, span = 120, o: Opt = {}): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span, ...o });
@@ -206,12 +215,11 @@ const columnRest = section({
 /** a plinth and a rubble gap, a small animal past it */
 const plinthHop = section({
   id: 'w7-plinth-hop',
-  name: 'plinth and gap',
+  name: 'drain and plinth',
   archetypes: 'any',
-  phases: ['ki', 'sho', 'ten'],
-  difficulty: 3,
-  weight: SHARED,
-  pieces: [bank('a', [300, 340]), wide('b', 'a', [260, 300], [0.4, 0.55]), up('c', 'b', 38, [140, 160]), down('d', 'c', 38, [260, 300]), up('k', 'd', 30, [140, 160]), down('e', 'k', 30, [160, 200])],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 4,
+  pieces: [bank('a', [360, 400]), drain('b', 'a', [360, 400]), up('c', 'b', 38, [140, 160]), down('d', 'c', 38, [260, 300]), up('k', 'd', 30, [140, 160]), down('e', 'k', 30, [160, 200])],
   last: 'e',
   sockets: [petals('a', 'a', 0.5, 2, 80), petals('c', 'c', 0.5, 1), foe('cat', 'd', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 }), petals('k', 'k', 0.5, 1), relic('r', 'e', 0.6)],
   mirrorable: true,
@@ -386,9 +394,9 @@ const brownWall = section({
   difficulty: 3,
   uses: [W7_THEME.walls],
   teaches: BROWN,
-  pieces: [bank('a', [320, 360]), ...wall('v', 'a', 'top', 220, [240, 280], 'b', [260, 300])],
+  pieces: [bank('a', [320, 360]), ...wall('v', 'a', 'top', 'b')],
   last: 'b',
-  sockets: [tip(BROWN, 'a', 0.2), petals('top', 'top', 0.5, 3, 140), relic('r', 'top', 0.7), scenery('figs', 'b', [0.5, 0.7])],
+  sockets: [tip(BROWN, 'a', 0.2), petals('top', 'top', 0.5, 2, 90), petals('topk', 'topk', 0.5, 1), relic('r', 'top2', 0.6), scenery('figs', 'b', [0.5, 0.7])],
   mirrorable: false,
 });
 
@@ -400,23 +408,24 @@ const wallGap = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [W7_THEME.walls],
-  pieces: [bank('a', [260, 300]), ...wall('v', 'a', 'top', 230, [220, 260], 'b', [200, 240]), wide('c', 'b', [340, 380])],
+  pieces: [bank('a', [260, 300]), ...wall('v', 'a', 'top', 'b'), wide('c', 'b', [340, 380])],
   last: 'c',
-  sockets: [petals('top', 'top', 0.5, 2, 100), relic('r', 'top', 0.6), foe('foe', 'c', [0.55, 0.7], CATS, 5, { phases: LIVE, chance: 0.7 })],
+  sockets: [petals('top', 'top', 0.5, 2, 100), relic('r', 'top2', 0.6), foe('foe', 'c', [0.55, 0.7], CATS, 5, { phases: LIVE, chance: 0.7 })],
   mirrorable: false,
 });
 
-/** two walls, a plinth floor between them */
-const doubleWall = section({
-  id: 'w7-double-wall',
-  name: 'two old walls',
+const wallPl = plinths('', 'b', 1, [260, 300]);
+/** a wall, then a plinth on the floor past it, a small animal past that */
+const wallPlinths = section({
+  id: 'w7-wall-plinths',
+  name: 'old wall and plinths',
   archetypes: ['sprint', 'relic_hunt'],
   phases: ['sho', 'ten', 'ketsu'],
-  difficulty: 6,
+  difficulty: 5,
   uses: [W7_THEME.walls],
-  pieces: [bank('a', [240, 280]), ...wall('v1', 'a', 'top1', 220, [200, 240], 'b', [260, 300]), up('k', 'b', 30, [140, 160]), down('b2', 'k', 30, [180, 220]), ...wall('v2', 'b2', 'top2', 240, [200, 240], 'c', [240, 280])],
-  last: 'c',
-  sockets: [petals('top1', 'top1', 0.5, 2, 90), petals('k', 'k', 0.5, 1), foe('foe', 'b', [0.45, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 }), petals('top2', 'top2', 0.5, 2, 90), relic('r', 'top2', 0.5)],
+  pieces: [bank('a', [240, 280]), ...wall('v', 'a', 'top', 'b'), ...wallPl.pieces],
+  last: wallPl.last,
+  sockets: [petals('top', 'top', 0.5, 2, 90), petals('topk', 'topk', 0.5, 1), relic('r', 'top2', 0.5), petals('k1', 'k1', 0.5, 1), foe('foe', 'f1', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 })],
   mirrorable: false,
 });
 
@@ -428,9 +437,9 @@ const wallCat = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W7_THEME.walls],
-  pieces: [bank('a', [200, 240]), up('k', 'a', 30, [140, 160]), down('foot', 'k', 30, [420, 460]), ...wall('v', 'foot', 'top', 220, [240, 280], 'b', [280, 320])],
+  pieces: [bank('a', [200, 240]), up('k', 'a', 30, [140, 160]), down('foot', 'k', 30, [420, 460]), ...wall('v', 'foot', 'top', 'b', [280, 320])],
   last: 'b',
-  sockets: [petals('k', 'k', 0.5, 1), foe('foe', 'foot', [0.35, 0.45], [...CATS, 'boa'], 5, { phases: LIVE }), petals('top', 'top', 0.5, 3, 140), relic('r', 'b', 0.6)],
+  sockets: [petals('k', 'k', 0.5, 1), foe('foe', 'foot', [0.35, 0.45], [...CATS, 'boa'], 5, { phases: LIVE }), petals('top', 'top', 0.5, 2, 90), petals('topk', 'topk', 0.5, 1), relic('r', 'b', 0.6)],
   mirrorable: false,
 });
 
@@ -440,10 +449,9 @@ const wallCat = section({
 const drainHop = section({
   id: 'w7-drain',
   name: 'dirty drain',
-  archetypes: ['sprint', 'relic_hunt'],
+  archetypes: 'any',
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 4,
-  uses: [W7_THEME.drains],
   pieces: [bank('a', [360, 400]), drain('b', 'a', [380, 420]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
   last: 'c',
   sockets: [petals('a', 'a', 0.45, 2, 90), foe('frog', 'b', [0.55, 0.65], ['frog', 'tayra'], 2.5, { phases: LIVE, chance: 0.7 }), petals('k', 'k', 0.5, 1), relic('r', 'c', 0.5)],
@@ -454,10 +462,9 @@ const drainHop = section({
 const drainPair = section({
   id: 'w7-drain-pair',
   name: 'two drains',
-  archetypes: ['sprint', 'relic_hunt'],
+  archetypes: 'any',
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
-  uses: [W7_THEME.drains],
   pieces: [bank('a', [360, 400]), drain('b', 'a', [420, 460]), drain('c', 'b', [360, 400])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), foe('foe', 'b', [0.45, 0.55], SMALL, 3, { phases: LIVE }), scenery('urn', 'c', [0.4, 0.6]), relic('r', 'c', 0.7)],
@@ -468,13 +475,26 @@ const drainPair = section({
 const drainRise = section({
   id: 'w7-drain-rise',
   name: 'drain and rubble',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  pieces: [bank('a', [360, 400]), drain('b', 'a', [360, 400]), up('k', 'b', 34, [140, 160]), down('b2', 'k', 34, [200, 240]), wide('c', 'b2', [300, 340])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 2, 90), petals('k', 'k', 0.5, 1), foe('foe', 'c', [0.55, 0.7], [...CATS, 'frog'], 5, { phases: HOT, chance: 0.6 })],
+  mirrorable: true,
+});
+
+/** the drains theme: three drains in a row, the floors between long enough to land and look (no glide trap) */
+const drainRun = section({
+  id: 'w7-drain-run',
+  name: 'three drains',
   archetypes: ['sprint', 'relic_hunt'],
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W7_THEME.drains],
-  pieces: [bank('a', [360, 400]), drain('b', 'a', [360, 400]), up('k', 'b', 34, [140, 160]), down('b2', 'k', 34, [200, 240]), wide('c', 'b2', [300, 340])],
-  last: 'c',
-  sockets: [petals('a', 'a', 0.5, 2, 90), petals('k', 'k', 0.5, 1), foe('foe', 'c', [0.55, 0.7], [...CATS, 'frog'], 5, { phases: HOT, chance: 0.6 })],
+  pieces: [bank('a', [360, 400]), drain('b', 'a', [360, 400]), drain('c', 'b', [360, 400]), drain('d', 'c', [360, 400])],
+  last: 'd',
+  sockets: [petals('a', 'a', 0.5, 1), foe('f1', 'b', [0.45, 0.55], ['frog', 'tayra'], 2.5, { phases: LIVE, chance: 0.6 }), scenery('urn', 'c', [0.4, 0.6]), relic('r', 'd', 0.6)],
   mirrorable: true,
 });
 
@@ -708,24 +728,24 @@ const harpyWall = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W7_THEME.harpies],
-  pieces: [bank('a', [380, 420]), ...wall('v', 'a', 'top', 220, [220, 260], 'b', [460, 500])],
+  pieces: [bank('a', [380, 420]), ...wall('v', 'a', 'top', 'b', [460, 500])],
   last: 'b',
   sockets: [foe('t1', 'a', [0.35, 0.45], ['tayra', 'frog'], 2.5), petals('top', 'top', 0.5, 2, 90), foe('harpy', 'b', [0.5, 0.6], ['harpy', 'tayra'], 4, { phases: LIVE })],
   mirrorable: false,
 });
 
-/** harpies: two walls, tayras on the floors between */
-const tayraWalls = section({
-  id: 'w7-tayra-walls',
-  name: 'tayra walls arena',
+/** harpies: a tayra on the floor, a long floor between two plinths for the harpy to slide on */
+const harpyPlinths = section({
+  id: 'w7-harpy-plinths',
+  name: 'harpy plinths arena',
   archetypes: ['purge', 'gauntlet'],
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 8,
   uses: [W7_THEME.harpies],
-  pieces: [bank('a', [300, 340]), ...wall('v1', 'a', 'top1', 220, [200, 240], 'b', [400, 440]), ...wall('v2', 'b', 'top2', 230, [200, 240], 'c', [360, 400])],
-  last: 'c',
-  sockets: [foe('t1', 'a', [0.35, 0.45], ['tayra'], 2.5), petals('top1', 'top1', 0.5, 2, 90), foe('t2', 'b', [0.45, 0.55], ['tayra', 'ocelot'], 3, { phases: LIVE }), foe('h', 'c', [0.55, 0.65], ['harpy', 'jaguar'], 5, { phases: HOT, chance: 0.6 })],
-  mirrorable: false,
+  pieces: [bank('a', [340, 380]), up('k', 'a', 30, [140, 160]), down('long', 'k', 30, [560, 600]), up('k2', 'long', 30, [140, 160]), down('b', 'k2', 30, [260, 300])],
+  last: 'b',
+  sockets: [foe('t1', 'a', [0.35, 0.45], ['tayra'], 2.5), petals('k', 'k', 0.5, 1), foe('harpy', 'long', [0.45, 0.55], ['harpy', 'jaguar'], 5, { phases: LIVE }), petals('k2', 'k2', 0.5, 1), foe('f3', 'b', [0.5, 0.6], ['tayra', 'frog'], 2.5, { phases: HOT, chance: 0.6 })],
+  mirrorable: true,
 });
 
 // ───────────────────────────── the list ─────────────────────────────
@@ -747,11 +767,12 @@ export const W7_GROUND_SECTIONS: SectionTemplate[] = [
   stairFlat,
   brownWall,
   wallGap,
-  doubleWall,
+  wallPlinths,
   wallCat,
   drainHop,
   drainPair,
   drainRise,
+  drainRun,
   courtyard,
   twinCourts,
   courtGap,
@@ -769,7 +790,7 @@ export const W7_GROUND_SECTIONS: SectionTemplate[] = [
   boaGallery,
   harpyFloor,
   harpyWall,
-  tayraWalls,
+  harpyPlinths,
 ];
 
 /** the sections that hold crumbling tiles (the tests hold each to the tile rules, and every roll to not needing them) */
@@ -784,9 +805,9 @@ export const W7_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object
   ...doorGates.map((s) => [s.id, [1]] as const),
   ...floorGates.map((s) => [s.id, [6]] as const),
   ['w7-first-tiles', [1]] as const,
+  ['w7-drain-run', [1, 6, 7]] as const,
   ['w7-chair-ring', [3]] as const,
   ...['w7-tile-stair', 'w7-long-stair', 'w7-stair-flat'].map((id) => [id, [6]] as const),
-  ...['w7-brown-wall', 'w7-wall-gap', 'w7-double-wall', 'w7-wall-cat'].map((id) => [id, [1, 3, 7]] as const),
+  ...['w7-brown-wall', 'w7-wall-gap', 'w7-wall-plinths', 'w7-wall-cat'].map((id) => [id, [1, 3, 7]] as const),
   ...['w7-gallery', 'w7-long-gallery', 'w7-twin-halls'].map((id) => [id, [1, 3, 6, 7, 9]] as const),
-  ...['w7-drain', 'w7-drain-pair', 'w7-drain-rise'].map((id) => [id, [1, 6, 7]] as const),
 ]);

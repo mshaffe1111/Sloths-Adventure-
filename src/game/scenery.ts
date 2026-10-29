@@ -1658,9 +1658,16 @@ function paintedSpan(img: Layer, iw: number, ih: number): { sx: number; sw: numb
   return span;
 }
 
+/**
+ * A world whose strip carries one big landmark (World 7's near strip: the sleeping stone head) draws it larger, so one repeat is wider
+ * than a sideways phone screen and the landmark never shows twice in one view (STAGE-RULES §5b item 2, QA 2026-10-29)
+ */
+const STRIP_GROW: Partial<Record<number, Partial<Record<keyof typeof STRIP_FIT, number>>>> = { 7: { near: 1.75 } };
+
 /** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT */
-function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0) {
-  const f = STRIP_FIT[part];
+function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, world = 0) {
+  const g = STRIP_GROW[world]?.[part] ?? 1;
+  const f = g === 1 ? STRIP_FIT[part] : { ...STRIP_FIT[part], k: STRIP_FIT[part].k * g };
   const dh = H * s * f.k;
   const iw = img instanceof HTMLCanvasElement ? img.width : img.naturalWidth;
   const ih = img instanceof HTMLCanvasElement ? img.height : img.naturalHeight;
@@ -1796,7 +1803,7 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     if (k < 0.99) {
       ctx.globalAlpha = 1 - k;
       drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo);
+      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo, world);
       ctx.globalAlpha = 1;
     }
     if (cano && k > 0.01) {

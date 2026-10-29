@@ -76,7 +76,7 @@ test('the manifest: ids unique, every socket asks for something the world has, e
           assert.equal(t.w, CRUMBLE_TILE_W, `${s.id}.${t.key}`);
           assert.ok(!t.main, `${s.id}.${t.key} is on the main route`);
           const under = L.pieces.find((p) => p.key.endsWith('hall') && p.x <= t.x + 1 && p.x + p.w >= t.x + t.w - 1);
-          assert.ok(under && under.y - (t.y + 26) >= 80, `${s.id}.${t.key}: no hall walked under it (${under ? under.y - t.y : 'none'})`);
+          assert.ok(under && under.y - (t.y + t.h) >= 80 && t.h === 40, `${s.id}.${t.key}: no hall walked under it (${under ? under.y - t.y : 'none'})`);
         }
       }
     }
@@ -109,6 +109,12 @@ test('World 7 on raw rolls, Normal and Easy: the check passes, and passes withou
     assert.ok(R.quick.time >= 120, `${at}: quick ${R.quick.time.toFixed(0)} s`);
     const q = measureStage(st as never);
     assert.equal(q.takeoffsNearEnemy + q.landingsNearEnemy, 0, `${at}: an animal by a jump`);
+    // (every climb and every swing is needed: the quick route climbs each brown vine and swings each liana, STAGE-RULES §6)
+    const segs = R.used.route.segs;
+    for (const v of st.vines) {
+      const kind = v.vineType === 'swing_liana' ? 'swing' : 'climb';
+      assert.ok(segs.some((s) => s.kind === kind && Math.min(s.x0, s.x1) <= v.x + 40 && Math.max(s.x0, s.x1) >= v.x - 40), `${at}: the ${kind} at ${v.x} is walked past`);
+    }
     // (the rooms and the tiles' lesson, once)
     for (const r of W7_REQUIRED[id] ?? []) assert.equal(st.gen2.sections.filter((s) => s.template === r.section).length, 1, `${at}: ${r.section}`);
   });
@@ -234,7 +240,7 @@ test("the pipeline's check catches tiles that are needed: with a hall's floor an
   assert.ok(found, 'a roll of 7-6 with the tile stair and run');
   const { st, x0, x1 } = found!;
   const y = st.platforms.find((p) => p.type === 'fragile' && p.x === x0)!.y;
-  const holed = { ...st, platforms: st.platforms.filter((p) => p.type === 'fragile' || !(p.x >= x0 - 1 && p.x < x1 + HALL.stepW + 1 && p.y > y)) };
+  const holed = { ...st, platforms: st.platforms.filter((p) => p.type === 'fragile' || !(p.x >= x0 - 1 && p.x < x1 + HALL.stepW + 1 && p.y > y + 1)) };
   const res = checkStage(holed as Gen2Stage, st.gen2.budget);
   assert.ok(res.errors.some((e) => e.startsWith('crumbling tiles needed:')), res.errors.slice(0, 3).join('; '));
 });

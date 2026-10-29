@@ -84,8 +84,9 @@ export function rngFor(seed: number, ...salts: number[]): Rng {
 export const roll = (rng: Rng, r: Range): number => (typeof r === 'number' ? r : r[0] + (r[1] - r[0]) * rng());
 const mid = (r: Range): number => (typeof r === 'number' ? r : (r[0] + r[1]) / 2);
 const R = Math.round;
-/** a crumbling ruin tile's thickness (the old generator's: stageGenerator.ts ruins) */
-const CRUMBLE_H = 26;
+/** a crumbling ruin tile's thickness: the painted slab's (crumbleArt.ts draws it 46 px deep, its hanging moss not solid), so nothing
+ *  stands in the air under it or clips through it */
+const CRUMBLE_H = 40;
 
 // ───────────────────────────── the jump envelope ─────────────────────────────
 
@@ -1332,7 +1333,8 @@ const flagInZone = (zones: readonly Zone[], x: number, y: number) => zones.some(
 /** the quota items a section's node asks for, shared out among the node's sections in turn */
 function graphObjectives(laid: Laid, sec: PlacedSection): number {
   const meta = laid as Laid & { objectives?: Map<string, number> };
-  return meta.objectives?.get(sec.uid) ?? 1;
+  // (a section with no share of a quota lays none: a relic socket in a sprint stays empty)
+  return meta.objectives?.get(sec.uid) ?? 0;
 }
 
 const terrainOK = (c: CreatureDef, p: Platform) => (c.terrain === 'air' ? true : c.terrain === 'flat' ? p.width >= c.minGround : p.width >= c.minGround);

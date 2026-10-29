@@ -20,6 +20,8 @@
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water
+ *   crumble        World 7's painted crumbling tiles (crumbleArt.ts) and bank-face dressing (w7FaceArt.ts), every World 7 stage but
+ *                  the guardian's lair
  *   anim:<name>    a clip sheet on its own (Meeca's stage: Pell and the soldiers)
  *   props2         World 1's second sheet (bushes, trunk hollows: protoArt.ts PROTO2_URL), for the stages that have them (STAGE_DRAWS)
  *   perch          Dot's perched poses (components/hud/painted.tsx), in every stage she flies in
@@ -155,6 +157,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (isGen2Stage(cfg) && gen2Water(cfg.id)) out.push('water-signs');
   // (World 6 on: its creeks and its tide are the dirty, fast water)
   if (isGen2Stage(cfg) && w >= 6) out.push('bad-water');
+  if (w === 7 && cfg.objectiveType !== 'boss_lair' && !cfg.secret) out.push('crumble');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
   out.push('perch');
   return out;

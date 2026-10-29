@@ -5,6 +5,9 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
+import { drawCrumbleTile } from './crumbleArt.ts';
+import { drawW7Face } from './w7FaceArt.ts';
+import { shakeOffset } from './spanArt.ts';
 import type { Collectible, Platform } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
@@ -441,6 +444,8 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
 export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number }): boolean {
   if (!protoArtReady()) return false;
   if (!moss) drawGroundFill(ctx, p, viewBottom, view);
+  // (World 7: Matt's painted roots, columns and statues set into the deep stone, so it is not one block repeated: w7FaceArt.ts)
+  if (kitWorld === 7 && view) drawW7Face(ctx, p, Math.max(p.y + p.height, viewBottom), view);
   const n: Name = moss ? 'mossStrip' : 'bank';
   const f = frameOf(n).f;
   const th = moss ? 46 : 110;
@@ -553,6 +558,19 @@ export interface ProtoSceneState {
   movedAt: Map<number, number>;
 }
 
+/** three of the kit's painted vines hanging from a wall's lip down its face to the floor, each its own length and side */
+function drawWallVines(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number) {
+  const { img, f } = frameOf('liana');
+  const h = bottom - top + 18;
+  for (const [dx, w, k, flip] of [[8, 44, 1, false], [30, 38, 0.86, true], [52, 34, 0.7, false]] as const) {
+    ctx.save();
+    ctx.translate(x + dx, top - 8);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(img, f.x, f.y, f.w, f.h, -w / 2, 0, w, h * k);
+    ctx.restore();
+  }
+}
+
 /**
  * The painted layer of the hand-built stage, drawn after the ground: the bank tops, the moss floors and the root wall over the drawn
  * ground, then the branches, perches, the rock and the log. Returns false (draw nothing) until the atlas is loaded.
@@ -583,6 +601,13 @@ export function drawProtoScene(
     // (a vine hanging down a cliff is not a trunk: its stage draws it)
     if (v.vineType !== 'tree_climb' || v.rope || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
+    // (World 7's brown vines up the old walls: the story's "the vines on the old walls hung brown". A climb whose top meets a wall's
+    // top-left corner is drawn as three of the kit's painted brown vines hanging down the wall's face, not the pale climbing pillar,
+    // which stood half over the air like a pasted pane, QA 2026-10-29)
+    if (kitWorld === 7 && banks.some((q) => Math.abs(q.x - v.x) < 4 && Math.abs(q.y - v.topY) < 4)) {
+      drawWallVines(ctx, v.x, v.topY, bottom);
+      continue;
+    }
     const tw = 84;
     const th = (tw * tf.h) / tf.w;
     ctx.save();
@@ -600,6 +625,11 @@ export function drawProtoScene(
     if (trunk && p.width <= 220) {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);
       continue;
+    }
+    // (World 7's crumbling tiles: Matt's painted crumble frames, crumbleArt.ts; their falling pieces are zoneArt's drawCrumbleTiles)
+    if (p.crumbleAfter !== undefined && !p.broken) {
+      const [dx, dy] = shakeOffset(p, t);
+      if (drawCrumbleTile(ctx, p, t, dx, dy)) continue;
     }
     if (p.type === 'fragile') {
       if (p.broken) {

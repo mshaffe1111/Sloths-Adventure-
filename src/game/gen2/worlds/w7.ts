@@ -16,8 +16,12 @@
  *   props       scenery only (statues, urns, fallen columns, braziers, fig roots, the ring of chairs): Matt's World 7 set dressing
  *               (src/assets/w6to10/props-made w7c, w7c-b), named by their cells. Like World 6's, the gen2 extras carry them for the
  *               drawing (proto.gen2.w7); nothing draws them yet.
- *   water       the drains of a few sections are dirty water (Matt's rule from World 6 on: badWaterArt.ts paints it), a third of a jump
- *               wide, warned first by Pokey (W7_TIPS.water). Everything else falls soft: a rubble floor and a step out.
+ *   falls       the drains are dirty water (Matt's rule from World 6 on: badWaterArt.ts paints it), a third of a jump wide, warned first by
+ *               Pokey (W7_TIPS.water), a life on both settings. The chasms between the old floors (the stitcher's pits, the wide and
+ *               second-jump gaps, the drops under the lianas) are deep: a life on Normal, soft on Easy (pipeline planBudget: Easy's falls
+ *               on land are always soft). With soft chasms World 7 measured BELOW World 6 on the first-timer's band (Normal middle about
+ *               25 against 45: §1b calls that a bug); deep, its Normal stages measure 50-51 (lives a minute 6-7, as 6-1's 5.3).
+ *               The sunken halls under the crumbling tiles are floors, not pits: walked, never a life.
  *   light       dawn (7-1 to 7-3), day (7-4 to 7-6), dusk (7-7 on): the backdrops w7dawn-far, w7-far, w7dusk-far.
  *
  * Pure data and pure functions (no canvas, no engine), like w6.ts.
@@ -132,7 +136,7 @@ export const W7_MANIFEST: WorldManifest = {
   name: 'Ancient Ruins',
   moves: ['double', 'punch', 'swing', 'climb', 'rope', 'glide'],
   ground: { y: W7_GROUND.y, bankH: W7_GROUND.bankH, style: 'moss_stone' },
-  pit: 'soft',
+  pit: 'void',
   pitDepth: W7_GROUND.pitDepth,
   corridor: { top: G - 160, bottom: G + 80, soft: 60 },
   creatures: W7_CREATURES,

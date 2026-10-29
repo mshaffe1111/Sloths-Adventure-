@@ -8,7 +8,7 @@ const pw = await import(process.argv[4] ?? 'playwright');
 const { chromium } = pw.chromium ? pw : pw.default;
 mkdirSync(out, { recursive: true });
 const SIZES = { upright: [390, 844], sideways: [844, 390] };
-const STAGES = ['7-1', '7-3', '7-5', '7-6', '7-7', '7-9'];
+const STAGES = (process.env.STAGES ?? '7-1,7-3,7-5,7-6,7-7,7-9').split(',');
 const b = await chromium.launch();
 for (const [size, [w, h]] of Object.entries(SIZES)) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2, hasTouch: true });

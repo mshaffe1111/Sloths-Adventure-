@@ -353,6 +353,20 @@ plan); never ship the rough version as finished.
     and a tile carries one petal.
   - *A world's new animal needs its sheet listed* (the full suite's preload test, 7-1: the frog): a gen2 World 6-10 stage now asks for
     every animal its manifest can lay (`gen2/game.ts` `gen2Creatures`), not only the old generator's set.
+  - *A relic socket laid a relic in a sprint* (the second builder's finding: the walls never shipped). gen2 gave a section with no share of
+    a quota one objective by default, so every wall top of 7-1 held a relic, overlapping its petals: the check failed and the roll was
+    re-rolled away, every time. A section lays objectives only from its node's quota (`pipeline.ts` `graphObjectives`, 0 by default).
+    Count what each roll holds by section (`count.ts`-style tallies), not only whether it passes: a section that never ships is a bug.
+  - *Soft falls put a world below the one before* (the first-timer bands, 2026-10-29): with every chasm soft, World 7's Normal middle
+    was about 25 against World 6's 45, because the bands read the first-timer's lives and World 6's came from swings over water. Third-
+    of-a-jump drains don't kill him. World 7's chasms are deep on Normal (soft on Easy, the pipeline's rule): 50-51. Measure the band with
+    `--firsttimer` early, not at the end.
+  - *Art and collider must agree* (§5b item 3): the painted crumble slab is drawn 46 px deep, so the tile's collider is 40 px (not the old
+    26) and the hall under it keeps 80 px of headroom; a thick painted piece over a thin collider lets Pokey's head into the stone.
+  - *A landmark in a repeated strip shows twice* (the sleeping stone head in World 7's near strip, mirrored every other copy): a strip
+    that carries one big landmark is drawn larger (`scenery.ts` `STRIP_GROW`) so one repeat is wider than a sideways screen.
+  - *Code-drawn decor repeated on every ledge reads as something else* (World 7's `figroot`: pale strokes read as ribs). Out of World 7's
+    scatter; the painted pieces (w7c fig roots, columns, statues) are set into the bank faces instead (`w7FaceArt.ts`).
   - *Dot is gone (Matt, §1):* Pokey's lines are the sections' tips and the rooms' tips; `wayside.ts dotPresent` already draws every
     World 7 line as his thought, and the tests hold every hint of every roll to his list.
 - **A narrow wall is glided through in the check** (World 7's brown vines, 2026-10-29): levelCheck measures a jump from ledge edge to

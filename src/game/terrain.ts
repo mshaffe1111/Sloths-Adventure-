@@ -20,6 +20,7 @@ import { fillCapWindy, windShear, lightBody, dapples, surfaceRoots, restShadow, 
 import { planStage, baseLook, VARIANTS, type StagePlan, type ThinPlan } from './platformPlan.ts';
 import { drawThin } from './platformArt.ts';
 import { drawBounce, drawRaftLive, shakeOffset } from './spanArt.ts';
+import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import './shelfArt.ts';
 import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
@@ -1344,7 +1345,8 @@ export function renderWorldObjects(
     } else if (p.type === 'fragile') {
       const tp = thinPlanFor(plan, p);
       const [dx, dy] = shakeOffset(p, time);
-      if (!drawThin(ctx, p, look, worldId, tp, dy, dx)) drawPlanks(ctx, p, look, r);
+      // (World 7's crumbling tiles: Matt's painted crumble frames, crumbleArt.ts; the kit plank until the sheet loads)
+      if (!drawCrumbleTile(ctx, p, time, dx, dy) && !drawThin(ctx, p, look, worldId, tp, dy, dx)) drawPlanks(ctx, p, look, r);
     } else if (p.type === 'drift' && p.drift) {
       // a log rides between its banks, bobbing; clipped to the river so it slides out from under one bank and under the other
       ctx.beginPath();

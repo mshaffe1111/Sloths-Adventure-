@@ -14,7 +14,7 @@ export const cfg7 = (id: string) => LEVELS.find((c) => c.id === id)!;
 /** the stages that take the swing sections, by id (7-5, 7-9) */
 export const SWING_STAGES: readonly string[] = W7S_STAGES.map((n) => `7-${n}`);
 /** World 7's kit for a stage with the swing sections folded in */
-export const w7SwingKit = (stage: number, d: Difficulty) => withW7Swing(w7GameKit(stage, d), stage, d);
+export const w7SwingKit = (stage: number, d: Difficulty) => withW7Swing(w7GameKit(stage, d), stage, d); // (w7GameKit folds it in already: a second fold adds nothing)
 
 const cache = new Map<string, Gen2Stage>();
 export function buildW7(id: string, seed: number, difficulty: 'easy' | 'normal'): Gen2Stage {
