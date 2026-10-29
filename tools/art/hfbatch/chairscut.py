@@ -13,7 +13,16 @@ from geminicut import cut_cell  # noqa: E402
 
 TAKES, PICK, OUT, REVIEW = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3]), Path(sys.argv[4])
 src = Image.open(TAKES / f'{PICK}.webp').convert('RGB')
-sp = cut_cell(src, 'magenta', {})
+cut_src = src
+if len(sys.argv) > 5:  # dim=X0:F:Y1: darken the painted (non-key) pixels right of x0 and above y1 by F (the c take painted its
+    # eleventh chair near white; y1 keeps the floor strip under it untouched, so no seam)
+    x0, f, y1 = sys.argv[5].split('=')[1].split(':')
+    b = np.asarray(src).astype(np.float32)
+    part = b[:int(y1), int(x0):]
+    paint = part[..., 1] > np.minimum(part[..., 0], part[..., 2]) - 60
+    part[paint] *= float(f)
+    cut_src = Image.fromarray(np.clip(b, 0, 255).astype(np.uint8))
+sp = cut_cell(cut_src, 'magenta', {})
 sp = sp.crop(sp.getchannel('A').getbbox())
 # (the model paints the thin outline with some of the key in it: a purple-pink line on a dark ground. A second, wider despill on the
 # 4 px band next to the transparency: where both r and b sit above g (a magenta tint), pull them both down to g + 6; brown roots,
