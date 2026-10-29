@@ -1,6 +1,6 @@
 import { buzz } from './haptics.ts';
 import { SlowWatch } from './slowTip.ts';
-import { drawW9Bush, drawW9Scenery, type W9SceneryItem } from './w9Art.ts';
+import { drawLavaSplash, drawW9Bush, drawW9Scenery, type W9SceneryItem } from './w9Art.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
@@ -344,6 +344,8 @@ export class GameEngine {
   private kitSteer = 0;
   private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
+  /** World 9: where and when Pokey last fell into the lava (its painted splash and steam play there: w9Art.ts drawLavaSplash) */
+  private lavaSplashAt: { x: number; y: number; t: number } | null = null;
   private pushSoundT = 0;
   /** a hint that rides above Pokey for a few seconds */
   private stageHint: { text: string; life: number } | null = null;
@@ -2292,11 +2294,12 @@ export class GameEngine {
       } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
         // (World 9's water line is lava: a burst of embers, not a splash)
         const lava = this.currentStage.config.worldIndex === 9;
-        if (lava) this.spawnSparkBurst(p.x, waterY - 10, '#fb923c');
-        else this.spawnWaterSplash(p.x, waterY);
+        if (!lava) this.spawnWaterSplash(p.x, waterY);
         sound.playWhoosh();
         sound.playHitImpact(true);
-        this.addFloatingText(lava ? 'TOO HOT!' : 'SPLASH!', p.x, waterY - 40, lava ? '#fdba74' : '#7dd3fc');
+        // (no words in the world for the lava: its painted splash and steam say it, w9Art.ts)
+        if (lava) this.lavaSplashAt = { x: p.x, y: waterY, t: this.gameTime };
+        else this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (!this.softFall()) {
@@ -4863,6 +4866,8 @@ export class GameEngine {
     if (waterY !== undefined) {
       const bottom = this.camera.y + this.camera.viewportHeight + 40;
       drawWater(ctx, world.id, x0, x1, waterY, bottom, t);
+      // (World 9: the painted splash and steam where he fell into the lava)
+      if (this.lavaSplashAt) drawLavaSplash(ctx, this.lavaSplashAt.x, this.lavaSplashAt.y, this.gameTime - this.lavaSplashAt.t);
     }
     for (const cp of this.currentStage.checkpoints ?? []) {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;

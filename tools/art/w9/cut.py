@@ -6,7 +6,7 @@ src/assets/w9/hazards.webp + hazards.json (frames anchored at the middle of the 
   burst0..2   the round-2 burst take's three frames (the burst leaving the vent, the full fountain, the fall) when present
   haze0..5    the round-2 haze take's six wisps when present
 Keying: alpha from the pixel's magenta-ness (min(r, b) - g), despilled on the fringe (r and b clamped toward g); nothing is upscaled.
-    python3 -I tools/art/w9/cut.py RAW [burst-take] [haze-take]
+    python3 -I tools/art/w9/cut.py RAW [burst-take] [haze-take] [splash-take]
 """
 import json, sys
 from pathlib import Path
@@ -91,6 +91,22 @@ if len(sys.argv) > 3:
         ramp = np.clip(np.minimum(np.arange(n) / (0.35 * n), (n - np.arange(n)) / (0.2 * n)), 0, 1)[:, None]
         arr[..., 3] *= ramp
         pieces.append((f'haze{i}', Image.fromarray(arr.astype(np.uint8), 'RGBA'), 'foot'))
+
+# ── round 3: the lava splash (a take named on the command line after the haze) ──
+if len(sys.argv) > 4:
+    sp = Image.open(RAW / sys.argv[4]).convert('RGB')
+    sw = sp.width // 3
+    # (each frame cut above the take's flat pool ellipse: in the game it stands in the lava's own surface; the last frame's steam fades
+    # out at its top, where the take's edge cut it flat)
+    for i in range(3):
+        c, box = main_parts(keyed(sp.crop((i * sw, 0, (i + 1) * sw, 445))), 150)
+        c = c.crop(box)
+        if i == 2:
+            arr = np.asarray(c).astype(np.float32)
+            n = arr.shape[0]
+            arr[..., 3] *= np.clip(np.arange(n) / (0.3 * n), 0, 1)[:, None]
+            c = Image.fromarray(arr.astype(np.uint8), 'RGBA')
+        pieces.append((f'splash{i}', c, 'foot'))
 
 # ── pack: shelf rows, 2048 wide ──
 x = y = rowh = 0

@@ -233,3 +233,26 @@ export function drawW9Crumble(ctx: CanvasRenderingContext2D, p: Platform, t: num
   ctx.restore();
   return true;
 }
+
+// ───────────────────────────── a fall into the lava ─────────────────────────────
+
+/** how long the splash plays (s): the crown, the crown falling back with its steam, the steam thinning */
+export const LAVA_SPLASH_S = 1.2;
+
+/** the painted splash where Pokey fell into the lava `age` seconds ago (false: nothing to draw, or the sheet is still loading) */
+export function drawLavaSplash(ctx: CanvasRenderingContext2D, x: number, surfaceY: number, age: number): boolean {
+  const im = load(HAZARDS_URL);
+  const frames = [HZ.splash0, HZ.splash1, HZ.splash2];
+  if (!im || frames.some((f) => !f) || age < 0 || age > LAVA_SPLASH_S) return false;
+  const u = age / LAVA_SPLASH_S;
+  const k = u < 0.3 ? 0 : u < 0.62 ? 1 : 2;
+  const f = frames[k]!;
+  const w = 150;
+  const h = (w * f.h) / f.w;
+  ctx.save();
+  // (the steam fades out over its last frame)
+  if (k === 2) ctx.globalAlpha = Math.max(0, 1 - (u - 0.62) / 0.38);
+  blit(ctx, im, f, x - w / 2, surfaceY - h + 14, w, h);
+  ctx.restore();
+  return true;
+}

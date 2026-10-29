@@ -10,3 +10,7 @@ w9-hazards-r2 6ae3bb09c78863f9c62de471 21:30:49Z-21:33:47Z (3.0 min, ~$0.14): bu
   cone so it stands in the vent rock's mouth), w9haze2-s75-7 (six soft wisps, faded at both ends). THROWN: burst s72 (the column reads as
   a carved wooden post), burst s86-7 (a flame, not lava).
 total ~6.2 min = ~$0.28 of the $10 cap.
+w9-hazards-r3 6ae3c25cc78863f9c62deac9 started 22:02:04Z (~2.5 min, ~$0.12): the lava splash (the lead: no "TOO HOT!" words at a lava death; the
+  painted splash and steam say it), s72/s86 x seeds 7/23. KEPT w9splash-s72-23 (a liquid crown, the crown falling back under a steam puff,
+  the steam alone; each cut above the take's flat pool ellipse, the steam faded at its top). s72-7: its crown reads as candles.
+running total ~8.7 min = ~$0.40 of the $10 cap.
