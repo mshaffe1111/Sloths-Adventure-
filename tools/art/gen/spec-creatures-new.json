@@ -1,0 +1,218 @@
+{
+ "tag": "creatures-new",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 0.5
+ },
+ "clips": [
+  {
+   "name": "nc-capuchin-defeat-s5",
+   "src": "newstills/new-capuchin-101.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the cheeky white-faced capuchin monkey gets knocked out: it tumbles over onto its back and lies still on the ground with its eyes closed and its tongue out, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-capuchin-defeat-s17",
+   "src": "newstills/new-capuchin-101.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the cheeky white-faced capuchin monkey gets knocked out: it tumbles over onto its back and lies still on the ground with its eyes closed and its tongue out, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-fruitbat-defeat-s5",
+   "src": "newstills/new-fruitbat-404.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown fruit bat is knocked out of the air: it stops flapping, its wings go limp and it drops down to the bottom of the frame and lies still with its eyes closed, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-fruitbat-defeat-s17",
+   "src": "newstills/new-fruitbat-404.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown fruit bat is knocked out of the air: it stops flapping, its wings go limp and it drops down to the bottom of the frame and lies still with its eyes closed, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-fruitbat-roost-s5",
+   "src": "newstills/new-fruitbat-404.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown fruit bat hangs upside down by its feet, slowly wraps its wings around its body like a little cloak and falls asleep, breathing gently, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "flip": "v"
+  },
+  {
+   "name": "nc-fruitbat-roost-s17",
+   "src": "newstills/new-fruitbat-404.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown fruit bat hangs upside down by its feet, slowly wraps its wings around its body like a little cloak and falls asleep, breathing gently, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480,
+   "flip": "v"
+  },
+  {
+   "name": "nc-howler-defeat-s5",
+   "src": "newstills/new-howler-404.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the shaggy red howler monkey gets knocked out: it sways, slumps over onto its side and lies still on the ground with its eyes closed, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-howler-defeat-s17",
+   "src": "newstills/new-howler-404.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the shaggy red howler monkey gets knocked out: it sways, slumps over onto its side and lies still on the ground with its eyes closed, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-lavalizard-defeat-s5",
+   "src": "newstills/new-lavalizard-505.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the red-orange lizard with glowing cracks of lava along its back is beaten: it slumps flat on its belly, the lava glow along its back fades to dull grey, its eyes close and it lies still, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-lavalizard-defeat-s17",
+   "src": "newstills/new-lavalizard-505.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the red-orange lizard with glowing cracks of lava along its back is beaten: it slumps flat on its belly, the lava glow along its back fades to dull grey, its eyes close and it lies still, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-owl-defeat-s5",
+   "src": "newstills/new-owl-505.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the dark brown spectacled owl is knocked out of the air: it tumbles down in a puff of feathers and lands sitting on the ground, dizzy, with its eyes closed, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-owl-defeat-s17",
+   "src": "newstills/new-owl-505.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the dark brown spectacled owl is knocked out of the air: it tumbles down in a puff of feathers and lands sitting on the ground, dizzy, with its eyes closed, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-soldiera-attack-s5",
+   "src": "../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap plants his feet and gives a big two-handed shove forward with both arms, then steps back and stands at ease again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "nc-soldiera-attack-s17",
+   "src": "../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap plants his feet and gives a big two-handed shove forward with both arms, then steps back and stands at ease again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "nc-soldiera-hurt-s5",
+   "src": "../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap gets bumped hard, staggers back a step holding his cap on, then straightens up again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "nc-soldiera-hurt-s17",
+   "src": "../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap gets bumped hard, staggers back a step holding his cap on, then straightens up again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "nc-soldiera-down-s5",
+   "src": "../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap is knocked over backwards and lands sitting on the ground, dazed and dizzy, his cap tipped over his eyes, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-soldiera-down-s17",
+   "src": "../stills/w5-soldiera-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump dark chocolate brown sloth soldier in an olive uniform and a soft field cap is knocked over backwards and lands sitting on the ground, dazed and dizzy, his cap tipped over his eyes, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-soldierb-attack-s5",
+   "src": "../stills/w5-soldierb-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump cinnamon brown sloth soldier in an olive uniform and a soft field cap with a rolled grey blanket on his back plants his feet and gives a big two-handed shove forward with both arms, then steps back and stands at ease again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "nc-soldierb-attack-s17",
+   "src": "../stills/w5-soldierb-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump cinnamon brown sloth soldier in an olive uniform and a soft field cap with a rolled grey blanket on his back plants his feet and gives a big two-handed shove forward with both arms, then steps back and stands at ease again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "nc-soldierb-hurt-s5",
+   "src": "../stills/w5-soldierb-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump cinnamon brown sloth soldier in an olive uniform and a soft field cap with a rolled grey blanket on his back gets bumped hard, staggers back a step holding his cap on, then straightens up again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "nc-soldierb-hurt-s17",
+   "src": "../stills/w5-soldierb-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump cinnamon brown sloth soldier in an olive uniform and a soft field cap with a rolled grey blanket on his back gets bumped hard, staggers back a step holding his cap on, then straightens up again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "nc-soldierb-down-s5",
+   "src": "../stills/w5-soldierb-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump cinnamon brown sloth soldier in an olive uniform and a soft field cap with a rolled grey blanket on his back is knocked over backwards and lands sitting on the ground, dazed and dizzy, his cap tipped over his eyes, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "nc-soldierb-down-s17",
+   "src": "../stills/w5-soldierb-idle3-s3-start.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the plump cinnamon brown sloth soldier in an olive uniform and a soft field cap with a rolled grey blanket on his back is knocked over backwards and lands sitting on the ground, dazed and dizzy, his cap tipped over his eyes, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}
