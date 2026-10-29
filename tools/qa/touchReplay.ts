@@ -18,9 +18,11 @@
  *     within 250 ms of it going down. A miss is no jump from that touch;
  *     a punch is the worst miss.
  *   - false jumps: Pokey on the ground, a touch that never rose 12 px within 150 ms (a tap, a steer, a wobble), and it jumped.
- *   - vine strokes: Pokey on a trunk or a liana, a touch that rose 34 px or more. One with a quick flick anywhere in it (28 to 60 degrees
- *     over at 0.6 px/ms or faster, or 22 to 60 at 1 px/ms or faster: the polish report's CT-3 envelope) should let go; one without, whose
- *     best rise is within 15 degrees of vertical (straight) or 15 to 28 slower than 1 px/ms (slanted), should only climb. A second finger's straight stroke is counted apart (CT-5 waits for Matt's call).
+ *   - vine strokes: Pokey on a trunk or a liana, a touch that rose 34 px or more. One with a quick flick anywhere in it (21 to 60 degrees
+ *     over at 0.44 px/ms or faster along its path: the players' own let-goes, swingSlide.test.ts) should let go; one without, whose best
+ *     rise is within 15 degrees of vertical (straight) or more slanted but slower or shallower than that (slanted), should only climb. A
+ *     quick stroke that a slow climb led straight into (rising 8 px or more in the 100 ms before, slower than 0.44 px/ms) is a climb that
+ *     bends over, which should climb too (the report's CT-3). A second finger's straight stroke is counted apart (CT-5 waits for Matt's call).
  *   - second jumps: a touch that fired two jumps; how many of the second came off a rise slower than 0.3 px/ms (a thumb drifting, CT-24).
  *   - rests: a second finger held still half a second or more (a resting thumb): how many threw a mega, and how many of the flicks up
  *     that the same finger then made did not jump.
@@ -219,7 +221,7 @@ const bump = (key: string, cat: string, miss: boolean, punch: boolean, tc?: Touc
     if (miss) g.any.miss++;
   }
 };
-const ANY = new Set(['clear', 'short', 'vStraight', 'vSlant', 'vFlick', 'rest']);
+const ANY = new Set(['clear', 'short', 'vStraight', 'vSlant', 'vBent', 'vFlick', 'rest']);
 
 for (const tc of touches) {
   if (tc.cancelled || tc.up === undefined) continue;
@@ -247,23 +249,39 @@ for (const tc of touches) {
   // vine strokes: a touch with a quick flick up and over anywhere in it should let go; one whose strokes are all straighter or slower
   // should only climb. A second finger's straight flick is counted on its own (CT-5, Matt's call)
   if (vine && f.rise >= 34) {
-    const t28 = Math.tan((28 * Math.PI) / 180), t60 = Math.tan((60 * Math.PI) / 180), t15 = Math.tan((15 * Math.PI) / 180), t22 = Math.tan((22 * Math.PI) / 180);
+    const t21 = Math.tan((21 * Math.PI) / 180), t60 = Math.tan((60 * Math.PI) / 180), t15 = Math.tan((15 * Math.PI) / 180);
     const pts = tc.pts;
+    // (fresh, as the report's CT-3 has it: not a climb that was going on slowly in the 100 ms before the quick stroke began, or it is a
+    // climb that bends over, which should still climb)
+    const sp = (a: Sample, b: Sample) => Math.hypot(b.x - a.x, b.y - a.y) / Math.max(1, b.t - a.t);
+    const bentFrom = (i: number) => {
+      let s0 = i;
+      while (s0 > 0 && sp(pts[s0 - 1], pts[s0]) >= 0.44) s0--;
+      const t0 = pts[s0].t;
+      const before = pts.filter((q) => q.t >= t0 - 100 && q.t <= t0);
+      if (before.length < 2) return false;
+      const a = before[0], b = before[before.length - 1];
+      return a.y - b.y >= 8 && sp(a, b) < 0.44;
+    };
     let flick = false;
+    let bent = false;
     for (let j = 1; j < pts.length && !flick; j++) {
       for (let i = j - 1; i >= 0 && pts[j].t - pts[i].t <= 150; i--) {
         const rise = pts[i].y - pts[j].y, ax = Math.abs(pts[j].x - pts[i].x);
-        const v = rise / Math.max(1, pts[j].t - pts[i].t);
-        if (rise >= 34 && ax < rise * t60 && ((v >= 0.6 && ax >= rise * t28) || (v >= 1.0 && ax >= rise * t22))) {
-          flick = true;
-          break;
+        const v = Math.hypot(ax, rise) / Math.max(1, pts[j].t - pts[i].t);
+        if (rise >= 34 && ax < rise * t60 && v >= 0.44 && ax >= rise * t21) {
+          if (bentFrom(i)) bent = true;
+          else {
+            flick = true;
+            break;
+          }
         }
       }
     }
     const slant = Math.abs(f.across) / f.rise; // the best rise's tan of the angle off vertical
-    const cat = flick ? 'vFlick' : slant < t15 ? (tc.second ? 'vStraight2' : 'vStraight') : slant < t28 && speed < 1.0 ? 'vSlant' : '';
+    const cat = flick ? 'vFlick' : bent ? 'vBent' : slant < t15 ? (tc.second ? 'vStraight2' : 'vStraight') : slant < t60 ? 'vSlant' : '';
     if (cat) {
-      // a straight or slanted climbing stroke "misses" when it let go; a quick flick when it did not
+      // a straight, slanted or bending climbing stroke "misses" when it let go; a quick flick when it did not
       const miss = cat === 'vFlick' ? !letGo : letGo;
       for (const k of keys) bump(k, cat, miss, false, tc);
     }
@@ -303,14 +321,14 @@ console.log(`Replay of the control tests sheet, recordings from ${since}: ${sess
   const n = (w: string) => touches.reduce((a, tc) => a + tc.did.filter((d) => d === w || d.startsWith(w + ':')).length, 0);
   console.log(`Decisions in all: ${n('jump') + n('jumpV')} jumps, ${n('punch')} punches, ${n('kick')} kicks, ${n('mega')} megas\n`);
 }
-console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | never rose 12 px, but jumped | vine straight climb (let go) | vine slanted climb (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) | second jumps from one touch (on a slow rise) |');
-console.log('|---|---|---|---|---|---|---|---|---|---|---|---|');
+console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | never rose 12 px, but jumped | vine straight climb (let go) | vine slanted climb (let go) | vine climb that bends over (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) | second jumps from one touch (on a slow rise) |');
+console.log('|---|---|---|---|---|---|---|---|---|---|---|---|---|');
 for (const k of order) {
   const g = groups.get(k);
   if (!g) continue;
   const punch = (g.clear?.punch ?? 0) + (g.short?.punch ?? 0);
   const fl = (g.clear?.n ?? 0) + (g.short?.n ?? 0);
-  console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.falseJump)} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} | ${pct(g.dbl)} |`);
+  console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.falseJump)} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vBent)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} | ${pct(g.dbl)} |`);
 }
 console.log('\nBy player and how the phone was held: every clear gesture misread (ground flicks clear and short, the three vine kinds, rests)\n');
 console.log('| who | portrait | landscape | both |');

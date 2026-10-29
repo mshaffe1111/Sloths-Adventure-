@@ -285,8 +285,6 @@ test('one thumb: after a pump to the right a flick up and left leaps LEFT, after
       // (a 22 degree flick thrown the instant a stroke the other way ends reads as climbing: its sideways part is cancelled by the stroke)
       for (const lean of [25, 30, 35, 41, 48]) {
         for (const speed of [0.6, 1, 1.8]) {
-          // (25 degrees under 1 px/ms is an ordinary climbing stroke since CT-3, polish report 2026-10-29: it climbs)
-          if (lean < 26.5 && speed < 1) continue;
           for (const pump of [1, -1] as const) {
             const against = -pump * lean;
             const t = pumpThenFlick(v.w, th.x, th.y, pump, against, 120, speed);
