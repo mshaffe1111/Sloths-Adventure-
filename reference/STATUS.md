@@ -16,6 +16,9 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | QA leftovers 2-6 (tip timing, plank ends), 3-3 counter | cloud session_01FhBbYMWcFJmuZ592k3J1vs | qa-fix-w123b | |
 | Better look-alike measure (Matt chose it over relaxing the rule) | cloud session_01FhBbYKxYezKsEn4iBnvKHP | gen2-lookalike | era + curate share one measure; W7/W8 switch on merge |
 | Art pickup: HF creatures + Gemini sheets cut-in | local helper (worktree) | art-pickup | no new HF spend |
+| Swimming (Matt: build it, first swim in 6-7's well; calm water from w6/water.jpg) | cloud session_01FhBbYJzbeg3VTVJMDHy4EK | swim | dirty/fast stays deadly |
+| Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | |
+| 7-4 The Slide (W7 special; Matt: NOT a climb: side-on run, floor crumbles, behind-the-back slide, steer and jump; art: slomatt/02_sliding-from-behind) | cloud session_01FhBbYJXeB8XaDrrUgxfuHR | w7-slide | mock-up first |
 | Rope traverse: Matt's Gemini hand-over-hand sheet + HF in-betweens (<= $2) + painted rope | local helper (worktree) | rope-traverse | frame 8 unusable (not holding) |
 | Audit: major looks still drawn in code (DONE) | local read-only | none | findings below |
 
@@ -30,7 +33,10 @@ Hugging Face: about $12 left (Matt, 2026-10-29: "any art that we need, use that"
 World 7 and 8 builders and the code-drawn-looks audit list (img2img from the world kits, as the W6-10 prop run); Pokey and story characters
 stay Gemini (Pokey drifts off model on HF). Stop new jobs at $1 left.
 
-Left for later: the hand-built ascents 7-4 and 8-4 (after Matt approves the 6-8 mock-up pattern), the bosses 6-10, 7-10 and 8-10 (Matt: all together later),
+Art pickup MERGED (0cf6bae): HF creature defeat/attack clips and the 10-28 Gemini sheets cut and packed, not drawn yet (manifest only);
+owl defeat dropped (redo on HF); crab, piranha, sentry, beetle were never generated (HF list).
+
+Left for later: 8-4 (Matt: specials should not just go up high; ask him for 8-4's idea), the bosses 6-10, 7-10 and 8-10 (Matt: all together later),
 the rope traverse (waits on Matt's Gemini hand-over-hand sheet).
 
 ## STANDSTILL, earlier (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
