@@ -30,3 +30,6 @@ export function markTipHeard(stageId: string, id: string): void {
     /* no storage (a private window): the tip may be said again next time, which is harmless */
   }
 }
+
+/** the lesson lines heard on this device, whichever stage said them (StageHint.firstOf: a lesson is said once per save) */
+export const FIRST_OF_STAGE = 'first-of';

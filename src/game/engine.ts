@@ -4,7 +4,7 @@ import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
-import { markTipHeard, tipHeard } from './tipMemory.ts';
+import { FIRST_OF_STAGE, markTipHeard, tipHeard } from './tipMemory.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
@@ -2403,7 +2403,10 @@ export class GameEngine {
         // said once per stage on this device: not again on a replay or a retry (tipMemory.ts)
         const id = `tip:${h.text}`;
         if (tipHeard(this.currentStage.config.id, id)) continue;
+        // (a lesson line, once on this device whichever stage reaches it first: StageHint.firstOf)
+        if (h.firstOf && tipHeard(FIRST_OF_STAGE, h.firstOf)) continue;
         markTipHeard(this.currentStage.config.id, id);
+        if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
         this.guide(said, 3.6);

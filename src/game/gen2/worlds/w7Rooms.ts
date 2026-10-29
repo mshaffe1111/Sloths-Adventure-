@@ -20,11 +20,12 @@ import type { Difficulty, LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit
  * Pokey's room lines (under 10 words). All new: each needs Matt's approval before it ships (STAGE-RULES §1 "Story").
  */
 export const W7R_TIPS = {
-  sealEnter: 'Sealed. Something heavy goes on that plate.',
+  // (Normal plays on Tips: a room's first line names the problem, never the answer (polish-dot DOT-2); Easy plays on Help, a nudge)
+  sealEnter: "Sealed. This old door won't budge.",
   sealEnterEasy: 'Sealed. A stone on that plate, maybe.',
   sealHold: "One stone isn't enough. I need another.",
   sealOpen: 'Open! Heavy work for one small sloth.',
-  leverEnter: 'A lever and a plate. Both, I think.',
+  leverEnter: 'Another sealed door. How does this one open?',
   leverEnterEasy: 'A lever by the door. Worth a pull.',
   leverHold: 'Now the plate needs a stone.',
   leverOpen: "Both done. The door's open.",

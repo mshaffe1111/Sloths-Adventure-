@@ -146,6 +146,10 @@ export const W7_TIPS: Record<string, string> = {
   [W7_LESSON.sentry]: 'A stone sentry. Hit it before it jabs.', // (new, needs Matt's approval)
 };
 export const W7_NEW_LINES: readonly string[] = Object.values(W7_TIPS);
+/** Pokey's lesson lines, by the thing each teaches (StageHint.firstOf: said once per save) */
+export const W7_FIRST_OF: Readonly<Record<string, string>> = Object.fromEntries(
+  ([W7_LESSON.crumble, W7_LESSON.brown, W7_LESSON.water, W7_LESSON.sentry] as string[]).map((k) => [W7_TIPS[k], `w7.${k}`]),
+);
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -241,13 +245,20 @@ export function w7Kit(stage = 1): WorldKit {
 
 /** Pokey's line comes this far before the first sentry (px): read before it can reach him */
 export const MEET_LEAD = 520;
+/** the first sentry's quiet floor runs this far past where its patrol starts (px) */
+export const QUIET_PAST = 260;
 
 /**
  * The stage as the engine plays it: Pokey's first line for the Stone Sentry MEET_LEAD px before the first one (fillSockets writes
- * proto.hints after the spawn hook runs, so it is added here, as World 6's w6Finish does). Calling it twice changes nothing.
+ * proto.hints after the spawn hook runs, so it is added here, as World 6's w6Finish does), and a quiet floor for that first meeting: no
+ * other animal from the line to just past the sentry's patrol start (QUIET_PAST), so he meets it alone (the lead's QA 2026-10-29: a tayra
+ * on him as the line came up). The purge's goal is a share of the animals left (goals.ts withGoals, at play). Calling it twice changes
+ * nothing.
  */
 export function w7Finish<S extends { spawnX?: number; enemies?: Enemy[]; proto?: { hints?: StageHint[] } }>(st: S): S {
   const first = Math.min(...(st.enemies ?? []).filter((e) => e.look === 'sentry').map((e) => e.patrolMinX));
+  if (st.enemies && Number.isFinite(first))
+    st.enemies = st.enemies.filter((e) => e.look === 'sentry' || e.patrolMaxX < first - MEET_LEAD - 60 || e.patrolMinX > first + QUIET_PAST);
   const text = W7_TIPS[W7_LESSON.sentry];
   if (st.proto && Number.isFinite(first) && !(st.proto.hints ?? []).some((h) => h.text === text)) {
     const hints = (st.proto.hints ??= []);
@@ -255,5 +266,11 @@ export function w7Finish<S extends { spawnX?: number; enemies?: Enemy[]; proto?:
   }
   // (in the order he meets them: the water's warning is written after the others, and a run from a later flag says the last one due)
   st.proto?.hints?.sort((a, b) => a.x - b.x);
+  // (a lesson line is said once per save, in the first stage that reaches it: the shrine's lines are not lessons, they say why the
+  // exit is shut, every stage)
+  for (const h of st.proto?.hints ?? []) {
+    const topic = W7_FIRST_OF[h.text];
+    if (topic) h.firstOf = topic;
+  }
   return st;
 }
