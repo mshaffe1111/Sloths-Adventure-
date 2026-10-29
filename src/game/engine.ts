@@ -231,6 +231,24 @@ export const STEP_UP = { min: 20, max: 96, near: 14 } as const;
 export const LIP_IN = 13;
 const STUCK_HOLD = 7;
 
+/** the swing's sweet-spot glow on the vine (a soft warm disc), painted once */
+let sweetGlowCv: HTMLCanvasElement | null = null;
+function sweetGlowPic(): HTMLCanvasElement | null {
+  if (sweetGlowCv || typeof document === 'undefined') return sweetGlowCv;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 64;
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gr.addColorStop(0, 'rgba(255, 246, 200, 0.95)');
+  gr.addColorStop(0.35, 'rgba(255, 214, 90, 0.55)');
+  gr.addColorStop(1, 'rgba(255, 196, 40, 0)');
+  g.fillStyle = gr;
+  g.fillRect(0, 0, 64, 64);
+  sweetGlowCv = cv;
+  return cv;
+}
+
 export class GameEngine {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -1667,7 +1685,7 @@ export class GameEngine {
           this.sweetGlint -= dt;
           if (sweet && this.sweetGlint <= 0) {
             this.sweetGlint = 0.14;
-            this.spawnSparkBurst(r.x - Math.sin(sw.angle) * VINE_HANG * 0.6, r.y - Math.cos(sw.angle) * VINE_HANG * 0.6, '#fde68a');
+            this.spawnSparkBurst(r.x - Math.sin(sw.angle) * VINE_HANG, r.y - Math.cos(sw.angle) * VINE_HANG, '#fde68a');
           }
           p.swingAngle = sw.angle;
           p.swingAngularVelocity = sw.omega;
@@ -5388,33 +5406,24 @@ export class GameEngine {
     }
     if (this.proto?.watch) this.drawWatchBack(ctx);
     if (this.ringDrops.length) this.drawRingDrops(ctx);
-    // the swing's sweet spot: a warm glow round him while letting go now would leap to the next vine
+    // the swing's sweet spot: a small warm glow on the vine where he holds it while letting go now would leap to the next vine (the
+    // glints along the vine as well, step), painted once (sweetGlowPic), no ring round him and no per-frame blur
     if (this.player.isVineSwinging && this.sweetGlow > 0.03) {
       const gp = this.player;
-      // centred on his body, which hangs from his hands partway up the vine (heroVine.ts)
-      const a = gp.swingAngle ?? 0;
-      const cx = gp.x - Math.sin(a) * VINE_HANG * 0.6;
-      const cy = gp.y - Math.cos(a) * VINE_HANG * 0.6;
       const k = this.sweetGlow;
-      const pulse = 1 + 0.06 * Math.sin(this.gameTime * 18);
-      ctx.save();
-      const g = ctx.createRadialGradient(cx, cy, 8, cx, cy, 62 * pulse);
-      g.addColorStop(0, `rgba(255, 214, 90, ${0.55 * k})`);
-      g.addColorStop(0.7, `rgba(255, 196, 40, ${0.25 * k})`);
-      g.addColorStop(1, 'rgba(255, 196, 40, 0)');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(cx, cy, 62 * pulse, 0, Math.PI * 2);
-      ctx.fill();
-      // a bright ring, so the moment reads against a pale sky as well as dark leaves
-      ctx.strokeStyle = `rgba(255, 236, 150, ${0.9 * k})`;
-      ctx.lineWidth = 3.5;
-      ctx.shadowColor = 'rgba(255, 170, 0, 0.9)';
-      ctx.shadowBlur = 10;
-      ctx.beginPath();
-      ctx.arc(cx, cy, 50 * pulse, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
+      const r = 30 * (1 + 0.08 * Math.sin(this.gameTime * 18));
+      const pic = sweetGlowPic();
+      if (pic) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = 0.9 * k;
+        // (at his grip: he hangs from it, his toes at his place, heroVine.ts)
+        const a = gp.swingAngle ?? 0;
+        const hx = gp.x - Math.sin(a) * VINE_HANG;
+        const hy = gp.y - Math.cos(a) * VINE_HANG;
+        ctx.drawImage(pic, hx - r, hy - r, r * 2, r * 2);
+        ctx.restore();
+      }
     } else if (!this.player.isVineSwinging) this.sweetGlow = 0;
     // Render Hero Sloth
     heroClipsLive(true);
