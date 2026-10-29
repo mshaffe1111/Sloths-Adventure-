@@ -4,7 +4,7 @@ import { GUIDE, GuideQueue, classifyLine, readMs, wordCount, type GuideLine, typ
 import { StruggleWatch, STRUGGLE, STRUGGLE_LINES, MoveWatch, inDanger } from './dotGuideWatch.ts';
 import { helpAllows } from './dotGuideHelp.ts';
 import { emptyGuideView } from './dotGuideView.ts';
-import { lessonDotLine, LESSON_DOT, type LessonId } from './lessons.ts';
+import { lessonDotLine, lessonOfLine, lessonStale, LESSON_DOT, type LessonId } from './lessons.ts';
 import { fallbackSafeArea, placeBubble, bubbleMaxW } from './dotGuidePerch.ts';
 
 const line = (key: string, kind: GuideLine['kind'], text = 'Follow the petals up the tree', extra: Partial<GuideLine> = {}): GuideLine => ({ key, text, kind, who: 'Dot', source: 'engine', ...extra });
@@ -476,4 +476,29 @@ test('an information line steps aside, after a fair look, for a tip about a thin
   q2.push({ key: 'x', text: 'Flick up into the vine', kind: 'teach', who: 'Dot', move: 'grab', source: 'engine' }, 100);
   q2.tick(GUIDE.thingYieldMs + 500, env);
   assert.equal(q2.cur?.line.key, flag.key);
+});
+
+test('a waiting lesson whose thing is done meanwhile is dropped unsaid: the petals lesson after the petals, the heart lesson at full health (QA 2026-10-29)', () => {
+  for (const calm of [false, true]) {
+    const q = new GuideQueue(calm);
+    const view = { ...emptyGuideView(), hp: 3, maxHp: 5, collectibles: [{ type: 'flower', x: 0, y: 0, collected: false }] };
+    const e = { ...env(), stale: (l: GuideLine) => { const id = lessonOfLine(l); return !!id && lessonStale(id, view); } };
+    // a story line up holds both lessons in the queue (calm lets a teach lesson cut it; the info lessons wait)
+    q.push(line('story', 'info', 'Some long words here that take a while to read out loud'), 3000);
+    q.tick(3000, e);
+    q.push(lessonDotLine('fruit', 'screen')!, 3100);
+    q.push(lessonDotLine('heart', 'screen')!, 3100);
+    // meanwhile he picks a flower up and heals to full
+    view.collectibles = [{ type: 'flower', x: 0, y: 0, collected: true }];
+    view.hp = 5;
+    const said = new Set(run(q, 3200, 30000, e));
+    assert.ok(!said.has('lesson:fruit:0'), `calm ${calm}: the petals lesson is not said`);
+    assert.ok(!said.has('lesson:heart:0'), `calm ${calm}: the heart lesson is not said`);
+  }
+  // still wanted: said
+  const q = new GuideQueue(true);
+  const view = { ...emptyGuideView(), hp: 3, maxHp: 5 };
+  const e = { ...env(), stale: (l: GuideLine) => { const id = lessonOfLine(l); return !!id && lessonStale(id, view); } };
+  q.push(lessonDotLine('heart', 'screen')!, 3000);
+  assert.ok(run(q, 3000, 6000, e).includes('lesson:heart:0'));
 });

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CARD_SAFE, LESSONS, cardSafe, pickLesson, type CardSafety, type LessonId, type LessonScene } from './lessons.ts';
+import { CARD_SAFE, DONE_LESSONS, LESSONS, cardSafe, lessonDone, lessonOfLine, lessonStale, pickLesson, type CardSafety, type LessonId, type LessonScene } from './lessons.ts';
 import { isSaveKey } from './saveFile.ts';
 
 const none: ReadonlySet<LessonId> = new Set();
@@ -63,7 +63,7 @@ test('a gap in the ground ahead gets its lesson, but a step or a join does not',
 test('pick-ups and the exit: one lesson each, the cage before the fruit beside it', () => {
   const col = (type: string) => scene({ collectibles: [{ type, x: 1150, y: 480, collected: false }] });
   assert.equal(pickLesson(col('fruit'), none), 'fruit');
-  assert.equal(pickLesson(col('heart'), none), 'heart');
+  assert.equal(pickLesson({ ...col('heart'), hp: 4, maxHp: 5 }, none), 'heart');
   assert.equal(pickLesson(col('cage'), none), 'cage');
   assert.equal(pickLesson(col('relic'), none), 'idol');
   assert.equal(pickLesson(col('powerup_magnet'), none), 'power');
@@ -104,4 +104,47 @@ test('the heart card says what really happens: a heart is for when you are hurt'
   const h = LESSONS.heart;
   assert.ok(/hurt/i.test(h.intro) && /full health/i.test(h.intro), h.intro);
   assert.ok(!h.lines.screen.some((l) => /just touch it/i.test(l.how)), 'not "Just touch it": at full health it cannot be picked up');
+});
+
+test('the heart lesson only when he is hurt: at 5 of 5 hearts it waits for the next heart after a hit (QA 2026-10-29, 1-7 and 3-1)', () => {
+  const heart = (hp?: number, maxHp?: number) => scene({ collectibles: [{ type: 'heart', x: 1150, y: 480, collected: false }], hp, maxHp });
+  assert.equal(pickLesson(heart(5, 5), none), null, 'full health: not said');
+  assert.equal(pickLesson(heart(), none), null, 'hearts unknown: taken as full health');
+  assert.equal(pickLesson(heart(4, 5), none), 'heart', 'hurt and near a heart');
+  assert.equal(pickLesson(scene({ collectibles: [{ type: 'super_heart', x: 1150, y: 480, collected: false }], hp: 1, maxHp: 3 }), none), 'heart');
+  assert.equal(pickLesson(scene({ hp: 1, maxHp: 5 }), none), null, 'hurt but no heart near');
+  // a heart's lesson picked while he was hurt is stale once he is back to full health (the engine's waiting card, the guide's queue)
+  const st = { enemies: [], collectibles: [], hp: 5, maxHp: 5 };
+  assert.equal(lessonStale('heart', st), true);
+  assert.equal(lessonStale('heart', { ...st, hp: 3 }), false);
+});
+
+test('a lesson whose thing he has done already is not said: 5 flowers picked, no "Run through flowers" (QA 2026-10-29, 2-2)', () => {
+  const flowers = [
+    ...[0, 1, 2, 3, 4].map((i) => ({ type: 'flower', x: 700 + i * 40, y: 480, collected: true })),
+    { type: 'flower', x: 1150, y: 480, collected: false },
+  ];
+  assert.equal(pickLesson(scene({ collectibles: flowers }), none), null);
+  assert.equal(pickLesson(scene({ collectibles: flowers.slice(5) }), none), 'fruit', 'none picked yet: taught');
+  // each done-check, on what it is about
+  const got = (type: string) => ({ enemies: [], collectibles: [{ type, collected: true }] });
+  const beat = (type: string) => ({ enemies: [{ type, defeated: true }], collectibles: [] });
+  assert.equal(lessonDone('fruit', got('leaf')), true);
+  assert.equal(lessonDone('heart', got('heart')), true);
+  assert.equal(lessonDone('cage', got('cage')), true);
+  assert.equal(lessonDone('idol', got('relic')), true);
+  assert.equal(lessonDone('power', got('powerup_speed')), true);
+  assert.equal(lessonDone('foe', beat('snake')), true);
+  assert.equal(lessonDone('foe', beat('boss')), false, 'a boss has its own introduction');
+  assert.equal(lessonDone('eagle', beat('eagle')), true);
+  assert.equal(lessonDone('eagle', beat('snake')), false);
+  assert.equal(lessonDone('nostomp', beat('spider')), true);
+  assert.equal(lessonDone('tough', beat('jaguar')), true);
+  assert.equal(lessonDone('fruit', got('heart')), false);
+  assert.equal(lessonDone('gap', got('flower')), false, 'a move lesson closes on its move, in the guide');
+  for (const id of DONE_LESSONS) assert.ok(id in LESSONS, id);
+  // a foe already beaten: the foe lesson for the next one is not said
+  assert.equal(pickLesson(scene({ enemies: [{ type: 'snake', x: 600, y: 500, defeated: true }, { type: 'snake', x: 1200, y: 500, defeated: false }] }), none), null);
+  assert.equal(lessonOfLine({ key: 'lesson:fruit:0', source: 'lesson' }), 'fruit');
+  assert.equal(lessonOfLine({ key: 'lesson:fruit:0', source: 'engine' }), null);
 });

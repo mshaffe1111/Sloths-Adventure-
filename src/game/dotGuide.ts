@@ -191,6 +191,11 @@ export interface TickEnv {
   gone?(l: GuideLine): boolean;
   /** no line starts at all, not even an urgent one (the stage-start goal card is up: they share the top-centre lane) */
   hold?: boolean;
+  /**
+   * the thing this line teaches has been done already, or it no longer applies (a petal picked up while the petals' lesson waited, the
+   * heart's lesson once he is back to full health): a waiting line for it is dropped unsaid, with its next step (QA 2026-10-29, 2-2)
+   */
+  stale?(l: GuideLine): boolean;
 }
 
 /**
@@ -317,6 +322,8 @@ export class GuideQueue {
     // (the next step of a lesson still comes, in its place)
     const skipped: GuideLine[] = [];
     this.waiting = this.waiting.filter((w) => {
+      // (a tip whose thing he has done already is not said, nor anything after it)
+      if (!isUrgent(w.line) && env.stale?.(w.line)) return false;
       // (calm) words said often enough this stage, or a move tip whose move he has done since it was said, are not said again
       if (this.calm && !isUrgent(w.line)) {
         const h = this.heard.get(norm(w.line.text));

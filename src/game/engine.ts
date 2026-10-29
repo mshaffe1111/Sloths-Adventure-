@@ -36,7 +36,7 @@ import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
-import { cardSafe, HARMLESS_LESSONS, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
@@ -4854,8 +4854,17 @@ export class GameEngine {
     if (!lessonsOn()) return;
     const seen = (this.lessonSeen ??= lessonsSeen());
     // a card that came due while he was busy keeps a while (after that, the next one of its kind brings it back)
-    if (this.lessonWaiting && (seen.has(this.lessonWaiting.id) || this.gameTime - this.lessonWaiting.at > 8)) this.lessonWaiting = null;
     const p = this.player;
+    // a lesson whose thing he has already done (a petal picked, a foe beaten) is learned: it is not said, now or later (lessons.ts
+    // lessonDone); a waiting heart's lesson goes once he is back to full health
+    const state = { enemies: this.enemies, collectibles: this.collectibles, hp: p.hp, maxHp: p.maxHp };
+    for (const d of DONE_LESSONS) {
+      if (!seen.has(d) && lessonDone(d, state)) {
+        seen.add(d);
+        markLessonSeen(d);
+      }
+    }
+    if (this.lessonWaiting && (seen.has(this.lessonWaiting.id) || lessonStale(this.lessonWaiting.id, state) || this.gameTime - this.lessonWaiting.at > 8)) this.lessonWaiting = null;
     const cam = this.camera;
     const picked = pickLesson(
       {
@@ -4871,6 +4880,8 @@ export class GameEngine {
         checkpoints: st.checkpoints ?? [],
         rivers: st.rivers ?? [],
         ropes: this.skills.has('shimmy') ? this.ropes : [],
+        hp: p.hp,
+        maxHp: p.maxHp,
       },
       seen,
     );
@@ -4931,6 +4942,7 @@ export class GameEngine {
     out.attack = p.attackType;
     out.hurt = p.invincibleTimer > 0 && p.activePowerUp !== 'invincible';
     out.hp = p.hp;
+    out.maxHp = p.maxHp;
     out.lives = this.lives;
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
