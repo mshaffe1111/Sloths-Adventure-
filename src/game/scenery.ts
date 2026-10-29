@@ -1672,6 +1672,19 @@ export function stripTop(part: keyof typeof STRIP_FIT, vh: number, s: number, yO
  * are always off screen, upright the trees dissolve into the far strip's sky */
 export const SKY_OVERLAP = 0.05;
 
+/** how tall a strip's painted sky is drawn: its rows at the strip's own scale */
+const skyRows = (sky: Layer, strip: Layer, dh: number): number => (dh * layerH(sky)) / layerH(strip);
+
+/**
+ * Where the painted far layer (the far strip, and its sky above when it has one) starts covering the view: everything below this is
+ * opaque paint, so the drawn sky (renderSky) is needed only above it (none when it is <= 0). The one place this is worked out, so
+ * anything that skips work under the far strip follows the upright fit (`s` is the strips' scale, renderScenery's ps).
+ */
+export function farCoverTop(far: Layer, sky: Layer | null | undefined, vh: number, s: number, yOff: number): number {
+  const pl = stripTop('far', vh, s, yOff);
+  return sky && pl.top > 0 ? pl.top + pl.dh * SKY_OVERLAP - skyRows(sky, far, pl.dh) : pl.top;
+}
+
 /** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT. The strip files are made seamless
  * (scripts/strip-seamless.py: the right edge crossfaded into the left), so every copy is drawn the same way round: no mirrored
  * twins (polish report VI-4). A far strip with its painted sky `above` has it drawn above when there is room (upright), as wide as
@@ -1685,7 +1698,7 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
   const k = devScale(ctx);
   const top = snapDev(pl.top, k);
   // the sky, when the strip leaves room above it (upright): its rows at the strip's own scale
-  const sh = above && top > 0 ? (dh * layerH(above)) / ih : 0;
+  const sh = above && top > 0 ? skyRows(above, img, dh) : 0;
   const skyTop = top + dh * SKY_OVERLAP - sh;
   let x0 = -((camX * par) % pitch);
   if (x0 > 0) x0 -= pitch;
