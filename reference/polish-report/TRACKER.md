@@ -49,18 +49,18 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| CT-1 | A one-thumb running jump loses 40% of its distance about half the time |  | polish-controls | built on branch, under lead review |
-| CT-2 | Pad: you can't climb a liana, and pushing up again on a trunk leaps off |  | polish-controls | built on branch, under lead review |
-| CT-3 | Ordinary climbing strokes leap off a trunk or liana |  | polish-controls | built on branch, under lead review |
-| CT-4 | Stopping on a trunk overshoots about 90 px, then a thumb left slightly sideways drops him off |  | polish-controls | built on branch, under lead review |
+| CT-1 | A one-thumb running jump loses 40% of its distance about half the time |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-2 | Pad: you can't climb a liana, and pushing up again on a trunk leaps off |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-3 | Ordinary climbing strokes leap off a trunk or liana |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-4 | Stopping on a trunk overshoots about 90 px, then a thumb left slightly sideways drops him off |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
 | CT-5 | The other thumb's straight-up flick lets go of a vine |  | polish-controls | waiting on Matt's decision (does a second thumb's straight flick on a vine climb?) |
-| CT-6 | A back swipe from the screen edge can leave the game |  | polish-controls | built on branch, under lead review |
-| CT-7 | Resting the action thumb fires a mega, and its next flick is eaten |  | polish-controls | built on branch, under lead review |
+| CT-6 | A back swipe from the screen edge can leave the game |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-7 | Resting the action thumb fires a mega, and its next flick is eaten |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
 | CT-8 | The two halves of the screen behave differently |  | polish-a2 (step 1) | in progress |
-| CT-9 | Short quick flicks on the ground do nothing, or punch |  | polish-controls | built on branch, under lead review |
-| CT-10 | A jump near a trunk grabs the trunk |  | polish-controls | built on branch, under lead review |
-| CT-11 | The thumb's arc reverses the steering at take-off |  | polish-controls | built on branch, under lead review |
-| CT-12 | Jump height jitters, and a jump right after a hit comes out low |  | polish-controls | built on branch, under lead review |
+| CT-9 | Short quick flicks on the ground do nothing, or punch |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-10 | A jump near a trunk grabs the trunk |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-11 | The thumb's arc reverses the steering at take-off |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-12 | Jump height jitters, and a jump right after a hit comes out low |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
 | CT-13 | The Pad lesson's text is false |  | — | waiting on Matt's decision |
 | CT-14 | No feedback in Screen mode, and iPhones have no vibration |  | polish-controls Build 3 | queued after Build 2 |
 | CT-15 | The palm rule eats second-thumb taps |  | polish-controls Build 3 | queued after Build 2 |
@@ -193,6 +193,8 @@ Last updated: 2026-10-29 2:35 PM ET.
 | X-7 | Stone Sentry guard for 7-5 | HF (exists) | gen2-w7 | cutting in |
 | X-8 | Floating capital-letter lesson labels; no speech box over Pokey | | polish-dot | in progress |
 | X-9 | Music: varied songs per world, adaptive, Hugging Face models allowed | HF | polish-audio | v1 REJECTED by Matt 2:45 PM ET ("I can't tell the difference"); v2: new lead instrument + tempo + groove per world, new tunes per stage in shuffled 8-bar chunks, obvious danger/dark/exit layers, HF pilot (Worlds 1, 3, 9 chunks). Matt: worlds must sound like new places; reference = a mix of Donkey Kong Country (genre + groove per world) and Ori (emotional orchestral). Each world its own style, not new settings |
+| X-14 | Pokey teeter / step-back frames at a ledge's end (painted; the slide is a stand-in) | HF | next Pokey art session | queued |
+| X-15 | 6-8 Stilt Climb (W6 special) | HF ledge set | w6-stilt-climb | PASSED review 3:00 PM ET; merge after the gate |
 | X-13 | Classic-family effects redo (no orchestra), tuned to each stage's key, checkpoint hiss gone | | polish-audio | built; held to send with music v2 (fix two clipping peaks) |
 | X-10 | QA batch E: replay 2 fps (survey no longer draws; root cause needs an Android replay), Facebook iPhone blur dropped steering (FIXED), load stutters (FIXED) | | qa-fix-e | MERGED into ccr 1:45 PM ET |
 | X-12 | Control-test opening too hard for first-timers: Matt chose Easy gaps sized to Easy reach + two more flags (2026-10-29) | | qa-fix-e | in progress |
