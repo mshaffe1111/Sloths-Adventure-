@@ -1,8 +1,8 @@
 """Write the story-art job specs (storygpu.py) and print the job args.
 
     python3 -I tools/art/storyart/make_spec.py <set> <commit>     -> tools/art/storyart/spec-<set>.json
-    python3 -I tools/art/storyart/make_spec.py args <set>         -> the hf_jobs run args
-Upload storygpu.py and the spec to hf://buckets/mshaffe111/w5-xfer/storyart/jobs/ (hf_fs_write), then run.
+    python3 -I tools/art/storyart/make_spec.py args <set> <commit> -> the hf_jobs run args
+Commit and push the spec first: the job fetches storygpu.py and the spec from GitHub raw at that commit.
 """
 import json, sys
 from pathlib import Path
@@ -29,7 +29,7 @@ PLATE_NEG = 'characters, people, animals, sloths, creatures, text, letters, wate
 
 
 def calib(commit):
-    base = f'https://raw.githubusercontent.com/mshaffe1111/sloths-adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
     it = []
     pose = {'idle': 'standing relaxed and smiling', 'worried': 'standing worried, hands on top of his head',
             'duck': 'crouching low and scared, gripping the ground with both paws', 'talk_b': 'standing and talking, one paw raised'}
@@ -60,16 +60,19 @@ def calib(commit):
     return {'tag': 'calib', 'loras': LORAS, 'base': base, 'items': it}
 
 
-def args(name):
+def args(name, commit):
+    raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
+    get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
+           f'curl -fsSL {raw}/spec-{name}.json -o /out/storyart/jobs/spec-{name}.json && sha256sum /out/storyart/jobs/storygpu.py && ')
     print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '3h', 'detach': True,
-                      'command': ['bash', '-lc', f'sha256sum /out/storyart/jobs/storygpu.py && SUB=storyart SPEC=storyart/jobs/spec-{name}.json '
+                      'command': ['bash', '-lc', get + f'SUB=storyart SPEC=storyart/jobs/spec-{name}.json '
                                   f'TAG={name} python /out/storyart/jobs/storygpu.py'],
                       'secrets': {'HF_TOKEN': '$HF_TOKEN'}, 'volumes': ['hf://buckets/mshaffe111/w5-xfer:/out:rw'], 'name': f'storyart-{name}'}, indent=1))
 
 
 if __name__ == '__main__':
     if sys.argv[1] == 'args':
-        args(sys.argv[2])
+        args(sys.argv[2], sys.argv[3])
     else:
         spec = globals()[sys.argv[1]](sys.argv[2])
         (H / f'spec-{sys.argv[1]}.json').write_text(json.dumps(spec, indent=1))
