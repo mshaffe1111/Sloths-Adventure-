@@ -2,6 +2,7 @@ import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
+import { dipWayOut } from './dipWayOut.ts';
 import type { Difficulty } from './difficulty.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
@@ -2818,6 +2819,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     if (a >= 0) attempt = a; // if no fresh layout passes (never seen in testing), fall back to the designed one
   }
   const stage = buildStage(config, attempt);
+  // (5-8's floor under its first stairs gets a short climb out wherever no way back up is near: dipWayOut.ts, LV-11)
+  if (config.id === '5-8' && !config.secret) dipWayOut(stage);
   // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)
   const acceptedIds = lastAccepted && lastAccepted.key === `${config.id}@${attempt}` && config.id !== SECRET_GATE_LEVEL ? lastAccepted.ids : undefined;
   lastAccepted = null;
