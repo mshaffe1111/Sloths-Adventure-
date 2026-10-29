@@ -118,17 +118,17 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     // the let-go, played (2026-10-29 story report): on a touch screen the player's thumbs are his hands, and the two pictures after it are
     // only read where it could not be played
     N('Pokey had hold of the nearest wall with both hands. He always held something when it thundered.',
-      'G#@.62*.9< P:duck@.31*.95', {
+      'G#@.62*.9< PN:grip_wall@.31*.95', {
         p: { zoom: 1.35, focusX: 0.3, focusY: 0.66 },
-        hold: { both: 'Hold on with both thumbs.', lift: 'Now lift one.', reach: 'G#@.62*.9< PN:sing_reach@.3*.95', p: { zoom: 1.45, focusX: 0.46, focusY: 0.72 } },
+        hold: { both: 'Hold on with both thumbs.', lift: 'Now lift one.', reach: 'G#@.62*.9< PN:reach_back@.31*.95', p: { zoom: 1.45, focusX: 0.46, focusY: 0.72 } },
       }),
     N('He let go with one hand.',
       'G#@.62*.9< PN:sing_reach@.3*.95', { cue: 'tender', i: 0.3, narratedOnly: true, p: { zoom: 1.45, focusX: 0.46, focusY: 0.72 } }),
     N('He held it out across the wet stones. Thunder broke over the wall, and he did not take it back.',
       '=', { cue: 'tender', i: 0.35, narratedOnly: true, p: { zoom: 1.55, focusX: 0.46, focusY: 0.74 } }),
     N('The General looked at the hand. From the lit window high in the tower, somebody began to sing.',
-      'G#@.62*.9< PN:sing_reach@.3*.95 M:sing@.335^.27*.42>', { cue: 'meeca', i: 0.4, p: pan(1.45, 0.46, 0.66, 1.5, 0.34, 0.3, 6) }),
-    M(LULLABY, 'M:sing@.335^.27*.42> G#@.62*.9<', { cue: 'meeca', i: 0.8, sting: 'bloom', p: { particles: 'petals', zoom: 1.6, focusX: 0.34, focusY: 0.3 } }),
+      'G#@.62*.9< PN:sing_reach@.3*.95 M:sing@.335^.333*.3%>', { cue: 'meeca', i: 0.4, p: pan(1.45, 0.46, 0.66, 1.5, 0.34, 0.3, 6) }),
+    M(LULLABY, 'M:sing@.335^.333*.3%> G#@.62*.9<', { cue: 'meeca', i: 0.8, sting: 'bloom', p: { particles: 'petals', zoom: 1.6, focusX: 0.34, focusY: 0.3 } }),
     N('Along the walls, the iron thorns of the Pact went still. The guardians raised their heads.', WALL,
       { cue: 'tender', i: 0.6, p: { ...OUT, particles: 'petals', ...pan(1.15, 0.12, 0.6, 1.15, 0.88, 0.6, 9) } }),
     VF('Sso. That\'s the song.', WALL, { p: zoomOn(wallX(1)) }),

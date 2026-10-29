@@ -40,6 +40,8 @@ export interface SceneActor {
   world?: number;
   /** draw as a dark silhouette */
   silhouette?: boolean;
+  /** on a plate: x and y are shares of the plate's own scene (its 1024:572 bottom), so a figure at a window stays at it in any shape of screen */
+  pinned?: boolean;
   /** boss only: attack pose */
   angry?: boolean;
   /** boss only: defeated and dizzy */

@@ -43,6 +43,8 @@ def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_m
         # (a painted floor shadow: grey, close to the background's brightness, no colour)
         lum = g.mean(-1)
         a = np.where(((g.max(-1) - g.min(-1)) < 16) & (np.abs(lum - bg.mean()) < 60), 0, a)
+    # (the repaint leaves a faint pale ring where the grey meets the figure: the edge comes in by a pixel)
+    a = np.minimum(a, np.asarray(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.7)), np.float32) / 255)
     # un-premultiply the grey out of the edge
     aa = np.maximum(a, 0.18)[..., None]
     rgb = np.clip(bg + (g - bg) / aa, 0, 255)

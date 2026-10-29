@@ -22,7 +22,8 @@
  *   The story sheets (storyCels.ts has every pose; a bad pose name throws, so the tests catch it):
  *   GR Grandma   LP Lieutenant Pell   TC the town crier   PO the mail carrier   GN the General in his war look (GN:ready, GN:soften, GN:morph into GV)   GV the General as himself, a plain sloth   GY the grandfather, young (the same plain sloth)   GC the grandfather leading the cub Meeca by the hand (one picture, two figures)   GB/GP busts of the war look and the plain face
  *   MS Meeca's story poses (pink #07: faces, emotion, music box, the tower)   MF Meeca's face bust, :a+b+c changes expression   PN Pokey (satchel)   PV the cub (pink bow, satchel strap)   PX Pokey bandaged   PA PB Pokey and Meeca together   PH Pokey and Meeca hugging   e.g.  GR:water@.4  PH:hug_a@.5
- *   @x across the picture 0..1, ^y feet down the picture, *scale, < faces left, > faces right, ~ a dark silhouette, ! angry (boss), # beaten (boss)
+ *   @x across the picture 0..1, ^y feet down the picture, *scale, < faces left, > faces right, ~ a dark silhouette, ! angry (boss), # beaten (boss),
+ *   % pinned to the plate: @x ^y are shares of the plate's own scene (a figure at a window stays at the window however the phone is held)
  * An unset x, y and facing take the kind's usual place (Pokey on the left looking right, everyone else on the right looking left).
  * A cast of "=" means the same picture as the beat before.
  */
@@ -103,11 +104,11 @@ const BLOOM_STAGES = new Set(['bud', 'bloom', 'epic', 'ultimate']);
 /** how long each face of a "PF:a+b+c" cast stays up */
 const FACE_SECONDS = 1.8;
 
-interface Mods { mood?: string; x?: number; y?: number; scale?: number; face?: 1 | -1; sil?: boolean; angry?: boolean; beaten?: boolean }
+interface Mods { mood?: string; x?: number; y?: number; scale?: number; face?: 1 | -1; sil?: boolean; angry?: boolean; beaten?: boolean; pin?: boolean }
 
 function mods(rest: string, tok: string): Mods {
   const out: Mods = {};
-  const re = /([:@^*])([A-Za-z0-9_.+-]+)|([<>~!#])/g;
+  const re = /([:@^*])([A-Za-z0-9_.+-]+)|([<>~!#%])/g;
   let used = 0;
   for (let m = re.exec(rest); m; m = re.exec(rest)) {
     used += m[0].length;
@@ -116,6 +117,7 @@ function mods(rest: string, tok: string): Mods {
       else if (m[3] === '>') out.face = 1;
       else if (m[3] === '~') out.sil = true;
       else if (m[3] === '!') out.angry = true;
+      else if (m[3] === '%') out.pin = true;
       else out.beaten = true;
       continue;
     }
@@ -222,7 +224,11 @@ function actor(tok: string): SceneActor {
 /** the actors a cast string names */
 export function cast(spec: string | undefined): SceneActor[] {
   if (!spec) return [];
-  return spec.trim().split(/\s+/).filter(Boolean).map(actor);
+  return spec.trim().split(/\s+/).filter(Boolean).map((tok) => {
+    const a = actor(tok);
+    if (/%/.test(tok.replace(/^[A-Z]+\d*/, ''))) a.pinned = true;
+    return a;
+  });
 }
 
 /** does this actor speak this beat's line (used to aim the camera) */

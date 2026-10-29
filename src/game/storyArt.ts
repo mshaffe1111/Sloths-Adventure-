@@ -578,6 +578,14 @@ export function warmStoryCast() {
  * A plate's picture: its bottom 1024:572 is the scene (where the ground and every shot were framed), and a repainted plate goes on
  * upward past it (PLATE_BASE), so an upright phone's room above the scene (`top`) shows more of the same painting.
  */
+/** where this frame's plate lies in the scene (drawPlate), for the figures pinned to it */
+let plateMap: { ox: number; iw: number; bh: number } | null = null;
+/** a pinned figure on a plate: its x and y (shares of the plate's scene) to the scene's own shares */
+function pin(a: SceneActor, w: number, h: number): SceneActor {
+  if (!a.pinned || !plateMap) return a;
+  return { ...a, x: (plateMap.ox + a.x * plateMap.iw) / w, y: a.y === undefined ? a.y : (a.y * plateMap.bh) / h };
+}
+
 function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, lift: number, t = 0, top = 0) {
   const im = plateImage(key);
   const hh = h * (1 + lift) + 4;
@@ -592,6 +600,7 @@ function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: num
   const iw = im.naturalWidth * s;
   const ox = (w - iw) / 2;
   const oy = -ext * s;
+  plateMap = { ox, iw, bh: bh * s };
   ctx.drawImage(im, ox, oy, iw, im.naturalHeight * s);
   // the parts of the painting that move (livePlates.ts, test): fire, fireflies, rain, mist (painted over the scene part)
   drawLivePlate(ctx, key, ox, 0, (s * im.naturalWidth) / 1024, t);
@@ -1454,6 +1463,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   // the sky and hills drift slowly behind the actors
   const camX = (scene.camX ?? 400) + t * 9 + scroll;
   const plated = !!scene.plate;
+  plateMap = null;
   if (plated) {
     drawPlate(ctx, scene.plate as string, w, h, lift, t, top);
   } else {
@@ -1469,7 +1479,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
     drawLineup(ctx, w, h, t, ground);
   } else {
     if (!plated) drawGround(ctx, scene, h * ground, w, h, scroll, lift);
-    drawFigures(ctx, scene, (c) => scene.actors.forEach((a) => drawActor(c, a, w, h, t, ground, scroll)));
+    drawFigures(ctx, scene, (c) => scene.actors.forEach((a) => drawActor(c, pin(a, w, h), w, h, t, ground, scroll)));
   }
 
   drawFx(ctx, scene.fx, t, w, h);
