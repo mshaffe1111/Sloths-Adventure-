@@ -226,8 +226,30 @@ export const TUNING = {
   trunkSideSpeed: 0.3,
 } as const;
 
+/**
+ * Touch sensitivity (the menu's slider, polish report CT-28): every distance a move has to cover is divided by it, so at 1.35 a flick,
+ * a slide or a duck needs about three quarters of the travel, and at 0.75 a third more. Taps and holds must stay stiller in step. The
+ * sizes that belong to the hand, not the move (the palm, the screen edge, beside the steering thumb), stay as they are.
+ */
+export const SENSITIVITY = { min: 0.75, max: 1.35 };
+const DISTANCES = [
+  'moveDead', 'reanchor', 'jumpDy', 'duckDy', 'flickPx', 'dragPx', 'tapPx', 'holdPx', 'jabCancelPx', 'nudgeTapPx', 'edgeMovePx', 'slideUpPx',
+  'airUpPx', 'airJumpDy', 'pumpDown', 'pumpUp', 'vineClimbedPx', 'vineFlickRise', 'earlyDragPx', 'liftFlickPx', 'tapRisePx', 'groundJumpPx',
+  'trunkSidePx',
+] as const;
+const AT_ONE = Object.fromEntries(DISTANCES.map((k) => [k, TUNING[k]])) as Record<(typeof DISTANCES)[number], number>;
+let sensitivityNow = 1;
+export function applyTouchSensitivity(s: number) {
+  const k = Math.max(SENSITIVITY.min, Math.min(SENSITIVITY.max, s));
+  if (k === sensitivityNow) return;
+  sensitivityNow = k;
+  Object.assign(TUNING, Object.fromEntries(DISTANCES.map((d) => [d, AT_ONE[d] / k])));
+}
+
 /** what the recogniser may ask the game: is jump help on, and is he in the air with a second jump to spare */
 export interface GestureEnv {
+  /** the hand that steers (CT-28): a lone first finger on that half of the screen steers at once; Left unless chosen */
+  steerHand?(): 'left' | 'right';
   assist(): boolean;
   air(): boolean;
   /** false while a mega punch is still cooling down: a held thumb then waits instead of announcing a punch that cannot happen */
@@ -433,6 +455,12 @@ export class TouchGestures {
     this.sink.punchCancel?.();
   }
 
+  /** x is on the steering hand's half of the screen (splitAt from that side: mirrored for Right, CT-28) */
+  private steerHalf(x: number): boolean {
+    const w = this.width();
+    return this.env?.steerHand?.() === 'right' ? x > w * (1 - TUNING.splitAt) : x < w * TUNING.splitAt;
+  }
+
   /** a finger just down (or just off a side edge): steering, an action, undecided, or the same hand as the steering thumb */
   private pickRole(f: Finger, x: number, y: number) {
     f.role = 'pending';
@@ -446,9 +474,9 @@ export class TouchGestures {
       else f.role = 'action';
     } else if (this.actor()) {
       // another undecided finger is down already; a left-side touch takes over steering
-      if (x < this.width() * TUNING.splitAt) f.role = 'mover';
+      if (this.steerHalf(x)) f.role = 'mover';
       else f.role = 'ignored';
-    } else if (x < this.width() * TUNING.splitAt) {
+    } else if (this.steerHalf(x)) {
       f.role = 'mover';
     }
   }

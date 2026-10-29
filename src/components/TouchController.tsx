@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
-import { TouchGestures } from '../game/touchGestures.ts';
+import { TouchGestures, applyTouchSensitivity } from '../game/touchGestures.ts';
+import { steerHand, subscribeControls, touchSensitivity } from '../game/controlPrefs.ts';
 import { jumpHelp } from '../game/jumpHelp.ts';
 import { recorder } from '../game/playRecorder.ts';
 import { refinedControls } from '../game/refinedControls.ts';
@@ -53,10 +54,15 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope, inCover: () => inputEngine.inCover },
+      { steerHand, assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope, inCover: () => inputEngine.inCover },
     );
   }
   const G = gestures.current;
+  // the sensitivity chosen in the menu scales the recogniser's distances (CT-28)
+  useEffect(() => {
+    applyTouchSensitivity(touchSensitivity());
+    return subscribeControls(() => applyTouchSensitivity(touchSensitivity()));
+  }, []);
   // a finger tracing a circle at a carving spot (Meeca's stage): once it is a circle it is the carving's, not the slide's
   const trace = useRef(new CircleTrace());
 

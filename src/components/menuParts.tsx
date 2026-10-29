@@ -2,7 +2,7 @@ import React from 'react';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
-import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
+import { controlStyle, padSide, setControlStyle, setPadSide, steerHand, setSteerHand, touchSensitivity, setTouchSensitivity, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 import { showTouches, setShowTouches, type ShowTouches } from '../game/touchMarks.ts';
 import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
@@ -142,6 +142,8 @@ export const ControlsSetting: React.FC = () => {
   const [side, setSide] = React.useState<PadSide>(() => padSide());
   const [help, setHelp] = React.useState<JumpHelp>(() => jumpHelp());
   const [marks, setMarks] = React.useState<ShowTouches>(() => showTouches());
+  const [hand, setHand] = React.useState<PadSide>(() => steerHand());
+  const [sens, setSens] = React.useState<number>(() => touchSensitivity());
   // (iPhones never buzz for a web page: there the marks are the only feedback a touch gets, CT-14)
   const noBuzz = typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function';
   return (
@@ -198,6 +200,50 @@ export const ControlsSetting: React.FC = () => {
               setHelp(v);
             }}
           />
+        </div>
+      )}
+      {style === 'screen' && (
+        <div className="pm-sound-h" style={{ marginTop: 8 }}>
+          <span className="pm-polish-note" style={{ margin: 0 }}>
+            Steer with
+          </span>
+          <Seg
+            value={hand}
+            options={[
+              { id: 'left', label: 'Left' },
+              { id: 'right', label: 'Right' },
+            ]}
+            onPick={(v) => {
+              setSteerHand(v);
+              setHand(v);
+            }}
+          />
+        </div>
+      )}
+      {style === 'screen' && (
+        <div className="pm-sound-h" style={{ marginTop: 8 }}>
+          <span className="pm-polish-note" style={{ margin: 0 }}>
+            Sensitivity
+          </span>
+          <span className="flex items-center gap-2">
+            <input
+              type="range"
+              min={0.75}
+              max={1.35}
+              step={0.05}
+              value={sens}
+              aria-label="Touch sensitivity"
+              style={{ width: 120, accentColor: '#10b981' }}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setTouchSensitivity(v);
+                setSens(v);
+              }}
+            />
+            <span className="pm-polish-note" style={{ margin: 0, minWidth: 34, textAlign: 'right' }}>
+              {Math.round(sens * 100)}%
+            </span>
+          </span>
         </div>
       )}
       {style === 'screen' && (

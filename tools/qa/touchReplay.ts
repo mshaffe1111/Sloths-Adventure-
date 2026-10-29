@@ -28,7 +28,7 @@
  *     that the same finger then made did not jump.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { TouchGestures, TUNING, type GestureSink } from '../../src/game/touchGestures.ts';
+import { TouchGestures, TUNING, type GestureSink, applyTouchSensitivity } from '../../src/game/touchGestures.ts';
 
 type Line = (string | number)[];
 interface Row { arrived: string; who: string; session: string; part: number; device: string; build: string; lines: Line[] }
@@ -40,6 +40,8 @@ if (!file) throw new Error('usage: touchReplay.ts <decoded.json> [since]');
 const rows: Row[] = JSON.parse(readFileSync(file, 'utf8'));
 /** TUNE='{"vineLeapDeg":26}' tries other numbers in the touch rules (for tuning by replay) */
 if (process.env.TUNE) Object.assign(TUNING, JSON.parse(process.env.TUNE));
+/** SENS=1.35 replays at another touch sensitivity (the menu's slider, CT-28) */
+if (process.env.SENS) applyTouchSensitivity(Number(process.env.SENS));
 
 const PLAYERS = ['Mike', 'yana', 'Cheddarbob', 'Jane', 'Steph', 'Matt', 'Sasa', 'Sally', 'Jen'];
 const nameOf = (w: string) => {

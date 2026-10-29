@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { HANG_DROP, ropeYAt } from './rope.ts';
 import type { Rope } from './types.ts';
-import { TouchGestures, TUNING } from './touchGestures.ts';
+import { TouchGestures, TUNING, applyTouchSensitivity } from './touchGestures.ts';
 import { PadInput, pickButton, BUTTON_REACH, type PadButtonSpot } from './padControl.ts';
 import { TouchRig, stroke, type TouchEv } from './touchRig.ts';
 import { TouchMarks, touchMarksOn, MARK } from './touchMarks.ts';
@@ -43,7 +43,7 @@ test('CT-21: hopping off a shimmy rope goes the way the flick leaned, even again
 });
 
 /** the recogniser on its own, with what the game tells it; every decision in order */
-function gestures(world: { rope?: boolean; vine?: boolean; air?: boolean } = {}) {
+function gestures(world: { rope?: boolean; vine?: boolean; air?: boolean; hand?: 'left' | 'right' } = {}) {
   const log: string[] = [];
   const marks: Array<{ k: string; x?: number; y?: number }> = [];
   const g = new TouchGestures(
@@ -53,7 +53,7 @@ function gestures(world: { rope?: boolean; vine?: boolean; air?: boolean } = {})
       climb: (d) => log.push(`climb:${d}`), feedback: (k, x, y) => marks.push({ k, x, y }),
     },
     () => 844,
-    { assist: () => true, air: () => !!world.air, refined: () => true, kickNear: () => false, onVine: () => !!world.vine, onRope: () => !!world.rope },
+    { steerHand: () => world.hand ?? 'left', assist: () => true, air: () => !!world.air, refined: () => true, kickNear: () => false, onVine: () => !!world.vine, onRope: () => !!world.rope },
   );
   let now = 1000;
   const path = (id: number, pts: Array<[number, number]>, every = 16, lift = true) => {
@@ -322,4 +322,40 @@ test('CT-14: a mark flashes, its label fades by 450 ms, and a jab taken back lea
   assert.equal(m.live(MARK.labelMs + 1).length, 0);
   assert.ok(touchMarksOn(1, 'auto') && !touchMarksOn(2, 'auto'));
   assert.ok(touchMarksOn(7, 'on') && !touchMarksOn(1, 'off'));
+});
+
+// ───────────────────────────── CT-28: sensitivity and the steering hand ─────────────────────────────
+
+test('CT-28: sensitivity scales how far a quick flick must rise: 18 px at 100%, about 14 at 135%, 24 at 75%; the palm stays the palm', () => {
+  const flick = (rise: number) => {
+    const t = gestures();
+    t.path(1, Array.from({ length: 5 }, (_, i) => [700, 600 - (rise * i) / 4] as [number, number]), 7);
+    return t.log.some((l) => l.startsWith('jump'));
+  };
+  try {
+    applyTouchSensitivity(1);
+    assert.ok(!flick(16) && flick(20), 'at 100%: 16 px no, 20 px yes');
+    applyTouchSensitivity(1.35);
+    assert.ok(flick(16), 'at 135% a 16 px flick jumps');
+    assert.equal(TUNING.palmPx, 45, 'the palm is the hand, not the move: unscaled');
+    applyTouchSensitivity(0.75);
+    assert.ok(!flick(20) && flick(26), 'at 75% a 20 px flick does not, 26 px does');
+  } finally {
+    applyTouchSensitivity(1);
+  }
+  assert.equal(TUNING.groundJumpPx, 26, 'back to the numbers at 100%');
+});
+
+test('CT-28: Steer with Right mirrors the screen: a lone first finger on the right steers at once, one on the left taps to punch', () => {
+  const r = gestures({ hand: 'right' });
+  r.path(1, [[700, 600], [712, 600], [726, 600], [742, 600]], 16, false);
+  assert.ok(r.log.includes('move:right'), `right half steers at once: ${r.log.join(' ')}`);
+  r.g.up(1, 742, 600, r.at() + 10);
+  r.wait(200);
+  r.path(2, [[150, 600], [151, 601]]);
+  assert.ok(r.log.includes('punch'), `left half tap punches: ${r.log.join(' ')}`);
+  // and Left is today's layout
+  const l = gestures({ hand: 'left' });
+  l.path(1, [[150, 600], [162, 600], [176, 600], [192, 600]], 16, false);
+  assert.ok(l.log.includes('move:right'), l.log.join(' '));
 });
