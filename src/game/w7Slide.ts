@@ -623,7 +623,7 @@ export function buildSlideStage(config: LevelConfig, seed = 1): GeneratedStage &
   plat(CRUMBLE_X0 - 100, CRUMBLE_X1 + 100, G + 380, 60);
   // the chamber at the bottom: the chute's mouth high in its left wall, a walk with two steps, the shrine
   plat(CHAMBER_X0 - 160, CHAMBER_X0, G - 520, 610); // its left wall (the chute's mouth is in it)
-  plat(CHAMBER_X0, 6200, G);
+  const floor = plat(CHAMBER_X0, 6200, G);
   plat(6200, 6380, G - 80, 170);
   plat(6380, 7000, G);
   plat(7000, 7160, G - 80, 170);
@@ -652,8 +652,10 @@ export function buildSlideStage(config: LevelConfig, seed = 1): GeneratedStage &
     spawnX: 220,
     spawnY: G,
     exitTotemX: CHAMBER_EXIT,
-    exitTotemY: G - 30,
+    exitTotemY: G,
     checkpoints: [{ x: slide.chamberFlag.x, y: G, reached: false }],
+    // (the level check can't see the slide: the crumble leads on to the chamber's floor)
+    links: [c1, c2].map((c) => ({ from: c.id, to: floor.id })),
     meta: { attempt: seed, chunks: [], width: SLIDE_LEVEL_W, timing: { layoutSeconds: slideSeconds(slide.normal), decorSeconds: 0, route: SLIDE_LEVEL_W } },
     proto: { hints: [], covers: [], beats: [[0, CRUMBLE_X0, 'hall'], [CRUMBLE_X0, CRUMBLE_X1, 'crumble'], [CHAMBER_X0, SLIDE_LEVEL_W, 'chamber']], slide },
   };

@@ -82,6 +82,8 @@ export interface GeneratedStage {
   deepFall?: number;
   /** Dot's netting flight (dotFlightStage.ts): she flies it, there is no ground, and the engine hands the stage to dotFlightRun.ts */
   dot?: import('./dotFlightStage.ts').DotStage;
+  /** one-way ways on that are no jump or climb, for the level check: from a platform to a platform (7-4: the crumble and the slide) */
+  links?: Array<{ from: number; to: number }>;
   /** puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): their pieces and wires, for a hand-built stage or the generator alike */
   kit?: import('./puzzleKit.ts').KitExtras;
   /** the goal Easy keeps: the stage's own quota, before goals.ts raised it to Normal's share of what the stage holds */
