@@ -269,3 +269,50 @@ test('CT-4: stopping the climb on a trunk stops him within a few px (no 90 px ov
     }
   }
 });
+
+// ───────────────────────────── CT-9: short quick flicks ─────────────────────────────
+
+/** standing still: these fingers; what the recogniser said, and whether he left the ground */
+function standing(evs: TouchEv[]) {
+  const rig = floorRig();
+  rig.run(100);
+  rig.push(evs);
+  let air = false;
+  rig.run(Math.max(...evs.map((e) => e.t)) + 400, () => {
+    if (!rig.p.grounded) air = true;
+  });
+  const w = rig.words();
+  return { jumped: w.some((x) => x.startsWith('jump:')) && air, punched: w.includes('punch'), words: w.join(' ') };
+}
+/** a quick flick straight up of `rise` px in `ms`, from (x, y), lifted at once */
+const upFlick = (id: number, x: number, y: number, rise: number, ms: number, t0 = 0, across = 0): TouchEv[] =>
+  stroke(id, [[t0, x, y], [t0 + ms, x + across, y - rise]]);
+
+test('CT-9: a short quick flick up jumps from every finger: a lone finger either side, a second finger, the steering thumb', () => {
+  for (const [rise, ms] of [[18, 40], [22, 45], [26, 56], [36, 56]] as const) {
+    for (const x of [250, 800]) {
+      const s = standing(upFlick(1, x, 700, rise, ms));
+      assert.ok(s.jumped && !s.punched, `lone finger at x ${x}, ${rise} px in ${ms} ms: ${s.words}`);
+    }
+    // a second finger while the left thumb rests on the glass
+    const two = standing([...stroke(1, [[0, 200, 700], [600, 202, 700]]), ...upFlick(2, 800, 700, rise, ms, 300)]);
+    assert.ok(two.jumped && !two.punched, `second finger, ${rise} px in ${ms} ms: ${two.words}`);
+  }
+  // the steering thumb, running, flicks 30 px and lifts: a jump (it used to just stop him)
+  const rig = floorRig();
+  rig.push(stroke(1, [[0, 150, 700], [100, 200, 700], [500, 205, 700], [560, 210, 670]]));
+  let air = false;
+  rig.run(1200, () => (air ||= !rig.p.grounded));
+  assert.ok(air, `steering thumb, 30 px flick: ${rig.words().join(' ')}`);
+});
+
+test('CT-9: a tap still punches, and a quick 12 to 18 px flick up neither punches nor jumps', () => {
+  for (const x of [250, 800]) {
+    const tap = standing(stroke(1, [[0, x, 700], [90, x + 3, 702]]));
+    assert.ok(tap.punched && !tap.jumped, `tap at x ${x}: ${tap.words}`);
+    const nudge = standing(stroke(1, [[0, x, 700], [150, x + 4, 690]]));
+    assert.ok(nudge.punched && !nudge.jumped, `slow 10 px nudge at x ${x} is still a tap: ${nudge.words}`);
+    const half = standing(upFlick(1, x, 700, 15, 30));
+    assert.ok(!half.punched && !half.jumped, `15 px in 30 ms at x ${x}: ${half.words}`);
+  }
+});

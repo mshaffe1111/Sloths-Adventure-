@@ -17,6 +17,7 @@
  *     A clear one may stay on the glass afterwards (a steering thumb's flick); a short one must lift. A second finger's flick must start
  *     within 250 ms of it going down. A miss is no jump from that touch;
  *     a punch is the worst miss.
+ *   - false jumps: Pokey on the ground, a touch that never rose 12 px within 150 ms (a tap, a steer, a wobble), and it jumped.
  *   - vine strokes: Pokey on a trunk or a liana, a touch that rose 34 px or more. One with a quick flick anywhere in it (28 to 60 degrees
  *     over at 0.6 px/ms or faster, or 22 to 60 at 1 px/ms or faster: the polish report's CT-3 envelope) should let go; one without, whose
  *     best rise is within 15 degrees of vertical (straight) or 15 to 28 slower than 1 px/ms (slanted), should only climb. A second finger's straight stroke is counted apart (CT-5 waits for Matt's call).
@@ -218,6 +219,10 @@ for (const tc of touches) {
     const cat = f.rise >= 34 ? 'clear' : 'short';
     for (const k of keys) bump(k, cat, !jumped, punched, tc);
   }
+  // a jump nobody flicked for: Pokey on the ground, a touch that never rose 12 px within 150 ms (a tap, a steer, a wobble) that jumped
+  if (ground && early && f.rise < 12) {
+    for (const k of keys) bump(k, 'falseJump', jumped, false, tc);
+  }
   // vine strokes: a touch with a quick flick up and over anywhere in it should let go; one whose strokes are all straighter or slower
   // should only climb. A second finger's straight flick is counted on its own (CT-5, Matt's call)
   if (vine && f.rise >= 34) {
@@ -263,14 +268,14 @@ for (const tc of touches) {
 const pct = (t?: Tally) => (t && t.n ? `${((100 * t.miss) / t.n).toFixed(1)}% (${t.miss}/${t.n})` : '-');
 const order = ['all', ...PLAYERS, 'others', 'portrait', 'landscape'];
 console.log(`Replay of the control tests sheet, recordings from ${since}: ${sessions.size} sessions, ${touches.length} touches\n`);
-console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | vine straight climb (let go) | vine slanted climb (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) |');
-console.log('|---|---|---|---|---|---|---|---|---|---|');
+console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | never rose 12 px, but jumped | vine straight climb (let go) | vine slanted climb (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) |');
+console.log('|---|---|---|---|---|---|---|---|---|---|---|');
 for (const k of order) {
   const g = groups.get(k);
   if (!g) continue;
   const punch = (g.clear?.punch ?? 0) + (g.short?.punch ?? 0);
   const fl = (g.clear?.n ?? 0) + (g.short?.n ?? 0);
-  console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} |`);
+  console.log(`| ${k} | ${pct(g.clear)} | ${pct(g.short)} | ${fl ? `${punch}/${fl}` : '-'} | ${pct(g.falseJump)} | ${pct(g.vStraight)} | ${pct(g.vSlant)} | ${pct(g.vFlick)} | ${pct(g.vStraight2)} | ${pct(g.rest)} | ${pct(g.restFlick)} |`);
 }
 console.log('\nBy player and how the phone was held (ground flicks, clear + short: missed)\n');
 console.log('| who | portrait | landscape |');

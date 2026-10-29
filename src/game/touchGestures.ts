@@ -97,7 +97,7 @@ export const TUNING = {
 
   // ---- jump help ----
   /** a finger that is not steering and slides up this far is a jump, at any speed (it used to need a fast flick, and a slow slide did nothing) */
-  slideUpPx: 30,
+  slideUpPx: 26,
   /** in the air with a second jump to spare: an upward move this far (mostly up) is that jump … */
   airUpPx: 16,
   /** … and the steering thumb jumps again on this shorter slide, … */
@@ -172,6 +172,20 @@ export const TUNING = {
   riseMs: 220,
   /** with nothing to kick, a quick flick that rises at least this far for each px across is a jump (0.4: up to about 68 degrees over) */
   flickJumpSlant: 0.4,
+  /**
+   * one rule at lift for every finger (polish report CT-9: small-phone and sideways thumbs flick 20 to 35 px, and a lone finger needed
+   * 41 px, a second 30, the steering thumb 34, so short flicks did nothing or punched): a finger lifting whose last `liftFlickMs` rose
+   * `liftFlickPx` or more at `liftFlickSpeed` px per ms or faster, at least `liftFlickSlant` times as far as it travelled sideways, jumped.
+   */
+  liftFlickMs: 150,
+  liftFlickPx: 18,
+  liftFlickSpeed: 0.4,
+  liftFlickSlant: 1.2,
+  /** … and a tap is a touch whose quickest moment stayed under this (px per ms), or that rose less than `tapRisePx` (else it was a flick) */
+  tapPeakSpeed: 0.35,
+  tapRisePx: 12,
+  /** a flick up jumps once it has risen this far, for every finger on the ground (it was 34 to 41 px by finger: CT-9) */
+  groundJumpPx: 26,
   /**
    * the intent lock: while the steering thumb is flicking up (rising at least `lockSpeed` px per ms over its last `lockTrailMs`, at least
    * `lockSlant` px up for each px across), and for `lockAfterJumpMs` after its jump, the run keeps its way: no stop, no turn. A thumb's
@@ -423,7 +437,7 @@ export class TouchGestures {
     if (f.consumed || t - f.t0 > TUNING.flickLiftMs) return;
     const dx = f.x - f.x0;
     const rise = f.y0 - f.y;
-    if (rise >= TUNING.jumpDy && rise >= Math.abs(dx) * TUNING.riseSlant && rise / Math.max(1, t - f.t0) >= TUNING.flickLiftSpeed) {
+    if (rise >= TUNING.groundJumpPx && rise >= Math.abs(dx) * TUNING.riseSlant && rise / Math.max(1, t - f.t0) >= TUNING.flickLiftSpeed) {
       f.role = 'action';
       f.consumed = true;
       this.fireJump(f, this.canAir(), this.leanOf(dx, rise));
@@ -442,7 +456,7 @@ export class TouchGestures {
       if (!f.jumped && !f.ducked) this.moverFlickOnLift(f, t);
       const travel = Math.hypot(f.x - f.x0, f.y - f.y0);
       const nudge = this.heldDir !== 'none' && travel <= TUNING.nudgeTapPx && t - f.t0 <= TUNING.nudgeTapMs && Math.abs(f.x - f.x0) >= Math.abs(f.y - f.y0);
-      const stillTap = !f.jumped && !f.ducked && ((this.heldDir === 'none' && travel <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) || nudge);
+      const stillTap = !f.jumped && !f.ducked && ((this.heldDir === 'none' && travel <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) || nudge) && !this.flickedUp(f);
       const wasReplant = f.tapT0 - this.lastMoverUp < TUNING.replantMs;
       // only a finger that really steered or jumped counts as a "thumb that was just lifted". A finger that merely tapped must not:
       // otherwise every tap in a quick run of taps on the left half would look like a re-plant of the one before, and be eaten
@@ -480,15 +494,31 @@ export class TouchGestures {
       }
       return;
     }
-    if (f.role === 'ignored') return;
+    if (f.role === 'ignored') {
+      // (a quick flick up as it lifts is a jump from any finger, CT-9)
+      const fl = !f.consumed ? this.liftFlick(f) : null;
+      if (fl) {
+        this.fireJump(f, this.canAir(), fl.lean);
+        this.sink.jumpRelease();
+      }
+      return;
+    }
     const was = f.consumed;
     // a last look: a flick that ended before it was judged (BEFORE releasing, so what it presses is released too)
-    const acted = !was && this.judge(f, t, true);
+    let acted = !was && this.judge(f, t, true);
+    // … and the one rule at lift every finger shares: a quick short flick up is a jump (CT-9)
+    if (!was && !acted) {
+      const fl = this.liftFlick(f);
+      if (fl) {
+        this.fireJump(f, this.canAir(), fl.lean);
+        acted = true;
+      }
+    }
     if (f.jumped) this.sink.jumpRelease();
     if (f.ducked) this.sink.duck(false);
     if (was || acted) return;
     const dist = Math.hypot(f.x - f.x0, f.y - f.y0);
-    if (dist <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) {
+    if (dist <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs && !this.flickedUp(f)) {
       // re-planting the thumb right after steering is not a punch: only if it began after the lift AND near it
       const replant = f.tapT0 >= this.lastMoverUp && f.tapT0 - this.lastMoverUp < TUNING.replantMs &&
         Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;
@@ -522,7 +552,13 @@ export class TouchGestures {
       }
       return;
     }
-    if (this.freshAirFlick(f, el, dx, rise)) this.fireJump(f, true, this.leanOf(dx, rise));
+    if (this.freshAirFlick(f, el, dx, rise)) {
+      this.fireJump(f, true, this.leanOf(dx, rise));
+      return;
+    }
+    // the one rule at lift every finger shares: a quick short flick up is a jump (CT-9: the steering thumb's 30 px flick only stopped him)
+    const fl = this.liftFlick(f);
+    if (fl) this.fireJump(f, this.canAir(), fl.lean);
   }
 
   /** a steering finger put down in the air a moment ago that has risen a second jump's worth, mostly up (not a sideways steer) */
@@ -716,7 +752,7 @@ export class TouchGestures {
     // (and a quick flick up from wherever the thumb has drifted to is a jump too: a thumb steering for a while rolls down the glass,
     // and its flick up then never got back above where it was planted, so the jump was eaten, QA v200 at 5-3's steps)
     const q = this.riseFrom(f);
-    const quick = !f.jumped && !this.duckOn && q.rise >= jdy && q.speed >= TUNING.riseSpeed && q.rise >= Math.abs(q.across) * TUNING.riseSlant && ropeUp;
+    const quick = !f.jumped && !this.duckOn && q.rise >= (air ? jdy : TUNING.groundJumpPx) && q.speed >= TUNING.riseSpeed && q.rise >= Math.abs(q.across) * TUNING.riseSlant && ropeUp;
     if (dyJ < -jdy && !f.jumped && (vUp >= 0.15 || dyJ < -jdy * 2) && ropeUp) {
       this.fireJump(f, air);
     } else if (quick) {
@@ -795,6 +831,36 @@ export class TouchGestures {
     this.setClimb(climb);
   }
 
+  /** the finger's flick as it lifts (CT-9): its last liftFlickMs rose enough, quick enough and mostly up; the lean it had, or null */
+  private liftFlick(f: Finger): { lean: -1 | 0 | 1 } | null {
+    // (not on a vine or a rope, where letting go has its own rules; nor on the heels of a second jump: airLockMs)
+    if (this.vine() || this.rope() || this.now - this.lastAir <= TUNING.airLockMs) return null;
+    const tr = f.trail;
+    let lo = -1;
+    for (let k = tr.length - 1; k >= 0 && this.now - tr[k].t <= TUNING.liftFlickMs; k--) if (lo < 0 || tr[k].y >= tr[lo].y) lo = k;
+    if (lo < 0) return null;
+    const rise = tr[lo].y - f.y;
+    let sx = 0;
+    for (let k = lo + 1; k < tr.length; k++) sx += Math.abs(tr[k].x - tr[k - 1].x);
+    sx += Math.abs(f.x - tr[tr.length - 1].x);
+    const el = Math.max(8, this.now - tr[lo].t);
+    if (rise < TUNING.liftFlickPx || rise / el < TUNING.liftFlickSpeed || rise < sx * TUNING.liftFlickSlant) return null;
+    return { lean: this.leanOf(f.x - tr[lo].x, rise) };
+  }
+  /** the touch was quick and rose: not a tap (CT-9: an 18 px flick used to punch) */
+  private flickedUp(f: Finger): boolean {
+    let peak = 0;
+    let minY = f.y0;
+    const tr = f.trail;
+    for (let k = 1; k < tr.length; k++) {
+      minY = Math.min(minY, tr[k].y);
+      const dt = tr[k].t - tr[k - 1].t;
+      if (dt >= 4) peak = Math.max(peak, Math.hypot(tr[k].x - tr[k - 1].x, tr[k].y - tr[k - 1].y) / dt);
+    }
+    minY = Math.min(minY, f.y);
+    return peak >= TUNING.tapPeakSpeed && f.y0 - minY >= TUNING.tapRisePx;
+  }
+
   /** a flick off a vine that went `across` while rising `rise`, `speed` px per ms along its path, leans far enough over to let go (CT-3's buckets) */
   private vineLeans(across: number, rise: number, speed: number, riseSpeed = Infinity): boolean {
     if (speed < TUNING.vineLeapSpeed || riseSpeed < TUNING.vineLeapRiseSpeed) return false;
@@ -859,7 +925,7 @@ export class TouchGestures {
     if (el <= window) {
       const sp = lifting ? TUNING.flickLiftSpeed : TUNING.flickSpeed;
       const upish = dy < 0 && ay >= ax * 0.85;
-      if (ay >= TUNING.flickPx * 0.9 && (upish || (dy > 0 && ay >= ax)) && ay / el >= sp * 0.75) {
+      if (ay >= (upish ? TUNING.groundJumpPx : TUNING.flickPx * 0.9) && (upish || (dy > 0 && ay >= ax)) && ay / el >= sp * 0.75) {
         f.consumed = true;
         if (dy < 0) {
           this.fireJump(f, this.canAir(), this.leanOf(dx, -dy));
