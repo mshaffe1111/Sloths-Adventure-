@@ -112,15 +112,19 @@ test('room 1, DON\'T SIT: the soft chair holds her (no jump gets her off it), sh
   sim.frame({ right: true, press: true });
   for (let i = 0; i < 24 && chair.state === 'empty'; i++) sim.frame({ right: true, jump: true });
   assert.notEqual(chair.state, 'empty', 'she sat in it');
-  // held: jumps do nothing at all
+  assert.equal(kit.hold(), 'chair');
+  // held: a jump never takes her up out of it (a flick is a wiggle, QA 2026-10-29: it only pops her back the way she came)
   const y = sim.p.y;
+  let top = y;
   for (let k = 0; k < 4; k++) {
     sim.frame({ press: true });
-    for (let i = 0; i < 6; i++) sim.frame({ jump: true });
+    for (let i = 0; i < 6; i++) {
+      sim.frame({ jump: true });
+      top = Math.min(top, sim.p.y);
+    }
   }
-  assert.equal(sim.p.y, y, 'still in the seat');
-  assert.equal(kit.hold(), 'chair');
-  for (let k = 0; k < 8 && chair.state !== 'pop'; k++) for (let i = 0; i < 3; i++) sim.frame(k % 2 ? { left: true } : { right: true });
+  assert.ok(top >= y - 50 && sim.standingOn !== ledge.id, `never up out of it (${Math.round(y - top)} px)`);
+  for (let k = 0; k < 8 && chair.state !== 'pop' && chair.state !== 'empty'; k++) for (let i = 0; i < 3; i++) sim.frame(k % 2 ? { left: true } : { right: true });
   for (let i = 0; i < 30; i++) sim.frame();
   assert.equal(chair.state, 'empty');
   assert.ok(sim.p.grounded && Math.abs(sim.p.y - MEECA_G) < 2 && sim.p.x < chair.x, `back on the floor before it (${sim.p.x.toFixed(0)}, ${sim.p.y.toFixed(0)})`);

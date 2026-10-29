@@ -4,7 +4,8 @@
 // Each shot stands her on the section's high way (its second step; in the hollow, its floor by the trunk out), the trunks before it
 // marked, Flicker with her.
 import { mkdirSync } from 'node:fs';
-const { chromium } = await import(process.argv[5] ?? 'playwright');
+const pw = await import(process.argv[5] ?? 'playwright');
+const chromium = pw.chromium ?? pw.default.chromium;
 const out = process.argv[2] ?? 'shots/meeca-layout';
 const port = process.argv[3] ?? '4301';
 const seed = Number(process.argv[4] ?? 1);

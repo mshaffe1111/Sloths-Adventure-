@@ -100,7 +100,24 @@ export interface MeecaStage {
   beats: Array<[number, number, string]>;
   /** the trails between the story's moments: each its way through, step by step (the bot follows it) */
   trails: MeecaTrail[];
+  /** a landmark at the start of each trail section (meecaArt.ts draws them) */
+  landmarks: MeecaLandmark[];
 }
+
+/** a World 5 piece standing at the start of a trail section, so each section is a place of its own */
+export interface MeecaLandmark {
+  n: (typeof LANDMARKS)[number][0];
+  /** its foot's middle, its width drawn, mirrored */
+  x: number;
+  y: number;
+  w: number;
+  flip: boolean;
+}
+/** the landmarks (World 5's pieces, w5PropsData.ts) and how wide each is drawn: a big orchid, a mossy broken stump, a silk cocoon... */
+export const LANDMARKS = [
+  ['orchidPink', 150], ['orchidPink2', 170], ['cocoonWrapped', 130], ['cocoonTorn', 120], ['mossRoot', 150], ['mossRoot2', 140],
+  ['fern', 150], ['wrappedStool', 70], ['orchidSprout2', 72],
+] as const;
 
 /**
  * The kinds of trail section (2026-10-28, after Matt played it: "climbing is unneeded because you can just run straight across the
@@ -122,6 +139,8 @@ export interface MeecaTrail {
 export const TRAIL_SECTIONS: readonly number[] = [2, 4, 4, 4, 4, 4];
 /** a gully's floor, this far below the path: deeper than a second jump climbs (DOUBLE_RISE ~185), so its far wall is a wall */
 export const GULLY = 260;
+/** the practice pinecone at the top of room 1's ledge (the first thing she carries) */
+export const PRACTICE_ID = 'try1';
 
 /** how long a warning's cut takes, from `from` characters already cut (s of holding) */
 export function carveSeconds(lines: readonly string[], from = 0): number {
@@ -308,7 +327,10 @@ export function buildMeecaStage(seed = 1): MeecaStage {
     double: (x, steps) => {
       const g0 = gbank(x, x + 180);
       steps.push({ kind: 'plat', id: g0.id });
-      const top = G - R.i(136, 146);
+      // (her one jump reaches 98 px, her two about 166 on Normal and 185 on Easy with a 70% hold on each, a second flick from just
+      // before the top of the first to about 0.13 s past it: 124-134 px is a second jump's bank on every roll, with a margin for a
+      // late flick. QA 2026-10-29: at 136-146 a player "got level with the lip and dropped back", meecaReal.test.ts)
+      const top = G - R.i(124, 134);
       const b = ground(g0.x + g0.width, g0.x + g0.width + R.i(240, 300), top, G + GULLY + BANK - top);
       steps.push({ kind: 'plat', id: b.id });
       const g1 = gbank(b.x + b.width, b.x + b.width + R.i(200, 250));
@@ -389,10 +411,13 @@ export function buildMeecaStage(seed = 1): MeecaStage {
       { kind: 'reset', id: 'post1', at: on(floorA, r1 + 50) },
       { kind: 'chair', id: 'chair1', at: on(floorA, r1 + 400) },
       { kind: 'sapling', id: 'sapling1', at: on(floorA, sapX), to: on(ledge1, ledge1.x + 30), h: 330, vine: sap.id },
+      // (up on the ledge, safe, the first thing she can carry: picking up, setting down and throwing taught before room 2 needs them,
+      // QA 2026-10-29. Not for anything: thrown off the ledge it is gone, and room 2 has its own)
+      { kind: 'item', id: PRACTICE_ID, variant: 'pinecone', at: on(ledge1, ledge1.x + 110) },
     ],
     exit: 'sapling1',
     beyond: on(ledge1, ledge1.x + 120),
-    ground: [floorA.id, dip.id],
+    ground: [floorA.id, dip.id, ledge1.id],
     tips: { ...ROOM_LINES.sit },
   };
   rooms.push(sit);
@@ -403,30 +428,33 @@ export function buildMeecaStage(seed = 1): MeecaStage {
   // ── ROOM 2: DON'T EAT ──
   const r2 = cx;
   const b0 = r2 + 50;
-  const floorB = ground(r2, b0 + 1060, G);
+  const floorB = ground(r2, b0 + 1020, G);
+  // (QA 2026-10-29, upright: the two plates and the gate did not fit on one screen. They now stand within about 370 px, the cake's
+  // stool just before them: on a 390 px wide phone held upright the room's framing shows her, both plates and the gate together)
   const eat: RoomSpec = {
     id: 'eat',
-    left: on(floorB, b0 - 20), right: on(floorB, b0 + 750), above: 420, below: 80,
+    left: on(floorB, b0 - 20), right: on(floorB, b0 + 705), above: 420, below: 80,
     pieces: [
       { kind: 'reset', id: 'post2', at: on(floorB, b0) },
       // (by the door a beetle waits by a cake that fell off the stool: it eats it and falls asleep there, as she comes in, so everyone
       // sees what a cake does before they carry one)
       { kind: 'item', id: 'crumb2', variant: 'cake', at: on(floorB, b0 + 60) },
       { kind: 'beetle', id: 'dozer2', at: on(floorB, b0 + 120), waitNear: 190 },
-      { kind: 'plate', id: 'plateA', at: on(floorB, b0 + 240) },
-      { kind: 'source', id: 'stool2', variant: 'cake', at: on(floorB, b0 + 360), look: 'pile' },
+      // (the stool out of the dozer's sight, so it eats the crumb by the door and not the stool's cakes)
+      { kind: 'source', id: 'stool2', variant: 'cake', at: on(floorB, b0 + 340), look: 'pile' },
       { kind: 'item', id: 'cake2', variant: 'cake', source: 'stool2', for: 'plateB' },
-      { kind: 'plate', id: 'plateB', at: on(floorB, b0 + 560) },
-      { kind: 'beetle', id: 'beetle2', at: on(floorB, b0 + 650) },
-      { kind: 'gate', id: 'gate2', at: on(floorB, b0 + 720), open: { all: ['plateA', 'plateB'] }, latch: true, look: 'woven' },
+      { kind: 'plate', id: 'plateA', at: on(floorB, b0 + 420) },
+      { kind: 'plate', id: 'plateB', at: on(floorB, b0 + 535) },
+      { kind: 'beetle', id: 'beetle2', at: on(floorB, b0 + 595) },
+      { kind: 'gate', id: 'gate2', at: on(floorB, b0 + 665), open: { all: ['plateA', 'plateB'] }, latch: true, look: 'woven' },
     ],
     exit: 'gate2',
-    beyond: on(floorB, b0 + 800),
+    beyond: on(floorB, b0 + 745),
     ground: [floorB.id],
     tips: { ...ROOM_LINES.eat },
   };
   rooms.push(eat);
-  const t2 = trunk(1, b0 + 900, G, 30, 'eat');
+  const t2 = trunk(1, b0 + 860, G, 30, 'eat');
   beats.push([r2, t2.x + 100, "Room 2: DON'T EAT (the cake, the beetles, two plates)"]);
   cx = trail(floorB.x + floorB.width, TRAIL_SECTIONS[3], 'deeper in');
 
@@ -532,9 +560,30 @@ export function buildMeecaStage(seed = 1): MeecaStage {
     { kind: 'dark', x0: e0 - 60, x1: bank.x + bank.width, top: G - 900, bottom: G + 400, baseY: G, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0, lights: [] },
   ];
   const width = bank.x + bank.width;
+  // a landmark at the start of every trail section, dealt from a shuffled bag of World 5's pieces so no two near each other are the
+  // same (QA 2026-10-29: the rolled sections looked alike, and a slow walker felt she was going round in circles). Its own stream: the
+  // layout rolls as before
+  const landmarks: MeecaLandmark[] = [];
+  {
+    const L = stream(seed * 31 + 11);
+    let bag: Array<(typeof LANDMARKS)[number]> = [];
+    let lastN = '';
+    for (const tr of trails) {
+      for (const sec of tr.sections) {
+        if (!bag.length) bag = L.shuffle([...LANDMARKS]);
+        let pick = bag.pop()!;
+        if (pick[0] === lastN && bag.length) {
+          bag.unshift(pick);
+          pick = bag.pop()!;
+        }
+        lastN = pick[0];
+        landmarks.push({ n: pick[0], x: sec.x0 + 46, y: G, w: Math.round(pick[1] * L.r(0.9, 1.1)), flip: L.chance(0.5) });
+      }
+    }
+  }
   const st: MeecaStage = {
     seed, width, spawn: { x: spawn, y: G }, campEnd, camp, highX: trails[0].x0 + 120, forkX, flickerX, flickerAt: { x: flickerX + 150, y: G - 130 },
-    trunks, darkX0: e0 - 60, clearing, beats, trails,
+    trunks, darkX0: e0 - 60, clearing, beats, trails, landmarks,
   };
   BUILT.set(st, { platforms: P, vines, trees, kit, zones });
   return st;

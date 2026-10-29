@@ -6,7 +6,7 @@ recommendation with its status in the game and what is next), and every mistake 
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
-Last updated 2026-10-28.
+Last updated 2026-10-29.
 
 ---
 
@@ -233,6 +233,22 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   the flight (`canGrabSwing(x, y, v, t)`); a jump from a ledge can wait for the vine; the sweet spot and the let-go are shares of each
   vine's own swing; measure release windows with `pressWindow` (the engine's early/late forgiveness included). Proof:
   `vineSelfSwing.test.ts` (no overlap; every liana-to-liana and liana-to-ledge jump at least 167 ms a swing on Normal, 300 ms on Easy).
+- **Taking a control away can take a move with it** (Meeca's stage, QA 2026-10-29: "level with the lip and drops back"): to stop her
+  gliding (she has no leaf) the stage let go of the jump hold whenever she was falling, and so on the frame a second flick came just past
+  the top of the first jump, the engine's variable-height cut stopped the second jump dead (it gave 0 px). A second jump past the top was
+  impossible on every second-jump bank. A filter on the controls keeps the frame of a new press whole; measure moves in the real engine
+  with the stage's own filters on (`meecaQA.test.ts` 8: a 70% hold, the second flick anywhere in about 0.4 s).
+- **A trap that holds you must let go of any thumb** (Meeca's chair): wiggling counted only left-right changes, so a thumb held one
+  way, or tapping, sat her frozen in it for a minute with its line long gone. Count every new input (a change, a fresh slide, a tap, a
+  steady push for a moment), keep its line up while it holds, and let go in the end whatever the thumb does (`CHAIR.giveUp`).
+- **A trap that lets go must not catch again at once** (Meeca's silk line): free after shaking it off, she stood right on it, and a
+  thumb sliding a little up as she walked on caught her again, over and over ("stuck at room 3's entrance"). It stays out of reach until
+  she has stepped away (`SILK.away`).
+- **Nobody is left stuck in silence** (Meeca's stage, the lead's QA brief 2026-10-29, an exception to §1's "hints only when asked" and
+  §3's "not a clock" that Matt has to confirm): QA stood 32 s in a room and nothing was said. Flicker nudges after about 20 s with
+  nothing new done in a room (or at a trunk not carved), and more strongly at about 40 s; anything the room has not seen yet starts
+  the clock again; the nudges point at the piece, never the whole answer (`meecaPlay.ts stepNudge`, `FLICKER_NUDGES`).
+- **What a counter counts needs its word** ("M. 1/5" read as "my mark didn't count"): Meeca's HUD says "Warnings 1/5" (`goalInfo.word`).
 
 ## 7. Where things are
 

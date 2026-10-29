@@ -188,41 +188,66 @@ export function drawFlicker(ctx: CanvasRenderingContext2D, mc: MeecaPlay, p: Pla
   drawGlow(ctx, f.x + face * 9, f.y + 2, 16, 'rgba(240, 255, 190, A)', 0.9 * blink);
 }
 
-/** the circle-and-finger guide the first time she stands at a trunk: a glowing dashed ring on the bark and a ghost finger tracing it */
-export function drawCarveRing(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, t: number) {
+/**
+ * The "trace a circle" guide at every trunk she stands at (QA 2026-10-29: the dashed ring the first time only, and it read as "hold
+ * here"): a faint ring on the bark, a bright light running round it with a fading tail and an arrowhead the way it goes, so it reads as
+ * a movement to copy; the first time, a ghost fingertip rides the light.
+ */
+export function drawCarveRing(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, t: number, finger = false) {
   const cx = tr.textX;
   const cy = tr.textY + tr.size * 0.7 * Math.max(0, tr.lines.length - 1) * 0.6;
-  const r = 34;
+  const r = 36;
+  const turn = 1.3;
+  const a0 = -Math.PI / 2 + ((t * Math.PI * 2) / turn) % (Math.PI * 2);
   ctx.save();
-  drawGlow(ctx, cx, cy, r + 26, 'rgba(214, 255, 160, A)', 0.45);
-  ctx.setLineDash([7, 7]);
-  ctx.lineDashOffset = -t * 30;
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = 'rgba(232, 255, 196, 0.9)';
+  drawGlow(ctx, cx, cy, r + 26, 'rgba(214, 255, 160, A)', 0.3);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(232, 255, 196, 0.35)';
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.stroke();
-  ctx.setLineDash([]);
-  // the arrow on it: round the way the finger goes
-  const a0 = -Math.PI / 2 + ((t * Math.PI * 2) / 1.3) % (Math.PI * 2);
+  // the tail: the last part of a turn, brighter toward the light
+  ctx.lineCap = 'round';
+  const n = 14;
+  for (let i = 0; i < n; i++) {
+    const u = i / n;
+    ctx.strokeStyle = `rgba(240, 255, 200, ${(0.9 * u).toFixed(3)})`;
+    ctx.lineWidth = 2 + 4 * u;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, a0 - 2.2 + 2.2 * u, a0 - 2.2 + 2.2 * (u + 1 / n));
+    ctx.stroke();
+  }
+  // the light and its arrowhead, pointing on round the ring
   const ax = cx + Math.cos(a0) * r, ay = cy + Math.sin(a0) * r;
-  // the ghost finger: a pale fingertip, its nail toward the ring's middle
+  drawGlow(ctx, ax, ay, 18, 'rgba(250, 255, 215, A)', 0.95);
   ctx.translate(ax, ay);
   ctx.rotate(a0 + Math.PI / 2);
-  ctx.globalAlpha = 0.85;
-  ctx.fillStyle = 'rgba(255, 236, 222, 0.92)';
-  ctx.strokeStyle = 'rgba(120, 80, 70, 0.7)';
-  ctx.lineWidth = 1.5;
+  ctx.fillStyle = 'rgba(255, 255, 230, 0.98)';
   ctx.beginPath();
-  ctx.roundRect(-8, -6, 16, 34, 8);
+  ctx.moveTo(10, 0);
+  ctx.lineTo(-5, -7);
+  ctx.lineTo(-5, 7);
+  ctx.closePath();
   ctx.fill();
-  ctx.stroke();
-  ctx.fillStyle = 'rgba(255, 250, 246, 0.95)';
-  ctx.beginPath();
-  ctx.ellipse(0, -1, 5, 6, 0, 0, Math.PI * 2);
-  ctx.fill();
+  if (finger) {
+    // the ghost finger: a pale fingertip on the light, its nail toward the ring's middle
+    ctx.rotate(-Math.PI / 2);
+    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = 'rgba(255, 236, 222, 0.92)';
+    ctx.strokeStyle = 'rgba(120, 80, 70, 0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(-8, -6, 16, 34, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255, 250, 246, 0.95)';
+    ctx.beginPath();
+    ctx.ellipse(0, -1, 5, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
   ctx.restore();
 }
+
 
 // ───────────────────────────── the camp, the clearing ─────────────────────────────
 
@@ -274,6 +299,8 @@ export function drawClearing(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view:
 export function drawMeecaBack(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view: { x0: number; x1: number }, t: number) {
   const st = mc.st;
   drawCamp(ctx, st, view, t);
+  // the trail's landmarks: one at the start of each section, so each is a place of its own
+  if (w5ArtReady()) for (const l of st.landmarks) if (l.x > view.x0 - 200 && l.x < view.x1 + 200) drawW5(ctx, l.n, l.x, l.y + 4, l.w, { flip: l.flip });
   st.trunks.forEach((tr, i) => {
     if (tr.x + tr.w < view.x0 - 100 || tr.x - tr.w > view.x1 + 100) return;
     const cut = mc.cutChars(i);
@@ -285,7 +312,7 @@ export function drawMeecaBack(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view
       if (mc.carvingNow) shavings(ctx, at.x - at.k * 0.15, at.y + at.k * 0.25, t);
       drawCarveMeter(ctx, at.x, at.y, tr.size * 0.78, at.frac);
     }
-    if (mc.ringOn === i && !mc.carvingNow) drawCarveRing(ctx, tr, t);
+    if (mc.ringOn === i && !mc.carvingNow) drawCarveRing(ctx, tr, t, mc.ringFinger);
   });
   drawClearing(ctx, mc, view, t);
 }
@@ -293,6 +320,27 @@ export function drawMeecaBack(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view
 /** in front of her: Flicker */
 export function drawMeecaFront(ctx: CanvasRenderingContext2D, mc: MeecaPlay, p: Player, t: number) {
   drawFlicker(ctx, mc, p, t);
+  // held by a soft chair: two arrows rocking either side of her, the wiggle to make (left, right, left, right)
+  if (mc.wiggling) {
+    const k = Math.sin(t * 9);
+    ctx.save();
+    for (const d of [-1, 1] as const) {
+      const on = d * k > 0;
+      const x = p.x + d * (58 + (on ? 8 : 0)), y = p.y - 52;
+      ctx.globalAlpha = on ? 1 : 0.55;
+      ctx.fillStyle = '#fff1c9';
+      ctx.strokeStyle = 'rgba(58, 36, 20, 0.9)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x + d * 16, y);
+      ctx.lineTo(x - d * 4, y - 14);
+      ctx.lineTo(x - d * 4, y + 14);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
 }
 
 /** the trail mark's arrow, cut beside her M */
