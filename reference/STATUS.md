@@ -45,6 +45,9 @@ the rope traverse (waits on Matt's Gemini hand-over-hand sheet).
 
 ## Live (main)
 
+- PR #46 (2026-10-29 08:53 UTC, Matt merged): World 6 on gen2 (6-1..6-7, 6-9), the animal clearance fix, painted dirty/fast water W6-10,
+  QA fixes, W3 r2, W4 r3-r7, 5-7/5-9 on gen2. Deploy run 40845383242 and APK run 40845383232 both succeeded.
+
 - PR #39 (2026-10-28): Worlds 1-2 rebuilt, iPhone sound fix, Worlds 1-4 groundwork.
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
