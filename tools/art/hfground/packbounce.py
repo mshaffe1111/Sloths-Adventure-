@@ -23,7 +23,7 @@ STALK_H = 256
 cells = []
 frames = {}
 for sp, pk in PICKS.items():
-    span = pk.get('span', 1.1)
+    wspan = pk.get('span', 1.1)
     cap = depurple(key(Image.open(raw / f"{pk['cap']}.webp"), main_only=True), edge_only=1)
     cap = cap.crop(cap.getbbox())
     a = np.asarray(cap)[..., 3] > 128
@@ -47,7 +47,7 @@ for sp, pk in PICKS.items():
     xs = np.where(a[wide])[0]
     cells.append((f'cap-{sp}', cap, {'cw': round((xs.max() - xs.min()) / a.shape[1], 4), 'cx': round((xs.min() + xs.max()) / 2 / a.shape[1], 4),
                                      'sx': round((sx0 + sx1) / 2 / a.shape[1], 4), 'sw': round((sx1 - sx0) / a.shape[1], 4),
-                                     'rim': round(rim * s / cap.height, 4), 'span': span}))
+                                     'rim': round(rim * s / cap.height, 4), 'span': wspan}))
     st = depurple(key(Image.open(raw / f"{pk['stalk']}.webp")), edge_only=1)
     bb = st.getbbox()
     st = st.crop((0, bb[1], st.width, bb[3])).rotate(90, expand=True)

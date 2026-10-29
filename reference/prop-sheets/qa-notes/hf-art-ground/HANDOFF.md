@@ -158,3 +158,6 @@ cost). No job is running.
 - World 3 (3-3): its kit drew the pit walls (44 tall, under the banks) as stone slabs floating in the soil; thinKit skips soil pieces.
 - `r4-pit-5-1-x7300.jpg`, `r4-pit-1-2-x11380.jpg`, `r4-pit-3-3-x330.jpg` (before 5114dea above, after below).
 - Not touched: the see-through boxes in 5-1 x7300 are World 5's painted silk sheets (w5Look.ts drawSilkSheet), panels side by side.
+- Bounce plants per world (Matt, 4:58 PM ET): starts5.py tints the round-3 caps toward each world, job hfg-art6 (10 caps x 2 seeds,
+  10 stalks, ~$0.22), picks in picks-bounce.json (w1..w10, each with its span), packed by packbounce.py; bounceArt.ts draws the world's
+  own (cap-w<N>). `review-bounce-worlds.jpg` (all 10, both seeds, on dark and grey), `r5-bounce-*.jpg` (Worlds 1, 7, 9, 10 in game).
