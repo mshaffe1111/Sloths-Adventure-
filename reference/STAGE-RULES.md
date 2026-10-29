@@ -400,6 +400,15 @@ plan); never ship the rough version as finished.
 - **One time model can be wrong by a world** (LV-15): stageTime.ts's old model gave 4-7 84 s (it doesn't model glide descents) while the
   200-roll tool's quick route says 3:07 at its shortest and the bots take 4-8 minutes. Check a length claim with era.ts and the bots.
 
+- **A room's wall is an `over` piece, never a `walk`** (World 10's hoist, 2026-10-29): gen2 clamps a `walk` rise to a plain hop, so a wall
+  walk laid as `{ kind: 'walk', dy: -320 }` came out 20 px high and the room was walked past without its stones. The room checker caught it
+  only because the test takes the key pieces out and expects a failure (`w10Rooms.test.ts`): every room test does that.
+- **A plate needs room before its gate** (World 10's gatehouse, 2026-10-29): with the plate 90 px short of the portcullis, or the
+  portcullis 40 px short of the floor's end, the checker found the gate open but no way through once a stone lay on the plate. 160 px from
+  plate to gate and 80 px from gate to the floor's end pass (as World 7's room).
+- **No jump while carrying, so nothing stands between the pile and the plate** (the same room): a crate block on the floor between them
+  made the room unsolvable on Normal. Put the climb to a lever before the pile, or past the plate.
+
 ## 7. Where things are
 
 - Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's

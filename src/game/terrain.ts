@@ -1122,7 +1122,7 @@ function drawGameVine(ctx: CanvasRenderingContext2D, v: Vine, look: Look, time: 
     return;
   }
   // the world's painted liana when its kit has loaded (the swinging ones; a climb vine keeps its drawn look on its trunk)
-  if (v.vineType === 'swing_liana' && paintedKitEnabled() && drawSwingLianaArt(ctx, v, ang)) return;
+  if (v.vineType === 'swing_liana' && paintedKitEnabled() && drawSwingLianaArt(ctx, v, ang, time)) return;
   const style = look.glow && Math.abs(v.id) % 5 === 4 ? 3 : Math.abs(v.id) % 3; // 0 twist, 1 liana, 2 leafy, 3 glow
   const ol = look.ground.outline;
   const gl = tone(look.vine.main);

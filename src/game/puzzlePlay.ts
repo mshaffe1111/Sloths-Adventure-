@@ -11,6 +11,7 @@ import {
   type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind, type Wire, wireIds,
 } from './puzzleKit.ts';
 import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
+import { drawW10Beam, drawW10Counterweight, drawW10Hoist, drawW10Piece, loadW10RoomArt } from './w10PuzzleArt.ts';
 import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
 import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
@@ -311,6 +312,8 @@ export class KitPlay {
       // World 2's thrown stones: Matt's river stone or the round grey one, by the roll (never the same look two stages running)
       stone: w === 2 ? rollLook(['riverStone', 'stone'] as const, world.stage ?? 1, roll, 2) : 'stone',
     };
+    // (World 10: its painted lever, plate, portcullis, hoist and beam, w10PuzzleArt.ts)
+    if (w === 10) loadW10RoomArt();
     this.extraZones = (world.zones ?? []).filter((z) => z.kind === 'wind');
     this.noClock = !!world.noClock;
     this.night = !!world.night;
@@ -1717,9 +1720,10 @@ export class KitPlay {
           drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + 6, { w: pw * 1.5, h: ph * 0.7 });
           if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
         }
-        const drew = stoneP
+        // (World 10: the stone pressure plate of its own sheet, sunk a little while held down)
+        const drew = (this.look.world === 10 && drawW10Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 8 + pl.show * 3, 22)) || (stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
-          : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
+          : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph }));
         ctx.restore();
         // (Meeca's night: an empty plate's rim breathes a pale light, so it reads as something to stand on, not a stump in the path)
         if (this.night && drew && pl.show < 0.5) {
@@ -1738,6 +1742,8 @@ export class KitPlay {
       }
       for (const l of room.levers) {
         if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
+        // (World 10: the iron lever on its block, thrown down while on)
+        if (this.look.world === 10 && drawW10Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 82)) continue;
         if (!drawKitArt(ctx, l.show > 0.5 ? 'leverOn' : 'leverOff', l.x, l.y + 4)) {
           ctx.strokeStyle = '#6b4a2b';
           ctx.lineWidth = 6;
@@ -1933,11 +1939,12 @@ export class KitPlay {
     const gw = KIT.gateW + 50;
     // World 1: Matt's branch gate, drawn up out of the way as it opens; World 3: Grandma's fern stone door, rolled aside
     const lw = this.look.world;
-    const drew = !g.spec.look && lw === 1
+    // (World 10: the portcullis in its stone arch, down and up)
+    const drew = (!g.spec.look && lw === 10 && drawW10Piece(ctx, g.show > 0.5 ? 'portcullis-up' : 'portcullis-down', g.x, g.y + 6, KIT.doorH + 34)) || (!g.spec.look && lw === 1
       ? g.show > 0.98 || drawKitArt(ctx, 'branchGate', g.x, g.y + 4 - g.show * (KIT.doorH + 20), { w: gw + 20, h: KIT.doorH + 14, alpha: 1 - g.show * 0.85 })
       : !g.spec.look && lw === 3
         ? drawKitArt(ctx, g.show > 0.5 ? 'fernDoorOpen' : 'fernDoorShut', g.x, g.y + 6, { w: gw + 40, h: KIT.doorH + 20 })
-        : drawKitArt(ctx, g.show > 0.5 ? 'gateOpen' : 'gateShut', g.x, g.y + 4, { w: gw, h: KIT.doorH + 10 });
+        : drawKitArt(ctx, g.show > 0.5 ? 'gateOpen' : 'gateShut', g.x, g.y + 4, { w: gw, h: KIT.doorH + 10 }));
     if (!drew) {
       ctx.fillStyle = g.open ? 'rgba(92, 64, 32, 0.35)' : '#6b4a2b';
       ctx.fillRect(g.door.x, doorTop, g.door.width, KIT.doorH);
@@ -2022,6 +2029,8 @@ export class KitPlay {
       }
       return;
     }
+    // (World 10's hoist: the grate and the counterweight each hang on their own chains from the wall's hoist overhead, w10PuzzleArt.ts)
+    if (this.look.world === 10 && this.drawPlank(ctx, pl)) return;
     // the pulley over the two of them, and the ropes from it to the plank's ends and to the basket
     if (b) {
       const px = (b.x + pl.x + pl.width / 2) / 2;
@@ -2100,6 +2109,8 @@ export class KitPlay {
   private drawPlank(ctx: CanvasRenderingContext2D, pl: Platform): boolean {
     const cx = pl.x + pl.width / 2;
     if (this.look.world === 4) return drawKitArt(ctx, 'ropeLift', cx, pl.y + 20, { w: pl.width + 16, h: 34 });
+    // (World 10: the hoist's iron grate on its chains)
+    if (this.look.world === 10 && drawW10Hoist(ctx, cx, pl.y + 10, pl.width + 30)) return true;
     return drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 });
   }
 
@@ -2158,6 +2169,8 @@ export class KitPlay {
 
   private drawBasket(ctx: CanvasRenderingContext2D, room: RoomRun, b: BasketRun) {
     const my = this.mouthY(room, b);
+    // (World 10: the hoist's counterweight, a cage on a chain, the rubble in it)
+    if (this.look.world === 10 && drawW10Counterweight(ctx, b.x, my, b.count > 0, (x, y) => drawKitArt(ctx, this.look.stone, x, y, { scale: 0.8 }))) return;
     // (World 2's counter-basket, by a hanging cage: the rope basket of river stones)
     if (room.lifts.some((l) => l.cage && room.baskets[l.basket] === b) && drawKitArt(ctx, b.count > 0 ? 'basket2Full' : 'basket2', b.x, my + kitSize('basket2').h * 0.62)) return;
     // (World 4: the cliff folk's rope net, full of the broken ledge's stones once he has put them in)
@@ -2173,6 +2186,8 @@ export class KitPlay {
 
   private drawSeesaw(ctx: CanvasRenderingContext2D, s: SeesawRun) {
     const [l, r] = s.ends;
+    // (World 10: the iron-banded beam on its block of rock)
+    if (this.look.world === 10 && drawW10Beam(ctx, l.x, l.y, r.x + r.width, r.y, s.x, s.y, s.foot)) return;
     const n: 'seesawLevel' | 'seesawUpR' | 'seesawUpL' = s.show < -0.5 ? 'seesawUpR' : s.show > 0.5 ? 'seesawUpL' : 'seesawLevel';
     // (the painted plank and its round pivot, stretched to the plank's length; its feet on the ground under the pivot)
     const sz = kitSize(n);
