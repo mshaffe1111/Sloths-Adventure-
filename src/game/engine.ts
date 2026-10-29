@@ -1804,7 +1804,9 @@ export class GameEngine {
             if (!this.facingLocked()) p.facing = dir as 1 | -1;
             const reversing = Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
             const acc = (p.grounded ? PHYS.groundAcc : PHYS.airAcc) * speedMult + (reversing ? (p.grounded ? PHYS.turnBonus : PHYS.airTurn) : 0);
-            if (dir * p.vx < maxSpeed) {
+            // (at exactly run speed too: with `<` he bled 17 px/s every other frame, 285 then 268, so a running take-off was one or the
+            // other by frame parity and the same jump carried 170 or 181 px, polish report CT-1)
+            if (dir * p.vx <= maxSpeed) {
               p.vx += dir * acc * dt;
               if (dir * p.vx > maxSpeed) p.vx = dir * maxSpeed;
             } else {
@@ -1812,8 +1814,11 @@ export class GameEngine {
               p.vx -= dir * (this.atk && p.grounded ? PHYS.groundDec : PHYS.airDec) * dt;
             }
           } else {
-            // refined controls: a finger lifted in mid-air no longer brakes him (holding down still does)
-            const dec = p.grounded ? PHYS.groundDec : this.refined && !this.input.state.down ? 0 : PHYS.airStop;
+            // refined controls: a finger lifted in mid-air no longer brakes him (holding down still does). Nor does one lifted on the frame
+            // he takes off: a one-thumb flick lifts at once, and when the lift beat the frame, ground braking ran before the jump below and
+            // took 113 px/s off the take-off, so the same running jump carried 93 px or 178 px by luck (polish report CT-1, touchRig.test.ts)
+            const takeOff = p.grounded && this.input.state.jumpPressed;
+            const dec = p.grounded ? (takeOff ? 0 : PHYS.groundDec) : this.refined && !this.input.state.down ? 0 : PHYS.airStop;
             if (Math.abs(p.vx) <= dec * dt) p.vx = 0;
             else p.vx -= Math.sign(p.vx) * dec * dt;
           }

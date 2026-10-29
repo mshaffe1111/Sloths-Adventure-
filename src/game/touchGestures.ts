@@ -157,6 +157,15 @@ export const TUNING = {
   riseMs: 220,
   /** with nothing to kick, a quick flick that rises at least this far for each px across is a jump (0.4: up to about 68 degrees over) */
   flickJumpSlant: 0.4,
+  /**
+   * the intent lock: while the steering thumb is flicking up (rising at least `lockSpeed` px per ms over its last `lockTrailMs`, at least
+   * `lockSlant` px up for each px across), and for `lockAfterJumpMs` after its jump, the run keeps its way: no stop, no turn. A thumb's
+   * flick arcs back toward the palm, and that arc used to read as a stop or a turn on the very frame he took off (polish report CT-11)
+   */
+  lockSpeed: 0.3,
+  lockSlant: 1.5,
+  lockTrailMs: 60,
+  lockAfterJumpMs: 120,
 } as const;
 
 /** what the recogniser may ask the game: is jump help on, and is he in the air with a second jump to spare */
@@ -308,6 +317,7 @@ export class TouchGestures {
   /** a jump the finger asked for: `air` marks it as the second jump, so another cannot fire on its heels; `lean`, which way it leaned */
   private fireJump(f: Finger, air: boolean, lean: -1 | 0 | 1 = 0) {
     if (f.role !== 'mover') f.consumed = true;
+    else this.lockUntil = this.now + TUNING.lockAfterJumpMs;
     f.jumped = true;
     f.pk = f.y;
     f.tr = f.y;
@@ -582,6 +592,20 @@ export class TouchGestures {
 
   // ───────────────────────────── steering ─────────────────────────────
 
+  /** the steering thumb's run keeps its way until then (its jump a moment ago: the intent lock) */
+  private lockUntil = -1e9;
+  /** the steering thumb is flicking up right now (the intent lock): quick, and mostly up, over its last moments */
+  private flickingUp(f: Finger): boolean {
+    let r0 = f.hist[f.hist.length - 1];
+    for (let i = f.hist.length - 1; i >= 0; i--) {
+      if (this.now - f.hist[i].t > TUNING.lockTrailMs) break;
+      r0 = f.hist[i];
+    }
+    const rise = r0.y - f.y;
+    const el = this.now - r0.t;
+    return el > 0 && rise >= 6 && rise / el >= TUNING.lockSpeed && rise >= Math.abs(f.x - (r0.x ?? f.x)) * TUNING.lockSlant;
+  }
+
   private setDir(d: 'left' | 'right' | 'none') {
     if (d === this.heldDir) return;
     this.heldDir = d;
@@ -599,6 +623,15 @@ export class TouchGestures {
     }
     // hysteresis: starting needs the full dead zone, stopping needs the finger well back inside it
     const stop = TUNING.moveDead * 0.6;
+    // the intent lock: a running thumb flicking up (or that has just jumped) keeps the run's way; the anchor comes along, so the thumb's arc
+    // back toward the palm is not read as a stop or a turn once the lock ends either
+    if (this.heldDir !== 'none' && !this.vine() && (this.now < this.lockUntil || this.flickingUp(f))) {
+      const s = this.heldDir === 'right' ? 1 : -1;
+      if (dx * s < TUNING.moveDead) {
+        f.ax = f.x - s * TUNING.moveDead;
+        dx = s * TUNING.moveDead;
+      }
+    }
     if (this.heldDir === 'none') this.setDir(dx > TUNING.moveDead ? 'right' : dx < -TUNING.moveDead ? 'left' : 'none');
     else if (this.heldDir === 'right') this.setDir(dx < stop ? (dx < -TUNING.moveDead ? 'left' : 'none') : 'right');
     else this.setDir(dx > -stop ? (dx > TUNING.moveDead ? 'right' : 'none') : 'left');
