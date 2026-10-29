@@ -1503,13 +1503,16 @@ export class GameEngine {
         this.jumpBufferTimer = 0;
         this.climbAssist = 0.45;
       }
-      if (this.input.state.down) this.climbAssist = 0;
-      else if (this.input.state.up) this.climbAssist = Math.max(this.climbAssist, 0.25);
+      // (the grab's little carry runs down even while up is held, and an explicit stop ends it: it used to be topped up to 0.25 s while
+      // up was held, so he climbed 50 to 90 px past where the thumb stopped, polish report CT-4)
+      if (this.input.state.down || (this.input as { takeClimbStop?: () => boolean }).takeClimbStop?.()) this.climbAssist = 0;
       else this.climbAssist = Math.max(0, this.climbAssist - dt);
       this.climbGrace = Math.max(0, this.climbGrace - dt);
       if (this.climbGrace > 0) this.input.state.jumpPressed = false;
-      // a sideways push only lets go once it is clearly deliberate: held, and not while climbing up or down
-      const sideHeld = this.input.state.left || this.input.state.right;
+      // a sideways push only lets go once it is clearly deliberate: held, and not while climbing up or down. Not by touch at all: there
+      // only a flick up and over leaves (Matt's vine rule), and a climbing stroke that drifted a little sideways dropped him off the moment
+      // the thumb stopped (CT-4). The Pad's push must be held longer (and its pad only steers there when clearly sideways, padControl.ts)
+      const sideHeld = (this.input.state.left || this.input.state.right) && this.input.source !== 'gesture';
       const vertHeld = this.input.state.up || this.input.state.down || this.climbAssist > 0;
       this.climbSideTimer = sideHeld && !vertHeld && this.climbGrace <= 0 ? this.climbSideTimer + dt : 0;
       p.climbing = true;
@@ -1582,7 +1585,7 @@ export class GameEngine {
         this.spawnSparkBurst(p.x, p.y, '#34d399');
       }
       // Natural Exit D: Steer away with Left / Right (held on purpose) -> Natural graceful hop off trunk!
-      else if (this.climbSideTimer >= 0.2) {
+      else if (this.climbSideTimer >= (this.input.source === 'pad' ? 0.35 : 0.2)) {
         const steerDir = this.input.state.left ? -1 : 1;
         p.climbing = false;
         this.vineCooldownTimer = 0.35;

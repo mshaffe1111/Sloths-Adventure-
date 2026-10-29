@@ -129,7 +129,7 @@ test('CT-2: off a trunk, the Pad leaps only on the Jump button or a push 45 degr
     rig.clear();
     rig.run(400); // past the grab's grace
     if (how === 'button') {
-      pad.pad(-30, 0); // steering left (no hop off, CT-4)
+      pad.pad(-45, 0); // steering left, clearly (a hop off needs it held 0.35 s: CT-4)
       pad.jumpButton(true);
     } else pad.pad(-45, -42);
     rig.run(200);
@@ -232,6 +232,40 @@ test('CT-3: a fresh flick up and over lets go: 28 degrees or more at 0.6 px/ms, 
   for (const swing of [false, true]) {
     for (const [deg, speed] of [[30, 0.7], [-35, 0.8], [45, 1.0], [24, 1.2], [-23, 1.4], [55, 1.5]] as const) {
       assert.ok(strokeLetsGo(lean(deg, 70, speed), swing), `${swing ? 'liana' : 'trunk'}: ${deg} degrees at ${speed} px/ms did not let go`);
+    }
+  }
+});
+
+// ───────────────────────────── CT-4: stopping on a trunk ─────────────────────────────
+
+/**
+ * on a trunk: one climbing stroke `deg` off straight up, `len` px at 0.35 px/ms, then the thumb stops the climb: `lift` takes it off the
+ * glass, `back` eases it 30 px back down (the joystick's middle trails 40 px behind a climbing thumb) and holds it there. How far he climbed past
+ * the moment the thumb stopped, and whether he is still on the trunk `holdMs` later.
+ */
+function climbAndStop(deg: number, len: number, how: 'lift' | 'back', holdMs = 1500) {
+  const rig = vineRig();
+  rig.r.climb(rig.r.vines[0], 1980);
+  rig.clear();
+  rig.run(400);
+  const r = (deg * Math.PI) / 180;
+  const ms = len / 0.35;
+  const x1 = 300 + Math.sin(r) * len, y1 = 700 - Math.cos(r) * len;
+  const pts: Array<[number, number, number]> = [[0, 300, 700], [ms, x1, y1]];
+  if (how === 'back') pts.push([ms + 80, x1, y1 + 30]);
+  rig.push(stroke(1, pts, how === 'lift'));
+  rig.run(pts[pts.length - 1][0]);
+  const yStop = rig.p.y;
+  rig.run(holdMs);
+  return { overshoot: yStop - rig.p.y, climbing: rig.p.climbing, words: rig.words().join(' ') };
+}
+
+test('CT-4: stopping the climb on a trunk stops him within a few px (no 90 px overshoot), and a thumb left a little sideways never drops him off', () => {
+  for (const how of ['lift', 'back'] as const) {
+    for (const deg of [0, 10, -10, 20]) {
+      const s = climbAndStop(deg, 100, how);
+      assert.ok(s.climbing, `${how}, ${deg} degrees: still on the trunk 1.5 s later (${s.words})`);
+      assert.ok(s.overshoot <= 20, `${how}, ${deg} degrees: climbed ${s.overshoot.toFixed(0)} px past where the thumb stopped`);
     }
   }
 });

@@ -19,6 +19,8 @@ export const PAD = {
    * down always climbs). Pad up used to be a jump there, so pushing up again on a trunk leapt off and a liana let go (polish report CT-2)
    */
   climbDy: 20,
+  /** on a trunk: a push steers (and, held 0.35 s, hops off) only this far sideways and twice as far across as up or down (CT-4) */
+  vineSideDx: 40,
 } as const;
 
 /**
@@ -110,6 +112,8 @@ export class PadInput {
 
   pad(dx: number, dy: number) {
     const it = padIntent(dx, dy);
+    // (on a trunk or a liana a thumb resting a little sideways is not a push to get off: CT-4)
+    if (this.inp.onVine && !(Math.abs(dx) >= PAD.vineSideDx && Math.abs(dx) >= 2 * Math.abs(dy))) it.move = 'none';
     if (it.move !== this.move) {
       this.move = it.move;
       this.inp.triggerTouchMove(it.move);

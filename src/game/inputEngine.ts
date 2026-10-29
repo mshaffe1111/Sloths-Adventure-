@@ -237,6 +237,7 @@ export class InputEngine {
     this.state.touchJoystickAngle = null;
     this.state.touchJoystickMagnitude = 0;
     this.touchClimb = 0;
+    this.climbStop = false;
     this.holds = { touch: false, keys: false, pad: false, gamepad: false };
     this.state.hold = false;
     if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
@@ -287,9 +288,18 @@ export class InputEngine {
 
   /** climbing by touch or the Pad (-1 up, 1 down): a jump let go meanwhile must not stop the climb (releaseTouchUp) */
   private touchClimb: -1 | 0 | 1 = 0;
+  /** a touch or Pad climb was just stopped on purpose: the engine ends the grab's carry (takeClimbStop) */
+  private climbStop = false;
+  /** the engine asks once a frame: was a climb stopped on purpose since it last asked? */
+  public takeClimbStop(): boolean {
+    const s = this.climbStop;
+    this.climbStop = false;
+    return s;
+  }
   /** climbing on a vine or trunk by touch: hold up or down with no jump (refined controls) */
   public triggerTouchClimb(dir: -1 | 0 | 1) {
     this.fresh();
+    if (dir === 0 && this.touchClimb !== 0) this.climbStop = true;
     this.touchClimb = dir;
     this.state.up = dir < 0;
     this.state.down = dir > 0;

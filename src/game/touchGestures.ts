@@ -785,7 +785,14 @@ export class TouchGestures {
       f.jumped = false;
       this.sink.jumpRelease();
     }
-    this.setClimb(dy < -16 ? -1 : dy > 16 ? 1 : 0);
+    const climb = dy < -16 ? -1 : dy > 16 ? 1 : 0;
+    // on a trunk a climb that starts re-centres the sideways anchor: a climbing stroke a little off vertical used to leave a steer held
+    // after it (it only lets go well back inside the dead zone), and a held steer with no climb hopped him off the trunk (CT-4)
+    if (climb !== 0 && this.climbDir === 0 && !this.env?.onSwing?.()) {
+      f.ax = f.x;
+      this.setDir('none');
+    }
+    this.setClimb(climb);
   }
 
   /** a flick off a vine that went `across` while rising `rise`, `speed` px per ms along its path, leans far enough over to let go (CT-3's buckets) */
