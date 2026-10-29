@@ -2616,7 +2616,7 @@ function buildBoss(gen: Gen): GeneratedStage {
     id: 1, type: 'boss', x: def.startDx !== undefined ? left + def.startDx : right - Math.max(160, def.w / 2 + 40), y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
     facing: -1, patrolMinX: left, patrolMaxX: right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
-    specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',
+    specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote,
     ai: newBrain(),
   };
   if (perchList.length) {

@@ -45,7 +45,7 @@ function makeBoss(angry: boolean, beaten: boolean): BossEntity {
     facing: 1, patrolMinX: 0, patrolMaxX: 0, attackCooldown: 0, telegraphTimer: 0,
     isAttacking: angry, animTimer: 0, hitFlashTimer: 0, defeated: beaten, koTimer: 0,
     behaviorTimer: 0, phase: 1, phaseMax: 3, specialAttackTimer: 0, shieldActive: false,
-    dialogueIntro: '', dialogueDefeat: '',
+    dialogueIntro: '',
   } as unknown as BossEntity;
 }
 

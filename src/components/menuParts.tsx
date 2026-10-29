@@ -12,12 +12,14 @@ import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, ty
 import { DIFFICULTY_LABEL, difficulty, switchDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGuideHelp.ts';
 import { dotSaid } from '../game/dotGuide.ts';
+import { hearTipsAgain } from '../game/dotMemory.ts';
 import { DotFace } from './DotFace.tsx';
 import { Icon as Glyph, type IconName } from './icons/index.tsx';
 
-/** "Dot's help" (the new look): Teach me / Just reminders / Quiet, with her last three lines under it */
+/** "Dot's help" (the new look): Help / Tips / Quiet, "Hear Dot's tips again", and her last three lines under it */
 export const DotHelpSetting: React.FC = () => {
   const [help, setHelp] = React.useState<DotHelp>(() => dotHelp());
+  const [again, setAgain] = React.useState(false);
   const said = dotSaid();
   return (
     <div className="pm-sound">
@@ -40,6 +42,17 @@ export const DotHelpSetting: React.FC = () => {
         />
       </div>
       <small className="pm-polish-note">{DOT_HELP_LABEL[help].blurb} A locked exit is always explained.</small>
+      <button
+        type="button"
+        className="pm-mute pm-dot-again"
+        disabled={again}
+        onClick={() => {
+          hearTipsAgain();
+          setAgain(true);
+        }}
+      >
+        {again ? 'Dot will teach it all again' : "Hear Dot's tips again"}
+      </button>
       {said.length > 0 && (
         <div className="pm-dotsaid" aria-label="Dot said">
           <small className="pm-polish-note" style={{ fontWeight: 700 }}>

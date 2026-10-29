@@ -344,7 +344,7 @@ class DotShadow {
         this.prevJR = jr;
         this.struggle.otherMove();
       }
-      this.help(this.struggle.step(DT * 1000, v.px, v.py, true));
+      this.help(this.struggle.step(DT * 1000, v.px, v.py));
     }
     this.prevLives = v.lives;
     const danger = !v.flight && (inDanger(v) || v.boss || v.chase);
