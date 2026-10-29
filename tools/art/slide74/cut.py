@@ -10,8 +10,8 @@ webs), and the pieces are packed into a few atlases with their boxes in flume-at
 Pokey (sheet 5): frames 1-4 grip two vertical poles that stand for the flume's rails; the game's flume is three lanes wide, so the poles
 are painted out (pole pixels: the long near-vertical dark-wood strips at each side, found above and below his body and joined by a
 line), keeping his hands. The satchel check (strap from the screen-left shoulder to a bag at screen-right): 1, 2, 4, 5, 6 are right;
-3 (lean left) and 7 (hurt) have it mirrored, so 7 is used flipped; 8 faces the camera with the bag on his left hip and is not used;
-3 is not used (no correct lean left yet: the lead has asked Matt for a re-do).
+3 (lean left), 7 (hurt) and 8 (facing the camera at the end) have it mirrored, so 7 and 8 are used flipped; 3 is not used (Matt's
+re-do came out mirrored again: the lean left is frame 1 tilted, in the game).
 """
 import json
 import os
@@ -36,7 +36,7 @@ SHEETS = {
                                         'rope', 'webCorner', 'webRoots', 'thornUp', 'thornDown', 'rootsHang', 'stalactites', 'stalagmites',
                                         'boulder']),
     'sheet4-cave': (2, 2, True, ['mouth', 'wallL', 'wallR', 'ceiling']),
-    'sheet5-pokey-behind': (4, 2, False, ['grip', 'grip2', None, 'leanR', 'jump', 'duck', 'hurt', None]),
+    'sheet5-pokey-behind': (4, 2, False, ['grip', 'grip2', None, 'leanR', 'jump', 'duck', 'hurt', 'cheer']),
     'sheet6-pokey-falling': (2, 1, False, ['fallOh', 'fallCurl']),
 }
 INSET = 5
@@ -123,15 +123,17 @@ def main():
                     cell = depink_soft(cell)
                 if name == 'sheet5-pokey-behind' and n in ('grip', 'grip2', 'leanR'):
                     cell = remove_poles(cell)
-                if n == 'hurt':
-                    cell = ImageOps.mirror(cell)  # (drawn with the satchel mirrored: flipped, it is right)
+                if n in ('hurt', 'cheer'):
+                    # (both drawn with the satchel mirrored: flipped, they are right; 8 faces the camera, so flipped its bag is on his
+                    # right hip, at screen-left, the strap over his left shoulder: the lead's check, 2026-10-29)
+                    cell = ImageOps.mirror(cell)
                 pieces[n] = cell
                 cell.save(os.path.join(HERE, 'cut', n + '.png'))
     # atlases: the flume and cave (big), the props and lights, Pokey
     groups = {
         'flume-cave': ['mouth', 'wallL', 'wallR', 'ceiling', 'bed', 'bedMoss', 'brokenFront', 'brokenBack', 'barrier', 'beam', 'crates', 'trestle'],
         'flume-props': [n for n in SHEETS['sheet2-lights'][3] + SHEETS['sheet3-side-props'][3] if n],
-        'flume-pokey': ['grip', 'grip2', 'leanR', 'jump', 'duck', 'hurt', 'fallOh', 'fallCurl'],
+        'flume-pokey': ['grip', 'grip2', 'leanR', 'jump', 'duck', 'hurt', 'cheer', 'fallOh', 'fallCurl'],
     }
     atlas = {'from': os.path.relpath(SRC, ROOT), 'note': __doc__.strip().splitlines()[0], 'sheets': {}}
     for g, names in groups.items():

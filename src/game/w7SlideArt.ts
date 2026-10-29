@@ -550,22 +550,26 @@ export function pokeyLight(sc: Scene, x: number, y: number, z: number): [number,
   return c.map((k, i) => Math.min(1.05, POKEY_MIN + (1 - POKEY_MIN) * Math.min(1, (k - AMBIENT[i]) * 1.6))) as [number, number, number];
 }
 
-/** which of Matt's poses (Sheet 5) Pokey is in */
-function pose(sim: SlideSim): { n: string; tilt: number } {
-  if (sim.safeT > SLIDE.safe - 0.5 && sim.hits + sim.stumbles > 0) return { n: 'hurt', tilt: 0 };
-  if (!sim.grounded) return { n: 'jump', tilt: 0 };
-  if (sim.ducking) return { n: 'duck', tilt: 0 };
-  if (sim.lean > 0.4) return { n: 'leanR', tilt: 0.06 };
-  // (no lean left is painted right yet: the lead has asked Matt for a re-do; the grip pose tipped left stands in)
-  if (sim.lean < -0.4) return { n: 'grip', tilt: -0.16 };
-  return { n: Math.floor(sim.clock * 4) % 2 ? 'grip2' : 'grip', tilt: 0 };
+/**
+ * Which of Matt's poses (Sheet 5) Pokey is in, how far it tips and how far his weight shifts (share of his width). The lead's set
+ * (2026-10-29): 1 and 2 straight and bumped, 4 the lean right, 1 tipped about 12 degrees the lean left (Sheet 5's own lean left has the
+ * satchel mirrored), 5 the jump, 6 the duck, 7 flipped the hurt (tipped the other way every other hit), 8 flipped the end.
+ */
+function pose(sim: SlideSim): { n: string; tilt: number; shift: number } {
+  if (sim.outT >= 0) return { n: 'cheer', tilt: 0, shift: 0 };
+  if (sim.safeT > SLIDE.safe - 0.5 && sim.hits + sim.stumbles > 0) return { n: 'hurt', tilt: (sim.hits + sim.stumbles) % 2 ? 0.12 : -0.12, shift: 0 };
+  if (!sim.grounded) return { n: 'jump', tilt: 0, shift: 0 };
+  if (sim.ducking) return { n: 'duck', tilt: 0, shift: 0 };
+  if (sim.lean > 0.4) return { n: 'leanR', tilt: 0.05, shift: 0.04 };
+  if (sim.lean < -0.4) return { n: 'grip', tilt: -0.21 * Math.min(1, -sim.lean), shift: -0.08 };
+  return { n: Math.floor(sim.clock * 4) % 2 ? 'grip2' : 'grip', tilt: 0, shift: 0 };
 }
 
 function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim, sc: Scene, ex: number) {
   const body = P(v, sim.x, sim.y, sim.z);
   if (!body) return;
   if (sim.safeT > 0 && sim.safeT < SLIDE.safe - 0.5 && Math.floor(sim.clock * 10) % 2 === 0) return;
-  const { n, tilt } = pose(sim);
+  const { n, tilt, shift } = pose(sim);
   const [k, fx, fy, fw, fh] = PIECE[n];
   const im = img(k);
   if (!im) return;
@@ -598,8 +602,9 @@ function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim, sc: Sc
   g.globalCompositeOperation = 'source-over';
   ctx.save();
   ctx.translate(body[0], body[1] + body[2] * 0.06);
-  ctx.rotate(tilt + (n === 'grip' || n === 'grip2' ? sim.lean * 0.04 : 0));
-  ctx.drawImage(pk, 0, 0, dw, dh, -dw / 2, -dh, dw, dh);
+  // (tipped about his seat, his weight shifted the way he leans)
+  ctx.rotate(tilt);
+  ctx.drawImage(pk, 0, 0, dw, dh, -dw / 2 + shift * dw, -dh, dw, dh);
   ctx.restore();
 }
 

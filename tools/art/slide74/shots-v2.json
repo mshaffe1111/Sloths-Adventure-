@@ -1,7 +1,38 @@
-[["a-drop-dark", "s.z = 4; s.clock = 0.55;"],
- ["b-torch-flume-statues", "at('head', 4, 6); s.x = 0; s.clock = 20;"],
- ["c-torch-flume-planks", "at('rubble', 1, 7); e.slideRun.line('Planks across! Flick up, jump!', 3);"],
- ["d-fungus-gap", "at('gap', 2, 6.5); e.slideRun.line('No floor! Jump!', 3);"],
- ["e-fungus-beam", "at('beam', 1, 6); e.slideRun.line('Low beam! Thumb down, duck!', 3);"],
- ["f-narrow-dark", "const o = s.sorted.filter((o) => o.kind === 'column')[1]; s.z = o.z - 7;"],
- ["g-the-way-out", "s.z = s.c.length - 14;"]]
+[
+ [
+  "a-drop-dark",
+  "s.z = 4; s.clock = 0.55;"
+ ],
+ [
+  "b-torch-flume-statues",
+  "at('head', 4, 6); s.x = 0; s.clock = 20;"
+ ],
+ [
+  "c-torch-flume-planks",
+  "at('rubble', 1, 7); e.slideRun.line('Planks across! Flick up, jump!', 3);"
+ ],
+ [
+  "d-fungus-gap",
+  "at('gap', 2, 6.5); e.slideRun.line('No floor! Jump!', 3);"
+ ],
+ [
+  "e-fungus-beam",
+  "at('beam', 1, 6); e.slideRun.line('Low beam! Thumb down, duck!', 3);"
+ ],
+ [
+  "f-narrow-dark",
+  "const o = s.sorted.filter((o) => o.kind === 'column')[1]; s.z = o.z - 7;"
+ ],
+ [
+  "g-the-way-out",
+  "s.z = s.c.length - 14;"
+ ],
+ [
+  "h-lean-left",
+  "at('head', 6, 9); s.lean = -1; s.x = -0.5;"
+ ],
+ [
+  "i-the-end-cheer",
+  "s.z = s.c.length + 0.5; s.outT = 0.15;"
+ ]
+]
