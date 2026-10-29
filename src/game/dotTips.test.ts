@@ -11,6 +11,7 @@ import { DotSay, HELP_GAP_MS } from './dotSay.ts';
 import { helpAllows, seenSkills } from './dotGuideHelp.ts';
 import { bindSent, markTipHeard, tipHeard, tipKept, forgetSent } from './tipMemory.ts';
 import { engineGuideLine } from './dotLines.ts';
+import { asQaBuildForTest } from './playRecorder.ts';
 import { PUZZLE_STEPS, roomLineOf } from './dotTips.ts';
 import { lessonDotLine, lessonsSeen } from './lessons.ts';
 import { hearTipsAgain } from './dotMemory.ts';
@@ -200,6 +201,8 @@ test('the control test: the opener teaches the jump and gap 3 the double jump (q
   const g = globalThis as unknown as { location?: unknown };
   const was = g.location;
   g.location = { hash: '#ctest', search: '' };
+  // (the control test runs only in QA builds since UI-15; this test plays one)
+  asQaBuildForTest(true);
   for (const help of ['reminders', 'teach'] as const) {
     const q = new GuideQueue(true);
     const say = new DotSay(q, help, new Set(['move:run']), new Set(['run']));
@@ -208,6 +211,7 @@ test('the control test: the opener teaches the jump and gap 3 the double jump (q
     assert.equal(q.cur?.line.key, 'engine:ctest.runStop', `${help}: said, though he is running and has run before`);
   }
   g.location = was;
+  asQaBuildForTest(false);
   // a stage's own words that match a test row are an ordinary tip there (1-3 said the bounce in every stage)
   const bounce = engineGuideLine('Flick up onto the mushroom to bounce.', '1-3', { dot: true });
   assert.ok(!bounce?.ctest);
