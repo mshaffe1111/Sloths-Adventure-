@@ -34,7 +34,8 @@ Branch `polish-a1`. Every shot is in this folder: `*-before-*` is the base commi
 10. Motion is smooth: AN-4 by test; the late-backdrop fade is 280 ms; on-phone check still wanted (headless runs below speed).
 
 Rough spots named plainly:
-- VI-4 far strips with a strong light glow at one end (seen on w4terraces; the other 67 joins were not all checked by eye) can show a soft change of light across the 256 px join band. No double picture, but visible if you look for it. The real fix is the VI-2 art (strips painted to tile).
+- VI-4: w5dusk2-near's right end was never keyed: an opaque painted pink-sky panel sits in the source strip. The join now blends it in softly (it was mirrored into a hard block before), but it is still there. That is VI-6's keying fix (World 5 dusk and twilight), with every join on `vi4-all-joins-1.jpg` and `vi4-all-joins-2.jpg`.
+- VI-4 far strips with a strong light glow at one end (seen on w4terraces and w1-far; every join was checked on the contact sheets) can show a soft change of light across the 256 px join band. No double picture, but visible if you look for it. The real fix is the VI-2 art (strips painted to tile).
 - ST-1: sideways, today's cels are already past 1.5x at the plain framing, so the cap holds every sideways close-up at the plain framing (upright close-ups keep up to about 1.4x). The cap reads CEL_K, so repainted, larger cels (ST-1's art part) get their close-ups back with no code change. Upright, World 1's opening still stands on the code-drawn green strip (drawBranch); that is ST-1's art part.
 - LV-1: sideways, the New Game panel already scrolled before this change (its start buttons sit under the fold). The new prompt is one short line so it adds no height.
 - Memory: VI-3 now keeps up to 4 strip sets decoded (2 worlds x 2 sets), where it kept 2. That is about 80 MB at worst, and it only happens in World 5 (its light changes stage to stage).
@@ -42,5 +43,5 @@ Rough spots named plainly:
 ## Checks
 
 - `npx tsc --noEmit -p .`: clean.
-- Full suite (audio, game, gen2, gen2/worlds, components, components/**, tools/inspect, tools/gen2): see the lead report for the counts.
+- Full suite (audio, game, gen2, gen2/worlds, components, components/**, tools/inspect, tools/gen2): 1823 tests, 1820 pass, 1 TODO (4-3's boulder test, marked TODO before this branch). The one failure in that run was the far-strip width test, which it ran before I updated it. The 11 files those late changes touch were re-run on the final strips: 25 of 25 pass.
 - `npx vite build`: clean, nothing in dist/assets over 4 MiB.
