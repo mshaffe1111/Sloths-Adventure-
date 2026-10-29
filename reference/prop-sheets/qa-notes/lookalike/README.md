@@ -68,6 +68,23 @@ labelling each window by the gen2 sections it covers:
 (Rolls are numbered from 1 here; `pairs.json`'s `roll` counts from 0. "Era roll": the game's layout number, era.ts's `rollVariants`;
 "raw roll": curate's build of seed `rollVariants(12, 777)[roll]`, World 6's swing and ground kits as `w6GameKit` gives them.)
 
+## What a player sees (the screenshots, 2026-10-29)
+
+`sheets/<pair>.jpg`: each era-roll pair in the game (dev build, `__play(id, layout)`), three frames of each window (its first, middle
+and last beats), landscape. The 6-1/6-7 and 6-5/6-9 pairs are curate's raw seeds, which the game cannot replay, so they have no sheet.
+
+- **Alike, and it looks it**: 3-1/3-3 (the same stone blocks and gaps), 3-5/3-8 (the same thorn-vine ledge over the same pool),
+  2-7/2-8 (the same river banks and channels), 4-2/4-4 (the same gorge, the same wind rock, the same vine), 5-2/5-5 (the same orchid
+  floor with chairs). A player would say "I've done this bit".
+- **Different, and it plays it**: 4-1/4-4 (a cliff climb against a flat gorge), 4-1/4-2, 1-4/1-6, 5-2/5-3 (chairs on a flat floor
+  against closing orchids on steps), 2-1/2-2 (stepping stones across channels against a log bank upstream), 2-2/2-5, 5-5/5-6, 3-1/3-5
+  (spore mushrooms and the dark against waking thorn vines).
+- **Plays different, looks close: 6-2/6-4.** One art kit per world: both are the same mangrove root banks under the same canopy.
+  What tells them apart is on the screen but small: 6-2's hiding bushes and narrow water slots (the eagle), 6-4's mud flats, tide
+  warning and caiman. 3-1/3-5 is the same in World 3's cave. The measure is right that they play differently; whether they *look*
+  copy-pasted is the art's job (decor sets per stage, STAGE-RULES §4 and §5b), not this measure's, and World 6's ground stages are
+  the place to look first.
+
 ## What the measure still cannot see
 
 - Timing inside a move: two liana chains with different vine spacing or periods read the same (the swing's own window is not a kind).
