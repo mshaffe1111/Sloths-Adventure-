@@ -497,6 +497,8 @@ export class GameEngine {
   private airDrive = newAirDrive();
   private maxLives: number = startingLives();
   private lives: number = this.maxLives;
+  /** what the last life was lost to, for Dot's death help (DOT-10) */
+  private lostTo: '' | 'water' | 'pit' | 'hurt' = '';
   /** the run ended because the lives ran out (not a win): the one case a Continue can pick up from the checkpoint */
   private outOfLives = false;
   /** the assist speed for this stage (1 = normal), read once so a menu change mid-stage waits for the next entry */
@@ -4360,6 +4362,7 @@ export class GameEngine {
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
     recorder.event('lostLife', reason);
+    this.lostTo = reason;
     if (this.bossGuideUp) this.clearGuide();
     this.lives -= 1;
     this.statLivesLost++;
@@ -4964,6 +4967,7 @@ export class GameEngine {
     out.hp = p.hp;
     out.maxHp = p.maxHp;
     out.lives = this.lives;
+    out.lostTo = this.lostTo;
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
     out.chase = !!this.chase;

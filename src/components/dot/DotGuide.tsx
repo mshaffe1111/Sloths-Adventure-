@@ -6,7 +6,7 @@ import type { ControlStyle } from '../../game/controlPrefs.ts';
 import { lessonDotLine, lessonOfLine, lessonStale, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
 import { calmFor, countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
-import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
+import { DEATH_TOPIC, DeathWatch, MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, knownMoveTip, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
@@ -125,6 +125,8 @@ class GuideRun {
   movesMarked = new Set<string>();
   moves = new MoveWatch();
   struggle = new StruggleWatch();
+  /** what he last stood on and held, to name what got him (DOT-10) */
+  deaths = new DeathWatch();
   clock = 0;
   lastT = -1;
   help = dotHelp();
@@ -1099,7 +1101,16 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         run.restartPending = false;
       }
       if (!v.boss) {
-        if (v.hp > 0 && v.py < v.levelH - 10) {
+        // (a lost life first: on that frame he already stands at the checkpoint, so where he was alive is last frame's)
+        if (v.lives < run.prevLives) {
+          const fell = run.alive.y > v.levelH - 140 || (run.alive.falling && !run.alive.foe);
+          // what got him, for the specific help line (DOT-10: the river, the push log, a crumbling branch, a vine...)
+          const cause = run.deaths.cause(v, fell ? 'fall' : run.alive.foe ? 'foe' : 'other');
+          const h = run.struggle.death(run.alive.x, run.alive.y, cause);
+          if (h) run.sayHelp(h, h.cause ? DEATH_TOPIC[h.cause] : undefined);
+          run.restartPending = true;
+          run.deaths.reset();
+        } else if (v.hp > 0 && v.py < v.levelH - 10) {
           let foe = false;
           for (const en of v.enemies) if (!en.defeated && Math.abs(en.x - v.px) < 150 && Math.abs(en.y - v.py) < 160) foe = true;
           run.alive.x = v.px;
@@ -1108,12 +1119,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           // made no sense; World 4's builder, 2026-10-28: 4-7 has nothing to punch)
           run.alive.foe = foe;
           run.alive.falling = !v.grounded && v.vy > 400;
-        }
-        if (v.lives < run.prevLives) {
-          const fell = run.alive.y > v.levelH - 140 || (run.alive.falling && !run.alive.foe);
-          const h = run.struggle.death(run.alive.x, run.alive.y, fell ? 'fall' : run.alive.foe ? 'foe' : 'other');
-          if (h) run.sayHelp(h, h.cause === 'fall' ? 'gap' : h.cause === 'foe' ? 'foe' : undefined);
-          run.restartPending = true;
+          run.deaths.step(v, dt);
         }
         const k = run.moves.kicked;
         if (k) {
