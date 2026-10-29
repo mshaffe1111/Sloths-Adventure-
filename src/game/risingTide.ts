@@ -31,13 +31,13 @@ export interface TideSetting {
   /** after he loses a life: how far under his flag it starts again (px), and how long it waits (s) */
   under: number;
   wait: number;
-  /** Dot's warning: the water this close under him (px) */
+  /** Dot's warning: the water this close under him (px; inside `close`, so only a stop between flags brings it) */
   near: number;
 }
 
 export const TIDE: Record<'normal' | 'easy', TideSetting> = {
-  normal: { speed: 24, spring: 31, band: 620, catch: 90, close: 430, creep: 6, hold: 6, warn: 2, under: 750, wait: 3, near: 470 },
-  easy: { speed: 16, spring: 21, band: 820, catch: 60, close: 600, creep: 3, hold: 10, warn: 3, under: 900, wait: 5, near: 640 },
+  normal: { speed: 24, spring: 31, band: 620, catch: 90, close: 430, creep: 6, hold: 6, warn: 2, under: 750, wait: 3, near: 370 },
+  easy: { speed: 16, spring: 21, band: 820, catch: 60, close: 600, creep: 3, hold: 10, warn: 3, under: 900, wait: 5, near: 540 },
 };
 
 export interface TidePlan {

@@ -6122,7 +6122,7 @@ export class GameEngine {
       this.spawnWaterSplash(this.camera.x + Math.random() * this.camera.viewportWidth, t.y);
     }
     // Dot's warning the first time the water comes close under him (once a stage: STAGE-RULES §6, no repeated tips)
-    if (t.on && t.y - p.y < this.tideSet.near && this.tideWarned === Infinity) {
+    if (t.on && t.warn <= 0 && t.y - p.y < this.tideSet.near && this.tideWarned === Infinity) {
       this.tideWarned = this.checkpoint.y;
       this.guide('The tide! Keep climbing.', 2.5); // (new, needs Matt's approval)
     }

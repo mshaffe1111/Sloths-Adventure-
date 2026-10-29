@@ -204,6 +204,7 @@ test('6-8: the tide by its rules: still until he is up the first root, a churn, 
     restartTide(s, plan, set, 10000);
     assert.deepEqual([s.y, s.on], [10000, false], 'back at the start: as it began');
   }
+  for (const set of [TIDE.normal, TIDE.easy]) assert.ok(set.near < set.close && set.close < set.band, 'Dot warns only once it creeps close');
   assert.ok(TIDE.easy.speed < TIDE.normal.speed && TIDE.easy.band > TIDE.normal.band && TIDE.easy.warn > TIDE.normal.warn, 'Easy is gentler');
 });
 
