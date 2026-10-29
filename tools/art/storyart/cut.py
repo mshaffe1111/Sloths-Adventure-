@@ -17,7 +17,7 @@ def bg_colour(arr):
     return np.median(edge, 0)
 
 
-def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_margin=None):
+def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_margin=None, limit=True):
     g = np.asarray(gen.convert('RGB'), np.float32)
     H, W = g.shape[:2]
     bg = bg_colour(g)
@@ -33,7 +33,12 @@ def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_m
     lim = Image.new('L', (W, H), 0)
     lim.paste(oa, (ox, oy))
     lim = lim.point(lambda v: 255 if v > 40 else 0).filter(ImageFilter.MaxFilter(2 * (grow // 2) + 1)).filter(ImageFilter.GaussianBlur(grow / 3))
-    a = ak * (np.asarray(lim, np.float32) / 255)
+    a = ak * (np.asarray(lim, np.float32) / 255) if limit else ak
+    if not limit:
+        # (an edit can leave a pale outline round the figure, like a sticker: a light, colourless rim on the edge goes)
+        rim = (np.asarray(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(9)), np.float32) / 255) < 0.5
+        pale = (g.min(-1) > 200) & ((g.max(-1) - g.min(-1)) < 30)
+        a = np.where(rim & pale & (a > 0), 0, a)
     # un-premultiply the grey out of the edge
     aa = np.maximum(a, 0.18)[..., None]
     rgb = np.clip(bg + (g - bg) / aa, 0, 255)

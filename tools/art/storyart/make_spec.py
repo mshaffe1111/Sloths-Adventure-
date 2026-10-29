@@ -206,45 +206,49 @@ EDIT_NEG = 'robot, armour suit, helmet, plume, toy, white outline, sticker, bord
 
 
 def general(commit):
-    """the General, every frame: the edit model redraws each old frame in his new look (a design picture as the second reference), then his
-    own models take him back on model at a low strength"""
+    """the General, every frame: the edit model redraws each old frame in his new look from one written description (the same words and
+    seed for every frame, so he stays one sloth), then his own models take him back on model at a low strength"""
     meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-cel.json').read_text())
-    bm = json.loads((H.parent / 'hfbatch/starts/storyart/meta-r2.json').read_text())
     it = []
 
-    def st(key, src=None):
-        if src:
-            return src
+    def st(key):
         m = meta[key]
         return {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']}
 
-    jobs = []
-    for k in ('gn.dim', 'gn.glare', 'gn.lids', 'gn.narrow', 'gn.ready_a', 'gn.ready_b', 'gn.ready_c', 'gn.shut', 'gn.sleep_b', 'gb.stare'):
-        jobs.append((k, st(f'cel-{k}'), WAR_REF, 'Redraw the sloth in the first picture ' + LOOK_WAR + ', with glowing red eyes where the first picture has them open.'))
-    for n in ('idle', 'roar', 'fallen'):
-        jobs.append((f'gn.card_{n}', f'r2-gen-{n}.png', WAR_REF, 'Redraw the sloth in the first picture ' + LOOK_WAR + ', with glowing red eyes.'
-                     + (' He lies face down in the heap of broken stone rubble exactly as in the first picture.' if n == 'fallen' else '')))
-    for k in ('gv.letter', 'gv.reach_a', 'gv.scout', 'gv.sit', 'gv.sorrow', 'gv.sorrow_b', 'gv.stand', 'gv.stand_m', 'gv.tea', 'gv.walk_a', 'gv.wipe_eye', 'gp.calm'):
-        jobs.append((k, st(f'cel-{k}'), PLAIN_REF, 'Redraw the sloth in the first picture ' + LOOK_PLAIN + ', with sad tired brown eyes.'))
-    for k in ('gy.smile', 'gy.stand', 'gy.stand_b', 'gy.turn_away'):
-        jobs.append((k, st(f'cel-{k}'), PLAIN_REF, 'Redraw the sloth in the first picture as the sloth in the second picture when he was younger: '
-                     'the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat.'))
-    jobs.append(('gc.hand', st('cel-gc.hand'), PLAIN_REF, 'Redraw the big sloth in the first picture as the sloth in the second picture when he '
-                 'was younger: the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat. Keep the little '
-                 'sloth girl holding his hand exactly as she is, with her pink headband, pink vest with the race bib 07, teal shorts and pink shoes.'))
-    for k, start, ref, words in jobs:
-        it.append({'name': f'gen-{k}-e', 'edit': True, 'start': start, 'refs': [ref], 'prompt': words + EDIT_END, 'seed': 3, 'neg': EDIT_NEG})
-        war = k.startswith(('gn', 'gb'))
-        it.append({'name': f'gen-{k}-s30', 'then': f'gen-{k}-e', 'strength': 0.3, 'seed': 7, 'w': 1024, 'h': 1024,
-                   'prompt': (GENERAL if war else 'generalsloth, a huge old broad sloth with a rust-coloured scarf, ') + 'in the same pose' + END,
-                   'neg': NEG_GEN + SOFT, 'loras': [['ironclaw', 0.5], ['general', 0.5], ['style', 0.35]] if war else [['general', 0.8], ['style', 0.35]]})
+    WAR = ('Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, '
+           'his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked '
+           'silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier\'s greatcoat with '
+           'two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, '
+           'an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume.')
+    PLAIN = ('Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with '
+             'darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped '
+             'wrists, and an old unbuttoned dark green soldier\'s greatcoat with brass buttons hanging open.')
+    YOUNG = ('Redraw this same sloth in the same pose, size and position, with the same expression, as a strong kind grandfather in his prime: '
+             'thick, real, shaggy dark brown sloth fur with darker tips and no grey, a warm kind face, gentle brown eyes, his rust-coloured scarf, '
+             'wrapped wrists, no coat.')
+    TAIL = ' Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.'
+    jobs = [(k, st(f'cel-{k}'), WAR) for k in ('gn.dim', 'gn.glare', 'gn.lids', 'gn.narrow', 'gn.ready_a', 'gn.ready_b', 'gn.ready_c', 'gn.shut', 'gn.sleep_b', 'gb.stare')]
+    jobs += [(f'gn.card_{n}', f'r2-gen-{n}.png', WAR + (' He lies beaten face down in the heap of broken stone rubble, exactly as in the picture.' if n == 'fallen' else ''))
+             for n in ('idle', 'roar', 'fallen')]
+    jobs += [(k, st(f'cel-{k}'), PLAIN) for k in ('gv.letter', 'gv.reach_a', 'gv.scout', 'gv.sit', 'gv.sorrow', 'gv.sorrow_b', 'gv.stand', 'gv.stand_m', 'gv.tea', 'gv.walk_a', 'gv.wipe_eye', 'gp.calm')]
+    jobs += [(k, st(f'cel-{k}'), YOUNG) for k in ('gy.smile', 'gy.stand', 'gy.stand_b', 'gy.turn_away')]
+    jobs.append(('gc.hand', st('cel-gc.hand'), YOUNG.replace('Redraw this same sloth', 'Redraw the big sloth') + ' Keep the little sloth girl holding '
+                 'his hand exactly as she is, with her pink headband, pink vest with the race bib 07, teal shorts and pink shoes.'))
+    for k, start, words in jobs:
+        for sd in ((3, 8) if k == 'gn.card_fallen' else (3,)):
+            tag = f'{k}-{sd}' if k == 'gn.card_fallen' else k
+            it.append({'name': f'gen-{tag}-e', 'edit': True, 'start': start, 'prompt': words + TAIL, 'seed': sd, 'neg': EDIT_NEG})
+            war = k.startswith(('gn', 'gb'))
+            it.append({'name': f'gen-{tag}-s30', 'then': f'gen-{tag}-e', 'strength': 0.3, 'seed': 7, 'w': 1024, 'h': 1024,
+                       'prompt': (GENERAL if war else 'generalsloth, a huge old broad sloth with a rust-coloured scarf, ') + 'in the same pose' + END,
+                       'neg': NEG_GEN + SOFT, 'loras': [['ironclaw', 0.5], ['general', 0.5], ['style', 0.35]] if war else [['general', 0.8], ['style', 0.35]]})
     return it
 
 
 def round3a(commit):
     base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
-    it = general(commit) + plates(commit)
-    return {'tag': 'r3a', 'loras': {k: LORAS[k] for k in ('style', 'general', 'ironclaw')}, 'base': base,
+    it = general(commit) + poses(commit)
+    return {'tag': 'r3a', 'loras': {k: LORAS[k] for k in ('style', 'general', 'ironclaw', 'pokey')}, 'base': base,
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'items': it,
             'keep': [x['name'] for x in it if not x['name'].endswith('-e') and '-up' not in x['name']], 'q': 90}
 
@@ -306,6 +310,38 @@ def round3b(commit):
     it = grounds(commit) + cels(commit)
     return {'tag': 'r3b', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca')}, 'base': base,
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'items': it, 'q': 92}
+
+
+GRIP = ('Redraw this same young sloth seen from behind, standing close in front of a wall (do not draw the wall) and gripping it with both '
+        'paws raised flat in front of him at head height, holding on tight, shoulders hunched, head down, scared of the thunder. The brown leather '
+        'satchel strap runs over his left shoulder and across his back to the bag on his right hip: seen from behind it runs from the left of '
+        'the picture down to the bag at the right of the picture. White bandage wraps on both wrists.')
+REACH = ('Redraw this same young sloth seen from behind and a little from the side: his left paw still flat on the wall in front of him at head '
+         'height (do not draw the wall), his body half turned to the right, and his right arm held straight out to the right with the paw open, '
+         'offering his hand to someone; he looks over his right shoulder with a brave, gentle face. The brown leather satchel strap runs over '
+         'his left shoulder and across his back to the bag on his right hip. White bandage wraps on both wrists.')
+FIG_END = ' Same size and position. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.'
+
+
+def poses(commit):
+    """the pictures the new scenes need that had none: Pokey holding the tower wall with both paws, and the reach (the played let-go)"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-pokey.json').read_text())
+    away = meta['pokey-away']
+    st = {'src': away['src'], 'scale': away['scale'], 'ox': away['ox'], 'oy': away['oy'], 'size': away['size']}
+    it = []
+    for n, words in (('grip_wall', GRIP), ('reach_back', REACH)):
+        for sd in (3, 9):
+            it.append({'name': f'new-{n}-{sd}-e', 'edit': True, 'start': st, 'prompt': words + FIG_END, 'seed': sd, 'neg': EDIT_NEG + ', wall, bricks, stones'})
+            it.append({'name': f'new-{n}-{sd}', 'then': f'new-{n}-{sd}-e', 'strength': 0.3, 'seed': 7, 'w': 1024, 'h': 1024, 'loras': [['pokey', 1.0], ['style', 0.35]],
+                       'prompt': POKEY + 'seen from behind' + END, 'neg': NEG_FIG + SOFT})
+    return it
+
+
+def round3c(commit):
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    it = plates(commit)
+    return {'tag': 'r3c', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 90,
+            'keep': [x['name'] for x in it if '-up' not in x['name']]}
 
 
 def args(name, commit):

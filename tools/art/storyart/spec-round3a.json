@@ -12,10 +12,14 @@
   "ironclaw": [
    "mshaffe111/ironclaw-qwen-lora",
    "ironclaw_qwen_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
   ]
  },
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/277880b69b330128eaaab38ac28cce4de2cc4cf4/tools/art/hfbatch/starts/storyart/",
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/277880b69b330128eaaab38ac28cce4de2cc4cf4/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/tools/art/hfbatch/starts/storyart/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/",
  "items": [
   {
    "name": "gen-gn.dim-e",
@@ -36,10 +40,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -86,10 +87,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -136,10 +134,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -186,10 +181,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -236,10 +228,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -286,10 +275,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -336,10 +322,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -386,10 +369,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -436,10 +416,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -486,10 +463,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes where the first picture has them open. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -521,10 +495,7 @@
    "name": "gen-gn.card_idle-e",
    "edit": true,
    "start": "r2-gen-idle.png",
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -556,10 +527,7 @@
    "name": "gen-gn.card_roar-e",
    "edit": true,
    "start": "r2-gen-roar.png",
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -588,19 +556,48 @@
    ]
   },
   {
-   "name": "gen-gn.card_fallen-e",
+   "name": "gen-gn.card_fallen-3-e",
    "edit": true,
    "start": "r2-gen-fallen.png",
-   "refs": [
-    "bucket:storyart/out/r2-ged-ready_a-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier's greatcoat with two rows of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real shaggy brown fur, the same old lined face with grey in his brows and around his muzzle, with glowing red eyes. He lies face down in the heap of broken stone rubble exactly as in the first picture. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. He lies beaten face down in the heap of broken stone rubble, exactly as in the picture. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
   {
-   "name": "gen-gn.card_fallen-s30",
-   "then": "gen-gn.card_fallen-e",
+   "name": "gen-gn.card_fallen-3-s30",
+   "then": "gen-gn.card_fallen-3-e",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.card_fallen-8-e",
+   "edit": true,
+   "start": "r2-gen-fallen.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his expression and his eyes as they are in the picture (open and glowing red, half shut, or closed), his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and his torn deep crimson-red cape. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle. He is a sloth, not a robot: no helmet, no metal suit, no plume. He lies beaten face down in the heap of broken stone rubble, exactly as in the picture. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "seed": 8,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "gen-gn.card_fallen-8-s30",
+   "then": "gen-gn.card_fallen-8-e",
    "strength": 0.3,
    "seed": 7,
    "w": 1024,
@@ -641,10 +638,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -687,10 +681,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -733,10 +724,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -779,10 +767,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -825,10 +810,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -871,10 +853,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -917,10 +896,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -963,10 +939,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1009,10 +982,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1055,10 +1025,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1101,10 +1068,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1147,10 +1111,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier's greatcoat hanging open, with sad tired brown eyes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same old sloth in the same pose, size and position, with the same expression: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1193,10 +1154,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture as the sloth in the second picture when he was younger: the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth in the same pose, size and position, with the same expression, as a strong kind grandfather in his prime: thick, real, shaggy dark brown sloth fur with darker tips and no grey, a warm kind face, gentle brown eyes, his rust-coloured scarf, wrapped wrists, no coat. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1239,10 +1197,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture as the sloth in the second picture when he was younger: the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth in the same pose, size and position, with the same expression, as a strong kind grandfather in his prime: thick, real, shaggy dark brown sloth fur with darker tips and no grey, a warm kind face, gentle brown eyes, his rust-coloured scarf, wrapped wrists, no coat. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1285,10 +1240,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture as the sloth in the second picture when he was younger: the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth in the same pose, size and position, with the same expression, as a strong kind grandfather in his prime: thick, real, shaggy dark brown sloth fur with darker tips and no grey, a warm kind face, gentle brown eyes, his rust-coloured scarf, wrapped wrists, no coat. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1331,10 +1283,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the sloth in the first picture as the sloth in the second picture when he was younger: the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw this same sloth in the same pose, size and position, with the same expression, as a strong kind grandfather in his prime: thick, real, shaggy dark brown sloth fur with darker tips and no grey, a warm kind face, gentle brown eyes, his rust-coloured scarf, wrapped wrists, no coat. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1377,10 +1326,7 @@
      1024
     ]
    },
-   "refs": [
-    "bucket:storyart/out/r2-ged-gv-3.png"
-   ],
-   "prompt": "Redraw the big sloth in the first picture as the sloth in the second picture when he was younger: the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat. Keep the little sloth girl holding his hand exactly as she is, with her pink headband, pink vest with the race bib 07, teal shorts and pink shoes. Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
+   "prompt": "Redraw the big sloth in the same pose, size and position, with the same expression, as a strong kind grandfather in his prime: thick, real, shaggy dark brown sloth fur with darker tips and no grey, a warm kind face, gentle brown eyes, his rust-coloured scarf, wrapped wrists, no coat. Keep the little sloth girl holding his hand exactly as she is, with her pink headband, pink vest with the race bib 07, teal shorts and pink shoes. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.",
    "seed": 3,
    "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
   },
@@ -1403,6 +1349,178 @@
      0.35
     ]
    ]
+  },
+  {
+   "name": "new-grip_wall-3-e",
+   "edit": true,
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     523,
+     0,
+     138,
+     215
+    ],
+    "scale": 4.0,
+    "ox": 208,
+    "oy": 78,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "Redraw this same young sloth seen from behind, standing close in front of a wall (do not draw the wall) and gripping it with both paws raised flat in front of him at head height, holding on tight, shoulders hunched, head down, scared of the thunder. The brown leather satchel strap runs over his left shoulder and across his back to the bag on his right hip: seen from behind it runs from the left of the picture down to the bag at the right of the picture. White bandage wraps on both wrists. Same size and position. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry, wall, bricks, stones"
+  },
+  {
+   "name": "new-grip_wall-3",
+   "then": "new-grip_wall-3-e",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, seen from behind, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "new-grip_wall-9-e",
+   "edit": true,
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     523,
+     0,
+     138,
+     215
+    ],
+    "scale": 4.0,
+    "ox": 208,
+    "oy": 78,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "Redraw this same young sloth seen from behind, standing close in front of a wall (do not draw the wall) and gripping it with both paws raised flat in front of him at head height, holding on tight, shoulders hunched, head down, scared of the thunder. The brown leather satchel strap runs over his left shoulder and across his back to the bag on his right hip: seen from behind it runs from the left of the picture down to the bag at the right of the picture. White bandage wraps on both wrists. Same size and position. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 9,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry, wall, bricks, stones"
+  },
+  {
+   "name": "new-grip_wall-9",
+   "then": "new-grip_wall-9-e",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, seen from behind, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "new-reach_back-3-e",
+   "edit": true,
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     523,
+     0,
+     138,
+     215
+    ],
+    "scale": 4.0,
+    "ox": 208,
+    "oy": 78,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "Redraw this same young sloth seen from behind and a little from the side: his left paw still flat on the wall in front of him at head height (do not draw the wall), his body half turned to the right, and his right arm held straight out to the right with the paw open, offering his hand to someone; he looks over his right shoulder with a brave, gentle face. The brown leather satchel strap runs over his left shoulder and across his back to the bag on his right hip. White bandage wraps on both wrists. Same size and position. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry, wall, bricks, stones"
+  },
+  {
+   "name": "new-reach_back-3",
+   "then": "new-reach_back-3-e",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, seen from behind, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "new-reach_back-9-e",
+   "edit": true,
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     523,
+     0,
+     138,
+     215
+    ],
+    "scale": 4.0,
+    "ox": 208,
+    "oy": 78,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "Redraw this same young sloth seen from behind and a little from the side: his left paw still flat on the wall in front of him at head height (do not draw the wall), his body half turned to the right, and his right arm held straight out to the right with the paw open, offering his hand to someone; he looks over his right shoulder with a brave, gentle face. The brown leather satchel strap runs over his left shoulder and across his back to the bag on his right hip. White bandage wraps on both wrists. Same size and position. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 9,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry, wall, bricks, stones"
+  },
+  {
+   "name": "new-reach_back-9",
+   "then": "new-reach_back-9-e",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, seen from behind, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
   },
   {
    "name": "pl-hill-up2",
@@ -2198,7 +2316,8 @@
   "gen-gb.stare-s30",
   "gen-gn.card_idle-s30",
   "gen-gn.card_roar-s30",
-  "gen-gn.card_fallen-s30",
+  "gen-gn.card_fallen-3-s30",
+  "gen-gn.card_fallen-8-s30",
   "gen-gv.letter-s30",
   "gen-gv.reach_a-s30",
   "gen-gv.scout-s30",
@@ -2216,6 +2335,10 @@
   "gen-gy.stand_b-s30",
   "gen-gy.turn_away-s30",
   "gen-gc.hand-s30",
+  "new-grip_wall-3",
+  "new-grip_wall-9",
+  "new-reach_back-3",
+  "new-reach_back-9",
   "pl-hill-2",
   "pl-hill-6",
   "pl-cell-2",
