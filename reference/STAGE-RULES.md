@@ -339,10 +339,26 @@ plan); never ship the rough version as finished.
   ends on a ledge 260 px or more. The same blind spot from below: a ledge just past a perch, within a double jump (plus 40) of the soft
   pit's floor under the swing, is "jumped" to through the perch, and the swing reads as optional. Proof: the quick route swings every
   liana and climbs every vine (`w7SwingRoute.test.ts`). And a long wall top is a quiet 4 s unless it carries a hop (a plinth or two).
+- **World 7 on gen2: what the ruins taught** (2026-10-29; the checklist is `src/game/gen2/DESIGN.md` B12):
+  - *Crumbling tiles were the only way over* in the old generator's ruins (a run of tiles over a drop), against §1. On gen2 a tile is a
+    piece flag (`SectionPiece.crumble`: a tile's width, never main, its own crumble zone), always laid over a sunken hall whose floor walks
+    on under the tiles with two hops out (`w7Ground.ts` `hall`). The tiles are the hurry; standing still drops him into the hall (soft).
+    And it is proven, not trusted: `pipeline.ts` `checkStage` validates every stage with its tiles taken away (only a petal or a heart
+    over a tile may go out of reach), so the repair loop, curation and the tests all hold the rule (any world, not only World 7).
+  - *A zone that reaches below its own pieces swallows the floor under them.* The old ruins zone ran 40 px under the tiles; levelCheck
+    keeps animals 60 px clear of a zone's bottom, so the hall's animals counted as standing inside it. The crumble zone ends at the
+    tiles' underside, and the hall is 120 px down (84 px of headroom under a tile for Pokey).
+  - *A puzzle room on one long floor reads quiet.* The inspector counts a room as one beat where it starts, so a 1,100 px level room was
+    a 4.5-5 s quiet stretch on most rolls of 7-3. The rooms step down to the plate's floor (a walk, so carrying needs no jump) and hop up
+    and over a plinth past the door (`w7Rooms.ts` `roomPieces`).
+  - *Hunt themes that all lean on animals read alike* (7-5 and 7-9: 0.15 apart on raw rolls). Each hunt theme leans on its own other move
+    too: the cats on plinths, the boas in tiled halls, the harpies at brown-vine walls (0.30 raw, 0.47 shipped).
+  - *Dot is gone (Matt, §1):* Pokey's lines are the sections' tips and the rooms' tips; `wayside.ts dotPresent` already draws every
+    World 7 line as his thought, and the tests hold every hint of every roll to his list.
 
 ## 7. Where things are
 
-- Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's
+- Stage code (World 7 on gen2 too: 7-1, 7-3, 7-5, 7-6, 7-7, 7-9 in `gen2/worlds/w7*.ts`; its ascents 7-2, 7-4, 7-8 are hand-built later): World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's
   stage (`5-M`) via `extraStages.ts`; 5-7 and 5-9 from the new generator (`src/game/gen2/`, its 16 curated rolls each: `gen2/game.ts`); 5-6, 5-8 and
   Worlds 6-10 from the old `stageGenerator.ts` (to be replaced by the new generator). Stage names and goals: `stagePlan.ts`. The validator: `levelCheck.ts`. Stage length: `stageTime.ts`.
 - The inspector: `tools/inspect/` (README in `tools/README.md`). Matt's art sheets: `reference/prop-sheets/`. Story:
