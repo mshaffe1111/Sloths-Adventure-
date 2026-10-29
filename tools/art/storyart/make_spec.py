@@ -151,6 +151,104 @@ def figures(commit, which='pokey', strength=0.55, only=None):
             'base': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/', 'items': it}
 
 
+# what each plate goes on up into, above its old top edge, for the upright phones (the edit model paints it and keeps the rest)
+PLATE_UP = {
+    'hill': 'the great old tree goes on up into its huge spreading crown of leaves and hanging moss, and above it a wide golden dusk sky with a few soft pink clouds',
+    'cell': 'the stone walls of the round tower cell go on up to a ceiling of heavy dark wooden beams, a cobweb in one corner, the arched window keeps its night sky',
+    'warroom': 'the stone walls and pillars go on up to a high vaulted stone ceiling with dark beams, the hanging banners and the iron lantern on its chain from the ceiling',
+    'door': 'the stone corridor walls and arches go on up to a vaulted stone ceiling in shadow, a little warm lantern light on the stones',
+    'courtyard': 'the round grey stone tower on the left goes on up past the lit window to a pointed slate roof, the wall on the right ends in battlements, and above everything heavy dark blue storm clouds with rain',
+    'nest-storm': 'the dark rainforest trees go on up into their tangled stormy canopy, and above it a dark purple storm sky turning and swirling, a far flash of lightning',
+    'gates': 'the black fortress goes on up into its dark towers and spires with thorns, under a dark purple storm sky with lightning',
+    'grandma-door': 'the trunk of the great tree goes on up into its huge leafy crown, with the deep green rainforest canopy and a little evening light coming through the leaves',
+    'grandma-door-empty': 'the trunk of the great tree goes on up into its huge leafy crown, with the deep green rainforest canopy and a little grey after-storm light coming through the leaves',
+    'tea': 'the silk-hung trees go on up into a dark violet canopy hung with great glowing spider webs like chandeliers and dangling silk threads',
+    'cookhouse': 'the cookhouse walls go on up to a high roof of dark wooden rafters hung with more copper pots, bundles of herbs and strings of onions, warm firelight',
+    'ruins': 'the mossy ruined stone pillars and the jungle go on up into a tall green rainforest canopy with soft shafts of light falling through',
+    'village': 'the treehouses and the giant trees go on up into a misty rainforest canopy with more little round houses high in the branches and rope bridges between them, a soft morning sky',
+}
+PLATE_SAY = {
+    'hill': 'a grassy hill with the oldest tree at golden dusk, a fortress far off on the right', 'cell': "a round stone tower cell at night",
+    'warroom': "a fortress war room with a round map table", 'door': 'a stone fortress corridor with a wooden door',
+    'courtyard': 'a stormy fortress courtyard with a round stone tower', 'nest-storm': 'a big woven nest on a rainforest branch in a night storm, two grown sloths far off along the branch',
+    'gates': 'a black fortress at the top of a long stair, its gates open', 'grandma-door': "a round door in the hollow of a great tree at dusk",
+    'grandma-door-empty': "a round door standing open in the hollow of a great tree after a storm", 'tea': "a long tea table under silk-hung trees",
+    'cookhouse': 'a warm fortress kitchen with a black stove and copper pots', 'ruins': 'mossy jungle ruins with ten stone seats in a ring',
+    'village': 'a rainforest treehouse village the morning after a storm',
+}
+
+
+def plates(commit, keys=None):
+    """every plate: the edit model paints the room above it (and keeps the rest), then a tiled pass at 2560 wide with the game's style
+    model paints it at full size"""
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    it = []
+    for k, sd in [(k, sd) for k in (keys or PLATE_UP) for sd in (2, 6)]:
+        it.append({'name': f'pl-{k}-up{sd}', 'edit': True, 'start': f'canvas-{k}.png', 'seed': sd, 'w': 1280, 'h': 1360,
+                   'prompt': (f'Fill the empty white top of this picture so the painting carries on upward: {PLATE_UP[k]}. Keep the painted bottom part '
+                              'as it is, with everything in the same place. Same painted storybook style. No characters, no text.'),
+                   'neg': 'white, blank, frame, border, text, characters, people'})
+        it.append({'name': f'pl-{k}-{sd}', 'then': f'pl-{k}-up{sd}', 'prompt': f'slothadv style, painted storybook illustration, {PLATE_SAY[k]}, no characters, no text',
+                   'neg': PLATE_NEG, 'strength': 0.3, 'seed': 5, 'w': 2560, 'h': 2720, 'tile': [1280, 256], 'loras': [['style', 1.0]]})
+    return it
+
+
+WAR_REF = 'bucket:storyart/out/r2-ged-ready_a-3.png'
+PLAIN_REF = 'bucket:storyart/out/r2-ged-gv-3.png'
+LOOK_WAR = ('dressed and looking exactly like the old sloth general in the second picture: the long dark green soldier\'s greatcoat with two rows '
+            'of brass buttons and the wide leather belt, the spiked silver shoulder plate, the red scarf, the torn crimson-red cape, thick real '
+            'shaggy brown fur, the same old lined face with grey in his brows and around his muzzle')
+LOOK_PLAIN = ('looking exactly like the old sloth in the second picture: the same old lined gentle face with grey in his brows and around his '
+              'muzzle, thick real shaggy brown fur, the rust-coloured scarf and the old unbuttoned dark green soldier\'s greatcoat hanging open')
+EDIT_END = (' Keep exactly the pose, the size and the position of the first picture, and its expression and eyes. Same painted storybook style '
+            'with dark ink outlines and soft cel shading. Plain flat grey background, no white outline, no sticker border.')
+EDIT_NEG = 'robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry'
+
+
+def general(commit):
+    """the General, every frame: the edit model redraws each old frame in his new look (a design picture as the second reference), then his
+    own models take him back on model at a low strength"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-cel.json').read_text())
+    bm = json.loads((H.parent / 'hfbatch/starts/storyart/meta-r2.json').read_text())
+    it = []
+
+    def st(key, src=None):
+        if src:
+            return src
+        m = meta[key]
+        return {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']}
+
+    jobs = []
+    for k in ('gn.dim', 'gn.glare', 'gn.lids', 'gn.narrow', 'gn.ready_a', 'gn.ready_b', 'gn.ready_c', 'gn.shut', 'gn.sleep_b', 'gb.stare'):
+        jobs.append((k, st(f'cel-{k}'), WAR_REF, 'Redraw the sloth in the first picture ' + LOOK_WAR + ', with glowing red eyes where the first picture has them open.'))
+    for n in ('idle', 'roar', 'fallen'):
+        jobs.append((f'gn.card_{n}', f'r2-gen-{n}.png', WAR_REF, 'Redraw the sloth in the first picture ' + LOOK_WAR + ', with glowing red eyes.'
+                     + (' He lies face down in the heap of broken stone rubble exactly as in the first picture.' if n == 'fallen' else '')))
+    for k in ('gv.letter', 'gv.reach_a', 'gv.scout', 'gv.sit', 'gv.sorrow', 'gv.sorrow_b', 'gv.stand', 'gv.stand_m', 'gv.tea', 'gv.walk_a', 'gv.wipe_eye', 'gp.calm'):
+        jobs.append((k, st(f'cel-{k}'), PLAIN_REF, 'Redraw the sloth in the first picture ' + LOOK_PLAIN + ', with sad tired brown eyes.'))
+    for k in ('gy.smile', 'gy.stand', 'gy.stand_b', 'gy.turn_away'):
+        jobs.append((k, st(f'cel-{k}'), PLAIN_REF, 'Redraw the sloth in the first picture as the sloth in the second picture when he was younger: '
+                     'the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat.'))
+    jobs.append(('gc.hand', st('cel-gc.hand'), PLAIN_REF, 'Redraw the big sloth in the first picture as the sloth in the second picture when he '
+                 'was younger: the same face but younger and kinder, darker brown fur with no grey, the rust-coloured scarf, no coat. Keep the little '
+                 'sloth girl holding his hand exactly as she is, with her pink headband, pink vest with the race bib 07, teal shorts and pink shoes.'))
+    for k, start, ref, words in jobs:
+        it.append({'name': f'gen-{k}-e', 'edit': True, 'start': start, 'refs': [ref], 'prompt': words + EDIT_END, 'seed': 3, 'neg': EDIT_NEG})
+        war = k.startswith(('gn', 'gb'))
+        it.append({'name': f'gen-{k}-s30', 'then': f'gen-{k}-e', 'strength': 0.3, 'seed': 7, 'w': 1024, 'h': 1024,
+                   'prompt': (GENERAL if war else 'generalsloth, a huge old broad sloth with a rust-coloured scarf, ') + 'in the same pose' + END,
+                   'neg': NEG_GEN + SOFT, 'loras': [['ironclaw', 0.5], ['general', 0.5], ['style', 0.35]] if war else [['general', 0.8], ['style', 0.35]]})
+    return it
+
+
+def round3a(commit):
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    it = general(commit) + plates(commit)
+    return {'tag': 'r3a', 'loras': {k: LORAS[k] for k in ('style', 'general', 'ironclaw')}, 'base': base,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'items': it,
+            'keep': [x['name'] for x in it if not x['name'].endswith('-e') and '-up' not in x['name']], 'q': 90}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '

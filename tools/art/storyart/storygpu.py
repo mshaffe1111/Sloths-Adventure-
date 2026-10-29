@@ -40,6 +40,37 @@ def put(path, data):
 
 results = {}
 done = []
+starts = {}
+
+
+def build(b):
+    """a figure start made here from the game's own atlas, exactly as starts.py on_key + sharpen would: the frame `src` [atlas, x, y, w, h]
+    scaled by `scale`, put at (ox, oy) on flat key grey of `size`, its edges crisped"""
+    key = (b['src'][0], 'atlas')
+    if key not in starts:
+        with urllib.request.urlopen(SPEC['repo'] + b['src'][0], timeout=90) as r:
+            starts[key] = Image.open(io.BytesIO(r.read())).convert('RGBA')
+    _, x, y, w, h = b['src']
+    fig = starts[key].crop((x, y, x + w, y + h))
+    s = b['scale']
+    big = fig.resize((max(1, round(w * s)), max(1, round(h * s))), Image.LANCZOS)
+    bg = Image.new('RGBA', tuple(b['size']), (128, 128, 128, 255))
+    bg.alpha_composite(big, (b['ox'], b['oy']))
+    return bg.convert('RGB').filter(ImageFilter.UnsharpMask(radius=3, percent=90, threshold=2))
+
+
+def fetch(rel):
+    """a start: a dict is built from an atlas (build), 'bucket:<path>' is a picture already in the bucket (an earlier job's pick)"""
+    if isinstance(rel, dict):
+        return build(rel)
+    if rel.startswith('bucket:'):
+        return Image.open(ROOT / rel[7:])
+    if rel not in starts:
+        with urllib.request.urlopen(SPEC['base'] + rel, timeout=90) as r:
+            starts[rel] = Image.open(io.BytesIO(r.read()))
+    return starts[rel]
+
+
 
 
 def put_png(name, img):
@@ -63,10 +94,7 @@ if EDITS:
     for it in EDITS:
         t1 = time.time()
         try:
-            ims = []
-            for rel in [it['start']] + it.get('refs', []):
-                with urllib.request.urlopen(SPEC['base'] + rel, timeout=90) as r:
-                    ims.append(Image.open(io.BytesIO(r.read())).convert('RGB'))
+            ims = [fetch(rel).convert('RGB') for rel in [it['start']] + it.get('refs', [])]
             kw = {}
             if it.get('w'):
                 kw = dict(width=it['w'], height=it['h'])
@@ -118,32 +146,6 @@ for n, (repo, fn) in SPEC['loras'].items():
     load_lora(n, repo, fn)
 
 NEG = SPEC.get('neg', 'text, letters, watermark, frame, border, photo, 3d render, blurry, extra limbs, extra arms, extra fingers, deformed')
-starts = {}
-
-
-def build(b):
-    """a figure start made here from the game's own atlas, exactly as starts.py on_key + sharpen would: the frame `src` [atlas, x, y, w, h]
-    scaled by `scale`, put at (ox, oy) on flat key grey of `size`, its edges crisped"""
-    key = (b['src'][0], 'atlas')
-    if key not in starts:
-        with urllib.request.urlopen(SPEC['repo'] + b['src'][0], timeout=90) as r:
-            starts[key] = Image.open(io.BytesIO(r.read())).convert('RGBA')
-    _, x, y, w, h = b['src']
-    fig = starts[key].crop((x, y, x + w, y + h))
-    s = b['scale']
-    big = fig.resize((max(1, round(w * s)), max(1, round(h * s))), Image.LANCZOS)
-    bg = Image.new('RGBA', tuple(b['size']), (128, 128, 128, 255))
-    bg.alpha_composite(big, (b['ox'], b['oy']))
-    return bg.convert('RGB').filter(ImageFilter.UnsharpMask(radius=3, percent=90, threshold=2))
-
-
-def fetch(rel):
-    if isinstance(rel, dict):
-        return build(rel)
-    if rel not in starts:
-        with urllib.request.urlopen(SPEC['base'] + rel, timeout=90) as r:
-            starts[rel] = Image.open(io.BytesIO(r.read()))
-    return starts[rel]
 
 
 def run_one(it, img, mask, w, h):

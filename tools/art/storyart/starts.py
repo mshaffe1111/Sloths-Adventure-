@@ -271,5 +271,48 @@ def figures():
     print(len(meta), which)
 
 
+def cels():
+    """meta for every story-sheet cel a story or a stage shows (celsused.json, the acts, the speaker heads, the rest poses, World 2's walkers)"""
+    import re
+    used = json.loads((REPO / 'tools/art/storyart/celsused.json').read_text())
+    keys = set(k for v in used.values() for k in v)
+    src = (REPO / 'src/game/storyCels.ts').read_text()
+    for m in re.finditer(r"run\('(\w+)', \[(.*?)\]\)|loop\('(\w+)', \[(.*?)\]", src):
+        pre = m.group(1) or m.group(3)
+        body = m.group(2) or m.group(4)
+        for n in re.findall(r"'([a-z0-9_]+)'", body):
+            keys.add(f'{pre}.{n}')
+    keys |= set(re.findall(r"key: '([a-z]+\.[a-z0-9_]+)'", src))
+    keys |= set(re.findall(r"frame: '([a-z]+\.[a-z0-9_]+)'", src))
+    for m in re.finditer(r"prefix: '(\w+)'.*?rest: '(\w+)'", src):
+        keys.add(f'{m.group(1)}.{m.group(2)}')
+    for f in (REPO / 'src/game').glob('*.ts'):
+        keys |= set(re.findall(r"cel(?:Walk)?: '([a-z]+\.[a-z0-9_]+)'", f.read_text()))
+    cr = cel_rects()
+    keys = sorted(k for k in keys if k in cr)
+    meta = {}
+    for k in keys:
+        r = cr[k]
+        fig = cut(CEL_ATLAS[r['a']], r['x'], r['y'], r['w'], r['h'])
+        if r['c'] == 'raw' or r['c'] == 'b' or k.startswith(('face.', 'gb.', 'gp.')):
+            im, m = on_key(fig, fill=0.8, foot=0.9)
+        else:
+            im, m = on_key(fig, height=min(900, 820 * r['h'] / 205))
+        m.update(src=[CEL_ATLAS[r['a']], r['x'], r['y'], r['w'], r['h']], cel=r, size=[im.width, im.height])
+        meta[f'cel-{k}'] = m
+    (OUT / 'meta-cel.json').write_text(json.dumps(meta, indent=1))
+    from collections import Counter
+    print(len(meta), Counter(k.split('.')[0][4:] for k in meta))
+
+
+def canvases():
+    """each plate at the bottom of a 1280 x 1360 white canvas: the edit model paints the white room above it"""
+    for f in sorted((REPO / 'src/assets/story/plates').glob('*.webp')):
+        base = Image.open(f).convert('RGB').resize((1280, 720), Image.LANCZOS)
+        can = Image.new('RGB', (1280, 1360), (255, 255, 255))
+        can.paste(base, (0, 640))
+        can.save(OUT / f'canvas-{f.stem}.png')
+
+
 if __name__ == '__main__':
     globals()[sys.argv[1]]()
