@@ -11,6 +11,7 @@ import { validateStage } from './levelCheck.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { findForStage, FIND_STAGE_IN } from './finds.ts';
 import { levelConfig, RealPlay } from './realPlay.ts';
+import { TIMED, vineAmp } from './physics.ts';
 import { SEAMSTRESS, SHEET, SIT, stepSeam, newSeam, laced, W5_TEACH, type W5Extras } from './w5Kit.ts';
 import { W5_HINTS } from './w5Lines.ts';
 import { CATCH_Y, type W54Info } from './w5Stage54.ts';
@@ -386,6 +387,7 @@ function thumbCross(seed: number, c: W54Info['chains'][number], f: Flick, at: nu
     g.up(2, ax, ay, now);
   };
   let jumped = false;
+  let edgeShare = 9, waited = 0;
   let lastVine = -1;
   let prevA = 9, flickAt = -1e9;
   const lets = new Set<number>();
@@ -394,8 +396,19 @@ function thumbCross(seed: number, c: W54Info['chains'][number], f: Flick, at: nu
     if (p.grounded && Math.abs(p.y - farY) < 2 && p.x > c.far + 20) return { ok: true, why: '' };
     if (p.y > G + 40) return { ok: false, why: `fell into the pit at x ${Math.round(p.x)} (lines let go: ${[...lets].join(',')})` };
     if (!jumped && p.grounded && p.x >= c.edge - 45) {
-      jumped = true;
-      flick();
+      // (the first line swings on its own, physics.ts: he waits at the edge until it swings back toward him, as a player does)
+      const first = r.vines.find((q) => q.id === c.vines[0]);
+      const share = first ? (first.swingAngle ?? 0) / Math.max(0.05, vineAmp(first)) : 0;
+      const coming = !first || vineAmp(first) < 0.05 || (share < 0.3 && share > -0.5 && share < edgeShare);
+      edgeShare = share;
+      if (coming || waited++ > 30 * 6) {
+        jumped = true;
+        flick();
+        continue;
+      }
+      held.right = false;
+      tick(33);
+      held.right = true;
       continue;
     }
     if (p.isVineSwinging) {
@@ -403,9 +416,13 @@ function thumbCross(seed: number, c: W54Info['chains'][number], f: Flick, at: nu
       // being spent, so a thumb that flicked too soon flicks again on the next swing forward, as a player does)
       if (p.swingVineId !== lastVine) prevA = 9;
       lastVine = p.swingVineId ?? -1;
-      const a = p.swingAngle ?? 0, om = p.swingAngularVelocity ?? 0;
-      const through = om > 0.2 && a >= at && (prevA < at || prevA === 9);
-      prevA = om > 0.2 ? a : -9;
+      // (`at` in radians of the old 0.8 swing: the same share of each line's own swing now, physics.ts swingSetup)
+      const own = r.vines.find((q) => q.id === p.swingVineId);
+      const amp = own ? vineAmp(own) : TIMED.amp;
+      const a = ((p.swingAngle ?? 0) / Math.max(0.05, amp)) * 0.8, om = p.swingAngularVelocity ?? 0;
+      const moving = om > 0.075 * amp * ((2 * Math.PI) / TIMED.period);
+      const through = moving && a >= at && (prevA < at || prevA === 9);
+      prevA = moving ? a : -9;
       if (through && now - flickAt > 500) {
         lets.add(lastVine);
         flickAt = now;
@@ -444,18 +461,25 @@ test('5-4: a miss in a chain lands on a catch ledge or the soft floor, and from 
     for (const c of st.w54info.chains) {
       for (const [k, id] of c.ledges.entries()) {
         const l = st.platforms.find((p) => p.id === id) as Platform;
-        const sim = new RealPlay('5-4', seed);
-        sim.stand(l.x + 20, l.y);
-        let grabbed = false, second = false;
-        for (let i = 0; i < 60 && !grabbed; i++) {
-          const near = sim.p.grounded && sim.p.x > l.x + l.width - 40;
-          // (a running jump off its end, and the second jump at the top of it where the line hangs high: a high bridge's)
-          const again = !sim.p.grounded && !second && c.high && sim.p.vy > -80;
-          if (again) second = true;
-          sim.frame({ right: true, press: near || again, jump: !sim.p.grounded });
-          if (sim.p.isVineSwinging && sim.p.swingVineId === c.vines[k + 1]) grabbed = true;
+        // (the lines swing on their own, physics.ts: a player on the ledge waits for the line; the jump is tried at eight moments of its
+        // swing, and must catch it at two or more, a quarter of every swing)
+        let caught = 0;
+        for (let m = 0; m < 8; m++) {
+          const sim = new RealPlay('5-4', seed);
+          sim.stand(l.x + 20, l.y);
+          sim.vineClock = (m / 8) * TIMED.period;
+          let grabbed = false, second = false;
+          for (let i = 0; i < 60 && !grabbed; i++) {
+            const near = sim.p.grounded && sim.p.x > l.x + l.width - 40;
+            // (a running jump off its end, and the second jump at the top of it where the line hangs high: a high bridge's)
+            const again = !sim.p.grounded && !second && c.high && sim.p.vy > -80;
+            if (again) second = true;
+            sim.frame({ right: true, press: near || again, jump: !sim.p.grounded });
+            if (sim.p.isVineSwinging && sim.p.swingVineId === c.vines[k + 1]) grabbed = true;
+          }
+          if (grabbed) caught++;
         }
-        assert.ok(grabbed, `seed ${seed}: from the ledge at ${l.x} the line ${c.vines[k + 1]} is not caught`);
+        assert.ok(caught >= 2, `seed ${seed}: from the ledge at ${l.x} the line ${c.vines[k + 1]} is caught at ${caught} of 8 moments of its swing`);
       }
     }
   }

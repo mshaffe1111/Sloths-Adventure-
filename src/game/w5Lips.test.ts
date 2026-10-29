@@ -14,6 +14,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
+import { TIMED } from './physics.ts';
 import { G } from './protoStage.ts';
 import type { Platform } from './types.ts';
 
@@ -42,6 +43,7 @@ function pitSide() {
  */
 function flicks(sim: RealPlay, lean: -1 | 0 | 1, k: number): number {
   for (let i = 0; i < 120; i++) {
+    if (sim.p.isVineSwinging) return NaN;
     const press = i === 0 || (k > 0 && i === k);
     if (press) sim.input.state.jumpLean = lean;
     sim.frame({ press, jump: i < 7 || (k > 0 && i >= k && i < k + 7) });
@@ -173,16 +175,23 @@ for (const id of ['5-3', '5-4', '5-5']) {
           for (const gap of [0, 8]) {
             for (const walked of [false, true]) {
               const x0 = q.x - 19 - gap;
-              if (walked) {
-                sim.stand(x0 - 50, floor);
-                for (let i = 0; i < 40 && sim.p.x < x0; i++) sim.frame({ right: true });
-              } else {
-                sim.stand(x0, floor);
-                sim.p.facing = 1;
-                sim.frame();
-              }
               n++;
-              const y = flicks(sim, lean, 0);
+              // (a lip under a chain's lines: the lines swing on their own, physics.ts, and a flick while one sweeps over him catches it,
+              // as a player's would; he tries again once it has swung on, a third of a swing later, up to three times)
+              let y = NaN;
+              for (let tries = 0; tries < 3; tries++) {
+                if (walked) {
+                  sim.stand(x0 - 50, floor);
+                  for (let i = 0; i < 40 && sim.p.x < x0; i++) sim.frame({ right: true });
+                } else {
+                  sim.stand(x0, floor);
+                  sim.p.facing = 1;
+                  sim.frame();
+                }
+                y = flicks(sim, lean, 0);
+                if (!sim.p.isVineSwinging) break;
+                sim.vineClock += TIMED.period / 3;
+              }
               if (!(y <= q.y)) bad.push(`seed ${seed}: the ${rise} px lip at ${q.x} (${q.style}), lean ${lean}, ${gap} px off${walked ? ', walked up' : ''}: landed at ${y}`);
             }
           }

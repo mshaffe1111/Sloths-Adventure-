@@ -12,6 +12,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
+import { canGrabSwing } from './physics.ts';
 import { G } from './protoStage.ts';
 import { STEP_UP } from './engine.ts';
 import type { Platform } from './types.ts';
@@ -104,7 +105,10 @@ function leaveDip(sim: RealPlay, d: Platform): number {
     still = Math.abs(p.x - lastX) < 0.5 && p.grounded ? still + 1 : 0;
     lastX = p.x;
     let press = false;
-    if (p.grounded && hold <= -3 && (face || still > 6) && rest-- <= 0) {
+    // a liana swinging over the dip (they swing on their own, physics.ts): he flicks up as it comes over him, the way a player waits
+    // for it (a jump's rise later, his hands meet it)
+    const vineComing = sim.vines.some((v) => v.vineType !== 'tree_climb' && Math.abs(v.x - p.x) < 260 && canGrabSwing(p.x, p.y - 90, v, sim.vineClock + 0.25));
+    if (p.grounded && hold <= -3 && (face || still > 6 || vineComing) && rest-- <= 0) {
       press = true;
       hold = 7;
       rest = 3;
