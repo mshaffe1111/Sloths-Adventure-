@@ -1,114 +1,103 @@
-# polish-edges: clean backdrop edges (VI-1, VI-5, VI-6, with VI-18 for World 4)
+# polish-edges: clean backdrop edges (VI-1, VI-5, VI-6) and upright no longer faded (X-16), with VI-18 for World 4
 
-Branch `polish-edges`. Merged in: `polish-a1` (seamless strips), the work branch, and `hf-art-backdrops` (native-resolution strips).
-Only image files and `tools/art/edges/` changed, plus a header note in `tools/art/upscale/up.py`. No drawing code changed.
-`src/assets/backdrops-hd/` is folded into `src/assets/backdrops/` and deleted, as the lead asked.
+Branch `polish-edges`, built on the latest work branch. Merged in: `polish-a1` (seamless strips) and `hf-art-backdrops` (Matt's native
+near and mid strips). `src/assets/backdrops-hd/` is folded in and deleted.
 
-## What ships, per strip
+## 1. The edge fix, redone after the lead's review (it had softened the paintings)
 
-| Strips | Source | Treatment |
-|---|---|---|
-| w1-w10 near and mid (except World 5's mood sets) | Matt's native-resolution strips, `hf-art-backdrops` cd71d17 (already joined: no seamless pass) | Edge fix in place, ink line scaled to the resolution (`--px 2.5` near, `1.9` mid). World 5's gold set (w5) keeps its own line. w4-mid is also graded (VI-18). |
-| w1c (canopy) | 31c243f, 2048 | A1's join, then the white halo un-mixed (VI-5), leftover key cleared from the sky, ink line |
-| w5gold2, w5dusk1/2, w5twi1/2, w5night | 8c1f0ab / 1baf7ca, 2048 | A1's join, then the magenta spill clamped (VI-6) and the black under the cut replaced; their own ink line kept. w5dusk2-near: unkeyed background panels cut out first (`unpanel.py`) |
-| w4-far, w4mist-far, w4terraces-far | A1's seamless strips, 3a1247a | VI-18 grade only (`grade.py`): saturation +12%, highlights warmed |
+`tools/art/edges/defringe.py --band 4`, run by `run_all.py` (native strips) and `hdset_in.py` (the new native mood and canopy strips).
 
-`python3 -I tools/art/edges/run_all.py` rebuilds all of them from those pinned sources (`--only` for single files). Each future strip
-goes through it: add a row to `RECIPES`. The 2048 route for the old strips (1024 originals at 18bedcc^ through Real-ESRGAN, then
-A1's join) is still in the script's notes, but the native-resolution strips replaced it.
+- **Inside the painting: untouched.** Only pixels within 4 px of an alpha edge may change. Every pixel deeper in, and every thin feature
+  (vines), is the source's own, byte for byte. The alpha is the source's own: no erode, so leaf tips don't bead. Encoded at WebP q95.
+  - Proof: `diffmask/<strip>.jpg` shows changed pixels in red, along the outlines only.
+  - `diffmask/interior.txt`: interior changed 0.01-0.31% (WebP noise) on all 20 native strips. w4-mid is 3.4% because of its VI-18
+    grade, which changes its colours everywhere on purpose.
+- **In the band.** The smeared sticker ring is replaced by the paint just inside, then an even line at 0.42x the local colour.
+  - Where the painting's own outline is darker and crisper, it is kept: per pixel, the darker of the two wins. This keeps w2's rock
+    line.
+  - No line on see-through strokes such as water ripples.
+- **Strips that were already clean are left exactly as painted.** A strip counts as clean when under half of its outer 2 px is darker
+  than 0.7x the paint inside. That is w8-near, which the earlier pass had made noisier.
+- **2x crops:** `zoom2x/` covers 10 strips, before and after at 2x zoom. Inner lines, petals and vines match. The outline goes from
+  blotchy to one even line.
+- **Evenness:** the share of pixels darker than 0.7x the paint inside, at 1 and 2 px in. For example, w1-near goes from 0.72/0.80
+  (blotchy) to 1.00/1.00 (one line).
+- **VI-5 (W1 canopy white halo) and VI-6 (World 5 magenta spill):** as before, now on their native repaints. Spill is 0.0-0.1%.
+- **w5dusk2-near's background panels:** cut out (`unpanel.py`).
 
-## Method (`tools/art/edges/defringe.py`)
+## 2. X-16: upright looked faded (Matt, 3:45 PM ET)
 
-1. **Trusted colour.** Opaque paint more than a ring in from the cut: 1.5 px at the 1024 originals, 3 px on 2048 strips, 6 px on
-   native near strips, 4.5 px on native mids. Thin features (hair vines, twigs) keep their own colour.
-2. **Bleed.** The trusted colour is bled 16 px out with a normalised Gaussian fill (sigma 1, 2, 4, 8). This replaces the stored
-   colour of the dark ring and of every half-see-through pixel, so it also un-premultiplies.
-3. **Enlarging.** Only for the old 1024 route: Real-ESRGAN on colour and alpha separately, with no black left to smear in.
-4. **Alpha.** Eroded 1 px and feathered about 1.2 px. Thin features keep their alpha, so vines survive. The width counted as thin
-   scales with the strip's resolution, so the outline doesn't step where protected edges meet eroded ones.
-5. **Ink line.** An even line, 1.6 px at the 2048 scale (4 px on a native near), at 0.42x the local colour. It is left off
-   see-through strokes (World 2's water ripples): it fades out where the paint around is mostly half see-through. Reeds and
-   cattails keep it.
-6. **W1 canopy (VI-5).**
-   - The white key is un-mixed: paint = (stored - (1 - a) x white) / a.
-   - Key-white opaque pixels at the cut go. Lianas don't: they are painted pale grey-green on purpose.
-   - Specks and faint veils of key are cleared from the sky.
-7. **World 5 (VI-6).**
-   - At the cut, red and blue are clamped to green + 12 over the paint just inside. Real pinks (orchids, the dusk haze) pass
-     untouched.
-   - World 5's dark edge is its own clean ink line, Gemini's cartoon style, not damage. Stripping it made the orchids fuzzy and grey
-     (tried), so it is kept.
-   - The faint cobwebs are kept.
-8. **w5dusk2-near (the lead's catch).**
-   - Gemini painted background trees and a sunset sky down both sides of the green key (raw `w5g-dusk-near-11`). The first cut only
-     faded their tops out.
-   - `unpanel.py` cuts what is background above a hand-drawn ground line: regions reaching the faded top, and ink-closed regions of
-     trunk purple or sky salmon.
-   - It keeps orchids, buds, falling petals, moss, the log and the ribbons. One white orchid whose stem was background would have
-     floated, so it goes too.
+- **Code.**
+  - Upright, the engine passes `stripVh`, the height sideways would show for the same width of world.
+  - `renderScenery` draws the mid and near strips at that scale, on the same ground line. Sideways is unchanged.
+  - The far strip has its painted sky above it (`<stem>-sky.webp`, `drawStrip`). Where no sky passed review, the far strip is drawn
+    just large enough to reach the top of the view (`farScale`). On a phone that is about 1.2x the sideways size, against 1.76x when
+    everything was fitted to the tall view. The drawn gradient never shows over a painted scene.
+  - Middle strips whose top edge is solid paint, or cut off straight (w8), fade out over their top 7% (16% on w8). Upright that top is
+    now on screen.
+  - Per frame this adds one `drawImage` per strip copy when there is a sky. No gradients.
+  - `farCoverTop()` is exported for PF-1's sky skip, so the placement math lives in one place (agreed with PF-1).
+  - Tests: `sceneryStrip.test.ts` (ground line kept, sideways unchanged, sky and cover cases); the stage-backdrop size tests follow
+    the native size.
+- **Art, Matt's rule (no upscaling).** One batched HF job (`hdset.sh`):
+  - All 34 far strips and the 14 World 5 mood and W1 canopy middle and near strips were repainted at native resolution, 1302 px (near
+    1736 px), the same way as the HD near and mid strips: img2img at 0.25 with the style model, tiled round the strip so it stays
+    seamless.
+  - Then the sky was inpainted above each new native far strip, from the native strip itself.
+  - **Skies kept: 18.** w1, w10, w10dusk, w2rapids, w3, w3cavern, w4, w4mist, w4terraces, w5, w5dusk1, w5gold2, w5night, w6dusk, w8,
+    w8night, w8sunset, w9night.
+  - **Skies held back: 16.** w1kapok, w1sunrise, w2, w2evening, w3sinkhole, w5dusk2, w5twi1, w5twi2, w6, w6dawn, w7, w7dawn, w7dusk,
+    w9, w9dawn, w10after.
+    - They stacked a second landscape above the strip, showed tile-panel ghosts, or went dark and streaky.
+    - Two retry rounds didn't fix it: a plain start and a sky-only prompt painted frames and panels, and one painted a sloth.
+    - These sets use the cover fit described above. That is the plain extension, and the reason it was chosen is that every AI take
+      failed review.
+- **Spend:** about $3.6 of the $8 X-16 budget (pilots $0.83, batch $2.27, two cancelled retries $0.46), logged in
+  `tools/art/hfbatch/jobs.txt`.
+- **In-game proof:** `x16/<stage>-up.jpg` (before and after upright) and `x16/<stage>-side.jpg` (before and after sideways), for 15
+  stages covering every world plus the mood sets: 1-5, 1-8, 2-1, 3-1, 3-7, 4-5, 4-8, 5-1, 5-5, 6-5, 6-8, 7-1, 8-1, 9-1, 10-1.
+  - Before is the work branch at aac019e1, after is this branch, with the same roll (layout 0).
+- **Numbers:** `x16/colour.md`, measured over the backdrop band.
 
-## Ink line or none: recommendation
+| | upright before | upright after | sideways before | sideways after |
+|---|---|---|---|---|
+| luma SD (contrast) | 37.2 | **44.2** | 47.1 | 48.1 |
+| HSV saturation | 0.371 | 0.325 | 0.337 | 0.335 |
 
-**Ink line, and it ships.** The paintings are inked inside (veins, bark), and Matt's strips already had a painted rim. The no-ink take
-measures on target (0.98-1.01 on the native strips: `crops/edges.md`, no-ink column), but at phone size its leaves blur into the sky
-next to the crisp inner lines (`ink-vs-clean/`).
-
-The ink take's "rim" reads about 0.45 on purpose. What changes is evenness: the share of edge pixels darker than 0.7x the paint
-inside, measured 1, 2, 3 and 4 px in.
-- **Before:** blotchy, the sticker smear. For example w1-near HD measures 0.72 0.80 0.66 0.40.
-- **After:** one even ring. w1-near measures 0.98-1.00 across its line (4 px wide on a native near), and the mids 0.86-1.00.
-
-To ship the no-ink take instead: `run_all.py --clean`.
-
-## Per-file table
-
-- `crops/edges.md` covers all 34 strips against A1's strips: what the game had before this branch.
-- `crops-hd/edges.md` covers 5 worlds against the raw native-resolution strips.
-- Magenta spill is 0.0-0.1% after on every file, from up to 2.0%.
-- Every file is under 400 KB, the largest 394 KB (w2-near). No asset is over 4 MiB.
-- The native strips keep their own dimensions (near 1736 tall, mid 1302); the 2048 ones keep A1's.
-
-## Proof
-
-All paths are under `reference/prop-sheets/qa-notes/polish-edges/`.
-
-- `crops-hd/w1-*.jpg`, `w2`, `w4`, `w7`, `w8`, each `-up` (390x844) and `-side` (844x390): the raw native strips (left) against
-  this branch (right). These are the before/after phone crops the lead asked for.
-- `crops/<set>-up.jpg` / `-side.jpg`: all 17 sets against A1's strips. Each is drawn as the game layers it and cropped where the
-  most cut edge is, at phone magnification.
-- `ingame/<stage>-up.jpg` / `-side.jpg` (phone size) and `-3x.jpg` (the phone's full resolution, top of the backdrop): this commit
-  against the same commit with A1's strips swapped back in. Stages: 1-1, 1-8 (canopy), 2-1, 4-1, 5-1, 5-5 (dusk B), 5-7, 6-2, 7-1
-  and 8-1. The soil and props can differ between the two because the game rolls its dressing per play; only the strips differ in
-  the build.
-- `joins-all.jpg`: every mid and near strip tiled against itself around its join (red tick). No seam on any.
-- `ink-vs-clean/`: native w1, w2, w8 and w10 strips and the W1 canopy, no ink against ink.
+Contrast upright now sits close to sideways. HSV saturation reads lower upright after the change: the old upright crop was darker, and
+HSV saturation balloons on dark pixels. The paired shots show the colour itself is not weaker. Sideways is unchanged, within noise.
 
 ## Polish check (STAGE-RULES §5b)
 
-1. **Painted, not drawn: pass.** Nothing new is drawn in code. The ink line lives in the image files, follows the painting's own
-   linework, and is left off the water (`ink-vs-clean/w1-near.jpg`, `crops-hd/w2-side.jpg`).
-2. **Nothing copy-pasted: pass.** Every join is still seamless after the fix (`joins-all.jpg`).
-3. **Art matches what it is: pass, with one rough spot named.**
-   - Canopy lianas stay whole (`ink-vs-clean/w1c-mid.jpg`).
-   - w5dusk2's background panel is gone, so the middle layer shows where it hung (`crops/w5dusk2-side.jpg`).
-   - **Rough spot:** at w5dusk2-near's join, the rising log ends in a fairly abrupt point behind a fern leaf (`joins-all.jpg`). At
-     phone size it reads as the log's end. A real fix is a re-cut or repaint of that strip.
-4. **Light fits the place: pass.** World 4 is warmer and less grey (`crops-hd/w4-side.jpg`). Night and dusk keep their light.
-5. **Pokey and the cast:** not affected.
-6. **Framing:** not affected by me. The native strips' layer heights are the HD helper's change.
+1. **Painted, not drawn: pass.**
+   - Every new picture is painted on HF from the game's own strips.
+   - Where no painted sky passed, the painted far strip covers the view. No drawn gradient shows over a painted scene (`x16/7-1-up.jpg`).
+2. **Nothing copy-pasted: pass.** The native strips are tiled round their seam (A1's join is kept). The skies are inpainted round the
+   strip as a circle.
+3. **Art matches what it is: pass.**
+   - The sky continues each strip's own light (`x16/8-1-up.jpg`, `x16/3-1-up.jpg`).
+   - The w8 trees fade up into the moonlight instead of ending in a cut line.
+4. **Light fits the place: pass.** Night and cave worlds stay dark (8-1, 3-7). World 4 is warmer.
+5. **Pokey on model:** not affected.
+6. **Framing works both ways: pass, improved.** Upright shows trees and banks at the sideways size instead of a 2.2x crop of mist
+   (every `x16/*-up.jpg`).
 7. **Text:** not affected.
 8. **Every move it teaches:** not affected.
 9. **Moments:** not affected.
-10. **Motion:** not affected.
+10. **Motion:** the strips keep their parallax. Climbs: `yo` is computed at the strips' scale, and a far strip without a sky covers
+   the view at any camera height.
 
-## Seen but not mine
+## Rough spots, named
 
-- **A hard horizontal line near the top of the backdrop on 8-1** (`ingame/8-1-up.jpg`, about y 115 of 844, upright), in both
-  before and after. It's a layer's top edge: drawing code or the VI-2/VI-18 "visible strip edges".
-- **The canopy lianas** now read as pale painted vines, where they used to look like thin dark cracks (1-4, 1-8).
+- **16 skies held back.** Those sets look right upright (cover fit) but don't have the taller painted sky. A clean retry needs a
+  different method (a dedicated sky painted on its own, then joined), not more rounds of the same inpaint.
+- **A faint soft band where the sky meets the far strip on some worlds** (5-1, 1-8 at the top). It's a smooth fade, not a cut, and
+  sits under the HUD.
+- **Unchanged from before:** w5dusk2-near's join (the log ends in an abrupt point), and 8-1's layer line under the HUD sideways, which
+  belongs to the drawing code.
 
 ## Checks
 
-- `npx tsc --noEmit -p .`
-- The full suite passes: 1665 tests, 0 failures (1 known TODO).
-- `npx vite build`, with nothing over 4 MiB.
+- `npx tsc --noEmit -p .` passes.
+- Full suite with every HF-ART-BRIEF glob: see the lead message.
+- `npx vite build` passes, with nothing over 4 MiB. The largest backdrop is under 0.5 MiB.
