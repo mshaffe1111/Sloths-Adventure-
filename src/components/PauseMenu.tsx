@@ -1,3 +1,4 @@
+import { ModeChip } from './ModeChip.tsx';
 import React from 'react';
 import { sound } from '../game/audio.ts';
 import { COARSE, OrchSfxToggle, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle, DifficultySetting, DotHelpSetting } from './menuParts.tsx';
@@ -152,6 +153,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
     label="Menu"
     title="Paused"
     sub={`${levelConfig.secret ? 'Secret stage' : `Stage ${levelConfig.id}`} · ${levelConfig.name}`}
+    subChip={<ModeChip />}
     notice={<UpdateRow />}
     go={{ label: 'Resume', onClick: onResume, title: COARSE ? undefined : 'Esc', start: true }}
     skills={skills}

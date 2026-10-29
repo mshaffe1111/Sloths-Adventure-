@@ -8,6 +8,8 @@ import { getStageClue } from './stageClue.ts';
 import type { StageStats } from '../game/badges.ts';
 import { ClrChips, ClrRibbon, useShortScreen, type ChipSpec } from './ClrParts.tsx';
 import { praiseFor, totalKills } from './stageSummary.ts';
+import { ModeChip } from './ModeChip.tsx';
+import { confettiPieces, type ConfettiPiece } from './fx/confetti.ts';
 import './hud/cleared.css';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -34,12 +36,72 @@ interface StageClearedProps {
 
 const STAR_PATH = 'M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z';
 
+/** the card laid out in one column (a phone held upright): Pokey goes beside the stars, the chips in rows of three */
+const UPRIGHT = '(max-width: 640px) and (min-height: 521px)';
+function useUpright(): boolean {
+  const [on, setOn] = React.useState(() => typeof window !== 'undefined' && !!window.matchMedia?.(UPRIGHT).matches);
+  React.useEffect(() => {
+    const m = window.matchMedia?.(UPRIGHT);
+    if (!m) return;
+    const f = () => setOn(m.matches);
+    m.addEventListener?.('change', f);
+    return () => m.removeEventListener?.('change', f);
+  }, []);
+  return on;
+}
+
+/** the chips the upright card has room for (two rows of three), the ones that say most about the run first */
+const UPRIGHT_ORDER = ['Time', 'Score', 'Best', 'Your best', 'Flowers', 'Hits taken', 'Lives lost', 'Foes', 'Best combo'];
+const uprightChips = (chips: ChipSpec[]): ChipSpec[] =>
+  [...chips].sort((a, b) => UPRIGHT_ORDER.indexOf(a.label) - UPRIGHT_ORDER.indexOf(b.label)).slice(0, 6);
+
+/** sideways, seven chips share one row: the two-word labels are cut to one, so none wraps at 12 px (UI-14) */
+const SHORT_LABEL: Record<string, string> = { 'Hits taken': 'Hits', 'Best combo': 'Combo', 'Lives lost': 'Lives', 'Your best': 'Best' };
+const shortLabel = (c: ChipSpec): ChipSpec => (SHORT_LABEL[c.label] ? { ...c, label: SHORT_LABEL[c.label] } : c);
+
+const CONFETTI_PATH: Record<ConfettiPiece['kind'], React.ReactNode> = {
+  star: <path d="M12 2l2.6 6.3 6.8.6-5.2 4.4 1.6 6.7L12 16.4 6.2 20l1.6-6.7L2.6 8.9l6.8-.6z" />,
+  leaf: <ellipse cx="12" cy="12" rx="10" ry="5" />,
+  dot: <circle cx="12" cy="12" r="6" />,
+};
+
+/** the confetti: thrown once as the card opens, falling over 1.6 s (UI-3); held still where motion is turned down */
+const Confetti: React.FC<{ stars: number }> = ({ stars }) => {
+  const pieces = React.useMemo(() => confettiPieces(stars), [stars]);
+  return (
+    <div className="clr-confetti" aria-hidden="true">
+      {pieces.map((c, i) => (
+        <svg
+          key={i}
+          viewBox="0 0 24 24"
+          width={c.size}
+          height={c.size}
+          fill={c.colour}
+          className="clr-bit"
+          style={{
+            left: `${c.x}%`,
+            animationDelay: `${c.delay}ms`,
+            animationDuration: `${c.fall}ms`,
+            ['--drift' as string]: `${c.drift}vw`,
+            ['--spin' as string]: `${c.spin}deg`,
+            // (where it rests when motion is turned down: scattered down the screen, as the old still picture was)
+            ['--rest' as string]: `${8 + ((i * 37) % 84)}vh`,
+          }}
+        >
+          {CONFETTI_PATH[c.kind]}
+        </svg>
+      ))}
+    </div>
+  );
+};
+
 const fmtTime = (s: number) => `${Math.floor(Math.round(s) / 60)}:${String(Math.round(s) % 60).padStart(2, '0')}`;
 
 /** The stage-cleared card: celebrate, show the result, the next clue, then where to go (next, previous, again, map). */
 export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEarned, timeSec, score, newBest, bestScore, stats, prevId, nextId, onNext, onPrev, onReplay, onOpenMap }) => {
   const secret = !!levelConfig.secret;
   const short = useShortScreen();
+  const upright = useUpright();
 
   // the stars ring in one after another as the card appears
   React.useEffect(() => {
@@ -68,26 +130,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
   return (
     <div className="clr-scrim select-none">
       <GhostOnExit />
-      <svg className="clr-confetti" viewBox="0 0 960 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <g fill="#fbbf24">
-          <path d="M120 120l5 10 11 1-8 8 2 11-10-6-10 6 2-11-8-8 11-1z" />
-          <path d="M850 170l4 8 9 1-6 6 1 9-8-5-8 5 1-9-6-6 9-1z" />
-          <path d="M90 520l4 8 9 1-6 6 1 9-8-5-8 5 1-9-6-6 9-1z" />
-          <path d="M870 520l4 8 9 1-6 6 1 9-8-5-8 5 1-9-6-6 9-1z" />
-        </g>
-        <g fill="#34d399">
-          <ellipse cx="190" cy="70" rx="9" ry="4.5" transform="rotate(-30 190 70)" />
-          <ellipse cx="790" cy="90" rx="9" ry="4.5" transform="rotate(35 790 90)" />
-          <ellipse cx="880" cy="400" rx="9" ry="4.5" transform="rotate(-20 880 400)" />
-          <ellipse cx="60" cy="300" rx="9" ry="4.5" transform="rotate(25 60 300)" />
-        </g>
-        <g fill="#f472b6">
-          <circle cx="260" cy="40" r="5" />
-          <circle cx="720" cy="40" r="5" />
-          <circle cx="910" cy="300" r="5" />
-          <circle cx="50" cy="420" r="5" />
-        </g>
-      </svg>
+      <Confetti stars={secret ? 3 : starsEarned} />
 
       <div className="clr-card clr-won" role="dialog" aria-label="Stage cleared">
         <ClrRibbon title={secret ? 'THORNBARK IS FREE!' : 'STAGE CLEARED!'} />
@@ -100,8 +143,13 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
 
         <div className="clr-main">
           <div className="flex flex-col items-center gap-1">
-            <div className="clr-stage">{secret ? 'Secret stage' : `Stage ${levelConfig.id}`} &middot; {levelConfig.name}</div>
+            <div className="clr-stage">
+              {secret ? 'Secret stage' : `Stage ${levelConfig.id}`} &middot; {levelConfig.name} <ModeChip />
+            </div>
             {!secret && (
+              <div className="clr-starrow">
+              {/* (upright the hero column is gone, so Pokey stands here, beside his stars: UI-1) */}
+              {upright && <HeroPose frame={pose} height={96} maxWidth={84} className={`clr-pose clr-mini s${starsEarned}`} label={poseLabel} />}
               <div className="clr-stars" role="img" aria-label={`${starsEarned} of 3 stars`}>
                 {[1, 2, 3].map((s) => {
                   const on = s <= starsEarned;
@@ -112,6 +160,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
                     </svg>
                   );
                 })}
+              </div>
               </div>
             )}
           </div>
@@ -129,8 +178,9 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
               { label: 'Score', value: score.toLocaleString(), colour: '#fde68a' },
               { label: newBest ? 'Best' : 'Your best', value: newBest ? 'New!' : bestScore.toLocaleString(), colour: '#6ee7b7' },
             ];
-            // on a phone held sideways everything goes in one row to save height
-            return short ? <ClrChips chips={[...main, ...extra]} small /> : (
+            // on a phone held sideways everything goes in one row to save height; upright, two rows of three (UI-1)
+            if (upright) return <ClrChips chips={uprightChips([...main, ...extra])} cols={3} />;
+            return short ? <ClrChips chips={[...main, ...extra].map(shortLabel)} small /> : (
               <>
                 <ClrChips chips={main} />
                 {extra.length > 0 && <ClrChips chips={extra} small />}

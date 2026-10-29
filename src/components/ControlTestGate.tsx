@@ -136,7 +136,7 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
           <label className="text-base font-black" htmlFor="ctest-name">
             Your name or a nickname
           </label>
-          <span className="rounded-full bg-[#f2c14e]/20 px-2 py-0.5 text-[11px] font-black uppercase tracking-wider text-[#f2c14e]">Required</span>
+          <span className="rounded-full bg-[#f2c14e]/20 px-2 py-0.5 text-xs font-black uppercase tracking-wider text-[#f2c14e]">Required</span>
         </div>
         <input
           id="ctest-name"
@@ -294,7 +294,7 @@ export const RecordingBadge: React.FC<{ onDone?: () => void }> = ({ onDone }) =>
       className="fixed left-1/2 z-[55] flex -translate-x-1/2 items-center gap-2"
       style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 6px)' }}
     >
-      <div className="pointer-events-none flex items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-bold text-white" aria-label="Recording">
+      <div className="pointer-events-none flex items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-xs font-bold text-white" aria-label="Recording">
         <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
         REC{state === 'blocked' ? ' · not sending from this link' : ''}
       </div>

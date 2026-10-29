@@ -28,6 +28,7 @@ export const JournalDemo: React.FC<{ demo: DemoId; label: string; className?: st
       if (c.width !== w || c.height !== h) {
         c.width = w;
         c.height = h;
+        ctx.imageSmoothingQuality = 'high';
       }
       const sec = (now - t0) / 1000;
       const t = still ? len * 0.55 : sec % len;

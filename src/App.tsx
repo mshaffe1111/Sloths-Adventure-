@@ -2,6 +2,8 @@ import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { GameScreen, LevelConfig, BossEntity } from './game/types.ts';
 import { generateAllLevels } from './game/worldsData.ts';
+import { mergeBest, type StageBest } from './game/stageBest.ts';
+import { runDifficulty, startRun } from './game/difficulty.ts';
 import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
 import { enterWorld } from './game/atlasLoader.ts';
@@ -532,6 +534,21 @@ export default function App() {
     };
   }
 
+  // dev only: the stage-cleared card for a stage with this many stars, as if it had just been won (for screenshots)
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __win?: (id: string, stars: number) => void }).__win = (id: string, stars: number) => {
+      const lvl = allLevels.find((l) => l.id === id);
+      if (!lvl) return;
+      setActiveLevel(lvl);
+      setStarsEarned(stars);
+      setClearTime(154);
+      setScore(4210);
+      setNewBest(true);
+      setLastStats({ win: true, stars, livesLost: 0, heartsLost: 1, floraTotal: 36, floraCollected: 31, timeSec: 154, timeLimit: 300, maxStompChain: 2, maxCombo: 3, stomps: 4, kills: { snake: 3, frog: 2 }, seen: [], id } as StageStats);
+      setScreen('victory');
+    };
+  }
+
   // dev only: show the new-medal toast for these medal ids (for screenshots)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __medals?: (ids: string[]) => void }).__medals = (ids: string[]) => setFreshBadges(BADGES.filter((b) => ids.includes(b.id)));
@@ -601,6 +618,8 @@ export default function App() {
     // the stage's picture sheets, loaded and decoded behind the menu (stagePreload.ts): what is still on its way gets a moment more,
     // so the first frames of play are not the browser decoding a 10 to 20 MB sheet (QA's 376 to 472 ms freezes as a stage began)
     const seq = ++launchSeq.current;
+    // (the mode this run is played on: a change in the menu applies from the next stage, so this is the one its results are kept with)
+    startRun();
     void readyToStart(lvl, canvasRef.current, inPlay).then(() => {
       if (seq !== launchSeq.current) return;
       // Slight delay to allow canvas element mounting
@@ -722,7 +741,7 @@ export default function App() {
   const saveLevelProgress = (id: string, stars: number, lvlScore: number, bestTime: number) => {
     try {
       // keep the player's best: a worse replay must never overwrite a better stored result
-      let prevStored: { stars?: number; highScore?: number; bestTime?: number } = {};
+      let prevStored: Partial<StageBest> = {};
       try {
         const raw = localStorage.getItem(`sloth_lvl_${id}`);
         const parsed = raw ? JSON.parse(raw) : null;
@@ -734,13 +753,8 @@ export default function App() {
       const prevScore = typeof prevStored.highScore === 'number' ? prevStored.highScore : 0;
       setNewBest(lvlScore > prevScore);
       setBestScore(Math.max(prevScore, lvlScore));
-      const prevTime = typeof prevStored.bestTime === 'number' && prevStored.bestTime > 0 ? prevStored.bestTime : 0;
-      const saved = {
-        completed: true,
-        stars: Math.max(prevStored.stars ?? 0, stars),
-        highScore: Math.max(prevStored.highScore ?? 0, lvlScore),
-        bestTime: prevTime === 0 ? bestTime : bestTime > 0 ? Math.min(prevTime, bestTime) : prevTime,
-      };
+      // (each best is kept with the mode it was set on: stageBest.ts, LV-1)
+      const saved = mergeBest(prevStored, { stars, score: lvlScore, time: bestTime }, runDifficulty());
       localStorage.setItem(`sloth_lvl_${id}`, JSON.stringify(saved));
       askToKeepStorage();
       setNewSkills(newlyLearned(id, skillsBefore));

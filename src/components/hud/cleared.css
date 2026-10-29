@@ -26,3 +26,24 @@
   .clr-scrim > .clr-card.clr-won .clr-btn2 { min-height: 44px; font-size: 13px; gap: 4px; padding: 0 4px; white-space: nowrap; }
   .clr-scrim > .clr-card.clr-won .clr-btn2 svg { width: 15px; height: 15px; flex: none; }
 }
+
+/* the confetti (UI-3): thrown once as the card opens, each piece falling and spinning off the bottom; held still where motion is off */
+/* (in front of the card: sideways the card fills the screen and the pieces fell unseen behind it; it never takes a tap) */
+.clr-confetti { position: fixed; z-index: 5; overflow: hidden; pointer-events: none; }
+.clr-bit { position: absolute; top: -40px; animation-name: clr-fall; animation-timing-function: cubic-bezier(0.45, 0.05, 0.75, 0.6); animation-fill-mode: both; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.25)); }
+@keyframes clr-fall {
+  from { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  85% { opacity: 1; }
+  to { transform: translate(var(--drift), calc(100vh + 80px)) rotate(var(--spin)); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* (held still, the pieces stay behind the card, where they never sit on the words) */
+  .clr-confetti { position: absolute; z-index: 0; }
+  .clr-bit { animation: none; top: var(--rest); opacity: 0.85; }
+}
+
+/* upright (UI-1): Pokey, 96 px, beside his stars */
+.clr-starrow { display: flex; align-items: flex-end; justify-content: center; gap: 10px; }
+.clr-starrow .clr-mini { flex: none; margin-bottom: -2px; }
+@media (max-width: 640px) and (min-height: 521px) { .clr-won .clr-chip span { letter-spacing: 0.3px; white-space: nowrap; } }
+@media (max-height: 520px) { .clr-chips.sm .clr-chip span { white-space: nowrap; letter-spacing: 0.4px; } }
