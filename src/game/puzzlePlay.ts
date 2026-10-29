@@ -574,14 +574,14 @@ export class KitPlay {
 
   /**
    * World 8's room pieces as light sources, for the darkness's drawing only (STAGE-RULES §4: in the dark every obstacle carries its own
-   * light): each glow-mushroom pad glows (brighter held down), a lamp hangs by each bark door, and a shut moonflower bud gleams faintly.
+   * light): each glow-mushroom pad glows (dimmer held down, sunk into the bark), a lamp hangs by each bark door, and a shut moonflower bud gleams faintly.
    * Never part of lights(): they light no hidden ledge and open no moonflower, so the rooms play as the checker proves them.
    */
   decorLights(): Array<{ x: number; y: number; r: number }> {
     const out: Array<{ x: number; y: number; r: number }> = [];
     if (this.look.world !== 8) return out;
     for (const room of this.rooms) {
-      for (const pl of room.plates) out.push({ x: pl.x, y: pl.y - 16, r: 95 + 45 * pl.show });
+      for (const pl of room.plates) out.push({ x: pl.x, y: pl.y - 16 + 8 * pl.show, r: 95 - 40 * pl.show });
       for (const g of room.gates) out.push({ x: g.x, y: g.y - KIT.doorH * 0.6, r: 150 });
       for (const m of room.moons) if (m.show < 0.98) out.push({ x: m.x, y: m.y - 40, r: 70 });
       for (const s of room.sources) out.push({ x: s.x, y: s.y - 20, r: 80 });
@@ -1737,8 +1737,9 @@ export class KitPlay {
           drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + 6, { w: pw * 1.5, h: ph * 0.7 });
           if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
         }
-        // (World 8: the glow-mushroom pad of Matt's W8 sheet, pressed flat into the bark when held down)
-        const drew = (this.look.world === 8 && drawW8Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6, 52)) || (stoneP
+        // (World 8: the glow-mushroom pad of Matt's W8 sheet: held down, it sinks into the bark and its glow dims, so it never reads as a
+        // bounce pad)
+        const drew = (this.look.world === 8 && drawW8Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + 7 * pl.show, 52 - 8 * pl.show)) || (stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
           : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph }));
         ctx.restore();
