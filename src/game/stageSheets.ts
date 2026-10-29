@@ -72,6 +72,7 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '5-3': ['foe:spider'],
   '5-4': ['foe:spider'],
   '5-5': ['foe:spider'],
+  '6-8': ['foe:frog', 'foe:tayra'], // Stilt Climb (w6Stages.ts): its animals
   '5-7': ['foe:spider'],
   '5-9': ['foe:spider'],
 };
