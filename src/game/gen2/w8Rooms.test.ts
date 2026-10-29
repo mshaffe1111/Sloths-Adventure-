@@ -1,7 +1,9 @@
 /**
- * World 8's puzzle rooms (gen2/worlds/w8Rooms.ts): the validator (puzzleCheck.ts, through levelCheck) solves each on Normal and Easy and
- * fails it without its key pieces; none can be walked past; each fits an upright phone at half scale; and each is played through in the
- * real engine, upright and sideways, on Normal and Easy, with no heart or life lost:
+ * World 8's three puzzle rooms (gen2/worlds/w8Rooms.ts): the validator (puzzleCheck.ts, through levelCheck) solves each on Normal and Easy
+ * and fails it without its key pieces; none can be walked past; each fits an upright phone at half scale; and each is played through in
+ * the real engine, upright and sideways, on Normal and Easy, with no heart or life lost:
+ *   the hammock room  the leaf door shut while the hammock is up; the lever lifts it with him on it; the stone from the fork to the
+ *                     plate; the lever again, the hammock down, through (Easy: the plate alone opens it)
  *   the pads room   the bark door shut; up the branch steps that show in the lantern's light; a pinecone from the bough down to the
  *                   first glow pad; standing on the second opens the door only while he stands there; a second pinecone, and through
  *                   (Easy: one pad, one pinecone)
@@ -20,14 +22,16 @@ import { RealPlay, type Pad } from '../realPlay.ts';
 import { setDifficulty, type Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
 import type { SectionTemplate } from './types.ts';
-import { M8, roomStage, RUNWAY } from './w8Harness.ts';
-import { MOON, moonRoom, moonRoomEasy, PADS, padsRoom, padsRoomEasy, roomFor, W8_REQUIRED, W8_ROOM_SECTIONS, W8R_NEW_LINES, W8R_ROOM_HINTS, W8R_STAGE, withW8Rooms } from './worlds/w8Rooms.ts';
+import { roomStage, RUNWAY } from './w6Harness.ts';
+import { RAFT_RISE, WATER } from './worlds/w6Rooms.ts';
+import { W8_REQUIRED } from './worlds/w8Game.ts';
+import { hammockRoom, hammockRoomEasy, MOON, moonRoom, moonRoomEasy, PADS, padsRoom, padsRoomEasy, roomFor, W8_ROOM_SECTIONS, W8_ROOM_STAGES, W8R_NEW_LINES, W8R_ROOM_HINTS, W8R_STAGE, w8RoomsFor } from './worlds/w8Rooms.ts';
 
 const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
 /** each room's key pieces: without them its way on never opens */
-const KEY: Record<string, string[]> = { pads: ['source', 'item'], moon: ['source', 'item'] };
+const KEY: Record<string, string[]> = { hammock: ['source', 'item'], pads: ['source', 'item'], moon: ['source', 'item'] };
 
-test('the rooms: the checker solves each, Normal and Easy; each fails without its key pieces (the pads room without the lantern, or with one pinecone on Normal)', () => {
+test('the rooms: the checker solves each, Normal and Easy; each fails without its key pieces (the hammock without its lever, the pads room without the lantern, or with one pinecone on Normal)', () => {
   for (const t of W8_ROOM_SECTIONS) {
     for (const d of ['normal', 'easy'] as const) {
       const st = roomStage(roomFor(t, d), d);
@@ -44,8 +48,13 @@ test('the rooms: the checker solves each, Normal and Easy; each fails without it
   // (Normal: one pinecone is one pad; he can stand on the other, but the door shuts as he steps off it)
   const one = roomStage(padsRoom, 'normal', (p) => p.id !== 's1-cone2');
   assert.ok(validateStage(one).errors.some((e) => e.startsWith('room s1-pads:')), 'Normal solved with one pinecone');
+  // (with no lever the hammock never rises: the stone on the fork is out of reach, on Easy too)
+  for (const t of [hammockRoom, hammockRoomEasy]) {
+    const noLever = roomStage(t, 'normal', (p) => p.kind !== 'lever');
+    assert.ok(validateStage(noLever).errors.some((e) => e.startsWith('room s1-hammock:')), 'solved without the lever');
+  }
   // (Easy's rooms are the same sections, their pieces in the same places but the moonflower's stem)
-  for (const [n, e] of [[padsRoom, padsRoomEasy], [moonRoom, moonRoomEasy]] as const) {
+  for (const [n, e] of [[hammockRoom, hammockRoomEasy], [padsRoom, padsRoomEasy], [moonRoom, moonRoomEasy]] as const) {
     assert.equal(e.id, n.id);
     assert.deepEqual(e.pieces, n.pieces);
     assert.deepEqual(e.room!.pieces.map((p) => p.id), n.room!.pieces.map((p) => p.id));
@@ -68,6 +77,17 @@ test('the rooms: none can be walked past, each fits an upright phone, each has a
     assert.ok(floorB.y - wall.y > DOUBLE_RISE + 20, `${t.id}: the trunk is ${floorB.y - wall.y} px over floor B`);
     const bough = Math.min(...st.platforms.filter((p) => p.x > RUNWAY && p.y < G - 100 && p.x + p.width < door.x).map((p) => p.y));
     assert.ok(bough - wall.y > DOUBLE_RISE + 20, `${t.id}: the trunk is ${bough - wall.y} px over the bough`);
+  }
+  // the hammock: its fork is out of a double jump from floor A, level with the hammock risen; the door out of reach from it risen
+  {
+    const st = roomStage(hammockRoom, 'normal');
+    const wall = st.platforms.find((p) => p.id === kitPlatId(0, 's1-door', 1))!;
+    const raft = st.platforms.find((p) => p.id === kitPlatId(0, 's1-hammock', 0))!;
+    const shelf = st.platforms.find((p) => p.id === (st.room.pieces.find((q) => q.id === 's1-pile') as { at: Anchor }).at.on)!;
+    assert.ok(raft.y - RAFT_RISE - wall.y > DOUBLE_RISE + 10, 'out of reach from the hammock risen');
+    assert.equal(shelf.y, G - WATER.shelfUp);
+    assert.ok(WATER.shelfUp > DOUBLE_RISE + 20);
+    assert.equal(raft.y - RAFT_RISE, shelf.y, 'risen, the hammock is level with the fork');
   }
   // the pads room's bough is out of a double jump from the floor
   assert.ok(PADS.boughUp > DOUBLE_RISE + 20);
@@ -92,17 +112,17 @@ test('the rooms: none can be walked past, each fits an upright phone, each has a
   for (const [a, b] of Object.values(W8R_ROOM_HINTS)) assert.ok(words(a) < 10 && words(b) < 10, `${a} / ${b}`);
 });
 
-test('each stage\'s kit holds its own room and no other (8-3 the pads, 8-5 the moonflower), once; each required on every roll', () => {
+test('each stage\'s kit holds its own room and no other (8-2 the hammock, 8-3 the pads, 8-5 the moonflower), Easy\'s on Easy; each required on every roll', () => {
   for (let st = 1; st <= 9; st++) {
-    const kit = withW8Rooms(withW8Rooms({ manifest: M8 }, st), st);
     const want = W8_ROOM_SECTIONS.filter((s) => W8R_STAGE[s.id] === `8-${st}`).map((s) => s.id);
-    assert.deepEqual(kit.manifest.sections.map((s) => s.id), want, `8-${st}`);
+    assert.deepEqual(w8RoomsFor(st).map((s) => s.id), want, `8-${st}`);
+    for (const s of w8RoomsFor(st)) assert.ok(W8_REQUIRED[`8-${st}`].some((r) => r.section === s.id), `8-${st}: ${s.id} is not required`);
   }
-  assert.deepEqual(Object.values(W8R_STAGE).sort(), ['8-3', '8-5']);
-  assert.deepEqual(W8_REQUIRED, { '8-3': [{ section: padsRoom.id }], '8-5': [{ section: moonRoom.id }] });
-  // (Easy's kit holds Easy's room)
-  assert.equal(withW8Rooms({ manifest: M8 }, 3, 'easy').manifest.sections[0], padsRoomEasy);
-  assert.equal(withW8Rooms({ manifest: M8 }, 5, 'easy').manifest.sections[0], moonRoomEasy);
+  assert.deepEqual(Object.values(W8R_STAGE).sort(), [...W8_ROOM_STAGES]);
+  assert.deepEqual([...W8_ROOM_STAGES], ['8-2', '8-3', '8-5']);
+  assert.equal(w8RoomsFor(2, 'easy')[0], hammockRoomEasy);
+  assert.equal(w8RoomsFor(3, 'easy')[0], padsRoomEasy);
+  assert.equal(w8RoomsFor(5, 'easy')[0], moonRoomEasy);
 });
 
 // ───────────────────────────── each room in the real engine ─────────────────────────────
@@ -176,6 +196,81 @@ const SCREENS = [['sideways', 844, 390], ['upright', 390, 844]] as const;
 
 for (const d of ['normal', 'easy'] as const) {
   for (const [name, w, h] of SCREENS) {
+    test(`the hammock room in the real engine (${d}, ${name}): the lever lifts the hammock, the stone to the plate, the hammock down, through the leaf door`, () => {
+      const { sim, kit, st } = play(hammockRoom, d, w, h);
+      const lives = sim.e.lives;
+      const hp = sim.p.hp;
+      const r = kit.rooms[0];
+      const door = r.gates[0];
+      const raft = r.lifts[0];
+      const lever = r.levers[0];
+      const pl = (id: number) => st.platforms.find((p) => p.id === id)!;
+      const floorA = pl(st.room.left.on);
+      const shelf = pl((st.room.pieces.find((p) => p.id === 's1-pile') as { at: Anchor }).at.on);
+      const floor2 = pl(st.room.beyond.on);
+      assert.equal(door.open, false, 'the root door is shut to start with');
+      // the door can't be jumped from floor B's foot
+      walkTo(sim, at(st, 'door') - 120);
+      for (let k = 0; k < 3; k++) {
+        sim.frame({ right: true, press: true });
+        for (let i = 0; i < 8; i++) sim.frame({ right: true, jump: true });
+        sim.frame({ right: true, press: true });
+        for (let i = 0; i < 20; i++) sim.frame({ right: true, jump: true });
+      }
+      sim.wait(1);
+      assert.ok(sim.p.x < door.wall.x, `the door is shut to him (${sim.p.x.toFixed(0)})`);
+      // back through the dip to floor A, then down onto the hammock; the lever from the hammock: up with him, level
+      // with the shelf
+      walkTo(sim, raft.plat.x + raft.plat.width + 40);
+      assert.ok(stepTo(sim, floorA, -1), 'out of the well onto floor A');
+      walkTo(sim, raft.plat.x + 30, 6);
+      sim.wait(0.3);
+      walkTo(sim, raft.plat.x + 20, 4);
+      assert.equal(sim.standingOn, raft.plat.id, 'on the raft');
+      face(sim, -1);
+      tap(sim);
+      assert.equal(lever.on, true, 'the lever pulled: the hammock rises');
+      sim.wait(RAFT_RISE / KIT.windSpeed + 1);
+      assert.ok(Math.abs(sim.p.y - shelf.y) < 3, `up with the raft (${sim.p.y.toFixed(0)}, the shelf ${shelf.y})`);
+      // the root-stone from the shelf
+      walkTo(sim, at(st, 'pile') + 40);
+      face(sim, -1);
+      tap(sim);
+      assert.ok(kit.holding, 'a tap by the pile picks the stone up');
+      // down with it: across the raft and off its far end into the well, to the plate
+      walkTo(sim, at(st, 'plate') - 40);
+      sim.wait(0.5);
+      assert.ok(kit.holding, 'still holding it after the drop');
+      face(sim, 1);
+      tap(sim);
+      sim.wait(0.6);
+      assert.ok(!kit.holding);
+      assert.equal(r.plates[0].down, true, 'the stone is on the plate');
+      sim.wait(0.5);
+      if (d === 'easy') assert.equal(door.open, true, "Easy: the stone on the plate opens the door (two steps)");
+      else {
+        assert.equal(door.open, false, 'the hammock is still up: the door stays shut');
+        // out of the dip, the lever again from floor A: the hammock drops, the door opens
+        walkTo(sim, floorA.x + floorA.width + 30, 6);
+        assert.ok(stepTo(sim, floorA, -1), 'out of the well onto floor A');
+        walkTo(sim, at(st, 'rope') - 30);
+        face(sim, 1);
+        tap(sim);
+        assert.equal(lever.on, false, 'the lever back: the hammock drops');
+        sim.wait(RAFT_RISE / KIT.windSpeed + 1);
+        assert.ok(raft.level < 0.01, 'the raft is down');
+        assert.equal(door.open, true, 'hammock down, the stone on the plate: the door is open');
+      }
+      // through: down into the well, across, up onto floor B, through the door
+      walkTo(sim, at(st, 'plate') + 80);
+      assert.ok(stepTo(sim, floor2), 'up onto floor B');
+      walkTo(sim, at(st, 'door') + 120);
+      assert.ok(sim.p.x > at(st, 'door') + 100, `through the root door (${sim.p.x.toFixed(0)})`);
+      assert.equal(sim.e.lives, lives);
+      assert.equal(sim.p.hp, hp);
+      setDifficulty('normal');
+    });
+
     test(`the pads room in the real engine (${d}, ${name}): up the lantern steps, pinecones down to the glow pads, through the bark door`, () => {
       const { sim, kit, st } = play(padsRoom, d, w, h);
       const lives = sim.e.lives;
@@ -299,4 +394,3 @@ for (const d of ['normal', 'easy'] as const) {
   }
 }
 
-void KIT;

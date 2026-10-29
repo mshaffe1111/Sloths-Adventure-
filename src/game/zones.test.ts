@@ -80,9 +80,11 @@ test('every ordinary World 3 to 10 stage has its zones, and Worlds 1 and 2 have 
     // (a gen2 stage carries its world's own pieces, not the old generator's zones: World 5's proto.w5, as the hand-built 5-1..5-5 do;
     // World 6's proto.gen2.w6, with its tide flats and dark roots among the stage's zones)
     if (want && isGen2Stage(l)) {
-      const p = (s as { proto?: { w5?: unknown; gen2?: { w6?: unknown } } }).proto;
+      const p = (s as { proto?: { w5?: unknown; gen2?: Record<string, unknown> } }).proto;
       if (l.worldIndex === 5) assert.ok(p?.w5, `${l.id}: World 5's pieces`);
-      else assert.ok(p?.gen2?.w6, `${l.id}: World 6's pieces`);
+      else assert.ok(p?.gen2?.[`w${l.worldIndex}`], `${l.id}: World ${l.worldIndex}'s pieces`);
+      // (World 8 is dark: every stage holds its dark stretches among its zones)
+      if (l.worldIndex === 8) assert.ok((s.zones ?? []).some((z) => z.kind === 'dark'), `${l.id}: the dark`);
       continue;
     }
     if (want) {

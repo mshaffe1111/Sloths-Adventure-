@@ -1,54 +1,68 @@
 /**
- * Test helpers for World 8's gen2 swing sections and rooms (w8Swing.test.ts, w8SwingRoute.test.ts, w8Rooms.test.ts): a stand-in World 8
- * kit until the world's own (gen2/worlds/w8.ts, the main World 8 builder's) is on this branch, and a room's section laid alone on a stage
- * for the validator and the real engine (World 6's, w6Harness.ts roomStage, on World 8's numbers).
+ * Test helpers for World 8's gen2 stages (w8Game.test.ts, and the raw rolls while authoring): the checks every World 8 roll is held to.
  */
-import { G } from '../protoStage.ts';
-import type { Difficulty } from '../difficulty.ts';
-import type { RoomSpec } from '../puzzleKit.ts';
+import assert from 'node:assert/strict';
+import { validateStage } from '../levelCheck.ts';
+import { walkSpeed, MODEL_TYPICAL } from '../stageTime.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
-import type { LevelConfig } from '../types.ts';
-import type { CreatureDef, PropDef, SectionTemplate, WorldKit, WorldManifest } from './types.ts';
-import { roomStage as w6RoomStage } from './w6Harness.ts';
-import { W8_REQUIRED } from './worlds/w8Rooms.ts';
-import { W8S_TAG, withW8Swing } from './worlds/w8Swing.ts';
+import { FLAG_SPAN } from './pipeline.ts';
+import type { Gen2Stage } from './types.ts';
+import { W8_LESSON, W8_TIPS } from './worlds/w8.ts';
+import { W8_REQUIRED } from './worlds/w8Game.ts';
+import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
 
-/** stand-in night animals with the tags the swing sections ask for (World 6's bodies) */
-const CREATURES: CreatureDef[] = [
-  { id: 'frog', enemy: 'frog', threat: 1.5, terrain: 'flat', minGround: 120, w: 36, h: 24, hp: 1, footY: 14, tags: ['frog', W8S_TAG.small, 'topup'] },
-  { id: 'tayra', enemy: 'tayra', threat: 2.5, terrain: 'flat', minGround: 200, w: 46, h: 24, hp: 1, footY: 15, tags: ['tayra', W8S_TAG.small, W8S_TAG.hunter, 'topup'] },
-  { id: 'ocelot', enemy: 'ocelot', threat: 3, terrain: 'flat', minGround: 220, w: 48, h: 28, hp: 2, footY: 18, tags: ['ocelot', W8S_TAG.hunter, 'topup'] },
-];
-const PROPS: PropDef[] = [{ id: 'moss', tags: [W8S_TAG.scenery], w: 80, minApart: 300 }];
+export type Played = GeneratedStage & { gen2?: Gen2Stage['gen2']; proto?: Gen2Stage['proto'] };
 
-/** a stand-in World 8 manifest: what planBudget and the pipeline read (the world's own is gen2/worlds/w8.ts, on the main builder's branch) */
-export const M8: WorldManifest = {
-  world: 8,
-  name: 'Twilight Treetops',
-  moves: ['double', 'punch', 'swing', 'climb', 'rope', 'glide'],
-  ground: { y: G, bankH: 90, style: 'log' },
-  pit: 'soft',
-  pitDepth: 110,
-  corridor: { top: G - 160, bottom: G + 80, soft: 60 },
-  creatures: CREATURES,
-  props: PROPS,
-  pairs: [],
-  decor: [],
-  flowers: ['orchid'],
-  sections: [],
-  handBuilt: ['8-10'],
-};
-/** the stand-in kit for stage `stage` with the swing sections and its room, the room required on every roll (as w6Game.ts does) */
-export const w8StandInKit = (stage: number, difficulty: Difficulty = 'normal'): WorldKit => {
-  const k = withW8Swing({ manifest: M8 }, stage, difficulty);
-  return { ...k, manifest: { ...k.manifest, required: W8_REQUIRED } };
-};
+/** where Dot says a line (its first time in the stage), or nothing */
+const said = (st: Played, text: string) => (st.proto?.hints ?? []).filter((h) => h.text === text).map((h) => h.x);
 
-export const cfg = (id: string, objectiveType: LevelConfig['objectiveType']): LevelConfig => ({
-  worldIndex: 8, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType, targetCount: 1, timeLimit: 0, levelWidth: 4000, levelHeight: 900,
-  description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
-});
+/** the checks every World 8 roll is held to (also run on raw rolls while authoring: see the report) */
+export function checkW8Roll(st: Played, at: string, id: string): void {
+  for (const r of W8_REQUIRED[id] ?? []) assert.equal(st.gen2!.sections.filter((s) => s.template === r.section).length, 1, `${at}: ${r.section} once`);
+  assert.deepEqual(validateStage(st).errors, [], at);
+  // (the dark: every roll has it; Dot's line before the first dark stretch, in 8-1 where it is taught)
+  const darks = (st.zones ?? []).filter((z) => z.kind === 'dark').sort((a, b) => a.x0 - b.x0);
+  assert.ok(darks.length, `${at}: no dark`);
+  if (id === '8-1') {
+    const lit = darks.find((z) => z.lights?.length);
+    const tip = said(st, W8_TIPS[W8_LESSON.dark]);
+    assert.ok(tip.length === 1 && lit && tip[0] < lit.x0, `${at}: the dark is not taught before ${lit?.x0}`);
+  }
+  // (no water in World 8: soft falls)
+  assert.equal(st.waterY, undefined, `${at}: water`);
+  const R = pickRoute(st.config.objectiveType, st as never);
+  assert.notEqual(R.used.route.traced, 'failed', at);
+  assert.ok(R.quick.time >= 120, `${at}: ${R.quick.time.toFixed(0)} s for the quick player`);
+  const swings = R.used.route.segs.filter((s) => s.kind === 'swing');
+  for (const v of st.vines.filter((x) => x.vineType === 'swing_liana')) {
+    assert.ok(swings.some((s) => Math.min(s.x0, s.x1) <= v.x + 40 && Math.max(s.x0, s.x1) >= v.x - 40), `${at}: the liana at ${v.x} is never swung`);
+  }
+  const ws = walkSpeed(MODEL_TYPICAL);
+  const open = st.spawnX + 5 * ws - 60;
+  for (const e of st.enemies) assert.ok(e.patrolMinX > open, `${at}: a ${e.type} ${e.patrolMinX - st.spawnX} px in`);
+  assert.ok(!st.platforms.some((p) => p.type === 'fragile'), `${at}: nothing crumbles`);
+  // (the night harpy: taught in 8-8 before the first one; 8-9 takes it as known)
+  const harpies = st.enemies.filter((e) => e.type === 'harpy').map((e) => e.patrolMinX);
+  if (id === '8-8' && harpies.length) {
+    const tip = said(st, W8_TIPS[W8_LESSON.harpy]);
+    assert.ok(tip.length === 1 && tip[0] < Math.min(...harpies) - 300, `${at}: the harpy is not taught before ${Math.min(...harpies)}`);
+  }
+  if (!['8-8', '8-9'].includes(id)) assert.equal(harpies.length, 0, `${at}: a harpy outside the Monarch's hunt`);
+  // (the shut shrine, the roosts and the glides: Dot's line before the first)
+  const gate = { '8-8': W8_LESSON.hunt, '8-9': W8_LESSON.fight } as Record<string, string>;
+  if (gate[id]) assert.equal(said(st, W8_TIPS[gate[id]]).length, 1, `${at}: the shut shrine is not explained`);
+  if (id === '8-4') {
+    const roost = Math.min(...(st.proto?.watch ?? []).map((z) => z.x0));
+    const tip = said(st, W8_TIPS[W8_LESSON.roost]);
+    assert.ok(tip.length === 1 && tip[0] < roost, `${at}: the roosts are not taught before ${roost}`);
+  }
+  if (id === '8-6') {
+    const glides = st.gen2!.sections.filter((s) => s.template.startsWith('w8-glide-')).map((s) => s.x0);
+    const tip = said(st, W8_TIPS[W8_LESSON.glide]);
+    assert.ok(tip.length === 1 && tip[0] < Math.min(...glides) + 400, `${at}: the glide is not taught first`);
+  }
+  for (const v of st.vines.filter((x) => x.vineType !== 'swing_liana')) assert.equal(v.vineType, 'tree_climb', `${at}: a vine at ${v.x} that is neither a liana nor a climb`);
+  const xs = [st.spawnX, ...(st.checkpoints ?? []).map((c) => c.x).sort((a, b) => a - b), st.exitTotemX];
+  for (let k = 1; k < xs.length; k++) assert.ok(xs[k] - xs[k - 1] <= FLAG_SPAN.max, `${at}: ${xs[k] - xs[k - 1]} px with no flag`);
+}
 
-export { RUNWAY } from './w6Harness.ts';
-/** the room's section laid alone, between a runway and a bank past it, its kit pieces added (`keep`: a room with pieces taken out) */
-export const roomStage = (tpl: SectionTemplate, d: Difficulty, keep?: (p: RoomSpec['pieces'][number]) => boolean): GeneratedStage & { room: RoomSpec } => w6RoomStage(tpl, d, keep);

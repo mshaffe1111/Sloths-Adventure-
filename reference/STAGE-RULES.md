@@ -297,6 +297,15 @@ test link, the QA testers or a release until the lead has re-run them, on more t
     `jumpEdges`), and curation drops any roll with an animal by a jump (7770de7). The lesson: every rule a full-suite test holds a stage
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
+- **World 8's lianas over soft pits** (2026-10-29, the World 8 swing builder; proof `w8Swing.test.ts`, every liana swung on 40 raw rolls of
+  8-3 and 8-5). World 6 kept black water under its lianas; World 8's falls are soft, and soft back pits set two traps:
+  - *A dark stretch dropped below its lit bough floats the boughs.* The back pit's floor lies a double jump plus 40 px under the perch;
+    with the swing's bough 30 px down and the perch 80 px over it, the floor (G+175) sank past where every bough ends (the baseline,
+    G+170). Keep a dark stretch level with its lit boughs.
+  - *levelCheck's jump links pass through walls.* From the pit's floor it "jumps" through a narrow perch's trunk onto the lower bough
+    behind it (pit floor to pit floor in a chain, or to the step down after a perch), so the quick route walks under the liana: 74
+    lianas never swung in 80 rolls with 130-150 px chain perches. A perch with a lower bough behind it is 190 px or more. (The real
+    engine blocks the wall; the check and the inspector's route do not.)
 
 ## 7. Where things are
 
