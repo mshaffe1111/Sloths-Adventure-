@@ -217,6 +217,10 @@ export class InputEngine {
 
   public clearAll() {
     this.carried = null;
+    // (the engine's flags too: the input lives for the whole app, and a carving spot, a swing or a bush must not outlive their stage, CT-20)
+    this.carveSpot = false;
+    this.onSwing = false;
+    this.inCover = false;
     this.state.left = false;
     this.state.right = false;
     this.state.up = false;

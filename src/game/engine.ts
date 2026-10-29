@@ -1166,8 +1166,9 @@ export class GameEngine {
     }
     // (Meeca never kicks: a sideways flick is a run, unless her hands are full: then it throws)
     if (this.mc) this.input.kickNear = !!this.kit?.holding;
-    // (and at a trunk, a finger tracing a circle is carving, not steering: the touch controls ask)
-    if (this.mc) (this.input as { carveSpot?: boolean }).carveSpot = this.mc.carveSpot;
+    // (and at a trunk, a finger tracing a circle is carving, not steering: the touch controls ask. Every frame, on every stage: written
+    // only in Meeca's stage it stayed true after leaving her stage on a carving spot, and later stages read curved swipes as circles, CT-20)
+    (this.input as { carveSpot?: boolean }).carveSpot = !!this.mc?.carveSpot;
     // inside a bush a watcher's stretch hides him in: a slide down there hides him even mid-run (touchGestures.ts inCover)
     this.input.inCover = !!this.proto?.watch && p.grounded && (this.proto.bushes ?? []).some((b) => !b.secret && !b.hanging && p.x > b.x + 10 && p.x < b.x + b.w - 10 && Math.abs(p.y - b.y) < 10);
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
@@ -5778,6 +5779,10 @@ export class GameEngine {
     this.input.kickNear = false;
     this.input.onVine = false;
     this.input.onRope = false;
+    // (nor a swing, a bush or a carving spot: left set from the stage before, they bent her flaps, CT-20)
+    this.input.onSwing = false;
+    this.input.inCover = false;
+    (this.input as { carveSpot?: boolean }).carveSpot = false;
     this.input.megaReady = true;
     if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
     else run.lastEvents = [];
