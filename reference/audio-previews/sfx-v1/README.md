@@ -1,90 +1,80 @@
 # Sound effects v1: real sounds instead of synth pings (for Matt)
 
-> **On hold (5:50 PM ET):** some sources turned out not to be what their archive captions said (a synth drum, a pint glass, plastic bags). Every effect is being rebuilt from sources checked by their real Freesound titles and tags; these files will be replaced. Don't send them to Matt yet.
-
-**What this is.** You said the effects are "pings everywhere... like pinball", the falling rocks worst of all. This folder has the
-first old-versus-new pairs of a whole new effect set. Every new sound is a real recording (people recorded footsteps, stones, water,
-wood and wings and gave the recordings away free, no strings: the CC0 licence), cut up, layered and tuned for the game. Nothing is
-wired into the game yet. You listen first; only after your OK does it go in, and then the old synth effects are deleted.
+**What this is.** You said the effects are "pings everywhere... like pinball", the falling rocks worst of all, and that the classic set
+is crap too. This folder has old-versus-new pairs of a whole new effect set. Every new sound is cut from real recordings that people
+made and gave away free with no strings (the CC0 licence; LICENCES.md lists all 148). Each one was picked by what its recordist called
+it: "stonehit1", "RockFall1b", "Walk Stone", "Wood Steps", a marimba recorded note by note, "Tiger Growl", "Río Cadí" (a waterfall).
+Nothing is wired into the game yet. You listen first; only after your OK does it go in, and then the old synth effects are deleted.
 
 **How to listen.** Each pair is two files: `-old` is what the game plays now, `-new` is the replacement. Both are played through the
-game's own sound chain, the way a phone plays them. Headphones or the phone speaker both work; try the phone speaker too, since that's
-where the pings were worst.
+game's own sound chain, the way a phone plays them. Try the phone speaker, since that's where the pings were worst.
 
-## Batch 1 (sent first)
-
-| Pair | What you hear | What changed |
-|---|---|---|
-| `rock-single` | one rock landing | Old: a ringing "ping" thud with a bell on top. New: a low stone thud, a dry crunch, and a little grit trickling after. No ring at all. The new one also has a quiet trickle of grit 0.3 s before it lands (a warning you can hear, not only see). |
-| `rock-burst` | four rocks inside 0.7 s | Old: the pings pile up into a chord. New: four different stone takes, never the same twice, and if more than three land at once the extras are dropped. |
-| `petal-trail` | twelve petals picked up at a run | Old: bright bell notes climbing a ladder, ringing up to 10 kHz (the pinball). New: a soft, warm note (a wooden marimba tap over a muted bell tone, its bright top cut away) on eight different notes that wander instead of climbing, a little quieter, with a breath of leaves under each. |
-| `steps-moss` / `steps-wood` / `steps-stone` | ten steps at a walk | Old: one footstep for every surface. New: real footsteps, a soft pad on moss, a hollow knock on wood, a dry tap on stone, eight takes each so a walk never repeats. (Water steps are built too and come in the next batch.) |
-| `mix-4-4` | 30 s of 4-4, everything at once | The same 30 seconds of play (a bot's run of 4-4, plus the rocks the stage really drops where you pass them), old and new. Biggest change besides the rocks: 4-4's wind chimes used to borrow the vine-grab sound (the loudest effect in the game) and rang up to every 0.6 s. Now they're a soft hollow wooden clatter on a breath of wind, at most every 1.4 s. The new side also has World 4's new recorded background (batch 2); the old side has the old synthesized one. |
-
-## Batch 2
+## The pairs
 
 | Pair | What you hear | What changed |
 |---|---|---|
-| `landing` | a small hop, a jump, a long drop | Old: one landing sound turned up or down. New: three real ones (a soft pad, a thump with leaves, a heavy thump with grit), picked by how far he fell. |
-| `vine-grab` | four grabs along a liana chain | Old: a ringing note, the loudest effect in the game. New: a palm slapping bark-wrapped rope, its leaves, and the vine creaking under his weight. |
-| `steps-water` | ten steps in shallow water | New: small sloshes, six takes. |
-| `creature-hits` | four fights: an ocelot, a snake, a spider, an eagle; two light hits, a heavy one, the knock-out | Old: one shared hit with a bell on top, and synthesized calls. New: every body has its own hit (fur, scales, shell, feathers; stone for the stone and iron bosses), and every creature its own real voice when it's knocked out (a cat's yowl, a snake's hiss, an insect's scurry, a bird's squawk), then a soft fall onto the ground. 12 creatures in all; the preview has four. |
-| `boss-slam` | the boss card's name landing (SN-10) | Old: polish-audio's boss arrival (a roar and a brass sting). New: a huge low impact, the card's wood slapping down, and a far roll of thunder. No ring. |
-| `bed-w1` ... `bed-w10` | 20 s of each world's background | Old: filtered noise. New: real recordings, one per world: 1 canopy birds over a soft wind, 2 a stream, 3 a cave with drips, 4 a distant waterfall, 5 tropical birds, 6 frogs and a swamp, 7 wind over stone, 8 crickets at dusk, 9 boiling lava and a low rumble, 10 rain, wind and far thunder. Each is a 20 s loop with real one-shots (bird calls, drips, croaks, thunder) scattered at random so it never sounds like a loop. Same loudness as the old ones. |
-| `mix-1-2` | 30 s of 1-2, everything at once | The same 30 s of play, old and new, the new side with World 1's new background. |
+| `rock-single` | one rock landing | Old: a ringing "ping" with a bell on top. New: stone striking stone, a thud, and a little rubble settling after. No ring at all. Just before it lands, a quiet trickle of grit (a warning you can hear, not only see). |
+| `rock-burst` | four rocks inside 0.7 s | Old: the pings pile up into a chord. New: four different stone takes, never the same twice; if more than three land at once the extras are dropped. |
+| `petal-trail` | twelve petals at a run | Old: bright bells climbing a ladder, ringing up to 10 kHz (the pinball). New: one soft marimba note each (real wood, its bright top cut away), on eight notes that wander instead of climbing, a little quieter, with a breath of leaves. |
+| `steps-moss`, `-wood`, `-stone`, `-water` | ten steps at a walk | Old: one footstep for every surface. New: real footsteps for each (forest floor, wooden boards, stone and gravel, shallow water), 6 to 8 takes each so a walk never repeats. |
+| `landing` | a small hop, a jump, a long drop | New: a soft pad, a thump with leaves, and a heavy thump with grit, picked by how far he fell. |
+| `vine-grab` | four grabs along a liana chain | Old: a ringing note, the loudest effect in the game. New: a hand on rope, its leaves, and the rope creaking under his weight. |
+| `creature-hits` | four fights (ocelot, snake, spider, eagle): two light hits, a heavy one, the knock-out | Old: one shared hit with a bell on top. New: every body has its own hit (fur, scales, shell, feathers; stone for the stone and iron bosses), and every creature its own real voice when it's knocked out (a cat's cry, a snake's hiss, a scamper and a twig snap, an eagle's scream), then a soft fall. 12 creatures in all; the preview has four. |
+| `boss-slam` | the boss card's name landing | Old: a roar and a brass sting. New: a huge low impact, an axe biting wood, and a far roll of real thunder. No ring. |
+| `pickups` | leaf, fruit, heart, super heart, the three power-ups, relic, 1-up, the three stars | Rewards are allowed to be notes, so they are: warm marimba notes, never bells or glass. The big ones (super heart, power-ups, relic, 1-up) get a short rising figure. |
+| `menus` | tap, tap, confirm, back, pause, unpause | Wooden knocks and leaf rustles, to match the wooden HUD. |
+| `world-things` | what the game plays now for 13 things, then the new sound for each | Today these borrow other effects: a log landing plays Pokey's landing, crumbling stone plays a punch's hit, a gate plays the shrine, a vine wrapping a log plays Pokey getting hurt. New: a mushroom bounce (a soft squash that springs back up, no metal spring), a log, crumbling stone, a thorn bush, a wooden gate, and the puzzle sounds (pick up, drop, wrap, reset, press, lever, throw, stone sliding, solved). |
+| `bed-w1` ... `bed-w10` | 20 s of each world's background | Old: filtered noise. New: real places: 1 calm forest birds, 2 a brook, 3 a stone cave with drips, 4 a river and waterfall, 5 parrots in the jungle, 6 a marsh full of frogs, 7 wind in the trees, 8 a jungle at night with crickets, 9 a slow deep boil and a crackle, 10 rain and wind with far thunder. Each is a seamless 20 s loop with real one-shots (bird calls, drips, croaks, thunder) scattered at random so it never sounds like a loop. Same loudness as the old ones. |
+| `mix-4-4`, `mix-1-2` | 30 s of each stage, everything at once | The same 30 seconds of play, old and new; the new side with the world's new background. In 4-4, the wind chimes used to borrow the vine-grab sound and rang up to every 0.6 s; now they're hollow sticks knocking on a breath of wind, at most every 1.4 s. |
 
 ## The numbers (for the lead, who can't listen)
 
-All measured on the files here (tools/audio/sfxv1/measure.py):
-
-- **pitched**: how much of the sound is ringing notes (0 = none, 1 = all). Pings are 0.7 and up.
-- **hf6k**: share of the energy above 6 kHz, in %. That top end is the glitter that reads as a ping on a phone.
-- **flatness**: noise-like (high) vs tone-like (near 0).
-- **peak**: dBFS. **lufs**: loudness.
+Measured on the files here (tools/audio/sfxv1/measure.py): **pitched** is the share of the sound that is ringing notes (0 = none, 1 =
+all; pings are 0.7 and up); **hf6k** the share of energy above 6 kHz in % (the glitter that reads as a ping on a phone); **centroid**
+the brightness; **peak** in dBFS and **LUFS** the loudness. The mixes are measured on the effects alone.
 
 | Pair | pitched old → new | hf6k % old → new | centroid Hz old → new | LUFS old → new | peak old → new |
 |---|---|---|---|---|---|
-| rock-single | 0.81 → 0.00 | 3.45 → 0.28 | 573 → 780 | −16.1 → −20.7 | 0.0 → −8.1 |
-| rock-burst | 0.32 → 0.07 | 0.67 → 0.28 | 479 → 649 | −11.5 → −17.4 | 0.0 → −4.6 |
-| petal-trail | 0.89 → 0.77 | 5.11 → 0.00 | 2188 → 693 | −9.0 → −13.4 | −0.2 → −4.3 |
-| steps-moss | 0.00 → 0.00 | 1.75 → 0.31 | 760 → 861 | −18.5 → −17.4 | 0.0 → 0.0 |
-| steps-wood | 0.01 → 0.02 | 2.04 → 0.30 | 845 → 838 | −18.1 → −18.1 | 0.0 → 0.0 |
-| steps-stone | 0.00 → 0.03 | 1.71 → 0.50 | 756 → 1389 | −18.4 → −19.0 | 0.0 → −0.1 |
-| mix-4-4, effects only | 0.83 → 0.21 | 0.34 → 0.72 | 916 → 1206 | -6.7 → -14.9 | -0.0 → -0.0 |
+| rock-single | 0.76 → 0.01 | 3.24 → 0.19 | 598 → 2044 | −16.5 → −20.9 | 0.0 → −10.6 |
+| rock-burst | 0.32 → 0.01 | 0.81 → 0.27 | 493 → 1229 | −11.5 → −18.3 | 0.0 → −3.7 |
+| petal-trail | 0.89 → 0.95 | 5.28 → 0.00 | 2199 → 519 | −9.0 → −13.8 | −0.2 → −4.8 |
+| steps-moss | 0.00 → 0.02 | 2.26 → 0.33 | 900 → 610 | −17.7 → −18.0 | 0.0 → −1.0 |
+| steps-wood | 0.00 → 0.03 | 1.78 → 0.24 | 758 → 313 | −18.5 → −19.3 | 0.0 → −1.0 |
+| steps-stone | 0.00 → 0.00 | 2.25 → 0.48 | 877 → 1729 | −17.9 → −18.3 | 0.0 → −1.0 |
+| steps-water | 0.00 → 0.00 | 1.76 → 1.80 | 772 → 2518 | −18.5 → −18.8 | 0.0 → −1.0 |
+| landing | 0.00 → 0.00 | 0.14 → 0.06 | 196 → 393 | −23.6 → −22.7 | −0.1 → −4.1 |
+| vine-grab | 0.94 → 0.05 | 0.09 → 0.38 | 1082 → 654 | −5.6 → −17.3 | 0.0 → −3.0 |
+| creature-hits | 0.48 → 0.06 | 0.72 → 0.28 | 749 → 970 | −11.1 → −13.1 | 0.0 → −1.0 |
+| boss-slam | 0.34 → 0.00 | 4.46 → 0.00 | 702 → 70 | −11.4 → −12.4 | −0.4 → −2.3 |
+| pickups | 0.95 → 0.93 | 2.67 → 0.12 | 1705 → 539 | −9.9 → −11.6 | 0.0 → −1.0 |
+| menus | 0.67 → 0.01 | 8.58 → 2.83 | 2177 → 2378 | −11.7 → −12.0 | 0.0 → −1.0 |
+| world-things | 0.77 → 0.10 | 1.25 → 0.30 | 814 → 756 | −10.8 → −19.0 | 0.0 → −1.7 |
+| mix-4-4, effects only | 0.83 → 0.17 | 0.37 → 0.24 | 819 → 932 | −7.1 → −15.3 | 0.0 → −1.0 |
+| mix-1-2, effects only | 0.43 → 0.10 | 1.31 → 0.19 | 774 → 713 | −13.6 → −16.7 | 0.0 → −1.0 |
 
-| landing | 0.08 → 0.05 | 0.15 → 0.04 | 231 → 363 | −22.5 → −25.0 | −0.1 → −7.9 |
-| vine-grab | 0.94 → 0.00 | 0.09 → 0.19 | 1084 → 689 | −5.6 → −16.9 | 0.0 → −0.2 |
-| steps-water | 0.00 → 0.00 | 2.37 → 0.03 | 913 → 675 | −17.8 → −18.7 | 0.0 → 0.0 |
-| creature-hits | 0.49 → 0.14 | 0.75 → 0.20 | 705 → 611 | −11.0 → −12.4 | 0.0 → 0.0 |
-| boss-slam | 0.29 → 0.01 | 3.95 → 0.07 | 640 → 596 | −11.3 → −12.1 | −0.3 → −1.4 |
-| mix-1-2, effects only | 0.44 → 0.09 | 1.39 → 0.50 | 818 → 1050 | −13.7 → −16.4 | 0.0 → 0.0 |
+- The **petals and pickups stay "pitched" on purpose**: they're rewards, the one place a note belongs. They are now warm wood (centroid
+  ~520–540 Hz instead of 1700–2200) with nothing above 6 kHz.
+- **Plays per minute** in the mixes: 4-4 old 276, new 260; 1-2 old 238, new 236. The 4-4 wind chime alone went from 48 a minute to
+  about 22, and it's no longer the vine-grab note.
+- **The beds** match the old loudness within 0.3 LU. The old beds are mostly a low rumble (centroids 61–414 Hz in six worlds) or
+  bright hiss (Worlds 2, 4 and 10: 24–26% of their energy above 6 kHz). The new ones are real places in between (2–6% above 6 kHz
+  where birds, rain or water live there).
+- **Peaks**: the new side now passes through polish-audio's −1 dBFS master ceiling (merged in), so new mixes peak at −1.0; the old
+  side was rendered on the branch before that ceiling.
+- **Loudness**: each new sound is set to where the loudness plan (SN-2) put the old one it replaces, by rendering both through the
+  game's chain (tools/audio/sfxv1/calib.py). Three deliberate exceptions: the rock 3 dB under the old hit, the petals 3 dB under the old
+  flower, and the vine grab well under the old one, which plays at −6 LUFS (the loudest thing in the game).
 
-The beds are matched in loudness to the old ones (within 0.3 LU). Their numbers are in numbers.json; the old beds are mostly low
-rumble (centroids 73–435 Hz in five worlds) or bright hiss (Worlds 2, 4 and 10: 24–27% of their energy above 6 kHz). The new ones sit
-between. World 5's birds keep 5% above 6 kHz because birdsong lives there.
-
-The petals stay "pitched" on purpose: they're a reward, so they're the one thing allowed to be a note. They're now warm (centroid
-~690 Hz instead of ~2200) with nothing above 6 kHz. Plays per minute in the 4-4 mix: old 272, new 256. The wind chime alone went from
-48 a minute in this run to 22, and it's no longer a bell.
-
-numbers.json has every figure for every file, including the 4-4 mix with its background sound.
+numbers.json has every figure for every file, including the mixes with their backgrounds. EFFECTS.md lists every effect in the game,
+how often it plays per minute in ten stages and a boss, and what replaces it.
 
 ## What's honest to know
 
-- **The game's own sound chain pushes peaks to 0 dBFS**, old and new alike: every footstep pair peaks at 0.0 after the chain's
-  compressor and soft clipper. The new files themselves peak at −1 dBFS or under. The chain is shared with the music, so that's for
-  the music helper (polish-audio) and the lead, not changed here.
-- **Most source recordings stop at about 8 kHz** (they come from a 16 kHz archive). That suits a dull, non-pinging top, but rustles
-  and splashes have a little less air than a full-band recording would.
-- **The 4-4 mix comes from a bot's run.** It jumps and swings more than a person; a third of its punches were kept.
-- **Creature voices are real animals from the free archive**, not made for a cartoon: a house cat's yowl stands in for the ocelot, a
-  big cat's growl for the jaguar, a pig-like grunt for the caiman's back-up take. If any one doesn't fit, I can make a replacement with
-  Stable Audio Open once Matt presses "Agree" on its Hugging Face page (it's gated). One ocelot take is a real meow, so it measures as
-  a note; it's a voice, not a ping.
-- **Effects still to build** (they don't change the picture, so they come after your OK, before anything's wired in): the pickups
-  other than petals (leaf, fruit, heart, super heart, power-ups, relic, 1-up), Pokey's hurt, the tree climb, the menu taps, the
-  predator warnings, the 12 puzzle sounds, the mushroom bounce, logs, crumbling stone, thorns and gates. EFFECTS.md lists every
-  effect, how often it plays, and what replaces it.
-- **Levels**: each new sound is set to where the loudness plan (SN-2) put the old one it replaces. Three exceptions: the rock is
-  3 dB under the old hit, the petals 3 dB under the old flower, and the vine grab doesn't copy the old one, which plays at −7 LUFS
-  (the loudest effect in the game, louder than the checkpoint).
+- **Most source recordings stop at about 8 kHz** (they come from a 16 kHz archive). That suits a dull, non-pinging top; rustles,
+  splashes and birds have a little less air than a full-band recording would.
+- **Creature voices are real animals**, not made for a cartoon: a house cat's cry stands in for the ocelot, a tiger's growl for the
+  jaguar, a lion for the bosses, a pig's grunt pitched down for the caiman (no usable crocodile was in the free archive), a rat's squeak
+  for the tayra. If one doesn't fit, I can replace it with Stable Audio Open once you press "Agree" on its Hugging Face page (it's gated).
+- **The mixes come from a bot's run.** It jumps and swings more than a person; a third of its punches were kept.
+- **Not built yet**: the predator warnings (ocelot, jaguar, boa, caiman and tayra calls before they pounce) and each boss's own roar,
+  which Build 1 owns (SN-4). They'll use the same animal recordings as the knock-outs.
