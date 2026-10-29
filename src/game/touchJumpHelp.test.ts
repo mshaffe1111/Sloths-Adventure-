@@ -265,12 +265,12 @@ function runStart(assist: boolean, x0: number, speed: number): number {
   return first;
 }
 
-test('a lone finger on the right half starts the run quickly (it used to wait 210 ms)', () => {
+test('a lone finger on the right half starts the run quickly (it used to wait 210 ms), with Jump help on or off (CT-8)', () => {
   for (const speed of [0.2, 0.3, 0.5]) {
-    const now = runStart(true, 600, speed);
-    const old = runStart(false, 600, speed);
-    assert.ok(now > 0 && now <= 110, `at ${speed} px/ms: ${now} ms`);
-    assert.ok(old >= 200, `the old wait was ${old} ms`);
+    for (const assist of [true, false]) {
+      const now = runStart(assist, 600, speed);
+      assert.ok(now > 0 && now <= 110, `at ${speed} px/ms, Jump help ${assist ? 'on' : 'off'}: ${now} ms`);
+    }
   }
 });
 
@@ -322,8 +322,8 @@ test('a second thumb on the right never takes over the steering while the first 
   assert.equal(t.count('move:left'), 0);
 });
 
-test('with jump help off the right half waits as before', () => {
-  assert.ok(runStart(false, 600, 0.5) >= 200);
+test('CT-8: with jump help off the right half no longer waits the 210 ms', () => {
+  assert.ok(runStart(false, 600, 0.5) <= 110);
 });
 
 /**
