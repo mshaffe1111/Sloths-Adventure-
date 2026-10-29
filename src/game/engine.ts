@@ -5545,7 +5545,7 @@ export class GameEngine {
         }
       }
       // the puzzle kit's glowing things (World 3's mushroom), carried or set down
-      for (const l of this.kit?.lights() ?? []) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
+      for (const l of [...(this.kit?.lights() ?? []), ...(this.kit?.decorLights() ?? [])]) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
       // every flower and leaf glows a little, so a reward is never lost in the dark
       for (const c of this.collectibles) {
         if (c.collected || (c.type !== 'flower' && c.type !== 'leaf')) continue;
