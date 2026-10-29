@@ -790,7 +790,10 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     });
     k.beat('Finish', () => {
       let n = 0;
-      const target = k.EXPERT_SECONDS - 2 + (flavour === 'islands' ? 10 : 0);
+      // (LV-15, polish report 2026-10-29: 2-4 ran about 8 minutes for a first play. The kit's clock under-counts the swings and the logs,
+      // so the long-swing flavours finish sooner: about 2:25-2:30 for a quick player on every flavour, the islands as they were)
+      const trim: Record<string, number> = { islands: 10, reeds: -14, ponds: -32, chains: -38 };
+      const target = k.EXPERT_SECONDS - 2 + (trim[flavour] ?? 0);
       while (k.expert < target && n < 18) {
         cross.step(turns.next(), n, turns.kinds);
         if (++n % 2 === 0) k.flag();

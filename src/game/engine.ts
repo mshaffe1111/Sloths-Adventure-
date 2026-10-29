@@ -6802,10 +6802,12 @@ export class GameEngine {
             p.squashY = 0.75;
             p.invincibleTimer = Math.max(p.invincibleTimer, 1);
             this.camera.trauma = Math.min(1, this.camera.trauma + 0.25);
-            if (!tipHeard(id, 'vine:freeze')) {
+            // (the swat says why, in Dot's own words for a lash: a warning lost behind another line leaves it unexplained)
+            const key = flying ? 'vine:hitAir' : 'vine:hit';
+            if (!tipHeard(id, key)) {
+              markTipHeard(id, key);
               markTipHeard(id, 'vine:freeze');
-              this.vineWarnAt = this.gameTime;
-              this.guide(flying ? 'A thorn vine is stirring! Hang on to your liana until it sleeps' : 'A vine is stirring! Freeze until it goes back to sleep', 3.2);
+              this.guide(flying ? 'Ouch! Hang on to your liana while a thorn vine looks, and let go while it sleeps' : 'Ouch! When a vine opens an eye, stand still, or duck', 3.4);
             }
             continue;
           }

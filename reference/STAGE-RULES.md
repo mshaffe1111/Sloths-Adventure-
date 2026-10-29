@@ -346,6 +346,22 @@ plan); never ship the rough version as finished.
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
 
+- **A warning worded like a move tip was dropped** (LV-8, 2026-10-29): "Careful, water! Flick up and over." read as a jump tip, and the
+  guide drops a move tip for a move he has already done, so the water warning went unsaid on any stage where he had jumped once (gen2's
+  too). Warnings are danger lines by their words (`dotGuide.ts classifyLine`); check a new warning reaches the screen in the first-timer's
+  Dot log, not only that it is in the stage.
+- **A stage's own tip can expire behind its opening line** (3-5, 3-7: the thorn vine's teaching line waited behind the story line and was
+  dropped unsaid; the first lash came with no warning). The first meeting must not rest on one queued line: the hazard warns for itself
+  as he walks up (`vine:freeze`), and its first strike is harmless (LV-14). Read the first-timer's `dot.lines`, not the stage's hints.
+- **A wall that doesn't reach the floor is a hidden pit** (5-6, old generator): a raised log drawn as solid bank down to the floor had
+  open water under its collider, so walking "into the wall" drowned him 4 s in. Walls reach the ground (§6 above, the push log); a
+  teaching pool catches it now (`waterTeach.ts`), the real fix is the rebuild.
+- **Measuring Easy against Normal** (LV-4/5): compare lives per full run (lives / share of the stage reached), not raw lives: the kid on
+  Easy often reaches the shrine where the adult on Normal runs out of time. And the first-timer only puts itself past a spot after three
+  lives lost there, so anything that costs no life (Easy's soft falls) has to count as a setback in the bot too (`softFalls`), or it loops.
+- **One time model can be wrong by a world** (LV-15): stageTime.ts's old model gave 4-7 84 s (it doesn't model glide descents) while the
+  200-roll tool's quick route says 3:07 at its shortest and the bots take 4-8 minutes. Check a length claim with era.ts and the bots.
+
 ## 7. Where things are
 
 - Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's

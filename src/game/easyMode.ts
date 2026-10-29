@@ -20,6 +20,7 @@ import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
 import { EASY_HOLD } from './physics.ts';
 import { EASY_FLOOR, goalHave } from './goals.ts';
+import { floorWater } from './waterTeach.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
 /** a drop is this deep (or has no floor at all) before a far jump over it gets a stone */
@@ -326,8 +327,9 @@ export function easyDrift(stage: Stage, k = EASY_DRIFT): void {
 
 /** how far the far bank of a hop over still water reaches toward him on Easy (px), and the least gap it leaves (still a jump) */
 export const EASY_WATER_LAND = 24;
-// (64: still a jump, and wide enough to see as water, qaW123.test.ts)
-const WATER_GAP_MIN = 64;
+// (the least gap left: 40, still a jump; the stage's first water, the one Dot warns of, stays wide enough to see as water: 64, qaW123.test.ts)
+const WATER_GAP_MIN = 40;
+const FIRST_WATER_MIN = 64;
 
 /**
  * Easy's landings over still water (LV-5, polish report 2026-10-29: the kid bot drowned more on Easy than the adult on Normal in 2-3,
@@ -346,6 +348,9 @@ export function easyWaterLandings(stage: Stage): number {
     if ((k === 'on' && typeof v === 'number') || (k === 'ground' && Array.isArray(v))) (Array.isArray(v) ? v : [v]).forEach((i) => anchored.add(i));
     return v;
   });
+  // (the stage's first water, the one Dot warns of: waterTeach.ts)
+  const first = floorWater(stage)[0];
+  const firstWater = (B: Platform) => !!first && !first.river && Math.abs(B.x - first.x1) <= 2;
   let n = 0;
   for (const B of floor) {
     if (B.type !== 'solid' || B.push || B.art || B.lily || B.crown || anchored.has(B.id)) continue;
@@ -359,7 +364,8 @@ export function easyWaterLandings(stage: Stage): number {
     if (gap < WATER_GAP_MIN + 4 || gap > 320) continue;
     if (rivers.some((r) => r.x0 < B.x && r.x1 > A!.x + A!.width)) continue;
     if (floor.some((q) => q !== A && q !== B && q.x < B.x && q.x + q.width > A!.x + A!.width)) continue;
-    const d = Math.min(EASY_WATER_LAND, gap - WATER_GAP_MIN);
+    const d = Math.min(EASY_WATER_LAND, gap - (firstWater(B) ? FIRST_WATER_MIN : WATER_GAP_MIN));
+    if (d <= 0) continue;
     const s0 = B.x - d;
     if (stage.platforms.some((q) => q !== B && q.x < B.x && q.x + q.width > s0 && q.y < B.y + 4 && q.y + q.height > B.y - 120)) continue;
     B.x -= d;

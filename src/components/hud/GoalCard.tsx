@@ -62,7 +62,9 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
     const root = document.documentElement;
     root.dataset.hudCard = '1';
     // (the reading time of its main line, 1.5 s + 0.5 s a word: about 4 s, never past 4.5 s)
-    const hold = quick ? 900 : Math.min(4500, readMs(info.line, 3000));
+    // (and a moment more for the easing's line, LV-7)
+    const ease = easeInLine(stageId);
+    const hold = quick ? 900 : Math.min(ease ? 6000 : 4500, readMs(ease ? `${info.line} ${ease}` : info.line, 3000));
     const t0 = window.setTimeout(() => setPhase('hold'), 30);
     const t1 = window.setTimeout(shrink, hold);
     // the first move (a touch anywhere, or a key) sends it to the counter, once it has been seen for a moment

@@ -2791,6 +2791,9 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   return st;
 };
 
+/** how much longer the first animal of each kind on an old-generator World 1-5 stage takes to strike (LV-14: a safe first meeting) */
+export const FIRST_TELL = 1.5;
+
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
@@ -2830,6 +2833,15 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   const stage = buildStage(config, attempt);
   // (water taught before it costs a life: waterTeach.ts, LV-8)
   if (!config.secret && config.worldIndex <= 5) teachWater(stage);
+  // (LV-14: the first animal of each kind on the stage shows a longer tell, a safe first meeting: 5-8's first ocelot pounced 8 s in)
+  if (!config.secret && config.worldIndex <= 5) {
+    const seen = new Set<string>();
+    for (const e of [...stage.enemies].sort((a, b) => a.x - b.x)) {
+      if (seen.has(e.type)) continue;
+      seen.add(e.type);
+      e.attackCooldown = Math.max(e.attackCooldown, 0) * FIRST_TELL;
+    }
+  }
   // (5-8's floor under its first stairs gets a short climb out wherever no way back up is near: dipWayOut.ts, LV-11)
   if (config.id === '5-8' && !config.secret) dipWayOut(stage);
   // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)
