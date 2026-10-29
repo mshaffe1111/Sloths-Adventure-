@@ -41,3 +41,13 @@ hfb-blocking-a 6ae3821dad9610e5cb314439 rtx-pro-6000 17:27:58Z-17:35:00Z (7.0 mi
   w7walls-a-s68-5 cut (worn stone sloth face, mixed blocks), but one big root per strip at similar heights reads as a pattern
     when strips sit side by side (redone in round b).
   w4falls: bodies s62-17, pillar s76-17, lips + splash s76-5 KEPT; mist + plume (all takes) THROWN: hard cartoon cloud blobs.
+hfb-blocking-b 6ae386955ddcdc0830263868 rtx-pro-6000 17:47:01Z-17:52:50Z (5.8 min, ~$0.27): 20 takes, 5 starts x 2 strengths x seeds 17/29
+  w7anchors-b-s62-17 KEPT (thick carved lintels running off the top, twisted liana knots); each anchor also gets its own liana
+    run (liana-a1..a4, the stretch under the frame, seamless) so the hanging part continues the knot's liana exactly.
+  w7lianas-b-s65-17 KEPT as liana-1..6 (four woody, two braided; spares for longer drops). s55 takes: plain painted tubes.
+  w7walls-b-s62-17 KEPT for wall-1, wall-2, wall-4; wall-3 (the worn stone sloth face) from w7walls-b-s68-17. s62-29/s68-29
+    THROWN: the face came back as a bright cartoon sloth. All strips graded down to the W7 kit wall's tone.
+  w4mist-b-s60-17 KEPT (mist-1, mist-2: soft, wispy, see-through), w4mist-b-s60-29 KEPT (plume). s75 takes: puffier, more cartoon.
+  w6wedge-b-s58-17 KEPT (a round log wedged between two arching stilt roots; ledge cell and the first perch cell).
+    s58-29/s68-29 THROWN: the roots turned into stumps with the log on top; s68-17 squared the log into a beam.
+running total ~12.8 min on rtx-pro-6000 = ~$0.59 of the $10 cap.

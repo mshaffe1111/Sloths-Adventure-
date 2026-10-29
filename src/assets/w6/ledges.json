@@ -12,16 +12,16 @@
   "stilt-deck-ledge-tall": "w6ledges-a-s68-17",
   "boardwalk-ledge": "w6ledges-a-s68-17",
   "boardwalk-ledge-tall": "w6ledges-a-s68-17",
-  "wedged-branch-ledge": "w6ledges-a-s68-17",
-  "wedged-branch-ledge-tall": "w6ledges-a-s68-17",
+  "wedged-branch-ledge": "w6wedge-b-s58-17",
+  "wedged-branch-ledge-tall": "w6wedge-b-s58-17",
   "root-shelf-perch": "w6perches-a-s55-17",
   "root-shelf-perch-tall": "w6perches-a-s55-17",
   "stilt-deck-perch": "w6perches-a-s55-17",
   "stilt-deck-perch-tall": "w6perches-a-s55-17",
   "boardwalk-perch": "w6perches-a-s55-17",
   "boardwalk-perch-tall": "w6perches-a-s55-17",
-  "wedged-branch-perch": "w6perches-a-s55-17",
-  "wedged-branch-perch-tall": "w6perches-a-s55-17"
+  "wedged-branch-perch": "w6wedge-b-s58-17@0",
+  "wedged-branch-perch-tall": "w6wedge-b-s58-17@0"
  },
  "method": "img2img (Qwen-Image + slothadv style model) from blockstart.py w6ledges / w6perches (W6 kit wood and roots)",
  "frames": {
@@ -91,18 +91,18 @@
    "w": 600,
    "h": 200,
    "ax": 300.0,
-   "ay": 6.3,
-   "walkTop": 6.3,
+   "ay": 51.3,
+   "walkTop": 51.3,
    "note": "ax, ay: the middle of the flat walkable top"
   },
   "wedged-branch-ledge-tall": {
    "x": 604,
    "y": 770,
    "w": 600,
-   "h": 278,
+   "h": 272,
    "ax": 300.0,
-   "ay": 6.3,
-   "walkTop": 6.3,
+   "ay": 51.3,
+   "walkTop": 51.3,
    "note": "ax, ay: the middle of the flat walkable top"
   },
   "root-shelf-perch": {
@@ -171,18 +171,18 @@
    "w": 260,
    "h": 200,
    "ax": 130.0,
-   "ay": 6.9,
-   "walkTop": 6.9,
+   "ay": 31.4,
+   "walkTop": 31.4,
    "note": "ax, ay: the middle of the flat walkable top"
   },
   "wedged-branch-perch-tall": {
    "x": 1056,
    "y": 1271,
    "w": 260,
-   "h": 360,
+   "h": 408,
    "ax": 130.0,
-   "ay": 6.9,
-   "walkTop": 6.9,
+   "ay": 31.4,
+   "walkTop": 31.4,
    "note": "ax, ay: the middle of the flat walkable top"
   }
  }

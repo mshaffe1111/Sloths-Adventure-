@@ -30,7 +30,7 @@ DARK, GREY = (20, 16, 24), (128, 128, 128)
 
 
 def take(n):
-    return Image.open(TAKES / f'{n}.webp').convert('RGB')
+    return Image.open(TAKES / f"{n.split('@')[0]}.webp").convert('RGB')
 
 
 def despill(sp):
@@ -71,6 +71,9 @@ def unmix(im, crop=True, water_only=True):
     if water_only:
         # (water is white to blue-grey: green flecks the repaint left at the edges become spray, green no higher than r and b)
         F[..., 1] = np.minimum(F[..., 1], np.maximum(F[..., 0], F[..., 2]) + 4)
+        # (and no lilac: red no higher than green, blue at most a little over it, so the spray reads white to blue-grey)
+        F[..., 0] = np.minimum(F[..., 0], F[..., 1] + 2)
+        F[..., 2] = np.minimum(F[..., 2], F[..., 1] + 16)
     out = Image.fromarray(np.dstack([F, a * 255]).astype(np.uint8), 'RGBA')
     if crop:
         bb = out.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox()
@@ -129,7 +132,7 @@ def candidates_sheet(names, tw=640):
     for i, (n, im) in enumerate(zip(names, ims)):
         x, y = (i % cols) * (tw + 8), (i // cols) * (th + 22)
         S.paste(im.resize((tw, th), Image.LANCZOS), (x, y + 20))
-        label(d, (x + 4, y + 4), n + ('   <- PICK' if n in PICKS or n in OVR.values() else ''))
+        label(d, (x + 4, y + 4), n + ('   <- PICK' if n in PICKS or n in [v.split('@')[0] for v in OVR.values()] else ''))
     return S
 
 
@@ -197,11 +200,9 @@ def w7anchors():
         # on above from there)
         rgb = np.asarray(sp_full.convert('RGB')).astype(np.float32)[:, x0:x1]
         solid = (al[:, x0:x1]) & (rgb.mean(axis=2) > 70)
-        y0 = int(np.nonzero(solid.mean(axis=1) > 0.72)[0][0])
-        dark = al[:, x0:x1] & (rgb.mean(axis=2) < 50)
-        rows = np.nonzero(dark[:40].mean(axis=1) > 0.015)[0]
-        if len(rows):
-            y0 = max(y0, int(rows[-1]) + 2)
+        y0 = int(np.nonzero(solid.mean(axis=1) > 0.6)[0][0])
+        # (round a's start drew an outline along the lintel top, which came back as a dark line: the round b start runs the
+        # lintel off the cell's top, so the frame starts at the first mostly solid row, the cell's top)
         h = round(w * 220 / 300)
         piece = sp_full.crop((x0, y0, x1, y0 + h))
         # (the liana: the widest run of opaque pixels on the bottom row is where it leaves the frame)
@@ -218,27 +219,60 @@ def w7anchors():
         piece = rs(piece, 300, h * k)
         sprites[name] = piece
         anchors[name] = {'ax': round(lx * k, 1), 'ay': piece.height, 'lianaW': round(lw * k, 1)}
-        # (the same take's liana below the frame, as a run that repeats top to bottom, so the hanging part matches the knot)
-        run = sp_full.crop((x0, y0 + h, x1, sp_full.height - 4))
-        ra = np.asarray(run.getchannel('A')) > 128
-        cs = np.nonzero(ra.any(axis=0))[0]
+        # (the same take's liana below the frame, as a run that repeats top to bottom, so the hanging part is the knot's own
+        # liana: a twisted liana repeats every twist, so the short stretch left under the frame (about 90 px) tiles)
+        run = sp_full.crop((x0, y0 + h, x1, sp_full.height - 6))
         cx = int(round(lx))
-        half = int(max(lw, 20) * 1.6)
+        half = int(max(lw, 20) * 1.5)
         run = run.crop((max(0, cx - half), 0, min(run.width, cx + half), run.height))
-        L = run.height - 60
-        if L > 400:  # (the round-a cells hold too little liana below the frame; the runs come from the w7lianas sheet)
-            tile = wrap_v(run, L, 60)
+        ra = np.asarray(run.getchannel('A')) > 128
+        rows = np.nonzero(ra.any(axis=1))[0]
+        run = run.crop((0, 0, run.width, int(rows[-1]) - 4))
+        ra = np.asarray(run).copy()   # (the strand only: loose leaf flecks would repeat down the run as a dotted line)
+        lab, nl = ndimage.label(ra[..., 3] > 40)
+        if nl > 1:
+            sz = ndimage.sum(np.ones(lab.shape), lab, range(1, nl + 1))
+            ra[..., 3] = ra[..., 3] * (lab == int(np.argmax(sz)) + 1)
+        run = Image.fromarray(ra, 'RGBA')
+        ov = min(30, run.height // 3)
+        if run.height - ov > 40:
+            tile = wrap_v(run, run.height - ov, ov)
             tile = rs(tile, tile.width * k, tile.height * k)
-            sprites[f'liana-{i + 1}'] = tile
-            anchors[f'liana-{i + 1}'] = {'ax': round((cx - max(0, cx - half)) * k, 1), 'ay': 0, 'tile': 'vertical',
-                                         'note': f'hangs from anchor-{i + 1} (ax at its top lines up with the anchor ax)'}
+            n = f'liana-a{i + 1}'
+            sprites[n] = tile
+            anchors[n] = {'ax': round((cx - max(0, cx - half)) * k, 1), 'ay': 0, 'tile': 'vertical',
+                          'note': f'anchor-{i + 1} own liana, repeats top to bottom; line its ax up with the anchor ax'}
+    if 'lianas' in OVR:
+        # (the matching liana runs: six vines from the w7lianas take, cut, made seamless top to bottom, scaled like the anchors so
+        # their width matches the anchors' liana where it leaves the frame)
+        LT = take(OVR['lianas'])
+        kk = float(np.mean([300 / 430, 300 / 420]))
+        for j in range(6):
+            cx = 100 + j * 200
+            run = despill(cut_cell_full(LT.crop((cx - 95, 0, cx + 95, LT.height))))
+            bb = run.getchannel('A').getbbox()
+            run = run.crop((bb[0], 30, bb[2], LT.height - 30))
+            tile = wrap_v(run, run.height - 90, 90)
+            tile = rs(tile, tile.width * kk, tile.height * kk)
+            a = np.asarray(tile.getchannel('A'))[0] > 128
+            xs = np.nonzero(a)[0]
+            n = f'liana-{j + 1}'
+            sprites[n] = tile
+            anchors[n] = {'ax': round((xs[0] + xs[-1] + 1) / 2, 1), 'ay': 0, 'tile': 'vertical', 'stemW': int(xs[-1] - xs[0] + 1),
+                          'note': 'hangs under any anchor: line its top ax up with the anchor ax; repeats top to bottom'}
     meta = {'anchor': 'ax, ay: the middle of the liana where it leaves the bottom of the frame (hang the game liana from there); '
                       'the top edge is the lintel running on above the screen', 'takes': {n: OVR.get(n, pick) for n in sprites},
             'method': 'img2img (Qwen-Image + slothadv style model) from blockstart.py w7anchors (W7 kit stone + liana)'}
     write_atlas(sprites, anchors, GAME / 'src/assets/w7', 'vine-anchors', meta)
     # review
     names = sorted(p.stem for p in TAKES.glob('w7anchors-*.webp'))
-    parts = [candidates_sheet(names), strip_of(sprites, DARK), strip_of(sprites, GREY)]  # (anchors and liana runs)
+    extra = sorted(p.stem for p in TAKES.glob('w7lianas-*.webp'))
+    anc = {k: v for k, v in sprites.items() if k.startswith('anchor')}
+    lia = {k: v for k, v in sprites.items() if k.startswith('liana')}
+    lia = {k: (stack3(v) if v.height < 300 else v) for k, v in lia.items()}
+    parts = [candidates_sheet(names)] + ([candidates_sheet(extra, tw=420)] if extra else []) + [strip_of(anc, DARK), strip_of(anc, GREY)]
+    if lia:
+        parts.append(strip_of({k: stack3(v).crop((0, 0, v.width, min(3 * v.height, 900))) for k, v in lia.items()}, DARK, 0.6))
     # game size (x0.5 on a 390 x 844 phone), hung under the screen top over the W7 backdrop with the kit liana below
     parts.append(phone_mock_anchors(sprites, anchors))
     vstack(parts).save(QA / 'w7anchors-review.jpg', quality=88)
@@ -297,11 +331,11 @@ def phone_mock_anchors(sprites, anchors):
             x = 20 + i * 200
             ax = anchors[n]['ax'] * s
             # (the kit liana, its stem (about a third of its width) scaled to the anchor's liana where it leaves the frame)
-            run = sprites.get(n.replace('anchor', 'liana'))
+            run = sprites.get(n.replace('anchor-', 'liana-a'))
             ky = q.height - 4
             if run is not None:
                 run = rs(run, run.width * s, run.height * s)
-                rax = anchors[n.replace('anchor', 'liana')]['ax'] * s
+                rax = anchors[n.replace('anchor-', 'liana-a')]['ax'] * s
                 for yy in range(q.height - 2, q.height + 420, run.height):
                     P.alpha_composite(run, (round(x + ax - rax), yy))
                 ky = q.height + 400
@@ -352,8 +386,10 @@ def w7walls():
         t = np.asarray(tile).astype(np.float32)
         for xx, f in ((0, 0.55), (1, 0.75), (2, 0.9), (217, 0.9), (218, 0.75), (219, 0.55)):
             t[:, xx, :3] *= f
-        tile = Image.fromarray(t.astype(np.uint8), 'RGBA')
-        # (tone to the W7 kit's grey-green: green at or above red)
+        # (tone to the W7 kit's own wall (mean rgb 87/81/74; the repaint came out at the walkable ledge's 111/109/100): a wall
+        # under a ledge sits darker than the ledge, so the ledge's top still reads in front)
+        t[..., 0] *= 0.84; t[..., 1] *= 0.80; t[..., 2] *= 0.78
+        tile = Image.fromarray(np.clip(t, 0, 255).astype(np.uint8), 'RGBA')
         sprites[name] = tile
         anchors[name] = {'tile': 'vertical', 'src': [int(y1), int(y2)]}
         checks.append(stack3(tile))
@@ -430,7 +466,10 @@ FALLS = {  # name: (box in the start/take, kind)
 def w4falls():
     pick = PICKS[0]
     sprites, anchors, checks = {}, {}, {}
+    MIST = {'mist-1': (0, 30, 540, 330), 'mist-2': (525, 40, 975, 330), 'plume': (965, 10, 1216, 630)}
     for name, (box, kind) in FALLS.items():
+        if OVR.get(name, '').startswith('w4mist'):
+            box = MIST[name]
         im = src_of(name, pick).crop(box)
         if kind == 'vrock':
             sp = opaque_cut(im)
@@ -445,6 +484,12 @@ def w4falls():
             # (keep the full width: the ragged edges and side streams; crop the empty key either side)
             bb = sp.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox()
             sp = sp.crop((bb[0], 0, bb[2], sp.height))
+            # (misty and a little see-through, like the backdrop's falls: the darker blue-grey streaks let ~25% through, the white
+            # streaks stay nearly solid)
+            fa = np.asarray(sp).astype(np.float32)
+            lum = fa[..., :3].mean(axis=2)
+            fa[..., 3] *= 0.74 + 0.26 * np.clip((lum - 150) / 80, 0, 1)
+            sp = Image.fromarray(fa.astype(np.uint8), 'RGBA')
             H, ov = sp.height - 110, 110
             tile = wrap_v(sp, H, ov)
             sprites[name], anchors[name] = tile, {'tile': 'vertical'}
@@ -453,6 +498,12 @@ def w4falls():
             sp = unmix(im, crop=False)
             bb = sp.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox()
             sp = sp.crop((6, bb[1], sp.width - 6, bb[3]))
+            # (the strip's foot fades out over its lowest fifth, so it sinks into whatever water or ledge it sits on with no
+            # hard white edge)
+            fa = np.asarray(sp).astype(np.float32)
+            fl = max(8, sp.height // 5)
+            fa[-fl:, :, 3] *= np.linspace(1, 0, fl)[:, None]
+            sp = Image.fromarray(fa.astype(np.uint8), 'RGBA')
             W, ov = sp.width - 100, 100
             tile = wrap_h(sp, W, ov)
             sprites[name], anchors[name] = tile, {'tile': 'horizontal', 'ax': tile.width / 2, 'ay': tile.height}
@@ -473,7 +524,19 @@ def w4falls():
             sprites[name] = sp
             anchors[name] = {'ax': round(sp.width / 2, 1), 'ay': 0, 'note': 'top of the rock; the pour hangs below'}
         else:
-            sp = unmix(im)
+            sp = unmix(im, crop=False)
+            a = np.asarray(sp).astype(np.float32)
+            # (mist is white with a cool grey shade: the lilac the repaint left in its middle goes; r no higher than g, b at most
+            # a little over g)
+            a[..., 0] = np.minimum(a[..., 0], a[..., 1] + 2)
+            a[..., 2] = np.minimum(a[..., 2], a[..., 1] + 10)
+            # (the piece only: a sliver of the next mist at the box edge is dropped)
+            lab, nl = ndimage.label(a[..., 3] > 20)
+            if nl > 1:
+                sz = ndimage.sum(np.ones(lab.shape), lab, range(1, nl + 1))
+                a[..., 3] *= np.isin(lab, [j + 1 for j, z in enumerate(sz) if z >= 0.12 * sz.max()])
+            sp = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'RGBA')
+            sp = sp.crop(sp.getchannel('A').point(lambda v: 255 if v > 10 else 0).getbbox())
             sprites[name], anchors[name] = sp, {'ax': round(sp.width / 2, 1), 'ay': sp.height}
     meta = {'anchor': 'tile pieces repeat (vertical or horizontal) with no seam; lips: top middle; mist, plume: foot middle',
             'takes': {n: OVR.get(n, pick) for n in sprites},
@@ -491,12 +554,13 @@ def w4falls():
         x = 20
         for n in vs:
             V.paste(stack3(checks[n][1], True, col).convert('RGB'), (x, 22)); x += checks[n][1].width + 20
-        d = ImageDraw.Draw(V); label(d, (4, 4), 'each fall body and the pillar stacked 3x (x1)')
+        d = ImageDraw.Draw(V); label(d, (4, 4), 'each fall body and the pillar stacked 3x (shown x0.5)')
         cks.append(rs(V, V.width / 2, V.height / 2))
         Hs = [stack3(checks[n][1], False, col).convert('RGB') for n in hs]
         Hs = [rs(h, h.width / 2, h.height / 2) for h in Hs]
         cks.append(vstack(Hs, 8, col))
-    parts = [candidates_sheet(names, tw=640), strip_of({k: v for k, v in sprites.items() if checks.get(k, ('', None))[0] != 'v'}, DARK, 0.6),
+    extra = sorted(p.stem for p in TAKES.glob('w4mist-*.webp'))
+    parts = [candidates_sheet(names, tw=640)] + ([candidates_sheet(extra, tw=480)] if extra else []) + [strip_of({k: v for k, v in sprites.items() if checks.get(k, ('', None))[0] != 'v'}, DARK, 0.6),
              strip_of({k: v for k, v in sprites.items() if checks.get(k, ('', None))[0] != 'v'}, GREY, 0.6)] + cks
     parts.append(phone_mock_falls(sprites))
     vstack(parts).save(QA / 'w4falls-review.jpg', quality=86)
@@ -560,7 +624,13 @@ def w6ledges():
         for i, base in enumerate(LEDGE_NAMES):
             name = f'{base}-{suffix}'
             cx, cy = (i % cols) * cw, (i // cols) * ch
-            im = src_of(name, pick).crop((cx + 4, cy + 4, cx + cw - 4, cy + ch - 2))
+            box = (cx + 4, cy + 4, cx + cw - 4, cy + ch - 2)
+            if OVR.get(name, '').startswith('w6wedge'):
+                tk, _, cell = OVR[name].partition('@')
+                box = (4, 4, 764, 446) if not short else ((772, 4, 1148, 766), (1156, 4, 1532, 766))[int(cell or 0)]
+                im = take(tk).crop(box)
+            else:
+                im = src_of(name, pick).crop(box)
             full = despill(cut_cell_full(im))
             # (tone to the W6 kit: the repaint shaded the grey-green wood a little lilac (37% of pixels with r and b over g, the
             # kit 7%); pull any r, b excess over g out and cool the blue a touch, so the wood is grey-green like the kit)
@@ -587,13 +657,14 @@ def w6ledges():
                                'walkTop': round(top * k, 1), 'note': 'ax, ay: the middle of the flat walkable top'}
     meta = {'anchor': 'ax, ay: middle of the walkable top (put the collider top there). <name>: the asked shape (ledges 3:1, perches '
                       '1.3:1) with the supports cut straight at the frame foot, running on below; <name>-tall: the whole piece',
-            'takes': {n: OVR.get(n.replace('-tall', ''), lpick if 'ledge' in n else ppick) for n in sprites},
+            'takes': {n: OVR.get(n.replace('-tall', ''), lpick if 'ledge' in n else ppick) for n in sprites},  # (take@cell)
             'method': 'img2img (Qwen-Image + slothadv style model) from blockstart.py w6ledges / w6perches (W6 kit wood and roots)'}
     write_atlas(sprites, anchors, GAME / 'src/assets/w6', 'ledges', meta)
     names = sorted(p.stem for p in TAKES.glob('w6ledges-*.webp')) + sorted(p.stem for p in TAKES.glob('w6perches-*.webp'))
     shorts = {k: v for k, v in sprites.items() if not k.endswith('-tall')}
     talls = {k: v for k, v in sprites.items() if k.endswith('-tall')}
-    parts = [candidates_sheet(names, tw=560), strip_of(shorts, DARK, 0.7), strip_of(shorts, GREY, 0.7),
+    extra = sorted(p.stem for p in TAKES.glob('w6wedge-*.webp'))
+    parts = [candidates_sheet(names, tw=560)] + ([candidates_sheet(extra, tw=560)] if extra else []) + [strip_of(shorts, DARK, 0.7), strip_of(shorts, GREY, 0.7),
              strip_of(talls, DARK, 0.5), phone_mock_w6(sprites, anchors)]
     vstack(parts).save(QA / 'w6ledges-review.jpg', quality=86)
     print(QA / 'w6ledges-review.jpg')
