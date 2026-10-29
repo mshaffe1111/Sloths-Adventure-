@@ -269,21 +269,26 @@ and a section's entry and exit are always ledges):
 - `{ shape: 'liana', place: { kind: 'swing', after, top?, reach?, amp?, period? } }`: a liana hanging past `after`'s end, its anchor
   `top` px above that ledge (default `LIANA.top` 360-420), `reach` px out from its end (160-190), down to 30 px under the ledge at
   most (410 long). It **swings by itself** (Matt, 2026-10-28): `amp` radians either side, one there-and-back every `period` s
-  (`LianaSwing`, defaults 0.7-0.85 and 1.8-2.2 s), rolled once per use and the same on Easy and Normal; the player can't pump it.
+  (`LianaSwing`); by default the engine's swing, mirrored from branch vine-fix (7d09039) in `VINE`: at most 0.45 rad, Normal 2.85 s,
+  Easy 3.3 s, its sweet spot (-0.15..0.9 of the swing, Easy -0.4..1.2), the press forgiveness and the let-go flights; a pipeline test
+  holds `VINE` to physics.ts's own numbers and `lianaRelease` to its `pressWindow` (within 2 frames) once vine-fix is on main. The
+  Vine also carries `swingAmp` / `swingPeriod` for vine-fix's engine; the player can't pump it.
   Each placed liana's swing goes to the engine as `proto.gen2.lianas` (`{ vine, amp, period }`, by vine id) and sits on
   `PlacedSection.vines`. A section with a liana needs the `swing` move (inferred) and is never mirrored.
 - `{ place: { kind: 'land', after: <the liana>, dy?, share? } }`: the perch past it. Its near end is `share` along the band of near
   ends where letting go lands on it with a **release window** of at least `LIANA.window` (Easy 300 ms, Normal 167 ms), `dy` from
-  the swing's ledge. The window comes from one function, `lianaRelease(vine, swing, gripY, perch)` (he hangs at the ledge's height,
-  letting go carries the vine's velocity at his grip, steering toward the perch): when branch vine-fix changes the engine's swing,
-  this function follows it. Until then `lianaBand` also holds the band to what today's levelCheck links (`swingLandings`, 6 lines).
+  the swing's ledge. The window comes from one function, `lianaRelease(vine, swing, perch, difficulty)`, vine-fix's pressWindow
+  calculation (the worse of two grips; sweet-spot leap, early and late presses, hops). `lianaBand` also holds the band to what
+  levelCheck links (`swingLandings`, 6 lines), whichever swing model levelCheck has. Under vine-fix's calmer swing levelCheck links a
+  level perch only to about 480-510 px out, just past the glide's 477: a perch that does not fit is moved (raised or lowered 40-160
+  px, nearest first: a raised perch is past the glide sooner, 307 px at 80 px up, and still in reach), then levelled, widened up to
+  400 px at each height; never a wider swing.
   The gap from the swing's ledge to the perch is a pit (soft, water or void as the stage's falls are), and the perch lies past every
   jump (`jumpLinkGap`: a jump, a double jump, and the leaf glide once every player has it, 457 px on the flat from World 5): the
   swing is the way over, not a choice. **A soft pit under a liana climbs back** to the swing's ledge (`backPit`: steps of the
   narrowest tread against the near wall), never forward: the perch's face stands more than a double jump (plus 40 px) over its
   floor, and no step of it is within a jump of the perch. (Easy's falls stay soft: a miss costs a climb back and another go.)
-  A perch too narrow or too high for the window is widened (up to 400 px), then levelled toward the swing's ledge (half its rise,
-  then level), until the window fits; only a section where none does is refused, by name.
+  Only a section where no height or width fits is refused, by name.
 - **Time**: a self-swinging liana costs `lianaSeconds` = (period - window) / 2 (the wait for the swing to come round) + period / 2
   (the ride). `gen2Model` is stageTime's `modelStage` with each liana (`proto.gen2.lianas` carries `window`, `x0`, `x1` too) costing
   that in place of walking its gap plus `TIME.swingExtra` (2.5 s, a pumped swing's cost: it ran a 17-liana 6-1 roll at 0.68 of the

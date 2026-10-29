@@ -16,7 +16,7 @@
  */
 import { rollLook } from '../artRoll.ts';
 import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
-import { airStep, DOUBLE_RISE, JUMP_RISE, reachGlide, reachJump, SWING, TAKEOFF_SLACK, type AirBody } from '../physics.ts';
+import { airStep, DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, SWING, TAKEOFF_SLACK, type AirBody } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
@@ -103,42 +103,96 @@ export const riseLimit = (dbl: boolean, share: number): number => share * (dbl ?
 // ───────────────────────────── the liana's reach ─────────────────────────────
 
 /**
- * The release window of a liana (s): the longest run of moments in one of its swings at which letting go lands him on `far` (its top
- * `far.y`, from `far.x` for `far.w` px). The ONE place gen2 sizes a swing by: when the engine's swing model changes (branch vine-fix),
- * this follows it. Today's model is Matt's of 2026-10-28: the liana swings by itself (`swing`: amp, period, on the game clock), he
- * hangs at the height of the ledge he jumped from (`gripY`; never nearer the anchor than SWING.minLen), and letting go carries the
- * vine's velocity at his grip, steering toward the perch in the air (physics airStep). Only forward releases count.
+ * The engine's self-swinging vine (branch vine-fix 7d09039, Matt-approved 2026-10-28), mirrored here until it is on main: one there-and-
+ * back every `period` s (Normal 2.85, Easy 3.3), at most `amp` radians either side, the sweet spot (a let-go there is the Tarzan leap)
+ * between these shares of the swing past straight down, the press forgiveness (RELEASE), the flights a let-go can make (LETGO_FLIGHTS)
+ * and the grips a check tries (shares of the vine's length). The pipeline test fails if physics.ts's own numbers drift from these.
  */
-export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, gripY: number, far: { x: number; y: number; w: number }): number {
-  const L = Math.max(SWING.minLen, Math.min(v.bottomY - v.topY, gripY - v.topY));
-  const w = (2 * Math.PI) / swing.period;
-  const dt = 1 / 120;
-  let best = 0;
-  let run = 0;
-  const b: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
-  for (let t = 0; t < swing.period; t += dt) {
-    const th = swing.amp * Math.sin(w * t);
-    const om = swing.amp * w * Math.cos(w * t);
-    let ok = false;
-    if (om > 0) {
-      b.x = v.x + L * Math.sin(th);
-      b.y = v.topY + L * Math.cos(th);
-      b.vx = L * Math.cos(th) * om;
-      b.vy = -L * Math.sin(th) * om;
-      for (let i = 0; i < 150; i++) {
-        const py = b.y;
-        airStep(b, 1 / 60, 1);
-        if (b.vy >= 0 && py <= far.y + 14 && b.y >= far.y && b.x > far.x + 10 && b.x < far.x + far.w) {
-          ok = true;
-          break;
-        }
-        if (b.y > far.y + 300) break;
-      }
+export const VINE = {
+  period: { normal: 2.85, easy: 3.3 },
+  amp: 0.45,
+  sweet: { normal: [-0.15, 0.9], easy: [-0.4, 1.2] },
+  release: { late: 0.36, early: 0.32, lateFrom: 0.375, earlyFrom: -0.875 },
+  flights: [{ held: 99, dbl: 99 }, { held: 7, dbl: 99 }, { held: 99, dbl: 0.15 }, { held: 99, dbl: 0.3 }, { held: 99, dbl: 0.45 }],
+  grips: [0.7, 0.95],
+} as const;
+
+/**
+ * The release window of a liana (s): of ONE swing, how long a press to let go toward the perch gets him onto it (its top `far.y`, from
+ * `far.x` for `far.w` px), the worse of his two grips. The ONE place gen2 sizes a swing by, and the same calculation as vine-fix's
+ * physics.ts pressWindow: the vine swings by itself (`swing`: amp, period on the game clock); in the sweet spot the let-go is the
+ * Tarzan leap; a beat early the press waits for it, a beat late it is the sweet spot's leap; anywhere else a hop off the vine; each
+ * flight tries the jump held, a flick and the second jump at three moments.
+ */
+export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty): number {
+  const DT = 1 / 30;
+  const L = v.bottomY - v.topY;
+  const { amp, period } = swing;
+  const [sweetFrom, sweetTo] = VINE.sweet[difficulty];
+  const n = Math.round(period / DT);
+  const w = (2 * Math.PI) / period;
+  const top = amp * w;
+  const sweetAt = (a: number, om: number) => amp < 0.05 || (om > 0 && Math.abs(om) > 0.075 * top && a / amp >= sweetFrom && a / amp <= sweetTo);
+  let worst = Infinity;
+  for (const g of VINE.grips) {
+    // (the grip a check takes: caught 40 px short of the vine, `g` of the way down it; swingGrab)
+    const len = Math.max(SWING.minLen, Math.min(Math.max(SWING.minLen, L - 10), Math.hypot(-40, Math.max(Math.min(L * g, L - 20), SWING.minLen * 0.6))));
+    const st: Array<{ a: number; om: number; x: number; y: number; sweet: boolean }> = [];
+    for (let k = 0; k < 2 * n + 20; k++) {
+      const t = (k + 1) * DT;
+      const a = amp * Math.sin(w * t);
+      const om = top * Math.cos(w * t);
+      st.push({ a, om, x: v.x + Math.sin(a) * len, y: v.topY + Math.cos(a) * len, sweet: sweetAt(a, om) });
     }
-    run = ok ? run + dt : 0;
-    best = Math.max(best, run);
+    const launch = (q: (typeof st)[number]) => {
+      const tang = q.om * len;
+      const vx = Math.cos(q.a) * tang;
+      const vy = -Math.sin(q.a) * tang;
+      if (q.sweet) return { vx: Math.max(SWING.leapMin, Math.min(SWING.leapMax, Math.abs(vx) * 1.15 + 120)), vy: Math.max(SWING.leapVyMin, Math.min(-PHYS.vineReleaseV, vy - 300)) };
+      return { vx: Math.max(-300, Math.min(300, vx * 0.6)), vy: Math.max(vy * 0.6, -260) - 120 };
+    };
+    let lastSweet = -1e9;
+    let snap: (typeof st)[number] | null = null;
+    for (let k = 0; k < n; k++) if (st[k].sweet) (lastSweet = k), (snap = st[k]);
+    let ok = 0;
+    for (let k = n; k < 2 * n; k++) {
+      if (st[k].sweet) (lastSweet = k), (snap = st[k]);
+      const q = st[k];
+      const a = q.a / (amp || 1);
+      const call = q.sweet ? 'sweet' : (k - lastSweet) * DT <= VINE.release.late && a >= VINE.release.lateFrom ? 'late' : q.om > 0 && a >= VINE.release.earlyFrom && a < sweetFrom ? 'early' : 'now';
+      let at = k;
+      let from = q;
+      if (call === 'late' && snap) from = snap;
+      if (call === 'early') {
+        let m = k;
+        while (m < k + Math.round(VINE.release.early / DT) && !st[m].sweet) m++;
+        at = m;
+        from = st[m];
+      }
+      const l = launch(from);
+      let made = false;
+      for (const f of VINE.flights) {
+        const c: AirBody = { x: st[at].x, y: st[at].y, vx: l.vx, vy: l.vy };
+        let t = 0;
+        let used = false;
+        for (let i = 1; i <= 90 && !made; i++) {
+          if (!used && t >= f.dbl) {
+            c.vy = -PHYS.doubleV;
+            used = true;
+          }
+          const prevY = c.y;
+          airStep(c, DT, 1, i <= f.held);
+          t += DT;
+          if (c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w) made = true;
+          if (c.y > v.bottomY + 500) break;
+        }
+        if (made) break;
+      }
+      if (made) ok++;
+    }
+    worst = Math.min(worst, ok * DT);
   }
-  return best;
+  return worst;
 }
 
 /**
@@ -162,11 +216,11 @@ const RELEASE_CACHE = new Map<string, number>();
  * branch vine-fix changes it, both must hold), as [lo, hi], never nearer than `min`; null when none does. `from` is the ledge the
  * swing starts from.
  */
-export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity): [number, number] | null {
+export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity, difficulty: Difficulty = 'normal'): [number, number] | null {
   const window = (x: number) => {
-    const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3)].join(',');
+    const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3), difficulty].join(',');
     let r = RELEASE_CACHE.get(key);
-    if (r === undefined) RELEASE_CACHE.set(key, (r = lianaRelease(v, swing, from.y, { x, y: from.y + dy, w })));
+    if (r === undefined) RELEASE_CACHE.set(key, (r = lianaRelease(v, swing, { x, y: from.y + dy, w }, difficulty)));
     return r;
   };
   const near: Platform = { id: -1, x: from.x, y: from.y, width: from.w, height: 90, type: 'solid' };
@@ -489,7 +543,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const a = ref(pl.after);
       if (pc.shape !== 'liana') throw new Error(`gen2 section ${tpl.id}: ${pc.key} swings, so its shape is 'liana'`);
       const top = a.y - roll(rng, pl.top ?? LIANA.top);
-      const swing: LianaSwing = { amp: roll(rng, pl.amp ?? LIANA.amp), period: roll(rng, pl.period ?? LIANA.period) };
+      // (the engine's swing unless the author sets one: VINE.amp at most, the setting's own period)
+      const swing: LianaSwing = { amp: Math.min(VINE.amp, roll(rng, pl.amp ?? VINE.amp)), period: roll(rng, pl.period ?? VINE.period[budget.difficulty]) };
       x = a.x + a.w + roll(rng, pl.reach ?? LIANA.reach);
       y = top;
       w = 0;
@@ -516,13 +571,15 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
         }
         return min;
       };
-      // (a perch too narrow or too high for the window is widened, then levelled toward the swing's ledge, until the window fits;
-      // only when none does is the section named)
+      // (a perch the window or today's check cannot reach is moved, nearest first: raised or lowered 40-160 px (a raised perch is
+      // past the glide sooner, and the calm swing reaches it: never a wider swing), then levelled toward the swing's ledge (half its
+      // rise, then 120, 80, 40 px over it, then level); at each
+      // height widened up to 400 px. Only when none fits is the section named)
       let band: [number, number] | null = null;
       let dy = dy0;
-      for (const d of [...new Set([dy0, dy0 / 2, 0])]) {
+      for (const d of [...new Set([0, -40, 40, -80, 80, -120, -160].map((o) => dy0 + o).concat([dy0 / 2, -120, -80, -40, 0]))]) {
         for (const extra of [0, 100, 200, 400]) {
-          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra, need, minFor(d));
+          band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, d, w + extra, need, minFor(d), budget.difficulty);
           if (band) {
             dy = d;
             w += extra;
@@ -534,7 +591,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       if (!band) throw new Error(`gen2 section ${tpl.id}: no perch past the liana ${pl.after}, however wide or level, both lies past every jump (${R(minFor(0) - a.x - a.w)} px out) and leaves a release window of ${need} s`);
       x = band[0] + share * (band[1] - band[0]);
       y = a.y + dy;
-      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, a.y, { x, y, w });
+      lv.hang.window = lianaRelease({ x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, { x, y, w }, budget.difficulty);
       lv.hang.gap = [a.x + a.w, x];
       gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}) });
     } else if (pl.kind === 'climb') {
@@ -852,6 +909,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
             id: vines.length + 1, x: R(ox + lp.x), topY: R(oy + lp.y), bottomY: R(oy + lp.y + lp.h), swaySpeed: 1.1, swayPhase: ((ox + lp.x) * 0.013) % 6.28,
             vineType: liana ? 'swing_liana' : 'tree_climb', ...(liana ? { isSwingingVine: true } : {}),
           };
+          // (its own swing on the Vine itself, for vine-fix's engine and checks: Vine.swingAmp / swingPeriod once that is on main; ignored
+          // before. Its phase is the engine's (swingSetup))
+          if (lp.hang.swing) Object.assign(v, { swingAmp: lp.hang.swing.amp, swingPeriod: lp.hang.swing.period });
           vines.push(v);
           const h = lp.hang;
           placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });

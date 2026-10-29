@@ -163,8 +163,8 @@ export interface LianaSwing {
  *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top (over a
  *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
  *   swing                a liana (shape 'liana') hanging past `after`'s end: its anchor `top` px above `after`'s top, `reach` px out
- *                        from the end (what a running jump grabs), swinging by itself (`amp`, `period`: LianaSwing; rolled once per use,
- *                        the same on Easy and Normal). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
+ *                        from the end (what a running jump grabs), swinging by itself (`amp` at most 0.45 rad, `period`: LianaSwing;
+ *                        default the engine's, pipeline VINE: 0.45, Normal 2.85 s, Easy 3.3 s). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
  *                        piece that lands from it
  *   land                 a ledge past a liana (`after` names the liana): its near end at `share` of the band where letting go lands
  *                        on it with a release window of at least LIANA.window (Easy 300 ms, Normal 167 ms), `dy` below (+) or above the
@@ -558,13 +558,11 @@ export const WATER_LINE = 'Careful, water! Flick up and over.';
 export const QUIET = { easy: 3.0, normal: 2.0, rest: 4.0 } as const;
 /**
  * Lianas (World 6): the release window a jump off one must leave onto the next perch (s: Easy 300 ms, Normal 167 ms, five frames at
- * 30 fps), and the defaults of the `swing` place rule: the swing (LianaSwing amp in radians, period in seconds), how high above the
- * ledge it hangs from, how far out from the ledge's end, and its length (it hangs to 30 px under the ledge at most)
+ * 30 fps), and the defaults of the `swing` place rule: how high above the ledge it hangs from, how far out from the ledge's end, and
+ * its length (it hangs to 30 px under the ledge at most). Its swing is the engine's (pipeline VINE) unless the section sets one
  */
 export const LIANA = {
   window: { easy: 0.3, normal: 0.167 },
-  amp: [0.7, 0.85],
-  period: [1.8, 2.2],
   top: [360, 420],
   reach: [160, 190],
   len: 410,

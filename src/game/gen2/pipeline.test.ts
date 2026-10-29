@@ -7,11 +7,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage, type CheckGraph } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds, VINE } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
 import { addKitPlatforms } from '../puzzleKit.ts';
+import * as physics from '../physics.ts';
 import { DOUBLE_RISE } from '../physics.ts';
 import { tideCrossTime, idleTime } from '../zones.ts';
 import { findRoute, type Route } from '../../../tools/inspect/route.ts';
@@ -660,15 +661,15 @@ test('a liana swings by itself and its perch is sized from the release window (E
       const L = layLocal(swingSec, b, rngFor(i));
       const [near, rope, far] = ['near', 'rope', 'far'].map((k) => L.pieces.find((p) => p.key === k)!);
       const swing = rope.hang!.swing!;
-      assert.ok(swing.amp >= LIANA.amp[0] && swing.amp <= LIANA.amp[1] && swing.period >= LIANA.period[0] && swing.period <= LIANA.period[1]);
-      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, swing, near.y, { x: far.x, y: far.y, w: far.w });
+      assert.ok(swing.amp === VINE.amp && swing.period === VINE.period[d], `${d}: the engine's swing`);
+      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, swing, { x: far.x, y: far.y, w: far.w }, d);
       assert.ok(win >= LIANA.window[d], `${d} roll ${i}: a ${(win * 1000).toFixed(0)} ms release window`);
-      assert.ok(far.x - (near.x + near.w) > jumpLinkGap(0, 5, 7), `${d} roll ${i}: a ${far.x - near.x - near.w} px gap a jump or the glide could cross`);
+      assert.ok(far.x - (near.x + near.w) > jumpLinkGap(near.y - far.y, 5, 7), `${d} roll ${i}: a ${far.x - near.x - near.w} px gap a jump or the glide could cross`);
       assert.equal(L.gaps.length, 1);
     }
     // (the same roll, the same liana on Easy and Normal: its swing is the stage's, only the perch moves)
     const nb = planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, 'normal');
-    const hung = (L: ReturnType<typeof layLocal>) => ({ x: L.pieces[1].x, y: L.pieces[1].y, h: L.pieces[1].h, swing: L.pieces[1].hang!.swing });
+    const hung = (L: ReturnType<typeof layLocal>) => ({ x: L.pieces[1].x, y: L.pieces[1].y, h: L.pieces[1].h, amp: L.pieces[1].hang!.swing!.amp });
     assert.deepEqual(hung(layLocal(swingSec, b, rngFor(7))), hung(layLocal(swingSec, nb, rngFor(7))));
   }
   // built, with nothing under the gaps (a void world on Normal: the swing is the only way over) and on Easy (soft floors)
@@ -784,7 +785,7 @@ test("a soft pit under a liana climbs back to the swing's ledge, never forward t
         const f = (st.gen2.falls ?? []).find((q) => q.x0 >= s.x0 && q.x1 <= s.x1)!;
         const inside = st.platforms.filter((p) => p.x >= f.x0 && p.x + p.width <= f.x1 && p.y > f.y);
         const perch = st.platforms.find((p) => p.x === f.x1 && !inside.includes(p))!;
-        const ledge = st.platforms.find((p) => p.x + p.width === f.x0 && p.y <= f.y + 1)!;
+        const ledge = st.platforms.find((p) => p.x + p.width === f.x0 && !inside.includes(p))!;
         assert.ok(inside.length && perch && ledge, `${what}: the pit under the liana at ${f.x0}`);
         pits++;
         const floor = Math.max(...inside.map((p) => p.y));
@@ -823,7 +824,7 @@ test("a liana costs what a self-swinging swing takes (wait for the window, ride 
 
 test("a perch past a liana too narrow or too high for the release window is widened, then levelled, rather than refused", () => {
   const b = planBudget(cfg('6-1', 'sprint'), { ...manifest, moves: [...manifest.moves, 'swing'] }, 'easy');
-  for (const [dy, w] of [[-150, 60], [-100, 80], [-400, 300]] as const) {
+  for (const [dy, w] of [[-200, 30], [-300, 300], [-400, 300]] as const) {
     const sec: SectionTemplate = {
       ...swingSec, mirrorable: false, sockets: [],
       pieces: [swingSec.pieces[0], swingSec.pieces[1], { key: 'far', shape: 'branch', w, place: { kind: 'land', after: 'rope', dy, water: true } }],
@@ -831,10 +832,45 @@ test("a perch past a liana too narrow or too high for the release window is wide
     for (let i = 1; i <= 3; i++) {
       const L = layLocal(sec, b, rngFor(i));
       const [near, rope, far] = L.pieces;
-      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, rope.hang!.swing!, near.y, { x: far.x, y: far.y, w: far.w });
+      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, rope.hang!.swing!, { x: far.x, y: far.y, w: far.w }, 'easy');
       assert.ok(win >= LIANA.window.easy, `dy ${dy} w ${w} roll ${i}: a ${(win * 1000).toFixed(0)} ms window`);
-      assert.ok(far.w > w + b.landingPad || far.y - near.y > dy, `dy ${dy} w ${w} roll ${i}: widened or levelled`);
-      assert.ok(far.y - near.y >= dy && far.y - near.y <= 0);
+      assert.ok(far.w > w + b.landingPad || far.y - near.y !== dy, `dy ${dy} w ${w} roll ${i}: widened or moved`);
+    }
+  }
+});
+
+test("gen2's liana model is the engine's (vine-fix): the same swing numbers and the same release window, or this fails", () => {
+  // (until vine-fix is on main, physics.ts has the old pumped swing: the mirror is held to vine-fix 7d09039's numbers; once it is,
+  // to physics.ts's own: its TIMED settings per difficulty, and pressWindow onto a perch on a few swings)
+  const P = physics as unknown as Record<string, unknown> & typeof physics;
+  const T = P.TIMED as { period: number; amp: number; sweetFrom: number; sweetTo: number };
+  if (typeof P.pressWindow === 'function' && typeof P.vineAngle === 'function') {
+    const press = P.pressWindow as (A: object, hits: (c: { x: number; y: number; vy: number }, t: number, prevY: number) => boolean) => number;
+    for (const d of ['normal', 'easy'] as const) {
+      P.setTimedSwing(d === 'easy');
+      assert.equal(T.period, VINE.period[d]);
+      assert.equal(T.amp, VINE.amp);
+      assert.deepEqual([T.sweetFrom, T.sweetTo], [...VINE.sweet[d]]);
+      for (const [top, reach, gap, dy] of [[400, 160, 477, 0], [420, 190, 560, -60], [400, 190, 600, 0]]) {
+        const A = { x: reach, topY: -top, bottomY: Math.min(30, -top + 410), swingAmp: VINE.amp, swingPhase: 0 };
+        const to = { x: gap, y: dy, w: 400 };
+        const theirs = press(A, (c, _t, prevY) => c.vy >= 0 && prevY <= to.y + 14 && c.y >= to.y && c.x > to.x + 10 && c.x < to.x + to.w) / 1000;
+        const ours = lianaRelease(A, { amp: VINE.amp, period: VINE.period[d] }, to, d);
+        assert.ok(Math.abs(theirs - ours) <= 2 / 30 + 1e-9, `${d} ${top}/${reach}/${gap}/${dy}: vine-fix ${theirs.toFixed(3)} s, gen2 ${ours.toFixed(3)} s`);
+      }
+    }
+    P.setTimedSwing(false);
+  } else {
+    assert.deepEqual(VINE.period, { normal: 2.85, easy: 3.3 });
+    assert.equal(VINE.amp, 0.45);
+    assert.deepEqual(VINE.sweet, { normal: [-0.15, 0.9], easy: [-0.4, 1.2] });
+    assert.deepEqual(VINE.release, { late: 0.36, early: 0.32, lateFrom: 0.375, earlyFrom: -0.875 });
+    // (and World 6's swings, anchored 400-420 px up with level perches 477 px or more out, leave the window under the calmer swing)
+    for (const d of ['normal', 'easy'] as const) {
+      for (const [top, reach] of [[400, 160], [420, 190]]) {
+        const v = { x: reach, topY: -top, bottomY: Math.min(30, -top + 410) };
+        assert.ok(lianaRelease(v, { amp: VINE.amp, period: VINE.period[d] }, { x: 477, y: 0, w: 400 }, d) >= LIANA.window[d] * 3, `${d} ${top}/${reach}`);
+      }
     }
   }
 });
