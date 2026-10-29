@@ -75,7 +75,7 @@ def main():
             mg = 0
         else:
             im, mg = cut_figure(gen, m, old, HD, rect_margin=30 if general else 6, limit=not general, drop_grey=take.startswith('new-'))
-        if re.search(r'-p[si]\d*$', take):
+        if re.search(r'-p[sij]\d*$', take):
             # (the pair repaints: Pokey's orange brought to his story frames')
             im = pokey_tone(im)
         figs[key] = im
