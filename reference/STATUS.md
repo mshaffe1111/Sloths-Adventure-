@@ -8,6 +8,19 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
+## Live and test link (2026-10-28 ~20:30 ET)
+
+- LIVE: PR #43 (polish, W1/W2/W4 round 2, gen2 core, Dot fix) and PR #44 (Meeca's trails rebuilt; Matt tested and approved, and
+  approved her line "Too far to jump. The high way, then."). Both deployed, APK built.
+- Test link v224 (ccr): + W3 round 2, W4 round 3, 5-7/5-9 on gen2 (gen2-hook 5c651ee; 5-9 Easy goal 5; flags <= 4,500 px).
+  Open: 5-7/5-9 look alike by era's 20 s rule (every W5 stage does: same few moves), so it goes to a World 5 variety pass; W5 band below W4.
+- Vine HOTFIX: Matt approved the v2 videos (period 2.85/3.3 s, amp <= 0.45 rad, no overlap, out of step, every jump >= 167/300 ms;
+  root cause: a neighbour vine took over the swing). vine-fix 7d09039, final suite in progress → small PR → main.
+- Art: Matt "Love it all, use as much as possible". Gallery published (https://claude.ai/artifact/6huUggQRkCkBs3K4Bf47o5). Art helper
+  a01f960681f8dcc2a: ~$5 re-runs (Monarch fly/hover, Flicker lead/dart, Reaver walk), then cut-in on art-cutin. Matt will make in Gemini:
+  side-on props (W10 stair, W7 block, W9 slab, W8 liana), collars-off Queen and General, Reaver walk pose sheet.
+- World 4 round 4 (climb rocks, Matt: "harder, still safe"; bands.ts timing term) held off the test link; round 5 running.
+
 ## Release PR #43 (opened 2026-10-28 ~18:45 ET, Matt: "everything that's in the merge right now can go through, I've tested it")
 
 - ccr at b080ec1: polish, W1 r2, W2 r2, W4 r2, gen2 core, the Dot fix. Gate: tsc clean, suite 1622 pass 0 fail (2 to-dos), build ok.
