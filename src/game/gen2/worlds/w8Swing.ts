@@ -221,8 +221,9 @@ const swingDropClimb = swingSection({
     liana('l1', 'a'),
     perch('b', 'l1', [220, 250]),
     down('b2', 'b', -RAISE, [160, 190]),
-    ...climbWall('v', 'b2', 'wall', 200, [200, 240]),
-    down('c', 'wall', 200, [380, 420]),
+    // (the trunk 290 px over the low bough: 210 over the perch before it, out of a double jump from either, so the climb is the way on)
+    ...climbWall('v', 'b2', 'wall', 290, [200, 240]),
+    down('c', 'wall', 290, [380, 420]),
   ],
   first: 'a',
   last: 'c',
