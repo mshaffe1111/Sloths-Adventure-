@@ -797,21 +797,15 @@ export function drawSilkSheet(ctx: CanvasRenderingContext2D, x0: number, x1: num
   if (drawW5Art(ctx, 'silkSheet', (x0 + x1) / 2, bottom, x1 - x0, { alpha: 0.9 })) return;
   const w = x1 - x0;
   if (w5ArtReady()) {
-    // the painted sheets hung side by side across it (each kept near its own shape), and slow light moving over them; brighter as he lingers
+    // one painted silk cloth draped along a bough across the whole sheet (its hem soft and torn, never a straight edge), turned by where
+    // it hangs; the light on it breathes, brighter as he lingers (drawn as the cloth itself again, added: no box of light)
     const hh = bottom - top;
-    const n = Math.max(1, Math.round(w / w5Width('silkSheet', hh)));
-    const sw = w / n;
-    for (let i = 0; i < n; i++) drawW5Box(ctx, 'silkSheet', x0 + i * sw - 4, top, sw + 8, hh, (i + takeAt(x0, 2)) % 2 === 1);
+    const flip = takeAt(x0, 2) === 1;
+    drawW5Box(ctx, 'silkDrape', x0 - 10, top, w + 20, hh, flip);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    const s = (t * 0.25) % 1;
-    const lx = x0 - 60 + (w + 120) * s;
-    const g = ctx.createLinearGradient(lx - 50, 0, lx + 50, 0);
-    g.addColorStop(0, 'rgba(255, 236, 200, 0)');
-    g.addColorStop(0.5, `rgba(255, 236, 200, ${0.16 + 0.14 * near})`);
-    g.addColorStop(1, 'rgba(255, 236, 200, 0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(Math.max(x0, lx - 50), top + hh * 0.08, Math.min(x1, lx + 50) - Math.max(x0, lx - 50), hh * 0.8);
+    ctx.globalAlpha = (0.06 + 0.1 * near) * (0.6 + 0.4 * Math.sin(t * 1.3 + x0 * 0.01));
+    drawW5Box(ctx, 'silkDrape', x0 - 10, top, w + 20, hh, flip);
     ctx.restore();
     return;
   }

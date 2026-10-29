@@ -11,7 +11,7 @@
 //   orchids        orchidOpen, orchidHalf, orchidClosed (the closing-orchid platform's three states), orchidOpen2, orchidHalf2,
 //                  orchidBack, orchidPink (+2), orchidIcon (64 px); orchidRow (+2): a mossy branch with a hanging row of blooms
 //   bell           bell, bell2: the pink bell flower ("in plain sight, look for a pink bell")
-//   silk           silkThread (a dewy thread), silkSpan (a thread strung between two forks, strands hanging), silkBridge, silkSheet
+//   silk           silkThread (a dewy thread), silkBridge, silkSheet, silkDrape (a wide silk cloth draped along a bough: a silk sheet)
 //   doilies        doily (flat, round), doilyStool (on a wooden disc), doilyLong (a long lace ledge)
 //   visitors       wrappedArmchair (+2), wrappedChair (+2), wrappedStool, wrappedCup (+2), silkLump
 //   cocoons        cocoonHanging, cocoonHangingTorn, cocoonWrapped (lying), cocoonTorn (lying, burst open)
@@ -65,6 +65,7 @@ export const W5_FRAMES = {
   orchidSprout2: { x: 1936, y: 1389, w: 99, h: 142 },
   silkBridge: { x: 188, y: 1478, w: 412, h: 122 },
   silkLump: { x: 824, y: 1607, w: 104, h: 44 },
+  silkDrape: { x: 908, y: 0, w: 707, h: 335 },
   silkSheet: { x: 652, y: 0, w: 252, h: 435 },
   silkThread: { x: 408, y: 1650, w: 412, h: 60 },
   teaTable: { x: 152, y: 1142, w: 204, h: 184 },

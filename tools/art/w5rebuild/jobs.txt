@@ -1,3 +1,5 @@
 w5-rebuild HF jobs, 2026-10-29 (cap $8). rtx-pro-6000 at ~$2.75/h. Results in the bucket mshaffe111/w5-xfer under w5rebuild/.
 w5r-r1 6ae3ba54c78863f9c62de3b3 rtx-pro-6000 created 21:27:48Z (5:27 PM ET): groundgpu.py on spec-w5r.json (42 World 5 props x 2 takes)
 finished: w5r-r1 21:37:43Z (about 11 min with the model load, ~$0.50); running total ~$0.50 of $8
+w5r-r2 6ae3c6b0c78863f9c62deee8 rtx-pro-6000 created 22:20:32Z (6:20 PM ET): spec-w5r2.json (the wide silk drape x4 takes)
+finished: w5r-r2 22:21:49Z (about 1.5 min, ~$0.07; pick s62-31); running total ~$0.57 of $8

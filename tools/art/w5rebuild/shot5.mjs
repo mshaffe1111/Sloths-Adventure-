@@ -13,7 +13,7 @@ for (const spec of specs) {
     const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, serviceWorkers: 'block' });
     const p = await ctx.newPage();
     p.on('pageerror', (e) => console.log('ERR', e.message));
-    await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+    await p.goto(`http://127.0.0.1:${port}/?lessons=off`); if (process.env.NOPIT) await p.evaluate(() => { globalThis.__noPit = true; });
     await p.waitForTimeout(2500);
     await p.evaluate(([i, l]) => window.__play(i, l === undefined ? undefined : +l), [id, layout]);
     await p.waitForTimeout(6000);

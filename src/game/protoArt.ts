@@ -670,10 +670,9 @@ function trunkVine(): HTMLCanvasElement | null {
 }
 
 /**
- * A pit's inside in shadow: cool, from nothing at the banks' lips to darkest on its floor, darker toward its walls, and spilling 40 units
- * under each bank's face, where the end's undercut shows it as a soft contact shadow under the lip. Each stretch of the pit's surface
- * (its floor, a step standing on it) is shaded down to its own top and fades out just under it: the soil under the surface is the
- * banks' own soil, one piece with theirs.
+ * A pit's inside in shadow: cool, from nothing at the banks' lips to darkest just over its floor, and spilling 40 units under each bank's
+ * face, where the end's undercut shows it as a soft contact shadow under the lip. Each stretch of the pit's surface (its floor, a step
+ * standing on it) is shaded down to its own top; the surface itself is left as painted.
  */
 function pitShade(ctx: CanvasRenderingContext2D, o: { x0: number; x1: number; top: number; pieces: Platform[] }) {
   const SH = '12,18,32';
@@ -694,34 +693,19 @@ function pitShade(ctx: CanvasRenderingContext2D, o: { x0: number; x1: number; to
     segs[segs.length - 1][1] = x1;
   }
   ctx.save();
+  // (only the air inside the pit is shaded, from nothing at the lips to darkest just over each stretch of its surface: shading down over
+  // the floor and its step too showed them as see-through boxes, and the walls' banded shadow as ruled lines, w5-rebuild 2026-10-29)
   for (const [a, b, fy] of segs) {
-    const y1 = fy + 50;
-    const g = ctx.createLinearGradient(0, o.top, 0, y1);
+    if (fy - o.top < 4) continue;
+    const g = ctx.createLinearGradient(0, o.top, 0, fy);
     g.addColorStop(0, `rgba(${SH},0)`);
-    g.addColorStop((fy - o.top) / (y1 - o.top), `rgba(${SH},0.56)`);
-    g.addColorStop(1, `rgba(${SH},0)`);
+    g.addColorStop(1, `rgba(${SH},0.5)`);
     ctx.fillStyle = g;
     // (feathered over its outer 40 units each side, under the banks' faces: a hard edge showed where a face curves in)
     for (let u = a; u < b; u += 5) {
       const d = Math.min(u - x0, x1 - (u + 5));
       ctx.globalAlpha = Math.max(0, Math.min(1, (d + 2.5) / 40));
-      ctx.fillRect(u, o.top, Math.min(5, b - u), y1 - o.top);
-    }
-  }
-  ctx.globalAlpha = 1;
-  // the walls' shadow, fading out toward the surface in three bands
-  const fl = Math.min(...segs.map((q) => q[2]));
-  const bands: Array<[number, number, number]> = [[o.top + 20, fl - 60, 1], [fl - 60, fl - 30, 0.6], [fl - 30, fl, 0.3]];
-  for (const [a, b] of [[x0, o.x0 + 70], [x1, o.x1 - 70]] as const) {
-    const h = ctx.createLinearGradient(a, 0, b, 0);
-    h.addColorStop(0, `rgba(${SH},0)`);
-    h.addColorStop(40 / 110, `rgba(${SH},0.4)`);
-    h.addColorStop(1, `rgba(${SH},0)`);
-    ctx.fillStyle = h;
-    for (const [ya, yb, al] of bands) {
-      if (yb <= ya) continue;
-      ctx.globalAlpha = al;
-      ctx.fillRect(Math.min(a, b), ya, Math.abs(b - a), yb - ya);
+      ctx.fillRect(u, o.top, Math.min(5, b - u), fy - o.top);
     }
   }
   ctx.restore();
@@ -799,7 +783,13 @@ export function drawProtoScene(
     const ul = !p.soil && !p.mound && under('l') ? 60 : 0;
     const ur = !p.soil && !p.mound && under('r') ? 60 : 0;
     const box = ul || ur ? { ...p, x: p.x - ul, width: p.width + ul + ur } : p;
+    // (World 5's raised beds a touch lighter and warmer than the bank they stand on, so they don't read dull beside the garden: the lead)
+    if (p.mound) {
+      ctx.save();
+      ctx.filter = 'brightness(1.16) saturate(1.12)';
+    }
     drawBankArt(ctx, box, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);
+    if (p.mound) ctx.restore();
   }
   shadeUpTo(-Infinity);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
