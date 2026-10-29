@@ -178,6 +178,105 @@ def gate_open_from(world, take):
     return fill_door_gaps(c, world)
 
 
+# the light each world's way out glows with (round 3, lead review: the open door read as a dark hole): warm gold, green-gold in the
+# cave and the swamp, rose-gold in the orchid garden
+GLOW = {1: (255, 214, 120), 2: (255, 210, 130), 3: (200, 240, 150), 4: (255, 224, 150), 5: (255, 200, 170), 6: (214, 236, 130),
+        7: (255, 208, 110), 8: (255, 214, 150), 9: (255, 196, 110), 10: (255, 210, 130)}
+
+
+def doorway_mask(im, world):
+    """the open way through: the biggest dark region (lum under 60) inside where the door way was laid out (door_rect; World 5: the
+    totem's little door, where gate_w5 put it), filled"""
+    from scipy import ndimage
+    a = np.asarray(im.convert('RGB')).astype(np.float32)
+    lum = a.mean(axis=2)
+    key = (np.minimum(a[..., 0], a[..., 2]) - a[..., 1]) > 90
+    dark = (lum < 60) & ~key
+    x0, x1, y0, y1 = (349, 489, 650, 851) if world == 5 else (round(v) for v in door_rect(world))
+    box = np.zeros_like(dark)
+    box[y0 - 10:y1 + 4, x0 - 16:x1 + 16] = True
+    dark &= box
+    lab, n = ndimage.label(dark)
+    if not n:
+        return None
+    sizes = ndimage.sum(np.ones_like(lum), lab, range(1, n + 1))
+    m = lab == (int(np.argmax(sizes)) + 1)
+    return ndimage.binary_fill_holes(ndimage.binary_closing(m, iterations=6))
+
+
+def gate_lit_from(world, take, shut_take=None, half=None):
+    """round 3: the open gate lit from inside: the way through shows the world beyond (its far backdrop, faint and warm) in a strong
+    glow of the world's light, brightest low in the middle where the path leads out. World 10: the shut take's floor spikes put back."""
+    from scipy import ndimage
+    src = Image.open(take).convert('RGB')
+    if half == 'right':
+        src = src.crop((src.width // 2, 0, src.width, src.height))
+    src = src.resize((768, 960), Image.LANCZOS) if src.size != (768, 960) else src
+    if shut_take is not None:  # (World 10's spikes: the step of the first round's open half, which painted a spike either side of the
+        # way through and two more by the pillars, put back under the round-2 gate)
+        sh = Image.open(shut_take).convert('RGB').crop((768, 0, 1536, 960))
+        y0 = 800
+        band = sh.crop((0, y0, 768, 960))
+        src.paste(band, (0, y0))
+    m = doorway_mask(src, world)
+    c = src.convert('RGBA')
+    if m is None:
+        return c
+    ys, xs = np.where(m)
+    x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
+    w, h = x1 - x0 + 1, y1 - y0 + 1
+    far = Image.open(R / f'src/assets/backdrops/w{world}-far.webp').convert('RGB')
+    # (a tall slice from the middle of the painting, inside its bounds: its sky above, its land below)
+    beyond = far.crop((round(far.width * 0.36), round(far.height * 0.12), round(far.width * 0.56), round(far.height * 0.92)))
+    beyond = np.asarray(beyond.resize((w, h), Image.LANCZOS)).astype(np.float32)
+    col = np.array(GLOW[world], np.float32)
+    yy, xx = np.mgrid[0:h, 0:w]
+    d = np.sqrt(((xx - w / 2) / (w * 0.55)) ** 2 + ((yy - h * 0.62) / (h * 0.62)) ** 2)
+    light = np.clip(1.15 - d, 0, 1)[..., None]
+    out = beyond * 0.55 + col * 0.45
+    out = out * (0.55 + 0.6 * light) + np.array([255, 250, 230], np.float32) * (light ** 3) * 0.55
+    # (the edges of the way through stay a little in shadow, so the frame reads)
+    edge = np.clip(ndimage.distance_transform_edt(m[y0:y1 + 1, x0:x1 + 1]) / 14, 0, 1)[..., None]
+    out = out * (0.45 + 0.55 * edge)
+    a = np.asarray(c).astype(np.float32)
+    sub = a[y0:y1 + 1, x0:x1 + 1]
+    mm = m[y0:y1 + 1, x0:x1 + 1]
+    sub[mm, :3] = np.clip(out, 0, 255)[mm]
+    a[y0:y1 + 1, x0:x1 + 1] = sub
+    return Image.fromarray(a.astype(np.uint8), 'RGBA')
+
+
+def water_irregular(world):
+    """round 3 (lead review: World 5's swirls came back every ~210 px): World 6's chop re-toned as before, but laid in uneven pieces,
+    each its own width, offset, height and flip, so the model has no beat to copy"""
+    import random
+    rnd = random.Random(world * 31 + 7)
+    src = sheet('src/assets/props/w6-water.webp')
+    chop = src.crop((0, 158, 183, 244)).convert('RGB')
+    a = np.asarray(chop).astype(np.float32)
+    lum = a.mean(axis=2, keepdims=True) / 255
+    top, deep = (np.array(c, np.float32) for c in WATER[world])
+    rows = np.linspace(0, 1, a.shape[0])[:, None, None]
+    base = top * (1 - rows) + deep * rows
+    tone = Image.fromarray(np.clip(base * (0.6 + lum * 0.9), 0, 255).astype(np.uint8))
+    s = Image.new('RGB', (1536, 384), MAG)
+    body = Image.new('RGB', (1536, 260), tuple(int(v) for v in deep))
+    x = 0
+    while x < 1536:
+        pw = rnd.randint(150, 330)
+        piece = tone.crop((rnd.randint(0, 60), 0, 183, 86)).resize((pw + 40, rnd.randint(230, 270)), Image.LANCZOS)
+        if rnd.random() < 0.5:
+            piece = piece.transpose(Image.FLIP_LEFT_RIGHT)
+        body.paste(piece, (x - 20, rnd.randint(-6, 6)))
+        x += pw
+    s.paste(body, (0, 124))
+    d = ImageDraw.Draw(s)
+    for _ in range(4 if world == 5 else 0):  # (a few petals, here and there, not in a row)
+        px, py = rnd.randint(40, 1500), rnd.randint(122, 150)
+        d.ellipse([px, py, px + rnd.randint(14, 22), py + 7], fill=(236, 180, 200))
+    return s
+
+
 def gate(world):
     s = Image.new('RGBA', (1536, 960), MAG + (255,))
     s.alpha_composite(gate_half(world, False), (0, 0))
@@ -450,6 +549,22 @@ def finds():
             s.alpha_composite(c, (k * 512, row * 512))
     return s
 
+
+if __name__ == '__main__' and len(sys.argv) > 2 and sys.argv[1] == 'lit':
+    # round 3: python3 -I tools/art/hfbatch/stagestarts.py lit <takes dir>  (the open gates lit from inside, World 5 and 4's water redone)
+    T = Path(sys.argv[2])
+    picks = json.loads((Path(__file__).resolve().parent / 'stage-picks.json').read_text())
+    for w in list(GATE) + [5]:
+        if w == 5:
+            im = gate_lit_from(5, T / f"{picks['gate-w5']}.webp", half='right')
+        else:
+            im = gate_lit_from(w, T / f"{picks[f'gateopen-w{w}']}.webp", T / f"{picks[f'gate-w{w}']}.webp" if w == 10 else None)
+        im.convert('RGB').save(OUT / f'start-gatelit-w{w}.webp', 'WEBP', quality=92)
+        print(OUT / f'start-gatelit-w{w}.webp')
+    for w in (4, 5):
+        water_irregular(w).save(OUT / f'start-water2-w{w}.webp', 'WEBP', quality=92)
+        print(OUT / f'start-water2-w{w}.webp')
+    sys.exit(0)
 
 if __name__ == '__main__' and len(sys.argv) > 2 and sys.argv[1] == 'open':
     # round 2: python3 -I tools/art/hfbatch/stagestarts.py open <takes dir>  (the open gates from the picked shut takes)

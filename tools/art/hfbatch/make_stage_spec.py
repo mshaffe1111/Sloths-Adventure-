@@ -113,10 +113,40 @@ for w, p in OPEN_P.items():
             items2.append({'name': f'gateopen-w{w}-s{round(st * 100)}-{sd}', 'start': f'start-gateopen-w{w}.webp', 'prompt': pr,
                            'strength': st, 'seed': sd, 'w': 768, 'h': 960})
 
+# (round 3, the lead's review: the open door read as a dark hole. start-gatelit-w<N>.webp (stagestarts.py gate_lit_from): the
+# round-2 pick with its way through lit from inside in the world's own light, the world beyond faint in it; World 10 with its
+# floor spikes put back. And World 4 and 5's water from an uneven start, start-water2-w<N>: the swirls came back every ~210 px.)
+LIGHT = {3: 'soft green-gold', 6: 'soft green-gold', 5: 'warm rose-gold'}
+items3 = []
+for w in list(GATES) + [5]:
+    body = OPEN_P[w] if w in OPEN_P else ('a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, '
+                                          'a big pink orchid in bloom on top, a small arched door low in the trunk')
+    lt = LIGHT.get(w, 'warm golden')
+    extra = ' A row of short rusty iron spikes stands on the step either side of the way through.' if w == 10 else ''
+    if w == 5:
+        how = (f' The little door stands open and glows bright with {lt} light from inside, the light spilling out onto the ground in '
+               'front of it.')
+    else:
+        how = (f' The gate stands open: no door, the way through glows bright with {lt} light from inside, and beyond it the land '
+               'outside is faintly visible in the glow, a path leading out into the light, the inner edges of the gate lit by it.')
+    pr = S + 'a game exit gate for a side-scrolling platformer, ' + body + how + extra + ' ' + STYLE + KEYM
+    for st in (0.4, 0.52):
+        for sd in (7, 23):
+            items3.append({'name': f'gatelit-w{w}-s{round(st * 100)}-{sd}', 'start': f'start-gatelit-w{w}.webp', 'prompt': pr,
+                           'strength': st, 'seed': sd, 'w': 768, 'h': 960})
+W2P = {4: WATERS[4].replace('with a little white foam', 'with small uneven flecks of white foam, here and there, never in a row'),
+       5: WATERS[5].replace('a few pale pink petals floating on the surface', 'two or three pale pink petals floating far apart')}
+for w, p in W2P.items():
+    for st in (0.55, 0.65):
+        for sd in (7, 23):
+            items3.append({'name': f'water2-w{w}-s{round(st * 100)}-{sd}', 'start': f'start-water2-w{w}.webp', 'neg': WNEG + ', repeated pattern, regular swirls, frieze, border',
+                           'prompt': S + 'a horizontal tileable strip of ' + p + ', uneven and natural, nothing repeating, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. '
+                           + STYLE.replace('seen straight from the side, ', '') + 'no sky, no text', 'strength': st, 'seed': sd, 'w': 1536, 'h': 384})
+
 NEG = ('perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, '
        '3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal')
 here = Path(__file__).resolve().parent
-parts = [items[: len(items) // 2], items[len(items) // 2:], items2]
+parts = [items[: len(items) // 2], items[len(items) // 2:], items2, items3]
 for k, part in enumerate(parts):
     spec = {'note': 'hf-art-stage every-stage pieces by img2img from stagestarts.py, 2026-10-29',
             'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
