@@ -647,7 +647,7 @@ export default function App() {
     // so the first frames of play are not the browser decoding a 10 to 20 MB sheet (QA's 376 to 472 ms freezes as a stage began)
     const seq = ++launchSeq.current;
     // (the mode this run is played on: a change in the menu applies from the next stage, so this is the one its results are kept with)
-    startRun();
+    startRun(lvl.id);
     void readyToStart(lvl, canvasRef.current, inPlay).then(() => {
       if (seq !== launchSeq.current) return;
       // Slight delay to allow canvas element mounting
@@ -1219,7 +1219,7 @@ export default function App() {
             />
           )}
           {inputEngineRef.current && (
-            <ControlSwitch inputEngine={inputEngineRef.current} />
+            <ControlSwitch inputEngine={inputEngineRef.current} world={activeLevel.worldIndex} />
           )}
         </>
       )}

@@ -12,6 +12,7 @@
 import { runFx as runClassic } from './sfxClassic.ts';
 import { AudioCore, envelope } from './core.ts';
 import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock, type NoteVoice } from './instruments.ts';
+import { fxGain } from './sfxMix.ts';
 import type { KeyInfo } from './music.ts';
 import { unpackHit, roarPitch, streakStage, type Material } from './combat.ts';
 import { midiHz } from './theory.ts';
@@ -1014,19 +1015,20 @@ export const SFX: Record<string, Fx> = {
     tone(core, { t, f0: 100, f1: 60, dec: 0.3, peak: 0.35, dst: d });
     noise(core, { t, type: 'highpass', f0: 6000, peak: 0.08, dec: 0.5, dst: d });
   },
-  pauseIn(core) {
+  // (the swoops run between the home note and its octave in the music's key, so pausing and resuming sit in the stage's music)
+  pauseIn(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
     smp(core, d, t, 'uiClose', { gain: 0.7, rate: 1.0, lp: 6000 });
     noise(core, { t, type: 'lowpass', f0: 4000, f1: 300, q: 0.7, peak: 0.12, dec: 0.3, attack: 0.02, dst: d, pink: true });
-    tone(core, { t, f0: 520, f1: 260, dec: 0.18, peak: 0.08, dst: d });
+    tone(core, { t, f0: midiHz(ladder(key, 3, 55)), f1: midiHz(ladder(key, 0, 55)), dec: 0.18, peak: 0.08, dst: d });
   },
-  pauseOut(core) {
+  pauseOut(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
     smp(core, d, t, 'uiOpen', { gain: 0.7, rate: 1.0, lp: 6000 });
     noise(core, { t, type: 'lowpass', f0: 300, f1: 4000, q: 0.7, peak: 0.12, dec: 0.28, attack: 0.1, dst: d, pink: true });
-    tone(core, { t, f0: 260, f1: 520, dec: 0.18, peak: 0.08, dst: d });
+    tone(core, { t, f0: midiHz(ladder(key, 0, 55)), f1: midiHz(ladder(key, 3, 55)), dec: 0.18, peak: 0.08, dst: d });
   },
   /** the first beat of a level */
   levelStart(core, key) {
@@ -1038,12 +1040,6 @@ export const SFX: Record<string, Fx> = {
 };
 
 export type SfxName = keyof typeof SFX;
-
-/** loudness trims measured offline so that frequent sounds sit low and big moments sit high without clipping */
-const TRIMS: Record<string, number> = {
-  jump: 1.45, doubleJump: 0.67, glide: 1.0, punch: 0.32, megaPunch: 0.42, kick: 0.35, whoosh: 0.41, hit: 0.85, flower: 1.45, fruit: 0.75, heart: 0.75, superHeart: 0.5,
-  power: 0.55, vine: 0.58, climb: 0.7, shrine: 0.45, relic: 0.45, hurt: 0.76, eagle: 2.0, roar: 0.75, land: 0.83, step: 0.88, checkpoint: 0.55, oneUp: 0.55,
-};
 
 
 /** which version of the effect to play and how long the combo is: both change the sound a little */
@@ -1095,7 +1091,7 @@ export function runFx(name: string, core: AudioCore, key: KeyInfo, arg?: number,
     runClassic(name, core, key, arg, v);
     return;
   }
-  TRIM = TRIMS[name] ?? 1;
+  TRIM = fxGain(name);
   VAR = Math.max(0, Math.floor(v.variant ?? 0));
   STREAK = Math.max(0, Math.floor(v.streak ?? 0));
   try {

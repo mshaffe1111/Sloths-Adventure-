@@ -245,3 +245,32 @@ test('4-8 runtime: a freed chick\'s parent blows a tailwind ahead of the nest fo
   const out = play.step(1 / 30, host(st, player(cage.x + 200, G), NEST_WIND.arrive + 1));
   assert.ok(out.wind > 0);
 });
+
+test('4-8 (LV-12): from the plugged boulder the jump to the nest\'s branch lands with any press in a 7-frame window, a short or a full hold', async () => {
+  const { RealPlay } = await import('./realPlay.ts');
+  for (const seed of [1, 2, 3]) {
+    const falls = (new RealPlay('4-8', seed).e as unknown as { proto: { w4: { falls: Array<{ plug: { platformId: number; atX: number } }> } } }).proto.w4.falls;
+    for (let fi = 0; fi < falls.length; fi++) {
+      for (const hold of [6, 9, 14]) {
+        for (const lead of [0, 2, 4, 6]) {
+          const r = new RealPlay('4-8', seed);
+          r.safe = true;
+          const f = (r.e as unknown as { proto: { w4: { falls: typeof falls } } }).proto.w4.falls[fi];
+          const b = r.platforms.find((q) => q.id === f.plug.platformId)!;
+          b.x = f.plug.atX;
+          r.stand(b.x + 10, b.y);
+          r.wait(FALLS.dry + 0.6);
+          const land = r.platforms.filter((q) => q.type === 'solid' && q.x > b.x + b.width + 60 && q.x < b.x + b.width + 400 && Math.abs(q.y - (b.y + b.height)) < 40).sort((a, c) => a.x - c.x)[0];
+          let pressed = -1;
+          for (let i = 0; i < 120; i++) {
+            const p = r.p;
+            if (pressed < 0 && p.grounded && ((b.x + b.width - p.x) / Math.max(60, Math.abs(p.vx))) * 30 <= lead) pressed = i;
+            r.frame({ right: true, press: i === pressed, jump: pressed >= 0 && i !== pressed && i - pressed < hold });
+            if (pressed >= 0 && r.p.grounded && i - pressed > 3) break;
+          }
+          assert.ok(land && r.p.grounded && Math.abs(r.p.y - land.y) < 4, `seed ${seed} fall ${fi}: a ${hold}-frame hold pressed ${lead} frames before the edge missed`);
+        }
+      }
+    }
+  }
+});

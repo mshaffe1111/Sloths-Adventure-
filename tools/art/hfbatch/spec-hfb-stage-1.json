@@ -1,0 +1,354 @@
+{
+ "note": "hf-art-stage every-stage pieces by img2img from stagestarts.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/f4b14f6a088899b3b29d9e7a5f346c1cd1b25f4b/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "flag-s55-7",
+   "start": "start-flag.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game checkpoint marker, two versions of the very same object side by side, identical in shape and size, a small carved wooden post with a pennant woven of green jungle leaves. Left: unlit, muted dull grey-green leaves, the post plain. Right: lit, the leaves glowing warm golden-green and the round bead on top of the post glowing warm yellow. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 768
+  },
+  {
+   "name": "flag-s55-23",
+   "start": "start-flag.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game checkpoint marker, two versions of the very same object side by side, identical in shape and size, a small carved wooden post with a pennant woven of green jungle leaves. Left: unlit, muted dull grey-green leaves, the post plain. Right: lit, the leaves glowing warm golden-green and the round bead on top of the post glowing warm yellow. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1024,
+   "h": 768
+  },
+  {
+   "name": "flag-s70-7",
+   "start": "start-flag.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game checkpoint marker, two versions of the very same object side by side, identical in shape and size, a small carved wooden post with a pennant woven of green jungle leaves. Left: unlit, muted dull grey-green leaves, the post plain. Right: lit, the leaves glowing warm golden-green and the round bead on top of the post glowing warm yellow. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1024,
+   "h": 768
+  },
+  {
+   "name": "flag-s70-23",
+   "start": "start-flag.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game checkpoint marker, two versions of the very same object side by side, identical in shape and size, a small carved wooden post with a pennant woven of green jungle leaves. Left: unlit, muted dull grey-green leaves, the post plain. Right: lit, the leaves glowing warm golden-green and the round bead on top of the post glowing warm yellow. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1024,
+   "h": 768
+  },
+  {
+   "name": "water-w1-s55-7",
+   "start": "start-water-w1.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of murky tea-brown rainforest pit water seen from the side, a few small dead leaves floating on the surface, darker toward the bottom, soft pale highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w1-s55-23",
+   "start": "start-water-w1.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of murky tea-brown rainforest pit water seen from the side, a few small dead leaves floating on the surface, darker toward the bottom, soft pale highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w1-s70-7",
+   "start": "start-water-w1.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of murky tea-brown rainforest pit water seen from the side, a few small dead leaves floating on the surface, darker toward the bottom, soft pale highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w1-s70-23",
+   "start": "start-water-w1.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of murky tea-brown rainforest pit water seen from the side, a few small dead leaves floating on the surface, darker toward the bottom, soft pale highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w3-s55-7",
+   "start": "start-water-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of dark blue night water in a cave seen from the side, faint glowing cyan specks in it, nearly black toward the bottom, soft pale blue highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w3-s55-23",
+   "start": "start-water-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of dark blue night water in a cave seen from the side, faint glowing cyan specks in it, nearly black toward the bottom, soft pale blue highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w3-s70-7",
+   "start": "start-water-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of dark blue night water in a cave seen from the side, faint glowing cyan specks in it, nearly black toward the bottom, soft pale blue highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w3-s70-23",
+   "start": "start-water-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of dark blue night water in a cave seen from the side, faint glowing cyan specks in it, nearly black toward the bottom, soft pale blue highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w4-s55-7",
+   "start": "start-water-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of cold grey-teal mountain pool water under misty cliffs seen from the side, darker slate toward the bottom, soft pale highlight line along the rippled surface with a little white foam, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w4-s55-23",
+   "start": "start-water-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of cold grey-teal mountain pool water under misty cliffs seen from the side, darker slate toward the bottom, soft pale highlight line along the rippled surface with a little white foam, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w4-s70-7",
+   "start": "start-water-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of cold grey-teal mountain pool water under misty cliffs seen from the side, darker slate toward the bottom, soft pale highlight line along the rippled surface with a little white foam, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w4-s70-23",
+   "start": "start-water-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of cold grey-teal mountain pool water under misty cliffs seen from the side, darker slate toward the bottom, soft pale highlight line along the rippled surface with a little white foam, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w5-s55-7",
+   "start": "start-water-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of still dusky lilac-rose garden pond water seen from the side, a few pale pink petals floating on the surface, deep plum toward the bottom, soft warm highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w5-s55-23",
+   "start": "start-water-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of still dusky lilac-rose garden pond water seen from the side, a few pale pink petals floating on the surface, deep plum toward the bottom, soft warm highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w5-s70-7",
+   "start": "start-water-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of still dusky lilac-rose garden pond water seen from the side, a few pale pink petals floating on the surface, deep plum toward the bottom, soft warm highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "water-w5-s70-23",
+   "start": "start-water-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a horizontal tileable strip of still dusky lilac-rose garden pond water seen from the side, a few pale pink petals floating on the surface, deep plum toward the bottom, soft warm highlight line along the rippled surface, the water fills the lower part of the picture edge to edge, flat magenta above the water surface. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, no sky, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, sky, land, rocks, plants, people, animal, boat, reflection of trees"
+  },
+  {
+   "name": "pickups-s55-7",
+   "start": "start-pickups.webp",
+   "prompt": "slothadv style, painted storybook illustration, six game pickup icons in a grid: a glossy red heart, a red heart wearing a small gold crown, a green leaf pod with a golden lightning bolt, a shining golden star, a glossy violet-blue magic orb with a pale swirl, another red heart. Each painted with a thick dark brown outline, a white shine at the upper left. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "pickups-s55-23",
+   "start": "start-pickups.webp",
+   "prompt": "slothadv style, painted storybook illustration, six game pickup icons in a grid: a glossy red heart, a red heart wearing a small gold crown, a green leaf pod with a golden lightning bolt, a shining golden star, a glossy violet-blue magic orb with a pale swirl, another red heart. Each painted with a thick dark brown outline, a white shine at the upper left. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "pickups-s70-7",
+   "start": "start-pickups.webp",
+   "prompt": "slothadv style, painted storybook illustration, six game pickup icons in a grid: a glossy red heart, a red heart wearing a small gold crown, a green leaf pod with a golden lightning bolt, a shining golden star, a glossy violet-blue magic orb with a pale swirl, another red heart. Each painted with a thick dark brown outline, a white shine at the upper left. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "pickups-s70-23",
+   "start": "start-pickups.webp",
+   "prompt": "slothadv style, painted storybook illustration, six game pickup icons in a grid: a glossy red heart, a red heart wearing a small gold crown, a green leaf pod with a golden lightning bolt, a shining golden star, a glossy violet-blue magic orb with a pale swirl, another red heart. Each painted with a thick dark brown outline, a white shine at the upper left. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "thorn-s55-7",
+   "start": "start-thorn.webp",
+   "prompt": "slothadv style, painted storybook illustration, a magic thorn gate, two versions of the very same object side by side, identical in shape and size, a ring of twisted dark purple thorny bramble vines with long pale sharp thorns pointing outward. Left: shut, the brambles woven across the middle, a dim violet dark inside. Right: open, the middle clear and glowing bright violet and white. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "thorn-s55-23",
+   "start": "start-thorn.webp",
+   "prompt": "slothadv style, painted storybook illustration, a magic thorn gate, two versions of the very same object side by side, identical in shape and size, a ring of twisted dark purple thorny bramble vines with long pale sharp thorns pointing outward. Left: shut, the brambles woven across the middle, a dim violet dark inside. Right: open, the middle clear and glowing bright violet and white. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "thorn-s70-7",
+   "start": "start-thorn.webp",
+   "prompt": "slothadv style, painted storybook illustration, a magic thorn gate, two versions of the very same object side by side, identical in shape and size, a ring of twisted dark purple thorny bramble vines with long pale sharp thorns pointing outward. Left: shut, the brambles woven across the middle, a dim violet dark inside. Right: open, the middle clear and glowing bright violet and white. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "thorn-s70-23",
+   "start": "start-thorn.webp",
+   "prompt": "slothadv style, painted storybook illustration, a magic thorn gate, two versions of the very same object side by side, identical in shape and size, a ring of twisted dark purple thorny bramble vines with long pale sharp thorns pointing outward. Left: shut, the brambles woven across the middle, a dim violet dark inside. Right: open, the middle clear and glowing bright violet and white. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1024,
+   "h": 512
+  },
+  {
+   "name": "net-s55-7",
+   "start": "start-net.webp",
+   "prompt": "slothadv style, painted storybook illustration, old frayed rope netting, two versions of the very same object side by side, identical in shape and size, a dome of pale beige knotted twine net pegged down at both ends with wooden pegs. Left: the net whole. Right: the same net torn open at the top, frayed loose ends hanging. Only the net and the pegs, nothing under it. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "net-s55-23",
+   "start": "start-net.webp",
+   "prompt": "slothadv style, painted storybook illustration, old frayed rope netting, two versions of the very same object side by side, identical in shape and size, a dome of pale beige knotted twine net pegged down at both ends with wooden pegs. Left: the net whole. Right: the same net torn open at the top, frayed loose ends hanging. Only the net and the pegs, nothing under it. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "net-s70-7",
+   "start": "start-net.webp",
+   "prompt": "slothadv style, painted storybook illustration, old frayed rope netting, two versions of the very same object side by side, identical in shape and size, a dome of pale beige knotted twine net pegged down at both ends with wooden pegs. Left: the net whole. Right: the same net torn open at the top, frayed loose ends hanging. Only the net and the pegs, nothing under it. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "net-s70-23",
+   "start": "start-net.webp",
+   "prompt": "slothadv style, painted storybook illustration, old frayed rope netting, two versions of the very same object side by side, identical in shape and size, a dome of pale beige knotted twine net pegged down at both ends with wooden pegs. Left: the net whole. Right: the same net torn open at the top, frayed loose ends hanging. Only the net and the pegs, nothing under it. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "finds-s55-7",
+   "start": "start-finds.webp",
+   "prompt": "slothadv style, painted storybook illustration, four game story-find icons in a grid: top row a clump of green fern fronds on a mossy mound, plain on the left and on the right the same fern lit warm golden as if glowing; bottom row a pink bell flower hanging from its stem, plain on the left and on the right the same bell lit warm as if glowing. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "finds-s55-23",
+   "start": "start-finds.webp",
+   "prompt": "slothadv style, painted storybook illustration, four game story-find icons in a grid: top row a clump of green fern fronds on a mossy mound, plain on the left and on the right the same fern lit warm golden as if glowing; bottom row a pink bell flower hanging from its stem, plain on the left and on the right the same bell lit warm as if glowing. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "finds-s70-7",
+   "start": "start-finds.webp",
+   "prompt": "slothadv style, painted storybook illustration, four game story-find icons in a grid: top row a clump of green fern fronds on a mossy mound, plain on the left and on the right the same fern lit warm golden as if glowing; bottom row a pink bell flower hanging from its stem, plain on the left and on the right the same bell lit warm as if glowing. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "finds-s70-23",
+   "start": "start-finds.webp",
+   "prompt": "slothadv style, painted storybook illustration, four game story-find icons in a grid: top row a clump of green fern fronds on a mossy mound, plain on the left and on the right the same fern lit warm golden as if glowing; bottom row a pink bell flower hanging from its stem, plain on the left and on the right the same bell lit warm as if glowing. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure cyan background, no sky, no shadow, no text",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

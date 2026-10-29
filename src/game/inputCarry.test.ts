@@ -84,3 +84,13 @@ test('the input engine takes away every listener it added', () => {
   inp.destroy();
   for (const [k, n] of live) assert.equal(n, before.get(k) ?? 0, k);
 });
+
+test('CT-20: clearAll drops the engine\'s carving-spot, swing and bush flags (they outlived Meeca\'s stage)', () => {
+  const inp = new InputEngine();
+  inp.carveSpot = true;
+  inp.onSwing = true;
+  inp.inCover = true;
+  inp.clearAll();
+  assert.deepEqual([inp.carveSpot, inp.onSwing, inp.inCover], [false, false, false]);
+  inp.destroy();
+});

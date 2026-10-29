@@ -3,6 +3,7 @@
  *
  *   npx tsx tools/inspect/inspect.ts --worlds 1-5 [--seed 1] [--html path/to/report.html] [--stages 1-7,2-2]
  *   npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer [--ft-trials 2] [--ft-windows 12]   (the pre-QA pass: firsttimerReport.ts)
+ *   ... --firsttimer --gate   (exit 1 when a world's Normal band misses its gate: bands.ts BAND_GATE)
  *
  * For every stage of the worlds asked for it traces the main route from the spawn to the shrine (route.ts), lists the active beats
  * along it (beats.ts), and measures dead time, rests, how alike the stages of a world are, the goal against what the stage holds,
@@ -47,6 +48,7 @@ function args() {
     /** only these stage ids (comma list), within the worlds */
     stages: get('--stages')?.split(',').filter(Boolean) ?? null,
     firsttimer: a.includes('--firsttimer'),
+    gate: a.includes('--gate'),
     ftTrials: Number(get('--ft-trials') ?? 2),
     ftWindows: Number(get('--ft-windows') ?? 12),
   };
@@ -363,6 +365,13 @@ function main() {
   fs.mkdirSync(path.dirname(opt.html), { recursive: true });
   fs.writeFileSync(opt.html, renderReport(out));
   process.stderr.write(`wrote ${opt.json}\nwrote ${opt.html}\n`);
+  // (--gate: the difficulty bands as a gate, bands.ts bandGate)
+  if (opt.gate) {
+    const fails = bands.flags.filter((f) => f.kind === 'gate');
+    for (const f of fails) process.stderr.write(`GATE: ${f.what}\n`);
+    if (!firstTimer) process.stderr.write('GATE: needs --firsttimer\n');
+    if (fails.length || !firstTimer) process.exitCode = 1;
+  }
 }
 
 export type InspectOutput = {
