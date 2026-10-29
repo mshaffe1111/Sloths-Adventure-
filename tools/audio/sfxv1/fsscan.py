@@ -81,8 +81,28 @@ CATS2 = {
     'bounce': ([r'\b(bounc\w*|boing\w*|springy|trampoline|rubber ball)\b'], 3, 10),
     'land': ([r'\b(jump\w* (down|off|onto)|land\w* on|body (fall|drop|hit)\w*|falls? (on|to) the (ground|floor))\b'], 3, 15),
 }
+# a third pass: the beds of Worlds 9 and 10 and the creature voices
+CATS3 = {
+    'rain': ([r'\b(rain\w*|downpour|drizzle)\b'], 30, 300),
+    'lava': ([r'\b(lava|magma|volcan\w*|bubbling mud|mud pot|geyser|boiling)\b'], 30, 120),
+    'fire': ([r'\b(fire|crackl\w*|campfire|bonfire|embers)\b'], 20, 120),
+    'bubble': ([r'\b(bubbl\w*|gurgl\w*|blub\w*)\b'], 6, 30),
+    'bigcat': ([r'\b(jaguar|tiger|lion|leopard|panther|big cat|cougar|puma)\b'], 5, 20),
+    'snake': ([r'\b(snake|serpent|rattlesnake|cobra)\b'], 4, 15),
+    'monkey': ([r'\b(monkey|ape|chimp\w*|primate|howler)\b'], 5, 20),
+    'croc': ([r'\b(crocodile|alligator|caiman|gator)\b'], 5, 20),
+    'bat': ([r'\b(bats?|echolocation)\b'], 4, 15),
+    'bug': ([r'\b(beetle|cockroach|insect click\w*|chitter\w*|cicada|spider)\b'], 4, 15),
+    'munch': ([r'\b(munch\w*|crunch\w* (an? )?(apple|carrot|fruit|food)|chewing|eating|bite into)\b'], 3, 10),
+    'kalimba': ([r'\b(kalimba|thumb piano|mbira|marimba|xylophone|music box|celesta|glockenspiel|vibraphone|handpan|hang drum|tongue drum)\b'], 4, 30),
+    'windchime': ([r'\b(wind chimes?|chimes|bamboo chimes?|tingsha|singing bowl|bell tree)\b'], 6, 30),
+    'taiko': ([r'\b(taiko|bass drum|kick drum|big drum|war drum|tom|timpani|gong|cinematic (hit|boom|impact)|boom)\b'], 5, 20),
+    'scrape': ([r'\b(scrap\w*|scratch\w*|drag\w*)\b', r'\b(wood|stone|rock|branch|bark|thorn|bush)\w*\b'], 4, 15),
+}
 if os.environ.get('PASS') == '2':
     CATS = CATS2
+if os.environ.get('PASS') == '3':
+    CATS = CATS3
 RX = {k: [re.compile(x, re.I) for x in (v[0] if isinstance(v[0], list) else [v[0]])] for k, v in CATS.items()}
 count = {k: 0 for k in CATS}
 files, size, kpack = [], 0, 0
