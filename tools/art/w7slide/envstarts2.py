@@ -208,11 +208,19 @@ def chamber2():
     out.alpha_composite(rays.filter(ImageFilter.GaussianBlur(24)))
     d = ImageDraw.Draw(out)
     # the chute's mouth high in the left wall: a dark round-topped opening with a carved stone spout under it
-    d.rectangle((60, 250, 400, 560), fill=(70, 56, 42, 255))
-    d.rounded_rectangle((100, 280, 360, 540), radius=120, fill=(14, 9, 6, 255))
-    spout = KIT.crop((1370, 904, 1940, 994)).resize((420, 70), Image.LANCZOS)
-    out.alpha_composite(spout, (40, 530))
-    d.polygon([(70, 600), (450, 600), (520, 640), (70, 640)], fill=(96, 80, 62, 255))
+    # (take 2: framed by the made archway prop instead of a flat box, the dark going deep inside, light catching the spout)
+    arch = warm(frame('w7c', 'archway')).resize((360, 388), Image.LANCZOS)
+    hole = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    hd = ImageDraw.Draw(hole)
+    for i in range(10):
+        k = i / 9
+        hd.rounded_rectangle((128 + 18 * k, 236 + 14 * k, 352 - 18 * k, 540), radius=110 - 30 * k,
+                             fill=(int(60 * (1 - k)) + 10, int(44 * (1 - k)) + 6, int(30 * (1 - k)) + 4, 255))
+    out.alpha_composite(hole)
+    out.alpha_composite(arch, (60, 168))
+    spout = warm(KIT.crop((1370, 904, 1940, 994))).resize((400, 64), Image.LANCZOS)
+    out.alpha_composite(spout, (40, 540))
+    d.polygon([(60, 600), (440, 600), (560, 700), (60, 700)], fill=(140, 120, 92, 255))  # the stone slope down to the floor
     fl = stone_fill((W, 130), 31)
     fa = (np.asarray(fl).astype(np.float32) * 0.55 + np.array([196, 170, 128]) * 0.45).clip(0, 255).astype(np.uint8)
     out.alpha_composite(Image.fromarray(fa).convert('RGBA'), (0, H - 112))

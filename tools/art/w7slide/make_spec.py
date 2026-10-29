@@ -124,6 +124,20 @@ def img2(sha):
     print(len(items), 'items')
 
 
+def img3(sha):
+    """take 2 of the chamber: its first chute mouth stayed a flat pasted box, so the start frames it with the archway prop"""
+    prompt = [p for n, _, _, _, p in JOBS2 if n == 'chamber2'][0].replace('the round dark mouth of a stone slide chute with a carved stone '
+                                                                        'spout under it', 'the dark mouth of a stone slide chute in a '
+                                                                        'carved stone archway wrapped in fig roots, a carved stone spout '
+                                                                        'and a stone slope under it down to the floor')
+    items = [{'name': f'chamber2b-s{round(st * 100)}-{sd}', 'start': 'chamber2b.jpg', 'lora': 'style', 'prompt': prompt, 'strength': st,
+              'seed': sd, 'w': 1792, 'h': 768} for st in (0.55, 0.68) for sd in (5, 17)]
+    spec = {'tag': 'w7slide-img3', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+            'items': items, 'base': BASE.format(sha=sha)}
+    (H / 'spec-img3.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'items')
+
+
 MOTION = {'high': ['mshaffe111/slothadv-motion-lora', 'slothadv_motion_v1_high_noise.safetensors'],
           'low': ['mshaffe111/slothadv-motion-lora', 'slothadv_motion_v1_low_noise.safetensors'], 'scale': 1.0}
 M = ('slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown '
@@ -155,4 +169,4 @@ def args(spec, sha):
 
 
 if __name__ == '__main__':
-    {'img': lambda: img(sys.argv[2]), 'seam': lambda: seam(sys.argv[2]), 'img2': lambda: img2(sys.argv[2]), 'clips': lambda: clips(json.loads(sys.argv[2])), 'args': lambda: args(sys.argv[2], sys.argv[3])}[sys.argv[1]]()
+    {'img': lambda: img(sys.argv[2]), 'seam': lambda: seam(sys.argv[2]), 'img2': lambda: img2(sys.argv[2]), 'img3': lambda: img3(sys.argv[2]), 'clips': lambda: clips(json.loads(sys.argv[2])), 'args': lambda: args(sys.argv[2], sys.argv[3])}[sys.argv[1]]()
