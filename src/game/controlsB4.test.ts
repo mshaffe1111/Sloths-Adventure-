@@ -6,6 +6,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { TouchRig, stroke } from './touchRig.ts';
 import { padSideFrom } from './controlPrefs.ts';
+import { PadInput } from './padControl.ts';
+import { COACH_TEXT } from '../components/CoachOverlay.tsx';
 
 const G = 2000;
 const TRUNK = { id: 7, x: 600, topY: 1500, bottomY: 2000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as const;
@@ -46,4 +48,42 @@ test('CT-19: the Pad puts movement on the left unless a side was chosen; a chose
   assert.equal(padSideFrom('right'), 'right', 'chose right: kept');
   assert.equal(padSideFrom('left'), 'left', 'chose left: kept');
   assert.equal(padSideFrom('junk'), 'left');
+});
+
+// ───────────────────────────── CT-13 / CT-27: the Pad's Jump, a tap is a hop ─────────────────────────────
+
+/** standing on a floor, the Pad's Jump button pressed for `ms`: how high he went */
+function padJumpHeight(ms: number): number {
+  const rig = new TouchRig('1-1', 1);
+  rig.r.bare([{ id: 1, x: 0, y: G, width: 20000, height: 300, type: 'solid' } as never]);
+  rig.r.stand(300, G);
+  rig.clear();
+  const pad = new PadInput(rig.input);
+  rig.input.source = 'pad';
+  rig.run(100);
+  let top = G;
+  pad.jumpButton(true);
+  rig.run(ms, () => (top = Math.min(top, rig.p.y)));
+  pad.jumpButton(false);
+  rig.run(1200, () => (top = Math.min(top, rig.p.y)));
+  return G - top;
+}
+
+test('CT-13: the Pad\'s Jump tapped is a short hop, held it goes full height, as the lesson says; a touch flick is unchanged', () => {
+  const taps = [40, 70, 100].map(padJumpHeight);
+  const held = padJumpHeight(600);
+  for (const h of taps) assert.ok(h >= 50 && h <= 75, `a tap hops ${h.toFixed(0)} px`);
+  assert.ok(held >= 95, `held: ${held.toFixed(0)} px`);
+  assert.ok(held - Math.max(...taps) >= 20, `a hold goes clearly higher than a tap (${taps.map((h) => h.toFixed(0)).join(', ')} against ${held.toFixed(0)})`);
+  assert.match(COACH_TEXT.pad.nice.sub, /hold jump/i, 'the lesson still tells the truth');
+  // the pad pushed up (not the button) and every touch flick keep the full jump however short
+  const rig = new TouchRig('1-1', 1);
+  rig.r.bare([{ id: 1, x: 0, y: G, width: 20000, height: 300, type: 'solid' } as never]);
+  rig.r.stand(300, G);
+  rig.clear();
+  rig.run(100);
+  rig.push(stroke(1, [[0, 800, 700], [50, 800, 640]]));
+  let top = G;
+  rig.run(1300, () => (top = Math.min(top, rig.p.y)));
+  assert.ok(G - top >= 95, `a quick flick: ${(G - top).toFixed(0)} px`);
 });

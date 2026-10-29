@@ -94,6 +94,8 @@ export class InputEngine {
   }
   /** game seconds a touch or Pad jump must still be held (counted in update, from the take-off: noteTakeOff) */
   private touchHold = 0;
+  /** this press's minimum hold from the take-off (s) */
+  private touchHoldMin = MIN_TOUCH_JUMP_HOLD_MS / 1000;
   /** the finger let go of the jump, and the release waits for touchHold */
   private releaseWanted = false;
 
@@ -310,12 +312,14 @@ export class InputEngine {
    * - Jump pressing up
    * - Double jump pressing up twice
    */
-  public triggerTouchUp(lean: -1 | 0 | 1 = 0) {
+  public triggerTouchUp(lean: -1 | 0 | 1 = 0, holdMs = MIN_TOUCH_JUMP_HOLD_MS) {
     this.fresh();
     // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir)
     this.state.jumpLean = lean;
-    // (held at least MIN_TOUCH_JUMP_HOLD_MS from the take-off; until he takes off, as long as the press can wait to be used as well)
-    this.touchHold = MIN_TOUCH_JUMP_HOLD_MS / 1000 + pressKeep();
+    // (held at least `holdMs` from the take-off, MIN_TOUCH_JUMP_HOLD_MS unless the press says (the Pad's Jump button: a tap is a hop);
+    // until he takes off, as long as the press can wait to be used as well)
+    this.touchHoldMin = holdMs / 1000;
+    this.touchHold = this.touchHoldMin + pressKeep();
     this.releaseWanted = false;
     this.state.up = true;
     this.state.jumpPressed = true;
@@ -359,7 +363,7 @@ export class InputEngine {
 
   /** the engine: he just took off (a jump or a double jump). A touch or Pad jump's minimum hold counts from here, in game time */
   public noteTakeOff() {
-    if (this.touchHold > 0) this.touchHold = MIN_TOUCH_JUMP_HOLD_MS / 1000;
+    if (this.touchHold > 0) this.touchHold = Math.max(0.001, this.touchHoldMin);
   }
 
   /**
