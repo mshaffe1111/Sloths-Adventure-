@@ -15,7 +15,8 @@ wired by the helper that owns that area, then reviewed by the lead.
 6. The exit shrine, closed and open, one per world, 512x640 (report VI-10).
 7. Painted pit water for Worlds 1, 3, 4 and 5: a strip that tiles left to right plus a shine (report VI-9 prompt). World 2 has its river and
    World 6+ the dirty water.
-8. 4-3's wide waterfall, only if the painted strips can't make it look right (painted-swaps' gemini-falls-prompt.md).
+8. World 4 painted waterfalls (4-3, 4-8, 4-9) plus a wet stone pillar strip for 4-3's vine column: NEEDED, the code streams failed review
+   2026-10-29 (prompt given to Matt: reference/prop-sheets/gemini-prompts/w4-waterfalls.md).
 
 ## Batch 3: the ground and the picture (report VI-8, VI-2)
 9. A soil-and-roots texture per world that tiles both ways, 2-3 variants, plus a mossy top-lip strip and a bank piece without the slab (report

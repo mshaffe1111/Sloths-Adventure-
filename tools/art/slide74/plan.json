@@ -1,0 +1,7 @@
+[["hall+crumble", 175, ""],
+ ["drop+heads+rubble", 840, ""],
+ ["columns", 270, "const s = e.slideRun.sim; s.z = s.sorted.find((o) => o.kind === 'column').z - 28;"],
+ ["gaps", 270, "const s = e.slideRun.sim; s.z = s.sorted.find((o) => o.kind === 'gap').z - 28; s.flagZ = s.c.flags[0];"],
+ ["beams", 240, "const s = e.slideRun.sim; s.z = s.sorted.find((o) => o.kind === 'beam').z - 28; s.flagZ = s.c.flags[1];"],
+ ["climax, one miss", 240, "const s = e.slideRun.sim; const i = s.sorted.findIndex((o) => o.kind === 'head' && o.z > s.c.sections.find((x) => x.name === 'climax').z0 + 20); s.z = s.sorted[i].z - 40; window.__miss = i; s.flagZ = s.c.flags[2];"],
+ ["the light + chamber", 230, "const s = e.slideRun.sim; s.z = s.c.length - 30;"]]

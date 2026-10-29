@@ -15,6 +15,7 @@
  * Pitches are randomised a few percent each time, so ten jumps in a row never sound like one sample repeated.
  * Pickups are locked to the key of the music that is playing, so collecting things plays along with the song.
  */
+import { classicGain } from './sfxMix.ts';
 import { AudioCore, envelope } from './core.ts';
 import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock } from './instruments.ts';
 import type { KeyInfo } from './music.ts';
@@ -879,7 +880,7 @@ export interface FxVariation {
 export function runFx(name: string, core: AudioCore, key: KeyInfo, arg?: number, v: FxVariation = {}) {
   const fn = SFX[name];
   if (!fn) return;
-  TRIM = TRIMS[name] ?? 1;
+  TRIM = classicGain(name, TRIMS[name] ?? 1);
   VAR = Math.max(0, Math.floor(v.variant ?? 0));
   STREAK = Math.max(0, Math.floor(v.streak ?? 0));
   try {

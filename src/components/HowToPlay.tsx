@@ -4,6 +4,7 @@ import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { GestureGlyph } from './GestureGlyph.tsx';
 import { Icon } from './icons/index.tsx';
 import { JournalDemo } from './JournalDemo.tsx';
+import { warmJournalArt } from '../game/journalScenes.ts';
 import { CHAPTERS, PAGES, PAGE_BY_ID, chapterPages, isNew, markLooked, openPages, type ChapterId, type JournalPage, type PoseId } from '../game/movesJournal.ts';
 import { lessonInputMode, type InputMode, type LessonLine } from '../game/lessons.ts';
 
@@ -166,6 +167,9 @@ const Extras: React.FC = () => (
       <p className="ui-copy">
         In a stage, <b>Menu</b> at the top pauses the game. It has Resume, Restart, Trophies, the World Map, this journal, how you control the game, and the sound.
       </p>
+      <p className="ui-copy">
+        The phone's <b>Back</b> swipe pauses the game too, instead of leaving it. Keep your thumbs <b>a finger's width in from the edges</b>: the phone keeps swipes that start at the very edge for itself.
+      </p>
     </section>
   </div>
 );
@@ -216,6 +220,8 @@ type View = { kind: 'chapter'; ch: ChapterId } | { kind: 'page'; id: string } | 
 export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
   const mode = React.useMemo(() => lessonInputMode(), []);
   const open = React.useMemo(() => openPages(), []);
+  // (the painted sheets the pages' scenes draw, asked for as the journal opens, so a page never shows its gate or pickups popping in)
+  React.useEffect(() => warmJournalArt(), []);
   const [short, setShort] = React.useState(intro);
   const [view, setView] = React.useState<View>({ kind: 'chapter', ch: 'moving' });
   // which pages were NEW when the journal opened: a page stays marked for this visit even after you look at it

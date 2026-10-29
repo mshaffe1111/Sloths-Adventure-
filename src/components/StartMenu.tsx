@@ -1,7 +1,7 @@
 import React from 'react';
 import type { SkillId } from '../game/skills.ts';
 import { Sliders, COARSE } from './PauseMenu.tsx';
-import { ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle, DifficultySetting } from './menuParts.tsx';
+import { ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, HapticsToggle, PerfToggle, DifficultySetting } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 import { MenuFrame, MenuTile, SoundSetting } from './MenuFrame.tsx';
 
@@ -57,6 +57,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({ isMuted, onToggleMute, onC
           <ControlsSetting />
           <AssistSetting />
           <WaysideToggle />
+          <HapticsToggle />
           <PerfToggle />
         </>
       }

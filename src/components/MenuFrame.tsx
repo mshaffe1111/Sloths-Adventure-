@@ -14,6 +14,8 @@ export const MenuFrame: React.FC<{
   label: string;
   title: string;
   sub: string;
+  /** shown after the stage line (the pause menu: the mode the stage is played on, LV-1) */
+  subChip?: React.ReactNode;
   /** a tap on the dimmed screen around the card (the start menu closes; the pause menu has no such tap) */
   onScrim?: () => void;
   /** the big board at the top */
@@ -24,7 +26,7 @@ export const MenuFrame: React.FC<{
   skills: Set<SkillId>;
   sound: React.ReactNode;
   settings: React.ReactNode;
-}> = ({ label, title, sub, onScrim, go, notice, tiles, skills, sound, settings }) => {
+}> = ({ label, title, sub, subChip, onScrim, go, notice, tiles, skills, sound, settings }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   useExitGhost(ref);
   return (
@@ -36,7 +38,7 @@ export const MenuFrame: React.FC<{
         <div className="pm-head">
           <div className="pm-head-t">
             <Plaque className="pm-title">{title}</Plaque>
-            <div className="pm-sub">{sub}</div>
+            <div className="pm-sub">{sub}{subChip && <> {subChip}</>}</div>
           </div>
         </div>
         <div className="pm-body">

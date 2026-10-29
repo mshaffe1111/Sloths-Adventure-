@@ -145,6 +145,8 @@ export interface BossBrain {
   poiseT: number;
   /** seconds before another attack can be broken (a stun is not a loop) */
   breakCd: number;
+  /** how far through its entrance the boss is (0..1), only while the entrance plays (the engine sets it; a sprite can stage it) */
+  intro?: number;
 }
 
 export function newBrain(): BossBrain {
@@ -306,7 +308,11 @@ export interface BossDef {
   /** this boss has its own lair look (see lairArt.ts) */
   lair?: LairKind;
   /** the entrance's eye glow and the colour of its dark (the Drake's are orange and near-black red) */
-  entrance?: { eye: [number, number, number]; dark: [number, number, number] };
+  /**
+   * `tea`: the long entrance is the boss's tea (the Tarantula Queen): she is lit early at her lair's painted tea table, pours, rises,
+   * roars, and skitters back to where the fight starts
+   */
+  entrance?: { eye: [number, number, number]; dark: [number, number, number]; tea?: boolean };
   /** a change in the lair when the boss enters a new phase (rising lava, a flood, ...) */
   onPhase?: (phase: number, b: BossEntity, c: BossCtx) => void;
   /** drawn as a fighter (the evil sloth) instead of one of the animal rigs */
