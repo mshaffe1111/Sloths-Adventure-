@@ -7,18 +7,17 @@ flat magenta. Each cell is keyed with the shared cutter (tools/art/w5puzzle/cut.
 trimmed), pink-tinted pixels are turned neutral where nothing is meant to be pink (the flume's worn middle, the cave mouth's rim, the
 webs), and the pieces are packed into a few atlases with their boxes in flume-atlas.json.
 
-Pokey (sheet 5): frames 1-4 grip two vertical poles that stand for the flume's rails; the game's flume is three lanes wide, so the poles
-are painted out (pole pixels: the long near-vertical dark-wood strips at each side, found above and below his body and joined by a
-line), keeping his hands. The satchel check (strap from the screen-left shoulder to a bag at screen-right): 1, 2, 4, 5, 6 are right;
-3 (lean left), 7 (hurt) and 8 (facing the camera at the end) have it mirrored, so 7 and 8 are used flipped; 3 is not used (Matt's
-re-do came out mirrored again: the lean left is frame 1 tilted, in the game).
+Pokey (sheet 5): the Hugging Face art helper's 2x pass (branch hf-art-pokey, 2026-10-29, the lead's review passed) has frames 1, 2
+and 4 repainted with the poles gone and empty open paws, upright (the lean comes from the game's tilt), so nothing is painted out here.
+Sheets 1, 5 and 6 are that 2x pass, copied over Matt's originals; 2-4 are his. The satchel check (strap from the screen-left shoulder
+to a bag at screen-right): 1, 2, 4, 5, 6 are right; 3 (lean left), 7 (hurt) and 8 (facing the camera at the end) have it mirrored, so
+7 and 8 are used flipped; 3 is not used (the lean left is frame 1 tilted, in the game).
 """
 import json
 import os
 import sys
 import numpy as np
 from PIL import Image, ImageOps
-from scipy import ndimage
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
@@ -54,53 +53,20 @@ def depink(img):
     return Image.fromarray(a.astype(np.uint8))
 
 
-def remove_poles(img):
-    """Paint out the two vertical poles in a sheet-5 grip frame. The poles are the same brown as his fur, so they are found by shape:
-    in each row, the outermost run of solid pixels on each side, when it is narrow and has background between it and his body, is pole.
-    Their inner edges give each pole's band; then everything from that band outward is cleared in every row, where his paws close round
-    the pole too, so nothing is left in his hands (the lead's review, 2026-10-29: the stubs read as glitches)."""
+def key_pockets(img):
+    """the magenta left in small enclosed gaps (between the bag and his paw, in the 2x pass), which the edge key can't reach: strongly
+    magenta pixels cleared, and the de-spilled pinkish-grey round them faded"""
     a = np.asarray(img).astype(np.float32)
-    h, w = a.shape[:2]
-    solid = a[..., 3] > 100
-    out = a.copy()
-    inner = {0: [], 1: []}
-    for y in range(h):
-        xs = np.nonzero(solid[y])[0]
-        if len(xs) == 0:
-            continue
-        cuts = np.nonzero(np.diff(xs) > 2)[0]
-        starts = np.concatenate([[xs[0]], xs[cuts + 1]])
-        ends = np.concatenate([xs[cuts], [xs[-1]]])
-        if len(starts) < 2:
-            continue
-        for side, i in ((0, 0), (1, len(starts) - 1)):
-            width = ends[i] - starts[i] + 1
-            outer = starts[i] < w * 0.3 if side == 0 else ends[i] > w * 0.7
-            if width <= max(30, w * 0.12) and outer:
-                inner[side].append(ends[i] if side == 0 else starts[i])
-    for side in (0, 1):
-        if not inner[side]:
-            continue
-        edge = int(np.percentile(inner[side], 90 if side == 0 else 10))
-        # cleared from the band outward, then faded over 14 px so the arm ends round off into the dark, not a straight cut
-        ramp = np.linspace(0, 1, 14)
-        if side == 0:
-            out[:, : edge + 3, 3] = 0
-            x0 = edge + 3
-            out[:, x0:x0 + 14, 3] *= ramp[None, : max(0, min(14, w - x0))]
-        else:
-            x1 = max(0, edge - 2)
-            out[:, x1:, 3] = 0
-            out[:, max(0, x1 - 14):x1, 3] *= ramp[::-1][None, 14 - (x1 - max(0, x1 - 14)):]
-    # what is left of the poles above and below his body: bits not joined to him
-    solid = out[..., 3] > 40
-    lab, n = ndimage.label(solid)
-    if n:
-        sizes = ndimage.sum(solid, lab, range(1, n + 1))
-        big = np.isin(lab, [i + 1 for i in range(n) if sizes[i] >= sizes.max() * 0.05])
-        out[..., 3] = np.where(big, out[..., 3], 0)
-    im = Image.fromarray(out.astype(np.uint8))
-    return im.crop(im.getbbox())
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    # (his fur, claws, wraps and bag all have less blue than green; the key's leftovers have more, pink or pinkish grey)
+    m = np.minimum(b - g, r - g)
+    a[..., 3] = np.where(m > 8, 0, np.where(m > 0, a[..., 3] * (8 - m) / 8, a[..., 3]))
+    # (and the neutral grey the de-spill left there: everything of his is warm, red 40-80 over blue, except the black outline, which is
+    # darker than this)
+    warm = r - b
+    lum = (r + g + b) / 3
+    a[..., 3] = np.where((warm < 22) & (lum > 50), 0, np.where((warm < 32) & (lum > 50), a[..., 3] * (warm - 22) / 10, a[..., 3]))
+    return Image.fromarray(a.astype(np.uint8))
 
 
 def depink_soft(img):
@@ -136,8 +102,8 @@ def main():
                     cell = depink(cell)
                 elif not pink:
                     cell = depink_soft(cell)
-                if name == 'sheet5-pokey-behind' and n in ('grip', 'grip2', 'leanR'):
-                    cell = remove_poles(cell)
+                if n in ('grip', 'grip2', 'leanR'):
+                    cell = key_pockets(cell)
                 if n in ('hurt', 'cheer'):
                     # (both drawn with the satchel mirrored: flipped, they are right; 8 faces the camera, so flipped its bag is on his
                     # right hip, at screen-left, the strap over his left shoulder: the lead's check, 2026-10-29)

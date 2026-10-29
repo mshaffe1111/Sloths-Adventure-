@@ -1,4 +1,4 @@
-# 7-4 mock-up, v2 (with the lead's v3 and v4 fixes): Matt's flume, every move needed, lit from its own lights
+# 7-4 mock-up, v2 (with the lead's v3, v4 and v5 fixes): Matt's flume, every move needed, lit from its own lights
 
 Matt on v1 (2026-10-29): "Everything can be done just by avoiding objects... The floor looks like trash... The actual mechanism of it
 going down looks good." Then his concept picture, his six Gemini sheets (`reference/prop-sheets/gemini-batch-2026-10-29/7-4-slide/`),
@@ -16,7 +16,7 @@ crumble, the drop, three lanes, steering, a hit costs a heart); the moves, the a
 | `d-fungus-gap`, `e-fungus-beam` | the fungus cavern (green and purple): a gap to jump, a low beam to duck |
 | `f-narrow-dark` | the narrow dark: the fewest lights, eyes in the rock; crates to jump or go round, still lit |
 | `g-the-way-out`, `i-the-end-cheer` | daylight growing at the end, framed by the cave mouth; his cheer as he shoots out |
-| `h-lean-left` | the lean left (frame 1 tipped, the lead's call) |
+| `h-lean-left`, `h2-lean-right` | the leans, steering held: frames 1 and 4 (both drawn upright) tipped about 10 degrees, his weight shifted |
 
 **Clip**: `clip-up.mp4`, `clip-side.mp4` (about 27 s: the crumble and fall, the drop, then a bot slides a stretch of every beat).
 `clip-stone-*.mp4` is the stone-chute pass from earlier today (the same every-move gameplay, before Matt's sheets and the lighting), for
@@ -131,12 +131,34 @@ back at twice the size, and `cut.py` cuts them as before):
 
 | Sheet | Frames used in the game | Why |
 |---|---|---|
-| `sheet5-pokey-behind.jpg` | 1 (grip), 2 (bump), 4 (lean right), 5 (jump), 6 (duck), 7 (hurt), 8 (cheer); 3 is not used | he is drawn from about 190 px, the softest thing on a big phone |
+| `sheet5-pokey-behind.jpg` | 1 (grip), 2 (bump), 4 (lean right), 5 (jump), 6 (duck), 7 (hurt), 8 (cheer); 3 is not used | he was drawn from about 190 px, the softest thing on a big phone (done in v5) |
 | `sheet6-pokey-falling.jpg` | both (oh!, curled) | the fall, side-on, drawn larger than the sheet |
 | `sheet1-flume.jpg` (if time) | all eight | the near boards and barriers are magnified most |
 | `sheet2`-`sheet4` (optional) | all | they are seen smaller; an upscale helps only the near ribs and torches |
 
-## Polish check (STAGE-RULES §5b), v4
+## v5: Pokey's new frames (the Hugging Face pass)
+
+The art helper's 2x pass (branch `hf-art-pokey`, fa64770, passed the lead's review) replaces Sheets 1, 5 and 6, same grids, same
+magenta, copied over the originals in `reference/prop-sheets/gemini-batch-2026-10-29/7-4-slide/`:
+
+- **Empty paws**: grip, bump and lean right are repainted with no poles, paws open with claws and wraps, arms at his sides. The pole
+  removal is gone from `cut.py`; a small key clears the magenta left in the pockets between his bag and his paws (it showed as pink
+  and grey speckle), keyed on colour (his fur, claws, wraps and bag are all warm; the leftovers are pink or neutral grey).
+- **Sharper**: every frame is twice the size (grip 279x371 px, was about 190 px tall), and the flume's boards and barriers too.
+- **The lean right** is drawn upright now, so it is tipped like the lean left (about 10 degrees, his weight shifted), steering held.
+- **Satchel** checked on dark in all nine frames: from behind, the strap from the screen-left shoulder to the bag at screen-right
+  (grip, bump, lean right, jump, duck, hurt flipped); facing us (the cheer, flipped), the bag on his right hip; side-on (the fall) as
+  drawn.
+
+Three things the re-shoot showed, fixed:
+
+1. **Pokey see-through**: right after a near prop faded out, he was drawn at its fade. He is now always drawn solid.
+2. **A statue filling the screen**: obstacles he had passed were drawn whole as they went by the camera; a statue in the next lane
+   swept past as a huge soft face. Once he is past one, it fades over a metre.
+3. **The way out's edge**: shooting out in an outer lane, the camera followed him and the end picture's edge showed (upright, he
+   went off screen as it centred). As he shoots out, he and the camera now come back to the middle in a quarter second.
+
+## Polish check (STAGE-RULES §5b), v5
 
 | # | Item | Result | Shows it |
 |---|---|---|---|
@@ -144,7 +166,7 @@ back at twice the size, and `cut.py` cuts them as before):
 | 2 | Nothing copy-pasted | **Fixed** (v4 item 3): the straight lines down the far rock and across the roof were gaps from source boxes running past the picture's edge; gone. The rock and roof now repeat mirrored, blend between picture sizes, and the eyes' boxes fade. The troughs mix plain and mossy boards; ribs, walls and props come at irregular spacing with rolled sizes and mirrors. | `side-f-narrow-dark`, `side-a-drop-dark` |
 | 3 | Art matches what it is | **Pass**: the barrier's top is the height a jump must clear, the beam's underside the height he must duck under, the crate piles the jump height; statues and crate towers are drawn 1.85 m tall (he jumps 1.3 m), so they read as steer-round; a gap is the flume broken off with the drop below. | `up-c-torch-flume-planks`, `up-e-fungus-beam` |
 | 4 | Light fits the place | **Pass**: dark ambient, light only from sources, depth into darkness; tested: every obstacle at least twice the ambient in every lane it fills (rolls 1-3, both settings). | `up-f-narrow-dark` |
-| 5 | Pokey on model | **Pass, rough spots named** (v4 item 2): no stubs; nothing in his paws. Satchel right in every frame used (strap from the screen-left shoulder to a bag at screen-right; the hurt and cheer frames flipped to make it right). **Rough spot**: his paws went with the poles, so his arms fade off at his sides (Gemini Sheet 5b would give real empty paws); and he is drawn from about 190 px, soft on a big phone (the upscale list, v4 item 6). | `side-b-torch-flume-statues`, `side-h-lean-left`, `side-i-the-end-cheer` |
+| 5 | Pokey on model | **Pass** (v5): the Hugging Face 2x pass, paws empty and open with claws and wraps, no stubs, no pink; twice as sharp; satchel right in all nine frames (checked on dark: from behind the strap from the screen-left shoulder to the bag at screen-right; the hurt and cheer flipped to make it right); both leans tipped from upright frames, steering held; always drawn solid. | `side-b-torch-flume-statues`, `side-h-lean-left`, `side-h2-lean-right`, `up-i-the-end-cheer` |
 | 6 | Framing works both ways | **Fixed**: upright showed the flume in a band across the middle with dark above and below; the upright camera is now narrower with a higher horizon, so the flume ahead fills the screen. | `up-*` against `side-*` |
 | 7 | Text stays out of the way | **Fixed** (v4 item 4): 7-4's wayside story line now shows at the start in the hall, and no story line comes up during the slide. His bubble sits on the flume just below him, tail up. All lines under 10 words, Pokey's own (World 7: no Dot). | `side-1-hall`, `side-c-torch-flume-planks` |
 | 8 | Every move it teaches is needed | **Pass**: tested: a player who only steers is hit by the barriers, gaps and beams (rolls 1-3, both settings); at least 40% of the obstacles are across the whole flume. | the clip |
@@ -153,7 +175,5 @@ back at twice the size, and `cut.py` cuts them as before):
 
 ## What's still needed for the full build
 
-- A painted lean left from behind with the satchel right, if Gemini can be made to keep the bag on the far side (two takes so far put it on the lean side).
-- A sharper pass of the sheets (they came 1024 px wide): the 2x upscale above.
-- Pokey's sliding frames without poles (Sheet 5b in `GEMINI-PROMPTS.md`), so his paws are real paws.
 - The torch crackle (no classic effect fits; left silent rather than wrong).
+- In-betweens for his poses, if a set can be made on model.

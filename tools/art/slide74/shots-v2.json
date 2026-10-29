@@ -29,10 +29,14 @@
  ],
  [
   "h-lean-left",
-  "at('head', 6, 9); s.lean = -1; s.x = -0.5; e.slideRun.say = null;"
+  "at('head', 6, 9); s.x = -0.2; e.slideRun.say = null; if (!window.__iu) window.__iu = e.input.update; e.input.update = (dt) => { window.__iu.call(e.input, dt); e.input.state.left = true; e.input.state.right = false; };"
+ ],
+ [
+  "h2-lean-right",
+  "at('head', 6, 9); s.x = 0.2; e.slideRun.say = null; if (!window.__iu) window.__iu = e.input.update; e.input.update = (dt) => { window.__iu.call(e.input, dt); e.input.state.left = false; e.input.state.right = true; };"
  ],
  [
   "i-the-end-cheer",
-  "s.z = s.c.length + 0.5; s.outT = 0.15;"
+  "if (window.__iu) e.input.update = window.__iu; s.z = s.c.length + 0.5; s.outT = 0.15;"
  ]
 ]

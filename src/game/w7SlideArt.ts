@@ -178,6 +178,12 @@ interface View {
 }
 const CAM_BACK = 4.2;
 const CAM_H = 1.7;
+/** as he shoots out, he and the camera come back to the middle, so the way out's picture fills the screen and he stays in it whatever
+ * lane he left in */
+const outCentre = (sim: SlideSim) => (sim.outT >= 0 ? Math.max(0, 1 - sim.outT / 0.25) : 1);
+/** where he is drawn across the flume (his lane, eased to the middle as he shoots out) */
+const drawX = (sim: SlideSim) => sim.x * outCentre(sim);
+
 /** one trough's piece covers a lane and this much of the flume's length (its own picture's shape) */
 const TROUGH_LEN = SLIDE.lane / aspect('bed');
 const ROCK_PANEL = 3.2;
@@ -190,7 +196,7 @@ function view(sim: SlideSim, W: number, H: number): View {
   // outer troughs' rails run just off the screen's edges beside him, and the camera follows him across further)
   const f = portrait ? W * 1.32 : Math.min(W * 0.7, H * 1.1);
   const hy = H * (portrait ? 0.36 : 0.36);
-  return { W, H, cx: W / 2, hy, f, camX: sim.x * (portrait ? 0.75 : 0.55), camY: CAM_H + sim.y * 0.3, camZ: sim.z - CAM_BACK };
+  return { W, H, cx: W / 2, hy, f, camX: drawX(sim) * (portrait ? 0.75 : 0.55), camY: CAM_H + sim.y * 0.3, camZ: sim.z - CAM_BACK };
 }
 function P(v: View, x: number, y: number, z: number): [number, number, number] | null {
   const dz = z - v.camZ;
@@ -481,10 +487,10 @@ export function drawSlide(ctx: CanvasRenderingContext2D, sim: SlideSim, W: numbe
   }
   sim.sorted.forEach((o, i) => {
     if (o.kind === 'gap' || o.z + o.len < z0 || o.z > farZ) return;
-    things.push({ z: o.z, draw: () => drawObstacle(ctx, v, o, sim.wasMet(i)) });
+    things.push({ z: o.z, draw: () => drawObstacle(ctx, v, o, sim.wasMet(i), sim.z) });
   });
   things.push({ z: sim.z + 0.01, draw: () => {
-    const g = P(v, sim.x, 0, sim.z);
+    const g = P(v, drawX(sim), 0, sim.z);
     if (!g) return;
     ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
     ctx.beginPath();
@@ -564,7 +570,7 @@ export function drawSlide(ctx: CanvasRenderingContext2D, sim: SlideSim, W: numbe
   // his line, in a bubble on the flume just in front of the camera, below him: over his head it would cover the flume ahead, where the
   // next obstacle comes up out of the dark (polish bar: words never cover the hazard); its tail points up at him
   if (say && say.t > 0) {
-    const feet = P(v, sim.x, 0, sim.z);
+    const feet = P(v, drawX(sim), 0, sim.z);
     if (feet) drawBubble(ctx, say.text, feet[0], Math.min(H - 70, feet[1] + 24), W, Math.min(1, say.t * 3));
   }
   if (sim.outT >= 0) {
@@ -660,9 +666,12 @@ function drawLips(ctx: CanvasRenderingContext2D, v: View, z: number, n: 'brokenB
   ctx.globalAlpha = 1;
 }
 
-function drawObstacle(ctx: CanvasRenderingContext2D, v: View, o: Obstacle, met: boolean) {
+function drawObstacle(ctx: CanvasRenderingContext2D, v: View, o: Obstacle, met: boolean, simZ: number) {
   const dz = o.z - v.camZ;
-  ctx.globalAlpha = fadeIn(dz);
+  // (once he is past it, it fades over a metre: drawn whole as it went by the camera, a statue in the next lane filled the screen)
+  const past = Math.max(0, Math.min(1, 1 - (simZ - (o.z + o.len)) / 1));
+  if (past <= 0) return;
+  ctx.globalAlpha = fadeIn(dz) * past;
   const k = KINDS[o.kind];
   const box = (n: string, x0: number, x1: number, y0: number, y1: number, flip = false, s0 = 0, s1 = 1) => {
     const a = P(v, x0, y1, o.z), b = P(v, x1, y0, o.z);
@@ -698,7 +707,7 @@ function drawObstacle(ctx: CanvasRenderingContext2D, v: View, o: Obstacle, met: 
     }
   }
   if (met) {
-    ctx.globalAlpha = 0.3 * fadeIn(dz);
+    ctx.globalAlpha = 0.3 * fadeIn(dz) * past;
     ctx.fillStyle = '#e7dcc4';
     const p = P(v, 0, 0.5, o.z);
     if (p) {
@@ -725,22 +734,23 @@ export function pokeyLight(sc: Scene, x: number, y: number, z: number): [number,
 }
 
 /**
- * Which of Matt's poses (Sheet 5) Pokey is in, how far it tips and how far his weight shifts (share of his width). The lead's set
- * (2026-10-29): 1 and 2 straight and bumped, 4 the lean right, 1 tipped about 10 degrees the lean left (Sheet 5's own lean left has the
- * satchel mirrored), 5 the jump, 6 the duck, 7 flipped the hurt (tipped the other way every other hit), 8 flipped the end.
+ * Which of the Sheet 5 poses Pokey is in, how far it tips and how far his weight shifts (share of his width). The lead's set
+ * (2026-10-29): 1 and 2 straight and bumped, 4 the lean right and 1 the lean left (both drawn upright in the Hugging Face 2x pass, with
+ * empty paws: the lean is the tip, about 10 degrees, and his weight shifted), 5 the jump, 6 the duck, 7 flipped the hurt (tipped the
+ * other way every other hit), 8 flipped the end.
  */
 function pose(sim: SlideSim): { n: string; tilt: number; shift: number } {
   if (sim.outT >= 0) return { n: 'cheer', tilt: 0, shift: 0 };
   if (sim.safeT > SLIDE.safe - 0.5 && sim.hits + sim.stumbles > 0) return { n: 'hurt', tilt: (sim.hits + sim.stumbles) % 2 ? 0.12 : -0.12, shift: 0 };
   if (!sim.grounded) return { n: 'jump', tilt: 0, shift: 0 };
   if (sim.ducking) return { n: 'duck', tilt: 0, shift: 0 };
-  if (sim.lean > 0.4) return { n: 'leanR', tilt: 0.05, shift: 0.04 };
+  if (sim.lean > 0.4) return { n: 'leanR', tilt: 0.17 * Math.min(1, sim.lean), shift: 0.06 };
   if (sim.lean < -0.4) return { n: 'grip', tilt: -0.17 * Math.min(1, -sim.lean), shift: -0.06 };
   return { n: Math.floor(sim.clock * 4) % 2 ? 'grip2' : 'grip', tilt: 0, shift: 0 };
 }
 
 function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim, sc: Scene, ex: number) {
-  const body = P(v, sim.x, sim.y, sim.z);
+  const body = P(v, drawX(sim), sim.y, sim.z);
   if (!body) return;
   if (sim.safeT > 0 && sim.safeT < SLIDE.safe - 0.5 && Math.floor(sim.clock * 10) % 2 === 0) return;
   const { n, tilt, shift } = pose(sim);
@@ -761,7 +771,7 @@ function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim, sc: Sc
   g.clearRect(0, 0, pk.width, pk.height);
   g.globalCompositeOperation = 'source-over';
   g.drawImage(im, fx, fy, fw, fh, 0, 0, dw, dh);
-  const [r, gg, b] = pokeyLight(sc, sim.x, 0.6 + sim.y, sim.z).map((c) => Math.round(Math.min(1, c * (0.5 + 0.5 * ex)) * 255));
+  const [r, gg, b] = pokeyLight(sc, drawX(sim), 0.6 + sim.y, sim.z).map((c) => Math.round(Math.min(1, c * (0.5 + 0.5 * ex)) * 255));
   g.globalCompositeOperation = 'multiply';
   g.fillStyle = `rgb(${r}, ${gg}, ${b})`;
   g.fillRect(0, 0, dw, dh);
@@ -775,6 +785,8 @@ function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim, sc: Sc
   g.drawImage(im, fx, fy, fw, fh, 0, 0, dw, dh);
   g.globalCompositeOperation = 'source-over';
   ctx.save();
+  // (always solid: a near prop faded just before him left its fade on the canvas, and he came out see-through)
+  ctx.globalAlpha = 1;
   ctx.translate(body[0], body[1] + body[2] * 0.06);
   // (tipped about his seat, his weight shifted the way he leans)
   ctx.rotate(tilt);
