@@ -1441,6 +1441,70 @@
      ]
     },
     "pairs": []
+   },
+   "w8roost": {
+    "title": "World 8 bat roost: two short mossy roost branches (draw about 260 x 60), a seed pod, a pile, an open pod, a small pile (pods about 60 px)",
+    "data": "props-made/w8roost.json",
+    "sheet": "props-made/w8roost.webp",
+    "frames": {
+     "roost-branch": [
+      477,
+      151
+     ],
+     "roost-branch-b": [
+      484,
+      152
+     ],
+     "seed-pod": [
+      219,
+      397
+     ],
+     "seed-pile": [
+      448,
+      293
+     ],
+     "seed-pod-open": [
+      223,
+      384
+     ],
+     "seed-pile-small": [
+      410,
+      181
+     ]
+    },
+    "pairs": []
+   },
+   "w8roost-b": {
+    "title": "World 8 bat roost, second look (the other img2img take of the same pieces)",
+    "data": "props-made/w8roost-b.json",
+    "sheet": "props-made/w8roost-b.webp",
+    "frames": {
+     "roost-branch": [
+      471,
+      131
+     ],
+     "roost-branch-b": [
+      479,
+      131
+     ],
+     "seed-pod": [
+      218,
+      378
+     ],
+     "seed-pile": [
+      463,
+      296
+     ],
+     "seed-pod-open": [
+      221,
+      387
+     ],
+     "seed-pile-small": [
+      398,
+      176
+     ]
+    },
+    "pairs": []
    }
   }
  },
@@ -1516,6 +1580,124 @@
     "attack_b": "nc-soldierb-attack-s5",
     "hurt_b": "nc-soldierb-hurt-s17",
     "down_b": "nc-soldierb-down-s17"
+   }
+  },
+  "fruitbat-w8": {
+   "sheets": [
+    "fruitbat-w8-anim.webp"
+   ],
+   "json": "fruitbat-w8.json",
+   "moves": {
+    "doze": 12,
+    "sleep": 13
+   },
+   "source": {
+    "doze": "hfb-bat-sleep-s5",
+    "sleep": "hfb-bat-sleep-s5"
+   }
+  },
+  "fruitbat-fly": {
+   "sheets": [
+    "fruitbat-fly-anim.webp"
+   ],
+   "json": "fruitbat-fly.json",
+   "moves": {
+    "fly": 6
+   },
+   "source": {
+    "fly": "cr-fruitbat-fly-s21"
+   }
+  },
+  "crab": {
+   "sheets": [
+    "crab-anim.webp"
+   ],
+   "json": "crab.json",
+   "moves": {
+    "idle": 25,
+    "walk": 7,
+    "attack": 8,
+    "hurt": 16,
+    "defeat": 22
+   },
+   "source": {
+    "idle": "cr-crab-idle-s7",
+    "walk": "m1k-crab-walk-s3",
+    "attack": "m1k-crab-snap-s29",
+    "hurt": "cr-crab-hurt-s21",
+    "defeat": "hfb-crab-defeat-s17"
+   }
+  },
+  "piranha": {
+   "sheets": [
+    "piranha-anim.webp"
+   ],
+   "json": "piranha.json",
+   "moves": {
+    "idle": 11,
+    "attack": 11,
+    "hurt": 6,
+    "defeat": 25
+   },
+   "source": {
+    "idle": "m1k-piranha-chomp-s3",
+    "attack": "cr-piranha-leap-s7",
+    "hurt": "cr-piranha-hurt-s21",
+    "defeat": "hfb-piranha-defeat-s5"
+   }
+  },
+  "sentry": {
+   "sheets": [
+    "sentry-anim-0.webp",
+    "sentry-anim-1.webp"
+   ],
+   "json": "sentry.json",
+   "moves": {
+    "idle": 25,
+    "walk": 25,
+    "attack": 19,
+    "hurt": 9,
+    "defeat": 25
+   },
+   "source": {
+    "idle": "cr-sentry-idle-s21",
+    "walk": "m1k-sentry-walk-s11",
+    "attack": "cr-sentry-jab-s21",
+    "hurt": "hfb-sentry-hurt-s5",
+    "defeat": "cr-sentry-crumble-s21"
+   }
+  },
+  "beetle": {
+   "sheets": [
+    "beetle-anim-0.webp",
+    "beetle-anim-1.webp"
+   ],
+   "json": "beetle.json",
+   "moves": {
+    "idle": 25,
+    "walk": 25,
+    "attack": 25,
+    "hurt": 25,
+    "defeat": 25
+   },
+   "source": {
+    "idle": "cr-beetle-idle-s21",
+    "walk": "m1k-beetle-walk-s11",
+    "attack": "m1k-beetle-charge-s3",
+    "hurt": "cr-beetle-flip-s21",
+    "defeat": "hfb-beetle-defeat-s17"
+   }
+  },
+  "owl": {
+   "sheets": [
+    "owl-anim.webp"
+   ],
+   "json": "owl.json",
+   "moves": {
+    "defeat": 25
+   },
+   "source": {
+    "defeat": "hfb-owl-defeat-s11"
    }
   }
  },
@@ -1703,5 +1885,6 @@
     ]
    }
   }
- }
+ },
+ "creaturesHfbNote": "hf-batch-w7w8 (2026-10-29, tools/art/hfbatch/cutbatch.py): crab, piranha, sentry, beetle, owl and the World 8 bat (fruitbat-w8: doze, sleep, fly) from the old cr-/m1k- clips plus this batch; frames face RIGHT, up 1, one canvas anchor per creature (each json says which). Nothing draws them yet."
 }
