@@ -244,6 +244,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.4-2.leaf", "4-2", "stage hint", "move", "Your leaf! Flick up, then keep your thumb on the glass as you fall", "Flick up, keep your thumb on the glass.", null, "flick-hold", "first wide gap"],
   ["hint.4-2.ride", "4-2", "stage hint", "move", "Wind up high! Open your leaf as the chimes swing your way, and ride it far", "Flick and hold as the chimes swing out.", null, "flick-hold", "chimes"],
   ["hint.4-3.boulder", "4-3", "stage hint", "move", "A boulder! Walk right into it and keep going: you push it along the shelf into the stream", "Slide into the boulder to push it along.", null, "slide", "boulder"],
+  ["w4.drySteps", "4-3", "guide", "move", "Now the steps are dry, and tall: flick up again in the air to jump twice", "Steps are tall: flick up twice.", null, "double-jump", "dry steps"],
   ["hint.4-3.logJump", "4-3", "stage hint", "move", "Stand on the near end of the log, under the ledge, and double jump straight up", "Flick up twice from the log's near end.", null, "double-jump", "ledge above the log"],
   ["hint.4-3.logJump2", "4-3", "stage hint", "move", "Wait on the near end of the log, under the ledge. When the water lifts it all the way, double jump straight up", "Flick up twice when it's at the top.", null, "double-jump", "ledge above the log"],
   ["hint.4-4.letGo", "4-4", "stage hint", "move", "The chimes swing the way the wind will blow. Let go when they swing your way, and the wind carries you over", "Flick off as the chimes swing your way.", null, "flick-up", "chimes"],

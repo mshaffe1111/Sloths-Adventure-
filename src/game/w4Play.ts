@@ -82,6 +82,11 @@ export interface W4Extras {
   /** a wider view than usual (4-7, where the next ledge is far across and far down): the world shown, held sideways (its height) and
    *  upright (its width), in place of the engine's 540 and 440 */
   view?: { land: number; port: number };
+  /** 4-3: the tree up to the shelf beside a fall (the fall's id, the trunk's x): standing at the foot of the pouring fall, the
+   *  view turns to show the tree too, so it is on screen when Dot says to climb it, held upright as well (QA 2026-10-29) */
+  fallTrees?: Array<{ fall: number; x: number }>;
+  /** 4-3: what Dot says as the first boulder stops its fall, in place of the plain line (its dry steps are each a double jump up) */
+  dryTip?: string;
   /** 4-6: sleeping eaglets (eaglet.ts) */
   nests?: Nest[];
   decor?: W4Decor[];
@@ -176,6 +181,8 @@ export class W4Play {
   private groundY = NaN;
   /** the view drawBack last drew (drawFront culls by it) */
   private view = { x0: -Infinity, x1: Infinity };
+  /** the first boulder's line (dryTip) has been said */
+  private dryTold = false;
   /** each nest: the last look that blew him back, and when its latest flurry started and which way it pushes */
   private nestBlow: Array<{ cycle: number; at: number; dir: number }>;
   /** 4-9: the guards that have been blown off their ledges while he was close (each counts once), and when each omen began */
@@ -339,7 +346,13 @@ export class W4Play {
       if (before > FALLS.trickle && this.flow[i] <= FALLS.trickle && Math.abs(w.x - p.x) < 900) {
         h.sfx('splash');
         // a boulder he has just rolled in: say it worked (the water is a long way down from the shelf, and easy to miss)
-        if (w.plug && Math.abs(w.x - p.x) < 700) h.tip('w4:plugged', 'That stopped the water! Now the steps under it are dry: climb them', 3.4);
+        if (w.plug && Math.abs(w.x - p.x) < 700) {
+          // (the first one, in a stage whose steps need it: the double jump told now, before he is down at them)
+          if (this.w4.dryTip && !this.dryTold) {
+            this.dryTold = true;
+            h.tip('w4:drySteps', this.w4.dryTip, 3.6);
+          } else h.tip('w4:plugged', 'That stopped the water! Now the steps under it are dry: climb them', 3.4);
+        }
       }
       // pouring water is a wall: it throws him back out the side he came in from (waterfalls.ts fallWall); out of it, that side is
       // simply the side he is on
@@ -706,6 +719,16 @@ export class W4Play {
       // under the bubble, so `leftX`: the view puts the knot near its left edge, beside the bubble in the middle)
       if (u > 0 && (!best || u > best.u)) best = { x: k.x, y: Math.min((k.y + feetY) / 2, k.y + 60), u, leftX: k.x };
     });
+    // 4-3's tree falls: on the terrace at the foot of a fall that still pours (or jumping up into it), far enough from the tree that it would be behind the
+    // view, the view centres between him and the tree, a little toward the tree (they are 340-360 px apart there: both fit the 440 px of
+    // an upright phone, the trunk clear of the edge). The engine keeps him in view
+    for (const ft of this.w4.fallTrees ?? []) {
+      const i = (this.w4.falls ?? []).findIndex((q) => q.id === ft.fall);
+      const w = (this.w4.falls ?? [])[i];
+      if (!w || this.flow[i] <= 0.5 || feetY > w.bottom + 24 || feetY < w.bottom - 280 || px < ft.x || px > w.x + 80) continue;
+      const u = Math.max(0, Math.min(1, (px - ft.x - 110) / 140));
+      if (u > 0 && (!best || u > best.u)) best = { x: ft.x + (px - ft.x) * 0.46, y: feetY - 120, u };
+    }
     return best;
   }
 
