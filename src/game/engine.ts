@@ -1803,7 +1803,6 @@ export class GameEngine {
         // --- Standard Ground / Aerial Movement ---
         if (this.input.state.down && p.grounded) {
           p.ducking = true;
-          p.teeter = 0;
           if (Math.abs(p.vx) <= PHYS.groundDec * dt) p.vx = 0;
           else p.vx -= Math.sign(p.vx) * PHYS.groundDec * dt;
         } else {
@@ -1827,7 +1826,6 @@ export class GameEngine {
           }
           // that push is gentler than a run, so a double jump does not fly off a small platform
           if (leaning) maxSpeed *= LEAN_SPEED;
-          p.teeter = 0;
           if (dir !== 0) {
             if (!this.facingLocked()) p.facing = dir as 1 | -1;
             const reversing = Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
@@ -1847,10 +1845,18 @@ export class GameEngine {
             const dec = p.grounded ? (takeOff ? 0 : PHYS.groundDec) : this.refined && !this.input.state.down ? 0 : PHYS.airStop;
             if (Math.abs(p.vx) <= dec * dt) p.vx = 0;
             else p.vx -= Math.sign(p.vx) * dec * dt;
-            // standing still past the end of a ledge: a small step back, so no more than about a quarter of him is over the air (EDGE)
-            const back = p.vx === 0 && !takeOff && !this.atk ? this.edgeStepBack() : 0;
-            if (back) p.vx = back * EDGE.stepV;
+            // standing still past the end of a ledge: drawn a small step back, so no more than about a quarter of him is over the air (EDGE)
+            if (p.vx === 0 && !takeOff && !this.atk) this.edgeTarget = this.edgeOffset();
           }
+        }
+        // (where he is drawn eases to that step back while he stands there, and back onto his footing within a few frames when he moves)
+        {
+          const cur = p.drawDx ?? 0;
+          const rate = (this.edgeTarget !== 0 ? EDGE.stepV : EDGE.snapV) * dt;
+          const d = this.edgeTarget - cur;
+          p.drawDx = Math.abs(d) <= rate ? this.edgeTarget : cur + Math.sign(d) * rate;
+          p.teeter = this.edgeTarget !== 0 && Math.abs(this.edgeTarget - p.drawDx) < 1 ? (this.edgeTarget < 0 ? 1 : -1) : 0;
+          this.edgeTarget = 0;
         }
 
         const assist = this.assistNow();
@@ -5206,28 +5212,23 @@ export class GameEngine {
     }
   }
 
+  /** this frame, the drawn step back at a ledge's end (edgeOffset): applied to where he is drawn, p.drawDx */
+  private edgeTarget = 0;
   /**
-   * He stands still with his middle past the end of the platform under him, and nothing at that height carries on beyond it: which way
-   * to step back onto it (-1, 1), or 0. The footing that lets him stand up to 11 px (16 with the early-stage help) past an end is left as
-   * it is, so where he walks off an edge, and every running jump, is unchanged; only standing still there he steps back until his middle
-   * is EDGE.inset inside, so at most about a quarter of him hangs over the air (QA, 2-6, 2026-10-29: "he stands in the air"). Sets
-   * p.teeter while he stands right at that line.
+   * He stands still with his middle past the end of the platform under him, and nothing at that height carries on beyond it: how far to
+   * DRAW him back from where he stands (px, - toward the left), so his middle shows EDGE.inset inside the end and at most about a quarter
+   * of him over the air (QA, 2-6, 2026-10-29: "he stands in the air"); 0 otherwise. Only the picture moves: his footing, every jump from
+   * that edge, coyote time and the landing forgiveness are exactly as before (moving him back cost 4-4 a liana jump, w4RealReach).
    */
-  private edgeStepBack(): -1 | 0 | 1 {
+  private edgeOffset(): number {
     const p = this.player;
-    p.teeter = 0;
     if (!p.grounded || p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.pushing) return 0;
     const plat = this.platforms.find((q) => q.id === this.standingOnId);
     if (!plat || plat.type === 'drift' || plat.width < EDGE.inset * 2 + 8) return 0;
     const carriesOn = (x: number) => this.platforms.some((q) => q !== plat && !q.broken && Math.abs(q.y - plat.y) <= 3 && x >= q.x && x <= q.x + q.width);
     const r = plat.x + plat.width;
-    if (p.x > r - EDGE.inset - EDGE.teeterPx && !carriesOn(r + 2)) {
-      if (p.x > r - EDGE.inset + 0.5) return -1;
-      p.teeter = 1;
-    } else if (p.x < plat.x + EDGE.inset + EDGE.teeterPx && !carriesOn(plat.x - 2)) {
-      if (p.x < plat.x + EDGE.inset - 0.5) return 1;
-      p.teeter = -1;
-    }
+    if (p.x > r - EDGE.inset && !carriesOn(r + 2)) return r - EDGE.inset - p.x;
+    if (p.x < plat.x + EDGE.inset && !carriesOn(plat.x - 2)) return plat.x + EDGE.inset - p.x;
     return 0;
   }
 
