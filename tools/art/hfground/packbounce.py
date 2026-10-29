@@ -25,6 +25,14 @@ frames = {}
 for sp, pk in PICKS.items():
     wspan = pk.get('span', 1.1)
     cap = depurple(key(Image.open(raw / f"{pk['cap']}.webp"), main_only=True), edge_only=1)
+    # (`lift`: brighter, for a dark plant on a dark stage: World 10's iron thistle on its storm, the lead's review)
+    def lifted(im, k=pk.get('lift', 1.0)):
+        if k == 1.0:
+            return im
+        a = np.asarray(im).astype(np.float32)
+        a[..., :3] = 255 * (a[..., :3] / 255) ** (1 / k) * min(1.15, k)
+        return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'RGBA')
+    cap = lifted(cap)
     cap = cap.crop(cap.getbbox())
     a = np.asarray(cap)[..., 3] > 128
     # the cap: rows down to where the solid narrows to the stalk (the widest row's span, then the first row below it under 40% as wide)
@@ -48,7 +56,7 @@ for sp, pk in PICKS.items():
     cells.append((f'cap-{sp}', cap, {'cw': round((xs.max() - xs.min()) / a.shape[1], 4), 'cx': round((xs.min() + xs.max()) / 2 / a.shape[1], 4),
                                      'sx': round((sx0 + sx1) / 2 / a.shape[1], 4), 'sw': round((sx1 - sx0) / a.shape[1], 4),
                                      'rim': round(rim * s / cap.height, 4), 'span': wspan}))
-    st = depurple(key(Image.open(raw / f"{pk['stalk']}.webp")), edge_only=1)
+    st = lifted(depurple(key(Image.open(raw / f"{pk['stalk']}.webp")), edge_only=1))
     bb = st.getbbox()
     st = st.crop((0, bb[1], st.width, bb[3])).rotate(90, expand=True)
     k = 48 / st.width
