@@ -180,11 +180,11 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     P('I was in the neighborhood. Slowly.', 'P:talk@.28 FL@.365^.44*.8> MS:happy_tears@.68*.8', { p: { particles: 'sparkles' } }),
     N('She laughed. Then her back stopped being straight.', 'P:happy@.28 FL@.365^.44*.8> MS:laugh@.62*.8', { cue: 'tender', i: 0.45, p: { particles: 'sparkles' } }),
     P('You can sit down now.', 'P:idle@.3 FL@.385^.44*.8> MS:content@.6*.8', { cue: 'tender', i: 0.4, p: { particles: 'sparkles', zoom: 1.35, focusX: 0.42 } }),
-    N('They sat on the wet steps. Neither of them said much. It was the best conversation of the year.', 'PA:lean_rest@.5*1.05', { cue: 'meeca', i: 0.5, p: { particles: 'petals', zoom: 1.2 } }),
+    N('They sat on the wet steps. Neither of them said much. It was the best conversation of the year.', 'PA:lean_rest@.44^.69%*1.05', { cue: 'meeca', i: 0.5, p: { plate: 'steps', particles: 'petals', zoom: 1.2 } }),
     // and the light that got her a night out lifts off Pokey's wrist (lead, 2026-10-29: here, not at Pell's shop)
-    M('There you are. I wondered where my light went.', 'PA:lean_rest@.5*1.05 FL@.58^.42', { cue: 'tender', i: 0.4, p: { particles: 'petals' } }),
-    FL('I\'m sorry.', 'PA:lean_rest@.5*1.05 FL:sad@.58^.42', { p: { particles: 'petals' } }),
-    M('You got me a whole night out. Come here.', 'PA:lean_rest@.5*1.05 FL:happy@.54^.46', { p: { particles: 'petals' } }),
+    M('There you are. I wondered where my light went.', 'PA:lean_rest@.44^.69%*1.05 FL@.58^.42', { cue: 'tender', i: 0.4, p: { plate: 'steps', particles: 'petals' } }),
+    FL('I\'m sorry.', 'PA:lean_rest@.44^.69%*1.05 FL:sad@.58^.42', { p: { plate: 'steps', particles: 'petals' } }),
+    M('You got me a whole night out. Come here.', 'PA:lean_rest@.44^.69%*1.05 FL:happy@.54^.46', { p: { plate: 'steps', particles: 'petals' } }),
   ]);
 
   // ───────────── THE SEAM ─────────────

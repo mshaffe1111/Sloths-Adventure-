@@ -17,6 +17,9 @@ import type { StoryPanel } from './story.ts';
 /** a little Pokey and a little Meeca: the same painted pair, drawn smaller */
 const kp = (mood: string, x = 0.36) => `P:${mood}@${x}*.78`;
 const km = (mood: string, x = 0.66) => `M:${mood}@${x}*.78`;
+// the cub and Meeca in the old nest, pinned to the nest of the plate (the left of the picture, its rim at about .6 of the scene)
+const kn = (mood: string, x = 0.2) => `P:${mood}@${x}^.6%*.6`;
+const mn = (mood: string, x = 0.32) => `M:${mood}@${x}^.6%*.6`;
 
 export const LULLABY = '♪ Slow the rain, slow the thunder. Slow the thorn that holds you under. Slow the kettle, slow the stair. Someone\'s coming. Keep a chair. ♪';
 
@@ -131,22 +134,22 @@ export const SEALED = chapter({ name: 'WORLD 6 · THE SEALED NOTE', w: 6, m: 'du
 ]);
 
 // ART HOOK: the nest-in-the-storm plate (two grown sloths seen from behind, going out along the branch; a cub's hands on the rim) belongs on the "It had been his parents' nest" beat once it is painted.
-export const STORM = chapter({ name: 'MEMORY · THE SINGING STORM', w: 1, m: 'storm', cue: 'tender', i: 0.3, base: { memory: true, particles: 'rain' } }, [
-  N('A storm, in the old nest. Pokey was small, and the nest was bigger than he was.', kp('duck', 0.5), { cue: 'dread', i: 0.2 }),
-  P('It\'s only weather.', `${kp('duck')} ${km('happy')}`, { p: { fx: [{ at: 0.4, kind: 'flash', dur: 0.3, amount: 0.5 }] } }),
-  M('You\'re holding the nest with both hands.', `${kp('duck')} ${km('talk')}`),
-  P('It\'s a very good nest. I want it to stay.', `${kp('duck')} ${km('talk')}`),
-  N('It had been his parents\' nest. He remembered a few small things about them. The sound his father\'s claws made on the bark, coming home. His mother humming something he could never get all the way back.', kp('sad', 0.5), { cue: 'sorrow', i: 0.3 }),
-  N('On a night like this one they\'d gone out along the far branches, and afterward the grown-ups said it was a storm, sweetheart, and talked about something else. Nobody ever told him what they went out for.', kp('sad', 0.5), { cue: 'sorrow', i: 0.3 }),
-  M('Can I sit?', `${kp('duck')} ${km('talk')}`),
-  P('It\'s small.', `${kp('duck')} ${km('talk')}`),
-  M('I\'m small.', `${kp('worried')} ${km('happy')}`, { cue: 'meeca', i: 0.4 }),
-  N('She put one hand over both of his on the rim of the nest. She didn\'t ask him to let go.', `${kp('worried', 0.4)} ${km('happy', 0.6)}`, { cue: 'tender', i: 0.4 }),
-  M('♪ Slow the rain... slow the thunder... ♪', `${kp('worried')} ${km('sing')}`, { cue: 'meeca', i: 0.8, sting: 'bloom', m: 'dusk', p: { particles: 'petals' } }),
-  N('The thunder kept coming. After a while, he could hear her over it.', `${kp('sleep', 0.4)} ${km('sing', 0.6)}`, { cue: 'tender', i: 0.6 }),
-  P('Who taught you that?', `${kp('happy')} ${km('happy')}`),
-  M('Grandma. It was her song first. She has a music box that plays it, with a little iron key. When it runs down, I sing the rest.', `${kp('happy', 0.22)} ${km('think', 0.42)} GR:box_sit@.74*.9`, { cue: 'grandma', i: 0.5 }),
-  N('Down in the house, the music box ran down. She went on without it, and he fell asleep with both hands still on the nest.', `${kp('sleep', 0.4)} ${km('happy', 0.6)} GR:hum_sit@.86*.7`, { cue: 'pokey', i: 0.5, p: { particles: 'sparkles' } }),
+export const STORM = chapter({ name: 'MEMORY · THE SINGING STORM', w: 1, m: 'storm', cue: 'tender', i: 0.3, base: { memory: true, plate: 'nest-night', particles: 'rain' } }, [
+  N('A storm, in the old nest. Pokey was small, and the nest was bigger than he was.', kn('duck'), { cue: 'dread', i: 0.2 }),
+  P('It\'s only weather.', `${kn('duck')} ${mn('happy')}`, { p: { fx: [{ at: 0.4, kind: 'flash', dur: 0.3, amount: 0.5 }] } }),
+  M('You\'re holding the nest with both hands.', `${kn('duck')} ${mn('talk')}`),
+  P('It\'s a very good nest. I want it to stay.', `${kn('duck')} ${mn('talk')}`),
+  N('It had been his parents\' nest. He remembered a few small things about them. The sound his father\'s claws made on the bark, coming home. His mother humming something he could never get all the way back.', kn('sad'), { cue: 'sorrow', i: 0.3, p: { plate: 'nest-storm' } }),
+  N('On a night like this one they\'d gone out along the far branches, and afterward the grown-ups said it was a storm, sweetheart, and talked about something else. Nobody ever told him what they went out for.', kn('sad'), { cue: 'sorrow', i: 0.3, p: { plate: 'nest-storm' } }),
+  M('Can I sit?', `${kn('duck')} ${mn('talk')}`),
+  P('It\'s small.', `${kn('duck')} ${mn('talk')}`),
+  M('I\'m small.', `${kn('worried')} ${mn('happy')}`, { cue: 'meeca', i: 0.4 }),
+  N('She put one hand over both of his on the rim of the nest. She didn\'t ask him to let go.', `${kn('worried')} ${mn('happy')}`, { cue: 'tender', i: 0.4 }),
+  M('♪ Slow the rain... slow the thunder... ♪', `${kn('worried')} ${mn('sing')}`, { cue: 'meeca', i: 0.8, sting: 'bloom', m: 'dusk', p: { particles: 'petals' } }),
+  N('The thunder kept coming. After a while, he could hear her over it.', `${kn('sleep')} ${mn('sing')}`, { cue: 'tender', i: 0.6 }),
+  P('Who taught you that?', `${kn('happy')} ${mn('happy')}`),
+  M('Grandma. It was her song first. She has a music box that plays it, with a little iron key. When it runs down, I sing the rest.', `${kn('happy')} ${mn('think')} GR:box_sit@.76*.9`, { cue: 'grandma', i: 0.5 }),
+  N('Down in the house, the music box ran down. She went on without it, and he fell asleep with both hands still on the nest.', `${kn('sleep')} ${mn('happy')} GR:hum_sit@.86*.7`, { cue: 'pokey', i: 0.5, p: { particles: 'sparkles' } }),
 ]);
 
 // ═════════════════════════════════ World 7 · who the General is ═════════════════════════════════
