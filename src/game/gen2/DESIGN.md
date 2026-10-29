@@ -273,15 +273,30 @@ and a section's entry and exit are always ledges):
 - `{ shape: 'liana', place: { kind: 'swing', after, top?, reach?, amp?, period? } }`: a liana hanging past `after`'s end, its anchor
   `top` px above that ledge (default `LIANA.top` 360-420), `reach` px out from its end (160-190), down to 30 px under the ledge at
   most (410 long). It **swings by itself** (Matt, 2026-10-28): `amp` radians either side, one there-and-back every `period` s
-  (`LianaSwing`, defaults 0.7-0.85 and 1.8-2.2 s), rolled once per use and the same on Easy and Normal; the player can't pump it.
+  (`LianaSwing`); by default the engine's swing (`VINE`, which a pipeline test holds to physics.ts `TIMED`): at most 0.45 rad,
+  Normal 2.85 s, Easy 3.3 s, its sweet spot (-0.15..0.9 of the swing, Easy -0.4..1.2). The Vine also carries `swingAmp` /
+  `swingPeriod` for the engine; the player can't pump it.
   Each placed liana's swing goes to the engine as `proto.gen2.lianas` (`{ vine, amp, period }`, by vine id) and sits on
   `PlacedSection.vines`. A section with a liana needs the `swing` move (inferred) and is never mirrored.
 - `{ place: { kind: 'land', after: <the liana>, dy?, share? } }`: the perch past it. Its near end is `share` along the band of near
   ends where letting go lands on it with a **release window** of at least `LIANA.window` (Easy 300 ms, Normal 167 ms), `dy` from
-  the swing's ledge. The window comes from one function, `lianaRelease(vine, swing, gripY, perch)` (he hangs at the ledge's height,
-  letting go carries the vine's velocity at his grip, steering toward the perch): when branch vine-fix changes the engine's swing,
-  this function follows it. Until then `lianaBand` also holds the band to what today's levelCheck links (`swingLandings`, 6 lines).
-  The gap from the swing's ledge to the perch is a pit (soft, water or void as the stage's falls are).
+  the swing's ledge. The window comes from one function, `lianaRelease(vine, swing, perch, difficulty)`, which is physics.ts
+  `pressWindow` itself on that difficulty's swing (the worse of two grips; sweet-spot leap, early and late presses, hops; since
+  d533039: a mirrored copy had drifted from the engine's leap). `lianaBand` also holds the band to what
+  levelCheck links (`swingLandings`, 6 lines), whichever swing model levelCheck has. Under vine-fix's calmer swing levelCheck links a
+  level perch only to about 480-510 px out, just past the glide's 477: a perch that does not fit is moved (raised or lowered 40-160
+  px, nearest first: a raised perch is past the glide sooner, 307 px at 80 px up, and still in reach), then levelled, widened up to
+  400 px at each height; never a wider swing.
+  The gap from the swing's ledge to the perch is a pit (soft, water or void as the stage's falls are), and the perch lies past every
+  jump (`jumpLinkGap`: a jump, a double jump, and the leaf glide once every player has it, 457 px on the flat from World 5): the
+  swing is the way over, not a choice. **A soft pit under a liana climbs back** to the swing's ledge (`backPit`: steps of the
+  narrowest tread against the near wall), never forward: the perch's face stands more than a double jump (plus 40 px) over its
+  floor, and no step of it is within a jump of the perch. (Easy's falls stay soft: a miss costs a climb back and another go.)
+  Only a section where no height or width fits is refused, by name.
+- **Time**: a self-swinging liana costs `lianaSeconds` = (period - window) / 2 (the wait for the swing to come round) + period / 2
+  (the ride). `gen2Model` is stageTime's `modelStage` with each liana (`proto.gen2.lianas` carries `window`, `x0`, `x1` too) costing
+  that in place of walking its gap plus `TIME.swingExtra` (2.5 s, a pumped swing's cost: it ran a 17-liana 6-1 roll at 0.68 of the
+  inspector's quick route). The length loop and `Gen2Meta.modelled` read `gen2Model`; stageTime is unchanged for Worlds 1-5.
 - **Chains**: levelCheck follows ledge -> liana -> ledge, never liana -> liana, so a chain has a perch between every two swings
   (liana, land, liana, land). levelCheck was not changed.
 - `{ shape: 'vine', place: { kind: 'climb', on, at, h } }`: a climbing vine standing on `on`, `at` along it, `h` px tall (the
@@ -301,6 +316,68 @@ first water, Easy again whenever 12 s of walking passed) with a sign's spot in `
 - `StageSink.zones`: every zone of the stage, the sections' own first; a world's emitter may push its own (a prop's patch).
 - Nothing stands in a zone (levelCheck): creature sockets and top-up animals inside one stay empty, and a flag inside one is not
   raised (or is taken down when an emitter's zone comes to cover it).
+
+**Required sections** (`WorldManifest.required`, stage id -> `[{ section, phase? }]`: 6-7's water room, 6-6's dark hollow, every
+World 6 room): every roll of that stage holds each once, placed by the plan, never drawn by weight: at the first slot of the first
+node it fits (of `phase` when given) with the route inside the corridor. A roll whose required section fails its check is rolled
+again (never swapped out), the length loop never trims one, Easy lays Normal's plan so it has them too, and a required section that
+fits no node of the stage is an authoring mistake the build names. Other stages draw the section by weight as usual.
+
+### B12. Building a new world on gen2 (the checklist for Worlds 7-10)
+
+Follow these steps in order. Each one points at World 6, which did all of them, and at the trap World 6 hit there (reference/STAGE-RULES.md §6,
+"World 6 on gen2"). Read STAGE-RULES in full first.
+
+1. **The world's kit** (`worlds/wN.ts`, as `w6.ts`): its `WorldManifest` (the stage list, `pit`, `moves`, creatures with
+   tags and threat, props and their emitters, tips: Dot's lines, under 10 words), the world's look, and `wNFinish` when the stage
+   needs a pass after the build (w6Finish: Dot's first line for each new animal). Start each stage of the world in `cfg` order and
+   give each its archetype.
+2. **Sections** (`worlds/wNGround.ts`, `wNSwing.ts`, as World 6's): about 30 a world (B9). Each is 600 to 1700 px (+370 a liana:
+   `w6Swing.test.ts`), level at its ends, with honest beats and its mechanic taught on first use (`teaches`, a tip socket on its
+   first piece). Traps:
+   - under a liana, either water or a pit that climbs back (B11);
+   - perches lie past the glide and are raised about 80 px;
+   - banks between creeks are 360 px or more;
+   - no long flat without a knee, since Easy drops the animals;
+   - nothing that a flag or an animal must stand in sits inside a zone;
+   - an animal needs a flat long enough to stay 120 px from every hop on and off it (`JUMP_CLEAR`). The pipeline drops it from a shorter
+     one, so a knee flat holds no animal;
+   - a section with a tip on its first piece is never mirrored.
+3. **Rooms** (`worlds/wNRooms.ts`, as `w6Rooms.ts`): each stage's puzzle room goes in `WorldManifest.required` (B11), never by
+   weight, and the stage's sheet list loads the kit pieces (`stageSheets.ts` `GEN2_ROOMS`).
+4. **The game's kit** (`worlds/wNGame.ts`, as `w6Game.ts`): one kit per stage and difficulty, folding in the ground, the swings and
+   the rooms, with `required` set. Decide here which stage takes which sections (`forStage`). Stages with the same archetype or the
+   same moves otherwise read alike and fail `--apart`.
+5. **Hook it into the game** (`game.ts`): a `GEN2_STAGES` entry per stage (`kit(difficulty)`, `kitName`, `finish`; `easyGoal` once
+   measured), the clip sheets of animals in every shipped roll (`stageSheets.ts` `STAGE_ANIMS`), and the water signs if the world
+   has water.
+6. **Tests to copy**, renamed for the world:
+   - `w6.test.ts`: the kit's sections and the inspector on 20 raw rolls, covering quiet, length and variety;
+   - `w6Swing.test.ts` and `w6SwingRoute.test.ts`: section sizes and the quick route swinging every liana;
+   - `w6Rooms.test.ts`: each room plays;
+   - `w6Game.test.ts`, on the shipped rolls as the game plays them: the room once per roll, every liana swung, 2:00 or more, nothing
+     hurting in the first 5 s, each animal and hazard taught first, nothing crumbling, and flags at most `FLAG_SPAN.max` apart;
+   - add the world's stages to `game.test.ts`, which covers the flag span on 30 raw rolls, the sheets, the water signs and the Easy
+     goals.
+7. **Measure while you author**, not after: a scratch loop of `buildGen2Stage` over 20-30 seeds a stage, Normal and Easy, for
+   throws, levelCheck, the longest quiet stretch, dead share, the quick route's time and diversity (as `w6.test.ts` does). Check
+   flags on every raw roll.
+8. **Curate** (B8), one stage at a time, then commit `seeds.ts`:
+   `npx tsx tools/gen2/curate.ts --stages N-1 --rolls 400 --keep 16 --apart [--rooms 8] --json out.json --report out.md`.
+   Any change to sections, the pipeline or the liana model means curating again. Before trusting curation, check that its filters
+   (`failsOf`) cover every rule the full suite holds a stage to (`stageQuality.test.ts`, `levels.test.ts`, `zones.test.ts`). A rule
+   only a test knows ships broken rolls (the animal clearance, STAGE-RULES §6).
+9. **Easy goals**: run the kid first-timer (`tools/inspect/firsttimer.ts`, `FT_KID`) on seeds 1-3 with two trials. Use the
+   second-lowest count as `easyGoal`, so the kid makes it in 5 of 6 runs.
+10. **The checks** (CLAUDE.md), in order:
+    - `npx tsc --noEmit -p .`;
+    - the full test suite, and the gen2 tests too (CLAUDE.md's command doesn't reach `src/game/gen2/`):
+      `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts tools/gen2/*.test.ts`;
+    - `npx tsx tools/inspect/era.ts --worlds N --rolls 200` (shipped variety 0.35 or more);
+    - `npx tsx tools/inspect/inspect.ts --worlds N --firsttimer --seed S` for S = 1, 2, 3;
+    - `npx vite build` (no asset over 4 MiB);
+    - screenshots of every stage upright (390x844) and sideways (844x390).
+    Then add what you learned to STAGE-RULES §6.
 
 ---
 

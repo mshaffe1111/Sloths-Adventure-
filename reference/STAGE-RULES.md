@@ -195,7 +195,6 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   it (only a separate floor piece, a dip or a step, makes a beat), and a falling rock that lands below the path (4-7's) is never met.
   So a glide stage is all J and V to it, and 4-7 stays 99.8% alike however its sections roll. Variety the tool counts needs versions
   with different kinds of action (vines, waits, puzzles, foes), not the same jumps in another order; a roll-wide "ground" theme (hops
-  or second-jump leaps between pieces) moved World 4 more than any single section did.
   or second-jump leaps between pieces) moved World 4 more than any single section did. Round 2: a flavour carried through the whole
   stage, with heavy pieces of its own after each section, moved 4-2, 4-5 and 4-9 to about half alike between flavours; stages made
   of one move (4-3's wet steps, 4-7's glides) stay 0.93-0.99 whatever is added, because their many jumps dominate the 3-grams.
@@ -215,12 +214,6 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   stage still reads ~0.7 alike. A fixed piece in every roll (a climax, a teaching room) pulls the rolls back together.
 - **A climb detour is invisible**: a tree to climb up and back down beside the path was walked past by the quick route (quiet stretches,
   short stages). Climbing counts only where the way on goes up it (a root up a wall too high to jump, `rootClimb`).
-  or second-jump leaps between pieces) moved World 4 more than any single section did. Round 2: a flavour carried through the whole
-  stage, with heavy pieces of its own after each section, moved 4-2, 4-5 and 4-9 to about half alike between flavours; stages made
-  of one move (4-3's wet steps, 4-7's glides) stay 0.93-0.99 whatever is added, because their many jumps dominate the 3-grams.
-- **The level check follows a swing from a ledge to a ledge, never from vine to vine** (2026-10-28): a chain of lianas over a real
-  drop reads as unfinishable (4-4 is not judged by the check for that reason). Where a stage is checked, a swing over a drop is one
-  liana from bank to bank (World 4's `swings`, windChain with one vine), as many in a row as you like.
 - **A high way the floor walks under is scenery** (Meeca's stage, 2026-10-28, Matt: "climbing is unneeded because you can just run
   straight across the bottom"): her trees, logs and stepping stumps all had the path going on under them. A climb, a branch or a log
   only counts when the floor beneath it goes nowhere: a gully deeper than a second jump (260 px) with stairs back at its near end, or a
@@ -258,6 +251,48 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   nothing new done in a room (or at a trunk not carved), and more strongly at about 40 s; anything the room has not seen yet starts
   the clock again; the nudges point at the piece, never the whole answer (`meecaPlay.ts stepNudge`, `FLICKER_NUDGES`).
 - **What a counter counts needs its word** ("M. 1/5" read as "my mark didn't count"): Meeca's HUD says "Warnings 1/5" (`goalInfo.word`).
+- **World 6 on gen2: what the swing and creek stages taught** (2026-10-28/29; carry every one of these into Worlds 7-10, the checklist
+  is `src/game/gen2/DESIGN.md` "Building a new world on gen2"):
+  - *A pit or a floor under a liana makes the swing optional* (2026-10-28). A soft pit under the swing let him walk under it, climb out
+    the far side and never swing. Under a liana either black water (a section piece's `water: true`) or a soft pit whose climb goes
+    back to the swing's own ledge, never on to the perch (`pipeline.ts` `backPit`, ab64871); proof: the quick route swings every liana
+    (`w6Game.test.ts`).
+  - *The leaf glide crosses swing gaps* (2026-10-28). From World 5 on the glide reaches 457 px on the flat, so a perch inside that was
+    reached without the liana. A perch lies past every jump and the glide from the ledge and from each step of the pit under it
+    (`pipeline.ts` `jumpLinkGap`, the `land` placement's `minFor`).
+  - *A level perch fails once the vines swing by themselves* (2026-10-29, vine-fix). A level perch past the glide's 477 px is out of
+    the calmer swing's reach (the check links 480-510 px at most). Perches sit about 80 px above the swing's ledge and step back down
+    after (`w6Swing.ts` `RAISE`, 460df03); the pipeline moves a perch the window can't reach (raised or lowered, then levelled).
+  - *gen2's copy of the swing drifted from the engine's* (2026-10-29). The mirror of vine-fix's numbers missed 22ffd1b's stronger
+    leap, so gen2 counted 1.40 s windows where the engine gives 1.27 s. gen2 now calls `physics.ts` `pressWindow` itself (`lianaRelease`,
+    d533039). Never mirror an engine rule; import it.
+  - *Liana-heavy stages ran short* (2026-10-29). The time model gave each liana a flat 2.5 s, so 6-1 with 17 lianas came out at 0.68 of
+    what the model promised. A liana costs (period - window) / 2 + period / 2 (`pipeline.ts` `lianaSeconds`, 639df5d).
+  - *Flags can't stand in the dark* (2026-10-29). Flags keep out of zones, so four dark stretches in a row left 6-6 with up to 9,000 px
+    and no flag. Each dark stretch goes lit root, dark, lit root, and is never mirrored, so Dot's dark line on the first lit root
+    comes before the dark (`w6Swing.ts` dark sections, 8334899). Proof: the flag-span test in `game.test.ts` on 30 raw rolls of every
+    stage, Normal and Easy.
+  - *Rooms dropped out of rolls* (2026-10-29). A puzzle room picked by weight was swapped or trimmed away on some rolls. A stage's room
+    is `WorldManifest.required` (placed by the plan, never swapped or trimmed: f443b11); proof: the room once in every shipped roll.
+  - *The swing and ground stages had to keep their sections apart* (2026-10-29). 6-4 and 6-6 are both sprints and 6-2 shared filler
+    sections with the swing stages; curation's look-alike check (`--apart`: no 20 s stretch alike between a world's stages) then
+    threw out most of 6-2's rolls (0.26 left). Which stage takes which sections is decided per stage (`w6Game.ts` `forStage`).
+  - *A short bank between two creeks is a glide trap* (2026-10-28). Under 340 px the route glides over both creeks and the first-timer
+    drowns. Banks between water gaps are 360 px or more (`w6Ground.ts` header).
+  - *A watcher has to watch its own piece* (2026-10-29). Reeds whose watch zone spread to the next flat read the same in every roll
+    and stacked with the pool's own watcher. `watchHere*` sockets watch only their piece (`w6.ts` `watch`).
+  - *Easy's fewer animals leave long flats quiet* (2026-10-29). With the animals gone, three long flats in a row read 4.2 s quiet on
+    6-5 Easy. Long flats carry a root knee (a hop) whatever stands on them (`w6Ground.ts` sunken yard, caiman pair, pools).
+  - *Sections have a size*: 600 to 1700 px plus 370 px a liana (`w6Swing.test.ts`). Adding lit roots to the dark stretches meant
+    trimming them back inside that.
+  - *Animals stood on the take-offs* (2026-10-29). 82 hops on 6-2, 6-5 and 6-9 took off or landed within 120 px of an animal: a patrol
+    covered its whole piece, and World 6's knee flats are short. gen2 missed it three ways: the pipeline didn't know the rule (it kept
+    animals off the safe spots only), curation didn't measure it (its filters were levelCheck, the §2 numbers and the jump bots), and the
+    rule lived only in the old generator's `stageQuality.test.ts`, which 5-7 and 5-9 passed by luck (wide flats). Now the pipeline keeps
+    every patrol `JUMP_CLEAR` (120 px) from each take-off and landing, using the same jumps the check finds (`stageMetrics.ts`
+    `jumpEdges`), and curation drops any roll with an animal by a jump (7770de7). The lesson: every rule a full-suite test holds a stage
+    to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
+    reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
 
 ## 7. Where things are
 

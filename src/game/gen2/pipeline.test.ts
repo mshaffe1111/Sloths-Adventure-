@@ -5,13 +5,14 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateStage } from '../levelCheck.ts';
+import { validateStage, type CheckGraph } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds, VINE } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
 import { addKitPlatforms } from '../puzzleKit.ts';
+import * as physics from '../physics.ts';
 import { DOUBLE_RISE } from '../physics.ts';
 import { tideCrossTime, idleTime } from '../zones.ts';
 import { findRoute, type Route } from '../../../tools/inspect/route.ts';
@@ -660,15 +661,16 @@ test('a liana swings by itself and its perch is sized from the release window (E
       const L = layLocal(swingSec, b, rngFor(i));
       const [near, rope, far] = ['near', 'rope', 'far'].map((k) => L.pieces.find((p) => p.key === k)!);
       const swing = rope.hang!.swing!;
-      assert.ok(swing.amp >= LIANA.amp[0] && swing.amp <= LIANA.amp[1] && swing.period >= LIANA.period[0] && swing.period <= LIANA.period[1]);
-      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, swing, near.y, { x: far.x, y: far.y, w: far.w });
+      assert.ok(swing.amp === VINE.amp && swing.period === VINE.period[d], `${d}: the engine's swing`);
+      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, swing, { x: far.x, y: far.y, w: far.w }, d);
       assert.ok(win >= LIANA.window[d], `${d} roll ${i}: a ${(win * 1000).toFixed(0)} ms release window`);
-      assert.ok(far.x - (near.x + near.w) > maxGap(0, true, 1), `${d} roll ${i}: a ${far.x - near.x - near.w} px gap a jump could cross`);
+      assert.ok(far.x - (near.x + near.w) > jumpLinkGap(near.y - far.y, 5, 7), `${d} roll ${i}: a ${far.x - near.x - near.w} px gap a jump or the glide could cross`);
       assert.equal(L.gaps.length, 1);
     }
     // (the same roll, the same liana on Easy and Normal: its swing is the stage's, only the perch moves)
     const nb = planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, 'normal');
-    assert.deepEqual(layLocal(swingSec, b, rngFor(7)).pieces[1].hang, layLocal(swingSec, nb, rngFor(7)).pieces[1].hang);
+    const hung = (L: ReturnType<typeof layLocal>) => ({ x: L.pieces[1].x, y: L.pieces[1].y, h: L.pieces[1].h, amp: L.pieces[1].hang!.swing!.amp });
+    assert.deepEqual(hung(layLocal(swingSec, b, rngFor(7))), hung(layLocal(swingSec, nb, rngFor(7))));
   }
   // built, with nothing under the gaps (a void world on Normal: the swing is the only way over) and on Easy (soft floors)
   let swings = 0;
@@ -766,4 +768,134 @@ test("World 6's water: a section's water gap is water on any world and setting (
     }
   }
   assert.ok(creeks > 0 && tides > 0, `${creeks} creeks, ${tides} tides`);
+});
+
+test("a soft pit under a liana climbs back to the swing's ledge, never forward to its perch (the swing stays the way over)", () => {
+  let pits = 0;
+  for (const seed of [1, 2, 3]) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: hangWorld('soft'), seed, difficulty: d });
+      const what = `seed ${seed} ${d}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      // (the graph without the lianas: a swing from a step in the pit is still the swing; what must not be there is a walk or a jump)
+      let graph: CheckGraph | null = null;
+      validateStage({ ...st, vines: st.vines.filter((v) => v.vineType !== 'swing_liana') }, { inspect: (x) => (graph = x) });
+      const g = graph as unknown as CheckGraph;
+      for (const s of st.gen2.sections.filter((x) => x.template === 'toy-swing')) {
+        const f = (st.gen2.falls ?? []).find((q) => q.x0 >= s.x0 && q.x1 <= s.x1)!;
+        const inside = st.platforms.filter((p) => p.x >= f.x0 && p.x + p.width <= f.x1 && p.y > f.y);
+        const perch = st.platforms.find((p) => p.x === f.x1 && !inside.includes(p))!;
+        const ledge = st.platforms.find((p) => p.x + p.width === f.x0 && !inside.includes(p))!;
+        assert.ok(inside.length && perch && ledge, `${what}: the pit under the liana at ${f.x0}`);
+        pits++;
+        const floor = Math.max(...inside.map((p) => p.y));
+        assert.ok(floor - perch.y > DOUBLE_RISE, `${what}: the perch's face is ${floor - perch.y} px over the floor`);
+        for (const p of inside) assert.ok(!g.adj.get(g.key(p))?.has(g.key(perch)), `${what}: the pit at ${f.x0} leads to the perch`);
+        assert.ok(inside.some((p) => g.adj.get(g.key(p))?.has(g.key(ledge))), `${what}: the pit at ${f.x0} has no way back to the swing's ledge`);
+        // (nor does a jump, a double jump or the glide reach the perch from the swing's ledge: the liana is the way)
+        assert.ok(!g.adj.get(g.key(ledge))?.has(g.key(perch)), `${what}: a jump crosses the swing at ${f.x0}`);
+      }
+    }
+  }
+  assert.ok(pits > 0);
+});
+
+test("a liana costs what a self-swinging swing takes (wait for the window, ride it), so a liana-heavy stage holds the inspector's 2:00", () => {
+  const swingy: SectionTemplate = {
+    ...swingSec, id: 'toy-swingy', phases: ['ki', 'sho', 'ten', 'ketsu'], weight: 30, sockets: [],
+    pieces: [swingSec.pieces[0], swingSec.pieces[1], { key: 'far', shape: 'bank', w: [300, 400], place: { kind: 'land', after: 'rope', water: true } }],
+  };
+  const k: WorldKit = { ...kit, manifest: { ...manifest, moves: [...manifest.moves, 'swing'], sections: [...manifest.sections, swingy] } };
+  for (let seed = 1; seed <= 4; seed++) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg('6-1', 'sprint'), kit: k, seed, difficulty: d });
+      const what = `seed ${seed} ${d}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      const lianas = (st.proto as { gen2?: { lianas?: Array<{ amp: number; period: number; window: number; x0: number; x1: number }> } }).gen2!.lianas!;
+      assert.ok(lianas.length >= 10, `${what}: ${lianas.length} lianas`);
+      for (const l of lianas) assert.ok(l.window >= LIANA.window[d] && l.x1 > l.x0 && lianaSeconds(l, l.window) < l.period, what);
+      // the model tracks the inspector's quick route (within QUICK's ratio), and the loop holds that route to 2:00
+      const q = pickRoute('sprint', st).quick.time;
+      assert.ok(q >= QUICK.seconds, `${what}: the inspector's quick player ${q.toFixed(0)} s`);
+      assert.ok(q / st.gen2.modelled.fast >= QUICK.ratio && q / st.gen2.modelled.fast <= 1.15, `${what}: quick ${q.toFixed(0)} s against the model's ${st.gen2.modelled.fast} s`);
+    }
+  }
+});
+
+test("a perch past a liana too narrow or too high for the release window is widened, then levelled, rather than refused", () => {
+  const b = planBudget(cfg('6-1', 'sprint'), { ...manifest, moves: [...manifest.moves, 'swing'] }, 'easy');
+  for (const [dy, w] of [[-200, 30], [-300, 300], [-400, 300]] as const) {
+    const sec: SectionTemplate = {
+      ...swingSec, mirrorable: false, sockets: [],
+      pieces: [swingSec.pieces[0], swingSec.pieces[1], { key: 'far', shape: 'branch', w, place: { kind: 'land', after: 'rope', dy, water: true } }],
+    };
+    for (let i = 1; i <= 3; i++) {
+      const L = layLocal(sec, b, rngFor(i));
+      const [near, rope, far] = L.pieces;
+      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, rope.hang!.swing!, { x: far.x, y: far.y, w: far.w }, 'easy');
+      assert.ok(win >= LIANA.window.easy, `dy ${dy} w ${w} roll ${i}: a ${(win * 1000).toFixed(0)} ms window`);
+      assert.ok(far.w > w + b.landingPad || far.y - near.y !== dy, `dy ${dy} w ${w} roll ${i}: widened or moved`);
+    }
+  }
+});
+
+test("gen2's liana model is the engine's: the same swing numbers and the same release window, or this fails", () => {
+  // (physics.ts's TIMED settings per difficulty, and its pressWindow onto a perch on a few swings)
+  for (const d of ['normal', 'easy'] as const) {
+    physics.setTimedSwing(d === 'easy');
+    assert.equal(physics.TIMED.period, VINE.period[d]);
+    assert.equal(physics.TIMED.amp, VINE.amp);
+    assert.deepEqual([physics.TIMED.sweetFrom, physics.TIMED.sweetTo], [...VINE.sweet[d]]);
+    for (const [top, reach, gap, dy] of [[400, 160, 477, 0], [420, 190, 560, -60], [400, 190, 600, 0]]) {
+      const A = { x: reach, topY: -top, bottomY: Math.min(30, -top + 410), swingAmp: VINE.amp, swingPhase: 0 };
+      const to = { x: gap, y: dy, w: 400 };
+      const theirs = physics.pressWindow(A, (c, _t, prevY) => c.vy >= 0 && prevY <= to.y + 14 && c.y >= to.y && c.x > to.x + 10 && c.x < to.x + to.w) / 1000;
+      physics.setTimedSwing(false);
+      const ours = lianaRelease(A, { amp: VINE.amp, period: VINE.period[d] }, to, d);
+      assert.ok(Math.abs(theirs - ours) <= 2 / 30 + 1e-9, `${d} ${top}/${reach}/${gap}/${dy}: the engine ${theirs.toFixed(3)} s, gen2 ${ours.toFixed(3)} s`);
+      // (and the engine's own setting is left as it was)
+      assert.equal(physics.TIMED.period, VINE.period.normal);
+      physics.setTimedSwing(d === 'easy');
+    }
+    // (World 6's swings, anchored 400-420 px up with level perches 477 px or more out, leave the window under the calmer swing)
+    for (const [top, reach] of [[400, 160], [420, 190]]) {
+      const v = { x: reach, topY: -top, bottomY: Math.min(30, -top + 410) };
+      assert.ok(lianaRelease(v, { amp: VINE.amp, period: VINE.period[d] }, { x: 477, y: 0, w: 400 }, d) >= LIANA.window[d] * 3, `${d} ${top}/${reach}`);
+    }
+  }
+  physics.setTimedSwing(false);
+});
+
+test("a stage's required sections come up on every roll (placed by the plan, never swapped or trimmed away), on Easy too", () => {
+  // a rare section (weight 0.01) the toy 5-7 must hold, in its Ten, and the carry room in its Sho
+  const rare: SectionTemplate = { ...stumps, id: 'toy-rare', weight: 0.01, phases: ['sho', 'ten'] };
+  const k: WorldKit = {
+    ...kit,
+    manifest: { ...manifest, sections: [...manifest.sections, rare], required: { '5-7': [{ section: 'toy-rare', phase: 'ten' }, { section: 'toy-carry' }] } },
+  };
+  let elsewhere = 0;
+  for (let seed = 1; seed <= 20; seed++) {
+    const n = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'normal' });
+    const e = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'easy' });
+    for (const [st, d] of [[n, 'normal'], [e, 'easy']] as const) {
+      const what = `seed ${seed} ${d}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      const rares = st.gen2.sections.filter((s) => s.template === 'toy-rare');
+      assert.ok(rares.length === 1 && rares[0].phase === 'ten', `${what}: the required section ${rares.length} times, in ${rares[0]?.phase}`);
+      assert.equal(st.gen2.sections.filter((s) => s.template === 'toy-carry').length, 1, `${what}: the carry room`);
+    }
+    // (a stage that doesn't require it draws it by weight, as any section)
+    elsewhere += buildGen2Stage({ config: cfg('5-4', 'vine_runner'), kit: k, seed, difficulty: 'normal' }).gen2.sections.filter((s) => s.template === 'toy-rare').length;
+  }
+  assert.ok(elsewhere > 0, 'the section is still in the world\'s bag for other stages');
+  // the trim never takes a required section
+  const b = planBudget(cfg('5-7', 'stealth'), k.manifest, 'normal');
+  const graph = missionGraph(b);
+  const plan = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed: 1, difficulty: 'normal' }).gen2.plan;
+  const byId = new Map(k.manifest.sections.map((t) => [t.id, t]));
+  let p: typeof plan | null = plan;
+  while ((p = trimPlan(p, graph, byId, new Set(['toy-rare', 'toy-carry'])))) assert.ok(p.some((q) => q.template === 'toy-rare'));
+  // a required section that fits no node of the stage is named
+  const bad: WorldKit = { ...k, manifest: { ...k.manifest, required: { '5-7': [{ section: 'toy-rare', phase: 'ketsu' }] } } };
+  assert.throws(() => buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: bad, seed: 1, difficulty: 'normal' }), /required section toy-rare fits no node/);
 });

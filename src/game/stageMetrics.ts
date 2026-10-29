@@ -41,6 +41,9 @@ export interface JumpEdge {
  * Every direct hop between two platforms: the next platform that starts beyond the edge of this one, within a jump's reach. Only ordinary
  * footing counts (not river logs, moving platforms or mushrooms: their hops are not a take-off from a fixed edge).
  */
+/** how far (px) a ground animal's patrol keeps from a jump's take-off and from its landing (the clearance check below; gen2's patchFor) */
+export const JUMP_CLEAR = 120;
+
 export function jumpEdges(src: GeneratedStage | Platform[]): JumpEdge[] {
   const all = Array.isArray(src) ? src : src.platforms;
   const plats = all.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving' && p.type !== 'bouncy');
@@ -238,12 +241,12 @@ export function measureStage(stage: GeneratedStage): StageMetrics {
     for (const e of ground) {
       const sf = surfaceOf(e);
       const onFrom = e.patrolMaxX >= j.from.x - 1 && e.patrolMinX <= j.from.x + j.from.width + 1 && Math.abs(sf - j.from.y) <= 8;
-      if (onFrom && j.takeoffX - e.patrolMaxX < 120) { takeoffsNearEnemy++; break; }
+      if (onFrom && j.takeoffX - e.patrolMaxX < JUMP_CLEAR) { takeoffsNearEnemy++; break; }
     }
     for (const e of ground) {
       const sf = surfaceOf(e);
       const onTo = e.patrolMaxX >= j.to.x - 1 && e.patrolMinX <= j.to.x + j.to.width + 1 && Math.abs(sf - j.to.y) <= 8;
-      if (onTo && e.patrolMinX - j.landX < 120) { landingsNearEnemy++; break; }
+      if (onTo && e.patrolMinX - j.landX < JUMP_CLEAR) { landingsNearEnemy++; break; }
     }
   }
 

@@ -13,7 +13,7 @@ import '../headlessDom.ts';
 import { buildGen2Stage, checkStage } from './pipeline.ts';
 import { closingSections, curateStage, distance, failsOf, pickSpread, plainReason, renderReport, renderTable, resolveStage, sharedWith, toEntry, type RollMeasure, type SideMeasure } from '../../../tools/gen2/curate.ts';
 
-const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, ...o });
+const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, nearJumps: 0, ...o });
 const roll = (seed: number, prof: Record<string, number>, quality = 0.5, plan: string[] = []): RollMeasure => ({
   seed, layoutSeed: seed, rerolls: 0, swaps: 0, plan, normal: side(), easy: side(), action: '', prof: new Map(Object.entries(prof)), wins: [], fails: [], quality,
 });
@@ -26,6 +26,10 @@ test('the filters name every number a roll misses, and a waiver lifts only its o
   for (const want of ['normal: levelCheck', 'normal: quiet over 4 s', 'normal: dead time over a fifth', 'normal: model typical under the target', 'easy: quick player under 2:00', 'easy: model fast under the floor']) assert.ok(f.includes(want), want);
   const w = failsOf(bad, floor, ['quiet', 'dead']);
   assert.ok(!w.some((x) => /quiet|dead/.test(x)) && w.includes('normal: levelCheck'));
+  // (an animal by a take-off or a landing is never waived: the full suite's stageQuality clearance check, measured on each roll)
+  const near = failsOf({ normal: side(), easy: side({ nearJumps: 2 }) }, floor, ['quiet', 'dead']);
+  assert.deepEqual(near, ['easy: an animal by a jump']);
+  assert.match(plainReason(near[0]), /^Easy: an animal within 120 px of a take-off or a landing$/);
 });
 
 test('the pick is greedy max-min: the best roll first, then the farthest, and a refused roll is skipped', () => {

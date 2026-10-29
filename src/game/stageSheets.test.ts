@@ -64,7 +64,8 @@ test('every sheet a built stage draws is in its preload list, for every stage an
           const st = generateStage(l, d);
           const keys = [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : [])];
           for (const k of keys) if (!list.has(k)) misses.push(`${l.id} roll ${v} ${d}: ${k}`);
-          if (!l.secret && (HAND_STAGES[l.id] || W2_STAGES[l.id] || isGen2Stage(l))) {
+          // (World 6 on gen2 on asks for its world's whole set, stageSheets.ts: its animals change from roll to roll)
+          if (!l.secret && (HAND_STAGES[l.id] || W2_STAGES[l.id] || (isGen2Stage(l) && l.worldIndex < 6))) {
             const set = drawn.get(l.id) ?? new Set<string>();
             for (const k of keys) set.add(k);
             drawn.set(l.id, set);
