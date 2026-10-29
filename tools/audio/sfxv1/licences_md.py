@@ -6,15 +6,21 @@ by benjamin-paine/freesound-laion-640k (licheck.py), its uploader and title, and
 import json, re, sys
 
 lic, used, build, out = json.load(open(sys.argv[1])), json.load(open(sys.argv[2])), open(sys.argv[3]).read(), sys.argv[4]
-# which effects use a recording: the def blocks that name its id
-blocks = re.split(r'\n(?=def |[A-Z]+ = )', build)
+# which effects use a recording: a source list names it on its own line (ROCK_HIT = [...]); a def names it in its body
 where = {}
-for b in blocks:
-    m = re.match(r'def (\w+)|([A-Z]+) = ', b)
-    if not m:
+cur = None
+for line in build.split('\n'):
+    code = line.split('#')[0]
+    m = re.match(r'def (\w+)', line)
+    if m:
+        cur = m.group(1)
+    c = re.match(r'([A-Z_]+) = ', line)
+    if c:
+        cur = c.group(1)   # (a table that runs over several lines keeps its name until the next one)
+    name = cur
+    if not name:
         continue
-    name = m.group(1) or m.group(2)
-    for fid in set(re.findall(r'\b(\d{4,6})\b', b)):
+    for fid in set(re.findall(r'\b(\d{4,6})\b', code)):
         where.setdefault(fid, set()).add(name)
 rows, bad = [], []
 for fid in sorted(used, key=int):

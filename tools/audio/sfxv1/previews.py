@@ -47,7 +47,10 @@ class Player:
 
     def take(self, fx, sub=None):
         """a shuffle bag: every take once before any repeats, never the same twice in a row"""
-        prefix, n = PLAYER[fx]['takes']
+        prefix, _ = PLAYER[fx]['takes']
+        n = 0
+        while os.path.exists(os.path.join(TAKES, f'{prefix}_{n}.mp3')):
+            n += 1
         idx = sub if sub is not None else list(range(n))
         key = (fx, tuple(idx))
         bag = self.bag.get(key)
@@ -198,6 +201,46 @@ for _k, _n in (('shotBirds', 6), ('shotBirdsFar', 6), ('shotDrips', 3), ('shotCr
     PLAYER[_k] = dict(takes=(_k, _n), db=0, gap=0.5, cap=1, pj=0.05, gj=2)
 
 
+for _k in ('leaf', 'fruit', 'heart', 'superHeart', 'power', 'relic', 'oneUp', 'star', 'uiTap', 'uiConfirm', 'uiBack', 'pauseIn', 'pauseOut', 'bounce', 'log',
+           'crumble', 'thorns', 'gate', 'hurt', 'climb', 'eagle', 'megaPunch', 'critter', 'respawn'):
+    PLAYER[_k] = dict(takes=(_k, 0), db=0, gap=0.05, cap=3, pj=0.0, gj=0)
+for _k in ('pick', 'drop', 'wrap', 'reset', 'press', 'lift', 'lever', 'throw', 'shift', 'solved'):
+    PLAYER[f'pz_{_k}'] = dict(takes=(f'pz_{_k}', 0), db=0, gap=0.05, cap=3, pj=0.0, gj=0)
+
+
+def sequence(name, items, gap):
+    """one after another: (old fx, old arg, new effect, new take or None), `gap` s apart"""
+    pl = Player()
+    old, new, t = [], [], 0.3
+    for ofx, oarg, nfx, sub in items:
+        if ofx:
+            old.append({'t': t, 'fx': ofx, **({'arg': oarg} if oarg is not None else {})})
+        e = pl.play(nfx, t, sub=None if sub is None else [sub])
+        if e:
+            new.append(e)
+        t += gap
+    pair(name, old, new, t + 0.6)
+
+
+def pickups_pair():
+    sequence('pickups', [('leaf', None, 'leaf', None), ('fruit', None, 'fruit', None), ('heart', None, 'heart', None), ('superHeart', None, 'superHeart', 0),
+                         ('power', 0, 'power', 0), ('power', 1, 'power', 1), ('power', 2, 'power', 2), ('relic', None, 'relic', 0),
+                         ('oneUp', None, 'oneUp', 0), ('star', 0, 'star', 0), ('star', 1, 'star', 1), ('star', 2, 'star', 2)], 1.0)
+
+
+def ui_pair():
+    sequence('menus', [('uiTap', None, 'uiTap', None), ('uiTap', None, 'uiTap', None), ('uiConfirm', None, 'uiConfirm', None),
+                       ('uiBack', None, 'uiBack', None), ('pauseIn', None, 'pauseIn', 0), ('pauseOut', None, 'pauseOut', 0)], 0.7)
+
+
+def world_pair():
+    """what the game plays now for these (borrowed sounds: engine.ts kit and w4 sfx maps) against the new ones"""
+    sequence('world-things', [('jump', None, 'bounce', None), ('land', 0.5, 'log', None), ('hit', 0, 'crumble', None), ('whoosh', None, 'thorns', None),
+                              ('shrine', None, 'gate', None), ('vine', None, 'pz_pick', 0), ('land', 0.4, 'pz_drop', 0), ('hurt', None, 'pz_wrap', 0),
+                              ('climb', None, 'pz_press', 0), ('punch', None, 'pz_lever', 0), ('whoosh', None, 'pz_throw', 0),
+                              ('checkpoint', None, 'pz_reset', 0), ('shrine', None, 'pz_solved', 0)], 0.9)
+
+
 def landing_pair():
     """three landings: a small hop, a jump, a long drop"""
     pl = Player()
@@ -308,6 +351,9 @@ def stage_mix(stage, start, dur, world, amb, rocks=None, kick_keep=0.35):
 
 
 if __name__ == '__main__':
+    pickups_pair()
+    ui_pair()
+    world_pair()
     landing_pair()
     vine_pair()
     creatures_pair()
