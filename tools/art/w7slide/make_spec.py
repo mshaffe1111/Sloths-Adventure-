@@ -80,6 +80,50 @@ def seam(sha):
     print(len(items), 'items')
 
 
+JOBS2 = [
+    ('floor2', 'floor2.jpg', (1024, 1024), [0.55, 0.7], ST + 'a smooth worn carved stone slide floor seen from directly above: large '
+     'flagstones of pale amber stone polished smooth, two shallow carved grooves running straight down it dividing it into three lanes, '
+     'green moss in the cracks between the stones, ' + W7 + TEX),
+    ('ceiling', 'ceiling.jpg', (1024, 1024), [0.55, 0.7], ST + 'a dark stone temple ceiling seen from directly below: big dark fitted '
+     'stone slabs in shadow, brown strangler-fig roots running across them and hanging down, a little moss in the joints, dim warm light, '
+     'ancient overgrown temple ruins, dark brown and grey stone' + TEX),
+    ('mouth-bright', 'mouth-bright.jpg', (1024, 1024), [0.6, 0.72], ST + 'looking straight down a long ancient stone slide chute inside a '
+     'temple toward its end: the smooth stone floor with two grooves and carved walls with fig roots running away to a bright opening of '
+     'daylight, green jungle leaves hanging round the bright opening, warm sunlight pouring in along the floor and walls, ' + W7 +
+     ', no people, no characters'),
+    ('obstacles2', 'obstacles2.jpg', (1536, 1024), [0.5, 0.65], ST + 'a sheet of six separate game obstacles in a 3 by 2 grid for a slide '
+     'game, each seen from the front: two carved stone lintels held up on two stone posts wrapped in fig vines, with open space under them, '
+     'two low wide heaps of broken stone blocks with moss, the broken edge of a stone floor with darkness beyond it, and the broken front '
+     'face of a stone floor slab above a dark drop. ' + W7 + '. Every obstacle alone in its own cell with clear space around it, on one '
+     'flat plain pure magenta background, no floor, no shadow, no text'),
+    ('crumble', 'crumble.jpg', (1536, 512), [0.45, 0.6], ST + 'four frames side by side of the same section of carved temple floor seen '
+     'from the side: whole, then cracked, then breaking into three chunks, then the chunks falling with small stones, ' + W7 + ', a game '
+     'sprite sheet, each frame alone with space around it, on one flat plain pure magenta background, no ground, no shadow, no text'),
+    ('chamber2', 'chamber2.jpg', (1792, 768), [0.5, 0.62], ST + 'a wide side-on view of a great underground temple chamber: high in the left '
+     'wall the round dark mouth of a stone slide chute with a carved stone spout under it, carved stone walls with fig roots, ruined '
+     'shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along '
+     'the bottom, ' + W7 + ', a game background, no people, no characters'),
+]
+
+
+def img2(sha):
+    base = BASE.format(sha=sha)
+    items = []
+    for name, start, wh, strengths, prompt in JOBS2:
+        for st in strengths:
+            for sd in (5, 17):
+                items.append({'name': f'{name}-s{round(st * 100)}-{sd}', 'start': start, 'lora': 'style', 'prompt': prompt, 'strength': st,
+                              'seed': sd, 'w': wh[0], 'h': wh[1]})
+    roots = [p for n, _, _, _, p in JOBS if n == 'wall-roots'][0]
+    for st in (0.65, 0.8):  # the roots wall's seams survived a 0.5 repaint
+        items.append({'name': f'seam-wall-roots-s{round(st * 100)}', 'start': 'roll-wall-roots.jpg', 'lora': 'style', 'prompt': roots,
+                      'strength': st, 'seed': 5, 'w': 1024, 'h': 1024})
+    spec = {'tag': 'w7slide-img2', 'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
+            'items': items, 'base': base}
+    (H / 'spec-img2.json').write_text(json.dumps(spec, indent=1))
+    print(len(items), 'items')
+
+
 MOTION = {'high': ['mshaffe111/slothadv-motion-lora', 'slothadv_motion_v1_high_noise.safetensors'],
           'low': ['mshaffe111/slothadv-motion-lora', 'slothadv_motion_v1_low_noise.safetensors'], 'scale': 1.0}
 M = ('slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown '
@@ -111,4 +155,4 @@ def args(spec, sha):
 
 
 if __name__ == '__main__':
-    {'img': lambda: img(sys.argv[2]), 'seam': lambda: seam(sys.argv[2]), 'clips': lambda: clips(json.loads(sys.argv[2])), 'args': lambda: args(sys.argv[2], sys.argv[3])}[sys.argv[1]]()
+    {'img': lambda: img(sys.argv[2]), 'seam': lambda: seam(sys.argv[2]), 'img2': lambda: img2(sys.argv[2]), 'clips': lambda: clips(json.loads(sys.argv[2])), 'args': lambda: args(sys.argv[2], sys.argv[3])}[sys.argv[1]]()

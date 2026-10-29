@@ -5,6 +5,13 @@
  "mouth": "mouth-s60-17",
  "chamber": "chamber-s65-5",
  "obstacles": "obstacles-s65-17",
- "obstacle_overrides": {"statue-head": "obstacles-s50-17"},
- "pokey": {}
+ "obstacle_overrides": {
+  "statue-head": "obstacles-s50-17"
+ },
+ "pokey": {},
+ "seam": {
+  "floor": "seam-floor-s50",
+  "wall-roots": "seam-wall-roots-s50",
+  "wall-glyph": "seam-wall-glyph-s50"
+ }
 }

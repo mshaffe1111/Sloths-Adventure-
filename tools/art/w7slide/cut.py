@@ -69,6 +69,27 @@ def seamless_periodic(im, P=512, m=96):
     return Image.fromarray(a.clip(0, 255).astype(np.uint8))
 
 
+def seam_repair(key, repaint, half=72, feather=34):
+    """the rolled texture (seamstarts.py) with the model's low-strength repaint kept only in feathered bands over its seam lines"""
+    import sys
+    sys.path.insert(0, str(H))
+    from seamstarts import ROLL, rolled
+    a = np.asarray(rolled(key)).astype(np.float32)
+    b = np.asarray(raw(repaint)).astype(np.float32)
+    h, w = a.shape[:2]
+    dy, dx = ROLL[key]
+
+    def band(n, lines):
+        x = np.arange(n)[:, None]
+        d = np.min(np.abs(x - np.array(lines)[None, :]), axis=1)
+        return np.clip((half + feather - d) / feather, 0, 1)
+    my = band(h, [dy] if dy == 512 else [256, 768]) if dy else np.zeros(h)
+    mx = band(w, [256, 768]) if dx else np.zeros(w)
+    m = np.maximum(my[:, None], mx[None, :])[..., None]
+    m = m * m * (3 - 2 * m)
+    return Image.fromarray((a * (1 - m) + b * m).clip(0, 255).astype(np.uint8))
+
+
 def patch_floor(im, half=100, rows=130):
     """the chamber's start had the chute groove in the middle of its floor strip, which the paint kept as a pale block: cover it with
     the floor just left of it, feathered in"""
@@ -112,9 +133,12 @@ def key_magenta(im):
         fig = np.isin(lab, 1 + np.flatnonzero(sizes > 1500))
     fig = ndimage.binary_fill_holes(fig) & (alpha > 0.02) | fig
     alpha = np.where(ndimage.binary_erosion(fig, iterations=2), 1.0, np.where(fig, alpha, 0.0))
-    # despill: where magenta leaked in, pull r and b down to g's level
-    spill = np.clip(np.minimum(r, b) - g, 0, None) * (1 - alpha) ** 0.5 + np.clip(np.minimum(r, b) - g - 30, 0, None) * 0.6
+    # despill: nothing in these pieces is meant to be magenta (grey stone has b ~ g, brown roots and moss b < g), so wherever blue
+    # stands above green the key leaked in: take that excess out of both red and blue
+    spill = np.clip(np.minimum(r, b) - g, 0, None)
     a[..., 0] -= spill; a[..., 2] -= spill
+    fig = ndimage.binary_erosion(fig, iterations=1)
+    alpha = np.where(fig, alpha, 0.0)
     edge = fig & ~ndimage.binary_erosion(fig, iterations=3)
     a[edge] = a[edge] * 0.75  # a hint of the dark outline the kit pieces carry
     rgba = np.dstack([a.clip(0, 255), (alpha * 255)]).astype(np.uint8)
@@ -203,7 +227,9 @@ def main():
            'takes': PICKS, 'files': {}}
     prev = []
     for key, fn in (('floor', 'chute-floor'), ('wall-roots', 'chute-wall-roots'), ('wall-glyph', 'chute-wall-glyph')):
-        if key == 'floor':
+        if PICKS.get('seam', {}).get(key):
+            im = seam_repair(key, PICKS['seam'][key])
+        elif key == 'floor':
             im = seamless(raw(PICKS[key]))
         else:
             # the walls' starts were one kit panel tiled 2 x 2, and the panel's own edges show as a line through the middle of the
