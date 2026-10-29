@@ -23,17 +23,18 @@ BACK = 'src/assets/backdrops'
 # False skips A1's join (the source is already joined)
 HD = 'src/assets/backdrops-hd'
 HD_REV = 'cd71d17'  # hf-art-backdrops: Matt's native-resolution near and mid strips (VI-2), joined, still with the old dark ring
-# near strips are 1736 tall (2x the 868 of a 2048 strip), mids 1302 (1.5x): the untrusted ring and the ink line scale with them
-HD_PART = {'near': ['--ring', '6', '--px', '2.5'], 'mid': ['--ring', '4.5', '--px', '1.9']}
+# near strips are 1736 tall (2x the 868 of a 2048 strip), mids 1302 (1.5x): the untrusted ring and the ink line scale with them. Only the
+# outer 4 px change (--band 4: the lead, 2026-10-29, every pixel further in and every thin feature is the painting's own), WebP q95
+HD_PART = {'near': ['--ring', '6', '--px', '1.9', '--band', '4'], 'mid': ['--ring', '4.5', '--px', '1.5', '--band', '4']}
 HD_X = {'dir': HD, 'seamless': False}
 RECIPES = [
-    (['w1', 'w2', 'w3', 'w6', 'w7', 'w8', 'w9', 'w10'], HD_REV, ['--scale', '1', '--despill', '--q', '90', '--ink'],
+    (['w1', 'w2', 'w3', 'w6', 'w7', 'w8', 'w9', 'w10'], HD_REV, ['--scale', '1', '--despill', '--q', '95', '--ink'],
      {**HD_X, 'part': HD_PART}),
     # World 4 also graded warmer and less grey on its mid strip (VI-18; grade.py does its far strips)
-    (['w4'], HD_REV, ['--scale', '1', '--despill', '--q', '90', '--ink'],
+    (['w4'], HD_REV, ['--scale', '1', '--despill', '--q', '95', '--ink'],
      {**HD_X, 'part': {'near': HD_PART['near'], 'mid': HD_PART['mid'] + ['--grade']}}),
     # World 5's gold set: its own clean ink line kept, the spill clamped (as the other World 5 sets below)
-    (['w5'], HD_REV, ['--scale', '1', '--keep-line', '--despill', '--q', '90'], HD_X),
+    (['w5'], HD_REV, ['--scale', '1', '--keep-line', '--despill', '--q', '95', '--band', '4'], HD_X),
     # World 1's canopy, keyed off white: un-mix the white halo, clear the leftover key in the sky
     (['w1c'], '31c243f', ['--scale', '1', '--ring', '3', '--unveil', '3', '--unmix', '252,252,252', '--q', '82', '--ink']),
     # World 5's other moods (Gemini, 2048 px): its outline is a clean painted ink line, kept; only the magenta spill and the black

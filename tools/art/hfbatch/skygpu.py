@@ -114,8 +114,11 @@ done = []
 for it in SPEC['items']:
     t1 = time.time()
     try:
-        with urllib.request.urlopen(it['src'], timeout=60) as r:
-            im = Image.open(io.BytesIO(r.read())).convert('RGBA')
+        if it['src'].startswith('/'):  # a picture an earlier step of the same job wrote to the bucket (the native-resolution far strip)
+            im = Image.open(it['src']).convert('RGBA')
+        else:
+            with urllib.request.urlopen(it['src'], timeout=60) as r:
+                im = Image.open(io.BytesIO(r.read())).convert('RGBA')
         a = np.asarray(im).astype(np.float32)
         rgb = a[..., :3]
         H, W, _ = rgb.shape
