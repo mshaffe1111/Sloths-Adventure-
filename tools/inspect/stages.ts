@@ -13,6 +13,7 @@ import { buildW2Stage, W2_STAGES } from '../../src/game/w2Stages.ts';
 import { generateStage, setLayoutVariant, type GeneratedStage } from '../../src/game/stageGenerator.ts';
 import { isGen2Stage } from '../../src/game/gen2/game.ts';
 import { capFlagSpans, easyStage } from '../../src/game/easyMode.ts';
+import { normalRamp } from '../../src/game/normalRamp.ts';
 import { withGoals } from '../../src/game/goals.ts';
 import { stageSpec } from '../../src/game/stagePlan.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
@@ -59,8 +60,10 @@ export function stageList(worlds: number[], seed: number): { stages: StageEntry[
     const gen2 = isGen2Stage(c);
     const make = (cfg: LevelConfig, easy: boolean): Stage => {
       // (with the game's own cap on the room between flags, as generateStage builds them: easyMode.ts capFlagSpans, LV-9)
-      if (HAND_STAGES[c.id]) return capped(buildProtoStage(cfg, seed, HAND_STAGES[c.id]));
-      if (W2_STAGES[c.id]) return capped(buildW2Stage(cfg, seed, W2_STAGES[c.id]));
+      // (and Normal's climb, Normal only: normalRamp.ts, LV-2)
+      const ramp = <T extends Stage>(st: T): T => (easy ? st : normalRamp(st));
+      if (HAND_STAGES[c.id]) return capped(ramp(buildProtoStage(cfg, seed, HAND_STAGES[c.id])));
+      if (W2_STAGES[c.id]) return capped(ramp(buildW2Stage(cfg, seed, W2_STAGES[c.id])));
       if (!gen2) return generateStage(cfg);
       // (as the engine builds it on entry: the layout number, then generateStage on the difficulty played)
       setLayoutVariant(seed);
