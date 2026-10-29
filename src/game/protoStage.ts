@@ -5648,7 +5648,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   if (mist) beat('Test: across the tree', () => {
     trunkTo(300);
     flag();
-    hint('All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', 'All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', 'All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', cur.y + 10);
+    // (round 5: a roll whose climb is by turns crosses on its ropes to the snakes' ledges, ledgeSnakes below, not the eaglets')
+    const snakesAcross = w4Climb?.theme === 'turns';
+    if (snakesAcross) hint('All the way across the tree, rope after rope!', 'All the way across the tree, rope after rope!', 'All the way across the tree, rope after rope!', cur.y + 10);
+    else hint('All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', 'All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', 'All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', cur.y + 10);
     /** room to land on past the rope, a nest's sight, and room to be blown back and to leave from past it */
     const IN = 140, SEES = 160, GAP2 = 120;
     [1, 2, 1].forEach((k, i) => {
@@ -5670,7 +5673,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       const len = Math.max(minLen, Math.min(want, room() - gap));
       rope(gap, len, 2);
       const e = dir === 1 ? cur.x : cur.x + cur.width;
-      const at = k === 2 ? [IN + SEES, len - IN - SEES] : [len / 2];
+      const at = snakesAcross ? [] : k === 2 ? [IN + SEES, len - IN - SEES] : [len / 2];
+      if (snakesAcross) expert += 1.5;
       for (const u of at) {
         const x = Math.round(e + dir * u);
         const every = Math.round(R.r(5.4, 6.4) * 10) / 10;
@@ -5821,6 +5825,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         const b = roomBox(rm, P);
         return v.x > b.x0 - 80 && v.x < b.x1 + 80 && land > b.y0 - 80 && land < b.y1 + 80;
       })) continue;
+      // (nor onto a snake's patch: one thing at a time)
+      if (E.some((e) => Math.abs(e.y + 14 - land) < 40 && v.x > e.patrolMinX - 200 && v.x < e.patrolMaxX + 200)) continue;
       const top = (perch ? perch.y : v.topY) + 24;
       // (nothing else across its column between the branch and the foot, so it falls clean down the trunk)
       if (P.some((q) => q !== perch && q.x < v.x + 30 && q.x + q.width > v.x - 30 && q.y > top && q.y < v.bottomY - 4)) continue;
@@ -5832,28 +5838,35 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
     return n;
   };
-  // (round 5, 4-1: a roll that climbs by turns is the snakes' flavour: a snake on the wide ledges, on the part of each clear of the
-  // flags (the level check's SAFE_APPROACH, with room to spare) and of the puzzle room; World 1's punch comes back, and the rolls differ
-  // in what they do, not only in where. Fewer rocks then, and never on a snake's ledge)
-  if (cliff && w4Climb?.theme === 'turns') {
+  // (round 5: a roll that climbs by turns is the snakes' flavour, 4-1 and 4-6: a snake on the wide ledges, on the part of each clear of
+  // the flags (the level check's SAFE_APPROACH, with room to spare) and of the puzzle rooms; World 1's punch comes back, and the rolls
+  // differ in what they do, not only in where. Fewer rocks then, and never on a snake's ledge)
+  const ledgeSnakes = (skip: (p: Platform) => boolean, margin: number) => {
     const spots = [...checkpoints, { x: crown.x + crown.width / 2, y: crown.y }];
-    const wide = P.filter((p) => p !== P[0] && p !== crown && p.width >= 300 && p.y < P[0].y - 400 && p.y > crown.y + 300 && p.id !== spot?.platformId && !pulley.plats.includes(p.id)).sort((a, b) => b.y - a.y);
+    const wide = P.filter((p) => p !== P[0] && p !== crown && p.width >= 300 && p.y < P[0].y - 400 && p.y > crown.y + 300 && !skip(p)).sort((a, b) => b.y - a.y);
     let lowest = -Infinity;
     for (const p of wide) {
       if (ROOMS.some((rm) => { const b = roomBox(rm, P); return p.x < b.x1 + 160 && p.x + p.width > b.x0 - 160 && p.y > b.y0 - 160 && p.y < b.y1 + 160; })) continue;
       // the stretches of the ledge clear of every flag near its height
-      let parts: Array<[number, number]> = [[p.x + 60, p.x + p.width - 60]];
+      let parts: Array<[number, number]> = [[p.x + margin, p.x + p.width - margin]];
       for (const q of spots) {
         if (Math.abs(q.y - p.y) >= 420) continue;
         parts = parts.flatMap(([a, b]): Array<[number, number]> => [[a, Math.min(b, q.x - 240)], [Math.max(a, q.x + 240), b]]).filter(([a, b]) => b - a >= 120);
       }
       const best = parts.sort((u, v) => v[1] - v[0] - (u[1] - u[0]))[0];
       if (!best || !R.chance(0.85)) continue;
-      snake((best[0] + best[1]) / 2, p.y, best[1] - best[0]);
+      // (a long clear stretch holds two, each on its own half, with a gap between them to land in)
+      const [a, b] = best;
+      if (b - a >= 560) {
+        const m = (a + b) / 2;
+        snake((a + m - 60) / 2, p.y, m - 60 - a);
+        snake((m + 60 + b) / 2, p.y, b - m - 60);
+      } else snake((a + b) / 2, p.y, b - a);
       lowest = Math.max(lowest, p.y);
     }
     if (lowest > -Infinity) hint('Snakes on the ledges! Punch them or hop over them', 'Snakes on the ledges! Punch them or hop over them', 'Snakes on the ledges! Punch them or hop over them', lowest + 200);
-  }
+  };
+  if (cliff && w4Climb?.theme === 'turns') ledgeSnakes((p) => p.id === spot?.platformId || pulley.plats.includes(p.id), 60);
   if (cliff) {
     // (and since 2026-10-28 up to the last hops under the crown, 300 under it: the frond's ledge and the crown stay quiet)
     const ledges = P.filter((p) => p !== P[0] && p !== crown && p.y < P[0].y - 600 && p.y > crown.y + 300 && p.width >= 260 && p.id !== spot?.platformId && !pulley.plats.includes(p.id)).sort((a, b) => b.y - a.y);
@@ -5931,7 +5944,13 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     for (let x = firstTrunkX + 260; x < W - KAPOK_MARGIN - 60; x += 300) flower(x, P[0].y - 34, 'hibiscus');
     // (round 4, harder but still safe: rocks down the trunks above the mist, Dot's 4-1 line when he first climbs toward one)
     const firstMist = mistSpots.reduce((m, q) => Math.max(m, q.y), -Infinity);
-    if (firstMist > -Infinity && climbRocks(firstMist - 200, 9)) {
+    // (round 5: the snakes' flavour here too, never in the mist (its feet, its hidden ledges and the ledges over them) nor by a nest,
+    // clear of the knots at the branch ends; and the rocks down the trunks are the hops' flavour, a few in the others)
+    if (w4Climb?.theme === 'turns') {
+      const misty = new Set(mistSpots.flatMap((m) => m.hides));
+      ledgeSnakes((p) => misty.has(p.id) || mistSpots.some((m) => Math.abs(m.y - p.y) < 4 && m.x0 < p.x + p.width && m.x1 > p.x) || nests.some((q) => Math.abs(q.y - p.y) < 4 && q.x > p.x - 200 && q.x < p.x + p.width + 200), 110);
+    }
+    if (firstMist > -Infinity && climbRocks(firstMist - 200, w4Climb?.theme === 'hops' ? 12 : 4)) {
       const low = rocks.reduce((m, q) => Math.max(m, q.land), -Infinity);
       hint(ROCKS_LOOSE, ROCKS_LOOSE, ROCKS_LOOSE, low + 120);
     }

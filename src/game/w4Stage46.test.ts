@@ -286,6 +286,11 @@ test('4-6: across the tree: ropes between nest ledges, each rope landing and lea
     const on = (p: Platform) => nests.filter((n) => n.y === p.y && n.x > p.x && n.x < p.x + p.width);
     // the ledges with nests that a rope reaches
     const roped = st.platforms.filter((p) => on(p).length && (st.ropes ?? []).some((r) => r.g0 === p.y || r.g1 === p.y));
+    // (round 5: a roll that climbs by turns crosses to the snakes' ledges instead, and has no nests across the tree)
+    if (st.proto.hints.some((h) => /rope after rope/.test(h.text))) {
+      assert.equal(roped.length, 0, `seed ${s}`);
+      continue;
+    }
     assert.ok(roped.length >= 3, `seed ${s}: ${roped.length} nest ledges across the tree`);
     assert.ok(roped.some((p) => on(p).length === 2), `seed ${s}: no ledge with two nests`);
     for (const p of roped) {

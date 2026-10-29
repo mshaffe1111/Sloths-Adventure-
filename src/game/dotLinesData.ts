@@ -314,6 +314,8 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.4-5.two", "4-5", "stage hint", "info", "Two lookouts! Knock the second fruit down from behind the waterfall", "Two lookouts! Knock the second fruit down from behind the falls.", null, null, "second fruit"],
   ["w4.lookout", "4-5", "guide", "info", "That monkey is watching! Get under cover before it shouts", "That monkey is watching! Get under cover before it shouts", null, null, "lookout monkey"],
   ["w4.veil", "4-5", "guide", "info", "Behind the water nobody can see you. Wait here while she goes by", "She can't see you behind the water. Wait here.", null, null, "waterfall"],
+  ["hint.4-6.snakes", "4-6", "stage hint", "move", "Snakes on the ledges! Punch them or hop over them", "Snakes! Tap to punch, or hop over.", null, "tap", "snakes"],
+  ["hint.4-6.acrossSnakes", "4-6", "stage hint", "info", "All the way across the tree, rope after rope!", "Across the tree, rope after rope!", null, null, "rope"],
   ["hint.4-6.across", "4-6", "stage hint", "info", "All the way across the tree! Stop at the end of each rope, and go while the eaglets doze", "Stop at each rope's end. Go while they doze.", null, null, "rope end"],
   ["hint.4-6.eaglets", "4-6", "stage hint", "info", "Sleeping eaglets! Go while they sleep. When one peeks up, stand still", "Eaglets! Go while they sleep. Freeze when one peeks.", null, null, "eaglets"],
   ["hint.4-6.eagletsMist", "4-6", "stage hint", "info", "Eaglets by the mist! Stand still and it settles: they do not mind that. Then climb while they sleep", "Eaglets don't mind you standing still. Climb while they sleep.", null, null, "eaglets"],
