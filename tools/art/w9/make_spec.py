@@ -34,12 +34,16 @@ P['burst'] = ('slothadv style, painted storybook illustration, three side-on gam
 P['haze2'] = ('slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six separate soft curling wisps '
               'of pale grey heat haze and thin smoke rising, each a different shape, wispy translucent painted edges, a tiny glowing '
               'ember near the top of each. ' + STYLE)
+P['splash'] = ('slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta, a splash in a pool of '
+               'molten lava in three moments: 1) the lava bursting up in a crown of glowing orange splashes and drops; 2) the crown '
+               'falling back into the lava with a puff of pale grey steam rising; 3) only the steam left, rising and thinning, a few '
+               'glowing embers in it. Liquid, glowing, splashing. ' + STYLE)
 ROUND = sys.argv[2] if len(sys.argv) > 2 else '1'
 items = []
-for n, sts in ((('lava', (0.62, 0.78)), ('geyser', (0.55, 0.7)), ('haze', (0.6, 0.75))) if ROUND == '1' else (('burst', (0.72, 0.86)), ('haze2', (0.75, 0.88)))):
+for n, sts in ((('lava', (0.62, 0.78)), ('geyser', (0.55, 0.7)), ('haze', (0.6, 0.75))) if ROUND == '1' else (('burst', (0.72, 0.86)), ('haze2', (0.75, 0.88))) if ROUND == '2' else (('splash', (0.72, 0.86)),)):
     for st in sts:
         for sd in (7, 23):
-            w, h = (1536, 768) if n in ('geyser', 'burst') else (1536, 416)
+            w, h = (1536, 768) if n in ('geyser', 'burst') else (1536, 512) if n == 'splash' else (1536, 416)
             items.append({'name': f'w9{n}-s{round(st * 100)}-{sd}', 'start': f'start-w9{n}.webp', 'prompt': P[n], 'strength': st, 'seed': sd, 'w': w, 'h': h})
 spec = {'note': "World 9's hazard art by img2img from tools/art/w9/lavastart.py, 2026-10-29",
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]}, 'neg': NEG, 'base': BASE, 'items': items}

@@ -20,6 +20,8 @@ export interface Bush {
   hanging?: boolean;
   /** the bush in front of the hidden hollow: not a hiding place (there is no ground under it) */
   secret?: boolean;
+  /** a hiding place drawn as its world's own painted piece (World 9: 'obsidian', 'ash-fern': w9Art.ts) */
+  look?: string;
 }
 
 /** a watched stretch of the stage, and how long the eagle stays away between passes there (s, rolled in this range) */

@@ -505,9 +505,10 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * The part of a world's bank piece that tiles cleanly (source pixels, from the piece's own corner). World 6's piece ends in a grey stone
  * slab (its bottom 60 rows, saturation 0.06 against 0.34 for the soil), which drew as a grey seam along every bank; World 5's has darker
  * columns at both ends (brightness 71 against 90 in its middle), a vertical step at every join in 5-7 (polish report VI-7). Measured
- * on kits/w5.webp and kits/w6.webp.
+ * on kits/w5.webp and kits/w6.webp. World 9's piece is whole (its full 250 rows): listed so its bottom rows fade into the columns under
+ * it, where its hard bottom edge drew a line across every bank (gen2-w9 stills).
  */
-const BANK_CROP: Record<number, { x0?: number; x1?: number; h?: number }> = { 5: { x0: 14, x1: 546 }, 6: { h: 296 } };
+const BANK_CROP: Record<number, { x0?: number; x1?: number; h?: number }> = { 5: { x0: 14, x1: 546 }, 6: { h: 296 }, 9: { h: 250 } };
 /** the same for the bank's end piece: World 6's carries the slab in its bottom 43 rows */
 const BANK_END_ROWS: Record<number, number> = { 6: 322 };
 /**

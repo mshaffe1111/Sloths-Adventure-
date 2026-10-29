@@ -13,12 +13,12 @@
  *   creatures   all met before, so none needs a first line: the cats (World 3), the boa guard (1-9), the tayra (6-2), the harpy (6-5).
  *   props       the geysers and vents, the hiding places of 9-4 (an obsidian spire, an ash fern: watcher.ts bushes, the eagle watching
  *               from above as everywhere), and the scenery of Matt's World 9 sheets (src/assets/w6to10/props-made w9c, w9c-b: the young
- *               ohia tree, the smoke crack, the charred log, the obsidian spire, the ash fern), drawn by w9SceneryArt.ts.
+ *               ohia tree, the smoke crack, the charred log, the obsidian spire, the ash fern), drawn by w9Art.ts.
  *   falls       on Normal a fall into a chasm costs a life (the lava); Dot names it before the first one (W9_TIPS.water, the pipeline's
  *               void warning). The second-jump, glide and start gaps keep a soft crust floor (w9Falls, as World 8's), and Easy's falls are
- *               all soft (the pipeline: Easy's falls on land are soft). Gaps over the lava are plain jumps of a third to two thirds of the
- *               envelope (STAGE-RULES §6: the first-timer misses half-jump gaps over a deadly fall), so the band rises by the geysers'
- *               beat, the hunters and the length, not by blind jumps.
+ *               all soft (the pipeline: Easy's falls on land are soft). Gaps over the lava are plain jumps of a half to four fifths of the
+ *               envelope, never blind (each is in view a second ahead, lit by its own lava), never a second jump: World 9 must sit above
+ *               World 8 on the band (STAGE-RULES §1b), and with a third-of-a-jump chasm it measured below World 6.
  *   light       dawn (9-1 to 9-3), day under the ash (9-4 to 9-6), the red night of the Drake's hoard (9-8, 9-9): the backdrops
  *               w9dawn-far, w9-far, w9night-far (stageBackdrops.ts).
  *
@@ -192,14 +192,15 @@ const pieceAt = (out: StageSink, x: number, y: number): Platform | undefined =>
 
 /**
  * A geyser's column (zones.ts geyser, the old generator's numbers: 72 px wide, 250 tall, 1.3 s of rumble): its quiet spell shrinks
- * through the world (zones.ts geyserRecipes: 3.0 s at 9-1 to 2.1 s at 9-9), never under the level check's 2 s; the lesson's (a socket
- * named `geyserLesson`) is a long 4 s, so the first one is watched before it is crossed. Active 0.9-1.0 s, never over the check's 1.2.
+ * through the world (2.4 s at 9-1 to 2.0 s at 9-9: World 9 sits above World 8), never under the level check's 2 s; the lesson's (a socket
+ * named `geyserLesson`) is a long 4 s, so the first one is watched before it is crossed. Active 1.0-1.1 s, never over the check's 1.2.
  */
 export const GEYSER = { w: 72, h: 250, warn: 1.3, lessonIdle: 4.0 } as const;
 export function geyserBeat(stage: number, lesson: boolean): { idle: number; active: number } {
   if (lesson) return { idle: GEYSER.lessonIdle, active: 0.9 };
+  // (World 9 sits above World 8: 2.4 s at 9-1 down to the check's floor of 2.0 at 9-9)
   const k = Math.max(0, Math.min(1, (stage - 1) / 8));
-  return { idle: Math.round((3.0 - 0.9 * k) * 10) / 10, active: stage >= 8 ? 1.0 : 0.9 };
+  return { idle: Math.round((2.4 - 0.4 * k) * 10) / 10, active: stage >= 6 ? 1.1 : 1.0 };
 }
 /** a vent in a chasm: a short column (its top under the lip, so the eruption never reaches the route) on a slow, lazy beat */
 export const VENT = { w: 80, h: 70, warn: 1.3, idle: 3.2, active: 0.9 } as const;
@@ -214,9 +215,9 @@ export function ventFloor(platforms: readonly Platform[], x: number, lipY: numbe
 export function w9Emitters(stage: number): Record<W9PropId, PropEmitter> {
   const hide = (kind: Bush['kind']): PropEmitter => (f, p, out) => {
     const w = W9_HIDE_W[p.id as keyof typeof W9_HIDE_W] ?? 150;
-    const b: Bush = { x: R(f.x - w / 2), w, y: f.y, kind };
+    const b: Bush = { x: R(f.x - w / 2), w, y: f.y, kind, look: look(p, f.x, 1) };
     (out.proto.bushes ??= []).push(b);
-    (w9Of(out, stage).hides ??= []).push({ x: b.x, w, y: f.y, look: look(p, f.x, 1) });
+    (w9Of(out, stage).hides ??= []).push({ x: b.x, w, y: f.y, look: b.look! });
   };
   const scenery = (salt: number, w0: number, dw: number): PropEmitter => (f, p, out) =>
     void (w9Of(out, stage).scenery ??= []).push({ n: look(p, f.x, salt), x: f.x, b: f.y, w: R(w0 + dw * hash01(f.x, salt + 1)), ...(hash01(f.x, salt + 2) < 0.5 ? { flip: true } : {}) });
@@ -311,14 +312,20 @@ export const CLIMB_CLEAR = 26;
 
 /**
  * The stage as the engine plays it (the hook-up and the curation tool call this after buildGen2Stage; calling it twice changes nothing):
+ *  - the crumbling tiles are the kit's cracked basalt (Platform.art 'basalt');
  *  - the soft pits' floors and steps out (the pipeline's 'moss_stone' blocks) are cooled crust, in the world's rock;
  *  - a climbing vine stands CLIMB_CLEAR px in front of the ledge's face (World 8's lesson: snapped to a vine on the face, he hung inside
  *    the ledge and fell out of its body);
- *  - no stage tip is said twice.
+ *  - no water sign stands at the lava (its picture is a wave; Dot's line before the first chasm stays).
  */
-export function w9Finish<S extends { spawnX?: number; platforms?: Platform[]; vines?: Vine[]; proto?: { hints?: StageHint[] } }>(st: S): S {
+export function w9Finish<S extends { spawnX?: number; platforms?: Platform[]; vines?: Vine[]; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
+  // (the water signs the pipeline stands at a deadly chasm's lip show a wave: the lava shows itself, and Dot names it before the first)
+  if (st.proto?.gen2?.waterWarnings) delete st.proto.gen2.waterWarnings;
   for (const p of st.platforms ?? []) {
-    if (p.type !== 'solid' || p.style !== 'moss_stone') continue;
+    // (the crumbling tiles are the kit's cracked basalt slabs: w9Art.ts drawW9Crumble)
+    if (p.type === 'fragile' && p.crumbleAfter !== undefined) p.art = 'basalt';
+    // (a soft pit's floor and its steps; a channel's solid slab between two runs of tiles (26 px) stays a slab)
+    if (p.type !== 'solid' || p.style !== 'moss_stone' || p.height <= 26) continue;
     p.style = 'log';
     p.height = Math.max(p.height, W9_GROUND.bankH + 70);
   }

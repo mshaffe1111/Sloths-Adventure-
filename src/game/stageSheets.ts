@@ -23,6 +23,7 @@
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
+ *   w9-art         World 9's painted lava, geysers, heat haze, scenery and hiding places (w9Art.ts), for a World 9 gen2 stage
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
  *   swim           the calm water Pokey swims in and his swim sheets (calmWaterArt.ts, heroSwim.ts), for a stage with calm water
  *   anim:<name>    a clip sheet on its own (Meeca's stage: Pell and the soldiers)
@@ -201,8 +202,9 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
   // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)
   if (isGen2Stage(cfg) ? gen2Water(cfg.id) : cfg.objectiveType !== 'boss_lair' && [1, 2, 3, 5].includes(w)) out.push('water-signs');
-  // (World 6 on: its creeks and its tide are the dirty, fast water)
-  if (isGen2Stage(cfg) && w >= 6) out.push('bad-water');
+  // (World 6 on: its creeks and its tide are the dirty, fast water; World 9's chasms are lava, its geysers, haze and scenery painted: w9Art.ts)
+  if (isGen2Stage(cfg) && w >= 6 && w !== 9) out.push('bad-water');
+  if (isGen2Stage(cfg) && w === 9) out.push('w9-art');
   // 6-8 Stilt Climb: its rising tide is the painted dirty water, and its ledges and shelves are World 6's pieces (w6StiltArt.ts)
   if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)

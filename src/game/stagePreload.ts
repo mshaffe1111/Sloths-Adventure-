@@ -34,6 +34,7 @@ import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
+import { W9_ART_URLS, w9ArtReady } from './w9Art.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
@@ -79,6 +80,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(BAD_WATER_URL);
+    } else if (k === 'w9-art') {
+      w9ArtReady();
+      urls.push(...W9_ART_URLS);
     } else if (k === 'w6-stilt') {
       stiltArtReady();
       urls.push(...STILT_ART_URLS);
