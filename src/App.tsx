@@ -1219,7 +1219,7 @@ export default function App() {
             />
           )}
           {inputEngineRef.current && (
-            <ControlSwitch inputEngine={inputEngineRef.current} />
+            <ControlSwitch inputEngine={inputEngineRef.current} world={activeLevel.worldIndex} />
           )}
         </>
       )}

@@ -265,6 +265,8 @@ export class InputEngine {
     this.state.jumpLean = 0;
     this.state.jumpHeld = false;
     this.state.punchPressed = false;
+    this.state.punchCancel = false;
+    this.state.punchHold = 0;
     this.state.kickPressed = false;
     this.state.kickDir = 0;
     this.state.megaPunchPressed = false;
@@ -373,10 +375,18 @@ export class InputEngine {
    * Touch Gesture:
    * - Tap to punch
    */
-  public triggerTouchPunch() {
+  public triggerTouchPunch(holdMs = 0) {
     this.fresh();
     this.state.punchPressed = true;
+    this.state.punchHold = holdMs / 1000;
     this.punchBufferTimer = 0.12;
+  }
+
+  /** a jab thrown as a finger landed, taken back: the finger moved off as a flick or a swipe (touchGestures.ts jabMoved, CT-17) */
+  public triggerTouchPunchCancel() {
+    this.state.punchPressed = false;
+    this.punchBufferTimer = 0;
+    this.state.punchCancel = true;
   }
 
   /**

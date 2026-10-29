@@ -35,13 +35,16 @@ export interface GestureSink {
    */
   jumpPress(lean?: -1 | 0 | 1): void;
   jumpRelease(): void;
-  punch(): void;
+  /** a punch; `holdMs`: it may still be taken back (punchCancel) for this long, so its swing waits in its wind-up until then */
+  punch(holdMs?: number): void;
+  /** take back the jab a finger threw as it went down: it moved off too fast to be a tap (CT-17) */
+  punchCancel?(): void;
   kick(dir?: -1 | 1): void;
   mega(): void;
   /** hold climbing up (-1), down (1) or stop (0) on a vine or trunk, with no jump and no duck (refined controls) */
   climb?(dir: -1 | 0 | 1): void;
-  /** a label for the little pill on screen, plus haptics */
-  feedback(kind: 'jump' | 'duck' | 'punch' | 'kick' | 'mega'): void;
+  /** what a touch just did, and where the finger is (the mark on screen, touchMarks.ts; and a buzz where the phone gives one) */
+  feedback(kind: 'jump' | 'duck' | 'punch' | 'kick' | 'mega', x?: number, y?: number): void;
 }
 
 export const TUNING = {
@@ -73,10 +76,20 @@ export const TUNING = {
   decideMs: 210,
   /** movement needed for that */
   dragPx: 18,
-  tapMs: 420,
+  /** a still press up to this long is a tap; one longer that lifts before the mega (holdMs, and no mega thrown) is a tap too (CT-22) */
+  tapMs: 400,
   tapPx: 22,
   /** a still finger held this long throws the mega (it was 460: a two-thumb player's resting thumb threw one every rest, CT-7) */
   holdMs: 550,
+  /**
+   * the action finger's jab starts as it goes down, not when it lifts (a tap waited a median 95 ms for its punch, polish report CT-17);
+   * it is taken back if the finger moves more than `jabCancelPx` within `jabCancelMs`: a flick or a swipe. The report asked for 22 px in
+   * 60 ms, the jab's wind-up; but phones report a finger's first move 40 to 100 ms after it lands, and replayed, 8% of Steph's second-
+   * thumb flicks kept a jab. At 12 px in 100 ms it is 0.5%. The engine holds a touch jab in its wind-up that long (engine.ts jabHold), so a
+   * jab taken back never strikes
+   */
+  jabCancelMs: 100,
+  jabCancelPx: 12,
   holdPx: 20,
   /**
    * a tap that begins this soon after the steering finger lifted is the thumb bouncing back onto the glass, not a punch. It was 190 ms,
@@ -92,7 +105,20 @@ export const TUNING = {
   nudgeTapPx: 30,
   nudgeTapMs: 250,
   /** a second finger this close to the steering finger is probably the same hand */
-  palmPx: 70,
+  /**
+   * (it was 70, and in portrait on a 320-390 px phone a thumb running right slides toward the other one, so its taps vanished: polish
+   * report CT-15. The report also asked to ignore a touch by its reported radius; in the testers' recordings almost every touch reports
+   * 24 px, near the thumb or not, so the radius tells a palm from a thumb on no phone here and is not used)
+   */
+  palmPx: 45,
+  /**
+   * a touch that starts this close to a side edge (px) is ignored until it has moved `edgeMovePx`: the hand gripping the phone, or a
+   * contact the screen reports for 8 to 17 ms at its edge (33 in the recordings, each a punch). One that slides in is a thumb (CT-16)
+   */
+  edgePx: 6,
+  edgeMovePx: 8,
+  /** a second finger this close (but past palmPx) is taken, but resting there it is the same hand: it never throws the mega (CT-15) */
+  nearPx: 70,
   /** the right half starts here (fraction of the width); left of it steers at once */
   splitAt: 0.5,
 
@@ -106,17 +132,14 @@ export const TUNING = {
   /** … or on a wiggle: down this far, then up this far, no faster than this (px per ms) */
   pumpDown: 12,
   pumpUp: 20,
-  pumpSpeed: 0.1,
   /**
-   * on a vine (refined): a slide up this far off straight is a leap off, not a climb (tan of the angle: 0.36 is 20 degrees). It was 0.7
-   * (35 degrees), so a thumb flicking "up and forward" the way the swing card says, about 27 degrees over, climbed instead (2026-10-25)
+   * (0.1 let a thumb drifting down and back up as it rested be a second jump: 0.25 now, polish report CT-24. The report also asked for a
+   * 16 px dip; replaying the testers' touches, that lost seven deliberate double jumps, big second strokes after a 12-13 px dip, and
+   * stopped only four more slow ones than the speed alone, so the dip stays 12)
    */
-  vineLeapSlant: 0.36,
-  /**
-   * a jump's flick that leans this far off straight up (tan of the angle: 0.364 is 20 degrees) carries its lean to the game, and a let-go
-   * from a vine or a trunk leaps that way. It used to follow his facing or the held steer whatever the flick did, so after a pump to the
-   * right a flick up and LEFT leaped right, and a flick up and right while he faced left threw him backward (QA, 2026-10-26)
-   */
+  pumpSpeed: 0.25,
+  /** the other thumb's sink-and-flick again (airAgain) must rise at least this fast (px per ms) over its last moments (CT-24) */
+  againSpeed: 0.3,
   leanSlant: 0.364,
   /**
    * … and go no more than this far sideways for each px it rises (1.2 is 50 degrees over): a mostly sideways or downward slide on a vine,
@@ -147,7 +170,7 @@ export const TUNING = {
   vineClimbedPx: 8,
   /**
    * on a vine, a liana or a trunk: a whole touch that is one quick stroke up and over, put down and lifted within this long (ms), lets go
-   * when it lifts, however far over it leans (only not straight up: vineLeapSlant). Matt's flicks off a liana (control test, 2026-10-26
+   * when it lifts, however far over it leans (only not straight up: leanSlant). Matt's flicks off a liana (control test, 2026-10-26
    * and 27, sideways phone) went 55 to 80 degrees over, e.g. 290 px across and 110 up in 200 ms, and lifted at once: every one was read as
    * pumping the swing (over vineLeapMaxSlant), climbed him to the top of the vine instead, and he was stuck there "flicking wildly"
    * (31 of them in three sessions). A thumb pumping a swing stays on the glass for half a second and more, and turns round.
@@ -203,8 +226,30 @@ export const TUNING = {
   trunkSideSpeed: 0.3,
 } as const;
 
+/**
+ * Touch sensitivity (the menu's slider, polish report CT-28): every distance a move has to cover is divided by it, so at 1.35 a flick,
+ * a slide or a duck needs about three quarters of the travel, and at 0.75 a third more. Taps and holds must stay stiller in step. The
+ * sizes that belong to the hand, not the move (the palm, the screen edge, beside the steering thumb), stay as they are.
+ */
+export const SENSITIVITY = { min: 0.75, max: 1.35 };
+const DISTANCES = [
+  'moveDead', 'reanchor', 'jumpDy', 'duckDy', 'flickPx', 'dragPx', 'tapPx', 'holdPx', 'jabCancelPx', 'nudgeTapPx', 'edgeMovePx', 'slideUpPx',
+  'airUpPx', 'airJumpDy', 'pumpDown', 'pumpUp', 'vineClimbedPx', 'vineFlickRise', 'earlyDragPx', 'liftFlickPx', 'tapRisePx', 'groundJumpPx',
+  'trunkSidePx',
+] as const;
+const AT_ONE = Object.fromEntries(DISTANCES.map((k) => [k, TUNING[k]])) as Record<(typeof DISTANCES)[number], number>;
+let sensitivityNow = 1;
+export function applyTouchSensitivity(s: number) {
+  const k = Math.max(SENSITIVITY.min, Math.min(SENSITIVITY.max, s));
+  if (k === sensitivityNow) return;
+  sensitivityNow = k;
+  Object.assign(TUNING, Object.fromEntries(DISTANCES.map((d) => [d, AT_ONE[d] / k])));
+}
+
 /** what the recogniser may ask the game: is jump help on, and is he in the air with a second jump to spare */
 export interface GestureEnv {
+  /** the hand that steers (CT-28): a lone first finger on that half of the screen steers at once; Left unless chosen */
+  steerHand?(): 'left' | 'right';
   assist(): boolean;
   air(): boolean;
   /** false while a mega punch is still cooling down: a held thumb then waits instead of announcing a punch that cannot happen */
@@ -284,6 +329,12 @@ interface Finger {
   airDown: boolean;
   /** where the thumb sank to after a jump (with tr): a consumed finger's wiggle measures its lean from here */
   trX: number;
+  /** it went down beside the steering thumb (nearPx): resting there is the same hand, never a mega */
+  nearThumb?: boolean;
+  /** it went down at a side edge and has not moved yet (edgePx): ignored until it does */
+  edgeWait?: boolean;
+  /** when it threw its jab as it went down (CT-17); lifting must not punch again */
+  jabT?: number;
 }
 
 export class TouchGestures {
@@ -358,7 +409,7 @@ export class TouchGestures {
     f.tr = f.y;
     f.trX = f.x;
     if (air) this.lastAir = this.now;
-    this.sink.feedback('jump');
+    this.sink.feedback('jump', f.x, f.y);
     this.sink.jumpPress(lean);
   }
 
@@ -380,26 +431,69 @@ export class TouchGestures {
     this.now = t;
     if (this.fingers.has(id)) return;
     const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], trail: [{ t, x, y }], tapT0: t, pk: y, tr: y, early: false, megaDone: false, lowY: y, lowX: x, riseT0: NaN, sx: 0, airDown: this.canAir(), trX: x };
+    // at a side edge: nothing until it moves (CT-16)
+    if (x < TUNING.edgePx || x > this.width() - TUNING.edgePx) {
+      f.role = 'ignored';
+      f.edgeWait = true;
+      this.fingers.set(id, f);
+      return;
+    }
+    this.pickRole(f, x, y);
+    this.fingers.set(id, f);
+    // the action finger punches as it lands (CT-17); a flick or swipe takes it back within the jab's wind-up (jabMoved)
+    if (f.role === 'action') {
+      f.jabT = t;
+      this.sink.feedback('punch', f.x, f.y);
+      this.sink.punch(TUNING.jabCancelMs);
+    }
+  }
+
+  /** a finger that jabbed as it went down moved off too far, too soon, to be a tap: take the jab back (CT-17) */
+  private jabMoved(f: Finger, x: number, y: number, t: number) {
+    if (f.jabT === undefined || t - f.jabT > TUNING.jabCancelMs || Math.hypot(x - f.x0, y - f.y0) <= TUNING.jabCancelPx) return;
+    f.jabT = undefined;
+    this.sink.punchCancel?.();
+  }
+
+  /** x is on the steering hand's half of the screen (splitAt from that side: mirrored for Right, CT-28) */
+  private steerHalf(x: number): boolean {
+    const w = this.width();
+    return this.env?.steerHand?.() === 'right' ? x > w * (1 - TUNING.splitAt) : x < w * TUNING.splitAt;
+  }
+
+  /** a finger just down (or just off a side edge): steering, an action, undecided, or the same hand as the steering thumb */
+  private pickRole(f: Finger, x: number, y: number) {
+    f.role = 'pending';
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
-      if (Math.hypot(x - m.x, y - m.y) < TUNING.palmPx) f.role = 'ignored';
+      const d = Math.hypot(x - m.x, y - m.y);
+      if (d < TUNING.palmPx) f.role = 'ignored';
+      else if (d < TUNING.nearPx) f.nearThumb = true;
       else if (this.actor()) f.role = 'ignored';
       else f.role = 'action';
     } else if (this.actor()) {
       // another undecided finger is down already; a left-side touch takes over steering
-      if (x < this.width() * TUNING.splitAt) f.role = 'mover';
+      if (this.steerHalf(x)) f.role = 'mover';
       else f.role = 'ignored';
-    } else if (x < this.width() * TUNING.splitAt) {
+    } else if (this.steerHalf(x)) {
       f.role = 'mover';
     }
-    this.fingers.set(id, f);
   }
 
   move(id: number, x: number, y: number, t: number) {
     this.now = t;
     const f = this.fingers.get(id);
     if (!f) return;
+    if (f.edgeWait) {
+      // it moved off the edge: a thumb after all, taken with all it has done so far (a flick that started at the edge keeps its rise)
+      if (Math.hypot(x - f.x0, y - f.y0) < TUNING.edgeMovePx) return;
+      f.edgeWait = false;
+      this.fingers.delete(id);
+      this.pickRole(f, f.x0, f.y0);
+      this.fingers.set(id, f);
+    }
+    this.jabMoved(f, x, y, t);
     // the low point a rise starts from: the thumb going down (or holding) moves it; a rise that dawdles starts again from where it is
     const lastT = f.hist[f.hist.length - 1].t;
     if (y >= f.y || !(t - f.riseT0 <= TUNING.riseMs)) {
@@ -420,8 +514,12 @@ export class TouchGestures {
     f.trail.push({ t, x, y });
     while (f.trail.length > 2 && t - f.trail[0].t > TUNING.duckTrailMs) f.trail.shift();
     if (f.role === 'mover') this.steer(f);
-    else if (f.role === 'pending' || f.role === 'action') this.judge(f, t, false);
-    else if (f.role === 'ignored') this.palmFlick(f, t);
+    else if (f.role === 'pending' || f.role === 'action') {
+      // (beside the steering thumb the palm rule's flick still counts: a second thumb flicking up and over from there, 45 to 60 degrees,
+      // jumped while the palm rule took it, and the ordinary rules want a flick more upright, CT-15)
+      if (f.nearThumb && !f.consumed) this.palmFlick(f, t);
+      if (!f.consumed || f.jumped) this.judge(f, t, false);
+    } else if (f.role === 'ignored') this.palmFlick(f, t);
   }
 
   /**
@@ -454,6 +552,7 @@ export class TouchGestures {
     this.now = t;
     const f = this.fingers.get(id);
     if (!f) return;
+    this.jabMoved(f, x, y, t);
     f.x = x;
     f.y = y;
     this.fingers.delete(id);
@@ -462,7 +561,7 @@ export class TouchGestures {
       if (!f.jumped && !f.ducked) this.moverFlickOnLift(f, t);
       const travel = Math.hypot(f.x - f.x0, f.y - f.y0);
       const nudge = this.heldDir !== 'none' && travel <= TUNING.nudgeTapPx && t - f.t0 <= TUNING.nudgeTapMs && Math.abs(f.x - f.x0) >= Math.abs(f.y - f.y0);
-      const stillTap = !f.jumped && !f.ducked && ((this.heldDir === 'none' && travel <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) || nudge) && !this.flickedUp(f);
+      const stillTap = !f.jumped && !f.ducked && !f.megaDone && ((this.heldDir === 'none' && travel <= TUNING.tapPx && this.tapLong(f, t)) || nudge) && !this.flickedUp(f);
       const wasReplant = f.tapT0 - this.lastMoverUp < TUNING.replantMs;
       // only a finger that really steered or jumped counts as a "thumb that was just lifted". A finger that merely tapped must not:
       // otherwise every tap in a quick run of taps on the left half would look like a re-plant of the one before, and be eaten
@@ -481,10 +580,10 @@ export class TouchGestures {
       const eel = Math.max(1, t - f.t0);
       const flicked = !this.noKick() && !f.jumped && !f.ducked && eel <= TUNING.flickLiftMs && Math.abs(edx) >= TUNING.flickPx && Math.abs(edx) >= Math.abs(f.y - f.y0) && Math.abs(edx) / eel >= (f.early ? TUNING.flickLiftSpeed : TUNING.steerFlickSpeed);
       if (flicked) {
-        this.sink.feedback('kick');
+        this.sink.feedback('kick', f.x, f.y);
         this.sink.kick(edx < 0 ? -1 : 1);
       }
-      if (stillTap && !wasReplant) this.tapAct();
+      if (stillTap && !wasReplant && f.jabT === undefined) this.tapAct(f);
       if (!wasTap && !flicked) {
         this.lastMoverUp = t;
         this.lastMoverUpX = f.x;
@@ -501,8 +600,8 @@ export class TouchGestures {
       return;
     }
     if (f.role === 'ignored') {
-      // (a quick flick up as it lifts is a jump from any finger, CT-9)
-      const fl = !f.consumed ? this.liftFlick(f) : null;
+      // (a quick flick up as it lifts is a jump from any finger, CT-9; not an edge contact that never moved)
+      const fl = !f.consumed && !f.edgeWait ? this.liftFlick(f) : null;
       if (fl) {
         this.fireJump(f, this.canAir(), fl.lean);
         this.sink.jumpRelease();
@@ -524,12 +623,12 @@ export class TouchGestures {
     if (f.ducked) this.sink.duck(false);
     if (was || acted) return;
     const dist = Math.hypot(f.x - f.x0, f.y - f.y0);
-    if (dist <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs && !this.flickedUp(f)) {
+    if (dist <= TUNING.tapPx && !f.megaDone && f.jabT === undefined && this.tapLong(f, t) && !this.flickedUp(f)) {
       // re-planting the thumb right after steering is not a punch: only if it began after the lift AND near it
       const replant = f.tapT0 >= this.lastMoverUp && f.tapT0 - this.lastMoverUp < TUNING.replantMs &&
         Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;
       if (replant) return;
-      this.tapAct();
+      this.tapAct(f);
     }
   }
 
@@ -547,7 +646,7 @@ export class TouchGestures {
     const el = Math.max(1, t - f.t0);
     if (this.vine()) {
       if (
-        el <= TUNING.vineFlickMs && rise >= TUNING.vineFlickRise && Math.abs(dx) >= rise * TUNING.vineLeapSlant &&
+        el <= TUNING.vineFlickMs && rise >= TUNING.vineFlickRise && Math.abs(dx) >= rise * TUNING.leanSlant &&
         f.sx <= Math.abs(dx) * 1.3 && Math.hypot(dx, rise) / el >= TUNING.vineFlickSpeed &&
         // (and under 45 degrees over, where climbing strokes lean, the same test as a flick while the finger is down: a short climbing stroke
         // that lifted is a climb, CT-3)
@@ -592,14 +691,21 @@ export class TouchGestures {
       return;
     }
     const up = f.tr - f.y;
-    if (this.canAir() && f.tr - f.pk >= TUNING.pumpDown && up >= TUNING.pumpUp && up >= Math.abs(f.x - f.trX) * 0.85) {
+    // (quick, over its last moments: a thumb resting on the glass that sinks and creeps back up is not flicking, CT-24)
+    let r0 = f.hist[0];
+    for (let i = f.hist.length - 1; i >= 0; i--) {
+      r0 = f.hist[i];
+      if (this.now - r0.t >= 60) break;
+    }
+    const vNow = (r0.y - f.y) / Math.max(1, this.now - r0.t);
+    if (this.canAir() && f.tr - f.pk >= TUNING.pumpDown && up >= TUNING.pumpUp && up >= Math.abs(f.x - f.trX) * 0.85 && vNow >= TUNING.againSpeed) {
       this.fireJump(f, true, this.leanOf(f.x - f.trX, up));
     }
   }
 
   /** a tap: always a punch (the fight turns one in the air into a jump kick) */
-  private tapAct() {
-    this.sink.feedback('punch');
+  private tapAct(f: Finger) {
+    this.sink.feedback('punch', f.x, f.y);
     this.sink.punch();
   }
 
@@ -626,6 +732,14 @@ export class TouchGestures {
     }
   }
 
+  /**
+   * every touch the browser still reports (a touchstart's e.touches): a finger not among them lost its lift, and is let go now, so a
+   * gripping palm or a lift that never came cannot hold the steering until every finger is up (CT-16)
+   */
+  keepOnly(ids: number[], t: number) {
+    for (const id of [...this.fingers.keys()]) if (!ids.includes(id)) this.cancelFinger(id, t);
+  }
+
   cancelAll() {
     this.setClimb(0);
     for (const f of this.fingers.values()) {
@@ -648,6 +762,13 @@ export class TouchGestures {
 
   get active(): boolean {
     return this.fingers.size > 0;
+  }
+
+  /** where the steering thumb is anchored, and the way it runs him (-1 left, 0 standing, 1 right): the ring on screen (CT-14) */
+  steerMark(): { x: number; y: number; dir: -1 | 0 | 1 } | null {
+    const m = this.mover();
+    if (!m) return null;
+    return { x: m.ax, y: m.ay, dir: this.heldDir === 'left' ? -1 : this.heldDir === 'right' ? 1 : 0 };
   }
 
   // ───────────────────────────── steering ─────────────────────────────
@@ -697,7 +818,8 @@ export class TouchGestures {
     }
     // the intent lock: a running thumb flicking up (or that has just jumped) keeps the run's way; the anchor comes along, so the thumb's arc
     // back toward the palm is not read as a stop or a turn once the lock ends either
-    if (this.heldDir !== 'none' && !this.vine() && (this.now < this.lockUntil || this.flickingUp(f))) {
+    // (not on a vine or a rope: there a flick up and over is a let-go, and it goes the way it leans, CT-21)
+    if (this.heldDir !== 'none' && !this.vine() && !this.rope() && (this.now < this.lockUntil || this.flickingUp(f))) {
       const s = this.heldDir === 'right' ? 1 : -1;
       if (dx * s < TUNING.moveDead) {
         f.ax = f.x - s * TUNING.moveDead;
@@ -772,7 +894,8 @@ export class TouchGestures {
     const q = this.riseFrom(f);
     const quick = !f.jumped && !this.duckOn && q.rise >= (air ? jdy : TUNING.groundJumpPx) && q.speed >= TUNING.riseSpeed && q.rise >= Math.abs(q.across) * TUNING.riseSlant && ropeUp;
     if (dyJ < -jdy && !f.jumped && (vUp >= 0.15 || dyJ < -jdy * 2) && ropeUp) {
-      this.fireJump(f, air);
+      // (with the lean of its rise, as the quick flick below: a hop off a rope or a let-go goes the way it leaned, CT-21)
+      this.fireJump(f, air, q.rise > 0 ? this.leanOf(q.across, q.rise) : 0);
     } else if (quick) {
       // (the anchor moves down to the low point, so the thumb held up there keeps the jump held, and the wiggle for the second works)
       f.ay = f.lowY;
@@ -794,7 +917,7 @@ export class TouchGestures {
         this.lastAir = this.now;
         f.pk = f.y;
         f.tr = f.y;
-        this.sink.feedback('jump');
+        this.sink.feedback('jump', f.x, f.y);
         this.sink.jumpPress();
       } else if (f.y < f.pk && f.tr - f.pk < TUNING.pumpDown) {
         // still on the way up (not yet sunk): the peak follows the thumb
@@ -865,6 +988,11 @@ export class TouchGestures {
     if (rise < TUNING.liftFlickPx || rise / el < TUNING.liftFlickSpeed || rise < sx * TUNING.liftFlickSlant) return null;
     return { lean: this.leanOf(f.x - tr[lo].x, rise) };
   }
+  /** a press short enough to be a tap: up to tapMs, or longer while no mega has been thrown and the hold has not run out (CT-22) */
+  private tapLong(f: Finger, t: number): boolean {
+    return t - f.tapT0 <= TUNING.tapMs || t - f.tapT0 < TUNING.holdMs;
+  }
+
   /** the finger is at rest right now: under 6 px of travel in its last 50 ms (a flick just starting is no hold: CT-7) */
   private stillNow(f: Finger): boolean {
     let d = 0;
@@ -965,7 +1093,7 @@ export class TouchGestures {
           this.fireJump(f, this.canAir(), this.leanOf(dx, -dy));
         } else {
           f.ducked = true;
-          this.sink.feedback('duck');
+          this.sink.feedback('duck', f.x, f.y);
           this.sink.duck(true);
         }
         return true;
@@ -997,7 +1125,7 @@ export class TouchGestures {
           return false;
         }
         f.consumed = true;
-        this.sink.feedback('kick');
+        this.sink.feedback('kick', f.x, f.y);
         this.sink.kick(dx < 0 ? -1 : 1);
         return true;
       }
@@ -1037,12 +1165,12 @@ export class TouchGestures {
     }
     // a long drag by an action finger while steering is going on elsewhere is just a wobble: let it be
     // a still finger held down: mega (but not while the last one is still cooling down: the thumb waits, and it goes off the moment it can)
-    if (!f.megaDone && el >= TUNING.holdMs && Math.hypot(dx, dy) <= TUNING.holdPx && this.stillNow(f)) {
+    if (!f.megaDone && !f.nearThumb && el >= TUNING.holdMs && Math.hypot(dx, dy) <= TUNING.holdPx && this.stillNow(f)) {
       if (this.env?.megaReady && !this.env.megaReady()) return false;
       f.megaDone = true;
       // the mega never uses the finger up: a thumb that was only resting can still steer if it slides, and still jump if it flicks (a
       // second thumb used to be spent until lifted, so the flick after a rest did nothing: CT-7)
-      this.sink.feedback('mega');
+      this.sink.feedback('mega', f.x, f.y);
       this.sink.mega();
       return true;
     }
