@@ -121,6 +121,44 @@ npx tsx tools/inspect/era.ts --worlds 1-5 --rolls 200 [--html out.html] [--json 
 
 `src/game/rollGuard.test.ts` (in the suite) samples 10 rolls of every World 1-4 stage and fails if one is under 2:00 or fails the level check.
 
+### The stage walk and the seam detector (required for any change to a look)
+
+Matt, 2026-10-29: "what we lack the most is seams and putting that extra cleanness on things." Shots at spots a helper chose miss most
+of it, so every helper that changes a look attaches a clean walk of the stages it touched, upright and sideways, with the detector's
+counts before and after (`reference/LEAD-PLAYBOOK.md`, "walk the stages, not the spots").
+
+```
+pip install opencv-python-headless scipy          # once (numpy and Pillow are already there)
+npx tsx tools/inspect/walk.mjs --stages 1-2,5-1   # a stage both ways: about 3-5 minutes each on 4 cores
+npx tsx tools/inspect/walk.mjs --worlds 1-10 --jobs 3   # everything (stages, boss lairs, 4-D, 5-M): a few hours
+```
+
+`walk.mjs` makes a development build (or reuses `--dist DIR`), starts each stage in it at 390x844 and 844x390 (dpr 2), stops the game's
+own loop and runs the engine one 30 fps frame at a time, with Pokey moved along the inspector's main route (`route.ts`, worked out from
+the stage exactly as the browser built it) at a brisk run, unhurt and never blinking. It saves a frame every half screen (`--step`), the
+canvas with a log of every draw call on it (`walkHook.js`: each picture's file, source rect, box, blow-up and clip; each code fill or
+line), the phone's screen with the HUD, and a 4 s clip from the middle of the stage (`--clip S`). Then `seams.py` reads the frames and
+writes, per stage and orientation, `finds/*.jpg` (a crop of each finding, boxed), `sheet.jpg` (the contact sheet, findings marked),
+`clip.mp4` and `seams.json`; and for the run `seams.md` (counts per stage and the causes, most spots first) and `seams.json`. The canvas
+pictures are deleted once read (`--keep-canvas` keeps them). Options: `--orient up,side`, `--seed N` (the roll), `--out DIR`
+(default `/tmp/walk`), `--no-detect`, `--jobs N`, `--dprocs N`.
+
+What the detector flags (one finding per cause per frame, with every spot of that cause in the frame listed under it):
+- **line**: a hard straight line where the colour steps (a tile join, a strip join, a cut-out edge, a code ground column's side) or a thin
+  dark or light line. `edge` when it lies on a drawn piece's edge or clip (high confidence); a step inside one picture only when long.
+- **fringe**: a light halo or a dark ring round a cut-out (measured on the picture file; a `proof` crop of the file, x3 on dark and grey).
+- **key**: magenta or green key colour on a cut-out's soft edge, or near-pure key colour on screen.
+- **repeat**: the same piece drawn several times close together, or the same patch of pixels again within the screen.
+- **style**: a picture blown up far more (blurry) or with a far heavier outline than the pieces round it.
+- **shape**: a code-drawn shape still showing: flat rects, ellipses, paths, code lines and dashed lines, code-made textures (a pattern of
+  code fills, a code-made canvas used as a piece of the world: the green pit blocks), flat areas under code fills.
+- **float**: a prop with a flat solid base and a 6-80 px gap under it to the ledge below (the stage's colliders).
+- **hud**: HUD or text cut off by the screen's edges, or text on top of other text.
+
+Re-run the detector alone: `python3 tools/inspect/seams.py DIR [--stages 1-2] [--one DIR/1-2/up] [--report-only]`. The walk is driven
+by the route, not by the first-timer bot: he never gets stuck, so every part of the stage is seen, but his feet slide along the route
+(on a vine or rope he is moved, not swinging). 4-D (Dot's flight) and 7-4 (the slide) run on a clock with right held.
+
 ## tools/control-test-collector.gs
 
 This is the Google Apps Script behind the touch-control test (`#ctest`). It writes testers' recordings into Matt's Google Sheet. The real key lives only in Matt's deployed script and in the page, and is not repeated here.
