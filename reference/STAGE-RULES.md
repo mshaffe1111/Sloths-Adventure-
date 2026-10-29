@@ -380,6 +380,10 @@ plan); never ship the rough version as finished.
   World 6's ledge set (`src/assets/w6/ledges.webp`) has the supports painted on: lay its tall piece cut off where the supports reach
   the ledge under it (`SET_ROWS` says where they are at each depth), so one picture fits any drop.
 
+- **A way out of a dip can be a shortcut past a climb** (LV-11, 2026-10-29): a 72 px step at the foot of World 2's mooring-post bank
+  let the double jump skip the rope climb, and 2-2's quick route lost its climbs (50 of 200 rolls over the dead-time limit). The step
+  stays in 2-3 only. Before adding a way out, check the 200-roll tool on every stage that uses the piece, not only the one asked about.
+
 ## 7. Where things are
 
 - Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's

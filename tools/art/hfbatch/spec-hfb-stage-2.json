@@ -1,0 +1,374 @@
+{
+ "note": "hf-art-stage every-stage pieces by img2img from stagestarts.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/f4b14f6a088899b3b29d9e7a5f346c1cd1b25f4b/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "gate-w5-s42-7",
+   "start": "start-gate-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, two versions of the very same object side by side, identical in shape and size, a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a big pink orchid in bloom on top and the little door open onto a dark inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1536,
+   "h": 960
+  },
+  {
+   "name": "gate-w5-s42-23",
+   "start": "start-gate-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, two versions of the very same object side by side, identical in shape and size, a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a big pink orchid in bloom on top and the little door open onto a dark inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.42,
+   "seed": 23,
+   "w": 1536,
+   "h": 960
+  },
+  {
+   "name": "gate-w5-s55-7",
+   "start": "start-gate-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, two versions of the very same object side by side, identical in shape and size, a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a big pink orchid in bloom on top and the little door open onto a dark inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1536,
+   "h": 960
+  },
+  {
+   "name": "gate-w5-s55-23",
+   "start": "start-gate-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, two versions of the very same object side by side, identical in shape and size, a carved wooden orchid-garden totem: a tall carved tree trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a big pink orchid in bloom on top and the little door open onto a dark inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 1536,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w1-s45-7",
+   "start": "start-gateopen-w1.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a rainforest sanctuary gate: two mossy wooden posts wrapped in green vines, a mossy log lintel with a red bromeliad on top, on a grassy earth step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w1-s45-23",
+   "start": "start-gateopen-w1.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a rainforest sanctuary gate: two mossy wooden posts wrapped in green vines, a mossy log lintel with a red bromeliad on top, on a grassy earth step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w1-s60-7",
+   "start": "start-gateopen-w1.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a rainforest sanctuary gate: two mossy wooden posts wrapped in green vines, a mossy log lintel with a red bromeliad on top, on a grassy earth step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w1-s60-23",
+   "start": "start-gateopen-w1.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a rainforest sanctuary gate: two mossy wooden posts wrapped in green vines, a mossy log lintel with a red bromeliad on top, on a grassy earth step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w2-s45-7",
+   "start": "start-gateopen-w2.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a riverbank gate of weathered grey-brown wooden planks and posts lashed with rope, a plank roof, on a wooden plank step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w2-s45-23",
+   "start": "start-gateopen-w2.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a riverbank gate of weathered grey-brown wooden planks and posts lashed with rope, a plank roof, on a wooden plank step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w2-s60-7",
+   "start": "start-gateopen-w2.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a riverbank gate of weathered grey-brown wooden planks and posts lashed with rope, a plank roof, on a wooden plank step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w2-s60-23",
+   "start": "start-gateopen-w2.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a riverbank gate of weathered grey-brown wooden planks and posts lashed with rope, a plank roof, on a wooden plank step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w3-s45-7",
+   "start": "start-gateopen-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, an ancient ruined stone gateway in a dark night cave, mossy grey-green stone pillars with glowing cyan water drips, a mossy stone lintel, on a wet stone step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w3-s45-23",
+   "start": "start-gateopen-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, an ancient ruined stone gateway in a dark night cave, mossy grey-green stone pillars with glowing cyan water drips, a mossy stone lintel, on a wet stone step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w3-s60-7",
+   "start": "start-gateopen-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, an ancient ruined stone gateway in a dark night cave, mossy grey-green stone pillars with glowing cyan water drips, a mossy stone lintel, on a wet stone step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w3-s60-23",
+   "start": "start-gateopen-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, an ancient ruined stone gateway in a dark night cave, mossy grey-green stone pillars with glowing cyan water drips, a mossy stone lintel, on a wet stone step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w4-s45-7",
+   "start": "start-gateopen-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a cliff gate of blue-grey slate rock pillars with twisting brown roots, a slate lintel with tufts of grass on top, on a slate step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w4-s45-23",
+   "start": "start-gateopen-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a cliff gate of blue-grey slate rock pillars with twisting brown roots, a slate lintel with tufts of grass on top, on a slate step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w4-s60-7",
+   "start": "start-gateopen-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a cliff gate of blue-grey slate rock pillars with twisting brown roots, a slate lintel with tufts of grass on top, on a slate step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w4-s60-23",
+   "start": "start-gateopen-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a cliff gate of blue-grey slate rock pillars with twisting brown roots, a slate lintel with tufts of grass on top, on a slate step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w6-s45-7",
+   "start": "start-gateopen-w6.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a mangrove swamp gate of pale grey-green mangrove wood pillars with shelf fungus, a pale root-wood lintel, on a muddy root step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w6-s45-23",
+   "start": "start-gateopen-w6.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a mangrove swamp gate of pale grey-green mangrove wood pillars with shelf fungus, a pale root-wood lintel, on a muddy root step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w6-s60-7",
+   "start": "start-gateopen-w6.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a mangrove swamp gate of pale grey-green mangrove wood pillars with shelf fungus, a pale root-wood lintel, on a muddy root step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w6-s60-23",
+   "start": "start-gateopen-w6.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a mangrove swamp gate of pale grey-green mangrove wood pillars with shelf fungus, a pale root-wood lintel, on a muddy root step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w7-s45-7",
+   "start": "start-gateopen-w7.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, an ancient temple gateway of weathered grey-green carved stone pillars with key patterns and moss, a carved stone lintel with key patterns, on a stone step with dry roots. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w7-s45-23",
+   "start": "start-gateopen-w7.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, an ancient temple gateway of weathered grey-green carved stone pillars with key patterns and moss, a carved stone lintel with key patterns, on a stone step with dry roots. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w7-s60-7",
+   "start": "start-gateopen-w7.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, an ancient temple gateway of weathered grey-green carved stone pillars with key patterns and moss, a carved stone lintel with key patterns, on a stone step with dry roots. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w7-s60-23",
+   "start": "start-gateopen-w7.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, an ancient temple gateway of weathered grey-green carved stone pillars with key patterns and moss, a carved stone lintel with key patterns, on a stone step with dry roots. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w8-s45-7",
+   "start": "start-gateopen-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a night forest gate of two dark blue and purple bark tree trunks, a fallen blue log lintel with violet leaves, on a blue mossy step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w8-s45-23",
+   "start": "start-gateopen-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a night forest gate of two dark blue and purple bark tree trunks, a fallen blue log lintel with violet leaves, on a blue mossy step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w8-s60-7",
+   "start": "start-gateopen-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a night forest gate of two dark blue and purple bark tree trunks, a fallen blue log lintel with violet leaves, on a blue mossy step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w8-s60-23",
+   "start": "start-gateopen-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a night forest gate of two dark blue and purple bark tree trunks, a fallen blue log lintel with violet leaves, on a blue mossy step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w9-s45-7",
+   "start": "start-gateopen-w9.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a volcanic gate of black hexagonal basalt columns, a cracked black basalt lintel with thin glowing orange lava cracks, on a basalt step with small red flowers. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w9-s45-23",
+   "start": "start-gateopen-w9.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a volcanic gate of black hexagonal basalt columns, a cracked black basalt lintel with thin glowing orange lava cracks, on a basalt step with small red flowers. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w9-s60-7",
+   "start": "start-gateopen-w9.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a volcanic gate of black hexagonal basalt columns, a cracked black basalt lintel with thin glowing orange lava cracks, on a basalt step with small red flowers. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w9-s60-23",
+   "start": "start-gateopen-w9.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a volcanic gate of black hexagonal basalt columns, a cracked black basalt lintel with thin glowing orange lava cracks, on a basalt step with small red flowers. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w10-s45-7",
+   "start": "start-gateopen-w10.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a stronghold gate of rough grey rock pillars and a grey rock lintel, on a grey rock step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w10-s45-23",
+   "start": "start-gateopen-w10.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a stronghold gate of rough grey rock pillars and a grey rock lintel, on a grey rock step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w10-s60-7",
+   "start": "start-gateopen-w10.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a stronghold gate of rough grey rock pillars and a grey rock lintel, on a grey rock step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 960
+  },
+  {
+   "name": "gateopen-w10-s60-23",
+   "start": "start-gateopen-w10.webp",
+   "prompt": "slothadv style, painted storybook illustration, a game exit gate for a side-scrolling platformer, a stronghold gate of rough grey rock pillars and a grey rock lintel, on a grey rock step. The gate stands open: no door, the way through is a dark passage going back into the gate, its inner walls and floor in soft shadow, a soft warm golden light glowing deep inside. Soft cel shading, thin dark outline, light from the upper left, evenly lit, hand-painted storybook game art, seen straight from the side, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 768,
+   "h": 960
+  }
+ ]
+}

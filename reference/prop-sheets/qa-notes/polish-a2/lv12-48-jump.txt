@@ -1,0 +1,24 @@
+LV-12: 4-8's jump from the plugged boulder to the nest's branch, real engine, seeds 1 2 3 38 75 112 (each fall), Normal.
+Pokey stands on the boulder's top, walks right, presses N frames before its edge, holds the jump H frames. Landed / tries.
+before (gap 220-240)	15% shorter (187-204)	shipped: 15% shorter and the landing 40 px nearer (147-164)
+hold6 lead0: 0/14	hold6 lead0: 14/14	hold6 lead0: 14/14
+hold6 lead2: 0/14	hold6 lead2: 0/14	hold6 lead2: 14/14
+hold6 lead4: 0/14	hold6 lead4: 0/14	hold6 lead4: 14/14
+hold6 lead6: 0/14	hold6 lead6: 0/14	hold6 lead6: 10/14
+hold6 lead8: 0/14	hold6 lead8: 0/14	hold6 lead8: 0/14
+hold6 lead10: 0/14	hold6 lead10: 0/14	hold6 lead10: 0/14
+hold9 lead0: 0/14	hold9 lead0: 14/14	hold9 lead0: 14/14
+hold9 lead2: 0/14	hold9 lead2: 6/14	hold9 lead2: 14/14
+hold9 lead4: 0/14	hold9 lead4: 0/14	hold9 lead4: 14/14
+hold9 lead6: 0/14	hold9 lead6: 0/14	hold9 lead6: 14/14
+hold9 lead8: 0/14	hold9 lead8: 0/14	hold9 lead8: 0/14
+hold9 lead10: 0/14	hold9 lead10: 0/14	hold9 lead10: 0/14
+hold14 lead0: 8/14	hold14 lead0: 14/14	hold14 lead0: 14/14
+hold14 lead2: 0/14	hold14 lead2: 14/14	hold14 lead2: 14/14
+hold14 lead4: 0/14	hold14 lead4: 14/14	hold14 lead4: 14/14
+hold14 lead6: 0/14	hold14 lead6: 0/14	hold14 lead6: 14/14
+hold14 lead8: 0/14	hold14 lead8: 0/14	hold14 lead8: 14/14
+hold14 lead10: 0/14	hold14 lead10: 0/14	hold14 lead10: 9/14
+landed 8/252	landed 76/252	landed 187/252
+
+The first-timer bot still reads 0% at the shelf's end (x~4136 and ~31404, seed 1): those are its jumps from the floor and the shelf into the pouring water before the boulder is rolled, which the puzzle blocks on purpose (w4Stage48 'each puzzle is needed'). The bot never pushes the boulder; the inspector rescues it past. Not a geometry fault.
