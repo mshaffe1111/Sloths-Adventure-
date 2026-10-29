@@ -128,6 +128,29 @@ def round2(commit):
     return {'tag': 'r2', 'loras': LORAS, 'base': base, 'items': it}
 
 
+DOT = ('dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, ')
+FIG = {'pokey': (POKEY + 'in the same pose and expression', [['pokey', 1.0], ['style', 0.35]]),
+       'meeca': (MEECA + 'in the same pose and expression', [['meeca', 1.0], ['style', 0.35]]),
+       'dot': (DOT + 'in the same pose', [['dot', 1.0], ['style', 0.35]])}
+
+
+def figures(commit, which='pokey', strength=0.55, only=None):
+    """every frame of a set (starts.py figures <set>): the job builds each start from the game's own atlas at this commit"""
+    meta = json.loads((H.parent / f'hfbatch/starts/storyart/meta-{which}.json').read_text())
+    words, loras = FIG[which]
+    it = []
+    for key, m in meta.items():
+        name = key[len(which) + 1:]
+        if only and name not in only:
+            continue
+        face = name.startswith('face_')
+        prompt = words + (', a close-up of his face' if face and which == 'pokey' else '') + END.replace(', full body', '' if face else ', full body')
+        it.append({'name': f'{key}-s{round(strength * 100)}', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']},
+                   'prompt': prompt, 'neg': NEG_FIG + SOFT, 'strength': strength, 'seed': 7, 'w': m['size'][0], 'h': m['size'][1], 'loras': loras})
+    return {'tag': which, 'loras': {k: LORAS[k] for k in {'style', loras[0][0]}}, 'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/',
+            'base': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/', 'items': it}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
@@ -141,6 +164,10 @@ def args(name, commit):
 if __name__ == '__main__':
     if sys.argv[1] == 'args':
         args(sys.argv[2], sys.argv[3])
+    elif sys.argv[1] == 'figures':
+        spec = figures(sys.argv[2], sys.argv[3], float(sys.argv[4]) if len(sys.argv) > 4 else 0.55)
+        (H / f'spec-{sys.argv[3]}.json').write_text(json.dumps(spec, indent=1))
+        print(len(spec['items']), 'items')
     else:
         spec = globals()[sys.argv[1]](sys.argv[2])
         (H / f'spec-{sys.argv[1]}.json').write_text(json.dumps(spec, indent=1))

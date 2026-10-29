@@ -121,7 +121,25 @@ NEG = SPEC.get('neg', 'text, letters, watermark, frame, border, photo, 3d render
 starts = {}
 
 
+def build(b):
+    """a figure start made here from the game's own atlas, exactly as starts.py on_key + sharpen would: the frame `src` [atlas, x, y, w, h]
+    scaled by `scale`, put at (ox, oy) on flat key grey of `size`, its edges crisped"""
+    key = (b['src'][0], 'atlas')
+    if key not in starts:
+        with urllib.request.urlopen(SPEC['repo'] + b['src'][0], timeout=90) as r:
+            starts[key] = Image.open(io.BytesIO(r.read())).convert('RGBA')
+    _, x, y, w, h = b['src']
+    fig = starts[key].crop((x, y, x + w, y + h))
+    s = b['scale']
+    big = fig.resize((max(1, round(w * s)), max(1, round(h * s))), Image.LANCZOS)
+    bg = Image.new('RGBA', tuple(b['size']), (128, 128, 128, 255))
+    bg.alpha_composite(big, (b['ox'], b['oy']))
+    return bg.convert('RGB').filter(ImageFilter.UnsharpMask(radius=3, percent=90, threshold=2))
+
+
 def fetch(rel):
+    if isinstance(rel, dict):
+        return build(rel)
     if rel not in starts:
         with urllib.request.urlopen(SPEC['base'] + rel, timeout=90) as r:
             starts[rel] = Image.open(io.BytesIO(r.read()))

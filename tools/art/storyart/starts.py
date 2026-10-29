@@ -208,5 +208,68 @@ def round2():
     band(1).save(OUT / 'r2-ground-w1.png')
 
 
+def ts_table(path, var):
+    """a generated TS frames table as {name: {field: value}} (numbers and number lists), whatever its fields"""
+    import re
+    src = (REPO / path).read_text()
+    i = src.index(var)
+    j = src.index('{', src.index('=', i))
+    depth, k = 0, j
+    while True:
+        c = src[k]
+        depth += c == '{'
+        depth -= c == '}'
+        k += 1
+        if depth == 0:
+            break
+    body = src[j:k]
+    js = re.sub(r"([{,]\s*)'?([A-Za-z_][A-Za-z0-9_.]*)'?\s*:", r'\1"\2":', body)
+    js = re.sub(r",\s*}", "}", js)
+    return json.loads(js)
+
+
+def figure_list(which):
+    """[(name, atlas, rect fields)] for Pokey, Meeca or Dot: every frame a story can show of them (framesused.json)"""
+    used = json.loads((REPO / 'tools/art/storyart/framesused.json').read_text())
+    if which == 'pokey':
+        sto = ts_table('src/game/heroStoryData.ts', 'STORY_FRAMES')
+        std = ts_table('src/game/heroStandardData.ts', 'STD_FRAMES')
+        out = []
+        for name, real in used['pokey']:
+            if real in sto:
+                out.append((real, 'src/assets/hero/hero-story.webp', sto[real]))
+            elif real in std:
+                out.append((real, 'src/assets/hero/hero-standard.webp', std[real]))
+        return sorted({o[0]: o for o in out}.values())
+    if which == 'meeca':
+        mf = ts_table('src/game/meecaStandardData.ts', 'MEECA_FRAMES')
+        return [(n, 'src/assets/characters/meeca-standard.webp', mf[n]) for n in used['meeca'] if n in mf]
+    if which == 'dot':
+        df = ts_table('src/game/dotAtlasData.ts', 'DOT_FRAMES')
+        return [(n, 'src/assets/characters/dot-atlas.webp', df[n]) for n in used['dot']]
+    raise SystemExit(which)
+
+
+def figures():
+    """starts for every frame of a set: python3 -I starts.py figures pokey|meeca|dot"""
+    which = sys.argv[2]
+    meta = {}
+    for name, atlas, r in figure_list(which):
+        fig = cut(atlas, r['x'], r['y'], r['w'], r['h'])
+        face = name.startswith('face_')
+        if which == 'dot':
+            im, m = on_key(fig, fill=0.55, foot=0.75)
+        elif face:
+            im, m = on_key(fig, fill=0.8, foot=0.9)
+        else:
+            # (a standing Pokey is 205 px: everyone at one scale, so a crouch stays smaller than a stand)
+            im, m = on_key(fig, ax=r.get('ax'), ay=r.get('ay'), height=820 * r['h'] / 205)
+        m.update(src=[atlas, r['x'], r['y'], r['w'], r['h']], frame=r, size=[im.width, im.height])
+        # (not saved: the job builds the start itself from the atlas, storygpu.py "build", so no copies go in git)
+        meta[f'{which}-{name}'] = m
+    (OUT / f'meta-{which}.json').write_text(json.dumps(meta, indent=1))
+    print(len(meta), which)
+
+
 if __name__ == '__main__':
     globals()[sys.argv[1]]()
