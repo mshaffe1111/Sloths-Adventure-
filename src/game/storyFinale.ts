@@ -138,7 +138,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     GOLEM('I have waited a thousand years for—', WALL, { p: zoomOn(wallX(7)), cue: 'tender', i: 0.6 }),
     MONARCH('Once more, please. I slept through the middle.', WALL, { p: zoomOn(wallX(8)), cue: 'finale', i: 0.7 }),
     N('Far away, down in his hollow, the old tree Thornbark lifted his branches to listen.', 'T@.6', { w: 7, m: 'night', cue: 'mercy', i: 0.6, p: { ...OUT, zoom: 1.3, focusX: 0.6 } }),
-    N('The iron collars cracked and fell. They rang on the stones for a long time.',
+    N('The iron collars cracked and fell. They rang on the stones, and kept ringing.',
       WALL, { cue: 'mercy', i: 0.7, sting: 'bloom', p: { ...OUT, particles: 'petals', zoom: 1.1, focusX: 0.5, fx: [{ at: 1.5, kind: 'shake', amount: 6, dur: 0.8 }] } }),
     N('In the courtyard, the General got to his feet. He did it slowly and without help, and he did not take his eyes off the hand.',
       'PN:sing_reach@.24*.95 GN:ready@.62*.95', { cue: 'tender', i: 0.4, p: { particles: 'petals', zoom: 1.05, focusX: 0.46, focusY: 0.66 } }),
@@ -217,7 +217,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
   // (the 2026-10-29 running order: the warning, the Golem, Pell's shop and Flicker; tea at four; three keepsakes, ending on the bell; Pell)
   const morning = chapter({ name: 'THE WEEKS AFTER', w: 2, m: 'day', cue: 'comedy', i: 0.5, base: { particles: 'sparkles' } }, [
     N('Down at the Sunlit Riverbank, Gruntlewick the crier reached the end of his flood warning. He\'d started it on a Tuesday, five months before. At the top of the bank, the slow mailman finally delivered his one package, which was the flood warning, addressed to Gruntlewick. Gruntlewick signed for it.', 'PO:offer_parcel@.36*.95 TC:scroll@.62*.95', { sting: 'laugh', p: { zoom: 1.1 } }),
-    N('In the ruins, the Stone Idol Golem finally finished a sentence. Nobody was there to hear it. He said it again, slowly, to the chairs.', '', { w: 7, m: 'dusk', cue: 'tender', i: 0.4, p: { zoom: 1.1 } }),
+    N('In the ruins, the Stone Idol Golem finally finished his sentence. "...company." That afternoon, all ten chairs were full.', '', { w: 7, m: 'dusk', cue: 'tender', i: 0.4, p: { zoom: 1.1 } }),
     N('Lieutenant Pell left the army that week and opened a tailor\'s shop at the foot of the mountain. He hung the sign himself. It hangs a little crooked, and he apologizes to it every morning.',
       'LP:sew_table@.5*.8', { w: 1, m: 'day', cue: 'comedy', i: 0.5, p: VIL }),
     // Flicker and Meeca, and Flicker and Dot (STORY-REVIEW-2026-10-27.md item 9): his light holds steady now
@@ -246,6 +246,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     N('Far off in the east, the last of the storm said something. Pokey was holding a teacup in one hand. He went on holding it in one hand.', TEA, { cue: 'tender', i: 0.4, p: { ...VIL, zoom: 1.4, focusX: 0.3 } }),
     OFF('Shall I tell the General, sir?', `${TEA} LP:cap_in_hand@.92*.75`, { cue: 'comedy', i: 0.4, p: VIL }),
     GF('Tell him he has retired.', `${TEA} LP:salute_nervous@.92*.75`, { sting: 'laugh', p: VIL }),
+    N('That spring he went down to the Sunlit Riverbank, to the place where the bank had washed away, and planted a tree. The next day he went back and planted another. He took his time.', 'GV:walk_a@.5*1.12', { w: 2, cue: 'tender', i: 0.45, p: { zoom: 1.15 } }),
   ]);
 
   // ───────────── THE END ─────────────

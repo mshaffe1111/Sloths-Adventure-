@@ -104,7 +104,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'Sorry I\'m late.', sting: 'laugh' },
     ],
     defeat: [
-      { speaker: 'Tarantula Queen', text: 'My webs. Fifty years of silk, and a sloth walks straight through it. Well. It was only silk, darling.' },
+      { speaker: 'Tarantula Queen', text: 'My webs. All that silk, and a sloth walks straight through it. Well. It was only silk, darling.' },
       { speaker: 'Pokey', text: 'I\'ll send a thank-you note.', sting: 'laugh' },
       { speaker: 'Tarantula Queen', text: 'Don\'t go yet. The pot\'s still warm. The cat told you to ask how it began, didn\'t he? Sit. I\'ll tell you.', boss: 'calm', cue: 'tender', intensity: 0.4 },
     ],
@@ -239,16 +239,17 @@ export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: st
 /** The secret boss: the Jungle Guardian, twisted by thorns. After the fight he is himself again. */
 export function thornbarkPanels(kind: 'intro' | 'defeat'): StoryPanel[] {
   const intro: BossLine[] = [
-    { speaker: 'Thornbark', text: 'The thorns... they whisper... Leave this hollow, little sloth...' },
+    { speaker: 'Thornbark', text: 'Leave my hollow, little sloth. The thorns do not like visitors. Today, neither do I.' },
     { speaker: 'Pokey', text: 'Meeca\'s grandma told me about you. The thorns did this, didn\'t they?' },
-    { speaker: 'Thornbark', text: 'I would not kneel. The others did. I would not. The thorns grew through me... to teach me...', boss: 'calm' },
-    { speaker: 'Thornbark', text: 'I cannot stop them... they want you gone. Run. Please.' },
+    { speaker: 'Thornbark', text: 'I would not kneel. The others did. So the thorns came to teach me how.', boss: 'calm' },
+    { speaker: 'Thornbark', text: 'I cannot hold them much longer. Run. Please.' },
   ];
   const defeat: BossLine[] = [
-    { speaker: 'Thornbark', text: 'The thorns... they are gone. I can think again. A sloth. They sent... a sloth. No. Nobody sent you.' },
+    { speaker: 'Thornbark', text: 'They are gone. I can hear myself think. It is very loud in here.' },
+    { speaker: 'Thornbark', text: 'A sloth. They sent a sloth? No. Nobody sent you.' },
     { speaker: 'Pokey', text: 'I didn\'t beat them. I just kept coming back until they got tired of me.' },
     { speaker: 'Pokey', text: 'You were right, you know. Not to kneel.' },
-    { speaker: 'Thornbark', text: 'Nobody has said that. Not in nine years. Nine of them knelt. I am the one who would not. The keeper before her sat among my roots for fifty years, humming. Your Meeca hums the same song. Tell her an old tree is listening.' },
+    { speaker: 'Thornbark', text: 'Nobody has said that to me since the Pact. The keeper before her sat in my roots through the long afternoons, humming. Your Meeca hums the same song. Tell her an old tree is listening.' },
     { speaker: 'Thornbark', text: 'Take this Thorn Heart. Go and bring your Meeca home.' },
   ];
   const lines = kind === 'intro' ? intro : defeat;

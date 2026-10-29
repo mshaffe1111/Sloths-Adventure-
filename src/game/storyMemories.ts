@@ -80,10 +80,10 @@ export const GARDEN = chapter({ name: 'MEMORY · GRANDMA\'S GARDEN', w: 5, m: 'g
   N('Young Pokey, all elbows, was watering the wrong plant, very carefully.', '', { ph: ['s4_07', 'Somebody was always nearby', 0.5, 0.02] }),
   P('I think I watered the fern.', `${kp('worried', 0.18)} ${km('laugh', 0.38)} H:bud@.56^.8 GR:look_up@.8*.92`),
   M('You watered the fern, the snail, and my sandal.', `${kp('worried', 0.18)} ${km('laugh', 0.38)} H:bud@.56^.8 GR:giggle@.8*.92`, { sting: 'laugh' }),
-  GM('Thank you for watering it anyway, Pokey. Nobody ever waters the fern. That frond\'s been unrolling since Tuesday. Slow is not stopped, dear.', `${kp('worried', 0.18)} ${km('laugh', 0.38)} H:bud@.56^.8 GR:hand_chest@.8*.92`, { cue: 'grandma', i: 0.5 }),
-  P('It\'s Thursday.', `${kp('happy', 0.18)} ${km('happy', 0.38)} H:bloom@.56^.8 GR:laugh@.8*.92`, { cue: 'pokey', i: 0.5 }),
+  GM('Thank you for watering it anyway, Pokey. Nobody ever waters the fern. That frond\'s been unrolling all week. Slow is not stopped, dear.', `${kp('worried', 0.18)} ${km('laugh', 0.38)} H:bud@.56^.8 GR:hand_chest@.8*.92`, { cue: 'grandma', i: 0.5 }),
+  P('It\'s Monday.', `${kp('happy', 0.18)} ${km('happy', 0.38)} H:bloom@.56^.8 GR:laugh@.8*.92`, { cue: 'pokey', i: 0.5 }),
   GM('You\'re staying for supper, Pokey. You always are.', `${kp('happy', 0.18)} ${km('happy', 0.38)} H:bloom@.56^.8 GR:wave_talk@.8*.92`, { cue: 'grandma', i: 0.5 }),
-  N('The frond unrolled another inch. Nobody saw it happen.', `${kp('happy', 0.18)} ${km('happy', 0.38)} H:bloom@.56^.8 GR:wave@.8*.92`, { cue: 'tender', i: 0.5, p: { particles: 'petals' } }),
+  N('The frond unrolled another inch while they argued about the sandal.', `${kp('happy', 0.18)} ${km('happy', 0.38)} H:bloom@.56^.8 GR:wave@.8*.92`, { cue: 'tender', i: 0.5, p: { particles: 'petals' } }),
 ]);
 
 // ═════════════════════════════════ World 5 · the middle of the story ═════════════════════════════════
@@ -243,9 +243,9 @@ const NIGHT = chapter({ name: 'WORLD 9 · THE NIGHT BEFORE', w: 9, m: 'night', c
 const GATES_DAY = chapter({ name: 'WORLD 9 · THE OPEN GATES', w: 10, m: 'storm', cue: 'dread', i: 0.35, base: { plate: 'gates', particles: 'rain' } }, [
   N('The lava road ended where the mountain began. Above him, the fortress went up in iron towers, and every thorn on every wall pointed down.',
     'P:idle@.3 D@.6^.4 FL@.385^.44*.8>', { p: pan(1.0, 0.5, 0.35, 1.25, 0.65, 0.45, 9) }),
-  D('Pokey. Pokey! The front door is open. The big one, up there. Wide open, and nobody standing in it. I\'ve been through forty doors in my life, and not one of them did that on purpose!', 'P:idle@.3 D@.6^.4 FL@.385^.44*.8>'),
+  D('Pokey. Pokey! The front door is open. The big one, up there. Wide open, and nobody standing in it. I\'ve been through a lot of doors, Pokey, a lot of doors, and not one of them did that on purpose!', 'P:idle@.3 D@.6^.4 FL@.385^.44*.8>'),
   P('Is that bad?', 'P:talk@.3 D@.6^.4 FL@.385^.44*.8>'),
-  D('It\'s welcoming, Pokey.', '=', { sting: 'laugh' }),
+  D('Pokey. The last thing that was this nice to us had a doily.', '=', { sting: 'laugh' }),
   N('Along the great wall, one by one, the guardians took their places. They didn\'t look down. Every collar was glowing.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'dread', i: 0.45, p: GATE_VIEW }),
   N('Above them, the great gates of the Highland Fortress groaned on their hinges, though nobody was pushing them. Lightning walked the length of the wall.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'war', i: 0.5, sting: 'door', p: { ...GATE_VIEW, fx: [{ at: 0.8, kind: 'flash', dur: 0.4, amount: 0.5 }, { at: 0.8, kind: 'shake', amount: 7, dur: 0.6 }] } }),
   GEN('Come up, sloth. The General has counted every step you took. There are a thousand more. The General is not tired. The General is never tired.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'war', i: 0.7, sting: 'blow', p: GATE_VIEW }),
@@ -274,6 +274,7 @@ export const MAP = chapter({ name: 'THE TOWER · THE MAP', w: 3, m: 'day', cue: 
   GEN('Go to bed, Lieutenant. Leave the lantern.', '=', { p: { zoom: 1.2, focusX: 0.75 } }),
   OFF('Yes, sir. Good night, sir. I am sorry about the spoons.', 'GN:ready@.8*.8 LP:salute_nervous@.16*.8', { p: { zoom: 1.0 } }),
   N('When the door had closed, the General took a spoon from the tray and drove it into the map beside the last fork, bowl up.', 'GN:ready@.8*.8', { cue: 'hush', i: 0.2, p: { zoom: 1.4, focusX: 0.62, focusY: 0.72 } }),
+  GEN('I used to walk straight through.', '=', { cue: 'sorrow', i: 0.2, p: { zoom: 1.4, focusX: 0.62, focusY: 0.72 } }),
   GEN('Forty-five.', '=', { cue: 'hush', i: 0.2, p: { zoom: 1.4, focusX: 0.62, focusY: 0.72 } }),
 ]);
 
