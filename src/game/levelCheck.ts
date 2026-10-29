@@ -36,6 +36,7 @@ import {
   reachMin,
   SWING,
   swingGrab,
+  swingSetup,
   swingStep,
   timedLaunch,
   type AirBody,
@@ -533,8 +534,10 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
       }
     }
 
-    // 3. swinging lianas
-    for (const v of vines) {
+    // 3. swinging lianas, at the swings the stage gives them (physics.ts swingSetup: a vine beside another swings less)
+    const sized = vines.map((v) => ({ ...v }));
+    swingSetup(sized);
+    for (const v of sized) {
       if (v.vineType !== 'swing_liana') continue;
       const pack = landingPack(v, plats);
       for (const a of plats) {

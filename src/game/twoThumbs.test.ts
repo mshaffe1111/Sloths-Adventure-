@@ -208,7 +208,7 @@ test('swing: a press anywhere in the forward part of the swing leaps forward, ev
     let n = 0;
     const r = swingAndLetGo((s) => {
       // forward part: moving forward anywhere past the back third, or the first beat after turning round at the front
-      const forward = (s.omega > 0 && s.angle > -0.45) || (s.omega <= 0 && s.angle > 0.62);
+      const forward = (s.omega > 0 && s.angle > -0.5625 * TIMED.amp) || (s.omega <= 0 && s.angle > 0.775 * TIMED.amp);
       return forward && n++ === phase % 7;
     });
     if (!r) continue;
@@ -221,13 +221,13 @@ test('swing: a press anywhere in the forward part of the swing leaps forward, ev
 });
 
 test('swing: the forward end of the swing, the natural moment, is a leap (it used to drop him almost straight down)', () => {
-  const r = swingAndLetGo((s) => s.angle > TIMED.sweetTo + 0.03 && s.omega > 0);
+  const r = swingAndLetGo((s) => s.angle > (TIMED.sweetTo + 0.04) * TIMED.amp && s.omega > 0);
   assert.ok(r && r.call === 'late' && r.launch.sweet, JSON.stringify(r));
   // and just after turning back at the front
-  const r2 = swingAndLetGo((s) => s.angle > 0.7 && s.omega < -0.2);
+  const r2 = swingAndLetGo((s) => s.angle > 0.875 * TIMED.amp && s.omega < -0.075);
   assert.ok(r2 && r2.launch.sweet, JSON.stringify(r2));
   // the backswing is still not a leap forward
-  const r3 = swingAndLetGo((s) => s.angle < -0.5 && s.omega < 0);
+  const r3 = swingAndLetGo((s) => s.angle < -0.625 * TIMED.amp && s.omega < 0);
   assert.ok(r3 && r3.call === 'now' && !r3.launch.sweet, JSON.stringify(r3));
 });
 
@@ -251,7 +251,7 @@ test('swing, driven by the real gestures: pump with slides, then flick at the fo
         const nx = 120 + Math.round(s.angle * 60);
         t.drag(1, fx, 520, nx, 520, 33, 1);
         fx = nx;
-      } else if (s.angle > TIMED.sweetTo && s.omega > 0) {
+      } else if (s.angle > TIMED.sweetTo * TIMED.amp && s.omega > 0) {
         // the forward end: flick toward the next vine (the other thumb sideways, or the steering thumb up and forward)
         if (twoThumbs) t.flick(2, 310, 450, 80, 0, 60);
         else {

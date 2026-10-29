@@ -213,6 +213,19 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 - **Skills come from the save, not the hero** (2026-10-28): Meeca ran on Pokey's skill set, so anyone who had cleared 4-1 could open
   Pokey's leaf as her and glide over her gullies, and the validator (World 5: glide guaranteed) agreed. She has no leaf now
   (`meecaPlay.ts` filter) and her check walks her as at 4-6 (`meecaCheckStage`). Any stage played as someone else: check what it inherits.
+- **"The vines swing wildly"** (iPhone tester, 2026-10-28). Not the frame rate: through the engine's 30 fps gate at 120 Hz, 60 Hz,
+  uneven 8-50 ms frames and 100-250 ms stalls, with a thumb pumping, flicking or climbing, the old swing held 0.83-0.84 rad every time.
+  Two real causes. (1) While he swung, the engine took the first vine in its list within reach as his own, so on a long grip near the
+  next liana of a chain (1-6's gorge pair) it threw him between the two vines' pivots: on the old engine every chain of 1-6 gave 80-170
+  jumps of 60-1000 px in 20 s of hanging on. His own vine now stays his. (2) The swing itself: ±47° at 1.9 s, pushed back up to full
+  size after every catch. Now every liana swings on its own (Matt: Donkey Kong Country), from the vines' clock (`physics.ts`
+  `vineAngle`), never from forces: up and down climb, left and right only turn him, letting go is the only choice; slower (2.85 s, Easy
+  3.3 s) and calmer (at most 0.45 rad). `swingSetup` gives each vine its swing when a stage starts: no bigger than keeps it clear of the
+  vines beside it with Pokey's body and a margin (`swingClearance`), and its own phase (the next liana of a chain `chainPhase` ahead, the
+  widest leap window, never in step). Rules for anything with lianas: a leap from one vine to the next carries the swing's clock through
+  the flight (`canGrabSwing(x, y, v, t)`); a jump from a ledge can wait for the vine; the sweet spot and the let-go are shares of each
+  vine's own swing; measure release windows with `pressWindow` (the engine's early/late forgiveness included). Proof:
+  `vineSelfSwing.test.ts` (no overlap; every liana-to-liana and liana-to-ledge jump at least 167 ms a swing on Normal, 300 ms on Easy).
 
 ## 7. Where things are
 
