@@ -6,7 +6,7 @@ Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
 
 - 6-8 Stilt Climb (World 6's special stage, hand-built): cloud session_01FhBbYMt17qa4tAv8V6jvxN, branch w6-stilt-climb. Step 1 is a
   mock-up for Matt (layout plan + blockout screenshots), then it stops; build only after Matt approves.
-- World 7 on gen2 (one builder, B12 checklist): cloud session (see below), branch gen2-w7. Matt: Pokey teaches himself in World 7
+- World 7 on gen2 (one builder, B12 checklist): cloud session_01FhBbYNKK8iPP5FQajUs6u5, branch gen2-w7. Matt: Pokey teaches himself in World 7
   (Dot is gone in the story); STAGE-RULES §1.
 
 ## STANDSTILL, earlier (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
