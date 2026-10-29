@@ -149,6 +149,40 @@ def gate(world):
     return s
 
 
+def gate_w5():
+    """World 5: its painted exit totem (w5-props 'totem') as the open gate; shut, the same totem with its little door wrapped in silk and
+    its orchid closed to a bud (w5-props 'orchidClosed')"""
+    s = Image.new('RGBA', (1536, 960), MAG + (255,))
+    tot = prop('src/assets/props/w5-props.webp', 'src/game/w5PropsData.ts', 'totem')
+    t = fit(tot, tot.width * 880 / tot.height, 880)
+    for k, open_ in enumerate((False, True)):
+        c = Image.new('RGBA', (768, 960), MAG + (255,))
+        x0 = (768 - t.width) // 2
+        c.alpha_composite(t, (x0, 960 - t.height - 30))
+        if not open_:
+            d = ImageDraw.Draw(c)
+            # (the door, low in the trunk, wrapped across in silk)
+            dx, dy = x0 + t.width * 0.58, 960 - 30 - t.height * 0.2
+            dw, dh = t.width * 0.16, t.height * 0.11
+            d.ellipse([dx - dw, dy - dh * 1.2, dx + dw, dy + dh], fill=(236, 232, 226, 255), outline=(90, 80, 80, 255), width=4)
+            for j in range(-3, 4):
+                d.line([(dx - dw, dy + j * dh * 0.3), (dx + dw, dy + j * dh * 0.3 - dh * 0.25)], fill=(170, 160, 160, 255), width=3)
+            # (the orchid on top closed to a bud)
+            bud = prop('src/assets/props/w5-props.webp', 'src/game/w5PropsData.ts', 'orchidClosed')
+            b = fit(bud, t.width * 0.36, t.width * 0.36 * bud.height / bud.width)
+            top = 960 - 30 - t.height
+            cut_y = top + t.height * 0.31
+            ImageDraw.Draw(c).rectangle([x0 - 4, top - 10, x0 + t.width + 4, cut_y], fill=MAG + (255,))
+            # (the bloom gone: the bud stands on the trunk's top)
+            c.alpha_composite(b, (round(x0 + t.width * 0.5 - b.width / 2), round(cut_y - b.height + 14)))
+            q = np.asarray(c).astype(np.float32)
+            paint = q[..., 1] > np.minimum(q[..., 0], q[..., 2]) - 60
+            q[paint, :3] *= 0.8
+            c = Image.fromarray(np.clip(q, 0, 255).astype(np.uint8), 'RGBA')
+        s.alpha_composite(c, (k * 768, 0))
+    return s
+
+
 def flag():
     W, H = 512, 768
     s = Image.new('RGBA', (1024, 768), MAG + (255,))
@@ -387,6 +421,7 @@ if __name__ == '__main__':
            'start-finds.webp': finds()}
     for w in GATE:
         out[f'start-gate-w{w}.webp'] = gate(w)
+    out['start-gate-w5.webp'] = gate_w5()
     for w in WATER:
         out[f'start-water-w{w}.webp'] = water(w)
     for n, im in out.items():

@@ -90,10 +90,21 @@ add('finds', 'start-finds.webp', S + 'four game story-find icons in a grid: top 
     'plain on the left and on the right the same fern lit warm golden as if glowing; bottom row a pink bell flower hanging from its '
     'stem, plain on the left and on the right the same bell lit warm as if glowing. ' + STYLE + KEYC, 1024, 1024)
 
+# (round 2: World 5's gate from its own painted totem, start-gate-w5.webp: stagestarts.py gate_w5)
+W5P = (S + 'a game exit gate for a side-scrolling platformer, ' + PAIR + 'a carved wooden orchid-garden totem: a tall carved tree '
+       'trunk wrapped in a band of cream lace, a small arched door low in the trunk, broad leaves at its top. Left: shut, the orchid on '
+       'top closed to a pale green bud, the little door wrapped over with white silk thread, the wood a little dimmer. Right: open, a '
+       'big pink orchid in bloom on top and the little door open onto a dark inside. ' + STYLE + KEYM)
+items2 = []
+for st in (0.42, 0.55):
+    for sd in (7, 23):
+        items2.append({'name': f'gate-w5-s{round(st * 100)}-{sd}', 'start': 'start-gate-w5.webp', 'prompt': W5P, 'strength': st, 'seed': sd,
+                       'w': 1536, 'h': 960})
+
 NEG = ('perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, '
        '3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal')
 here = Path(__file__).resolve().parent
-parts = [items[: len(items) // 2], items[len(items) // 2:]]
+parts = [items[: len(items) // 2], items[len(items) // 2:], items2]
 for k, part in enumerate(parts):
     spec = {'note': 'hf-art-stage every-stage pieces by img2img from stagestarts.py, 2026-10-29',
             'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
