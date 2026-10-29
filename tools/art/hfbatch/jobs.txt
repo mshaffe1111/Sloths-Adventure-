@@ -45,3 +45,8 @@ hfb-w7chairs-c 6ae37b2e5ddcdc0830262b41 rtx-pro-6000 16:58:22Z-16:59:36Z (1.2 mi
   w7chairs-c-s60-41 KEPT as src/assets/w7/chairs-ring.webp (replaces the b take), its near-white eleventh chair dimmed 0.74 above the
   floor strip (chairscut.py dim=1400:0.74:385). s60-29 not used: its crests turned into bird/fish heads, stray sparkles, a loose column.
 running total ~4.1 min = ~$0.19. Review v2: reference/prop-sheets/qa-notes/hf-w7-chairs/review-v2.jpg
+lead review of v2: passes, but the eleventh chair is flat and pale (reads unfinished) and the brown rock clump should go.
+hfb-w7chairs-fix 6ae37f4cad9610e5cb314126 rtx-pro-6000 17:15:56Z-17:17:08Z (1.2 min, ~$0.06): chairfix.py crops (256 px, 3x), the
+  eleventh chair at 0.45 (dimmed to the kit stone and a dab of moss at its feet first), the rock painted out roughly then 0.5.
+  Pasted back feathered inside each fix's area (chairfix.py paste), cut with dim=1400:0.84:385. Both kept.
+running total ~5.3 min = ~$0.25. Close-ups: reference/prop-sheets/qa-notes/hf-w7-chairs/review-v3-crop.jpg (full: review-v3.jpg)
