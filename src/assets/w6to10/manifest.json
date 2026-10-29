@@ -253,11 +253,295 @@
   "lairs/lairplates-general.webp": 865198,
   "props/collar.webp": 118298,
   "props/guardiansfree.webp": 405506,
-  "props/props.webp": 604440
+  "props/props.webp": 604440,
+  "gemini/general-armour-off.json": 966,
+  "gemini/general-armour-off.webp": 62920,
+  "gemini/w10c-set-dressing.json": 726,
+  "gemini/w10c-set-dressing.webp": 64336,
+  "gemini/w6a-puzzle.json": 861,
+  "gemini/w6a-puzzle.webp": 56162,
+  "gemini/w6b-water-room-take2.json": 738,
+  "gemini/w6b-water-room-take2.webp": 46414,
+  "gemini/w7a-puzzle-take2.json": 626,
+  "gemini/w7a-puzzle-take2.webp": 58298,
+  "gemini/w8a-puzzle.json": 861,
+  "gemini/w8a-puzzle.webp": 43208,
+  "gemini/w9a-puzzle.json": 862,
+  "gemini/w9a-puzzle.webp": 37366
  },
  "lairs": "lairs/lairs.json",
  "lairplates": "lairs/lairplates.json",
  "collar": "props/collar.json",
  "guardiansfree": "props/guardiansfree.json",
- "props": "props/props.json"
+ "props": "props/props.json",
+ "gemini": {
+  "note": "Matt's Gemini prop sheets (reference/prop-sheets/gemini-batch-2026-10-28), keyed and cut by tools/art/w6to10/geminicut.py on 2026-10-29. Each atlas: frames anchored at the middle of the foot; paired states (lever up/down, plate up/down, door or gate closed/open) share one canvas and anchor, so they swap in place. W7's plates are left out (isometric: Matt is redoing them); the Reaver's walk is held (Matt is redoing it). World 6's two sets have a data module for the World 6 hook-up: src/game/w6PropsData.ts.",
+  "sheets": {
+   "general-armour-off": {
+    "data": "gemini/general-armour-off.json",
+    "sheet": "gemini/general-armour-off.webp",
+    "frames": {
+     "stand": [
+      172,
+      247
+     ],
+     "bow": [
+      181,
+      243
+     ],
+     "offer": [
+      238,
+      245
+     ],
+     "hand-on-heart": [
+      173,
+      246
+     ],
+     "eyes-shut": [
+      217,
+      237
+     ],
+     "sit": [
+      243,
+      211
+     ],
+     "laugh": [
+      237,
+      237
+     ],
+     "open-arms": [
+      234,
+      239
+     ]
+    },
+    "pairs": []
+   },
+   "w10c-set-dressing": {
+    "data": "gemini/w10c-set-dressing.json",
+    "sheet": "gemini/w10c-set-dressing.webp",
+    "frames": {
+     "banner": [
+      129,
+      271
+     ],
+     "weapon-rack": [
+      228,
+      246
+     ],
+     "brazier": [
+      148,
+      247
+     ],
+     "cage": [
+      247,
+      249
+     ],
+     "crates": [
+      236,
+      232
+     ],
+     "spout": [
+      213,
+      222
+     ]
+    },
+    "pairs": []
+   },
+   "w6a-puzzle": {
+    "data": "gemini/w6a-puzzle.json",
+    "sheet": "gemini/w6a-puzzle.webp",
+    "frames": {
+     "lever-up": [
+      179,
+      225
+     ],
+     "lever-down": [
+      179,
+      225
+     ],
+     "plate-up": [
+      281,
+      108
+     ],
+     "plate-down": [
+      281,
+      108
+     ],
+     "door-closed": [
+      256,
+      235
+     ],
+     "door-open": [
+      256,
+      235
+     ]
+    },
+    "pairs": [
+     [
+      "lever-up",
+      "lever-down"
+     ],
+     [
+      "plate-up",
+      "plate-down"
+     ],
+     [
+      "door-closed",
+      "door-open"
+     ]
+    ]
+   },
+   "w6b-water-room-take2": {
+    "data": "gemini/w6b-water-room-take2.json",
+    "sheet": "gemini/w6b-water-room-take2.webp",
+    "frames": {
+     "raft": [
+      286,
+      101
+     ],
+     "sluice-wheel": [
+      189,
+      256
+     ],
+     "gauge-post": [
+      53,
+      276
+     ],
+     "seesaw": [
+      317,
+      158
+     ],
+     "stone": [
+      304,
+      160
+     ],
+     "lily-pads": [
+      312,
+      134
+     ]
+    },
+    "pairs": []
+   },
+   "w7a-puzzle-take2": {
+    "data": "gemini/w7a-puzzle-take2.json",
+    "sheet": "gemini/w7a-puzzle-take2.webp",
+    "frames": {
+     "lever-up": [
+      245,
+      204
+     ],
+     "lever-down": [
+      245,
+      204
+     ],
+     "door-closed": [
+      274,
+      277
+     ],
+     "door-open": [
+      274,
+      277
+     ]
+    },
+    "pairs": [
+     [
+      "lever-up",
+      "lever-down"
+     ],
+     [
+      "door-closed",
+      "door-open"
+     ]
+    ]
+   },
+   "w8a-puzzle": {
+    "data": "gemini/w8a-puzzle.json",
+    "sheet": "gemini/w8a-puzzle.webp",
+    "frames": {
+     "lever-up": [
+      225,
+      226
+     ],
+     "lever-down": [
+      225,
+      226
+     ],
+     "plate-up": [
+      243,
+      132
+     ],
+     "plate-down": [
+      243,
+      132
+     ],
+     "door-closed": [
+      244,
+      256
+     ],
+     "door-open": [
+      244,
+      256
+     ]
+    },
+    "pairs": [
+     [
+      "lever-up",
+      "lever-down"
+     ],
+     [
+      "plate-up",
+      "plate-down"
+     ],
+     [
+      "door-closed",
+      "door-open"
+     ]
+    ]
+   },
+   "w9a-puzzle": {
+    "data": "gemini/w9a-puzzle.json",
+    "sheet": "gemini/w9a-puzzle.webp",
+    "frames": {
+     "lever-up": [
+      202,
+      193
+     ],
+     "lever-down": [
+      202,
+      193
+     ],
+     "plate-up": [
+      296,
+      129
+     ],
+     "plate-down": [
+      296,
+      129
+     ],
+     "gate-closed": [
+      276,
+      220
+     ],
+     "gate-open": [
+      276,
+      220
+     ]
+    },
+    "pairs": [
+     [
+      "lever-up",
+      "lever-down"
+     ],
+     [
+      "plate-up",
+      "plate-down"
+     ],
+     [
+      "gate-closed",
+      "gate-open"
+     ]
+    ]
+   }
+  }
+ }
 }

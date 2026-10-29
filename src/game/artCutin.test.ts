@@ -21,6 +21,7 @@ import { FLICKER_DOZE_S, FLICKER_LEAD_V, flickerFrame, flickerMove, type Flicker
 import { MEECA_SAY, FLICKER_HINTS } from './meecaLines.ts';
 import { stageSheets } from './stageSheets.ts';
 import { MEECA_STAGE_ID } from './extraStages.ts';
+import { W6_PUZZLE_FRAMES, W6_PUZZLE_SIZE, W6_PUZZLE_URL, W6_WATER_FRAMES, W6_WATER_SIZE, W6_WATER_URL } from './w6PropsData.ts';
 
 /** width and height of a WebP file, from its header */
 function webpSize(path: string): { w: number; h: number } {
@@ -138,4 +139,16 @@ test('the art made ready for the worlds being built: every file the manifest nam
   for (const s of ['w7dawn', 'w7dusk', 'w8sunset', 'w8night', 'w9dawn', 'w9night', 'w10dusk', 'w10after']) {
     assert.deepEqual(webpSize(fileURLToPath(new URL(`../assets/backdrops/${s}-far.webp`, import.meta.url))), { w: 2048, h: 868 }, s);
   }
+});
+
+test("World 6's pieces cut from Matt's Gemini sheets: inside their sheets, and each pair of states on one canvas and anchor", () => {
+  for (const [url, size, frames] of [[W6_PUZZLE_URL, W6_PUZZLE_SIZE, W6_PUZZLE_FRAMES], [W6_WATER_URL, W6_WATER_SIZE, W6_WATER_FRAMES]] as const) {
+    assert.deepEqual(webpSize(fileURLToPath(url)), size);
+    for (const [n, f] of Object.entries(frames)) assert.ok(f.x >= 0 && f.y >= 0 && f.x + f.w <= size.w && f.y + f.h <= size.h, n);
+  }
+  for (const [a, b] of [['lever-up', 'lever-down'], ['plate-up', 'plate-down'], ['door-closed', 'door-open']]) {
+    const fa = W6_PUZZLE_FRAMES[a], fb = W6_PUZZLE_FRAMES[b];
+    assert.deepEqual([fa.w, fa.h, fa.ax, fa.ay], [fb.w, fb.h, fb.ax, fb.ay], `${a} / ${b}`);
+  }
+  assert.deepEqual(Object.keys(W6_WATER_FRAMES).sort(), ['gauge-post', 'lily-pads', 'raft', 'seesaw', 'sluice-wheel', 'stone']);
 });
