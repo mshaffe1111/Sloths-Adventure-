@@ -8,6 +8,14 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
+## Tomorrow's art pickup (2026-10-28 ~23:30 ET)
+
+- The art helper was stopped (Matt's side). Its two HF creature jobs (6ae2b6ae3fb22a235dd4f5f9, 6ae2b6a341e90535df781f07; "creatures-new-0/1",
+  spec tools/art/gen/spec-creatures-new.json in the art-hf worktree, output in the bucket under w6to10/) were left to finish (Matt: let them
+  finish). A low-effort helper then cuts them in: W6-10 creature clip sheets (crab, piranha, sentry, bat, owl, lizard, beetle, soldier attack/hurt),
+  plus Matt's Gemini sheets in reference/prop-sheets/gemini-batch-2026-10-28/: w6-hides-arches, w9w10-bridges, queen-collar-off (crop labels),
+  reaver-walk-take2 (still no walk: use 2-3 poses for a code-driven walk). The art-hf worktree has the creature scripts uncommitted.
+
 ## Cost mode (Matt, 2026-10-28 ~22:45 ET): one builder per world, cheaper effort for routine work, tests once at the end and one gate
 per merge batch, QA once per world; never skip a rule (LEAD-PLAYBOOK §7).
 
