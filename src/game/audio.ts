@@ -12,6 +12,9 @@
 import { Conductor, type SceneOptions } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
 import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
+import { CALM, type MusicState } from '../audio/adaptive.ts';
+import type { CueName } from '../audio/cues.ts';
+import { PUZZLE_KIND, PUZZLE_SOUNDS } from '../audio/sfxGame.ts';
 import { holdScene, sceneForPanel, sceneForScreen, type Held, type PanelInfo } from '../audio/scenes.ts';
 
 type PredatorKind = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
@@ -80,10 +83,15 @@ class SoundEngine {
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
   screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string) {
     this.held = null;
+    // the stage's state (a dark zone, a danger, a boss phase) belongs to that stage: any other screen, or another stage, starts calm
+    const stage = screen === 'playing' || screen === 'paused' ? levelId : '';
+    if (stage !== this.stateStage) this.c.setMusicState(CALM);
+    this.stateStage = stage;
     const s = sceneForScreen(screen, world, isBoss, levelId, mini, salt, objective);
-    if (s) this.c.setScene(s.id, { intensity: s.intensity, seed: s.seed, tempo: s.tempo });
+    if (s) this.c.setScene(s.id, { intensity: s.intensity, seed: s.seed, tempo: s.tempo, form: s.form });
     this.c.setPaused(screen === 'paused');
   }
+  private stateStage = '';
   /** the story piece being held (see scenes.ts holdScene); cleared when any other music is chosen */
   private held: Held | null = null;
   storyPanel(panel: PanelInfo) {
@@ -108,6 +116,14 @@ class SoundEngine {
   }
   setLowHealth(on: boolean) {
     this.c.setLowHealth(on);
+  }
+  /** what is happening, for the music to follow (see audio/adaptive.ts): danger 0..1, dark 0..1, exit 0..1, puzzle 0..1, boss phase, mood */
+  setMusicState(s: Partial<MusicState>) {
+    this.c.setMusicState(s);
+  }
+  /** an in-key stinger: 'checkpoint', 'discovery', 'secret', 'lowHealth', 'bossAppear' (see audio/cues.ts) */
+  cue(name: CueName) {
+    this.c.cue(name);
   }
   setAmbient(type: AmbientType | null) {
     this.c.setAmbient(type);
@@ -165,6 +181,22 @@ class SoundEngine {
   playUiBack() { this.c.fx('uiBack'); }
   playStar(i: number) { this.c.fx('star', i); }
   playPause(on: boolean) { this.c.fx(on ? 'pauseIn' : 'pauseOut'); }
+
+  // ------------------------------------------------------------------ the review's missing sounds (SN-3, audio/sfxGame.ts)
+  /** into the water: 0 a full plunge, 1 a body-sized splash, 2 a small dip */
+  playSplash(size: 0 | 1 | 2 = 0) { this.c.fx('splash', size); }
+  playRespawn() { this.c.fx('respawn'); }
+  /** every landing, `speed` 0..1 how fast he fell (a small hop is soft) */
+  playLanding(speed: number) { this.c.fx('landing', speed); }
+  /** a boss arriving: its roar over the orchestra's in-key sting (also the boss intro card) */
+  playBossArrives(world = 0) { this.c.fx('bossAppear', world); }
+  /** a puzzle kit's action by its event name (see PUZZLE_KIND); false when it has no sound of its own */
+  playPuzzle(kind: string): boolean {
+    const s = PUZZLE_KIND[kind];
+    if (!s) return false;
+    this.c.fx('puzzle', PUZZLE_SOUNDS.indexOf(s));
+    return true;
+  }
 }
 
 export const sound = new SoundEngine();

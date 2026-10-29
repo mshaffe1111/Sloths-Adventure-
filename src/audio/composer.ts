@@ -22,12 +22,15 @@
  *   3. arrangement  pads, bass, arpeggios, a countermelody and drums from the world's palette, layered in by intensity.
  */
 import { SCALES, hashStr, parseMelodyBar, rng } from './theory.ts';
-import type { ChordTrack, DrumName, DrumTrack, MelodyTrack, PatternTrack, Theme, Track } from './music.ts';
+import type { ChordTrack, DrumName, DrumTrack, MelodyTrack, NoteInstName, PatternTrack, Theme, Track } from './music.ts';
 import { IRON_CLAW, SLOMATT_A } from './tunes.ts';
 import { lullaby, stepBy } from './motifs.ts';
 import { orchestrate, PACE_CODE, paceFromCode, type Pace } from './orchestrate.ts';
 import { actOfWorld, fitShift, LEAD_BAND, LEAD_SIT, leadWindow, MIN_BPM, type ActId } from './acts.ts';
 import { trim, VOICE_RANGE, VOICE_TRIM_DB } from './scoreKit.ts';
+import { arrange, ornament, rerhythm, hint, type SectionSet } from './form.ts';
+import { DOUBLES, realNoteName } from './realize.ts';
+import type { FormPart } from './music.ts';
 
 type R = () => number;
 type Mode = keyof typeof SCALES;
@@ -712,6 +715,12 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
   } as MelodyTrack);
   tracks.push(...drumTracks(r, groove));
 
+  // ---- the form: the tune built out into sections (form.ts), from its own dice so the tune itself is the same as it always was
+  const form = stageForm({
+    r: rng((hashStr(`form${w}`) ^ Math.imul(seed >>> 0, 2246822519)) >>> 0), seed, mode, tonicPc, card, h, barsA, barsB: b.map(barStr), c, motif, from, mid,
+    lead, alt, counter: counterInst, shift, noteLo, noteHi,
+  });
+
   let theme: Theme = {
     id: `gen-${w}-${seed >>> 0}${pace ? '-' + PACE_CODE[pace] : ''}`,
     bpm,
@@ -721,11 +730,132 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     swing8: card.swing8,
     delay: card.delay,
     chords: mergeChords(h.names),
+    form,
     tracks,
   };
   // the same tune, dressed in the orchestra for what the player is doing (the notes do not change with the pace)
   if (pace) theme = { ...orchestrate(theme, { world: w, pace, seed }), ...(STAGE_LEVEL[w] ? { level: STAGE_LEVEL[w] } : {}) };
   return { theme, info: { key: `${noteName(tonicPc, flats)} ${mode}`, mode, bpm, lead, groove, hero: !!quote, tune, act, progression: h.names } };
+}
+
+// ───────────────────────────────────────────── a stage's form ─────────────────────────────────────────────
+
+/** the C section's chords: it starts away from home (on the relative or the subdominant side) and ends on the way back */
+const C_PROG: Record<'bright' | 'dark' | 'phrygian', number[][]> = {
+  bright: [[5, 3, 0, 4], [3, 4, 2, 5], [5, 1, 4, 0], [3, 0, 1, 4], [5, 2, 3, 4]],
+  dark: [[2, 5, 3, 4], [5, 2, 6, 2], [3, 6, 2, 5], [5, 6, 2, 3], [2, 6, 3, 4]],
+  phrygian: [[6, 5, 1, 0], [5, 6, 1, 6], [2, 1, 6, 0]],
+};
+/** the bridge climbs two bars to a chord, to the chord that leads home */
+const BRIDGE: Record<'bright' | 'dark' | 'phrygian', number[][]> = {
+  bright: [[3, 4, 5], [1, 3, 4], [5, 3, 1]],
+  dark: [[5, 6, 3], [3, 6, 5], [5, 3, 6]],
+  phrygian: [[1, 6, 5], [5, 6, 1]],
+};
+
+interface FormInput {
+  r: R;
+  seed: number;
+  mode: Mode;
+  tonicPc: number;
+  card: WorldCard;
+  h: Harmony;
+  barsA: string[];
+  barsB: string[];
+  c: MelCtx;
+  motif: BarN;
+  from: { end: number; top: number };
+  mid: number;
+  lead: Inst;
+  alt?: Inst;
+  counter: Inst;
+  shift: number;
+  noteLo: number;
+  noteHi: number;
+}
+
+/**
+ * A stage's tune built out into a form (see form.ts for the plan): the A and B it already has, a varied A twice, a varied B, a new C
+ * section on another instrument, a bridge, and the quiet passage, laid out in one of the orders. All in the stage's key and mode.
+ */
+function stageForm(f: FormInput): FormPart[] {
+  const { r, mode, tonicPc, card, h } = f;
+  const fam = mode === 'phrygian' ? 'phrygian' : MINORISH.has(mode) ? 'dark' : 'bright';
+  const cad = cadenceRoot(mode);
+  const names = (roots: number[]) =>
+    mergeChords(roots.map((root, i) => chordName(tonicPc, mode, root, { seventh: r() < card.seventh, dom: cadenceIsDom(mode) && mode !== 'harmonicMinor' && root === 4 && i >= 6 })));
+  const domsOf = (roots: number[]) => roots.map((root, i) => cadenceIsDom(mode) && mode !== 'harmonicMinor' && root === 4 && i >= 6);
+  // who takes the tune in the C section and the varied A: an instrument of the world's that can play it at the lead's own shift
+  // (only an instrument the piece already plays: its countermelody, its alternate, or one that doubles its tune. A new one would be one more
+  // instrument for a phone to fetch and hold in memory, 2-6 MB each)
+  const plays = new Set<string>([f.counter, ...(f.alt ? [f.alt] : []), ...(DOUBLES[realNoteName(f.lead)] ?? []).map((d) => d.inst)]);
+  // (and about as loud as the lead for the same gain, as the alternate is chosen: a section plays its tune at the lead's level)
+  const trimDb = (x: string) => VOICE_TRIM_DB[x] ?? 0;
+  const can = (x: Inst) =>
+    x !== f.lead && plays.has(x) && (LEAD_SIT[x] ?? 0) === (LEAD_SIT[f.lead] ?? 0) && Math.abs(trimDb(x) - trimDb(f.lead)) <= 2 && coversRange(x, f.shift, f.noteLo, f.noteHi);
+  const others = [...new Set([f.counter, ...f.card.alts, ...f.card.leads, ...plays])].filter(can);
+  // (the C section gets someone other than the varied A's player when the world has one)
+  const notAlt = others.filter((x) => x !== f.alt);
+  const cInst = notAlt.length ? pick(r, notAlt) : others.length ? pick(r, others) : undefined;
+  const aInst = f.alt ?? (others.length > 1 ? others.find((x) => x !== cInst) : undefined);
+
+  // ---- C: new chords, a new tune (sparser or busier than the A), ending open on the chord that leads home
+  const pC = pick(r, C_PROG[fam]);
+  const rootsC = [...pC, pC[0], pC[1], pick(r, [3, 1, 5].filter((x) => x !== cad)), cad];
+  const dens: MelCtx['dens'] = f.c.dens === 'sparse' ? 'normal' : 'sparse';
+  const cc: MelCtx = { ...f.c, r, dens };
+  const dC = domsOf(rootsC);
+  const c0 = buildBar(cc, rootsC[0], pickRhythm(cc), f.mid + pick(r, [1, 2, 3]), null);
+  const c1 = buildBar(cc, rootsC[1], pickRhythm(cc), c0.end + pick(r, [-1, 1]), c0.deltas);
+  const c2 = buildBar(cc, rootsC[2], pickRhythm(cc), c1.end + pick(r, [-2, -1, 1]), null);
+  const c3 = cadenceBar(cc, rootsC[3], 'half', c2.end, dC[3]);
+  const c4 = buildBar(cc, rootsC[4], pickRhythm(cc), clamp(c0.notes[0].n ?? f.mid, c3.end - 4, c3.end + 4), c0.deltas);
+  const c5 = buildBar(cc, rootsC[5], pickRhythm(cc), c4.end + pick(r, [-1, 1, 2]), c1.deltas);
+  const c6 = buildBar(cc, rootsC[6], pickRhythm(cc), c5.end + pick(r, [-1, 1]), null, dC[6]);
+  const c7 = cadenceBar(cc, rootsC[7], 'open', Math.round((c6.end + f.mid) / 2), dC[7]);
+  const barsC = [c0, c1, c2, c3, c4, c5, c6, c7].map(barStr);
+
+  // ---- the bridge: two bars to a chord, long notes climbing on the chord tones, then the dominant
+  const [x, y, z] = pick(r, BRIDGE[fam]);
+  const rootsBr = [x, x, y, y, z, z, cad, cad];
+  const sb: MelCtx = { ...f.c, r, dens: 'sparse' };
+  const barsBr: string[] = [];
+  let at = f.mid - 2;
+  for (let i = 0; i < 8; i++) {
+    const rhythm = i === 7 ? [12, -4] : pick(r, [[8, 8], [12, 4], [6, 2, 8], [4, 4, 8]]);
+    const bar = buildBar(sb, rootsBr[i], rhythm, at, i % 2 === 1 ? [1, 1, 1] : null);
+    barsBr.push(barStr(bar));
+    at = Math.min(sb.hi - 1, bar.end + (i % 2 === 1 ? 1 : 0));
+  }
+
+  // ---- the A section's second phrase answered anew (A3), over its own chords
+  const rootsA = h.roots.slice(0, 8);
+  const dA = h.doms.slice(0, 8);
+  const ac: MelCtx = { ...f.c, r };
+  const motifDeltas = f.motif.deltas.length ? f.motif.deltas : null;
+  const a4 = buildBar(ac, rootsA[4], pickRhythm(ac), f.mid + pick(r, [0, 1, 2]), null);
+  const a5 = buildBar(ac, rootsA[5], pickRhythm(ac), a4.end + pick(r, [-1, 1]), motifDeltas);
+  const a6 = buildBar(ac, rootsA[6], pickRhythm(ac), a5.end + pick(r, [-1, 1]), null, dA[6]);
+  const a7 = cadenceBar(ac, rootsA[7], 'auth', a6.end, dA[7]);
+  const barsA3 = [...f.barsA.slice(0, 4).map((b) => rerhythm(b, r)), ...[a4, a5, a6, a7].map(barStr)];
+
+  const lead = (bars: string[]) => ({ lead: bars });
+  const sections: SectionSet = {
+    A: { chords: names(rootsA), lines: lead(f.barsA) },
+    A2: { chords: names(rootsA), lines: lead(f.barsA.map((b) => ornament(b, r))), ...(aInst ? { inst: { lead: aInst as NoteInstName } } : {}) },
+    A3: { chords: names(rootsA), lines: lead(barsA3), lift: 0.08 },
+    B: { chords: names(h.roots.slice(8, 16)), lines: lead(f.barsB) },
+    B2: { chords: names(h.roots.slice(8, 16)), lines: lead(f.barsB.map((b) => rerhythm(b, r))), ...(cInst ? { inst: { lead: cInst as NoteInstName } } : {}) },
+    C: { chords: names(rootsC), lines: lead(barsC), ...(cInst ? { inst: { lead: cInst as NoteInstName } } : {}), lift: -0.05 },
+    bridge: { chords: names(rootsBr), lines: lead(barsBr), lift: 0.18, rest: ['counter'] },
+    break: {
+      chords: names([...rootsA.slice(0, 4), ...rootsA.slice(0, 2), pick(r, [3, 1, 5]), cad]),
+      lines: lead([hint(f.barsA[0]), restBar(16), hint(f.barsA[1]), restBar(16), hint(f.barsA[0]), restBar(16), restBar(16), restBar(16)]),
+      rest: ['perc', 'low', 'stab', 'drive', 'counter'],
+      lift: -0.35,
+    },
+  };
+  return arrange(sections, f.seed >>> 5);
 }
 
 /**

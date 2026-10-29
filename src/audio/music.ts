@@ -30,6 +30,8 @@ import {
   type Chord,
   type MelNote,
 } from './theory.ts';
+import { CALM, intensityLift, layerMix, layerTracks, moodTempo, roleOf, stepState, toneCutoff, voiceDrop, type MusicState, type Role } from './adaptive.ts';
+import { autoForm } from './form.ts';
 
 export type NoteInstName = keyof typeof NOTE_VOICES;
 export type ChordInstName = keyof typeof CHORD_VOICES;
@@ -49,6 +51,8 @@ interface TrackBase {
   gate?: [number, number];
   /** per-bar on/off across the loop ('x' plays, '.' rests), cycled */
   mask?: string;
+  /** an adaptive layer (adaptive.ts): it comes in with the game's state instead of with intensity */
+  layer?: 'drive' | 'shine' | 'boss';
 }
 
 /** a bass line, arpeggio or comping figure written relative to the current chord */
@@ -105,6 +109,25 @@ export interface DrumTrack extends TrackBase {
 
 export type Track = PatternTrack | MelodyTrack | ChordTrack | DrumTrack;
 
+/**
+ * One section of a piece's form (form.ts): its chords, its tune lines, and how it is dressed. A piece with a form plays its sections in order
+ * instead of going round its one chord loop; tracks with no line of their own in a section play their patterns from the section's first bar.
+ */
+export interface FormPart {
+  /** 'A', 'A2', 'B', 'C', 'bridge', 'break'... (for the debug overlay and tests) */
+  name: string;
+  /** one chord per bar, as Theme.chords ('Am*2' lasts two bars) */
+  chords: string[];
+  /** written tune bars, by the line they replace (a melody track's genKey, or its name): the doublings of a tune follow it */
+  lines?: Record<string, Array<string | null>>;
+  /** the instrument a melody track (by name) plays in this section */
+  inst?: Record<string, NoteInstName>;
+  /** roles (adaptive.ts: 'perc', 'low', 'stab', 'counter', 'drive'...) or track names that rest through the section */
+  rest?: string[];
+  /** added to the intensity the parts' gates read: a fuller bridge (+), a quiet passage (-) */
+  lift?: number;
+}
+
 export interface Theme {
   id: string;
   bpm: number;
@@ -130,11 +153,17 @@ export interface Theme {
   still?: boolean;
   /** the speed of each bar of the loop as a share of the written tempo (cycled): a slowing down, a held bar, a broadening. 1 = as written */
   tempoMap?: number[];
+  /** the piece's sections in the order they play (see FormPart); without it the piece goes round `chords` */
+  form?: FormPart[];
   tracks: Track[];
 }
 
 interface RuntimeTrack {
   spec: Track;
+  /** what it does in the piece (adaptive.ts): how it answers the game's state */
+  role: Role;
+  /** the tune lines a form's sections give this track (by section; null = the track's own bars) */
+  partMel?: Array<Array<MelNote[] | null> | null>;
   gate: GainNode;
   lastPitch: number;
   lastVoicing: number[] | null;
@@ -162,6 +191,8 @@ export interface PlaybackOpts {
   startLoop?: number;
   /** play every part on the recording of its instrument instead of the built-in synthesized voices (default: yes; false is the old sound) */
   real?: boolean;
+  /** a piece written as one loop is laid out as a form (form.ts autoForm): the stage music */
+  form?: boolean;
 }
 
 /** a note moved by whole octaves into a range */
@@ -209,6 +240,14 @@ export class Playback {
   private readonly accent: GainNode;
   private readonly scale: number[];
   private readonly barChords: BarChord[];
+  /** a piece with a form: which section (index into theme.form) and which bar of it every bar of the timeline is */
+  private readonly partAt: Array<{ p: number; b: number; len: number }> | null = null;
+  /** the game's state (adaptive.ts), as asked for and as the music has reached it (one bar at a time) */
+  private stateTarget: MusicState = CALM;
+  private state: MusicState = CALM;
+  private lastBoss = 0;
+  /** closes the treble in the dark (adaptive.ts toneCutoff) */
+  private readonly tone: BiquadFilterNode;
   private tracks: RuntimeTrack[] = [];
   private nextTime: number;
   private bar = 0;
@@ -228,27 +267,51 @@ export class Playback {
   constructor(core: AudioCore, theme: Theme, startAt: number, out?: GainNode, fadeIn = false, opts: PlaybackOpts = {}) {
     this.core = core;
     this.c = core.ctx;
+    this.seed = Math.abs(Math.floor(opts.seed ?? 0));
+    // the stage music plays as a form (form.ts): a piece written as one loop is laid out as one here
+    if (opts.form && !theme.form && !theme.still) {
+      const form = autoForm(theme, this.seed);
+      if (form) theme = { ...theme, form };
+    }
     this.theme = theme;
     this.spb = theme.stepsPerBar ?? 16;
     this.real = opts.real !== false;
-    this.seed = Math.abs(Math.floor(opts.seed ?? 0));
     this.tempoScale = this.tempoTarget = clampTempo(opts.tempo ?? 1);
     this.tonic = noteMidi(theme.tonic);
     this.scale = SCALES[theme.scale];
     this.nextTime = startAt;
     this.out = out ?? core.ctx.createGain();
     this.out.gain.value = fadeIn ? 0 : theme.level ?? 1;
-    this.out.connect(core.music);
+    this.tone = this.c.createBiquadFilter();
+    this.tone.type = 'lowpass';
+    this.tone.frequency.value = toneCutoff(CALM);
+    this.tone.Q.value = 0.5;
+    this.out.connect(this.tone);
+    this.tone.connect(core.music);
     this.accent = this.c.createGain();
     this.accent.gain.value = 0.8;
     this.accent.connect(core.withReverb(this.out, 0.25, 'music'));
 
-    const chords = theme.chords.map(parseChord);
     this.barChords = [];
-    for (const ch of chords) for (let i = 0; i < ch.bars; i++) this.barChords.push({ chord: ch, start: i === 0, left: ch.bars - i });
+    const addChords = (list: string[]) => {
+      for (const ch of list.map(parseChord)) for (let i = 0; i < ch.bars; i++) this.barChords.push({ chord: ch, start: i === 0, left: ch.bars - i });
+    };
+    if (theme.form?.length) {
+      // the timeline is the sections one after another
+      const at: Array<{ p: number; b: number; len: number }> = [];
+      theme.form.forEach((part, p) => {
+        const from = this.barChords.length;
+        addChords(part.chords);
+        const len = this.barChords.length - from;
+        for (let b = 0; b < len; b++) at.push({ p, b, len });
+      });
+      this.partAt = at;
+    } else addChords(theme.chords);
 
-    // the real orchestra plays more than the theme wrote (see fullOrchestra), and every part sits where its instrument sits on the stage
-    const specs: Track[] = this.real ? [...theme.tracks, ...fullOrchestra(theme)] : theme.tracks;
+    // the real orchestra plays more than the theme wrote (see fullOrchestra), and every part sits where its instrument sits on the stage;
+    // and every piece but the story's still ones carries the layers the game's state brings in (adaptive.ts)
+    const layers = theme.still ? [] : layerTracks(theme);
+    const specs: Track[] = [...(this.real ? [...theme.tracks, ...fullOrchestra(theme)] : theme.tracks), ...layers];
     for (const spec of specs) {
       const gate = this.c.createGain();
       gate.gain.value = 0;
@@ -281,9 +344,11 @@ export class Playback {
         node.connect(d);
         d.connect(core.musicEchoSend);
       }
-      const rt: RuntimeTrack = { spec, gate, lastPitch: this.tonic + 12, lastVoicing: null };
+      const rt: RuntimeTrack = { spec, role: roleOf(spec), gate, lastPitch: this.tonic + 12, lastVoicing: null };
       if (spec.kind === 'melody') {
-        rt.melody = spec.bars.map((b) => (b === null ? null : parseMelodyBar(b, this.tonic + (spec.shift ?? 0), this.scale, this.spb)));
+        const parse = (b: string | null) => (b === null ? null : parseMelodyBar(b, this.tonic + (spec.shift ?? 0), this.scale, this.spb));
+        rt.melody = spec.bars.map(parse);
+        if (theme.form) rt.partMel = theme.form.map((part) => part.lines?.[spec.genKey ?? spec.name]?.map(parse) ?? null);
       } else if (spec.kind === 'pattern') {
         rt.pats = spec.pats.map((p) => parsePattern(p, this.spb));
       } else if (spec.kind === 'drums') {
@@ -326,6 +391,45 @@ export class Playback {
     return { tonic: this.tonic + this.sh, scale: this.scale };
   }
 
+  /** the game's state (adaptive.ts): the parts follow it from the next bar line, fading, never cutting */
+  setState(s: Partial<MusicState>, snap = false) {
+    this.stateTarget = { ...this.stateTarget, ...s };
+    if (snap) this.state = this.stateTarget;
+  }
+
+  /** the section of the form playing now ('A', 'bridge'...; '' for a piece without a form) */
+  get section(): string {
+    if (!this.partAt || !this.theme.form) return '';
+    const at = this.partAt[Math.max(0, this.bar - 1) % this.partAt.length];
+    return this.theme.form[at.p].name;
+  }
+
+  /** seconds per beat at the current tempo */
+  get beatDur() {
+    return this.stepDur * 4;
+  }
+
+  /**
+   * The first point of the music's grid (every `steps` sixteenths: 2 = the eighths, 4 = the beats) at or after `t`, so a stinger lands
+   * in time with the band; but never more than `most` seconds away (a stinger must answer the moment).
+   */
+  gridAfter(t: number, steps = 2, most = 0.3): number {
+    const dur = this.stepDur;
+    // the time of the step being scheduled next, and its index counted from the bar line
+    let tt = this.nextTime;
+    let s = this.step;
+    while (tt - dur >= t) {
+      tt -= dur;
+      s--;
+    }
+    while (tt < t || ((s % steps) + steps) % steps !== 0) {
+      tt += dur;
+      s++;
+      if (tt - t > most) return t;
+    }
+    return tt;
+  }
+
   setIntensity(v: number, snap = false) {
     this.targetIntensity = Math.max(0, Math.min(1, v));
     if (snap) this.intensity = this.targetIntensity;
@@ -366,19 +470,23 @@ export class Playback {
     return t;
   }
 
-  private gateFor(spec: Track): number {
+  private gateFor(spec: Track, lift = 0): number {
     if (!spec.gate) return 1;
+    const k = Math.max(0, Math.min(1, this.intensity + lift));
     const [lo, hi] = spec.gate;
-    if (hi <= lo) return this.intensity >= lo ? 1 : 0;
-    const x = Math.max(0, Math.min(1, (this.intensity - lo) / (hi - lo)));
+    if (hi <= lo) return k >= lo ? 1 : 0;
+    const x = Math.max(0, Math.min(1, (k - lo) / (hi - lo)));
     return x * x * (3 - 2 * x);
   }
 
   private beginBar() {
     // tempo glides toward its target, half the remaining distance each bar
     let retime = false;
-    if (Math.abs(this.tempoTarget - this.tempoScale) > 0.0005) {
-      this.tempoScale += (this.tempoTarget - this.tempoScale) * 0.5;
+    // the game's state moves one bar's worth toward what was asked for
+    this.state = stepState(this.state, this.stateTarget);
+    const want = clampTempo(this.tempoTarget * moodTempo(this.state));
+    if (Math.abs(want - this.tempoScale) > 0.0005) {
+      this.tempoScale += (want - this.tempoScale) * 0.5;
       retime = true;
     }
     // a piece may slow or broaden bar by bar (its tempoMap)
@@ -399,6 +507,16 @@ export class Playback {
     const L = this.barChords.length;
     const barInLoop = this.bar % L;
     const loop = Math.floor(this.bar / L);
+    // the section of the form and the bar within it (a piece without a form is one section: its loop)
+    const form = this.theme.form;
+    const at = this.partAt?.[barInLoop];
+    const part = at && form ? form[at.p] : undefined;
+    const bip = at ? at.b : barInLoop;
+    const prevPart = at && form && this.partAt ? form[this.partAt[(barInLoop - 1 + L) % L].p] : undefined;
+    const lift = (part?.lift ?? 0) + intensityLift(this.state);
+    const st = this.state;
+    const drop = voiceDrop(st);
+    this.tone.frequency.setTargetAtTime(toneCutoff(st), Math.max(this.c.currentTime, this.nextTime - 0.02), 0.35);
     // the arrangement: every pass through the loop is dressed differently, and each stage starts at a different pass
     const phase = this.theme.still ? 0 : Playback.phaseOf(loop, this.seed);
     const lp = loop + (this.seed % 2);
@@ -407,9 +525,15 @@ export class Playback {
     const calm = this.targetIntensity < 0.3;
     /** the breakdown: first bars of the pass lose drums and bass, then a riser and a crash bring them back */
     const win = Math.min(4, Math.floor(L / 2));
-    const inBreak = phase === 2 && !calm && barInLoop < win;
-    const riserBar = phase === 2 && !calm && barInLoop === win - 1;
-    const crashBar = phase === 2 && !calm && barInLoop === win;
+    // (a piece with a form has its quiet passage written in: the riser ends it and the crash brings the next section in)
+    // (and a boss fight past its first phase, or a danger, never drops into the breakdown: the music only builds then)
+    const driven = st.boss >= 2 || st.danger >= 0.5;
+    const inBreak = !form && phase === 2 && !calm && !driven && barInLoop < win;
+    const riserBar = form ? part?.name === 'break' && at!.b === at!.len - 1 && !calm : phase === 2 && !calm && !driven && barInLoop === win - 1;
+    const crashBar = form ? prevPart?.name === 'break' && part?.name !== 'break' && bip === 0 && !calm : phase === 2 && !calm && !driven && barInLoop === win;
+    // a boss's new phase is marked on the bar line it is heard from: the cymbal and the taiko
+    const phaseHit = st.boss > this.lastBoss && this.lastBoss > 0;
+    this.lastBoss = st.boss;
     /** two-pattern tracks swap their order on the answer pass and on alternating stages */
     const swap = (phase === 1 ? 1 : 0) + ((this.seed >> 3) & 1);
     const bc0 = this.barChords[barInLoop];
@@ -425,7 +549,7 @@ export class Playback {
       push(Math.max(0, this.spb - 12), (t) => this.drum('riser')(this.core, this.accent, t, 0.9));
       for (let i = 0; i < 8; i++) push(this.spb - 8 + i, (t) => this.drum('tom')(this.core, this.accent, t, 0.25 + 0.075 * i));
     }
-    if (crashBar) {
+    if (crashBar || phaseHit) {
       push(0, (t) => {
         this.drum('crash')(this.core, this.accent, t, 0.9);
         this.drum('taiko')(this.core, this.accent, t, 0.8);
@@ -436,22 +560,25 @@ export class Playback {
 
     for (const rt of this.tracks) {
       const spec = rt.spec;
-      const g = this.gateFor(spec) * spec.gain * (this.real ? trimOf(spec.kind === 'drums' ? spec.voice : spec.inst) : 1);
+      // a layer comes in with the game's state alone; every other part with the intensity (and the section's lift), shaped by the state
+      const resting = !!part?.rest && (part.rest.includes(rt.role) || part.rest.includes(spec.name));
+      const shape = resting ? 0 : layerMix(rt.role, st);
+      const g = (spec.layer ? 1 : this.gateFor(spec, lift)) * shape * spec.gain * (this.real ? trimOf(spec.kind === 'drums' ? spec.voice : spec.inst) : 1);
       rt.gate.gain.setTargetAtTime(g, Math.max(now, this.nextTime - 0.02), 0.3);
       if (g < 0.02 || (this.liteMode && spec.lite)) continue;
-      if (spec.mask && spec.mask[barInLoop % spec.mask.length] === '.') continue;
+      if (spec.mask && spec.mask[bip % spec.mask.length] === '.') continue;
       if (inBreak && (spec.kind === 'drums' || (spec.kind === 'pattern' && LOW_INSTS.has(spec.inst)))) continue;
       const vel = (v: number) => v * (0.9 + this.rand() * 0.2);
 
       if (spec.kind === 'drums') {
-        const isFill = spec.fill && barInLoop % 4 === 3;
+        const isFill = spec.fill && bip % 4 === 3;
         const n = rt.drums!.length;
-        const cells = isFill ? rt.fill! : rt.drums![(barInLoop + (n === 2 ? swap : 0)) % n];
+        const cells = isFill ? rt.fill! : rt.drums![(bip + (n === 2 ? swap : 0)) % n];
         const voice = DRUM_VOICES[this.real ? realVoice(spec) : spec.voice];
         for (const h of cells) push(h.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.006, vel(h.v)));
       } else if (spec.kind === 'pattern') {
         const n2 = rt.pats!.length;
-        const cells = rt.pats![(barInLoop + (n2 === 2 ? swap : 0)) % n2];
+        const cells = rt.pats![(bip + (n2 === 2 ? swap : 0)) % n2];
         const voice = NOTE_VOICES[this.real ? realVoice(spec) : spec.inst];
         const n = bc.chord.tones.length;
         for (const cell of cells) {
@@ -465,8 +592,11 @@ export class Playback {
           push(cell.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.005, midiHz(midi), dur, vel(v)));
         }
       } else if (spec.kind === 'melody') {
-        const mel = rt.melody!;
-        let bar = mel[barInLoop % mel.length];
+        // a section's own line for this track, or the track's own bars
+        const own = at ? rt.partMel?.[at.p] : null;
+        const mel = own ?? rt.melody!;
+        const mi = own ? bip % own.length : barInLoop % mel.length;
+        let bar = mel[mi];
         if (bar === null) {
           const r = rng(hashStr(this.theme.id + (spec.genKey ?? spec.name)) + barInLoop * 131 + (lp % 4) * 7919 + this.seed * 17);
           bar = generateMelodyBar({
@@ -477,16 +607,16 @@ export class Playback {
             hi: (spec.gen?.hi ?? this.tonic + 17) + sh,
             rand: r,
             steps: this.spb,
-            phraseBar: barInLoop % 4,
+            phraseBar: bip % 4,
             density: spec.gen?.density,
           });
         }
-        const inst = spec.altInst && lp % 2 === 1 ? spec.altInst : spec.inst;
+        const inst = part?.inst?.[spec.name] ?? (spec.altInst && lp % 2 === 1 ? spec.altInst : spec.inst);
         const voice = NOTE_VOICES[this.real ? realVoice(spec, inst) : inst];
         const echo = phase === 3 && rt === lead && !this.liteMode ? NOTE_VOICES[this.real ? 'glockR' : 'bell'] : null;
         for (const nt of bar) {
           if (nt.midi === null) continue;
-          const composed = mel[barInLoop % mel.length] === null;
+          const composed = mel[mi] === null;
           // written bars carry the track's transposition from the notation; composed ones get it here, after they are made, so a track that doubles another a few octaves away plays the same notes
           const m = nt.midi + (composed ? spec.shift ?? 0 : sh);
           rt.lastPitch = composed ? m - (spec.shift ?? 0) : m;
@@ -500,10 +630,11 @@ export class Playback {
         }
       } else if (spec.kind === 'chords') {
         const voice = CHORD_VOICES[this.real ? realVoice(spec) : spec.inst];
-        rt.lastVoicing = voiceLead(rt.lastVoicing, bc.chord, spec.lo, spec.hi, spec.voices ?? 4);
+        // (in the dark the chords are voiced lower: adaptive.ts voiceDrop)
+        rt.lastVoicing = voiceLead(rt.lastVoicing, bc.chord, spec.lo - drop, spec.hi - drop, spec.voices ?? 4);
         const notes = rt.lastVoicing.map(midiHz);
         if (spec.stabs) {
-          const cells = rt.stabs![barInLoop % rt.stabs!.length];
+          const cells = rt.stabs![bip % rt.stabs!.length];
           for (const h of cells) push(h.step, (t) => voice(this.core, rt.gate, t, notes, (spec.stabLen ?? 2) * stepDur, vel(h.v)));
         } else if (bc.start) {
           const dur = bc.left * barDur - 0.05;
@@ -535,6 +666,7 @@ export class Playback {
     this.disposed = true;
     try {
       this.out.disconnect();
+      this.tone.disconnect();
     } catch {
       /* already gone */
     }

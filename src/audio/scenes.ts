@@ -17,6 +17,8 @@ export interface SceneChoice {
   seed?: number;
   /** playing speed, 1 = as written */
   tempo?: number;
+  /** play it as a form, sections and all (form.ts): the stage music */
+  form?: boolean;
 }
 
 /** how fast a stage plays: later stages of a world are a touch quicker, and each stage gets its own small nudge; bosses are as written */
@@ -149,7 +151,7 @@ export function meecaStageMusic(): SceneChoice {
     if (c.info.lead === 'clarinet') pick = seed;
   }
   const seed = pick ?? any ?? 1;
-  meecaPick = { id: stageThemeId(5, seed, 'sneak'), intensity: 0.26, seed, tempo: 0.86 };
+  meecaPick = { id: stageThemeId(5, seed, 'sneak'), intensity: 0.26, seed, tempo: 0.86, form: true };
   return meecaPick;
 }
 
@@ -159,11 +161,11 @@ export function stageMusic(world: number, levelId: string, mini: number, salt = 
   // what the stage is about sets how the music moves: a run, a fight, a climb, a sneak (see orchestrate.ts)
   const pace = paceFor(objective);
   const tempo = levelId ? Math.round(stageTempo(seed, mini) * PACE_TEMPO[pace] * 10000) / 10000 : 1;
-  if (!levelId) return { id: WORLD_THEME(world), intensity: 0.35, seed, tempo };
+  if (!levelId) return { id: WORLD_THEME(world), intensity: 0.35, seed, tempo, form: true };
   // about one in five stages of the first act plays the world's written theme, so Pokey's signature tunes still turn up; the later acts have
   // their own sounds (composer.ts) and never fall back to a tune written for another mood
-  if (actOfWorld(world) === 'trail' && (seed >>> 5) % 5 === 0) return { id: `${WORLD_THEME(world)}~${PACE_CODE[pace]}`, intensity: 0.35, seed, tempo };
-  return { id: stageThemeId(world, seed, pace), intensity: 0.35, seed, tempo };
+  if (actOfWorld(world) === 'trail' && (seed >>> 5) % 5 === 0) return { id: `${WORLD_THEME(world)}~${PACE_CODE[pace]}`, intensity: 0.35, seed, tempo, form: true };
+  return { id: stageThemeId(world, seed, pace), intensity: 0.35, seed, tempo, form: true };
 }
 
 /** the piece the title screen and the pause menu play: the first stage's own tune, as it was written */
