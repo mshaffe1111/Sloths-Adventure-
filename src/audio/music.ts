@@ -52,7 +52,7 @@ interface TrackBase {
   /** per-bar on/off across the loop ('x' plays, '.' rests), cycled */
   mask?: string;
   /** an adaptive layer (adaptive.ts): it comes in with the game's state instead of with intensity */
-  layer?: 'drive' | 'shine' | 'boss';
+  layer?: 'drive' | 'shine' | 'boss' | 'dark';
 }
 
 /** a bass line, arpeggio or comping figure written relative to the current chord */
@@ -159,6 +159,8 @@ export interface Theme {
   form?: FormPart[];
   /** the form is a pool of chunks the Playback strings together as it plays, never in the same order (form.ts nextChunk) */
   chain?: boolean;
+  /** how much of the full orchestra joins what the piece wrote (realize.ts fullOrchestra; default full) */
+  orch?: 'full' | 'light' | 'none';
   tracks: Track[];
 }
 
@@ -254,6 +256,7 @@ export class Playback {
   private stateTarget: MusicState = CALM;
   private state: MusicState = CALM;
   private lastBoss = 0;
+  private lastExit = 0;
   /** closes the treble in the dark (adaptive.ts toneCutoff) */
   private readonly tone: BiquadFilterNode;
   private tracks: RuntimeTrack[] = [];
@@ -534,7 +537,9 @@ export class Playback {
     const tau = this.targetIntensity > this.intensity ? 1.2 : 4;
     this.intensity += (this.targetIntensity - this.intensity) * (1 - Math.exp(-barDur / tau));
     // the whole piece also swells a little with intensity
-    this.out.gain.setTargetAtTime((this.theme.level ?? 1) * (0.74 + 0.26 * this.intensity), Math.max(this.c.currentTime, this.nextTime - 0.02), 0.4);
+    // (near the exit the whole piece swells about 3 dB, and a danger pushes about 2: each must be heard without being told, Matt 2026-10-29)
+    const swell = 1 + 0.4 * this.state.exit + 0.25 * this.state.danger;
+    this.out.gain.setTargetAtTime((this.theme.level ?? 1) * (0.74 + 0.26 * this.intensity) * swell, Math.max(this.c.currentTime, this.nextTime - 0.02), 0.6);
 
     // a chained piece adds its next chunk as the last one ends: it never comes round
     if (this.chain) while (this.bar >= this.partAt!.length) this.appendChunk();
@@ -567,8 +572,9 @@ export class Playback {
     const riserBar = form ? part?.name === 'break' && at!.b === at!.len - 1 && !calm : phase === 2 && !calm && !driven && barInLoop === win - 1;
     const crashBar = form ? prevPart?.name === 'break' && part?.name !== 'break' && bip === 0 && !calm : phase === 2 && !calm && !driven && barInLoop === win;
     // a boss's new phase is marked on the bar line it is heard from: the cymbal and the taiko
-    const phaseHit = st.boss > this.lastBoss && this.lastBoss > 0;
+    const phaseHit = (st.boss > this.lastBoss && this.lastBoss > 0) || (st.exit > 0.5 && this.lastExit <= 0.5);
     this.lastBoss = st.boss;
+    this.lastExit = st.exit;
     /** two-pattern tracks swap their order on the answer pass and on alternating stages */
     const swap = (phase === 1 ? 1 : 0) + ((this.seed >> 3) & 1);
     const bc0 = this.barChords[barInLoop];

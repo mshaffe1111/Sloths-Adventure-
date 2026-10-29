@@ -56,7 +56,7 @@ test('a composed stage is valid notation for every world and many seeds', () => 
       const th = composeStage(w, seed);
       const loop = checkNotation(th);
       assert.equal(loop, 16, `${th.id}: a 16-bar form`);
-      assert.ok(th.bpm >= 70 && th.bpm <= 140, `${th.id}: ${th.bpm} bpm`);
+      assert.ok(th.bpm >= 60 && th.bpm <= 140, `${th.id}: ${th.bpm} bpm`);
     }
   }
 });
@@ -75,8 +75,8 @@ test('the lead melody is in key, singable, and mostly stepwise', () => {
       let leaps = 0;
       let moves = 0;
       for (let i = 0; i < lead.bars.length; i++) {
-        const bar = parseMelodyBar(lead.bars[i]!, tonic, scale, 16);
-        assert.equal(bar.reduce((n, x) => n + x.len, 0), 16, `${th.id} bar ${i}`);
+        const bar = parseMelodyBar(lead.bars[i]!, tonic, scale, th.stepsPerBar ?? 16);
+        assert.equal(bar.reduce((n, x) => n + x.len, 0), th.stepsPerBar ?? 16, `${th.id} bar ${i}`);
         for (const n of bar) {
           if (n.midi === null) continue;
           assert.ok(pcs.has(n.midi % 12), `${th.id}: note ${n.midi} is not in ${info.key}`);
@@ -114,7 +114,7 @@ test('strong beats land on chord tones', () => {
       lead.bars.forEach((b, i) => {
         const chord = parseChord(info.progression[i]);
         const pcs = chordPcs(chord);
-        const bar = parseMelodyBar(b!, tonic, SCALES[th.scale], 16);
+        const bar = parseMelodyBar(b!, tonic, SCALES[th.scale], th.stepsPerBar ?? 16);
         for (const n of bar) {
           if (n.midi === null || (n.step !== 0 && n.step !== 8)) continue;
           strong++;
@@ -155,14 +155,14 @@ test('phrases close: a long final note on a stable note, and the loop turns over
       const lead = th.tracks.find((t) => t.kind === 'melody' && t.name === 'lead');
       if (!lead || lead.kind !== 'melody') continue;
       for (const bi of [3, 7, 15]) {
-        const bar = parseMelodyBar(lead.bars[bi]!, tonic, scale, 16);
+        const bar = parseMelodyBar(lead.bars[bi]!, tonic, scale, th.stepsPerBar ?? 16);
         const last = bar[bar.length - 1];
         assert.ok(last.midi !== null && last.len >= 4, `${th.id} bar ${bi} should end on a long note`);
         const chord = parseChord(info.progression[bi]);
         assert.ok(chordPcs(chord).includes((last.midi as number) % 12), `${th.id} bar ${bi}: closing note is not in ${chord.name}`);
       }
       // bar 8 (the last of A) closes on the tonic triad
-      const endA = parseMelodyBar(lead.bars[7]!, tonic, scale, 16).slice(-1)[0].midi as number;
+      const endA = parseMelodyBar(lead.bars[7]!, tonic, scale, th.stepsPerBar ?? 16).slice(-1)[0].midi as number;
       const tonicTriad = [0, scale[2], scale[4]].map((x) => (x) % 12);
       assert.ok(tonicTriad.includes((endA - tonic + 120) % 12), `${th.id}: A section does not close on the tonic triad`);
     }
@@ -178,7 +178,7 @@ test('the B section reaches higher than the A section', () => {
       const lead = th.tracks.find((t) => t.kind === 'melody' && t.name === 'lead');
       if (!lead || lead.kind !== 'melody') continue;
       const tonic = noteMidi(th.tonic);
-      const top = (from: number, to: number) => Math.max(...lead.bars.slice(from, to).flatMap((b) => parseMelodyBar(b!, tonic, SCALES[th.scale], 16)).map((n) => n.midi ?? 0));
+      const top = (from: number, to: number) => Math.max(...lead.bars.slice(from, to).flatMap((b) => parseMelodyBar(b!, tonic, SCALES[th.scale], th.stepsPerBar ?? 16)).map((n) => n.midi ?? 0));
       total++;
       if (top(8, 16) >= top(0, 8)) higher++;
       assert.ok(top(8, 16) >= top(0, 8) - 8, `${th.id}: B tops out ${top(0, 8) - top(8, 16)} semitones below A`);
@@ -216,14 +216,15 @@ test('each world keeps its character', () => {
       assert.equal(theme.scale, info.tune ? TUNE_MODE[info.tune] : BASE[w], `${theme.id} (${info.tune ?? 'no tune'})`);
     }
   }
-  // the last worlds are the most driving
+  // the volcano marches; the canopy bounces fastest; the grotto, the ruins and the fortress are slow (styles.ts)
   const avg = (w: number) => SEEDS.reduce((n, s) => n + composeStage(w, s).bpm, 0) / SEEDS.length;
-  assert.ok(avg(9) > avg(8) + 8, `${avg(9)} vs ${avg(8)}`);
-  assert.ok(avg(10) > avg(8) + 5);
-  // the grooves differ: world 9 has a kick and a snare, world 3 does not
+  assert.ok(avg(9) > avg(8) + 20, `${avg(9)} vs ${avg(8)}`);
+  assert.ok(avg(1) > avg(9) && avg(10) < avg(9) - 25 && avg(3) < 80 && avg(7) < 80);
+  // the grooves differ (styles.ts): the volcano marches on snare and bass drum, the canopy plays hand drums, the grotto has no drums at all
   const voices = (w: number) => new Set(composeStage(w, 5).tracks.flatMap((t) => (t.kind === 'drums' ? [t.voice] : [])));
-  assert.ok(voices(9).has('kick') && voices(9).has('snare'));
-  assert.ok(!voices(3).has('kick') && !voices(3).has('snare'));
+  assert.ok(voices(9).has('bassDrum') && voices(9).has('snare'));
+  assert.ok(voices(1).has('handHi') && voices(1).has('shakerJ') && !voices(1).has('snare'));
+  assert.equal(voices(3).size, 0);
 });
 
 test('chord spelling follows the key', () => {
@@ -309,7 +310,7 @@ function checkTheme(t: import('./music.ts').Theme, label: string) {
   }
 }
 
-test('every world and pace is orchestrated into valid notation, with the tune and the low end intact', () => {
+test('every world and pace is valid notation, with the tune and the low end intact', () => {
   for (let w = 1; w <= 10; w++) {
     for (const pace of PACES) {
       for (const seed of [1, 77, 4242]) {
@@ -321,10 +322,10 @@ test('every world and pace is orchestrated into valid notation, with the tune an
         const lead = (x: import('./music.ts').Theme) => (x.tracks.find((k) => k.kind === 'melody') as import('./music.ts').MelodyTrack).bars;
         assert.deepEqual(lead(t), lead(plain));
         assert.deepEqual(t.chords, plain.chords);
-        // something always carries the bass
-        assert.ok(t.tracks.some((k) => k.name === 'orchBass'));
-        // the foundation is on from the first bar: no gate on the pad, the bass, the ostinato or the timpani
-        for (const n of ['orchPad', 'orchBass', 'ost', 'timpR']) assert.equal(t.tracks.find((k) => k.name === n)!.gate, undefined, n);
+        // something always carries the bass, from the first bar (each world's own bass line, styles.ts: the stage music is no longer
+        // dressed by the one orchestration pass, which made every world sound alike)
+        const bass = t.tracks.find((k) => k.name === 'bass' || k.name === 'drone');
+        assert.ok(bass && !bass.gate, `world ${w}: a bass from the first bar`);
       }
     }
   }

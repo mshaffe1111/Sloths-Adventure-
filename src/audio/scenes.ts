@@ -6,6 +6,7 @@ import { BOSS_THEME, WORLD_THEME } from './themes.ts';
 import { composeStageFull, stageThemeId } from './composer.ts';
 import { PACE_CODE, PACE_TEMPO, paceFor } from './orchestrate.ts';
 import { actOfWorld } from './acts.ts';
+import { STYLES } from './styles.ts';
 import { cueId } from './score.ts';
 import type { StoryCue } from '../game/story.ts';
 
@@ -160,7 +161,10 @@ export function stageMusic(world: number, levelId: string, mini: number, salt = 
   const seed = (levelId ? hashStr(levelId) ^ (salt >>> 0) : 0) >>> 0;
   // what the stage is about sets how the music moves: a run, a fight, a climb, a sneak (see orchestrate.ts)
   const pace = paceFor(objective);
-  const tempo = levelId ? Math.round(stageTempo(seed, mini) * PACE_TEMPO[pace] * 10000) / 10000 : 1;
+  // a stage's speed may move only a little from its world's own (styles.ts paceRoom): the tempo is part of a world's identity
+  const room = STYLES[Math.max(1, Math.min(10, world))]?.paceRoom ?? 0.03;
+  const nudge = levelId ? stageTempo(seed, mini) * PACE_TEMPO[pace] - 1 : 0;
+  const tempo = Math.round((1 + Math.max(-room, Math.min(room, nudge))) * 10000) / 10000;
   if (!levelId) return { id: WORLD_THEME(world), intensity: 0.35, seed, tempo, form: true };
   // about one in five stages of the first act plays the world's written theme, so Pokey's signature tunes still turn up; the later acts have
   // their own sounds (composer.ts) and never fall back to a tune written for another mood

@@ -122,10 +122,14 @@ if (v2) {
     return { id: s.id, seed: s.seed, tempo: s.tempo, intensity: 0.35, form: true };
   };
   specs['two-stages-w5'] = { seconds: 120, music: m(5, 2), events: [{ t: 0, amb: AMB[5] }, { t: 60, music: m(5, 3) }] };
-  specs['four-minutes-w3'] = {
-    seconds: 240, music: m(3, 4),
-    events: [{ t: 0, amb: AMB[3] }, { t: 95, state: { danger: 1 }, intensity: 0.7 }, { t: 112, state: { danger: 0 }, intensity: 0.35 }, { t: 170, state: { dark: 1 } }, { t: 195, state: { dark: 0 } }],
+  // three minutes of one stage (World 1, the bounciest, so every change shows): an animal near at 0:50-1:10, a dark stretch at 1:40-2:05,
+  // the exit from 2:35
+  specs['three-minutes-w1'] = {
+    seconds: 180, music: m(1, 4),
+    events: [{ t: 0, amb: AMB[1] }, { t: 50, state: { danger: 1 } }, { t: 70, state: { danger: 0 } }, { t: 100, state: { dark: 1 } }, { t: 125, state: { dark: 0 } }, { t: 155, state: { exit: 1 } }],
   };
+  // the live half of the Hugging Face comparisons: 60 s, an animal near from 0:30 to 0:45
+  for (const w of [1, 3, 9]) specs[`live-w${w}`] = { seconds: 60, music: m(w, 4), events: [{ t: 0, amb: AMB[w] }, { t: 30, state: { danger: 1 } }, { t: 45, state: { danger: 0 } }] };
   const reel: unknown[] = [{ t: 0, amb: AMB[1] }];
   // (World 2's 4th stage is one of the one-in-five that play its written tune, with the old instruments: the reel takes its 5th)
   for (let w = 2; w <= 10; w++) reel.push({ t: (w - 1) * 60, music: m(w, w === 2 ? 5 : 4), amb: AMB[w] });

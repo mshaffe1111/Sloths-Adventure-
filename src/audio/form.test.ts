@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { composeStage } from './composer.ts';
 import { stageMusic } from './scenes.ts';
 import { themeById } from './themes.ts';
-import { autoForm, formBars, ornament, parseBar, POKEY_MOTIF, rerhythm, hint } from './form.ts';
+import { autoForm, formBars, ornament, parseBar, POKEY_MOTIF, POKEY_MOTIF12, rerhythm, hint } from './form.ts';
 import { chordPcs, hashStr, parseChord, rng, SCALES } from './theory.ts';
 import { AudioCore } from './core.ts';
 import { Playback } from './music.ts';
@@ -35,7 +35,7 @@ test("Pokey's motif opens a tune in every world, on that world's lead", () => {
     const bars = (p.lines!.lead as string[]).slice(0, 2);
     // the motif's shape, in scale steps, whatever octave it sits in
     const steps = (b: string) => parseBar(b).filter((t) => t.n !== null).map((t) => t.n!);
-    const want = POKEY_MOTIF.map(steps);
+    const want = (th.stepsPerBar === 12 ? POKEY_MOTIF12 : POKEY_MOTIF).map(steps);
     const got = bars.map(steps);
     const d = got[0][0] - want[0][0];
     assert.equal(d % 7, 0, `world ${w}: moved by whole octaves`);
@@ -90,11 +90,13 @@ test('the variations keep every bar whole, and a hint is quieter than the bar it
   const r = rng(5);
   for (let w = 1; w <= 10; w++) {
     const th = composeStage(w, 99 + w, 'run');
+    const n = th.stepsPerBar ?? 16;
     for (const b of th.form!.flatMap((p) => p.lines?.lead ?? [])) {
       if (!b) continue;
-      assert.equal(len(ornament(b, r)), 16, b);
-      assert.equal(len(rerhythm(b, r)), 16, b);
-      assert.equal(len(hint(b)), 16, b);
+      assert.equal(len(b), n, b);
+      assert.equal(len(ornament(b, r)), n, b);
+      assert.equal(len(rerhythm(b, r)), n, b);
+      assert.equal(len(hint(b, n)), n, b);
       assert.ok(parseBar(hint(b)).filter((x) => x.n !== null).length <= 2);
     }
   }

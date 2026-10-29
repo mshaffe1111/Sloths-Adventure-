@@ -176,6 +176,9 @@ const mergeGate = (a: [number, number] | undefined, b: [number, number]): [numbe
  */
 export function fullOrchestra(theme: Theme): Track[] {
   const out: Track[] = [];
+  // a world's style says how much orchestra it wants (styles.ts): the cave has none, the light worlds a low bed and one double
+  const amount = theme.orch ?? 'full';
+  if (amount === 'none') return out;
   const act = actOfThemeId(theme.id);
   const mix = act ? ACT_MIX[act] : NEUTRAL_MIX;
   const cue = theme.id.startsWith('score_');
@@ -184,6 +187,7 @@ export function fullOrchestra(theme: Theme): Track[] {
   const ref = lead ? (lead.gain * trimOf(lead.inst)) / trim(realVoice(lead)) : 0.6;
   const shiftGate = (g: [number, number], by: number): [number, number] => [Math.max(0, Math.min(0.95, g[0] + by)), Math.max(0.05, Math.min(1, g[1] + by))];
   for (const b of BEDS) {
+    if (amount === 'light' && b.key !== 'low' && b.key !== 'strings') continue;
     const has = theme.tracks.some((t) => t.kind === 'chords' && b.like.includes(realVoice(t)));
     const bed: ChordTrack = {
       kind: 'chords',
@@ -193,7 +197,7 @@ export function fullOrchestra(theme: Theme): Track[] {
       hi: b.hi,
       voices: b.voices,
       mask: undefined,
-      gain: Math.round(ref * b.frac * mix.bed[b.key] * (has ? 0.5 : 1) * (cue ? 0.8 : 1) * trim(b.inst) * 1000) / 1000,
+      gain: Math.round(ref * b.frac * mix.bed[b.key] * (has ? 0.5 : 1) * (cue ? 0.8 : 1) * (amount === 'light' ? 0.6 : 1) * trim(b.inst) * 1000) / 1000,
       rev: b.rev,
       gate: b.key === 'winds' || b.key === 'horns' ? shiftGate(b.gate, mix.join[b.key]) : b.gate,
       ...(b.lite ? { lite: true } : {}),
@@ -203,7 +207,7 @@ export function fullOrchestra(theme: Theme): Track[] {
   if (lead && !cue) {
     const leadReal = realVoice(lead);
     const players = [...(DOUBLES[leadReal] ?? []).filter((d) => !mix.drop.includes(d.inst)), ...(mix.extra[leadReal] ?? [])];
-    for (const d of players) {
+    for (const d of amount === 'light' ? players.filter((x) => !x.lite).slice(0, 1) : players) {
       out.push({
         kind: 'melody',
         name: `${lead.name}+${d.inst}${d.harm ? 'H' : ''}`,

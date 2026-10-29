@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CALM, intensityLift, layerMix, layerTracks, roleOf, stepState, toneCutoff, type MusicState, type Role } from './adaptive.ts';
+import { CALM, intensityLift, layerMix, layerTracks, moodTempo, roleOf, stepState, toneCutoff, type MusicState, type Role } from './adaptive.ts';
 import { composeStage } from './composer.ts';
 import { AudioCore } from './core.ts';
 import { Playback } from './music.ts';
@@ -21,8 +21,12 @@ test('each state moves the parts it should', () => {
   assert.ok(layerMix('lead', puzzle) <= 0.1 && layerMix('perc', puzzle) <= 0.1 && layerMix('drive', puzzle) === 0, 'a puzzle room rests the tune and drums');
   assert.equal(layerMix('bed', puzzle), 1, '...and keeps the held chords as its bed');
   const dark = S({ dark: 1 });
-  assert.ok(layerMix('color', dark) <= 0.2 && layerMix('counter', dark) <= 0.2, 'the dark is thinner');
-  assert.ok(toneCutoff(dark) < 2000 && toneCutoff(CALM) >= 18000, '...and lower');
+  assert.ok(layerMix('lead', dark) === 0 && layerMix('color', dark) === 0 && layerMix('counter', dark) === 0, 'in the dark the tune falls away');
+  assert.equal(layerMix('dark', dark), 1, '...to the low drone and the sparse bell');
+  assert.ok(toneCutoff(dark) < 5000 && toneCutoff(CALM) >= 18000, '...and the top closes');
+  assert.ok(layerMix('lead', S({ danger: 1 })) < 0.2, 'danger hands the tune to the ostinato');
+  assert.ok(moodTempo(S({ danger: 1 })) >= 1.09, 'danger runs about 10% faster');
+  assert.ok(intensityLift(S({ exit: 1 })) >= 0.45, 'the exit swells everything in');
   assert.equal(layerMix('shine', S({ exit: 1 })), 1, 'the exit lifts');
   assert.equal(layerMix('drive', S({ boss: 2 })), 1);
   assert.equal(layerMix('boss', S({ boss: 2 })), 0);
@@ -72,12 +76,12 @@ test('a state change crossfades on the bar line: the layer fades in over a beat 
   pb.update(bar * 6);
   const calls = gateCalls(pb, (n) => n.startsWith('drive'), asked - 0.5);
   assert.ok(calls.length > 0);
+  // the bar lines the Playback scheduled (the piece's swell is set on each of them): danger speeds the music up, so they are not evenly spaced
+  const barLines = (pb.out.gain as unknown as FakeParam).calls.filter((c) => c.fn === 'target').map((c) => c.time);
   for (const c of calls) {
     assert.equal(c.fn, 'target', `${c.name}: ${c.fn} is a jump`);
     assert.ok((c.tau ?? 0) >= 0.2, `${c.name}: a fade of ${c.tau}s is a cut`);
-    // the bar lines: 0, bar, 2 bar ... (scheduled 20 ms early)
-    const k = (c.time + 0.02) / bar;
-    assert.ok(Math.abs(k - Math.round(k)) < 0.01, `${c.name}: changed at ${c.time.toFixed(3)}s, not on a bar line`);
+    assert.ok(barLines.some((t) => Math.abs(t - c.time) < 0.005), `${c.name}: changed at ${c.time.toFixed(3)}s, not on a bar line`);
   }
   assert.ok(calls.some((c) => c.value > 0.05), 'the drive came in');
   // and the piece did not restart or skip: the same Playback is still in its form

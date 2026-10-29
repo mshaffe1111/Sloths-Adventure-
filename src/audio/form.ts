@@ -230,6 +230,8 @@ function safe(fn: (b: string) => string, b: string, spb: number): string {
  * tunes, in that world's mode and on that world's lead, so the one thread runs through all ten worlds (the lead, 2026-10-29).
  */
 export const POKEY_MOTIF = ['5:3 5:1 6:2 5:2 3:4 r:4', '2:3 3:1 2:2 1:2 7,:4 r:4'];
+/** the same two bars in three (for the worlds in 6/8 and 3/4): the same notes, the long ones shortened */
+export const POKEY_MOTIF12 = ['5:3 6:1 5:2 3:6', '2:3 3:1 2:2 7,:6'];
 export const POKEY_ROOTS = [0, 4];
 
 /** a bar moved by whole scale steps (7 = an octave) */
