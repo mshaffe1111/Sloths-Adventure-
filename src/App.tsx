@@ -324,12 +324,19 @@ export default function App() {
     setBadgeStore(r.store);
     saveBadgeStore(r.store);
     // a stage just ended: celebrate. Badges found when a save loads or the game opens are filed quietly.
+    // (on the stage-cleared card they get a row of their own, with the medal chime when it comes in: UI-9)
     if (stats && r.fresh.length) {
       setFreshBadges(r.fresh);
-      sound.playShrineUnlocked();
+      if (screen !== 'victory') sound.playShrineUnlocked();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, allLevels, secretFound, thornHeart]);
+  // the stage-cleared card showed this run's medals in its own row (UI-9): no pop-up for the same medals once the card closes
+  const wasVictory = useRef(false);
+  useEffect(() => {
+    if (wasVictory.current && screen !== 'victory') setFreshBadges([]);
+    wasVictory.current = screen === 'victory';
+  }, [screen]);
   const changeCosmetic = (c: CosmeticChoice) => {
     setCosmetic(c);
     saveCosmetic(c);
@@ -536,7 +543,7 @@ export default function App() {
 
   // dev only: the stage-cleared card for a stage with this many stars, as if it had just been won (for screenshots)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
-    (window as unknown as { __win?: (id: string, stars: number) => void }).__win = (id: string, stars: number) => {
+    (window as unknown as { __win?: (id: string, stars: number, medals?: string[]) => void }).__win = (id: string, stars: number, medals?: string[]) => {
       const lvl = allLevels.find((l) => l.id === id);
       if (!lvl) return;
       setActiveLevel(lvl);
@@ -545,6 +552,7 @@ export default function App() {
       setScore(4210);
       setNewBest(true);
       setLastStats({ win: true, stars, livesLost: 0, heartsLost: 1, floraTotal: 36, floraCollected: 31, timeSec: 154, timeLimit: 300, maxStompChain: 2, maxCombo: 3, stomps: 4, kills: { snake: 3, frog: 2 }, seen: [], id } as StageStats);
+      setFreshBadges(medals ? BADGES.filter((b) => medals.includes(b.id)) : []);
       setScreen('victory');
     };
   }
@@ -1202,6 +1210,7 @@ export default function App() {
           newBest={newBest}
           bestScore={bestScore}
           stats={lastStats}
+          medals={screen === 'victory' ? freshBadges : undefined}
           prevId={activeLevel.secret ? null : prevStage?.id ?? null}
           nextId={activeLevel.secret ? null : nextStage?.id ?? null}
           isMuted={isMuted}

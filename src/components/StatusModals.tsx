@@ -5,7 +5,7 @@ import { PauseMenu } from './PauseMenu.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { StageCleared } from './StageCleared.tsx';
 import { GameOverCard } from './GameOverCard.tsx';
-import type { StageStats } from '../game/badges.ts';
+import type { BadgeDef, StageStats } from '../game/badges.ts';
 import { Icon } from './icons/index.tsx';
 import { Crest } from './icons/Crest.tsx';
 import { crestName } from './icons/crests.ts';
@@ -25,6 +25,8 @@ interface StatusModalsProps {
   bestScore: number;
   /** what happened in the stage that just ended */
   stats?: StageStats | null;
+  /** the medals it earned (on the stage-cleared card) */
+  medals?: BadgeDef[];
   prevId: string | null;
   nextId: string | null;
   isMuted: boolean;
@@ -60,6 +62,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   newBest,
   bestScore,
   stats,
+  medals,
   prevId,
   nextId,
   isMuted,
@@ -112,6 +115,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         newBest={newBest}
         bestScore={bestScore}
         stats={stats}
+        medals={medals}
         prevId={prevId}
         nextId={nextId}
         onNext={onNextStage}

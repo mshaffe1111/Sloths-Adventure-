@@ -47,3 +47,48 @@
 .clr-starrow .clr-mini { flex: none; margin-bottom: -2px; }
 @media (max-width: 640px) and (min-height: 521px) { .clr-won .clr-chip span { letter-spacing: 0.3px; white-space: nowrap; } }
 @media (max-height: 520px) { .clr-chips.sm .clr-chip span { white-space: nowrap; letter-spacing: 0.4px; } }
+
+/* the card's entrance (AN-11, fx/countUp.ts): the card glides up and settles (clr-in), its pieces follow in turn, the numbers count up,
+   then the stars drop in one by one, the praise lands with the last of them, and the medals come in after */
+.clr-won .clr-main > * { animation: kit-in 0.4s cubic-bezier(0.2, 1.2, 0.4, 1) backwards; }
+.clr-won .clr-main > :nth-child(1) { animation-delay: 0.12s; }
+.clr-won .clr-main > :nth-child(2) { animation-delay: 0.18s; }
+.clr-won .clr-main > :nth-child(3) { animation-delay: 0.24s; }
+.clr-won .clr-main > :nth-child(4) { animation-delay: 0.3s; }
+.clr-won .clr-main > :nth-child(5) { animation-delay: 0.36s; }
+.clr-won .clr-main > :nth-child(n+6) { animation-delay: 0.42s; }
+.clr-won .clr-hero { animation: kit-in 0.45s cubic-bezier(0.2, 1.2, 0.4, 1) 0.1s backwards; }
+/* a star not yet landed is its empty slot; on landing it drops in with a squash and a ring of light */
+.clr-star.on { animation: clr-star-land 0.5s cubic-bezier(0.2, 1.5, 0.4, 1) both; }
+@keyframes clr-star-land {
+  0% { transform: translateY(-26px) scale(1.5) rotate(-24deg); opacity: 0; }
+  55% { transform: translateY(2px) scale(0.92, 1.06) rotate(4deg); opacity: 1; }
+  78% { transform: scale(1.08, 0.94); }
+  100% { transform: none; opacity: 1; }
+}
+/* the praise waits (keeping its room, so nothing below it moves) until the stars are in, then pops */
+.clr-won .clr-main > .clr-praise { opacity: 0; animation: none; }
+.clr-won .clr-main > .clr-praise.in { opacity: 1; animation: clr-praise-in 0.42s cubic-bezier(0.2, 1.5, 0.4, 1) both; }
+@keyframes clr-praise-in { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
+/* the numbers keep their width while they count, and "New!" pops once the score has landed */
+.clr-chip b { font-variant-numeric: tabular-nums; }
+.clr-chip b.pop { display: inline-block; animation: clr-praise-in 0.38s cubic-bezier(0.2, 1.6, 0.4, 1) both; }
+/* the medals this run earned (UI-9): a short row under the stars */
+.clr-medals { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; min-height: 38px; opacity: 0; }
+.clr-medals.in { opacity: 1; }
+.clr-medals.in > * { animation: clr-star-land 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) backwards; }
+.clr-medals.in > :nth-child(2) { animation-delay: 0s; }
+.clr-medals.in > :nth-child(3) { animation-delay: 0.08s; }
+.clr-medals.in > :nth-child(4) { animation-delay: 0.16s; }
+.clr-medals.in > :nth-child(5) { animation-delay: 0.24s; }
+.clr-medals.in > :nth-child(n+6) { animation-delay: 0.32s; }
+.clr-medals-k { font-family: var(--font-ui); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gx-ink-soft); margin-right: 2px; }
+.clr-medals.in > .clr-medals-k { animation: kit-in 0.3s ease backwards; }
+@media (max-height: 520px) { .clr-medals { min-height: 30px; margin-top: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .clr-won .clr-main > *, .clr-won .clr-hero, .clr-star.on, .clr-won .clr-main > .clr-praise.in, .clr-chip b.pop, .clr-medals.in > * { animation: none; }
+}
+/* sideways the medals sit beside the stars, past a thin rule, so the card keeps its height */
+@media (max-height: 520px) {
+  .clr-starrow .clr-medals { margin: 0 0 2px 6px; padding-left: 12px; min-height: 0; border-left: 2px solid rgba(120, 80, 30, 0.25); align-self: center; }
+}
