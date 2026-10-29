@@ -1,7 +1,7 @@
 """Write tools/art/hfbatch/spec-w9-hazards.json (2026-10-29): World 9's lava surface, geyser and heat haze by img2img
 (w6to10/img2imggpu.py) from tools/art/w9/lavastart.py's starts, two strengths x two seeds each. The starts are force-added under
 tools/art/hfbatch/starts/ and read from GitHub raw at a pinned commit of gen2-w9 (BASE, set by the caller).
-    python3 tools/art/w9/make_spec.py <commit>
+    python3 tools/art/w9/make_spec.py <commit> [round]   (round 2: the burst frames and the haze again, from lavastart2.py)
 """
 import json, sys
 from pathlib import Path
@@ -26,14 +26,23 @@ P = {
 }
 NEG = ('perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, '
        '3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal, grass, trees')
+P['burst'] = ('slothadv style, painted storybook illustration, three side-on game sprites in a row on magenta, a lava geyser erupting '
+              'from the ground in three moments: 1) a short wide burst of molten lava and fire just leaving the ground; 2) a tall '
+              'fountain of molten lava shooting straight up, white-hot yellow core, orange skin, curling over at the top, glowing drops '
+              'raining off both sides; 3) the fountain collapsing, broken streams and drops of lava falling back. Liquid, glowing, '
+              'splashing, not solid. ' + STYLE)
+P['haze2'] = ('slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six separate soft curling wisps '
+              'of pale grey heat haze and thin smoke rising, each a different shape, wispy translucent painted edges, a tiny glowing '
+              'ember near the top of each. ' + STYLE)
+ROUND = sys.argv[2] if len(sys.argv) > 2 else '1'
 items = []
-for n, sts in (('lava', (0.62, 0.78)), ('geyser', (0.55, 0.7)), ('haze', (0.6, 0.75))):
+for n, sts in ((('lava', (0.62, 0.78)), ('geyser', (0.55, 0.7)), ('haze', (0.6, 0.75))) if ROUND == '1' else (('burst', (0.72, 0.86)), ('haze2', (0.75, 0.88)))):
     for st in sts:
         for sd in (7, 23):
-            w, h = (1536, 768) if n == 'geyser' else (1536, 416)
+            w, h = (1536, 768) if n in ('geyser', 'burst') else (1536, 416)
             items.append({'name': f'w9{n}-s{round(st * 100)}-{sd}', 'start': f'start-w9{n}.webp', 'prompt': P[n], 'strength': st, 'seed': sd, 'w': w, 'h': h})
 spec = {'note': "World 9's hazard art by img2img from tools/art/w9/lavastart.py, 2026-10-29",
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]}, 'neg': NEG, 'base': BASE, 'items': items}
-p = Path(__file__).resolve().parents[1] / 'hfbatch/spec-w9-hazards.json'
+p = Path(__file__).resolve().parents[1] / ('hfbatch/spec-w9-hazards.json' if ROUND == '1' else f'hfbatch/spec-w9-hazards-r{ROUND}.json')
 p.write_text(json.dumps(spec, indent=1))
 print(p, len(items))
