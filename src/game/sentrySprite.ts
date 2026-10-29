@@ -80,9 +80,8 @@ export function drawSentrySprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   ctx.beginPath();
   ctx.ellipse(0, 1, 30, 5, 0, 0, Math.PI * 2);
   ctx.fill();
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
+  // (the hit flash is the engine's, around every animal: hurtFlash.ts, AN-6)
   ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
-  ctx.filter = 'none';
   // (the eyes and the rune glow softly, a little brighter as it winds up; out once it is beaten)
   if (!enemy.defeated) {
     const a = 0.32 + (st === 'windup' ? 0.25 : 0) + 0.06 * Math.sin(time * 3 + enemy.id);
