@@ -1,0 +1,5 @@
+[["a-statues", "at('head', 4, 6); s.x = 0;"],
+ ["b-rubble-wall", "at('rubble', 1, 7); e.slideRun.line('A wall of rubble! Flick up, jump!', 3);"],
+ ["c-gap", "at('gap', 2, 6.5); e.slideRun.line('No floor! Jump!', 3);"],
+ ["d-doorway", "at('beam', 1, 6); e.slideRun.line('Low doorway! Thumb down, duck!', 3);"],
+ ["e-light", "s.z = s.c.length - 14;"]]

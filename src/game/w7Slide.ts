@@ -27,7 +27,11 @@ export const SLIDE_STAGE_ID = '7-4';
 export const SLIDE = {
   /** lane spacing (m) and the chute's half width at the floor */
   lane: 1.2,
-  halfW: 1.85,
+  halfW: 1.8,
+  /** the walls stand this far out (m): a stone ledge runs between the lanes and each wall, where the statues and torches are; the
+   *  ceiling is this high */
+  wallX: 2.4,
+  roof: 2.8,
   /** Pokey's half width (m): an obstacle's edge must overlap this to count (a brush is forgiven) */
   bodyHalf: 0.3,
   /** sliding speed (m/s) */
@@ -35,15 +39,15 @@ export const SLIDE = {
   /** steering (m/s across) and, with no thumb, how fast he settles into the nearest lane */
   steer: 6.4,
   settle: 2.6,
-  /** a jump: straight up at this, pulled down at this (airtime 2*jumpV/g ≈ 0.74 s, peak ≈ 0.97 m) */
-  jumpV: 5.2,
-  g: 14,
+  /** a jump: straight up at this, pulled down at this (airtime 2*jumpV/g = 0.8 s, peak 1.3 m: over a rubble wall he can see) */
+  jumpV: 6.5,
+  g: 16.25,
   /** a jump pressed this long before landing still goes (buffer, s) */
   buffer: 0.15,
   /** a duck lasts this long after a down, or while down is held (s), and he stands this tall ducked / up (m) */
   duck: 0.55,
   tallUp: 1.0,
-  tallDuck: 0.45,
+  tallDuck: 0.5,
   /** after a hit he flickers and nothing hurts for this long (s) */
   safe: 1.4,
   /** how far ahead the chute is drawn (m), and how far it fades in over (an obstacle is readable from FAR - FADE) */
@@ -65,13 +69,13 @@ export const KINDS: Record<ObstacleKind, { beat: 'dodge' | 'jump' | 'duck' | 'ju
   /** a fallen statue (or an urn), in one lane (two on Normal later on): steer round it */
   head: { beat: 'dodge', len: 1.0 },
   /** a low line of rubble across the chute: jump it */
-  rubble: { beat: 'jump', len: 0.8, low: 0.45 },
+  rubble: { beat: 'jump', len: 0.8, low: 0.85 },
   /** a fallen column across two lanes: jump it or steer to the open lane */
-  column: { beat: 'jumpOrDodge', len: 0.9, low: 0.55 },
+  column: { beat: 'jumpOrDodge', len: 0.9, low: 0.6 },
   /** the floor is gone across the chute: jump it (len is Normal's; Easy's is shorter, see gapLen) */
   gap: { beat: 'jump', len: 2.6 },
   /** a beam across the chute at head height: duck under it (high = its underside) */
-  beam: { beat: 'duck', len: 0.6, high: 0.6 },
+  beam: { beat: 'duck', len: 0.6, high: 0.75 },
 };
 export const gapLen = (easy: boolean) => (easy ? 1.8 : 2.6);
 
@@ -117,10 +121,10 @@ export interface SlideCourse {
 export const SLIDE_LINES = {
   drop: 'Whoa! Lean left, lean right!',
   head: 'Statues! Steer round them.',
-  rubble: 'Rubble. Flick up, jump it!',
+  rubble: 'A wall of rubble! Flick up, jump!',
   column: 'Fallen column. Jump it, or go round.',
   gap: 'No floor! Jump!',
-  beam: 'Low beam! Thumb down, duck!',
+  beam: 'Low doorway! Thumb down, duck!',
   hit: 'Ow. Eyes ahead, Pokey.',
   light: 'Light! There is an end!',
 } as const;
@@ -146,16 +150,18 @@ function rng(seed: number) {
 }
 
 /**
- * The course, in seconds (the same shape on both difficulties; Easy is slower and has fewer obstacles, more room between them, and
- * never two lanes blocked by heads). Sawtooth: learn, build, a breather at each flag, the climax near the end, the light.
+ * The course, in seconds (the same shape on both settings; Easy is slower, with fewer obstacles and more room between them, and never
+ * two lanes of statues at once, but it asks for every move). Matt, 2026-10-29: "Everything can be done just by avoiding objects": so
+ * every section past the first has things across the WHOLE chute (rubble walls to jump, gaps to jump, low doorways to duck), and the
+ * one-lane statues come in front of them, so a steer is followed by a jump or a duck.
  *
- *   0-6     the drop in: petals only, "lean left, lean right" (steering is taught with petals to steer for)
- *   6-22    heads: one lane, then (Normal) two
- *   22-36   rubble (taught), mixed with heads                       flag
- *   38-52   columns across two lanes (taught): jump or go round
- *   52-66   gaps (taught), heads between them                       flag
- *   68-82   beams (taught), heads between them                      flag
- *   84-104  everything, the climax (Normal: tighter)
+ *   0-6     the drop in: petals to steer for ("lean left, lean right")
+ *   6-20    statues and rubble piles in one lane (Normal: two, later)
+ *   20-34   rubble walls across the chute (taught), between statues          flag
+ *   36-50   gaps across the chute (taught), a statue before some             flag
+ *   52-66   low doorways across the chute (taught), statues, rubble walls    flag
+ *   68-80   fallen columns over two lanes (taught: jump or go round), all of it
+ *   82-104  the climax: everything, in steer-then-jump and steer-then-duck pairs
  *   104-110 the light at the end: petals, then out
  */
 export function buildCourse(seed: number, easy: boolean): SlideCourse {
@@ -169,7 +175,7 @@ export function buildCourse(seed: number, easy: boolean): SlideCourse {
   const taught = new Set<ObstacleKind>();
   const pick = <T,>(a: readonly T[]) => a[Math.floor(R() * a.length)];
   const lx = (lane: number) => (lane - 1) * SLIDE.lane;
-  /** the free lane of the last steering row, so the next one's free lane is never two lanes over in too short a time */
+  /** the free lane of the last steering row (the next row's free lane is one he can get to in time), and when the last thing ends */
   let lastFree = 1;
   let lastT = -9;
   const line = (t: number, id: keyof typeof SLIDE_LINES, seconds = 3) => lines.push({ z: Z(t), id, text: SLIDE_LINES[id], seconds });
@@ -180,29 +186,26 @@ export function buildCourse(seed: number, easy: boolean): SlideCourse {
     obstacles.push({ z: Z(t), kind, lanes, len, ...(first ? { taught: true } : {}), look: Math.floor(R() * 3) });
     // his line comes 2.2 s before the first of a kind (it is readable by then: (SLIDE.far - SLIDE.fade) / speed is over 2.3 s)
     if (first) line(t - 2.2, kind);
-    lastT = t;
+    lastT = t + len / v;
   };
   const petalRow = (t0: number, t1: number, lane: number, y = 0.35) => {
     for (let t = t0; t <= t1 + 1e-6; t += 0.3) petals.push({ z: Z(t), x: lx(lane), y });
   };
-  /** a steering row: heads in `n` lanes, the free lane reachable from the last one in time */
+  /** a steering row: statues in `n` lanes, the free lane one he can reach in time from the last */
   const heads = (t: number, n: number) => {
     const gap = t - lastT;
-    // lanes he can get to: a lane change takes LANE_TIME, plus a reaction of 0.35 s (0.6 s on Easy)
     const reach = Math.max(0, Math.floor((gap - (easy ? 0.6 : 0.35)) / LANE_TIME));
     const free = [0, 1, 2].filter((l) => Math.abs(l - lastFree) <= Math.max(1, reach));
     const f = pick(free);
     const blocked = [0, 1, 2].filter((l) => l !== f);
-    const lanes = n >= 2 ? blocked : [pick(blocked)];
-    put(t, 'head', lanes);
+    put(t, 'head', n >= 2 ? blocked : [pick(blocked)]);
     lastFree = f;
-    // a petal or two in the free lane, just past the heads (a reward for the right line)
     if (R() < 0.5) petals.push({ z: Z(t) + 1.4, x: lx(f), y: 0.35 });
   };
   const across = (t: number, kind: 'rubble' | 'gap' | 'beam') => {
     put(t, kind, [0, 1, 2]);
-    // petals in an arc over rubble and gaps (they show the jump), under a beam (they show the duck)
-    if (kind !== 'beam') for (let i = -2; i <= 2; i++) petals.push({ z: Z(t) + i * 0.85, x: lx(lastFree), y: 0.6 + 0.5 * (1 - (i * i) / 4) });
+    // petals in an arc over a wall or a gap (they show the jump), low under a doorway (they show the duck)
+    if (kind !== 'beam') for (let i = -2; i <= 2; i++) petals.push({ z: Z(t) + (kind === 'gap' ? gapLen(easy) / 2 : 0) + i * 0.9, x: lx(lastFree), y: 0.9 + 0.5 * (1 - (i * i) / 4) });
     else petals.push({ z: Z(t), x: lx(lastFree), y: 0.25 });
   };
   const column = (t: number) => {
@@ -211,91 +214,97 @@ export function buildCourse(seed: number, easy: boolean): SlideCourse {
     lastFree = open;
   };
   const sec = (t0: number, t1: number, name: string) => sections.push({ z0: Z(t0), z1: Z(t1), name });
-  /** the rhythm: Normal's beats come every `n` s, Easy's every `e` s, with a little jitter */
-  const step = (n: number, e: number) => (easy ? e : n) + (R() - 0.5) * 0.3;
+  /** a beat: Normal every `n` s, Easy every `e` s, a little jitter; timed from the end of the last thing (a gap's far edge) */
+  const next = (n: number, e: number) => lastT + (easy ? e : n) + (R() - 0.5) * 0.3;
+  /** a steer then (shortly after) something across the chute: the pair Matt asked for */
+  const pair = (t: number, kind: 'rubble' | 'gap' | 'beam') => {
+    heads(t, !easy && R() < 0.35 ? 2 : 1);
+    across(lastT + (easy ? 1.5 : 1.05), kind);
+  };
 
   // 1. the drop in
   sec(0, 6, 'drop');
   line(0.8, 'drop', 3.5);
   petalRow(2.0, 3.0, 0);
   petalRow(3.8, 4.8, 2);
-  // 2. heads
-  sec(6, 22, 'heads');
-  let t = 8.6;
-  heads(t, 1);
-  t += 2.6;
-  while (t < 21) {
-    heads(t, !easy && t > 15 && R() < 0.5 ? 2 : 1);
-    t += step(1.45, 2.1);
+  // 2. statues
+  sec(6, 20, 'statues');
+  heads(8.6, 1);
+  let t = next(2.6, 2.6);
+  while (t < 19) {
+    heads(t, !easy && t > 14 && R() < 0.5 ? 2 : 1);
+    t = next(1.4, 2.1);
   }
-  // 3. rubble
-  sec(22, 36, 'rubble');
-  t = Math.max(t, 24.5);
-  across(t, 'rubble');
-  t += 2.8;
-  while (t < 34) {
-    if (R() < 0.45) across(t, 'rubble');
-    else heads(t, !easy && R() < 0.4 ? 2 : 1);
-    t += step(1.5, 2.2);
-  }
-  const flags = [Z(36)];
-  petalRow(36.5, 37.5, 1);
-  // 4. columns
-  sec(38, 52, 'columns');
-  t = 40.5;
-  column(t);
-  t += 2.8;
-  while (t < 51) {
-    if (R() < 0.6) column(t);
-    else heads(t, 1);
-    t += step(1.5, 2.2);
-  }
-  // 5. gaps
-  sec(52, 66, 'gaps');
-  t = Math.max(t, 54.5);
-  across(t, 'gap');
-  t += 3;
-  while (t < 65) {
-    if (R() < 0.45) across(t, 'gap');
-    else heads(t, !easy && R() < 0.4 ? 2 : 1);
-    t += step(1.6, 2.3);
-  }
-  flags.push(Z(66.5));
-  petalRow(67, 68, lastFree);
-  // 6. beams
-  sec(68, 82, 'beams');
-  t = 70.5;
-  across(t, 'beam');
-  t += 3;
-  while (t < 81) {
-    if (R() < 0.45) across(t, 'beam');
-    else heads(t, 1);
-    t += step(1.6, 2.3);
-  }
-  flags.push(Z(82.5));
-  // 7. the climax: everything
-  sec(84, 104, 'climax');
-  t = 85;
-  while (t < 103) {
+  // 3. rubble walls (taught on their own, then between statues and in pairs)
+  sec(20, 34, 'rubble');
+  across(Math.max(t, 22.5), 'rubble');
+  t = next(2.6, 3);
+  while (t < 33) {
     const r = R();
-    if (r < 0.15) across(t, 'rubble');
-    else if (r < 0.3) across(t, 'gap');
-    else if (r < 0.42) across(t, 'beam');
-    else if (r < 0.62) column(t);
+    if (r < 0.4) pair(t, 'rubble');
+    else if (r < 0.7) across(t, 'rubble');
+    else heads(t, 1);
+    t = next(1.5, 2.2);
+  }
+  const flags = [Z(Math.max(34, lastT + 0.8))];
+  petalRow(35, 36, 1);
+  // 4. gaps
+  sec(36, 50, 'gaps');
+  across(Math.max(lastT + 2, 38.5), 'gap');
+  t = next(2.6, 3);
+  while (t < 49) {
+    const r = R();
+    if (r < 0.45) pair(t, 'gap');
+    else if (r < 0.75) across(t, 'gap');
+    else heads(t, 1);
+    t = next(1.5, 2.2);
+  }
+  flags.push(Z(Math.max(50, lastT + 0.8)));
+  petalRow(51, 52, lastFree);
+  // 5. low doorways
+  sec(52, 66, 'doorways');
+  across(Math.max(lastT + 2, 54.5), 'beam');
+  t = next(2.6, 3);
+  while (t < 65) {
+    const r = R();
+    if (r < 0.4) pair(t, 'beam');
+    else if (r < 0.65) across(t, 'beam');
+    else if (r < 0.85) across(t, 'rubble');
+    else heads(t, 1);
+    t = next(1.5, 2.2);
+  }
+  flags.push(Z(Math.max(66, lastT + 0.8)));
+  // 6. fallen columns, among all of it
+  sec(68, 80, 'columns');
+  column(Math.max(lastT + 2, 70));
+  t = next(2.4, 3);
+  while (t < 79) {
+    const r = R();
+    if (r < 0.4) column(t);
+    else if (r < 0.6) across(t, 'gap');
+    else if (r < 0.8) across(t, 'beam');
+    else across(t, 'rubble');
+    t = next(1.5, 2.2);
+  }
+  // 7. the climax: pairs and everything
+  sec(82, 104, 'climax');
+  t = Math.max(next(1.5, 2.2), 82);
+  while (t < 102) {
+    const r = R();
+    if (r < 0.45) pair(t, pick(['rubble', 'gap', 'beam'] as const));
+    else if (r < 0.65) across(t, pick(['rubble', 'gap', 'beam'] as const));
+    else if (r < 0.8) column(t);
     else heads(t, !easy && R() < 0.5 ? 2 : 1);
-    // (a gap's own length comes on top: the next beat is timed from its far edge)
-    t += step(1.3, 2.0) + (obstacles[obstacles.length - 1].kind === 'gap' ? gapLen(easy) / v : 0);
+    t = next(1.3, 2.0);
   }
   // 8. the light
-  sec(104, 110, 'light');
-  line(104.5, 'light', 3);
-  petalRow(105, 107, 1, 0.35);
-  const length = Z(110);
-  const bends = [
-    { a: 2.0, k: 26 + R() * 8, p: R() * 6.28 },
-    { a: 0.9, k: 10 + R() * 4, p: R() * 6.28 },
-  ];
-  return { easy, speed: v, length, obstacles, petals, flags, lines, sections, bends };
+  const tl = Math.max(104, lastT + 1.5);
+  sec(tl, tl + 6, 'light');
+  line(tl + 0.5, 'light', 3);
+  petalRow(tl + 1, tl + 3, 1, 0.35);
+  const length = Z(tl + 6);
+  // (a straight chute: the painted far view and the pieces are drawn for one)
+  return { easy, speed: v, length, obstacles, petals, flags, lines, sections, bends: [] };
 }
 
 // ───────────────────────── the proof ─────────────────────────
@@ -310,10 +319,12 @@ export function checkSlide(c: SlideCourse): string[] {
   const obs = [...c.obstacles].sort((a, b) => a.z - b.z);
   let free = new Set([0, 1, 2]);
   let lastZ = -99;
+  let lastAir = false;
   for (const o of obs) {
     const dt = (o.z - lastZ) / c.speed;
-    // nothing within a jump's landing of the last thing (he must be on the ground and ready again)
-    if (dt < AIRTIME * 0.75 + 0.25) bad.push(`z ${o.z}: only ${dt.toFixed(2)} s after the last obstacle`);
+    // room after the last thing: after a jump or a duck he must be down and ready again; after a steer, a moment to react
+    const need = lastAir ? AIRTIME * 0.75 + 0.25 : c.easy ? 1.0 : 0.7;
+    if (dt < need) bad.push(`z ${o.z}: only ${dt.toFixed(2)} s after the last obstacle`);
     const steer = KINDS[o.kind].beat === 'dodge';
     const open = steer ? [0, 1, 2].filter((l) => !o.lanes.includes(l)) : [0, 1, 2];
     if (!open.length) bad.push(`z ${o.z}: no clear lane`);
@@ -330,7 +341,10 @@ export function checkSlide(c: SlideCourse): string[] {
       if (cross > AIRTIME - 0.25) bad.push(`z ${o.z}: a ${o.kind} too long to jump (${cross.toFixed(2)} s)`);
     }
     lastZ = o.z + o.len;
+    lastAir = KINDS[o.kind].beat !== 'dodge';
   }
+  // every move is asked for: something across the whole chute to jump (rubble, a gap) and to duck (a doorway), and statues to steer round
+  for (const k of ['rubble', 'gap', 'beam', 'head'] as const) if (!c.obstacles.some((o) => o.kind === k)) bad.push(`no ${k}`);
   return bad;
 }
 

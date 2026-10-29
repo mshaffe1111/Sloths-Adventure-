@@ -1,6 +1,6 @@
 import { createRequire } from 'module';
 const { chromium } = createRequire(import.meta.url)(process.env.PW ?? 'playwright');
-const out = '/home/user/Sloths-Adventure-/reference/prop-sheets/qa-notes/7-4-slide-mockup/';
+const out = process.env.OUT ?? '/home/user/Sloths-Adventure-/reference/prop-sheets/qa-notes/7-4-slide-mockup/';
 const [mode] = process.argv.slice(2);
 const vp = mode === 'up' ? { width: 390, height: 844 } : { width: 844, height: 390 };
 const b = await chromium.launch();
@@ -25,7 +25,7 @@ for (let i = 0; i < 40; i++) { const s = await E('return e.slideRun.phase'); if 
 console.log('phase', await E('return e.slideRun.phase'));
 const shots = JSON.parse(process.argv[3] ?? '[]');
 for (const [name, code] of shots) {
-  await E(`const s = e.slideRun.sim; const at = (k, n = 0, back = 8) => { const o = s.sorted.filter((o) => o.kind === k)[n]; s.z = o.z - back; return o; }; s.safeT = 0; ${code}`);
+  await E(`const s = e.slideRun.sim; const at = (k, n = 0, back = 8) => { const o = s.sorted.filter((o) => o.kind === k)[n]; s.z = o.z - back; return o; }; s.safeT = 0; ${code}; e.player.hp = e.player.maxHp;`);
   await p.waitForTimeout(250);
   await p.screenshot({ path: out + `${mode}-${name}.jpg`, type: 'jpeg', quality: 82 });
 }

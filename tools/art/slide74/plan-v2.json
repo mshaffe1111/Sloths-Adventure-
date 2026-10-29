@@ -1,0 +1,7 @@
+[["crumble", 75, "e.player.x = 3150;"],
+ ["drop+statues", 210, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'head')[0].z - 26;"],
+ ["rubble walls", 180, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'rubble')[1].z - 26;"],
+ ["gaps", 180, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'gap')[1].z - 26;"],
+ ["doorways", 180, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'beam')[1].z - 26;"],
+ ["climax", 120, "const s = e.slideRun.sim; s.z = s.c.sections.find((x) => x.name === 'climax').z0 + 10;"],
+ ["the light", 105, "const s = e.slideRun.sim; s.z = s.c.length - 26;"]]
