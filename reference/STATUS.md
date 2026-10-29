@@ -1,6 +1,6 @@
 # Status board (the lead session keeps this current; see reference/LEAD-PLAYBOOK.md)
 
-Last updated: 2026-10-29 3:45 PM ET (supervision round; next 4:25 PM ET). Matt's QA session is blocked on his approval of a send_message (Build 1 push request).
+Last updated: 2026-10-29 3:45 PM ET (supervision round; next 4:25 PM ET). Merged 4:20 PM ET: polish-a2 1205a6e, controls ab0f077, hf-art-stage 5e66912 (gate5 running); polish-c rebasing on its own machine. Matt 4:20 PM ET: no upscaling, native HD from HF in one batch (sent to polish-edges for far + mood strips). Matt's QA session is blocked on his approval of a send_message (Build 1 push request).
 
 Every polish-report item, with its owner and status: reference/polish-report/TRACKER.md (keep it current with this board).
 ## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
