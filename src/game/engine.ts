@@ -5057,6 +5057,8 @@ export class GameEngine {
 
   /** he has just jumped (`second`: double jumped). A plain jump is as it always was; a second jump taken with nothing steering pushes forward the way he faces, except where a drift would hurt (the climbing and boss stages) */
   private takeOff(second: boolean) {
+    // (a touch or Pad jump's minimum hold counts from now, in game time: CT-12)
+    (this.input as { noteTakeOff?: () => void }).noteTakeOff?.();
     const help = this.touchHelp();
     if (help === 'off') return;
     const inp = this.input.state;

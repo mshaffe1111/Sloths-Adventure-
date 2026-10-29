@@ -327,3 +327,28 @@ test('CT-7: a second thumb resting on the glass, then flicking up, jumps; a rest
     else assert.ok(s.words.includes('mega'), `a deliberate hold of ${rest} ms is still the mega: ${s.words}`);
   }
 });
+
+// ───────────────────────────── CT-12: jump height ─────────────────────────────
+
+/** standing, a quick flick straight up lifted at once (`phase` ms against the frames; `freezeMs` of hitstop just after it): how high */
+function flickHeight(phase: number, freezeMs = 0): number {
+  const rig = floorRig();
+  rig.run(100 + phase);
+  rig.push(upFlick(1, 800, 700, 50, 40));
+  let top = G;
+  if (freezeMs) {
+    rig.run(45);
+    rig.freeze(freezeMs);
+  }
+  rig.run(1200, () => (top = Math.min(top, rig.p.y)));
+  return G - top;
+}
+
+test('CT-12: a quick flick jumps the same height whatever the frame phase, and a hitstop just after it does not cut it low', () => {
+  const hs = Array.from({ length: 12 }, (_, i) => flickHeight(i * 3));
+  assert.ok(Math.max(...hs) - Math.min(...hs) <= 2, `heights by phase: ${hs.map((h) => h.toFixed(0)).join(' ')}`);
+  for (const f of [45, 80, 110]) {
+    const h = flickHeight(0, f);
+    assert.ok(h >= Math.min(...hs) - 2, `a ${f} ms hitstop after the flick: ${h.toFixed(0)} px against ${Math.min(...hs).toFixed(0)}`);
+  }
+});

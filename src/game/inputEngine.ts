@@ -3,7 +3,12 @@ import { isEasy } from './difficulty.ts';
 import { FORGIVE } from './physics.ts';
 import { parseTouchVector } from './rules.ts';
 
-/** a touch jump is held at least this long: a jump stops rising the moment the press is let go, and the level builder assumes a full jump (about 216 ms of rising), so a flick must give a full one, not the three-quarters a 130 ms press gave */
+/**
+ * a touch jump is held at least this long: a jump stops rising the moment the press is let go, and the level builder assumes a full jump
+ * (about 216 ms of rising), so a flick must give a full one, not the three-quarters a 130 ms press gave. It is game time from the take-off
+ * (polish report CT-12): timed on the wall clock from the press, take-off 0 to 33 ms later made heights jitter, and a hitstop or a slow
+ * frame (the engine frozen, the clock running) cut a flick to half height
+ */
 export const MIN_TOUCH_JUMP_HOLD_MS = 220;
 
 /**
@@ -84,8 +89,10 @@ export class InputEngine {
     if (on) this.fresh();
     this.state.hold = this.holds.touch || this.holds.keys || this.holds.pad || this.holds.gamepad;
   }
-  private touchUpAt = 0;
-  private upReleaseTimer: number | undefined;
+  /** game seconds a touch or Pad jump must still be held (counted in update, from the take-off: noteTakeOff) */
+  private touchHold = 0;
+  /** the finger let go of the jump, and the release waits for touchHold */
+  private releaseWanted = false;
 
   constructor() {
     this.bindKeyboardEvents();
@@ -240,8 +247,8 @@ export class InputEngine {
     this.climbStop = false;
     this.holds = { touch: false, keys: false, pad: false, gamepad: false };
     this.state.hold = false;
-    if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
-    this.upReleaseTimer = undefined;
+    this.touchHold = 0;
+    this.releaseWanted = false;
     this.jumpBufferTimer = 0;
     this.punchBufferTimer = 0;
     this.kickBufferTimer = 0;
@@ -277,9 +284,9 @@ export class InputEngine {
     this.fresh();
     // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir)
     this.state.jumpLean = lean;
-    if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
-    this.upReleaseTimer = undefined;
-    this.touchUpAt = performance.now();
+    // (held at least MIN_TOUCH_JUMP_HOLD_MS from the take-off; until he takes off, as long as the press can wait to be used as well)
+    this.touchHold = MIN_TOUCH_JUMP_HOLD_MS / 1000 + pressKeep();
+    this.releaseWanted = false;
     this.state.up = true;
     this.state.jumpPressed = true;
     this.state.jumpHeld = true;
@@ -306,20 +313,23 @@ export class InputEngine {
   }
 
   public releaseTouchUp() {
-    // a quick flick lifts the finger almost at once, and an instant release would cut the jump to a hop:
-    // the press counts for at least this long
-    const wait = MIN_TOUCH_JUMP_HOLD_MS - (performance.now() - this.touchUpAt);
-    if (wait > 4) {
-      if (this.upReleaseTimer === undefined) {
-        this.upReleaseTimer = window.setTimeout(() => {
-          this.upReleaseTimer = undefined;
-          this.releaseTouchUp();
-        }, wait);
-      }
+    // a quick flick lifts the finger almost at once, and an instant release would cut the jump to a hop: the press counts for at least
+    // MIN_TOUCH_JUMP_HOLD_MS of game time after the take-off (update lets go then)
+    if (this.touchHold > 0) {
+      this.releaseWanted = true;
       return;
     }
+    this.letGoOfJump();
+  }
+  private letGoOfJump() {
+    this.releaseWanted = false;
     this.state.up = this.touchClimb < 0;
     this.state.jumpHeld = false;
+  }
+
+  /** the engine: he just took off (a jump or a double jump). A touch or Pad jump's minimum hold counts from here, in game time */
+  public noteTakeOff() {
+    if (this.touchHold > 0) this.touchHold = MIN_TOUCH_JUMP_HOLD_MS / 1000;
   }
 
   /**
@@ -438,6 +448,15 @@ export class InputEngine {
         this.padPrev = now;
       }
     } catch {}
+
+    // the touch jump's minimum hold, in game time (a hitstop or a capped slow frame does not run it down)
+    if (this.touchHold > 0) {
+      this.touchHold -= dt;
+      if (this.touchHold <= 0) {
+        this.touchHold = 0;
+        if (this.releaseWanted) this.letGoOfJump();
+      }
+    }
 
     if (this.jumpBufferTimer > 0) {
       this.jumpBufferTimer -= dt;

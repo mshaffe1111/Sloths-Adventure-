@@ -118,6 +118,17 @@ export class TouchRig {
     this.queue.sort((a, b) => a.t - b.t);
   }
 
+  /** the engine is frozen (a hitstop: engine.ts loop) while the clock, the fingers and the timers run on, this many ms */
+  freeze(ms: number) {
+    this.frozen = true;
+    try {
+      this.run(ms);
+    } finally {
+      this.frozen = false;
+    }
+  }
+  private frozen = false;
+
   /** run the clock this many ms: finger events, the recogniser's ticks, timers and engine frames, in time order */
   run(ms: number, onFrame?: () => void) {
     const end = clock + ms;
@@ -145,6 +156,7 @@ export class TouchRig {
         if (this.g.active) this.g.tick(clock);
       } else {
         this.nextFrame += FRAME_MS;
+        if (this.frozen) continue;
         this.r.e.update(DT);
         this.frames++;
         onFrame?.();
