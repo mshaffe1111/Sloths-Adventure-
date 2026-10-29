@@ -259,6 +259,14 @@ test link, the QA testers or a release until the lead has re-run them, on more t
     6-5 Easy. Long flats carry a root knee (a hop) whatever stands on them (`w6Ground.ts` sunken yard, caiman pair, pools).
   - *Sections have a size*: 600 to 1700 px plus 370 px a liana (`w6Swing.test.ts`). Adding lit roots to the dark stretches meant
     trimming them back inside that.
+  - *Animals stood on the take-offs* (2026-10-29). 82 hops on 6-2, 6-5 and 6-9 took off or landed within 120 px of an animal: a patrol
+    covered its whole piece, and World 6's knee flats are short. gen2 missed it three ways: the pipeline didn't know the rule (it kept
+    animals off the safe spots only), curation didn't measure it (its filters were levelCheck, the §2 numbers and the jump bots), and the
+    rule lived only in the old generator's `stageQuality.test.ts`, which 5-7 and 5-9 passed by luck (wide flats). Now the pipeline keeps
+    every patrol `JUMP_CLEAR` (120 px) from each take-off and landing, using the same jumps the check finds (`stageMetrics.ts`
+    `jumpEdges`), and curation drops any roll with an animal by a jump (7770de7). The lesson: every rule a full-suite test holds a stage
+    to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
+    reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
 
 ## 7. Where things are
 

@@ -340,6 +340,8 @@ Follow these steps in order. Each one points at World 6, which did all of them, 
    - banks between creeks are 360 px or more;
    - no long flat without a knee, since Easy drops the animals;
    - nothing that a flag or an animal must stand in sits inside a zone;
+   - an animal needs a flat long enough to stay 120 px from every hop on and off it (`JUMP_CLEAR`). The pipeline drops it from a shorter
+     one, so a knee flat holds no animal;
    - a section with a tip on its first piece is never mirrored.
 3. **Rooms** (`worlds/wNRooms.ts`, as `w6Rooms.ts`): each stage's puzzle room goes in `WorldManifest.required` (B11), never by
    weight, and the stage's sheet list loads the kit pieces (`stageSheets.ts` `GEN2_ROOMS`).
@@ -362,12 +364,15 @@ Follow these steps in order. Each one points at World 6, which did all of them, 
    flags on every raw roll.
 8. **Curate** (B8), one stage at a time, then commit `seeds.ts`:
    `npx tsx tools/gen2/curate.ts --stages N-1 --rolls 400 --keep 16 --apart [--rooms 8] --json out.json --report out.md`.
-   Any change to sections, the pipeline or the liana model means curating again.
+   Any change to sections, the pipeline or the liana model means curating again. Before trusting curation, check that its filters
+   (`failsOf`) cover every rule the full suite holds a stage to (`stageQuality.test.ts`, `levels.test.ts`, `zones.test.ts`). A rule
+   only a test knows ships broken rolls (the animal clearance, STAGE-RULES §6).
 9. **Easy goals**: run the kid first-timer (`tools/inspect/firsttimer.ts`, `FT_KID`) on seeds 1-3 with two trials. Use the
    second-lowest count as `easyGoal`, so the kid makes it in 5 of 6 runs.
 10. **The checks** (CLAUDE.md), in order:
     - `npx tsc --noEmit -p .`;
-    - the full test suite;
+    - the full test suite, and the gen2 tests too (CLAUDE.md's command doesn't reach `src/game/gen2/`):
+      `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts tools/gen2/*.test.ts`;
     - `npx tsx tools/inspect/era.ts --worlds N --rolls 200` (shipped variety 0.35 or more);
     - `npx tsx tools/inspect/inspect.ts --worlds N --firsttimer --seed S` for S = 1, 2, 3;
     - `npx vite build` (no asset over 4 MiB);
