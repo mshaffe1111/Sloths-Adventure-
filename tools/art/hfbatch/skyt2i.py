@@ -1,0 +1,170 @@
+"""X-16 round 5 (the lead, 2026-10-29): fresh start pictures for the 11 skies round 4 left on the cover fit. Round 4 showed the img2img
+pass hardly moves its start, so the start has to be good already: here it is painted from text, not built from a donor sky or a gradient.
+
+Per take (Qwen-Image with the style model mshaffe111/slothadv-style-lora, one load for both pipelines):
+  1. sky    text-to-image, sky only (TW2 x TH2), the strip's world and light in the prompt, anything with a horizon in the negative
+  2. start  the sky Lanczos-scaled to the strip's width (+ a wrap margin crossfaded into its left end, so it repeats like the strip), its
+            bottom rows squeezed into the E rows above the strip, matched in colour to the strip's top rows, eased into its top row
+  3. join   inpainted across the join only (from JA x E above the strip's top to JB x H into it), sequential overlapping tiles round the
+            strip as a circle, each tile keeping what the tile before painted, so the strip's trunks, leaves and smoke carry on up and the
+            join is painted, not a straight crossfade (round 4's failure)
+Results to the bucket mshaffe111/w5-xfer, under <SUB>/:
+  <name>.webp            E + O rows (the canvas skycut.py cuts: the sky, then the strip's top 16%), q95
+  start-<name>.jpg       step 2, before the join is painted
+  t2i-<name>.jpg         step 1
+  carrier-<TAG>-<k>.png  all of them packed byte for byte into greyscale PNGs under 6 MB (tools/art/w5/unpack_carrier.py)
+env SPEC = the spec's bucket path: {"loras": {"style": [repo, file, scale]}, "items": [{"name", "src" (url of the far strip), "sky",
+"join", "neg" (the sky's), "neg_join", "seed"}]}; SUB; TAG. The token reaches the job only as the secret HF_TOKEN.
+"""
+import io, json, math, os, time, urllib.request
+from pathlib import Path
+
+import numpy as np
+import torch
+from PIL import Image
+from scipy.ndimage import uniform_filter1d
+from huggingface_hub import hf_hub_download
+
+tok = os.environ['HF_TOKEN']
+ROOT = Path(os.environ.get('OUT', '/out'))
+OUT = ROOT / os.environ['SUB']
+SPEC = json.loads((ROOT / os.environ['SPEC']).read_text())
+TAG = os.environ.get('TAG', 'sky5')
+t0 = time.time()
+
+E_SHARE, O_SHARE, C_SHARE = 0.35, 0.16, 0.45  # tallstart.py E_SHARE, skycut.py O, the strip shown below the join for context
+JA, JB = 0.40, 0.10  # the join band: this share of E above the strip's top, this share of H into the strip
+TW, TW2, TH2 = 1024, 1664, 640
+
+
+def put(path, data):
+    p = OUT / path
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_bytes(data)
+    print('PUT', path, len(data), flush=True)
+
+
+from diffusers import QwenImagePipeline, QwenImageInpaintPipeline  # noqa: E402
+t2i = QwenImagePipeline.from_pretrained('Qwen/Qwen-Image', torch_dtype=torch.bfloat16).to('cuda')
+print('LOADED', round(time.time() - t0), flush=True)
+
+repo, fn, scale = SPEC['loras']['style']
+path = hf_hub_download(repo, fn, token=tok)
+try:
+    t2i.load_lora_weights(path, adapter_name='style')
+except Exception as e:  # ai-toolkit key names, as striphdgpu.py
+    print('LORA direct failed:', str(e)[:200], flush=True)
+    from safetensors.torch import load_file
+    sd2 = {}
+    for k, v in load_file(path).items():
+        k2 = k
+        for pre in ('diffusion_model.', 'model.diffusion_model.', 'base_model.model.'):
+            if k2.startswith(pre):
+                k2 = 'transformer.' + k2[len(pre):]
+        if not k2.startswith('transformer.'):
+            k2 = 'transformer.' + k2
+        sd2[k2] = v
+    t2i.load_lora_weights(sd2, adapter_name='style')
+t2i.set_adapters(['style'], adapter_weights=[scale])
+inp = QwenImageInpaintPipeline(**t2i.components)  # the same weights, LoRA and all
+
+
+def jpg(a, q=85):
+    b = io.BytesIO(); Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)).save(b, 'JPEG', quality=q)
+    return b.getvalue()
+
+
+def start(sky, rgb, E):
+    """the sky over the strip: scaled to the strip's width plus a wrap margin crossfaded into its left end, its bottom rows squeezed
+    (at most 1.4x) into E rows, matched to the strip's top rows' colour (mean, and the spread tempered), eased into the strip's top row"""
+    H, W, _ = rgb.shape
+    M = W // 6
+    s = Image.fromarray(sky)
+    h = round(s.height * (W + M) / s.width)
+    big = np.asarray(s.resize((W + M, h), Image.LANCZOS)).astype(np.float32)
+    t = np.linspace(0, 1, M, dtype=np.float32)[None, :, None]
+    t = t * t * (3 - 2 * t)
+    big[:, :M] = big[:, W:W + M] * (1 - t) + big[:, :M] * t  # the right end runs on into the left
+    big = big[:, :W]
+    take = min(h, round(E * 1.4))
+    up = np.asarray(Image.fromarray(big[h - take:].astype(np.uint8)).resize((W, E), Image.LANCZOS)).astype(np.float32)
+    top = rgb[: max(8, H // 8)].reshape(-1, 3)
+    a = up[-max(8, E // 4):].reshape(-1, 3)  # matched where it meets the strip, so the light at the join is the strip's own
+    up = (up - a.mean(0)) / np.maximum(a.std(0), 1) * (0.5 * a.std(0) + 0.5 * top.std(0)) + top.mean(0)
+    k = int(E * 0.10)
+    t = np.linspace(0, 1, k, dtype=np.float32)[:, None, None]
+    t = t * t * (3 - 2 * t)
+    up[E - k:] = up[E - k:] * (1 - t) + rgb[:1] * t
+    return np.clip(up, 0, 255)
+
+
+done = []
+for it in SPEC['items']:
+    t1 = time.time()
+    try:
+        with urllib.request.urlopen(it['src'], timeout=60) as r:
+            rgb = np.asarray(Image.open(io.BytesIO(r.read())).convert('RGB')).astype(np.float32)
+        H, W, _ = rgb.shape
+        E = int(round(H * E_SHARE / 16) * 16)
+        O = int(round(H * O_SHARE / 16) * 16)
+        C = int(round(H * C_SHARE / 16) * 16)
+        g = torch.Generator('cuda').manual_seed(it['seed'])
+        sky = t2i(prompt=it['sky'], negative_prompt=it['neg'], width=TW2, height=TH2, num_inference_steps=28, true_cfg_scale=4.0,
+                  generator=g).images[0].convert('RGB')
+        sky = np.asarray(sky)
+        put(f"t2i-{it['name']}.jpg", jpg(sky))
+        cv = np.concatenate([start(sky, rgb, E), rgb[:C]], 0)
+        put(f"start-{it['name']}.jpg", jpg(cv[:E + O]))
+        CH = E + C
+        # the join band's mask: full in the middle, ramping off over a third of its height each side
+        ja, jb = int(E * JA), int(H * JB)
+        rows = np.zeros(CH, np.float32)
+        rows[E - ja:E + jb] = 1
+        ramp = max(8, (ja + jb) // 3)
+        rows[E - ja:E - ja + ramp] = np.linspace(0, 1, ramp)
+        rows[E + jb - ramp:E + jb] = np.linspace(1, 0, ramp)
+        painted = np.zeros(W, bool)
+        n = math.ceil(W / (TW - 320))
+        for i in range(n):
+            x0 = round(i * W / n)
+            cols = (x0 + np.arange(TW)) % W
+            # columns an earlier tile painted are kept (feathered over 96 px), so the tiles line up instead of being averaged into ghosts
+            colm = np.clip(1 - uniform_filter1d(painted[cols].astype(np.float32), 96, mode='nearest'), 0, 1)
+            mask = (rows[:, None] * colm[None, :] * 255).astype(np.uint8)
+            tile = Image.fromarray(np.clip(cv[:, cols], 0, 255).astype(np.uint8))
+            res = inp(prompt=it['join'], negative_prompt=it.get('neg_join', it['neg']), image=tile, mask_image=Image.fromarray(mask, 'L'), strength=0.9,
+                      width=TW, height=CH, num_inference_steps=28, true_cfg_scale=4.0,
+                      generator=torch.Generator('cuda').manual_seed(it['seed'] + i)).images[0].convert('RGB')
+            m = mask.astype(np.float32)[..., None] / 255
+            cv[:, cols] = cv[:, cols] * (1 - m) + np.asarray(res, np.float32) * m
+            painted[cols] = True
+            print('tile', it['name'], i, n, round(time.time() - t1), flush=True)
+        b = io.BytesIO(); Image.fromarray(np.clip(cv[:E + O], 0, 255).astype(np.uint8)).save(b, 'WEBP', quality=95, method=4)
+        put(f"{it['name']}.webp", b.getvalue())
+        for f in (f"{it['name']}.webp", f"start-{it['name']}.jpg", f"t2i-{it['name']}.jpg"):
+            done.append((f, (OUT / f).read_bytes()))
+        print('DONE', it['name'], W, E + O, round(time.time() - t1), flush=True)
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        print('FAILED', it['name'], repr(e)[:300], flush=True)
+
+
+def carrier(files):
+    head = json.dumps([[n, len(x)] for n, x in files]).encode() + b'\n'
+    data = head + b''.join(x for _, x in files)
+    w = 2048
+    h = (len(data) + w - 1) // w
+    arr = np.zeros(w * h, np.uint8)
+    arr[:len(data)] = np.frombuffer(data, np.uint8)
+    b = io.BytesIO(); Image.fromarray(arr.reshape(h, w), 'L').save(b, 'PNG', compress_level=9)
+    return b.getvalue()
+
+
+chunk, size, k = [], 0, 0
+for n, x in done:
+    if chunk and size + len(x) > 5_800_000:
+        put(f'carrier-{TAG}-{k}.png', carrier(chunk)); k += 1; chunk, size = [], 0
+    chunk.append((n, x)); size += len(x)
+if chunk:
+    put(f'carrier-{TAG}-{k}.png', carrier(chunk))
+print('ALL_DONE', len(done), round(time.time() - t0), flush=True)
