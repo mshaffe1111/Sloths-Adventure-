@@ -52,7 +52,7 @@ import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShad
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
-import { drawBatSweep, drawRoost } from './batArt.ts';
+import { drawBatSweep, drawRoost, drawW8Hide } from './batArt.ts';
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
@@ -5442,6 +5442,8 @@ export class GameEngine {
     this.kit?.drawFront(ctx, this.player, kitPose);
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
+    // (World 8's bat roosts hang in front of the roost tree's hollows: after the hides)
+    if (this.proto?.watch && this.currentStage.config.worldIndex === 8) this.drawRoosts(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
@@ -6271,7 +6273,6 @@ export class GameEngine {
     this.watchEyes = null;
     const w = this.watch;
     const zone = zoneAt(this.proto!.watch!, this.player.x);
-    if (this.currentStage.config.worldIndex === 8) this.drawRoosts(ctx);
     if (this.currentStage.config.worldIndex === 3) {
       // the Mossy Grotto: something large in the dark, watching. Two eyes far back among the stalactites (calm), opening wide at the
       // edge of the view (warn), sweeping across with a pool of their amber light on the floor (pass), and if they see him, narrowing
@@ -6368,7 +6369,7 @@ export class GameEngine {
     const roosts = (this.proto?.gen2 as { w8?: { roosts?: Array<{ x: number; y: number }> } } | undefined)?.w8?.roosts ?? [];
     const w = this.watch;
     const waking = w.phase === 'warn' ? Math.min(1, w.t / WATCH.warn) : w.phase === 'calm' ? 0 : 1;
-    for (const r of roosts) if (this.onScreen(r.x + 120, r.y - 300, 400)) drawRoost(ctx, r.x, r.y, waking, this.gameTime);
+    for (const r of roosts) if (this.onScreen(r.x + 120, r.y - 185, 400)) drawRoost(ctx, r.x, r.y, waking, this.gameTime);
   }
 
   /**
@@ -6791,12 +6792,16 @@ export class GameEngine {
   private drawBushes(ctx: CanvasRenderingContext2D) {
     const p = this.player;
     const bushes = this.proto?.bushes ?? [];
+    const w8Hides = (this.proto?.gen2 as { w8?: { hides?: Array<{ x: number; y: number; look: string }> } } | undefined)?.w8?.hides;
     for (let i = 0; i < bushes.length; i++) {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
       // (World 4 has its own painted cover: w4Art.ts)
       if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)
+      const w8look = w8Hides?.find((h) => h.x === b.x && h.y === b.y)?.look;
+      if (w8look && drawW8Hide(ctx, b, w8look, inside)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });

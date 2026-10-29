@@ -8,14 +8,16 @@
  *               wing flutter (the roost clip's frames 00-04), bat by bat
  *   the sweep   one bat on the flying cycle (fruitbat-fly, drawn at half its size), a faint glow on its eye (a small code touch), flies
  *               the watcher's pass and dives as the eagle did
- * Everything draws false while its sheet loads (the eagle stands in for the sweep; the roost is scenery).
+ *   the hides   the watcher's bushes in World 8's dress: the tree hollow and the leaf curtain (drawW8Hide)
+ * Everything draws false while its sheet loads (the eagle stands in for the sweep; the roost is scenery; the bush art for the hides).
  */
 import { makeCreatureAnim } from './creatureAnim.ts';
-import { FRUITBAT_ANIM, FRUITBAT_ANIM_UP, FRUITBAT_ANIM_URL, FRUITBAT_FLY, FRUITBAT_FLY_SEQ, FRUITBAT_FLY_URL, FRUITBAT_SEQ, W8ROOST, W8ROOST_URL } from './fruitbatAnimData.ts';
+import { FRUITBAT_ANIM, FRUITBAT_ANIM_UP, FRUITBAT_ANIM_URL, FRUITBAT_FLY, FRUITBAT_FLY_SEQ, FRUITBAT_FLY_URL, FRUITBAT_SEQ, W8C, W8C_URL, W8ROOST, W8ROOST_URL } from './fruitbatAnimData.ts';
 
 const ANIM = makeCreatureAnim(FRUITBAT_ANIM_URL, FRUITBAT_ANIM, FRUITBAT_SEQ, FRUITBAT_ANIM_UP);
 const FLY = makeCreatureAnim(FRUITBAT_FLY_URL, FRUITBAT_FLY, FRUITBAT_FLY_SEQ, 1);
 const BRANCH = makeCreatureAnim(W8ROOST_URL, W8ROOST, {}, 1);
+const DRESS = makeCreatureAnim(W8C_URL, W8C, {}, 1);
 /** the roost clip's frames: the wings open (flapping in), and hanging still */
 const FLAP = ['roost_00', 'roost_01', 'roost_02', 'roost_03', 'roost_04'];
 const HANG = (FRUITBAT_SEQ.roost ?? []).slice(5);
@@ -23,7 +25,7 @@ const HANG = (FRUITBAT_SEQ.roost ?? []).slice(5);
 const ROOST_K = 0.33;
 const FLY_K = 0.4;
 /** the roost branch over the stretch's ground, how far apart the bats hang, the branch's width on screen */
-export const ROOST = { up: 300, apart: 58, branch: 300 } as const;
+export const ROOST = { up: 185, apart: 72, branch: 340 } as const;
 /** the flying bat's eye in its frame (px from the anchor, before scaling): where the faint glow sits */
 const EYE = { x: 70, y: -22 } as const;
 
@@ -99,6 +101,21 @@ export function drawBatSweep(ctx: CanvasRenderingContext2D, x: number, y: number
   ctx.beginPath();
   ctx.arc(ex, ey, 9, 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
+  return true;
+}
+
+/**
+ * A roost stretch's hiding place in World 8's painted dress (w8c 'tree-hollow', 'leaf-curtain'), standing on the bush's ground, as wide
+ * as the bush and a little more; see-through while he is inside, so he stays readable. False while the sheet loads (the bush art stands in)
+ */
+export function drawW8Hide(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number }, look: string, inside: boolean): boolean {
+  const f = W8C[look];
+  if (!f || !DRESS.ready()) return false;
+  ctx.save();
+  ctx.globalAlpha = inside ? 0.6 : 1;
+  ctx.translate(b.x + b.w / 2, b.y + 6);
+  DRESS.draw(ctx, look, (b.w * 1.25) / f.w);
   ctx.restore();
   return true;
 }

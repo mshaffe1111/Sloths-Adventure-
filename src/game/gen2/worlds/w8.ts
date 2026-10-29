@@ -22,7 +22,7 @@
  */
 import { G } from '../../protoStage.ts';
 import type { StageHint } from '../../protoStage.ts';
-import type { Enemy } from '../../types.ts';
+import type { Enemy, Platform } from '../../types.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
 import type { CreatureDef, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W6S_EMIT, W6S_PROPS } from './w6Swing.ts';
@@ -275,11 +275,18 @@ export function w8Kit(stage: number): WorldKit {
 export const W8_HARPY_LESSON = 8;
 
 /**
- * The stage as the engine plays it: in 8-8, Dot's harpy line W8_MEET_LEAD px before the first night harpy (fillSockets writes
+ * The stage as the engine plays it: the pits' blocks drawn as boughs (below); in 8-8, Dot's harpy line W8_MEET_LEAD px before the first night harpy (fillSockets writes
  * proto.hints after the spawn hook runs, so the line is added here). Calling it twice changes nothing.
  */
-export function w8Finish<S extends { spawnX?: number; config?: { miniIndex: number }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
+export function w8Finish<S extends { spawnX?: number; platforms?: Platform[]; config?: { miniIndex: number }; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
   const w8 = st.proto?.gen2?.w8 as W8Extras | undefined;
+  // (the soft pits' floors and their steps out are the pipeline's 'moss_stone' blocks, drawn as pale stone pillars in the treetops: they
+  // are lower boughs here, in the kit's bark, each reaching down like a bough (its top unchanged, so nothing the check walks moves))
+  for (const p of st.platforms ?? []) {
+    if (p.type !== 'solid' || p.style !== 'moss_stone') continue;
+    p.style = 'log';
+    p.height = Math.max(p.height, W8_GROUND.bankH + 70);
+  }
   if (st.proto && w8?.meets?.length && st.config?.miniIndex === W8_HARPY_LESSON) {
     const hints = (st.proto.hints ??= []);
     const x = Math.min(...w8.meets.map((m) => m.x));
