@@ -236,3 +236,11 @@ Earlier read of the same log, kept for the details:
    CAnn 73 s, Age 67 s, Logan 28 s); Jane's survey: hardest "Long jumps"; Age: "Hide from the eagle"; Logan: "Running".
 4. [rule 11] All on iPhones, frame rate 21-30 (median 25-30). Logan (Safari 18) had 8 stalls of 130-220 ms after the eagle and snake
    sheets loaded mid-run (blank-wait family, B2). CAnn's phone is small (320 x 485), on Easy, 2.4 min.
+5. [blocker, rule 11] Sally (Sasa, Android 16, Chrome 156 inside Facebook, Adreno 735 with hardware drawing, 8 GB; small screen
+   320x649; Easy; build 2026-10-29 04:53 ET), 11:29-11:51 ET (session 20261029-1128-5ziw). First control-test run: a steady 30 fps,
+   finished in 4:09 ("smooth"). She pressed Play Again (390 s, mix seed 56672: River logs, Bounce, Stepping stones, Hide from the
+   eagle, Sleeping...). At 411 s, in Short hops at x 1423, every frame became a 250-340 ms long task, and it never recovered:
+   about 3 fps, then 2 fps for the next 11 minutes, even at the lowest quality (q2, 320x649 canvas). Memory flat at 21/25 MB, no
+   leak. The slow-phone tip fired at 432 s. She quit at 1074 s: "Too slow this time, made it almost impossible." Not the
+   software-drawing problem (her phone has a graphics chip), and the main thread is what's stuck. Either something in that
+   replay costs ~300 ms a frame, or the phone throttled hard mid-run. Worth replaying seed 56672 into Short hops on a slow phone.
