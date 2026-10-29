@@ -69,7 +69,8 @@ second on, a hit costs a heart.
 
 - **Pokey**: Matt's sliding-from-behind sheet, `reference/animation-sheets/slomatt/02_sliding-from-behind-seated-jump.jpg`
   (its cut-outs `slomatt/cutouts/s2_*.png`), packed as `src/assets/w6to10/slide/pokey-slide-back.webp`. Sliding: poses 1 and 3;
-  leaning: pose 10 (left) and pose 10 flipped (right); jumping: 13 (launch), 14 (in the air), 15 (coming down), 16 (landing).
+  leaning: pose 10 (left) and, **as a stand-in only**, pose 10 flipped (right: its satchel is on the wrong side); jumping: 13 (launch),
+  14 (in the air), 15 (coming down), 16 flipped (landing).
 - **Obstacles**: World 7's painted props: the sloth statue and the urn (`props-made/w7c`), the fallen column in drums (`w7c`), the low
   beam as the carved span (`props-made/w7b`) on the kit's vine column, rubble as the kit's moss strip with two blocks (`w7b`).
 - **Chute walls**: the kit's carved wall (`kits/w7.webp`), laid flat into each wall piece (not in true perspective yet).
@@ -86,18 +87,15 @@ from behind, that is: strap from the **screen-left** shoulder down to the bag at
 | 2 Sliding speed | wrong (mirrored) | flipped: right (his face turns the other way, still reads) |
 | 3 Bumpy slide | wrong (mirrored) | flipped: right, used as a slide frame |
 | 4 Full slide | wrong (mirrored) | flipped: right |
-| 5 Prepare right turn | wrong (mirrored) | not needed: 9 flipped is a correct "prepare right" |
-| 6 Lean & dig right | wrong (mirrored) | not needed: 10 flipped is a correct right lean (used) |
-| 7 Slideout right | wrong (mirrored) | not needed: 11 flipped |
-| 8 Exit right turn | wrong (mirrored) | not needed: 12 flipped |
-| 9-12 Left turn | **right** | as drawn for left; flipped for right |
+| 5-8 Right turn | wrong (mirrored) | flipped, the satchel comes right but they become left turns: no use |
+| 9-12 Left turn | **right** | as drawn, for the left lean (10 used). Flipped, they turn right but the satchel goes wrong: the mock-up's right lean is 10 flipped, **a stand-in** |
 | 13 Seated launch | **right** | as drawn (used) |
 | 14 Mid-air seated jump | **right** | as drawn (used) |
 | 15 Preparing landing | **right** | as drawn (used) |
 | 16 Seated impact | wrong (mirrored) | flipped: right (used) |
 
-Every pose can be made right by flipping, so no new slide sheet is needed. What the sheet doesn't have is a **hurt** pose and a
-**duck** from behind. `standard-set/09_back-views.jpg` row 3, pose 1 (knocked sideways) has the satchel right and can be the hurt pose
+Flipping always swaps the satchel's sides, so only the straight poses (1, 3, 4, 16) come right when flipped. **There is no correct right
+lean or right turn in the sheet** (thanks to the lead for catching this). The sheet also has no **hurt** pose and no **duck** from behind. Prompt A asks for all of them. `standard-set/09_back-views.jpg` row 3, pose 1 (knocked sideways) has the satchel right and can be the hurt pose
 (it needs cutting from its grey background); the duck is the slide pose squashed in the mock-up. If Matt wants a real duck and hurt,
 Prompt A below asks for both. (Also noted: `pokey-climb-back` and most of `09_behind-the-back.jpg` have the satchel mirrored.)
 
@@ -112,7 +110,7 @@ The cut-outs keep a strip of the slope and dust they were drawn on (seen under h
 
 ## The art list (what is still missing)
 
-The lead's art helper is making the chute art on Hugging Face (branch `w7-slide-art`). The drawing is built around **tiling textures**
+The lead's art helper has made the chute art on Hugging Face (branch `w7-slide-art`, `src/assets/w7slide/`: floor, walls, ceiling, chute ends, chamber, obstacles, crumble frames, and Pokey stills). The table below was written before it landed; step 2 checks it against what is there. The drawing is built around **tiling textures**
 for the floor, walls and ceiling (drawn in perspective in strips along the chute) plus **front-view sprites** for the obstacles, so
 those are the shapes to make. Already in hand and used above: Pokey sliding (slomatt/02), the fallen column, the statue, the urn, the
 carved span, the kit's wall.
@@ -129,18 +127,20 @@ carved span, the kit's wall.
 | 8 | A statue head on its side, front view (the far strip's faces) | (a) | optional: the sloth statue works |
 | 9 | Side-on: the floor cracking and falling in, 4 frames | (a) | the kit's `bank` and `branchCreak` |
 | 10 | Side-on: the chamber, with the chute's mouth in its wall | (a) | |
-| 11 | Pokey ducking and hurt, from behind | (b) Gemini | only if Matt wants them; Prompt A |
+| 11 | Pokey leaning and turning right, ducking and hurt, from behind | (b) Gemini | Prompt A (the right lean and turn are needed) |
 | 12 | Pokey falling as the floor goes, side-on | (b) Gemini | Prompt B; the existing fall poses may do |
 
-### Prompt A: Pokey ducking and hurt, seen from behind (attach: `reference/animation-sheets/slomatt/02_sliding-from-behind-seated-jump.jpg`, `src/assets/hero/hero-standard.webp`)
+### Prompt A: Pokey leaning right, turning right, ducking and hurt, seen from behind (attach: `reference/animation-sheets/slomatt/02_sliding-from-behind-seated-jump.jpg`, `src/assets/hero/hero-standard.webp`)
 
 > In exactly the same style as the attached sliding sheet, the same little brown three-toed sloth, seen **from directly behind**, sitting
 > and sliding down a slope. His brown satchel strap goes over his **left** shoulder (on the left of the picture, since we see his back)
-> and down across his back to the bag, which sits on his **right** hip (on the right of the picture). Bandages on both forearms. Four
-> poses side by side with lots of space between, the same size, on a plain flat magenta (#FF00FF) background, no ground, no dust, no
-> frames and no captions: (1) ducking flat, body pressed low, arms over his head; (2) the same, a moment later; (3) hurt, knocked
-> sideways to the left, arms flung up; (4) hurt, knocked sideways to the right, arms flung up. We see only his back and the back of his
-> head.
+> and down across his back to the bag, which sits on his **right** hip (on the right of the picture). Keep the satchel exactly there in
+> every pose, even when he leans or turns. Bandages on both forearms. Eight poses in two rows of four, with lots of space between, the
+> same size, on a plain flat magenta (#FF00FF) background, no ground, no dust, no frames and no captions. Row 1: (1) leaning right,
+> body tipped to the right of the picture, right hand digging into the slope, left arm out for balance; (2) the same lean a moment
+> later; (3) starting a turn to the right; (4) coming out of the turn to the right. Row 2: (5) ducking flat, body pressed low, arms over
+> his head; (6) the same, a moment later; (7) hurt, knocked sideways to the left, arms flung up; (8) hurt, knocked sideways to the right,
+> arms flung up. We see only his back and the back of his head.
 
 ### Prompt B: Pokey falling as the floor gives way, side-on (attach: `src/assets/hero/hero-standard.webp`)
 

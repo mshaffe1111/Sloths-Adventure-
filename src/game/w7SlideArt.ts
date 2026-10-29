@@ -14,8 +14,8 @@ const KIT_URL = new URL('../assets/kits/w7.webp', import.meta.url).href;
 const BACK_URL = new URL('../assets/w6to10/slide/pokey-slide-back.webp', import.meta.url).href;
 /**
  * Pokey sliding from behind (slomatt/02, Matt's sliding sheet; pokey-slide-back.json): x, y, w, h. Seen from behind, his strap runs from
- * his left shoulder (screen left) to the bag on his right hip (screen right); the sheet's poses 1-8 and 16 are drawn mirrored, so those
- * are flipped here (and the left lean flipped is the right lean).
+ * his left shoulder (screen left) to the bag on his right hip (screen right). The straight poses (1, 3, 16) are drawn mirrored and are
+ * flipped here. Flipping swaps the satchel's sides, so the right lean (the left lean flipped) has it wrong: a stand-in until Matt's sheet.
  */
 const BACK: Record<string, [number, number, number, number]> = {
   slideA: [0, 0, 147, 115],
