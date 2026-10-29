@@ -39,6 +39,12 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
 | Cleanness sweep (Matt 4:08 PM ET: "what we lack the most is seams... I feel like I'm fighting a battle"): stage-walk tool + seam detector, every stage walked both ways, findings routed by cause, own share fixed ($6) | cloud session_01FhBbYKDts8FcdDtxECVnkT | polish-clean | started 4:09 PM ET; findings list to the lead before fixes |
 | Sound effects rebuilt with real sounds (Matt 4:00/4:05 PM ET: "pings everywhere... pinball", "they were crap"): every effect, ambience beds, boss slam; SN-1 revised, SN-3, SN-9, SN-10, X-17; old/new previews to Matt first ($8) | cloud session_01FhBbYLYe1b66N7kEhtr9gq | polish-sfx | started 4:06 PM ET; polish-audio keeps music only |
+| 8-4 Firefly Lantern Run (Matt's pick 4:58 PM ET): W8 special, jar of fireflies whose light shrinks, refill at glowing flowers; mock-up first ($8) | cloud session_01FhBbYNXkjnYNgAxsTrTGve | w8-lantern | started 5:02 PM ET |
+| World 9 Volcano on gen2 (kit, ground/hazards, hook-up, curation; lava geyser art) (Matt 5:05 PM ET: start now) | cloud session_01FhBbYMiLwJyrCuQSV6ZpJf | gen2-w9 | started 5:05 PM ET |
+| World 9 swings + rooms | cloud session_01FhBbYKXZEzCAj72fCQcLvh | gen2-w9-swing | started 5:05 PM ET |
+| World 10 Fortress on gen2 (lightning art; Pokey's own lines) | cloud session_01FhBbYMfTYnVWg65zhiPmgK | gen2-w10 | started 5:05 PM ET |
+| World 10 swings + rooms | cloud session_01FhBbYNBTbLLgVB5ZHEdm5W | gen2-w10-swing | started 5:05 PM ET |
+| World 5 rebuild: 5-6/5-8 onto gen2, one art style (LV-10, ST-3) (Matt: start now) | cloud session_01FhBbYK2Fd5H9bqRihq9enn | w5-rebuild | started 5:05 PM ET |
 | Falling rocks + repeating hazard animations painted and done right (Matt 4:02 PM ET: "it puts squares where it's going to fall... doing it lazy again"): painted grit/pebbles, boss-fx dust, soft shadow, impact, then sweep every repeating effect drawn as code shapes ($5) | cloud session_01FhBbYKvc5dMeVNeehSxNyt | hazard-anim | started 4:03 PM ET; video proof required |
 | Audit: major looks still drawn in code (DONE) | local read-only | none | findings below |
 
