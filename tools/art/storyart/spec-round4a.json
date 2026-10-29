@@ -22,7 +22,7 @@
    "general_qwen_v1.safetensors"
   ]
  },
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/tools/art/hfbatch/starts/storyart/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1d437dfc077002bdedb1203a7b2fee7c9780fd14/tools/art/hfbatch/starts/storyart/",
  "items": [
   {
    "name": "pokey-alarm-s42",
@@ -1261,7 +1261,7 @@
   }
  ],
  "q": 92,
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1d437dfc077002bdedb1203a7b2fee7c9780fd14/",
  "keep": [
   "pokey-alarm-s42",
   "pokey-crossed-s42",
