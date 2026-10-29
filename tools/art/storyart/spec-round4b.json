@@ -14,7 +14,7 @@
    "meeca_qwen_v1.safetensors"
   ]
  },
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/tools/art/hfbatch/starts/storyart/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e5d2463fd62c7163ebdad197195c9291a0513c52/tools/art/hfbatch/starts/storyart/",
  "items": [
   {
    "name": "pl-nest-night-e",
@@ -35,6 +35,36 @@
    "h": 1360,
    "prompt": "Add a short wide flight of five worn wet stone steps coming down from a small arched wooden door at the foot of the round tower onto the courtyard flagstones, in the lower left of the picture, puddles on the steps reflecting the warm window light. Keep everything else exactly as it is. Same painted storybook style. No characters, no text.",
    "neg": "characters, people, text"
+  },
+  {
+   "name": "pl-parents-e",
+   "edit": true,
+   "start": "bucket:storyart/r3c/out/pl-nest-storm-6.png",
+   "seed": 4,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Change only the two sloths on the far branch: make them two grown-up sloths of the same size, a mother and a father, seen from behind as dark shapes against the storm, heads down, holding on, going away along the branch into the wind and rain. Keep everything else exactly as it is: the nest, the trees, the turning storm sky, the lightning. Same painted storybook style. No text.",
+   "neg": "cub, child, small sloth, faces, text"
+  },
+  {
+   "name": "pl-parents",
+   "then": "pl-parents-e",
+   "prompt": "slothadv style, painted storybook illustration, a big woven nest on a rainforest branch in a night storm, two grown sloths far off along the branch, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.3,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
   },
   {
    "name": "pl-nest-night",
@@ -558,8 +588,9 @@
   }
  ],
  "q": 90,
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e5d2463fd62c7163ebdad197195c9291a0513c52/",
  "keep": [
+  "pl-parents",
   "pl-nest-night",
   "pl-steps",
   "cel-da.kneel_tie-ps",
