@@ -9,8 +9,17 @@ import { HANG_DROP, ropeYAt } from './rope.ts';
 import type { Rope } from './types.ts';
 import { TouchGestures, TUNING } from './touchGestures.ts';
 import { PadInput } from './padControl.ts';
+import { TouchRig, stroke, type TouchEv } from './touchRig.ts';
 
 const G = 2000;
+/** a bare floor, Pokey standing on it at x, the whole touch chain wired (touchRig.ts) */
+function floorRig(x = 300): TouchRig {
+  const rig = new TouchRig('1-1', 1);
+  rig.r.bare([{ id: 1, x: 0, y: G, width: 20000, height: 300, type: 'solid' } as never]);
+  rig.r.stand(x, G);
+  rig.clear();
+  return rig;
+}
 
 // ───────────────────────────── CT-21: the rope hop and the flick's lean ─────────────────────────────
 
@@ -121,7 +130,7 @@ test('CT-26: pressing Jump while the pad is held up is a fresh jump press (the s
   const presses: number[] = [];
   const inp = {
     onVine: false, source: 'pad',
-    triggerTouchMove() {}, triggerTouchDuck() {}, triggerTouchClimb() {}, releaseTouchUp() {}, triggerHaptic() {},
+    triggerTouchMove() {}, triggerTouchDuck() {}, triggerTouchClimb() {}, releaseTouchUp() {}, triggerHaptic() {}, triggerTouchPunch() {}, triggerTouchMega() {}, setHold() {},
     triggerTouchUp(lean?: -1 | 0 | 1) { presses.push(lean ?? 0); },
   };
   const pad = new PadInput(inp);
@@ -180,4 +189,67 @@ test('CT-16: a finger the browser no longer reports is dropped on the next touch
   t.g.keepOnly([2], t.at() + 100);
   t.path(2, [[500, 600], [480, 600], [460, 600], [440, 600], [420, 600]], 16, false);
   assert.ok(t.log.includes('move:left'), `the new thumb steers: ${t.log.join(' ')}`);
+});
+
+// ───────────────────────────── CT-17: punches wait for the finger to lift ─────────────────────────────
+
+/** the engine's current swing: which move, how far in, and whether it has struck yet */
+const swing = (rig: TouchRig) => (rig.r.e as unknown as { atk: { move: { id: string; startup: number }; t: number; id: number } | null }).atk;
+
+test('CT-17: the Pad punches as Punch is pressed, and holding it on 320 ms upgrades to the mega', () => {
+  const rig = floorRig();
+  rig.input.source = 'pad';
+  const pad = new PadInput(rig.input);
+  rig.run(100);
+  pad.punchButton(true);
+  rig.runFrames(2);
+  assert.equal(swing(rig)?.move.id, 'jab', 'a jab two frames after the press, the button still held');
+  rig.run(400);
+  assert.equal(swing(rig)?.move.id, 'mega', 'held on: the mega');
+  pad.punchButton(false);
+  // a quick press and release: one jab, no mega
+  const rig2 = floorRig();
+  const pad2 = new PadInput(rig2.input);
+  rig2.run(100);
+  pad2.punchButton(true);
+  rig2.run(80);
+  pad2.punchButton(false);
+  const seen = new Set<string>();
+  rig2.run(800, () => swing(rig2) && seen.add(swing(rig2)!.move.id));
+  assert.deepEqual([...seen], ['jab']);
+});
+
+/** steering with the left thumb, a second thumb's touch on the right: every swing the engine ran, and whether one struck */
+function secondThumb(evs: TouchEv[]) {
+  const rig = floorRig();
+  rig.push([...stroke(1, [[0, 200, 700], [900, 230, 700]]), ...evs]);
+  const swings: Array<{ id: string; n: number; struck: boolean }> = [];
+  let jumped = false;
+  rig.run(1000, () => {
+    const a = swing(rig);
+    if (a && swings[swings.length - 1]?.n !== a.id) swings.push({ id: a.move.id, n: a.id, struck: false });
+    if (a && a.t >= a.move.startup) swings[swings.length - 1].struck = true;
+    if (!rig.p.grounded) jumped = true;
+  });
+  return { swings, jumped, words: rig.words().join(' ') };
+}
+
+test('CT-17: a second thumb\'s tap starts the jab as it lands, not when it lifts, and lifting does not punch again', () => {
+  const rig = floorRig();
+  rig.push([...stroke(1, [[0, 200, 700], [900, 230, 700]]), ...stroke(2, [[200, 800, 700], [380, 801, 701]])]);
+  rig.run(200 + 40);
+  assert.equal(swing(rig)?.move.id, 'jab', 'winding up 40 ms after the thumb landed, the thumb still down');
+  rig.run(100);
+  assert.ok(swing(rig)!.t >= swing(rig)!.move.startup, 'and it has struck before the thumb lifts');
+  const s = secondThumb(stroke(2, [[200, 800, 700], [380, 801, 701]]));
+  assert.equal(s.swings.length, 1, `one swing: ${s.words}`);
+});
+
+test('CT-17: a second thumb that lands and flicks up (its first move reported 50 ms late) jumps, and its jab is taken back before it strikes', () => {
+  for (const [first, dy] of [[50, 6], [60, 14], [90, 20]] as const) {
+    const s = secondThumb(stroke(2, [[200, 800, 700], [200 + first, 801, 700 - dy], [200 + first + 50, 806, 620]], true, 17));
+    assert.ok(s.jumped, `jumped: ${s.words}`);
+    assert.ok(s.words.includes('punchCancel'), `jab taken back: ${s.words}`);
+    assert.ok(s.swings.every((w) => !w.struck), `nothing struck: ${JSON.stringify(s.swings)}`);
+  }
 });

@@ -74,7 +74,13 @@ export interface PadInputTarget {
   releaseTouchUp(): void;
   triggerTouchClimb(dir: -1 | 0 | 1): void;
   triggerHaptic(ms?: number): void;
+  triggerTouchPunch(): void;
+  triggerTouchMega(): void;
+  setHold(src: string, on: boolean): void;
 }
+
+/** the Punch button held this long upgrades its punch to the mega (ms) */
+export const MEGA_HOLD_MS = 320;
 
 /**
  * The Pad's thumb pad and Jump button, turned into input (PadController.tsx draws them and feeds this). Pure apart from the input it
@@ -158,5 +164,22 @@ export class PadInput {
       return;
     }
     this.jumpSet('btn', on);
+  }
+
+  private megaTimer = 0;
+  /**
+   * the Punch button pressed or let go. It punches as it is pressed, and held MEGA_HOLD_MS upgrades to the mega; it used to wait for the
+   * release, so every punch came a whole press late (polish report CT-17)
+   */
+  punchButton(on: boolean) {
+    window.clearTimeout(this.megaTimer);
+    this.inp.setHold('pad', on);
+    if (!on) return;
+    this.inp.triggerTouchPunch();
+    this.inp.triggerHaptic(20);
+    this.megaTimer = window.setTimeout(() => {
+      this.inp.triggerTouchMega();
+      this.inp.triggerHaptic(35);
+    }, MEGA_HOLD_MS);
   }
 }

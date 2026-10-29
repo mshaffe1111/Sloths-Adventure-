@@ -35,7 +35,10 @@ export interface GestureSink {
    */
   jumpPress(lean?: -1 | 0 | 1): void;
   jumpRelease(): void;
-  punch(): void;
+  /** a punch; `holdMs`: it may still be taken back (punchCancel) for this long, so its swing waits in its wind-up until then */
+  punch(holdMs?: number): void;
+  /** take back the jab a finger threw as it went down: it moved off too fast to be a tap (CT-17) */
+  punchCancel?(): void;
   kick(dir?: -1 | 1): void;
   mega(): void;
   /** hold climbing up (-1), down (1) or stop (0) on a vine or trunk, with no jump and no duck (refined controls) */
@@ -78,6 +81,15 @@ export const TUNING = {
   tapPx: 22,
   /** a still finger held this long throws the mega (it was 460: a two-thumb player's resting thumb threw one every rest, CT-7) */
   holdMs: 550,
+  /**
+   * the action finger's jab starts as it goes down, not when it lifts (a tap waited a median 95 ms for its punch, polish report CT-17);
+   * it is taken back if the finger moves more than `jabCancelPx` within `jabCancelMs`: a flick or a swipe. The report asked for 22 px in
+   * 60 ms, the jab's wind-up; but phones report a finger's first move 40 to 100 ms after it lands, and replayed, 8% of Steph's second-
+   * thumb flicks kept a jab. At 12 px in 100 ms it is 0.5%. The engine holds a touch jab in its wind-up that long (engine.ts jabHold), so a
+   * jab taken back never strikes
+   */
+  jabCancelMs: 100,
+  jabCancelPx: 12,
   holdPx: 20,
   /**
    * a tap that begins this soon after the steering finger lifted is the thumb bouncing back onto the glass, not a punch. It was 190 ms,
@@ -299,6 +311,8 @@ interface Finger {
   nearThumb?: boolean;
   /** it went down at a side edge and has not moved yet (edgePx): ignored until it does */
   edgeWait?: boolean;
+  /** when it threw its jab as it went down (CT-17); lifting must not punch again */
+  jabT?: number;
 }
 
 export class TouchGestures {
@@ -404,6 +418,19 @@ export class TouchGestures {
     }
     this.pickRole(f, x, y);
     this.fingers.set(id, f);
+    // the action finger punches as it lands (CT-17); a flick or swipe takes it back within the jab's wind-up (jabMoved)
+    if (f.role === 'action') {
+      f.jabT = t;
+      this.sink.feedback('punch');
+      this.sink.punch(TUNING.jabCancelMs);
+    }
+  }
+
+  /** a finger that jabbed as it went down moved off too far, too soon, to be a tap: take the jab back (CT-17) */
+  private jabMoved(f: Finger, x: number, y: number, t: number) {
+    if (f.jabT === undefined || t - f.jabT > TUNING.jabCancelMs || Math.hypot(x - f.x0, y - f.y0) <= TUNING.jabCancelPx) return;
+    f.jabT = undefined;
+    this.sink.punchCancel?.();
   }
 
   /** a finger just down (or just off a side edge): steering, an action, undecided, or the same hand as the steering thumb */
@@ -438,6 +465,7 @@ export class TouchGestures {
       this.pickRole(f, f.x0, f.y0);
       this.fingers.set(id, f);
     }
+    this.jabMoved(f, x, y, t);
     // the low point a rise starts from: the thumb going down (or holding) moves it; a rise that dawdles starts again from where it is
     const lastT = f.hist[f.hist.length - 1].t;
     if (y >= f.y || !(t - f.riseT0 <= TUNING.riseMs)) {
@@ -496,6 +524,7 @@ export class TouchGestures {
     this.now = t;
     const f = this.fingers.get(id);
     if (!f) return;
+    this.jabMoved(f, x, y, t);
     f.x = x;
     f.y = y;
     this.fingers.delete(id);
@@ -526,7 +555,7 @@ export class TouchGestures {
         this.sink.feedback('kick');
         this.sink.kick(edx < 0 ? -1 : 1);
       }
-      if (stillTap && !wasReplant) this.tapAct();
+      if (stillTap && !wasReplant && f.jabT === undefined) this.tapAct();
       if (!wasTap && !flicked) {
         this.lastMoverUp = t;
         this.lastMoverUpX = f.x;
@@ -566,7 +595,7 @@ export class TouchGestures {
     if (f.ducked) this.sink.duck(false);
     if (was || acted) return;
     const dist = Math.hypot(f.x - f.x0, f.y - f.y0);
-    if (dist <= TUNING.tapPx && !f.megaDone && this.tapLong(f, t) && !this.flickedUp(f)) {
+    if (dist <= TUNING.tapPx && !f.megaDone && f.jabT === undefined && this.tapLong(f, t) && !this.flickedUp(f)) {
       // re-planting the thumb right after steering is not a punch: only if it began after the lift AND near it
       const replant = f.tapT0 >= this.lastMoverUp && f.tapT0 - this.lastMoverUp < TUNING.replantMs &&
         Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;

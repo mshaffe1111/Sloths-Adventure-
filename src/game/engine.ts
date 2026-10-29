@@ -520,8 +520,10 @@ export class GameEngine {
 
   // --- fight system (see fight.ts) ---
   /** the attack being played: which move, how far into it, which animals it has already hit */
-  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean } | null = null;
+  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean; want?: AttackWant } | null = null;
   private atkQueue: { want: AttackWant; ttl: number; face: number } | null = null;
+  /** game time until which a touch jab may still be taken back, and waits in its wind-up (CT-17) */
+  private jabHold = 0;
   private lastPunch: MoveId | null = null;
   private chainTimer = 0;
   /** kicks thrown close together take turns: a front snap kick, then a high side kick (only the new animation sheets show it) */
@@ -3441,10 +3443,19 @@ export class GameEngine {
     if (this.kickChain > 0) this.kickChain -= dt;
     if (p.grounded) this.stompChain = 0;
 
+    // a touch jab taken back (CT-17): the finger that pressed it turned out to be a flick or a swipe. A swing still winding up stops,
+    // as if never pressed; one that has struck stays
+    if (inp.punchCancel) {
+      inp.punchCancel = false;
+      if (this.atkQueue?.want === 'punch') this.atkQueue = null;
+      if (this.atk?.want === 'punch' && this.atk.t < this.atk.move.startup) this.atk = null;
+    }
     let want: AttackWant | null = null;
     if (inp.megaPunchPressed) want = 'mega';
     else if (inp.kickPressed) want = 'kick';
     else if (inp.punchPressed) want = 'punch';
+    if (want === 'punch' && inp.punchHold) this.jabHold = this.gameTime + inp.punchHold;
+    inp.punchHold = 0;
     const face = inp.kickPressed ? inp.kickDir : 0;
     inp.megaPunchPressed = false;
     inp.kickPressed = false;
@@ -3465,6 +3476,8 @@ export class GameEngine {
     if (a0) {
       const t0 = a0.t;
       a0.t += dt;
+      // (a touch jab that may yet be taken back waits in its wind-up: CT-17)
+      if (a0.want === 'punch' && this.gameTime < this.jabHold) a0.t = Math.min(a0.t, Math.max(t0, a0.move.startup - 1e-3));
       if (!a0.sounded && a0.t >= a0.move.startup) {
         a0.sounded = true;
         this.onStrikeBegin(a0.move);
@@ -3501,7 +3514,7 @@ export class GameEngine {
     if (id === 'mega') this.megaCooldown = 1.0;
     if (id === 'kick') this.kickTurn = this.kickChain > 0 ? this.kickTurn + 1 : 0;
     this.chainTimer = 0;
-    this.atk = { move, t: 0, id: ++this.swingId, connected: false, lunged: false, hits: new Set(), sounded: false };
+    this.atk = { move, t: 0, id: ++this.swingId, connected: false, lunged: false, hits: new Set(), sounded: false, want };
   }
 
   private endAttack() {

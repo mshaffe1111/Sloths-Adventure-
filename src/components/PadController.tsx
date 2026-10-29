@@ -11,7 +11,7 @@ import { Icon } from './icons/index.tsx';
  *
  *   pad:   slide sideways to run, down to duck, up to jump (hold up to climb a trunk or grab a rope)
  *   Jump:  press to jump, hold for height, press again in the air for a double jump
- *   Punch: tap to punch, hold to charge a mega punch
+ *   Punch: press to punch, hold on to upgrade it to a mega punch
  *   Kick:  tap to kick the way he faces
  */
 interface Props {
@@ -20,7 +20,6 @@ interface Props {
 }
 
 type Btn = 'jump' | 'punch' | 'kick';
-const MEGA_HOLD_MS = 320;
 
 export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
   // the pad under the thumb: shown or not is React state, but where it and its knob are moves through refs and a CSS transform, so a
@@ -43,8 +42,6 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
     padId: -1,
     ax: 0,
     ay: 0,
-    megaTimer: 0,
-    megaFired: false,
   });
   // what the pad and the Jump button mean (padControl.ts PadInput)
   const drive = useRef<PadInput | null>(null);
@@ -58,9 +55,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
   };
 
   const releaseAll = () => {
-    const s = st.current;
-    window.clearTimeout(s.megaTimer);
-    s.megaFired = false;
+    P.punchButton(false);
     padRelease();
     P.jumpButton(false);
     setDown(new Set());
@@ -130,36 +125,17 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
   const btnStart = (b: Btn) => (e: React.TouchEvent) => {
     e.stopPropagation();
     mark(b, true);
-    const s = st.current;
     if (b === 'jump') P.jumpButton(true);
     else if (b === 'kick') {
       inputEngine.triggerTouchKick(0);
       inputEngine.triggerHaptic(25);
-    } else {
-      inputEngine.setHold('pad', true);
-      s.megaFired = false;
-      window.clearTimeout(s.megaTimer);
-      s.megaTimer = window.setTimeout(() => {
-        s.megaFired = true;
-        inputEngine.triggerTouchMega();
-        inputEngine.triggerHaptic(35);
-      }, MEGA_HOLD_MS);
-    }
+    } else P.punchButton(true);
   };
   const btnEnd = (b: Btn) => (e: React.TouchEvent) => {
     e.stopPropagation();
     mark(b, false);
-    const s = st.current;
     if (b === 'jump') P.jumpButton(false);
-    else if (b === 'punch') {
-      inputEngine.setHold('pad', false);
-      window.clearTimeout(s.megaTimer);
-      if (!s.megaFired) {
-        inputEngine.triggerTouchPunch();
-        inputEngine.triggerHaptic(20);
-      }
-      s.megaFired = false;
-    }
+    else if (b === 'punch') P.punchButton(false);
   };
   const btnProps = (b: Btn) => ({ onTouchStart: btnStart(b), onTouchEnd: btnEnd(b), onTouchCancel: btnEnd(b) });
 

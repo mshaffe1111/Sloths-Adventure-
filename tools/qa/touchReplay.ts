@@ -58,6 +58,8 @@ interface Touch {
   did: string[];
   /** when each of its jumps fired */
   jt: number[];
+  /** when each of its punches fired (a jab cancelled as the finger moved off is taken back: CT-17) */
+  pt: number[];
   /** Pokey's state when it went down, and at its best flick */
   st0: string;
   held: 'portrait' | 'landscape';
@@ -111,7 +113,17 @@ for (const parts of sessions.values()) {
       vineHold = '';
     },
     jumpRelease: () => {},
-    punch: () => current?.did.push('punch'),
+    punch: () => {
+      current?.did.push('punch');
+      current?.pt.push(clockT);
+    },
+    punchCancel: () => {
+      const i = current ? current.did.lastIndexOf('punch') : -1;
+      if (i >= 0) {
+        current!.did.splice(i, 1, 'jabX');
+        current!.pt.pop();
+      }
+    },
     kick: () => current?.did.push('kick'),
     mega: () => current?.did.push('mega'),
     climb: (d) => current?.did.push(`climb:${d}`),
@@ -159,7 +171,7 @@ for (const parts of sessions.values()) {
       // (the device line is noted once a part: a phone turned during it shows touches past its width, and it is sideways now)
       if ((l[3] as number) > dev.w) dev = { w: dev.h, h: dev.w, held: dev.held === 'portrait' ? 'landscape' : 'portrait' };
       if (state === 'c' || state === 's') vineHold = state;
-      const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], jt: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0 };
+      const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], jt: [], pt: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0 };
       live.set(id, tch);
       touches.push(tch);
       current = tch;
@@ -336,4 +348,23 @@ console.log('|---|---|---|---|');
 for (const k of ['all', ...PLAYERS, 'others']) {
   const cell = (key: string) => pct(groups.get(key)?.any);
   console.log(`| ${k} | ${cell(k === 'all' ? 'portrait' : `${k} portrait`)} | ${cell(k === 'all' ? 'landscape' : `${k} landscape`)} | ${cell(k)} |`);
+}
+
+// CT-17: how long a punch waits. A tap (a touch that punched and did nothing else) punched this long after the finger went down; and how
+// many touches that jumped, kicked or threw a mega also threw a punch they did not mean (a jab on press the finger then outran)
+{
+  const q = (a: number[], f: number) => (a.length ? Math.round(a[Math.min(a.length - 1, Math.floor(a.length * f))]) : NaN);
+  console.log('\nCT-17: taps, how long after the finger went down the punch came (ms), and punches thrown by touches that meant something else\n');
+  console.log('| who | taps | median wait | 90% within | touches that jumped, kicked or megaed | ... and punched too | jabs taken back |');
+  console.log('|---|---|---|---|---|---|---|');
+  for (const k of order) {
+    const mine = touches.filter((tc) => k === 'all' || tc.who === k || tc.held === k);
+    const taps = mine.filter((tc) => tc.pt.length && !tc.did.some((d) => d.startsWith('jump') || d === 'kick' || d === 'mega'));
+    const waits = taps.map((tc) => tc.pt[0] - tc.pts[0].t).sort((a, b) => a - b);
+    const other = mine.filter((tc) => tc.did.some((d) => d.startsWith('jump') || d === 'kick' || d === 'mega'));
+    const both = other.filter((tc) => tc.pt.length);
+    const back = mine.reduce((a, tc) => a + tc.did.filter((d) => d === 'jabX').length, 0);
+    if (!mine.length) continue;
+    console.log(`| ${k} | ${taps.length} | ${q(waits, 0.5)} | ${q(waits, 0.9)} | ${other.length} | ${both.length} (${other.length ? ((100 * both.length) / other.length).toFixed(1) : 0}%) | ${back} |`);
+  }
 }
