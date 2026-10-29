@@ -19,6 +19,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
 import { clipPick, heroClipsAreLive, heroClipsLive } from './heroClips.ts';
 import { drawVineHang } from './heroVine.ts';
+import { drawSwimHero } from './heroSwim.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -269,6 +270,8 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   if (!heroSpriteEnabled()) return false;
   load();
   events.track(p, time);
+  // swimming in calm water: Matt's swim sheets (heroSwim.ts)
+  if (p.swim && drawSwimHero(ctx, p, time)) return true;
   // holding a vine: Matt's vine-swing pictures, his hands round the real liana (heroVine.ts)
   if (p.isVineSwinging && drawVineHang(ctx, p, 1, time)) return true;
   // the standard hero (heroStandard.ts), when switched on and loaded, draws every pose it has a frame for

@@ -109,6 +109,8 @@ export interface PlayerState {
   isVineSwinging?: boolean;
   /** hanging from a rope (shimmy) */
   hanging?: boolean;
+  /** swimming in calm water (swim.ts): the water's top, how far under he has dived (0..1), and seconds into his first swim's moment */
+  swim?: { surfaceY: number; under: number; first?: number };
   swingVineId?: number;
   swingAngle?: number;          // in radians (-1.2 to 1.2)
   swingAngularVelocity?: number; // rad/s
