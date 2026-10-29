@@ -6,8 +6,8 @@
  *   free (rescue)           every animal there is to free (the cages, World 5's cocoons);
  *   beat (purge, gauntlet)  about 70-80% of the stage's predators (the ring's snakes and the aerie's guard monkeys count too).
  *
- * Easy keeps the lower bars each stage had before (its own quota, `easyGoal`), and easyMode.ts makes a beat-the-animals goal gentler
- * still. A search (relic_hunt) keeps its own count: it is a finding goal, not a share.
+ * Easy asks round(Normal x 0.8), and never under 60% of what the stage holds (LV-6, polish report 2026-10-29: the old "the stage's own
+ * quota" left hollow targets, 2-5 asking 8 of 21), and easyMode.ts makes a beat-the-animals goal gentler still. A search (relic_hunt) keeps its own count: it is a finding goal, not a share.
  *
  * The engine applies it as it builds a stage on Normal (engine.ts), and the stage inspector reads the same counts (tools/inspect).
  * Pure: no engine, no canvas.
@@ -24,8 +24,15 @@ export const GOAL_SHARE = {
   rescue: 1,
 } as const;
 
-/** Easy never asks more than this share of Normal's goal */
+/** Easy asks this share of Normal's goal (rounded) */
 export const EASY_UNDER = 0.8;
+/** and never less than this share of what the stage holds (LV-6) */
+export const EASY_FLOOR = 0.6;
+
+/** Easy's goal from Normal's and what the stage holds: round(Normal x 0.8), at least 60% of what is there, never more than Normal */
+export function easyGoalFor(normal: number, have: number): number {
+  return Math.max(1, Math.min(normal, Math.max(Math.round(normal * EASY_UNDER), Math.ceil(have * EASY_FLOOR - 1e-9))));
+}
 
 type Stage = GeneratedStage & { proto?: { ring?: { waves: unknown[][] }; w4?: { monkeys?: Array<{ job: string; blowOff?: number }> }; w5?: { cocoons?: unknown[] } } };
 
@@ -54,27 +61,34 @@ export function goalCounts(st: Stage): { petals: number; animals: number; rescua
   };
 }
 
-/** Normal's goal for a stage, from what it holds; null for a stage whose goal is not a share (a sprint, a search, a boss) */
-export function normalGoal(st: Stage): number | null {
+/** how many of what its goal counts the stage holds; null for a stage whose goal is not a share (a sprint, a search, a boss) */
+export function goalHave(st: Stage): number | null {
   const type = st.config.objectiveType;
   const n = goalCounts(st);
-  const share = (have: number, k: number) => (have > 0 ? Math.max(1, Math.min(have, Math.round(have * k))) : null);
-  if (type === 'harvest') return share(n.petals, GOAL_SHARE.collect);
-  if (type === 'rescue') return share(n.rescuable, GOAL_SHARE.rescue);
-  if (type === 'purge' || type === 'gauntlet') return share(n.animals, GOAL_SHARE.defeat);
+  if (type === 'harvest') return n.petals;
+  if (type === 'rescue') return n.rescuable;
+  if (type === 'purge' || type === 'gauntlet') return n.animals;
   return null;
 }
 
+/** Normal's goal for a stage, from what it holds; null for a stage whose goal is not a share (a sprint, a search, a boss) */
+export function normalGoal(st: Stage): number | null {
+  const type = st.config.objectiveType;
+  const have = goalHave(st);
+  if (!have) return null;
+  const k = type === 'harvest' ? GOAL_SHARE.collect : type === 'rescue' ? GOAL_SHARE.rescue : GOAL_SHARE.defeat;
+  return Math.max(1, Math.min(have, Math.round(have * k)));
+}
+
 /**
- * Set a built stage's goal: Normal's share (normalGoal), keeping the stage's own quota as Easy's (`easyGoal`). Changes the stage and
- * returns it; a stage already set is left as it is.
+ * Set a built stage's goal: Normal's share (normalGoal), and Easy's (`easyGoal`: easyGoalFor). Changes the stage and returns it; a stage
+ * already set (a gen2 stage whose Easy goal the kid bot measured: gen2/game.ts easyGoal) is left as it is.
  */
 export function withGoals<T extends GeneratedStage>(st: T): T {
   if (st.easyGoal !== undefined || st.boss) return st;
   const g = normalGoal(st as Stage);
   if (g === null) return st;
-  // (a stage's own quota that already asked as much as Normal now does, or more, still leaves Easy a lower bar: EASY_UNDER of Normal's)
-  st.easyGoal = Math.max(1, Math.min(st.config.targetCount, Math.round(g * EASY_UNDER)));
+  st.easyGoal = easyGoalFor(g, goalHave(st as Stage) ?? g);
   st.config = { ...st.config, targetCount: g };
   return st;
 }

@@ -17,6 +17,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
 import { EASY_HOLD } from './physics.ts';
+import { EASY_FLOOR, goalHave } from './goals.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
 /** a drop is this deep (or has no floor at all) before a far jump over it gets a stone */
@@ -273,11 +274,15 @@ export function easyStage(stage: Stage): Stage {
   // fewer animals, and a beat-the-animals goal that asks for fewer (gen2 laid Easy's share already, with the longer tell)
   if (!gen2) {
     const keep = easyKeep(stage.enemies);
-    const before = stage.enemies.length;
+    const before = goalHave(stage as never) ?? 0;
     stage.enemies = stage.enemies.filter((e) => keep.has(e));
+    const ring = stage.proto?.ring;
+    if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
     if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
-      const target = Math.max(1, Math.min(stage.enemies.length, Math.round(stage.config.targetCount * 0.6)));
-      stage.config = { ...stage.config, targetCount: target };
+      // (the gentler fight goal, 0.6 of Easy's, and never under 60% of the animals Easy keeps: LV-6)
+      const have = goalHave(stage as never) ?? 0;
+      const target = Math.min(have, Math.max(Math.round(stage.config.targetCount * 0.6), Math.ceil(have * EASY_FLOOR - 1e-9)));
+      stage.config = { ...stage.config, targetCount: Math.max(1, target) };
     }
     for (const e of stage.enemies) e.attackCooldown = Math.max(e.attackCooldown, 0) * 1.5;
   } else if ((kind === 'purge' || kind === 'gauntlet') && stage.enemies.length) {
@@ -285,9 +290,10 @@ export function easyStage(stage: Stage): Stage {
     const target = Math.max(1, Math.min(stage.config.targetCount, stage.gen2!.budget.quota.check, stage.enemies.length));
     stage.config = { ...stage.config, targetCount: target };
   }
-  const ring = stage.proto?.ring;
-  if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
-
+  if (gen2) {
+    const ring = stage.proto?.ring;
+    if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
+  }
   // flags, and a heart at every flag
   let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
   const next = () => cid++;
