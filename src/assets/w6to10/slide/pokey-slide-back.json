@@ -1,0 +1,88 @@
+{
+ "sheet": "pokey-slide-back.webp",
+ "from": "reference/animation-sheets/slomatt/02_sliding-from-behind-seated-jump.jpg (cutouts/s2_*.png)",
+ "picks": {
+  "slideA": {
+   "pose": 1,
+   "flipped": true
+  },
+  "slideB": {
+   "pose": 3,
+   "flipped": true
+  },
+  "leanL": {
+   "pose": 10,
+   "flipped": false
+  },
+  "leanR": {
+   "pose": 10,
+   "flipped": true
+  },
+  "launch": {
+   "pose": 13,
+   "flipped": false
+  },
+  "air": {
+   "pose": 14,
+   "flipped": false
+  },
+  "land": {
+   "pose": 15,
+   "flipped": false
+  },
+  "impact": {
+   "pose": 16,
+   "flipped": true
+  }
+ },
+ "frames": {
+  "slideA": [
+   0,
+   0,
+   147,
+   115
+  ],
+  "slideB": [
+   151,
+   0,
+   121,
+   115
+  ],
+  "leanL": [
+   276,
+   0,
+   152,
+   109
+  ],
+  "leanR": [
+   432,
+   0,
+   152,
+   109
+  ],
+  "launch": [
+   588,
+   0,
+   111,
+   116
+  ],
+  "air": [
+   703,
+   0,
+   113,
+   106
+  ],
+  "land": [
+   820,
+   0,
+   127,
+   107
+  ],
+  "impact": [
+   951,
+   0,
+   152,
+   108
+  ]
+ }
+}

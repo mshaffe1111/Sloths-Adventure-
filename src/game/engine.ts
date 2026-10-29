@@ -83,6 +83,7 @@ const NO_W5_THINGS: readonly never[] = [];
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
+import { SlideRun } from './w7SlideRun.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
 import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
@@ -421,6 +422,8 @@ export class GameEngine {
   private viewCssY = 0;
   /** Dot's netting flight (dotFlightRun.ts): while it is set, she is the player and it runs the stage */
   private dotRun: DotRun | null = null;
+  /** 7-4's slide (w7SlideRun.ts): side-on until the crumble, then it runs the stage until he comes out in the chamber */
+  private slideRun: SlideRun | null = null;
   /** Meeca's stage (5-M, meecaPlay.ts): she is the player, on his physics, with no fighting and no Dot */
   private mc: MeecaPlay | null = null;
   private mcCinematic: boolean | null = null;
@@ -656,6 +659,7 @@ export class GameEngine {
     this.plainVines = this.vines.filter((v) => !v.kit);
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
+    this.slideRun = null;
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
@@ -679,6 +683,7 @@ export class GameEngine {
       perfNote(`stage ${config.id} started`);
     }
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
+    if (this.proto?.slide) this.startSlide(this.proto.slide);
     this.camLedge = null;
     this.camLand = null;
     this.bestDropY = -Infinity;
@@ -1125,6 +1130,8 @@ export class GameEngine {
     if (this.stepEntrance(dt)) return;
     this.input.update(dt);
     if (this.dotRun) return this.stepDot(dt);
+    if (this.slideRun?.sliding) return this.stepSlide(dt);
+    if (this.slideRun) this.slideRun.side(dt, this.player, this.input.state);
     // Meeca's stage: she cannot fight, and while the card, a catch or the ending is on, the controls are not hers
     if (this.mc) this.mc.filter(this.input.state as MeecaControls);
     {
@@ -4429,6 +4436,7 @@ export class GameEngine {
     if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 88, '#fde68a', 1.4);
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
+    if (this.slideRun?.sliding) this.slideRun.respawn();
   }
 
   /**
@@ -5094,6 +5102,11 @@ export class GameEngine {
       ctx.restore();
       return;
     }
+    if (this.slideRun?.sliding) {
+      this.slideRun.draw(ctx, this.viewCssW, this.viewCssH, dpr);
+      ctx.restore();
+      return;
+    }
 
     // Apply Screen Shake (Trauma squared for punchy feel)
     const shakeMag = this.camera.trauma * this.camera.trauma * 16;
@@ -5607,6 +5620,11 @@ export class GameEngine {
     }
 
     if (this.mc) this.renderMeecaScreen(ctx, dpr);
+    if (this.slideRun) {
+      const p = this.player;
+      const at = (x: number, y: number): [number, number] => [(x - this.camera.x) * this.zoom, (y - this.camera.y) * this.zoom];
+      this.slideRun.overlay(ctx, dpr, this.viewCssW, this.viewCssH, at, at(p.x + p.width / 2, p.y - 130));
+    }
 
     ctx.restore(); // end DPR transform
   }
@@ -5711,6 +5729,58 @@ export class GameEngine {
       ctx.fillRect(0, 0, W, H);
     }
     ctx.restore();
+  }
+
+  // --- 7-4's slide (w7SlideRun.ts does the work; these hand it the engine's hearts, platforms and canvas) ---
+  private startSlide(st: import('./w7Slide.ts').SlideStage) {
+    this.slideRun = new SlideRun(st, {
+      easy: isEasy(),
+      loseHeart: () => {
+        const p = this.player;
+        if (this.isGameOver) return;
+        this.statHeartsLost++;
+        p.hp = Math.max(0, p.hp - 1);
+        recorder.event('hurt', p.hp);
+        if (p.hp <= 0) this.loseLife('hurt');
+      },
+      score: (n) => (this.runScore += n),
+      shake: (n) => (this.camera.trauma = Math.min(1, this.camera.trauma + n)),
+      dropFloor: (ids) => {
+        const gone = (pl: Platform) => !ids.includes(pl.id);
+        this.platforms = this.platforms.filter(gone);
+        this.drawPlats = this.drawPlats.filter(gone);
+        this.paintedPlats = this.paintedPlats.filter(gone);
+        this.player.grounded = false;
+      },
+      comeOut: (x, y) => {
+        const p = this.player;
+        p.x = x;
+        p.y = y;
+        p.vx = 420;
+        p.vy = -120;
+        p.grounded = false;
+        this.checkpoint = { x: this.slideRun!.st.chamberFlag.x, y: this.slideRun!.st.chamberFlag.y };
+        this.camera.x = x - this.camera.viewportWidth * 0.3;
+        this.camera.y = y - this.camera.viewportHeight * 0.5;
+        this.respawnFlash = 0.6;
+      },
+    });
+  }
+
+  private stepSlide(dt: number) {
+    const run = this.slideRun!;
+    const p = this.player;
+    this.input.kickNear = false;
+    this.input.onVine = false;
+    this.input.onRope = false;
+    if (!this.isGameOver) run.step(dt, this.input.state);
+    this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.life -= dt;
+      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
+    }
+    this.callbacks.onProgressUpdate(0, 1, this.runScore, p.hp, 0.35 + 0.4 * run.sim.ratio(), null, 0);
   }
 
   // --- Dot's netting flight (dotFlightRun.ts does the work; these hand it the engine's input, hearts, camera and canvas) ---
