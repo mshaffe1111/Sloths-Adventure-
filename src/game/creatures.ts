@@ -20,6 +20,7 @@ import {
   type Body,
   type V2,
 } from './creatureRig.ts';
+import { FONT_UI } from './fonts.ts';
 
 // ---------------------------------------------------------------------------------------------
 // shared bits
@@ -184,7 +185,6 @@ export function drawTreeSnake(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
   ctx.translate(enemy.x, enemy.y);
   if (enemy.wx !== undefined) ctx.translate(-0, 0);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   const C = { dark: '#2f9a2c', base: '#52c53f', light: '#9be873', belly: '#e4f7a6' };
   const wx = b.wx;
   const wy = b.wy;
@@ -445,7 +445,6 @@ export function drawOcelot(ctx: CanvasRenderingContext2D, enemy: Enemy, time: nu
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   const GOLD = '#dba444';
   const GOLD_D = '#b97a22';
   const CREAM = '#fff3d4';
@@ -674,7 +673,6 @@ export function drawHarpyEagle(ctx: CanvasRenderingContext2D, enemy: Enemy, time
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.4)';
 
   const BR = '#8d5b2b';
   const TAN = '#d4a05a';
@@ -692,7 +690,7 @@ export function drawHarpyEagle(ctx: CanvasRenderingContext2D, enemy: Enemy, time
     ctx.beginPath();
     ctx.arc(0, -6, 40, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.font = 'bold 12px sans-serif';
+    ctx.font = `bold 12px ${FONT_UI}`;
     for (let k = 0; k < 3; k++) {
       const a = time * 5 + (k * Math.PI * 2) / 3;
       ctx.fillText('✨', 16 + Math.cos(a) * 22, -16 + Math.sin(a) * 12);
@@ -908,7 +906,7 @@ export function drawHarpyEagle(ctx: CanvasRenderingContext2D, enemy: Enemy, time
     ctx.arc(16, -56, 9, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 12px sans-serif';
+    ctx.font = `bold 12px ${FONT_UI}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('!', 16, -56);
@@ -974,7 +972,6 @@ function drawFrog(ctx: CanvasRenderingContext2D, enemy: Enemy, time: number) {
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   const B = '#2a8cf0';
   groundShadow(ctx, 0, FROG_G, 18 - r.lift * 0.25, 4 - r.lift * 0.08, 0.25 - r.lift * 0.005);
   ctx.translate(0, -r.lift);
@@ -1090,7 +1087,6 @@ function drawSpider(ctx: CanvasRenderingContext2D, enemy: Enemy, time: number) {
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   const O = '#f2812a';
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   if (hanging) {
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
     ctx.lineWidth = 1.2;

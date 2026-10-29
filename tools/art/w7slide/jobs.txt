@@ -1,0 +1,11 @@
+7-4 "The Way Down" slide art, Hugging Face jobs (2026-10-29), all rtx-pro-6000 at ~$2.75/h, results in the bucket mshaffe111/w5-xfer under w7slide/
+The job reads slidegpu.py and its spec from raw GitHub at the commit named in its command (branch w7-slide-art), the starts from
+reference/prop-sheets/qa-notes/7-4-slide-art/starts/ at the spec's "base" commit.
+
+w7slide-img    6ae353513fb22a235dd5c4c6  14:08:17-14:17:11   8.9 min  ~$0.41  34 img2img stills: chute floor/walls/dark mouth, obstacles, chamber, 10 Pokey-from-behind stills (spec-img.json)
+w7slide-clips  6ae355c03fb22a235dd5c7f1  14:18:40-14:39:10  20.5 min  ~$0.94  4 Wan 2.2 clips (sliding loop x2, lean left x2) from the on-model stills (spec-clips.json): all 4 thrown away
+w7slide-seam   6ae356973fb22a235dd5c903  14:22:15-14:24:15   2.0 min  ~$0.09  seam repaint of the rolled floor and walls (spec-seam.json)
+w7slide-img2   6ae3584141e90535df78e431  14:29:21-14:36:44   7.4 min  ~$0.34  round 2 for the builder's list: 3-lane floor, ceiling, way-out light, lintels/rubble/lips, crumble frames, chamber; roots seam at 0.65/0.8 (spec-img2.json)
+w7slide-img3   6ae35a8ead9610e5cb311b61  14:39:10-14:41:22   2.2 min  ~$0.10  chamber take 2, the chute mouth in an archway (spec-img3.json)
+w7slide-seam2  6ae35ad5ad9610e5cb311bc6  14:40:21-14:42:07   1.8 min  ~$0.08  seam repaint of the 3-lane floor and the ceiling (spec-seam2.json)
+total 42.8 min of GPU, ~$1.96 (Pokey's share: the clips $0.94 + 10/34 of w7slide-img ~$0.12 = ~$1.06, under its $1.50 cap)

@@ -1,0 +1,122 @@
+{
+ "sheet": "falls.webp",
+ "size": {
+  "w": 2048,
+  "h": 1384
+ },
+ "anchor": "tile pieces repeat (vertical or horizontal) with no seam; lips: top middle; mist, plume: foot middle",
+ "takes": {
+  "fall-narrow": "w4falls-a-s62-17",
+  "fall-medium": "w4falls-a-s62-17",
+  "fall-wide": "w4falls-a-s62-17",
+  "pillar": "w4falls-a-s76-17",
+  "lip-1": "w4falls-a-s76-5",
+  "lip-2": "w4falls-a-s76-5",
+  "lip-3": "w4falls-a-s76-5",
+  "splash-1": "w4falls-a-s76-5",
+  "splash-2": "w4falls-a-s76-5",
+  "mist-1": "w4mist-b-s60-17",
+  "mist-2": "w4mist-b-s60-17",
+  "plume": "w4mist-b-s60-29"
+ },
+ "method": "img2img (Qwen-Image + slothadv style model) from blockstart.py w4falls; water unmixed from the key (soft alpha), tiling pieces cross-faded after the cut",
+ "frames": {
+  "fall-narrow": {
+   "x": 0,
+   "y": 0,
+   "w": 168,
+   "h": 598,
+   "tile": "vertical"
+  },
+  "fall-medium": {
+   "x": 172,
+   "y": 0,
+   "w": 233,
+   "h": 598,
+   "tile": "vertical"
+  },
+  "fall-wide": {
+   "x": 409,
+   "y": 0,
+   "w": 355,
+   "h": 598,
+   "tile": "vertical"
+  },
+  "pillar": {
+   "x": 768,
+   "y": 0,
+   "w": 181,
+   "h": 618,
+   "tile": "vertical"
+  },
+  "lip-1": {
+   "x": 953,
+   "y": 0,
+   "w": 372,
+   "h": 176,
+   "ax": 186.0,
+   "ay": 0,
+   "note": "top of the rock; the pour hangs below"
+  },
+  "lip-2": {
+   "x": 1329,
+   "y": 0,
+   "w": 373,
+   "h": 182,
+   "ax": 186.5,
+   "ay": 0,
+   "note": "top of the rock; the pour hangs below"
+  },
+  "lip-3": {
+   "x": 0,
+   "y": 622,
+   "w": 366,
+   "h": 182,
+   "ax": 183.0,
+   "ay": 0,
+   "note": "top of the rock; the pour hangs below"
+  },
+  "splash-1": {
+   "x": 370,
+   "y": 622,
+   "w": 508,
+   "h": 185,
+   "tile": "horizontal",
+   "ax": 254.0,
+   "ay": 185
+  },
+  "splash-2": {
+   "x": 882,
+   "y": 622,
+   "w": 508,
+   "h": 168,
+   "tile": "horizontal",
+   "ax": 254.0,
+   "ay": 168
+  },
+  "mist-1": {
+   "x": 1394,
+   "y": 622,
+   "w": 484,
+   "h": 191,
+   "ax": 242.0,
+   "ay": 191
+  },
+  "mist-2": {
+   "x": 0,
+   "y": 817,
+   "w": 450,
+   "h": 190,
+   "ax": 225.0,
+   "ay": 190
+  },
+  "plume": {
+   "x": 454,
+   "y": 817,
+   "w": 220,
+   "h": 567,
+   "ax": 110.0,
+   "ay": 567
+  }
+ }
+}

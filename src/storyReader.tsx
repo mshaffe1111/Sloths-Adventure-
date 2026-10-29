@@ -11,6 +11,7 @@ import { AFTER_BOSS, MEMORIES, finalePanels } from './game/storyChapters.ts';
 import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { FINDS, BONUS_FIND } from './game/finds.ts';
+import { FONT_READ } from './game/fonts.ts';
 
 interface Piece { id: string; group: string; title: string; panels: StoryPanel[] }
 
@@ -63,7 +64,7 @@ function Reader() {
 
   let lastGroup = '';
   return (
-    <div style={{ minHeight: '100vh', background: '#0b1a13', color: '#e8f5ea', font: '16px/1.45 system-ui, sans-serif', padding: '28px max(16px, env(safe-area-inset-left)) 80px' }}>
+    <div style={{ minHeight: '100vh', background: '#0b1a13', color: '#e8f5ea', font: `16px/1.45 ${FONT_READ}`, padding: '28px max(16px, env(safe-area-inset-left)) 80px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto' }}>
         <div style={{ font: '600 12px system-ui', letterSpacing: '.14em', textTransform: 'uppercase', color: '#f4c85a' }}>Sloths Rainforest Adventures</div>
         <h1 style={{ margin: '6px 0 8px', font: '700 clamp(30px,7vw,46px)/1.05 system-ui', textWrap: 'balance' as never }}>The story draft</h1>

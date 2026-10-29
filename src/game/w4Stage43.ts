@@ -716,7 +716,7 @@ export function buildWaterfallSteps(
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },
     proto: {
       hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups,
-      w4: { falls, pools, monkeys, decor, rocks, rockTip: ROCK_TIP, dryTip: DRY_STEPS, ...(fallTrees.length ? { fallTrees } : {}) },
+      w4: { falls, pools, monkeys, decor, rocks, rockTip: ROCK_TIP, dryTip: DRY_STEPS, pillarTrunks: true, ...(fallTrees.length ? { fallTrees } : {}) },
     },
     falls43: info,
     tides43: tides,

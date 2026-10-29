@@ -282,3 +282,32 @@ function loadCanopy(world: number, stem = stemFor(world)): Promise<void> {
   canopyLoading.set(world, p);
   return p;
 }
+
+// ---- the reveal: another world's strips seen from the top of a climb (6-8 Stilt Climb: the first sight of the ruins, World 7, at dusk)
+
+const reveals = new Map<string, PaintedSet>();
+const revealLoading = new Set<string>();
+/**
+ * The strips a stage reveals at its top (`far`, `mid`, `near`: strip stems, e.g. 'w7dusk-far'), decoded on their own (not one of the
+ * KEEP_WORLDS sets: they are drawn over the world's own only near the top). Null until they have decoded; the first call starts them.
+ */
+export function revealSet(parts: { far: string; mid: string; near: string }): PaintedSet | null {
+  const key = `${parts.far}|${parts.mid}|${parts.near}`;
+  const hit = reveals.get(key);
+  if (hit) return hit;
+  if (revealLoading.has(key) || typeof Image === 'undefined') return null;
+  const urls = [parts.far, parts.mid, parts.near].map((n) => FILES[`../assets/backdrops/${n}.webp`]);
+  if (urls.some((u) => !u)) return null;
+  revealLoading.add(key);
+  const imgs = urls.map((u) => {
+    const im = new Image();
+    im.decoding = 'async';
+    im.src = u!;
+    return im;
+  });
+  Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
+    .then(() => reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2], at: typeof performance !== 'undefined' ? performance.now() : 0 }))
+    .catch(() => { /* no reveal: the world's own strips stay */ })
+    .finally(() => revealLoading.delete(key));
+  return null;
+}

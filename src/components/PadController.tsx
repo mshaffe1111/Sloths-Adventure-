@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
-import { PAD, padIntent, followAnchor, clampKnob } from '../game/padControl.ts';
+import { PAD, PadInput, followAnchor, clampKnob, pickButton, BUTTON_REACH, type PadButtonSpot } from '../game/padControl.ts';
 import type { PadSide } from '../game/controlPrefs.ts';
 import { Icon } from './icons/index.tsx';
 
@@ -11,7 +11,7 @@ import { Icon } from './icons/index.tsx';
  *
  *   pad:   slide sideways to run, down to duck, up to jump (hold up to climb a trunk or grab a rope)
  *   Jump:  press to jump, hold for height, press again in the air for a double jump
- *   Punch: tap to punch, hold to charge a mega punch
+ *   Punch: press to punch, hold on to upgrade it to a mega punch
  *   Kick:  tap to kick the way he faces
  */
 interface Props {
@@ -20,66 +20,45 @@ interface Props {
 }
 
 type Btn = 'jump' | 'punch' | 'kick';
-const MEGA_HOLD_MS = 320;
 
 export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
-  const [pad, setPad] = useState<{ ax: number; ay: number; kx: number; ky: number } | null>(null);
+  // the pad under the thumb: shown or not is React state, but where it and its knob are moves through refs and a CSS transform, so a
+  // touchmove re-renders nothing (it re-rendered the whole controller on every move: polish report CT-25)
+  const [shown, setShown] = useState(false);
+  const geo = useRef({ ax: 0, ay: 0, kx: 0, ky: 0 });
+  const ringRef = useRef<HTMLDivElement | null>(null);
+  const knobRef = useRef<HTMLDivElement | null>(null);
+  const place = () => {
+    const g = geo.current;
+    if (ringRef.current) ringRef.current.style.transform = `translate3d(${g.ax - PAD.radius - 14}px, ${g.ay - PAD.radius - 14}px, 0)`;
+    if (knobRef.current) knobRef.current.style.transform = `translate3d(${g.ax + g.kx - 26}px, ${g.ay + g.ky - 26}px, 0)`;
+  };
+  useLayoutEffect(() => {
+    if (shown) place();
+  }, [shown]);
   const [down, setDown] = useState<Set<Btn>>(new Set());
 
   const st = useRef({
     padId: -1,
     ax: 0,
     ay: 0,
-    move: 'none' as 'left' | 'right' | 'none',
-    duck: false,
-    jumpSrc: new Set<string>(),
-    megaTimer: 0,
-    megaFired: false,
   });
-
-  const jumpSet = (src: string, on: boolean) => {
-    const s = st.current.jumpSrc;
-    const before = s.size > 0;
-    if (on) s.add(src);
-    else s.delete(src);
-    const after = s.size > 0;
-    if (!before && after) {
-      inputEngine.triggerTouchUp();
-      inputEngine.triggerHaptic(15);
-    } else if (before && !after) inputEngine.releaseTouchUp();
-  };
-
-  const padApply = (dx: number, dy: number) => {
-    const s = st.current;
-    const it = padIntent(dx, dy);
-    if (it.move !== s.move) {
-      s.move = it.move;
-      inputEngine.triggerTouchMove(it.move);
-    }
-    if (it.duck !== s.duck) {
-      s.duck = it.duck;
-      inputEngine.triggerTouchDuck(it.duck);
-    }
-    jumpSet('pad', it.up);
-  };
+  // what the pad and the Jump button mean (padControl.ts PadInput)
+  const drive = useRef<PadInput | null>(null);
+  if (!drive.current) drive.current = new PadInput(inputEngine);
+  const P = drive.current;
 
   const padRelease = () => {
-    const s = st.current;
-    s.padId = -1;
-    s.move = 'none';
-    s.duck = false;
-    inputEngine.triggerTouchMove('none');
-    inputEngine.triggerTouchDuck(false);
-    jumpSet('pad', false);
-    setPad(null);
+    st.current.padId = -1;
+    P.padUp();
+    setShown(false);
   };
 
   const releaseAll = () => {
-    const s = st.current;
-    window.clearTimeout(s.megaTimer);
-    s.megaFired = false;
+    fingerBtn.current.clear();
+    P.punchButton(false);
     padRelease();
-    jumpSet('btn', false);
+    P.jumpButton(false);
     setDown(new Set());
   };
 
@@ -122,7 +101,8 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
     s.padId = t.identifier;
     s.ax = t.clientX;
     s.ay = t.clientY;
-    setPad({ ax: s.ax, ay: s.ay, kx: 0, ky: 0 });
+    geo.current = { ax: s.ax, ay: s.ay, kx: 0, ky: 0 };
+    setShown(true);
   };
   const padMove = (e: React.TouchEvent) => {
     const s = st.current;
@@ -132,9 +112,10 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
       s.ax = followAnchor(s.ax, t.clientX);
       const dx = t.clientX - s.ax;
       const dy = t.clientY - s.ay;
-      padApply(dx, dy);
+      P.pad(dx, dy);
       const k = clampKnob(dx, dy);
-      setPad({ ax: s.ax, ay: s.ay, kx: k.x, ky: k.y });
+      geo.current = { ax: s.ax, ay: s.ay, kx: k.x, ky: k.y };
+      place();
     }
   };
   const padEnd = (e: React.TouchEvent) => {
@@ -142,41 +123,54 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
   };
 
   // ---- the buttons ----
-  const btnStart = (b: Btn) => (e: React.TouchEvent) => {
-    e.stopPropagation();
+  // one touch area covers the buttons' half of the screen, and each finger presses the button nearest it (pickButton): a touch that
+  // missed a button by a few px did nothing (polish report CT-18). The buttons themselves are only drawn.
+  const btnEls = useRef<Partial<Record<Btn, HTMLDivElement | null>>>({});
+  const fingerBtn = useRef(new Map<number, Btn>());
+  const press = (b: Btn) => {
     mark(b, true);
-    const s = st.current;
-    if (b === 'jump') jumpSet('btn', true);
+    if (b === 'jump') P.jumpButton(true);
     else if (b === 'kick') {
       inputEngine.triggerTouchKick(0);
       inputEngine.triggerHaptic(25);
-    } else {
-      inputEngine.setHold('pad', true);
-      s.megaFired = false;
-      window.clearTimeout(s.megaTimer);
-      s.megaTimer = window.setTimeout(() => {
-        s.megaFired = true;
-        inputEngine.triggerTouchMega();
-        inputEngine.triggerHaptic(35);
-      }, MEGA_HOLD_MS);
-    }
+    } else P.punchButton(true);
   };
-  const btnEnd = (b: Btn) => (e: React.TouchEvent) => {
-    e.stopPropagation();
+  const letGo = (b: Btn) => {
+    // (two fingers on one button: it is let go when the last one lifts)
+    if ([...fingerBtn.current.values()].includes(b)) return;
     mark(b, false);
-    const s = st.current;
-    if (b === 'jump') jumpSet('btn', false);
-    else if (b === 'punch') {
-      inputEngine.setHold('pad', false);
-      window.clearTimeout(s.megaTimer);
-      if (!s.megaFired) {
-        inputEngine.triggerTouchPunch();
-        inputEngine.triggerHaptic(20);
-      }
-      s.megaFired = false;
+    if (b === 'jump') P.jumpButton(false);
+    else if (b === 'punch') P.punchButton(false);
+  };
+  const btnsStart = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    const spots: PadButtonSpot<Btn>[] = [];
+    for (const [b, el] of Object.entries(btnEls.current) as Array<[Btn, HTMLDivElement | null]>) {
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      spots.push({ b, cx: r.left + r.width / 2, cy: r.top + r.height / 2, r: r.width / 2 });
+    }
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const t = e.changedTouches[i];
+      const b = pickButton(t.clientX, t.clientY, spots);
+      if (!b) continue;
+      const again = [...fingerBtn.current.values()].includes(b);
+      fingerBtn.current.set(t.identifier, b);
+      if (!again) press(b);
     }
   };
-  const btnProps = (b: Btn) => ({ onTouchStart: btnStart(b), onTouchEnd: btnEnd(b), onTouchCancel: btnEnd(b) });
+  const btnsEnd = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const id = e.changedTouches[i].identifier;
+      const b = fingerBtn.current.get(id);
+      if (!b) continue;
+      fingerBtn.current.delete(id);
+      letGo(b);
+    }
+  };
+
+  const hit = { onTouchStart: btnsStart, onTouchEnd: btnsEnd, onTouchCancel: btnsEnd };
 
   // the pad is on `side`; the buttons are on the other one, mirrored so the cluster always opens toward the thumb
   const btnSide: PadSide = side === 'right' ? 'left' : 'right';
@@ -203,7 +197,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
         {/* the ghost pad that shows where to put a thumb. It stays mounted (and never takes a touch) because a touch that began on an element which then unmounts stops reporting its moves */}
         <div
           className="absolute left-1/2 bottom-[18%] -translate-x-1/2 grid place-items-center rounded-full border-2 border-white/30 bg-white/10 text-white/50 font-black pointer-events-none transition-opacity"
-          style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, opacity: pad ? 0 : 1 }}
+          style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, opacity: shown ? 0 : 1 }}
         >
           <span className="inline-flex items-center gap-3" aria-hidden="true">
             <Icon name="arrow" size={18} rotate={180} />
@@ -211,17 +205,25 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
           </span>
         </div>
       </div>
-      {pad && (
+      {shown && (
         <>
-          <div className="fixed rounded-full border-[3px] border-white/55 bg-white/15 pointer-events-none" style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, left: pad.ax - PAD.radius - 14, top: pad.ay - PAD.radius - 14 }} />
-          <div className="fixed rounded-full bg-white/80 shadow-lg pointer-events-none" style={{ width: 52, height: 52, left: pad.ax + pad.kx - 26, top: pad.ay + pad.ky - 26 }} />
+          <div ref={ringRef} className="fixed left-0 top-0 rounded-full border-[3px] border-white/55 bg-white/15 pointer-events-none" style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, willChange: 'transform' }} />
+          <div ref={knobRef} className="fixed left-0 top-0 rounded-full bg-white/80 shadow-lg pointer-events-none" style={{ width: 52, height: 52, willChange: 'transform' }} />
         </>
       )}
 
+      {/* the buttons' half of the screen: any touch there presses the nearest button */}
+      <div
+        className="absolute top-[16%] bottom-0 w-1/2 pointer-events-auto"
+        style={{ [btnSide]: 0, touchAction: 'none', WebkitTouchCallout: 'none' }}
+        onTouchStart={btnsStart}
+        onTouchEnd={btnsEnd}
+        onTouchCancel={btnsEnd}
+      />
       {/* Jump sits nearest the thumb's rest; Punch beside it, Kick above */}
-      <Button label="Kick" className="from-rose-400 to-rose-600 border-rose-200/80" down={down.has('kick')} size="1" style={pos('calc(var(--b) * 0.45)', 'calc(var(--b) * 1.45)')} {...btnProps('kick')} />
-      <Button label="Punch" className="from-amber-300 to-amber-500 border-amber-100/80" down={down.has('punch')} size="1" style={pos('calc(var(--b) * 1.55)', 'calc(var(--b) * 0.7)')} {...btnProps('punch')} />
-      <Button label="Jump" className="from-emerald-400 to-emerald-600 border-emerald-100/80" down={down.has('jump')} size="1.2" style={pos('calc(var(--b) * 0.1)', '0px')} {...btnProps('jump')} />
+      <Button label="Kick" className="from-rose-400 to-rose-600 border-rose-200/80" down={down.has('kick')} size="1" style={pos('calc(var(--b) * 0.45)', 'calc(var(--b) * 1.45)')} el={(d) => (btnEls.current.kick = d)} {...hit} />
+      <Button label="Punch" className="from-amber-300 to-amber-500 border-amber-100/80" down={down.has('punch')} size="1" style={pos('calc(var(--b) * 1.55)', 'calc(var(--b) * 0.7)')} el={(d) => (btnEls.current.punch = d)} {...hit} />
+      <Button label="Jump" className="from-emerald-400 to-emerald-600 border-emerald-100/80" down={down.has('jump')} size="1.2" style={pos('calc(var(--b) * 0.1)', '0px')} el={(d) => (btnEls.current.jump = d)} {...hit} />
     </div>
   );
 };
@@ -232,17 +234,20 @@ const Button: React.FC<{
   down: boolean;
   size: string;
   style: React.CSSProperties;
+  el: (d: HTMLDivElement | null) => void;
   onTouchStart: (e: React.TouchEvent) => void;
   onTouchEnd: (e: React.TouchEvent) => void;
   onTouchCancel: (e: React.TouchEvent) => void;
-}> = ({ label, className, down, size, style, ...h }) => (
+}> = ({ label, className, down, size, style, el, ...h }) => (
   <div
-    {...h}
-    className={`absolute pointer-events-auto grid place-items-center rounded-full border-[3px] bg-gradient-to-b font-black uppercase tracking-wide text-white shadow-[0_5px_0_rgba(0,0,0,.35)] transition-transform duration-75 [text-shadow:0_1px_2px_rgba(0,0,0,.6)] ${className} ${down ? 'scale-90 brightness-125 shadow-none' : 'opacity-80'}`}
+    ref={el}
+    className={`absolute pointer-events-none grid place-items-center rounded-full border-[3px] bg-gradient-to-b font-black uppercase tracking-wide text-white shadow-[0_5px_0_rgba(0,0,0,.35)] transition-transform duration-75 [text-shadow:0_1px_2px_rgba(0,0,0,.6)] ${className} ${down ? 'scale-90 brightness-125 shadow-none' : 'opacity-80'}`}
     style={{ width: `calc(var(--b) * ${size})`, height: `calc(var(--b) * ${size})`, fontSize: 'calc(var(--b) * 0.2)', touchAction: 'none', ...style }}
     role="button"
     aria-label={label}
   >
     {label}
+    {/* its reach: an invisible ring BUTTON_REACH times its size, which answers touches even past the middle of the screen (CT-18) */}
+    <div className="absolute rounded-full pointer-events-auto" style={{ inset: `${(-(BUTTON_REACH - 1) / 2) * 100}%`, touchAction: 'none' }} {...h} />
   </div>
 );

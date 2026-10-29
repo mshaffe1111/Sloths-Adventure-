@@ -1,7 +1,7 @@
 import { ModeChip } from './ModeChip.tsx';
 import React from 'react';
 import { sound } from '../game/audio.ts';
-import { COARSE, OrchSfxToggle, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle, DifficultySetting, DotHelpSetting } from './menuParts.tsx';
+import { COARSE, OrchSfxToggle, ControlsSetting, ShakeSetting, FullscreenSetting, AssistSetting, WaysideToggle, HapticsToggle, PerfToggle, DifficultySetting, DotHelpSetting } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 import { MenuFrame, MenuTile, SoundSetting } from './MenuFrame.tsx';
 
@@ -173,10 +173,12 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
         <FullscreenSetting />
         <DifficultySetting />
         <ControlsSetting />
+        <ShakeSetting />
         <AssistSetting />
         {/* Dot's help and what she said */}
         <DotHelpSetting />
         <WaysideToggle />
+        <HapticsToggle />
         <PerfToggle />
         <OrchSfxToggle />
       </>

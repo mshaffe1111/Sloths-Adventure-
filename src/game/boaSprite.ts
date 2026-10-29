@@ -137,7 +137,6 @@ export function drawBoaSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
     ctx.ellipse(0, 1, 34 * sx, 3.4, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   ctx.scale(sx, sy);
   if (!(clip && ANIM.draw(ctx, clip, K))) ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();

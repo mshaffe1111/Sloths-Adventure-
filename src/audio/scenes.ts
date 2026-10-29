@@ -166,7 +166,7 @@ export function stageMusic(world: number, levelId: string, mini: number, salt = 
   return { id: stageThemeId(world, seed, pace), intensity: 0.35, seed, tempo };
 }
 
-/** the piece the title screen and the pause menu play: the first stage's own tune, as it was written */
+/** the piece the title screen plays: the first stage's own tune, as it was written */
 export const MENU_THEME = 'world1';
 
 /** music for the non-cutscene screens; null means "leave it to the cutscene player" */
@@ -178,7 +178,9 @@ export function sceneForScreen(screen: string, world: number, isBoss: boolean, l
     case 'world_map':
       return { id: 'map~r', intensity: 0.55 };
     case 'paused':
-      return { id: MENU_THEME, intensity: 0.45 };
+      // the stage's own tune goes on under the pause menu, quieter and muffled (conductor.ts setPaused): it used to switch to the World
+      // 1 tune (SN-6). null: keep what is playing
+      return null;
     case 'playing':
     {
       if (isBoss) return { id: `${BOSS_THEME(world)}~b`, intensity: 0.6, seed: levelId ? hashStr(levelId) : 0, tempo: 1 };

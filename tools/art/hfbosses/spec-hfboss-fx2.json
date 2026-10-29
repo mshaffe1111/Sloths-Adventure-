@@ -1,0 +1,133 @@
+{
+ "note": "hfboss-fx2: boss art batch round 2, hf-art-bosses, 2026-10-29",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2fedf4b420262b373fd659bd98e1b0b73983e2e1/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "fx-storm-s80-7",
+   "start": "start-fx-storm.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: along the top three different dark violet thunderclouds, billowing and lumpy with rounded puffs, lilac highlights on their tops, deep indigo underneath; below them two long low banks of the same storm cloud lying flat. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-storm-s80-23",
+   "start": "start-fx-storm.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: along the top three different dark violet thunderclouds, billowing and lumpy with rounded puffs, lilac highlights on their tops, deep indigo underneath; below them two long low banks of the same storm cloud lying flat. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.8,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-storm-s88-7",
+   "start": "start-fx-storm.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: along the top three different dark violet thunderclouds, billowing and lumpy with rounded puffs, lilac highlights on their tops, deep indigo underneath; below them two long low banks of the same storm cloud lying flat. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-storm-s88-23",
+   "start": "start-fx-storm.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: along the top three different dark violet thunderclouds, billowing and lumpy with rounded puffs, lilac highlights on their tops, deep indigo underneath; below them two long low banks of the same storm cloud lying flat. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.88,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-mud-s80-7",
+   "start": "start-fx-mud.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: on the left a breaking wave of thick wet brown river mud rolling to the right, its crest curling over at the top, clods of mud flying off it; on the right a crown splash of cyan-white river water thrown up in spikes with droplets flying off their tips, over a small dark teal pool. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-mud-s80-23",
+   "start": "start-fx-mud.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: on the left a breaking wave of thick wet brown river mud rolling to the right, its crest curling over at the top, clods of mud flying off it; on the right a crown splash of cyan-white river water thrown up in spikes with droplets flying off their tips, over a small dark teal pool. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.8,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-mud-s88-7",
+   "start": "start-fx-mud.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: on the left a breaking wave of thick wet brown river mud rolling to the right, its crest curling over at the top, clods of mud flying off it; on the right a crown splash of cyan-white river water thrown up in spikes with droplets flying off their tips, over a small dark teal pool. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-mud-s88-23",
+   "start": "start-fx-mud.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: on the left a breaking wave of thick wet brown river mud rolling to the right, its crest curling over at the top, clods of mud flying off it; on the right a crown splash of cyan-white river water thrown up in spikes with droplets flying off their tips, over a small dark teal pool. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.88,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dust2-s80-7",
+   "start": "start-dust2.webp",
+   "prompt": "slothadv style, an animation strip of eight frames left to right, each separate on the background: a soft cartoon puff of tan jungle dust kicked up from the ground, small at first, billowing out round and fluffy, then breaking apart into little wisps and fading. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 256
+  },
+  {
+   "name": "dust2-s80-23",
+   "start": "start-dust2.webp",
+   "prompt": "slothadv style, an animation strip of eight frames left to right, each separate on the background: a soft cartoon puff of tan jungle dust kicked up from the ground, small at first, billowing out round and fluffy, then breaking apart into little wisps and fading. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.8,
+   "seed": 23,
+   "w": 2048,
+   "h": 256
+  },
+  {
+   "name": "dust2-s88-7",
+   "start": "start-dust2.webp",
+   "prompt": "slothadv style, an animation strip of eight frames left to right, each separate on the background: a soft cartoon puff of tan jungle dust kicked up from the ground, small at first, billowing out round and fluffy, then breaking apart into little wisps and fading. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 256
+  },
+  {
+   "name": "dust2-s88-23",
+   "start": "start-dust2.webp",
+   "prompt": "slothadv style, an animation strip of eight frames left to right, each separate on the background: a soft cartoon puff of tan jungle dust kicked up from the ground, small at first, billowing out round and fluffy, then breaking apart into little wisps and fading. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, landscape, cast shadow, people, sloth, character, face, eyes",
+   "strength": 0.88,
+   "seed": 23,
+   "w": 2048,
+   "h": 256
+  }
+ ]
+}

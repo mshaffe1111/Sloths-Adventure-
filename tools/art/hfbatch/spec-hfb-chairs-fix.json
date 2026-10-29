@@ -1,0 +1,12 @@
+{
+ "note": "7-3 ring of chairs touch-ups (2026-10-29): repaint the flat eleventh chair and blend out the rock clump, crops from chairfix.py",
+ "loras": {"style": ["mshaffe111/slothadv-style-lora", "slothadv_style_v1.safetensors", 1.0]},
+ "neg": "carving, carved pattern, glyphs, face, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, flat colour, vector art",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/hf-w7-chairs/tools/art/hfbatch/starts/",
+ "items": [
+  {"name": "w7chairs-fix-c11", "start": "start-w7chairs-fix-c11.webp", "strength": 0.45, "seed": 41, "w": 768, "h": 768,
+   "prompt": "slothadv style, painted storybook illustration, side view of a small plain stone chair in a ruined jungle temple, smooth uncarved weathered grey-green stone with soft painted shading and a faint stone grain, light from the upper left, a little soft green moss at the foot of its legs, thin dark outline, soft cel shading, beside a carved stone chair wrapped in roots, on a carved stone floor edge, flat plain pure magenta background"},
+  {"name": "w7chairs-fix-rock", "start": "start-w7chairs-fix-rock.webp", "strength": 0.5, "seed": 41, "w": 768, "h": 768,
+   "prompt": "slothadv style, painted storybook illustration, side view of old carved stone chairs standing on a mossy cracked temple stone floor with thin dry brown roots, stone chair legs wrapped in roots, soft cel shading, thin dark outline, light from the upper left, evenly lit, flat plain pure magenta background"}
+ ]
+}

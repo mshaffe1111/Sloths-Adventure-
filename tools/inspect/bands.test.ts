@@ -1,7 +1,7 @@
 // npx tsx --test tools/inspect/bands.test.ts
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { bandChart, bandFlags, floorFlags, floorFor, parts, stageScore, worldBands, type BandInput, type Scored } from './bands.ts';
+import { bandGate, bandChart, bandFlags, floorFlags, floorFor, parts, stageScore, worldBands, type BandInput, type Scored } from './bands.ts';
 
 const input = (o: Partial<BandInput> = {}): BandInput => ({
   id: '1-1', world: 1, setting: 'normal', time: 120, deadShare: 0.5, jumpRates: [], livesPerMin: 0, peakStress: 0, minWindowMs: 500, survivalMin: null, ...o,
@@ -22,7 +22,8 @@ test('score: each part moves it the right way', () => {
 });
 
 test('score: the hardest jumps are the mean miss of the worst three', () => {
-  assert.equal(Math.round(parts(input({ jumpRates: [1, 1, 0.7, 0.7, 0.7] })).jump! * 100), 50);
+  // (a 15% miss is the top: JUMP_TOP, LV-2 round 2)
+  assert.equal(Math.round(parts(input({ jumpRates: [1, 1, 0.925, 0.925, 0.925] })).jump! * 100), 50);
 });
 
 test('score: without the first-timer, only the inspector parts count (weights spread over them)', () => {
@@ -97,7 +98,14 @@ test('score: timing pressure (round 4, 2026-10-28) makes a safe but demanding st
     assert.ok(s > calm, `${JSON.stringify(more)}: ${s} > ${calm}`);
   }
   // all three at their top read as the top of the part; none measured leaves the part out
-  assert.equal(parts(input({ hazardsPerMin: 24, tightShare: 1, restartsPerMin: 6 })).pressure, 1);
+  assert.equal(parts(input({ hazardsPerMin: 24, tightShare: 1, restartsPerMin: 24 })).pressure, 1);
   assert.ok(!('pressure' in parts(input())));
   assert.ok(!('pressure' in parts(input({ hazardsPerMin: null, tightShare: null, restartsPerMin: null }))));
+});
+
+test('gate (LV-2): a Normal world under its floor, or under the world before it, fails; Easy is not gated', () => {
+  const b = (world: number, mid: number, setting: 'easy' | 'normal' = 'normal') => ({ world, setting, n: 9, min: mid - 5, max: mid + 5, mid, ids: [] });
+  assert.deepEqual(bandGate([b(2, 30), b(3, 35), b(4, 40), b(5, 45)]), []);
+  const f = bandGate([b(2, 30), b(3, 28), b(4, 40), b(5, 39), b(5, 10, 'easy')]);
+  assert.deepEqual(f.map((x) => x.world), [3, 3, 5, 5]);
 });

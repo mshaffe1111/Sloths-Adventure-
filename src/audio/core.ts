@@ -32,6 +32,8 @@ export class AudioCore {
   readonly music: GainNode;
   /** between the music bus and its filter: dips the music under stingers and dialogue */
   readonly musicDuck: GainNode;
+  /** after musicDuck: dips the music a few dB under speech (SN-7), on its own so a sting's deeper duck is never undone by a line */
+  readonly speechDuck: GainNode;
   readonly amb: GainNode;
   /** low-pass on the music bus: closes when the game is paused (a muffled "underwater" feel) */
   readonly musicFilter: BiquadFilterNode;
@@ -110,8 +112,10 @@ export class AudioCore {
     this.sfx.gain.value = 0.9;
     this.amb.gain.value = 0.6;
     this.sfx.connect(this.master);
+    this.speechDuck = c.createGain();
     this.music.connect(this.musicDuck);
-    this.musicDuck.connect(this.musicFilter);
+    this.musicDuck.connect(this.speechDuck);
+    this.speechDuck.connect(this.musicFilter);
     // nothing below ~40 Hz can be heard on any speaker, but it uses up the compressor's headroom and makes the whole mix pump
     const musicHp = c.createBiquadFilter();
     musicHp.type = 'highpass';

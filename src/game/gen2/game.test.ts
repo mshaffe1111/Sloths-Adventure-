@@ -139,8 +139,8 @@ test('the layout memory: a retry keeps the roll, and after a clear the next roll
 
 test("a gen2 stage loads World 5's sheets before it starts: the kit, its dressing, the spiders, and 5-9's puzzle pieces", () => {
   const on = { hand: true, paint: true, ctest: false };
-  assert.deepEqual(stageSheets(lv('5-7'), on), ['kit:1', 'kit:5', 'w5-props', 'dress', 'foe:spider', 'perch']);
-  assert.deepEqual(stageSheets(lv('5-9'), on), ['kit:1', 'kit:5', 'w5-props', 'dress', 'foe:spider', 'kit-pieces', 'perch']);
+  assert.deepEqual(stageSheets(lv('5-7'), on), ['kit:1', 'kit:5', 'w5-props', 'dress', 'foe:spider', 'perch', 'stage-art', 'gate:5', 'pit-water:5']);
+  assert.deepEqual(stageSheets(lv('5-9'), on), ['kit:1', 'kit:5', 'w5-props', 'dress', 'foe:spider', 'kit-pieces', 'perch', 'stage-art', 'gate:5', 'pit-water:5']);
   // (with or without the hand-built switch: gen2 is the only 5-7 there is)
   assert.deepEqual(stageSheets(lv('5-7'), { ...on, hand: false }), stageSheets(lv('5-7'), on));
 });

@@ -92,6 +92,10 @@ export interface LevelConfig {
 }
 
 export interface PlayerState {
+  /** standing still right at the end of a ledge, facing out over it this way (1 its right end, -1 its left; engine.ts edgeOffset) */
+  teeter?: -1 | 0 | 1;
+  /** where he is drawn, px from where he stands: a step back from a ledge's end while he stands at it (engine.ts edgeOffset) */
+  drawDx?: number;
   /** leaning into a log that moves (the push clip, heroClips.ts) */
   pushing?: boolean;
   /** game time he reached the exit, while the cheer plays before the stage clears (heroClips.ts) */
@@ -289,8 +293,8 @@ export interface Platform {
   lily?: boolean;
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
-  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), and the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`) */
-  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'post';
+  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`), and 6-8's ledges in World 6's pieces (`stilt`, w6StiltArt.ts) */
+  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'post' | 'stilt' | 'hidden';
   /** one of the Sky Sovereign's rock pillars in 4-10 (sovereignFight.ts): its index. It is a wall with a top to stand on; it cracks, and broken it is a stump */
   pillar?: number;
   /** a knot of wood standing at the end of a high branch (4-6; a mailbox post on 2-6's porches): a little wall, so he cannot walk off it
@@ -437,7 +441,15 @@ export interface Particle {
   size: number;
   life: number;
   maxLife: number;
-  type: 'leaf' | 'spark' | 'smoke' | 'star' | 'water' | 'feather' | 'claw_wave';
+  /**
+   * puff: a frame of the painted dust strip (size = its width); flash: the painted hit spark with a brief glow (size = its width);
+   * leaf: a painted leaf (green, or warm when `color` is 'warm'); grit: a painted chip of stone (multiplied by `color` unless it is
+   * ''); water: a puff of painted spray; splash: the painted splash crown (size = its width); feather: the painted feather; star: a
+   * small four-pointed sparkle (the one code-drawn touch)
+   */
+  type: 'leaf' | 'star' | 'water' | 'feather' | 'puff' | 'flash' | 'grit' | 'splash';
+  /** 0..1, fixed for the particle's life: which painted piece, which way it spins */
+  seed?: number;
 }
 
 export interface FloatingText {
@@ -476,6 +488,10 @@ export interface InputState {
   jumpLean?: -1 | 0 | 1;
   jumpHeld: boolean;
   punchPressed: boolean;
+  /** take back a punch pressed a moment ago, if its swing has not struck yet (a touch jab the finger outran, CT-17) */
+  punchCancel?: boolean;
+  /** … and the punch just pressed may be taken back for this long (s): its swing waits in its wind-up until then */
+  punchHold?: number;
   kickPressed: boolean;
   /** which way a touch kick was flicked (-1 left, 1 right, 0 = no preference) */
   kickDir: number;

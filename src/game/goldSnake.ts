@@ -188,7 +188,6 @@ export function drawGoldSnake(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
   ctx.save();
   ctx.translate(enemy.x, enemy.y + 12);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.4)';
   if (mode === 'defeat') ctx.globalAlpha = 0.9;
 
   // contact shadow
@@ -287,7 +286,6 @@ function drawPainted(ctx: CanvasRenderingContext2D, enemy: Enemy, r: Rig, mode: 
   ctx.beginPath();
   ctx.ellipse(0, 0.5, SHADOW[seq] ?? 40, 2.6, 0, 0, Math.PI * 2);
   ctx.fill();
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.4)';
   if (asleep) {
     // breathing
     ctx.scale(1, 1 + Math.sin(time * 2.2 + enemy.id) * 0.018);
@@ -298,7 +296,6 @@ function drawPainted(ctx: CanvasRenderingContext2D, enemy: Enemy, r: Rig, mode: 
     ANIM.draw(ctx, r.prev, 1);
     ctx.globalAlpha = 1;
   }
-  ctx.filter = 'none';
   if (mode === 'dazed') {
     ctx.fillStyle = '#fde68a';
     for (let k = 0; k < 3; k++) {
