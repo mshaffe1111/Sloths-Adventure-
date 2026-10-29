@@ -11,6 +11,7 @@ import {
   type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind, type Wire, wireIds,
 } from './puzzleKit.ts';
 import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
+import { drawW8Hammock, drawW8Piece, loadW8RoomArt } from './w8RoomArt.ts';
 import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
 import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
@@ -311,6 +312,8 @@ export class KitPlay {
       // World 2's thrown stones: Matt's river stone or the round grey one, by the roll (never the same look two stages running)
       stone: w === 2 ? rollLook(['riverStone', 'stone'] as const, world.stage ?? 1, roll, 2) : 'stone',
     };
+    // (World 8: Matt's W8 sheet for its lever stump, glow pads and bark doors)
+    if (w === 8) loadW8RoomArt();
     this.extraZones = (world.zones ?? []).filter((z) => z.kind === 'wind');
     this.noClock = !!world.noClock;
     this.night = !!world.night;
@@ -565,6 +568,23 @@ export class KitPlay {
       }
       for (const g of room.glows) if (g.on) out.push({ x: g.x, y: g.y, r: g.spec.r });
       for (const m of room.moons) if (m.show > 0.02) out.push({ x: m.x, y: m.y - 40, r: m.spec.r * m.show });
+    }
+    return out;
+  }
+
+  /**
+   * World 8's room pieces as light sources, for the darkness's drawing only (STAGE-RULES §4: in the dark every obstacle carries its own
+   * light): each glow-mushroom pad glows (brighter held down), a lamp hangs by each bark door, and a shut moonflower bud gleams faintly.
+   * Never part of lights(): they light no hidden ledge and open no moonflower, so the rooms play as the checker proves them.
+   */
+  decorLights(): Array<{ x: number; y: number; r: number }> {
+    const out: Array<{ x: number; y: number; r: number }> = [];
+    if (this.look.world !== 8) return out;
+    for (const room of this.rooms) {
+      for (const pl of room.plates) out.push({ x: pl.x, y: pl.y - 16, r: 95 + 45 * pl.show });
+      for (const g of room.gates) out.push({ x: g.x, y: g.y - KIT.doorH * 0.6, r: 150 });
+      for (const m of room.moons) if (m.show < 0.98) out.push({ x: m.x, y: m.y - 40, r: 70 });
+      for (const s of room.sources) out.push({ x: s.x, y: s.y - 20, r: 80 });
     }
     return out;
   }
@@ -1717,9 +1737,10 @@ export class KitPlay {
           drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + 6, { w: pw * 1.5, h: ph * 0.7 });
           if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
         }
-        const drew = stoneP
+        // (World 8: the glow-mushroom pad of Matt's W8 sheet, pressed flat into the bark when held down)
+        const drew = (this.look.world === 8 && drawW8Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6, 52)) || (stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
-          : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
+          : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph }));
         ctx.restore();
         // (Meeca's night: an empty plate's rim breathes a pale light, so it reads as something to stand on, not a stump in the path)
         if (this.night && drew && pl.show < 0.5) {
@@ -1738,6 +1759,8 @@ export class KitPlay {
       }
       for (const l of room.levers) {
         if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
+        // (World 8: the branch-lever stump of Matt's W8 sheet, its branch pulled down while on)
+        if (this.look.world === 8 && drawW8Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 84)) continue;
         if (!drawKitArt(ctx, l.show > 0.5 ? 'leverOn' : 'leverOff', l.x, l.y + 4)) {
           ctx.strokeStyle = '#6b4a2b';
           ctx.lineWidth = 6;
@@ -1933,11 +1956,12 @@ export class KitPlay {
     const gw = KIT.gateW + 50;
     // World 1: Matt's branch gate, drawn up out of the way as it opens; World 3: Grandma's fern stone door, rolled aside
     const lw = this.look.world;
-    const drew = !g.spec.look && lw === 1
+    // (World 8: the bark door of Matt's W8 sheet, in its own piece of trunk)
+    const drew = (lw === 8 && drawW8Piece(ctx, g.show > 0.5 ? 'door-open' : 'door-closed', g.x, g.y + 4, 180)) || (!g.spec.look && lw === 1
       ? g.show > 0.98 || drawKitArt(ctx, 'branchGate', g.x, g.y + 4 - g.show * (KIT.doorH + 20), { w: gw + 20, h: KIT.doorH + 14, alpha: 1 - g.show * 0.85 })
       : !g.spec.look && lw === 3
         ? drawKitArt(ctx, g.show > 0.5 ? 'fernDoorOpen' : 'fernDoorShut', g.x, g.y + 6, { w: gw + 40, h: KIT.doorH + 20 })
-        : drawKitArt(ctx, g.show > 0.5 ? 'gateOpen' : 'gateShut', g.x, g.y + 4, { w: gw, h: KIT.doorH + 10 });
+        : drawKitArt(ctx, g.show > 0.5 ? 'gateOpen' : 'gateShut', g.x, g.y + 4, { w: gw, h: KIT.doorH + 10 }));
     if (!drew) {
       ctx.fillStyle = g.open ? 'rgba(92, 64, 32, 0.35)' : '#6b4a2b';
       ctx.fillRect(g.door.x, doorTop, g.door.width, KIT.doorH);
@@ -2096,10 +2120,12 @@ export class KitPlay {
     } else drawKitArt(ctx, 'cageLifted', cx, floor + 30);
   }
 
-  /** a lift's plank: World 4's is the plank of Matt's rope lift, every other world's the plank of World 1's swing */
+  /** a lift's plank: World 4's is the plank of Matt's rope lift, World 8's a leaf hammock, every other world's the plank of World 1's swing */
   private drawPlank(ctx: CanvasRenderingContext2D, pl: Platform): boolean {
     const cx = pl.x + pl.width / 2;
     if (this.look.world === 4) return drawKitArt(ctx, 'ropeLift', cx, pl.y + 20, { w: pl.width + 16, h: 34 });
+    // (World 8: the leaf hammock of Matt's W8 props sheet, its sag where he stands)
+    if (this.look.world === 8 && drawW8Hammock(ctx, cx, pl.y + 14, pl.width + 70)) return true;
     return drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 });
   }
 

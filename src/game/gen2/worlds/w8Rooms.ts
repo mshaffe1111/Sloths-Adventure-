@@ -169,7 +169,7 @@ export const padsRoomSpec: LocalRoomSpec = {
   id: 'pads',
   left: pf(0),
   right: pb(PADS.door + 60),
-  above: 520,
+  above: 330,
   below: 40,
   pieces: [
     { kind: 'reset', id: 'post', at: pf(24) },
@@ -271,7 +271,7 @@ export const moonRoomSpec: LocalRoomSpec = {
   id: 'moon',
   left: mf(0),
   right: mb(MOON.door + 60),
-  above: 560,
+  above: 400,
   below: 40,
   pieces: [
     { kind: 'reset', id: 'post', at: mf(24) },
@@ -306,7 +306,8 @@ export const moonRoom: SectionTemplate = {
   extraSeconds: 12,
   pieces: [
     bank('floor', MOON.floor, { kind: 'start' }),
-    { key: 'stump', shape: 'block', w: MOON.stumpW, h: MOON.stumpUp, place: { kind: 'on', on: 'floor', at: MOON.stumpX / (MOON.floor - MOON.stumpW), h: MOON.stumpUp }, style: 'moss_stone' },
+    // (a trunk stump: drawn as the world's own boughs, its trunk down to their feet)
+    { key: 'stump', shape: 'bank', w: MOON.stumpW, h: MOON.stumpUp, place: { kind: 'on', on: 'floor', at: MOON.stumpX / (MOON.floor - MOON.stumpW), h: MOON.stumpUp } },
     { key: 'bough', shape: 'branch', w: MOON.boughW, place: { kind: 'over', on: 'floor', at: MOON.boughX / MOON.floor, dy: -MOON.boughUp }, main: false },
     bank('floorB', MOON.floorB, { kind: 'walk', after: 'floor', dy: -MOON.knot }),
     bank('out', [200, 240], { kind: 'walk', after: 'floorB', dy: MOON.knot }),
