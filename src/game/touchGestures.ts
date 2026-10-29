@@ -73,7 +73,8 @@ export const TUNING = {
   decideMs: 210,
   /** movement needed for that */
   dragPx: 18,
-  tapMs: 420,
+  /** a still press up to this long is a tap; one longer that lifts before the mega (holdMs, and no mega thrown) is a tap too (CT-22) */
+  tapMs: 400,
   tapPx: 22,
   /** a still finger held this long throws the mega (it was 460: a two-thumb player's resting thumb threw one every rest, CT-7) */
   holdMs: 550,
@@ -457,7 +458,7 @@ export class TouchGestures {
       if (!f.jumped && !f.ducked) this.moverFlickOnLift(f, t);
       const travel = Math.hypot(f.x - f.x0, f.y - f.y0);
       const nudge = this.heldDir !== 'none' && travel <= TUNING.nudgeTapPx && t - f.t0 <= TUNING.nudgeTapMs && Math.abs(f.x - f.x0) >= Math.abs(f.y - f.y0);
-      const stillTap = !f.jumped && !f.ducked && ((this.heldDir === 'none' && travel <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) || nudge) && !this.flickedUp(f);
+      const stillTap = !f.jumped && !f.ducked && !f.megaDone && ((this.heldDir === 'none' && travel <= TUNING.tapPx && this.tapLong(f, t)) || nudge) && !this.flickedUp(f);
       const wasReplant = f.tapT0 - this.lastMoverUp < TUNING.replantMs;
       // only a finger that really steered or jumped counts as a "thumb that was just lifted". A finger that merely tapped must not:
       // otherwise every tap in a quick run of taps on the left half would look like a re-plant of the one before, and be eaten
@@ -519,7 +520,7 @@ export class TouchGestures {
     if (f.ducked) this.sink.duck(false);
     if (was || acted) return;
     const dist = Math.hypot(f.x - f.x0, f.y - f.y0);
-    if (dist <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs && !this.flickedUp(f)) {
+    if (dist <= TUNING.tapPx && !f.megaDone && this.tapLong(f, t) && !this.flickedUp(f)) {
       // re-planting the thumb right after steering is not a punch: only if it began after the lift AND near it
       const replant = f.tapT0 >= this.lastMoverUp && f.tapT0 - this.lastMoverUp < TUNING.replantMs &&
         Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;
@@ -869,6 +870,11 @@ export class TouchGestures {
     if (rise < TUNING.liftFlickPx || rise / el < TUNING.liftFlickSpeed || rise < sx * TUNING.liftFlickSlant) return null;
     return { lean: this.leanOf(f.x - tr[lo].x, rise) };
   }
+  /** a press short enough to be a tap: up to tapMs, or longer while no mega has been thrown and the hold has not run out (CT-22) */
+  private tapLong(f: Finger, t: number): boolean {
+    return t - f.tapT0 <= TUNING.tapMs || t - f.tapT0 < TUNING.holdMs;
+  }
+
   /** the finger is at rest right now: under 6 px of travel in its last 50 ms (a flick just starting is no hold: CT-7) */
   private stillNow(f: Finger): boolean {
     let d = 0;

@@ -94,3 +94,22 @@ test('CT-24: a thumb drifting slowly down and up after a jump is no second jump;
   two2.path(2, [[600, 600], [600, 570], [600, 540], ...Array.from({ length: 8 }, () => [600, 540] as [number, number]), [600, 550], [600, 560], [600, 545], [600, 530], [600, 515]], 25, false);
   assert.equal(two2.log.filter((l) => l.startsWith('jump')).length, 2, `other thumb, quick re-flick: ${two2.log.join(' ')}`);
 });
+
+// ───────────────────────────── CT-22: the still press between a tap and a hold ─────────────────────────────
+
+test('CT-22: a still press too long for a tap and too short for a mega punches, on either half', () => {
+  for (const x of [200, 650]) {
+    for (const ms of [300, 450, 520]) {
+      const t = gestures();
+      t.path(1, [[x, 600], ...Array.from({ length: Math.round(ms / 30) }, () => [x, 600] as [number, number])], 30);
+      assert.deepEqual(t.log, ['punch'], `x ${x}, still ${ms} ms: ${t.log.join(' ')}`);
+    }
+  }
+  // (a lone left-half finger held still is NOT a mega: replaying the testers' touches, that threw 283 more megas, 85 -> 368, from thumbs
+  // resting before they steer. The right half's held finger megas as before)
+  const t = gestures();
+  t.g.down(1, 200, 600, 1000);
+  for (let ms = 30; ms <= 700; ms += 30) t.g.tick(1000 + ms);
+  t.g.up(1, 200, 600, 1710);
+  assert.deepEqual(t.log, [], t.log.join(' '));
+});

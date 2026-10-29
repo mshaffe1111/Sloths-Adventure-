@@ -291,6 +291,10 @@ for (const tc of touches) {
 const pct = (t?: Tally) => (t && t.n ? `${((100 * t.miss) / t.n).toFixed(1)}% (${t.miss}/${t.n})` : '-');
 const order = ['all', ...PLAYERS, 'others', 'portrait', 'landscape'];
 console.log(`Replay of the control tests sheet, recordings from ${since}: ${sessions.size} sessions, ${touches.length} touches\n`);
+{
+  const n = (w: string) => touches.reduce((a, tc) => a + tc.did.filter((d) => d === w || d.startsWith(w + ':')).length, 0);
+  console.log(`Decisions in all: ${n('jump') + n('jumpV')} jumps, ${n('punch')} punches, ${n('kick')} kicks, ${n('mega')} megas\n`);
+}
 console.log('| who | ground flicks, clear (missed) | ground flicks, short (missed) | punched instead | never rose 12 px, but jumped | vine straight climb (let go) | vine slanted climb (let go) | vine quick flick (did not let go) | vine, second thumb straight (let go; CT-5) | rests that threw a mega | flick after a rest (no jump) | second jumps from one touch (on a slow rise) |');
 console.log('|---|---|---|---|---|---|---|---|---|---|---|---|');
 for (const k of order) {
