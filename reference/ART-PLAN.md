@@ -159,11 +159,25 @@ Round 1 = items 1-7 (~$30-32 of the $40 cap). Round 2 = items 10-15 in that orde
 | 6ae264813fb22a235dd496cd | boss batch 2, 16 clips | rtx-pro-6000 | 66.5 | 3.05 |
 | 6ae2648341e90535df77c9bb | boss batch 2, 16 clips | rtx-pro-6000 | 66.3 | 3.04 |
 | 6ae2754341e90535df77d9a7 | previews of every clip for the gallery | cpu-upgrade | ~10 | ~0.01 |
+| 6ae28eef3fb22a235dd4cca5 | Part A re-runs, last frame pinned: Flicker lead and dart, Reaver walk (6 clips) | rtx-pro-6000 | 29.8 | 1.37 |
+| 6ae28ef041e90535df77f9bd | Part A re-runs, motion model at 0.5: Monarch hover and fly (4 clips) | rtx-pro-6000 | 20.6 | 0.94 |
+| 3 cancelled cutpack runs (bash ate GROUPS) | cut-in packing, every group three times over | cpu-upgrade | ~6 | ~0.01 |
+| 6ae290f73fb22a235dd4cf3f / 6ae290f941e90535df77fcb9 / 6ae290fb41e90535df77fcbd | cut-in packing (cutpack2.py), every group once | cpu-upgrade | 5.0 + 4.4 + 5.0 | ~0.02 |
 
 Painted logo: cancelled by Matt before it ran, $0.
 
-Total: **$54.65** (round 1 enemies + Flicker $35.6; the title pair $5.0, inside the same cap; round 2 $14.1).
-Under the $65 cap; new jobs stop at $60 (coordinator), the rest kept for re-runs after Matt's gallery review.
+Total: **$56.99** (round 1 enemies + Flicker $35.6; the title pair $5.0, inside the same cap; round 2 $14.1; Part A re-runs $2.31;
+packing on CPU about 3 cents).
+
+Part A re-runs (2026-10-29), what came out:
+- **Monarch hover and fly, motion model at 0.5: fixed** in the s11 takes (hover3-s11, fly3-s11: flapping in place at a steady size; the
+  s3 takes still shrink away). They replace the old hover and fly in the Monarch's sheet (src/assets/w6to10/bosses/monarch-anim.webp).
+- **Flicker lead and dart, pinned: usable.** lead3-s3 flies in place with a look ahead and back (now his lead while he flies with Meeca);
+  dart3-s11's first 13 frames are a dash with speed streaks, then it stops dead (cut to the dash, played once). dart3-s3 is a plain hover.
+- **Reaver walk, pinned: still weak.** walk3-s3/s11 hold his size now but his feet only shuffle in place; not cut in. Matt's Gemini redo
+  of the walk poses is the way.
+- Still broken from before: Iron-Claw jump, Drake leap and claw, Monarch takeoff, Flicker show, Queen and General collars off, the Dozer's
+  fly loop, the Reaver's ultimate.
 
 ## 4. Results (2026-10-28)
 
