@@ -16,6 +16,7 @@
  */
 import { rollLook } from '../artRoll.ts';
 import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
+import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { DOUBLE_RISE, JUMP_RISE, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
@@ -1102,6 +1103,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     lastFlagT = t;
   });
   const safe = [{ x: laid.spawn.x, y: laid.spawn.y }, ...checkpoints, { x: laid.exit.x, y: laid.exit.y }];
+  // (where an animal may walk on each piece: clear of the jumps on and off it)
+  const clear = jumpClearance(laid.platforms);
   const openX = laid.spawn.x + OPEN_SECONDS * budget.walkSpeed;
 
   // props and pairs
@@ -1182,14 +1185,14 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           c = kept === undefined ? undefined : M.creatures.find((cr) => cr.id === kept);
         }
         if (!want || !c || (dropOnEasy && !c.easyFirst) || k.x < openX) continue;
-        const patch = patchFor(k.x, k.piece, safe, c.minGround);
-        if (!patch) continue;
+        const pf = patchFor(k.x, k.piece, safe, c.minGround, clear.get(k.piece));
+        if (!pf) continue;
         threat -= c.threat;
         // (nothing stands in a zone: levelCheck)
-        if (foeInZone(sink.zones, k.x, k.piece.y - (c.footY ?? c.h / 2))) continue;
-        const e = makeEnemy(c, k.x, k.piece.y, patch, sink.nextEnemyId(), easy && s.easy === 'soften');
-        const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: k.x, y: k.y };
-        foes.push({ x: k.x, kind: c.id, e, fill, sec });
+        if (foeInZone(sink.zones, pf.at, k.piece.y - (c.footY ?? c.h / 2))) continue;
+        const e = makeEnemy(c, pf.at, k.piece.y, pf.patch, sink.nextEnemyId(), easy && s.easy === 'soften');
+        const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: pf.at, y: k.y };
+        foes.push({ x: pf.at, kind: c.id, e, fill, sec });
       } else if (s.role === 'pickup') {
         if (!want) continue;
         const n = s.count ?? 1;
@@ -1308,8 +1311,29 @@ function graphObjectives(laid: Laid, sec: PlacedSection): number {
 
 const terrainOK = (c: CreatureDef, p: Platform) => (c.terrain === 'air' ? true : c.terrain === 'flat' ? p.width >= c.minGround : p.width >= c.minGround);
 
-/** the creature's patch on its piece: the stretch around x clear of every safe spot (levelCheck SAFE_APPROACH), or null if too short */
-function patchFor(x: number, p: Platform, safe: ReadonlyArray<{ x: number; y: number }>, minGround: number): [number, number] | null {
+/**
+ * Where an animal may walk on each piece, clear of the jumps (stageMetrics JUMP_CLEAR, the same jumps its clearance check finds: jumpEdges):
+ * its patrol ends JUMP_CLEAR px short of a jump's take-off from that piece and starts JUMP_CLEAR px past a jump's landing on it, so he
+ * never takes off into it or lands on it. By piece (the laid platforms, each piece's own object).
+ */
+function jumpClearance(platforms: readonly Platform[]): Map<Platform, { lo: number; hi: number }> {
+  const out = new Map<Platform, { lo: number; hi: number }>();
+  const of = (p: Platform) => out.get(p) ?? (out.set(p, { lo: -Infinity, hi: Infinity }), out.get(p)!);
+  for (const j of jumpEdges([...platforms])) {
+    const a = of(j.from);
+    a.hi = Math.min(a.hi, j.takeoffX - JUMP_CLEAR);
+    const b = of(j.to);
+    b.lo = Math.max(b.lo, j.landX + JUMP_CLEAR);
+  }
+  return out;
+}
+
+/**
+ * the creature's patch on its piece: the stretch around x clear of every safe spot (levelCheck SAFE_APPROACH) and of the piece's jumps
+ * (`clear`, jumpClearance), or null if too short. An x the jumps leave outside the stretch is moved into it (`at`): the animal stands
+ * on the clear ground of its piece, or not at all.
+ */
+function patchFor(x: number, p: Platform, safe: ReadonlyArray<{ x: number; y: number }>, minGround: number, clear?: { lo: number; hi: number }): { patch: [number, number]; at: number } | null {
   let lo = p.x + 24;
   let hi = p.x + p.width - 24;
   for (const s of safe) {
@@ -1321,7 +1345,14 @@ function patchFor(x: number, p: Platform, safe: ReadonlyArray<{ x: number; y: nu
     else if (x > b) lo = Math.max(lo, b);
     else return null;
   }
-  return hi - lo >= minGround && x >= lo && x <= hi ? [R(lo), R(hi)] : null;
+  if (!(x >= lo && x <= hi)) return null;
+  if (clear) {
+    lo = Math.max(lo, clear.lo);
+    hi = Math.min(hi, clear.hi);
+  }
+  if (hi - lo < minGround) return null;
+  const at = Math.max(lo, Math.min(hi, x));
+  return { patch: [R(lo), R(hi)], at: R(at) };
 }
 
 /** a top-up animal keeps this far from a flag it stands before (px): never waiting right at the next checkpoint */
@@ -1359,6 +1390,8 @@ function topUpFoes(
     .filter((s) => s.phase !== 'start' && s.phase !== 'rest' && s.phase !== 'goal' && !s.room)
     .flatMap((s) => s.pieces.filter((p) => p.main).map((p) => ({ s, p: p.platform })))
     .sort((a, b) => b.p.width - a.p.width || a.p.x - b.p.x);
+  // (where an animal may walk on each piece: clear of the jumps on and off it)
+  const clear = jumpClearance(laid.platforms);
   // (the stretch of a piece's top with nothing standing on it: a stump on a bank is a wall in a patrol)
   const freeRun = (x: number, p: Platform): [number, number] | null => {
     let lo = p.x;
@@ -1382,8 +1415,8 @@ function topUpFoes(
         if (flags.some((f) => x <= f.x && f.x - x < FLAG_BEFORE)) continue;
         const run = freeRun(x, p);
         if (!run) continue;
-        const patch = patchFor(x, { ...p, x: run[0], width: run[1] - run[0] }, safe, c.minGround);
-        if (patch) cands.push({ x, kind: c.id, c, p, s, patch });
+        const pf = patchFor(x, { ...p, x: run[0], width: run[1] - run[0] }, safe, c.minGround, clear.get(p));
+        if (pf && !foeInZone(sink.zones, pf.at, p.y - (c.footY ?? c.h / 2))) cands.push({ x: pf.at, kind: c.id, c, p, s, patch: pf.patch });
       }
     }
   }

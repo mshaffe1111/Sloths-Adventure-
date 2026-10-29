@@ -29,6 +29,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildGen2Stage, checkStage } from '../../src/game/gen2/pipeline.ts';
+import { JUMP_CLEAR, measureStage } from '../../src/game/stageMetrics.ts';
 import type { Gen2Stage, WorldKit } from '../../src/game/gen2/types.ts';
 import type { Gen2StageSeeds, Gen2Seed } from '../../src/game/gen2/seeds.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
@@ -76,6 +77,8 @@ export interface SideMeasure {
   played: number;
   longestQuiet: number;
   perMin: number;
+  /** take-offs and landings within JUMP_CLEAR px of an animal (stageMetrics, the full suite's stageQuality check): none ships */
+  nearJumps: number;
 }
 
 export interface RollMeasure {
@@ -169,6 +172,7 @@ function measureSide(st: Gen2Stage, type: string, setting: Setting) {
     played: br.total,
     longestQuiet: quiet.length ? Math.max(...quiet) : 0,
     perMin: (beats / Math.max(1, br.total)) * 60,
+    nearJumps: (() => { const q = measureStage(s as never); return q.takeoffsNearEnemy + q.landingsNearEnemy; })(),
   };
   return { side, route: R.used.route, beats: br };
 }
@@ -194,6 +198,7 @@ export function failsOf(m: Pick<RollMeasure, 'normal' | 'easy'>, floor: { target
     if (s.fast < floor.fast) f.push(`${name}: model fast under the floor`);
     if (!waive.includes('quiet') && s.longestQuiet > RULES.quietMax) f.push(`${name}: quiet over 4 s`);
     if (!waive.includes('dead') && s.dead > RULES.deadShare * s.played) f.push(`${name}: dead time over a fifth`);
+    if (s.nearJumps > 0) f.push(`${name}: an animal by a jump`);
   }
   // (Easy's typical player is shorter by design, fewer animals: the target is Normal's)
   if (m.normal.typical < floor.target) f.push('normal: model typical under the target');
@@ -635,6 +640,7 @@ export function plainReason(k: string): string {
     'model typical under the target': "the typical player's clock is under the stage's target",
     'quiet over 4 s': 'a stretch of more than 4 seconds with nothing to do',
     'dead time over a fifth': 'more than a fifth of the stage is quiet',
+    'an animal by a jump': `an animal within ${JUMP_CLEAR} px of a take-off or a landing`,
     'kid bot: jumps under 85%': 'a jump the kid bot (Easy) makes less than 85% of the time',
     'adult bot: jumps under 70%': 'a jump the adult bot (Normal) makes less than 70% of the time',
     'band outside': 'its difficulty score is outside the band',
