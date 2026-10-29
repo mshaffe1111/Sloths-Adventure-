@@ -72,8 +72,8 @@ export const MEECA_SAY = {
   carveHold: { id: 'carveHold', who: 'flicker', text: 'Not a poke. Draw circles on the bark.' },
   /**
    * a plain walk into a step one hop climbs (a stump, the gully's stairs) stops her, and nothing taught the hop (QA 2026-10-29: "only
-   * lifted hops move her"): her own thought, the first time she pushes into one, and again if she is still pushing (new, needs Matt's
-   * approval)
+   * lifted hops move her"): her own thought, the first time she pushes into one, and again if she is still pushing (Matt approved,
+   * 2026-10-28)
    */
   stepHop: { id: 'stepHop', who: 'meeca', text: 'Too tall to walk. Keep sliding and flick up!' },
   /** part-way along the trail after room 1, by its landmarks: she is not going round in circles (Matt approved, 2026-10-28) */
