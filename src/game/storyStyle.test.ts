@@ -15,7 +15,7 @@ import { WAYSIDE } from './wayside.ts';
 import { FINDS, BONUS_FIND } from './finds.ts';
 import { STAGE_PLAN } from './stagePlan.ts';
 import { LESSONS } from './lessons.ts';
-import { getStageClue } from '../components/stageClue.ts';
+import { STAGE_CLUES, getStageClue } from '../components/stageClue.ts';
 
 const TEXT_KEYS = new Set(['text', 'caption', 'desc', 'tip', 'intro', 'sub', 'hint']);
 
@@ -45,7 +45,8 @@ const LINES = collect(
     BONUS_FIND,
     STAGE_PLAN,
     LESSONS,
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => getStageClue(`1-${n}`)),
+    Object.values(STAGE_CLUES),
+    getStageClue('9-99'),
   ],
   [],
 );

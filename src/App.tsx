@@ -98,6 +98,20 @@ function markMidStorySeen(w: number) {
     localStorage.setItem(midStoryKey(w), '1');
   } catch {}
 }
+/** a guardian's intro has been seen (a long one is shortened on the retries: storyBosses.ts RETRY_INTRO_LINES) */
+const bossIntroKey = (w: number) => `sloth_story_b${w}`;
+function hasSeenBossIntro(w: number): boolean {
+  try {
+    return localStorage.getItem(bossIntroKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markBossIntroSeen(w: number) {
+  try {
+    localStorage.setItem(bossIntroKey(w), '1');
+  } catch {}
+}
 /** the scene at the guardian's door, after a world's ninth stage (World 10's gate), plays once */
 const gateStoryKey = (w: number) => `sloth_story_g${w}`;
 function hasSeenGateStory(w: number): boolean {
@@ -1049,11 +1063,14 @@ export default function App() {
           panels={
             activeLevel.secret
               ? thornbarkPanels('intro')
-              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
+              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName, hasSeenBossIntro(activeLevel.worldIndex))
           }
           finishLabel="FIGHT!" finishIcon="swords"
           skipLabel="Skip to fight"
-          onFinish={() => launchEngine(activeLevel)}
+          onFinish={() => {
+            if (!activeLevel.secret) markBossIntroSeen(activeLevel.worldIndex);
+            launchEngine(activeLevel);
+          }}
         />
       )}
 

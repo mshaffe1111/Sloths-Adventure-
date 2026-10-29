@@ -5,6 +5,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
+import './gameUi.css';
 import { StoryPlayer } from './components/StoryPlayer.tsx';
 import { INTRO_PANELS, WORLD_STORIES, WORLD_MID, WORLD_GATE, bossPanels, thornbarkPanels, ENDING_PANELS, type StoryPanel } from './game/story.ts';
 import { AFTER_BOSS, MEMORIES, endTagPanels, finalePanels } from './game/storyChapters.ts';

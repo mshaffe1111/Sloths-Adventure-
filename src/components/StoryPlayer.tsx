@@ -429,10 +429,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       {hold && (
         <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(uprightH(view) * 0.42) }}>
           <div className="sp-hold-thumbs" aria-hidden="true">
-            <span className={`sp-thumb ${thumbs >= 1 ? 'on' : ''}`} />
-            <span className={`sp-thumb ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`} />
+            <span className={`sp-thumb gx-token ${thumbs >= 1 ? 'on' : ''}`}><Icon name="paw" size={17} /></span>
+            <span className={`sp-thumb gx-token ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`}><Icon name="paw" size={17} /></span>
           </div>
-          <div className="sp-hold-say">{phase === 'lift' || phase === 'reach' ? hold.lift : hold.both}</div>
+          <div className="sp-hold-say kit-plaque"><span>{phase === 'lift' || phase === 'reach' ? hold.lift : hold.both}</span></div>
         </div>
       )}
 

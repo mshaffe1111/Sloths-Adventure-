@@ -51,7 +51,7 @@ const hPetal = (text: string, from?: number, to?: number): HurtWay => ({ who: 'P
 
 export const WAYSIDE: Record<number, WorldWay> = {
   // ── ACT I · THE TRAIL: Dot is chatty, two days late, and sure she is fast ──
-  // 2 Petal Trail · 3 Branch Snakes · 4 Up the Kapok · 5 More Petals · 6 First Lianas · 7 A Very Good Bush · 8 The Long Branch · 9 The Boa's Branches
+  // 2 Petal Trail · 3 Branch Snakes · 4 Up the Kapok · 5 Where She Walked · 6 First Lianas · 7 A Very Good Bush · 8 The Long Branch · 9 The Boa's Branches
   1: {
     stages: {
       2: dot('start', 'She said don\'t stop to smell the flowers. She never said anything about picking up her petals.'),
