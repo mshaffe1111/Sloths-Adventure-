@@ -4,6 +4,8 @@ Last updated: 2026-10-29 7:55 PM ET. HOTFIX PR #49 (#ctest on the testers' link 
 
 ## THE FINISH LINE (lead manages; Matt 2026-10-29 ~7:55 PM ET: "take control again and really manage this... finishing the game and finishing the polish... keep up with people... make sure things are moving along and we're not going to run into issues")
 
+RELEASE (Matt ~8:05 PM ET): after he plays the 11 PM test link and says "push", that exact build is frozen as the release branch and the PR opened. Tracker refreshed 79186903 (165 items: 77 live, 49 merged-not-live, 7 running, unowned all assigned 8:05 PM ET). Cutscenes (ST-1/2): plates at 2560, dpr cap 2, cels repacked, merged-not-live; story-art doing a full scene pass + contact sheet for Matt.
+
 How the lead runs it: a check-in every 30 min (send_later, re-armed each time). Each check-in: list_sessions; read every report; review against LEAD-PLAYBOOK §4; merge what passes (fetch first, one gate per batch); send back what doesn't; nudge anything idle or stuck with no report for 60+ min; update this board; tell Matt only decisions and finished things. Test link cutoff 10:40 PM ET, link 11 PM ET.
 
 Track A, finish the game (owner, next milestone):
