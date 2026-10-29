@@ -21,6 +21,10 @@ import { RealPlay, type Pad } from '../realPlay.ts';
 import { setDifficulty, type Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
 import type { SectionTemplate } from './types.ts';
+import { generateAllLevels } from '../worldsData.ts';
+import { buildGen2Stage } from './pipeline.ts';
+import { w9Finish } from './worlds/w9.ts';
+import { w9GameKit } from './worlds/w9Game.ts';
 import { roomStage9, RUNWAY } from './w9SwingHarness.ts';
 import { BUCKET, bucketRoom, LIFT, liftRoom, PLATES, platesRoom, roomFor9, W9_ROOM_SECTIONS, W9R_NEW_LINES, W9R_STAGE, W9R_TIERS, w9RoomsFor } from './worlds/w9Rooms.ts';
 
@@ -290,3 +294,21 @@ for (const d of ['normal', 'easy'] as const) {
     });
   }
 }
+
+// ───────────────────────────── each room in its stage, on the game's kit ─────────────────────────────
+
+test("9-3, 9-5 and 9-8 on 10 raw rolls each, Normal and Easy, on the game's kit (w9GameKit): the stage's room once, solved, and levelCheck passes", () => {
+  const levels = generateAllLevels();
+  for (const [id, room] of [['9-3', bucketRoom], ['9-5', platesRoom], ['9-8', liftRoom]] as const) {
+    const config = { ...levels.find((l) => l.id === id)!, unlocked: true };
+    for (const difficulty of ['normal', 'easy'] as const) {
+      for (let seed = 1; seed <= 10; seed++) {
+        const st = w9Finish(buildGen2Stage({ config, kit: w9GameKit(Number(id[2]), difficulty), seed, difficulty }));
+        const at = `${id} seed ${seed} (${difficulty})`;
+        assert.equal(st.gen2.sections.filter((s) => s.template === room.id).length, 1, `${at}: ${room.id} once`);
+        assert.equal(st.gen2.sections.filter((s) => s.template.startsWith('w9r-')).length, 1, `${at}: one room`);
+        assert.deepEqual(validateStage(st).errors, [], at);
+      }
+    }
+  }
+});

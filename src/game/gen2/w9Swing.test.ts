@@ -1,6 +1,6 @@
 /**
  * World 9's chain sections (gen2/worlds/w9Swing.ts), each laid alone on 30 rolls, Normal and Easy, and 9-3 "Ember Canopy" built through
- * buildGen2Stage on 20 raw rolls a setting (on the stand-in kit until w9Game.ts lands: w9SwingHarness.ts): every roll passes levelCheck,
+ * buildGen2Stage on 20 raw rolls a setting, on the kit the game builds with (w9Game.ts w9GameKit, then w9Finish): every roll passes levelCheck,
  * the quick route swings on every chain (none is walked under through its pit or jumped past), the quick player takes 2:00 or more,
  * nothing crumbles, nothing stands in the opening five seconds, flags are close enough, and Normal's falls are the lava (deadly) while
  * Easy's are all soft.
@@ -12,16 +12,20 @@ import { validateStage } from '../levelCheck.ts';
 import { MODEL_TYPICAL, walkSpeed } from '../stageTime.ts';
 import { buildGen2Stage, FLAG_SPAN, layLocal, maxGap, planBudget, rngFor } from './pipeline.ts';
 import type { Gen2Stage } from './types.ts';
-import { cfg9, w9StandIn } from './w9SwingHarness.ts';
-import { w9RoomsFor } from './worlds/w9Rooms.ts';
+import { generateAllLevels } from '../worldsData.ts';
+import type { LevelConfig } from '../types.ts';
+import { w9Finish, w9Kit } from './worlds/w9.ts';
+import { w9GameKit } from './worlds/w9Game.ts';
 import { RAISE, W9_SWING_SECTIONS } from './worlds/w9Swing.ts';
 import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
 
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
+const levels = generateAllLevels();
+const lv = (id: string): LevelConfig => ({ ...levels.find((l) => l.id === id)!, unlocked: true });
 
 test('the chain sections: laid in their own space (600-1700 px, 370 more a chain), level at their ends, hops a third of a jump or so, never mirrored', () => {
   for (const d of ['normal', 'easy'] as const) {
-    const budget = planBudget(cfg9('9-3', 'vine_runner'), w9StandIn(3, d).manifest, d);
+    const budget = planBudget(lv('9-3'), w9Kit(3).manifest, d);
     for (const s of W9_SWING_SECTIONS) {
       const keys = new Set(s.pieces.map((p) => p.key));
       for (const k of s.sockets) assert.ok(keys.has(k.on), `${s.id}.${k.id} sits on a piece it has`);
@@ -51,11 +55,11 @@ test('the chain sections: laid in their own space (600-1700 px, 370 more a chain
 const cache = new Map<string, Gen2Stage>();
 const build = (seed: number, difficulty: 'easy' | 'normal') => {
   const k = `${seed}:${difficulty}`;
-  if (!cache.has(k)) cache.set(k, buildGen2Stage({ config: cfg9('9-3', 'vine_runner'), kit: w9StandIn(3, difficulty, w9RoomsFor(3, difficulty)), seed, difficulty }));
+  if (!cache.has(k)) cache.set(k, w9Finish(buildGen2Stage({ config: lv('9-3'), kit: w9GameKit(3, difficulty), seed, difficulty })));
   return cache.get(k)!;
 };
 
-test('9-3 on 20 raw rolls, Normal and Easy: levelCheck (its bucket room solved, once), every chain swung, 2:00 or more, nothing crumbles, a quiet opening, flags close enough, the lava only on Normal', () => {
+test('9-3 on 20 raw rolls, Normal and Easy: levelCheck (its bucket room solved, once), every chain swung, 2:00 or more, nothing of the chains crumbles, a quiet opening, flags close enough, the lava only on Normal', () => {
   const seen = new Set<string>();
   for (const difficulty of ['normal', 'easy'] as const) {
     for (const seed of SEEDS) {
@@ -70,7 +74,8 @@ test('9-3 on 20 raw rolls, Normal and Easy: levelCheck (its bucket room solved, 
       const chains = st.vines.filter((v) => v.vineType === 'swing_liana');
       assert.ok(chains.length >= 4, `${at}: ${chains.length} chains`);
       for (const v of chains) assert.ok(swings.some((s) => Math.min(s.x0, s.x1) <= v.x + 40 && Math.max(s.x0, s.x1) >= v.x - 40), `${at}: the chain at ${v.x} is never swung`);
-      assert.ok(!st.platforms.some((p) => p.type === 'fragile'), `${at}: nothing crumbles`);
+      // (World 9's own cracked basalt crumbles, never needed: levelCheck holds that; nothing of the chains' sections crumbles)
+      for (const sec of st.gen2.sections.filter((x) => x.template.startsWith('w9s-'))) assert.ok(!st.platforms.some((p) => p.type === 'fragile' && p.x >= sec.x0 && p.x < sec.x1), `${at}: ${sec.template} crumbles`);
       const open = st.spawnX + 5 * walkSpeed(MODEL_TYPICAL) - 60;
       for (const e of st.enemies) assert.ok(e.patrolMinX > open, `${at}: a ${e.type} ${e.patrolMinX - st.spawnX} px in`);
       const xs = [st.spawnX, ...(st.checkpoints ?? []).map((c) => c.x).sort((a, b) => a - b), st.exitTotemX];
