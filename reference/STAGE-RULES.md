@@ -149,7 +149,7 @@ test link, the QA testers or a release until the lead has re-run them, on more t
    per jump, minimum input window, peak stress, backtracking), and names the rule each finding breaks (HANDOFF §6, "Pre-QA pass").
 4. The puzzle validator and the real-engine play-through tests for every room.
 5. The full suite: `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts`.
-6. `npx vite build` (nothing over 4 MiB). Before committing: `git checkout -- dev-dist; rm -f dev-dist/registerSW.js`.
+6. `npx vite build` (nothing over 4 MiB).
 7. Screenshots of what changed, upright 390x844 and sideways 844x390 (a dev-hooks build, `NODE_ENV=development npx vite build`,
    lets you place Pokey in a room). Then the test link (HANDOFF §6), then the QA testers.
 
