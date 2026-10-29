@@ -146,10 +146,12 @@ def do_clips(name, g):
     for seq, (clip, ref, a, b) in g['seqs'].items():
         fs = clip_frames(clip)
         H, W = fs[0].shape[:2]
-        idx = list(range(a, min(b, len(fs) - 1) + 1, step))
+        # (a > b: the frames played backwards, e.g. a wake from a settle clip)
+        idx = list(range(a, min(b, len(fs) - 1) + 1, step)) if a <= b else list(range(min(a, len(fs) - 1), b - 1, -step))
         ims = [np.dstack([fs[i], keyf(fs[i])]) for i in idx]
         boxes = [bbox(im[..., 3]) for im in ims]
-        if g.get('anchor', 'meta') == 'meta':
+        mode = g.get('anchor', 'meta')
+        if mode == 'meta':
             m = meta_of(ref)
             tw, th = max(1024, round(1024 * W / H)), max(1024, round(1024 * H / W))
             px, py = (tw - 1024) // 2, (th - 1024) // 2
@@ -158,9 +160,19 @@ def do_clips(name, g):
             ayc = (m['ay'] * m['f'] + m['oy'] + py) * sc
             F = g['up'] / (m['f'] * sc)
         else:
-            x0, y0, x1, y1 = boxes[0]
-            axc, ayc = (x0 + x1) / 2, (y0 + y1) / 2
-            F = g['target'] / (y1 - y0)
+            # (the scale and anchor come from one reference frame of the clip, frame 0 or "f:<n>", so every range of a clip, and every
+            # clip of a creature made from the same start, shares them; "feet": the middle of the bottom, "middle": the box's middle)
+            rf = int(ref[2:]) if ref.startswith('f:') else 0
+            r = np.dstack([fs[rf], keyf(fs[rf])])
+            x0, y0, x1, y1 = bbox(r[..., 3])
+            if mode == 'feet':
+                a8 = r[..., 3] > 128
+                rows = a8[max(y0, y1 - max(3, (y1 - y0) // 10)):y1]
+                xs = np.nonzero(rows.any(axis=0))[0]
+                axc, ayc = ((xs[0] + xs[-1] + 1) / 2 if len(xs) else (x0 + x1) / 2), y1
+            else:
+                axc, ayc = (x0 + x1) / 2, (y0 + y1) / 2
+            F = g.get('targets', {}).get(seq, g['target']) / (y1 - y0)
         names = []
         for i, im, (x0, y0, x1, y1) in zip(idx, ims, boxes):
             n = f'{seq}_{i:02d}'
