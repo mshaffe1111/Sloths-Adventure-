@@ -1,122 +1,76 @@
 /**
- * gen2/worlds/w8Rooms — World 8's puzzle-room sections (DESIGN.md B9; STAGE-RULES §3), built from the puzzle kit as it is (no new piece),
- * on World 6's proven geometry (w6Rooms.ts: each room's numbers are those its real-engine test plays), dressed for the treetops with
- * Matt's w8a-puzzle sheet (lever, plate, door) once the art hook-up draws it.
+ * gen2/worlds/w8Rooms — World 8's puzzle-room sections (DESIGN.md B9, B11; STAGE-RULES §3), built from the puzzle kit as it is
+ * (puzzleKit.ts: no new piece). The story is the Twilight Treetops' (reference/STORY-REWRITE.md "World 8"): the light gone, the
+ * fireflies out, Pokey's lantern, and the tree doors of the canopy. The pieces are Matt's Gemini W8 puzzle sheet
+ * (reference/prop-sheets/gemini-batch-2026-10-28/w8a-puzzle.jpg, cut as src/assets/w6to10/gemini/w8a-puzzle.webp/json), drawn once the
+ * art hook-up draws it: the branch-lever stump (the kit's lever: 'lever-up', 'lever-down'), the glow-mushroom pad (the plate:
+ * 'plate-up', 'plate-down') and the bark door in its trunk (the gate: 'door-closed', 'door-open'). Between them the three rooms use every
+ * cell of the sheet.
  *
- *   w8r-room-hollow   8-1 "As the Light Goes" (The fireflies will show the way). A dark hollow in the trunk under a bough too high to
- *                     jump; the knots up out of it show only in the firefly's light (the kit's `glow` and `ledge`), four of them (World
- *                     6's dark room has three). At the top a moonflower opens in his light and lights the whole hollow. The hollow's
- *                     floor is soft ground with a step out (never a life).
- *   w8r-room-hammock  8-2 "Night Blooms". A leaf hammock hangs by a lever's rope: pulled, it rises to a high fork where the seed stones
- *                     lie; let go, it drops. The leaf door past the dip opens with a stone on its plate AND the hammock down (its rope
- *                     runs through the door's latch). So: pull the lever, ride up, take a stone, drop to the plate, climb out, let the
- *                     lever go, through. Three steps on Normal; Easy's door listens to the plate alone (two).
- *   w8r-room-seesaw   8-5 "Next Branch". A branch seesaw before a bough too high to jump: his own weight tips it; one stone on the near end
- *                     is too light, two hold it. Carry both, walk up the plank, hop to the bough (World 1 and 6-3 taught the seesaw).
+ *   w8r-room-hammock  8-2 "Night Blooms" (World 6's water room's proven numbers: w6Rooms.ts). A leaf hammock hangs by the lever stump's
+ *                     rope: pulled, it rises to a high fork where the seed stones lie; let go, it drops. The door past the dip opens with
+ *                     a stone on its glow pad AND the hammock down (its rope runs through the door's latch). So: pull the lever, ride
+ *                     up, take a stone, drop to the pad, climb out, let the lever go, through. Three steps on Normal; Easy's door listens
+ *                     to the pad alone (two).
+ *   w8r-room-pads     8-3 "Long Swings". A bark door opens only while both glow pads by it glow (both pressed: no latch). The pinecones
+ *                     lie up on a high bough, too high to jump; the branch steps up to it show only in Pokey's lantern (the kit's `glow`
+ *                     and `ledge`, World 6's dark-room numbers). He is one weight on one pad: a pinecone on one pad and himself on the
+ *                     other opens the door only while he stands there. So: up the steps, a pinecone down to the first pad, up again, a
+ *                     second to the other, through. Three steps on Normal; Easy's door listens to one pad (two steps).
+ *   w8r-room-moon     8-5 "Next Branch". A bark door that opens for a moonflower: its bud hangs high over a stump, out of the reach of any
+ *                     light lying on the floor (Pokey's lantern is not a light for it: the room has no glow). The glowcaps grow by the
+ *                     door. Carry one to the stump's foot and flick it up onto the stump: its light reaches the bud, the moonflower
+ *                     opens, the door opens (3-2's high glow room, World 3's carried light, in the kit's own pieces). Easy: the bud hangs
+ *                     lower on its stem, so a glowcap set down by the stump is enough (two steps).
  *
- * None has an enemy socket, none is mirrored, each is once a stage and only in its own (W8R_STAGE), and none can be walked past unsolved.
+ * (The swing builder's rooms replaced the main build's 8-1 dark hollow and 8-5 branch seesaw, 2026-10-29: those were World 6's 6-6 and
+ * 6-3 rooms again, and STAGE-RULES §3 asks 2-3 puzzle moments a world. The dark is taught by 8-1's dark stretches.)
+ *
+ * None has an enemy socket, none is mirrored (a room reads left to right), each is once a stage and only in its own (W8R_STAGE), and the
+ * pipeline keeps a room's join quiet. None can be walked past unsolved: each door stands on its floor and the trunk over it is out of a
+ * double jump's reach from anything he can stand on unaided. Nothing in any room can hurt him (every floor is ground; a miss is a hop
+ * back down). The pads and moon rooms lay their own dark (World 6's dark props, w6Swing.ts, registered by w8.ts: no fireflies, the
+ * room's own lights: the lantern's glow, the glowcap, the open moonflower), after the stage's first dark stretch has taught it.
  */
 import type { Difficulty, LocalRoomSpec, SectionPiece, SectionTemplate } from '../types.ts';
 import { W8_LESSON } from './w8.ts';
-import { DARK as W6_DARK_ROOM, SEESAW, WATER, RAFT_RISE } from './w6Rooms.ts';
+import { RAFT_RISE, WATER } from './w6Rooms.ts';
 
-/** the rooms' lines (under 10 words). All new: each needs Matt's approval */
+/**
+ * The rooms' lines (under 10 words). All new: each needs Matt's approval before it ships (STAGE-RULES §1 "Story").
+ *   hammock  the door, explained as he comes in (Normal, Easy); a stone in his hands; the door open
+ *   pads     the door, explained as he comes in (Normal, Easy); a pinecone in his hands; the door open
+ *   moon     the door, explained as he comes in; a glowcap in his hands; the moonflower open
+ */
 export const W8R_NEW_LINES: readonly string[] = [
-  'Too high. The firefly will find the knots.',
-  'A knot! It only shows in the light.',
-  'A moonflower! Now the whole hollow glows.',
   "The hammock's rope holds that leaf door shut.",
+  'That leaf door needs a weight on its plate.',
   'Seed stones up there! The plate is below.',
   'Hammock down, door open. Through!',
-  'That leaf door needs a weight on its plate.',
-  'Too high. That branch tips, though.',
-  'One stone is not enough. Try two.',
-  'It holds! Up the branch you go.',
+  'That bark door needs both glow pads glowing.',
+  'That bark door needs its glow pad pressed.',
+  "Pinecones! Heavy enough for a pad, I bet.",
+  'Both pads glowing. Through, quick!',
+  'That door only opens for a moonflower.',
+  'Glowcaps glow. Moonflowers love a glow.',
+  'It opened! And so did the door.',
 ];
 
-/** the rooms' hints, asked for (only when asked, in steps, never the answer). New lines: each needs his approval */
+/** the rooms' hints, asked for (Matt: only when asked, in steps, never the answer; under 10 words). New lines: each needs his approval */
 export const W8R_ROOM_HINTS: Record<string, readonly [string, string]> = {
-  hollow: ['The firefly goes where you go.', 'Walk slowly at the edge. Look up.'],
   hammock: ['What does the lever lift?', 'The door hates a raised hammock.'],
-  seesaw: ['Which end goes down when you stand there?', 'You are heavier than one stone.'],
+  pads: ['Your lantern finds the way up.', 'You can only stand on one pad.'],
+  moon: ['Your lantern is not the right light.', 'A flick up throws what you carry.'],
 };
 
 const bank = (key: string, w: SectionPiece['w'], place: SectionPiece['place'], o: Partial<SectionPiece> = {}): SectionPiece => ({ key, shape: 'bank', w, place, ...o });
+/** a room piece's spot along a fixed-width floor, in px (the anchors are fractions of it: widths are settled first, STAGE-RULES §6) */
 const along = (on: string, w: number) => (px: number, dy?: number) => ({ on, at: px / w, ...(dy === undefined ? {} : { dy }) });
-
-// ───────────────────────────── 8-1: the dark hollow, four knots ─────────────────────────────
-
-export const HOLLOW = {
-  ...W6_DARK_ROOM,
-  /** one more knot than World 6's: the hollow 100 px wider (the knots 125 px apart, not 130: the room still fits an upright phone), the
-   *  bough 70 px higher; floor E 100 px (its post and a step's run-up) */
-  floorE: 100,
-  hollow: W6_DARK_ROOM.hollow + 100,
-  bankUp: W6_DARK_ROOM.bankUp + 70,
-} as const;
-
-const he = along('floorE', HOLLOW.floorE);
-const hh = along('hollow', HOLLOW.hollow);
-const hb = along('bank', HOLLOW.bankW);
-
-export const hollowRoomSpec: LocalRoomSpec = {
-  id: 'hollow',
-  left: he(4),
-  right: hb(100),
-  above: 510,
-  below: HOLLOW.down + 50,
-  pieces: [
-    { kind: 'reset', id: 'post', at: he(20) },
-    { kind: 'glow', id: 'firefly', r: HOLLOW.glow },
-    // (World 6's knots, 70 px apart in height, 125 across, and a fourth)
-    { kind: 'ledge', id: 'stepA', at: hh(55, -200), w: 100 },
-    { kind: 'ledge', id: 'stepB', at: hh(180, -270), w: 100 },
-    { kind: 'ledge', id: 'stepC', at: hh(305, -340), w: 100 },
-    { kind: 'ledge', id: 'stepD', at: hh(430, -410), w: 100 },
-    { kind: 'moonflower', id: 'moon', at: hb(90), r: 900 },
-  ],
-  exit: 'moon',
-  beyond: hb(70),
-  ground: ['floorE'],
-  tips: {
-    enter: 'Too high. The firefly will find the knots.', // (new, needs Matt's approval)
-    lit: 'A knot! It only shows in the light.', // (new, needs Matt's approval)
-    open: 'A moonflower! Now the whole hollow glows.', // (new, needs Matt's approval)
-  },
-};
-
-export const hollowRoom: SectionTemplate = {
-  id: 'w8r-room-hollow',
-  name: 'puzzle room: the dark hollow (the firefly finds the knots)',
-  archetypes: ['sprint'],
-  teaches: 'w8:firefly-knots',
-  // (after the stage's first dark stretch, whose tip teaches the dark: the room's dark comes second)
-  uses: [W8_LESSON.dark],
-  phases: ['sho', 'ten'],
-  difficulty: 4,
-  maxPerStage: 1,
-  weight: 40,
-  extraSeconds: 12,
-  pieces: [
-    bank('floorE', HOLLOW.floorE, { kind: 'start' }),
-    bank('hollow', HOLLOW.hollow, { kind: 'walk', after: 'floorE', dy: HOLLOW.down }),
-    { key: 'step', shape: 'block', w: HOLLOW.stepW, h: HOLLOW.step, place: { kind: 'on', on: 'hollow', at: 0, h: HOLLOW.step }, style: 'moss_stone' },
-    bank('bank', HOLLOW.bankW, { kind: 'over', on: 'hollow', at: 1, dy: -(HOLLOW.down + HOLLOW.bankUp) }, { main: true }),
-    // (two steps down, so no drop is a whole fall: the route leaves the room level with where it came in)
-    bank('mid', [200, 240], { kind: 'walk', after: 'bank', dy: Math.round(HOLLOW.bankUp / 2) }),
-    bank('out', [240, 280], { kind: 'walk', after: 'mid', dy: HOLLOW.bankUp - Math.round(HOLLOW.bankUp / 2) }),
-  ],
-  entry: { piece: 'floorE', kind: 'ground' },
-  exit: { piece: 'out', kind: 'ground' },
-  exitDy: 0,
-  // (the dark over the hollow, floor E to the bough's far end: no lights of its own, the room's firefly is the light)
-  sockets: [
-    { id: 'darkFrom', role: 'prop', on: 'floorE', t: 0, allow: ['darkFrom'], easy: 'keep' },
-    { id: 'darkTo', role: 'prop', on: 'bank', t: 1, allow: ['darkToBare'], easy: 'keep' },
-  ],
-  room: hollowRoomSpec,
-  mirrorable: false,
-};
+/** a room's own dark, its two ends on its first and last pieces (World 6's dark props, w6Swing.ts, with no fireflies: the room's own lights) */
+const roomDark = (from: string, to: string): SectionTemplate['sockets'] => [
+  { id: 'darkFrom', role: 'prop', on: from, t: 0, allow: ['darkFrom'], easy: 'keep' },
+  { id: 'darkTo', role: 'prop', on: to, t: 1, allow: ['darkToBare'], easy: 'keep' },
+];
 
 // ───────────────────────────── 8-2: the leaf hammock ─────────────────────────────
 
@@ -182,66 +136,210 @@ export const hammockRoomSpecEasy: LocalRoomSpec = {
 };
 export const hammockRoomEasy: SectionTemplate = { ...hammockRoom, room: hammockRoomSpecEasy };
 
-// ───────────────────────────── 8-5: the branch seesaw ─────────────────────────────
+// ───────────────────────────── 8-3: two glow pads ─────────────────────────────
 
-const sf = along('floor', SEESAW.floor);
-const sb = along('bank', SEESAW.bankW);
+/** the floor (post, the lantern steps, the pads), the high bough over it (the pinecones), floor B a knot up (the bark door) */
+export const PADS = {
+  floor: 610,
+  /** the lantern steps up to the bough (World 6's dark room: 70-80 px up and 130 across each, 100 wide) */
+  stepA: { x: 100, up: 80 },
+  stepB: { x: 225, up: 155 },
+  stepW: 100,
+  /** the bough: its near end, its width, its top over the floor (out of a double jump's reach) */
+  boughX: 290,
+  boughW: 130,
+  boughUp: 230,
+  /** the two glow pads (their middles), past where a drop off the bough lands */
+  padA: 465,
+  padB: 557,
+  /** floor B, a knot up past the floor; the bark door on it, its trunk's whole height (out of a double jump from the bough) */
+  floorB: 300,
+  knot: 40,
+  door: 100,
+  doorH: 470,
+  /** the lantern's reach (World 6's firefly: 170) */
+  glow: 170,
+} as const;
 
-export const seesawRoomSpec: LocalRoomSpec = {
-  id: 'seesaw',
-  left: sf(0),
-  right: sb(60),
-  above: 460,
-  below: SEESAW.dip + 10,
+const pf = along('floor', PADS.floor);
+const pb = along('floorB', PADS.floorB);
+const pt = along('bough', PADS.boughW);
+
+export const padsRoomSpec: LocalRoomSpec = {
+  id: 'pads',
+  left: pf(0),
+  right: pb(PADS.door + 60),
+  above: 520,
+  below: 40,
   pieces: [
-    { kind: 'reset', id: 'post', at: sf(20) },
-    { kind: 'source', id: 'pile', variant: 'stone', at: sf(130), look: 'pile' },
-    { kind: 'item', id: 'stone1', variant: 'stone', source: 'pile', for: 'branch' },
-    { kind: 'item', id: 'stone2', variant: 'stone', source: 'pile', for: 'branch' },
-    { kind: 'seesaw', id: 'branch', at: { on: 'dip', at: 0.5, dy: -SEESAW.dip }, w: SEESAW.plank, rise: SEESAW.rise, rest: -1 },
+    { kind: 'reset', id: 'post', at: pf(24) },
+    // (Pokey's lantern: the branch steps show only in its light)
+    { kind: 'glow', id: 'lantern', r: PADS.glow },
+    { kind: 'ledge', id: 'stepA', at: pf(PADS.stepA.x, -PADS.stepA.up), w: PADS.stepW },
+    { kind: 'ledge', id: 'stepB', at: pf(PADS.stepB.x, -PADS.stepB.up), w: PADS.stepW },
+    // (the pinecones on the bough: a pile, so a dropped one comes back)
+    { kind: 'source', id: 'pile', variant: 'pinecone', at: pt(50), look: 'pile' },
+    { kind: 'item', id: 'cone1', variant: 'pinecone', source: 'pile', for: 'padA' },
+    { kind: 'item', id: 'cone2', variant: 'pinecone', source: 'pile', for: 'padB' },
+    { kind: 'plate', id: 'padA', at: pf(PADS.padA) },
+    { kind: 'plate', id: 'padB', at: pf(PADS.padB) },
+    // (open only while both pads are pressed: standing on one himself, it shuts as he steps off)
+    { kind: 'gate', id: 'door', at: pb(PADS.door), open: { all: ['padA', 'padB'] }, h: PADS.doorH, look: 'roots' },
   ],
-  exit: 'branch',
-  beyond: sb(120),
-  ground: ['floor', 'dip'],
+  exit: 'door',
+  beyond: pb(PADS.door + 110),
+  ground: ['floor', 'bough'],
   tips: {
-    enter: 'Too high. That branch tips, though.', // (new, needs Matt's approval)
-    hold: 'One stone is not enough. Try two.', // (World 6's line, needs Matt's approval)
-    open: 'It holds! Up the branch you go.', // (new, needs Matt's approval)
+    enter: 'That bark door needs both glow pads glowing.', // (new, needs Matt's approval)
+    hold: "Pinecones! Heavy enough for a pad, I bet.", // (new, needs Matt's approval)
+    open: 'Both pads glowing. Through, quick!', // (new, needs Matt's approval)
   },
 };
 
-export const seesawRoom: SectionTemplate = {
-  id: 'w8r-room-seesaw',
-  name: 'puzzle room: the branch seesaw (two stones)',
+export const padsRoom: SectionTemplate = {
+  id: 'w8r-room-pads',
+  name: 'puzzle room: two glow pads (the bark door)',
   archetypes: ['vine_runner'],
-  teaches: 'w8:two-stones',
+  teaches: 'w8:pads',
+  // (its dark comes after the stage's first dark stretch, whose tip teaches the dark)
+  uses: [W8_LESSON.dark],
   phases: ['sho', 'ten'],
-  difficulty: 4,
+  difficulty: 5,
   maxPerStage: 1,
   weight: 40,
-  extraSeconds: 14,
+  // (up the lantern steps, a pinecone down, up again, the second, through: about 18 s for a first-timer)
+  extraSeconds: 18,
   pieces: [
-    bank('floor', SEESAW.floor, { kind: 'start' }),
-    bank('dip', SEESAW.plank, { kind: 'walk', after: 'floor', dy: SEESAW.dip }),
-    bank('bank', SEESAW.bankW, { kind: 'over', on: 'dip', at: 1, dy: -(SEESAW.dip + SEESAW.bankUp) }, { main: true }),
-    bank('out', [240, 300], { kind: 'walk', after: 'bank', dy: SEESAW.bankUp }),
+    bank('floor', PADS.floor, { kind: 'start' }),
+    { key: 'bough', shape: 'branch', w: PADS.boughW, place: { kind: 'over', on: 'floor', at: PADS.boughX / PADS.floor, dy: -PADS.boughUp }, main: false },
+    bank('floorB', PADS.floorB, { kind: 'walk', after: 'floor', dy: -PADS.knot }),
+    // (and down again past the door, level with where the room began)
+    bank('out', [200, 240], { kind: 'walk', after: 'floorB', dy: PADS.knot }),
   ],
   entry: { piece: 'floor', kind: 'ground' },
   exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
-  sockets: [],
-  room: seesawRoomSpec,
+  sockets: roomDark('floor', 'floorB'),
+  room: padsRoomSpec,
   mirrorable: false,
 };
 
-/** World 8's puzzle-room sections */
-export const W8_ROOM_SECTIONS: readonly SectionTemplate[] = [hollowRoom, hammockRoom, seesawRoom];
+/**
+ * Easy's pads room (1-2 step puzzles on Easy, STAGE-RULES §1): the same section, the same pieces in the same places, but the bark door
+ * listens to the first pad alone. Two steps: up the lantern steps, a pinecone down to the pad. The section id is the same, so Easy lays
+ * Normal's plan.
+ */
+export const padsRoomSpecEasy: LocalRoomSpec = {
+  ...padsRoomSpec,
+  pieces: padsRoomSpec.pieces.map((p) => (p.kind === 'gate' ? { ...p, open: 'padA' } : p)),
+  tips: { ...padsRoomSpec.tips, enter: 'That bark door needs its glow pad pressed.' }, // (new, needs Matt's approval)
+};
+export const padsRoomEasy: SectionTemplate = { ...padsRoom, room: padsRoomSpecEasy };
 
-/** each room's stage (2-3 puzzle moments a world) */
-export const W8R_STAGE: Record<string, string> = { [hollowRoom.id]: '8-1', [hammockRoom.id]: '8-2', [seesawRoom.id]: '8-5' };
-export const W8_ROOM_STAGES = ['8-1', '8-2', '8-5'] as const;
+// ───────────────────────────── 8-5: the moonflower door ─────────────────────────────
+
+/** the floor (post, the glowcap patch, the stump, the bough with the bud over it), floor B a knot up (the bark door) */
+export const MOON = {
+  floor: 600,
+  /** the glowcap patch (near the post) */
+  patch: 90,
+  /** the stump: a block a hop high, its near end and width (a glowcap flicked up from its foot lands on its top) */
+  stumpX: 330,
+  stumpW: 150,
+  stumpUp: 110,
+  /** the bough over the stump, its near end, width and top over the floor; the bud on it */
+  boughX: 340,
+  boughW: 140,
+  boughUp: 290,
+  bud: 30,
+  /** Easy: the bud hangs this far down from the bough on its stem (a glowcap on the floor under it reaches it) */
+  hangEasy: 110,
+  /** floor B, a knot up; the bark door on it, its trunk's whole height */
+  floorB: 300,
+  knot: 40,
+  door: 120,
+  doorH: 470,
+  /** the moonflower's light, open */
+  moonR: 700,
+} as const;
+
+const mf = along('floor', MOON.floor);
+const mb = along('floorB', MOON.floorB);
+const mt = along('bough', MOON.boughW);
+
+export const moonRoomSpec: LocalRoomSpec = {
+  id: 'moon',
+  left: mf(0),
+  right: mb(MOON.door + 60),
+  above: 560,
+  below: 40,
+  pieces: [
+    { kind: 'reset', id: 'post', at: mf(24) },
+    // (the glowcaps: a patch, so a lost one grows back)
+    { kind: 'source', id: 'patch', variant: 'mushroom', at: mf(MOON.patch), look: 'pile' },
+    { kind: 'item', id: 'cap', variant: 'mushroom', source: 'patch', for: 'moon' },
+    // (the bud on the high bough: out of any light lying on the floor, in the light of a glowcap on the stump)
+    { kind: 'moonflower', id: 'moon', at: mt(MOON.bud), r: MOON.moonR },
+    { kind: 'gate', id: 'door', at: mb(MOON.door), open: 'moon', h: MOON.doorH, look: 'roots' },
+  ],
+  exit: 'door',
+  beyond: mb(MOON.door + 110),
+  ground: ['floor', 'stump'],
+  tips: {
+    enter: 'That door only opens for a moonflower.', // (new, needs Matt's approval)
+    hold: 'Glowcaps glow. Moonflowers love a glow.', // (new, needs Matt's approval)
+    open: 'It opened! And so did the door.', // (new, needs Matt's approval)
+  },
+};
+
+export const moonRoom: SectionTemplate = {
+  id: 'w8r-room-moon',
+  name: 'puzzle room: the moonflower door (a glowcap thrown up)',
+  archetypes: ['vine_runner'],
+  teaches: 'w8:moonflower',
+  uses: [W8_LESSON.dark],
+  phases: ['sho', 'ten'],
+  difficulty: 5,
+  maxPerStage: 1,
+  weight: 40,
+  // (a glowcap, carried to the stump, flicked up, the bud opens, through: about 12 s for a first-timer)
+  extraSeconds: 12,
+  pieces: [
+    bank('floor', MOON.floor, { kind: 'start' }),
+    { key: 'stump', shape: 'block', w: MOON.stumpW, h: MOON.stumpUp, place: { kind: 'on', on: 'floor', at: MOON.stumpX / (MOON.floor - MOON.stumpW), h: MOON.stumpUp }, style: 'moss_stone' },
+    { key: 'bough', shape: 'branch', w: MOON.boughW, place: { kind: 'over', on: 'floor', at: MOON.boughX / MOON.floor, dy: -MOON.boughUp }, main: false },
+    bank('floorB', MOON.floorB, { kind: 'walk', after: 'floor', dy: -MOON.knot }),
+    bank('out', [200, 240], { kind: 'walk', after: 'floorB', dy: MOON.knot }),
+  ],
+  entry: { piece: 'floor', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
+  exitDy: 0,
+  sockets: roomDark('floor', 'floorB'),
+  room: moonRoomSpec,
+  mirrorable: false,
+};
+
+/** Easy's moonflower room: the same section and pieces; the bud hangs lower on its stem, so a glowcap set down under it opens it (two steps) */
+export const moonRoomSpecEasy: LocalRoomSpec = {
+  ...moonRoomSpec,
+  pieces: moonRoomSpec.pieces.map((p) => (p.kind === 'moonflower' ? { ...p, at: { ...p.at, dy: MOON.hangEasy } } : p)),
+};
+export const moonRoomEasy: SectionTemplate = { ...moonRoom, room: moonRoomSpecEasy };
+
+// ───────────────────────────── the set ─────────────────────────────
+
+/** World 8's puzzle-room sections */
+export const W8_ROOM_SECTIONS: readonly SectionTemplate[] = [hammockRoom, padsRoom, moonRoom];
+
+/** each room's stage (STAGE-RULES §3: 2-3 puzzle moments a world): a stage's kit holds only its own */
+export const W8R_STAGE: Record<string, string> = { [hammockRoom.id]: '8-2', [padsRoom.id]: '8-3', [moonRoom.id]: '8-5' };
+export const W8_ROOM_STAGES = ['8-2', '8-3', '8-5'] as const;
+
+/** Easy's version of each room (the same section id, so Easy lays Normal's plan) */
+const EASY: Record<string, SectionTemplate> = { [hammockRoom.id]: hammockRoomEasy, [padsRoom.id]: padsRoomEasy, [moonRoom.id]: moonRoomEasy };
+export const roomFor = (t: SectionTemplate, d: Difficulty): SectionTemplate => (d === 'easy' ? EASY[t.id] ?? t : t);
 
 /** the room sections of stage `stage`, Easy's version on Easy */
 export function w8RoomsFor(stage: number, difficulty: Difficulty = 'normal'): SectionTemplate[] {
-  return W8_ROOM_SECTIONS.filter((s) => W8R_STAGE[s.id] === `8-${stage}`).map((s) => (difficulty === 'easy' && s === hammockRoom ? hammockRoomEasy : s));
+  return W8_ROOM_SECTIONS.filter((s) => W8R_STAGE[s.id] === `8-${stage}`).map((s) => roomFor(s, difficulty));
 }

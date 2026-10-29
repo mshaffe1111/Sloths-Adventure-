@@ -6,8 +6,17 @@
  * release window (pipeline lianaBand: Easy 300 ms, Normal 167 ms) and lies past every jump and the leaf glide, raised about 80 px (RAISE,
  * World 6's lesson), so the swing is the way over. Under it is a soft pit that climbs back to the swing's own bough (pipeline backPit),
  * never on to the perch: a miss costs a climb and another go. Chains keep a perch between every two swings (levelCheck follows ledge ->
- * liana -> ledge). World 8's own: swings in the dark (the firefly lights the gap under the liana: the dark zone's lights, w6Swing.ts), and
- * longer chains than World 6's. A liana section is never mirrored.
+ * liana -> ledge). World 8's own: swings in the dark (the firefly lights the gap under the liana: the dark zone's lights, w6Swing.ts; with
+ * Pokey's lantern, 210 px, from the swing's bough, the whole swing is lit: w8Swing.test.ts), longer chains than World 6's, and the
+ * trunk climbs of the climbers' theme (a swing off a trunk's top, a drop and a climb, a swing and a climb in the dark). A liana section is
+ * never mirrored.
+ *
+ * Two traps the soft pits set (the swing builder, 2026-10-29; STAGE-RULES §6), proved on the quick route (w8SwingRoute.test.ts):
+ *   - a dark stretch stays level with its lit bough: dropped 30 px below it, the back pit under its swing sinks past the boughs' feet
+ *     (a perch at G-50 puts the pit's floor at G+175; the boughs end at the baseline, G+170) and they float over the floor;
+ *   - a perch in front of a lower bough is 190 px or more: levelCheck's jump links pass through walls, so from the pit's floor under a
+ *     swing it "jumps" through a narrow perch's trunk onto the bough behind it, and the swing reads as optional (a chain with 130-150 px
+ *     perches: 74 lianas never swung in 80 rolls).
  */
 import type { SectionPiece, SectionTemplate, Socket } from '../types.ts';
 import { darkEnds } from './w6Swing.ts';
@@ -60,7 +69,7 @@ const swingPair = swingSection({
   difficulty: 5,
   weight: 2,
   uses: [W8_THEME.chains],
-  pieces: [bank('a', [200, 240]), liana('l1', 'a'), perch('p1', 'l1', [180, 220]), down('p1d', 'p1', -RAISE, [140, 170]), liana('l2', 'p1d'), perch('b', 'l2', [220, 260]), down('c', 'b', -RAISE, [200, 240])],
+  pieces: [bank('a', [200, 240]), liana('l1', 'a'), perch('p1', 'l1', [190, 230]), down('p1d', 'p1', -RAISE, [140, 170]), liana('l2', 'p1d'), perch('b', 'l2', [220, 260]), down('c', 'b', -RAISE, [200, 240])],
   first: 'a',
   last: 'c',
   sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 90), flag('c', 0.5)],
@@ -76,16 +85,16 @@ const swingChain = swingSection({
   extraSeconds: 2,
   uses: [W8_THEME.chains],
   pieces: [
-    bank('a', [160, 190]),
+    bank('a', [150, 170]),
     liana('l1', 'a'),
-    perch('p1', 'l1', [150, 180]),
-    down('p1d', 'p1', -RAISE, [110, 130]),
+    perch('p1', 'l1', [190, 210]),
+    down('p1d', 'p1', -RAISE, [100, 110]),
     liana('l2', 'p1d'),
-    perch('p2', 'l2', [150, 180]),
-    down('p2d', 'p2', -RAISE, [110, 130]),
+    perch('p2', 'l2', [190, 210]),
+    down('p2d', 'p2', -RAISE, [100, 110]),
     liana('l3', 'p2d'),
-    perch('b', 'l3', [170, 200]),
-    down('c', 'b', -RAISE, [160, 190]),
+    perch('b', 'l3', [190, 210]),
+    down('c', 'b', -RAISE, [150, 170]),
   ],
   first: 'a',
   last: 'c',
@@ -128,7 +137,7 @@ const knotsSwing = swingSection({
   difficulty: 5,
   weight: 2,
   uses: [W8_THEME.prowlers],
-  pieces: [bank('a', [150, 180]), hop('k1', 'a', [150, 180]), hop('k2', 'k1', [170, 200]), liana('l1', 'k2'), perch('b', 'l1', [200, 230]), down('b2', 'b', 35 - RAISE, [130, 160]), up('c', 'b2', 35, [200, 240])],
+  pieces: [bank('a', [150, 180]), hop('k1', 'a', [150, 180]), hop('k2', 'k1', [170, 200]), liana('l1', 'k2'), perch('b', 'l1', [240, 270]), down('b2', 'b', 35 - RAISE, [130, 160]), up('c', 'b2', 35, [200, 240])],
   first: 'a',
   last: 'c',
   sockets: [petals('k1', 'k1', 0.5, 1), petals('k2', 'k2', 0.5, 1), petals('b', 'b', 0.5, 2, 80), flag('c', 0.5)],
@@ -158,12 +167,12 @@ const darkSwing = swingSection({
   weight: 2,
   pieces: [
     bank('in', [180, 210]),
-    down('a', 'in', 30, [200, 240]),
+    down('a', 'in', 0, [200, 240]),
     liana('l1', 'a'),
     perch('b', 'l1', [220, 260]),
     down('c', 'b', -RAISE, [170, 200]),
     hop('d', 'c', [170, 200]),
-    up('out', 'd', 30, [220, 260]),
+    up('out', 'd', 0, [220, 260]),
   ],
   first: 'in',
   last: 'out',
@@ -181,20 +190,93 @@ const darkSwingPair = swingSection({
   maxPerStage: 1,
   uses: [W8_THEME.chains],
   pieces: [
-    bank('in', [180, 210]),
-    down('a', 'in', 30, [200, 240]),
+    bank('in', [160, 180]),
+    down('a', 'in', 0, [160, 190]),
     liana('l1', 'a'),
-    perch('p1', 'l1', [180, 220]),
+    perch('p1', 'l1', [190, 230]),
     down('p1d', 'p1', -RAISE, [140, 170]),
     liana('l2', 'p1d'),
     perch('b', 'l2', [200, 240]),
     down('c', 'b', -RAISE, [180, 210]),
-    up('out', 'c', 30, [220, 260]),
+    up('out', 'c', 0, [190, 220]),
   ],
   first: 'in',
   last: 'out',
   sockets: [darkTip('in'), ...darkEnds('a', 'c'), petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 80), flag('out', 0.6)],
 });
 
+// ───────────────────────────── the climbers' swings (the trunk climbs: W8_THEME.climbers) ─────────────────────────────
+
+/** up a trunk, along the high bough, a swing off its far end onto a perch past it, and down again (the climb, then the swing) */
+const trunkSwing = swingSection({
+  id: 'w8s-trunk-swing',
+  name: 'climb the trunk, swing off the top',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [W8_THEME.climbers],
+  pieces: [
+    bank('a', [220, 260]),
+    ...climbWall('v', 'a', 'wall', 200, [220, 260]),
+    liana('l1', 'wall'),
+    // (the perch raised over the trunk's top, as every perch: one lower than the swing's bough has no release window the check links)
+    perch('b', 'l1', [220, 260]),
+    // (and two steps back down to the bough the climb began on)
+    down('b2', 'b', (200 - RAISE) / 2, [160, 190]),
+    down('c', 'b2', (200 - RAISE) / 2, [200, 240]),
+  ],
+  first: 'a',
+  last: 'c',
+  sockets: [petals('a', 'a', 0.4, 1), petals('wall', 'wall', 0.4, 2, 90), petals('b', 'b', 0.5, 1), petals('b2', 'b2', 0.5, 1), scenery('nest', 'c', [0.5, 0.8], 0.5), flag('c', 0.6)],
+});
+
+/** a swing onto a wide bough, a drop onto the bough past it, and a climbing vine up the trunk beyond */
+const swingDropClimb = swingSection({
+  id: 'w8s-swing-drop-climb',
+  name: 'swing, drop, climb the trunk',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [W8_THEME.climbers],
+  pieces: [
+    bank('a', [200, 240]),
+    liana('l1', 'a'),
+    perch('b', 'l1', [220, 250]),
+    down('b2', 'b', -RAISE, [160, 190]),
+    ...climbWall('v', 'b2', 'wall', 200, [200, 240]),
+    down('c', 'wall', 200, [380, 420]),
+  ],
+  first: 'a',
+  last: 'c',
+  sockets: [petals('b', 'b', 0.5, 1), petals('b2', 'b2', 0.5, 1), petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'c', [0.55, 0.65], SMALL, 3, { phases: ['ten', 'ketsu'], chance: 0.4 })],
+});
+
+/** a swing in the dark onto a bough, the trunk climbed past it in the firefly's light, and down out of the dark */
+const darkSwingClimb = swingSection({
+  id: 'w8s-dark-swing-climb',
+  name: 'a swing and a climb in the dark',
+  phases: ['ten', 'ketsu'],
+  difficulty: 7,
+  teaches: W8_LESSON.dark,
+  weight: 2,
+  maxPerStage: 1,
+  uses: [W8_THEME.climbers],
+  pieces: [
+    bank('in', [180, 210]),
+    down('a', 'in', 0, [180, 220]),
+    liana('l1', 'a'),
+    perch('b', 'l1', [260, 300]),
+    ...climbWall('v', 'b', 'wall', 220, [200, 240]),
+    down('c', 'wall', 220 - RAISE, [170, 200]),
+    up('out', 'c', 0, [220, 260]),
+  ],
+  first: 'in',
+  last: 'out',
+  sockets: [darkTip('in'), ...darkEnds('a', 'c'), petals('b', 'b', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), flag('out', 0.6)],
+});
+
 /** World 8's liana sections (the vine stages: w8Game.ts) */
-export const W8_SWING_SECTIONS: readonly SectionTemplate[] = [firstSwing, swingPair, swingChain, swingClimb, swingHunter, knotsSwing, swingRun, darkSwing, darkSwingPair];
+export const W8_SWING_SECTIONS: readonly SectionTemplate[] = [
+  firstSwing, swingPair, swingChain, swingClimb, swingHunter, knotsSwing, swingRun, darkSwing, darkSwingPair,
+  trunkSwing, swingDropClimb, darkSwingClimb,
+];
