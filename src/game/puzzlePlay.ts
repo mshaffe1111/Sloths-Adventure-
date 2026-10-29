@@ -5,6 +5,7 @@
  * stuck, and the piece Dot points at. The engine only lends it what it needs through `KitHost`, as World 4 and 5 do (w4Play.ts,
  * w5Play.ts), and reads the intents it took (engine.ts kitControls).
  */
+import { drawW7Piece } from './w7PuzzleArt.ts';
 import {
   anchorAt, BEETLE, CHAIR, evalWire, knotBox, GLOW, SAPLING, SILK, TEA, tipText, type TipLine, falseLeaves, flowRate, flyStep, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox,
   seesawDy, seesawTilt, setDownX, sluiceFlow, stepBeetle, stepFlow, throwStart, THROW, tradeTakes, useReach, isLit, type BeetleState, type Body,
@@ -1717,7 +1718,10 @@ export class KitPlay {
           drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + 6, { w: pw * 1.5, h: ph * 0.7 });
           if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
         }
-        const drew = stoneP
+        // (World 7: Matt's carved stone plate, w7PuzzleArt.ts)
+        const drew = this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)
+          ? true
+          : stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
           : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
         ctx.restore();
@@ -1738,6 +1742,8 @@ export class KitPlay {
       }
       for (const l of room.levers) {
         if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
+        // (World 7: Matt's stone lever, w7PuzzleArt.ts)
+        if (this.look.world === 7 && drawW7Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 78)) continue;
         if (!drawKitArt(ctx, l.show > 0.5 ? 'leverOn' : 'leverOff', l.x, l.y + 4)) {
           ctx.strokeStyle = '#6b4a2b';
           ctx.lineWidth = 6;
@@ -1933,7 +1939,10 @@ export class KitPlay {
     const gw = KIT.gateW + 50;
     // World 1: Matt's branch gate, drawn up out of the way as it opens; World 3: Grandma's fern stone door, rolled aside
     const lw = this.look.world;
-    const drew = !g.spec.look && lw === 1
+    // (World 7: Matt's stone door, shut and open, w7PuzzleArt.ts)
+    const drew = !g.spec.look && lw === 7 && drawW7Piece(ctx, g.show > 0.5 ? 'door-open' : 'door-closed', g.x, g.y + 6, gw + 30, KIT.doorH + 16)
+      ? true
+      : !g.spec.look && lw === 1
       ? g.show > 0.98 || drawKitArt(ctx, 'branchGate', g.x, g.y + 4 - g.show * (KIT.doorH + 20), { w: gw + 20, h: KIT.doorH + 14, alpha: 1 - g.show * 0.85 })
       : !g.spec.look && lw === 3
         ? drawKitArt(ctx, g.show > 0.5 ? 'fernDoorOpen' : 'fernDoorShut', g.x, g.y + 6, { w: gw + 40, h: KIT.doorH + 20 })

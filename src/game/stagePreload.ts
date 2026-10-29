@@ -11,6 +11,7 @@
  */
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
+import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
 import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
@@ -77,7 +78,8 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'crumble') {
       crumbleArtReady();
       w7FaceReady();
-      urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS);
+      w7PuzzleReady();
+      urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS);
     } else if (k === 'meeca-night') {
       nightArtReady();
       urls.push(NIGHT_ART_URL);
