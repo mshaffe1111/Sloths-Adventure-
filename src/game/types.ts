@@ -223,6 +223,9 @@ export interface Enemy {
   /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
    *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
   royal?: boolean;
+  /** drawn as another creature than its kind: World 10's soldier fights as a prowler (an ocelot's brain, score and checks) and only
+   *  looks like the General's soldier (soldierSprite.ts). (World 7's builder adds 'sentry' here too) */
+  look?: 'soldier';
   /** a snapper listening to the puzzle kit's noise (noise.ts): where the noise is; it walks there along its ground and notices nobody */
   lureX?: number;
   /** predator AI: where it started this move, and where it is going */

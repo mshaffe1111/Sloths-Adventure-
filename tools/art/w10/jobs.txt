@@ -1,0 +1,6 @@
+World 10 (storm fortress) painted HF art (2026-10-29, cap $10), helper for the gen2-w10 builder. rtx-pro-6000 at ~$2.75/h.
+Raw takes in the bucket mshaffe111/w5-xfer under hfbatch/w10/ (props/, clips/). Starts on branch gen2-w10-artstarts under
+tools/art/hfbatch/starts/w10/ (starts.py). Review sheets in reference/prop-sheets/qa-notes/w10/.
+w10-soldier-0 6ae3b830c78863f9c62de1d7 rtx-pro-6000 created 21:18:40Z: spec-w10-soldier.json part 0 of 2 (hfbatch/hfbgpu.py @5ec10f97 -> anim/jobs/animgpu.py)
+w10-soldier-1 6ae3b8320e0338d1bb7c3336 rtx-pro-6000 created 21:18:42Z: part 1 of 2 (idle/walk for soldier a seeds 5/17, b seed 5, all pinned loops)
+w10-props     6ae3b946c78863f9c62de319 rtx-pro-6000 created 21:23:18Z: w6to10/img2imggpu.py @5ec10f97 on spec-w10-props.json (6 starts @d1629a14 x s-low/s-high x seeds 7/23 = 24 takes)

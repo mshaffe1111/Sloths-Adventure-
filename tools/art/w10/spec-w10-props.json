@@ -1,0 +1,205 @@
+{
+ "note": "World 10 painted pieces by img2img from tools/art/w10/starts.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/d1629a1406a4c5de72de26474798e296e7b3a975/tools/art/hfbatch/starts/w10/",
+ "items": [
+  {
+   "name": "w10rods-s55-7",
+   "start": "start-w10-rods.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side, each standing on a small square riveted grey stone footing with an iron collar plate. Left: a plain rusty iron rod with iron bands and a sharp spear tip with two barbs. Right: a rusty iron rod with a crown of four sharp prongs on top and a thick coil of copper wire wound around its upper part. Dark weathered iron with orange-brown rust, grey storm stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.55,
+   "seed": 7
+  },
+  {
+   "name": "w10rods-s55-23",
+   "start": "start-w10-rods.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side, each standing on a small square riveted grey stone footing with an iron collar plate. Left: a plain rusty iron rod with iron bands and a sharp spear tip with two barbs. Right: a rusty iron rod with a crown of four sharp prongs on top and a thick coil of copper wire wound around its upper part. Dark weathered iron with orange-brown rust, grey storm stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.55,
+   "seed": 23
+  },
+  {
+   "name": "w10rods-s68-7",
+   "start": "start-w10-rods.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side, each standing on a small square riveted grey stone footing with an iron collar plate. Left: a plain rusty iron rod with iron bands and a sharp spear tip with two barbs. Right: a rusty iron rod with a crown of four sharp prongs on top and a thick coil of copper wire wound around its upper part. Dark weathered iron with orange-brown rust, grey storm stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.68,
+   "seed": 7
+  },
+  {
+   "name": "w10rods-s68-23",
+   "start": "start-w10-rods.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side, each standing on a small square riveted grey stone footing with an iron collar plate. Left: a plain rusty iron rod with iron bands and a sharp spear tip with two barbs. Right: a rusty iron rod with a crown of four sharp prongs on top and a thick coil of copper wire wound around its upper part. Dark weathered iron with orange-brown rust, grey storm stone. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.68,
+   "seed": 23
+  },
+  {
+   "name": "w10bolts-s50-7",
+   "start": "start-w10-bolts.webp",
+   "prompt": "slothadv style, painted storybook illustration, four tall jagged forked lightning bolts striking straight down, each one different, a bright white-blue core with a soft cyan glow around it, hand-painted glowing light with soft painted edges, game effect sprites, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.5,
+   "seed": 7
+  },
+  {
+   "name": "w10bolts-s50-23",
+   "start": "start-w10-bolts.webp",
+   "prompt": "slothadv style, painted storybook illustration, four tall jagged forked lightning bolts striking straight down, each one different, a bright white-blue core with a soft cyan glow around it, hand-painted glowing light with soft painted edges, game effect sprites, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.5,
+   "seed": 23
+  },
+  {
+   "name": "w10bolts-s65-7",
+   "start": "start-w10-bolts.webp",
+   "prompt": "slothadv style, painted storybook illustration, four tall jagged forked lightning bolts striking straight down, each one different, a bright white-blue core with a soft cyan glow around it, hand-painted glowing light with soft painted edges, game effect sprites, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.65,
+   "seed": 7
+  },
+  {
+   "name": "w10bolts-s65-23",
+   "start": "start-w10-bolts.webp",
+   "prompt": "slothadv style, painted storybook illustration, four tall jagged forked lightning bolts striking straight down, each one different, a bright white-blue core with a soft cyan glow around it, hand-painted glowing light with soft painted edges, game effect sprites, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.65,
+   "seed": 23
+  },
+  {
+   "name": "w10bursts-s50-7",
+   "start": "start-w10-bursts.webp",
+   "prompt": "slothadv style, painted storybook illustration, three game effect sprites of a lightning strike hitting the ground: a bright white-blue flash bursting up from the ground, then crackling blue electric arcs and sparks along the ground, then a fading blue glow with a few sparks and a thin curl of grey smoke, hand-painted glowing light, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.5,
+   "seed": 7
+  },
+  {
+   "name": "w10bursts-s50-23",
+   "start": "start-w10-bursts.webp",
+   "prompt": "slothadv style, painted storybook illustration, three game effect sprites of a lightning strike hitting the ground: a bright white-blue flash bursting up from the ground, then crackling blue electric arcs and sparks along the ground, then a fading blue glow with a few sparks and a thin curl of grey smoke, hand-painted glowing light, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.5,
+   "seed": 23
+  },
+  {
+   "name": "w10bursts-s65-7",
+   "start": "start-w10-bursts.webp",
+   "prompt": "slothadv style, painted storybook illustration, three game effect sprites of a lightning strike hitting the ground: a bright white-blue flash bursting up from the ground, then crackling blue electric arcs and sparks along the ground, then a fading blue glow with a few sparks and a thin curl of grey smoke, hand-painted glowing light, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.65,
+   "seed": 7
+  },
+  {
+   "name": "w10bursts-s65-23",
+   "start": "start-w10-bursts.webp",
+   "prompt": "slothadv style, painted storybook illustration, three game effect sprites of a lightning strike hitting the ground: a bright white-blue flash bursting up from the ground, then crackling blue electric arcs and sparks along the ground, then a fading blue glow with a few sparks and a thin curl of grey smoke, hand-painted glowing light, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.65,
+   "seed": 23
+  },
+  {
+   "name": "w10spikes-s50-7",
+   "start": "start-w10-spikes.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, a long row of sharp rusty iron spikes set in a heavy dark riveted iron base bar, seen from the side, the spikes of slightly different heights, some leaning a little, dangerous, sharp points, dark iron with orange-brown rust, and two short end pieces of the same bar with bolted iron end brackets. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.5,
+   "seed": 7
+  },
+  {
+   "name": "w10spikes-s50-23",
+   "start": "start-w10-spikes.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, a long row of sharp rusty iron spikes set in a heavy dark riveted iron base bar, seen from the side, the spikes of slightly different heights, some leaning a little, dangerous, sharp points, dark iron with orange-brown rust, and two short end pieces of the same bar with bolted iron end brackets. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.5,
+   "seed": 23
+  },
+  {
+   "name": "w10spikes-s62-7",
+   "start": "start-w10-spikes.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, a long row of sharp rusty iron spikes set in a heavy dark riveted iron base bar, seen from the side, the spikes of slightly different heights, some leaning a little, dangerous, sharp points, dark iron with orange-brown rust, and two short end pieces of the same bar with bolted iron end brackets. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.62,
+   "seed": 7
+  },
+  {
+   "name": "w10spikes-s62-23",
+   "start": "start-w10-spikes.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, a long row of sharp rusty iron spikes set in a heavy dark riveted iron base bar, seen from the side, the spikes of slightly different heights, some leaning a little, dangerous, sharp points, dark iron with orange-brown rust, and two short end pieces of the same bar with bolted iron end brackets. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.62,
+   "seed": 23
+  },
+  {
+   "name": "w10rampart-s55-7",
+   "start": "start-w10-rampart.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, seen straight from the side: a fortress battlement slab of dark grey dressed storm stone blocks with a worn flat top and a riveted rusty iron band across it; four loose broken chunks of the same stone; and below, a patch of grey stone with a black soot scorch mark burnt onto it with a few glowing orange embers. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.55,
+   "seed": 7
+  },
+  {
+   "name": "w10rampart-s55-23",
+   "start": "start-w10-rampart.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, seen straight from the side: a fortress battlement slab of dark grey dressed storm stone blocks with a worn flat top and a riveted rusty iron band across it; four loose broken chunks of the same stone; and below, a patch of grey stone with a black soot scorch mark burnt onto it with a few glowing orange embers. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.55,
+   "seed": 23
+  },
+  {
+   "name": "w10rampart-s68-7",
+   "start": "start-w10-rampart.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, seen straight from the side: a fortress battlement slab of dark grey dressed storm stone blocks with a worn flat top and a riveted rusty iron band across it; four loose broken chunks of the same stone; and below, a patch of grey stone with a black soot scorch mark burnt onto it with a few glowing orange embers. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.68,
+   "seed": 7
+  },
+  {
+   "name": "w10rampart-s68-23",
+   "start": "start-w10-rampart.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, seen straight from the side: a fortress battlement slab of dark grey dressed storm stone blocks with a worn flat top and a riveted rusty iron band across it; four loose broken chunks of the same stone; and below, a patch of grey stone with a black soot scorch mark burnt onto it with a few glowing orange embers. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.68,
+   "seed": 23
+  },
+  {
+   "name": "w10wind-s50-7",
+   "start": "start-w10-wind.webp",
+   "prompt": "slothadv style, painted storybook illustration, game effect sprites: three bands of storm wind blowing driving rain sideways, many thin slanted pale blue-white streaks of wind-driven rain of different lengths, gusting, a few small leaves and a torn scrap of red cloth tumbling in the wind, hand-painted soft streaks, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.5,
+   "seed": 7
+  },
+  {
+   "name": "w10wind-s50-23",
+   "start": "start-w10-wind.webp",
+   "prompt": "slothadv style, painted storybook illustration, game effect sprites: three bands of storm wind blowing driving rain sideways, many thin slanted pale blue-white streaks of wind-driven rain of different lengths, gusting, a few small leaves and a torn scrap of red cloth tumbling in the wind, hand-painted soft streaks, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.5,
+   "seed": 23
+  },
+  {
+   "name": "w10wind-s65-7",
+   "start": "start-w10-wind.webp",
+   "prompt": "slothadv style, painted storybook illustration, game effect sprites: three bands of storm wind blowing driving rain sideways, many thin slanted pale blue-white streaks of wind-driven rain of different lengths, gusting, a few small leaves and a torn scrap of red cloth tumbling in the wind, hand-painted soft streaks, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.65,
+   "seed": 7
+  },
+  {
+   "name": "w10wind-s65-23",
+   "start": "start-w10-wind.webp",
+   "prompt": "slothadv style, painted storybook illustration, game effect sprites: three bands of storm wind blowing driving rain sideways, many thin slanted pale blue-white streaks of wind-driven rain of different lengths, gusting, a few small leaves and a torn scrap of red cloth tumbling in the wind, hand-painted soft streaks, on a plain pure black background, no sky, no ground, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.65,
+   "seed": 23
+  }
+ ]
+}
