@@ -144,7 +144,7 @@
 .vh-short .vh-card { padding: 6px 13px 7px; gap: 3px; }
 .vh-short .vh-card-big { font-size: 17px; }
 .vh-short .vh-card-pre, .vh-short .vh-card-sub { font-size: 12px; }
-.vh-short .vh-card-label { font-size: 10.5px; }
+.vh-short .vh-card-label { font-size: 12px; }
 /* painted (painted.tsx): the wood-and-parchment card, its words centred on the parchment; the retry version on the goal plate */
 .vh-card.painted { border: 0; border-radius: 0; box-shadow: none; background-color: transparent; justify-content: center; text-align: left; gap: 4px;
   filter: drop-shadow(0 5px 8px rgba(0, 0, 0, .35)); }

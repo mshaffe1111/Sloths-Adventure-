@@ -4,8 +4,8 @@
  *   far   the sky and the far distance, opaque, scrolls slowest
  *   mid   the middle distance (crags, trees, landmarks) cut out of a flat magenta, so the far strip shows through
  *   near  the low foreground just behind the ground, cut out the same way
- * Each strip is prepared by scripts/backdrop-strip.py (side panels cropped, the key colour cut out) and is repeated mirrored every other
- * time, so it needs no seam. Decoded, a world's strips take about 20 MB (36 MB for the wide worlds 8 and 9).
+ * Each strip is prepared by scripts/backdrop-strip.py (side panels cropped, the key colour cut out, the ends crossfaded into each other
+ * by scripts/strip-seamless.py) and is repeated side by side, unflipped. Decoded, a world's strips take about 20 MB (36 MB for the wide worlds 8 and 9).
  *
  * Loading is lazy and asynchronous. Until a world's three strips have decoded, the drawn layers stand in; when they are ready,
  * the listeners are told so the scenery can rebuild. Only the last KEEP_WORLDS worlds used stay decoded (memory audit, 2026-10-25:
@@ -16,6 +16,9 @@
  * names the stage being played (setBackdropStage) and the world's strips are that stage's set. Each set counts as one of the
  * KEEP_WORLDS kept decoded. Away from a stage (the map, the title, a story) a world shows the set the last stage used, or its plain
  * w<N>-* set.
+ *
+ * A stage waits for its strips before it starts (stagePreload.ts readyToStart, up to BACKDROP_WAIT_MS), and a strip set or canopy that
+ * still comes in late fades in over FADE_IN_MS from the stand-in sky instead of popping in (polish report VI-3, `at` below).
  */
 // (under the test runner there is no bundler and so no glob, the call throws, and no world is painted: the drawn layers are what get
 // tested. The bundler replaces the call itself, so it must stay a plain call for it to be found.)
@@ -33,7 +36,15 @@ export interface PaintedSet {
   mid: HTMLImageElement;
   /** the near strip is optional: a world can run on its far and middle strips while its near one is being remade */
   near: HTMLImageElement | null;
+  /** when it finished decoding (performance.now()): the scenery fades a set in over FADE_IN_MS from then */
+  at: number;
 }
+
+/** how long a stage waits for its backdrop before it starts anyway (polish report VI-3: 2.5 s; the other sheets wait 900 ms) */
+export const BACKDROP_WAIT_MS = 2500;
+/** a set or canopy that arrives once its picture is already on screen fades in over this long instead of popping in */
+export const FADE_IN_MS = 280;
+const now = (): number => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 
 type Part = keyof PaintedSet;
 const PARTS: Part[] = ['far', 'mid', 'near'];
@@ -88,12 +99,24 @@ export function hasPainted(world: number): boolean {
   return !!urlFor(`w${world}`, 'far') && !!urlFor(`w${world}`, 'mid');
 }
 
-/** the worlds whose strips stay decoded at once: the one being played and one more (the map or a story showing another world) */
+/**
+ * The worlds whose strips stay decoded at once: the one being played and one more (the map or a story showing another world). This
+ * counts worlds, not sets (VI-3: World 5's dusk and twilight sets each counted as a world, so the next stage's set pushed out the one
+ * on screen); a world keeps at most SETS_PER_WORLD of its sets, the stage's and the one before or after it.
+ */
 export const KEEP_WORLDS = 2;
+export const SETS_PER_WORLD = 2;
 const ready = new Map<string, PaintedSet>();
 const loading = new Set<string>();
 const failed = new Set<string>();
 const listeners = new Set<(world: number) => void>();
+/** the calls waiting for a set to finish decoding (or fail) */
+const settled = new Map<string, (() => void)[]>();
+function settle(stem: string) {
+  const w = settled.get(stem);
+  settled.delete(stem);
+  w?.forEach((fn) => fn());
+}
 
 export function onPaintedReady(fn: (world: number) => void): () => void {
   listeners.add(fn);
@@ -114,7 +137,7 @@ function loadSet(stem: string) {
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
     .then(() => {
       const at = (p: Part) => imgs[parts.indexOf(p)] ?? null;
-      ready.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near') });
+      ready.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near'), at: now() });
       listeners.forEach((fn) => fn(world));
       trim(stem);
     })
@@ -122,7 +145,10 @@ function loadSet(stem: string) {
       // a strip that will not load leaves the drawn layers in place for good
       failed.add(stem);
     })
-    .finally(() => loading.delete(stem));
+    .finally(() => {
+      loading.delete(stem);
+      settle(stem);
+    });
 }
 
 /**
@@ -130,14 +156,54 @@ function loadSet(stem: string) {
  * card), so the stage does not open on a plain sky while they decode.
  */
 export function preloadBackdrop(world: number, stageId: string): void {
-  if (hasPainted(world)) loadSet(backdropStem(world, stageId));
+  void backdropReady(world, stageId);
 }
 
-/** drop the sets used longest ago (the Map keeps the order of use) until only KEEP_WORLDS are left; `keep` is never dropped */
-function trim(keep: string) {
-  for (const k of [...ready.keys()]) {
-    if (ready.size <= KEEP_WORLDS) break;
+/** this stage is played high in the trees (1-8's long branch, the ascents), so its world's canopy strips are part of its backdrop */
+export const stageUsesCanopy = (cfg: { id: string; objectiveType?: string }): boolean => cfg.id === '1-8' || cfg.objectiveType === 'ascent';
+
+/**
+ * Start decoding the strips a stage plays in (and its canopy strips when `canopy`), resolving once they are all decoded, or have failed
+ * (the drawn layers stand in), or at once for a world with no painted strips. The stage waits on this before it starts (VI-3).
+ */
+export function backdropReady(world: number, stageId: string, canopy = false): Promise<void> {
+  if (!hasPainted(world) || typeof Image === 'undefined') return Promise.resolve();
+  const stem = backdropStem(world, stageId);
+  loadSet(stem);
+  const set = ready.has(stem) || failed.has(stem) ? Promise.resolve() : new Promise<void>((res) => settled.set(stem, [...(settled.get(stem) ?? []), res]));
+  if (!canopy || !ownMid(stem)) return set;
+  return set.then(() => loadCanopy(world, stem));
+}
+
+/**
+ * Which decoded sets to let go: `order` is the sets from used longest ago to most recently, `keep` is never dropped. Only the
+ * KEEP_WORLDS worlds used last stay, each with at most SETS_PER_WORLD sets (its oldest go first).
+ */
+export function setsToDrop(order: readonly string[], keep: string, keepWorlds = KEEP_WORLDS, perWorld = SETS_PER_WORLD): string[] {
+  // (the set just decoded counts as the one used last)
+  const left = order.includes(keep) ? [...order.filter((k) => k !== keep), keep] : [...order];
+  const drop: string[] = [];
+  for (const k of [...left]) {
     if (k === keep) continue;
+    const worlds: number[] = [];
+    for (const q of left) {
+      const i = worlds.indexOf(worldOf(q));
+      if (i >= 0) worlds.splice(i, 1);
+      worlds.push(worldOf(q));
+    }
+    const w = worldOf(k);
+    const oldWorld = worlds.indexOf(w) < worlds.length - keepWorlds;
+    const extraSet = left.filter((q) => worldOf(q) === w).length > perWorld;
+    if (!oldWorld && !extraSet) continue;
+    left.splice(left.indexOf(k), 1);
+    drop.push(k);
+  }
+  return drop;
+}
+
+/** drop the sets setsToDrop names (the Map keeps the order of use); `keep`, the one just decoded, is never dropped */
+function trim(keep: string) {
+  for (const k of setsToDrop([...ready.keys()], keep)) {
     ready.delete(k);
     const w = worldOf(k);
     if (ownMid(k) && ![...ready.keys()].some((q) => worldOf(q) === w && ownMid(q))) canopyReady.delete(w);
@@ -178,9 +244,11 @@ export const decodedSets = (): string[] => [...ready.keys()];
 export interface CanopySet {
   mid: HTMLImageElement;
   near: HTMLImageElement;
+  /** when it finished decoding (the scenery fades it in over FADE_IN_MS) */
+  at: number;
 }
 const canopyReady = new Map<number, CanopySet>();
-const canopyLoading = new Set<number>();
+const canopyLoading = new Map<number, Promise<void>>();
 const canopyFailed = new Set<number>();
 const canopyUrl = (world: number, part: 'mid' | 'near') => FILES[`../assets/backdrops/w${world}c-${part}.webp`] ?? null;
 
@@ -188,23 +256,31 @@ const canopyUrl = (world: number, part: 'mid' | 'near') => FILES[`../assets/back
 export function canopyFor(world: number): CanopySet | null {
   const hit = canopyReady.get(world);
   if (hit) return hit;
+  void loadCanopy(world);
+  return null;
+}
+
+/** start decoding a world's canopy strips (they go with the world's own middle strip); resolves when they are in, or will not come */
+function loadCanopy(world: number, stem = stemFor(world)): Promise<void> {
+  if (canopyReady.has(world)) return Promise.resolve();
   // the canopy strips go with the world's own middle strip: none for a world whose strips were dropped, or a set with its own middle
-  const stem = stemFor(world);
-  if (!ready.has(stem) || !ownMid(stem)) return null;
+  if (!ready.has(stem) || !ownMid(stem)) return Promise.resolve();
   const mu = canopyUrl(world, 'mid'), nu = canopyUrl(world, 'near');
-  if (!mu || !nu || canopyLoading.has(world) || canopyFailed.has(world) || typeof Image === 'undefined') return null;
-  canopyLoading.add(world);
+  if (!mu || !nu || canopyFailed.has(world) || typeof Image === 'undefined') return Promise.resolve();
+  const going = canopyLoading.get(world);
+  if (going) return going;
   const mid = new Image();
   const near = new Image();
   mid.decoding = 'async';
   near.decoding = 'async';
   mid.src = mu;
   near.src = nu;
-  Promise.all([mid, near].map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => { if (ready.has(stemFor(world)) && ownMid(stemFor(world))) canopyReady.set(world, { mid, near }); })
+  const p = Promise.all([mid, near].map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
+    .then(() => { if ([...ready.keys()].some((q) => worldOf(q) === world && ownMid(q))) canopyReady.set(world, { mid, near, at: now() }); })
     .catch(() => { canopyFailed.add(world); /* the ground strips stay */ })
     .finally(() => canopyLoading.delete(world));
-  return null;
+  canopyLoading.set(world, p);
+  return p;
 }
 
 // ---- the reveal: another world's strips seen from the top of a climb (6-8 Stilt Climb: the first sight of the ruins, World 7, at dusk)
@@ -230,7 +306,7 @@ export function revealSet(parts: { far: string; mid: string; near: string }): Pa
     return im;
   });
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2] }))
+    .then(() => reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2], at: typeof performance !== 'undefined' ? performance.now() : 0 }))
     .catch(() => { /* no reveal: the world's own strips stay */ })
     .finally(() => revealLoading.delete(key));
   return null;

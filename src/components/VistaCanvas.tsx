@@ -63,6 +63,7 @@ export const WorldThumb: React.FC<{ world: number; size: number; className?: str
       if (!src || !cv) return;
       const c = cv.getContext('2d')!;
       c.clearRect(0, 0, cv.width, cv.height);
+      c.imageSmoothingQuality = 'high';
       c.drawImage(src, 0, 0, cv.width, cv.height);
     };
     paint();

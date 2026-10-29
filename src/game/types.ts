@@ -109,6 +109,8 @@ export interface PlayerState {
   isVineSwinging?: boolean;
   /** hanging from a rope (shimmy) */
   hanging?: boolean;
+  /** swimming in calm water (swim.ts): the water's top, how far under he has dived (0..1), and seconds into his first swim's moment */
+  swim?: { surfaceY: number; under: number; first?: number };
   /** how far the rope is drawn giving under him at his hands (world units, for the drawing only: ropeArt.ts ropeDip, heroRope.ts) */
   hangDip?: number;
   swingVineId?: number;
@@ -287,11 +289,12 @@ export interface Platform {
   lily?: boolean;
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
-  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), 6-8's ledges in Matt's other World 6 pieces (`stilt`, w6StiltArt.ts) */
-  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'stilt';
+  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts), and World 4's little mossy rocks to hop (`rock`, protoArt drawRockArt), the mailbox post at a porch's dead end in 2-6 (`post`, a knot: `lip`), and 6-8's ledges in World 6's pieces (`stilt`, w6StiltArt.ts) */
+  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog' | 'orchid' | 'kit' | 'rock' | 'post' | 'stilt';
   /** one of the Sky Sovereign's rock pillars in 4-10 (sovereignFight.ts): its index. It is a wall with a top to stand on; it cracks, and broken it is a stump */
   pillar?: number;
-  /** a knot of wood standing at the end of a high branch (4-6): a little wall, so he cannot walk off it into a very long fall */
+  /** a knot of wood standing at the end of a high branch (4-6; a mailbox post on 2-6's porches): a little wall, so he cannot walk off it
+   *  into a very long fall */
   lip?: boolean;
 }
 

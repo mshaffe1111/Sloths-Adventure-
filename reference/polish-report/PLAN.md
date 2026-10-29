@@ -60,7 +60,7 @@ Matt: prioritize easy wins first; run another agent or two on the hardest things
 
 ## Decisions for Matt, one at a time
 1. Build 1: Matt is having the other session push it to a GitHub branch (polish-build1); the lead reviews and merges it.
-2. SN-1: orchestral effects only?
+2. SN-1: DECIDED 2026-10-29 by Matt: "The orchestra only sounds awful... I usually have that turned off." The orchestral set and its switch are deleted; the classic set is tuned to each stage's music and new effects join that family (polish-audio).
 3. CT-5: a second thumb's straight flick on a vine climbs?
 4. DOT-12: 8 words or under 10?
 5. LV-3, CT-19, CT-13 and CT-27.
