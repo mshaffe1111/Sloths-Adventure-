@@ -5,7 +5,7 @@ Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
 ## STANDSTILL (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
 
 - Nothing is running. W6 cloud sessions (gen2-w6, gen2-w6-swing) archived; the wind-down check-in is disabled.
-- Release PR ccr → main is open for Matt to merge (everything since PR #45): World 6 on gen2 (6-1..6-7, 6-9; 6-8 hand-built and the
+- Release PR #46 (https://github.com/mshaffe1111/Sloths-Adventure-/pull/46) is open for Matt to merge (everything since PR #45; test link v229): World 6 on gen2 (6-1..6-7, 6-9; 6-8 hand-built and the
   6-10 boss later), the animal clearance fix, Matt's painted dirty/fast water for Worlds 6-10 (badWaterArt.ts) and Dot's water line,
   qa-fix-w123 (3-1, 2-2, 1-7, part of 2-6), qa-fix-dot, qa-fix-meeca (17 lines + nudges approved), W3 r2, W4 r3-r7, 5-7/5-9 on gen2,
   Matt's Gemini sheets saved, the polish rule. After the merge: check the deploy run and the APK, tell QA.
