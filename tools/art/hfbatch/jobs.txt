@@ -147,3 +147,6 @@ X-16 skies r4 6ae3cdb10e0338d1bb7c4633 rtx-pro-6000 started 22:50:25Z (the lead'
   stacked above (a passed sky of the same world recoloured where the light fits, else a smooth gradient of the strip's own top), one
   img2img pass over the whole tall picture at s30/s38 (striphdgpu.py, full-height tiles), 32 takes.
   Finished about 23:15:44Z (~25 min, ~$1.15). Review sheets: reference/prop-sheets/qa-notes/polish-edges/skies-r4/review-1..4.jpg (A start, B s30, C s38).
+X-16 skies r5 6ae3dd5ec78863f9c62e0ae9 rtx-pro-6000 started 23:57:18Z (the lead's go, $3.25 left): skyt2i.py at 11d10552, the 11
+  held-back skies x 2 seeds: a sky painted from text, scaled and colour-matched above the far strip, the join inpainted (sequential
+  tiles). Estimate ~45 min, ~$2.2; timeout 65 min.
