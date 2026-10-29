@@ -205,12 +205,20 @@ const DOT_WITH = new Set([1, 2, 3, 4, 5, 8, 9]);
 const FLICKER_WITH = new Set([6, 7, 8, 9, 10]);
 
 /**
+ * A long intro is played whole only the first time: on a retry, just its first lines, then the fight (lead, 2026-10-29: the General's
+ * nine-line argument plays once; after that, his first line and Pokey's answer).
+ */
+export const RETRY_INTRO_LINES: Partial<Record<number, number>> = { 10: 2 };
+
+/**
  * The cutscene panels for a boss encounter (before the fight) or its defeat (after).
  * The boss stands on the right, angry while it talks before a fight and dizzy after; Pokey on the left, calm until he speaks.
+ * `retry`: the player has seen this intro before (RETRY_INTRO_LINES).
  */
-export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: string): StoryPanel[] {
+export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: string, retry = false): StoryPanel[] {
   const story = BOSS_STORIES[world] ?? BOSS_STORIES[1];
-  const lines = kind === 'intro' ? story.intro : story.defeat;
+  const short = kind === 'intro' && retry ? RETRY_INTRO_LINES[world] : undefined;
+  const lines = kind === 'intro' ? (short ? story.intro.slice(0, short) : story.intro) : story.defeat;
   const bossSpeaker = lines.find((l) => l.speaker !== 'Pokey' && l.speaker !== 'Dot')?.speaker ?? bossName;
   const beats: Beat[] = lines.map((line, i) => {
     const bossTalks = line.speaker === bossSpeaker;

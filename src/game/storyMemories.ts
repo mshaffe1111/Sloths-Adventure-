@@ -232,7 +232,7 @@ const NIGHT = chapter({ name: 'WORLD 9 · THE NIGHT BEFORE', w: 9, m: 'night', c
   D('How far did she get?', '=', { cue: 'sorrow', i: 0.3 }),
   FL('One more tree.', 'P:sleep@.26 D:sad@.52^.5 FL:sad@.72^.66'),
   D('And now you go over it. Every night. Which tree. What if you\'d been somewhere else.', 'P:sleep@.26 D:sad@.56^.5 FL:sad@.72^.66'),
-  FL('...How do you know that?', 'P:sleep@.26 D:sad@.56^.5 FL:startled@.72^.66'),
+  FL('How do you know that?', 'P:sleep@.26 D:sad@.56^.5 FL:startled@.72^.66'),
   N('Dot\'s wing went to the pouch at her side. She looked at Pokey, asleep with his mouth open.', 'P:sleep@.26 D:sad@.44^.5 FL@.72^.66', { cue: 'hush', i: 0.2, p: { zoom: 1.45, focusX: 0.36 } }),
   D('Lucky guess.', 'P:sleep@.26 D:sad@.5^.5 FL@.72^.66', { cue: 'sorrow', i: 0.3 }),
   D('Tomorrow, at the bottom of the mountain, I might say something to him. If I stop halfway, don\'t let me.', 'P:sleep@.26 D@.56^.5 FL@.72^.66'),

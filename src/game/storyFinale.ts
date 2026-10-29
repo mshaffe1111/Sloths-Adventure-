@@ -114,11 +114,11 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
   // ───────────── THE TOWER ─────────────
   const tower = chapter({ name: 'THE TOWER', w: 10, m: 'day', cue: 'hush', i: 0.2, base: { plate: 'courtyard', particles: 'rain' } }, [
     N('The General lay in the rubble in the middle of the courtyard. The thunder was still coming up the mountain after them both.',
-      'G#@.62*.9< P:duck@.26*.95', { sting: 'blow', p: pan(1.0, 0.5, 0.55, 1.15, 0.42, 0.62, 8) }),
+      'G#@.62*.9< P:duck@.31*.95', { sting: 'blow', p: pan(1.0, 0.5, 0.55, 1.15, 0.42, 0.62, 8) }),
     // the let-go, played (2026-10-29 story report): on a touch screen the player's thumbs are his hands, and the two pictures after it are
     // only read where it could not be played
     N('Pokey had hold of the nearest wall with both hands. He always held something when it thundered.',
-      'G#@.62*.9< P:duck@.26*.95', {
+      'G#@.62*.9< P:duck@.31*.95', {
         p: { zoom: 1.35, focusX: 0.3, focusY: 0.66 },
         hold: { both: 'Hold on with both thumbs.', lift: 'Now lift one.', reach: 'G#@.62*.9< PN:sing_reach@.3*.95', p: { zoom: 1.45, focusX: 0.46, focusY: 0.72 } },
       }),
@@ -181,6 +181,10 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     N('She laughed. Then her back stopped being straight.', 'P:happy@.28 FL@.365^.44*.8> MS:laugh@.62*.8', { cue: 'tender', i: 0.45, p: { particles: 'sparkles' } }),
     P('You can sit down now.', 'P:idle@.3 FL@.385^.44*.8> MS:content@.6*.8', { cue: 'tender', i: 0.4, p: { particles: 'sparkles', zoom: 1.35, focusX: 0.42 } }),
     N('They sat on the wet steps. Neither of them said much. It was the best conversation of the year.', 'PA:lean_rest@.5*1.05', { cue: 'meeca', i: 0.5, p: { particles: 'petals', zoom: 1.2 } }),
+    // and the light that got her a night out lifts off Pokey's wrist (lead, 2026-10-29: here, not at Pell's shop)
+    M('There you are. I wondered where my light went.', 'PA:lean_rest@.5*1.05 FL@.58^.42', { cue: 'tender', i: 0.4, p: { particles: 'petals' } }),
+    FL('I\'m sorry.', 'PA:lean_rest@.5*1.05 FL:sad@.58^.42', { p: { particles: 'petals' } }),
+    M('You got me a whole night out. Come here.', 'PA:lean_rest@.5*1.05 FL:happy@.54^.46', { p: { particles: 'petals' } }),
   ]);
 
   // ───────────── THE SEAM ─────────────
@@ -220,10 +224,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     N('In the ruins, the Stone Idol Golem finally finished his sentence. "...company." That afternoon, all ten chairs were full.', '', { w: 7, m: 'dusk', cue: 'tender', i: 0.4, p: { zoom: 1.1 } }),
     N('Lieutenant Pell left the army that week and opened a tailor\'s shop at the foot of the mountain. He hung the sign himself. It hangs a little crooked, and he apologizes to it every morning.',
       'LP:sew_table@.5*.8', { w: 1, m: 'day', cue: 'comedy', i: 0.5, p: VIL }),
-    // Flicker and Meeca, and Flicker and Dot (STORY-REVIEW-2026-10-27.md item 9): his light holds steady now
-    M('There you are. I wondered where my light went.', 'M:happy@.3*.9 FL@.52^.5 LP:sew_table@.8*.8', { cue: 'tender', i: 0.4, p: VIL }),
-    FL('I\'m sorry.', 'M:happy@.3*.9 FL:sad@.52^.5 LP:sew_table@.8*.8', { p: VIL }),
-    M('You got me a whole night out. Come here.', 'M:talk@.3*.9 FL@.42^.5 LP:sew_table@.8*.8', { p: VIL }),
+    // Flicker stays, and Dot hands him over for good (STORY-REVIEW-2026-10-27.md item 9): his light holds steady now
     FL('I\'m staying, if that\'s all right.', 'M:happy@.3*.9 D@.6^.42 FL:talk@.42^.5 LP:sew_table@.8*.8', { cue: 'tender', i: 0.45, p: VIL }),
     D('He\'s all right. Don\'t tell him.', 'M:happy@.3*.9 D@.6^.42 FL@.42^.5 LP:sew_table@.8*.8', { p: VIL }),
     FL('I\'m right here.', 'M:laugh@.3*.9 D:flinch@.6^.42 FL:smug@.42^.5 LP:sew_table@.8*.8', { sting: 'laugh', p: VIL }),
