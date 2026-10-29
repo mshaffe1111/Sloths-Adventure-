@@ -2,6 +2,6 @@
  * kit style. cap-<species>: the cap, its top row the collision line; cw/cx the widest span and its middle, sx/sw the stalk under it,
  * as shares of the frame's width; rim: where the cap meets its stalk, a share of the frame's height. stalk-<species>: one repeat of
  * the stalk, upright, tiling downward. */
-export interface BounceFrame { x: number; y: number; w: number; h: number; cw?: number; cx?: number; sx?: number; sw?: number; rim?: number }
+export interface BounceFrame { x: number; y: number; w: number; h: number; cw?: number; cx?: number; sx?: number; sw?: number; rim?: number; span?: number }
 export const BOUNCE_URL = new URL('../assets/props/bounce.webp', import.meta.url).href;
 export const BOUNCE_FRAMES: Record<string, BounceFrame> = {"cap-toad": {"x": 0, "y": 0, "w": 300, "h": 126, "cw": 0.9952, "cx": 0.5, "sx": 0.5, "sw": 0.1467, "rim": 0.8302}, "stalk-toad": {"x": 302, "y": 0, "w": 48, "h": 256}, "cap-parasol": {"x": 352, "y": 0, "w": 300, "h": 158, "cw": 0.9929, "cx": 0.4988, "sx": 0.5067, "sw": 0.06, "rim": 0.8688}, "stalk-parasol": {"x": 654, "y": 0, "w": 48, "h": 256}, "cap-bloom": {"x": 704, "y": 0, "w": 300, "h": 92, "cw": 0.9939, "cx": 0.499, "sx": 0.5033, "sw": 0.0867, "rim": 0.8019}, "stalk-bloom": {"x": 1006, "y": 0, "w": 48, "h": 256}};
