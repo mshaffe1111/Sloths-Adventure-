@@ -21,6 +21,9 @@ await p.screenshot({ path: out + `${mode}-1-hall.jpg`, type: 'jpeg', quality: 82
 await E('e.player.x = 3310; e.player.y = 580; e.player.vx = 0;');
 await p.waitForTimeout(700);
 await p.screenshot({ path: out + `${mode}-2-crumble.jpg`, type: 'jpeg', quality: 82 });
+for (let i = 0; i < 30; i++) { const s = await E('return e.slideRun.phase'); if (s === 'fall') break; await p.waitForTimeout(60); }
+await p.waitForTimeout(120);
+await p.screenshot({ path: out + `${mode}-2b-fall.jpg`, type: 'jpeg', quality: 82 });
 for (let i = 0; i < 40; i++) { const s = await E('return e.slideRun.phase'); if (s === 'slide') break; await p.waitForTimeout(300); }
 console.log('phase', await E('return e.slideRun.phase'));
 const shots = JSON.parse(process.argv[3] ?? '[]');

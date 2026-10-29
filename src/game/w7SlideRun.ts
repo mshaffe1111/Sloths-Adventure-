@@ -5,8 +5,8 @@
  * (dotFlightRun.ts), and at the chute's end hands him back to the engine, side-on, in the chamber. Hearts, lives and the result stay the
  * engine's, through `SlideHost`.
  */
-import { SlideSim, type SlideStage } from './w7Slide.ts';
-import { drawSlide, warmSlide } from './w7SlideArt.ts';
+import { CRUMBLE_X0, CRUMBLE_X1, HALL_G, SlideSim, type SlideStage } from './w7Slide.ts';
+import { drawCrumble, drawFall, drawHallLight, drawSlide, warmSlide } from './w7SlideArt.ts';
 import type { InputState } from './types.ts';
 
 export interface SlideHost {
@@ -23,6 +23,8 @@ export interface SlideHost {
 /** the beat's timings (s): the floor cracks for this long (he stops; no control), then he falls for this long before the slide */
 export const CRACK_S = 1.1;
 export const FALL_S = 0.75;
+/** where the crumbling floor is (world px: its left, right and top) */
+const CRUMBLE_AT = { x0: CRUMBLE_X0, x1: CRUMBLE_X1, top: HALL_G };
 
 export type SlidePhase = 'hall' | 'crack' | 'fall' | 'slide' | 'out';
 
@@ -32,6 +34,8 @@ export class SlideRun {
   phase: SlidePhase = 'hall';
   private host: SlideHost;
   private t = 0;
+  /** seconds since the stage began (the hall's light drifts) */
+  private clock = 0;
   /** his line on screen and how long it has left */
   say: { text: string; t: number } | null = null;
   /** the hall's own lines, said once */
@@ -60,6 +64,7 @@ export class SlideRun {
    */
   side(dt: number, p: { x: number; y: number; vx: number; grounded: boolean }, inp: InputState): boolean {
     if (this.say) this.say.t -= dt;
+    this.clock += dt;
     if (this.phase === 'out') return false;
     if (this.phase === 'hall') {
       if (p.x > 700 && !this.hallSaid.has('alone')) {
@@ -128,32 +133,27 @@ export class SlideRun {
   }
 
   /**
+   * Side-on, in the world (the engine's hero step): the floor's painted break (the art helper's four crumble frames) over the crumbling
+   * floor, and while he falls, Matt's falling poses instead of his usual drawing. True when Pokey is drawn here.
+   */
+  drawHero(ctx: CanvasRenderingContext2D, p: { x: number; y: number; width: number }): boolean {
+    if (this.phase === 'crack' || this.phase === 'fall') {
+      drawCrumble(ctx, CRUMBLE_AT, this.phase, this.t, CRACK_S, FALL_S);
+    }
+    if (this.phase !== 'fall') return false;
+    drawFall(ctx, p.x + p.width / 2, p.y, this.t);
+    return true;
+  }
+
+  /**
    * Side-on, over the engine's picture (css px): the cracks running through the floor as it goes (a stand-in: the painted crumble
    * frames replace it), the fade to dark as he falls, and his bubble over him. `at` turns a world point into css px.
    */
   overlay(ctx: CanvasRenderingContext2D, dpr: number, W: number, H: number, at: (x: number, y: number) => [number, number], head: [number, number]) {
     ctx.save();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (this.phase === 'crack') {
-      // the cracks spread from under his feet as the beat goes on
-      const k = Math.min(1, this.t / CRACK_S);
-      const [x0, y0] = at(this.st.crumbleX - 40, 580);
-      const [x1] = at(this.st.crumbleX + 360, 580);
-      ctx.strokeStyle = 'rgba(20, 16, 12, 0.85)';
-      ctx.lineWidth = 2.5;
-      for (let i = 0; i < 4; i++) {
-        const sx = x0 + ((x1 - x0) * (i + 0.5)) / 4;
-        ctx.beginPath();
-        ctx.moveTo(sx, y0);
-        let x = sx, y = y0;
-        for (let j = 0; j < 5 * k; j++) {
-          x += ((i * 7 + j * 13) % 9) - 4;
-          y += 9;
-          ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      }
-    }
+    // the temple hall: shafts of gold daylight through the cracked roof (the colour script's first beat)
+    if (this.phase === 'hall' || this.phase === 'crack') drawHallLight(ctx, W, H, at, this.clock);
     if (this.phase === 'fall') {
       ctx.fillStyle = `rgba(10, 12, 14, ${Math.min(1, this.t / FALL_S)})`;
       ctx.fillRect(0, 0, W, H);

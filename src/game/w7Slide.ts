@@ -66,15 +66,15 @@ export type ObstacleKind = 'head' | 'rubble' | 'column' | 'gap' | 'beam';
 
 /** what each kind is and how it is beaten: dodge (steer round), jump (over), duck (under) */
 export const KINDS: Record<ObstacleKind, { beat: 'dodge' | 'jump' | 'duck' | 'jumpOrDodge'; len: number; low?: number; high?: number }> = {
-  /** a fallen statue (or an urn), in one lane (two on Normal later on): steer round it */
+  /** a statue (or a tower of crates) in one lane, too tall to jump (two lanes on Normal later on): steer round it */
   head: { beat: 'dodge', len: 1.0 },
-  /** a low line of rubble across the chute: jump it */
+  /** a plank barrier nailed across every trough (Matt's Sheet 1): jump it */
   rubble: { beat: 'jump', len: 0.8, low: 0.85 },
-  /** a fallen column across two lanes: jump it or steer to the open lane */
-  column: { beat: 'jumpOrDodge', len: 0.9, low: 0.6 },
+  /** crates spilled across two lanes (Matt's Sheet 1): jump them or steer to the open lane */
+  column: { beat: 'jumpOrDodge', len: 0.9, low: 0.85 },
   /** the floor is gone across the chute: jump it (len is Normal's; Easy's is shorter, see gapLen) */
   gap: { beat: 'jump', len: 2.6 },
-  /** a beam across the chute at head height: duck under it (high = its underside) */
+  /** a beam across every trough at head height (Matt's Sheet 1): duck under it (high = its underside) */
   beam: { beat: 'duck', len: 0.6, high: 0.75 },
 };
 export const gapLen = (easy: boolean) => (easy ? 1.8 : 2.6);
@@ -121,10 +121,10 @@ export interface SlideCourse {
 export const SLIDE_LINES = {
   drop: 'Whoa! Lean left, lean right!',
   head: 'Statues! Steer round them.',
-  rubble: 'A wall of rubble! Flick up, jump!',
-  column: 'Fallen column. Jump it, or go round.',
+  rubble: 'Planks across! Flick up, jump!',
+  column: 'Crates! Jump them, or go round.',
   gap: 'No floor! Jump!',
-  beam: 'Low doorway! Thumb down, duck!',
+  beam: 'Low beam! Thumb down, duck!',
   hit: 'Ow. Eyes ahead, Pokey.',
   light: 'Light! There is an end!',
 } as const;

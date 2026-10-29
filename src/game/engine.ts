@@ -5440,7 +5440,8 @@ export class GameEngine {
     }
     // carrying, throwing or setting down: Matt's carry poses (puzzlePlay.ts drawPokey)
     // (Meeca's stage: her own sheet draws her carrying, in the chair and on the silk: meecaArt.ts meecaPose)
-    const kitPose = !!this.mc || (!!this.kit && this.kit.drawPokey(ctx, this.player));
+    // (7-4's crumble: the floor's painted break and Matt's falling poses, w7SlideRun.ts)
+    const kitPose = !!this.mc || (!!this.slideRun && this.slideRun.drawHero(ctx, this.player)) || (!!this.kit && this.kit.drawPokey(ctx, this.player));
     if (this.mc) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
     else if (kitPose) { /* drawn */ }
     else if (rig) {
