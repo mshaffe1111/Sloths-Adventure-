@@ -335,7 +335,8 @@ test('6-8 ledges: painted in Matt\'s World 6 pieces, mixed, so ledges near each 
     const st = build(s);
     const ledges = st.proto.stiltLedges!;
     const looks = new Map<number, string[]>();
-    for (const l of ledges) looks.set(l.id, [...(looks.get(l.id) ?? []), l.look]);
+    // (the root arch and the den read alike in the game: one look here)
+    for (const l of ledges) looks.set(l.id, [...(looks.get(l.id) ?? []), l.look === 'root-den' ? 'root-arch' : l.look]);
     for (const p of st.platforms) {
       if (p.height >= 50) continue;
       assert.equal(p.art === 'stilt', looks.has(p.id), `seed ${s}: platform ${p.id}'s look`);
@@ -345,15 +346,22 @@ test('6-8 ledges: painted in Matt\'s World 6 pieces, mixed, so ledges near each 
     const all = [...looks.values()].flat();
     for (const l of ['kit', 'branch-b', 'root-arch', 'moss-log', 'stump']) assert.ok(all.includes(l), `seed ${s}: no ${l}`);
     for (const l of new Set(all)) assert.ok(all.filter((v) => v === l).length <= all.length / 3, `seed ${s}: ${l} on ${all.filter((v) => v === l).length} of ${all.length}`);
-    // ledges likely on one screen (as the build reckons: within 800 up or down, 500 across) differ, as far as the looks that fit allow
-    const thin = st.platforms.filter((p) => p.height < 50);
+    // pieces likely on one screen (within 300 up or down, 300 across) differ, as far as the looks that fit allow: each painted piece
+    // (a wide ledge is laid in several) and each kit plank, side by side on one ledge too
+    const kin = (l: string) => (l === 'root-den' ? 'root-arch' : l);
+    const pieces = [
+      ...ledges.map((l) => ({ id: l.id, look: kin(l.look), x0: l.x, x1: l.x + l.w, y: l.y })),
+      ...st.platforms.filter((p) => p.height < 50 && p.art !== 'stilt').map((p) => ({ id: p.id, look: 'kit', x0: p.x, x1: p.x + p.width, y: p.y })),
+    ];
     let same = 0, pairs = 0;
-    for (const a of thin) for (const b of thin) {
-      if (a.id >= b.id || Math.abs(a.y - b.y) > 300 || a.x > b.x + b.width + 300 || b.x > a.x + a.width + 300) continue;
+    for (let i = 0; i < pieces.length; i++) for (let j = i + 1; j < pieces.length; j++) {
+      const a = pieces[i], b = pieces[j];
+      if (Math.abs(a.y - b.y) > 300 || a.x0 > b.x1 + 300 || b.x0 > a.x1 + 300) continue;
       pairs++;
-      if (looks.get(a.id)!.some((l) => looks.get(b.id)!.includes(l))) same++;
+      if (a.look === b.look) same++;
+      if (a.id === b.id && Math.abs(a.x1 - b.x0) < 2) assert.notEqual(a.look, b.look, `seed ${s}: ledge ${a.id} has the same look twice side by side`);
     }
-    assert.ok(same <= pairs * 0.15, `seed ${s}: ${same} of ${pairs} close pairs look alike`);
+    assert.ok(same <= pairs * 0.1, `seed ${s}: ${same} of ${pairs} close pairs look alike`);
     // a look's walkable top is the ledge's top, and its roots never hang onto a ledge under it
     for (const l of ledges) {
       const p = st.platforms.find((q) => q.id === l.id)!;

@@ -413,17 +413,19 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
 
   // the ledges' looks (the lead's review: no two alike on one screen): each ledge takes one of Matt's World 6 pieces (w6StiltArt.ts) or the
   // kit's own root plank, never the look a ledge near it (likely on the same screen) has; a tall look (the root arch, the den) only
-  // where its roots don't hang onto a ledge under it; a very wide ledge (the crown) is laid in segments of different looks
+  // where its roots don't hang onto a ledge under it; a wide ledge is laid in segments of different looks, each narrow enough for one copy of an arch or a den (two side by side read as a pattern)
   const ledges: StiltLedge[] = [];
   const looked = new Map<Platform, Array<{ look: LedgeLook | 'kit'; n: number; x0: number; x1: number }>>();
   /** how deep a look may hang under a ledge from x0 to x1 before it reaches another ledge (or a catch) under it */
   const roomUnder = (p: Platform, x0: number, x1: number) =>
     Math.min(Infinity, ...P.filter((q) => q !== p && q.x < x1 + 20 && q.x + q.width > x0 - 20 && q.y > p.y + 10).map((q) => q.y - p.y - 30));
   /** how much a look would clash with the ledges already given one: each the same look counts more the closer it is */
+  // (the root arch and the den count as one look: in the game the dark behind shows through the arch, and it reads as the den)
+  const kin = (l: LedgeLook | 'kit') => (l === 'root-den' ? 'root-arch' : l);
   const clash = (y: number, x0: number, x1: number, look: LedgeLook | 'kit') => {
     let c = 0;
     for (const [q, ls] of looked) for (const l of ls) {
-      if (l.look !== look) continue;
+      if (kin(l.look) !== kin(look)) continue;
       const dx = Math.max(0, l.x0 - x1, x0 - l.x1);
       const d = Math.hypot(dx, Math.abs(q.y - y));
       if (d < 900) c += 1 / (1 + d / 150);
@@ -455,11 +457,13 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   for (const p of [...P].filter((q) => q !== flat && q.height < 50).sort((m, n) => n.y - m.y)) {
     // (a ledge in segments is painted whole by this file, as the kit's plank can't take part of one: when a segment has no look that
     // fits, the ledge goes whole)
-    let segs = p.width > 760 ? Math.round(p.width / 420) : 1;
+    let segs = p.width > 520 ? Math.ceil(p.width / 360) : 1;
     let mine: Array<{ look: LedgeLook | 'kit'; n: number; x0: number; x1: number }> = [];
     for (let tries = 0; tries < 2; tries++, segs = 1, mine = []) {
+      // (its own segments so far count in the clash too: the crown's are on one screen together)
+      looked.set(p, mine);
       for (let i = 0; i < segs; i++) {
-        const x0 = p.x + (p.width * i) / segs, x1 = p.x + (p.width * (i + 1)) / segs;
+        const x0 = r(p.x + (p.width * i) / segs), x1 = r(p.x + (p.width * (i + 1)) / segs);
         const got = lookFor(p, x0, x1, segs === 1);
         if (!got) break;
         mine.push({ look: got.look, n: got.n, x0, x1 });
