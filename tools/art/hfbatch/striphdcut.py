@@ -77,6 +77,15 @@ def cut2(old_p, new_p, alpha_p, out_p, pre_p=None, mode='paint', bg=(128, 128, 1
         if mode == 'grain':
             blur = lambda v: ndimage.gaussian_filter(v, (2.5, 2.5, 0))
             new = np.clip(pre + (new - blur(new)), 0, 255)
+        # (small lights keep the start's paint: the repaint turned w8's round fireflies into little yellow arrowheads and dimmed w3's
+        # glowing mushroom caps. A light is a spot much brighter than the paint round it.)
+        L = pre @ np.array([0.3, 0.59, 0.11], np.float32)
+        med = ndimage.uniform_filter(ndimage.median_filter(L[::4, ::4], size=9), 3)
+        med = np.asarray(Image.fromarray(med).resize((W, H), Image.BILINEAR))
+        light = ((L - med) > 45) & (L > 110)
+        light = ndimage.binary_opening(light, iterations=1)
+        lw = np.clip(ndimage.gaussian_filter(ndimage.binary_dilation(light, iterations=5).astype(np.float32), 2.5) * 1.6, 0, 1)[..., None]
+        new = new * (1 - lw) + pre * lw
         solid = np.asarray(Image.open(alpha_p).convert('L')).astype(np.float32) > 250
         dist = ndimage.distance_transform_edt(solid)
         w = np.clip((dist - 2) / 4, 0, 1)[..., None]
