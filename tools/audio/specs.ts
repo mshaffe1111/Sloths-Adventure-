@@ -84,5 +84,34 @@ specs.effects = {
   music: { id: w1.id, seed: w1.seed, tempo: w1.tempo, intensity: 0.25, ...(after ? { form: true } : {}) },
   events: [{ t: 0, amb: 'gentle_breeze' }, ...(after ? [{ t: 36, state: { puzzle: 1 } }] : []), ...reel.map(([t, b, a]) => ({ t, ...(after ? a : b) })).filter((e) => Object.keys(e).length > 1)],
 };
+// each effect over a stage's own music: the old (classic) version, then 2.2 s later the new one (the lead, 2026-10-29)
+const PAIRS: Array<[string, Record<string, unknown>[], Record<string, unknown>[]]> = [
+  ['checkpoint', [{ fx: 'legacyCheckpoint' }], [{ cue: 'checkpoint' }]],
+  ['falling in water', [{ fx: 'whoosh' }, { fx: 'hit', dt: 0.15 }], [{ fx: 'splash', arg: 0 }]],
+  ['a small hop landing', [], [{ fx: 'landing', arg: 0.15 }]],
+  ['respawn', [], [{ fx: 'respawn' }]],
+  ['first discovery', [], [{ cue: 'discovery' }]],
+  ['secret found', [{ fx: 'relic' }], [{ cue: 'secret' }]],
+  ['last heart', [{ fx: 'heartbeat' }], [{ cue: 'lowHealth' }]],
+  ['boss appears', [{ sting: 'bossAppear' }], [{ fx: 'bossAppear', arg: 5 }]],
+  ['puzzle: a vine wraps', [{ fx: 'hurt' }], [{ fx: 'puzzle', arg: 2 }]],
+  ['puzzle: reset', [{ fx: 'legacyCheckpoint' }], [{ fx: 'puzzle', arg: 3 }]],
+  ['puzzle: lever', [{ fx: 'punch' }], [{ fx: 'puzzle', arg: 7 }]],
+  ['puzzle: press', [{ fx: 'climb' }], [{ fx: 'puzzle', arg: 4 }]],
+  ['puzzle: solved', [{ fx: 'shrine' }], [{ fx: 'puzzle', arg: 11 }]],
+];
+const pairTimes: Array<[string, number]> = [];
+for (const w of [1, 4, 9]) {
+  const s = stageMusic(w, `${w}-4`, 4, 0, OBJ[w]);
+  const events: unknown[] = [{ t: 0, amb: AMB[w] }];
+  PAIRS.forEach(([name, old, neu], i) => {
+    const t = 3 + i * 5;
+    if (w === 1) pairTimes.push([name, t]);
+    for (const e of old) events.push({ ...e, t: t + Number(e.dt ?? 0) });
+    for (const e of neu) events.push({ ...e, t: t + 2.2 + Number(e.dt ?? 0) });
+  });
+  if (after) specs[`effects-w${w}`] = { seconds: 3 + PAIRS.length * 5 + 2, music: { id: s.id, seed: s.seed, tempo: s.tempo, intensity: 0.3, form: true }, events };
+}
+if (after && process.env.PAIRS) fs.writeFileSync(process.env.PAIRS, JSON.stringify(pairTimes));
 console.log(JSON.stringify(specs, null, 1));
 if (after && process.env.TIMELINE) fs.writeFileSync(process.env.TIMELINE, JSON.stringify(timeline, null, 1));

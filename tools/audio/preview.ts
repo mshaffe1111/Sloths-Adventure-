@@ -15,6 +15,9 @@ import { groupsFor, loadOrch, ALL_ORCH } from '../../src/audio/orchLoader.ts';
 import { loadSamples } from '../../src/audio/sampleLoader.ts';
 import * as M from '../../src/audio/music.ts';
 import { playGameFx } from '../../src/audio/sfxGame.ts';
+import { ladder } from '../../src/audio/sfx.ts';
+import { NOTE_VOICES } from '../../src/audio/instruments.ts';
+import { midiHz } from '../../src/audio/theory.ts';
 import { playCue, CUE_DUCK, type CueName } from '../../src/audio/cues.ts';
 
 export interface PreviewEvent {
@@ -42,6 +45,25 @@ export interface PreviewSpec {
 }
 
 const RATE = 44100;
+
+/** the classic checkpoint as it was before its 6.5 kHz hiss was taken out (sfxClassic.ts), for the old-then-new previews */
+function legacyCheckpoint(core: AudioCore, key: { tonic: number; scale: number[] }) {
+  const t = core.ctx.currentTime;
+  const d = core.withReverb(core.sfx, 0.4);
+  d.gain.value = 0.55;
+  [0, 2, 3].forEach((n, i) => NOTE_VOICES.bell(core, d, t + i * 0.09, midiHz(ladder(key, n)), 0.3, 0.7));
+  NOTE_VOICES.marimba(core, d, t, midiHz(ladder(key, 0) - 12), 0.3, 0.7);
+  const src = core.noiseSource(t + 0.1, 0.5, false);
+  const f = core.ctx.createBiquadFilter();
+  f.type = 'highpass';
+  f.frequency.value = 6500;
+  const g = core.ctx.createGain();
+  g.gain.setValueAtTime(0.07, t + 0.1);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+  src.connect(f);
+  f.connect(g);
+  g.connect(d);
+}
 const TICK = 0.1;
 
 async function render(spec: PreviewSpec): Promise<{ l: string; r: string; perf: Record<string, number> }> {
@@ -84,7 +106,8 @@ async function render(spec: PreviewSpec): Promise<{ l: string; r: string; perf: 
       else amb.stop();
     }
     const key = pb?.key() ?? { tonic: 60, scale: [0, 2, 4, 5, 7, 9, 11] };
-    if (e.fx && !playGameFx(e.fx, core, key, e.arg)) runFx(e.fx, core, key, e.arg, { variant: Math.floor(Math.random() * 4) });
+    if (e.fx === 'legacyCheckpoint') legacyCheckpoint(core, key);
+    else if (e.fx && !playGameFx(e.fx, core, key, e.arg)) runFx(e.fx, core, key, e.arg, { variant: Math.floor(Math.random() * 4) });
     if (e.sting) playSting(core, e.sting, now + 0.05);
     if (e.cue) {
       // as the Conductor does: on the music's next eighth, with the music dipped a little under it

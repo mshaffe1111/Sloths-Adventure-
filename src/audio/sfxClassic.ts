@@ -677,7 +677,8 @@ export const SFX: Record<string, Fx> = {
     const d = out(core, 0.4);
     [0, 2, 3].forEach((n, i) => note(core, bell, t + i * 0.09, ladder(key, n), 0.7, d));
     note(core, marimba, t, ladder(key, 0) - 12, 0.7, d);
-    noise(core, { t: t + 0.1, type: 'highpass', f0: 6500, peak: 0.07, dec: 0.4, dst: d });
+    // (it ended in a 6.5 kHz hiss, the harsh part Matt heard: the top note's octave on the kalimba, softly, rings it out instead)
+    note(core, kalimba, t + 0.27, ladder(key, 7), 0.35, d);
   },
 
   /** an extra life: a quick fanfare */

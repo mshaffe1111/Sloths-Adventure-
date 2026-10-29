@@ -53,11 +53,35 @@ quiet breakdown right as the last phase began (listen at 0:53 in `before/boss.mp
 | 0:02, 0:03, 0:04 | a small hop (silent), a medium and a big landing | every landing has a sound, soft for a hop, heavier for a long drop |
 | 0:07 to 0:12 | falling in water: a whoosh and a punch | three splashes: a full plunge, a body-sized one, a small dip |
 | 0:14 | coming back after losing a life: silent | a soft pop and two notes in the music's key |
-| 0:17 | checkpoint: bells and a marimba | a checkpoint stinger: a second long, bright, played by the orchestra in the music's key, on its beat |
+| 0:17 | checkpoint: bells, a marimba and a high hiss | a checkpoint stinger: a second long, bright, on the kalimba and soft bells in the music's key, on its beat |
 | 0:21, 0:24, 0:28 | (none) | stingers for a first discovery, a secret found, and a last heart |
-| 0:32 | boss appears: a sting in its own key | the boss's roar, then the orchestra's sting in the music's key (this is also the boss intro card's sound) |
+| 0:32 | boss appears: a sting in its own key | the boss's roar, then a low marimba and drum sting in the music's key (this is also the boss intro card's sound) |
 | 0:36 to 0:55 | puzzle actions: the whoosh six times, the hurt sound, the checkpoint sound | the music drops to its quiet puzzle bed; then the twelve puzzle sounds: pick up, set down, a vine wrapping, reset, press, lift, gate, lever, throw, chime, shift, solved |
 | 0:57, 0:59, 1:00 | extra life, menu confirm, menu back | the same sounds: they exist but nothing in the game plays them yet; they get wired in with the rest |
+
+## 4. Each effect over its own stage's music, old then new (`after/effects-w1.mp3`, `effects-w4.mp3`, `effects-w9.mp3`, 70 s each)
+
+You turned the orchestral effects off for good, so every new sound and stinger here is in the classic family you play with: kalimba,
+marimba, soft bells and wood, tuned to the key of the music under it and softened so nothing pings. The checkpoint's 6.5 kHz hiss is gone.
+Each pair plays the old classic sound, then 2 seconds later the new one, over World 1 (F major), World 4 (A dorian) and World 9 (the Iron
+March), so you can hear how each one sits in that world's music. Where the old game had nothing (a small hop, coming back after a life,
+a first discovery), you'll hear silence and then the new sound.
+
+| old | moment | new |
+|---|---|---|
+| 0:03 | checkpoint | 0:05 |
+| 0:08 | falling in water | 0:10 |
+| 0:13 | a small hop landing | 0:15 |
+| 0:18 | respawn | 0:20 |
+| 0:23 | first discovery | 0:25 |
+| 0:28 | secret found | 0:30 |
+| 0:33 | last heart | 0:35 |
+| 0:38 | boss appears | 0:40 |
+| 0:43 | puzzle: a vine wraps | 0:45 |
+| 0:48 | puzzle: reset | 0:50 |
+| 0:53 | puzzle: lever | 0:55 |
+| 0:58 | puzzle: press | 1:00 |
+| 1:03 | puzzle: solved | 1:05 |
 
 ## Also changed, heard everywhere
 

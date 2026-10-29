@@ -3,20 +3,22 @@
  *
  *   splash      falling into water: three versions, from a full plunge to a small dip (it used to be a whoosh and a punch)
  *   respawn     Pokey coming back after a lost life: a soft pop and two notes rising in the music's key (it used to be silent)
- *   bossAppear  a boss arriving: its roar, and the orchestra's in-key sting under it (cues.ts), also for the boss intro card (SN-10)
+ *   bossAppear  a boss arriving: its roar, and a low in-key sting under it (cues.ts), also for the boss intro card (SN-10)
  *   landing     every landing, scaled by how fast he fell: a small hop lands softly, a long drop lands with weight (small hops were silent)
  *   puzzle      one sound for each kind of puzzle action, twelve of them (PUZZLE_SOUNDS), instead of the whoosh for six different things, the
  *               checkpoint sound for a reset and the player-hurt sound for a vine wrapping a log
  *
- * Built like the rest (sfx.ts): a body, a transient, some air, and the music's key where a note is played, so they sit in the same family as
- * the score. The recorded Kenney layers (CC0, already shipped) are used where one fits, and every sound has a synthesized version that plays
- * until they have loaded.
+ * Built like the rest (sfx.ts): a body, a transient, some air, and the music's key where a note is played. Their notes are the classic
+ * set's family (kalimba, marimba, soft bells, wood: Matt, 2026-10-29, the orchestral effects are out), softened so nothing pings. The
+ * recorded Kenney layers (CC0, already shipped) are used where one fits, and every sound has a synthesized version that plays until they
+ * have loaded.
  */
 import type { AudioCore } from './core.ts';
 import { NOTE_VOICES } from './instruments.ts';
 import type { KeyInfo } from './music.ts';
 import { midiHz } from './theory.ts';
-import { degreeMidi, playCue, standIn } from './cues.ts';
+import { degreeMidi, playCue } from './cues.ts';
+import { soften } from './sfxOrch.ts';
 import { runFx } from './sfx.ts';
 
 type Fx = (core: AudioCore, key: KeyInfo, a?: number) => void;
@@ -95,11 +97,9 @@ function sample(core: AudioCore, dst: AudioNode, t: number, group: string, o: { 
   return true;
 }
 
-/** a note of the music's key on one of the orchestra's voices */
+/** a note of the music's key on one of the game's own mallets (kalimba, marimba, soft bell: the classic family Matt plays with) */
 function keyNote(core: AudioCore, dst: AudioNode, t: number, key: KeyInfo, voice: string, deg: number, near: number, len: number, vel: number) {
-  // (on what the music has loaded: an effect never fetches an instrument of its own, see cues.ts)
-  const v = standIn(voice, (g) => core.orch.has(g));
-  if (v) NOTE_VOICES[v]?.(core, dst, t, midiHz(degreeMidi(key, deg, near)), len, vel);
+  NOTE_VOICES[voice]?.(core, soften(core, dst, 4200), t, midiHz(degreeMidi(key, deg, near)), len, vel);
 }
 
 /** the puzzle actions, in the order of the `puzzle` effect's argument (see PUZZLE_KIND for which engine event plays which) */
@@ -154,12 +154,12 @@ export const GAME_SFX: Record<string, Fx> = {
     hiss(core, d, t, { type: 'bandpass', f0: 500, f1: 2600, q: 1.2, peak: 0.14, dec: 0.05, attack: 0.22 });
     tone(core, d, t + 0.24, { f0: 260, f1: 620, sweep: 0.04, peak: 0.3, dec: 0.07, attack: 0.002 });
     hiss(core, d, t + 0.24, { type: 'highpass', f0: 3000, peak: 0.08, dec: 0.04 });
-    keyNote(core, d, t + 0.26, key, 'harp', 0, 67, 0.8, 0.7);
-    keyNote(core, d, t + 0.36, key, 'harp', 4, 67, 0.9, 0.65);
-    keyNote(core, d, t + 0.36, key, 'glockR', 7, 79, 0.9, 0.3);
+    keyNote(core, d, t + 0.26, key, 'kalimba', 0, 67, 0.8, 0.7);
+    keyNote(core, d, t + 0.36, key, 'kalimba', 4, 67, 0.9, 0.65);
+    keyNote(core, d, t + 0.36, key, 'bell', 7, 79, 0.9, 0.3);
   },
 
-  /** a boss arrives: its roar (a = its world), with the orchestra's sting in the music's key under it */
+  /** a boss arrives: its roar (a = its world), with a low sting in the music's key under it (cues.ts) */
   bossAppear(core, key, a = 0) {
     const t = core.ctx.currentTime;
     // the roar first, over the timpani roll, and the brass and gong land after it
@@ -181,7 +181,7 @@ export const GAME_SFX: Record<string, Fx> = {
     hiss(core, d, t, { type: 'lowpass', f0: 1500, f1: 350, peak: 0.03 + 0.12 * s, dec: 0.06 + 0.1 * s, pink: true });
     if (s > 0.55) sample(core, d, t, 'softH', { gain: 0.6 * (s - 0.4), rate: 1.25 });
     // a long drop answers in the key: the low home note on the cellos, short and soft
-    if (s > 0.75) keyNote(core, d, t, key, 'cello', 0, 40, 0.35, 0.3 * s);
+    if (s > 0.75) keyNote(core, d, t, key, 'marimba', 0, 40, 0.35, 0.3 * s);
   },
 
   /** one puzzle action (a: its place in PUZZLE_SOUNDS) */
@@ -193,8 +193,8 @@ export const GAME_SFX: Record<string, Fx> = {
     switch (kind) {
       case 'pick': // picked up: a soft grab and a little lift
         sample(core, d, t, 'cloth', { gain: 0.5, rate: 1.2 });
-        keyNote(core, d, t + 0.03, key, 'harp', 4, 72, 0.4, 0.45);
-        keyNote(core, d, t + 0.09, key, 'harp', 7, 72, 0.5, 0.4);
+        keyNote(core, d, t + 0.03, key, 'kalimba', 4, 72, 0.4, 0.45);
+        keyNote(core, d, t + 0.09, key, 'kalimba', 7, 72, 0.5, 0.4);
         break;
       case 'drop': // set down: a wooden knock
         sample(core, d, t, 'woodL', { gain: 0.8, rate: 0.9 });
@@ -208,7 +208,7 @@ export const GAME_SFX: Record<string, Fx> = {
         break;
       case 'reset': // back to the start: a reversed breath and three notes falling home
         hiss(core, d, t, { type: 'bandpass', f0: 2600, f1: 600, q: 1, peak: 0.1, dec: 0.05, attack: 0.25 });
-        [4, 2, 0].forEach((deg, i) => keyNote(core, d, t + 0.18 + i * 0.09, key, 'harp', deg, 67, 0.5, 0.32));
+        [4, 2, 0].forEach((deg, i) => keyNote(core, d, t + 0.18 + i * 0.09, key, 'kalimba', deg, 67, 0.5, 0.32));
         break;
       case 'press': // a plate or button: a click and a low thunk underneath
         sample(core, d, t, 'plank', { gain: 0.8, rate: 1.3, hp: 300 });
@@ -222,7 +222,7 @@ export const GAME_SFX: Record<string, Fx> = {
       case 'gate': // a gate or a door of stone opening: a grinding rumble and the low home note
         hiss(core, d, t, { type: 'lowpass', f0: 380, f1: 180, peak: 0.3, dec: 0.7, attack: 0.08, pink: true });
         for (let i = 0; i < 6; i++) hiss(core, d, t + 0.05 + i * 0.1 + Math.random() * 0.04, { type: 'bandpass', f0: rnd(500, 900), q: 4, peak: 0.08, dec: 0.04 });
-        keyNote(core, d, t + 0.1, key, 'cello', 0, 43, 0.8, 0.4);
+        keyNote(core, d, t + 0.1, key, 'marimba', 0, 43, 0.8, 0.4);
         break;
       case 'lever': // a lever thrown: a metal clack
         sample(core, d, t, 'metalM', { gain: 0.8, rate: 1.1 });
@@ -234,8 +234,8 @@ export const GAME_SFX: Record<string, Fx> = {
         sample(core, d, t, 'swishK', { gain: 0.45, rate: 1.25, hp: 600 }) || hiss(core, d, t, { type: 'bandpass', f0: 900, f1: 3200, q: 1.4, peak: 0.12, dec: 0.12, attack: 0.03 });
         break;
       case 'chime': // a bell or ring answered: two notes of the key on the glockenspiel
-        keyNote(core, d, t, key, 'glockR', 4, 79, 0.8, 0.4);
-        keyNote(core, d, t + 0.08, key, 'glockR', 7, 79, 1, 0.38);
+        keyNote(core, d, t, key, 'bell', 4, 79, 0.8, 0.4);
+        keyNote(core, d, t + 0.08, key, 'bell', 7, 79, 1, 0.38);
         break;
       case 'shift': // something tilts, sinks or settles: a soft wooden creak and a low settle
         sample(core, d, t, 'creak', { gain: 0.3, rate: 0.8 });
@@ -243,8 +243,8 @@ export const GAME_SFX: Record<string, Fx> = {
         hiss(core, d, t, { type: 'lowpass', f0: 900, f1: 300, peak: 0.06, dec: 0.2, pink: true });
         break;
       case 'solved': // the puzzle's goal reached: a harp run up the chord and the glockenspiel at the top
-        [0, 2, 4, 7, 9].forEach((deg, i) => keyNote(core, d, t + i * 0.06, key, 'harp', deg, 62, 0.7, 0.38));
-        keyNote(core, d, t + 0.3, key, 'glockR', 9, 79, 1.2, 0.28);
+        [0, 2, 4, 7, 9].forEach((deg, i) => keyNote(core, d, t + i * 0.06, key, 'kalimba', deg, 62, 0.7, 0.38));
+        keyNote(core, d, t + 0.3, key, 'bell', 9, 79, 1.2, 0.28);
         break;
     }
   },
