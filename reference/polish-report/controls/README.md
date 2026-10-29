@@ -103,9 +103,17 @@ The reproduction, the fix, and the proof. Every test below fails on the code bef
 **Fix:**
 - No ground braking on the frame he takes off.
 - The intent lock: while the steering thumb is flicking up, and for 120 ms after its jump, the run keeps its way.
-- A second cause turned up: at exactly run speed the run code bled 17 px/s every other frame (285, then 268), so take-off speed depended on frame parity. `<` is now `<=`.
 
-**Proof.** All phases now give 181 px, lifted or held, arcs included. The regression test asks for 165 px or more.
+**Proof.**
+- Lifted at once: 170 px on 6 of 12 phases and 181 px on the rest (it was 93 px on 5 of 12).
+- Thumb kept down: 177-178 px.
+- The 40 px arc: 172-178 px (it was 98 px).
+- The regression test asks for 165 px or more at every phase.
+
+**Separate finding, not fixed here.** The 170 vs 181 split that remains comes from the run code. At exactly run speed it bleeds 17 px/s every other frame (285, then 268), so take-off speed depends on frame parity.
+- Making it steady (`<` to `<=` in the run code) raised the average run speed by about 3% everywhere.
+- That broke Meeca's timed sneaking playthroughs (`meecaReal`, 6 tests) and the puzzle kit's test room, so I undid it (30e1485).
+- It is the lead's call whether to fix it and re-time those stages.
 
 ### CT-2: the Pad, keyboard and controller on a vine
 
@@ -204,7 +212,7 @@ Dot speaks the first-stage coach lines from `dotLinesData.ts`, which this build 
 
 **Fix.** The 220 ms minimum hold of a touch or Pad jump counts down in the input's per-frame update (game time), from the take-off the engine reports (`noteTakeOff`). It no longer runs on the wall clock from the press. Hitstop and the 0.05 s frame cap live outside `update`, so they no longer run it down.
 
-**Proof.** 97 px at every phase and after every hitstop. The one-thumb running jump, lifted, is now 181 px at every phase (it was 171-181).
+**Proof.** 97 px at every phase and after every hitstop.
 
 ### CT-10: a jump beside a trunk
 

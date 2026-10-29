@@ -4,7 +4,7 @@ From the polish report's 10-minute test, cut to what Build 2 changed. Use the te
 
 1. **Running jumps, 2 minutes (CT-1, CT-11).** On a flat run with a gap, run right with one thumb and flick up and forward, lifting at once, 10 times. Then 10 more keeping the thumb on the glass.
    - *Before:* the lift-off jumps sometimes came up about 40% short.
-   - *Now:* both sets should land in the same place, every time. A flick that curls back toward your palm should not stop or turn him as he takes off.
+   - *Now:* both sets should land within about 10 px of each other. None come up short. A flick that curls back toward your palm should not stop or turn him as he takes off.
 
 2. **Trunk and liana by touch, 2 minutes (CT-3, CT-4).** Climb a trunk with relaxed, slightly slanted strokes. Stop halfway, by lifting or easing back, and hold still for a second, a thumb a little to one side.
    - *Before:* he leapt off on some slanted strokes, slid on about 50 to 90 px after you stopped, and hopped off the side.
@@ -36,6 +36,10 @@ From the polish report's 10-minute test, cut to what Build 2 changed. Use the te
 8. **Edges, 1 minute (CT-6).** During a stage, swipe Back from the screen's edge (Android), or use the browser's Back.
    - *Before:* the browser could leave the game.
    - *Now:* the stage pauses and the Pause menu opens. Resume, swipe Back again: it pauses again.
+
+9. **Ledge ends, 1 minute (the lead's 2-6 item).** Walk right to the end of a plank or ledge, slowly, and stop at the very end.
+   - *Before:* he could stand with half his body over the air.
+   - *Now:* he takes a small step back and teeters, with about a quarter of him past the edge. Running off the end, and running jumps, should feel exactly as before.
 
 Not in this build:
 - **CT-5** (the second thumb's straight flick on a vine still lets go) waits for your call.
