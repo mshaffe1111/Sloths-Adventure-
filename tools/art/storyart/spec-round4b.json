@@ -1,0 +1,581 @@
+{
+ "tag": "r4b",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
+  ],
+  "meeca": [
+   "mshaffe111/meeca-qwen-lora",
+   "meeca_qwen_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "pl-nest-night-e",
+   "edit": true,
+   "start": "bucket:storyart/r3c/out/pl-nest-storm-6.png",
+   "seed": 4,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Remove the two sloths on the far branch, so the long branch is empty, and keep everything else in the picture exactly as it is: the nest, the trees, the storm sky. Same painted storybook style. No characters, no text.",
+   "neg": "sloths, animals, characters, text"
+  },
+  {
+   "name": "pl-steps-e",
+   "edit": true,
+   "start": "bucket:storyart/r3c/out/pl-courtyard-6.png",
+   "seed": 4,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Add a short wide flight of five worn wet stone steps coming down from a small arched wooden door at the foot of the round tower onto the courtyard flagstones, in the lower left of the picture, puddles on the steps reflecting the warm window light. Keep everything else exactly as it is. Same painted storybook style. No characters, no text.",
+   "neg": "characters, people, text"
+  },
+  {
+   "name": "pl-nest-night",
+   "then": "pl-nest-night-e",
+   "prompt": "slothadv style, painted storybook illustration, a big woven nest on a rainforest branch in a night storm, nobody on the branch, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.3,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "pl-steps",
+   "then": "pl-steps-e",
+   "prompt": "slothadv style, painted storybook illustration, a stormy fortress courtyard with a round stone tower and wet stone steps down from its door, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.3,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-da.kneel_tie-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-da.kneel_tie-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-da.kneel_tie-ps",
+   "then": "cel-da.kneel_tie-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-da.lean_rest-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-da.lean_rest-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-da.lean_rest-ps",
+   "then": "cel-da.lean_rest-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-da.reach_slump-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-da.reach_slump-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-da.reach_slump-ps",
+   "then": "cel-da.reach_slump-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-da.side_by_side-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-da.side_by_side-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-da.side_by_side-ps",
+   "then": "cel-da.side_by_side-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-db.side_by_side-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-db.side_by_side-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-db.side_by_side-ps",
+   "then": "cel-db.side_by_side-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-db.tie_stand-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-db.tie_stand-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-db.tie_stand-ps",
+   "then": "cel-db.tie_stand-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.arm_around-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.arm_around-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.arm_around-ps",
+   "then": "cel-hug.arm_around-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.cheek_glad-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.cheek_glad-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.cheek_glad-ps",
+   "then": "cel-hug.cheek_glad-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.heart_hands-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.heart_hands-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.heart_hands-ps",
+   "then": "cel-hug.heart_hands-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.hug_a-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.hug_a-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.hug_a-ps",
+   "then": "cel-hug.hug_a-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.hug_b-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.hug_b-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.hug_b-ps",
+   "then": "cel-hug.hug_b-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.hug_c-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.hug_c-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.hug_c-ps",
+   "then": "cel-hug.hug_c-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.nuzzle-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.nuzzle-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.nuzzle-ps",
+   "then": "cel-hug.nuzzle-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.sit_hug-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.sit_hug-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.sit_hug-ps",
+   "then": "cel-hug.sit_hug-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.stand_close-pe",
+   "edit": true,
+   "start": "bucket:storyart/r4a/out/cel-hug.stand_close-s40.png",
+   "seed": 3,
+   "prompt": "Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "cel-hug.stand_close-ps",
+   "then": "cel-hug.stand_close-pe",
+   "strength": 0.28,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     0.4
+    ],
+    [
+     "meeca",
+     0.4
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ],
+   "prompt": "two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/",
+ "keep": [
+  "pl-nest-night",
+  "pl-steps",
+  "cel-da.kneel_tie-ps",
+  "cel-da.lean_rest-ps",
+  "cel-da.reach_slump-ps",
+  "cel-da.side_by_side-ps",
+  "cel-db.side_by_side-ps",
+  "cel-db.tie_stand-ps",
+  "cel-hug.arm_around-ps",
+  "cel-hug.cheek_glad-ps",
+  "cel-hug.heart_hands-ps",
+  "cel-hug.hug_a-ps",
+  "cel-hug.hug_b-ps",
+  "cel-hug.hug_c-ps",
+  "cel-hug.nuzzle-ps",
+  "cel-hug.sit_hug-ps",
+  "cel-hug.stand_close-ps"
+ ]
+}

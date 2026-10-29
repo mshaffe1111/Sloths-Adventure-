@@ -371,7 +371,13 @@ def derived(commit, nest_pick, court_pick):
            'prompt': ('Add a short wide flight of five worn wet stone steps coming down from a small arched wooden door at the foot of the round tower '
                       'onto the courtyard flagstones, in the lower left of the picture, puddles on the steps reflecting the warm window light. Keep '
                       'everything else exactly as it is. Same painted storybook style. No characters, no text.'), 'neg': 'characters, people, text'}]
-    for n, say in (('nest-night', 'a big woven nest on a rainforest branch in a night storm, nobody on the branch'),
+    it.append({'name': 'pl-parents-e', 'edit': True, 'start': f'bucket:storyart/r3c/out/{nest_pick}.png', 'seed': 4, 'w': 1280, 'h': 1360,
+               'prompt': ('Change only the two sloths on the far branch: make them two grown-up sloths of the same size, a mother and a father, seen from '
+                          'behind as dark shapes against the storm, heads down, holding on, going away along the branch into the wind and rain. Keep '
+                          'everything else exactly as it is: the nest, the trees, the turning storm sky, the lightning. Same painted storybook style. No text.'),
+               'neg': 'cub, child, small sloth, faces, text'})
+    for n, say in (('parents', 'a big woven nest on a rainforest branch in a night storm, two grown sloths far off along the branch'),
+                   ('nest-night', 'a big woven nest on a rainforest branch in a night storm, nobody on the branch'),
                    ('steps', 'a stormy fortress courtyard with a round stone tower and wet stone steps down from its door')):
         it.append({'name': f'pl-{n}', 'then': f'pl-{n}-e', 'prompt': f'slothadv style, painted storybook illustration, {say}, no characters, no text',
                    'neg': PLATE_NEG, 'strength': 0.3, 'seed': 5, 'w': 2560, 'h': 2720, 'tile': [1280, 256], 'loras': [['style', 1.0]]})
@@ -435,6 +441,35 @@ def round4a(commit):
     base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
     return {'tag': 'r4a', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca', 'ironclaw', 'general')}, 'base': base, 'items': it, 'q': 92,
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it if not x['name'].endswith(('-e', '-x', '-f'))]}
+
+
+PAIR_EDIT = ('Change only the sloth with the brown leather satchel: he wears no clothes at all, no vest, no race bib, no shorts, no shoes, just his '
+             'warm orange-brown fur, cream belly, the satchel on its strap over his left shoulder to his right hip, and white bandages on his '
+             'wrists. Keep the other sloth, the girl with the pink headband, exactly as she is in her pink vest with the race bib 07, teal shorts '
+             'and pink shoes. Keep the pose, the size and the position of both of them exactly the same. Plain flat grey background.')
+
+
+def pair_edits(commit):
+    """Pokey and Meeca together: the old pair sheets drew him in her running kit (the first concept); the edit model takes it off him"""
+    it = []
+    for f in sorted((H.parent / 'hfbatch/starts/storyart').glob('meta-cel.json')):
+        meta = json.loads(f.read_text())
+    for key in meta:
+        pre = key[4:].split('.')[0]
+        if pre not in ('da', 'db', 'hug') or meta[key]['cel'].get('c') == 'raw':
+            continue
+        it.append({'name': f'{key}-pe', 'edit': True, 'start': f'bucket:storyart/r4a/out/{key}-s40.png', 'seed': 3, 'prompt': PAIR_EDIT, 'neg': EDIT_NEG})
+        it.append({'name': f'{key}-ps', 'then': f'{key}-pe', 'strength': 0.28, 'seed': 7, 'w': 1024, 'h': 1024, 'loras': [['pokey', 0.4], ['meeca', 0.4], ['style', 0.4]],
+                   'prompt': 'two young sloths together, the boy with orange-brown fur and a satchel, the girl in a pink headband, pink vest with bib 07 and teal shorts' + END,
+                   'neg': NEG_FIG + SOFT})
+    return it
+
+
+def round4b(commit, nest_pick='pl-nest-storm-6', court_pick='pl-courtyard-6'):
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    it = derived(commit, nest_pick, court_pick) + pair_edits(commit)
+    return {'tag': 'r4b', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca')}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it if not x['name'].endswith(('-e', '-pe'))]}
 
 
 def args(name, commit):
