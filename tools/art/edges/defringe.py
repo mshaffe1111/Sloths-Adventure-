@@ -13,6 +13,8 @@ magenta spill. Every cut-out strip (near, mid, canopy) goes through this before 
   --unveil N   clear what keying left in the sky: specks, and faint (alpha < 0.5) leftovers more than N px from the painting
                (the W1 canopy's white key). Never on World 5, whose cobwebs are faint strands on purpose
   --unmix R,G,B  the strip was keyed off this light colour (the W1 canopy: white): un-mix it from the edge pixels first
+  --px S       the strip has S x the pixels per screen point of a 2048 x 868 one (the native-resolution strips: 2 for a near,
+               1.5 for a mid): the ink line and its rules scale with it
   --grade      World 4 (VI-18): saturation +12%, highlights warmed (grade.py does the same to an opaque far strip)
   --q          WebP quality (default 90, what the strips were saved at)
 
@@ -169,19 +171,24 @@ def bleed(rgb, trusted, reach=16):
     return out, todo  # todo: pixels nothing trusted reaches (far out in the transparent area)
 
 
-def ink_line(rgb, alpha, width=1.6, k=0.42):
-    """an even line along the cut: colour darkened to k x local within `width` px of the alpha edge, smoothly. Only where the paint
-    has a solid body (4+ px thick) within 4 px (fading out by 6): see-through water ripples and wisps get no outline"""
+def ink_line(rgb, alpha, width=1.6, k=0.42, px=1.0):
+    """an even line along the cut: colour darkened to k x local within `width` px of the alpha edge, smoothly; not on see-through
+    strokes. `px` scales every distance, for a strip drawn at more pixels per screen point than the 2048 ones (the native-resolution
+    strips)"""
+    width *= px
     d = ndimage.distance_transform_edt(alpha >= 0.5)
     t = np.clip(width + 0.5 - d, 0, 1)  # 1 inside the line, ramps off over its last px
-    yy, xx = np.mgrid[-2:3, -2:3]
-    body = ndimage.binary_opening(alpha > 0.97, structure=xx * xx + yy * yy <= 4)
-    t = t * np.clip((6 - ndimage.distance_transform_edt(~body)) / 2, 0, 1)
+    # see-through strokes (water ripples, wisps) get no line: there the drawn pixels around are mostly half see-through. Solid paint,
+    # however thin (a reed, a cattail), keeps it
+    drawn = (alpha > 0.05).astype(np.float32)
+    sg = 3 * px
+    solid = ndimage.gaussian_filter(alpha * drawn, sg) / np.maximum(ndimage.gaussian_filter(drawn, sg), 1e-3)
+    t = t * np.clip((solid - 0.55) / 0.15, 0, 1)  # (ripples sit near 0.5, canopy edges, reeds and mids at 0.7-0.95)
     f = 1 - (1 - k) * t
     return rgb * f[..., None]
 
 
-def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despill=False, keep_line=False, veil=None, key=None, do_grade=False):
+def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despill=False, keep_line=False, veil=None, key=None, do_grade=False, px=1.0):
     rgb = src_rgba[..., :3].astype(np.float32)
     alpha = src_rgba[..., 3].astype(np.float32) / 255
     info = {}
@@ -196,12 +203,12 @@ def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despi
     solid = alpha > 0.99
     dist = ndimage.distance_transform_edt(alpha >= 0.5)
     # a thin feature (under 2 px at 1024, under 4 at 2048 cleaned in place) has no inside to borrow from: its colour is all there is
-    thin_w = 2 * max(ring / 1.5, 1)
+    thin_w = 2 * px if px > 1 else 2 * max(ring / 1.5, 1)
     vine = thin(alpha >= 0.5, thin_w)
     # crumbs of the old painted outline are thin too, but short: a vine is a connected run of 12+ px
     lab, n = ndimage.label(vine, structure=np.ones((3, 3)))
     if n:
-        vine &= np.isin(lab, 1 + np.flatnonzero(ndimage.sum(vine, lab, range(1, n + 1)) >= 12))
+        vine &= np.isin(lab, 1 + np.flatnonzero(ndimage.sum(vine, lab, range(1, n + 1)) >= 12 * px * px))
     core = solid & (dist > ring)
     # a thin feature is trusted unless it is much lighter than the paint around it (a stray strand of the white key, not a vine)
     ref, _ = bleed(rgb, core)
@@ -229,7 +236,10 @@ def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despi
         a = alpha
     # erode 1 px and feather ~1.2 px; features under 4 px wide (8 on a 2048 strip cleaned in place, whose lianas are 5-7 px)
     # keep their alpha
-    keep = ndimage.binary_dilation(thin(a >= 0.3, 4 * max(ring / 1.5, 1)), iterations=2)
+    # (a native-resolution strip, px > 1: 4 screen px, whatever its ring; a wider band of protected edges next to eroded ones would
+    # step the outline)
+    keep_w = 4 * px if px > 1 else 4 * max(ring / 1.5, 1)
+    keep = ndimage.binary_dilation(thin(a >= 0.3, keep_w), iterations=2)
     er = ndimage.grey_erosion(a, size=(3, 3))
     er = ndimage.gaussian_filter(er, 0.6)
     a2 = np.where(keep, a, np.minimum(a, er))
@@ -238,7 +248,7 @@ def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despi
     if keep_line:
         a2 = a  # no erode: it would thin the painted line
     if ink:
-        big = ink_line(big, a2)
+        big = ink_line(big, a2, px=px)
     # past 6 px into the transparent area the colour is never sampled: black there costs nothing in the file
     far = ndimage.distance_transform_edt(a2 < 0.01) > 6
     big[far] = 0
@@ -257,12 +267,13 @@ def main():
     ap.add_argument('--despill', action='store_true')
     ap.add_argument('--keep-line', action='store_true')
     ap.add_argument('--grade', action='store_true')
+    ap.add_argument('--px', type=float, default=1.0)
     ap.add_argument('--unveil', type=float, default=None)
     ap.add_argument('--unmix', default=None, help='r,g,b of a light key to take out of the edge pixels')
     ap.add_argument('--q', type=int, default=90)
     o = ap.parse_args()
     src = np.asarray(Image.open(o.src).convert('RGBA'))
-    out, info = process(src, o.scale, o.esrgan, o.ring, o.ink, o.despill, o.keep_line, o.unveil, None if o.unmix is None else [float(v) for v in o.unmix.split(",")], o.grade)
+    out, info = process(src, o.scale, o.esrgan, o.ring, o.ink, o.despill, o.keep_line, o.unveil, None if o.unmix is None else [float(v) for v in o.unmix.split(",")], o.grade, o.px)
     Image.fromarray(out, 'RGBA').save(o.dst, 'WEBP', quality=o.q, method=6)
     before, after = edge_stats(src), edge_stats(np.asarray(Image.open(o.dst).convert('RGBA')))
     print(f'{Path(o.dst).name}: {out.shape[1]}x{out.shape[0]} {Path(o.dst).stat().st_size} B  edge {before[0]:.2f} -> {after[0]:.2f}'

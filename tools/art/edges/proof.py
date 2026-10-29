@@ -1,6 +1,6 @@
 """Before/after crops of every strip set at phone size, upright (390x844) and sideways (844x390), plus the edge table.
 
-    python3 -I tools/art/edges/proof.py <before rev> <out dir> [<no-ink take dir>]
+    python3 -I tools/art/edges/proof.py <before rev> <out dir> [<no-ink take dir>] [--before-dir <folder>] [--sets w1,w4]
 
 Before = the strips at <before rev>; after = the working tree. Each set is drawn as the game layers it (far, then mid, then near)
 and cropped where the most cut edge is, at the size a phone shows it (portrait magnifies a strip about 2x: a 195x422 strip window
@@ -23,7 +23,14 @@ SETS = ['w1', 'w1c', 'w2', 'w3', 'w4', 'w5', 'w5gold2', 'w5dusk1', 'w5dusk2', 'w
         'w10']
 
 
+BEFORE_DIR = None  # --before-dir: read the "before" strips from another folder at that commit (the raw native-resolution ones)
+
+
 def load(rev, name):
+    if rev is not None and BEFORE_DIR and not name.endswith('-far'):
+        r = subprocess.run(['git', 'show', f'{rev}:{BEFORE_DIR}/{name}.webp'], cwd=ROOT, capture_output=True)
+        if r.returncode == 0:
+            return Image.open(io.BytesIO(r.stdout)).convert('RGBA')
     if rev is None:
         p = ROOT / BACK / f'{name}.webp'
         return Image.open(p).convert('RGBA') if p.exists() else None
@@ -73,13 +80,13 @@ def pair(before, after, box, size, label):
     return o
 
 
-def main(rev, out):
+def main(rev, out, sets=None):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     clean = Path(sys.argv[3]) if len(sys.argv) > 3 else None
     rows = ['| file | before: rim / outer px | before: dark at 1-4 px | after: rim / outer px | after: dark at 1-4 px | no-ink take: rim / '
             'outer px | magenta spill before -> after | size before -> after | px |', '|---|---|---|---|---|---|---|---|---|']
-    for s in SETS:
+    for s in sets or SETS:
         (b, _), (a, edge) = scene(rev, s), scene(None, s)
         x, y = edgiest(edge, 195, 422)
         pair(b, a, (x, y, x + 195, y + 422), (390, 844), s).save(out / f'{s}-up.png')
@@ -89,7 +96,7 @@ def main(rev, out):
             n = f'{s}-{part}'
             bi, ai = load(rev, n), load(None, n)
             sb, sa = edge_stats(np.asarray(bi)), edge_stats(np.asarray(ai))
-            zb = len(subprocess.run(['git', 'show', f'{rev}:{BACK}/{n}.webp'], cwd=ROOT, capture_output=True).stdout)
+            zb = len(subprocess.run(['git', 'show', f'{rev}:{BEFORE_DIR or BACK}/{n}.webp'], cwd=ROOT, capture_output=True).stdout)
             za = (ROOT / BACK / f'{n}.webp').stat().st_size
             cp = clean / f'{n}.webp' if clean else None
             sc = edge_stats(np.asarray(Image.open(cp).convert('RGBA'))) if cp and cp.exists() else None
@@ -102,4 +109,15 @@ def main(rev, out):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2])
+    args = sys.argv[1:]
+    if '--before-dir' in args:
+        i = args.index('--before-dir')
+        BEFORE_DIR = args[i + 1]
+        del args[i:i + 2]
+    sets = None
+    if '--sets' in args:
+        i = args.index('--sets')
+        sets = args[i + 1].split(',')
+        del args[i:i + 2]
+    sys.argv = [sys.argv[0]] + args
+    main(args[0], args[1], sets)

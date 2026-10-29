@@ -18,21 +18,31 @@ sys.dont_write_bytecode = True  # (it imports scripts/strip-seamless.py: no __py
 ROOT = Path(__file__).resolve().parents[3]
 BACK = 'src/assets/backdrops'
 
-# (stems, source commit, defringe options). The commit is the strip as it was before any upscaler or fix touched it.
-ORIG_1024 = ['--scale', '2', '--esrgan', '--q', '90']  # the 1024 px paintings, enlarged 2x (as 18bedcc did, minus the black)
+# (stems, source commit, defringe options[, extras]). The commit holds the strip as it was before any upscaler or fix touched it.
+# extras: 'part' adds options for the mid or the near only; 'dir' reads the source from another folder at that commit; 'seamless':
+# False skips A1's join (the source is already joined)
+HD = 'src/assets/backdrops-hd'
+HD_REV = 'cd71d17'  # hf-art-backdrops: Matt's native-resolution near and mid strips (VI-2), joined, still with the old dark ring
+# near strips are 1736 tall (2x the 868 of a 2048 strip), mids 1302 (1.5x): the untrusted ring and the ink line scale with them
+HD_PART = {'near': ['--ring', '6', '--px', '2.5'], 'mid': ['--ring', '4.5', '--px', '1.9']}
+HD_X = {'dir': HD, 'seamless': False}
 RECIPES = [
-    (['w1', 'w2', 'w3', 'w6', 'w7', 'w10'], '18bedcc^', ORIG_1024 + ['--ink']),
+    (['w1', 'w2', 'w3', 'w6', 'w7', 'w8', 'w9', 'w10'], HD_REV, ['--scale', '1', '--despill', '--q', '90', '--ink'],
+     {**HD_X, 'part': HD_PART}),
     # World 4 also graded warmer and less grey on its mid strip (VI-18; grade.py does its far strips)
-    (['w4'], '18bedcc^', ORIG_1024 + ['--ink'], {'mid': ['--grade']}),
-    # Matt's World 8 and 9 strips, 2800 px: sharpened through the model at the same size (as 8687ee6 did, minus the black)
-    (['w8', 'w9'], '9f2dbfe', ['--scale', '1', '--esrgan', '--ring', '2', '--q', '90', '--ink']),
+    (['w4'], HD_REV, ['--scale', '1', '--despill', '--q', '90', '--ink'],
+     {**HD_X, 'part': {'near': HD_PART['near'], 'mid': HD_PART['mid'] + ['--grade']}}),
+    # World 5's gold set: its own clean ink line kept, the spill clamped (as the other World 5 sets below)
+    (['w5'], HD_REV, ['--scale', '1', '--keep-line', '--despill', '--q', '90'], HD_X),
     # World 1's canopy, keyed off white: un-mix the white halo, clear the leftover key in the sky
     (['w1c'], '31c243f', ['--scale', '1', '--ring', '3', '--unveil', '3', '--unmix', '252,252,252', '--q', '82', '--ink']),
-    # World 5 (Gemini, 2048 px): its outline is a clean painted ink line, kept; only the magenta spill and the black under the
-    # cut (which lossy WebP smears into the edge) are fixed
-    (['w5', 'w5gold2', 'w5dusk1', 'w5dusk2', 'w5twi1', 'w5twi2'], '8c1f0ab', ['--scale', '1', '--keep-line', '--despill', '--q', '82']),
+    # World 5's other moods (Gemini, 2048 px): its outline is a clean painted ink line, kept; only the magenta spill and the black
+    # under the cut (which lossy WebP smears into the edge) are fixed
+    (['w5gold2', 'w5dusk1', 'w5dusk2', 'w5twi1', 'w5twi2'], '8c1f0ab', ['--scale', '1', '--keep-line', '--despill', '--q', '82']),
     (['w5night'], '1baf7ca', ['--scale', '1', '--keep-line', '--despill', '--q', '82']),
 ]
+# (before the native-resolution strips, 2026-10-29, Worlds 1-4, 6, 7 and 10 came from the 1024 px originals at 18bedcc^ with
+# ['--scale', '2', '--esrgan', '--ink'], and Worlds 8-9 from 9f2dbfe with ['--scale', '1', '--esrgan', '--ring', '2', '--ink'])
 
 
 # one-off fixes on a source before anything else: w5dusk2-near's unkeyed background panels (unpanel.py)
@@ -69,16 +79,17 @@ def main():
     out = Path(o.out)
     out.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
-        for stems, rev, opts, *per_part in RECIPES:
+        for stems, rev, opts, *extra in RECIPES:
+            x = extra[0] if extra else {}
             for stem in stems:
                 for part in ('mid', 'near'):
                     name = f'{stem}-{part}'
                     if only and name not in only:
                         continue
                     src = Path(tmp) / f'{name}.webp'
-                    src.write_bytes(subprocess.run(['git', 'show', f'{rev}:{BACK}/{name}.webp'], cwd=ROOT, check=True,
+                    src.write_bytes(subprocess.run(['git', 'show', f'{rev}:{x.get("dir", BACK)}/{name}.webp'], cwd=ROOT, check=True,
                                                    capture_output=True).stdout)
-                    args = [a for a in opts + (per_part[0].get(part, []) if per_part else []) if not (o.clean and a == '--ink')]
+                    args = [a for a in opts + x.get('part', {}).get(part, []) if not (o.clean and a == '--ink')]
                     if name in PRE:
                         spec = importlib.util.spec_from_file_location(PRE[name], Path(__file__).with_name(f'{PRE[name]}.py'))
                         mod = importlib.util.module_from_spec(spec)
@@ -89,7 +100,10 @@ def main():
                         Image.fromarray(getattr(mod, PRE[name])(np.asarray(Image.open(src).convert('RGBA'))), 'RGBA').save(fixed)
                         src = fixed
                     joined = Path(tmp) / f'{name}-seamless.png'
-                    seamless(src, joined)
+                    if x.get('seamless', True):
+                        seamless(src, joined)
+                    else:
+                        joined = src
                     subprocess.run([sys.executable, '-I', str(Path(__file__).with_name('defringe.py')), str(joined),
                                     str(out / f'{name}.webp'), *args], check=True)
 
