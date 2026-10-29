@@ -62,9 +62,10 @@ const FPS = 30;
 /** Full-screen cinematic: the stage scenery behind the actors, a title card for each chapter, and a dialogue panel. */
 /** upright the picture fills the screen from the top down to the words (it was a 4:3 window with dark empty screen above it: Matt,
  * 2026-10-29); the scene keeps its width and the room above it shows the top of the painting (storyArt.ts drawStoryScene `top`) */
-/** the room kept for the words under it */
+/** the room kept for the words under it (six lines in the reading font, the Back and Next row, the top chips: 290 plus 60 to spare, or
+ *  a long line pushed Next off the bottom of the screen) */
 const UPRIGHT_WORDS = 290;
-const uprightH = (v: { w: number; h: number }) => Math.round(Math.max(160, v.h - UPRIGHT_WORDS));
+const uprightH = (v: { w: number; h: number }) => Math.round(Math.max(160, v.h - UPRIGHT_WORDS - 60));
 
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
   // a picture the player plays with their thumbs needs a touch screen; without one it reads as a picture, with the narration that says
@@ -423,7 +424,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       </div>
 
       {/* (a steady height for six lines of words, so the picture above stays put from one panel to the next; a longer line still grows it) */}
-      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS }}>{!cardUp && box}</div>}
+      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS + 60 }}>{!cardUp && box}</div>}
       {wide && !cardUp && (
         <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
           {box}

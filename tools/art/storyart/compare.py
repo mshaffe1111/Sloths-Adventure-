@@ -1,6 +1,6 @@
 """Before/after sheets of story stills (shots.mjs output): one row per shot, before and after, upright and sideways.
 
-    python3 -I tools/art/storyart/compare.py <before dir> <after dir> <out.jpg> <tag> [title]
+    python3 -I tools/art/storyart/compare.py <before dir> <after dir> <out.jpg> <tag[,tag...]> [title]
 """
 import sys
 from pathlib import Path
@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 
 b, a, out, tag = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3], sys.argv[4]
 title = sys.argv[5] if len(sys.argv) > 5 else tag
-shots = sorted({p.name.rsplit('-', 1)[0] for p in a.glob(f'{tag}-*-up.jpg')})
+shots = [x for t in tag.split(',') for x in sorted({p.name.rsplit('-', 1)[0] for p in a.glob(f'{t}-*-up.jpg')})]
 UW, UH = 300, 650
 SW, SH = 700, 323
 rowh = UH + 30

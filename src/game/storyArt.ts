@@ -995,7 +995,7 @@ function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryS
   switch (world) {
     case 10: {
       // the painted castle fills the picture when it is loaded; the drawn storm clouds and fortress are the fallback and the classic look
-      if (drawCastleBackdrop(ctx, castle ?? FORTRESS_CASTLE, w, h, t)) {
+      if (drawCastleBackdrop(ctx, castle ?? FORTRESS_CASTLE, w, h, t, top)) {
         if (mood === 'storm') {
           const ph = (t % 5) / 5;
           if (ph < 0.1) {
@@ -1168,12 +1168,12 @@ function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryS
       break;
     }
     case 5: {
-      // giant orchid-draped spider webs
+      // giant orchid-draped spider webs (hung from the top of the view: upright, the old top is mid-screen, and its straight strand showed)
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
       ctx.lineWidth = 1.6;
       [[0.04, 0], [0.96, 0]].forEach(([cx, cy], k) => {
         const ox = cx * w;
-        const oy = cy * h;
+        const oy = cy * h - top;
         const dir = k ? -1 : 1;
         for (let r = 1; r <= 6; r++) {
           ctx.beginPath();
