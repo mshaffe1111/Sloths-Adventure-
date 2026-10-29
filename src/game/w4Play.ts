@@ -11,7 +11,7 @@
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
-import { drawW4, drawW4Pour, POUR_ASPECT, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
+import { drawW4, drawW4Pour, pourAspect, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
 import { drawLogArt } from './protoArt.ts';
 import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
@@ -854,18 +854,35 @@ function drawPouring(ctx: CanvasRenderingContext2D, x: number, top: number, widt
   if (!w4ArtReady()) return false;
   const n = Math.max(1, Math.round(width / POUR_COL));
   const cw = width / n;
-  const th = (cw + 2) * POUR_ASPECT;
   const base = ctx.globalAlpha;
   ctx.save();
   ctx.beginPath();
   ctx.rect(x, top, width, bottom - top);
   ctx.clip();
   for (let k = 0; k < n; k++) {
+    // (the white rims only at the fall's two edges: inside it the columns run into each other)
+    const strip = n === 1 ? 'full' : k === 0 || k === n - 1 ? 'edge' : 'core';
+    const right = n > 1 && k === n - 1;
+    const th = cw * pourAspect(strip);
     const r1 = (k * 0.618034 + x * 0.0013) % 1;
     const r2 = (k * 0.414214 + x * 0.0007) % 1;
     const off = (t * POUR_SPEED * (0.85 + 0.3 * r1) + r2 * th) % th;
     ctx.globalAlpha = base * alphaAt((k + 0.5) / n);
-    for (let y = top - th + off; y < bottom; y += th - 1) drawW4Pour(ctx, x + k * cw - 1, y, cw + 2, th);
+    // (edge to edge, no overlap: the water is see-through, so an overlap would show as a darker line)
+    for (let y = top - th + off; y < bottom; y += th) {
+      // (a fall's right edge is its left one turned round, so both rims face out)
+      if (right) {
+        ctx.save();
+        ctx.translate(2 * (x + k * cw) + cw, 0);
+        ctx.scale(-1, 1);
+      }
+      const drawn = drawW4Pour(ctx, x + k * cw, y, cw, th, strip);
+      if (right) ctx.restore();
+      if (!drawn) {
+        ctx.restore();
+        return false;
+      }
+    }
   }
   ctx.restore();
   return true;
@@ -877,7 +894,7 @@ function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number
   const width = w.width * (0.25 + 0.75 * flow);
   const x = w.x + (w.width - width) / 2;
   // (see-through: the steps behind the water show; thicker the harder it pours)
-  ctx.globalAlpha = 0.35 + 0.5 * flow;
+  ctx.globalAlpha = 0.3 + 0.4 * flow;
   if (drawPouring(ctx, x, w.top, width, w.bottom, t, () => 1)) {
     ctx.globalAlpha = 1;
     drawFoot(ctx, x, width, w.bottom, flow, t);
@@ -909,15 +926,38 @@ function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number
   ctx.restore();
 }
 
-/** foam churning where a fall lands */
+/** a soft white puff, painted once and drawn scaled: the foam where a fall lands */
+let foamPic: HTMLCanvasElement | null = null;
+function foam(): HTMLCanvasElement | null {
+  if (foamPic || typeof document === 'undefined') return foamPic;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 64;
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gr.addColorStop(0, 'rgba(255,255,255,0.95)');
+  gr.addColorStop(0.55, 'rgba(240,250,255,0.6)');
+  gr.addColorStop(1, 'rgba(240,250,255,0)');
+  g.fillStyle = gr;
+  g.fillRect(0, 0, 64, 64);
+  foamPic = cv;
+  return cv;
+}
+
+/** foam churning where a fall lands: soft puffs along its foot, each swelling and settling on its own beat */
 function drawFoot(ctx: CanvasRenderingContext2D, x: number, width: number, bottom: number, flow: number, t: number) {
-  ctx.fillStyle = 'rgba(255,255,255,0.8)';
-  const n = Math.max(6, Math.round(width / 40));
+  const pic = foam();
+  const n = Math.max(6, Math.round(width / 36));
+  if (!pic) return;
+  ctx.save();
   for (let k = 0; k < n; k++) {
-    ctx.beginPath();
-    ctx.arc(x + (k / (n - 1)) * width, bottom - 4 + Math.sin(t * 8 + k) * 3, 8 * flow + 3, 0, Math.PI * 2);
-    ctx.fill();
+    const sd = (k * 0.618034) % 1;
+    const r = (14 + 12 * sd) * (0.5 + 0.5 * flow) * (1 + 0.18 * Math.sin(t * (5 + 3 * sd) + k * 1.7));
+    const cx = x + ((k + 0.5) / n) * width + Math.sin(t * 2 + k) * 4;
+    ctx.globalAlpha = 0.8 * Math.min(1, flow * 1.5);
+    ctx.drawImage(pic, cx - r * 1.4, bottom - 6 - r * 0.9, r * 2.8, r * 1.6);
   }
+  ctx.restore();
 }
 
 /**

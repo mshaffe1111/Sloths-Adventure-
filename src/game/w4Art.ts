@@ -19,7 +19,7 @@ function load() {
   if (img || typeof Image === 'undefined') return;
   const im = new Image();
   img = im;
-  trackAtlas(im, W4_PROPS_URL, () => { ready = true; }, () => { img = null; }, () => { img = null; ready = false; });
+  trackAtlas(im, W4_PROPS_URL, () => { ready = true; }, () => { img = null; }, () => { img = null; ready = false; pour = null; });
 }
 
 /** whether the World 4 pieces have loaded (starts the load) */
@@ -54,17 +54,60 @@ export function drawW4(ctx: CanvasRenderingContext2D, n: W4Piece, x: number, bot
 
 /**
  * The water pouring off the painted lip ('lipPour'), cut out on its own (its place in that piece): a strip of falling water, the same
- * from top to bottom, that the falls are built from (w4Play.ts drawFallWater, drawVeil), so the water under a lip is the lip's own
+ * from top to bottom, that the falls are built from (w4Play.ts drawFallWater, drawVeil), so the water under a lip is the lip's own.
+ * Made seamless once, when the sheet has loaded: its last third cross-faded into its first, so copies stacked down a fall meet with no
+ * seam. `core` is the strip without its white rims, for the inside of a wide fall; `edge` with its left rim only, for a wide fall's
+ * edges (turned round for the right one); `full` the whole strip, for a fall one column wide.
  */
-const POUR = { x: 128, y: 38, w: 35, h: 72 };
-/** the strip's height for its width */
-export const POUR_ASPECT = POUR.h / POUR.w;
-
-/** the lip's falling water stretched to the box (x, y, w, h). False until the atlas has loaded. */
-export function drawW4Pour(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): boolean {
-  if (!w4ArtReady()) return false;
+const POUR = { x: 128, y: 38, w: 35, h: 72, rim: 3 };
+const POUR_SCALE = 2;
+const POUR_FADE = 1 / 3;
+export type PourStrip = 'core' | 'edge' | 'full';
+let pour: Record<PourStrip, HTMLCanvasElement> | null = null;
+const POUR_W: Record<PourStrip, number> = { core: POUR.w - 2 * POUR.rim, edge: POUR.w - POUR.rim, full: POUR.w };
+function seamless(sx: number, sw: number): HTMLCanvasElement | null {
   const f = W4_FRAMES.lipPour;
-  ctx.drawImage(img!, f.x + POUR.x, f.y + POUR.y, POUR.w, POUR.h, x, y, w, h);
+  const W = sw * POUR_SCALE, H = POUR.h * POUR_SCALE, K = Math.round(H * POUR_FADE), P = H - K;
+  const cv = document.createElement('canvas');
+  cv.width = W;
+  cv.height = P;
+  const g = cv.getContext('2d');
+  const tmp = document.createElement('canvas');
+  tmp.width = W;
+  tmp.height = K;
+  const tg = tmp.getContext('2d');
+  if (!g || !tg) return null;
+  // the strip's first P rows, then its last K rows laid over the top, fading out downward: the bottom runs on into the top again
+  g.drawImage(img!, f.x + sx, f.y + POUR.y, sw, (P / H) * POUR.h, 0, 0, W, P);
+  tg.drawImage(img!, f.x + sx, f.y + POUR.y + (P / H) * POUR.h, sw, (K / H) * POUR.h, 0, 0, W, K);
+  tg.globalCompositeOperation = 'destination-in';
+  const fade = tg.createLinearGradient(0, 0, 0, K);
+  fade.addColorStop(0, 'rgba(0,0,0,1)');
+  fade.addColorStop(1, 'rgba(0,0,0,0)');
+  tg.fillStyle = fade;
+  tg.fillRect(0, 0, W, K);
+  g.drawImage(tmp, 0, 0);
+  return cv;
+}
+function pourStrips(): typeof pour {
+  if (pour || !w4ArtReady() || typeof document === 'undefined') return pour;
+  const core = seamless(POUR.x + POUR.rim, POUR_W.core);
+  const edge = seamless(POUR.x, POUR_W.edge);
+  const full = seamless(POUR.x, POUR_W.full);
+  if (core && edge && full) pour = { core, edge, full };
+  return pour;
+}
+
+/** one repeat of the falling water's strip: its height for a width */
+export function pourAspect(n: PourStrip): number {
+  return (POUR.h * (1 - POUR_FADE) + 0.5) / POUR_W[n];
+}
+
+/** the lip's falling water stretched to the box (x, y, w, h): one repeat of it. False until the atlas has loaded. */
+export function drawW4Pour(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, n: PourStrip = 'full'): boolean {
+  const p = pourStrips();
+  if (!p) return false;
+  ctx.drawImage(p[n], x, y, w, h);
   return true;
 }
 
