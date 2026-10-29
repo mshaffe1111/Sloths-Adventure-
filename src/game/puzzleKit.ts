@@ -130,6 +130,10 @@ export interface RoomTips {
   hold?: TipLine;
   /** the room's way on opens */
   open?: TipLine;
+  /** after real struggle (two failed tries, or back and forth with nothing changing): a nudge that points at the piece, never the move */
+  nudge?: TipLine;
+  /** after more struggle, and only on "Dot's help: Help": the move itself */
+  move?: TipLine;
   /** the beetle fell asleep off every plate (the room needs starting again: the post) */
   stuck?: string;
   // ── phase 2b's moments (each the first time it comes) ──
@@ -167,6 +171,8 @@ export interface RoomSpec {
   /** the platforms a dropped or thrown thing may rest on (anything else it lands on is out of reach: lost, and it comes back) */
   ground: number[];
   tips?: RoomTips;
+  /** the thing this room teaches for the first time (the seesaw's first room): "Tips" says its first line once per save (dotTips.ts) */
+  mech?: string;
 }
 
 export interface KitExtras {

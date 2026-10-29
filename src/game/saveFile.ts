@@ -9,6 +9,7 @@
  * has no opinion about screens.
  */
 import { reloadDifficulty } from './difficulty.ts';
+import { DOT_MEMORY, forgetDotSession } from './dotMemory.ts';
 
 export const SAVE_FORMAT = 'sloths-rainforest-adventures-save';
 export const SAVE_VERSION = 1;
@@ -37,8 +38,9 @@ const ALLOWED: RegExp[] = [
   /^sloth_difficulty$/, // Easy or Normal, picked at New Game (difficulty.ts)
   /^sloth_w5_cakes$/, // whether any cake was eaten in World 5 (w5Kit.ts: the Queen's line, and the badge for eating none)
   /^sloth_w5_carved$/, // what Meeca carved in her stage, and where (meecaCarved.ts: 5-6 shows it to Pokey)
-  // sloth_lessons, sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device,
-  // and starting a new game (or loading a save) must not bring them back for someone who already knows how to play
+  // sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device. Dot's memory
+  // (her tips, the lessons, what she has taught: dotMemory.ts) is not in the file either, but a New Game clears it, so a new adventure
+  // is taught again (Matt, 2026-10-29: tips once per save)
 ];
 
 export const isSaveKey = (k: string) => ALLOWED.some((re) => re.test(k));
@@ -188,7 +190,8 @@ const KEEP_ON_NEW_GAME = /^sloth_(music_vol|sfx_vol|game_muted)$/;
  * With `skipStory` every world's story beat is marked as seen, so the game goes straight to play.
  */
 export function resetProgress(store: Store, opts: { skipStory?: boolean } = {}) {
-  for (const k of store.keys()) if (isSaveKey(k) && !KEEP_ON_NEW_GAME.test(k)) store.removeItem(k);
+  for (const k of store.keys()) if ((isSaveKey(k) && !KEEP_ON_NEW_GAME.test(k)) || DOT_MEMORY.test(k)) store.removeItem(k);
+  forgetDotSession();
   reloadDifficulty();
   if (opts.skipStory) {
     for (let w = 1; w <= 10; w++) {

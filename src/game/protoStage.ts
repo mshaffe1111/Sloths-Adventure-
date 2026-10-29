@@ -645,7 +645,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         id: `seesaw-show-${ROOMS.length}`,
         left: onP(floor, edge - 150), right: { on: pit.id, at: 1, dx: 40 }, above: 420, below: SEE.pit + 10,
         pieces: kit, exit: id, beyond: { on: ledge.id, at: 0.5 }, ground: [floor.id, pit.id],
-        tips: { enter: 'The log holds that end down. Hop up the other end!' },
+        // (the seesaw's first room: the room shows the idea by itself, and Dot names what it shows; the move only after struggle)
+        tips: { enter: 'See? The log holds that end down.', nudge: 'That high end makes a step.', move: 'Hop up the other end!' },
+        mech: 'seesaw',
       });
       open(edge + SEE.w);
       run(R.r(260, 320));
@@ -661,7 +663,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       id: `seesaw-${ROOMS.length}`,
       left: onP(floor, logX - 60), right: { on: top.id, at: 0, dx: 60 }, above: 420, below: SEE.pit + 10,
       pieces: kit, exit: id, beyond: { on: top.id, at: 0.3 }, ground: [floor.id, pit.id],
-      tips: { enter: 'Too high! Push the log onto the near end.' },
+      // (the problem on walking in, never the answer: DOT-2)
+      tips: { enter: 'Too high! That log could help.', nudge: 'That log looks heavy.', move: 'Push the log onto the near end.' },
     });
     // down off the far end of the bank onto the floor again, and a dip to jump on the way on
     open(top.x + top.width);
@@ -708,7 +711,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         { kind: 'seesaw', id, at: onP(pit, pivot, -SEE.pit), w: SEE.w, rise, rest: 1 },
       ],
       exit: id, beyond: { on: top.id, at: 0.4 }, ground: [floor.id, pit.id, farFloor.id],
-      tips: { enter: "The log's on the far side. Push it back onto the far end!" },
+      tips: { enter: "The log's moved. Hmm, that won't tip now.", nudge: "The log's past the seesaw now.", move: 'Push it back onto the far end!' },
     });
     open(top.x + top.width);
     run(R.r(110, 150));

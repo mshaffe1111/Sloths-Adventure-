@@ -2,7 +2,7 @@ import { SlowWatch } from './slowTip.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
-import { markTipHeard, tipHeard } from './tipMemory.ts';
+import { bindSent, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
@@ -593,6 +593,8 @@ export class GameEngine {
     // every stage load rolls a fresh look for the backdrop and ground (the layout itself does not change)
     setSceneSeed(rollSceneSeed());
 
+    // (a new run of a stage: tips sent but never shown in an earlier run may be said again, tipMemory.ts)
+    forgetSent();
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
@@ -4920,8 +4922,8 @@ export class GameEngine {
       return;
     }
     this.lessonWaiting = null;
+    // (not again this run; it is kept on the phone once Dot has shown it, DotGuide.tsx: one her help setting drops is taught later)
     seen.add(id);
-    markLessonSeen(id);
     // no card and no pause: the lesson is one of Dot's lines, said in play (dotGuide.ts)
     this.lessonQuietUntil = this.gameTime + 6;
     this.lessonAt = this.gameTime;
@@ -6818,6 +6820,8 @@ export class GameEngine {
 
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
   private guide(text: string, seconds: number) {
+    // (the tips just marked sent are kept on the phone once this line has been shown: tipMemory.ts)
+    bindSent(text);
     this.stageHint = { text, life: seconds };
     this.bossGuideUp = false;
     this.guideN++;

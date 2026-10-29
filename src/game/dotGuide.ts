@@ -78,6 +78,15 @@ export interface GuideLine {
    * the HUD said 51/116 as Dot said "Still 68" (QA, 5-3, v198)
    */
   counted?: boolean;
+  /** the thing it introduces for the first time (dotTips.ts FIRST_OF): "Tips" says it once per save */
+  mech?: string;
+  /** a puzzle's line (dotTips.ts): 'name' names the problem, 'nudge' points at the piece after struggle, 'move' says the move (Help
+   *  only), 'event' is one of its moments (the log lands, the gate opens) */
+  step?: 'name' | 'nudge' | 'move' | 'event';
+  /** the engine's own words for it (tipMemory.ts keeps the tips it carries once it has been shown) */
+  said?: string;
+  /** a first-time hazard about to hit: it does not wait out the gap between lines (it never cuts in over a line, as a warning does) */
+  soon?: boolean;
   /** where it came from: an engine line can be taken down by the engine ("the moment has passed") */
   source: 'engine' | 'lesson' | 'coach' | 'story' | 'journal' | 'struggle';
 }
@@ -137,6 +146,9 @@ export const GUIDE = {
  * back once, after it): a stage's opening words held the gap's lesson back past 2-2's first river.
  */
 export const CALM = { startMs: 2500, gapMs: 10000, repeatMax: 2, moveCapMs: 12000, goneMs: 2500, nearMs: 30000 } as const;
+/** "Tips" (dotTips.ts): at least this long from one line's start to the next's, for everything but the urgent lines (a warning, the
+ *  locked exit, a first-time hazard about to hit, a lesson's next step) */
+export const TIPS_GAP_MS = 30000;
 
 /**
  * Lines that say the same thing as another line of the same stage in other words: once one of a pair has been said, the other is not said
@@ -197,6 +209,8 @@ export interface Showing {
   base: number;
   /** a new number for each line put up (the view keys on it) */
   n: number;
+  /** its bubble has appeared (onScreen) */
+  onScreen?: boolean;
 }
 
 export interface TickEnv {
@@ -229,8 +243,11 @@ export type GuideEvent =
   | { type: 'end'; show: Showing; why: 'done' | 'read' | 'cap' | 'yield' | 'cut' | 'cleared' };
 
 export class GuideQueue {
-  /** `calm`: Dot toned down (CALM), as Worlds 1-4 have her */
-  constructor(readonly calm = false) {}
+  /** `calm`: Dot toned down (CALM); `gapMs`: the least time from one line's start to the next's (Tips: TIPS_GAP_MS) */
+  constructor(readonly calm = false, public gapMs: number = CALM.gapMs) {}
+  /** (calm) the same words at most this many times a stage, and a warning's (dotSay.ts sets them for the help setting) */
+  repeatMax: number = CALM.repeatMax;
+  repeatWarn = Infinity;
   /** (calm) when the last line started, and the words said this stage: how often, and the move count when last said */
   private startedAt = -1e9;
   private heard = new Map<string, { n: number; base: number }>();
@@ -268,18 +285,29 @@ export class GuideQueue {
   }
 
   /** queue a line. An urgent line comes in at once over a lower line, which goes back to the front of the queue. */
+  /**
+   * (calm) may this line come in over the one up? A first-time lesson over a plain information or story line, and any tip over a story
+   * aside (in 2-2 the opening aside held the first river's tip until he was at the water); only once the line up has been read its
+   * minimum time (one cut sooner came back 10-15 s later, said twice: DOT-6). Until then it waits in the queue (tick tries again).
+   */
+  private cutsIn(line: GuideLine, now: number): boolean {
+    const cur = this.cur;
+    return this.calm && line.kind === 'teach' && !!cur && now >= CALM.startMs && now - cur.startedAt >= GUIDE.minShowMs && (cur.line.kind === 'story' || (line.source === 'lesson' && cur.line.kind === 'info'));
+  }
+
   push(line: GuideLine, now: number): void {
     if (!line.text || this.has(line.key, line.text)) return;
     const cur = this.cur;
-    // (calm: a first-time lesson comes in over a plain information or story line, which goes back to be said again: see CALM)
-    // (and any tip comes in over a story aside: in 2-2 the opening aside held the first river's tip until he was at the water)
-    const lessonCut = this.calm && line.kind === 'teach' && !!cur && now >= CALM.startMs && (cur.line.kind === 'story' || (line.source === 'lesson' && cur.line.kind === 'info'));
+    const lessonCut = this.cutsIn(line, now);
     if (cur && ((isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) || lessonCut)) {
       this.events.push({ type: 'end', show: cur, why: 'cut' });
       // (it goes back in front of everything of its own priority, to be said again in full; a scene's line that was mostly read
       // counts as heard, and the scene goes on)
       // (calm: a plain line that a first-time lesson cut after it had been up its minimum time counts as heard, and is not said again)
-      const heard = (cur.line.scene && now - cur.startedAt >= readMs(cur.line.text) * GUIDE.sceneHeard) || (lessonCut && now - cur.startedAt >= GUIDE.minShowMs);
+      // (calm: and any line cut once it has been up its minimum time has been seen: it is not said twice, DOT-6. "The Sky Sovereign is
+      // hunting" came again 11 s after a warning cut it)
+      const up = now - cur.startedAt;
+      const heard = (cur.line.scene && up >= readMs(cur.line.text) * GUIDE.sceneHeard) || (lessonCut && up >= GUIDE.minShowMs) || (this.calm && up >= GUIDE.minShowMs && !cur.line.move);
       if (!heard) this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
       this.cur = null;
       this.begin(line, now, 0);
@@ -304,6 +332,11 @@ export class GuideQueue {
       this.cur = null;
       this.endedAt = now;
     }
+  }
+
+  /** drop the waiting lines that match (the line up stays) */
+  dropWaiting(match: (l: GuideLine) => boolean): void {
+    this.waiting = this.waiting.filter((w) => !match(w.line));
   }
 
   /** forget everything (a new run of the stage) */
@@ -347,9 +380,11 @@ export class GuideQueue {
       // (a tip whose thing he has done already is not said, nor anything after it)
       if (!isUrgent(w.line) && env.stale?.(w.line)) return false;
       // (calm) words said often enough this stage, or a move tip whose move he has done since it was said, are not said again
+      // (calm) the same warning again and again as the eagle passes is nagging: at most repeatWarn times a stage
+      if (this.calm && w.line.kind === 'danger' && (this.heard.get(norm(w.line.text))?.n ?? 0) >= this.repeatWarn) return false;
       if (this.calm && !isUrgent(w.line)) {
         const h = this.heard.get(norm(w.line.text));
-        if (h && (h.n >= CALM.repeatMax || (w.line.move && env.moveCount(w.line.move) > h.base))) {
+        if (h && (h.n >= this.repeatMax || (w.line.move && env.moveCount(w.line.move) > h.base))) {
           if (w.line.next) skipped.push(w.line.next);
           return false;
         }
@@ -368,6 +403,14 @@ export class GuideQueue {
       return env.moveCount(m) <= w.base;
     });
     for (const n of skipped) this.push(n, now);
+    // (calm: a lesson that came while the line up was still new comes in once that line has had its minimum time, DOT-6)
+    if (this.cur && this.calm) {
+      const w = this.waiting.find((x) => this.cutsIn(x.line, now));
+      if (w) {
+        this.waiting.splice(this.waiting.indexOf(w), 1);
+        this.push(w.line, now);
+      }
+    }
     const cur = this.cur;
     if (cur) {
       const age = now - cur.startedAt;
@@ -394,8 +437,9 @@ export class GuideQueue {
           why = 'cap';
         } else if (age >= GUIDE.moveCapMs) why = 'cap';
         else if (age >= readMs(l.text)) {
+          // (read: it steps aside for a more important line, or for a puzzle's first line or a new thing's, which belong to now)
           const b = this.best(now, env);
-          if (b && PRIORITY[b.line.kind] > PRIORITY[l.kind]) why = 'yield';
+          if (b && b.line.kind !== 'story' && (PRIORITY[b.line.kind] > PRIORITY[l.kind] || b.line.step === 'name' || (!!b.line.mech && !l.mech))) why = 'yield';
         }
       } else if (age >= showFor(l)) why = 'read';
       else if (l.kind === 'story' && age >= (l.scene ? readMs(l.text) * GUIDE.sceneHeard : GUIDE.storyYieldMs)) {
@@ -438,12 +482,29 @@ export class GuideQueue {
     if (this.calm && !isUrgent(b.line)) {
       // (calm) nothing in the stage's first seconds; then the gaps between lines
       if (now < CALM.startMs) return null;
-      const teach = GuideQueue.lessonish(b.line) || b.line.kind === 'teach';
-      if (!teach && now - this.startedAt < CALM.gapMs) return null;
+      const teach = GuideQueue.lessonish(b.line) || b.line.kind === 'teach' || !!b.line.soon;
+      // (Tips: only a first-time hazard about to hit, the coach, a lesson's next step or a first move skips the long gap)
+      // (and the first line about a new thing: the first appearance of a mechanic is always taught, so it may not be held back past it)
+      const tipsFirst = !!b.line.soon || !!b.line.mech || b.line.source === 'coach' || (b.line.kind === 'teach' && !!b.line.move);
+      // (on Tips a harmless lesson, the flag's or the heart's, waits too: it is not a hazard about to hit)
+      const exempt = this.gapMs >= TIPS_GAP_MS ? tipsFirst : tipsFirst || teach;
+      const gap = exempt ? 0 : this.gapMs;
+      if (now - this.startedAt < gap) return null;
     }
     this.waiting.splice(this.waiting.indexOf(b), 1);
     this.begin(b.line, now, b.line.move ? env.moveCount(b.line.move) : 0);
     return this.cur;
+  }
+
+  /**
+   * The line's bubble is on screen now (she has landed beside the thing): its reading time counts from here, not from when it left the
+   * queue, so her flight does not eat into it (DOT-7: a 4 s line showed for about 3 s). Once per line.
+   */
+  onScreen(now: number): void {
+    const c = this.cur;
+    if (!c || c.onScreen) return;
+    c.onScreen = true;
+    if (now > c.startedAt) c.startedAt = Math.min(now, c.startedAt + 1500);
   }
 
   /** take the events since the last call */

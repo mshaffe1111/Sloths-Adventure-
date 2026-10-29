@@ -13,6 +13,7 @@ import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { LessonCard } from './components/LessonCard.tsx';
 import { Wayside } from './components/Wayside.tsx';
+import type { GuideFeed } from './components/dot/DotGuide.tsx';
 import { MeecaWords } from './components/MeecaWords.tsx';
 import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
@@ -204,7 +205,7 @@ export default function App() {
   const [currentCount, setCurrentCount] = useState<number>(0);
   const [targetCount, setTargetCount] = useState<number>(1);
   /** the guiding line Dot is saying (a stage tip, the goal, the sealed door): from the engine, shown by Wayside */
-  const [guideLine, setGuideLine] = useState<{ text: string; ms: number; n: number; passed?: boolean } | null>(null);
+  const [guideLine, setGuideLine] = useState<GuideFeed | null>(null);
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
@@ -616,7 +617,12 @@ export default function App() {
           onSlowDevice: () => {
             if (!slowTipShown()) setSlowTip(slowTipText(navigator.userAgent));
           },
-          onGuide: (text, seconds, passed) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) })),
+          // (the last few ride along: two lines in one frame are both said, DotGuide.tsx GuideFeed)
+          onGuide: (text, seconds, passed) =>
+            setGuideLine((g) => {
+              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) };
+              return { ...line, recent: [...(g?.recent ?? []).slice(-5), line] };
+            }),
           onStageStats: (s) => {
             pendingStats.current = s;
             setLastStats(s);

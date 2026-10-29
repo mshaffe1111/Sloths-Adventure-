@@ -22,6 +22,8 @@ export interface GuidePlatform {
   broken?: boolean;
   push?: { min: number; max: number };
   chase?: boolean;
+  /** a painted piece's name ('poolLog': 4-3's floating log, a thing Dot can point at) */
+  art?: string;
 }
 export interface GuideVine {
   x: number;

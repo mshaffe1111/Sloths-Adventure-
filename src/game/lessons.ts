@@ -3,8 +3,8 @@
  *
  * A lesson is a card with Pokey's face, a title, and a few "do this, get that" lines for the way this player is controlling the game (touch
  * screen, thumb pad, or keyboard). The engine spots the first foe, the first climbable trunk, the first swinging vine and so on ahead of the hero
- * (`pickLesson`), pauses, and the app shows the card (components/LessonCard.tsx). What has been shown is kept on the device, in the save, so a
- * New Game teaches it all again. `?lessons=off` skips them, `?lessons=all` shows every one again (for trying them out).
+ * (`pickLesson`), pauses, and the app shows the card (components/LessonCard.tsx). A lesson counts as shown once Dot's line for it has been
+ * up its minimum time (dotSay.ts), and a New Game clears what has been shown (dotMemory.ts), so it teaches it all again. `?lessons=off` skips them, `?lessons=all` shows every one again (for trying them out).
  */
 import { controlStyle } from './controlPrefs.ts';
 import type { GlyphKind } from '../components/GestureGlyph.tsx';
@@ -511,6 +511,8 @@ function lessonStep(lesson: LessonId, ids: string[], i: number, mode: InputMode)
     gesture: l.gesture ?? undefined,
     skill: `lesson:${lesson}${i ? `:${i}` : ''}`,
     source: 'lesson',
+    // (a first-time hazard about to hit does not wait out the Tips gap: dotGuide.ts TIPS_GAP_MS)
+    ...(HARMLESS_LESSONS.has(lesson) ? {} : { soon: true }),
     waitMs: 9000,
     next: mode === 'screen' && i + 1 < ids.length ? lessonStep(lesson, ids, i + 1, mode) : undefined,
   };
