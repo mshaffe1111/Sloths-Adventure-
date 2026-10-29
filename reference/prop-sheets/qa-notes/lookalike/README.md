@@ -68,6 +68,23 @@ labelling each window by the gen2 sections it covers:
 (Rolls are numbered from 1 here; `pairs.json`'s `roll` counts from 0. "Era roll": the game's layout number, era.ts's `rollVariants`;
 "raw roll": curate's build of seed `rollVariants(12, 777)[roll]`, World 6's swing and ground kits as `w6GameKit` gives them.)
 
+## World 6 under `--apart`, before and after
+
+Rolls each stage keeps (passing every other filter, then no 20 s stretch alike with any shipped roll of another World 6 stage;
+`tools/gen2/curate.ts --apart` against the shipped seeds of 2026-10-29). 6-1, 6-2, 6-4: curate itself, 400 rolls; the others the same
+check in one pass for both measures, 200 rolls (it matched curate exactly on 6-4's first 40).
+
+| Stage | Rolls passing | Kept, old measure | Kept, new | What the new measure still matches |
+|---|---|---|---|---|
+| 6-1 | 400 | 0 | 0 | 6-3, 6-6, 6-7 on every roll (the shared swing sections); the ground stages 0-6 rolls (old: 22-182) |
+| 6-2 | 400 | 0 | 161 | 6-3 114, 6-7 112, 6-5 107, 6-4 85, 6-1 55, 6-9 52 |
+| 6-3 | 200 | 0 | 0 | 6-1, 6-6, 6-7 on every roll; 6-2 26 (old: the ground stages 17-131) |
+| 6-4 | 390 | 0 | 56 | 6-5 257, 6-9 250, 6-2 95 |
+| 6-5 | 199 | 0 | 0 | 6-9 on every roll (the same sections), 6-4 146, 6-2 77 |
+| 6-6 | 200 | 0 | 0 | 6-1 and 6-7 every roll, 6-3 198 |
+| 6-7 | 34 | 0 | 0 | 6-1, 6-3, 6-6 every roll (only 34 of 200 pass its other filters) |
+| 6-9 | 199 | 0 | 0 | 6-5 every roll, 6-4 92, 6-2 60 |
+
 ## What a player sees (the screenshots, 2026-10-29)
 
 `sheets/<pair>.jpg`: each era-roll pair in the game (dev build, `__play(id, layout)`), three frames of each window (its first, middle
