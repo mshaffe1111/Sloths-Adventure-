@@ -11,7 +11,8 @@ import { stingLength } from './stingers.ts';
 const src = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8');
 
 test('SN-5: the shrine plays the short chime; the victory sting waits for the card', () => {
-  assert.ok(SFX.exitChime, 'the chime exists');
+  assert.match(src('../game/audio.ts'), /playExitChime\(\) \{ this\.c\.fx\('star', 2\); \}/, 'a short chime');
+  assert.ok(SFX.star);
   const engine = src('../game/engine.ts');
   const at = engine.indexOf('this.exitTotemReached = true;');
   const block = engine.slice(at, at + 400);

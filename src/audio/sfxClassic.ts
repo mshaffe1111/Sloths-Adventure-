@@ -15,7 +15,7 @@
  * Pitches are randomised a few percent each time, so ten jumps in a row never sound like one sample repeated.
  * Pickups are locked to the key of the music that is playing, so collecting things plays along with the song.
  */
-import { FX_MIX, FX_REF } from './sfxMix.ts';
+import { classicGain } from './sfxMix.ts';
 import { AudioCore, envelope } from './core.ts';
 import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock } from './instruments.ts';
 import type { KeyInfo } from './music.ts';
@@ -872,18 +872,11 @@ export interface FxVariation {
   streak?: number;
 }
 
-/**
- * The classic recipes the game still plays for these (sfx.ts classicFor), with their own loudness at trim 1 (LUFS, measured as sfx.ts
- * FX_LOUDNESS is, SN-2): brought to the mix as the new recipes are. The rest keep their old trims (a soft landing stays soft).
- */
-const CLASSIC_LOUDNESS: Record<string, number> = { vine: -36.0, checkpoint: -12.6, hit: -28.9 };
-
 /** play an effect with its loudness trim */
 export function runFx(name: string, core: AudioCore, key: KeyInfo, arg?: number, v: FxVariation = {}) {
   const fn = SFX[name];
   if (!fn) return;
-  const own = CLASSIC_LOUDNESS[name];
-  TRIM = own === undefined ? (TRIMS[name] ?? 1) : 10 ** ((FX_REF - own) / 20) * (FX_MIX[name] ?? 1);
+  TRIM = classicGain(name, TRIMS[name] ?? 1);
   VAR = Math.max(0, Math.floor(v.variant ?? 0));
   STREAK = Math.max(0, Math.floor(v.streak ?? 0));
   try {

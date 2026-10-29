@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FX_MIX } from './sfxMix.ts';
-import { fxGain } from './sfx.ts';
+import { FX_MIX, fxGain } from './sfxMix.ts';
 
 test('SN-2: the mix: most effects trimmed 0.8-1.2, and the jump and the flower lowest', () => {
   const v = Object.entries(FX_MIX);
