@@ -37,22 +37,22 @@ import { W8_LESSON } from './w8.ts';
 import { RAFT_RISE, WATER } from './w6Rooms.ts';
 
 /**
- * The rooms' lines (under 10 words). All new: each needs Matt's approval before it ships (STAGE-RULES §1 "Story").
- *   hammock  the door, explained as he comes in (Normal, Easy); a stone in his hands; the door open
- *   pads     the door, explained as he comes in (Normal, Easy); a pinecone in his hands; the door open
- *   moon     the door, explained as he comes in; a glowcap in his hands; the moonflower open
+ * The rooms' lines (under 10 words). All new: each needs Matt's approval before it ships (STAGE-RULES §1 "Story"). Dot is a guide, not a
+ * narrator (the lead's review, 2026-10-29): coming in she only notices the door is shut, and with a thing in his hands she only remarks
+ * on it; nothing names the next step (the hints, asked for, come later and in steps).
+ *   hammock  the door shut; a stone in his hands; the door open
+ *   pads     the door shut; a pinecone in his hands; the door open
+ *   moon     the door shut; a glowcap in his hands; the moonflower open
  */
 export const W8R_NEW_LINES: readonly string[] = [
-  "The hammock's rope holds that leaf door shut.",
-  'That leaf door needs a weight on its plate.',
-  'Seed stones up there! The plate is below.',
+  'Shut tight.',
+  'A seed stone. Heavy!',
   'Hammock down, door open. Through!',
-  'That bark door needs both glow pads glowing.',
-  'That bark door needs its glow pad pressed.',
-  "Pinecones! Heavy enough for a pad, I bet.",
+  "That door won't budge.",
+  'Got a pinecone.',
   'Both pads glowing. Through, quick!',
-  'That door only opens for a moonflower.',
-  'Glowcaps glow. Moonflowers love a glow.',
+  'Hm. Shut.',
+  'Ooh, it glows.',
   'It opened! And so did the door.',
 ];
 
@@ -98,8 +98,8 @@ export const hammockRoomSpec: LocalRoomSpec = {
   beyond: wb(230),
   ground: ['floor', 'well', 'floor2', 'shelf'],
   tips: {
-    enter: "The hammock's rope holds that leaf door shut.", // (new, needs Matt's approval)
-    hold: 'Seed stones up there! The plate is below.', // (new, needs Matt's approval)
+    enter: 'Shut tight.', // (new, needs Matt's approval)
+    hold: 'A seed stone. Heavy!', // (new, needs Matt's approval)
     open: 'Hammock down, door open. Through!', // (new, needs Matt's approval)
   },
 };
@@ -132,7 +132,7 @@ export const hammockRoom: SectionTemplate = {
 export const hammockRoomSpecEasy: LocalRoomSpec = {
   ...hammockRoomSpec,
   pieces: hammockRoomSpec.pieces.map((p) => (p.kind === 'gate' ? { ...p, open: 'plate' } : p)),
-  tips: { ...hammockRoomSpec.tips, enter: 'That leaf door needs a weight on its plate.' }, // (new, needs Matt's approval)
+  tips: hammockRoomSpec.tips,
 };
 export const hammockRoomEasy: SectionTemplate = { ...hammockRoom, room: hammockRoomSpecEasy };
 
@@ -190,8 +190,8 @@ export const padsRoomSpec: LocalRoomSpec = {
   beyond: pb(PADS.door + 110),
   ground: ['floor', 'bough'],
   tips: {
-    enter: 'That bark door needs both glow pads glowing.', // (new, needs Matt's approval)
-    hold: "Pinecones! Heavy enough for a pad, I bet.", // (new, needs Matt's approval)
+    enter: "That door won't budge.", // (new, needs Matt's approval)
+    hold: 'Got a pinecone.', // (new, needs Matt's approval)
     open: 'Both pads glowing. Through, quick!', // (new, needs Matt's approval)
   },
 };
@@ -232,7 +232,7 @@ export const padsRoom: SectionTemplate = {
 export const padsRoomSpecEasy: LocalRoomSpec = {
   ...padsRoomSpec,
   pieces: padsRoomSpec.pieces.map((p) => (p.kind === 'gate' ? { ...p, open: 'padA' } : p)),
-  tips: { ...padsRoomSpec.tips, enter: 'That bark door needs its glow pad pressed.' }, // (new, needs Matt's approval)
+  tips: padsRoomSpec.tips,
 };
 export const padsRoomEasy: SectionTemplate = { ...padsRoom, room: padsRoomSpecEasy };
 
@@ -286,8 +286,8 @@ export const moonRoomSpec: LocalRoomSpec = {
   beyond: mb(MOON.door + 110),
   ground: ['floor', 'stump'],
   tips: {
-    enter: 'That door only opens for a moonflower.', // (new, needs Matt's approval)
-    hold: 'Glowcaps glow. Moonflowers love a glow.', // (new, needs Matt's approval)
+    enter: 'Hm. Shut.', // (new, needs Matt's approval)
+    hold: 'Ooh, it glows.', // (new, needs Matt's approval)
     open: 'It opened! And so did the door.', // (new, needs Matt's approval)
   },
 };
