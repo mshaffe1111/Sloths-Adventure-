@@ -805,6 +805,9 @@ export class GameEngine {
 
     this.canvas.width = Math.floor(w * dpr);
     this.canvas.height = Math.floor(h * dpr);
+    // (resizing resets the context: smoothing back to plain bilinear, which smears the magnified backdrops upright)
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = 'high';
     this.viewCssW = w;
     this.viewCssH = h;
     this.viewCssX = rect.left || 0;
