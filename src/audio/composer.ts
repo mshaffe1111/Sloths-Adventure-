@@ -28,7 +28,7 @@ import { lullaby, stepBy } from './motifs.ts';
 import { orchestrate, PACE_CODE, paceFromCode, type Pace } from './orchestrate.ts';
 import { actOfWorld, fitShift, LEAD_BAND, LEAD_SIT, leadWindow, MIN_BPM, type ActId } from './acts.ts';
 import { trim, VOICE_RANGE, VOICE_TRIM_DB } from './scoreKit.ts';
-import { arrange, ornament, rerhythm, hint, type SectionSet } from './form.ts';
+import { arrange, ornament, rerhythm, hint, parseBar, POKEY_MOTIF, POKEY_ROOTS, transposeBar, type SectionSet } from './form.ts';
 import { DOUBLES, realNoteName } from './realize.ts';
 import type { FormPart } from './music.ts';
 
@@ -332,7 +332,8 @@ function fallBar(c: MelCtx, root: number, prevEnd: number): BarN {
 /** an 8-bar section A: state, answer by sequence, contrast, half cadence; repeat the idea; close on the tonic */
 function sectionA(c: MelCtx, roots: number[], start: number, doms?: boolean[]): { bars: BarN[]; motif: BarN; top: number } {
   // A keeps below the top of the range, so the climax of B really is the high point
-  c = { ...c, hi: Math.round(c.lo + (c.hi - c.lo) * 0.68) };
+  // (but never to less than an octave: a lead with a narrow range, the horn, would have nowhere left to close a phrase)
+  c = { ...c, hi: Math.min(c.hi, Math.max(c.lo + 7, Math.round(c.lo + (c.hi - c.lo) * 0.68))) };
   const rA = pickRhythm(c);
   const rB = pickRhythm(c);
   const b0 = buildBar(c, roots[0], rA, start, null);
@@ -433,6 +434,8 @@ interface WorldCard {
   /** longer chords (two bars each) */
   slow: number;
   delay: number;
+  /** the world's own colour under the tune: a figure on its instrument (and, for the ruins, a gong every four bars) */
+  color?: { inst: Inst; oct: number; pats: string[]; gain: number; gong?: boolean };
 }
 
 /**
@@ -443,19 +446,31 @@ interface WorldCard {
  *   Act III The Iron Road  worlds 8-10  heavy; cellos and horns, the phrygian and the harmonic minor, the Iron March
  */
 const CARDS: Record<number, WorldCard> = {
+  // Each world has its own lead (Matt, 2026-10-29: "change the main instrument to really make it feel different") and a colour of its own;
+  // the alternates take the tune in a stage's other sections and tunes.
   // ---- Act I
-  1: { mode: 'major', tonics: ['C', 'D', 'F', 'G'], bpm: [108, 122], leads: ['flute', 'clarinet', 'violins'], alts: ['clarinet', 'oboe', 'flute'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'oboe'], groove: 'bounce', dens: 'normal', seventh: 0.1, tunes: [['pokey', 0.35]], slow: 0.1, delay: 0.75 },
-  2: { mode: 'major', tonics: ['G', 'D', 'A', 'C'], bpm: [104, 116], swing8: 0.18, leads: ['oboe', 'clarinet', 'flute'], alts: ['flute', 'clarinet', 'oboe'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'clarinet'], groove: 'lazy', dens: 'normal', seventh: 0.15, tunes: [['pokey', 0.25]], slow: 0.15, delay: 0.75 },
-  3: { mode: 'minor', tonics: ['A', 'E', 'D', 'B'], bpm: [104, 112], leads: ['oboe', 'clarinet', 'flute', 'cello'], alts: ['clarinet', 'oboe', 'flute'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'clarinet'], groove: 'drift', dens: 'sparse', seventh: 0.3, tunes: [], slow: 0.35, delay: 0.75 },
+  // 1 Emerald Canopy: the flute, with marimba
+  1: { mode: 'major', tonics: ['C', 'D', 'F', 'G'], bpm: [108, 122], leads: ['flute'], alts: ['clarinet', 'oboe'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'oboe'], groove: 'bounce', dens: 'normal', seventh: 0.1, tunes: [['pokey', 0.35]], slow: 0.1, delay: 0.75, color: { inst: 'marimbaR', oct: 60, pats: ['r.t. f.t. r.t. f.t.', 'r... t.f. r... t.f.'], gain: 0.32 } },
+  // 2 the River: the clarinet, with harp ripples
+  2: { mode: 'major', tonics: ['G', 'D', 'A', 'C'], bpm: [104, 116], swing8: 0.18, leads: ['clarinet'], alts: ['flute', 'oboe'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'oboe'], groove: 'lazy', dens: 'normal', seventh: 0.15, tunes: [['pokey', 0.25]], slow: 0.15, delay: 0.75, color: { inst: 'harp', oct: 60, pats: ['rtfo tfr. .... ....', '.... .... rtfo tfr.'], gain: 0.34 } },
+  // 3 the night grotto: the harp, with glockenspiel sparkle over low cellos
+  3: { mode: 'minor', tonics: ['A', 'E', 'D', 'B'], bpm: [104, 112], leads: ['harp'], alts: ['clarinet', 'oboe'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'oboe'], groove: 'drift', dens: 'sparse', seventh: 0.3, tunes: [], slow: 0.35, delay: 0.75, color: { inst: 'bell', oct: 79, pats: ['.... .... f... ....', '.... t... .... ..o.'], gain: 0.16 } },
   // ---- Act II: the notes get thin
-  4: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [100, 112], leads: ['oboe', 'cello', 'clarinet'], alts: ['clarinet', 'oboe', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'oboe'], groove: 'lazy', dens: 'sparse', seventh: 0.3, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
-  5: { mode: 'minor', tonics: ['A', 'E', 'D', 'G'], bpm: [106, 118], leads: ['oboe', 'clarinet', 'cello'], alts: ['clarinet', 'oboe', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'oboe'], groove: 'lazy', dens: 'normal', seventh: 0.25, tunes: [['lament', 0.35]], slow: 0.15, delay: 0.75 },
-  6: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [100, 110], leads: ['clarinet', 'oboe', 'cello'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['oboe', 'clarinet'], groove: 'lazy', dens: 'sparse', seventh: 0.25, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
-  7: { mode: 'phrygian', tonics: ['E', 'A', 'D', 'B'], bpm: [100, 112], leads: ['cello', 'horn', 'oboe', 'clarinet'], alts: ['horn', 'cello', 'clarinet'], pads: ['choir', 'strings'], bass: ['bass'], arps: ['celloStac'], counters: ['oboe', 'clarinet'], groove: 'march', dens: 'sparse', seventh: 0.1, tunes: [['march', 0.3], ['lament', 0.2]], slow: 0.4, delay: 0.75 },
+  // 4 falls and cliffs: the horn, with the flute for the wind
+  4: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [100, 112], leads: ['horn'], alts: ['cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'oboe'], groove: 'lazy', dens: 'sparse', seventh: 0.3, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
+  // 5 orchid and silk: the oboe, with pizzicato strings
+  5: { mode: 'minor', tonics: ['A', 'E', 'D', 'G'], bpm: [106, 118], leads: ['oboe'], alts: ['clarinet', 'flute'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'flute'], groove: 'lazy', dens: 'normal', seventh: 0.25, tunes: [['lament', 0.35]], slow: 0.15, delay: 0.75, color: { inst: 'violinStac', oct: 62, pats: ['..t. ..f. ..t. ..o.', '..f. ..t. .... ..t.'], gain: 0.3 } },
+  // 6 the mangrove: the bassoon (in its upper range), with plucked double basses
+  6: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [100, 110], leads: ['bassoon'], alts: ['cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['oboe', 'clarinet'], groove: 'lazy', dens: 'sparse', seventh: 0.25, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
+  // 7 the ruins: the cello, with marimba and a gong
+  7: { mode: 'phrygian', tonics: ['E', 'A', 'D', 'B'], bpm: [100, 112], leads: ['cello'], alts: ['horn', 'bassoon'], pads: ['choir', 'strings'], bass: ['bass'], arps: ['celloStac'], counters: ['oboe', 'clarinet'], groove: 'march', dens: 'sparse', seventh: 0.1, tunes: [['march', 0.3], ['lament', 0.2]], slow: 0.4, delay: 0.75, color: { inst: 'marimbaR', oct: 55, pats: ['r... ..t. .... f...', 'r... .... t... ....'], gain: 0.3, gong: true } },
   // ---- Act III: heavy, the Iron March
-  8: { mode: 'lydian', tonics: ['D', 'A', 'G', 'E'], bpm: [108, 114], leads: ['clarinet', 'oboe', 'cello', 'violins'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings', 'choir'], bass: ['bass'], arps: ['harp'], counters: ['oboe', 'clarinet'], groove: 'drift', dens: 'sparse', seventh: 0.3, tunes: [['lullaby', 0.4]], slow: 0.45, delay: 0.75 },
-  9: { mode: 'phrygian', tonics: ['D', 'A', 'G', 'E'], bpm: [118, 132], leads: ['cello', 'cello', 'oboe', 'clarinet'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['celloStac', 'violinStac'], counters: ['oboe', 'clarinet'], groove: 'drive', dens: 'normal', seventh: 0.05, tunes: [['march', 0.4]], slow: 0, delay: 0.5 },
-  10: { mode: 'minor', tonics: ['C', 'G', 'F', 'D'], bpm: [114, 128], leads: ['horn', 'cello', 'cello', 'oboe'], alts: ['cello', 'horn', 'oboe'], pads: ['strings', 'choir'], bass: ['bass'], arps: ['celloStac', 'hornStac'], counters: ['oboe', 'clarinet'], groove: 'drive', dens: 'normal', seventh: 0.1, tunes: [['march', 0.45]], slow: 0.1, delay: 0.5 },
+  // 8 moonlit treetops: the violins, with glockenspiel
+  8: { mode: 'lydian', tonics: ['D', 'A', 'G', 'E'], bpm: [108, 114], leads: ['violins'], alts: ['oboe', 'clarinet'], pads: ['strings', 'choir'], bass: ['bass'], arps: ['harp'], counters: ['oboe', 'clarinet'], groove: 'drift', dens: 'sparse', seventh: 0.3, tunes: [['lullaby', 0.4]], slow: 0.45, delay: 0.75, color: { inst: 'bell', oct: 79, pats: ['r... .... t... ....', '.... f... .... o...'], gain: 0.16 } },
+  // 9 the volcano march: the trombone, over the tuba
+  9: { mode: 'phrygian', tonics: ['D', 'A', 'G', 'E'], bpm: [118, 132], leads: ['trombone'], alts: ['horn', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['celloStac', 'violinStac'], counters: ['oboe', 'clarinet'], groove: 'drive', dens: 'normal', seventh: 0.05, tunes: [['march', 0.4]], slow: 0, delay: 0.5 },
+  // 10 the General's fortress: the horns, full brass and timpani
+  10: { mode: 'minor', tonics: ['C', 'G', 'F', 'D'], bpm: [114, 128], leads: ['horn'], alts: ['trombone', 'cello'], pads: ['strings', 'choir'], bass: ['bass'], arps: ['celloStac', 'hornStac'], counters: ['oboe', 'clarinet'], groove: 'drive', dens: 'normal', seventh: 0.1, tunes: [['march', 0.45]], slow: 0.1, delay: 0.5, color: { inst: 'hornStac', oct: 48, pats: ['R... ..r. R... ....', 'R..r ..R. .... ....'], gain: 0.36 } },
 };
 
 /**
@@ -654,8 +669,15 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
   }
   const tonicPc = PC[tonicName];
   const flats = usesFlats(tonicPc, mode);
-  const tonicStr = `${noteName(tonicPc, flats)}${tonicPc >= 10 ? 3 : 4}`;
-  const tonicMidi = tonicOf(tonicName);
+  // a made-up tune's home note sits near the bottom of where its lead sings, whatever the key (a horn or a bassoon in A put it at the top of
+  // their range, and the tune was squeezed into five notes); a quoted tune keeps the octave it was fitted in
+  const tonicMidi = quote ? tonicOf(tonicName) : (() => {
+    let m = tonicOf(tonicName);
+    const low = leadWindow(lead)[0] - shift;
+    while (m > low + 5) m -= 12;
+    return m;
+  })();
+  const tonicStr = `${noteName(tonicPc, flats)}${Math.floor(tonicMidi / 12) - 1}`;
   const tuneRange = quote ? extentOf(quote.bars, tonicMidi, scale) : null;
   const slow = !quote && r() < card.slow;
   const h = harmony16(r, mode, tonicPc, { slow, seventh: card.seventh, tune: quote });
@@ -714,11 +736,17 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     gain: Math.round(0.4 * trim(counterInst) * 1000) / 1000, rev: 0.5, dly: 0.22, pan: pick(r, [-0.3, 0.3]), gate: [0.4, 0.8],
   } as MelodyTrack);
   tracks.push(...drumTracks(r, groove));
+  // the world's own colour (CARDS.color): never dropped as the tinkling arpeggios are, it is part of what makes the world sound like itself
+  if (card.color) {
+    const col = card.color;
+    tracks.push({ kind: 'pattern', name: 'color', inst: col.inst as PatternTrack['inst'], oct: col.oct, pats: col.pats, gain: col.gain, rev: 0.4, len: 1, pan: 0.2 } as PatternTrack);
+    if (col.gong) tracks.push({ kind: 'drums', name: 'gongC', voice: 'gong', pats: ['X... .... .... ....'], gain: 0.32, rev: 0.6, mask: 'x...x...x...x...' } as DrumTrack);
+  }
 
   // ---- the form: the tune built out into sections (form.ts), from its own dice so the tune itself is the same as it always was
   const form = stageForm({
     r: rng((hashStr(`form${w}`) ^ Math.imul(seed >>> 0, 2246822519)) >>> 0), seed, mode, tonicPc, card, h, barsA, barsB: b.map(barStr), c, motif, from, mid,
-    lead, alt, counter: counterInst, shift, noteLo, noteHi,
+    lead, alt, counter: counterInst, shift, noteLo, noteHi, tunes: 2 + ((seed >>> 3) % 2),
   });
 
   let theme: Theme = {
@@ -731,6 +759,7 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     delay: card.delay,
     chords: mergeChords(h.names),
     form,
+    chain: true,
     tracks,
   };
   // the same tune, dressed in the orchestra for what the player is doing (the notes do not change with the pace)
@@ -772,6 +801,8 @@ interface FormInput {
   shift: number;
   noteLo: number;
   noteHi: number;
+  /** how many tunes the stage has (2 or 3) */
+  tunes: number;
 }
 
 /**
@@ -855,7 +886,41 @@ function stageForm(f: FormInput): FormPart[] {
       lift: -0.35,
     },
   };
-  return arrange(sections, f.seed >>> 5);
+  // ---- the stage's other tunes (Matt, 2026-10-29: "write more musics for levels"): the same key, mode and instruments, their own chords
+  // and melody, cut into chunks the same way. The first of them opens with Pokey's motif (form.ts), the thread through every world.
+  const pool: FormPart[] = arrange(sections, f.seed >>> 5).filter((p, i, a) => a.findIndex((q) => q.name === p.name) === i).map((p) => ({ ...p, tune: 0 }));
+  for (let k = 1; k < f.tunes; k++) {
+    const hk = harmony16(r, mode, tonicPc, { slow: r() < card.slow, seventh: card.seventh });
+    const ck: MelCtx = { ...f.c, r, dens: k === 1 ? f.c.dens : f.c.dens === 'sparse' ? 'normal' : 'sparse' };
+    const rootsK = hk.roots.slice(0, 8);
+    const a = sectionA(ck, rootsK, f.mid + pick(r, [-2, -1, 1, 2]), hk.doms.slice(0, 8));
+    let barsK = a.bars.map(barStr);
+    if (k === 1) {
+      // Pokey's two bars over the home chord and the fifth, moved by octaves into the range the stage's tune keeps to
+      const lo = Math.min(...POKEY_MOTIF.flatMap((b) => parseBar(b).map((t) => t.n ?? 99)));
+      const hi = Math.max(...POKEY_MOTIF.flatMap((b) => parseBar(b).map((t) => t.n ?? -99)));
+      let step = 0;
+      while (lo + step < f.c.lo && hi + step + 7 <= f.c.hi + 2) step += 7;
+      while (hi + step > f.c.hi + 2 && lo + step - 7 >= f.c.lo - 2) step -= 7;
+      barsK = [...POKEY_MOTIF.map((b) => transposeBar(b, step)), ...barsK.slice(2)];
+      rootsK[0] = POKEY_ROOTS[0];
+      rootsK[1] = POKEY_ROOTS[1];
+    }
+    const bk = sectionB(ck, hk.roots.slice(8, 16), a.motif, f.mid, hk.doms.slice(8, 16), { end: a.bars[7].end, top: a.top });
+    const tag = `·${k + 1}`;
+    pool.push(
+      { name: `A${tag}`, tune: k, chords: names(rootsK), lines: lead(barsK) },
+      { name: `B${tag}`, tune: k, chords: names(hk.roots.slice(8, 16)), lines: lead(bk.map(barStr)) },
+      { name: `A2${tag}`, tune: k, chords: names(rootsK), lines: lead(barsK.map((b) => ornament(b, r))), ...(aInst ? { inst: { lead: aInst as NoteInstName } } : {}) },
+      {
+        name: `break${tag}`, tune: k,
+        chords: names([...rootsK.slice(0, 4), ...rootsK.slice(0, 2), pick(r, [3, 1, 5]), cad]),
+        lines: lead([hint(barsK[0]), restBar(16), hint(barsK[1]), restBar(16), hint(barsK[0]), restBar(16), restBar(16), restBar(16)]),
+        rest: ['perc', 'low', 'stab', 'drive', 'counter'], lift: -0.35,
+      },
+    );
+  }
+  return pool;
 }
 
 /**

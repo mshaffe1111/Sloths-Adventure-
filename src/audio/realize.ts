@@ -120,9 +120,23 @@ export const DOUBLES: Record<string, Doubling[]> = {
     { inst: 'flute', oct: 12, frac: 0.3, gate: [0.4, 0.9], lite: true },
     { inst: 'clarinet', oct: 0, frac: 0.38, gate: [0.45, 0.9], harm: true, lite: true },
   ],
+  // the low leads are doubled an octave up, softly and from the start: a phone's small speaker loses a cello, a bassoon or a trombone's
+  // body, and the octave is what it carries
   cello: [
-    { inst: 'violas', oct: 12, frac: 0.45, gate: [0.2, 0.65] },
+    { inst: 'violas', oct: 12, frac: 0.4, gate: [0, 0.3] },
     { inst: 'bassoon', oct: 0, frac: 0.4, gate: [0.3, 0.8], lite: true },
+  ],
+  bassoon: [
+    { inst: 'violas', oct: 12, frac: 0.38, gate: [0, 0.3] },
+    { inst: 'cello', oct: 0, frac: 0.4, gate: [0.3, 0.8], lite: true },
+  ],
+  trombone: [
+    { inst: 'horn', oct: 12, frac: 0.38, gate: [0, 0.3] },
+    { inst: 'violas', oct: 12, frac: 0.3, gate: [0.4, 0.85], lite: true },
+  ],
+  harp: [
+    { inst: 'violins', oct: 0, frac: 0.3, gate: [0.35, 0.8] },
+    { inst: 'flute', oct: 0, frac: 0.3, gate: [0.5, 0.95], lite: true },
   ],
   horn: [
     { inst: 'violas', oct: 0, frac: 0.42, gate: [0.2, 0.7] },

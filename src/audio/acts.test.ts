@@ -124,7 +124,7 @@ test('the placing rules: a tune takes the nearest octave that fits, and a tune t
     assert.ok(lo >= LEAD_BAND[inst][0] && hi <= LEAD_BAND[inst][1]);
     assert.ok(inst in VOICE_RANGE, `${inst} is a recorded voice`);
   }
-  assert.deepEqual(Object.keys(LEAD_SIT).sort(), ['cello', 'horn']);
+  assert.deepEqual(Object.keys(LEAD_SIT).sort(), ['bassoon', 'cello', 'horn', 'trombone']);
 });
 
 test('Act I is sunny, Act II somber, Act III heavy', () => {
@@ -159,13 +159,14 @@ test('Act I is sunny, Act II somber, Act III heavy', () => {
   assert.ok(iron.bpm > trail.bpm, `${iron.bpm} vs ${trail.bpm}`);
 });
 
-test('Act II is dressed without the bouncing pizzicato, the snare and the triangle', () => {
+test('Act II is dressed without the snare and the triangle, and only its silk and mangrove worlds pluck', () => {
   for (const w of [4, 5, 6]) {
     for (const pace of PACES) {
       for (const seed of SEEDS.slice(0, 12)) {
         const t = orchestrate(composeStage(w, seed), { world: w, pace, seed });
         const bass = t.tracks.find((k) => k.name === 'orchBass');
-        assert.ok(bass && bass.kind === 'pattern' && bass.inst !== 'contraPizz', `world ${w} ${pace}: bass ${bass && 'inst' in bass ? bass.inst : '?'}`);
+        // (World 5's pizzicato strings and World 6's plucked double basses are those worlds' own colour: Matt, 2026-10-29)
+        if (w === 4) assert.ok(bass && bass.kind === 'pattern' && bass.inst !== 'contraPizz', `world ${w} ${pace}: bass ${bass && 'inst' in bass ? bass.inst : '?'}`);
         assert.ok(!t.tracks.some((k) => k.name === 'snareR' || k.name === 'triR'), `world ${w} ${pace}`);
       }
     }

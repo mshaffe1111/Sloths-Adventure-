@@ -1,10 +1,10 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
-import { COARSE, OrchSfxToggle, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle, DifficultySetting, DotHelpSetting } from './menuParts.tsx';
+import { COARSE, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle, DifficultySetting, DotHelpSetting } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 import { MenuFrame, MenuTile, SoundSetting } from './MenuFrame.tsx';
 
-export { COARSE, OrchSfxToggle };
+export { COARSE };
 import type { LevelConfig } from '../game/types.ts';
 import type { SkillId } from '../game/skills.ts';
 import { UpdateRow } from './UpdateControls.tsx';
@@ -176,7 +176,6 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
         <DotHelpSetting />
         <WaysideToggle />
         <PerfToggle />
-        <OrchSfxToggle />
       </>
     }
   />

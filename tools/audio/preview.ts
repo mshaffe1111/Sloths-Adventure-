@@ -66,7 +66,7 @@ function legacyCheckpoint(core: AudioCore, key: { tonic: number; scale: number[]
 }
 const TICK = 0.1;
 
-async function render(spec: PreviewSpec): Promise<{ l: string; r: string; perf: Record<string, number> }> {
+async function render(spec: PreviewSpec): Promise<{ l: string; r: string; perf: Record<string, number>; chunks: Array<{ id: string; chunks: string[] }> }> {
   const ctx = new OfflineAudioContext(2, Math.ceil(spec.seconds * RATE), RATE);
   const lite = spec.lite !== false;
   const core = new AudioCore(ctx, { lightRoom: lite });
@@ -79,12 +79,14 @@ async function render(spec: PreviewSpec): Promise<{ l: string; r: string; perf: 
   const amb = new Ambience(core);
   amb.lite = lite;
   let pb: M.Playback | null = null;
+  const pbs: M.Playback[] = [];
   const start = (m: NonNullable<PreviewSpec['music']>, at: number, fade: boolean) => {
     const theme = themeById(m.id);
     if (!theme) throw new Error('no theme ' + m.id);
     const p = new Playback(core, theme, at, undefined, fade, { seed: m.seed, tempo: m.tempo, form: m.form });
     p.liteMode = lite;
     p.setIntensity(m.intensity ?? 0.4, true);
+    pbs.push(p);
     if (fade) p.out.gain.linearRampToValueAtTime((theme.level ?? 1) * 0.9, at + 1.4);
     return p;
   };
@@ -141,7 +143,8 @@ async function render(spec: PreviewSpec): Promise<{ l: string; r: string; perf: 
     for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode(...u8.subarray(i, i + 0x8000));
     return btoa(s);
   };
-  return { l: enc(buf.getChannelData(0)), r: enc(buf.getChannelData(1)), perf: { renderMs: ms, seconds: spec.seconds } };
+  const chunks = pbs.map((p) => ({ id: p.theme.id, chunks: p.chunks }));
+  return { l: enc(buf.getChannelData(0)), r: enc(buf.getChannelData(1)), perf: { renderMs: ms, seconds: spec.seconds }, chunks };
 }
 
 (window as unknown as { renderPreview: typeof render }).renderPreview = render;

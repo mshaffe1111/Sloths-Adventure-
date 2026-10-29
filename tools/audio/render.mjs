@@ -39,6 +39,7 @@ try {
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', wav, '-codec:a', 'libmp3lame', '-b:a', '160k', path.join(outDir, `${name}.mp3`)]);
     if (!process.env.KEEP_WAV) fs.unlinkSync(wav);
     console.log(name, `${spec.seconds}s rendered in ${Math.round(res.perf.renderMs)} ms`);
+    if (res.chunks?.some((c) => c.chunks.length)) fs.writeFileSync(path.join(outDir, `${name}.chunks.json`), JSON.stringify(res.chunks));
   }
 } finally {
   await browser.close();

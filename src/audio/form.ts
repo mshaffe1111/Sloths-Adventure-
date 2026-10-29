@@ -223,5 +223,70 @@ function safe(fn: (b: string) => string, b: string, spb: number): string {
   }
 }
 
+// ───────────────────────────────────────────── chaining the chunks ─────────────────────────────────────────────
+
+/**
+ * Pokey's motif: the first two bars of his tune (tunes.ts SLOMATT_A), over the home chord and the fifth. It opens one of every stage's
+ * tunes, in that world's mode and on that world's lead, so the one thread runs through all ten worlds (the lead, 2026-10-29).
+ */
+export const POKEY_MOTIF = ['5:3 5:1 6:2 5:2 3:4 r:4', '2:3 3:1 2:2 1:2 7,:4 r:4'];
+export const POKEY_ROOTS = [0, 4];
+
+/** a bar moved by whole scale steps (7 = an octave) */
+export function transposeBar(src: string, steps: number): string {
+  return barOf(parseBar(src).map((t) => (t.n === null ? t : { ...t, n: t.n + steps })));
+}
+
+/** what a chunk does in the piece: 'A', 'B', 'A2', 'C', 'bridge', 'break' (a tune's chunks after the first are named 'A·2' and so on) */
+export const roleOfPart = (p: FormPart) => p.name.split('·')[0];
+
+const barsOfPart = (p: FormPart) => p.chords.reduce((a, c) => a + (Number(/\*(\d+)$/.exec(c)?.[1]) || 1), 0);
+
+/**
+ * The next chunk to play (an index into the pool), given those played so far (Matt, 2026-10-29: "write more musics for levels and keep
+ * them smaller by looping. Keeping the music constantly changes"). A stage's music is a pool of 8-bar chunks from its 2-3 tunes, and the
+ * game strings them together as it goes, never the same order twice:
+ *   - nothing heard in the last `windowSec` seconds comes back (when the pool is too small for that, just not the last three);
+ *   - a tune's answer usually follows it, and after the quiet passage or the bridge a tune comes home on its A;
+ *   - the quiet passage and the bridge never come twice in a row, and the music moves to another tune through an A, a bridge or a quiet
+ *     passage rather than in the middle of a phrase.
+ * `r` is the stage's own dice, so a stage's music is the same each time it is played from the same start, and different from every other.
+ */
+export function nextChunk(pool: FormPart[], history: number[], r: R, barSec: number, windowSec = 120): number {
+  if (!history.length) return Math.max(0, pool.findIndex((p) => p.name === 'A'));
+  const lastI = history[history.length - 1];
+  const last = pool[lastI];
+  const recent = new Set<number>();
+  let t = 0;
+  for (let i = history.length - 1; i >= 0 && t < windowSec; i--) {
+    recent.add(history[i]);
+    t += barsOfPart(pool[history[i]]) * barSec;
+  }
+  let cands = pool.map((_, i) => i).filter((i) => !recent.has(i));
+  if (!cands.length) cands = pool.map((_, i) => i).filter((i) => !history.slice(-3).includes(i));
+  if (!cands.length) cands = pool.map((_, i) => i).filter((i) => i !== lastI);
+  const lr = roleOfPart(last);
+  const weight = (i: number) => {
+    const p = pool[i];
+    const ro = roleOfPart(p);
+    if ((ro === 'break' || ro === 'bridge') && ro === lr) return 0;
+    let x = 1;
+    if (lr === 'A' && ro === 'B' && p.tune === last.tune) x = 5;
+    else if ((lr === 'break' || lr === 'bridge') && ro === 'A') x = 4;
+    if (ro === 'break' && lr === 'A') x *= 0.3;
+    if (p.tune !== last.tune && ro !== 'A' && lr !== 'break' && lr !== 'bridge') x *= 0.4;
+    return x;
+  };
+  const ws = cands.map(weight);
+  const total = ws.reduce((a, b) => a + b, 0);
+  if (total <= 0) return cands[Math.floor(r() * cands.length)];
+  let u = r() * total;
+  for (let k = 0; k < cands.length; k++) {
+    u -= ws[k];
+    if (u <= 0) return cands[k];
+  }
+  return cands[cands.length - 1];
+}
+
 /** the instrument a section hands the tune to, when it hands it to anyone */
 export const leadInst = (part: FormPart | undefined, track: string): NoteInstName | undefined => part?.inst?.[track];

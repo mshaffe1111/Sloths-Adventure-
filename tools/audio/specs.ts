@@ -4,8 +4,9 @@ import { themeById } from '../../src/audio/themes.ts';
 import { autoForm } from '../../src/audio/form.ts';
 import fs from 'node:fs';
 
-const which = process.argv[2] === 'after' ? 'after' : 'before';
+const which = process.argv[2] === 'after' ? 'after' : process.argv[2] === 'v2' ? 'v2' : 'before';
 const after = which === 'after';
+const v2 = which === 'v2';
 const OBJ: Record<number, string | undefined> = { 1: undefined, 2: undefined, 3: 'climb', 4: undefined, 5: 'sneak', 6: undefined, 7: undefined, 8: 'climb', 9: undefined, 10: 'defeat' };
 import { WORLDS_DATA } from '../../src/game/worldsData.ts';
 const AMB: Record<number, string> = Object.fromEntries(WORLDS_DATA.map((d, i) => [i + 1, d.ambientType]));
@@ -113,5 +114,22 @@ for (const w of [1, 4, 9]) {
   if (after) specs[`effects-w${w}`] = { seconds: 3 + PAIRS.length * 5 + 2, music: { id: s.id, seed: s.seed, tempo: s.tempo, intensity: 0.3, form: true }, events };
 }
 if (after && process.env.PAIRS) fs.writeFileSync(process.env.PAIRS, JSON.stringify(pairTimes));
+if (v2) {
+  // the v2 previews (the lead, 2026-10-29): two stages of one world back to back, one stage for four minutes, and every world's new lead
+  for (const k of Object.keys(specs)) delete specs[k];
+  const m = (w: number, lvl: number) => {
+    const s = stageMusic(w, `${w}-${lvl}`, lvl, 0, OBJ[w]);
+    return { id: s.id, seed: s.seed, tempo: s.tempo, intensity: 0.35, form: true };
+  };
+  specs['two-stages-w5'] = { seconds: 120, music: m(5, 2), events: [{ t: 0, amb: AMB[5] }, { t: 60, music: m(5, 3) }] };
+  specs['four-minutes-w3'] = {
+    seconds: 240, music: m(3, 4),
+    events: [{ t: 0, amb: AMB[3] }, { t: 95, state: { danger: 1 }, intensity: 0.7 }, { t: 112, state: { danger: 0 }, intensity: 0.35 }, { t: 170, state: { dark: 1 } }, { t: 195, state: { dark: 0 } }],
+  };
+  const reel: unknown[] = [{ t: 0, amb: AMB[1] }];
+  // (World 2's 4th stage is one of the one-in-five that play its written tune, with the old instruments: the reel takes its 5th)
+  for (let w = 2; w <= 10; w++) reel.push({ t: (w - 1) * 60, music: m(w, w === 2 ? 5 : 4), amb: AMB[w] });
+  specs['leads-reel'] = { seconds: 600, music: m(1, 4), events: reel };
+}
 console.log(JSON.stringify(specs, null, 1));
 if (after && process.env.TIMELINE) fs.writeFileSync(process.env.TIMELINE, JSON.stringify(timeline, null, 1));

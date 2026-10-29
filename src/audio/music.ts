@@ -31,7 +31,7 @@ import {
   type MelNote,
 } from './theory.ts';
 import { CALM, intensityLift, layerMix, layerTracks, moodTempo, roleOf, stepState, toneCutoff, voiceDrop, type MusicState, type Role } from './adaptive.ts';
-import { autoForm } from './form.ts';
+import { autoForm, nextChunk } from './form.ts';
 
 export type NoteInstName = keyof typeof NOTE_VOICES;
 export type ChordInstName = keyof typeof CHORD_VOICES;
@@ -126,6 +126,8 @@ export interface FormPart {
   rest?: string[];
   /** added to the intensity the parts' gates read: a fuller bridge (+), a quiet passage (-) */
   lift?: number;
+  /** which of the stage's tunes it comes from (0 = the first) */
+  tune?: number;
 }
 
 export interface Theme {
@@ -155,6 +157,8 @@ export interface Theme {
   tempoMap?: number[];
   /** the piece's sections in the order they play (see FormPart); without it the piece goes round `chords` */
   form?: FormPart[];
+  /** the form is a pool of chunks the Playback strings together as it plays, never in the same order (form.ts nextChunk) */
+  chain?: boolean;
   tracks: Track[];
 }
 
@@ -241,7 +245,11 @@ export class Playback {
   private readonly scale: number[];
   private readonly barChords: BarChord[];
   /** a piece with a form: which section (index into theme.form) and which bar of it every bar of the timeline is */
-  private readonly partAt: Array<{ p: number; b: number; len: number }> | null = null;
+  private partAt: Array<{ p: number; b: number; len: number }> | null = null;
+  /** a chained piece: the chunks played so far, and the dice that choose the next */
+  private readonly chain: boolean = false;
+  private readonly chainHistory: number[] = [];
+  private readonly chainRand: () => number = () => 0;
   /** the game's state (adaptive.ts), as asked for and as the music has reached it (one bar at a time) */
   private stateTarget: MusicState = CALM;
   private state: MusicState = CALM;
@@ -271,7 +279,7 @@ export class Playback {
     // the stage music plays as a form (form.ts): a piece written as one loop is laid out as one here
     if (opts.form && !theme.form && !theme.still) {
       const form = autoForm(theme, this.seed);
-      if (form) theme = { ...theme, form };
+      if (form) theme = { ...theme, form, chain: true };
     }
     this.theme = theme;
     this.spb = theme.stepsPerBar ?? 16;
@@ -296,7 +304,13 @@ export class Playback {
     const addChords = (list: string[]) => {
       for (const ch of list.map(parseChord)) for (let i = 0; i < ch.bars; i++) this.barChords.push({ chord: ch, start: i === 0, left: ch.bars - i });
     };
-    if (theme.form?.length) {
+    if (theme.form?.length && theme.chain) {
+      // the timeline grows chunk by chunk as the piece plays (appendChunk)
+      this.chain = true;
+      this.partAt = [];
+      this.chainRand = rng((hashStr(`chain${theme.id}`) ^ Math.imul(this.seed, 2654435761)) >>> 0);
+      this.appendChunk();
+    } else if (theme.form?.length) {
       // the timeline is the sections one after another
       const at: Array<{ p: number; b: number; len: number }> = [];
       theme.form.forEach((part, p) => {
@@ -361,6 +375,24 @@ export class Playback {
     }
     core.setDelayTime(this.stepDur * 4 * (theme.delay ?? 0.75));
     this.bar = Math.max(0, Math.floor(opts.startLoop ?? 0)) * this.barChords.length;
+  }
+
+  /** a chained piece: choose the next chunk and add its bars to the timeline */
+  private appendChunk() {
+    const form = this.theme.form!;
+    const barSec = (60 / this.theme.bpm) * 4 * ((this.theme.stepsPerBar ?? 16) / 16);
+    const p = nextChunk(form, this.chainHistory, this.chainRand, barSec);
+    this.chainHistory.push(p);
+    const from = this.barChords.length;
+    for (const ch of form[p].chords.map(parseChord)) for (let i = 0; i < ch.bars; i++) this.barChords.push({ chord: ch, start: i === 0, left: ch.bars - i });
+    const len = this.barChords.length - from;
+    for (let b = 0; b < len; b++) this.partAt!.push({ p, b, len });
+  }
+
+  /** the chunks a chained piece has played, in order (for tests and the previews' timelines) */
+  get chunks(): string[] {
+    const form = this.theme.form;
+    return form ? this.chainHistory.map((i) => form[i].name) : [];
   }
 
   /** current playing speed (1 = as written) */
@@ -504,21 +536,24 @@ export class Playback {
     // the whole piece also swells a little with intensity
     this.out.gain.setTargetAtTime((this.theme.level ?? 1) * (0.74 + 0.26 * this.intensity), Math.max(this.c.currentTime, this.nextTime - 0.02), 0.4);
 
+    // a chained piece adds its next chunk as the last one ends: it never comes round
+    if (this.chain) while (this.bar >= this.partAt!.length) this.appendChunk();
     const L = this.barChords.length;
-    const barInLoop = this.bar % L;
-    const loop = Math.floor(this.bar / L);
+    const barInLoop = this.chain ? this.bar : this.bar % L;
+    const loop = this.chain ? Math.floor(this.chainHistory.length / 8) : Math.floor(this.bar / L);
     // the section of the form and the bar within it (a piece without a form is one section: its loop)
     const form = this.theme.form;
     const at = this.partAt?.[barInLoop];
     const part = at && form ? form[at.p] : undefined;
     const bip = at ? at.b : barInLoop;
-    const prevPart = at && form && this.partAt ? form[this.partAt[(barInLoop - 1 + L) % L].p] : undefined;
+    const prevPart = at && form && this.partAt ? form[this.partAt[this.chain ? Math.max(0, barInLoop - 1) : (barInLoop - 1 + L) % L].p] : undefined;
     const lift = (part?.lift ?? 0) + intensityLift(this.state);
     const st = this.state;
     const drop = voiceDrop(st);
     this.tone.frequency.setTargetAtTime(toneCutoff(st), Math.max(this.c.currentTime, this.nextTime - 0.02), 0.35);
     // the arrangement: every pass through the loop is dressed differently, and each stage starts at a different pass
-    const phase = this.theme.still ? 0 : Playback.phaseOf(loop, this.seed);
+    // (a chained piece has its quiet passages and its variety written in: it is never lifted a key or broken down as a loop is)
+    const phase = this.theme.still || this.chain ? 0 : Playback.phaseOf(loop, this.seed);
     const lp = loop + (this.seed % 2);
     const sh = phase === 3 ? 2 : 0;
     this.sh = sh;

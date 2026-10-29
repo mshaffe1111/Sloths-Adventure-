@@ -1038,19 +1038,20 @@ export const SFX: Record<string, Fx> = {
     tone(core, { t, f0: 100, f1: 60, dec: 0.3, peak: 0.35, dst: d });
     noise(core, { t, type: 'highpass', f0: 6000, peak: 0.08, dec: 0.5, dst: d });
   },
-  pauseIn(core) {
+  // (the swoops run between the home note and its octave in the music's key, so pausing and resuming sit in the stage's music)
+  pauseIn(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
     smp(core, d, t, 'uiClose', { gain: 0.7, rate: 1.0, lp: 6000 });
     noise(core, { t, type: 'lowpass', f0: 4000, f1: 300, q: 0.7, peak: 0.12, dec: 0.3, attack: 0.02, dst: d, pink: true });
-    tone(core, { t, f0: 520, f1: 260, dec: 0.18, peak: 0.08, dst: d });
+    tone(core, { t, f0: midiHz(ladder(key, 3, 55)), f1: midiHz(ladder(key, 0, 55)), dec: 0.18, peak: 0.08, dst: d });
   },
-  pauseOut(core) {
+  pauseOut(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
     smp(core, d, t, 'uiOpen', { gain: 0.7, rate: 1.0, lp: 6000 });
     noise(core, { t, type: 'lowpass', f0: 300, f1: 4000, q: 0.7, peak: 0.12, dec: 0.28, attack: 0.1, dst: d, pink: true });
-    tone(core, { t, f0: 260, f1: 520, dec: 0.18, peak: 0.08, dst: d });
+    tone(core, { t, f0: midiHz(ladder(key, 0, 55)), f1: midiHz(ladder(key, 3, 55)), dec: 0.18, peak: 0.08, dst: d });
   },
   /** the first beat of a level */
   levelStart(core, key) {
