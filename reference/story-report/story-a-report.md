@@ -174,3 +174,146 @@ GATE
 - Tests: story.test 15/15, storyHold 4/4, victoryScenes, meeca tests: 60/60 after the SR edits. The full gate (all folders) ran 535+ with 0 failures; the last slow generator tests were still running when I sent this. I'll message you the final count.
 
 FILES: all on story-a (3 commits: 10a0d4d, 72374c9, 74a7d27). Clip and stills: reference/story-report/letgo-clip/ (letgo-normal-up.mp4, letgo-normal-side.mp4, letgo-easy-up.mp4, plus stills of each beat and three Flicker shots).
+
+ST-4 TO ST-8 (the text around the story, after Matt's 'placeholders are out')
+ST-4, a clue per stage (Stage Cleared card; title: text):
+- 1-1 A Bootprint: One deep bootprint in the moss, pointing north. They did not stop here.
+- 1-2 Low on the Bark: Another petal, low on the bark, where you would not have to look up.
+- 1-3 A Shed Skin: A snake skin hangs from a branch, neatly folded. The snake here is tidy.
+- 1-4 The View North: From the top of the kapok you can see the Highlands. They are very far.
+- 1-5 Petals in a Row: The petals run in a straight row here. She must have been humming.
+- 1-6 A Cut Liana: One liana hangs cut short. The soldiers did not swing. They went around.
+- 1-7 A Very Good Bush: The bush Dot hid in. It still has a small, worried dent in it.
+- 1-8 Squirrel Tracks: Tiny tracks run beside yours. The squirrels have been checking on you.
+- 1-9 Coiled Branches: The branches ahead are wrapped in coils. The snake is close.
+- 1-10 An Itchy Collar: Venom Fang scratches at his collar and pretends he is not watching you go.
+- 2-1 PLEASE BE PATIENT: Every door in the bank village has the same sign. You like it here already.
+- 2-2 A Bare Stem: A flower stem with no petals left on it. She used them all on the crown.
+- 2-3 Wet Footprints: Little wet footprints run off into the reeds, very fast, very grateful.
+- 2-4 A Shadow Underwater: Under the still water, a long shadow with a crown on its head.
+- 2-5 The Raft: The village has started on your raft. They have agreed on the wood.
+- 2-6 A Welcome Mat: A mat outside the top house says TAKE YOUR TIME. They mean it.
+- 2-7 URGENT: The mailman's package rests on a step. It still says URGENT, in red.
+- 2-8 Open Cages: The reed cages hang open, and the water is still rising, slowly.
+- 2-9 A Crooked Crown: A crooked crown of petals floats past. Somebody will want that back.
+- 2-10 Never Crooked: Crocus Rex straightens his crown with one claw, then puts it back crooked.
+- 3-1 Glowworm Threads: The glowworms light up as you pass. They seem to like slow visitors.
+- 3-2 Still Water: A pool so still it holds the ceiling's lights like a second sky.
+- 3-3 The Circle: The big footprints go round in a circle again, and stop where you are standing.
+- 3-4 Moonlight: At the top of the sinkhole, a coin of moonlight. The way out is up.
+- 3-5 A Dreaming Thorn: One thorn vine twitches as you pass, then settles. It is dreaming.
+- 3-6 A Rustling Fern: A fern rustles. It might be the wind.
+- 3-7 Rude Ferns: Dot points out the rude ferns. They look exactly like the polite ones.
+- 3-8 Something Still: The dark ahead is very still. It is being still on purpose.
+- 3-9 Claw Marks: Long claw marks on the rock, too high up to be friendly.
+- 3-10 Sorry: The Prowler watches you from his ledge. He looks sorry about something.
+- 4-1 A Clean Break: The ledge was cut, not cracked. Somebody wanted it to fall.
+- 4-2 A Long Feather: A feather as long as your arm, drifting down out of the mist.
+- 4-3 Behind the Falls: Behind the water the rock is dry and quiet. You could sleep here. You don't.
+- 4-4 The Wind Lane: The wind always blows the same way up here. North, mostly.
+- 4-5 A Shadow Overhead: A great shadow passes over, and then, a moment later, the sound of it.
+- 4-D Still Here: Meeca's note came out through the gap as wide as a folded letter. A white feather stayed behind on the thorns.
+- 4-6 Old Orders: The nests are woven from old orders. You can still read SEAL THE PASS.
+- 4-7 Soft Landing: Moss at the bottom of the long drop, thick as a bed, and just as welcome.
+- 4-8 Eaglets: The eaglets you freed are already arguing about who flies first.
+- 4-9 Talon Gouges: Fresh talon marks on the rock. The Sovereign lands here.
+- 4-10 On the Ground: The Sky Sovereign stands on the ground and looks at it as if it might bite.
+- 5-1 A Carving: Cut into the bark, shaky and quick: POKEY. DON'T SIT. M.
+- 5-2 Another Carving: Lower down, in the same small hand: DON'T EAT. M.
+- 5-3 Closing Early: The orchids are folding up, and it is barely afternoon.
+- 5-4 By the Web: Cut beside a web, deeper than the others: HANDS OFF THE SILK. M.
+- 5-5 A Slipped Hairpin: A long scratch across the bark, where the hairpin slipped.
+- 5-M One Night Out: She learned every warning the hard way first, and cut it into a tree for you.
+- 5-6 By a Little Table: Carved into the leg of a tea table: NO TEA. BE RUDE. M.
+- 5-7 A Humming Thread: One silk thread hums when the wind touches it. The others hum back.
+- 5-8 The Last Carving: High in a bloom tree: DON'T STOP TO LOOK. LOVE, M.
+- 5-9 A Set Table: A table set for two, the pot still warm. It is always warm.
+- 5-10 A Full Cup: The cup at the head of the Queen's table is full. It always is.
+- 6-1 Flat Water: The water between the roots lies flat and gray, and very patient.
+- 6-2 A Spear Tip: A spear tip breaks the water, turns to look at you, and sinks again.
+- 6-3 A Stain: A stain on a leaf, about the shape of lunch.
+- 6-4 Webbed Prints: The tide is out. Big webbed prints lead off into the roots.
+- 6-5 Noon: The sun is nearly straight overhead. Lunch is coming.
+- 6-6 A Small Light: A small light rides on the satchel strap. It says it is just passing.
+- 6-7 Something of Dot's: A green feather tucked in the roots, where only you would look.
+- 6-8 Dry Wood: Up on the stilts the wood is dry, and you cannot hear the water.
+- 6-9 Ripples: Ripples cross the black water, all of them coming from one place.
+- 6-10 Half a Lunch: Half of the Reaver's lunch sits on a root, facing the path.
+- 7-1 Heavy Footprints: The temple floor is scuffed by something heavy that walks very slowly.
+- 7-2 Brown Vines: The old vines do not move when you touch them.
+- 7-3 The Eleventh Chair: A plain chair stands apart from the ring, with a dent worn in the seat.
+- 7-4 Old Words: Words cut into an old stone by the path: SLOW IS NOT STOPPED.
+- 7-5 Quiet Halls: The halls are quiet now. The quiet is louder without Dot.
+- 7-6 Falling Dust: Dust is still falling from the ceiling. You were quicker than the floor.
+- 7-7 A Folded Cloth: Behind a broken rune, a hollow, and a cloth folded around something flat.
+- 7-8 Ten Friends: Flicker lights a carving of ten friends around one table, arguing.
+- 7-9 A Long Good Morning: Somewhere ahead, a very large voice has started saying good morning.
+- 7-10 An Unfinished Sentence: The Golem is still working on his sentence. He waves you on, slowly.
+- 8-1 Fireflies: The fireflies come out one by one. Flicker nods to each of them.
+- 8-2 Night Blooms: The night blooms only open after dark. They understand slow.
+- 8-3 Moon Shadow: Something passes in front of the moon, and the whole branch goes dark.
+- 8-4 Tiptoes: Every bat is still asleep. You have never tiptoed better.
+- 8-5 Hover-Sitting: Dot rests on your head. She says it is hover-sitting. It is sitting.
+- 8-6 A Small Square of Light: From up here the fortress window is a small square of light.
+- 8-7 Smoke in the North: From the top of the tallest tree you can see smoke in the north.
+- 8-8 Soft Wings: Wingbeats overhead, very soft. Somebody up there is writing things down.
+- 8-9 A Torn Page: A page caught in the branches, in neat writing: "He said petal again."
+- 8-10 A Good Ending: The Monarch is writing down how the dream ends.
+- 9-1 Pepper Air: The air tastes like pepper. Dot sneezes, and pretends she did not.
+- 9-2 Warm Rock: The rock is warm through your paws. Keep moving.
+- 9-3 Embers: Embers drift up through the canopy and go out in the leaves.
+- 9-4 A Doormat: A doormat at the edge of the lava. WELCOME, it says, and then, smaller, GO AWAY.
+- 9-5 The Mountain Breathes: The vents breathe out, and in, and out. The mountain is asleep. Mostly.
+- 9-6 A Lantern Stake: An old lantern stake in the ash. The soldiers camped here weeks ago.
+- 9-7 Cooled Steps: The lava cooled into steps here, as if it wanted to help.
+- 9-8 Too Much Thread: Pell's thread runs off toward the fortress. He bought a great deal of it.
+- 9-9 One Teacup: A single teacup on a rock, freshly dusted. Somebody has been tidying.
+- 9-10 Two Cups: The Drake asks you to bring tea next time. Two cups.
+- 10-1 The Netting: The iron thorns hum in the wind, from the ground up into the clouds.
+- 10-2 Into the Rain: The steps go on up into the rain. You stop trying to see the top.
+- 10-3 Still Holding: The thunder passes. Your paws are still on the rock. That is all right.
+- 10-4 A Lit Window: Above you, one window is lit. It is closer than it was.
+- 10-5 A Song: Halfway up, between the thunder, someone is singing a song you know.
+- 10-6 Bad Stitches: A place in the netting where the stitches are wrong. Very badly wrong.
+- 10-7 Empty Walls: The guards are gone from the walls. They looked tired anyway.
+- 10-8 The Gate: The fortress gate stands open, and the wind is not the one holding it.
+- 10-9 The Last Step: One step left, and a door with a line of lamplight under it.
+- 10-10 Lost Count: The General has stopped counting. Up in the tower, the song goes on.
+- any other stage (the secret ones): The Trail Goes On: Meeca's trail goes on, north.
+
+ST-5, one name: "shrine" (stage lines, the goal card 'to open the shrine' / 'reach the shrine', worldsData). Shrine opens: "The shrine is open." Stepping in, by world:
+- 1: 'The canopy lets you through.'
+- 2: 'The village waves you on.'
+- 3: 'The glowworms light the way out.'
+- 4: 'Out of the mist, and on.'
+- 5: 'Still standing. Good.'
+- 6: 'Out of the black water.'
+- 7: 'The old stones let you pass.'
+- 8: 'One more branch behind you.'
+- 9: 'Through the heat, and on.'
+- 10: 'A few steps closer to her.'
+- After a guardian falls (it said VICTORY! MEECA IS SAVED! after every one): 'The way north is open.' / World 10: 'The General is down.' / Thornbark: 'Thornbark is free.'
+- Left for polish-dot: Dot's spoken goal lines still say 'sanctuary' (dotLinesData goal.start, goal.done "That's all of them! The sanctuary's open."); goalLine() feeds that swap table, so I left its words.
+
+ST-6, the guardians' card quotes (SR-41):
+- 'Ssloth. What are you doing on my branch?'
+- 'The toll is one traveler. Today, my friend, you are it.'
+- 'I am the dark between the threads. I try to be.'
+- 'State your business, sloth, and keep it short. I was mid-dive.'
+- 'Do stay awhile, darling. Everyone does. Eventually.'
+- 'Nobody wades at noon. It is LUNCH.'
+- 'None... may... pass. Take... your time.'
+- 'I am told to stop you. I will try to do it softly.'
+- 'I am to burn you. There is a speech. I have lost my place.'
+- 'Still slow, boy.'
+- Aim text ("TOO TOUGH! HIT THE GLOW") is Dot's float line: polish-dot.
+
+ST-7, the ending card: heading "Meeca is home"; text "Pokey crossed ten realms and climbed a thousand steps, slowly, the whole way. The Heartbloom is open, the guardians are free, and there is tea at four."; "Your score"; buttons "Back to the world map", "Title screen".
+
+ST-8, stage names: 1-5 More Petals -> Where She Walked; 2-8 Reed Cages -> Before the Water Rises (it repeated 2-3 Stuck in the Reeds). The rest read as real names already.
+
+PLACEHOLDER SWEEP (found, not changed; owner in brackets):
+- No TODO/Lorem/'Great job' in shipped copy. 'Stage 1-1' in the new-game dialog and 'from stage 1-4' on the skill card are real references, fine.
+- All-caps arcade floats in engine.ts, most read as placeholder voice: '⭐ SOLAR INVINCIBLE (8s)!', '⚡ CHEETAH SPEED (10s)!', '🧲 NECTAR MAGNET (12s)!', 'POWER-UP EXPIRED', 'MAX HP RESTORED + SHIELD!', '+1 HP RESTORED', 'JUNGLE IDOL! +500', 'RESCUED! +400', 'PHASE 2: SPEED UP!', 'PHASE 3: ENRAGED!', 'K.O.!', 'THE THORN GATE OPENS...' (leading-dot style), plus the teaching floats ('WARM AIR! HOLD THE LEAF OPEN TO RISE', 'LOGS DRIFT! HOP ON AND RIDE', 'TOO DARK. STAND STILL AND LISTEN'). The teaching ones and 'TOO TOUGH! AIM HIGH' are Dot's float rows in dotLinesData [polish-dot]; the power-up, score and boss-phase ones need a decision on whether floats should exist at all [UI / lead].
+- Mission type names in worldsData ('Stealth Thicket', 'Idol Hunt', 'Canopy Rescue', 'Apex Gauntlet', 'Stage Boss Lair'): fallback names, shown only where a stage has no plan name. Worth a check that nothing still shows them [UI].
+- The Stage Cleared ribbons 'STAGE CLEARED!' and 'THORNBARK IS FREE!' are all caps by design (the ribbon style); left.
