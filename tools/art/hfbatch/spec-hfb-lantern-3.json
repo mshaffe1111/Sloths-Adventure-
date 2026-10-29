@@ -1,0 +1,141 @@
+{
+ "note": "8-4 Lantern Run art, round 3, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w8-lantern/tools/art/hfbatch/starts/w8lantern/",
+ "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, extra arms, extra limbs, extra fingers, two jars, lantern, candle, flame, fire",
+ "items": [
+  {
+   "name": "gauge-lit-s40",
+   "start": "gauge-lit.png",
+   "prompt": "slothadv style, painted storybook illustration, a small game HUD icon: a glass jar of glowing fireflies with a cork and a twine handle, standing on a round carved wooden plate, hanging from a curly green vine tendril with a small leaf, cartoon wooden game interface piece. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.4,
+   "seed": 11,
+   "w": 512,
+   "h": 640,
+   "loras": [
+    "style"
+   ]
+  },
+  {
+   "name": "gauge-lit-s55",
+   "start": "gauge-lit.png",
+   "prompt": "slothadv style, painted storybook illustration, a small game HUD icon: a glass jar of glowing fireflies with a cork and a twine handle, standing on a round carved wooden plate, hanging from a curly green vine tendril with a small leaf, cartoon wooden game interface piece. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.55,
+   "seed": 11,
+   "w": 512,
+   "h": 640,
+   "loras": [
+    "style"
+   ]
+  },
+  {
+   "name": "gauge-dim-s40",
+   "start": "gauge-dim.png",
+   "prompt": "slothadv style, painted storybook illustration, a small game HUD icon: an empty pale blue glass jar with only two faint fireflies left with a cork and a twine handle, standing on a round carved wooden plate, hanging from a curly green vine tendril with a small leaf, cartoon wooden game interface piece. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.4,
+   "seed": 11,
+   "w": 512,
+   "h": 640,
+   "loras": [
+    "style"
+   ]
+  },
+  {
+   "name": "gauge-dim-s55",
+   "start": "gauge-dim.png",
+   "prompt": "slothadv style, painted storybook illustration, a small game HUD icon: an empty pale blue glass jar with only two faint fireflies left with a cork and a twine handle, standing on a round carved wooden plate, hanging from a curly green vine tendril with a small leaf, cartoon wooden game interface piece. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.55,
+   "seed": 11,
+   "w": 512,
+   "h": 640,
+   "loras": [
+    "style"
+   ]
+  },
+  {
+   "name": "tree-s72-5",
+   "start": "tree.png",
+   "prompt": "slothadv style, painted storybook illustration, a huge ancient night forest tree seen from the side for a side-scrolling platform game: a tall thick blue-grey trunk with mossy bark and a dark hollow, under a wide round crown of dense dark blue and violet leaves with gaps and small branches, the leaves clumped in soft rounded masses, a twilight treetops forest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.72,
+   "seed": 5,
+   "w": 1024,
+   "h": 1536,
+   "loras": [
+    "style"
+   ]
+  },
+  {
+   "name": "tree-s72-17",
+   "start": "tree.png",
+   "prompt": "slothadv style, painted storybook illustration, a huge ancient night forest tree seen from the side for a side-scrolling platform game: a tall thick blue-grey trunk with mossy bark and a dark hollow, under a wide round crown of dense dark blue and violet leaves with gaps and small branches, the leaves clumped in soft rounded masses, a twilight treetops forest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.72,
+   "seed": 17,
+   "w": 1024,
+   "h": 1536,
+   "loras": [
+    "style"
+   ]
+  },
+  {
+   "name": "tree-s85-5",
+   "start": "tree.png",
+   "prompt": "slothadv style, painted storybook illustration, a huge ancient night forest tree seen from the side for a side-scrolling platform game: a tall thick blue-grey trunk with mossy bark and a dark hollow, under a wide round crown of dense dark blue and violet leaves with gaps and small branches, the leaves clumped in soft rounded masses, a twilight treetops forest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.85,
+   "seed": 5,
+   "w": 1024,
+   "h": 1536,
+   "loras": [
+    "style"
+   ]
+  },
+  {
+   "name": "tree-s85-17",
+   "start": "tree.png",
+   "prompt": "slothadv style, painted storybook illustration, a huge ancient night forest tree seen from the side for a side-scrolling platform game: a tall thick blue-grey trunk with mossy bark and a dark hollow, under a wide round crown of dense dark blue and violet leaves with gaps and small branches, the leaves clumped in soft rounded masses, a twilight treetops forest. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.85,
+   "seed": 17,
+   "w": 1024,
+   "h": 1536,
+   "loras": [
+    "style"
+   ]
+  },
+  {
+   "name": "tuck-s50",
+   "start": "pokey-tuck.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, jumping in the air curled up with his knees tucked to his chest, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "tuck-s62",
+   "start": "pokey-tuck.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, jumping in the air curled up with his knees tucked to his chest, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  }
+ ]
+}

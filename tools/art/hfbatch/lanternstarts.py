@@ -123,7 +123,7 @@ def pokey(name, fr, size=768, arms=True):
     return im.convert('RGB')
 
 
-if __name__ == '__main__' and not (len(sys.argv) > 2 and sys.argv[2] == '--carry'):
+if __name__ == '__main__' and not (len(sys.argv) > 2 and sys.argv[2] in ('--carry', '--r3')):
     jar().save(OUT / 'jar.png')
     jar(lit=0.15).save(OUT / 'jar-dim.png')
     moth().save(OUT / 'moth-open.png')
@@ -164,3 +164,49 @@ def carry(name, size=768):
 if __name__ == '__main__' and len(sys.argv) > 2 and sys.argv[2] == '--carry':
     for n in sys.argv[3:]:
         carry(n).save(OUT / f'carry-{n}.png')
+
+
+def gauge(lit=True, size=(512, 640)):
+    """the HUD's jar gauge: the painted HUD's wooden number plate hung on its tendril, the painted jar standing on it (lit or empty)"""
+    hud = Image.open(ROOT / 'src/assets/hud/hud-atlas.webp').convert('RGBA')
+    plate = hud.crop((4, 1068, 4 + 188, 1068 + 96)).resize((376, 192), Image.LANCZOS)
+    tendril = hud.crop((912, 226, 912 + 24, 226 + 182)).resize((36, 200), Image.LANCZOS)
+    im = Image.new('RGBA', size, MAG + (255,))
+    im.alpha_composite(tendril, (size[0] // 2 - 18, 0))
+    im.alpha_composite(plate, (size[0] // 2 - 188, 400))
+    j = Image.open(OUT / ('jar-painted.png' if lit else 'jar-dim-painted.png')).convert('RGBA')
+    px = j.load()
+    for yy in range(j.height):
+        for xx in range(j.width):
+            r, g, b, _ = px[xx, yy]
+            if r > 200 and b > 200 and g < 90:
+                px[xx, yy] = (0, 0, 0, 0)
+    j = j.crop(j.getchannel('A').getbbox())
+    jh = 330
+    j = j.resize((round(j.width * jh / j.height), jh), Image.LANCZOS)
+    im.alpha_composite(j, (size[0] // 2 - j.width // 2, 470 - jh + 30))
+    return im.convert('RGB')
+
+
+def tree(size=(1024, 1536)):
+    """the firefly tree: World 8's kit trunk, tall, under a round crown of dark leaves with a hollow at its heart"""
+    kit = Image.open(ROOT / 'src/assets/kits/w8.webp').convert('RGBA')
+    trunk = kit.crop((140, 0, 512, 600))
+    trunk = trunk.resize((480, 1100), Image.LANCZOS)
+    im = Image.new('RGBA', size, MAG + (255,))
+    d = ImageDraw.Draw(im)
+    cx = size[0] // 2
+    for k, (dx, dy, r) in enumerate([(0, 360, 330), (-260, 470, 230), (260, 470, 230), (-150, 260, 220), (160, 250, 220), (0, 180, 220)]):
+        col = (40 + k * 6, 62 + k * 5, 110 + k * 4)
+        d.ellipse((cx + dx - r, dy - r, cx + dx + r, dy + r), fill=col, outline=(20, 25, 50), width=6)
+    im.alpha_composite(trunk, (cx - 240, size[1] - 1100))
+    d = ImageDraw.Draw(im)
+    d.ellipse((cx - 70, 900, cx + 70, 1060), fill=(25, 20, 30), outline=(15, 10, 20), width=6)
+    return im.convert('RGB')
+
+
+if __name__ == '__main__' and len(sys.argv) > 2 and sys.argv[2] == '--r3':
+    gauge(True).save(OUT / 'gauge-lit.png')
+    gauge(False).save(OUT / 'gauge-dim.png')
+    tree().save(OUT / 'tree.png')
+    pokey('tuck', frames(), arms=False).save(OUT / 'pokey-tuck.png')

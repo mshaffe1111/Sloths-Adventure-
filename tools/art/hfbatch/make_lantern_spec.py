@@ -39,6 +39,20 @@ if rnd == '2':
     AIR = POKEY.replace('side view facing right, ', 'side view facing right, jumping up in the air, his legs tucked up under him, ')
     items += [{'name': f'air-p3-s70-{sd}', 'start': 'carry-p3.png', 'prompt': AIR, 'strength': 0.7, 'seed': sd, 'w': 768, 'h': 768,
                'loras': ['style', 'pokey']} for sd in (7, 19)]
+if rnd == '3':
+    GAUGE = (STYLE + 'a small game HUD icon: a glass jar of glowing fireflies with a cork and a twine handle, standing on a round carved '
+             'wooden plate, hanging from a curly green vine tendril with a small leaf, cartoon wooden game interface piece. ' + TAIL)
+    GAUGE_DIM = GAUGE.replace('a glass jar of glowing fireflies', 'an empty pale blue glass jar with only two faint fireflies left')
+    items += [{'name': f'gauge-{k}-s{round(s * 100)}', 'start': f'gauge-{k}.png', 'prompt': GAUGE if k == 'lit' else GAUGE_DIM,
+               'strength': s, 'seed': 11, 'w': 512, 'h': 640, 'loras': ['style']} for k in ('lit', 'dim') for s in (0.4, 0.55)]
+    TREE = (STYLE + 'a huge ancient night forest tree seen from the side for a side-scrolling platform game: a tall thick blue-grey trunk '
+            'with mossy bark and a dark hollow, under a wide round crown of dense dark blue and violet leaves with gaps and small '
+            'branches, the leaves clumped in soft rounded masses, a twilight treetops forest. ' + TAIL)
+    items += [{'name': f'tree-s{round(s * 100)}-{sd}', 'start': 'tree.png', 'prompt': TREE, 'strength': s, 'seed': sd, 'w': 1024,
+               'h': 1536, 'loras': ['style']} for s in (0.72, 0.85) for sd in (5, 17)]
+    TUCK = POKEY.replace('side view facing right, ', 'side view facing right, jumping in the air curled up with his knees tucked to his chest, ')
+    items += [{'name': f'tuck-s{round(s * 100)}', 'start': 'pokey-tuck.png', 'prompt': TUCK, 'strength': s, 'seed': 7, 'w': 768,
+               'h': 768, 'loras': ['style', 'pokey']} for s in (0.5, 0.62)]
 spec = {'note': f'8-4 Lantern Run art, round {rnd}, 2026-10-29',
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 0.8],
                   'pokey': ['mshaffe111/pokey-qwen-lora', 'pokey_qwen_v1.safetensors', 1.0]},
