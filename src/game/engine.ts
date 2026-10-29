@@ -1,3 +1,4 @@
+import { buzz } from './haptics.ts';
 import { SlowWatch } from './slowTip.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
@@ -149,6 +150,9 @@ import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGo
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+
+/** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
+const HARD_LAND_VY = 560;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -2126,6 +2130,7 @@ export class GameEngine {
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
           sound.playCheckpoint();
+          buzz('checkpoint');
         }
       }
 
@@ -2665,6 +2670,7 @@ export class GameEngine {
           this.exitTotemReached = true;
           // (a short chime here; the full victory sting plays when the Stage Cleared card lands, StatusModals.tsx, SN-5)
           sound.playExitChime();
+          buzz('clear');
           this.spawnSparkBurst(this.currentStage.exitTotemX, p.y - 30, '#34d399');
           this.addFloatingText('SANCTUARY UNLOCKED! VICTORY!', p.x, p.y - 60, '#34d399');
         } else {
@@ -2870,6 +2876,8 @@ export class GameEngine {
     }
     if (p.grounded && !groundedBefore && vyBefore > 140 && !p.climbing && !p.isVineSwinging) {
       sound.playLand(Math.min(1, vyBefore / 700));
+      // (a hard landing buzzes: AN-9)
+      if (vyBefore > HARD_LAND_VY) buzz('hardLand');
     }
     // footsteps: one leaf-crunch every few body-lengths on the ground
     if (p.grounded && !p.climbing && Math.abs(p.vx) > 25) {
@@ -2924,6 +2932,8 @@ export class GameEngine {
         spawnMinion: (kind, x, y) => this.spawnMinion(kind, x, y),
         shake: (a) => {
           this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, a));
+          // (a slam that shakes the arena hard buzzes: AN-9)
+          if (a >= 0.5) buzz('bossSlam');
         },
         roar: () => sound.playBossRoar(world),
         thud: (heavy) => sound.playHitImpact(heavy ?? true, bossMaterial(world)),
@@ -4339,6 +4349,7 @@ export class GameEngine {
     this.airDrive = newAirDrive();
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
+    buzz('hurt');
     // (the hit that costs a life says so at the respawn instead: two lots of words on one spot were unreadable)
     if (p.hp > 0) this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
 

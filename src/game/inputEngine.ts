@@ -1,3 +1,4 @@
+import { vibrate } from './haptics.ts';
 import type { InputState } from './types.ts';
 import { isEasy } from './difficulty.ts';
 import { FORGIVE } from './physics.ts';
@@ -455,12 +456,9 @@ export class InputEngine {
     this.state.layerSwitchPressed = false;
   }
 
+  /** a buzz, when the Vibration setting is on (haptics.ts) */
   public triggerHaptic(durationMs = 15) {
-    try {
-      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-        navigator.vibrate(durationMs);
-      }
-    } catch {}
+    vibrate(durationMs);
   }
 
   public destroy() {
