@@ -1,0 +1,68 @@
+{
+ "sheet": "w5var.webp",
+ "size": {
+  "w": 2048,
+  "h": 749
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "bank-b": "w5var-s62-5",
+  "fill-b": "w5var-s62-5",
+  "buttress-b": "w5var-s62-5",
+  "stump-b": "w5var-s62-5",
+  "mossStrip-b": "w5var-s62-5",
+  "bankEnd-b": "w5var-s62-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "bank-b": {
+   "x": 0,
+   "y": 0,
+   "w": 446,
+   "h": 186,
+   "ax": 223.5,
+   "ay": 186
+  },
+  "fill-b": {
+   "x": 450,
+   "y": 0,
+   "w": 439,
+   "h": 310,
+   "ax": 219.5,
+   "ay": 310
+  },
+  "buttress-b": {
+   "x": 893,
+   "y": 0,
+   "w": 443,
+   "h": 274,
+   "ax": 112.5,
+   "ay": 274
+  },
+  "stump-b": {
+   "x": 1340,
+   "y": 0,
+   "w": 439,
+   "h": 337,
+   "ax": 144.0,
+   "ay": 337
+  },
+  "mossStrip-b": {
+   "x": 0,
+   "y": 341,
+   "w": 446,
+   "h": 121,
+   "ax": 225.5,
+   "ay": 121
+  },
+  "bankEnd-b": {
+   "x": 450,
+   "y": 341,
+   "w": 205,
+   "h": 408,
+   "ax": 100.0,
+   "ay": 408
+  }
+ }
+}

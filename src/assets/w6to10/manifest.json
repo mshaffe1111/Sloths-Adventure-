@@ -267,7 +267,59 @@
   "gemini/w8a-puzzle.json": 861,
   "gemini/w8a-puzzle.webp": 43208,
   "gemini/w9a-puzzle.json": 862,
-  "gemini/w9a-puzzle.webp": 37366
+  "gemini/w9a-puzzle.webp": 37366,
+  "props-made/w10a.json": 1195,
+  "props-made/w10a.webp": 44390,
+  "props-made/w10b.json": 911,
+  "props-made/w10b.webp": 58288,
+  "props-made/w5a.json": 1006,
+  "props-made/w5a.webp": 137004,
+  "props-made/w5b.json": 1164,
+  "props-made/w5b.webp": 102348,
+  "props-made/w6c.json": 1061,
+  "props-made/w6c.webp": 119986,
+  "props-made/w6d.json": 1026,
+  "props-made/w6d.webp": 134980,
+  "props-made/w7-plates.json": 589,
+  "props-made/w7-plates.webp": 13890,
+  "props-made/w7b.json": 1047,
+  "props-made/w7b.webp": 82106,
+  "props-made/w7c.json": 1044,
+  "props-made/w7c.webp": 128734,
+  "props-made/w8b.json": 1066,
+  "props-made/w8b.webp": 90400,
+  "props-made/w8c.json": 1064,
+  "props-made/w8c.webp": 134918,
+  "props-made/w9b.json": 1061,
+  "props-made/w9b.webp": 78124,
+  "props-made/w9c.json": 1043,
+  "props-made/w9c.webp": 96342,
+  "props-made/w10alt.json": 1049,
+  "props-made/w10alt.webp": 109322,
+  "props-made/w10var.json": 1033,
+  "props-made/w10var.webp": 75610,
+  "props-made/w5a-b.json": 1012,
+  "props-made/w5a-b.webp": 154870,
+  "props-made/w5var.json": 1040,
+  "props-made/w5var.webp": 91596,
+  "props-made/w6balt.json": 1061,
+  "props-made/w6balt.webp": 67110,
+  "props-made/w6c-b.json": 1063,
+  "props-made/w6c-b.webp": 128888,
+  "props-made/w6var.json": 1031,
+  "props-made/w6var.webp": 104348,
+  "props-made/w7c-b.json": 1048,
+  "props-made/w7c-b.webp": 129786,
+  "props-made/w7var.json": 1029,
+  "props-made/w7var.webp": 102004,
+  "props-made/w8c-b.json": 1069,
+  "props-made/w8c-b.webp": 116714,
+  "props-made/w8var.json": 1030,
+  "props-made/w8var.webp": 94768,
+  "props-made/w9c-b.json": 1048,
+  "props-made/w9c-b.webp": 86510,
+  "props-made/w9var.json": 1028,
+  "props-made/w9var.webp": 68722
  },
  "lairs": "lairs/lairs.json",
  "lairplates": "lairs/lairplates.json",
@@ -541,6 +593,854 @@
       "gate-open"
      ]
     ]
+   }
+  }
+ },
+ "propsMade": {
+  "note": "Props made 2026-10-29 by img2img (Qwen-Image + the style model) over flat side-on start sheets built from each world kit (tools/art/w6to10/propstarts.py, img2imggpu.py, propcut.py); frames anchored at the middle of the foot, paired states on one canvas and anchor.",
+  "sheets": {
+   "w10a": {
+    "title": "World 10 puzzle pieces (iron lever, iron plate, portcullis)",
+    "data": "props-made/w10a.json",
+    "sheet": "props-made/w10a.webp",
+    "frames": {
+     "lever-up": [
+      304,
+      331
+     ],
+     "lever-down": [
+      304,
+      331
+     ],
+     "plate-up": [
+      388,
+      86
+     ],
+     "plate-down": [
+      388,
+      86
+     ],
+     "portcullis-down": [
+      374,
+      434
+     ],
+     "portcullis-up": [
+      374,
+      434
+     ]
+    },
+    "pairs": [
+     [
+      "lever-up",
+      "lever-down"
+     ],
+     [
+      "plate-up",
+      "plate-down"
+     ],
+     [
+      "portcullis-down",
+      "portcullis-up"
+     ]
+    ]
+   },
+   "w10b": {
+    "title": "World 10 platforms",
+    "data": "props-made/w10b.json",
+    "sheet": "props-made/w10b.webp",
+    "frames": {
+     "scaffold": [
+      467,
+      128
+     ],
+     "crate": [
+      300,
+      274
+     ],
+     "balcony": [
+      424,
+      295
+     ],
+     "hanging-iron": [
+      397,
+      316
+     ],
+     "iron-stair": [
+      393,
+      302
+     ]
+    },
+    "pairs": []
+   },
+   "w5a": {
+    "title": "World 5 set dressing",
+    "data": "props-made/w5a.json",
+    "sheet": "props-made/w5a.webp",
+    "frames": {
+     "orchids": [
+      202,
+      356
+     ],
+     "cocoon": [
+      311,
+      366
+     ],
+     "web": [
+      358,
+      411
+     ],
+     "mossy-log": [
+      426,
+      271
+     ],
+     "ferns": [
+      459,
+      288
+     ],
+     "bromeliad": [
+      333,
+      292
+     ]
+    },
+    "pairs": []
+   },
+   "w5b": {
+    "title": "World 5 puzzle pieces (silk lever, orchid plate, silk curtain door)",
+    "data": "props-made/w5b.json",
+    "sheet": "props-made/w5b.webp",
+    "frames": {
+     "lever-up": [
+      314,
+      268
+     ],
+     "lever-down": [
+      314,
+      268
+     ],
+     "plate-up": [
+      403,
+      83
+     ],
+     "plate-down": [
+      403,
+      83
+     ],
+     "door-closed": [
+      364,
+      425
+     ],
+     "door-open": [
+      364,
+      425
+     ]
+    },
+    "pairs": [
+     [
+      "lever-up",
+      "lever-down"
+     ],
+     [
+      "plate-up",
+      "plate-down"
+     ],
+     [
+      "door-closed",
+      "door-open"
+     ]
+    ]
+   },
+   "w6c": {
+    "title": "World 6 set dressing",
+    "data": "props-made/w6c.json",
+    "sheet": "props-made/w6c.webp",
+    "frames": {
+     "cattails": [
+      422,
+      456
+     ],
+     "moss-curtain": [
+      425,
+      249
+     ],
+     "lantern-flower": [
+      209,
+      421
+     ],
+     "canoe": [
+      428,
+      257
+     ],
+     "mooring-post": [
+      286,
+      390
+     ],
+     "glow-mushrooms": [
+      410,
+      374
+     ]
+    },
+    "pairs": []
+   },
+   "w6d": {
+    "title": "World 6 sections' props (root arch, root den, hides, logs)",
+    "data": "props-made/w6d.json",
+    "sheet": "props-made/w6d.webp",
+    "frames": {
+     "root-arch": [
+      469,
+      305
+     ],
+     "root-den": [
+      469,
+      305
+     ],
+     "root-hide": [
+      436,
+      322
+     ],
+     "reed-hide": [
+      492,
+      419
+     ],
+     "moss-log": [
+      460,
+      132
+     ],
+     "log": [
+      455,
+      119
+     ]
+    },
+    "pairs": []
+   },
+   "w7-plates": {
+    "title": "World 7 pressure plate",
+    "data": "props-made/w7-plates.json",
+    "sheet": "props-made/w7-plates.webp",
+    "frames": {
+     "plate-up": [
+      352,
+      86
+     ],
+     "plate-down": [
+      352,
+      86
+     ]
+    },
+    "pairs": [
+     [
+      "plate-up",
+      "plate-down"
+     ]
+    ]
+   },
+   "w7b": {
+    "title": "World 7 platforms and blocks",
+    "data": "props-made/w7b.json",
+    "sheet": "props-made/w7b.webp",
+    "frames": {
+     "bridge-span": [
+      480,
+      61
+     ],
+     "steps": [
+      440,
+      331
+     ],
+     "hanging-platform": [
+      358,
+      342
+     ],
+     "capital": [
+      299,
+      245
+     ],
+     "cracked-ledge": [
+      421,
+      81
+     ],
+     "push-block": [
+      291,
+      204
+     ]
+    },
+    "pairs": []
+   },
+   "w7c": {
+    "title": "World 7 set dressing",
+    "data": "props-made/w7c.json",
+    "sheet": "props-made/w7c.webp",
+    "frames": {
+     "sloth-statue": [
+      253,
+      468
+     ],
+     "urn": [
+      226,
+      386
+     ],
+     "fallen-column": [
+      457,
+      237
+     ],
+     "archway": [
+      404,
+      436
+     ],
+     "stone-brazier": [
+      275,
+      319
+     ],
+     "fig-roots": [
+      463,
+      403
+     ]
+    },
+    "pairs": []
+   },
+   "w8b": {
+    "title": "World 8 platforms",
+    "data": "props-made/w8b.json",
+    "sheet": "props-made/w8b.webp",
+    "frames": {
+     "shelf-fungus": [
+      449,
+      278
+     ],
+     "leaf-hammock": [
+      473,
+      274
+     ],
+     "rope-bridge": [
+      432,
+      154
+     ],
+     "bouncy-leaf": [
+      396,
+      373
+     ],
+     "knot-perch": [
+      346,
+      337
+     ],
+     "branch-fork": [
+      466,
+      161
+     ]
+    },
+    "pairs": []
+   },
+   "w8c": {
+    "title": "World 8 set dressing",
+    "data": "props-made/w8c.json",
+    "sheet": "props-made/w8c.webp",
+    "frames": {
+     "night-flowers": [
+      245,
+      320
+     ],
+     "bark-fungus": [
+      445,
+      234
+     ],
+     "firefly-leaf": [
+      260,
+      322
+     ],
+     "bird-nest": [
+      312,
+      377
+     ],
+     "leaf-curtain": [
+      471,
+      480
+     ],
+     "tree-hollow": [
+      395,
+      481
+     ]
+    },
+    "pairs": []
+   },
+   "w9b": {
+    "title": "World 9 platforms",
+    "data": "props-made/w9b.json",
+    "sheet": "props-made/w9b.webp",
+    "frames": {
+     "pumice-raft": [
+      426,
+      115
+     ],
+     "hex-column": [
+      133,
+      426
+     ],
+     "hot-platform": [
+      434,
+      211
+     ],
+     "scorched-bridge": [
+      479,
+      286
+     ],
+     "lava-dome": [
+      445,
+      329
+     ],
+     "vent-rock": [
+      382,
+      204
+     ]
+    },
+    "pairs": []
+   },
+   "w9c": {
+    "title": "World 9 set dressing",
+    "data": "props-made/w9c.json",
+    "sheet": "props-made/w9c.webp",
+    "frames": {
+     "young-tree": [
+      281,
+      462
+     ],
+     "smoke-crack": [
+      465,
+      259
+     ],
+     "obsidian": [
+      237,
+      260
+     ],
+     "charred-log": [
+      442,
+      278
+     ],
+     "ash-fern": [
+      400,
+      299
+     ],
+     "lava-pool": [
+      456,
+      156
+     ]
+    },
+    "pairs": []
+   },
+   "w10alt": {
+    "title": "World 10 set dressing, second look (Matt's Gemini set repainted)",
+    "data": "props-made/w10alt.json",
+    "sheet": "props-made/w10alt.webp",
+    "frames": {
+     "banner-b": [
+      207,
+      429
+     ],
+     "weapon-rack-b": [
+      393,
+      426
+     ],
+     "brazier-b": [
+      252,
+      398
+     ],
+     "cage-b": [
+      405,
+      419
+     ],
+     "crates-b": [
+      425,
+      416
+     ],
+     "spout-b": [
+      398,
+      416
+     ]
+    },
+    "pairs": []
+   },
+   "w10var": {
+    "title": "World 10 platform variants (its kit pieces, painted again)",
+    "data": "props-made/w10var.json",
+    "sheet": "props-made/w10var.webp",
+    "frames": {
+     "bank-b": [
+      446,
+      200
+     ],
+     "perch-b": [
+      200,
+      427
+     ],
+     "stump-b": [
+      448,
+      240
+     ],
+     "buttress-b": [
+      442,
+      348
+     ],
+     "branch-b": [
+      438,
+      83
+     ],
+     "fill-b": [
+      324,
+      428
+     ]
+    },
+    "pairs": []
+   },
+   "w5a-b": {
+    "title": "World 5 set dressing, second look",
+    "data": "props-made/w5a-b.json",
+    "sheet": "props-made/w5a-b.webp",
+    "frames": {
+     "orchids": [
+      248,
+      347
+     ],
+     "cocoon": [
+      292,
+      396
+     ],
+     "web": [
+      347,
+      337
+     ],
+     "mossy-log": [
+      438,
+      248
+     ],
+     "ferns": [
+      439,
+      308
+     ],
+     "bromeliad": [
+      412,
+      328
+     ]
+    },
+    "pairs": []
+   },
+   "w5var": {
+    "title": "World 5 platform variants (its kit pieces, painted again)",
+    "data": "props-made/w5var.json",
+    "sheet": "props-made/w5var.webp",
+    "frames": {
+     "bank-b": [
+      446,
+      186
+     ],
+     "fill-b": [
+      439,
+      310
+     ],
+     "buttress-b": [
+      443,
+      274
+     ],
+     "stump-b": [
+      439,
+      337
+     ],
+     "mossStrip-b": [
+      446,
+      121
+     ],
+     "bankEnd-b": [
+      205,
+      408
+     ]
+    },
+    "pairs": []
+   },
+   "w6balt": {
+    "title": "World 6 water room, second look (Matt's Gemini set repainted)",
+    "data": "props-made/w6balt.json",
+    "sheet": "props-made/w6balt.webp",
+    "frames": {
+     "raft-b": [
+      439,
+      149
+     ],
+     "sluice-wheel-b": [
+      322,
+      417
+     ],
+     "gauge-post-b": [
+      78,
+      412
+     ],
+     "seesaw-b": [
+      442,
+      217
+     ],
+     "stone-b": [
+      432,
+      229
+     ],
+     "lily-pads-b": [
+      441,
+      187
+     ]
+    },
+    "pairs": []
+   },
+   "w6c-b": {
+    "title": "World 6 set dressing, second look",
+    "data": "props-made/w6c-b.json",
+    "sheet": "props-made/w6c-b.webp",
+    "frames": {
+     "cattails": [
+      310,
+      477
+     ],
+     "moss-curtain": [
+      397,
+      396
+     ],
+     "lantern-flower": [
+      247,
+      443
+     ],
+     "canoe": [
+      457,
+      469
+     ],
+     "mooring-post": [
+      280,
+      455
+     ],
+     "glow-mushrooms": [
+      483,
+      250
+     ]
+    },
+    "pairs": []
+   },
+   "w6var": {
+    "title": "World 6 platform variants (its kit pieces, painted again)",
+    "data": "props-made/w6var.json",
+    "sheet": "props-made/w6var.webp",
+    "frames": {
+     "branch-b": [
+      447,
+      162
+     ],
+     "snapL-b": [
+      455,
+      352
+     ],
+     "stump-b": [
+      431,
+      189
+     ],
+     "bank-b": [
+      442,
+      387
+     ],
+     "buttress-b": [
+      414,
+      421
+     ],
+     "perch-b": [
+      435,
+      388
+     ]
+    },
+    "pairs": []
+   },
+   "w7c-b": {
+    "title": "World 7 set dressing, second look",
+    "data": "props-made/w7c-b.json",
+    "sheet": "props-made/w7c-b.webp",
+    "frames": {
+     "sloth-statue": [
+      244,
+      452
+     ],
+     "urn": [
+      239,
+      418
+     ],
+     "fallen-column": [
+      468,
+      177
+     ],
+     "archway": [
+      431,
+      448
+     ],
+     "stone-brazier": [
+      279,
+      448
+     ],
+     "fig-roots": [
+      467,
+      374
+     ]
+    },
+    "pairs": []
+   },
+   "w7var": {
+    "title": "World 7 platform variants (its kit pieces, painted again)",
+    "data": "props-made/w7var.json",
+    "sheet": "props-made/w7var.webp",
+    "frames": {
+     "branch-b": [
+      436,
+      73
+     ],
+     "bank-b": [
+      453,
+      187
+     ],
+     "perch-b": [
+      355,
+      413
+     ],
+     "buttress-b": [
+      471,
+      371
+     ],
+     "stump-b": [
+      416,
+      298
+     ],
+     "snapL-b": [
+      442,
+      324
+     ]
+    },
+    "pairs": []
+   },
+   "w8c-b": {
+    "title": "World 8 set dressing, second look",
+    "data": "props-made/w8c-b.json",
+    "sheet": "props-made/w8c-b.webp",
+    "frames": {
+     "night-flowers": [
+      251,
+      290
+     ],
+     "bark-fungus": [
+      439,
+      172
+     ],
+     "firefly-leaf": [
+      249,
+      325
+     ],
+     "bird-nest": [
+      350,
+      172
+     ],
+     "leaf-curtain": [
+      449,
+      411
+     ],
+     "tree-hollow": [
+      352,
+      467
+     ]
+    },
+    "pairs": []
+   },
+   "w8var": {
+    "title": "World 8 platform variants (its kit pieces, painted again)",
+    "data": "props-made/w8var.json",
+    "sheet": "props-made/w8var.webp",
+    "frames": {
+     "branch-b": [
+      433,
+      162
+     ],
+     "bank-b": [
+      442,
+      183
+     ],
+     "perch-b": [
+      430,
+      432
+     ],
+     "stump-b": [
+      441,
+      208
+     ],
+     "buttress-b": [
+      441,
+      366
+     ],
+     "fill-b": [
+      323,
+      430
+     ]
+    },
+    "pairs": []
+   },
+   "w9c-b": {
+    "title": "World 9 set dressing, second look",
+    "data": "props-made/w9c-b.json",
+    "sheet": "props-made/w9c-b.webp",
+    "frames": {
+     "young-tree": [
+      250,
+      417
+     ],
+     "smoke-crack": [
+      433,
+      410
+     ],
+     "obsidian": [
+      272,
+      374
+     ],
+     "charred-log": [
+      449,
+      348
+     ],
+     "ash-fern": [
+      354,
+      454
+     ],
+     "lava-pool": [
+      463,
+      314
+     ]
+    },
+    "pairs": []
+   },
+   "w9var": {
+    "title": "World 9 platform variants (its kit pieces, painted again)",
+    "data": "props-made/w9var.json",
+    "sheet": "props-made/w9var.webp",
+    "frames": {
+     "bank-b": [
+      440,
+      206
+     ],
+     "snapL-b": [
+      433,
+      195
+     ],
+     "stump-b": [
+      441,
+      257
+     ],
+     "perch-b": [
+      336,
+      425
+     ],
+     "buttress-b": [
+      437,
+      269
+     ],
+     "fill-b": [
+      442,
+      286
+     ]
+    },
+    "pairs": []
    }
   }
  }
