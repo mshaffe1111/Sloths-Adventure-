@@ -13,6 +13,7 @@ magenta spill. Every cut-out strip (near, mid, canopy) goes through this before 
   --unveil N   clear what keying left in the sky: specks, and faint (alpha < 0.5) leftovers more than N px from the painting
                (the W1 canopy's white key). Never on World 5, whose cobwebs are faint strands on purpose
   --unmix R,G,B  the strip was keyed off this light colour (the W1 canopy: white): un-mix it from the edge pixels first
+  --grade      World 4 (VI-18): saturation +12%, highlights warmed (grade.py does the same to an opaque far strip)
   --q          WebP quality (default 90, what the strips were saved at)
 
 What it does, in order:
@@ -121,6 +122,17 @@ def unmix(rgb, alpha, key):
     return out, alpha, int(soft.sum() + near_key.sum())
 
 
+def grade(rgb, sat=1.12, warm=0.05):
+    """VI-18 (World 4 reads grey): saturation up by `sat`, highlights warmed (red up, blue down by up to `warm` in the brightest
+    paint, eased in from mid-grey up), luminance kept"""
+    L = lum(rgb)[..., None]
+    out = L + (rgb - L) * sat
+    t = np.clip((L / 255 - 0.5) / 0.5, 0, 1)
+    t = t * t * (3 - 2 * t)
+    out = out * (1 + warm * t * np.array([1, 0.2, -1], np.float32))
+    return np.clip(out * (L / np.maximum(lum(out)[..., None], 1e-3)), 0, 255)
+
+
 def lum(rgb):
     return rgb[..., 0] * 0.2126 + rgb[..., 1] * 0.7152 + rgb[..., 2] * 0.0722
 
@@ -165,10 +177,12 @@ def ink_line(rgb, alpha, width=1.6, k=0.42):
     return rgb * f[..., None]
 
 
-def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despill=False, keep_line=False, veil=None, key=None):
+def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despill=False, keep_line=False, veil=None, key=None, do_grade=False):
     rgb = src_rgba[..., :3].astype(np.float32)
     alpha = src_rgba[..., 3].astype(np.float32) / 255
     info = {}
+    if do_grade:
+        rgb = grade(rgb)
     if do_despill:
         rgb, info['despilled px'] = despill(rgb, alpha)
     if key is not None:
@@ -238,12 +252,13 @@ def main():
     ap.add_argument('--ink', action='store_true')
     ap.add_argument('--despill', action='store_true')
     ap.add_argument('--keep-line', action='store_true')
+    ap.add_argument('--grade', action='store_true')
     ap.add_argument('--unveil', type=float, default=None)
     ap.add_argument('--unmix', default=None, help='r,g,b of a light key to take out of the edge pixels')
     ap.add_argument('--q', type=int, default=90)
     o = ap.parse_args()
     src = np.asarray(Image.open(o.src).convert('RGBA'))
-    out, info = process(src, o.scale, o.esrgan, o.ring, o.ink, o.despill, o.keep_line, o.unveil, None if o.unmix is None else [float(v) for v in o.unmix.split(",")])
+    out, info = process(src, o.scale, o.esrgan, o.ring, o.ink, o.despill, o.keep_line, o.unveil, None if o.unmix is None else [float(v) for v in o.unmix.split(",")], o.grade)
     Image.fromarray(out, 'RGBA').save(o.dst, 'WEBP', quality=o.q, method=6)
     before, after = edge_stats(src), edge_stats(np.asarray(Image.open(o.dst).convert('RGBA')))
     print(f'{Path(o.dst).name}: {out.shape[1]}x{out.shape[0]} {Path(o.dst).stat().st_size} B  edge {before[0]:.2f} -> {after[0]:.2f}'

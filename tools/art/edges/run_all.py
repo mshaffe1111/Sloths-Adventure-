@@ -21,7 +21,9 @@ BACK = 'src/assets/backdrops'
 # (stems, source commit, defringe options). The commit is the strip as it was before any upscaler or fix touched it.
 ORIG_1024 = ['--scale', '2', '--esrgan', '--q', '90']  # the 1024 px paintings, enlarged 2x (as 18bedcc did, minus the black)
 RECIPES = [
-    (['w1', 'w2', 'w3', 'w4', 'w6', 'w7', 'w10'], '18bedcc^', ORIG_1024 + ['--ink']),
+    (['w1', 'w2', 'w3', 'w6', 'w7', 'w10'], '18bedcc^', ORIG_1024 + ['--ink']),
+    # World 4 also graded warmer and less grey on its mid strip (VI-18; grade.py does its far strips)
+    (['w4'], '18bedcc^', ORIG_1024 + ['--ink'], {'mid': ['--grade']}),
     # Matt's World 8 and 9 strips, 2800 px: sharpened through the model at the same size (as 8687ee6 did, minus the black)
     (['w8', 'w9'], '9f2dbfe', ['--scale', '1', '--esrgan', '--ring', '2', '--q', '90', '--ink']),
     # World 1's canopy, keyed off white: un-mix the white halo, clear the leftover key in the sky
@@ -67,7 +69,7 @@ def main():
     out = Path(o.out)
     out.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
-        for stems, rev, opts in RECIPES:
+        for stems, rev, opts, *per_part in RECIPES:
             for stem in stems:
                 for part in ('mid', 'near'):
                     name = f'{stem}-{part}'
@@ -76,7 +78,7 @@ def main():
                     src = Path(tmp) / f'{name}.webp'
                     src.write_bytes(subprocess.run(['git', 'show', f'{rev}:{BACK}/{name}.webp'], cwd=ROOT, check=True,
                                                    capture_output=True).stdout)
-                    args = [a for a in opts if not (o.clean and a == '--ink')]
+                    args = [a for a in opts + (per_part[0].get(part, []) if per_part else []) if not (o.clean and a == '--ink')]
                     if name in PRE:
                         spec = importlib.util.spec_from_file_location(PRE[name], Path(__file__).with_name(f'{PRE[name]}.py'))
                         mod = importlib.util.module_from_spec(spec)
