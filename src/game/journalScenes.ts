@@ -28,6 +28,8 @@ import { drawGlideSprite } from './leafSprites.ts';
 import { venomRig } from './venomRig.ts';
 import { newBrain } from './bossAI.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { FONT_UI } from './fonts.ts';
+import { withHurtFlash } from './hurtFlash.ts';
 
 export const SCENE_W = 300;
 export const SCENE_H = 187.5;
@@ -304,13 +306,16 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       if (ko < 0 || ko < 0.8) {
         ctx.save();
         if (ko > 0) ctx.globalAlpha = Math.max(0, 1 - ko / 0.8);
-        if (id === 'nostomp') {
-          const e = foe('spider', enemyX, FLOOR, 34, 22, { hitFlashTimer: flash, facing: -1 });
-          if (!drawSpiderSprite(ctx, e, now, 140)) drawHazardEntity(ctx, e, now);
-        } else if (big) {
-          const e = foe('boa', enemyX, FLOOR, 58, 26, { hp: 3, maxHp: 3, hitFlashTimer: flash, facing: -1 });
-          if (!drawBoaSprite(ctx, e, now)) drawBoa(ctx, e, now);
-        } else snake(ctx, now, foe('snake', enemyX, FLOOR, 38, 22, { hitFlashTimer: flash }));
+        // (the white flash on each hit, as in play: hurtFlash.ts)
+        withHurtFlash(ctx, flash > 0, enemyX - 90, FLOOR - 110, 180, 130, (ctx) => {
+          if (id === 'nostomp') {
+            const e = foe('spider', enemyX, FLOOR, 34, 22, { hitFlashTimer: flash, facing: -1 });
+            if (!drawSpiderSprite(ctx, e, now, 140)) drawHazardEntity(ctx, e, now);
+          } else if (big) {
+            const e = foe('boa', enemyX, FLOOR, 58, 26, { hp: 3, maxHp: 3, hitFlashTimer: flash, facing: -1 });
+            if (!drawBoaSprite(ctx, e, now)) drawBoa(ctx, e, now);
+          } else snake(ctx, now, foe('snake', enemyX, FLOOR, 38, 22, { hitFlashTimer: flash }));
+        });
         ctx.restore();
       }
       hits.forEach((h) => bang(ctx, 142, FLOOR - 16, (t - h - 0.1) / 0.3));
@@ -339,7 +344,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
         ctx.scale(1, squashed ? 0.35 : 1);
         ctx.translate(-sx, -FLOOR);
         if (squashed) ctx.globalAlpha = Math.max(0, 1 - (t - 1.3) / 0.9);
-        snake(ctx, now, foe('snake', sx, FLOOR, 38, 22, { hitFlashTimer: squashed ? 0.1 : 0 }));
+        withHurtFlash(ctx, squashed, sx - 70, FLOOR - 80, 140, 100, (c) => snake(c, now, foe('snake', sx, FLOOR, 38, 22, { hitFlashTimer: squashed ? 0.1 : 0 })));
         ctx.restore();
       }
       bang(ctx, sx, FLOOR - 24, (t - 1.3) / 0.35);
@@ -535,7 +540,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       if (ko < 0) {
         ctx.save();
         ctx.fillStyle = '#e8f5ff';
-        ctx.font = '700 12px Fredoka, sans-serif';
+        ctx.font = `700 12px ${FONT_UI}`;
         const z = (now * 0.8) % 1;
         ctx.globalAlpha = 1 - z;
         ctx.fillText('z', sx + 12 + z * 10, FLOOR - 26 - z * 18);
@@ -682,7 +687,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       ctx.roundRect(SCENE_W - 92, 8, 84, 24, 8);
       ctx.fill();
       ctx.fillStyle = '#fcd34d';
-      ctx.font = '700 15px Outfit, sans-serif';
+      ctx.font = `700 15px ${FONT_UI}`;
       ctx.textAlign = 'center';
       ctx.fillText(`${got} / 4 petals`, SCENE_W - 50, 25);
       ctx.restore();
@@ -712,7 +717,7 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
         ctx.save();
         ctx.globalAlpha = 1 - (t - 1.1);
         ctx.fillStyle = '#fda4af';
-        ctx.font = '700 16px Fredoka, sans-serif';
+        ctx.font = `700 16px ${FONT_UI}`;
         ctx.fillText('+1', ix - 8, FLOOR - 50 - (t - 1.1) * 20);
         ctx.restore();
       }

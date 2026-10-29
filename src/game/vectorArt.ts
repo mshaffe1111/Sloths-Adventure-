@@ -15,6 +15,7 @@ import { drawHushFern, drawKeepersBell, drawSearchHint } from './findArt.ts';
 import { drawThingFern } from './w3Art.ts';
 import { leaf } from './rainforest.ts';
 import { drawGiantBat } from './bossBat.ts';
+import { FONT_UI } from './fonts.ts';
 
 export { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity };
 
@@ -499,7 +500,6 @@ export function drawBossEntity(
   ctx.save();
   ctx.translate(boss.x, boss.y);
   ctx.scale(boss.facing * 1.5, 1.5);
-  const hit = boss.hitFlashTimer > 0;
   const breath = Math.sin(time * 3) * 2;
   const angry = boss.telegraphTimer > 0 || boss.isAttacking;
   // The animal rigs measure motion from position, so tell them where the boss really is (mirrored when it faces left).
@@ -534,7 +534,6 @@ export function drawBossEntity(
     }
     case 2: {
       // Crocus Rex: river crocodile king
-      if (hit) ctx.filter = 'brightness(2.4)';
       ctx.save();
       ctx.scale(0.78, 0.78);
       ctx.translate(0, 8);
@@ -657,7 +656,6 @@ export function drawBossEntity(
     }
     case 7: {
       // Stone Idol Golem
-      if (hit) ctx.filter = 'brightness(2.2)';
       const ST = '#8c929c';
       softBlob(ctx, -12, 12, 11, 9, 0, mixc(ST, '#444', 0.2));
       softBlob(ctx, 12, 12, 11, 9, 0, mixc(ST, '#444', 0.2));
@@ -730,12 +728,10 @@ export function drawBossEntity(
     }
     case 8: {
       // Night-Wing Monarch: a giant fruit bat with a crown
-      if (hit) ctx.filter = 'brightness(2.2)';
       ctx.save();
       ctx.scale(1.25, 1.25);
       drawGiantBat(ctx, time, angry);
       ctx.restore();
-      if (hit) ctx.filter = 'none';
       break;
     }
     case 9: {
@@ -781,7 +777,6 @@ export function drawBossEntity(
     }
     default: {
       // Fortress General Iron-Claw: armoured gorilla
-      if (hit) ctx.filter = 'brightness(2.2)';
       const FUR = '#566073';
       // cape
       ctx.fillStyle = '#b3262e';
@@ -978,7 +973,7 @@ export function drawGirlfriendDaisy(
 
   if (isRescued) {
     ctx.fillStyle = '#ec4899';
-    ctx.font = '18px sans-serif';
+    ctx.font = `18px ${FONT_UI}`;
     ctx.fillText('❤️', -9, -72 + Math.sin(time * 5) * 4);
   }
   ctx.restore();
@@ -1253,7 +1248,7 @@ export function drawCollectible(
         ctx.fillStyle = '#ffffff';
         ctx.strokeStyle = '#c0284a';
         ctx.lineWidth = 3;
-        ctx.font = 'bold 12px sans-serif';
+        ctx.font = `bold 12px ${FONT_UI}`;
         ctx.strokeText(`HP: ${item.cageHp}`, -16, -27);
         ctx.fillText(`HP: ${item.cageHp}`, -16, -27);
       }

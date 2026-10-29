@@ -96,7 +96,6 @@ export function drawSpiderSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
     ctx.ellipse(0, 1, 24, 3.2, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   ctx.scale(sx, sy);
   ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();

@@ -11,6 +11,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { VENOM2_FRAMES, VENOM2_PX, type VenomFrame } from './venom2AtlasData.ts';
 import { VENOM_FRAMES } from './venomAtlasData.ts';
 import { NECK, VF, coilCut, coilTop, venomPose, type CoilPose, type HeadPose } from './venomFang.ts';
+import { withHurtFlash } from './hurtFlash.ts';
 
 const URL_ATLAS = new URL('../assets/enemies/venom2-atlas.webp', import.meta.url).href;
 const K = VF.S / VENOM2_PX;
@@ -165,9 +166,9 @@ function drawPose(ctx: CanvasRenderingContext2D, coil: CoilPose, head: HeadPose,
   neck(ctx, pts.slice(0, Math.min(pts.length, k + 3)));
   piece(ctx, VENOM2_FRAMES['coil_' + coil], 0, 0);
   if (k < pts.length - 1) neck(ctx, pts.slice(Math.max(0, k - 1)), 'butt');
-  if (flash) ctx.filter = 'brightness(1.45)';
-  piece(ctx, VENOM2_FRAMES['head_' + head], jx, jy, squash);
-  ctx.filter = 'none';
+  // (a hit: the head flashes white, the shared hurt flash: hurtFlash.ts, AN-6)
+  const hf = VENOM2_FRAMES['head_' + head];
+  withHurtFlash(ctx, flash, jx - hf.ax * K, jy - hf.ay * K * squash, hf.w * K, hf.h * K * squash, (c) => piece(c, hf, jx, jy, squash));
 }
 
 /** the old frame names the story cards ask for, as poses of the new pieces */

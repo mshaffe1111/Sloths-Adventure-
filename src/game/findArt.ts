@@ -5,6 +5,7 @@
  * Both are drawn with the origin at the item's centre, 26 px above the ground it stands on.
  */
 import type { Collectible } from './types.ts';
+import { FONT_UI } from './fonts.ts';
 
 const GROUND = 26;
 
@@ -119,7 +120,7 @@ export function drawSearchHint(ctx: CanvasRenderingContext2D, item: Collectible,
     ctx.translate(0, -GROUND - 62);
     const a = 0.75 + 0.25 * Math.sin(time * 5);
     ctx.globalAlpha = a;
-    ctx.font = 'bold 13px sans-serif';
+    ctx.font = `bold 13px ${FONT_UI}`;
     ctx.textAlign = 'center';
     const w = 82;
     ctx.fillStyle = 'rgba(20,34,24,0.85)';

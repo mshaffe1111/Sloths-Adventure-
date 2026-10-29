@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { buildProtoStage, G } from './protoStage.ts';
 import { reachJump } from './physics.ts';
 import { maxRise } from './protoCheck.ts';
-import { ctestEnabled } from './playRecorder.ts';
+import { ctestEnabled, qaBuild } from './playRecorder.ts';
 import { validateStage } from './levelCheck.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -12,8 +12,10 @@ const cfg = {
   levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
 } as LevelConfig;
 
-test('control test: off unless the address asks for it', () => {
+test('control test: off unless the address asks for it, and only in a QA build (UI-15)', () => {
   assert.equal(ctestEnabled(), false);
+  // (outside a Vite dev or test-link build there is no QA build: the shipped game never opens it)
+  assert.equal(qaBuild(), false);
 });
 
 const SEEDS = Array.from({ length: 40 }, (_, i) => 1 + i * 7919);

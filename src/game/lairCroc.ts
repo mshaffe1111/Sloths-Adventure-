@@ -9,6 +9,7 @@
  * ropes are in lairCrocObjects.ts.
  */
 import type { LairArena, LairView } from './lairArt.ts';
+import { FONT_UI } from './fonts.ts';
 
 function rand(i: number): number {
   const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
@@ -365,7 +366,7 @@ export function drawCrocWorld(ctx: CanvasRenderingContext2D, a: LairArena, view:
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = '#fde68a';
-    ctx.font = 'bold 15px system-ui, sans-serif';
+    ctx.font = `bold 15px ${FONT_UI}`;
     ctx.textAlign = 'center';
     ctx.fillText('NO', 0, -83);
     ctx.fillText('SWIMMING', 0, -66);

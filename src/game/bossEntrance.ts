@@ -1,3 +1,4 @@
+import { FONT_UI } from './fonts.ts';
 /**
  * A giant boss makes an entrance. The first time you meet it in a session it takes about five seconds: the screen goes dark under
  * two black bars, a pair of eyes opens in the dark, the boss is revealed, it roars, and its name slams down. Trying again after a
@@ -102,7 +103,7 @@ export function drawEntrance(ctx: CanvasRenderingContext2D, v: EntranceView, b: 
     ctx.globalAlpha = b.nameAlpha;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = `bold ${size}px Fredoka, sans-serif`;
+    ctx.font = `bold ${size}px ${FONT_UI}`;
     const text = v.name.toUpperCase();
     ctx.lineJoin = 'round';
     ctx.lineWidth = size * 0.16;

@@ -1,3 +1,4 @@
+import { FONT_UI } from './fonts.ts';
 /**
  * The sanctuary door at the end of a stage: a mossy stone temple arch with carved runes, hung with vines and
  * hibiscus. Open, it holds a swirling emerald portal; sealed, it is bound with vines and a golden padlock.
@@ -339,7 +340,7 @@ let plateText = '';
 let plateW = 0;
 function missingPlate(ctx: CanvasRenderingContext2D, n: number) {
   ctx.save();
-  ctx.font = '700 21px Fredoka, sans-serif';
+  ctx.font = `700 21px ${FONT_UI}`;
   // (the words and their width only change with the number, so nothing new is made each frame)
   if (n !== plateN) {
     plateN = n;
@@ -410,7 +411,7 @@ export function drawSanctuaryDoor(ctx: CanvasRenderingContext2D, time: number, l
   if (locked) return;
   const bounce = Math.sin(time * 5) * 4;
   ctx.save();
-  ctx.font = 'bold 15px Fredoka, sans-serif';
+  ctx.font = `bold 15px ${FONT_UI}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineWidth = 4;

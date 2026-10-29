@@ -152,6 +152,8 @@ import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGo
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+import { FONT_UI } from './fonts.ts';
+import { withHurtFlash } from './hurtFlash.ts';
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -4148,7 +4150,13 @@ export class GameEngine {
   }
 
   /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
-  private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, draw: () => void) {
+  private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, paint: (c: CanvasRenderingContext2D) => void) {
+    // a creature just hit flashes white (hurtFlash.ts, AN-6); the box it is drawn in is its body with room for legs, tails and wings
+    const draw = () => {
+      const b = bodyRect(e);
+      const pad = Math.max(b.w, b.h) * 0.9 + 60;
+      withHurtFlash(ctx, e.hitFlashTimer > 0, b.x - pad, b.y - pad, b.w + pad * 2, b.h + pad * 2, paint);
+    };
     const recoil = e.recoil ?? 0;
     if (!e.defeated && recoil < 0.02) {
       draw();
@@ -5469,7 +5477,7 @@ export class GameEngine {
         drawAura(ctx, 'danger', world.id, enemy.width * 0.8, enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
         ctx.restore();
       }
-      const draw = () => {
+      const draw = (ctx: CanvasRenderingContext2D) => {
         if (enemy.type === 'snake') {
           if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
           if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
@@ -5630,7 +5638,7 @@ export class GameEngine {
       const a = Math.min(1, h.life / 0.4, (3.6 - h.life) / 0.25);
       ctx.save();
       ctx.globalAlpha = Math.max(0, a);
-      ctx.font = '700 17px Fredoka, sans-serif';
+      ctx.font = `700 17px ${FONT_UI}`;
       ctx.textAlign = 'center';
       const w = ctx.measureText(h.text).width + 28;
       // kept inside the view, so on a narrow portrait screen the bubble is never cut off at the edge
@@ -5976,7 +5984,7 @@ export class GameEngine {
     const snap = dpr * this.zoom;
     ctx.translate(-snapCam(this.camera.x, snap), -snapCam(this.camera.y, snap));
     ctx.textAlign = 'center';
-    ctx.font = 'bold 15px Fredoka, sans-serif';
+    ctx.font = `bold 15px ${FONT_UI}`;
     for (const ft of this.floatingTexts) {
       ctx.lineWidth = 3;
       ctx.strokeStyle = 'rgba(30, 20, 30, 0.6)';
@@ -6003,7 +6011,7 @@ export class GameEngine {
     // (a boss fight is zoomed out to show both fighters: the words grow back to a readable size on the phone, QA gate)
     // (World 5's words, a tray knocked away or a cake eaten, are as large as upright on a short landscape screen too: cardScale)
     const fs = this.boss && !this.boss.defeated && this.zoom < 1 ? Math.round(Math.max(15, (15 / this.zoom) * 0.85)) : this.w5 ? Math.round(15 * cardScale(this.zoom)) : 15;
-    ctx.font = `bold ${fs}px Fredoka, sans-serif`;
+    ctx.font = `bold ${fs}px ${FONT_UI}`;
     ctx.lineJoin = 'round';
     const cam = this.camera;
     const placed: Array<{ x0: number; x1: number; y: number }> = [];
@@ -6941,7 +6949,7 @@ export class GameEngine {
   /** a sleeping animal's Z's, drifting up from its head (a stand-in until the sleeping snake art arrives) */
   private drawSleepZ(ctx: CanvasRenderingContext2D, e: Enemy) {
     ctx.save();
-    ctx.font = '700 15px Fredoka, sans-serif';
+    ctx.font = `700 15px ${FONT_UI}`;
     ctx.textAlign = 'center';
     for (let i = 0; i < 3; i++) {
       const u = (this.gameTime * 0.45 + i / 3 + e.id * 0.13) % 1;
@@ -6950,7 +6958,7 @@ export class GameEngine {
       ctx.strokeStyle = 'rgba(20, 38, 26, 0.7)';
       ctx.lineWidth = 3;
       const zx = e.x + e.facing * 10 + u * 22, zy = e.y - 18 - u * 40;
-      ctx.font = `700 ${11 + u * 9}px Fredoka, sans-serif`;
+      ctx.font = `700 ${11 + u * 9}px ${FONT_UI}`;
       ctx.strokeText('z', zx, zy);
       ctx.fillText('z', zx, zy);
     }

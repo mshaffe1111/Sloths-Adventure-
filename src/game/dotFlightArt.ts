@@ -14,6 +14,7 @@ import { DOT_PROP_FRAMES } from './dotPropsData.ts';
 import { drawDotFrame, flyFrame, warmDot } from './dotSprite.ts';
 import { BLOOM, DOT, MIST, TOP, gustState, openingY, type BackName, type DotStage, type Nectar, type NetWall, type Thorn } from './dotFlightStage.ts';
 import type { DotFlight } from './dotFlight.ts';
+import { FONT_UI } from './fonts.ts';
 
 export type DotPiece = keyof typeof DOT_PROP_FRAMES;
 
@@ -971,7 +972,7 @@ function drawSlimHud(ctx: CanvasRenderingContext2D, fl: DotFlight, t: number, at
   ctx.moveTo(sx + 5, y + 16);
   ctx.lineTo(sx + 9, y + 6);
   ctx.stroke();
-  ctx.font = '700 12px Fredoka, sans-serif';
+  ctx.font = `700 12px ${FONT_UI}`;
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#ffe4e6';
   ctx.fillText(String(fl.scratches), sx + 13, y + h / 2 + 1);
@@ -1014,7 +1015,7 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
   ctx.roundRect(x + 26, y + 10, Math.max(4, (w - 36) * u), 10, 5);
   ctx.fill();
   // scratches: nine little marks
-  ctx.font = '600 11px Fredoka, sans-serif';
+  ctx.font = `600 11px ${FONT_UI}`;
   ctx.fillStyle = '#d1fae5';
   ctx.textBaseline = 'middle';
   ctx.fillText('Scratches', x + 9, y + 36);
@@ -1040,7 +1041,7 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
     ctx.roundRect(x + w + 6, y, 62, h, 14);
     ctx.fill();
     drawPiece(ctx, 'silkWide', x + w + 24, y + 25, 28);
-    ctx.font = '700 14px Fredoka, sans-serif';
+    ctx.font = `700 14px ${FONT_UI}`;
     ctx.fillStyle = '#e0f2fe';
     ctx.fillText(`${fl.silkGot.size}/${fl.stage.silk.length}`, x + w + 40, y + 26);
   }
