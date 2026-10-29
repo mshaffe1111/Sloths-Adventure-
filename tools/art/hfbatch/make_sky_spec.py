@@ -5,8 +5,11 @@ The source is src/assets/backdrops/<stem>-far.webp at <commit> on GitHub."""
 import json, sys
 from pathlib import Path
 
-STYLE = ('slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, '
+STYLE = ('slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, '
          'thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text')
+# (the words "side-scrolling game" brought a row of stone ledge blocks with them, pilot 3: nothing up there is a platform)
+NEG = ('ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, text, letters, watermark, frame, border, photo, 3d '
+       'render, people, animal, sloth, horizontal band, seam, blurry, smeared')
 SKY = 'open sky with a few soft painted clouds'
 # what carries on above each far strip's top edge (looked at, 2026-10-29: tools/art/edges contact sheet of the far strips)
 WHAT = {
@@ -49,7 +52,7 @@ WHAT = {
 
 # the middle strips whose trees, roots or cave roof run off their top edge (upright that edge is on screen): carried on upward on flat
 # magenta, keyed by skycut.py into <stem>-midtop.webp
-CUT = ('slothadv style, painted storybook illustration, a cut-out layer of a side-scrolling game background, soft cel shading, thin '
+CUT = ('slothadv style, painted storybook illustration, a cut-out layer of a landscape painting, soft cel shading, thin '
        'dark outline, hand-painted gouache brushwork, the same colours and light as below, isolated on one flat solid pure {key} '
        'background filling every gap, no sky, no haze, no glow, no gradient, no text')
 # the key the middle strip is painted on: magenta, or green where the strip itself is pink (World 5: the model turned magenta into a
@@ -78,9 +81,9 @@ def item(stem, strength, seed, commit):
         w = stem[:-4]
         kname, kcol = KEY.get('w5' if w.startswith('w5') else w, ('magenta', [255, 0, 255]))
         return {'name': f'{w}-midtop-s{st}-{seed}', 'strength': float(strength), 'seed': int(seed), 'src': f'{base}{w}-mid.webp',
-                'prompt': f'{CUT.format(key=kname)}. {MID[w]}', 'bg': kcol, 'ext': 0.45}
+                'prompt': f'{CUT.format(key=kname)}. {MID[w]}', 'bg': kcol, 'ext': 0.45, 'neg': NEG}
     return {'name': f'{stem}-sky-s{st}-{seed}', 'strength': float(strength), 'seed': int(seed), 'src': f'{base}{stem}-far.webp',
-            'prompt': f'{STYLE}. {WHAT[stem]}'}
+            'prompt': f'{STYLE}. {WHAT[stem]}', 'neg': NEG}
 
 
 if __name__ == '__main__':
