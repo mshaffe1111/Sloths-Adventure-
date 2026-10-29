@@ -12,6 +12,42 @@
  "items": [
   {
    "kind": "tile",
+   "name": "fill-w7-c",
+   "start": "fill-w7.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, deep under an old jungle temple: broken irregular grey-green temple stone rubble, worn carved fragments with faint key patterns, packed earth between them, thick brown tree roots winding over everything. The same density all over, no top, no bottom, no border, no horizon, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, grid, straight lines, square tiles, bricks in rows, mortar lines, diagonal pattern",
+   "s1": 0.7,
+   "seed": 31,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w7-d",
+   "start": "fill-w7.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, deep under an old jungle temple: broken irregular grey-green temple stone rubble, worn carved fragments with faint key patterns, packed earth between them, thick brown tree roots winding over everything. The same density all over, no top, no bottom, no border, no horizon, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, grid, straight lines, square tiles, bricks in rows, mortar lines, diagonal pattern",
+   "s1": 0.8,
+   "seed": 43,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "tile",
    "name": "fill-w9-a",
    "start": "fill-w9.webp",
    "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: dark grey basalt rock in tall six-sided columns packed side by side, worn tops and fine cracks. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",

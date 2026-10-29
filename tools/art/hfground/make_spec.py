@@ -67,11 +67,21 @@ for w in range(1, 11):
          'w': 512, 'h': 768},
     ]
 
+# (World 7, round 2: take a was a busy diagonal jumble of blocks, take b painted a straight mortar grid that read as tile lines)
+W7R = (f'{STYLE}, a seamless tileable square texture for a side-scrolling platform game, deep under an old jungle temple: broken '
+       f'irregular grey-green temple stone rubble, worn carved fragments with faint key patterns, packed earth between them, thick brown '
+       f'tree roots winding over everything. The same density all over, no top, no bottom, no border, no horizon, {LIGHT}, must tile '
+       f'seamlessly in all four directions')
+NEG_W7 = NEG_TILE + ', grid, straight lines, square tiles, bricks in rows, mortar lines, diagonal pattern'
+w7r = [{'kind': 'tile', 'name': f'fill-w7-{t}', 'start': 'fill-w7.webp', 'prompt': W7R, 'neg': NEG_W7, 's1': s1, 'seed': sd, 's2': 0.45,
+        'seeds2': [3, 5, 7], 'w': 1024, 'h': 1024, 'band': 80} for t, s1, sd in (('c', 0.7, 31), ('d', 0.8, 43))]
+
 common = {'note': 'hf-art-ground: soil textures, top lips, bank ends (VI-8), 2026-10-29',
           'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
           'neg': NEG_TILE, 'base': BASE}
 here = Path(__file__).resolve().parent
 for part, ws in (('a', [6, 7, 1, 2]), ('b', [3, 4, 5, 8]), ('c', [9, 10])):
     p = here / f'spec-ground-{part}.json'
-    p.write_text(json.dumps({**common, 'items': [i for w in ws for i in items[w]]}, indent=1))
+    extra = w7r if part == 'c' else []
+    p.write_text(json.dumps({**common, 'items': extra + [i for w in ws for i in items[w]]}, indent=1))
     print(p)
