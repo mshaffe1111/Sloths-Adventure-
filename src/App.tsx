@@ -674,7 +674,9 @@ export default function App() {
             setScore(curScore);
             setHp(curHp);
             if (distRatio !== undefined) {
-              setDistanceRatio(distRatio);
+              // in steps of a quarter percent (under a pixel on the HUD's trail): the exact share changed every frame he moved, so the
+              // whole app re-rendered 30 times a second while he ran (PF-1)
+              setDistanceRatio(Math.round(distRatio * 400) / 400);
             }
             setActivePowerUp(curPowerUp ?? null);
             setPowerUpTimer(curPowerTimer ?? 0);

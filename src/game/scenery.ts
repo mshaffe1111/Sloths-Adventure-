@@ -1309,6 +1309,7 @@ function buildFront(look: Look, world: number, hangs = true): HTMLCanvasElement 
       drawBananaLeaf(ctx, xx + 80, -40, 110, 36, Math.PI + 0.4, rim[(r() * rim.length) | 0]);
     });
   }
+  findBands(cv);
   return cv;
 }
 
@@ -1476,6 +1477,8 @@ function mistDrift(ctx: CanvasRenderingContext2D, look: Look, vw: number, vh: nu
   if (look.weather !== 'mist') return;
   const pic = mistPuff(look.haze);
   ctx.save();
+  // (a soft round puff: plain smoothing looks the same and skips the high-quality filter's pass over the whole bank: PF-1)
+  ctx.imageSmoothingQuality = 'low';
   for (let i = 0; i < 5; i++) {
     const x = (((i * 0.3 + time * 0.01 * (1 + i * 0.2)) % 1.4) - 0.2) * vw;
     const rx = vw * 0.42;
@@ -1492,7 +1495,11 @@ function lanePool(ctx: CanvasRenderingContext2D, look: Look, world: number, vw: 
   const { col, a } = poolFor(look, world);
   const rx = Math.min(vw * 0.42, 360);
   const ry = Math.min(vh * 0.36, 190);
+  // (one soft gradient: plain smoothing looks the same and skips the high-quality filter's pass: PF-1)
+  const q = ctx.imageSmoothingQuality;
+  ctx.imageSmoothingQuality = 'low';
   ctx.drawImage(poolSprite(col, a), hs.x - rx, hs.y - 36 - ry, rx * 2, ry * 2);
+  ctx.imageSmoothingQuality = q;
 }
 
 function ensure(world: number): LayerSet {
@@ -1584,6 +1591,42 @@ export function devScale(ctx: CanvasRenderingContext2D): number {
  * jumping two device pixels, while the ground moved every frame, so the layers shuddered against each other (polish report AN-4) */
 export const snapDev = (v: number, k: number): number => Math.round(v * k) / k;
 
+/**
+ * The bands of rows a baked layer actually paints, found once per layer (PF-1). The front frame is clear but for its leaf clumps along
+ * the bottom (and the hanging leaves at the top over a drawn backdrop), yet drawing the whole clear tile over the screen cost a phone as
+ * much as an opaque one: drawn as just its bands, the picture is the same and the clear rows cost nothing. Found when the layer is baked
+ * (buildFront), so drawTile only looks them up.
+ */
+const bandsOf = new WeakMap<HTMLCanvasElement, Array<[number, number]>>();
+function findBands(cv: HTMLCanvasElement): void {
+  const w = cv.width;
+  const h = cv.height;
+  let bands: Array<[number, number]> = [[0, h]];
+  try {
+    const d = cv.getContext('2d')!.getImageData(0, 0, w, h).data;
+    const runs: Array<[number, number]> = [];
+    for (let y = 0; y < h; y++) {
+      let any = false;
+      for (let i = y * w * 4 + 3, e = i + w * 4; i < e; i += 4) {
+        if (d[i]) {
+          any = true;
+          break;
+        }
+      }
+      if (!any) continue;
+      // (a few clear rows of margin either side, so the smoothing at a band's edge reads the same clear pixels it always did)
+      const r0 = Math.max(0, y - 4);
+      const last = runs[runs.length - 1];
+      if (last && r0 <= last[1] + 16) last[1] = Math.min(h, y + 5);
+      else runs.push([r0, Math.min(h, y + 5)]);
+    }
+    if (runs.length <= 3) bands = runs;
+  } catch {
+    /* unreadable: draw it whole */
+  }
+  bandsOf.set(cv, bands);
+}
+
 function drawTile(ctx: CanvasRenderingContext2D, cv: Layer, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, alpha = 1, o?: TileOpt) {
   const pitch = tileW(cv) * s;
   const k = devScale(ctx);
@@ -1627,10 +1670,15 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: Layer, par: number, camX: n
       if (flip) ctx.restore();
     }
   } else {
+    // a layer that is mostly clear (the front frame) is drawn as just the rows it paints
+    const bands = cv instanceof HTMLCanvasElement && !(lv && lv.flip) ? bandsOf.get(cv) : undefined;
+    const lh = layerH(cv);
     for (let x = x0; x < vw; x += pitch) {
       const px = snapDev(x, k);
       const pw = snapDev(x + pitch, k) - px + 1 / k;
-      if (lv && lv.flip) {
+      if (bands) {
+        for (const [r0, r1] of bands) ctx.drawImage(cv, 0, r0, layerWpx(cv), r1 - r0, px, y0 + (dh * r0) / lh, pw, (dh * (r1 - r0)) / lh);
+      } else if (lv && lv.flip) {
         ctx.save();
         ctx.translate(px + pw, 0);
         ctx.scale(-1, 1);
@@ -1656,6 +1704,9 @@ export const STRIP_FIT: Record<'far' | 'mid' | 'near', { k: number; a: number; a
 /** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT. The strip files are made seamless
  * (scripts/strip-seamless.py: the right edge crossfaded into the left), so every copy is drawn the same way round: no mirrored
  * twins (polish report VI-4). */
+/** where a strip's top edge sits on screen (drawStrip) */
+const stripTop = (part: keyof typeof STRIP_FIT, vh: number, s: number, yOff: number) => vh * STRIP_FIT[part].at - STRIP_FIT[part].a * H * s * STRIP_FIT[part].k + yOff;
+
 function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0) {
   const f = STRIP_FIT[part];
   const dh = H * s * f.k;
@@ -1663,7 +1714,7 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
   const ih = layerH(img);
   const pitch = tileW(img) * s * f.k;
   const k = devScale(ctx);
-  const top = snapDev(vh * f.at - f.a * dh + yOff, k);
+  const top = snapDev(stripTop(part, vh, s, yOff), k);
   let x0 = -((camX * par) % pitch);
   if (x0 > 0) x0 -= pitch;
   for (let x = x0; x < vw; x += pitch) {
@@ -1778,9 +1829,12 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   const look = lookFor(world);
   const set = ensure(world);
   const s = vh / H;
-  renderSky(ctx, world, vw, vh, time, camX);
   // how far the layers slide with the climb: gentle, so the stretch that keeps their edges covered stays unnoticeable
   const yo = -Math.min(30, Math.max(-30, camY * 0.03)) * s;
+  // a painted world's far strip is opaque and covers the whole view once its top is above the screen's (drawStrip runs its last rows on
+  // to the bottom and its copies across), so once it has faded in, the sky under it never shows: skipping it saves a full-screen
+  // gradient, the sun's full-screen glow and the clouds every frame (PF-1)
+  if (!set.painted || fadeIn(set.at) < 1 || stripTop('far', vh, s, yo * 0.3) > 0) renderSky(ctx, world, vw, vh, time, camX);
   // the polish pass (prototype, off by default): per-stage layer shifts/flips, wind, mist and light shafts
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
@@ -1875,8 +1929,12 @@ function drawVignette(ctx: CanvasRenderingContext2D, col: string, vw: number, vh
     vigKey = key;
   }
   const prev = ctx.imageSmoothingEnabled;
+  const prevQ = ctx.imageSmoothingQuality;
   ctx.imageSmoothingEnabled = true;
+  // plain smoothing: the picture is one soft gradient, and the high-quality filter cost a full-screen pass of its own (PF-1)
+  ctx.imageSmoothingQuality = 'low';
   ctx.drawImage(vigPic, 0, 0, bw, bh, 0, 0, vw, vh);
+  ctx.imageSmoothingQuality = prevQ;
   ctx.imageSmoothingEnabled = prev;
 }
 
