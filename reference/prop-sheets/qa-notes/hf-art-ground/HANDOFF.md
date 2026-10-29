@@ -122,3 +122,17 @@ cost). No job is running.
 - Rough spots seen, not mine to fix here:
   - a flat green code-drawn block in 5-1's pit (a rock platform, x about 7700);
   - the lips are thin (a 22-30 unit moss band). LIP_W in groundPaint.ts can be raised to about 700 if Matt wants a heavier lip.
+
+## Cloud round (2026-10-29, ~3:30 PM ET)
+- Dressing (VI-17) checked over every World 1/2/5 stage, 8 rolls each (`work/dresscheck.ts`, git-ignored): nothing floats; fixed
+  pieces standing in bounce pads, steps and walls (`free()`), hanging moss in front of a pickup, hanging moss under logs lying at ground
+  level across wide water (now the two nearest banks, any distance), two bank sets facing each other across a pit (600+ apart now), the
+  same piece twice side by side (clutter keeps 440/700 clear of bank sets), and each set laid in a turned order. Left: the fern always
+  stands half in front of the mushroom in World 1's bank set A (by design: a cluster).
+- 5-6 and 5-8 are the old generator and get no dressing (no `proto`).
+- LIP_W 560 -> 700 (`work/lip-*.jpg` compared 560/700/840; 840 covered his feet in World 9's stone).
+- World 10 soil redone: new start (`starts3.py`, broken blocks), job hfg-ground-d, pick fill-w10-c swapped in by `packfill.py`.
+  `review-w10-redo.jpg`.
+- Water signs: gen2 stood the sign at the higher of a gap's two lips, so on 6-1 it hung 80 units in the air; it now stands on the near
+  lip (gen2/pipeline.ts). `after-6-1-sign-*.jpg`.
+- Before/after: `ba-<stage>.jpg` (upright and sideways, before above, after below).

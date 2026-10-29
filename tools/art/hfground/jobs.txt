@@ -7,3 +7,5 @@ hfg-ground-c 6ae385535ddcdc0830263740 rtx-pro-6000 created 17:41:39Z: spec-groun
 finished: hfg-art2 17:47:09Z (9.7 min, ~$0.44); hfg-ground-c 17:48:15Z (6.6 min, ~$0.30)
 running total ~35.9 min = ~$1.65
 finished: hfg-art3 18:06:52Z (1.6 min, ~$0.07); running total ~37.5 min = ~$1.72
+hfg-ground-d 6ae39ab5ad9610e5cb316079 rtx-pro-6000 created 19:12:53Z: spec-ground-d.json (World 10 soil redo from starts3.py: 2 bases x 3 variants)
+finished: hfg-ground-d 19:15:18Z (2.4 min, ~$0.11); pick fill-w10-c (packfill.py); running total ~39.9 min = ~$1.83
