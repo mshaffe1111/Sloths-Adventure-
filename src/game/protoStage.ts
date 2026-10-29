@@ -5341,13 +5341,19 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   // ---- Learn: up two trunks from the floor
   cur = P[0];
   beat('Learn: up the trunk', () => {
-    cur = { ...P[0], x: 300, width: 400 } as Platform; // the patch of floor the first trunk stands on
+    // the patch of floor the first trunk stands on
+    // (2-6, QA 2026-10-29: the first ladder stood 440 px from where he starts, off an upright screen (it shows 70-510); the tip to slide
+    // up a post came as he walked past it, and he walked the floor seeing only the bank's dirt. In the village it stands 220 px on)
+    cur = (village ? { ...P[0], x: 200, width: 280 } : { ...P[0], x: 300, width: 400 }) as Platform;
     if (village) hint('Up through the village! Slide up a post to climb', 'Up through the village! Hold up on a post to climb', 'Up through the village! Hold up on a post to climb');
     else if (grotto) hint('Up the sinkhole, toward the moonlight! Slide up a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb');
     else if (mist) hint('Up toward the eagle nests, above the mist! Slide up a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb');
     else if (cliff) hint('The ledge broke away! Climb back up. Slide up a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb');
     else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
     firstTrunkX = climb(Math.round(R.r(280, 320)), 4);
+    // (2-6: a log lying on the floor just past the first ladder, a hop high: a plain walk stops by the ladder instead of carrying him off
+    // along the floor, and coming back to it after a fall is a hop over, QA 2026-10-29)
+    if (village) P.push({ id: pid++, x: firstTrunkX + 70, y: -40, width: 100, height: 40 + BANK_H, type: 'solid', style: 'log' });
     row(cur.x + 80, cur.x + cur.width - 30, cur.y - 34, 2, 'hibiscus');
     climb(Math.round(R.r(260, 300)), 3);
     flag();

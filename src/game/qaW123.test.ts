@@ -264,3 +264,19 @@ test("watcher: a freeFirst stretch's first pass is harmless, its second is not, 
   assert.equal(passOver(c), true, 'the first over a new freeFirst stretch');
   assert.equal(passOver(c), false, 'the second over it');
 });
+
+// QA 5 (rules 7/2): 2-6 upright, 0-11%: the first ladder stood 440 px from the start, off an upright screen (it shows 70-510), so Dot's
+// "Slide up a post" came as he walked past it and the floor led him away along the bank's dirt. Now it stands in view from the start,
+// and a log a hop high lies on the floor just past it, so a plain walk stops beside it.
+test('2-6: the first ladder is on an upright screen from the start, and a plain walk stops beside it (every roll)', () => {
+  setDifficulty('normal');
+  for (const s of [1, 2, 3, 7, 12]) {
+    const r = new RealPlay('2-6', s);
+    const st = r.stage;
+    const ladder = r.vines.filter((v) => v.vineType === 'tree_climb').sort((a, b) => b.bottomY - a.bottomY)[0];
+    assert.ok(ladder.x - st.spawnX <= 260, `roll ${s}: the first ladder ${Math.round(ladder.x - st.spawnX)} px from the start`);
+    r.stand(st.spawnX, st.spawnY);
+    for (let i = 0; i < 120; i++) r.frame({ right: true });
+    assert.ok(Math.abs(r.p.x - ladder.x) < 120, `roll ${s}: a plain walk stops by the ladder (at ${Math.round(r.p.x)}, ladder ${ladder.x})`);
+  }
+});
