@@ -1,6 +1,7 @@
 /**
- * bounceArt — the bounce plants (toadstool, parasol, bloom), painted on Hugging Face in the kit style (hf-art-ground round 3,
- * 2026-10-29). They were drawn in code (spanArt.ts drawBounce), and in 10-1 the toadstool's pale code stalk read as a white bar standing
+ * bounceArt — the bounce plants, painted on Hugging Face in the kit style (hf-art-ground round 3, 2026-10-29), each world its own (Matt,
+ * 2026-10-29): a canopy mushroom, a river lily, a glowing grotto cap, a fern bud, a gold orchid, a swamp pitcher, a stone lotus, a moon
+ * flower, an ash cap, an iron thistle. They were drawn in code (spanArt.ts drawBounce), and in 10-1 the toadstool's pale code stalk read as a white bar standing
  * in the water. The cap's top row is the collision line; it squashes about its rim as it breathes. The stalk runs down off the bottom of
  * the view, darkening as it goes down (baked once per species), so it sinks into the gloom instead of standing as a pale pole. The cue
  * is unchanged: the up-arrow above them. One small sheet (bounce.webp, bounceAtlasData.ts), warmed on the first draw.
@@ -9,10 +10,6 @@ import { trackAtlas } from './atlasLoader.ts';
 import { BOUNCE_FRAMES, BOUNCE_URL, type BounceFrame } from './bounceAtlasData.ts';
 import type { Platform } from './types.ts';
 
-export type Species = 'toadstool' | 'parasol' | 'bloom';
-const KEY: Record<Species, string> = { toadstool: 'toad', parasol: 'parasol', bloom: 'bloom' };
-/** the cap's widest span over the platform's width */
-const SPAN: Record<Species, number> = { toadstool: 1.08, parasol: 1.2, bloom: 1.12 };
 /** how far down the stalk darkens (world px) and how dark it ends */
 const FADE = { len: 260, dark: 0.62 };
 
@@ -60,18 +57,18 @@ function bake(sp: string, f: BounceFrame, scale: number) {
 }
 
 /**
- * a bounce plant on platform p, its stalk down to bottomY; variant 1 is drawn mirrored. Only the cue while the sheet loads. `part`:
+ * world's bounce plant on platform p, its stalk down to bottomY; variant 1 is drawn mirrored. Only the cue while the sheet loads. `part`:
  * 'plant' the stalk and cap with the ground (it stands behind the painted banks), 'cap' the cap and its cue again over the painted
  * ground (a plant at a bank's end was hidden under the bank's lip: terrain.ts drawBounceCaps)
  */
-export function drawBounce(ctx: CanvasRenderingContext2D, p: Platform, species: Species, variant: number, time: number, bottomY: number, part: 'plant' | 'cap' = 'plant') {
+export function drawBounce(ctx: CanvasRenderingContext2D, p: Platform, world: number, variant: number, time: number, bottomY: number, part: 'plant' | 'cap' = 'plant') {
   const cxp = Math.round(p.x + p.width / 2);
   const topY = Math.round(p.y);
-  if (warmBounce()) {
-    const sp = KEY[species];
-    const cf = BOUNCE_FRAMES[`cap-${sp}`];
-    const sf = BOUNCE_FRAMES[`stalk-${sp}`];
-    const k = (p.width * SPAN[species]) / (cf.w * (cf.cw ?? 1));
+  const sp = BOUNCE_FRAMES[`cap-w${world}`] ? `w${world}` : 'w1';
+  const cf = BOUNCE_FRAMES[`cap-${sp}`];
+  const sf = BOUNCE_FRAMES[`stalk-${sp}`];
+  if (cf && sf && warmBounce()) {
+    const k = (p.width * (cf.span ?? 1.1)) / (cf.w * (cf.cw ?? 1));
     const cw = cf.w * k, ch = cf.h * k;
     const x0 = cxp - (cf.cx ?? 0.5) * cw;
     const rimY = topY + (cf.rim ?? 0.8) * ch;

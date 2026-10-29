@@ -1341,7 +1341,7 @@ export function renderWorldObjects(
     ctx.save();
     if (p.type === 'bouncy') {
       const tp = thinPlanFor(plan, p);
-      drawBounce(ctx, p, tp.look === 'parasol' || tp.look === 'bloom' ? tp.look : 'toadstool', tp.variant, time, bounceBottom);
+      drawBounce(ctx, p, worldId, tp.variant, time, bounceBottom);
     } else if (p.type === 'fragile') {
       const tp = thinPlanFor(plan, p);
       const [dx, dy] = shakeOffset(p, time);
@@ -1431,7 +1431,7 @@ export function drawBounceCaps(ctx: CanvasRenderingContext2D, worldId: number, p
   for (const p of platforms) {
     if (p.type !== 'bouncy' || p.broken || p.x + p.width < left || p.x > right) continue;
     const tp = thinPlanFor(plan, p);
-    drawBounce(ctx, p, tp.look === 'parasol' || tp.look === 'bloom' ? tp.look : 'toadstool', tp.variant, time, 0, 'cap');
+    drawBounce(ctx, p, worldId, tp.variant, time, 0, 'cap');
   }
 }
 

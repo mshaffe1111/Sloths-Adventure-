@@ -13,3 +13,4 @@ hfg-art4 6ae3a68e0e0338d1bb7c1ea7 rtx-pro-6000 created 20:03:26Z: spec-art4.json
 finished: hfg-art4 20:06:53Z (3.5 min, ~$0.16); running total ~43.4 min = ~$1.99
 hfg-art5 6ae3a7b30e0338d1bb7c1ff3 rtx-pro-6000 created 20:08:19Z: spec-art5.json (bounce caps redo x3 x2 strengths)
 finished: hfg-art5 20:09:57Z (1.6 min, ~$0.07); running total ~45.0 min = ~$2.06
+hfg-art6 6ae3b5490e0338d1bb7c2fc4 rtx-pro-6000 created 21:06:17Z: spec-art6.json (each world its bounce plant: caps x10 x2 seeds, stalks x10)
