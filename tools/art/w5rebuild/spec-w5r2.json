@@ -1,0 +1,58 @@
+{
+ "note": "w5-rebuild r2: the wide silk drape (the silk sheets), 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "thick black outline, black lines, sticker, comic, cartoon outline, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal, face, eyes",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/3dcd0d2a47889baff173463e27c4324e385131ac/tools/art/w5rebuild/starts/",
+ "items": [
+  {
+   "kind": "plain",
+   "name": "w5r-silkDrape-s62-7",
+   "start": "w5r-silkDrape.webp",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 768,
+   "h": 576,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal, face, eyes",
+   "prompt": "slothadv style, painted storybook illustration, a single prop for a side-scrolling platform game, side view: a wide long white silk cloth hung along a thin mossy branch, draping down in soft deep folds, a delicate lace hem with a soft torn feathered edge, a few silk drips, faintly see-through at its thinnest folds, in World 5's garden palette: soft rose pink, lilac, cream white and warm honey, a little sage green, painted in soft cel shading with no black outline, the edges drawn in a darker shade of each colour, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "w5r-silkDrape-s72-19",
+   "start": "w5r-silkDrape.webp",
+   "strength": 0.72,
+   "seed": 19,
+   "w": 768,
+   "h": 576,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal, face, eyes",
+   "prompt": "slothadv style, painted storybook illustration, a single prop for a side-scrolling platform game, side view: a wide long white silk cloth hung along a thin mossy branch, draping down in soft deep folds, a delicate lace hem with a soft torn feathered edge, a few silk drips, faintly see-through at its thinnest folds, in World 5's garden palette: soft rose pink, lilac, cream white and warm honey, a little sage green, painted in soft cel shading with no black outline, the edges drawn in a darker shade of each colour, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "w5r-silkDrape-s62-31",
+   "start": "w5r-silkDrape.webp",
+   "strength": 0.62,
+   "seed": 31,
+   "w": 768,
+   "h": 576,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal, face, eyes",
+   "prompt": "slothadv style, painted storybook illustration, a single prop for a side-scrolling platform game, side view: a wide long white silk cloth hung along a thin mossy branch, draping down in soft deep folds, a delicate lace hem with a soft torn feathered edge, a few silk drips, faintly see-through at its thinnest folds, in World 5's garden palette: soft rose pink, lilac, cream white and warm honey, a little sage green, painted in soft cel shading with no black outline, the edges drawn in a darker shade of each colour, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "w5r-silkDrape-s72-43",
+   "start": "w5r-silkDrape.webp",
+   "strength": 0.72,
+   "seed": 43,
+   "w": 768,
+   "h": 576,
+   "neg": "thick black outline, black lines, sticker, comic, cartoon outline, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, people, sloth, animal, face, eyes",
+   "prompt": "slothadv style, painted storybook illustration, a single prop for a side-scrolling platform game, side view: a wide long white silk cloth hung along a thin mossy branch, draping down in soft deep folds, a delicate lace hem with a soft torn feathered edge, a few silk drips, faintly see-through at its thinnest folds, in World 5's garden palette: soft rose pink, lilac, cream white and warm honey, a little sage green, painted in soft cel shading with no black outline, the edges drawn in a darker shade of each colour, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  }
+ ]
+}
