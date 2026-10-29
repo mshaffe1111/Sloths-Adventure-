@@ -11,6 +11,7 @@ import type { GoalInfo } from './goalInfo.ts';
 import { GoalPic } from './hudArt.tsx';
 import { readMs, type HudMode, type LaneRect } from './hudLayout.ts';
 import { fillStyle, useHudArt } from './painted.tsx';
+import { ModeChip } from '../ModeChip.tsx';
 
 /** stages whose full card has been shown this session (a retry gets the short one) */
 const SEEN = new Set<string>();
@@ -131,7 +132,9 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
         </div>
       ) : (
         <>
-          <div className="vh-card-label">{label}</div>
+          <div className="vh-card-label">
+            {label} <ModeChip />
+          </div>
           <div className="vh-card-row">
             <GoalPic icon={info.icon} size={icon} />
             <div className="vh-card-text">

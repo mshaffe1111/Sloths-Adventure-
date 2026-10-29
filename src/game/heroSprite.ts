@@ -19,6 +19,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
 import { clipPick, heroClipsAreLive, heroClipsLive } from './heroClips.ts';
 import { drawVineHang } from './heroVine.ts';
+import { drawSwimHero } from './heroSwim.ts';
 import { drawRopeHang } from './heroRope.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
@@ -270,6 +271,8 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   if (!heroSpriteEnabled()) return false;
   load();
   events.track(p, time);
+  // swimming in calm water: Matt's swim sheets (heroSwim.ts)
+  if (p.swim && drawSwimHero(ctx, p, time)) return true;
   // holding a vine: Matt's vine-swing pictures, his hands round the real liana (heroVine.ts)
   if (p.isVineSwinging && drawVineHang(ctx, p, 1, time)) return true;
   // on a shimmy rope: Matt's hand-over-hand pictures, his paws round the painted rope (heroRope.ts)
@@ -315,7 +318,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   const src: CanvasImageSource = study && sf && sAtlas ? sAtlas : sheet() ?? atlas;
 
   ctx.save();
-  ctx.translate(p.x, p.y);
+  ctx.translate(p.x + (p.grounded ? p.drawDx ?? 0 : 0), p.y);
   if (!polishEnabled() && p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging) {
     const sc = (1 / p.squashY) * (p.ducking ? 1.3 : 1.05) * HERO_SPRITE_SCALE;
     ctx.fillStyle = 'rgba(15,23,42,0.36)';
@@ -379,7 +382,7 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   if (!f) return false;
   const k = STD_K;
   ctx.save();
-  ctx.translate(p.x, p.y);
+  ctx.translate(p.x + (p.grounded ? p.drawDx ?? 0 : 0), p.y);
   if (!polishEnabled() && p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging) {
     const sc = (1 / p.squashY) * (p.ducking ? 1.3 : 1.05) * HERO_SPRITE_SCALE;
     ctx.fillStyle = 'rgba(15,23,42,0.36)';
@@ -389,6 +392,8 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   }
   // the rope ends at his feet, so a vine swing turns the whole body about them
   if (ch.swing !== undefined) ctx.rotate(ch.swing);
+  // standing right at the end of a ledge: a slow teeter out over it and back, about his feet (engine.ts edgeOffset)
+  if (p.teeter && p.grounded) ctx.rotate(p.teeter * (0.03 + 0.03 * Math.sin(time * 5)));
   const q = ch.squash ?? 1;
   ctx.scale(p.facing * (1 + (p.squashX - 1) * q), 1 + (p.squashY - 1) * q);
   if (ch.trail) {

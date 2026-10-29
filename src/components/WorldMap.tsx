@@ -1,3 +1,4 @@
+import { starsPossible } from './mapStars.ts';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { testUnlockOn } from '../game/testUnlock.ts';
 import type { LevelConfig } from '../game/types.ts';
@@ -109,6 +110,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   // a world's first stage is open once the world is: its first in the list (World 5's is Meeca's own, 5-M, before 5-1: required)
   const firstOf = (l: LevelConfig) => l.id === worldLevels[0]?.id;
   const totalStars = levels.reduce((a, l) => a + (l.stars || 0), 0);
+  const allStars = starsPossible(levels);
 
   const worldUnlocked = (id: number) => id === 1 || testUnlockOn() || levels.some((l) => l.worldIndex === id - 1 && l.miniIndex === 10 && l.completed);
 
@@ -222,16 +224,16 @@ export const WorldMap: React.FC<WorldMapProps> = ({
               <Icon name="trophy" size={17} />
             </button>
           )}
-          <span className="ui-chip" aria-label={`${totalStars} of 300 stars`}>
+          <span className="ui-chip" aria-label={`${totalStars} of ${allStars} stars`}>
             <Icon name="star" size={15} />
-            <span className="tabular-nums">{totalStars}/300</span>
+            <span className="tabular-nums">{totalStars}/{allStars}</span>
           </span>
           <button type="button" onClick={() => setSaveOpen(true)} className="ui-chip ui-chip-btn">
             Save / Load
           </button>
         </div>
       </div>
-      <p className="relative z-10 text-center font-sans text-[11px] sm:text-xs text-emerald-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.7)] px-4 truncate">{curWorld.subtitle}</p>
+      <p className="relative z-10 text-center font-sans text-xs text-emerald-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.7)] px-4 truncate">{curWorld.subtitle}</p>
 
       {/* the trail */}
       <div ref={trailRef} className="relative z-10 flex-1 min-h-0">

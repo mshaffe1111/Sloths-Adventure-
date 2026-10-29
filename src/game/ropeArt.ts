@@ -62,9 +62,9 @@ export interface RopeLoad {
 }
 
 /** the painted rope laid through `pts` (a polyline), its twist running on along the length */
-function layRope(ctx: CanvasRenderingContext2D, im: HTMLImageElement, pts: Array<[number, number]>) {
-  const t = ROPE_KIT.tile;
-  const k = ROPE_THICK / t.thick;
+function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: Array<[number, number]>, thick = ROPE_THICK, src = ROPE_KIT.tile) {
+  const t = src;
+  const k = thick / t.thick;
   const tileLen = t.w * k;
   let u = 0; // how far along the rope (world units), for the twist
   for (let i = 1; i < pts.length; i++) {
@@ -147,6 +147,68 @@ export function drawRopes(
       ctx.stroke();
     }
   }
+}
+
+/** the rope's tile re-coloured once per tint (multiplied by `tint`, its own alpha kept): silk, glowing vine, jungle liana */
+const tinted = new Map<string, HTMLCanvasElement>();
+function tintedTile(im: HTMLImageElement, tint: string): HTMLCanvasElement | null {
+  let c = tinted.get(tint);
+  if (c) return c;
+  if (typeof document === 'undefined') return null;
+  const t = ROPE_KIT.tile;
+  c = document.createElement('canvas');
+  c.width = t.w;
+  c.height = t.h;
+  const g = c.getContext('2d');
+  if (!g) return null;
+  g.drawImage(im, t.x, t.y, t.w, t.h, 0, 0, t.w, t.h);
+  g.globalCompositeOperation = 'multiply';
+  g.fillStyle = tint;
+  g.fillRect(0, 0, t.w, t.h);
+  g.globalCompositeOperation = 'destination-in';
+  g.drawImage(im, t.x, t.y, t.w, t.h, 0, 0, t.w, t.h);
+  tinted.set(tint, c);
+  return c;
+}
+
+/**
+ * A lair's rope or vine along its own curve `at(u)` (u 0..1, N slices), in the painted rope: World 2's twisted rope as it is, or
+ * multiplied by `tint` (pale lilac silk, green vine). While the pieces load it is a plain line of `fallback`, so it never vanishes.
+ */
+export function drawLairRope(
+  ctx: CanvasRenderingContext2D,
+  at: (u: number) => { x: number; y: number },
+  N: number,
+  thick: number,
+  tint: string | null,
+  fallback: string,
+) {
+  load();
+  const pts: Array<[number, number]> = [];
+  for (let i = 0; i <= N; i++) {
+    const p = at(i / N);
+    pts.push([p.x, p.y]);
+  }
+  const src = ready && img ? (tint ? tintedTile(img, tint) : img) : null;
+  if (src) {
+    const t = ROPE_KIT.tile;
+    layRope(ctx, src, pts, thick, tint ? { ...t, x: 0, y: 0 } : t);
+    return;
+  }
+  ctx.save();
+  ctx.strokeStyle = fallback;
+  ctx.lineWidth = thick * 0.8;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** a straight lair rope from (x0, y0) to (x1, y1), in the painted rope (see drawLairRope) */
+export function drawLairRopeLine(ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number, thick: number, tint: string | null, fallback: string) {
+  const n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 40));
+  drawLairRope(ctx, (u) => ({ x: x0 + (x1 - x0) * u, y: y0 + (y1 - y0) * u }), n, thick, tint, fallback);
 }
 
 /** the painted rope along a curve of the caller's (the journal's shimmy demo); false until the pieces have loaded */

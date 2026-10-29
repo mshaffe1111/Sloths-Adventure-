@@ -9,13 +9,13 @@
  * Memory (atlasLoader.ts): preloading a stage in another world counts as entering that world, so the last world's sheets are let go
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
-import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
+import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
-import { BACK_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
+import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
 import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
-import { ctestEnabled } from './playRecorder.ts';
+import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
@@ -26,18 +26,24 @@ import { jennifurSpriteReady, MEECA_STANDARD_URL } from './jennifurSprite.ts';
 import { MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
-import { preloadBackdrop } from './paintedBackdrops.ts';
-import { stageSheets } from './stageSheets.ts';
-import { warmSprites } from './spriteSheets.ts';
+import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
+import { CTEST_FOES, ctestMixDraws, stageSheets } from './stageSheets.ts';
+import { SPRITES, warmSprites } from './spriteSheets.ts';
+import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
+import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
+import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
+import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
+import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
 import { LEAVES_URL, warmLeaves } from './leafSprites.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
 import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
+import { BOSS_FX_URL, warmBossFx } from './bossFx.ts';
 import { perfNote } from './perfLog.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -72,6 +78,13 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(BAD_WATER_URL);
+    } else if (k === 'w6-stilt') {
+      stiltArtReady();
+      urls.push(...STILT_ART_URLS);
+    } else if (k === 'swim') {
+      calmWaterReady();
+      swimAtlasReady();
+      urls.push(CALM_WATER_URL, SWIM_ATLAS_URL);
     } else if (k === 'meeca-night') {
       nightArtReady();
       urls.push(NIGHT_ART_URL);
@@ -79,9 +92,15 @@ function start(keys: readonly string[]): string[] {
       jennifurSpriteReady();
       warmMeecaArt();
       urls.push(MEECA_STANDARD_URL, MEECA_CARVE_URL, MEECA_BLANKET_URL);
+    } else if (k === 'w4-falls') {
+      fallsArtReady();
+      urls.push(W4_FALLS_URL);
+    } else if (k === 'dot-props') {
+      dotPropsReady();
+      urls.push(DOT_PROPS_URL);
     } else if (k === 'dot') {
       warmDotSheets();
-      urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, ...Object.values(BACK_URL));
+      urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, DOT_BRIDGES_URL, ...Object.values(BACK_URL));
     } else if (k.startsWith('foe:')) {
       // a creature: its clip sheet (if it has one) and its painted poses (spriteSheets.ts)
       const n = k.slice(4);
@@ -123,10 +142,14 @@ let pending: { id: string; done: Promise<void> } | null = null;
  */
 export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean = () => false, ms = 8000): Promise<void> {
   if (typeof Image === 'undefined' || !preloadEnabled()) return Promise.resolve();
-  if (pending?.id === cfg.id) return pending.done;
+  // (the control test: the mix about to be played, so only its creatures are asked for, and the others' sheets are let go)
+  const mix = ctestEnabled() && cfg.id === CTEST_STAGE_ID ? ctestSeed() : undefined;
+  const id = mix ? `${cfg.id}#${mix}` : cfg.id;
+  if (pending?.id === id) return pending.done;
   // (a stage in another world: the last world's sheets go first, as starting the stage would do)
   enterWorld(cfg.worldIndex);
-  const keys = stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled() });
+  if (mix && !live()) releaseCtestFoes(ctestMixDraws(mix).foes);
+  const keys = stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled(), mix });
   const urls = start(keys);
   // (and two small sheets nearly every stage draws: the falling leaves, and Pokey hanging from a liana; QA's 'blank wait leaves-atlas'
   // a second into a stage, 'wait hero-vine' at the first swing)
@@ -139,16 +162,20 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     warmHeroRope();
     warmRopeKit();
     urls.push(HERO_ROPE_URL, ROPE_KIT_URL);
+    // (and the painted effects: every stage's dust puffs and hit sparks, and a boss fight's warnings and hazards)
+    warmBossFx();
+    urls.push(BOSS_FX_URL);
   }
-  // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode)
-  preloadBackdrop(cfg.worldIndex, cfg.id);
+  // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode; and the canopy
+  // strips of a stage played up in the trees, which used to load on first use and pop in a second time)
+  void backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg));
   const t0 = performance.now();
   const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
   const done = whenSheetsReady(urls, ms).then((n) => {
     const drawn = live() ? 0 : warmSheets(urls, ctx);
     perfNote(`preloaded ${cfg.id}: ${n}/${urls.length} sheets ready, ${drawn} drawn once, ${Math.round(performance.now() - t0)} ms`);
   });
-  const mine = { id: cfg.id, done };
+  const mine = { id, done };
   pending = mine;
   void done.then(() => {
     if (pending === mine) pending = null;
@@ -156,16 +183,31 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   return done;
 }
 
+/** the control test's creature sheets that this mix does not draw: let go (a decoded clip sheet is 13 to 20 MB) */
+function releaseCtestFoes(keep: readonly string[]) {
+  const urls: string[] = [];
+  for (const n of CTEST_FOES) {
+    if (keep.includes(n)) continue;
+    const u = creatureAnimUrl(n);
+    if (u) urls.push(u);
+    urls.push(...(SPRITES[n]?.urls() ?? []));
+  }
+  releaseSheets(urls);
+}
+
 /**
  * The engine is about to be made for this stage: whatever of its sheets is still on its way gets up to `ms` more (behind the stage's
  * name card, before the first frame), then each is drawn once. Most of the time they arrived behind the menu and this is at once.
+ * The stage's painted backdrop (and canopy) gets up to `backMs`: a stage that opened on the stand-in sky and had its painting pop in a
+ * moment later was the first thing a player saw (polish report VI-3). Whatever is still later than that fades in (scenery.ts).
  */
-export function readyToStart(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean, ms = 900): Promise<void> {
+export function readyToStart(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean, ms = 900, backMs = BACKDROP_WAIT_MS): Promise<void> {
   if (typeof Image === 'undefined' || !preloadEnabled()) return Promise.resolve();
   let started = false;
-  return Promise.race([
-    preloadStage(cfg, canvas, () => started || live()),
-    new Promise<void>((r) => setTimeout(r, ms)),
+  const wait = (p: Promise<void>, t: number) => Promise.race([p, new Promise<void>((r) => setTimeout(r, t))]);
+  return Promise.all([
+    wait(preloadStage(cfg, canvas, () => started || live()), ms),
+    wait(backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg)), backMs),
   ]).then(() => {
     started = true;
   });

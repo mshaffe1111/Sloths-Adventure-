@@ -8,6 +8,9 @@
 import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
+import { drawW3Piece, w3ArtReady } from './w3Art.ts';
+import { drawW5Box, w5ArtReady } from './w5Art.ts';
+import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -49,10 +52,16 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
     if (!visible(z, cam)) continue;
     if (z.kind === 'geyser') { drawVent(ctx, z, zoneState(z, t), t); continue; }
     if (z.kind === 'bolt') { drawRod(ctx, z, zoneState(z, t), t); continue; }
+    if (z.kind === 'web') { drawWebBack(ctx, z); continue; }
     if (z.kind !== 'spore' || !z.emit) continue;
     const st = zoneState(z, t);
     const swell = st.phase === 'warn' ? 1 + 0.32 * Math.sin(st.u * Math.PI * (0.5 + st.u * 2.5)) ** 2 + 0.1 * st.u : st.phase === 'active' ? 1.12 - 0.12 * st.u + 0.06 * Math.sin(t * 18) * st.strength : 1;
     const glow = st.phase === 'warn' ? 0.3 + 0.7 * st.u : st.phase === 'active' ? 0.6 * st.strength : 0;
+    if (w3ArtReady()) {
+      drawPaintedMushrooms(ctx, z, swell, glow, t);
+      continue;
+    }
+    // (the shapes below are the stand-in while Matt's grotto sheet loads)
     z.emit.forEach((ex, i) => {
       const by = z.baseY;
       ctx.save();
@@ -97,6 +106,39 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
       ctx.restore();
     });
   }
+}
+
+/** how wide a painted spore cluster is drawn (World 3 sheet 'mushrooms', the same piece as the grotto's dressing) */
+const MUSH_W = 112;
+
+/**
+ * The spore mushrooms from Matt's grotto sheet: the cluster on its moss mound, swelling (wider and squatter) on the warning and glowing
+ * as it puffs. The swell, the glow and the cloud stay code: small touches on the painted piece.
+ */
+function drawPaintedMushrooms(ctx: CanvasRenderingContext2D, z: Zone, swell: number, glow: number, t: number) {
+  z.emit!.forEach((ex, i) => {
+    const by = z.baseY + 6;
+    ctx.save();
+    ctx.translate(ex, by);
+    if (glow > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(0, -10, 70, 22, 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.globalAlpha = 0.55 * glow;
+      ctx.drawImage(sporeGlowPic(), -70, -80, 140, 140);
+      ctx.restore();
+    }
+    // a slow sway about the mound, and the swell about the same point
+    ctx.rotate(Math.sin(t * 1.4 + i * 1.7) * 0.025);
+    ctx.scale(i % 2 ? -swell : swell, 2 - swell);
+    drawW3Piece(ctx, 'mushrooms', 0, 0, MUSH_W);
+    if (glow > 0) {
+      ctx.globalCompositeOperation = 'lighter';
+      drawW3Piece(ctx, 'mushrooms', 0, 0, MUSH_W, 0.4 * glow);
+    }
+    ctx.restore();
+  });
 }
 
 /** the clouds and gusts themselves: drawn over the player, so the hero is inside them */
@@ -456,7 +498,49 @@ function drawBolt(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
 // Webs (World 5)
 // ---------------------------------------------------------------------------
 
+/** the silk bridge's picture (w5PropsData.ts 'silkBridge'): its planks run this far down it, and its height is kept to this at the most */
+const BRIDGE_DECK = 0.62;
+const BRIDGE_MAX_H = 150;
+/** a patch's webs: Dot's see-through silk strung low across the path ('silkWide'), about this wide and this far apart */
+const PATCH_WEB = { w: 96, step: 70 } as const;
+
+/** Matt's painted silk behind Pokey: the silk bridge strung over the gap, or the back row of a patch's webs */
+function drawWebBack(ctx: CanvasRenderingContext2D, z: Zone) {
+  if (z.bridge) {
+    if (!w5ArtReady()) return;
+    const x0 = z.x0 - 14, w = z.x1 - z.x0 + 28;
+    const h = Math.min(BRIDGE_MAX_H, (w * 122) / 412);
+    drawW5Box(ctx, 'silkBridge', x0, z.baseY - h * BRIDGE_DECK, w, h);
+    return;
+  }
+  drawPatchWebs(ctx, z, 0, 0.85);
+}
+
+/**
+ * one row of a patch's webs, standing on the ground along it (`row` 0 the back one, 1 the front one, set half a step along and a
+ * little smaller), mirrored in turn so the row doesn't repeat; the path shows through the strands. False until the sheet has loaded.
+ */
+function drawPatchWebs(ctx: CanvasRenderingContext2D, z: Zone, row: 0 | 1, alpha: number): boolean {
+  if (!dotPropsReady()) return false;
+  const w = z.x1 - z.x0;
+  const n = Math.max(1, Math.round((w - PATCH_WEB.w * 0.5) / PATCH_WEB.step));
+  const step = (w - PATCH_WEB.w * 0.6) / n;
+  const ww = PATCH_WEB.w * (row ? 0.85 : 1);
+  for (let i = 0; i <= n - row; i++) {
+    const x = z.x0 + PATCH_WEB.w * 0.3 + (i + row * 0.5) * step;
+    const sd = hash(i * 4.3 + row * 9.1 + z.x0 * 0.01);
+    drawPiece(ctx, 'silkWide', x, z.baseY + 4, ww * (0.9 + 0.2 * sd), { ay: 1, flip: (i + row) % 2 === 1, alpha });
+  }
+  return true;
+}
+
 function drawWeb(ctx: CanvasRenderingContext2D, z: Zone, t: number) {
+  // over him: a patch's front row of webs, so he is in them (the bridge he walks on top of), and the dew catching the light
+  if (z.bridge ? w5ArtReady() : drawPatchWebs(ctx, z, 1, 0.55)) {
+    drawDew(ctx, z, Math.max(4, Math.round((z.x1 - z.x0) / 34)), z.bridge ? 40 : 60);
+    return;
+  }
+  // (the shapes below are the stand-in while World 5's sheet loads)
   const w = z.x1 - z.x0;
   const n = Math.max(4, Math.round(w / 34));
   ctx.save();
@@ -495,15 +579,20 @@ function drawWeb(ctx: CanvasRenderingContext2D, z: Zone, t: number) {
     });
     ctx.stroke();
   }
-  // dew
+  drawDew(ctx, z, n, 60);
+  ctx.restore();
+}
+
+/** beads of dew on the silk, up to `rise` over the ground */
+function drawDew(ctx: CanvasRenderingContext2D, z: Zone, n: number, rise: number) {
+  const w = z.x1 - z.x0;
   ctx.fillStyle = 'rgba(200, 240, 255, 0.9)';
   for (let i = 0; i < Math.round(n * 0.8); i++) {
     const sd = hash(i * 6.1 + z.x0 * 0.02);
     ctx.beginPath();
-    ctx.arc(z.x0 + sd * w, z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * 60, 1.8, 0, Math.PI * 2);
+    ctx.arc(z.x0 + sd * w, z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * rise, 1.8, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------

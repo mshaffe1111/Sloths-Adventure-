@@ -82,6 +82,8 @@ export interface GeneratedStage {
   deepFall?: number;
   /** Dot's netting flight (dotFlightStage.ts): she flies it, there is no ground, and the engine hands the stage to dotFlightRun.ts */
   dot?: import('./dotFlightStage.ts').DotStage;
+  /** one-way ways on that are no jump or climb, for the level check: from a platform to a platform (7-4: the crumble and the slide) */
+  links?: Array<{ from: number; to: number }>;
   /** puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): their pieces and wires, for a hand-built stage or the generator alike */
   kit?: import('./puzzleKit.ts').KitExtras;
   /** the goal Easy keeps: the stage's own quota, before goals.ts raised it to Normal's share of what the stage holds */
@@ -1313,7 +1315,7 @@ export class Gen {
       this.closeBank();
       const x0 = this.cx;
       this.plat({ x: x0, y: g0, width: len, height: 26, type: 'solid'}, 'bridge');
-      zones.push({ ...base, x0, x1: x0 + len, top: g0 - 130, bottom: g0 + 18, baseY: g0, offset: 0 });
+      zones.push({ ...base, x0, x1: x0 + len, top: g0 - 130, bottom: g0 + 18, baseY: g0, offset: 0, bridge: true });
       this.row(x0 + 50, x0 + len - 50, g0 - 40, Math.max(3, Math.round(len / 80)));
       this.cx = x0 + len;
       this.openBank();
@@ -2780,7 +2782,7 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
-  if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest');
+  if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest', difficulty === 'easy');
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);
   if (config.id === MEECA_STAGE_ID) return meecaGeneratedStage(config, layoutVariant ?? 1);

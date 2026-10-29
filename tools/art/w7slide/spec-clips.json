@@ -1,0 +1,48 @@
+{
+ "tag": "w7slide-clips",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "pokey-straight-a-s45-loop-s3",
+   "src": "img/pokey-straight-a-s45.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth seen from behind, his satchel strap and bag stay fixed on his back, he slides away down a smooth slide sitting on his bottom, his body swaying gently left and right and bobbing a little over bumps, arms low for balance, a smooth repeating sliding motion, he stays in the middle of the frame at the same size",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pokey-straight-a-s45-loop-s11",
+   "src": "img/pokey-straight-a-s45.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth seen from behind, his satchel strap and bag stay fixed on his back, he slides away down a smooth slide sitting on his bottom, his body swaying gently left and right and bobbing a little over bumps, arms low for balance, a smooth repeating sliding motion, he stays in the middle of the frame at the same size",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pokey-lean-left-s45-lean-s3",
+   "src": "img/pokey-lean-left-s45.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth seen from behind, his satchel strap and bag stay fixed on his back, he slides sitting on his bottom and leans his whole body to the left into a turn, then leans back upright, arms out for balance, he stays in the middle of the frame at the same size",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "pokey-lean-left-s45-lean-s11",
+   "src": "img/pokey-lean-left-s45.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth seen from behind, his satchel strap and bag stay fixed on his back, he slides sitting on his bottom and leans his whole body to the left into a turn, then leans back upright, arms out for balance, he stays in the middle of the frame at the same size",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  }
+ ]
+}

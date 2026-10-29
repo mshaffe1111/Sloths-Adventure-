@@ -21,7 +21,7 @@ test('backdrops: Worlds 1-4 go through the day (W1 sunrise, the world\'s own, th
   assert.equal(backdropStem(1, '1-1'), 'w1');
 });
 
-test('backdrops: each new far strip is there at the far layers\' size (2048 x 868), well under the size limit; and the sinkhole is Matt\'s redo', () => {
+test('backdrops: each new far strip is there at the far layers\' height (868; up to 2048 wide, less once made seamless: VI-4), well under the size limit; and the sinkhole is Matt\'s redo', () => {
   assert.deepEqual([...FAR_ONLY].sort(), ['w1kapok', 'w1sunrise', 'w2evening', 'w2rapids', 'w3cavern', 'w3sinkhole', 'w4mist', 'w4terraces', 'w6dawn', 'w6dusk']);
   for (const stem of FAR_ONLY) {
     const f = new URL(`../assets/backdrops/${stem}-far.webp`, import.meta.url);
@@ -32,7 +32,9 @@ test('backdrops: each new far strip is there at the far layers\' size (2048 x 86
     assert.ok(i > 0, stem);
     const w = buf.readUInt16LE(i + 14) & 0x3fff;
     const h = buf.readUInt16LE(i + 16) & 0x3fff;
-    assert.deepEqual([w, h], [2048, 868], stem);
+    // (scripts/strip-seamless.py cuts the rim columns and the joined band off a strip's width: 1760 for a 2048 strip)
+    assert.equal(h, 868, stem);
+    assert.ok(w >= 1600 && w <= 2048, `${stem}: ${w} wide`);
     // its world's middle and near strips are the ones it borrows
     assert.ok(fs.existsSync(new URL(`../assets/backdrops/w${/^w(\d+)/.exec(stem)![1]}-mid.webp`, import.meta.url)));
   }

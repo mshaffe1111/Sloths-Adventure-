@@ -71,8 +71,10 @@ export type PieceSpec =
   /** `by`: the basket whose weight raises it (a counterweight), or any piece whose output winds it up while on (a pinwheel); `hold`: it
    * stays where it was wound to when that goes off (a ratchet), instead of coming back down; `cage`: the reed cage it hangs (World 2: a
    * cage collectible's id). A cage's lift has no plank to stand on: the cage hangs on the rope where the plank would be, and lifted all
-   * the way up its floor drops open and the little one is free (puzzlePlay.ts) */
-  | { kind: 'lift'; id: string; at: Anchor; w: number; rise: number; by: string; hold?: boolean; cage?: number }
+   * the way up its floor drops open and the little one is free (puzzlePlay.ts); `water`: a raft afloat in calm water filling the platform
+   * it is anchored on (World 6's well): the water's top rides just under the plank, up to `water` px over that platform's top, and
+   * Pokey can swim in it (swim.ts) */
+  | { kind: 'lift'; id: string; at: Anchor; w: number; rise: number; by: string; hold?: boolean; cage?: number; water?: number }
   /** `waitNear`: it dozes, not looking about, until he comes this close (px): a cake left by it is eaten while he is there to see */
   | { kind: 'beetle'; id: string; at: Anchor; sight?: number; waitNear?: number }
   | { kind: 'reset'; id: string; at: Anchor }

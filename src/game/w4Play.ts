@@ -6,11 +6,14 @@
  * a field, a step call and two draw calls rather than seven mechanics.
  *
  * The pieces are painted (w4Art.ts, art batches 1 and 2); each draw keeps a plain-shape stand-in for the moment before the atlas loads.
- * The falling water itself stays drawn here, because it has to pour, ease and dry; only the lip it pours over is painted.
+ * The falls are the painted waterfall set (w4FallsArt.ts) laid on each fall's box: its lip, its bodies pouring, easing and drying, and
+ * the white water and mist where it lands.
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
 import { drawW4, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
+import { drawFallBodies, drawFallFoot, drawFallLips } from './w4FallsArt.ts';
+import { drawLogArt } from './protoArt.ts';
 import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
@@ -86,6 +89,8 @@ export interface W4Extras {
   /** 4-3: the tree up to the shelf beside a fall (the fall's id, the trunk's x): standing at the foot of the pouring fall, the
    *  view turns to show the tree too, so it is on screen when Dot says to climb it, held upright as well (QA 2026-10-29) */
   fallTrees?: Array<{ fall: number; x: number }>;
+  /** the climb trunks are the waterfall set's wet stone pillar, with the trunk's vine on it (4-3, beside its falls: protoArt.ts) */
+  pillarTrunks?: boolean;
   /** 4-3: what Dot says as the first boulder stops its fall, in place of the plain line (its dry steps are each a double jump up) */
   dryTip?: string;
   /** 4-6: sleeping eaglets (eaglet.ts) */
@@ -809,22 +814,30 @@ function drawSettleGlow(ctx: CanvasRenderingContext2D, s: PatienceSpot, reveal: 
   ctx.restore();
 }
 
-/** a fall: its water, then the painted lip it pours over */
+/**
+ * A fall: the painted waterfall set (w4FallsArt.ts) on its box, its bodies, the lip along its top edge and the white water and mist at
+ * its foot; the old shapes and World 4's lip pieces as the stand-in while the set loads
+ */
 function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
+  if (drawFallBodies(ctx, w, flow, t)) {
+    drawFallLips(ctx, w, flow);
+    drawFallFoot(ctx, w, flow, t);
+    return;
+  }
   drawFallWater(ctx, w, flow, t);
   drawLip(ctx, w, flow);
 }
 
 /**
- * the painted lips over a fall: one for about every `span` px of its width (a wide fall pours off a row of them), each `pad` px wider
- * than its share so they overlap, their rock's underside `below` px down the water (hiding where it starts)
+ * the stand-in's lips over a fall: one for about every `span` px of its width (a wide fall pours off a row of them), each `pad` px
+ * wider than its share so they overlap, their rock's underside `below` px down the water (hiding where it starts)
  */
 const LIP = { span: 300, pad: 50, below: 40 };
 
 /**
- * The painted lip at a fall's top: the rock pouring a full fall while it flows, the same rock trickling once it is stopped, the one
- * fading into the other with the flow. Only the lip: the water under it is drawn by drawFallWater. A fall a boulder plugs already
- * pours out of its painted channel (the stage's decor), so it gets none. Nothing before the atlas loads.
+ * The stand-in's lip at a fall's top (World 4's lip pieces): the rock pouring a full fall while it flows, the same rock trickling once
+ * it is stopped, the one fading into the other with the flow. A fall a boulder plugs already pours out of its painted channel (the
+ * stage's decor), so it gets none. Nothing before the atlas loads.
  */
 function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
   if (w.plug || !w4ArtReady()) return;
@@ -838,6 +851,7 @@ function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
   }
 }
 
+/** the stand-in's water: a see-through sheet with streaks running down it and foam at its foot */
 function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
   if (flow <= 0.02) return;
   ctx.save();
@@ -874,10 +888,15 @@ function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number
 }
 
 /**
- * a curtain of water in front of him (4-5): a sheet with rippling edges, thicker at its sides and thin enough in the middle to see him
- * standing behind it, streaks pouring down it, and spray and mist where it lands on the path
+ * a curtain of water in front of him (4-5): the painted set's bodies see-through enough to show him standing behind it, its lip up on
+ * the cliff and its white water and mist on the path; the old sheet with rippling edges as the stand-in while the set loads
  */
 function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
+  if (drawFallBodies(ctx, w, 1, t, 0.8)) {
+    drawFallLips(ctx, w, 1);
+    drawFallFoot(ctx, w, 1, t);
+    return;
+  }
   const x0 = w.x, x1 = w.x + w.width, top = w.top, bot = w.bottom;
   ctx.save();
   ctx.beginPath();
@@ -1034,11 +1053,27 @@ function drawPool(ctx: CanvasRenderingContext2D, cx: number, pool: Pool, level: 
   ctx.restore();
 }
 
-/** the log floating on a pool (a plain drawn log: it rides up and down on the water) */
+/** the log floating on a pool (the painted log, bobbing as it rides up and down on the water; a plain drawn one while the kit loads) */
 function drawFloatLog(ctx: CanvasRenderingContext2D, p: Platform, t: number) {
   const { width: w, height: h } = p;
   const x = p.x;
-  const y = p.y + Math.sin(t * 2.2 + p.x) * 1.5;
+  const bob = Math.sin(t * 2.2 + p.x) * 1.5;
+  const y = p.y + bob;
+  ctx.save();
+  ctx.translate(0, bob);
+  const painted = drawLogArt(ctx, p, false);
+  ctx.restore();
+  if (painted) {
+    // ripples where it sits in the water
+    ctx.save();
+    ctx.strokeStyle = 'rgba(224,242,254,0.8)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(x + w / 2, y + h - 2, w * 0.6 + Math.sin(t * 3) * 4, 5, 0, 0, Math.PI);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
   const r = h / 2;
   ctx.save();
   const g = ctx.createLinearGradient(0, y, 0, y + h);

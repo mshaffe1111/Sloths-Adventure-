@@ -1,0 +1,253 @@
+{
+ "note": "hfboss-lairs: boss art batch, hf-art-bosses, 2026-10-29",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ebd423fbdfff3afc0867a2727321b78ffea540c6/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "lair-croc-calm-s55-7",
+   "start": "start-lair-croc-calm.webp",
+   "prompt": "slothadv style, a wide painted game backdrop at night: the Moonlit Mire, a broad still jungle river seen from a muddy bank, a big pale full moon low in a deep blue night sky with a glittering road of moonlight across the dark water, arching mangrove trees with stilt roots standing in the river in blue-black silhouette, the far jungle tree line dark, low fog lying on the water, faint stars, one warm lantern glowing on a far post. Moonlit cyan and indigo. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-croc-calm-s55-23",
+   "start": "start-lair-croc-calm.webp",
+   "prompt": "slothadv style, a wide painted game backdrop at night: the Moonlit Mire, a broad still jungle river seen from a muddy bank, a big pale full moon low in a deep blue night sky with a glittering road of moonlight across the dark water, arching mangrove trees with stilt roots standing in the river in blue-black silhouette, the far jungle tree line dark, low fog lying on the water, faint stars, one warm lantern glowing on a far post. Moonlit cyan and indigo. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-croc-calm-s68-7",
+   "start": "start-lair-croc-calm.webp",
+   "prompt": "slothadv style, a wide painted game backdrop at night: the Moonlit Mire, a broad still jungle river seen from a muddy bank, a big pale full moon low in a deep blue night sky with a glittering road of moonlight across the dark water, arching mangrove trees with stilt roots standing in the river in blue-black silhouette, the far jungle tree line dark, low fog lying on the water, faint stars, one warm lantern glowing on a far post. Moonlit cyan and indigo. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-croc-calm-s68-23",
+   "start": "start-lair-croc-calm.webp",
+   "prompt": "slothadv style, a wide painted game backdrop at night: the Moonlit Mire, a broad still jungle river seen from a muddy bank, a big pale full moon low in a deep blue night sky with a glittering road of moonlight across the dark water, arching mangrove trees with stilt roots standing in the river in blue-black silhouette, the far jungle tree line dark, low fog lying on the water, faint stars, one warm lantern glowing on a far post. Moonlit cyan and indigo. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-croc-rage-s55-7",
+   "start": "start-lair-croc-rage.webp",
+   "prompt": "slothadv style, a wide painted game backdrop at night: the Moonlit Mire in flood, a broad jungle river swollen and churning with white foam, a big pale full moon in a deep blue night sky behind drifting cloud, arching mangrove trees with stilt roots in blue-black silhouette, many pairs of glowing yellow crocodile eyes watching from the dark water, fog on the river. Moonlit cyan and indigo, menacing. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-croc-rage-s55-23",
+   "start": "start-lair-croc-rage.webp",
+   "prompt": "slothadv style, a wide painted game backdrop at night: the Moonlit Mire in flood, a broad jungle river swollen and churning with white foam, a big pale full moon in a deep blue night sky behind drifting cloud, arching mangrove trees with stilt roots in blue-black silhouette, many pairs of glowing yellow crocodile eyes watching from the dark water, fog on the river. Moonlit cyan and indigo, menacing. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-croc-rage-s68-7",
+   "start": "start-lair-croc-rage.webp",
+   "prompt": "slothadv style, a wide painted game backdrop at night: the Moonlit Mire in flood, a broad jungle river swollen and churning with white foam, a big pale full moon in a deep blue night sky behind drifting cloud, arching mangrove trees with stilt roots in blue-black silhouette, many pairs of glowing yellow crocodile eyes watching from the dark water, fog on the river. Moonlit cyan and indigo, menacing. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-croc-rage-s68-23",
+   "start": "start-lair-croc-rage.webp",
+   "prompt": "slothadv style, a wide painted game backdrop at night: the Moonlit Mire in flood, a broad jungle river swollen and churning with white foam, a big pale full moon in a deep blue night sky behind drifting cloud, arching mangrove trees with stilt roots in blue-black silhouette, many pairs of glowing yellow crocodile eyes watching from the dark water, fog on the river. Moonlit cyan and indigo, menacing. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-sov-calm-s55-7",
+   "start": "start-lair-sov-calm.webp",
+   "prompt": "slothadv style, a wide painted game backdrop: the Cloud Aerie, high cliffs and tall rock spires rising out of a sea of soft white cloud at golden sunset, a great eagle nest of sticks on top of the tallest spire, a waterfall pouring off a cliff into the clouds, a rope bridge between two cliffs, warm orange and lilac sky with long clouds. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-sov-calm-s55-23",
+   "start": "start-lair-sov-calm.webp",
+   "prompt": "slothadv style, a wide painted game backdrop: the Cloud Aerie, high cliffs and tall rock spires rising out of a sea of soft white cloud at golden sunset, a great eagle nest of sticks on top of the tallest spire, a waterfall pouring off a cliff into the clouds, a rope bridge between two cliffs, warm orange and lilac sky with long clouds. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-sov-calm-s68-7",
+   "start": "start-lair-sov-calm.webp",
+   "prompt": "slothadv style, a wide painted game backdrop: the Cloud Aerie, high cliffs and tall rock spires rising out of a sea of soft white cloud at golden sunset, a great eagle nest of sticks on top of the tallest spire, a waterfall pouring off a cliff into the clouds, a rope bridge between two cliffs, warm orange and lilac sky with long clouds. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-sov-calm-s68-23",
+   "start": "start-lair-sov-calm.webp",
+   "prompt": "slothadv style, a wide painted game backdrop: the Cloud Aerie, high cliffs and tall rock spires rising out of a sea of soft white cloud at golden sunset, a great eagle nest of sticks on top of the tallest spire, a waterfall pouring off a cliff into the clouds, a rope bridge between two cliffs, warm orange and lilac sky with long clouds. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-sov-rage-s55-7",
+   "start": "start-lair-sov-rage.webp",
+   "prompt": "slothadv style, a wide painted game backdrop: the Cloud Aerie in a thunderstorm, high cliffs and tall rock spires rising out of a sea of dark cloud, a great eagle nest of sticks on top of the tallest spire, forked white lightning behind the spires, slanting rain, a bruised violet and deep purple sky with heavy storm clouds, a rope bridge between two cliffs. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-sov-rage-s55-23",
+   "start": "start-lair-sov-rage.webp",
+   "prompt": "slothadv style, a wide painted game backdrop: the Cloud Aerie in a thunderstorm, high cliffs and tall rock spires rising out of a sea of dark cloud, a great eagle nest of sticks on top of the tallest spire, forked white lightning behind the spires, slanting rain, a bruised violet and deep purple sky with heavy storm clouds, a rope bridge between two cliffs. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-sov-rage-s68-7",
+   "start": "start-lair-sov-rage.webp",
+   "prompt": "slothadv style, a wide painted game backdrop: the Cloud Aerie in a thunderstorm, high cliffs and tall rock spires rising out of a sea of dark cloud, a great eagle nest of sticks on top of the tallest spire, forked white lightning behind the spires, slanting rain, a bruised violet and deep purple sky with heavy storm clouds, a rope bridge between two cliffs. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "lair-sov-rage-s68-23",
+   "start": "start-lair-sov-rage.webp",
+   "prompt": "slothadv style, a wide painted game backdrop: the Cloud Aerie in a thunderstorm, high cliffs and tall rock spires rising out of a sea of dark cloud, a great eagle nest of sticks on top of the tallest spire, forked white lightning behind the spires, slanting rain, a bruised violet and deep purple sky with heavy storm clouds, a rope bridge between two cliffs. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style, no characters, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, people, animal, character, sloth, crocodile, bird",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 1152
+  },
+  {
+   "name": "fg-croc-s62-7",
+   "start": "start-fg-croc.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game at night: along the top edge a fringe of soft hanging swamp moss and drooping mangrove leaves, dark blue-green; along the bottom edge a row of tall swamp reeds, bulrushes with brown cattail heads, and a few round lily pads, dark blue-green with a cool moonlit rim. Nothing in the middle. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 512
+  },
+  {
+   "name": "fg-croc-s62-23",
+   "start": "start-fg-croc.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game at night: along the top edge a fringe of soft hanging swamp moss and drooping mangrove leaves, dark blue-green; along the bottom edge a row of tall swamp reeds, bulrushes with brown cattail heads, and a few round lily pads, dark blue-green with a cool moonlit rim. Nothing in the middle. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 512
+  },
+  {
+   "name": "fg-croc-s75-7",
+   "start": "start-fg-croc.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game at night: along the top edge a fringe of soft hanging swamp moss and drooping mangrove leaves, dark blue-green; along the bottom edge a row of tall swamp reeds, bulrushes with brown cattail heads, and a few round lily pads, dark blue-green with a cool moonlit rim. Nothing in the middle. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 2048,
+   "h": 512
+  },
+  {
+   "name": "fg-croc-s75-23",
+   "start": "start-fg-croc.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game at night: along the top edge a fringe of soft hanging swamp moss and drooping mangrove leaves, dark blue-green; along the bottom edge a row of tall swamp reeds, bulrushes with brown cattail heads, and a few round lily pads, dark blue-green with a cool moonlit rim. Nothing in the middle. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 2048,
+   "h": 512
+  },
+  {
+   "name": "fg-sov-s62-7",
+   "start": "start-fg-sov.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game: along the bottom edge tufts of dry golden mountain grass all bent to the left by a strong wind, a few rounded lilac-grey cliff-top stones, and three loose grey eagle feathers caught in the grass. Nothing above them. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 512
+  },
+  {
+   "name": "fg-sov-s62-23",
+   "start": "start-fg-sov.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game: along the bottom edge tufts of dry golden mountain grass all bent to the left by a strong wind, a few rounded lilac-grey cliff-top stones, and three loose grey eagle feathers caught in the grass. Nothing above them. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 512
+  },
+  {
+   "name": "fg-sov-s75-7",
+   "start": "start-fg-sov.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game: along the bottom edge tufts of dry golden mountain grass all bent to the left by a strong wind, a few rounded lilac-grey cliff-top stones, and three loose grey eagle feathers caught in the grass. Nothing above them. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 2048,
+   "h": 512
+  },
+  {
+   "name": "fg-sov-s75-23",
+   "start": "start-fg-sov.webp",
+   "prompt": "slothadv style, a wide foreground strip for a side-scrolling game: along the bottom edge tufts of dry golden mountain grass all bent to the left by a strong wind, a few rounded lilac-grey cliff-top stones, and three loose grey eagle feathers caught in the grass. Nothing above them. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 2048,
+   "h": 512
+  }
+ ]
+}

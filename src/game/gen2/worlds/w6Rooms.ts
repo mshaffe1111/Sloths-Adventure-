@@ -9,6 +9,8 @@
  *                    the well opens only with the stone on its plate AND the water down (high water swells the root door shut). So:
  *                    raise the water, ride the raft up, take the stone, drop down with it to the plate, climb out, lower the water,
  *                    through. Three steps (Normal's 2-3); Easy's door listens to the plate alone (two steps: waterRoomEasy). The water never costs a life (the well's floor is ground: a dip, a hop out).
+ *                    The well holds calm, clean water (swim.ts, calmWaterArt.ts): down, it is a wade; up, it fills the well to its lip
+ *                    and Pokey swims in it (his first swim, with Dot's lines: swim.ts SWIM_LINES). Carrying the stone he walks the bottom.
  *   w6r-room-seesaw  6-3 "Root to Root" (Keep swinging. The water is watching). A root seesaw before a bank too high to jump: at rest
  *                    its near end lies down level with the floor and its far end stands a step up, a step from the bank's top, but his
  *                    own weight on the far end tips it down. One root-stone on the near end is too light to hold it (2 against his 3);
@@ -23,8 +25,8 @@
  * the floor and its wall is out of a double jump's reach from anything he can stand on unaided; the dark and seesaw rooms' banks are too
  * high to jump.
  *
- * What the kit has no art for yet (reported): the water itself (the kit's lift is drawn as a plank; the well wants black water rising
- * and falling with it, and the raft), the sluice wheel (a lever today), and the dark over the hollow is laid by
+ * What the kit has no art for yet (reported): the raft (the kit's lift is drawn as a plank; the water in the well is Matt's painted calm
+ * water, rising and falling with it up to the well's lip: above that the plank rises on alone), the sluice wheel (a lever today), and the dark over the hollow is laid by
  * w6Swing.ts's dark props (a `dark` zone with no lights: the room's firefly is the light). Dot's lines are new: each needs Matt's approval.
  */
 import type { Difficulty, LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit } from '../types.ts';
@@ -79,6 +81,8 @@ export const WATER = {
   raftW: 110,
   /** the root door's whole height (out of a double jump from the raft risen) */
   doorH: 450,
+  /** the well's water, up, stops this far under the floors' top (a lip to climb out over: swim.ts SWIM.climbOut) */
+  lip: 8,
 } as const;
 /** the raft's rise: from its low spot in the well to the shelf's top */
 export const RAFT_RISE = WATER.dip - WATER.raftDy + WATER.shelfUp;
@@ -99,7 +103,8 @@ export const waterRoomSpec: LocalRoomSpec = {
     // (the sluice wheel at the well's lip: in reach from the floor, and from the raft down in the well beside it)
     { kind: 'lever', id: 'sluice', at: wa(WATER.floorA - 18) },
     // (the raft in the well, against floor A: the water up, it floats level with the shelf; down, it rests a hop over the well's floor)
-    { kind: 'lift', id: 'raft', at: ww(WATER.raftW / 2 + 4, -WATER.raftDy), w: WATER.raftW, rise: RAFT_RISE, by: 'sluice' },
+    // (`water`: the calm water it floats in fills the well, its top just under the plank, up to WATER.lip under the floors: swim.ts)
+    { kind: 'lift', id: 'raft', at: ww(WATER.raftW / 2 + 4, -WATER.raftDy), w: WATER.raftW, rise: RAFT_RISE, by: 'sluice', water: WATER.dip - WATER.lip },
     // (Dot's root-stone on the shelf: a pile of them, so a dropped one comes back)
     { kind: 'source', id: 'pile', variant: 'stone', at: ws(46), look: 'pile' },
     { kind: 'item', id: 'stone', variant: 'stone', source: 'pile', for: 'plate' },
@@ -317,6 +322,8 @@ export const W6_ROOM_SECTIONS: readonly SectionTemplate[] = [waterRoom, darkRoom
 
 /** each room's stage (STAGE-RULES §3: 2-3 puzzle moments a world; w6.ts W6_ROOM_STAGES): a stage's kit holds only its own */
 export const W6R_STAGE: Record<string, string> = { [seesawRoom.id]: '6-3', [darkRoom.id]: '6-6', [waterRoom.id]: '6-7' };
+/** the stages with calm water to swim in (the water room's well): they load the calm water and the swim sheets (stageSheets.ts) */
+export const W6_SWIM_STAGES: readonly string[] = [W6R_STAGE[waterRoom.id]];
 
 /**
  * World 6's kit for stage `stage` (6-3: 3) with that stage's room joined, none for a stage with no room, Easy's version of a room on Easy

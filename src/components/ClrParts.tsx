@@ -30,8 +30,8 @@ export interface ChipSpec {
 }
 
 /** a row of small result chips; the row sizes itself to however many there are */
-export const ClrChips: React.FC<{ chips: ChipSpec[]; small?: boolean }> = ({ chips, small }) => (
-  <div className={`clr-chips${small ? ' sm' : ''}`} style={{ ['--n' as string]: chips.length }}>
+export const ClrChips: React.FC<{ chips: ChipSpec[]; small?: boolean; /** columns (default: all in one row) */ cols?: number }> = ({ chips, small, cols }) => (
+  <div className={`clr-chips${small ? ' sm' : ''}`} style={{ ['--n' as string]: cols ?? chips.length }}>
     {chips.map((c) => (
       <div className="clr-chip" key={c.label}>
         <span>{c.label}</span>

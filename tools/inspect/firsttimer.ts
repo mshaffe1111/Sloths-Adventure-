@@ -39,7 +39,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { TIMED, vineAmp } from '../../src/game/physics.ts';
+import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { findRoute } from './route.ts';
 import { buildRoll } from './eraRoll.ts';
@@ -847,6 +847,26 @@ export class FirstTimerRun {
     return !q.broken;
   }
   /** a floor under x near his feet (from a little above to `down` px below) */
+  /**
+   * The jump for the edge ahead: a double where he failed before (SpotMemory), and once Dot's double-jump tip has been on screen for his
+   * read time (takeIn: learned 'double'), a double at a gap wider than one jump on his setting (Easy: a thumb that lets go at about 70%).
+   * Before this the bot never doubled at a gap it had not missed, so a tip teaching the second jump could not change what it did.
+   */
+  private jumpFor(p: { x: number; y: number }, dir: -1 | 0 | 1, here: Platform | null): 'single' | 'double' {
+    const plan = this.mem.plan(p.x, p.y);
+    if (plan === 'double' || !this.learned.has('double') || !here || dir === 0) return plan;
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    let gap = Infinity;
+    for (const q of this.sim.platforms) {
+      if (q.broken || q === here || Math.abs(q.y - here.y) > 40) continue;
+      const d = dir > 0 ? q.x - edgeX : edgeX - (q.x + q.width);
+      // (a piece that starts at the edge itself carries the same ground on: not across a gap)
+      if (d >= 5 && d < gap) gap = d;
+    }
+    const one = this.who.setting === 'easy' ? reachJumpHeld(0, false) : reachJump(0, false);
+    return gap > one && gap < 600 ? 'double' : 'single';
+  }
+
   floorAt(x: number, y: number, down = 40): Platform | null {
     for (const q of this.sim.platforms) {
       if (!this.solid(q)) continue;
@@ -1177,7 +1197,7 @@ export class FirstTimerRun {
         this.padPause = null;
         if (dir !== 0 && !this.floorAt(p.x + dir * 80, p.y, 40)) {
           const on = this.prog.target(p, 160);
-          if (!(on && on.y > p.y + 50)) return this.decide(dir, this.mem.plan(p.x, p.y), false, side(dir));
+          if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
         }
       }
     }
@@ -1225,7 +1245,7 @@ export class FirstTimerRun {
           }
         }
         this.edgeWait = -1;
-        if (!drops) return this.decide(dir, this.mem.plan(p.x, p.y), false, side(dir));
+        if (!drops) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
       }
       // an animal walking at him: hop it (or punch it, once told how), or walk on into it
       for (const m of e.enemies as any[]) {
