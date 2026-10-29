@@ -3809,11 +3809,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   /** and the knotted vine hangs this far (to 10 more) back from the edge, so the spot between them is wider than he is */
   const KNOT_BACK = 112;
   /**
-   * the foot of the short vine after a knotted one (it hangs from high up, out of any jump's reach from the bank). It was 370; the calmer
-   * swing of 2026-10-28 lets go of the knotted vine lower at the front of its swing, so it hangs a little lower to meet the leap
-   */
-  const KNOT_SHORT = 370;
-  /**
    * the roll's ground between World 4's pieces (w4Sections.ts, the variety pass 2026-10-28): mossy rocks and dips to hop, or wide gaps
    * of soft moss for the second jump (a miss is a hop back out, never a life). Rolls that differ in this differ all
    * through the stage, not only in one section.
@@ -4298,7 +4293,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       for (let k = 2; k < n; k++) xs.push(xs[k - 1] + (dir && k === 2 ? R.r(378, 402) : R.r(300, 330)));
       const farX = xs[n - 1] + R.r(200, 240);
       const tops = xs.map((_, k) => Math.round(k === 0 ? R.r(148, 160) : R.r(140, 180)));
-      const bottoms = xs.map((_, k) => (k === 0 ? G - 40 : k === 1 ? KNOT_SHORT : Math.min(G + 30, tops[k] + 410)));
+      const bottoms = xs.map((_, k) => (k === 0 ? G - 40 : k === 1 ? 370 : Math.min(G + 30, tops[k] + 410)));
       const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: vx, topY: tops[k], bottomY: bottoms[k], swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
       const tied: Vine = { ...vs[0], bottomY: KNOT_Y };
       const far: Platform = { id: -99, x: farX, y: G, width: 400, height: BANK_H, type: 'solid' };
