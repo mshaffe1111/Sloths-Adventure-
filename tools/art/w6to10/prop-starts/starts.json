@@ -1,4 +1,16 @@
 {
+ "w6d": {
+  "key": "magenta",
+  "words": "a grey misty mangrove swamp, pale grey-green mangrove roots, weathered wood, dark mud, grey hanging moss and reeds",
+  "cells": [
+   "root-arch",
+   "root-den",
+   "root-hide",
+   "reed-hide",
+   "moss-log",
+   "log"
+  ]
+ },
  "w6c": {
   "key": "magenta",
   "words": "a grey misty mangrove swamp, muted grey-green, weathered wood, dark mud and grey hanging moss",
@@ -129,6 +141,78 @@
    "archway",
    "stone-brazier",
    "fig-roots"
+  ]
+ },
+ "w5var": {
+  "key": "yellow",
+  "words": "a deep violet-blue orchid forest at dusk, silver spider webs, mossy earth, a second painted version of each piece (platform variants)",
+  "cells": [
+   "bank-b",
+   "fill-b",
+   "buttress-b",
+   "stump-b",
+   "mossStrip-b",
+   "bankEnd-b"
+  ]
+ },
+ "w6var": {
+  "key": "magenta",
+  "words": "a grey misty mangrove swamp, pale grey-green roots, dark mud, a second painted version of each piece (platform variants)",
+  "cells": [
+   "branch-b",
+   "snapL-b",
+   "stump-b",
+   "bank-b",
+   "buttress-b",
+   "perch-b"
+  ]
+ },
+ "w7var": {
+  "key": "magenta",
+  "words": "ancient overgrown temple ruins, carved grey stone, moss and roots, a second painted version of each piece (platform variants)",
+  "cells": [
+   "branch-b",
+   "bank-b",
+   "perch-b",
+   "buttress-b",
+   "stump-b",
+   "snapL-b"
+  ]
+ },
+ "w8var": {
+  "key": "magenta",
+  "words": "a calm deep-blue night in the treetops, moonlit bark, glowing fungus, a second painted version of each piece (platform variants)",
+  "cells": [
+   "branch-b",
+   "bank-b",
+   "perch-b",
+   "stump-b",
+   "buttress-b",
+   "fill-b"
+  ]
+ },
+ "w9var": {
+  "key": "magenta",
+  "words": "a scorched black volcanic valley, black basalt, glowing lava cracks, red pompom flowers, a second painted version of each piece (platform variants)",
+  "cells": [
+   "bank-b",
+   "snapL-b",
+   "stump-b",
+   "perch-b",
+   "buttress-b",
+   "fill-b"
+  ]
+ },
+ "w10var": {
+  "key": "magenta",
+  "words": "a dark mountain fortress at night, wet stone and black iron, a second painted version of each piece (platform variants)",
+  "cells": [
+   "bank-b",
+   "perch-b",
+   "stump-b",
+   "buttress-b",
+   "branch-b",
+   "fill-b"
   ]
  }
 }

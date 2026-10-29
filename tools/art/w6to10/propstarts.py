@@ -905,6 +905,18 @@ def log_lying(moss):
     return c
 
 
+VAR = {5: ['bank', 'fill', 'buttress', 'stump', 'mossStrip', 'bankEnd'],
+       6: ['branch', 'snapL', 'stump', 'bank', 'buttress', 'perch'],
+       7: ['branch', 'bank', 'perch', 'buttress', 'stump', 'snapL'],
+       8: ['branch', 'bank', 'perch', 'stump', 'buttress', 'fill'],
+       9: ['bank', 'snapL', 'stump', 'perch', 'buttress', 'fill'],
+       10: ['bank', 'perch', 'stump', 'buttress', 'branch', 'fill']}
+
+
+def var_cell(w, n):
+    return place(fit(kit(w, n), w=440, h=420))
+
+
 W7S = trim(kit(7, 'mossStrip'))
 SHEETS = {
     'w6d': ('magenta', 'a grey misty mangrove swamp, pale grey-green mangrove roots, weathered wood, dark mud, grey hanging moss and reeds', [
@@ -947,6 +959,11 @@ SHEETS = {
         ('sloth-statue', sloth_statue(), 'raw'), ('urn', urn(), 'raw'), ('fallen-column', fallen_column(), 'raw'),
         ('archway', archway(), 'raw'), ('stone-brazier', stone_brazier(), 'raw'), ('fig-roots', fig_roots(), 'raw')]),
 }
+LOOK = {5: 'a deep violet-blue orchid forest at dusk, silver spider webs, mossy earth', 6: 'a grey misty mangrove swamp, pale grey-green roots, dark mud',
+        7: 'ancient overgrown temple ruins, carved grey stone, moss and roots', 8: 'a calm deep-blue night in the treetops, moonlit bark, glowing fungus',
+        9: 'a scorched black volcanic valley, black basalt, glowing lava cracks, red pompom flowers', 10: 'a dark mountain fortress at night, wet stone and black iron'}
+for w, ns in VAR.items():
+    SHEETS[f'w{w}var'] = ('yellow' if w == 5 else 'magenta', LOOK[w] + ', a second painted version of each piece (platform variants)', [(f'{n}-b', var_cell(w, n), 'raw') for n in ns])
 KEYS = {'magenta': (255, 0, 255), 'yellow': (255, 255, 0)}
 index = {}
 for name, (key, words, cells) in SHEETS.items():
