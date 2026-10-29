@@ -437,30 +437,107 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
   return { start: from + skip * step, end: Math.min(to, x1) };
 }
 
+/**
+ * The part of a world's bank piece that tiles cleanly (source pixels, from the piece's own corner). World 6's piece ends in a grey stone
+ * slab (its bottom 60 rows, saturation 0.06 against 0.34 for the soil), which drew as a grey seam along every bank; World 5's has darker
+ * columns at both ends (brightness 71 against 90 in its middle), a vertical step at every join in 5-7 (polish report VI-7). Measured
+ * on kits/w5.webp and kits/w6.webp.
+ */
+const BANK_CROP: Record<number, { x0?: number; x1?: number; h?: number }> = { 5: { x0: 14, x1: 546 }, 6: { h: 296 } };
+/** the same for the bank's end piece: World 6's carries the slab in its bottom 43 rows */
+const BANK_END_ROWS: Record<number, number> = { 6: 322 };
+/**
+ * Worlds whose bank piece is made to repeat with no join (its right end crossfaded over SEAM_BAND source columns into its left end,
+ * baked once): World 5's crack lines stop at different heights at the two ends, so every join showed as a vertical seam in 5-7.
+ */
+const SEAMLESS_BANK = new Set([5]);
+const SEAM_BAND = 60;
+const seamlessBanks = new Map<number, HTMLCanvasElement | null>();
+function seamlessBank(img: HTMLImageElement, f: ProtoFrame, world: number): HTMLCanvasElement | null {
+  if (seamlessBanks.has(world)) return seamlessBanks.get(world)!;
+  let out: HTMLCanvasElement | null = null;
+  try {
+    const w = Math.round(f.w - SEAM_BAND), h = Math.round(f.h);
+    out = document.createElement('canvas');
+    out.width = w;
+    out.height = h;
+    const g = out.getContext('2d')!;
+    g.drawImage(img, f.x, f.y, w, h, 0, 0, w, h);
+    // the right end, fading out from the join, over the start of the left end
+    const end = document.createElement('canvas');
+    end.width = SEAM_BAND;
+    end.height = h;
+    const e = end.getContext('2d')!;
+    e.drawImage(img, f.x + w, f.y, SEAM_BAND, h, 0, 0, SEAM_BAND, h);
+    e.globalCompositeOperation = 'destination-in';
+    const grad = e.createLinearGradient(0, 0, SEAM_BAND, 0);
+    grad.addColorStop(0, 'rgba(0,0,0,1)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    e.fillStyle = grad;
+    e.fillRect(0, 0, SEAM_BAND, h);
+    g.drawImage(end, 0, 0);
+  } catch {
+    out = null;
+  }
+  seamlessBanks.set(world, out);
+  return out;
+}
+
 /** a bank of earth: the painted top edge repeated along it, the end caps where it drops away; `view`: only what is on screen */
 export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number }): boolean {
   if (!protoArtReady()) return false;
   if (!moss) drawGroundFill(ctx, p, viewBottom, view);
   const n: Name = moss ? 'mossStrip' : 'bank';
-  const f = frameOf(n).f;
+  const { img, f: full } = frameOf(n);
+  // (a world whose bank piece does not tile cleanly as painted uses only the part that does: BANK_CROP)
+  const crop = !moss && kitWorld !== 1 && KIT_FRAMES[kitWorld]?.bank ? BANK_CROP[kitWorld] : undefined;
+  const f = crop
+    ? { x: full.x + (crop.x0 ?? 0), y: full.y, w: Math.min(full.w, crop.x1 ?? full.w) - (crop.x0 ?? 0), h: Math.min(full.h, crop.h ?? full.h) }
+    : full;
+  const baked = !moss && crop && SEAMLESS_BANK.has(kitWorld) ? seamlessBank(img as HTMLImageElement, f, kitWorld) : null;
+  const pic: CanvasImageSource = baked ?? img;
+  const sf = baked ? { x: 0, y: 0, w: baked.width, h: baked.height } : f;
   const th = moss ? 46 : 110;
-  const tw = (th * f.w) / f.h;
+  const tw = (th * sf.w) / sf.h;
+  // (a seamless piece repeats edge to edge, overlapping by half a unit; a painted one overlaps by two, so no gap shows at a join)
+  const step = baked ? tw - 0.5 : tw - 2;
   ctx.save();
   ctx.beginPath();
-  ctx.rect(p.x - (open.left ? 26 : 0), p.y - 30, p.width + (open.left ? 26 : 0) + (open.right ? 26 : 0), th + 40);
+  // (a side that meets the next bank runs a unit under it: two clips' soft edges meeting showed the fill through as a hairline)
+  ctx.rect(p.x - (open.left ? 26 : 1), p.y - 30, p.width + (open.left ? 26 : 1) + (open.right ? 26 : 1), th + 40);
   ctx.clip();
-  const { start, end } = stripSpan(p.x - (open.left ? 18 : 0), p.x + p.width + 18, tw, view?.x0, view?.x1);
-  for (let x = start; x < end; x += tw - 2) blit(ctx, n, x, p.y - (moss ? 14 : 18), tw, th);
+  // (the repeat is laid from a fixed point in the world, not from this bank's own left end: two banks side by side carry on one pattern
+  // instead of each starting its own, which left a hard join where they meet; 5-7)
+  const from = p.x - (open.left ? 18 : 0);
+  const { start, end } = stripSpan(Math.floor(from / step) * step, p.x + p.width + 18, step + 2, view?.x0, view?.x1);
+  const y0 = p.y - (moss ? 14 : 18);
+  // (a cropped bank ends in plain soil, a hard line on the fill under it: its last rows fade part way into the fill instead; not all
+  // the way, or the lit bevel of the fill piece under it shows through: VI-8)
+  const fade = crop?.h ? 6 : 0;
+  const fh = fade ? Math.round(sf.h * 0.14) : 0;
+  const ga = ctx.globalAlpha;
+  for (let x = start; x < end; x += step) {
+    ctx.drawImage(pic, sf.x, sf.y, sf.w, sf.h - fh, x, y0, tw, (th * (sf.h - fh)) / sf.h);
+    for (let i = 0; i < fade; i++) {
+      const sy = sf.h - fh + (fh * i) / fade;
+      ctx.globalAlpha = ga * (1 - (0.55 * (i + 0.5)) / fade);
+      ctx.drawImage(pic, sf.x, sf.y + sy, sf.w, fh / fade, x, y0 + (th * sy) / sf.h, tw, (th * fh) / sf.h / fade + 0.5);
+    }
+    ctx.globalAlpha = ga;
+  }
   ctx.restore();
   if (!moss) {
-    const cap = frameOf('bankEnd').f;
+    const { img: capImg, f: capFull } = frameOf('bankEnd');
+    const capRows = kitWorld !== 1 && KIT_FRAMES[kitWorld]?.bankEnd ? BANK_END_ROWS[kitWorld] : undefined;
+    const cap = capRows ? { ...capFull, h: Math.min(capFull.h, capRows) } : capFull;
     const cw = (th * cap.w) / cap.h;
-    if (open.right) blit(ctx, 'bankEnd', p.x + p.width - cw * 0.55, p.y - 18, cw, th);
+    const drawCap = (x: number) => ctx.drawImage(capImg, cap.x, cap.y, cap.w, cap.h, x, p.y - 18, cw, th);
+    if (open.right) drawCap(p.x + p.width - cw * 0.55);
     if (open.left) {
       ctx.save();
       ctx.translate(p.x + cw * 0.55, 0);
       ctx.scale(-1, 1);
-      blit(ctx, 'bankEnd', 0, p.y - 18, cw, th);
+      drawCap(0);
       ctx.restore();
     }
   }
