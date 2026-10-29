@@ -36,6 +36,8 @@ import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
+import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
+import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
 import { LEAVES_URL, warmLeaves } from './leafSprites.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
@@ -80,6 +82,10 @@ function start(keys: readonly string[]): string[] {
       w7FaceReady();
       w7PuzzleReady();
       urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS);
+    } else if (k === 'swim') {
+      calmWaterReady();
+      swimAtlasReady();
+      urls.push(CALM_WATER_URL, SWIM_ATLAS_URL);
     } else if (k === 'meeca-night') {
       nightArtReady();
       urls.push(NIGHT_ART_URL);

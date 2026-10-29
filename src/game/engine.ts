@@ -65,6 +65,9 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
+import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
+import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterPlain } from './calmWaterArt.ts';
+import { swimHeadY } from './heroSwim.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { heard, NOISE } from './noise.ts';
@@ -429,6 +432,13 @@ export class GameEngine {
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
+  /** swimming (swim.ts): his dive and the first-swim moment; whether he has swum yet this stage; when Dot says how to get out */
+  private swimSt: SwimState = { diveT: 0, firstLeft: 0 };
+  private swamYet = false;
+  /** the first swim's lines still to say, and when (game time) */
+  private swimLines: Array<{ at: number; text: string; s: number }> = [];
+  /** the camera's ease in on him in calm water (SWIM_CAM), times the usual zoom */
+  private swimZoom = 1;
   private runScore: number = 0;
   // what happened this stage, for badges
   private statLivesLost = 0;
@@ -829,7 +839,7 @@ export class GameEngine {
     // (a puzzle room pulls back from that, past the level's height if it must: upright a room never fit across a view the level's height
     // tall; the extra is the sky over the level, updateCamera. Its floor is roomFloor, puzzleCamera.ts)
     this.roomUsual = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
-    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom;
+    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom * this.swimZoom;
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -1491,6 +1501,8 @@ export class GameEngine {
     this.updateRopeLoad(dt);
     if (onRope) {
       // hanging from a rope: updateRope has done all the moving
+    } else if (p.swim && !(nearTreeVine && wantGrab) && this.swimMove(dt)) {
+      // swimming in calm water: swimMove (swim.ts) has done all the moving
     } else if (nearTreeVine && (p.climbing || wantGrab) && (p.climbing || !(p.grounded && p.y <= nearTreeVine.topY + 14))) {
       // (standing on the branch at the very top of a trunk, a jump is a jump: it used to grab the trunk and turn into the
       // little vault off its top, a 21 px hop, so nothing could be jumped to from beside a trunk's top)
@@ -2079,6 +2091,9 @@ export class GameEngine {
         }
       }
 
+      // calm water (swim.ts): in deep enough, he swims; it never costs a life
+      this.swimCheck(dt);
+
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
       const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
@@ -2364,9 +2379,11 @@ export class GameEngine {
     if (this.proto) {
       // (a line that waits for his depth waits for him to stand down there: a fall into 4-7's mist, past the ledges below, used up
       // the lines meant for them)
+      // (none while he swims in calm water: 6-7's warning about the dirty pit past the well came while he swam in the clean water, and
+      // talked over his first-swim lines; it waits until he is out, still before the pit)
       // (several passed in one frame, as when a run starts from a later flag: only the last is said, and only it counts as heard, so a
       // line nobody saw is not lost for good)
-      const due = this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && (p.y < h.belowY || !p.grounded)) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX)));
+      const due = p.swim ? [] : this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && (p.y < h.belowY || !p.grounded)) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX)));
       for (const h of due) {
         h.shown = true;
         if (h !== due[due.length - 1]) continue;
@@ -4425,6 +4442,7 @@ export class GameEngine {
     p.grounded = false;
     p.climbing = false;
     p.isVineSwinging = false;
+    p.swim = undefined;
     this.letGoOfRope(0.5);
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
@@ -4696,6 +4714,13 @@ export class GameEngine {
       this.camera.targetY += (v.y - this.camera.targetY) * k;
     }
     if (this.roomK === 0) this.roomAim = null;
+    // in calm water, zoomed in on him (SWIM_CAM): the view centres on him at the water's top, as far as it is zoomed in
+    if (this.swimZoom > 1.001) {
+      const k = Math.min(1, (this.swimZoom - 1) / (SWIM_CAM.swim - 1));
+      const sy = p.swim?.surfaceY ?? p.y;
+      this.camera.targetX += (p.x - vw / 2 - this.camera.targetX) * k;
+      this.camera.targetY += (sy - vh * 0.58 - this.camera.targetY) * k;
+    }
     // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
     let landShown: Box | null = null;
     let landX = 0;
@@ -4945,7 +4970,8 @@ export class GameEngine {
     out.cssW = this.viewCssW;
     out.cssH = this.viewCssH;
     out.px = p.x;
-    out.py = p.y;
+    // (swimming, he is drawn high in the water, his head well over its top: the box the bubbles keep clear of is where he shows)
+    out.py = p.swim ? p.swim.surfaceY + 2 : p.y;
     out.pw = p.width;
     out.ph = p.height;
     out.vx = p.vx;
@@ -5048,6 +5074,116 @@ export class GameEngine {
   }
 
   /** he has just jumped (`second`: double jumped). A plain jump is as it always was; a second jump taken with nothing steering pushes forward the way he faces, except where a drift would hurt (the climbing and boss stages) */
+  /** the calm water of this stage (swim.ts): today, the water a puzzle room's raft floats in (6-7's well) */
+  private calmPools(): CalmPool[] {
+    return kitPools(this.kit, this.platforms);
+  }
+
+  /**
+   * One frame in calm water (swim.ts swimStep): the thumb swims him left and right, down dives, a flick up leaps out, moving into a bank
+   * climbs out onto it. False (and he is out of the water) when there is no water deep enough under him any more: it drained.
+   */
+  private swimMove(dt: number): boolean {
+    const p = this.player;
+    const w = poolAt(this.calmPools(), p.x);
+    if (!w || !deepEnough(w)) {
+      p.swim = undefined;
+      return false;
+    }
+    const inp = this.input.state;
+    const steer = this.inputGrace > 0 ? 0 : inp.left ? -1 : inp.right ? 1 : 0;
+    const r = swimStep(p, this.swimSt, w, { steer, down: inp.down, jump: inp.jumpPressed }, dt, this.platforms);
+    p.grounded = false;
+    p.ducking = false;
+    p.isDoubleJumping = false;
+    p.somersaultAngle = 0;
+    if (r.kind === 'leap') {
+      // a full leap out (a quick thumb never cuts it short), and one more flick in the air
+      inp.jumpPressed = false;
+      p.swim = undefined;
+      p.jumpsLeft = 1;
+      this.launched = true;
+      this.coyoteTimer = 0;
+      this.jumpBufferTimer = 0;
+      p.squashX = 0.82;
+      p.squashY = 1.28;
+      this.takeOff(false);
+      sound.playJump();
+      this.spawnWaterSplash(p.x, w.surfaceY);
+    } else if (r.kind === 'out') {
+      // up onto the bank he swam into
+      p.swim = undefined;
+      p.grounded = true;
+      p.jumpsLeft = 2;
+      p.squashX = 1.12;
+      p.squashY = 0.88;
+      sound.playTreeClimb();
+      this.spawnWaterSplash(p.x - p.facing * 24, w.surfaceY);
+    } else {
+      const first = p.swim?.first !== undefined && this.swimSt.firstLeft > 0 ? SWIM.firstFor - this.swimSt.firstLeft : undefined;
+      p.swim = { surfaceY: w.surfaceY, under: underOf(w, p.y), ...(first !== undefined ? { first } : {}) };
+    }
+    return true;
+  }
+
+  /**
+   * Into calm water and out of it, after the frame's moving: falling (or set down) into water deep enough, hands free, he swims; standing
+   * on something, climbing, or holding something heavy, he is out. The first time a stage, the first-swim moment and Dot's lines.
+   */
+  private swimCheck(dt: number) {
+    const p = this.player;
+    while (this.swimLines.length && this.gameTime >= this.swimLines[0].at) {
+      const l = this.swimLines.shift()!;
+      this.guide(l.text, l.s);
+    }
+    // the camera eases in on him in the water (further for the first-swim moment), and back out on land
+    const want = p.swim ? (p.swim.first !== undefined ? SWIM_CAM.first : SWIM_CAM.swim) : 1;
+    const was = this.swimZoom;
+    this.swimZoom += (want - this.swimZoom) * Math.min(1, dt * SWIM_CAM.ease);
+    if (Math.abs(want - this.swimZoom) < 0.002) this.swimZoom = want;
+    if (this.swimZoom !== was) this.applyZoom();
+    const busy = p.climbing || !!p.hanging || !!p.isVineSwinging || !!this.kit?.holding || this.isGameOver;
+    if (p.swim) {
+      if (busy || p.grounded) p.swim = undefined;
+      return;
+    }
+    const w = poolAt(this.calmPools(), p.x);
+    if (!startsSwim(w, p.y, p.vy, busy)) return;
+    const first = !this.swamYet;
+    this.swamYet = true;
+    p.vy *= SWIM.splash;
+    // (the first time he all but stops where he splashed in: the moment plays on the spot)
+    p.vx *= first ? 0.15 : 0.5;
+    p.grounded = false;
+    this.swimSt = { diveT: 0, firstLeft: first ? SWIM.firstFor : 0 };
+    p.swim = { surfaceY: w.surfaceY, under: underOf(w, p.y), ...(first ? { first: 0 } : {}) };
+    this.spawnWaterSplash(p.x, w.surfaceY);
+    sound.playWhoosh();
+    recorder.event('swim', Math.round(p.x));
+    if (first) {
+      // the moment: a big splash, a beat under it, then the flail turns into the grin (heroSwim.ts), and his line after the beat
+      this.spawnWaterSplash(p.x - 18, w.surfaceY);
+      this.spawnWaterSplash(p.x + 18, w.surfaceY);
+      this.camera.trauma = Math.min(1, this.camera.trauma + 0.18);
+      this.swimLines = [
+        { at: this.gameTime + SWIM.firstLine, text: SWIM_LINES.first, s: SWIM_FIRST_LINE },
+        { at: this.gameTime + SWIM.firstLine + SWIM_FIRST_LINE, text: SWIM_LINES.out, s: 3.5 },
+      ];
+    }
+  }
+
+  /** the calm water: behind him (`front` false) or its veil in front of him, with the ring round him and his bubbles */
+  private drawCalmWater(ctx: CanvasRenderingContext2D, front: boolean) {
+    const p = this.player;
+    for (const w of this.calmPools()) {
+      if (w.x1 < this.camera.x - 40 || w.x0 > this.camera.x + this.camera.viewportWidth + 40) continue;
+      const mine = p.swim && p.x > w.x0 && p.x < w.x1;
+      const who = mine ? { x: p.x, headY: swimHeadY(p), under: p.swim!.under, stroke: Math.min(1, Math.abs(p.vx) / SWIM.speed) } : undefined;
+      const drew = front ? drawCalmWaterFront(ctx, w, this.gameTime, who) : drawCalmWaterBack(ctx, w, this.gameTime);
+      if (!drew) drawCalmWaterPlain(ctx, w, front);
+    }
+  }
+
   private takeOff(second: boolean) {
     const help = this.touchHelp();
     if (help === 'off') return;
@@ -5235,6 +5371,7 @@ export class GameEngine {
     }
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
+    this.drawCalmWater(ctx, false);
     this.kit?.drawBack(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.markKeepOuts();
@@ -5439,6 +5576,7 @@ export class GameEngine {
     } else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);
     if (shiftOff) ctx.restore();
     this.kit?.drawFront(ctx, this.player, kitPose);
+    this.drawCalmWater(ctx, true);
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
