@@ -7,3 +7,11 @@ storyart-calib 6ae39e25ad9610e5cb31649c 19:27Z-19:35Z (~8 min incl. model downlo
   needs the edit model); courtyard tiled 2560 pass looks right, but the inpainted top is a different place (a second tower) with a seam;
   ground from the old branch is flat and dull (thrown; next from each world's own near-backdrop floor).
 running total ~$0.37
+storyart-round2 6ae3a03fad9610e5cb316757 19:36Z-~19:53Z (~17 min, ~$0.78): sharpened Pokey starts 0.5/0.62, PN/PX cels, Meeca, Grandma,
+  the General through Qwen-Image-Edit (greatcoat, real fur, old face: works; it drops pose on the fallen frame), courtyard outpaint by the
+  edit model (seed 6 keeps the old plate's layout and paints the tower up to a pointed roof; seed 2 re-lays the plate). Verdicts: Pokey on
+  model at 0.55; General design = edit ready_a-3 (war) and gv-3 (plain) as the references; plates by edit outpaint + tiled 2560 pass.
+storyart-figs1 6ae3a2214403c6b5065dd64f from 19:44Z: all 82 Pokey + 59 Meeca + 26 Dot story frames at 0.55 on their models.
+storyart-r3a 6ae3a3be0e0338d1bb7c1b59 from 19:51Z: the General (31 frames: edit with the design reference, then 0.3 on his models) and
+  13 plates x 2 seeds (edit outpaint, then the tiled 2560 pass).
+storyart-r3b 6ae3a3f2c78863f9c62dc7a5 from 19:52Z: 10 ground strips x 2 strengths, 93 story-sheet cels (folk, Meeca, Pokey, the pairs).
