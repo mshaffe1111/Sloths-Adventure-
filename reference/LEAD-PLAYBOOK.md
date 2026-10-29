@@ -131,3 +131,6 @@ it), so art jobs go there as well. Local agents only for a few-minute lookup.
 
 ## Review rule: repeating animations (Matt, 2026-10-29 4:02 PM ET)
 Anything that plays over and over (warnings, grit, splashes, sparks, debris) gets the same painted bar as a major look. When reviewing, play the stage and watch every repeating effect up close in video, not only stills; code squares, outlined rects or flat blobs are a fail. The 4-4 rock grit slipped through the 10-29 code-drawn audit because it only shows during a warning.
+
+## Review rule: walk the stages, not the spots (Matt, 2026-10-29 4:08 PM ET)
+Once tools/inspect/walk.mjs + the seam detector land (polish-clean), every helper that changes a look attaches a clean walk of the stages it touched (upright and sideways, the detector's counts before/after). No walk, no merge. The lead looks at the whole contact sheet and the clip, not only the helper's chosen shots.
