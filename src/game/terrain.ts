@@ -26,6 +26,7 @@ import { drawGroundBody, drawGroundCap } from './groundArt.ts';
 import { drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
+import { drawBadWater } from './badWaterArt.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
 let curWorld = 1;
@@ -1425,6 +1426,8 @@ function thinPlanFor(plan: StagePlan, p: Platform): ThinPlan {
 }
 
 export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: number, x1: number, waterY: number, bottom: number, time: number) {
+  // Worlds 6-10: Matt's painted dirty, fast water (badWaterArt.ts); the drawn version below until it loads
+  if (worldId >= 6 && drawBadWater(ctx, x0, x1, waterY, bottom, time)) return;
   const look = lookFor(worldId);
   const w = look.water;
   const g = ctx.createLinearGradient(0, waterY, 0, bottom);
