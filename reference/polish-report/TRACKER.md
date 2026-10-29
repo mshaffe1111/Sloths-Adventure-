@@ -176,7 +176,7 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| PF-1 | iPhones in portrait drop frames |  | qa-fix-e (slow-phone frame drops overlap) then its own pass | partly in progress |
+| PF-1 | iPhones in portrait drop frames |  | polish-pf1 (cloud session_01FhBbYKVyEjhCyWwVmH9dfG) | started 3:05 PM ET |
 | PF-2 | The download is heavy |  | — | later: download size |
 | PF-3 | Leftovers |  | polish-c (cloud) | started 1:35 PM ET |
 
