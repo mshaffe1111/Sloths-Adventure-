@@ -451,9 +451,10 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   const FLOOR = flat.y + 500;
   /** how deep a look may hang under a ledge from x0 to x1 before it reaches another ledge (or a catch) under it */
   // (a ledge that only meets it end to end a little lower, as the crown's pieces do, is beside it, not under it)
+  const beside = (p: Platform, q: Platform) => q.y - p.y < 80 && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(q.x - (p.x + p.width)) < 2);
   const roomUnder = (p: Platform, x0: number, x1: number) =>
     Math.min(Infinity, ...P.filter((q) => q !== p && q.x < x1 + 20 && q.x + q.width > x0 - 20 && q.y > p.y + 10)
-      .filter((q) => !(q.y - p.y < 80 && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(q.x - (p.x + p.width)) < 2)))
+      .filter((q) => !beside(p, q))
       .map((q) => q.y - p.y - 30));
   /** a post at x from y0 down to y1 doesn't skim past a ledge's end (within its half-width of one, outside it) */
   const clearEdge = (x: number, y0: number, y1: number) =>
@@ -484,6 +485,9 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     return turn.reduce((best, l) => (cost(l) < cost(best) - 1e-9 ? l : best), turn[0]);
   };
   const REACH = 300, POST_MAX = 400, STILT_MAX = 520;
+  /** a lashed stilt (the set's own stilt deck post) from b down to foot, its shaft about `w` wide (each a little different) */
+  const stilt = (x: number, b: number, foot: number, w = 42): StiltDecor =>
+    ({ n: 'stilt', x: r(x), b: r(b), foot, w: r(w * R.r(0.85, 1.2)), v: R.f() < 0.5 ? 0 : 1, ...(R.f() < 0.5 ? { flip: true } : {}) });
   /**
    * stilt posts under a stump, arch or den laid in n copies over x0..x1 of p (the lead's review: "a stump, den or root arch goes only
    * where something holds it up: its own roots reaching down ... or a stilt post under it"): from its roots' feet down to the ledge
@@ -512,37 +516,39 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
    * (POST_MAX at most; not the root shelf, whose roots a post can't carry on). Its supports clear of the climbing roots, and the
    * piece clear of any other ledge between
    */
-  const setFor = (p: Platform, x0: number, x1: number, kind: SetKind): Seg | null => {
+  const setFor = (p: Platform, x0: number, x1: number, kind: SetKind, deep = false): Seg | null => {
     const w = x1 - x0;
     const form: SetForm = w < 330 ? 'perch' : 'ledge';
     const name = setFrame(kind, form, true);
     const fr = SET_FRAMES[name];
     const flip = R.f() < 0.5;
-    const q = under(p, x0 + w / 2);
-    if (!q) return null;
+    // (the crown, `deep`: nothing near under it, so the whole piece stands on stilts carried down to whatever is under them)
+    const q = deep ? undefined : under(p, x0 + w / 2);
+    if (!q && !deep) return null;
     for (const over of [1.06, 1.0, 1.14]) {
       const k = (w * over) / fr.w;
       const top = p.y - fr.ay * k;
       // cut where its supports reach the ledge under its middle (tucked 4 px behind its top), or whole and carried on by posts
-      const want = (q.y + 4 - top) / k;
+      const want = q ? (q.y + 4 - top) / k : Infinity;
       if (want < setMinCut(name)) return null;
       const whole = want > fr.h;
       const cut = whole ? undefined : Math.round(want);
       const pl = setPlace(name, x0, p.y, w, over, flip, cut);
       // nothing else between it and its feet (the piece would hang onto it)
-      if (P.some((o) => o !== p && o.y > p.y + 10 && o.y < pl.foot - 12 && o.x < pl.left + pl.width - 10 && o.x + o.width > pl.left + 10)) continue;
+      if (P.some((o) => o !== p && !beside(p, o) && o.y > p.y + 10 && o.y < pl.foot - 12 && o.x < pl.left + pl.width - 10 && o.x + o.width > pl.left + 10)) continue;
       const stilts: NonNullable<Seg['stilts']> = [];
       let fits = true;
       for (const ft of pl.feet) {
         const g = under(p, ft.x);
+        const gy = g?.y ?? (deep ? FLOOR : null);
         // (clear of the climbing roots: a support beside a root reads as one)
-        if (!g || climbs.some((v) => Math.abs(v.x - ft.x) < 12 + ft.w / 2 && v.bottomY > p.y && v.topY < g.y)) { fits = false; break; }
+        if (gy === null || climbs.some((v) => Math.abs(v.x - ft.x) < 12 + ft.w / 2 && v.bottomY > p.y && v.topY < gy)) { fits = false; break; }
         if (!whole) {
-          if (Math.abs(g.y - (q.y + 4)) > 8) { fits = false; break; }
+          if (Math.abs(gy - (q!.y + 4)) > 8) { fits = false; break; }
           continue;
         }
-        if (g.y - pl.foot < 10 || g.y - pl.foot > POST_MAX || !clearEdge(ft.x, pl.foot, g.y)) { fits = false; break; }
-        stilts.push({ x: r(ft.x), b: r(pl.foot - 4), foot: g.y, w: r(Math.max(16, ft.w * 0.95)) });
+        if (gy - pl.foot < 10 || (!deep && gy - pl.foot > POST_MAX) || !clearEdge(ft.x, pl.foot, gy)) { fits = false; break; }
+        stilts.push({ x: r(ft.x), b: r(pl.foot - 4), foot: gy, w: r(Math.max(16, ft.w * 0.95)) });
       }
       if (fits) return { look: kind, n: 1, x0, x1, over, set: name, flip, ...(cut !== undefined ? { cut } : {}), ...(whole ? { stilts } : {}) };
     }
@@ -556,10 +562,15 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     const w = x1 - x0;
     const room = roomUnder(p, x0, x1);
     const fit: Seg[] = [];
-    for (const kind of SET_KINDS) {
-      const got = setFor(p, x0, x1, kind);
+    // (the crown stands on lashed wooden stilts: the stilt deck and the boardwalk only, the lead's review)
+    const top = p.y <= crown.y + 40;
+    for (const kind of top ? (['stilt-deck', 'boardwalk'] as const) : SET_KINDS) {
+      const got = setFor(p, x0, x1, kind, top);
       if (got) fit.push(got);
     }
+    // (one that differs from the piece beside it; where none does, the other looks below)
+    const differ = fit.filter((f) => !avoid.some((a) => kin(a) === kin(f.look)));
+    if (top && differ.length) return least(p, x0, x1, differ);
     // (the old pieces where none of the set fits: a stump, arch or den on stilts, a log or the kit's plank held up by hold)
     const opts: Array<LedgeLook | 'kit'> = fit.length ? (w <= 240 ? ['stump'] : ['root-arch', 'root-den']) : w <= 240 ? ['stump', 'moss-log', 'kit'] : ['root-arch', 'branch-b', 'moss-log', 'root-den', 'kit'];
     for (const l of opts) {
@@ -658,27 +669,20 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     for (const m of mine) {
       if (!GROUNDED.includes(m.look as LedgeLook) && !m.set) continue;
       held.push([m.x0, m.x1]);
-      for (const t of m.stilts ?? []) posts.push({ n: 'post', x: t.x, b: t.b, w: t.w ?? 30, foot: t.foot, ...(R.f() < 0.5 ? { flip: true } : {}) });
+      for (const t of m.stilts ?? []) posts.push(stilt(t.x, t.b, t.foot, t.w ?? 30));
     }
     for (const v of climbs) if ((Math.abs(v.topY + 2 - p.y) < 6 || Math.abs(v.bottomY + 6 - p.y) < 6) && v.x >= p.x - 30 && v.x <= p.x + p.width + 30) held.push([v.x, v.x]);
+    // (the crown's pieces stand on two stilts or more, never one balanced pole: held closer)
+    const reach = p.y <= crown.y + 40 ? REACH / 2 : REACH;
     const free = () => {
-      for (let x = p.x + 20; x <= p.x + p.width - 20; x += 10) if (!held.some(([a, b]) => x >= a - REACH && x <= b + REACH)) return x;
+      for (let x = p.x + 20; x <= p.x + p.width - 20; x += 10) if (!held.some(([a, b]) => x >= a - reach && x <= b + reach)) return x;
       return null;
     };
     /** a short post at x, standing on the ledge under it, clear of the climbing roots (a post beside a root would read as one) */
     const post = (at: number): StiltDecor | null => {
       const q = under(p, at);
       if (!q || q.y - p.y > POST_MAX || !clearEdge(at, p.y, q.y) || climbs.some((v) => Math.abs(v.x - at) < 50 && v.bottomY > p.y && v.topY < q.y)) return null;
-      return { n: 'post', x: r(at), b: p.y + 6, w: 30, foot: q.y };
-    };
-    /** a brace from x down to a trunk beside it at 40 to 50 degrees, onto the trunk (not past its ends), crossing no ledge */
-    const brace = (at: number): StiltDecor | null => {
-      const t = climbs
-        .map((v) => ({ v, dx: v.x - at }))
-        .filter(({ v, dx }) => Math.abs(dx) >= 60 && Math.abs(dx) <= 320 && v.topY <= p.y + Math.abs(dx) && v.bottomY >= p.y + Math.abs(dx) + 20)
-        .filter(({ v, dx }) => !P.some((o) => o !== p && o.y > p.y + 10 && o.y < p.y + Math.abs(dx) + 10 && o.x < Math.max(at, v.x) && o.x + o.width > Math.min(at, v.x)))
-        .sort((m, n) => Math.abs(m.dx) - Math.abs(n.dx))[0];
-      return t ? { n: 'brace', x: r(at), b: p.y + 6, w: 24, to: [t.v.x - Math.sign(t.dx) * 14, r(p.y + Math.abs(t.dx))] } : null;
+      return stilt(at, p.y + 6, q.y);
     };
     /** a rope at x up to the ledge over it */
     const rope = (at: number): StiltDecor | null => {
@@ -688,16 +692,16 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     for (let k = 0, x = free(); x !== null && k < 8; k++, x = free()) {
       // (each kind of hold tried along the free stretch, from REACH on (one covers as much as it can) back to the free point)
       const spots: number[] = [];
-      for (let at = Math.min(p.x + p.width - 24, x + REACH - 10); at >= Math.max(p.x + 24, x - 10); at -= 30) spots.push(at);
+      for (let at = Math.min(p.x + p.width - 24, x + reach - 10); at >= Math.max(p.x + 24, x - 10); at -= 30) spots.push(at);
       let got: StiltDecor | null = null;
-      for (const kind of [post, brace, rope]) {
+      // (no brace: the slanting post read as a pipe, the lead's review)
+      for (const kind of [post, rope]) {
         for (const at of spots) if ((got = kind(at))) break;
         if (got) break;
       }
       // (else a long post down to the ledge under it, or into the water)
       const at = spots[0] ?? x;
-      got ??= { n: 'post', x: r(at), b: p.y + 6, w: 30, foot: under(p, at)?.y ?? FLOOR };
-      if (got.n !== 'rope' && R.f() < 0.5) got.flip = true;
+      got ??= stilt(at, p.y + 6, under(p, at)?.y ?? FLOOR);
       posts.push(got);
       held.push([got.x, got.x]);
     }

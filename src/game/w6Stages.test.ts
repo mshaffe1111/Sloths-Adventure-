@@ -313,7 +313,7 @@ test('6-8 dressing: Matt\'s World 6 hides and arches stand on the wide shelves, 
   for (const [k, f] of Object.entries(SET_FRAMES)) for (const [kk, v] of Object.entries(f)) assert.equal(v, set.frames[k][kk], `${k}.${kk}`);
   for (const s of SEEDS) {
     const st = build(s);
-    const decor = st.proto.stilt!.filter((d) => d.n !== 'post' && d.n !== 'brace' && d.n !== 'rope');
+    const decor = st.proto.stilt!.filter((d) => d.n !== 'stilt' && d.n !== 'rope');
     assert.ok(decor.length >= 10, `seed ${s}: ${decor.length} pieces`);
     assert.ok(new Set(decor.map((d) => d.n)).size >= 5, `seed ${s}: the pieces vary`);
     for (const d of decor) {
@@ -379,10 +379,11 @@ test('6-8 ledges: painted in Matt\'s World 6 pieces, mixed, so ledges near each 
         // them (cut there) or carried on by posts
         const pl = setPlace(l.set, l.x, l.y, l.w, l.over!, l.flip, l.cut);
         assert.ok(Math.abs(pl.top + SET_FRAMES[l.set].ay * pl.k - p.y) < 0.5);
-        assert.ok(!st.platforms.some((o) => o !== p && o.y > p.y + 10 && o.y < pl.foot - 12 && o.x < pl.left + pl.width - 10 && o.x + o.width > pl.left + 10), `seed ${s}: the ${l.set} on ${p.id} hangs onto a ledge`);
+        const beside = (o: Platform) => o.y - p.y < 80 && (Math.abs(o.x + o.width - p.x) < 2 || Math.abs(o.x - (p.x + p.width)) < 2);
+        assert.ok(!st.platforms.some((o) => o !== p && !beside(o) && o.y > p.y + 10 && o.y < pl.foot - 12 && o.x < pl.left + pl.width - 10 && o.x + o.width > pl.left + 10), `seed ${s}: the ${l.set} on ${p.id} hangs onto a ledge`);
         for (const ft of pl.feet) {
           const on = st.platforms.some((o) => o !== p && Math.abs(o.y + 4 - pl.foot) <= 9 && ft.x >= o.x && ft.x <= o.x + o.width);
-          const post = st.proto.stilt!.some((d) => d.n === 'post' && Math.abs(d.x - ft.x) < 1 && Math.abs(d.b - (pl.foot - 4)) < 1.5);
+          const post = st.proto.stilt!.some((d) => d.n === 'stilt' && Math.abs(d.x - ft.x) < 1 && Math.abs(d.b - (pl.foot - 4)) < 1.5);
           assert.ok(l.cut !== undefined ? on : post, `seed ${s}: a support of the ${l.set} on ${p.id} at ${Math.round(ft.x)} stands on nothing`);
         }
         continue;
@@ -392,7 +393,7 @@ test('6-8 ledges: painted in Matt\'s World 6 pieces, mixed, so ledges near each 
         const feet = l.y - LEDGE_LOOKS[l.look as LedgeLook].top * h + h;
         const q = st.platforms.find((o) => o !== p && Math.abs(o.y - feet) <= 8 && o.x <= l.x + 0.12 * l.w && o.x + o.width >= l.x + l.w - 0.12 * l.w);
         // (or on stilts: the next test)
-        const stilts = st.proto.stilt!.some((d) => d.n === 'post' && Math.abs(feet - 6 - d.b) < 2 && d.x >= l.x && d.x <= l.x + l.w);
+        const stilts = st.proto.stilt!.some((d) => d.n === 'stilt' && Math.abs(feet - 6 - d.b) < 2 && d.x >= l.x && d.x <= l.x + l.w);
         assert.ok(q || stilts, `seed ${s}: the ${l.look} on ${p.id} stands on nothing`);
         const until = q ? q.y : feet + 30;
         assert.ok(!st.platforms.some((o) => o !== p && o !== q && o.x < l.x + l.w + 20 && o.x + o.width > l.x - 20 && o.y > p.y + 10 && o.y < until), `seed ${s}: the ${l.look} on ${p.id} hangs onto a ledge`);
@@ -418,11 +419,13 @@ test('6-8 ledges: painted in Matt\'s World 6 pieces, mixed, so ledges near each 
   }
 });
 
-test('6-8 nothing floats (the lead\'s review, 2026-10-29): every stretch of every ledge is held up, by a stump\'s, arch\'s or den\'s roots on the ledge under it or on stilt posts, a climbing root, a post, a brace or a rope', () => {
+test('6-8 nothing floats (the lead\'s review, 2026-10-29): every stretch of every ledge is held up, by a stump\'s, arch\'s or den\'s roots on the ledge under it or on lashed stilts, a climbing root, a stilt or a rope', () => {
   for (const s of SEEDS) {
     const st = build(s);
     const ledges = st.proto.stiltLedges!;
-    const holds = st.proto.stilt!.filter((d) => d.n === 'post' || d.n === 'brace' || d.n === 'rope');
+    const holds = st.proto.stilt!.filter((d) => d.n === 'stilt' || d.n === 'rope');
+    // (the set's own lashed stilts hold things up: never the grey gauge post or a brace, which read as pipes, the lead's review)
+    assert.ok(!st.proto.stilt!.some((d) => d.n === 'post' || d.n === 'brace'), `seed ${s}: a gauge post`);
     const floor = st.config.levelHeight;
     const climbs = st.vines.filter((v) => v.vineType === 'tree_climb');
     const on = (p: Platform, x: number) => x >= p.x - 1 && x <= p.x + p.width + 1;
@@ -436,12 +439,11 @@ test('6-8 nothing floats (the lead\'s review, 2026-10-29): every stretch of ever
       // its top: under a ledge, or (a stilt) at the feet of a stump, arch or den
       const top = st.platforms.find((p) => Math.abs(p.y + (d.n === 'rope' ? 4 : 6) - d.b) < 1 && on(p, d.x));
       const stilt = ledges.find((l) => (GROUNDED.includes(l.look as LedgeLook) && Math.abs(feet(l) - 6 - d.b) < 2) || (l.set && Math.abs(feet(l) - 4 - d.b) < 1.5));
-      assert.ok(top || (d.n === 'post' && stilt), `seed ${s}: a ${d.n} at ${d.x},${d.b} holds nothing`);
-      if (d.n === 'post') {
+      assert.ok(top || (d.n === 'stilt' && stilt), `seed ${s}: a ${d.n} at ${d.x},${d.b} holds nothing`);
+      if (d.n === 'stilt') {
         assert.ok(d.foot! >= floor - 1 || st.platforms.some((p) => Math.abs(p.y - d.foot!) < 1 && on(p, d.x)), `seed ${s}: a post at ${d.x} stands on nothing`);
         assert.ok(!st.platforms.some((p) => p.y > d.b + 10 && p.y < d.foot! - 1 && on(p, d.x)), `seed ${s}: a post at ${d.x} through a ledge`);
       }
-      if (d.n === 'brace') assert.ok(climbs.some((v) => Math.abs(v.x - d.to![0]) <= 16 && v.topY <= d.to![1] && v.bottomY >= d.to![1]), `seed ${s}: a brace at ${d.x} ends on no trunk`);
       if (d.n === 'rope') assert.ok(st.platforms.some((p) => Math.abs(p.y + 10 - d.top!) < 1 && on(p, d.x)), `seed ${s}: a rope at ${d.x} hangs from nothing`);
     }
     for (const p of st.platforms) {
@@ -453,7 +455,7 @@ test('6-8 nothing floats (the lead\'s review, 2026-10-29): every stretch of ever
         // on the ledge under it, or on stilts
         const f = feet(l);
         const ground = st.platforms.some((q) => q !== p && Math.abs(q.y - f) <= 8 && q.x <= l.x + 0.12 * l.w && q.x + q.width >= l.x + l.w - 0.12 * l.w);
-        const stilts = holds.filter((d) => d.n === 'post' && Math.abs(f - 6 - d.b) < 2 && d.x >= l.x && d.x <= l.x + l.w);
+        const stilts = holds.filter((d) => d.n === 'stilt' && Math.abs(f - 6 - d.b) < 2 && d.x >= l.x && d.x <= l.x + l.w);
         assert.ok(ground || stilts.length >= Math.min(l.n, 1), `seed ${s}: the ${l.look} on ${p.id} floats`);
         held.push([l.x, l.x + l.w]);
       }

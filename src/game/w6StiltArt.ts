@@ -143,7 +143,7 @@ export interface StiltLedge {
  * water); a brace (the same post, slanting) down to `to` on a climbing root's trunk; a lashed rope up to `top` (the ledge over it)
  */
 export interface StiltDecor {
-  n: StiltPiece | StiltProp | 'post' | 'brace' | 'rope';
+  n: StiltPiece | StiltProp | 'post' | 'brace' | 'rope' | 'stilt';
   x: number;
   b: number;
   w: number;
@@ -151,6 +151,8 @@ export interface StiltDecor {
   foot?: number;
   to?: [number, number];
   top?: number;
+  /** a stilt: which of the stilt deck's two posts it is cut from */
+  v?: 0 | 1;
 }
 export const isProp = (n: StiltDecor['n']): n is StiltProp => n in STILT_PROP_FRAMES;
 /** the gauge post: its capped top, then its plain shaft, laid again and again down to the foot */
@@ -219,6 +221,27 @@ function drawFaded(ctx: CanvasRenderingContext2D, s: Sheet, f: Frame, x: number,
   }
   ctx.drawImage(c, x, y, w, h);
 }
+/**
+ * a lashed stilt (the lead's review, 2026-10-29: the gauge posts read as grey pipes): the ledge set's own stilt deck post, cut from its
+ * tall picture: its rope lashing at the top, then its plain shaft laid again and again down to the foot. `w` is the shaft's width
+ */
+const LASHED = [
+  { lash: { x: 40, y: 381 + 90, w: 90, h: 145 }, shaft: { x: 54, y: 381 + 250, w: 62, h: 120 } },
+  { lash: { x: 420, y: 381 + 90, w: 90, h: 145 }, shaft: { x: 434, y: 381 + 250, w: 62, h: 120 } },
+] as const;
+function drawLashed(ctx: CanvasRenderingContext2D, x: number, b: number, foot: number, w: number, v: 0 | 1, view: View, flip = false) {
+  const L = LASHED[v];
+  const k = w / L.shaft.w;
+  const lashH = Math.min(L.lash.h * k, foot - b);
+  blit(ctx, 'set', { ...L.lash, h: lashH / k }, x - (L.lash.w * k) / 2, b, L.lash.w * k, lashH, flip);
+  const step = L.shaft.h * k;
+  let y = b + lashH;
+  if (view.y0 - 40 > y) y += Math.floor((view.y0 - 40 - y) / step) * step;
+  for (; y < Math.min(foot, view.y1 + 40) - 0.5; y += step) {
+    const h = Math.min(step, foot - y);
+    blit(ctx, 'set', { ...L.shaft, h: h / k }, x - w / 2, y, w, h, flip);
+  }
+}
 /** a brace: the post slanting from (x, y) down to (tx, ty), its cap at the top */
 function drawBrace(ctx: CanvasRenderingContext2D, x: number, y: number, tx: number, ty: number, w: number, flip = false) {
   const len = Math.hypot(tx - x, ty - y);
@@ -261,6 +284,11 @@ export function drawStiltDecor(ctx: CanvasRenderingContext2D, items: readonly St
     }
     if (d.n === 'rope' && d.top !== undefined) {
       if (seen(d.x - 20, d.x + 20, d.top, d.b, view)) drawRope(ctx, d.x, d.top, d.b);
+      continue;
+    }
+    if (d.n === 'stilt') {
+      const foot = d.foot ?? d.b;
+      if (seen(d.x - d.w * 1.5, d.x + d.w * 1.5, d.b, foot, view)) drawLashed(ctx, d.x, d.b, foot, d.w, d.v ?? 0, view, d.flip);
       continue;
     }
     if (d.n === 'post') {
