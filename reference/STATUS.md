@@ -19,7 +19,7 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Swimming (Matt: build it, first swim in 6-7's well; calm water from w6/water.jpg) | cloud session_01FhBbYJzbeg3VTVJMDHy4EK | swim | dirty/fast stays deadly |
 | Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | |
 | 7-4 The Slide (W7 special; Matt: NOT a climb: side-on run, floor crumbles, behind-the-back slide, steer and jump; art: slomatt/02_sliding-from-behind) | cloud session_01FhBbYJXeB8XaDrrUgxfuHR | w7-slide | mock-up first |
-| Rope traverse: Matt's Gemini hand-over-hand sheet + HF in-betweens (<= $2) + painted rope | local helper (worktree) | rope-traverse | frame 8 unusable (not holding) |
+| Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
 | Audit: major looks still drawn in code (DONE) | local read-only | none | findings below |
 
 Audit findings (2026-10-29), most visible first: W6 tide drawn clean teal (FIXED: painted fast water, tide-w6-painted.png); W9 lava
