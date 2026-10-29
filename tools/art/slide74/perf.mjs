@@ -2,16 +2,16 @@
 import { createRequire } from 'module';
 const { chromium } = createRequire(import.meta.url)(process.env.PW ?? 'playwright');
 const b = await chromium.launch();
-for (const vp of [{ width: 844, height: 390 }, { width: 390, height: 844 }]) {
+for (const vp of (process.env.ONLY ? [{ width: 844, height: 390 }] : [{ width: 844, height: 390 }, { width: 390, height: 844 }])) {
   const p = await b.newPage({ viewport: vp, deviceScaleFactor: 2, hasTouch: true, isMobile: true });
   await p.goto('http://127.0.0.1:4301/?nodemo=1&lessons=off');
   await p.waitForTimeout(4000);
-  await p.evaluate(() => window.__play('7-4'));
+  await p.evaluate((o) => { globalThis.__off = o; window.__play('7-4'); }, process.env.OFF ?? '');
   await p.waitForTimeout(4000);
   await p.evaluate(() => { const e = window.__engine(); e.player.x = 3320; e.player.y = 580; });
   await p.waitForTimeout(5000);
   const cdp = await p.context().newCDPSession(p);
-  for (const rate of [1, 4]) {
+  for (const rate of (process.env.ONLY ? [1] : [1, 4])) {
     await cdp.send('Emulation.setCPUThrottlingRate', { rate });
     const ms = await p.evaluate(() => {
       const e = window.__engine();

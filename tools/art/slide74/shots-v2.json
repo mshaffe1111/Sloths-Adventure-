@@ -29,7 +29,7 @@
  ],
  [
   "h-lean-left",
-  "at('head', 6, 9); s.lean = -1; s.x = -0.5;"
+  "at('head', 6, 9); s.lean = -1; s.x = -0.5; e.slideRun.say = null;"
  ],
  [
   "i-the-end-cheer",

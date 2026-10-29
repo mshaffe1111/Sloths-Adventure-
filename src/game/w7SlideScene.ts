@@ -63,8 +63,6 @@ export const RAIL_X = SLIDE.halfW;
 export const RAIL_H = 0.3;
 export const CAVE_X = 4.4;
 export const CAVE_ROOF = 4.2;
-/** a cave rib every this many metres */
-export const RIB_EVERY = 9;
 
 const hash = (n: number) => {
   const s = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -110,36 +108,43 @@ export function buildScene(c: SlideCourse): Scene {
   add('signTurnBack', RAIL_X + 0.7, -0.3, 22, 1.4);
   lights.push({ x: -(RAIL_X + 0.7), y: 1.5, z: 13.5, r: 2.4, i: 0.6, kind: 'torch' });
   lights.push({ x: RAIL_X + 0.7, y: 1.5, z: 21.5, r: 2.4, i: 0.6, kind: 'torch' });
+  // the set dressing, metre by metre, at irregular spacing (each kind has a chance a metre, from the roll, never a fixed beat: the lead's
+  // review, 2026-10-29: evenly spaced pieces read as a tile)
+  const chance = (z: number, salt: number, every: number) => hash(z * 1.37 + salt * 7.1) < 1 / every;
+  let nextRib = 5;
   for (let k = 4; k < c.length; k += 1) {
-    const z = k;
+    const z = k + (hash(k * 0.73) - 0.5) * 0.8;
     const b = beatAt(z);
-    // the cave's ribs (Sheet 4's walls and ceiling), and a cave mouth where the cave changes
-    if (k % RIB_EVERY === 0) add('rib', 0, 0, z, CAVE_ROOF);
+    // the cave's ribs (Sheet 4's walls and ceiling), 6-13 m apart, and now and then one wall on its own between them
+    if (k >= nextRib) {
+      add('rib', (hash(k + 0.2) - 0.5) * 0.6, 0, z, CAVE_ROOF * (0.9 + hash(k + 0.4) * 0.25), hash(k + 0.6) < 0.5);
+      nextRib = k + 6 + Math.floor(hash(k + 0.8) * 8);
+    } else if (chance(z, 1, 9)) add(hash(z + 0.3) < 0.5 ? 'wallL' : 'wallR', 0, 0, z, CAVE_ROOF * (0.85 + hash(z + 0.5) * 0.35));
     // the flume's own lights by beat
-    if (b === 'torch' && k % 7 === 0) torch(z, (k / 7) % 2 ? 1 : -1);
-    if (b === 'torch' && k % 11 === 5) torchWall(z, hash(z + 6) < 0.5 ? -1 : 1);
-    if (b === 'fungus' && k % 4 === 0) fungus(z, sideX(z, 7), -0.3 + hash(z + 8) * 0.4, hash(z + 9) < 0.5);
-    if (b === 'fungus' && k % 8 === 4) {
+    if (b === 'torch' && chance(z, 2, 6)) torch(z, hash(z + 2.5) < 0.5 ? 1 : -1);
+    if (b === 'torch' && chance(z, 3, 10)) torchWall(z, hash(z + 6) < 0.5 ? -1 : 1);
+    if (b === 'fungus' && chance(z, 4, 3.5)) fungus(z, sideX(z, 7), -0.3 + hash(z + 8) * 0.4, hash(z + 9) < 0.5);
+    if (b === 'fungus' && chance(z, 5, 8)) {
       add('glowworms', (hash(z + 10) - 0.5) * 2 * (CAVE_X - 1), CAVE_ROOF - 0.2, z, 0.4);
       lights.push({ x: 0, y: CAVE_ROOF - 0.8, z, r: 3.2, i: 0.35, kind: 'fungusG' });
     }
-    if (b === 'fungus' && k % 20 === 10) torchWall(z, hash(z + 11) < 0.5 ? -1 : 1, 0.7);
-    if (b === 'dark' && k % 24 === 12) torch(z, hash(z + 12) < 0.5 ? -1 : 1, 0.75);
-    if (b === 'dark' && k % 5 === 2) add(['eyesHole', 'eyesRoots', 'eyesThorns'][Math.floor(hash(z + 13) * 3)], (hash(z + 14) < 0.5 ? -1 : 1) * (CAVE_X - 0.6), 0.3 + hash(z + 15) * 1.8, z, 0.9);
-    if (b === 'dark' && k % 7 === 3) add(hash(z + 16) < 0.5 ? 'thornUp' : 'thornDown', sideX(z, 17, 0.6, 1.4), hash(z + 16) < 0.5 ? -0.4 : CAVE_ROOF - 0.3, z, 1.2);
+    if (b === 'fungus' && chance(z, 6, 18)) torchWall(z, hash(z + 11) < 0.5 ? -1 : 1, 0.7);
+    if (b === 'dark' && chance(z, 7, 22)) torch(z, hash(z + 12) < 0.5 ? -1 : 1, 0.75);
+    if (b === 'dark' && chance(z, 8, 4.5)) add(['eyesHole', 'eyesRoots', 'eyesThorns'][Math.floor(hash(z + 13) * 3)], (hash(z + 14) < 0.5 ? -1 : 1) * (CAVE_X - 0.6), 0.3 + hash(z + 15) * 1.8, z, 0.7 + hash(z + 15.5) * 0.4, hash(z + 15.7) < 0.5);
+    if (b === 'dark' && chance(z, 9, 6)) add(hash(z + 16) < 0.5 ? 'thornUp' : 'thornDown', sideX(z, 17, 0.6, 1.4), hash(z + 16) < 0.5 ? -0.4 : CAVE_ROOF - 0.3, z, 0.9 + hash(z + 16.5) * 0.6, hash(z + 16.7) < 0.5);
     // hanging from the roof: roots, stalactites, now and then a lantern on its rope
-    if (k % 6 === 1) add(hash(z + 18) < 0.5 ? 'rootsHang' : 'stalactites', (hash(z + 19) - 0.5) * 2 * (CAVE_X - 0.8), CAVE_ROOF + 0.1, z, 1.3, hash(z + 20) < 0.5);
-    if (b !== 'dark' && k % 13 === 6) lantern(z, sideX(z, 21, 0.2, 0.9), 3.0, 0.7);
-    // the cave floor beside the flume: stalagmites, boulders, webs at the walls, scaffolds and the rope bridge overhead
-    if (k % 8 === 3) add(['stalagmites', 'boulder', 'stalagmites'][Math.floor(hash(z + 22) * 3)], sideX(z, 23, 1.0, 2.2), -0.6, z, 1.0, hash(z + 24) < 0.5);
-    if (k % 13 === 9) add(hash(z + 25) < 0.5 ? 'webCorner' : 'webRoots', (hash(z + 26) < 0.5 ? -1 : 1) * (CAVE_X - 0.7), 1.2 + hash(z + 27), z, 1.3, hash(z + 26) >= 0.5);
-    if (b !== 'dark' && k % 27 === 14) {
+    if (chance(z, 10, 4.5)) add(hash(z + 18) < 0.5 ? 'rootsHang' : 'stalactites', (hash(z + 19) - 0.5) * 2 * (CAVE_X - 0.8), CAVE_ROOF + 0.1, z, 0.9 + hash(z + 19.5) * 0.9, hash(z + 20) < 0.5);
+    if (b !== 'dark' && chance(z, 11, 12)) lantern(z, sideX(z, 21, 0.2, 0.9), 3.0, 0.7);
+    // the cave floor beside the flume: stalagmites, boulders, webs at the walls, scaffolds and the rope bridge overhead, signs
+    if (chance(z, 12, 5)) add(['stalagmites', 'boulder', 'stalagmites'][Math.floor(hash(z + 22) * 3)], sideX(z, 23, 1.0, 2.2), -0.6, z, 0.7 + hash(z + 22.5) * 0.7, hash(z + 24) < 0.5);
+    if (chance(z, 13, 9)) add(hash(z + 25) < 0.5 ? 'webCorner' : 'webRoots', (hash(z + 26) < 0.5 ? -1 : 1) * (CAVE_X - 0.7), 1.2 + hash(z + 27), z, 1.0 + hash(z + 27.5) * 0.6, hash(z + 26) >= 0.5);
+    if (b !== 'dark' && chance(z, 14, 22)) {
       const side = hash(z + 28) < 0.5 ? -1 : 1;
-      add(hash(z + 29) < 0.5 ? 'scaffoldTall' : 'scaffoldShort', side * (RAIL_X + 1.9), -0.8, z, hash(z + 29) < 0.5 ? 3.4 : 2.2);
+      add(hash(z + 29) < 0.5 ? 'scaffoldTall' : 'scaffoldShort', side * (RAIL_X + 1.9), -0.8, z, hash(z + 29) < 0.5 ? 3.4 : 2.2, side > 0);
       add('rope', side * (RAIL_X + 1.2), CAVE_ROOF, z + 1.5, 2.4);
     }
-    if (k % 41 === 20) add('ropeBridge', 0, 3.1, z, 1.2);
-    if (b === 'torch' && k % 29 === 17) add(hash(z + 30) < 0.5 ? 'signArrow' : 'signBroken', sideX(z, 31, 0.5, 0.9), -0.3, z, hash(z + 30) < 0.5 ? 0.9 : 1.2);
+    if (chance(z, 15, 35)) add('ropeBridge', 0, 3.1, z, 1.2);
+    if (b === 'torch' && chance(z, 16, 25)) add(hash(z + 30) < 0.5 ? 'signArrow' : 'signBroken', sideX(z, 31, 0.5, 0.9), -0.3, z, hash(z + 30) < 0.5 ? 0.9 : 1.2, hash(z + 31) < 0.5);
   }
   // a cave mouth where the cave opens into the fungus cavern and closes into the narrow dark
   for (const b of beats) if (b.beat === 'fungus' || b.beat === 'dark') add('mouth', 0, 0, b.z0 + 2, CAVE_ROOF);
