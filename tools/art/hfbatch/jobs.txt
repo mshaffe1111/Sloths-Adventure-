@@ -1,0 +1,5 @@
+HF batch W7/W8 jobs, 2026-10-29 (cap for this task $5 of Matt's last ~$11 on Hugging Face). rtx-pro-6000 at ~$2.75/h.
+Results in the bucket mshaffe111/w5-xfer under hfbatch/ (clips/, carriers/, props/).
+hfb-clips-0  6ae35ba1ad9610e5cb311ca2 rtx-pro-6000 created 14:43:45Z: spec-hfb-clips.json part 0 of 2 (13 clips: bat asleep, crab/beetle/piranha defeat, sentry hurt, owl defeat redo)
+hfb-clips-1  6ae35ba4ad9610e5cb311cab rtx-pro-6000 created 14:43:48Z: part 1 of 2
+hfb-carriers 6ae35bab5ddcdc08302610e2 cpu-basic    created 14:43:55Z: carriercpu.py, the existing cr-/m1k- clips of bat fly, crab, piranha, sentry, beetle brought back as carriers
