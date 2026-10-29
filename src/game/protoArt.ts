@@ -352,18 +352,31 @@ export function drawCurtainArt(ctx: CanvasRenderingContext2D, x: number, y: numb
   return true;
 }
 
-const topCache = new Map<string, number>();
+/** where a painted piece's solid top starts (`top`, a share of its height) and the share of its width that row covers (`l` to `r`) */
+export interface PaintSpan { top: number; l: number; r: number }
 /**
- * Where the solid top of a painted piece starts, as a share of its height: the first row the picture fills across most of its
- * width. A branch painting carries a bromeliad and moss tufts above the bark, so lining the picture's top edge up with the walkable
- * top left Pokey standing on the air above the log (Matt, 2026-10-23). Measured once per picture; each world's kit has its own.
+ * The solid top of a picture from its alpha (w x h, RGBA): the first row it fills across most of its width, and where that row's
+ * paint starts and ends. Null when no row is that full.
  */
-function solidTop(n: Name, fallback: number): number {
+export function paintSpan(a: ArrayLike<number>, w: number, h: number): PaintSpan | null {
+  for (let y = 0; y < h; y++) {
+    let n = 0, l = -1, r = -1;
+    for (let x = 0; x < w; x++) {
+      if (a[(y * w + x) * 4 + 3] <= 40) continue;
+      n++;
+      if (l < 0) l = x;
+      r = x + 1;
+    }
+    if (n > w * 0.6) return { top: y / h, l: l / w, r: r / w };
+  }
+  return null;
+}
+const spanCache = new Map<string, PaintSpan | null>();
+function measure(n: Name): PaintSpan | null {
   const { img, f } = frameOf(n);
   const key = `${img.src}#${n}`;
-  const hit = topCache.get(key);
-  if (hit !== undefined) return hit;
-  let v = fallback;
+  if (spanCache.has(key)) return spanCache.get(key)!;
+  let v: PaintSpan | null = null;
   try {
     const c = document.createElement('canvas');
     const w = Math.min(160, f.w), h = Math.round((f.h * w) / f.w);
@@ -371,20 +384,36 @@ function solidTop(n: Name, fallback: number): number {
     c.height = h;
     const g = c.getContext('2d', { willReadFrequently: true })!;
     g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, w, h);
-    const a = g.getImageData(0, 0, w, h).data;
-    for (let y = 0; y < h; y++) {
-      let n2 = 0;
-      for (let x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] > 40) n2++;
-      if (n2 > w * 0.6) { v = y / h; break; }
-    }
+    v = paintSpan(g.getImageData(0, 0, w, h).data, w, h);
   } catch {
-    /* no canvas to measure on: the measured share for World 1's branch */
+    /* no canvas to measure on */
   }
-  topCache.set(key, v);
+  spanCache.set(key, v);
   return v;
 }
+/**
+ * Where the solid top of a painted piece starts, as a share of its height: the first row the picture fills across most of its
+ * width. A branch painting carries a bromeliad and moss tufts above the bark, so lining the picture's top edge up with the walkable
+ * top left Pokey standing on the air above the log (Matt, 2026-10-23). Measured once per picture; each world's kit has its own.
+ */
+function solidTop(n: Name, fallback: number): number {
+  return measure(n)?.top ?? fallback;
+}
 
-/** a branch you land on: whole, creaking (a timer is running), or snapped (the halves fall away for a second) */
+/** how far the painted walking top runs past each end of a branch's collider (px): he still stands with his middle up to 13 px past
+ *  the end (the engine's footing), so he stands on paint there too */
+export const BRANCH_OVERHANG = 16;
+/**
+ * The box a branch picture is drawn in, so the row he walks on (`span`, measured from the picture) runs from one end of the collider to
+ * the other, BRANCH_OVERHANG past each. (QA 2026-10-29, 2-6 ?layout=7: World 2's plank is painted on the middle 15-86% of its picture,
+ * so drawn edge to edge on the collider he stood 30-40 px past a plank's painted end, in the air; Worlds 3, 6, 9 and 10 the same.)
+ */
+export function branchBox(p: Pick<Platform, 'x' | 'width'>, span: Pick<PaintSpan, 'l' | 'r'> | null): { x: number; w: number } {
+  const l = span?.l ?? 0, r = span?.r ?? 1;
+  const w = (p.width + 2 * BRANCH_OVERHANG) / Math.max(0.3, r - l);
+  return { x: p.x - BRANCH_OVERHANG - l * w, w };
+}
+
 export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state: 'whole' | 'creak' | 'snapped', since: number): boolean {
   if (!protoArtReady()) return false;
   const f = frameOf('branch').f;
@@ -411,7 +440,8 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
     ctx.restore();
     return true;
   }
-  blit(ctx, name, p.x - 6, y, p.width + 12, h);
+  const box = branchBox(p, measure(name));
+  blit(ctx, name, box.x, y, box.w, h);
   return true;
 }
 

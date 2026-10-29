@@ -19,7 +19,7 @@ import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
-import { DOUBLE_RISE, JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, SAFE } from './physics.ts';
 import { validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
@@ -5987,11 +5987,38 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     if (firstRock) hint(ROCKS_LOOSE, ROCKS_LOOSE, ROCKS_LOOSE, firstRock.land + 280);
   }
 
-  // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
-  // a knot of wood stands at each such end, a little wall, so he cannot walk off into a ten-second fall (he can still hop over it). And
-  // a trail of petals along the floor leads back to the one trunk that climbs up from it.
-  if (mist) {
-    const LIP = { w: 18, h: 56, drop: 600 };
+  /**
+   * A knot of wood at each end of a high branch where a step too far drops him `drop` px or more (or at a rope's post), so a plain walk
+   * stops there instead of carrying him into a long fall; he can still hop over it. Returns the knots. `floor` (2-6): the drop is where
+   * a walk off lands (walkOff), and an end onto the floor gets one too; `doubt`: every knot is listed there for the level check to judge
+   * (one that saves a move goes), and knots under a ledge a double jump off their top might reach are made anyway (2-6: a knot's top was
+   * a step up to a porch 180 px up and 130 px across, a double jump the kid bot made 78% of the time).
+   */
+  const knots = (drop: number, o: { floor?: boolean; doubt?: Platform[] } = {}): Platform[] => {
+    const LIP = { w: 18, h: 56 };
+    const made: Platform[] = [];
+    /**
+     * Where a walk off the end of p lands (`floor`, 2-6): the arc of a walk off at a run, held on the way it was going (he carries on
+     * well past the end as he falls: 30 and 80 px past it missed porches below that he sails over), and how far down that is. An end
+     * that drops him to the floor gets a knot however short the fall.
+     */
+    const walkOff = (p: Platform, end: number, side: 1 | -1): { drop: number; floor: boolean } => {
+      let y = 0, vy = 0;
+      for (let t = 0; t < 4; t += 1 / 60) {
+        const x = end + side * (8 + PHYS.maxRun * t);
+        const y1 = y + vy / 60;
+        vy = Math.min(PHYS.maxFall, vy + PHYS.gravDown / 60);
+        // (a landing within 60 px of a porch's end counts as a miss: he comes down on the knot there, half his body past it, and walks on
+        // off it)
+        const hit = P.filter((q) => q !== p && !q.lip && q.y - p.y > y && q.y - p.y <= y1 && q.x + 60 <= x && q.x + q.width - 60 >= x);
+        if (hit.length) {
+          const q = hit.reduce((a, b) => (b.y < a.y ? b : a));
+          return { drop: q.y - p.y, floor: q === P[0] };
+        }
+        y = y1;
+      }
+      return { drop: Infinity, floor: false };
+    };
     const dropAt = (p: Platform, x: number) => {
       const under = P.filter((q) => q !== p && q.y > p.y && q.x <= x + 19 && q.x + q.width >= x - 19);
       return under.length ? Math.min(...under.map((q) => q.y)) - p.y : Infinity;
@@ -6003,20 +6030,41 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         // (and at an end where a rope's post stands: walking up to the post he used to run past it and off the end, 44 px on, before
         // he could jump up to the rope; the knot stops him at the post. Hanging, he passes over it, and he steps off the rope beyond it)
         const post = ROPES.some((q) => (side > 0 ? Math.abs(q.x0 + 44 - end) < 2 : Math.abs(q.x1 - 44 - end) < 2) && Math.abs(q.g0 - p.y) < 2);
-        if (!post && Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < LIP.drop) continue;
+        const off = o.floor ? walkOff(p, end, side) : null;
+        if (!post && (off ? off.drop < drop && !off.floor : Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < drop)) continue;
         // (never under a ledge a double jump off the knot's top would reach: under a mist column's top it was a step up past the hidden
         // ledges, a 150 px jump straight up that the kid bot made 54-65% of the time, 2026-10-28. A fall here costs a climb, not a life)
         // (a knot under a rope's post stays: the post needs it; the engine's walls are 50 px or taller, so it cannot be made lower)
         const lx = side < 0 ? end : end - LIP.w;
         const over = P.some((q) => q !== p && q.y < p.y && p.y - LIP.h - q.y < DOUBLE_RISE + 30 && q.x < lx + LIP.w + 60 && q.x + q.width > lx - 60);
-        if (over && !post) continue;
+        // (`doubt`: kept for now, and the level check takes it away if it saves a move, as it does the catch branches below)
+        if (over && !post && !o.doubt) continue;
         // (nor where the next branch is a hop away at about the same height, round 4: a knot at both ends of a 70 px gap made the hop clear
         // two walls, a 100 ms press on Easy; a slip into that gap drops to a branch or the floor, the climb again, never a life)
         const hopNext = P.some((q) => q !== p && q.height === 24 && Math.abs(q.y - p.y) < 90 && (side > 0 ? q.x >= end && q.x - end < 200 : end >= q.x + q.width && end - (q.x + q.width) < 200));
         if (hopNext && !post) continue;
-        P.push({ id: pid++, x: lx, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true });
+        const knot: Platform = { id: pid++, x: lx, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true };
+        P.push(knot);
+        made.push(knot);
+        o.doubt?.push(knot);
       }
     }
+    return made;
+  };
+
+  // 2-6 (QA 2026-10-29, ?layout=1: "plank ends walk you off to the floor"): the same knots at the porches' dead ends where a step too far
+  // drops him past the porch below (400 px or more: a climb back is one ladder, a fall past it a long way back) or onto the floor (where
+  // he walked off along the bank, away from the ladders); each is a mailbox on its post (the World 2 sheet: placed once the level check
+  // has had its say, below)
+  /** the knots for the level check to judge (it keeps only those that save no move) */
+  const doubtKnots: Platform[] = [];
+  const villageKnots = village ? knots(400, { floor: true, doubt: doubtKnots }) : [];
+
+  // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
+  // a knot of wood stands at each such end, a little wall, so he cannot walk off into a ten-second fall (he can still hop over it). And
+  // a trail of petals along the floor leads back to the one trunk that climbs up from it.
+  if (mist) {
+    knots(600);
     for (let x = firstTrunkX + 260; x < W - KAPOK_MARGIN - 60; x += 300) flower(x, P[0].y - 34, 'hibiscus');
     // (round 4, harder but still safe: rocks down the trunks above the mist, Dot's 4-1 line when he first climbs toward one)
     const firstMist = mistSpots.reduce((m, q) => Math.max(m, q.y), -Infinity);
@@ -6169,13 +6217,17 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     },
   };
   // (the catch branches, judged by the level check itself: one that lets any place be reached in fewer moves than without the catches
-  // is taken away, and its gap closed instead where it can be. The rules above keep most clear; this catches the rest)
-  if (catches.length) {
+  // is taken away, and its gap closed instead where it can be. The rules above keep most clear; this catches the rest. 2-6's knots the
+  // same way: one that saves a move is taken away)
+  if (catches.length || doubtKnots.length) {
     let g: CheckGraph | null = null;
     validateStage(out as unknown as GeneratedStage, { inspect: (q) => (g = q) });
     const graph = g as CheckGraph | null;
     if (graph) {
-      const ck = new Map(catches.map((c) => [graph.key(P.find((p) => p.id === c.plat)!), c]));
+      const ck = new Map<string, { plat: number; planks?: [number, number] }>([
+        ...catches.map((c) => [graph.key(P.find((p) => p.id === c.plat)!), c] as const),
+        ...doubtKnots.map((k) => [graph.key(k), { plat: k.id }] as const),
+      ]);
       const start = graph.key(P[0]);
       const bfs = (skip: (k: string) => boolean) => {
         const d = new Map<string, number>([[start, 0]]);
@@ -6198,11 +6250,22 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       for (const k of gone) {
         const c = ck.get(k)!;
         P.splice(P.findIndex((p) => p.id === c.plat), 1);
-        catches.splice(catches.indexOf(c), 1);
+        if (!c.planks) {
+          villageKnots.splice(villageKnots.findIndex((q) => q.id === c.plat), 1);
+          continue;
+        }
+        catches.splice(catches.indexOf(c as (typeof catches)[number]), 1);
         const [a, b] = c.planks.map((id) => P.find((p) => p.id === id)!);
         closeGap(a, b);
       }
     }
+  }
+  // 2-6's knots: a mailbox on its post, its box facing out over the drop (the post stands 6% of the picture right of its middle: flipped,
+  // as far left)
+  for (const k of villageKnots) {
+    k.art = 'post';
+    const left = P.some((q) => q.height === 24 && q.y === k.y + k.height && q.x === k.x);
+    decor.push({ n: 'mailbox', x: Math.round(k.x + k.width / 2 + (left ? 2 : -2)), b: k.y + k.height + 2, w: 38, flip: left });
   }
   return out;
 }

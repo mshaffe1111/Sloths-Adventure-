@@ -254,6 +254,13 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   §3's "not a clock", in Meeca's stage only; Matt confirmed it on both settings, 2026-10-28): QA stood 32 s in a room and nothing was said. Flicker nudges after about 20 s with
   nothing new done in a room (or at a trunk not carved), and more strongly at about 40 s; anything the room has not seen yet starts
   the clock again; the nudges point at the piece, never the whole answer (`meecaPlay.ts stepNudge`, `FLICKER_NUDGES`).
+- **A painted plank is narrower than its picture** (2-6, QA 2026-10-29: "stands a few px past a plank's end, in the air"). World 2's plank
+  is painted on the middle 15-86% of its picture (Worlds 3, 6, 9 and 10 the same), and the picture was stretched edge to edge over the
+  collider, so every plank ended 30-40 px of air short of where he could stand. The walking row is measured from the picture and fitted
+  to the collider, 16 px past each end, as far as the engine lets him stand (`protoArt.ts` `branchBox`). Measure the art, never assume it
+  fills its box. And a dead end's fall is where a walk off *lands*: he carries on 100-200 px past the end as he falls, over porches a
+  check 30 and 80 px out says will catch him, and down onto the knot at a lower porch's end, off which he walks on (`walkOff` in
+  `protoStage.ts` `knots`; proof `qaW123.test.ts`, a plain walk from every porch both ways in the real engine).
 - **What a counter counts needs its word** ("M. 1/5" read as "my mark didn't count"): Meeca's HUD says "Warnings 1/5" (`goalInfo.word`).
 - **World 6 on gen2: what the swing and creek stages taught** (2026-10-28/29; carry every one of these into Worlds 7-10, the checklist
   is `src/game/gen2/DESIGN.md` "Building a new world on gen2"):

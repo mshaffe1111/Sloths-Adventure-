@@ -280,3 +280,170 @@ test('2-6: the first ladder is on an upright screen from the start, and a plain 
     assert.ok(Math.abs(r.p.x - ladder.x) < 120, `roll ${s}: a plain walk stops by the ladder (at ${Math.round(r.p.x)}, ladder ${ladder.x})`);
   }
 });
+
+// QA 5 (rules 2/7): Dot's "Up through the village! Slide up a post" came after he had walked past the ladder. Dot says nothing in a
+// stage's first 2.5 s (dotGuide.ts CALM.startMs) and he reaches the ladder in 0.7 s, so the tip can only come before the climb if he is
+// still standing by the ladder when it does: walked in the real engine through Dot's queue, holding right and nothing else, the first
+// line about climbing (the stage's tip, or the climb lesson for a first-timer) goes up while he stands within 120 px of the ladder, on
+// the floor, on every roll, Normal and Easy, upright and sideways.
+test("2-6: Dot's climb line goes up while a plain walk stands by the first ladder (every roll, both settings, both views, taught or not)", async () => {
+  const { GameEngine } = await import('./engine.ts');
+  const { GuideQueue } = await import('./dotGuide.ts');
+  const { engineGuideLine } = await import('./dotLines.ts');
+  const { lessonDotLine, markLessonSeen } = await import('./lessons.ts');
+  try {
+    (globalThis as unknown as { window: { matchMedia: unknown } }).window.matchMedia = () => ({ matches: true });
+  } catch {
+    /* no window */
+  }
+  const bad: string[] = [];
+  for (const diff of ['normal', 'easy'] as const) {
+    setDifficulty(diff);
+    for (const view of [[390, 844], [844, 390]] as const) {
+      for (const taught of [false, true]) {
+        for (const s of [1, 2, 3, 7, 12]) {
+          localStorage.clear();
+          if (taught) markLessonSeen('climb');
+          Object.assign((globalThis as unknown as { window: object }).window, { innerWidth: view[0], innerHeight: view[1] });
+          const r = new RealPlay('2-6', s);
+          const e = r.e;
+          const proto = GameEngine.prototype as unknown as Record<string, (...a: unknown[]) => unknown>;
+          e.lessonTick = proto.lessonTick.bind(e);
+          e.updateCamera = proto.updateCamera.bind(e);
+          e.resizeCanvas();
+          const ladder = r.vines.filter((v) => v.vineType === 'tree_climb').sort((a, b) => b.bottomY - a.bottomY)[0];
+          const said: Array<{ text: string; lesson?: Parameters<typeof lessonDotLine>[0] }> = [];
+          e.callbacks.onLesson = (l: Parameters<typeof lessonDotLine>[0]) => said.push({ text: '', lesson: l });
+          e.callbacks.onGuide = (text: string, _s: number, passed?: boolean) => {
+            if (text && !passed) said.push({ text });
+          };
+          const q = new GuideQueue(true);
+          r.stand(r.stage.spawnX, r.stage.spawnY);
+          let at: string | null = null;
+          for (let i = 0; i < 12 * 30 && !at; i++) {
+            r.frame({ right: true });
+            for (const x of said.splice(0)) {
+              const l = x.lesson ? lessonDotLine(x.lesson, 'screen') : engineGuideLine(x.text, '2-6', { dot: true });
+              if (l) q.push(l, (i * 1000) / 30);
+            }
+            q.tick((i * 1000) / 30, { danger: false, hold: i < 45, moveCount: () => 0 });
+            for (const ev of q.drain()) {
+              if (ev.type !== 'start' || !/climb|post/i.test(ev.show.line.text)) continue;
+              at = `"${ev.show.line.text}" at ${(i / 30).toFixed(1)} s, x ${Math.round(r.p.x)} (ladder ${ladder.x}), y ${Math.round(r.p.y)}`;
+              if (Math.abs(r.p.x - ladder.x) > 120 || Math.abs(r.p.y - r.stage.spawnY) > 8 || !r.p.grounded) bad.push(`${diff} ${view.join('x')} ${taught ? 'taught' : 'first-timer'} roll ${s}: ${at}`);
+            }
+          }
+          if (!at) bad.push(`${diff} ${view.join('x')} ${taught ? 'taught' : 'first-timer'} roll ${s}: no climb line in 12 s`);
+        }
+      }
+    }
+  }
+  setDifficulty('normal');
+  assert.deepEqual(bad, []);
+});
+
+// QA 5 (rule 2, "plain walk"): 2-6 ?layout=1, "plank ends walk you off to the floor": a plain walk along a porch ran off its dead end into
+// a long fall, or onto the floor (where he walked off along the bank, away from the ladders). Now a mailbox on its post (a knot, as 4-6's)
+// stands at each such end. Walked in the real engine from the middle of every porch, both ways, holding the one way and nothing else: no
+// walk off a dead end falls 400 px or more, or onto the floor (where he first lands). (Not dead ends: a hop gap, the way on; and the
+// secret side ledge, where a knot at the stub by its ladder would be a double jump up to the porch above, past the ladder, the rope and
+// two porches: the level check takes it away. 0 open dead ends over rolls 1-40.)
+test('2-6: a plain walk to a porch\'s dead end stops there: no fall of 400 px or more, none onto the floor (every roll, Normal and Easy)', () => {
+  const bad: string[] = [];
+  for (const diff of ['normal', 'easy'] as const) {
+    setDifficulty(diff);
+    for (const s of [1, 2, 3, 7, 12]) {
+      const r = new RealPlay('2-6', s);
+      const P = r.platforms;
+      const floor = P.reduce((a, b) => (b.y > a.y ? b : a));
+      const seeds = r.stage.collectibles.filter((c) => c.type === 'seed').map((c) => c.x);
+      const secret = (p: Platform) => r.vines.some((v) => seeds.includes(v.x) && Math.abs(v.topY + 2 - p.y) < 4);
+      let ends = 0;
+      for (const p of P) {
+        if (p === floor || p.height !== 24 || p.width < 150 || p.lip || secret(p)) continue;
+        for (const side of [-1, 1] as const) {
+          const end = side < 0 ? p.x : p.x + p.width;
+          const hop = P.some((q) => q !== p && q.height === 24 && Math.abs(q.y - p.y) < 90 && (side > 0 ? q.x >= end && q.x - end < 200 : end >= q.x + q.width && end - (q.x + q.width) < 200));
+          if (hop) continue;
+          ends++;
+          // (one walk off: where he first lands after leaving the porch)
+          r.stand(p.x + p.width / 2, p.y);
+          let left = false;
+          for (let i = 0; i < 120; i++) {
+            r.frame(side > 0 ? { right: true } : { left: true });
+            if (!r.p.grounded) left = true;
+            else if (left) break;
+          }
+          const fell = r.p.y - p.y;
+          if (fell >= 400 || Math.abs(r.p.y - floor.y) < 4) bad.push(`${diff} roll ${s}: walking ${side > 0 ? 'right' : 'left'} on the porch at ${p.x}-${end} (y ${p.y}) fell ${Math.round(fell)} px`);
+        }
+      }
+      assert.ok(ends > 20, `roll ${s}: ${ends} porch ends walked`);
+    }
+  }
+  setDifficulty('normal');
+  assert.deepEqual(bad, []);
+});
+
+// QA 7 (polish): 2-6 ?layout=7 at about 9%: Pokey stood a few px past a porch's end, in the air. World 2's plank is painted on the middle
+// 15-86% of its picture (its walking row: Worlds 3, 6, 9 and 10 the same), and the picture was drawn edge to edge on the collider, so the
+// painted plank ended 30-40 px short of where he could stand. Now the measured walking row is fitted to the collider, BRANCH_OVERHANG past
+// each end, and he cannot stand further out than that.
+test('the painted plank runs under Pokey as far out as he can stand on a branch (the walking row fitted to the collider)', async () => {
+  const { paintSpan, branchBox, BRANCH_OVERHANG } = await import('./protoArt.ts');
+  // (a picture 100 x 20 whose rows from 4 down are painted from 15 to 86 across: World 2's plank, kits/w2.webp)
+  const w = 100, h = 20, a = new Uint8ClampedArray(w * h * 4);
+  for (let y = 4; y < h; y++) for (let x = 15; x < 86; x++) a[(y * w + x) * 4 + 3] = 255;
+  const span = paintSpan(a, w, h)!;
+  assert.deepEqual(span, { top: 0.2, l: 0.15, r: 0.86 });
+  for (const p of [{ x: 600, width: 170 }, { x: 1373, width: 342 }, { x: 0, width: 600 }]) {
+    const box = branchBox(p, span);
+    const l = box.x + span.l * box.w, r = box.x + span.r * box.w;
+    assert.ok(Math.abs(l - (p.x - BRANCH_OVERHANG)) < 0.01 && Math.abs(r - (p.x + p.width + BRANCH_OVERHANG)) < 0.01, `a ${p.width} px plank: paint ${l}-${r}`);
+  }
+  // (no measure, as on a device with no canvas to measure on: the whole picture fitted, BRANCH_OVERHANG past each end)
+  assert.deepEqual(branchBox({ x: 100, width: 200 }, null), { x: 100 - BRANCH_OVERHANG, w: 200 + 2 * BRANCH_OVERHANG });
+  // he stands on a branch with his middle at most BRANCH_OVERHANG past its end (the engine's footing): past that, he is falling
+  setDifficulty('normal');
+  for (const s of [1, 7]) {
+    const r = new RealPlay('2-6', s);
+    for (const br of r.platforms.filter((p) => p.height === 24 && p.width >= 150).slice(1, 14)) {
+      for (const side of [-1, 1] as const) {
+        let far = 0;
+        for (let d = 0; d <= 40; d++) {
+          r.stand(side > 0 ? br.x + br.width + d : br.x - d, br.y);
+          for (let i = 0; i < 3; i++) r.frame({});
+          if (r.p.grounded && Math.abs(r.p.y - br.y) < 2) far = d;
+        }
+        assert.ok(far <= BRANCH_OVERHANG, `roll ${s}: he stands ${far} px past the ${side > 0 ? 'right' : 'left'} end of the porch at ${br.x}`);
+      }
+    }
+  }
+});
+
+// QA 8 (unverified, 3-3 Easy: "0 of 7 predators" never moved while taps scored): the counter counts knock-outs (engine.ts knockOut, the
+// only way an animal is beaten), and it says so ("N of 7 predators"). Checked in the real engine, and on the page (the counter's label
+// went 1, 2, 3 of 7 as three prowlers went down, the score 600, 1,200, 1,850). Both ways a thumb beats a prowler (a tap, which beside
+// an animal throws the kick, and a flick) count on Easy, every prowler of the roll.
+test('3-3 Easy: every prowler beaten by a tap or a flick counts toward the goal (rolls 1-3)', () => {
+  setDifficulty('easy');
+  for (const s of [1, 2, 3]) {
+    for (const move of ['tap', 'flick'] as const) {
+      const r = new RealPlay('3-3', s);
+      r.e.damagePlayer = () => {};
+      const foes = r.e.enemies.filter((e: { type: string }) => e.type === 'ocelot' || e.type === 'jaguar');
+      assert.ok(foes.length >= r.stage.config.targetCount, `roll ${s}: ${foes.length} prowlers for a goal of ${r.stage.config.targetCount}`);
+      for (const f of foes) {
+        for (let k = 0; k < 30 && !f.defeated; k++) {
+          r.stand(f.x - 45, f.y + 14);
+          r.p.facing = 1;
+          r.frame(move === 'tap' ? { punch: true } : { kick: 1 });
+          for (let i = 0; i < 8; i++) r.frame({});
+        }
+        assert.ok(f.defeated, `roll ${s}: a ${f.type} at ${Math.round(f.x)} beaten by ${move}s`);
+      }
+      assert.equal(r.p.enemiesDefeated, foes.length, `roll ${s}: ${move}s: the count`);
+    }
+  }
+  setDifficulty('normal');
+});
