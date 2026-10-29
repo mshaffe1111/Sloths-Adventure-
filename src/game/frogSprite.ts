@@ -119,7 +119,6 @@ export function drawFrogSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, time
     ctx.ellipse(0, 1, 18 - lift * 0.25, 3.6 - lift * 0.07, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   ctx.translate(0, -lift);
   ctx.scale(1, sy);
   ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);

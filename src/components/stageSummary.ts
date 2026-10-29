@@ -6,14 +6,24 @@ export function totalKills(s: StageStats | null | undefined): number {
   return Object.values(s.kills).reduce((a, b) => a + b, 0);
 }
 
+export interface FloraChip {
+  /** "Flower goal" on a gather stage, "Flowers" elsewhere */
+  label: string;
+  cur: number;
+  of: number;
+  /** the goal met, or every flower picked */
+  full: boolean;
+}
+
 /**
- * the Flowers chip on the out-of-lives card: on a gather stage, picked so far of the goal, as the HUD's bar counts it (the bar said 107
- * and the card "1/122", QA 2-2, 2026-10-28); elsewhere, of every flower the stage holds. Null when there are none.
+ * The Flowers chip, the same on every card (UI-10): it counts what the HUD's bar counted during the stage. On a gather stage that is
+ * the flowers picked against the goal (the bar said 107 and the out-of-lives card "1/122", QA 2-2, 2026-10-28; the win card showed
+ * the stage's total, so the one chip meant two things); elsewhere, every flower the stage holds. Null when there are none.
  */
-export function floraChip(s: StageStats | null | undefined): string | null {
+export function floraChip(s: StageStats | null | undefined): FloraChip | null {
   if (!s) return null;
-  if (s.floraGoal) return `${s.floraGoal.cur}/${s.floraGoal.target}`;
-  return s.floraTotal > 0 ? `${s.floraCollected}/${s.floraTotal}` : null;
+  if (s.floraGoal) return { label: 'Flower goal', cur: s.floraGoal.cur, of: s.floraGoal.target, full: s.floraGoal.cur >= s.floraGoal.target };
+  return s.floraTotal > 0 ? { label: 'Flowers', cur: s.floraCollected, of: s.floraTotal, full: s.floraCollected >= s.floraTotal } : null;
 }
 
 export interface Praise {

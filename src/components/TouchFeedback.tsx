@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import type { TouchGestures } from '../game/touchGestures.ts';
 import { MARK, type MarkKind, type TouchMarks } from '../game/touchMarks.ts';
+import { FONT_UI } from '../game/fonts.ts';
 
 /**
  * Screen mode's marks under the fingers (touchMarks.ts, polish report CT-14), drawn on a canvas that never takes a touch:
@@ -84,7 +85,7 @@ export const TouchFeedback: React.FC<{ gestures: TouchGestures; marks: TouchMark
         // the name, above the finger so the thumb does not hide it, fading out
         const a = age < MARK.burstMs ? 1 : 1 - (age - MARK.burstMs) / (MARK.labelMs - MARK.burstMs);
         ctx.globalAlpha = Math.max(0, a);
-        ctx.font = '900 15px system-ui, -apple-system, sans-serif';
+        ctx.font = `900 15px ${FONT_UI}`;
         const text = LABEL[m.kind];
         const tw = ctx.measureText(text).width;
         const lx = Math.max(tw / 2 + 12, Math.min(w - tw / 2 - 12, m.x));

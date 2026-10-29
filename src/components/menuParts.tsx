@@ -2,6 +2,7 @@ import React from 'react';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
+import { setShakeLevel, shakeLevel, type ShakeLevel } from '../game/screenShake.ts';
 import { canBuzz, hapticsOn, setHaptics, vibrate } from '../game/haptics.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, steerHand, setSteerHand, touchSensitivity, setTouchSensitivity, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 import { showTouches, setShowTouches, type ShowTouches } from '../game/touchMarks.ts';
@@ -120,6 +121,33 @@ export const WaysideToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Now and then Dot, Pokey or the petal says a short line while you play. They never pause the game. Turn them off if you would rather just play.</small>
+    </div>
+  );
+};
+
+/** how hard the screen shakes on a big hit or a boss's slam (AN-10); Gentle to start with where the phone asks for less motion */
+export const ShakeSetting: React.FC = () => {
+  const [v, setV] = React.useState<ShakeLevel>(() => shakeLevel());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <SetIcon name="burst" />
+          Screen shake
+        </span>
+        <Seg<ShakeLevel>
+          value={v}
+          options={[
+            { id: 'full', label: 'Full' },
+            { id: 'gentle', label: 'Gentle' },
+            { id: 'off', label: 'Off' },
+          ]}
+          onPick={(n) => {
+            setShakeLevel(n);
+            setV(n);
+          }}
+        />
+      </div>
     </div>
   );
 };

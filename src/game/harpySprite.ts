@@ -161,7 +161,6 @@ export function drawHarpySprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   if (name === 'dizzy' && !enemy.defeated) ctx.rotate(Math.sin(time * 7 + enemy.id) * 0.05);
   // the warning crouch trembles, so it reads as "something is about to happen"
   if (st === 'crouch' && hk === 'none') ctx.translate(Math.sin(time * 70) * 1.4, 0);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();
 

@@ -63,7 +63,6 @@ export function drawW5Spider(ctx: CanvasRenderingContext2D, e: Enemy, t: number,
   ctx.beginPath();
   ctx.ellipse(0, 1, 26, 3.4, 0, 0, Math.PI * 2);
   ctx.fill();
-  if (e.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   const ok = spiderAnim.draw(ctx, name, SPIDER_K);
   ctx.restore();
   return ok;

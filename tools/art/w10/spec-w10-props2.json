@@ -1,0 +1,141 @@
+{
+ "note": "World 10 round 2 (states) by img2img from tools/art/w10/starts2.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/75124775728ec22070625b4c66ee71973d4fa5e3/tools/art/hfbatch/starts/w10/",
+ "items": [
+  {
+   "name": "w10rodcharge-s35-7",
+   "start": "start-w10-rodcharge.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side on riveted stone footings, left a spear-tipped rod, right a rod with a spiked crown and a copper coil, both CHARGED with electricity: the spear tip, the crown prongs and the coil glow bright pale blue-white, white-hot at the very tips, the glow painted on the metal. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.35,
+   "seed": 7
+  },
+  {
+   "name": "w10rodcharge-s35-23",
+   "start": "start-w10-rodcharge.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side on riveted stone footings, left a spear-tipped rod, right a rod with a spiked crown and a copper coil, both CHARGED with electricity: the spear tip, the crown prongs and the coil glow bright pale blue-white, white-hot at the very tips, the glow painted on the metal. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.35,
+   "seed": 23
+  },
+  {
+   "name": "w10rodcharge-s45-7",
+   "start": "start-w10-rodcharge.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side on riveted stone footings, left a spear-tipped rod, right a rod with a spiked crown and a copper coil, both CHARGED with electricity: the spear tip, the crown prongs and the coil glow bright pale blue-white, white-hot at the very tips, the glow painted on the metal. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.45,
+   "seed": 7
+  },
+  {
+   "name": "w10rodcharge-s45-23",
+   "start": "start-w10-rodcharge.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side on riveted stone footings, left a spear-tipped rod, right a rod with a spiked crown and a copper coil, both CHARGED with electricity: the spear tip, the crown prongs and the coil glow bright pale blue-white, white-hot at the very tips, the glow painted on the metal. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.45,
+   "seed": 23
+  },
+  {
+   "name": "w10rodspent-s35-7",
+   "start": "start-w10-rodspent.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side on riveted stone footings, left a spear-tipped rod, right a rod with a spiked crown and a copper coil, just struck by lightning: the tips faintly glowing pale blue and blackened with soot. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.35,
+   "seed": 7
+  },
+  {
+   "name": "w10rodspent-s35-23",
+   "start": "start-w10-rodspent.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side on riveted stone footings, left a spear-tipped rod, right a rod with a spiked crown and a copper coil, just struck by lightning: the tips faintly glowing pale blue and blackened with soot. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.35,
+   "seed": 23
+  },
+  {
+   "name": "w10rodspent-s45-7",
+   "start": "start-w10-rodspent.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side on riveted stone footings, left a spear-tipped rod, right a rod with a spiked crown and a copper coil, just struck by lightning: the tips faintly glowing pale blue and blackened with soot. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.45,
+   "seed": 7
+  },
+  {
+   "name": "w10rodspent-s45-23",
+   "start": "start-w10-rodspent.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, two tall iron lightning rods seen from the side on riveted stone footings, left a spear-tipped rod, right a rod with a spiked crown and a copper coil, just struck by lightning: the tips faintly glowing pale blue and blackened with soot. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.45,
+   "seed": 23
+  },
+  {
+   "name": "w10rodfx-s45-7",
+   "start": "start-w10-rodfx.webp",
+   "prompt": "slothadv style, painted storybook illustration, game effect sprites on a plain pure black background: two balls of crackling blue-white electricity with small jagged sparks, a soft dim blue after-glow, and two thin curls of grey smoke rising, hand-painted glowing light, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.45,
+   "seed": 7
+  },
+  {
+   "name": "w10rodfx-s45-23",
+   "start": "start-w10-rodfx.webp",
+   "prompt": "slothadv style, painted storybook illustration, game effect sprites on a plain pure black background: two balls of crackling blue-white electricity with small jagged sparks, a soft dim blue after-glow, and two thin curls of grey smoke rising, hand-painted glowing light, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.45,
+   "seed": 23
+  },
+  {
+   "name": "w10rodfx-s60-7",
+   "start": "start-w10-rodfx.webp",
+   "prompt": "slothadv style, painted storybook illustration, game effect sprites on a plain pure black background: two balls of crackling blue-white electricity with small jagged sparks, a soft dim blue after-glow, and two thin curls of grey smoke rising, hand-painted glowing light, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.6,
+   "seed": 7
+  },
+  {
+   "name": "w10rodfx-s60-23",
+   "start": "start-w10-rodfx.webp",
+   "prompt": "slothadv style, painted storybook illustration, game effect sprites on a plain pure black background: two balls of crackling blue-white electricity with small jagged sparks, a soft dim blue after-glow, and two thin curls of grey smoke rising, hand-painted glowing light, no text",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, sky, clouds, ground, landscape, people, animal, vector art, flat neon, straight ruler lines",
+   "strength": 0.6,
+   "seed": 23
+  },
+  {
+   "name": "w10rampcrack-s35-7",
+   "start": "start-w10-rampcrack.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, seen straight from the side: a fortress battlement slab of dark grey dressed storm stone with a riveted rusty iron band, CRACKED: deep dark cracks running through the stones and chips broken out of its top edge, about to crumble; four loose broken chunks of the same stone; a patch of grey stone with a soot scorch mark. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.35,
+   "seed": 7
+  },
+  {
+   "name": "w10rampcrack-s35-23",
+   "start": "start-w10-rampcrack.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, seen straight from the side: a fortress battlement slab of dark grey dressed storm stone with a riveted rusty iron band, CRACKED: deep dark cracks running through the stones and chips broken out of its top edge, about to crumble; four loose broken chunks of the same stone; a patch of grey stone with a soot scorch mark. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.35,
+   "seed": 23
+  },
+  {
+   "name": "w10rampcrack-s45-7",
+   "start": "start-w10-rampcrack.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, seen straight from the side: a fortress battlement slab of dark grey dressed storm stone with a riveted rusty iron band, CRACKED: deep dark cracks running through the stones and chips broken out of its top edge, about to crumble; four loose broken chunks of the same stone; a patch of grey stone with a soot scorch mark. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.45,
+   "seed": 7
+  },
+  {
+   "name": "w10rampcrack-s45-23",
+   "start": "start-w10-rampcrack.webp",
+   "prompt": "slothadv style, painted storybook illustration for a side-scrolling platform game, seen straight from the side: a fortress battlement slab of dark grey dressed storm stone with a riveted rusty iron band, CRACKED: deep dark cracks running through the stones and chips broken out of its top edge, about to crumble; four loose broken chunks of the same stone; a patch of grey stone with a soot scorch mark. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal",
+   "strength": 0.45,
+   "seed": 23
+  }
+ ]
+}

@@ -165,6 +165,8 @@ export interface LianaSwing {
  *   jump | double        a gap from the jump envelope: `share` (0..1) of the widest gap the difficulty allows for that rise
  *                        (pipeline maxGap: Easy 0.65, Normal 0.82 of the physical reach, never past what levelCheck accepts)
  *   pit                  a gap at the same height with a pit under it (soft: a floor and a step out); the jump kind decides its width
+ *                        (`glide`: the leaf glide's reach, pipeline glideGap; Normal's is past the double jump, so the leaf is the way over;
+ *                        its soft pit climbs back to the take-off, as a liana's does, so walking down and out the far side is no way over)
  *   on                   an obstacle standing on `on`'s top, `at` (0..1) along it, `h` px tall (a stump, a block)
  *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top (over a
  *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
@@ -179,16 +181,18 @@ export interface LianaSwing {
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
  * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
+ * A gap rule with `soft: true` has a soft pit under it whatever the world's falls (World 8: in a world whose falls cost a life, its gaps in
+ * the dark keep a soft floor, so no jump in the dark is blind)
  */
 export type PlaceRule =
   | { kind: 'start' }
   | { kind: 'walk'; after: string; dy?: Range }
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double'; share?: Range; water?: boolean }
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean; spikes?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean; soft?: boolean; spikes?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
-  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean }
+  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range };
 
 export interface SectionPiece {
@@ -205,6 +209,13 @@ export interface SectionPiece {
   landing?: boolean;
   /** part of the main route (what the repair pass may stretch or bridge); a high road's branch is not */
   main?: boolean;
+  /**
+   * a crumbling ruin tile (World 7, zones.ts CRUMBLE_TILE_W wide, holding crumbleTime(stage) s once stood on): never on the main route
+   * and never needed (STAGE-RULES §1: a tile is a shortcut or a hurry; pipeline checkStage proves the stage without its tiles). The
+   * section's tiles lie in one crumble zone (its rules: levelCheck's runs of at most CRUMBLE_RUN_MAX, steps of at most CRUMBLE_STEP), so
+   * no animal or flag stands on or over them
+   */
+  crumble?: boolean;
 }
 
 /** what a socket can hold */
@@ -277,7 +288,17 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
  *          `warn` (>= 0.9 s), `active` (<= 3 s) and `force` (px/s) default to TIDE's. Its beat on the clock is rolled per use
  * Nothing stands or flies inside a zone (no animal, no flag: levelCheck), so creature sockets and flags inside one stay empty.
  */
-export type SectionZone = { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number };
+export type SectionZone =
+  | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
+  /** World 10: a lightning rod standing on `on`, `at` along it; its bolt strikes the column on a beat (BOLT) */
+  | { kind: 'bolt'; on: string; at: Range; period?: Range }
+  /** World 10: a gust lane over the gap between `from` and `to`, blowing `dir` (+1 right) on a beat (WIND); mirrored with the section */
+  | { kind: 'wind'; from: string; to: string; dir: 1 | -1 };
+
+/** a lightning rod's column (World 10): 56 px wide, its strike from high above; Easy warns longer and strikes less often */
+export const BOLT = { w: 56, height: 560, warn: 1.4, warnEasy: 1.9, active: 0.9, period: [4.4, 5.4], easySlower: 1.2 } as const;
+/** a gust lane (World 10's storm): under levelCheck's 160 px/s, long quiet spells to jump in */
+export const WIND = { pad: 170, warn: 1.4, active: 2.4, period: [6.2, 7.4], force: 130, forceEasy: 90 } as const;
 
 /** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
 export const TIDE = { low: [5.6, 7.0], warn: 1.8, active: 2.2, force: 190 } as const;

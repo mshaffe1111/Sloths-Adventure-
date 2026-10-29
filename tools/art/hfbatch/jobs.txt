@@ -123,3 +123,13 @@ hfb-w10banner 6ae3bcadc78863f9c62de57d rtx-pro-6000 21:37:50Z-21:39:30Z (~1.7 mi
   w10banner-s50-23 all three KEPT and w10banner-s65-23's right one KEPT as src/assets/w10/swing-banners.webp (four looks). s65-23's
   left one not used (magenta through a rip), its middle one not used (a wide rip down one side); s50-7 and s65-7 not used (plainer).
 running total ~$0.08 of the $6 cap. Review: reference/prop-sheets/qa-notes/w10-swing/banners.jpg
+Repeating hazard animations (2026-10-29, cap $5), branch hazard-anim: start pebblestart.py (16 bits of World 4's own rock, rockMoss,
+shardA-D, boulderSmall, boulderRound pieces), spec make_pebbles_spec.py, cut tools/art/hazard/gritcut.py -> src/assets/props/w4-grit.webp.
+hfb-w4pebbles 6ae3a561c78863f9c62dc965 rtx-pro-6000 19:58:25Z-20:00:15Z (1.8 min, ~$0.08): 4 takes, s50/s66 x seeds 7/23, 1024 x 1024.
+  KEPT: w4pebbles-s50-7 (11 pebbles: all but cell 8, a green leaf), w4pebbles-s66-7 (8 pebbles: cells 0,1,3,4,5,6,9,10; the chips of
+  gravel cells 12-14), w4pebbles-s50-23 (the chips of gravel cells 13, 15). Not used: s50-23's pebbles (smeared, soft, the dark ones
+  blurred into moss), s66-7 cells 7/8/11 (a split pod, a green splat, a magenta crack), all of s66-23 (pink cast through its gravel).
+  The chips came out pink-tinged with a red rim from the key: gritcut.py despills every piece and takes the chips to their own
+  brightness in a warm grey. 19 pebbles + 20 chips; review sheet reference/prop-sheets/qa-notes/hazard-anim/grit-review.jpg.
+total ~1.8 min on rtx-pro-6000 = ~$0.08 of the $5 cap. Stopped there: everything else reuses painted pieces already in the game
+  (boss-fx dust, spark, splash, gust, warnArrow and feather; the leaves atlas; the waterfall set).

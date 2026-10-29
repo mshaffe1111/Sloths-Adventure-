@@ -133,7 +133,7 @@ export interface ProtoExtras {
   /** World 5's chairs, cakes, teapots, threads, sheets, orchids, cocoons, carvings and spiders (w5Kit.ts, run by w5Play.ts) */
   w5?: import('./w5Kit.ts').W5Extras;
   /** the new generator's own extras (gen2/pipeline.ts fillSockets): the water-warning signs at the water's edge */
-  gen2?: { waterWarnings?: Array<{ x: number; y: number }> };
+  gen2?: { waterWarnings?: Array<{ x: number; y: number }>; /** World 10's dressing (gen2/worlds/w10.ts W10Extras, drawn by w10Art.ts) */ w10?: unknown };
   /** Meeca's stage (5-M, after 5-5): the column, the trees she carves, the ferns and the guards' rhythms (meecaStage.ts, run by meecaPlay.ts) */
   meeca?: import('./meecaStage.ts').MeecaStage;
   /** 7-4's slide (w7Slide.ts): the crumble, the chute's courses and the chamber (run by w7SlideRun.ts) */

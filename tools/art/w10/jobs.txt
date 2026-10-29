@@ -1,0 +1,33 @@
+World 10 (storm fortress) painted HF art (2026-10-29, cap $10), helper for the gen2-w10 builder. rtx-pro-6000 at ~$2.75/h.
+Raw takes in the bucket mshaffe111/w5-xfer under hfbatch/w10/ (props/, clips/). Starts on branch gen2-w10-artstarts under
+tools/art/hfbatch/starts/w10/ (starts.py). Review sheets in reference/prop-sheets/qa-notes/w10/.
+w10-soldier-0 6ae3b830c78863f9c62de1d7 rtx-pro-6000 created 21:18:40Z: spec-w10-soldier.json part 0 of 2 (hfbatch/hfbgpu.py @5ec10f97 -> anim/jobs/animgpu.py)
+w10-soldier-1 6ae3b8320e0338d1bb7c3336 rtx-pro-6000 created 21:18:42Z: part 1 of 2 (idle/walk for soldier a seeds 5/17, b seed 5, all pinned loops)
+w10-props     6ae3b946c78863f9c62de319 rtx-pro-6000 created 21:23:18Z: w6to10/img2imggpu.py @5ec10f97 on spec-w10-props.json (6 starts @d1629a14 x s-low/s-high x seeds 7/23 = 24 takes)
+w10-soldier-0/1 CANCELLED at ~21:29Z on the builder's word (item 6 dropped: Meeca's stage already has the soldiers' march and idle,
+  src/assets/enemies/soldier-anim.webp). Each ran ~11 min. No clips kept.
+Item 5 (storm wind) dropped by the builder too (painted gust strip from hazard-anim); its 4 takes in w10-props are not cut.
+finished: w10-props 21:29:56Z (6.6 min, ~$0.30); w10-soldier-0 and -1 cancelled ~21:30Z (11.3 min each = 22.6 min, ~$1.04, nothing kept).
+w10-props verdicts (review sheets in reference/prop-sheets/qa-notes/w10/):
+  bolts   w10bolts-s65-7 KEPT (most painterly: feathered crackle hairs on the halo). s50-7/s50-23 fine but cleaner, more vector-like;
+          s65-23 thinner forks.
+  bursts  w10bursts-s65-23 KEPT (hazy flash, crackle with star sparks, smoke curl). s65-7 THROWN (fade frame grew grey blobs).
+  spikes  w10spikes-s62-7 KEPT (dark iron, bright edge highlights, rust low on the spikes). s62-23 THROWN (spikes split into shards).
+  rods    w10rods-s68-7 KEPT for both looks (spear; crown of arrow prongs with a wound copper coil; riveted footing). s55 takes keep the
+          start's flat crown.
+  rampart w10rampart-s55-23 KEPT (big dressed blocks, clear riveted band, worn top); scorch decal from w10rampart-s55-7. s68 takes
+          turn the slab into small bricks / a dripping rust band.
+  wind    not cut (item dropped).
+w10-props2    6ae3bc1c0e0338d1bb7c35ec rtx-pro-6000 created 21:35:24Z: spec-w10-props2.json (starts2.py @75124775: rods charged/spent,
+  rod fx on black, cracked rampart; s35/s45 (fx s45/s60) x seeds 7/23 = 16 takes)
+w10-props2 finished 21:38:37Z (3.2 min, ~$0.15).
+w10-props2 verdicts:
+  rodcharge w10rodcharge-s45-7 KEPT (sparks at the crown and coil; its pale grey-blue lit iron graded to the bolts' cyan in cut2.py, else
+            the coil reads as white bandage). s35 takes too faint.
+  rodspent  w10rodspent-s35-7 KEPT (tips sooted, faint). All four are close to dull; the spent state leans on afterglow + smoke.
+  rodfx     w10rodfx-s60-7 KEPT (crackling arcs in both halos, clean smoke curls). s60-23 has stray sparkle dots; s45 takes softer.
+  rampcrack w10rampcrack-s35-23 KEPT (heaviest cracks, chipped top); its crack lines darkened in cut2.py to read at phone size.
+  Only the upper part of each rod (above row 640 of the 2x canvas, feathered over 60 px) comes from the state repaints, so the footing
+  and anchor are identical in all three states.
+TOTAL ~32.4 min on rtx-pro-6000 = ~$1.49 of the $10 cap: w10-props 6.6 min $0.30, w10-props2 3.2 min $0.15, w10-soldier-0/1 22.6 min
+  $1.04 (cancelled when item 6 was dropped; nothing from them is used).

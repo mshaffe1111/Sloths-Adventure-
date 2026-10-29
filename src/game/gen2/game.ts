@@ -20,6 +20,8 @@ import { w5Kit } from './worlds/w5.ts';
 import { w5ArenaKit } from './worlds/w5Arena.ts';
 import { w6Finish } from './worlds/w6.ts';
 import { W6_GAME_STAGES, w6GameKit } from './worlds/w6Game.ts';
+import { w10Finish } from './worlds/w10.ts';
+import { W10_GAME_STAGES, w10GameKit } from './worlds/w10Game.ts';
 
 export interface Gen2Entry {
   /**
@@ -46,6 +48,15 @@ const w6Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
   ...o,
 });
 
+/** World 10's stages (w10Game.ts): its sections, the swings and the stage's room in one kit, on the difficulty played; w10Finish puts
+ *  Pokey's line before the first soldier */
+const w10Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
+  kit: (d) => w10GameKit(stage, d ?? 'normal'),
+  kitName: `w10Game.ts:w10GameKit(${stage})`,
+  finish: w10Finish,
+  ...o,
+});
+
 /**
  * The stages gen2 builds, each with its kit (the per-stage chooser). 5-8 stays hand-built (Matt, 2026-10-28): it is still the old
  * generator's until its own build lands; 6-8 Stilt Climb is hand-built later.
@@ -55,6 +66,7 @@ export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   // (5-9 Easy: the kid beat 5, 5, 9, 10, 10 and 10 spiders on seeds 1-3 before the shrine; 5 opens it in all six)
   '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', easyGoal: 5 },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
+  ...Object.fromEntries(W10_GAME_STAGES.map((id) => [id, w10Entry(Number(id.split('-')[1]))])),
 };
 
 /** is this stage built by gen2 (a secret stage of the same number never is) */

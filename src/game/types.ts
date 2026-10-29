@@ -223,6 +223,9 @@ export interface Enemy {
   /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
    *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
   royal?: boolean;
+  /** drawn as another creature than its kind: World 10's soldier fights as a prowler (an ocelot's brain, score and checks) and only
+   *  looks like the General's soldier (soldierSprite.ts). (World 7's builder adds 'sentry' here too) */
+  look?: 'soldier';
   /** a snapper listening to the puzzle kit's noise (noise.ts): where the noise is; it walks there along its ground and notices nobody */
   lureX?: number;
   /** predator AI: where it started this move, and where it is going */
@@ -440,8 +443,15 @@ export interface Particle {
   size: number;
   life: number;
   maxLife: number;
-  /** puff: a frame of the painted dust strip (size = its width); flash: the painted hit spark with a brief glow (size = its width) */
-  type: 'leaf' | 'spark' | 'smoke' | 'star' | 'water' | 'feather' | 'claw_wave' | 'puff' | 'flash';
+  /**
+   * puff: a frame of the painted dust strip (size = its width); flash: the painted hit spark with a brief glow (size = its width);
+   * leaf: a painted leaf (green, or warm when `color` is 'warm'); grit: a painted chip of stone (multiplied by `color` unless it is
+   * ''); water: a puff of painted spray; splash: the painted splash crown (size = its width); feather: the painted feather; star: a
+   * small four-pointed sparkle (the one code-drawn touch)
+   */
+  type: 'leaf' | 'star' | 'water' | 'feather' | 'puff' | 'flash' | 'grit' | 'splash';
+  /** 0..1, fixed for the particle's life: which painted piece, which way it spins */
+  seed?: number;
 }
 
 export interface FloatingText {

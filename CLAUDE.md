@@ -32,5 +32,4 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
   - the first appearance of a mechanic is taught;
   - Dot explains any locked exit.
 - **Hugging Face token**: it never goes in code, commits, shared files or memory (`tools/README.md`).
-- **Before committing**: `git checkout -- dev-dist; rm -f dev-dist/registerSW.js`.
 - **Checks**: `npx tsc --noEmit -p .`, then `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts`, then `npx vite build` (no asset over 4 MiB).
