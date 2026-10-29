@@ -14,7 +14,7 @@ import { drawDotFrame, flyFrame } from './dotSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
 import { drawW4, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
 import { drawFallBodies, drawFallFoot, drawFallLips, drawFallsBit } from './w4FallsArt.ts';
-import { drawFx, fxFrame } from './bossFx.ts';
+import { drawFx } from './bossFx.ts';
 import { drawLogArt } from './protoArt.ts';
 import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
@@ -1176,19 +1176,17 @@ function drawChime(ctx: CanvasRenderingContext2D, c: Chime, angle: number) {
 }
 
 function drawUpdraft(ctx: CanvasRenderingContext2D, u: Updraft, t: number) {
-  // a faint warm glow up the column (one soft sprite, faded at its sides and both ends), and wisps of the painted dust strip, warm white,
-  // rising and unfurling, thicker in the middle of it, each fading in at the bottom and out at the top (no code ellipses: Matt
-  // 2026-10-29, repeating effects are painted)
+  // a faint warm glow up the column, and pale wisps of air rising in it, thicker in the middle: each a soft streak (the same soft sprite
+  // as the glow, faded on every side, so none reads as a shape), fading in at the bottom and out at the top
   const w = u.x1 - u.x0;
   const span = u.bottom - u.top;
   drawSoftColumn(ctx, u.x0, u.top + 30, w, span - 30, 0.32);
   for (let k = 0; k < 9; k++) {
     const x = u.x0 + w * ((k + 0.5) / 9) + Math.sin(t * 1.7 + k) * 8;
     const y = u.bottom - ((t * 160 + k * 97) % span);
-    const a = (0.3 + 0.25 * Math.sin((Math.PI * (k + 0.5)) / 9)) * Math.min(1, (y - u.top) / 80, (u.bottom - y) / 60);
+    const a = (0.45 + 0.35 * Math.sin((Math.PI * (k + 0.5)) / 9)) * Math.min(1, (y - u.top) / 80, (u.bottom - y) / 60);
     if (a <= 0) continue;
-    const age = ((t * 160 + k * 97) % span) / span;
-    drawFx(ctx, fxFrame('dust', 0.15 + 0.7 * age), x, y, 30 + (k % 3) * 6, { h: 56 + (k % 2) * 14, ay: 0.5, alpha: a, flipX: k % 2 === 1, recolor: '#fff1dc' });
+    drawSoftColumn(ctx, x - 9, y - 40, 18, 80 + (k % 3) * 14, a);
   }
 }
 

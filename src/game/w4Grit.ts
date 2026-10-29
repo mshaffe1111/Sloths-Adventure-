@@ -228,7 +228,7 @@ export function drawRockFx(ctx: CanvasRenderingContext2D, r: RockDrop, t: number
       dust(ctx, r.x, r.top + 14, 46, (t * 1.1) % 1, 0.25 + 0.3 * s.u);
     }
   } else {
-    // through open air: grit and wisps streaming down the column the whole way (fading in and out at its ends)
+    // through open air: painted pebbles and chips streaming down the column the whole way, spinning (fading in and out at its ends)
     const span = r.land - r.top;
     if (s.phase === 'warn') {
       const n = 10 + Math.round(12 * s.u);
@@ -238,8 +238,7 @@ export function drawRockFx(ctx: CanvasRenderingContext2D, r: RockDrop, t: number
         const end = Math.min(1, (gy - r.top) / 60, (r.land - gy) / 60);
         if (end <= 0) continue;
         const gx = r.x + Math.sin(k * 2.3) * 11;
-        if (k % 4 === 0) dust(ctx, gx, gy + 14, 26, (t * 0.8 + k * 0.17) % 1, 0.35 * end, k % 8 === 0);
-        else piece(ctx, k % 3 ? W4_CHIPS[k % W4_CHIPS.length] : W4_PEBBLES[k % W4_PEBBLES.length], gx, gy, 5 + 6 * rnd(seed, 1), seed + t * (k % 2 ? 7 : -6), end);
+        piece(ctx, k % 3 ? W4_CHIPS[k % W4_CHIPS.length] : W4_PEBBLES[k % W4_PEBBLES.length], gx, gy, 6 + 6 * rnd(seed, 1), seed + t * (k % 2 ? 7 : -6), end);
       }
     }
   }
@@ -312,10 +311,13 @@ function drawGrain(ctx: CanvasRenderingContext2D, seed: number, g: Grain, k: num
 function drawAirColumn(ctx: CanvasRenderingContext2D, r: RockDrop, u: number, t: number) {
   const c = column();
   if (!c || u <= 0) return;
-  const a = 0.18 + 0.3 * u;
+  // (twice over: the pale column has to read against pale mist as well as grey rock, as the old band did)
+  const a = 0.3 + 0.35 * u;
   ctx.save();
   ctx.globalAlpha = a * (0.92 + 0.08 * Math.sin(t * 5));
-  ctx.drawImage(c, r.x - 32 - 8 * u, r.top + 20, 64 + 16 * u, r.land - r.top - 40);
+  ctx.drawImage(c, r.x - 40 - 10 * u, r.top + 20, 80 + 20 * u, r.land - r.top - 40);
+  ctx.globalAlpha *= 0.5;
+  ctx.drawImage(c, r.x - 18, r.top + 40, 36, r.land - r.top - 80);
   ctx.restore();
 }
 

@@ -16,8 +16,9 @@ const ROCKAT = `(r, t) => { const fallT = Math.max(0.01, (r.land - r.top) / 620)
 
 const SCENES = {
   // 4-7: the first rock through open air, three moments of its warning and fall
-  air: { stage: '4-7', setup: `const r = e.proto.w4.rocks.find((q) => q.air); const lp = e.platforms.filter((p) => p.x < r.x - 40).sort((a, b) => b.x + b.width - a.x - a.width)[0];
-      Object.assign(e.player, { x: lp.x + lp.width - 30, y: lp.y, vx: 0, vy: 0, facing: 1, grounded: true }); return r;`,
+  air: { stage: '4-7', setup: `const r = e.proto.w4.rocks.find((q) => q.air); const hold = { x: r.x - 170, y: (r.top + r.land) / 2 + 60 };
+      // (held in the air beside its path, out of reach, so the whole fall is in view; he would otherwise drop into the mist)
+      setInterval(() => Object.assign(e.player, hold, { vx: 0, vy: 0, invincibleTimer: 9 }), 4); Object.assign(e.player, hold); return r;`,
     moments: [['warn', 0.55], ['warn', 0.95], ['fall', 0.5]] },
   // 4-4: the ground rock, its warning half way and late, its impact
   rock: { stage: '4-4', setup: `const r = e.proto.w4.rocks.filter((q) => !q.air)[0]; Object.assign(e.player, { x: r.x - 120, y: r.land, vx: 0, vy: 0, facing: 1 }); return r;`,
