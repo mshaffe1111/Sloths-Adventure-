@@ -99,5 +99,5 @@ HSV saturation balloons on dark pixels. The paired shots show the colour itself 
 ## Checks
 
 - `npx tsc --noEmit -p .` passes.
-- Full suite with every HF-ART-BRIEF glob: see the lead message.
+- Full suite with every HF-ART-BRIEF glob: 1924 of 1926 pass, 0 fail (the 2 not counted are the 4-3 boulder TODO, already marked).
 - `npx vite build` passes, with nothing over 4 MiB. The largest backdrop is under 0.5 MiB.
