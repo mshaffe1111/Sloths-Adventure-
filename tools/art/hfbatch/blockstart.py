@@ -155,6 +155,7 @@ def w7walls():
         T = Image.new('RGBA', (SW, SH), (120, 118, 112, 255))
         y = 0
         face_row = 3 if s == 2 else -1
+        face_y = None
         row = 0
         while y < SH:
             if row == face_row:
@@ -192,8 +193,9 @@ def w7walls():
                         cx += rnd.randint(-14, 14); cy += rnd.randint(12, 28); pts.append((cx, cy))
                     dd.line(pts, fill=INK, width=3)
             if row == face_row:
+                face_y = y
                 face = statue.crop((0, 0, statue.width, int(statue.height * 0.42)))
-                face = rs(face, SW * 0.82, SW * 0.82 * face.height / face.width)
+                face = rs(face, SW * 0.9, SW * 0.9 * face.height / face.width)
                 fa = np.asarray(face).astype(np.float32)
                 g = fa[..., :3].mean(axis=2, keepdims=True)
                 fa[..., :3] = (g * 0.8 + fa[..., :3] * 0.2) * 0.92  # weathered: pulled toward the wall's grey
@@ -206,7 +208,12 @@ def w7walls():
         if rnd.random() < 0.5:
             r = r.transpose(Image.FLIP_LEFT_RIGHT)
         r = rs(r, SW * rnd.uniform(0.6, 0.9), SH * rnd.uniform(0.3, 0.5))
-        T.alpha_composite(r, (rnd.randint(-30, SW - r.width + 30), rnd.randint(int(SH * 0.12), int(SH * 0.88) - r.height)))
+        if face_y is not None:  # (keep the root clear of the carved face)
+            ry = face_y + 310 if face_y + 310 + r.height < SH * 0.88 else max(int(SH * 0.12), face_y - r.height - 10)
+        else:
+            ry = rnd.randint(int(SH * 0.12), int(SH * 0.88) - r.height)
+        if face_y is None:  # (the face strip has no root: the face is its feature)
+            T.alpha_composite(r, (rnd.randint(-30, SW - r.width + 30), ry))
         dd = ImageDraw.Draw(T)
         for j in range(5):
             mx, my = rnd.randint(0, SW - 40), rnd.randint(int(SH * 0.12), int(SH * 0.85))
@@ -321,45 +328,62 @@ def w4falls():
     col = outline(col, 2)
     S.alpha_composite(col, (x, 40))
     x += 250
-    # 2. three mossy rock lips with a pour over the front
-    bank = opaque(kit(4, 'bank'))
+    # 2. three mossy rock lips (the W4 kit's layered slab rock, moss on top), the water running over the top and curling over the
+    # whole front edge in a thick pour that thins as it drops
+    boulder = trim(kit(4, 'boulder'))
     for i in range(3):
-        lip = rs(bank.crop((i * 60, 0, i * 60 + 420, 150)), 360, 120)
-        m = Image.new('L', lip.size, 0)
-        md = ImageDraw.Draw(m)
-        pts = [(0, 20)] + [(lip.width * t / 8, rnd.randint(0, 20)) for t in range(9)] + [(lip.width, 20)]
-        md.polygon([(6, 30)] + pts[1:-1] + [(lip.width - 6, 30), (lip.width - 20, lip.height - 4), (20, lip.height - 8)], fill=255)
-        lip.putalpha(m); lip = outline(lip, 2)
+        lw = (360, 330, 380)[i]
+        lip = rs(boulder, lw, 160)
+        if i == 1:
+            lip = lip.transpose(Image.FLIP_LEFT_RIGHT)
+        lip = outline(lip, 2)
+        ld = ImageDraw.Draw(lip)
+        for _ in range(9):  # moss on the top and spilling down the sides
+            mx = rnd.randint(10, lw - 40); my = rnd.randint(6, 26)
+            ld.ellipse([mx, my, mx + rnd.randint(30, 60), my + rnd.randint(10, 18)], fill=(92, 118, 70, 255), outline=INK)
         lx, ly = x, 40 + i * 250
-        pw = rnd.randint(230, 300)
-        pour = water(pw, 130, rnd, edge=0.08)
+        S.alpha_composite(lip, (lx, ly + 20))
+        pw = int(lw * (0.42, 0.5, 0.38)[i])
+        px = lx + (lw - pw) // 2 + rnd.randint(-20, 20)
+        # the water on the top surface, then the roll over the edge, then the pour
+        top = water(pw, 30, rnd, edge=0.03)
+        S.alpha_composite(top, (px, ly + 26))
+        pour = water(pw + 16, 150, rnd, edge=0.06)
         pa = np.asarray(pour).astype(np.float32)
-        for yy in range(130):  # thins as it drops
-            cut = int(yy / 130 * pw * 0.22)
-            pa[yy, :cut, 3] = 0; pa[yy, pw - cut:, 3] = 0
+        for yy in range(150):  # thins as it drops, ragged foot
+            cut = int((yy / 150) ** 1.4 * (pw + 16) * 0.2)
+            pa[yy, :cut, 3] = 0; pa[yy, pw + 16 - cut:, 3] = 0
+        for xx in range(0, pw + 16, 9):
+            pa[150 - rnd.randint(0, 40):, xx:xx + 9, 3] = 0
         pour = outline(Image.fromarray(pa.astype(np.uint8)), 2, (70, 84, 92, 255))
-        S.alpha_composite(lip, (lx, ly))
-        px = lx + (360 - pw) // 2 + rnd.randint(-30, 30)
-        S.alpha_composite(pour, (px, ly + 84))
-        # the curl over the front edge
-        d.chord([px - 6, ly + 58, px + pw + 6, ly + 112], 180, 360, fill=(70, 84, 92, 255))
-        d.chord([px - 2, ly + 62, px + pw + 2, ly + 110], 180, 360, fill=(234, 238, 240, 255))
+        S.alpha_composite(pour, (px - 8, ly + 66))
+        d.rounded_rectangle([px - 10, ly + 40, px + pw + 10, ly + 80], radius=20, fill=(70, 84, 92, 255))
+        d.rounded_rectangle([px - 7, ly + 43, px + pw + 7, ly + 77], radius=17, fill=(236, 240, 242, 255))
+        for q in range(0, pw, 22):  # streaks over the roll
+            d.line([(px + q + 6, ly + 48), (px + q + 10, ly + 74)], fill=(176, 190, 200, 255), width=4)
     # 3. two splash strips (4:1)
     for i in range(2):
         f = foam(620, 155, rnd)
         S.alpha_composite(f, (40 + i * 660, 800))
-    # 4. two mist clouds and a spray plume
-    S.alpha_composite(cloud(300, 140, rnd), (40, 985))
-    S.alpha_composite(cloud(260, 120, rnd), (400, 1000))
-    plume = Image.new('RGBA', (180, 300), (0, 0, 0, 0))
-    pd = ImageDraw.Draw(plume)
-    for j in range(16):
-        t = j / 15
-        r = 20 + 50 * (1 - t)
-        cx = 90 + rnd.randint(-25, 25) * t; cy = 300 - r - t * 210
-        pd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(232, 236, 240, 255))
-    plume = outline(plume.filter(ImageFilter.GaussianBlur(1)), 2, (110, 122, 130, 255))
-    S.alpha_composite(plume, (1340, 830))
+    # 4. two mist clouds and a spray plume: soft, no outline, fading out at the edges (laid over the key, so the start already
+    # shows the see-through)
+    def soft(w, h, blobs, shape):
+        M = Image.new('L', (w, h), 0)
+        md = ImageDraw.Draw(M)
+        for _ in range(blobs):
+            cx, cy, rx, ry = shape(rnd)
+            md.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=255)
+        M = M.filter(ImageFilter.GaussianBlur(min(w, h) / 9))
+        T = Image.new('RGBA', (w, h), (236, 240, 244, 255))
+        nz = Image.fromarray((np.random.RandomState(rnd.randint(0, 999)).rand(h // 36 + 2, w // 36 + 2) * 255).astype(np.uint8))
+        nz = nz.resize((w, h), Image.BICUBIC).filter(ImageFilter.GaussianBlur(8))
+        sh = Image.new('RGBA', (w, h), (180, 192, 202, 255)); sh.putalpha(nz.point(lambda v: int(v * 0.5)))
+        T.alpha_composite(sh)
+        T.putalpha(M.point(lambda v: int(min(255, v * 1.15))))
+        return T
+    S.alpha_composite(soft(330, 170, 12, lambda r: (r.randint(70, 260), r.randint(60, 110), r.randint(40, 80), r.randint(28, 46))), (30, 975))
+    S.alpha_composite(soft(290, 150, 10, lambda r: (r.randint(60, 230), r.randint(55, 95), r.randint(36, 70), r.randint(24, 40))), (395, 985))
+    S.alpha_composite(soft(200, 320, 14, lambda r: (100 + r.randint(-30, 30), r.randint(60, 280), r.randint(24, 60), r.randint(30, 60))), (1328, 815))
     S.convert('RGB').save(OUT / 'start-w4falls.webp', 'WEBP', quality=92)
 
 

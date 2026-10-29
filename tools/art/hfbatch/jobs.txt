@@ -31,3 +31,13 @@ verdicts (cut by cutbatch.py from picks.json; check sheets + GIFs in reference/p
               itself (not a defeat). Pale rim cut (derim 8).
   owl         defeat hfb-owl-defeat-s11 KEPT (wings fold, drops, lies flat with eyes shut; Wan drew closed lids, not swirly X's).
               s5 and s23 THROWN: grey ground shadow.
+
+hf-art-blocking (2026-10-29, cap $10), branch hf-art-blocking: starts blockstart.py, spec make_blocking_spec.py, cut blockcut.py.
+Results in the bucket mshaffe111/w5-xfer under hfbatch/blocking/props/. Review sheets in reference/prop-sheets/qa-notes/hf-art-blocking/.
+hfb-blocking-a 6ae3821dad9610e5cb314439 rtx-pro-6000 17:27:58Z-17:35:00Z (7.0 min, ~$0.32): 20 takes, 5 starts x 2 strengths x seeds 5/17
+  w6ledges-a-s68-17 KEPT (ledges), w6perches-a-s55-17 KEPT (perches) -> src/assets/w6/ledges.webp; wood graded off its lilac cast.
+    w6ledges seed 5 THROWN (white light beams painted over the root shelf and deck).
+  w7anchors-a-s55-17 cut, but the lintels came out thin and the start's top outline left a dark line (redone in round b).
+  w7walls-a-s68-5 cut (worn stone sloth face, mixed blocks), but one big root per strip at similar heights reads as a pattern
+    when strips sit side by side (redone in round b).
+  w4falls: bodies s62-17, pillar s76-17, lips + splash s76-5 KEPT; mist + plume (all takes) THROWN: hard cartoon cloud blobs.
