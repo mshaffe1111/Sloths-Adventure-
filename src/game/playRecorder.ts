@@ -76,10 +76,12 @@ export function qaBuild(): boolean {
   }
 }
 
-/** the control test is on: a QA build (qaBuild), and #ctest in the address (the only part a shared Claude link passes on) or ?ctest=1 */
+/** the control test is on: #ctest in the address (the only part a shared Claude link passes on) or ?ctest=1, in any build, the live
+ *  site included: the testers' link opens it there (Matt, 2026-10-29: "Only for that link. The full game should be unaffected"), and a
+ *  player without that link never sees it */
 export function ctestEnabled(): boolean {
   try {
-    return qaBuild() && typeof location !== 'undefined' && (/(^#|[#&])ctest\b/.test(location.hash) || /[?&]ctest=1\b/.test(location.search));
+    return typeof location !== 'undefined' && (/(^#|[#&])ctest\b/.test(location.hash) || /[?&]ctest=1\b/.test(location.search));
   } catch {
     return false;
   }
