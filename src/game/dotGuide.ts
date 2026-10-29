@@ -136,7 +136,26 @@ export const GUIDE = {
  * A first-time lesson may also come in over a plain information line already up, and any tip over a story aside (the line cut comes
  * back once, after it): a stage's opening words held the gap's lesson back past 2-2's first river.
  */
-export const CALM = { startMs: 2500, gapMs: 10000, repeatMax: 2, moveCapMs: 12000, goneMs: 2500 } as const;
+export const CALM = { startMs: 2500, gapMs: 10000, repeatMax: 2, moveCapMs: 12000, goneMs: 2500, nearMs: 30000 } as const;
+
+/**
+ * Lines that say the same thing as another line of the same stage in other words: once one of a pair has been said, the other is not said
+ * within CALM.nearMs (a stage hint before a thing, and the engine's own tip at it). Keys are the guide's (`engine:<line id>`, dotLines.ts).
+ * (QA 2026-10-29, 4-3 Easy: "The water pushes you back. Stop it at the top!" came 10 s after "The water pushes you down. Climb up and stop
+ * it.") Found by comparing every pair of a stage's lines (their meaning words); the pairs that are about one thing in one place.
+ */
+const SAME_TIPS: readonly (readonly string[])[] = [
+  ['hint.4-3.push', 'w4.fall'],
+  ['hint.4-3.quiet', 'w4.surge'],
+  ['hint.4-4.knot', 'w4.knot'],
+  ['hint.4-5.fall', 'w4.veil'],
+  ['hint.1-7.hide', 'eng.watch.hide.bush'],
+  ['hint.3-2.eyes', 'eng.watch.hide.fern'],
+  ['hint.3-6.search', 'eng.fern.near'],
+  ['hint.1-1.double', 'eng.stuck.wall'],
+];
+export const SAME_TIP = new Map<string, readonly string[]>();
+for (const group of SAME_TIPS) for (const id of group) SAME_TIP.set(`engine:${id}`, group.filter((g) => g !== id).map((g) => `engine:${g}`));
 
 const waitFor = (l: GuideLine) => l.waitMs ?? GUIDE.waitMs[l.kind];
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim();
@@ -191,6 +210,11 @@ export interface TickEnv {
   gone?(l: GuideLine): boolean;
   /** no line starts at all, not even an urgent one (the stage-start goal card is up: they share the top-centre lane) */
   hold?: boolean;
+  /**
+   * the thing this line teaches has been done already, or it no longer applies (a petal picked up while the petals' lesson waited, the
+   * heart's lesson once he is back to full health): a waiting line for it is dropped unsaid, with its next step (QA 2026-10-29, 2-2)
+   */
+  stale?(l: GuideLine): boolean;
 }
 
 /**
@@ -210,6 +234,8 @@ export class GuideQueue {
   /** (calm) when the last line started, and the words said this stage: how often, and the move count when last said */
   private startedAt = -1e9;
   private heard = new Map<string, { n: number; base: number }>();
+  /** (calm) when each line was last started, by key (for SAME_TIP) */
+  private saidAt = new Map<string, number>();
   /** (calm) since when the showing move tip's thing has been out of view (-1: in view) */
   private goneSince = -1;
   /** (calm) a line is a first-time lesson's, or the next step of one: it is never held back by the gap */
@@ -304,6 +330,7 @@ export class GuideQueue {
     this.goneSince = -1;
     const k = norm(line.text);
     this.heard.set(k, { n: (this.heard.get(k)?.n ?? 0) + 1, base });
+    this.saidAt.set(line.key, now);
     this.history = [line, ...this.history.filter((h) => h.key !== line.key)].slice(0, GUIDE.historyN);
     this.events.push({ type: 'start', show: this.cur });
   }
@@ -317,6 +344,8 @@ export class GuideQueue {
     // (the next step of a lesson still comes, in its place)
     const skipped: GuideLine[] = [];
     this.waiting = this.waiting.filter((w) => {
+      // (a tip whose thing he has done already is not said, nor anything after it)
+      if (!isUrgent(w.line) && env.stale?.(w.line)) return false;
       // (calm) words said often enough this stage, or a move tip whose move he has done since it was said, are not said again
       if (this.calm && !isUrgent(w.line)) {
         const h = this.heard.get(norm(w.line.text));
@@ -324,6 +353,8 @@ export class GuideQueue {
           if (w.line.next) skipped.push(w.line.next);
           return false;
         }
+        // (nor a stage line that says what its pair said a moment ago, in other words: SAME_TIP)
+        if (SAME_TIP.get(w.line.key)?.some((k) => now - (this.saidAt.get(k) ?? -1e9) < CALM.nearMs)) return false;
       }
       const m = w.line.move;
       if (!m || w.line.thing) return now <= w.until;

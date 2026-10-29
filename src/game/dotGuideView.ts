@@ -90,6 +90,8 @@ export interface GuideView {
   /** still blinking from a hit (not the sun power-up) */
   hurt: boolean;
   hp: number;
+  /** the most hearts he can hold (the heart's lesson only while hp is below it) */
+  maxHp: number;
   lives: number;
   /** something is close enough to kick (the engine works it out for the touch rules) */
   kickNear: boolean;
@@ -152,6 +154,7 @@ export function emptyGuideView(): GuideView {
     attack: 'none',
     hurt: false,
     hp: 1,
+    maxHp: 1,
     lives: 1,
     kickNear: false,
     boss: false,

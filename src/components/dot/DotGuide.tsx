@@ -3,7 +3,7 @@ import type { LevelConfig } from '../../game/types.ts';
 import type { GameEngine } from '../../game/engine.ts';
 import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
-import { lessonDotLine, type LessonId } from '../../game/lessons.ts';
+import { lessonDotLine, lessonOfLine, lessonStale, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
 import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
@@ -179,6 +179,11 @@ class GuideRun {
   /** the move counter, for the queue (made once: no new function each frame) */
   countMove = (m: MoveId): number => this.moves.count(m);
   /** a move tip's thing is nowhere in view (made once) */
+  /** a lesson's line whose thing he has done meanwhile, or the heart's once he is at full health (lessons.ts lessonStale) */
+  stale = (l: GuideLine): boolean => {
+    const id = lessonOfLine(l);
+    return !!id && lessonStale(id, this.view);
+  };
   gone = (l: GuideLine): boolean => !!l.topic && GONE_TOPICS.has(l.topic) && !findTarget(l.topic, this.view);
   /** when she last landed (ms of play): she says her line from then */
   landedAt = 0;
@@ -703,7 +708,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       // (no line starts while the stage-start goal card is up: the two share the top-centre lane, QA v189)
       const cardUp = document.documentElement.dataset.hudCard === '1';
       const danger = !v.flight && (inDanger(v) || v.boss || v.chase);
-      run.queue.tick(run.clock, { danger, hold: cardUp, moveCount: run.countMove, swinging: run.view.swinging, gone: run.gone });
+      run.queue.tick(run.clock, { danger, hold: cardUp, moveCount: run.countMove, swinging: run.view.swinging, gone: run.gone, stale: run.stale });
       // (the moves he has done, kept for later stages)
       if (run.queue.calm && run.movesMarked.size < MOVE_IDS.length) {
         for (const m of MOVE_IDS) if (!run.movesMarked.has(m) && run.moves.count(m) > 0) {

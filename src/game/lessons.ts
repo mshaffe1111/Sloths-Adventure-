@@ -311,7 +311,64 @@ export interface LessonScene {
   rivers: { x0: number; x1: number }[];
   /** shimmy ropes (their ends, and their height), when the stage has them and he can use them */
   ropes?: { x0: number; x1: number; g0: number; g1: number }[];
+  /** his hearts now and at most: the heart's lesson ("Hurt? Grab a heart to heal.") waits until he is hurt (QA 2026-10-29, 1-7 and 3-1
+   *  said it at 5 of 5 hearts). Left out: treated as full health */
+  hp?: number;
+  maxHp?: number;
 }
+
+/** what a lesson's done-check reads: the stage's things (their collected and defeated flags) and his hearts */
+export interface LessonState extends Pick<LessonScene, 'hp' | 'maxHp'> {
+  enemies: readonly { type: string; defeated: boolean }[];
+  collectibles: readonly { type: string; collected: boolean }[];
+}
+
+const FRUIT = ['fruit', 'flower', 'leaf'];
+const HEARTS = ['heart', 'super_heart'];
+const POWERS = ['powerup_speed', 'powerup_invincible', 'powerup_magnet'];
+const NO_STOMP = new Set(['spider', 'ant_hazard']);
+const TOUGH = new Set(['jaguar', 'boa', 'caiman', 'harpy']);
+
+/** he has fewer hearts than he can hold */
+export const lessonHurt = (s: Pick<LessonScene, 'hp' | 'maxHp'>): boolean => s.hp !== undefined && s.maxHp !== undefined && s.hp < s.maxHp;
+
+/**
+ * The thing a lesson teaches has been done already this stage, so the lesson is not needed: a petal picked up, a heart taken, a cage
+ * opened, a relic or a power-up taken, an animal of its kind beaten. (QA 2026-10-29, 2-2: "Run through flowers to pick them up." came
+ * with 5 flowers already picked.) The move lessons are covered by the guide's own move count (a move tip for a move already done is
+ * not said, dotGuide.ts); this is the same rule for the lessons about things.
+ */
+export function lessonDone(id: LessonId, s: LessonState): boolean {
+  const got = (types: string[]) => s.collectibles.some((c) => c.collected && types.includes(c.type));
+  const beat = (f: (type: string) => boolean) => s.enemies.some((e) => e.defeated && e.type !== 'boss' && f(e.type));
+  switch (id) {
+    case 'fruit': return got(FRUIT);
+    case 'heart': return got(HEARTS);
+    case 'cage': return got(['cage']);
+    case 'idol': return got(['relic']);
+    case 'power': return got(POWERS);
+    case 'foe': return beat(() => true);
+    case 'eagle': return beat((t) => t === 'eagle');
+    case 'nostomp': return beat((t) => NO_STOMP.has(t));
+    case 'tough': return beat((t) => TOUGH.has(t));
+    default: return false;
+  }
+}
+
+/** a lesson picked (or queued) a moment ago is no longer wanted: its thing has been done, or (the heart's) he is not hurt now */
+export function lessonStale(id: LessonId, s: LessonState): boolean {
+  return lessonDone(id, s) || (id === 'heart' && !lessonHurt(s));
+}
+
+/** the lesson a guide line belongs to (its key is `lesson:<id>:<step>`), or null for any other line */
+export function lessonOfLine(l: Pick<GuideLine, 'key' | 'source'>): LessonId | null {
+  if (l.source !== 'lesson') return null;
+  const id = l.key.split(':')[1];
+  return id && id in LESSONS ? (id as LessonId) : null;
+}
+
+/** the lessons a done-check can close (the rest close on their move, or are about a place) */
+export const DONE_LESSONS: readonly LessonId[] = ['fruit', 'heart', 'cage', 'idol', 'power', 'foe', 'eagle', 'nostomp', 'tough'];
 
 /** how far ahead of the hero something has to be before it is "here", and how far above or below */
 export const NEAR = { foe: 400, thing: 340, climb: 170, dy: 230 } as const;
@@ -325,14 +382,12 @@ export const SWING_SPAN = { grabX: 60, below: 30 } as const;
 /** lessons about something that cannot hurt him: the breather after one of them does not hold back a lesson about a danger ahead */
 export const HARMLESS_LESSONS: ReadonlySet<LessonId> = new Set<LessonId>(['fruit', 'heart', 'idol', 'power', 'checkpoint', 'shrine', 'cage']);
 
-const NO_STOMP = new Set(['spider', 'ant_hazard']);
-const TOUGH = new Set(['jaguar', 'boa', 'caiman', 'harpy']);
-
 /** the lesson to show now, if something new is close ahead; the foe lesson first, then the rest by how soon they matter */
 export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonId | null {
   const onScreen = (x: number, y: number) => x >= s.view.x0 && x <= s.view.x1 && y >= s.view.y0 - 40 && y <= s.view.y1 + 40;
   const near = (x: number, y: number, r: number) => Math.abs(x - s.px) <= r && Math.abs(y - s.py) <= NEAR.dy && onScreen(x, y);
-  const want = (id: LessonId) => !seen.has(id);
+  // (a lesson whose thing he has done already is not wanted: lessonDone)
+  const want = (id: LessonId) => !seen.has(id) && !lessonDone(id, s);
 
   for (const e of s.enemies) {
     if (e.defeated || e.type === 'boss' || !near(e.x, e.y, NEAR.foe)) continue;
@@ -365,10 +420,11 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
   if (want('water') && s.rivers.some((r) => (r.x0 <= s.px + NEAR.thing && r.x1 >= s.px - 40) && s.py >= 0 && Math.abs(r.x0 - s.px) <= 500)) return 'water';
   const col = (types: string[]) => s.collectibles.find((c) => !c.collected && types.includes(c.type) && near(c.x, c.y, NEAR.thing));
   if (want('cage') && col(['cage'])) return 'cage';
-  if (want('power') && col(['powerup_speed', 'powerup_invincible', 'powerup_magnet'])) return 'power';
-  if (want('heart') && col(['heart', 'super_heart'])) return 'heart';
+  if (want('power') && col(POWERS)) return 'power';
+  // (only when he is hurt: at full health a heart cannot be taken, and the lesson waits for the next heart after a hit)
+  if (want('heart') && lessonHurt(s) && col(HEARTS)) return 'heart';
   if (want('idol') && col(['relic'])) return 'idol';
-  if (want('fruit') && col(['fruit', 'flower', 'leaf'])) return 'fruit';
+  if (want('fruit') && col(FRUIT)) return 'fruit';
   if (want('checkpoint') && s.checkpoints.some((c) => c.reached && near(c.x, c.y, NEAR.thing))) return 'checkpoint';
   if (want('shrine') && col(['exit_totem'])) return 'shrine';
   return null;
