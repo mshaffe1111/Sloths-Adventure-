@@ -42,7 +42,7 @@ def main(d):
     d = Path(d)
     tmp = d / 'cut'
     tmp.mkdir(exist_ok=True)
-    for p in sorted(d.glob('*-far-hd.webp')):
+    for p in sorted(q for q in d.glob('*-far-hd.webp') if not q.name.startswith('pre-')):
         stem = p.name[:-len('-far-hd.webp')]
         im = Image.open(p).convert('RGB')
         out = BACK / f'{stem}-far.webp'
