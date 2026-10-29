@@ -105,6 +105,8 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   const onStart = (e: React.TouchEvent) => {
     inputEngine.source = 'gesture';
     const now = stamp(e);
+    // (a finger whose lift was never reported is let go: it must not hold the steering, CT-16)
+    G.keepOnly(Array.from(e.touches, (t) => t.identifier), now);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       recorder.touch('d', t.identifier, t.clientX, t.clientY, now, Math.max((t as unknown as { radiusX?: number }).radiusX || 0, (t as unknown as { radiusY?: number }).radiusY || 0));

@@ -154,3 +154,30 @@ test('CT-15: a second thumb tapping 45-70 px from the steering thumb punches (th
   p.path(2, [[270, 600], [271, 601]], 40);
   assert.ok(!p.log.includes('punch'), p.log.join(' '));
 });
+
+// ───────────────────────────── CT-16: a gripping palm, a lift never reported ─────────────────────────────
+
+test('CT-16: a touch at the very side edge does nothing until it moves; one that slides in steers', () => {
+  for (const x of [2, 842]) {
+    const blip = gestures();
+    blip.path(1, [[x, 600], [x, 600]], 15);
+    assert.deepEqual(blip.log, [], `an edge blip at x ${x}: ${blip.log.join(' ')}`);
+    // a gripping palm at the edge, then the real thumb: the thumb steers
+    const grip = gestures();
+    grip.g.down(9, x, 650, grip.at());
+    grip.path(1, [[300, 600], [320, 600], [340, 600], [360, 600]], 16, false);
+    assert.ok(grip.log.includes('move:right'), `the thumb steers past a grip at x ${x}: ${grip.log.join(' ')}`);
+  }
+  // a thumb that starts at the edge and slides in is a thumb
+  const slide = gestures();
+  slide.path(1, [[3, 600], [15, 600], [30, 600], [45, 600], [60, 600]], 16, false);
+  assert.ok(slide.log.includes('move:right'), slide.log.join(' '));
+});
+
+test('CT-16: a finger the browser no longer reports is dropped on the next touch, so it never holds the steering', () => {
+  const t = gestures();
+  t.path(1, [[200, 600], [240, 600]], 16, false); // steering right; its lift is lost
+  t.g.keepOnly([2], t.at() + 100);
+  t.path(2, [[500, 600], [480, 600], [460, 600], [440, 600], [420, 600]], 16, false);
+  assert.ok(t.log.includes('move:left'), `the new thumb steers: ${t.log.join(' ')}`);
+});

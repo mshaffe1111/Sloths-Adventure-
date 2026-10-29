@@ -91,7 +91,7 @@ for (const parts of sessions.values()) {
   const lines = parts.flatMap((p) => p.lines.map((l) => ({ l, dev: p.device }))).sort((a, b) => (a.l[1] as number) - (b.l[1] as number));
   const devOf = (dev: string) => {
     const m = /(\d+)x(\d+)\s+(portrait|landscape)/.exec(dev);
-    return m ? { w: Number(m[1]), held: m[3] as 'portrait' | 'landscape' } : { w: 400, held: 'portrait' as const };
+    return m ? { w: Number(m[1]), h: Number(m[2]), held: m[3] as 'portrait' | 'landscape' } : { w: 400, h: 800, held: 'portrait' as const };
   };
   let dev = devOf(parts[0].device);
   let state = 'g';
@@ -154,6 +154,8 @@ for (const parts of sessions.values()) {
     const id = l[2] as number;
     if (l[0] === 'd') {
       dev = devOf(d);
+      // (the device line is noted once a part: a phone turned during it shows touches past its width, and it is sideways now)
+      if ((l[3] as number) > dev.w) dev = { w: dev.h, h: dev.w, held: dev.held === 'portrait' ? 'landscape' : 'portrait' };
       if (state === 'c' || state === 's') vineHold = state;
       const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], jt: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0 };
       live.set(id, tch);

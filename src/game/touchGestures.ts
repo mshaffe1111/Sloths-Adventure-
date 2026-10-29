@@ -99,6 +99,12 @@ export const TUNING = {
    * 24 px, near the thumb or not, so the radius tells a palm from a thumb on no phone here and is not used)
    */
   palmPx: 45,
+  /**
+   * a touch that starts this close to a side edge (px) is ignored until it has moved `edgeMovePx`: the hand gripping the phone, or a
+   * contact the screen reports for 8 to 17 ms at its edge (33 in the recordings, each a punch). One that slides in is a thumb (CT-16)
+   */
+  edgePx: 6,
+  edgeMovePx: 8,
   /** a second finger this close (but past palmPx) is taken, but resting there it is the same hand: it never throws the mega (CT-15) */
   nearPx: 70,
   /** the right half starts here (fraction of the width); left of it steers at once */
@@ -289,6 +295,8 @@ interface Finger {
   trX: number;
   /** it went down beside the steering thumb (nearPx): resting there is the same hand, never a mega */
   nearThumb?: boolean;
+  /** it went down at a side edge and has not moved yet (edgePx): ignored until it does */
+  edgeWait?: boolean;
 }
 
 export class TouchGestures {
@@ -385,6 +393,20 @@ export class TouchGestures {
     this.now = t;
     if (this.fingers.has(id)) return;
     const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], trail: [{ t, x, y }], tapT0: t, pk: y, tr: y, early: false, megaDone: false, lowY: y, lowX: x, riseT0: NaN, sx: 0, airDown: this.canAir(), trX: x };
+    // at a side edge: nothing until it moves (CT-16)
+    if (x < TUNING.edgePx || x > this.width() - TUNING.edgePx) {
+      f.role = 'ignored';
+      f.edgeWait = true;
+      this.fingers.set(id, f);
+      return;
+    }
+    this.pickRole(f, x, y);
+    this.fingers.set(id, f);
+  }
+
+  /** a finger just down (or just off a side edge): steering, an action, undecided, or the same hand as the steering thumb */
+  private pickRole(f: Finger, x: number, y: number) {
+    f.role = 'pending';
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
@@ -400,13 +422,20 @@ export class TouchGestures {
     } else if (x < this.width() * TUNING.splitAt) {
       f.role = 'mover';
     }
-    this.fingers.set(id, f);
   }
 
   move(id: number, x: number, y: number, t: number) {
     this.now = t;
     const f = this.fingers.get(id);
     if (!f) return;
+    if (f.edgeWait) {
+      // it moved off the edge: a thumb after all, taken with all it has done so far (a flick that started at the edge keeps its rise)
+      if (Math.hypot(x - f.x0, y - f.y0) < TUNING.edgeMovePx) return;
+      f.edgeWait = false;
+      this.fingers.delete(id);
+      this.pickRole(f, f.x0, f.y0);
+      this.fingers.set(id, f);
+    }
     // the low point a rise starts from: the thumb going down (or holding) moves it; a rise that dawdles starts again from where it is
     const lastT = f.hist[f.hist.length - 1].t;
     if (y >= f.y || !(t - f.riseT0 <= TUNING.riseMs)) {
@@ -512,8 +541,8 @@ export class TouchGestures {
       return;
     }
     if (f.role === 'ignored') {
-      // (a quick flick up as it lifts is a jump from any finger, CT-9)
-      const fl = !f.consumed ? this.liftFlick(f) : null;
+      // (a quick flick up as it lifts is a jump from any finger, CT-9; not an edge contact that never moved)
+      const fl = !f.consumed && !f.edgeWait ? this.liftFlick(f) : null;
       if (fl) {
         this.fireJump(f, this.canAir(), fl.lean);
         this.sink.jumpRelease();
@@ -642,6 +671,14 @@ export class TouchGestures {
         a.tapT0 = t;
       }
     }
+  }
+
+  /**
+   * every touch the browser still reports (a touchstart's e.touches): a finger not among them lost its lift, and is let go now, so a
+   * gripping palm or a lift that never came cannot hold the steering until every finger is up (CT-16)
+   */
+  keepOnly(ids: number[], t: number) {
+    for (const id of [...this.fingers.keys()]) if (!ids.includes(id)) this.cancelFinger(id, t);
   }
 
   cancelAll() {
