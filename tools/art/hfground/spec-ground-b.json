@@ -1,0 +1,374 @@
+{
+ "note": "hf-art-ground: soil textures, top lips, bank ends (VI-8), 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/999e0670f6c1b9e80975d40b842b3da05286c9cb/tools/art/hfground/starts/",
+ "items": [
+  {
+   "kind": "tile",
+   "name": "fill-w3-a",
+   "start": "fill-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: cool teal-grey grotto stone with soft moss in the cracks and a few thin faint glowing blue-green water seeps. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+   "s1": 0.62,
+   "seed": 11,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w3-b",
+   "start": "fill-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: cool teal-grey grotto stone with soft moss in the cracks and a few thin faint glowing blue-green water seeps. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+   "s1": 0.72,
+   "seed": 23,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "strip",
+   "name": "lip-w3-a",
+   "start": "lip-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, the top edge of a ground bank seen from the side: dark green grotto moss with a few tiny pale glowing mushrooms along the top, thin roots and moss strands hanging down from its underside, on one flat plain pure magenta background, the left and right ends continue seamlessly, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "s1": 0.66,
+   "seed": 5,
+   "s2": 0.4,
+   "seeds2": [
+    9
+   ],
+   "w": 1536,
+   "h": 240,
+   "band": 96
+  },
+  {
+   "kind": "strip",
+   "name": "lip-w3-b",
+   "start": "lip-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, the top edge of a ground bank seen from the side: dark green grotto moss with a few tiny pale glowing mushrooms along the top, thin roots and moss strands hanging down from its underside, on one flat plain pure magenta background, the left and right ends continue seamlessly, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "s1": 0.76,
+   "seed": 17,
+   "s2": 0.4,
+   "seeds2": [
+    9
+   ],
+   "w": 1536,
+   "h": 240,
+   "band": 96
+  },
+  {
+   "kind": "plain",
+   "name": "end-w3-a",
+   "start": "end-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, the right-hand end of a ground bank for a side-scrolling platform game, seen from the side: the mossy top lip (dark green grotto moss with a few tiny pale glowing mushrooms) rounding over the corner, below it the bank face of cool teal-grey grotto stone with soft moss in the cracks and a few thin faint glowing blue-green water seeps, crumbling and sloping back in as it goes down toward water, roots poking out of the face and hanging, on one flat plain pure magenta background on the right, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no stone slab, no base, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 512,
+   "h": 768
+  },
+  {
+   "kind": "plain",
+   "name": "end-w3-b",
+   "start": "end-w3.webp",
+   "prompt": "slothadv style, painted storybook illustration, the right-hand end of a ground bank for a side-scrolling platform game, seen from the side: the mossy top lip (dark green grotto moss with a few tiny pale glowing mushrooms) rounding over the corner, below it the bank face of cool teal-grey grotto stone with soft moss in the cracks and a few thin faint glowing blue-green water seeps, crumbling and sloping back in as it goes down toward water, roots poking out of the face and hanging, on one flat plain pure magenta background on the right, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no stone slab, no base, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "strength": 0.7,
+   "seed": 29,
+   "w": 512,
+   "h": 768
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w4-a",
+   "start": "fill-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: blue-grey slate cliff rock with deep long cracks, a few small patches of moss. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+   "s1": 0.62,
+   "seed": 11,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w4-b",
+   "start": "fill-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: blue-grey slate cliff rock with deep long cracks, a few small patches of moss. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+   "s1": 0.72,
+   "seed": 23,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "strip",
+   "name": "lip-w4-a",
+   "start": "lip-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, the top edge of a ground bank seen from the side: blue-green mountain grass tufts and moss along the top, thin roots and moss strands hanging down from its underside, on one flat plain pure magenta background, the left and right ends continue seamlessly, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "s1": 0.66,
+   "seed": 5,
+   "s2": 0.4,
+   "seeds2": [
+    9
+   ],
+   "w": 1536,
+   "h": 240,
+   "band": 96
+  },
+  {
+   "kind": "strip",
+   "name": "lip-w4-b",
+   "start": "lip-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, the top edge of a ground bank seen from the side: blue-green mountain grass tufts and moss along the top, thin roots and moss strands hanging down from its underside, on one flat plain pure magenta background, the left and right ends continue seamlessly, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "s1": 0.76,
+   "seed": 17,
+   "s2": 0.4,
+   "seeds2": [
+    9
+   ],
+   "w": 1536,
+   "h": 240,
+   "band": 96
+  },
+  {
+   "kind": "plain",
+   "name": "end-w4-a",
+   "start": "end-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, the right-hand end of a ground bank for a side-scrolling platform game, seen from the side: the mossy top lip (blue-green mountain grass tufts and moss) rounding over the corner, below it the bank face of blue-grey slate cliff rock with deep long cracks, a few small patches of moss, crumbling and sloping back in as it goes down toward water, roots poking out of the face and hanging, on one flat plain pure magenta background on the right, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no stone slab, no base, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 512,
+   "h": 768
+  },
+  {
+   "kind": "plain",
+   "name": "end-w4-b",
+   "start": "end-w4.webp",
+   "prompt": "slothadv style, painted storybook illustration, the right-hand end of a ground bank for a side-scrolling platform game, seen from the side: the mossy top lip (blue-green mountain grass tufts and moss) rounding over the corner, below it the bank face of blue-grey slate cliff rock with deep long cracks, a few small patches of moss, crumbling and sloping back in as it goes down toward water, roots poking out of the face and hanging, on one flat plain pure magenta background on the right, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no stone slab, no base, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "strength": 0.7,
+   "seed": 29,
+   "w": 512,
+   "h": 768
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w5-a",
+   "start": "fill-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: soft brown garden soil with fine dark root lines and tiny pebbles. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+   "s1": 0.62,
+   "seed": 11,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w5-b",
+   "start": "fill-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: soft brown garden soil with fine dark root lines and tiny pebbles. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+   "s1": 0.72,
+   "seed": 23,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "strip",
+   "name": "lip-w5-a",
+   "start": "lip-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, the top edge of a ground bank seen from the side: fresh green moss with small ferns and tiny white petals along the top, thin roots and moss strands hanging down from its underside, on one flat plain pure magenta background, the left and right ends continue seamlessly, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "s1": 0.66,
+   "seed": 5,
+   "s2": 0.4,
+   "seeds2": [
+    9
+   ],
+   "w": 1536,
+   "h": 240,
+   "band": 96
+  },
+  {
+   "kind": "strip",
+   "name": "lip-w5-b",
+   "start": "lip-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, the top edge of a ground bank seen from the side: fresh green moss with small ferns and tiny white petals along the top, thin roots and moss strands hanging down from its underside, on one flat plain pure magenta background, the left and right ends continue seamlessly, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "s1": 0.76,
+   "seed": 17,
+   "s2": 0.4,
+   "seeds2": [
+    9
+   ],
+   "w": 1536,
+   "h": 240,
+   "band": 96
+  },
+  {
+   "kind": "plain",
+   "name": "end-w5-a",
+   "start": "end-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, the right-hand end of a ground bank for a side-scrolling platform game, seen from the side: the mossy top lip (fresh green moss with small ferns and tiny white petals) rounding over the corner, below it the bank face of soft brown garden soil with fine dark root lines and tiny pebbles, crumbling and sloping back in as it goes down toward water, roots poking out of the face and hanging, on one flat plain pure magenta background on the right, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no stone slab, no base, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 512,
+   "h": 768
+  },
+  {
+   "kind": "plain",
+   "name": "end-w5-b",
+   "start": "end-w5.webp",
+   "prompt": "slothadv style, painted storybook illustration, the right-hand end of a ground bank for a side-scrolling platform game, seen from the side: the mossy top lip (fresh green moss with small ferns and tiny white petals) rounding over the corner, below it the bank face of soft brown garden soil with fine dark root lines and tiny pebbles, crumbling and sloping back in as it goes down toward water, roots poking out of the face and hanging, on one flat plain pure magenta background on the right, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no stone slab, no base, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "strength": 0.7,
+   "seed": 29,
+   "w": 512,
+   "h": 768
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w8-a",
+   "start": "fill-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: deep blue night-forest rock like old bark, long dark cracks, small specks of green moss. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+   "s1": 0.62,
+   "seed": 11,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w8-b",
+   "start": "fill-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: deep blue night-forest rock like old bark, long dark cracks, small specks of green moss. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+   "s1": 0.72,
+   "seed": 23,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "strip",
+   "name": "lip-w8-a",
+   "start": "lip-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, the top edge of a ground bank seen from the side: dark blue-green night moss with tiny pale flowers along the top, thin roots and moss strands hanging down from its underside, on one flat plain pure magenta background, the left and right ends continue seamlessly, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "s1": 0.66,
+   "seed": 5,
+   "s2": 0.4,
+   "seeds2": [
+    9
+   ],
+   "w": 1536,
+   "h": 240,
+   "band": 96
+  },
+  {
+   "kind": "strip",
+   "name": "lip-w8-b",
+   "start": "lip-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, the top edge of a ground bank seen from the side: dark blue-green night moss with tiny pale flowers along the top, thin roots and moss strands hanging down from its underside, on one flat plain pure magenta background, the left and right ends continue seamlessly, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "s1": 0.76,
+   "seed": 17,
+   "s2": 0.4,
+   "seeds2": [
+    9
+   ],
+   "w": 1536,
+   "h": 240,
+   "band": 96
+  },
+  {
+   "kind": "plain",
+   "name": "end-w8-a",
+   "start": "end-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, the right-hand end of a ground bank for a side-scrolling platform game, seen from the side: the mossy top lip (dark blue-green night moss with tiny pale flowers) rounding over the corner, below it the bank face of deep blue night-forest rock like old bark, long dark cracks, small specks of green moss, crumbling and sloping back in as it goes down toward water, roots poking out of the face and hanging, on one flat plain pure magenta background on the right, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no stone slab, no base, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 512,
+   "h": 768
+  },
+  {
+   "kind": "plain",
+   "name": "end-w8-b",
+   "start": "end-w8.webp",
+   "prompt": "slothadv style, painted storybook illustration, the right-hand end of a ground bank for a side-scrolling platform game, seen from the side: the mossy top lip (dark blue-green night moss with tiny pale flowers) rounding over the corner, below it the bank face of deep blue night-forest rock like old bark, long dark cracks, small specks of green moss, crumbling and sloping back in as it goes down toward water, roots poking out of the face and hanging, on one flat plain pure magenta background on the right, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no stone slab, no base, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, stone slab, brick base, plinth",
+   "strength": 0.7,
+   "seed": 29,
+   "w": 512,
+   "h": 768
+  }
+ ]
+}

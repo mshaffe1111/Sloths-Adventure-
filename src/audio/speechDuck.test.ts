@@ -38,5 +38,5 @@ test('SN-7: speech dips the music 4-6 dB, in 80 ms, back over 400 ms after the l
 
 test('SN-7: Dot chirps once per line, when her bubble goes up', () => {
   const src = readFileSync(new URL('../components/dot/DotGuide.tsx', import.meta.url), 'utf8');
-  assert.match(src, /if \(s\.line\.who === 'Dot' && run\.chirpN !== s\.n\) \{\n\s*run\.chirpN = s\.n;\n\s*sound\.dotChirp\(\);/);
+  assert.match(src, /if \(cur\.line\.who === 'Dot' && run\.chirpN !== cur\.n\) \{\n\s*run\.chirpN = cur\.n;\n\s*sound\.dotChirp\(\);/);
 });

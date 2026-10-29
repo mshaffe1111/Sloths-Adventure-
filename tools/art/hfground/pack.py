@@ -1,0 +1,114 @@
+"""Pack each world's painted ground (hf-art-ground, 2026-10-29) from the picks in picks.json into src/assets/ground/w<N>.webp and
+src/game/groundAtlasData.ts.
+    python3 tools/art/hfground/pack.py <raw dir>
+
+Sheet (2048 x 2048): the three soil variants at (0,0), (1024,0), (0,1024) at 1024 square; the top lip at (1024,1024), 1024 x 160; the
+bank end at (1024,1200), 384 x 576.
+  lip    keyed off the magenta, the dark purple the key left in its roots turned brown; `surf` is where his feet go: the first row the
+         moss covers across most of the strip, a few px down
+  end    keyed (the largest piece only), the same root fix, its left 40% faded out so it melts into the world's lip and soil under it;
+         `cx` the share of its width where the corner is (the walkable end sits there), `face` where its soil face runs at 9 heights
+         from the walking line down to its bottom (shares of its width)
+  deep   the soil's darkest tone, for the darkening with depth
+"""
+import json, sys
+from pathlib import Path
+
+import numpy as np
+from PIL import Image
+from scipy import ndimage
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from keying import depurple, key  # noqa: E402
+
+ROOT = HERE.parents[2]
+raw = Path(sys.argv[1])
+picks = json.loads((HERE / 'picks.json').read_text())
+(ROOT / 'src/assets/ground').mkdir(parents=True, exist_ok=True)
+
+
+def surf_row(solid, share=0.85):
+    cov = solid.mean(1)
+    rows = np.where(cov >= share)[0]
+    return int(rows[0]) if len(rows) else int(np.argmax(cov))
+
+
+data = {}
+for w, pk in picks.items():
+    S = Image.new('RGBA', (2048, 2048), (0, 0, 0, 0))
+    base = pk['fill']
+    fills = [Image.open(raw / f'{base}-v{s}.webp').convert('RGB') for s in (3, 5, 7)]
+    pos = [(0, 0), (1024, 0), (0, 1024)]
+    for im, (x, y) in zip(fills, pos):
+        S.paste(im.resize((1024, 1024), Image.LANCZOS).convert('RGBA'), (x, y))
+    m = np.asarray(fills[0], np.float32).mean((0, 1))
+    deep = [int(c * 0.22) for c in m]
+    lip = depurple(key(Image.open(raw / f"{pk['lip']}.webp"))).resize((1024, 160), Image.LANCZOS)
+    S.alpha_composite(lip, (1024, 1024))
+    la = np.asarray(lip)[..., 3]
+    surf = (surf_row(la > 128) + 3) / 160
+    end = depurple(key(Image.open(raw / f"{pk['end']}.webp"), main_only=True)).resize((384, 576), Image.LANCZOS)
+    a = np.asarray(end).copy()
+    al = a[..., 3].astype(np.float32)
+    x = np.arange(384, dtype=np.float32)
+    fade = np.clip((x - 0.04 * 384) / (0.36 * 384), 0, 1)
+    fade = fade * fade * (3 - 2 * fade)
+    # below the corner only a rim along the face is kept (70 px, fading over 50 more), so the world's own soil shows in the bank's
+    # middle and a narrow bank's two ends are two rims, not one picture mirrored
+    solid0 = al > 128
+    body = ndimage.binary_erosion(solid0, iterations=5)
+    edge = np.array([np.where(body[y])[0].max() if body[y].any() else 0 for y in range(576)], np.float32)
+    edge = ndimage.median_filter(edge, size=41, mode='nearest')
+    rim = np.clip(1 - ((edge[:, None] - x[None, :]) - 70) / 50, 0, 1)
+    es0 = surf_row(solid0[:, :192], 0.9)
+    top = np.clip(1 - (np.arange(576, dtype=np.float32) - (es0 + 50)) / 60, 0, 1)[:, None]
+    keep = ndimage.gaussian_filter(np.maximum(rim, top * fade[None, :]), 6)
+    # (and its last 120 rows faded out, so the rim hands over to the soil below it with no line)
+    yy = np.arange(576, dtype=np.float32)
+    keep = keep * np.clip((575 - yy) / 120, 0, 1)[:, None]
+    a[..., 3] = (al * np.minimum(1, keep)).astype(np.uint8)
+    end = Image.fromarray(a, 'RGBA')
+    S.alpha_composite(end, (1024, 1200))
+    solid = al > 128
+    # (the walking line: where the moss mat covers the left half of the piece)
+    es = surf_row(solid[:, :192], 0.9)
+    # the corner: the right edge of the solid just below the walking line
+    def right_edge(row):
+        xs = np.where(solid[min(575, max(0, row))])[0]
+        return int(xs.max()) if len(xs) else 192
+    corner = right_edge(es + 14)
+    face = []
+    for i in range(9):
+        row = round(es + (575 - es) * i / 8)
+        # (each height's edge, smoothed over 9 rows so a root poking out does not set it)
+        rs = [right_edge(r) for r in range(max(0, row - 4), min(576, row + 5))]
+        face.append(round(float(np.median(rs)) / 384, 4))
+    face[0] = min(face[0], corner / 384)
+    data[w] = {'fills': [{'x': x0, 'y': y0, 'w': 1024, 'h': 1024} for x0, y0 in pos],
+               'lip': {'x': 1024, 'y': 1024, 'w': 1024, 'h': 160, 'surf': round(surf, 4)},
+               'end': {'x': 1024, 'y': 1200, 'w': 384, 'h': 576, 'surf': round(es / 576, 4), 'cx': round(corner / 384, 4), 'face': face},
+               'deep': deep}
+    out = ROOT / f'src/assets/ground/w{w}.webp'
+    S.save(out, 'WEBP', quality=82, method=6)
+    print(w, out.stat().st_size, data[w]['lip']['surf'], data[w]['end']['surf'], data[w]['end']['cx'])
+
+ts = ['/**',
+      ' * Generated by tools/art/hfground/pack.py (hf-art-ground, 2026-10-29): where each world\'s painted ground sits in',
+      ' * src/assets/ground/w<N>.webp. Do not edit by hand. Drawn by groundPaint.ts.',
+      ' *   fills  three soil textures, brick-bond periodic, sharing their edges (any one next to any other)',
+      ' *   lip    the top lip strip; surf: the share of its height where his feet go',
+      ' *   end    the bank end (a right end; mirrored for a left one); surf as the lip; cx: the share of its width where the corner is;',
+      ' *          face: where its soil face runs at 9 even heights from the walking line to its bottom (shares of its width)',
+      ' *   deep   the soil\'s darkest tone (the darkening with depth)',
+      ' */',
+      'export interface GroundFrame { x: number; y: number; w: number; h: number }',
+      'export interface GroundSheet {',
+      '  fills: GroundFrame[];',
+      '  lip: GroundFrame & { surf: number };',
+      '  end: GroundFrame & { surf: number; cx: number; face: number[] };',
+      '  deep: [number, number, number];',
+      '}',
+      f'export const GROUND_FRAMES: Record<number, GroundSheet> = {json.dumps({int(k): v for k, v in data.items()})};', '']
+(ROOT / 'src/game/groundAtlasData.ts').write_text('\n'.join(ts))
+print('ok')

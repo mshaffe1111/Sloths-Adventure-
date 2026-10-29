@@ -21,6 +21,7 @@ import { buildGen2Stage, FLAG_SPAN } from './pipeline.ts';
 import { GEN2_SEEDS } from './seeds.ts';
 import type { Gen2Stage } from './types.ts';
 import { W6_ROOM_STAGES } from './worlds/w6.ts';
+import { W7_ROOM_STAGES } from './worlds/w7.ts';
 
 const levels = generateAllLevels();
 const lv = (id: string): LevelConfig => ({ ...levels.find((l) => l.id === id)!, unlocked: true });
@@ -37,11 +38,9 @@ function played(id: string, variant: number, easy: boolean): Played {
   }
 }
 
-test('gen2 builds 5-7, 5-9, World 6 but 6-8 and World 10 but its ascents (5-8 and 6-8 stay the old way), each from the kit its 16 shipped rolls were curated on', () => {
-  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['10-1', '10-3', '10-6', '10-7', '10-9', '5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9']);
-  for (const id of ['10-2', '10-4', '10-5', '10-8']) assert.equal(isGen2Stage(lv(id)), false, `${id}: an ascent, not gen2`);
-  assert.equal(isGen2Stage(lv('5-8')), false);
-  assert.equal(isGen2Stage(lv('6-8')), false);
+test('gen2 builds 5-7, 5-9, World 6 but 6-8, World 7 but its ascents (7-2, 7-4, 7-8) and World 10 but its ascents (10-2, 10-4, 10-5, 10-8), each from the kit its 16 shipped rolls were curated on', () => {
+  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['10-1', '10-3', '10-6', '10-7', '10-9', '5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '7-1', '7-3', '7-5', '7-6', '7-7', '7-9']);
+  for (const id of ['5-8', '6-8', '7-2', '7-4', '7-8', '7-10', '10-2', '10-4', '10-5', '10-8', '10-10']) assert.equal(isGen2Stage(lv(id)), false, id);
   for (const id of Object.keys(GEN2_STAGES)) {
     const e = GEN2_SEEDS[id];
     assert.ok(e, `${id}: no curated rolls in seeds.ts`);
@@ -79,6 +78,9 @@ test('every shipped roll, Normal and Easy, as the game plays it: the checker pas
         if (st.config.worldIndex === 5) assert.ok(st.proto?.w5, `${at}: World 5's extras reach the engine`);
         if (st.config.worldIndex === 6) assert.ok((st.proto?.gen2 as { w6?: unknown } | undefined)?.w6, `${at}: World 6's extras reach the engine`);
         if (st.config.worldIndex === 10) assert.ok((st.proto?.gen2 as { w10?: unknown } | undefined)?.w10, `${at}: World 10's extras reach the engine`);
+        if (st.config.worldIndex === 7) assert.ok((st.proto?.gen2 as { w7?: unknown } | undefined)?.w7, `${at}: World 7's extras reach the engine`);
+        // (7-7 hides the Thorn Gate on a ledge over the start, reached by a mushroom behind him: stageGenerator addSecrets)
+        if (id === '7-7') assert.ok(st.collectibles.some((c) => c.type === 'thorn_gate' && c.x < st.spawnX + 400), `${at}: the secret gate`);
         // (a gauntlet's goal: Normal's share of what the stage holds, Easy's lower; every animal it counts stands before the shrine)
         if (st.config.objectiveType === 'gauntlet') {
           const before = st.enemies.filter((e) => e.x <= st.exitTotemX + 35).length;
@@ -141,8 +143,8 @@ test('the layout memory: a retry keeps the roll, and after a clear the next roll
 
 test("a gen2 stage loads World 5's sheets before it starts: the kit, its dressing, the spiders, and 5-9's puzzle pieces", () => {
   const on = { hand: true, paint: true, ctest: false };
-  assert.deepEqual(stageSheets(lv('5-7'), on), ['kit:1', 'kit:5', 'w5-props', 'foe:spider', 'perch', 'stage-art', 'gate:5', 'pit-water:5']);
-  assert.deepEqual(stageSheets(lv('5-9'), on), ['kit:1', 'kit:5', 'w5-props', 'foe:spider', 'kit-pieces', 'perch', 'stage-art', 'gate:5', 'pit-water:5']);
+  assert.deepEqual(stageSheets(lv('5-7'), on), ['kit:1', 'kit:5', 'w5-props', 'dress', 'foe:spider', 'perch', 'stage-art', 'gate:5', 'pit-water:5']);
+  assert.deepEqual(stageSheets(lv('5-9'), on), ['kit:1', 'kit:5', 'w5-props', 'dress', 'foe:spider', 'kit-pieces', 'perch', 'stage-art', 'gate:5', 'pit-water:5']);
   // (with or without the hand-built switch: gen2 is the only 5-7 there is)
   assert.deepEqual(stageSheets(lv('5-7'), { ...on, hand: false }), stageSheets(lv('5-7'), on));
 });
@@ -172,6 +174,18 @@ test("a World 10 gen2 stage loads World 10's kit, its dressing and soldiers, and
   }
 });
 
+test("a World 7 gen2 stage loads World 7's kit, the kit pieces for its room, and its drains' signs and painted water", () => {
+  const on = { hand: true, paint: true, ctest: false };
+  for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('7-'))) {
+    const sheets = stageSheets(lv(id), on);
+    assert.deepEqual(sheets.slice(0, 2), ['kit:1', 'kit:7'], id);
+    assert.equal(sheets.includes('kit-pieces'), (W7_ROOM_STAGES as readonly string[]).includes(id), `${id}: the kit pieces exactly when it has a room`);
+    assert.equal(sheets.includes('water-signs'), gen2Water(id), `${id}: the water signs exactly when it has water`);
+    assert.equal(sheets.includes('bad-water'), gen2Water(id), `${id}: the dirty water exactly when it has water`);
+    assert.deepEqual(stageSheets(lv(id), { ...on, hand: false }), sheets, `${id}: whatever the hand-built switch`);
+  }
+});
+
 test('every shipped roll holds the clip-sheet animals its sheet list loads, and a water sign exactly where there is water', () => {
   const on = { hand: true, paint: true, ctest: false };
   for (const id of Object.keys(GEN2_STAGES)) {
@@ -182,7 +196,8 @@ test('every shipped roll holds the clip-sheet animals its sheet list loads, and 
       if (id.startsWith('5-')) assert.ok(st.enemies.some((e) => e.type === 'spider'), `${id} roll ${i}: spiders`);
       for (const a of anims) assert.ok(st.enemies.some((e) => e.type === a), `${id} roll ${i}: no ${a} for its sheet`);
       // (World 5's pits are soft: no water. World 6's creeks: a sign at the first, Dot's line before it)
-      const water = (st.gen2?.falls ?? []).some((f) => f.kind === 'water');
+      // (a deep chasm, World 7's on Normal, shows the dirty water far below and is warned and signed like a creek)
+      const water = (st.gen2?.falls ?? []).some((f) => f.kind === 'water' || f.kind === 'void');
       assert.equal(st.waterY !== undefined, water, `${id} roll ${i}: the water line`);
       assert.equal((st.proto?.gen2?.waterWarnings?.length ?? 0) > 0, water, `${id} roll ${i}: the water signs`);
     }

@@ -1370,7 +1370,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       if (signs.length && (!easy || g.x0 - last < every)) continue;
       const x = R(Math.max(laid.spawn.x + 40, g.x0 - WATER_WARN.lead));
       hints.push({ x, text, pad: text, keys: text, passX: R(g.x1 + 80) });
-      signs.push({ x: R(g.x0 - 40), y: R(g.y) });
+      // (the sign stands on the near lip: g.y is the higher of the two lips, so where the far side stood higher the sign hung in the air)
+      const sx = g.x0 - 40;
+      const lip = laid.platforms.filter((q) => q.x <= sx && q.x + q.width >= sx && q.y >= g.y - 1).reduce((m, q) => Math.min(m, q.y), Infinity);
+      signs.push({ x: R(sx), y: R(Number.isFinite(lip) ? lip : g.y) });
       fills.push({ section: g.section ?? '', socket: 'water', role: 'tip', what: 'water', x, y: R(g.y) });
       last = g.x0;
     }

@@ -11,6 +11,12 @@
  */
 import { W10_ART_URLS, w10ArtReady } from './w10Art.ts';
 import { SOLDIER_URLS, soldierReady } from './soldierSprite.ts';
+import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
+import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
+import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
+import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
+import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
+import { W7_TEMPLE_URLS, w7TempleReady } from './w7TempleArt.ts';
 import { enterWorld, releaseSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, dotPropsReady, warmDotSheets } from './dotFlightArt.ts';
@@ -48,6 +54,8 @@ import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
 import { BOSS_FX_URL, warmBossFx } from './bossFx.ts';
 import { perfNote } from './perfLog.ts';
+import { groundUrl, hasGround, warmGround } from './groundPaint.ts';
+import { DRESS_URL, dressReady } from './dressArt.ts';
 import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stageArtReady } from './stageArt.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -56,6 +64,15 @@ type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
 /** start the loads for these sheet keys; the addresses to wait for */
 function start(keys: readonly string[]): string[] {
   const urls: string[] = [];
+  // (the painted ground goes with the stage's own kit: the highest kit asked for, World 1's only when it is the only one)
+  const kits = keys.filter((k) => k.startsWith('kit:')).map((k) => Number(k.slice(4)));
+  if (kits.length) {
+    const gw = Math.max(...kits);
+    if (hasGround(gw)) {
+      warmGround(gw);
+      urls.push(groundUrl(gw));
+    }
+  }
   for (const k of keys) {
     if (k.startsWith('kit:')) {
       const w = Number(k.slice(4));
@@ -76,6 +93,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'kit-pieces') {
       kitArtReady();
       urls.push(KIT_ART_URL);
+    } else if (k === 'dress') {
+      dressReady();
+      urls.push(DRESS_URL);
     } else if (k === 'water-signs') {
       warmWaterSigns();
       urls.push(WATER_SIGN_URL);
@@ -86,6 +106,18 @@ function start(keys: readonly string[]): string[] {
       w10ArtReady();
       soldierReady();
       urls.push(...W10_ART_URLS, ...SOLDIER_URLS);
+    } else if (k === 'sentry') {
+      sentryReady();
+      urls.push(...SENTRY_URLS);
+    } else if (k === 'chairs') {
+      w7ChairsReady();
+      urls.push(W7_CHAIRS_URL);
+    } else if (k === 'crumble') {
+      crumbleArtReady();
+      w7FaceReady();
+      w7PuzzleReady();
+      w7TempleReady();
+      urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
     } else if (k === 'w6-stilt') {
       stiltArtReady();
       urls.push(...STILT_ART_URLS);

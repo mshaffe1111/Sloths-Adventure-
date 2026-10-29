@@ -1,9 +1,12 @@
 import { buzz } from './haptics.ts';
 import { SlowWatch } from './slowTip.ts';
+import { drawW7Chairs } from './w7ChairsArt.ts';
+import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
-import { markTipHeard, tipHeard } from './tipMemory.ts';
+import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
+import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
@@ -69,7 +72,7 @@ import { drawSpiderSprite } from './spiderSprite.ts';
 import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
-import { renderWorldObjects, drawWater } from './terrain.ts';
+import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
 import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
@@ -84,7 +87,8 @@ import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { drawKitDecor } from './puzzleArt.ts';
-import { drawWaterSign } from './waterSign.ts';
+import { drawDress } from './dressArt.ts';
+import { drawWaterSign, signRattle } from './waterSign.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
@@ -153,7 +157,7 @@ import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, se
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawSoldierSprite } from './soldierSprite.ts';
 import { drawW10Dressing, drawW10Hide, type W10Dressing } from './w10Art.ts';
@@ -162,7 +166,7 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
-import { dotHelp } from './dotGuideHelp.ts';
+import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
 import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
@@ -253,6 +257,21 @@ export const STEP_UP = { min: 20, max: 96, near: 14 } as const;
 /** World 5: how far over a ledge's edge the lip's hoist puts his body (px past the face), so a foot is on it (the floor check wants ~8) */
 export const LIP_IN = 13;
 const STUCK_HOLD = 7;
+
+/** what the shrine says when Pokey steps into it, one line per world in its own voice (polish report ST-5: it said "SANCTUARY UNLOCKED!
+ * VICTORY!" on every stage of every world, and World 10's fortress is no sanctuary) */
+const SHRINE_LINE: Record<number, string> = {
+  1: 'The canopy lets you through.',
+  2: 'The village waves you on.',
+  3: 'The glowworms light the way out.',
+  4: 'Out of the mist, and on.',
+  5: 'Still standing. Good.',
+  6: 'Out of the black water.',
+  7: 'The old stones let you pass.',
+  8: 'One more branch behind you.',
+  9: 'Through the heat, and on.',
+  10: 'A few steps closer to her.',
+};
 
 /** the swing's sweet-spot glow on the vine (a soft warm disc), painted once */
 let sweetGlowCv: HTMLCanvasElement | null = null;
@@ -391,6 +410,8 @@ export class GameEngine {
   private kitSteer = 0;
   private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
+  /** when he came within reach of each water sign (its index), so it rattles for a moment (waterSign.ts signRattle) */
+  private signNear = new Map<number, number>();
   private pushSoundT = 0;
   /** a hint that rides above Pokey for a few seconds */
   private stageHint: { text: string; life: number } | null = null;
@@ -400,6 +421,8 @@ export class GameEngine {
   private bossDef: BossDef | null = null;
   private bossCtx: BossCtx | null = null;
   private bossIntro = false;
+  /** a stage's own reveal (a camera move to show something, 6-8's crown) runs until this game time: Dot's lines that can wait, wait */
+  public revealUntil = -1;
   /** a giant's entrance while it plays (the fight and the player wait) */
   /** `tea`: the Tarantula Queen's tea (bossDefs entrance.tea, the long version only): where the fight starts her, to walk back to */
   private entrance: { t: number; total: number; roared: boolean; named: boolean; tea: { home: number } | null } | null = null;
@@ -749,6 +772,8 @@ export class GameEngine {
     // every stage load rolls a fresh look for the backdrop and ground (the layout itself does not change)
     setSceneSeed(rollSceneSeed());
 
+    // (a new run of a stage: tips sent but never shown in an earlier run may be said again, tipMemory.ts)
+    forgetSent();
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
@@ -836,6 +861,7 @@ export class GameEngine {
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
     setLianaTops(!this.proto?.decor?.some((d) => d.n === 'canopy' || d.n === 'swingFrame'));
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
+    setGroundPaint(this.paintKit);
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
       this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown && !pl.art);
@@ -1443,8 +1469,8 @@ export class GameEngine {
     if (!this.riverHinted && this.currentStage.rivers?.length) {
       const r0 = this.currentStage.rivers[0];
       if (p.x > r0.x0 - 380 && p.x < r0.x1) {
+        // (no words floating in the world: the water's lesson says it in Dot's bubble, the Dot rework 2026-10-29)
         this.riverHinted = true;
-        this.addFloatingText('LOGS DRIFT! HOP ON AND RIDE', p.x, p.y - 90, '#7dd3fc');
       }
     }
 
@@ -1454,7 +1480,6 @@ export class GameEngine {
       const bodyY = p.y - 30;
       const level = drowsyLevel(zoneEffect(zones, 'spore', p.x, bodyY, this.gameTime).strength);
       if (level > 0 && this.drowsy <= 0) {
-        if (!this.zoneHinted.sleepy) this.addFloatingText('SLEEPY SPORES...', p.x, p.y - 80, '#c4b5fd');
         this.zoneHinted.sleepy = true;
         this.zzzTimer = 0.3;
       }
@@ -1465,7 +1490,6 @@ export class GameEngine {
       this.dragJump = drag.jump;
       if (drag.speed < 0.5 && !this.zoneHinted.stuck && zones.some((z) => z.kind === 'web' && inZone(z, p.x, bodyY))) {
         this.zoneHinted.stuck = true;
-        this.addFloatingText('STUCK IN THE WEB!', p.x, p.y - 80, '#e2e8f0');
       }
       // lava geysers and lightning (Worlds 9 and 10): a firing column burns whoever stands in it
       const hot = columnHit(zones, p.x - 14, p.y - 64, 28, 64, this.gameTime);
@@ -1477,24 +1501,16 @@ export class GameEngine {
       for (const z of zones) {
         if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
         this.zoneHinted[z.kind] = true;
-        // (World 10's storm is taught by Pokey's own thoughts, gen2 w10.ts W10_TIPS: no floating label over them)
+        // (World 10's storm is taught by Pokey's own thoughts, gen2 w10.ts W10_TIPS: no second line over them)
         if (this.currentStage.config.worldIndex === 10 && this.proto?.gen2) continue;
-        const hint: Record<string, [string, string]> = {
-          web: ['STICKY WEBS SLOW YOU. GO ABOVE THEM OR PUSH THROUGH', '#e2e8f0'],
-          tide: ['THE TIDE RISES ON A BEAT. CROSS WHILE IT IS LOW', '#7dd3fc'],
-          dark: ['IT IS DARK. FOLLOW THE FIREFLIES', '#fde68a'],
-          crumble: ['THESE TILES CRUMBLE. KEEP MOVING', '#fdba74'],
-          spore: ['SPORES PUFF ON A BEAT. WAIT FOR THEM TO CLEAR', '#c4b5fd'],
-          wind: ['GUSTS BLOW ON A BEAT. WATCH THE LEAVES', '#99f6e4'],
-          geyser: ['VENTS ERUPT ON A BEAT. STAND BETWEEN THEM', '#fdba74'],
-          bolt: ['LIGHTNING STRIKES WHERE THE RODS CHARGE', '#bae6fd'],
-          spikes: ['IRON SPIKES. JUMP CLEAR', '#fca5a5'],
-        };
-        if (z.kind === 'dark' && z.lights?.some((l) => l.sleep)) {
-          this.addFloatingText('TOO DARK. STAND STILL AND LISTEN', p.x, p.y - 100, '#99f6e4');
-          continue;
+        // (said in Dot's bubble, or Pokey's thought when she is away, once a stage: no words floating in the world, the Dot rework
+        // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
+        const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;
+        const zid = this.currentStage.config.id;
+        if (ZONE_LINE[kind] && !tipHeard(zid, `zone:${kind}`)) {
+          markTipHeard(zid, `zone:${kind}`);
+          this.guide(ZONE_LINE[kind], 3.6);
         }
-        this.addFloatingText(hint[z.kind][0], p.x, p.y - 100, hint[z.kind][1]);
       }
     } else {
       this.windV = 0;
@@ -1993,7 +2009,8 @@ export class GameEngine {
           // touch jump help: a second jump taken with nothing steering pushes him forward until he lands or the thumb takes over
           let dir: -1 | 0 | 1 = steer;
           let leaning = false;
-          if (this.touchHelp() === 'off' || p.grounded) {
+          // (with Jump help off only a slanted standing flick's carry runs: CT-27)
+          if ((this.touchHelp() === 'off' && this.airDrive.drive === 0) || p.grounded) {
             if (p.grounded) this.airDrive = newAirDrive();
           } else if (this.inputGrace <= 0) {
             dir = airCarry(this.airDrive, steer, this.input.state.down);
@@ -2104,7 +2121,7 @@ export class GameEngine {
           p.vy = glideLift(p.vy, dt);
           if (!this.zoneHinted.lift) {
             this.zoneHinted.lift = true;
-            this.addFloatingText('WARM AIR! HOLD THE LEAF OPEN TO RISE', p.x, p.y - 80, '#fdba74');
+            // (warm air is taught in Dot's bubble by 4-7's own line)
           }
         }
         this.glideOpen += ((this.glide.on ? 1 : 0) - this.glideOpen) * Math.min(1, dt * 16);
@@ -2290,7 +2307,7 @@ export class GameEngine {
               if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
               if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
                 this.zoneHinted.crumble = true;
-                this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
+                // (the crumble is taught by its lesson, in Dot's bubble)
               }
             }
           }
@@ -2324,7 +2341,7 @@ export class GameEngine {
         // a teaching river (2-1): a splash and back to the bank to try again, no life lost
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
-        this.addFloatingText('SPLASH! TRY AGAIN', p.x, river.surfaceY - 40, '#7dd3fc');
+        this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         p.x = river.safe.backX;
         p.y = river.safe.backY;
         p.vx = 0;
@@ -2635,7 +2652,10 @@ export class GameEngine {
         // said once per stage on this device: not again on a replay or a retry (tipMemory.ts)
         const id = `tip:${h.text}`;
         if (tipHeard(this.currentStage.config.id, id)) continue;
+        // (a lesson line, once on this device whichever stage reaches it first: StageHint.firstOf)
+        if (h.firstOf && tipHeard(FIRST_OF_STAGE, h.firstOf)) continue;
         markTipHeard(this.currentStage.config.id, id);
+        if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
         this.guide(said, 3.6);
@@ -2699,12 +2719,20 @@ export class GameEngine {
         const close = Math.abs(p.x - c.x) < 54 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
         c.near = close && !p.ducking;
         // the stage's opening line says one plant here looks different; beside it, the first time, Dot says what to do with it
-        if (!close && !p.ducking && p.grounded && Math.abs(p.x - c.x) < 150 && Math.abs(p.y - (c.y + 26)) < 26) {
+        // (once the search has been taught on this save, only a "Hmm, that fern..." after he has walked past it twice: DOT-14)
+        const by = !close && !p.ducking && p.grounded && Math.abs(p.x - c.x) < 150 && Math.abs(p.y - (c.y + 26)) < 26;
+        if (!by && c.fernBy) c.fernPasses = (c.fernPasses ?? 0) + 1;
+        c.fernBy = by;
+        if (by) {
           const stageId = this.currentStage.config.id;
-          if (!tipHeard(stageId, 'fern:near')) {
+          const taught = seenSkills().has('mech:hushFern');
+          if (!taught && !tipHeard(stageId, 'fern:near')) {
             markTipHeard(stageId, 'fern:near');
             const mode = lessonInputMode();
             this.guide(mode === 'screen' ? 'That fern looks different! Stand beside it and slide your thumb down to crouch and search it' : 'That fern looks different! Stand beside it and hold down to crouch and search it', 4.2);
+          } else if (taught && (c.fernPasses ?? 0) >= 2 && !tipHeard(stageId, 'fern:hmm')) {
+            markTipHeard(stageId, 'fern:hmm');
+            this.guide(FERN_HMM, 3);
           }
         }
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
@@ -2759,7 +2787,7 @@ export class GameEngine {
         if (c.type === 'heart' && p.hp >= p.maxHp) {
           if (!this.zoneHinted.fullHeart) {
             this.zoneHinted.fullHeart = true;
-            this.addFloatingText('FULL HEALTH! SAVE IT FOR LATER', c.x, c.y - 30, '#fda4af', 1.6);
+            // (the heart's lesson says when a heart can be taken)
           }
           continue;
         }
@@ -2882,7 +2910,7 @@ export class GameEngine {
       this.wasQuotaMet = true;
       sound.playShrineUnlocked();
       this.spawnSparkBurst(p.x, p.y - 40, '#facc15');
-      this.addFloatingText('✨ SHRINE UNSEALED! ENTER TO CLEAR! ✨', p.x, p.y - 65, '#facc15');
+      // (Dot says it in her bubble: goal.done)
       this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
     }
 
@@ -2928,7 +2956,7 @@ export class GameEngine {
           sound.playExitChime();
           buzz('clear');
           this.spawnSparkBurst(this.currentStage.exitTotemX, p.y - 30, '#34d399');
-          this.addFloatingText('SANCTUARY UNLOCKED! VICTORY!', p.x, p.y - 60, '#34d399');
+          this.addFloatingText(SHRINE_LINE[this.currentStage.config.worldIndex] ?? 'Onward.', p.x, p.y - 60, '#34d399');
         } else {
           // Push player back gently from sealed barrier and show clear reminder
           p.x = this.currentStage.exitTotemX - 35;
@@ -3175,6 +3203,30 @@ export class GameEngine {
     if (p.activePowerUp === 'invincible' || p.activePowerUp === 'speed') v = Math.max(v, 0.95);
     sound.setIntensity(Math.min(1, v));
     sound.setLowHealth(this.lives <= 1 && p.hp <= 1);
+    sound.setMusicState(this.musicState(near));
+  }
+
+  /**
+   * What is happening, for the music to follow (audio/adaptive.ts; Matt approved the music, 2026-10-29): it answers each change on its next
+   * bar line, so this only has to say what is true now.
+   *   danger  an animal within reach, 1-8's collapsing branch on the move, 6-8's tide close under him
+   *   dark    World 3's and World 8's dark stretches (the same fade the screen uses)
+   *   exit    the open exit totem coming into reach
+   *   puzzle  inside a puzzle room that is not solved yet (a quiet bed to think over)
+   *   boss    the fight's phase, 1 to 3 (0 when there is none, or it has fallen)
+   */
+  private musicState(near: number) {
+    const p = this.player;
+    const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
+    let danger = clamp01((300 - near) / 120);
+    if (this.chase?.active) danger = 1;
+    if (this.tide?.on && this.tide.y - p.y < 260) danger = 1;
+    const boss = this.boss && !this.boss.defeated ? Math.max(1, Math.min(3, this.boss.phase)) : 0;
+    const exitItem = boss ? undefined : this.collectibles.find((c) => c.type === 'exit_totem' && !c.isLocked);
+    const exit = exitItem ? clamp01((900 - Math.abs(exitItem.x - p.x)) / 500) : 0;
+    const room = this.kit?.inRoom ?? -1;
+    const puzzle = room >= 0 && !this.kit!.solved(room) ? 1 : 0;
+    return { danger: boss ? 0 : danger, dark: this.darkShow, exit, puzzle, boss };
   }
 
   // ===========================================================================================
@@ -3298,7 +3350,7 @@ export class GameEngine {
           this.bossShove = v;
           this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, 0.35));
           this.addFloatingText(p.ducking && p.grounded ? 'HOLD ON!' : 'BLOWN BACK!', p.x, p.y - 80, '#bae6fd');
-        } else if (free) this.addFloatingText('SAFE BEHIND THE ROCK!', p.x, p.y - 80, '#bbf7d0');
+        }
       } else if (h.look === 'gust' && free) {
         gust = gustPush({ ps, srcX: src, dir, phase: b.phase, px: p.x, bodyTop, floor, grounded: p.grounded, gliding: this.glide.on });
       }
@@ -3583,7 +3635,9 @@ export class GameEngine {
       this.daisyRescued = true;
       sound.playBossVictory();
       this.camera.trauma = end ? 0.3 : 0.9;
-      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : end ? 'VICTORY!' : 'VICTORY! MEECA IS SAVED!', b.x, b.y - 70, '#ec4899');
+      // (it said "VICTORY! MEECA IS SAVED!" after every guardian, World 1 on: the story only frees her at the top of the mountain)
+      const won = this.currentStage.config.secret ? 'Thornbark is free.' : end ? 'Victory!' : this.currentStage.config.worldIndex === 10 ? 'The General is down.' : 'The way north is open.';
+      this.addFloatingText(won, b.x, b.y - 70, '#ec4899');
       if (!end) this.spawnDebrisBurst(b.x, b.y, '#dc2626');
       this.bossShove = 0;
       this.bossGust = 0;
@@ -3895,7 +3949,7 @@ export class GameEngine {
       a.hits.add(1_000_000 + c.id);
       // (a reed cage hung over the water, World 2: too tough to break, the pulley lifts it out: puzzlePlay.ts)
       if (this.kit?.holdsCage(c)) {
-        this.addFloatingText('LIFT IT OUT!', c.x, c.y - 40, '#fde68a');
+        // (the cage room's own lines say the basket lifts it)
         continue;
       }
       a.connected = true;
@@ -3949,11 +4003,11 @@ export class GameEngine {
           e.vx = 0;
           if (e.royal) {
             // the river king's guard blocks with his spear
-            if (!this.guardTold) this.addFloatingText('BLOCKED! GET BEHIND HIM, OR KICK HIM', e.x, e.y - 60, '#cbd5e1');
+            if (!this.guardTold) this.guide('Head-on he blocks. Flick sideways to kick!', 3);
             else this.addFloatingText('CLANK!', e.x, e.y - 50, '#cbd5e1');
             this.guardTold = true;
           } else {
-            if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
+            if (!this.turtleTold) this.guide('Head-on it hides. Flick sideways to kick!', 3);
             else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
             this.turtleTold = true;
           }
@@ -4941,7 +4995,12 @@ export class GameEngine {
       if (w.x < x0 - 80 || w.x > x1 + 80) return;
       // (World 10's deep falls are the chasms between the walls, not water: Pokey's line warns, no water sign)
       if (this.currentStage.config.worldIndex === 10 && this.proto?.gen2) return;
-      if (drawWaterSign(ctx, this.currentStage.config.worldIndex, w.x, w.y + 3, i)) return;
+      // (it rattles for a moment as he comes up to it: once each time he comes within reach)
+      const near = Math.abs(this.player.x + this.player.width / 2 - w.x) < 150 && Math.abs(this.player.y + this.player.height - w.y) < 200;
+      if (near && !this.signNear.has(i)) this.signNear.set(i, this.gameTime);
+      else if (!near) this.signNear.delete(i);
+      const since = this.signNear.has(i) ? this.gameTime - this.signNear.get(i)! : undefined;
+      if (drawWaterSign(ctx, this.currentStage.config.worldIndex, w.x, w.y + 3, signRattle(since))) return;
       const cy = w.y - 50;
       ctx.save();
       ctx.fillStyle = '#7c5a32';
@@ -5269,6 +5328,7 @@ export class GameEngine {
         ropes: this.skills.has('shimmy') ? this.ropes : [],
         hp: p.hp,
         maxHp: p.maxHp,
+        rooms: this.kit?.roomSpans,
       },
       seen,
     );
@@ -5287,8 +5347,8 @@ export class GameEngine {
       return;
     }
     this.lessonWaiting = null;
+    // (not again this run; it is kept on the phone once Dot has shown it, DotGuide.tsx: one her help setting drops is taught later)
     seen.add(id);
-    markLessonSeen(id);
     // no card and no pause: the lesson is one of Dot's lines, said in play (dotGuide.ts)
     this.lessonQuietUntil = this.gameTime + 6;
     this.lessonAt = this.gameTime;
@@ -5337,6 +5397,7 @@ export class GameEngine {
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
     out.chase = !!this.chase;
+    out.reveal = !!this.kit?.panning || !!this.entrance || this.gameTime < this.revealUntil;
     out.levelH = cfg.levelHeight;
     out.enemies = this.enemies;
     out.platforms = this.platforms;
@@ -5552,9 +5613,16 @@ export class GameEngine {
     // (a touch or Pad jump's minimum hold counts from now, in game time: CT-12)
     (this.input as { noteTakeOff?: () => void }).noteTakeOff?.();
     const help = this.touchHelp();
-    if (help === 'off') return;
     const inp = this.input.state;
     const steer = this.inputGrace > 0 ? 0 : inp.left ? -1 : inp.right ? 1 : 0;
+    // a standing flick that leaned 35 degrees or more carries him that way at LEAN_SPEED of a run, Jump help or not (Matt, 2026-10-29,
+    // polish report CT-27: it went straight up and down)
+    const slant = this.input.source === 'gesture' && !second && steer === 0 ? inp.jumpSlant ?? 0 : 0;
+    if (help === 'off') {
+      this.airDrive = slant ? { drive: slant, lean: true } : newAirDrive();
+      if (slant) this.player.facing = slant;
+      return;
+    }
     const kind = this.currentStage.config.objectiveType;
     airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
     // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
@@ -5572,6 +5640,10 @@ export class GameEngine {
         this.airDrive.lean = true;
         this.player.facing = dir;
       }
+    }
+    if (slant) {
+      this.airDrive = { drive: slant, lean: true };
+      this.player.facing = slant;
     }
   }
 
@@ -5635,7 +5707,11 @@ export class GameEngine {
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
     setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     // (the backdrop shakes with the world, each layer by its own depth, so the layers never slide against each other)
-    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    // (upright, the painted strips are drawn at the size sideways uses for the same width of world, so they are as sharp and as close
+    // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
+    const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
+    const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
+    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
     // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
     if (this.proto?.w4?.deepFall !== undefined) {
       const lipY = this.camLedge?.y ?? this.player.y;
@@ -5707,8 +5783,13 @@ export class GameEngine {
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
-    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
+    // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
+    const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
+    if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
+    if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     // 6-8: its ledges in Matt's other World 6 pieces (over the roots that top out on them, as the kit's planks are)
     if (this.proto?.stiltLedges) drawStiltLedges(ctx, this.proto.stiltLedges, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 6-8's crown: a warm light behind him as the view pulls back, so he stands out against the ruins at dusk (the lead's review)
@@ -5740,6 +5821,8 @@ export class GameEngine {
     if (this.proto?.gen2?.w10) drawW10Dressing(ctx, this.proto.gen2.w10 as W10Dressing, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     // Matt's World 3 and 4 puzzle sheets set in as dressing (artDress.ts)
     if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x, false, (id) => this.kit?.roomDone(id) ?? {});
+    // Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets)
+    if (this.proto?.dress) drawDress(ctx, this.proto.dress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // World 3's sleeping thorn vines (thornVine.ts)
     for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
       const v = this.proto!.thorns![i];
@@ -5865,6 +5948,8 @@ export class GameEngine {
         } else if (enemy.type === 'ocelot') {
           // (World 10's soldiers: a prowler's body, the soldier's painted clips)
           if (enemy.look === 'soldier' && drawSoldierSprite(ctx, enemy, this.gameTime)) return;
+          // (World 7's Stone Sentry: a prowler's body, the sentry's painted clips)
+          if (enemy.look === 'sentry' && drawSentrySprite(ctx, enemy, this.gameTime)) return;
           if (!drawOcelotSprite(ctx, enemy, this.gameTime)) drawOcelot(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
@@ -6831,7 +6916,7 @@ export class GameEngine {
   private drawWatchEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
     const w = this.watch;
     if (w.phase !== 'warn') return;
-    const u = Math.min(1, w.t / WATCH.warn);
+    const u = Math.min(1, w.t / w.dur);
     const k = (0.35 + 0.65 * u) * (0.6 + 0.4 * Math.sin(this.gameTime * 11));
     const width = vw * 0.22;
     const fromLeft = w.dir === 1;
@@ -6882,8 +6967,9 @@ export class GameEngine {
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
       cry(0);
-      // every pass is called out, not only the first: a word over his head and a buzz on a phone (many play with the sound off)
-      this.addFloatingText(cliffs ? 'HIDE! WATER OR BUSH' : `HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
+      // every pass is called out, not only the first: an alarm mark over his head and a buzz on a phone (many play with the sound off);
+      // the words are Dot's, in her bubble (no words floating in the world, the Dot rework 2026-10-29)
+      this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
       this.input.triggerHaptic(120);
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
@@ -6949,7 +7035,7 @@ export class GameEngine {
         const blink = Math.sin(this.gameTime * 1.3) > 0.97 ? 0.15 : 1;
         this.watchEyes = { x: cam.x + cam.viewportWidth * (0.5 + 0.36 * Math.cos(a)), y: cam.y + 160 + 12 * Math.sin(a * 1.7), s: 0.6, a: 0.5 * blink, narrow: 0 };
       } else if (w.phase === 'warn') {
-        const u = w.t / WATCH.warn;
+        const u = w.t / w.dur;
         this.watchEyes = { x: w.dir === 1 ? cam.x + 40 + 30 * u : cam.x + cam.viewportWidth - 40 - 30 * u, y: cam.y + 175, s: 0.8 + 0.5 * u, a: 0.5 + 0.5 * u, narrow: 0 };
         this.watchShadowAt = { x: w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30, a: 0.18 + 0.3 * u };
       } else if (w.seen) {
@@ -6983,7 +7069,7 @@ export class GameEngine {
       alpha = 0.55;
     } else if (w.phase === 'warn') {
       // it turns for its run: at the edge, flaring, and its shadow starts to show there
-      const u = w.t / WATCH.warn;
+      const u = w.t / w.dur;
       // (in from the edge to well inside the view, all of it on screen by the screech's end: upright, it sat half off the edge with
       // only its "!" showing, QA 2026-10-28)
       const inX = Math.min(130, cam.viewportWidth * 0.2);
@@ -7252,7 +7338,7 @@ export class GameEngine {
           this.watch.t = 0;
           this.watch.dur = WATCH.warn;
           sound.playEagleScreech();
-          this.addFloatingText('HIDE!', p.x, p.y - 96, '#fbbf24');
+          this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
           this.input.triggerHaptic(120);
         }
       },
@@ -7513,6 +7599,8 @@ export class GameEngine {
 
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
   private guide(text: string, seconds: number) {
+    // (the tips just marked sent are kept on the phone once this line has been shown: tipMemory.ts)
+    bindSent(text);
     this.stageHint = { text, life: seconds };
     this.bossGuideUp = false;
     this.guideN++;

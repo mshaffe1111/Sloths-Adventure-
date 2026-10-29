@@ -22,12 +22,16 @@
  *   3. arrangement  pads, bass, arpeggios, a countermelody and drums from the world's palette, layered in by intensity.
  */
 import { SCALES, hashStr, parseMelodyBar, rng } from './theory.ts';
-import type { ChordTrack, DrumName, DrumTrack, MelodyTrack, PatternTrack, Theme, Track } from './music.ts';
+import type { ChordTrack, DrumName, DrumTrack, MelodyTrack, NoteInstName, PatternTrack, Theme, Track } from './music.ts';
 import { IRON_CLAW, SLOMATT_A } from './tunes.ts';
 import { lullaby, stepBy } from './motifs.ts';
-import { orchestrate, PACE_CODE, paceFromCode, type Pace } from './orchestrate.ts';
+import { PACE_CODE, paceFromCode, type Pace } from './orchestrate.ts';
 import { actOfWorld, fitShift, LEAD_BAND, LEAD_SIT, leadWindow, MIN_BPM, type ActId } from './acts.ts';
 import { trim, VOICE_RANGE, VOICE_TRIM_DB } from './scoreKit.ts';
+import { arrange, ornament, rerhythm, hint, parseBar, POKEY_MOTIF, POKEY_MOTIF12, POKEY_ROOTS, transposeBar, type SectionSet } from './form.ts';
+import { STYLES, type StyleFigure } from './styles.ts';
+import { DOUBLES, realNoteName } from './realize.ts';
+import type { FormPart } from './music.ts';
 
 type R = () => number;
 type Mode = keyof typeof SCALES;
@@ -329,7 +333,8 @@ function fallBar(c: MelCtx, root: number, prevEnd: number): BarN {
 /** an 8-bar section A: state, answer by sequence, contrast, half cadence; repeat the idea; close on the tonic */
 function sectionA(c: MelCtx, roots: number[], start: number, doms?: boolean[]): { bars: BarN[]; motif: BarN; top: number } {
   // A keeps below the top of the range, so the climax of B really is the high point
-  c = { ...c, hi: Math.round(c.lo + (c.hi - c.lo) * 0.68) };
+  // (but never to less than an octave: a lead with a narrow range, the horn, would have nowhere left to close a phrase)
+  c = { ...c, hi: Math.min(c.hi, Math.max(c.lo + 7, Math.round(c.lo + (c.hi - c.lo) * 0.68))) };
   const rA = pickRhythm(c);
   const rB = pickRhythm(c);
   const b0 = buildBar(c, roots[0], rA, start, null);
@@ -401,7 +406,6 @@ function degreeRange(tonic: number, scale: number[], loMidi: number, hiMidi: num
 
 // ───────────────────────────────────────────── the worlds' styles ─────────────────────────────────────────────
 
-type Groove = 'bounce' | 'lazy' | 'drift' | 'drive' | 'march';
 
 /** the story's own tunes a stage can quote, and the sound they belong to */
 export type TuneName = 'pokey' | 'lullaby' | 'lament' | 'march';
@@ -410,19 +414,11 @@ interface WorldCard {
   /** the mode when the stage does not quote a tune (a quoted tune brings its own) */
   mode: Mode;
   tonics: string[];
-  bpm: [number, number];
-  swing?: number;
-  swing8?: number;
   /** who plays the tune (the real orchestra's solo voices; each is given only tunes that sit in its range, see acts.ts) */
   leads: Inst[];
   /** who plays it instead on every second time round */
   alts: Inst[];
-  pads: Array<'pad' | 'strings' | 'choir'>;
-  bass: Inst[];
-  arps: Inst[];
   counters: Inst[];
-  groove: Groove;
-  dens: MelCtx['dens'];
   /** chance of a seventh on any chord */
   seventh: number;
   /** the chance the A section is one of the story's tunes, tune by tune */
@@ -433,26 +429,35 @@ interface WorldCard {
 }
 
 /**
- * The worlds follow the story, in three acts (acts.ts). Each act has its own sound, and none of them stands still: a stage is a run.
- *
- *   Act I   The Trail      worlds 1-3   sunny and good-humored; flute, clarinet and violins over a bouncing pulse; Pokey's own tune
- *   Act II  The Cost       worlds 4-7   somber; oboe, cello and clarinet, the dorian and plain minor, fewer notes, the lullaby played sadly
- *   Act III The Iron Road  worlds 8-10  heavy; cellos and horns, the phrygian and the harmonic minor, the Iron March
+ * The worlds' keys, modes, lead instruments and quoted tunes, following the story's three acts (acts.ts). How each world SOUNDS (meter,
+ * tempo, groove, drums, bass, texture) is its style, in styles.ts.
  */
 const CARDS: Record<number, WorldCard> = {
+  // Each world has its own lead (Matt, 2026-10-29: "change the main instrument to really make it feel different") and a colour of its own;
+  // the alternates take the tune in a stage's other sections and tunes.
   // ---- Act I
-  1: { mode: 'major', tonics: ['C', 'D', 'F', 'G'], bpm: [108, 122], leads: ['flute', 'clarinet', 'violins'], alts: ['clarinet', 'oboe', 'flute'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'oboe'], groove: 'bounce', dens: 'normal', seventh: 0.1, tunes: [['pokey', 0.35]], slow: 0.1, delay: 0.75 },
-  2: { mode: 'major', tonics: ['G', 'D', 'A', 'C'], bpm: [104, 116], swing8: 0.18, leads: ['oboe', 'clarinet', 'flute'], alts: ['flute', 'clarinet', 'oboe'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'clarinet'], groove: 'lazy', dens: 'normal', seventh: 0.15, tunes: [['pokey', 0.25]], slow: 0.15, delay: 0.75 },
-  3: { mode: 'minor', tonics: ['A', 'E', 'D', 'B'], bpm: [104, 112], leads: ['oboe', 'clarinet', 'flute', 'cello'], alts: ['clarinet', 'oboe', 'flute'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'clarinet'], groove: 'drift', dens: 'sparse', seventh: 0.3, tunes: [], slow: 0.35, delay: 0.75 },
+  // 1 Emerald Canopy: the flute, with marimba
+  1: { mode: 'major', tonics: ['C', 'D', 'F', 'G'], leads: ['flute'], alts: ['clarinet', 'oboe'], counters: ['clarinet', 'oboe'], seventh: 0.1, tunes: [['pokey', 0.35]], slow: 0.1, delay: 0.75 },
+  // 2 the River: the clarinet, with harp ripples
+  2: { mode: 'major', tonics: ['G', 'D', 'A', 'C'], leads: ['clarinet'], alts: ['flute', 'oboe'], counters: ['flute', 'oboe'], seventh: 0.15, tunes: [['pokey', 0.25]], slow: 0.15, delay: 0.75 },
+  // 3 the night grotto: the harp, with glockenspiel sparkle over low cellos
+  3: { mode: 'minor', tonics: ['A', 'E', 'D', 'B'], leads: ['harp'], alts: ['clarinet', 'oboe'], counters: ['clarinet', 'oboe'], seventh: 0.3, tunes: [], slow: 0.35, delay: 0.75 },
   // ---- Act II: the notes get thin
-  4: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [100, 112], leads: ['oboe', 'cello', 'clarinet'], alts: ['clarinet', 'oboe', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'oboe'], groove: 'lazy', dens: 'sparse', seventh: 0.3, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
-  5: { mode: 'minor', tonics: ['A', 'E', 'D', 'G'], bpm: [106, 118], leads: ['oboe', 'clarinet', 'cello'], alts: ['clarinet', 'oboe', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'oboe'], groove: 'lazy', dens: 'normal', seventh: 0.25, tunes: [['lament', 0.35]], slow: 0.15, delay: 0.75 },
-  6: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [100, 110], leads: ['clarinet', 'oboe', 'cello'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['oboe', 'clarinet'], groove: 'lazy', dens: 'sparse', seventh: 0.25, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
-  7: { mode: 'phrygian', tonics: ['E', 'A', 'D', 'B'], bpm: [100, 112], leads: ['cello', 'horn', 'oboe', 'clarinet'], alts: ['horn', 'cello', 'clarinet'], pads: ['choir', 'strings'], bass: ['bass'], arps: ['celloStac'], counters: ['oboe', 'clarinet'], groove: 'march', dens: 'sparse', seventh: 0.1, tunes: [['march', 0.3], ['lament', 0.2]], slow: 0.4, delay: 0.75 },
+  // 4 falls and cliffs: the horn, with the flute for the wind
+  4: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], leads: ['horn'], alts: ['cello'], counters: ['flute', 'oboe'], seventh: 0.3, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
+  // 5 orchid and silk: the oboe, with pizzicato strings
+  5: { mode: 'minor', tonics: ['A', 'E', 'D', 'G'], leads: ['oboe'], alts: ['clarinet', 'flute'], counters: ['clarinet', 'flute'], seventh: 0.25, tunes: [['lament', 0.35]], slow: 0.15, delay: 0.75 },
+  // 6 the mangrove: the bassoon (in its upper range), with plucked double basses
+  6: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], leads: ['bassoon'], alts: ['cello'], counters: ['oboe', 'clarinet'], seventh: 0.25, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
+  // 7 the ruins: the cello, with marimba and a gong
+  7: { mode: 'phrygian', tonics: ['E', 'A', 'D', 'B'], leads: ['cello'], alts: ['horn', 'bassoon'], counters: ['oboe', 'clarinet'], seventh: 0.1, tunes: [['march', 0.3], ['lament', 0.2]], slow: 0.4, delay: 0.75 },
   // ---- Act III: heavy, the Iron March
-  8: { mode: 'lydian', tonics: ['D', 'A', 'G', 'E'], bpm: [108, 114], leads: ['clarinet', 'oboe', 'cello', 'violins'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings', 'choir'], bass: ['bass'], arps: ['harp'], counters: ['oboe', 'clarinet'], groove: 'drift', dens: 'sparse', seventh: 0.3, tunes: [['lullaby', 0.4]], slow: 0.45, delay: 0.75 },
-  9: { mode: 'phrygian', tonics: ['D', 'A', 'G', 'E'], bpm: [118, 132], leads: ['cello', 'cello', 'oboe', 'clarinet'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['celloStac', 'violinStac'], counters: ['oboe', 'clarinet'], groove: 'drive', dens: 'normal', seventh: 0.05, tunes: [['march', 0.4]], slow: 0, delay: 0.5 },
-  10: { mode: 'minor', tonics: ['C', 'G', 'F', 'D'], bpm: [114, 128], leads: ['horn', 'cello', 'cello', 'oboe'], alts: ['cello', 'horn', 'oboe'], pads: ['strings', 'choir'], bass: ['bass'], arps: ['celloStac', 'hornStac'], counters: ['oboe', 'clarinet'], groove: 'drive', dens: 'normal', seventh: 0.1, tunes: [['march', 0.45]], slow: 0.1, delay: 0.5 },
+  // 8 moonlit treetops: the violins, with glockenspiel
+  8: { mode: 'lydian', tonics: ['D', 'A', 'G', 'E'], leads: ['violins'], alts: ['oboe', 'clarinet'], counters: ['oboe', 'clarinet'], seventh: 0.3, tunes: [['lullaby', 0.4]], slow: 0.45, delay: 0.75 },
+  // 9 the volcano march: the trombone, over the tuba
+  9: { mode: 'phrygian', tonics: ['D', 'A', 'G', 'E'], leads: ['trombone'], alts: ['horn', 'cello'], counters: ['oboe', 'clarinet'], seventh: 0.05, tunes: [['march', 0.4]], slow: 0, delay: 0.5 },
+  // 10 the General's fortress: the horns, full brass and timpani
+  10: { mode: 'minor', tonics: ['C', 'G', 'F', 'D'], leads: ['horn'], alts: ['trombone', 'cello'], counters: ['oboe', 'clarinet'], seventh: 0.1, tunes: [['march', 0.45]], slow: 0.1, delay: 0.5 },
 };
 
 /**
@@ -484,93 +489,27 @@ const QUOTES: Record<TuneName, Quote> = {
   march: { mode: 'harmonicMinor', bars: lullaby('sq', { scale: 'harmonicMinor' }), roots: [0, 0, 5, 4, 3, 1, 4, 0], deltas: [1, 1], from: { end: 0, top: 8 }, doms: 'none' },
 };
 
+/** the tunes a world in three can quote, in their own counting: the lullaby in 6/8, as Meeca sang it (World 8, the treetops lullaby) */
+const QUOTES12: Partial<Record<TuneName, Quote>> = {
+  lullaby: { ...QUOTES.lullaby, bars: lullaby('68') },
+};
+
 const PC: Record<string, number> = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
-
-// ───────────────────────────────────────────── grooves ─────────────────────────────────────────────
-
-interface DrumSpec {
-  voice: DrumName;
-  pats: string[];
-  gain: number;
-  gate?: [number, number];
-  fill?: string;
-  pan?: number;
-}
-const FILL = 'x... x... x.x. xxxx';
-const GROOVES: Record<Groove, DrumSpec[]> = {
-  bounce: [
-    { voice: 'softKick', pats: ['x... .... x... ....', 'x... .... x... ..x.', 'x... ..x. x... ....', 'x... .... x.x. ....'], gain: 0.7, gate: [0.15, 0.4] },
-    { voice: 'shaker', pats: ['.x.x .x.x .x.x .x.x', 'x.x. x.x. x.x. x.x.', '.xox .xox .xox .xox'], gain: 0.55, gate: [0, 0.2] },
-    { voice: 'hat', pats: ['x.x. x.x. x.x. x.xo', '..x. ..x. ..x. ..x.', 'x.xo x.xo x.xo x.xo'], gain: 0.35, gate: [0.55, 0.85] },
-    { voice: 'congaHi', pats: ['.... x... .... x.x.', '..x. .... ..x. ..x.'], gain: 0.5, gate: [0.3, 0.55] },
-    { voice: 'congaLo', pats: ['..x. .... ..x. ....', 'x... ..x. .... ..x.'], gain: 0.5, gate: [0.3, 0.55] },
-    { voice: 'rim', pats: ['.... x... .... x...'], gain: 0.55, gate: [0.5, 0.8], fill: FILL },
-  ],
-  lazy: [
-    { voice: 'softKick', pats: ['x... .... ..x. ....', 'x... ..x. .... ....', 'x... .... x... ....'], gain: 0.65, gate: [0.1, 0.4] },
-    { voice: 'brush', pats: ['.... x... .... x...', '..x. x... ..x. x...'], gain: 0.5, gate: [0.2, 0.6] },
-    { voice: 'shaker', pats: ['x.x. x.x. x.x. x.x.', '.x.x .x.x .x.x .x.x'], gain: 0.5, gate: [0, 0.25] },
-    { voice: 'woodblock', pats: ['.... .... x... ....', '..x. .... .... ..x.'], gain: 0.45, gate: [0.3, 0.6] },
-    { voice: 'clave', pats: ['x..x ..x. ..x. x...'], gain: 0.4, gate: [0.45, 0.8] },
-  ],
-  drift: [
-    { voice: 'softKick', pats: ['x... .... .... ....', 'x... .... ..x. ....'], gain: 0.55, gate: [0.2, 0.5] },
-    { voice: 'shaker', pats: ['.... .x.. .... .x..', '..x. .... ..x. ....'], gain: 0.45, gate: [0, 0.35] },
-    { voice: 'woodblock', pats: ['.... .... ..x. ....', '.... ..x. .... ....'], gain: 0.4, gate: [0.35, 0.7] },
-    { voice: 'timpani', pats: ['X... .... .... ....'], gain: 0.4, gate: [0.6, 0.9] },
-  ],
-  drive: [
-    { voice: 'kick', pats: ['x... x... x... x...', 'x..x ..x. x..x ..x.', 'x... x... x..x ..x.'], gain: 0.7, gate: [0.15, 0.4] },
-    { voice: 'snare', pats: ['.... x... .... x...'], gain: 0.55, gate: [0.35, 0.7], fill: FILL },
-    { voice: 'hat', pats: ['x.x. x.x. x.x. x.x.', 'xxxx xxxx xxxx xxxx'], gain: 0.3, gate: [0.5, 0.9] },
-    { voice: 'taiko', pats: ['x... .... ..x. ....', 'x... .... x... ....'], gain: 0.6, gate: [0.45, 0.9] },
-    { voice: 'tom', pats: ['.... .... .... ..xx'], gain: 0.4, gate: [0.6, 1] },
-  ],
-  march: [
-    { voice: 'taiko', pats: ['x... .... x... ..x.', 'X... .... .... X...'], gain: 0.6, gate: [0, 0.4] },
-    { voice: 'tom', pats: ['.... x... .... x...', '.... ..x. .... ..x.'], gain: 0.45, gate: [0.3, 0.6] },
-    { voice: 'woodblock', pats: ['x.x. x.x. x.x. x.x.'], gain: 0.35, gate: [0.5, 0.9] },
-    { voice: 'timpani', pats: ['X... .... .... ....'], gain: 0.45, gate: [0.4, 0.8] },
-  ],
-};
-const BASS_POOLS: Record<Groove, string[]> = {
-  bounce: ['R... ..r. ..f. r...', 'R... ..r. R... ..f.', 'R.-. ..r. ..f. r.-.'],
-  lazy: ['R... ..r. ..f. r...', 'R..r ..R. .r.. f.r.'],
-  drift: ['R--- ---- ---- ----', 'R--- ---. ..f. ....', 'R--- ---- r--- ----'],
-  drive: ['R.R. R.r. R.R. f.r.', 'R.R. R.r. R.rR .f.r', 'R... R... R.r. f.r.'],
-  march: ['R--- ---- ---. ....', 'R--- ---- r--- ....'],
-};
-const ARP_POOLS: Record<Groove, string[]> = {
-  bounce: ['r.t.f.t. r.t.f.t.', 'r.t.f.o.f.t.f.t.'],
-  lazy: ['r.t.f.t. r.t.f.t.', 'r.t.f.s.f.t.r.t.'],
-  drift: ['r... t... f... t...', 'r... f... t... s...', '.... .... t... ....'],
-  drive: ['r.t. f.t. r.t. f.t.', 't.f. r.f. t.f. r.s.'],
-  march: ['r... .... t... ....', 'r... t... f... t...'],
-};
-
-const drumTracks = (r: R, groove: Groove): DrumTrack[] =>
-  GROOVES[groove].map((d, i) => {
-    // each stage keeps a different subset and ordering of the grooves' patterns
-    const first = pick(r, d.pats);
-    const second = pick(r, d.pats);
-    const pats = first === second ? [first] : [first, second];
-    return { kind: 'drums', name: `${d.voice}${i}`, voice: d.voice, pats, gain: d.gain, gate: d.gate, fill: d.fill, pan: d.pan } as DrumTrack;
-  });
 
 // ───────────────────────────────────────────── a stage ─────────────────────────────────────────────
 
 export interface Composed {
   theme: Theme;
   /** what was chosen, for the debug overlay and for tests */
-  info: { key: string; mode: string; bpm: number; lead: string; groove: Groove; hero: boolean; tune: TuneName | null; act: ActId; progression: string[] };
+  info: { key: string; mode: string; bpm: number; lead: string; hero: boolean; tune: TuneName | null; act: ActId; progression: string[] };
 }
 
 /** the lowest and highest note of some bars of melody, as written (MIDI) */
-function extentOf(bars: string[], tonicMidi: number, scale: number[]): [number, number] {
+function extentOf(bars: string[], tonicMidi: number, scale: number[], steps: 12 | 16 = 16): [number, number] {
   let lo = 999;
   let hi = -999;
   for (const b of bars) {
-    for (const n of parseMelodyBar(b, tonicMidi, scale, 16)) {
+    for (const n of parseMelodyBar(b, tonicMidi, scale, steps)) {
       if (n.midi === null) continue;
       lo = Math.min(lo, n.midi);
       hi = Math.max(hi, n.midi);
@@ -603,10 +542,15 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
   const r = rng((hashStr(`stage${w}`) ^ Math.imul(seed >>> 0, 2654435761)) >>> 0);
   const tonicName0 = pick(r, card.tonics);
   // a stage is a run, even in the saddest act: the act sets the slowest the music may be
-  const bpm = Math.max(MIN_BPM[act], Math.round(card.bpm[0] + r() * (card.bpm[1] - card.bpm[0])));
+  // each world's own style (styles.ts): its tempo band, meter, groove and texture
+  const style = STYLES[w];
+  const bpm = Math.round(style.bpm[0] + r() * (style.bpm[1] - style.bpm[0]));
   // some stages open with one of the story's tunes, and then the stage is in that tune's mode
-  const tune = rollTune(r, card.tunes);
-  const quote = tune ? QUOTES[tune] : undefined;
+  // (a world in three or six has no quotes: the story's tunes are written in four)
+  // (a world in three quotes a tune only in its own counting: Meeca's lullaby as she sang it, in 6/8. The others are written in four)
+  const rolled = rollTune(r, card.tunes);
+  const tune = style.meter === 12 ? (rolled && QUOTES12[rolled] ? rolled : null) : rolled;
+  const quote = tune ? (style.meter === 12 ? QUOTES12[tune] : QUOTES[tune]) : undefined;
   const mode = quote ? quote.mode : card.mode;
   const scale = SCALES[mode];
   const first = Math.floor(r() * card.leads.length);
@@ -625,7 +569,7 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     for (const inst of order) {
       for (let k = 0; k < card.tonics.length && !placed; k++) {
         const name = card.tonics[(start + k) % card.tonics.length];
-        const [tlo, thi] = extentOf(quote.bars, tonicOf(name), scale);
+        const [tlo, thi] = extentOf(quote.bars, tonicOf(name), scale, style.meter);
         const s = fitShift(inst, tlo, thi);
         if (s !== null) {
           tonicName = name;
@@ -638,7 +582,7 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     }
     if (!placed) {
       // no lead of the world's can take it in any of its keys: the nearest instrument that can
-      const [tlo, thi] = extentOf(quote.bars, tonicOf(tonicName0), scale);
+      const [tlo, thi] = extentOf(quote.bars, tonicOf(tonicName0), scale, style.meter);
       for (const inst of Object.keys(LEAD_BAND)) {
         const s = fitShift(inst, tlo, thi);
         if (s !== null) {
@@ -651,10 +595,17 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
   }
   const tonicPc = PC[tonicName];
   const flats = usesFlats(tonicPc, mode);
-  const tonicStr = `${noteName(tonicPc, flats)}${tonicPc >= 10 ? 3 : 4}`;
-  const tonicMidi = tonicOf(tonicName);
-  const tuneRange = quote ? extentOf(quote.bars, tonicMidi, scale) : null;
-  const slow = !quote && r() < card.slow;
+  // a made-up tune's home note sits near the bottom of where its lead sings, whatever the key (a horn or a bassoon in A put it at the top of
+  // their range, and the tune was squeezed into five notes); a quoted tune keeps the octave it was fitted in
+  const tonicMidi = quote ? tonicOf(tonicName) : (() => {
+    let m = tonicOf(tonicName);
+    const low = leadWindow(lead)[0] - shift;
+    while (m > low + 5) m -= 12;
+    return m;
+  })();
+  const tonicStr = `${noteName(tonicPc, flats)}${Math.floor(tonicMidi / 12) - 1}`;
+  const tuneRange = quote ? extentOf(quote.bars, tonicMidi, scale, style.meter) : null;
+  const slow = !quote && r() < style.slow;
   const h = harmony16(r, mode, tonicPc, { slow, seventh: card.seventh, tune: quote });
 
   // the melody: A section, B section, composed to the chords. The made-up part keeps to the instrument's own comfortable stretch.
@@ -665,7 +616,7 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     tuneRange ? Math.min(win[0] - shift, tuneRange[0]) : win[0] - shift,
     tuneRange ? Math.max(win[1] - shift, tuneRange[1] + 3) : win[1] - shift,
   );
-  const c: MelCtx = { r, steps: 16, lo, hi, dens: card.dens };
+  const c: MelCtx = { r, steps: style.meter, lo, hi, dens: style.dens };
   const mid = Math.round(lo + (hi - lo) * 0.45);
   let barsA: string[];
   let motif: BarN;
@@ -690,42 +641,215 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
   const trimDb = (x: string) => VOICE_TRIM_DB[x] ?? 0;
   const altChoices = card.alts.filter((x) => x !== lead && (LEAD_SIT[x] ?? 0) === (LEAD_SIT[lead] ?? 0) && Math.abs(trimDb(x) - trimDb(lead)) <= 2 && coversRange(x, shift, noteLo, noteHi));
   const alt = altChoices.length ? pick(r, altChoices) : undefined;
-  const padInst = pick(r, card.pads);
-  const bassInst = pick(r, card.bass);
-  const groove = card.groove;
-  const padLo = padInst === 'choir' ? 55 : padInst === 'strings' ? 45 : 50;
-  const padHi = padInst === 'choir' ? 74 : padInst === 'strings' ? 69 : 70;
+  // (two throws of the dice that once chose the pad and the bass: kept, so every stage's tunes stay the ones Matt approved)
+  r();
+  r();
 
   const tracks: Track[] = [];
-  tracks.push({ kind: 'chords', name: 'pad', inst: padInst, lo: padLo, hi: padHi, voices: 4, gain: padInst === 'pad' ? 0.34 : 0.3, rev: 0.45 } as ChordTrack);
-  tracks.push({ kind: 'pattern', name: 'bass', inst: bassInst, oct: bassInst === 'bass' ? 36 : 33, pats: [pick(r, BASS_POOLS[groove]), pick(r, BASS_POOLS[groove])], gain: 0.52, rev: 0.05 } as PatternTrack);
+  // the world's own texture (styles.ts): its held chords, its bass line, its accompaniment figures and its drums
+  for (const ch of style.chords) {
+    tracks.push({ kind: 'chords', name: ch.name, inst: ch.inst, lo: ch.lo, hi: ch.hi, voices: ch.voices ?? 3, gain: ch.gain, rev: ch.rev ?? 0.45, ...(ch.stabs ? { stabs: ch.stabs, stabLen: ch.stabLen ?? 2 } : {}), ...(ch.gate ? { gate: ch.gate } : {}) } as ChordTrack);
+  }
+  const fig = (f: StyleFigure): PatternTrack => ({ kind: 'pattern', name: f.name, inst: f.inst, oct: f.oct, pats: f.pats, gain: f.gain, rev: f.rev ?? 0.15, len: f.len ?? 0.9, ...(f.pan ? { pan: f.pan } : {}), ...(f.gate ? { gate: f.gate } : {}) });
+  tracks.push(fig(style.bass));
   tracks.push({ kind: 'melody', name: 'lead', inst: lead, ...(alt ? { altInst: alt } : {}), bars, ...(shift ? { shift } : {}), gain: Math.round(0.64 * (LEAD_LEVEL[lead] ?? 1) * trim(lead) * 1000) / 1000, rev: 0.32, dly: 0.16 } as MelodyTrack);
-  const arpInst = pick(r, card.arps);
-  tracks.push({ kind: 'pattern', name: 'arp', lite: true, inst: arpInst, oct: ARP_OCT[arpInst] ?? 58, pats: [pick(r, ARP_POOLS[groove]), pick(r, ARP_POOLS[groove])], gain: 0.38, rev: 0.3, dly: 0.14, pan: pick(r, [-0.25, 0.25]), gate: [0.1, 0.45] } as PatternTrack);
-  const counterInst = pick(r, card.counters);
-  const counterSit = LEAD_SIT[counterInst] ?? 0;
-  tracks.push({
-    kind: 'melody', name: 'counter', lite: true, inst: counterInst,
-    bars: Array.from({ length: 16 }, () => null), gen: { lo: tonicMidi + 7, hi: tonicMidi + 19, density: 0.3 },
-    ...(counterSit ? { shift: counterSit } : {}),
-    gain: Math.round(0.4 * trim(counterInst) * 1000) / 1000, rev: 0.5, dly: 0.22, pan: pick(r, [-0.3, 0.3]), gate: [0.4, 0.8],
-  } as MelodyTrack);
-  tracks.push(...drumTracks(r, groove));
+  for (const f of style.figures) tracks.push(fig(f));
+  const counterInst = style.counter?.inst ?? pick(r, card.counters);
+  if (style.counter) {
+    const counterSit = LEAD_SIT[counterInst] ?? 0;
+    tracks.push({
+      kind: 'melody', name: 'counter', lite: true, inst: counterInst,
+      bars: Array.from({ length: 16 }, () => null), gen: { lo: tonicMidi + 7, hi: tonicMidi + 19, density: 0.3 },
+      ...(counterSit ? { shift: counterSit } : {}),
+      gain: Math.round(0.36 * trim(counterInst) * 1000) / 1000, rev: 0.5, dly: 0.22, pan: pick(r, [-0.3, 0.3]), gate: style.counter.gate,
+    } as MelodyTrack);
+  }
+  style.drums.forEach((d, i) => {
+    tracks.push({ kind: 'drums', name: `${d.voice}${i}`, voice: d.voice, pats: d.pats, gain: d.gain, rev: 0.2, ...(d.gate ? { gate: d.gate } : {}), ...(d.mask ? { mask: d.mask } : {}), ...(d.fill ? { fill: d.fill } : {}) } as DrumTrack);
+  });
 
-  let theme: Theme = {
+  // ---- the form: the tune built out into sections (form.ts), from its own dice so the tune itself is the same as it always was
+  const form = stageForm({
+    r: rng((hashStr(`form${w}`) ^ Math.imul(seed >>> 0, 2246822519)) >>> 0), seed, mode, tonicPc, card, h, barsA, barsB: b.map(barStr), c, motif, from, mid,
+    lead, alt, counter: counterInst, shift, noteLo, noteHi, tunes: 2 + ((seed >>> 3) % 2),
+  });
+
+  const theme: Theme = {
     id: `gen-${w}-${seed >>> 0}${pace ? '-' + PACE_CODE[pace] : ''}`,
     bpm,
     tonic: tonicStr,
     scale: mode,
-    swing: card.swing,
-    swing8: card.swing8,
+    ...(style.meter === 12 ? { stepsPerBar: 12 as const } : {}),
+    swing: style.swing,
+    swing8: style.swing8,
     delay: card.delay,
     chords: mergeChords(h.names),
+    form,
+    chain: true,
+    orch: style.orch,
+    ...(style.tempoMap ? { tempoMap: style.tempoMap } : {}),
+    ...(style.level ? { level: style.level } : {}),
     tracks,
   };
-  // the same tune, dressed in the orchestra for what the player is doing (the notes do not change with the pace)
-  if (pace) theme = { ...orchestrate(theme, { world: w, pace, seed }), ...(STAGE_LEVEL[w] ? { level: STAGE_LEVEL[w] } : {}) };
-  return { theme, info: { key: `${noteName(tonicPc, flats)} ${mode}`, mode, bpm, lead, groove, hero: !!quote, tune, act, progression: h.names } };
+  // (the world's style is its whole arrangement: what the stage is about, the pace, only names it and nudges its speed, scenes.ts)
+  return { theme, info: { key: `${noteName(tonicPc, flats)} ${mode}`, mode, bpm, lead, hero: !!quote, tune, act, progression: h.names } };
+}
+
+// ───────────────────────────────────────────── a stage's form ─────────────────────────────────────────────
+
+/** the C section's chords: it starts away from home (on the relative or the subdominant side) and ends on the way back */
+const C_PROG: Record<'bright' | 'dark' | 'phrygian', number[][]> = {
+  bright: [[5, 3, 0, 4], [3, 4, 2, 5], [5, 1, 4, 0], [3, 0, 1, 4], [5, 2, 3, 4]],
+  dark: [[2, 5, 3, 4], [5, 2, 6, 2], [3, 6, 2, 5], [5, 6, 2, 3], [2, 6, 3, 4]],
+  phrygian: [[6, 5, 1, 0], [5, 6, 1, 6], [2, 1, 6, 0]],
+};
+/** the bridge climbs two bars to a chord, to the chord that leads home */
+const BRIDGE: Record<'bright' | 'dark' | 'phrygian', number[][]> = {
+  bright: [[3, 4, 5], [1, 3, 4], [5, 3, 1]],
+  dark: [[5, 6, 3], [3, 6, 5], [5, 3, 6]],
+  phrygian: [[1, 6, 5], [5, 6, 1]],
+};
+
+interface FormInput {
+  r: R;
+  seed: number;
+  mode: Mode;
+  tonicPc: number;
+  card: WorldCard;
+  h: Harmony;
+  barsA: string[];
+  barsB: string[];
+  c: MelCtx;
+  motif: BarN;
+  from: { end: number; top: number };
+  mid: number;
+  lead: Inst;
+  alt?: Inst;
+  counter: Inst;
+  shift: number;
+  noteLo: number;
+  noteHi: number;
+  /** how many tunes the stage has (2 or 3) */
+  tunes: number;
+}
+
+/**
+ * A stage's tune built out into a form (see form.ts for the plan): the A and B it already has, a varied A twice, a varied B, a new C
+ * section on another instrument, a bridge, and the quiet passage, laid out in one of the orders. All in the stage's key and mode.
+ */
+function stageForm(f: FormInput): FormPart[] {
+  const { r, mode, tonicPc, card, h } = f;
+  const fam = mode === 'phrygian' ? 'phrygian' : MINORISH.has(mode) ? 'dark' : 'bright';
+  const cad = cadenceRoot(mode);
+  const names = (roots: number[]) =>
+    mergeChords(roots.map((root, i) => chordName(tonicPc, mode, root, { seventh: r() < card.seventh, dom: cadenceIsDom(mode) && mode !== 'harmonicMinor' && root === 4 && i >= 6 })));
+  const domsOf = (roots: number[]) => roots.map((root, i) => cadenceIsDom(mode) && mode !== 'harmonicMinor' && root === 4 && i >= 6);
+  // who takes the tune in the C section and the varied A: an instrument of the world's that can play it at the lead's own shift
+  // (only an instrument the piece already plays: its countermelody, its alternate, or one that doubles its tune. A new one would be one more
+  // instrument for a phone to fetch and hold in memory, 2-6 MB each)
+  const plays = new Set<string>([f.counter, ...(f.alt ? [f.alt] : []), ...(DOUBLES[realNoteName(f.lead)] ?? []).map((d) => d.inst)]);
+  // (and about as loud as the lead for the same gain, as the alternate is chosen: a section plays its tune at the lead's level)
+  const trimDb = (x: string) => VOICE_TRIM_DB[x] ?? 0;
+  const can = (x: Inst) =>
+    x !== f.lead && plays.has(x) && (LEAD_SIT[x] ?? 0) === (LEAD_SIT[f.lead] ?? 0) && Math.abs(trimDb(x) - trimDb(f.lead)) <= 2 && coversRange(x, f.shift, f.noteLo, f.noteHi);
+  const others = [...new Set([f.counter, ...f.card.alts, ...f.card.leads, ...plays])].filter(can);
+  // (the C section gets someone other than the varied A's player when the world has one)
+  const notAlt = others.filter((x) => x !== f.alt);
+  const cInst = notAlt.length ? pick(r, notAlt) : others.length ? pick(r, others) : undefined;
+  const aInst = f.alt ?? (others.length > 1 ? others.find((x) => x !== cInst) : undefined);
+
+  // ---- C: new chords, a new tune (sparser or busier than the A), ending open on the chord that leads home
+  const pC = pick(r, C_PROG[fam]);
+  const rootsC = [...pC, pC[0], pC[1], pick(r, [3, 1, 5].filter((x) => x !== cad)), cad];
+  const dens: MelCtx['dens'] = f.c.dens === 'sparse' ? 'normal' : 'sparse';
+  const cc: MelCtx = { ...f.c, r, dens };
+  const dC = domsOf(rootsC);
+  const c0 = buildBar(cc, rootsC[0], pickRhythm(cc), f.mid + pick(r, [1, 2, 3]), null);
+  const c1 = buildBar(cc, rootsC[1], pickRhythm(cc), c0.end + pick(r, [-1, 1]), c0.deltas);
+  const c2 = buildBar(cc, rootsC[2], pickRhythm(cc), c1.end + pick(r, [-2, -1, 1]), null);
+  const c3 = cadenceBar(cc, rootsC[3], 'half', c2.end, dC[3]);
+  const c4 = buildBar(cc, rootsC[4], pickRhythm(cc), clamp(c0.notes[0].n ?? f.mid, c3.end - 4, c3.end + 4), c0.deltas);
+  const c5 = buildBar(cc, rootsC[5], pickRhythm(cc), c4.end + pick(r, [-1, 1, 2]), c1.deltas);
+  const c6 = buildBar(cc, rootsC[6], pickRhythm(cc), c5.end + pick(r, [-1, 1]), null, dC[6]);
+  const c7 = cadenceBar(cc, rootsC[7], 'open', Math.round((c6.end + f.mid) / 2), dC[7]);
+  const barsC = [c0, c1, c2, c3, c4, c5, c6, c7].map(barStr);
+
+  // ---- the bridge: two bars to a chord, long notes climbing on the chord tones, then the dominant
+  const [x, y, z] = pick(r, BRIDGE[fam]);
+  const rootsBr = [x, x, y, y, z, z, cad, cad];
+  const sb: MelCtx = { ...f.c, r, dens: 'sparse' };
+  const barsBr: string[] = [];
+  let at = f.mid - 2;
+  for (let i = 0; i < 8; i++) {
+    const rhythm = f.c.steps === 12 ? (i === 7 ? [8, -4] : pick(r, [[6, 6], [8, 4], [4, 2, 6], [12]])) : i === 7 ? [12, -4] : pick(r, [[8, 8], [12, 4], [6, 2, 8], [4, 4, 8]]);
+    const bar = buildBar(sb, rootsBr[i], rhythm, at, i % 2 === 1 ? [1, 1, 1] : null);
+    barsBr.push(barStr(bar));
+    at = Math.min(sb.hi - 1, bar.end + (i % 2 === 1 ? 1 : 0));
+  }
+
+  // ---- the A section's second phrase answered anew (A3), over its own chords
+  const rootsA = h.roots.slice(0, 8);
+  const dA = h.doms.slice(0, 8);
+  const ac: MelCtx = { ...f.c, r };
+  const motifDeltas = f.motif.deltas.length ? f.motif.deltas : null;
+  const a4 = buildBar(ac, rootsA[4], pickRhythm(ac), f.mid + pick(r, [0, 1, 2]), null);
+  const a5 = buildBar(ac, rootsA[5], pickRhythm(ac), a4.end + pick(r, [-1, 1]), motifDeltas);
+  const a6 = buildBar(ac, rootsA[6], pickRhythm(ac), a5.end + pick(r, [-1, 1]), null, dA[6]);
+  const a7 = cadenceBar(ac, rootsA[7], 'auth', a6.end, dA[7]);
+  const barsA3 = [...f.barsA.slice(0, 4).map((b) => rerhythm(b, r)), ...[a4, a5, a6, a7].map(barStr)];
+
+  const lead = (bars: string[]) => ({ lead: bars });
+  const sections: SectionSet = {
+    A: { chords: names(rootsA), lines: lead(f.barsA) },
+    A2: { chords: names(rootsA), lines: lead(f.barsA.map((b) => ornament(b, r))), ...(aInst ? { inst: { lead: aInst as NoteInstName } } : {}) },
+    A3: { chords: names(rootsA), lines: lead(barsA3), lift: 0.08 },
+    B: { chords: names(h.roots.slice(8, 16)), lines: lead(f.barsB) },
+    B2: { chords: names(h.roots.slice(8, 16)), lines: lead(f.barsB.map((b) => rerhythm(b, r))), ...(cInst ? { inst: { lead: cInst as NoteInstName } } : {}) },
+    C: { chords: names(rootsC), lines: lead(barsC), ...(cInst ? { inst: { lead: cInst as NoteInstName } } : {}), lift: -0.05 },
+    bridge: { chords: names(rootsBr), lines: lead(barsBr), lift: 0.18, rest: ['counter'] },
+    break: {
+      chords: names([...rootsA.slice(0, 4), ...rootsA.slice(0, 2), pick(r, [3, 1, 5]), cad]),
+      lines: lead([hint(f.barsA[0], f.c.steps), restBar(f.c.steps), hint(f.barsA[1], f.c.steps), restBar(f.c.steps), hint(f.barsA[0], f.c.steps), restBar(f.c.steps), restBar(f.c.steps), restBar(f.c.steps)]),
+      rest: ['perc', 'low', 'stab', 'drive', 'counter'],
+      lift: -0.35,
+    },
+  };
+  // ---- the stage's other tunes (Matt, 2026-10-29: "write more musics for levels"): the same key, mode and instruments, their own chords
+  // and melody, cut into chunks the same way. The first of them opens with Pokey's motif (form.ts), the thread through every world.
+  const pool: FormPart[] = arrange(sections, f.seed >>> 5).filter((p, i, a) => a.findIndex((q) => q.name === p.name) === i).map((p) => ({ ...p, tune: 0 }));
+  for (let k = 1; k < f.tunes; k++) {
+    const hk = harmony16(r, mode, tonicPc, { slow: r() < card.slow, seventh: card.seventh });
+    const ck: MelCtx = { ...f.c, r, dens: k === 1 ? f.c.dens : f.c.dens === 'sparse' ? 'normal' : 'sparse' };
+    const rootsK = hk.roots.slice(0, 8);
+    const a = sectionA(ck, rootsK, f.mid + pick(r, [-2, -1, 1, 2]), hk.doms.slice(0, 8));
+    let barsK = a.bars.map(barStr);
+    if (k === 1) {
+      // Pokey's two bars over the home chord and the fifth, moved by octaves into the range the stage's tune keeps to
+      const motifBars = f.c.steps === 12 ? POKEY_MOTIF12 : POKEY_MOTIF;
+      const lo = Math.min(...motifBars.flatMap((b) => parseBar(b).map((t) => t.n ?? 99)));
+      const hi = Math.max(...motifBars.flatMap((b) => parseBar(b).map((t) => t.n ?? -99)));
+      let step = 0;
+      while (lo + step < f.c.lo && hi + step + 7 <= f.c.hi + 2) step += 7;
+      while (hi + step > f.c.hi + 2 && lo + step - 7 >= f.c.lo - 2) step -= 7;
+      barsK = [...motifBars.map((b) => transposeBar(b, step)), ...barsK.slice(2)];
+      rootsK[0] = POKEY_ROOTS[0];
+      rootsK[1] = POKEY_ROOTS[1];
+    }
+    const bk = sectionB(ck, hk.roots.slice(8, 16), a.motif, f.mid, hk.doms.slice(8, 16), { end: a.bars[7].end, top: a.top });
+    const tag = `·${k + 1}`;
+    pool.push(
+      { name: `A${tag}`, tune: k, chords: names(rootsK), lines: lead(barsK) },
+      { name: `B${tag}`, tune: k, chords: names(hk.roots.slice(8, 16)), lines: lead(bk.map(barStr)) },
+      { name: `A2${tag}`, tune: k, chords: names(rootsK), lines: lead(barsK.map((b) => ornament(b, r))), ...(aInst ? { inst: { lead: aInst as NoteInstName } } : {}) },
+      {
+        name: `break${tag}`, tune: k,
+        chords: names([...rootsK.slice(0, 4), ...rootsK.slice(0, 2), pick(r, [3, 1, 5]), cad]),
+        lines: lead([hint(barsK[0], f.c.steps), restBar(f.c.steps), hint(barsK[1], f.c.steps), restBar(f.c.steps), hint(barsK[0], f.c.steps), restBar(f.c.steps), restBar(f.c.steps), restBar(f.c.steps)]),
+        rest: ['perc', 'low', 'stab', 'drive', 'counter'], lift: -0.35,
+      },
+    );
+  }
+  return pool;
 }
 
 /**
@@ -733,15 +857,6 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
  * rendering stages and comparing the tune with everything else. The cello's low notes carry a lot of weight, and the horn is a loud instrument.
  */
 const LEAD_LEVEL: Record<string, number> = { cello: 0.7, horn: 0.85 };
-
-/**
- * The master level of a dressed stage, world by world, so that every act plays about as loud as the music before it (A-weighted, measured on
- * rendered stages): the brass-heavy worlds, with their tuba, trombones, choir and drums, came out about a decibel and a half hot.
- */
-const STAGE_LEVEL: Record<number, number | undefined> = { 7: 0.84, 8: 0.94, 9: 0.94, 10: 0.81 };
-
-/** where an arpeggio of each voice is centred (MIDI): a figure for the cello lies lower than one for the violins */
-const ARP_OCT: Record<string, number> = { harp: 58, celloStac: 48, violinStac: 62, hornStac: 48 };
 
 export const composeStage = (world: number, seed: number, pace?: Pace): Theme => composeStageFull(world, seed, pace).theme;
 
@@ -841,7 +956,8 @@ const STORY: Record<StoryKind, () => StorySpec> = {
       { name: 'theme', bars: 8, roots: [0, 4, 5, 3, 0, 4, 3, 4], layers: ['strings', 'harp', 'leadA', 'bass'], melody: 'hero', lead: 'leadA' },
       { name: 'theme again', bars: 8, roots: [0, 4, 5, 3, 0, 4, 3, 4], layers: ['strings', 'harp', 'leadB', 'bass', 'bell', 'choir'], melody: 'hero', lead: 'leadB' },
       { name: 'her theme', bars: 8, roots: [5, 3, 0, 4, 5, 3, 1, 4], layers: ['strings', 'harp', 'leadA', 'counter', 'choir', 'bass', 'timp'], melody: 'B', lead: 'leadA' },
-      { name: 'together', bars: 8, roots: [0, 4, 5, 3, 0, 4, 3, 0], layers: ['strings', 'choir', 'harp', 'leadB', 'counter', 'bass', 'bell', 'timp', 'taiko', 'crash'], melody: 'hero', lead: 'leadB' },
+      // (the game's last statement of Pokey's tune is World 1's flute, where it all began: the finale resolves on it, the lead 2026-10-29)
+      { name: 'together', bars: 8, roots: [0, 4, 5, 3, 0, 4, 3, 0], layers: ['strings', 'choir', 'harp', 'leadA', 'counter', 'bass', 'bell', 'timp', 'taiko', 'crash'], melody: 'hero', lead: 'leadA' },
       { name: 'glow', bars: 4, roots: [3, 0, 3, 0], layers: ['strings', 'harp', 'bell', 'choir'], melody: 'none' },
     ],
   }),

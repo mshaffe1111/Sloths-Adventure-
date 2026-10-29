@@ -1,0 +1,600 @@
+{
+ "dot-fly0": {
+  "scale": 6.121739130434783,
+  "ox": 111,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   0,
+   227,
+   131,
+   92
+  ],
+  "frame": {
+   "x": 0,
+   "y": 227,
+   "w": 131,
+   "h": 92,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-fly1": {
+  "scale": 5.313207547169812,
+  "ox": 167,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   366,
+   0,
+   130,
+   106
+  ],
+  "frame": {
+   "x": 366,
+   "y": 0,
+   "w": 130,
+   "h": 106,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-fly2": {
+  "scale": 5.263551401869159,
+  "ox": 165,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   232,
+   0,
+   132,
+   107
+  ],
+  "frame": {
+   "x": 232,
+   "y": 0,
+   "w": 132,
+   "h": 107,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-fly3": {
+  "scale": 5.4679611650485445,
+  "ox": 181,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   0,
+   122,
+   121,
+   103
+  ],
+  "frame": {
+   "x": 0,
+   "y": 122,
+   "w": 121,
+   "h": 103,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-perch": {
+  "scale": 5.991489361702128,
+  "ox": 141,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   379,
+   122,
+   124,
+   94
+  ],
+  "frame": {
+   "x": 379,
+   "y": 122,
+   "w": 124,
+   "h": 94,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-yelp": {
+  "scale": 6.6258823529411774,
+  "ox": 141,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   322,
+   227,
+   112,
+   85
+  ],
+  "frame": {
+   "x": 322,
+   "y": 227,
+   "w": 112,
+   "h": 85,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-dizzy": {
+  "scale": 5.866666666666667,
+  "ox": 145,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   252,
+   122,
+   125,
+   96
+  ],
+  "frame": {
+   "x": 252,
+   "y": 122,
+   "w": 125,
+   "h": 96,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-flinch": {
+  "scale": 5.80618556701031,
+  "ox": 143,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   123,
+   122,
+   127,
+   97
+  ],
+  "frame": {
+   "x": 123,
+   "y": 122,
+   "w": 127,
+   "h": 97,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-cheer": {
+  "scale": 4.693333333333333,
+  "ox": 252,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   0,
+   0,
+   111,
+   120
+  ],
+  "frame": {
+   "x": 0,
+   "y": 0,
+   "w": 111,
+   "h": 120,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-puzzled": {
+  "scale": 4.984070796460178,
+  "ox": 220,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   113,
+   0,
+   117,
+   113
+  ],
+  "frame": {
+   "x": 113,
+   "y": 0,
+   "w": 117,
+   "h": 113,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-sad": {
+  "scale": 6.473563218390805,
+  "ox": 279,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   133,
+   227,
+   72,
+   87
+  ],
+  "frame": {
+   "x": 133,
+   "y": 227,
+   "w": 72,
+   "h": 87,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-gasp": {
+  "scale": 6.473563218390805,
+  "ox": 146,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   207,
+   227,
+   113,
+   87
+  ],
+  "frame": {
+   "x": 207,
+   "y": 227,
+   "w": 113,
+   "h": 87,
+   "f": 1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-sleep": {
+  "scale": 8.487207207207208,
+  "ox": 41,
+  "oy": 267,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   0,
+   452,
+   111,
+   59
+  ],
+  "frame": {
+   "x": 0,
+   "y": 452,
+   "w": 111,
+   "h": 59,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-closed": {
+  "scale": 9.083870967741936,
+  "ox": 176,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   313,
+   321,
+   74,
+   62
+  ],
+  "frame": {
+   "x": 313,
+   "y": 321,
+   "w": 74,
+   "h": 62,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-small": {
+  "scale": 9.083870967741936,
+  "ox": 171,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   389,
+   321,
+   75,
+   62
+  ],
+  "frame": {
+   "x": 389,
+   "y": 321,
+   "w": 75,
+   "h": 62,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-ee": {
+  "scale": 9.386666666666667,
+  "ox": 137,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   395,
+   388,
+   80,
+   60
+  ],
+  "frame": {
+   "x": 395,
+   "y": 388,
+   "w": 80,
+   "h": 60,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-ah": {
+  "scale": 9.232786885245902,
+  "ox": 143,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   146,
+   388,
+   80,
+   61
+  ],
+  "frame": {
+   "x": 146,
+   "y": 388,
+   "w": 80,
+   "h": 61,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-oh": {
+  "scale": 9.083870967741936,
+  "ox": 158,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   0,
+   388,
+   78,
+   62
+  ],
+  "frame": {
+   "x": 0,
+   "y": 388,
+   "w": 78,
+   "h": 62,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-surprise": {
+  "scale": 9.083870967741936,
+  "ox": 221,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   80,
+   388,
+   64,
+   62
+  ],
+  "frame": {
+   "x": 80,
+   "y": 388,
+   "w": 64,
+   "h": 62,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-wink": {
+  "scale": 9.232786885245902,
+  "ox": 138,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   228,
+   388,
+   81,
+   61
+  ],
+  "frame": {
+   "x": 228,
+   "y": 388,
+   "w": 81,
+   "h": 61,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-grit": {
+  "scale": 9.232786885245902,
+  "ox": 133,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   311,
+   388,
+   82,
+   61
+  ],
+  "frame": {
+   "x": 311,
+   "y": 388,
+   "w": 82,
+   "h": 61,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-starry": {
+  "scale": 8.93968253968254,
+  "ox": 150,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   76,
+   321,
+   81,
+   63
+  ],
+  "frame": {
+   "x": 76,
+   "y": 321,
+   "w": 81,
+   "h": 63,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-yell": {
+  "scale": 8.664615384615386,
+  "ox": 191,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   0,
+   321,
+   74,
+   65
+  ],
+  "frame": {
+   "x": 0,
+   "y": 321,
+   "w": 74,
+   "h": 65,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-angry": {
+  "scale": 8.93968253968254,
+  "ox": 168,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   159,
+   321,
+   77,
+   63
+  ],
+  "frame": {
+   "x": 159,
+   "y": 321,
+   "w": 77,
+   "h": 63,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-sleepy": {
+  "scale": 8.93968253968254,
+  "ox": 186,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   238,
+   321,
+   73,
+   63
+  ],
+  "frame": {
+   "x": 238,
+   "y": 321,
+   "w": 73,
+   "h": 63,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "dot-side": {
+  "scale": 8.162318840579712,
+  "ox": 234,
+  "oy": 205,
+  "src": [
+   "src/assets/characters/dot-atlas.webp",
+   436,
+   227,
+   68,
+   69
+  ],
+  "frame": {
+   "x": 436,
+   "y": 227,
+   "w": 68,
+   "h": 69,
+   "f": -1
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ }
+}

@@ -1,0 +1,733 @@
+{
+ "note": "X-16 native-resolution far and mood strips, striphdgpu.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w1-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a bright morning open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w10-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a dark stormy night sky with heavy rain clouds and a flash of lightning, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10after-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w10after-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a stormy golden sky with heavy dark clouds breaking up, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10dusk-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w10dusk-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a stormy purple dusk sky with heavy clouds and lightning, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1kapok-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w1kapok-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. the great kapok tree's leafy green canopy overhead with lilac orchids, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1sunrise-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w1sunrise-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a sunrise open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w2-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a warm hazy golden afternoon open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2evening-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w2evening-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a warm orange evening open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w2rapids-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w2rapids-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. the green jungle canopy and hanging vines overhead, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w3-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a dark cave roof overhead: dark teal rock, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3cavern-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w3cavern-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a dark cave roof overhead: dark teal rock, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w3sinkhole-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w3sinkhole-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. the grey-green rock wall of the sinkhole rising overhead with hanging vines, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w4-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a pale misty grey-white mountain open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4mist-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w4mist-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a warm orange dusk open sky with a few soft painted clouds over misty mountains, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4terraces-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w4terraces-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a pale bright misty open sky with a few soft painted clouds with soft sun rays, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a soft peach and gold afternoon open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5dusk1-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5dusk1-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a pink and lilac dusk open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5dusk2-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5dusk2-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a pink and lilac dusk open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5gold2-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5gold2-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a soft peach and gold afternoon open sky with a few soft painted clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5night-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5night-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a deep blue night sky with a few stars, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5twi1-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5twi1-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a lilac and violet twilight sky with soft clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5twi2-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5twi2-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a lilac and violet twilight sky with soft clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w6-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a grey misty swamp sky, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6dawn-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w6dawn-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a pale pink dawn sky over the swamp, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6dusk-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w6dusk-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a dark teal dusk sky with a few stars, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w7-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a grey-green overcast sky over the jungle ruins, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7dawn-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w7dawn-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a warm pale dawn sky over the ruins, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7dusk-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w7dusk-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a dim green-gold dusk sky over the ruins, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w8-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a deep blue night sky with soft moonlit clouds and a few stars, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8night-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w8night-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a deep blue night sky full of stars, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8sunset-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w8sunset-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a violet and orange sunset sky with a few stars and a shooting star, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w9-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a smoky brown-orange sky full of drifting volcanic smoke and ash clouds, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9dawn-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w9dawn-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a soft pink dawn sky with a thin trail of volcanic smoke, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9night-far-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w9night-far.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left. a dark red night sky full of ash clouds lit orange from below, the far distance of the scene",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1c-mid-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w1c-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. the rainforest canopy high in the trees: big mossy branches, dense leaves, hanging lianas",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w1c-near-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w1c-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. dense broad rainforest leaves high in the canopy",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5gold2-mid-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5gold2-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. tall golden-barked trees covered in big white and pink orchids, spider webs between the trees, ferns",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5gold2-near-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5gold2-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. a mossy golden orchid grove floor: twisted roots, ferns, white and pink orchids, falling pink petals",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5dusk1-mid-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5dusk1-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. tall purple-barked trees covered in big white and pink orchids at dusk, spider webs, ferns",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5dusk1-near-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5dusk1-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. a mossy orchid grove floor at dusk: twisted purple roots, ferns, white and pink orchids, falling petals",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5dusk2-mid-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5dusk2-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. tall purple-barked trees covered in big white and pink orchids at dusk, spider webs, ferns",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5dusk2-near-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5dusk2-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. a mossy fallen log at dusk with ferns, white orchids and pink petals",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5twi1-mid-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5twi1-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. tall violet trees with pale orchids at twilight, spider webs, ferns",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5twi1-near-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5twi1-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. a mossy orchid grove floor at twilight: violet roots, ferns, pale orchids, small white flowers",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5twi2-mid-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5twi2-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. tall violet trees with pale orchids at twilight, spider webs, ferns",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5twi2-near-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5twi2-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. a mossy orchid grove floor at twilight: violet roots, ferns, pale orchids, small white flowers",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5night-mid-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5night-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. tall dark blue trees at night with blue orchids",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w5night-near-hd",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/aa32a932219f9be29e3ca8b29c52a8c8944533c8/src/assets/backdrops/w5night-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "steps": 24,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine detail, light from the upper left, on one flat plain grey background, no text. a dark blue night grove floor with blue orchids, ferns and roots",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

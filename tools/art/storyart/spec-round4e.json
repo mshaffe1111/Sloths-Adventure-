@@ -1,0 +1,64 @@
+{
+ "tag": "r4e",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1d8b2ca1857253381ba8699218c02d02292e58de/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "cel-da.kneel_tie-pj4",
+   "start": "bucket:storyart/r4d/out/cel-da.kneel_tie-pi8.png",
+   "mask": "pairmask-da.kneel_tie-r.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm muted caramel-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, a sloth face with a dark brown eye patch, bare fur with no vest, kneeling and holding out his bandaged wrist to her, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail, human, girl, hair, hairstyle, vest, shirt, clothes",
+   "strength": 0.7,
+   "seed": 4,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-da.kneel_tie-pj9",
+   "start": "bucket:storyart/r4d/out/cel-da.kneel_tie-pi8.png",
+   "mask": "pairmask-da.kneel_tie-r.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm muted caramel-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, a sloth face with a dark brown eye patch, bare fur with no vest, kneeling and holding out his bandaged wrist to her, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail, human, girl, hair, hairstyle, vest, shirt, clothes",
+   "strength": 0.78,
+   "seed": 9,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  }
+ ],
+ "q": 92,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1d8b2ca1857253381ba8699218c02d02292e58de/",
+ "keep": [
+  "cel-da.kneel_tie-pj4",
+  "cel-da.kneel_tie-pj9"
+ ]
+}

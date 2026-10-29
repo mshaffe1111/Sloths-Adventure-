@@ -530,7 +530,6 @@ export class W5Play {
     doze(CAKE.sleepy);
     h.ate?.();
     h.sfx('cake');
-    h.float('SLEEPY AND SLOW...', p.x, p.y - 96, '#ddd6fe', W5_POP_LIFE);
     h.tip(said(W5_TEACH.ate), W5_TEACH.ate, 3.2);
   }
 

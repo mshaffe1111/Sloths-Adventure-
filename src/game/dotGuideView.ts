@@ -22,6 +22,8 @@ export interface GuidePlatform {
   broken?: boolean;
   push?: { min: number; max: number };
   chase?: boolean;
+  /** a painted piece's name ('poolLog': 4-3's floating log, a thing Dot can point at) */
+  art?: string;
 }
 export interface GuideVine {
   x: number;
@@ -99,6 +101,8 @@ export interface GuideView {
   kickNear: boolean;
   boss: boolean;
   chase: boolean;
+  /** the camera is showing something (a puzzle room's far gate, a boss's entrance, a stage's reveal): lines that can wait, wait */
+  reveal: boolean;
   /** Dot's own flight stage (she is the player: no perch, no ring, and Pokey's state means nothing) */
   flight: boolean;
   /** 7-4's slide (w7SlideRun.ts): the view is behind Pokey's back, and no story aside covers the flume ahead */
@@ -164,6 +168,7 @@ export function emptyGuideView(): GuideView {
     kickNear: false,
     boss: false,
     chase: false,
+    reveal: false,
     flight: false,
     levelH: 900,
     enemies: NONE,

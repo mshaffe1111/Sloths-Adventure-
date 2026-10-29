@@ -1,0 +1,32 @@
+{
+ "note": "World 7's plain temple wall strip (wall-5) by img2img from make_wall5.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, face, root, roots, vine, branch",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9f428bd9b6b1e38ebe1c69a49d376ad9ddf0e93b/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w7wall5-s58-17",
+   "start": "start-w7wall5.webp",
+   "prompt": "slothadv style, painted storybook illustration, one tall vertical strip of ruined jungle temple wall for a 2D platform game, filled edge to edge: weathered grey-green stone blocks of mixed sizes with dark mortar joints, one carved key-pattern meander band, cracks and chipped corners, soft green moss creeping down over a few block edges, no roots, no vines, no face. Flat front-on wall texture. Soft cel shading, thin dark outline, light from the upper left, evenly lit, no sky, no ground, no cast shadow, no text",
+   "strength": 0.58,
+   "seed": 17,
+   "w": 448,
+   "h": 1824
+  },
+  {
+   "name": "w7wall5-s58-29",
+   "start": "start-w7wall5.webp",
+   "prompt": "slothadv style, painted storybook illustration, one tall vertical strip of ruined jungle temple wall for a 2D platform game, filled edge to edge: weathered grey-green stone blocks of mixed sizes with dark mortar joints, one carved key-pattern meander band, cracks and chipped corners, soft green moss creeping down over a few block edges, no roots, no vines, no face. Flat front-on wall texture. Soft cel shading, thin dark outline, light from the upper left, evenly lit, no sky, no ground, no cast shadow, no text",
+   "strength": 0.58,
+   "seed": 29,
+   "w": 448,
+   "h": 1824
+  }
+ ]
+}

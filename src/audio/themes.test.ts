@@ -4,7 +4,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { THEMES, WORLD_THEME, BOSS_THEME } from './themes.ts';
+import { THEMES, WORLD_THEME, BOSS_THEME, themeById } from './themes.ts';
 import { CHORD_VOICES, DRUM_VOICES, NOTE_VOICES } from './instruments.ts';
 import {
   chordPcs,
@@ -26,7 +26,9 @@ test('there is music for every world, boss and scene', () => {
     assert.ok(THEMES[WORLD_THEME(w)], `world ${w}`);
     assert.ok(THEMES[BOSS_THEME(w)], `boss ${w}`);
   }
-  for (const id of ['title', 'map', 'results', 'gameover', 'jennifur', 'storyDusk', 'storyStorm', 'ending']) assert.ok(THEMES[id], id);
+  for (const id of ['results', 'gameover', 'jennifur', 'storyDusk', 'storyStorm', 'ending']) assert.ok(THEMES[id], id);
+  // the title, the menus and the map play the signature (signature.ts)
+  for (const id of ['signature', 'menu', 'map-1', 'map-10']) assert.ok(themeById(id), id);
 });
 
 for (const id of ids) {

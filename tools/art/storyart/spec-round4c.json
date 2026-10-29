@@ -1,0 +1,47 @@
+{
+ "tag": "r4c",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dec38b0e8b4384dcafcb1de342d5c6d2fbd3587b/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "pl-grandma-door-e",
+   "edit": true,
+   "start": "bucket:storyart/r3c/out/pl-grandma-door-empty-2.png",
+   "seed": 4,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Close the round wooden door so it is shut, remove the chair, and light the house: the lantern beside the door and the round window glow warm golden yellow, warm light spills onto the door, the path and the ferns, a potted fern by the door, a few glowing fireflies. Keep everything else exactly as it is: the great tree, the forest, the sky, the composition. Same painted storybook style. No characters, no text.",
+   "neg": "characters, people, animals, text"
+  },
+  {
+   "name": "pl-grandma-door",
+   "then": "pl-grandma-door-e",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.3,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a round wooden door in the roots of a great rainforest tree at dusk, warm lantern light, fireflies, no characters, no text"
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dec38b0e8b4384dcafcb1de342d5c6d2fbd3587b/",
+ "keep": [
+  "pl-grandma-door"
+ ]
+}

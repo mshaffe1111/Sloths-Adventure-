@@ -3,8 +3,8 @@
  *
  * A lesson is a card with Pokey's face, a title, and a few "do this, get that" lines for the way this player is controlling the game (touch
  * screen, thumb pad, or keyboard). The engine spots the first foe, the first climbable trunk, the first swinging vine and so on ahead of the hero
- * (`pickLesson`), pauses, and the app shows the card (components/LessonCard.tsx). What has been shown is kept on the device, in the save, so a
- * New Game teaches it all again. `?lessons=off` skips them, `?lessons=all` shows every one again (for trying them out).
+ * (`pickLesson`), pauses, and the app shows the card (components/LessonCard.tsx). A lesson counts as shown once Dot's line for it has been
+ * up its minimum time (dotSay.ts), and a New Game clears what has been shown (dotMemory.ts), so it teaches it all again. `?lessons=off` skips them, `?lessons=all` shows every one again (for trying them out).
  */
 import { controlStyle } from './controlPrefs.ts';
 import type { GlyphKind } from '../components/GestureGlyph.tsx';
@@ -41,7 +41,7 @@ const same = (l: LessonLine[]): Record<InputMode, LessonLine[]> => ({ screen: l,
 export const LESSONS: Record<LessonId, Lesson> = {
   foe: {
     id: 'foe',
-    title: 'A foe ahead!',
+    title: "Somebody's in the way",
     face: 'face_surprised',
     intro: 'Touching it costs a heart. Hit it first, or land on its head.',
     lines: {
@@ -66,14 +66,14 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   nostomp: {
     id: 'nostomp',
-    title: 'Not this one!',
+    title: 'Not that one!',
     face: 'face_surprised',
     intro: 'Spiders and ants cannot be stomped, so do not land on them. Punch or kick them, or jump right over.',
     lines: same([{ how: 'Punch or kick', what: 'Beat it', sub: 'one hit does it' }]),
   },
   eagle: {
     id: 'eagle',
-    title: 'Swooping bird!',
+    title: 'Swooping bird',
     face: 'face_surprised',
     intro: 'It circles, then dives at you. Dodge the dive, then hit it when it comes in low.',
     lines: {
@@ -87,14 +87,14 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   tough: {
     id: 'tough',
-    title: 'A big one!',
+    title: 'A big one',
     face: 'face_surprised',
     intro: 'Big animals take several hits and are hard to shove. Watch for it rearing back. That is when it strikes, so step away, then hit it as it recovers.',
     lines: same([{ how: 'Keep at it', what: 'It takes a few hits', sub: 'a mega punch hits hardest, and landing on a caiman only bounces you off' }]),
   },
   gap: {
     id: 'gap',
-    title: 'A gap ahead!',
+    title: 'Mind the gap',
     face: 'face_surprised',
     intro: 'Falling into water or a pit costs a life. Run up and jump a little before the edge, not at it.',
     lines: {
@@ -108,7 +108,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   climb: {
     id: 'climb',
-    title: 'A tree to climb!',
+    title: 'A tree to climb',
     face: 'face_cheer',
     intro: 'Pokey can scale a trunk with a vine on it. Grab on, climb to the top, and he vaults onto the branch.',
     lines: {
@@ -132,7 +132,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   swing: {
     id: 'swing',
-    title: 'A swinging vine!',
+    title: 'A swinging vine',
     face: 'face_cheer',
     intro: 'Grab the vine, swing out over the gap, and let go to leap across.',
     lines: {
@@ -147,7 +147,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   rope: {
     id: 'rope',
-    title: 'A rope to hang from!',
+    title: 'A rope to hang from',
     face: 'face_calm',
     intro: 'Stand by the post at its end and jump straight up: Pokey grabs the rope and hangs on by himself. Creep along it to the far ledge.',
     lines: {
@@ -162,21 +162,21 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   bounce: {
     id: 'bounce',
-    title: 'A bouncy mushroom!',
+    title: 'A bouncy mushroom',
     face: 'face_happy',
     intro: 'Land on it and it springs you much higher than any jump. Good for reaching the high ledges.',
     lines: same([{ how: 'Land on it', what: 'Boing!', sub: 'steer in the air to aim your landing' }]),
   },
   crumble: {
     id: 'crumble',
-    title: 'A crumbling branch!',
+    title: "This branch won't hold",
     face: 'face_surprised',
     intro: 'It breaks about a second after you land on it. Keep moving and do not stop on it.',
     lines: same([{ how: 'Keep moving', what: 'Cross quickly' }]),
   },
   moving: {
     id: 'moving',
-    title: 'A moving platform!',
+    title: 'A moving platform',
     face: 'face_calm',
     intro: 'It slides back and forth and carries you with it. Wait for it to swing close, then hop on.',
     lines: same([{ how: 'Hop on when it is close', what: 'Ride it' }]),
@@ -190,21 +190,21 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   fruit: {
     id: 'fruit',
-    title: 'Fruit and flowers!',
+    title: 'Fruit and flowers',
     face: 'face_happy',
     intro: 'Touch them to score points. Some stages ask you to gather a number of them before the exit opens.',
     lines: same([{ how: 'Just touch them', what: 'Score points' }]),
   },
   heart: {
     id: 'heart',
-    title: 'A heart!',
+    title: 'A heart',
     face: 'face_happy',
     intro: 'When you are hurt, touch it to heal one heart. At full health it stays where it is, waiting for when you need it.',
     lines: same([{ how: 'Touch it when you are hurt', what: 'Heals a heart', sub: 'at full health you cannot pick it up' }]),
   },
   cage: {
     id: 'cage',
-    title: 'A friend in a cage!',
+    title: 'Someone in a cage',
     face: 'face_cheer',
     intro: 'Hit the cage a few times to crack it open and set the friend free.',
     lines: {
@@ -215,28 +215,28 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   idol: {
     id: 'idol',
-    title: 'Something hidden!',
+    title: 'Something hidden',
     face: 'face_wink',
     intro: 'Some stages hide things to find: Grandma\'s keepsakes, Meeca\'s messages, old relics. Look in the high and out-of-the-way places.',
     lines: same([{ how: 'Just touch it', what: 'Collect it' }]),
   },
   power: {
     id: 'power',
-    title: 'A power-up!',
+    title: 'A power-up',
     face: 'face_cheer',
     intro: 'Each one lasts a few seconds. Speed makes you run faster, the sun makes you invincible, and the nectar magnet pulls fruit and hearts to you.',
     lines: same([{ how: 'Just touch it', what: 'Take it' }]),
   },
   checkpoint: {
     id: 'checkpoint',
-    title: 'A checkpoint!',
+    title: 'A checkpoint',
     face: 'face_happy',
     intro: 'You just passed a flag, and the game remembers. If you lose a life, you start again from here, not the beginning.',
     lines: same([{ how: 'Run past a flag', what: 'Saves your place' }]),
   },
   shrine: {
     id: 'shrine',
-    title: 'The exit shrine!',
+    title: 'The exit shrine',
     face: 'face_cheer',
     intro: 'Touch it to finish the stage. If the stage asked for something first, such as fruit, foes, or friends, the shrine opens once you have done it.',
     lines: same([{ how: 'Reach it', what: 'Finish the stage' }]),
@@ -303,8 +303,8 @@ export interface LessonScene {
   py: number;
   /** the part of the world on screen */
   view: { x0: number; x1: number; y0: number; y1: number };
-  enemies: { type: string; x: number; y: number; defeated: boolean }[];
-  collectibles: { type: string; x: number; y: number; collected: boolean }[];
+  enemies: { type: string; x: number; y: number; defeated: boolean; stompable?: boolean }[];
+  collectibles: { type: string; x: number; y: number; collected: boolean; hidden?: boolean }[];
   vines: { x: number; topY: number; bottomY: number; vineType?: string }[];
   platforms: { x: number; y: number; width: number; type: string; broken?: boolean }[];
   /** the flags; `reached` once he has run past one (the checkpoint card comes on the flag, not on the way to it) */
@@ -316,6 +316,9 @@ export interface LessonScene {
    *  said it at 5 of 5 hearts). Left out: treated as full health */
   hp?: number;
   maxHp?: number;
+  /** the puzzle rooms' spans: no jump's lesson at a room's set pieces (a "Flick up just before the edge" at 8-2's hammock well read
+   *  as the answer to the puzzle; World 8 builder, 2026-10-29) */
+  rooms?: readonly { x0: number; x1: number }[];
 }
 
 /** what a lesson's done-check reads: the stage's things (their collected and defeated flags) and his hearts */
@@ -394,7 +397,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
     if (e.defeated || e.type === 'boss' || !near(e.x, e.y, NEAR.foe)) continue;
     if (want('foe')) return 'foe';
     if (e.type === 'eagle' && want('eagle')) return 'eagle';
-    if (NO_STOMP.has(e.type) && want('nostomp')) return 'nostomp';
+    // (not World 5's ground spiders, which a stomp does beat: Dot had just said "or stomp it" when this said "Don't stomp this one")
+    if (NO_STOMP.has(e.type) && !e.stompable && want('nostomp')) return 'nostomp';
     if (TOUGH.has(e.type) && want('tough')) return 'tough';
   }
   // (a swinging vine before the gap: the gap it hangs over is crossed by the vine, and the lesson that crossing needs is the swing's)
@@ -405,6 +409,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
       const edge = ps[i].x + ps[i].width;
       // (not a gap a swinging vine hangs over: that one is crossed on the vine, and its lesson is the swing's)
       if (s.vines.some((v) => v.vineType !== 'tree_climb' && v.x > edge && v.x < ps[i + 1].x)) continue;
+      // (not at a puzzle room's pieces: a jump's lesson there points at the answer)
+      if ((s.rooms ?? []).some((r) => edge >= r.x0 - 40 && edge <= r.x1 + 40)) continue;
       if (ps[i + 1].x - edge > 60 && edge >= s.px && edge - s.px <= NEAR.thing && onScreen(edge, s.py)) return 'gap';
     }
   }
@@ -424,7 +430,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
   if (want('power') && col(POWERS)) return 'power';
   // (only when he is hurt: at full health a heart cannot be taken, and the lesson waits for the next heart after a hit)
   if (want('heart') && lessonHurt(s) && col(HEARTS)) return 'heart';
-  if (want('idol') && col(['relic'])) return 'idol';
+  // (a relic he can see, up high, as the lesson says: not one hidden in a fern, which 3-6's lesson pointed at, DOT-15)
+  if (want('idol') && s.collectibles.some((c) => !c.collected && !c.hidden && c.type === 'relic' && c.y < s.py - 80 && near(c.x, c.y, NEAR.thing + 120))) return 'idol';
   if (want('fruit') && col(FRUIT)) return 'fruit';
   if (want('checkpoint') && s.checkpoints.some((c) => c.reached && near(c.x, c.y, NEAR.thing))) return 'checkpoint';
   if (want('shrine') && col(['exit_totem'])) return 'shrine';
@@ -512,6 +519,8 @@ function lessonStep(lesson: LessonId, ids: string[], i: number, mode: InputMode)
     gesture: l.gesture ?? undefined,
     skill: `lesson:${lesson}${i ? `:${i}` : ''}`,
     source: 'lesson',
+    // (a first-time hazard about to hit does not wait out the Tips gap: dotGuide.ts TIPS_GAP_MS)
+    ...(HARMLESS_LESSONS.has(lesson) ? {} : { soon: true }),
     waitMs: 9000,
     next: mode === 'screen' && i + 1 < ids.length ? lessonStep(lesson, ids, i + 1, mode) : undefined,
   };
@@ -531,4 +540,13 @@ export function lessonDotLine(id: LessonId, mode: InputMode = lessonInputMode(),
     if (own && l) return { ...l, text: own, next: undefined };
   }
   return lessonStep(id, d.ids, 0, mode);
+}
+
+/**
+ * the lesson said by whoever is with Pokey: Dot's lines are hers while she is there, his own thought while she is away (wayside.ts
+ * dotPresent: the second half of World 6, all of World 7, World 10). A lesson card said by Dot in World 7 broke Matt's rule (STAGE-RULES §1)
+ */
+export function lessonSaidBy(l: GuideLine, dot: boolean): GuideLine {
+  if (dot) return l;
+  return { ...l, who: 'Pokey', next: l.next ? lessonSaidBy(l.next, dot) : undefined };
 }

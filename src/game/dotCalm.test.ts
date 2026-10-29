@@ -5,7 +5,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CALM, GuideQueue, type GuideLine, type MoveId, type TickEnv } from './dotGuide.ts';
+import { CALM, GUIDE, GuideQueue, type GuideLine, type MoveId, type TickEnv } from './dotGuide.ts';
 import { knownMoveTip, markMoveDone, movesDone } from './dotGuideHelp.ts';
 
 const line = (key: string, text: string, o: Partial<GuideLine> = {}): GuideLine => ({ key, text, kind: 'info', who: 'Dot', source: 'engine', ...o });
@@ -53,7 +53,10 @@ test("calm: at least 10 s from one line's start to the next, but a first-time le
   const lock = starts(runWith(new GuideQueue(true), 8000, [[3000, line('a', 'A flag! Fall, and you start again here.')], [4000, line('c', 'Sealed: collect 3 more flowers first.', { kind: 'must' })]]));
   assert.ok(lock.find((e) => e.key === 'c')!.at < 4100, 'the locked exit at once');
   const les = starts(runWith(new GuideQueue(true), 8000, [[3000, line('a', 'A flag! Fall, and you start again here.')], [3500, line('l', 'Flick up just before the edge.', { kind: 'teach', move: 'jump', source: 'lesson' })]]));
-  assert.ok(les.find((e) => e.key === 'l')!.at < 3600, 'a first-time lesson comes in over a plain line at once');
+  // (once the plain line has had its minimum time, not before: a line cut sooner came back later, said twice, DOT-6)
+  const lat = les.find((e) => e.key === 'l')?.at ?? -1;
+  assert.ok(lat >= 3000 + GUIDE.minShowMs && lat < 3000 + GUIDE.minShowMs + 100, `a first-time lesson comes in over a plain line after its minimum time (${lat})`);
+  assert.equal(les.filter((e) => e.key === 'a').length, 1, 'and the plain line is not said again');
 });
 
 test('calm: the same words at most twice a stage, and never again once their move is done', () => {

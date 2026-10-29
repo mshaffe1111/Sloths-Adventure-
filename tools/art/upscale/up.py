@@ -1,4 +1,7 @@
-"""Upscale game backdrops 4x with Real-ESRGAN (anime 6B, good for painted/illustrated art), CPU, tiled."""
+"""Upscale game backdrops 4x with Real-ESRGAN (anime 6B, good for painted/illustrated art), CPU, tiled.
+
+Opaque pictures only. A cut-out (anything with see-through parts) must go through tools/art/edges/defringe.py --esrgan instead:
+this script sees the transparent area as black and smears it into every edge (the dark ring of polish report VI-1)."""
 import sys, time
 import numpy as np
 import torch
