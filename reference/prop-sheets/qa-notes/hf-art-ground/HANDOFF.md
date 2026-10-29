@@ -148,3 +148,13 @@ cost). No job is running.
   `packbounce.py`, `picks-bounce.json`, `src/assets/props/bounce.webp`, `bounceArt.ts`); spanArt.ts's drawBounce is deleted. The stalk
   darkens downward; the cap and cue draw again over the painted ground (terrain.ts drawBounceCaps). `r3-10-1-x500.jpg`,
   `r3-1-2L4-x11600.jpg`, `review-bounce-caps.jpg`, `bounce-packed-*.jpg`.
+
+## Round 4 (2026-10-29, ~5:30 PM ET): pits in shadow
+- protoArt.ts drawProtoScene finds each pit (a piece with a bank 60+ higher on either side, the opening 20-700 wide) and shades its
+  inside (pitShade) after the pieces in it and before the banks: cool, from nothing at the lips to darkest on each stretch of its
+  surface (floor or step, each to its own top), darker toward the walls, feathered 40 units under the banks' faces (a soft contact
+  shadow where a face curves in), fading out just under the surface (the soil below is the banks' own). In every world.
+- 1-2's narrow pits: the step's straight lip ends and the root blob now sit in the pit's shadow.
+- World 3 (3-3): its kit drew the pit walls (44 tall, under the banks) as stone slabs floating in the soil; thinKit skips soil pieces.
+- `r4-pit-5-1-x7300.jpg`, `r4-pit-1-2-x11380.jpg`, `r4-pit-3-3-x330.jpg` (before 5114dea above, after below).
+- Not touched: the see-through boxes in 5-1 x7300 are World 5's painted silk sheets (w5Look.ts drawSilkSheet), panels side by side.

@@ -616,7 +616,7 @@ export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: numbe
 
 /** a world with its own kit paints every thin ledge with its own piece (a drifting river log and a spring keep their own look) */
 function thinKit(p: Platform): boolean {
-  return p.height < 50 && !p.push && !p.lily && !p.art && p.type !== 'drift' && p.type !== 'bouncy';
+  return p.height < 50 && !p.push && !p.lily && !p.art && !p.soil && p.type !== 'drift' && p.type !== 'bouncy';
 }
 /** which of the stage's platforms the painted props draw (the rest keep the drawn look) */
 export function paintedPlatforms(platforms: Platform[]): Set<number> {
@@ -627,6 +627,64 @@ export function paintedPlatforms(platforms: Platform[]): Set<number> {
     else if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') out.add(p.id);
   }
   return out;
+}
+
+/**
+ * A pit's inside in shadow: cool, from nothing at the banks' lips to darkest on its floor, darker toward its walls, and spilling 40 units
+ * under each bank's face, where the end's undercut shows it as a soft contact shadow under the lip. Each stretch of the pit's surface
+ * (its floor, a step standing on it) is shaded down to its own top and fades out just under it: the soil under the surface is the
+ * banks' own soil, one piece with theirs.
+ */
+function pitShade(ctx: CanvasRenderingContext2D, o: { x0: number; x1: number; top: number; pieces: Platform[] }) {
+  const SH = '12,18,32';
+  const x0 = o.x0 - 40, x1 = o.x1 + 40;
+  // the surface: each piece where no higher piece covers it
+  const covered: Array<[number, number]> = [];
+  const segs: Array<[number, number, number]> = [];
+  for (const p of [...o.pieces].sort((a, b) => a.y - b.y)) {
+    let parts: Array<[number, number]> = [[Math.max(x0, p.x), Math.min(x1, p.x + p.width)]];
+    for (const [ca, cb] of covered) parts = parts.flatMap(([a, b]) => (cb <= a || ca >= b ? [[a, b]] : [[a, ca], [cb, b]].filter(([u, v]) => v - u > 1)) as Array<[number, number]>);
+    for (const [a, b] of parts) if (b - a > 1) segs.push([a, b, p.y]);
+    covered.push([p.x, p.x + p.width]);
+  }
+  // (the ends of the opening, beyond the pieces, take the nearest stretch's depth)
+  segs.sort((a, b) => a[0] - b[0]);
+  if (segs.length) {
+    segs[0][0] = x0;
+    segs[segs.length - 1][1] = x1;
+  }
+  ctx.save();
+  for (const [a, b, fy] of segs) {
+    const y1 = fy + 50;
+    const g = ctx.createLinearGradient(0, o.top, 0, y1);
+    g.addColorStop(0, `rgba(${SH},0)`);
+    g.addColorStop((fy - o.top) / (y1 - o.top), `rgba(${SH},0.56)`);
+    g.addColorStop(1, `rgba(${SH},0)`);
+    ctx.fillStyle = g;
+    // (feathered over its outer 40 units each side, under the banks' faces: a hard edge showed where a face curves in)
+    for (let u = a; u < b; u += 5) {
+      const d = Math.min(u - x0, x1 - (u + 5));
+      ctx.globalAlpha = Math.max(0, Math.min(1, (d + 2.5) / 40));
+      ctx.fillRect(u, o.top, Math.min(5, b - u), y1 - o.top);
+    }
+  }
+  ctx.globalAlpha = 1;
+  // the walls' shadow, fading out toward the surface in three bands
+  const fl = Math.min(...segs.map((q) => q[2]));
+  const bands: Array<[number, number, number]> = [[o.top + 20, fl - 60, 1], [fl - 60, fl - 30, 0.6], [fl - 30, fl, 0.3]];
+  for (const [a, b] of [[x0, o.x0 + 70], [x1, o.x1 - 70]] as const) {
+    const h = ctx.createLinearGradient(a, 0, b, 0);
+    h.addColorStop(0, `rgba(${SH},0)`);
+    h.addColorStop(40 / 110, `rgba(${SH},0.4)`);
+    h.addColorStop(1, `rgba(${SH},0)`);
+    ctx.fillStyle = h;
+    for (const [ya, yb, al] of bands) {
+      if (yb <= ya) continue;
+      ctx.globalAlpha = al;
+      ctx.fillRect(Math.min(a, b), ya, Math.abs(b - a), yb - ya);
+    }
+  }
+  ctx.restore();
 }
 
 export interface ProtoSceneState {
@@ -652,9 +710,30 @@ export function drawProtoScene(
   if (!protoArtReady()) return false;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
   const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  // the pits: a piece with a bank 60 or more higher on either side, close by. Their inside is shaded (pitShade) once the pieces in them
+  // are drawn and before the banks either side, so a gap reads as a gap and not as more of the same lit soil
+  const tall = banks.filter((q) => q.height >= 90 && !q.soil);
+  const pits = new Map<string, { x0: number; x1: number; top: number; pieces: Platform[] }>();
+  for (const p of banks) {
+    if (!vis(p)) continue;
+    const L = tall.filter((q) => q.y <= p.y - 60 && q.x + q.width <= p.x + p.width + 2 && q.x + q.width >= p.x - 300).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+    const R = tall.filter((q) => q.y <= p.y - 60 && q.x >= p.x - 2 && q.x <= p.x + p.width + 300).sort((a, b) => a.x - b.x)[0];
+    if (!L || !R) continue;
+    const x0 = L.x + L.width, x1 = R.x;
+    if (x1 - x0 < 20 || x1 - x0 > 700) continue;
+    const k = `${Math.round(x0)}|${Math.round(x1)}`;
+    const o = pits.get(k);
+    if (o) o.pieces.push(p);
+    else pits.set(k, { x0, x1, top: Math.max(L.y, R.y), pieces: [p] });
+  }
+  const shaded = new Set<string>();
+  const shadeUpTo = (y: number) => {
+    for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); pitShade(ctx, o); }
+  };
   // (the lowest first: a pit's floor and its step go under the banks either side, whose faces then cover their ends)
   for (const p of [...banks].sort((a, b) => b.y - a.y)) {
     if (!vis(p)) continue;
+    shadeUpTo(p.y);
     // (a pit's wall under a bank's end is that bank's soil already)
     if (p.soil && banks.some((q) => q !== p && !q.soil && Math.abs(q.y + q.height - p.y) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)) continue;
     // (a side is closed where the next bank meets it, or where a piece stands right on top of its end: a pit's floor runs on under the
@@ -674,6 +753,7 @@ export function drawProtoScene(
     // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
     drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);
   }
+  shadeUpTo(-Infinity);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {
