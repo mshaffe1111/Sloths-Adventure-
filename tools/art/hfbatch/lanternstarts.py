@@ -78,7 +78,7 @@ def frames():
     return fr
 
 
-def pokey(name, fr, size=768):
+def pokey(name, fr, size=768, arms=True):
     x, y, w, h, ax, ay, hx = fr[name]
     atlas = Image.open(ROOT / 'src/assets/hero/hero-standard.webp').convert('RGBA')
     c = atlas.crop((int(x), int(y), int(x + w), int(y + h)))
@@ -88,23 +88,42 @@ def pokey(name, fr, size=768):
     # feet anchor at 90% down, the anchor x in the middle
     ox, oy = round(size / 2 - ax * k), round(size * 0.92 - ay * k)
     im.alpha_composite(c, (ox, oy))
-    j = jar(512).convert('RGBA')
-    # the jar's magenta keyed out
+    # the painted jar (round 1's pick) if it is there, else the sketch; its magenta keyed out
+    pj = OUT / 'jar-painted.png'
+    j = (Image.open(pj) if pj.exists() else jar(512)).convert('RGBA')
     px = j.load()
     for yy in range(j.height):
         for xx in range(j.width):
-            if px[xx, yy][:3] == MAG:
+            r, g, b, _ = px[xx, yy]
+            if r > 200 and b > 200 and g < 90:
                 px[xx, yy] = (0, 0, 0, 0)
     js = round(0.40 * 130 * k)
     j = j.resize((js, js), Image.LANCZOS)
-    # at his chest: across from the middle of the torso, a little forward (he faces right), about 45% down the body
+    # at his belly: across from the middle of the torso, a little forward (he faces right)
     jx = round(ox + hx * k + 0.10 * w * k - js / 2)
     jy = round(oy + 0.56 * h * k - js / 2)
+    if arms:
+        # rough arms round it (fur brown, cream wrist wraps, paws on the jar): the repaint makes them his
+        d = ImageDraw.Draw(im)
+        fur, wrap, paw = (150, 95, 55), (235, 215, 180), (110, 70, 40)
+        bw = 110 * k  # his body's width
+        sh_far = (ox + hx * k + 0.25 * bw, oy + 0.36 * h * k)
+        hand_far = (jx + js * 0.92, jy + js * 0.55)
+        d.line([sh_far, hand_far], fill=fur, width=round(26 * k))
+        d.ellipse((hand_far[0] - 13 * k, hand_far[1] - 13 * k, hand_far[0] + 13 * k, hand_far[1] + 13 * k), fill=paw)
     im.alpha_composite(j, (jx, jy))
+    if arms:
+        sh_near = (ox + hx * k - 0.30 * bw, oy + 0.37 * h * k)
+        elbow = (jx - 0.05 * js, jy + js * 0.95)
+        hand = (jx + js * 0.35, jy + js * 0.78)
+        d = ImageDraw.Draw(im)
+        d.line([sh_near, elbow, hand], fill=fur, width=round(28 * k), joint='curve')
+        d.line([(elbow[0] + (hand[0] - elbow[0]) * 0.55, elbow[1] + (hand[1] - elbow[1]) * 0.55), (elbow[0] + (hand[0] - elbow[0]) * 0.75, elbow[1] + (hand[1] - elbow[1]) * 0.75)], fill=wrap, width=round(30 * k))
+        d.ellipse((hand[0] - 15 * k, hand[1] - 13 * k, hand[0] + 15 * k, hand[1] + 13 * k), fill=paw)
     return im.convert('RGB')
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' and not (len(sys.argv) > 2 and sys.argv[2] == '--carry'):
     jar().save(OUT / 'jar.png')
     jar(lit=0.15).save(OUT / 'jar-dim.png')
     moth().save(OUT / 'moth-open.png')
@@ -113,3 +132,35 @@ if __name__ == '__main__':
     for n in sys.argv[2:]:
         pokey(n, fr).save(OUT / f'pokey-{n}.png')
     print(sorted(p.name for p in OUT.iterdir()))
+
+
+def carry(name, size=768):
+    """Pokey's carry pose <name> (the puzzle kit's p3, p5-p8: an acorn hugged at his chest) on magenta, the painted jar over the acorn"""
+    src = (ROOT / 'src/game/puzzleAtlasData.ts').read_text()
+    m = re.search(rf"  {name}: \{{ x: (\d+), y: (\d+), w: (\d+), h: (\d+), ax: (\d+), k: ([\d.]+), hx: (\d+), hy: (\d+)", src)
+    x, y, w, h, ax, kk, hx, hy = (float(v) for v in m.groups())
+    kit = Image.open(ROOT / 'src/assets/props/puzzle-kit.webp').convert('RGBA')
+    c = kit.crop((int(x), int(y), int(x + w), int(y + h)))
+    k = (size * 0.80) / 170
+    c = c.resize((round(w * k), round(h * k)), Image.LANCZOS)
+    im = Image.new('RGBA', (size, size), MAG + (255,))
+    ox, oy = round(size / 2 - ax * k), round(size * 0.92 - h * k)
+    im.alpha_composite(c, (ox, oy))
+    pj = OUT / 'jar-painted.png'
+    j = Image.open(pj).convert('RGBA')
+    px = j.load()
+    for yy in range(j.height):
+        for xx in range(j.width):
+            r, g, b, _ = px[xx, yy]
+            if r > 200 and b > 200 and g < 90:
+                px[xx, yy] = (0, 0, 0, 0)
+    j = j.crop(j.getchannel('A').getbbox())
+    jh = round(36 * k)
+    j = j.resize((round(j.width * jh / j.height), jh), Image.LANCZOS)
+    im.alpha_composite(j, (round(ox + hx * k - j.width / 2), round(oy + hy * k - jh * 0.45)))
+    return im.convert('RGB')
+
+
+if __name__ == '__main__' and len(sys.argv) > 2 and sys.argv[2] == '--carry':
+    for n in sys.argv[3:]:
+        carry(n).save(OUT / f'carry-{n}.png')
