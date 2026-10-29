@@ -8,7 +8,8 @@
  * Options: --orient up,side (default both) --seed N (the layout roll, default 1) --out DIR (default /tmp/walk) --clip S (seconds of
  * 30 fps clip from the middle of each stage, default 4; 0 for none) --step F (a frame every F screen widths, default 0.5)
  * --dist DIR (a dev build to reuse; default: build one) --no-detect (frames only) --jobs N (stages at once, default 2) --dprocs N
- * (detector processes per stage, default 2) --keep-canvas (keep the canvas pictures after the detector has read them).
+ * (detector processes per stage, default 2) --keep-canvas (keep the canvas pictures after the detector has read them) --skip-done
+ * (leave out walks the detector has already read: carry on a stopped sweep).
  *
  * How it plays: it starts the stage in a development build of the game (window.__play), stops the game's own frame loop and runs
  * the engine one 30 fps frame at a time itself (so the picture stays at full quality however slow the machine is). Pokey follows
@@ -357,7 +358,7 @@ async function walkOne(id, orient) {
       for (let f = 0; f < extra.length; f++) {
         await page.evaluate(step, [[extra[f]], mode]);
         await page.evaluate(() => window.__weng().render());
-        await page.screenshot({ path: join(dir, 'clip', `${String(f).padStart(4, '0')}.jpg`), type: 'jpeg', quality: 80 });
+        await page.screenshot({ path: join(dir, 'clip', `${String(f).padStart(4, '0')}.jpg`), type: 'jpeg', quality: 78, scale: 'css' });
       }
       try {
         execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', '30', '-i', join(dir, 'clip', '%04d.jpg'), '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2', '-pix_fmt', 'yuv420p', '-crf', '24', join(dir, 'clip.mp4')]);
@@ -374,7 +375,8 @@ async function walkOne(id, orient) {
   console.log(`${id} ${orient}: ${frames.length} frames, ${how}, ${Math.round((Date.now() - t0) / 1000)} s (play ${Math.round(prof.step / 1000)} s, grab ${Math.round(prof.grab / 1000)} s, shots ${Math.round(prof.shot / 1000)} s)${errors.length ? `, ${errors.length} page errors` : ''}`);
 }
 
-const queue = ids.flatMap((id) => ORIENTS.map((o) => [id, o]));
+// (--skip-done: a walk already read by the detector is not walked again, so a stopped sweep can carry on)
+const queue = ids.flatMap((id) => ORIENTS.map((o) => [id, o])).filter(([id, o]) => !flag('skip-done') || !existsSync(join(OUT, id, o, 'seams.json')));
 const failed = [];
 await Promise.all(Array.from({ length: Math.min(JOBS, queue.length) }, async () => {
   while (queue.length) {

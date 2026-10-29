@@ -818,10 +818,29 @@ def walk_dir(wd, kinds, crops, pool=None):
     for f in os.listdir(fdir):
         os.remove(os.path.join(fdir, f))
     frames = sorted(f[:-5] for f in os.listdir(cdir) if f.endswith('.json') and os.path.exists(os.path.join(cdir, f[:-5] + '.png')))
-    jobs = [(wd, fr, kinds, crops, w) for fr in frames]
+    jobs = [(wd, fr, kinds, False, w) for fr in frames]
     res = pool.map(frame_finds, jobs) if pool else [frame_finds(j) for j in jobs]
     finds = [f for r in res for f in r]
     if crops:
+        # crops of the three biggest showings of each cause in this walk (every finding still has its frame and boxes)
+        by = defaultdict(list)
+        for f in finds:
+            by[(f['kind'], f['sub'], f['cause'])].append(f)
+        for k, fs in by.items():
+            fs.sort(key=lambda f: (f.get('spots', 1), f.get('len', 0)), reverse=True)
+            for j, f in enumerate(fs[:3]):
+                name = f"{f['kind']}-{f['frame']}-{abs(hash(k)) % 10 ** 6}-{j}.jpg"
+                try:
+                    if 'box' in f:
+                        pil = Image.open(os.path.join(cdir, f['frame'] + '.png')).convert('RGB')
+                        crop(pil, f['box'], os.path.join(fdir, name), others=f.get('boxes', [])[1:])
+                    else:
+                        scr = Image.open(os.path.join(wd, 'screen', f['frame'] + '.jpg'))
+                        sc = scr.size[0] / w['size'][0]
+                        crop(scr, [int(v * sc) for v in f['box_css']], os.path.join(fdir, name))
+                    f['crop'] = os.path.relpath(os.path.join(fdir, name), os.path.dirname(os.path.dirname(wd)))
+                except Exception as err:  # a crop never stops the walk
+                    f['crop_error'] = str(err)
         proofs(wd, w, finds)
     sheet(wd, w, frames, finds)
     json.dump(finds, open(os.path.join(wd, 'seams.json'), 'w'), default=str)
