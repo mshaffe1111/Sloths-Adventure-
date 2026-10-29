@@ -252,7 +252,8 @@ export function w7Finish<S extends { spawnX?: number; enemies?: Enemy[]; proto?:
   if (st.proto && Number.isFinite(first) && !(st.proto.hints ?? []).some((h) => h.text === text)) {
     const hints = (st.proto.hints ??= []);
     hints.push({ x: R(Math.max((st.spawnX ?? 0) + 40, first - MEET_LEAD)), text, pad: text, keys: text });
-    hints.sort((a, b) => a.x - b.x);
   }
+  // (in the order he meets them: the water's warning is written after the others, and a run from a later flag says the last one due)
+  st.proto?.hints?.sort((a, b) => a.x - b.x);
   return st;
 }
