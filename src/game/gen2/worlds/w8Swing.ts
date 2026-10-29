@@ -8,8 +8,9 @@
  * never on to the perch: a miss costs a climb and another go. Chains keep a perch between every two swings (levelCheck follows ledge ->
  * liana -> ledge). World 8's own: swings in the dark (the firefly lights the gap under the liana: the dark zone's lights, w6Swing.ts; with
  * Pokey's lantern, 210 px, from the swing's bough, the whole swing is lit: w8Swing.test.ts), longer chains than World 6's, and the
- * trunk climbs of the climbers' theme (a swing off a trunk's top, a drop and a climb, a swing and a climb in the dark). A liana section is
- * never mirrored.
+ * trunk climbs of the climbers' theme (a drop and a climb, a swing and a climb in the dark). A liana section is never mirrored. (A swing off
+ * a trunk's top is not one of them: its perch must sit over the trunk's top, and the boughs stepping back down past it are in a glide's
+ * reach from the trunk, so the quick route skipped the liana on 12 of 64 shipped rolls, 2026-10-29.)
  *
  * Two traps the soft pits set (the swing builder, 2026-10-29; STAGE-RULES §6), proved on the quick route (w8SwingRoute.test.ts):
  *   - a dark stretch stays level with its lit bough: dropped 30 px below it, the back pit under its swing sinks past the boughs' feet
@@ -207,29 +208,6 @@ const darkSwingPair = swingSection({
 
 // ───────────────────────────── the climbers' swings (the trunk climbs: W8_THEME.climbers) ─────────────────────────────
 
-/** up a trunk, along the high bough, a swing off its far end onto a perch past it, and down again (the climb, then the swing) */
-const trunkSwing = swingSection({
-  id: 'w8s-trunk-swing',
-  name: 'climb the trunk, swing off the top',
-  phases: ['sho', 'ten', 'ketsu'],
-  difficulty: 6,
-  weight: 2,
-  uses: [W8_THEME.climbers],
-  pieces: [
-    bank('a', [220, 260]),
-    ...climbWall('v', 'a', 'wall', 200, [220, 260]),
-    liana('l1', 'wall'),
-    // (the perch raised over the trunk's top, as every perch: one lower than the swing's bough has no release window the check links)
-    perch('b', 'l1', [220, 260]),
-    // (and two steps back down to the bough the climb began on)
-    down('b2', 'b', (200 - RAISE) / 2, [160, 190]),
-    down('c', 'b2', (200 - RAISE) / 2, [200, 240]),
-  ],
-  first: 'a',
-  last: 'c',
-  sockets: [petals('a', 'a', 0.4, 1), petals('wall', 'wall', 0.4, 2, 90), petals('b', 'b', 0.5, 1), petals('b2', 'b2', 0.5, 1), scenery('nest', 'c', [0.5, 0.8], 0.5), flag('c', 0.6)],
-});
-
 /** a swing onto a wide bough, a drop onto the bough past it, and a climbing vine up the trunk beyond */
 const swingDropClimb = swingSection({
   id: 'w8s-swing-drop-climb',
@@ -278,5 +256,5 @@ const darkSwingClimb = swingSection({
 /** World 8's liana sections (the vine stages: w8Game.ts) */
 export const W8_SWING_SECTIONS: readonly SectionTemplate[] = [
   firstSwing, swingPair, swingChain, swingClimb, swingHunter, knotsSwing, swingRun, darkSwing, darkSwingPair,
-  trunkSwing, swingDropClimb, darkSwingClimb,
+  swingDropClimb, darkSwingClimb,
 ];
