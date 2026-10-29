@@ -38,6 +38,50 @@ def put(path, data):
     print('PUT', path, len(data), flush=True)
 
 
+results = {}
+done = []
+
+
+def put_png(name, img):
+    b = io.BytesIO(); img.save(b, 'PNG')
+    put(f'{name}.png', b.getvalue())
+
+
+# items with "edit": Qwen-Image-Edit-2509 first, with their start (and "refs", more start-relative pictures) as the reference pictures,
+# then the edit model is let go and the img2img model loads (both at once do not fit): a later item may start from an edit with "then"
+EDITS = [it for it in SPEC['items'] if it.get('edit')]
+if EDITS:
+    try:
+        from diffusers import QwenImageEditPlusPipeline
+    except Exception as e:  # (as gen/gen_edit.py)
+        import subprocess, sys
+        print('installing newer diffusers', repr(e)[:200], flush=True)
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '--break-system-packages', '-q', '-U', 'git+https://github.com/huggingface/diffusers'], check=True)
+        from diffusers import QwenImageEditPlusPipeline
+    ed = QwenImageEditPlusPipeline.from_pretrained('Qwen/Qwen-Image-Edit-2509', torch_dtype=torch.bfloat16).to('cuda')
+    print('EDIT LOADED', round(time.time() - t0), flush=True)
+    for it in EDITS:
+        t1 = time.time()
+        try:
+            ims = []
+            for rel in [it['start']] + it.get('refs', []):
+                with urllib.request.urlopen(SPEC['base'] + rel, timeout=90) as r:
+                    ims.append(Image.open(io.BytesIO(r.read())).convert('RGB'))
+            kw = {}
+            if it.get('w'):
+                kw = dict(width=it['w'], height=it['h'])
+            img = ed(image=ims, prompt=it['prompt'], negative_prompt=it.get('neg', ' '), true_cfg_scale=it.get('cfg', 4.0), guidance_scale=1.0,
+                     num_inference_steps=it.get('steps', 40), generator=torch.Generator('cuda').manual_seed(it.get('seed', 1)), **kw).images[0].convert('RGB')
+            results[it['name']] = img
+            put_png(it['name'], img)
+            done.append((it['name'], img))
+            print('DONE', it['name'], round(time.time() - t1), flush=True)
+        except Exception as e:
+            import traceback; traceback.print_exc()
+            print('FAILED', it['name'], repr(e)[:300], flush=True)
+    del ed
+    import gc; gc.collect(); torch.cuda.empty_cache()
+
 from diffusers import QwenImageImg2ImgPipeline  # noqa: E402
 
 pipe = QwenImageImg2ImgPipeline.from_pretrained('Qwen/Qwen-Image', torch_dtype=torch.bfloat16).to('cuda')
@@ -75,7 +119,6 @@ for n, (repo, fn) in SPEC['loras'].items():
 
 NEG = SPEC.get('neg', 'text, letters, watermark, frame, border, photo, 3d render, blurry, extra limbs, extra arms, extra fingers, deformed')
 starts = {}
-results = {}
 
 
 def fetch(rel):
@@ -123,8 +166,9 @@ def tiled(it, img, size, ov):
     return Image.fromarray(np.clip(acc / np.maximum(wsum, 1e-6), 0, 255).astype(np.uint8))
 
 
-done = []
 for it in SPEC['items']:
+    if it.get('edit'):
+        continue
     t1 = time.time()
     try:
         names = [n for n, _ in it.get('loras', [])]
@@ -145,8 +189,7 @@ for it in SPEC['items']:
             mask = fetch(it['mask']).convert('L').resize((w, h), Image.LANCZOS) if it.get('mask') else None
             img = run_one(it, start, mask, w, h)
         results[it['name']] = img
-        b = io.BytesIO(); img.save(b, 'PNG')
-        put(f"{it['name']}.png", b.getvalue())
+        put_png(it['name'], img)
         done.append((it['name'], img))
         print('DONE', it['name'], round(time.time() - t1), flush=True)
     except Exception as e:

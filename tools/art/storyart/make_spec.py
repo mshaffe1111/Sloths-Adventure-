@@ -60,6 +60,74 @@ def calib(commit):
     return {'tag': 'calib', 'loras': LORAS, 'base': base, 'items': it}
 
 
+SOFT = ', blurry, soft focus, airbrushed, smooth gradient shading, low detail'
+MEECA = ('meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib '
+         'number 07, teal shorts and pink running shoes, ')
+EDIT_GEN = ('Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, '
+            'his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. '
+            'Dress him in a long dark green soldier\'s greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and '
+            'open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around '
+            'his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with '
+            'dark ink outlines and soft cel shading. Plain flat grey background.')
+EDIT_GV = ('Redraw this same old sloth in the same pose, size and position: thick, real, shaggy brown sloth fur with darker tips, an old lined '
+           'gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old '
+           'unbuttoned dark green soldier\'s greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines '
+           'and soft cel shading. Plain flat grey background.')
+
+
+def round2(commit):
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    it = []
+    pose = {'idle': 'standing relaxed and smiling', 'worried': 'standing worried, hands on top of his head',
+            'duck': 'crouching low and scared, gripping the ground with both paws'}
+    for n in pose:
+        for st in (0.5, 0.62):
+            it.append({'name': f'r2-pk-{n}-s{round(st * 100)}', 'start': f'r2-pokey-{n}.png', 'prompt': POKEY + pose[n] + END,
+                       'neg': NEG_FIG + SOFT, 'strength': st, 'seed': 7, 'w': 1024, 'h': 1024, 'loras': [['pokey', 1.0], ['style', 0.35]]})
+    for k, words in (('mc-sing_reach', 'standing and reaching one paw out in front of him, palm open, offering his hand, eyes soft'),
+                     ('mx-petal_glow', 'holding up his wrist in both paws where a small glowing pink petal is tied with a ribbon, looking at it in wonder')):
+        for st in (0.55, 0.68):
+            it.append({'name': f'r2-{k}-s{round(st * 100)}', 'start': f'r2-cel-{k}.png', 'prompt': POKEY + words + END,
+                       'neg': NEG_FIG + SOFT, 'strength': st, 'seed': 7, 'w': 1024, 'h': 1024, 'loras': [['pokey', 1.0], ['style', 0.35]]})
+    for st in (0.5, 0.62):
+        it.append({'name': f'r2-meeca-idle-s{round(st * 100)}', 'start': 'r2-meeca-idle.png', 'prompt': MEECA + 'standing relaxed and smiling' + END,
+                   'neg': NEG_FIG + SOFT, 'strength': st, 'seed': 7, 'w': 1024, 'h': 1024, 'loras': [['meeca', 1.0], ['style', 0.35]]})
+    it.append({'name': 'r2-grandma-s55', 'start': 'r2-cel-gr-stand_hands.png', 'strength': 0.55, 'seed': 7, 'w': 1024, 'h': 1024,
+               'prompt': 'slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, a green gardening apron, standing with her paws folded in front of her, smiling warmly' + END,
+               'neg': NEG_FIG + SOFT, 'loras': [['style', 1.0]]})
+    # the General: the edit model puts the coat and the real fur on him, then his own models bring him back on model
+    for n, src in (('idle', 'r2-gen-idle.png'), ('roar', 'r2-gen-roar.png'), ('fallen', 'r2-gen-fallen.png'), ('ready_a', 'r2-cel-gn-ready_a.png')):
+        for sd in (3, 8):
+            it.append({'name': f'r2-ged-{n}-{sd}', 'edit': True, 'start': src, 'prompt': EDIT_GEN, 'seed': sd,
+                       'neg': 'robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry'})
+    for sd in (3, 8):
+        it.append({'name': f'r2-ged-gv-{sd}', 'edit': True, 'start': 'r2-cel-gv-stand.png', 'prompt': EDIT_GV, 'seed': sd,
+                   'neg': 'robot, armour, helmet, text, watermark, extra limbs, blurry'})
+    for n in ('idle', 'roar', 'ready_a'):
+        it.append({'name': f'r2-gen-{n}-on', 'then': f'r2-ged-{n}-3', 'prompt': GENERAL + 'a tired grieving old soldier' + END, 'neg': NEG_GEN + SOFT,
+                   'strength': 0.35, 'seed': 7, 'w': 1024, 'h': 1024, 'loras': [['ironclaw', 0.7], ['general', 0.6]]})
+    cp = ('slothadv style, painted storybook illustration, a stormy evening courtyard of an old stone fortress, a tall round grey stone tower '
+          'on the left rising high up into heavy dark blue storm clouds, its top a pointed slate roof, one small warm lit arched window, black '
+          'thorn vines climbing the stone, rain, no characters, no text')
+    for st, sd in ((0.85, 5), (0.95, 5), (0.85, 11)):
+        it.append({'name': f'r2-pl-courtyard-s{round(st * 100)}-{sd}', 'start': 'r2-plate-courtyard.png', 'mask': 'r2-plate-courtyard-mask.png',
+                   'prompt': cp, 'neg': PLATE_NEG, 'strength': st, 'seed': sd, 'w': 1280, 'h': 1360, 'loras': [['style', 1.0]]})
+    for sd in (2, 6):
+        it.append({'name': f'r2-pl-courtyard-edit-{sd}', 'edit': True, 'start': 'r2-plate-courtyard-canvas.png', 'seed': sd, 'w': 1280, 'h': 1360,
+                   'prompt': ('Fill the empty white top of this picture so the painting carries on upward: the round grey stone tower on the left '
+                              'goes on up past the lit window to a pointed slate roof, the stone wall on the right goes up a little and ends in '
+                              'battlements, and above everything heavy dark blue storm clouds with rain. Keep the painted bottom part exactly as it '
+                              'is. Same painted storybook style. No characters, no text.'),
+                   'neg': 'white, blank, frame, border, text, characters'})
+    gr = ('slothadv style, painted storybook illustration, the top edge of a lush rainforest floor seen from the side: soft dark green moss and '
+          'leaf litter with small fern sprouts, a few pink petals and tiny red mushrooms, tufts of grass along its top edge, plain flat grey '
+          'background above the ground, no characters, no text')
+    for st in (0.4, 0.55):
+        it.append({'name': f'r2-gr-w1-s{round(st * 100)}', 'start': 'r2-ground-w1.png', 'prompt': gr, 'neg': PLATE_NEG, 'strength': st,
+                   'seed': 3, 'w': 2048, 'h': 512, 'loras': [['style', 1.0]]})
+    return {'tag': 'r2', 'loras': LORAS, 'base': base, 'items': it}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
