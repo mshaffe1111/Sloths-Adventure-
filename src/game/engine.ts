@@ -4939,6 +4939,8 @@ export class GameEngine {
     // (and the sign at a hand-built stage's first water: waterTeach.ts, LV-8)
     [...(this.proto?.gen2?.waterWarnings ?? []), ...(this.currentStage.waterSigns ?? [])].forEach((w, i) => {
       if (w.x < x0 - 80 || w.x > x1 + 80) return;
+      // (World 10's deep falls are the chasms between the walls, not water: Pokey's line warns, no water sign)
+      if (this.currentStage.config.worldIndex === 10 && this.proto?.gen2) return;
       if (drawWaterSign(ctx, this.currentStage.config.worldIndex, w.x, w.y + 3, i)) return;
       const cy = w.y - 50;
       ctx.save();
