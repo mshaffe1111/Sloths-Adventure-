@@ -238,14 +238,14 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.3-8", "3-8", "wayside", "story", "Old vines only watch for things in a hurry. So don't hurry. You're very good at that.", "Old vines only watch for hurrying. So don't. You're good at that.", null, null, null],
   ["hint.3-9.prints", "3-9", "stage hint", "story", "Pawprints in a circle, and they all go one way...", "Pawprints in a circle, and they all go one way...", null, null, "pawprints"],
   ["way.3-9", "3-9", "wayside", "story", "Seems to me a ring is just a road that forgot where it was going.", "Seems to me we've been here.", null, null, null],
-  // (new, needs Matt's approval: round 5, the snakes' flavour of the climbs)
+  // (Matt approved, 2026-10-28: round 5, the snakes' flavour of the climbs)
   ["hint.4-1.snakes", "4-1", "stage hint", "move", "Snakes on the ledges! Punch them or hop over them", "Snakes! Tap to punch, or hop over.", null, "tap", "snakes"],
   ["hint.4-1.climb", "4-1", "stage hint", "move", "The ledge broke away! Climb back up. Slide up a trunk to climb", "Ledge gone! Slide up a trunk to climb.", null, "climb-up", "trunk"],
   ["skill.glide.controls", "4-1", "skill card", "move", "Jump: then hold Jump as you start to fall. Left/Right: steer while you drift. Let go: to drop normally", "Flick up, keep your thumb on the glass.", null, "flick-hold", "the card's gesture picture"],
   ["hint.4-2.leaf", "4-2", "stage hint", "move", "Your leaf! Flick up, then keep your thumb on the glass as you fall", "Flick up, keep your thumb on the glass.", null, "flick-hold", "first wide gap"],
   ["hint.4-2.ride", "4-2", "stage hint", "move", "Wind up high! Open your leaf as the chimes swing your way, and ride it far", "Flick and hold as the chimes swing out.", null, "flick-hold", "chimes"],
   ["hint.4-3.boulder", "4-3", "stage hint", "move", "A boulder! Walk right into it and keep going: you push it along the shelf into the stream", "Slide into the boulder to push it along.", null, "slide", "boulder"],
-  // (new, needs Matt's approval: QA 2026-10-29, the first dry steps' double jump told as the boulder stops the fall)
+  // (Matt approved, 2026-10-28: QA 2026-10-29, the first dry steps' double jump told as the boulder stops the fall)
   ["w4.drySteps", "4-3", "guide", "move", "Dry now! These steps are tall. Jump twice!", "Dry now! These steps are tall. Jump twice!", null, "double-jump", "dry steps"],
   ["hint.4-3.logJump", "4-3", "stage hint", "move", "Stand on the near end of the log, under the ledge, and double jump straight up", "Flick up twice from the log's near end.", null, "double-jump", "ledge above the log"],
   ["hint.4-3.logJump2", "4-3", "stage hint", "move", "Wait on the near end of the log, under the ledge. When the water lifts it all the way, double jump straight up", "Flick up twice when it's at the top.", null, "double-jump", "ledge above the log"],
@@ -317,9 +317,9 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.4-5.two", "4-5", "stage hint", "info", "Two lookouts! Knock the second fruit down from behind the waterfall", "Two lookouts! Knock the second fruit down from behind the falls.", null, null, "second fruit"],
   ["w4.lookout", "4-5", "guide", "info", "That monkey is watching! Get under cover before it shouts", "That monkey is watching! Get under cover before it shouts", null, null, "lookout monkey"],
   ["w4.veil", "4-5", "guide", "info", "Behind the water nobody can see you. Wait here while she goes by", "She can't see you behind the water. Wait here.", null, null, "waterfall"],
-  // (new, needs Matt's approval: round 5, the snakes' flavour of the climbs)
+  // (Matt approved, 2026-10-28: round 5, the snakes' flavour of the climbs)
   ["hint.4-6.snakes", "4-6", "stage hint", "move", "Snakes on the ledges! Punch them or hop over them", "Snakes! Tap to punch, or hop over.", null, "tap", "snakes"],
-  // (new, needs Matt's approval: round 5, the snakes' flavour of the climbs)
+  // (Matt approved, 2026-10-28: round 5, the snakes' flavour of the climbs)
   ["hint.4-6.acrossSnakes", "4-6", "stage hint", "info", "All the way across the tree, rope after rope!", "Across the tree, rope after rope!", null, null, "rope"],
   ["hint.4-6.across", "4-6", "stage hint", "info", "All the way across the tree! Stop at the end of each rope, and go while the eaglets doze", "Stop at each rope's end. Go while they doze.", null, null, "rope end"],
   ["hint.4-6.eaglets", "4-6", "stage hint", "info", "Sleeping eaglets! Go while they sleep. When one peeks up, stand still", "Eaglets! Go while they sleep. Freeze when one peeks.", null, null, "eaglets"],
