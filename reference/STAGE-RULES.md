@@ -96,6 +96,12 @@ Last updated 2026-10-29.
   fill to his painted sheet: "Sometimes quick fixes just don't work. That's the difference between a good game and a bad game. It
   takes the immersion out of the game if what you're looking at doesn't really feel like the rest of the game."
   (Before and after: `reference/prop-sheets/qa-notes/water-w6-painted.png`.)
+- **Light underground and in the dark comes from sources (Matt, 2026-10-29: "if he's underground, it's not going to be bright").**
+  Ambient is low and cool (deep blue-teal to near black); only torches/lanterns (warm, flickering), glowing fungi (small green or purple
+  pools), glowworms and the way out give light; depth fades INTO darkness, never into haze. Fairness first: every obstacle and gap carries
+  its own light or a lit rim and reads at least 1 s ahead on Normal (1.6 s Easy); Pokey never vanishes (a warm key from the light he passes,
+  a cool rim, a contact shadow, never under ~60% brightness). Props are painted evenly lit so the game can light them; light sources are
+  painted bright and separate so they can glow. Code glow (pre-rendered radial light sprites, additive) is a small touch and allowed.
 - **Use what Matt made.** Every prop, state frame and backdrop from his sheets has a place in the game. A piece packed but never
   drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.
