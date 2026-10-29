@@ -6,7 +6,7 @@ seamless once, here: the clear margin and the soft rim columns at both ends are 
 the first ones along the seam where they look most alike (backdrop-strip.py seamless()), so the right edge runs straight on into the
 left one with no ghosted double picture. The game tiles it as is.
 
-A strip whose ends already meet (its join is no rougher than its own neighbouring columns) is left alone, so running this again is safe.
+A strip this script already made seamless is listed in scripts/strip-seamless.done and left alone, so running it again is safe.
 Usage: python3 scripts/strip-seamless.py [files...]   (default: every w*-far/mid/near strip in src/assets/backdrops)"""
 import sys, glob, importlib.util, os
 import numpy as np
@@ -34,15 +34,27 @@ def painted_cols(a):
     return (l, r + 1) if r - l > len(row) * 0.66 else (0, len(row))
 
 
-def make_seamless(path):
+DONE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strip-seamless.done')
+
+
+def done_list():
+    try:
+        return set(open(DONE).read().split())
+    except OSError:
+        return set()
+
+
+def make_seamless(path, force=False):
     im = Image.open(path)
     opaque = im.mode == 'RGB'
     a = np.asarray(im.convert('RGBA')).astype(float)
     l, r = painted_cols(a)
     # (judged on the painted columns: a clear margin at both ends would always meet itself)
     join, nb = join_score(a[:, l:r])
-    if l == 0 and r == a.shape[1] and join <= nb * 1.5:
-        print(f'{os.path.basename(path)}: already seamless (join {join:.1f}, columns {nb:.1f})')
+    # (a join no rougher than the picture's own columns can still be a hard edge to the eye, a dark trunk meeting a pale glow: so only a
+    # file this script already wrote is left alone, marked in its name list)
+    if not force and os.path.basename(path) in done_list():
+        print(f'{os.path.basename(path)}: already seamless')
         return
     k = a.shape[1] / 2048
     rim = round(RIM * k)
@@ -55,6 +67,8 @@ def make_seamless(path):
     if opaque: pic = pic.convert('RGB')
     pic.save(path, 'WEBP', quality=90, method=6)
     j2, nb2 = join_score(np.asarray(pic.convert('RGBA')).astype(float))
+    with open(DONE, 'a') as fh:
+        fh.write(os.path.basename(path) + '\n')
     print(f'{os.path.basename(path)}: cut {l + rim},{im.width - r + rim}, band {band}, {im.width} -> {pic.width} wide, join {join:.1f} -> {j2:.1f} (columns {nb2:.1f})')
 
 

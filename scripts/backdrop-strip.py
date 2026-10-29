@@ -100,6 +100,8 @@ def seamless(rgba, band, feather=6):
     lin = np.linspace(0, 1, band)[None, :]
     grad = lambda v: np.abs(np.diff(v, axis=1, append=v[:, -1:])).sum(-1) + np.abs(np.diff(v, axis=0, append=v[-1:])).sum(-1)
     detail = np.clip(_blur(grad(L) + grad(R), 10) / 14, 0, 1)
+    # (and where one end is paint and the other is clear, a crossfade is a see-through ghost of the paint: the cut there too)
+    detail = np.maximum(detail, np.clip(_blur(np.abs(L[..., 3] - R[..., 3]), 6) / 60, 0, 1))
     t = (t_cut * detail + lin * (1 - detail))[..., None]
     head_rgb = rgb[:, :band] * t + rgb[:, W - band:] * (1 - t)
     head_a = a[:, :band] * t + a[:, W - band:] * (1 - t)
@@ -131,7 +133,7 @@ def main(src, dst, kind, scale=2.0, band_frac=0.07):
     import importlib.util, os
     spec = importlib.util.spec_from_file_location('seam', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strip-seamless.py'))
     seam = importlib.util.module_from_spec(spec); spec.loader.exec_module(seam)
-    seam.make_seamless(dst)
+    seam.make_seamless(dst, force=True)  # (a freshly made strip: whatever the list says about the old one)
 
 if __name__ == '__main__':
     main(sys.argv[1], sys.argv[2], sys.argv[3], float(sys.argv[4]) if len(sys.argv) > 4 else 2.0)
