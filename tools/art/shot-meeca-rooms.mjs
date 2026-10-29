@@ -36,6 +36,10 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
       mc.marked = 1 + order.indexOf(id);
       mc.flicker.on = true;
       mc.flicker.show = 1;
+      mc.thought = null;
+      mc.bubble = null;
+      mc.queue.length = 0;
+      for (const k of ['camp', 'high', 'lost', 'flicker']) mc.said.add(k);
       const ri = kit.rooms.findIndex((r) => r.spec.id === id);
       const room = kit.rooms[ri];
       const pl = e.player;
@@ -70,7 +74,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
       if (shot === 'look') put(room.resets[0].x + 110, room.resets[0].y);
       return { x: Math.round(pl.x), y: Math.round(pl.y) };
     }, shot);
-    await p.waitForTimeout(shot === 'eat-open' ? 900 : 2200);
+    await p.waitForTimeout(2600);
     await p.screenshot({ path: `${out}/${shot}-${size}.png` });
     console.log(shot, size, JSON.stringify(where));
   }
