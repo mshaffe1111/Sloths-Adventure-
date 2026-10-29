@@ -44,3 +44,10 @@ w6to10-bosses2-0/1/2 6ae2647f3fb22a235dd496c8 / 6ae264813fb22a235dd496cd / 6ae26
 w6to10-plates        6ae264b441e90535df77ca10  rtx-pro-6000 21:10- moving lair plates, 6 clips, no motion model
 w6to10-stills2       6ae264cc41e90535df77ca2e  rtx-pro-6000 21:10- water's-edge signs (W5 + jungle, 3 takes each) and side-on prop retries
 w6to10-preview-all   6ae2754341e90535df77d9a7  cpu-upgrade  22:20- previews of every clip for the gallery
+w6to10-redo2-pin     6ae28eef3fb22a235dd4cca5  rtx-pro-6000 00:10- re-runs, last frame pinned: Flicker lead3/dart3, Reaver walk3 (pingpu.py)
+w6to10-redo2-m5      6ae28ef041e90535df77f9bd  rtx-pro-6000 00:10- re-runs: Monarch hover3/fly3 with the motion model at 0.5
+--- cut-in (2026-10-29) ---
+w6to10-cutpack a/b/c 6ae2909e.. / 6ae2909f.. / 6ae290a1..  cpu-upgrade  cancelled after 1-2 min: bash ate GROUPS (every job ran every group)
+w6to10-cutpack-a     6ae290f73fb22a235dd4cf3f  cpu-upgrade  00:19- Flicker, the four W5 creatures, water signs, far strips, props (cutpack2.py PACKS=...)
+w6to10-cutpack-b     6ae290f941e90535df77fcb9  cpu-upgrade  00:19- Iron-Claw, Golem, Drake sheets
+w6to10-cutpack-c     6ae290fb41e90535df77fcbd  cpu-upgrade  00:19- Reaver, Thornbark, Monarch sheets, lair plates, lairs, collar, collars off
