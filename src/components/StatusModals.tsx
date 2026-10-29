@@ -186,14 +186,14 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             <Crest world="meeca" size={endingH * 0.82} className="ending-meeca" />
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-pink-300 text-stroke mb-2">
-            MEECA IS SAVED!
+            Meeca is home
           </h2>
           <p className="text-sm text-pink-100 font-sans max-w-md mx-auto mb-6">
-            Pokey trekked through ten perilous realms, passed one hundred trials, and faced down General Iron-Claw himself. Meeca is home, the Heartbloom is glowing, and the canopy is at peace again.
+            Pokey crossed ten realms and climbed a thousand steps, slowly, the whole way. The Heartbloom is open, the guardians are free, and there is tea at four.
           </p>
 
           <div className="ending-score bg-black/50 border border-amber-400/40 p-4 rounded-2xl mb-6">
-            <span className="text-xs text-amber-300 uppercase font-sans">Grand Expedition Score</span>
+            <span className="text-xs text-amber-300 font-sans">Your score</span>
             <div className="text-3xl font-black text-amber-400 tabular-nums">{score.toLocaleString()}</div>
           </div>
 
@@ -203,14 +203,14 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               onClick={onOpenMap}
               className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base shadow-lg active:scale-95 transition-transform"
             >
-              VISIT WORLD MAP
+              Back to the world map
             </button>
             <button
               type="button"
               onClick={onOpenTitle}
               className="w-full py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-300 text-xs font-bold"
             >
-              Main Title Screen
+              Title screen
             </button>
           </div>
         </div>

@@ -17,7 +17,7 @@ export interface GoalInfo {
   kind: 'count' | 'distance' | 'boss' | 'none';
   /** the goal card's main line, e.g. "This stage: collect 33 petals" */
   line: string;
-  /** the card's second line, e.g. "to open the sanctuary" */
+  /** the card's second line, e.g. "to open the shrine" */
   sub: string;
   /** the counter's icon */
   icon: GoalIcon;
@@ -46,7 +46,7 @@ interface Cfg {
 }
 
 const DIST: Record<string, string> = {
-  sprint: 'reach the sanctuary',
+  sprint: 'reach the shrine',
   ascent: 'climb to the top',
   stealth: 'sneak to the end',
   vine_runner: 'swing to the end',
@@ -114,5 +114,5 @@ export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
     slotIcon = () => icon;
   }
   // (a beat-the-animals stage too: 1-9's and 2-5's counters showed no sense of how much stage was left, QA 2026-10-28)
-  return { kind: 'count', line, sub: 'to open the sanctuary', icon, slotIcon, noun: g.many, far: type === 'harvest' || type === 'rescue' || type === 'purge' || type === 'gauntlet' };
+  return { kind: 'count', line, sub: 'to open the shrine', icon, slotIcon, noun: g.many, far: type === 'harvest' || type === 'rescue' || type === 'purge' || type === 'gauntlet' };
 }
