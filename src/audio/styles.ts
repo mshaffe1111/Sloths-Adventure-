@@ -118,7 +118,8 @@ export const STYLES: Record<number, Style> = {
       { name: 'ripple', inst: 'harp', oct: 60, pats: ['rtfo tfr. .... ....', '.... .... rtfo tfr.'], gain: 0.38, pan: -0.35, rev: 0.45 },
       { name: 'strum', inst: 'harpSoft', oct: 55, pats: ['..r. ..t. ..f. ..t.'], gain: 0.34, pan: 0.3, rev: 0.25 },
     ],
-    chords: [{ name: 'pad', inst: 'orchWinds', lo: 55, hi: 74, voices: 3, gain: 0.18, rev: 0.5, gate: [0.3, 0.7] }],
+    // (strings, not a woodwind choir: the strings are loaded with every piece, the bassoon would be loaded for this alone)
+    chords: [{ name: 'pad', inst: 'orchStrings', lo: 55, hi: 74, voices: 3, gain: 0.18, rev: 0.5, gate: [0.3, 0.7] }],
     counter: { inst: 'flute', gate: [0.45, 0.8] },
   },
   // 3 Grotto: cave ambient in a slow 6/8. No drums at all: the harp's arpeggios, glockenspiel droplets, a low cello drone, a lot of room

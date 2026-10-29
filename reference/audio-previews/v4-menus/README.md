@@ -11,7 +11,7 @@ key, a groove and a tune of its own. No world plays in B-flat or in this rolling
   - **0:00** the groove alone: a clave-like wooden bell, hand drums, a rolling plucked bass, in 12/8.
   - **0:05** the hook on the marimba. It opens with Pokey's two-bar motif, then becomes its own tune.
   - **0:16** the warm part: the violins sing over the cellos, and the drums thin out.
-  - **0:27** the hook again, with the flute an octave above it and a soft choir.
+  - **0:27** the hook again, with the flute an octave above it.
   - **0:38** a quiet passage: the harp plays the motif over the hand drums.
   - **0:44** the hook to close, then round again.
 - **`menu-loop.mp3`** (2 min): the journal, badges and library. The same tune and groove, lighter and slower, cut into chunks the game
@@ -28,11 +28,11 @@ Measured the same way as the v3 worlds (tempo, brightness, rhythm density, low e
 
 | | nearest world | its distance | median distance to the ten worlds |
 |---|---|---|---|
-| new title | 5 Orchids | 2.04 | 3.24 |
+| new title | 5 Orchids | 2.26 | 3.11 |
 | menu loop | 5 Orchids | 1.85 | 3.02 |
 | old title (World 1's tune) | 9 Volcano | 1.45 | 2.89 |
 
 Two worlds sit 3.06 apart on average, so the title stands about as far from every world as the worlds stand from each other. The menu loop
-is 1.35 from the title: the same piece, lighter.
+is 1.43 from the title: the same piece, lighter.
 
-Loudness: title -10.7 LUFS, menu loop -13.3, map -12.4. Peaks -1.3 dBFS and lower.
+Loudness: title -11.2 LUFS, menu loop -13.3, map -12.4. Peaks -1.3 dBFS and lower.

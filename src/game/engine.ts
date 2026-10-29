@@ -3120,6 +3120,30 @@ export class GameEngine {
     if (p.activePowerUp === 'invincible' || p.activePowerUp === 'speed') v = Math.max(v, 0.95);
     sound.setIntensity(Math.min(1, v));
     sound.setLowHealth(this.lives <= 1 && p.hp <= 1);
+    sound.setMusicState(this.musicState(near));
+  }
+
+  /**
+   * What is happening, for the music to follow (audio/adaptive.ts; Matt approved the music, 2026-10-29): it answers each change on its next
+   * bar line, so this only has to say what is true now.
+   *   danger  an animal within reach, 1-8's collapsing branch on the move, 6-8's tide close under him
+   *   dark    World 3's and World 8's dark stretches (the same fade the screen uses)
+   *   exit    the open exit totem coming into reach
+   *   puzzle  inside a puzzle room that is not solved yet (a quiet bed to think over)
+   *   boss    the fight's phase, 1 to 3 (0 when there is none, or it has fallen)
+   */
+  private musicState(near: number) {
+    const p = this.player;
+    const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
+    let danger = clamp01((300 - near) / 120);
+    if (this.chase?.active) danger = 1;
+    if (this.tide?.on && this.tide.y - p.y < 260) danger = 1;
+    const boss = this.boss && !this.boss.defeated ? Math.max(1, Math.min(3, this.boss.phase)) : 0;
+    const exitItem = boss ? undefined : this.collectibles.find((c) => c.type === 'exit_totem' && !c.isLocked);
+    const exit = exitItem ? clamp01((900 - Math.abs(exitItem.x - p.x)) / 500) : 0;
+    const room = this.kit?.inRoom ?? -1;
+    const puzzle = room >= 0 && !this.kit!.solved(room) ? 1 : 0;
+    return { danger: boss ? 0 : danger, dark: this.darkShow, exit, puzzle, boss };
   }
 
   // ===========================================================================================

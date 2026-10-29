@@ -331,8 +331,8 @@ test('every world and pace is valid notation, with the tune and the low end inta
   }
 });
 
-test('written pieces (worlds, bosses, title, map, results, game over) can all be dressed in the orchestra', () => {
-  for (const id of ['world1', 'world5', 'world10', 'bossA', 'bossB', 'bossC', 'bossFinal', 'title', 'map', 'results', 'gameover']) {
+test('written pieces (worlds, bosses, results, game over) can all be dressed in the orchestra', () => {
+  for (const id of ['world1', 'world5', 'world10', 'bossA', 'bossB', 'bossC', 'bossFinal', 'results', 'gameover']) {
     for (const pace of PACES) {
       const t = themeById(`${id}~${PACE_CODE[pace]}`);
       assert.ok(t, `${id}~${PACE_CODE[pace]}`);

@@ -491,59 +491,6 @@ THEMES.bossFinal = bossTheme({
 // MENUS, MAP AND RESULTS
 // ---------------------------------------------------------------------------------------------
 
-// Title: Pokey's theme made grand, warm and unhurried
-THEMES.title = {
-  id: 'title',
-  bpm: 100,
-  tonic: 'C4',
-  scale: 'major',
-  delay: 0.75,
-  chords: ['C', 'G', 'Am', 'F', 'C', 'G', 'F', 'G', 'Am', 'F', 'C', 'G', 'Am', 'Dm', 'G', 'G7'],
-  tracks: [
-    { kind: 'chords', name: 'strings', inst: 'strings', lo: 50, hi: 71, voices: 4, gain: 0.34, rev: 0.5 },
-    { kind: 'pattern', name: 'harp', inst: 'harp', oct: 55, pats: ['r.t.f.t.o.f.t.f.', 'r.t.f.o.f.t.f.t.'], gain: 0.5, rev: 0.4, dly: 0.12, pan: -0.25 },
-    { kind: 'pattern', name: 'bass', inst: 'subBass', oct: 36, pats: ['R--- ---. ..r. ....'], gain: 0.5, rev: 0.05 },
-    { kind: 'melody', name: 'lead', inst: 'marimba', altInst: 'flute', bars: loop16(SLOMATT_A), gen: { lo: 64, hi: 84, density: 0.4 }, gain: 0.65, rev: 0.4, dly: 0.2 },
-    { kind: 'pattern', name: 'sparkle', lite: true, inst: 'bell', oct: 72, pats: ['.... .... t... ....', '..r. .... .... f...'], gain: 0.35, rev: 0.6, dly: 0.3, pan: 0.3, gate: [0.2, 0.7] },
-    { kind: 'chords', name: 'choir', inst: 'choir', lo: 55, hi: 72, voices: 3, gain: 0.26, rev: 0.6, gate: [0.5, 1] },
-    drum('kick', 'softKick', ['x... .... x... ....'], 0.55, [0.3, 0.6]),
-    drum('shaker', 'shaker', ['.x.x .x.x .x.x .x.x'], 0.5, [0.2, 0.5]),
-    drum('rim', 'rim', ['.... x... .... x...'], 0.45, [0.5, 0.8]),
-  ],
-};
-
-// World map: a jaunty "where next?" walking tune
-THEMES.map = {
-  id: 'map',
-  bpm: 112,
-  tonic: 'G4',
-  scale: 'major',
-  swing8: 0.14,
-  delay: 0.75,
-  chords: ['G', 'C', 'G', 'D', 'G', 'C', 'D', 'G', 'Em', 'C', 'G', 'D', 'Em', 'C', 'D', 'G'],
-  tracks: [
-    { kind: 'chords', name: 'pad', inst: 'pad', lo: 50, hi: 69, voices: 3, gain: 0.26, rev: 0.4 },
-    { kind: 'pattern', name: 'bass', inst: 'bass', oct: 36, pats: ['R... ..r. R... ..f.', 'R.r. ..f. R... r...'], gain: 0.55, rev: 0.05 },
-    {
-      kind: 'melody', name: 'lead', inst: 'pluck', altInst: 'marimba', gen: { lo: 67, hi: 86, density: 0.45 }, gain: 0.7, rev: 0.3, dly: 0.2,
-      bars: loop16([
-        "1:2 3:2 5:2 3:2 1':4 5:4",
-        "4:2 6:2 1':2 6:2 5:4 4:4",
-        "3:2 5:2 7:2 5:2 3:4 1:4",
-        "5:2 7:2 2':2 7:2 5:8",
-        "1':3 7:1 5:2 3:2 5:4 r:4",
-        "6:3 5:1 4:2 6:2 1':4 r:4",
-        "7:2 2':2 5':2 2':2 7:2 5:2 2:4",
-        "1':4 5:4 3:4 1:4",
-      ]),
-    },
-    { kind: 'pattern', name: 'comp', lite: true, inst: 'marimba', oct: 57, pats: ['.... t..t .... t..t', '..t. ..f. ..t. ..f.'], gain: 0.4, rev: 0.2 },
-    drum('kick', 'softKick', ['x... .... x... ....', 'x... .... x... ..x.'], 0.6, [0.1, 0.35]),
-    drum('congaHi', 'congaHi', ['.... x... .x.. x.x.'], 0.5),
-    drum('shaker', 'shaker', ['x.x. x.x. x.x. x.xx'], 0.5, [0.15, 0.4]),
-    drum('rim', 'rim', ['.... x... .... x...'], 0.5, [0.4, 0.7]),
-  ],
-};
 
 // Results: a short, warm, settled loop (stingers do the fanfare)
 THEMES.results = {
@@ -603,7 +550,7 @@ THEMES.ending = composeStory('ending');
 
 /** a piece by id: written (THEMES) or composed on demand ('gen-<world>-<seed>') */
 /** which world's instrument flavour (see orchestrate.ts) each written non-world piece uses */
-const FLAVOUR_OF: Record<string, number> = { bossA: 5, bossB: 7, bossC: 9, bossFinal: 10, title: 1, map: 2, results: 1, gameover: 3 };
+const FLAVOUR_OF: Record<string, number> = { bossA: 5, bossB: 7, bossC: 9, bossFinal: 10, results: 1, gameover: 3 };
 
 /** 'world3~c' is the written world 3 theme dressed in the orchestra for a climbing stage; 'bossB~b', 'title~c' and the like work the same way (see orchestrate.ts) */
 function orchestratedById(id: string): Theme | null {

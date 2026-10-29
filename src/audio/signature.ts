@@ -4,7 +4,7 @@
  * drums, Pokey's motif) but in a key and a groove of its own, with a tune of its own, so the menus never sound like a stage.
  *
  *   signature   the start screen, the full statement (about 55 s, then round again): the 12/8 groove alone, the hook on the marimba, a warm
- *               section on violins and cellos, the hook again with the flute above it and a soft choir, a quiet passage where the harp
+ *               section on violins and cellos, the hook again with the flute above it, a quiet passage where the harp
  *               plays the motif over the hand drums, and the hook to close
  *   menu        the menus (settings, journal, pause from the title): the same tune and key, lighter (marimba, flute, harp, soft hand drums),
  *               as chunks the Playback strings together in a never-repeating order (form.ts), so minutes of sitting never tire
@@ -63,7 +63,6 @@ export function signatureTheme(): Theme {
     { kind: 'chords', name: 'strings', inst: 'orchStrings', lo: 50, hi: 72, voices: 4, gain: 0.3, rev: 0.55 } as ChordTrack,
     // a soft bed of horns: warmth, not a fanfare
     { kind: 'chords', name: 'horns', inst: 'orchBrass', lo: 46, hi: 63, voices: 3, gain: 0.18, rev: 0.6 } as ChordTrack,
-    { kind: 'chords', name: 'choir', inst: 'choir', lo: 58, hi: 75, voices: 3, gain: 0.2, rev: 0.6 } as ChordTrack,
     pat('bass', 'contraPizz', 34, ['R....r..R.f.', 'R....r.R..t.'], 0.85, { len: 0.7 }),
     pat('ripple', 'harp', 58, ['r.t.f.o.f.t.', 'r.f.o.t.o.f.'], 0.3, { rev: 0.45, pan: -0.3 }),
     // the hook on the marimba, the flute an octave above it the second time
@@ -88,7 +87,9 @@ export function signatureTheme(): Theme {
     { name: 'break', chords: ['Bb', 'Bb', 'Eb', 'F'], lines: { motif: MOTIF4 }, rest: [...only('motif'), 'strings', 'horns', 'choir', 'bass', 'kick'] },
     { name: 'A3', chords: HOOK_CHORDS, lines: { hook: HOOK }, rest: only('hook', 'flute'), lift: 0.2 },
   ];
-  return { id: 'signature', bpm: 132, tonic: 'Bb3', scale: 'major', stepsPerBar: STEPS, delay: 0.75, chords: HOOK_CHORDS, form, tracks, level: 0.9 };
+  // (light orchestra: the low strings and string beds only. A choir and the woodwind and horn beds were another 8 MB of recordings to hold
+  // in a phone's memory for the start screen alone)
+  return { id: 'signature', bpm: 132, tonic: 'Bb3', scale: 'major', stepsPerBar: STEPS, delay: 0.75, chords: HOOK_CHORDS, form, tracks, level: 0.9, orch: 'light' };
 }
 
 /** the menus and (with the world's lead) the map: the same tune and groove, lighter, as chunks that never come round in the same order */

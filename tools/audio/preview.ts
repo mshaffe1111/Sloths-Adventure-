@@ -148,4 +148,9 @@ async function render(spec: PreviewSpec): Promise<{ l: string; r: string; perf: 
 }
 
 (window as unknown as { renderPreview: typeof render }).renderPreview = render;
+/** the recordings a piece loads (tools/audio/memory.mjs: the phone memory each world's music takes) */
+(window as unknown as { groupsOf: (id: string) => string[] | null }).groupsOf = (id: string) => {
+  const t = themeById(id);
+  return t ? groupsFor(t) : null;
+};
 document.getElementById('s')!.textContent = 'ready';
