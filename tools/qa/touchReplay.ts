@@ -25,7 +25,7 @@
  *   - rests: a second finger held still half a second or more (a resting thumb): how many threw a mega, and how many of the flicks up
  *     that the same finger then made did not jump.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { TouchGestures, TUNING, type GestureSink } from '../../src/game/touchGestures.ts';
 
 type Line = (string | number)[];
@@ -182,6 +182,12 @@ for (const parts of sessions.values()) {
       if (live.size === 0) vineHold = '';
     }
   }
+}
+
+/** LIST=<file> writes every touch's decisions, one line each, to compare two versions of the rules */
+if (process.env.LIST) {
+  const out = touches.map((tc, i) => `${i} ${tc.who} ${tc.second ? 2 : 1} ${tc.did.join(',')} | ${tc.pts.slice(0, 14).map((p) => `${Math.round(p.t - tc.pts[0].t)}:${Math.round(p.x - tc.pts[0].x)},${Math.round(p.y - tc.pts[0].y)}`).join(' ')}`);
+  writeFileSync(process.env.LIST, out.join('\n'));
 }
 
 // ───────────────────────────── counting ─────────────────────────────

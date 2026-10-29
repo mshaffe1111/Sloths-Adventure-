@@ -133,3 +133,24 @@ test('CT-26: pressing Jump while the pad is held up is a fresh jump press (the s
   pad.jumpButton(true);
   assert.equal(presses.length, 3, 'and again');
 });
+
+// ───────────────────────────── CT-15: the palm rule ─────────────────────────────
+
+test('CT-15: a second thumb tapping 45-70 px from the steering thumb punches (the palm rule ate it); resting there it throws no mega', () => {
+  for (const d of [50, 65]) {
+    const t = gestures();
+    t.path(1, [[200, 600], [240, 600]], 16, false); // steering right, thumb stays down
+    t.path(2, [[240 + d, 600], [241 + d, 601]], 40);
+    assert.ok(t.log.includes('punch'), `a tap ${d} px from the steering thumb: ${t.log.join(' ')}`);
+    const r = gestures();
+    r.path(1, [[200, 600], [240, 600]], 16, false);
+    r.g.down(2, 240 + d, 600, r.at() + 10);
+    for (let ms = 30; ms <= 900; ms += 30) r.g.tick(r.at() + 10 + ms);
+    assert.ok(!r.log.includes('mega'), `resting ${d} px from the steering thumb threw a mega: ${r.log.join(' ')}`);
+  }
+  // nearer than 45 px it is the same hand: ignored, as before
+  const p = gestures();
+  p.path(1, [[200, 600], [240, 600]], 16, false);
+  p.path(2, [[270, 600], [271, 601]], 40);
+  assert.ok(!p.log.includes('punch'), p.log.join(' '));
+});

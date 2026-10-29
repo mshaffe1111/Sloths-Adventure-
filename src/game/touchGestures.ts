@@ -93,7 +93,14 @@ export const TUNING = {
   nudgeTapPx: 30,
   nudgeTapMs: 250,
   /** a second finger this close to the steering finger is probably the same hand */
-  palmPx: 70,
+  /**
+   * (it was 70, and in portrait on a 320-390 px phone a thumb running right slides toward the other one, so its taps vanished: polish
+   * report CT-15. The report also asked to ignore a touch by its reported radius; in the testers' recordings almost every touch reports
+   * 24 px, near the thumb or not, so the radius tells a palm from a thumb on no phone here and is not used)
+   */
+  palmPx: 45,
+  /** a second finger this close (but past palmPx) is taken, but resting there it is the same hand: it never throws the mega (CT-15) */
+  nearPx: 70,
   /** the right half starts here (fraction of the width); left of it steers at once */
   splitAt: 0.5,
 
@@ -280,6 +287,8 @@ interface Finger {
   airDown: boolean;
   /** where the thumb sank to after a jump (with tr): a consumed finger's wiggle measures its lean from here */
   trX: number;
+  /** it went down beside the steering thumb (nearPx): resting there is the same hand, never a mega */
+  nearThumb?: boolean;
 }
 
 export class TouchGestures {
@@ -379,7 +388,9 @@ export class TouchGestures {
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
-      if (Math.hypot(x - m.x, y - m.y) < TUNING.palmPx) f.role = 'ignored';
+      const d = Math.hypot(x - m.x, y - m.y);
+      if (d < TUNING.palmPx) f.role = 'ignored';
+      else if (d < TUNING.nearPx) f.nearThumb = true;
       else if (this.actor()) f.role = 'ignored';
       else f.role = 'action';
     } else if (this.actor()) {
@@ -416,8 +427,12 @@ export class TouchGestures {
     f.trail.push({ t, x, y });
     while (f.trail.length > 2 && t - f.trail[0].t > TUNING.duckTrailMs) f.trail.shift();
     if (f.role === 'mover') this.steer(f);
-    else if (f.role === 'pending' || f.role === 'action') this.judge(f, t, false);
-    else if (f.role === 'ignored') this.palmFlick(f, t);
+    else if (f.role === 'pending' || f.role === 'action') {
+      // (beside the steering thumb the palm rule's flick still counts: a second thumb flicking up and over from there, 45 to 60 degrees,
+      // jumped while the palm rule took it, and the ordinary rules want a flick more upright, CT-15)
+      if (f.nearThumb && !f.consumed) this.palmFlick(f, t);
+      if (!f.consumed || f.jumped) this.judge(f, t, false);
+    } else if (f.role === 'ignored') this.palmFlick(f, t);
   }
 
   /**
@@ -1038,7 +1053,7 @@ export class TouchGestures {
     }
     // a long drag by an action finger while steering is going on elsewhere is just a wobble: let it be
     // a still finger held down: mega (but not while the last one is still cooling down: the thumb waits, and it goes off the moment it can)
-    if (!f.megaDone && el >= TUNING.holdMs && Math.hypot(dx, dy) <= TUNING.holdPx && this.stillNow(f)) {
+    if (!f.megaDone && !f.nearThumb && el >= TUNING.holdMs && Math.hypot(dx, dy) <= TUNING.holdPx && this.stillNow(f)) {
       if (this.env?.megaReady && !this.env.megaReady()) return false;
       f.megaDone = true;
       // the mega never uses the finger up: a thumb that was only resting can still steer if it slides, and still jump if it flicks (a
