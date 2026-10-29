@@ -57,15 +57,16 @@ def main(commit):
 
 
 
-# round 2 of the skies (2026-10-29): the ones that stacked a second landscape, ghosted tile panels or went dark, redone from a plain
+# rounds 2-3 of the skies (2026-10-29): the ones that stacked a second landscape, ghosted tile panels or went dark, redone from a plain
 # start with wide tile overlaps and a sky-only prompt, two seeds each
 REDO = ['w1kapok', 'w1sunrise', 'w2', 'w2evening', 'w3sinkhole', 'w5dusk2', 'w5twi1', 'w5twi2', 'w6', 'w6dawn', 'w7', 'w7dawn', 'w7dusk',
         'w9', 'w9dawn', 'w10after']
-SKY2 = ('slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the '
-        'sky carries straight on up from the bottom edge in the same colours and light, {what}. One continuous picture, no horizon, '
-        'no second landscape, no frame, no panel, no border, no text')
+# (round 2 put "no frame, no panel, no horizon" in the positive prompt and the model painted frames and panels, and a sloth: every
+# negative goes in NEG2 only, round 3)
+SKY2 = '{style}. {what}'
 NEG2 = ('horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, '
-        'picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry')
+        'picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, '
+        'monkey, bird, blurry')
 OVERHEAD = {  # what hangs into the top for the worlds that are under trees, a canopy or in a sinkhole
     'w1kapok': 'leafy green kapok branches with lilac orchids reach in along the very top, blue sky between',
     'w3sinkhole': 'the mossy grey-green rock rim of the sinkhole and hanging vines around the edges, pale misty light',
@@ -82,12 +83,12 @@ def redo(commit):
     for stem in REDO:
         what = OVERHEAD.get(stem, SKY[stem])
         for seed in (11, 23):
-            items.append({'name': f'{stem}-sky-r2-{seed}', 'src': f'/out/hfbatch/hdset/{stem}-far-hd.webp', 'strength': 1.0, 'seed': seed,
-                          'steps': 24, 'ext': 0.35, 'ctx': 0.3, 'start': 'flat', 'ov': 512, 'prompt': SKY2.format(what=what), 'neg': NEG2})
-    sky = {'note': 'X-16 skies round 2, skygpu.py, 2026-10-29', 'loras': {'style': ['mshaffe111/slothadv-style-lora',
+            items.append({'name': f'{stem}-sky-r3-{seed}', 'src': f'/out/hfbatch/hdset/{stem}-far-hd.webp', 'strength': 1.0, 'seed': seed,
+                          'steps': 24, 'ext': 0.35, 'ctx': 0.3, 'start': 'flat', 'ov': 384, 'prompt': SKY2.format(style=SKY_STYLE, what=what), 'neg': NEG2})
+    sky = {'note': 'X-16 skies round 3, skygpu.py, 2026-10-29', 'loras': {'style': ['mshaffe111/slothadv-style-lora',
            'slothadv_style_v1.safetensors', 0.8]}, 'tw': 1024, 'items': items}
     (ROOT / 'tools/art/hfbatch/specs/spec-hdsky2.json').write_text(json.dumps(sky, indent=1))
-    print(len(items), 'skies (round 2)')
+    print(len(items), 'skies (round 3)')
 
 
 if __name__ == '__main__':

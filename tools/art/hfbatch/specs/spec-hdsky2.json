@@ -1,5 +1,5 @@
 {
- "note": "X-16 skies round 2, skygpu.py, 2026-10-29",
+ "note": "X-16 skies round 3, skygpu.py, 2026-10-29",
  "loras": {
   "style": [
    "mshaffe111/slothadv-style-lora",
@@ -10,7 +10,7 @@
  "tw": 1024,
  "items": [
   {
-   "name": "w1kapok-sky-r2-11",
+   "name": "w1kapok-sky-r3-11",
    "src": "/out/hfbatch/hdset/w1kapok-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -18,12 +18,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, leafy green kapok branches with lilac orchids reach in along the very top, blue sky between. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. leafy green kapok branches with lilac orchids reach in along the very top, blue sky between",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w1kapok-sky-r2-23",
+   "name": "w1kapok-sky-r3-23",
    "src": "/out/hfbatch/hdset/w1kapok-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -31,12 +31,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, leafy green kapok branches with lilac orchids reach in along the very top, blue sky between. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. leafy green kapok branches with lilac orchids reach in along the very top, blue sky between",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w1sunrise-sky-r2-11",
+   "name": "w1sunrise-sky-r3-11",
    "src": "/out/hfbatch/hdset/w1sunrise-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -44,12 +44,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a sunrise open sky with a few soft painted clouds, pale gold and blue. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a sunrise open sky with a few soft painted clouds, pale gold and blue",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w1sunrise-sky-r2-23",
+   "name": "w1sunrise-sky-r3-23",
    "src": "/out/hfbatch/hdset/w1sunrise-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -57,12 +57,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a sunrise open sky with a few soft painted clouds, pale gold and blue. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a sunrise open sky with a few soft painted clouds, pale gold and blue",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w2-sky-r2-11",
+   "name": "w2-sky-r3-11",
    "src": "/out/hfbatch/hdset/w2-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -70,12 +70,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a warm hazy golden afternoon open sky with a few soft painted clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a warm hazy golden afternoon open sky with a few soft painted clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w2-sky-r2-23",
+   "name": "w2-sky-r3-23",
    "src": "/out/hfbatch/hdset/w2-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -83,12 +83,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a warm hazy golden afternoon open sky with a few soft painted clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a warm hazy golden afternoon open sky with a few soft painted clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w2evening-sky-r2-11",
+   "name": "w2evening-sky-r3-11",
    "src": "/out/hfbatch/hdset/w2evening-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -96,12 +96,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a warm orange evening open sky with a few soft painted clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a warm orange evening open sky with a few soft painted clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w2evening-sky-r2-23",
+   "name": "w2evening-sky-r3-23",
    "src": "/out/hfbatch/hdset/w2evening-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -109,12 +109,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a warm orange evening open sky with a few soft painted clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a warm orange evening open sky with a few soft painted clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w3sinkhole-sky-r2-11",
+   "name": "w3sinkhole-sky-r3-11",
    "src": "/out/hfbatch/hdset/w3sinkhole-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -122,12 +122,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, the mossy grey-green rock rim of the sinkhole and hanging vines around the edges, pale misty light. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. the mossy grey-green rock rim of the sinkhole and hanging vines around the edges, pale misty light",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w3sinkhole-sky-r2-23",
+   "name": "w3sinkhole-sky-r3-23",
    "src": "/out/hfbatch/hdset/w3sinkhole-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -135,12 +135,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, the mossy grey-green rock rim of the sinkhole and hanging vines around the edges, pale misty light. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. the mossy grey-green rock rim of the sinkhole and hanging vines around the edges, pale misty light",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w5dusk2-sky-r2-11",
+   "name": "w5dusk2-sky-r3-11",
    "src": "/out/hfbatch/hdset/w5dusk2-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -148,12 +148,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w5dusk2-sky-r2-23",
+   "name": "w5dusk2-sky-r3-23",
    "src": "/out/hfbatch/hdset/w5dusk2-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -161,12 +161,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w5twi1-sky-r2-11",
+   "name": "w5twi1-sky-r3-11",
    "src": "/out/hfbatch/hdset/w5twi1-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -174,12 +174,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, lilac and violet twilight sky with soft pink clouds, calm and light. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. lilac and violet twilight sky with soft pink clouds, calm and light",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w5twi1-sky-r2-23",
+   "name": "w5twi1-sky-r3-23",
    "src": "/out/hfbatch/hdset/w5twi1-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -187,12 +187,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, lilac and violet twilight sky with soft pink clouds, calm and light. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. lilac and violet twilight sky with soft pink clouds, calm and light",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w5twi2-sky-r2-11",
+   "name": "w5twi2-sky-r3-11",
    "src": "/out/hfbatch/hdset/w5twi2-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -200,12 +200,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, lilac and violet twilight sky with soft pink clouds, calm and light. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. lilac and violet twilight sky with soft pink clouds, calm and light",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w5twi2-sky-r2-23",
+   "name": "w5twi2-sky-r3-23",
    "src": "/out/hfbatch/hdset/w5twi2-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -213,12 +213,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, lilac and violet twilight sky with soft pink clouds, calm and light. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. lilac and violet twilight sky with soft pink clouds, calm and light",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w6-sky-r2-11",
+   "name": "w6-sky-r3-11",
    "src": "/out/hfbatch/hdset/w6-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -226,12 +226,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, grey misty sky, a few dark mangrove branches with hanging moss reach in along the very top. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. grey misty sky, a few dark mangrove branches with hanging moss reach in along the very top",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w6-sky-r2-23",
+   "name": "w6-sky-r3-23",
    "src": "/out/hfbatch/hdset/w6-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -239,12 +239,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, grey misty sky, a few dark mangrove branches with hanging moss reach in along the very top. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. grey misty sky, a few dark mangrove branches with hanging moss reach in along the very top",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w6dawn-sky-r2-11",
+   "name": "w6dawn-sky-r3-11",
    "src": "/out/hfbatch/hdset/w6dawn-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -252,12 +252,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, pale pink dawn sky, a few dark mangrove branches with hanging moss reach in along the very top. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. pale pink dawn sky, a few dark mangrove branches with hanging moss reach in along the very top",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w6dawn-sky-r2-23",
+   "name": "w6dawn-sky-r3-23",
    "src": "/out/hfbatch/hdset/w6dawn-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -265,12 +265,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, pale pink dawn sky, a few dark mangrove branches with hanging moss reach in along the very top. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. pale pink dawn sky, a few dark mangrove branches with hanging moss reach in along the very top",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w7-sky-r2-11",
+   "name": "w7-sky-r3-11",
    "src": "/out/hfbatch/hdset/w7-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -278,12 +278,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a grey-green overcast sky over the jungle ruins, soft clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a grey-green overcast sky over the jungle ruins, soft clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w7-sky-r2-23",
+   "name": "w7-sky-r3-23",
    "src": "/out/hfbatch/hdset/w7-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -291,12 +291,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a grey-green overcast sky over the jungle ruins, soft clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a grey-green overcast sky over the jungle ruins, soft clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w7dawn-sky-r2-11",
+   "name": "w7dawn-sky-r3-11",
    "src": "/out/hfbatch/hdset/w7dawn-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -304,12 +304,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, warm pale dawn sky, the leaves of the great carved tree reach in along the very top. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. warm pale dawn sky, the leaves of the great carved tree reach in along the very top",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w7dawn-sky-r2-23",
+   "name": "w7dawn-sky-r3-23",
    "src": "/out/hfbatch/hdset/w7dawn-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -317,12 +317,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, warm pale dawn sky, the leaves of the great carved tree reach in along the very top. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. warm pale dawn sky, the leaves of the great carved tree reach in along the very top",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w7dusk-sky-r2-11",
+   "name": "w7dusk-sky-r3-11",
    "src": "/out/hfbatch/hdset/w7dusk-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -330,12 +330,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a dim green-gold dusk sky over the ruins, soft clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dim green-gold dusk sky over the ruins, soft clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w7dusk-sky-r2-23",
+   "name": "w7dusk-sky-r3-23",
    "src": "/out/hfbatch/hdset/w7dusk-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -343,12 +343,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a dim green-gold dusk sky over the ruins, soft clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dim green-gold dusk sky over the ruins, soft clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w9-sky-r2-11",
+   "name": "w9-sky-r3-11",
    "src": "/out/hfbatch/hdset/w9-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -356,12 +356,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a smoky brown-orange sky full of drifting volcanic smoke and ash clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a smoky brown-orange sky full of drifting volcanic smoke and ash clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w9-sky-r2-23",
+   "name": "w9-sky-r3-23",
    "src": "/out/hfbatch/hdset/w9-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -369,12 +369,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a smoky brown-orange sky full of drifting volcanic smoke and ash clouds. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a smoky brown-orange sky full of drifting volcanic smoke and ash clouds",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w9dawn-sky-r2-11",
+   "name": "w9dawn-sky-r3-11",
    "src": "/out/hfbatch/hdset/w9dawn-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -382,12 +382,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a soft pink dawn sky with a thin trail of volcanic smoke. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a soft pink dawn sky with a thin trail of volcanic smoke",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w9dawn-sky-r2-23",
+   "name": "w9dawn-sky-r3-23",
    "src": "/out/hfbatch/hdset/w9dawn-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -395,12 +395,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a soft pink dawn sky with a thin trail of volcanic smoke. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a soft pink dawn sky with a thin trail of volcanic smoke",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w10after-sky-r2-11",
+   "name": "w10after-sky-r3-11",
    "src": "/out/hfbatch/hdset/w10after-far-hd.webp",
    "strength": 1.0,
    "seed": 11,
@@ -408,12 +408,12 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a stormy golden sky with heavy dark clouds breaking up. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a stormy golden sky with heavy dark clouds breaking up",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   },
   {
-   "name": "w10after-sky-r2-23",
+   "name": "w10after-sky-r3-23",
    "src": "/out/hfbatch/hdset/w10after-far-hd.webp",
    "strength": 1.0,
    "seed": 23,
@@ -421,9 +421,9 @@
    "ext": 0.35,
    "ctx": 0.3,
    "start": "flat",
-   "ov": 512,
-   "prompt": "slothadv style, hand-painted gouache storybook illustration, soft cel shading, thin dark outline. The top of the picture: the sky carries straight on up from the bottom edge in the same colours and light, a stormy golden sky with heavy dark clouds breaking up. One continuous picture, no horizon, no second landscape, no frame, no panel, no border, no text",
-   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, blurry"
+   "ov": 384,
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a stormy golden sky with heavy dark clouds breaking up",
+   "neg": "horizon, landscape, hills, mountains, distant trees row, ground, ledge, platform, building, frame, border, panel, rectangle, picture in picture, window, seam, horizontal line, band, text, letters, watermark, photo, 3d render, people, animal, sloth, monkey, bird, blurry"
   }
  ]
 }
