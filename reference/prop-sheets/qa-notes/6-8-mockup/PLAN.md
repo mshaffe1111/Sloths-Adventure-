@@ -54,7 +54,7 @@ small pure module like 1-8's collapse (`chase.ts`): the engine steps it, and its
 | Slack water | stops while he stands at a flag, and for 6 s after he leaves it | stops for 10 s |
 | First liana | holds while he stands on its shelf, until his first swing | the same |
 | When it is off screen | a small ripple and arrow at the bottom edge of the screen (a small code-drawn touch) | the same, plus Dot's "The tide! Keep climbing." when it is within 350 px |
-| If it catches him | a splash and a life, like all dirty water in World 6. He goes back to the flag with the water 600 px under it, and it waits 3 s | see the question below |
+| If it catches him | a splash and a life, like all dirty water in World 6. He goes back to the flag with the water 600 px under it, and it waits 3 s | the same: a life (Matt, 2026-10-29: answer A) |
 
 **Never a cheap death.** The tide catches only a player who stops for a long time between flags: about 18 s on Normal, about 40 s on
 Easy. In the blockout, a careful Normal player (half the quick player's speed, waiting a full swing at every liana) is never closer than
@@ -82,7 +82,7 @@ close-ups inside the ruins. The reveal needs the ruins far off, seen over the ma
 
 The tide itself reuses Matt's dirty-water sheet. No other new art is needed for the build.
 
-## One question for Matt
+## Matt's answer (2026-10-29): **A**
 
 When the tide catches Pokey on **Easy**:
 
