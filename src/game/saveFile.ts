@@ -23,7 +23,7 @@ const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS 
 const ALLOWED: RegExp[] = [
   /^sloth_lvl_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // per-stage result (and the extra stages, extraStages.ts: Dot's flight 4-D, Meeca's 5-M)
   /^sloth_layout_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // the layout a stage was first played with (it stays the same)
-  /^sloth_story_[wmn]\d{1,2}$/, // world intro seen (w), the scene halfway through the world (m), World 1's first note after 1-1 (n)
+  /^sloth_story_[wmng]\d{1,2}$/, // world intro seen (w), the scene halfway through the world (m), World 1's first note after 1-1 (n), a guardian's card (g, 11 = Thornbark)
   /^sloth_way_\d{1,2}-\d{1,2}$/, // which in-stage asides have been heard (so a new game hears them again; the on/off switch is a device setting, not here)
   /^sloth_secret_gate$/,
   /^sloth_thorn_heart$/,

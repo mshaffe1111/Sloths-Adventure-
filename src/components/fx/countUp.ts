@@ -5,8 +5,11 @@
  */
 /** the card's lift-in (cleared.css clr-in) */
 export const CARD_IN_MS = 420;
-/** the counts start a beat after the card has landed */
-export const COUNT_START_MS = 480;
+/**
+ * the counts start a beat after the card has landed, and just after the opening timpani hit of the victory sting (which plays as the
+ * card lands, at 500 ms: polish A2's SN-5), so the first ticks never sit on that hit; the rest of the ticks run softly under the brass
+ */
+export const COUNT_START_MS = 650;
 export const COUNT_MS = 800;
 export const TICK_MS = 50;
 export const TICK_MAX = 16;

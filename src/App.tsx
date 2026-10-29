@@ -94,6 +94,20 @@ function hasSeenMidStory(w: number): boolean {
     return false;
   }
 }
+/** a guardian's card comes after its scene the first time only, in each save (UI-5; key 11 is Thornbark) */
+const guardianCardKey = (lvl: LevelConfig) => `sloth_story_g${lvl.secret ? 11 : lvl.worldIndex}`;
+function hasSeenGuardianCard(lvl: LevelConfig): boolean {
+  try {
+    return localStorage.getItem(guardianCardKey(lvl)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markGuardianCardSeen(lvl: LevelConfig) {
+  try {
+    localStorage.setItem(guardianCardKey(lvl), '1');
+  } catch {}
+}
 function markMidStorySeen(w: number) {
   try {
     localStorage.setItem(midStoryKey(w), '1');
@@ -1021,14 +1035,15 @@ export default function App() {
           }
           finishLabel="FIGHT!" finishIcon="swords"
           skipLabel="Skip to fight"
-          onFinish={() => setBossCard(true)}
+          onFinish={() => (hasSeenGuardianCard(activeLevel) ? launchEngine(activeLevel) : setBossCard(true))}
         />
       )}
-      {/* after the guardian's scene: its card, with Dot's one line, then the fight (UI-5) */}
+      {/* after the guardian's scene, the first time in this save: its card, with Dot's one line, then the fight (UI-5) */}
       {screen === 'boss_intro' && bossCard && (
         <BossIntroCard
           levelConfig={activeLevel}
           onGo={() => {
+            markGuardianCardSeen(activeLevel);
             setBossCard(false);
             launchEngine(activeLevel);
           }}
