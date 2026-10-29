@@ -2,7 +2,7 @@
 
     python3 -I tools/art/w7slide/make_spec.py img <commit holding the starts>-> spec-img.json   (all the stills, one GPU job)
     python3 -I tools/art/w7slide/make_spec.py clips '<json [[still name, kind], ...]>'   -> spec-clips.json
-    python3 -I tools/art/w7slide/make_spec.py args <spec>   -> the hf_jobs run args
+    python3 -I tools/art/w7slide/make_spec.py args <spec> <commit>   -> the hf_jobs run args
 """
 import json, sys
 from pathlib import Path
@@ -87,14 +87,16 @@ def clips(picks):
     print(len(cl), 'clips')
 
 
-def args(spec):
+def args(spec, sha):
+    """the job reads this script and the spec straight from the repo at commit sha (pushed to w7-slide-art), writes to the bucket"""
+    raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{sha}/tools/art/w7slide/'
     name = Path(spec).name
     print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '1h', 'detach': True,
-                      'command': ['bash', '-lc', f'sha256sum /out/w7slide/jobs/slidegpu.py && SPEC=w7slide/jobs/{name} '
-                                  'python /out/w7slide/jobs/slidegpu.py'],
+                      'command': ['bash', '-lc', f'curl -sSfL {raw}slidegpu.py -o /tmp/slidegpu.py && sha256sum /tmp/slidegpu.py && '
+                                  f'SPEC={raw}{name} python /tmp/slidegpu.py'],
                       'secrets': {'HF_TOKEN': '$HF_TOKEN'}, 'volumes': ['hf://buckets/mshaffe111/w5-xfer:/out:rw'],
                       'name': json.loads(Path(spec).read_text())['tag']}, indent=1))
 
 
 if __name__ == '__main__':
-    {'img': lambda: img(sys.argv[2]), 'clips': lambda: clips(json.loads(sys.argv[2])), 'args': lambda: args(sys.argv[2])}[sys.argv[1]]()
+    {'img': lambda: img(sys.argv[2]), 'clips': lambda: clips(json.loads(sys.argv[2])), 'args': lambda: args(sys.argv[2], sys.argv[3])}[sys.argv[1]]()

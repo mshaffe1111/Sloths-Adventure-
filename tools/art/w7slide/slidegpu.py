@@ -5,7 +5,7 @@ the bucket mshaffe111/w5-xfer read-write at /out and works under /out/w7slide/:
   img/carrier-<tag>-<k>.png  the pictures as WebP q94 packed byte for byte into greyscale PNGs (w5/unpack_carrier.py), for hf_fs attach
   clips/<name>.zip, clips/sheet-<name>.jpg, clips/<name>.carrier.png
                              mode "clips": Wan 2.2 I2V + the motion model, as w6/swim/swimgpu.py
-env SPEC = the spec's path in the bucket: {"tag", "base": url prefix of the starts (raw GitHub, reference/prop-sheets/qa-notes/7-4-slide-art/starts/ at a commit), "loras": {"style": [repo, file, scale], "pokey": [...]}, "items": [{"name", "start",
+env SPEC = the spec's path in the bucket, or its raw GitHub url: {"tag", "base": url prefix of the starts (raw GitHub, reference/prop-sheets/qa-notes/7-4-slide-art/starts/ at a commit), "loras": {"style": [repo, file, scale], "pokey": [...]}, "items": [{"name", "start",
 "prompt", "lora", "strength", "seed", "w", "h", "neg"?}], "clips": [{"name", "src", "prompt", "seed", "w", "h"}], "motion": {...}}.
 The token reaches the job only as the job secret HF_TOKEN.
 """
@@ -20,7 +20,8 @@ from huggingface_hub import hf_hub_download
 tok = os.environ['HF_TOKEN']
 ROOT = Path(os.environ.get('OUT', '/out'))
 OUT = ROOT / 'w7slide'
-SPEC = json.loads((ROOT / os.environ['SPEC']).read_text())
+SPEC = json.loads(urllib.request.urlopen(os.environ['SPEC'], timeout=60).read() if os.environ['SPEC'].startswith('http')
+                  else (ROOT / os.environ['SPEC']).read_text())
 TAG = SPEC.get('tag', 'slide')
 t0 = time.time()
 
