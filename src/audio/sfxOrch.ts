@@ -41,30 +41,23 @@ export function soften(core: AudioCore, dst: AudioNode, hz = 2800): AudioNode {
 
 export const DEFAULT_ORCH_SFX = false;
 
-let enabled: boolean | null = null;
+/**
+ * The orchestral set is off for good (Matt, 2026-10-29: "The orchestra only sounds awful. It's weird, and the sound effects don't match
+ * the game"): its menu switch is gone and the setting it saved is cleared. What is left of this file is what the classic set and the new
+ * effects still use (soften); its own recipes go once the effects' levelling (polish-a2, sfxMix.ts) has landed, so the two do not collide in
+ * sfx.ts.
+ */
+let cleared = false;
 export function orchSfxEnabled(): boolean {
-  if (enabled !== null) return enabled;
-  let v = DEFAULT_ORCH_SFX;
-  try {
-    const q = new URLSearchParams(location.search).get('sfx');
-    if (q === 'orch' || q === '1') v = true;
-    else if (q === 'classic' || q === '0') v = false;
-    else if (localStorage.getItem('sloth_sfx') === 'orch') v = true;
-    else if (localStorage.getItem('sloth_sfx') === 'classic') v = false;
-  } catch {
-    /* no window or storage: stay off */
+  if (!cleared) {
+    cleared = true;
+    try {
+      localStorage.removeItem('sloth_sfx');
+    } catch {
+      /* no storage */
+    }
   }
-  enabled = v;
-  return v;
-}
-/** the menu switch: applies at once and is remembered on the device */
-export function setOrchSfxPref(on: boolean) {
-  enabled = on;
-  try {
-    localStorage.setItem('sloth_sfx', on ? 'orch' : 'classic');
-  } catch {
-    /* storage blocked: it just will not be remembered */
-  }
+  return false;
 }
 
 /** the recorded instruments this set draws on (orchLoader names): fetched when the set is switched on */

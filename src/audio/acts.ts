@@ -43,9 +43,12 @@ export const MIN_BPM: Record<ActId, number> = { trail: 104, cost: 98, iron: 108 
  */
 export const LEAD_BAND: Record<string, [number, number]> = {
   flute: [67, 91], oboe: [62, 84], clarinet: [58, 84], violins: [64, 88], cello: [48, 72], horn: [47, 66],
+  // (each world's own lead, Matt 2026-10-29. The bassoon and trombone keep to their upper range, where a phone's small speaker still
+  // carries them; the harp sits where its notes ring)
+  harp: [57, 86], bassoon: [50, 70], trombone: [48, 64],
 };
 /** semitones a lead plays below the written tune */
-export const LEAD_SIT: Record<string, number> = { cello: -12, horn: -12 };
+export const LEAD_SIT: Record<string, number> = { cello: -12, horn: -12, bassoon: -12, trombone: -12 };
 
 /** the shifts an instrument may play a tune at: its usual one first, then an octave below and an octave above */
 export const leadShifts = (inst: string): number[] => {

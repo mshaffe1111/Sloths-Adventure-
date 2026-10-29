@@ -23,6 +23,64 @@ export type AmbientType =
 const FLOOR = 0.0001;
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 
+/**
+ * Each place's loudness brought to about -28 LUFS in the game's mix (polish report SN-9): measured by rendering every place alone
+ * (tools/audio/render.mjs) they ran from -32.5 (the crickets) to -21 (the storm), so the waterfall and the storm drowned the music and the
+ * crickets were barely there. dB added to the place's own level.
+ */
+export const AMB_TRIM_DB: Record<AmbientType, number> = {
+  gentle_breeze: 2.2, river_flow: -3.8, deep_cave: 3.2, waterfall: -6.5, tropical_birds: 2.5,
+  swamp_croaks: 2.3, ancient_echo: 3.7, twilight_crickets: 4.5, volcanic_hum: 1.8, thunderstorm: -7,
+};
+
+/**
+ * The noise the beds are made of: 8 seconds of it, looping seamlessly (its last quarter second cross-fades into the noise that comes before
+ * its start). The beds used the effects' 2.5 s noise, and a rush of water or wind that repeats every 2.5 s is heard as a loop. It is made at
+ * 22 kHz (the beds are filtered well under 11 kHz), so the pair costs about 1.4 MB.
+ */
+const BED_RATE = 22050;
+const BED_SECONDS = 8;
+const bedNoises = new WeakMap<BaseAudioContext, { white: AudioBuffer; pink: AudioBuffer }>();
+export function bedNoise(ctx: BaseAudioContext, pink: boolean): AudioBuffer {
+  let have = bedNoises.get(ctx);
+  if (!have) {
+    const make = (isPink: boolean) => {
+      const n = BED_RATE * BED_SECONDS;
+      const f = Math.floor(BED_RATE * 0.25);
+      const z = new Float32Array(n + f);
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < z.length; i++) {
+        const w = Math.random() * 2 - 1;
+        if (!isPink) {
+          z[i] = w;
+          continue;
+        }
+        // Paul Kellet's economy pink filter (as core.ts)
+        b0 = 0.99886 * b0 + w * 0.0555179;
+        b1 = 0.99332 * b1 + w * 0.0750759;
+        b2 = 0.969 * b2 + w * 0.153852;
+        b3 = 0.8665 * b3 + w * 0.3104856;
+        b4 = 0.55 * b4 + w * 0.5329522;
+        b5 = -0.7616 * b5 - w * 0.016898;
+        z[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11;
+        b6 = w * 0.115926;
+      }
+      const buf = ctx.createBuffer(1, n, BED_RATE);
+      const d = buf.getChannelData(0);
+      d.set(z.subarray(f, f + n));
+      // the end runs into the noise just before the start, equal power: wrapping around is a continuation, not a jump
+      for (let i = 0; i < f; i++) {
+        const t = i / f;
+        d[n - f + i] = z[f + n - f + i] * Math.cos((t * Math.PI) / 2) + z[i] * Math.sin((t * Math.PI) / 2);
+      }
+      return buf;
+    };
+    have = { white: make(false), pink: make(true) };
+    bedNoises.set(ctx, have);
+  }
+  return pink ? have.pink : have.white;
+}
+
 interface Bed {
   pink: boolean;
   type: BiquadFilterType;
@@ -368,14 +426,14 @@ export class Ambience {
     const now = c.currentTime;
     const mix = c.createGain();
     mix.gain.setValueAtTime(0, now);
-    mix.gain.linearRampToValueAtTime(def.level, now + fade);
+    mix.gain.linearRampToValueAtTime(def.level * Math.pow(10, AMB_TRIM_DB[type] / 20), now + fade);
     mix.connect(this.core.amb);
     const events = this.core.withReverb(mix, def.rev, 'amb');
     const run: Running = { type, def, mix, events, sources: [], nodes: [mix, events], nextAt: def.events.map((e) => now + rnd(0.5, e.gap[1])) };
 
     for (const b of def.beds) {
       const src = c.createBufferSource();
-      src.buffer = b.pink ? this.core.pinkNoise : this.core.noise;
+      src.buffer = bedNoise(c, b.pink);
       src.loop = true;
       src.start(now, Math.random() * (src.buffer.duration - 0.1));
       const f = c.createBiquadFilter();
