@@ -148,6 +148,34 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 7. Screenshots of what changed, upright 390x844 and sideways 844x390 (a dev-hooks build, `NODE_ENV=development npx vite build`,
    lets you place Pokey in a room). Then the test link (HANDOFF §6), then the QA testers.
 
+## 5b. The polish bar (Matt, 2026-10-29: "it's not just getting it done, but it should have polish")
+
+Working is the floor, not the finish. Before any report, the helper reviews its own upright (390x844) and sideways (844x390) screenshots
+and a short video, at phone size, against every line below, and writes a **Polish check** in the report: each item, pass or fixed, with
+the screenshot that shows it. The lead checks it again before Matt sees anything. Compare against the best of the game (Matt's Gemini
+sheets, World 2's painted river, the painted dirty water, the painted rope) and his reference pictures.
+
+1. **Painted, not drawn.** No major look or hazard drawn in code (§4): no flat rectangles, see-through panes, gradient blobs, dashed lines
+   or placeholder boxes on screen. Code is only for small touches (glow, sparkle, dust).
+2. **Nothing looks copy-pasted.** No visible tile seams, no texture stretched in strips, no single piece repeated until it reads as a
+   pattern. Mix pieces, sizes and heights; set dressing in front and behind.
+3. **Art matches what it is.** A web looks like web, water like water, a hazard looks dangerous, a safe thing looks safe. Art lines up
+   with its collider: nobody stands in the air, sinks into a ledge or clips through a wall.
+4. **Light fits the place** (§4): underground and night scenes are dark with light from sources; every obstacle stays readable.
+5. **Pokey and the cast on model.** Right size, right colours, satchel on the correct side (strap over his left shoulder, bag on his right
+   hip), wrist wraps; no off-model frames, no popping between frames. Big enough to read on a phone.
+6. **Framing works both ways.** Upright and sideways each show the action, not half a screen of empty backdrop; the camera leads where
+   the player needs to look.
+7. **Text stays out of the way.** Speech boxes are short (under 10 words), don't cover the jump or the hazard, and the right character
+   speaks (Dot where she's present; Pokey only in World 7).
+8. **Every move it teaches is needed.** An obstacle you can just walk or steer round doesn't teach a jump.
+9. **Moments feel like moments.** A first time (first swim, a reveal, a crumble) gets a beat: sound, a pause, the camera, an animation, not
+   only a caption.
+10. **Motion is smooth.** No jitter, snapping, frozen poses where something should move, or animations playing at the wrong speed.
+
+If something can't meet the bar with the art that exists, say exactly what art is missing and give the Gemini prompt (or the Hugging Face
+plan); never ship the rough version as finished.
+
 ## 6. Mistakes we already paid for (don't repeat them)
 
 - **2-2 drowned you 0.9 s in** (2026-10-28, live): walking right off into water before Dot's tip. Our bots only proved the stage

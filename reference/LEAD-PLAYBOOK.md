@@ -31,7 +31,7 @@ goes onto the Docs roadmap and, if it is a rule, into STAGE-RULES.md or CLAUDE.m
 2. **As many helpers at once as there are separate jobs** (Matt, 2026-10-28: he would rather run twice as many to finish sooner),
    but only on separate files, and a helper that needs another's result waits for it. Split big jobs into pieces that own separate
    (new) files with agreed interfaces.
-3. **The brief must include:** the goal in Matt's words; "read reference/STAGE-RULES.md and reference/GEMINI-LEDGER.md first" and the
+3. **The brief must include:** the polish bar (STAGE-RULES §5b) and the Polish check it must report; the goal in Matt's words; "read reference/STAGE-RULES.md and reference/GEMINI-LEDGER.md first" and the
    sections that apply; the files it owns and the files other helpers own right now; the exact checks it must run (STAGE-RULES §5),
    **on more than one roll**; the deliverables (screenshots upright and sideways, before/after numbers, notes); "update the ledger
    rows you change and add a §6 lesson if you learn one"; don't push, don't publish the test link.
