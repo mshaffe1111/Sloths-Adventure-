@@ -9,6 +9,7 @@
  * ropes are in lairCrocObjects.ts.
  */
 import type { LairArena, LairView } from './lairArt.ts';
+import { FONT_UI } from './fonts.ts';
 import { LairPlate, LairStrip } from './lairPlate.ts';
 import { drawFx } from './bossFx.ts';
 

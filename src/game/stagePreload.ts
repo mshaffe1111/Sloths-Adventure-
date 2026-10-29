@@ -19,6 +19,7 @@ import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
+import { W4_GRIT_URL, w4GritReady } from './w4Grit.ts';
 import { W5_PROPS_URL, w5ArtReady } from './w5Art.ts';
 import { KIT_ART_URL, kitArtReady } from './puzzleArt.ts';
 import { NIGHT_ART_URL, nightArtReady } from './meecaNightArt.ts';
@@ -180,6 +181,9 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     // (and the painted effects: every stage's dust puffs and hit sparks, and a boss fight's warnings and hazards)
     warmBossFx();
     urls.push(BOSS_FX_URL);
+    // (and the painted grit every stage's crumbling ledges and breaking pillars throw: small, and asked for everywhere)
+    w4GritReady();
+    urls.push(W4_GRIT_URL);
   }
   // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode; and the canopy
   // strips of a stage played up in the trees, which used to load on first use and pop in a second time)

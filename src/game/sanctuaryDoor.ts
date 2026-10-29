@@ -1,3 +1,4 @@
+import { FONT_UI } from './fonts.ts';
 /**
  * The way out at the end of a stage: each world's own painted gate (stageArt.ts drawGateArt, hf-art-stage 2026-10-29, VI-10), shut while
  * the stage's goal is not done and open after. Shut, a small plate on it says how many are still missing; open, "Touch the door!" floats
@@ -20,7 +21,7 @@ let plateText = '';
 let plateW = 0;
 function missingPlate(ctx: CanvasRenderingContext2D, n: number) {
   ctx.save();
-  ctx.font = '700 16px Fredoka, sans-serif';
+  ctx.font = `700 16px ${FONT_UI}`;
   // (the words and their width only change with the number, so nothing new is made each frame)
   if (n !== plateN) {
     plateN = n;
@@ -62,7 +63,7 @@ export function drawSanctuaryDoor(ctx: CanvasRenderingContext2D, time: number, l
   }
   const bounce = Math.sin(time * 5) * 4;
   ctx.save();
-  ctx.font = 'bold 15px Fredoka, sans-serif';
+  ctx.font = `bold 15px ${FONT_UI}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineWidth = 4;

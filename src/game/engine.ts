@@ -50,7 +50,7 @@ import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
-import { drawGlideSprite } from './leafSprites.ts';
+import { drawGlideSprite, drawLeafBit } from './leafSprites.ts';
 import { renderScenery, renderOverlay, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
 import { revealSet, setBackdropStage } from './paintedBackdrops.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
@@ -155,12 +155,16 @@ import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedF
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
+import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+import { FONT_UI } from './fonts.ts';
+import { withHurtFlash } from './hurtFlash.ts';
+import { shakeOffset } from './screenShake.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -274,12 +278,39 @@ const DEBRIS_COLOR: Partial<Record<string, string>> = {
   tayra: '#5b3a24', frog: '#38bdf8', spider: '#6b4f3a', turtle: '#7c8a3a',
 };
 
-/** a painted puff or hit spark: the frame for how far through its life it is, fading at the end; the spark with a brief warm glow */
+/**
+ * A painted particle, by its type (types.ts Particle): the dust puff and the hit spark (a frame for how far through its life it is, fading
+ * at the end; the spark with a brief warm glow), a leaf tumbling, a chip of grit spinning, a puff of spray, the splash crown, a feather
+ * see-sawing down. Nothing is drawn while the sheets load (stagePreload has them ready before a stage starts).
+ */
 function drawFxParticle(ctx: CanvasRenderingContext2D, pt: Particle) {
   const u = 1 - pt.life / pt.maxLife;
-  if (pt.type === 'puff') {
-    drawFx(ctx, fxFrame('dust', u), pt.x, pt.y, pt.size, { ay: 0.9, alpha: Math.min(1, (1 - u) * 3) * 0.92 });
-    return;
+  const seed = pt.seed ?? 0.5;
+  const fade = Math.min(1, (1 - u) * 3);
+  const spin = (seed - 0.5) * 18;
+  switch (pt.type) {
+    case 'puff':
+      drawFx(ctx, fxFrame('dust', u), pt.x, pt.y, pt.size, { ay: 0.9, alpha: fade * 0.92 });
+      return;
+    case 'leaf':
+      drawLeafBit(ctx, pt.color === 'warm' ? 'warm' : 'green', seed, pt.x, pt.y, pt.size * 4.2, seed * 6 + spin * 0.4 * u, Math.cos(u * 9 + seed * 6), fade);
+      return;
+    case 'grit':
+      drawGritBit(ctx, seed, pt.x, pt.y, pt.size * 2.6, seed * 6 + spin * u, fade, pt.color || undefined);
+      return;
+    case 'water':
+      drawFx(ctx, fxFrame('dust', Math.min(0.99, 0.2 + u * 0.8)), pt.x, pt.y, pt.size * 5, { ay: 0.5, alpha: fade * 0.75, recolor: '#e0f2fe', flipX: seed > 0.5 });
+      return;
+    case 'splash':
+      drawFx(ctx, 'splash', pt.x, pt.y, pt.size * (0.7 + 0.45 * u), { ay: 1, h: pt.size * (0.75 + 0.35 * Math.sin(Math.PI * Math.min(1, u * 1.3))) * 0.75, alpha: Math.min(1, (1 - u) * 2.2) });
+      return;
+    case 'feather':
+      drawFx(ctx, 'feather', pt.x, pt.y, pt.size * 4.5, { rot: seed * 6 + Math.sin(u * 8 + seed * 5) * 0.8, alpha: fade, flipX: seed > 0.5 });
+      return;
+    case 'flash':
+      break;
+    default:
+      return;
   }
   if (u < 0.45) {
     ctx.save();
@@ -292,7 +323,22 @@ function drawFxParticle(ctx: CanvasRenderingContext2D, pt: Particle) {
     ctx.fillRect(pt.x - r, pt.y - r, r * 2, r * 2);
     ctx.restore();
   }
-  drawFx(ctx, fxFrame('spark', u), pt.x, pt.y, pt.size * (0.8 + 0.4 * u), { alpha: Math.min(1, (1 - u) * 3) });
+  drawFx(ctx, fxFrame('spark', u), pt.x, pt.y, pt.size * (0.8 + 0.4 * u), { alpha: fade });
+}
+
+/** what a burst of bits looks like for a colour: gold, yellow or bright red sparkles; green leaves; grey stone grit; anything else (wood,
+ *  earth, fur) brown-tinted grit under a dust puff */
+function debrisLook(color: string): 'star' | 'leaf' | 'grit' | 'earth' {
+  const m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(color);
+  if (!m) return 'grit';
+  const [r, g, b] = [m[1], m[2], m[3]].map((h) => parseInt(h, 16) / 255);
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+  const sat = mx === 0 ? 0 : (mx - mn) / mx;
+  if (sat < 0.25) return 'grit';
+  const hue = mx === r ? ((g - b) / (mx - mn) + 6) % 6 * 60 : mx === g ? ((b - r) / (mx - mn) + 2) * 60 : ((r - g) / (mx - mn) + 4) * 60;
+  if (hue >= 70 && hue <= 170) return 'leaf';
+  if (mx > 0.85 && ((hue >= 40 && hue < 70) || hue < 12 || hue > 340)) return 'star';
+  return 'earth';
 }
 
 export class GameEngine {
@@ -2949,10 +2995,14 @@ export class GameEngine {
       }
       pt.x += pt.vx * dt;
       pt.y += pt.vy * dt;
-      if (pt.type === 'puff' || pt.type === 'flash') {
+      if (pt.type === 'puff' || pt.type === 'flash' || pt.type === 'splash') {
         // the painted puffs drift out and slow; they do not fall
         pt.vx *= Math.max(0, 1 - dt * 5);
         pt.vy *= Math.max(0, 1 - dt * 5);
+      } else if (pt.type === 'leaf' || pt.type === 'feather') {
+        // (leaves and feathers catch the air: they slow, and drift down gently)
+        pt.vx *= Math.max(0, 1 - dt * 2.2);
+        pt.vy = Math.min(pt.vy + 300 * dt, 70);
       } else pt.vy += 300 * dt; // gravity
     }
 
@@ -4385,7 +4435,13 @@ export class GameEngine {
   }
 
   /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
-  private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, draw: () => void) {
+  private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, paint: (c: CanvasRenderingContext2D) => void) {
+    // a creature just hit flashes white (hurtFlash.ts, AN-6); the box it is drawn in is its body with room for legs, tails and wings
+    const draw = () => {
+      const b = bodyRect(e);
+      const pad = Math.max(b.w, b.h) * 0.9 + 60;
+      withHurtFlash(ctx, e.hitFlashTimer > 0, b.x - pad, b.y - pad, b.w + pad * 2, b.h + pad * 2, paint);
+    };
     const recoil = e.recoil ?? 0;
     if (!e.defeated && recoil < 0.02) {
       draw();
@@ -4901,14 +4957,15 @@ export class GameEngine {
     });
   }
 
+  /** a splash, painted: the splash crown where he went in, and puffs of spray thrown up out of it */
   private spawnWaterSplash(x: number, y: number) {
-    for (let i = 0; i < 26; i++) {
-      const a = -Math.PI / 2 + (Math.random() - 0.5) * 1.5;
-      const sp = 160 + Math.random() * 260;
+    this.emit({ x, y: y + 6, vx: 0, vy: 0, color: '', size: 96, life: 0.55, maxLife: 0.55, type: 'splash' });
+    for (let i = 0; i < 9; i++) {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * 1.4;
+      const sp = 150 + Math.random() * 220;
       this.emit({
         x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-        color: Math.random() < 0.5 ? '#bae6fd' : '#ffffff',
-        size: 3 + Math.random() * 4, life: 0.8, maxLife: 0.8, type: 'water',
+        color: '', size: 3 + Math.random() * 3, life: 0.7, maxLife: 0.7, type: 'water',
       });
     }
   }
@@ -5563,10 +5620,9 @@ export class GameEngine {
       return;
     }
 
-    // Apply Screen Shake (Trauma squared for punchy feel)
-    const shakeMag = this.camera.trauma * this.camera.trauma * 16;
-    const shakeX = (Math.random() - 0.5) * shakeMag;
-    const shakeY = (Math.random() - 0.5) * shakeMag;
+    // the screen shake: a smooth wobble that dies away with the trauma, turned down or off in the settings (screenShake.ts, AN-10)
+    // (on the real clock: in a hit's freeze the game clock stops, and the shake must keep settling, not hang off to one side)
+    const { x: shakeX, y: shakeY } = shakeOffset(this.camera.trauma, performance.now() / 1000, 16);
 
     // 1. Render Multi-Layer Parallax Background
     // a boss with its own lair: either the backdrop is darkened and re-lit, or (lairOwnsScene) the lair paints all of it itself
@@ -5574,7 +5630,8 @@ export class GameEngine {
     const ownScene = !!lair && lairOwnsScene(lair);
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
     setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
-    if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    // (the backdrop shakes with the world, each layer by its own depth, so the layers never slide against each other)
+    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
     if (this.proto?.w4?.deepFall !== undefined) {
       const lipY = this.camLedge?.y ?? this.player.y;
@@ -5793,7 +5850,7 @@ export class GameEngine {
         drawAura(ctx, 'danger', world.id, enemy.width * 0.8, enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
         ctx.restore();
       }
-      const draw = () => {
+      const draw = (ctx: CanvasRenderingContext2D) => {
         if (enemy.type === 'snake') {
           if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
           if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
@@ -5918,21 +5975,17 @@ export class GameEngine {
 
     // Render Particles
     this.particles.forEach((pt) => {
-      if (pt.type === 'puff' || pt.type === 'flash') return drawFxParticle(ctx, pt);
+      if (pt.type !== 'star') return drawFxParticle(ctx, pt);
+      // a four-pointed sparkle
+      const r = pt.size * (pt.life / pt.maxLife);
+      const k = r * 1.7;
       ctx.fillStyle = pt.color;
       ctx.beginPath();
-      const r = pt.size * (pt.life / pt.maxLife);
-      if (pt.type === 'star') {
-        // a four-pointed sparkle
-        const k = r * 1.7;
-        ctx.moveTo(pt.x, pt.y - k);
-        ctx.quadraticCurveTo(pt.x, pt.y, pt.x + k, pt.y);
-        ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y + k);
-        ctx.quadraticCurveTo(pt.x, pt.y, pt.x - k, pt.y);
-        ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y - k);
-      } else {
-        ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
-      }
+      ctx.moveTo(pt.x, pt.y - k);
+      ctx.quadraticCurveTo(pt.x, pt.y, pt.x + k, pt.y);
+      ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y + k);
+      ctx.quadraticCurveTo(pt.x, pt.y, pt.x - k, pt.y);
+      ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y - k);
       ctx.fill();
     });
 
@@ -5947,7 +6000,7 @@ export class GameEngine {
       const a = Math.min(1, h.life / 0.4, (3.6 - h.life) / 0.25);
       ctx.save();
       ctx.globalAlpha = Math.max(0, a);
-      ctx.font = '700 17px Fredoka, sans-serif';
+      ctx.font = `700 17px ${FONT_UI}`;
       ctx.textAlign = 'center';
       const w = ctx.measureText(h.text).width + 28;
       // kept inside the view, so on a narrow portrait screen the bubble is never cut off at the edge
@@ -6340,8 +6393,7 @@ export class GameEngine {
   }
 
   private renderDot(ctx: CanvasRenderingContext2D, dpr: number) {
-    const shakeMag = this.camera.trauma * this.camera.trauma * 14;
-    const shake = { x: (Math.random() - 0.5) * shakeMag, y: (Math.random() - 0.5) * shakeMag };
+    const shake = shakeOffset(this.camera.trauma, performance.now() / 1000, 14);
     // her panel: held sideways it sits under the hearts and lives (GameHUD.tsx), left; upright, the top is full (the stage card, Dot's banner), so it sits bottom left
     const portrait = this.viewCssH > this.viewCssW;
     // a short landscape screen has the compact HUD (index.css): her panel shrinks too and sits right under the hearts and lives
@@ -6355,7 +6407,7 @@ export class GameEngine {
     const snap = dpr * this.zoom;
     ctx.translate(-snapCam(this.camera.x, snap), -snapCam(this.camera.y, snap));
     ctx.textAlign = 'center';
-    ctx.font = 'bold 15px Fredoka, sans-serif';
+    ctx.font = `bold 15px ${FONT_UI}`;
     for (const ft of this.floatingTexts) {
       ctx.lineWidth = 3;
       ctx.strokeStyle = 'rgba(30, 20, 30, 0.6)';
@@ -6382,7 +6434,7 @@ export class GameEngine {
     // (a boss fight is zoomed out to show both fighters: the words grow back to a readable size on the phone, QA gate)
     // (World 5's words, a tray knocked away or a cake eaten, are as large as upright on a short landscape screen too: cardScale)
     const fs = this.boss && !this.boss.defeated && this.zoom < 1 ? Math.round(Math.max(15, (15 / this.zoom) * 0.85)) : this.w5 ? Math.round(15 * cardScale(this.zoom)) : 15;
-    ctx.font = `bold ${fs}px Fredoka, sans-serif`;
+    ctx.font = `bold ${fs}px ${FONT_UI}`;
     ctx.lineJoin = 'round';
     const cam = this.camera;
     const placed: Array<{ x0: number; x1: number; y: number }> = [];
@@ -6542,12 +6594,7 @@ export class GameEngine {
       const u = Math.max(0, d.t - d.delay) / GameEngine.RING_DROP.t;
       const y0 = e.y;
       // where it will land: a shadow on the branch that darkens as it comes down
-      ctx.save();
-      ctx.fillStyle = `rgba(20, 10, 2, ${0.3 + 0.35 * u})`;
-      ctx.beginPath();
-      ctx.ellipse(e.x, y0 + (e.type === 'boa' ? 12 : 10), e.width * (0.55 + 0.3 * u), 7 + 3 * u, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+      drawSoftShadow(ctx, e.x, y0 + (e.type === 'boa' ? 12 : 10), e.width * (1.5 + 0.8 * u), 20 + 8 * u, 0.4 + 0.5 * u);
       e.y = y0 - GameEngine.RING_DROP.h * (1 - u * u);
       if (e.type === 'snake') {
         if (!drawGoldSnake(ctx, e, this.gameTime) && !drawSnakeSprite(ctx, e, this.gameTime)) drawTreeSnake(ctx, e, this.gameTime);
@@ -7011,18 +7058,11 @@ export class GameEngine {
       ctx.restore();
       return;
     }
-    // a dark oval on the grass (drawn after the front grass and the bushes, so they never hide it): a wide soft halo and a firmer
-    // core, plain enough to read against the dark soil at a glance
-    ctx.save();
-    ctx.fillStyle = `rgba(8, 12, 8, ${a * 0.45})`;
-    ctx.beginPath();
-    ctx.ellipse(x, gy - 6, 120, 20, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = `rgba(8, 12, 8, ${a})`;
-    ctx.beginPath();
-    ctx.ellipse(x, gy - 6, 82, 12, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    // a dark shadow on the grass (drawn after the front grass and the bushes, so they never hide it): a wide soft halo and a firmer
+    // core, plain enough to read against the dark soil at a glance; the soft shadow sprite (w4Grit.ts), so neither shows an edge
+    drawSoftShadow(ctx, x, gy - 6, 280, 46, a);
+    drawSoftShadow(ctx, x, gy - 6, 190, 30, a * 1.6);
+    drawSoftShadow(ctx, x, gy - 6, 150, 22, a * 1.4);
   }
 
   /** the bushes, in front of Pokey */
@@ -7216,6 +7256,9 @@ export class GameEngine {
       // 4-9 The Aerie: a guard blown off its ledge while he is close counts toward the stage's goal
       defeat: () => {
         p.enemiesDefeated++;
+      },
+      shake: (n) => {
+        this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, n));
       },
       sfx: (kind) => {
         if (kind === 'cry') sound.playEagleScreech();
@@ -7442,7 +7485,7 @@ export class GameEngine {
   /** a sleeping animal's Z's, drifting up from its head (a stand-in until the sleeping snake art arrives) */
   private drawSleepZ(ctx: CanvasRenderingContext2D, e: Enemy) {
     ctx.save();
-    ctx.font = '700 15px Fredoka, sans-serif';
+    ctx.font = `700 15px ${FONT_UI}`;
     ctx.textAlign = 'center';
     for (let i = 0; i < 3; i++) {
       const u = (this.gameTime * 0.45 + i / 3 + e.id * 0.13) % 1;
@@ -7451,7 +7494,7 @@ export class GameEngine {
       ctx.strokeStyle = 'rgba(20, 38, 26, 0.7)';
       ctx.lineWidth = 3;
       const zx = e.x + e.facing * 10 + u * 22, zy = e.y - 18 - u * 40;
-      ctx.font = `700 ${11 + u * 9}px Fredoka, sans-serif`;
+      ctx.font = `700 ${11 + u * 9}px ${FONT_UI}`;
       ctx.strokeText('z', zx, zy);
       ctx.fillText('z', zx, zy);
     }
@@ -7519,6 +7562,7 @@ export class GameEngine {
     q.life = p.life;
     q.maxLife = p.maxLife;
     q.type = p.type;
+    q.seed = p.seed ?? Math.random();
   }
 
   /** the painted hit spark (a brief glow and the star bursting into rays), `w` wide, and a few sparkles flying off it */
@@ -7547,26 +7591,30 @@ export class GameEngine {
         vx: (this.player.facing * spd * 0.8) + (Math.random() - 0.5) * 80,
         vy: (Math.random() - 0.5) * 120,
         color: isMega ? '#fef08a' : '#86efac',
-        size: 3.5,
+        size: 3.2,
         life: 0.35,
         maxLife: 0.35,
-        type: 'spark',
+        type: 'star',
       });
     }
   }
 
+  /** a burst of bits, painted (debrisLook: sparkles, leaves, stone grit, or earth-brown grit under a puff of dust) */
   private spawnDebrisBurst(x: number, y: number, color: string) {
-    for (let i = 0; i < 12; i++) {
+    const look = debrisLook(color);
+    if (look === 'earth') this.emit({ x, y: y + 6, vx: 0, vy: -10, color: '', size: 46, life: 0.5, maxLife: 0.5, type: 'puff' });
+    const n = look === 'star' ? 8 : look === 'leaf' ? 8 : 10;
+    for (let i = 0; i < n; i++) {
       this.emit({
         x: x + (Math.random() - 0.5) * 20,
         y: y + (Math.random() - 0.5) * 10,
         vx: (Math.random() - 0.5) * 180,
         vy: -80 - Math.random() * 160,
-        color,
-        size: 3 + Math.random() * 4,
+        color: look === 'star' ? color : look === 'earth' ? color : look === 'leaf' ? 'green' : '',
+        size: look === 'star' ? 2.6 + Math.random() * 1.4 : 3 + Math.random() * 3,
         life: 0.5 + Math.random() * 0.3,
         maxLife: 0.8,
-        type: 'leaf',
+        type: look === 'star' ? 'star' : look === 'leaf' ? 'leaf' : 'grit',
       });
     }
   }
@@ -7593,10 +7641,10 @@ export class GameEngine {
         y: y + Math.sin(angle) * 8,
         vx: Math.cos(angle) * spd,
         vy: Math.sin(angle) * spd + 40,
-        color: i % 2 === 0 ? '#4ade80' : '#86efac',
+        color: 'green',
         size: 3.5,
-        life: 0.45,
-        maxLife: 0.45,
+        life: 0.55,
+        maxLife: 0.55,
         type: 'leaf',
       });
     }
@@ -7612,11 +7660,11 @@ export class GameEngine {
         y,
         vx: (this.player.facing * spd * 0.9) + (Math.random() - 0.5) * 60,
         vy: (Math.random() - 0.5) * 140,
-        color: i % 2 === 0 ? '#f97316' : '#fde047',
-        size: 4,
+        color: i % 2 === 0 ? '#fdba74' : '#fde047',
+        size: 3.4,
         life: 0.38,
         maxLife: 0.38,
-        type: 'spark',
+        type: 'star',
       });
     }
   }
@@ -7630,11 +7678,11 @@ export class GameEngine {
         y: y + (Math.random() - 0.5) * 18,
         vx: Math.cos(angle) * spd,
         vy: Math.sin(angle) * spd - 35,
-        color: i % 3 === 0 ? '#f8fafc' : i % 3 === 1 ? '#64748b' : '#f59e0b',
-        size: 4,
-        life: 0.6,
-        maxLife: 0.6,
-        type: 'leaf',
+        color: '',
+        size: 3.6 + Math.random() * 1.4,
+        life: 0.9,
+        maxLife: 0.9,
+        type: 'feather',
       });
     }
   }

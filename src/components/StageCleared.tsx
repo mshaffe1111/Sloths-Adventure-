@@ -7,9 +7,12 @@ import { HeroPose } from './HeroPose.tsx';
 import { getStageClue } from './stageClue.ts';
 import type { StageStats } from '../game/badges.ts';
 import { ClrChips, ClrRibbon, useShortScreen, type ChipSpec } from './ClrParts.tsx';
-import { praiseFor, totalKills } from './stageSummary.ts';
+import { floraChip, praiseFor, totalKills } from './stageSummary.ts';
 import { ModeChip } from './ModeChip.tsx';
 import { confettiPieces, type ConfettiPiece } from './fx/confetti.ts';
+import { COUNT_MS, COUNT_START_MS, countProgress, countValue, medalsAtMs, starTimes, tickTimes } from './fx/countUp.ts';
+import { BadgeMedal } from './BadgeMedal.tsx';
+import type { BadgeDef } from '../game/badges.ts';
 import './hud/cleared.css';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -25,6 +28,8 @@ interface StageClearedProps {
   bestScore: number;
   /** what happened in the stage (flowers, foes, hits); absent when nothing was reported */
   stats?: StageStats | null;
+  /** the medals this run earned, shown in a row under the stars (UI-9) */
+  medals?: BadgeDef[];
   /** ids of the stages either side of this one, or null when there is none (first stage, last stage, secret stage) */
   prevId: string | null;
   nextId: string | null;
@@ -51,12 +56,12 @@ function useUpright(): boolean {
 }
 
 /** the chips the upright card has room for (two rows of three), the ones that say most about the run first */
-const UPRIGHT_ORDER = ['Time', 'Score', 'Best', 'Your best', 'Flowers', 'Hits taken', 'Lives lost', 'Foes', 'Best combo'];
+const UPRIGHT_ORDER = ['Time', 'Score', 'Best', 'Your best', 'Flowers', 'Flower goal', 'Hits taken', 'Lives lost', 'Foes', 'Best combo'];
 const uprightChips = (chips: ChipSpec[]): ChipSpec[] =>
   [...chips].sort((a, b) => UPRIGHT_ORDER.indexOf(a.label) - UPRIGHT_ORDER.indexOf(b.label)).slice(0, 6);
 
 /** sideways, seven chips share one row: the two-word labels are cut to one, so none wraps at 12 px (UI-14) */
-const SHORT_LABEL: Record<string, string> = { 'Hits taken': 'Hits', 'Best combo': 'Combo', 'Lives lost': 'Lives', 'Your best': 'Best' };
+const SHORT_LABEL: Record<string, string> = { 'Flower goal': 'Flowers', 'Hits taken': 'Hits', 'Best combo': 'Combo', 'Lives lost': 'Lives', 'Your best': 'Best' };
 const shortLabel = (c: ChipSpec): ChipSpec => (SHORT_LABEL[c.label] ? { ...c, label: SHORT_LABEL[c.label] } : c);
 
 const CONFETTI_PATH: Record<ConfettiPiece['kind'], React.ReactNode> = {
@@ -66,7 +71,7 @@ const CONFETTI_PATH: Record<ConfettiPiece['kind'], React.ReactNode> = {
 };
 
 /** the confetti: thrown once as the card opens, falling over 1.6 s (UI-3); held still where motion is turned down */
-const Confetti: React.FC<{ stars: number }> = ({ stars }) => {
+const Confetti: React.FC<{ stars: number }> = React.memo(({ stars }) => {
   const pieces = React.useMemo(() => confettiPieces(stars), [stars]);
   return (
     <div className="clr-confetti" aria-hidden="true">
@@ -93,23 +98,89 @@ const Confetti: React.FC<{ stars: number }> = ({ stars }) => {
       ))}
     </div>
   );
-};
+});
+
+/**
+ * The card's clock (fx/countUp.ts): ms since it opened, ticking each frame until the medals are in, with the sounds on the same
+ * timeline (a soft tick while the numbers count, a chime as they land, a ring for each star, the medal chime). skip() jumps to the end.
+ * With motion turned down it starts at the end: final numbers, the stars already up.
+ */
+const DONE_MS = 1e6;
+function useCardClock(stars: number, hasMedals: boolean, score: number): { ms: number; skip: () => void } {
+  const reduced = React.useMemo(() => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
+  const [ms, setMs] = React.useState(reduced ? DONE_MS : 0);
+  const timers = React.useRef<number[]>([]);
+  const raf = React.useRef(0);
+  const clear = React.useCallback(() => {
+    timers.current.forEach((id) => window.clearTimeout(id));
+    timers.current = [];
+    cancelAnimationFrame(raf.current);
+  }, []);
+  React.useEffect(() => {
+    const end = hasMedals ? medalsAtMs(stars) : Math.max(COUNT_START_MS + COUNT_MS, ...starTimes(stars));
+    const at = (t: number, f: () => void) => timers.current.push(window.setTimeout(f, t));
+    if (reduced) {
+      // (no count to hear: the stars ring together, as the card shows them)
+      if (stars > 0) at(200, () => sound.playStar(stars));
+      if (hasMedals) at(500, () => sound.playShrineUnlocked());
+      return clear;
+    }
+    for (const t of tickTimes(score)) at(t, () => sound.playUiTap());
+    at(COUNT_START_MS + COUNT_MS, () => sound.playUiConfirm());
+    starTimes(stars).forEach((t, i) => at(t, () => sound.playStar(i + 1)));
+    if (hasMedals) at(medalsAtMs(stars), () => sound.playShrineUnlocked());
+    const t0 = performance.now();
+    let last = -1;
+    const step = () => {
+      const now = performance.now() - t0;
+      // (stepped at the game's 30 fps: the card re-draws a few pieces each step, not every display frame)
+      if (now - last >= 33) {
+        last = now;
+        setMs(now);
+      }
+      if (now < end + 50) raf.current = requestAnimationFrame(step);
+      else done.current = true;
+    };
+    raf.current = requestAnimationFrame(step);
+    return clear;
+    // (once, as the card opens)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const done = React.useRef(reduced);
+  const skip = React.useCallback(() => {
+    if (done.current) return;
+    done.current = true;
+    clear();
+    if (stars > 0) sound.playStar(stars);
+    setMs(DONE_MS);
+  }, [clear, stars]);
+  return { ms, skip };
+}
+
+/** the row of medals this run earned: they come in after the last star, with the medal chime (UI-9) */
+const Medals: React.FC<{ medals: BadgeDef[]; on: boolean; size: number }> = ({ medals, on, size }) => (
+  <div className={`clr-medals${on ? ' in' : ''}`} role="img" aria-label={`New medal${medals.length > 1 ? 's' : ''}: ${medals.map((b) => b.name).join(', ')}`}>
+    <span className="clr-medals-k">New {medals.length > 1 ? 'medals' : 'medal'}</span>
+    {medals.map((b) => (
+      <BadgeMedal key={b.id} badge={b} earned size={size} />
+    ))}
+  </div>
+);
 
 const fmtTime = (s: number) => `${Math.floor(Math.round(s) / 60)}:${String(Math.round(s) % 60).padStart(2, '0')}`;
 
 /** The stage-cleared card: celebrate, show the result, the next clue, then where to go (next, previous, again, map). */
-export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEarned, timeSec, score, newBest, bestScore, stats, prevId, nextId, onNext, onPrev, onReplay, onOpenMap }) => {
+export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEarned, timeSec, score, newBest, bestScore, stats, medals, prevId, nextId, onNext, onPrev, onReplay, onOpenMap }) => {
   const secret = !!levelConfig.secret;
   const short = useShortScreen();
   const upright = useUpright();
 
-  // the stars ring in one after another as the card appears
-  React.useEffect(() => {
-    if (secret) return;
-    const ids: number[] = [];
-    for (let i = 1; i <= starsEarned; i++) ids.push(window.setTimeout(() => sound.playStar(i), 350 + (i - 1) * 260));
-    return () => ids.forEach((id) => window.clearTimeout(id));
-  }, [secret, starsEarned]);
+  const medalRow = (medals ?? []).slice(0, 6);
+  const { ms, skip } = useCardClock(secret ? 0 : starsEarned, medalRow.length > 0, score);
+  const p = countProgress(ms);
+  const landed = starTimes(secret ? 0 : starsEarned).filter((t) => t <= ms).length;
+  const counted = ms >= COUNT_START_MS + COUNT_MS;
+  const medalsIn = ms >= medalsAtMs(secret ? 0 : starsEarned);
 
   const clue = getStageClue(levelConfig.id);
   // Pokey's pose follows the result: arms up for three stars, a fist pump for two, a content smile for one
@@ -117,7 +188,9 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
   const poseLabel = starsEarned >= 3 ? 'Pokey cheers with both arms up' : starsEarned === 2 ? 'Pokey pumps a fist' : 'Pokey smiles, pleased with himself';
   const praise = praiseFor(stats, starsEarned);
   const extra: ChipSpec[] = [];
-  if (stats && stats.floraTotal > 0) extra.push({ label: 'Flowers', value: `${stats.floraCollected}/${stats.floraTotal}`, colour: stats.floraCollected >= stats.floraTotal ? '#f9a8d4' : undefined });
+  // (the flowers chip means the same on every card: stageSummary.ts floraChip, UI-10; the count goes up with the score)
+  const flora = floraChip(stats);
+  if (flora) extra.push({ label: flora.label, value: `${countValue(flora.cur, p)}/${flora.of}`, colour: counted && flora.full ? '#f9a8d4' : undefined });
   if (stats) extra.push({ label: 'Foes', value: String(totalKills(stats)) });
   // hits are the hearts knocked off him; a fall into a pit or the water costs a life with no hit, so lives lost get their own chip
   // ("Hits taken 0" after three falls read as a lie, 2026-10-25), and the green "clean run" colour only shows when neither happened
@@ -126,20 +199,28 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
   if (stats && stats.maxCombo >= 2) extra.push({ label: 'Best combo', value: `x${stats.maxCombo}` });
   const heroW = typeof window !== 'undefined' && window.innerHeight <= 520 ? 120 : 196;
   const heroH = Math.round(Math.max(130, Math.min(300, (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.42)));
+  // (made once: the count re-draws the card 30 times a second for a moment, and Pokey and Dot never change in it)
+  const hero = React.useMemo(
+    () => (
+      <div className="clr-hero">
+        <HeroPose frame={pose} height={heroH} maxWidth={heroW} className={`clr-pose s${starsEarned}`} label={poseLabel} />
+        {/* Dot, his guide, perched beside him for the moment (painted perch frame, held still) */}
+        <DotPerched size={58} className="clr-dot" facing="left" />
+      </div>
+    ),
+    [pose, heroH, heroW, starsEarned, poseLabel],
+  );
 
   return (
-    <div className="clr-scrim select-none">
+    // (a tap anywhere that is not a button skips the count to the end)
+    <div className="clr-scrim select-none" onPointerDown={(e) => !(e.target as HTMLElement).closest('button') && skip()}>
       <GhostOnExit />
       <Confetti stars={secret ? 3 : starsEarned} />
 
       <div className="clr-card clr-won" role="dialog" aria-label="Stage cleared">
         <ClrRibbon title={secret ? 'THORNBARK IS FREE!' : 'STAGE CLEARED!'} />
 
-        <div className="clr-hero">
-          <HeroPose frame={pose} height={heroH} maxWidth={heroW} className={`clr-pose s${starsEarned}`} label={poseLabel} />
-          {/* Dot, his guide, perched beside him for the moment (painted perch frame, held still) */}
-          <DotPerched size={58} className="clr-dot" facing="left" />
-        </div>
+        {hero}
 
         <div className="clr-main">
           <div className="flex flex-col items-center gap-1">
@@ -152,21 +233,25 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
               {upright && <HeroPose frame={pose} height={96} maxWidth={84} className={`clr-pose clr-mini s${starsEarned}`} label={poseLabel} />}
               <div className="clr-stars" role="img" aria-label={`${starsEarned} of 3 stars`}>
                 {[1, 2, 3].map((s) => {
-                  const on = s <= starsEarned;
+                  // (each earned star stays an empty slot until its turn, then drops in: the counts first, then the stars)
+                  const on = s <= landed;
                   const size = s === 2 ? 70 : 56;
                   return (
-                    <svg key={s} width={size} height={size} viewBox="0 0 24 24" className={`clr-star ${on ? 'on' : ''}`} style={on ? { animationDelay: `${0.25 + (s - 1) * 0.26}s` } : undefined} aria-hidden="true">
+                    <svg key={s} width={size} height={size} viewBox="0 0 24 24" className={`clr-star ${on ? 'on' : ''}`} aria-hidden="true">
                       <path d={STAR_PATH} fill={on ? '#fbbf24' : 'rgba(255,255,255,.1)'} stroke={on ? '#92400e' : '#6b7f77'} strokeWidth="1.2" strokeLinejoin="round" />
                     </svg>
                   );
                 })}
               </div>
+              {short && medalRow.length > 0 && <Medals medals={medalRow} on={medalsIn} size={30} />}
               </div>
             )}
+            {/* the medals this run earned, under the stars (UI-9; sideways, beside them, where there is no height to spare) */}
+            {!short && medalRow.length > 0 && <Medals medals={medalRow} on={medalsIn} size={38} />}
           </div>
 
           {!secret && (
-            <div className="clr-praise">
+            <div className={`clr-praise${landed >= starsEarned && counted ? ' in' : ''}`}>
               <b>{praise.title}</b>
               <span>{praise.sub}</span>
             </div>
@@ -174,9 +259,10 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
 
           {(() => {
             const main: ChipSpec[] = [
-              { label: 'Time', value: fmtTime(timeSec) },
-              { label: 'Score', value: score.toLocaleString(), colour: '#fde68a' },
-              { label: newBest ? 'Best' : 'Your best', value: newBest ? 'New!' : bestScore.toLocaleString(), colour: '#6ee7b7' },
+              { label: 'Time', value: fmtTime(timeSec * p) },
+              { label: 'Score', value: countValue(score, p).toLocaleString(), colour: '#fde68a' },
+              // ("New!" waits for the score to finish counting, then pops)
+              { label: newBest ? 'Best' : 'Your best', value: newBest ? (counted ? 'New!' : '\u2013') : bestScore.toLocaleString(), colour: '#6ee7b7', pop: newBest && counted },
             ];
             // on a phone held sideways everything goes in one row to save height; upright, two rows of three (UI-1)
             if (upright) return <ClrChips chips={uprightChips([...main, ...extra])} cols={3} />;
