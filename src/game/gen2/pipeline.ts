@@ -1082,10 +1082,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const checkpoints: Filled['checkpoints'] = [];
   const hints: StageHint[] = [];
   const C = sink.collectibles;
-  const flower = (x: number, y: number) => {
+  /** a flower's look from a spot (its own, or its row's first: a row or an arc of flowers is one species, stageQuality.test.ts) */
+  const lookAt = (x: number, y: number) => M.flowers[Math.floor(rngFor(seed, 29, R(x), R(y))() * M.flowers.length)];
+  const flower = (x: number, y: number, rowLook?: (typeof M.flowers)[number]) => {
     if (C.some((c) => Math.hypot(c.x - x, c.y - y) < 40)) return;
     // (its look from its own spot, not the shared stream: a flower skipped for overlapping must not move every roll after it)
-    const look = M.flowers[Math.floor(rngFor(seed, 29, R(x), R(y))() * M.flowers.length)];
+    const look = rowLook ?? lookAt(x, y);
     C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   };
   const tipsSaid = new Set<string>();
@@ -1219,9 +1221,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (!want) continue;
         const n = s.count ?? 1;
         const span = Math.min(s.span ?? 0, k.piece.width - 40);
+        const rowLook = lookAt(k.x, k.y);
         for (let i = 0; i < n; i++) {
           const x = n === 1 ? k.x : k.x - span / 2 + (span * i) / (n - 1);
-          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP));
+          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP), rowLook);
         }
         fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what: 'flower', x: k.x, y: k.y });
       } else if (s.role === 'objective') {
@@ -1282,9 +1285,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   for (const [gi, g] of laid.gaps.entries()) {
     const arc = rngFor(seed, 31, gi)() <= 0.7;
     if (g.x1 - g.x0 < 90 || !arc) continue;
+    const arcLook = lookAt(g.x0, g.y);
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
-      flower(g.x0 + (g.x1 - g.x0) * tt, g.y - 70 - 50 * Math.sin(Math.PI * tt));
+      flower(g.x0 + (g.x1 - g.x0) * tt, g.y - 70 - 50 * Math.sin(Math.PI * tt), arcLook);
     }
   }
   if (budget.archetype === 'harvest') {

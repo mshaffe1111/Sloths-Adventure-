@@ -4,7 +4,8 @@
 import { mkdirSync } from 'node:fs';
 const out = process.argv[2];
 const port = process.argv[3] ?? '4399';
-const { chromium } = await import(process.argv[4] ?? 'playwright');
+const pw = await import(process.argv[4] ?? 'playwright');
+const { chromium } = pw.chromium ? pw : pw.default;
 mkdirSync(out, { recursive: true });
 const SIZES = { upright: [390, 844], sideways: [844, 390] };
 const STAGES = ['7-1', '7-3', '7-5', '7-6', '7-7', '7-9'];
@@ -21,7 +22,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
     await p.screenshot({ path: `${out}/${id}-start-${size}.png` });
     // the spots worth a look, found in the stage the engine is playing
     const spots = await p.evaluate(() => {
-      const e = window.__engine();
+      const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
       const st = e.currentStage;
       const tiles = st.platforms.filter((q) => q.type === 'fragile').sort((a, c) => a.x - c.x);
       const vine = (st.vines ?? []).find((v) => v.vineType === 'tree_climb');
@@ -35,7 +36,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
     });
     for (const [name, x, y] of spots) {
       await p.evaluate(([x, y]) => {
-        const e = window.__engine();
+        const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
         e.player.x = x;
         e.player.y = y - 2;
         e.player.vx = 0;

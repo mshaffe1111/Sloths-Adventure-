@@ -80,6 +80,12 @@ export function gen2Water(id: string): boolean {
   return M.pit === 'water' || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
 }
 
+/** the creature sheets a gen2 stage's world can lay (its manifest's animals, by clip-sheet name: a snake draws the golden snake's) */
+export function gen2Creatures(id: string): string[] {
+  const M = GEN2_STAGES[id]?.kit('normal').manifest;
+  return M ? [...new Set(M.creatures.map((c) => (c.enemy === 'snake' ? 'goldsnake' : c.enemy)))] : [];
+}
+
 /** how many rolls a stage ships (0: none, or not a gen2 stage) */
 export const gen2SeedCount = (id: string): number => GEN2_SEEDS[id]?.seeds.length ?? 0;
 

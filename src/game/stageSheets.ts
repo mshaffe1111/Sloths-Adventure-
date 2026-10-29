@@ -35,7 +35,7 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID } from './extraStages.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
-import { gen2Water, isGen2Stage } from './gen2/game.ts';
+import { gen2Creatures, gen2Water, isGen2Stage } from './gen2/game.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
 import { W7_ROOM_STAGES } from './gen2/worlds/w7.ts';
@@ -143,8 +143,9 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // the creatures it can draw, and their sheets (see foe: above)
   if (cfg.objectiveType === 'boss_lair') for (const f of BOSS_MINIONS[w] ?? []) out.push(`foe:${f}`);
   else if (!built) for (const f of genFoes(w)) out.push(`foe:${f}`);
-  // (World 6 on gen2 on: a stage's animals, the eagle and the bushes change from roll to roll, so it asks for the world's whole set)
-  else if (isGen2Stage(cfg) && w >= 6) out.push(...genFoes(w).map((f) => `foe:${f}`), 'props2');
+  // (World 6 on gen2 on: a stage's animals, the eagle and the bushes change from roll to roll, so it asks for the world's whole set:
+  // the old generator's, and every animal the gen2 world's manifest can lay, World 7's frog among them)
+  else if (isGen2Stage(cfg) && w >= 6) out.push(...[...new Set([...genFoes(w), ...gen2Creatures(cfg.id)])].map((f) => `foe:${f}`), 'props2');
   else if (sw.ctest && cfg.id === CTEST_STAGE_ID) out.push(...CTEST_FOES.map((f) => `foe:${f}`), 'props2');
   else out.push(...(STAGE_DRAWS[cfg.id] ?? []));
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)

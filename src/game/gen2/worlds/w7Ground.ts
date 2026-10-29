@@ -95,7 +95,7 @@ function hall(p: string, after: string, runs: number[], stair = false, bW: W = [
   let span = 0;
   runs.forEach((count, r) => {
     if (r > 0) {
-      out.push({ key: `${p}slab${r}`, shape: 'block', w: SLAB, h: 26, place: { kind: 'over', on: prev, at: 1, dy: 0 }, style: 'ruin', main: false });
+      out.push({ key: `${p}slab${r}`, shape: 'block', w: SLAB, h: 26, place: { kind: 'over', on: prev, at: 1, dy: 0 }, style: 'moss_stone', main: false });
       prev = `${p}slab${r}`;
       span += SLAB;
     }
@@ -124,7 +124,8 @@ function hall(p: string, after: string, runs: number[], stair = false, bW: W = [
 /** a brown vine up an old wall at the end of `on` (the wall a whole bank, out of a double jump's reach), and down off its far side */
 const wall = (vine: string, on: string, top: string, h: number, w: W, after: string, afterW: W): SectionPiece[] => [
   { key: vine, shape: 'vine', w: 0, place: { kind: 'climb', on, at: 1, h } },
-  bank(top, w, { kind: 'over', on: vine, at: 0, dy: 0 }, { main: true }),
+  // (not main: the purge's top-up lays its animals on main pieces, and none may wait where the climb tops out)
+  bank(top, w, { kind: 'over', on: vine, at: 0, dy: 0 }, { main: false }),
   down(after, top, h, afterW),
 ];
 
@@ -278,7 +279,7 @@ const firstTiles = section({
   maxPerStage: 1,
   pieces: [bank('a', [340, 380]), ...firstHall.pieces],
   last: firstHall.last,
-  sockets: [tip(CRUMBLE, 'a', 0.1), petals('t', 't1', 0.5, 3, 200), petals('hall', 'hall', 0.5, 2, 120), scenery('urn', 'b', [0.5, 0.7], 0.8)],
+  sockets: [tip(CRUMBLE, 'a', 0.1), petals('t', 't1', 0.5, 1), petals('t2', 't2', 0.5, 1), petals('hall', 'hall', 0.5, 2, 120), scenery('urn', 'b', [0.5, 0.7], 0.8)],
   mirrorable: false,
 });
 
@@ -293,7 +294,7 @@ const gallery = section({
   uses: [CRUMBLE, W7_THEME.galleries],
   pieces: [bank('a', [300, 340]), ...gal3.pieces],
   last: gal3.last,
-  sockets: [petals('t', 't2', 0.5, 3, 240), foe('foe', 'hall', [0.45, 0.55], HALLERS, 3, { phases: LIVE, chance: 0.7 }), relic('r', 'hall', 0.3), scenery('brazier', 'b', [0.5, 0.7])],
+  sockets: [petals('t', 't2', 0.5, 1), foe('foe', 'hall', [0.45, 0.55], HALLERS, 3, { phases: LIVE, chance: 0.7 }), relic('r', 'hall', 0.3), scenery('brazier', 'b', [0.5, 0.7])],
   mirrorable: false,
 });
 
@@ -308,7 +309,7 @@ const longGallery = section({
   uses: [CRUMBLE, W7_THEME.galleries],
   pieces: [bank('a', [240, 280]), ...galLong.pieces],
   last: galLong.last,
-  sockets: [petals('t', 't2', 0.5, 2, 200), petals('slab', 'slab1', 0.5, 1), petals('t5', 't5', 0.5, 2, 200), foe('f1', 'hall', [0.2, 0.3], HALLERS, 3, { phases: LIVE }), foe('f2', 'hall', [0.72, 0.8], [...CATS, 'boa'], 5, { phases: HOT, chance: 0.6 }), relic('r', 'hall', 0.5)],
+  sockets: [petals('t', 't2', 0.5, 1), petals('slab', 'slab1', 0.5, 1), petals('t5', 't5', 0.5, 1), foe('f1', 'hall', [0.2, 0.3], HALLERS, 3, { phases: LIVE }), foe('f2', 'hall', [0.72, 0.8], [...CATS, 'boa'], 5, { phases: HOT, chance: 0.6 }), relic('r', 'hall', 0.5)],
   mirrorable: false,
 });
 
@@ -324,7 +325,7 @@ const twinHalls = section({
   uses: [CRUMBLE, W7_THEME.galleries],
   pieces: [bank('a', [220, 260]), ...twinA.pieces, ...twinB.pieces],
   last: twinB.last,
-  sockets: [petals('t1', 'h1t1', 0.5, 2, 160), foe('f1', 'h2hall', [0.5, 0.6], HALLERS, 3, { phases: LIVE, chance: 0.7 }), petals('t2', 'h2t2', 0.5, 3, 240), relic('r', 'h1hall', 0.5)],
+  sockets: [petals('t1', 'h1t1', 0.5, 1), foe('f1', 'h2hall', [0.5, 0.6], HALLERS, 3, { phases: LIVE, chance: 0.7 }), petals('t2', 'h2t2', 0.5, 1), relic('r', 'h1hall', 0.5)],
   mirrorable: false,
 });
 
@@ -370,7 +371,7 @@ const stairFlat = section({
   uses: [CRUMBLE, W7_THEME.stairs],
   pieces: [bank('a', [220, 260]), ...sfA.pieces, ...sfB.pieces],
   last: sfB.last,
-  sockets: [petals('t2', 'h1t2', 0.5, 1), foe('f1', 'h1hall', [0.5, 0.6], ['frog'], 1.5, { phases: LIVE, chance: 0.6 }), petals('t6', 'h2t2', 0.5, 3, 260), foe('f2', 'h2hall', [0.5, 0.6], HALLERS, 3, { phases: HOT, chance: 0.6 })],
+  sockets: [petals('t2', 'h1t2', 0.5, 1), foe('f1', 'h1hall', [0.5, 0.6], ['frog'], 1.5, { phases: LIVE, chance: 0.6 }), petals('t6', 'h2t2', 0.5, 1), foe('f2', 'h2hall', [0.5, 0.6], HALLERS, 3, { phases: HOT, chance: 0.6 })],
   mirrorable: false,
 });
 
@@ -666,7 +667,7 @@ const boaTwin = section({
   uses: [CRUMBLE, W7_THEME.boas],
   pieces: [bank('a', [280, 300]), ...btA.pieces, ...btB.pieces],
   last: btB.last,
-  sockets: [petals('t1', 'h1t2', 0.5, 2, 160), foe('b1', 'h1hall', [0.45, 0.55], ['boa'], 3), foe('f1', 'h1b', [0.5, 0.6], ['frog'], 1.5, { phases: LIVE, chance: 0.6 }), foe('b2', 'h2hall', [0.45, 0.55], ['boa', 'ocelot'], 3, { phases: LIVE })],
+  sockets: [petals('t1', 'h1t2', 0.5, 1), foe('b1', 'h1hall', [0.45, 0.55], ['boa'], 3), foe('f1', 'h1b', [0.5, 0.6], ['frog'], 1.5, { phases: LIVE, chance: 0.6 }), foe('b2', 'h2hall', [0.45, 0.55], ['boa', 'ocelot'], 3, { phases: LIVE })],
   mirrorable: false,
 });
 
@@ -681,7 +682,7 @@ const boaGallery = section({
   uses: [CRUMBLE, W7_THEME.boas],
   pieces: [bank('a', [340, 380]), ...boaGal.pieces],
   last: boaGal.last,
-  sockets: [foe('f1', 'a', [0.4, 0.5], SMALL, 3), petals('t', 't2', 0.5, 2, 200), foe('b1', 'hall', [0.45, 0.55], ['boa'], 3, { phases: LIVE }), foe('f2', 'b', [0.55, 0.7], ['ocelot', 'tayra'], 3, { phases: HOT, chance: 0.6 })],
+  sockets: [foe('f1', 'a', [0.4, 0.5], SMALL, 3), petals('t', 't2', 0.5, 1), foe('b1', 'hall', [0.45, 0.55], ['boa'], 3, { phases: LIVE }), foe('f2', 'b', [0.55, 0.7], ['ocelot', 'tayra'], 3, { phases: HOT, chance: 0.6 })],
   mirrorable: false,
 });
 

@@ -311,6 +311,14 @@ test link, the QA testers or a release until the lead has re-run them, on more t
     and over a plinth past the door (`w7Rooms.ts` `roomPieces`).
   - *Hunt themes that all lean on animals read alike* (7-5 and 7-9: 0.15 apart on raw rolls). Each hunt theme leans on its own other move
     too: the cats on plinths, the boas in tiled halls, the harpies at brown-vine walls (0.30 raw, 0.47 shipped).
+  - *An animal waited where a climb tops out* (screenshots, 7-9): the purge's top-up lays its animals on the widest main pieces, and a
+    wall top a vine climbs onto is one, but `JUMP_CLEAR` only knows jumps. Wall tops are not main pieces (`w7Ground.ts` `wall`), so no
+    top-up animal stands there; look at the screenshots, not only the numbers.
+  - *A row of petals squeezed onto a tile mixed its flowers* (the full suite's "a row is one species"): gen2 rolled each flower's look
+    from its own spot, and a 110 px tile squeezed a row of three into 70 px. A row and an arc now take one look (`pipeline.ts` `lookAt`),
+    and a tile carries one petal.
+  - *A world's new animal needs its sheet listed* (the full suite's preload test, 7-1: the frog): a gen2 World 6-10 stage now asks for
+    every animal its manifest can lay (`gen2/game.ts` `gen2Creatures`), not only the old generator's set.
   - *Dot is gone (Matt, §1):* Pokey's lines are the sections' tips and the rooms' tips; `wayside.ts dotPresent` already draws every
     World 7 line as his thought, and the tests hold every hint of every roll to his list.
 
