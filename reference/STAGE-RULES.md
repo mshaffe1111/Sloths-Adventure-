@@ -355,6 +355,14 @@ plan); never ship the rough version as finished.
     every animal its manifest can lay (`gen2/game.ts` `gen2Creatures`), not only the old generator's set.
   - *Dot is gone (Matt, §1):* Pokey's lines are the sections' tips and the rooms' tips; `wayside.ts dotPresent` already draws every
     World 7 line as his thought, and the tests hold every hint of every roll to his list.
+- **A narrow wall is glided through in the check** (World 7's brown vines, 2026-10-29): levelCheck measures a jump from ledge edge to
+  ledge edge and never sees a wall standing between, so a 220-280 px wall with a vine up it read as a glide from its foot to the floor
+  past it; the quick route walked past half the climbs (and World 6's `vineWall` and `swingClimb` have the same shape). A climb only
+  counts where the wall's top is a walk wider than the glide from the vine's foot (530 px or more on the flat, about 600 dropping 80 px,
+  790 dropping 230 px), its top stands more than a double jump plus 40 over every ledge beside it, and a section coming down off a wall
+  ends on a ledge 260 px or more. The same blind spot from below: a ledge just past a perch, within a double jump (plus 40) of the soft
+  pit's floor under the swing, is "jumped" to through the perch, and the swing reads as optional. Proof: the quick route swings every
+  liana and climbs every vine (`w7SwingRoute.test.ts`). And a long wall top is a quiet 4 s unless it carries a hop (a plinth or two).
 
 ## 7. Where things are
 
