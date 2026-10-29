@@ -344,6 +344,65 @@ def round3c(commit):
             'keep': [x['name'] for x in it if '-up' not in x['name']]}
 
 
+def pairs(commit):
+    """Pokey and Meeca together (da, db, hug): at 0.55 with both models the two came out alike (her headband and vest lost), so lower"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-cel.json').read_text())
+    it = []
+    for key, m in meta.items():
+        pre, pose = key[4:].split('.')
+        if pre not in ('da', 'db', 'hug'):
+            continue
+        raw = m['cel'].get('c') == 'raw'
+        it.append({'name': f'{key}-s40', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']}, 'seed': 7,
+                   'w': m['size'][0], 'h': m['size'][1], 'strength': 0.4, 'loras': [['pokey', 0.35], ['meeca', 0.35], ['style', 0.5]],
+                   'prompt': ('two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the '
+                              'girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they '
+                              f'are, {pose.replace("_", " ")}') + (', painted storybook illustration' if raw else END), 'neg': NEG_FIG + SOFT})
+    return it
+
+
+def derived(commit, nest_pick, court_pick):
+    """two plates made from repainted ones: the nest in the storm with nobody on the branch (the singing-storm memory, before and after
+    the parents go), and the courtyard with the wet stone steps down from the tower door (the reunion: they sit on the wet steps)"""
+    it = [{'name': 'pl-nest-night-e', 'edit': True, 'start': f'bucket:storyart/r3c/out/{nest_pick}.png', 'seed': 4, 'w': 1280, 'h': 1360,
+           'prompt': ('Remove the two sloths on the far branch, so the long branch is empty, and keep everything else in the picture exactly as it is: '
+                      'the nest, the trees, the storm sky. Same painted storybook style. No characters, no text.'), 'neg': 'sloths, animals, characters, text'},
+          {'name': 'pl-steps-e', 'edit': True, 'start': f'bucket:storyart/r3c/out/{court_pick}.png', 'seed': 4, 'w': 1280, 'h': 1360,
+           'prompt': ('Add a short wide flight of five worn wet stone steps coming down from a small arched wooden door at the foot of the round tower '
+                      'onto the courtyard flagstones, in the lower left of the picture, puddles on the steps reflecting the warm window light. Keep '
+                      'everything else exactly as it is. Same painted storybook style. No characters, no text.'), 'neg': 'characters, people, text'}]
+    for n, say in (('nest-night', 'a big woven nest on a rainforest branch in a night storm, nobody on the branch'),
+                   ('steps', 'a stormy fortress courtyard with a round stone tower and wet stone steps down from its door')):
+        it.append({'name': f'pl-{n}', 'then': f'pl-{n}-e', 'prompt': f'slothadv style, painted storybook illustration, {say}, no characters, no text',
+                   'neg': PLATE_NEG, 'strength': 0.3, 'seed': 5, 'w': 2560, 'h': 2720, 'tile': [1280, 256], 'loras': [['style', 1.0]]})
+    return it
+
+
+EYES = {'glare': 'his red eyes wide open, glowing bright red and glaring', 'narrow': 'his glowing red eyes narrowed, the glow a little softer',
+        'dim': 'his eyes half open, the red glow in them fading to a dull dark red', 'lids': 'his heavy eyelids drooping low over tired eyes, only a faint red left',
+        'shut': 'his eyes gently closed', 'sleep_b': 'his eyes closed and his head bowed a little lower, as if he is falling asleep on his feet'}
+
+
+def eyes(commit, base_pick):
+    """the General's eyes going out as the song reaches him (GN:soften): every state an edit of ONE picture of him (only the eyes change),
+    so the act does not jump from face to face"""
+    it = []
+    for n, words in EYES.items():
+        it.append({'name': f'gen-gn.{n}-x', 'edit': True, 'start': f'bucket:storyart/r3a2/out/{base_pick}.png', 'seed': 3,
+                   'prompt': f'Change only his eyes: {words}. Keep everything else in the picture exactly the same, every line and colour, his face, his pose, his clothes. Plain flat grey background.',
+                   'neg': EDIT_NEG})
+        it.append({'name': f'gen-gn.{n}-xs', 'then': f'gen-gn.{n}-x', 'strength': 0.25, 'seed': 7, 'w': 1024, 'h': 1024, 'prompt': GENERAL + 'in the same pose' + END,
+                   'neg': NEG_GEN + SOFT, 'loras': [['ironclaw', 0.5], ['general', 0.5], ['style', 0.35]]})
+    return it
+
+
+def round4(commit, nest_pick='pl-nest-storm-6', court_pick='pl-courtyard-6', gen_base='gen-gn.ready_a-s30'):
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    it = derived(commit, nest_pick, court_pick) + pairs(commit) + eyes(commit, gen_base)
+    return {'tag': 'r4', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca', 'ironclaw', 'general')}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it if not x['name'].endswith('-e')]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '

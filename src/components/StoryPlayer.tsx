@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import type { StoryPanel } from '../game/story.ts';
 import { isEasy } from '../game/difficulty.ts';
 import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
-import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H } from '../game/storyArt.ts';
+import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
@@ -87,8 +87,11 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     preloadScenePhotos(ahead.map((p) => p.scene.photo?.key));
     preloadScenePlates(ahead.slice(1).map((p) => p.scene.plate));
   }, [panels, idx]);
-  // a closed story lets its pictures go
-  useEffect(() => () => releaseStoryArt(), []);
+  // the cast's paintings load as the story opens, and a closed story lets its pictures go
+  useEffect(() => {
+    warmStoryCast();
+    return () => releaseStoryArt();
+  }, []);
   const [shown, setShown] = useState(0);
   const panel = panels[idx];
   const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;

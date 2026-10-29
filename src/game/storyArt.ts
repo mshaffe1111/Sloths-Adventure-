@@ -4,20 +4,20 @@ import { POKEY, drawPokeyFace, VISEMES, warmStoryHero } from './heroStory.ts';
 import { cameraAt, drawFx, flashAt, poseAt, shakeAt } from './storyShots.ts';
 import { devScale, renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
 import { drawHeroSloth, drawGirlfriendDaisy } from './vectorArt.ts';
-import { MEECA } from './jennifurSprite.ts';
+import { MEECA, warmStoryMeeca } from './jennifurSprite.ts';
+import { releaseHd } from './storyHd.ts';
 import { actorDx, footing, followScroll, GROUNDED, groundOf, shadowFor, showActor, type StoryCharacter } from './storyActors.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor, ScenePhoto, BloomStage } from './story.ts';
 import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
-import { drawPaintedBird } from './birdSprites.ts';
-import { drawDotFrame, poseFrame, warmDot } from './dotSprite.ts';
+import { drawDotStoryFrame, poseFrame, warmStoryDot } from './dotSprite.ts';
 import { FLICKER_CLIPS } from './flickerClips.ts';
 import { FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP } from './flickerAnimData.ts';
 import { photoUrl } from './photos.ts';
 import { plateImage, preloadPlates, releasePlates } from './plates.ts';
 import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
-import { CEL_K, CELS, drawCel, warmCels } from './storyCels.ts';
+import { CEL_HD, CEL_K, CELS, drawCel, releaseCels, warmCels } from './storyCels.ts';
 import { capStoryZoom, liftForFeet } from './storyFrame.ts';
 import { GROUND_LINE, groundImage } from './storyGround.ts';
 import { isPlate, PLATES } from './plateData.ts';
@@ -27,11 +27,6 @@ export const SCENE_H = 540;
 /** a plate's scene part (its bottom) as a share of its width: the old 1024 x 572 plates */
 export const PLATE_BASE = 572 / 1024;
 
-// the painted Pokey (the standard hero and the cutscene poses) starts loading as soon as a story can be shown, so the first picture never opens in vector art
-warmStoryHero();
-warmDot();
-// the story-sheet figures are 1.8 MB: fetched a moment later so they never compete with the first screen
-if (typeof window !== 'undefined') setTimeout(() => warmCels(), 1500);
 
 function makePlayer(pose: SceneActor['pose'], facing: 1 | -1): PlayerState {
   return {
@@ -565,7 +560,17 @@ export function preloadScenePlates(keys: Array<string | undefined>) {
 export function releaseStoryArt() {
   releasePlates();
   releaseLivePlates();
+  releaseHd();
+  releaseCels();
   photoImgs.clear();
+}
+
+/** a story is opening: start fetching its cast's paintings (Pokey, Meeca and Dot's story pages, the story cels) */
+export function warmStoryCast() {
+  warmStoryHero();
+  warmStoryMeeca();
+  warmStoryDot();
+  warmCels();
 }
 
 /** a plate fills the picture (cover), the painting's own floor under the actors; until it has loaded the picture is a dark ground, never another world's scenery */
@@ -692,7 +697,7 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
   const y = (a.y ?? 0.45) * h + Math.sin(t * 3.1) * (hover ? 6 : 3);
   const sc = a.scale ?? 1;
   const face = a.facing === -1 ? -1 : 1;
-  if (drawDotFrame(ctx, poseFrame(pose, t), x, y, 0.95 * sc, face, hover ? 0.05 + Math.sin(t * 1.3) * 0.04 : 0)) {
+  if (drawDotStoryFrame(ctx, poseFrame(pose, t), x, y, 0.95 * sc, face, hover ? 0.05 + Math.sin(t * 1.3) * 0.04 : 0)) {
     if (pose === 'dizzy') {
       for (let i = 0; i < 3; i++) {
         const ang = t * 3 + (i * Math.PI * 2) / 3;
@@ -704,18 +709,8 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
         glint(ctx, x + (i - 1) * 52 * sc, y - (46 + ph * 26) * sc, (7 + 5 * Math.sin(ph * Math.PI)) * sc, Math.sin(ph * Math.PI));
       }
     }
-    return;
   }
-  const size = sc * 4.2;
-  if (!drawPaintedBird(ctx, 'hummer', x, y, t, 1, size, face, 0, -0.12)) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.fillStyle = '#2f9d6a';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 16 * sc, 9 * sc, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
+  // (until her story paintings have loaded she is not drawn: no stand-in bird)
 }
 
 /** Flicker's height in scene units at scale 1 (a firefly: well under Dot's size) */
@@ -785,7 +780,7 @@ function bustBand(scene: StoryScene): number {
     for (const key of a.seq) {
       for (const f of Array.isArray(key.frame) ? key.frame : key.frame ? [key.frame] : []) {
         const c = CELS[f];
-        if (c?.c === 'b') m = Math.max(m, 0.2 * c.h * CEL_K * (a.scale ?? 1) * (key.sc ?? 1));
+        if (c?.c === 'b') m = Math.max(m, (0.2 * (c.h - 2 * c.m) * CEL_K * (a.scale ?? 1) * (key.sc ?? 1)) / CEL_HD);
       }
     }
   }
@@ -804,7 +799,10 @@ function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
   const k = CEL_K * (a.scale ?? 1) * pose.sc;
   const face = (a.facing === -1 ? -1 : 1) * (pose.flip ? -1 : 1) as 1 | -1;
   const bust = c.c === 'b';
-  if (c.c !== 'raw' && !bust) drawContactShadow(ctx, x, groundY, c.w * k * 0.6, c.h * k, Math.max(0, groundY - feetY));
+  // (the frame's own size, in px of the old sheets: the page holds it CEL_HD times bigger, grown by m)
+  const ow = (c.w - 2 * c.m) / CEL_HD;
+  const oh = (c.h - 2 * c.m) / CEL_HD;
+  if (c.c !== 'raw' && !bust) drawContactShadow(ctx, x, groundY, ow * k * 0.6, oh * k, Math.max(0, groundY - feetY));
   ctx.save();
   ctx.translate(x, feetY);
   ctx.rotate(pose.rot * face);
@@ -825,8 +823,9 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
   if (a.kind === 'cel') { drawCelActor(ctx, a, w, h, t, ground, scroll); return; }
   // Pokey and Meeca: the painted characters, one engine (moods, moves, ground, shadow)
   if (a.kind === 'milo' && a.portrait) { drawPortrait(ctx, a, w, h, t, ground, scroll); return; }
-  if (a.kind === 'milo' && drawCharacter(ctx, a, POKEY, w, h, t, ground, scroll, 'idle')) return;
-  else if ((a.kind === 'daisy' || a.kind === 'daisy_wave') && drawCharacter(ctx, a, MEECA, w, h, t, ground, scroll, a.kind === 'daisy_wave' ? 'scaredwave' : 'happy')) return;
+  // (only their paintings: until those have loaded the picture goes without them, never the old drawn stand-ins)
+  if (a.kind === 'milo') { drawCharacter(ctx, a, POKEY, w, h, t, ground, scroll, 'idle'); return; }
+  if (a.kind === 'daisy' || a.kind === 'daisy_wave') { drawCharacter(ctx, a, MEECA, w, h, t, ground, scroll, a.kind === 'daisy_wave' ? 'scaredwave' : 'happy'); return; }
   if (a.kind === 'boss' && a.seq && drawBossPerformer(ctx, a, w, h, t, ground, scroll)) return;
   const foot = footing(a, ground);
   const dx = actorDx(a, t, w);
@@ -837,17 +836,6 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
   ctx.save();
   ctx.translate(x, feetY);
   switch (a.kind) {
-    case 'milo': {
-      // the vector fallback, while the painted art loads (or with it switched off)
-      ctx.scale(s, s);
-      if (face === -1) ctx.scale(-1, 1);
-      const p = makePlayer(a.pose, 1);
-      if (a.pose === 'happy') {
-        p.y = -Math.abs(Math.sin(t * 5)) * 5;
-      }
-      drawHeroSloth(ctx, p, t);
-      break;
-    }
     case 'thornbark': {
       // the corrupted guardian; once freed he is the gentle Jungle Guardian again
       if (face === -1) ctx.scale(-1, 1);
@@ -863,17 +851,10 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
       }
       break;
     }
-    case 'daisy':
-    case 'daisy_wave': {
-      ctx.scale(s, s);
-      if (face === -1) ctx.scale(-1, 1);
-      drawGirlfriendDaisy(ctx, 0, 0, t, a.kind === 'daisy_wave');
-      break;
-    }
     case 'boss': {
       ctx.scale(s * 0.62, s * 0.62);
       if (face === -1) ctx.scale(-1, 1);
-      if (a.beaten) {
+      if (a.beaten && a.world !== 10) {
         ctx.rotate(-0.1);
         ctx.globalAlpha = 0.92;
       }
@@ -881,6 +862,9 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
       const paintedCard = (c: CanvasRenderingContext2D) => {
         c.translate(0, 24);
         c.scale(1.3, 1.3);
+        // the General in a story is the grieving grandfather in his greatcoat (the story cels), not the stage's war-look sprite; his cards
+        // were painted from that sprite's frames, at its scale (0.72 world units to its pixel)
+        if (a.world === 10) return drawCel(c, `gn.card_${a.beaten ? 'fallen' : a.angry ? 'roar' : 'idle'}`, 0, 0, 0.72, 1);
         return drawPaintedCardBoss(c, a.world ?? 1, !!a.angry, !!a.beaten);
       };
       // (only the painted guardian, never the old drawn stand-in: on a slow phone that showed the General as a tin robot; until the
@@ -896,9 +880,9 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
         paintedCard(ctx);
         ctx.restore();
       }
-      if (a.beaten) {
+      if (a.beaten && a.world !== 10) {
         ctx.globalAlpha = 1;
-        // two dizzy sparkles over the beaten guardian: drawn four-point stars, gold with a darker rim
+        // two dizzy sparkles over the beaten guardian (not over the General: his fall in the courtyard is no joke): drawn four-point stars, gold with a darker rim
         for (const [sx, sy, sr] of [[-10, -105 + Math.sin(t * 3) * 3, 11], [24, -92 + Math.cos(t * 3) * 3, 9]] as const) {
           ctx.beginPath();
           for (let k = 0; k < 8; k++) {
@@ -1425,7 +1409,8 @@ function drawLineup(ctx: CanvasRenderingContext2D, w: number, h: number, t: numb
     drawSilhouette(ctx, (c) => {
       c.translate(0, 24);
       c.scale(1.3, 1.3);
-      drawPaintedCardBoss(c, i + 1, false, false);
+      if (i === 9) drawCel(c, 'gn.card_idle', 0, 0, 0.72, 1);
+      else drawPaintedCardBoss(c, i + 1, false, false);
     }, 0.9, i === 9 ? '#2a0a14' : '#0b1024');
     ctx.restore();
   }

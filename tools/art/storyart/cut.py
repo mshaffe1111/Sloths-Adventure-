@@ -53,7 +53,7 @@ def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_m
         im = im.crop(box)
         f = k_new / s
         im = im.resize((max(1, round(old.width * k_new + 2 * rect_margin * k_new)), max(1, round(old.height * k_new + 2 * rect_margin * k_new))), Image.LANCZOS)
-        return im, rect_margin * k_new
+        return crisp(im), rect_margin * k_new
     box = im.split()[3].point(lambda v: 255 if v > 8 else 0).getbbox()
     if not box:
         return None, None
@@ -72,3 +72,11 @@ def on_dark(im, bg=(24, 28, 32)):
     b = Image.new('RGBA', im.size, bg + (255,))
     b.alpha_composite(im)
     return b.convert('RGB')
+
+
+def crisp(im):
+    """a light unsharp mask on the colour only (the repaint is drawn down 2-3x from a 1024 picture; this keeps its ink lines firm)"""
+    a = im.split()[3]
+    rgb = im.convert('RGB').filter(ImageFilter.UnsharpMask(radius=1.4, percent=55, threshold=2))
+    rgb.putalpha(a)
+    return rgb

@@ -1,5 +1,5 @@
 /** storyFrame — how a story picture is framed on the phone: the close-up cap and the lift that keeps feet clear of the words (ST-1) */
-import { CEL_K } from './storyCels.ts';
+import { CEL_HD, CEL_K } from './storyCels.ts';
 
 /** a story figure never draws above this many device pixels per pixel of its cel (polish report ST-1: they came out 3.6x, soft) */
 export const MAX_CEL_MAG = 1.5;
@@ -10,7 +10,8 @@ export const MAX_CEL_MAG = 1.5;
  * a smaller CEL_K gives the close-ups their room back by itself).
  */
 export function capStoryZoom(z: number, dev: number, actorScale = 1): number {
-  const room = MAX_CEL_MAG / Math.max(1e-6, dev * CEL_K * actorScale);
+  // (the cels were repainted CEL_HD times bigger on 2026-10-29: device px per page px is dev * CEL_K / CEL_HD)
+  const room = MAX_CEL_MAG / Math.max(1e-6, (dev * CEL_K * actorScale) / CEL_HD);
   return Math.min(z, Math.max(1, room));
 }
 /**

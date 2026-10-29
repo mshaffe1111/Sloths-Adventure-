@@ -4,7 +4,13 @@
  * where the feet go, as a share of the strip's height; the strip is laid along the ground line and repeated (every other copy turned
  * over, so the joins match) as far as the camera travels.
  */
-const files = import.meta.glob('../assets/story/ground/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+// (under the test runner there is no bundler and so no glob: the call throws and there are no pictures, as paintedBackdrops.ts)
+let files: Record<string, string> = {};
+try {
+  files = import.meta.glob('../assets/story/ground/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+} catch {
+  files = {};
+}
 
 /** the walk line on each world's strip (share of its height) */
 export const GROUND_LINE: Record<number, number> = { 1: 0.3, 2: 0.3, 3: 0.3, 4: 0.3, 5: 0.3, 6: 0.3, 7: 0.3, 8: 0.3, 9: 0.3, 10: 0.3 };

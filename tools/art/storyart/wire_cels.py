@@ -40,6 +40,13 @@ def main():
             r = json.JSONDecoder().raw_decode(src[i:])[0][n]
             old = Image.open(REPO / 'src/assets/enemies/ironclaw-atlas.webp').convert('RGBA').crop((r['x'], r['y'], r['x'] + r['w'], r['y'] + r['h']))
             face, raw, cut_c = 1, False, None
+        elif key in ('mc.grip_wall', 'mc.reach_back'):
+            # (new pictures, made from his from-behind frame of the story poses: the same size and feet as that frame)
+            m = json.loads((ST / 'meta-pokey.json').read_text())['pokey-away']
+            atlas, x, y, w, h = m['src']
+            old = Image.open(REPO / atlas).convert('RGBA').crop((x, y, x + w, y + h))
+            face, raw, cut_c = 0, False, None
+            general = True
         else:
             m = meta[f'cel-{key}']
             atlas, x, y, w, h = m['src']

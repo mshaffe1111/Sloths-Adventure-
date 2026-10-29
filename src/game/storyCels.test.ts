@@ -4,11 +4,11 @@ import { CELS, CEL_ACTS, CEL_ATLAS_SIZES, CEL_CAST, CEL_FACES, celPoses, celTrac
 import { chapter, N } from './storyDsl.ts';
 
 test('every frame sits inside its atlas and no two frames overlap', () => {
-  const by: Record<number, Array<[string, (typeof CELS)[string]]>> = { 0: [], 1: [], 2: [] };
+  const by: Record<number, Array<[string, (typeof CELS)[string]]>> = {};
   for (const [k, c] of Object.entries(CELS)) {
     const size = CEL_ATLAS_SIZES[c.a];
     assert.ok(c.x >= 0 && c.y >= 0 && c.x + c.w <= size.w && c.y + c.h <= size.h, `${k} is inside atlas ${c.a}`);
-    by[c.a].push([k, c]);
+    (by[c.a] ??= []).push([k, c]);
   }
   for (const list of Object.values(by)) {
     for (let i = 0; i < list.length; i++) {

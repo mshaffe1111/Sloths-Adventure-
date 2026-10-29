@@ -1,16 +1,18 @@
 /**
- * Pokey in a cutscene: the standard hero's own frames (hero-standard.webp: idle, walk, run, jump, hurt, ko...) plus the cutscene poses cut from the library's acting
- * sheets (hero-story.webp, scripts/cutPokeyStory.py): sneaking, shock, pointing and shouting, sulking, exhaustion, resolve, thinking, sleeping, the view from behind, and the
- * dialogue faces. Every `milo` actor in a story picture is drawn from here (storyArt.ts); the vector hero is only the fallback while the art loads or when `?std=0` turns it off.
+ * Pokey in a cutscene: the standard hero's frames (idle, walk, run, jump, hurt, ko...), the cutscene poses from the library's acting sheets (sneaking, shock,
+ * pointing and shouting, sulking, exhaustion, resolve, thinking, sleeping, the view from behind) and the dialogue faces, every one of them repainted on his
+ * character model at HD times its old size for the story (storyHd.ts, 2026-10-29: the story had shown the soft first art). The old frame tables still say
+ * where each frame hangs (feet, head); his story pages hold the paintings. Every `milo` actor in a story picture is drawn from here (storyArt.ts).
  *
  * A mood is a timed loop over those frames (storyActors.ts moodAt); a walk, a run and a sneak are chosen by the ground (gaitAt), the planted foot of every walk and run frame
  * being measured by the cutter (STD_FOOT), so his feet do not skate when he crosses a picture.
  */
 import { STD_FRAMES, STD_STAND_H } from './heroStandardData.ts';
-import { stdFrame, stdAlias, standardAtlas, standardEnabled } from './heroStandard.ts';
-import { heroCoatSheet, stdSheet, HERO_UNITS, HERO_SPRITE_SCALE } from './heroSprite.ts';
+import { stdAlias } from './heroStandard.ts';
+import { heroCoatSheet, HERO_UNITS, HERO_SPRITE_SCALE } from './heroSprite.ts';
 import { STORY_FRAMES, STD_HEAD, STD_FOOT } from './heroStoryData.ts';
-import { trackAtlas } from './atlasLoader.ts';
+import { hdPage, hdReady, warmHd, type HdSet } from './storyHd.ts';
+import { HD_POKEY, HD_POKEY_FRAMES, HD_POKEY_PAGES } from './storyHdData_pokey.ts';
 import { gaitAt, gaitNaturalSpeed, moodAt, type GaitSpec, type MoodSpec, type StoryCharacter } from './storyActors.ts';
 
 export type PokeyMood =
@@ -72,24 +74,16 @@ export const POKEY_GAITS: Record<string, GaitSpec> = {
   walkaway: { frames: [{ name: 'away' }, { name: 'away_a' }, { name: 'away' }, { name: 'away_b' }, { name: 'away_c' }], stride: 130, minCadence: 0.4, maxCadence: 1.4, bob: 0.01 },
 };
 
-let storyAtlas: HTMLImageElement | null = null;
-let storyReady = false;
-function loadStory() {
-  if (storyAtlas || typeof Image === 'undefined' || !standardEnabled()) return;
-  const img = new Image();
-  storyAtlas = img;
-  trackAtlas(img, new URL('../assets/hero/hero-story.webp', import.meta.url).href, () => { storyReady = true; }, () => { storyAtlas = null; });
-}
-/** start fetching the cutscene poses (the standard atlas is fetched by the hero's own loader) */
+/** his story paintings (storyHd.ts): every frame below repainted at HD times its old size; until they have loaded he is not drawn */
+const HD_SET: HdSet = { hd: HD_POKEY, pages: HD_POKEY_PAGES, frames: HD_POKEY_FRAMES };
+/** start fetching his story paintings */
 export function warmStoryHero() {
-  loadStory();
-  standardAtlas();
+  warmHd('pokey', HD_SET);
 }
 
-/** both atlases are loaded and on: Pokey can be painted in a cutscene */
+/** his story paintings have loaded: Pokey can be painted in a cutscene */
 export function storyHeroReady(): boolean {
-  loadStory();
-  return !!standardAtlas() && storyReady;
+  return hdReady('pokey', HD_SET);
 }
 
 /** the frame a name stands for in the story hero: one of the cutscene poses, a standard frame, or an old name that stands in for one; undefined when there is none */
@@ -115,42 +109,31 @@ function headOf(name: string): number {
  * False while an atlas loads, when the standard hero is off, or for a name with no frame.
  */
 export function drawPokeyFrame(ctx: CanvasRenderingContext2D, name: string, anchor = 1): boolean {
-  if (!storyHeroReady()) return false;
   const real = pokeyResolve(name);
-  if (!real) return false;
-  const sf = STORY_FRAMES[real];
-  const k = POKEY_K;
+  const f = real ? HD_POKEY_FRAMES[real] : undefined;
+  const img = f ? hdPage('pokey', f) : null;
+  if (!real || !f || !img) return false;
+  const sf = STORY_FRAMES[real] ?? STD_FRAMES[real];
+  if (!sf) return false;
+  const k = POKEY_K / HD_POKEY;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  if (sf && storyAtlas) {
-    const x = anchor * sf.ax + (1 - anchor) * sf.hx;
-    ctx.drawImage(heroCoatSheet(storyAtlas), sf.x, sf.y, sf.w, sf.h, -x * k, -sf.ay * k, sf.w * k, sf.h * k);
-    return true;
-  }
-  const f = stdFrame(real);
-  const img = standardAtlas();
-  if (!f || !img) return false;
-  const x = anchor * f.ax + (1 - anchor) * headOf(real);
-  ctx.drawImage(stdSheet(img), f.x, f.y, f.w, f.h, -x * k, -f.ay * k, f.w * k, f.h * k);
+  const x = (anchor * sf.ax + (1 - anchor) * headOf(real)) * HD_POKEY + f.m;
+  ctx.drawImage(heroCoatSheet(img), f.x, f.y, f.w, f.h, -x * k, -(sf.ay * HD_POKEY + f.m) * k, f.w * k, f.h * k);
   return true;
 }
 
 /** a face portrait: `name` is one of the dialogue faces (face_calm, face_oh...), drawn into the square (x, y, size). False while the art loads. */
 export function drawPokeyFace(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, size: number): boolean {
-  if (!storyHeroReady()) return false;
   const real = pokeyResolve(name);
-  if (!real) return false;
+  const f = real ? HD_POKEY_FRAMES[real] : undefined;
+  const img = f ? hdPage('pokey', f) : null;
+  if (!real || !f || !img) return false;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  const sf = STORY_FRAMES[real];
-  if (sf && storyAtlas) {
-    ctx.drawImage(heroCoatSheet(storyAtlas), sf.x, sf.y, sf.w, sf.h, x, y, size, size);
-    return true;
-  }
-  const f = stdFrame(real);
-  const img = standardAtlas();
-  if (!f || !img) return false;
-  ctx.drawImage(stdSheet(img), f.x, f.y, f.w, f.h, x, y, size, size);
+  // (the painting is the old square grown by m all round: the old square is what fills the window)
+  const g = (size / (f.w - 2 * f.m));
+  ctx.drawImage(heroCoatSheet(img), f.x, f.y, f.w, f.h, x - f.m * g, y - f.m * g, f.w * g, f.h * g);
   return true;
 }
 
