@@ -9,17 +9,20 @@
  *     knot and the ladder unrolls, the arch cannot be walked through, tea tipped from the floor sends the lift up without her and the post
  *     sets the table again, the dark steps show only in Flicker's light and the pit under them is soft with a way out;
  *   - the carving: the circle carves only at a trunk, she cannot walk past a trunk she has not marked, and she tiptoes through the camp;
- *   - Easy's sparkle comes for going back and forth, never for a clock; Flicker's hints come only when asked, a step at a time.
+ *   - Easy's sparkle comes for going back and forth, never for a clock; Flicker's hints come only when asked, a step at a time;
+ *   - the trails' floor (Matt, 2026-10-28: "you can just run straight across the bottom"): walked, every section stops her; hopped
+ *     along without climbing, every section with a trunk stops her; and she has no leaf: a jump held over a gully never glides;
+ *   - a full playthrough on Easy (the stage as Easy makes it).
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
-import { MeecaBot } from './meecaBot.ts';
+import { MeecaBot, floorWalker } from './meecaBot.ts';
 import type { MeecaPlay } from './meecaPlay.ts';
 import type { KitPlay } from './puzzlePlay.ts';
 import { CARVED_KEY, carvingsForPokey } from './meecaCarved.ts';
 import { FLICKER_HINTS, MEECA_ENDING_B, MEECA_GOAL, ROOM_LINES } from './meecaLines.ts';
-import { MEECA_G, TIPTOE } from './meecaStage.ts';
+import { GULLY, MEECA_G, TIPTOE } from './meecaStage.ts';
 import { setDifficulty } from './difficulty.ts';
 
 function forget() {
@@ -77,8 +80,8 @@ for (const [name, w, h, seeds] of [['sideways', 844, 390, [1, 38, 75]], ['uprigh
       assert.ok(mc.wrapped, 'the blanket round her');
       assert.equal(sim.e.lives, lives);
       assert.equal(sim.p.hp, hp);
-      // the quick bot plays faster than any person (it knows every answer): over four minutes even so
-      assert.ok(mc.t >= 240, `${mc.t.toFixed(0)} s`);
+      // the quick bot plays faster than any person (it knows every answer, never misses a jump): two and a half minutes even so
+      assert.ok(mc.t >= 150, `${mc.t.toFixed(0)} s`);
       const saved = carvingsForPokey();
       assert.deepEqual(saved.map((c) => c.id), ['sit', 'eat', 'silk', 'tea', 'look']);
       assert.ok(saved.every((c, i) => i === 0 || c.along > saved[i - 1].along));
@@ -275,6 +278,70 @@ test("Easy's sparkle comes for going back and forth with nothing changing, not f
     assert.equal(mc.bubble?.who, 'flicker');
     assert.equal(mc.hintsAsked, 3);
     assert.equal((sim.e as { buildStats(win: boolean, stars: number): { hints?: number } }).buildStats(true, 3).hints, 3, 'the medal counts them');
+  } finally {
+    setDifficulty('normal');
+  }
+});
+
+test("the trails' floor, in the engine: walking along it never gets her through a section, and hopping without climbing never gets her past a trunk", () => {
+  for (const seed of [1, 75]) {
+    const probe = new RealPlay('5-M', seed);
+    const st = parts(probe).mc.st;
+    let trunks = 0;
+    for (const tr of st.trails) {
+      for (const sec of tr.sections) {
+        const at = `seed ${seed}: ${tr.name}, ${sec.kind} at ${sec.x0}`;
+        assert.equal(floorWalker(new RealPlay('5-M', seed), sec.x0, sec.x1, false).through, false, `${at}: walked straight through`);
+        const hop = floorWalker(new RealPlay('5-M', seed), sec.x0, sec.x1, true);
+        if (hop.climbs) {
+          trunks++;
+          assert.equal(hop.through, false, `${at}: got past its trunk without climbing`);
+        }
+      }
+    }
+    assert.ok(trunks >= 5, `seed ${seed}: ${trunks} sections with a trunk`);
+  }
+});
+
+test('she has no leaf: a jump held all the way over a gully never glides; she drops into it, and its stairs lead back', () => {
+  const sim = onScreen(1);
+  // (a player who has come this far has Pokey's leaf, from 4-1: she still has none)
+  (sim.e as unknown as { skills: Set<string> }).skills.add('glide');
+  const { mc } = parts(sim);
+  mc.phase = 'play';
+  mc.marked = mc.st.trunks.length;
+  const sec = mc.st.trails.flatMap((t) => t.sections).find((x) => x.kind === 'canopy' || x.kind === 'fallen')!;
+  const floor = sim.platforms.find((p) => p.x > sec.x0 && p.x < sec.x1 && p.y === MEECA_G + GULLY)!;
+  const lip = sim.platforms.find((p) => Math.abs(p.x + p.width - (floor.x - 168)) < 2 && p.y === MEECA_G)!;
+  sim.stand(lip.x + lip.width - 150, MEECA_G);
+  for (let i = 0; i < 30 * 3 && !(sim.p.grounded && sim.p.y > MEECA_G + 100); i++) {
+    const nearEdge = sim.p.grounded && sim.p.x > lip.x + lip.width - 24;
+    sim.frame(nearEdge ? { right: true, press: true } : sim.p.grounded ? { right: true } : { right: true, jump: true });
+    assert.equal((sim.e as { glide: { on: boolean } }).glide.on, false, 'the leaf never opens');
+  }
+  assert.ok(sim.p.grounded && sim.p.y >= MEECA_G + 65, `she came down in the gully (${Math.round(sim.p.x)}, ${Math.round(sim.p.y)})`);
+  // the way out is the way she came: left along the floor and up the stairs, a hop each
+  for (let i = 0; i < 30 * 12 && !(sim.p.grounded && sim.p.y === MEECA_G); i++) {
+    const p = sim.p;
+    sim.frame(p.grounded && sim.e.player.vx === 0 && i % 6 === 0 ? { left: true, press: true } : { left: true, jump: !p.grounded });
+  }
+  assert.ok(sim.p.grounded && sim.p.y === MEECA_G && sim.p.x < floor.x, `back up on the path (${Math.round(sim.p.x)}, ${Math.round(sim.p.y)})`);
+  assert.equal(sim.died, false);
+});
+
+test('5-M on Easy, upright: a full playthrough (the stage as Easy makes it), no heart and no life lost', () => {
+  setDifficulty('easy');
+  try {
+    const sim = onScreen(2, 390, 844);
+    let won = false;
+    sim.e.callbacks.onVictory = () => (won = true);
+    const lives = sim.e.lives;
+    const bot = new MeecaBot(sim);
+    bot.play();
+    const { mc } = parts(sim);
+    assert.ok(won && mc.phase === 'done', bot.log.map(([a, t]) => `${a}@${t.toFixed(0)}`).join(' '));
+    assert.ok(!bot.log.some(([a]) => a.startsWith('stuck')), bot.log.map(([a]) => a).join(', '));
+    assert.equal(sim.e.lives, lives);
   } finally {
     setDifficulty('normal');
   }

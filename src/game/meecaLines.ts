@@ -50,6 +50,8 @@ export const MEECA_SAY = {
   // ── the camp (NEW) ──
   /** the card has gone: the column asleep round the fire, and she gets up out of her place (NEW) */
   camp: { id: 'camp', who: 'meeca', text: 'All asleep. Soft feet. Go.' },
+  /** at the first gully past the camp: the floor goes nowhere, the way on is up (Matt approved it, 2026-10-28) */
+  high: { id: 'high', who: 'meeca', text: 'Too far to jump. The high way, then.', teach: true },
   /** past the camp, two paths that look the same (NEW) */
   lost: { id: 'lost', who: 'meeca', text: 'Out! ...Which way is back?' },
   /** Flicker's light blinks on (approved, word for word) */
