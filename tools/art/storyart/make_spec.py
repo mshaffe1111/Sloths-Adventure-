@@ -472,6 +472,22 @@ def round4b(commit, nest_pick='pl-nest-storm-6', court_pick='pl-courtyard-6'):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it if not x['name'].endswith(('-e', '-pe'))]}
 
 
+def round4c(commit):
+    """Grandma's door, lit: both repaints of it showed the seam where the old picture met the new sky, so it is made from the clean empty
+    one (the same tree and door) by closing the door and lighting her lamp, then painted at full size like the others"""
+    it = [{'name': 'pl-grandma-door-e', 'edit': True, 'start': 'bucket:storyart/r3c/out/pl-grandma-door-empty-2.png', 'seed': 4, 'w': 1280, 'h': 1360,
+           'prompt': ('Close the round wooden door so it is shut, remove the chair, and light the house: the lantern beside the door and the round '
+                      'window glow warm golden yellow, warm light spills onto the door, the path and the ferns, a potted fern by the door, a few '
+                      'glowing fireflies. Keep everything else exactly as it is: the great tree, the forest, the sky, the composition. Same painted '
+                      'storybook style. No characters, no text.'), 'neg': 'characters, people, animals, text'},
+          {'name': 'pl-grandma-door', 'then': 'pl-grandma-door-e', 'neg': PLATE_NEG, 'strength': 0.3, 'seed': 5, 'w': 2560, 'h': 2720, 'tile': [1280, 256],
+           'loras': [['style', 1.0]], 'prompt': ('slothadv style, painted storybook illustration, a round wooden door in the roots of a great rainforest '
+                                                 'tree at dusk, warm lantern light, fireflies, no characters, no text')}]
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r4c', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': ['pl-grandma-door']}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
