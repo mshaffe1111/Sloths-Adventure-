@@ -4,7 +4,7 @@
 import { createRequire } from 'module';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const [port, out, tag, ...stages] = process.argv.slice(2);
-const b = await chromium.launch();
+const b = await chromium.launch({ args: ['--disable-dev-shm-usage'] });
 for (const spec of stages) {
   const [idl, dx = '0'] = spec.split(':');
   const [id, layout] = idl.split('@');
@@ -16,7 +16,7 @@ for (const spec of stages) {
     await p.waitForTimeout(2500);
     await p.evaluate(([i, l]) => window.__play(i, l === undefined ? undefined : +l), [id, layout]);
     await p.waitForTimeout(3500);
-    if (+dx) await p.evaluate((d) => { const e = window.__engine(); const pl = e.player; pl.x += d; if (pl.position) pl.position.x += d; }, +dx);
+    if (+dx) await p.evaluate((d) => { let e = window.__engine; if (typeof e === "function") e = e(); const pl = e.player; pl.x += d; if (pl.position) pl.position.x += d; }, +dx);
     await p.waitForTimeout(2500);
     await p.screenshot({ path: `${out}/${tag}-${idl.replace('@', 'L')}${+dx ? '-x' + dx : ''}-${o}.jpg`, type: 'jpeg', quality: 80 });
     await ctx.close();

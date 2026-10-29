@@ -30,7 +30,7 @@ def on(im, col):
 
 for w in sys.argv[3:]:
     tiles = []
-    for t in 'ab':
+    for t in 'abcd':
         names = [f'fill-w{w}-{t}-base'] + [f'fill-w{w}-{t}-v{s}' for s in (3, 5, 7)]
         ims = [Image.open(raw / f'{n}.webp').convert('RGB') for n in names if (raw / f'{n}.webp').exists()]
         if not ims:

@@ -36,3 +36,19 @@ def key(img, d0=70, d1=150, speck=60, erode=0, main_only=False):
         al = np.where(inner | (al < 0.5), al, al * 0.5)
     rgba = np.dstack([np.clip(out, 0, 255), al * 255]).astype(np.uint8)
     return Image.fromarray(rgba, 'RGBA')
+
+
+def depurple(im, lum_max=120, edge_only=0):
+    """dark purple left by the key in thin roots and shadows: its blue brought down to its green, so it reads brown. `edge_only`: only
+    within that many px of the silhouette (a prop whose own reds and pinks must stay)"""
+    a = np.asarray(im, np.float32).copy()
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    lum = (r + g + b) / 3
+    p = (np.minimum(r, b) - g > 8) & (lum < lum_max) & (a[..., 3] > 0)
+    if edge_only:
+        p &= ndimage.binary_dilation(a[..., 3] < 200, iterations=edge_only)
+    # (to a root brown: red a little over green, blue under it, at the pixel's own brightness)
+    a[..., 0] = np.where(p, lum * 1.22, r)
+    a[..., 1] = np.where(p, lum * 0.98, g)
+    a[..., 2] = np.where(p, lum * 0.8, b)
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'RGBA')

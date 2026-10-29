@@ -2,3 +2,8 @@ hf-art-ground jobs, 2026-10-29 (cap $14). rtx-pro-6000 at ~$2.75/h. Results in t
 hfg-ground-a 6ae38264ad9610e5cb314481 rtx-pro-6000 created 17:29:08Z: groundgpu.py on spec-ground-a.json (Worlds 6, 7, 1, 2: soil x2 bases x3 variants, lip x2, end x2)
 hfg-ground-b 6ae38267ad9610e5cb314486 rtx-pro-6000 created 17:29:11Z: spec-ground-b.json (Worlds 3, 4, 5, 8)
 hfg-art2     6ae384585ddcdc083026362d rtx-pro-6000 created 17:37:28Z: spec-art2.json (79 items: W5 props x18 x2, signs x2 x2, dressing x18 x2, W6 water chop + leaves)
+finished: hfg-ground-a 17:39:37Z (10.5 min, ~$0.48); hfg-ground-b 17:38:18Z (9.1 min, ~$0.42)
+hfg-ground-c 6ae385535ddcdc0830263740 rtx-pro-6000 created 17:41:39Z: spec-ground-c.json (World 7 soil redo c/d, Worlds 9 and 10)
+finished: hfg-art2 17:47:09Z (9.7 min, ~$0.44); hfg-ground-c 17:48:15Z (6.6 min, ~$0.30)
+running total ~35.9 min = ~$1.65
+finished: hfg-art3 18:06:52Z (1.6 min, ~$0.07); running total ~37.5 min = ~$1.72

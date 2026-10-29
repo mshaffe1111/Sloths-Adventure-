@@ -23,7 +23,7 @@ import { drawBounce, drawRaftLive, shakeOffset } from './spanArt.ts';
 import './shelfArt.ts';
 import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
-import { drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
+import { bankPainted, drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
 import { drawBadWater } from './badWaterArt.ts';
@@ -1357,6 +1357,9 @@ export function renderWorldObjects(
       else drawRaft(ctx, p, look, time, r);
     } else if (p.style === 'canopy_bridge') {
       if (!drawThin(ctx, p, look, worldId, thinPlanFor(plan, p))) drawBridge(ctx, p, look, time, r);
+    } else if (p.height >= 50 && bankPainted(p)) {
+      // the painted ground covers this bank (protoArt.ts drawBankArt, its face undercut where it drops away): only what grows on top
+      topDecor(ctx, p, look, r, time);
     } else if (p.height >= 50) {
       const gp = curRig ? undefined : plan.ground.get(p);
       if (gp && gp.role === 'ground') {
