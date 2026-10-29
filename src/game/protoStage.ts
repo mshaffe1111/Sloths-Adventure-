@@ -20,6 +20,7 @@ import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import { DOUBLE_RISE, JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
+import { validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
@@ -125,6 +126,8 @@ export interface ProtoExtras {
   decor?: import('./riverArt.ts').W2Decor[];
   /** 2-6: the climbs are the village's ladders (riverArt.ts drawLadder), not trunks */
   ladders?: boolean;
+  /** 4-1 and 4-6's catch branches under the hop gaps of the climb (platform id, the gap's two planks) */
+  catches?: Array<{ plat: number; planks: [number, number] }>;
   /** 2-6: the face of the river bank the village is dug into, behind the whole climb (drawn by protoArt.ts drawEarthWall) */
   bankWall?: { x0: number; x1: number; top: number; bottom: number };
   /** the control test's mix: the seed and the stretches it drew, in order (logged when the run starts, so any run can be built again) */
@@ -5956,6 +5959,83 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
   }
 
+  // ---- catch branches (round 6, 2026-10-29; Matt's call: catch ledges under high planks in tall climbs). A miss at a hop gap of the
+  // climb fell to the floor or a ledge far below, up to the whole climb lost (4-1 seed 1: 1,940 px). Under every hop gap with more than
+  // CATCH.max under it goes a short branch a body and a half down, a double jump back up to the lower of the gap's two planks. It is
+  // placed last, and only where nothing under it can jump up to it and nothing stands in its column, so the only ways onto it are a
+  // miss above and back from it to its own planks: never a shortcut (the level check's route is unchanged, w4Catch.test.ts).
+  const catches: Array<{ plat: number; planks: [number, number] }> = [];
+  /** the gap between planks a (left) and b closed, the higher run on to meet the lower, where nothing is in the way: false if not */
+  const closeGap = (a: Platform, b: Platform): boolean => {
+    const gl = a.x + a.width, gr = b.x;
+    const hi = a.y >= b.y ? b : a;
+    const clearRun = !P.some((q) => q !== a && q !== b && q.x < gr + 30 && q.x + q.width > gl - 30 && Math.abs(q.y - hi.y) < 120) &&
+      !V.some((v) => v.x > gl - 40 && v.x < gr + 40 && v.bottomY > hi.y - 160 && v.topY < hi.y + 40) &&
+      !ROPES.some((r) => r.x1 > gl - 60 && r.x0 < gr + 60 && r.y > hi.y - 200 && r.y < hi.y + 40);
+    if (!clearRun) return false;
+    if (hi === b) { b.width += b.x - gl; b.x = gl; }
+    else a.width = gr - a.x;
+    return true;
+  };
+  if (cliff || mist) {
+    const CATCH = { max: 400, rises: [150, 165, 135, 175], reach: DOUBLE_RISE + 15 };
+    const made = new Set<number>();
+    const misty = new Set(mistSpots.flatMap((m) => m.hides));
+    const firstUnder = (x: number, y: number) => P.reduce((m, q) => (q.x <= x && q.x + q.width >= x && q.y > y + 4 ? Math.min(m, q.y) : m), Infinity);
+    const planks = P.filter((p) => p !== P[0] && p !== crown && p.height === 24 && !p.lip && p.width >= 60 && !misty.has(p.id));
+    /** from q to p in one move: a drop, or a jump across (a double jump's rise; a trunk is two moves, up it and off it, so it is not) */
+    const linked = (q: Platform, p: Platform) => {
+      const dx = Math.max(0, p.x - (q.x + q.width), q.x - (p.x + p.width));
+      return dx <= 260 && q.y - p.y <= DOUBLE_RISE;
+    };
+    for (const a of planks) for (const b of planks) {
+      if (b.x < a.x + a.width) continue;
+      const gl = a.x + a.width, gr = b.x, g = gr - gl;
+      if (g < 20 || g > 260 || Math.abs(a.y - b.y) > 110) continue;
+      // (a branch across the gap between them: not a gap)
+      if (P.some((c) => c !== a && c !== b && c.x < gr && c.x + c.width > gl && Math.abs(c.y - (a.y + b.y) / 2) < 60)) continue;
+      const top = Math.max(a.y, b.y);
+      const drop = Math.max(...[gl + 10, gl + g / 2, gr - 10].map((x) => firstUnder(x, top))) - top;
+      if (drop <= CATCH.max) continue;
+      const low = a.y >= b.y ? a : b;
+      // (trimmed clear of a trunk close by, as long as it still spans the gap)
+      let x0 = Math.max(KAPOK_MARGIN, gl - 70), x1 = Math.min(W - KAPOK_MARGIN, gr + 70);
+      for (const v of V) if (v.bottomY > top - 20 && v.topY < low.y + 240) {
+        if (v.x >= gr && v.x - 45 < x1) x1 = Math.max(gr, v.x - 45);
+        if (v.x <= gl && v.x + 45 > x0) x0 = Math.min(gl, v.x + 45);
+      }
+      const ok = (y: number) => {
+        // whatever can jump up to it, or that it can jump up to, reaches the gap's planks in one move already: so it opens no way that was
+        // not there and saves no move; and nothing in its column between the planks and it
+        const near = (q: Platform) => q !== a && q !== b && !made.has(q.id) && Math.max(0, x0 - (q.x + q.width), q.x - x1) <= 260 && Math.abs(q.y - y) <= CATCH.reach;
+        if (P.some((q) => near(q) && (q === P[0] || !(linked(q, a) || linked(q, b))))) return false;
+        if (P.some((q) => q !== a && q !== b && q.x < x1 + 20 && q.x + q.width > x0 - 20 && q.y > top - 30 && q.y < y + 30)) return false;
+        // no vine, trunk or rope through it
+        if (V.some((v) => v.x > x0 - 40 && v.x < x1 + 40 && v.bottomY > top - 20 && v.topY < y + 60)) return false;
+        // (nor a trunk he could jump off sideways onto it, unless that trunk tops out on one of the gap's planks: then it saves no move)
+        const topsOn = (v: Vine, p: Platform) => Math.abs(v.topY + 2 - p.y) < 12 && v.x >= p.x - 60 && v.x <= p.x + p.width + 60;
+        if (V.some((v) => Math.max(0, x0 - v.x, v.x - x1) <= 260 && v.bottomY > y - DOUBLE_RISE && v.topY < y + 200 && !topsOn(v, a) && !topsOn(v, b))) return false;
+        if (ROPES.some((r) => r.x1 > x0 - 60 && r.x0 < x1 + 60 && r.y + HANG_DROP + 100 > top + 30 && r.y < y + 30)) return false;
+        if (ROOMS.some((rm) => { const bx = roomBox(rm, P); return x1 > bx.x0 - 60 && x0 < bx.x1 + 60 && y > bx.y0 - 60 && top < bx.y1 + 60; })) return false;
+        if (mistSpots.some((m) => m.area && x1 > m.x0 - 300 && x0 < m.x1 + 300 && y > m.area.top - 60 && top < m.area.bottom + 60)) return false;
+        if (nests.some((q) => q.x > x0 - 320 && q.x < x1 + 320 && q.y > top - 60 && q.y < y + 60)) return false;
+        if (E.some((e) => e.x > x0 - 240 && e.x < x1 + 240 && e.y + 14 > top + 20 && e.y < y + 60)) return false;
+        if (rocks.some((r) => r.x > x0 - 120 && r.x < x1 + 120 && r.land > top + 20 && r.land < y + 60)) return false;
+        return true;
+      };
+      const y = CATCH.rises.map((rz) => low.y + rz).find(ok);
+      if (y === undefined) {
+        // (no room for a catch, a rope hanging under the gap or a room by it: the gap is closed instead, the higher plank run on to
+        // meet the lower, so the hop is a step up with nothing to miss)
+        closeGap(a, b);
+        continue;
+      }
+      const c = ledge(x0, x1, y);
+      made.add(c.id);
+      catches.push({ plat: c.id, planks: [a.id, b.id] });
+    }
+  }
+
   const shift = 400 - crown.y;
   for (const r of rocks) { r.top += shift; r.land += shift; }
   for (const z of gusts) { z.top += shift; z.bottom += shift; z.baseY += shift; }
@@ -5992,7 +6072,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   if (kit) addKitPlatforms(P, kit);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES }, C);
   const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: H };
-  return {
+  const out = {
     config: cfg,
     trees: T,
     platforms: P,
@@ -6010,11 +6090,48 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     ...(kit ? { kit } : {}),
     ...(gusts.length ? { zones: gusts } : {}),
     proto: {
-      hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
+      hints, covers: [], beats, movedPickups, hollows, ...(catches.length ? { catches } : {}), ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
       ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [], rockTip: ROCKS_LOOSE } } : {}),
       ...(mist ? { w4: { patience: mistSpots, nests, floor: { y: floorY, trunkX: firstTrunkX }, ...(rocks.length ? { rocks, rockTip: ROCKS_LOOSE } : {}) } } : {}),
     },
   };
+  // (the catch branches, judged by the level check itself: one that lets any place be reached in fewer moves than without the catches
+  // is taken away, and its gap closed instead where it can be. The rules above keep most clear; this catches the rest)
+  if (catches.length) {
+    let g: CheckGraph | null = null;
+    validateStage(out as unknown as GeneratedStage, { inspect: (q) => (g = q) });
+    const graph = g as CheckGraph | null;
+    if (graph) {
+      const ck = new Map(catches.map((c) => [graph.key(P.find((p) => p.id === c.plat)!), c]));
+      const start = graph.key(P[0]);
+      const bfs = (skip: (k: string) => boolean) => {
+        const d = new Map<string, number>([[start, 0]]);
+        const queue = [start];
+        while (queue.length) {
+          const k = queue.shift()!;
+          for (const n of graph.adj.get(k) ?? []) if (!skip(n) && !d.has(n)) { d.set(n, d.get(k)! + 1); queue.push(n); }
+        }
+        return d;
+      };
+      const without = bfs((k) => ck.has(k));
+      const gone = new Set<string>();
+      for (let round = 0; round < 50; round++) {
+        const withC = bfs((k) => gone.has(k));
+        // the catches on a way that reaches somewhere as soon as without them, or sooner (a tie would let the route take the catch)
+        const bad = [...ck.keys()].filter((k) => !gone.has(k) && withC.has(k) && [...(graph.adj.get(k) ?? [])].some((w) => withC.get(k)! + 1 === withC.get(w) && withC.get(w)! <= (without.get(w) ?? Infinity)));
+        if (!bad.length) break;
+        for (const k of bad) gone.add(k);
+      }
+      for (const k of gone) {
+        const c = ck.get(k)!;
+        P.splice(P.findIndex((p) => p.id === c.plat), 1);
+        catches.splice(catches.indexOf(c), 1);
+        const [a, b] = c.planks.map((id) => P.find((p) => p.id === id)!);
+        closeGap(a, b);
+      }
+    }
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
