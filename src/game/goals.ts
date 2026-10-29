@@ -6,8 +6,8 @@
  *   free (rescue)           every animal there is to free (the cages, World 5's cocoons);
  *   beat (purge, gauntlet)  about 70-80% of the stage's predators (the ring's snakes and the aerie's guard monkeys count too).
  *
- * Easy asks round(Normal x 0.8), and never under 60% of what the stage holds (LV-6, polish report 2026-10-29: the old "the stage's own
- * quota" left hollow targets, 2-5 asking 8 of 21), and easyMode.ts makes a beat-the-animals goal gentler still. A search (relic_hunt) keeps its own count: it is a finding goal, not a share.
+ * Easy asks round(Normal x 0.65), never under 60% of what the Easy stage holds and never under the goal it had before (LV-6, polish
+ * report 2026-10-29: the old "the stage's own quota" left hollow targets, 2-5 asking 8 of 21; Matt: "softer, 65% of Normal"), and easyMode.ts makes a beat-the-animals goal gentler still. A search (relic_hunt) keeps its own count: it is a finding goal, not a share.
  *
  * The engine applies it as it builds a stage on Normal (engine.ts), and the stage inspector reads the same counts (tools/inspect).
  * Pure: no engine, no canvas.
@@ -24,14 +24,19 @@ export const GOAL_SHARE = {
   rescue: 1,
 } as const;
 
-/** Easy asks this share of Normal's goal (rounded) */
-export const EASY_UNDER = 0.8;
-/** and never less than this share of what the stage holds (LV-6) */
+/** Easy asks this share of Normal's goal (rounded): Matt, 2026-10-29, "softer, 65% of Normal" (LV-6) */
+export const EASY_SHARE = 0.65;
+/** and never less than this share of what the Easy stage holds (LV-6) */
 export const EASY_FLOOR = 0.6;
+/** (how Easy's goal was set before LV-6: the stage's own quota, at most this share of Normal's; never asked for less than that now) */
+export const EASY_UNDER_OLD = 0.8;
 
-/** Easy's goal from Normal's and what the stage holds: round(Normal x 0.8), at least 60% of what is there, never more than Normal */
-export function easyGoalFor(normal: number, have: number): number {
-  return Math.max(1, Math.min(normal, Math.max(Math.round(normal * EASY_UNDER), Math.ceil(have * EASY_FLOOR - 1e-9))));
+/**
+ * Easy's goal from Normal's and what the Easy stage holds: round(Normal x 0.65), at least 60% of what is there, never under `today`
+ * (the goal before LV-6), never more than Normal
+ */
+export function easyGoalFor(normal: number, have: number, today = 0): number {
+  return Math.max(1, Math.min(normal, Math.max(Math.round(normal * EASY_SHARE), Math.ceil(have * EASY_FLOOR - 1e-9), today)));
 }
 
 type Stage = GeneratedStage & { proto?: { ring?: { waves: unknown[][] }; w4?: { monkeys?: Array<{ job: string; blowOff?: number }> }; w5?: { cocoons?: unknown[] } } };
@@ -88,8 +93,11 @@ export function withGoals<T extends GeneratedStage>(st: T): T {
   if (st.easyGoal !== undefined || st.boss) return st;
   const g = normalGoal(st as Stage);
   if (g === null) return st;
-  st.easyGoal = easyGoalFor(g, goalHave(st as Stage) ?? g);
+  // (today's Easy goal, the floor: the stage's own quota, at most 80% of Normal's)
+  const today = Math.max(1, Math.min(st.config.targetCount, Math.round(g * EASY_UNDER_OLD)));
+  st.easyGoal = easyGoalFor(g, goalHave(st as Stage) ?? g, today);
   st.normalGoal = g;
+  st.easyToday = today;
   st.config = { ...st.config, targetCount: g };
   return st;
 }

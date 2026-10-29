@@ -17,7 +17,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
 import { EASY_HOLD } from './physics.ts';
-import { EASY_UNDER, easyGoalFor, goalHave } from './goals.ts';
+import { easyGoalFor, goalHave } from './goals.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
 /** a drop is this deep (or has no floor at all) before a far jump over it gets a stone */
@@ -358,11 +358,13 @@ export function easyStage(stage: Stage): Stage {
     const ring = stage.proto?.ring;
     if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
     if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
-      // (LV-6: Normal's goal scaled to the animals Easy keeps, then Easy's share of that, never under 60% of them. Not 0.6 of Easy's
-      // goal for the whole stage: that asked 2-5's kids for 16 of the 21 snappers Easy keeps, where the rule gives 13)
+      // (LV-6: Normal's goal scaled to the animals Easy keeps, then Easy's share of that (65%), never under 60% of them and never under
+      // the goal this fight had before (0.6 of the old Easy goal). Not a share of Easy's goal for the whole stage: that asked 2-5's kids
+      // for 16 of the 21 snappers Easy keeps)
       const have = goalHave(stage as never) ?? 0;
-      const normal = stage.normalGoal ?? Math.round(stage.config.targetCount / EASY_UNDER);
-      const target = Math.min(have, easyGoalFor(Math.round((normal * have) / before), have));
+      const normal = stage.normalGoal ?? stage.config.targetCount;
+      const today = Math.max(1, Math.round((stage.easyToday ?? stage.config.targetCount) * 0.6));
+      const target = Math.min(have, easyGoalFor(Math.round((normal * have) / before), have, today));
       stage.config = { ...stage.config, targetCount: Math.max(1, target) };
     }
     for (const e of stage.enemies) e.attackCooldown = Math.max(e.attackCooldown, 0) * 1.5;

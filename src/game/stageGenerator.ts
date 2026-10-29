@@ -89,6 +89,8 @@ export interface GeneratedStage {
   easyGoal?: number;
   /** Normal's goal, set with easyGoal (goals.ts withGoals): Easy scales it to the animals it keeps (easyMode.ts) */
   normalGoal?: number;
+  /** Easy's goal before LV-6 (goals.ts withGoals): Easy's goal never goes under it */
+  easyToday?: number;
   /** what the generator built (for tests and debugging) */
   meta?: {
     attempt: number;
