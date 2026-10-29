@@ -36,13 +36,16 @@ skycut = load('skycut', ROOT / 'tools/art/hfbatch/skycut.py')
 sys.path.insert(0, str(HERE))
 from defringe import process  # noqa: E402
 from run_all import TOPFADE  # noqa: E402
+sys.path.insert(0, str(ROOT / 'tools/art/hfbatch'))
+from make_hdset_spec import REDO as REJECTED  # noqa: E402  (the skies that failed review: the far strip covers the view instead)
 
 
-def main(d):
+def main(d, only=None):
+    """only: 'cutouts' to redo just the middle and near strips"""
     d = Path(d)
     tmp = d / 'cut'
     tmp.mkdir(exist_ok=True)
-    for p in sorted(q for q in d.glob('*-far-hd.webp') if not q.name.startswith('pre-')):
+    for p in ([] if only == 'cutouts' else sorted(q for q in d.glob('*-far-hd.webp') if not q.name.startswith('pre-'))):
         stem = p.name[:-len('-far-hd.webp')]
         im = Image.open(p).convert('RGB')
         out = BACK / f'{stem}-far.webp'
@@ -64,9 +67,12 @@ def main(d):
                             topfade=0.07 if part == 'mid' and world in TOPFADE else 0.0)
         Image.fromarray(out, 'RGBA').save(old, 'WEBP', quality=95, method=6)
         print(old.name, out.shape[1], 'x', out.shape[0], old.stat().st_size // 1024, 'KB', info)
-    for p in sorted(d.glob('*-sky.webp')):
+    # (skies only those that passed review: a held-back one is listed in REJECTED, make_hdset_spec.py REDO)
+    for p in ([] if only == 'cutouts' else sorted(d.glob('*-sky.webp'))):
+        if p.name[:-len('-sky.webp')] in REJECTED:
+            continue
         skycut.cut(p.name[:-len('-sky.webp')], str(p))
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)

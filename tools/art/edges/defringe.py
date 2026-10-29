@@ -271,6 +271,24 @@ def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despi
         else:
             out[same] = src_rgba[same]
         info['band px'] = int((~same & (src_rgba[..., 3] > 0)).sum())
+        if ink:
+            # in the line itself, whichever is darker: a crisp painted outline stays (the lead's 2x review: w2-near's rock), the even
+            # line fills wherever the painted one is missing or smeared pale
+            zone = (din <= 1.6 * px + 0.5) & ~same
+            sc = src_rgba[..., :3].astype(np.float32)
+            if do_grade:
+                sc = grade(sc)
+            darker = zone & (lum(sc) < lum(out[..., :3].astype(np.float32)))
+            out[darker, :3] = np.clip(sc[darker], 0, 255).round().astype(np.uint8)
+        # a strip whose edges are already clean (no sticker ring: under half its outer 2 px darker than 0.7x the paint inside) is left
+        # exactly as painted (the lead's 2x review: w8-near's fern leaflets came out noisier from a fix they did not need)
+        ring = edge_stats(src_rgba)
+        if ring is not None and (ring[4][0] + ring[4][1]) / 2 < 0.5:
+            out = src_rgba.copy()
+            if do_grade:
+                out[..., :3] = np.clip(grade(src_rgba[..., :3].astype(np.float32)), 0, 255).round().astype(np.uint8)
+            info['band px'] = 0
+            info['clean already'] = True
     if topfade > 0:
         # a middle strip whose top is solid paint: its top rows fade out (sideways they are always off screen; upright the trees
         # dissolve into the far strip's painted sky instead of ending in a straight cut)

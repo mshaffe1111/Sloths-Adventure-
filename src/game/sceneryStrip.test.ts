@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { devScale, snapDev, stripTop, STRIP_FIT } from './scenery.ts';
+import { devScale, snapDev, stripTop, STRIP_FIT, farScale, farCoverTop } from './scenery.ts';
 
 const ctxWith = (a: number) => ({ getTransform: () => ({ a, b: 0 }) }) as unknown as CanvasRenderingContext2D;
 
@@ -47,4 +47,21 @@ test('upright, the painted strips are drawn at the size sideways uses, on the sa
   assert.ok(stripTop('far', vh, now).top > 0);
   // sideways nothing changes: the strip height is the view height
   assert.deepEqual(stripTop('mid', 390, 390 / H), stripTop('mid', 390, Math.min(390, 390) / H));
+});
+
+// (no DOM under the test runner: a stand-in canvas class, so scenery.ts can tell a baked layer from a picture)
+(globalThis as { HTMLCanvasElement?: unknown }).HTMLCanvasElement ??= class {};
+
+test('upright, a far strip without a painted sky is drawn just large enough to reach the top of the view; with one, at the strips\' size', () => {
+  const vh = 844, s = (540 * 390) / 440 / 720;
+  const sky = { naturalWidth: 2640, naturalHeight: 513 } as unknown as HTMLImageElement;
+  const far = { naturalWidth: 2640, naturalHeight: 1302 } as unknown as HTMLImageElement;
+  assert.equal(farScale(sky, vh, s, 0), s);
+  const k = farScale(null, vh, s, 0);
+  assert.ok(Math.abs(stripTop('far', vh, k, 0).top) < 1e-6, 'its top meets the top of the view');
+  assert.ok(k / s < 1.3, 'only a little larger than sideways');
+  assert.ok(farCoverTop(far, null, vh, s, 0) <= 1e-6, 'nothing above it needs the drawn sky');
+  assert.ok(farCoverTop(far, sky, vh, s, 0) < 0, 'the painted sky reaches above the top of a phone');
+  // sideways nothing changes: the far strip already reaches the top
+  assert.equal(farScale(null, 390, 390 / 720, 0), 390 / 720);
 });

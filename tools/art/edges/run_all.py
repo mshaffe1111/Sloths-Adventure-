@@ -97,7 +97,8 @@ def main():
                                                    capture_output=True).stdout)
                     args = [a for a in opts + x.get('part', {}).get(part, []) if not (o.clean and a == '--ink')]
                     if part == 'mid' and stem in TOPFADE:
-                        args += ['--topfade', '0.07']
+                        # (w8's veil of trees starts straight a quarter of the way down, over the moon: a longer fade reads as mist)
+                        args += ['--topfade', '0.16' if stem == 'w8' else '0.07']
                     if name in PRE:
                         spec = importlib.util.spec_from_file_location(PRE[name], Path(__file__).with_name(f'{PRE[name]}.py'))
                         mod = importlib.util.module_from_spec(spec)

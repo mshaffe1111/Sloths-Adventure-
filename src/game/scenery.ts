@@ -1681,8 +1681,22 @@ const skyRows = (sky: Layer, strip: Layer, dh: number): number => (dh * layerH(s
  * anything that skips work under the far strip follows the upright fit (`s` is the strips' scale, renderScenery's ps).
  */
 export function farCoverTop(far: Layer, sky: Layer | null | undefined, vh: number, s: number, yOff: number): number {
+  s = farScale(sky, vh, s, yOff);
   const pl = stripTop('far', vh, s, yOff);
   return sky && pl.top > 0 ? pl.top + pl.dh * SKY_OVERLAP - skyRows(sky, far, pl.dh) : pl.top;
+}
+
+/**
+ * The far strip's scale: the strips' own (`s`) when it has a painted sky to fill the room above it; without one (a set whose sky did not
+ * pass review), just large enough that its top reaches the top of the view (upright only: sideways it always does), so the view is
+ * never the drawn gradient over a painted scene. About 1.2x the sideways size on a phone, against 1.76x when everything was fitted to
+ * the tall view.
+ */
+export function farScale(sky: Layer | null | undefined, vh: number, s: number, yOff: number): number {
+  if (sky) return s;
+  const f = STRIP_FIT.far;
+  // top = vh * at - a * H * s * k + yOff <= 0
+  return Math.max(s, (vh * f.at + yOff) / (f.a * H * f.k));
 }
 
 /** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT. The strip files are made seamless
@@ -1836,12 +1850,12 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     // (the stand-in sky is a plain gradient: it still fills the whole view, at the view's own scale)
     if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
     ctx.globalAlpha = fa;
-    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, ps, yo * 0.3, set.sky ?? null);
+    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null);
     const rv = revealK > 0.01 && revealStrips ? revealStrips : null;
     const rk = rv ? revealK : 0;
     if (rv) {
       ctx.globalAlpha = rk;
-      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, ps, yo * 0.3, rv.sky);
+      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, farScale(rv.sky, vh, ps, yo * 0.3), yo * 0.3, rv.sky);
       ctx.globalAlpha = 1;
     }
     // high in the trees the middle and near strips fade over to the canopy ones (setCanopy: 1-8's branch, the top of 1-4's climb)
