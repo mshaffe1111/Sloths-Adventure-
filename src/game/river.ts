@@ -120,7 +120,10 @@ export function gapFor(dir: 1 | -1, speed: number): number {
 }
 
 /** how forgiving a log is to a player who runs off the end of one: much less than ground, so a gap has to be jumped */
-export const DRIFT_CATCH = { side: 0.3, drop: 8 } as const;
+export const DRIFT_CATCH = { side: 0.3, drop: 8, easySide: 0.1 } as const;
+// (Easy, LV-5: a kid's hop that comes down on a log's very end still lands, as on a ledge, a foot wider and with the ledge-landing
+// forgiveness for a jump that falls a little short; walking off a log's end still falls. The kid bot drowned 84-114 times in 2-1 on Easy
+// against 74-87 for the adult on Normal, nearly all of them hopping onto drifting logs)
 
 /**
  * The rivers of a World 2 stage, in order. Stage 1: one slow river with the flow. Stages 2-3: two, one of them against the flow.

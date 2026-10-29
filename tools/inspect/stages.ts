@@ -12,7 +12,7 @@ import { buildProtoStage, HAND_STAGES, type ProtoExtras } from '../../src/game/p
 import { buildW2Stage, W2_STAGES } from '../../src/game/w2Stages.ts';
 import { generateStage, setLayoutVariant, type GeneratedStage } from '../../src/game/stageGenerator.ts';
 import { isGen2Stage } from '../../src/game/gen2/game.ts';
-import { easyStage } from '../../src/game/easyMode.ts';
+import { capFlagSpans, easyStage } from '../../src/game/easyMode.ts';
 import { withGoals } from '../../src/game/goals.ts';
 import { stageSpec } from '../../src/game/stagePlan.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
@@ -38,6 +38,11 @@ export interface Skipped {
   why: string;
 }
 
+const capped = <T extends Stage>(st: T): T => {
+  capFlagSpans(st as never);
+  return st;
+};
+
 /** every stage of the worlds asked for, plus the ones skipped and why */
 export function stageList(worlds: number[], seed: number): { stages: StageEntry[]; skipped: Skipped[] } {
   const levels = generateAllLevels();
@@ -53,8 +58,9 @@ export function stageList(worlds: number[], seed: number): { stages: StageEntry[
     const hand = !!HAND_STAGES[c.id] || !!W2_STAGES[c.id];
     const gen2 = isGen2Stage(c);
     const make = (cfg: LevelConfig, easy: boolean): Stage => {
-      if (HAND_STAGES[c.id]) return buildProtoStage(cfg, seed, HAND_STAGES[c.id]);
-      if (W2_STAGES[c.id]) return buildW2Stage(cfg, seed, W2_STAGES[c.id]);
+      // (with the game's own cap on the room between flags, as generateStage builds them: easyMode.ts capFlagSpans, LV-9)
+      if (HAND_STAGES[c.id]) return capped(buildProtoStage(cfg, seed, HAND_STAGES[c.id]));
+      if (W2_STAGES[c.id]) return capped(buildW2Stage(cfg, seed, W2_STAGES[c.id]));
       if (!gen2) return generateStage(cfg);
       // (as the engine builds it on entry: the layout number, then generateStage on the difficulty played)
       setLayoutVariant(seed);
