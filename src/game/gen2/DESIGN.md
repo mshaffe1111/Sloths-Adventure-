@@ -150,7 +150,8 @@ so Easy rolls every piece and socket from the same numbers as Normal (tested: th
 ### B4. Pass 4: the sockets (`fillSockets`)
 
 A socket is bound to a piece by key, `t` (0..1 along its top, rolled from a range) and `dn` (px above it): D6, so it never floats.
-Order: **flags** (rests, and wherever 35 s passed without one), **Dot's tips** (the first time a stage meets a mechanic not taught
+Order: **flags** (rests, wherever 35 s passed without one, and wherever the next section's end would leave more than
+`FLAG_SPAN.max`, 4500 px, without one; laid first, so the animals' patches keep clear of them: a flag always has its pad), **Dot's tips** (the first time a stage meets a mechanic not taught
 before), **linked pairs** (A7: a receptor finds a `manifest.pairs` entry whose source fits its `link` socket at a distance in
 [minApart, maxApart]; both are filled or neither), **props** (a ShuffleBag per tag set, a CooldownQueue of 2 so a prop is not next
 to itself; `easy: 'drop'` hazards stay empty on Easy), **creatures** (a ShuffleBag of the world's creatures; paid from the section's
@@ -227,7 +228,9 @@ again (the sub-block commit kept every section without sub-blocks laid exactly a
 for a seed, so Easy and Normal fill alike: seeds curated before it must be curated again). It also rejects a set whose rolls share too many sections with the neighbouring stages' sets (C4 across
 stages). The picks go to `gen2/seeds.ts`: `GEN2_SEEDS['5-7'] = [ ... ]`; at play the layout variant chooses among them
 (`variant % n`): a retry keeps the roll, a fresh entry changes it, every shipped roll is verified. A stage whose sections include puzzle
-rooms ships them in at least half its set (`--rooms N`; the pipeline rolls rooms rarely, and the greedy pick never chose one).
+rooms ships them in at least half its set (`--rooms N`; the pipeline rolls rooms rarely, and the greedy pick never chose one). Each roll is
+also compared with the world's other gen2 stages' shipped rolls by era.ts's 20 s window rule (reported; `--apart` drops a roll that
+matches: World 5's stages all share its moves, so nearly every roll matches, hand-built ones too).
 
 ### B9. A world's building blocks (authoring)
 

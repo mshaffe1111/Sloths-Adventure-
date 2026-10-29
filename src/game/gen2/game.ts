@@ -24,6 +24,11 @@ export interface Gen2Entry {
   kit: () => WorldKit;
   /** the kit's name as the curation tool writes it in seeds.ts (`kit`): the shipped rolls were checked on this kit */
   kitName: string;
+  /**
+   * Easy's goal for a fight stage, when set: the highest the first-timer kid bot opens the shrine with in at least 5 of its 6 Easy runs
+   * (seeds 1-3, two trials each: the lead's rule, 2026-10-28). Normal keeps its share of what the stage holds (goals.ts)
+   */
+  easyGoal?: number;
 }
 
 /**
@@ -32,7 +37,8 @@ export interface Gen2Entry {
  */
 export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   '5-7': { kit: () => w5Kit(7), kitName: 'w5.ts:w5Kit(7)' },
-  '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)' },
+  // (5-9 Easy: the kid beat 5, 5, 9, 10, 10 and 10 spiders on seeds 1-3 before the shrine; 5 opens it in all six)
+  '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', easyGoal: 5 },
 };
 
 /** is this stage built by gen2 (a secret stage of the same number never is) */

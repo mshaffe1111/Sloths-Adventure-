@@ -3,7 +3,7 @@
  * writes the shipped table, src/game/gen2/seeds.ts.
  *
  *   npx tsx tools/gen2/curate.ts --stages 5-7,5-9 [--rolls 400] [--keep 16] [--out src/game/gen2/seeds.ts] [--waive quiet,dead]
- *     [--band 50-65] [--max-shared 0.7] [--rooms 8] [--json out.json] [--report out.md] [--salt 20261028]
+ *     [--band 50-65] [--max-shared 0.7] [--rooms 8] [--apart] [--json out.json] [--report out.md] [--salt 20261028]
  *   npx tsx tools/gen2/curate.ts --stages toy-3,toy-4,toy-7 --rolls 400 --keep 16 --waive quiet,dead   (the toy world: tools/gen2/toySeeds.ts)
  *
  * For each stage: `--rolls` layout seeds (era.ts's rollVariants) are built through `buildGen2Stage` on Normal and on Easy (the same
@@ -32,7 +32,7 @@ import { buildGen2Stage, checkStage } from '../../src/game/gen2/pipeline.ts';
 import type { Gen2Stage, WorldKit } from '../../src/game/gen2/types.ts';
 import type { Gen2StageSeeds, Gen2Seed } from '../../src/game/gen2/seeds.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
-import { actionTokens, cosine, deadTime, EASY_GAP, NORMAL_GAP, profile, tokenString, type Dead } from '../inspect/analyze.ts';
+import { actionTokens, closestWindows, cosine, deadTime, EASY_GAP, NORMAL_GAP, profile, tokenString, windows, type Dead, type Win } from '../inspect/analyze.ts';
 import { stageScore } from '../inspect/bands.ts';
 import { rollVariants } from '../inspect/era.ts';
 import { pickRoute, RULES } from '../inspect/eraRoll.ts';
@@ -76,6 +76,8 @@ export interface RollMeasure {
   /** the action string (Normal) and its weighted 3-grams */
   action: string;
   prof: Map<string, number>;
+  /** its 20 s windows (Normal), as era.ts compares stages of a world */
+  wins: Win[];
   /** why it was dropped (empty: it passed the filters) */
   fails: string[];
   quality: number;
@@ -96,6 +98,10 @@ export interface CurateOptions {
   /** the previous world-neighbour's shipped closing sections (BuildRequest.recent) and its section set */
   recent: string[];
   neighbour: Set<string> | null;
+  /** the world's other gen2 stages' shipped rolls, by their 20 s windows (era.ts's look-alike rule across a world's stages) */
+  others?: Array<{ key: string; wins: Win[][] }>;
+  /** drop a roll that shares a 20 s stretch with one of `others`' shipped rolls (`--apart`) */
+  apart?: boolean;
   log: (s: string) => void;
 }
 
@@ -109,6 +115,8 @@ export interface CurateResult {
   passed: number;
   dropped: Record<string, number>;
   botRejects: number;
+  /** per other gen2 stage of the world: the passing rolls, and the shipped ones, that share a 20 s stretch with its shipped set */
+  alike: Array<{ key: string; rolls: number; picks: number }>;
   diversity: { all: number; shipped: number };
   shared: number | null;
   recent: string[];
@@ -197,6 +205,7 @@ export function measureRoll(stage: CurateStage, seed: number, recent: string[], 
     easy: E.side,
     action: tokenString(tokens).replace(/W/g, ''),
     prof: profile(tokens),
+    wins: windows(tokens, N.beats.total),
     fails: [],
     quality: 0,
   };
@@ -318,6 +327,14 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
     measures.push(m);
     if ((i + 1) % 25 === 0) opt.log(`  ${stage.key}: ${i + 1}/${seeds.length} rolls, ${measures.filter((x) => !x.fails.length).length} pass  (${((Date.now() - t0) / 1000).toFixed(0)} s)`);
   }
+  // (era.ts's look-alike rule across a world's stages: any 20 s window of the roll against any of the other stage's shipped rolls')
+  const alikeOf = new Map<RollMeasure, string[]>();
+  for (const m of measures) {
+    if (m.fails.length) continue;
+    const keys = (opt.others ?? []).filter((o) => o.wins.some((w) => { const c = closestWindows(m.wins, w); return !!c && c.d < RULES.window; })).map((o) => o.key);
+    alikeOf.set(m, keys);
+    if (opt.apart) for (const k of keys) m.fails.push(`shares a 20 s stretch with ${k}`);
+  }
   const dropped: Record<string, number> = {};
   for (const m of measures) for (const f of m.fails) dropped[f] = (dropped[f] ?? 0) + 1;
   const pool = measures.filter((m) => !m.fails.length);
@@ -345,7 +362,9 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
   }, quota);
   let shared: number | null = null;
   if (opt.neighbour && picks.length) shared = picks.reduce((t, p) => t + sharedWith(p.plan, opt.neighbour!), 0) / picks.length;
-  return { stage, measures, picks, spread, passed, dropped, botRejects: refused, diversity: { all: diversity(pool.length ? pool : measures), shipped: diversity(picks) }, shared, recent: opt.recent, seconds: (Date.now() - t0) / 1000 };
+  const alike = (opt.others ?? []).map((o) => ({ key: o.key, rolls: [...alikeOf.values()].filter((k) => k.includes(o.key)).length, picks: picks.filter((p) => alikeOf.get(p)?.includes(o.key)).length }));
+  if (alike.length) opt.log(`  ${stage.key}: ${alike.map((a) => `${a.rolls} passing rolls (${a.picks} shipped) share a 20 s stretch with ${a.key}'s shipped set`).join('; ')}`);
+  return { stage, measures, picks, spread, passed, dropped, botRejects: refused, alike, diversity: { all: diversity(pool.length ? pool : measures), shipped: diversity(picks) }, shared, recent: opt.recent, seconds: (Date.now() - t0) / 1000 };
 }
 
 // ───────────────────────────── stages and kits ─────────────────────────────
@@ -469,6 +488,7 @@ function args(argv: string[]) {
     band: band && band.length === 2 ? band : null,
     maxShared: Number(get('--max-shared') ?? 0.7),
     rooms: get('--rooms') === undefined ? undefined : Math.max(0, Number(get('--rooms'))),
+    apart: argv.includes('--apart'),
     kit: get('--kit'),
     out: get('--out') ?? (toy ? path.join(here, 'toySeeds.ts') : path.join(root, 'src', 'game', 'gen2', 'seeds.ts')),
     json: get('--json'),
@@ -543,8 +563,19 @@ async function main() {
     const prevPicks = results.find((r) => r.stage.key === neighbourKey(key))?.picks;
     const recent = prevPicks ? closingSections(prevPicks) : prev ? closingSectionsOf(prev) : [];
     const neighbour = prevPicks ? new Set(prevPicks.flatMap((p) => p.plan.map((t) => t.replace(/~$/, '')))) : prev ? new Set(prev.seeds.flatMap((s) => s.sections.split(' ').map((t) => t.replace(/~$/, '')))) : null;
+    // (the world's other gen2 stages, curated now or before: their shipped rolls' windows, for the look-alike rule across stages)
+    const others: Array<{ key: string; wins: Win[][] }> = [];
+    if (!opt.toy) {
+      for (const [k, e] of Object.entries(existing)) {
+        if (k === key || k.split('-')[0] !== key.split('-')[0]) continue;
+        const done = results.find((r) => r.stage.key === k);
+        if (done) { others.push({ key: k, wins: done.picks.map((p) => p.wins) }); continue; }
+        const st = await resolveStage(k, e.kit);
+        others.push({ key: k, wins: e.seeds.map((x) => measureRoll(st, x.seed, e.recent, []).wins) });
+      }
+    }
     log(`${key} (${stage.config.objectiveType}, ${stage.kitName}): ${opt.rolls} rolls${recent.length ? `, recent ${recent.join(',')}` : ''}${opt.waive.length ? `, waived ${opt.waive.join(',')}` : ''}`);
-    const r = curateStage(stage, { ...opt, recent, neighbour, log });
+    const r = curateStage(stage, { ...opt, recent, neighbour, others, log });
     results.push(r);
     existing[key] = toEntry(r, opt, date);
     report(r, opt.keep, log);
@@ -605,7 +636,7 @@ export function renderReport(results: CurateResult[], opt: Pick<CurateOptions, '
   for (const r of results) {
     const n = r.measures.length;
     out.push('', `## ${r.stage.key}: ${r.stage.config.objectiveType}, ${r.stage.kitName}`, '');
-    out.push(`${r.passed - r.botRejects} of ${n} rolls (${pct(r.passed - r.botRejects, n)}) passed every check (the jump bots ran only on the rolls about to be shipped: ${r.botRejects} refused). ${r.picks.length} shipped.${r.recent.length ? ` Built after the stage before's closing blocks: ${r.recent.join(', ')}.` : ''}${r.shared !== null ? ` Blocks shared with the stage before: ${pct(r.shared, 1)}.` : ''}${roomLine(r)}`, '');
+    out.push(`${r.passed - r.botRejects} of ${n} rolls (${pct(r.passed - r.botRejects, n)}) passed every check (the jump bots ran only on the rolls about to be shipped: ${r.botRejects} refused). ${r.picks.length} shipped.${r.recent.length ? ` Built after the stage before's closing blocks: ${r.recent.join(', ')}.` : ''}${r.shared !== null ? ` Blocks shared with the stage before: ${pct(r.shared, 1)}.` : ''}${roomLine(r)}${r.alike.map((a) => ` ${a.rolls} of the passing rolls (${a.picks} shipped) share a 20-second stretch with ${a.key}'s shipped rolls (era.ts's look-alike rule).`).join('')}`, '');
     const drops = Object.entries(r.dropped).sort((a, b) => b[1] - a[1]);
     if (drops.length) {
       out.push('Why rolls were dropped (a roll can fail more than one check):', '', '| Reason | Rolls | Share |', '|---|---|---|');

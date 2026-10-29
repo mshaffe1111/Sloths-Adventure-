@@ -558,6 +558,11 @@ export interface LayOptions {
 const RUNWAY = 640;
 const SPAWN_X = 140;
 const SHRINE_BANK = 560;
+/**
+ * Flags (Matt's QA, 2026-10-28, through the lead): never more than `max` px of route between two flags, the start or the shrine; a
+ * flag is put in a section that ends within `slack` of that, and needs a plain stretch `pad` px wide on a main piece
+ */
+export const FLAG_SPAN = { max: 4500, slack: 300, pad: 160 } as const;
 /** the plain-walk seconds at the start before any animal may stand (§2 "Opening seconds": 3-5 s) */
 const OPEN_SECONDS = 5;
 
@@ -961,21 +966,38 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // (lessons from earlier stages need no tip here)
   for (const [m, st] of Object.entries(M.lessons ?? {})) if (stageOrder(st) < stageOrder(budget.id)) tipsSaid.add(m);
 
-  // flags
+  // flags: at the rests, wherever 35 s passed without one, and wherever the next section's end would leave more than FLAG_SPAN.max px
+  // with none (a slow stealth stage's 35 s can be 6000 px). A flag goes in first, so it is a pad: the creatures' patches and the
+  // top-up keep clear of it (the safe spots below), and a flag can always land
   let lastFlagT = 0;
   let t = 0;
-  for (const s of laid.sections) {
-    t += s.seconds;
+  const flagSpot = (s: PlacedSection): { x: number; piece: Platform } | null => {
+    const lastX = checkpoints.at(-1)?.x ?? SPAWN_X;
+    const ok = (x: number, piece: Platform | undefined): piece is Platform => !!piece && x - piece.x > 30 && piece.x + piece.width - x > 30 && x > lastX + 600 && !flagInZone(laid.zones, x, piece.y);
     const flagSock = s.sockets.find((k) => k.socket.role === 'flag');
-    const due = t - lastFlagT > 35;
-    if ((s.phase === 'rest' || due) && s.phase !== 'goal') {
-      const at = flagSock ?? { x: s.exit.x - 80, y: s.exit.y, piece: s.pieces.find((p) => p.platform.y === s.exit.y && p.platform.x + p.platform.width >= s.exit.x - 1)?.platform };
-      if (at.piece && at.x - at.piece.x > 30 && at.x > (checkpoints.at(-1)?.x ?? SPAWN_X) + 600 && !flagInZone(laid.zones, at.x, at.piece.y)) {
-        checkpoints.push({ x: R(at.x), y: at.piece.y, reached: false });
-        lastFlagT = t;
-      }
+    if (flagSock && ok(flagSock.x, flagSock.piece)) return { x: flagSock.x, piece: flagSock.piece };
+    const exitPiece = s.pieces.find((p) => p.platform.y === s.exit.y && p.platform.x + p.platform.width >= s.exit.x - 1)?.platform;
+    if (ok(s.exit.x - 80, exitPiece)) return { x: s.exit.x - 80, piece: exitPiece };
+    // (else the rightmost wide main piece of the section, near its end, outside a room)
+    if (s.room) return null;
+    for (const p of [...s.pieces].filter((q) => q.main && q.platform.width >= FLAG_SPAN.pad).sort((a, b) => b.platform.x - a.platform.x)) {
+      const x = p.platform.x + p.platform.width - FLAG_SPAN.pad / 2;
+      if (ok(x, p.platform)) return { x, piece: p.platform };
     }
-  }
+    return null;
+  };
+  laid.sections.forEach((s, i) => {
+    t += s.seconds;
+    if (s.phase === 'goal') return;
+    const lastX = checkpoints.at(-1)?.x ?? SPAWN_X;
+    const nextEnd = laid.sections[i + 1] && laid.sections[i + 1].phase !== 'goal' ? laid.sections[i + 1].exit.x : laid.exit.x;
+    const due = t - lastFlagT > 35 || nextEnd - lastX > FLAG_SPAN.max - FLAG_SPAN.slack;
+    if (s.phase !== 'rest' && !due) return;
+    const at = flagSpot(s);
+    if (!at) return;
+    checkpoints.push({ x: R(at.x), y: at.piece.y, reached: false });
+    lastFlagT = t;
+  });
   const safe = [{ x: laid.spawn.x, y: laid.spawn.y }, ...checkpoints, { x: laid.exit.x, y: laid.exit.y }];
   const openX = laid.spawn.x + OPEN_SECONDS * budget.walkSpeed;
 

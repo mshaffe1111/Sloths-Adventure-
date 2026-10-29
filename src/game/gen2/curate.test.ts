@@ -15,7 +15,7 @@ import { closingSections, curateStage, distance, failsOf, pickSpread, plainReaso
 
 const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, ...o });
 const roll = (seed: number, prof: Record<string, number>, quality = 0.5, plan: string[] = []): RollMeasure => ({
-  seed, layoutSeed: seed, rerolls: 0, swaps: 0, plan, normal: side(), easy: side(), action: '', prof: new Map(Object.entries(prof)), fails: [], quality,
+  seed, layoutSeed: seed, rerolls: 0, swaps: 0, plan, normal: side(), easy: side(), action: '', prof: new Map(Object.entries(prof)), wins: [], fails: [], quality,
 });
 
 test('the filters name every number a roll misses, and a waiver lifts only its own rule', () => {

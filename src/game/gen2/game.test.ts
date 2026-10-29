@@ -17,6 +17,7 @@ import { stageSheets } from '../stageSheets.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { LevelConfig } from '../types.ts';
 import { GEN2_STAGES, gen2SeedFor, gen2SeedIndex, isGen2Stage } from './game.ts';
+import { buildGen2Stage, FLAG_SPAN } from './pipeline.ts';
 import { GEN2_SEEDS } from './seeds.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -78,12 +79,14 @@ test('every shipped roll, Normal and Easy, as the game plays it: the checker pas
           const before = st.enemies.filter((e) => e.x <= st.exitTotemX + 35).length;
           assert.ok(st.config.targetCount <= before, `${at}: goal ${st.config.targetCount}, ${before} animals before the shrine`);
           assert.ok(st.config.targetCount <= Math.round(before * 0.8), `${at}: the goal asks for at most 80% of the animals`);
+          // (Easy's goal as the kid first-timer measured it: game.ts easyGoal)
+          if (easy && GEN2_STAGES[id].easyGoal !== undefined) assert.equal(st.config.targetCount, GEN2_STAGES[id].easyGoal, `${at}: Easy's measured goal`);
         }
-        // (flags no farther apart than the hand-built stages have them, up to 8000-9400 px (1-7, 4-5): gen2 lays them by the clock, at
-        // its rests and every 35 s; its rolls run 5300-7600 at the most); a heart by every second flag, and on Easy by every flag
+        // (never more than FLAG_SPAN.max px between flags, the start and the shrine: pipeline.ts; a heart by every second flag, and on
+        // Easy by every flag)
         const cps = [...(st.checkpoints ?? [])].sort((p, q) => p.x - q.x);
         let prev = st.spawnX;
-        for (const c of [...cps, { x: st.exitTotemX }]) { assert.ok(c.x - prev < 8000, `${at}: ${c.x - prev} px with no flag`); prev = c.x; }
+        for (const c of [...cps, { x: st.exitTotemX }]) { assert.ok(c.x - prev <= FLAG_SPAN.max, `${at}: ${c.x - prev} px with no flag`); prev = c.x; }
         const heartBy = (c: { x: number; y: number }) => st.collectibles.some((h) => h.type === 'heart' && Math.abs(h.x - c.x) < 260 && Math.abs(h.y - c.y) < 260);
         cps.forEach((c, k) => (easy || k % 2 === 1) && assert.ok(heartBy(c), `${at}: no heart by the flag at ${c.x}`));
       }
@@ -145,6 +148,20 @@ test('every shipped roll holds the jumping spiders its sheet list loads, and dra
       // (World 5's pits are soft: no water, so no warning sign and no Dot's water line)
       assert.equal(st.waterY, undefined);
       assert.equal(st.proto?.gen2?.waterWarnings?.length ?? 0, 0);
+    }
+  }
+});
+
+test('the pipeline\'s flags: on 30 raw rolls of each gen2 stage, Normal and Easy, never more than FLAG_SPAN.max px without one, and every flag clear of the animals', () => {
+  for (const id of Object.keys(GEN2_STAGES)) {
+    const kit = GEN2_STAGES[id].kit();
+    for (let seed = 1; seed <= 30; seed++) {
+      for (const difficulty of ['normal', 'easy'] as const) {
+        const st = buildGen2Stage({ config: lv(id), kit, seed, difficulty });
+        const xs = [st.spawnX, ...(st.checkpoints ?? []).map((c) => c.x).sort((p, q) => p - q), st.exitTotemX];
+        for (let k = 1; k < xs.length; k++) assert.ok(xs[k] - xs[k - 1] <= FLAG_SPAN.max, `${id} seed ${seed} ${difficulty}: ${xs[k] - xs[k - 1]} px from ${xs[k - 1]} with no flag`);
+        assert.deepEqual(validateStage(st).errors.filter((e) => /safe spot|flag|checkpoint/.test(e)), [], `${id} seed ${seed} ${difficulty}`);
+      }
     }
   }
 });

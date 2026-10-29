@@ -1,6 +1,6 @@
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
-import { buildGen2ForGame, isGen2Stage } from './gen2/game.ts';
+import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { heartBy } from './easyMode.ts';
 import type { Difficulty } from './difficulty.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
@@ -2789,6 +2789,9 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below
   if (isGen2Stage(config)) {
     const stage = buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+    // (Easy's own goal for the stage, as the first-timer kid bot measured it: easyStage sets it, withGoals leaves it)
+    const easyGoal = GEN2_STAGES[config.id].easyGoal;
+    if (difficulty === 'easy' && easyGoal !== undefined) stage.easyGoal = Math.min(easyGoal, stage.enemies.length);
     // (a heart by every second flag from the second on, as the hand-built stages have (protoStage.ts heartsAtFlags), set where it is
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;

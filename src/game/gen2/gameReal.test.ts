@@ -111,12 +111,14 @@ for (const { i, room } of ROOM_ROLLS) {
           sim.wait(0.5);
           assert.ok(sim.p.grounded && sim.p.x > butler.wall.x + 100, `over the Butler's arch (${sim.p.x.toFixed(0)}, ${sim.p.y.toFixed(0)})`);
         }
-        // (and on along the stage: a little more walking, hopping any step as he meets it)
-        const x = sim.p.x;
-        walkTo(sim, x + 300);
-        assert.ok(sim.p.x > x + 150, `he walks on past the room (${x.toFixed(0)} -> ${sim.p.x.toFixed(0)})`);
+        // (the room cost nothing: no life, no heart)
         assert.equal(sim.e.lives, lives, 'no life lost');
         assert.equal(sim.p.hp, hp, 'no heart lost');
+        // (and on along the stage, hopping any step as he meets it: past the room the gauntlet's spiders may be waiting)
+        const x = sim.p.x;
+        sim.safe = true;
+        walkTo(sim, x + 300);
+        assert.ok(sim.p.x > x + 150, `he walks on past the room (${x.toFixed(0)} -> ${sim.p.x.toFixed(0)})`);
         setDifficulty('normal');
       });
     }
