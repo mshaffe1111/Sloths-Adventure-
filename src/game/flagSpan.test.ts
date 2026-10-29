@@ -38,6 +38,8 @@ test('LV-9: no more than 4000 px between flags on any hand-built stage, layouts 
         if (before.has(`${f.x},${f.y}`)) continue;
         const on = st.platforms.find((p) => f.x >= p.x && f.x <= p.x + p.width && Math.abs(p.y - f.y) < 1);
         assert.ok(on && on.type === 'solid' && !on.push && !on.broken, `${c.id} layout ${lay}: the flag at ${f.x} stands on nothing solid`);
+        // a run-up to the water ahead (2-5: a flag 134 px short of the log river put Easy's first-timer back in the water again and again)
+        for (const r of st.rivers ?? []) assert.ok(f.x <= r.x0 - 200 || f.x >= r.x1 + 40, `${c.id} layout ${lay}: the flag at ${f.x} is ${Math.round(r.x0 - f.x)} px short of the water`);
         for (const e of st.enemies) if (Math.abs(e.y - f.y) < 400 && e.type !== 'eagle') assert.ok(f.x < e.patrolMinX - SAFE_APPROACH || f.x > e.patrolMaxX + SAFE_APPROACH || Math.abs(e.y - f.y) >= 400, `${c.id} layout ${lay}: the flag at ${f.x} by a ${e.type}`);
       }
       if (lay === 1) {

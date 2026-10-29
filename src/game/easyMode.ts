@@ -234,6 +234,12 @@ function flagLedge(stage: Stage, p: Platform, reach: ReadonlySet<number>, x = p.
   return flagSpot(stage, x, p.y);
 }
 /** no animal close to a flag at (x, y), and out of the zones */
+/** a flag's respawn needs a run-up to the water ahead (LV-9, 2026-10-29: a flag 134 px short of 2-5's log river put Easy's first-timer
+ *  back in the water again and again, and it beat fewer snappers before the shrine than with no flag there) */
+export const FLAG_WATER_RUNUP = 320;
+/** (a river stage with no ledge that far from the water takes the best it has, at least this much) */
+export const FLAG_WATER_RUNUP_MIN = 200;
+const clearOfWater = (stage: Stage, x: number, runup = FLAG_WATER_RUNUP) => !(stage.rivers ?? []).some((r) => x > r.x0 - runup && x < r.x1 + 40);
 const flagSpot = (stage: Stage, x: number, y: number) =>
   !animalNear(stage, x, y) && !(stage.zones ?? []).some((z) => x > z.x0 - 40 && x < z.x1 + 40 && y > z.top - 40 && y < z.bottom + 40);
 
@@ -278,21 +284,25 @@ export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readon
       const want = x0 + (x1 - x0) / Math.ceil((x1 - x0) / max);
       let best: Platform | null = null;
       let bestX = 0;
-      for (const p of ledges) {
-        // (the spot on the ledge nearest the split, 60 px in from its ends, with no animal close: a long bank can hold a patrol at
-        // one end and a safe flag at the other)
-        const a = Math.max(p.x + 60, x0 + 400);
-        const b = Math.min(p.x + p.width - 60, x1 - 400, x0 + max);
-        if (a > b) continue;
-        const c = Math.max(a, Math.min(b, want));
-        for (let d = 0; d <= b - a; d += 40) {
-          const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y));
-          if (x === undefined) continue;
-          if (!best || Math.abs(x - want) < Math.abs(bestX - want)) {
-            best = p;
-            bestX = x;
+      // (clear of the water by a full run-up if any ledge is; a river stage with none takes the best it has)
+      for (const runup of [FLAG_WATER_RUNUP, FLAG_WATER_RUNUP_MIN]) {
+        if (best) break;
+        for (const p of ledges) {
+          // (the spot on the ledge nearest the split, 60 px in from its ends, with no animal close: a long bank can hold a patrol at
+          // one end and a safe flag at the other)
+          const a = Math.max(p.x + 60, x0 + 400);
+          const b = Math.min(p.x + p.width - 60, x1 - 400, x0 + max);
+          if (a > b) continue;
+          const c = Math.max(a, Math.min(b, want));
+          for (let d = 0; d <= b - a; d += 40) {
+            const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y) && clearOfWater(stage, q, runup));
+            if (x === undefined) continue;
+            if (!best || Math.abs(x - want) < Math.abs(bestX - want)) {
+              best = p;
+              bestX = x;
+            }
+            break;
           }
-          break;
         }
       }
       if (!best) continue;
