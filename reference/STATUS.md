@@ -16,6 +16,15 @@ Last updated: 2026-10-28 (Hugging Face art run started).
   plus Matt's Gemini sheets in reference/prop-sheets/gemini-batch-2026-10-28/: w6-hides-arches, w9w10-bridges, queen-collar-off (crop labels),
   reaver-walk-take2 (still no walk: use 2-3 poses for a code-driven walk). The art-hf worktree has the creature scripts uncommitted.
 
+## Water once Pokey can swim (Matt, 2026-10-29 ~00:10 ET)
+
+- Pokey learns to swim in World 6 (pokey-swim sheets, first-swim moment), but World 2 says "Don't swim" and gen2 water costs a life.
+  Matt's answer: the dangerous water is DIRTY or FAST-FLOWING. So: World 6-10 hazard water is drawn murky (grey-brown, scum) or fast
+  (current streaks, tide channels) and still costs a life; clean, calm water (where the first swim happens, and later pools) is swimmable.
+  To do tomorrow: the water look for gen2 hazard water, Dot's World 6 water line with the reason (new line for Matt's approval, e.g.
+  "Careful! That water's dirty and fast. Flick up and over."), and check where the first-swim moment sits so it's in clean water.
+  6-8's rising tide = fast water. Tonight's World 6 ships with today's water; the look and line follow.
+
 ## Rope traverse looks awful (Matt, 2026-10-28 ~23:55 ET; screenshot reference/prop-sheets/qa-notes/rope-traverse-2026-10-28.png)
 
 - Pokey hangs in one stiff pose under a rope drawn as a dashed yellow line. Fix tomorrow: Matt's Gemini hand-over-hand sheet (prompt given:
