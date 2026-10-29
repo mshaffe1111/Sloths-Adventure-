@@ -7,7 +7,7 @@ import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShado
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
 import { drawBadWater } from './badWaterArt.ts';
-import { drawStiltDecor } from './w6StiltArt.ts';
+import { drawStiltDecor, drawStiltLedges } from './w6StiltArt.ts';
 import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
@@ -5231,6 +5231,8 @@ export class GameEngine {
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // 6-8: its ledges in Matt's other World 6 pieces (over the roots that top out on them, as the kit's planks are)
+    if (this.proto?.stiltLedges) drawStiltLedges(ctx, this.proto.stiltLedges, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
@@ -6180,7 +6182,8 @@ export class GameEngine {
       this.revealHeard = true;
       sound.playRelicFound();
     }
-    const want = onCrown ? 0.72 : 1;
+    // (upright pulls back only a little: the view is narrow, and pulled far back he would be small at the top of a tall, empty screen)
+    const want = onCrown ? (this.viewCssH > this.viewCssW ? 0.9 : 0.72) : 1;
     const prev = this.revealZoom;
     this.revealZoom += (want - this.revealZoom) * Math.min(1, dt * 1.2);
     if (Math.abs(want - this.revealZoom) < 0.002) this.revealZoom = want;

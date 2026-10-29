@@ -4,7 +4,7 @@ import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { easyHoldCheck, validateStage } from './levelCheck.ts';
 import { easyStage } from './easyMode.ts';
 import { buildStiltClimb, STILT_COLUMN, STILT_CREATURES, STILT_VIEW } from './w6Stages.ts';
-import { STILT_FRAMES, STILT_PIECES } from './w6StiltArt.ts';
+import { isProp, ledgeHeight, STILT_FRAMES, STILT_PIECES, type StiltPiece } from './w6StiltArt.ts';
 import { findForStage } from './finds.ts';
 import { readFileSync, existsSync } from 'node:fs';
 import { newTide, restartTide, stepTide, swell, TIDE, type TideSetting } from './risingTide.ts';
@@ -314,15 +314,53 @@ test('6-8 dressing: Matt\'s World 6 hides and arches stand on the wide shelves, 
     assert.ok(decor.length >= 10, `seed ${s}: ${decor.length} pieces`);
     assert.ok(new Set(decor.map((d) => d.n)).size >= 5, `seed ${s}: the pieces vary`);
     for (const d of decor) {
-      assert.ok(STILT_PIECES.includes(d.n));
-      const p = st.platforms.find((q) => Math.abs(q.y + 4 - d.b) < 2 && d.x >= q.x && d.x <= q.x + q.width)!;
-      assert.ok(p, `seed ${s}: ${d.n} at ${d.x} stands on a shelf`);
+      assert.ok(STILT_PIECES.includes(d.n as StiltPiece) || isProp(d.n), d.n);
+      // (the moss curtain hangs under its shelf; everything else stands on one)
+      const foot = d.n === 'moss-curtain' ? d.b - 10 : d.b - 4;
+      const p = st.platforms.find((q) => Math.abs(q.y - foot) < 2 && d.x >= q.x && d.x <= q.x + q.width)!;
+      assert.ok(p, `seed ${s}: ${d.n} at ${d.x} on a shelf`);
+      if (d.n === 'moss-curtain') continue;
       const keep = [
         ...st.vines.filter((v) => v.vineType === 'tree_climb' && (Math.abs(v.topY + 2 - p.y) < 4 || Math.abs(v.bottomY + 6 - p.y) < 4)).map((v) => v.x),
         ...st.checkpoints!.filter((c) => Math.abs(c.y - p.y) < 2).map((c) => c.x),
         ...st.collectibles.filter((c) => c.type === 'find' && Math.abs(c.y + 26 - p.y) < 2).map((c) => c.x),
       ];
       for (const k of keep) assert.ok(Math.abs(k - d.x) > d.w / 2 + 30, `seed ${s}: ${d.n} at ${d.x} covers ${k}`);
+    }
+  }
+});
+
+test('6-8 ledges: painted in Matt\'s World 6 pieces, mixed, so ledges near each other differ; a painted ledge is drawn only by its look', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const ledges = st.proto.stiltLedges!;
+    const looks = new Map<number, string[]>();
+    for (const l of ledges) looks.set(l.id, [...(looks.get(l.id) ?? []), l.look]);
+    for (const p of st.platforms) {
+      if (p.height >= 50) continue;
+      assert.equal(p.art === 'stilt', looks.has(p.id), `seed ${s}: platform ${p.id}'s look`);
+      if (!looks.has(p.id)) looks.set(p.id, ['kit']);
+    }
+    // every look in use, none taking more than a third of the ledges
+    const all = [...looks.values()].flat();
+    for (const l of ['kit', 'branch-b', 'root-arch', 'moss-log', 'stump']) assert.ok(all.includes(l), `seed ${s}: no ${l}`);
+    for (const l of new Set(all)) assert.ok(all.filter((v) => v === l).length <= all.length / 3, `seed ${s}: ${l} on ${all.filter((v) => v === l).length} of ${all.length}`);
+    // ledges likely on one screen (as the build reckons: within 800 up or down, 500 across) differ, as far as the looks that fit allow
+    const thin = st.platforms.filter((p) => p.height < 50);
+    let same = 0, pairs = 0;
+    for (const a of thin) for (const b of thin) {
+      if (a.id >= b.id || Math.abs(a.y - b.y) > 300 || a.x > b.x + b.width + 300 || b.x > a.x + a.width + 300) continue;
+      pairs++;
+      if (looks.get(a.id)!.some((l) => looks.get(b.id)!.includes(l))) same++;
+    }
+    assert.ok(same <= pairs * 0.15, `seed ${s}: ${same} of ${pairs} close pairs look alike`);
+    // a look's walkable top is the ledge's top, and its roots never hang onto a ledge under it
+    for (const l of ledges) {
+      const p = st.platforms.find((q) => q.id === l.id)!;
+      assert.equal(l.y, p.y);
+      assert.ok(l.x >= p.x - 1 && l.x + l.w <= p.x + p.width + 1);
+      const h = ledgeHeight(l.look, l.w, l.n);
+      assert.ok(!st.platforms.some((q) => q !== p && q.x < l.x + l.w + 20 && q.x + q.width > l.x - 20 && q.y > p.y + 10 && q.y < p.y + h + 30), `seed ${s}: ${l.look} on ${p.id} hangs onto a ledge`);
     }
   }
 });

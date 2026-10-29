@@ -117,6 +117,8 @@ export interface ProtoExtras {
   reveal?: { from: number; full: number; load: number; crown: number; strips: { far: string; mid: string; near: string } };
   /** 6-8's dressing from Matt's painted World 6 pieces: hides and arches on the shelves, the root wall behind (w6StiltArt.ts) */
   stilt?: import('./w6StiltArt.ts').StiltDecor[];
+  /** 6-8's ledges painted in Matt's other World 6 pieces (their platforms are art 'stilt': w6StiltArt.ts) */
+  stiltLedges?: import('./w6StiltArt.ts').StiltLedge[];
   /** a stage that shows more of the world than usual (engine applyZoom: world px tall sideways, wide upright), as 4-7's w4.view */
   view?: { land: number; port: number };
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */

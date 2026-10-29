@@ -32,7 +32,7 @@ import { jumpLinkGap, lianaBand, VINE } from './gen2/pipeline.ts';
 import { JUMP_CLEAR } from './stageMetrics.ts';
 import { SAFE_APPROACH } from './levelCheck.ts';
 import type { TidePlan } from './risingTide.ts';
-import { STILT_PIECES, type StiltDecor } from './w6StiltArt.ts';
+import { LEDGE_MIN_COPY, ledgeCopies, ledgeHeight, STILT_PIECES, type LedgeLook, type StiltDecor, type StiltLedge, type StiltProp } from './w6StiltArt.ts';
 
 /** what the tests read back: each section's height range (world y, after the shift), the lianas and their shelves, the crown */
 export interface Stilt68 {
@@ -396,31 +396,109 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     C.push({ id: cid++, type: 'find', findId: book.id, hidden: true, x: r(bx), y: rest.y - 26, collected: false, bobPhase: 0 });
   }
 
-  // the dressing (pictures only): Matt's World 6 hides and arches on every wide shelf of the way up, clear of its roots, its flag,
-  // its find and its ends (the kit's root wall was tried in panels behind the climb, 2026-10-29: its square edges read as crates)
+  // the ledges' looks (the lead's review: no two alike on one screen): each ledge takes one of Matt's World 6 pieces (w6StiltArt.ts) or the
+  // kit's own root plank, never the look a ledge near it (likely on the same screen) has; a tall look (the root arch, the den) only
+  // where its roots don't hang onto a ledge under it; a very wide ledge (the crown) is laid in segments of different looks
+  const ledges: StiltLedge[] = [];
+  const looked = new Map<Platform, Array<{ look: LedgeLook | 'kit'; n: number; x0: number; x1: number }>>();
+  /** how deep a look may hang under a ledge from x0 to x1 before it reaches another ledge (or a catch) under it */
+  const roomUnder = (p: Platform, x0: number, x1: number) =>
+    Math.min(Infinity, ...P.filter((q) => q !== p && q.x < x1 + 20 && q.x + q.width > x0 - 20 && q.y > p.y + 10).map((q) => q.y - p.y - 30));
+  /** how much a look would clash with the ledges already given one: each the same look counts more the closer it is */
+  const clash = (y: number, x0: number, x1: number, look: LedgeLook | 'kit') => {
+    let c = 0;
+    for (const [q, ls] of looked) for (const l of ls) {
+      if (l.look !== look) continue;
+      const dx = Math.max(0, l.x0 - x1, x0 - l.x1);
+      const d = Math.hypot(dx, Math.abs(q.y - y));
+      if (d < 900) c += 1 / (1 + d / 150);
+    }
+    return c;
+  };
+  /** the look for a ledge (or a segment of one) and its copies: the fewest copies that keep it clear of what is under it */
+  const lookFor = (p: Platform, x0: number, x1: number, kit: boolean): { look: LedgeLook | 'kit'; n: number } | null => {
+    const w = x1 - x0;
+    const room = roomUnder(p, x0, x1);
+    const opts: Array<LedgeLook | 'kit'> = w <= 240 ? ['stump', 'moss-log', 'kit'] : ['root-arch', 'branch-b', 'moss-log', 'root-den', 'kit'];
+    const fit: Array<{ look: LedgeLook | 'kit'; n: number }> = [];
+    for (const l of opts) {
+      if (l === 'kit') {
+        if (kit) fit.push({ look: l, n: 1 });
+        continue;
+      }
+      // (the tall root arch and den keep their shape: one or two copies; a plank or a log may be laid as several)
+      // (and a stump at most twice: three in a row read as a pattern; a raft of logs may be more)
+      const most = l === 'root-arch' || l === 'root-den' || l === 'stump' ? 2 : Math.max(1, Math.floor(w / LEDGE_MIN_COPY));
+      for (let n = ledgeCopies(l, w); n <= most; n++) if (ledgeHeight(l, w, n) <= room) { fit.push({ look: l, n }); break; }
+    }
+    if (!fit.length) return kit ? { look: 'kit', n: 1 } : null;
+    // the least clash; ties by the roll
+    const k = Math.floor(R.r(0, fit.length));
+    const turn = [...fit.slice(k), ...fit.slice(0, k)];
+    return turn.reduce((best, l) => (clash(p.y, x0, x1, l.look) < clash(p.y, x0, x1, best.look) - 1e-9 ? l : best), turn[0]);
+  };
+  for (const p of [...P].filter((q) => q !== flat && q.height < 50).sort((m, n) => n.y - m.y)) {
+    // (a ledge in segments is painted whole by this file, as the kit's plank can't take part of one: when a segment has no look that
+    // fits, the ledge goes whole)
+    let segs = p.width > 760 ? Math.round(p.width / 420) : 1;
+    let mine: Array<{ look: LedgeLook | 'kit'; n: number; x0: number; x1: number }> = [];
+    for (let tries = 0; tries < 2; tries++, segs = 1, mine = []) {
+      for (let i = 0; i < segs; i++) {
+        const x0 = p.x + (p.width * i) / segs, x1 = p.x + (p.width * (i + 1)) / segs;
+        const got = lookFor(p, x0, x1, segs === 1);
+        if (!got) break;
+        mine.push({ look: got.look, n: got.n, x0, x1 });
+      }
+      if (mine.length === segs) break;
+    }
+    looked.set(p, mine);
+    for (const m of mine) {
+      if (m.look === 'kit') continue;
+      p.art = 'stilt';
+      ledges.push({ id: p.id, look: m.look, x: r(m.x0), y: p.y, w: r(m.x1 - m.x0), n: m.n, ...(R.f() < 0.5 ? { flip: true } : {}) });
+    }
+  }
+
+  // the dressing (pictures only): on the wide shelves of the way up, Matt's World 6 hides and arches, or the cattails, a mooring post,
+  // glow mushrooms or a lantern flower (props-made/w6c), clear of the shelf's roots, its flag, its find and its ends; a curtain of moss
+  // hangs under some plain shelves (the kit's root wall was tried in panels behind the climb, 2026-10-29: its square edges read as crates)
   const decor: StiltDecor[] = [];
   const shelves = route.map((q) => P.find((p) => p.id === q.id)!).filter((p) => p !== flat);
+  const SMALL: Array<[StiltProp, number, number]> = [['cattails', 110, 140], ['mooring-post', 60, 75], ['glow-mushrooms', 110, 140], ['lantern-flower', 46, 58]];
   let pick = Math.floor(R.r(0, STILT_PIECES.length));
+  let small = Math.floor(R.r(0, SMALL.length));
   shelves.forEach((p, i) => {
-    if (p.width < 300) return;
-    const n = STILT_PIECES[pick++ % STILT_PIECES.length];
-    const w = j(200, 240);
     const keep = [
       ...V.filter((v) => v.vineType === 'tree_climb' && (Math.abs(v.topY + 2 - p.y) < 4 || Math.abs(v.bottomY + 6 - p.y) < 4)).map((v) => v.x),
       ...checkpoints.filter((c) => Math.abs(c.y - p.y) < 2).map((c) => c.x),
       ...C.filter((c) => c.type === 'find' && Math.abs(c.y + 26 - p.y) < 2).map((c) => c.x),
     ];
-    for (let k = 0; k < 8; k++) {
-      const x = p.x + w / 2 + 40 + (p.width - w - 80) * R.r(0, 1);
-      if (keep.every((kx) => Math.abs(kx - x) > w / 2 + 40)) {
-        decor.push({ n, x: r(x), b: p.y + 4, w, ...(R.f() < 0.5 ? { flip: true } : {}) });
-        break;
+    const place = (n: StiltDecor['n'], w: number) => {
+      for (let k = 0; k < 8; k++) {
+        const x = p.x + w / 2 + 40 + (p.width - w - 80) * R.r(0, 1);
+        if (keep.every((kx) => Math.abs(kx - x) > w / 2 + 40)) {
+          decor.push({ n, x: r(x), b: p.y + 4, w, ...(R.f() < 0.5 ? { flip: true } : {}) });
+          keep.push(x);
+          return;
+        }
       }
+    };
+    if (p.width >= 300 && i % 2 === 0) place(STILT_PIECES[pick++ % STILT_PIECES.length], j(200, 240));
+    else if (p.width >= 200) {
+      const [n, w0, w1] = SMALL[small++ % SMALL.length];
+      place(n, j(w0, w1));
+    }
+    // (moss hangs under a plain plank, never under a root arch's own legs)
+    const ls = looked.get(p) ?? [];
+    if (i % 3 === 1 && ls.every((l) => l.look === 'kit' || l.look === 'branch-b')) {
+      const w = Math.min(320, p.width * 0.7);
+      decor.push({ n: 'moss-curtain', x: r(p.x + p.width * R.r(0.35, 0.65)), b: p.y + 10, w: r(w) });
     }
   });
 
-  // shift: the crown 600 px under the top of the stage (room for the sky and the skyline over it)
-  const shift = 600 - Math.min(...P.map((p) => p.y));
+  // shift: the crown 900 px under the top of the stage (room for the sky and the skyline over it, so the view can hold him in its middle
+  // on the crown, upright too)
+  const shift = 900 - Math.min(...P.map((p) => p.y));
   for (const p of P) p.y += shift;
   for (const v of V) { v.topY += shift; v.bottomY += shift; }
   for (const t of T) { t.groundY += shift; t.topY += shift; }
@@ -434,6 +512,7 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   for (const s of sections) { s.top += shift; s.bottom += shift; }
   for (const h of holds) h.y += shift;
   for (const d of decor) d.b += shift;
+  for (const l of ledges) l.y += shift;
   const floorY = flat.y;
   const lowWater = floorY + 60;
   const H = floorY + 500;
@@ -461,7 +540,7 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     waterY: lowWater,
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },
     proto: {
-      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, tide, view: STILT_VIEW, stilt: decor,
+      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, tide, view: STILT_VIEW, stilt: decor, stiltLedges: ledges,
       // (the ruins at dusk past the mangrove: World 7's dusk sky and its middle and near strips; fading in up the last root)
       reveal: { from: crown.y + 700, full: crown.y + 60, load: tide.springAbove, crown: crown.y, strips: { far: 'w7dusk-far', mid: 'w7-mid', near: 'w7-near' } },
     },
