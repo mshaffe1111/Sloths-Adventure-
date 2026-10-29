@@ -6,7 +6,7 @@ recommendation with its status in the game and what is next), and every mistake 
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
-Last updated 2026-10-29 (6-8's lesson).
+Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
 
 ---
 
@@ -347,6 +347,11 @@ plan); never ship the rough version as finished.
   line (holding up runs on past the shelf into the next one). The stage's tests check both, and play every root and hop in the real
   engine. The first-timer bot doesn't climb back out of a catch, so on climbs (4-1 too) it runs out its 6 minutes: read its lives a minute
   and its stuck spots, not whether it finished.
+- **Ledges in the air: nothing floats** (6-8 v4, the lead's review, 2026-10-29). A stump, root arch or den (and any slab on spreading
+  roots) grows out of the ground: hung in mid-air it looks wrong, however varied the pieces. It goes only where its own roots stand on
+  the ledge under it or it stands on stilt posts (two, never one balanced pole); every stretch of a plank or log is held by a climbing
+  root, a post, a brace to a trunk or a rope. Don't run a post from every plank down to the water: about 90 poles a stage read as a
+  cage. Short holds to what is near, long posts only where nothing is (the crown). Check it in `w6Stages.test.ts` ("nothing floats").
 
 ## 7. Where things are
 
