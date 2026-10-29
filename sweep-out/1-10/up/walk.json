@@ -1,0 +1,35 @@
+{
+ "id": "1-10",
+ "orient": "up",
+ "seed": 1,
+ "how": "arena walk",
+ "dist": "/tmp/claude-0/sweepdist2",
+ "size": [
+  390,
+  844
+ ],
+ "dpr": 2,
+ "difficulty": null,
+ "frames": [
+  {
+   "i": 0,
+   "why": "start",
+   "x": 820,
+   "y": 560
+  },
+  {
+   "i": 1,
+   "why": "x1216",
+   "x": 1216,
+   "y": 560
+  },
+  {
+   "i": 2,
+   "why": "end",
+   "x": 1942,
+   "y": 560
+  }
+ ],
+ "errors": [],
+ "secs": 39
+}
