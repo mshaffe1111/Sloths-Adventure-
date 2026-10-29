@@ -12,6 +12,7 @@
 import { runFx as runClassic } from './sfxClassic.ts';
 import { AudioCore, envelope } from './core.ts';
 import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock, type NoteVoice } from './instruments.ts';
+import { FX_MIX, FX_REF } from './sfxMix.ts';
 import { CLASSIC_WITH_BELLS, hopNote, isPingySample, landNote, orchSfxEnabled, PING_FLOOR_HZ, playFigure, soften, swapMallet, type MalletKind } from './sfxOrch.ts';
 import type { KeyInfo } from './music.ts';
 import { unpackHit, roarPitch, streakStage, type Material } from './combat.ts';
@@ -1063,11 +1064,22 @@ export const SFX: Record<string, Fx> = {
 
 export type SfxName = keyof typeof SFX;
 
-/** loudness trims measured offline so that frequent sounds sit low and big moments sit high without clipping */
-const TRIMS: Record<string, number> = {
-  jump: 1.45, doubleJump: 0.67, glide: 1.0, punch: 0.32, megaPunch: 0.42, kick: 0.35, whoosh: 0.41, hit: 0.85, flower: 1.45, fruit: 0.75, heart: 0.75, superHeart: 0.5,
-  power: 0.55, vine: 0.58, climb: 0.7, shrine: 0.45, relic: 0.45, hurt: 0.76, eagle: 2.0, roar: 0.75, land: 0.83, step: 0.88, checkpoint: 0.55, oneUp: 0.55,
+/**
+ * Each effect's own loudness with no trim (LUFS, short-term over the effect's sound, through the master chain; four versions averaged),
+ * measured offline after the recorded effects were normalised (and once more after the first mix, for those more than 1 dB off) (SN-2, 2026-10-29: tools/audio/sfx_loudness.py, rendered by
+ * tools/audio/sfx_render.mjs). runFx brings every effect to FX_REF with it first, so the trims (sfxMix.ts FX_MIX) are the mix alone. Re-measure after
+ * changing a recipe.
+ */
+const FX_LOUDNESS: Record<string, number> = {
+  checkpoint: -12.7, climb: -24.8, doubleJump: -15.0, eagle: -22.4, flower: -19.0, fruit: -14.5, glide: -21.5, heart: -16.2, hit: -26.4, hurt: -18.1,
+  jump: -27.0, kick: -11.4, land: -16.8, megaPunch: -11.0, oneUp: -9.1, power: -11.9, punch: -12.5, relic: -9.0, roar: -15.0, shrine: -9.4,
+  step: -26.1, superHeart: -11.8, vine: -21.8, whoosh: -19.2,
 };
+/** the gain runFx gives an effect: to FX_REF, then its trim */
+export function fxGain(name: string): number {
+  const own = FX_LOUDNESS[name];
+  return (own === undefined ? 1 : 10 ** ((FX_REF - own) / 20)) * (FX_MIX[name] ?? 1);
+}
 
 
 /** which version of the effect to play and how long the combo is: both change the sound a little */
@@ -1120,7 +1132,7 @@ export function runFx(name: string, core: AudioCore, key: KeyInfo, arg?: number,
     runClassic(name, core, key, arg, v);
     return;
   }
-  TRIM = TRIMS[name] ?? 1;
+  TRIM = fxGain(name);
   ORCH = orch;
   VAR = Math.max(0, Math.floor(v.variant ?? 0));
   STREAK = Math.max(0, Math.floor(v.streak ?? 0));
