@@ -300,6 +300,30 @@ function stand(ctx: CanvasRenderingContext2D, v: View, n: string, x: number, y: 
 
 const exposure = (sim: SlideSim) => Math.max(0, Math.min(1, (sim.clock - 0.35) / 1.0));
 
+/**
+ * The slide drawn once, offscreen, at one of eight points down the course (`i` 0-7), so every picture's halving sizes, feathered copies
+ * and light sprites are made, and turned into bitmaps, before he lands in the flume: the hall, the crack and the fall call it a few
+ * frames apart. (Made on first sight instead, the first frames of a new stretch took up to 140 ms at a 4x CPU slow-down.)
+ */
+let warmCanvas: HTMLCanvasElement | null = null;
+export function prewarmSlide(sim: SlideSim, W: number, H: number, dpr: number, i: number): boolean {
+  // (only once every picture has loaded: a pass before that would make nothing)
+  if ((Object.keys(URLS) as Key[]).some((k) => !img(k))) return false;
+  const w = Math.round(W * dpr), h = Math.round(H * dpr);
+  if (!warmCanvas || warmCanvas.width !== w || warmCanvas.height !== h) warmCanvas = canvas(w, h);
+  if (!warmCanvas) return false;
+  const z = sim.z, clock = sim.clock;
+  sim.z = (sim.c.length * i) / 8;
+  sim.clock = 5;
+  try {
+    drawSlide(warmCanvas.getContext('2d')!, sim, W, H, dpr, null);
+  } finally {
+    sim.z = z;
+    sim.clock = clock;
+  }
+  return true;
+}
+
 export function drawSlide(ctx: CanvasRenderingContext2D, sim: SlideSim, W: number, H: number, dpr: number, say: { text: string; t: number } | null) {
   const c = sim.c;
   const sc = sceneOf(sim);

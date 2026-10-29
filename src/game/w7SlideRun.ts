@@ -6,7 +6,7 @@
  * engine's, through `SlideHost`.
  */
 import { CRUMBLE_X0, CRUMBLE_X1, HALL_G, SlideSim, type SlideStage } from './w7Slide.ts';
-import { drawCrumble, drawFall, drawHallLight, drawSlide, warmSlide } from './w7SlideArt.ts';
+import { drawCrumble, drawFall, drawHallLight, drawSlide, prewarmSlide, warmSlide } from './w7SlideArt.ts';
 import type { InputState } from './types.ts';
 import { sound } from './audio.ts';
 
@@ -32,6 +32,9 @@ export type SlidePhase = 'hall' | 'crack' | 'fall' | 'slide' | 'out';
 export class SlideRun {
   readonly st: SlideStage;
   readonly sim: SlideSim;
+  /** how many of the eight points down the flume have been drawn offscreen, and the frame count between them */
+  private warmed = 0;
+  private warmTick = 0;
   phase: SlidePhase = 'hall';
   private host: SlideHost;
   private t = 0;
@@ -184,6 +187,10 @@ export class SlideRun {
   overlay(ctx: CanvasRenderingContext2D, dpr: number, W: number, H: number, at: (x: number, y: number) => [number, number], head: [number, number]) {
     ctx.save();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // (before the slide: the flume drawn offscreen at eight points down it, one every few frames, so nothing is made on first sight)
+    if (this.phase !== 'out' && this.warmed < 8 && ++this.warmTick % 4 === 0) {
+      if (prewarmSlide(this.sim, W, H, dpr, this.warmed)) this.warmed++;
+    }
     // the temple hall: shafts of gold daylight through the cracked roof (the colour script's first beat)
     if (this.phase === 'hall' || this.phase === 'crack') drawHallLight(ctx, W, H, at, this.clock);
     if (this.phase === 'fall') {
