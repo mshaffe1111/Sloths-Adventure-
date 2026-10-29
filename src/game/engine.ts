@@ -2746,8 +2746,14 @@ export class GameEngine {
           p.relicsFound++;
           this.runScore += 500;
           sound.playRelicFound();
-          this.spawnSparkBurst(c.x, c.y, '#38bdf8');
-          this.addFloatingText('JUNGLE IDOL! +500', c.x, c.y - 30, '#38bdf8');
+          // (5-6: one of Meeca's carvings read, w5Run.ts)
+          if (c.carving !== undefined) {
+            this.spawnSparkBurst(c.x, c.y, '#f9d77e');
+            this.addFloatingText('HER MESSAGE +500', c.x, c.y - 30, '#f9d77e');
+          } else {
+            this.spawnSparkBurst(c.x, c.y, '#38bdf8');
+            this.addFloatingText('JUNGLE IDOL! +500', c.x, c.y - 30, '#38bdf8');
+          }
         } else if (c.type === 'heart') {
           p.hp = Math.min(p.maxHp, p.hp + 1);
           sound.playHeartPickup();

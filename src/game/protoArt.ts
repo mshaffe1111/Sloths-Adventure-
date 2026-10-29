@@ -39,7 +39,7 @@ export function setGroundPaint(on: boolean) {
 }
 /** a bank the painted ground covers whole (drawProtoScene's banks, not a moss floor), once its sheets are in */
 export function bankPainted(p: Platform): boolean {
-  return groundOn && (p.height >= 90 || !!p.soil) && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
+  return groundOn && (p.height >= 90 || !!p.soil || !!p.mound) && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
 }
 /** whether a world has its own painted kit yet */
 export function hasKit(w: number): boolean {
@@ -751,7 +751,7 @@ export function drawProtoScene(
 ): boolean {
   if (!protoArtReady()) return false;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
-  const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  const banks = platforms.filter((p) => (p.height >= 90 || p.soil || p.mound) && !p.push && !p.broken && !p.art);
   // the pits: a piece with a bank 60 or more higher on either side, close by. Their inside is shaded (pitShade) once the pieces in them
   // are drawn and before the banks either side, so a gap reads as a gap and not as more of the same lit soil
   const tall = banks.filter((q) => q.height >= 90 && !q.soil);
@@ -790,7 +790,7 @@ export function drawProtoScene(
     if (isWall) drawWallArt(ctx, p.x, p.y, banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6, 230);
     // (a side whose neighbour is lower is a step down to it, not a drop)
     // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
-    const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
+    const floor = p.soil || p.mound ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
     const lower = (side: 'l' | 'r') => banks.find((q) => q !== p && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2))?.y ?? floor;
     // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
     drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);

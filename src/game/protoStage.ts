@@ -335,6 +335,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 /** Worlds 1, 2 and 5: the dressing sets (artDress.ts dressSets), on any of their built stages (hand-built, World 2's, the new generator's) */
 export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { rooms: RoomSpec[] } }, seed: number) {
   const c = st.config;
+  // (World 5: a mossy block on a bank that the painted stump doesn't stand for (it is 50 tall) is a mound of the ground, not a box)
+  if (c.worldIndex === 5) for (const p of st.platforms) if (p.style === 'moss_stone' && p.height !== 50 && p.height < 90 && !p.soil && !p.art && p.type === 'solid') p.mound = true;
   if (!st.proto || !DRESS_WORLDS.includes(c.worldIndex as 1 | 2 | 5) || c.objectiveType === 'boss_lair') return;
   const ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
   if (ds.length) st.proto.dress = ds;

@@ -303,6 +303,9 @@ export interface Platform {
   /** a small piece of the ground under 90 tall (a soft pit's low step, or its walls under the banks): painted as the soil like a bank, or
    *  (a wall under a bank) left to that bank's soil, never drawn as a platform (protoArt.ts drawProtoScene, terrain.ts) */
   soil?: boolean;
+  /** World 5: a mossy block standing on a bank (a stump to hop, a raised bed), painted as a small mound of the world's ground with its
+   *  own ends and lip, never the drawn box (protoStage.ts addDress, protoArt.ts drawProtoScene) */
+  mound?: boolean;
 }
 
 /**
@@ -424,6 +427,9 @@ export interface Collectible {
    * carved stones in the mushroom's light are what tell the right fern, not walking past it
    */
   riddle?: boolean;
+  /** 5-6: a message is one of Meeca's carvings (its index along the stage): the trunk and her words are drawn by w5Play.ts, the message
+   *  itself only as a soft glow over them until he walks up to it */
+  carving?: number;
   /**
    * World 2's reed cages: the little one inside (Matt's sheet: a baby capybara, duckling or otter), and when it was freed (game time).
    * 'eaglet': World 4's nests on the cliff (4-8), a chick caught in old netting (w4Nests.ts draws it)

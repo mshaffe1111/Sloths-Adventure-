@@ -1130,6 +1130,13 @@ export function drawCollectible(
         else drawSearchHint(ctx, item, time);
         break;
       }
+      // (5-6: the message is the carving on the trunk behind it, w5Play.ts: only a soft warm glow that breathes, until he reaches it)
+      if (item.carving !== undefined) {
+        const k = 0.75 + 0.25 * Math.sin(time * 2.2 + item.carving);
+        ctx.globalAlpha *= k;
+        fillGlow(ctx, 'carving', 0, -40, 6, 64, [[0, 'rgba(255, 226, 140, 0.5)'], [1, 'rgba(255, 220, 110, 0)']]);
+        break;
+      }
       fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
       // what this world's search turns up (Grandma's things, Meeca's messages, the lieutenant's thread); the golden idol elsewhere
       const keep = relicArt(world, item.id);

@@ -129,9 +129,6 @@ export function steamPuff(ctx: CanvasRenderingContext2D, x: number, y: number, k
 export const CARVE_BOX: Partial<Record<W5Piece, readonly [number, number, number, number]>> = {
   trunkTall: [0.22, 0.32, 0.78, 0.78],
   trunkShort: [0.2, 0.3, 0.82, 0.78],
-  trunkA: [0.24, 0.3, 0.8, 0.82],
-  trunkB: [0.2, 0.32, 0.8, 0.72],
-  trunkC: [0.2, 0.3, 0.8, 0.72],
 };
 
 /**

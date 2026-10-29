@@ -352,7 +352,8 @@ export function generateAllLevels(): LevelConfig[] {
           timeLimit = timedLimit(objType);
           break;
         case 'relic_hunt':
-          targetCount = 3 + (world.id > 6 ? 1 : 0);
+          // (5-6 Where She Ran: five of Meeca's six carvings, gen2/worlds/w5Run.ts)
+          targetCount = world.id === 5 ? 5 : 3 + (world.id > 6 ? 1 : 0);
           levelWidth = lengthOf('relic_hunt');
           levelHeight = 1100;
           break;

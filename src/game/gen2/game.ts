@@ -18,6 +18,7 @@ import { GEN2_SEEDS, type Gen2Seed } from './seeds.ts';
 import type { Gen2Stage, WorldKit } from './types.ts';
 import { w5Kit } from './worlds/w5.ts';
 import { w5ArenaKit } from './worlds/w5Arena.ts';
+import { w5RunFinish, w5RunKit } from './worlds/w5Run.ts';
 import { w6Finish } from './worlds/w6.ts';
 import { W6_GAME_STAGES, w6GameKit } from './worlds/w6Game.ts';
 
@@ -47,10 +48,11 @@ const w6Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
 });
 
 /**
- * The stages gen2 builds, each with its kit (the per-stage chooser). 5-8 stays hand-built (Matt, 2026-10-28): it is still the old
- * generator's until its own build lands; 6-8 Stilt Climb is hand-built later.
+ * The stages gen2 builds, each with its kit (the per-stage chooser). 6-8 Stilt Climb is hand-built (w6Stages.ts).
  */
 export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
+  // (5-6: Meeca's carvings are its messages, her words put on after the build: w5Run.ts)
+  '5-6': { kit: w5RunKit, kitName: 'w5Run.ts:w5RunKit(6)', finish: (st) => w5RunFinish(st) },
   '5-7': { kit: () => w5Kit(7), kitName: 'w5.ts:w5Kit(7)' },
   // (5-9 Easy: the kid beat 5, 5, 9, 10, 10 and 10 spiders on seeds 1-3 before the shrine; 5 opens it in all six)
   '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', easyGoal: 5 },
