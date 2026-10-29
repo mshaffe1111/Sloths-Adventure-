@@ -83,16 +83,16 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| SN-1 | The old "pingy" effects are the default |  | polish-audio | DECIDED by Matt: orchestral set deleted, classic set tuned to each stage |
+| SN-1 | The old "pingy" effects are the default |  | polish-sfx | REVISED by Matt 4:05 PM ET: the classic set is "crap" too: whole effect set rebuilt with real sounds (session_01FhBbYLYe1b66N7kEhtr9gq), previews first |
 | SN-2 | Effects swing 20 dB in loudness |  | polish-a2 | in progress |
-| SN-3 | Silent or wrong sounds at key moments |  | polish-audio | in progress (listening clips first; may use Hugging Face) |
+| SN-3 | Silent or wrong sounds at key moments |  | polish-sfx (moved from polish-audio 4:06 PM ET) | in progress (listening clips first; may use Hugging Face) |
 | SN-4 | Every boss tell sounds like a jaguar |  | Build 1 (Matt's other session, polish-build1) | built, waiting for that session to push to GitHub |
 | SN-5 | The victory sting fires in the level, so the Stage Cleared card has only star chimes |  | polish-a2 | in progress |
 | SN-6 | Pausing switches to the World 1 tune |  | polish-a2 | in progress |
 | SN-7 | Nothing ducks under speech, and Dot is silent in play |  | polish-a2 | in progress |
 | SN-8 | Some instruments jump in volume at their loop point |  | polish-audio | in progress (listening clips first; may use Hugging Face) |
-| SN-9 | Ambience is fully synthesized |  | polish-audio | in progress (listening clips first; may use Hugging Face) |
-| SN-10 | The boss intro card plays no sound |  | polish-audio | in progress (listening clips first; may use Hugging Face) |
+| SN-9 | Ambience is fully synthesized |  | polish-sfx (moved from polish-audio 4:06 PM ET) | in progress (listening clips first; may use Hugging Face) |
+| SN-10 | The boss intro card plays no sound |  | polish-sfx (moved from polish-audio 4:06 PM ET) | in progress (listening clips first; may use Hugging Face) |
 
 ## Story (8)
 
@@ -196,7 +196,7 @@ Last updated: 2026-10-29 2:35 PM ET.
 | X-14 | Pokey teeter / step-back frames at a ledge's end (painted; the slide is a stand-in) | HF | next Pokey art session | queued |
 | X-15 | 6-8 Stilt Climb (W6 special) | HF ledge set | w6-stilt-climb | PASSED review 3:00 PM ET; merge after the gate |
 | X-16 | Upright looks faded next to sideways: the strips are fitted to the view height, about 3.5x blow-up upright against 1.6x sideways (Matt 3:45 PM ET) | HF + code | polish-edges (with the backdrops-hd swap) | sent 3:47 PM ET; Matt: build it, no mock-up |
-| X-17 | Sound effects "pings everywhere, sounds like pinball", worst the falling rocks (Matt 4:00 PM ET): real stone/wood/water sounds, varied, capped repeats, pickups softer | HF/CC0 audio | polish-audio | sent 4:01 PM ET; old/new previews first (reference/audio-previews/sfx-v1/) |
+| X-17 | Sound effects "pings everywhere, sounds like pinball", worst the falling rocks (Matt 4:00 PM ET): real stone/wood/water sounds, varied, capped repeats, pickups softer | HF/CC0 audio | polish-sfx | sent 4:01 PM ET; old/new previews first (reference/audio-previews/sfx-v1/) |
 | X-18 | Falling-rock warning drawn as grey squares (grit, hopping stones, trickle) and flat ellipse shadows; sweep all repeating effects drawn as code shapes (Matt 4:02 PM ET) | HF + code | hazard-anim | started 4:03 PM ET |
 | X-13 | Classic-family effects redo (no orchestra), tuned to each stage's key, checkpoint hiss gone | | polish-audio | built; held to send with music v2 (fix two clipping peaks) |
 | X-10 | QA batch E: replay 2 fps (survey no longer draws; root cause needs an Android replay), Facebook iPhone blur dropped steering (FIXED), load stutters (FIXED) | | qa-fix-e | MERGED into ccr 1:45 PM ET |
