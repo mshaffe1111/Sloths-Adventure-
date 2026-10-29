@@ -245,7 +245,7 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   thumb sliding a little up as she walked on caught her again, over and over ("stuck at room 3's entrance"). It stays out of reach until
   she has stepped away (`SILK.away`).
 - **Nobody is left stuck in silence** (Meeca's stage, the lead's QA brief 2026-10-29, an exception to §1's "hints only when asked" and
-  §3's "not a clock" that Matt has to confirm): QA stood 32 s in a room and nothing was said. Flicker nudges after about 20 s with
+  §3's "not a clock", in Meeca's stage only; Matt confirmed it on both settings, 2026-10-28): QA stood 32 s in a room and nothing was said. Flicker nudges after about 20 s with
   nothing new done in a room (or at a trunk not carved), and more strongly at about 40 s; anything the room has not seen yet starts
   the clock again; the nudges point at the piece, never the whole answer (`meecaPlay.ts stepNudge`, `FLICKER_NUDGES`).
 - **What a counter counts needs its word** ("M. 1/5" read as "my mark didn't count"): Meeca's HUD says "Warnings 1/5" (`goalInfo.word`).
