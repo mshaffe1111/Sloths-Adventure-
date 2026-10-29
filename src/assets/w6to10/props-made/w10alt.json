@@ -1,0 +1,68 @@
+{
+ "sheet": "w10alt.webp",
+ "size": {
+  "w": 2048,
+  "h": 849
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "banner-b": "w10alt-s50-5",
+  "weapon-rack-b": "w10alt-s50-5",
+  "brazier-b": "w10alt-s50-5",
+  "cage-b": "w10alt-s50-5",
+  "crates-b": "w10alt-s50-5",
+  "spout-b": "w10alt-s50-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "banner-b": {
+   "x": 0,
+   "y": 0,
+   "w": 207,
+   "h": 429,
+   "ax": 104.0,
+   "ay": 429
+  },
+  "weapon-rack-b": {
+   "x": 211,
+   "y": 0,
+   "w": 393,
+   "h": 426,
+   "ax": 194.5,
+   "ay": 426
+  },
+  "brazier-b": {
+   "x": 608,
+   "y": 0,
+   "w": 252,
+   "h": 398,
+   "ax": 125.5,
+   "ay": 398
+  },
+  "cage-b": {
+   "x": 864,
+   "y": 0,
+   "w": 405,
+   "h": 419,
+   "ax": 144.0,
+   "ay": 419
+  },
+  "crates-b": {
+   "x": 1273,
+   "y": 0,
+   "w": 425,
+   "h": 416,
+   "ax": 143.5,
+   "ay": 416
+  },
+  "spout-b": {
+   "x": 0,
+   "y": 433,
+   "w": 398,
+   "h": 416,
+   "ax": 278.0,
+   "ay": 416
+  }
+ }
+}

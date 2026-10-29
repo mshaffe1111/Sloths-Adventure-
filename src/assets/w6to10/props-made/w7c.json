@@ -1,0 +1,68 @@
+{
+ "sheet": "w7c.webp",
+ "size": {
+  "w": 2048,
+  "h": 875
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "sloth-statue": "w7c-s85-5",
+  "urn": "w7c-s85-17",
+  "fallen-column": "w7c-s85-5",
+  "archway": "w7c-s75-17",
+  "stone-brazier": "w7c-s75-17",
+  "fig-roots": "w7c-s75-17"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "sloth-statue": {
+   "x": 0,
+   "y": 0,
+   "w": 253,
+   "h": 468,
+   "ax": 126.5,
+   "ay": 468
+  },
+  "urn": {
+   "x": 257,
+   "y": 0,
+   "w": 226,
+   "h": 386,
+   "ax": 126.0,
+   "ay": 386
+  },
+  "fallen-column": {
+   "x": 487,
+   "y": 0,
+   "w": 457,
+   "h": 237,
+   "ax": 223.0,
+   "ay": 237
+  },
+  "archway": {
+   "x": 948,
+   "y": 0,
+   "w": 404,
+   "h": 436,
+   "ax": 201.0,
+   "ay": 436
+  },
+  "stone-brazier": {
+   "x": 1356,
+   "y": 0,
+   "w": 275,
+   "h": 319,
+   "ax": 137.5,
+   "ay": 319
+  },
+  "fig-roots": {
+   "x": 0,
+   "y": 472,
+   "w": 463,
+   "h": 403,
+   "ax": 231.5,
+   "ay": 403
+  }
+ }
+}

@@ -1,0 +1,52 @@
+{
+ "sheet": "w7a-puzzle-take2.webp",
+ "size": {
+  "w": 2048,
+  "h": 277
+ },
+ "anchor": "middle of the foot",
+ "pairs": [
+  [
+   "lever-up",
+   "lever-down"
+  ],
+  [
+   "door-closed",
+   "door-open"
+  ]
+ ],
+ "frames": {
+  "lever-up": {
+   "x": 0,
+   "y": 0,
+   "w": 245,
+   "h": 204,
+   "ax": 109.5,
+   "ay": 204
+  },
+  "lever-down": {
+   "x": 249,
+   "y": 0,
+   "w": 245,
+   "h": 204,
+   "ax": 109.5,
+   "ay": 204
+  },
+  "door-closed": {
+   "x": 498,
+   "y": 0,
+   "w": 274,
+   "h": 277,
+   "ax": 136.0,
+   "ay": 277
+  },
+  "door-open": {
+   "x": 776,
+   "y": 0,
+   "w": 274,
+   "h": 277,
+   "ax": 136.0,
+   "ay": 277
+  }
+ }
+}

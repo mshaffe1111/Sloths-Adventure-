@@ -1,0 +1,68 @@
+{
+ "sheet": "w6d.webp",
+ "size": {
+  "w": 2048,
+  "h": 555
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "root-arch": "w6d-s62-17",
+  "root-den": "w6d-s62-17",
+  "root-hide": "w6d-s62-17",
+  "reed-hide": "w6d-s62-17",
+  "moss-log": "w6d-s62-17",
+  "log": "w6d-s62-17"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "root-arch": {
+   "x": 0,
+   "y": 0,
+   "w": 469,
+   "h": 305,
+   "ax": 234.5,
+   "ay": 305
+  },
+  "root-den": {
+   "x": 473,
+   "y": 0,
+   "w": 469,
+   "h": 305,
+   "ax": 234.0,
+   "ay": 305
+  },
+  "root-hide": {
+   "x": 946,
+   "y": 0,
+   "w": 436,
+   "h": 322,
+   "ax": 208.0,
+   "ay": 322
+  },
+  "reed-hide": {
+   "x": 1386,
+   "y": 0,
+   "w": 492,
+   "h": 419,
+   "ax": 238.0,
+   "ay": 419
+  },
+  "moss-log": {
+   "x": 0,
+   "y": 423,
+   "w": 460,
+   "h": 132,
+   "ax": 230.0,
+   "ay": 132
+  },
+  "log": {
+   "x": 464,
+   "y": 423,
+   "w": 455,
+   "h": 119,
+   "ax": 227.0,
+   "ay": 119
+  }
+ }
+}

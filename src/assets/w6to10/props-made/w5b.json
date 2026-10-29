@@ -1,0 +1,81 @@
+{
+ "sheet": "w5b.webp",
+ "size": {
+  "w": 2048,
+  "h": 854
+ },
+ "anchor": "middle of the foot",
+ "pairs": [
+  [
+   "lever-up",
+   "lever-down"
+  ],
+  [
+   "plate-up",
+   "plate-down"
+  ],
+  [
+   "door-closed",
+   "door-open"
+  ]
+ ],
+ "takes": {
+  "lever-up": "w5b-s62-17",
+  "lever-down": "w5b-s62-17",
+  "plate-up": "w5b-s62-17",
+  "plate-down": "w5b-s62-17",
+  "door-closed": "w5b-s62-17",
+  "door-open": "w5b-s62-17"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "lever-up": {
+   "x": 0,
+   "y": 0,
+   "w": 314,
+   "h": 268,
+   "ax": 117.0,
+   "ay": 268
+  },
+  "lever-down": {
+   "x": 318,
+   "y": 0,
+   "w": 314,
+   "h": 268,
+   "ax": 117.0,
+   "ay": 268
+  },
+  "plate-up": {
+   "x": 636,
+   "y": 0,
+   "w": 403,
+   "h": 83,
+   "ax": 197.5,
+   "ay": 83
+  },
+  "plate-down": {
+   "x": 1043,
+   "y": 0,
+   "w": 403,
+   "h": 83,
+   "ax": 197.5,
+   "ay": 83
+  },
+  "door-closed": {
+   "x": 1450,
+   "y": 0,
+   "w": 364,
+   "h": 425,
+   "ax": 183.5,
+   "ay": 425
+  },
+  "door-open": {
+   "x": 0,
+   "y": 429,
+   "w": 364,
+   "h": 425,
+   "ax": 183.5,
+   "ay": 425
+  }
+ }
+}

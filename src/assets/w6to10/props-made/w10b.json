@@ -1,0 +1,59 @@
+{
+ "sheet": "w10b.webp",
+ "size": {
+  "w": 2048,
+  "h": 316
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "scaffold": "w10b-s45-17",
+  "crate": "w10b-s45-17",
+  "balcony": "w10b-s45-17",
+  "hanging-iron": "w10b-s45-17",
+  "iron-stair": "w10b-s45-17"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "scaffold": {
+   "x": 0,
+   "y": 0,
+   "w": 467,
+   "h": 128,
+   "ax": 233.0,
+   "ay": 128
+  },
+  "crate": {
+   "x": 471,
+   "y": 0,
+   "w": 300,
+   "h": 274,
+   "ax": 150.0,
+   "ay": 274
+  },
+  "balcony": {
+   "x": 775,
+   "y": 0,
+   "w": 424,
+   "h": 295,
+   "ax": 335.5,
+   "ay": 295
+  },
+  "hanging-iron": {
+   "x": 1203,
+   "y": 0,
+   "w": 397,
+   "h": 316,
+   "ax": 198.5,
+   "ay": 316
+  },
+  "iron-stair": {
+   "x": 1604,
+   "y": 0,
+   "w": 393,
+   "h": 302,
+   "ax": 196.5,
+   "ay": 302
+  }
+ }
+}

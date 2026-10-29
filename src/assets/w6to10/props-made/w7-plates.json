@@ -1,0 +1,33 @@
+{
+ "sheet": "w7-plates.webp",
+ "size": {
+  "w": 708,
+  "h": 86
+ },
+ "anchor": "middle of the foot",
+ "pairs": [
+  [
+   "plate-up",
+   "plate-down"
+  ]
+ ],
+ "source": "World 7's own kit (src/assets/kits/w7.webp): the carved slab ('branch', half size) on the mossy stone edge ('mossStrip'), pressed = the same slab sunk flush; no GPU (the crop reads well, as the brief allows)",
+ "frames": {
+  "plate-up": {
+   "x": 0,
+   "y": 0,
+   "w": 352,
+   "h": 86,
+   "ax": 176.0,
+   "ay": 86
+  },
+  "plate-down": {
+   "x": 356,
+   "y": 0,
+   "w": 352,
+   "h": 86,
+   "ax": 176.0,
+   "ay": 86
+  }
+ }
+}

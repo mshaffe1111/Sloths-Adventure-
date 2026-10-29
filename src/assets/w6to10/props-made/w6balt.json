@@ -1,0 +1,68 @@
+{
+ "sheet": "w6balt.webp",
+ "size": {
+  "w": 2048,
+  "h": 608
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "raft-b": "w6balt-s50-5",
+  "sluice-wheel-b": "w6balt-s50-5",
+  "gauge-post-b": "w6balt-s50-5",
+  "seesaw-b": "w6balt-s50-5",
+  "stone-b": "w6balt-s50-5",
+  "lily-pads-b": "w6balt-s50-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "raft-b": {
+   "x": 0,
+   "y": 0,
+   "w": 439,
+   "h": 149,
+   "ax": 188.0,
+   "ay": 149
+  },
+  "sluice-wheel-b": {
+   "x": 443,
+   "y": 0,
+   "w": 322,
+   "h": 417,
+   "ax": 160.5,
+   "ay": 417
+  },
+  "gauge-post-b": {
+   "x": 769,
+   "y": 0,
+   "w": 78,
+   "h": 412,
+   "ax": 39.5,
+   "ay": 412
+  },
+  "seesaw-b": {
+   "x": 851,
+   "y": 0,
+   "w": 442,
+   "h": 217,
+   "ax": 258.0,
+   "ay": 217
+  },
+  "stone-b": {
+   "x": 1297,
+   "y": 0,
+   "w": 432,
+   "h": 229,
+   "ax": 263.0,
+   "ay": 229
+  },
+  "lily-pads-b": {
+   "x": 0,
+   "y": 421,
+   "w": 441,
+   "h": 187,
+   "ax": 230.5,
+   "ay": 187
+  }
+ }
+}

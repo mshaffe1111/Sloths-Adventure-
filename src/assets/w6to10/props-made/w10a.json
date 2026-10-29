@@ -1,0 +1,81 @@
+{
+ "sheet": "w10a.webp",
+ "size": {
+  "w": 2048,
+  "h": 872
+ },
+ "anchor": "middle of the foot",
+ "pairs": [
+  [
+   "lever-up",
+   "lever-down"
+  ],
+  [
+   "plate-up",
+   "plate-down"
+  ],
+  [
+   "portcullis-down",
+   "portcullis-up"
+  ]
+ ],
+ "takes": {
+  "lever-up": "w10a-s45-17",
+  "lever-down": "w10a-s45-17",
+  "plate-up": "w10a-s45-17",
+  "plate-down": "w10a-s45-17",
+  "portcullis-down": "w10a-s45-17",
+  "portcullis-up": "w10a-s45-17"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "lever-up": {
+   "x": 0,
+   "y": 0,
+   "w": 304,
+   "h": 331,
+   "ax": 104.0,
+   "ay": 331
+  },
+  "lever-down": {
+   "x": 308,
+   "y": 0,
+   "w": 304,
+   "h": 331,
+   "ax": 104.0,
+   "ay": 331
+  },
+  "plate-up": {
+   "x": 616,
+   "y": 0,
+   "w": 388,
+   "h": 86,
+   "ax": 195.0,
+   "ay": 86
+  },
+  "plate-down": {
+   "x": 1008,
+   "y": 0,
+   "w": 388,
+   "h": 86,
+   "ax": 195.0,
+   "ay": 86
+  },
+  "portcullis-down": {
+   "x": 1400,
+   "y": 0,
+   "w": 374,
+   "h": 434,
+   "ax": 187.0,
+   "ay": 434
+  },
+  "portcullis-up": {
+   "x": 0,
+   "y": 438,
+   "w": 374,
+   "h": 434,
+   "ax": 187.0,
+   "ay": 434
+  }
+ }
+}

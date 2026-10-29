@@ -1,0 +1,68 @@
+{
+ "sheet": "w8b.webp",
+ "size": {
+  "w": 2048,
+  "h": 714
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "shelf-fungus": "w8b-s75-5",
+  "leaf-hammock": "w8b-s85-17",
+  "rope-bridge": "w8b-s85-17",
+  "bouncy-leaf": "w8b-s75-17",
+  "knot-perch": "w8b-s85-17",
+  "branch-fork": "w8b-s85-17"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "shelf-fungus": {
+   "x": 0,
+   "y": 0,
+   "w": 449,
+   "h": 278,
+   "ax": 82.0,
+   "ay": 278
+  },
+  "leaf-hammock": {
+   "x": 453,
+   "y": 0,
+   "w": 473,
+   "h": 274,
+   "ax": 235.0,
+   "ay": 274
+  },
+  "rope-bridge": {
+   "x": 930,
+   "y": 0,
+   "w": 432,
+   "h": 154,
+   "ax": 215.0,
+   "ay": 154
+  },
+  "bouncy-leaf": {
+   "x": 1366,
+   "y": 0,
+   "w": 396,
+   "h": 373,
+   "ax": 190.5,
+   "ay": 373
+  },
+  "knot-perch": {
+   "x": 0,
+   "y": 377,
+   "w": 346,
+   "h": 337,
+   "ax": 172.0,
+   "ay": 337
+  },
+  "branch-fork": {
+   "x": 350,
+   "y": 377,
+   "w": 466,
+   "h": 161,
+   "ax": 242.0,
+   "ay": 161
+  }
+ }
+}

@@ -1,0 +1,68 @@
+{
+ "sheet": "w7b.webp",
+ "size": {
+  "w": 2048,
+  "h": 550
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "bridge-span": "w7b-s45-5",
+  "steps": "w7b-s45-5",
+  "hanging-platform": "w7b-s45-5",
+  "capital": "w7b-s45-5",
+  "cracked-ledge": "w7b-s45-5",
+  "push-block": "w7b-s45-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "bridge-span": {
+   "x": 0,
+   "y": 0,
+   "w": 480,
+   "h": 61,
+   "ax": 240.5,
+   "ay": 61
+  },
+  "steps": {
+   "x": 484,
+   "y": 0,
+   "w": 440,
+   "h": 331,
+   "ax": 220.5,
+   "ay": 331
+  },
+  "hanging-platform": {
+   "x": 928,
+   "y": 0,
+   "w": 358,
+   "h": 342,
+   "ax": 179.0,
+   "ay": 342
+  },
+  "capital": {
+   "x": 1290,
+   "y": 0,
+   "w": 299,
+   "h": 245,
+   "ax": 151.0,
+   "ay": 245
+  },
+  "cracked-ledge": {
+   "x": 1593,
+   "y": 0,
+   "w": 421,
+   "h": 81,
+   "ax": 197.5,
+   "ay": 81
+  },
+  "push-block": {
+   "x": 0,
+   "y": 346,
+   "w": 291,
+   "h": 204,
+   "ax": 154.0,
+   "ay": 204
+  }
+ }
+}
