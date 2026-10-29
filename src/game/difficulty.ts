@@ -51,6 +51,16 @@ export function subscribeDifficulty(fn: () => void): () => void {
   };
 }
 
+/** the mode the stage being played started on: a change in the menu applies from the next stage, so the run keeps this one */
+let run: Difficulty | null = null;
+/** a stage is starting: it is played on the mode chosen now */
+export function startRun(): Difficulty {
+  run = difficulty();
+  return run;
+}
+/** the mode of the stage being played (or last played); the chosen mode before any stage (LV-1: shown on its cards, kept with its bests) */
+export const runDifficulty = (): Difficulty => run ?? difficulty();
+
 export const DIFFICULTY_LABEL: Record<Difficulty, { name: string; blurb: string }> = {
   easy: { name: 'Easy', blurb: 'For the story and for learning to play. Shorter jumps, fewer enemies, more hearts.' },
   normal: { name: 'Normal', blurb: 'The adventure as it was meant to be played.' },

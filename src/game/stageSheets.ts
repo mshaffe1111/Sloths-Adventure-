@@ -22,7 +22,7 @@
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water
  *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
  *   chairs         7-3 Ten Chairs' ring of stone chairs (w7ChairsArt.ts)
- *   crumble        World 7's painted crumbling tiles (crumbleArt.ts), bank-face dressing (w7FaceArt.ts) and puzzle pieces
+ *   crumble        World 7's painted crumbling tiles (crumbleArt.ts), bank-face dressing (w7FaceArt.ts), temple walls and lianas (w7TempleArt.ts) and puzzle pieces
  *                  (w7PuzzleArt.ts), every World 7 stage but the
  *                  guardian's lair
  *   swim           the calm water Pokey swims in and his swim sheets (calmWaterArt.ts, heroSwim.ts), for a stage with calm water

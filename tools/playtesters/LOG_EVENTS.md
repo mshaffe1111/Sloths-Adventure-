@@ -44,10 +44,11 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 
 | Name | Detail | Meaning |
 |---|---|---|
-| `stall` | `<ms>ms x<pokeyX> q<quality> [after <sheet>]` | One frame took more than 100 ms. `after` names a picture sheet that finished loading in the 1.5 s before, which is the usual cause. |
+| `stall` | `<ms>ms x<pokeyX> q<quality> js u<ms> d<ms> [after <sheet>]` | One frame took more than 100 ms. `js` (builds after 2026-10-29): how long the frame before the gap spent in the game's own code, `u` updating the world and `d` drawing it. When `u` + `d` is close to the stall, the game's own work is the cost. When it is far smaller, the time went in the browser, outside the game (putting the picture on screen, decoding or uploading a picture). `after` names a picture sheet that finished loading in the 1.5 s before, which is the usual cause. |
 | `long` | `<ms>ms x<pokeyX> [menu]` | The browser was blocked for 100 ms or more (Chrome and Android only; iPhones never send it). `menu` means no stage was running. Shorter blocks of 50 to 99 ms are only counted, in the `fps` line's `lt`. |
 | `hidden` | `x<pokeyX>` | The page went out of view: another app, the lock button, a call. |
 | `shown` | `away <s>s` | The page came back after that many seconds. A gap between `hidden` and `shown` is time away, **not a freeze**. The first frame after a return is never logged as a stall. |
+| `blurKept` | `fingers <n>` | The page lost focus while a finger was on the glass and the page still showed, and the game kept the touch going (from builds after 2026-10-29). Facebook's in-app browser on an iPhone does this on every touch; before this fix it dropped the steering each time and Pokey never moved. Many of these in a row are that browser, not a bug. |
 
 ### Screen
 

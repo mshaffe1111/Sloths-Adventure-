@@ -14,6 +14,7 @@ import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
 import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
 import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
+import { W7_TEMPLE_URLS, w7TempleReady } from './w7TempleArt.ts';
 import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
@@ -31,7 +32,7 @@ import { jennifurSpriteReady, MEECA_STANDARD_URL } from './jennifurSprite.ts';
 import { MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
-import { preloadBackdrop } from './paintedBackdrops.ts';
+import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
 import { stageSheets } from './stageSheets.ts';
 import { warmSprites } from './spriteSheets.ts';
 import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
@@ -89,7 +90,8 @@ function start(keys: readonly string[]): string[] {
       crumbleArtReady();
       w7FaceReady();
       w7PuzzleReady();
-      urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS);
+      w7TempleReady();
+      urls.push(CRUMBLE_ART_URL, ...W7_FACE_URLS, ...W7_PUZZLE_URLS, ...W7_TEMPLE_URLS);
     } else if (k === 'swim') {
       calmWaterReady();
       swimAtlasReady();
@@ -162,8 +164,9 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     warmRopeKit();
     urls.push(HERO_ROPE_URL, ROPE_KIT_URL);
   }
-  // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode)
-  preloadBackdrop(cfg.worldIndex, cfg.id);
+  // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode; and the canopy
+  // strips of a stage played up in the trees, which used to load on first use and pop in a second time)
+  void backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg));
   const t0 = performance.now();
   const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
   const done = whenSheetsReady(urls, ms).then((n) => {
@@ -181,13 +184,16 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
 /**
  * The engine is about to be made for this stage: whatever of its sheets is still on its way gets up to `ms` more (behind the stage's
  * name card, before the first frame), then each is drawn once. Most of the time they arrived behind the menu and this is at once.
+ * The stage's painted backdrop (and canopy) gets up to `backMs`: a stage that opened on the stand-in sky and had its painting pop in a
+ * moment later was the first thing a player saw (polish report VI-3). Whatever is still later than that fades in (scenery.ts).
  */
-export function readyToStart(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean, ms = 900): Promise<void> {
+export function readyToStart(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean, ms = 900, backMs = BACKDROP_WAIT_MS): Promise<void> {
   if (typeof Image === 'undefined' || !preloadEnabled()) return Promise.resolve();
   let started = false;
-  return Promise.race([
-    preloadStage(cfg, canvas, () => started || live()),
-    new Promise<void>((r) => setTimeout(r, ms)),
+  const wait = (p: Promise<void>, t: number) => Promise.race([p, new Promise<void>((r) => setTimeout(r, t))]);
+  return Promise.all([
+    wait(preloadStage(cfg, canvas, () => started || live()), ms),
+    wait(backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg)), backMs),
   ]).then(() => {
     started = true;
   });

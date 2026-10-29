@@ -2,6 +2,7 @@
 
 Last updated: 2026-10-29 12:55 PM ET (supervision round).
 
+Every polish-report item, with its owner and status: reference/polish-report/TRACKER.md (keep it current with this board).
 ## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
 
 Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as on 2026-10-28. Effort levels still by job (LEAD-PLAYBOOK §7).
@@ -24,6 +25,15 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Dot rework (Matt: "constantly nagging", "gives away the puzzle", "weird blue box/circle"): Tips speaks only first-times, water, locked exits, real struggle; >=30 s gaps; no answers on room entry; no highlight boxes, Dot perches on the object; DOT-1..17 | cloud session_01FhBbYKJkZarvUhKDPsuRvk | polish-dot | before/after preview first added 12:50 PM ET: no box over Pokey (wayside placement, hold during reveals); floating world-space lesson labels game-wide |
 | Music and sound (Matt: "repetitive or boring", "wrong feel for the world", effects "more tied into the game"): song forms with sections and variations per stage, adaptive layers (danger, dark, puzzle rooms, bosses, story), the SN-3 missing effects, SN-8 loop seams, SN-9 ambience, SN-10 boss card; A2 keeps only SN-2/5/6/7 loudness via sfx.ts TRIMS | cloud session_01FhBbYMtoVBrf58j7276oA4 | polish-audio | listenable before/after previews first (reference/audio-previews/v1/) |
 | QA batch E fixes: replay drops to 2 fps (Sally, seed 56672, Short hops), Facebook iPhone frozen start after skipOffer (Age), opening difficulty options (Matt decides), mid-run sheet-load stalls | cloud session_01FhBbYJnGzLi5a2LUwVEvaw | qa-fix-e | started 12:18 PM ET |
+| HF art 1, blocking sheets: W7 vine anchors, W7 temple walls, W4 waterfalls + wet pillar, W6 ledge set ($10 cap) | local agent (worktree) | hf-art-blocking | started 1:10 PM ET; art only, owners wire |
+| HF art 2, every-stage pieces: checkpoint marker, exit gate per world, pit water W1/3/4/5, thorn gate, pickups, 4-8 netting + painted nests, story finds ($14 cap) | local agent (worktree) | hf-art-stage | started 1:10 PM ET; makes and wires |
+| HF art 3, ground and World 5: soil textures + lip + bank per world with the VI-8 code, W5 props + water sign, W5 dressing sets, W6 water repaint ($14 cap) | local agent (worktree) | hf-art-ground | started 1:10 PM ET; makes and wires |
+| HF art 4, Pokey: swim satchel fix (tread, under), 7-4 pole stubs painted out + 2x upscale; pokey LoRA v2 only if asked ($12 cap) | local agent (worktree) | hf-art-pokey | started 1:10 PM ET |
+| 7-3 ring of chairs (HF, ~$0.25) | local agent (worktree) | hf-w7-chairs | DONE, passed, MERGED into ccr 1:25 PM ET; gen2-w7 wires |
+| HF art 5, bosses and effects: lairs (wire 6 unused + 3 new plates), shared warning marker, boss effects, dust/sparks, Venom Fang, Queen clips, shimmy ropes, 4-D/5-M bits ($10 cap) | local agent (worktree) | hf-art-bosses | started 1:30 PM ET |
+| HF art 6, native-resolution near/mid backdrops W1-5 first, into src/assets/backdrops-hd/ (swap after polish-edges) ($10 cap) | local agent (worktree) | hf-art-backdrops | started 1:30 PM ET |
+| Polish C, screens and feel: UI-2, AN-11, UI-5, UI-9, UI-10, UI-12, UI-13, UI-15, AN-6, AN-10, PF-3 | cloud session_01FhBbYJojJwqFxv2u9mo8uR | polish-c | started 1:35 PM ET; big screen changes shown first |
+| Polish levels: LV-8, LV-14, LV-4, LV-5, LV-7, LV-15, then LV-2 (proposal first) | cloud session_01FhBbYLyE75iwttyDZRWPxT | polish-levels | started 1:35 PM ET |
 | Polish B1: controls never misread (CT-1..4, 6, 7, 9, 10, 12; CT-5 waits for Matt) | cloud session_01FhBbYKmJjBAbBHVVVBnhLE | polish-controls | replay tester touches |
 | Polish B2: clean backdrop edges (VI-1, VI-5, VI-6) | cloud session_01FhBbYNmvX29Yt9L2XxEWqJ | polish-edges | |
 | Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
@@ -36,7 +46,7 @@ painted); rope traverse (helper running); W4 waterfalls (code on purpose); web p
 no art: HF list); 4-3's pool log (painted log exists, unused). SWIMMING DOES NOT EXIST in the game yet (pokey-swim sheets are in
 reference/animation-sheets/pokey-swim/, not wired); question to Matt.
 
-Hugging Face: about $12 left (Matt, 2026-10-29: "any art that we need, use that"). Plan: one run for the props/creatures/backdrops the
+Hugging Face: Matt reloaded it to $91 (2026-10-29 ~1:05 PM ET): ALL art from Hugging Face, no more Gemini; music may use it too (polish-audio, $15 round). Wave 1 caps: $10+$14+$14+$12. Earlier: about $12 left (Matt, 2026-10-29: "any art that we need, use that"). Plan: one run for the props/creatures/backdrops the
 World 7 and 8 builders and the code-drawn-looks audit list (img2img from the world kits, as the W6-10 prop run); Pokey and story characters
 stay Gemini (Pokey drifts off model on HF). Stop new jobs at $1 left.
 
