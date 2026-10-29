@@ -19,6 +19,16 @@ WHAT = {
     'w4-mid': 'grey cliff crags with waterfalls, wind-bent small trees on top of the rocks, a twig nest on a tall rock pillar',
     'w5-near': 'a mossy golden orchid grove floor: twisted roots, ferns, white and pink orchids, small white flowers, falling pink petals',
     'w5-mid': 'tall golden-barked trees covered in big white and pink orchids, spider webs strung between the trees, ferns at their feet, moss',
+    'w6-near': 'a murky grey-green mangrove swamp edge: arching mangrove roots, reeds, a fallen log, still dark water with lily pads and ripples, mossy stones',
+    'w6-mid': 'grey-green mangrove trees standing in still swamp water on tall arching stilt roots, hanging grey moss, a broken stump, an old spear stuck in the water',
+    'w7-near': 'a ruined jungle temple floor: cracked grey-green flagstones, toppled carved stone blocks, a fallen carved stone head, ferns, dry roots and leaves',
+    'w7-mid': 'a ruined jungle temple: a carved stone tower with faces, stone stairs, broken arches and pillars, stone chairs, roots and red vines creeping over the stone',
+    'w8-near': 'a dark blue night jungle floor: dark blue-green leaves and ferns, white star-shaped night flowers, tiny glowing fireflies',
+    'w8-mid': 'a dark blue night forest: huge banyan trees with hanging aerial roots, moonlit blue leaves, white night flowers at their feet, tiny fireflies',
+    'w9-near': 'a volcanic ground: black ash soil, cracked dark lava rock slabs with glowing orange cracks, a small smoking vent, red flowers',
+    'w9-mid': 'volcanic land: a tall dark basalt column rock with orange lava glow and steam, smoking vents, a dead twisted tree, basalt columns, a few green shoots and red flowers',
+    'w10-near': 'a dark wet slate highland at night in the rain: dark jagged rocks, wet shining stone, stone steps, dry grass tufts',
+    'w10-mid': 'a dark rainy slate highland: jagged standing stones, stone stairs, wooden posts with rope nets and small blue lanterns, bare thorny branches, wet rocks',
 }
 
 
