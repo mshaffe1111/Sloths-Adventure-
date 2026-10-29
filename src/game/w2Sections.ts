@@ -597,11 +597,22 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       k.flag();
     });
     k.beat('Develop: the river’s flowers', () => {
+      // (the lily ponds' roll: a little more bank before the first pond that costs a life, QA 2026-10-29: the Learn's lily tip waits out
+      // Dot's ten seconds after the stage's first lines, and a quick player was at the deep pond before it)
+      if (flavour === 'ponds') {
+        k.rest(R.r(300, 340), false);
+        k.breath();
+      }
       cross.step(turns.next(), 0, turns.kinds);
       k.heart(k.x - 40, k.G - 60);
       cross.step(turns.next(), 1, turns.kinds);
+      // (a flag every two crossings, QA 2026-10-29: the lily ponds' roll had 7000 px between flags, and a run of misses there sent him
+      // back a minute and more)
+      k.flag();
       k.breath();
       note();
+      // (the lily ponds' note is a pond of its own: a flag past it too)
+      if (flavour === 'ponds') k.flag();
       cross.deal(turns, 2);
     });
     k.beat('Twist: the ferry', () => {
@@ -615,6 +626,8 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
         tips: { enter: 'The raft is tied up over there. Pull the lever to let the river run!', open: 'Here comes the raft. Hop on and ride!' },
       });
       k.heart(k.x - 50, k.G - 60);
+      // (a flag past the ferry: the room and two crossings were 5000 px with none, QA 2026-10-29)
+      k.flag();
       cross.deal(turns, 2, false);
       cross.seedBank();
       k.flag();
@@ -625,7 +638,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       const target = k.EXPERT_SECONDS + (flavour === 'high' ? 38 : flavour === 'ponds' ? -10 : flavour === 'snakes' ? 10 : 48);
       while (k.expert < target && n < 16) {
         cross.step(turns.next(), n, turns.kinds);
-        if (++n % 3 === 0) k.flag();
+        if (++n % 2 === 0) k.flag();
       }
       k.rest(R.r(300, 400), false);
     });

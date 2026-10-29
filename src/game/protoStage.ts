@@ -185,6 +185,11 @@ export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: num
 
 /** the floor under a teaching swing: soft moss, high enough above the water that a miss costs a hop, not a life */
 const HOLLOW_Y = 710;
+/**
+ * 1-7's secret bush: its trunk's climbing vine starts this far above the ground (over the 90 px under a vine's foot where Dot's climb
+ * lesson finds a trunk, lessons.ts pickLesson; within a flick's rise of the 25 px the engine catches a trunk from)
+ */
+export const SECRET_VINE_UP = 96;
 /** the step out of a soft pit: the pit is 130 deep and one jump rises about 108, so 55 up and then 75 up, each an easy single jump */
 const PIT_STEP = 55;
 /** the width of a step at a soft pit's near wall (4-2's lesson drops: the way back up to try the leaf again) */
@@ -317,6 +322,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   let MIX: string | undefined;
   const BUSHES: Bush[] = [];
   const ZONES: WatchZone[] = [];
+  /** the acorn meadows' watched stretches (1-7): their passes are the puzzle, as built */
+  const MEADOWS = new Set<WatchZone>();
   /** World 1's puzzle rooms (the shared puzzle kit, puzzleKit.ts): the seesaw (1-6) and the acorns (1-7) */
   const ROOMS: RoomSpec[] = [];
   let RING: ProtoExtras['ring'];
@@ -1736,7 +1743,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (k > 0 && !rocks) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
       // (`rocks`, World 1's rebuilt 1-7: a mossy rock or two to hop between the bushes, a petal on each: the run from bush to bush is
       // a hop and a dash, not an empty walk)
-      if (rocks && (k > 0 || g >= 600)) {
+      // (and before the first bush of a row 400 px and more in, 2026-10-29: 1-7's rows are closer now, and a first gap with no rock was
+      // two and a half seconds of plain running)
+      if (rocks && (k > 0 || g >= 400)) {
         // (three in the longest runs, World 1's rebuilt 1-7 since 2026-10-28: two left two seconds of plain running between them)
         const m = g >= 760 ? 3 : g >= 640 ? 2 : 1;
         for (let j = 0; j < m; j++) {
@@ -1751,8 +1760,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const kind = kinds[k % kinds.length];
       bush(x - BUSH_W[kind] / 2, kind);
     }
+    const lastBush = BUSHES[BUSHES.length - 1];
     run(R.r(260, 340));
-    ZONES.push({ x0, x1: x, calm });
+    // (1-7, QA 2026-10-29: the eagle watches up to just past the last bush, not the walk on from it: a pass that came as he walked on
+    // caught him 300 px from the bush behind him, off an upright screen)
+    ZONES.push({ x0, x1: plan === '1-7' ? Math.min(x, lastBush.x + lastBush.w + 40) : x, calm });
     expert += watched(x - x0, (calm[0] + calm[1]) / 2);
     pieces.push({ k: 'rest', x0, x1: x });
   }
@@ -1768,6 +1780,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const tX = Math.round(b.x + b.w / 2);
     const perchY = Math.round(G - 160);
     trunk(tX, G, perchY);
+    // (its climbing vine starts a hop up the trunk, QA 2026-10-29, 1-7: Dot's climb lesson, "Flick up into the trunk to grab it", fired
+    // here on the ground, for a trunk hidden in the leaves; the player saw no trunk, walked on to the next wall and flicked up into it six
+    // times, where the spring mushroom is the way. A flick up from inside the bush still catches it: the secret stays a secret)
+    V[V.length - 1].bottomY = G - SECRET_VINE_UP;
     const end = tX + Math.round(R.r(360, 420));
     branch(tX - 40, end, perchY);
     row(tX + 70, end - 90, perchY - 34, 3, 'hibiscus');
@@ -1780,7 +1796,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       block(rx, rx + 120, 40);
       flower(rx + 60, G - 74, 'orchid');
     }
-    ZONES.push({ x0, x1: x, calm });
+    // (1-7, QA 2026-10-29: watched to just past the bush, as the bush rows are: the walk on from it was 500 px with no bush on screen)
+    ZONES.push({ x0, x1: plan === '1-7' ? b.x + b.w + 40 : x, calm });
     expert += watched(x - x0, (calm[0] + calm[1]) / 2);
     pieces.push({ k: 'rest', x0, x1: x });
   }
@@ -1807,8 +1824,16 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flower(rx + 50, HOLLOW_Y - 86, 'orchid');
     }
     open(far);
-    run(R.r(260, 340));
-    ZONES.push({ x0, x1: x, calm });
+    // (1-7, QA 2026-10-29: a bush on the far bank as he drops off the rope, and the eagle watches to just past it: the walk on from the
+    // rope's end was 500 px with no bush on an upright screen)
+    let x1 = x + R.r(260, 340);
+    if (plan === '1-7') {
+      run(R.r(50, 70));
+      const fb = bush(x, 'tall');
+      x1 = fb.x + fb.w + 40;
+    }
+    run(Math.max(0, x1 - x) + (plan === '1-7' ? R.r(180, 240) : 0));
+    ZONES.push({ x0, x1: Math.min(x, x1), calm });
     expert += (edge - x0) / RUN + (span + 88) / ROPE_SPEED * ((calm[0] + calm[1]) / 2 + 4) / ((calm[0] + calm[1]) / 2) + (x - far) / RUN;
     pieces.push({ k: 'snakes', x0, x1: x });
   }
@@ -1839,7 +1864,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
           { kind: 'item', id: `acorn${n}`, variant: 'acorn', source: `oak${n}` },
         ],
         exit: `acorn${n}`, beyond: onP(floor, oakX + 620), ground: [floor.id],
-        ...(first ? { tips: { enter: 'The squirrels\' acorn tree! Carry one out with you.', hold: 'When it screeches, flick up to throw it. Keep running!' } } : {}),
+        // (QA 2026-10-29, 1-7: "Carry one out with you" read as a must, and a player who walked on without one was left wondering. The
+        // first stretch is crossable without it, the second only with it: the first room says what an acorn is for, the second that
+        // this time it is needed. Both lines new, need Matt's approval)
+        tips: first
+          ? { enter: 'The squirrels\' acorn tree! An acorn can fool the eagle.', hold: 'When it screeches, flick up to throw it. Keep running!' }
+          : { enter: 'Too far to run this time. Take an acorn!' },
       });
       flower(oakX + 300, G - 34, 'hibiscus');
       // the rest of the stretch: a rock or two to hop once his hands are free, then the next bush
@@ -1857,6 +1887,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     room(Math.round(R.r(2050, 2200)), false);
     run(R.r(260, 320));
     ZONES.push({ x0, x1: x, calm });
+    MEADOWS.add(ZONES[ZONES.length - 1]);
     expert += (x - x0) / RUN + 2 * 4 + watched(x - x0, (calm[0] + calm[1]) / 2) - (x - x0) / RUN;
     pieces.push({ k: 'rest', x0, x1: x });
   }
@@ -1885,7 +1916,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Twist: the rope line', () => {
       hint(x + 60, 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by');
-      ropeBushes([6, 7]);
+      ropeBushes([7, 8]);
       flag();
     });
     beat('Finish: the acorn meadow', () => {
@@ -1895,6 +1926,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       section('finish');
       homeRun(['log']);
     });
+    // (QA 2026-10-29: the first pass over each of 1-7's watched stretches only warns, as the stage's first pass does: World 1's eagle
+    // shows each stretch's rhythm once before it strikes. The acorn meadow keeps its own passes, which its puzzle is built on)
+    for (const z of ZONES) if (!MEADOWS.has(z)) z.freeFirst = true;
   }
 
   /** a coiled boa guarding a spot (it never moves; it rears, lunges about 130 px, and takes three hits) */
@@ -2546,6 +2580,33 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * chain, a vine over a gap): the first-timer drowned before it where the first drop was not a run of stones (new, needs Matt's approval)
    */
   const deepTip = (at: number) => once('deep', () => hint(at - 260, 'No moss down there. Jump true!'));
+  /**
+   * World 3's first water (3-1, QA 2026-10-29: plain hops lost all three lives in about 10 s at 3-1's first gap over the stream, with no
+   * tip before it: Dot's line waited behind the spores' tip and the lessons, and the gap came 270 px out of the spore cloud, 56-64 px
+   * wide, a slot the eye barely sees). Dot's water line first, on open floor in the light (no spores, no dark, no stone to land on), two
+   * grotto rocks to hop on the way, then one level gap over the stream: a plain jump (40-45% of one, wider than the slot, well inside
+   * the shortest flick from a run), petals over it where the hop goes, and a wide landing. Every later water of the stage comes after it.
+   */
+  function firstWater() {
+    const x0 = x;
+    run(R.r(180, 220));
+    // (Dot's line about 1500 px, five seconds, before the edge: it may wait behind a lesson, she keeps ten seconds between lines)
+    once('deep', () => hint(x, 'No moss down there. Jump true!'));
+    for (let k = 0; k < 3; k++) {
+      run(R.r(240, 280));
+      logHop(R.i(34, 42));
+    }
+    run(R.r(300, 340));
+    const edge = x;
+    close();
+    const far = Math.round(edge + reachJump(0, false) * R.r(0.4, 0.45));
+    arc(edge - 40, far + 40, G - 110, 3);
+    open(far);
+    // (the landing: plain floor, nothing on it for a long hop that runs on)
+    run(R.r(340, 380));
+    expert += (x - x0) / RUN + 0.6;
+    pieces.push({ k: 'gorge', x0, x1: x });
+  }
   /** a stone pillar standing up out of the deep (no floor under it: the water below costs a life) */
   const deepStone = (x0: number, w: number, top: number) => {
     const p: Platform = { id: pid++, x: Math.round(x0), y: Math.round(top), width: Math.round(w), height: WATER + 40 - Math.round(top), type: 'solid', style: 'moss_stone' };
@@ -2808,8 +2869,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Learn: the grotto stones', () => {
       if (v.learn === 0) w3Order(() => stumps(), () => busy(1), () => w3Stones([60, 120, 60], [0.5, 0.62]));
-      else w3Order(() => w3Stones([50, 90, 130, 80], [0.5, 0.62]), () => highRoadOver());
+      // (the mushroom first: its lesson well before the water's tip, which waits ten seconds after any line before it)
+      else { highRoadOver(); w3Stones([50, 90, 130, 80], [0.5, 0.62]); }
       busy(1);
+      // (QA 2026-10-29: the stage's first water, taught, before anything else over the stream on every roll; late in the Learn, so the
+      // first lessons have had their say and Dot's line is not held back behind them)
+      firstWater();
       flag();
     });
     beat('Develop: the sleepy spores', () => {
@@ -5276,13 +5341,19 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   // ---- Learn: up two trunks from the floor
   cur = P[0];
   beat('Learn: up the trunk', () => {
-    cur = { ...P[0], x: 300, width: 400 } as Platform; // the patch of floor the first trunk stands on
+    // the patch of floor the first trunk stands on
+    // (2-6, QA 2026-10-29: the first ladder stood 440 px from where he starts, off an upright screen (it shows 70-510); the tip to slide
+    // up a post came as he walked past it, and he walked the floor seeing only the bank's dirt. In the village it stands 220 px on)
+    cur = (village ? { ...P[0], x: 200, width: 280 } : { ...P[0], x: 300, width: 400 }) as Platform;
     if (village) hint('Up through the village! Slide up a post to climb', 'Up through the village! Hold up on a post to climb', 'Up through the village! Hold up on a post to climb');
     else if (grotto) hint('Up the sinkhole, toward the moonlight! Slide up a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb');
     else if (mist) hint('Up toward the eagle nests, above the mist! Slide up a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb');
     else if (cliff) hint('The ledge broke away! Climb back up. Slide up a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb');
     else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
     firstTrunkX = climb(Math.round(R.r(280, 320)), 4);
+    // (2-6: a log lying on the floor just past the first ladder, a hop high: a plain walk stops by the ladder instead of carrying him off
+    // along the floor, and coming back to it after a fall is a hop over, QA 2026-10-29)
+    if (village) P.push({ id: pid++, x: firstTrunkX + 70, y: -40, width: 100, height: 40 + BANK_H, type: 'solid', style: 'log' });
     row(cur.x + 80, cur.x + cur.width - 30, cur.y - 34, 2, 'hibiscus');
     climb(Math.round(R.r(260, 300)), 3);
     flag();
