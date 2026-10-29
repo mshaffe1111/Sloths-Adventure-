@@ -521,6 +521,20 @@ def round4d(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
+def round4e(commit):
+    """kneel_tie again: r4d's Meeca (seed 8) kept, and Pokey painted again more gently (at 0.9 the model gave him a girl's face and hair)"""
+    it = []
+    for sd, st in ((4, 0.7), (9, 0.78)):
+        it.append({'name': f'cel-da.kneel_tie-pj{sd}', 'start': 'bucket:storyart/r4d/out/cel-da.kneel_tie-pi8.png', 'mask': 'pairmask-da.kneel_tie-r.png',
+                   'prompt': POKEY.replace('warm orange-brown fur', 'warm muted caramel-brown fur') + 'a sloth face with a dark brown eye patch, bare fur with '
+                   'no vest, kneeling and holding out his bandaged wrist to her' + END,
+                   'neg': NEG_FIG + SOFT + ', human, girl, hair, hairstyle, vest, shirt, clothes', 'strength': st, 'seed': sd, 'w': 1024, 'h': 1024,
+                   'loras': [['pokey', 1.0], ['style', 0.35]]})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r4e', 'loras': {k: LORAS[k] for k in ('style', 'pokey')}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
