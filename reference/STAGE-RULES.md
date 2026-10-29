@@ -331,6 +331,21 @@ plan); never ship the rough version as finished.
     `jumpEdges`), and curation drops any roll with an animal by a jump (7770de7). The lesson: every rule a full-suite test holds a stage
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
+- **A runner where everything can be steered round teaches one move** (7-4 v1, 2026-10-29, Matt: "Everything can be done just by
+  avoiding objects. You don't have to jump anything because nothing goes the whole way across"). Every section past the opening needs
+  things across the whole width (barriers and gaps to jump, beams to duck), and pairs (a steer, then a jump or a duck straight after).
+  Test it with a player who only steers: they must be hit (`w7Slide.test.ts`).
+- **Dark and underground stages are lit from their sources** (7-4 v2, Matt 2026-10-29: "If he's underground, it's not going to be
+  bright"). Ambient near black and cool (#142430), light only from torches, lanterns, fungus and the way out; depth goes into darkness,
+  never haze. Every obstacle brings its own light, so it still reads a second ahead (1.6 s on Easy): test it from the scene's light list
+  (each obstacle in every lane at least twice the ambient). Pokey is never below 60% (a warm key from the light he passes, a cool rim).
+  Ask Gemini for props **evenly lit** (the game lights them) with the light sources painted bright on their own. Cheap at 30 fps: a
+  half-size light map, light sprites made once, multiplied over the scene (`w7SlideArt.ts`, under 24 ms a frame at a 4x CPU slow-down).
+- **Textures stretched in strips look copy-pasted** (7-4 v1: "It looks like we just copied and pasted a couple things in there").
+  A pseudo-3D floor, wall or ceiling is laid one screen row or column at a time in true perspective, and the look comes from painted
+  pieces at every depth, not from the surfaces; straight edges of a painted layer far away are feathered into the dark.
+- **A speech bubble over the player's head in a behind-the-back view covers the road ahead** (7-4 v2): put it below him, on the empty
+  near floor.
 
 ## 7. Where things are
 

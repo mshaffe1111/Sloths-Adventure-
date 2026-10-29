@@ -17,7 +17,7 @@ for (const vp of [{ width: 844, height: 390 }, { width: 390, height: 844 }]) {
       const e = window.__engine();
       e.isPaused = true;
       const s = e.slideRun.sim;
-      s.z = s.sorted.find((o) => o.kind === 'rubble').z - 8;
+      s.z = s.sorted.find((o) => o.kind === 'rubble').z - 8; s.clock = 5;
       for (let i = 0; i < 20; i++) { e.update(1 / 30); e.render(); }
       const t = [];
       for (let i = 0; i < 40; i++) { const a = performance.now(); e.update(1 / 30); e.render(); t.push(performance.now() - a); }
