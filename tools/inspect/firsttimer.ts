@@ -27,7 +27,7 @@
  * Nothing here changes the engine: it uses realPlay.ts's harness, puts back the engine's own lessonTick, watchForStuck, updateCamera,
  * loseLife and damagePlayer (the harness stubs them), and sizes the view to a phone held sideways (844 x 390).
  */
-import { DT, RealPlay, type Pad } from '../../src/game/realPlay.ts';
+import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { GameEngine } from '../../src/game/engine.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import { GuideQueue, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
@@ -42,6 +42,8 @@ const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { findRoute } from './route.ts';
+import { buildRoll } from './eraRoll.ts';
+import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
 import type { Stage } from './stages.ts';
 
@@ -217,10 +219,18 @@ export class Progress {
     if (this.cur > this.best) this.best = this.cur;
     return more;
   }
+  /** how far he stands from the point he is at along the way (0 with no route) */
+  off(p: Pt): number {
+    return this.pts.length ? this.d(this.cur, p) : 0;
+  }
   /** after a respawn or a rescue: find him anywhere along the way */
-  relocate(p: Pt): void {
+  relocate(p: Pt, level = false): void {
     let bi = 0, bd = Infinity;
+    // (`level`: after a fall, only the points about his height or below: the way back up starts where he can walk to)
+    const ok = (i: number) => !level || this.pts[i].y >= p.y - 80;
+    if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
+      if (!ok(i)) continue;
       const d = this.d(i, p);
       if (d < bd) {
         bd = d;
@@ -686,6 +696,24 @@ export class FirstTimerRun {
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
+  /** s he has stood far off the way (after a fall) */
+  private offRoute = 0;
+  /** he was on a trunk last frame */
+  private wasClimbing = false;
+  /** s he has held up beside a trunk standing still, and till when he lets it be */
+  private trunkUpT = 0;
+  private trunkIgnoreUntil = -1;
+  /** when he was last put past each puzzle room */
+  private roomAt = new Map<number, number>();
+  /** the trunk he is on, and whether climbing down it got him nowhere */
+  private climbVine: unknown = null;
+  private climbDown = false;
+  private climbTurned = false;
+  /** he was on a trunk when the last choice was made */
+  private wasOnTrunk = false;
+  /** how far he moved in the last frame */
+  private moveX = 0;
+  private moveY = 0;
   private lastY = 0;
   private visited = new Set<number>();
   private puzzleWait: { until: number; room: number } | null = null;
@@ -756,7 +784,10 @@ export class FirstTimerRun {
     const st = this.sim.stage as Stage;
     this.direct = Math.hypot((st.exitTotemX || this.sim.p.x) - this.sim.p.x, (st.exitTotemY ?? this.sim.p.y) - this.sim.p.y);
     if (!pts) {
-      const route = findRoute(st, []);
+      let route = findRoute(st, []);
+      // (the engine's own copy of a stage with puzzle rooms or Dot's pulley is changed as it loads, and the check cannot follow it: the
+      // route is then traced on the stage as built, the same roll and setting, as the inspector traces it, round 5 2026-10-29)
+      if (route.traced === 'failed') route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), []);
       pts = route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y }));
       // (no route the inspector can trace: the straight line from the spawn to the shrine gives him a way to head, and the run is marked)
       if (!pts.length && st.exitTotemX) {
@@ -1001,17 +1032,25 @@ export class FirstTimerRun {
       return {};
     }
     for (const room of e.kit?.rooms ?? []) {
-      if (this.visited.has(room.ri)) continue;
+      // (a room he comes back to after a fall, its lift wound back down: worked again, as a person works it again, round 5 2026-10-29;
+      // counted once)
+      const again = this.visited.has(room.ri);
+      if (again && t - (this.roomAt.get(room.ri) ?? -Infinity) < 12) continue;
       const b = room.box;
       if (p.x > b.x0 - 40 && p.x < b.x1 && p.y > b.y0 - 40 && p.y < b.y1 + 40 && p.grounded) {
         this.visited.add(room.ri);
-        this.puzzles.push({ id: room.spec.id, x: Math.round(p.x), t: +t.toFixed(1) });
+        this.roomAt.set(room.ri, t);
+        if (!again) this.puzzles.push({ id: room.spec.id, x: Math.round(p.x), t: +t.toFixed(1) });
         this.puzzleWait = { until: t + 3, room: room.ri };
         this.closeStuck(false);
         return {};
       }
     }
 
+    // (he has just caught a trunk: a press he decided on before it is dropped, as a thumb that has gone to the climb does; one still on
+    // its way threw him off halfway up, round 5 2026-10-29)
+    if (p.climbing && !this.wasClimbing) this.pending = null;
+    this.wasClimbing = !!p.climbing;
     // a press he has decided on comes when his thumb gets there (the reaction noise)
     if (this.pending && t >= this.pending.at && !this.jump) {
       const q = this.pending;
@@ -1066,11 +1105,25 @@ export class FirstTimerRun {
 
     // on a trunk: straight up to its top (down where the way goes down), then off it with a flick the way on
     if (p.climbing) {
-      const moved = Math.abs(p.y - this.lastY);
+      // (round 5, 2026-10-29: measured against lastY, which after() has already moved to where he is, this read 0 every frame, and he
+      // flicked off every trunk about 90 px up: the tall climbs ran out the clock)
+      const moved = Math.abs(this.moveY);
       this.climbStill = moved < 0.5 ? this.climbStill + DT : 0;
-      const downWay = tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60;
-      if (this.climbStill < 0.4) return downWay ? { down: true } : { up: true };
+      // (the way up or down a trunk is chosen as he catches it and kept: chosen afresh every frame, it flipped with the point he
+      // headed for, up one frame and down the next, at a trunk's foot for half a minute; and when it gets him nowhere, the other way,
+      // once, before he flicks off, round 5 2026-10-29)
+      if (this.climbVine !== e.nearTreeVine || !this.wasOnTrunk) {
+        this.climbVine = e.nearTreeVine;
+        this.climbDown = !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60);
+        this.climbTurned = false;
+      }
+      if (this.climbStill < 0.4) return this.climbDown ? { down: true } : { up: true };
       this.climbStill = 0;
+      if (!this.climbTurned) {
+        this.climbTurned = true;
+        this.climbDown = !this.climbDown;
+        return this.climbDown ? { down: true } : { up: true };
+      }
       return this.decide(fdir, 'single', true, side(fdir));
     }
     // on a liana: the vine swings itself (physics.ts, the self-swing), so he only holds the way on (that just turns him) and lets go as
@@ -1089,7 +1142,7 @@ export class FirstTimerRun {
     this.swingT = 0;
     // on a rope: along it the way on, off at its end
     if (p.hanging) {
-      this.ropeStill = Math.abs(p.x - this.lastX) < 0.5 ? this.ropeStill + DT : 0;
+      this.ropeStill = Math.abs(this.moveX) < 0.5 ? this.ropeStill + DT : 0;
       if (this.ropeStill > 0.5 && !this.pending) {
         this.ropeStill = 0;
         return this.decide(fdir, 'single', true, side(fdir));
@@ -1135,7 +1188,11 @@ export class FirstTimerRun {
       return { punch: true };
     }
     // a trunk he is touching, and the way goes up (or he is stopped beside it): straight up
-    if (e.nearTreeVine && (up || this.blockedT > who.stopReact)) return { up: true };
+    // (holding up at the top of the trunk he just came up takes him nowhere: after a moment he lets the trunk be and goes on as on
+    // open ground, a hop up to the ledge above, round 5 2026-10-29)
+    this.trunkUpT = e.nearTreeVine && !p.climbing && p.grounded && Math.abs(this.moveY) < 0.5 ? this.trunkUpT + DT : 0;
+    if (this.trunkUpT > 0.6) this.trunkIgnoreUntil = t + 2;
+    if (e.nearTreeVine && t >= this.trunkIgnoreUntil && (up || this.blockedT > who.stopReact)) return { up: true };
     // stopped dead against something: a plain jump
     const moved = Math.abs(p.x - this.lastX);
     this.blockedT = moved < 0.8 && dir !== 0 && !p.pushing ? this.blockedT + DT : 0;
@@ -1231,6 +1288,7 @@ export class FirstTimerRun {
 
   private pad(): Pad {
     const out = this.thumbify(this.intend());
+    this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
     return out;
   }
@@ -1311,7 +1369,9 @@ export class FirstTimerRun {
       if (t - this.airFrom.t > 0.12) {
         this.lastLand = t;
         if (j) {
-          const ok = held || p.y < j.y - 6 || this.prog.cur > j.cur + 2;
+          // (a jump that took him on along the way but dropped him far under where he set off is a miss: he fell past the ledge,
+          // round 5 2026-10-29; counted a success, the bot never tried the jump another way)
+          const ok = held || p.y < j.y - 6 || (this.prog.cur > j.cur + 2 && p.y < j.y + 60);
           this.mem.result(j.x, j.y, j.kind, ok);
           const hurt = this.harms.length > j.harms;
           this.tries.push({ x: j.x, y: j.y, dir: j.dir, t0: j.t0, t1: t, kind: j.kind, ok: ok && !hurt, hurt, running: j.running, land: ok && p.grounded ? { id: this.e.standingOnId, x: p.x, y: p.y } : undefined, hold: j.hold });
@@ -1331,6 +1391,16 @@ export class FirstTimerRun {
       this.mem.result(this.jump.x, this.jump.y, this.jump.kind, false);
       this.jump = null;
     }
+    // fallen off the way (a miss in a climb drops him to a branch or the floor far under where he was): once he stands there a moment,
+    // he finds his place along the way again and heads back to the way up, as a person climbs back (round 5, 2026-10-29: the bot kept
+    // heading for the point straight over his head, never walked back to the trunk, and the tall climbs ran out the clock)
+    if (this.prog.off(p) > 260 && !held) {
+      this.offRoute += DT;
+      if (this.offRoute > 0.5 && p.grounded) {
+        this.prog.relocate(p, true);
+        this.offRoute = 0;
+      }
+    } else this.offRoute = 0;
     // stuck: no progress for 8 s (not while standing at a puzzle)
     if (more || this.puzzleWait || this.stillSpot) {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
@@ -1366,6 +1436,9 @@ export class FirstTimerRun {
     // the sealed shrine: he stands at it a moment and gives up (the run ends there)
     if (this.sealed()) this.sealedT += DT;
     if (p.grounded) this.ground = { x: p.x, y: p.y };
+    // (the frame's own movement, for the next frame's choices: by then lastX and lastY are where he already is)
+    this.moveX = p.x - this.lastX;
+    this.moveY = p.y - this.lastY;
     const step = Math.hypot(p.x - this.lastX, p.y - this.lastY);
     if (step < 100) this.walked += step;
     this.lastX = p.x;
@@ -1374,7 +1447,9 @@ export class FirstTimerRun {
 
   /** the whole run, until the shrine, a sealed shrine, or the time cap */
   play(): this {
-    const cap = this.opts.cap ?? 360;
+    // (three times the stage's own length where it has one (STAGE_SECONDS), as 360 s is for a two-minute stage: World 4's longer stages ran out of time at 360 s while
+    // the bot was still making its way up, round 5 2026-10-29)
+    const cap = this.opts.cap ?? Math.max(360, 3 * (STAGE_SECONDS[this.id] ?? 0));
     const e = this.e;
     while (this.t < cap) {
       const pad = this.pad();
