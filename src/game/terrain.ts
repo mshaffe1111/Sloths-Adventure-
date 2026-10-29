@@ -1458,7 +1458,48 @@ export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: nu
   }
   ctx.globalAlpha = 1;
   waterLife(ctx, worldId, x0, x1, waterY, time);
+  if (worldId >= 6) badWater(ctx, x0, x1, waterY, bottom, time);
   void darken;
+}
+
+/**
+ * From World 6 Pokey can swim, so the water that still costs a life has to look unswimmable (Matt, 2026-10-29: "make the water dirty
+ * or fast-flowing"): a murky brown cast through the water, drifting scum on the surface and fast current streaks just under it.
+ * Clean, calm water he can swim in is drawn without this.
+ */
+function badWater(ctx: CanvasRenderingContext2D, x0: number, x1: number, waterY: number, bottom: number, time: number) {
+  ctx.fillStyle = 'rgba(96,76,40,0.38)';
+  ctx.fillRect(x0, waterY + 4, x1 - x0, bottom - waterY - 4);
+  // scum: flat greasy patches drifting slowly on the surface
+  for (let x = Math.floor(x0 / 130) * 130 - 130; x < x1 + 130; x += 130) {
+    const k = ((x / 130) | 0) % 7;
+    const sx = x + ((time * 9 + k * 37) % 130);
+    if (sx < x0 - 40 || sx > x1 + 40) continue;
+    const y = waveY(sx, waterY, time) + 3;
+    ctx.fillStyle = 'rgba(122,116,62,0.85)';
+    ctx.beginPath();
+    ctx.ellipse(sx, y, 24 + k * 4, 4 + (k % 3), 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(178,170,104,0.75)';
+    ctx.beginPath();
+    ctx.ellipse(sx - 6 + k, y - 0.5, 5 + (k % 4), 1.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // the current: quick pale streaks racing along under the surface
+  ctx.strokeStyle = 'rgba(214,220,190,0.6)';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  for (let x = Math.floor(x0 / 50) * 50 - 50; x < x1 + 50; x += 50) {
+    const k = ((x / 50) | 0) % 5;
+    const sx = x + ((time * 140 + k * 29) % 50);
+    if (sx < x0 || sx > x1) continue;
+    const y = waterY + 12 + k * 7;
+    if (y > bottom - 6) continue;
+    ctx.beginPath();
+    ctx.moveTo(sx, y);
+    ctx.lineTo(sx + 22 + k * 4, y + 0.5);
+    ctx.stroke();
+  }
 }
 
 const waveY = (x: number, waterY: number, time: number) => waterY + Math.sin(x * 0.03 + time * 2.2) * 4 + Math.sin(x * 0.07 - time * 1.5) * 2;
