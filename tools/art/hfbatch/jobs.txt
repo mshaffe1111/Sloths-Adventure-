@@ -50,3 +50,20 @@ hfb-w7chairs-fix 6ae37f4cad9610e5cb314126 rtx-pro-6000 17:15:56Z-17:17:08Z (1.2 
   eleventh chair at 0.45 (dimmed to the kit stone and a dab of moss at its feet first), the rock painted out roughly then 0.5.
   Pasted back feathered inside each fix's area (chairfix.py paste), cut with dim=1400:0.84:385. Both kept.
 running total ~5.3 min = ~$0.25. Close-ups: reference/prop-sheets/qa-notes/hf-w7-chairs/review-v3-crop.jpg (full: review-v3.jpg)
+
+Boss art (2026-10-29, cap $10 after the lead's correction from $14), branch hf-art-bosses: starts bossstarts.py / bossstarts2.py /
+venomstart.py, specs make_spec.py / make_spec2.py / make_spec3.py, cut bosscut.py / venomcut.py, dot bridges dotbridge.py (no GPU).
+hfboss-fx     6ae385fdad9610e5cb3148fc rtx-pro-6000 17:44:29Z-17:52:17Z (7.8 min, ~$0.36): 24 takes, the warning marker, the Crocus Rex /
+  Sky Sovereign / Tarantula Queen effects sheets, dust and spark strips, 2 strengths x 2 seeds. KEPT: marker-s75-7 (ring, both arrows,
+  dash trail), fx-croc-s75-23 (flood water, piranha), fx-queen-s75-7 (silk ball, web splat, cocoon, venom jet, silk ripple), fx-sov-s75-23
+  (lightning, feather, gust), spark-s62-7. THROWN: the storm clouds (four smooth blobs), the mud wave (a dome), the splash (a ring of
+  beads), the dust (tan eggs): the start shapes came through too plainly; redone in round 2.
+hfboss-lairs  6ae385faad9610e5cb3148f1 rtx-pro-6000 17:44:26Z-17:56:10Z (11.7 min, ~$0.54): 16 plates at 2048x1152 and 8 foreground
+  strips. KEPT: lair-croc-calm-s68-7 + lair-croc-rage-s68-7, lair-sov-calm-s68-7 + lair-sov-rage-s68-7 (same seed, so the calm and rage
+  plates share their layout and cross-fade), fg-croc-s75-23, fg-sov-s75-23. Not used: croc calm s55 takes (banded moon halo), calm-s68-23
+  (stray marks bottom left). The Silk Hollow needed none: lair-queen-calm/rage (w6to10/lairs) is the Queen's own lair, now wired.
+hfboss-fx2    6ae38bcf5ddcdc0830263d64 rtx-pro-6000 18:09:19Z-18:14:35Z (5.3 min, ~$0.24): round 2 at 0.8 / 0.88. KEPT: fx-storm-s80-7
+  (three thunderclouds), fx-mud-s88-7 (breaking mud wave, crown splash), dust2-s80-23 (puff, billow, wisps; its late frames' pink cast
+  pulled back to tan in bosscut.py).
+hfboss-venom  6ae3907aad9610e5cb31546f rtx-pro-6000 18:29:14Z-18:30:35Z (1.35 min, ~$0.06): Venom Fang's body strip. KEPT venombody-s62-7.
+total ~26.2 min on rtx-pro-6000 = ~$1.20 of the $10 cap.

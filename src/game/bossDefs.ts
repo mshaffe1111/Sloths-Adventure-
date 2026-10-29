@@ -372,6 +372,7 @@ const CROC: BossDef = {
         for (const d of [-1, 1] as const) {
           const w = floorWave(c, b.x + d * (b.width / 2 + 10), d, 330, '#8b6b3a', '#4a3416', true);
           w.look = 'mud';
+          w.look = 'mud';
         }
       },
     },
@@ -1321,7 +1322,7 @@ const QUEEN: BossDef = {
       pose: 'slam',
       onAct: (b, c) => {
         impact(b, c, 0.55, '#9ca3af');
-        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2 - 20), d, 300, '#d1d5db', '#4b5563');
+        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2 - 20), d, 300, '#d1d5db', '#4b5563').look = 'silk';
       },
       tick: (b, c, dt, t) => {
         // the legs are only a danger as they come down

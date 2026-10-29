@@ -434,7 +434,8 @@ export interface Particle {
   size: number;
   life: number;
   maxLife: number;
-  type: 'leaf' | 'spark' | 'smoke' | 'star' | 'water' | 'feather' | 'claw_wave';
+  /** puff: a frame of the painted dust strip (size = its width); flash: the painted hit spark with a brief glow (size = its width) */
+  type: 'leaf' | 'spark' | 'smoke' | 'star' | 'water' | 'feather' | 'claw_wave' | 'puff' | 'flash';
 }
 
 export interface FloatingText {

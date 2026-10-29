@@ -11,7 +11,7 @@
  */
 import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
-import { BACK_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
+import { BACK_URL, DOT_BRIDGES_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
 import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
@@ -40,6 +40,7 @@ import { LEAVES_URL, warmLeaves } from './leafSprites.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
 import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
+import { BOSS_FX_URL, warmBossFx } from './bossFx.ts';
 import { perfNote } from './perfLog.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -87,7 +88,7 @@ function start(keys: readonly string[]): string[] {
       urls.push(MEECA_STANDARD_URL, MEECA_CARVE_URL, MEECA_BLANKET_URL);
     } else if (k === 'dot') {
       warmDotSheets();
-      urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, ...Object.values(BACK_URL));
+      urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, DOT_BRIDGES_URL, ...Object.values(BACK_URL));
     } else if (k.startsWith('foe:')) {
       // a creature: its clip sheet (if it has one) and its painted poses (spriteSheets.ts)
       const n = k.slice(4);
@@ -145,6 +146,9 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     warmHeroRope();
     warmRopeKit();
     urls.push(HERO_ROPE_URL, ROPE_KIT_URL);
+    // (and the painted effects: every stage's dust puffs and hit sparks, and a boss fight's warnings and hazards)
+    warmBossFx();
+    urls.push(BOSS_FX_URL);
   }
   // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode; and the canopy
   // strips of a stage played up in the trees, which used to load on first use and pop in a second time)
