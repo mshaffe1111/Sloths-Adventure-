@@ -18,14 +18,14 @@ Last updated: 2026-10-29 2:35 PM ET.
 | VI-6 | Magenta leaking on World 5 dusk and twilight |  | polish-edges | in progress (full rebuild running) |
 | VI-7 | Grey seams in the soil, including on the new generator |  | polish-a1 | MERGED into ccr 2026-10-29 1:25 PM ET (next test link) |
 | VI-8 | Ground tiles repeat and band | HF | hf-art-ground (HF art + wiring) | started 1:10 PM ET |
-| VI-9 | Pit water is code-drawn in Worlds 1, 3, 4 and 5 | HF | hf-art-stage (HF art + wiring) | started 1:10 PM ET |
-| VI-10 | Exit door and checkpoint flags are code-drawn in every world but World 5 | HF | hf-art-stage (HF art + wiring) | started 1:10 PM ET |
+| VI-9 | Pit water is code-drawn in Worlds 1, 3, 4 and 5 | HF | hf-art-stage (HF art + wiring) | round 1 in 3:25 PM ET; round 2 running (open gates, net, W5 water) |
+| VI-10 | Exit door and checkpoint flags are code-drawn in every world but World 5 | HF | hf-art-stage (HF art + wiring) | round 1 in 3:25 PM ET; round 2 running (open gates, net, W5 water) |
 | VI-11 | Shimmy ropes are a dashed yellow line | HF | hf-art-bosses (HF art + wiring) | started 1:45 PM ET |
-| VI-12 | Pickups and the thorn gate are vector shapes | HF | hf-art-stage (HF art + wiring) | started 1:10 PM ET |
+| VI-12 | Pickups and the thorn gate are vector shapes | HF | hf-art-stage (HF art + wiring) | round 1 in 3:25 PM ET; round 2 running (open gates, net, W5 water) |
 | VI-13 | World 5's props are pastel stickers with thick outlines | HF | hf-art-ground (HF art + wiring) | started 1:10 PM ET |
 | VI-14 | Boss lairs: one painted, the rest code-drawn, while finished lair art sits unused | HF | hf-art-bosses (HF art + wiring) | started 1:45 PM ET |
 | VI-15 | Boss projectiles, hazards and danger rings are vector shapes | HF | hf-art-bosses (HF art + wiring) | started 1:45 PM ET |
-| VI-16 | Code-drawn stand-ins still in shipped stages | HF | hf-art-stage (HF art + wiring) | started 1:10 PM ET |
+| VI-16 | Code-drawn stand-ins still in shipped stages | HF | hf-art-stage (HF art + wiring) | round 1 in 3:25 PM ET; round 2 running (open gates, net, W5 water) |
 | VI-17 | World 1 and World 5 look the same every visit | HF | hf-art-ground (HF art + wiring) | started 1:10 PM ET |
 | VI-18 | Smaller visual notes | HF | hf-art-ground (World 6 water) + hf-art-bosses (4-D bridge, 4-D counter, 5-M title) + polish-edges (World 4 grade) | started |
 
