@@ -67,7 +67,7 @@ test("1-2's long ground bank draws a handful of pieces a frame at a narrow phone
       n = 0;
       drawBankArt(ctx, bank, { left: true, right: true }, false, 0, { x0, x1: x0 + 440 });
       // (hf-art-ground 2026-10-29) the soil tiles on screen (600 units each: 2 across, 2 rows at most), the darkening field (2 at most),
-      // the top lip's repeats (560 each: 3 at most) and an end on screen
+      // the top lip's repeats (700 each: 4 at most) and an end on screen
       assert.ok(n <= 10, `view at ${x0}: ${n} pieces drawn`);
     }
     // the whole bank, with no view given: every repeat, as the journal's scenes draw it

@@ -20,8 +20,8 @@ type C = CanvasRenderingContext2D;
 
 /** a soil tile's size in world units (one tile is wider than an upright phone's view: 440-540 units) */
 export const SOIL_TILE = 600;
-/** the lip strip's repeat, world units */
-export const LIP_W = 560;
+/** the lip strip's repeat, world units (700, up from 560: the moss band read thin at 22-30 units; 840 began to cover his feet in World 9's stone) */
+export const LIP_W = 700;
 /** a bank end's height, world units */
 export const END_H = 300;
 /** how much darker the soil is by the bottom of the view (VI-8: 35-55%) */
