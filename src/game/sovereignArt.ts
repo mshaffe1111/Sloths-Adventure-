@@ -9,6 +9,7 @@ import type { BossHazard } from './bossAI.ts';
 import { drawW4 } from './w4Art.ts';
 import { COVER_LEN, type SkyPillar } from './sovereignFight.ts';
 import { screechBeak } from './sovereignSprite.ts';
+import { drawFx, drawFxAlong } from './bossFx.ts';
 
 let live: SkyPillar[] | null = null;
 /** the engine hands over the fight's pillars (null when the stage has none), so the lair can draw their cracks */
@@ -116,39 +117,31 @@ export function drawSkyPush(ctx: CanvasRenderingContext2D, h: BossHazard, time: 
   const fade = clamp01(h.life / 0.5) * clamp01(age / 0.08);
   const rocks = (live ?? []).filter((p) => p.h > 0 && (p.x - dir * (p.w / 2) - src) * dir > 0);
   ctx.save();
-  ctx.lineCap = 'round';
-  // three arcs, one behind the other
+  // three painted waves of sound and wind (boss-fx.webp 'screech'), one behind the other, each laid along its arc. The arc
+  // is broken where a rock shelters, and the paint carries on across the gap so it reads as one wave.
   for (let k = 0; k < 3; k++) {
     const fx = front - dir * k * 46;
     if ((fx - src) * dir < 10) continue;
     const r = Math.abs(fx - src);
     const span = Math.min(1.05, 0.35 + r / 600);
     const cy = floor - 150;
-    ctx.globalAlpha = fade * (0.9 - k * 0.25);
-    ctx.strokeStyle = k === 0 ? '#f0f9ff' : '#bae6fd';
-    ctx.lineWidth = 9 - k * 2.5;
-    ctx.shadowColor = 'rgba(125, 211, 252, 0.9)';
-    ctx.shadowBlur = 12;
-    // draw the arc in short pieces, leaving out what a rock shelters
+    ctx.globalAlpha = fade * (0.95 - k * 0.28);
+    const thick = 46 - k * 10;
     const N = 26;
-    let open = false;
+    let run: Array<[number, number, number]> = [];
+    const lay = () => {
+      if (run.length > 1) drawFxAlong(ctx, 'screech', run, thick);
+      run = [];
+    };
     for (let i = 0; i <= N; i++) {
       const a = -span + (2 * span * i) / N;
       const x = src + dir * Math.cos(a) * r;
       const y = Math.min(floor - 4, cy + Math.sin(a) * r * 0.8);
       const sheltered = rocks.some((p) => (x - (p.x + dir * p.w / 2)) * dir > 0 && (x - p.x) * dir < COVER_LEN + p.w / 2 && y > floor - p.h - 4);
-      if (sheltered || y < floor - 430) {
-        if (open) ctx.stroke();
-        open = false;
-        continue;
-      }
-      if (!open) {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        open = true;
-      } else ctx.lineTo(x, y);
+      if (sheltered || y < floor - 430) lay();
+      else run.push([x, y, i / N]);
     }
-    if (open) ctx.stroke();
+    lay();
   }
   ctx.restore();
 }
@@ -160,31 +153,16 @@ function drawGust(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const age = h.maxLife - h.life;
   const fade = clamp01(age / 0.25) * clamp01(h.life / 0.35);
   ctx.save();
-  ctx.lineCap = 'round';
-  for (let i = 0; i < 26; i++) {
-    const y = floor - 20 - rand(i * 3) * 300;
-    const len = 60 + rand(i * 5) * 90;
+  for (let i = 0; i < 14; i++) {
+    const y = floor - 30 - rand(i * 3) * 290;
+    const len = 110 + rand(i * 5) * 120;
     const sp = 520 + rand(i * 7) * 260;
     const u = ((time * sp + rand(i) * h.w) % (h.w + len)) - len;
     const x = dir > 0 ? x0 + u : x0 + h.w - u;
-    ctx.globalAlpha = fade * (0.35 + 0.35 * rand(i * 11));
-    ctx.strokeStyle = i % 3 ? '#e0f2fe' : '#ccfbf1';
-    ctx.lineWidth = 2 + rand(i * 13) * 2.5;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.quadraticCurveTo(x - dir * len * 0.5, y - 6 * Math.sin(time * 6 + i), x - dir * len, y + 2);
-    ctx.stroke();
-    if (i % 5 === 0) {
-      // a leaf tumbling along in it
-      ctx.fillStyle = '#86b84a';
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(time * 9 + i);
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 7, 3.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
+    ctx.globalAlpha = fade * (0.45 + 0.4 * rand(i * 11));
+    // the painted streaks of wind, and now and then one of her feathers tumbling along in it
+    drawFx(ctx, 'gust', x, y, len, { ax: dir > 0 ? 1 : 0, flipX: dir < 0 });
+    if (i % 4 === 0) drawFx(ctx, 'feather', x - dir * len * 0.4, y + 14, 22, { rot: time * 9 + i });
   }
   ctx.restore();
 }

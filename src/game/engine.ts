@@ -135,7 +135,8 @@ import {
   type AttackWant, type MoveId, type MoveSpec, type Rect,
 } from './fight.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
-import { drawEntrance, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
+import { drawEntrance, ENTRANCE_LONG, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
+import { queenTeaTableX } from './lairQueen.ts';
 import { drawLairBack, drawLairFront, drawLairObjects, drawLairWorld, lairOwnsScene } from './lairArt.ts';
 import { EASY_OPEN_MUL, bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
@@ -150,12 +151,16 @@ import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { drawFx, fxFrame } from './bossFx.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+
+/** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
+const TEA_STAND = 150;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -256,6 +261,35 @@ function sweetGlowPic(): HTMLCanvasElement | null {
   return cv;
 }
 
+/** at most this many particles at once: past it the oldest is reused (AN-5: one pooled system with a cap) */
+const MAX_PARTICLES = 260;
+/** the colour of the bits a creature leaves when it is knocked out: its own (fur, scales, feathers), not one green for all */
+const DEBRIS_COLOR: Partial<Record<string, string>> = {
+  snake: '#4d7c0f', eagle: '#f59e0b', harpy: '#9ca3af', ocelot: '#e0a64b', jaguar: '#d4a03a', boa: '#65a30d', caiman: '#6b7d3a',
+  tayra: '#5b3a24', frog: '#38bdf8', spider: '#6b4f3a', turtle: '#7c8a3a',
+};
+
+/** a painted puff or hit spark: the frame for how far through its life it is, fading at the end; the spark with a brief warm glow */
+function drawFxParticle(ctx: CanvasRenderingContext2D, pt: Particle) {
+  const u = 1 - pt.life / pt.maxLife;
+  if (pt.type === 'puff') {
+    drawFx(ctx, fxFrame('dust', u), pt.x, pt.y, pt.size, { ay: 0.9, alpha: Math.min(1, (1 - u) * 3) * 0.92 });
+    return;
+  }
+  if (u < 0.45) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const r = pt.size * (0.5 + u);
+    const g = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, r);
+    g.addColorStop(0, `rgba(255, 240, 190, ${0.55 * (1 - u / 0.45)})`);
+    g.addColorStop(1, 'rgba(255, 240, 190, 0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(pt.x - r, pt.y - r, r * 2, r * 2);
+    ctx.restore();
+  }
+  drawFx(ctx, fxFrame('spark', u), pt.x, pt.y, pt.size * (0.8 + 0.4 * u), { alpha: Math.min(1, (1 - u) * 3) });
+}
+
 export class GameEngine {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -314,7 +348,8 @@ export class GameEngine {
   private bossCtx: BossCtx | null = null;
   private bossIntro = false;
   /** a giant's entrance while it plays (the fight and the player wait) */
-  private entrance: { t: number; total: number; roared: boolean; named: boolean } | null = null;
+  /** `tea`: the Tarantula Queen's tea (bossDefs entrance.tea, the long version only): where the fight starts her, to walk back to */
+  private entrance: { t: number; total: number; roared: boolean; named: boolean; tea: { home: number } | null } | null = null;
   private entranceDone = false;
   /** the line on screen is one of the boss fight's (bossCtx.guide) */
   private bossGuideUp = false;
@@ -339,6 +374,10 @@ export class GameEngine {
   private viewCssH = 0;
   private introT = 0;
   private particles: Particle[] = [];
+  /** spent particles kept for reuse, so a busy fight does not churn the garbage collector */
+  private particlePool: Particle[] = [];
+  /** where the next particle goes once the cap is reached (the oldest is reused) */
+  private particleWrap = 0
   private floatingTexts: FloatingText[] = [];
   /** stage tips said that go once he is past their spot (StageHint.passX), with the words they were said in */
   private passTips: Array<{ x: number; text: string }> = [];
@@ -1402,7 +1441,7 @@ export class GameEngine {
       this.zzzTimer -= dt;
       if (this.zzzTimer <= 0) {
         this.zzzTimer = 0.9;
-        this.particles.push({ x: p.x + p.facing * 14, y: p.y - 62, vx: p.facing * 12, vy: -30, color: '#ddd6fe', size: 3, life: 0.9, maxLife: 0.9, type: 'star' });
+        this.emit({ x: p.x + p.facing * 14, y: p.y - 62, vx: p.facing * 12, vy: -30, color: '#ddd6fe', size: 3, life: 0.9, maxLife: 0.9, type: 'star' });
         this.addFloatingText('z', p.x + p.facing * 16, p.y - 66, '#ddd6fe');
       }
     }
@@ -1443,7 +1482,7 @@ export class GameEngine {
       this.trailT = 0;
       const pl = this.player;
       const hues = ['#fbbf24', '#f9a8d4', '#6ee7b7', '#fde047'];
-      this.particles.push({
+      this.emit({
         x: pl.x - pl.facing * (6 + Math.random() * 10),
         y: pl.y - 8 - Math.random() * 38,
         vx: -pl.facing * (10 + Math.random() * 30),
@@ -2153,6 +2192,8 @@ export class GameEngine {
             p.squashX = 1.1 + 0.15 * hard;
             p.squashY = 0.9 - 0.17 * hard;
           }
+          // the dust he kicks up as he lands (none for a step down that hardly falls)
+          if (landV > 260) this.spawnJumpDust(p.x, p.y, landV);
 
           // Bouncy mushroom interaction
           if (plat.type === 'bouncy') this.bounceOff();
@@ -2823,12 +2864,19 @@ export class GameEngine {
       const pt = this.particles[i];
       pt.life -= dt;
       if (pt.life <= 0) {
-        this.particles.splice(i, 1);
+        // (order does not matter: the last one takes its place, and the spent one goes back to the pool)
+        const last = this.particles.pop()!;
+        if (last !== pt) this.particles[i] = last;
+        this.particlePool.push(pt);
         continue;
       }
       pt.x += pt.vx * dt;
       pt.y += pt.vy * dt;
-      pt.vy += 300 * dt; // gravity
+      if (pt.type === 'puff' || pt.type === 'flash') {
+        // the painted puffs drift out and slow; they do not fall
+        pt.vx *= Math.max(0, 1 - dt * 5);
+        pt.vy *= Math.max(0, 1 - dt * 5);
+      } else pt.vy += 300 * dt; // gravity
     }
 
     if (this.stageHint && (this.stageHint.life -= dt) <= 0) this.stageHint = null;
@@ -3178,15 +3226,29 @@ export class GameEngine {
     if (!b || !def?.lair || b.defeated || !b.ai) return false;
     if (!this.entrance) {
       if (this.entranceDone) return false;
-      this.entrance = { t: 0, total: takeEntranceLength(this.currentStage.config.id), roared: false, named: false };
+      const total = takeEntranceLength(this.currentStage.config.id);
+      const tea = def.entrance?.tea && total >= ENTRANCE_LONG ? { home: b.x } : null;
+      this.entrance = { t: 0, total, roared: false, named: false, tea };
       this.bossIntro = true; // the usual first roar is part of the entrance instead
       b.ai.alpha = 0;
       this.reportBoss();
     }
     const en = this.entrance;
     en.t += dt;
-    const beat = entranceBeat(en.t, en.total);
+    const beat = entranceBeat(en.t, en.total, !!en.tea);
     b.ai.alpha = beat.reveal;
+    b.ai.intro = beat.u;
+    if (en.tea && this.currentStage.arena) {
+      // her tea: at the painted table (facing it from its right, so the pot she holds is over it) until she has roared, then she
+      // skitters back, still facing the sloth, to where the fight starts her
+      const a = this.currentStage.arena;
+      const view = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
+      const home = this.teaHome();
+      const at = Math.min(en.tea.home, queenTeaTableX(view, a) + TEA_STAND);
+      const back = Math.max(0, Math.min(1, (beat.u - 0.7) / 0.22));
+      b.x = at + (home - at) * back * back * (3 - 2 * back);
+      b.facing = -1;
+    }
     const world = this.currentStage.config.worldIndex;
     if (beat.roaring && !en.roared) {
       en.roared = true;
@@ -3213,8 +3275,10 @@ export class GameEngine {
       }
     }
     if (en.t >= en.total) {
+      if (en.tea) b.x = this.teaHome();
       this.entrance = null;
       this.entranceDone = true;
+      b.ai.intro = undefined;
       const start = def.guide?.start;
       if (start && !tipHeard(this.currentStage.config.id, 'boss:start')) {
         markTipHeard(this.currentStage.config.id, 'boss:start');
@@ -3443,7 +3507,8 @@ export class GameEngine {
     const levelH = this.currentStage.config.levelHeight;
     const portrait = h > w;
     // in a tall narrow window the arena is wider than the screen: the boss makes its entrance close enough to be seen
-    if (portrait && b.ai?.state === 'roar' && b.ai.roarReason === 'enter') b.x = Math.min(b.x, p.x + 540);
+    // (not during the Queen's tea: she stands at her table and the view goes to her, teaAimK)
+    if (portrait && b.ai?.state === 'roar' && b.ai.roarReason === 'enter' && !this.entrance?.tea) b.x = Math.min(b.x, p.x + 540);
     const baseViewW = w / baseScale({ w, h, levelH, worldViewH: WORLD_VIEW_H, portraitViewW: PORTRAIT_VIEW_W });
     const def = this.bossDef;
     const want = bossViewWidth({
@@ -4046,7 +4111,7 @@ export class GameEngine {
     sound.playEnemyDefeated(e.type);
     this.hitstopTimer = Math.max(this.hitstopTimer, 0.1);
     this.addFloatingText(label, e.x, e.y - 25, '#86efac');
-    this.spawnDebrisBurst(e.x, e.y, e.type === 'eagle' ? '#f59e0b' : '#22c55e');
+    this.spawnDebrisBurst(e.x, e.y, DEBRIS_COLOR[e.type] ?? '#22c55e');
   }
 
   /** a knocked-out animal tumbles (small), drops (flyers) or hops and flops belly-up (big), then fades */
@@ -4740,7 +4805,7 @@ export class GameEngine {
     for (let i = 0; i < 26; i++) {
       const a = -Math.PI / 2 + (Math.random() - 0.5) * 1.5;
       const sp = 160 + Math.random() * 260;
-      this.particles.push({
+      this.emit({
         x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
         color: Math.random() < 0.5 ? '#bae6fd' : '#ffffff',
         size: 3 + Math.random() * 4, life: 0.8, maxLife: 0.8, type: 'water',
@@ -4751,6 +4816,21 @@ export class GameEngine {
   /**
    * Camera Controller with lookahead and trauma screen shake
    */
+  /** where the Queen's tea sends her home to: her fight start (upright, as close to Pokey as any entering boss is put, updateCamera) */
+  private teaHome(): number {
+    const home = this.entrance?.tea?.home ?? this.boss?.x ?? 0;
+    return this.viewCssH > this.viewCssW ? Math.min(home, this.player.x + 540) : home;
+  }
+
+  /** how far the view is turned over to the Queen's tea table (0..1): upright only, through the pour, easing off as she walks home */
+  private teaAimK(): number {
+    const en = this.entrance;
+    if (!en?.tea || !this.boss || this.viewCssH <= this.viewCssW) return 0;
+    const u = en.t / en.total;
+    const k = Math.min(1, u / 0.3) * (1 - Math.max(0, Math.min(1, (u - 0.7) / 0.2)));
+    return k * k * (3 - 2 * k);
+  }
+
   private updateCamera(dt: number) {
     const p = this.player;
     const { viewportWidth: vw, viewportHeight: vh } = this.camera;
@@ -4848,6 +4928,10 @@ export class GameEngine {
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
+      // the Queen's tea, upright: the narrow view goes over to her table while she pours and eases back as she skitters home
+      // (sideways, both already fit). Everything holds still in the entrance, so Pokey may be off the edge for those seconds.
+      const k = this.teaAimK();
+      if (k > 0) this.camera.targetX += (bs.x - TEA_STAND * 0.6 - vw / 2 - this.camera.targetX) * k;
     }
 
     // 6-8: the rising tide is the star: the view drops so its line sits near the bottom of the screen while he climbs (as far as his
@@ -4869,7 +4953,9 @@ export class GameEngine {
     // the easing never loses him off the side: the aim keeps him in the view, but on a narrow view the eased camera trailed a quick swing
     // back by 60 px or more, and on 5-4's long silk lines upright (320 x 782) he swung out past the left edge (QA v200). The framing is
     // the aim's; this only keeps his whole body (and a little room) inside while the camera catches up (cameraFollow.ts keepHeroX)
-    this.camera.x = keepHeroX(this.camera.x, p.x, vw);
+    const teaK = this.teaAimK();
+    const kept = keepHeroX(this.camera.x, p.x, vw);
+    this.camera.x = kept + (this.camera.x - kept) * teaK;
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
 
@@ -5729,6 +5815,7 @@ export class GameEngine {
 
     // Render Particles
     this.particles.forEach((pt) => {
+      if (pt.type === 'puff' || pt.type === 'flash') return drawFxParticle(ctx, pt);
       ctx.fillStyle = pt.color;
       ctx.beginPath();
       const r = pt.size * (pt.life / pt.maxLife);
@@ -5884,7 +5971,7 @@ export class GameEngine {
           eyeRgb: this.bossDef.entrance?.eye,
           darkRgb: this.bossDef.entrance?.dark,
         },
-        entranceBeat(this.entrance.t, this.entrance.total),
+        entranceBeat(this.entrance.t, this.entrance.total, !!this.entrance.tea),
         this.gameTime
       );
     }
@@ -7278,30 +7365,47 @@ export class GameEngine {
     return l === r ? facing : r > l ? 1 : -1;
   }
 
-  private spawnSparkBurst(x: number, y: number, color: string) {
-    for (let i = 0; i < 8; i++) {
+  /** one particle, from the pool; past the cap the oldest is reused, so a frame never holds more than MAX_PARTICLES */
+  private emit(p: Particle) {
+    let q: Particle;
+    if (this.particles.length >= MAX_PARTICLES) {
+      q = this.particles[this.particleWrap++ % MAX_PARTICLES];
+    } else {
+      q = this.particlePool.pop() ?? ({} as Particle);
+      this.particles.push(q);
+    }
+    q.x = p.x;
+    q.y = p.y;
+    q.vx = p.vx;
+    q.vy = p.vy;
+    q.color = p.color;
+    q.size = p.size;
+    q.life = p.life;
+    q.maxLife = p.maxLife;
+    q.type = p.type;
+  }
+
+  /** the painted hit spark (a brief glow and the star bursting into rays), `w` wide, and a few sparkles flying off it */
+  private spawnHitSpark(x: number, y: number, w: number, color: string, sparkles: number) {
+    this.emit({ x, y, vx: 0, vy: 0, color, size: w, life: 0.3, maxLife: 0.3, type: 'flash' });
+    for (let i = 0; i < sparkles; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const spd = 60 + Math.random() * 120;
-      this.particles.push({
-        x,
-        y,
-        vx: Math.cos(angle) * spd,
-        vy: Math.sin(angle) * spd,
-        color,
-        size: 3 + Math.random() * 3,
-        life: 0.4 + Math.random() * 0.3,
-        maxLife: 0.7,
-        type: 'spark',
-      });
+      const spd = 90 + Math.random() * 120;
+      this.emit({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd - 30, color, size: 2.6, life: 0.32, maxLife: 0.32, type: 'star' });
     }
   }
 
+  private spawnSparkBurst(x: number, y: number, color: string) {
+    this.spawnHitSpark(x, y, 46, color, 3);
+  }
+
   private spawnClawHitSparks(x: number, y: number, isMega: boolean) {
-    const count = isMega ? 16 : 8;
+    this.spawnHitSpark(x + this.player.facing * 6, y, isMega ? 74 : 50, isMega ? '#fef08a' : '#bbf7d0', isMega ? 5 : 3);
+    const count = isMega ? 4 : 0;
     for (let i = 0; i < count; i++) {
       const angle = (Math.random() - 0.5) * Math.PI;
       const spd = 120 + Math.random() * 180;
-      this.particles.push({
+      this.emit({
         x,
         y,
         vx: (this.player.facing * spd * 0.8) + (Math.random() - 0.5) * 80,
@@ -7317,7 +7421,7 @@ export class GameEngine {
 
   private spawnDebrisBurst(x: number, y: number, color: string) {
     for (let i = 0; i < 12; i++) {
-      this.particles.push({
+      this.emit({
         x: x + (Math.random() - 0.5) * 20,
         y: y + (Math.random() - 0.5) * 10,
         vx: (Math.random() - 0.5) * 180,
@@ -7331,19 +7435,16 @@ export class GameEngine {
     }
   }
 
-  private spawnJumpDust(x: number, y: number) {
-    for (let i = 0; i < 5; i++) {
-      this.particles.push({
-        x: x + (Math.random() - 0.5) * 16,
-        y,
-        vx: (Math.random() - 0.5) * 60,
-        vy: -20 - Math.random() * 40,
-        color: '#e2f1e7',
-        size: 2.5,
-        life: 0.25,
-        maxLife: 0.25,
-        type: 'smoke',
-      });
+  /**
+   * A soft painted dust puff where he takes off or lands (the dust strip in boss-fx.webp), bigger and slower to clear the harder he came
+   * down (`speed`: how fast he was falling, px/s); a hard landing throws two more puffs out to the sides.
+   */
+  private spawnJumpDust(x: number, y: number, speed = 0) {
+    const k = Math.max(0, Math.min(1, speed / PHYS.maxFall));
+    const life = 0.36 + 0.2 * k;
+    this.emit({ x, y: y + 2, vx: 0, vy: -8, color: '', size: 40 + 44 * k, life, maxLife: life, type: 'puff' });
+    if (k > 0.4) {
+      for (const d of [-1, 1]) this.emit({ x: x + d * 10, y: y + 2, vx: d * (70 + 90 * k), vy: -6, color: '', size: 26 + 22 * k, life: life * 0.9, maxLife: life * 0.9, type: 'puff' });
     }
   }
 
@@ -7351,7 +7452,7 @@ export class GameEngine {
     for (let i = 0; i < 10; i++) {
       const angle = (i / 10) * Math.PI * 2;
       const spd = 70 + Math.random() * 90;
-      this.particles.push({
+      this.emit({
         x: x + Math.cos(angle) * 12,
         y: y + Math.sin(angle) * 8,
         vx: Math.cos(angle) * spd,
@@ -7366,10 +7467,11 @@ export class GameEngine {
   }
 
   private spawnKickHitBurst(x: number, y: number) {
-    for (let i = 0; i < 14; i++) {
+    this.spawnHitSpark(x + this.player.facing * 8, y, 62, '#fde047', 4);
+    for (let i = 0; i < 4; i++) {
       const angle = (Math.random() - 0.5) * Math.PI;
       const spd = 140 + Math.random() * 190;
-      this.particles.push({
+      this.emit({
         x,
         y,
         vx: (this.player.facing * spd * 0.9) + (Math.random() - 0.5) * 60,
@@ -7387,7 +7489,7 @@ export class GameEngine {
     for (let i = 0; i < 14; i++) {
       const angle = (Math.random() - 0.5) * Math.PI * 2;
       const spd = 50 + Math.random() * 120;
-      this.particles.push({
+      this.emit({
         x: x + (Math.random() - 0.5) * 24,
         y: y + (Math.random() - 0.5) * 18,
         vx: Math.cos(angle) * spd,
