@@ -17,6 +17,20 @@ from pack import pack  # noqa: E402
 REPO = Path(__file__).resolve().parents[3]
 HD = 2.0
 ST = REPO / 'tools/art/hfbatch/starts/storyart'
+# the old three sheets the starts were cut from (replaced in the game by the repainted pages): read from git, where they still are
+OLD_SHEETS_AT = '0e433bd'
+
+
+def old_sheet(atlas):
+    p = REPO / atlas
+    if p.exists():
+        return p
+    import subprocess, tempfile
+    out = Path(tempfile.gettempdir()) / 'storyart-old' / Path(atlas).name
+    if not out.exists():
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_bytes(subprocess.run(['git', 'show', f'{OLD_SHEETS_AT}:{atlas}'], cwd=REPO, capture_output=True, check=True).stdout)
+    return out
 
 
 def main():
@@ -50,7 +64,7 @@ def main():
         else:
             m = meta[f'cel-{key}']
             atlas, x, y, w, h = m['src']
-            old = Image.open(REPO / atlas).convert('RGBA').crop((x, y, x + w, y + h))
+            old = Image.open(old_sheet(atlas)).convert('RGBA').crop((x, y, x + w, y + h))
             face, raw, cut_c = m['cel']['f'], m['cel'].get('c') == 'raw', m['cel'].get('c')
         # (the edit model's start was 1024 square too; its picture is the same size, so the start's mapping holds for it)
         if gen.size != tuple(m.get('size', (1024, 1024))):
