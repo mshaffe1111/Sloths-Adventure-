@@ -172,6 +172,50 @@ def water():
     return out
 
 
+def sign_sketch(look, W=448, H=640):
+    """round 2 of the signs: the first takes kept the old sheet's comic look (its black outline and painted wave came through). A plain
+    sketch instead: a post, a board of three planks with a nail at each corner, a big curling wave cut into the board as a groove (its
+    shadowed upper lip and lit lower lip), a vine (jungle) or a twist of silk and an orchid (World 5) round the post; no outline."""
+    from PIL import ImageDraw
+    wood, dark, lit = {'jungle': ((150, 98, 56), (92, 58, 32), (186, 134, 84)), 'w5': ((176, 172, 180), (108, 102, 116), (212, 208, 216))}[look]
+    can = Image.new('RGB', (W, H), MAG)
+    d = ImageDraw.Draw(can)
+    d.rectangle((W // 2 - 26, 250, W // 2 + 26, H - 30), fill=dark)
+    d.rectangle((W // 2 - 18, 250, W // 2 + 4, H - 30), fill=wood)
+    bx0, by0, bx1, by1 = 40, 70, W - 40, 330
+    for i in range(3):
+        y0 = by0 + i * (by1 - by0) // 3
+        d.rounded_rectangle((bx0 + (i % 2) * 6, y0, bx1 - ((i + 1) % 2) * 8, y0 + (by1 - by0) // 3 - 4), 14, fill=wood)
+        d.line((bx0 + 20, y0 + 20, bx1 - 30, y0 + 24), fill=lit, width=3)
+    for x, y in ((bx0 + 22, by0 + 20), (bx1 - 24, by0 + 20), (bx0 + 22, by1 - 22), (bx1 - 24, by1 - 22)):
+        d.ellipse((x - 6, y - 6, x + 6, y + 6), fill=dark)
+    import math
+    # three wavy water lines cut into the board, the top one curling over at its crest
+    for row in range(3):
+        yc = by0 + 70 + row * 62
+        pts = [(bx0 + 60 + t * 3, yc - 22 * math.sin((t * 3) / 52.0) * (1.25 if row == 0 else 1)) for t in range(0, round((bx1 - bx0 - 120) / 3))]
+        if row == 0:
+            ex, ey = pts[-1]
+            pts += [(ex + 18 * math.sin(a2), ey - 18 + 18 * math.cos(a2)) for a2 in [k / 10 * math.pi * 1.3 for k in range(11)]]
+        d.line(pts, fill=dark, width=18, joint='curve')
+        d.line([(x, y + 8) for x, y in pts[:len(pts) - (11 if row == 0 else 0)]], fill=lit, width=5)
+    if look == 'jungle':
+        for k in range(9):
+            y = 300 + k * 32
+            d.line((W // 2 - 30, y, W // 2 + 30, y + 18), fill=(70, 120, 50), width=9)
+        d.ellipse((W // 2 + 22, 380, W // 2 + 70, 410), fill=(84, 140, 60))
+    else:
+        for k in range(5):
+            y = 420 + k * 18
+            d.line((W // 2 - 32, y, W // 2 + 32, y + 10), fill=(236, 236, 240), width=7)
+        d.ellipse((W // 2 + 20, 400, W // 2 + 70, 450), fill=(246, 244, 248))
+        d.ellipse((W // 2 + 38, 418, W // 2 + 52, 432), fill=(226, 170, 196))
+        for k in range(14):
+            x = W // 2 - 90 + k * 13
+            d.polygon([(x, H - 20), (x + 8, H - 70), (x + 14, H - 20)], fill=(150, 120, 170))
+    return can
+
+
 if __name__ == '__main__':
     for n in PROPS:
         im = deline(w5(n))
@@ -180,6 +224,8 @@ if __name__ == '__main__':
         f = SIGNS[n]
         im = SIGNIMG.crop((f['x'], f['y'], f['x'] + f['w'], f['y'] + f['h']))
         on_mag(im, (448, 640), pad=0.05).save(OUT / f'{n}.webp', quality=92)
+    for look in ('jungle', 'w5'):
+        sign_sketch(look).save(OUT / f'sign2-{look}.webp', quality=92)
     for n, v in dress().items():
         (v if isinstance(v, Image.Image) else collage(*v)).save(OUT / f'dress-{n}.webp', quality=92)
     for n, im in water().items():
