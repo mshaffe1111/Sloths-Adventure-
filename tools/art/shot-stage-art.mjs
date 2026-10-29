@@ -42,7 +42,7 @@ const place = (what) => {
     const c = pick((c) => c.type === 'cage' && c.critter === 'eaglet');
     if (!c) return 'no nest';
     if (what === 'nesttorn') c.cageHp = 1;
-    tx = c.x - 90; ty = c.y + 26;
+    tx = c.x - 130; ty = c.y + 26;
   } else {
     const type = what === 'fern' || what === 'bell' ? 'find' : what === 'thorn' ? 'thorn_gate' : what;
     let c = what === 'bell' ? null : pick((c) => c.type === type && !c.collected && (what === 'fern' ? c.hidden : what === 'bell' ? !c.hidden : true));
@@ -73,6 +73,9 @@ for (const [tag, w, h] of [['up', 390, 844], ['side', 844, 390]]) {
     await p.waitForTimeout(300);
     await p.evaluate(() => { const e = typeof window.__engine === "function" ? window.__engine() : window.__engine; e.player.invincibleTimer = 999; });
   }
+  // (his hurt-proof blink ends just before the shot, so he is drawn solid, not half see-through)
+  await p.evaluate(() => { const e = typeof window.__engine === "function" ? window.__engine() : window.__engine; e.player.invincibleTimer = 0; });
+  await p.waitForTimeout(120);
   await p.screenshot({ path: `${out}-${tag}.jpg`, type: 'jpeg', quality: 82 });
   await p.close();
 }

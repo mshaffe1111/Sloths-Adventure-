@@ -239,15 +239,18 @@ export function drawBellArt(ctx: CanvasRenderingContext2D, ground: number, t: nu
 }
 
 // ───────────────────────────── 4-8's netting ─────────────────────────────
-/** the old netting pegged over a nest, its pegs' feet on `floor` either side of x: whole, torn (after the first blow), falling away (gone 0..1) */
-export function drawNetArt(ctx: CanvasRenderingContext2D, x: number, floor: number, torn: boolean, gone: number, t: number, h = 112): boolean {
+/**
+ * the old netting pegged over a nest, its pegs' feet on `floor` either side of x, `w` world px wide (snug over the nest's bowl): whole,
+ * torn (after the first blow), falling away (gone 0..1)
+ */
+export function drawNetArt(ctx: CanvasRenderingContext2D, x: number, floor: number, torn: boolean, gone: number, t: number, w = 150): boolean {
   if (gone >= 1) return true;
   const p = piece(torn ? 'netTorn' : 'netWhole');
   if (!p) return false;
   ctx.save();
   ctx.globalAlpha *= 1 - gone;
   const shake = torn && gone === 0 ? Math.sin(t * 30) * 1.2 : 0;
-  blitAt(ctx, p[0], p[1], x + shake, floor + gone * gone * 120, h);
+  blitAt(ctx, p[0], p[1], x + shake, floor + gone * gone * 120, (w * p[1].h) / p[1].w);
   ctx.restore();
   return true;
 }

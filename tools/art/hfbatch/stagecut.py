@@ -175,7 +175,7 @@ for key in sorted(k for k in PICKS if k.startswith('gate-w')):
         shut = cut(src, (0, 0, src.width // 2, src.height), 'magenta')
     if f'gateopen-w{w}' in PICKS:
         o = take(PICKS[f'gateopen-w{w}'])
-        opn = cut(fill_door_gaps(o, w), (0, 0, o.width, o.height), 'magenta')
+        opn = cut(fill_door_gaps(o, w) if w in GATE else o, (0, 0, o.width, o.height), 'magenta')
     else:
         opn = cut(src, (src.width // 2, 0, src.width, src.height), 'magenta')
     s_, o_ = scale_pair(shut, opn, 640)

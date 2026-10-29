@@ -45,3 +45,11 @@ hfb-stage-2 6ae3858a5ddcdc083026376e rtx-pro-6000 17:42:34Z-17:49:13Z (6.65 min,
   KEPT gateopen-w<N>-s60-7 for all nine (a painted passage with its own light; the s45 takes keep the start's flat rectangle),
   gate-w5-s55-7.
 total ~25.5 min on rtx-pro-6000 = ~$1.17 of the $14 cap. Reviews: reference/prop-sheets/qa-notes/hf-art-stage/.
+Round 3 (the lead's review: the open door read as a dark hole; World 5's water repeated every ~210 px):
+hfb-stage-3 6ae39f625ddcdc08302650d1 rtx-pro-6000 19:32:50Z-19:39:27Z (6.6 min, ~$0.30): the open gates lit from inside
+  (start-gatelit-w<N>: the round-2 pick's way through filled with the world beyond, faint, in the world's own light; World 10's floor
+  spikes put back from the first round's open half), s40/s52 x 7/23, all ten worlds; World 4 and 5's water from uneven starts
+  (start-water2-w<N>), s55/s65 x 7/23. KEPT gatelit s52: w1-23, w2-7, w3-23, w4-7, w5-7, w6-23, w7-23, w8-23, w9-7, w10-7 (s40 keeps too
+  much of the start's flat fill). water2-w4-s55-7 KEPT (uneven flecks); water2-w5-s55-23 KEPT (petals scattered, no beat); the -7 takes
+  THROWN (the start's piece seams show as vertical lines).
+running total ~32.1 min on rtx-pro-6000 = ~$1.47 of the $14 cap.

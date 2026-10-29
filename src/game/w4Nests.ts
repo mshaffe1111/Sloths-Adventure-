@@ -78,6 +78,8 @@ export function nestWind(cages: readonly Cage[], px: number, py: number, grounde
 /** the painted nest is drawn this wide; it sits this share of its height down into the ledge */
 const NEST_W = 150;
 const NEST_SINK = 0.12;
+/** the netting's width: snug over the bowl (a touch wider than the nest, so its pegs stand just outside the rim) */
+const NET_W = 158;
 /** the parent's width, circling high and close to (hovering, perched) */
 const PARENT_W = { far: 118, near: 150, perched: 110 };
 
@@ -126,13 +128,13 @@ export function drawNest(ctx: CanvasRenderingContext2D, c: Cage, t: number): voi
   const shiver = since < 0 ? Math.sin(t * 9) * 0.8 : 0;
   drawW4(ctx, 'nestEaglet', c.x + shiver, floor + nh * NEST_SINK - hop, NEST_W);
   if (since < 0) {
-    drawNetArt(ctx, c.x, floor + 4, (c.cageHp ?? 2) < 2, 0, t, nh * 0.86);
+    drawNetArt(ctx, c.x, floor + nh * 0.1, (c.cageHp ?? 2) < 2, 0, t, NET_W);
     // the parent, circling high over its chick (it cannot get to it through the netting)
     const a = t * 0.9 + c.x * 0.01;
     drawParent(ctx, c.x + Math.cos(a) * 120, floor - 260 + Math.sin(a) * 26, t, 0.2, PARENT_W.far, Math.sin(a) < 0 ? 1 : -1);
     return;
   }
-  drawNetArt(ctx, c.x, floor + 4, true, Math.min(1, since / 0.9), t, nh * 0.86);
+  drawNetArt(ctx, c.x, floor + nh * 0.1, true, Math.min(1, since / 0.9), t, NET_W);
   const hoverY = floor - 150;
   if (since < NEST_WIND.arrive) {
     // the swoop: from high up behind, down to just over the nest
