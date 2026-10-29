@@ -39,7 +39,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, EDGE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -1525,7 +1525,18 @@ export class GameEngine {
     // so a jump that touches a trunk grabs it even if the thumb has already left the glass
     if (this.input.state.jumpPressed) this.upIntent = 0.35;
     else this.upIntent = Math.max(0, this.upIntent - dt);
-    const wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down);
+    let wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down);
+    // (only a jump straight up or toward the trunk grabs it, and not while steering away; in the air, only moving toward it or holding up
+    // or down without leaning or steering away: any jump within reach grabbed it, so a leap away from beside a trunk stuck to it, CT-10)
+    if (wantGrab && nearTreeVine && !p.climbing) {
+      const toward = Math.abs(nearTreeVine.x - p.x) < 8 ? 0 : Math.sign(nearTreeVine.x - p.x);
+      const st = this.input.state;
+      const steer = st.left ? -1 : st.right ? 1 : 0;
+      const lean = this.upIntent > 0 ? (st.jumpLean ?? 0) : 0;
+      const aimedAway = toward !== 0 && (lean === -toward || steer === -toward);
+      const movingToward = toward !== 0 && p.vx * toward > 20;
+      wantGrab = p.grounded ? !aimedAway : movingToward || !aimedAway;
+    }
     const onRope = this.updateRope(dt);
     this.updateRopeLoad(dt);
     if (onRope) {
@@ -1544,12 +1555,15 @@ export class GameEngine {
         this.jumpBufferTimer = 0;
         this.climbAssist = 0.45;
       }
-      if (this.input.state.down) this.climbAssist = 0;
-      else if (this.input.state.up) this.climbAssist = Math.max(this.climbAssist, 0.25);
+      // (the grab's little carry runs down even while up is held, and an explicit stop ends it: it used to be topped up to 0.25 s while
+      // up was held, so he climbed 50 to 90 px past where the thumb stopped, polish report CT-4)
+      if (this.input.state.down || (this.input as { takeClimbStop?: () => boolean }).takeClimbStop?.()) this.climbAssist = 0;
       else this.climbAssist = Math.max(0, this.climbAssist - dt);
       this.climbGrace = Math.max(0, this.climbGrace - dt);
       if (this.climbGrace > 0) this.input.state.jumpPressed = false;
-      // a sideways push only lets go once it is clearly deliberate: held, and not while climbing up or down
+      // a sideways push only lets go once it is clearly deliberate: held, and not while climbing up or down. By touch and with the Pad it
+      // must be held longer, and on a trunk both steer only on a clearly sideways stroke (touchGestures.ts trunkSide, padControl.ts): a
+      // climbing stroke that drifted a little sideways dropped him off the moment the thumb stopped (CT-4)
       const sideHeld = this.input.state.left || this.input.state.right;
       const vertHeld = this.input.state.up || this.input.state.down || this.climbAssist > 0;
       this.climbSideTimer = sideHeld && !vertHeld && this.climbGrace <= 0 ? this.climbSideTimer + dt : 0;
@@ -1623,7 +1637,7 @@ export class GameEngine {
         this.spawnSparkBurst(p.x, p.y, '#34d399');
       }
       // Natural Exit D: Steer away with Left / Right (held on purpose) -> Natural graceful hop off trunk!
-      else if (this.climbSideTimer >= 0.2) {
+      else if (this.climbSideTimer >= (this.input.source === 'keys' ? 0.2 : 0.35)) {
         const steerDir = this.input.state.left ? -1 : 1;
         p.climbing = false;
         this.vineCooldownTimer = 0.35;
@@ -1853,11 +1867,25 @@ export class GameEngine {
               p.vx -= dir * (this.atk && p.grounded ? PHYS.groundDec : PHYS.airDec) * dt;
             }
           } else {
-            // refined controls: a finger lifted in mid-air no longer brakes him (holding down still does)
-            const dec = p.grounded ? PHYS.groundDec : this.refined && !this.input.state.down ? 0 : PHYS.airStop;
+            // refined controls: a finger lifted in mid-air no longer brakes him (holding down still does). Nor does one lifted on the frame
+            // he takes off: a one-thumb flick lifts at once, and when the lift beat the frame, ground braking ran before the jump below and
+            // took 113 px/s off the take-off, so the same running jump carried 93 px or 178 px by luck (polish report CT-1, touchRig.test.ts)
+            const takeOff = p.grounded && this.input.state.jumpPressed;
+            const dec = p.grounded ? (takeOff ? 0 : PHYS.groundDec) : this.refined && !this.input.state.down ? 0 : PHYS.airStop;
             if (Math.abs(p.vx) <= dec * dt) p.vx = 0;
             else p.vx -= Math.sign(p.vx) * dec * dt;
+            // standing still past the end of a ledge: drawn a small step back, so no more than about a quarter of him is over the air (EDGE)
+            if (p.vx === 0 && !takeOff && !this.atk) this.edgeTarget = this.edgeOffset();
           }
+        }
+        // (where he is drawn eases to that step back while he stands there, and back onto his footing within a few frames when he moves)
+        {
+          const cur = p.drawDx ?? 0;
+          const rate = (this.edgeTarget !== 0 ? EDGE.stepV : EDGE.snapV) * dt;
+          const d = this.edgeTarget - cur;
+          p.drawDx = Math.abs(d) <= rate ? this.edgeTarget : cur + Math.sign(d) * rate;
+          p.teeter = this.edgeTarget !== 0 && Math.abs(this.edgeTarget - p.drawDx) < 1 ? (this.edgeTarget < 0 ? 1 : -1) : 0;
+          this.edgeTarget = 0;
         }
 
         const assist = this.assistNow();
@@ -5213,7 +5241,29 @@ export class GameEngine {
     }
   }
 
+  /** this frame, the drawn step back at a ledge's end (edgeOffset): applied to where he is drawn, p.drawDx */
+  private edgeTarget = 0;
+  /**
+   * He stands still with his middle past the end of the platform under him, and nothing at that height carries on beyond it: how far to
+   * DRAW him back from where he stands (px, - toward the left), so his middle shows EDGE.inset inside the end and at most about a quarter
+   * of him over the air (QA, 2-6, 2026-10-29: "he stands in the air"); 0 otherwise. Only the picture moves: his footing, every jump from
+   * that edge, coyote time and the landing forgiveness are exactly as before (moving him back cost 4-4 a liana jump, w4RealReach).
+   */
+  private edgeOffset(): number {
+    const p = this.player;
+    if (!p.grounded || p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.pushing) return 0;
+    const plat = this.platforms.find((q) => q.id === this.standingOnId);
+    if (!plat || plat.type === 'drift' || plat.width < EDGE.inset * 2 + 8) return 0;
+    const carriesOn = (x: number) => this.platforms.some((q) => q !== plat && !q.broken && Math.abs(q.y - plat.y) <= 3 && x >= q.x && x <= q.x + q.width);
+    const r = plat.x + plat.width;
+    if (p.x > r - EDGE.inset && !carriesOn(r + 2)) return r - EDGE.inset - p.x;
+    if (p.x < plat.x + EDGE.inset && !carriesOn(plat.x - 2)) return plat.x + EDGE.inset - p.x;
+    return 0;
+  }
+
   private takeOff(second: boolean) {
+    // (a touch or Pad jump's minimum hold counts from now, in game time: CT-12)
+    (this.input as { noteTakeOff?: () => void }).noteTakeOff?.();
     const help = this.touchHelp();
     if (help === 'off') return;
     const inp = this.input.state;

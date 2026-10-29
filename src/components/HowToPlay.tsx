@@ -166,6 +166,9 @@ const Extras: React.FC = () => (
       <p className="ui-copy">
         In a stage, <b>Menu</b> at the top pauses the game. It has Resume, Restart, Trophies, the World Map, this journal, how you control the game, and the sound.
       </p>
+      <p className="ui-copy">
+        The phone's <b>Back</b> swipe pauses the game too, instead of leaving it. Keep your thumbs <b>a finger's width in from the edges</b>: the phone keeps swipes that start at the very edge for itself.
+      </p>
     </section>
   </div>
 );

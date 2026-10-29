@@ -46,6 +46,7 @@ import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
 import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
+import { guardBack } from './game/backGuard.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { midSceneAfter } from './game/midScene.ts';
@@ -812,6 +813,14 @@ export default function App() {
   useEffect(() => {
     if (screen === 'title') leaveWideMode();
   }, [screen]);
+
+  // a back swipe from the screen's edge pauses the stage instead of leaving the game (backGuard.ts, polish report CT-6)
+  const onBackSwipe = useRef<() => void>(() => {});
+  onBackSwipe.current = () => {
+    if (screen === 'playing') pauseGame();
+  };
+  const onStage = screen === 'playing' || screen === 'paused';
+  useEffect(() => (onStage ? guardBack(() => onBackSwipe.current()) : undefined), [onStage]);
 
   // the new HUD (beta) flies a pickup from Pokey into its counter
   const heroPoint = useCallback(() => engineRef.current?.heroScreenPoint() ?? null, []);
