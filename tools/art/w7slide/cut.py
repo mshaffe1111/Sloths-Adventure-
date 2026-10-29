@@ -84,7 +84,7 @@ def seam_repair(key, repaint, half=72, feather=34):
         d = np.min(np.abs(x - np.array(lines)[None, :]), axis=1)
         return np.clip((half + feather - d) / feather, 0, 1)
     my = band(h, [dy] if dy == 512 else [256, 768]) if dy else np.zeros(h)
-    mx = band(w, [256, 768]) if dx else np.zeros(w)
+    mx = band(w, [512] if dx == 512 else [256, 768]) if dx else np.zeros(w)
     m = np.maximum(my[:, None], mx[None, :])[..., None]
     m = m * m * (3 - 2 * m)
     return Image.fromarray((a * (1 - m) + b * m).clip(0, 255).astype(np.uint8))
@@ -172,7 +172,17 @@ def key_grey(im):
     sys.path.insert(0, str(H.parent / 'train'))
     from clips import key
     a = np.asarray(im)
-    alpha = key(a)
+    m = key(a) > 128
+    # the sheet's pale sticker rim: peel edge pixels that are pale and unsaturated, a ring at a time
+    pale = (a.min(-1) > 165) & (a.max(-1).astype(int) - a.min(-1) < 70)
+    for _ in range(6):
+        edge = m & ~ndimage.binary_erosion(m)
+        m &= ~(edge & pale)
+    m = ndimage.binary_opening(m, iterations=3)  # drops the thin slope line left under a hand
+    lab, n = ndimage.label(m)
+    m = lab == 1 + int(np.argmax(ndimage.sum(m, lab, range(1, n + 1))))
+    m = ndimage.binary_erosion(m, iterations=3)
+    alpha = np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.8)))
     return Image.fromarray(np.dstack([a, alpha]), 'RGBA')
 
 
@@ -220,67 +230,96 @@ def save_webp(im, path, q=90):
     return path.stat().st_size
 
 
+def crumble_frames(im, n=4):
+    """the four crumble frames: each quarter keyed from the magenta, all cut to one shared box so the frames line up when played"""
+    rgba, fig = key_magenta(im)
+    W, Hh = rgba.size
+    cw = W // n
+    boxes = []
+    for i in range(n):
+        m = fig[:, i * cw:(i + 1) * cw]
+        ys, xs = np.nonzero(m)
+        boxes.append((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1))
+    x0 = min(b[0] for b in boxes); y0 = min(b[1] for b in boxes); x1 = max(b[2] for b in boxes); y1 = max(b[3] for b in boxes)
+    return [(f'crumble-{i}', rgba.crop((i * cw + x0, y0, i * cw + x1, y1))) for i in range(n)]
+
+
+TEX = [  # (pick key, file, seamless, use)
+    ('floor2', 'chute-floor-3lane', 'top to bottom (along the chute)',
+     'the chute floor, seen straight down, three lanes: grooves at x = 1/3 and 2/3; repeat it down the chute'),
+    ('floor', 'chute-floor-1groove', 'top to bottom (along the chute)', 'a one-groove floor (round 1), spare'),
+    ('wall-roots', 'chute-wall-roots', 'both ways', 'chute wall: carved key-pattern stone with fig roots; repeat it along the chute'),
+    ('wall-glyph', 'chute-wall-glyph', 'both ways', 'chute wall variant: glyph tablets and a carved band; mix with wall-roots'),
+    ('ceiling', 'chute-ceiling', 'both ways', 'the chute ceiling seen from below: dark slabs, fig roots across them'),
+]
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True); QA.mkdir(parents=True, exist_ok=True)
-    man = {'note': '7-4 "The Slide" art, Hugging Face img2img (Qwen-Image + the style model) from World 7 kit paste-ups '
-                   '(tools/art/w7slide/envstarts.py), cut by tools/art/w7slide/cut.py, 2026-10-29. Not wired in yet.',
-           'takes': PICKS, 'files': {}}
+    for f in OUT.glob('*'):
+        f.unlink()
+    man = {'note': '7-4 "The Way Down" slide art: Hugging Face img2img (Qwen-Image + the slothadv style model) from paste-ups of '
+                   "World 7's own kit and made props (tools/art/w7slide/envstarts.py, envstarts2.py), cut by tools/art/w7slide/cut.py, "
+                   '2026-10-29. Not wired in yet.', 'takes': PICKS, 'files': {}}
     prev = []
-    for key, fn in (('floor', 'chute-floor'), ('wall-roots', 'chute-wall-roots'), ('wall-glyph', 'chute-wall-glyph')):
-        if PICKS.get('seam', {}).get(key):
-            im = seam_repair(key, PICKS['seam'][key])
-        elif key == 'floor':
-            im = seamless(raw(PICKS[key]))
-        else:
-            # the walls' starts were one kit panel tiled 2 x 2, and the panel's own edges show as a line through the middle of the
-            # painting: make one 512 quarter seamless on its own, then lay it 2 x 2 again
-            q = seamless(raw(PICKS[key]).crop(tuple(PICKS.get('quarter', {}).get(key, (0, 0, 512, 512)))), band=0.16)
-            im = Image.new('RGB', (1024, 1024))
-            for y in (0, 512):
-                for x in (0, 512):
-                    im.paste(q, (x, y))
+    for key, fn, way, use in TEX:
+        im = seam_repair(key, PICKS['seam'][key])
         sz = save_webp(im, OUT / f'{fn}.webp')
-        t = tiled(im)
-        t.save(QA / f'{fn}-tiled3x.jpg', quality=86)
-        man['files'][f'{fn}.webp'] = {'w': im.width, 'h': im.height, 'bytes': sz, 'seamless': 'both ways', 'seam_ratio': seam_score(im),
-                                      'use': {'floor': 'the chute floor, drawn in perspective; the groove runs down the middle (x = 0.5)',
-                                              'wall-roots': 'the chute walls, carved stone with fig roots',
-                                              'wall-glyph': 'the chute walls, glyph tablets (mix with wall-roots to break repeats)'}[key]}
+        tiled(im).save(QA / f'{fn}-tiled3x.jpg', quality=86)
+        man['files'][f'{fn}.webp'] = {'w': im.width, 'h': im.height, 'bytes': sz, 'seamless': way, 'use': use}
         prev.append((fn, im))
-    m = raw(PICKS['mouth'])
-    man['files']['chute-mouth.webp'] = {'w': m.width, 'h': m.height, 'bytes': save_webp(m, OUT / 'chute-mouth.webp'),
-                                        'use': 'backdrop at the far end of the chute (the vanishing point is about x 0.5, y 0.42)'}
-    prev.append(('chute-mouth', m))
-    c = patch_floor(raw(PICKS['chamber']))
+    for key, fn, use in (('mouth-bright', 'chute-end-light', 'the way out at the end of the chute: daylight and leaves seen from inside '
+                                                             '(vanishing point about x 0.5, y 0.42)'),
+                         ('mouth', 'chute-far-dark', 'the chute running on into torch-lit dark (vanishing point about x 0.5, y 0.42), '
+                                                     'the far view before the light shows')):
+        m = raw(PICKS[key])
+        man['files'][f'{fn}.webp'] = {'w': m.width, 'h': m.height, 'bytes': save_webp(m, OUT / f'{fn}.webp'), 'use': use}
+        prev.append((fn, m))
+    c = raw(PICKS['chamber2'])
     c = c.resize((2048, round(c.height * 2048 / c.width)), Image.LANCZOS)
     man['files']['chamber.webp'] = {'w': c.width, 'h': c.height, 'bytes': save_webp(c, OUT / 'chamber.webp'),
-                                    'use': 'side-on backdrop of the chamber at the end of the slide; its stone floor is the bottom ~15%'}
+                                    'use': "side-on: the chamber he shoots out into; the chute's mouth is high on the left "
+                                           '(its spout lip about x 0.02-0.22, y 0.70); stone floor is the bottom ~15%'}
     prev.append(('chamber', c))
-    rgba, fig = key_magenta(raw(PICKS['obstacles']))
-    names = ['fallen-column', 'statue-head', 'low-beam', 'gap-lip', 'rubble', 'roots-tangle']
-    pieces = [(n, trim(p)) for n, p in zip(names, cells(rgba, fig))]
-    for n, p in list(pieces):
-        if n in PICKS.get('obstacle_overrides', {}):
-            src = PICKS['obstacle_overrides'][n]
-            r2, f2 = key_magenta(raw(src))
-            pieces[names.index(n)] = (n, trim(cells(r2, f2)[names.index(n)]))
+    # obstacles: round 2 (made for the builder's list) and the round-1 pieces it can still use
+    r2, f2 = key_magenta(raw(PICKS['obstacles2']))
+    pieces = [(n, trim(p)) for n, p in zip(['lintel-a', 'rubble-wide-a', 'gap-near-lip', 'lintel-b', 'rubble-wide-b', 'gap-far-lip'],
+                                           cells(r2, f2))]
+    r1, f1 = key_magenta(raw(PICKS['obstacles']))
+    c1 = cells(r1, f1)
+    rh, fh = key_magenta(raw(PICKS['obstacle_overrides']['statue-head']))
+    pieces += [('statue-head', trim(cells(rh, fh)[1])), ('rubble-pile', trim(c1[4])), ('roots-tangle', trim(c1[5]))]
     sheet, frames = pack(pieces)
     man['files']['obstacles.webp'] = {'w': sheet.width, 'h': sheet.height, 'bytes': save_webp(sheet, OUT / 'obstacles.webp', 92),
-                                      'frames': frames, 'anchor': 'middle of the bottom edge (where it sits on the chute floor)',
-                                      'use': 'obstacles seen from the front, scaled with depth down the chute'}
+                                      'frames': frames, 'anchor': 'ax, ay: middle of the bottom edge (where it stands on the chute floor)',
+                                      'use': 'obstacles seen from the front (from behind Pokey); lintels: duck under the slab, the posts '
+                                             'stand at the chute sides; gap-near-lip: the floor ending before a gap; gap-far-lip: the '
+                                             'broken front face of the floor after it; rubble-wide: jump; statue-head, rubble-pile, '
+                                             'roots-tangle: one-lane blockers'}
     on_dark(pieces, title='7-4 obstacles, cut from the magenta, on dark').save(QA / 'obstacles-on-dark.jpg', quality=88)
-    if PICKS.get('pokey'):
+    cr = crumble_frames(raw(PICKS['crumble']))
+    csheet, cframes = pack(cr)
+    man['files']['crumble.webp'] = {'w': csheet.width, 'h': csheet.height, 'bytes': save_webp(csheet, OUT / 'crumble.webp', 92),
+                                    'frames': cframes, 'use': 'side-on: the hall floor giving way, frames 0-3 (whole, cracked, breaking, '
+                                                              'falling); every frame shares one box, so they line up'}
+    on_dark(cr, cols=4, title='7-4 crumble frames on dark').save(QA / 'crumble-on-dark.jpg', quality=88)
+    if PICKS.get('pokey'):  # optional: the on-model stills (no clip stayed on model)
         pk = [(n, trim(key_grey(raw(s)))) for n, s in PICKS['pokey'].items()]
-        psheet, pframes = pack([(n, p.resize((round(p.width * 512 / p.height), 512), Image.LANCZOS)) for n, p in pk])
-        man['files']['pokey-slide.webp'] = {'w': psheet.width, 'h': psheet.height, 'bytes': save_webp(psheet, OUT / 'pokey-slide.webp', 92),
-                                            'frames': pframes, 'anchor': 'middle of the bottom edge'}
-        on_dark(pk, title='Pokey from behind, keyed, on dark').save(QA / 'pokey-on-dark.jpg', quality=88)
+        pk = [(n, p.resize((round(p.width * 512 / p.height), 512), Image.LANCZOS)) for n, p in pk]
+        psheet, pframes = pack(pk)
+        man['files']['pokey-slide-stills.webp'] = {
+            'w': psheet.width, 'h': psheet.height, 'bytes': save_webp(psheet, OUT / 'pokey-slide-stills.webp', 92), 'frames': pframes,
+            'anchor': 'middle of the bottom edge', 'satchel': 'strap from his left shoulder (screen left) to the bag on his right hip '
+                                                               '(screen right), checked on every still',
+            'use': "optional: Pokey from behind, repainted on model with his character model from slomatt/02 cells 1 (flipped), 10 and "
+                   "14; the Hugging Face clips from them were all thrown away (see the report). Do not mirror lean-left for a right "
+                   "lean: a mirror puts the satchel on the wrong side."}
+        on_dark(pk, title='Pokey from behind (HF stills), keyed, on dark').save(QA / 'pokey-on-dark.jpg', quality=88)
     (OUT / 'manifest.json').write_text(json.dumps(man, indent=1))
-    # contact sheet: every packed piece on dark
-    cs = on_dark(prev + pieces, tw=340, cols=4, title='7-4 The Slide: art pack (src/assets/w7slide)')
-    cs.save(QA / 'contact.jpg', quality=86)
+    on_dark(prev + pieces + cr, tw=340, cols=4, title='7-4 The Way Down: art pack (src/assets/w7slide), on dark').save(QA / 'contact.jpg', quality=86)
     for f, v in man['files'].items():
-        print(f, v['w'], v['h'], v['bytes'], v.get('seam_ratio', ''))
+        if 'w' in v:
+            print(f, v['w'], v['h'], v['bytes'])
 
 
 if __name__ == '__main__':
