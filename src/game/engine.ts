@@ -53,6 +53,11 @@ import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
 import { drawBatSweep, drawRoost, drawW8Hide } from './batArt.ts';
+/**
+ * World 8's dark (the Twilight Treetops at night): a violet ink a little lighter than the default, so the painted soil and bark under the
+ * boughs still shows faintly (polish bar item 4: dark, never a flat void); the lantern and the fireflies are still the only real light
+ */
+const W8_DARK = { ink: 'rgb(12, 9, 34)', depth: 0.84 } as const;
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
@@ -5557,7 +5562,7 @@ export class GameEngine {
       // World 3 has no lantern: Pokey is dim, but steady (a small glow of his own), and the grotto's dark is green-black
       const grotto = this.currentStage.config.worldIndex === 3;
       if (this.watchShadowAt) lights.push({ x: this.watchShadowAt.x - cx0, y: this.player.y - 40 - cy0, r: 150 * this.watchShadowAt.a * 2 });
-      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : undefined);
+      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : this.currentStage.config.worldIndex === 8 ? W8_DARK : undefined);
     }
     if (this.watchEyes) {
       // World 3's watcher: two amber eyes, over the darkness so they always show
