@@ -92,6 +92,8 @@ import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { SlideRun } from './w7SlideRun.ts';
+import { drawJarMeter, LanternRun } from './w8LanternRun.ts';
+import { LANTERN_LINES } from './w8Lantern.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
 import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
@@ -556,6 +558,8 @@ export class GameEngine {
   private chaseNext = 0;
   /** 6-8's rising tide (risingTide.ts): its state, its setting, and the flag Dot warned under (Infinity: not yet; once a stage) */
   private tide: TideState | null = null;
+  /** 8-4's jar of fireflies (w8LanternRun.ts): its light, the glowing flowers, the moths, the firefly tree */
+  private lanternRun: LanternRun | null = null;
   private tideSet: TideSetting = TIDE.normal;
   private tideWarned = Infinity;
   private tideChurn = 0;
@@ -745,6 +749,7 @@ export class GameEngine {
     this.chaseSlowDone = false;
     this.chaseNext = 0;
     this.tide = this.proto?.tide ? newTide(this.proto.tide) : null;
+    this.lanternRun = this.proto?.lantern ? new LanternRun(this.proto.lantern, isEasy()) : null;
     this.revealZoom = 1;
     this.revealHeard = false;
     setReveal(0, null);
@@ -1459,6 +1464,7 @@ export class GameEngine {
         const out = Math.max(z.x0 - p.x, p.x - z.x1, 0);
         want = Math.max(want, Math.max(0, 1 - out / 220));
       }
+      if (this.lanternRun) want = this.lanternRun.night();
       this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
       this.stepGlowworms(dt, zones);
       if (this.proto?.thorns) this.stepThornVines();
@@ -1467,6 +1473,7 @@ export class GameEngine {
       if (this.kit) this.stepKit(dt);
       // (Meeca's stage: on tiptoe through the camp)
       if (this.mc) this.dragSpeed *= this.mc.speedK();
+      if (this.lanternRun) this.stepLanternRun(dt);
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -2295,7 +2302,8 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
-        if (!this.softFall()) {
+        if (this.lanternRun) this.lanternFall();
+        else if (!this.softFall()) {
           sound.playPlayerHurt();
           this.loseLife('pit');
         }
@@ -4697,6 +4705,7 @@ export class GameEngine {
     this.dragSpeed = 1;
     this.dragJump = 1;
     // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
+    this.lanternRun?.restart();
     // 6-8: the tide starts again under his flag, waiting a moment (risingTide.ts)
     if (this.tide) {
       restartTide(this.tide, this.proto!.tide!, this.tideSet, this.checkpoint.y);
@@ -5696,6 +5705,7 @@ export class GameEngine {
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     this.drawCalmWater(ctx, false);
+    this.lanternRun?.drawBack(ctx, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime);
     this.kit?.drawBack(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.markKeepOuts();
@@ -5899,6 +5909,7 @@ export class GameEngine {
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     this.w4?.drawFront(ctx, this.platforms, this.gameTime);
+    this.lanternRun?.drawFront(ctx, this.player, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime);
     if (this.mc) drawMeecaFront(ctx, this.mc, this.player, this.gameTime);
     this.w5?.drawFront(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight, zoom: this.zoom, hud: this.camera.y + (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom });
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
@@ -6010,7 +6021,15 @@ export class GameEngine {
       // World 3 has no lantern: Pokey is dim, but steady (a small glow of his own), and the grotto's dark is green-black
       const grotto = this.currentStage.config.worldIndex === 3;
       if (this.watchShadowAt) lights.push({ x: this.watchShadowAt.x - cx0, y: this.player.y - 40 - cy0, r: 150 * this.watchShadowAt.a * 2 });
-      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : undefined);
+      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : this.lanternRun ? { heroR: this.lanternRun.radius() } : undefined);
+      if (this.lanternRun) {
+        this.lanternRun.drawOver(ctx, cx0, cy0, this.gameTime);
+        // (the jar's level under the lives, in screen px)
+        ctx.save();
+        ctx.scale(1 / this.zoom, 1 / this.zoom);
+        drawJarMeter(ctx, 18, (this.viewCssH || 400) > (this.viewCssW || 400) ? 112 : 92, this.lanternRun.st.level, this.gameTime, this.lanternRun.set.low);
+        ctx.restore();
+      }
     }
     if (this.watchEyes) {
       // World 3's watcher: two amber eyes, over the darkness so they always show
@@ -6608,6 +6627,57 @@ export class GameEngine {
     for (const pl of this.platforms) if (pl.chase && Math.abs(pl.x + pl.width / 2 - p.x) < 800) low = Math.max(low, pl.y);
     const off = low > -Infinity && p.y > low + 300 && !p.isVineSwinging && !p.climbing;
     if ((caught(ch, p.x) && !p.isVineSwinging) || off) this.chaseCaught();
+  }
+
+  /** step 8-4's jar (w8LanternRun.ts): its light, the moths, Dot's lines, the dark's setback, the firefly tree */
+  private stepLanternRun(dt: number) {
+    const lr = this.lanternRun!;
+    const p = this.player;
+    const id = this.currentStage.config.id;
+    const ev = lr.step(dt, p, !!this.atk);
+    this.dragSpeed *= lr.speed();
+    if (ev === 'filled') {
+      sound.playFlowerPickup(2);
+      this.spawnSparkBurst(p.x, p.y - 40, '#fde047');
+    } else if (ev === 'low' && !tipHeard(id, 'lantern:low')) {
+      markTipHeard(id, 'lantern:low');
+      this.guide(LANTERN_LINES.low, 3);
+    } else if (ev === 'stolen') {
+      sound.playWhoosh();
+      this.addFloatingText('-LIGHT', p.x, p.y - 90, '#c4b5fd', 0.8);
+    } else if (ev === 'setback') {
+      const at = lr.setbackAt();
+      this.lanternSetBack(at.x, at.y);
+      if (!tipHeard(id, 'lantern:setback')) {
+        markTipHeard(id, 'lantern:setback');
+        this.guide(LANTERN_LINES.setback, 3.5);
+      }
+    } else if (ev === 'swarm') {
+      sound.playShrineUnlocked();
+    }
+  }
+
+  /** 8-4: a fall past the bottom: soft (back on the bough he left) on Easy or from an unlit take-off, else a life (lantern.ts) */
+  private lanternFall() {
+    const lr = this.lanternRun!;
+    if (!lr.fallIsSoft()) {
+      sound.playPlayerHurt();
+      this.loseLife('pit');
+      return;
+    }
+    const at = lr.backTo();
+    recorder.event('softFall', Math.round(this.player.x));
+    this.lanternSetBack(at.x, at.y);
+  }
+
+  /** 8-4: set him down at (x, feet) as Easy's soft falls do, nothing lost */
+  private lanternSetBack(x: number, y: number) {
+    const was = { softOn: this.softOn, softAt: this.softAt };
+    this.softOn = true;
+    this.softAt = { x, y };
+    this.softFall();
+    this.softOn = was.softOn;
+    this.softAt = was.softAt;
   }
 
   /**
