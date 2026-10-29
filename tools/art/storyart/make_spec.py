@@ -403,6 +403,40 @@ def round4(commit, nest_pick='pl-nest-storm-6', court_pick='pl-courtyard-6', gen
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it if not x['name'].endswith('-e')]}
 
 
+PK_FIX = {'alarm': 'alarmed and shocked, eyes wide open, mouth open', 'crossed': 'arms crossed, grumpy and stubborn, frowning',
+          'impatient': 'arms crossed, impatient and annoyed, frowning, tapping his foot', 'point_a': 'pointing ahead, frowning and serious',
+          'point_b': 'pointing ahead, upset and crying out, mouth open', 'tired': 'exhausted and sad, tears in his eyes, slumped',
+          'wipe': 'wiping a tear from his eye with one paw, crying', 'slump': 'slumped down sitting exhausted, head hanging, eyes closed',
+          'worried': 'worried and wincing, both paws on top of his head, one eye squeezed shut'}
+
+
+def round4a(commit):
+    """fixes after the first look: Pokey's frames whose face drifted (named expressions, lower strength), the General's eyes from one picture,
+    his two story cards with the crimson cape and the shoulder plate, Pokey and Meeca together, and the wall grip and reach on his model"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-pokey.json').read_text())
+    it = []
+    for n, words in PK_FIX.items():
+        m = meta[f'pokey-{n}']
+        it.append({'name': f'pokey-{n}-s42', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']},
+                   'prompt': POKEY + words + END, 'neg': NEG_FIG + SOFT, 'strength': 0.42, 'seed': 7, 'w': m['size'][0], 'h': m['size'][1],
+                   'loras': [['pokey', 1.0], ['style', 0.35]]})
+    it += eyes(commit, 'gen-gn.glare-s30')
+    for n in ('card_idle', 'card_roar'):
+        it.append({'name': f'gen-gn.{n}-f', 'edit': True, 'start': f'bucket:storyart/r3a2/out/gen-gn.{n}-s30.png', 'seed': 3, 'neg': EDIT_NEG,
+                   'prompt': ('Change only two things: make his long cape a torn deep crimson-red, and put a spiked silver plate on his shoulder. Keep '
+                              'everything else exactly the same: his face, his eyes, his pose, his greatcoat, his club. Plain flat grey background.')})
+        it.append({'name': f'gen-gn.{n}-fs', 'then': f'gen-gn.{n}-f', 'strength': 0.25, 'seed': 7, 'w': 1024, 'h': 1024, 'prompt': GENERAL + 'in the same pose' + END,
+                   'neg': NEG_GEN + SOFT, 'loras': [['ironclaw', 0.5], ['general', 0.5], ['style', 0.35]]})
+    for n in ('grip_wall', 'reach_back'):
+        it.append({'name': f'new-{n}-9-on', 'start': f'bucket:storyart/r3a2/out/new-{n}-9.png', 'strength': 0.45, 'seed': 7, 'w': 1024, 'h': 1024,
+                   'loras': [['pokey', 1.0], ['style', 0.35]], 'prompt': POKEY + ('seen from behind, both paws raised holding on to a wall' if n == 'grip_wall' else
+                   'reaching one paw out to the side, offering his hand') + END, 'neg': NEG_FIG + SOFT + ', wall'})
+    it += pairs(commit)
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r4a', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca', 'ironclaw', 'general')}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it if not x['name'].endswith(('-e', '-x', '-f'))]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
