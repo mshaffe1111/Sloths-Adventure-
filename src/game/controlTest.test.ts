@@ -65,3 +65,27 @@ test('control test: the long jumps get wider, and the last two need the second j
   // and from the moss below each gap, a double jump climbs back out
   assert.ok(720 - G - 10 < maxRise() + 26);
 });
+
+test("control test, Easy: the long jumps are sized to Easy's own jump (Matt, 2026-10-29), Normal's stay; a flag before each double-jump gap", async () => {
+  const { reachJumpHeld } = await import('./physics.ts');
+  const gapsOf = (a: ReturnType<typeof buildProtoStage>) => {
+    const [x0, x1] = a.proto.beats[2];
+    const banks = a.platforms.filter((p) => p.y === G && p.x + p.width > x0 && p.x < x1).sort((p, q) => p.x - q.x);
+    return { banks, gaps: banks.slice(1).map((b, i) => Math.round(b.x - (banks[i].x + banks[i].width))), x0, x1 };
+  };
+  for (const s of [1, 7, 56672, 681171, 44053]) {
+    const easy = gapsOf(buildProtoStage(cfg, s, 'ctest', true));
+    const one = reachJumpHeld(0, false), two = reachJumpHeld(0, true);
+    assert.deepEqual(easy.gaps.map((g, i) => Math.abs(g - [one * 0.5, one * 0.75, two * 0.7, two * 0.85][i]) <= 1), [true, true, true, true], `seed ${s}: ${easy.gaps}`);
+    const normal = gapsOf(buildProtoStage(cfg, s, 'ctest'));
+    assert.ok(normal.gaps[3] > 260 && normal.gaps[0] > 85, `seed ${s}: Normal's are as they were (${normal.gaps})`);
+    // the same mix either way: only the long jumps differ
+    assert.equal(buildProtoStage(cfg, s, 'ctest', true).proto.mix, buildProtoStage(cfg, s, 'ctest').proto.mix);
+    for (const [name, a] of [['Easy', buildProtoStage(cfg, s, 'ctest', true)], ['Normal', buildProtoStage(cfg, s, 'ctest')]] as const) {
+      const { banks } = gapsOf(a);
+      const cps = a.checkpoints ?? [];
+      // on the bank after the second gap, and on the bank before the last
+      for (const k of [2, 3]) assert.ok(cps.some((c) => c.x > banks[k].x && c.x < banks[k].x + banks[k].width - 60), `${name} seed ${s}: a flag on bank ${k}`);
+    }
+  }
+});

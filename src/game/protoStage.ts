@@ -19,7 +19,7 @@ import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
-import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, SAFE } from './physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
 import { validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
@@ -291,8 +291,8 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * where the snakes sit, the order of the pieces inside a beat, and the dressing. Every rolled piece is checked against the physics
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
-export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
-  const st = buildPlan(config, seed, plan);
+export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
+  const st = buildPlan(config, seed, plan, easy);
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
   const w = config.worldIndex;
   if ((w === 3 || w === 4) && /^[34]-[1-9]$/.test(plan) || (w === 1 && /^1-[467]$/.test(config.id))) {
@@ -302,7 +302,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   return st;
 }
 
-function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): GeneratedStage & { proto: ProtoExtras } {
+/** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
+function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = false): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
@@ -872,16 +873,24 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   function gaps() {
     const x0 = x;
     run(R.r(200, 260));
-    const one = reachJump(0, false), two = reachJump(0, true);
-    for (const w of [one * 0.5, one * 0.75, two * 0.7, two * 0.85]) {
+    // (Easy's own reach, a thumb that lets go at about 70%, physics.ts EASY_HOLD: 73 / 109 / 200 / 242 px where Normal's are 87 / 131 /
+    // 219 / 267, which on Easy were 90% of a single jump and 94% of a double; QA batch E, 2026-10-29, every new player fell back here, and
+    // Matt chose this with the flags below)
+    const reach = easy ? reachJumpHeld : reachJump;
+    const one = reach(0, false), two = reach(0, true);
+    const ws = [one * 0.5, one * 0.75, two * 0.7, two * 0.85];
+    ws.forEach((w, k) => {
       const edge = x;
       close();
       const far = Math.round(edge + w);
       softPit(edge, far);
       flower(edge + w / 2, G - 120, 'hibiscus');
       open(far);
+      // a flag on the far bank once the single jumps are done, and another before the last gap, so a missed double jump starts again
+      // just before it (there was none for 2,100 px on Normal)
+      if (k === 1 || k === 2) checkpoints.push({ x: far + 70, y: G, reached: false });
       run(R.r(260, 320));
-    }
+    });
     expert += (x - x0) / RUN + 2;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
