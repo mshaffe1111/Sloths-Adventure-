@@ -15,3 +15,8 @@ storyart-figs1 6ae3a2214403c6b5065dd64f from 19:44Z: all 82 Pokey + 59 Meeca + 2
 storyart-r3a 6ae3a3be0e0338d1bb7c1b59 from 19:51Z: the General (31 frames: edit with the design reference, then 0.3 on his models) and
   13 plates x 2 seeds (edit outpaint, then the tiled 2560 pass).
 storyart-r3b 6ae3a3f2c78863f9c62dc7a5 from 19:52Z: 10 ground strips x 2 strengths, 93 story-sheet cels (folk, Meeca, Pokey, the pairs).
+storyart-r3a CANCELLED 19:51Z-~20:00Z (~9 min, ~$0.41, wasted): the two-picture edit (old frame + the design picture) copied the design
+  picture instead of redrawing the frame (every General frame came back as ready_a-3, eyes and pose lost). Replaced by r3a2 and r3c.
+storyart-r3a2 6ae3a56dc78863f9c62dc974 from 19:58Z: the General's 31 frames from one written look per state (war, plain, young), seed 3
+  (the fallen card also seed 8), then 0.3 on his models; Pokey's wall grip and reach (edit of his from-behind frame, 2 seeds each).
+storyart-r3c 6ae3a5710e0338d1bb7c1d41 from 19:58Z: 13 plates x seeds 2/6: the edit model paints the room above, then the tiled 2560 pass.
