@@ -27,6 +27,10 @@ Last updated 2026-10-29 (6-8's lesson).
 - **Show first.** Big screen changes are shown to Matt (screenshots, mock-ups) before they are built in.
 - **Story.** Stage names, story beats and goal text stay as approved. Any new line is marked "(new, needs Matt's approval)".
 
+- **World 7: Pokey teaches himself (Matt, 2026-10-29).** Dot is gone for all of World 7 (the story's "Alone" chapter; she comes back in
+  World 8). Pokey says the teaching lines and explains any locked exit himself, in his own voice, under 10 words ("Cracked tiles.
+  Don't stand still."). No Dot perch, no Dot lines in World 7 stages.
+
 ## 1b. The game gets harder as it goes (Matt, 2026-10-28)
 
 - **Each world sits in its own difficulty band, and the bands climb world by world.** Inside a world, stages can go up and down
@@ -92,6 +96,12 @@ Last updated 2026-10-29 (6-8's lesson).
   fill to his painted sheet: "Sometimes quick fixes just don't work. That's the difference between a good game and a bad game. It
   takes the immersion out of the game if what you're looking at doesn't really feel like the rest of the game."
   (Before and after: `reference/prop-sheets/qa-notes/water-w6-painted.png`.)
+- **Light underground and in the dark comes from sources (Matt, 2026-10-29: "if he's underground, it's not going to be bright").**
+  Ambient is low and cool (deep blue-teal to near black); only torches/lanterns (warm, flickering), glowing fungi (small green or purple
+  pools), glowworms and the way out give light; depth fades INTO darkness, never into haze. Fairness first: every obstacle and gap carries
+  its own light or a lit rim and reads at least 1 s ahead on Normal (1.6 s Easy); Pokey never vanishes (a warm key from the light he passes,
+  a cool rim, a contact shadow, never under ~60% brightness). Props are painted evenly lit so the game can light them; light sources are
+  painted bright and separate so they can glow. Code glow (pre-rendered radial light sprites, additive) is a small touch and allowed.
 - **Use what Matt made.** Every prop, state frame and backdrop from his sheets has a place in the game. A piece packed but never
   drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.

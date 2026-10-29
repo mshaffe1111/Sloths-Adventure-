@@ -59,8 +59,8 @@ function tiled(ctx: CanvasRenderingContext2D, n: keyof typeof FRAMES, x0: number
   for (let x = Math.floor((x0 - s) / TILE) * TILE + s; x < x1; x += TILE - 1) blit(ctx, n, x, top, TILE, h);
 }
 
-/** the dirty, fast water between x0 and x1, from its surface `waterY` down to `bottom` */
-export function drawBadWater(ctx: CanvasRenderingContext2D, x0: number, x1: number, waterY: number, bottom: number, time: number): boolean {
+/** the dirty, fast water between x0 and x1, from its surface `waterY` down to `bottom`, running toward `dir` (World 6's tide: the bank it sweeps you to) */
+export function drawBadWater(ctx: CanvasRenderingContext2D, x0: number, x1: number, waterY: number, bottom: number, time: number, dir: 1 | -1 = 1): boolean {
   if (!badWaterReady()) return false;
   const th = (TILE * FRAMES.chop.h) / FRAMES.chop.w;
   const top = waterY - th * SURFACE;
@@ -71,12 +71,12 @@ export function drawBadWater(ctx: CanvasRenderingContext2D, x0: number, x1: numb
   ctx.fillStyle = DEEP;
   ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));
   // the choppy strip rushing along the current
-  tiled(ctx, 'chop', x0, x1, top, th, time * 60);
+  tiled(ctx, 'chop', x0, x1, top, th, time * 60 * dir);
   // pale streaks racing along under the surface
   const sw = 120, sh = (sw * FRAMES.streaks.h) / FRAMES.streaks.w;
   for (let x = Math.floor(x0 / 260) * 260 - 260; x < x1 + 260; x += 260) {
     const k = Math.abs((x / 260) | 0) % 3;
-    const sx = x + ((time * 170 + k * 90) % 260);
+    const sx = x + ((((time * 170 * dir + k * 90) % 260) + 260) % 260);
     const sy = waterY + 10 + k * 9;
     if (sy + sh > bottom) continue;
     ctx.globalAlpha = 0.8;
@@ -87,7 +87,7 @@ export function drawBadWater(ctx: CanvasRenderingContext2D, x0: number, x1: numb
   const lw = 70, lh = (lw * FRAMES.leaves.h) / FRAMES.leaves.w;
   for (let x = Math.floor(x0 / 480) * 480 - 480; x < x1 + 480; x += 480) {
     const k = Math.abs((x / 480) | 0) % 4;
-    const sx = x + ((time * 55 + k * 130) % 480);
+    const sx = x + ((((time * 55 * dir + k * 130) % 480) + 480) % 480);
     const bob = Math.sin(time * 2.6 + k * 1.9) * 2;
     blit(ctx, 'leaves', sx - lw / 2, waterY - lh * 0.55 + bob, lw, lh);
   }

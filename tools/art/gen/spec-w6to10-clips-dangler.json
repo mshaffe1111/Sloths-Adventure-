@@ -1,0 +1,88 @@
+{
+ "tag": "w6to10-dangler",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "idle": "idle",
+  "move": "move",
+  "attack": "tell",
+  "hurt": "hurt"
+ },
+ "clips": [
+  {
+   "name": "w6t-dangler-idle-s3",
+   "src": "../stills/w5dg-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, stands in place bobbing gently, its legs twitching and its big eyes blinking, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-dangler-idle-s11",
+   "src": "../stills/w5dg-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, stands in place bobbing gently, its legs twitching and its big eyes blinking, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-dangler-move-s3",
+   "src": "../stills/w5dg-move.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, hangs from a single silk thread and climbs up it and lowers itself back down, legs paddling, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dangler-move-s11",
+   "src": "../stills/w5dg-move.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, hangs from a single silk thread and climbs up it and lowers itself back down, legs paddling, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dangler-attack-s3",
+   "src": "../stills/w5dg-tell.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, rears back with its front legs raised and holds still, then lunges forward and snaps, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dangler-attack-s11",
+   "src": "../stills/w5dg-tell.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, rears back with its front legs raised and holds still, then lunges forward and snaps, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-dangler-hurt-s3",
+   "src": "../stills/w5dg-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, jolts back from a hit with a dizzy frown, legs flinching, then steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-dangler-hurt-s11",
+   "src": "../stills/w5dg-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a round fuzzy spider with a big black and yellow striped abdomen, a tan furry body, long brown legs and big shiny black eyes, jolts back from a hit with a dizzy frown, legs flinching, then steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}

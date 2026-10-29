@@ -1,0 +1,88 @@
+{
+ "tag": "w6to10-mantis",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "idle": "idle",
+  "move": "move",
+  "attack": "tell",
+  "hurt": "hurt"
+ },
+ "clips": [
+  {
+   "name": "w6t-mantis-idle-s3",
+   "src": "../stills/w5mt-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a pink and white orchid mantis with petal-shaped legs, big green eyes and spiky pink forelegs, sways gently from side to side like a flower in a breeze, its forelegs folded, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-mantis-idle-s11",
+   "src": "../stills/w5mt-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a pink and white orchid mantis with petal-shaped legs, big green eyes and spiky pink forelegs, sways gently from side to side like a flower in a breeze, its forelegs folded, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-mantis-move-s3",
+   "src": "../stills/w5mt-move.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a pink and white orchid mantis with petal-shaped legs, big green eyes and spiky pink forelegs, walks forward in place on four thin legs, swaying, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-mantis-move-s11",
+   "src": "../stills/w5mt-move.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a pink and white orchid mantis with petal-shaped legs, big green eyes and spiky pink forelegs, walks forward in place on four thin legs, swaying, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-mantis-attack-s3",
+   "src": "../stills/w5mt-tell.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a pink and white orchid mantis with petal-shaped legs, big green eyes and spiky pink forelegs, raises its spiky forelegs and holds perfectly still, then strikes forward fast and pulls back, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-mantis-attack-s11",
+   "src": "../stills/w5mt-tell.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a pink and white orchid mantis with petal-shaped legs, big green eyes and spiky pink forelegs, raises its spiky forelegs and holds perfectly still, then strikes forward fast and pulls back, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-mantis-hurt-s3",
+   "src": "../stills/w5mt-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a pink and white orchid mantis with petal-shaped legs, big green eyes and spiky pink forelegs, jolts back from a hit, flinching, then steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-mantis-hurt-s11",
+   "src": "../stills/w5mt-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a pink and white orchid mantis with petal-shaped legs, big green eyes and spiky pink forelegs, jolts back from a hit, flinching, then steadies itself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}

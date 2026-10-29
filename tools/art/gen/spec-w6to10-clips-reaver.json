@@ -1,0 +1,190 @@
+{
+ "tag": "w6to10-reaver",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "idle": "idle",
+  "advance": "adv_1",
+  "thrust": "guard",
+  "swipe": "swipe",
+  "vault": "vault",
+  "mud": "mudsling",
+  "roar": "roar",
+  "hurt": "hurt",
+  "stunned": "stunned",
+  "defeat": "hurt"
+ },
+ "clips": [
+  {
+   "name": "w6t-reaver-idle-s3",
+   "src": "../stills/w6r-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, stands upright holding his spear, breathing, his whiskers twitching and his tail swaying, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-reaver-idle-s11",
+   "src": "../stills/w6r-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, stands upright holding his spear, breathing, his whiskers twitching and his tail swaying, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-reaver-advance-s3",
+   "src": "../stills/w6r-adv_1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, walks forward in place in a low crouch with the spear held level in front of him, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-advance-s11",
+   "src": "../stills/w6r-adv_1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, walks forward in place in a low crouch with the spear held level in front of him, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-thrust-s3",
+   "src": "../stills/w6r-guard.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, draws his spear back and holds it there, then thrusts it forward hard and pulls it back, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-thrust-s11",
+   "src": "../stills/w6r-guard.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, draws his spear back and holds it there, then thrusts it forward hard and pulls it back, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-swipe-s3",
+   "src": "../stills/w6r-swipe.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, raises his spear high and holds, then swings it down in a big arc in front of him, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-reaver-swipe-s11",
+   "src": "../stills/w6r-swipe.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, raises his spear high and holds, then swings it down in a big arc in front of him, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-reaver-vault-s3",
+   "src": "../stills/w6r-vault.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, plants his spear and vaults up into the air, then comes down smashing the spear onto the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-reaver-vault-s11",
+   "src": "../stills/w6r-vault.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, plants his spear and vaults up into the air, then comes down smashing the spear onto the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6t-reaver-mud-s3",
+   "src": "../stills/w6r-mudsling.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, scoops up a big ball of mud with his paws, holds it back, then flings it forward, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-mud-s11",
+   "src": "../stills/w6r-mudsling.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, scoops up a big ball of mud with his paws, holds it back, then flings it forward, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-roar-s3",
+   "src": "../stills/w6r-roar.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, rears up tall and roars, his chest puffed out, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-reaver-roar-s11",
+   "src": "../stills/w6r-roar.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, rears up tall and roars, his chest puffed out, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-reaver-hurt-s3",
+   "src": "../stills/w6r-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, jolts back from a hit, flinching, then steadies himself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-hurt-s11",
+   "src": "../stills/w6r-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, jolts back from a hit, flinching, then steadies himself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-stunned-s3",
+   "src": "../stills/w6r-stunned.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, stands dazed and dizzy, swaying and wobbling, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-reaver-stunned-s11",
+   "src": "../stills/w6r-stunned.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, stands dazed and dizzy, swaying and wobbling, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-reaver-defeat-s3",
+   "src": "../stills/w6r-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, staggers, falls over backwards onto his back on the ground and lies still, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-reaver-defeat-s11",
+   "src": "../stills/w6r-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant dark grey-brown river otter warrior standing on his hind legs, holding a long wooden spear with a pale stone tip, staggers, falls over backwards onto his back on the ground and lies still, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}

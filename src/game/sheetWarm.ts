@@ -14,6 +14,8 @@
 import { sheetWarm, warmSheets } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
+import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
+import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
 import { PROTO2_URL, warmProto2 } from './protoArt.ts';
 import { warmSprites } from './spriteSheets.ts';
 
@@ -28,6 +30,8 @@ export function animOf(type: string, royal?: boolean): string {
 export interface StageDraws {
   enemies: ReadonlyArray<{ type: string; royal?: boolean }>;
   vines?: ReadonlyArray<{ vineType?: string; rope?: boolean }>;
+  /** shimmy ropes (Pokey's rope sheet and the painted rope) */
+  ropes?: readonly unknown[];
   proto?: {
     /** the animals a ring drops in (a snake ring, 3-9's prowlers) */
     ring?: { waves: ReadonlyArray<ReadonlyArray<{ kind: string }>> };
@@ -48,11 +52,15 @@ export function stageAnims(st: StageDraws): string[] {
   return [...out];
 }
 
-/** the other sheets drawn only in some stages: Pokey hanging from a liana (any swing vine), the second World 1 sheet (bushes, hollows) */
-export function stageExtras(st: StageDraws): { vine: boolean; props2: boolean } {
+/**
+ * the other sheets drawn only in some stages: Pokey hanging from a liana (any swing vine), the second World 1 sheet (bushes, hollows),
+ * Pokey on a shimmy rope and the painted rope (any rope)
+ */
+export function stageExtras(st: StageDraws): { vine: boolean; props2: boolean; rope: boolean } {
   const vine = (st.vines ?? []).some((v) => !v.rope && v.vineType !== 'tree_climb');
   const props2 = !!st.proto?.bushes?.length || !!st.proto?.hollows?.length;
-  return { vine, props2 };
+  const rope = !!st.ropes?.length;
+  return { vine, props2, rope };
 }
 
 /** start every sheet the stage can draw loading (its creatures' clips and painted poses, and the extras it needs); their addresses */
@@ -72,6 +80,11 @@ export function warmStageSheets(st: StageDraws): string[] {
   if (x.props2) {
     warmProto2();
     urls.push(PROTO2_URL);
+  }
+  if (x.rope) {
+    warmHeroRope();
+    warmRopeKit();
+    urls.push(HERO_ROPE_URL, ROPE_KIT_URL);
   }
   return urls;
 }

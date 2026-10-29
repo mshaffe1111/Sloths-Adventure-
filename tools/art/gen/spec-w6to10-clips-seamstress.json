@@ -1,0 +1,88 @@
+{
+ "tag": "w6to10-seamstress",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "idle": "idle",
+  "move": "move",
+  "attack": "tell",
+  "hurt": "hurt"
+ },
+ "clips": [
+  {
+   "name": "w6t-seamstress-idle-s3",
+   "src": "../stills/w5sm-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy round pink spider grandma with round glasses, a white lace apron, thin black legs and two knitting needles, sits knitting busily, her needles clicking back and forth, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-seamstress-idle-s11",
+   "src": "../stills/w5sm-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy round pink spider grandma with round glasses, a white lace apron, thin black legs and two knitting needles, sits knitting busily, her needles clicking back and forth, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-seamstress-move-s3",
+   "src": "../stills/w5sm-move.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy round pink spider grandma with round glasses, a white lace apron, thin black legs and two knitting needles, scuttles forward in place on her thin black legs, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-seamstress-move-s11",
+   "src": "../stills/w5sm-move.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy round pink spider grandma with round glasses, a white lace apron, thin black legs and two knitting needles, scuttles forward in place on her thin black legs, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-seamstress-attack-s3",
+   "src": "../stills/w5sm-tell.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy round pink spider grandma with round glasses, a white lace apron, thin black legs and two knitting needles, raises her knitting needles high and holds still, then flings a long strip of white lace forward, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-seamstress-attack-s11",
+   "src": "../stills/w5sm-tell.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy round pink spider grandma with round glasses, a white lace apron, thin black legs and two knitting needles, raises her knitting needles high and holds still, then flings a long strip of white lace forward, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-seamstress-hurt-s3",
+   "src": "../stills/w5sm-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy round pink spider grandma with round glasses, a white lace apron, thin black legs and two knitting needles, jolts back from a hit, her glasses askew, then steadies herself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-seamstress-hurt-s11",
+   "src": "../stills/w5sm-hurt.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy round pink spider grandma with round glasses, a white lace apron, thin black legs and two knitting needles, jolts back from a hit, her glasses askew, then steadies herself, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  }
+ ]
+}
