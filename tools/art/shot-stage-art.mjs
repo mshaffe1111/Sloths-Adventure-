@@ -45,11 +45,11 @@ const place = (what) => {
     tx = c.x - 90; ty = c.y + 26;
   } else {
     const type = what === 'fern' || what === 'bell' ? 'find' : what === 'thorn' ? 'thorn_gate' : what;
-    let c = pick((c) => c.type === type && !c.collected && (what === 'fern' ? c.hidden : what === 'bell' ? !c.hidden : true));
+    let c = what === 'bell' ? null : pick((c) => c.type === type && !c.collected && (what === 'fern' ? c.hidden : what === 'bell' ? !c.hidden : true));
     if (!c) {
       // (none on this stage: one is set down by Pokey's start, on the ground in front of him)
       const p = e.player;
-      c = { id: 9001, type, x: p.x + 90, y: p.y - (type === 'find' ? 30 : 40), collected: false, bobPhase: 0, hidden: what === 'fern' };
+      c = { id: 9001, type, x: p.x + (what === 'bell' ? 150 : 90), y: p.y - (type === 'find' ? 30 : 40), collected: false, bobPhase: 0, hidden: what === 'fern', findId: 'w1_note' };
       items.push(c);
       return 'placed';
     }

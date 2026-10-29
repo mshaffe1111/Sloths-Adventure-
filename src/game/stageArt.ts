@@ -127,7 +127,7 @@ function piece(n: StageArtName): [HTMLImageElement, ArtFrame] | null {
 
 // ───────────────────────────── the checkpoint ─────────────────────────────
 /** how tall the checkpoint post stands (world px; Pokey is about 86) */
-export const FLAG_H = 112;
+export const FLAG_H = 122;
 /** when each checkpoint was first seen reached (by its x), for its bounce */
 const reachedAt = new Map<number, number>();
 

@@ -126,13 +126,13 @@ export function drawNest(ctx: CanvasRenderingContext2D, c: Cage, t: number): voi
   const shiver = since < 0 ? Math.sin(t * 9) * 0.8 : 0;
   drawW4(ctx, 'nestEaglet', c.x + shiver, floor + nh * NEST_SINK - hop, NEST_W);
   if (since < 0) {
-    drawNetArt(ctx, c.x, floor + 4, (c.cageHp ?? 2) < 2, 0, t, nh * 0.95);
+    drawNetArt(ctx, c.x, floor + 4, (c.cageHp ?? 2) < 2, 0, t, nh * 0.86);
     // the parent, circling high over its chick (it cannot get to it through the netting)
     const a = t * 0.9 + c.x * 0.01;
     drawParent(ctx, c.x + Math.cos(a) * 120, floor - 260 + Math.sin(a) * 26, t, 0.2, PARENT_W.far, Math.sin(a) < 0 ? 1 : -1);
     return;
   }
-  drawNetArt(ctx, c.x, floor + 4, true, Math.min(1, since / 0.9), t, nh * 0.95);
+  drawNetArt(ctx, c.x, floor + 4, true, Math.min(1, since / 0.9), t, nh * 0.86);
   const hoverY = floor - 150;
   if (since < NEST_WIND.arrive) {
     // the swoop: from high up behind, down to just over the nest
