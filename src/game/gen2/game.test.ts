@@ -37,8 +37,8 @@ function played(id: string, variant: number, easy: boolean): Played {
   }
 }
 
-test('gen2 builds 5-7, 5-9 and World 6 but 6-8 (5-8 and 6-8 stay the old way), each from the kit its 16 shipped rolls were curated on', () => {
-  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9']);
+test('gen2 builds 5-6, 5-7, 5-9 and World 6 but 6-8 (5-8 the old way until its build, 6-8 hand-built), each from the kit its 16 shipped rolls were curated on', () => {
+  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-6', '5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9']);
   assert.equal(isGen2Stage(lv('5-8')), false);
   assert.equal(isGen2Stage(lv('6-8')), false);
   for (const id of Object.keys(GEN2_STAGES)) {

@@ -165,12 +165,92 @@ const carveDip: SectionTemplate = {
   mirrorable: false,
 };
 
-export const W5_RUN_SECTIONS: SectionTemplate[] = [carveTrunk, carveGap, carveStumps, carveHigh, carveDip];
+/** her run, two awake spiders on one long bank with a stump between them: the way she went past the column's guards */
+const runSpiders: SectionTemplate = {
+  id: 'w5-run-spiders',
+  name: 'two spiders on the run',
+  archetypes: ['relic_hunt'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  pieces: [bank('bank', [1050, 1200]), stump('st', 'bank', [0.46, 0.52], [60, 80], [120, 140])],
+  entry: { piece: 'bank', kind: 'ground' },
+  exit: { piece: 'bank', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    petals('a', 'bank', 0.12, 2, 90),
+    awake('f1', 'bank', [0.28, 0.34]),
+    petals('st', 'st', 0.5, 1),
+    awake('f2', 'bank', [0.7, 0.78], { phases: ['ten', 'ketsu'] }),
+    petals('b', 'bank', 0.92, 1),
+  ],
+  mirrorable: true,
+};
+
+/** a chain of two gaps with a tall stump between, the second jump over each: she ran it without stopping */
+const runChain: SectionTemplate = {
+  id: 'w5-run-chain',
+  name: 'gap, tall stump, gap',
+  archetypes: ['relic_hunt'],
+  phases: ['ten', 'ketsu'],
+  difficulty: 8,
+  needs: ['double'],
+  uses: ['double'],
+  pieces: [
+    bank('near', [360, 440]),
+    { key: 'mid', shape: 'bank', w: [420, 500], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.7, 0.9] }, landing: true },
+    stump('st', 'mid', [0.45, 0.55], [118, 136], [120, 140]),
+    { key: 'far', shape: 'bank', w: [620, 760], place: { kind: 'pit', after: 'mid', jump: 'jump', share: [0.7, 0.9] }, landing: true },
+  ],
+  entry: { piece: 'near', kind: 'ground' },
+  exit: { piece: 'far', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    petals('near', 'near', 0.45, 1),
+    petals('st', 'st', 0.5, 2, 60),
+    awake('foe', 'far', [0.5, 0.6], { chance: 0.7 }),
+    petals('far', 'far', 0.85, 2, 90),
+  ],
+  mirrorable: false,
+};
+
+/** up out of reach: a run of boughs over a garden with an awake spider on it, down at the far end (the high way she took) */
+const runBoughs: SectionTemplate = {
+  id: 'w5-run-boughs',
+  name: 'the high boughs',
+  archetypes: ['relic_hunt'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  pieces: [
+    bank('bank', [1200, 1350]),
+    stump('st', 'bank', [0.06, 0.1], [55, 65], [110, 130]),
+    over('b1', 'bank', [0.18, 0.2], -150, [220, 260]),
+    over('b2', 'b1', [0.62, 0.66], [-40, -20], [240, 300]),
+    over('b3', 'b2', [0.66, 0.7], [20, 40], [220, 280]),
+    stump('tail', 'bank', [0.88, 0.92], [55, 65], [110, 130]),
+  ],
+  entry: { piece: 'bank', kind: 'ground' },
+  exit: { piece: 'bank', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    petals('st', 'st', 0.5, 1),
+    petals('b1', 'b1', 0.5, 2, 80),
+    petals('b2', 'b2', 0.5, 2, 90),
+    petals('b3', 'b3', 0.5, 2, 80),
+    awake('f1', 'bank', [0.4, 0.46]),
+    awake('f2', 'bank', [0.66, 0.72], { phases: ['ten', 'ketsu'], chance: 0.7 }),
+    petals('tail', 'tail', 0.5, 1),
+  ],
+  mirrorable: true,
+};
+
+export const W5_RUN_SECTIONS: SectionTemplate[] = [carveTrunk, carveGap, carveStumps, carveHigh, carveDip, runSpiders, runChain, runBoughs];
 
 /** the ground sections 5-6 leaves to 5-7 (its stealth: threads over sleepers, the sheets, the Seamstress) and the teapots (5-7 teaches them) */
 const LEFT_TO_57 = new Set([
   'w5-thread-hop', 'w5-drop', 'w5-high-road', 'w5-sheet-walk', 'w5-thread-gap', 'w5-sleeper-row', 'w5-sheets', 'w5-seamstress',
   'w5-thread-stairs', 'w5-tea-table', 'w5-pot-gap', 'w5-pot-pair', 'w5-pot-stumps', 'w5-gauntlet', 'w5-steps',
+  // (and the chairs, cakes and orchids 5-7's garden walks are made of: 5-6 is a run, not a stroll among the tea things)
+  'w5-chair-walk', 'w5-chair-gap', 'w5-cake-path', 'w5-lawn', 'w5-orchid-hop',
 ]);
 
 /** the two carvings where she hid, placed by the plan (never by weight, never trimmed) */
@@ -202,8 +282,9 @@ export function runWords(): string[][] {
   return [[...MEECA_MARK.lines], ...(cut.length ? [...warnings, ...rest] : warnings)];
 }
 
-/** a carving's trunk and letters (w5Stages.ts: 5-1's "POKEY. DON'T SIT. M." on a trunk 128 wide, 470 tall, the words 196 up) */
-const TRUNK = { w: 124, h: 440, up: 196, size: 30 } as const;
+/** a carving's trunk and letters (w5Stages.ts: 5-1's "POKEY. DON'T SIT. M." on a trunk 128 wide, 470 tall, the words 196 up;
+ *  5-6's a little lower, so the HUD never covers her first line sideways) */
+const TRUNK = { w: 124, h: 400, up: 170, size: 28 } as const;
 
 /**
  * 5-6's pass after the build: each message gets its carving (a trunk with her words, standing just behind it on its ground), the words
@@ -234,10 +315,13 @@ export function w5RunFinish(st: Gen2Stage, words: string[][] = runWords()): Gen2
   const w5 = (st.proto.w5 ??= { mood: w5Mood(6), petals: true });
   const carvings: Carving[] = (w5.carvings ??= []);
   msgs.forEach((c, i) => {
-    const ground = groundUnder(st, c.x, c.y);
+    const stand = groundUnder(st, c.x, c.y);
+    const ground = bankUnder(st, c.x, c.y) ?? stand;
     c.carving = i;
     const lines = said[i];
-    carvings.push({ x: c.x, y: ground - TRUNK.up + (lines.length > 3 ? 0 : 20), lines, size: TRUNK.size, trunk: { ground, w: TRUNK.w, h: TRUNK.h } });
+    // (up on a bough: the trunk grows from the ground under it, nothing floats, and her words are cut at the bough's height)
+    const y = stand - TRUNK.up + (lines.length > 3 ? 0 : 20);
+    carvings.push({ x: c.x, y, lines, size: TRUNK.size, trunk: { ground, w: TRUNK.w, h: Math.max(TRUNK.h, ground - y + 120) } });
   });
   return st;
 }
@@ -253,5 +337,12 @@ function groundUnder(st: Gen2Stage, x: number, y: number): number {
       best = p.y;
     }
   }
+  return best;
+}
+
+/** the top of the bank (a piece of the ground, 90 or more tall) under the message, below any bough it floats over */
+function bankUnder(st: Gen2Stage, x: number, y: number): number | undefined {
+  let best: number | undefined;
+  for (const p of st.platforms) if (p.height >= 90 && x >= p.x && x <= p.x + p.width && p.y >= y && (best === undefined || p.y < best)) best = p.y;
   return best;
 }

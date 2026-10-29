@@ -1050,7 +1050,7 @@ export function drawCollectible(
   ctx.translate(item.x, item.y);
   const bobY = Math.sin(time * 4 + item.bobPhase) * 4;
   ctx.translate(0, bobY);
-  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate' && item.type !== 'find' && !(item.type === 'relic' && item.hidden)) {
+  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate' && item.type !== 'find' && !(item.type === 'relic' && (item.hidden || item.carving !== undefined))) {
     const big = item.type === 'relic' ? 1.25 : 1.4;
     ctx.scale(big, big);
     // the gold rim on a soft dark pool (see readable.ts): everything you can take wears it, so it reads on any backdrop
@@ -1132,9 +1132,11 @@ export function drawCollectible(
       }
       // (5-6: the message is the carving on the trunk behind it, w5Play.ts: only a soft warm glow that breathes, until he reaches it)
       if (item.carving !== undefined) {
+        // (over her words, which stand 110 above it: carvingY in w5Run.ts; no bob)
         const k = 0.75 + 0.25 * Math.sin(time * 2.2 + item.carving);
+        ctx.translate(0, -bobY);
         ctx.globalAlpha *= k;
-        fillGlow(ctx, 'carving', 0, -40, 6, 64, [[0, 'rgba(255, 226, 140, 0.5)'], [1, 'rgba(255, 220, 110, 0)']]);
+        fillGlow(ctx, 'carving', 0, -70, 10, 96, [[0, 'rgba(255, 226, 140, 0.5)'], [1, 'rgba(255, 220, 110, 0)']]);
         break;
       }
       fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
