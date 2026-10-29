@@ -400,6 +400,18 @@ plan); never ship the rough version as finished.
 - **One time model can be wrong by a world** (LV-15): stageTime.ts's old model gave 4-7 84 s (it doesn't model glide descents) while the
   200-roll tool's quick route says 3:07 at its shortest and the bots take 4-8 minutes. Check a length claim with era.ts and the bots.
 
+- **World 9's swings and rooms** (2026-10-29, gen2-w9-swing):
+  - *A room's high ledge is an `over` piece, never a `walk`*: a `walk` rise is clamped to a plain hop, so the chain lift's 260 px ledge came
+    out 20 px up and the room solved itself with no stone. The validator's "fails without its key piece" check is what caught it: every room
+    test runs it (`w9Rooms.test.ts`).
+  - *A counterweight lift is boarded before its last weight goes in*: with two stones the plank stopped halfway after the first, and he
+    could not climb onto it with the second in his hands (carrying, no jump). The bucket takes one stone, flicked in from the plank (Normal)
+    or set down from it (Easy); thrown from the floor, the plank leaves without him and the post resets it.
+  - *A post is whole tiles of a jointed column, never one picture stretched* (World 6's grey pipes again, in the first chain frames): the
+    hex column's shaft tiled up from the ground reads as basalt (`w9SwingArt.ts drawW9Post`).
+  - *Hugging Face results reach a cloud session through `hf_fs attach`*: huggingface.co is blocked by the session's proxy, but attach saves
+    the exact bytes in the session's tool-results folder; unpack the carrier from there (`tools/art/w5/unpack_carrier.py`).
+
 ## 7. Where things are
 
 - Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's
