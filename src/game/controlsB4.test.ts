@@ -8,6 +8,8 @@ import { TouchRig, stroke } from './touchRig.ts';
 import { padSideFrom } from './controlPrefs.ts';
 import { PadInput } from './padControl.ts';
 import { COACH_TEXT } from '../components/CoachOverlay.tsx';
+import { jumpHelp, setJumpHelp } from './jumpHelp.ts';
+import { PHYS, LEAN_SPEED } from './physics.ts';
 
 const G = 2000;
 const TRUNK = { id: 7, x: 600, topY: 1500, bottomY: 2000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' } as const;
@@ -86,4 +88,45 @@ test('CT-13: the Pad\'s Jump tapped is a short hop, held it goes full height, as
   let top = G;
   rig.run(1300, () => (top = Math.min(top, rig.p.y)));
   assert.ok(G - top >= 95, `a quick flick: ${(G - top).toFixed(0)} px`);
+});
+
+// ───────────────────────────── CT-27: a slanted standing flick carries him ─────────────────────────────
+
+/** standing still, a lone flick 70 px up leaning `deg` (+ right), lifted at once: his speed across at the top, and where he landed */
+function slantFlick(deg: number) {
+  const rig = new TouchRig('1-1', 1);
+  rig.r.bare([{ id: 1, x: 0, y: G, width: 20000, height: 300, type: 'solid' } as never]);
+  rig.r.stand(3000, G);
+  rig.clear();
+  rig.run(100);
+  const a = (deg * Math.PI) / 180;
+  rig.push(stroke(1, [[0, 800, 700], [60, 800 + Math.sin(a) * 70, 700 - Math.cos(a) * 70]]));
+  let vTop = 0, top = G, wasAir = false, land = NaN;
+  rig.run(1400, () => {
+    if (rig.p.y < top) (top = rig.p.y), (vTop = rig.p.vx);
+    if (!rig.p.grounded) wasAir = true;
+    else if (wasAir && Number.isNaN(land)) land = rig.p.x;
+  });
+  return { vTop, carried: land - 3000 };
+}
+
+test('CT-27: a standing flick leaning 35 degrees or more carries him that way at 0.75 of a run; one under 35 goes straight up; Jump help on or off', () => {
+  const was = jumpHelp();
+  try {
+    for (const help of ['off', 'keep', 'forward'] as const) {
+      setJumpHelp(help);
+      for (const deg of [40, -40, 55]) {
+        const s = slantFlick(deg);
+        const want = Math.sign(deg) * PHYS.maxRun * LEAN_SPEED;
+        assert.ok(Math.abs(s.vTop - want) <= PHYS.maxRun * 0.08, `help ${help}, ${deg} degrees: across at the top ${s.vTop.toFixed(0)} px/s, want about ${want.toFixed(0)}`);
+        assert.ok(Math.sign(s.carried) === Math.sign(deg) && Math.abs(s.carried) >= 60, `help ${help}, ${deg} degrees: carried ${s.carried.toFixed(0)} px`);
+      }
+      for (const deg of [0, 25, -25]) {
+        const s = slantFlick(deg);
+        assert.ok(Math.abs(s.carried) <= 8, `help ${help}, ${deg} degrees: carried ${s.carried.toFixed(0)} px (straight up)`);
+      }
+    }
+  } finally {
+    setJumpHelp(was);
+  }
 });

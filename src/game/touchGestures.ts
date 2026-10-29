@@ -33,7 +33,7 @@ export interface GestureSink {
    * a jump. `lean`: the flick behind it leaned 20 degrees or more off straight up, this way (-1 left, 1 right); 0 or unset when it went
    * (nearly) straight up. Off a vine or a trunk he leaps the way it leaned (engine.ts leapDir).
    */
-  jumpPress(lean?: -1 | 0 | 1): void;
+  jumpPress(lean?: -1 | 0 | 1, slant?: -1 | 0 | 1): void;
   jumpRelease(): void;
   /** a punch; `holdMs`: it may still be taken back (punchCancel) for this long, so its swing waits in its wind-up until then */
   punch(holdMs?: number): void;
@@ -224,6 +224,8 @@ export const TUNING = {
   /** on a trunk a steer starts only on a stroke this far sideways (px), at least twice as far across as up or down, this quick (px per ms) */
   trunkSidePx: 40,
   trunkSideSpeed: 0.3,
+  /** a standing flick leaning this far off straight up (degrees) carries him that way at LEAN_SPEED of a run (Matt, CT-27) */
+  slantDeg: 35,
   /** a straight flick up on a vine climbs on this long after its finger lifts (ms): about 55 px, a flick's worth (CT-5) */
   vineFlickClimbMs: 250,
 } as const;
@@ -402,7 +404,10 @@ export class TouchGestures {
     return !!this.env && this.env.assist() && this.env.air() && this.now - this.lastAir > TUNING.airLockMs;
   }
   /** which way a flick that moved `dx` across while rising `rise` px leans: 0 unless it is 20 degrees or more off straight up */
+  /** the lean leanOf last measured was `slantDeg` or more, this way (fireJump passes it on: a standing jump carries him, CT-27) */
+  private slantSeen: -1 | 0 | 1 = 0;
   private leanOf(dx: number, rise: number): -1 | 0 | 1 {
+    this.slantSeen = Math.abs(dx) >= 4 && Math.abs(dx) >= Math.max(0, rise) * Math.tan((TUNING.slantDeg * Math.PI) / 180) ? (dx < 0 ? -1 : 1) : 0;
     if (Math.abs(dx) < 4 || Math.abs(dx) < Math.max(0, rise) * TUNING.leanSlant) return 0;
     return dx < 0 ? -1 : 1;
   }
@@ -446,7 +451,10 @@ export class TouchGestures {
     f.trX = f.x;
     if (air) this.lastAir = this.now;
     this.sink.feedback('jump', f.x, f.y);
-    this.sink.jumpPress(lean);
+    // (the lean the caller just measured, if it was 35 degrees or more that same way; a sideways flick that jumps is well over)
+    const slant = lean !== 0 && this.slantSeen === lean ? lean : 0;
+    this.slantSeen = 0;
+    this.sink.jumpPress(lean, slant);
   }
 
   private mover(): Finger | undefined {
@@ -1153,6 +1161,7 @@ export class TouchGestures {
           // on a swinging vine, the other thumb's quick sideways flick lets go and leaps the way it was flicked
           if (this.vine() && this.env?.onSwing?.() && f.role === 'action') {
             f.consumed = true;
+            this.slantSeen = dx < 0 ? -1 : 1;
             this.fireJump(f, false, dx < 0 ? -1 : 1);
             return true;
           }
@@ -1160,6 +1169,7 @@ export class TouchGestures {
           // did nothing at all, QA v200: "a flick must always jump")
           if (f.role === 'action' && !this.vine() && dy < 0 && ay >= 24 && ay >= ax * TUNING.flickJumpSlant) {
             f.consumed = true;
+            this.slantSeen = dx < 0 ? -1 : 1;
             this.fireJump(f, this.canAir(), dx < 0 ? -1 : 1);
             return true;
           }

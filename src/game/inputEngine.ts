@@ -265,6 +265,7 @@ export class InputEngine {
     this.state.down = false;
     this.state.jumpPressed = false;
     this.state.jumpLean = 0;
+    this.state.jumpSlant = 0;
     this.state.jumpHeld = false;
     this.state.punchPressed = false;
     this.state.punchCancel = false;
@@ -312,10 +313,12 @@ export class InputEngine {
    * - Jump pressing up
    * - Double jump pressing up twice
    */
-  public triggerTouchUp(lean: -1 | 0 | 1 = 0, holdMs = MIN_TOUCH_JUMP_HOLD_MS) {
+  public triggerTouchUp(lean: -1 | 0 | 1 = 0, holdMs = MIN_TOUCH_JUMP_HOLD_MS, slant: -1 | 0 | 1 = 0) {
     this.fresh();
-    // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir)
+    // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir; leaning 35 degrees or more, a
+    // standing jump carries him that way, CT-27)
     this.state.jumpLean = lean;
+    this.state.jumpSlant = slant;
     // (held at least `holdMs` from the take-off, MIN_TOUCH_JUMP_HOLD_MS unless the press says (the Pad's Jump button: a tap is a hop);
     // until he takes off, as long as the press can wait to be used as well)
     this.touchHoldMin = holdMs / 1000;

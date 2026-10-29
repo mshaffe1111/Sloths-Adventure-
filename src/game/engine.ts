@@ -1942,7 +1942,8 @@ export class GameEngine {
           // touch jump help: a second jump taken with nothing steering pushes him forward until he lands or the thumb takes over
           let dir: -1 | 0 | 1 = steer;
           let leaning = false;
-          if (this.touchHelp() === 'off' || p.grounded) {
+          // (with Jump help off only a slanted standing flick's carry runs: CT-27)
+          if ((this.touchHelp() === 'off' && this.airDrive.drive === 0) || p.grounded) {
             if (p.grounded) this.airDrive = newAirDrive();
           } else if (this.inputGrace <= 0) {
             dir = airCarry(this.airDrive, steer, this.input.state.down);
@@ -5488,9 +5489,16 @@ export class GameEngine {
     // (a touch or Pad jump's minimum hold counts from now, in game time: CT-12)
     (this.input as { noteTakeOff?: () => void }).noteTakeOff?.();
     const help = this.touchHelp();
-    if (help === 'off') return;
     const inp = this.input.state;
     const steer = this.inputGrace > 0 ? 0 : inp.left ? -1 : inp.right ? 1 : 0;
+    // a standing flick that leaned 35 degrees or more carries him that way at LEAN_SPEED of a run, Jump help or not (Matt, 2026-10-29,
+    // polish report CT-27: it went straight up and down)
+    const slant = this.input.source === 'gesture' && !second && steer === 0 ? inp.jumpSlant ?? 0 : 0;
+    if (help === 'off') {
+      this.airDrive = slant ? { drive: slant, lean: true } : newAirDrive();
+      if (slant) this.player.facing = slant;
+      return;
+    }
     const kind = this.currentStage.config.objectiveType;
     airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
     // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
@@ -5508,6 +5516,10 @@ export class GameEngine {
         this.airDrive.lean = true;
         this.player.facing = dir;
       }
+    }
+    if (slant) {
+      this.airDrive = { drive: slant, lean: true };
+      this.player.facing = slant;
     }
   }
 
