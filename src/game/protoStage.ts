@@ -108,6 +108,8 @@ export interface ProtoExtras {
   ring?: { x0: number; x1: number; wallId: number; waves: Array<Array<{ x: number; surface: number; kind: 'snake' | 'boa' | 'ocelot' | 'jaguar' }>> };
   /** the collapse that chases him along the long branch (1-8: chase.ts) */
   chase?: import('./chase.ts').ChasePlan;
+  /** the dirty tide that comes in under him as he climbs (6-8: risingTide.ts) */
+  tide?: import('./risingTide.ts').TidePlan;
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
   bushes?: import('./watcher.ts').Bush[];
   watch?: import('./watcher.ts').WatchZone[];

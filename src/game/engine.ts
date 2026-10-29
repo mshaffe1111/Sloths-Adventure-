@@ -5,6 +5,7 @@ import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
+import { newTide, onHeld, restartTide, stepTide, TIDE, type TideSetting, type TideState } from './risingTide.ts';
 import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
@@ -465,6 +466,11 @@ export class GameEngine {
   private chaseFalling: Array<{ x: number; y: number; w: number; h: number; vx: number; vy: number; rot: number; vr: number; t: number; right: boolean }> = [];
   private chaseSlowDone = false;
   private chaseNext = 0;
+  /** 6-8's rising tide (risingTide.ts): its state, its setting, and the flag Dot warned under (Infinity: not yet; once a stage) */
+  private tide: TideState | null = null;
+  private tideSet: TideSetting = TIDE.normal;
+  private tideWarned = Infinity;
+  private tideChurn = 0;
   /** where the eagle's shadow falls this frame (drawn after the bushes and the front grass), or null */
   private watchShadowAt: { x: number; a: number } | null = null;
   /** World 3: the watcher is a pair of eyes in the dark, not an eagle (where they are this frame, world px; drawn over the darkness) */
@@ -631,6 +637,10 @@ export class GameEngine {
     this.chaseFalling = [];
     this.chaseSlowDone = false;
     this.chaseNext = 0;
+    this.tide = this.proto?.tide ? newTide(this.proto.tide) : null;
+    this.tideSet = isEasy() ? TIDE.easy : TIDE.normal;
+    this.tideWarned = Infinity;
+    if (this.tide) this.currentStage.waterY = this.tide.y;
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
     this.bushRustle.clear();
@@ -2388,6 +2398,7 @@ export class GameEngine {
     // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
     if (this.proto?.watch) this.updateWatch(dt);
     if (this.chase) this.updateChase(dt);
+    if (this.tide) this.updateTide(dt);
     if (this.ringDrops.length) this.stepDrops(dt);
     if (this.proto?.ring) this.updateRing(dt);
 
@@ -4387,6 +4398,11 @@ export class GameEngine {
     this.dragSpeed = 1;
     this.dragJump = 1;
     // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
+    // 6-8: the tide starts again under his flag, waiting a moment (risingTide.ts)
+    if (this.tide) {
+      restartTide(this.tide, this.proto!.tide!, this.tideSet, this.checkpoint.y);
+      this.currentStage.waterY = this.tide.y;
+    }
     for (const pl of this.platforms) {
       if (pl.type === 'fragile') {
         pl.broken = false;
@@ -5492,6 +5508,7 @@ export class GameEngine {
 
     ctx.restore(); // end world transform
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
+    if (this.tide) this.drawTideEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
     if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
@@ -6077,6 +6094,53 @@ export class GameEngine {
     for (const pl of this.platforms) if (pl.chase && Math.abs(pl.x + pl.width / 2 - p.x) < 800) low = Math.max(low, pl.y);
     const off = low > -Infinity && p.y > low + 300 && !p.isVineSwinging && !p.climbing;
     if ((caught(ch, p.x) && !p.isVineSwinging) || off) this.chaseCaught();
+  }
+
+  /**
+   * step 6-8's tide: it turns once he is up the first root (a churn, a rumble, Dot's line), then rises under him, holding while he stands
+   * at a flag or on a held shelf. The water line is the stage's (drawn with the painted dirty water; under it costs a life as any water)
+   */
+  private updateTide(dt: number) {
+    const plan = this.proto!.tide!;
+    const t = this.tide!;
+    const p = this.player;
+    const atFlag = p.grounded && (this.currentStage.checkpoints ?? []).some((c) => Math.abs(p.y - c.y) < 6 && Math.abs(p.x - c.x) < 160);
+    const resting = atFlag || onHeld(plan, p.x, p.y, p.grounded);
+    if (stepTide(t, plan, this.tideSet, dt, p.y, resting) === 'turned') {
+      sound.playHitImpact(true);
+      this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
+      const id = this.currentStage.config.id;
+      if (!tipHeard(id, 'tide:turn')) {
+        markTipHeard(id, 'tide:turn');
+        this.guide("The tide's coming in. Climb!", 3.5); // (new, needs Matt's approval)
+      }
+    }
+    this.currentStage.waterY = t.y;
+    // the churn while it turns: splashes along the line where he can see it
+    if (t.on && t.warn > 0 && this.gameTime > this.tideChurn) {
+      this.tideChurn = this.gameTime + 0.25;
+      this.spawnWaterSplash(this.camera.x + Math.random() * this.camera.viewportWidth, t.y);
+    }
+    // Dot's warning the first time the water comes close under him (once a stage: STAGE-RULES §6, no repeated tips)
+    if (t.on && t.y - p.y < this.tideSet.near && this.tideWarned === Infinity) {
+      this.tideWarned = this.checkpoint.y;
+      this.guide('The tide! Keep climbing.', 2.5); // (new, needs Matt's approval)
+    }
+  }
+
+  /** 6-8's tide on the screen: the bottom edge darkens with murky water as it closes in (or while it is below the view) */
+  private drawTideEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
+    const t = this.tide!;
+    if (!t.on) return;
+    const k = Math.max(0, Math.min(1, (this.tideSet.band + 150 - (t.y - this.player.y)) / 500));
+    if (k <= 0.02) return;
+    const h = vh * 0.18;
+    const pulse = 0.8 + 0.2 * Math.sin(this.gameTime * (t.warn > 0 ? 12 : 4));
+    const g = ctx.createLinearGradient(0, vh, 0, vh - h);
+    g.addColorStop(0, `rgba(58, 52, 36, ${0.6 * k * pulse})`);
+    g.addColorStop(1, 'rgba(58, 52, 36, 0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, vh - h, vw, h);
   }
 
   /** caught on the long branch: one heart, back at the flag with the branch whole again from there, the collapse waiting a moment */
