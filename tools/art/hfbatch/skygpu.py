@@ -119,9 +119,12 @@ for it in SPEC['items']:
         b = io.BytesIO(); Image.fromarray(cv.astype(np.uint8)).save(b, 'JPEG', quality=85)
         put(f"start-{it['name']}.jpg", b.getvalue())
         CH = E + C
+        # the mask runs on into the strip's top 11%, falling off, so the model blends the join (skycut.py fades back to the strip itself
+        # over the same rows); a mask that stopped at the strip's top left a hard seam (pilot 3, w1kapok)
+        R = int(H * 0.11)
         mask = np.zeros((CH, TW), np.uint8)
         mask[:E] = 255
-        mask[E:E + 16] = np.linspace(255, 0, 16, dtype=np.float32)[:, None].astype(np.uint8)
+        mask[E:E + R] = np.linspace(255, 0, R, dtype=np.float32)[:, None].astype(np.uint8)
         mimg = Image.fromarray(mask, 'L')
         n = math.ceil(W / (TW - 256))
         acc = np.zeros((CH, W, 3), np.float64)

@@ -94,3 +94,11 @@ hfboss-r4     6ae396a55ddcdc08302647b4 rtx-pro-6000 18:55:33Z-19:01:52Z (6.3 min
   (fine, thinner); croc-props s62 (start shapes too plain), s75-23 (boat on a flat slab); fx3 s85-7 (screech grew an arrowhead), s72-23
   (stray flecks), s85-23's pennants (spear tips doubling the pole).
 total ~32.5 min on rtx-pro-6000 = ~$1.49 of the $10 cap.
+
+Painted sky above the far strips and the middle strips carried on up, for the upright view (polish-edges, Matt 2026-10-29: "upright looks
+faded next to sideways"; budget ~$2). GPU tools/art/hfbatch/skygpu.py, spec make_sky_spec.py, cut skycut.py. Bucket hfbatch/sky/.
+hfsky-pilot1  6ae3a77ec78863f9c62dcc62 rtx-pro-6000 20:07:26Z-20:11:50Z (4.4 min, ~$0.20, cancelled): img2img from a flat start at
+  s75/s88. s75 leaves the start flat with a hard band; s88 paints a good open sky (w1) but a flat green block on w1kapok and a flat
+  patch on the w3 cave roof.
+hfsky-pilot2  6ae3a88bc78863f9c62dcda5 rtx-pro-6000 20:11:55Z-20:14:10Z (2.3 min, ~$0.11, cancelled): textured start (the strip's top
+  quarter turned over). Img2img on the short canvas paints a whole new scene, a stone ledge where the strip's top was: thrown.

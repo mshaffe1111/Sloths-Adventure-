@@ -50,8 +50,11 @@ WHAT = {
 # the middle strips whose trees, roots or cave roof run off their top edge (upright that edge is on screen): carried on upward on flat
 # magenta, keyed by skycut.py into <stem>-midtop.webp
 CUT = ('slothadv style, painted storybook illustration, a cut-out layer of a side-scrolling game background, soft cel shading, thin '
-       'dark outline, hand-painted gouache brushwork, the same colours and light as below, on one flat plain magenta background, no '
-       'sky, no text')
+       'dark outline, hand-painted gouache brushwork, the same colours and light as below, isolated on one flat solid pure {key} '
+       'background filling every gap, no sky, no haze, no glow, no gradient, no text')
+# the key the middle strip is painted on: magenta, or green where the strip itself is pink (World 5: the model turned magenta into a
+# pink sunset haze, pilot 3)
+KEY = {'w5': ('green', [0, 255, 0])}
 MID = {
     'w1': 'the tall mossy rainforest trees carry on up: trunks, spreading leafy green canopy, hanging lianas and little orchids',
     'w1c': 'the dense leafy green rainforest canopy carries on up: leaves, branches, hanging lianas',
@@ -73,8 +76,9 @@ def item(stem, strength, seed, commit):
     base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/src/assets/backdrops/'
     if stem.endswith(':mid'):
         w = stem[:-4]
+        kname, kcol = KEY.get('w5' if w.startswith('w5') else w, ('magenta', [255, 0, 255]))
         return {'name': f'{w}-midtop-s{st}-{seed}', 'strength': float(strength), 'seed': int(seed), 'src': f'{base}{w}-mid.webp',
-                'prompt': f'{CUT}. {MID[w]}', 'bg': [255, 0, 255], 'ext': 0.45}
+                'prompt': f'{CUT.format(key=kname)}. {MID[w]}', 'bg': kcol, 'ext': 0.45}
     return {'name': f'{stem}-sky-s{st}-{seed}', 'strength': float(strength), 'seed': int(seed), 'src': f'{base}{stem}-far.webp',
             'prompt': f'{STYLE}. {WHAT[stem]}'}
 
