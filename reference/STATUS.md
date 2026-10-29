@@ -19,6 +19,11 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Swimming (Matt: build it, first swim in 6-7's well; calm water from w6/water.jpg) | cloud session_01FhBbYJzbeg3VTVJMDHy4EK | swim | dirty/fast stays deadly |
 | Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | |
 | 7-4 The Slide (W7 special; Matt: NOT a climb: side-on run, floor crumbles, behind-the-back slide, steer and jump; art: slomatt/02_sliding-from-behind) | cloud session_01FhBbYJXeB8XaDrrUgxfuHR | w7-slide | mock-up first |
+| Polish A1: picture and screens (VI-2, AN-4, VI-3, VI-4, VI-7, ST-1 code, UI-1, UI-3, UI-11, UI-14, LV-1) | cloud session_01FhBbYLAhepkzSTfrwKHSBm | polish-a1 | reference/polish-report/PLAN.md |
+| Polish A2: levels, sound (LV-6/9/11/12/13, CT-8 step 1, CT-20, SN-2/5/6/7, AN-9; its Dot items moved to the Dot helper) | cloud session_01FhBbYPEyi9ZZvvRqRyf8wK | polish-a2 | |
+| Dot rework (Matt: "constantly nagging", "gives away the puzzle", "weird blue box/circle"): Tips speaks only first-times, water, locked exits, real struggle; >=30 s gaps; no answers on room entry; no highlight boxes, Dot perches on the object; DOT-1..17 | cloud session_01FhBbYKJkZarvUhKDPsuRvk | polish-dot | before/after preview first |
+| Polish B1: controls never misread (CT-1..4, 6, 7, 9, 10, 12; CT-5 waits for Matt) | cloud session_01FhBbYKmJjBAbBHVVVBnhLE | polish-controls | replay tester touches |
+| Polish B2: clean backdrop edges (VI-1, VI-5, VI-6) | cloud session_01FhBbYNmvX29Yt9L2XxEWqJ | polish-edges | |
 | Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
 | Audit: major looks still drawn in code (DONE) | local read-only | none | findings below |
 
