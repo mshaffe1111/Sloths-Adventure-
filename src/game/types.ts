@@ -300,6 +300,9 @@ export interface Platform {
   /** a knot of wood standing at the end of a high branch (4-6; a mailbox post on 2-6's porches): a little wall, so he cannot walk off it
    *  into a very long fall */
   lip?: boolean;
+  /** a small piece of the ground under 90 tall (a soft pit's low step, or its walls under the banks): painted as the soil like a bank, or
+   *  (a wall under a bank) left to that bank's soil, never drawn as a platform (protoArt.ts drawProtoScene, terrain.ts) */
+  soil?: boolean;
 }
 
 /**

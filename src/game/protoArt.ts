@@ -12,6 +12,7 @@ import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
+import { drawEnd, drawLip, drawSoil, endFace, warmGround } from './groundPaint.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -30,6 +31,15 @@ let kitWorld = 1;
 /** which world's kit the painted layer draws (the engine sets it when a stage starts) */
 export function setKitWorld(w: number) {
   kitWorld = hasKit(w) ? w : 1;
+}
+let groundOn = false;
+/** whether this stage paints its banks (engine.ts paintKit): the drawn ground then leaves them to the painted soil (bankPainted) */
+export function setGroundPaint(on: boolean) {
+  groundOn = on;
+}
+/** a bank the painted ground covers whole (drawProtoScene's banks, not a moss floor), once its sheets are in */
+export function bankPainted(p: Platform): boolean {
+  return groundOn && (p.height >= 90 || !!p.soil) && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
 }
 /** whether a world has its own painted kit yet */
 export function hasKit(w: number): boolean {
@@ -496,166 +506,105 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
 }
 
 /**
- * The part of a world's bank piece that tiles cleanly (source pixels, from the piece's own corner). World 6's piece ends in a grey stone
- * slab (its bottom 60 rows, saturation 0.06 against 0.34 for the soil), which drew as a grey seam along every bank; World 5's has darker
- * columns at both ends (brightness 71 against 90 in its middle), a vertical step at every join in 5-7 (polish report VI-7). Measured
- * on kits/w5.webp and kits/w6.webp.
+ * A bank of earth (hf-art-ground, 2026-10-29; polish report VI-8): the world's painted soil (groundPaint.ts) from the bank's top all the way
+ * down, darkening with depth, the painted top lip along it, and where it drops away the painted bank end, its face carrying on down with a
+ * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
  */
-const BANK_CROP: Record<number, { x0?: number; x1?: number; h?: number }> = { 5: { x0: 14, x1: 546 }, 6: { h: 296 } };
-/** the same for the bank's end piece: World 6's carries the slab in its bottom 43 rows */
-const BANK_END_ROWS: Record<number, number> = { 6: 322 };
-/**
- * Worlds whose bank piece is made to repeat with no join (its right end crossfaded over SEAM_BAND source columns into its left end,
- * baked once): World 5's crack lines stop at different heights at the two ends, so every join showed as a vertical seam in 5-7.
- */
-const SEAMLESS_BANK = new Set([5]);
-const SEAM_BAND = 60;
-const seamlessBanks = new Map<number, HTMLCanvasElement | null>();
-function seamlessBank(img: HTMLImageElement, f: ProtoFrame, world: number): HTMLCanvasElement | null {
-  if (seamlessBanks.has(world)) return seamlessBanks.get(world)!;
-  let out: HTMLCanvasElement | null = null;
-  try {
-    const w = Math.round(f.w - SEAM_BAND), h = Math.round(f.h);
-    out = document.createElement('canvas');
-    out.width = w;
-    out.height = h;
-    const g = out.getContext('2d')!;
-    g.drawImage(img, f.x, f.y, w, h, 0, 0, w, h);
-    // the right end, fading out from the join, over the start of the left end
-    const end = document.createElement('canvas');
-    end.width = SEAM_BAND;
-    end.height = h;
-    const e = end.getContext('2d')!;
-    e.drawImage(img, f.x + w, f.y, SEAM_BAND, h, 0, 0, SEAM_BAND, h);
-    e.globalCompositeOperation = 'destination-in';
-    const grad = e.createLinearGradient(0, 0, SEAM_BAND, 0);
-    grad.addColorStop(0, 'rgba(0,0,0,1)');
-    grad.addColorStop(1, 'rgba(0,0,0,0)');
-    e.fillStyle = grad;
-    e.fillRect(0, 0, SEAM_BAND, h);
-    g.drawImage(end, 0, 0);
-  } catch {
-    out = null;
-  }
-  seamlessBanks.set(world, out);
-  return out;
-}
-
-/** a bank of earth: the painted top edge repeated along it, the end caps where it drops away; `view`: only what is on screen */
-export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number }): boolean {
+export function drawBankArt(
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+): boolean {
   if (!protoArtReady()) return false;
-  if (!moss) drawGroundFill(ctx, p, viewBottom, view);
-  const n: Name = moss ? 'mossStrip' : 'bank';
-  const { img, f: full } = frameOf(n);
-  // (a world whose bank piece does not tile cleanly as painted uses only the part that does: BANK_CROP)
-  const crop = !moss && kitWorld !== 1 && KIT_FRAMES[kitWorld]?.bank ? BANK_CROP[kitWorld] : undefined;
-  const f = crop
-    ? { x: full.x + (crop.x0 ?? 0), y: full.y, w: Math.min(full.w, crop.x1 ?? full.w) - (crop.x0 ?? 0), h: Math.min(full.h, crop.h ?? full.h) }
-    : full;
-  const baked = !moss && crop && SEAMLESS_BANK.has(kitWorld) ? seamlessBank(img as HTMLImageElement, f, kitWorld) : null;
-  const pic: CanvasImageSource = baked ?? img;
-  const sf = baked ? { x: 0, y: 0, w: baked.width, h: baked.height } : f;
-  const th = moss ? 46 : 110;
-  const tw = (th * sf.w) / sf.h;
-  // (a seamless piece repeats edge to edge, overlapping by half a unit; a painted one overlaps by two, so no gap shows at a join)
-  const step = baked ? tw - 0.5 : tw - 2;
+  if (moss) {
+    const { f } = frameOf('mossStrip');
+    const th = 46, tw = (th * f.w) / f.h;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(p.x - (open.left ? 26 : 1), p.y - 30, p.width + (open.left ? 26 : 1) + (open.right ? 26 : 1), th + 40);
+    ctx.clip();
+    const { start, end } = stripSpan(Math.floor((p.x - (open.left ? 18 : 0)) / (tw - 2)) * (tw - 2), p.x + p.width + 18, tw, view?.x0, view?.x1);
+    for (let x = start; x < end; x += tw - 2) blit(ctx, 'mossStrip', x, p.y - 14, tw, th);
+    ctx.restore();
+    return true;
+  }
+  const w = kitWorld;
+  if (!warmGround(w)) return false;
+  const bottom = Math.max(p.y + p.height, viewBottom);
+  const soilTop = p.y + 6;
+  // the outline of the bank's soil: straight down where it meets the next bank (a unit under it, so no hairline), the end's face where
+  // it drops away
+  // (a side that steps down to a lower bank: the end's face only down to that bank's top, then straight down under it, where the two
+  // banks' soils are the one world-anchored texture and meet with no join)
+  const side = (right: boolean): Array<[number, number]> => {
+    const x = right ? p.x + p.width : p.x, d = right ? 1 : -1;
+    if (!(right ? open.right : open.left)) return [[x + d, soilTop], [x + d, bottom]];
+    const step = right ? open.rightStep : open.leftStep;
+    const face = endFace(w, x, p.y, bottom, right);
+    if (step === undefined) return face;
+    const cut = step + 24;
+    const pts = face.filter((q) => q[1] < cut);
+    return [...pts, [pts.length ? pts[pts.length - 1][0] : x, cut], [x + d, cut], [x + d, bottom]];
+  };
+  const R = side(true);
+  const L = side(false);
+  const clampY = (pt: [number, number]): [number, number] => [pt[0], Math.max(soilTop, pt[1])];
   ctx.save();
   ctx.beginPath();
-  // (a side that meets the next bank runs a unit under it: two clips' soft edges meeting showed the fill through as a hairline)
-  ctx.rect(p.x - (open.left ? 26 : 1), p.y - 30, p.width + (open.left ? 26 : 1) + (open.right ? 26 : 1), th + 40);
+  ctx.moveTo(...clampY(L[0]));
+  for (const pt of R) ctx.lineTo(...clampY(pt));
+  ctx.lineTo(R[R.length - 1][0], bottom + 2);
+  ctx.lineTo(L[L.length - 1][0], bottom + 2);
+  for (let i = L.length - 1; i >= 0; i--) ctx.lineTo(...clampY(L[i]));
+  ctx.closePath();
   ctx.clip();
-  // (the repeat is laid from a fixed point in the world, not from this bank's own left end: two banks side by side carry on one pattern
-  // instead of each starting its own, which left a hard join where they meet; 5-7)
-  const from = p.x - (open.left ? 18 : 0);
-  const { start, end } = stripSpan(Math.floor(from / step) * step, p.x + p.width + 18, step + 2, view?.x0, view?.x1);
-  const y0 = p.y - (moss ? 14 : 18);
-  // (a cropped bank ends in plain soil, a hard line on the fill under it: its last rows fade part way into the fill instead; not all
-  // the way, or the lit bevel of the fill piece under it shows through: VI-8)
-  const fade = crop?.h ? 6 : 0;
-  const fh = fade ? Math.round(sf.h * 0.14) : 0;
-  const ga = ctx.globalAlpha;
-  for (let x = start; x < end; x += step) {
-    ctx.drawImage(pic, sf.x, sf.y, sf.w, sf.h - fh, x, y0, tw, (th * (sf.h - fh)) / sf.h);
-    for (let i = 0; i < fade; i++) {
-      const sy = sf.h - fh + (fh * i) / fade;
-      ctx.globalAlpha = ga * (1 - (0.55 * (i + 0.5)) / fade);
-      ctx.drawImage(pic, sf.x, sf.y + sy, sf.w, fh / fade, x, y0 + (th * sy) / sf.h, tw, (th * fh) / sf.h / fade + 0.5);
-    }
-    ctx.globalAlpha = ga;
+  let x0 = Math.min(...L.map((q) => q[0])), x1 = Math.max(...R.map((q) => q[0]));
+  if (view) {
+    x0 = Math.max(x0, view.x0 - 20);
+    x1 = Math.min(x1, view.x1 + 20);
   }
+  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, viewBottom, view?.y0);
   ctx.restore();
-  if (!moss) {
-    const { img: capImg, f: capFull } = frameOf('bankEnd');
-    const capRows = kitWorld !== 1 && KIT_FRAMES[kitWorld]?.bankEnd ? BANK_END_ROWS[kitWorld] : undefined;
-    const cap = capRows ? { ...capFull, h: Math.min(capFull.h, capRows) } : capFull;
-    const cw = (th * cap.w) / cap.h;
-    const drawCap = (x: number) => ctx.drawImage(capImg, cap.x, cap.y, cap.w, cap.h, x, p.y - 18, cw, th);
-    if (open.right) drawCap(p.x + p.width - cw * 0.55);
-    if (open.left) {
-      ctx.save();
-      ctx.translate(p.x + cw * 0.55, 0);
-      ctx.scale(-1, 1);
-      drawCap(0);
-      ctx.restore();
-    }
-  }
+  // the top lip, under the end pieces' own lip corners (`bare`: a pit's low step, too narrow for the end pieces, which are wider than it
+  // and see-through below their rims: its soil keeps the end's wobbling face and the lip runs to its ends)
+  const la = open.left && !open.bare ? p.x + 30 : p.x - 1;
+  const lb = open.right && !open.bare ? p.x + p.width - 30 : p.x + p.width + 1;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(la, p.y - 120, lb - la, 260);
+  ctx.clip();
+  drawLip(ctx, w, la, lb, p.y, view);
+  ctx.restore();
+  const end = (right: boolean, step?: number) => {
+    const x = right ? p.x + p.width : p.x;
+    // (only an end on screen: a long bank's far end is thousands of units off)
+    if (view && (x < view.x0 - 260 || x > view.x1 + 260)) return;
+    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : step + 26);
+  };
+  if (open.bare) return true;
+  if (open.right) end(true, open.rightStep);
+  if (open.left) end(false, open.leftStep);
   return true;
 }
 
-/** a world with its own kit: the deep ground below the top band, in that world's earth or rock, all the way down */
-function drawGroundFill(ctx: CanvasRenderingContext2D, p: Platform, viewBottom: number, view?: { x0: number; x1: number }) {
-  const f = ownKit() ? KIT_FRAMES[kitWorld]?.fill : undefined;
-  const img = imgs.get(kitWorld);
-  if (!f || !img || !ready.has(kitWorld)) return;
-  const tw = 230;
-  const th = (tw * f.h) / f.w;
-  const top = p.y + 70;
-  // the drawn ground underneath runs to the bottom of the screen, so the painted one does too
-  const bottom = Math.max(p.y + p.height, viewBottom);
-  if (bottom <= top) return;
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(p.x, top, p.width, bottom - top + 2);
-  ctx.clip();
-  // anchored to the world, not the platform, so neighbouring banks line up
-  // (and only the columns on screen)
-  const { start, end } = stripSpan(Math.floor(p.x / (tw - 2)) * (tw - 2), p.x + p.width, tw, view?.x0, view?.x1);
-  for (let y = top; y < bottom; y += th - 2) for (let x = start; x < end; x += tw - 2) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, tw, th);
-  ctx.restore();
-}
-
 /**
- * The face of a river bank behind a climb (2-6, the village dug into the bank): the world's painted earth repeated across the view,
- * shaded back so the porches and posts in front stand out, with the grassy lip along its top. False until the kit has loaded.
+ * The face of a river bank behind a climb (2-6, the village dug into the bank): the world's painted soil across the view, shaded back so
+ * the porches and posts in front stand out, with the grassy lip along its top. False until the sheets have loaded.
  */
 export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number }): boolean {
-  if (!protoArtReady() || !ownKit()) return false;
-  const f = KIT_FRAMES[kitWorld]?.fill;
-  const img = imgs.get(kitWorld);
-  if (!f || !img) return false;
+  if (!protoArtReady() || !warmGround(kitWorld)) return false;
   const a = Math.max(wall.x0, view.x0 - 10), b = Math.min(wall.x1, view.x1 + 10);
   const top = Math.max(wall.top, view.y0 - 10), bottom = Math.min(wall.bottom, view.y1 + 10);
   if (b <= a || bottom <= top) return true;
-  const tw = 300;
-  const th = (tw * f.h) / f.w;
   ctx.save();
   ctx.beginPath();
   ctx.rect(a, top, b - a, bottom - top);
   ctx.clip();
-  // anchored to the world, so it does not swim as the camera climbs
-  const x0 = Math.floor(a / (tw - 2)) * (tw - 2);
-  const y0 = wall.top + Math.floor((top - wall.top) / (th - 2)) * (th - 2);
-  for (let y = y0; y < bottom; y += th - 2) for (let x = x0; x < b; x += tw - 2) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, tw, th);
-  // set back: darker, and darker still toward the bottom of the view, so the climb in front reads clearly
-  ctx.fillStyle = 'rgba(28, 18, 8, 0.42)';
+  drawSoil(ctx, kitWorld, a, b, top, bottom, view.y1, view.y0);
+  // set back: darker, so the climb in front reads clearly
+  ctx.fillStyle = 'rgba(28, 18, 8, 0.36)';
   ctx.fillRect(a, top, b - a, bottom - top);
   ctx.restore();
   // the grassy lip where the bank meets the sky
-  if (wall.top >= view.y0 - 60 && wall.top <= view.y1 + 60) {
-    const m = frameOf('mossStrip').f;
-    const mh = 46, mw = (mh * m.w) / m.h;
-    for (let x = Math.floor(a / (mw - 2)) * (mw - 2); x < b; x += mw - 2) blit(ctx, 'mossStrip', x, wall.top - 16, mw, mh);
-  }
+  if (wall.top >= view.y0 - 60 && wall.top <= view.y1 + 60) drawLip(ctx, kitWorld, a, b, wall.top, view);
   return true;
 }
 
@@ -668,7 +617,7 @@ export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: numbe
 
 /** a world with its own kit paints every thin ledge with its own piece (a drifting river log and a spring keep their own look) */
 function thinKit(p: Platform): boolean {
-  return p.height < 50 && !p.push && !p.lily && !p.art && p.type !== 'drift' && p.type !== 'bouncy';
+  return p.height < 50 && !p.push && !p.lily && !p.art && !p.soil && p.type !== 'drift' && p.type !== 'bouncy';
 }
 /** which of the stage's platforms the painted props draw (the rest keep the drawn look) */
 export function paintedPlatforms(platforms: Platform[]): Set<number> {
@@ -720,6 +669,64 @@ function trunkVine(): HTMLCanvasElement | null {
   return out;
 }
 
+/**
+ * A pit's inside in shadow: cool, from nothing at the banks' lips to darkest on its floor, darker toward its walls, and spilling 40 units
+ * under each bank's face, where the end's undercut shows it as a soft contact shadow under the lip. Each stretch of the pit's surface
+ * (its floor, a step standing on it) is shaded down to its own top and fades out just under it: the soil under the surface is the
+ * banks' own soil, one piece with theirs.
+ */
+function pitShade(ctx: CanvasRenderingContext2D, o: { x0: number; x1: number; top: number; pieces: Platform[] }) {
+  const SH = '12,18,32';
+  const x0 = o.x0 - 40, x1 = o.x1 + 40;
+  // the surface: each piece where no higher piece covers it
+  const covered: Array<[number, number]> = [];
+  const segs: Array<[number, number, number]> = [];
+  for (const p of [...o.pieces].sort((a, b) => a.y - b.y)) {
+    let parts: Array<[number, number]> = [[Math.max(x0, p.x), Math.min(x1, p.x + p.width)]];
+    for (const [ca, cb] of covered) parts = parts.flatMap(([a, b]) => (cb <= a || ca >= b ? [[a, b]] : [[a, ca], [cb, b]].filter(([u, v]) => v - u > 1)) as Array<[number, number]>);
+    for (const [a, b] of parts) if (b - a > 1) segs.push([a, b, p.y]);
+    covered.push([p.x, p.x + p.width]);
+  }
+  // (the ends of the opening, beyond the pieces, take the nearest stretch's depth)
+  segs.sort((a, b) => a[0] - b[0]);
+  if (segs.length) {
+    segs[0][0] = x0;
+    segs[segs.length - 1][1] = x1;
+  }
+  ctx.save();
+  for (const [a, b, fy] of segs) {
+    const y1 = fy + 50;
+    const g = ctx.createLinearGradient(0, o.top, 0, y1);
+    g.addColorStop(0, `rgba(${SH},0)`);
+    g.addColorStop((fy - o.top) / (y1 - o.top), `rgba(${SH},0.56)`);
+    g.addColorStop(1, `rgba(${SH},0)`);
+    ctx.fillStyle = g;
+    // (feathered over its outer 40 units each side, under the banks' faces: a hard edge showed where a face curves in)
+    for (let u = a; u < b; u += 5) {
+      const d = Math.min(u - x0, x1 - (u + 5));
+      ctx.globalAlpha = Math.max(0, Math.min(1, (d + 2.5) / 40));
+      ctx.fillRect(u, o.top, Math.min(5, b - u), y1 - o.top);
+    }
+  }
+  ctx.globalAlpha = 1;
+  // the walls' shadow, fading out toward the surface in three bands
+  const fl = Math.min(...segs.map((q) => q[2]));
+  const bands: Array<[number, number, number]> = [[o.top + 20, fl - 60, 1], [fl - 60, fl - 30, 0.6], [fl - 30, fl, 0.3]];
+  for (const [a, b] of [[x0, o.x0 + 70], [x1, o.x1 - 70]] as const) {
+    const h = ctx.createLinearGradient(a, 0, b, 0);
+    h.addColorStop(0, `rgba(${SH},0)`);
+    h.addColorStop(40 / 110, `rgba(${SH},0.4)`);
+    h.addColorStop(1, `rgba(${SH},0)`);
+    ctx.fillStyle = h;
+    for (const [ya, yb, al] of bands) {
+      if (yb <= ya) continue;
+      ctx.globalAlpha = al;
+      ctx.fillRect(Math.min(a, b), ya, Math.abs(b - a), yb - ya);
+    }
+  }
+  ctx.restore();
+}
+
 export interface ProtoSceneState {
   /** when each crumbling branch broke (game time) */
   brokeAt: Map<number, number>;
@@ -739,20 +746,56 @@ export function drawProtoScene(
   trees: Array<{ x: number; topY: number }>,
   vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean }>,
   t: number,
-  view: { x0: number; x1: number; y1?: number },
+  view: { x0: number; x1: number; y0?: number; y1?: number },
   st: ProtoSceneState,
 ): boolean {
   if (!protoArtReady()) return false;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
-  const banks = platforms.filter((p) => p.height >= 90 && !p.push && !p.broken && !p.art);
+  const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  // the pits: a piece with a bank 60 or more higher on either side, close by. Their inside is shaded (pitShade) once the pieces in them
+  // are drawn and before the banks either side, so a gap reads as a gap and not as more of the same lit soil
+  const tall = banks.filter((q) => q.height >= 90 && !q.soil);
+  const pits = new Map<string, { x0: number; x1: number; top: number; pieces: Platform[] }>();
   for (const p of banks) {
     if (!vis(p)) continue;
-    const touches = (side: 'l' | 'r') => banks.some((q) => q !== p && q.y <= p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2));
+    const L = tall.filter((q) => q.y <= p.y - 60 && q.x + q.width <= p.x + p.width + 2 && q.x + q.width >= p.x - 300).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+    const R = tall.filter((q) => q.y <= p.y - 60 && q.x >= p.x - 2 && q.x <= p.x + p.width + 300).sort((a, b) => a.x - b.x)[0];
+    if (!L || !R) continue;
+    const x0 = L.x + L.width, x1 = R.x;
+    if (x1 - x0 < 20 || x1 - x0 > 700) continue;
+    const k = `${Math.round(x0)}|${Math.round(x1)}`;
+    const o = pits.get(k);
+    if (o) o.pieces.push(p);
+    else pits.set(k, { x0, x1, top: Math.max(L.y, R.y), pieces: [p] });
+  }
+  const shaded = new Set<string>();
+  const shadeUpTo = (y: number) => {
+    for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); pitShade(ctx, o); }
+  };
+  // (the lowest first: a pit's floor and its step go under the banks either side, whose faces then cover their ends)
+  for (const p of [...banks].sort((a, b) => b.y - a.y)) {
+    if (!vis(p)) continue;
+    shadeUpTo(p.y);
+    // (a pit's wall under a bank's end is that bank's soil already)
+    if (p.soil && banks.some((q) => q !== p && !q.soil && Math.abs(q.y + q.height - p.y) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)) continue;
+    // (a side is closed where the next bank meets it, or where a piece stands right on top of its end: a pit's floor runs on under the
+    // walls, and its end pieces' lip corners showed through the banks' undercut faces above it)
+    const touches = (side: 'l' | 'r') => {
+      const ex = side === 'l' ? p.x : p.x + p.width;
+      return banks.some((q) => q !== p && ((q.y <= p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2)) ||
+        (q.y < p.y && q.y + q.height >= p.y - 4 && q.x <= ex + 1 && q.x + q.width >= ex - 1)));
+    };
     // the high canopy: a wall face on the side that faces the yard
     const isWall = banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
     if (isWall) drawWallArt(ctx, p.x, p.y, banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6, 230);
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r') }, p.style === 'moss_stone', view.y1 ?? 0, view);
+    // (a side whose neighbour is lower is a step down to it, not a drop)
+    // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
+    const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
+    const lower = (side: 'l' | 'r') => banks.find((q) => q !== p && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2))?.y ?? floor;
+    // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);
   }
+  shadeUpTo(-Infinity);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {

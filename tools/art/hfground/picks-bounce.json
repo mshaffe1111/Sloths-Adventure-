@@ -1,0 +1,5 @@
+{
+ "toad": {"cap": "bounce-toad-p76", "stalk": "stalk-toad-v9"},
+ "parasol": {"cap": "bounce-parasol-p76", "stalk": "stalk-parasol-v9"},
+ "bloom": {"cap": "bounce-bloom-p76", "stalk": "stalk-bloom-v9"}
+}
