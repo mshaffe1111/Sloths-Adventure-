@@ -131,7 +131,8 @@ import {
   type AttackWant, type MoveId, type MoveSpec, type Rect,
 } from './fight.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
-import { drawEntrance, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
+import { drawEntrance, ENTRANCE_LONG, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
+import { queenTeaTableX } from './lairQueen.ts';
 import { drawLairBack, drawLairFront, drawLairObjects, drawLairWorld, lairOwnsScene } from './lairArt.ts';
 import { EASY_OPEN_MUL, bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
@@ -153,6 +154,9 @@ import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGo
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+
+/** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
+const TEA_STAND = 150;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -322,7 +326,8 @@ export class GameEngine {
   private bossCtx: BossCtx | null = null;
   private bossIntro = false;
   /** a giant's entrance while it plays (the fight and the player wait) */
-  private entrance: { t: number; total: number; roared: boolean; named: boolean } | null = null;
+  /** `tea`: the Tarantula Queen's tea (bossDefs entrance.tea, the long version only): where the fight starts her, to walk back to */
+  private entrance: { t: number; total: number; roared: boolean; named: boolean; tea: { home: number } | null } | null = null;
   private entranceDone = false;
   /** the line on screen is one of the boss fight's (bossCtx.guide) */
   private bossGuideUp = false;
@@ -3141,16 +3146,29 @@ export class GameEngine {
     if (!b || !def?.lair || b.defeated || !b.ai) return false;
     if (!this.entrance) {
       if (this.entranceDone) return false;
-      this.entrance = { t: 0, total: takeEntranceLength(this.currentStage.config.id), roared: false, named: false };
+      const total = takeEntranceLength(this.currentStage.config.id);
+      const tea = def.entrance?.tea && total >= ENTRANCE_LONG ? { home: b.x } : null;
+      this.entrance = { t: 0, total, roared: false, named: false, tea };
       this.bossIntro = true; // the usual first roar is part of the entrance instead
       b.ai.alpha = 0;
       this.reportBoss();
     }
     const en = this.entrance;
     en.t += dt;
-    const beat = entranceBeat(en.t, en.total);
+    const beat = entranceBeat(en.t, en.total, !!en.tea);
     b.ai.alpha = beat.reveal;
     b.ai.intro = beat.u;
+    if (en.tea && this.currentStage.arena) {
+      // her tea: at the painted table (facing it from its right, so the pot she holds is over it) until she has roared, then she
+      // skitters back, still facing the sloth, to where the fight starts her
+      const a = this.currentStage.arena;
+      const view = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
+      const home = this.teaHome();
+      const at = Math.min(en.tea.home, queenTeaTableX(view, a) + TEA_STAND);
+      const back = Math.max(0, Math.min(1, (beat.u - 0.7) / 0.22));
+      b.x = at + (home - at) * back * back * (3 - 2 * back);
+      b.facing = -1;
+    }
     const world = this.currentStage.config.worldIndex;
     if (beat.roaring && !en.roared) {
       en.roared = true;
@@ -3177,6 +3195,7 @@ export class GameEngine {
       }
     }
     if (en.t >= en.total) {
+      if (en.tea) b.x = this.teaHome();
       this.entrance = null;
       this.entranceDone = true;
       b.ai.intro = undefined;
@@ -3408,7 +3427,8 @@ export class GameEngine {
     const levelH = this.currentStage.config.levelHeight;
     const portrait = h > w;
     // in a tall narrow window the arena is wider than the screen: the boss makes its entrance close enough to be seen
-    if (portrait && b.ai?.state === 'roar' && b.ai.roarReason === 'enter') b.x = Math.min(b.x, p.x + 540);
+    // (not during the Queen's tea: she stands at her table and the view goes to her, teaAimK)
+    if (portrait && b.ai?.state === 'roar' && b.ai.roarReason === 'enter' && !this.entrance?.tea) b.x = Math.min(b.x, p.x + 540);
     const baseViewW = w / baseScale({ w, h, levelH, worldViewH: WORLD_VIEW_H, portraitViewW: PORTRAIT_VIEW_W });
     const def = this.bossDef;
     const want = bossViewWidth({
@@ -4710,6 +4730,21 @@ export class GameEngine {
   /**
    * Camera Controller with lookahead and trauma screen shake
    */
+  /** where the Queen's tea sends her home to: her fight start (upright, as close to Pokey as any entering boss is put, updateCamera) */
+  private teaHome(): number {
+    const home = this.entrance?.tea?.home ?? this.boss?.x ?? 0;
+    return this.viewCssH > this.viewCssW ? Math.min(home, this.player.x + 540) : home;
+  }
+
+  /** how far the view is turned over to the Queen's tea table (0..1): upright only, through the pour, easing off as she walks home */
+  private teaAimK(): number {
+    const en = this.entrance;
+    if (!en?.tea || !this.boss || this.viewCssH <= this.viewCssW) return 0;
+    const u = en.t / en.total;
+    const k = Math.min(1, u / 0.3) * (1 - Math.max(0, Math.min(1, (u - 0.7) / 0.2)));
+    return k * k * (3 - 2 * k);
+  }
+
   private updateCamera(dt: number) {
     const p = this.player;
     const { viewportWidth: vw, viewportHeight: vh } = this.camera;
@@ -4807,6 +4842,10 @@ export class GameEngine {
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
+      // the Queen's tea, upright: the narrow view goes over to her table while she pours and eases back as she skitters home
+      // (sideways, both already fit). Everything holds still in the entrance, so Pokey may be off the edge for those seconds.
+      const k = this.teaAimK();
+      if (k > 0) this.camera.targetX += (bs.x - TEA_STAND * 0.6 - vw / 2 - this.camera.targetX) * k;
     }
 
     // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
@@ -4822,7 +4861,9 @@ export class GameEngine {
     // the easing never loses him off the side: the aim keeps him in the view, but on a narrow view the eased camera trailed a quick swing
     // back by 60 px or more, and on 5-4's long silk lines upright (320 x 782) he swung out past the left edge (QA v200). The framing is
     // the aim's; this only keeps his whole body (and a little room) inside while the camera catches up (cameraFollow.ts keepHeroX)
-    this.camera.x = keepHeroX(this.camera.x, p.x, vw);
+    const teaK = this.teaAimK();
+    const kept = keepHeroX(this.camera.x, p.x, vw);
+    this.camera.x = kept + (this.camera.x - kept) * teaK;
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
 
@@ -5802,7 +5843,7 @@ export class GameEngine {
           eyeRgb: this.bossDef.entrance?.eye,
           darkRgb: this.bossDef.entrance?.dark,
         },
-        entranceBeat(this.entrance.t, this.entrance.total),
+        entranceBeat(this.entrance.t, this.entrance.total, !!this.entrance.tea),
         this.gameTime
       );
     }

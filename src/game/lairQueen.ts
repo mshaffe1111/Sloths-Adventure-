@@ -54,6 +54,10 @@ const PLATE = new LairPlate({
   // the top of the painting is the canopy: a tall screen grows it to fit rather than show the canopy mirrored
   cover: true,
 });
+/** where the painted tea table stands (the middle of the Silk Hollow painting), in world x, for this view: her entrance's tea is there */
+export function queenTeaTableX(v: LairView, a: LairArena): number {
+  return PLATE.worldX(0.5, v, a);
+}
 
 export function drawQueenBack(ctx: CanvasRenderingContext2D, v: LairView, a: LairArena, time: number, bossX: number, phase: number) {
   easeBrood(time, phase);

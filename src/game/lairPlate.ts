@@ -60,17 +60,18 @@ export class LairPlate {
     this.rage = new Picture(spec.rage);
   }
 
-  /** the plate, with `rage` (0..1) of the phase-3 painting over the calm one */
-  draw(ctx: CanvasRenderingContext2D, v: LairView, a: LairArena, rage: number) {
+  /** where the point `fx` of the way across the painting is, in world x, for this view (16:9 assumed while it loads) */
+  worldX(fx: number, v: LairView, a: LairArena): number {
+    const base = this.calm.get();
+    const g = this.place(v, a, base ? base.naturalHeight / base.naturalWidth : 9 / 16);
+    return v.x + g.left + fx * g.dw;
+  }
+
+  /** the painting's place in the view: its left and top edges (view units) and its drawn size */
+  private place(v: LairView, a: LairArena, aspect: number) {
     const s = this.spec;
-    ctx.fillStyle = s.fill;
-    ctx.fillRect(0, 0, v.vw, v.vh);
-    const c = this.calm.get();
-    const r = rage > 0.01 ? this.rage.get() : null;
-    const base = c ?? r;
-    if (!base) return;
     let dw = (a.right - a.left) * s.widthK;
-    let dh = (dw * base.naturalHeight) / base.naturalWidth;
+    let dh = dw * aspect;
     if (s.cover) {
       // (from the view's height, not where the floor sits in it, so the painting never breathes as the camera rises and falls)
       const need = (v.vh * 0.85) / s.floorAt;
@@ -87,6 +88,19 @@ export class LairPlate {
     const drift = s.drift + (s.focusX === undefined ? 0 : (0.7 - s.drift) * tall);
     const left = mid - dw / 2 - v.x + (camMid - mid) * drift + slide;
     const top = a.floor - s.floorAt * dh - v.y;
+    return { left, top, dw, dh };
+  }
+
+  /** the plate, with `rage` (0..1) of the phase-3 painting over the calm one */
+  draw(ctx: CanvasRenderingContext2D, v: LairView, a: LairArena, rage: number) {
+    const s = this.spec;
+    ctx.fillStyle = s.fill;
+    ctx.fillRect(0, 0, v.vw, v.vh);
+    const c = this.calm.get();
+    const r = rage > 0.01 ? this.rage.get() : null;
+    const base = c ?? r;
+    if (!base) return;
+    const { left, top, dw, dh } = this.place(v, a, base.naturalHeight / base.naturalWidth);
     const sky = !!s.skyTop;
     if (c && (!r || rage < 0.99)) tile(ctx, c, left, top, dw, dh, v, sky);
     if (r) {

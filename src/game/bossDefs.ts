@@ -1247,7 +1247,7 @@ const QUEEN: BossDef = {
   bodyGrace: 99,
   arenaW: 1600,
   lair: 'queen',
-  entrance: { eye: [255, 90, 80], dark: [3, 8, 6] },
+  entrance: { eye: [255, 90, 80], dark: [3, 8, 6], tea: true },
   // the Silk Hollow: a low branch at each end, a sling that drifts across the middle and a silk rope hanging from the roof
   perches: [
     { dx: 190, up: 105, w: 250 },

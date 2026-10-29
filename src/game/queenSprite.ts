@@ -12,6 +12,7 @@
  * The moves that have no clip (the venom jet, the brood call, the pounce, the cocoon drop, the roars) keep their painted poses. Her
  * entrance is her tea: she is revealed pouring a cup (the pour clip), rises from her seat (the sit clip played backwards) and then roars.
  */
+import { TEA_POUR, TEA_RISE } from './bossEntrance.ts';
 import { createPaintedBoss, type PaintedBoss, type PickContext } from './paintedBoss.ts';
 import { QUEEN_FRAMES } from './queenAtlasData.ts';
 import { QUEEN_ANIM, QUEEN_ANIM_UP, QUEEN_ANIM_URL, QUEEN_SEQ, queenFps } from './queenAnimData.ts';
@@ -67,9 +68,6 @@ const queenStills = createPaintedBoss({
 
 /** the death sequence's length (engine stepBossDeath) */
 const DYING_S = 2.0;
-/** where her entrance's tea ends and her rise ends (fractions of the entrance; the roar starts at 0.62) */
-const POUR_END = 0.53;
-const RISE_END = 0.62;
 /** world units of skitter a full cycle covers */
 const SKITTER_CYCLE = 260;
 const at = (seq: string, p: number) => {
@@ -101,10 +99,16 @@ const queenClips = createPaintedBoss({
     if (br.state === 'dying') return at('defeat', br.t / DYING_S);
     if (br.state === 'stun') return loop('stunned', time);
     if (br.state === 'roar' && br.intro !== undefined) {
-      // the entrance (bossEntrance.ts: revealed from 0.4, roaring from 0.62): pouring her tea, then rising from her seat into the roar
+      // her entrance is her tea (bossEntrance.ts, engine.stepEntrance): at the table pouring, rising from her seat, the roar (her
+      // painted screech), then skittering back to where the fight starts
       const u = br.intro;
-      if (u < POUR_END) return at('pour', Math.max(0, (u - 0.3) / (POUR_END - 0.3)));
-      if (u < RISE_END) return at('sit', 1 - (u - POUR_END) / (RISE_END - POUR_END));
+      const [p0, p1] = TEA_POUR;
+      if (u < p1) return at('pour', Math.max(0, (u - p0) / (p1 - p0)));
+      if (u < TEA_RISE) return at('sit', 1 - (u - p1) / (TEA_RISE - p1));
+      if (moving) {
+        const f = QUEEN_SEQ.skitter;
+        return f[Math.floor((dist / SKITTER_CYCLE) * f.length) % f.length];
+      }
       return '';
     }
     if (br.state === 'roar') return '';
