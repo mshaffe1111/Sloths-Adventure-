@@ -6,6 +6,8 @@ Last updated: 2026-10-29 7:55 PM ET. HOTFIX PR #49 (#ctest on the testers' link 
 
 RELEASE (Matt ~8:05 PM ET): after he plays the 11 PM test link and says "push", that exact build is frozen as the release branch and the PR opened. Tracker refreshed 79186903 (165 items: 77 live, 49 merged-not-live, 7 running, unowned all assigned 8:05 PM ET). Cutscenes (ST-1/2): plates at 2560, dpr cap 2, cels repacked, merged-not-live; story-art doing a full scene pass + contact sheet for Matt.
 
+MATT'S CALLS ~8:10 PM ET: Build 1's 8 items rebuilt here (polish-c: AN-1/2/3, SN-4, DOT-3, UI-6/7/8); LV-3 keep the Easy double jump + a 1-6 practice spot and one Dot line (polish-a2); tilt CT-29 later (after W7-10 and the next releases); Naturalist medal = all 18 journal cards (polish-a1). Also assigned 8:05 PM ET: CT-8 step 2 (polish-controls), X-14 teeter frames (hf-art-bosses), PF-2 + X-10 cause (PF-1), S-12 Flicker stage lines + DOT-5/6/7 check (polish-dot), SR leftovers (story-a), lookalike 31d0341 check (W8).
+
 How the lead runs it: a check-in every 30 min (send_later, re-armed each time). Each check-in: list_sessions; read every report; review against LEAD-PLAYBOOK §4; merge what passes (fetch first, one gate per batch); send back what doesn't; nudge anything idle or stuck with no report for 60+ min; update this board; tell Matt only decisions and finished things. Test link cutoff 10:40 PM ET, link 11 PM ET.
 
 Track A, finish the game (owner, next milestone):
