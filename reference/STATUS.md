@@ -2,12 +2,23 @@
 
 Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
 
-## Running (2026-10-29 ~08:10 ET; Matt: "Let's start 7" and "start World 6's special stage")
+## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
 
-- 6-8 Stilt Climb (World 6's special stage, hand-built): cloud session_01FhBbYMt17qa4tAv8V6jvxN, branch w6-stilt-climb. Step 1 is a
-  mock-up for Matt (layout plan + blockout screenshots), then it stops; build only after Matt approves.
-- World 7 on gen2 (one builder, B12 checklist): cloud session_01FhBbYNKK8iPP5FQajUs6u5, branch gen2-w7. Matt: Pokey teaches himself in World 7
-  (Dot is gone in the story); STAGE-RULES §1.
+Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as on 2026-10-28. Effort levels still by job (LEAD-PLAYBOOK §7).
+
+| Job | Who | Branch | Notes |
+|---|---|---|---|
+| 6-8 Stilt Climb (W6 special, hand-built) | cloud session_01FhBbYMt17qa4tAv8V6jvxN | w6-stilt-climb | mock-up first, then stops for Matt |
+| World 7 kit, ground/crumble, hook-up, curation | cloud session_01FhBbYNKK8iPP5FQajUs6u5 | gen2-w7 | Pokey teaches himself (Dot absent) |
+| World 7 swings + rooms | cloud session_01FhBbYL6bqh18b851MMeCgA | gen2-w7-swing | merges into gen2-w7 before curation |
+| World 8 kit, ground/darkness, hook-up, curation | cloud session_01FhBbYL7oX9aYPA1U8CKGQ9 | gen2-w8 | lantern + fireflies |
+| World 8 swings + rooms | cloud session_01FhBbYM8NXWsJ1fXfGP892s | gen2-w8-swing | merges into gen2-w8 before curation |
+| QA leftovers 2-6 (tip timing, plank ends), 3-3 counter | cloud session_01FhBbYMWcFJmuZ592k3J1vs | qa-fix-w123b | |
+| Art pickup: HF creatures + Gemini sheets cut-in | local helper (worktree) | art-pickup | no new HF spend |
+| Audit: major looks still drawn in code; first swim in clean water | local read-only | none | list goes to Matt |
+
+Left for later: the hand-built ascents 7-4 and 8-4 (after Matt approves the 6-8 mock-up pattern), the bosses 6-10, 7-10 and 8-10 (Matt: all together later),
+the rope traverse (waits on Matt's Gemini hand-over-hand sheet), the look-alike rule (question for Matt).
 
 ## STANDSTILL, earlier (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
 

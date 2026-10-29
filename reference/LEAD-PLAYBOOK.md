@@ -95,6 +95,8 @@ Make the notes do the thinking: a brief points at the exact files, rules and com
 spends its tokens on the job, not on finding its way around. When a helper had to work something out that the next one will need,
 add it to the notes.
 
+**(Lifted 2026-10-29: Matt got a usage reset, "run as we did yesterday": full capacity, two builders per world. Use this mode again when he says the budget is tight.)**
+
 **Lowest cost, not sloppy (Matt, 2026-10-28: "keep this down to the cheapest cost now that we have things set up... I don't want it to
 get sloppy"):**
 - **One builder per world** (gen2 worlds 7-10: one helper does the sections, rooms and hook-up, following DESIGN.md B12). No parallel
