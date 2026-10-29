@@ -1,6 +1,6 @@
 # Status board (the lead session keeps this current; see reference/LEAD-PLAYBOOK.md)
 
-Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
+Last updated: 2026-10-29 12:55 PM ET (supervision round).
 
 ## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
 
@@ -8,10 +8,10 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 
 | Job | Who | Branch | Notes |
 |---|---|---|---|
-| 6-8 Stilt Climb (W6 special, hand-built) | cloud session_01FhBbYMt17qa4tAv8V6jvxN | w6-stilt-climb | mock-up first, then stops for Matt |
+| 6-8 Stilt Climb (W6 special, hand-built) | cloud session_01FhBbYMt17qa4tAv8V6jvxN | w6-stilt-climb | mock-up first, then stops for Matt v3 reviewed 12:40 PM ET: variety and upright framing PASS; sent back floating stumps/dens (support rule), the start bank cut, the crown row. Ledge set prompt queued for Matt (4b) |
 | World 7 kit, ground/crumble, hook-up, curation | cloud session_01FhBbYNKK8iPP5FQajUs6u5 | gen2-w7 | Pokey teaches himself (Dot absent) |
 | World 7 swings + rooms | cloud session_01FhBbYL6bqh18b851MMeCgA | gen2-w7-swing | merges into gen2-w7 before curation |
-| World 8 kit, ground/darkness, hook-up, curation | cloud session_01FhBbYL7oX9aYPA1U8CKGQ9 | gen2-w8 | lantern + fireflies |
+| World 8 kit, ground/darkness, hook-up, curation | cloud session_01FhBbYL7oX9aYPA1U8CKGQ9 | gen2-w8 | lantern + fireflies reviewed 12:45 PM ET (mid-curation): sent back Dot spoiler lines on room entry, boxes in the dark, glowing square spike block, black void upright; bounce mushrooms to HF |
 | World 8 swings + rooms | cloud session_01FhBbYM8NXWsJ1fXfGP892s | gen2-w8-swing | merges into gen2-w8 before curation |
 | QA leftovers 2-6 (tip timing, plank ends), 3-3 counter | cloud session_01FhBbYMWcFJmuZ592k3J1vs | qa-fix-w123b | |
 | Better look-alike measure (Matt chose it over relaxing the rule) | cloud session_01FhBbYKxYezKsEn4iBnvKHP | gen2-lookalike | era + curate share one measure; W7/W8 switch on merge |
@@ -19,9 +19,9 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Swimming (Matt: build it, first swim in 6-7's well; calm water from w6/water.jpg) | cloud session_01FhBbYJzbeg3VTVJMDHy4EK | swim | dirty/fast stays deadly |
 | Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | v3 reviewed 12:20 PM ET: web patch + swing ring PASS; falls FAIL (straight cyan pillars, no lip, clash with backdrop). Waiting on Matt's Gemini falls sheet (prompt: reference/prop-sheets/gemini-prompts/w4-waterfalls.md) |
 | 7-4 The Slide (W7 special; Matt: NOT a climb: side-on run, floor crumbles, behind-the-back slide, steer and jump; art: slomatt/02_sliding-from-behind) | cloud session_01FhBbYJXeB8XaDrrUgxfuHR | w7-slide | mock-up first v3 reviewed 12:25 PM ET: tunnel PASS; sent back the crumble, pole stubs, side-wall edges, wayside line, sounds, full gate |
-| Polish A1: picture and screens (VI-2, AN-4, VI-3, VI-4, VI-7, ST-1 code, UI-1, UI-3, UI-11, UI-14, LV-1) | cloud session_01FhBbYLAhepkzSTfrwKHSBm | polish-a1 | reference/polish-report/PLAN.md |
+| Polish A1: picture and screens (VI-2, AN-4, VI-3, VI-4, VI-7, ST-1 code, UI-1, UI-3, UI-11, UI-14, LV-1) | cloud session_01FhBbYLAhepkzSTfrwKHSBm | polish-a1 | reference/polish-report/PLAN.md spot-checked 12:50 PM ET: win card, confetti, mode chip, map, text sizes PASS; asked about clipped story text upright and a see-through 7-1 figure |
 | Polish A2: levels, sound (LV-6/9/11/12/13, CT-8 step 1, CT-20, SN-2/5/6/7, AN-9; its Dot items moved to the Dot helper) | cloud session_01FhBbYPEyi9ZZvvRqRyf8wK | polish-a2 | |
-| Dot rework (Matt: "constantly nagging", "gives away the puzzle", "weird blue box/circle"): Tips speaks only first-times, water, locked exits, real struggle; >=30 s gaps; no answers on room entry; no highlight boxes, Dot perches on the object; DOT-1..17 | cloud session_01FhBbYKJkZarvUhKDPsuRvk | polish-dot | before/after preview first |
+| Dot rework (Matt: "constantly nagging", "gives away the puzzle", "weird blue box/circle"): Tips speaks only first-times, water, locked exits, real struggle; >=30 s gaps; no answers on room entry; no highlight boxes, Dot perches on the object; DOT-1..17 | cloud session_01FhBbYKJkZarvUhKDPsuRvk | polish-dot | before/after preview first added 12:50 PM ET: no box over Pokey (wayside placement, hold during reveals); floating world-space lesson labels game-wide |
 | Music and sound (Matt: "repetitive or boring", "wrong feel for the world", effects "more tied into the game"): song forms with sections and variations per stage, adaptive layers (danger, dark, puzzle rooms, bosses, story), the SN-3 missing effects, SN-8 loop seams, SN-9 ambience, SN-10 boss card; A2 keeps only SN-2/5/6/7 loudness via sfx.ts TRIMS | cloud session_01FhBbYMtoVBrf58j7276oA4 | polish-audio | listenable before/after previews first (reference/audio-previews/v1/) |
 | QA batch E fixes: replay drops to 2 fps (Sally, seed 56672, Short hops), Facebook iPhone frozen start after skipOffer (Age), opening difficulty options (Matt decides), mid-run sheet-load stalls | cloud session_01FhBbYJnGzLi5a2LUwVEvaw | qa-fix-e | started 12:18 PM ET |
 | Polish B1: controls never misread (CT-1..4, 6, 7, 9, 10, 12; CT-5 waits for Matt) | cloud session_01FhBbYKmJjBAbBHVVVBnhLE | polish-controls | replay tester touches |

@@ -10,6 +10,7 @@ the polish bar before it goes in. Tick each one when its sheet is in.
 | 2 | World 7 tall temple wall strips that tile | refs/02-w7-walls-ref.jpg | gen2-w7 | |
 | 3 | Swim poses with the satchel (tread, underwater) | refs/03-swim-satchel-ref.jpg | swim (lead cuts) | |
 | 4 | World 4 waterfalls + wet stone pillar | refs/04-w4-waterfalls-ref.jpg | painted-swaps | |
+| 4b | World 6 ledge set: stilt-house deck, broken boardwalk, root shelves (6-8 needs it) | reference/prop-sheets/w6/kit.jpg | w6-stilt-climb | |
 | 5 | Checkpoint flag, unlit and lit (VI-10) | World 5 pennant crop | polish | |
 | 6-9 | Pit water strips, Worlds 1, 3, 4, 5 (VI-9) | each world's stage screenshot | polish | |
 | 10 | Thorn gate (hurts Pokey) and pickups: hearts, super heart, 3 power-ups (VI-12) | HUD hearts + a stage shot | polish | |
@@ -44,3 +45,11 @@ water, no shadow, no text.
 
 ## 4. World 4 waterfalls (attach refs/04-w4-waterfalls-ref.jpg)
 See w4-waterfalls.md (the prompt there; this reference is the whole World 4 far backdrop, whose falls set the look).
+
+## 4b. World 6 ledge set (attach reference/prop-sheets/w6/kit.jpg)
+A sprite sheet on a flat magenta (#FF00FF) background, 2 rows of 4, each piece separate with clear space around it, side-on view for a
+2D platformer, in the exact painted style of the attached sheet (soft cel shading, dark outlines, grey-green mangrove wood with moss and
+pale fungus). Row 1, ledges to stand on, each about 3 times as wide as tall, flat walkable top, each one visibly held up: (1) a twisted
+mangrove root bent into a flat shelf with prop roots curling down under it, (2) a plank deck from an old stilt house lashed with rope to
+two posts that run down out of the bottom of the picture, (3) a broken boardwalk section, planks missing, on two leaning posts, (4) a
+fallen branch wedged between two stilt roots. Row 2, the same four as short perches about 1.3 times as wide as tall. No characters, no text.
