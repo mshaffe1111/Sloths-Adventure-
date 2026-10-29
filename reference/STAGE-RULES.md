@@ -172,7 +172,7 @@ sheets, World 2's painted river, the painted dirty water, the painted rope) and 
 6. **Framing works both ways.** Upright and sideways each show the action, not half a screen of empty backdrop; the camera leads where
    the player needs to look.
 7. **Text stays out of the way.** Speech boxes are short (under 10 words), don't cover the jump or the hazard, and the right character
-   speaks (Dot where she's present; Pokey only in World 7).
+   speaks (Dot where she's present; Pokey only where she's away: the second half of World 6 and World 7, `wayside.ts dotPresent()`).
 8. **Every move it teaches is needed.** An obstacle you can just walk or steer round doesn't teach a jump.
 9. **Moments feel like moments.** A first time (first swim, a reveal, a crumble) gets a beat: sound, a pause, the camera, an animation, not
    only a caption.
