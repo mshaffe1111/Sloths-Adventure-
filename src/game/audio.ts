@@ -112,6 +112,10 @@ class SoundEngine {
   setAmbient(type: AmbientType | null) {
     this.c.setAmbient(type);
   }
+  /** Dot's bubble opens in play: a soft chirp, once per line, and the music dips a moment (SN-7) */
+  dotChirp() {
+    this.c.dotChirp();
+  }
   speak(speaker: string, ch: string, index: number) {
     this.c.speak(speaker, ch, index);
   }

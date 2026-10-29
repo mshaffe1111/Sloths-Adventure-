@@ -47,6 +47,10 @@ const writeStr = (k: string, v: string) => {
 
 /** the music under the pause menu: this share of its level, through the low-pass (SN-6) */
 export const PAUSED_MUSIC = 0.45;
+/** the music under speech (SN-7): -5 dB, in 80 ms, out over 400 ms (a time constant of a third: about 95% there in that time) */
+export const SPEECH_DUCK = 10 ** (-5 / 20);
+export const SPEECH_ATTACK = 0.08;
+export const SPEECH_RELEASE = 0.4;
 
 export interface SceneOptions {
   /** crossfade length in seconds */
@@ -334,7 +338,32 @@ export class Conductor {
   speak(speaker: string, ch: string, index: number) {
     const core = this.core;
     if (!core || this.muted || core.ctx.state !== 'running') return;
+    this.speechDip();
     speechBlip(core, speaker, ch, index);
+  }
+
+  /** a soft chirp from Dot as her bubble opens, once per line (SN-7: her lines in play had no sound at all) */
+  dotChirp() {
+    const core = this.core;
+    if (!core || this.muted || core.ctx.state !== 'running') return;
+    // (two of her blips, a hop apart: "chirrup")
+    speechBlip(core, 'Dot', 'd', 0);
+    window.setTimeout(() => this.core && speechBlip(this.core, 'Dot', 'o', 2), 70);
+    this.speechDip(0.5);
+  }
+
+  /**
+   * The music dips under speech (SN-7): SPEECH_DUCK, in 80 ms, held while the letters come (each blip holds it), back up over 400 ms
+   * `hold` s after the last one.
+   */
+  private speechDip(hold = 0.25) {
+    const core = this.core;
+    if (!core) return;
+    const g = core.speechDuck.gain;
+    const t = core.ctx.currentTime;
+    g.cancelScheduledValues(t);
+    g.setTargetAtTime(SPEECH_DUCK, t, SPEECH_ATTACK / 3);
+    g.setTargetAtTime(1, t + hold, SPEECH_RELEASE / 3);
   }
 
   // ------------------------------------------------------------------------------------------- state

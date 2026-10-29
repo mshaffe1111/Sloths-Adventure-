@@ -1,3 +1,4 @@
+import { sound } from '../../game/audio.ts';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { LevelConfig } from '../../game/types.ts';
 import type { GameEngine } from '../../game/engine.ts';
@@ -127,6 +128,8 @@ class GuideRun {
   struggle = new StruggleWatch();
   /** what he last stood on and held, to name what got him (DOT-10) */
   deaths = new DeathWatch();
+  /** the line Dot last chirped for (SN-7: once per line) */
+  chirpN = -1;
   clock = 0;
   lastT = -1;
   help = dotHelp();
@@ -583,6 +586,17 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       return a;
     };
 
+    /** the bubble is up: the reading clock starts now (DOT-7), and Dot chirps, once per line (SN-7) */
+    const bubbleUp = () => {
+      const s = run.show;
+      if (!s) return;
+      run.queue.shown(s.n, run.clock);
+      if (s.line.who === 'Dot' && run.chirpN !== s.n) {
+        run.chirpN = s.n;
+        sound.dotChirp();
+      }
+    };
+
     /** a boss fight: the corner band (and her spot beside it) */
     const placeCorner = (p: Plan) => {
       hardNow();
@@ -591,7 +605,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.sx = c.dot.x;
       p.sy = c.dot.y;
       p.placedAt = run.clock;
-      if (run.show) run.queue.shown(run.show.n, run.clock);
+      bubbleUp();
     };
 
     const placeBub = (p: Plan) => {
@@ -633,8 +647,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.bubDy = p.bub.y - spot.y;
       p.ko = koCover(p.bub.x, p.bub.y);
       p.placedAt = run.clock;
-      // the bubble is up: the reading clock starts now (DOT-7)
-      if (run.show) run.queue.shown(run.show.n, run.clock);
+      bubbleUp();
     };
 
     const startLine = (s: Showing) => {
