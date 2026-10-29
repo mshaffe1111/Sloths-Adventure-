@@ -667,10 +667,12 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       const critter = critters[i % 3];
       const first = !told.has(c === 'high1' ? 'high' : c);
       told.add(c === 'high1' ? 'high' : c);
-      if (c === 'heavy') k.cageRoom({ need: STONE * 2, mode: 'bank', critter, tips: first ? { enter: 'A heavy one! It barely moves.', nudge: 'One stone lifts it halfway.', move: 'Two stones in the basket.' } : undefined });
+      // (a puzzle never costs a life, STAGE-RULES §3: a slip into a cage's pool is a splash and back to the bank, LV-8: 2-3 drowned the
+      // first-timer in the second cage's pool at 19 s)
+      if (c === 'heavy') k.cageRoom({ need: STONE * 2, mode: 'bank', critter, safe: true, tips: first ? { enter: 'A heavy one! It barely moves.', nudge: 'One stone lifts it halfway.', move: 'Two stones in the basket.' } : undefined });
       else if (c === 'across')
-        k.cageRoom({ need: STONE, mode: 'across', critter, tips: first ? { enter: 'The stones are on the island.', hold: 'Hands full! Flick toward the bank to throw it.', nudge: 'Too far to carry it over.', move: 'Throw one over to the bank.' } : undefined });
-      else k.cageRoom({ need: c === 'high' ? STONE * 2 : STONE, mode: 'high', critter, tips: first ? { enter: 'The basket hangs high.', nudge: 'Too high to drop it in.', move: 'Flick up to throw!' } : undefined });
+        k.cageRoom({ need: STONE, mode: 'across', critter, safe: true, tips: first ? { enter: 'The stones are on the island.', hold: 'Hands full! Flick toward the bank to throw it.', nudge: 'Too far to carry it over.', move: 'Throw one over to the bank.' } : undefined });
+      else k.cageRoom({ need: c === 'high' ? STONE * 2 : STONE, mode: 'high', critter, safe: true, tips: first ? { enter: 'The basket hangs high.', nudge: 'Too high to drop it in.', move: 'Flick up to throw!' } : undefined });
     };
     /** the reeds between two cages, by the roll */
     const kinds: Record<string, Kind[]> = {
@@ -779,16 +781,18 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       k.heart(k.x - 40, k.G - 60);
       cross.deal(turns, 1, false);
       pause(k);
-      // a golden seed above the last vine of a long chain, a leap from the top of its swing
-      const v0 = k.V.length;
+      // a golden seed for the chain: over the far bank, a full jump up from where he lands off it (it was up by the last vine, a leap
+      // from the top of its swing, which the level check never reaches: it follows a swing from ledge to ledge; 37 of 40 rolls failed)
       k.swingRiver(flavour === 'chains' ? 4 : 2);
-      const last = k.V[k.V.length - 1];
-      if (k.V.length > v0) k.goldenSeed(last.x + 40, last.topY + 40);
+      k.goldenSeed(k.x + 70, k.G - 165);
       k.flag();
     });
     k.beat('Finish', () => {
       let n = 0;
-      const target = k.EXPERT_SECONDS - 2 + (flavour === 'islands' ? 10 : 0);
+      // (LV-15, polish report 2026-10-29: 2-4 ran about 8 minutes for a first play. The kit's clock under-counts the swings and the logs,
+      // so the long-swing flavours finish sooner: about 2:25-2:30 for a quick player on every flavour, the islands as they were)
+      const trim: Record<string, number> = { islands: 10, reeds: -14, ponds: -32, chains: -38 };
+      const target = k.EXPERT_SECONDS - 2 + (trim[flavour] ?? 0);
       while (k.expert < target && n < 18) {
         cross.step(turns.next(), n, turns.kinds);
         if (++n % 2 === 0) k.flag();

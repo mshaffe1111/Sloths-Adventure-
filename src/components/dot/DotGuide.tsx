@@ -151,6 +151,8 @@ class GuideRun {
   movesMarked = new Set<string>();
   moves = new MoveWatch();
   struggle = new StruggleWatch();
+  /** the line Dot last chirped for (SN-7: once per line) */
+  chirpN = -1;
   clock = 0;
   lastT = -1;
   help = dotHelp();
@@ -171,8 +173,6 @@ class GuideRun {
   hushRoom = (l: GuideLine): boolean => !roomMaySay(l);
   /** while the camera shows something (a reveal), only the urgent lines: the story aside waits until after it (the lead, 2026-10-29) */
   hushReveal = (l: GuideLine): boolean => !isUrgent(l);
-  /** the line Dot last chirped for (SN-7: once per line) */
-  chirpN = -1;
   /** what the setting lets her say, and what counts as heard (dotSay.ts) */
   dotSay: DotSay;
   storyOn = waysideEnabled();
@@ -1119,10 +1119,10 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bubIn = toggle(bub, 'in', true, bubIn);
         // (its reading time counts from now, not from when it left the queue: DOT-7)
         run.queue.onScreen(run.clock);
-        // and Dot chirps as her bubble opens, once per line (SN-7, Polish A2's sound: called when the sound engine has it)
+        // and Dot chirps as her bubble opens, once per line (SN-7, Polish A2's sound)
         if (cur.line.who === 'Dot' && run.chirpN !== cur.n) {
           run.chirpN = cur.n;
-          (sound as unknown as { dotChirp?: () => void }).dotChirp?.();
+          sound.dotChirp();
         }
         // an info line stays fully readable until its last 0.3 s
         const left = cur.line.move ? Infinity : showFor(cur.line) - (run.clock - cur.startedAt);

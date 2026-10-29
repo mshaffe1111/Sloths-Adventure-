@@ -1,3 +1,4 @@
+import { buzz } from './haptics.ts';
 import { SlowWatch } from './slowTip.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
@@ -15,7 +16,8 @@ import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
-import { difficulty, isEasy } from './difficulty.ts';
+import { isGen2Stage } from './gen2/game.ts';
+import { difficulty, easeInShare, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
@@ -97,6 +99,7 @@ import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
+import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
 import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
@@ -162,6 +165,8 @@ import type { GuideView } from './dotGuideView.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
+/** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
+const HARD_LAND_VY = 560;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -445,6 +450,12 @@ export class GameEngine {
   private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
   /** and the noise (its game time) each vine last struck at (3-5's pebble lure: once per noise) */
   private vineStruck = new Map<number, number>();
+  /**
+   * LV-14 (polish report 2026-10-29: hits nobody teaches): when the stir warning went up (game time; -1: not yet this stage), and whether
+   * a vine has lashed him yet. A stage's first lash, if the warning has not been up 2.5 s, is a swat back that costs no heart
+   */
+  private vineWarnAt = -1;
+  private vineLashed = false;
   /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
   private camAnchorY = NaN;
   private camLookX: number = CAM.lookAhead;
@@ -581,10 +592,24 @@ export class GameEngine {
   private airDrive = newAirDrive();
   private maxLives: number = startingLives();
   private lives: number = this.maxLives;
+  /** what the last life was lost to, for Dot's death help (DOT-10) */
+  private lostTo: '' | 'water' | 'pit' | 'hurt' = '';
   /** the run ended because the lives ran out (not a win): the one case a Continue can pick up from the checkpoint */
   private outOfLives = false;
   /** the assist speed for this stage (1 = normal), read once so a menu change mid-stage waits for the next entry */
   private readonly speedScale: number = gameSpeed();
+  /** Easy's help still fading out after a switch to Normal (difficulty.ts easeInShare, LV-7), read once as the stage starts */
+  private easeIn = -1;
+  /** Easy's kinder drifting logs (river.ts DRIFT_CATCH, LV-5), read once as the stage starts */
+  private readonly easyLogs: boolean = isEasy();
+  /**
+   * Easy's soft falls on land (LV-4, polish report 2026-10-29: only the new generator's stages had them, so a child on Easy found Worlds
+   * 1-5 harsher than World 6): on a hand-built or old-generator stage a fall off land (not into water) sets him back on the last still
+   * ground he stood on, his hearts and lives kept. Water still costs a life on Easy, with its warning (waterTeach.ts), as on gen2.
+   * `softAt`: that ground (null until he has stood somewhere); `softOn`: whether this stage has them.
+   */
+  private softOn = false;
+  private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
   private respawnFlash = 0;
   /** where he stood when the exit cheer began (heroClips.ts) */
@@ -594,8 +619,10 @@ export class GameEngine {
 
   // --- fight system (see fight.ts) ---
   /** the attack being played: which move, how far into it, which animals it has already hit */
-  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean } | null = null;
+  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean; want?: AttackWant } | null = null;
   private atkQueue: { want: AttackWant; ttl: number; face: number } | null = null;
+  /** game time until which a touch jab may still be taken back, and waits in its wind-up (CT-17) */
+  private jabHold = 0;
   private lastPunch: MoveId | null = null;
   private chainTimer = 0;
   /** kicks thrown close together take turns: a front snap kick, then a high side kick (only the new animation sheets show it) */
@@ -685,6 +712,9 @@ export class GameEngine {
     this.forgive = isEasy() ? FORGIVE.easy : FORGIVE.normal;
     // (a gen2 stage, gen2/game.ts, is laid for Easy by its own pipeline: the difficulty goes in with the build)
     this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
+    // (gen2 lays real soft pits on Easy; a boss's arena and 1-8's chase keep their own rules)
+    this.softOn = isEasy() && !isGen2Stage(config) && config.objectiveType !== 'boss_lair' && !this.currentStage.arena;
+    if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
     // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
@@ -740,6 +770,7 @@ export class GameEngine {
     // frame it arrives, not when he meets it (sheetWarm.ts: QA's 'blank wait' lines and the freezes after a sheet)
     this.arrivals = new ArrivalWarm(warmStageSheets({ enemies: this.enemies, vines: this.vines, proto: this.proto, ropes: this.ropes }));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
+    if (this.currentStage.waterHint) this.currentStage.waterHint.shown = false;
     this.passTips = [];
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
@@ -1271,8 +1302,9 @@ export class GameEngine {
     }
     // (Meeca never kicks: a sideways flick is a run, unless her hands are full: then it throws)
     if (this.mc) this.input.kickNear = !!this.kit?.holding;
-    // (and at a trunk, a finger tracing a circle is carving, not steering: the touch controls ask)
-    if (this.mc) (this.input as { carveSpot?: boolean }).carveSpot = this.mc.carveSpot;
+    // (and at a trunk, a finger tracing a circle is carving, not steering: the touch controls ask. Every frame, on every stage: written
+    // only in Meeca's stage it stayed true after leaving her stage on a carving spot, and later stages read curved swipes as circles, CT-20)
+    (this.input as { carveSpot?: boolean }).carveSpot = !!this.mc?.carveSpot;
     // inside a bush a watcher's stretch hides him in: a slide down there hides him even mid-run (touchGestures.ts inCover)
     this.input.inCover = !!this.proto?.watch && p.grounded && (this.proto.bushes ?? []).some((b) => !b.secret && !b.hanging && p.x > b.x + 10 && p.x < b.x + b.w - 10 && Math.abs(p.y - b.y) < 10);
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
@@ -2134,12 +2166,13 @@ export class GameEngine {
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
-        const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26 + ASSIST.landSide * assist;
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easyLogs ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
         if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) {
           // ledge-landing forgiveness (physics.ts FORGIVE.landPx, every stage): falling onto it from above, a foot that misses its edge
           // by a few px still lands, nudged on. Never for walking off an edge (his feet were not above its top) nor a drifting log
-          if (plat.type === 'drift' || !(playerPrevFeet < plat.y - 2)) return false;
+          // (but a log too on Easy: river.ts DRIFT_CATCH, LV-5)
+          if ((plat.type === 'drift' && !this.easyLogs) || !(playerPrevFeet < plat.y - 2)) return false;
           const missL = plat.x - (p.x + p.width * side);
           const missR = p.x - p.width * side - (plat.x + plat.width);
           // (and only for a jump carrying him toward it that fell a little short: a hop straight up beside a step is not caught here,
@@ -2152,9 +2185,9 @@ export class GameEngine {
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
       const plat = pickFloor(floors, p.x);
-      if (plat && plat.type !== 'drift') {
+      if (plat && (plat.type !== 'drift' || this.easyLogs)) {
         // (caught by the ledge-landing forgiveness: on with a foot, as far as the usual tolerance needs)
-        const side = 0.26 + ASSIST.landSide * assist;
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side + DRIFT_CATCH.easySide : 0.26 + ASSIST.landSide * assist;
         const missL = plat.x - (p.x + p.width * side);
         const missR = p.x - p.width * side - (plat.x + plat.width);
         if (missL >= 0) p.x += missL + 1;
@@ -2212,10 +2245,27 @@ export class GameEngine {
       // calm water (swim.ts): in deep enough, he swims; it never costs a life
       this.swimCheck(dt);
 
+      // (Easy's soft falls: the last still ground he stood on)
+      if (this.softOn && p.grounded && !p.climbing) {
+        const g = this.platforms.find((q) => q.id === this.standingOnId);
+        if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y };
+      }
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
       const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
-      if (river?.safe && p.y > river.surfaceY + 8 && !this.isGameOver) {
+      // a teaching pool under the floor (waterTeach.ts, LV-8): a splash and back on the bank, no life
+      const pool = waterY !== undefined && !river ? this.currentStage.safeWater?.find((s) => p.x > s.x0 && p.x < s.x1) : undefined;
+      if (pool && p.y > waterY! + 20 && !this.isGameOver) {
+        this.spawnWaterSplash(p.x, waterY!);
+        sound.playWhoosh();
+        this.addFloatingText('SPLASH!', p.x, waterY! - 40, '#7dd3fc');
+        p.x = pool.backX;
+        p.y = pool.backY;
+        p.vx = 0;
+        p.vy = 0;
+        p.grounded = true;
+        p.invincibleTimer = Math.max(p.invincibleTimer, 1);
+      } else if (river?.safe && p.y > river.surfaceY + 8 && !this.isGameOver) {
         // a teaching river (2-1): a splash and back to the bank to try again, no life lost
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
@@ -2241,8 +2291,10 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
-        sound.playPlayerHurt();
-        this.loseLife('pit');
+        if (!this.softFall()) {
+          sound.playPlayerHurt();
+          this.loseLife('pit');
+        }
       }
 
       // Checkpoints
@@ -2256,6 +2308,7 @@ export class GameEngine {
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
           sound.playCheckpoint();
+          buzz('checkpoint');
         }
       }
 
@@ -2493,6 +2546,25 @@ export class GameEngine {
       }
     }
 
+    // the water warning on a stage with no hand-built hints (the old generator's: waterTeach.ts, LV-8), said as a stage hint is
+    const wh = this.currentStage.waterHint;
+    if (wh && !this.proto && !p.swim) {
+      if (!wh.shown && p.x >= wh.x) {
+        wh.shown = true;
+        if (!tipHeard(this.currentStage.config.id, `tip:${wh.text}`)) {
+          markTipHeard(this.currentStage.config.id, `tip:${wh.text}`);
+          this.guide(wh.text, 3.6);
+          this.passTips.push({ x: wh.passX, text: wh.text });
+        }
+      }
+      for (let i = this.passTips.length - 1; i >= 0; i--) {
+        const pt = this.passTips[i];
+        if (p.x < pt.x || !p.grounded) continue;
+        this.passTips.splice(i, 1);
+        if (this.stageHint?.text === pt.text) this.stageHint = null;
+        this.callbacks.onGuide?.(pt.text, 0, true);
+      }
+    }
     // the hand-built stage's one-time hints (protoStage.ts)
     if (this.proto) {
       // (a line that waits for his depth waits for him to stand down there: a fall into 4-7's mist, past the ledges below, used up
@@ -2805,7 +2877,9 @@ export class GameEngine {
       if (isExitUnlocked ? atExitDoor(p, doorX, doorY) : atSealedDoor(p, doorX, doorY)) {
         if (isExitUnlocked) {
           this.exitTotemReached = true;
-          sound.playVictory();
+          // (a short chime here; the full victory sting plays when the Stage Cleared card lands, StatusModals.tsx, SN-5)
+          sound.playExitChime();
+          buzz('clear');
           this.spawnSparkBurst(this.currentStage.exitTotemX, p.y - 30, '#34d399');
           this.addFloatingText('SANCTUARY UNLOCKED! VICTORY!', p.x, p.y - 60, '#34d399');
         } else {
@@ -3018,6 +3092,8 @@ export class GameEngine {
     }
     if (p.grounded && !groundedBefore && vyBefore > 140 && !p.climbing && !p.isVineSwinging) {
       sound.playLand(Math.min(1, vyBefore / 700));
+      // (a hard landing buzzes: AN-9)
+      if (vyBefore > HARD_LAND_VY) buzz('hardLand');
     }
     // footsteps: one leaf-crunch every few body-lengths on the ground
     if (p.grounded && !p.climbing && Math.abs(p.vx) > 25) {
@@ -3072,6 +3148,8 @@ export class GameEngine {
         spawnMinion: (kind, x, y) => this.spawnMinion(kind, x, y),
         shake: (a) => {
           this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, a));
+          // (a slam that shakes the arena hard buzzes: AN-9)
+          if (a >= 0.5) buzz('bossSlam');
         },
         roar: () => sound.playBossRoar(world),
         thud: (heavy) => sound.playHitImpact(heavy ?? true, bossMaterial(world)),
@@ -3565,10 +3643,19 @@ export class GameEngine {
     if (this.kickChain > 0) this.kickChain -= dt;
     if (p.grounded) this.stompChain = 0;
 
+    // a touch jab taken back (CT-17): the finger that pressed it turned out to be a flick or a swipe. A swing still winding up stops,
+    // as if never pressed; one that has struck stays
+    if (inp.punchCancel) {
+      inp.punchCancel = false;
+      if (this.atkQueue?.want === 'punch') this.atkQueue = null;
+      if (this.atk?.want === 'punch' && this.atk.t < this.atk.move.startup) this.atk = null;
+    }
     let want: AttackWant | null = null;
     if (inp.megaPunchPressed) want = 'mega';
     else if (inp.kickPressed) want = 'kick';
     else if (inp.punchPressed) want = 'punch';
+    if (want === 'punch' && inp.punchHold) this.jabHold = this.gameTime + inp.punchHold;
+    inp.punchHold = 0;
     const face = inp.kickPressed ? inp.kickDir : 0;
     inp.megaPunchPressed = false;
     inp.kickPressed = false;
@@ -3589,6 +3676,8 @@ export class GameEngine {
     if (a0) {
       const t0 = a0.t;
       a0.t += dt;
+      // (a touch jab that may yet be taken back waits in its wind-up: CT-17)
+      if (a0.want === 'punch' && this.gameTime < this.jabHold) a0.t = Math.min(a0.t, Math.max(t0, a0.move.startup - 1e-3));
       if (!a0.sounded && a0.t >= a0.move.startup) {
         a0.sounded = true;
         this.onStrikeBegin(a0.move);
@@ -3625,7 +3714,7 @@ export class GameEngine {
     if (id === 'mega') this.megaCooldown = 1.0;
     if (id === 'kick') this.kickTurn = this.kickChain > 0 ? this.kickTurn + 1 : 0;
     this.chainTimer = 0;
-    this.atk = { move, t: 0, id: ++this.swingId, connected: false, lunged: false, hits: new Set(), sounded: false };
+    this.atk = { move, t: 0, id: ++this.swingId, connected: false, lunged: false, hits: new Set(), sounded: false, want };
   }
 
   private endAttack() {
@@ -4460,8 +4549,10 @@ export class GameEngine {
     };
     if (inp.jumpPressed && this.ropeGrace <= 0) {
       inp.jumpPressed = false;
-      const jd = dir !== 0 ? dir : p.facing;
-      p.facing = jd as 1 | -1;
+      // (the way the flick leaned first, then the steer, then his facing, as off a vine or a trunk: leapDir. It took the steer only, so
+      // creeping one way and flicking up and the other hopped him the way he crept, polish report CT-21)
+      const jd = this.leapDir(dir !== 0 ? (dir as -1 | 1) : p.facing);
+      p.facing = jd;
       off(jd * 230, -PHYS.jumpV * 0.82, 0.35);
       p.jumpsLeft = 1;
       this.launched = true;
@@ -4504,6 +4595,7 @@ export class GameEngine {
     this.airDrive = newAirDrive();
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
+    buzz('hurt');
     // (the hit that costs a life says so at the respawn instead: two lots of words on one spot were unreadable)
     if (p.hp > 0) this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
 
@@ -4529,6 +4621,7 @@ export class GameEngine {
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
     recorder.event('lostLife', reason);
+    this.lostTo = reason;
     if (this.bossGuideUp) this.clearGuide();
     this.lives -= 1;
     this.statLivesLost++;
@@ -4558,6 +4651,38 @@ export class GameEngine {
     this.lives = this.maxLives;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     this.respawnAtCheckpoint('hurt');
+    return true;
+  }
+
+  /** Easy's soft fall on land (softOn): back on the last still ground he stood on, nothing lost. False when it does not apply */
+  private softFall(): boolean {
+    const at = this.softAt;
+    if (!this.softOn || !at) return false;
+    const p = this.player;
+    recorder.event('softFall', Math.round(p.x));
+    sound.playWhoosh();
+    p.x = at.x;
+    p.y = at.y;
+    p.vx = 0;
+    p.vy = 0;
+    this.airDrive = newAirDrive();
+    p.grounded = false;
+    p.climbing = false;
+    p.isVineSwinging = false;
+    this.letGoOfRope(0.5);
+    p.jumpsLeft = 2;
+    p.invincibleTimer = Math.max(p.invincibleTimer, 1.2);
+    this.respawnFlash = 0.6;
+    this.inputGrace = 0.35;
+    this.graceMoves = this.input.moves;
+    const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
+    this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
+    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);
+    this.camCut = true;
+    this.camera.targetX = this.camera.x;
+    this.camera.targetY = this.camera.y;
+    this.camAnchorY = NaN;
+    this.addFloatingText('TRY AGAIN!', p.x, p.y - 112, '#fde68a', 1.2);
     return true;
   }
 
@@ -4743,47 +4868,19 @@ export class GameEngine {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
       // World 5: the painted lace pennant
       if (this.w5?.drawFlag(ctx, cp, t, world.id)) continue;
-      ctx.save();
-      ctx.translate(cp.x, cp.y);
+      // the painted leaf-pennant post (stageArt.ts): unlit, then lit and fluttering once reached
       if (!cp.reached) {
         ctx.save();
-        ctx.translate(20, -52);
+        ctx.translate(cp.x + 20, cp.y - 52);
         drawAura(ctx, 'take', world.id, 30, 40, t, cp.x * 0.01);
         ctx.restore();
       }
-      ctx.strokeStyle = '#6b4423';
-      ctx.lineWidth = 6;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, -78);
-      ctx.stroke();
-      const wave = Math.sin(t * 5) * 4;
-      ctx.fillStyle = cp.reached ? '#fde047' : '#e5e7eb';
-      ctx.beginPath();
-      ctx.moveTo(2, -76);
-      ctx.quadraticCurveTo(26, -80 + wave, 46, -66 + wave * 0.6);
-      ctx.quadraticCurveTo(26, -58 + wave, 2, -52);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = cp.reached ? '#f59e0b' : '#9ca3af';
-      ctx.beginPath();
-      ctx.arc(22, -66 + wave * 0.5, 5, 0, Math.PI * 2);
-      ctx.fill();
-      if (cp.reached) {
-        const g = ctx.createRadialGradient(0, -60, 4, 0, -60, 60);
-        g.addColorStop(0, 'rgba(253, 224, 71, 0.45)');
-        g.addColorStop(1, 'rgba(253, 224, 71, 0)');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(0, -60, 60, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
+      drawCheckpointArt(ctx, cp.x, cp.y, cp.reached, t);
     }
     // the new generator's water warnings (gen2 proto.gen2.waterWarnings): the painted warning sign at the water's edge (World 5's garden
     // sign, the jungle one in the other worlds: waterSign.ts), a plain post with a wave on it while its sheet loads
-    (this.proto?.gen2?.waterWarnings ?? []).forEach((w, i) => {
+    // (and the sign at a hand-built stage's first water: waterTeach.ts, LV-8)
+    [...(this.proto?.gen2?.waterWarnings ?? []), ...(this.currentStage.waterSigns ?? [])].forEach((w, i) => {
       if (w.x < x0 - 80 || w.x > x1 + 80) return;
       if (drawWaterSign(ctx, this.currentStage.config.worldIndex, w.x, w.y + 3, i)) return;
       const cy = w.y - 50;
@@ -5177,6 +5274,7 @@ export class GameEngine {
     out.hp = p.hp;
     out.maxHp = p.maxHp;
     out.lives = this.lives;
+    out.lostTo = this.lostTo;
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
     out.chase = !!this.chase;
@@ -5437,7 +5535,9 @@ export class GameEngine {
     const c = this.currentStage.config;
     // Easy keeps the first stage's help (the longer ledge grace, the stronger second jump, the wider landing) the whole game
     if (isEasy()) return 1;
-    return easeAssist((c.worldIndex - 1) * 10 + c.miniIndex);
+    // (and just after a switch from Easy, it fades out over five stages: difficulty.ts easeInShare, LV-7)
+    if (this.easeIn < 0) this.easeIn = easeInShare(c.id);
+    return Math.max(easeAssist((c.worldIndex - 1) * 10 + c.miniIndex), this.easeIn);
   }
 
   /**
@@ -6193,6 +6293,10 @@ export class GameEngine {
     this.input.kickNear = false;
     this.input.onVine = false;
     this.input.onRope = false;
+    // (nor a swing, a bush or a carving spot: left set from the stage before, they bent her flaps, CT-20)
+    this.input.onSwing = false;
+    this.input.inCover = false;
+    (this.input as { carveSpot?: boolean }).carveSpot = false;
     this.input.megaReady = true;
     if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
     else run.lastEvents = [];
@@ -6983,8 +7087,11 @@ export class GameEngine {
       if (Math.abs(v.x - p.x) > 900) continue;
       const ph = vinePhase(v, this.gameTime);
       const cycle = Math.floor((this.gameTime + v.offset) / vinePeriod(v));
-      if (ph.phase === 'stir' && Math.abs(v.x - p.x) < v.reach + 260 && !tipHeard(id, 'vine:freeze')) {
+      // (the warning also comes walking up to one already looking, toward it: he may never be near one while it stirs, LV-14)
+      const toward = (v.x - p.x) * (p.facing || 1) > 0;
+      if ((ph.phase === 'stir' || (ph.phase === 'look' && toward)) && Math.abs(v.x - p.x) < v.reach + 260 && !tipHeard(id, 'vine:freeze')) {
         markTipHeard(id, 'vine:freeze');
+        this.vineWarnAt = this.gameTime;
         // (3-8: on a liana the answer is to hang on, not to freeze)
         this.guide(p.isVineSwinging ? 'A thorn vine is stirring! Hang on to your liana until it sleeps' : 'A vine is stirring! Freeze until it goes back to sleep', 3.2);
       }
@@ -7028,6 +7135,32 @@ export class GameEngine {
         // (caught the next liana before it landed: he is out of its sight again)
         if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0 && !p.isVineSwinging) {
           const flying = !p.grounded;
+          // a safe first showing (LV-14): the stage's first lash, before its warning has been up 2.5 s (a kid's reaction), is a swat back (on the ground)
+          // or a near miss (in a leap), never a heart
+          const first = !this.vineLashed && (this.vineWarnAt < 0 || this.gameTime - this.vineWarnAt < 2.5);
+          this.vineLashed = true;
+          if (first) {
+            if (!flying) {
+              p.vx = l.dir * 360;
+              p.vy = -PHYS.hurtKnockV * 0.7;
+              p.grounded = false;
+              this.airDrive = newAirDrive();
+              this.inputGrace = Math.max(this.inputGrace, 0.4);
+              this.graceMoves = -1;
+            }
+            p.squashX = 1.25;
+            p.squashY = 0.75;
+            p.invincibleTimer = Math.max(p.invincibleTimer, 1);
+            this.camera.trauma = Math.min(1, this.camera.trauma + 0.25);
+            // (the swat says why, in Dot's own words for a lash: a warning lost behind another line leaves it unexplained)
+            const key = flying ? 'vine:hitAir' : 'vine:hit';
+            if (!tipHeard(id, key)) {
+              markTipHeard(id, key);
+              markTipHeard(id, 'vine:freeze');
+              this.guide(flying ? 'Ouch! Hang on to your liana while a thorn vine looks, and let go while it sleeps' : 'Ouch! When a vine opens an eye, stand still, or duck', 3.4);
+            }
+            continue;
+          }
           this.damagePlayer(1);
           p.vx = l.dir * 260;
           const key = flying ? 'vine:hitAir' : 'vine:hit';
@@ -7080,7 +7213,7 @@ export class GameEngine {
         }
       },
       fellOff: () => {
-        if (this.isGameOver) return;
+        if (this.isGameOver || this.softFall()) return;
         sound.playPlayerHurt();
         this.loseLife('pit');
       },

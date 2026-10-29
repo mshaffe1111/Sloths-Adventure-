@@ -95,6 +95,8 @@ export interface GuideView {
   /** the most hearts he can hold (the heart's lesson only while hp is below it) */
   maxHp: number;
   lives: number;
+  /** what the last life was lost to (engine.ts loseLife): water, a pit or a hit; '' before any */
+  lostTo: '' | 'water' | 'pit' | 'hurt';
   /** something is close enough to kick (the engine works it out for the touch rules) */
   kickNear: boolean;
   boss: boolean;
@@ -162,6 +164,7 @@ export function emptyGuideView(): GuideView {
     hp: 1,
     maxHp: 1,
     lives: 1,
+    lostTo: '',
     kickNear: false,
     boss: false,
     chase: false,

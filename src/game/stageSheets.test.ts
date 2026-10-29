@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { STAGE_DRAWS, W4_FALL_STAGES, genFoes, stageSheets } from './stageSheets.ts';
+import { STAGE_DRAWS, W4_FALL_STAGES, everyStage, genFoes, stageSheets } from './stageSheets.ts';
 import { buildProtoStage, HAND_STAGES, type ProtoExtras } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { generateAllLevels } from './worldsData.ts';
@@ -17,7 +17,7 @@ const levels = generateAllLevels();
 const lvl = (id: string) => levels.find((l) => l.id === id)!;
 
 test('4-2 gets World 4 ready: both kit sheets, the World 4 props and the puzzle sheets it is dressed with, nothing else', () => {
-  assert.deepEqual(stageSheets(lvl('4-2'), on), ['kit:1', 'kit:4', 'w4-props', 'kit-pieces', 'perch']);
+  assert.deepEqual(stageSheets(lvl('4-2'), on), ['kit:1', 'kit:4', 'w4-props', 'kit-pieces', 'perch', 'stage-art', 'gate:4', 'pit-water:4']);
   assert.deepEqual(stageSheets(lvl('4-3'), on).slice(0, 4), ['kit:1', 'kit:4', 'w4-props', 'w4-falls']);
 });
 
@@ -26,7 +26,19 @@ test('every hand-built World 3 stage gets the World 3 props and kit; 3-3 its cat
     const s = stageSheets(lvl(`3-${m}`), on);
     assert.deepEqual(s.slice(0, 3), ['kit:1', 'kit:3', 'w3-props'], `3-${m}`);
   }
-  assert.deepEqual(stageSheets(lvl('3-3'), on).slice(3), ['foe:jaguar', 'foe:ocelot', 'kit-pieces', 'perch']);
+  assert.deepEqual(stageSheets(lvl('3-3'), on).slice(3), ['foe:jaguar', 'foe:ocelot', 'kit-pieces', 'water-signs', 'perch', ...everyStage(3)]);
+});
+
+test('every stage but Dot\'s flight gets the painted checkpoint, pickups and finds sheet, its world\'s gate, and Worlds 1, 3, 4 and 5 their pit water (hf-art-stage)', () => {
+  for (const l of levels) {
+    if (l.id === DOT_STAGE_ID) continue;
+    const s = stageSheets(l, on);
+    assert.ok(s.includes('stage-art'), l.id);
+    assert.ok(s.includes(`gate:${Math.min(10, l.worldIndex)}`), l.id);
+    assert.equal(s.includes(`pit-water:${l.worldIndex}`), [1, 3, 4, 5].includes(l.worldIndex), l.id);
+  }
+  assert.deepEqual(everyStage(2), ['stage-art', 'gate:2']);
+  assert.deepEqual(everyStage(6), ['stage-art', 'gate:6']);
 });
 
 test("Dot's flight gets her own sheets only (it draws no platforms)", () => {
@@ -35,15 +47,15 @@ test("Dot's flight gets her own sheets only (it draws no platforms)", () => {
 
 test('a boss lair and a generated stage get only what they draw', () => {
   // a boss lair draws no painted platforms and is not hand-built: its boss's minions (3-10's Prowler calls none) and Dot's perch
-  assert.deepEqual(stageSheets(lvl('3-10'), on), ['perch']);
-  assert.deepEqual(stageSheets(lvl('1-10'), on), ['foe:goldsnake', 'perch']);
+  assert.deepEqual(stageSheets(lvl('3-10'), on), ['perch', ...everyStage(3)]);
+  assert.deepEqual(stageSheets(lvl('1-10'), on), ['foe:goldsnake', 'perch', ...everyStage(1)]);
   // a generated stage: the kit when painting is on, and every creature its world's generator can place (rolled with the stage)
   // (5-8: 5-1 to 5-4 are hand-built now)
   const five = stageSheets(lvl('5-8'), on);
-  assert.deepEqual(five, ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'perch']);
-  assert.deepEqual(stageSheets(lvl('5-8'), { ...on, paint: false }), [...genFoes(5).map((f) => `foe:${f}`), 'perch']);
+  assert.deepEqual(five, ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'water-signs', 'perch', ...everyStage(5)]);
+  assert.deepEqual(stageSheets(lvl('5-8'), { ...on, paint: false }), [...genFoes(5).map((f) => `foe:${f}`), 'water-signs', 'perch', ...everyStage(5)]);
   // (5-6 has webs, 5-8 is a climb with none: World 5's sheet too for its silk bridges, and Dot's pieces for its web patches)
-  assert.deepEqual(stageSheets(lvl('5-6'), on), ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'w5-props', 'dot-props', 'perch']);
+  assert.deepEqual(stageSheets(lvl('5-6'), on), ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'w5-props', 'dot-props', 'water-signs', 'perch', ...everyStage(5)]);
   // with the hand-built stages switched off (?proto=0), 3-1 is a generated stage: no World 3 props
   assert.deepEqual(stageSheets(lvl('3-1'), { ...on, hand: false }).slice(0, 3), ['kit:1', 'kit:3', 'foe:goldsnake']);
 });

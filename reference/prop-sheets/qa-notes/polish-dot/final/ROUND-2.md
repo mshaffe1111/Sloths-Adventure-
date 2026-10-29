@@ -128,13 +128,13 @@ My own zone lines from round 1 (they replaced the floating labels) had the same 
 
 | Zone | Was | Now |
 |---|---|---|
-| webs | Sticky webs slow you. Go above them. | **Sticky webs slow you down.** |
-| tide | The tide rises on a beat. Cross when low. | **The tide rises and falls on a beat.** |
+| webs | Sticky webs slow you. Go above them. | **Sticky webs! They slow you down.** |
+| tide | The tide rises on a beat. Cross when low. | **The tide rises and falls.** |
 | crumbling tiles | These tiles crumble. Keep moving! | **These tiles crumble!** |
-| spores | Spores puff on a beat. Wait them out. | **Spores puff on a beat.** |
+| spores | Spores puff on a beat. Wait them out. | **Sleepy spores puff out here.** |
 | vents | Vents erupt on a beat. Stand between them. | **Vents erupt on a beat.** |
 
-Kept: "So dark. Follow the fireflies.", "Too dark to see. Stand still and listen..." and "Gusts blow on a beat. Watch the leaves." (each points at a sign he could not read alone, not at the answer).
+(The webs, tide and spores wording is the lead's, 2026-10-29.) Kept: "So dark. Follow the fireflies.", "Too dark to see. Stand still and listen..." and "Gusts blow on a beat. Watch the leaves." (each points at a sign he could not read alone, not at the answer).
 
 ## 2. Dot's voice (story review SR-38 and SR-39)
 

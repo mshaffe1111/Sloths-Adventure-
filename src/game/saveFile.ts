@@ -36,6 +36,7 @@ const ALLOWED: RegExp[] = [
   /^sloth_memories$/, // the flashbacks seen
   /^sloth_cosmetic$/, // which reward Pokey wears
   /^sloth_difficulty$/, // Easy or Normal, picked at New Game (difficulty.ts)
+  /^sloth_ease_in$/, // the stages played since a switch from Easy to Normal, while Easy's help fades out (difficulty.ts, LV-7)
   /^sloth_w5_cakes$/, // whether any cake was eaten in World 5 (w5Kit.ts: the Queen's line, and the badge for eating none)
   /^sloth_w5_carved$/, // what Meeca carved in her stage, and where (meecaCarved.ts: 5-6 shows it to Pokey)
   // sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device. Dot's memory

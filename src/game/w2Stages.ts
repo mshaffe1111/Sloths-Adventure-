@@ -10,6 +10,7 @@
  * Painted from Matt's World 2 sheets (riverArt.ts): the river, the logs, lily pads, reeds, and the village at the end of 2-1 with its round
  * doors, its PLEASE BE PATIENT sign and the mailman, who has been carrying the same parcel since the spring.
  */
+import { teachWater } from './waterTeach.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { findForStage } from './finds.ts';
@@ -92,6 +93,11 @@ function clearFlags<S extends GeneratedStage>(st: S): S {
 }
 
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
+  // water taught before it costs a life (LV-8)
+  return teachWater(buildW2Plan(config, seed, plan));
+}
+
+function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
   // 2-6 Up the Bank Houses: World 1's climbing stage (1-4) built up the riverbank village instead of the kapok
   if (plan === '2-6') return clearFlags(buildKapok(config, seed, true));
   const R = stream(seed * 7 + 2);
@@ -871,6 +877,12 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     flower(px, G - 170, 'orchid');
     // (the shelf runs from px - 40 to px + 160; the high bank starts a hop past its end)
     run(160 + Math.round(R.r(46, 60)));
+    // (LV-11, polish report 2026-10-29: in 2-3, a 72 px step at the foot of the bank, so the floor before it is never a dip with no way out:
+    // the scripted player fell back 6-7 times at this 200 px wall. From the step the bank is a double jump; the post is still the
+    // easy way up)
+    // (2-3 only: elsewhere the double jump off the step skipped the climb, and 2-2's quick route lost its climbs, 50 of 200 rolls over
+    // the dead-time limit)
+    if (plan === '2-3') P.push({ id: pid++, x: x - 96, y: G - 72, width: 96, height: 72 + BANK_H, type: 'solid', style: 'log' });
     close();
     open(x, G - 200);
     // (too high to jump: the only way up is the post. A short stretch on top: at 340-370 px the walk from the post's top to the drop

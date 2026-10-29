@@ -284,7 +284,7 @@ function standing(evs: TouchEv[]) {
     if (!rig.p.grounded) air = true;
   });
   const w = rig.words();
-  return { jumped: w.some((x) => x.startsWith('jump:')) && air, punched: w.includes('punch'), words: w.join(' ') };
+  return { jumped: w.some((x) => x.startsWith('jump:')) && air, punched: w.filter((x) => x === 'punch').length > w.filter((x) => x === 'punchCancel').length, words: w.join(' ') };
 }
 /** a quick flick straight up of `rise` px in `ms`, from (x, y), lifted at once */
 const upFlick = (id: number, x: number, y: number, rise: number, ms: number, t0 = 0, across = 0): TouchEv[] =>

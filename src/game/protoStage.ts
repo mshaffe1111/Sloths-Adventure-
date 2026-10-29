@@ -15,6 +15,7 @@
  * many vines each chain has, how far apart and how high they hang, the length of every stretch, the snakes, and the order inside a beat.
  * Every rolled piece is checked against the shared physics (protoCheck.ts) and rolled again if it fails (see protoStage.test.ts).
  */
+import { teachWater } from './waterTeach.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -324,7 +325,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const kd = dressStage({ world: w, stage: config.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
     if (kd.length) st.proto.kitDecor = kd;
   }
-  return st;
+  // water taught before it costs a life (LV-8)
+  return teachWater(st);
 }
 
 /** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
@@ -4111,6 +4113,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     type Cover = Bush['kind'] | 'fall';
     /** a place to hide, centred on the cursor */
     const cover = (kind: Cover) => (kind === 'fall' ? veil(x) : bush(x - BUSH_W[kind] / 2, kind));
+    /** the opening stretches under her eye, where her first strike comes: cover close all along (hopRun, LV-13) */
+    let dense = false;
+    let denseKind: Cover = 'fern';
+    let lookoutFern = false;
     /**
      * a bush at the end of her stretch: a pass that starts as he leaves it sweeps on past its end, and with the last cover 500-1200 px
      * back it caught him in the open (2026-10-28, the first-timer bot: first strikes at 27-173 s)
@@ -4126,6 +4132,32 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
      */
     function hopRun(len: number) {
       const end = x + len;
+      if (dense) {
+        // (LV-13: under her eye a rock to hop and a fern just past it, about every 330 px, so no spot of a hop run is more
+        // than about 100 px from a place to hide when her first strike comes; QA: 11 hurts at "Hide from the eagle" since 2026-10-26,
+        // and the first-timer's first strike landed 194-215 px from the nearest bush on every seed)
+        // (spread evenly over the stretch, each fern's rock just before it: n of them, about one each 330 px)
+        const x0 = x;
+        const len = end - x0;
+        const n = Math.max(1, Math.round(len / 330) - 1);
+        for (let i = 1; i <= n; i++) {
+          const k: Cover = lookoutFern ? 'fern' : denseKind;
+          const cw = k === 'fall' ? VEIL_W : BUSH_W[k];
+          const mid = x0 + (len * i) / (n + 1);
+          const rockAt = mid - cw / 2 - 12 - 96;
+          if (rockAt > x) run(rockAt - x);
+          const ra = x;
+          logHop();
+          // (a petal of the stretch's row that the rock now stands on goes: the rock carries its own on top)
+          for (let j = C.length - 1; j >= 0; j--) if (C[j].type === 'flower' && C[j].y > G - 50 && C[j].x > ra - 24 && C[j].x < x + 24) C.splice(j, 1);
+          // (the kind of cover the row teaches: a curtain of water in the waterfall row, so the water is still what hides him there; on
+          // the flat just past the rock, clear of it, so it reads as growing there and hides him on the ground)
+          if (mid > x) run(mid - x);
+          cover(k);
+        }
+        if (x < end) run(end - x);
+        return;
+      }
       let k = Math.floor(len / 300);
       while (k-- > 0) {
         run(Math.max(70, (end - x) / (k + 2) - 60));
@@ -4141,6 +4173,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       for (let k = 0; k < n; k++) {
         const g = R.r(gap[0], gap[1]);
         if (k > 0) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
+        denseKind = kinds[k % kinds.length];
         if (k > 0) hopRun(g);
         // (the first place to hide is a short run into the row: her first pass can come as he walks in, 2026-10-28)
         else run(Math.min(g, R.r(160, 220)));
@@ -4165,6 +4198,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
      */
     function lookoutRun(kinds: Cover[], gap: [number, number], calm: [number, number]) {
       const x0 = x;
+      // (on a lookout's stretch the extra cover is a fern, never a curtain: a curtain hides him from the lookout too, and its fruit
+      // trick would be a choice; in a fern he is hidden only crouched and still, and the lookout sees him run on, LV-13)
+      const wasFern = lookoutFern;
+      lookoutFern = true;
       // a bush on the way in, short of the fruit tree: with it, no stretch of a lookout's run is more than ~700 px from a place to hide,
       // so her pass always has cover within the 2 s warning (2026-10-28, the first-timer: her first strike at ~23 s, cover 680-1490 px off)
       run(R.r(110, 150));
@@ -4187,6 +4224,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 1.5;
       pieces.push({ k: 'rest', x0, x1: x });
+      lookoutFern = wasFern;
     }
     /**
      * two lookouts in a row: the first one's fruit is the old trick, and its stretch ends in a curtain of water. The second one's tree
@@ -4194,6 +4232,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
      */
     function lookoutPair(calm: [number, number]) {
       const x0 = x;
+      // (on a lookout's stretch the extra cover is a fern, never a curtain: a curtain hides him from the lookout too, and its fruit
+      // trick would be a choice; in a fern he is hidden only crouched and still, and the lookout sees him run on, LV-13)
+      const wasFern = lookoutFern;
+      lookoutFern = true;
       // (a bush on the way in, as in lookoutRun)
       run(R.r(110, 150));
       cover(R.pick(['tall', 'fern'] as const));
@@ -4222,6 +4264,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 3;
       pieces.push({ k: 'rest', x0, x1: x });
+      lookoutFern = wasFern;
     }
     /**
      * the secret: one curtain hides a trunk in the hollow behind it, up to a branch path behind leaves with a golden seed at its end.
@@ -4259,6 +4302,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       flag();
     });
     beat('Learn: under cover', () => {
+      dense = true;
       hint(x + 20, 'Her shadow! Slide down inside a bush to hide', 'Her shadow! Hold down inside a bush to hide', 'Her shadow! Hold down inside a bush to hide');
       coverRow(3, [380, 460], ['tall', 'wide', 'fern'], [7.5, 9]);
       hint(x + 20, 'Stand behind a waterfall. She cannot see you through the water');
@@ -4744,7 +4788,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       const BW = 100, BH = 84;
       const boulder: Platform = { id: pid++, x: tX + 70, y: sy - BH, width: BW, height: BH, type: 'solid', style: 'moss_stone', push: { min: tX + 60, max: shelfEnd } };
       P.push(boulder);
-      const gap = Math.round(R.r(220, 240));
+      // (LV-12, polish report 2026-10-29: 220-240 failed every scripted try from the boulder's top in both modes. In the real engine,
+      // from the boulder's 100 px top, 8 of 252 presses landed, all full holds at the very edge; 15% shorter, 76. So both: 15% shorter
+      // and the landing 40 px nearer)
+      const gap = Math.round(R.r(187, 204)) - 40;
       // (the water lands on the shelf's last stretch too, where the boulder stops; it starts higher than a double jump off the boulder)
       FALLS8.push({ id: FALLS8.length + 1, x: shelfEnd - FALL_LIP, width: gap + FALL_LIP, top: sy - FALL_HEAD, bottom: G, plug: { platformId: boulder.id, atX: shelfEnd - BW } });
       const nl = branch(shelfEnd + gap, shelfEnd + gap + Math.round(R.r(200, 240)), sy + Math.round(R.r(0, 16)));

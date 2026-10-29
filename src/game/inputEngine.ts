@@ -1,3 +1,4 @@
+import { vibrate } from './haptics.ts';
 import type { InputState } from './types.ts';
 import { isEasy } from './difficulty.ts';
 import { FORGIVE } from './physics.ts';
@@ -252,6 +253,10 @@ export class InputEngine {
 
   public clearAll() {
     this.carried = null;
+    // (the engine's flags too: the input lives for the whole app, and a carving spot, a swing or a bush must not outlive their stage, CT-20)
+    this.carveSpot = false;
+    this.onSwing = false;
+    this.inCover = false;
     this.state.left = false;
     this.state.right = false;
     this.state.up = false;
@@ -260,6 +265,8 @@ export class InputEngine {
     this.state.jumpLean = 0;
     this.state.jumpHeld = false;
     this.state.punchPressed = false;
+    this.state.punchCancel = false;
+    this.state.punchHold = 0;
     this.state.kickPressed = false;
     this.state.kickDir = 0;
     this.state.megaPunchPressed = false;
@@ -368,10 +375,18 @@ export class InputEngine {
    * Touch Gesture:
    * - Tap to punch
    */
-  public triggerTouchPunch() {
+  public triggerTouchPunch(holdMs = 0) {
     this.fresh();
     this.state.punchPressed = true;
+    this.state.punchHold = holdMs / 1000;
     this.punchBufferTimer = 0.12;
+  }
+
+  /** a jab thrown as a finger landed, taken back: the finger moved off as a flick or a swipe (touchGestures.ts jabMoved, CT-17) */
+  public triggerTouchPunchCancel() {
+    this.state.punchPressed = false;
+    this.punchBufferTimer = 0;
+    this.state.punchCancel = true;
   }
 
   /**
@@ -518,12 +533,9 @@ export class InputEngine {
     this.state.layerSwitchPressed = false;
   }
 
+  /** a buzz, when the Vibration setting is on (haptics.ts) */
   public triggerHaptic(durationMs = 15) {
-    try {
-      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-        navigator.vibrate(durationMs);
-      }
-    } catch {}
+    vibrate(durationMs);
   }
 
   public destroy() {

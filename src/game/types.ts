@@ -480,6 +480,10 @@ export interface InputState {
   jumpLean?: -1 | 0 | 1;
   jumpHeld: boolean;
   punchPressed: boolean;
+  /** take back a punch pressed a moment ago, if its swing has not struck yet (a touch jab the finger outran, CT-17) */
+  punchCancel?: boolean;
+  /** … and the punch just pressed may be taken back for this long (s): its swing waits in its wind-up until then */
+  punchHold?: number;
   kickPressed: boolean;
   /** which way a touch kick was flicked (-1 left, 1 right, 0 = no preference) */
   kickDir: number;

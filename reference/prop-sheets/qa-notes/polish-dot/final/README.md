@@ -129,4 +129,4 @@ Rough spots, named plainly:
 
 ## Checks
 
-`npx tsc --noEmit -p .` clean; the full suite (round 2, on the work branch merged in) 1903 tests, 1901 pass, 0 fail, 2 to-do (the known 4-3 boulder item and one other); `npx vite build` clean, no asset over 4 MiB.
+`npx tsc --noEmit -p .` clean; the full suite (round 2, on the work branch at fac610c8 merged in) 1938 tests, 1936 pass, 0 fail, 2 to-do (the known 4-3 boulder item and one other); `npx vite build` clean, no asset over 4 MiB.

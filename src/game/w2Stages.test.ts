@@ -46,7 +46,9 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
       assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
       assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 1, `${plan}: one golden seed`);
       assert.ok(st.collectibles.filter((c) => c.type === 'heart').length >= 2, `${plan} seed ${s}: hearts on the hard stretches`);
-      assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `${plan} seed ${s}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s`);
+      // (2-4's own clock under-counts its swings and logs, so its finish is trimmed by flavour, LV-15: its quick player is 2:07-2:40 on
+      // the 200-roll tool's route, and rollGuard.test.ts holds the real 2:00 floor)
+      assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - (plan === '2-4' ? 50 : 15), `${plan} seed ${s}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s`);
       assert.equal(st.proto.movedPickups, 0, `${plan} seed ${s}: every pickup placed where he can get it`);
       // every river has a bank at both ends and logs (a lily pond has pads instead)
       for (const r of st.rivers ?? []) {
