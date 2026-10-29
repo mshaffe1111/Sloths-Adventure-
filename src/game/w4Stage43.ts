@@ -45,7 +45,7 @@ export const WET = { rise: 130, tread: 220, margin: 110 } as const;
  * Dot, as the first fall dries (w4Play dryTip, in place of its plain "that stopped the water"): its steps are each a double jump up (a
  * single jump rises about 108). Said when he got to the steps, the tip came after two or three tries (QA 2026-10-29)
  */
-export const DRY_STEPS = 'Now the steps are dry, and tall: flick up again in the air to jump twice';
+export const DRY_STEPS = 'Dry now! These steps are tall. Jump twice!'; // (new, needs Matt's approval)
 /** the cave ledge behind a surge's water: wider than any wet step, room to wait in */
 const CAVE_W = WET.tread + 100;
 /** the pushable boulder */

@@ -434,5 +434,5 @@ test("4-3: the first fall's steps are each a double jump up, and the line as its
     const st = build(s);
     assert.equal(st.proto.w4!.dryTip, DRY_STEPS, `seed ${s}`);
   }
-  assert.match(DRY_STEPS, /jump twice/);
+  assert.match(DRY_STEPS, /jump twice/i);
 });
