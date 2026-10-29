@@ -297,6 +297,12 @@ test link, the QA testers or a release until the lead has re-run them, on more t
     `jumpEdges`), and curation drops any roll with an animal by a jump (7770de7). The lesson: every rule a full-suite test holds a stage
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
+- **A narrow wall is glided through in the check** (World 7's brown vines, 2026-10-29): levelCheck measures a jump from ledge edge to
+  ledge edge and never sees a wall standing between, so a 220-280 px wall with a vine up it read as a glide from its foot to the floor
+  past it; the quick route walked past half the climbs (and World 6's `vineWall` and `swingClimb` have the same shape). A climb only
+  counts where the wall's top is a walk wider than the glide from the vine's foot (530 px or more on the flat, about 600 dropping 80 px,
+  790 dropping 230 px), its top stands more than a double jump plus 40 over every ledge beside it, and a section coming down off a wall
+  ends on a ledge 260 px or more. Proof: the quick route climbs every vine (`w7SwingRoute.test.ts`).
 
 ## 7. Where things are
 
