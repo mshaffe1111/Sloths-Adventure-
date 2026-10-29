@@ -298,8 +298,10 @@ export function w6Emitters(stage: number): Record<W6PropId, PropEmitter> {
     reedHide: hide('tall'),
     // the watched stretch: the bank the watch stands on and the knees joined to it, 40 px in from each end (the section lays the roots
     // along it). Two watches on one stretch make one zone
+    // (a `watchHere` socket watches its own bank only: a reed bed's flats each have their own stretch, the knees between unwatched)
     watch: (f, _p, out) => {
-      const run = watchedRun(out, f.x, f.y) ?? [f.x - 300, f.x + 300];
+      const own = f.socket.startsWith('watchHere') ? pieceAt(out, f.x, f.y) : undefined;
+      const run = own ? [own.x, own.x + own.width] : watchedRun(out, f.x, f.y) ?? [f.x - 300, f.x + 300];
       const z: WatchZone = { x0: R(run[0] + 40), x1: R(run[1] - 40), calm: watchCalm(stage, f.socket === 'watchLesson') };
       const zones = (out.proto.watch ??= []);
       if (!zones.some((q) => q.x0 < z.x1 && z.x0 < q.x1)) zones.push(z);

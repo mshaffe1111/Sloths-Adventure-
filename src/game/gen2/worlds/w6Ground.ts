@@ -351,12 +351,9 @@ const watchPools = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [W6_THEME.pools],
-  pieces: [bank('a', [380, 420]), hop('b', 'a', [380, 420]), hop('c', 'b', [380, 420])],
-  last: 'c',
-  sockets: [
-    watch('a'), hideAt('h1', 'a'), watch('b', 0.03, 'watch2'), hideAt('h2', 'b'), watch('c', 0.03, 'watch3'), hideAt('h3', 'c', 0.35),
-    foe('frog', 'c', [0.68, 0.74], ['frog'], 1.5, { phases: LIVE, chance: 0.7 }),
-  ],
+  pieces: [bank('a', [180, 200]), up('ak', 'a', 30, [140, 160]), down('a2', 'ak', 30, [180, 200]), hop('b', 'a2', [180, 200]), up('bk', 'b', 30, [140, 160]), down('b2', 'bk', 30, [180, 200]), hop('c', 'b2', [180, 200]), up('ck', 'c', 30, [140, 160]), down('c2', 'ck', 30, [200, 240])],
+  last: 'c2',
+  sockets: [watch('a'), hideAt('h1', 'a2'), petals('ak', 'ak', 0.5, 1), hideAt('h2', 'b2'), petals('bk', 'bk', 0.5, 1), hideAt('h3', 'c'), petals('ck', 'ck', 0.5, 1), foe('frog', 'c2', [0.55, 0.65], ['frog'], 1.5, { phases: LIVE, chance: 0.7 })],
   mirrorable: true,
 });
 
@@ -368,9 +365,9 @@ const poolChain = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W6_THEME.pools],
-  pieces: [bank('a', [380, 420]), hop('b', 'a', [400, 440]), up('k', 'b', 32, [150, 170]), down('b2', 'k', 32, [200, 240]), hop('c', 'b2', [380, 420])],
-  last: 'c',
-  sockets: [watch('a'), hideAt('h1', 'a'), watch('b', 0.03, 'watch2'), hideAt('h2', 'b', 0.4), hideAt('h3', 'b2'), watch('c', 0.03, 'watch3'), hideAt('h4', 'c', 0.35), petals('c', 'c', 0.75, 1)],
+  pieces: [bank('a', [180, 200]), up('ak', 'a', 30, [140, 160]), down('a2', 'ak', 30, [180, 200]), hop('b', 'a2', [180, 200]), up('bk', 'b', 32, [140, 160]), down('b2', 'bk', 32, [180, 200]), hop('c', 'b2', [180, 200]), up('ck', 'c', 30, [140, 160]), down('c2', 'ck', 30, [200, 240])],
+  last: 'c2',
+  sockets: [watch('a'), hideAt('h1', 'a2'), petals('ak', 'ak', 0.5, 1), hideAt('h2', 'b2'), petals('bk', 'bk', 0.5, 1), hideAt('h3', 'c'), petals('ck', 'ck', 0.5, 1), hideAt('h4', 'c2', 0.5)],
   mirrorable: true,
 });
 
@@ -382,9 +379,9 @@ const poolLong = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [W6_THEME.pools],
-  pieces: [bank('a', [380, 420]), hop('b', 'a', [520, 580]), up('k', 'b', 30, [150, 170]), down('c', 'k', 30, [240, 280])],
+  pieces: [bank('a', [180, 200]), up('ak', 'a', 30, [140, 160]), down('a2', 'ak', 30, [180, 200]), hop('b', 'a2', [200, 240]), up('k', 'b', 30, [140, 160]), down('b2', 'k', 30, [200, 240]), up('k2', 'b2', 30, [140, 160]), down('c', 'k2', 30, [240, 280])],
   last: 'c',
-  sockets: [hideAt('h1', 'a'), watch('b'), hideAt('h2', 'b', 0.25), petals('b', 'b', 0.55, 1), hideAt('h3', 'b', 0.8), hideAt('h4', 'c'), foe('frog', 'c', [0.75, 0.8], ['frog'], 1.5, { phases: HOT, chance: 0.7 })],
+  sockets: [hideAt('h1', 'a2'), petals('ak', 'ak', 0.5, 1), watch('b'), hideAt('h2', 'b', 0.5), petals('k', 'k', 0.5, 1), hideAt('h3', 'b2'), petals('k2', 'k2', 0.5, 1), hideAt('h4', 'c'), foe('frog', 'c', [0.75, 0.8], ['frog'], 1.5, { phases: HOT, chance: 0.7 })],
   mirrorable: true,
 });
 
@@ -399,7 +396,7 @@ const watchReeds = section({
   uses: [W6_THEME.reeds],
   pieces: [bank('a', [150, 180]), ...reedKnees.pieces, up('k4', reedKnees.last, 30, [140, 160]), down('f4', 'k4', 30, [260, 300])],
   last: 'f4',
-  sockets: [watch('a'), hideAt('h1', 'f1'), petals('k2', 'k2', 0.5, 1), hideAt('h2', 'f2'), hideAt('h3', 'f3'), hideAt('h4', 'f4', 0.25), foe('foe', 'f4', [0.62, 0.7], ['tayra'], 2.5, { phases: LIVE, chance: 0.6 })],
+  sockets: [watch('f1', 0.03, 'watchHere1'), hideAt('h1', 'f1'), petals('k2', 'k2', 0.5, 1), watch('f2', 0.03, 'watchHere2'), hideAt('h2', 'f2'), watch('f3', 0.03, 'watchHere3'), hideAt('h3', 'f3'), watch('f4', 0.03, 'watchHere4'), hideAt('h4', 'f4', 0.25), foe('foe', 'f4', [0.62, 0.7], ['tayra'], 2.5, { phases: LIVE, chance: 0.6 })],
   mirrorable: true,
 });
 
@@ -414,7 +411,7 @@ const reedRun = section({
   uses: [W6_THEME.reeds],
   pieces: [bank('a', [150, 180]), ...reedRunKnees.pieces, up('k4', reedRunKnees.last, 34, [140, 160]), down('f4', 'k4', 34, [280, 320])],
   last: 'f4',
-  sockets: [watch('a'), hideAt('h1', 'f1'), petals('k2', 'k2', 0.5, 1), hideAt('h2', 'f2'), hideAt('h3', 'f3'), hideAt('h4', 'f4', 0.25), foe('foe', 'f4', [0.62, 0.7], ['tayra', 'ocelot'], 3, { phases: HOT, chance: 0.6 })],
+  sockets: [watch('f1', 0.03, 'watchHere1'), hideAt('h1', 'f1'), petals('k2', 'k2', 0.5, 1), watch('f2', 0.03, 'watchHere2'), hideAt('h2', 'f2'), watch('f3', 0.03, 'watchHere3'), hideAt('h3', 'f3'), watch('f4', 0.03, 'watchHere4'), hideAt('h4', 'f4', 0.25), foe('foe', 'f4', [0.62, 0.7], ['tayra', 'ocelot'], 3, { phases: HOT, chance: 0.6 })],
   mirrorable: true,
 });
 
@@ -430,7 +427,7 @@ const reedStairs = section({
   pieces: [bank('a', [150, 180]), up('s1', 'a', 34, [140, 160]), up('top', 's1', 30, [200, 240]), ...reedStairKnees.pieces, hop('c', reedStairKnees.last, [360, 400])],
   last: 'c',
   exitDy: -64,
-  sockets: [hideAt('h1', 'a', 0.5), watch('top'), hideAt('h2', 'top', 0.5), hideAt('h3', 'f1'), petals('k2', 'k2', 0.5, 1), hideAt('h4', 'f2'), hideAt('h5', 'c', 0.5)],
+  sockets: [hideAt('h1', 'a', 0.5), watch('top', 0.03, 'watchHere0'), hideAt('h2', 'top', 0.5), watch('f1', 0.03, 'watchHere1'), hideAt('h3', 'f1'), petals('k2', 'k2', 0.5, 1), watch('f2', 0.03, 'watchHere2'), hideAt('h4', 'f2'), watch('c', 0.03, 'watchHere3'), hideAt('h5', 'c', 0.5)],
   // (never flipped: the stairs go up, which is where the hops are, and the exit stays above the entry)
   mirrorable: false,
 });
@@ -447,7 +444,7 @@ const baskBank = section({
   last: 'c',
   sockets: [
     watch('a'), hideAt('h1', 'a', 0.25), foe('frog', 'a', [0.72, 0.78], ['frog'], 1.5), hideAt('h2', 'b', 0.12), foe('caiman', 'b', [0.6, 0.65], ['caiman'], 3),
-    watch('c', 0.03, 'watch2'), hideAt('h3', 'c', 0.3), foe('frog2', 'c', [0.72, 0.78], ['frog'], 1.5, { phases: HOT }),
+    hideAt('h3', 'c', 0.3), foe('frog2', 'c', [0.72, 0.78], ['frog'], 1.5, { phases: HOT }),
   ],
   mirrorable: true,
 });
@@ -477,8 +474,8 @@ const baskFrogs = section({
   pieces: [bank('a', [360, 400]), hop('b', 'a', [360, 400]), hop('c', 'b', [360, 400])],
   last: 'c',
   sockets: [
-    watch('a'), hideAt('h1', 'a', 0.2), foe('f1', 'a', [0.7, 0.78], ['frog'], 1.5), watch('b', 0.03, 'watch2'), hideAt('h2', 'b', 0.2), foe('f2', 'b', [0.7, 0.78], ['frog', 'tayra'], 2.5),
-    watch('c', 0.03, 'watch3'), hideAt('h3', 'c', 0.3), foe('f3', 'c', [0.72, 0.8], ['frog'], 1.5, { phases: HOT }),
+    watch('a'), hideAt('h1', 'a', 0.2), foe('f1', 'a', [0.7, 0.78], ['frog'], 1.5), hideAt('h2', 'b', 0.2), foe('f2', 'b', [0.7, 0.78], ['frog', 'tayra'], 2.5),
+    hideAt('h3', 'c', 0.3), foe('f3', 'c', [0.72, 0.8], ['frog'], 1.5, { phases: HOT }),
   ],
   mirrorable: true,
 });
@@ -725,7 +722,7 @@ const hunterBank = section({
   mirrorable: true,
 });
 
-/** any hunt: a sunken yard (a step down and back up) with two animals in it */
+/** any hunt: a sunken yard (a step down and back up, a root knee in its second half) with two animals in it */
 const sunkenYard = section({
   id: 'w6-sunken-yard',
   name: 'sunken yard arena',
@@ -733,9 +730,9 @@ const sunkenYard = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   weight: SHARED / 2,
-  pieces: [bank('a', [180, 220]), down('yard', 'a', 46, [380, 420]), up('mid', 'yard', 30, [160, 190]), down('yard2', 'mid', 30, [380, 420]), up('b', 'yard2', 46, [260, 300])],
+  pieces: [bank('a', [180, 220]), down('yard', 'a', 46, [380, 420]), up('mid', 'yard', 30, [160, 190]), down('yard2', 'mid', 30, [180, 200]), up('yk', 'yard2', 20, [90, 110]), down('yard3', 'yk', 20, [170, 190]), up('b', 'yard3', 46, [260, 300])],
   last: 'b',
-  sockets: [petals('a', 'a', 0.5, 1), foe('f1', 'yard', [0.45, 0.6], SMALL, 3), petals('mid', 'mid', 0.5, 1), foe('f2', 'yard2', [0.45, 0.6], [...CATS, 'frog'], 5, { phases: LIVE }), scenery('snag', 'b', [0.5, 0.7])],
+  sockets: [petals('a', 'a', 0.5, 1), foe('f1', 'yard', [0.45, 0.6], SMALL, 3), petals('mid', 'mid', 0.5, 1), foe('f2', 'yard3', [0.4, 0.6], [...CATS, 'frog'], 5, { phases: LIVE }), scenery('snag', 'b', [0.5, 0.7])],
   mirrorable: true,
 });
 
@@ -798,7 +795,7 @@ const caimanFlat = section({
   mirrorable: false,
 });
 
-/** caimans: two caimans on two banks with a mudflat between */
+/** caimans: two caimans on two banks with a mudflat between (a root knee in the first bank) */
 const caimanPair = section({
   id: 'w6-caiman-pair',
   name: 'two caimans arena',
@@ -806,9 +803,9 @@ const caimanPair = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 7,
   uses: [W6_THEME.caimans],
-  pieces: [bank('a', [380, 420]), mud('mud', 'a', [260, 300]), up('b', 'mud', 50, [380, 420])],
+  pieces: [bank('a', [190, 210]), up('ak', 'a', 24, [80, 100]), down('a2', 'ak', 24, [140, 160]), mud('mud', 'a2', [260, 300]), up('b', 'mud', 50, [380, 420])],
   last: 'b',
-  sockets: [foe('c1', 'a', [0.5, 0.6], ['caiman'], 3), ...postAndTide('a', 0.9, 'mud'), foe('c2', 'b', [0.5, 0.6], ['caiman'], 3, { phases: LIVE })],
+  sockets: [foe('c1', 'a', [0.4, 0.6], ['caiman'], 3), ...postAndTide('a2', 0.85, 'mud'), foe('c2', 'b', [0.5, 0.6], ['caiman'], 3, { phases: LIVE })],
   mirrorable: false,
 });
 

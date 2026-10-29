@@ -389,7 +389,10 @@ const swingRun: SectionTemplate = {
 // run of roots, laid by a pair of props at its ends (W6S_PROP darkFrom, darkTo: their emitters push the zone into StageSink.zones), with the
 // firefly's lights hanging over every gap (r 190) and a dimmer one every 420 px, so the dark is never total. Gaps in the dark are soft
 // (STAGE-RULES §6: a gap in the dark over water is a blind jump), a hop a third of a jump at most; nothing stands in the dark (the core
-// keeps animals and flags out of a zone). The first dark stretch of a stage says Dot's line before it (its tip socket).
+// keeps animals and flags out of a zone, so each stretch steps from a lit root, 'in', down into the dark and up out of it onto another,
+// 'out', where a flag can stand; a dark stretch is never mirrored, so Dot's line on 'in' comes before the dark: four
+// stretches in a row would otherwise leave more than FLAG_SPAN.max px with none). The first dark stretch of a stage says Dot's line before
+// it (its tip socket).
 
 /** the dark's lesson key and Dot's line (new, needs Matt's approval) */
 export const W6_DARK = 'w6:dark';
@@ -473,19 +476,21 @@ const darkRoots: SectionTemplate = {
   difficulty: 5,
   teaches: W6_DARK,
   pieces: [
-    bank('a', [200, 240]),
+    bank('in', [170, 200]),
+    down('a', 'in', 30, [160, 190]),
     hop('b', 'a', [180, 220], [0.3, 0.38], false),
     up('k', 'b', 45, [120, 150]),
-    down('c', 'k', 45, [160, 200]),
+    down('c', 'k', 45, [140, 170]),
     hop('d', 'c', [180, 220], [0.3, 0.38], false),
-    hop('e', 'd', [240, 280], [0.3, 0.38], false),
+    hop('e', 'd', [180, 220], [0.3, 0.38], false),
+    up('out', 'e', 30, [160, 190]),
   ],
-  entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'e', kind: 'ground' },
+  entry: { piece: 'in', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
-  sockets: [darkTip('a'), ...darkEnds('a', 'e'), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.4, 2, 80)],
+  sockets: [darkTip('in'), ...darkEnds('a', 'e'), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.4, 2, 80)],
   weight: 2,
-  mirrorable: true,
+  mirrorable: false,
 };
 
 /** roots stepping up and down in the dark, a hop between */
@@ -497,20 +502,22 @@ const darkSteps: SectionTemplate = {
   difficulty: 6,
   teaches: W6_DARK,
   pieces: [
-    bank('a', [180, 220]),
+    bank('in', [170, 200]),
+    down('a', 'in', 30, [180, 220]),
     up('b', 'a', 55, [130, 160]),
     hop('c', 'b', [140, 170], [0.3, 0.38], false),
     up('d', 'c', 55, [130, 160]),
     hop('e', 'd', [150, 180], [0.3, 0.38], false),
     down('f', 'e', 55, [110, 130]),
     down('g', 'f', 55, [180, 220]),
+    up('out', 'g', 30, [160, 190]),
   ],
-  entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'g', kind: 'ground' },
+  entry: { piece: 'in', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
-  sockets: [darkTip('a'), ...darkEnds('a', 'g'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.5, 1)],
+  sockets: [darkTip('in'), ...darkEnds('a', 'g'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.5, 1)],
   weight: 2,
-  mirrorable: true,
+  mirrorable: false,
 };
 
 /** a long dark: knees, hops and a step, two runs of the firefly's light (the climax of 6-6) */
@@ -523,21 +530,22 @@ const darkLong: SectionTemplate = {
   teaches: W6_DARK,
   maxPerStage: 1,
   pieces: [
-    bank('a', [160, 200]),
+    bank('in', [170, 200]),
+    down('a', 'in', 30, [160, 200]),
     hop('b', 'a', [150, 180], [0.3, 0.38], false),
-    hop('c', 'b', [150, 180], [0.3, 0.38], false),
-    up('k', 'c', 50, [110, 140]),
+    up('k', 'b', 50, [110, 140]),
     down('d', 'k', 50, [150, 180]),
     hop('e', 'd', [160, 200], [0.3, 0.38], false),
     up('f', 'e', 50, [120, 150]),
-    down('g', 'f', 50, [200, 240]),
+    down('g', 'f', 50, [170, 200]),
+    up('out', 'g', 30, [160, 190]),
   ],
-  entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'g', kind: 'ground' },
+  entry: { piece: 'in', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
-  sockets: [darkTip('a'), ...darkEnds('a', 'g'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('k', 'k', 0.5, 1), petals('e', 'e', 0.5, 1), petals('f', 'f', 0.5, 1)],
+  sockets: [darkTip('in'), ...darkEnds('a', 'g'), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('e', 'e', 0.5, 1), petals('f', 'f', 0.5, 1)],
   weight: 2,
-  mirrorable: true,
+  mirrorable: false,
 };
 
 /** a root wall in the dark: a hop, the climbing vine up it in the firefly's light, down the far side, a hop out */
@@ -550,16 +558,18 @@ const darkClimb: SectionTemplate = {
   teaches: W6_DARK,
   weight: 2,
   pieces: [
-    bank('a', [180, 220]),
+    bank('in', [170, 200]),
+    down('a', 'in', 30, [180, 220]),
     hop('b', 'a', [220, 260], [0.3, 0.38], false),
     ...climbWall('v', 'b', 'wall', 220, [200, 240]),
     down('c', 'wall', 220, [160, 200]),
     hop('d', 'c', [220, 260], [0.3, 0.38], false),
+    up('out', 'd', 30, [160, 190]),
   ],
-  entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'd', kind: 'ground' },
+  entry: { piece: 'in', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
-  sockets: [darkTip('a'), ...darkEnds('a', 'd'), petals('b', 'b', 0.4, 1), petals('wall', 'wall', 0.5, 2, 90), petals('d', 'd', 0.5, 1)],
+  sockets: [darkTip('in'), ...darkEnds('a', 'd'), petals('b', 'b', 0.4, 1), petals('wall', 'wall', 0.5, 2, 90), petals('d', 'd', 0.5, 1)],
   mirrorable: false,
 };
 

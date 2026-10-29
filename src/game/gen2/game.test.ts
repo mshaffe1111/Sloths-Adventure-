@@ -16,10 +16,11 @@ import { forgetLayout, lastLayout, layoutForEntry, savedLayout } from '../layout
 import { stageSheets } from '../stageSheets.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { LevelConfig } from '../types.ts';
-import { GEN2_STAGES, gen2SeedFor, gen2SeedIndex, isGen2Stage } from './game.ts';
+import { GEN2_STAGES, gen2SeedFor, gen2SeedIndex, gen2Water, isGen2Stage } from './game.ts';
 import { buildGen2Stage, FLAG_SPAN } from './pipeline.ts';
 import { GEN2_SEEDS } from './seeds.ts';
 import type { Gen2Stage } from './types.ts';
+import { W6_ROOM_STAGES } from './worlds/w6.ts';
 
 const levels = generateAllLevels();
 const lv = (id: string): LevelConfig => ({ ...levels.find((l) => l.id === id)!, unlocked: true });
@@ -149,7 +150,7 @@ test("a World 6 gen2 stage loads World 6's kit, the clip sheets of the cats in i
   for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('6-'))) {
     const sheets = stageSheets(lv(id), on);
     assert.deepEqual(sheets.slice(0, 2), ['kit:1', 'kit:6'], id);
-    assert.ok(sheets.includes('kit-pieces'), `${id}: its room or its water signs`);
+    assert.equal(sheets.includes('kit-pieces'), (W6_ROOM_STAGES as readonly string[]).includes(id) || gen2Water(id), `${id}: the kit pieces exactly when it has a room or water signs`);
     assert.deepEqual(stageSheets(lv(id), { ...on, hand: false }), sheets, `${id}: whatever the hand-built switch`);
   }
 });
