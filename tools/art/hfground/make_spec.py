@@ -20,6 +20,8 @@ SOIL = {
     6: 'dark brown swamp soil packed with thick tangled brown mangrove roots, small stones',
     7: 'old weathered grey-green temple stone blocks with worn carved key-pattern bands, thick brown tree roots growing over them',
     8: 'deep blue night-forest rock like old bark, long dark cracks, small specks of green moss',
+    9: 'dark grey basalt rock in tall six-sided columns packed side by side, worn tops and fine cracks',
+    10: 'dark grey-brown volcanic rock with deep jagged cracks and a few dull rusty patches',
 }
 LIP = {
     1: 'soft green moss and short grass with small ferns and tiny pink flowers',
@@ -30,6 +32,8 @@ LIP = {
     6: 'dark swamp grass and moss tufts',
     7: 'a worn mossy grey stone ledge edge with fallen orange leaves',
     8: 'dark blue-green night moss with tiny pale flowers',
+    9: 'a worn grey stone top with a few small round red flowers and thin green leaves',
+    10: 'a dusty rust-brown ash crust edge with small pebbles',
 }
 NEG_TILE = ('border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, '
             'gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal')
@@ -37,7 +41,7 @@ NEG_KEY = ('text, letters, watermark, frame, border, photo, 3d render, blurry, g
            'stone slab, brick base, plinth')
 
 items = {}
-for w in range(1, 9):
+for w in range(1, 11):
     tex = (f'{STYLE}, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the '
            f'surface: {SOIL[w]}. The same density all over, no top, no bottom, no border, no horizon, no grass on top, {LIGHT}, must '
            f'tile seamlessly in all four directions')
@@ -67,7 +71,7 @@ common = {'note': 'hf-art-ground: soil textures, top lips, bank ends (VI-8), 202
           'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
           'neg': NEG_TILE, 'base': BASE}
 here = Path(__file__).resolve().parent
-for part, ws in (('a', [6, 7, 1, 2]), ('b', [3, 4, 5, 8])):
+for part, ws in (('a', [6, 7, 1, 2]), ('b', [3, 4, 5, 8]), ('c', [9, 10])):
     p = here / f'spec-ground-{part}.json'
     p.write_text(json.dumps({**common, 'items': [i for w in ws for i in items[w]]}, indent=1))
     print(p)

@@ -42,9 +42,10 @@ def piece(w, n):
 # the part of each fill that is plain soil: rows (and for World 1 columns) from its picture, measured on the row brightness profile
 FILL_CROP = {1: ('bank', (16, 150, 548, 335)), 2: ('fill', (0, 30, 390, 250)), 3: ('fill', (0, 10, 393, 250)),
              4: ('fill', (0, 0, 366, 294)), 5: ('fill', (0, 8, 227, 152)), 6: ('fill', (0, 40, 397, 150)),
-             7: ('fill', (0, 34, 306, 205)), 8: ('fill', (0, 0, 222, 295))}
+             7: ('fill', (0, 34, 306, 205)), 8: ('fill', (0, 0, 222, 295)),
+             9: ('fill', None), 10: ('fill', None)}
 # how big the patches go in (source px per start px), so the features keep about their size in the game
-FILL_SCALE = {1: 1.6, 2: 1.5, 3: 1.5, 4: 1.4, 5: 2.2, 6: 1.6, 7: 1.7, 8: 1.5}
+FILL_SCALE = {1: 1.6, 2: 1.5, 3: 1.5, 4: 1.4, 5: 2.2, 6: 1.6, 7: 1.7, 8: 1.5, 9: 1.5, 10: 1.6}
 
 
 def flatten(img, sigma=110, keep=0.25):
@@ -58,7 +59,7 @@ def flatten(img, sigma=110, keep=0.25):
 
 def fill_start(w, size=1024, seed=1):
     n, box = FILL_CROP[w]
-    src = piece(w, n).crop(box).convert('RGB')
+    src = (piece(w, n).crop(box) if box else piece(w, n)).convert('RGB')
     sc = FILL_SCALE[w]
     src = src.resize((round(src.width * sc), round(src.height * sc)), Image.LANCZOS)
     rnd = random.Random(seed * 100 + w)
@@ -119,7 +120,7 @@ def lip_start(w, W=1536, H=240, seed=3):
     rnd = random.Random(seed + w)
     d = ImageDraw.Draw(can)
     col = {1: (92, 64, 40), 2: (120, 82, 46), 3: (60, 80, 70), 4: (60, 78, 84), 5: (100, 74, 52), 6: (96, 66, 42), 7: (104, 74, 46),
-           8: (50, 62, 86)}[w]
+           8: (50, 62, 86), 9: (52, 54, 58), 10: (70, 52, 44)}[w]
     for i in range(34):
         x0 = rnd.uniform(10, W - 10)
         y = 8 + th - 26
@@ -172,7 +173,7 @@ def end_start(w, W=512, H=768, seed=5):
     can.alpha_composite(corner, (top_x - 70, 40))
     dr = ImageDraw.Draw(can)
     col = {1: (92, 64, 40), 2: (120, 82, 46), 3: (60, 80, 70), 4: (60, 78, 84), 5: (100, 74, 52), 6: (96, 66, 42), 7: (104, 74, 46),
-           8: (50, 62, 86)}[w]
+           8: (50, 62, 86), 9: (52, 54, 58), 10: (70, 52, 44)}[w]
     for i in range(7):
         y0 = rnd.uniform(130, 520)
         u = (y0 - 70) / (H - 70)
@@ -185,7 +186,7 @@ def end_start(w, W=512, H=768, seed=5):
 
 
 if __name__ == '__main__':
-    worlds = [int(x) for x in sys.argv[1:]] or list(range(1, 9))
+    worlds = [int(x) for x in sys.argv[1:]] or list(range(1, 11))
     for w in worlds:
         fill_start(w).save(OUT / f'fill-w{w}.webp', quality=90)
         lip_start(w).save(OUT / f'lip-w{w}.webp', quality=92)

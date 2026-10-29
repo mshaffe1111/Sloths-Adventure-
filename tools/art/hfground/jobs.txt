@@ -1,0 +1,3 @@
+hf-art-ground jobs, 2026-10-29 (cap $14). rtx-pro-6000 at ~$2.75/h. Results in the bucket mshaffe111/w5-xfer under hfground/.
+hfg-ground-a 6ae38264ad9610e5cb314481 rtx-pro-6000 created 17:29:08Z: groundgpu.py on spec-ground-a.json (Worlds 6, 7, 1, 2: soil x2 bases x3 variants, lip x2, end x2)
+hfg-ground-b 6ae38267ad9610e5cb314486 rtx-pro-6000 created 17:29:11Z: spec-ground-b.json (Worlds 3, 4, 5, 8)
