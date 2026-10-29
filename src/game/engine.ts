@@ -75,7 +75,8 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
-import { drawKitArt, drawKitDecor, kitSize } from './puzzleArt.ts';
+import { drawKitDecor } from './puzzleArt.ts';
+import { drawWaterSign } from './waterSign.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
@@ -4570,18 +4571,16 @@ export class GameEngine {
       }
       ctx.restore();
     }
-    // the new generator's water warnings (gen2 proto.gen2.waterWarnings): a sign at the water's edge, the puzzle kit's signpost with a
-    // wave on its board until the sign's own art lands (a plain post while the kit's sheet loads)
-    for (const w of this.proto?.gen2?.waterWarnings ?? []) {
-      if (w.x < x0 - 80 || w.x > x1 + 80) continue;
-      const drew = drawKitArt(ctx, 'sign', w.x, w.y + 3);
-      const cy = w.y - (drew ? kitSize('sign').h * 0.72 : 50);
+    // the new generator's water warnings (gen2 proto.gen2.waterWarnings): the painted warning sign at the water's edge (World 5's garden
+    // sign, the jungle one in the other worlds: waterSign.ts), a plain post with a wave on it while its sheet loads
+    (this.proto?.gen2?.waterWarnings ?? []).forEach((w, i) => {
+      if (w.x < x0 - 80 || w.x > x1 + 80) return;
+      if (drawWaterSign(ctx, this.currentStage.config.worldIndex, w.x, w.y + 3, i)) return;
+      const cy = w.y - 50;
       ctx.save();
-      if (!drew) {
-        ctx.fillStyle = '#7c5a32';
-        ctx.fillRect(w.x - 3, w.y - 40, 6, 40);
-        ctx.fillRect(w.x - 18, cy - 12, 36, 24);
-      }
+      ctx.fillStyle = '#7c5a32';
+      ctx.fillRect(w.x - 3, w.y - 40, 6, 40);
+      ctx.fillRect(w.x - 18, cy - 12, 36, 24);
       ctx.strokeStyle = '#1d4ed8';
       ctx.lineWidth = 3.5;
       ctx.lineCap = 'round';
@@ -4593,7 +4592,7 @@ export class GameEngine {
         ctx.stroke();
       }
       ctx.restore();
-    }
+    });
   }
 
   private spawnWaterSplash(x: number, y: number) {

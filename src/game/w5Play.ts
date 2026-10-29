@@ -554,7 +554,7 @@ export class W5Play {
       const st = this.seams[i];
       // her pose: knitting (her lace spread on the ground before her), looking up with her needles raised (the tell), casting
       const pose = st.phase === 'tell' ? 'tell' : st.phase === 'cast' ? 'attack' : 'idle';
-      drawSeamstress(ctx, sm.x, sm.y, sm.dir, pose, t, st.phase === 'tell' ? Math.min(1, st.t / SEAMSTRESS.tell) : 0);
+      drawSeamstress(ctx, sm.x, sm.y, sm.dir, pose, t, st.phase === 'tell' ? Math.min(1, st.t / SEAMSTRESS.tell) : st.phase === 'cast' ? Math.min(1, st.t / SEAMSTRESS.cast) : 0);
     });
     for (const tb of w5.tables ?? []) if (vis(tb.x)) drawTeaTable(ctx, tb.x, tb.y, t);
     (w5.chairs ?? []).forEach((c, i) => {

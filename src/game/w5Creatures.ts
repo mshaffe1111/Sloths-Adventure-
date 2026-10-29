@@ -1,8 +1,10 @@
 /**
  * w5Creatures — World 5's trained creature art on the stage (2026-10-26): the jumping spider's clips (spider-anim.webp: walk, idle,
  * crouch and hurt; its attack, dizzy and knocked-out stay the single painted frames of spiderSprite.ts) and the Butler's pose sheet
- * (butler-poses.webp: idle, move, tell, attack, hurt, defeated), and the Seamstress's pose sheet (seamstress-poses.webp, 5-4: a stand-in
- * until her trained clips come). The Dangler, Orchid Mantis and Dozer moth sheets are in no stage yet, so nothing loads them.
+ * (butler-poses.webp: idle, move, tell, attack, hurt, defeated), and the Seamstress's clips (seamstress-anim.webp, 5-4, 2026-10-29: she
+ * knits, looks up with her needles raised and casts her lace; her pose sheet seamstress-poses.webp is what she draws while they load).
+ * The Dangler, Orchid Mantis and Dozer have clip sheets too (danglerAnimData.ts, mantisAnimData.ts, dozerAnimData.ts) but are in no
+ * stage yet, so nothing loads them.
  *
  * All are World 5 sheets: they start loading when a World 5 stage that holds the creature starts (W5Play's constructor, and
  * stageSheets.ts STAGE_ANIMS for the spider's clips), and are let go when play moves to another world (atlasLoader.ts). Every draw
@@ -16,6 +18,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { SPIDER_ANIM, SPIDER_ANIM_UP, SPIDER_ANIM_URL, SPIDER_SEQ } from './spiderAnimData.ts';
 import { BUTLER_ATLAS_URL, BUTLER_FRAMES } from './butlerAtlasData.ts';
 import { SEAMSTRESS_ATLAS_URL, SEAMSTRESS_FRAMES } from './seamstressAtlasData.ts';
+import { SEAMSTRESS_ANIM, SEAMSTRESS_ANIM_FPS, SEAMSTRESS_ANIM_UP, SEAMSTRESS_ANIM_URL, SEAMSTRESS_SEQ } from './seamstressAnimData.ts';
 import { SEAMSTRESS } from './w5Kit.ts';
 
 // ───────────────────────────── the jumping spider ─────────────────────────────
@@ -127,8 +130,16 @@ function loadSeam() {
 /** start the Seamstress's poses loading (a World 5 stage where she knits, as it starts); true once they are in */
 export function warmW5Seamstress(): boolean {
   loadSeam();
+  seamAnim.ready();
   return seamReady && !!seamImg;
 }
+
+const seamAnim = makeCreatureAnim(SEAMSTRESS_ANIM_URL, SEAMSTRESS_ANIM, SEAMSTRESS_SEQ, SEAMSTRESS_ANIM_UP);
+/** where in her attack clip a pose stands: the tell is its first 60% (needles up), the cast the rest (the lace flies); u 0..1 through each */
+export const seamClipAt = (pose: SeamPose, u: number): number => {
+  const v = Math.max(0, Math.min(1, u));
+  return pose === 'tell' ? v * 0.6 : pose === 'attack' ? 0.6 + v * 0.4 : 0;
+};
 
 export type SeamPose = 'idle' | 'tell' | 'attack';
 
@@ -177,7 +188,8 @@ export const seamTop = (pose: SeamPose): number => (SEAMSTRESS.h * SEAMSTRESS_FR
 
 /**
  * The Seamstress from her pose sheet, feet at (x, b), facing `dir`: knitting (idle: her lace spread on the ground before her), looking up
- * with her needles raised (the tell, `u` 0..1 through it: she rises a little), casting the lace (attack). Until the sheet is in, a plain
+ * with her needles raised (the tell, `u` 0..1 through it), casting the lace (attack, `u` 0..1 through the cast). Her clips; until they are
+ * in, her pose sheet's stills (she rises a little through the tell); until that is in too, a plain
  * stand-in of the same size: a pink fuzzy body in a lace apron, round glasses, dark legs and her needles.
  */
 export function drawSeamstress(ctx: CanvasRenderingContext2D, x: number, b: number, dir: 1 | -1, pose: SeamPose, t: number, u = 0): void {
@@ -189,11 +201,21 @@ export function drawSeamstress(ctx: CanvasRenderingContext2D, x: number, b: numb
   ctx.ellipse(0, 1, 34, 4, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.scale(dir, 1);
+  // her clips (the dark plum edge is baked into the sheet): knitting is the clip of her standing still with her needles (eyes on her
+  // work), the tell and the cast are the attack clip (needles raised, then the lace thrown), every frame at her stills' scale
+  const kStill = h / SEAMSTRESS_FRAMES[SEAM_STILL.idle].h;
+  if (seamAnim.ready()) {
+    const name = pose === 'idle' ? seamAnim.ping('hurt', t, SEAMSTRESS_ANIM_FPS) : seamAnim.at('attack', seamClipAt(pose, u));
+    if (seamAnim.draw(ctx, name, kStill)) {
+      ctx.restore();
+      return;
+    }
+  }
   if (warmW5Seamstress()) {
     const name = SEAM_STILL[pose];
     const f = SEAMSTRESS_FRAMES[name];
     // (every pose at the knitting pose's scale, so she keeps her size; a little lift through the tell, a breath as she knits)
-    const k = h / SEAMSTRESS_FRAMES[SEAM_STILL.idle].h;
+    const k = kStill;
     ctx.translate(0, -u * 4);
     if (pose === 'idle') ctx.scale(1, 1 + Math.sin(t * 2.4) * 0.012);
     const edged = edgedStill(name);

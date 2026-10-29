@@ -20,7 +20,8 @@ import { drawScratch, drawW5, w5ArtReady } from './w5Art.ts';
 import { carvingTrunk, drawCarving } from './w5Look.ts';
 import { shakyLetters } from './w5Kit.ts';
 import { LOOK_S, type Guard, type MeecaPlay } from './meecaPlay.ts';
-import { MEECA_CARD, type MeecaSceneLine, type Speaker } from './meecaLines.ts';
+import { FLICKER_HINTS, MEECA_CARD, MEECA_SAY, type MeecaSceneLine, type Speaker } from './meecaLines.ts';
+import { FLICKER_ANIM, FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP, FLICKER_ANIM_URL, FLICKER_SEQ } from './flickerAnimData.ts';
 import type { MeecaStage, MeecaTrunk } from './meecaStage.ts';
 import { drawGlow, drawNightPiece, nightArtReady } from './meecaNightArt.ts';
 import type { NightArtName } from './meecaNightData.ts';
@@ -60,6 +61,7 @@ const blanketSheet = sheet(MEECA_BLANKET_URL);
 /** start loading everything the stage draws, as it starts */
 export function warmMeecaArt() {
   PELL_CLIPS.ready();
+  FLICKER_CLIPS.ready();
   SOLDIER_CLIPS.ready();
   carveSheet();
   blanketSheet();
@@ -163,26 +165,136 @@ export const MEECA_HOLDS_PAINTED = true;
 
 // ───────────────────────────── Flicker ─────────────────────────────
 
-/** Flicker: a few frames of wings, his glowing tail, a little sad when he says the light was his */
+/**
+ * Flicker's clips (flicker-anim.webp, 2026-10-29: his own painted frames made into short clips with the motion model, every one of them
+ * him hovering in place): blinking while he keeps her company, talking, smug the first time he speaks, a shrug when he has nothing to
+ * add, glowing brighter at a trunk to carve, startled then worried when Pell steps out, happy at the moonflower, sad and small once he
+ * says the light was his, dozing off when she stands still a while, a turn when he swaps sides, leading the way (a look ahead) as he
+ * flies with her, and a dash when he darts off to a trunk. His frames face right.
+ */
+const FLICKER_CLIPS = makeCreatureAnim(FLICKER_ANIM_URL, FLICKER_ANIM, FLICKER_SEQ, FLICKER_ANIM_UP);
+/** how tall he is drawn, world px (his old frames stood about 38 tall), and how far over his perch his middle sits */
+export const FLICKER_DRAW_H = 40;
+const FLICKER_MID = -5;
+/** seconds she stands still before he nods off; his turn, played at twice the clips' rate, and the least time between two turns */
+export const FLICKER_DOZE_S = 8;
+const TURN_S = FLICKER_SEQ.turn.length / (FLICKER_ANIM_FPS * 2);
+const TURN_GAP = 2.5;
+
+export type FlickerMove = 'talk' | 'blink' | 'glow' | 'happy' | 'sad' | 'doze' | 'smug' | 'startled' | 'worried' | 'shrug' | 'turn' | 'lead' | 'dart';
+/** how fast he flies (world px a second) to lead the way with a look ahead, and to dash (his dart, played through once) */
+export const FLICKER_LEAD_V = 60;
+export const FLICKER_DART_V = 260;
+const DART_S = FLICKER_SEQ.dart.length / FLICKER_ANIM_FPS;
+
+/** what he is doing now (pure: the stage's state, how long she has stood still, whether he is in a turn or a dash, how fast he flies) */
+export function flickerMove(mc: Pick<MeecaPlay, 'phase' | 'small' | 'bubble' | 'sceneLine' | 'ringOn' | 'carveSpot' | 'line' | 'lineAt' | 't'>, still: number, turning: boolean, darting = false, speed = 0): FlickerMove {
+  if (mc.small && (mc.phase === 'endingB' || mc.phase === 'done')) return 'sad';
+  if (mc.phase === 'endingA' || mc.phase === 'endingB' || mc.phase === 'done') {
+    if (mc.phase === 'endingA' && mc.line === 0 && mc.t - mc.lineAt < 1.6) return 'startled';
+    return mc.sceneLine?.who === 'Flicker' ? 'talk' : 'worried';
+  }
+  if (mc.phase === 'look') return 'happy';
+  if (turning) return 'turn';
+  if (mc.bubble?.who === 'flicker') {
+    const text = mc.bubble.text;
+    if (text === MEECA_SAY.flicker.text) return 'smug';
+    if (text === REMIND_MARK || FLICKER_HINTS.none.includes(text)) return 'shrug';
+    return 'talk';
+  }
+  if (mc.ringOn >= 0 || mc.carveSpot) return 'glow';
+  if (darting) return 'dart';
+  if (speed >= FLICKER_LEAD_V) return 'lead';
+  // (the last tree, Pell waiting by it: he keeps close and anxious)
+  if (mc.phase === 'last') return 'worried';
+  if (mc.phase === 'play' && still >= FLICKER_DOZE_S) return 'doze';
+  return 'blink';
+}
+/** his reminder when she walks past a trunk unmarked (meecaPlay.ts 'remindMark') */
+const REMIND_MARK = 'Mark it. Then you can find your way back.';
+
+/** what he remembers between frames: which way he faced, when he last turned, where she stood and since when */
+const fl = { face: 0, turnAt: -99, px: NaN, stillSince: 0, move: '' as FlickerMove | '', moveAt: 0, x: NaN, y: 0, t: 0, v: 0, vx: 0, dartAt: -99 };
+/** the moves that end somewhere else than they start (he sinks down sad, nods off, jumps and shuts his eyes): played through once, then
+ * rocking gently over their second half, never back to the start */
+const SETTLE: ReadonlySet<FlickerMove> = new Set(['sad', 'doze', 'startled']);
+/** the moves played once and held at their end (his dash is only its first half second: the clip stops dead after it) */
+const ONCE: ReadonlySet<FlickerMove> = new Set(['dart']);
+/** his frame `s` seconds into a move */
+export function flickerFrame(move: FlickerMove, s: number, turnS: number): string {
+  const seq = FLICKER_SEQ[move];
+  const n = seq.length;
+  if (move === 'turn') return seq[Math.max(0, Math.min(n - 1, Math.floor((s / turnS) * n)))];
+  const i = Math.max(0, Math.floor(s * FLICKER_ANIM_FPS));
+  if (ONCE.has(move)) return seq[Math.min(n - 1, i)];
+  if (SETTLE.has(move)) {
+    if (i < n) return seq[i];
+    const h = Math.floor(n / 2);
+    const m = (i - n) % (2 * (n - 1 - h));
+    return seq[m < n - 1 - h ? n - 1 - m : h + (m - (n - 1 - h))];
+  }
+  // (the others go back and forth, so the clip's two ends never jump)
+  const m = i % (2 * n - 2);
+  return seq[m < n ? m : 2 * n - 2 - m];
+}
+
+/** Flicker: his clips (his old frames of wings while they load), his glowing tail, a little smaller when he says the light was his */
 export function drawFlicker(ctx: CanvasRenderingContext2D, mc: MeecaPlay, p: Player, t: number) {
   const f = mc.flicker;
   if (!f.on || f.show <= 0.01) return;
   const talking = mc.bubble?.who === 'flicker';
   const sad = mc.small && (mc.phase === 'endingB' || mc.phase === 'done');
   const showing = mc.ringOn >= 0;
-  const frame: NightArtName = sad ? 'fl15' : showing ? 'fl16' : talking ? (Math.floor(t * 6) % 2 ? 'fl13' : 'fl1') : (['fl1', 'fl2', 'fl3', 'fl2'] as const)[Math.floor(t * 12) % 4];
-  // (he faces the way he flies, and her when he is still)
-  const face = f.x < p.x ? 1 : -1;
+  // (how fast he flies, smoothed over a few frames, and which way across; a burst past FLICKER_DART_V starts a dash)
+  const dt = t - fl.t;
+  if (dt > 0 && dt < 0.5 && !Number.isNaN(fl.x)) {
+    const k = Math.min(1, dt * 6);
+    fl.v += (Math.hypot(f.x - fl.x, f.y - fl.y) / dt - fl.v) * k;
+    fl.vx += ((f.x - fl.x) / dt - fl.vx) * k;
+  } else if (dt !== 0) fl.v = fl.vx = 0;
+  fl.x = f.x;
+  fl.y = f.y;
+  fl.t = t;
+  if (fl.v >= FLICKER_DART_V && t - fl.dartAt > DART_S + 1) fl.dartAt = t;
+  // (flying along he faces the way he flies; still, he faces her. A change of side is a turn, at most every TURN_GAP s, else a flip)
+  const face = fl.v >= FLICKER_LEAD_V && Math.abs(fl.vx) > FLICKER_LEAD_V / 2 ? Math.sign(fl.vx) : f.x < p.x ? 1 : -1;
+  if (fl.face !== face) {
+    if (fl.face !== 0 && t - fl.turnAt > TURN_S + TURN_GAP) fl.turnAt = t;
+    fl.face = face;
+  }
+  if (Math.abs(p.x - fl.px) > 0.5 || !p.grounded || Number.isNaN(fl.px)) {
+    fl.px = p.x;
+    fl.stillSince = t;
+  }
+  const move = flickerMove(mc, t - fl.stillSince, t - fl.turnAt < TURN_S, t - fl.dartAt < DART_S, fl.v);
+  if (move !== fl.move) {
+    fl.move = move;
+    fl.moveAt = move === 'turn' ? fl.turnAt : move === 'dart' ? fl.dartAt : t;
+  }
   const blink = f.show < 1 ? (Math.floor(t * 14) % 2 ? 0.4 : 1) * f.show : 1;
-  drawGlow(ctx, f.x + face * 10, f.y - 6, 70, 'rgba(214, 255, 150, A)', 0.65 * blink);
+  const glow = move === 'glow' ? 1 : move === 'doze' ? 0.4 : 0.65;
+  drawGlow(ctx, f.x + face * 10, f.y - 6, move === 'glow' ? 90 : 70, 'rgba(214, 255, 150, A)', glow * blink);
   ctx.save();
   ctx.globalAlpha *= blink;
-  // (his sheet faces left: mirrored to face right)
-  if (!drawNightPiece(ctx, frame, f.x, f.y + 14, { flip: face > 0, scale: sad ? 0.85 : 1 })) {
-    ctx.fillStyle = '#6b4320';
-    ctx.beginPath();
-    ctx.arc(f.x, f.y, 9, 0, Math.PI * 2);
-    ctx.fill();
+  let drew = false;
+  if (FLICKER_CLIPS.ready()) {
+    const name = flickerFrame(move, t - fl.moveAt, TURN_S);
+    ctx.save();
+    ctx.translate(f.x, f.y + FLICKER_MID);
+    // (his clips face right: mirrored to face left)
+    ctx.scale(face, 1);
+    drew = FLICKER_CLIPS.draw(ctx, name, (FLICKER_DRAW_H / FLICKER_ANIM_H) * FLICKER_ANIM_UP * (sad ? 0.85 : 1));
+    ctx.restore();
+  }
+  if (!drew) {
+    const frame: NightArtName = sad ? 'fl15' : showing ? 'fl16' : talking ? (Math.floor(t * 6) % 2 ? 'fl13' : 'fl1') : (['fl1', 'fl2', 'fl3', 'fl2'] as const)[Math.floor(t * 12) % 4];
+    // (his old sheet faces left: mirrored to face right)
+    if (!drawNightPiece(ctx, frame, f.x, f.y + 14, { flip: face > 0, scale: sad ? 0.85 : 1 })) {
+      ctx.fillStyle = '#6b4320';
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, 9, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
   ctx.restore();
   drawGlow(ctx, f.x + face * 9, f.y + 2, 16, 'rgba(240, 255, 190, A)', 0.9 * blink);

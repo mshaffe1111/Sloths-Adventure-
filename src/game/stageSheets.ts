@@ -9,10 +9,11 @@
  *   dot            Dot's flight (4-D): her pieces, her frames and the four paintings behind the netting (dotFlightArt.ts)
  *   Meeca's stage (5-M): World 5's kit and dressing, the puzzle kit's pieces, her own sheets (meeca-standard, her carving and the
  *                  blanket, and the night sheet of her new poses and the stage's props, meecaNightArt.ts), and Pell's and the soldiers'
- *                  clip sheets (meecaArt.ts)
+ *                  clip sheets, and Flicker's (meecaArt.ts)
  *   kit-pieces     the puzzle kit's pieces and Pokey's carry poses (puzzleArt.ts), for a stage with puzzle rooms (the test room, 'kit',
  *                  World 1's rooms, World 2's W2_PUZZLES, World 3's W3_PUZZLES, gen2's 5-9), every World 3 and 4 stage (its dressing,
- *                  artDress.ts), and a gen2 stage with water (its warning sign is the kit's signpost until its own art lands)
+ *                  artDress.ts)
+ *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water
  *   anim:<name>    a creature's clip sheet (creatureAnim.ts), for the hand-built stages that hold one (STAGE_ANIMS)
  *
  * A generated stage's creatures are rolled with the stage, so they are not known ahead: their clip sheets still start loading as the
@@ -67,7 +68,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // the puzzle kit's test room: World 1's painted ground, the kit's pieces, and World 4's sheet for the trade room's capuchin
   if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props'];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
-  if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier'];
+  if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier', 'anim:flicker'];
   const w = cfg.worldIndex;
   // (a gen2 stage is built like a hand-built one, with World 5's dressing, whatever the switch: gen2/game.ts)
   const built = !cfg.secret && ((sw.ctest && cfg.id === CTEST_STAGE_ID) || (sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])) || isGen2Stage(cfg));
@@ -85,6 +86,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
   // (World 1's rooms: 1-4's lift, 1-6's seesaw, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
-  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || (isGen2Stage(cfg) && gen2Water(cfg.id)) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
+  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
+  if (isGen2Stage(cfg) && gen2Water(cfg.id)) out.push('water-signs');
   return out;
 }

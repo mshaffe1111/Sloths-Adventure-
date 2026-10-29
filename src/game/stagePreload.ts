@@ -28,6 +28,8 @@ import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
 import { preloadBackdrop } from './paintedBackdrops.ts';
 import { stageSheets } from './stageSheets.ts';
+import { warmWaterSigns } from './waterSign.ts';
+import { WATER_SIGN_URL } from './waterSignData.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
 import { LEAVES_URL, warmLeaves } from './leafSprites.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
@@ -59,6 +61,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'kit-pieces') {
       kitArtReady();
       urls.push(KIT_ART_URL);
+    } else if (k === 'water-signs') {
+      warmWaterSigns();
+      urls.push(WATER_SIGN_URL);
     } else if (k === 'meeca-night') {
       nightArtReady();
       urls.push(NIGHT_ART_URL);

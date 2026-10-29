@@ -1,0 +1,263 @@
+{
+ "note": "Worlds 5-10 art cut in 2026-10-29 (tools/art/w6to10/cutpack.py + cutin.py), ready for the boss fights and the worlds still being built; nothing imports these yet. Clip sheets: frames keyed off the grey, every 2nd Wan frame (8 fps); anchors are the old painted frames' (draw at the sprite's K / up), see each json.",
+ "bosses": {
+  "ironclaw": {
+   "sheets": [
+    "ironclaw-anim-0.webp",
+    "ironclaw-anim-1.webp"
+   ],
+   "moves": {
+    "idle": 25,
+    "march": 25,
+    "charge": 25,
+    "slam": 25,
+    "slash": 25,
+    "roar": 25,
+    "stomp": 25,
+    "hurt": 25,
+    "stunned": 25,
+    "defeat": 25,
+    "enrage": 25,
+    "punch": 25,
+    "block": 25
+   },
+   "up": 1.25,
+   "source": {
+    "idle": "w6t-ironclaw-idle-s11",
+    "march": "w6t-ironclaw-march-s11",
+    "charge": "w6t-ironclaw-charge-s11",
+    "slam": "w6t-ironclaw-slam-s11",
+    "slash": "w6t-ironclaw-slash2-s11",
+    "roar": "w6t-ironclaw-roar-s11",
+    "stomp": "w6t-ironclaw-stomp-s3",
+    "hurt": "w6t-ironclaw-hurt-s11",
+    "stunned": "w6t-ironclaw-stunned-s11",
+    "defeat": "w6t-ironclaw-defeat-s11",
+    "enrage": "w6t-ironclaw-enrage-s3",
+    "punch": "w6t-ironclaw-punch-s3",
+    "block": "w6t-ironclaw-block-s11"
+   },
+   "data": "bosses/ironclaw.json"
+  },
+  "golem": {
+   "sheets": [
+    "golem-anim.webp"
+   ],
+   "moves": {
+    "awaken": 25,
+    "march": 25,
+    "charge": 25,
+    "slam": 25,
+    "beam": 25,
+    "quake": 25,
+    "roar": 25,
+    "hurt": 25,
+    "stunned": 25,
+    "defeat": 25,
+    "rush": 25,
+    "shield": 25,
+    "grab": 25
+   },
+   "up": 1.25,
+   "source": {
+    "awaken": "w6t-golem-awaken-s3",
+    "march": "w6t-golem-march-s3",
+    "charge": "w6t-golem-charge-s3",
+    "slam": "w6t-golem-slam2-s3",
+    "beam": "w6t-golem-beam-s11",
+    "quake": "w6t-golem-quake-s3",
+    "roar": "w6t-golem-roar-s11",
+    "hurt": "w6t-golem-hurt-s3",
+    "stunned": "w6t-golem-stunned-s3",
+    "defeat": "w6t-golem-defeat-s3",
+    "rush": "w6t-golem-rush-s11",
+    "shield": "w6t-golem-shield-s11",
+    "grab": "w6t-golem-grab-s11"
+   },
+   "data": "bosses/golem.json"
+  },
+  "drake": {
+   "sheets": [
+    "drake-anim.webp"
+   ],
+   "moves": {
+    "idle": 25,
+    "walk": 25,
+    "breath": 25,
+    "tail": 25,
+    "stomp": 25,
+    "roar": 25,
+    "hurt": 25,
+    "stunned": 25,
+    "defeat": 25,
+    "petrify": 25,
+    "tailspin": 25,
+    "leap": 25,
+    "jumpslam": 25
+   },
+   "up": 1.25,
+   "source": {
+    "idle": "w6t-drake-idle-s3",
+    "walk": "w6t-drake-walk-s3",
+    "breath": "w6t-drake-breath-s3",
+    "tail": "w6t-drake-tail-s3",
+    "stomp": "w6t-drake-stomp-s11",
+    "roar": "w6t-drake-roar-s3",
+    "hurt": "w6t-drake-hurt-s11",
+    "stunned": "w6t-drake-stunned-s3",
+    "defeat": "w6t-drake-defeat-s3",
+    "petrify": "w6t-drake-petrify-s3",
+    "tailspin": "w6t-drake-tailspin-s11",
+    "leap": "w6t-drake-leap-s11",
+    "jumpslam": "w6t-drake-jumpslam-s3"
+   },
+   "data": "bosses/drake.json"
+  },
+  "reaver": {
+   "sheets": [
+    "reaver-anim.webp"
+   ],
+   "moves": {
+    "idle": 25,
+    "thrust": 25,
+    "swipe": 25,
+    "sweep": 25,
+    "vault": 25,
+    "mud": 25,
+    "roar": 25,
+    "hurt": 25,
+    "stunned": 25,
+    "defeat": 25,
+    "stagger": 25,
+    "block": 25
+   },
+   "up": 1.25,
+   "source": {
+    "idle": "w6t-reaver-idle-s3",
+    "thrust": "w6t-reaver-thrust-s11",
+    "swipe": "w6t-reaver-swipe-s3",
+    "sweep": "w6t-reaver-sweep-s11",
+    "vault": "w6t-reaver-vault-s11",
+    "mud": "w6t-reaver-mud-s11",
+    "roar": "w6t-reaver-roar-s3",
+    "hurt": "w6t-reaver-hurt-s11",
+    "stunned": "w6t-reaver-stunned-s11",
+    "defeat": "w6t-reaver-defeat-s11",
+    "stagger": "w6t-reaver-stagger-s3",
+    "block": "w6t-reaver-block-s11"
+   },
+   "data": "bosses/reaver.json"
+  },
+  "thornbark": {
+   "sheets": [
+    "thornbark-anim-0.webp",
+    "thornbark-anim-1.webp",
+    "thornbark-anim-2.webp",
+    "thornbark-anim-3.webp"
+   ],
+   "moves": {
+    "idle": 25,
+    "march": 25,
+    "gallop": 25,
+    "roar": 25,
+    "whip": 25,
+    "slam": 25,
+    "claw": 25,
+    "leap": 25,
+    "guard": 25,
+    "rest": 25,
+    "freed": 25,
+    "kick": 25,
+    "knuckle": 25,
+    "tail": 25
+   },
+   "up": 1.25,
+   "source": {
+    "idle": "w6t-thornbark-idle-s3",
+    "march": "w6t-thornbark-march-s3",
+    "gallop": "w6t-thornbark-gallop-s11",
+    "roar": "w6t-thornbark-roar-s3",
+    "whip": "w6t-thornbark-whip-s3",
+    "slam": "w6t-thornbark-slam-s3",
+    "claw": "w6t-thornbark-claw-s11",
+    "leap": "w6t-thornbark-leap-s3",
+    "guard": "w6t-thornbark-guard-s11",
+    "rest": "w6t-thornbark-rest-s11",
+    "freed": "w6t-thornbark-freed-s3",
+    "kick": "w6t-thornbark-kick-s11",
+    "knuckle": "w6t-thornbark-knuckle-s11",
+    "tail": "w6t-thornbark-tail-s3"
+   },
+   "data": "bosses/thornbark.json"
+  },
+  "monarch": {
+   "sheets": [
+    "monarch-anim.webp"
+   ],
+   "moves": {
+    "roost": 25,
+    "screech": 25,
+    "glide": 25,
+    "fall": 25,
+    "hurt": 25,
+    "dive": 25,
+    "landing": 25,
+    "descent": 25,
+    "hover": 25,
+    "fly": 25
+   },
+   "up": 1.25,
+   "source": {
+    "roost": "w6t-monarch-roost-s11",
+    "screech": "w6t-monarch-screech-s11",
+    "glide": "w6t-monarch-glide-s11",
+    "fall": "w6t-monarch-fall-s11",
+    "hurt": "w6t-monarch-hurt-s11",
+    "dive": "w6t-monarch-dive-s11",
+    "landing": "w6t-monarch-landing-s11",
+    "descent": "w6t-monarch-descent-s11",
+    "hover": "w6t-monarch-hover3-s11",
+    "fly": "w6t-monarch-fly3-s11"
+   },
+   "data": "bosses/monarch.json"
+  }
+ },
+ "files": {
+  "bosses/ironclaw-anim-0.webp": 2380646,
+  "bosses/ironclaw-anim-1.webp": 2130936,
+  "bosses/golem-anim.webp": 2707746,
+  "bosses/drake-anim.webp": 3018856,
+  "bosses/reaver-anim.webp": 1714086,
+  "bosses/thornbark-anim-0.webp": 2377886,
+  "bosses/thornbark-anim-1.webp": 2532590,
+  "bosses/thornbark-anim-2.webp": 2269086,
+  "bosses/thornbark-anim-3.webp": 155088,
+  "bosses/monarch-anim.webp": 1424894,
+  "lairs/lair-queen-calm.webp": 120398,
+  "lairs/lair-queen-rage.webp": 118032,
+  "lairs/lair-reaver-calm.webp": 134506,
+  "lairs/lair-reaver-rage.webp": 126344,
+  "lairs/lair-golem-calm.webp": 106418,
+  "lairs/lair-golem-rage.webp": 116664,
+  "lairs/lair-monarch-calm.webp": 109246,
+  "lairs/lair-monarch-rage.webp": 101134,
+  "lairs/lair-drake-calm.webp": 143204,
+  "lairs/lair-drake-rage.webp": 142300,
+  "lairs/lair-general-calm.webp": 121420,
+  "lairs/lair-general-rage.webp": 127378,
+  "lairs/lairplates-queen.webp": 1054552,
+  "lairs/lairplates-reaver.webp": 1072270,
+  "lairs/lairplates-golem.webp": 808046,
+  "lairs/lairplates-monarch.webp": 784836,
+  "lairs/lairplates-drake.webp": 1215156,
+  "lairs/lairplates-general.webp": 865198,
+  "props/collar.webp": 118298,
+  "props/guardiansfree.webp": 405506,
+  "props/props.webp": 604440
+ },
+ "lairs": "lairs/lairs.json",
+ "lairplates": "lairs/lairplates.json",
+ "collar": "props/collar.json",
+ "guardiansfree": "props/guardiansfree.json",
+ "props": "props/props.json"
+}

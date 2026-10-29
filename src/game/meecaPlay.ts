@@ -391,9 +391,10 @@ export class MeecaPlay {
     } else if (nx && this.carveSpot) {
       tx = nx.textX + 52;
       ty = nx.textY - 10 + Math.sin(this.t * 3) * 4;
-    } else if (this.phase === 'endingB' && this.small) {
+    } else if ((this.phase === 'endingB' || this.phase === 'done') && this.small) {
+      // (small: he comes down and sits by her feet, meecaArt.ts drawFlicker's sad clip)
       tx = p.x + 26;
-      ty = p.y - 70;
+      ty = p.y - 24;
     }
     const k = Math.min(1, dt * 4);
     f.x += (tx - f.x) * k;
