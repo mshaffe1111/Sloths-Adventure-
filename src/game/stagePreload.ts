@@ -26,13 +26,15 @@ import { jennifurSpriteReady, MEECA_STANDARD_URL } from './jennifurSprite.ts';
 import { MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
-import { preloadBackdrop } from './paintedBackdrops.ts';
+import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
 import { stageSheets } from './stageSheets.ts';
 import { warmSprites } from './spriteSheets.ts';
 import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
+import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
+import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
 import { LEAVES_URL, warmLeaves } from './leafSprites.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
@@ -72,6 +74,10 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(BAD_WATER_URL);
+    } else if (k === 'swim') {
+      calmWaterReady();
+      swimAtlasReady();
+      urls.push(CALM_WATER_URL, SWIM_ATLAS_URL);
     } else if (k === 'meeca-night') {
       nightArtReady();
       urls.push(NIGHT_ART_URL);
@@ -143,8 +149,9 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     warmRopeKit();
     urls.push(HERO_ROPE_URL, ROPE_KIT_URL);
   }
-  // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode)
-  preloadBackdrop(cfg.worldIndex, cfg.id);
+  // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode; and the canopy
+  // strips of a stage played up in the trees, which used to load on first use and pop in a second time)
+  void backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg));
   const t0 = performance.now();
   const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
   const done = whenSheetsReady(urls, ms).then((n) => {
@@ -162,13 +169,16 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
 /**
  * The engine is about to be made for this stage: whatever of its sheets is still on its way gets up to `ms` more (behind the stage's
  * name card, before the first frame), then each is drawn once. Most of the time they arrived behind the menu and this is at once.
+ * The stage's painted backdrop (and canopy) gets up to `backMs`: a stage that opened on the stand-in sky and had its painting pop in a
+ * moment later was the first thing a player saw (polish report VI-3). Whatever is still later than that fades in (scenery.ts).
  */
-export function readyToStart(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean, ms = 900): Promise<void> {
+export function readyToStart(cfg: Cfg, canvas: HTMLCanvasElement | null, live: () => boolean, ms = 900, backMs = BACKDROP_WAIT_MS): Promise<void> {
   if (typeof Image === 'undefined' || !preloadEnabled()) return Promise.resolve();
   let started = false;
-  return Promise.race([
-    preloadStage(cfg, canvas, () => started || live()),
-    new Promise<void>((r) => setTimeout(r, ms)),
+  const wait = (p: Promise<void>, t: number) => Promise.race([p, new Promise<void>((r) => setTimeout(r, t))]);
+  return Promise.all([
+    wait(preloadStage(cfg, canvas, () => started || live()), ms),
+    wait(backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg)), backMs),
   ]).then(() => {
     started = true;
   });

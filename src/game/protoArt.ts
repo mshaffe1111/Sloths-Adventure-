@@ -352,18 +352,40 @@ export function drawCurtainArt(ctx: CanvasRenderingContext2D, x: number, y: numb
   return true;
 }
 
-const topCache = new Map<string, number>();
 /**
- * Where the solid top of a painted piece starts, as a share of its height: the first row the picture fills across most of its
- * width. A branch painting carries a bromeliad and moss tufts above the bark, so lining the picture's top edge up with the walkable
- * top left Pokey standing on the air above the log (Matt, 2026-10-23). Measured once per picture; each world's kit has its own.
+ * Where a painted piece's solid top starts (`top`, a share of its height), the share of its width that row covers (`l` to `r`), and the
+ * widest the body below it runs (`L` to `R`: a plank seen a little from above is a deck, its top edge narrower than its front edge)
  */
-function solidTop(n: Name, fallback: number): number {
+export interface PaintSpan { top: number; l: number; r: number; L: number; R: number }
+/**
+ * The solid top of a picture from its alpha (w x h, RGBA): the first row it fills across most of its width, and where that row's
+ * paint starts and ends; and the widest the body below runs (rows filled across a third of the width or more). Null when no row is full.
+ */
+export function paintSpan(a: ArrayLike<number>, w: number, h: number): PaintSpan | null {
+  let out: PaintSpan | null = null;
+  for (let y = 0; y < h; y++) {
+    let n = 0, l = -1, r = -1;
+    for (let x = 0; x < w; x++) {
+      if (a[(y * w + x) * 4 + 3] <= 40) continue;
+      n++;
+      if (l < 0) l = x;
+      r = x + 1;
+    }
+    if (!out) {
+      if (n > w * 0.6) out = { top: y / h, l: l / w, r: r / w, L: l / w, R: r / w };
+    } else if (n > w / 3) {
+      out.L = Math.min(out.L, l / w);
+      out.R = Math.max(out.R, r / w);
+    }
+  }
+  return out;
+}
+const spanCache = new Map<string, PaintSpan | null>();
+function measure(n: Name): PaintSpan | null {
   const { img, f } = frameOf(n);
   const key = `${img.src}#${n}`;
-  const hit = topCache.get(key);
-  if (hit !== undefined) return hit;
-  let v = fallback;
+  if (spanCache.has(key)) return spanCache.get(key)!;
+  let v: PaintSpan | null = null;
   try {
     const c = document.createElement('canvas');
     const w = Math.min(160, f.w), h = Math.round((f.h * w) / f.w);
@@ -371,20 +393,53 @@ function solidTop(n: Name, fallback: number): number {
     c.height = h;
     const g = c.getContext('2d', { willReadFrequently: true })!;
     g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, w, h);
-    const a = g.getImageData(0, 0, w, h).data;
-    for (let y = 0; y < h; y++) {
-      let n2 = 0;
-      for (let x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] > 40) n2++;
-      if (n2 > w * 0.6) { v = y / h; break; }
-    }
+    v = paintSpan(g.getImageData(0, 0, w, h).data, w, h);
   } catch {
-    /* no canvas to measure on: the measured share for World 1's branch */
+    /* no canvas to measure on */
   }
-  topCache.set(key, v);
+  spanCache.set(key, v);
   return v;
 }
+/**
+ * Where the solid top of a painted piece starts, as a share of its height: the first row the picture fills across most of its
+ * width. A branch painting carries a bromeliad and moss tufts above the bark, so lining the picture's top edge up with the walkable
+ * top left Pokey standing on the air above the log (Matt, 2026-10-23). Measured once per picture; each world's kit has its own.
+ */
+function solidTop(n: Name, fallback: number): number {
+  return measure(n)?.top ?? fallback;
+}
 
-/** a branch you land on: whole, creaking (a timer is running), or snapped (the halves fall away for a second) */
+/** one slice of a picture drawn into a box: from share `sx` of its width, `sw` wide, to x `dx`, `dw` wide */
+export interface Slice { sx: number; sw: number; dx: number; dw: number }
+/**
+ * How a branch picture (fw x fh, drawn h tall) is laid along a collider, so its painted ends sit on the collider's ends. (QA 2026-10-29,
+ * 2-6 ?layout=7: Pokey stood a few px past a plank's end, in the air. World 2's plank is a deck seen a little from above: its top edge
+ * runs over 15-87% of the picture, its front edge the whole width. Stretched edge to edge on the collider, the top edge, where his feet
+ * are drawn, ended 20-90 px short of each end; fitted to the top edge instead, the front edges ran 40-60 px past and closed the 55-85 px
+ * hop gaps on screen.) The two ends keep their painted shape (drawn at the picture's own scale, h / fh, whatever the plank's length:
+ * stretched, a long plank's slanted end grew with it) and only the middle stretches; the collider's end sits halfway along the slant,
+ * between the top edge and the front edge, so at the end he stands on the slant and a hop gap shows (about 13 px of slant each side
+ * on World 2's plank). With no measure, the whole picture as before, 6 px past each end.
+ */
+export function branchSlices(p: Pick<Platform, 'x' | 'width'>, span: PaintSpan | null, fw: number, fh: number, h: number): Slice[] {
+  if (!span) return [{ sx: 0, sw: 1, dx: p.x - 6, dw: p.width + 12 }];
+  const k = (fw * h) / fh; // px drawn per share of the picture's width, at its own scale
+  const mL = (span.l + span.L) / 2, mR = (span.r + span.R) / 2;
+  const cL = Math.min(0.35, span.l + 0.03), cR = Math.min(0.35, 1 - span.r + 0.03);
+  const x0 = p.x - mL * k, x1 = p.x + p.width + (1 - mR) * k;
+  const mid = x1 - cR * k - (x0 + cL * k);
+  if (mid < 0.1 * (1 - cL - cR) * k) {
+    // (a plank too short for its two ends at their own size: the whole picture, the slant's middle on the collider's ends)
+    const w = p.width / Math.max(0.3, mR - mL);
+    return [{ sx: 0, sw: 1, dx: p.x - mL * w, dw: w }];
+  }
+  return [
+    { sx: 0, sw: cL, dx: x0, dw: cL * k },
+    { sx: cL, sw: 1 - cL - cR, dx: x0 + cL * k, dw: mid },
+    { sx: 1 - cR, sw: cR, dx: x1 - cR * k, dw: cR * k },
+  ];
+}
+
 export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state: 'whole' | 'creak' | 'snapped', since: number): boolean {
   if (!protoArtReady()) return false;
   const f = frameOf('branch').f;
@@ -411,7 +466,9 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
     ctx.restore();
     return true;
   }
-  blit(ctx, name, p.x - 6, y, p.width + 12, h);
+  const { img, f: fr } = frameOf(name);
+  // (each slice 0.5 px wider, so no hairline of background shows between them)
+  for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c.sx * fr.w, fr.y, c.sw * fr.w, fr.h, c.dx, y, c.dw + 0.5, h);
   return true;
 }
 
@@ -437,30 +494,107 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
   return { start: from + skip * step, end: Math.min(to, x1) };
 }
 
+/**
+ * The part of a world's bank piece that tiles cleanly (source pixels, from the piece's own corner). World 6's piece ends in a grey stone
+ * slab (its bottom 60 rows, saturation 0.06 against 0.34 for the soil), which drew as a grey seam along every bank; World 5's has darker
+ * columns at both ends (brightness 71 against 90 in its middle), a vertical step at every join in 5-7 (polish report VI-7). Measured
+ * on kits/w5.webp and kits/w6.webp.
+ */
+const BANK_CROP: Record<number, { x0?: number; x1?: number; h?: number }> = { 5: { x0: 14, x1: 546 }, 6: { h: 296 } };
+/** the same for the bank's end piece: World 6's carries the slab in its bottom 43 rows */
+const BANK_END_ROWS: Record<number, number> = { 6: 322 };
+/**
+ * Worlds whose bank piece is made to repeat with no join (its right end crossfaded over SEAM_BAND source columns into its left end,
+ * baked once): World 5's crack lines stop at different heights at the two ends, so every join showed as a vertical seam in 5-7.
+ */
+const SEAMLESS_BANK = new Set([5]);
+const SEAM_BAND = 60;
+const seamlessBanks = new Map<number, HTMLCanvasElement | null>();
+function seamlessBank(img: HTMLImageElement, f: ProtoFrame, world: number): HTMLCanvasElement | null {
+  if (seamlessBanks.has(world)) return seamlessBanks.get(world)!;
+  let out: HTMLCanvasElement | null = null;
+  try {
+    const w = Math.round(f.w - SEAM_BAND), h = Math.round(f.h);
+    out = document.createElement('canvas');
+    out.width = w;
+    out.height = h;
+    const g = out.getContext('2d')!;
+    g.drawImage(img, f.x, f.y, w, h, 0, 0, w, h);
+    // the right end, fading out from the join, over the start of the left end
+    const end = document.createElement('canvas');
+    end.width = SEAM_BAND;
+    end.height = h;
+    const e = end.getContext('2d')!;
+    e.drawImage(img, f.x + w, f.y, SEAM_BAND, h, 0, 0, SEAM_BAND, h);
+    e.globalCompositeOperation = 'destination-in';
+    const grad = e.createLinearGradient(0, 0, SEAM_BAND, 0);
+    grad.addColorStop(0, 'rgba(0,0,0,1)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    e.fillStyle = grad;
+    e.fillRect(0, 0, SEAM_BAND, h);
+    g.drawImage(end, 0, 0);
+  } catch {
+    out = null;
+  }
+  seamlessBanks.set(world, out);
+  return out;
+}
+
 /** a bank of earth: the painted top edge repeated along it, the end caps where it drops away; `view`: only what is on screen */
 export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number }): boolean {
   if (!protoArtReady()) return false;
   if (!moss) drawGroundFill(ctx, p, viewBottom, view);
   const n: Name = moss ? 'mossStrip' : 'bank';
-  const f = frameOf(n).f;
+  const { img, f: full } = frameOf(n);
+  // (a world whose bank piece does not tile cleanly as painted uses only the part that does: BANK_CROP)
+  const crop = !moss && kitWorld !== 1 && KIT_FRAMES[kitWorld]?.bank ? BANK_CROP[kitWorld] : undefined;
+  const f = crop
+    ? { x: full.x + (crop.x0 ?? 0), y: full.y, w: Math.min(full.w, crop.x1 ?? full.w) - (crop.x0 ?? 0), h: Math.min(full.h, crop.h ?? full.h) }
+    : full;
+  const baked = !moss && crop && SEAMLESS_BANK.has(kitWorld) ? seamlessBank(img as HTMLImageElement, f, kitWorld) : null;
+  const pic: CanvasImageSource = baked ?? img;
+  const sf = baked ? { x: 0, y: 0, w: baked.width, h: baked.height } : f;
   const th = moss ? 46 : 110;
-  const tw = (th * f.w) / f.h;
+  const tw = (th * sf.w) / sf.h;
+  // (a seamless piece repeats edge to edge, overlapping by half a unit; a painted one overlaps by two, so no gap shows at a join)
+  const step = baked ? tw - 0.5 : tw - 2;
   ctx.save();
   ctx.beginPath();
-  ctx.rect(p.x - (open.left ? 26 : 0), p.y - 30, p.width + (open.left ? 26 : 0) + (open.right ? 26 : 0), th + 40);
+  // (a side that meets the next bank runs a unit under it: two clips' soft edges meeting showed the fill through as a hairline)
+  ctx.rect(p.x - (open.left ? 26 : 1), p.y - 30, p.width + (open.left ? 26 : 1) + (open.right ? 26 : 1), th + 40);
   ctx.clip();
-  const { start, end } = stripSpan(p.x - (open.left ? 18 : 0), p.x + p.width + 18, tw, view?.x0, view?.x1);
-  for (let x = start; x < end; x += tw - 2) blit(ctx, n, x, p.y - (moss ? 14 : 18), tw, th);
+  // (the repeat is laid from a fixed point in the world, not from this bank's own left end: two banks side by side carry on one pattern
+  // instead of each starting its own, which left a hard join where they meet; 5-7)
+  const from = p.x - (open.left ? 18 : 0);
+  const { start, end } = stripSpan(Math.floor(from / step) * step, p.x + p.width + 18, step + 2, view?.x0, view?.x1);
+  const y0 = p.y - (moss ? 14 : 18);
+  // (a cropped bank ends in plain soil, a hard line on the fill under it: its last rows fade part way into the fill instead; not all
+  // the way, or the lit bevel of the fill piece under it shows through: VI-8)
+  const fade = crop?.h ? 6 : 0;
+  const fh = fade ? Math.round(sf.h * 0.14) : 0;
+  const ga = ctx.globalAlpha;
+  for (let x = start; x < end; x += step) {
+    ctx.drawImage(pic, sf.x, sf.y, sf.w, sf.h - fh, x, y0, tw, (th * (sf.h - fh)) / sf.h);
+    for (let i = 0; i < fade; i++) {
+      const sy = sf.h - fh + (fh * i) / fade;
+      ctx.globalAlpha = ga * (1 - (0.55 * (i + 0.5)) / fade);
+      ctx.drawImage(pic, sf.x, sf.y + sy, sf.w, fh / fade, x, y0 + (th * sy) / sf.h, tw, (th * fh) / sf.h / fade + 0.5);
+    }
+    ctx.globalAlpha = ga;
+  }
   ctx.restore();
   if (!moss) {
-    const cap = frameOf('bankEnd').f;
+    const { img: capImg, f: capFull } = frameOf('bankEnd');
+    const capRows = kitWorld !== 1 && KIT_FRAMES[kitWorld]?.bankEnd ? BANK_END_ROWS[kitWorld] : undefined;
+    const cap = capRows ? { ...capFull, h: Math.min(capFull.h, capRows) } : capFull;
     const cw = (th * cap.w) / cap.h;
-    if (open.right) blit(ctx, 'bankEnd', p.x + p.width - cw * 0.55, p.y - 18, cw, th);
+    const drawCap = (x: number) => ctx.drawImage(capImg, cap.x, cap.y, cap.w, cap.h, x, p.y - 18, cw, th);
+    if (open.right) drawCap(p.x + p.width - cw * 0.55);
     if (open.left) {
       ctx.save();
       ctx.translate(p.x + cw * 0.55, 0);
       ctx.scale(-1, 1);
-      blit(ctx, 'bankEnd', 0, p.y - 18, cw, th);
+      drawCap(0);
       ctx.restore();
     }
   }

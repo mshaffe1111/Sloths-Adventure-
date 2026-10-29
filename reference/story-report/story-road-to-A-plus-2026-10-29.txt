@@ -1,0 +1,971 @@
+Sloths story: the road to A+
+
+Oct 29, 2026 · @Matt Shaffer
+
+The short answer
+
+The story is a B today against the best story games, and it can be an A+ against indie mobile and an A against story games without changing the plot. The bones are already Pixar-grade: everyone has lost someone, nobody has anyone to blame, slow is set against late, and a grieving grandfather has turned lateness into a crime. What holds it back is how the story is wired, how it sounds, and how little of it you get to play.
+
+This is the final story report. It pulls together part one and part two of the story review in the polish report (SR-1 to SR-43 keep their numbers here), adds what was still missing, and turns it all into one list of edits for the coders. Everything was checked against the script on the test-link branch on Oct 29. The story files there match main, so the line numbers hold. No code was changed.
+
+  ------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Bar                                                                              Today   After the words (steps 1 to 3)   After everything (steps 1 to 10)
+  -------------------------------------------------------------------------------- ------- -------------------------------- ----------------------------------
+  Indie mobile story games (Florence, Old Man's Journey, Alto's Odyssey)           A−      A+                               A+
+
+  Story games of this size (Celeste, Ori, Undertale, Hollow Knight, Paper Mario)   B       A−                               A
+
+  Pixar at its best (Up, Toy Story 3, Inside Out, Coco)                            B−      B+                               A−
+  ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+An honest note on the top bar. A Pixar film is performed by actors and animated frame by frame, so words alone stop at about B+ against it. The last steps there are delivery: sharp pictures, timing, a beat of silence before the big lines, and voices. With those, A− is realistic. A full A+ against Pixar would take a studio, and it isn't the bar that decides whether people love this game.
+
+The eight moves that get it there, biggest first:
+
+1.  Let the three relationships finish face to face. Pokey and Meeca never speak in the finale. Pokey answers Dot's confession to the General, not to her. Flicker never meets Dot. Those three missing exchanges are the main reason the big moments land small.
+
+2.  Fill the holes in the story. The biggest: nobody ever says why the General took Meeca, or why he came that morning. Pokey's parents and who raised him are blanks too. So is a moment where being slow costs something, which is what makes "slow is not stopped" earned instead of just said.
+
+3.  Take out the AI sound. It's mostly rhythm and formula, not word choice. Dot is meant to be the breathless run-on talker, but in the script her sentences are as short as Pokey's. All ten boss scenes follow the same five beats, and too many characters talk in wise one-liners.
+
+4.  Sharpen each character. Dot gets more mothering in the middle worlds. Meeca gets her people-pleasing shown, not just told. The General gets his tough-guy shell (decided). Every guardian gets one beat that breaks the boss template.
+
+5.  Play it like an RPG. Dot comments as you play, the way a party member does. Pokey keeps a journal in his own voice. Side characters come back in later worlds. The garden fills up as you free people. And the game notices what you did.
+
+6.  Hide the rest of the story. Every hidden thing today tells the General's or Grandma's story. Add finds that tell Pokey's, Dot's and the guardians' stories, each one paying off later.
+
+7.  Make the peak something you do. The hand Pokey holds out in the thunder should be the player letting go with one thumb, not a picture.
+
+8.  Deliver it. A table read, a kid test, sharp story art, and short sound barks for each voice.
+
+What's missing
+
+Nine holes, in order of how much they cost the story. The first three are the ones a careful adult notices on a first play. Each comes with drafted lines in the character's voice, and three of them are Matt's call (marked).
+
+1.  Why the General took Meeca, and why that morning. Nobody ever says. The clues are all there: the flower opened for Meeca for the first time since Grandma, the narrator says the thorns sleep while it's open, and the soldiers arrived the same morning. But a player has to work out alone that her flower was undoing his Pact, and nobody ever names the personal reason, which is fear. An RPG villain without a stated motive reads as a plot device. Fix it in three places, each in its own layer:
+
+    -   The public reason, at tea (storyMemories.ts, after 103). Queen: "Her flower puts our thorns to sleep, darling. The morning it opened, his whole Pact started to yawn." Kids get a sleepy thorn; adults get the politics.
+
+    -   The excuse, in the tower (storyMemories.ts, after Meeca's question at 260). Meeca: "Why am I here, Pell?" Pell: "For your safety, Miss. He says so every morning. I think he says it to the mirror first."
+
+    -   The truth, in the finale (storyFinale.ts 89, replacing it). General: "She waited for help, and it came late. So I put you somewhere nobody would ever be late for you." Then "I should have knocked" (90), as it is. Now that line answers something.
+
+2.  Pokey and Meeca's reunion. The whole game is a slow friend coming for her, and they don't say one line to each other in the finale. The drafted scene is in Big moments below.
+
+3.  Being slow never costs anything. Every time Pokey is slow, the story proves him right. That makes "slow is not stopped" a slogan instead of something earned. The best stories let the hero's virtue cost him once. The cheapest place is the gap closing in World 6, which today just happens ("They found the gap and closed it"). Make it the tea (storyWorlds.ts 264, Matt's call):
+
+    -   Dot: "That was the last note I can get out. They sewed the gap shut the night before I got there. One night, Pokey."
+
+    -   Pokey: "We stopped for tea."
+
+    -   Dot: "We stopped for tea."
+
+    -   Then the scene goes on as it is. Now his stop in the sealed-note scene is a real low point: he's sitting with the cost. It also gives the General a line at boss 10: "You stopped for tea, boy. The General counted." Pokey: "Yes, sir. It was very good tea." The answer is a joke, but he means it, which is the whole theme.
+
+4.  Pokey's answer to Dot, to her face. Drafted in Big moments.
+
+5.  Flicker. He guides Meeca in 5-M, says "I was the light" to Pell, and then disappears from the story. Matt's Oct 27 plan (Flicker joins Pokey after Dot leaves, Dot comes back jealous, they make peace before the mountain) is drafted word for word in reference/STORY-REVIEW-2026-10-27.md and was never built. Build it, with the mother's jealousy line in Relationships below.
+
+6.  Pokey's parents (Matt's call). We know they went out on a stormy night and didn't come back, and that Pokey remembers his father's claws on the bark and his mother humming. We never learn what they went out for. My recommendation is the plainest answer: they were out gathering, like every evening, and the storm turned early. Nothing heroic, nobody's fault. That's exactly what Grandma's letter says about her own death ("It was only weather"), so the theme holds for both families. Show them once, without words: one of Matt's large painted backgrounds behind the singing-storm memory (storyMemories.ts 135 to 136), two sloths on the far branches with the sky turning. Give them one find too (the growth-notch twig, under Collectibles).
+
+7.  Who raised Pokey. He was a cub when his parents died, and the game never says who took him in. The scenes suggest Grandma's garden half-raised him: he's there watering the fern as a cub, and he knows her door. Make it one line in the garden memory (storyMemories.ts, after 83). Grandma: "You're staying for supper, Pokey. You always are." That makes Grandma his loss too, so when he forgives the lateness that killed her, it's his own grief he's letting go of.
+
+8.  The argument the General can't win. The Cast Bible names it: Pokey is the one person with a real reason to blame lateness, and he doesn't. The game never stages it. One exchange at boss 10 does (storyBosses.ts, after 181). Pokey: "I've had a long time to work out who to blame, sir. It was a storm." General: "The General does not lose twice." The shell slams shut because he has no answer.
+
+9.  The forest, and everyone in it, after. We're told the forest is fading (cloudy water, unkind rivers) but never see it fade or heal. And only the Queen, the Golem and Pell get an ending; the other seven guardians, the squirrels, Gruntlewick and the mailman mostly don't. RPGs end with a card for everyone you met. That's covered under Playing it like an RPG.
+
+Two things I'd leave unsaid. Meeca's parents: a third set of lost parents would make the forest feel like a sad place, and the grandparents are the point. Make sure no line contradicts that. And the Pact's magic stays as simple as it is: thorns, collars, a horn, and a song that puts them to sleep. Kids don't need more rules, and adults enjoy filling it in.
+
+Getting rid of the AI sound
+
+The AI sound isn't in the words. It's in six patterns that repeat until a reader can feel the machinery under the scene. I measured them across the five story files: about 11,000 words in 694 lines. Any one of them alone is fine, and good writers use all of them. It's the stacking that readers notice.
+
+1. Everybody talks in the same short rhythm. This is the biggest one. The Cast Bible says Dot is "long, breathless and escalating" and Pokey is "quick, flat and short". In the script they sound the same:
+
+  -----------------------------------------------------------------------------------------------------------------------------------------
+  Voice         Typical sentence   Sentences of 6 words or fewer   Should be
+  ------------- ------------------ ------------------------------- ------------------------------------------------------------------------
+  Pokey         4 words            83% (90% in boss scenes)        Right. Short and dry is him.
+
+  The General   2 to 3 words       97%                             Right. Clipped is him.
+
+  Dot           4 words            68%                             Wrong. She's the run-on.
+
+  Meeca         4 words            70%                             Too short. She's a warm host who asks questions and talks over people.
+
+  Narrator      9 words            29%                             Fine, but even. Let one sentence per scene run long and loose.
+  -----------------------------------------------------------------------------------------------------------------------------------------
+
+Dot's long speeches are built from short sentences stuck together ("I know what I said. I know what I said."). Someone who rambles doesn't use full stops. She uses "and" and commas, and she interrupts herself. The fix: in every scene she's in, give Dot one real run-on sentence. When she goes short, it should mean something is wrong, which is exactly how the Cast Bible says her silence works.
+
+2. One template for ten bosses. Every boss scene runs the same five beats: a taunt about how slow he is, Pokey's dry comeback, the fight, wounded pride with a second comeback, then the guardian softens and points the way north. Fifteen lines in the boss file have a laugh sting under them, nearly all of them Pokey's comebacks, and there are 54 across the story. That's a laugh track. Five guardians end by giving directions, like quest-givers, when the petal on Pokey's wrist already points north. Fix: break the template in at least four bosses (each is listed in Character by character), cut four of the five direction lines, and keep one laugh sting per scene, on the line that needs the help.
+
+3. Too many wise sayings. The game has nine or ten lines that could go on a poster: "Slow isn't stopped", "It's only weather", "Peace is mostly paperwork", "Be patient with the slow ones. They always arrive", "Fast people are the ones who arrive in time", "That's all I ever do. Then the one after", "You're the one who stops", and the secret token's "Be slow with him. He has been fast for far too long." When everyone is wise, it sounds like one writer being wise through all of them. Fix: Grandma owns the wisdom, and hers always comes attached to a fern, a kettle or a bell. The General's sayings stay, because they're the wrong belief the story argues with. Everyone else says the plain or the wrong version.
+
+4. Every line is a setup or a punchline. Exchanges are clean: a question, a perfect answer, a button. Real people talk past each other, guess wrong, and say things that go nowhere. Fix: in each scene, allow one line that isn't a joke and isn't plot, just someone being a person. The script already has a few, and they're among its most human moments: "Is this branch taken?", "I checked it with my face", "Thanks for not interrupting".
+
+5. The narrator tidies up. "Didn't say anything" or "said nothing" seven times, "for a long time" six times, 33 narrator sentences starting with "Then", "nobody" 23 times, "both hands" eight times. Each closes a scene with a little bow. Fix (SR-1 and SR-3): at most one narrator button in every three scenes, "for a long time" twice in the whole game, "nobody" under ten, and "both hands" only where the finale needs it.
+
+6. Every note has the same shape. "Pokey," then a funny or brave paragraph, then "Love, M.", and five of the ten have a P.S. joke. Real letters change shape with the writer's mood, and Meeca's state is the whole point of her notes. Fix: let the shape show how she's doing. One note crossed out and started again. One cut off mid-sentence when the guard comes. One that's only a drawing. The sealed note's handwriting, falling off the end of every line, is already the model.
+
+Before and after, a sample (the full list is in Line edits):
+
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where                           Now                                                                                                                  After                                                                                                                                                                                                                                                              What changed
+  ------------------------------- -------------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -------------------------------------------------------------------
+  storyWorlds.ts 60, Dot          "I know what I said. I know what I said. And I said don't you go anywhere without me, and here you are. Going."      "I know what I said, I know, and I also said don't you go anywhere without me, and I come back and here you are, going, at your speed, which is barely going, but it's the principle."                                                                             One breath instead of four full stops. That's her.
+
+  storyWorlds.ts 133 to 134       Pokey: "She wants me to be nice to the ones trying to bite me." Dot: "That's her whole thing. Mostly it works."      Pokey: "She wants me to be nice to the snake." Dot: "She was nice to a wasp once. Now it visits. It brings friends."                                                                                                                                               The characters stop summing up the theme; a story does the work.
+
+  finds.ts, World 10 note         "Whenever you get here, you were never too slow. Everybody else always hurried past me. You're the one who stops."   "Pokey, I've started this four times. The first three were too long, and you'd have stopped to read them halfway up a cliff. Come and get me. Bring snacks." Keep her P.S. as it is, then: "P.P.S. You were never too slow. Everybody else was just in a hurry."   The true thing moves to the P.P.S., where people actually put it.
+
+  finds.ts, secret token          "He will tell you he is not sorry. He is only afraid. Be slow with him. He has been fast for far too long."          "To whoever was patient enough to find this. Plant the seed by his window. He won't stop for a flower. He'll stop for a weed he can't name. Be slow with him."                                                                                                     Grandma teaches with a plant, never a moral.
+
+  storyBosses.ts 41, Venom Fang   "...She went north, toward the river. She thanked me too..."                                                         Cut "She went north, toward the river."                                                                                                                                                                                                                            The petal points north. The thank-you is the line that matters.
+
+  finds.ts, World 9 note          Ends "P.S. Tell Dot the bars aren't getting any wider. Love, M."                                                     Keep the P.S., then add a P.P.S. that stops mid-sentence, with no sign-off: "P.P.S. Somebody's on the stairs. It isn't Pell. I have to"                                                                                                                            The first note she can't finish. It's a scare, and it's human.
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Rules for anyone writing a new line, the Worlds 7 to 10 pass included:
+
+-   Read it out loud. If a good actor would refuse to say it, rewrite it.
+
+-   The swap test: if another character could say it and nothing changes, it isn't finished.
+
+-   Never describe what the picture already shows.
+
+-   Only the General counts, and Meeca's tally. Nobody else's jokes use numbers.
+
+-   One wise line per act, and it's Grandma's.
+
+-   End two scenes out of three on dialogue, not the narrator.
+
+-   Dot gets one real run-on per scene. When she's short, something's wrong.
+
+-   Every scene has one laugh a six-year-old gets without reading, and one line that's just a person being a person.
+
+-   Banned: "both hands" (except the finale), "something enormous", "for a long time", "Nobody saw", and a guardian giving directions.
+
+Character by character
+
+Matt's definitions come first, then what's on screen, then what an A+ version needs and the exact edits. A character is A+ when you'd know their line with the name covered, and when they want something, hide something and change by the end.
+
+Pokey: a smart-aleck, but good-hearted
+
+On screen he's on model from the first line to the last: quick, flat jokes aimed at himself, polite words for bad news, and kindness that shows in what he notices (four bowls of the wrong soup). Two things keep him from A+. He's sometimes the straight man while Dot gets the jokes, and his flaw never costs him anything. His real flaw isn't slowness, it's that he jokes his way around hard conversations. So his arc should end with him having the two conversations he's been avoiding, one with Dot and one with Meeca.
+
+-   Give him the comeback where Dot fusses. After storyWorlds.ts 55 (Dot: "Don't move. Don't you move."), Pokey: "Historically, not a problem."
+
+-   Let slowness cost once: the tea closes the gap (What's missing, 3).
+
+-   Give him the argument the General can't win at boss 10 (What's missing, 8).
+
+-   Night-Wing Monarch, storyBosses.ts 147: "I hope I said something nice." (SR-31)
+
+-   Magma Drake, storyBosses.ts 168: "You sound terrible. Have some water. Actually, don't." (SR-32)
+
+-   His two straight lines are in Big moments: "You can sit down now" to Meeca, and "And you came back every time. I was counting" to Dot. Neither has a joke in it. That's the payoff the Cast Bible promises: "by the end he says one true thing with no joke attached."
+
+Meeca: has to get people to like her, does what people want
+
+She's well built in her notes and in the best scene in the game, "No. You don't get to say that yet." What's thin is that we hear about her people-pleasing in her angry speech more than we see it cost her. She also has a quiet arc nobody made on purpose: she thanks Pell for a blanket she didn't ask for (World 5), refuses the pillow (World 8), and says "No" to her grandfather (finale). Build that on purpose.
+
+-   Make sure she never says a plain "no" to anyone before World 8.
+
+-   Add the soup note, funny and sad at once, as the World 6 note's first paragraph (finds.ts, w6_note) or a new note: "Pokey, I told Pell the soup was lovely. It was not lovely. Now he brings it every day, and every day I say it's lovely. I don't know how to stop." Kids laugh at the soup; adults see the trap. Her finale line "I ate all of it. I said thank you every time" then lands as a payoff.
+
+-   Let her notes change shape with her mood (AI sound, pattern 6). World 7's note starts with "I'm fine" crossed out, then "I'm tired." World 9's breaks off mid-sentence when someone who isn't Pell comes up the stairs.
+
+-   In her own stage, give her flavor and keep the tips short (SR-18): "Too high. A chair! Somebody thinks of everything." and "A rope. Test it first, Grandma says. Testing."
+
+-   The reunion and the bush line with Dot are in Big moments and Relationships.
+
+Dot: motherly, almost Pokey's second mother
+
+She reads motherly in bursts (the prologue, World 1, the ledge in World 4), then mostly anxious and comic through the middle, gone for World 7, and her ten-world payoff is Pokey saying "Okay." Her confession in World 10 is excellent. The fix has four parts.
+
+-   Her rhythm. One real run-on per scene (AI sound, pattern 1). Rewrite storyWorlds.ts 60 as shown there; 255: "That's worse, that's so much worse, I'm fine, I've backed up about nine feet, I'm going to stay over here and be fine from a distance!"; 336: "I'm not humming. I'm vibrating. Humming is on purpose." (SR-21); 367: "Pokey, you've been quiet since the lava, which is long even for you, and you're doing the thing with your eyebrow." (SR-23)
+
+-   Mothering acts, not just words, spread through the middle. World 3, before the dark (after storyWorlds.ts 143): "Have you got everything? Petal? Satchel? Ears?" World 4, at the Sky Sovereign (storyBosses.ts, after 82): "He's very polite, he gets that from me, I mean he doesn't, I'm a bird, but he gets it from me." At tea (storyMemories.ts, after 96): "Sip. Don't gulp. She's watching you gulp." World 8, back from the net (storyWorlds.ts 316, before her news): "Never mind me, look at you, you've lost weight, have you been eating, you haven't, I can tell from here." That last one calls back her very first worry in the prologue ("Have you been eating?"), so the mother comes back when she does.
+
+-   A mother's jealousy, not a rival's, with Flicker (Relationships).
+
+-   Her payoff. The finale exchange (Big moments), and if the player found all of her lost pocket, The Notch (Collectibles).
+
+One fix outside the game: the Cast Bible calls Dot "he" throughout. She's "she" in the game and in VOICE.md, and the Bible should match. Add one line to her entry too: it started as penance and became love.
+
+The General: a tough guy who cracks and turns back into who he was (decided)
+
+The full plan is in part two of the polish report: in public he calls himself "the General", never "I"; the cracks show in private (the spoons, the door) and once in public, at boss 10 ("I find that I mind"); and the turn back is the man in the photo books, who retires and plants trees by the river. About a dozen lines, starting with "The General does not knock." This report adds three:
+
+-   His motive, in the finale, replacing storyFinale.ts 89: "She waited for help, and it came late. So I put you somewhere nobody would ever be late for you."
+
+-   The cost of the tea, at boss 10 (after storyBosses.ts 179): "You stopped for tea, boy. The General counted." Pokey: "Yes, sir. It was very good tea."
+
+-   "The General does not lose twice" moves to right after Pokey's new line about the storm, so the shell slams shut because he has no answer.
+
+Flicker: short, dry, earnest, holds his ground, and guilty
+
+He's a D today because, in Pokey's story, he doesn't exist. Build Matt's Oct 27 plan as written. Then give him what every other character has, a physical tell kids can watch for: his light stutters when he isn't telling the whole truth. It pays off twice. When he first meets Pokey and says he's "just passing", his light stutters. And at the gate, when Dot says "Flicker, stay with him" and he says "I will", it holds perfectly steady. Add his entry to the Cast Bible (he/him, short and dry, earnest, guilty about the one tree his light led Meeca to).
+
+Pell, Grandma, and the people around them
+
+-   Pell is the best supporting character in the game. Protect him. His one addition is the "For your safety, Miss" line (What's missing, 1).
+
+-   Grandma is perfect, because every line is attached to a thing. Add "You're staying for supper, Pokey. You always are." (What's missing, 7) and fix the secret token so it sounds like her (AI sound).
+
+-   The two soldiers who never spotted Dot ("Is that a hummingbird?" "Where?") are a gift. Bring them back twice: at the open gates, still not seeing her, and in the weeks after as Pell's first customers.
+
+-   The squirrels ("North! At that speed? See you next year!") never see him come home. In the weeks after, give them one line: "Back already?"
+
+-   Gruntlewick and the mailman already pay off beautifully. Leave them alone.
+
+The guardians
+
+Each is one of the General's old council, and the Cast Bible gives each one a small thing they want. Today their scenes all run the same template (AI sound, pattern 2). Break it for the ones marked, so the bosses stop feeling generated:
+
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Guardian               What they want                           Change
+  ---------------------- ---------------------------------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  1 Venom Fang           To be asked, not ordered                 Cut "She went north, toward the river." Add at the end of his defeat, Pokey: "May I go past now?" Venom Fang: "You asked. Nobody asks." Breaks the template: Pokey wins him by manners.
+
+  2 Crocus Rex           To be admired                            None. He's the template done right (the crooked crown).
+
+  3 Shadow Prowler       Someone who stays still with him         His ending card: he sits on the ledge every evening, and once a week Pokey sits with him. Neither says anything.
+
+  4 Sky Sovereign        To be known as honest                    Cut "Take the wind lane to the orchids, and". Keep the warning about the collars.
+
+  5 Tarantula Queen      A guest who stays and finishes the cup   Already different (tea, not directions). Add the motive line (What's missing, 1). Fix "Fifty years of silk" (SR-29).
+
+  6 Marsh Reaver         Lunch, and not to be the scary one       Cut his directions. Replace them with an action and no words: "When Pokey looked back, the Reaver had left half his lunch on a root, facing the path. He was pretending he hadn't." Breaks the template: he never softens out loud.
+
+  7 Stone Idol Golem     Someone who will wait back               Keep his scenes. Finish his sentence in the weeks after (SR-35).
+
+  8 Night-Wing Monarch   To hear how a dream ends                 Cut "Then take the lava road." Her question about the dream is already a template break. Pay it off in her ending card: Pokey goes back and tells her the end.
+
+  9 Magma Drake          Tea and company                          Keep. Pay off his "Bring tea. Two cups." in his ending card: Pokey and Meeca come, with two cups, and he has tidied.
+
+  10 The General         To never lose anyone again               Decided (above).
+
+  Thornbark              To hear he was right to refuse           Rewrite in his own formal voice with one dry joke (SR-30).
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Relationships
+
+A story's big moments are the ends of relationships, so each relationship needs a setup, a middle and a scene where the two people finish it face to face. Three of the main ones are missing their last scene.
+
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Relationship            Now                                                        What it needs
+  ----------------------- ---------------------------------------------------------- ----------------------------------------------------------------------------------------------------------------
+  Pokey and Meeca         Built beautifully in memory, never finished                The reunion scene (Big moments). Setup in the middle: his one message to her, the Under the Ruins note.
+
+  Pokey and Dot           The spine of the game, payoff goes to the wrong listener   His answer to her face (Big moments). Trim boss 10 so the General gets the facts and Dot gets the forgiveness.
+
+  Dot and Flicker         Never meet                                                 Matt's Oct 27 plan, with a mother's jealousy (below).
+
+  Dot and Meeca           A running joke (the bush) that never pays off              One exchange in the weeks after (below).
+
+  Meeca and the General   The best in the game                                       Protect it. Trim the keepsake parade so it doesn't become a list. Add his motive line.
+
+  Pokey and the General   Quietly strong                                             Add the storm line and the tea line at boss 10. Keep "It was a good door, sir. It fit" and the medal.
+
+  Dot and the General     The letter, "Courier. Sit."                                Protect it.
+
+  Meeca and Pell          Lovely                                                     Protect it. Add "For your safety, Miss."
+
+  Pokey and Grandma       Two memories and a vision                                  Add the supper line, so she was family to him too.
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Dot and Flicker. Build the Oct 27 plan as drafted (reference/STORY-REVIEW-2026-10-27.md, items 7 to 10): Flicker arrives as Dot leaves in World 6, lights Pokey's way through World 7, and Dot comes back in World 8 to find someone else on Pokey's satchel strap. Make the jealousy a mother's. At their first meeting, Dot: "I've been doing this his whole life. You've been doing it since a mangrove." Flicker: "Then you'll know where he keeps the snacks." Kids get a squabble; adults get a mother meeting the new babysitter. Their peace comes the night before the mountain, when Flicker tells her his light led Meeca one tree from freedom and Dot hears her own guilt in him. At the gate she hands him the job she was jealous of. Dot: "Flicker, stay with him." Flicker: "I will." His light doesn't stutter.
+
+Dot and Meeca. Meeca's notes tease Dot about the bush three times ("tell her I saw her in that bush", "Ask Dot what I put in her bush", "Tell Dot the bars aren't getting any wider"), and the two never speak after the prologue. In the weeks after (storyFinale.ts, after 141): Meeca: "Was it a nice bush?" Dot: "It was the best bush, it was a really excellent bush, I've been back, I sit in it sometimes, it's very calming." One line for each, and a running joke closes for kids and adults at once.
+
+Line edits, before and after
+
+This is the whole list in script order, so a coder can open one file and work down it. Line numbers are from the current story files. Where a fix was already written out in the polish report, the row points to its SR number instead of copying it. "New" means a line that doesn't exist yet. "Cut" means delete it and leave nothing in its place.
+
+Prologue (storyIntro.ts)
+
+  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where            Now                                                                         Change to                                                                   Why
+  ---------------- --------------------------------------------------------------------------- --------------------------------------------------------------------------- -----------------------------------------------------------------------------------------------------------------------
+  New, before 58   nothing                                                                     GEN "The General does not knock." Meeca "It's a garden. There's no door."   Sets up his third-person voice and her backbone in one exchange, and pays off at finale 90 ("I should have knocked").
+
+  59               "Excuse me? You're standing in my garden. And you're blocking my flower."   "Excuse me? You're blocking my flower."                                     Half the words, twice the attitude.
+
+  New, after 64    nothing                                                                     GEN "The General has flattened forts for less."                             He needs one real threat early or the ending has nothing to turn from.
+
+  72               "Him? Save you? He's too slow..."                                           Keep, then add "Nothing slow has ever reached the General."                 Plants the line Pokey disproves at the gates.
+  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 1 (storyWorlds.ts)
+
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where           Now                                           Change to                                                                                                                                                                                Why
+  --------------- --------------------------------------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------
+  52              "held it in both hands"                       "held it like it might wake up"                                                                                                                                                          First of eight "both hands". Keep the one at 386.
+
+  New, after 55   Dot "Don't move. Don't you move."             Pokey "Historically, not a problem."                                                                                                                                                     Pokey's dry streak, shown on page one.
+
+  60              "I know what I said. I know what I said..."   "I know what I said, I know, and I also said don't you go anywhere without me, and I come back and here you are, going, at your speed, which is barely going, but it's the principle."   Dot talks in run-ons. This is her voice from her first real line.
+
+  72              "Pokey didn't say anything to that."          Cut                                                                                                                                                                                      Narrator explaining a silence the art already shows.
+
+  76              "...Then he put it in the satchel."           Cut the last sentence                                                                                                                                                                    The satchel button repeats 16 times. Let the player see it go in.
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 2
+
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where          Now                                                                                                     Change to                                                                                                            Why
+  -------------- ------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------
+  113            "something long and dark..."                                                                            SR-8                                                                                                                 Vague-monster narration.
+
+  130 to 131     the collar lines                                                                                        SR-9                                                                                                                 Tighter, and the collar matters later.
+
+  133 to 134     "She wants me to be nice to the ones trying to bite me." / "That's her whole thing. Mostly it works."   Pokey "She wants me to be nice to the snake." Dot "She was nice to a wasp once. Now it visits. It brings friends."   A real joke with a picture in it instead of a summary of Meeca's personality.
+
+  135            foot tapping                                                                                            Cut                                                                                                                  Filler beat.
+
+  W2 mid scene   nothing                                                                                                 Dot "What's in the pouch?" Pokey "It's a thing. It isn't for you."                                                   Moves the pouch setup earlier so it has three worlds to sit.
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 3 and the first memory
+
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where                        Now                                                          Change to                                                                 Why
+  ---------------------------- ------------------------------------------------------------ ------------------------------------------------------------------------- -----------------------------------------------------------------------------
+  New, after storyWorlds 143   "Dim and steady. Fine. Don't let go of me."                  Dot "Have you got everything? Petal? Satchel? Ears?"                      Dot mothers by checklist. One of four small acts that make her ending land.
+
+  150                          "something shifted its weight"                               SR-11                                                                     Same vague-monster habit.
+
+  storyMemories 64             ledge, both hands                                            "Pokey grabbed the ledge."                                                Plain verb, and it frees "both hands" for the thunder.
+
+  storyMemories 83 to 85       "since Tuesday" / "It's Thursday" / "Nobody saw it happen"   SR-15, then Grandma "You're staying for supper, Pokey. You always are."   Answers who raised him without a speech.
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 4 and Boss 4
+
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where                       Now                                                                 Change to                                                                                              Why
+  --------------------------- ------------------------------------------------------------------- ------------------------------------------------------------------------------------------------------ -------------------------------------------------------------------
+  storyWorlds 183             "The Prowler said sorry. Twice."                                    SR-12                                                                                                  Counting for a laugh in the one moment that shouldn't get one.
+
+  184                         "Both hands."                                                       Cut                                                                                                    
+
+  186                         the horn line                                                       SR-13                                                                                                  
+
+  195                         "She started it at breakfast..."                                    SR-14                                                                                                  
+
+  210                         satchel button                                                      Cut                                                                                                    
+
+  New, after storyBosses 82   "Slowly."                                                           Dot "He's very polite, he gets that from me, I mean he doesn't, I'm a bird, but he gets it from me."   Dot bragging about him in front of a guardian. Mothering act two.
+
+  storyBosses 91              "Take the wind lane to the orchids, and watch the next collar..."   Cut "Take the wind lane to the orchids, and"                                                           One of the five guardians who hand out directions.
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 5, the tea memory and Boss 5
+
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where                          Now                              Change to                                                                                                      Why
+  ------------------------------ -------------------------------- -------------------------------------------------------------------------------------------------------------- ----------------------------------------------
+  storyWorlds 221                the hairpin line                 SR-16 (the spoon)                                                                                              
+
+  234                            "You keep checking that pouch"   "You're still checking that pouch."                                                                            Calls back to the World 2 setup.
+
+  239                            "Slow isn't stopped"             SR-17                                                                                                          The poster line.
+
+  246                            button                           Cut                                                                                                            
+
+  New, after storyMemories 96    "Pokey drank the whole cup."     Dot "Sip. Don't gulp. She's watching you gulp."                                                                Mothering act three.
+
+  New, after storyMemories 103   the Queen's Pact story           Queen "Her flower puts our thorns to sleep, darling. The morning it opened, his whole Pact started to yawn."   Motive layer one: why he wants Meeca at all.
+
+  storyMemories 105              both hands                       "He held the cup until it went cold."                                                                          
+
+  storyBosses 104                "Fifty years of silk"            SR-29                                                                                                          
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 6 and Boss 6
+
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where                Now                                                                           Change to                                                                                                                                                                   Why
+  -------------------- ----------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ----------------------------------------------------------------------
+  storyWorlds 255      "That's worse. I'm fine..."                                                   "That's worse, that's so much worse, I'm fine, I've backed up about nine feet, I'm going to stay over here and be fine from a distance!"                                    Run-on Dot.
+
+  264                  "That was the last note I can get out. They found the gap and closed it..."   Dot "That was the last note I can get out. They sewed the gap shut the night before I got there. One night, Pokey." Pokey "We stopped for tea." Dot "We stopped for tea."   The one place slowness costs something. Matt's call to keep or drop.
+
+  269                  feathers counted                                                              SR-19                                                                                                                                                                       
+
+  w6 note (finds.ts)   letter to Grandma                                                             Meeca "Pokey, I told Pell the soup was lovely. It was not lovely. Now he brings it every day, and every day I say it's lovely. I don't know how to stop."                   Meeca being funny and trapped by her own manners, in her voice.
+
+  storyBosses 120      Reaver directions                                                             Cut, replace with narration "When Pokey looked back, the Reaver had left half his lunch on a root, facing the path. He was pretending he hadn't."                           Shows the Reaver softening instead of handing out a map.
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 7
+
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where               Now                      Change to                                                                                                      Why
+  ------------------- ------------------------ -------------------------------------------------------------------------------------------------------------- --------------------------------------------
+  Flicker's scenes    as written               Follow the Flicker plan in the characters section: his light stutters when he isn't telling the whole truth.   Gives him a tell the player learns.
+
+  w7 note             plain chair              Start it with "I'm fine" crossed out, then "I'm tired."                                                        First crack in Meeca.
+
+  storyMemories 156   both hands               "He took hold of the satchel strap and didn't let go of it."                                                   
+
+  storyMemories 157   photograph explanation   "She thinks he walked out on her." (SR-27)                                                                     One line does what the paragraph tried to.
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 8, Boss 8 and the tally
+
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where               Now                                                   Change to                                                                                                                                                        Why
+  ------------------- ----------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------
+  storyWorlds 306     "enormous wings"                                      SR-20                                                                                                                                                            
+
+  316                 Dot's arrival speech                                  "Never mind me, look at you, you've lost weight, have you been eating, you haven't, I can tell from here."                                                       Mothering act four, and it echoes her own "You look thin" from the prologue.
+
+  336                 "I'm vibrating... It's worse."                        SR-21                                                                                                                                                            
+
+  344                 "...Neither of them mentioned it."                    Trim to the action before it                                                                                                                                     Narrator tidying.
+
+  storyBosses 147     "I didn't know anybody was up there."                 SR-31: "I hope I said something nice."                                                                                                                           
+
+  storyBosses 154     "Then take the lava road. The Drake lives on it..."   Monarch "Ah. A good ending. The Drake is next. He is bad at visitors. Be patient with the fire."                                                                 Cuts the directions and makes her sound like herself.
+
+  storyMemories 260   "Who told him to call me that? Little bloom"          Split it. Keep the line, then add Meeca "Why am I here, Pell?" Pell "For your safety, Miss. He says so every morning. I think he says it to the mirror first."   Motive layer two.
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 9, the gates and Boss 9
+
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where               Now                                              Change to                                                                                                                                         Why
+  ------------------- ------------------------------------------------ ------------------------------------------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------
+  storyWorlds 348     "something enormous"                             SR-22                                                                                                                                             
+
+  355                 satchel button                                   Cut                                                                                                                                               
+
+  367                 "two hours and seven minutes"                    "Pokey, you've been quiet since the lava, which is long even for you, and you're doing the thing with your eyebrow."                              Run-on Dot, and she notices him.
+
+  w9 note             ends with the bars P.S.                          Keep the P.S., then "P.P.S. Somebody's on the stairs. It isn't Pell. I have to"                                                                   The note breaks off. Real stakes before the last world.
+
+  storyMemories 219   "forty doors"                                    SR-28                                                                                                                                             
+
+  storyMemories 221   "It's welcoming"                                 SR-28                                                                                                                                             
+
+  storyMemories 224   "Come up, sloth. I have counted every step..."   "Come up, sloth. The General has counted every step you took. There are a thousand more. The General is not tired. The General is never tired."   Third person all the way. The repeat is the crack.
+
+  storyBosses 162     "Don't be— what is that?"                        "Don't be... What is that?" (SR-32)                                                                                                               
+
+  storyBosses 168     "Drink some water."                              SR-32: "You sound terrible. Have some water. Actually, don't."                                                                                    
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+World 10
+
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where                          Now                                                      Change to                                                                                                                                                                                                                                                Why
+  ------------------------------ -------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------
+  storyWorlds 399                "something metal fell over"                              SR-25                                                                                                                                                                                                                                                    
+
+  401                            "exactly his width"                                      SR-24                                                                                                                                                                                                                                                    
+
+  425 teaser                     as written                                               "A thousand steps, one lit window, and no hummingbird."                                                                                                                                                                                                  Three things, and the missing one hurts.
+
+  w10 note                       "you were never too slow... You're the one who stops."   "Pokey, I've started this four times. The first three were too long, and you'd have stopped to read them halfway up a cliff. Come and get me. Bring snacks." Keep the P.S., then "P.P.S. You were never too slow. Everybody else was just in a hurry."   Sounds like a person writing a note, not a theme statement.
+
+  storyMemories 248, before it   the map, forks and spoons                                Meeca "I used to walk straight through."                                                                                                                                                                                                                 One line on what the garden was before the General.
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Boss 10 (storyBosses.ts)
+
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where            Now                                                                                                             Change to                                                                                                                                                                Why
+  ---------------- --------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -------------------------------------------------------------------
+  177              "Nine hundred and ninety-nine steps. I counted. Still slow, boy."                                               "Nine hundred and ninety-nine steps. One more. The General has broken stronger things than a sloth. Still slow, boy."                                                    Threat first, then the tic.
+
+  179              "I do not know where your bird is... You did not hurry once, boy. I watched for it. Slow gets people killed."   "I do not know where your bird is, and I find that I mind. You stopped for tea, boy. The General counted. Slow gets people killed." Pokey "It was very good tea, sir."   Pays off the World 6 cost, and Pokey refuses to be ashamed of it.
+
+  180              Pokey's answer to Dot, said to the General                                                                      "I know it does, sir. My folks went out in a storm when I was little. The warning came late. Tonight I found out whose."                                                 Trimmed to the bone.
+
+  181              "Then you know what it costs. I buried her because help was late. Not again."                                   Keep                                                                                                                                                                     
+
+  New, after 181   nothing                                                                                                         Pokey "I've had a long time to work out who to blame, sir. It was a storm." GEN "The General does not lose twice."                                                       The argument he can't win, and he fights anyway.
+
+  184 to 187                                                                                                                       Keep                                                                                                                                                                     
+
+  storyBosses 41   Venom Fang directions                                                                                           Cut. New: Pokey "May I go past now?" Venom Fang "You asked. Nobody asks."                                                                                                
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Finale (storyFinale.ts)
+
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Where                  Now                                                                              Change to                                                                                                                                                                              Why
+  ---------------------- -------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ----------------------------------------------------------------------
+  89                     "She waited for help. It came late. I counted every hour. I have not stopped."   "She waited for help, and it came late. So I put you somewhere nobody would ever be late for you."                                                                                     Motive layer three. The kidnapping was his idea of keeping her safe.
+
+  New, after 101         nothing                                                                          The reunion scene (see Big moments).                                                                                                                                                   The story's missing moment.
+
+  126 to 128             "It was always both" / "Okay."                                                   The Pokey and Dot exchange (see Big moments).                                                                                                                                          Pokey finally answers her.
+
+  134                    Golem                                                                            SR-35                                                                                                                                                                                  
+
+  New, after 135         Pell's shop                                                                      Flicker, light steady: "I'm staying, if that's all right."                                                                                                                             
+
+  New, after 141         scarf                                                                            Meeca "Was it a nice bush?" Dot "It was the best bush, it was a really excellent bush, I've been back, I sit in it sometimes, it's very calming."                                      Meeca and Dot finally talk.
+
+  145 to 193             keepsake parade                                                                  Cut to three on screen (see Big moments).                                                                                                                                              Ten in a row stalls the ending.
+
+  178                    "for a long time nobody said a word"                                             "The General bowed his head and let it play to the end."                                                                                                                               Action, not a narrator tidying a silence.
+
+  New, the weeks after   nothing                                                                          Pell "Shall I tell the General, sir?" GEN "Tell him he has retired." Then the river trees, the squirrels' "Back already?", the two soldiers at Pell's counter, and the ending cards.   
+
+  206                    "Of course he made it"                                                           "He's gonna make it. He trained for it."                                                                                                                                               Funnier, and it's about trying, not arriving.
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Dot in play and the edges
+
+SR-38 to SR-43 in the polish report cover Dot's in-play barks, Easy-mode hints, the boss quotes in SR-41, and the menu and loading text. Do those as written there. They're small, and they're where players hear her most.
+
+Big moments rebuilt: setups, payoffs and finale order
+
+A story gets an A+ on its big moments. Sloths has the right ones in the right places. Three of them are missing a beat, one runs too long, and the biggest one happens to the player instead of being done by the player. Here's each one, rebuilt.
+
+The moments that carry the grade
+
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Moment                  Where                    Now                                           What it needs
+  ----------------------- ------------------------ --------------------------------------------- ------------------------------------------------------------------------------------------
+  Meeca taken             Prologue                 Works. The General is a shape with a voice.   One real threat line (see Line edits) so the turn at the end has somewhere to turn from.
+
+  Dot leaves              storyWorlds 271          Works, and hurts.                             The World 6 cost before it, so her leaving has a reason Pokey can feel.
+
+  Dot comes back          storyWorlds 316          Funny, but she talks about herself.           Her first words are about him: "you've lost weight, have you been eating".
+
+  The photograph          storyMemories 157        Pokey explains the plot out loud.             SR-27: one line, and let the picture do the rest.
+
+  Boss 10                 storyBosses 177 to 187   Strong, a bit long.                           Trimmed lines, the tea payoff, the storm argument.
+
+  Letting go              storyFinale 46 to 52     Narrated.                                     Make it the player's thumb (below).
+
+  Meeca and the General   storyFinale 82 to 101    The best scene in the game.                   Only the new motive line at 89. Leave the rest alone.
+
+  Pokey and Meeca         missing                  They never greet each other.                  The reunion (below). This is the single biggest hole.
+
+  Pokey and Dot           storyFinale 107 to 128   Ends on "Okay."                               Pokey answers her (below).
+
+  The keepsakes           storyFinale 145 to 193   Up to ten in a row.                           Three on screen, the rest in the satchel (below).
+
+  The snail               storyFinale 205 to 206   Last line contradicts the picture.            SR-36.
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The reunion (new, after storyFinale 101)
+
+Right now Pokey climbs a thousand steps for Meeca and the game never lets them say hello. The scene with her grandfather is so good that nobody notices on the first play. They notice on the second. Put this straight after "Mostly."
+
+  Narrator: Meeca turned around. Pokey was standing where he'd stopped, soaked, in the middle of the courtyard.
+
+  Meeca: You came.
+
+  Pokey: I was in the neighborhood. Slowly.
+
+  Narrator: She laughed. Then her back stopped being straight.
+
+  Pokey: You can sit down now.
+
+  Narrator: They sat on the wet steps. Neither of them said much. It was the best conversation of the year.
+
+The last line is the caption from the World 4 photo book. Players who found it get the callback. Players who didn't still get a good line. "Her back stopped being straight" pays off the earlier "Her back was very straight" at storyFinale 82. She held herself up for 191 nights. This is where she stops.
+
+Pokey answers Dot (replaces storyFinale 126 to 128)
+
+Dot's whole arc is guilt turning into love, and at the moment she confesses, Pokey says "Okay." It reads like he's hurt and closing the door. That's the wrong ending for the spine of the game.
+
+  Pokey: I thought you came around because you liked me.
+
+  Dot: I did! I do! It was both. I came because I owed you, and I stayed because... I stayed. You're mine, Pokey. You've been mine since you were this big and couldn't reach the low branch.
+
+  Pokey: You were late every time, you know.
+
+  Dot: I know.
+
+  Pokey: And you came back every time. I was counting.
+
+  Narrator: Dot's wing went to the pouch at her side, which was empty, and she left it there.
+
+"I was counting" turns the General's habit inside out. He counted the hours help was late. Pokey counted the times it came anyway. Nobody needs to point that out.
+
+Letting go, played (storyFinale 46 to 52)
+
+The whole game teaches one thing about Pokey: he holds on when it thunders. Make the player hold on too, then let the player be the one who lets go.
+
+1.  The thunder scene starts with a prompt to hold both thumbs down. Pokey grips the wall. Every roll of thunder shakes the screen a little.
+
+2.  A second prompt asks the player to lift one thumb. Pokey's hand comes off the wall and reaches toward the General.
+
+3.  Thunder breaks. If the player puts the thumb back down, Pokey grabs the wall again, and the scene waits. No fail, no timer, no text. It just waits for the player to try again.
+
+4.  When the player keeps one thumb up through the thunder, the song starts from the window.
+
+First-time players like Sally will get it on the second try, and that's the point. On Easy, the prompt stays on screen. On Normal, it fades after the first try. This is the one place in the game where the controls are the story, and it's what turns a good ending into the moment people tell their friends about.
+
+The keepsakes: three on screen, the rest in the satchel
+
+If a player finds all ten keepsakes, the finale stops for up to ten little scenes in a row. Each is lovely. Together they bury the ending. Keep three as full scenes, in this order, because each one does something the others don't:
+
+1.  The ribbon (World 4). The two cut halves tied with string. It's the General finishing his grief.
+
+2.  The key and the music box (World 1). It plays the song, which closes the loop from the tower.
+
+3.  The bell (World 10). "Somebody is coming home." This is the last keepsake shown, always.
+
+The locket, medal, petal, rattle, bear, stopwatch and seeds don't disappear. Each becomes one line of dialogue on its own page in the satchel (see Playing it like an RPG), opened from the end screen or the hub. The stopwatch exchange ("I let you.") is too good to lose, so if the player found it, it plays as a short tag after the end credits. The seeds stay where they are, on the hill.
+
+New finale running order
+
+1.  The tower. Thunder, the played let-go, the song, the collars fall, the General turns.
+
+2.  Meeca and the General, with the new motive line at 89.
+
+3.  The reunion. Pokey and Meeca on the steps.
+
+4.  The seam. Dot comes back covered in flour, the letter, and Pokey's answer.
+
+5.  The weeks after, part one. Gruntlewick finishes his warning. The Golem finishes his sentence. Pell opens his shop, and Flicker stays.
+
+6.  Tea at four. The General sits. Dot and Meeca finally talk about the bush. The scarf. The letters, and the wobble payoff if the Under the Ruins note was found.
+
+7.  The three keepsake scenes, ending on the bell.
+
+8.  Pell "Shall I tell the General, sir?" GEN "Tell him he has retired."
+
+9.  The ending cards (see Playing it like an RPG): one picture and one line for each guardian, the soldiers, the squirrels and Flicker.
+
+10. The hill. "Hello, love. I'm late. I brought the whole family." The seeds, if found.
+
+11. Home. The snail, SR-36, and Meeca and Pokey sitting on the path.
+
+12. After the credits: the stopwatch tag if found, and the Thornbark tag if the secret boss was beaten.
+
+Setups and payoffs
+
+Every payoff in the finale should have a setup the player saw at least an hour earlier. These are the ones to check after the edits land.
+
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Setup                                Where it's planted                                Payoff
+  ------------------------------------ ------------------------------------------------- ------------------------------------------------------------------------------
+  "The General does not knock."        New, prologue                                     "I should have knocked." Finale 90.
+
+  Pokey holds on when it thunders      World 1 onward, "both hands" at storyWorlds 386   The played let-go.
+
+  The pouch                            Moved to World 2                                  Dot's empty pouch in the seam.
+
+  "We stopped for tea."                World 6, storyWorlds 264                          Boss 10: "It was very good tea, sir." Then tea at four.
+
+  "Her back was very straight."        Finale 82                                         "Her back stopped being straight." The reunion.
+
+  The World 4 photo book caption       finds.ts                                          "It was the best conversation of the year." The reunion.
+
+  Dot is late, always                  Every world                                       "And you came back every time. I was counting."
+
+  The General counts                   Boss 10, gates, tally                             "I have lost count." Finale, already there.
+
+  Meeca's letters say "I'm fine"       w1 to w10 notes                                   Pokey reads them at tea. "The handwriting never wobbled once."
+
+  Pokey's Under the Ruins note         Secret level                                      "Your handwriting wobbled." "It was raining." "You were underground, Pokey."
+
+  The snail on the path                Prologue                                          The last shot.
+
+  Venom Fang: "Nobody asks."           Boss 1                                            His ending card: Pokey stops by and asks.
+
+  The Drake's "Bring tea. Two cups."   Boss 9                                            His ending card: two cups, both used.
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Playing it like an RPG
+
+The way to think about this: Sloths plays like a platformer and should remember like an RPG. The jumping stays fast and fun. What changes is that the world notices what you did, your companion talks to you while you play, and the things you pick up mean something. Paper Mario, Ori and Hollow Knight all do this inside action games. None of it needs dice, stats or menus full of numbers.
+
+Here are ten pieces, roughly in the order I'd build them. The first three do most of the work.
+
+1. Dot as a party member who talks
+
+Right now Dot speaks in cutscenes and gives tips in play. In an RPG, the companion is who you spend the game with. Give her about 80 short in-stage lines that trigger at rest points: a checkpoint, standing still for five seconds, the top of a long climb, the moment after a hard section. Ten or so per world, two to four seconds each, never during a jump.
+
+They're not tips. They're her talking. A few examples in her voice:
+
+-   After a long climb: "You did that whole wall at one speed, do you know how annoying that is to watch, it's very impressive, it's very annoying."
+
+-   Standing still in World 3: "Are you resting or are you thinking? With you I can never tell. Both? It's both."
+
+-   After a near miss: "I didn't see that. I'm choosing not to have seen that."
+
+-   World 8, after she's back: "I'm not going anywhere. I'm just saying it so it's said."
+
+The rule from SR-38 holds: 12 words or fewer for a story aside, and tips stay separate. Her lines change after she leaves and comes back, so World 8 to 10 Dot sounds different from World 1 to 6 Dot. That change is her arc, and the player feels it without a cutscene.
+
+2. Pokey's journal
+
+Every stage cleared adds one line to a journal in Pokey's voice, written as if he's slow and careful with a pencil. It's the save screen and the chapter select in one. Examples:
+
+-   1-1: "Left home. Dot says I forgot something. I didn't. I checked twice."
+
+-   2-5: "A snake asked me to be nice to it. I was. It was fine."
+
+-   6-8: "Dot left. I'm going to keep writing in here like she didn't."
+
+-   9-10: "A thousand steps tomorrow. I'm going to take them one at a time. There isn't another way."
+
+This is where the quiet Pokey gets an inner voice. It's also where a player who stopped for a month remembers what was going on.
+
+3. The satchel as an inventory
+
+The narrator says "he put it in the satchel" sixteen times. Make the satchel a screen instead. Everything Pokey picks up goes in it with a picture and one line: Meeca's notes, the keepsakes, the photo books, Dot's lost things, guardian relics. Tapping a keepsake plays its one line of dialogue. This is also where the seven keepsakes that leave the finale live, so nothing a player found is ever lost.
+
+4. People who come back
+
+RPG worlds feel real because you meet the same people twice. Sloths already has the cast for this:
+
+-   Gruntlewick the crier, World 2. His flood warning gets one sentence further every time you pass him. On replay it's further along. He finishes it in the finale.
+
+-   The two soldiers from the prologue. You see them again at the gates in World 9, more tired each time. In the weeks after, they're Pell's first customers.
+
+-   The squirrels. Every time Pokey walks back through World 1 on the map, one of them says "Back already?"
+
+-   Pell. His soup shows up in Meeca's notes, his face at the tally, and his crooked shop sign at the end.
+
+-   Flicker. He shows up once in World 5 and once in World 7 before his story pays off.
+
+5. The Heartbloom garden as a hub
+
+Meeca's garden is where the story starts and ends. Make it the place you go between worlds, even if it's only a single screen. Each guardian you free sends something there: the Prowler's ledge stone, a strand of the Queen's silk, a feather from the Sky Sovereign, the Drake's two cups. Rescued critters from World 2's reed cages and World 4's eaglets move in. By World 10 the garden is full, and the one empty spot is the chair by the flower. It fills after the finale.
+
+This gives the player something they built, and it makes "the whole family" on the hill something they can see.
+
+6. The world notices what you did
+
+Small, cheap, and it's what makes people say a game remembers them:
+
+-   The General counts. At the gates and in Boss 10, he quotes the real number of times the player fell and the real number of in-game nights. "Forty-one falls, boy. The General counted."
+
+-   If the player found Meeca's World 6 note, Dot mentions the soup in World 8. If not, she doesn't.
+
+-   If the player beat Thornbark, the Golem's ending card mentions him.
+
+-   If the player found all of Dot's lost things (see Collectibles), her finale line gets one extra sentence.
+
+None of these are branches. The story is the same. It just notices.
+
+7. Coats that mean something
+
+Coats unlock by points now. Make four of them story items:
+
+-   The leaf raincoat, from Grandma's garden memory. Wearing it in a thunder stage gives Dot a line.
+
+-   Meeca's scarf, unlocked after the finale. It drags on the ground in every stage.
+
+-   The General's rust scarf, unlocked by beating the game on Normal.
+
+-   Pell's coat, tailored, unlocked by finding his shop sign. Slightly crooked.
+
+The rest stay as they are. Four that mean something make the other forty feel like a wardrobe instead of a list.
+
+8. The map warms up
+
+The world map starts gray under the Pact. Each freed guardian brings color back to their world. By the end the whole map is green, and the iron thorns are gone. It's a progress bar that tells the story.
+
+9. Ending cards for everyone
+
+After the finale, one card per character: a single painted picture and one line. Examples:
+
+-   Venom Fang: "Pokey stops by on Thursdays. He always asks first."
+
+-   The Prowler: "He still sits on the ledge. Now somebody sits with him."
+
+-   The Sky Sovereign: "She lets the wind lane run where it likes."
+
+-   The Night-Wing Monarch: "Pokey told her how the dream ended. She wrote it down."
+
+-   The Magma Drake: "Two cups. Both used."
+
+-   The two soldiers: "Pell took their measurements. They didn't need new coats. They just wanted to sit down."
+
+-   Flicker: "He stays at Pell's shop. The light over the counter is steady."
+
+These replace the weeks-after narration that's trying to cover everyone in a paragraph.
+
+10. A playable prologue morning
+
+Right now the prologue is a cutscene. Let the player walk Pokey through one ordinary morning in the garden before the General arrives: water the fern, nudge the snail, find Meeca, get told he looks thin. Two minutes, no danger. It teaches the controls, and it means the player has a home to lose before it's taken. Every great RPG opening does this.
+
+What not to add
+
+No stats, no experience points, no shops, no dialogue choices. Sloths is a story about a sloth who does one thing at one speed. Choices would fight that. Let the player change how much of the story they see, never what happens in it.
+
+Collectibles and hidden things
+
+The rule for every find: it should tell the player something they couldn't learn any other way, and it should pay off later. A coin is a reward. A letter is a story. Sloths already has the bones of a great collection. It needs fewer kinds of thing, each carrying more story, and every one of them paying off somewhere.
+
+What's already there, and what to tweak
+
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Find                    Where                               Keep or change
+  ----------------------- ----------------------------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Meeca's notes           Stage 2 of each world               Keep. Apply the note rewrites (World 6 soup, World 7 crossed out, World 9 breaks off, World 10 "Bring snacks"). Make the handwriting get shakier from World 6 on, so the art tells the story too.
+
+  Keepsakes               Hush Ferns, stage 5 of each world   Keep all ten. Three play in the finale, the rest open from the satchel.
+
+  Photo books             Stage 8 of each world               Keep. Each book should show one moment from the General's life with Meeca and her grandma, in order, so ten books are a life story told backwards to the day the door shut.
+
+  Grandma's bonus token   Hidden                              Use the rewrite ("He won't stop for a flower. He'll stop for a weed he can't name.") and have it unlock the seed planted by the General's window in the ending cards.
+
+  Reed cages, World 2     Capybara, duck, otter               Keep. Each rescued critter moves into the garden hub and gets one line at tea.
+
+  Eaglets, World 4        4-8                                 Keep. The Sky Sovereign's ending card shows them grown.
+
+  The Thorn Gate          7-7, to Thornbark                   Keep. Beating him adds his tag after the credits.
+
+  Under the Ruins         World 7 secret level                Finish the note (below).
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Under the Ruins: Pokey's note
+
+The secret level has Pokey pushing a note up to Meeca, but the words were never written. Here they are:
+
+  Meeca. I'm coming. It's taking a while. I'm fine. P.
+
+  P.S. My handwriting's wobbling. That's the rain.
+
+It's the one note in the game going the other way, and it uses her own "I'm fine" back at her. At tea in the finale, if the player found it:
+
+  Meeca: Your handwriting wobbled.
+
+  Pokey: It was raining.
+
+  Meeca: You were underground, Pokey.
+
+New: Dot's lost pocket
+
+One find per world from World 4 to World 9, six in all. Each is something small that fell out of Dot's pouch over the years: a button, a bent pin, a feather that isn't hers, a scrap of the yellowed envelope, a tiny map with Pokey's tree circled, a ribbon that matches nothing. Each has one line from Dot, in the run-on voice, when Pokey picks it up.
+
+Together they tell her side of the story before she tells it herself. The last one, the envelope scrap, is a corner of the letter she's been carrying for years. Players who found all six figure out the confession a world early, which is exactly what a good hidden track should do. Finding all six adds one sentence to her finale line.
+
+New: The Notch
+
+One hidden find in the memory scenes: a twig with growth notches cut into it, one a year, in two different hands. The early notches are his parents'. The later ones are Grandma's. It answers who raised Pokey without anybody saying it, and it sits in the satchel next to the painted background of his parents.
+
+New: guardian relics
+
+Each of the ten guardians, Thornbark included, leaves one thing behind after their fight, hidden somewhere in the next world rather than handed over. The Prowler's ledge stone. A strand of the Queen's silk. The Monarch's notebook page with Pokey's sleep-talk on it. The Drake's second cup. Each relic goes to the garden hub.
+
+Find all ten and the ruined council chamber in World 7, the one with the Golem's chairs, lights up. A secret scene plays: all ten guardians sitting in the chairs, as they were before the Pact, with the Golem finally saying his whole sentence to someone. This is the platinum reward that means something.
+
+New: a snail in every world
+
+The snail from the prologue is on the same trip Pokey is. Hide him once in every world, a little further along each time, always moving left to right, never in a hurry. Tapping him gives nothing but a tiny sound. Players who find all ten get one extra line at the very end, from Pokey: "I saw him every day, you know. He never once stopped for tea."
+
+Small hidden things that cost almost nothing
+
+-   The squirrels' sign in World 1. On replay it says "BACK ALREADY?"
+
+-   The soldiers' trail. Their dropped helmets and a half-eaten ration show up in Worlds 3, 6 and 9, so their return at the gates makes sense.
+
+-   Meeca's window. In every world, a lit window somewhere in the far background, getting closer each time. In World 10 it's the tower.
+
+-   Gruntlewick's warning, one sentence further every time you pass.
+
+-   Pell's shop sign, hidden in World 10, crooked. Unlocks his coat.
+
+How many is too many
+
+About five story finds per world: note, keepsake, book, and up to two of Dot's pocket, a relic, or the snail. More than that and finding things becomes a chore, and the platformer slows down. Sally should be able to finish a world without feeling she missed the story. Jen and Steph should be able to go back for the rest.
+
+What each find unlocks
+
+  ----------------------------------------------------------------------------------------------------------------------------------
+  Find                     What it tells you                    Where it pays off
+  ------------------------ ------------------------------------ --------------------------------------------------------------------
+  Meeca's notes            How she's really doing               Pokey reads them all at tea. "The handwriting never wobbled once."
+
+  Keepsakes                The General's life with his family   Three finale scenes, the rest in the satchel.
+
+  Photo books              Who the General was before           The General's turn makes sense to players who read them.
+
+  Dot's lost pocket        Dot's secret, early                  One extra sentence in her finale line.
+
+  The Notch                Who raised Pokey                     Sits next to the parents' painting in the satchel.
+
+  Guardian relics          The guardians as people              The garden fills up, and the council chamber scene.
+
+  Snail                    Nothing, and that's the joke         Pokey's last line.
+
+  Under the Ruins note     Pokey's own "I'm fine"               "You were underground, Pokey."
+
+  Reed cages and eaglets   That kindness sticks                 The critters at tea and the ending cards.
+
+  Grandma's token          What she knew about him              The weed by his window in the ending cards.
+  ----------------------------------------------------------------------------------------------------------------------------------
+
+Build order for the coders and how to test that it landed
+
+Do it in this order. The early steps are text changes in five files and move the grade the most. The later steps are new features and move it less per hour of work, but they're what makes it feel like an RPG.
+
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Step   What                                                                                              Size                 Story grade after
+  ------ ------------------------------------------------------------------------------------------------- -------------------- -------------------------------------------------
+  1      All the line edits in this doc, file by file. Text only.                                          Small                Indie A, story games A−
+
+  2      The three new scenes: the reunion, Pokey's answer to Dot, the General's motive in three layers.   Small                Indie A+, story games A−
+
+  3      The finale reorder and keepsakes cut to three.                                                    Small to medium      Same, and the ending stops dragging
+
+  4      The played let-go in the tower.                                                                   Medium               Story games A. This is the one people remember.
+
+  5      Dot's in-stage lines (about 80) and SR-38 to SR-43.                                               Medium               Dot becomes the reason to keep playing
+
+  6      The satchel screen and Pokey's journal.                                                           Medium               Nothing found is ever lost
+
+  7      Ending cards for every character.                                                                 Medium, mostly art   The world feels finished
+
+  8      Dot's lost pocket, The Notch, the Under the Ruins note, the snail.                                Medium               Replay value, and the story rewards looking
+
+  9      The garden hub, the map warming up, guardian relics and the council chamber scene.                Large                Full RPG feel
+
+  10     The playable prologue morning, story coats, and the General counting real falls.                  Medium               Polish on top
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Steps 1 to 3 together are the A+ against indie games. Step 4 is what gets it to an A next to the big story games. Steps 5 to 10 are what makes people call it an RPG.
+
+One caution for the coders: story.test.ts checks the script. After step 1, run it, and update any test that was checking for a line that got cut. A failing story test after a text edit almost always means the test was pinned to old words, not that something broke.
+
+How to test that it landed
+
+Three tests, each with a different job.
+
+A table read with Matt, Jen and Steph. Read the whole script out loud, each person taking a voice. It takes about an hour. Anywhere someone stumbles, or two characters sound the same, mark it. This is the best test there is for AI sound, because nobody can say an AI line out loud without hearing it.
+
+A kid test. One player around 8 to 12, playing on Easy, with no help. Afterward, ask them three things: who was their favorite, what was the saddest part, and what happened to Dot. If they can answer the last one, the story is clear. If the saddest part they name is the tea or the reunion, the new scenes are working.
+
+Sally as the story test. She's the most valuable tester for this, because she plays for the story. Watch for one thing: at the end of a world, does she ask what happens next? If she does in Worlds 6, 8 and 9, the stakes are landing. Also watch whether she gets the let-go on her own. If she needs to be told twice, make the prompt clearer. If she gets it and goes quiet, it's done.
+
+A good sign across all three: people quote lines back afterward. If someone says "It was very good tea, sir" a day later, that's the A+.
+
+Decisions that are Matt's
+
+These change what the story is, so they're your call, not the coders'. I've said which way I'd go on each.
+
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Decision                                Options                                                        I'd go
+  --------------------------------------- -------------------------------------------------------------- ------------------------------------------------------------------------
+  Slowness costs once (the World 6 tea)   Keep it, or drop it and let slow never cost anything           Keep it. Without one real cost, "slow isn't stopped" is just a slogan.
+
+  Pokey's parents                         One painted background with no words, or leave them unseen     The painting. It's cheap and it lands the Boss 10 line.
+
+  Dot's lost pocket                       Add it, or skip it                                             Add it. It's the best new collectible and it's mostly writing.
+
+  The played let-go                       Make it the player's thumb, or keep it narrated                The player's thumb.
+
+  Keepsakes in the finale                 Three on screen and the rest in the satchel, or keep all ten   Three.
+
+  The garden hub                          Build it, or keep the plain map                                Build it later, after steps 1 to 8.
+
+  The playable prologue                   Build it, or keep the cutscene                                 Build it if the coders have time. It's the best tutorial you'll get.
+  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
