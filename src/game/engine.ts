@@ -2663,7 +2663,8 @@ export class GameEngine {
       if (isExitUnlocked ? atExitDoor(p, doorX, doorY) : atSealedDoor(p, doorX, doorY)) {
         if (isExitUnlocked) {
           this.exitTotemReached = true;
-          sound.playVictory();
+          // (a short chime here; the full victory sting plays when the Stage Cleared card lands, StatusModals.tsx, SN-5)
+          sound.playExitChime();
           this.spawnSparkBurst(this.currentStage.exitTotemX, p.y - 30, '#34d399');
           this.addFloatingText('SANCTUARY UNLOCKED! VICTORY!', p.x, p.y - 60, '#34d399');
         } else {

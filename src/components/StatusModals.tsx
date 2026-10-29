@@ -4,6 +4,7 @@ import { BOSS_TIPS } from '../game/bossDefs.ts';
 import { PauseMenu } from './PauseMenu.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { StageCleared } from './StageCleared.tsx';
+import { sound } from '../game/audio.ts';
 import { GameOverCard } from './GameOverCard.tsx';
 import type { StageStats } from '../game/badges.ts';
 import { Icon } from './icons/index.tsx';
@@ -104,6 +105,8 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   // --- 2. STAGE CLEARED ---
   if (screen === 'victory') {
     return (
+      <>
+      <VictorySting />
       <StageCleared
         levelConfig={levelConfig}
         starsEarned={starsEarned}
@@ -119,6 +122,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         onReplay={onRestart}
         onOpenMap={onOpenMap}
       />
+      </>
     );
   }
 
@@ -218,5 +222,16 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
     );
   }
 
+  return null;
+};
+
+/** the card's pop-in (index.css clr-pop) */
+export const CARD_LANDS_MS = 500;
+/** the full victory sting, when the Stage Cleared card and its ribbon have landed (SN-5: it used to play in the level, at the shrine) */
+const VictorySting: React.FC = () => {
+  React.useEffect(() => {
+    const id = window.setTimeout(() => sound.playVictory(), CARD_LANDS_MS);
+    return () => window.clearTimeout(id);
+  }, []);
   return null;
 };

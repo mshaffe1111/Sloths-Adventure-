@@ -1053,6 +1053,14 @@ export const SFX: Record<string, Fx> = {
     noise(core, { t, type: 'lowpass', f0: 300, f1: 4000, q: 0.7, peak: 0.12, dec: 0.28, attack: 0.1, dst: d, pink: true });
     tone(core, { t, f0: 260, f1: 520, dec: 0.18, peak: 0.08, dst: d });
   },
+  /** at the shrine (SN-5): a short rising chime in the stage's key; the full victory sting waits for the Stage Cleared card */
+  exitChime(core, key) {
+    const t = core.ctx.currentTime;
+    const d = out(core, 0.5);
+    [0, 2, 4, 7].forEach((n, i) => note(core, bell, t + i * 0.07, ladder(key, n), i === 3 ? 0.75 : 0.55, d));
+    note(core, harp, t, ladder(key, 0) - 12, 0.5, d);
+    noise(core, { t: t + 0.2, type: 'highpass', f0: 6000, peak: 0.06, dec: 0.5, dst: d });
+  },
   /** the first beat of a level */
   levelStart(core, key) {
     const t = core.ctx.currentTime;
@@ -1073,7 +1081,7 @@ export type SfxName = keyof typeof SFX;
 const FX_LOUDNESS: Record<string, number> = {
   checkpoint: -12.7, climb: -24.8, doubleJump: -15.0, eagle: -22.4, flower: -19.0, fruit: -14.5, glide: -21.5, heart: -16.2, hit: -26.4, hurt: -18.1,
   jump: -27.0, kick: -11.4, land: -16.8, megaPunch: -11.0, oneUp: -9.1, power: -11.9, punch: -12.5, relic: -9.0, roar: -15.0, shrine: -9.4,
-  step: -26.1, superHeart: -11.8, vine: -21.8, whoosh: -19.2,
+  step: -26.1, superHeart: -11.8, vine: -21.8, whoosh: -19.2, exitChime: -12.7,
 };
 /** the gain runFx gives an effect: to FX_REF, then its trim */
 export function fxGain(name: string): number {

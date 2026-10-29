@@ -145,6 +145,8 @@ class SoundEngine {
   /** `world` 1..10: each world's boss has its own voice */
   playBossRoar(world = 0) { this.c.fx('roar', world); }
   playVictory() { this.c.sting('victory'); }
+  /** reaching the shrine: a short chime (the victory sting plays when the Stage Cleared card lands: SN-5) */
+  playExitChime() { this.c.fx('exitChime'); }
   playDefeat() { this.c.sting('defeat'); }
   /** the old engine started and stopped one global ambience; the world now picks its own (see setAmbient) */
   startAmbient() {}
