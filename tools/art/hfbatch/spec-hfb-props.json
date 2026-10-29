@@ -1,0 +1,49 @@
+{
+ "note": "World 8 roost branch and seed pods by img2img from tools/art/hfbatch/propstart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/hf-batch-w7w8/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w8roost-s55-5",
+   "start": "start-w8roost.webp",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props in a 3 by 2 grid for a side-scrolling platform game: a short mossy tree branch, a short mossy tree branch, a seed pod, a pile of seed pods, an open seed pod with seeds inside, a small pile of seed pods. Each prop seen straight from the side, a flat front view like a cross-section, soft painted brush texture, thin dark outline, light from the upper left, a calm deep-blue night high in the treetops, silver moonlight, blue-violet bark with soft green moss, dark plum seed pods with a soft sheen. Every prop alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w8roost-s55-17",
+   "start": "start-w8roost.webp",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props in a 3 by 2 grid for a side-scrolling platform game: a short mossy tree branch, a short mossy tree branch, a seed pod, a pile of seed pods, an open seed pod with seeds inside, a small pile of seed pods. Each prop seen straight from the side, a flat front view like a cross-section, soft painted brush texture, thin dark outline, light from the upper left, a calm deep-blue night high in the treetops, silver moonlight, blue-violet bark with soft green moss, dark plum seed pods with a soft sheen. Every prop alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w8roost-s72-5",
+   "start": "start-w8roost.webp",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props in a 3 by 2 grid for a side-scrolling platform game: a short mossy tree branch, a short mossy tree branch, a seed pod, a pile of seed pods, an open seed pod with seeds inside, a small pile of seed pods. Each prop seen straight from the side, a flat front view like a cross-section, soft painted brush texture, thin dark outline, light from the upper left, a calm deep-blue night high in the treetops, silver moonlight, blue-violet bark with soft green moss, dark plum seed pods with a soft sheen. Every prop alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.72,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w8roost-s72-17",
+   "start": "start-w8roost.webp",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props in a 3 by 2 grid for a side-scrolling platform game: a short mossy tree branch, a short mossy tree branch, a seed pod, a pile of seed pods, an open seed pod with seeds inside, a small pile of seed pods. Each prop seen straight from the side, a flat front view like a cross-section, soft painted brush texture, thin dark outline, light from the upper left, a calm deep-blue night high in the treetops, silver moonlight, blue-violet bark with soft green moss, dark plum seed pods with a soft sheen. Every prop alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.72,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024
+  }
+ ]
+}
