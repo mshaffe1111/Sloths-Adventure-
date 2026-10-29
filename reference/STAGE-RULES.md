@@ -361,6 +361,8 @@ plan); never ship the rough version as finished.
   the ledge under it or it stands on stilt posts (two, never one balanced pole); every stretch of a plank or log is held by a climbing
   root, a post, a brace to a trunk or a rope. Don't run a post from every plank down to the water: about 90 poles a stage read as a
   cage. Short holds to what is near, long posts only where nothing is (the crown). Check it in `w6Stages.test.ts` ("nothing floats").
+  World 6's ledge set (`src/assets/w6/ledges.webp`) has the supports painted on: lay its tall piece cut off where the supports reach
+  the ledge under it (`SET_ROWS` says where they are at each depth), so one picture fits any drop.
 
 ## 7. Where things are
 
