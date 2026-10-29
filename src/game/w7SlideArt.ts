@@ -577,7 +577,8 @@ function drawEyes(ctx: CanvasRenderingContext2D, v: View, p: Prop, t: number, ex
   const a = P(v, p.x - w / 2, p.y + p.h, p.z), b = P(v, p.x + w / 2, p.y, p.z);
   if (!a || !b) return;
   // (like every side piece, they fade out close to the camera, before their glow gets big and soft)
-  const near = nearFade(p.z - v.camZ) * Math.max(0, Math.min(1, (0.3 - (b[1] - a[1]) / v.H) / 0.12));
+  // (eyes are pinpoints: they only show far off, and are gone well before they pass him)
+  const near = Math.max(0, Math.min(1, (p.z - v.camZ - 7) / 4)) * Math.max(0, Math.min(1, (0.2 - (b[1] - a[1]) / v.H) / 0.1));
   if (near <= 0) return;
   ctx.globalCompositeOperation = 'lighter';
   ctx.globalAlpha = fadeIn(p.z - v.camZ) * ex * near;
