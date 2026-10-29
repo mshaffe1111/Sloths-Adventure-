@@ -126,11 +126,12 @@ export function drawCalmWaterFront(ctx: CanvasRenderingContext2D, w: CalmPool, t
   ctx.beginPath();
   ctx.rect(w.x0, w.surfaceY - OVER - 30, w.x1 - w.x0, w.bottomY - w.surfaceY + OVER + 30);
   ctx.clip();
-  ctx.globalAlpha = 0.42;
+  // (clear water: you can see him through it, unlike the murky kind)
+  ctx.globalAlpha = 0.3;
   ctx.fillStyle = DEEP;
   ctx.fillRect(w.x0, w.surfaceY + 3, w.x1 - w.x0, Math.max(0, w.bottomY - w.surfaceY - 3));
   // the top again, lightly: the waterline crosses him
-  ctx.globalAlpha = 0.5;
+  ctx.globalAlpha = 0.4;
   ctx.beginPath();
   ctx.rect(w.x0, w.surfaceY - 1, w.x1 - w.x0, w.bottomY - w.surfaceY + 1);
   ctx.clip();

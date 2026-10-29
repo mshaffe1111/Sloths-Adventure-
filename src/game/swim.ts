@@ -50,8 +50,13 @@ export const SWIM = {
   /** his half-width against a bank (engine.ts's wall half) and how close to it counts as touching */
   half: 19,
   touch: 8,
-  /** the first-swim moment (the `first` sheet: 6 frames at 6 a second, then a beat on the grin), s */
-  firstFor: 1.4,
+  /**
+   * the first-swim moment, s: the splash and a beat under it (`firstPause`, the first frame of the `first` sheet: the flail), then the
+   * sheet's 6 frames at 6 a second (the flail turns into the grin) and a beat on the grin. His line comes after the pause (`firstLine`)
+   */
+  firstFor: 2.1,
+  firstPause: 0.5,
+  firstLine: 0.6,
 } as const;
 
 /**
@@ -65,6 +70,12 @@ export const SWIM_LINES = {
 } as const;
 /** how long the first line shows before the second */
 export const SWIM_FIRST_LINE = 3.2;
+
+/**
+ * The camera in calm water (engine.ts): it eases in on him, so a kid sees him swim (his arms, his head out of the water) even in a puzzle
+ * room's pulled-back framing; further in for the first-swim moment. Times the usual zoom, reached at `ease` per second.
+ */
+export const SWIM_CAM = { first: 1.5, swim: 1.2, ease: 2.5 } as const;
 
 /** the calm water of a stage's puzzle rooms: each raft lift with `water` set, filling the platform it is anchored on (6-7's well) */
 export function kitPools(kit: KitPlay | null | undefined, platforms: readonly Platform[]): CalmPool[] {

@@ -157,18 +157,19 @@ for (const [name, w, h] of SCREENS) {
     assert.equal(water.surfaceY, well.y - (WATER.dip - WATER.lip), 'up to the well\'s lip, no higher');
     assert.ok(water.surfaceY > floorA.y && water.surfaceY > floor2.y, 'never over the floors');
 
-    // in: the first swim. The moment plays (no steering), Dot's first line
+    // in: the first swim. The moment plays (no steering), his first line after a beat
     const before = said().length;
     assert.ok(holdUntil(sim, { right: true }, () => !!swim(sim)), 'into the water: swimming');
     assert.notEqual(swim(sim)!.first, undefined, 'the first-swim moment');
-    assert.equal(said()[before], SWIM_LINES.first);
+    assert.equal(said().length, before, 'a beat after the splash before his line');
     const x0 = sim.p.x;
-    for (let i = 0; i < 15; i++) sim.frame({ right: true });
+    for (let i = 0; i < 21; i++) sim.frame({ right: true });
     assert.ok(Math.abs(sim.p.x - x0) < 6, `no steering during the moment (${(sim.p.x - x0).toFixed(1)})`);
+    assert.equal(said()[before], SWIM_LINES.first, 'then his line, as the moment plays');
     sim.wait(SWIM.firstFor);
     assert.equal(swim(sim)?.first, undefined, 'the moment is over');
     sim.wait(SWIM_FIRST_LINE);
-    assert.ok(said().includes(SWIM_LINES.out), "Dot's second line: how to get out");
+    assert.ok(said().includes(SWIM_LINES.out), "his second line: how to get out");
     // floating, treading still at the top
     assert.ok(Math.abs(sim.p.y - (water.surfaceY + SWIM.float)) < 3, `floating (${(sim.p.y - water.surfaceY).toFixed(1)} under)`);
     assert.equal(sim.p.vx, 0);

@@ -20,6 +20,8 @@ import { SWIM } from './swim.ts';
 import type { PlayerState } from './types.ts';
 
 export const SWIM_ATLAS_URL = new URL('../assets/hero/pokey-swim.webp', import.meta.url).href;
+/** how far over its own waterline each move is drawn (world units): his shoulders and the arm coming over show above the water */
+const LIFT: Record<SwimMoveName, number> = { surf: 9, tread: 8, under: 0, first: 6 };
 /** world units per sheet pixel: the sheet is at the standard hero's scale (worked out when drawn: heroSprite.ts imports this file) */
 const unit = () => (HERO_UNITS * HERO_SPRITE_SCALE) / STD_STAND_H;
 
@@ -55,7 +57,8 @@ export function swimFrame(p: Pick<PlayerState, 'vx' | 'swim'>, time: number): { 
   const s = p.swim!;
   if (s.first !== undefined) {
     const m = SWIM_MOVES.first;
-    return { move: 'first', i: Math.min(m.at.length - 1, Math.floor(s.first * m.fps)) };
+    // (the first frame, the flail, through the pause after the splash; then the sheet plays out to the grin)
+    return { move: 'first', i: Math.min(m.at.length - 1, Math.floor(Math.max(0, s.first - SWIM.firstPause) * m.fps)) };
   }
   const move: SwimMoveName = s.under > 0.5 ? 'under' : Math.abs(p.vx) > 30 ? 'surf' : 'tread';
   const m = SWIM_MOVES[move];
@@ -69,8 +72,8 @@ export function drawSwimHero(ctx: CanvasRenderingContext2D, p: PlayerState, time
   const m = SWIM_MOVES[move];
   const [fx, fy] = m.at[i];
   // the waterline on the water's top, with a slow bob; the dive about the middle of his body
-  // (the crawl a little lower: its waterline is drawn high on his back, and he should lie in the water, not on it)
-  const y = move === 'under' ? p.y - SWIM.float + 16 : p.swim.surfaceY + (move === 'surf' ? 8 : 0) + Math.sin(time * 2.4) * 1.5;
+  // (each a little high in the water, LIFT: a kid has to see him swim, his head, shoulders and arms out, not a head on the water)
+  const y = move === 'under' ? p.y - SWIM.float + 16 : p.swim.surfaceY - LIFT[move] + Math.sin(time * 2.4) * 1.5;
   ctx.save();
   ctx.translate(p.x, y);
   ctx.scale(p.facing, 1);
