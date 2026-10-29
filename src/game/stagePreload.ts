@@ -35,6 +35,7 @@ import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
+import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
 import { SWIM_ATLAS_URL, swimAtlasReady } from './heroSwim.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
@@ -76,6 +77,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(BAD_WATER_URL);
+    } else if (k === 'w6-stilt') {
+      stiltArtReady();
+      urls.push(...STILT_ART_URLS);
     } else if (k === 'swim') {
       calmWaterReady();
       swimAtlasReady();

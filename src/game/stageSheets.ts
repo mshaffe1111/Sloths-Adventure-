@@ -22,7 +22,8 @@
  *                  stage's are rolled with it, so it gets every creature its world's generator can place (GEN_FOES), and a boss lair
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water
- *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water
+ *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
+ *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
  *   swim           the calm water Pokey swims in and his swim sheets (calmWaterArt.ts, heroSwim.ts), for a stage with calm water
  *   anim:<name>    a clip sheet on its own (Meeca's stage: Pell and the soldiers)
  *   props2         World 1's second sheet (bushes, trunk hollows: protoArt.ts PROTO2_URL), for the stages that have them (STAGE_DRAWS)
@@ -78,6 +79,7 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '5-3': ['foe:spider'],
   '5-4': ['foe:spider'],
   '5-5': ['foe:spider'],
+  '6-8': ['foe:frog', 'foe:tayra'], // Stilt Climb (w6Stages.ts): its animals
   '5-7': ['foe:spider'],
   '5-9': ['foe:spider'],
 };
@@ -193,6 +195,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (isGen2Stage(cfg) && gen2Water(cfg.id)) out.push('water-signs');
   // (World 6 on: its creeks and its tide are the dirty, fast water)
   if (isGen2Stage(cfg) && w >= 6) out.push('bad-water');
+  // 6-8 Stilt Climb: its rising tide is the painted dirty water, and its ledges and shelves are World 6's pieces (w6StiltArt.ts)
+  if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
   // (and the calm, clean water he swims in, with his swim sheets: swim.ts)
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
