@@ -109,6 +109,8 @@ export interface PlayerState {
   isVineSwinging?: boolean;
   /** hanging from a rope (shimmy) */
   hanging?: boolean;
+  /** how far the rope is drawn giving under him at his hands (world units, for the drawing only: ropeArt.ts ropeDip, heroRope.ts) */
+  hangDip?: number;
   swingVineId?: number;
   swingAngle?: number;          // in radians (-1.2 to 1.2)
   swingAngularVelocity?: number; // rad/s

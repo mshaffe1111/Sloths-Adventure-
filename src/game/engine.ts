@@ -42,7 +42,7 @@ import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, DOUBLE_RISE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
-import { drawRopes } from './ropeArt.ts';
+import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
 import { drawGlideSprite } from './leafSprites.ts';
@@ -253,6 +253,8 @@ export class GameEngine {
   private ropeCooldown = 0;
   private ropeGrace = 0;
   private ropeId = -1;
+  /** his weight on a rope, for the drawing: the rope gives under his hands, easing in as he grabs and out as he lets go (ropeArt.ts) */
+  private ropeLoad: RopeLoad = { id: -1, x: 0, amt: 0 };
   private enemies: Enemy[];
   private boss: BossEntity | null;
   /** refined controls (refinedControls.ts), fixed for the stage */
@@ -603,6 +605,7 @@ export class GameEngine {
     // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
     swingSetup(this.vines);
     this.ropes = this.currentStage.ropes ?? [];
+    this.ropeLoad = { id: -1, x: 0, amt: 0 };
     this.skills = learnedSkills(config.id);
     this.enemies = this.currentStage.enemies;
     // hunters may chase past their own patch, but only along ground that is really there
@@ -643,7 +646,7 @@ export class GameEngine {
     // every sheet this stage can draw starts loading now (its creatures' clips: a snake's is the golden snake's; the eagle over a
     // watched stretch, a ring's drop-ins, Pokey on a liana, the bushes), not as each first comes on screen; and each is drawn once the
     // frame it arrives, not when he meets it (sheetWarm.ts: QA's 'blank wait' lines and the freezes after a sheet)
-    this.arrivals = new ArrivalWarm(warmStageSheets({ enemies: this.enemies, vines: this.vines, proto: this.proto }));
+    this.arrivals = new ArrivalWarm(warmStageSheets({ enemies: this.enemies, vines: this.vines, proto: this.proto, ropes: this.ropes }));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.passTips = [];
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
@@ -1485,6 +1488,7 @@ export class GameEngine {
     else this.upIntent = Math.max(0, this.upIntent - dt);
     const wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down);
     const onRope = this.updateRope(dt);
+    this.updateRopeLoad(dt);
     if (onRope) {
       // hanging from a rope: updateRope has done all the moving
     } else if (nearTreeVine && (p.climbing || wantGrab) && (p.climbing || !(p.grounded && p.y <= nearTreeVine.topY + 14))) {
@@ -4185,6 +4189,22 @@ export class GameEngine {
     this.dbgHurt = [];
   }
 
+  /** the rope's give under him (drawing only): the rope he hangs from takes his weight over a moment, and lets it go as he drops off */
+  private updateRopeLoad(dt: number) {
+    const p = this.player;
+    const ld = this.ropeLoad;
+    if (p.hanging) {
+      if (ld.id !== this.ropeId) ld.amt = 0;
+      ld.id = this.ropeId;
+      ld.x = p.x;
+      ld.amt = Math.min(1, ld.amt + dt * 9);
+    } else {
+      ld.amt = Math.max(0, ld.amt - dt * 6);
+    }
+    const r = p.hanging ? this.ropes.find((q) => q.id === ld.id) : undefined;
+    p.hangDip = r ? ropeDip(r, p.x, p.x, ld.amt) : 0;
+  }
+
   /** let go of a rope (hurt, respawn, or a deliberate drop); `cooldown` is how long before it can be grabbed again */
   private letGoOfRope(cooldown: number) {
     const p = this.player;
@@ -5238,13 +5258,7 @@ export class GameEngine {
 
     // Shimmy ropes (behind the hero)
     if (this.ropes.length) {
-      drawRopes(ctx, this.ropes, this.gameTime, {
-        hangingId: this.player.hanging ? this.ropeId : undefined,
-        canGrab: this.skills.has('shimmy'),
-        px: this.player.x,
-        py: this.player.y,
-        pGrounded: this.player.grounded,
-      });
+      drawRopes(ctx, this.ropes, this.gameTime, { load: this.ropeLoad.amt > 0 ? this.ropeLoad : undefined });
     }
 
     // Render Collectibles

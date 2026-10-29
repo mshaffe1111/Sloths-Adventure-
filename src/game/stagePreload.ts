@@ -36,6 +36,8 @@ import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
 import { LEAVES_URL, warmLeaves } from './leafSprites.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
+import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
+import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
 import { perfNote } from './perfLog.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -132,6 +134,11 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
     if (warmLeaves()) urls.push(LEAVES_URL);
     warmHeroVine();
     urls.push(HERO_VINE_URL);
+    // (and Pokey on a shimmy rope with the painted rope: two small sheets, asked for like the liana one, since which stages hang a
+    // rope is only known once the stage is built)
+    warmHeroRope();
+    warmRopeKit();
+    urls.push(HERO_ROPE_URL, ROPE_KIT_URL);
   }
   // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode)
   preloadBackdrop(cfg.worldIndex, cfg.id);
