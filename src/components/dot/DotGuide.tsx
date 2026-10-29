@@ -719,8 +719,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       for (const ev of run.queue.drain()) {
         if (ev.type === 'start') {
           noteSaid(ev.show.line);
-          // her very first tip on this phone carries the Skip tips button (once per device)
-          if (!v.flight && offersSkip(ev.show.line, run.help, run.seen)) {
+          // her first tip from the second stage on carries the Skip tips button (once per device)
+          if (!v.flight && offersSkip(ev.show.line, run.help, run.stageId)) {
             markSkipOffered();
             run.skipN = ev.show.n;
           }

@@ -112,9 +112,10 @@ export function helpAllows(l: Pick<GuideLine, 'kind' | 'skill'>, help: DotHelp, 
 }
 
 /**
- * "Skip tips" (Matt, 2026-10-26): Dot's very first tip on a phone carries a button that turns tips off ("Dot's help" to Quiet). It is
- * offered once per device, on the first tip she gives in a fresh game (nothing taught on this phone yet), and only while the setting is
- * still Teach me. A player who does not tap it keeps Teach me. Quiet still says the must-know lines (why an exit is locked).
+ * "Skip tips" (Matt, 2026-10-26): one of Dot's tips carries a button that turns tips off ("Dot's help" to Quiet). It is offered once
+ * per device, on her first tip from the second stage on (DOT-5, 2026-10-29: never on the first stage's coach lines, where a newcomer
+ * tapping the bubble away turned Quiet on before learning to run), and only while the setting is still Teach me. A player who does
+ * not tap it keeps Teach me. Quiet still says the must-know lines (why an exit is locked).
  */
 const SKIP_KEY = 'sloth_dot_skip_offered';
 /** the words she says when it is tapped (about 2 s) */
@@ -141,9 +142,12 @@ export function skipOffered(s: Pick<Storage, 'getItem'> | null = store()): boole
     return true;
   }
 }
-/** does this line, just going up, carry the Skip tips button? (a tip from Dot; not a must-know line, a warning or a story) */
-export function offersSkip(l: Pick<GuideLine, 'kind' | 'who'>, help: DotHelp, seen: ReadonlySet<string>, s: Pick<Storage, 'getItem'> | null = store()): boolean {
-  if (help !== 'teach' || seen.size > 0 || l.who !== 'Dot') return false;
+/** the first stage, whose coach lines teach the run and the jump: no Skip tips there */
+export const FIRST_STAGE = '1-1';
+/** does this line, just going up in stage `stageId`, carry the Skip tips button? (a tip from Dot; not a must-know line, a warning or a
+ *  story; not in the first stage) */
+export function offersSkip(l: Pick<GuideLine, 'kind' | 'who'>, help: DotHelp, stageId: string, s: Pick<Storage, 'getItem'> | null = store()): boolean {
+  if (help !== 'teach' || stageId === FIRST_STAGE || l.who !== 'Dot') return false;
   if (l.kind !== 'teach' && l.kind !== 'info' && l.kind !== 'goal' && l.kind !== 'struggle') return false;
   return !skipOffered(s);
 }
