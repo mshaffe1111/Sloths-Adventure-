@@ -172,4 +172,18 @@ export const GEN2_SEEDS: Record<string, Gen2StageSeeds> = {
 
     ],
   },
+  "6-4": {
+    stage: "6-4",
+    kit: "w6Game.ts:w6GameKit(4)",
+    curated: "2026-10-29",
+    rolled: 400,
+    passed: 0,
+    waived: [],
+    recent: [],
+    diversity: {"all":0.415,"shipped":0},
+    shared: null,
+    seeds: [
+
+    ],
+  },
 };
