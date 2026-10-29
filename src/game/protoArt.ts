@@ -793,7 +793,13 @@ export function drawProtoScene(
     const floor = p.soil || p.mound ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
     const lower = (side: 'l' | 'r') => banks.find((q) => q !== p && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2))?.y ?? floor;
     // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);
+    // (a bank beside a higher one runs its soil on 60 under that one's end: the higher end's curved face showed the backdrop through a
+    // sliver, and the lower bank's closed end as a ruled line, at every step down; the higher bank, drawn after, covers the rest)
+    const under = (side: 'l' | 'r') => banks.some((q) => q !== p && q.y < p.y - 2 && q.y + q.height >= p.y && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2));
+    const ul = !p.soil && !p.mound && under('l') ? 60 : 0;
+    const ur = !p.soil && !p.mound && under('r') ? 60 : 0;
+    const box = ul || ur ? { ...p, x: p.x - ul, width: p.width + ul + ur } : p;
+    drawBankArt(ctx, box, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);
   }
   shadeUpTo(-Infinity);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches

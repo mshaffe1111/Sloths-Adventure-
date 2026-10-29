@@ -27,7 +27,7 @@ for (const spec of stages) {
         const prev = pl.y + pl.height;
         const y = tops.length ? tops.sort((a, b) => Math.abs(a - prev) - Math.abs(b - prev))[0] : prev;
         pl.x = x; pl.y = y - pl.height; if ('vx' in pl) pl.vx = 0; if ('vy' in pl) pl.vy = 0;
-        pl.invincibleTimer = 0.9; if ('health' in pl && 'maxHealth' in pl) pl.health = pl.maxHealth;
+        pl.invincibleTimer = 0; if ('health' in pl && 'maxHealth' in pl) pl.health = pl.maxHealth;
       }, x);
       await p.waitForTimeout(700);
       await p.screenshot({ path: `${out}/${id}${layout ? 'L' + layout : ''}-${o}-${String(n++).padStart(3, '0')}-x${Math.round(x)}.jpg`, type: 'jpeg', quality: 70 });
