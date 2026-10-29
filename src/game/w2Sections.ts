@@ -781,11 +781,10 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       k.heart(k.x - 40, k.G - 60);
       cross.deal(turns, 1, false);
       pause(k);
-      // a golden seed above the last vine of a long chain, a leap from the top of its swing
-      const v0 = k.V.length;
+      // a golden seed for the chain: over the far bank, a full jump up from where he lands off it (it was up by the last vine, a leap
+      // from the top of its swing, which the level check never reaches: it follows a swing from ledge to ledge; 37 of 40 rolls failed)
       k.swingRiver(flavour === 'chains' ? 4 : 2);
-      const last = k.V[k.V.length - 1];
-      if (k.V.length > v0) k.goldenSeed(last.x + 40, last.topY + 40);
+      k.goldenSeed(k.x + 70, k.G - 165);
       k.flag();
     });
     k.beat('Finish', () => {

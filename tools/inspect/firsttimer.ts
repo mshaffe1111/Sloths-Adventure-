@@ -158,9 +158,14 @@ export class SpotMemory {
     if (!s) this.list.push((s = { x, y, singles: 0, doubles: 0, fails: 0, deaths: 0 }));
     return s;
   }
+  /**
+   * a double where a single has failed here: fallen back, or died (LV-2 round 2: a death never counted, so at 1-8's 212 px gap mid-chase
+   * he tried singles to the end; and his take-off moves from try to try, so a death within 160 px before counts for this spot)
+   */
   plan(x: number, y: number): 'single' | 'double' {
     const s = this.find(x, y);
-    return s && s.fails > 0 ? 'double' : 'single';
+    if (s && s.fails > 0) return 'double';
+    return this.list.some((q) => q.deaths > 0 && Math.abs(q.y - y) < 30 && q.x - x >= -40 && q.x - x < 160) ? 'double' : 'single';
   }
   /** a jump from (x, y) ended: `ok` when it got him on */
   result(x: number, y: number, kind: 'single' | 'double', ok: boolean): void {
@@ -917,14 +922,17 @@ export class FirstTimerRun {
    * Coming down over a small ledge or pad (under 220 px across), past its near quarter: he lets go of the steer to land on it (the
    * research's Channel 2: the lift-off then comes late, thumbify, so he may still run off its far side)
    */
-  private overSmall(dir: -1 | 0 | 1): boolean {
+  /** over a small landing, falling to it: 1 near its middle (let go of the steer), 2 past it (steer back), 0 not over one */
+  private overSmall(dir: -1 | 0 | 1): 0 | 1 | 2 {
     const p = this.sim.p;
-    if (dir === 0 || p.vy < -60) return false;
+    if (dir === 0 || p.vy < -60) return 0;
     for (const q of this.sim.platforms) {
       if (q.broken || q.width >= 220 || p.x < q.x || p.x > q.x + q.width || q.y < p.y - 2 || q.y > p.y + 140) continue;
-      if (dir * (p.x - (q.x + q.width / 2)) > -q.width * 0.25) return true;
+      const past = dir * (p.x - (q.x + q.width / 2));
+      if (past > q.width * 0.15) return 2;
+      if (past > -q.width * 0.25) return 1;
     }
-    return false;
+    return 0;
   }
 
   /** how far the nearest bush at his level is (px), or null */
@@ -1121,7 +1129,10 @@ export class FirstTimerRun {
     const j = this.jump;
     if (j) {
       const age = t - j.t0;
-      const out: Pad = age < j.upOnly || this.overSmall(j.dir) ? {} : side(j.dir);
+      // (past the middle of a small landing, a log or a pad, the thumb steers back onto it: round 2 of LV-2, 2-1's drownings were the bot
+      // landing on a log's far end at a run and running off it)
+      const small = age < j.upOnly ? 0 : this.overSmall(j.dir);
+      const out: Pad = age < j.upOnly || small === 1 ? {} : small === 2 ? side(j.dir === 1 ? -1 : 1) : side(j.dir);
       if (age < j.hold) out.jump = true;
       if (j.kind === 'double' && !j.pressed2 && age > j.hold + DT && !p.grounded && p.vy > j.dblAt && p.jumpsLeft > 0) {
         j.pressed2 = true;
@@ -1251,6 +1262,17 @@ export class FirstTimerRun {
           const floats = this.sim.platforms.filter((q) => (q.type === 'drift' || q.type === 'moving') && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x + q.width > edgeX && q.x < edgeX + 320 : q.x < edgeX && q.x + q.width > edgeX - 320));
           const near = floats.some((q) => (dir > 0 ? q.x - edgeX < 90 && q.x + q.width - edgeX > 40 : edgeX - (q.x + q.width) < 90 && edgeX - q.x > 40));
           if (floats.length && !near) {
+            if (this.edgeWait < 0) this.edgeWait = t;
+            if (t - this.edgeWait < 6) return {};
+          }
+        }
+        // (and riding a drifting log: he waits on it until the next log or the bank is near, LV-2 round 2: he used to hop off the end
+        // of the log the moment he reached it, whatever was ahead, which a person watching the river does not)
+        if (!drops && here && here.type === 'drift') {
+          const edgeX = dir > 0 ? here.x + here.width : here.x;
+          const bank = this.sim.platforms.some((q) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX));
+          const next = this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 90 && q.x - edgeX > -q.width + 40 : edgeX - (q.x + q.width) < 90 && edgeX - (q.x + q.width) > -q.width + 40));
+          if (!bank && !next) {
             if (this.edgeWait < 0) this.edgeWait = t;
             if (t - this.edgeWait < 6) return {};
           }

@@ -1,3 +1,4 @@
+import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
@@ -2781,6 +2782,9 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
   return found;
 }
 
+/** how much longer the first animal of each kind on an old-generator World 1-5 stage takes to strike (LV-14: a safe first meeting) */
+export const FIRST_TELL = 1.5;
+
 /**
  * The stage the game plays for a level. `difficulty` matters only for the stages the new generator builds (gen2/game.ts: Easy is
  * laid by the pipeline itself, the same stage under Easy's rules); every other stage is built once and made gentler by
@@ -2790,9 +2794,6 @@ const flagsCapped = (st: GeneratedStage): GeneratedStage => {
   capFlagSpans(st as never);
   return st;
 };
-
-/** how much longer the first animal of each kind on an old-generator World 1-5 stage takes to strike (LV-14: a safe first meeting) */
-export const FIRST_TELL = 1.5;
 
 export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
@@ -2831,6 +2832,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     if (a >= 0) attempt = a; // if no fresh layout passes (never seen in testing), fall back to the designed one
   }
   const stage = buildStage(config, attempt);
+  // (a ground block hung over water reaches the floor it is drawn down to: groundFloor.ts, 5-6's wall he walked through into the water)
+  groundToFloor(stage);
   // (water taught before it costs a life: waterTeach.ts, LV-8)
   if (!config.secret && config.worldIndex <= 5) teachWater(stage);
   // (LV-14: the first animal of each kind on the stage shows a longer tell, a safe first meeting: 5-8's first ocelot pounced 8 s in)
