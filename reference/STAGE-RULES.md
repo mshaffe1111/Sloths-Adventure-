@@ -302,7 +302,9 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   past it; the quick route walked past half the climbs (and World 6's `vineWall` and `swingClimb` have the same shape). A climb only
   counts where the wall's top is a walk wider than the glide from the vine's foot (530 px or more on the flat, about 600 dropping 80 px,
   790 dropping 230 px), its top stands more than a double jump plus 40 over every ledge beside it, and a section coming down off a wall
-  ends on a ledge 260 px or more. Proof: the quick route climbs every vine (`w7SwingRoute.test.ts`).
+  ends on a ledge 260 px or more. The same blind spot from below: a ledge just past a perch, within a double jump (plus 40) of the soft
+  pit's floor under the swing, is "jumped" to through the perch, and the swing reads as optional. Proof: the quick route swings every
+  liana and climbs every vine (`w7SwingRoute.test.ts`). And a long wall top is a quiet 4 s unless it carries a hop (a plinth or two).
 
 ## 7. Where things are
 

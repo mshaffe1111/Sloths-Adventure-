@@ -8,30 +8,32 @@
  *     ledge (pipeline backPit), never on to the perch, so the swing is the only way on (no floor to walk under it);
  *   - a perch lies past every jump and the leaf glide and sits about 80 px over the swing's ledge (RAISE), stepping back down after it;
  *   - chains keep a stone perch between every two swings (levelCheck follows ledge -> liana -> ledge, never liana to liana);
+ *   - no ledge just past a perch sits within a double jump (plus 40) of the soft pit's floor under the swing: levelCheck jumps through the
+ *     perch from the pit's floor to it, and the swing reads as optional (a drop to a lower ledge after the perch did: w7SwingRoute.test.ts);
  *   - a hop over the fall is a third of a jump or so, never a lower stone, never a second-jump gap;
  *   - a wall a brown vine climbs is a whole bank down to the ground (a wall reaches the floor), too high to jump: the vine is the way up;
  *   - sections are 600-1700 px, plus 370 px a liana (w7Swing.test.ts); a liana section is never mirrored, nor one with a tip;
  *   - nothing here crumbles (World 7's crumbling floors are w7Ground's, and are never required: STAGE-RULES §1).
  *
- * World 7 is the "Alone" chapter: Dot is gone (STAGE-RULES §1, Matt 2026-10-29), so the one line here is Pokey's own (W7S_TIPS).
+ * World 7 is the "Alone" chapter: Dot is gone (STAGE-RULES §1, Matt 2026-10-29). The first climb says Pokey's own line for the brown
+ * vines (w7.ts W7_TIPS.brown, the lesson w7Ground's walls teach too): no new line here.
+ *
+ * Which stages: the halls, 7-5 Stone Sentries (a purge) and 7-9 The Golem's Hall (a gauntlet) (W7S_STAGES): their themes are the halls'
+ * hunters (w7Ground W7_THEME cats, boas, harpies), with no walls or galleries of their own, so the swings and climbs give them the heavy
+ * beats the others' tiles and walls give theirs (STAGE-RULES §2 "Sameness"). The ruin floor between is w7Ground's.
  */
 import type { Difficulty, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
+import { W7_LESSON, W7_TAG } from './w7.ts';
 
-// ───────────────────────────── the tags (World 7's manifest, gen2/worlds/w7.ts, names what these ask for) ─────────────────────────────
+// ───────────────────────────── the stages, the tags ─────────────────────────────
 
-export const W7S_TAG = {
-  /** statues, fallen columns, carved stones: scenery along the ruin floor */
-  scenery: 'scenery',
-  statue: 'statue',
-} as const;
-/** the animals a ruin section may hold (the old generator's World 7: jaguar, ocelot, boa, caiman) */
-const SMALL = ['ocelot', 'boa'];
-const HUNTERS = ['jaguar', 'ocelot', 'boa'];
-
-/** the brown vines' lesson key, and Pokey's line on the first climb of World 7 (new, needs Matt's approval) */
-export const W7_VINES = 'w7:brown-vines';
-export const W7S_TIPS: Record<string, string> = { [W7_VINES]: "Brown vines. They don't move, but they hold." };
-export const W7S_NEW_LINES: readonly string[] = Object.values(W7S_TIPS);
+/** the stages these sections go to (w7Game.ts folds them in with withW7Swing) */
+export const W7S_STAGES: readonly number[] = [5, 9];
+/** the animals a swing or climb section may hold (w7.ts creature tags: the cats and the boa, World 7's halls) */
+const SMALL = ['ocelot', W7_TAG.coil];
+const HUNTERS = [W7_TAG.hunter, W7_TAG.coil];
+/** the brown vines' lesson (w7.ts W7_LESSON.brown: Pokey's line on the first one, W7_TIPS) */
+export const W7_VINES = W7_LESSON.brown;
 
 // ───────────────────────────── helpers ─────────────────────────────
 
@@ -39,9 +41,8 @@ type Opt = Partial<Socket>;
 const petals = (id: string, on: string, t: Socket['t'], count = 2, span = 120, o: Opt = {}): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span, ...o });
 const foe = (id: string, on: string, t: Socket['t'], kinds: string[] = SMALL, max = 3, o: Opt = {}): Socket => ({ id, role: 'enemy', on, t, allow: kinds, maxThreat: max, easy: 'soften', ...o });
 const prop = (id: string, on: string, t: Socket['t'], allow: string[], o: Opt = {}): Socket => ({ id, role: 'prop', on, t, allow, ...o });
-const scenery = (id: string, on: string, t: Socket['t'], chance = 0.6) => prop(id, on, t, [W7S_TAG.scenery], { chance });
-const statue = (id: string, on: string, t: Socket['t'], chance = 0.7) => prop(id, on, t, [W7S_TAG.statue], { chance });
-const flag = (on: string, t: Socket['t']): Socket => ({ id: 'flag', role: 'flag', on, t });
+/** a statue, an urn, a fallen column (w7.ts W7_PROPS, all tagged scenery) */
+const scenery = (id: string, on: string, t: Socket['t'], chance = 0.6) => prop(id, on, t, [W7_TAG.scenery], { chance });
 const tip = (on: string, key: string): Socket => ({ id: `tip-${key}`, role: 'tip', on, t: 0.1, allow: [key] });
 
 const bank = (key: string, w: SectionPiece['w'], place: SectionPiece['place'] = { kind: 'start' }, o: Partial<SectionPiece> = {}): SectionPiece => ({ key, shape: 'bank', w, place, ...o });
@@ -67,62 +68,6 @@ const climbWall = (vine: string, on: string, wall: string, h: number, w: Section
 const LIVE: SectionTemplate['phases'] = ['sho', 'ten', 'ketsu'];
 const ALL: SectionTemplate['archetypes'] = 'any';
 
-// ───────────────────────────── the ruin floor the swings join ─────────────────────────────
-
-/** a courtyard: flagstones, a low plinth to step over, a statue, a flag (the start, a rest, the shrine's approach) */
-const courtyard: SectionTemplate = {
-  id: 'w7s-courtyard',
-  name: 'a ruined courtyard',
-  archetypes: ALL,
-  phases: ['start', 'rest', 'goal'],
-  difficulty: 1,
-  pieces: [bank('a', [220, 260]), up('plinth', 'a', 40, [130, 160]), down('b', 'plinth', 40, [260, 300]), up('step', 'b', 40, [110, 140]), down('c', 'step', 40, [180, 220])],
-  entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'c', kind: 'ground' },
-  exitDy: 0,
-  sockets: [statue('statue', 'a', [0.2, 0.4]), petals('plinth', 'plinth', 0.5, 2, 80), flag('b', 0.5), petals('step', 'step', 0.5, 1), scenery('column', 'c', [0.6, 0.8], 0.5)],
-  mirrorable: true,
-};
-
-/** the temple stair: three steps up, three down, a hop over a break at the foot */
-const templeStair: SectionTemplate = {
-  id: 'w7s-temple-stair',
-  name: 'the temple stair up and down',
-  archetypes: ALL,
-  phases: ['ki', 'sho', 'ten', 'rest'],
-  difficulty: 3,
-  pieces: [
-    bank('a', [160, 200]),
-    up('s1', 'a', 55, [120, 150]),
-    up('s2', 's1', 55, [120, 150]),
-    up('top', 's2', 55, [170, 210]),
-    down('d1', 'top', 55, [120, 150]),
-    down('d2', 'd1', 55, [120, 150]),
-    down('e', 'd2', 55, [140, 170]),
-    hop('f', 'e', [240, 300]),
-  ],
-  entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'f', kind: 'ground' },
-  exitDy: 0,
-  sockets: [petals('s2', 's2', 0.5, 1), petals('top', 'top', 0.5, 2, 90), statue('statue', 'top', 0.8, 0.4), petals('d1', 'd1', 0.5, 1), foe('foe', 'f', [0.6, 0.85], SMALL, 2.5, { phases: LIVE, chance: 0.5 })],
-  mirrorable: true,
-};
-
-/** a broken colonnade: column stubs over the broken floor, a hop each, petals on the stubs */
-const colonnade: SectionTemplate = {
-  id: 'w7s-colonnade',
-  name: 'the broken colonnade',
-  archetypes: ALL,
-  phases: ['ki', 'sho', 'ten'],
-  difficulty: 3,
-  pieces: [bank('a', [180, 220]), hop('b', 'a', [150, 180]), up('c', 'b', 45, [120, 150]), hop('d', 'c', [140, 170]), down('e', 'd', 45, [160, 190]), hop('f', 'e', [240, 300])],
-  entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'f', kind: 'ground' },
-  exitDy: 0,
-  sockets: [scenery('column', 'a', 0.3, 0.6), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 1), foe('foe', 'f', [0.65, 0.85], SMALL, 2, { phases: LIVE, chance: 0.6 })],
-  mirrorable: true,
-};
-
 // ───────────────────────────── the lianas over the broken temple floor ─────────────────────────────
 //
 // A liana swings by itself (physics.ts vineAngle: Matt, 2026-10-28, Donkey Kong Country): up and down climb, left and right only turn
@@ -140,7 +85,7 @@ const firstSwing: SectionTemplate = {
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
-  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.4, 2, 80), petals('step', 'step', 0.5, 1), statue('statue', 'c', [0.5, 0.8], 0.5)],
+  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.4, 2, 80), petals('step', 'step', 0.5, 1), scenery('statue', 'c', [0.5, 0.8], 0.5)],
   weight: 2,
   mirrorable: false,
 };
@@ -211,8 +156,9 @@ const stairSwing: SectionTemplate = {
     up('s2', 's1', 50, [140, 170]),
     liana('l1', 's2'),
     perch('b', 'l1', [200, 240]),
-    down('b2', 'b', 50 - RAISE, [140, 170]),
-    down('c', 'b2', 50, [180, 220]),
+    down('b2', 'b', 50 - RAISE, [120, 140]),
+    up('k', 'b2', 40, [90, 110]),
+    down('c', 'k', 90, [180, 220]),
   ],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
@@ -247,18 +193,21 @@ const swingRun: SectionTemplate = {
   difficulty: 5,
   weight: 2,
   pieces: [
-    bank('a', [180, 220]),
+    bank('a', [160, 190]),
     liana('l1', 'a'),
-    perch('b', 'l1', [200, 240]),
+    perch('b', 'l1', [180, 210]),
     up('k1', 'b', 45, [100, 130]),
     down('c', 'k1', 45 - RAISE, [120, 150]),
     hop('d', 'c', [150, 180]),
-    hop('e', 'd', [220, 260]),
+    hop('e', 'd', [150, 170]),
+    // (a knee at the end: on Easy, with fewer animals, the run still ends on a hop)
+    up('k2', 'e', 40, [90, 100]),
+    down('f', 'k2', 40, [190, 220]),
   ],
   entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'e', kind: 'ground' },
+  exit: { piece: 'f', kind: 'ground' },
   exitDy: 0,
-  sockets: [petals('b', 'b', 0.5, 1), petals('k1', 'k1', 0.5, 1), petals('d', 'd', 0.5, 1), foe('foe', 'e', [0.6, 0.85], SMALL, 2.5, { phases: LIVE, chance: 0.5 })],
+  sockets: [petals('b', 'b', 0.5, 1), petals('k1', 'k1', 0.5, 1), petals('d', 'd', 0.5, 1), petals('k2', 'k2', 0.5, 1), foe('foe', 'f', [0.6, 0.85], SMALL, 2.5, { phases: LIVE, chance: 0.5 })],
   mirrorable: false,
 };
 
@@ -273,11 +222,16 @@ const swingRun: SectionTemplate = {
 
 /** how high a wall stands over the ledge its vine starts on: more than a double jump, plus 40 */
 const WALL = 230;
-/** the top of an old wall: the wall over the vine, a plinth on it (a hop up and down), the wall again; `last` the piece that ends it */
-const wallTop = (vine: string, on: string, wall: string, h: number, last: string): SectionPiece[] => [
-  ...climbWall(vine, on, wall, h, [200, 230]),
-  up(`${wall}Plinth`, wall, 40, [130, 160]),
-  bank(last, [200, 230], { kind: 'walk', after: `${wall}Plinth`, dy: 40 }, { main: true }),
+/**
+ * the top of an old wall: the wall over the vine, a plinth on it (a hop up and down), the wall again, `last` the piece that ends it; with
+ * `two`, a second plinth and a stretch between (a hop more along the top: the walk along a wall top is otherwise a quiet 4 s)
+ */
+const wallTop = (vine: string, on: string, wall: string, h: number, last: string, two = false): SectionPiece[] => [
+  ...climbWall(vine, on, wall, h, two ? [160, 180] : [200, 230]),
+  up(`${wall}Plinth`, wall, 40, two ? [100, 120] : [130, 160]),
+  ...(two
+    ? [down(`${wall}Mid`, `${wall}Plinth`, 40, [110, 130]), up(`${wall}Plinth2`, `${wall}Mid`, 40, [100, 120]), bank(last, [160, 180], { kind: 'walk', after: `${wall}Plinth2`, dy: 40 }, { main: true })]
+    : [bank(last, [200, 230], { kind: 'walk', after: `${wall}Plinth`, dy: 40 }, { main: true })]),
 ];
 
 /** a temple wall with a brown vine up it, petals along the top, down again: the climb shown safely, Pokey's line first (World 7's first) */
@@ -288,11 +242,11 @@ const vineWall: SectionTemplate = {
   phases: ['ki', 'sho', 'rest'],
   difficulty: 2,
   teaches: W7_VINES,
-  pieces: [bank('a', [260, 300]), ...wallTop('v', 'a', 'wall', WALL, 'top'), down('b', 'top', WALL, [180, 220]), hop('c', 'b', [200, 240])],
+  pieces: [bank('a', [260, 300]), ...wallTop('v', 'a', 'wall', WALL, 'top', true), down('b', 'top', WALL, [180, 220]), hop('c', 'b', [200, 240])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
-  sockets: [tip('a', W7_VINES), petals('a', 'a', 0.5, 2, 80), petals('wall', 'wall', 0.5, 2, 90), petals('plinth', 'wallPlinth', 0.5, 1), statue('statue', 'c', 0.6, 0.5)],
+  sockets: [tip('a', W7_VINES), petals('a', 'a', 0.5, 2, 80), petals('wall', 'wall', 0.5, 2, 90), petals('plinth', 'wallPlinth', 0.5, 1), scenery('statue', 'c', 0.6, 0.5)],
   mirrorable: false,
 };
 
@@ -306,12 +260,15 @@ const wallPair: SectionTemplate = {
   uses: [W7_VINES],
   pieces: [
     // (wide: a glide from a higher ledge before the section falls short of the first wall's top)
-    bank('a', [330, 360]),
+    bank('a', [320, 350]),
     ...climbWall('v1', 'a', 'w1', WALL, [210, 240]),
     ...wallTop('v2', 'w1', 'w2', WALL, 'top'),
-    // (wide: a glide off the first wall's top, dropping to the floor, falls short of the floor past it)
-    down('d', 'top', WALL, [260, 280]),
-    down('c', 'd', WALL, [160, 190]),
+    // (down a stair, a knee on it: 320 px or more, so a glide off the first wall's top, dropping to the floor, falls short of the floor
+    // past it; the knee keeps the way down from going quiet)
+    down('d', 'top', WALL, [130, 140]),
+    up('dk', 'd', 40, [90, 100]),
+    down('d2', 'dk', 40, [100, 110]),
+    down('c', 'd2', WALL, [150, 170]),
   ],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
@@ -333,7 +290,7 @@ const swingClimb: SectionTemplate = {
     bank('a', [180, 220]),
     liana('l1', 'a'),
     perch('b', 'l1', [220, 260]),
-    ...wallTop('v', 'b', 'wall', WALL, 'top'),
+    ...wallTop('v', 'b', 'wall', WALL, 'top', true),
     // (down in two steps: a glide from the perch, dropping to the floor, falls short of it past the wall's top)
     down('d', 'top', 150, [110, 130]),
     down('c', 'd', WALL - RAISE - 150, [200, 240]),
@@ -343,30 +300,6 @@ const swingClimb: SectionTemplate = {
   exitDy: 0,
   sockets: [petals('b', 'b', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), petals('plinth', 'wallPlinth', 0.5, 1), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: LIVE, chance: 0.5 })],
   weight: 2,
-  mirrorable: false,
-};
-
-/** a swing onto a ledge, a drop onto a lower one, and a tall brown vine up the wall past both (its top out of a jump from the perch) */
-const swingDropClimb: SectionTemplate = {
-  id: 'w7s-swing-drop-climb',
-  name: 'swing, drop, climb the tall wall (run)',
-  archetypes: ALL,
-  phases: LIVE,
-  difficulty: 6,
-  uses: [W7_VINES],
-  weight: 2,
-  pieces: [
-    bank('a', [180, 220]),
-    liana('l1', 'a'),
-    perch('b', 'l1', [180, 220]),
-    down('b2', 'b', 130, [140, 170]),
-    ...wallTop('v', 'b2', 'wall', 130 + WALL, 'top'),
-    down('c', 'top', WALL - RAISE, [260, 300]),
-  ],
-  entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'c', kind: 'ground' },
-  exitDy: 0,
-  sockets: [petals('b', 'b', 0.5, 1), petals('b2', 'b2', 0.5, 1), petals('wall', 'wall', 0.5, 2, 90), petals('plinth', 'wallPlinth', 0.5, 1), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: ['ten', 'ketsu'], chance: 0.4 })],
   mirrorable: false,
 };
 
@@ -384,8 +317,10 @@ const climbSwing: SectionTemplate = {
     ...wallTop('v', 'a', 'wall', WALL, 'top'),
     liana('l1', 'top'),
     perch('b', 'l1', [200, 240]),
-    down('b2', 'b', 155, [140, 170]),
-    down('c', 'b2', 155, [200, 240]),
+    // (down in two drops with a knee between: the way down keeps a hop)
+    down('b2', 'b', 155, [110, 130]),
+    up('k', 'b2', 40, [80, 100]),
+    down('c', 'k', 195, [200, 240]),
   ],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
@@ -398,22 +333,19 @@ const climbSwing: SectionTemplate = {
 
 // ───────────────────────────── the set ─────────────────────────────
 
-/** World 7's swing and climb sections, with the ruin floor that joins them */
+/** World 7's swing and climb sections */
 export const W7_SWING_SECTIONS: readonly SectionTemplate[] = [
-  courtyard, templeStair, colonnade,
   firstSwing, swingPair, swingChain, stairSwing, swingHunter, swingRun,
-  vineWall, wallPair, swingClimb, swingDropClimb, climbSwing,
+  vineWall, wallPair, swingClimb, climbSwing,
 ];
 
 /**
- * World 7's kit with the swing and climb sections joined (the world's own manifest, gen2/worlds/w7.ts, stays as it is: w7Game.ts decides
- * which stage takes which, `forStage`). Pokey's line for the brown vines joins the manifest's tips.
+ * World 7's kit for stage `stage` with the swing and climb sections joined, for the stages that take them (W7S_STAGES; none for the rest).
+ * The world's own manifest (gen2/worlds/w7.ts) stays as it is: w7Game.ts folds this in.
  */
-export function withW7Swing(kit: WorldKit, _stage?: number, _difficulty: Difficulty = 'normal'): WorldKit {
+export function withW7Swing(kit: WorldKit, stage: number, _difficulty: Difficulty = 'normal'): WorldKit {
+  if (!W7S_STAGES.includes(stage)) return kit;
   const M = kit.manifest;
   const have = new Set(M.sections.map((s) => s.id));
-  return {
-    ...kit,
-    manifest: { ...M, sections: [...M.sections, ...W7_SWING_SECTIONS.filter((s) => !have.has(s.id))], tips: { ...W7S_TIPS, ...(M.tips ?? {}) } },
-  };
+  return { ...kit, manifest: { ...M, sections: [...M.sections, ...W7_SWING_SECTIONS.filter((s) => !have.has(s.id))] } };
 }
