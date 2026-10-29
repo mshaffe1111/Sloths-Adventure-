@@ -68,6 +68,20 @@ def edit1(commit):
     print(len(ed), 'edit items', sum(len(e['seeds']) for e in ed), 'images')
 
 
+def clips1(picks):
+    """Wan 2.2 clips re-run from the edited starts, exactly as the swim set (tools/art/w6/swim/make_specs.py CLIPS, M, P, MOTION)"""
+    sys.path.insert(0, str(H.parents[0] / 'w6' / 'swim'))
+    import make_specs as sw
+    cl = []
+    for mv, src, seeds in picks:
+        what, _, wh = sw.CLIPS[mv]
+        for s in seeds:
+            cl.append({'name': f'hfp-{mv}-{Path(src).stem}-s{s}', 'src': f'b:hfpokey/{src}', 'prompt': sw.M + sw.P + what, 'seed': s,
+                       'w': wh[0], 'h': wh[1]})
+    (H / 'spec-clips1.json').write_text(json.dumps({'tag': 'pokey-clips1', 'motion': sw.MOTION, 'clips': cl}, indent=1))
+    print(len(cl), 'clips')
+
+
 def args(spec, commit):
     name = Path(spec).name
     gh = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfpokey/'
@@ -85,5 +99,7 @@ def args(spec, commit):
 if __name__ == '__main__':
     if sys.argv[1] == 'edit1':
         edit1(sys.argv[2])
+    elif sys.argv[1] == 'clips1':
+        clips1([('tread', 'edits/tread-start-s1.png', [3, 11]), ('under', 'edits/under-start-s2.png', [11, 3])])
     else:
         args(sys.argv[2], sys.argv[3])

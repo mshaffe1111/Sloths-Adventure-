@@ -1,0 +1,5 @@
+hf-art-pokey Hugging Face jobs (2026-10-29), rtx-pro-6000 at ~$2.75/h, results in the bucket mshaffe111/w5-xfer under hfpokey/
+The job copies pokeygpu.py and its spec from raw GitHub at the commit named in its command (branch hf-art-pokey).
+
+pokey-edit1   6ae381255ddcdc0830263250  17:23:49-~17:25   ~1 min   ~$0.05  failed at once: pip in the image needs --break-system-packages (spandrel)
+pokey-edit1b  6ae38154ad9610e5cb31436b  17:24:36-         running  spec-edit1.json @ d625cff: Real-ESRGAN anime x4 -> 2x of 7-4 sheets 1, 5, 6; Qwen-Image-Edit-2511 satchel edits (swim starts, every tread/under loop frame), pole removal on sheet 5 cells 1, 2, 4
