@@ -107,16 +107,6 @@ export const TUNING = {
   pumpDown: 12,
   pumpUp: 20,
   pumpSpeed: 0.1,
-  /**
-   * on a vine (refined): a slide up this far off straight is a leap off, not a climb (tan of the angle: 0.36 is 20 degrees). It was 0.7
-   * (35 degrees), so a thumb flicking "up and forward" the way the swing card says, about 27 degrees over, climbed instead (2026-10-25)
-   */
-  vineLeapSlant: 0.36,
-  /**
-   * a jump's flick that leans this far off straight up (tan of the angle: 0.364 is 20 degrees) carries its lean to the game, and a let-go
-   * from a vine or a trunk leaps that way. It used to follow his facing or the held steer whatever the flick did, so after a pump to the
-   * right a flick up and LEFT leaped right, and a flick up and right while he faced left threw him backward (QA, 2026-10-26)
-   */
   leanSlant: 0.364,
   /**
    * … and go no more than this far sideways for each px it rises (1.2 is 50 degrees over): a mostly sideways or downward slide on a vine,
@@ -145,7 +135,7 @@ export const TUNING = {
   vineClimbedPx: 8,
   /**
    * on a vine, a liana or a trunk: a whole touch that is one quick stroke up and over, put down and lifted within this long (ms), lets go
-   * when it lifts, however far over it leans (only not straight up: vineLeapSlant). Matt's flicks off a liana (control test, 2026-10-26
+   * when it lifts, however far over it leans (only not straight up: leanSlant). Matt's flicks off a liana (control test, 2026-10-26
    * and 27, sideways phone) went 55 to 80 degrees over, e.g. 290 px across and 110 up in 200 ms, and lifted at once: every one was read as
    * pumping the swing (over vineLeapMaxSlant), climbed him to the top of the vine instead, and he was stuck there "flicking wildly"
    * (31 of them in three sessions). A thumb pumping a swing stays on the glass for half a second and more, and turns round.
@@ -545,7 +535,7 @@ export class TouchGestures {
     const el = Math.max(1, t - f.t0);
     if (this.vine()) {
       if (
-        el <= TUNING.vineFlickMs && rise >= TUNING.vineFlickRise && Math.abs(dx) >= rise * TUNING.vineLeapSlant &&
+        el <= TUNING.vineFlickMs && rise >= TUNING.vineFlickRise && Math.abs(dx) >= rise * TUNING.leanSlant &&
         f.sx <= Math.abs(dx) * 1.3 && Math.hypot(dx, rise) / el >= TUNING.vineFlickSpeed &&
         // (and under 45 degrees over, where climbing strokes lean, the same test as a flick while the finger is down: a short climbing stroke
         // that lifted is a climb, CT-3)

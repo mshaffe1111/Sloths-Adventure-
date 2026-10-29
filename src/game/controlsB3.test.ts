@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { HANG_DROP, ropeYAt } from './rope.ts';
 import type { Rope } from './types.ts';
-import { TouchGestures } from './touchGestures.ts';
+import { TouchGestures, TUNING } from './touchGestures.ts';
 
 const G = 2000;
 
@@ -63,4 +63,11 @@ test('CT-21: on a rope the steering thumb\'s flick up and back lets go of the st
   assert.ok(jump >= 0, t.log.join(' '));
   assert.equal(t.log[jump], 'jump:-1', t.log.join(' '));
   assert.ok(t.log.slice(0, jump).includes('move:none') || t.log.slice(0, jump).includes('move:left'), `the steer right let go before the hop: ${t.log.join(' ')}`);
+});
+
+// ───────────────────────────── CT-23: one "20 degrees" ─────────────────────────────
+
+test('CT-23: one 20 degree lean: the flick that carries a lean and the least lean that can let go of a vine are the same number', () => {
+  assert.equal((TUNING as Record<string, unknown>).vineLeapSlant, undefined);
+  assert.ok(Math.abs(TUNING.leanSlant - Math.tan((20 * Math.PI) / 180)) < 0.001);
 });
