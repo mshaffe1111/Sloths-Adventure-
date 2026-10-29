@@ -1,6 +1,7 @@
 """Key a native-resolution strip from striphdgpu.py (VI-2, 2026-10-29) and make the side-by-side phone crops.
 
-    python3 -I tools/art/hfbatch/striphdcut.py cut <old strip.webp> <new on magenta.webp> <out.webp>
+    python3 -I tools/art/hfbatch/striphdcut.py cut2 <old strip.webp> <new on grey.webp> <alpha-<stem>.webp> <out.webp>   (the one used)
+    python3 -I tools/art/hfbatch/striphdcut.py cut <old strip.webp> <new on magenta.webp> <out.webp>   (the first try: keyed)
     python3 -I tools/art/hfbatch/striphdcut.py crops <old strip.webp> <new strip.webp> <near|mid> <out.jpg> [x0 fraction ...]
     python3 -I tools/art/hfbatch/striphdcut.py seam <strip.webp>
 
@@ -23,7 +24,16 @@ FIT = {'far': (1.2, 0.72, 0.6), 'mid': (1.0, 0.69, 0.58), 'near': (1.05, 0.72, 0
 def cut(old_p, new_p, out_p, grow=4):
     new = np.asarray(Image.open(new_p).convert('RGB')).astype(np.float32)
     H, W = new.shape[:2]
-    a0 = np.asarray(Image.open(old_p).convert('RGBA').getchannel('A').resize((W, H), Image.LANCZOS)).astype(np.float32) / 255
+    oldim = Image.open(old_p).convert('RGBA')
+    a0 = np.asarray(oldim.getchannel('A').resize((W, H), Image.LANCZOS)).astype(np.float32) / 255
+    # the old colour, un-premultiplied and spread a little into the clear (so a rim pixel has an old colour to be judged against)
+    o = np.asarray(oldim).astype(np.float32)
+    oa = o[..., 3:4] / 255
+    pm = o[..., :3] * oa
+    k = lambda v: ndimage.uniform_filter(v, size=(5, 5, 1)[:v.ndim])
+    oc = k(pm) / np.maximum(k(oa), 1e-3)
+    oc = np.where(oa > 0.6, o[..., :3], oc)
+    oc = np.asarray(Image.fromarray(np.clip(oc, 0, 255).astype(np.uint8)).resize((W, H), Image.LANCZOS)).astype(np.float32)
     r, g, b = new[..., 0], new[..., 1], new[..., 2]
     # magenta-ness: r and b high and alike, g low
     keyness = np.clip(np.minimum(r, b) - g - np.abs(r - b) * 0.5, 0, 255)
@@ -36,9 +46,44 @@ def cut(old_p, new_p, out_p, grow=4):
     am = np.maximum(a, 0.05)[..., None]
     c = np.clip((new - (1 - am) * MAG) / am, 0, 255)
     c = np.where(rim[..., None], c, new)
-    m = np.minimum(c[..., 0], c[..., 2])
-    ex = np.clip(m - c[..., 1] - 12, 0, None) * rim
+    # spill: how much more magenta (r and b both above g) the pixel has than the old strip had there; pink petals and orchids keep theirs
+    mag = lambda v: np.minimum(v[..., 0], v[..., 2]) - v[..., 1]
+    rim2 = ndimage.binary_dilation(rim, iterations=2)
+    ex = np.clip(mag(c) - np.maximum(mag(oc), 0) - 4, 0, None) * rim2
     c[..., 0] -= ex; c[..., 2] -= ex
+    # a rim pixel the unmix could not save (it is still far off the old colour and very faint) takes the old colour
+    bad = rim & (a < 0.35) & (np.abs(c - oc).sum(-1) > 120)
+    c[bad] = oc[bad]
+    px = np.dstack([np.clip(c, 0, 255), a * 255]).astype(np.uint8)
+    Image.fromarray(px, 'RGBA').save(out_p, 'WEBP', quality=82, method=6, alpha_quality=90)
+    print(out_p, W, H, round(os.path.getsize(out_p) / 1048576, 2), 'MiB')
+
+
+def cut2(old_p, new_p, alpha_p, out_p, bg=(128, 128, 128)):
+    """the repaint was made on flat grey, and the shape is the old strip's alpha sharpened by Real-ESRGAN (striphdgpu.py alpha-*): no
+    keying at all, so the repaint can neither add nor drop a shape. The colour on the soft rim is unmixed from the grey; a faint rim
+    pixel the unmix cannot save takes the old colour."""
+    new = np.asarray(Image.open(new_p).convert('RGB')).astype(np.float32)
+    H, W = new.shape[:2]
+    a = np.asarray(Image.open(alpha_p).convert('L').resize((W, H), Image.LANCZOS)).astype(np.float32) / 255
+    # (the old shape at this size, to keep the sharpened one honest: never more than the old one grown by 2 px)
+    oldim = Image.open(old_p).convert('RGBA')
+    a0 = np.asarray(oldim.getchannel('A').resize((W, H), Image.LANCZOS)).astype(np.float32) / 255
+    a = np.minimum(a, ndimage.maximum_filter(a0, size=5))
+    a[a < 0.03] = 0
+    o = np.asarray(oldim).astype(np.float32)
+    oa = o[..., 3:4] / 255
+    pm = o[..., :3] * oa
+    k = lambda v: ndimage.uniform_filter(v, size=(5, 5, 1))
+    oc = np.where(oa > 0.6, o[..., :3], k(pm) / np.maximum(k(oa), 1e-3))
+    oc = np.asarray(Image.fromarray(np.clip(oc, 0, 255).astype(np.uint8)).resize((W, H), Image.LANCZOS)).astype(np.float32)
+    B = np.array(bg, np.float32)
+    am = np.maximum(a, 0.05)[..., None]
+    c = np.clip((new - (1 - am) * B) / am, 0, 255)
+    rim = a < 0.98
+    c = np.where(rim[..., None], c, new)
+    t = np.clip((0.45 - a) / 0.3, 0, 1)[..., None]  # the faintest rim leans on the old colour
+    c = c * (1 - t) + oc * t
     px = np.dstack([np.clip(c, 0, 255), a * 255]).astype(np.uint8)
     Image.fromarray(px, 'RGBA').save(out_p, 'WEBP', quality=82, method=6, alpha_quality=90)
     print(out_p, W, H, round(os.path.getsize(out_p) / 1048576, 2), 'MiB')
@@ -92,6 +137,8 @@ if __name__ == '__main__':
     cmd = sys.argv[1]
     if cmd == 'cut':
         cut(*sys.argv[2:5])
+    elif cmd == 'cut2':
+        cut2(*sys.argv[2:6])
     elif cmd == 'crops':
         crops(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], [float(x) for x in sys.argv[6:]] or [0.15, 0.6])
     elif cmd == 'seam':

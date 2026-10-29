@@ -70,7 +70,7 @@ def esrgan():
         import spandrel  # noqa: F401
     except ImportError:
         import subprocess, sys
-        subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'spandrel'], check=True)
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', '--no-deps', '--break-system-packages', 'spandrel'], check=True)
     from spandrel import ModelLoader
     pth = Path('/tmp/anime6b.pth')
     if not pth.exists():
@@ -108,17 +108,26 @@ for it in SPEC['items']:
         im = srcs[it['src']]
         H = it['h']
         W = round(im.width * H / im.height)
+        BG = np.array(it.get('bg', [255, 0, 255]), np.float32)
         if it.get('pre') == 'esrgan':
             a = np.asarray(im).astype(np.float32)
             al = a[..., 3:4] / 255
-            big = UP(a[..., :3] * al + MAG * (1 - al))
+            big = UP(a[..., :3] * al + BG * (1 - al))
             rgb = np.asarray(Image.fromarray(np.clip(big, 0, 255).astype(np.uint8)).resize((W, H), Image.LANCZOS)).astype(np.float32)
             b = io.BytesIO(); Image.fromarray(rgb.astype(np.uint8)).save(b, 'WEBP', quality=95, method=4)
             put(f"pre-{it['name']}.webp", b.getvalue())
+            # the shape, sharpened the same way (the cut takes the alpha from here, so the repaint cannot add or drop any shape)
+            stem = it['src'].rsplit('/', 1)[1].rsplit('.', 1)[0]
+            if not (OUT / f'alpha-{stem}.webp').exists():
+                bal = UP(np.repeat(a[..., 3:4], 3, 2)).mean(2)
+                al2 = Image.fromarray(np.clip(bal, 0, 255).astype(np.uint8), 'L').resize((W, H), Image.LANCZOS)
+                b = io.BytesIO(); al2.save(b, 'WEBP', lossless=True)
+                put(f'alpha-{stem}.webp', b.getvalue())
+                done.append((f'alpha-{stem}.webp', b.getvalue()))
         else:
             a = np.asarray(im.resize((W, H), Image.LANCZOS)).astype(np.float32)
             al = a[..., 3:4] / 255
-            rgb = a[..., :3] * al + MAG * (1 - al)
+            rgb = a[..., :3] * al + BG * (1 - al)
         H16 = math.ceil(H / 16) * 16
         if H16 > H:
             rgb = np.concatenate([rgb, np.repeat(rgb[-1:], H16 - H, 0)], 0)

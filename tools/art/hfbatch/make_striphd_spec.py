@@ -7,7 +7,7 @@ import json, sys
 
 STYLE = ('slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark '
          'outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, '
-         'on one flat plain pure magenta background, no text')
+         'on one flat plain grey background, no text')
 WHAT = {
     'w1-near': 'sunny lowland rainforest undergrowth: lush ferns and broad leaves, a mossy fallen log, small red-capped mushrooms, pink petals on a mossy forest floor',
     'w1-mid': 'big mossy rainforest trees with a spreading green canopy, hanging lianas, bromeliads and small purple orchids on the trunks, wide buttress roots',
@@ -27,7 +27,7 @@ def item(stem, strength, seed, commit, pre='esrgan'):
     return {'name': f'{stem}-s{round(float(strength) * 100)}-{seed}' + ('' if pre == 'esrgan' else '-' + pre), 'pre': pre,
             'src': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/src/assets/backdrops/{stem}.webp',
             'h': 1736 if part == 'near' else 1302, 'strength': float(strength), 'seed': int(seed),
-            'prompt': f'{STYLE}. {WHAT[stem]}'}
+            'prompt': f'{STYLE}. {WHAT[stem]}', 'bg': [128, 128, 128]}
 
 
 if __name__ == '__main__':
