@@ -576,8 +576,11 @@ function drawEyes(ctx: CanvasRenderingContext2D, v: View, p: Prop, t: number, ex
   const w = p.h * aspect(p.kind);
   const a = P(v, p.x - w / 2, p.y + p.h, p.z), b = P(v, p.x + w / 2, p.y, p.z);
   if (!a || !b) return;
+  // (like every side piece, they fade out close to the camera, before their glow gets big and soft)
+  const near = nearFade(p.z - v.camZ) * Math.max(0, Math.min(1, (0.3 - (b[1] - a[1]) / v.H) / 0.12));
+  if (near <= 0) return;
   ctx.globalCompositeOperation = 'lighter';
-  ctx.globalAlpha = fadeIn(p.z - v.camZ) * ex;
+  ctx.globalAlpha = fadeIn(p.z - v.camZ) * ex * near;
   const col = p.kind === 'eyesThorns' ? '120, 255, 150' : '255, 230, 110';
   for (const [ex0, ey0] of EYES[p.kind]) {
     const x = a[0] + (b[0] - a[0]) * (p.flip ? 1 - ex0 : ex0), y = a[1] + (b[1] - a[1]) * ey0;
