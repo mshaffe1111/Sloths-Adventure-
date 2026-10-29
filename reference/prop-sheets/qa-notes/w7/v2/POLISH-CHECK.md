@@ -33,3 +33,20 @@ in `video/` (the first crumbling tiles in 7-1, the first Stone Sentry in 7-5).
    **Rough spot, named:** in 7-5's layout 1 a tayra patrols the floor where the sentry line comes up, so the first sentry is met mid-fight rather than on a quiet floor (`lines/7-5-a-stone-sentry-sideways.png`: the tayra on Pokey, the sentry at the right edge). The fix is a quiet floor before the first sentry (no other animal within MEET_LEAD), then a re-curation of 7-5; not done in this round.
    The line shots missed 7 of 40 lines (7-5 most), each where an animal hit Pokey as he was set down, which holds the line back; those shots show the spot without the bubble.
 10. **Motion smooth: pass.** The crumble frames swap in place (one scale for all three); the sentry's walk follows its stride (`video/7-5-sentry-*.webm`).
+
+## Round 3: the Hugging Face World 7 art wired in (stills in `../v3/`)
+
+| Piece | Where | State | Proof |
+|---|---|---|---|
+| Ring of chairs (`chairs-ring.webp`) | 7-3's courtyard, behind the floor, 1000 px wide, its carved strip under the floor's lip | Wired. The chairs stand on the courtyard, each one its own, the plain eleventh set apart | `v3/7-3-chairs-*.png` |
+| Stone Sentry | 7-5's hall guards | Wired (round 2) | `v3/7-5-sentry-*.png` |
+| Vine anchors (`vine-anchors.webp`) | every World 7 swinging liana: the lintel fixed at its top, the anchor's own liana run down its length, turning with the swing; no leaf clump | Wired. On upright the lintel and knot show at the top; sideways the top is above the screen | `v3/7-5-liana-*.png`, `v3/7-9-liana-*.png` |
+| Spare liana runs | the brown vines down the old walls (14 px stems, each thinning away at its foot, no cut ends) | Wired | `v3/7-3-wall-*.png`, `v3/7-7-wall-*.png` |
+| Temple walls (`temple-walls.webp`) | the face of every high ledge (a run of banks standing 90 px or more over the floor beside it), in place of the plain stacked bricks and the kit's root wall | Wired: one grid of strips through the stage, so a run of banks is one wall and its columns carry on across the banks' 40 px steps | `v3/7-5-high-*.png`, `v3/7-7-wall-sideways.png` |
+
+Rules kept (tested, `src/game/w7TempleArt.test.ts`):
+- never the same strip twice side by side;
+- the sloth face (wall-3) at least 8 columns (1,760 px) from the next, never twice down its column;
+- wall-4 only on a lone ledge one strip wide. Its root runs off **both** edges, the left at y 830-858 and the right at y 571-604 (measured), so it can't sit beside any strip, mirrored or not.
+
+**Rough spot, named:** with the face kept rare and wall-4 kept alone, a wall alternates wall-1 and wall-2, so wall-1's root comes back every 440 px. Mirroring and a different height per column soften it, but a wide wall shows it two or three times (`v3/7-5-high-sideways.png`). The fix is one more plain strip without a root (220 x 900, the same stone).

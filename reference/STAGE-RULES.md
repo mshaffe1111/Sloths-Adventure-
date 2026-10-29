@@ -391,6 +391,12 @@ plan); never ship the rough version as finished.
     scatter; the painted pieces (w7c fig roots, columns, statues) are set into the bank faces instead (`w7FaceArt.ts`).
   - *Dot is gone (Matt, §1):* Pokey's lines are the sections' tips and the rooms' tips; `wayside.ts dotPresent` already draws every
     World 7 line as his thought, and the tests hold every hint of every roll to his list.
+  - *A wall face is a run of banks, not one bank* (World 7's temple walls, 2026-10-29): a wall's top is several banks touching, 30 to 40
+    px apart, so "is this a high ledge" asks of the whole run (touching banks under 90 px apart) against the floor beside it, and the strips
+    sit on one grid through the stage at the world's height, not each bank's, or every step shows a seam (`w7TempleArt.ts`). Read an art
+    piece's edges before tiling it: wall-4's root runs off both edges, which the art notes gave as one.
+  - *Line shots: one fresh page per line* (`tools/art/w7/lines.mjs`): hints are said once a device, a line due while another is up is used
+    up unseen, and hints are not stored in x order (w7Finish now sorts them). Teleporting between spots in one page loses most of them.
 
 ## 7. Where things are
 
