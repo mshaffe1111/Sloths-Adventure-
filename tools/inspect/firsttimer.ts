@@ -30,10 +30,10 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { GameEngine } from '../../src/game/engine.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
-import { GuideQueue, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
+import { GuideQueue, calmFor, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
 import { engineGuideLine } from '../../src/game/dotLines.ts';
 import { lessonDotLine, type LessonId } from '../../src/game/lessons.ts';
-import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../src/game/dotGuideWatch.ts';
+import { DEATH_TOPIC, DeathWatch, MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../src/game/dotGuideWatch.ts';
 import { emptyGuideView, type GuideView } from '../../src/game/dotGuideView.ts';
 import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
@@ -280,6 +280,9 @@ class DotShadow {
   readonly queue: GuideQueue;
   readonly moves = new MoveWatch();
   readonly struggle = new StruggleWatch();
+  readonly deaths = new DeathWatch();
+  /** what got him, each life lost (DOT-10) */
+  readonly lostTo: DeathCause[] = [];
   clock = 0;
   readonly shown: Shown[] = [];
   private open = new Map<number, Shown>();
@@ -289,7 +292,7 @@ class DotShadow {
   private prevJR = 0;
   constructor(readonly stageId: string) {
     const w = Number(stageId.split('-')[0]);
-    this.queue = new GuideQueue(w >= 1 && w <= 4 && !/-D$/.test(stageId));
+    this.queue = new GuideQueue(calmFor(w, stageId));
   }
   private say(l: GuideLine | null | undefined) {
     if (l) this.queue.push(l, this.clock);
@@ -323,16 +326,19 @@ class DotShadow {
       this.restart = false;
     }
     if (!v.boss) {
-      if (v.hp > 0 && v.py < v.levelH - 10) {
+      if (v.lives < this.prevLives) {
+        const fell = this.alive.y > v.levelH - 140 || (this.alive.falling && !this.alive.foe);
+        const cause = this.deaths.cause(v, fell ? 'fall' : this.alive.foe ? 'foe' : 'other');
+        this.lostTo.push(cause);
+        const h = this.struggle.death(this.alive.x, this.alive.y, cause);
+        this.help(h, h?.cause ? DEATH_TOPIC[h.cause] : undefined);
+        this.restart = true;
+        this.deaths.reset();
+      } else if (v.hp > 0 && v.py < v.levelH - 10) {
         let foe = false;
         for (const en of v.enemies) if (!en.defeated && Math.abs(en.x - v.px) < 150 && Math.abs(en.y - v.py) < 160) foe = true;
         this.alive = { x: v.px, y: v.py, foe: foe || v.hurt, falling: !v.grounded && v.vy > 400 };
-      }
-      if (v.lives < this.prevLives) {
-        const fell = this.alive.y > v.levelH - 140 || (this.alive.falling && !this.alive.foe);
-        const h = this.struggle.death(this.alive.x, this.alive.y, fell ? 'fall' : this.alive.foe ? 'foe' : 'other');
-        this.help(h, h?.cause === 'fall' ? 'gap' : h?.cause === 'foe' ? 'foe' : undefined);
-        this.restart = true;
+        this.deaths.step(v, DT * 1000);
       }
       const jr = this.moves.count('jump') + this.moves.count('run') + this.moves.count('grab');
       if (jr !== this.prevJR) {

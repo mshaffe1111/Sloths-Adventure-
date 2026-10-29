@@ -119,6 +119,8 @@ export const GUIDE = {
   bossLineMs: 6000,
   /** a tip about a thing (GuideLine.thing) has had a fair look after this long, and gives way to the next thing's tip (ms) */
   thingYieldMs: 3000,
+  /** the reading clock moves to when the bubble shows (Dot's flight in), at most this late (ms; DOT-7) */
+  showLagMaxMs: 2000,
 } as const;
 
 /**
@@ -136,6 +138,10 @@ export const GUIDE = {
  * A first-time lesson may also come in over a plain information line already up, and any tip over a story aside (the line cut comes
  * back once, after it): a stage's opening words held the gap's lesson back past 2-2's first river.
  */
+/** the worlds where Dot is toned down (Matt, 2026-10-28; World 5 added 2026-10-29, DOT-8: its move tips stayed up to 20 s and came back,
+ *  a median 7.9 s between lines). Not a boss stage (-D). World 7 has no Dot (Pokey teaches himself). */
+export const CALM_WORLDS: ReadonlySet<number> = new Set([1, 2, 3, 4, 5]);
+export const calmFor = (world: number, stageId: string): boolean => CALM_WORLDS.has(world) && !/-D$/.test(stageId);
 export const CALM = { startMs: 2500, gapMs: 10000, repeatMax: 2, moveCapMs: 12000, goneMs: 2500, nearMs: 30000 } as const;
 
 /**
@@ -197,6 +203,8 @@ export interface Showing {
   base: number;
   /** a new number for each line put up (the view keys on it) */
   n: number;
+  /** the bubble is up (the view said so: queue.shown): the clocks run from then */
+  shown?: boolean;
 }
 
 export interface TickEnv {
@@ -254,6 +262,8 @@ export class GuideQueue {
   private capped = new Set<string>();
   /** the line on screen was taken down by its sender before its minimum time: it goes when that is up */
   private clearCur = false;
+  /** (calm) a first-time lesson waiting to cut the line on screen once that has been up its minimum time (DOT-6) */
+  private cutWait: Waiting | null = null;
   /** what happened on the last calls (the view and the tests read it) */
   events: GuideEvent[] = [];
 
@@ -274,12 +284,21 @@ export class GuideQueue {
     // (calm: a first-time lesson comes in over a plain information or story line, which goes back to be said again: see CALM)
     // (and any tip comes in over a story aside: in 2-2 the opening aside held the first river's tip until he was at the water)
     const lessonCut = this.calm && line.kind === 'teach' && !!cur && now >= CALM.startMs && (cur.line.kind === 'story' || (line.source === 'lesson' && cur.line.kind === 'info'));
-    if (cur && ((isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) || lessonCut)) {
+    const urgentCut = !!cur && isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind];
+    // (DOT-6: a lesson cut waits until the line on screen has been up its minimum time, so the cut line has been seen and is not said
+    // again; the lesson goes up the moment that time is up, see tick)
+    if (cur && lessonCut && !urgentCut && now - cur.startedAt < GUIDE.minShowMs) {
+      const w: Waiting = { line, until: now + waitFor(line), seq: ++this.seq, base: line.move ? -1 : undefined };
+      this.waiting.push(w);
+      this.cutWait = w;
+      return;
+    }
+    if (cur && (urgentCut || lessonCut)) {
       this.events.push({ type: 'end', show: cur, why: 'cut' });
       // (it goes back in front of everything of its own priority, to be said again in full; a scene's line that was mostly read
       // counts as heard, and the scene goes on)
       // (calm: a plain line that a first-time lesson cut after it had been up its minimum time counts as heard, and is not said again)
-      const heard = (cur.line.scene && now - cur.startedAt >= readMs(cur.line.text) * GUIDE.sceneHeard) || (lessonCut && now - cur.startedAt >= GUIDE.minShowMs);
+      const heard = (cur.line.scene && now - cur.startedAt >= readMs(cur.line.text) * GUIDE.sceneHeard) || (lessonCut && !urgentCut);
       if (!heard) this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
       this.cur = null;
       this.begin(line, now, 0);
@@ -309,6 +328,7 @@ export class GuideQueue {
   /** forget everything (a new run of the stage) */
   reset(): void {
     this.waiting = [];
+    this.cutWait = null;
     this.cur = null;
     this.clearCur = false;
     this.endedAt = -1e9;
@@ -368,6 +388,18 @@ export class GuideQueue {
       return env.moveCount(m) <= w.base;
     });
     for (const n of skipped) this.push(n, now);
+    const cw = this.cutWait;
+    if (cw && (!this.cur || !this.waiting.includes(cw))) this.cutWait = null;
+    else if (cw && this.cur && now - this.cur.startedAt >= GUIDE.minShowMs) {
+      // (DOT-6) the line on screen has had its minimum time: the waiting lesson cuts it now, and it counts as heard
+      this.cutWait = null;
+      this.events.push({ type: 'end', show: this.cur, why: 'cut' });
+      this.cur = null;
+      this.clearCur = false;
+      this.waiting.splice(this.waiting.indexOf(cw), 1);
+      this.begin(cw.line, now, 0);
+      return this.cur;
+    }
     const cur = this.cur;
     if (cur) {
       const age = now - cur.startedAt;
@@ -446,6 +478,19 @@ export class GuideQueue {
     return this.cur;
   }
 
+  /**
+   * The view put line `n`'s bubble up (DOT-7): its clocks (reading time, minimum time, caps) start now, not when it left the queue.
+   * Dot flies in first (600 ms, about 1.2 s if she re-flies), and a 4 s line was up about 3 s. Only the first call counts.
+   */
+  shown(n: number, now: number): void {
+    const c = this.cur;
+    if (!c || c.n !== n || c.shown) return;
+    c.shown = true;
+    const lag = Math.max(0, Math.min(GUIDE.showLagMaxMs, now - c.startedAt));
+    if (this.startedAt === c.startedAt) this.startedAt += lag;
+    c.startedAt += lag;
+  }
+
   /** take the events since the last call */
   drain(): GuideEvent[] {
     const e = this.events;
@@ -480,7 +525,7 @@ export function classifyLine(text: string, inBoss = false): Pick<GuideLine, 'kin
   if (inBoss) return { kind: 'danger' };
   // (World 5: the silk creeping up him, the wrap itself and a thread's hum come in at once, over whatever is being read: the creep is the
   // only warning before the wrap takes a heart, QA v193)
-  if (/^(It saw you|She saw you|Here (she|it) comes|Hide! |Ouch!|A (thorn )?vine is stirring|Her shadow!|Eyes in the dark|The eyes are back|The glowworms noticed|Don't stand still here|Wrapped up!|Wake up, Pokey|It hummed!)/i.test(t)) {
+  if (/^(It saw you|She saw you|Here (she|it) comes|Hide! |Hide in the bush|Ouch!|A (thorn )?vine is stirring|Her shadow!|Eyes in the dark|The eyes are back|The glowworms noticed|Don't stand still here|Wrapped up!|Wake up, Pokey|It hummed!)/i.test(t)) {
     return { kind: 'danger', topic: /bush/i.test(t) ? 'bush' : /fern/i.test(t) ? 'fern' : undefined };
   }
   if (/to open the sanctuary|before the sanctuary opens/i.test(t)) return { kind: 'goal' };

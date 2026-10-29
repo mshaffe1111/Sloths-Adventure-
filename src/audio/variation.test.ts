@@ -38,7 +38,7 @@ test('every stage gets its own seed and a gentle tempo', () => {
       assert.ok(themeById(s.id));
       assert.ok(s.tempo! >= 0.85 && s.tempo! <= 1.15, `${id} tempo ${s.tempo}`);
       // the pause menu plays the menu music (the first stage's own tune), the same wherever the player was
-      assert.equal(sceneForScreen('paused', w, false, id, m)!.id, MENU_THEME, 'pausing plays the menu music');
+      assert.equal(sceneForScreen('paused', w, false, id, m), null, 'pausing keeps the stage\'s own tune (SN-6)');
       seeds.add(s.seed!);
     }
   }

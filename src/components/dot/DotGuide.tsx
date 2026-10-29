@@ -1,3 +1,4 @@
+import { sound } from '../../game/audio.ts';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { LevelConfig } from '../../game/types.ts';
 import type { GameEngine } from '../../game/engine.ts';
@@ -5,8 +6,8 @@ import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
 import { lessonDotLine, lessonOfLine, lessonStale, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
-import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
-import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
+import { calmFor, countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
+import { DEATH_TOPIC, DeathWatch, MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, knownMoveTip, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
@@ -125,6 +126,10 @@ class GuideRun {
   movesMarked = new Set<string>();
   moves = new MoveWatch();
   struggle = new StruggleWatch();
+  /** what he last stood on and held, to name what got him (DOT-10) */
+  deaths = new DeathWatch();
+  /** the line Dot last chirped for (SN-7: once per line) */
+  chirpN = -1;
   clock = 0;
   lastT = -1;
   help = dotHelp();
@@ -200,7 +205,7 @@ class GuideRun {
     this.H = wasShown(this.world, this.mini, 'H');
     this.F = wasShown(this.world, this.mini, 'F');
     this.lastGuide = guideN;
-    this.queue = new GuideQueue(CALM_WORLDS.has(this.world) && !/-D$/.test(level.id));
+    this.queue = new GuideQueue(calmFor(this.world, level.id));
   }
 
   /** queue a line if Dot's help lets it through */
@@ -233,8 +238,6 @@ class GuideRun {
 }
 
 const storyKey = (f: WayFlag) => `story:${f}`;
-/** the worlds where Dot is toned down (Matt, 2026-10-28) */
-const CALM_WORLDS = new Set([1, 2, 3, 4]);
 /** a move tip about one of these is over once none of them is in view (dotGuide.ts CALM.goneMs) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 const MOVE_IDS: MoveId[] = ['run', 'jump', 'double', 'grab', 'climb', 'leap', 'glide', 'punch', 'kick', 'crouch', 'push', 'bounce'];
@@ -583,6 +586,17 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       return a;
     };
 
+    /** the bubble is up: the reading clock starts now (DOT-7), and Dot chirps, once per line (SN-7) */
+    const bubbleUp = () => {
+      const s = run.show;
+      if (!s) return;
+      run.queue.shown(s.n, run.clock);
+      if (s.line.who === 'Dot' && run.chirpN !== s.n) {
+        run.chirpN = s.n;
+        sound.dotChirp();
+      }
+    };
+
     /** a boss fight: the corner band (and her spot beside it) */
     const placeCorner = (p: Plan) => {
       hardNow();
@@ -591,6 +605,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.sx = c.dot.x;
       p.sy = c.dot.y;
       p.placedAt = run.clock;
+      bubbleUp();
     };
 
     const placeBub = (p: Plan) => {
@@ -632,6 +647,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.bubDy = p.bub.y - spot.y;
       p.ko = koCover(p.bub.x, p.bub.y);
       p.placedAt = run.clock;
+      bubbleUp();
     };
 
     const startLine = (s: Showing) => {
@@ -719,8 +735,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       for (const ev of run.queue.drain()) {
         if (ev.type === 'start') {
           noteSaid(ev.show.line);
-          // her very first tip on this phone carries the Skip tips button (once per device)
-          if (!v.flight && offersSkip(ev.show.line, run.help, run.seen)) {
+          // her first tip from the second stage on carries the Skip tips button (once per device)
+          if (!v.flight && offersSkip(ev.show.line, run.help, run.stageId)) {
             markSkipOffered();
             run.skipN = ev.show.n;
           }
@@ -1098,7 +1114,16 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         run.restartPending = false;
       }
       if (!v.boss) {
-        if (v.hp > 0 && v.py < v.levelH - 10) {
+        // (a lost life first: on that frame he already stands at the checkpoint, so where he was alive is last frame's)
+        if (v.lives < run.prevLives) {
+          const fell = run.alive.y > v.levelH - 140 || (run.alive.falling && !run.alive.foe);
+          // what got him, for the specific help line (DOT-10: the river, the push log, a crumbling branch, a vine...)
+          const cause = run.deaths.cause(v, fell ? 'fall' : run.alive.foe ? 'foe' : 'other');
+          const h = run.struggle.death(run.alive.x, run.alive.y, cause);
+          if (h) run.sayHelp(h, h.cause ? DEATH_TOPIC[h.cause] : undefined);
+          run.restartPending = true;
+          run.deaths.reset();
+        } else if (v.hp > 0 && v.py < v.levelH - 10) {
           let foe = false;
           for (const en of v.enemies) if (!en.defeated && Math.abs(en.x - v.px) < 150 && Math.abs(en.y - v.py) < 160) foe = true;
           run.alive.x = v.px;
@@ -1107,12 +1132,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           // made no sense; World 4's builder, 2026-10-28: 4-7 has nothing to punch)
           run.alive.foe = foe;
           run.alive.falling = !v.grounded && v.vy > 400;
-        }
-        if (v.lives < run.prevLives) {
-          const fell = run.alive.y > v.levelH - 140 || (run.alive.falling && !run.alive.foe);
-          const h = run.struggle.death(run.alive.x, run.alive.y, fell ? 'fall' : run.alive.foe ? 'foe' : 'other');
-          if (h) run.sayHelp(h, h.cause === 'fall' ? 'gap' : h.cause === 'foe' ? 'foe' : undefined);
-          run.restartPending = true;
+          run.deaths.step(v, dt);
         }
         const k = run.moves.kicked;
         if (k) {

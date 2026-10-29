@@ -170,3 +170,23 @@ test('4-5: a lookout that sees him screeches; the fruit punched down from its tr
     });
   }
 });
+
+test('4-5 (LV-13): under her eye, every hop run between two places to hide has cover beside its rock: no spot of the path more than ~200 px from cover (was 330-386), and Dot calls her first strike', async () => {
+  for (const s of [1, 2, 3, 4, 5, 6, 7, 8]) {
+    const st = buildProtoStage(cfg, s, '4-5');
+    const pr = st.proto as unknown as { bushes: Array<{ x: number; w: number; y: number; hanging?: boolean }>; watch: Array<{ x0: number; x1: number }> | { zones: Array<{ x0: number; x1: number }> }; w4: { falls: Array<{ x: number; width: number; veil?: boolean }> } };
+    const covers: Array<[number, number]> = [...pr.bushes.filter((b) => !b.hanging && b.y === G).map((b): [number, number] => [b.x, b.x + b.w]), ...pr.w4.falls.filter((f) => f.veil).map((f): [number, number] => [f.x, f.x + f.width])];
+    const zones = Array.isArray(pr.watch) ? pr.watch : pr.watch.zones;
+    let worst = 0;
+    for (const z of zones) {
+      for (let x = z.x0; x <= z.x1; x += 10) {
+        if (!st.platforms.some((p) => p.y === G && x >= p.x && x <= p.x + p.width)) continue;
+        worst = Math.max(worst, Math.min(...covers.map(([a, b]) => (x < a ? a - x : x > b ? x - b : 0))));
+      }
+    }
+    assert.ok(worst <= 230, `seed ${s}: ${Math.round(worst)} px from cover under her eye`);
+  }
+  // her first strike's call is a warning: it comes at once, over anything else Dot is saying
+  const { engineGuideLine } = await import('./dotLines.ts');
+  assert.equal(engineGuideLine('Hide in the bush!', '4-5', { dot: true })?.kind, 'danger');
+});

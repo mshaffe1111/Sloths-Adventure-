@@ -822,8 +822,9 @@ export class TouchGestures {
 
     if (lifting) return false;
 
-    // jump help: a lone undecided finger that is clearly sliding sideways starts the run now, not 210 ms from now
-    if (f.role === 'pending' && this.assistOn() && !this.mover() && el >= TUNING.earlyDragMs && ax >= TUNING.earlyDragPx && ax >= ay * 1.2 && !this.actorOther(f)) {
+    // a lone undecided finger that is clearly sliding sideways starts the run now, not 210 ms from now (with Jump help on or off: CT-8,
+    // with it off a run started on the right half waited the 210 ms)
+    if (f.role === 'pending' && !this.mover() && el >= TUNING.earlyDragMs && ax >= TUNING.earlyDragPx && ax >= ay * 1.2 && !this.actorOther(f)) {
       f.role = 'mover';
       f.early = true;
       f.ax = f.x0;

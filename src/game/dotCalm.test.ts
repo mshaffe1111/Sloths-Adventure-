@@ -5,7 +5,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CALM, GuideQueue, type GuideLine, type MoveId, type TickEnv } from './dotGuide.ts';
+import { CALM, GUIDE, GuideQueue, calmFor, showFor, type GuideLine, type MoveId, type TickEnv } from './dotGuide.ts';
 import { knownMoveTip, markMoveDone, movesDone } from './dotGuideHelp.ts';
 
 const line = (key: string, text: string, o: Partial<GuideLine> = {}): GuideLine => ({ key, text, kind: 'info', who: 'Dot', source: 'engine', ...o });
@@ -53,7 +53,18 @@ test("calm: at least 10 s from one line's start to the next, but a first-time le
   const lock = starts(runWith(new GuideQueue(true), 8000, [[3000, line('a', 'A flag! Fall, and you start again here.')], [4000, line('c', 'Sealed: collect 3 more flowers first.', { kind: 'must' })]]));
   assert.ok(lock.find((e) => e.key === 'c')!.at < 4100, 'the locked exit at once');
   const les = starts(runWith(new GuideQueue(true), 8000, [[3000, line('a', 'A flag! Fall, and you start again here.')], [3500, line('l', 'Flick up just before the edge.', { kind: 'teach', move: 'jump', source: 'lesson' })]]));
-  assert.ok(les.find((e) => e.key === 'l')!.at < 3600, 'a first-time lesson comes in over a plain line at once');
+  // (DOT-6) once the plain line has been up its minimum time (1.5 s), so it has been seen and is not said again
+  assert.ok(les.find((e) => e.key === 'l')!.at <= 3000 + GUIDE.minShowMs + 40, 'a first-time lesson comes in over a plain line');
+});
+
+test('DOT-6: a first-time lesson cuts a plain line only after its 1.5 s, and the cut line is never said again', () => {
+  const evs = runWith(new GuideQueue(true), 40000, [[3000, line('a', 'A flag! Fall, and you start again here.')], [3300, line('l', 'Flick up just before the edge.', { kind: 'teach', move: 'jump', source: 'lesson' })]]);
+  const l = starts(evs).find((e) => e.key === 'l')!;
+  assert.ok(l.at >= 3000 + GUIDE.minShowMs && l.at <= 3000 + GUIDE.minShowMs + 40, `the lesson waited out the flag line's minimum (${l.at})`);
+  assert.equal(starts(evs).filter((e) => e.key === 'a').length, 1, 'the flag line is not replayed');
+  // and a story aside cut the same way
+  const st = runWith(new GuideQueue(true), 40000, [[3000, line('s', 'What a lovely morning for a walk.', { kind: 'story' })], [3200, line('l', 'Flick up just before the edge.', { kind: 'teach', move: 'jump', source: 'lesson' })]]);
+  assert.equal(starts(st).filter((e) => e.key === 's').length, 1, 'the aside is not replayed');
 });
 
 test('calm: the same words at most twice a stage, and never again once their move is done', () => {
@@ -105,4 +116,34 @@ test('a stage tip for a move done in an earlier stage is cut; first-time lessons
   markMoveDone('climb', s);
   markMoveDone('climb', s);
   assert.deepEqual([...movesDone(s)], ['climb']);
+});
+
+test('DOT-7: the reading clock starts when the bubble shows, not when the line leaves the queue', () => {
+  const q = new GuideQueue();
+  const env = { danger: false, moveCount: () => 0 };
+  const l = line('a', 'A flag! Fall, and you start again here.');
+  q.push(l, 0);
+  q.tick(1000, env);
+  const n = q.cur!.n;
+  // Dot flies in for 600 ms, then the bubble goes up
+  q.shown(n, 1600);
+  q.shown(n, 2500); // (only the first call counts)
+  const end = 1600 + showFor(l);
+  q.tick(end - 50, env);
+  assert.equal(q.cur?.line.key, 'a', 'still up just before its full reading time from the bubble');
+  q.tick(end + 1, env);
+  assert.equal(q.cur, null, 'and down after it');
+  // the lag counted is at most 2 s (a bubble that never shows does not hold the line forever)
+  const q2 = new GuideQueue();
+  q2.push(l, 0);
+  q2.tick(0, env);
+  q2.shown(q2.cur!.n, 9000);
+  assert.equal(q2.cur!.startedAt, GUIDE.showLagMaxMs);
+});
+
+test('DOT-8: World 5 gets the calm rules too (not a boss stage)', () => {
+  for (const w of [1, 2, 3, 4, 5]) assert.equal(calmFor(w, `${w}-2`), true, `world ${w}`);
+  assert.equal(calmFor(5, '5-M'), true);
+  assert.equal(calmFor(4, '4-D'), false);
+  assert.equal(calmFor(6, '6-1'), false);
 });

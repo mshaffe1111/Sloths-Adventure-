@@ -1,3 +1,4 @@
+import { buzz } from './haptics.ts';
 import { SlowWatch } from './slowTip.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
@@ -152,6 +153,9 @@ import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGo
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+
+/** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
+const HARD_LAND_VY = 560;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -507,6 +511,8 @@ export class GameEngine {
   private airDrive = newAirDrive();
   private maxLives: number = startingLives();
   private lives: number = this.maxLives;
+  /** what the last life was lost to, for Dot's death help (DOT-10) */
+  private lostTo: '' | 'water' | 'pit' | 'hurt' = '';
   /** the run ended because the lives ran out (not a win): the one case a Continue can pick up from the checkpoint */
   private outOfLives = false;
   /** the assist speed for this stage (1 = normal), read once so a menu change mid-stage waits for the next entry */
@@ -1177,8 +1183,9 @@ export class GameEngine {
     }
     // (Meeca never kicks: a sideways flick is a run, unless her hands are full: then it throws)
     if (this.mc) this.input.kickNear = !!this.kit?.holding;
-    // (and at a trunk, a finger tracing a circle is carving, not steering: the touch controls ask)
-    if (this.mc) (this.input as { carveSpot?: boolean }).carveSpot = this.mc.carveSpot;
+    // (and at a trunk, a finger tracing a circle is carving, not steering: the touch controls ask. Every frame, on every stage: written
+    // only in Meeca's stage it stayed true after leaving her stage on a carving spot, and later stages read curved swipes as circles, CT-20)
+    (this.input as { carveSpot?: boolean }).carveSpot = !!this.mc?.carveSpot;
     // inside a bush a watcher's stretch hides him in: a slide down there hides him even mid-run (touchGestures.ts inCover)
     this.input.inCover = !!this.proto?.watch && p.grounded && (this.proto.bushes ?? []).some((b) => !b.secret && !b.hanging && p.x > b.x + 10 && p.x < b.x + b.w - 10 && Math.abs(p.y - b.y) < 10);
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
@@ -2141,6 +2148,7 @@ export class GameEngine {
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
           sound.playCheckpoint();
+          buzz('checkpoint');
         }
       }
 
@@ -2680,7 +2688,9 @@ export class GameEngine {
       if (isExitUnlocked ? atExitDoor(p, doorX, doorY) : atSealedDoor(p, doorX, doorY)) {
         if (isExitUnlocked) {
           this.exitTotemReached = true;
-          sound.playVictory();
+          // (a short chime here; the full victory sting plays when the Stage Cleared card lands, StatusModals.tsx, SN-5)
+          sound.playExitChime();
+          buzz('clear');
           this.spawnSparkBurst(this.currentStage.exitTotemX, p.y - 30, '#34d399');
           this.addFloatingText('SANCTUARY UNLOCKED! VICTORY!', p.x, p.y - 60, '#34d399');
         } else {
@@ -2886,6 +2896,8 @@ export class GameEngine {
     }
     if (p.grounded && !groundedBefore && vyBefore > 140 && !p.climbing && !p.isVineSwinging) {
       sound.playLand(Math.min(1, vyBefore / 700));
+      // (a hard landing buzzes: AN-9)
+      if (vyBefore > HARD_LAND_VY) buzz('hardLand');
     }
     // footsteps: one leaf-crunch every few body-lengths on the ground
     if (p.grounded && !p.climbing && Math.abs(p.vx) > 25) {
@@ -2940,6 +2952,8 @@ export class GameEngine {
         spawnMinion: (kind, x, y) => this.spawnMinion(kind, x, y),
         shake: (a) => {
           this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, a));
+          // (a slam that shakes the arena hard buzzes: AN-9)
+          if (a >= 0.5) buzz('bossSlam');
         },
         roar: () => sound.playBossRoar(world),
         thud: (heavy) => sound.playHitImpact(heavy ?? true, bossMaterial(world)),
@@ -4355,6 +4369,7 @@ export class GameEngine {
     this.airDrive = newAirDrive();
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
+    buzz('hurt');
     // (the hit that costs a life says so at the respawn instead: two lots of words on one spot were unreadable)
     if (p.hp > 0) this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
 
@@ -4380,6 +4395,7 @@ export class GameEngine {
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
     recorder.event('lostLife', reason);
+    this.lostTo = reason;
     if (this.bossGuideUp) this.clearGuide();
     this.lives -= 1;
     this.statLivesLost++;
@@ -4993,6 +5009,7 @@ export class GameEngine {
     out.hp = p.hp;
     out.maxHp = p.maxHp;
     out.lives = this.lives;
+    out.lostTo = this.lostTo;
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
     out.chase = !!this.chase;
@@ -5915,6 +5932,10 @@ export class GameEngine {
     this.input.kickNear = false;
     this.input.onVine = false;
     this.input.onRope = false;
+    // (nor a swing, a bush or a carving spot: left set from the stage before, they bent her flaps, CT-20)
+    this.input.onSwing = false;
+    this.input.inCover = false;
+    (this.input as { carveSpot?: boolean }).carveSpot = false;
     this.input.megaReady = true;
     if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
     else run.lastEvents = [];
@@ -6338,6 +6359,8 @@ export class GameEngine {
   private watchCaught = false;
   /** how many of the watcher's later warnings Dot has said this stage (watchCaught) */
   private watchVoiced = 0;
+  /** the eagle has struck him this stage (her first strike gets Dot's call the moment she sees him: LV-13) */
+  private watchStruck = false;
 
   private updateWatch(dt: number) {
     const p = this.player;
@@ -6375,12 +6398,18 @@ export class GameEngine {
     if (this.watch.phase === 'pass') {
       const sx = this.shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
       if (!water && sees(this.watch, sx, bushes, me)) {
+        const first = !this.watch.seen;
         this.watch.seen = true;
         this.watchFrom = { x: sx, y: this.camera.y + 125 };
         cry(2);
         if (!tipHeard(id, 'watch:seen')) {
           markTipHeard(id, 'watch:seen');
           this.guide(grotto ? 'It saw you! Get into a fern before it reaches you' : cliffs ? 'She saw you! Get behind the water or into a bush, quick' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
+        } else if (cliffs && first && !this.watchStruck && !harmlessPass(this.watch)) {
+          // (LV-13: her first strike of the stage gets Dot's call a beat before it lands, the bush beside him named; QA: 11 hurts at
+          // 4-5's "Hide from the eagle" since 2026-10-26, the first strike with the nearest bush 196 px off)
+          const bush = bushes.some((b) => Math.abs(b.x + b.w / 2 - p.x) < 200);
+          this.guide(bush ? 'Hide in the bush!' : 'She saw you! Get behind the water or into a bush, quick', 1.5);
         }
       }
       // the strike: unless he made it into a bush (or behind the water) in time
@@ -6393,6 +6422,7 @@ export class GameEngine {
         } else {
           this.damagePlayer(1);
           this.watchCaught = true;
+          this.watchStruck = true;
         }
       }
     }
