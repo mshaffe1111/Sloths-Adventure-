@@ -145,6 +145,8 @@ export interface BossBrain {
   poiseT: number;
   /** seconds before another attack can be broken (a stun is not a loop) */
   breakCd: number;
+  /** how far through its entrance the boss is (0..1), only while the entrance plays (the engine sets it; a sprite can stage it) */
+  intro?: number;
 }
 
 export function newBrain(): BossBrain {

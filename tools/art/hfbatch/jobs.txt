@@ -67,3 +67,11 @@ hfboss-fx2    6ae38bcf5ddcdc0830263d64 rtx-pro-6000 18:09:19Z-18:14:35Z (5.3 min
   pulled back to tan in bosscut.py).
 hfboss-venom  6ae3907aad9610e5cb31546f rtx-pro-6000 18:29:14Z-18:30:35Z (1.35 min, ~$0.06): Venom Fang's body strip. KEPT venombody-s62-7.
 total ~26.2 min on rtx-pro-6000 = ~$1.20 of the $10 cap.
+hfboss-r4     6ae396a55ddcdc08302647b4 rtx-pro-6000 18:55:33Z-19:01:52Z (6.3 min, ~$0.29): round 4 (bossstarts4.py,
+  make_spec4.py, bosscut4.py), 12 takes. KEPT: fg-moss-s70-23 (Spanish moss off a branch; its lilac key cast graded to grey-green; replaces
+  the round-1 'teal icicles' fringe over the same reeds), croc-props-s75-7 (rowboat with its start's mud slab cut off, the crossed-out wave
+  sign, the helmet heap, two cattail clumps), fx3-s72-7 (three pale pennants tinted in the game, the pole, the screech wave graded to
+  cyan-white), fx3-s85-23 (the weak-point ring, its pink glow graded to gold). Not used: fg-moss s82 (branchy, reads as roots), s70-7
+  (fine, thinner); croc-props s62 (start shapes too plain), s75-23 (boat on a flat slab); fx3 s85-7 (screech grew an arrowhead), s72-23
+  (stray flecks), s85-23's pennants (spear tips doubling the pole).
+total ~32.5 min on rtx-pro-6000 = ~$1.49 of the $10 cap.

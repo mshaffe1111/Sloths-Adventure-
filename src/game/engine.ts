@@ -3150,6 +3150,7 @@ export class GameEngine {
     en.t += dt;
     const beat = entranceBeat(en.t, en.total);
     b.ai.alpha = beat.reveal;
+    b.ai.intro = beat.u;
     const world = this.currentStage.config.worldIndex;
     if (beat.roaring && !en.roared) {
       en.roared = true;
@@ -3178,6 +3179,7 @@ export class GameEngine {
     if (en.t >= en.total) {
       this.entrance = null;
       this.entranceDone = true;
+      b.ai.intro = undefined;
       const start = def.guide?.start;
       if (start && !tipHeard(this.currentStage.config.id, 'boss:start')) {
         markTipHeard(this.currentStage.config.id, 'boss:start');

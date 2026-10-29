@@ -1253,19 +1253,11 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   if (!r || !br || br.state === 'dying' || b.defeated) return;
   const open = weakOpen(b, def);
   if (def.weakAt) {
-    // a head that comes down to be hit: only a ring round it while it is open (the head itself says where; no ember up high)
+    // a head that comes down to be hit: only the painted gold ring round it while it is open (the head itself says where; no ember up high)
     if (!open) return;
     const pulse = 0.5 + 0.5 * Math.sin(time * 9);
-    ctx.save();
-    ctx.globalAlpha = 0.55 + 0.35 * pulse;
-    ctx.strokeStyle = '#fde047';
-    ctx.lineWidth = 3 + 2 * pulse;
-    ctx.setLineDash([14, 9]);
-    ctx.lineDashOffset = -time * 40;
-    ctx.beginPath();
-    ctx.ellipse(r.x + r.w / 2, r.y + r.h * 0.55, r.w * 0.58 + 6 * pulse, r.h * 0.62 + 4 * pulse, 0, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.restore();
+    const rw = (r.w * 0.58 + 6 * pulse) * 2.3;
+    drawFx(ctx, 'weakRing', r.x + r.w / 2, r.y + r.h * 0.55, rw, { h: (r.h * 0.62 + 4 * pulse) * 2.3, alpha: 0.7 + 0.3 * pulse });
     return;
   }
   const cx = r.x + r.w / 2;
@@ -1301,20 +1293,9 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   ctx.arc(cx, cy, rad * 1.5, 0, Math.PI * 2);
   ctx.fill();
   ctx.globalAlpha = 1;
-  ctx.strokeStyle = '#fff7ed';
-  ctx.lineWidth = 4;
-  ctx.shadowColor = '#fde047';
-  ctx.shadowBlur = 14;
-  ctx.beginPath();
-  ctx.arc(cx, cy, rad * (0.8 + 0.12 * pulse), 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-    ctx.moveTo(cx + dx * rad * 0.45, cy + dy * rad * 0.45);
-    ctx.lineTo(cx + dx * rad * 1.15, cy + dy * rad * 1.15);
-  }
-  ctx.stroke();
+  // the painted gold target ring (boss-fx.webp 'weakRing'), breathing and turning slowly
+  const d = rad * 2.6 * (0.9 + 0.1 * pulse);
+  drawFx(ctx, 'weakRing', cx, cy, d, { rot: time * 0.8 });
   ctx.restore();
 }
 

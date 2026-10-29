@@ -9,7 +9,8 @@
  *
  * Her animated clips (queen-anim.webp, queenAnimData.ts: Wan 2.2 clips of her own painted poses) play wherever one exists: the idle,
  * the skitter, the silk shot, the leg slam and the web net (tell, strike, and the slam's recovery), the flinch, the stun and the defeat.
- * The moves that have no clip (the venom jet, the brood call, the pounce, the cocoon drop, the roars) keep their painted poses.
+ * The moves that have no clip (the venom jet, the brood call, the pounce, the cocoon drop, the roars) keep their painted poses. Her
+ * entrance is her tea: she is revealed pouring a cup (the pour clip), rises from her seat (the sit clip played backwards) and then roars.
  */
 import { createPaintedBoss, type PaintedBoss, type PickContext } from './paintedBoss.ts';
 import { QUEEN_FRAMES } from './queenAtlasData.ts';
@@ -66,6 +67,9 @@ const queenStills = createPaintedBoss({
 
 /** the death sequence's length (engine stepBossDeath) */
 const DYING_S = 2.0;
+/** where her entrance's tea ends and her rise ends (fractions of the entrance; the roar starts at 0.62) */
+const POUR_END = 0.53;
+const RISE_END = 0.62;
 /** world units of skitter a full cycle covers */
 const SKITTER_CYCLE = 260;
 const at = (seq: string, p: number) => {
@@ -96,6 +100,13 @@ const queenClips = createPaintedBoss({
     const c = br.move ? CLIPS[br.move] : undefined;
     if (br.state === 'dying') return at('defeat', br.t / DYING_S);
     if (br.state === 'stun') return loop('stunned', time);
+    if (br.state === 'roar' && br.intro !== undefined) {
+      // the entrance (bossEntrance.ts: revealed from 0.4, roaring from 0.62): pouring her tea, then rising from her seat into the roar
+      const u = br.intro;
+      if (u < POUR_END) return at('pour', Math.max(0, (u - 0.3) / (POUR_END - 0.3)));
+      if (u < RISE_END) return at('sit', 1 - (u - POUR_END) / (RISE_END - POUR_END));
+      return '';
+    }
     if (br.state === 'roar') return '';
     if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) return at('hurt', 0.4);
     if (br.state === 'tell') return c ? at(c.tell, p(m?.tell)) : '';

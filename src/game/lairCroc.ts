@@ -4,12 +4,13 @@
  * crossing the moon and cold wisp-lights drifting. Everything is moonlit cyan and indigo, with the warm yellow of one lantern, so it
  * shares no colour with the green Hollow or the orange Drake lair.
  *
- * Same layers as the other lairs (lairArt.ts): back (screen space, opaque), world (props: a sunk rowboat, a sign, a pile of old
- * helmets, reeds) and front (screen space: moss, reeds and fog over everything). The stilt boardwalks, mud bank, wall trunks and
+ * Same layers as the other lairs (lairArt.ts): back (screen space, opaque), world (painted props: a sunk rowboat, a sign, a pile of old
+ * helmets, cattails) and front (screen space: moss, reeds and fog over everything). The stilt boardwalks, mud bank, wall trunks and
  * ropes are in lairCrocObjects.ts.
  */
 import type { LairArena, LairView } from './lairArt.ts';
 import { LairPlate, LairStrip } from './lairPlate.ts';
+import { drawFx } from './bossFx.ts';
 
 function rand(i: number): number {
   const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
@@ -28,9 +29,13 @@ const PLATE = new LairPlate({
   widthK: 1.25,
   drift: 0.25,
   fill: '#06101c',
+  // the moon, its road on the water and the lantern sit right of middle: upright, they are brought onto the screen
+  focusX: 0.7,
+  skyTop: true,
 });
-/** the painted moss above and reeds below, nearer than anything (fg-croc.webp: the top 45% hangs, the rest stands) */
-const STRIP = new LairStrip(new URL('../assets/lairs/fg-croc.webp', import.meta.url).href, 0.45);
+/** the painted moss above and reeds below, nearer than anything (fg-croc.webp: the top half, Spanish moss off a branch, hangs; the rest
+ * stands). The strip is drawn 570/512 of its old height so the reeds keep their size */
+const STRIP = new LairStrip(new URL('../assets/lairs/fg-croc.webp', import.meta.url).href, 288 / 570);
 
 /** 0 = the quiet river, 1 = the flood. Eased toward the target; snaps on a new fight or a retry. */
 let flood = 0;
@@ -62,143 +67,24 @@ export function drawCrocBack(ctx: CanvasRenderingContext2D, v: LairView, a: Lair
   ctx.restore();
 }
 
-/** 2. props on the bank: a rowboat sunk in the mud, a sign, a heap of helmets and bones, cattails along the fences */
+/**
+ * 2. props on the bank, painted (boss-fx.webp, round 4 of hf-art-bosses): a rowboat sunk in the mud by the left fence, the croc's own
+ * warning sign (the water sign's wave crossed out, a bite out of its corner), a heap of old helmets with a bucket and bones on the right,
+ * and a clump of cattails at each fence that sways a little. Nothing is drawn while the sheet loads.
+ */
 export function drawCrocWorld(ctx: CanvasRenderingContext2D, a: LairArena, view: LairView, time: number) {
   const f = a.floor;
-  const x0 = view.x - 60;
-  const x1 = view.x + view.vw + 60;
-  const cattail = (x: number, h: number, seed: number) => {
-    const sw = Math.sin(time * 1.1 + seed) * 3;
-    ctx.strokeStyle = '#0d2a1f';
-    ctx.lineWidth = 2.4;
-    ctx.beginPath();
-    ctx.moveTo(x, f - 1);
-    ctx.quadraticCurveTo(x + sw, f - h * 0.6, x + sw * 1.6, f - h);
-    ctx.stroke();
-    ctx.fillStyle = '#5b3a1e';
-    ctx.beginPath();
-    ctx.roundRect(x + sw * 1.6 - 3, f - h - 20, 6, 22, 3);
-    ctx.fill();
-    ctx.strokeStyle = '#143a2a';
-    ctx.lineWidth = 2;
-    for (const d of [-1, 1]) {
-      ctx.beginPath();
-      ctx.moveTo(x, f - 1);
-      ctx.quadraticCurveTo(x + d * 14 + sw, f - h * 0.5, x + d * 22 + sw, f - h * 0.78);
-      ctx.stroke();
-    }
-  };
-
-  ctx.save();
-  // the sunk rowboat by the left fence: a tilted hull with a split plank, half in the mud
-  const bx = a.left + 150;
-  if (bx > x0 - 200 && bx < x1 + 100) {
-    ctx.save();
-    ctx.translate(bx, f + 2);
-    ctx.rotate(-0.1);
-    ctx.fillStyle = '#2a1d12';
-    ctx.beginPath();
-    ctx.moveTo(-70, -34);
-    ctx.quadraticCurveTo(-50, 6, 0, 8);
-    ctx.quadraticCurveTo(54, 6, 76, -40);
-    ctx.lineTo(64, -42);
-    ctx.quadraticCurveTo(44, -8, 0, -8);
-    ctx.quadraticCurveTo(-44, -8, -58, -36);
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = '#0d0a06';
-    ctx.lineWidth = 2.4;
-    ctx.stroke();
-    ctx.strokeStyle = 'rgba(148, 190, 220, 0.4)';
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    ctx.moveTo(-60, -34);
-    ctx.quadraticCurveTo(-40, -4, 0, -6);
-    ctx.stroke();
-    ctx.strokeStyle = '#0d0a06';
-    ctx.lineWidth = 3;
-    for (const px of [-30, 0, 30]) {
-      ctx.beginPath();
-      ctx.moveTo(px, -12);
-      ctx.lineTo(px + 2, 4);
-      ctx.stroke();
-    }
-    // a broken oar sticking out
-    ctx.strokeStyle = '#3b2a1c';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.moveTo(30, -10);
-    ctx.lineTo(62, -64);
-    ctx.stroke();
-    ctx.restore();
+  const x0 = view.x - 200;
+  const x1 = view.x + view.vw + 200;
+  const at = (x: number) => x > x0 && x < x1;
+  if (at(a.left + 150)) drawFx(ctx, 'rowboat', a.left + 150, f + 8, 190, { ax: 0.5, ay: 1 });
+  if (at(a.left + 330)) drawFx(ctx, 'signNo', a.left + 330, f + 2, 96, { ax: 0.5, ay: 1, rot: 0.05 });
+  if (at(a.right - 140)) drawFx(ctx, 'helmets', a.right - 140, f + 6, 210, { ax: 0.5, ay: 1 });
+  // the cattails lean with the breeze from their roots
+  for (const [cx, k, w] of [[a.left + 34, 0, 120], [a.right - 40, 1, 132]] as const) {
+    if (!at(cx)) continue;
+    drawFx(ctx, `cattail${k}`, cx, f + 4, w, { ax: 0.5, ay: 1, rot: Math.sin(time * 1.1 + k * 2) * 0.03, flipX: k === 1 });
   }
-
-  // a sign on a leaning post: the croc's own warning
-  const sx = a.left + 330;
-  if (sx > x0 - 100 && sx < x1 + 100) {
-    ctx.save();
-    ctx.translate(sx, f);
-    ctx.rotate(0.07);
-    ctx.fillStyle = '#2a1d12';
-    ctx.fillRect(-4, -92, 8, 92);
-    ctx.fillStyle = '#5a4128';
-    ctx.strokeStyle = '#120c06';
-    ctx.lineWidth = 2.4;
-    ctx.beginPath();
-    ctx.roundRect(-46, -100, 92, 44, 4);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = '#fde68a';
-    ctx.font = 'bold 15px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('NO', 0, -83);
-    ctx.fillText('SWIMMING', 0, -66);
-    // a bite out of the corner
-    ctx.fillStyle = '#04121c';
-    ctx.beginPath();
-    ctx.arc(46, -100, 9, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  // a heap of old helmets and a rusty bucket on the right: the croc's trophies
-  const hx = a.right - 140;
-  if (hx > x0 - 200 && hx < x1 + 200) {
-    for (let i = 0; i < 5; i++) {
-      const px = hx - 70 + i * 34 + (rand(i) - 0.5) * 10;
-      const py = f - 2 - (i % 2) * 14;
-      ctx.fillStyle = i % 2 ? '#6b7280' : '#7c6a4f';
-      ctx.strokeStyle = '#111827';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.ellipse(px, py - 12, 20, 15, 0, Math.PI, 0);
-      ctx.lineTo(px + 22, py);
-      ctx.lineTo(px - 22, py);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(0,0,0,.45)';
-      ctx.fillRect(px - 9, py - 14, 18, 3);
-    }
-    ctx.fillStyle = '#e5e7eb';
-    ctx.strokeStyle = '#374151';
-    ctx.lineWidth = 2;
-    for (const [bx2, by2] of [[-96, 4], [96, 2]] as const) {
-      ctx.beginPath();
-      ctx.moveTo(hx + bx2 - 14, f - by2);
-      ctx.lineTo(hx + bx2 + 14, f - by2 - 7);
-      ctx.stroke();
-    }
-  }
-
-  // cattails clustered at both fences
-  for (let i = 0; i < 6; i++) {
-    const cxl = a.left + 20 + i * 18 + (rand(i + 5) - 0.5) * 10;
-    const cxr = a.right - 20 - i * 18 + (rand(i + 15) - 0.5) * 10;
-    if (cxl > x0 && cxl < x1) cattail(cxl, 70 + rand(i) * 60, i);
-    if (cxr > x0 && cxr < x1) cattail(cxr, 70 + rand(i + 20) * 60, i + 9);
-  }
-  ctx.restore();
 }
 
 /** 3. over everything: a cold vignette, moss hanging from the top, a row of reeds along the bottom and fog wisps passing in front */
@@ -211,7 +97,7 @@ export function drawCrocFront(ctx: CanvasRenderingContext2D, v: LairView, time: 
   ctx.fillRect(0, 0, v.vw, v.vh);
 
   // the painted moss hanging from the top edge and the reeds along the bottom, nearer than anything
-  STRIP.draw(ctx, v, Math.min(230, Math.max(170, v.vh * 0.4)));
+  STRIP.draw(ctx, v, (Math.min(230, Math.max(170, v.vh * 0.4)) * 570) / 512);
 
   // fog wisps crossing in front, very faint
   ctx.fillStyle = 'rgba(190, 228, 245, 0.05)';

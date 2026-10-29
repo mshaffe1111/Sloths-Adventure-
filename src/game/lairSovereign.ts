@@ -11,6 +11,7 @@
  */
 import type { LairArena, LairView } from './lairArt.ts';
 import { LairPlate, LairStrip } from './lairPlate.ts';
+import { drawFx, drawFxWave } from './bossFx.ts';
 
 function rand(i: number): number {
   const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
@@ -113,45 +114,17 @@ export function drawSovereignBack(ctx: CanvasRenderingContext2D, v: LairView, a:
 
 // ───────────────────────────── a pennant ─────────────────────────────
 
-/** a tattered pennant on a pole standing on (x, y): it streams with the wind, harder in the storm */
+/**
+ * a tattered pennant on a pole standing on (x, y), painted (boss-fx.webp: the pole and three pale cloths, tinted here): the cloth
+ * streams with the wind in a travelling ripple, harder in the storm. Nothing is drawn while the sheet loads.
+ */
 export function pennant(ctx: CanvasRenderingContext2D, x: number, y: number, h: number, color: string, time: number, seed: number) {
   const lash = 1 + storm * 1.6;
-  ctx.save();
-  ctx.strokeStyle = '#3a2a1e';
-  ctx.lineWidth = 4;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x, y - h);
-  ctx.stroke();
-  ctx.fillStyle = '#e9c56a';
-  ctx.beginPath();
-  ctx.arc(x, y - h - 2, 4.5, 0, Math.PI * 2);
-  ctx.fill();
-  // the cloth, three tails
-  ctx.fillStyle = color;
-  ctx.strokeStyle = 'rgba(30, 14, 30, 0.6)';
-  ctx.lineWidth = 1.4;
-  const top = y - h + 6;
-  for (let t = 0; t < 3; t++) {
-    const ty = top + t * 15;
-    const len = 56 + rand(seed + t) * 26;
-    ctx.beginPath();
-    ctx.moveTo(x + 2, ty);
-    const n = 8;
-    for (let i = 1; i <= n; i++) {
-      const u = i / n;
-      ctx.lineTo(x + 2 + u * len * lash * 0.7, ty + Math.sin(time * 6 * lash - u * 5 + seed + t) * 5 * u * lash + u * 4);
-    }
-    for (let i = n; i >= 1; i--) {
-      const u = i / n;
-      ctx.lineTo(x + 2 + u * len * lash * 0.7, ty + 11 * (1 - u * 0.7) + Math.sin(time * 6 * lash - u * 5 + seed + t) * 5 * u * lash + u * 4);
-    }
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-  }
-  ctx.restore();
+  if (!drawFx(ctx, 'pole', x, y + 2, h * 0.07, { ax: 0.5, ay: 1, h: h + 8 })) return;
+  const cw = h * (0.5 + rand(seed) * 0.12) * (1 + storm * 0.25);
+  const ch = h * 0.34;
+  drawFxWave(ctx, `pennant${seed % 3}`, x - 2, y - h + 8 + ch / 2, cw, ch,
+    (u) => Math.sin(time * 6 * lash - u * 5 + seed) * 5 * u * lash + u * 6, color);
 }
 
 // ───────────────────────────── 2. the world ─────────────────────────────

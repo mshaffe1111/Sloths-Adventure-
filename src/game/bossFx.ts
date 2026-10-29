@@ -97,3 +97,74 @@ export function fxFrame(base: 'dust' | 'spark', u: number): string {
   const n = base === 'dust' ? 8 : 6;
   return `${base}${Math.max(0, Math.min(n - 1, Math.floor(u * n)))}`;
 }
+
+/** a piece re-coloured once per tint (multiplied by `tint`, its own alpha kept): the pale pennant cloths take their colours this way */
+const tinted = new Map<string, HTMLCanvasElement>();
+function tintedPiece(name: FxName, tint: string): HTMLCanvasElement | null {
+  const key = `${name}|${tint}`;
+  const hit = tinted.get(key);
+  if (hit) return hit;
+  const f = BOSS_FX[name];
+  if (!f || !ready || !img || typeof document === 'undefined') return null;
+  const c = document.createElement('canvas');
+  c.width = f.w;
+  c.height = f.h;
+  const g = c.getContext('2d');
+  if (!g) return null;
+  g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+  g.globalCompositeOperation = 'multiply';
+  g.fillStyle = tint;
+  g.fillRect(0, 0, f.w, f.h);
+  g.globalCompositeOperation = 'destination-in';
+  g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+  tinted.set(key, c);
+  return c;
+}
+
+/**
+ * A piece drawn `w` x `h` from its left middle at (x, y), cut into upright slices that each ride `wave(u)` (u = 0 at the left edge,
+ * 1 at the right): a cloth streaming in the wind. `tint` multiplies its colour. False while the sheet loads.
+ */
+export function drawFxWave(ctx: CanvasRenderingContext2D, name: FxName, x: number, y: number, w: number, h: number, wave: (u: number) => number, tint?: string): boolean {
+  const f = BOSS_FX[name];
+  if (!f) return false;
+  load();
+  if (!ready || !img) return false;
+  const src = tint ? tintedPiece(name, tint) : null;
+  const N = 14;
+  for (let i = 0; i < N; i++) {
+    const u0 = i / N;
+    const sw = f.w / N;
+    const sx = src ? u0 * f.w : f.x + u0 * f.w;
+    const sy = src ? 0 : f.y;
+    const dy = wave(u0 + 0.5 / N);
+    ctx.drawImage(src ?? img, sx, sy, sw + (i < N - 1 ? 1 : 0), f.h, x + u0 * w, y - h / 2 + dy, w / N + 0.6, h);
+  }
+  return true;
+}
+
+/**
+ * A long piece laid along a path (the Sky Sovereign's screech wave along its arc): each point is [x, y, u], u being where along the
+ * piece (0..1) that point takes its paint from, so a path broken into runs (where a rock shelters) still shows one wave. Each step is a
+ * slice turned to the path, `thick` across. False while the sheet loads.
+ */
+export function drawFxAlong(ctx: CanvasRenderingContext2D, name: FxName, pts: Array<[number, number, number]>, thick: number): boolean {
+  const f = BOSS_FX[name];
+  if (!f) return false;
+  load();
+  if (!ready || !img) return false;
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const [x0, y0, u0] = pts[i];
+    const [x1, y1, u1] = pts[i + 1];
+    const len = Math.hypot(x1 - x0, y1 - y0);
+    if (len < 0.5) continue;
+    const a = Math.min(u0, u1);
+    const sw = Math.max(1, Math.abs(u1 - u0) * f.w);
+    ctx.save();
+    ctx.translate(x0, y0);
+    ctx.rotate(Math.atan2(y1 - y0, x1 - x0));
+    ctx.drawImage(img, f.x + a * f.w, f.y, sw, f.h, -0.5, -thick / 2, len + 1, thick);
+    ctx.restore();
+  }
+  return true;
+}

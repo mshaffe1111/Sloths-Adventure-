@@ -35,6 +35,16 @@ export interface PlateSpec {
   drift: number;
   /** the fill while the painting loads */
   fill: string;
+  /**
+   * Where the painting's centre of interest is across it (0..1). On an upright phone the view is a narrow slice of the plate, so the
+   * plate slides to put this on the screen, and drifts more with the camera so it stays there. Left out, the middle (no slide).
+   */
+  focusX?: number;
+  /**
+   * Above the painting, carry on its own top band stretched upward (an open sky) instead of a mirror image: a mirror would show the
+   * moon twice on a tall screen.
+   */
+  skyTop?: boolean;
 }
 
 export class LairPlate {
@@ -58,26 +68,45 @@ export class LairPlate {
     const dh = (dw * base.naturalHeight) / base.naturalWidth;
     const mid = (a.left + a.right) / 2;
     const camMid = v.x + v.vw / 2;
-    const left = mid - dw / 2 - v.x + (camMid - mid) * s.drift;
+    // upright (taller than wide), slide the focus onto the screen and let the plate follow the camera more so it stays there
+    const tall = Math.max(0, Math.min(1, (v.vh / v.vw - 1) / 0.8));
+    const slide = s.focusX === undefined ? 0 : (0.5 - s.focusX) * dw * tall;
+    const drift = s.drift + (s.focusX === undefined ? 0 : (0.7 - s.drift) * tall);
+    const left = mid - dw / 2 - v.x + (camMid - mid) * drift + slide;
     const top = a.floor - s.floorAt * dh - v.y;
-    if (c && (!r || rage < 0.99)) tile(ctx, c, left, top, dw, dh, v);
+    const sky = !!s.skyTop;
+    if (c && (!r || rage < 0.99)) tile(ctx, c, left, top, dw, dh, v, sky);
     if (r) {
       ctx.save();
       ctx.globalAlpha = c ? Math.min(1, rage) : 1;
-      tile(ctx, r, left, top, dw, dh, v);
+      tile(ctx, r, left, top, dw, dh, v, sky);
       ctx.restore();
     }
   }
 }
 
-/** the painting, and its mirror images on any side the view reaches past it (a mirror meets its original edge to edge, so no seam) */
-function tile(ctx: CanvasRenderingContext2D, img: HTMLImageElement, left: number, top: number, dw: number, dh: number, v: LairView) {
+/**
+ * the painting, and its mirror images on any side the view reaches past it (a mirror meets its original edge to edge, so no seam).
+ * With `sky`, above it the painting's top band is stretched up to the top of the view instead.
+ */
+function tile(ctx: CanvasRenderingContext2D, img: HTMLImageElement, left: number, top: number, dw: number, dh: number, v: LairView, sky = false) {
   for (let ty = -1; ty <= 1; ty++) {
     const y = top + ty * dh;
     if (y + dh <= 0 || y >= v.vh) continue;
     for (let tx = -1; tx <= 1; tx++) {
       const x = left + tx * dw;
       if (x + dw <= 0 || x >= v.vw) continue;
+      if (ty < 0 && sky) {
+        // the top 3% of the painting, stretched from the view's top down to the painting's top edge (mirrored sideways like the rest)
+        const band = Math.max(2, Math.round(img.naturalHeight * 0.03));
+        const h = Math.max(0, top) + 1;
+        ctx.save();
+        ctx.translate(x + (tx ? dw / 2 : 0), 0);
+        if (tx) ctx.scale(-1, 1);
+        ctx.drawImage(img, 0, 0, img.naturalWidth, band, tx ? -dw / 2 : 0, 0, dw, h);
+        ctx.restore();
+        continue;
+      }
       ctx.save();
       ctx.translate(x + (tx ? dw / 2 : 0), y + (ty ? dh / 2 : 0));
       if (tx || ty) ctx.scale(tx ? -1 : 1, ty ? -1 : 1);

@@ -1,5 +1,5 @@
 // node introshots.mjs <url> <outdir> <tag> <level>: shots in the first seconds of a stage, both ways up
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from '/opt/node-tools/node_modules/playwright/index.mjs';
 import fs from 'fs';
 const [url, out, tag, id] = process.argv.slice(2);
 fs.mkdirSync(out, { recursive: true });

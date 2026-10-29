@@ -1,5 +1,5 @@
 // node bossshots.mjs <url> <outdir> <tag> [levels comma] [count] [views up,side]
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from '/opt/node-tools/node_modules/playwright/index.mjs';
 import fs from 'fs';
 const [url, out, tag, lv = '1-10,2-10,3-10,4-10,5-10', cnt = '10', views = 'up,side', gap = '700'] = process.argv.slice(2);
 fs.mkdirSync(out, { recursive: true });

@@ -1,5 +1,5 @@
 // node lairrender.mjs <outdir>: renders the code-drawn lair backs (croc, sovereign; phase 1 and 3) at 2048x1152 as img2img starts
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from '/opt/node-tools/node_modules/playwright/index.mjs';
 import fs from 'fs';
 const out = process.argv[2];
 fs.mkdirSync(out, { recursive: true });
