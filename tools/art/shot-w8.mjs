@@ -12,7 +12,7 @@ const port = process.argv[3] ?? '4301';
 const layout = Number(process.argv[4] ?? 0);
 mkdirSync(out, { recursive: true });
 const SIZES = { upright: [390, 844], sideways: [844, 390] };
-const STAGES = ['8-1', '8-2', '8-3', '8-4', '8-5', '8-6', '8-8', '8-9'];
+const STAGES = (process.env.W8_STAGES ?? '8-1,8-2,8-3,8-4,8-5,8-6,8-8,8-9').split(',');
 const b = await chromium.launch();
 for (const [size, [w, h]] of Object.entries(SIZES)) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true });
@@ -27,7 +27,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
       await p.mouse.click(w / 2, h / 2);
       await p.waitForTimeout(1200);
       const where = await p.evaluate(([id, what]) => {
-        const e = window.__engine();
+        const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
         const st = e.currentStage;
         const plats = e.platforms ?? st.platforms;
         const topAt = (x) => {

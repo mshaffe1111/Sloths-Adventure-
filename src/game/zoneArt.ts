@@ -656,7 +656,7 @@ let darkCanvas: HTMLCanvasElement | null = null;
 export function drawDarkness(
   ctx: CanvasRenderingContext2D, vw: number, vh: number, level: number,
   hero: { x: number; y: number }, lights: ReadonlyArray<{ x: number; y: number; r: number }>, t: number,
-  opts: { heroR?: number; ink?: string; fireflies?: boolean } = {},
+  opts: { heroR?: number; ink?: string; fireflies?: boolean; depth?: number } = {},
 ) {
   if (level <= 0.01 || typeof document === 'undefined') return;
   if (!darkCanvas) darkCanvas = document.createElement('canvas');
@@ -692,7 +692,7 @@ export function drawDarkness(
   d.globalCompositeOperation = 'source-over';
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.globalAlpha = 0.9 * level;
+  ctx.globalAlpha = (opts.depth ?? 0.9) * level;
   ctx.drawImage(darkCanvas, 0, 0);
   ctx.restore();
   // the fireflies themselves: small warm points in each light (World 3's lights are glowworms, drawn by the stage)

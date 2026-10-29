@@ -11,6 +11,7 @@
  * - levelCheck (with puzzleCheck through it) finds an error;
  * - the clock fails: the time model's typical player under the stage's target or its fast player under the floor, or the inspector's
  *   quick player under 2:00 (STAGE-RULES §1, §2 "Length");
+ * - an animal stands within JUMP_CLEAR of a take-off or landing, or the quick route never swings a liana (the full suite's rules);
  * - a quiet stretch runs over 4 s, or dead time is over a fifth of the stage (§2 "Dead time"; era.ts's budget) — `--waive` names
  *   rules a world cannot meet yet (the toy world's meadow is all quiet), and the waiver is written next to the seeds;
  * Then the 16 to ship are picked greedily: the best-quality roll first, then each time the roll farthest from every roll already
@@ -79,6 +80,9 @@ export interface SideMeasure {
   perMin: number;
   /** take-offs and landings within JUMP_CLEAR px of an animal (stageMetrics, the full suite's stageQuality check): none ships */
   nearJumps: number;
+  /** lianas the quick route never swings (a swing it can walk or jump around: World 6's and World 8's test, gen2/w6Game.test.ts,
+   *  w8Harness.ts checkW8Roll): none ships */
+  unswung: number;
 }
 
 export interface RollMeasure {
@@ -173,6 +177,10 @@ function measureSide(st: Gen2Stage, type: string, setting: Setting) {
     longestQuiet: quiet.length ? Math.max(...quiet) : 0,
     perMin: (beats / Math.max(1, br.total)) * 60,
     nearJumps: (() => { const q = measureStage(s as never); return q.takeoffsNearEnemy + q.landingsNearEnemy; })(),
+    unswung: (() => {
+      const swings = R.used.route.segs.filter((g) => g.kind === 'swing');
+      return st.vines.filter((v) => v.vineType === 'swing_liana' && !swings.some((g) => Math.min(g.x0, g.x1) <= v.x + 40 && Math.max(g.x0, g.x1) >= v.x - 40)).length;
+    })(),
   };
   return { side, route: R.used.route, beats: br };
 }
@@ -199,6 +207,7 @@ export function failsOf(m: Pick<RollMeasure, 'normal' | 'easy'>, floor: { target
     if (!waive.includes('quiet') && s.longestQuiet > RULES.quietMax) f.push(`${name}: quiet over 4 s`);
     if (!waive.includes('dead') && s.dead > RULES.deadShare * s.played) f.push(`${name}: dead time over a fifth`);
     if (s.nearJumps > 0) f.push(`${name}: an animal by a jump`);
+    if (s.unswung > 0) f.push(`${name}: a liana never swung`);
   }
   // (Easy's typical player is shorter by design, fewer animals: the target is Normal's)
   if (m.normal.typical < floor.target) f.push('normal: model typical under the target');
@@ -641,6 +650,7 @@ export function plainReason(k: string): string {
     'quiet over 4 s': 'a stretch of more than 4 seconds with nothing to do',
     'dead time over a fifth': 'more than a fifth of the stage is quiet',
     'an animal by a jump': `an animal within ${JUMP_CLEAR} px of a take-off or a landing`,
+    'a liana never swung': 'a liana the quick route never swings (it walks or jumps around it)',
     'kid bot: jumps under 85%': 'a jump the kid bot (Easy) makes less than 85% of the time',
     'adult bot: jumps under 70%': 'a jump the adult bot (Normal) makes less than 70% of the time',
     'band outside': 'its difficulty score is outside the band',

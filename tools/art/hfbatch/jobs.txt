@@ -1,0 +1,33 @@
+HF batch W7/W8 jobs, 2026-10-29 (cap for this task $5 of Matt's last ~$11 on Hugging Face). rtx-pro-6000 at ~$2.75/h.
+Results in the bucket mshaffe111/w5-xfer under hfbatch/ (clips/, carriers/, props/).
+hfb-clips-0  6ae35ba1ad9610e5cb311ca2 rtx-pro-6000 created 14:43:45Z: spec-hfb-clips.json part 0 of 2 (13 clips: bat asleep, crab/beetle/piranha defeat, sentry hurt, owl defeat redo)
+hfb-clips-1  6ae35ba4ad9610e5cb311cab rtx-pro-6000 created 14:43:48Z: part 1 of 2
+hfb-carriers 6ae35bab5ddcdc08302610e2 cpu-basic    created 14:43:55Z: carriercpu.py, the existing cr-/m1k- clips of bat fly, crab, piranha, sentry, beetle brought back as carriers
+hfb-props    6ae35c2bad9610e5cb311d4f rtx-pro-6000 created 14:46:03Z: w6to10/img2imggpu.py on spec-hfb-props.json (World 8 roost branch + seed pods, 2 strengths x 2 seeds)
+finished: hfb-carriers 14:45:14Z (1.3 min cpu-basic, ~$0.00); hfb-props 14:48:23Z (2.3 min, ~$0.11);
+  hfb-clips-1 15:06:59Z (23.2 min, ~$1.06); hfb-clips-0 15:10:40Z (26.9 min, ~$1.23)
+total 52.4 min on rtx-pro-6000 = ~$2.40 of the $5 cap (clips ~$2.29, props ~$0.11). Stopped there: everything asked was made.
+
+verdicts (cut by cutbatch.py from picks.json; check sheets + GIFs in reference/prop-sheets/qa-notes/hf-batch-w7w8/):
+  bat asleep  hfb-bat-sleep-s5 KEPT (eyes close by frame 22, then shut with slow breathing; doze 0-22, sleep 24-48; same canvas
+              and anchor as fruitbat.json roost_24: ax 230 ay 214). s17 THROWN: its eyes never close.
+  bat fly     no new spend: the old cr-fruitbat-fly-s21 (frames 36-46, one clean flap cycle) KEPT; cr-fruitbat-fly-s7 not used
+              (shallow flap). Painted eyes are dark with a highlight, not lit: a faint glow is a code touch for the integrator.
+  roost/pods  the kit has no 'moss-bough' cell (its 'buttress' bough is fixed to a wall corner, 'branch' has no moss), so made by
+              img2img: w8roost-s72-5 KEPT as w8roost, w8roost-s55-5 KEPT as w8roost-b (second look). s55-17, s72-17 not used.
+  crab        idle cr-crab-idle-s7, walk m1k-crab-walk-s3 22-34, attack m1k-crab-snap-s29 0-14, hurt cr-crab-hurt-s21 0-30 (old,
+              free); defeat hfb-crab-defeat-s17 KEPT (frames 4-8 dropped: a smeared tumble). s5 THROWN: grey ground shadow
+              under it (shows as a grey blob on a dark ground). cr-crab-hurt-s7 not used: turns to face the camera.
+  piranha     idle m1k-piranha-chomp-s3 14-34, attack cr-piranha-leap-s7 8-28, hurt cr-piranha-hurt-s21 2-12 (later frames turn
+              and face left); defeat hfb-piranha-defeat-s5 KEPT. s17 THROWN: the body stretches into a slim trout (off model).
+              Detached splash/ripple pieces are cut off (mainOnly); only the splash joined to the fish at the leap remains.
+  sentry      idle cr-sentry-idle-s21, walk m1k-sentry-walk-s11 (cr-sentry-walk-s7 has white blobs at the feet), attack
+              cr-sentry-jab-s21 (cr-sentry-jab-s7 THROWN: spear turns into an ice crystal), defeat cr-sentry-crumble-s21
+              (crumble-s7 pops into a pile in one frame); hurt hfb-sentry-hurt-s5 KEPT as frames 0,10-24 (4-8 have white
+              smears). s17 THROWN: lunges forward, white patches. The sentry's white sticker rim and the white fill between its
+              legs are cut (derim 14, whitePockets 15).
+  beetle      idle cr-beetle-idle-s21, walk m1k-beetle-walk-s11, attack m1k-beetle-charge-s3, hurt cr-beetle-flip-s21 (flip-s7
+              THROWN: goes flat black); defeat hfb-beetle-defeat-s17 KEPT (flips onto its back, legs up, stays). s5 THROWN: rights
+              itself (not a defeat). Pale rim cut (derim 8).
+  owl         defeat hfb-owl-defeat-s11 KEPT (wings fold, drops, lies flat with eyes shut; Wan drew closed lids, not swirly X's).
+              s5 and s23 THROWN: grey ground shadow.

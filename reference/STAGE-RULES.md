@@ -31,6 +31,11 @@ Last updated 2026-10-29.
   World 8). Pokey says the teaching lines and explains any locked exit himself, in his own voice, under 10 words ("Cracked tiles.
   Don't stand still."). No Dot perch, no Dot lines in World 7 stages.
 
+- **Dot is a guide, not a narrator (Matt, 2026-10-29: "it feels like she's constantly nagging me... we give away the puzzle").** On Tips she
+  speaks only for a first-time mechanic, creature or hazard (once per save), the water warning, a locked exit, and real struggle (two deaths
+  in one spot, two failed tries); at least 30 s between non-urgent lines. Puzzle rooms never give the answer on entry; nudges escalate only
+  on struggle. No code-drawn highlight boxes, rings or arrows: to point, Dot flies to the actual object.
+
 ## 1b. The game gets harder as it goes (Matt, 2026-10-28)
 
 - **Each world sits in its own difficulty band, and the bands climb world by world.** Inside a world, stages can go up and down

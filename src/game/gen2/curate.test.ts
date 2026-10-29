@@ -13,7 +13,7 @@ import '../headlessDom.ts';
 import { buildGen2Stage, checkStage } from './pipeline.ts';
 import { closingSections, curateStage, distance, failsOf, pickSpread, plainReason, renderReport, renderTable, resolveStage, sharedWith, toEntry, type RollMeasure, type SideMeasure } from '../../../tools/gen2/curate.ts';
 
-const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, nearJumps: 0, ...o });
+const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, nearJumps: 0, unswung: 0, ...o });
 const roll = (seed: number, prof: Record<string, number>, quality = 0.5, plan: string[] = []): RollMeasure => ({
   seed, layoutSeed: seed, rerolls: 0, swaps: 0, plan, normal: side(), easy: side(), action: '', prof: new Map(Object.entries(prof)), wins: [], fails: [], quality,
 });
@@ -30,6 +30,9 @@ test('the filters name every number a roll misses, and a waiver lifts only its o
   const near = failsOf({ normal: side(), easy: side({ nearJumps: 2 }) }, floor, ['quiet', 'dead']);
   assert.deepEqual(near, ['easy: an animal by a jump']);
   assert.match(plainReason(near[0]), /^Easy: an animal within 120 px of a take-off or a landing$/);
+  // (a liana the quick route never swings: World 6's and World 8's full-suite rule, never waived)
+  const unswung = failsOf({ normal: side({ unswung: 1 }), easy: side() }, floor, ['quiet', 'dead']);
+  assert.deepEqual(unswung, ['normal: a liana never swung']);
 });
 
 test('the pick is greedy max-min: the best roll first, then the farthest, and a refused roll is skipped', () => {

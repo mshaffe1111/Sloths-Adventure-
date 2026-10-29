@@ -165,7 +165,8 @@ export interface LianaSwing {
  *   jump | double        a gap from the jump envelope: `share` (0..1) of the widest gap the difficulty allows for that rise
  *                        (pipeline maxGap: Easy 0.65, Normal 0.82 of the physical reach, never past what levelCheck accepts)
  *   pit                  a gap at the same height with a pit under it (soft: a floor and a step out); the jump kind decides its width
- *                        (`glide`: the leaf glide's reach, pipeline glideGap; Normal's is past the double jump, so the leaf is the way over)
+ *                        (`glide`: the leaf glide's reach, pipeline glideGap; Normal's is past the double jump, so the leaf is the way over;
+ *                        its soft pit climbs back to the take-off, as a liana's does, so walking down and out the far side is no way over)
  *   on                   an obstacle standing on `on`'s top, `at` (0..1) along it, `h` px tall (a stump, a block)
  *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top (over a
  *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
