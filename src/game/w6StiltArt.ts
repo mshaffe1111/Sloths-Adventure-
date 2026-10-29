@@ -11,6 +11,7 @@
  * platform look leaves it alone). Nothing is drawn until its sheet has loaded.
  */
 import { trackAtlas } from './atlasLoader.ts';
+import { drawRopeAlong } from './ropeArt.ts';
 
 type Frame = { x: number; y: number; w: number; h: number };
 const SHEETS = {
@@ -18,6 +19,7 @@ const SHEETS = {
   var: new URL('../assets/w6to10/props-made/w6var.webp', import.meta.url).href,
   d: new URL('../assets/w6to10/props-made/w6d.webp', import.meta.url).href,
   c: new URL('../assets/w6to10/props-made/w6c.webp', import.meta.url).href,
+  balt: new URL('../assets/w6to10/props-made/w6balt.webp', import.meta.url).href,
 } as const;
 type Sheet = keyof typeof SHEETS;
 export const STILT_ART_URLS: readonly string[] = Object.values(SHEETS);
@@ -36,30 +38,63 @@ export const STILT_PROP_FRAMES: Record<StiltProp, Frame> = {"moss-curtain": {x: 
  * log), where its walkable top is (share of the picture's height, measured from the pictures' opaque pixels), and the widest ledge one
  * copy covers before it is laid in several side by side
  */
-export type LedgeLook = 'branch-b' | 'root-arch' | 'root-den' | 'moss-log' | 'stump';
+export type LedgeLook = 'branch-b' | 'root-arch' | 'root-den' | 'moss-log' | 'stump' | 'bank' | 'bank-edge';
 export const LEDGE_LOOKS: Record<LedgeLook, { sheet: Sheet; f: Frame; top: number; cut?: number; max: number }> = {
   'branch-b': { sheet: 'var', f: { x: 0, y: 0, w: 447, h: 162 }, top: 0.031, max: 460 },
   'root-arch': { sheet: 'd', f: { x: 0, y: 0, w: 469, h: 305 }, top: 0.026, max: 360 },
   'root-den': { sheet: 'd', f: { x: 473, y: 0, w: 469, h: 305 }, top: 0.026, max: 360 },
   'moss-log': { sheet: 'd', f: { x: 0, y: 423, w: 460, h: 132 }, top: 0.083, cut: 0.735, max: 420 },
   stump: { sheet: 'var', f: { x: 910, y: 0, w: 431, h: 189 }, top: 0.026, max: 260 },
+  // the start's bank: w6var's soil block, and its bank edge (the mud breaking off into the water, roots hanging from it: its walkable top
+  // runs over the left `walk` share of its width)
+  bank: { sheet: 'var', f: { x: 1345, y: 0, w: 442, h: 387 }, top: 0.057, max: 400 },
+  'bank-edge': { sheet: 'var', f: { x: 0, y: 391, w: 414, h: 421 }, top: 0.03, max: 420 },
 };
+/** the share of the bank edge's width its walkable top runs over (from its left); past it the mud breaks off */
+export const BANK_EDGE_WALK = 0.72;
+/**
+ * the looks that grow out of the ground (the lead's review, 2026-10-29: "a stump or a root den is something that grows out of the
+ * ground"; w6var's second plank is a slab on spreading roots too, and reads as one): laid only where their own roots reach down onto the ledge under them (w6Stages.ts sizes them so their feet stand on it)
+ */
+export const GROUNDED: readonly LedgeLook[] = ['stump', 'root-arch', 'root-den', 'branch-b'];
 /** how much wider than its ledge a look is drawn (its painted ends are ragged: the walkable top still covers the ledge) */
 export const LEDGE_OVER = 1.1;
 
 /** a ledge the stage paints with one of the looks (its platform is art 'stilt'), laid in `n` copies side by side */
-export interface StiltLedge { id: number; look: LedgeLook; x: number; y: number; w: number; n: number; flip?: boolean }
-/** dressing: a hides-and-arches piece or a w6c prop on its foot at (x, b), `w` px wide; the moss curtain hangs from b */
-export interface StiltDecor { n: StiltPiece | StiltProp; x: number; b: number; w: number; flip?: boolean }
+export interface StiltLedge { id: number; look: LedgeLook; x: number; y: number; w: number; n: number; flip?: boolean; over?: number; /** drawn this tall (the start's bank: one piece, no seams) */ h?: number }
+/**
+ * dressing: a hides-and-arches piece or a w6c prop on its foot at (x, b), `w` px wide; the moss curtain hangs from b. And what holds
+ * a ledge up, from its underside at (x, b): a stilt post (w6balt's gauge post) down to its foot at `foot` (a ledge's top, or under the
+ * water); a brace (the same post, slanting) down to `to` on a climbing root's trunk; a lashed rope up to `top` (the ledge over it)
+ */
+export interface StiltDecor {
+  n: StiltPiece | StiltProp | 'post' | 'brace' | 'rope';
+  x: number;
+  b: number;
+  w: number;
+  flip?: boolean;
+  foot?: number;
+  to?: [number, number];
+  top?: number;
+}
 export const isProp = (n: StiltDecor['n']): n is StiltProp => n in STILT_PROP_FRAMES;
+/** the gauge post: its capped top, then its plain shaft, laid again and again down to the foot */
+const POST = { x: 769, w: 78, cap: 215, shaft: [215, 405] as const };
 
 /** how many copies a look takes over a ledge `w` wide */
 export const ledgeCopies = (look: LedgeLook, w: number): number => Math.max(1, Math.ceil(w / LEDGE_LOOKS[look].max));
 /** how tall a look is drawn over a ledge `w` wide, laid in `n` copies (more copies, each narrower, draw it shallower) */
-export function ledgeHeight(look: LedgeLook, w: number, n = ledgeCopies(look, w)): number {
+export function ledgeHeight(look: LedgeLook, w: number, n = ledgeCopies(look, w), over = LEDGE_OVER): number {
   const L = LEDGE_LOOKS[look];
-  return ((w / n) * LEDGE_OVER * L.f.h) / (L.f.w * (L.cut ?? 1));
+  return ((w / n) * over * L.f.h) / (L.f.w * (L.cut ?? 1));
 }
+/** how much wider than its ledge a grounded look is drawn, so its feet stand `drop` px under its top (one copy) */
+export function overFor(look: LedgeLook, w: number, drop: number): number {
+  const L = LEDGE_LOOKS[look];
+  return (drop / (1 - L.top)) * (L.f.w * (L.cut ?? 1)) / (w * L.f.h);
+}
+/** the range of `overFor` a grounded look may be drawn at: its walkable top still covers its ledge, and it overhangs only a little */
+export const GROUND_OVER = [1.0, 1.18] as const;
 /** the narrowest one copy of a look is laid (narrower reads as a smudge) */
 export const LEDGE_MIN_COPY = 130;
 
@@ -76,6 +111,7 @@ export function stiltArtReady(): boolean {
   (Object.keys(SHEETS) as Sheet[]).forEach(load);
   return ready.size === Object.keys(SHEETS).length;
 }
+type View = { x0: number; x1: number; y0: number; y1: number };
 function blit(ctx: CanvasRenderingContext2D, s: Sheet, f: Frame, x: number, y: number, w: number, h: number, flip = false, cut = 1) {
   const img = imgs.get(s);
   if (!img || !ready.has(s)) return;
@@ -85,14 +121,78 @@ function blit(ctx: CanvasRenderingContext2D, s: Sheet, f: Frame, x: number, y: n
   ctx.drawImage(img, f.x, f.y, f.w * cut, f.h, -w / 2, 0, w, h);
   ctx.restore();
 }
+/** a picture drawn with its right `fade` px fading out (the start's bank over its edge piece: no seam), made once per size */
+const faded = new Map<string, HTMLCanvasElement>();
+function drawFaded(ctx: CanvasRenderingContext2D, s: Sheet, f: Frame, x: number, y: number, w: number, h: number, fade: number) {
+  const img = imgs.get(s);
+  if (!img || !ready.has(s) || typeof document === 'undefined') return;
+  const key = `${s}:${f.x}:${f.y}:${Math.round(w)}:${Math.round(h)}:${fade}`;
+  let c = faded.get(key);
+  if (!c) {
+    c = document.createElement('canvas');
+    c.width = Math.ceil(w);
+    c.height = Math.ceil(h);
+    const g = c.getContext('2d')!;
+    g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, w, h);
+    g.globalCompositeOperation = 'destination-out';
+    const gr = g.createLinearGradient(w - fade, 0, w, 0);
+    gr.addColorStop(0, 'rgba(0,0,0,0)');
+    gr.addColorStop(1, 'rgba(0,0,0,1)');
+    g.fillStyle = gr;
+    g.fillRect(w - fade, 0, fade, h);
+    faded.set(key, c);
+  }
+  ctx.drawImage(c, x, y, w, h);
+}
+/** a brace: the post slanting from (x, y) down to (tx, ty), its cap at the top */
+function drawBrace(ctx: CanvasRenderingContext2D, x: number, y: number, tx: number, ty: number, w: number, flip = false) {
+  const len = Math.hypot(tx - x, ty - y);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(Math.atan2(ty - y, tx - x) - Math.PI / 2);
+  drawPost(ctx, 0, 0, len, w, { x0: -1e9, x1: 1e9, y0: -1e9, y1: 1e9 }, flip);
+  ctx.restore();
+}
+/** a lashed rope from the ledge over it at top down to its ledge at b: the game's painted rope (ropeArt.ts), hung straight */
+function drawRope(ctx: CanvasRenderingContext2D, x: number, top: number, b: number) {
+  drawRopeAlong(ctx, [[x, top], [x, b]]);
+}
+/** a stilt post from b down to foot, `w` wide: the cap, then the shaft laid down to the foot (the last one cut short) */
+function drawPost(ctx: CanvasRenderingContext2D, x: number, b: number, foot: number, w: number, view: View, flip = false) {
+  const k = w / POST.w;
+  const left = x - w / 2;
+  const capH = Math.min(POST.cap * k, foot - b);
+  blit(ctx, 'balt', { x: POST.x, y: 0, w: POST.w, h: capH / k }, left, b, w, capH, flip);
+  const [s0, s1] = POST.shaft;
+  const step = (s1 - s0) * k;
+  // (only the pieces in view: a post down into the water can be thousands of px long)
+  let y = b + capH;
+  if (view.y0 - 40 > y) y += Math.floor((view.y0 - 40 - y) / step) * step;
+  for (; y < Math.min(foot, view.y1 + 40) - 0.5; y += step) {
+    const h = Math.min(step, foot - y);
+    blit(ctx, 'balt', { x: POST.x, y: s0, w: POST.w, h: h / k }, left, y, w, h, flip);
+  }
+}
 
-type View = { x0: number; x1: number; y0: number; y1: number };
 const seen = (x0: number, x1: number, y0: number, y1: number, v: View) => x1 > v.x0 - 40 && x0 < v.x1 + 40 && y1 > v.y0 - 40 && y0 < v.y1 + 40;
 
 /** the dressing behind the ledges (the hanging moss, and what stands on the shelves) */
 export function drawStiltDecor(ctx: CanvasRenderingContext2D, items: readonly StiltDecor[], view: View): void {
   stiltArtReady();
   for (const d of items) {
+    if (d.n === 'brace' && d.to) {
+      if (seen(Math.min(d.x, d.to[0]), Math.max(d.x, d.to[0]), d.b, d.to[1], view)) drawBrace(ctx, d.x, d.b, d.to[0], d.to[1], d.w, d.flip);
+      continue;
+    }
+    if (d.n === 'rope' && d.top !== undefined) {
+      if (seen(d.x - 20, d.x + 20, d.top, d.b, view)) drawRope(ctx, d.x, d.top, d.b);
+      continue;
+    }
+    if (d.n === 'post') {
+      const foot = d.foot ?? d.b;
+      if (seen(d.x - d.w, d.x + d.w, d.b, foot, view)) drawPost(ctx, d.x, d.b, foot, d.w, view, d.flip);
+      continue;
+    }
     if (isProp(d.n)) {
       const f = STILT_PROP_FRAMES[d.n];
       const h = (f.h * d.w) / f.w;
@@ -100,7 +200,8 @@ export function drawStiltDecor(ctx: CanvasRenderingContext2D, items: readonly St
       if (seen(d.x - d.w / 2, d.x + d.w / 2, top, top + h, view)) blit(ctx, 'c', f, d.x - d.w / 2, top, d.w, h, d.flip);
       continue;
     }
-    const f = STILT_FRAMES[d.n];
+    const f = STILT_FRAMES[d.n as StiltPiece];
+    if (!f) continue;
     const k = d.w / f.w;
     const h = f.h * k;
     if (!seen(d.x - d.w, d.x + d.w, d.b - h, d.b, view)) continue;
@@ -115,10 +216,14 @@ export function drawStiltLedges(ctx: CanvasRenderingContext2D, ledges: readonly 
   stiltArtReady();
   for (const l of ledges) {
     const L = LEDGE_LOOKS[l.look];
-    const cw = (l.w / l.n) * LEDGE_OVER;
-    const h = ledgeHeight(l.look, l.w, l.n);
+    const cw = (l.w / l.n) * (l.over ?? LEDGE_OVER);
+    const h = l.h ?? ledgeHeight(l.look, l.w, l.n, l.over);
     const top = l.y - L.top * h;
     if (!seen(l.x - cw, l.x + l.w + cw, top, top + h, view)) continue;
+    if (l.look === 'bank') {
+      drawFaded(ctx, L.sheet, L.f, l.x + l.w / 2 - cw / 2, top, cw, h, 80);
+      continue;
+    }
     for (let i = 0; i < l.n; i++) {
       const cx = l.x + (l.w / l.n) * (i + 0.5);
       blit(ctx, L.sheet, L.f, cx - cw / 2, top, cw, h, !!l.flip !== (i % 2 === 1), L.cut ?? 1);

@@ -4,7 +4,7 @@ import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { easyHoldCheck, validateStage } from './levelCheck.ts';
 import { easyStage } from './easyMode.ts';
 import { buildStiltClimb, STILT_COLUMN, STILT_CREATURES, STILT_VIEW } from './w6Stages.ts';
-import { isProp, ledgeHeight, STILT_FRAMES, STILT_PIECES, type StiltPiece } from './w6StiltArt.ts';
+import { BANK_EDGE_WALK, GROUNDED, isProp, LEDGE_LOOKS, ledgeHeight, STILT_FRAMES, STILT_PIECES, type StiltPiece } from './w6StiltArt.ts';
 import { findForStage } from './finds.ts';
 import { readFileSync, existsSync } from 'node:fs';
 import { newTide, restartTide, stepTide, swell, TIDE, type TideSetting } from './risingTide.ts';
@@ -58,7 +58,7 @@ test('6-8: hand-built, an ascent; every roll can be climbed on Normal and on Eas
     assert.ok(st.stilt68.expert >= 120 && st.stilt68.expert <= 170, `seed ${s}: ${Math.round(st.stilt68.expert)} s`);
     assert.ok((st.proto.movedPickups ?? 0) <= 2, `seed ${s}: ${st.proto.movedPickups} pickups moved`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
-    assert.ok(Math.abs(st.exitTotemY - (st.stilt68.crown - 45)) < 2, 'the shrine is on the crown, a hop up from where the root tops out');
+    assert.ok(Math.abs(st.exitTotemY - (st.stilt68.crown - 75)) < 2, 'the shrine is on the crown, two hops up from where the root tops out');
   }
 });
 
@@ -310,7 +310,7 @@ test('6-8 dressing: Matt\'s World 6 hides and arches stand on the wide shelves, 
   assert.deepEqual(STILT_FRAMES, sheet.frames);
   for (const s of SEEDS) {
     const st = build(s);
-    const decor = st.proto.stilt!;
+    const decor = st.proto.stilt!.filter((d) => d.n !== 'post' && d.n !== 'brace' && d.n !== 'rope');
     assert.ok(decor.length >= 10, `seed ${s}: ${decor.length} pieces`);
     assert.ok(new Set(decor.map((d) => d.n)).size >= 5, `seed ${s}: the pieces vary`);
     for (const d of decor) {
@@ -344,8 +344,9 @@ test('6-8 ledges: painted in Matt\'s World 6 pieces, mixed, so ledges near each 
     }
     // every look in use, none taking more than a third of the ledges
     const all = [...looks.values()].flat();
-    for (const l of ['kit', 'branch-b', 'root-arch', 'moss-log', 'stump']) assert.ok(all.includes(l), `seed ${s}: no ${l}`);
-    for (const l of new Set(all)) assert.ok(all.filter((v) => v === l).length <= all.length / 3, `seed ${s}: ${l} on ${all.filter((v) => v === l).length} of ${all.length}`);
+    for (const l of ['kit', 'branch-b', 'moss-log']) assert.ok(all.includes(l), `seed ${s}: no ${l}`);
+    // (a log or the kit's plank fits nearly anywhere, a stump, arch or den only where its stilts can stand: none over 40%)
+    for (const l of new Set(all)) assert.ok(all.filter((v) => v === l).length <= all.length * 0.4, `seed ${s}: ${l} on ${all.filter((v) => v === l).length} of ${all.length}`);
     // pieces likely on one screen (within 300 up or down, 300 across) differ, as far as the looks that fit allow: each painted piece
     // (a wide ledge is laid in several) and each kit plank, side by side on one ledge too
     const kin = (l: string) => (l === 'root-den' ? 'root-arch' : l);
@@ -361,14 +362,86 @@ test('6-8 ledges: painted in Matt\'s World 6 pieces, mixed, so ledges near each 
       if (a.look === b.look) same++;
       if (a.id === b.id && Math.abs(a.x1 - b.x0) < 2) assert.notEqual(a.look, b.look, `seed ${s}: ledge ${a.id} has the same look twice side by side`);
     }
-    assert.ok(same <= pairs * 0.1, `seed ${s}: ${same} of ${pairs} close pairs look alike`);
-    // a look's walkable top is the ledge's top, and its roots never hang onto a ledge under it
+    // (under the support rule the log fits where little else does, until Matt's World 6 ledge set comes: about one close pair in seven)
+    assert.ok(same <= pairs * 0.2, `seed ${s}: ${same} of ${pairs} close pairs look alike`);
+    // a look's walkable top is the ledge's top; a plank's or a log's body never hangs onto a ledge under it, and a stump's, an arch's or
+    // a den's roots stand on the ledge under it (its feet on that ledge's top, the ledge under nearly all of it)
     for (const l of ledges) {
       const p = st.platforms.find((q) => q.id === l.id)!;
       assert.equal(l.y, p.y);
+      if (p.height >= 50) continue; // (the start's bank and knee: below)
       assert.ok(l.x >= p.x - 1 && l.x + l.w <= p.x + p.width + 1);
-      const h = ledgeHeight(l.look, l.w, l.n);
-      assert.ok(!st.platforms.some((q) => q !== p && q.x < l.x + l.w + 20 && q.x + q.width > l.x - 20 && q.y > p.y + 10 && q.y < p.y + h + 30), `seed ${s}: ${l.look} on ${p.id} hangs onto a ledge`);
+      const h = ledgeHeight(l.look, l.w, l.n, l.over);
+      if (GROUNDED.includes(l.look)) {
+        const feet = l.y - LEDGE_LOOKS[l.look].top * h + h;
+        const q = st.platforms.find((o) => o !== p && Math.abs(o.y - feet) <= 8 && o.x <= l.x + 0.12 * l.w && o.x + o.width >= l.x + l.w - 0.12 * l.w);
+        // (or on stilts: the next test)
+        const stilts = st.proto.stilt!.some((d) => d.n === 'post' && Math.abs(feet - 6 - d.b) < 2 && d.x >= l.x && d.x <= l.x + l.w);
+        assert.ok(q || stilts, `seed ${s}: the ${l.look} on ${p.id} stands on nothing`);
+        const until = q ? q.y : feet + 30;
+        assert.ok(!st.platforms.some((o) => o !== p && o !== q && o.x < l.x + l.w + 20 && o.x + o.width > l.x - 20 && o.y > p.y + 10 && o.y < until), `seed ${s}: the ${l.look} on ${p.id} hangs onto a ledge`);
+        continue;
+      }
+      // (a ledge meeting it end to end a little lower, as the crown's pieces do, is beside it, not under it)
+      const beside = (q: Platform) => q.y - p.y < 80 && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(q.x - (p.x + p.width)) < 2);
+      assert.ok(!st.platforms.some((q) => q !== p && !beside(q) && q.x < l.x + l.w + 20 && q.x + q.width > l.x - 20 && q.y > p.y + 10 && q.y < p.y + h + 30), `seed ${s}: ${l.look} on ${p.id} hangs onto a ledge`);
+    }
+    // the start: the bank's soil, ending in its painted edge breaking off into the water (no cut), and the knee a stump in the mud
+    const flat = st.platforms.find((p) => p.y === st.spawnY && p.height >= 50)!;
+    const bank = ledges.filter((l) => l.id === flat.id);
+    // (the edge drawn first: the soil's end fades out over its cut left side)
+    assert.deepEqual(bank.map((l) => l.look), ['bank-edge', 'bank'], `seed ${s}`);
+    const edge = bank[0];
+    assert.ok(bank[1].x + bank[1].w > edge.x + 60, `seed ${s}: the soil runs on over the edge's cut side`);
+    assert.ok(Math.abs(edge.x + edge.w * BANK_EDGE_WALK - (flat.x + flat.width)) <= 1, `seed ${s}: the edge's walkable top ends where the bank does`);
+    const knee = st.platforms.find((p) => p !== flat && p.height >= 50 && p.y < flat.y)!;
+    const stump = ledges.find((l) => l.id === knee.id)!;
+    assert.equal(stump.look, 'stump');
+    const sh = ledgeHeight('stump', stump.w, 1, stump.over);
+    assert.ok(Math.abs(stump.y - LEDGE_LOOKS.stump.top * sh + sh - flat.y) <= 8, `seed ${s}: the knee's roots in the mud`);
+  }
+});
+
+test('6-8 nothing floats (the lead\'s review, 2026-10-29): every stretch of every ledge is held up, by a stump\'s, arch\'s or den\'s roots on the ledge under it or on stilt posts, a climbing root, a post, a brace or a rope', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const ledges = st.proto.stiltLedges!;
+    const holds = st.proto.stilt!.filter((d) => d.n === 'post' || d.n === 'brace' || d.n === 'rope');
+    const floor = st.config.levelHeight;
+    const climbs = st.vines.filter((v) => v.vineType === 'tree_climb');
+    const on = (p: Platform, x: number) => x >= p.x - 1 && x <= p.x + p.width + 1;
+    /** the feet of a stump, arch or den laid on p */
+    const feet = (l: (typeof ledges)[number]) => {
+      const h = ledgeHeight(l.look, l.w, l.n, l.over);
+      return l.y - LEDGE_LOOKS[l.look].top * h + h;
+    };
+    for (const d of holds) {
+      // its top: under a ledge, or (a stilt) at the feet of a stump, arch or den
+      const top = st.platforms.find((p) => Math.abs(p.y + (d.n === 'rope' ? 4 : 6) - d.b) < 1 && on(p, d.x));
+      const stilt = ledges.find((l) => GROUNDED.includes(l.look) && Math.abs(feet(l) - 6 - d.b) < 2 && d.x >= l.x && d.x <= l.x + l.w);
+      assert.ok(top || (d.n === 'post' && stilt), `seed ${s}: a ${d.n} at ${d.x},${d.b} holds nothing`);
+      if (d.n === 'post') {
+        assert.ok(d.foot! >= floor - 1 || st.platforms.some((p) => Math.abs(p.y - d.foot!) < 1 && on(p, d.x)), `seed ${s}: a post at ${d.x} stands on nothing`);
+        assert.ok(!st.platforms.some((p) => p.y > d.b + 10 && p.y < d.foot! - 1 && on(p, d.x)), `seed ${s}: a post at ${d.x} through a ledge`);
+      }
+      if (d.n === 'brace') assert.ok(climbs.some((v) => Math.abs(v.x - d.to![0]) <= 16 && v.topY <= d.to![1] && v.bottomY >= d.to![1]), `seed ${s}: a brace at ${d.x} ends on no trunk`);
+      if (d.n === 'rope') assert.ok(st.platforms.some((p) => Math.abs(p.y + 10 - d.top!) < 1 && on(p, d.x)), `seed ${s}: a rope at ${d.x} hangs from nothing`);
+    }
+    for (const p of st.platforms) {
+      if (p.height >= 50) continue;
+      const held: Array<[number, number]> = [];
+      for (const l of ledges.filter((q) => q.id === p.id && GROUNDED.includes(q.look))) {
+        // on the ledge under it, or on stilts
+        const f = feet(l);
+        const ground = st.platforms.some((q) => q !== p && Math.abs(q.y - f) <= 8 && q.x <= l.x + 0.12 * l.w && q.x + q.width >= l.x + l.w - 0.12 * l.w);
+        const stilts = holds.filter((d) => d.n === 'post' && Math.abs(f - 6 - d.b) < 2 && d.x >= l.x && d.x <= l.x + l.w);
+        assert.ok(ground || stilts.length >= Math.min(l.n, 1), `seed ${s}: the ${l.look} on ${p.id} floats`);
+        held.push([l.x, l.x + l.w]);
+      }
+      for (const v of climbs) if ((Math.abs(v.topY + 2 - p.y) < 6 || Math.abs(v.bottomY + 6 - p.y) < 6) && on(p, v.x)) held.push([v.x, v.x]);
+      for (const d of holds) if (Math.abs(p.y + (d.n === 'rope' ? 4 : 6) - d.b) < 1 && on(p, d.x)) held.push([d.x, d.x]);
+      for (let x = p.x + 20; x <= p.x + p.width - 20; x += 10)
+        assert.ok(held.some(([a, b]) => x >= a - 300 && x <= b + 300), `seed ${s}: ledge ${p.id} (${p.x}..${p.x + p.width} at ${p.y}) floats at ${x}`);
     }
   }
 });
@@ -393,9 +466,14 @@ test('6-8 the crown: the top of the canopy, the whole width, the shrine at its f
   for (const s of SEEDS.slice(0, 6)) {
     const st = build(s);
     const crown = st.platforms.find((p) => p.y === st.stilt68.crown)!;
-    const step = st.platforms.find((p) => p.y === st.stilt68.crown - 45)!;
-    // (the two halves of the crown, a hop apart, span the column)
-    assert.deepEqual([Math.min(crown.x, step.x), Math.max(crown.x + crown.width, step.x + step.width)], [STILT_COLUMN.x0, STILT_COLUMN.x1]);
+    // (not one straight strip: its pieces at three or four heights, end to end across the column, each next a plain hop up or down)
+    const parts = st.platforms.filter((p) => p.y >= crown.y - 80 && p.y <= crown.y + 30 && p.height < 50).sort((a, b) => a.x - b.x);
+    assert.ok(new Set(parts.map((p) => p.y)).size >= 3, `seed ${s}: the crown's heights`);
+    assert.deepEqual([parts[0].x, parts[parts.length - 1].x + parts[parts.length - 1].width], [STILT_COLUMN.x0, STILT_COLUMN.x1]);
+    for (let i = 1; i < parts.length; i++) {
+      assert.equal(parts[i].x, parts[i - 1].x + parts[i - 1].width, `seed ${s}: the crown's pieces meet`);
+      assert.ok(Math.abs(parts[i].y - parts[i - 1].y) <= 45, `seed ${s}: a plain hop between the crown's pieces`);
+    }
     const root = st.vines.find((v) => v.vineType === 'tree_climb' && Math.abs(v.topY + 2 - crown.y) < 4)!;
     assert.ok(Math.abs(st.exitTotemX - root.x) <= 1000, `seed ${s}: the walk out is short`);
     assert.ok(Math.abs(st.exitTotemX - root.x) > 600, `seed ${s}: a walk across the crown to the shrine`);

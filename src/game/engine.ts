@@ -5233,6 +5233,17 @@ export class GameEngine {
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     // 6-8: its ledges in Matt's other World 6 pieces (over the roots that top out on them, as the kit's planks are)
     if (this.proto?.stiltLedges) drawStiltLedges(ctx, this.proto.stiltLedges, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+    // 6-8's crown: a warm light behind him as the view pulls back, so he stands out against the ruins at dusk (the lead's review)
+    if (this.proto?.reveal && this.revealZoom < 1) {
+      const p = this.player;
+      const k = Math.min(1, (1 - this.revealZoom) / 0.1);
+      const g = ctx.createRadialGradient(p.x, p.y - 34, 8, p.x, p.y - 34, 120);
+      g.addColorStop(0, `rgba(255, 226, 160, ${0.7 * k})`);
+      g.addColorStop(0.45, `rgba(255, 200, 120, ${0.32 * k})`);
+      g.addColorStop(1, 'rgba(255, 190, 100, 0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(p.x - 124, p.y - 158, 248, 248);
+    }
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
@@ -6189,8 +6200,9 @@ export class GameEngine {
       this.revealHeard = true;
       sound.playRelicFound();
     }
-    // (upright pulls back only a little: the view is narrow, and pulled far back he would be small at the top of a tall, empty screen)
-    const want = onCrown ? (this.viewCssH > this.viewCssW ? 0.9 : 0.72) : 1;
+    // (upright pulls back only a little: the view is narrow, and pulled far back he would be small at the top of a tall, empty screen;
+    // sideways not so far that he is lost in it: the lead's review, 2026-10-29)
+    const want = onCrown ? (this.viewCssH > this.viewCssW ? 0.9 : 0.8) : 1;
     const prev = this.revealZoom;
     this.revealZoom += (want - this.revealZoom) * Math.min(1, dt * 1.2);
     if (Math.abs(want - this.revealZoom) < 0.002) this.revealZoom = want;
