@@ -74,8 +74,8 @@ def args(spec, commit):
     tag = json.loads(Path(spec).read_text())['tag']
     cmd = (f'mkdir -p /out/hfpokey/jobs && curl -fsSL {gh}pokeygpu.py -o /out/hfpokey/jobs/pokeygpu.py && '
            f'curl -fsSL {gh}{name} -o /out/hfpokey/jobs/{name} && '
-           'python -c "from diffusers import QwenImageEditPlusPipeline" 2>/dev/null || pip install -q -U diffusers; '
-           'pip install -q spandrel; python -c "import diffusers; print(diffusers.__version__)"; '
+           'python -c "from diffusers import QwenImageEditPlusPipeline" 2>/dev/null || pip install -q --break-system-packages -U diffusers; '
+           'pip install -q --break-system-packages --no-deps spandrel; python -c "import diffusers; print(diffusers.__version__)"; '
            f'sha256sum /out/hfpokey/jobs/pokeygpu.py && SPEC=hfpokey/jobs/{name} python /out/hfpokey/jobs/pokeygpu.py')
     print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '2h', 'detach': True,
                       'command': ['bash', '-lc', cmd], 'secrets': {'HF_TOKEN': '$HF_TOKEN'},
