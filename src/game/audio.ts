@@ -59,10 +59,6 @@ class SoundEngine {
   unlock() {
     this.c.unlock(true);
   }
-  /** the orchestral effects were switched on: fetch the recordings they use */
-  warmOrchSfx() {
-    this.c.warmOrchSfx();
-  }
   /** a snapshot of what the audio is doing (used by tests) */
   /** the control test's line about the sound (light or full, buffer, sound lost) */
   report(): string {

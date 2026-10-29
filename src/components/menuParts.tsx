@@ -1,5 +1,4 @@
 import React from 'react';
-import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
@@ -285,39 +284,6 @@ export const AssistSetting: React.FC = () => {
   );
 };
 
-/** the orchestral sound-effects switch (saved on the device): pickups, hits and animals played by the music's own instruments, no bells or glass */
-export const OrchSfxToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => orchSfxEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <SetIcon name="note" />
-          Orchestra sound effects
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setOrchSfxPref(v);
-            if (v) sound.warmOrchSfx();
-            // a flower and a defeat, so the change is heard at once (the recordings may still be arriving: whatever is ready plays)
-            window.setTimeout(() => {
-              sound.playFlowerPickup(1);
-              window.setTimeout(() => sound.playEnemyDefeated('jaguar'), 450);
-            }, 500);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">Pickups, hits and each animal's sounds played by the same instruments as the music: no bells or glass, and a different instrument each time. Off by default; switch it on if you like it.</small>
-    </div>
-  );
-};
 
 
 /** full screen on or off (the game starts full screen; this is the way out, and back): hidden where the browser cannot do it */
