@@ -1,0 +1,53 @@
+{
+ "tag": "w7slide-seam2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "seam-floor2-s50",
+   "start": "roll-floor2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth, two shallow carved grooves running straight down it dividing it into three lanes, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-floor2-s62",
+   "start": "roll-floor2.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth, two shallow carved grooves running straight down it dividing it into three lanes, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-ceiling-s50",
+   "start": "roll-ceiling.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a dark stone temple ceiling seen from directly below: big dark fitted stone slabs in shadow, brown strangler-fig roots running across them and hanging down, a little moss in the joints, dim warm light, ancient overgrown temple ruins, dark brown and grey stone, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "seam-ceiling-s62",
+   "start": "roll-ceiling.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a dark stone temple ceiling seen from directly below: big dark fitted stone slabs in shadow, brown strangler-fig roots running across them and hanging down, a little moss in the joints, dim warm light, ancient overgrown temple ruins, dark brown and grey stone, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/eae7245f1bbb647ec8bc912f54c84ee3e37e8fc2/reference/prop-sheets/qa-notes/7-4-slide-art/starts/"
+}
