@@ -52,6 +52,7 @@ import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShad
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
+import { drawBatSweep, drawRoost } from './batArt.ts';
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
@@ -6270,6 +6271,7 @@ export class GameEngine {
     this.watchEyes = null;
     const w = this.watch;
     const zone = zoneAt(this.proto!.watch!, this.player.x);
+    if (this.currentStage.config.worldIndex === 8) this.drawRoosts(ctx);
     if (this.currentStage.config.worldIndex === 3) {
       // the Mossy Grotto: something large in the dark, watching. Two eyes far back among the stalactites (calm), opening wide at the
       // edge of the view (warn), sweeping across with a pool of their amber light on the floor (pass), and if they see him, narrowing
@@ -6353,8 +6355,20 @@ export class GameEngine {
     ctx.translate(e.x, e.y);
     ctx.scale(scale, scale);
     ctx.translate(-e.x, -e.y);
-    if (!(this.currentStage.config.worldIndex === 4 && this.drawSovereignWatch(ctx, e)) && !drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+    const bat = this.currentStage.config.worldIndex === 8 && drawBatSweep(ctx, e.x, e.y, e.facing, this.gameTime);
+    if (!bat && !(this.currentStage.config.worldIndex === 4 && this.drawSovereignWatch(ctx, e)) && !drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
     ctx.restore();
+  }
+
+  /**
+   * World 8's bat roosts (batArt.ts): the bats hanging over the start of each watched stretch on screen, still while the roost is calm,
+   * fluttering as it wakes (the watcher's warning) and while it sweeps
+   */
+  private drawRoosts(ctx: CanvasRenderingContext2D) {
+    const roosts = (this.proto?.gen2 as { w8?: { roosts?: Array<{ x: number; y: number }> } } | undefined)?.w8?.roosts ?? [];
+    const w = this.watch;
+    const waking = w.phase === 'warn' ? Math.min(1, w.t / WATCH.warn) : w.phase === 'calm' ? 0 : 1;
+    for (const r of roosts) if (this.onScreen(r.x + 120, r.y - 300, 400)) drawRoost(ctx, r.x, r.y, waking, this.gameTime);
   }
 
   /**
