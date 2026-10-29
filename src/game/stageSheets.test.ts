@@ -25,7 +25,7 @@ test('every hand-built World 3 stage gets the World 3 props and kit; 3-3 its cat
     const s = stageSheets(lvl(`3-${m}`), on);
     assert.deepEqual(s.slice(0, 3), ['kit:1', 'kit:3', 'w3-props'], `3-${m}`);
   }
-  assert.deepEqual(stageSheets(lvl('3-3'), on).slice(3), ['foe:jaguar', 'foe:ocelot', 'kit-pieces', 'perch']);
+  assert.deepEqual(stageSheets(lvl('3-3'), on).slice(3), ['foe:jaguar', 'foe:ocelot', 'kit-pieces', 'water-signs', 'perch']);
 });
 
 test("Dot's flight gets her own sheets only (it draws no platforms)", () => {
@@ -39,8 +39,9 @@ test('a boss lair and a generated stage get only what they draw', () => {
   // a generated stage: the kit when painting is on, and every creature its world's generator can place (rolled with the stage)
   // (5-8: 5-1 to 5-4 are hand-built now)
   const five = stageSheets(lvl('5-8'), on);
-  assert.deepEqual(five, ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'perch']);
-  assert.deepEqual(stageSheets(lvl('5-8'), { ...on, paint: false }), [...genFoes(5).map((f) => `foe:${f}`), 'perch']);
+  // (and World 5's water sign: its stages' first water has one, waterTeach.ts)
+  assert.deepEqual(five, ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'water-signs', 'perch']);
+  assert.deepEqual(stageSheets(lvl('5-8'), { ...on, paint: false }), [...genFoes(5).map((f) => `foe:${f}`), 'water-signs', 'perch']);
   // with the hand-built stages switched off (?proto=0), 3-1 is a generated stage: no World 3 props
   assert.deepEqual(stageSheets(lvl('3-1'), { ...on, hand: false }).slice(0, 3), ['kit:1', 'kit:3', 'foe:goldsnake']);
 });

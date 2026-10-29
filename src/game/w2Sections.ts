@@ -667,10 +667,12 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       const critter = critters[i % 3];
       const first = !told.has(c === 'high1' ? 'high' : c);
       told.add(c === 'high1' ? 'high' : c);
-      if (c === 'heavy') k.cageRoom({ need: STONE * 2, mode: 'bank', critter, tips: first ? { enter: 'A heavy one! One stone lifts it halfway.' } : undefined });
+      // (a puzzle never costs a life, STAGE-RULES §3: a slip into a cage's pool is a splash and back to the bank, LV-8: 2-3 drowned the
+      // first-timer in the second cage's pool at 19 s)
+      if (c === 'heavy') k.cageRoom({ need: STONE * 2, mode: 'bank', critter, safe: true, tips: first ? { enter: 'A heavy one! One stone lifts it halfway.' } : undefined });
       else if (c === 'across')
-        k.cageRoom({ need: STONE, mode: 'across', critter, tips: first ? { enter: 'The stones are on the island. Throw one over!', hold: 'Hands full! Flick toward the bank to throw it.' } : undefined });
-      else k.cageRoom({ need: c === 'high' ? STONE * 2 : STONE, mode: 'high', critter, tips: first ? { enter: 'The basket hangs high. Flick up to throw!' } : undefined });
+        k.cageRoom({ need: STONE, mode: 'across', critter, safe: true, tips: first ? { enter: 'The stones are on the island. Throw one over!', hold: 'Hands full! Flick toward the bank to throw it.' } : undefined });
+      else k.cageRoom({ need: c === 'high' ? STONE * 2 : STONE, mode: 'high', critter, safe: true, tips: first ? { enter: 'The basket hangs high. Flick up to throw!' } : undefined });
     };
     /** the reeds between two cages, by the roll */
     const kinds: Record<string, Kind[]> = {

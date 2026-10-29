@@ -476,6 +476,8 @@ export interface FTRun {
   /** hits and lives lost in the bot's own first 5 s */
   opening: Harm[];
   harms: Harm[];
+  /** Easy's soft falls on land (no life lost: engine.ts softFall) */
+  softFalls?: number;
   perMin: { hits: number; lives: number };
   gameOvers: number;
   firstHarm: FirstHarm[];
@@ -549,6 +551,7 @@ export function teaches(cause: string, s: Pick<Shown, 'text' | 'topic' | 'source
   const t = s.text.toLowerCase();
   if (cause === 'water' || cause === 'pit') return s.topic === 'gap' || s.topic === 'water' || s.topic === 'ledge' || s.topic === 'moving' || /\b(jump|flick up|leap|gap|water|river|edge|hop|log|raft|over)\b/.test(t);
   if (cause === 'watcher') return /\b(hide|bush|fern|waterfall)\b/.test(t);
+  if (cause === 'thorn') return /\b(thorn|vines?|freeze|eye)\b/.test(t);
   if (cause.startsWith('foe:')) {
     const type = cause.slice(4).toLowerCase();
     return s.topic === 'foe' || /lesson:foe/.test(s.key) || (type.length > 2 && t.includes(type.replace(/_/g, ' ')));
@@ -649,6 +652,8 @@ export class FirstTimerRun {
   readonly mem = new SpotMemory();
   readonly dot: DotShadow;
   readonly harms: Harm[] = [];
+  /** Easy's soft falls on land (engine.ts softFall, LV-4): no life, but a setback like one (three at a spot is a loop, and he is put past) */
+  readonly softFalls: Array<{ t: number; x: number; y: number }> = [];
   readonly stuck: StuckSpot[] = [];
   readonly puzzles: Array<{ id: string; x: number; t: number }> = [];
   private view = emptyGuideView();
@@ -786,6 +791,24 @@ export class FirstTimerRun {
         if (!this.rescue()) this.end = 'stranded';
       }
     };
+    if (typeof proto.softFall === 'function') {
+      e.softFall = () => {
+        const p = this.sim.p;
+        const at = { t: this.sim.t, x: p.x, y: p.y };
+        const best = this.prog.best;
+        if (!proto.softFall.call(e)) return false;
+        this.softFalls.push(at);
+        const j = this.jump;
+        if (j) this.tries.push({ x: j.x, y: j.y, dir: j.dir, t0: j.t0, t1: this.t, kind: j.kind, ok: false, hurt: true, running: j.running, hold: j.hold });
+        const deaths = this.mem.died(this.ground.x, this.ground.y);
+        this.respawned();
+        if (deaths >= 3 && this.prog.best <= best) {
+          this.prog.hi = Math.max(this.prog.hi, this.progAt(p.x, p.y));
+          if (!this.rescue()) this.end = 'stranded';
+        }
+        return true;
+      };
+    }
     let pts = opts.route;
     const st = this.sim.stage as Stage;
     this.direct = Math.hypot((st.exitTotemX || this.sim.p.x) - this.sim.p.x, (st.exitTotemY ?? this.sim.p.y) - this.sim.p.y);
@@ -843,6 +866,8 @@ export class FirstTimerRun {
     if (best) return { cause: `foe:${best.e.type}`, onScreen: on(best.e.x, best.e.y) };
     for (const h of e.hazards as any[]) if (Math.hypot(h.x - p.x, h.y - p.y) < 120) return { cause: `hazard:${h.type ?? 'thing'}`, onScreen: on(h.x, h.y) };
     for (const r of e.proto?.w4?.rocks ?? []) if (Math.abs(r.x - p.x) < 140) return { cause: 'rock', onScreen: on(r.x, p.y) };
+    // (World 3's thorn vines: a lash within its reach, LV-14)
+    for (const v of e.proto?.thorns ?? []) if (Math.abs(v.x - p.x) < v.reach + 80) return { cause: 'thorn', onScreen: on(v.x, v.bud) };
     if (e.w5) return { cause: 'silk', onScreen: true };
     return { cause: 'other', onScreen: null };
   }
@@ -1587,6 +1612,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     opening: harms.filter((h) => h.t < 5),
     harms,
     perMin: { hits: +(harms.filter((h) => h.kind === 'hit').length / mins).toFixed(2), lives: +(harms.filter((h) => h.kind === 'life').length / mins).toFixed(2) },
+    softFalls: run.softFalls.length,
     gameOvers: run.gameOvers,
     firstHarm: fh,
     stuck: run.stuck,

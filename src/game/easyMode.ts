@@ -5,7 +5,9 @@
  *     way across: the swing's sweet spot is wider on Easy instead, physics.ts setTimedSwing);
  *   - about half the animals go (the first of each kind stays, so the stage still shows what it teaches), and a goal of beating
  *     animals asks for fewer to match; the snake ring drops half as many;
- *   - every flag has a heart beside it, and a long stretch with no flag gets one.
+ *   - every flag has a heart beside it, and a long stretch with no flag gets one;
+ *   - the rivers' drifting logs run slower (EASY_DRIFT), and land a hop that comes down on a log's end (river.ts DRIFT_CATCH); the bank
+ *     across a hop over still water reaches a little toward him (EASY_WATER_LAND).
  * Boss fights, the chase along the long branch and the climbs are left as they are.
  *
  * The new generator's stages (gen2/game.ts) are built for Easy by the pipeline itself (gen2/DESIGN.md B1, B4): its jumps are sized from
@@ -307,6 +309,66 @@ export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readon
   return added;
 }
 
+/**
+ * How fast Easy's rivers run against Normal's (LV-5, polish report 2026-10-29: the kid bot drowned 84-114 times in 2-1 on Easy against
+ * 74-87 for the adult on Normal, nearly all hopping onto drifting logs; a slower log is a longer window to hop on and off it).
+ */
+export const EASY_DRIFT = 0.7;
+
+/** Easy's drifting logs: slow motion (the same spacing), and their rivers' streaks */
+export function easyDrift(stage: Stage, k = EASY_DRIFT): void {
+  for (const p of stage.platforms) {
+    if (p.type !== 'drift' || !p.drift) continue;
+    p.drift = { ...p.drift, speed: p.drift.speed * k, offset: p.drift.offset / k };
+  }
+  for (const r of stage.rivers ?? []) r.speed *= k;
+}
+
+/** how far the far bank of a hop over still water reaches toward him on Easy (px), and the least gap it leaves (still a jump) */
+export const EASY_WATER_LAND = 24;
+// (64: still a jump, and wide enough to see as water, qaW123.test.ts)
+const WATER_GAP_MIN = 64;
+
+/**
+ * Easy's landings over still water (LV-5, polish report 2026-10-29: the kid bot drowned more on Easy than the adult on Normal in 2-3,
+ * 2-7, 2-9, 3-7 and 5-6): the ledge across each floor-level water gap reaches EASY_WATER_LAND px toward him, where it is plain ground or
+ * a stone (not a pad, a log, a painted piece) and the strip it grows by is clear. Rivers with drifting logs are slowed instead (easyDrift).
+ */
+export function easyWaterLandings(stage: Stage): number {
+  const waterY = stage.waterY;
+  if (waterY === undefined) return 0;
+  const floorY = stage.spawnY ?? 580;
+  const floor = stage.platforms.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving' && !p.chase && (p.y >= floorY - 160 || p.y + p.height >= floorY - 10) && p.y < waterY);
+  const rivers = stage.rivers ?? [];
+  // (never a ledge a puzzle room's pieces stand on: they sit at a share along it, and widening it would move them, STAGE-RULES §6)
+  const anchored = new Set<number>();
+  JSON.stringify(stage.kit ?? null, (k, v) => {
+    if ((k === 'on' && typeof v === 'number') || (k === 'ground' && Array.isArray(v))) (Array.isArray(v) ? v : [v]).forEach((i) => anchored.add(i));
+    return v;
+  });
+  let n = 0;
+  for (const B of floor) {
+    if (B.type !== 'solid' || B.push || B.art || B.lily || B.crown || anchored.has(B.id)) continue;
+    // (nor a rope's ledge: a rope joins two ledges at their ends)
+    if ((stage.ropes ?? []).some((r) => Math.abs(r.x0 - B.x) < 60 || Math.abs(r.x1 - B.x) < 60)) continue;
+    // the ledge he hops from: the nearest floor piece ending before B, over water (no other floor under the gap)
+    let A: Platform | null = null;
+    for (const q of floor) if (q !== B && q.x + q.width <= B.x + 1 && (!A || q.x + q.width > A.x + A.width)) A = q;
+    if (!A) continue;
+    const gap = B.x - (A.x + A.width);
+    if (gap < WATER_GAP_MIN + 4 || gap > 320) continue;
+    if (rivers.some((r) => r.x0 < B.x && r.x1 > A!.x + A!.width)) continue;
+    if (floor.some((q) => q !== A && q !== B && q.x < B.x && q.x + q.width > A!.x + A!.width)) continue;
+    const d = Math.min(EASY_WATER_LAND, gap - WATER_GAP_MIN);
+    const s0 = B.x - d;
+    if (stage.platforms.some((q) => q !== B && q.x < B.x && q.x + q.width > s0 && q.y < B.y + 4 && q.y + q.height > B.y - 120)) continue;
+    B.x -= d;
+    B.width += d;
+    n++;
+  }
+  return n;
+}
+
 /** Easy's version of a built stage (the stage passed in is changed and returned) */
 export function easyStage(stage: Stage): Stage {
   const kind = stage.config.objectiveType;
@@ -331,6 +393,11 @@ export function easyStage(stage: Stage): Stage {
     p.x -= d;
     p.width += 2 * d;
   }
+  // the rivers run slower (LV-5): every drifting log in slow motion, its spacing kept (speed x EASY_DRIFT, its phase / EASY_DRIFT, so
+  // where it is at time t is where Normal's is at EASY_DRIFT x t), and the streaks with it
+  if (!gen2) easyDrift(stage);
+  // and every hop over still water lands on a wider bank (LV-5; gen2's EASY_LANDING, halved: the jump stays a jump)
+  if (!gen2 && !climb && !chase && stage.config.worldIndex <= 5) easyWaterLandings(stage);
   // far jumps
   if (!climb && !chase && !gen2) stage.platforms.push(...easyStones(stage));
   // and no jump that needs a full hold (a hand-built stage; again while it softens something, as one jump can open the way to the

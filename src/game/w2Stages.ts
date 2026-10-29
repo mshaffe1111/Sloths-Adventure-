@@ -10,6 +10,7 @@
  * Painted from Matt's World 2 sheets (riverArt.ts): the river, the logs, lily pads, reeds, and the village at the end of 2-1 with its round
  * doors, its PLEASE BE PATIENT sign and the mailman, who has been carrying the same parcel since the spring.
  */
+import { teachWater } from './waterTeach.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { findForStage } from './finds.ts';
@@ -92,6 +93,11 @@ function clearFlags<S extends GeneratedStage>(st: S): S {
 }
 
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
+  // water taught before it costs a life (LV-8)
+  return teachWater(buildW2Plan(config, seed, plan));
+}
+
+function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
   // 2-6 Up the Bank Houses: World 1's climbing stage (1-4) built up the riverbank village instead of the kapok
   if (plan === '2-6') return clearFlags(buildKapok(config, seed, true));
   const R = stream(seed * 7 + 2);

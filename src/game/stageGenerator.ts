@@ -1,3 +1,4 @@
+import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
@@ -68,6 +69,14 @@ export interface GeneratedStage {
   checkpoints?: Array<{ x: number; y: number; reached: boolean }>;
   /** y of the water/pit surface; falling below it costs a life */
   waterY?: number;
+  /**
+   * water taught before it costs a life (waterTeach.ts, LV-8), on hand-built and old-generator stages: the painted warning sign at the
+   * first water (the foot of its post), teaching pools (water under the floor there costs no life: a splash and back to backX, backY),
+   * and Dot's warning (said once he passes x, gone once he is past passX) on a stage with no hand-built hints to carry it
+   */
+  waterSigns?: Array<{ x: number; y: number }>;
+  safeWater?: Array<{ x0: number; x1: number; backX: number; backY: number }>;
+  waterHint?: { x: number; text: string; passX: number; shown?: boolean };
   /** World 2: rivers with drifting logs (their water, and the surface that is fatal) */
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
@@ -2819,6 +2828,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     if (a >= 0) attempt = a; // if no fresh layout passes (never seen in testing), fall back to the designed one
   }
   const stage = buildStage(config, attempt);
+  // (water taught before it costs a life: waterTeach.ts, LV-8)
+  if (!config.secret && config.worldIndex <= 5) teachWater(stage);
   // (5-8's floor under its first stairs gets a short climb out wherever no way back up is near: dipWayOut.ts, LV-11)
   if (config.id === '5-8' && !config.secret) dipWayOut(stage);
   // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)
