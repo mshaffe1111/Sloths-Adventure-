@@ -44,17 +44,19 @@ export const TouchFeedback: React.FC<{ gestures: TouchGestures; marks: TouchMark
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       if (steer) {
-        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-        ctx.fillStyle = 'rgba(255,255,255,0.12)';
-        ctx.lineWidth = 2.5;
+        // a soft dark edge under the white, so the ring reads on bright sky as well as in shade (Matt, 2026-10-29: "a little stronger")
+        ctx.fillStyle = 'rgba(255,255,255,0.14)';
         ctx.beginPath();
         ctx.arc(steer.x, steer.y, RING, 0, Math.PI * 2);
         ctx.fill();
+        ctx.strokeStyle = 'rgba(15,23,42,0.22)';
+        ctx.lineWidth = 5.5;
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,255,255,0.62)';
+        ctx.lineWidth = 2.5;
         ctx.stroke();
         if (steer.dir) {
-          // two chevrons just outside the ring, pointing the way he runs
-          ctx.strokeStyle = 'rgba(255,255,255,0.75)';
-          ctx.lineWidth = 4;
+          // two chevrons just outside the ring, pointing the way he runs (each with the same soft dark edge)
           for (const k of [0, 1]) {
             const x = steer.x + steer.dir * (RING + 10 + k * 11);
             ctx.globalAlpha = k ? 0.55 : 1;
@@ -62,6 +64,11 @@ export const TouchFeedback: React.FC<{ gestures: TouchGestures; marks: TouchMark
             ctx.moveTo(x - steer.dir * 6, steer.y - 9);
             ctx.lineTo(x + steer.dir * 3, steer.y);
             ctx.lineTo(x - steer.dir * 6, steer.y + 9);
+            ctx.strokeStyle = 'rgba(15,23,42,0.25)';
+            ctx.lineWidth = 7;
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+            ctx.lineWidth = 4;
             ctx.stroke();
           }
           ctx.globalAlpha = 1;

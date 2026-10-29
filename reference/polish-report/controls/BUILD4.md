@@ -53,6 +53,11 @@ The Pad items (CT-19, CT-13) have no recordings to replay; their tests drive the
   - Thumbs lean by chance. On a small platform a careless flick could now carry him off.
   - Matt's phone test step 18 checks that.
 
+### The steering ring, a little stronger (Matt, 5:04 PM ET)
+- The touch marks' steering ring and chevrons now have a soft dark edge under the white, and the white is a touch brighter (ring 0.4 → 0.62, chevrons 0.75 → 0.85).
+- They read on bright sky and stay soft in shade.
+- Before/after on 1-1 and 1-2, sideways (bright sky) and upright (shade): `shots/ct14-ring-before-after.jpg`.
+
 ## Polish check
 1. **Painted, not drawn:** no new art. The Pad's look is the same, mirrored by default.
 2. **Nothing copy-pasted:** n/a.
@@ -66,3 +71,4 @@ The Pad items (CT-19, CT-13) have no recordings to replay; their tests drive the
 10. **Motion:**
     - The slant carry runs at the same 0.75 speed as Jump help's forward double jump, so it feels like a move the game already has.
     - **Rough spot, named plainly:** the 10% of standing jumps that now carry, above.
+    - The steering ring now reads on bright sky (`shots/ct14-ring-before-after.jpg`), so Build 3's "faint ring" rough spot is closed.
