@@ -158,4 +158,18 @@ export const GEN2_SEEDS: Record<string, Gen2StageSeeds> = {
       {"seed":510956,"layoutSeed":510956,"quality":0.894,"nearest":0.156,"quick":{"normal":169,"easy":159.2},"model":{"typical":195.6,"fast":153.7},"dead":{"normal":24,"easy":0},"quiet":{"normal":2.8,"easy":0},"worstJump":{"kid":0.955,"adult":1},"band":{"normal":20.5,"easy":27.4},"sections":"w6-watch-gate-basking w6-bask-gap~ w6-bask-gap w6-bask-pair w6-bask-frogs~ w6-bask-bank w6-lily-rest w6-bank~ w6-bask-gap w6-bask-frogs w6-bask-pair w6-lily-rest~ w6-root-steps w6-bask-gap~ w6-bask-bank~ w6-bask-pair w6-bask-frogs~ w6-bask-bank w6-bask-pair~ w6-bask-bank w6-bask-pair~ w6-bask-bank w6-lily-rest~"},
     ],
   },
+  "6-3": {
+    stage: "6-3",
+    kit: "w6Game.ts:w6GameKit(3)",
+    curated: "2026-10-29",
+    rolled: 400,
+    passed: 0,
+    waived: [],
+    recent: ["w6-bask-pair","w6-bask-bank","w6-bask-frogs","w6-bask-gap"],
+    diversity: {"all":0.445,"shipped":0},
+    shared: null,
+    seeds: [
+
+    ],
+  },
 };
