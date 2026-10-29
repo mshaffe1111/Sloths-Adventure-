@@ -47,6 +47,9 @@ export const STAGE_ANIMS: Record<string, readonly string[]> = {
   // (the new generator's World 5 stages, gen2/game.ts: their jumping spiders in every shipped roll)
   '5-7': ['spider'],
   '5-9': ['spider'],
+  // (World 6's: the ocelot in every shipped roll of 6-5 and 6-9; the other stages' cats come and go between rolls)
+  '6-5': ['ocelot'],
+  '6-9': ['ocelot'],
 };
 
 /** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms) */
