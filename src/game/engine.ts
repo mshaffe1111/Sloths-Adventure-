@@ -4330,8 +4330,10 @@ export class GameEngine {
     };
     if (inp.jumpPressed && this.ropeGrace <= 0) {
       inp.jumpPressed = false;
-      const jd = dir !== 0 ? dir : p.facing;
-      p.facing = jd as 1 | -1;
+      // (the way the flick leaned first, then the steer, then his facing, as off a vine or a trunk: leapDir. It took the steer only, so
+      // creeping one way and flicking up and the other hopped him the way he crept, polish report CT-21)
+      const jd = this.leapDir(dir !== 0 ? (dir as -1 | 1) : p.facing);
+      p.facing = jd;
       off(jd * 230, -PHYS.jumpV * 0.82, 0.35);
       p.jumpsLeft = 1;
       this.launched = true;

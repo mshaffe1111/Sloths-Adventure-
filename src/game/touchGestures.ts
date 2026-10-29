@@ -695,7 +695,8 @@ export class TouchGestures {
     }
     // the intent lock: a running thumb flicking up (or that has just jumped) keeps the run's way; the anchor comes along, so the thumb's arc
     // back toward the palm is not read as a stop or a turn once the lock ends either
-    if (this.heldDir !== 'none' && !this.vine() && (this.now < this.lockUntil || this.flickingUp(f))) {
+    // (not on a vine or a rope: there a flick up and over is a let-go, and it goes the way it leans, CT-21)
+    if (this.heldDir !== 'none' && !this.vine() && !this.rope() && (this.now < this.lockUntil || this.flickingUp(f))) {
       const s = this.heldDir === 'right' ? 1 : -1;
       if (dx * s < TUNING.moveDead) {
         f.ax = f.x - s * TUNING.moveDead;
@@ -770,7 +771,8 @@ export class TouchGestures {
     const q = this.riseFrom(f);
     const quick = !f.jumped && !this.duckOn && q.rise >= (air ? jdy : TUNING.groundJumpPx) && q.speed >= TUNING.riseSpeed && q.rise >= Math.abs(q.across) * TUNING.riseSlant && ropeUp;
     if (dyJ < -jdy && !f.jumped && (vUp >= 0.15 || dyJ < -jdy * 2) && ropeUp) {
-      this.fireJump(f, air);
+      // (with the lean of its rise, as the quick flick below: a hop off a rope or a let-go goes the way it leaned, CT-21)
+      this.fireJump(f, air, q.rise > 0 ? this.leanOf(q.across, q.rise) : 0);
     } else if (quick) {
       // (the anchor moves down to the low point, so the thumb held up there keeps the jump held, and the wiggle for the second works)
       f.ay = f.lowY;
