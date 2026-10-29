@@ -38,6 +38,7 @@ import { KIT_STAGE_ID } from './kitStage.ts';
 import { gen2Water, isGen2Stage } from './gen2/game.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
+import { W7_ROOM_STAGES } from './gen2/worlds/w7.ts';
 import type { LevelConfig } from './types.ts';
 
 /**
@@ -106,8 +107,8 @@ export function genFoes(world: number): string[] {
 /** the minions a world's boss calls into its lair mid-fight (bossDefs.ts spawnMinion / dropMinion) */
 const BOSS_MINIONS: Record<number, readonly string[]> = { 1: ['goldsnake'], 5: ['spider'], 6: ['tayra'], 10: ['ocelot'] };
 
-/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms) */
-const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W6_ROOM_STAGES]);
+/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms; 7-3 and 7-7's) */
+const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W6_ROOM_STAGES, ...W7_ROOM_STAGES]);
 
 /** World 1's stages with puzzle rooms (protoStage.ts: the squirrels' lift, the seesaw, the acorn meadow) */
 const W1_ROOMS: ReadonlySet<string> = new Set(['1-4', '1-6', '1-7']);
