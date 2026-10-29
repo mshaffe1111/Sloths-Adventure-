@@ -1,0 +1,152 @@
+{
+ "tag": "hfb-clips",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 0.5
+ },
+ "clips": [
+  {
+   "name": "hfb-bat-sleep-s5",
+   "zipsrc": [
+    "w6to10/clips/nc-fruitbat-roost-s17.zip",
+    48
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown fruit bat hangs upside down by its feet with its wings wrapped tight around its body like a little cloak, it slowly closes its eyes and falls fast asleep, then it only breathes slowly and gently, its wrapped body swelling and settling a little, it keeps its eyes shut and its wings wrapped, it does not move from its spot, side view the whole time",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-bat-sleep-s17",
+   "zipsrc": [
+    "w6to10/clips/nc-fruitbat-roost-s17.zip",
+    48
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown fruit bat hangs upside down by its feet with its wings wrapped tight around its body like a little cloak, it slowly closes its eyes and falls fast asleep, then it only breathes slowly and gently, its wrapped body swelling and settling a little, it keeps its eyes shut and its wings wrapped, it does not move from its spot, side view the whole time",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-crab-defeat-s5",
+   "zipsrc": [
+    "w6to10/clips/cr-crab-idle-s21.zip",
+    0
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the red cartoon crab is knocked out: it tips over onto its back with its legs curled up in the air, its eyes shut tight, and it lies still on the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-crab-defeat-s17",
+   "zipsrc": [
+    "w6to10/clips/cr-crab-idle-s21.zip",
+    0
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the red cartoon crab is knocked out: it tips over onto its back with its legs curled up in the air, its eyes shut tight, and it lies still on the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-sentry-hurt-s5",
+   "zipsrc": [
+    "w6to10/clips/cr-sentry-idle-s21.zip",
+    0
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small mossy stone sentry holding a spear is struck: it rocks back a step, chips of stone fly off it and its glowing blue eyes flicker, then it steadies itself and stands upright again holding its spear, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "hfb-sentry-hurt-s17",
+   "zipsrc": [
+    "w6to10/clips/cr-sentry-idle-s21.zip",
+    0
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small mossy stone sentry holding a spear is struck: it rocks back a step, chips of stone fly off it and its glowing blue eyes flicker, then it steadies itself and stands upright again holding its spear, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480,
+   "pin": true
+  },
+  {
+   "name": "hfb-beetle-defeat-s5",
+   "zipsrc": [
+    "w6to10/clips/cr-beetle-idle-s21.zip",
+    0
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the orange and black beetle is knocked out: it flips over onto its back, its legs curl up and twitch, then it lies still on its back on the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-beetle-defeat-s17",
+   "zipsrc": [
+    "w6to10/clips/cr-beetle-idle-s21.zip",
+    0
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the orange and black beetle is knocked out: it flips over onto its back, its legs curl up and twitch, then it lies still on its back on the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-piranha-defeat-s5",
+   "zipsrc": [
+    "w6to10/clips/cr-piranha-hurt-s21.zip",
+    0
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the red-bellied piranha fish is knocked out in mid-leap: it goes limp, rolls belly-up and drops down to the bottom of the frame and lies still on its side with its eyes shut and its mouth open, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-piranha-defeat-s17",
+   "zipsrc": [
+    "w6to10/clips/cr-piranha-hurt-s21.zip",
+    0
+   ],
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the red-bellied piranha fish is knocked out in mid-leap: it goes limp, rolls belly-up and drops down to the bottom of the frame and lies still on its side with its eyes shut and its mouth open, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 17,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-owl-defeat-s5",
+   "src": "../w6to10/newstills/new-owl-505.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown owl is knocked out of the air: its wings fold, it tumbles to the ground and ends lying on its side with its eyes shut as swirly X's, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-owl-defeat-s11",
+   "src": "../w6to10/newstills/new-owl-505.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown owl is knocked out of the air: its wings fold, it tumbles to the ground and ends lying on its side with its eyes shut as swirly X's, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "hfb-owl-defeat-s23",
+   "src": "../w6to10/newstills/new-owl-505.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, the small brown owl is knocked out of the air: its wings fold, it tumbles to the ground and ends lying on its side with its eyes shut as swirly X's, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 23,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}

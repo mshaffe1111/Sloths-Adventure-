@@ -1,0 +1,68 @@
+{
+ "sheet": "w8roost-b.webp",
+ "size": {
+  "w": 2048,
+  "h": 567
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "roost-branch": "w8roost-s55-5",
+  "roost-branch-b": "w8roost-s55-5",
+  "seed-pod": "w8roost-s55-5",
+  "seed-pile": "w8roost-s55-5",
+  "seed-pod-open": "w8roost-s55-5",
+  "seed-pile-small": "w8roost-s55-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from a start sheet built from the World 8 kit (tools/art/hfbatch/propstart.py)",
+ "frames": {
+  "roost-branch": {
+   "x": 0,
+   "y": 0,
+   "w": 471,
+   "h": 131,
+   "ax": 191.0,
+   "ay": 131
+  },
+  "roost-branch-b": {
+   "x": 475,
+   "y": 0,
+   "w": 479,
+   "h": 131,
+   "ax": 194.5,
+   "ay": 131
+  },
+  "seed-pod": {
+   "x": 958,
+   "y": 0,
+   "w": 218,
+   "h": 378,
+   "ax": 69.5,
+   "ay": 378
+  },
+  "seed-pile": {
+   "x": 1180,
+   "y": 0,
+   "w": 463,
+   "h": 296,
+   "ax": 233.0,
+   "ay": 296
+  },
+  "seed-pod-open": {
+   "x": 1647,
+   "y": 0,
+   "w": 221,
+   "h": 387,
+   "ax": 137.0,
+   "ay": 387
+  },
+  "seed-pile-small": {
+   "x": 0,
+   "y": 391,
+   "w": 398,
+   "h": 176,
+   "ax": 199.5,
+   "ay": 176
+  }
+ }
+}
