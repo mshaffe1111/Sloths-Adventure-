@@ -5,7 +5,9 @@ import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
-import { newTide, onHeld, restartTide, stepTide, TIDE, type TideSetting, type TideState } from './risingTide.ts';
+import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
+import { drawBadWater } from './badWaterArt.ts';
+import { drawStiltDecor } from './w6StiltArt.ts';
 import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
@@ -47,8 +49,8 @@ import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
 import { drawGlideSprite } from './leafSprites.ts';
-import { renderScenery, renderOverlay, setCanopy, setWeatherAvoid, lookFor } from './scenery.ts';
-import { setBackdropStage } from './paintedBackdrops.ts';
+import { renderScenery, renderOverlay, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
+import { revealSet, setBackdropStage } from './paintedBackdrops.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
@@ -409,6 +411,8 @@ export class GameEngine {
   /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey, the puzzle part and what it works all fit (puzzleCamera.ts:
    * never below 0.75 sideways, further upright, roomFloor) */
   private roomZoom = 1;
+  /** 6-8's crown: the view pulls back as he stands on it (1: no pull; proto.reveal) */
+  private revealZoom = 1;
   /** the zoom a room pulls back from (css px per world px: the usual framing, applyZoom) */
   private roomUsual = 1;
   /** how far the room's framing is blended in (0 outside, 1 inside a room), and where it last aimed (the view's middle) */
@@ -473,6 +477,8 @@ export class GameEngine {
   private tideSet: TideSetting = TIDE.normal;
   private tideWarned = Infinity;
   private tideChurn = 0;
+  /** when the tide's last surge began (game time): its foam pulse */
+  private tideSurgeAt = -9;
   /** where the eagle's shadow falls this frame (drawn after the bushes and the front grass), or null */
   private watchShadowAt: { x: number; a: number } | null = null;
   /** World 3: the watcher is a pair of eyes in the dark, not an eagle (where they are this frame, world px; drawn over the darkness) */
@@ -641,6 +647,8 @@ export class GameEngine {
     this.chaseSlowDone = false;
     this.chaseNext = 0;
     this.tide = this.proto?.tide ? newTide(this.proto.tide) : null;
+    this.revealZoom = 1;
+    setReveal(0, null);
     this.tideSet = isEasy() ? TIDE.easy : TIDE.normal;
     this.tideWarned = Infinity;
     if (this.tide) this.currentStage.waterY = this.tide.y;
@@ -827,7 +835,7 @@ export class GameEngine {
     const levelH = this.currentStage?.config.levelHeight ?? 900;
     const portrait = h > w;
     // (a stage may show more of the world than usual: 4-7, where the next ledge is far across and far below)
-    const wide = this.proto?.w4?.view;
+    const wide = this.proto?.view ?? this.proto?.w4?.view;
     let base = portrait ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
     base = Math.max(0.5, Math.min(1.8, base));
     const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
@@ -839,7 +847,7 @@ export class GameEngine {
     // (a puzzle room pulls back from that, past the level's height if it must: upright a room never fit across a view the level's height
     // tall; the extra is the sky over the level, updateCamera. Its floor is roomFloor, puzzleCamera.ts)
     this.roomUsual = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
-    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom;
+    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom * this.revealZoom;
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -2403,6 +2411,7 @@ export class GameEngine {
     if (this.proto?.watch) this.updateWatch(dt);
     if (this.chase) this.updateChase(dt);
     if (this.tide) this.updateTide(dt);
+    if (this.proto?.reveal) this.updateReveal(dt);
     if (this.ringDrops.length) this.stepDrops(dt);
     if (this.proto?.ring) this.updateRing(dt);
 
@@ -4752,6 +4761,12 @@ export class GameEngine {
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
     }
 
+    // 6-8: the rising tide is the star: the view drops so its line sits near the bottom of the screen while he climbs (as far as his
+    // head under the HUD allows, just below)
+    // (not up the last root: there the view is the reveal's)
+    const revealing = !!this.proto?.reveal && p.y < this.proto.reveal.from;
+    if (this.tide?.on && !revealing) this.camera.targetY = Math.max(this.camera.targetY, this.tide.y - vh * 0.86);
+
     // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
     // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
     const band = (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
@@ -4774,7 +4789,7 @@ export class GameEngine {
     const maxY = this.currentStage.config.levelHeight - vh;
     // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues), and so may a puzzle room
     // pulled back further than the level is tall (upright): its foot stays the level's foot, the extra is sky over the top
-    const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1;
+    const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1 || this.revealZoom < 1;
     this.camera.y = Math.max(overTop ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
   }
 
@@ -5165,6 +5180,8 @@ export class GameEngine {
     ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
 
     this.drawWaterAndFlags(ctx, world);
+    // 6-8: the root wall and the hides and arches behind the climb
+    if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     this.drawRivers(ctx, world, false);
     // 2-6: the river bank the village is dug into, behind the whole climb
     if (this.proto?.bankWall)
@@ -5520,6 +5537,7 @@ export class GameEngine {
       ctx.restore();
     }
 
+    if (this.tide?.on) this.drawTideFront(ctx);
     ctx.restore(); // end world transform
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
     if (this.tide) this.drawTideEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
@@ -6120,7 +6138,14 @@ export class GameEngine {
     const p = this.player;
     const atFlag = p.grounded && (this.currentStage.checkpoints ?? []).some((c) => Math.abs(p.y - c.y) < 6 && Math.abs(p.x - c.x) < 160);
     const resting = atFlag || onHeld(plan, p.x, p.y, p.grounded);
-    if (stepTide(t, plan, this.tideSet, dt, p.y, resting) === 'turned') {
+    const ev = stepTide(t, plan, this.tideSet, dt, p.y, resting);
+    if (ev === 'surge') {
+      // a surge: a pulse of foam along the line, splashes, a low rush
+      this.tideSurgeAt = this.gameTime;
+      for (let i = 0; i < 3; i++) this.spawnWaterSplash(this.camera.x + ((i + 0.2 + Math.random() * 0.6) / 3) * this.camera.viewportWidth, t.y);
+      if (t.y - p.y < this.tideSet.band + 200) sound.playWhoosh();
+    }
+    if (ev === 'turned') {
       sound.playHitImpact(true);
       this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
       const id = this.currentStage.config.id;
@@ -6140,6 +6165,48 @@ export class GameEngine {
       this.tideWarned = this.checkpoint.y;
       this.guide('The tide! Keep climbing.', 2.5); // (new, needs Matt's approval)
     }
+  }
+
+  /**
+   * 6-8's crown: climbing the last root, the backdrop turns from the mangrove to the ruins of World 7 in golden light (scenery setReveal);
+   * standing on the crown, the view pulls back to take it in
+   */
+  private updateReveal(dt: number) {
+    const rv = this.proto!.reveal!;
+    const p = this.player;
+    const strips = p.y < rv.load ? revealSet(rv.strips) : null;
+    setReveal((rv.from - p.y) / (rv.from - rv.full), strips);
+    const onCrown = p.grounded && Math.abs(p.y - rv.crown) < 6;
+    const want = onCrown ? 0.72 : 1;
+    const prev = this.revealZoom;
+    this.revealZoom += (want - this.revealZoom) * Math.min(1, dt * 1.2);
+    if (Math.abs(want - this.revealZoom) < 0.002) this.revealZoom = want;
+    if (this.revealZoom !== prev) this.applyZoom();
+  }
+
+  /**
+   * 6-8's tide in front of the climb: the painted dirty water again over everything under its line, a little see-through, so the roots
+   * it has swallowed show dimly in it; along the line a band of foam that flares as each surge comes in (and while it turns)
+   */
+  private drawTideFront(ctx: CanvasRenderingContext2D) {
+    const t = this.tide!;
+    const x0 = this.camera.x - 20, x1 = this.camera.x + this.camera.viewportWidth + 20;
+    const bottom = this.camera.y + this.camera.viewportHeight + 40;
+    if (t.y > bottom) return;
+    ctx.save();
+    ctx.globalAlpha = 0.78;
+    drawBadWater(ctx, x0, x1, t.y, bottom, this.gameTime);
+    ctx.restore();
+    // the foam: brightest as a surge comes in, a soft glow otherwise
+    const since = this.gameTime - this.tideSurgeAt;
+    const flare = t.warn > 0 ? 0.6 + 0.4 * Math.sin(this.gameTime * 14) : surging(t, this.tideSet) ? Math.max(0, 1 - since / 1.2) : 0;
+    const a = 0.18 + 0.5 * flare;
+    const g = ctx.createLinearGradient(0, t.y - 16, 0, t.y + 12);
+    g.addColorStop(0, 'rgba(236, 232, 214, 0)');
+    g.addColorStop(0.55, `rgba(236, 232, 214, ${a})`);
+    g.addColorStop(1, 'rgba(236, 232, 214, 0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(x0, t.y - 16, x1 - x0, 28);
   }
 
   /** 6-8's tide on the screen: the bottom edge darkens with murky water as it closes in (or while it is below the view) */

@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { easyHoldCheck, validateStage } from './levelCheck.ts';
 import { easyStage } from './easyMode.ts';
-import { buildStiltClimb, STILT_COLUMN, STILT_CREATURES } from './w6Stages.ts';
+import { buildStiltClimb, STILT_COLUMN, STILT_CREATURES, STILT_VIEW } from './w6Stages.ts';
+import { STILT_FRAMES, STILT_PIECES } from './w6StiltArt.ts';
+import { findForStage } from './finds.ts';
+import { readFileSync, existsSync } from 'node:fs';
 import { newTide, restartTide, stepTide, TIDE, type TideSetting } from './risingTide.ts';
 import { lianaRelease, VINE } from './gen2/pipeline.ts';
 import { LIANA, WATER_LINE } from './gen2/types.ts';
@@ -297,5 +300,65 @@ test('6-8 first-timers: nothing hurts before the water line; lives lost stay ins
     const first = run.harms[0];
     assert.ok(!first || first.t > 10, `${who.name}: hurt at ${first?.t} s`);
     assert.ok(run.perMin.lives <= 3, `${who.name}: ${run.perMin.lives} lives a minute`);
+  }
+});
+
+test('6-8 dressing: Matt\'s World 6 hides and arches stand on the wide shelves, clear of roots, flags and the fern; the sheet\'s frames match its .json', () => {
+  const sheet = JSON.parse(readFileSync(new URL('../assets/w6to10/gemini/w6-hides-arches.json', import.meta.url), 'utf8'));
+  assert.deepEqual(STILT_FRAMES, sheet.frames);
+  for (const s of SEEDS) {
+    const st = build(s);
+    const decor = st.proto.stilt!;
+    assert.ok(decor.length >= 10, `seed ${s}: ${decor.length} pieces`);
+    assert.ok(new Set(decor.map((d) => d.n)).size >= 5, `seed ${s}: the pieces vary`);
+    for (const d of decor) {
+      assert.ok(STILT_PIECES.includes(d.n));
+      const p = st.platforms.find((q) => Math.abs(q.y + 4 - d.b) < 2 && d.x >= q.x && d.x <= q.x + q.width)!;
+      assert.ok(p, `seed ${s}: ${d.n} at ${d.x} stands on a shelf`);
+      const keep = [
+        ...st.vines.filter((v) => v.vineType === 'tree_climb' && (Math.abs(v.topY + 2 - p.y) < 4 || Math.abs(v.bottomY + 6 - p.y) < 4)).map((v) => v.x),
+        ...st.checkpoints!.filter((c) => Math.abs(c.y - p.y) < 2).map((c) => c.x),
+        ...st.collectibles.filter((c) => c.type === 'find' && Math.abs(c.y + 26 - p.y) < 2).map((c) => c.x),
+      ];
+      for (const k of keep) assert.ok(Math.abs(k - d.x) > d.w / 2 + 30, `seed ${s}: ${d.n} at ${d.x} covers ${k}`);
+    }
+  }
+});
+
+test('6-8 keeps World 6\'s story find: the book in a Hush Fern on the rest shelf, away from its flag, and the climb still checks', () => {
+  const find = findForStage(6, 8)!;
+  assert.equal(find.kind, 'book');
+  for (const s of SEEDS) {
+    const st = build(s);
+    const f = st.collectibles.filter((c) => c.type === 'find');
+    assert.equal(f.length, 1, `seed ${s}`);
+    assert.equal(f[0].findId, find.id);
+    assert.equal(f[0].hidden, true);
+    const shelf = st.platforms.find((p) => Math.abs(p.y - (f[0].y + 26)) < 2 && f[0].x >= p.x && f[0].x <= p.x + p.width)!;
+    assert.ok(shelf, `seed ${s}: the fern stands on a shelf`);
+    for (const c of st.checkpoints!) if (Math.abs(c.y - shelf.y) < 2) assert.ok(Math.abs(c.x - f[0].x) >= 150, `seed ${s}: the fern by its flag`);
+    assert.ok(validateStage(st).reachableIds.includes(shelf.id), `seed ${s}: the fern's shelf is reached`);
+  }
+});
+
+test('6-8 the crown: the top of the canopy, the whole width, the shrine at its far end; the reveal of the ruins and the wider view are set', () => {
+  for (const s of SEEDS.slice(0, 6)) {
+    const st = build(s);
+    const crown = st.platforms.find((p) => p.y === st.stilt68.crown)!;
+    assert.deepEqual([crown.x, crown.x + crown.width], [STILT_COLUMN.x0, STILT_COLUMN.x1]);
+    const root = st.vines.find((v) => v.vineType === 'tree_climb' && Math.abs(v.topY + 2 - crown.y) < 4)!;
+    assert.ok(Math.abs(st.exitTotemX - root.x) > 600, `seed ${s}: a walk across the crown to the shrine`);
+    const rv = st.proto.reveal!;
+    assert.ok(rv.from > rv.full && rv.full > rv.crown && rv.crown === crown.y && rv.load > rv.from, `seed ${s}`);
+    for (const n of Object.values(rv.strips)) assert.ok(existsSync(new URL(`../assets/backdrops/${n}.webp`, import.meta.url)), n);
+    assert.deepEqual(st.proto.view, STILT_VIEW);
+  }
+});
+
+test('6-8 the tide comes in surges that average out to its own rise (so the careful-player margins hold)', () => {
+  for (const set of [TIDE.normal, TIDE.easy]) {
+    const { every, len, up, down } = set.surge;
+    assert.ok(Math.abs((len * up + (every - len) * down) / every - 1) < 1e-9);
+    assert.ok(up > 1.5 && down > 0.3, 'a surge you can see, and still rising between them');
   }
 });

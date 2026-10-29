@@ -14,7 +14,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
+import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, type PaintedSet } from './paintedBackdrops.ts';
 import { w5Mood, type W5Mood } from './w5Backdrop.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
@@ -1777,6 +1777,17 @@ export function setCanopy(k: number): void {
   canopyK = Math.max(0, Math.min(1, k));
 }
 
+let revealK = 0;
+let revealStrips: PaintedSet | null = null;
+/**
+ * The top of a climb that opens onto another world (6-8: the ruins of World 7 past the mangrove): `k` 0 (not yet) to 1 (there). The
+ * world's own middle and near strips fade out, the revealed set's far, middle and near fade in, and the light turns golden.
+ */
+export function setReveal(k: number, strips: PaintedSet | null): void {
+  revealK = strips ? Math.max(0, Math.min(1, k)) : 0;
+  revealStrips = strips;
+}
+
 export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX: number, camY: number, vw: number, vh: number, time: number, lite = false) {
   const look = lookFor(world);
   const set = ensure(world);
@@ -1790,23 +1801,45 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   const live = !lite && !set.hazed;
   if (set.painted) {
     drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+    const rv = revealK > 0.01 && revealStrips ? revealStrips : null;
+    const rk = rv ? revealK : 0;
+    if (rv) {
+      ctx.globalAlpha = rk;
+      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+      ctx.globalAlpha = 1;
+    }
     // high in the trees the middle and near strips fade over to the canopy ones (setCanopy: 1-8's branch, the top of 1-4's climb)
     const cano = canopyK > 0.01 && !set.waiting ? canopyFor(world) : null;
     const k = cano ? canopyK : 0;
-    if (k < 0.99) {
-      ctx.globalAlpha = 1 - k;
+    if (k < 0.99 && rk < 0.99) {
+      ctx.globalAlpha = (1 - k) * (1 - rk);
       drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
       if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo);
       ctx.globalAlpha = 1;
     }
-    if (cano && k > 0.01) {
-      ctx.globalAlpha = k;
+    if (cano && k > 0.01 && rk < 0.99) {
+      ctx.globalAlpha = k * (1 - rk);
       drawStrip(ctx, cano.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
       drawStrip(ctx, cano.near, 'near', 0.42, camX, vw, vh, s, yo);
       ctx.globalAlpha = 1;
     }
-    ctx.fillStyle = rgba(look.grade[0], look.grade[1]);
+    if (rv) {
+      ctx.globalAlpha = rk;
+      drawStrip(ctx, rv.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
+      if (rv.near) drawStrip(ctx, rv.near, 'near', 0.42, camX, vw, vh, s, yo);
+      ctx.globalAlpha = 1;
+    }
+    ctx.fillStyle = rgba(look.grade[0], look.grade[1] * (1 - rk));
     ctx.fillRect(0, 0, vw, vh);
+    if (rv) {
+      // golden light from the low sun over the ruins
+      const g = ctx.createLinearGradient(0, 0, 0, vh);
+      g.addColorStop(0, `rgba(255, 196, 110, ${0.3 * rk})`);
+      g.addColorStop(0.6, `rgba(255, 170, 80, ${0.16 * rk})`);
+      g.addColorStop(1, 'rgba(255, 170, 80, 0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, vw, vh);
+    }
     mistDrift(ctx, look, vw, vh, time);
     lanePool(ctx, look, world, vw, vh);
     return;

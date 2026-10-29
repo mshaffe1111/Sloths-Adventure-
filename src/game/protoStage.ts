@@ -110,6 +110,15 @@ export interface ProtoExtras {
   chase?: import('./chase.ts').ChasePlan;
   /** the dirty tide that comes in under him as he climbs (6-8: risingTide.ts) */
   tide?: import('./risingTide.ts').TidePlan;
+  /**
+   * the top of a climb opening onto the next world (6-8: the ruins of World 7): from height `from` to `full` (world y) the backdrop turns
+   * to `strips` (backdrop stems) in golden light, loaded once he is above `load`; standing on the crown (`crown`, its top) the view pulls back
+   */
+  reveal?: { from: number; full: number; load: number; crown: number; strips: { far: string; mid: string; near: string } };
+  /** 6-8's dressing from Matt's painted World 6 pieces: hides and arches on the shelves, the root wall behind (w6StiltArt.ts) */
+  stilt?: import('./w6StiltArt.ts').StiltDecor[];
+  /** a stage that shows more of the world than usual (engine applyZoom: world px tall sideways, wide upright), as 4-7's w4.view */
+  view?: { land: number; port: number };
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
   bushes?: import('./watcher.ts').Bush[];
   watch?: import('./watcher.ts').WatchZone[];

@@ -19,7 +19,8 @@
  *                  stage's are rolled with it, so it gets every creature its world's generator can place (GEN_FOES), and a boss lair
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water
- *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water
+ *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
+ *   w6-stilt       Matt's World 6 hides and arches sheet (w6StiltArt.ts), for 6-8 Stilt Climb's shelves
  *   anim:<name>    a clip sheet on its own (Meeca's stage: Pell and the soldiers)
  *   props2         World 1's second sheet (bushes, trunk hollows: protoArt.ts PROTO2_URL), for the stages that have them (STAGE_DRAWS)
  *   perch          Dot's perched poses (components/hud/painted.tsx), in every stage she flies in
@@ -154,6 +155,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (isGen2Stage(cfg) && gen2Water(cfg.id)) out.push('water-signs');
   // (World 6 on: its creeks and its tide are the dirty, fast water)
   if (isGen2Stage(cfg) && w >= 6) out.push('bad-water');
+  // 6-8 Stilt Climb: its rising tide is the painted dirty water, and its shelves carry Matt's World 6 hides and arches (w6StiltArt.ts)
+  if (built && cfg.id === '6-8') out.push('bad-water', 'w6-stilt');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
   out.push('perch');
   return out;

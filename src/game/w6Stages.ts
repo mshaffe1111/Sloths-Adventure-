@@ -24,6 +24,7 @@
  */
 import { fixPickups } from './flowerReach.ts';
 import { heartsAtFlags, stageSeconds, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
+import { findForStage } from './finds.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 import { LIANA, WATER_LINE } from './gen2/types.ts';
@@ -31,6 +32,7 @@ import { jumpLinkGap, lianaBand, VINE } from './gen2/pipeline.ts';
 import { JUMP_CLEAR } from './stageMetrics.ts';
 import { SAFE_APPROACH } from './levelCheck.ts';
 import type { TidePlan } from './risingTide.ts';
+import { STILT_PIECES, type StiltDecor } from './w6StiltArt.ts';
 
 /** what the tests read back: each section's height range (world y, after the shift), the lianas and their shelves, the crown */
 export interface Stilt68 {
@@ -63,6 +65,12 @@ export const STILT_CREATURES = {
  */
 export const STILT_COLUMN = { x0: 20, x1: 1700 } as const;
 
+/**
+ * 6-8 shows more of the world than other stages (as 4-7): sideways 760 px of world tall, upright 520 wide, so the shelf above, the
+ * liana ahead and the tide below him are in one view (engine applyZoom)
+ */
+export const STILT_VIEW = { land: 760, port: 520 } as const;
+
 export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedStage & { proto: ProtoExtras; stilt68: Stilt68 } {
   const R = stream(seed);
   const P: Platform[] = [];
@@ -90,12 +98,14 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   };
   const flower = (x: number, y: number, v: Collectible['botanicalVariant'] = 'orchid') =>
     C.push({ id: cid++, type: 'flower', botanicalVariant: v, x: r(x), y: r(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
+  let rootN = 0;
   /** a stilt root to climb, from `foot` up to `top` */
   const root = (x: number, foot: number, top: number) => {
     const tree: TreeStructure = { id: tid++, x: r(x), groundY: r(foot), topY: r(top) - 150, trunkWidth: 70, hasClimbVine: true, canopyRadius: 120 };
     T.push(tree);
     V.push({ id: vid++, x: r(x), topY: r(top) - 2, bottomY: r(foot) - 6, swaySpeed: 0.9, swayPhase: (x * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id });
-    for (let i = 1; i <= 2; i++) flower(x, foot - ((foot - top) * i) / 3, 'hibiscus');
+    // (one petal partway up every other root, never a stack on every post: the petals lead the eye up the way, not crowd it)
+    if (rootN++ % 2 === 0) flower(x, foot - (foot - top) * 0.6, 'hibiscus');
   };
   /** a flag on the ledge he is on (placed along it away from the animals once they are all in: see the end) */
   const flagged: Platform[] = [];
@@ -176,9 +186,11 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
       c.style = 'branch';
       catches.push(c.id);
     }
+    const from = edge();
     cur = ledge(x0, x0 + w, cur.y - rise);
     arrive('hop');
-    flower(x0 + w / 2, cur.y - 60);
+    // (a petal in the arc of the hop, over the gap: it shows where to jump)
+    flower((from + (dir > 0 ? x0 : x0 + w)) / 2, cur.y - 70);
   };
   /**
    * a liana past this ledge's end and the perch past it `raise` px higher: the perch's near end where a let-go lands with the engine's
@@ -207,7 +219,8 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     V.push(vine);
     const fromId = cur.id;
     // (under the swing a root shelf, a root at the ledge's end back up to it: a missed let-go costs the climb, never the tide)
-    const sy = cur.y + 300;
+    // (240 under it: above the tide while it waits under him, TIDE close; still too far under the perch for any jump)
+    const sy = cur.y + 240;
     const s0 = dir > 0 ? edge() - 90 : x0 + w * 0.3, s1 = dir > 0 ? x0 + w * 0.7 : edge() + 90;
     if (free(s0, s1, sy, 90)) {
       const c = ledge(s0, s1, sy);
@@ -218,7 +231,8 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     cur = ledge(x0, x0 + w, cur.y - raise);
     lianas.push({ vine: vine.id, from: fromId, to: cur.id });
     arrive('liana');
-    flower(vx, vine.topY + 300, 'hibiscus');
+    // (a petal in the leap off the liana, on the way to the perch)
+    flower((vx + (dir > 0 ? x0 : x0 + w)) / 2, cur.y - 90, 'hibiscus');
   };
   /** a wide root shelf for an animal: a hop up onto it (the landing and take-offs at its ends, the animal in its middle) */
   const animalShelf = (kind: keyof typeof STILT_CREATURES, w: number) => {
@@ -249,7 +263,8 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     rootUp(j(370, 390), 420);
     turnAbove = cur.y + 20;
     hopUp(j(140, 160), j(55, 65), 260);
-    rootUp(j(350, 370), 380);
+    // (a short perch on top of a root: the kit's painted perch, a change from the long planks)
+    rootUp(j(350, 370), 210);
     hopUp(j(150, 170), j(55, 65), 300);
     hopUp(j(140, 160), j(55, 65), 300);
     rootUp(j(330, 350), 440);
@@ -269,10 +284,12 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     liana(80, 260);
     rootUp(j(420, 440), 300);
     liana(80, 260);
-    rootUp(j(340, 360), 480);
+    rootUp(j(340, 360), 680);
   });
-  // 4. REST: slack water
+  // 4. REST: slack water (a wide shelf: the flag, and the World 6 book in a Hush Fern at its far end: placed once the flags are in)
+  let rest: Platform = flat;
   section('Rest: slack water', () => {
+    rest = cur;
     flag();
     rootUp(j(350, 370), 440);
   });
@@ -287,7 +304,7 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     animalShelf('frog', 560);
     rootUp(j(350, 370), 420);
     animalShelf('tayra', 600);
-    rootUp(j(330, 350), 380);
+    rootUp(j(330, 350), 210);
     hopUp(j(140, 160), j(55, 65), 280);
     rootUp(j(330, 350), 440);
   });
@@ -311,13 +328,19 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     rootUp(j(320, 340), 440);
   });
   // 7. FINISH: the tallest root, up through the canopy to the crown
+  let crownWalk: 1 | -1 = 1;
   section('Finish: the crown and the ruins', () => {
     flag();
     rootUp(560, 900);
-    hint(cur.x + 200, cur.y, 'Stone towers. Past the trees.'); // (new, needs Matt's approval)
+    // the crown: the top of the canopy, the whole width, the shrine at its far end from the root (a walk with the ruins opening up)
+    cur.x = L;
+    cur.width = Rt - L;
+    const top = V[V.length - 1].x;
+    crownWalk = top < (L + Rt) / 2 ? 1 : -1;
+    hint(top + crownWalk * 160, cur.y, 'Stone towers. Past the trees.'); // (new, needs Matt's approval)
+    expert += Math.abs((crownWalk > 0 ? Rt - 160 : L + 160) - top) / RUN + 1;
   });
   const crown = cur;
-  expert += 900 * 0.6 / RUN + 1;
 
   // the flags: each in the middle of its ledge, or as far along it from the animals as it goes (SAFE_APPROACH, within 400 px up or
   // down); a ledge an animal's patch leaves no room on passes its flag on to the next ledge up
@@ -358,6 +381,45 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     e.x = r((lo + hi) / 2);
   }
 
+  // the story find for stage 8 (finds.ts: World 6's book), in a Hush Fern on the rest shelf, as far along it from its flag and roots as
+  // it goes (the old generator's addFinds put it on a high ledge; a hand-built stage places its own)
+  const book = findForStage(config.worldIndex, config.miniIndex);
+  if (book && book.kind === 'book') {
+    const keepX = [
+      ...checkpoints.filter((c) => Math.abs(c.y - rest.y) < 2).map((c) => c.x),
+      ...V.filter((v) => v.vineType === 'tree_climb' && (Math.abs(v.topY + 2 - rest.y) < 4 || Math.abs(v.bottomY + 6 - rest.y) < 4)).map((v) => v.x),
+    ];
+    let bx = rest.x + 70, bd = -1;
+    for (let x = rest.x + 70; x <= rest.x + rest.width - 70; x += 10) {
+      const d = Math.min(...keepX.map((k) => Math.abs(k - x)));
+      if (d > bd) { bd = d; bx = x; }
+    }
+    C.push({ id: cid++, type: 'find', findId: book.id, hidden: true, x: r(bx), y: rest.y - 26, collected: false, bobPhase: 0 });
+  }
+
+  // the dressing (pictures only): Matt's World 6 hides and arches on every wide shelf of the way up, clear of its roots, its flag,
+  // its find and its ends (the kit's root wall was tried in panels behind the climb, 2026-10-29: its square edges read as crates)
+  const decor: StiltDecor[] = [];
+  const shelves = route.map((q) => P.find((p) => p.id === q.id)!).filter((p) => p !== flat);
+  let pick = Math.floor(R.r(0, STILT_PIECES.length));
+  shelves.forEach((p, i) => {
+    if (p.width < 300) return;
+    const n = STILT_PIECES[pick++ % STILT_PIECES.length];
+    const w = j(200, 240);
+    const keep = [
+      ...V.filter((v) => v.vineType === 'tree_climb' && (Math.abs(v.topY + 2 - p.y) < 4 || Math.abs(v.bottomY + 6 - p.y) < 4)).map((v) => v.x),
+      ...checkpoints.filter((c) => Math.abs(c.y - p.y) < 2).map((c) => c.x),
+      ...C.filter((c) => c.type === 'find' && Math.abs(c.y + 26 - p.y) < 2).map((c) => c.x),
+    ];
+    for (let k = 0; k < 8; k++) {
+      const x = p.x + w / 2 + 40 + (p.width - w - 80) * R.r(0, 1);
+      if (keep.every((kx) => Math.abs(kx - x) > w / 2 + 40)) {
+        decor.push({ n, x: r(x), b: p.y + 4, w, ...(R.f() < 0.5 ? { flip: true } : {}) });
+        break;
+      }
+    }
+  });
+
   // shift: the crown 600 px under the top of the stage (room for the sky and the skyline over it)
   const shift = 600 - Math.min(...P.map((p) => p.y));
   for (const p of P) p.y += shift;
@@ -372,11 +434,12 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   }
   for (const s of sections) { s.top += shift; s.bottom += shift; }
   for (const h of holds) h.y += shift;
+  for (const d of decor) d.b += shift;
   const floorY = flat.y;
   const lowWater = floorY + 60;
   const H = floorY + 500;
   const W = Rt + 20;
-  const exitX = r(crown.x + crown.width - 160);
+  const exitX = r(crownWalk > 0 ? crown.x + crown.width - 160 : crown.x + 160);
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crown.y - 30, collected: false, bobPhase: 0 });
   cid = heartsAtFlags(C, checkpoints, cid);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C);
@@ -398,7 +461,11 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
     waterY: lowWater,
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, tide },
+    proto: {
+      hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, tide, view: STILT_VIEW, stilt: decor,
+      // (the ruins at dusk past the mangrove: World 7's dusk sky and its middle and near strips; fading in up the last root)
+      reveal: { from: crown.y + 700, full: crown.y + 60, load: tide.springAbove, crown: crown.y, strips: { far: 'w7dusk-far', mid: 'w7-mid', near: 'w7-near' } },
+    },
     stilt68: { sections, lianas, catches, route, lowWater, crown: crown.y, expert },
   };
 }
