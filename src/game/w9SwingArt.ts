@@ -118,11 +118,33 @@ export function drawW9Post(ctx: CanvasRenderingContext2D, x: number, top: number
   return true;
 }
 
-/** the lintel from x0 to x1, its middle at y, `h` thick: the bridges sheet's cooled ember slab laid across the posts' tops */
+/**
+ * The lintel from x0 to x1, its middle at y, `h` thick: the bridges sheet's cooled ember slab at its own scale (never stretched: its
+ * outline would thicken past the kit's), its two painted ends, and between them its middle laid end to end, every other piece flipped
+ * so the cracks never line up (the stage walk's detector: one stretched slab read 3.4 px of outline against the kit's 0.6)
+ */
 export function drawW9Beam(ctx: CanvasRenderingContext2D, x0: number, x1: number, y: number, h: number): boolean {
   if (!ok.bridges) return false;
   const c = W9_BRIDGE_CELLS.emberSlab;
-  ctx.drawImage(imgs.bridges!, c.x, c.y, c.w, c.h, x0, y - h / 2, x1 - x0, h);
+  const k = h / c.h;
+  const cap = c.w * 0.2, mid = c.w - 2 * cap;
+  const capW = cap * k, midW = mid * k;
+  const top = y - h / 2;
+  const im = imgs.bridges!;
+  ctx.drawImage(im, c.x, c.y, cap, c.h, x0, top, capW + 1, h);
+  ctx.drawImage(im, c.x + c.w - cap, c.y, cap, c.h, x1 - capW - 1, top, capW + 1, h);
+  let n = 0;
+  for (let x = x0 + capW; x < x1 - capW; x += midW - 2, n++) {
+    const w = Math.min(midW, x1 - capW - x);
+    const sw = w / k;
+    ctx.save();
+    if (n % 2) {
+      ctx.translate(x + w, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(im, c.x + cap, c.y, sw, c.h, 0, top, w + 1, h);
+    } else ctx.drawImage(im, c.x + cap, c.y, sw, c.h, x, top, w + 1, h);
+    ctx.restore();
+  }
   return true;
 }
 
