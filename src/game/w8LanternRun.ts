@@ -45,7 +45,9 @@ export function jarFrame(name: string): StdFrame | undefined {
   const m = /^(walk|run)_(\d)$/.exec(name);
   if (m) return POKEY_JAR_FRAMES[`walk_${Number(m[2]) >> 1}`];
   if (name === 'idle' || name === 'blink' || name === 'land' || name === 'recover' || name === 'duck') return POKEY_JAR_FRAMES.hold;
-  if (name === 'launch' || name.startsWith('rise') || name === 'apex' || name.startsWith('fall') || name === 'tuck') return POKEY_JAR_FRAMES.air;
+  // (going up and over the top he tucks round the jar; coming down, legs down for the landing)
+  if (name === 'launch' || name.startsWith('rise') || name === 'apex' || name === 'tuck') return POKEY_JAR_FRAMES.tuck;
+  if (name.startsWith('fall')) return POKEY_JAR_FRAMES.air;
   return undefined;
 }
 
@@ -260,12 +262,13 @@ function drawMoth(ctx: CanvasRenderingContext2D, x: number, y: number, beat: num
   ctx.restore();
 }
 
-/** the HUD's jar (screen px, its top-left at x, y): the painted jar, lit by its level, the empty jar under it; it blinks when low */
+/** the HUD's jar gauge (screen px, its top-left at x, y): the painted jar on the HUD's wooden plate, hung on its tendril (Hugging Face,
+ *  in the painted HUD's style); the lit jar fades out over the empty one as the light goes, and blinks when low */
 export function drawJarMeter(ctx: CanvasRenderingContext2D, x: number, y: number, level: number, t: number, low: number): void {
   const img = pieces();
   if (!img) return;
-  const f = LANTERN_FRAMES.jar, fd = LANTERN_FRAMES.jarDim;
-  const s = 44 / f.h;
+  const f = LANTERN_FRAMES.gaugeLit, fd = LANTERN_FRAMES.gaugeDim;
+  const s = 52 / f.h;
   ctx.save();
   blitPiece(ctx, img, fd, x + f.ax * s, y + f.ay * s, s);
   const blink = level < low ? 0.55 + 0.45 * Math.sin(t * 10) : 1;

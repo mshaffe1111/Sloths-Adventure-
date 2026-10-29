@@ -6027,10 +6027,12 @@ export class GameEngine {
       drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : this.lanternRun ? { heroR: this.lanternRun.radius() } : undefined);
       if (this.lanternRun) {
         this.lanternRun.drawOver(ctx, cx0, cy0, this.gameTime);
-        // (the jar's level under the lives, in screen px)
+        // (the jar gauge under the lives, in screen px)
         ctx.save();
         ctx.scale(1 / this.zoom, 1 / this.zoom);
-        drawJarMeter(ctx, 18, (this.viewCssH || 400) > (this.viewCssW || 400) ? 112 : 92, this.lanternRun.st.level, this.gameTime, this.lanternRun.set.low);
+        // (hung from the lives plate's underside, as the plate hangs from the vine)
+        const up = (this.viewCssH || 400) > (this.viewCssW || 400);
+        drawJarMeter(ctx, up ? 17 : 46, up ? 80 : 78, this.lanternRun.st.level, this.gameTime, this.lanternRun.set.low);
         ctx.restore();
       }
     }

@@ -130,3 +130,11 @@ hfb-w8lantern-r2  6ae3bb32c78863f9c62de487 rtx-pro-6000 21:31:30Z-~21:35:30Z (~4
   air air-p3-s70-7 (it came out standing, not tucked: used for every air pose). THROWN: p3 takes (the acorn's weave shows behind
   the jar), air-p3-s70-19 (stray sparkles). Review: reference/prop-sheets/qa-notes/8-4-art/review-pokey-jar.jpg
 running total ~$0.39 of $8.
+hfb-w8lantern-r3  6ae3bcf4c78863f9c62de5b5 rtx-pro-6000 21:39:00Z-~21:44Z (~5 min with the model download, ~$0.23): the jar gauge
+  (the HUD's number plate and tendril with the painted jar, lit and empty, 0.4 and 0.55, one seed so the pair matches), the firefly
+  tree (kit trunk under a sketched crown, 0.72 and 0.85, two seeds), the tucked jump (standard tuck + the jar, 0.5 and 0.62).
+  KEPT: gauge-lit-s40 + gauge-dim-s40 (the pair; the lit one fades out over the empty one), tree-s85-5 (a leafy crown, the trunk's
+  hollow; packed, not placed yet: the finale is build-out), tuck-s50 (the air going up). THROWN: the 0.72 trees (the sketched round
+  crown stayed flat circles), tuck-s62 (the jar melted into his paws). Review: reference/prop-sheets/qa-notes/8-4-art/review-pieces.jpg,
+  review-pokey-jar.jpg
+running total ~$0.62 of $8.
