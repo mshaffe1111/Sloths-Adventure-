@@ -1,5 +1,6 @@
 """Write tools/art/hfbatch/spec-hfb-chairs.json (2026-10-29): 7-3's "ring of chairs" set piece, img2img (w6to10/img2imggpu.py) from the
-start strip chairstart.py makes, two strengths x two seeds at 1536 x 416. The start is kept in git (tools/art/hfbatch/starts/,
+start strip chairstart.py makes, two strengths x two seeds at 1536 x 416, then one more pair from the
+fixed start (start-w7chairs-b). The start is kept in git (tools/art/hfbatch/starts/,
 force-added) and read from GitHub raw, so the branch is pushed before the job runs.
     python3 tools/art/hfbatch/make_chairs_spec.py
 """
@@ -16,11 +17,18 @@ P = ("slothadv style, painted storybook illustration, a wide side-on strip for a
      "shadow, no text")
 items = [{'name': f'w7chairs-s{round(st * 100)}-{sd}', 'start': 'start-w7chairs.webp', 'prompt': P, 'strength': st, 'seed': sd,
           'w': 1536, 'h': 416} for st in (0.55, 0.72) for sd in (5, 17)]
-spec = {'note': '7-3 ring of chairs by img2img from tools/art/hfbatch/chairstart.py, 2026-10-29',
+# (round 2: the first start lifted the middle chairs off the floor line and they float; start-w7chairs-b stands them all on it and lays
+# the fallen chair flat on its back. One pair, between the two first strengths.)
+items += [{'name': f'w7chairs-b-s62-{sd}', 'start': 'start-w7chairs-b.webp', 'prompt': P, 'strength': 0.62, 'seed': sd, 'w': 1536,
+           'h': 416} for sd in (17, 29)]
+spec_all = {'note': '7-3 ring of chairs by img2img from tools/art/hfbatch/chairstart.py, 2026-10-29',
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 1.0]},
         'neg': ('perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, '
                 'photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal'),
         'base': BASE, 'items': items}
 p = Path(__file__).resolve().parent / 'spec-hfb-chairs.json'
-p.write_text(json.dumps(spec, indent=1))
+p.write_text(json.dumps(spec_all, indent=1))
+p2 = p.with_name('spec-hfb-chairs-b.json')
+p2.write_text(json.dumps({**spec_all, 'items': [it for it in items if it['start'] == 'start-w7chairs-b.webp']}, indent=1))
+print(p2)
 print(p)

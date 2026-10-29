@@ -1,5 +1,5 @@
 """Start strip for 7-3's "ring of chairs" set piece (2026-10-29), for img2img (tools/art/w6to10/img2imggpu.py): 1536 x 416 on flat
-magenta. Ten carved stone chairs in a shallow arc (the middle ones a touch smaller and higher, as if further back), the fourth one
+magenta. Ten carved stone chairs in a shallow arc (the middle ones a touch smaller, as if further back, every one standing on the floor line), the fourth one
 knocked over on its back, each chair side-on and facing the middle of the ring, and an eleventh chair at the right end, plain and smaller. Every chair is pasted up from the World 7 kit's own
 stone (the carved 'wall' panel for the backs, the carved 'branch' ledge for the seats and caps, the carved 'wall' panel again for the block legs, 'perch' for the
 plain chair) and the kit's 'mossStrip' for a low floor line, so the style model only has to repaint it.
@@ -41,7 +41,7 @@ def chair(k=1.0, plain=False):
     im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
     bw = w * 0.3
     if plain:
-        back = rs(piece('perch', (20, 200, 140, 460)), bw * 0.9, h * 0.72)
+        back = rs(piece('perch', (20, 200, 140, 460)), bw * 0.9, h * 0.9)
         im.alpha_composite(back, (0, h - back.height))
         seat = rs(trim(piece('boulder')), w, h * 0.12)
     else:
@@ -74,14 +74,16 @@ for i in range(n):
     arc = 1 - (2 * u - 1) ** 2  # 0 at the ends, 1 in the middle
     k = 1.0 - 0.16 * arc
     cx = x0 + (x1 - x0) * u
-    foot = GROUND - 22 * arc
+    foot = GROUND  # every chair stands on the floor line (a lifted foot reads as floating); the arc is in the sizes only
     c = chair(k)
-    if i == 3:  # knocked over: lying on its back, seat towards the viewer's right
-        c = trim(c.rotate(-84, expand=True, resample=Image.BICUBIC))
-        cx += 22
+    if i == 3:  # knocked over backwards: the back slab flat on the floor, seat and leg sticking up
+        c = trim(c.rotate(90, expand=True, resample=Image.BICUBIC))
+        fallen = (c, (round(cx - 6 - c.width / 2), round(GROUND + 4 - c.height)))  # drawn last, in front of its neighbours
+        continue
     elif u > 0.5:  # the right half of the ring faces back to the left, towards the middle
         c = c.transpose(Image.FLIP_LEFT_RIGHT)
     S.alpha_composite(c, (round(cx - c.width / 2), round(foot - c.height)))
+S.alpha_composite(*fallen)
 c = chair(0.66, plain=True).transpose(Image.FLIP_LEFT_RIGHT)
 S.alpha_composite(c, (1430 - c.width // 2, GROUND - c.height))
 S.convert('RGB').save(OUT, 'WEBP', quality=92)
