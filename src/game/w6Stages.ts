@@ -32,7 +32,7 @@ import { jumpLinkGap, lianaBand, VINE } from './gen2/pipeline.ts';
 import { JUMP_CLEAR } from './stageMetrics.ts';
 import { SAFE_APPROACH } from './levelCheck.ts';
 import type { TidePlan } from './risingTide.ts';
-import { BANK_EDGE_WALK, GROUND_OVER, GROUNDED, LEDGE_LOOKS, LEDGE_MIN_COPY, ledgeCopies, ledgeHeight, overFor, STILT_PIECES, type LedgeLook, type StiltDecor, type StiltLedge, type StiltProp } from './w6StiltArt.ts';
+import { BANK_EDGE_WALK, GROUND_OVER, GROUNDED, LEDGE_LOOKS, LEDGE_MIN_COPY, SET_FRAMES, SET_KINDS, setFrame, setMinCut, setPlace, type SetForm, type SetKind, ledgeCopies, ledgeHeight, overFor, STILT_PIECES, type LedgeLook, type StiltDecor, type StiltLedge, type StiltProp } from './w6StiltArt.ts';
 
 /** what the tests read back: each section's height range (world y, after the shift), the lianas and their shelves, the crown */
 export interface Stilt68 {
@@ -432,7 +432,19 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   const ledges: StiltLedge[] = [];
   const posts: StiltDecor[] = [];
   /** a look laid over x0..x1 of a ledge; a stump, arch or den either stands on the ledge under it (`over` sized) or on `stilts` */
-  type Seg = { look: LedgeLook | 'kit'; n: number; x0: number; x1: number; over?: number; stilts?: Array<{ x: number; b: number; foot: number }> };
+  type Look = LedgeLook | SetKind | 'kit';
+  type Seg = {
+    look: Look;
+    n: number;
+    x0: number;
+    x1: number;
+    over?: number;
+    stilts?: Array<{ x: number; b: number; foot: number; w?: number }>;
+    /** a piece of World 6's ledge set: its frame, where it is cut off, and whether it is drawn flipped */
+    set?: string;
+    cut?: number;
+    flip?: boolean;
+  };
   const looked = new Map<Platform, Seg[]>();
   const climbs = V.filter((v) => v.vineType === 'tree_climb');
   /** under the water, below the stage's foot (where a post with no ledge under it stands) */
@@ -449,9 +461,9 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   /** the first ledge under p at x */
   const under = (p: Platform, x: number) => P.filter((q) => q !== p && q.y > p.y + 10 && q.x <= x && q.x + q.width >= x).sort((m, n) => m.y - n.y)[0];
   // (the root arch and the den count as one look: in the game the dark behind shows through the arch, and it reads as the den)
-  const kin = (l: LedgeLook | 'kit') => (l === 'root-den' ? 'root-arch' : l);
+  const kin = (l: Look) => (l === 'root-den' ? 'root-arch' : l);
   /** how much a look would clash with the ledges already given one: each the same look counts more the closer it is */
-  const clash = (y: number, x0: number, x1: number, look: LedgeLook | 'kit') => {
+  const clash = (y: number, x0: number, x1: number, look: Look) => {
     let c = 0;
     for (const [q, ls] of looked) for (const l of ls) {
       if (kin(l.look) !== kin(look)) continue;
@@ -463,9 +475,9 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   };
   // (a log or the kit's plank fits nearly anywhere, a stump, arch or den only where its stilts can stand: where one fits it is the
   // likelier pick, or the logs fill the climb)
-  const bias = (l: LedgeLook | 'kit') => (l === 'moss-log' || l === 'kit' ? BIAS : 0);
+  const bias = (l: Look) => (l === 'moss-log' || l === 'kit' ? BIAS : 0);
   const BIAS = 0.35;
-  const least = <T extends { look: LedgeLook | 'kit' }>(p: Platform, x0: number, x1: number, fit: T[]): T => {
+  const least = <T extends { look: Look }>(p: Platform, x0: number, x1: number, fit: T[]): T => {
     const k = Math.floor(R.r(0, fit.length));
     const turn = [...fit.slice(k), ...fit.slice(0, k)];
     const cost = (l: T) => clash(p.y, x0, x1, l.look) + bias(l.look);
@@ -494,14 +506,62 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     return out;
   };
   /**
+   * a piece of World 6's ledge set over x0..x1 of p (the lead, 2026-10-29: "use -tall wherever there's room under a ledge, so the
+   * support reaches the water or the ledge below"): the tall one, then the short one, each sized (within SET_OVER) so its supports'
+   * feet stand on the ledge under them; else the short one with a post carrying each cut support on down to the ledge under it
+   * (POST_MAX at most; not the root shelf, whose roots a post can't carry on). Its supports clear of the climbing roots, and the
+   * piece clear of any other ledge between
+   */
+  const setFor = (p: Platform, x0: number, x1: number, kind: SetKind): Seg | null => {
+    const w = x1 - x0;
+    const form: SetForm = w < 330 ? 'perch' : 'ledge';
+    const name = setFrame(kind, form, true);
+    const fr = SET_FRAMES[name];
+    const flip = R.f() < 0.5;
+    const q = under(p, x0 + w / 2);
+    if (!q) return null;
+    for (const over of [1.06, 1.0, 1.14]) {
+      const k = (w * over) / fr.w;
+      const top = p.y - fr.ay * k;
+      // cut where its supports reach the ledge under its middle (tucked 4 px behind its top), or whole and carried on by posts
+      const want = (q.y + 4 - top) / k;
+      if (want < setMinCut(name)) return null;
+      const whole = want > fr.h;
+      const cut = whole ? undefined : Math.round(want);
+      const pl = setPlace(name, x0, p.y, w, over, flip, cut);
+      // nothing else between it and its feet (the piece would hang onto it)
+      if (P.some((o) => o !== p && o.y > p.y + 10 && o.y < pl.foot - 12 && o.x < pl.left + pl.width - 10 && o.x + o.width > pl.left + 10)) continue;
+      const stilts: NonNullable<Seg['stilts']> = [];
+      let fits = true;
+      for (const ft of pl.feet) {
+        const g = under(p, ft.x);
+        // (clear of the climbing roots: a support beside a root reads as one)
+        if (!g || climbs.some((v) => Math.abs(v.x - ft.x) < 12 + ft.w / 2 && v.bottomY > p.y && v.topY < g.y)) { fits = false; break; }
+        if (!whole) {
+          if (Math.abs(g.y - (q.y + 4)) > 8) { fits = false; break; }
+          continue;
+        }
+        if (g.y - pl.foot < 10 || g.y - pl.foot > POST_MAX || !clearEdge(ft.x, pl.foot, g.y)) { fits = false; break; }
+        stilts.push({ x: r(ft.x), b: r(pl.foot - 4), foot: g.y, w: r(Math.max(16, ft.w * 0.95)) });
+      }
+      if (fits) return { look: kind, n: 1, x0, x1, over, set: name, flip, ...(cut !== undefined ? { cut } : {}), ...(whole ? { stilts } : {}) };
+    }
+    return null;
+  };
+  /**
    * a look for a ledge (or a segment of one), in the fewest copies that keep it clear of what is under it: a log or the kit's plank
    * (held up by hold, below), or a stump, arch or den on stilts
    */
-  const plankFor = (p: Platform, x0: number, x1: number, kit: boolean, avoid: Array<LedgeLook | 'kit'> = []): Seg | null => {
+  const plankFor = (p: Platform, x0: number, x1: number, kit: boolean, avoid: Look[] = []): Seg | null => {
     const w = x1 - x0;
     const room = roomUnder(p, x0, x1);
-    const opts: Array<LedgeLook | 'kit'> = w <= 240 ? ['stump', 'moss-log', 'kit'] : ['root-arch', 'branch-b', 'moss-log', 'root-den', 'kit'];
     const fit: Seg[] = [];
+    for (const kind of SET_KINDS) {
+      const got = setFor(p, x0, x1, kind);
+      if (got) fit.push(got);
+    }
+    // (the old pieces where none of the set fits: a stump, arch or den on stilts, a log or the kit's plank held up by hold)
+    const opts: Array<LedgeLook | 'kit'> = fit.length ? (w <= 240 ? ['stump'] : ['root-arch', 'root-den']) : w <= 240 ? ['stump', 'moss-log', 'kit'] : ['root-arch', 'branch-b', 'moss-log', 'root-den', 'kit'];
     for (const l of opts) {
       if (l === 'kit') {
         if (kit) fit.push({ look: l, n: 1, x0, x1 });
@@ -521,7 +581,7 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     return ok.length ? least(p, x0, x1, ok) : null;
   };
   /** planks over x0..x1 of p (a wide stretch in segments; the kit's plank only for a whole ledge), or null */
-  const planks = (p: Platform, x0: number, x1: number, whole: boolean, beside: Array<LedgeLook | 'kit'> = []): Seg[] | null => {
+  const planks = (p: Platform, x0: number, x1: number, whole: boolean, beside: Look[] = []): Seg[] | null => {
     let segs = x1 - x0 > 520 ? Math.ceil((x1 - x0) / 360) : 1;
     for (let tries = 0; tries < 2; tries++, segs = 1) {
       const mine: Seg[] = [];
@@ -596,9 +656,9 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
   const hold = (p: Platform, mine: Seg[]) => {
     const held: Array<[number, number]> = [];
     for (const m of mine) {
-      if (!GROUNDED.includes(m.look as LedgeLook)) continue;
+      if (!GROUNDED.includes(m.look as LedgeLook) && !m.set) continue;
       held.push([m.x0, m.x1]);
-      for (const t of m.stilts ?? []) posts.push({ n: 'post', x: t.x, b: t.b, w: 30, foot: t.foot, ...(R.f() < 0.5 ? { flip: true } : {}) });
+      for (const t of m.stilts ?? []) posts.push({ n: 'post', x: t.x, b: t.b, w: t.w ?? 30, foot: t.foot, ...(R.f() < 0.5 ? { flip: true } : {}) });
     }
     for (const v of climbs) if ((Math.abs(v.topY + 2 - p.y) < 6 || Math.abs(v.bottomY + 6 - p.y) < 6) && v.x >= p.x - 30 && v.x <= p.x + p.width + 30) held.push([v.x, v.x]);
     const free = () => {
@@ -655,7 +715,8 @@ export function buildStiltClimb(config: LevelConfig, seed: number): GeneratedSta
     for (const m of mine) {
       if (m.look !== 'kit') {
         p.art = 'stilt';
-        ledges.push({ id: p.id, look: m.look, x: m.x0, y: p.y, w: m.x1 - m.x0, n: m.n, ...(R.f() < 0.5 ? { flip: true } : {}), ...(m.over ? { over: m.over } : {}) });
+        if (m.set) ledges.push({ id: p.id, look: m.look, x: m.x0, y: p.y, w: m.x1 - m.x0, n: 1, over: m.over, set: m.set, ...(m.cut !== undefined ? { cut: m.cut } : {}), ...(m.flip ? { flip: true } : {}) });
+        else ledges.push({ id: p.id, look: m.look as LedgeLook, x: m.x0, y: p.y, w: m.x1 - m.x0, n: m.n, ...(R.f() < 0.5 ? { flip: true } : {}), ...(m.over ? { over: m.over } : {}) });
       }
     }
     hold(p, mine);

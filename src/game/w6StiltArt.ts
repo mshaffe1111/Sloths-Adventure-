@@ -20,6 +20,7 @@ const SHEETS = {
   d: new URL('../assets/w6to10/props-made/w6d.webp', import.meta.url).href,
   c: new URL('../assets/w6to10/props-made/w6c.webp', import.meta.url).href,
   balt: new URL('../assets/w6to10/props-made/w6balt.webp', import.meta.url).href,
+  set: new URL('../assets/w6/ledges.webp', import.meta.url).href,
 } as const;
 type Sheet = keyof typeof SHEETS;
 export const STILT_ART_URLS: readonly string[] = Object.values(SHEETS);
@@ -50,6 +51,66 @@ export const LEDGE_LOOKS: Record<LedgeLook, { sheet: Sheet; f: Frame; top: numbe
   bank: { sheet: 'var', f: { x: 1345, y: 0, w: 442, h: 387 }, top: 0.057, max: 400 },
   'bank-edge': { sheet: 'var', f: { x: 0, y: 391, w: 414, h: 421 }, top: 0.03, max: 420 },
 };
+/**
+ * World 6's ledge set (assets/w6/ledges.json, made on Hugging Face for 6-8, 2026-10-29): four kinds, each a ledge (3:1) and a perch
+ * (1.3:1), each with its own painted supports: the short one has them cut straight at the frame's foot (where they stand on the ledge
+ * under it, or a post carries each on), the tall one has them whole. `ay` is the walkable top (as the .json, w6Stages.test.ts checks)
+ */
+export type SetKind = 'root-shelf' | 'stilt-deck' | 'boardwalk' | 'wedged-branch';
+export const SET_KINDS: readonly SetKind[] = ['root-shelf', 'stilt-deck', 'boardwalk', 'wedged-branch'];
+export type SetForm = 'ledge' | 'perch';
+export const SET_FRAMES: Record<string, Frame & { ax: number; ay: number; walkTop: number }> = {"root-shelf-ledge":{"x":0,"y":0,"w":600,"h":200,"ax":300.0,"ay":12.2,"walkTop":12.2},"root-shelf-ledge-tall":{"x":604,"y":0,"w":600,"h":377,"ax":300.0,"ay":12.2,"walkTop":12.2},"stilt-deck-ledge":{"x":1208,"y":0,"w":600,"h":200,"ax":300.0,"ay":25.7,"walkTop":25.7},"stilt-deck-ledge-tall":{"x":0,"y":381,"w":600,"h":385,"ax":300.0,"ay":25.7,"walkTop":25.7},"boardwalk-ledge":{"x":604,"y":381,"w":600,"h":200,"ax":300.0,"ay":21.0,"walkTop":21.0},"boardwalk-ledge-tall":{"x":1208,"y":381,"w":600,"h":350,"ax":300.0,"ay":21.0,"walkTop":21.0},"wedged-branch-ledge":{"x":0,"y":770,"w":600,"h":200,"ax":300.0,"ay":51.3,"walkTop":51.3},"wedged-branch-ledge-tall":{"x":604,"y":770,"w":600,"h":272,"ax":300.0,"ay":51.3,"walkTop":51.3},"root-shelf-perch":{"x":1208,"y":770,"w":260,"h":200,"ax":130.0,"ay":18.6,"walkTop":18.6},"root-shelf-perch-tall":{"x":1472,"y":770,"w":260,"h":497,"ax":130.0,"ay":18.6,"walkTop":18.6},"stilt-deck-perch":{"x":1736,"y":770,"w":260,"h":200,"ax":130.0,"ay":24.6,"walkTop":24.6},"stilt-deck-perch-tall":{"x":0,"y":1271,"w":260,"h":464,"ax":130.0,"ay":24.6,"walkTop":24.6},"boardwalk-perch":{"x":264,"y":1271,"w":260,"h":200,"ax":130.0,"ay":28.8,"walkTop":28.8},"boardwalk-perch-tall":{"x":528,"y":1271,"w":260,"h":455,"ax":130.0,"ay":28.8,"walkTop":28.8},"wedged-branch-perch":{"x":792,"y":1271,"w":260,"h":200,"ax":130.0,"ay":31.4,"walkTop":31.4},"wedged-branch-perch-tall":{"x":1056,"y":1271,"w":260,"h":408,"ax":130.0,"ay":31.4,"walkTop":31.4}};
+/**
+ * where each frame's supports meet its foot: [middle, width], shares of the frame's width (measured from the picture's opaque pixels
+ * on its bottom rows; the dangling ropes left out). A short frame's are the cut ends a post carries on
+ */
+export const SET_FEET: Record<string, Array<[number, number]>> = {
+  'root-shelf-ledge': [[0.222, 0.167], [0.488, 0.159], [0.609, 0.067], [0.77, 0.056]],
+  'root-shelf-ledge-tall': [[0.517, 0.063]],
+  'stilt-deck-ledge': [[0.153, 0.121], [0.784, 0.122]],
+  'stilt-deck-ledge-tall': [[0.14, 0.104], [0.777, 0.113]],
+  'boardwalk-ledge': [[0.219, 0.088], [0.704, 0.087]],
+  'boardwalk-ledge-tall': [[0.254, 0.107], [0.665, 0.104]],
+  'wedged-branch-ledge': [[0.099, 0.142], [0.899, 0.138]],
+  'wedged-branch-ledge-tall': [[0.081, 0.072], [0.914, 0.088]],
+  'root-shelf-perch': [[0.375, 0.05], [0.533, 0.135], [0.7, 0.046]],
+  'root-shelf-perch-tall': [[0.514, 0.027]],
+  'stilt-deck-perch': [[0.129, 0.242], [0.735, 0.239]],
+  'stilt-deck-perch-tall': [[0.129, 0.173], [0.733, 0.173]],
+  'boardwalk-perch': [[0.214, 0.189], [0.75, 0.192]],
+  'boardwalk-perch-tall': [[0.322, 0.227], [0.602, 0.22]],
+  'wedged-branch-perch': [[0.156, 0.173], [0.86, 0.173]],
+  'wedged-branch-perch-tall': [[0.075, 0.15], [0.927, 0.138]],
+};
+/**
+ * a tall frame's supports at each depth (frame px under its top, every 20): [middle, width] shares of its width, measured from the
+ * picture. A tall piece is cut off at the depth its supports reach the ledge under it (the cut ends stand on that ledge's top, as the
+ * short frames' do), so one picture fits any drop up to its whole height
+ */
+export const SET_ROWS: Record<string, Array<[number, Array<[number, number]>]>> = {"root-shelf-ledge-tall":[[60,[[0.482,0.732]]],[80,[[0.479,0.63]]],[100,[[0.181,0.013],[0.22,0.008],[0.487,0.362],[0.738,0.022]]],[120,[[0.501,0.267],[0.742,0.008]]],[140,[[0.508,0.312]]],[160,[[0.354,0.083],[0.517,0.165],[0.682,0.097]]],[180,[[0.288,0.122],[0.521,0.19],[0.739,0.067]]],[200,[[0.213,0.172],[0.485,0.165],[0.613,0.067],[0.777,0.058]]],[220,[[0.133,0.065],[0.242,0.06],[0.394,0.07],[0.473,0.065],[0.558,0.045],[0.648,0.068],[0.812,0.083]]],[240,[[0.101,0.05],[0.223,0.067],[0.353,0.058],[0.461,0.067],[0.574,0.047],[0.683,0.055],[0.855,0.135]]],[260,[[0.078,0.042],[0.175,0.028],[0.222,0.052],[0.329,0.047],[0.454,0.067],[0.586,0.047],[0.709,0.057],[0.823,0.047],[0.931,0.033]]],[280,[[0.052,0.063],[0.155,0.025],[0.22,0.048],[0.323,0.047],[0.453,0.067],[0.588,0.045],[0.737,0.082],[0.824,0.05],[0.947,0.032]]],[300,[[0.035,0.062],[0.142,0.022],[0.228,0.053],[0.306,0.063],[0.458,0.068],[0.581,0.053],[0.719,0.037],[0.807,0.082],[0.966,0.05]]],[320,[[0.007,0.017],[0.133,0.023],[0.252,0.078],[0.471,0.073],[0.715,0.038],[0.82,0.045],[0.974,0.047]]],[340,[[0.133,0.03],[0.253,0.045],[0.492,0.075],[0.701,0.043],[0.833,0.04]]],[360,[[0.247,0.037],[0.51,0.072]]],[374,[[0.517,0.065]]]],"stilt-deck-ledge-tall":[[80,[[0.484,0.97]]],[100,[[0.082,0.012],[0.151,0.12],[0.774,0.133]]],[120,[[0.144,0.143],[0.775,0.145]]],[140,[[0.144,0.143],[0.775,0.145]]],[160,[[0.143,0.142],[0.774,0.143]]],[180,[[0.15,0.122],[0.782,0.122]]],[200,[[0.152,0.123],[0.784,0.123]]],[220,[[0.155,0.125],[0.786,0.123]]],[240,[[0.142,0.095],[0.207,0.028],[0.772,0.092],[0.838,0.027]]],[260,[[0.141,0.09],[0.212,0.027],[0.772,0.088],[0.843,0.027]]],[280,[[0.142,0.088],[0.22,0.028],[0.771,0.087],[0.849,0.03]]],[300,[[0.142,0.088],[0.228,0.03],[0.772,0.085],[0.856,0.03]]],[320,[[0.142,0.088],[0.233,0.028],[0.772,0.088],[0.863,0.028]]],[340,[[0.142,0.092],[0.242,0.03],[0.771,0.093],[0.871,0.03]]],[360,[[0.141,0.097],[0.253,0.03],[0.772,0.1],[0.882,0.032]]],[380,[[0.14,0.105],[0.263,0.032],[0.777,0.115],[0.892,0.032]]],[382,[[0.14,0.105],[0.265,0.032],[0.777,0.115],[0.893,0.032]]]],"boardwalk-ledge-tall":[[80,[[0.142,0.012],[0.203,0.108],[0.738,0.112]]],[100,[[0.198,0.127],[0.736,0.11]]],[120,[[0.2,0.118],[0.737,0.122]]],[140,[[0.208,0.098],[0.728,0.108]]],[160,[[0.212,0.093],[0.717,0.092]]],[180,[[0.217,0.092],[0.71,0.088]]],[200,[[0.219,0.09],[0.703,0.087]]],[220,[[0.223,0.088],[0.697,0.088]]],[240,[[0.227,0.088],[0.693,0.09]]],[260,[[0.231,0.09],[0.686,0.093]]],[280,[[0.237,0.092],[0.675,0.108]]],[300,[[0.241,0.093],[0.676,0.1]]],[320,[[0.248,0.102],[0.672,0.1]]],[340,[[0.251,0.103],[0.666,0.103]]],[347,[[0.253,0.108],[0.665,0.105]]]],"wedged-branch-ledge-tall":[[100,[[0.496,0.903]]],[120,[[0.178,0.238],[0.823,0.24]]],[140,[[0.13,0.175],[0.868,0.18]]],[160,[[0.112,0.178],[0.889,0.187]]],[180,[[0.113,0.142],[0.885,0.138]]],[200,[[0.098,0.143],[0.901,0.14]]],[220,[[0.085,0.135],[0.912,0.135]]],[240,[[0.073,0.135],[0.923,0.132]]],[260,[[0.066,0.133],[0.932,0.133]]],[269,[[0.081,0.073],[0.914,0.09]]]],"root-shelf-perch-tall":[[60,[[0.508,0.75]]],[80,[[0.515,0.719]]],[100,[[0.506,0.638]]],[120,[[0.225,0.023],[0.519,0.373]]],[140,[[0.515,0.212]]],[160,[[0.51,0.177],[0.627,0.05]]],[180,[[0.41,0.054],[0.531,0.135],[0.677,0.05]]],[200,[[0.367,0.054],[0.535,0.142],[0.706,0.054]]],[220,[[0.323,0.058],[0.535,0.173],[0.731,0.05]]],[240,[[0.279,0.077],[0.535,0.212],[0.756,0.046]]],[260,[[0.212,0.065],[0.275,0.038],[0.429,0.046],[0.498,0.069],[0.581,0.035],[0.644,0.054],[0.785,0.05]]],[280,[[0.163,0.054],[0.252,0.038],[0.406,0.038],[0.492,0.073],[0.592,0.035],[0.667,0.054],[0.819,0.058]]],[300,[[0.133,0.046],[0.238,0.05],[0.387,0.038],[0.487,0.077],[0.6,0.027],[0.687,0.046],[0.856,0.077]]],[320,[[0.104,0.05],[0.217,0.038],[0.256,0.023],[0.367,0.038],[0.481,0.081],[0.608,0.027],[0.71,0.054],[0.904,0.042]]],[340,[[0.079,0.046],[0.198,0.031],[0.258,0.019],[0.354,0.05],[0.479,0.085],[0.612,0.027],[0.7,0.027],[0.746,0.05],[0.931,0.042]]],[360,[[0.06,0.054],[0.183,0.038],[0.26,0.023],[0.34,0.062],[0.45,0.035],[0.506,0.046],[0.613,0.023],[0.702,0.023],[0.775,0.046],[0.952,0.038]]],[380,[[0.038,0.058],[0.177,0.035],[0.263,0.023],[0.313,0.038],[0.45,0.035],[0.512,0.042],[0.613,0.023],[0.702,0.023],[0.796,0.05],[0.969,0.042]]],[400,[[0.031,0.058],[0.175,0.031],[0.285,0.065],[0.452,0.031],[0.515,0.042],[0.698,0.023],[0.815,0.05],[0.979,0.038]]],[420,[[0.025,0.054],[0.283,0.046],[0.521,0.054],[0.696,0.019],[0.831,0.042]]],[440,[[0.273,0.042],[0.525,0.062],[0.698,0.023],[0.835,0.035]]],[460,[[0.269,0.042],[0.523,0.058],[0.704,0.019]]],[480,[[0.519,0.042]]],[494,[[0.513,0.031]]]],"stilt-deck-perch-tall":[[80,[[0.129,0.185],[0.733,0.185]]],[100,[[0.127,0.181],[0.733,0.185]]],[120,[[0.135,0.204],[0.606,0.023],[0.737,0.208]]],[140,[[0.129,0.246],[0.725,0.254]]],[160,[[0.127,0.25],[0.733,0.246]]],[180,[[0.131,0.25],[0.735,0.25]]],[200,[[0.131,0.242],[0.735,0.242]]],[220,[[0.14,0.238],[0.742,0.242]]],[240,[[0.127,0.227],[0.733,0.231]]],[260,[[0.146,0.204],[0.75,0.204]]],[280,[[0.148,0.215],[0.754,0.219]]],[300,[[0.152,0.223],[0.756,0.223]]],[320,[[0.127,0.173],[0.242,0.05],[0.731,0.173],[0.852,0.046]]],[340,[[0.125,0.169],[0.258,0.05],[0.729,0.169],[0.862,0.05]]],[360,[[0.129,0.169],[0.265,0.05],[0.733,0.169],[0.869,0.05]]],[380,[[0.127,0.165],[0.277,0.05],[0.733,0.162],[0.883,0.046]]],[400,[[0.123,0.165],[0.29,0.046],[0.729,0.162],[0.894,0.046]]],[420,[[0.123,0.165],[0.302,0.054],[0.729,0.162],[0.91,0.046]]],[440,[[0.127,0.173],[0.319,0.05],[0.731,0.173],[0.925,0.046]]],[460,[[0.129,0.177],[0.331,0.058],[0.733,0.177],[0.937,0.054]]],[461,[[0.129,0.177],[0.331,0.058],[0.733,0.177],[0.938,0.058]]]],"boardwalk-perch-tall":[[80,[[0.16,0.277],[0.823,0.258]]],[100,[[0.187,0.246],[0.833,0.246]]],[120,[[0.2,0.242],[0.821,0.246]]],[140,[[0.208,0.242],[0.81,0.246]]],[160,[[0.21,0.231],[0.794,0.246]]],[180,[[0.204,0.196],[0.321,0.023],[0.779,0.231]]],[200,[[0.213,0.192],[0.335,0.019],[0.744,0.192],[0.869,0.019]]],[220,[[0.225,0.192],[0.733,0.192]]],[240,[[0.233,0.185],[0.721,0.185]]],[260,[[0.24,0.177],[0.71,0.177]]],[280,[[0.252,0.177],[0.7,0.181]]],[300,[[0.26,0.177],[0.685,0.181]]],[320,[[0.269,0.181],[0.671,0.185]]],[340,[[0.277,0.188],[0.66,0.192]]],[360,[[0.285,0.196],[0.646,0.204]]],[380,[[0.29,0.208],[0.637,0.208]]],[400,[[0.3,0.212],[0.625,0.215]]],[420,[[0.31,0.223],[0.612,0.227]]],[440,[[0.319,0.235],[0.596,0.242]]],[452,[[0.321,0.231],[0.602,0.223]]]],"wedged-branch-perch-tall":[[80,[[0.256,0.338],[0.723,0.388]]],[100,[[0.179,0.192],[0.84,0.2]]],[120,[[0.162,0.212],[0.85,0.204]]],[140,[[0.16,0.215],[0.854,0.204]]],[160,[[0.158,0.212],[0.852,0.2]]],[180,[[0.158,0.196],[0.854,0.188]]],[200,[[0.154,0.181],[0.863,0.177]]],[220,[[0.142,0.165],[0.869,0.165]]],[240,[[0.127,0.158],[0.883,0.162]]],[260,[[0.121,0.154],[0.89,0.154]]],[280,[[0.115,0.15],[0.898,0.154]]],[300,[[0.108,0.142],[0.904,0.15]]],[320,[[0.102,0.131],[0.913,0.146]]],[340,[[0.094,0.131],[0.923,0.142]]],[360,[[0.087,0.138],[0.927,0.142]]],[380,[[0.081,0.15],[0.925,0.146]]],[400,[[0.077,0.15],[0.927,0.142]]],[405,[[0.075,0.154],[0.927,0.142]]]]};
+/** the shallowest depth a tall frame may be cut at: where its body ends and only its supports run on (no run wider than a third) */
+export const setMinCut = (name: string): number => SET_ROWS[name].find(([, runs]) => runs.length && runs.every(([, w]) => w < 0.34))?.[0] ?? SET_FRAMES[name].h;
+/** a tall frame's supports at depth `cut` (the measured row nearest it, at or above it) */
+export const setFeetAt = (name: string, cut: number): Array<[number, number]> => {
+  const rows = SET_ROWS[name];
+  let best = rows[0];
+  for (const r of rows) if (r[0] <= cut + 1) best = r;
+  return best[1];
+};
+/** a set piece's frame name */
+export const setFrame = (kind: SetKind, form: SetForm, tall: boolean) => `${kind}-${form}${tall ? '-tall' : ''}`;
+/** a set piece laid over a ledge `w` wide, `over` times as wide: its scale, top (from the ledge's top), the y of its feet, its supports' x */
+export function setPlace(name: string, x: number, y: number, w: number, over: number, flip = false, cut?: number) {
+  const f = SET_FRAMES[name];
+  const k = (w * over) / f.w;
+  const left = x + w / 2 - (f.w * k) / 2;
+  const depth = cut ?? f.h;
+  const feet = (cut === undefined ? SET_FEET[name] : setFeetAt(name, cut)).map(([c, sw]) => ({ x: left + (flip ? 1 - c : c) * f.w * k, w: sw * f.w * k }));
+  return { k, top: y - f.ay * k, foot: y - f.ay * k + depth * k, left, feet, width: f.w * k, depth };
+}
+/** the range of `over` a set piece may be drawn at (its walkable top still covers the ledge, its ends overhang only a little) */
+export const SET_OVER = [0.98, 1.2] as const;
+
 /** the share of the bank edge's width its walkable top runs over (from its left); past it the mud breaks off */
 export const BANK_EDGE_WALK = 0.72;
 /**
@@ -61,7 +122,21 @@ export const GROUNDED: readonly LedgeLook[] = ['stump', 'root-arch', 'root-den',
 export const LEDGE_OVER = 1.1;
 
 /** a ledge the stage paints with one of the looks (its platform is art 'stilt'), laid in `n` copies side by side */
-export interface StiltLedge { id: number; look: LedgeLook; x: number; y: number; w: number; n: number; flip?: boolean; over?: number; /** drawn this tall (the start's bank: one piece, no seams) */ h?: number }
+export interface StiltLedge {
+  id: number;
+  look: LedgeLook | SetKind;
+  x: number;
+  y: number;
+  w: number;
+  n: number;
+  flip?: boolean;
+  over?: number;
+  /** drawn this tall (the start's bank: one piece, no seams) */
+  h?: number;
+  /** a piece of World 6's ledge set: its frame (setFrame), cut off `cut` frame px under its top (a tall one fitted to its drop) */
+  set?: string;
+  cut?: number;
+}
 /**
  * dressing: a hides-and-arches piece or a w6c prop on its foot at (x, b), `w` px wide; the moss curtain hangs from b. And what holds
  * a ledge up, from its underside at (x, b): a stilt post (w6balt's gauge post) down to its foot at `foot` (a ledge's top, or under the
@@ -215,9 +290,15 @@ export function drawStiltDecor(ctx: CanvasRenderingContext2D, items: readonly St
 export function drawStiltLedges(ctx: CanvasRenderingContext2D, ledges: readonly StiltLedge[], view: View): void {
   stiltArtReady();
   for (const l of ledges) {
-    const L = LEDGE_LOOKS[l.look];
+    if (l.set) {
+      const f = SET_FRAMES[l.set];
+      const pl = setPlace(l.set, l.x, l.y, l.w, l.over ?? 1, l.flip, l.cut);
+      if (seen(pl.left, pl.left + pl.width, pl.top, pl.foot, view)) blit(ctx, 'set', { ...f, h: pl.depth }, pl.left, pl.top, pl.width, pl.depth * pl.k, l.flip);
+      continue;
+    }
+    const L = LEDGE_LOOKS[l.look as LedgeLook];
     const cw = (l.w / l.n) * (l.over ?? LEDGE_OVER);
-    const h = l.h ?? ledgeHeight(l.look, l.w, l.n, l.over);
+    const h = l.h ?? ledgeHeight(l.look as LedgeLook, l.w, l.n, l.over);
     const top = l.y - L.top * h;
     if (!seen(l.x - cw, l.x + l.w + cw, top, top + h, view)) continue;
     if (l.look === 'bank') {
