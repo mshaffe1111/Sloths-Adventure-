@@ -99,6 +99,19 @@ CATS3 = {
     'taiko': ([r'\b(taiko|bass drum|kick drum|big drum|war drum|tom|timpani|gong|cinematic (hit|boom|impact)|boom)\b'], 5, 20),
     'scrape': ([r'\b(scrap\w*|scratch\w*|drag\w*)\b', r'\b(wood|stone|rock|branch|bark|thorn|bush)\w*\b'], 4, 15),
 }
+# a fourth pass: animal voices, in the words the captions use (they describe a sound more often than they name the animal)
+CATS4 = {
+    'cat': ([r'\b(meow\w*|mew\w*|yowl\w*|caterwaul\w*|purr\w*|feline|kitten|cat (hiss|growl|scream|cry)\w*)\b'], 4, 20),
+    'raptor': ([r'\b(screech\w*|squawk\w*|caw\w*|bird of prey|hawk|eagle|falcon|kite|raptor|seagull|gull|parrot|macaw)\b'], 4, 20),
+    'chitter': ([r'\b(chitter\w*|chatter\w*|squeal\w*|yelp\w*|whimper\w*|squeak\w*)\b', r'\b(animal|rodent|creature|critter|mammal|squirrel|ferret|weasel|otter|monkey|guinea pig|hamster|rat|mouse|mice)\b'], 4, 20),
+    'reptile': ([r'\b(hiss\w*)\b', r'\b(animal|snake|reptile|lizard|cat|creature|goose|gecko|serpent)\b'], 4, 20),
+    'croak': ([r'\b(croak\w*|ribbit\w*|toad|bullfrog)\b'], 4, 20),
+    'grunt': ([r'\b(grunt\w*|snort\w*|oink|boar|pig|hog|warthog)\b', r'\b(animal|pig|boar|hog|creature|beast)\b'], 4, 20),
+    'click': ([r'\b(insect|beetle|bug|cricket|grasshopper|cicada|mantis)\b'], 4, 20),
+    'wingbeat': ([r'\b(wings?|wingbeats?|flapping|takes? off|taking off|flutter\w*)\b', r'\b(bird|pigeon|dove|crow|owl|bat|duck|goose)\w*\b'], 4, 20),
+}
+if os.environ.get('PASS') == '4':
+    CATS = CATS4
 if os.environ.get('PASS') == '2':
     CATS = CATS2
 if os.environ.get('PASS') == '3':
