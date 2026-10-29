@@ -205,16 +205,19 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 - **The level check follows a swing from a ledge to a ledge, never from vine to vine** (2026-10-28): a chain of lianas over a real
   drop reads as unfinishable (4-4 is not judged by the check for that reason). Where a stage is checked, a swing over a drop is one
   liana from bank to bank (World 4's `swings`, windChain with one vine), as many in a row as you like.
-- **"The vines swing wildly"** (iPhone tester, 2026-10-28). Not the frame rate: driven through the engine's 30 fps gate at 120 Hz,
-  60 Hz, uneven 8-50 ms frames and 100-250 ms stalls, with a thumb pumping, flicking or climbing, the old swing held 0.83-0.84 rad
-  every time. The arcs themselves were the trouble: ±47° at the 1.9 s rhythm, a swing that pushed itself back up to full size after
-  every catch, and his feet sweeping ±115 px on a short grip and ±230 px on a long one. Now every liana swings on its own (Matt:
-  Donkey Kong Country): its angle comes from the vines' clock (`physics.ts` `vineAngle`), never from forces, and is the same with or
-  without him on it. Up and down climb, left and right only turn him, letting go is the only choice. A catch takes the vine where it
-  is (no jolt). All lianas swing in step: measured on every chain in Worlds 1-10, in step the next vine swings back to meet him (the
-  smallest catch window 14 frames), while half a swing apart it swings away (0 frames on 12 chains). Any check of a leap from one vine
-  to the next must carry the swing's clock through the flight (`canGrabSwing(x, y, v, t)`, `protoCheck`); a jump from a ledge can wait
-  for the vine, so it is checked against the line the vine swings through hanging straight down. Proof: `vineSelfSwing.test.ts`.
+- **"The vines swing wildly"** (iPhone tester, 2026-10-28). Not the frame rate: through the engine's 30 fps gate at 120 Hz, 60 Hz,
+  uneven 8-50 ms frames and 100-250 ms stalls, with a thumb pumping, flicking or climbing, the old swing held 0.83-0.84 rad every time.
+  Two real causes. (1) While he swung, the engine took the first vine in its list within reach as his own, so on a long grip near the
+  next liana of a chain (1-6's gorge pair) it threw him between the two vines' pivots: on the old engine every chain of 1-6 gave 80-170
+  jumps of 60-1000 px in 20 s of hanging on. His own vine now stays his. (2) The swing itself: ±47° at 1.9 s, pushed back up to full
+  size after every catch. Now every liana swings on its own (Matt: Donkey Kong Country), from the vines' clock (`physics.ts`
+  `vineAngle`), never from forces: up and down climb, left and right only turn him, letting go is the only choice; slower (2.85 s, Easy
+  3.3 s) and calmer (at most 0.45 rad). `swingSetup` gives each vine its swing when a stage starts: no bigger than keeps it clear of the
+  vines beside it with Pokey's body and a margin (`swingClearance`), and its own phase (the next liana of a chain `chainPhase` ahead, the
+  widest leap window, never in step). Rules for anything with lianas: a leap from one vine to the next carries the swing's clock through
+  the flight (`canGrabSwing(x, y, v, t)`); a jump from a ledge can wait for the vine; the sweet spot and the let-go are shares of each
+  vine's own swing; measure release windows with `pressWindow` (the engine's early/late forgiveness included). Proof:
+  `vineSelfSwing.test.ts` (no overlap; every liana-to-liana and liana-to-ledge jump at least 167 ms a swing on Normal, 300 ms on Easy).
 
 ## 7. Where things are
 

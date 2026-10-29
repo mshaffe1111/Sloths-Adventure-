@@ -180,7 +180,7 @@ export class RealPlay {
     });
     p.invincibleTimer = this.safe ? 1e9 : 0;
     Object.assign(e, {
-      coyoteTimer: 0, jumpBufferTimer: 0, upIntent: 0, climbGrace: 0, climbAssist: 0, climbSideTimer: 0, swingGrace: 0, vineCooldownTimer: 0,
+      coyoteTimer: 0, jumpBufferTimer: 0, upIntent: 0, climbGrace: 0, climbAssist: 0, climbSideTimer: 0, swingGrace: 0, vineCooldownTimer: 0, swungOff: -1,
       lastReleasedVineId: -1, launched: false, airDrive: newAirDrive(), glide: newGlide(), inputGrace: 0, ropeCooldown: 0, ropeGrace: 0,
       atk: null, atkQueue: null, standingOnId: -1, isGameOver: false,
     });

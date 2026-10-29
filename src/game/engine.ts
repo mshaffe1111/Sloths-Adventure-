@@ -538,6 +538,11 @@ export class GameEngine {
   private nearTreeVine: Vine | null = null;
   private nearSwingVine: Vine | null = null;
   private vineCooldownTimer: number = 0;
+  /**
+   * the liana he last let go of, until he stands, climbs, hangs or catches another: it swings on its own (physics.ts), and its swing used
+   * to come round and catch him again in the air as he leapt off it
+   */
+  private swungOff = -1;
   /** after grabbing a trunk, the press that grabbed it is not also a leap or a hop off */
   private climbGrace = 0;
   /** how long a sideways push has been held, with no up or down, while on a trunk */
@@ -548,8 +553,6 @@ export class GameEngine {
   private climbAssist = 0;
   /** same for a liana: the jump press that caught it is not also the leap off it */
   private swingGrace = 0;
-  /** seconds since a sideways steer was last held on the swing (physics.ts swingLanding: a hands-off landing) */
-  private swingIdle = 0;
   /** down and a sideways steer held together on the swing, and for how long (getting off onto a ledge beside it) */
   private swingDownHeld: { dir: number; t: number } = { dir: 0, t: 0 };
   /** seconds until the next sweet-spot glint on a swinging vine */
@@ -1402,6 +1405,7 @@ export class GameEngine {
       }
     }
 
+    if (p.grounded || p.climbing || p.hanging) this.swungOff = -1;
     // --- Vine Re-grab Cooldown & Scratch Audio Timers ---
     if (this.vineCooldownTimer > 0) {
       this.vineCooldownTimer -= dt;
@@ -1446,7 +1450,7 @@ export class GameEngine {
         break;
       }
       // Prevent instant magnetic re-grabbing when jumping off a vine!
-      if (this.vineCooldownTimer > 0 && v.id === this.lastReleasedVineId) {
+      if ((this.vineCooldownTimer > 0 && v.id === this.lastReleasedVineId) || v.id === this.swungOff) {
         continue;
       }
 
@@ -1613,7 +1617,6 @@ export class GameEngine {
         p.isDoubleJumping = false;
         p.somersaultAngle = 0;
         this.swingGrace = 0.25;
-        this.swingIdle = 0;
         this.swingDownHeld = { dir: 0, t: 0 };
         this.input.state.jumpPressed = false;
         this.jumpBufferTimer = 0;
@@ -1622,7 +1625,6 @@ export class GameEngine {
 
       if (p.isVineSwinging && nearSwingVine) {
         this.swingGrace = Math.max(0, this.swingGrace - dt);
-        this.swingIdle = this.input.state.left || this.input.state.right ? 0 : this.swingIdle + dt;
         {
           const st = this.input.state;
           const dir = st.down ? (st.left ? -1 : st.right ? 1 : 0) : 0;
@@ -1676,6 +1678,7 @@ export class GameEngine {
           p.isVineSwinging = false;
           this.input.state.jumpPressed = false;
           this.vineCooldownTimer = 0.45; // Prevent re-grab!
+          this.swungOff = nearSwingVine.id;
           this.lastReleasedVineId = nearSwingVine.id;
 
           const dropDir = this.input.state.left ? -1 : this.input.state.right ? 1 : p.facing;
@@ -1690,6 +1693,7 @@ export class GameEngine {
           p.isVineSwinging = false;
           this.input.state.jumpPressed = false;
           this.vineCooldownTimer = 0.50; // Guaranteed window to fly free from the vine!
+          this.swungOff = nearSwingVine.id;
           this.lastReleasedVineId = nearSwingVine.id;
 
           // the way a leaning flick leaned, then the held steer, then (refined) the way he faces, toward the next vine (the swing's side
@@ -1727,7 +1731,7 @@ export class GameEngine {
         // beside it, and it set him down there in the middle of a pump, which read as the vine letting go, QA 2026-10-26)
         else {
           const steer = this.input.state.right ? 1 : this.input.state.left ? -1 : 0;
-          const hands = { steer: steer as -1 | 0 | 1, down: this.input.state.down, idle: this.swingIdle, held: this.swingDownHeld.t };
+          const hands = { steer: steer as -1 | 0 | 1, down: this.input.state.down, held: this.swingDownHeld.t };
           for (const plat of this.platforms) {
             if (p.x >= plat.x - 10 && p.x <= plat.x + plat.width + 10 && p.vy >= 0 && p.y < plat.y + 14 && p.y > plat.y - SWING_LAND.reach) {
               const how = swingLanding({ angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, amp: vineAmp(nearSwingVine) }, nearSwingVine.x, plat, hands, p.y - plat.y);

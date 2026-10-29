@@ -25,6 +25,11 @@ import { PHYS, TIMED, airStep, canGrabSwing, inSweetSpot, swingGrab, swingSetup,
 import type { Platform, Vine } from './types.ts';
 
 const DT = 1 / 30;
+/**
+ * the frames of a swing the checks watch: 90 at the old swing (a swing and a half at 1.9 s), half as many again now the swing is one
+ * and a half times slower (2026-10-28), so a window's seconds mean what they did: the same share of the swing, in its own time
+ */
+const SPAN = () => 135;
 
 /** the highest a double jump lifts his feet (px), at either tick rate and the best moment for the second jump */
 export function maxRise(): number {
@@ -83,7 +88,7 @@ export function catchWindow(A0: Vine, B0: Vine, wind = 0): number {
 function catchWindowAt(A: Vine, B: Vine, wind: number): number {
   const { s } = enter(A);
   let ok = 0;
-  for (let k = 0; k < 90; k++) {
+  for (let k = 0; k < SPAN(); k++) {
     const r = swingStep(s, A, DT, 1, 0);
     if (share(s) <= 0.0625) continue;
     const l = timedLaunch(s, 1);
@@ -110,7 +115,7 @@ function arriveFrom(A0: Vine, B0: Vine, wind = 0) {
   const [A, B1] = pair(A0, B0);
   const B = B1;
   const { s } = enter(A);
-  for (let k = 0; k < 90; k++) {
+  for (let k = 0; k < SPAN(); k++) {
     const r = swingStep(s, A, DT, 1, 0);
     if (share(s) <= 0.25) continue;
     const l = timedLaunch(s, 1);
@@ -130,7 +135,7 @@ export function landWindow(A: Vine | null, B0: Vine, to: Platform, wind = 0): nu
   if (!got) return -1;
   const { s: sb, B } = got;
   let ok = 0;
-  for (let k = 0; k < 90; k++) {
+  for (let k = 0; k < SPAN(); k++) {
     const r = swingStep(sb, B, DT, 1, 0);
     if (share(sb) <= 0.0625) continue;
     const l = timedLaunch(sb, 1);
@@ -164,7 +169,7 @@ export function earlyCatch(A0: Vine, B0: Vine, at = 0.5, wind = 0): boolean {
 }
 function earlyCatchAt(A: Vine, B: Vine, at: number, wind: number): boolean {
   const { s } = enter(A);
-  for (let k = 0; k < 90; k++) {
+  for (let k = 0; k < SPAN(); k++) {
     const r = swingStep(s, A, DT, 1, 0);
     if (share(s) < Math.asin(at) / 0.8 || s.omega <= 0) continue;
     const l = timedLaunch(s, 1);
@@ -196,9 +201,9 @@ export function leapBand(A0: Vine, B0: Vine, cx: number, reach: number): [number
 function leapBandAt(A: Vine, B: Vine, cx: number, reach: number): [number, number] | null {
   const { s } = enter(A);
   let lo = Infinity, hi = -Infinity;
-  for (let k = 0; k < 150; k++) {
+  for (let k = 0; k < Math.round(SPAN() * 150 / 90); k++) {
     const r = swingStep(s, A, DT, 1, 0);
-    if (k < 45 || !inSweetSpot(s, 1)) continue;
+    if (k < Math.round(SPAN() / 2) || !inSweetSpot(s, 1)) continue;
     const l = timedLaunch(s, 1);
     const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
     let a = Infinity, b = -Infinity, hit = false;

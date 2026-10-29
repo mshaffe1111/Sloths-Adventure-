@@ -571,19 +571,16 @@ export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0
  *  - a platform under the vine's hanging point, his feet within 14 px of its top (he climbed down onto it, and they would otherwise
  *    sink into it): 'land', as before;
  *  - a ledge out to one side: when he holds down and toward it together for `heldS`, from up to `reach` px above its top ('step' when he is above
- *    it: he steps off and drops onto it); or with his thumb off the steering for `idleS`, his feet within 14 px, near the end of the
- *    swing's stroke (`apexOmega`), where the swing slows and turns.
+ *    it: he steps off and drops onto it). Hands off is never getting off (2026-10-28): the vines swing on their own, so hands off is
+ *    a player waiting for the moment to leap, and the calmer swing's turn sat right over 1-6's raised ledge (it used to set him down
+ *    there at the end of a stroke).
  * A sideways steer on its own is never getting off: a thumb pumping the swing holds toward the ledge for half of every stroke, and the
  * first version, which stepped off on a steer toward it, stepped QA's pumping bot off at the first pump after a climb down (v192).
  * `dy`: his feet below the platform's top (px; negative = above it).
  */
 export const SWING_LAND = {
-  /** slower than this share of the swing's top speed (at the bottom) is the end of a stroke */
-  apexShare: 0.38,
   /** px above a ledge's top that holding down and toward it steps off onto it */
   reach: 40,
-  /** seconds with no steer held before a hands-off landing (a pumping thumb passes through no steer between strokes) */
-  idleS: 0.3,
   /**
    * seconds down and the same sideways steer must be held together, against the swing's motion, to get off that way: a thumb pumping
    * the swing turns round with it every stroke (a beat late at most, about a third of a second), and its count starts again
@@ -595,13 +592,11 @@ export interface SwingHands {
   steer: -1 | 0 | 1;
   /** down is held (climbing down) */
   down: boolean;
-  /** seconds since a sideways steer was last held */
-  idle: number;
   /** seconds down and this same steer have been held together against the swing (engine.ts swingDownHeld) */
   held: number;
 }
 export function swingLanding(
-  s: { angle: number; omega: number; amp?: number },
+  _s: { angle: number; omega: number; amp?: number },
   vineX: number,
   plat: { x: number; width: number },
   hands: SwingHands,
@@ -611,9 +606,7 @@ export function swingLanding(
   if (vineX >= plat.x - 10 && vineX <= plat.x + plat.width + 10) return dy > -14 ? 'land' : null;
   const side = plat.x + plat.width / 2 < vineX ? -1 : 1;
   if (hands.steer === side && hands.down && hands.held >= SWING_LAND.heldS) return dy > -14 ? 'land' : dy > -SWING_LAND.reach ? 'step' : null;
-  if (hands.steer !== 0 || hands.idle < SWING_LAND.idleS) return null;
-  const top = (s.amp ?? TIMED.amp) * ((2 * Math.PI) / TIMED.period);
-  return dy > -14 && Math.abs(s.omega) < SWING_LAND.apexShare * top ? 'land' : null;
+  return null;
 }
 
 /** is this the moment to let go toward `dir`? (moving that way, between just behind straight down and most of the way up the front) */
@@ -636,11 +629,20 @@ export function inSweetSpot(s: SwingState, dir: -1 | 1): boolean {
  */
 export const LEAN_HOP = 130;
 export function timedLaunch(s: SwingState, dir: -1 | 1, leaned = false): { vx: number; vy: number; sweet: boolean } {
-  const tang = s.omega * s.len;
+  // the leap carries the vine's speed at his grip, counted as the old swing's (0.8 rad either side, two-thirds the time: 1.9 s, Easy
+  // 2.2) at the same point of its swing: the calmer, slower swing of 2026-10-28 throws him as far as the old one did from the same
+  // moment, so every gap the stages were built for keeps its reach (a vine hanging nearly still throws no harder than four times its speed)
+  const k = Math.min(4, (0.8 / Math.max(0.2, s.amp ?? TIMED.amp)) * 1.5);
+  const tang = s.omega * s.len * k;
   const vx = Math.cos(s.angle) * tang;
   const vy = -Math.sin(s.angle) * tang;
   if (inSweetSpot(s, dir)) {
     const l = tarzanLaunch(vx, vy, dir);
+    // and as high: the old swing let go higher up its arc at the same point of its swing (the calmer one hangs straighter), so the leap
+    // rises that much more, to the same top
+    const amp = s.amp ?? TIMED.amp;
+    const lift = amp > 0.05 ? Math.max(0, s.len * (Math.cos(s.angle) - Math.cos((s.angle / amp) * 0.8))) : 0;
+    if (lift > 0 && l.vy < 0) l.vy = Math.max(SWING.leapVyMin, -Math.sqrt(l.vy * l.vy + 2 * PHYS.gravUp * lift));
     return { ...l, sweet: true };
   }
   // anywhere else he only lets go: a small hop off the vine with part of its speed, never a fling up the screen or back the way he came
