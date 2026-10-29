@@ -858,8 +858,58 @@ def raw(im):
     return im
 
 
+def root_arch(hole=True, den=False):
+    c = canvas()
+    p = trim(kit(6, 'branch')).resize((470, 300), Image.LANCZOS)
+    m = Image.new('L', p.size, 0)
+    ImageDraw.Draw(m).ellipse((140, 110, 330, 470), fill=255)
+    if hole:
+        a = ImageChops.subtract(p.getchannel('A'), m)
+        p.putalpha(a)
+    if den:
+        dk = Image.new('RGBA', p.size, (30, 22, 18, 255)); dk.putalpha(m)
+        p.alpha_composite(dk)
+    c.alpha_composite(outline(p) if hole else p, (21, 470 - p.height))
+    return c
+
+
+def root_hide():
+    c = canvas()
+    tex = kit(6, 'wall')
+    b = shape(c.size, lambda d: (d.ellipse((40, 220, 300, 520)), d.ellipse((180, 180, 470, 520)), d.rectangle((60, 380, 450, 470))), tex)
+    b = b.crop((0, 0, CW, 470)); b = b.crop((0, 0, CW, CH)) if False else b
+    c2 = canvas(); c2.alpha_composite(b, (0, 0)); b = c2
+    c.alpha_composite(outline(b))
+    return c
+
+
+def reed_hide():
+    c = canvas()
+    for k in range(2):
+        r = cattails()
+        c.alpha_composite(r, (-90 + k * 170, 0))
+    return c
+
+
+def log_lying(moss):
+    c = canvas()
+    t = trim(kit(6, 'trunk')).rotate(90, expand=True)
+    t = t.resize((340, 110), Image.LANCZOS)
+    c.alpha_composite(t, (40, 360))
+    end = fit(kit(6, 'stump'), h=120)
+    end = end.crop((0, 0, end.width // 2, end.height))
+    c.alpha_composite(end, (360, 350))
+    if moss:
+        m = trim(kit(6, 'mossStrip')).resize((340, 36), Image.LANCZOS)
+        c.alpha_composite(m, (40, 344))
+    return c
+
+
 W7S = trim(kit(7, 'mossStrip'))
 SHEETS = {
+    'w6d': ('magenta', 'a grey misty mangrove swamp, pale grey-green mangrove roots, weathered wood, dark mud, grey hanging moss and reeds', [
+        ('root-arch', root_arch(), 'raw'), ('root-den', root_arch(hole=False, den=True), 'raw'), ('root-hide', root_hide(), 'raw'),
+        ('reed-hide', reed_hide(), 'raw'), ('moss-log', log_lying(True), 'raw'), ('log', log_lying(False), 'raw')]),
     # (key colour, prompt words, cells as (name, picture, how to place))
     'w6c': ('magenta', 'a grey misty mangrove swamp, muted grey-green, weathered wood, dark mud and grey hanging moss', [
         ('cattails', cattails(), 'ground'), ('moss-curtain', moss_curtain(), 'top'), ('lantern-flower', lantern_flower(), 'ground'),
