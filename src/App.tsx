@@ -253,6 +253,8 @@ export default function App() {
   // Initialize Input Engine once
   useEffect(() => {
     inputEngineRef.current = new InputEngine();
+    // (the control test: a blur that came while a finger was down, and was let pass: inputEngine.ts handleBlur)
+    inputEngineRef.current.onBlurKept = () => recorder.glitch('blurKept', `fingers ${inputEngineRef.current?.touchesDown ?? 0}`);
     return () => {
       inputEngineRef.current?.destroy();
     };
@@ -545,6 +547,21 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeLevel.id]);
 
+  // the control test's stage: 1-2, asking only to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
+  const ctestLevel = (): LevelConfig | null => {
+    const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
+    return base ? { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 } : null;
+  };
+  // and its sheets, loaded, decoded and drawn once while the tester reads the front page and types a name: started only at Start, a slow
+  // connection had the eagle's and the snakes' sheets arrive mid-run and stall the frames they first drew in (QA 2026-10-29, Safari 18,
+  // 130-220 ms right after each 'sheet' line)
+  useEffect(() => {
+    if (!ctestGate) return;
+    const lvl = ctestLevel();
+    if (lvl) void preloadStage(lvl, canvasRef.current, inPlay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctestGate]);
+
   // World 8's flashback (the promise) plays inside its world card: it counts as seen once that card opens
   useEffect(() => {
     if (screen === 'world_story' && activeLevel.worldIndex === 8) markMemorySeen('promise');
@@ -661,7 +678,10 @@ export default function App() {
             setScore(finalScore);
 
             // the control test is over at its shrine: thank the tester (nothing is saved, and the game does not go on to 1-3)
+            // (and the stage stops: under the questions it kept drawing 30 times a second for as long as they took, minutes, and on Sally's
+            // Android the frames there slowed and the picture dropped to its lightest before the replay, QA 2026-10-29)
             if (ctestEnabled() && lvl.id === CTEST_STAGE_ID) {
+              engine.stop();
               setCtestDone(lvl);
               return;
             }
@@ -865,9 +885,7 @@ export default function App() {
           onStart={() => {
             setCtestGate(false);
             setRecording(true);
-            const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
-            // the test only asks him to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
-            const lvl = base && { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 };
+            const lvl = ctestLevel();
             if (lvl) {
               setActiveLevel(lvl);
               setSelectedWorldId(lvl.worldIndex);
@@ -881,7 +899,7 @@ export default function App() {
           onDone={() => {
             // ending early: note where he was, stop the stage, and go to the questions
             recorder.event('quit');
-            engineRef.current?.pause();
+            engineRef.current?.stop();
             setCtestDone(activeLevel);
           }}
         />

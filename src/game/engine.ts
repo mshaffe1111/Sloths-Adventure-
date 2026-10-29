@@ -962,6 +962,8 @@ export class GameEngine {
     const dt = Math.min(elapsed / 1000, 0.05);
     // the frame-time check (menu switch, off by default): how long this frame's update and draw took on their own
     const pl = perfEnabled() ? perfLog : null;
+    // (the control test times it too: a stall line says how much of the gap was the game's own work, js below)
+    const timed = !!pl || recorder.on;
     let tUpd = 0;
 
     try {
@@ -977,17 +979,19 @@ export class GameEngine {
             this.slowMoLeft -= dt;
             sdt = dt * 0.3 * this.speedScale;
           }
-          const u0 = pl ? performance.now() : 0;
+          const u0 = timed ? performance.now() : 0;
           this.update(sdt);
-          if (pl) tUpd = performance.now() - u0;
+          if (timed) tUpd = performance.now() - u0;
           if (recorder.on) this.watchGlitches(now);
         }
       }
 
-      const r0 = pl ? performance.now() : 0;
+      const r0 = timed ? performance.now() : 0;
       this.render();
-      if (pl) pl.record(elapsed, tUpd, performance.now() - r0, now, () => this.perfInfo());
+      const tDraw = timed ? performance.now() - r0 : 0;
+      if (pl) pl.record(elapsed, tUpd, tDraw, now, () => this.perfInfo());
       if (recorder.on) this.recordFrames(elapsed, now);
+      this.lastJs = { upd: tUpd, draw: tDraw };
       // judge the real frame gap: too slow for a moment -> a lighter picture (never while a menu holds the game, or once at the lightest)
       if (!this.isPaused && (this.quality < 2 || (polishEnabled() && polishTier() < 2)) && this.gov.feed(elapsed)) this.stepQuality();
       else if (!this.isPaused && this.quality === 2) this.gov.feed(elapsed);
@@ -1025,6 +1029,8 @@ export class GameEngine {
    */
   private frameWin: number[] = [];
   private frameWinAt = 0;
+  /** the last frame's update and drawing time in ms (timed only for the control test and the frame-time check) */
+  private lastJs = { upd: 0, draw: 0 };
   private recordFrames(elapsed: number, now: number) {
     if (!this.frameWinAt) this.frameWinAt = now;
     // a gap that spans the page being hidden (another app, the lock button) is time away, not a freeze ('hidden' / 'shown' say so)
@@ -1032,7 +1038,9 @@ export class GameEngine {
     if (!this.isPaused) this.frameWin.push(elapsed);
     // a hitch long enough to see (over 100 ms): noted on its own, with where he was and the last picture sheet to arrive (an atlas
     // decoding mid-play is the usual cause), so a stall can be tied to what caused it
-    if (!this.isPaused && elapsed > 100) recorder.glitch('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality}${lastSheet.name && now - lastSheet.at < 1500 ? ` after ${lastSheet.name}` : ''}`);
+    // (`js u<ms> d<ms>`: the frame before the gap, its update and its drawing in the game's own code; a gap much longer than both is the
+    // browser's time, outside the game: putting the picture on screen, or a drawing it put off, QA 2026-10-29's 2 fps replay)
+    if (!this.isPaused && elapsed > 100) recorder.glitch('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality} js u${Math.round(this.lastJs.upd)} d${Math.round(this.lastJs.draw)}${lastSheet.name && now - lastSheet.at < 1500 ? ` after ${lastSheet.name}` : ''}`);
     if (now - this.frameWinAt < 5000) return;
     // memory (Chrome and Android only: iPhones don't report it), and how many live things the game is carrying, so the QA team can see
     // memory climbing the longer someone plays
