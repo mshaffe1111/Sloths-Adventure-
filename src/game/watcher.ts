@@ -27,6 +27,11 @@ export interface WatchZone {
   x0: number;
   x1: number;
   calm: [number, number];
+  /**
+   * the first pass over this stretch only warns, as the stage's first pass does (World 1's 1-7, QA 2026-10-29: hearts 5 to 1 in about
+   * 80 s on ?layout=1 upright; the easiest world's eagle shows each new stretch's rhythm once before it can strike)
+   */
+  freeFirst?: boolean;
 }
 
 export const WATCH = {
@@ -54,6 +59,9 @@ export interface WatchState {
   /** seen during this pass (one dive per pass at most), and the dive's clock */
   seen: boolean;
   diveT: number;
+  /** the stretch the last pass came over (its x0), and the pass that is harmless because it is the first over a freeFirst stretch */
+  zoneAt?: number;
+  freePass?: number;
 }
 
 export function newWatch(): WatchState {
@@ -88,6 +96,11 @@ export function stepWatch(s: WatchState, dt: number, zone: WatchZone | undefined
     return {};
   }
   if (s.phase === 'warn' && s.t >= s.dur) {
+    // (a pass over a stretch it has not come over before: the first over a freeFirst stretch only warns)
+    if (zone && zone.x0 !== s.zoneAt) {
+      s.zoneAt = zone.x0;
+      if (zone.freeFirst) s.freePass = s.passes;
+    }
     s.phase = 'pass';
     s.t = 0;
     s.dur = WATCH.pass;
@@ -114,7 +127,7 @@ export function stepWatch(s: WatchState, dt: number, zone: WatchZone | undefined
  * the first pass of a stage is a warning that cannot hurt: if it sees him, it dives and pulls up short (the hide is taught by then, but
  * not yet tried; QA 2026-10-28, 1-7: "It saw you! Slide down in a bush!" came only after the first hit)
  */
-export const harmlessPass = (s: WatchState) => s.passes === 0;
+export const harmlessPass = (s: WatchState) => s.passes === 0 || s.passes === s.freePass;
 
 /** where the shadow's middle is during a pass (world x): it crosses the view from beyond one edge to beyond the other */
 export function shadowX(s: WatchState, camX: number, viewW: number): number {

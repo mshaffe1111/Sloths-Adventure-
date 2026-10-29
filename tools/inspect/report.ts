@@ -139,7 +139,7 @@ function card(s: StageReport, out: InspectOutput): string {
   return `<article class="card" id="s${s.id}">
   <header class="ch">
     <div><span class="sid">${s.id}</span> <h3>${esc(s.name)}</h3></div>
-    <span class="type">${esc(TYPE[s.type] ?? s.type)}${s.source === 'generated' ? ' · generated' : ''}</span>
+    <span class="type">${esc(TYPE[s.type] ?? s.type)}${s.source === 'generated' ? ' · generated' : s.source === 'gen2' ? ' · gen2' : ''}</span>
   </header>
   <p class="goaltext">${esc(s.goalText)}</p>
   <div class="stats">

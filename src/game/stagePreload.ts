@@ -13,7 +13,7 @@ import { enterWorld, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { BACK_URL, DOT_PROPS_URL, warmDotSheets } from './dotFlightArt.ts';
 import { DOT_ATLAS_URL } from './dotSprite.ts';
-import { kitUrl, paintedKitEnabled, warmKit } from './protoArt.ts';
+import { kitUrl, paintedKitEnabled, PROTO2_URL, warmKit, warmProto2 } from './protoArt.ts';
 import { protoStageEnabled } from './protoStage.ts';
 import { ctestEnabled } from './playRecorder.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
@@ -28,6 +28,11 @@ import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
 import { preloadBackdrop } from './paintedBackdrops.ts';
 import { stageSheets } from './stageSheets.ts';
+import { warmSprites } from './spriteSheets.ts';
+import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
+import { warmWaterSigns } from './waterSign.ts';
+import { WATER_SIGN_URL } from './waterSignData.ts';
+import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
 import { LEAVES_URL, warmLeaves } from './leafSprites.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
@@ -59,6 +64,12 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'kit-pieces') {
       kitArtReady();
       urls.push(KIT_ART_URL);
+    } else if (k === 'water-signs') {
+      warmWaterSigns();
+      urls.push(WATER_SIGN_URL);
+    } else if (k === 'bad-water') {
+      badWaterReady();
+      urls.push(BAD_WATER_URL);
     } else if (k === 'meeca-night') {
       nightArtReady();
       urls.push(NIGHT_ART_URL);
@@ -69,6 +80,19 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'dot') {
       warmDotSheets();
       urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, ...Object.values(BACK_URL));
+    } else if (k.startsWith('foe:')) {
+      // a creature: its clip sheet (if it has one) and its painted poses (spriteSheets.ts)
+      const n = k.slice(4);
+      warmCreatureAnims([n]);
+      const u = creatureAnimUrl(n);
+      if (u) urls.push(u);
+      urls.push(...warmSprites([n]));
+    } else if (k === 'props2') {
+      warmProto2();
+      urls.push(PROTO2_URL);
+    } else if (k === 'perch') {
+      perchArtReady();
+      urls.push(DOT_PERCH_URL);
     } else if (k.startsWith('anim:')) {
       const n = k.slice(5);
       warmCreatureAnims([n]);

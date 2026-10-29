@@ -1,0 +1,68 @@
+{
+ "sheet": "w6c.webp",
+ "size": {
+  "w": 2048,
+  "h": 834
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "cattails": "w6c-s85-17",
+  "moss-curtain": "w6c-s85-17",
+  "lantern-flower": "w6c-s85-17",
+  "canoe": "w6c-s85-17",
+  "mooring-post": "w6c-s85-5",
+  "glow-mushrooms": "w6c-s85-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "cattails": {
+   "x": 0,
+   "y": 0,
+   "w": 422,
+   "h": 456,
+   "ax": 211.0,
+   "ay": 456
+  },
+  "moss-curtain": {
+   "x": 426,
+   "y": 0,
+   "w": 425,
+   "h": 249,
+   "ax": 195.5,
+   "ay": 249
+  },
+  "lantern-flower": {
+   "x": 855,
+   "y": 0,
+   "w": 209,
+   "h": 421,
+   "ax": 112.0,
+   "ay": 421
+  },
+  "canoe": {
+   "x": 1068,
+   "y": 0,
+   "w": 428,
+   "h": 257,
+   "ax": 129.0,
+   "ay": 257
+  },
+  "mooring-post": {
+   "x": 1500,
+   "y": 0,
+   "w": 286,
+   "h": 390,
+   "ax": 151.0,
+   "ay": 390
+  },
+  "glow-mushrooms": {
+   "x": 0,
+   "y": 460,
+   "w": 410,
+   "h": 374,
+   "ax": 205.5,
+   "ay": 374
+  }
+ }
+}

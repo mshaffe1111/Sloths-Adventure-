@@ -101,7 +101,7 @@ const stat = (xs: number[]): Stat => {
 export interface WorstRoll { variant: number; layout: number; score: number; why: string[]; quick: number; longestQuiet: number }
 
 export interface StageSummary {
-  id: string; world: number; name: string; type: string; source: 'hand' | 'generated'; climb: boolean;
+  id: string; world: number; name: string; type: string; source: 'hand' | 'gen2' | 'generated'; climb: boolean;
   rolls: number; ms: number;
   floor: number; target: number;
   stats: Record<'quick' | 'played' | 'designer' | 'dead' | 'longestQuiet' | 'perMin' | 'linearity' | 'leniency' | 'vertical' | 'platforms' | 'routePlatforms' | 'props' | 'styles', Stat>;
@@ -159,7 +159,7 @@ const LIN_BINS = 10, LEN_BINS = 10;
 export const HEAT = { lenLo: 60, lenStep: 20, lenBins: 12, deadStep: 8, deadBins: 10 };
 const bin = (v: number, lo: number, step: number, n: number) => Math.max(0, Math.min(n - 1, Math.floor((v - lo) / step)));
 
-function summarise(meta: { id: string; world: number; name: string; type: string; source: 'hand' | 'generated' }, rs: RollResult[], target: number, rules: EraOutput['rules']): StageSummary {
+function summarise(meta: { id: string; world: number; name: string; type: string; source: 'hand' | 'gen2' | 'generated' }, rs: RollResult[], target: number, rules: EraOutput['rules']): StageSummary {
   const n = rs.length;
   const profs = rs.map((r) => new Map(r.prof));
   // diversity: every pair of rolls
@@ -263,6 +263,7 @@ async function main() {
   const { generateAllLevels } = await import('../../src/game/worldsData.ts');
   const { stageSpec } = await import('../../src/game/stagePlan.ts');
   const { HAND_STAGES } = await import('../../src/game/protoStage.ts');
+  const { isGen2Stage } = await import('../../src/game/gen2/game.ts');
   const { W2_STAGES } = await import('../../src/game/w2Stages.ts');
   const skipped: EraOutput['skipped'] = [];
   const levels = generateAllLevels().filter((c) => {
@@ -330,7 +331,7 @@ async function main() {
     const rs = variants.map((v) => map.get(v)!);
     byId.set(c.id, rs);
     const spec = stageSpec(c.worldIndex, c.miniIndex);
-    const source = HAND_STAGES[c.id] || W2_STAGES[c.id] ? 'hand' : 'generated';
+    const source = HAND_STAGES[c.id] || W2_STAGES[c.id] ? 'hand' : isGen2Stage(c) ? 'gen2' : 'generated';
     summaries.push(summarise({ id: c.id, world: c.worldIndex, name: spec?.name ?? c.name, type: c.objectiveType, source }, rs, source === 'hand' ? targetFor(c.id) : 0, RULES));
   }
 

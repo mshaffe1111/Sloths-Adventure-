@@ -206,7 +206,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const underBoss = isBoss && info.kind === 'count';
   const cg = underBoss ? centreGeo('short', 320) : centreGeo(mode, vp.h);
   const ckind = isBoss && !underBoss ? 'none' : info.kind === 'count' ? (slots ? 'slots' : 'count') : info.kind === 'distance' ? 'distance' : 'none';
-  const cw = counterW(cg, ckind, target);
+  const cw = counterW(cg, ckind, target, ckind === 'count' ? info.word : '');
   const place = cw > 0 ? centrePlace(vp.w, vp.h, cw, { hearts: nHearts, insets: ins, underBoss: underBoss && boss ? boss : undefined }) : null;
   const safe = hudSafeRect(vp.w, vp.h, { boss: isBoss, hearts: nHearts, counter: cw, insets: ins });
   React.useLayoutEffect(() => {
@@ -301,6 +301,11 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
           <span ref={iconRef} className="vh-goal-icon">
             <GoalPic icon={info.icon} size={cg.icon} />
           </span>
+          {info.word && (
+            <span className="vh-cword" style={{ fontSize: Math.round(cg.num * 0.62) }}>
+              {info.word}
+            </span>
+          )}
           <span className="vh-cnum" style={{ fontSize: cg.num }}>
             {goalNow}
             <small style={{ fontSize: Math.round(cg.num * 0.66) }}>/{target}</small>

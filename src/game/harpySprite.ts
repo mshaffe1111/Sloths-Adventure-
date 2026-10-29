@@ -198,3 +198,10 @@ export function drawHarpyFallback(ctx: CanvasRenderingContext2D, enemy: Enemy, t
   ctx.fill();
   ctx.restore();
 }
+
+/** the sheets this sprite draws from (sheetWarm.ts spriteSheets: asked for before the stage starts, not when it first comes on screen) */
+export const HARPY_SHEETS: readonly string[] = [new URL('../assets/enemies/harpy-atlas.webp', import.meta.url).href];
+/** start loading them now (the stage preload and the stage start; QA's mid-stage 'blank wait' lines, 2026-10-29) */
+export function warmHarpySprite(): void {
+  if (harpySpriteEnabled()) load();
+}

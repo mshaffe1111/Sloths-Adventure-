@@ -64,7 +64,37 @@ export const MEECA_SAY = {
   wonder: { id: 'wonder', who: 'meeca', text: 'Oh... look at it.' },
   /** the last room, in the dark: said by Flicker as she comes in (NEW) */
   shy: { id: 'shy', who: 'flicker', text: 'Stay in my light. The steps are shy.' },
+  // ── QA batch 2026-10-29 (all approved by Matt, 2026-10-28) ──
+  /** by the pinecone at the top of room 1's ledge, the first thing she can carry: picking up taught before room 2 needs it (new, needs
+   * Matt's approval) */
+  pick: { id: 'pick', who: 'meeca', text: 'A pinecone. Tap it to pick it up.', teach: true },
+  /** a finger held still on the glass at a trunk (a hold carves nothing): Flicker shows the circle again (Matt approved, 2026-10-28) */
+  carveHold: { id: 'carveHold', who: 'flicker', text: 'Not a poke. Draw circles on the bark.' },
+  /**
+   * a plain walk into a step one hop climbs (a stump, the gully's stairs) stops her, and nothing taught the hop (QA 2026-10-29: "only
+   * lifted hops move her"): her own thought, the first time she pushes into one, and again if she is still pushing (Matt approved,
+   * 2026-10-28)
+   */
+  stepHop: { id: 'stepHop', who: 'meeca', text: 'Too tall to walk. Keep sliding and flick up!' },
+  /** part-way along the trail after room 1, by its landmarks: she is not going round in circles (Matt approved, 2026-10-28) */
+  trailA: { id: 'trailA', who: 'flicker', text: "Not going in circles. I'd know." },
+  /** part-way along the trail after room 3 (Matt approved, 2026-10-28) */
+  trailB: { id: 'trailB', who: 'flicker', text: "Older trees now. We're getting somewhere." },
 } as const satisfies Record<string, MeecaLine>;
+
+/**
+ * Flicker's nudges (QA batch 2026-10-29, Matt approved, 2026-10-28): a room with no progress for about 20 s gets the first, about 40 s
+ * the second, stronger one. They point at the piece, never say the whole answer, and are under ten words. `carve`: at a trunk, not
+ * carving.
+ */
+export const FLICKER_NUDGES: Record<string, readonly [string, string]> = {
+  carve: ['Trace a circle on the bark. Round and round.', 'Keep your finger going round, like stirring tea.'],
+  sit: ["That chair's a trap. Look for something taller.", 'That young tree. Climb it right to the top.'],
+  eat: ['Two plates. That beetle by the gate likes cake.', 'Leave a cake where that beetle can reach it.'],
+  silk: ['See the knot up top? It holds the ladder.', 'Grab a pinecone. Stand under the knot. Flick up.'],
+  tea: ["He won't move. His teapot, though... very full.", 'From the plank, tip the teapot over.'],
+  look: ['Stay close. My light finds the steps.', 'Walk to each edge. Wait for my light.'],
+};
 
 /**
  * The rooms' lines (puzzleKit.ts RoomTips, said the first time each moment comes). Meeca's own unless a speaker is named. All NEW.
@@ -75,6 +105,8 @@ export const ROOM_LINES = {
     enter: 'Too high. Ooh, a chair. A step!',
     chair: "It's holding me! Wiggle, wiggle!",
     climb: 'A sapling. Slide up to climb.',
+    /** the practice pinecone at the top of the ledge, picked up (Matt approved, 2026-10-28) */
+    hold: 'Flick up to throw. Tap to set down.',
   },
   eat: {
     enter: 'Two plates. One of me.',

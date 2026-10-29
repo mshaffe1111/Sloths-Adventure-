@@ -1,0 +1,68 @@
+{
+ "sheet": "w5a.webp",
+ "size": {
+  "w": 2048,
+  "h": 707
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "orchids": "w5a-s85-5",
+  "cocoon": "w5a-s75-5",
+  "web": "w5a-s75-17",
+  "mossy-log": "w5a-s85-5",
+  "ferns": "w5a-s75-17",
+  "bromeliad": "w5a-s75-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "orchids": {
+   "x": 0,
+   "y": 0,
+   "w": 202,
+   "h": 356,
+   "ax": 118.5,
+   "ay": 356
+  },
+  "cocoon": {
+   "x": 206,
+   "y": 0,
+   "w": 311,
+   "h": 366,
+   "ax": 180.0,
+   "ay": 366
+  },
+  "web": {
+   "x": 521,
+   "y": 0,
+   "w": 358,
+   "h": 411,
+   "ax": 179.0,
+   "ay": 411
+  },
+  "mossy-log": {
+   "x": 883,
+   "y": 0,
+   "w": 426,
+   "h": 271,
+   "ax": 205.5,
+   "ay": 271
+  },
+  "ferns": {
+   "x": 1313,
+   "y": 0,
+   "w": 459,
+   "h": 288,
+   "ax": 233.0,
+   "ay": 288
+  },
+  "bromeliad": {
+   "x": 0,
+   "y": 415,
+   "w": 333,
+   "h": 292,
+   "ax": 153.5,
+   "ay": 292
+  }
+ }
+}

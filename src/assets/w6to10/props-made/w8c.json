@@ -1,0 +1,68 @@
+{
+ "sheet": "w8c.webp",
+ "size": {
+  "w": 2048,
+  "h": 965
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "night-flowers": "w8c-s75-17",
+  "bark-fungus": "w8c-s85-5",
+  "firefly-leaf": "w8c-s85-17",
+  "bird-nest": "w8c-s85-5",
+  "leaf-curtain": "w8c-s85-5",
+  "tree-hollow": "w8c-s85-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "night-flowers": {
+   "x": 0,
+   "y": 0,
+   "w": 245,
+   "h": 320,
+   "ax": 116.0,
+   "ay": 320
+  },
+  "bark-fungus": {
+   "x": 249,
+   "y": 0,
+   "w": 445,
+   "h": 234,
+   "ax": 203.5,
+   "ay": 234
+  },
+  "firefly-leaf": {
+   "x": 698,
+   "y": 0,
+   "w": 260,
+   "h": 322,
+   "ax": 109.5,
+   "ay": 322
+  },
+  "bird-nest": {
+   "x": 962,
+   "y": 0,
+   "w": 312,
+   "h": 377,
+   "ax": 152.0,
+   "ay": 377
+  },
+  "leaf-curtain": {
+   "x": 1278,
+   "y": 0,
+   "w": 471,
+   "h": 480,
+   "ax": 245.0,
+   "ay": 480
+  },
+  "tree-hollow": {
+   "x": 0,
+   "y": 484,
+   "w": 395,
+   "h": 481,
+   "ax": 231.5,
+   "ay": 481
+  }
+ }
+}

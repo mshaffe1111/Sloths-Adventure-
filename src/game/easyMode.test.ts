@@ -6,8 +6,11 @@ import { validateStage, jumpOK, easyHoldCheck } from './levelCheck.ts';
 import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { easyStage } from './easyMode.ts';
+import { isGen2Stage } from './gen2/game.ts';
 
 const levels = generateAllLevels().filter((l) => !l.secret);
+/** a stage on Easy as the engine builds it: a gen2 stage (5-7, 5-9) is laid for Easy by its own pipeline, the rest made gentler here */
+const easyOf = (cfg: (typeof levels)[number]) => easyStage(isGen2Stage(cfg) ? generateStage(cfg, 'easy') : generateStage(cfg));
 
 /** what the validator says about a stage, without the parts that name ids or positions that Easy shifts */
 const errs = (r: { ok: boolean; errors?: string[] }) => new Set((r.errors ?? []).map((e) => e.replace(/[\d.]+/g, '#')));
@@ -22,7 +25,7 @@ function check(id: string, normal: ReturnType<typeof generateStage>, easy: Retur
 test('easy: every generated stage is still a good stage on Easy', () => {
   for (const cfg of levels) {
     if (HAND_STAGES[cfg.id] || W2_STAGES[cfg.id]) continue;
-    check(cfg.id, generateStage(cfg), easyStage(generateStage(cfg)));
+    check(cfg.id, generateStage(cfg), easyOf(cfg));
   }
 });
 
@@ -44,7 +47,7 @@ test('easy: no stage needs a full-hold jump on Easy, on rolls 1-3 (Gemini G8, a 
       const w2 = W2_STAGES[cfg.id];
       // (a generated stage is the same on every roll)
       if (!hand && !w2 && seed > 1) continue;
-      const easy = easyStage(hand ? buildProtoStage(cfg, seed, hand) : w2 ? buildW2Stage(cfg, seed, w2) : generateStage(cfg));
+      const easy = hand ? easyStage(buildProtoStage(cfg, seed, hand)) : w2 ? easyStage(buildW2Stage(cfg, seed, w2)) : easyOf(cfg);
       const full = errs(validateStage(easy));
       const added = [...errs({ ok: false, errors: easyHoldCheck(easy) })].filter((e) => !full.has(e));
       assert.deepEqual(added, [], `${cfg.id} roll ${seed}: only a full-hold jump reaches it on Easy: ${added.join('; ')}`);
@@ -57,7 +60,7 @@ test('easy: fewer animals, a goal that still can be met, and a heart at every fl
   for (const cfg of levels) {
     if (cfg.objectiveType === 'boss_lair') continue;
     const n = generateStage(cfg);
-    const e = easyStage(generateStage(cfg));
+    const e = easyOf(cfg);
     before += n.enemies.length;
     after += e.enemies.length;
     for (const t of new Set(n.enemies.map((x) => x.type))) assert.ok(e.enemies.some((x) => x.type === t), `${cfg.id}: keeps a ${t}`);
@@ -74,6 +77,8 @@ test('easy: fewer animals, a goal that still can be met, and a heart at every fl
 test('easy: a far jump over a drop gets a stone each side of it can reach with a single jump', () => {
   let stones = 0;
   for (const cfg of levels) {
+    // (a gen2 stage lays no stones: its Easy jumps are sized from Easy's margin, with soft pits, by the pipeline: gen2/game.test.ts)
+    if (isGen2Stage(cfg)) continue;
     const n = generateStage(cfg);
     const e = easyStage(generateStage(cfg));
     const ids = new Set(n.platforms.map((p) => p.id));

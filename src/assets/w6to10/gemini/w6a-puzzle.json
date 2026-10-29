@@ -1,0 +1,72 @@
+{
+ "sheet": "w6a-puzzle.webp",
+ "size": {
+  "w": 2048,
+  "h": 235
+ },
+ "anchor": "middle of the foot",
+ "pairs": [
+  [
+   "lever-up",
+   "lever-down"
+  ],
+  [
+   "plate-up",
+   "plate-down"
+  ],
+  [
+   "door-closed",
+   "door-open"
+  ]
+ ],
+ "frames": {
+  "lever-up": {
+   "x": 0,
+   "y": 0,
+   "w": 179,
+   "h": 225,
+   "ax": 89.5,
+   "ay": 225
+  },
+  "lever-down": {
+   "x": 183,
+   "y": 0,
+   "w": 179,
+   "h": 225,
+   "ax": 89.5,
+   "ay": 225
+  },
+  "plate-up": {
+   "x": 366,
+   "y": 0,
+   "w": 281,
+   "h": 108,
+   "ax": 141.5,
+   "ay": 108
+  },
+  "plate-down": {
+   "x": 651,
+   "y": 0,
+   "w": 281,
+   "h": 108,
+   "ax": 141.5,
+   "ay": 108
+  },
+  "door-closed": {
+   "x": 936,
+   "y": 0,
+   "w": 256,
+   "h": 235,
+   "ax": 128.0,
+   "ay": 235
+  },
+  "door-open": {
+   "x": 1196,
+   "y": 0,
+   "w": 256,
+   "h": 235,
+   "ax": 128.0,
+   "ay": 235
+  }
+ }
+}

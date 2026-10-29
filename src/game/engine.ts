@@ -36,10 +36,10 @@ import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
-import { cardSafe, HARMLESS_LESSONS, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -76,13 +76,14 @@ import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { drawKitDecor } from './puzzleArt.ts';
+import { drawWaterSign } from './waterSign.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
-import { MeecaPlay, type MeecaControls } from './meecaPlay.ts';
+import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
 import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
@@ -594,7 +595,8 @@ export class GameEngine {
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
     this.forgive = isEasy() ? FORGIVE.easy : FORGIVE.normal;
-    this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config))) : withGoals(generateStage(config));
+    // (a gen2 stage, gen2/game.ts, is laid for Easy by its own pipeline: the difficulty goes in with the build)
+    this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config, 'easy'))) : withGoals(generateStage(config, 'normal'));
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
@@ -4021,8 +4023,9 @@ export class GameEngine {
       }
     }
   }
-  /** a solid face just in front of him, standing on the ground, taller than one jump climbs (or, given, between `lo` and `hi` px tall) */
-  private wallAhead(lo = 100, hi = 320): boolean {
+  /** a solid face just in front of him, standing on the ground, taller than one jump climbs but one a double jump clears (or, given,
+   * between `lo` and `hi` px tall): Dot's "jump twice" tip must never point at a face a double jump can't clear (QA 2026-10-29, 4-5) */
+  private wallAhead(lo = 100, hi = DOUBLE_RISE + 10): boolean {
     const p = this.player;
     const f = p.facing >= 0 ? 1 : -1;
     for (const q of this.platforms) {
@@ -4582,6 +4585,28 @@ export class GameEngine {
       }
       ctx.restore();
     }
+    // the new generator's water warnings (gen2 proto.gen2.waterWarnings): the painted warning sign at the water's edge (World 5's garden
+    // sign, the jungle one in the other worlds: waterSign.ts), a plain post with a wave on it while its sheet loads
+    (this.proto?.gen2?.waterWarnings ?? []).forEach((w, i) => {
+      if (w.x < x0 - 80 || w.x > x1 + 80) return;
+      if (drawWaterSign(ctx, this.currentStage.config.worldIndex, w.x, w.y + 3, i)) return;
+      const cy = w.y - 50;
+      ctx.save();
+      ctx.fillStyle = '#7c5a32';
+      ctx.fillRect(w.x - 3, w.y - 40, 6, 40);
+      ctx.fillRect(w.x - 18, cy - 12, 36, 24);
+      ctx.strokeStyle = '#1d4ed8';
+      ctx.lineWidth = 3.5;
+      ctx.lineCap = 'round';
+      for (const dy of [-5, 4]) {
+        ctx.beginPath();
+        ctx.moveTo(w.x - 12, cy + dy);
+        ctx.quadraticCurveTo(w.x - 6, cy + dy - 5, w.x, cy + dy);
+        ctx.quadraticCurveTo(w.x + 6, cy + dy + 5, w.x + 12, cy + dy);
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
   }
 
   private spawnWaterSplash(x: number, y: number) {
@@ -4829,8 +4854,17 @@ export class GameEngine {
     if (!lessonsOn()) return;
     const seen = (this.lessonSeen ??= lessonsSeen());
     // a card that came due while he was busy keeps a while (after that, the next one of its kind brings it back)
-    if (this.lessonWaiting && (seen.has(this.lessonWaiting.id) || this.gameTime - this.lessonWaiting.at > 8)) this.lessonWaiting = null;
     const p = this.player;
+    // a lesson whose thing he has already done (a petal picked, a foe beaten) is learned: it is not said, now or later (lessons.ts
+    // lessonDone); a waiting heart's lesson goes once he is back to full health
+    const state = { enemies: this.enemies, collectibles: this.collectibles, hp: p.hp, maxHp: p.maxHp };
+    for (const d of DONE_LESSONS) {
+      if (!seen.has(d) && lessonDone(d, state)) {
+        seen.add(d);
+        markLessonSeen(d);
+      }
+    }
+    if (this.lessonWaiting && (seen.has(this.lessonWaiting.id) || lessonStale(this.lessonWaiting.id, state) || this.gameTime - this.lessonWaiting.at > 8)) this.lessonWaiting = null;
     const cam = this.camera;
     const picked = pickLesson(
       {
@@ -4846,6 +4880,8 @@ export class GameEngine {
         checkpoints: st.checkpoints ?? [],
         rivers: st.rivers ?? [],
         ropes: this.skills.has('shimmy') ? this.ropes : [],
+        hp: p.hp,
+        maxHp: p.maxHp,
       },
       seen,
     );
@@ -4906,6 +4942,7 @@ export class GameEngine {
     out.attack = p.attackType;
     out.hurt = p.invincibleTimer > 0 && p.activePowerUp !== 'invincible';
     out.hp = p.hp;
+    out.maxHp = p.maxHp;
     out.lives = this.lives;
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
@@ -5601,6 +5638,7 @@ export class GameEngine {
         this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
       },
       score: (n) => (this.runScore += n),
+      stepAt: (dir) => this.stepAt(dir),
       sfx: (kind) => {
         if (kind === 'scratch') sound.playTreeClimb();
         else if (kind === 'cut') sound.playRelicFound();
@@ -6586,8 +6624,14 @@ export class GameEngine {
     h.player = this.player;
     h.standingOn = this.standingOnId;
     h.steer = this.kitSteer;
+    h.poke = this.kitPoke;
+    // (Meeca's stage: a generous tap, QA 2026-10-29)
+    if (this.mc) h.reachK = MEECA_REACH;
     return h;
   }
+  /** a new tap, flick or press this frame (a trap chair counts it as a wiggle), and whether one was down the frame before */
+  private kitPoke = false;
+  private kitPokeWas = false;
 
   /**
    * The puzzle kit's controls, from the intents as they are (touchGestures.ts and the input are untouched): a tap with a piece in reach
@@ -6597,6 +6641,9 @@ export class GameEngine {
   private kitControls() {
     const inp = this.input.state;
     this.kitSteer = inp.left && !inp.right ? -1 : inp.right && !inp.left ? 1 : 0;
+    const poke = inp.punchPressed || inp.jumpPressed || inp.kickPressed;
+    this.kitPoke = poke && !this.kitPokeWas;
+    this.kitPokeWas = poke;
     const took = this.kit!.control({ tap: inp.punchPressed, up: inp.jumpPressed, side: inp.kickPressed, sideDir: inp.kickDir }, this.kitHost(), this.platforms);
     if (took.tap) inp.punchPressed = false;
     if (took.up) {

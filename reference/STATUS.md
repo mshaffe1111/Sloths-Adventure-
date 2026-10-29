@@ -1,12 +1,79 @@
 # Status board (the lead session keeps this current; see reference/LEAD-PLAYBOOK.md)
 
-Last updated: 2026-10-28 (Hugging Face art run started).
+Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
+
+## STANDSTILL (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
+
+- Nothing is running. W6 cloud sessions (gen2-w6, gen2-w6-swing) archived; the wind-down check-in is disabled.
+- Release PR #46 (https://github.com/mshaffe1111/Sloths-Adventure-/pull/46) is open for Matt to merge (everything since PR #45; test link v229): World 6 on gen2 (6-1..6-7, 6-9; 6-8 hand-built and the
+  6-10 boss later), the animal clearance fix, Matt's painted dirty/fast water for Worlds 6-10 (badWaterArt.ts) and Dot's water line,
+  qa-fix-w123 (3-1, 2-2, 1-7, part of 2-6), qa-fix-dot, qa-fix-meeca (17 lines + nudges approved), W3 r2, W4 r3-r7, 5-7/5-9 on gen2,
+  Matt's Gemini sheets saved, the polish rule. After the merge: check the deploy run and the APK, tell QA.
+- Why the animal clearance bug was missed (82 hops by animals on 6-2/6-5/6-9): the 120 px rule lived only in the old generator's
+  stageQuality test; the gen2 pipeline and curation didn't know it, and cost mode ran the full suite only at the end. Fixed at the source
+  (JUMP_CLEAR in the pipeline, curation drops bad rolls); lesson in STAGE-RULES §6 and DESIGN.md B12. Also: CLAUDE.md's suite command
+  misses src/game/gen2/, so run the gen2 tests too.
+- World 6 gen2 stages preload the world's whole creature set (their animals vary by roll).
+- Waiting on Matt (one question at a time): the look-alike rule (§2 "no 20 s stretch alike between stages") can't be met in World 6
+  (the measure's alphabet is too small): better measure, or relax it? Then World 7 when he says.
+- Leftovers: qa-fix-w123's 3-3 and the rest of 2-6 (helper interrupted 03:01); rope traverse (Gemini sheet); first swim in clean water;
+  the rest of the dirty-water sheet (log, warning post, reeds, pipe waterfall, scum, splash) in reference/prop-sheets/gemini-batch-2026-10-29/;
+  tomorrow's art pickup below; list the major code-drawn looks that hurt Pokey for painted sheets (polish rule).
 
 ## Live (main)
 
 - PR #39 (2026-10-28): Worlds 1-2 rebuilt, iPhone sound fix, Worlds 1-4 groundwork.
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
+
+## Tomorrow's art pickup (2026-10-28 ~23:30 ET)
+
+- The art helper was stopped (Matt's side). Its two HF creature jobs (6ae2b6ae3fb22a235dd4f5f9, 6ae2b6a341e90535df781f07; "creatures-new-0/1",
+  spec tools/art/gen/spec-creatures-new.json in the art-hf worktree, output in the bucket under w6to10/) were left to finish (Matt: let them
+  finish). A low-effort helper then cuts them in: W6-10 creature clip sheets (crab, piranha, sentry, bat, owl, lizard, beetle, soldier attack/hurt),
+  plus Matt's Gemini sheets in reference/prop-sheets/gemini-batch-2026-10-28/: w6-hides-arches, w9w10-bridges, queen-collar-off (crop labels),
+  reaver-walk-take2 (still no walk: use 2-3 poses for a code-driven walk). The art-hf worktree has the creature scripts uncommitted.
+
+## Water once Pokey can swim (Matt, 2026-10-29 ~00:10 ET)
+
+- Pokey learns to swim in World 6 (pokey-swim sheets, first-swim moment), but World 2 says "Don't swim" and gen2 water costs a life.
+  Matt's answer: the dangerous water is DIRTY or FAST-FLOWING. So: World 6-10 hazard water is drawn murky (grey-brown, scum) or fast
+  (current streaks, tide channels) and still costs a life; clean, calm water (where the first swim happens, and later pools) is swimmable.
+  To do tomorrow: the water look for gen2 hazard water, Dot's World 6 water line with the reason (new line for Matt's approval, e.g.
+  "Careful! That water's dirty and fast. Flick up and over."), and check where the first-swim moment sits so it's in clean water.
+  6-8's rising tide = fast water. Tonight's World 6 ships with today's water; the look and line follow.
+
+## Rope traverse looks awful (Matt, 2026-10-28 ~23:55 ET; screenshot reference/prop-sheets/qa-notes/rope-traverse-2026-10-28.png)
+
+- Pokey hangs in one stiff pose under a rope drawn as a dashed yellow line. Fix tomorrow: Matt's Gemini hand-over-hand sheet (prompt given:
+  8 poses, 2 rows) → a cycle while moving, a sway while still; the rope drawn as a painted rope (W2 rope texture) with a little sag. Not HF:
+  Pokey drifts off model there and the last HF money is on the creatures.
+
+## Cost mode (Matt, 2026-10-28 ~22:45 ET): one builder per world, cheaper effort for routine work, tests once at the end and one gate
+per merge batch, QA once per world; never skip a rule (LEAD-PLAYBOOK §7).
+
+## Update 2026-10-28 ~21:20 ET
+
+- LIVE: PR #45 vine hotfix (self-swinging vines; deployed, APK built). Test link v225 = ccr with the vines.
+- W4 round 6 (catch ledges, Matt's earlier call; climb rocks) merged in ccr, gate running → test link. W4 round 7 (QA C5/C6/D5) sent.
+- QA batch 2026-10-29 assigned: qa-fix-w123 (3-1 water gap BLOCKER, 2-2 ponds/flags, 1-7, 2-6, 3-3), qa-fix-dot (heart tip at full hp,
+  misfiring/long lines, mid-stage sheet loads), qa-fix-meeca (room nudges, room 2 upright, pick-up teaching, carving ring, counter label).
+- World 6 hook-up: gen2-w6 session on gen2-w6-hook. gen2 core DONE (f443b11).
+- Art: gallery published; Gemini prompt page https://claude.ai/artifact/59Dv4xofbzSP7U5mz4CDyW (17 prop sheets + 3 characters). Matt's
+  first 10 sheets in reference/prop-sheets/gemini-batch-2026-10-28/ (redo asked: W7 plates, Reaver walk). Art helper cutting them in.
+
+## Live and test link (2026-10-28 ~20:30 ET)
+
+- LIVE: PR #43 (polish, W1/W2/W4 round 2, gen2 core, Dot fix) and PR #44 (Meeca's trails rebuilt; Matt tested and approved, and
+  approved her line "Too far to jump. The high way, then."). Both deployed, APK built.
+- Test link v224 (ccr): + W3 round 2, W4 round 3, 5-7/5-9 on gen2 (gen2-hook 5c651ee; 5-9 Easy goal 5; flags <= 4,500 px).
+  Open: 5-7/5-9 look alike by era's 20 s rule (every W5 stage does: same few moves), so it goes to a World 5 variety pass; W5 band below W4.
+- Vine HOTFIX: Matt approved the v2 videos (period 2.85/3.3 s, amp <= 0.45 rad, no overlap, out of step, every jump >= 167/300 ms;
+  root cause: a neighbour vine took over the swing). vine-fix 7d09039, final suite in progress → small PR → main.
+- Art: Matt "Love it all, use as much as possible". Gallery published (https://claude.ai/artifact/6huUggQRkCkBs3K4Bf47o5). Art helper
+  a01f960681f8dcc2a: ~$5 re-runs (Monarch fly/hover, Flicker lead/dart, Reaver walk), then cut-in on art-cutin. Matt will make in Gemini:
+  side-on props (W10 stair, W7 block, W9 slab, W8 liana), collars-off Queen and General, Reaver walk pose sheet.
+- World 4 round 4 (climb rocks, Matt: "harder, still safe"; bands.ts timing term) held off the test link; round 5 running.
 
 ## Release PR #43 (opened 2026-10-28 ~18:45 ET, Matt: "everything that's in the merge right now can go through, I've tested it")
 

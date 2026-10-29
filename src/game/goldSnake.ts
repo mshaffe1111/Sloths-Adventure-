@@ -308,3 +308,10 @@ function drawPainted(ctx: CanvasRenderingContext2D, enemy: Enemy, r: Rig, mode: 
   }
   ctx.restore();
 }
+
+/** the sheets this sprite draws from (sheetWarm.ts spriteSheets: asked for before the stage starts, not when it first comes on screen) */
+export const GOLDSNAKE_SHEETS: readonly string[] = [new URL('../assets/enemies/goldsnake-head.webp', import.meta.url).href, new URL('../assets/enemies/goldsnake-sleep.webp', import.meta.url).href, new URL('../assets/enemies/goldsnake-wake.webp', import.meta.url).href];
+/** start loading them now (the stage preload and the stage start; QA's mid-stage 'blank wait' lines, 2026-10-29) */
+export function warmGoldsnakeSprite(): void {
+  if (goldSnakeEnabled()) load();
+}

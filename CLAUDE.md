@@ -15,6 +15,7 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
 - **Safe-keeping pushes (Matt, 2026-10-28):** push the work branch whenever it holds work worth keeping (the container is temporary); that is not a release. A release (PR, merge, live site) still waits for Matt's "push".
 - **Test link**: after every round of changes, rebuild and republish Matt's test link in place (`python3 tools/testlink/build.py`, then the Artifact tool; HANDOFF §6).
 - **New replaces old (Matt, 2026-10-26)**: once something new is tested and passes QA, it replaces the old code outright in the next release. No on/off switches; the old path is deleted. Nothing untested or half-finished goes to `main`.
+- **Polish (Matt, 2026-10-29)**: anything that changes a major part of the look, above all anything that hurts Pokey (water, pits, thorns), is painted art (Gemini sheets or Hugging Face), with a Gemini prompt for Matt first. Small code-drawn touches (a firefly's glow, a sparkle, a minor tweak) are fine (`reference/STAGE-RULES.md` §4).
 - **Show first**: show big screen changes as screenshots, a mock-up or a preview video before building them in.
 - **Talking to Matt**: ask him one multiple-choice question at a time. Explain in plain spoken terms, give honest pushback, no apologies.
 - **Phone game**:

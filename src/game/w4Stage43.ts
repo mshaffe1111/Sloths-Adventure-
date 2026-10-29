@@ -41,6 +41,11 @@ import { W4Roll } from './w4Sections.ts';
 // (tread 130 to 220, 2026-10-28: on a 130 px deep step the double jump up the next one had to be pressed within 67-133 ms on Normal and
 // 100 ms on Easy, the first-timer bot; under the fair floors of 167 / 300 ms, STAGE-RULES §1b. The cave ledge stays wider than a step)
 export const WET = { rise: 130, tread: 220, margin: 110 } as const;
+/**
+ * Dot, as the first fall dries (w4Play dryTip, in place of its plain "that stopped the water"): its steps are each a double jump up (a
+ * single jump rises about 108). Said when he got to the steps, the tip came after two or three tries (QA 2026-10-29)
+ */
+export const DRY_STEPS = 'Dry now! These steps are tall. Jump twice!'; // (Matt approved, 2026-10-28)
 /** the cave ledge behind a surge's water: wider than any wet step, room to wait in */
 const CAVE_W = WET.tread + 100;
 /** the pushable boulder */
@@ -86,6 +91,8 @@ export function buildWaterfallSteps(
   const hints: StageHint[] = [];
   const beats: Array<[number, number, string]> = [];
   const falls: Waterfall[] = [];
+  /** the tree fall's tree (w4Play fallTrees) */
+  const fallTrees: Array<{ fall: number; x: number }> = [];
   const pools: Array<Pool & { art?: { cx: number; b: number; w: number } }> = [];
   const monkeys: Array<Capuchin & { petalId?: number }> = [];
   const decor: W4Decor[] = [];
@@ -175,6 +182,15 @@ export function buildWaterfallSteps(
     y -= Math.round(h);
     trunk(tX, y0, y);
     for (let i = 0; i < 3; i++) flower(tX, y0 - 80 - ((h - 140) * i) / 2, 'hibiscus');
+    // (round 4, Matt 2026-10-28 "Harder, still safe": once Dot has taught the rocks, every tree has one coming down past its trunk
+    // from the cliff above, grit trickling first; a hit knocks him off the trunk, the climb again, never a life)
+    if (rocksSaid) {
+      const rk: RockDrop = { x: Math.round(tX), top: Math.round(y - 260), land: Math.round(y0), every: Math.round(R.r(5.8, 6.6) * 10) / 10, warn: ROCK_WARN, offset: Math.round(R.r(0, 5) * 10) / 10, air: true };
+      if (rockFits(rk)) {
+        rocks.push(rk);
+        expert += 1.2;
+      }
+    }
     run(R.r(180, 220));
     expert += (x - x0) / RUN + h / CLIMB + 1;
   }
@@ -194,11 +210,12 @@ export function buildWaterfallSteps(
     expert += 1.6;
   }
   /** a terrace and a dry stair, or a tree up a tall cliff, at random (with `rock`, the terrace may have a falling rock) */
+  // (dry stairs at most 94 up, round 7: a 100 px step was one the kid bot made 83% of the time on Easy)
   function terrace(rock = false) {
     if (R.chance(0.5)) {
       if (rock && R.chance(0.6)) rockRest(R.r(400, 460));
       else rest(R.r(180, 240));
-      stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+      stairs(R.i(2, 3), R.r(86, 94), R.r(190, 240));
     } else {
       treeUp(R.r(300, 360));
     }
@@ -236,7 +253,10 @@ export function buildWaterfallSteps(
     if (kind === 'tree') {
       run(R.r(240, 280));
       treeX = r(x + 40);
-      c0 = r(treeX + R.r(400, 440));
+      // (the tree 340-360 px from the fall, closer than the others: at the fall's foot, held upright, the view turns to show it too,
+      // w4Play fallTrees; the boulder's push is shorter to match)
+      c0 = r(treeX + R.r(340, 360));
+      fallTrees.push({ fall: fid, x: treeX });
       trunk(treeX, y0, shelfY);
       for (let i = 0; i < 4; i++) flower(treeX, y0 - 80 - ((y0 - shelfY - 160) * i) / 3, 'hibiscus');
       hint(x0 + 40, 'The water pushes you back down! Climb the tree, and stop it at the top', 'The water pushes you back down! Climb the tree, and stop it at the top', 'The water pushes you back down! Climb the tree, and stop it at the top');
@@ -319,7 +339,7 @@ export function buildWaterfallSteps(
     }
     // the shelf, its channel and the boulder
     const top = shelf(treeX - 40, c0, shelfY);
-    const bX = r(c0 - BOULDER.w - R.r(190, 240));
+    const bX = r(c0 - BOULDER.w - (kind === 'tree' ? R.r(160, 180) : R.r(190, 240)));
     const boulder: Platform = {
       id: pid++, x: bX, y: shelfY - BOULDER.h, width: BOULDER.w, height: BOULDER.h, type: 'solid', style: 'moss_stone', art: 'boulder',
       push: { min: treeX + 60, max: c0 },
@@ -566,11 +586,12 @@ export function buildWaterfallSteps(
   const theme = roll.theme('finish', ['trees', 'surges', 'rocks'] as const);
   const sig = () => {
     if (theme === 'trees') treeUp(R.r(330, 380));
-    // (the surges' own piece is the finish's: a surge after every part ran the stage a minute long and out of its taught order)
-    else if (theme === 'surges') stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+    // (the surges' own piece is the finish's: a surge after every part ran the stage a minute long and out of its taught order; a
+    // rock terrace instead, round 3, World 4 sitting above World 3)
+    else if (theme === 'surges') rockRest(R.r(420, 480));
     else {
       rockRest(R.r(420, 480));
-      stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+      stairs(R.i(2, 3), R.r(86, 94), R.r(190, 240));
     }
     breath();
     flag();
@@ -641,7 +662,7 @@ export function buildWaterfallSteps(
         breath();
       } else if (theme === 'rocks' && n % 2 === 0) {
         rockRest(R.r(420, 480));
-        stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+        stairs(R.i(2, 3), R.r(86, 94), R.r(190, 240));
       } else terrace(true);
       n++;
       if (n % 3 === 0) flag();
@@ -695,7 +716,7 @@ export function buildWaterfallSteps(
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },
     proto: {
       hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups,
-      w4: { falls, pools, monkeys, decor, rocks, rockTip: ROCK_TIP },
+      w4: { falls, pools, monkeys, decor, rocks, rockTip: ROCK_TIP, dryTip: DRY_STEPS, ...(fallTrees.length ? { fallTrees } : {}) },
     },
     falls43: info,
     tides43: tides,

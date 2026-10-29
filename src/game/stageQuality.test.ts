@@ -9,11 +9,18 @@ import { buildStage, generateStage, setLayoutVariant } from './stageGenerator.ts
 import type { GeneratedStage } from './stageGenerator.ts';
 import { checkLanes, validateStage } from './levelCheck.ts';
 import { measureStage } from './stageMetrics.ts';
+import { isGen2Stage } from './gen2/game.ts';
+import { gen2Model } from './gen2/pipeline.ts';
 import { fastFloor, FLOOR_FAST, FLOOR_TYPICAL, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from './stageTime.ts';
 
 const levels = generateAllLevels().filter((l) => l.objectiveType !== 'boss_lair');
 const horizontal = levels.filter((l) => l.objectiveType !== 'ascent');
 const ascents = levels.filter((l) => l.objectiveType === 'ascent');
+/**
+ * the old generator's stages (its forks, corridors, flag spacing and platform styles): the new generator's (gen2/game.ts: 5-7, 5-9, World 6)
+ * are built from sections instead, and held to STAGE-RULES by src/game/gen2's tests and the inspector
+ */
+const oldGen = horizontal.filter((l) => !isGen2Stage(l));
 
 /** a fixed spread of layout variants (null is the designed layout) */
 const VARIANTS = [null, 371001, 664213];
@@ -41,7 +48,8 @@ test('every ordinary stage takes the typical player at least 125 s and the quick
 
 test('stages grow from about two and a quarter minutes in World 1 to about four in World 10, and none runs past five', () => {
   const med = (w: number) => {
-    const xs = levels.filter((l) => l.worldIndex === w).map((l) => modelStage(stage(l, null), MODEL_TYPICAL).total).sort((a, b) => a - b);
+    // (each generator's own time model: a gen2 stage's lianas cost a self-swinging swing's time, gen2Model, as its length loop reads it)
+    const xs = levels.filter((l) => l.worldIndex === w).map((l) => (isGen2Stage(l) ? gen2Model(stage(l, null), MODEL_TYPICAL) : modelStage(stage(l, null), MODEL_TYPICAL).total)).sort((a, b) => a - b);
     return xs[xs.length >> 1];
   };
   const m1 = med(1);
@@ -76,7 +84,7 @@ test('ascents take at least two minutes and ten seconds from World 1 on, and eve
 // ---- two-lane forks ------------------------------------------------------------------------------------------------------------------
 
 test('every ordinary stage has one to three forks, apart from each other, and not in the opening or the final approach', () => {
-  for (const l of horizontal) {
+  for (const l of oldGen) {
     for (const v of VARIANTS) {
       const s = stage(l, v);
       const lanes = s.lanes ?? [];
@@ -156,7 +164,8 @@ test('skills are respected on the lanes: no swing before the swing is taught, no
 
 test('every stage shows nine kinds of piece at least, never the same kind twice in a row, and no kind over a quarter of the length', () => {
   const bad: string[] = [];
-  for (const l of horizontal) {
+  // (the old generator's platform styles: a gen2 stage's pieces are its sections', held by src/game/gen2's tests)
+  for (const l of oldGen) {
     for (const v of VARIANTS) {
       const m = measureStage(stage(l, v));
       if (m.distinctKinds < 9) bad.push(`${l.id}@${v}: ${m.distinctKinds} kinds`);
@@ -168,7 +177,7 @@ test('every stage shows nine kinds of piece at least, never the same kind twice 
 });
 
 test('fight stages are not flat yards: plain ground is under 45% of them, with relief, ledges and tiers', () => {
-  const rows = horizontal.filter((l) => l.objectiveType === 'purge' || l.objectiveType === 'gauntlet');
+  const rows = oldGen.filter((l) => l.objectiveType === 'purge' || l.objectiveType === 'gauntlet');
   let over = 0;
   for (const l of rows) for (const v of VARIANTS) if (measureStage(stage(l, v)).plainShare >= 0.45) over++;
   assert.ok(over <= Math.ceil(rows.length * VARIANTS.length * 0.1), `${over} fight stages are at least 45% plain ground`);
@@ -176,7 +185,7 @@ test('fight stages are not flat yards: plain ground is under 45% of them, with r
 
 test('no long empty corridors: the longest stretch with nothing in the way stays under 2400 px (3200 at the very most)', () => {
   const free: number[] = [];
-  for (const l of horizontal) for (const v of VARIANTS) free.push(measureStage(stage(l, v)).freeInterior);
+  for (const l of oldGen) for (const v of VARIANTS) free.push(measureStage(stage(l, v)).freeInterior);
   free.sort((a, b) => a - b);
   assert.ok(free[Math.floor(free.length * 0.9)] <= 2400, `p90 ${free[Math.floor(free.length * 0.9)].toFixed(0)}`);
   assert.ok(free[free.length - 1] <= 3200, `max ${free[free.length - 1].toFixed(0)}`);
@@ -197,7 +206,7 @@ test('animals stand clear of take-offs and landings; narrow landings are rare an
 
 test('checkpoints stand 900 to 1900 px apart (the first at least 700 px from the start)', () => {
   const gaps: number[] = [];
-  for (const l of horizontal) {
+  for (const l of oldGen) {
     const s = stage(l, null);
     const m = measureStage(s);
     assert.ok(m.firstFlag >= 700, `${l.id}: the first flag is ${m.firstFlag.toFixed(0)} px from the start`);
@@ -210,7 +219,7 @@ test('checkpoints stand 900 to 1900 px apart (the first at least 700 px from the
 });
 
 test('platforms come in at least four styles per stage and no style is over 40% of the thin platforms', () => {
-  for (const l of horizontal) {
+  for (const l of oldGen) {
     const m = measureStage(stage(l, null));
     assert.ok(m.styleDistinct >= 4, `${l.id}: ${m.styleDistinct} styles`);
     assert.ok(m.maxStyleShare <= 0.4 + 1e-9, `${l.id}: one style is ${(m.maxStyleShare * 100).toFixed(0)}%`);

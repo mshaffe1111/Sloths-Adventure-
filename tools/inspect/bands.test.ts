@@ -88,3 +88,16 @@ test('chart: one column per world, a dot per stage and setting, out-of-band stag
   assert.equal((svg.match(/<circle cx="[\d.]+" cy="[\d.]+" r="4/g) ?? []).length, 8);
   assert.match(svg, />2-8<\/text>/);
 });
+
+test('score: timing pressure (round 4, 2026-10-28) makes a safe but demanding stage score harder, and counts only when measured', () => {
+  const safe = { livesPerMin: 0, jumpRates: [1], peakStress: 1, minWindowMs: 400, deadShare: 0.2, time: 180 };
+  const calm = stageScore(input({ ...safe, hazardsPerMin: 1, tightShare: 0, restartsPerMin: 0 })).score;
+  for (const more of [{ hazardsPerMin: 10 }, { tightShare: 0.8 }, { restartsPerMin: 2 }]) {
+    const s = stageScore(input({ ...safe, hazardsPerMin: 1, tightShare: 0, restartsPerMin: 0, ...more })).score;
+    assert.ok(s > calm, `${JSON.stringify(more)}: ${s} > ${calm}`);
+  }
+  // all three at their top read as the top of the part; none measured leaves the part out
+  assert.equal(parts(input({ hazardsPerMin: 24, tightShare: 1, restartsPerMin: 6 })).pressure, 1);
+  assert.ok(!('pressure' in parts(input())));
+  assert.ok(!('pressure' in parts(input({ hazardsPerMin: null, tightShare: null, restartsPerMin: null }))));
+});

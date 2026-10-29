@@ -3,8 +3,11 @@ import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage, buildStage } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
+import { isGen2Stage } from './gen2/game.ts';
 
-const levels = generateAllLevels().filter((l) => l.objectiveType !== 'boss_lair' && l.objectiveType !== 'ascent' && !l.secret);
+// (the recipes are the old generator's: the new generator's stages, gen2/game.ts, are built from sections on a mission graph instead,
+// proven by src/game/gen2's tests)
+const levels = generateAllLevels().filter((l) => l.objectiveType !== 'boss_lair' && l.objectiveType !== 'ascent' && !l.secret && !isGen2Stage(l));
 
 test('every horizontal stage is built around a core idea', () => {
   for (const l of levels) {

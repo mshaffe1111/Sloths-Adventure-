@@ -4,6 +4,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { buildStage, generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
+import { isGen2Stage } from './gen2/game.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 
 const levels = generateAllLevels();
@@ -17,7 +18,11 @@ test('every shipped level passes the reachability validator', () => {
 });
 
 test('the seed table is complete and not stale', () => {
-  for (const l of levels) assert.notEqual(LEVEL_ATTEMPTS[l.id], undefined, `missing seed for ${l.id}`);
+  // (the new generator's stages ship their own curated rolls, gen2/seeds.ts: the old table has no entry for them)
+  for (const l of levels) {
+    if (isGen2Stage(l)) assert.equal(LEVEL_ATTEMPTS[l.id], undefined, `${l.id} is built by gen2: no old seed`);
+    else assert.notEqual(LEVEL_ATTEMPTS[l.id], undefined, `missing seed for ${l.id}`);
+  }
 });
 
 test('generation is deterministic', () => {
@@ -50,9 +55,18 @@ test('every level has a flag every ~1500px (never more than 2300 apart) and a li
     const s = generateStage(l);
     const cps = s.checkpoints ?? [];
     let prev = 0;
-    for (const c of cps) { assert.ok(c.x - prev < 2300, `${l.id} flag gap ${c.x - prev}`); prev = c.x; }
-    assert.ok(s.exitTotemX - prev < 2000, `${l.id} last flag too far from goal`);
-    assert.ok(s.waterY !== undefined && s.waterY > s.spawnY, `${l.id} has water below the spawn`);
+    // (the old generator's spacing; a gen2 stage lays its flags by the clock, at its rests and every 35 s, as far apart as the
+    // hand-built stages have them: gen2/game.test.ts)
+    if (!isGen2Stage(l)) {
+      for (const c of cps) { assert.ok(c.x - prev < 2300, `${l.id} flag gap ${c.x - prev}`); prev = c.x; }
+      assert.ok(s.exitTotemX - prev < 2000, `${l.id} last flag too far from goal`);
+    }
+    // (a gen2 stage of a world whose pits are soft has no water but its sections' own creeks (World 6's water gaps): a fall lands in a
+    // mossy pit with a step out, gen2/DESIGN.md B1 and B11)
+    const g2 = (s as { gen2?: { budget: { pit: string }; falls?: Array<{ kind: string }> } }).gen2;
+    const soft = isGen2Stage(l) && g2?.budget.pit === 'soft' && !(g2.falls ?? []).some((f) => f.kind === 'water');
+    if (soft) assert.equal(s.waterY, undefined, `${l.id}: soft pits, no water`);
+    else assert.ok(s.waterY !== undefined && s.waterY > s.spawnY, `${l.id} has water below the spawn`);
   }
 });
 
@@ -138,7 +152,8 @@ test('random layouts are not stuck in "safe mode": vine-swing stages really have
   for (const l of vineLevels.slice(0, 12)) {
     setLayoutVariant(777);
     const stage = generateStage(l);
-    if ((stage.meta?.chunks ?? []).some((c) => c.startsWith('swing'))) withSwing++;
+    // (the old generator's swing chunks, or a gen2 stage's lianas: World 6's swing stages)
+    if ((stage.meta?.chunks ?? []).some((c) => c.startsWith('swing')) || (isGen2Stage(l) && stage.vines.some((v) => v.vineType === 'swing_liana'))) withSwing++;
   }
   setLayoutVariant(null);
   assert.equal(withSwing, Math.min(12, vineLevels.length), 'a Vine Swing stage came out without a single swing');

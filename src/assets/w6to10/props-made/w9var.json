@@ -1,0 +1,68 @@
+{
+ "sheet": "w9var.webp",
+ "size": {
+  "w": 2048,
+  "h": 715
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "bank-b": "w9var-s62-5",
+  "snapL-b": "w9var-s62-5",
+  "stump-b": "w9var-s62-5",
+  "perch-b": "w9var-s62-5",
+  "buttress-b": "w9var-s62-5",
+  "fill-b": "w9var-s62-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "bank-b": {
+   "x": 0,
+   "y": 0,
+   "w": 440,
+   "h": 206,
+   "ax": 220.5,
+   "ay": 206
+  },
+  "snapL-b": {
+   "x": 444,
+   "y": 0,
+   "w": 433,
+   "h": 195,
+   "ax": 295.0,
+   "ay": 195
+  },
+  "stump-b": {
+   "x": 881,
+   "y": 0,
+   "w": 441,
+   "h": 257,
+   "ax": 222.0,
+   "ay": 257
+  },
+  "perch-b": {
+   "x": 1326,
+   "y": 0,
+   "w": 336,
+   "h": 425,
+   "ax": 168.0,
+   "ay": 425
+  },
+  "buttress-b": {
+   "x": 0,
+   "y": 429,
+   "w": 437,
+   "h": 269,
+   "ax": 212.5,
+   "ay": 269
+  },
+  "fill-b": {
+   "x": 441,
+   "y": 429,
+   "w": 442,
+   "h": 286,
+   "ax": 221.5,
+   "ay": 286
+  }
+ }
+}

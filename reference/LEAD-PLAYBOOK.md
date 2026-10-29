@@ -95,6 +95,17 @@ Make the notes do the thinking: a brief points at the exact files, rules and com
 spends its tokens on the job, not on finding its way around. When a helper had to work something out that the next one will need,
 add it to the notes.
 
+**Lowest cost, not sloppy (Matt, 2026-10-28: "keep this down to the cheapest cost now that we have things set up... I don't want it to
+get sloppy"):**
+- **One builder per world** (gen2 worlds 7-10: one helper does the sections, rooms and hook-up, following DESIGN.md B12). No parallel
+  builders on the same world; a core-pipeline change goes to that same builder unless it blocks other work.
+- **Effort by job:** medium for writing a world's sections and rooms from the B12 checklist, fixes inside one stage, curation; high only
+  for a new mechanic the engine or gen2 doesn't have yet, engine/physics changes, and the lead's reviews; low for cutting art, publishing,
+  running checks, status notes.
+- **Testing, minimal but complete:** while working, a builder runs only the tests for what it touched plus `--rolls 50`; the full suite,
+  200 rolls and the first-timer run ONCE, at the end, before its report. The lead runs the full gate once per merge batch (merge
+  everything that's ready, then one gate), not once per branch. QA tests once per world (or per release batch), not after every change.
+  Never skip the end checks or a rule: cheaper means fewer repeats, not fewer rules.
 - No duplicate work (§3.1). Reuse a running helper instead of a new one.
 - Check one roll only for a quick look; the full checks only at §4.
 - Don't re-read big files that are already summarised in STATUS.md or the rulebook.

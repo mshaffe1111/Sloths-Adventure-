@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ALL_DOT_LINES, dotLine, gestureMove, swapLine, targetTopic } from './dotLines.ts';
+import { ALL_DOT_LINES, dotLine, engineGuideLine, gestureMove, swapLine, targetTopic } from './dotLines.ts';
+import { CALM, GuideQueue, SAME_TIP, wordCount } from './dotGuide.ts';
 import { goalLine } from './stagePlan.ts';
 import { HURT_DELAY_MS, START_AFTER_MS, WAYSIDE, dueLine } from './wayside.ts';
 import { lessonDotLine } from './lessons.ts';
@@ -77,4 +78,49 @@ test('the move a tip waits for comes from its gesture and what it points at', ()
   assert.equal(targetTopic('pokey'), 'controls');
   assert.ok(dotLine('lesson.swing.grab'));
   assert.ok(lessonDotLine('gap', 'screen'));
+});
+
+test("Dot's in-play lines keep under the QA rule's 10 words where QA found them over (2026-10-29: 4-3's molting line, the tough lesson, 3-2's fern)", () => {
+  for (const id of ['way.4-3', 'lesson.tough', 'hint.3-2.fern']) {
+    const t = dotLine(id)?.text;
+    assert.ok(t && wordCount(t) <= 10, `${id}: ${t}`);
+  }
+  // (the joke stays: a real season)
+  assert.match(dotLine('way.4-3')!.text!, /molting season.*real season/i);
+});
+
+test("every line paired as saying the same thing (SAME_TIP) is a line of the review, and the pairs name each other", () => {
+  const ids = new Set(ALL_DOT_LINES.map((l) => l.id));
+  for (const [k, others] of SAME_TIP) {
+    assert.ok(ids.has(k.replace(/^engine:/, '')), k);
+    for (const o of others) assert.ok(SAME_TIP.get(o)?.includes(k), `${o} does not name ${k} back`);
+  }
+});
+
+test("4-3 Easy: the fall's tip is not said 10 s after the stage hint said the same (QA 2026-10-29), and still comes without the hint", () => {
+  const hint = engineGuideLine('The water pushes you back down! Climb the tree, and stop it at the top', '4-3')!;
+  const fall = engineGuideLine('The water pushes you back. Can you stop it at the top?', '4-3')!;
+  assert.equal(hint.key, 'engine:hint.4-3.push');
+  assert.equal(fall.key, 'engine:w4.fall');
+  const env = { danger: false, moveCount: () => 0 };
+  const said = (q: GuideQueue, from: number, to: number) => {
+    const out = new Set<string>();
+    for (let t = from; t <= to; t += 100) {
+      const s = q.tick(t, env);
+      if (s) out.add(s.line.key);
+    }
+    return out;
+  };
+  const q = new GuideQueue(true);
+  q.push(hint, 20000);
+  assert.ok(said(q, 20000, 29000).has(hint.key));
+  q.push(fall, 30000);
+  assert.ok(!said(q, 30000, 60000).has(fall.key), "the fall's tip repeats the hint");
+  // long after the hint (past CALM.nearMs), or with no hint at all: the fall's tip is said
+  const late = 20000 + CALM.nearMs + 1000;
+  q.push(fall, late);
+  assert.ok(said(q, late, late + 20000).has(fall.key));
+  const q2 = new GuideQueue(true);
+  q2.push(fall, 20000);
+  assert.ok(said(q2, 20000, 30000).has(fall.key));
 });

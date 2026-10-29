@@ -1,0 +1,242 @@
+{
+ "w6d": {
+  "key": "magenta",
+  "words": "a grey misty mangrove swamp, pale grey-green mangrove roots, weathered wood, dark mud, grey hanging moss and reeds",
+  "cells": [
+   "root-arch",
+   "root-den",
+   "root-hide",
+   "reed-hide",
+   "moss-log",
+   "log"
+  ]
+ },
+ "w6c": {
+  "key": "magenta",
+  "words": "a grey misty mangrove swamp, muted grey-green, weathered wood, dark mud and grey hanging moss",
+  "cells": [
+   "cattails",
+   "moss-curtain",
+   "lantern-flower",
+   "canoe",
+   "mooring-post",
+   "glow-mushrooms"
+  ]
+ },
+ "w7b": {
+  "key": "magenta",
+  "words": "ancient overgrown temple ruins, carved grey stone with worn geometric patterns, moss and roots",
+  "cells": [
+   "bridge-span",
+   "steps",
+   "hanging-platform",
+   "capital",
+   "cracked-ledge",
+   "push-block"
+  ]
+ },
+ "w10a": {
+  "key": "magenta",
+  "words": "a dark mountain fortress at night, wet dark stone and black iron, rain-shiny",
+  "cells": [
+   "lever-up",
+   "lever-down",
+   "plate-up",
+   "plate-down",
+   "portcullis-down",
+   "portcullis-up"
+  ]
+ },
+ "w8b": {
+  "key": "magenta",
+  "words": "a calm deep-blue night high in the treetops, silver moonlight, soft glowing blue fungus",
+  "cells": [
+   "shelf-fungus",
+   "leaf-hammock",
+   "rope-bridge",
+   "bouncy-leaf",
+   "knot-perch",
+   "branch-fork"
+  ]
+ },
+ "w8c": {
+  "key": "magenta",
+  "words": "a calm deep-blue night high in the treetops, silver moonlight, glowing fungus and fireflies, pale cream flowers",
+  "cells": [
+   "night-flowers",
+   "bark-fungus",
+   "firefly-leaf",
+   "bird-nest",
+   "leaf-curtain",
+   "tree-hollow"
+  ]
+ },
+ "w9b": {
+  "key": "magenta",
+  "words": "a scorched black volcanic valley lit by glowing orange lava, black basalt, ash",
+  "cells": [
+   "pumice-raft",
+   "hex-column",
+   "hot-platform",
+   "scorched-bridge",
+   "lava-dome",
+   "vent-rock"
+  ]
+ },
+ "w9c": {
+  "key": "magenta",
+  "words": "a scorched black volcanic valley lit by glowing orange lava, black basalt, ash, young green trees with red pompom flowers",
+  "cells": [
+   "young-tree",
+   "smoke-crack",
+   "obsidian",
+   "charred-log",
+   "ash-fern",
+   "lava-pool"
+  ]
+ },
+ "w10b": {
+  "key": "magenta",
+  "words": "a dark mountain fortress at night, wet dark stone, black iron and heavy wood, rain-shiny",
+  "cells": [
+   "scaffold",
+   "crate",
+   "balcony",
+   "drawbridge",
+   "hanging-iron",
+   "iron-stair"
+  ]
+ },
+ "w5a": {
+  "key": "yellow",
+  "words": "a deep violet-blue orchid forest at dusk, silver spider webs, white and pale pink orchids",
+  "cells": [
+   "orchids",
+   "cocoon",
+   "web",
+   "mossy-log",
+   "ferns",
+   "bromeliad"
+  ]
+ },
+ "w5b": {
+  "key": "yellow",
+  "words": "a deep violet-blue orchid forest at dusk, white spider silk, mossy wood and stone",
+  "cells": [
+   "lever-up",
+   "lever-down",
+   "plate-up",
+   "plate-down",
+   "door-closed",
+   "door-open"
+  ]
+ },
+ "w7c": {
+  "key": "magenta",
+  "words": "ancient overgrown temple ruins, carved grey stone with worn geometric patterns, moss, strangler-fig roots, dry brown leaves",
+  "cells": [
+   "sloth-statue",
+   "urn",
+   "fallen-column",
+   "archway",
+   "stone-brazier",
+   "fig-roots"
+  ]
+ },
+ "w5var": {
+  "key": "yellow",
+  "words": "a deep violet-blue orchid forest at dusk, silver spider webs, mossy earth, a second painted version of each piece (platform variants)",
+  "cells": [
+   "bank-b",
+   "fill-b",
+   "buttress-b",
+   "stump-b",
+   "mossStrip-b",
+   "bankEnd-b"
+  ]
+ },
+ "w6var": {
+  "key": "magenta",
+  "words": "a grey misty mangrove swamp, pale grey-green roots, dark mud, a second painted version of each piece (platform variants)",
+  "cells": [
+   "branch-b",
+   "snapL-b",
+   "stump-b",
+   "bank-b",
+   "buttress-b",
+   "perch-b"
+  ]
+ },
+ "w7var": {
+  "key": "magenta",
+  "words": "ancient overgrown temple ruins, carved grey stone, moss and roots, a second painted version of each piece (platform variants)",
+  "cells": [
+   "branch-b",
+   "bank-b",
+   "perch-b",
+   "buttress-b",
+   "stump-b",
+   "snapL-b"
+  ]
+ },
+ "w8var": {
+  "key": "magenta",
+  "words": "a calm deep-blue night in the treetops, moonlit bark, glowing fungus, a second painted version of each piece (platform variants)",
+  "cells": [
+   "branch-b",
+   "bank-b",
+   "perch-b",
+   "stump-b",
+   "buttress-b",
+   "fill-b"
+  ]
+ },
+ "w9var": {
+  "key": "magenta",
+  "words": "a scorched black volcanic valley, black basalt, glowing lava cracks, red pompom flowers, a second painted version of each piece (platform variants)",
+  "cells": [
+   "bank-b",
+   "snapL-b",
+   "stump-b",
+   "perch-b",
+   "buttress-b",
+   "fill-b"
+  ]
+ },
+ "w10var": {
+  "key": "magenta",
+  "words": "a dark mountain fortress at night, wet stone and black iron, a second painted version of each piece (platform variants)",
+  "cells": [
+   "bank-b",
+   "perch-b",
+   "stump-b",
+   "buttress-b",
+   "branch-b",
+   "fill-b"
+  ]
+ },
+ "w10alt": {
+  "key": "magenta",
+  "words": "a dark mountain fortress at night, wet stone and black iron, a second painted version of each prop",
+  "cells": [
+   "banner-b",
+   "weapon-rack-b",
+   "brazier-b",
+   "cage-b",
+   "crates-b",
+   "spout-b"
+  ]
+ },
+ "w6balt": {
+  "key": "magenta",
+  "words": "a grey misty mangrove swamp, pale grey-green roots, dark mud, a second painted version of each prop",
+  "cells": [
+   "raft-b",
+   "sluice-wheel-b",
+   "gauge-post-b",
+   "seesaw-b",
+   "stone-b",
+   "lily-pads-b"
+  ]
+ }
+}

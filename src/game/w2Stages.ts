@@ -427,6 +427,18 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     pieces.push({ k: 'steps', x0, x1: x });
   }
 
+  /**
+   * the far side of still water: a flat stone at the stones' own height at the foot of the bank, the bank a walk-up step above it (20 px,
+   * under the lip's hoist). QA 2026-10-29 (2-2): the last hop from a pad or a stone was up onto the bank, 20-34 px higher, and a hop
+   * that came up short met the bank's face and slid down it into the water, with no sideways speed; and a kid who ran on off the last
+   * stone fell in. Now the last hop lands level, and the bank is walked up onto.
+   */
+  const LAND_STEP = 80;
+  /** returns where the bank starts */
+  function landStep(at: number): number {
+    P.push({ id: pid++, x: at, y: ISLAND_TOP, width: LAND_STEP, height: 110, type: 'solid', style: 'moss_stone' });
+    return at + LAND_STEP;
+  }
   /** a lily pond: still water crossed on floating pads, a flower above each */
   function lilyPond(pads: number, deepFlowers = true, special?: { at: number; put: (cx: number, top: number) => void }, opts: { safe?: boolean } = {}) {
     const x0p = x;
@@ -435,8 +447,12 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const px0 = x;
     let px = px0;
     for (let i = 0; i < pads; i++) {
-      px += Math.round(one * R.r(0.42, 0.55));
-      const w = Math.round(R.r(84, 104));
+      // (gaps 36-46% of a jump, 2026-10-29: at up to 55%, a hop from a pad's middle came down short of the next one)
+      px += Math.round(one * R.r(0.36, 0.46));
+      // (wide pads, 124-144 px, QA 2026-10-29: on the 84-104 px ones a hop that came down past a pad's middle ran on off its far end, and
+      // he fell in with no sideways speed; 2-2's lily ponds cost Matt 14 lives. On 130 px pads every take-off from 70 px before the edge to
+      // 20 px past it, with any hold, lands and stays)
+      const w = Math.round(R.r(124, 144));
       P.push({
         id: pid++,
         x: px,
@@ -453,12 +469,14 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       }
       px += w;
     }
-    px += Math.round(one * R.r(0.42, 0.55));
+    // (the last hop is up onto the bank, 34 px higher than the pads: a short one, so a hop that comes up short still lands on top
+    // instead of meeting the bank's face and sliding down it into the water)
+    px += Math.round(one * R.r(0.32, 0.4));
     // still water: no logs, so nothing drifts (speed 0)
     rivers.push({ x0: px0, x1: px, surfaceY: SURFACE, dir: 1, speed: 0, ...(opts.safe ? { safe: { backX: px0 - 70, backY: G } } : {}) });
     reeds(px0 - 20, G + 6);
     reeds(px + 20, G + 6);
-    open(px);
+    open(landStep(px));
     run(R.r(145, 160));
     expert += (x - x0p) / RUN + pads * 0.35;
     pieces.push({ k: 'pond', x0: x0p, x1: x });
@@ -781,16 +799,18 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     for (let i = 0; i < n; i++) {
       sx += Math.round(one * R.r(0.36, 0.46));
       // (`wide`: flat-topped stones, room to land a hop that runs on a little: a first-timer overshot the narrow ones into the creek)
-      const w = Math.round(opts.wide ? R.r(104, 124) : R.r(76, 92));
+      // (2026-10-29: wider still, 124-144 px; QA's falls in 2-2 came down on a stone's far end and ran on off it)
+      const w = Math.round(opts.wide ? R.r(124, 144) : R.r(76, 92));
       P.push({ id: pid++, x: sx, y: ISLAND_TOP, width: w, height: 110, type: 'solid', style: 'moss_stone' });
       if (opts.flowers) flower(sx + w / 2, ISLAND_TOP - 60, 'lotus');
       sx += w;
     }
-    sx += Math.round(one * R.r(0.36, 0.44));
+    // (the last hop is up onto the bank, 20 px higher than the stones: a short one, QA 2026-10-29, as the lily ponds')
+    sx += Math.round(one * R.r(0.28, 0.34));
     rivers.push({ x0: sx0, x1: sx, surfaceY: SURFACE, dir: 1, speed: 0, ...(opts.safe ? { safe: { backX: sx0 - 70, backY: G } } : {}) });
     reeds(sx0 - 20, G + 6);
     reeds(sx + 20, G + 6, true);
-    open(sx);
+    open(landStep(sx));
     run(R.r(145, 160));
     expert += (x - x0s) / RUN + n * 0.35;
     pieces.push({ k: 'stones', x0: x0s, x1: x });

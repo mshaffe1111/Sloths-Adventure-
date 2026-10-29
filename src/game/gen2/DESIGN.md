@@ -150,7 +150,8 @@ so Easy rolls every piece and socket from the same numbers as Normal (tested: th
 ### B4. Pass 4: the sockets (`fillSockets`)
 
 A socket is bound to a piece by key, `t` (0..1 along its top, rolled from a range) and `dn` (px above it): D6, so it never floats.
-Order: **flags** (rests, and wherever 35 s passed without one), **Dot's tips** (the first time a stage meets a mechanic not taught
+Order: **flags** (rests, wherever 35 s passed without one, and wherever the next section's end would leave more than
+`FLAG_SPAN.max`, 4500 px, without one; laid first, so the animals' patches keep clear of them: a flag always has its pad), **Dot's tips** (the first time a stage meets a mechanic not taught
 before), **linked pairs** (A7: a receptor finds a `manifest.pairs` entry whose source fits its `link` socket at a distance in
 [minApart, maxApart]; both are filled or neither), **props** (a ShuffleBag per tag set, a CooldownQueue of 2 so a prop is not next
 to itself; `easy: 'drop'` hazards stay empty on Easy), **creatures** (a ShuffleBag of the world's creatures; paid from the section's
@@ -226,7 +227,10 @@ greedily for **quality first, then the most different from those already picked*
 again (the sub-block commit kept every section without sub-blocks laid exactly as before, but changed which sockets pass 4 fills
 for a seed, so Easy and Normal fill alike: seeds curated before it must be curated again). It also rejects a set whose rolls share too many sections with the neighbouring stages' sets (C4 across
 stages). The picks go to `gen2/seeds.ts`: `GEN2_SEEDS['5-7'] = [ ... ]`; at play the layout variant chooses among them
-(`variant % n`): a retry keeps the roll, a fresh entry changes it, every shipped roll is verified.
+(`variant % n`): a retry keeps the roll, a fresh entry changes it, every shipped roll is verified. A stage whose sections include puzzle
+rooms ships them in at least half its set (`--rooms N`; the pipeline rolls rooms rarely, and the greedy pick never chose one). Each roll is
+also compared with the world's other gen2 stages' shipped rolls by era.ts's 20 s window rule (reported; `--apart` drops a roll that
+matches: World 5's stages all share its moves, so nearly every roll matches, hand-built ones too).
 
 ### B9. A world's building blocks (authoring)
 
@@ -252,7 +256,7 @@ with its state frames, 2-3 decor sets per job, and the backdrops through the day
 | D. 5-9 arena + puzzle rooms | `gen2/worlds/w5Arena.ts` (arena gates, the 2 puzzle-room sections from the kit) | A |
 | E. Sub-blocks in layLocal, and Easy's water rule | `pipeline.ts`, `types.ts` (architect): **built** 2026-10-28 | none |
 | F. Curation tool | `tools/gen2/curate.ts`, `gen2/seeds.ts` | era.ts, the inspector |
-| G. Hook-up (lead, last) | one line in `stageGenerator.generateStage` (`if (GEN2[config.id]) return buildGen2Stage(...)`), `easyMode.easyStage` skipping stones and the animal cut for gen2 stages (it already gives hearts and the goal), the old 5-7..5-9 code deleted (new replaces old) | all |
+| G. Hook-up (lead, last) | one line in `stageGenerator.generateStage` (`if (GEN2[config.id]) return buildGen2Stage(...)`), `easyMode.easyStage` skipping stones and the animal cut for gen2 stages (it already gives hearts and the goal), the old 5-7..5-9 code deleted (new replaces old). **Built** 2026-10-28: `gen2/game.ts` (the stages, their kits, the roll a layout number plays), generateStage(config, difficulty) builds them on the difficulty played and runs the shared post-passes (a heart by every second flag, addJumpTrails, addFinds, fixPickups); easyStage leaves out the stones, the animal cut and the longer tell, caps a fight's goal at `quota.check`; layoutMemory never deals the roll just played; proven by `game.test.ts` and `gameReal.test.ts` (5-9's rooms in the real engine) | all |
 
 A+B, D and F run in parallel (cloud builders, branches `gen2-w5`, `gen2-w5-arena`, `gen2-curate`); E is done. Nothing reaches
 `main` until G passes the §5 checks on several rolls.
@@ -260,6 +264,120 @@ A+B, D and F run in parallel (cloud builders, branches `gen2-w5`, `gen2-w5-arena
 **Phase 3: World 6** (the mangrove: swing-heavy, water pits): `gen2/worlds/w6*.ts`; pieces for lianas and roots as sockets/pieces
 (`PieceShape` gains `liana`), water pits (a life on Normal and on Easy, warned first on Easy), tide zones as props. Then Worlds 7-10 the same way, one
 world per helper team.
+
+### B11. World 6's pieces (the Deep Mangrove, 2026-10-28)
+
+**Hanging pieces** (`PieceShape` `'liana'` and `'vine'`; they become the engine's `Vine`s, not platforms; a socket never sits on one,
+and a section's entry and exit are always ledges):
+
+- `{ shape: 'liana', place: { kind: 'swing', after, top?, reach?, amp?, period? } }`: a liana hanging past `after`'s end, its anchor
+  `top` px above that ledge (default `LIANA.top` 360-420), `reach` px out from its end (160-190), down to 30 px under the ledge at
+  most (410 long). It **swings by itself** (Matt, 2026-10-28): `amp` radians either side, one there-and-back every `period` s
+  (`LianaSwing`); by default the engine's swing (`VINE`, which a pipeline test holds to physics.ts `TIMED`): at most 0.45 rad,
+  Normal 2.85 s, Easy 3.3 s, its sweet spot (-0.15..0.9 of the swing, Easy -0.4..1.2). The Vine also carries `swingAmp` /
+  `swingPeriod` for the engine; the player can't pump it.
+  Each placed liana's swing goes to the engine as `proto.gen2.lianas` (`{ vine, amp, period }`, by vine id) and sits on
+  `PlacedSection.vines`. A section with a liana needs the `swing` move (inferred) and is never mirrored.
+- `{ place: { kind: 'land', after: <the liana>, dy?, share? } }`: the perch past it. Its near end is `share` along the band of near
+  ends where letting go lands on it with a **release window** of at least `LIANA.window` (Easy 300 ms, Normal 167 ms), `dy` from
+  the swing's ledge. The window comes from one function, `lianaRelease(vine, swing, perch, difficulty)`, which is physics.ts
+  `pressWindow` itself on that difficulty's swing (the worse of two grips; sweet-spot leap, early and late presses, hops; since
+  d533039: a mirrored copy had drifted from the engine's leap). `lianaBand` also holds the band to what
+  levelCheck links (`swingLandings`, 6 lines), whichever swing model levelCheck has. Under vine-fix's calmer swing levelCheck links a
+  level perch only to about 480-510 px out, just past the glide's 477: a perch that does not fit is moved (raised or lowered 40-160
+  px, nearest first: a raised perch is past the glide sooner, 307 px at 80 px up, and still in reach), then levelled, widened up to
+  400 px at each height; never a wider swing.
+  The gap from the swing's ledge to the perch is a pit (soft, water or void as the stage's falls are), and the perch lies past every
+  jump (`jumpLinkGap`: a jump, a double jump, and the leaf glide once every player has it, 457 px on the flat from World 5): the
+  swing is the way over, not a choice. **A soft pit under a liana climbs back** to the swing's ledge (`backPit`: steps of the
+  narrowest tread against the near wall), never forward: the perch's face stands more than a double jump (plus 40 px) over its
+  floor, and no step of it is within a jump of the perch. (Easy's falls stay soft: a miss costs a climb back and another go.)
+  Only a section where no height or width fits is refused, by name.
+- **Time**: a self-swinging liana costs `lianaSeconds` = (period - window) / 2 (the wait for the swing to come round) + period / 2
+  (the ride). `gen2Model` is stageTime's `modelStage` with each liana (`proto.gen2.lianas` carries `window`, `x0`, `x1` too) costing
+  that in place of walking its gap plus `TIME.swingExtra` (2.5 s, a pumped swing's cost: it ran a 17-liana 6-1 roll at 0.68 of the
+  inspector's quick route). The length loop and `Gen2Meta.modelled` read `gen2Model`; stageTime is unchanged for Worlds 1-5.
+- **Chains**: levelCheck follows ledge -> liana -> ledge, never liana -> liana, so a chain has a perch between every two swings
+  (liana, land, liana, land). levelCheck was not changed.
+- `{ shape: 'vine', place: { kind: 'climb', on, at, h } }`: a climbing vine standing on `on`, `at` along it, `h` px tall (the
+  engine's `tree_climb` vine; needs the `climb` move, inferred). An `over` piece on a vine with `at: 0` starts at the vine (its
+  top `dy` above the vine's top): the ledge a climb leads to. Only the vine reaches a ledge higher than a double jump.
+
+**Water gaps**: a gap rule (`jump`, `double`, `pit`, `land`) with `water: true` is water whatever the world's `pit` (a creek in a soft
+world): nothing is laid under it, the stage gets its water line (`waterY`), `Gen2Meta.falls` calls it `'water'`, and a fall costs a
+life on Normal and on Easy alike (Matt's rule B), warned by Dot's "Careful, water! Flick up and over." (`WATER_WARN`: Normal at the
+first water, Easy again whenever 12 s of walking passed) with a sign's spot in `proto.gen2.waterWarnings`.
+
+**Zones** (`SectionTemplate.zones`, the engine's `zones.ts` Zone, placed by piece key; the stage's are `Gen2Stage.zones`):
+- `{ kind: 'tide', on, low?, warn?, active?, force? }` (6-4 Low Tide): the piece `on` is the mudflat, with a bank on each side (its
+  neighbours must end and start at its ends: `walk` pieces do). The water rises on a timer and sweeps him back; the low spell
+  (`TIDE.low` 5.6-7.0 s) is lengthened to outlast the walk across (`tideCrossTime`), warn >= 0.9 s, active <= 3 s; its beat on the
+  clock is rolled per use. 6-7's raising and lowering the water by hand is not in the engine (a puzzle piece to build).
+- `StageSink.zones`: every zone of the stage, the sections' own first; a world's emitter may push its own (a prop's patch).
+- Nothing stands in a zone (levelCheck): creature sockets and top-up animals inside one stay empty, and a flag inside one is not
+  raised (or is taken down when an emitter's zone comes to cover it).
+
+**Required sections** (`WorldManifest.required`, stage id -> `[{ section, phase? }]`: 6-7's water room, 6-6's dark hollow, every
+World 6 room): every roll of that stage holds each once, placed by the plan, never drawn by weight: at the first slot of the first
+node it fits (of `phase` when given) with the route inside the corridor. A roll whose required section fails its check is rolled
+again (never swapped out), the length loop never trims one, Easy lays Normal's plan so it has them too, and a required section that
+fits no node of the stage is an authoring mistake the build names. Other stages draw the section by weight as usual.
+
+### B12. Building a new world on gen2 (the checklist for Worlds 7-10)
+
+Follow these steps in order. Each one points at World 6, which did all of them, and at the trap World 6 hit there (reference/STAGE-RULES.md §6,
+"World 6 on gen2"). Read STAGE-RULES in full first.
+
+1. **The world's kit** (`worlds/wN.ts`, as `w6.ts`): its `WorldManifest` (the stage list, `pit`, `moves`, creatures with
+   tags and threat, props and their emitters, tips: Dot's lines, under 10 words), the world's look, and `wNFinish` when the stage
+   needs a pass after the build (w6Finish: Dot's first line for each new animal). Start each stage of the world in `cfg` order and
+   give each its archetype.
+2. **Sections** (`worlds/wNGround.ts`, `wNSwing.ts`, as World 6's): about 30 a world (B9). Each is 600 to 1700 px (+370 a liana:
+   `w6Swing.test.ts`), level at its ends, with honest beats and its mechanic taught on first use (`teaches`, a tip socket on its
+   first piece). Traps:
+   - under a liana, either water or a pit that climbs back (B11);
+   - perches lie past the glide and are raised about 80 px;
+   - banks between creeks are 360 px or more;
+   - no long flat without a knee, since Easy drops the animals;
+   - nothing that a flag or an animal must stand in sits inside a zone;
+   - an animal needs a flat long enough to stay 120 px from every hop on and off it (`JUMP_CLEAR`). The pipeline drops it from a shorter
+     one, so a knee flat holds no animal;
+   - a section with a tip on its first piece is never mirrored.
+3. **Rooms** (`worlds/wNRooms.ts`, as `w6Rooms.ts`): each stage's puzzle room goes in `WorldManifest.required` (B11), never by
+   weight, and the stage's sheet list loads the kit pieces (`stageSheets.ts` `GEN2_ROOMS`).
+4. **The game's kit** (`worlds/wNGame.ts`, as `w6Game.ts`): one kit per stage and difficulty, folding in the ground, the swings and
+   the rooms, with `required` set. Decide here which stage takes which sections (`forStage`). Stages with the same archetype or the
+   same moves otherwise read alike and fail `--apart`.
+5. **Hook it into the game** (`game.ts`): a `GEN2_STAGES` entry per stage (`kit(difficulty)`, `kitName`, `finish`; `easyGoal` once
+   measured), the clip sheets of animals in every shipped roll (`stageSheets.ts` `STAGE_ANIMS`), and the water signs if the world
+   has water.
+6. **Tests to copy**, renamed for the world:
+   - `w6.test.ts`: the kit's sections and the inspector on 20 raw rolls, covering quiet, length and variety;
+   - `w6Swing.test.ts` and `w6SwingRoute.test.ts`: section sizes and the quick route swinging every liana;
+   - `w6Rooms.test.ts`: each room plays;
+   - `w6Game.test.ts`, on the shipped rolls as the game plays them: the room once per roll, every liana swung, 2:00 or more, nothing
+     hurting in the first 5 s, each animal and hazard taught first, nothing crumbling, and flags at most `FLAG_SPAN.max` apart;
+   - add the world's stages to `game.test.ts`, which covers the flag span on 30 raw rolls, the sheets, the water signs and the Easy
+     goals.
+7. **Measure while you author**, not after: a scratch loop of `buildGen2Stage` over 20-30 seeds a stage, Normal and Easy, for
+   throws, levelCheck, the longest quiet stretch, dead share, the quick route's time and diversity (as `w6.test.ts` does). Check
+   flags on every raw roll.
+8. **Curate** (B8), one stage at a time, then commit `seeds.ts`:
+   `npx tsx tools/gen2/curate.ts --stages N-1 --rolls 400 --keep 16 --apart [--rooms 8] --json out.json --report out.md`.
+   Any change to sections, the pipeline or the liana model means curating again. Before trusting curation, check that its filters
+   (`failsOf`) cover every rule the full suite holds a stage to (`stageQuality.test.ts`, `levels.test.ts`, `zones.test.ts`). A rule
+   only a test knows ships broken rolls (the animal clearance, STAGE-RULES §6).
+9. **Easy goals**: run the kid first-timer (`tools/inspect/firsttimer.ts`, `FT_KID`) on seeds 1-3 with two trials. Use the
+   second-lowest count as `easyGoal`, so the kid makes it in 5 of 6 runs.
+10. **The checks** (CLAUDE.md), in order:
+    - `npx tsc --noEmit -p .`;
+    - the full test suite, and the gen2 tests too (CLAUDE.md's command doesn't reach `src/game/gen2/`):
+      `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts tools/gen2/*.test.ts`;
+    - `npx tsx tools/inspect/era.ts --worlds N --rolls 200` (shipped variety 0.35 or more);
+    - `npx tsx tools/inspect/inspect.ts --worlds N --firsttimer --seed S` for S = 1, 2, 3;
+    - `npx vite build` (no asset over 4 MiB);
+    - screenshots of every stage upright (390x844) and sideways (844x390).
+    Then add what you learned to STAGE-RULES §6.
 
 ---
 

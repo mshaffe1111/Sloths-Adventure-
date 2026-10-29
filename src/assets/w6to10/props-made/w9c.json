@@ -1,0 +1,68 @@
+{
+ "sheet": "w9c.webp",
+ "size": {
+  "w": 2048,
+  "h": 622
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "young-tree": "w9c-s85-5",
+  "smoke-crack": "w9c-s85-5",
+  "obsidian": "w9c-s75-5",
+  "charred-log": "w9c-s75-17",
+  "ash-fern": "w9c-s85-17",
+  "lava-pool": "w9c-s75-17"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "young-tree": {
+   "x": 0,
+   "y": 0,
+   "w": 281,
+   "h": 462,
+   "ax": 137.5,
+   "ay": 462
+  },
+  "smoke-crack": {
+   "x": 285,
+   "y": 0,
+   "w": 465,
+   "h": 259,
+   "ax": 233.0,
+   "ay": 259
+  },
+  "obsidian": {
+   "x": 754,
+   "y": 0,
+   "w": 237,
+   "h": 260,
+   "ax": 118.5,
+   "ay": 260
+  },
+  "charred-log": {
+   "x": 995,
+   "y": 0,
+   "w": 442,
+   "h": 278,
+   "ax": 334.0,
+   "ay": 278
+  },
+  "ash-fern": {
+   "x": 1441,
+   "y": 0,
+   "w": 400,
+   "h": 299,
+   "ax": 218.0,
+   "ay": 299
+  },
+  "lava-pool": {
+   "x": 0,
+   "y": 466,
+   "w": 456,
+   "h": 156,
+   "ax": 214.5,
+   "ay": 156
+  }
+ }
+}

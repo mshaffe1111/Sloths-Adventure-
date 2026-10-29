@@ -218,6 +218,16 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     y -= r(h);
     trunk(tX, y0, y);
     for (let i = 0; i < 3; i++) flower(tX, y0 - 80 - ((h - 140) * i) / 2, 'hibiscus');
+    // (round 4, Matt 2026-10-28 "Harder, still safe": once Dot has taught the rocks, every tree has one coming down past its trunk
+    // from the cliff above, grit trickling first; a hit knocks him off the trunk, the climb again, never a life)
+    // (and only after the grit is taught, over the drop: these are grit-warned rocks too)
+    if (rocksSaid && info.glides.some((g) => g.rock !== undefined)) {
+      const rk: RockDrop = { x: Math.round(tX), top: Math.round(y - 260), land: Math.round(y0), every: Math.round(R.r(5.4, 6.2) * 10) / 10, warn: 1.6, offset: Math.round(R.r(0, 5) * 10) / 10, air: true };
+      if (rockFits(rk)) {
+        rocks.push(rk);
+        expert += 1.2;
+      }
+    }
     run(R.r(180, 220));
     expert += (x - x0) / RUN + h / CLIMB + 1;
   }
@@ -568,6 +578,14 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     hopRest();
     flag();
   };
+  // (round 5: between the drops, the flavour's own small piece: a boulder fall, or a trunk to climb; the guards keep to the order they
+  // are taught in, so their rolls go straight on)
+  const mid = () => {
+    if (theme === 'falls') { hopRest(); plugFall(R.chance(0.5)); }
+    else if (theme === 'climbs') { hopRest(); mistSeen && R.chance(0.5) ? mistClimb(false) : treeUp(R.r(300, 330)); hopRest(R.r(90, 120)); }
+    // (a hop between the rock and the next drop's run-in: walked straight on, it was four quiet seconds)
+    else { rockRest(R.r(440, 500)); hopRest(R.r(90, 120)); }
+  };
   beat('Develop: Dot and the boulder', () => {
     hopRest();
     hint(x + 60, 'Tied up again! Stand still under the knot, and I will fly up');
@@ -587,8 +605,8 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
       secretKnot();
       flag();
     };
-    if (roll.pick(['plugFirst', 'secretFirst'] as const) === 'plugFirst') { plug(); secret(); }
-    else { secret(); plug(); }
+    if (roll.pick(['plugFirst', 'secretFirst'] as const) === 'plugFirst') { plug(); mid(); secret(); }
+    else { secret(); plug(); mid(); }  // (the falls' piece after the taught one)
     // (not a guard yet: the guards' order of teaching, a pass, a perch, then two together, holds)
     if (theme !== 'guards') sig();
   });
@@ -596,10 +614,12 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     hint(x + 60, 'Too far to jump. Jump, and keep your thumb on the glass to open your leaf', 'Too far to jump. Jump, and hold Jump to open your leaf', 'Too far to jump. Jump, and hold Space to open your leaf');
     glideGap();
     hopRest(R.r(120, 160));
+    mid();
     hint(x + 40, 'Grit trickling down! A rock is coming through. Wait for it to pass, then glide');
     glideGap({ rock: true });
     flag();
     hopRest(R.r(120, 160));
+    mid();
     hint(x + 40, 'Warm air rising out of the drop! Glide into it and it lifts you');
     glideGap({ draft: true, rock: R.chance(0.5) });
     flag();
@@ -618,18 +638,31 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
       guardPair();
       flag();
     };
-    if (roll.pick(['mistFirst', 'pairFirst'] as const) === 'mistFirst') { mist(); pair(); }
-    else { pair(); hopRest(); mist(); }
+    if (roll.pick(['mistFirst', 'pairFirst'] as const) === 'mistFirst') { mist(); mistSeen = true; mid(); pair(); }
+    else { pair(); mid(); hopRest(); mist(); }
     mistSeen = true;
     sig();
   });
-  type Piece49 = 'knot' | 'rocks' | 'plug' | 'climb' | 'glide' | 'pair';
+  type Piece49 = 'knot' | 'rocks' | 'plug' | 'climb' | 'glide' | 'pair' | 'perch';
   const counts: Record<typeof theme, Record<Piece49, number>> = {
-    guards: { knot: 1, rocks: 2, plug: 1, climb: 1, glide: 0, pair: 2 },
-    falls: { knot: 1, rocks: 1, plug: 2, climb: 0, glide: 2, pair: 0 },
-    climbs: { knot: 2, rocks: 0, plug: 1, climb: 2, glide: 1, pair: 0 },
+    // (round 5: each flavour's finish holds its own pieces only, so two rolls of different flavours differ all the way to the top)
+    // (the falls bring their guards on the edge of a drop, the climbs theirs at the top of a climb)
+    guards: { knot: 1, rocks: 2, plug: 0, climb: 0, glide: 0, pair: 2, perch: 0 },
+    falls: { knot: 0, rocks: 0, plug: 2, climb: 0, glide: 1, pair: 0, perch: 2 },
+    climbs: { knot: 1, rocks: 0, plug: 0, climb: 3, glide: 0, pair: 0, perch: 0 },
   };
-  const bag = roll.bag<Piece49>(['knot', 'rocks', 'plug', 'climb', 'glide', 'pair'], (k) => counts[theme][k]);
+  const bag = roll.bag<Piece49>(['knot', 'rocks', 'plug', 'climb', 'glide', 'pair', 'perch'], (k) => counts[theme][k]);
+  // (two climbs, the mist's and a trunk's in either order, and a guard at the top)
+  const climbGuard = () => {
+    const mistNow = R.chance(0.5);
+    if (mistNow) mistClimb(false);
+    else treeUp(R.r(300, 330));
+    hopRest();
+    if (mistNow) treeUp(R.r(300, 330));
+    else mistClimb(false);
+    guardPass(R.chance(0.5) ? 1 : -1, true);
+  };
+  const flavourGuard = () => (theme === 'falls' ? guardPerch() : theme === 'climbs' ? climbGuard() : guardPass(R.chance(0.5) ? 1 : -1, true));
   beat('Finish: to the aerie', () => {
     // the ideas again in new pairs, a flag after each, until a quick player has had about five minutes (stageSeconds('4-9'))
     let n = 0;
@@ -649,20 +682,18 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
         plugs++;
         plugFall(R.chance(0.5));
         rockRest(R.r(480, 560));
-      } else if (k === 'climb') {
-        if (R.chance(0.5)) mistClimb(false);
-        else treeUp(R.r(300, 330));
-        guardPass(R.chance(0.5) ? 1 : -1, true);
-      } else if (k === 'glide') {
+      } else if (k === 'climb') climbGuard();
+      else if (k === 'perch') guardPerch();
+      else if (k === 'glide') {
         glideGap({ rock: R.chance(0.5), draft: R.chance(0.5) });
       } else guardPair();
       hopRest();
       flag();
       n++;
     }
-    // (and always more guards than the goal asks: a flavour light on guards adds them here)
+    // (and always more guards than the goal asks: a flavour light on guards adds them here, its own way)
     while (monkeys.filter((m) => m.job === 'guard').length < GUARD_GOAL_49 + 2) {
-      guardPass(R.chance(0.5) ? 1 : -1, true);
+      flavourGuard();
       hopRest();
       flag();
     }

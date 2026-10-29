@@ -1,0 +1,68 @@
+{
+ "sheet": "w9b.webp",
+ "size": {
+  "w": 2048,
+  "h": 634
+ },
+ "anchor": "middle of the foot",
+ "pairs": [],
+ "takes": {
+  "pumice-raft": "w9b-s85-5",
+  "hex-column": "w9b-s75-5",
+  "hot-platform": "w9b-s75-17",
+  "scorched-bridge": "w9b-s85-17",
+  "lava-dome": "w9b-s85-17",
+  "vent-rock": "w9b-s75-5"
+ },
+ "method": "img2img (Qwen-Image + the style model) from side-on start sheets built from the world kit (propstarts.py)",
+ "frames": {
+  "pumice-raft": {
+   "x": 0,
+   "y": 0,
+   "w": 426,
+   "h": 115,
+   "ax": 216.5,
+   "ay": 115
+  },
+  "hex-column": {
+   "x": 430,
+   "y": 0,
+   "w": 133,
+   "h": 426,
+   "ax": 67.5,
+   "ay": 426
+  },
+  "hot-platform": {
+   "x": 567,
+   "y": 0,
+   "w": 434,
+   "h": 211,
+   "ax": 350.0,
+   "ay": 211
+  },
+  "scorched-bridge": {
+   "x": 1005,
+   "y": 0,
+   "w": 479,
+   "h": 286,
+   "ax": 186.5,
+   "ay": 286
+  },
+  "lava-dome": {
+   "x": 1488,
+   "y": 0,
+   "w": 445,
+   "h": 329,
+   "ax": 203.0,
+   "ay": 329
+  },
+  "vent-rock": {
+   "x": 0,
+   "y": 430,
+   "w": 382,
+   "h": 204,
+   "ax": 170.5,
+   "ay": 204
+  }
+ }
+}

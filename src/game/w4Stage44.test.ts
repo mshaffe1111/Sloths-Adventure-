@@ -81,7 +81,8 @@ test('4-4: every gust lane has its chimes at the gorge edge, over a chain and no
     const st = build(s);
     const winds = (st.zones ?? []).map((z, i) => ({ z, i })).filter(({ z }) => z.kind === 'wind');
     const chimes = st.proto.w4?.chimes ?? [];
-    assert.ok(winds.length >= 7, `seed ${s}: ${winds.length} gust lanes`);
+    // (the two lanes of the Learn, the headwind, the rocks, the headwind over the rocks and the knot in the wind; a windy roll has more)
+    assert.ok(winds.length >= 6, `seed ${s}: ${winds.length} gust lanes`);
     for (const { z, i } of winds) {
       const mine = chimes.filter((c) => c.zone === i);
       assert.ok(mine.length >= 1, `seed ${s}: a gust lane at ${z.x0} without chimes`);
@@ -131,8 +132,8 @@ test('4-4: Dot frees the knotted vine, and it is the only way across its gorge; 
   for (const s of SEEDS) {
     const st = build(s);
     const knots = st.proto.w4?.knots ?? [];
-    // the Develop beat's knot, the two knots in the wind (Twist again) and the secret's; a roll whose finish leans to the knots has more
-    assert.ok(knots.length >= 4, `seed ${s}: ${knots.length} knots`);
+    // the Develop beat's knot, the knot in the wind (Twist again) and the secret's; a roll whose flavour is the knots has more
+    assert.ok(knots.length >= 3, `seed ${s}: ${knots.length} knots`);
     const secret = secretKnot(st);
     assert.ok(secret, `seed ${s}`);
     for (const main of knots.filter((k) => k !== secret)) {
@@ -191,7 +192,11 @@ test('4-4: the secret seed sits on a branch no jump reaches, behind leaves, and 
     assert.ok(k.x0 > v.x && k.x1 - v.x < 130, `seed ${s}: the spot is not beside the vine`);
     assert.ok(st.proto.covers.some((c) => seeds[0].x > c.x && seeds[0].x < c.x + c.w && seeds[0].y > c.y && seeds[0].y < c.y + c.h), `seed ${s}: the seed is not behind leaves`);
     // the floor runs on under it
-    assert.ok(st.platforms.some((p) => p.y === G && p.x < k.x0 && p.x + p.width > ledge.x + ledge.width), `seed ${s}`);
+    // (the floor, or a mossy rock sunk into it, all the way: World 4's rocks break the bank around them, 2026-10-28)
+    const ground = st.platforms.filter((p) => p.y <= G && p.y >= G - 50 && p.x + p.width > k.x0 && p.x < ledge.x + ledge.width).sort((a, b) => a.x - b.x);
+    let to = k.x0;
+    for (const p of ground) if (p.x <= to + 1) to = Math.max(to, p.x + p.width);
+    assert.ok(to >= ledge.x + ledge.width, `seed ${s}`);
   }
 });
 
@@ -223,9 +228,10 @@ test('4-4: the second twist puts Dot\'s knots in the wind and the headwind over 
     const [b0, b1] = st.proto.beats[at];
     const lanes = (st.zones ?? []).map((z, i) => ({ z, i })).filter(({ z }) => z.kind === 'wind');
     const chimes = st.proto.w4?.chimes ?? [];
-    // two knots in the beat, each over a gorge with a gust lane across it, and its chimes behind the knotted vine, clear of his spot
+    // a knot in the beat (two when the roll's flavour is the knots), each over a gorge with a gust lane across it, and its chimes
+    // behind the knotted vine, clear of his spot
     const knots = (st.proto.w4?.knots ?? []).filter((k) => k.x > b0 && k.x < b1);
-    assert.equal(knots.length, 2, `seed ${s}: ${knots.length} knots in the second twist`);
+    assert.ok(knots.length >= 1 && knots.length <= 2, `seed ${s}: ${knots.length} knots in the second twist`);
     for (const k of knots) {
       const v = st.vines.find((q) => q.id === k.releases.id)!;
       const chain = chains(st).find((c) => c.includes(v))!;

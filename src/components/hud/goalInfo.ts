@@ -30,6 +30,11 @@ export interface GoalInfo {
    * and 5-5 upright: the goal count alone gave no sense of how much was left; and 1-9 and 2-5, 2026-10-28)
    */
   far?: boolean;
+  /**
+   * a word on the counter before the count (Meeca's stage: "Warnings 1/5"). QA 2026-10-29: "M. 1/5" had no word for what it counts,
+   * and her first trail mark (not a warning) read as "my mark didn't count"
+   */
+  word?: string;
 }
 
 interface Cfg {
@@ -68,7 +73,7 @@ export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
   if (cfg.id === MEECA_STAGE_ID) {
     // Meeca's stage counts her warnings: a scrap of bark with "M." scratched on it, "1/5" (the approved mock-ups)
     const icon: GoalIcon = { kind: 'drawn', name: 'carving' };
-    return { kind: 'count', line: `This stage: carve ${cfg.targetCount} warnings`, sub: 'for Pokey to find', icon, slotIcon: () => icon, noun: 'warnings' };
+    return { kind: 'count', line: `This stage: carve ${cfg.targetCount} warnings`, sub: 'for Pokey to find', icon, slotIcon: () => icon, noun: 'warnings', word: 'Warnings' };
   }
   if (type === 'boss_lair') {
     const icon: GoalIcon = { kind: 'drawn', name: 'foe' };

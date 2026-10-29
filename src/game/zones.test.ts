@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage } from './stageGenerator.ts';
+import { isGen2Stage } from './gen2/game.ts';
 import { validateStage } from './levelCheck.ts';
 import {
   zoneState, idleTime, windPush, zoneEffect, columnHit, isDamaging, sporeRecipes, windRecipes, zoneRecipes, pieceWidth, ZONE_RAMP, zoneDrag, tideCrossTime,
@@ -76,6 +77,14 @@ test('every ordinary World 3 to 10 stage has its zones, and Worlds 1 and 2 have 
   for (const l of levels) {
     const s = generateStage(l);
     const want = l.worldIndex >= 3 && !['ascent', 'boss_lair'].includes(l.objectiveType) && !l.secret;
+    // (a gen2 stage carries its world's own pieces, not the old generator's zones: World 5's proto.w5, as the hand-built 5-1..5-5 do;
+    // World 6's proto.gen2.w6, with its tide flats and dark roots among the stage's zones)
+    if (want && isGen2Stage(l)) {
+      const p = (s as { proto?: { w5?: unknown; gen2?: { w6?: unknown } } }).proto;
+      if (l.worldIndex === 5) assert.ok(p?.w5, `${l.id}: World 5's pieces`);
+      else assert.ok(p?.gen2?.w6, `${l.id}: World 6's pieces`);
+      continue;
+    }
     if (want) {
       assert.ok((s.zones?.length ?? 0) >= zoneRecipes(l.worldIndex, l.miniIndex).length, `${l.id} is missing its zones`);
       const kind = ({ 3: 'spore', 4: 'wind', 5: 'web', 6: 'tide', 7: 'crumble', 8: 'dark', 9: 'geyser', 10: 'bolt' } as Record<number, string>)[l.worldIndex];

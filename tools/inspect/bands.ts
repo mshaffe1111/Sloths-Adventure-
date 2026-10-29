@@ -28,6 +28,15 @@ export interface BandInput {
   peakStress: number | null;
   minWindowMs: number | null;
   survivalMin: number | null;
+  /**
+   * timing pressure (2026-10-28, round 4 of World 4's pass, Matt: "Harder, still safe"): a stage can ask a lot without costing lives.
+   * Timed hazards and animals met a minute on the route (the inspector's Z and C beats); the share of the first-timer's measured press
+   * windows that are fair but tight (under twice the gate); and restarts a minute (hits taken and back-and-forth loops, a climb lost
+   * without a life). Left out (null or missing) where not measured.
+   */
+  hazardsPerMin?: number | null;
+  tightShare?: number | null;
+  restartsPerMin?: number | null;
 }
 
 /** how much each part counts (weights are spread over the parts that were measured) */
@@ -38,6 +47,7 @@ export const PARTS = {
   window: { w: 0.1, name: 'narrowest input window (first-timer)' },
   busy: { w: 0.1, name: 'little dead time' },
   length: { w: 0.1, name: 'length' },
+  pressure: { w: 0.2, name: 'timing pressure: hazards met, tight-but-fair presses, restarts (first-timer)' },
 } as const;
 export type PartId = keyof typeof PARTS;
 
@@ -58,6 +68,13 @@ export function parts(i: BandInput): Partial<Record<PartId, number>> {
   out.busy = clamp(1 - i.deadShare / 0.5);
   // 2 minutes is the floor (STAGE-RULES §1), 6 minutes long
   out.length = clamp((i.time - 120) / 240);
+  // (twelve hazards or animals a minute, every press tight, or three restarts a minute each read as the top; the mean of what was measured)
+  const press = [
+    i.hazardsPerMin == null ? null : clamp(i.hazardsPerMin / 12),
+    i.tightShare == null ? null : clamp(i.tightShare),
+    i.restartsPerMin == null ? null : clamp(i.restartsPerMin / 3),
+  ].filter((v): v is number => v !== null);
+  if (press.length) out.pressure = press.reduce((a, b) => a + b, 0) / press.length;
   return out;
 }
 
@@ -156,17 +173,26 @@ export function floorFlags(inputs: BandInput[]): BandFlag[] {
 }
 
 /** one stage's first-timer numbers on one setting */
-export function ftNumbers(st: FTStage | undefined): Pick<BandInput, 'livesPerMin' | 'peakStress' | 'minWindowMs' | 'survivalMin'> {
-  if (!st) return { livesPerMin: null, peakStress: null, minWindowMs: null, survivalMin: null };
+export function ftNumbers(st: FTStage | undefined): Pick<BandInput, 'livesPerMin' | 'peakStress' | 'minWindowMs' | 'survivalMin' | 'tightShare' | 'restartsPerMin'> {
+  if (!st) return { livesPerMin: null, peakStress: null, minWindowMs: null, survivalMin: null, tightShare: null, restartsPerMin: null };
   const lives = st.runs.reduce((s, r) => s + r.harms.filter((h) => h.kind === 'life').length, 0);
   const mins = st.runs.reduce((s, r) => s + r.time, 0) / 60;
+  const hits = st.runs.reduce((s, r) => s + r.harms.filter((h) => h.kind === 'hit').length, 0);
+  const loops = st.runs.reduce((s, r) => s + r.loops.reduce((a, l) => a + l.n, 0), 0);
+  const gate = st.gates.window.gate;
+  const ws = st.windows ?? [];
   return {
     livesPerMin: Math.round((lives / Math.max(0.25, mins)) * 100) / 100,
     peakStress: st.gates.stress.peak,
     minWindowMs: st.gates.window.min?.ms ?? null,
     survivalMin: st.gates.survival.min,
+    tightShare: ws.length ? Math.round((ws.filter((w) => w.ms < 2 * gate).length / ws.length) * 100) / 100 : null,
+    restartsPerMin: Math.round(((hits + loops) / Math.max(0.25, mins)) * 100) / 100,
   };
 }
+/** timed hazards and animals met a minute on the inspector's route (its Z and C beats) */
+export const hazardsPerMin = (r: Pick<StageReport, 'beats' | 'time'>): number =>
+  Math.round((r.beats.filter((b) => b.letter === 'Z' || b.letter === 'C').reduce((s, b) => s + b.count, 0) / Math.max(0.5, r.time.inspector / 60)) * 100) / 100;
 
 export interface BandsOutput {
   /** whether the first-timer's numbers went in (without them the score is the inspector's alone) */
@@ -185,8 +211,10 @@ export function computeBands(reports: StageReport[], ft?: FirstTimerPass): Bands
     if (!/^\d+-\d+$/.test(r.id)) continue;
     const f = ft?.stages.find((s) => s.id === r.id);
     const rates = (list: StageReport['jumps']['normal']) => list.filter((j) => j.rate !== null && !j.unflyable).map((j) => j.rate!);
-    inputs.push({ id: r.id, world: r.world, setting: 'normal', time: r.time.inspector, deadShare: r.dead.normal.total / Math.max(1, r.time.inspector), jumpRates: rates(r.jumps.normal), ...ftNumbers(f?.normal) });
-    inputs.push({ id: r.id, world: r.world, setting: 'easy', time: r.dead.easy.time, deadShare: r.dead.easy.total / Math.max(1, r.dead.easy.time), jumpRates: rates(r.jumps.easy), ...ftNumbers(f?.easy) });
+    // (the timing pressure counts only with the first-timer's numbers: without them the score stays the inspector's own parts)
+    const hz = f ? hazardsPerMin(r) : null;
+    inputs.push({ id: r.id, world: r.world, setting: 'normal', time: r.time.inspector, deadShare: r.dead.normal.total / Math.max(1, r.time.inspector), jumpRates: rates(r.jumps.normal), ...ftNumbers(f?.normal), hazardsPerMin: hz });
+    inputs.push({ id: r.id, world: r.world, setting: 'easy', time: r.dead.easy.time, deadShare: r.dead.easy.total / Math.max(1, r.dead.easy.time), jumpRates: rates(r.jumps.easy), ...ftNumbers(f?.easy), hazardsPerMin: hz });
   }
   const scored: Scored[] = inputs.map((i) => ({ id: i.id, world: i.world, setting: i.setting, ...stageScore(i) }));
   const bands = worldBands(scored);

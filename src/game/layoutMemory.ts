@@ -1,6 +1,7 @@
 import type { LevelConfig } from './types.ts';
 import { rollLayoutVariant } from './stageGenerator.ts';
 import { isW1Stage, w1RollDistance } from './w1Sections.ts';
+import { GEN2_STAGES, gen2SeedCount, gen2SeedIndex } from './gen2/game.ts';
 
 /**
  * layoutMemory — a stage keeps its layout until you clear it.
@@ -16,6 +17,9 @@ import { isW1Stage, w1RollDistance } from './w1Sections.ts';
  * versions (w1Sections.ts w1RollDistance, a cheap stand-in for the era tool's action 3-grams: the versions are what make those differ)
  * is rolled again, up to 24 times, and the farthest is kept. So a roll closer than 0.35 to the player's last one never comes back
  * while a farther one can be found, and the version they last played is not picked again.
+ *
+ * The new generator's stages (gen2/game.ts: 5-7, 5-9) do the same with their shipped rolls: the number picks one of the 16 curated
+ * rolls, and a fresh roll after a clear is never the roll just played (another of the 16 is always found within the tries).
  */
 export const layoutKey = (id: string) => `sloth_layout_${id}`;
 
@@ -58,7 +62,7 @@ export function layoutForEntry(
   if (lvl.objectiveType === 'boss_lair' || lvl.secret) return roll();
   const kept = savedLayout(lvl.id, mem);
   if (kept != null) return kept;
-  const prev = isW1Stage(lvl.id) ? lastLayout(lvl.id, mem) : null;
+  const prev = keepsLast(lvl.id) ? lastLayout(lvl.id, mem) : null;
   const fresh = prev != null ? awayFrom(lvl.id, prev, roll) : roll();
   if (fresh != null) {
     try {
@@ -82,14 +86,17 @@ function hasLayoutOverride(): boolean {
 export function forgetLayout(id: string, mem: Mem | null = browserMem()): void {
   try {
     const n = savedLayout(id, mem);
-    if (n != null && isW1Stage(id)) mem?.setItem(layoutKey(id), `p${n}`);
+    if (n != null && keepsLast(id)) mem?.setItem(layoutKey(id), `p${n}`);
     else mem?.removeItem?.(layoutKey(id));
   } catch {
     /* storage blocked: the stage simply keeps its layout */
   }
 }
 
-/** the layout number a World 1 stage was last cleared with, or null */
+/** the stages whose next roll keeps away from the last one played: World 1's, and gen2's (a different one of its shipped rolls) */
+const keepsLast = (id: string) => isW1Stage(id) || (!!GEN2_STAGES[id] && gen2SeedCount(id) > 1);
+
+/** the layout number a World 1 or gen2 stage was last cleared with, or null */
 export function lastLayout(id: string, mem: Mem | null = browserMem()): number | null {
   try {
     const raw = mem?.getItem(layoutKey(id));
@@ -106,7 +113,17 @@ export const AWAY = { min: 0.35, tries: 24 } as const;
 /** a fresh roll as far from the last one played as can be found: every section version different, or else the farthest of the tries */
 function awayFrom(id: string, prev: number, roll: () => number | null): number | null {
   let best = roll();
-  if (best == null || !isW1Stage(id)) return best;
+  if (best == null) return best;
+  if (GEN2_STAGES[id]) {
+    // (gen2: any other of the stage's shipped rolls; they were picked to differ from each other the most)
+    for (let k = 1; k < AWAY.tries && gen2SeedIndex(id, best) === gen2SeedIndex(id, prev); k++) {
+      const c = roll();
+      if (c == null) break;
+      best = c;
+    }
+    return best;
+  }
+  if (!isW1Stage(id)) return best;
   let far = w1RollDistance(id, prev, best);
   for (let k = 1; k < AWAY.tries && far < 1; k++) {
     const c = roll();
