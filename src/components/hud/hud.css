@@ -45,6 +45,9 @@
   text-shadow: 0 2px 0 rgba(30, 15, 5, .45); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; font-feature-settings: 'liga' 0, 'calt' 0;
   display: inline-flex; align-items: baseline; transition: color .3s ease; }
 .vh-cnum small { -webkit-text-stroke-width: 4px; color: #f3dfb4; }
+/* (a word before the count: Meeca's "Warnings 1/5") */
+.vh-cword { font-family: var(--font-heading); font-weight: 700; color: #f3dfb4; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill;
+  text-shadow: 0 2px 0 rgba(30, 15, 5, .45); line-height: 1; white-space: nowrap; }
 .vh-goal.bloom .vh-cplate { transform: scale(1.14); box-shadow: inset 0 1px 0 rgba(255, 236, 190, .3), 0 2px 0 rgba(30, 15, 5, .45), 0 0 16px 4px rgba(255, 220, 120, .45); }
 .vh-goal.bloom .vh-cnum { color: #ffe9a8; }
 .vh-goal.glow .vh-cplate { filter: drop-shadow(0 0 10px #ffe98a) drop-shadow(0 0 3px #fff); }

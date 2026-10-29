@@ -103,13 +103,15 @@ export function centreGeo(mode: HudMode, h = 390): CentreGeo {
 }
 
 /** the counter's width: 'count' (icon and "13/33"), 'slots' (one per item), 'distance' (the trail), or 0 for 'none' */
-export function counterW(c: CentreGeo, kind: 'count' | 'slots' | 'distance' | 'none', target = 30): number {
+export function counterW(c: CentreGeo, kind: 'count' | 'slots' | 'distance' | 'none', target = 30, word = ''): number {
   if (kind === 'none') return 0;
   const ends = Math.round(c.plate * PLATE_ENDS);
   if (kind === 'distance') return (c.icon >= 36 ? 150 : c.icon >= 31 ? 130 : 112) + ends;
   if (kind === 'slots') return target * (c.slot + 4) + ends;
   const dg = String(Math.max(1, Math.round(target))).length;
-  return Math.max(Math.round(c.plate * PLATE_ASPECT), Math.round(c.icon + 6 + c.num * (0.6 * dg + 0.42 * (dg + 1)) + ends));
+  // (a word before the count, "Warnings": its letters at about 0.62 of the number's size, and a gap)
+  const wd = word ? Math.round(word.length * c.num * 0.62 * 0.56 + 8) : 0;
+  return Math.max(Math.round(c.plate * PLATE_ASPECT), Math.round(c.icon + 6 + wd + c.num * (0.6 * dg + 0.42 * (dg + 1)) + ends));
 }
 
 export interface CentrePlace extends LaneRect {

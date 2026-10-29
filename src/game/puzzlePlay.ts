@@ -53,6 +53,13 @@ export interface KitHost {
   tip(key: string, text: TipLine, seconds: number): void;
   /** which way his thumb steers now (-1, 0, 1): a trap chair counts the wiggles */
   steer?: number;
+  /**
+   * a generous tap (Meeca's stage, QA 2026-10-29: "slightly off and it becomes a punch"): the reach in front this many times the usual,
+   * and a piece behind her within most of it counts too (she turns to it)
+   */
+  reachK?: number;
+  /** a thumb action this frame (a tap, a flick, a press): a trap chair counts it as a wiggle too */
+  poke?: boolean;
   /** where the room's glow is (Meeca's stage: Flicker, who goes with her everywhere); unset, the kit's own follows him */
   glowAt?(): { x: number; y: number } | null;
   float(text: string, x: number, y: number, color: string): void;
@@ -106,7 +113,7 @@ interface ItemRun {
   trader: number;
 }
 interface PlateRun { spec: Extract<PieceSpec, { kind: 'plate' }>; x: number; y: number; plat: number; w: number; down: boolean; show: number }
-interface GateRun { spec: Extract<PieceSpec, { kind: 'gate' }>; x: number; y: number; door: Platform; wall: Platform; open: boolean; latched: boolean; show: number; panned: boolean; opened: boolean }
+interface GateRun { spec: Extract<PieceSpec, { kind: 'gate' }>; x: number; y: number; door: Platform; wall: Platform; open: boolean; latched: boolean; show: number; panned: boolean; opened: boolean; openAt: number }
 interface LeverRun { spec: Extract<PieceSpec, { kind: 'lever' }>; x: number; y: number; plat: number; on: boolean; show: number }
 interface BasketRun { spec: Extract<PieceSpec, { kind: 'basket' }>; x: number; y: number; weight: number; count: number }
 interface LiftRun { spec: Extract<PieceSpec, { kind: 'lift' }>; plat: Platform; baseY: number; level: number; basket: number; unwind?: boolean; cage?: Collectible }
@@ -121,9 +128,9 @@ interface ShutterRun { spec: Extract<PieceSpec, { kind: 'shutter' }>; x: number;
 interface PinwheelRun { spec: Extract<PieceSpec, { kind: 'pinwheel' }>; x: number; y: number; spin: boolean; ang: number }
 interface SluiceRun { spec: Extract<PieceSpec, { kind: 'sluice' }>; x: number; y: number; river: RiverZone | undefined; open: boolean; rate: number; rafts: Platform[] }
 interface TraderRun { spec: Extract<PieceSpec, { kind: 'trader' }>; x: number; y: number; plat: number; done: boolean; t: number }
-interface ChairRun { spec: Extract<PieceSpec, { kind: 'chair' }>; x: number; y: number; seat: Platform; state: 'empty' | 'sink' | 'held' | 'pop'; t: number; wig: number; lastDir: number; armed: boolean; back: -1 | 1; times: number }
+interface ChairRun { spec: Extract<PieceSpec, { kind: 'chair' }>; x: number; y: number; seat: Platform; state: 'empty' | 'sink' | 'held' | 'pop'; t: number; wig: number; push: number; lastDir: number; armed: boolean; back: -1 | 1; times: number }
 interface SaplingRun { spec: Extract<PieceSpec, { kind: 'sapling' }>; x: number; y: number; to: { x: number; y: number; plat: number }; vine: Vine | undefined; home: Vine | null; bent: boolean; bendT: number; told: boolean }
-interface SilkRun { spec: Extract<PieceSpec, { kind: 'silk' }>; x: number; y: number; vine: Vine | undefined; t: number; state: 'free' | 'held' | 'drop' | 'shake'; times: number }
+interface SilkRun { spec: Extract<PieceSpec, { kind: 'silk' }>; x: number; y: number; vine: Vine | undefined; t: number; state: 'free' | 'held' | 'drop' | 'shake'; times: number; armed: boolean }
 interface KnotRun { spec: Extract<PieceSpec, { kind: 'knot' }>; x: number; y: number; snapped: boolean; at: number }
 interface LadderRun { spec: Extract<PieceSpec, { kind: 'ladder' }>; x: number; y: number; vine: Vine | undefined; down: boolean; show: number }
 interface TeapotRun { spec: Extract<PieceSpec, { kind: 'teapot' }>; x: number; y: number; plat: number; tipped: boolean; t: number; full: boolean; path: Array<{ x: number; y: number }>; spills: number }
@@ -140,6 +147,8 @@ const PEG_ROCK = 88;
 const PEG_KNOT = { x: 0.6, y: 0.32 };
 
 /** a bell's box a thrown thing knocks (world) */
+/** Meeca's night: a throw up within this far (px, either side) of a silk knot goes to the knot */
+export const KNOT_AIM = 170;
 const bellBox = (b: { x: number; y: number }) => ({ x0: b.x - 26, x1: b.x + 26, y0: b.y - 110, y1: b.y - 20 });
 
 
@@ -323,7 +332,7 @@ export class KitPlay {
         if (pc.kind === 'gate' && a) {
           const door = byId.get(kitPlatId(ri, pc.id, 0));
           const wall = byId.get(kitPlatId(ri, pc.id, 1));
-          if (door && wall) room.gates.push({ spec: pc, x: a.x, y: a.y, door, wall, open: false, latched: false, show: 0, panned: false, opened: false });
+          if (door && wall) room.gates.push({ spec: pc, x: a.x, y: a.y, door, wall, open: false, latched: false, show: 0, panned: false, opened: false, openAt: -9 });
         }
         if (pc.kind === 'lift') {
           const plat = byId.get(kitPlatId(ri, pc.id, 0));
@@ -356,14 +365,14 @@ export class KitPlay {
         const vineOf = (id: number) => world.vines?.find((v) => v.id === id);
         if (pc.kind === 'chair' && a) {
           const seat = byId.get(kitPlatId(ri, pc.id, 0));
-          if (seat) room.chairs.push({ spec: pc, x: a.x, y: a.y, seat, state: 'empty', t: 0, wig: 0, lastDir: 0, armed: true, back: -1, times: 0 });
+          if (seat) room.chairs.push({ spec: pc, x: a.x, y: a.y, seat, state: 'empty', t: 0, wig: 0, push: 0, lastDir: 0, armed: true, back: -1, times: 0 });
         }
         if (pc.kind === 'sapling' && a) {
           const to = anchorAt(pc.to, byId);
           const vine = vineOf(pc.vine);
           if (to) room.saplings.push({ spec: pc, x: a.x, y: a.y, to: { ...to, plat: pc.to.on }, vine, home: vine ? { ...vine } : null, bent: false, bendT: -1, told: false });
         }
-        if (pc.kind === 'silk' && a) room.silks.push({ spec: pc, x: a.x, y: a.y, vine: vineOf(pc.vine), t: 0, state: 'free', times: 0 });
+        if (pc.kind === 'silk' && a) room.silks.push({ spec: pc, x: a.x, y: a.y, vine: vineOf(pc.vine), t: 0, state: 'free', times: 0, armed: true });
         if (pc.kind === 'knot' && a) room.knots.push({ spec: pc, x: a.x, y: a.y, snapped: false, at: -9 });
         if (pc.kind === 'ladder' && a) {
           const vine = vineOf(pc.vine);
@@ -403,6 +412,50 @@ export class KitPlay {
   /** his hands are full */
   get holding(): boolean {
     return !!this.held;
+  }
+
+  /**
+   * What a room has done so far, as a short word (Meeca's stage: Flicker's nudges, meecaPlay.ts stepNudge; a word never seen before in
+   * the room is progress): the plates down, the gates open, where the beetles sleep, where the things are (on a plate, in hand), the
+   * knot, the ladder, the sapling, the teapot, the lift, how many hidden steps are lit, the moonflower.
+   */
+  progressKey(ri: number): string {
+    const room = this.rooms[ri];
+    if (!room) return '';
+    const onWhich = (plat: number, x: number) => room.plates.findIndex((q) => q.plat === plat && onPlate(x, q.x, q.w));
+    let s = '';
+    for (const pl of room.plates) s += pl.down ? 'P' : 'p';
+    for (const g of room.gates) s += g.open ? 'G' : 'g';
+    for (const b of room.beetles) s += b.st.mode === 'sleep' ? `z${onWhich(b.st.plat, b.st.x)}` : 'b';
+    room.items.forEach((it, i) => {
+      s += this.held?.room === ri && this.held.item === i ? 'H' : it.mode === 'rest' && onWhich(it.plat, it.x) >= 0 ? `i${onWhich(it.plat, it.x)}` : it.mode === 'basket' ? 'B' : '.';
+    });
+    for (const k of room.knots) s += k.snapped ? 'K' : 'k';
+    for (const l of room.ladders) s += l.down ? 'L' : 'l';
+    for (const sp of room.saplings) s += sp.bent ? 'S' : 's';
+    for (const tp of room.teapots) s += tp.full ? 'T' : tp.tipped ? 't' : '-';
+    for (const l of room.lifts) s += l.level >= 0.999 ? 'U' : 'u';
+    s += room.ledges.filter((l) => l.lit).length;
+    for (const m of room.moons) s += m.open ? 'M' : 'm';
+    return s;
+  }
+  /** a room's way on is open */
+  solved(ri: number): boolean {
+    const room = this.rooms[ri];
+    return !!room && this.output(room, room.spec.exit);
+  }
+  /** the room's line for what is in his hands (its "hold" line), or null with empty hands */
+  heldTip(): TipLine | null {
+    return this.held ? this.rooms[this.held.room].spec.tips?.hold ?? null : null;
+  }
+  /** where a thing lies, by its id (null while it is held, flying, or gone) */
+  restingAt(id: string): { x: number; y: number } | null {
+    for (const room of this.rooms) for (const it of room.items) if (it.spec.id === id && it.mode === 'rest') return { x: it.x, y: it.y };
+    return null;
+  }
+  /** a trap chair is holding him (sunk in, or held): the wiggle */
+  get chairHeld(): boolean {
+    return this.rooms.some((r) => r.chairs.some((c) => c.state === 'sink' || c.state === 'held'));
   }
 
   /** is this reed cage hung on a lift (World 2): no punch breaks it, the lift frees it, and the kit draws it */
@@ -579,16 +632,17 @@ export class KitPlay {
       return took;
     }
     if (!inp.tap || !p.grounded) return took;
-    const reach = useReach(h.easy);
+    const reach = useReach(h.easy) * (h.reachK ?? 1);
+    const behind = h.reachK ? reach * 0.6 : KIT.behind;
     const inFront = (x: number, y: number) => {
       const ahead = (x - p.x) * f;
-      return ahead >= -KIT.behind && ahead <= reach && y <= p.y + KIT.down && y >= p.y - KIT.up;
+      return ahead >= -behind && ahead <= reach && y <= p.y + KIT.down && y >= p.y - KIT.up;
     };
-    let best: { d: number; go: () => void } | null = null;
+    let best: { d: number; x: number; go: () => void } | null = null;
     const consider = (x: number, y: number, go: () => void) => {
       if (!inFront(x, y)) return;
       const d = Math.abs(x - p.x);
-      if (!best || d < best.d) best = { d, go };
+      if (!best || d < best.d) best = { d, x, go };
     };
     this.rooms.forEach((room, ri) => {
       if (p.x < room.box.x0 - 80 || p.x > room.box.x1 + 80) return;
@@ -625,7 +679,10 @@ export class KitPlay {
       });
     });
     if (best) {
-      (best as { go: () => void }).go();
+      const b = best as { x: number; go: () => void };
+      // (a piece just behind her: she turns to it)
+      if (h.reachK && (b.x - p.x) * f < -KIT.behind) p.facing = f > 0 ? -1 : 1;
+      b.go();
       took.tap = true;
     }
     return took;
@@ -743,6 +800,15 @@ export class KitPlay {
     const p = h.player;
     this.lastVariant = it.variant;
     it.body = throwStart(kind, p.x, p.y, f);
+    // (Meeca's night: thrown up anywhere near a silk knot, it goes to the knot, whichever way she faces. QA 2026-10-29: a bot's throws
+    // at room 3's knot "never landed" for 70 s: facing away or a step too far, the throw up drifted past it)
+    if (this.night && kind === 'up') {
+      const k = room.knots.find((q) => !q.snapped && Math.abs(q.x - p.x) <= KNOT_AIM);
+      if (k) {
+        const tTop = -it.body.vy / THROW.gravity;
+        it.body.vx = Math.max(-260, Math.min(260, (k.x - it.body.x) / tTop));
+      }
+    }
     it.thrown = true;
     it.mode = 'fly';
     it.acc = 0;
@@ -1082,6 +1148,7 @@ export class KitPlay {
         g.door.broken = true;
         room.changes++;
         h.sfx('gate');
+        g.openAt = this.t;
         // the first time a far gate opens, the view goes to it for a moment
         if (!g.panned && Math.abs(g.x - p.x) > 420 * ROOM_CAM.far) {
           g.panned = true;
@@ -1247,6 +1314,7 @@ export class KitPlay {
           c.state = 'sink';
           c.t = 0;
           c.wig = 0;
+          c.push = 0;
           c.lastDir = 0;
           c.times++;
           c.back = p.x < c.x || p.facing > 0 ? -1 : 1;
@@ -1263,12 +1331,20 @@ export class KitPlay {
           c.state = 'held';
           c.t = 0;
         }
-        if (c.state === 'held' && steer && steer !== c.lastDir) {
-          // a wiggle: each change of the way he slides
-          if (c.lastDir !== 0 || c.wig === 0) c.wig++;
+        if (c.state === 'held') {
+          // a wiggle: each change of the way he slides, a fresh slide after letting go, any tap or flick, or a steady push one way for a
+          // moment (QA 2026-10-29: a thumb held one way, or tapping, never wiggled her free; she sat frozen in it for a minute). And a
+          // chair lets go of anyone in the end.
+          c.push = steer !== 0 && steer === c.lastDir ? c.push + dt : 0;
+          const strain = c.push >= CHAIR.strain;
+          if (strain) c.push = 0;
+          const fresh = (steer !== 0 && steer !== c.lastDir) || !!h.poke || strain;
+          if (fresh) {
+            c.wig++;
+            h.sfx('wiggle');
+          }
           c.lastDir = steer;
-          h.sfx('wiggle');
-          if (c.wig >= CHAIR.wiggles) {
+          if (c.wig >= CHAIR.wiggles || c.t >= CHAIR.giveUp) {
             c.state = 'pop';
             c.t = 0;
             c.armed = false;
@@ -1347,8 +1423,13 @@ export class KitPlay {
         Object.assign(p, { vx: 0 });
         if (sl.t >= SILK.shake) {
           sl.state = 'free';
-          v.off = false;
+          // (it hangs out of reach until she has stepped away from it: QA 2026-10-29, a thumb sliding a little up as she walked on
+          // caught her on it again the moment she was free, over and over, "stuck at room 3's entrance")
+          sl.armed = false;
         }
+      } else if (sl.state === 'free' && !sl.armed && Math.abs(p.x - v.x) > SILK.away) {
+        sl.armed = true;
+        v.off = false;
       }
     }
     const out = (id: string) => this.output(room, id);
@@ -1576,6 +1657,17 @@ export class KitPlay {
       box = u;
       queue.push(...this.worksOn(room, id));
     }
+    // (a gate in it: the other parts its wire reads too, if they fit: both plates with their gate, QA 2026-10-29)
+    for (const g of room.gates) {
+      if (!seen.has(g.spec.id)) continue;
+      for (const id of wireIds(g.spec.open)) {
+        if (seen.has(id)) continue;
+        const b = this.pieceBox(room, id);
+        if (!b) continue;
+        const u = unionBox(box, b);
+        if (boxFits(u, vw, vh)) box = u;
+      }
+    }
     const by = room.beyond;
     if (seen.has(room.spec.exit) && by) {
       const u = unionBox(box, { x0: by.x - 30, x1: by.x + 30, y0: by.y - 60, y1: by.y + 6 });
@@ -1609,6 +1701,7 @@ export class KitPlay {
       for (const r of room.resets) if (!this.night || !drawNightPiece(ctx, room === this.rooms[this.inRoom] ? 'stakeLit' : 'stake', r.x, r.y + 3)) this.drawPost(ctx, r);
       if (this.night) for (const r of room.resets) if (room === this.rooms[this.inRoom]) drawGlow(ctx, r.x + 14, r.y - 78, 60, 'rgba(255, 214, 140, A)', 0.8);
       for (const s of room.sources) this.drawSource(ctx, room, s);
+      if (this.night) this.drawPlateRoots(ctx, room);
       for (const pl of room.plates) {
         // the knot plate sits sunk in the ground, its knot just over the grass (pressed, it sinks a little further and glows)
         const pw = pl.w + 10, ph = pw * 0.6;
@@ -1616,14 +1709,28 @@ export class KitPlay {
         ctx.beginPath();
         ctx.rect(pl.x - pw, pl.y - ph, pw * 2, ph + 8);
         ctx.clip();
-        // (Meeca's night look is her leaf plate; World 3's is Matt's mossy stone plate, sunk among its rubble while held down)
+        // (World 3's is Matt's mossy stone plate, sunk among its rubble while held down. Meeca's night has the kit's own plate: her leaf
+        // plate read as dirt on the path, QA 2026-10-29; pressed, it glows)
         const stoneP = this.look.world === 3;
-        const drew = this.night
-          ? drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + pl.show * 4, { w: pw, h: ph * 0.62 })
-          : stoneP
+        if (this.night) {
+          // (her leaf plate is the bed of leaves it sits in, wider than it)
+          drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + 6, { w: pw * 1.5, h: ph * 0.7 });
+          if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
+        }
+        const drew = stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
           : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
         ctx.restore();
+        // (Meeca's night: an empty plate's rim breathes a pale light, so it reads as something to stand on, not a stump in the path)
+        if (this.night && drew && pl.show < 0.5) {
+          ctx.save();
+          ctx.strokeStyle = `rgba(255, 244, 210, ${(0.45 + 0.25 * Math.sin(this.t * 3.2 + pl.x * 0.01)).toFixed(3)})`;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.ellipse(pl.x, pl.y - 7, pw * 0.42, 8, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
         if (!drew) {
           ctx.fillStyle = pl.down ? '#d9b24a' : '#8b6a3e';
           ctx.fillRect(pl.x - pl.w / 2, pl.y - 8 + pl.show * 4, pl.w, 10);
@@ -1834,6 +1941,60 @@ export class KitPlay {
     if (!drew) {
       ctx.fillStyle = g.open ? 'rgba(92, 64, 32, 0.35)' : '#6b4a2b';
       ctx.fillRect(g.door.x, doorTop, g.door.width, KIT.doorH);
+    }
+    // (Meeca's night: the moment it opens, a burst of light in the doorway, so it reads as "that opened it": QA 2026-10-29)
+    const since = this.t - g.openAt;
+    if (this.night && since >= 0 && since < 1.4) {
+      const u = since / 1.4;
+      drawGlow(ctx, g.x, g.y - KIT.doorH / 2, 70 + 90 * u, 'rgba(255, 230, 150, A)', 0.95 * (1 - u));
+      ctx.save();
+      ctx.fillStyle = '#fff3c4';
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2 + 0.4;
+        const r = 30 + 80 * u;
+        ctx.globalAlpha = 1 - u;
+        ctx.beginPath();
+        ctx.arc(g.x + Math.cos(a) * r, g.y - KIT.doorH / 2 + Math.sin(a) * r * 0.8, 4 - 2 * u, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+  }
+
+  /**
+   * Meeca's night: a root along the ground from each plate to the gate it holds open, lit gold while the plate is down, so the two
+   * plates and the gate read as one thing (STAGE-RULES §3: a far switch and its gate are connected by something visible)
+   */
+  private drawPlateRoots(ctx: CanvasRenderingContext2D, room: RoomRun) {
+    for (const g of room.gates) {
+      const ids = wireIds(g.spec.open);
+      for (const pl of room.plates) {
+        if (!ids.includes(pl.spec.id)) continue;
+        const x0 = pl.x + (g.x > pl.x ? 1 : -1) * (pl.w / 2 - 6);
+        const x1 = g.x - (g.x > pl.x ? 1 : -1) * (KIT.gateW / 2 - 4);
+        const y = pl.y - 6 + ids.indexOf(pl.spec.id) * 5;
+        const lit = pl.show;
+        ctx.save();
+        ctx.lineCap = 'round';
+        for (const [c, w] of [['rgba(30, 18, 8, 0.9)', 9], [lit > 0.5 ? 'rgba(255, 220, 120, 1)' : 'rgba(214, 186, 140, 0.95)', 4.5]] as const) {
+          ctx.strokeStyle = c;
+          ctx.lineWidth = w;
+          ctx.beginPath();
+          ctx.moveTo(x0, y);
+          const n = Math.max(2, Math.round(Math.abs(x1 - x0) / 40));
+          for (let k = 1; k <= n; k++) {
+            const x = x0 + ((x1 - x0) * k) / n;
+            ctx.lineTo(x, y - (k % 2 ? 3 : 0));
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+        if (lit > 0.02) {
+          // (the light running along it to the gate)
+          const u = (this.t * 1.2) % 1;
+          drawGlow(ctx, x0 + (x1 - x0) * u, y - 2, 16, 'rgba(255, 226, 140, A)', 0.9 * lit);
+        }
+      }
     }
   }
 

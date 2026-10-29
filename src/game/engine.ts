@@ -82,7 +82,7 @@ const NO_W5_THINGS: readonly never[] = [];
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
-import { MeecaPlay, type MeecaControls } from './meecaPlay.ts';
+import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
 import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
@@ -5639,6 +5639,7 @@ export class GameEngine {
         this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
       },
       score: (n) => (this.runScore += n),
+      stepAt: (dir) => this.stepAt(dir),
       sfx: (kind) => {
         if (kind === 'scratch') sound.playTreeClimb();
         else if (kind === 'cut') sound.playRelicFound();
@@ -6624,8 +6625,14 @@ export class GameEngine {
     h.player = this.player;
     h.standingOn = this.standingOnId;
     h.steer = this.kitSteer;
+    h.poke = this.kitPoke;
+    // (Meeca's stage: a generous tap, QA 2026-10-29)
+    if (this.mc) h.reachK = MEECA_REACH;
     return h;
   }
+  /** a new tap, flick or press this frame (a trap chair counts it as a wiggle), and whether one was down the frame before */
+  private kitPoke = false;
+  private kitPokeWas = false;
 
   /**
    * The puzzle kit's controls, from the intents as they are (touchGestures.ts and the input are untouched): a tap with a piece in reach
@@ -6635,6 +6642,9 @@ export class GameEngine {
   private kitControls() {
     const inp = this.input.state;
     this.kitSteer = inp.left && !inp.right ? -1 : inp.right && !inp.left ? 1 : 0;
+    const poke = inp.punchPressed || inp.jumpPressed || inp.kickPressed;
+    this.kitPoke = poke && !this.kitPokeWas;
+    this.kitPokeWas = poke;
     const took = this.kit!.control({ tap: inp.punchPressed, up: inp.jumpPressed, side: inp.kickPressed, sideDir: inp.kickDir }, this.kitHost(), this.platforms);
     if (took.tap) inp.punchPressed = false;
     if (took.up) {

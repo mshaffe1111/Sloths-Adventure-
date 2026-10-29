@@ -228,6 +228,10 @@ export const CHAIR = {
   wiggles: 4,
   /** he sinks in for this long before the wiggling counts (s) */
   sink: 0.55,
+  /** held this long with no wiggling at all, it lets him go anyway (s): nobody is ever stuck in it */
+  giveUp: 10,
+  /** a steady push one way this long counts as a wiggle too (s) */
+  strain: 0.5,
   /** popped free: thrown off the way he came */
   popVx: 230,
   popVy: -360,
@@ -237,6 +241,8 @@ export const SILK = {
   hold: 1.25,
   /** and shakes it off this long (s), standing */
   shake: 0.8,
+  /** shaken off, it hangs out of reach until she is this far from it (px) */
+  away: 70,
 } as const;
 export const SAPLING = {
   /** he is this near its top (px) when it starts to bend */
