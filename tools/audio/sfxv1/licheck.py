@@ -1,13 +1,13 @@
 """Check the licence of every scanned clip against benjamin-paine/freesound-laion-640k, which names it (CC0-1.0, CC-BY-4.0, ...) with the
 uploader and the title (polish-sfx, 2026-10-29). CPU job, python:3.12, volumes
 ["hf://datasets/benjamin-paine/freesound-laion-640k:/lic:ro", "hf://buckets/mshaffe111/w5-xfer:/out:rw"]; reads only the small columns of
-each parquet file. env IDS = a file of Freesound ids in the bucket (one per line). Writes hfbatch/sfx/licences.json.
+each parquet file. env IDS = a file of Freesound ids (one per line; scan-ids.txt, fetched beside this script). Writes hfbatch/sfx/licences.json.
 """
 import glob, json, subprocess, sys
 subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'pyarrow'], check=True)
 import os
 import pyarrow.parquet as pq
-ids = {int(l) for l in open('/out/' + os.environ['IDS']) if l.strip()}
+ids = {int(l) for l in open(os.environ['IDS']) if l.strip()}
 NAMES = ["CC0-1.0", "CC-BY-4.0", "CC-BY-3.0", "CC-BY-NC-3.0", "CC-BY-NC-4.0", "CC-Sampling+"]
 files = sorted(glob.glob('/lic/**/*.parquet', recursive=True))
 print('files', len(files), flush=True)
