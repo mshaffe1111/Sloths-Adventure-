@@ -13,6 +13,7 @@ import { reachJump } from './physics.ts';
 import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
 import { pickLesson } from './lessons.ts';
+import { harmlessPass, newWatch, stepWatch, type WatchZone } from './watcher.ts';
 import type { LevelConfig, Platform } from './types.ts';
 
 const cfg = (id: string, type: LevelConfig['objectiveType']): LevelConfig =>
@@ -221,4 +222,45 @@ test('1-7: the acorn rooms say what an acorn is for, and that the long stretch n
     assert.match(String(rooms[0].tips?.enter ?? ''), /eagle/, `roll ${s}: the first room says what an acorn does`);
     assert.match(String(rooms[1].tips?.enter ?? ''), /acorn/i, `roll ${s}: the second room says one is needed`);
   }
+});
+
+// QA 4 (above World 1's band): 1-7's eagle took hearts 5 to 1 in about 80 s on ?layout=1 upright, where the next bush was often off
+// screen (an upright phone shows 416 px of the world, about 120 behind him and 290 ahead). Now in every watched stretch but the acorn
+// meadow (its passes are its puzzle) a bush is always on an upright screen, the calms are longer, and the first pass over each
+// stretch only warns.
+test('1-7: in every watched stretch a bush is on an upright screen wherever he stands, and the first pass over each stretch only warns', () => {
+  const UP_BEHIND = 120, UP_AHEAD = 290;
+  for (const s of ROLLS) {
+    const st = buildProtoStage(cfg('1-7', 'stealth'), s, '1-7');
+    const all = (st.proto.bushes ?? []).filter((b) => !b.secret);
+    for (const z of st.proto.watch ?? []) {
+      if (!z.freeFirst) continue;
+      assert.ok(z.calm[0] >= 7, `roll ${s}: a ${z.calm[0]} s calm at ${Math.round(z.x0)}`);
+      // (from where he walks in to the stretch's first bush the first pass over it, which only warns, is the only one that can come)
+      const first = Math.min(...all.filter((b) => b.x + b.w / 2 >= z.x0 && b.x + b.w / 2 <= z.x1).map((b) => b.x));
+      for (let px = Math.max(z.x0, first); px <= z.x1; px += 20) {
+        const seen = all.some((b) => b.x + b.w > px - UP_BEHIND && b.x < px + UP_AHEAD);
+        assert.ok(seen, `roll ${s}: no bush on an upright screen at x=${px} (stretch ${Math.round(z.x0)}-${Math.round(z.x1)})`);
+      }
+    }
+    assert.ok((st.proto.watch ?? []).filter((z) => z.freeFirst).length >= 4, `roll ${s}: freeFirst stretches`);
+  }
+});
+
+test("watcher: a freeFirst stretch's first pass is harmless, its second is not, and a plain stretch is as before", () => {
+  const a: WatchZone = { x0: 0, x1: 1000, calm: [3, 3], freeFirst: true };
+  const b: WatchZone = { x0: 2000, x1: 3000, calm: [3, 3] };
+  const c: WatchZone = { x0: 4000, x1: 5000, calm: [3, 3], freeFirst: true };
+  const s = newWatch();
+  const passOver = (z: WatchZone) => {
+    for (let i = 0; i < 400 && s.phase !== 'pass'; i++) stepWatch(s, 0.05, z, () => 0);
+    const harmless = harmlessPass(s);
+    for (let i = 0; i < 400 && s.phase === 'pass'; i++) stepWatch(s, 0.05, z, () => 0);
+    return harmless;
+  };
+  assert.equal(passOver(a), true, "the stage's first pass");
+  assert.equal(passOver(a), false, 'the second over the same stretch');
+  assert.equal(passOver(b), false, 'a plain stretch');
+  assert.equal(passOver(c), true, 'the first over a new freeFirst stretch');
+  assert.equal(passOver(c), false, 'the second over it');
 });

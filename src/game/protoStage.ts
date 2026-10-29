@@ -322,6 +322,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   let MIX: string | undefined;
   const BUSHES: Bush[] = [];
   const ZONES: WatchZone[] = [];
+  /** the acorn meadows' watched stretches (1-7): their passes are the puzzle, as built */
+  const MEADOWS = new Set<WatchZone>();
   /** World 1's puzzle rooms (the shared puzzle kit, puzzleKit.ts): the seesaw (1-6) and the acorns (1-7) */
   const ROOMS: RoomSpec[] = [];
   let RING: ProtoExtras['ring'];
@@ -1741,7 +1743,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (k > 0 && !rocks) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
       // (`rocks`, World 1's rebuilt 1-7: a mossy rock or two to hop between the bushes, a petal on each: the run from bush to bush is
       // a hop and a dash, not an empty walk)
-      if (rocks && (k > 0 || g >= 600)) {
+      // (and before the first bush of a row 400 px and more in, 2026-10-29: 1-7's rows are closer now, and a first gap with no rock was
+      // two and a half seconds of plain running)
+      if (rocks && (k > 0 || g >= 400)) {
         // (three in the longest runs, World 1's rebuilt 1-7 since 2026-10-28: two left two seconds of plain running between them)
         const m = g >= 760 ? 3 : g >= 640 ? 2 : 1;
         for (let j = 0; j < m; j++) {
@@ -1756,8 +1760,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const kind = kinds[k % kinds.length];
       bush(x - BUSH_W[kind] / 2, kind);
     }
+    const lastBush = BUSHES[BUSHES.length - 1];
     run(R.r(260, 340));
-    ZONES.push({ x0, x1: x, calm });
+    // (1-7, QA 2026-10-29: the eagle watches up to just past the last bush, not the walk on from it: a pass that came as he walked on
+    // caught him 300 px from the bush behind him, off an upright screen)
+    ZONES.push({ x0, x1: plan === '1-7' ? Math.min(x, lastBush.x + lastBush.w + 40) : x, calm });
     expert += watched(x - x0, (calm[0] + calm[1]) / 2);
     pieces.push({ k: 'rest', x0, x1: x });
   }
@@ -1789,7 +1796,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       block(rx, rx + 120, 40);
       flower(rx + 60, G - 74, 'orchid');
     }
-    ZONES.push({ x0, x1: x, calm });
+    // (1-7, QA 2026-10-29: watched to just past the bush, as the bush rows are: the walk on from it was 500 px with no bush on screen)
+    ZONES.push({ x0, x1: plan === '1-7' ? b.x + b.w + 40 : x, calm });
     expert += watched(x - x0, (calm[0] + calm[1]) / 2);
     pieces.push({ k: 'rest', x0, x1: x });
   }
@@ -1816,8 +1824,16 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flower(rx + 50, HOLLOW_Y - 86, 'orchid');
     }
     open(far);
-    run(R.r(260, 340));
-    ZONES.push({ x0, x1: x, calm });
+    // (1-7, QA 2026-10-29: a bush on the far bank as he drops off the rope, and the eagle watches to just past it: the walk on from the
+    // rope's end was 500 px with no bush on an upright screen)
+    let x1 = x + R.r(260, 340);
+    if (plan === '1-7') {
+      run(R.r(50, 70));
+      const fb = bush(x, 'tall');
+      x1 = fb.x + fb.w + 40;
+    }
+    run(Math.max(0, x1 - x) + (plan === '1-7' ? R.r(180, 240) : 0));
+    ZONES.push({ x0, x1: Math.min(x, x1), calm });
     expert += (edge - x0) / RUN + (span + 88) / ROPE_SPEED * ((calm[0] + calm[1]) / 2 + 4) / ((calm[0] + calm[1]) / 2) + (x - far) / RUN;
     pieces.push({ k: 'snakes', x0, x1: x });
   }
@@ -1871,6 +1887,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     room(Math.round(R.r(2050, 2200)), false);
     run(R.r(260, 320));
     ZONES.push({ x0, x1: x, calm });
+    MEADOWS.add(ZONES[ZONES.length - 1]);
     expert += (x - x0) / RUN + 2 * 4 + watched(x - x0, (calm[0] + calm[1]) / 2) - (x - x0) / RUN;
     pieces.push({ k: 'rest', x0, x1: x });
   }
@@ -1899,7 +1916,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Twist: the rope line', () => {
       hint(x + 60, 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by');
-      ropeBushes([6, 7]);
+      ropeBushes([7, 8]);
       flag();
     });
     beat('Finish: the acorn meadow', () => {
@@ -1909,6 +1926,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       section('finish');
       homeRun(['log']);
     });
+    // (QA 2026-10-29: the first pass over each of 1-7's watched stretches only warns, as the stage's first pass does: World 1's eagle
+    // shows each stretch's rhythm once before it strikes. The acorn meadow keeps its own passes, which its puzzle is built on)
+    for (const z of ZONES) if (!MEADOWS.has(z)) z.freeFirst = true;
   }
 
   /** a coiled boa guarding a spot (it never moves; it rears, lunges about 130 px, and takes three hits) */
