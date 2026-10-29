@@ -57,6 +57,8 @@ export interface Lantern84 {
   route: Array<{ id: number; t: number; by: 'start' | 'hop' | 'liana' | 'climb' }>;
   /** the quick player's seconds the build reckons (running 285 px/s, a hop 0.3 s, a liana half a swing and a wait, climbing 220 px/s) */
   expert: number;
+  /** the quick player's seconds on reaching each flower (the jar's gaps: lantern.test.ts) */
+  flowerT: number[];
   plan: LanternPlan;
 }
 
@@ -75,6 +77,8 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
   const flowers: GlowFlower[] = [];
   const moths: MothSpot[] = [];
   const gaps: LanternGap[] = [];
+  /** the quick player's seconds on reaching each flower */
+  const flowerT: number[] = [];
   let pid = 1, vid = 1, tid = 1, cid = 1, fid = 1, mid = 1;
   let expert = 0;
   const RUN = 285, CLIMB = 220;
@@ -99,6 +103,7 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
   const flower = (at: number, big = false) => {
     const f: GlowFlower = { id: fid++, x: r(cur.x + 50 + (cur.width - 100) * at), y: cur.y, r: big ? 300 : 190, ...(big ? { big: true } : {}) };
     flowers.push(f);
+    flowerT.push(expert + (f.x - cur.x) / RUN);
     return f;
   };
   /** a moth resting in the dark over the bough he is on, `at` along it */
@@ -252,8 +257,9 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
   section('Twist: the long dark', () => {
     hop(j(170, 195), j(0, 40), 460);
     liana(80, 300);
-    moth(0.5);
+    flower(0.7);
     hop(j(160, 190), j(0, 40), 420);
+    moth(0.5);
     climb(j(330, 360), 500);
     hop(j(170, 195), j(-20, 30), 420);
     moth(0.4);
@@ -274,6 +280,7 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     hop(j(160, 190), j(0, 40), 420);
     moth(0.5);
     climb(j(330, 360), 480);
+    flower(0.4);
     hop(j(160, 185), j(0, 40), 440);
     moth(0.6);
     liana(80, 300);
@@ -316,6 +323,6 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     zones,
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },
     proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, lantern: plan },
-    lantern84: { sections, lianas, route, expert, plan },
+    lantern84: { sections, lianas, route, expert, flowerT, plan },
   };
 }

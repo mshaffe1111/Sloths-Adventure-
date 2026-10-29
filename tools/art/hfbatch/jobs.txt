@@ -115,3 +115,18 @@ hfb-stage-3 6ae39f625ddcdc08302650d1 rtx-pro-6000 19:32:50Z-19:39:27Z (6.6 min, 
   much of the start's flat fill). water2-w4-s55-7 KEPT (uneven flecks); water2-w5-s55-23 KEPT (petals scattered, no beat); the -7 takes
   THROWN (the start's piece seams show as vertical lines).
 running total ~32.1 min on rtx-pro-6000 = ~$1.47 of the $14 cap.
+
+8-4 Lantern Run (2026-10-29, cap $8), branch w8-lantern: starts lanternstarts.py, spec make_lantern_spec.py, GPU lanterngpu.py (starts
+and spec from GitHub raw at the branch), cut lanterncut.py. Takes in the bucket under hfbatch/w8lantern/props/.
+hfb-w8lantern     6ae3b9ec0e0338d1bb7c349f rtx-pro-6000 21:26 cancelled at once (secrets given in the wrong form; nothing ran)
+hfb-w8lantern-r1  6ae3ba07c78863f9c62de38d rtx-pro-6000 21:26:31Z-~21:31Z (~4.5 min with the model download, ~$0.21): 16 takes:
+  jar x4, dim jar x2, moth open/up x2 each, Pokey idle/run_1/apex with the jar pasted at his belly at 0.45 and 0.6.
+  KEPT: jar-s60-17 (the lit jar), jardim-s70-5 (the empty jar), moth-open-s72-5 (the moth; its flap is the picture narrowing as the
+  wings fold, so one painted moth, no popping between two takes that differ). Pokey takes THROWN: his arms never moved, the jar sat
+  stuck on his belly. Review: reference/prop-sheets/qa-notes/8-4-art/review-jar-moth.jpg
+hfb-w8lantern-r2  6ae3bb32c78863f9c62de487 rtx-pro-6000 21:31:30Z-~21:35:30Z (~4 min, ~$0.18): the carry poses (p3, p5-p8: his
+  paws already round a held thing) with the painted jar over the acorn, 0.45 and 0.6; two air takes from p3 at 0.7.
+  KEPT (lanternhero.py, graded to the standard idle's colours): hold carry-p6-s60, walk carry-p5-s60 / p6-s45 / p7-s60 / p8-s45,
+  air air-p3-s70-7 (it came out standing, not tucked: used for every air pose). THROWN: p3 takes (the acorn's weave shows behind
+  the jar), air-p3-s70-19 (stray sparkles). Review: reference/prop-sheets/qa-notes/8-4-art/review-pokey-jar.jpg
+running total ~$0.39 of $8.

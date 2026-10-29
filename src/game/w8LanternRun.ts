@@ -4,6 +4,8 @@
  * jar and the firefly tree's swarm.
  */
 import { glowPic } from './glow.ts';
+import { LANTERN_FRAMES, POKEY_JAR_FRAMES, type LanternFrame } from './w8LanternAtlas.ts';
+import type { StdFrame } from './heroStandardData.ts';
 import { jarAt, LANTERN, lanternRadius, newLantern, setbackTo, stepLantern, takeoff, type LanternEvent, type LanternPlan, type LanternSetting, type LanternState } from './lantern.ts';
 
 /** how full the jar is as the stage starts: half, so the first flower (just ahead) fills it before anything can go wrong */
@@ -13,6 +15,43 @@ const FLOWER_URL = new URL('../assets/w6to10/props-made/w8c.webp', import.meta.u
 /** World 8's painted night bloom (props-made/w8c 'night-flowers'): the glowing flower */
 const BLOOM = { x: 0, y: 0, w: 245, h: 320, ax: 116, ay: 320 } as const;
 let bloomPic: HTMLImageElement | null = null;
+/** the jar and the moth, painted on Hugging Face (src/assets/w8/lantern.webp, w8LanternAtlas.ts) */
+const PIECES_URL = new URL('../assets/w8/lantern.webp', import.meta.url).href;
+let piecesPic: HTMLImageElement | null = null;
+const pieces = (): HTMLImageElement | null => {
+  if (typeof Image === 'undefined') return null;
+  if (!piecesPic) {
+    piecesPic = new Image();
+    piecesPic.src = PIECES_URL;
+  }
+  return piecesPic.complete && piecesPic.naturalWidth ? piecesPic : null;
+};
+/** Pokey with the jar in his paws (src/assets/w8/pokey-jar.webp): his frames for standing, the hurry and the air */
+const JAR_HERO_URL = new URL('../assets/w8/pokey-jar.webp', import.meta.url).href;
+let jarHeroPic: HTMLImageElement | null = null;
+export function jarHeroImage(): HTMLImageElement | null {
+  if (typeof Image === 'undefined') return null;
+  if (!jarHeroPic) {
+    jarHeroPic = new Image();
+    jarHeroPic.src = JAR_HERO_URL;
+  }
+  return jarHeroPic;
+}
+/**
+ * the jar frame for a standard pose (heroStandard.ts names), or undefined where his paws are busy (a climb, a swing, a punch: the
+ * standard frame, the jar at his hip). The walk and the run's eight frames step through the four jar steps, two to each.
+ */
+export function jarFrame(name: string): StdFrame | undefined {
+  const m = /^(walk|run)_(\d)$/.exec(name);
+  if (m) return POKEY_JAR_FRAMES[`walk_${Number(m[2]) >> 1}`];
+  if (name === 'idle' || name === 'blink' || name === 'land' || name === 'recover' || name === 'duck') return POKEY_JAR_FRAMES.hold;
+  if (name === 'launch' || name.startsWith('rise') || name === 'apex' || name.startsWith('fall') || name === 'tuck') return POKEY_JAR_FRAMES.air;
+  return undefined;
+}
+
+/** draw a piece with its anchor at (x, y), `sx` and `sy` its scale */
+const blitPiece = (ctx: CanvasRenderingContext2D, img: HTMLImageElement, f: LanternFrame, x: number, y: number, sx: number, sy = sx) =>
+  ctx.drawImage(img, f.x, f.y, f.w, f.h, x - f.ax * sx, y - f.ay * sy, f.w * sx, f.h * sy);
 const bloom = (): HTMLImageElement | null => {
   if (typeof Image === 'undefined') return null;
   if (!bloomPic) {
@@ -28,6 +67,8 @@ export interface LanternPlayer {
   grounded: boolean;
   climbing: boolean;
   isVineSwinging?: boolean;
+  hanging?: boolean;
+  attacking?: boolean;
   facing: number;
 }
 
@@ -156,33 +197,26 @@ export class LanternRun {
       if (m.mode === 'gone' || m.x < x0 - 100 || m.x > x1 + 100) continue;
       drawMoth(ctx, m.x, m.y, m.beat, m.mode === 'seek');
     }
-    // the jar (a stand-in until its painted frames come: a glass jar of fireflies in his arms)
-    const j = jarAt(p.x, p.y);
+    // the jar's own light: a soft warm glow where it is (in his paws, or at his hip while his paws are busy)
+    const busy = p.climbing || !!p.isVineSwinging || !!p.hanging || !!p.attacking;
+    const j = busy ? { x: p.x - p.facing * 14, y: p.y - 34 } : { x: p.x + p.facing * 12, y: p.y - 52 };
     const lv = this.st.level;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 0.15 + 0.3 * lv;
-    const g = glowPic('#fde047');
-    const gs = 30 + 40 * lv;
-    ctx.drawImage(g, j.x + p.facing * 6 - gs / 2, j.y - gs / 2, gs, gs);
+    ctx.globalAlpha = 0.18 + 0.4 * lv;
+    const gs = 34 + 46 * lv;
+    ctx.drawImage(glowPic('#fde047'), j.x - gs / 2, j.y - gs / 2, gs, gs);
     ctx.restore();
-    ctx.save();
-    ctx.globalAlpha = 0.85;
-    ctx.fillStyle = 'rgba(190, 230, 255, 0.35)';
-    ctx.strokeStyle = 'rgba(230, 245, 255, 0.8)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(j.x + p.facing * 6 - 11, j.y - 13, 22, 26, 6);
-    ctx.fill();
-    ctx.stroke();
-    ctx.globalCompositeOperation = 'lighter';
-    const fly = glowPic('#fef9c3', 'fly');
-    const n = Math.round(1 + 5 * lv);
-    for (let k = 0; k < n; k++) {
-      const a = t * (1.3 + k * 0.4) + k * 2.1;
-      ctx.drawImage(fly, j.x + p.facing * 6 + Math.cos(a) * 6 - 6, j.y + Math.sin(a * 1.3) * 8 - 6, 12, 12);
+    // (at his hip on its twine while he climbs, swings or punches: the painted jar, lit by its level)
+    const img = pieces();
+    if (busy && img) {
+      const s = 0.26;
+      blitPiece(ctx, img, LANTERN_FRAMES.jarDim, j.x, j.y, s);
+      ctx.save();
+      ctx.globalAlpha = lv;
+      blitPiece(ctx, img, LANTERN_FRAMES.jar, j.x, j.y, s);
+      ctx.restore();
     }
-    ctx.restore();
   }
 
   /** over the dark: the moths' wing dust (so one is never unseen), and the swarm rising into the firefly tree */
@@ -212,49 +246,30 @@ export class LanternRun {
   }
 }
 
-/** a moth (a stand-in until its painted frames come): pale wings beating, drawn toward the light */
+/** a moth: the painted moth seen from above, its wings beating (the picture narrows and widens as they fold up and open: a flap) */
 function drawMoth(ctx: CanvasRenderingContext2D, x: number, y: number, beat: number, seeking: boolean): void {
-  const flap = Math.abs(Math.sin(beat * Math.PI * 2));
+  const img = pieces();
+  if (!img) return;
+  const flap = 0.3 + 0.7 * Math.abs(Math.cos(beat * Math.PI * 2));
+  const s = seeking ? 0.36 : 0.32;
   ctx.save();
+  // (a little tilt with the flutter)
   ctx.translate(x, y);
-  ctx.fillStyle = seeking ? '#e9d5ff' : '#cbd5e1';
-  ctx.strokeStyle = '#1e1b4b';
-  ctx.lineWidth = 1.5;
-  for (const s of [-1, 1]) {
-    ctx.beginPath();
-    ctx.ellipse(s * 9, -2, 12, 9 * (0.35 + 0.65 * flap), s * 0.4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-  }
-  ctx.fillStyle = '#6b5b45';
-  ctx.beginPath();
-  ctx.ellipse(0, 0, 3.5, 8, 0, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.rotate(Math.sin(beat * Math.PI * 4) * 0.08);
+  blitPiece(ctx, img, LANTERN_FRAMES.moth, 0, 0, s * flap, s);
   ctx.restore();
 }
 
-/** the HUD's jar (screen px): a small glass with its light level, under the hearts */
+/** the HUD's jar (screen px, its top-left at x, y): the painted jar, lit by its level, the empty jar under it; it blinks when low */
 export function drawJarMeter(ctx: CanvasRenderingContext2D, x: number, y: number, level: number, t: number, low: number): void {
+  const img = pieces();
+  if (!img) return;
+  const f = LANTERN_FRAMES.jar, fd = LANTERN_FRAMES.jarDim;
+  const s = 44 / f.h;
   ctx.save();
-  const w = 26, h = 34;
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
-  ctx.beginPath();
-  ctx.roundRect(x - 4, y - 4, w + 8, h + 8, 9);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(200, 230, 255, 0.18)';
-  ctx.strokeStyle = 'rgba(226, 240, 255, 0.85)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, 7);
-  ctx.fill();
-  const lh = (h - 6) * Math.max(0, level);
-  const blink = level < low ? 0.6 + 0.4 * Math.sin(t * 10) : 1;
-  ctx.fillStyle = `rgba(253, 224, 71, ${0.85 * blink})`;
-  ctx.beginPath();
-  ctx.roundRect(x + 3, y + h - 3 - lh, w - 6, lh, 4);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, 7);
-  ctx.stroke();
+  blitPiece(ctx, img, fd, x + f.ax * s, y + f.ay * s, s);
+  const blink = level < low ? 0.55 + 0.45 * Math.sin(t * 10) : 1;
+  ctx.globalAlpha = Math.max(0, Math.min(1, level)) * blink;
+  blitPiece(ctx, img, f, x + f.ax * s, y + f.ay * s, s);
   ctx.restore();
 }

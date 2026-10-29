@@ -37,7 +37,7 @@ import type {
 import { WORLDS_DATA } from './worldsData.ts';
 import type { StageStats } from './badges.ts';
 import { loadCosmetic } from './badgeStore.ts';
-import { setHeroCoat } from './heroSprite.ts';
+import { setHeroCoat, setJarHero } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
@@ -92,7 +92,7 @@ import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { SlideRun } from './w7SlideRun.ts';
-import { drawJarMeter, LanternRun } from './w8LanternRun.ts';
+import { drawJarMeter, jarFrame, jarHeroImage, LanternRun } from './w8LanternRun.ts';
 import { LANTERN_LINES } from './w8Lantern.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
 import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
@@ -750,6 +750,9 @@ export class GameEngine {
     this.chaseNext = 0;
     this.tide = this.proto?.tide ? newTide(this.proto.tide) : null;
     this.lanternRun = this.proto?.lantern ? new LanternRun(this.proto.lantern, isEasy()) : null;
+    // (8-4: Pokey carries the jar in his paws; every other stage, his plain frames)
+    const jarImg = this.lanternRun ? jarHeroImage() : null;
+    setJarHero(jarImg ? { img: jarImg, frame: jarFrame } : null);
     this.revealZoom = 1;
     this.revealHeard = false;
     setReveal(0, null);
@@ -5909,7 +5912,7 @@ export class GameEngine {
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     this.w4?.drawFront(ctx, this.platforms, this.gameTime);
-    this.lanternRun?.drawFront(ctx, this.player, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime);
+    this.lanternRun?.drawFront(ctx, { ...this.player, attacking: !!this.atk }, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime);
     if (this.mc) drawMeecaFront(ctx, this.mc, this.player, this.gameTime);
     this.w5?.drawFront(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight, zoom: this.zoom, hud: this.camera.y + (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom });
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
