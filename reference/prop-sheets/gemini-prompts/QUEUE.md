@@ -1,4 +1,10 @@
-# Gemini prompt queue for Matt (one at a time, each with one reference picture)
+# Art queue (was Matt's Gemini prompts; since 2026-10-29 ~1:10 PM ET every sheet is made on Hugging Face)
+
+Matt, 2026-10-29: "I've reloaded the Hugging Face. It has $91... I'm not going to do any more Google Gemini stuff." The prompts below are now
+the content spec for the Hugging Face art helpers (reference/HF-ART-BRIEF.md): 1, 2, 4, 4b on hf-art-blocking; 3 on hf-art-pokey; 5-12 on
+hf-art-stage; 13, 14, 25+ on hf-art-ground.
+
+(Original note:)
 
 Matt (2026-10-29): "I prefer one at a time prompts with a reference picture." The lead hands him the next prompt when the last sheet
 comes back (or when he says "next"). Reference pictures are in refs/, numbered to match. Every sheet is cut, checked on dark and against
