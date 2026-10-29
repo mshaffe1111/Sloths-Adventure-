@@ -205,8 +205,9 @@ export const PIT_CLIMB = 100;
 const STUMP_REACH = 90;
 /** the control test's line before its first two-jump gap (its words for the new look: dotLinesData.ts ctest.gap3) */
 export const CTEST_GAP3 = 'This one needs two jumps: jump, then jump again in the air';
-/** the long jumps' own tip (dotLinesData.ts ctest.gaps) */
-const CTEST_GAPS = 'Jump the gaps. The last two need a second jump';
+/** the long jumps' own tip, on the single jumps (dotLinesData.ts ctest.gaps; Matt, 2026-10-29: one line for each move, the second jump's
+ * at gap 3) */
+const CTEST_GAPS = 'Jump across the gaps';
 /** before the second jump is taught (1-1's stepping stones): how far below a stone's lower side a gap's floor sits, an easy single hop */
 export const PLAIN_CLIMB = 75;
 /** 1-1's practice shelf for the second jump: this far past the start of the twist (the tip is said at 60), and this high above the path */

@@ -480,7 +480,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["ctest.double", "ctest", "stage hint", "move", "Jump, then jump again in the air to cross", "Flick up, then again midair to cross.", null, "double-jump", "gap"],
   ["ctest.eagle", "ctest", "stage hint", "move", "An eagle is watching. Slide down inside a bush to hide", "Slide down in a bush to hide.", null, "slide-down", "nearest bush"],
   ["ctest.gap3", "ctest", "stage hint", "move", "This one needs two jumps: jump, then jump again in the air", "Flick up again midair to jump twice.", null, "double-jump", "far side of the gap"],
-  ["ctest.gaps", "ctest", "stage hint", "move", "Jump the gaps. The last two need a second jump", "Flick up again midair for the last two.", null, "double-jump", "last two gaps"],
+  ["ctest.gaps", "ctest", "stage hint", "move", "Jump across the gaps", "Flick up to jump the gaps.", null, "flick-up", "gap edge"],
   ["ctest.guard", "ctest", "stage hint", "move", "A guard! Wait for it to strike, then punch it", "Tap to punch it after it strikes.", null, "tap", "boa guard"],
   ["ctest.highVines", "ctest", "stage hint", "move", "Climb the tree, then swing across the vines", "Slide up the tree, then swing across.", null, "climb-up", "trunk"],
   ["ctest.hops", "ctest", "stage hint", "move", "Hop up the stumps", "Flick up to hop up the stumps.", null, "flick-up", "stumps"],
