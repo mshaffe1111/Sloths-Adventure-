@@ -17,6 +17,8 @@ export const MIN_TOUCH_JUMP_HOLD_MS = 220;
  */
 export const pressKeep = (): number => (isEasy() ? FORGIVE.easy.buffer : FORGIVE.normal.buffer) + 1 / 30;
 
+const TOUCH_EVENTS = ['touchstart', 'touchend', 'touchcancel'] as const;
+
 export class InputEngine {
   public state: InputState = {
     left: false,
@@ -103,7 +105,15 @@ export class InputEngine {
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('blur', this.handleBlur);
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    // (fingers on the glass, counted before any other handler sees the touch: a blur while one is down is not a lost touch, handleBlur)
+    for (const t of TOUCH_EVENTS) window.addEventListener(t, this.countTouches, { capture: true, passive: true });
   }
+
+  /** how many fingers are on the glass (the browser's own count, from every touch event) */
+  public touchesDown = 0;
+  private countTouches = (e: TouchEvent) => {
+    this.touchesDown = e.touches?.length ?? 0;
+  };
 
   private handleKeyDown = (e: KeyboardEvent) => {
     const key = e.code;
@@ -183,10 +193,23 @@ export class InputEngine {
     if (key === 'KeyL' || key === 'ShiftLeft' || key === 'ShiftRight') this.setHold('keys', false);
   };
 
+  /**
+   * The page lost focus. Keys held down never send their key-up then, so everything held is dropped and the touch recogniser forgets its
+   * fingers. But not while a finger is on the glass and the page still shows: Facebook's in-app browser on an iPhone blurs the page
+   * 100-130 ms into every touch (QA 2026-10-28, session 347v: every slide steered for 1 ms, then this let go of it, and Pokey never moved
+   * in 37 s). Those fingers still end or cancel by themselves (TouchController.tsx, and its safety net when the last one lifts), and a
+   * page that really goes away is hidden first (handleVisibilityChange).
+   */
   private handleBlur = () => {
+    if (this.touchesDown > 0 && !document.hidden) {
+      this.onBlurKept?.();
+      return;
+    }
     this.clearAll();
     this.onFocusLost?.();
   };
+  /** a blur was let pass because a finger was down (the control test logs it) */
+  public onBlurKept: (() => void) | null = null;
 
   private handleVisibilityChange = () => {
     if (document.hidden) {
@@ -520,5 +543,6 @@ export class InputEngine {
     window.removeEventListener('keyup', this.handleKeyUp);
     window.removeEventListener('blur', this.handleBlur);
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    for (const t of TOUCH_EVENTS) window.removeEventListener(t, this.countTouches, { capture: true });
   }
 }

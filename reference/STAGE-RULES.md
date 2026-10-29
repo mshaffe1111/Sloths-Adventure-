@@ -6,7 +6,7 @@ recommendation with its status in the game and what is next), and every mistake 
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
-Last updated 2026-10-29.
+Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
 
 ---
 
@@ -346,10 +346,29 @@ plan); never ship the rough version as finished.
     to belongs in the generator and in curation's filters too, not only in a test that runs after. And CLAUDE.md's suite command does not
     reach `src/game/gen2/`, so run both: the full suite and `npx tsx --test src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts`.
 
+- **A vertical climb with water under it: every fall is the water** (6-8 Stilt Climb, 2026-10-29). The first build kept the rising tide
+  about 240 px under Pokey, and the first-timer bot drowned 2-6 times a minute: not the tide catching a still player, but missed hops and
+  lianas falling a row or two into it, plus walking off the outer end of a shelf past its root. What fixed it (World 6's band, 0.2 lives a
+  minute on Easy, 1.2-1.7 on Normal): the water waits more than a row below him and only creeps when close (`risingTide.ts`); a catch
+  under every hop's gap and every liana (a root back up to the liana's own ledge, never a short cut: `w6Stages.test.ts`); shelves run on
+  past the root at their end, to the stage's edge when it is near. And two placement traps a 2-D zig-zag sets that a left-to-right stage
+  never does: a liana's anchor at the height of a shelf above (pressing up there for a root grabs the liana instead), and two roots in
+  line (holding up runs on past the shelf into the next one). The stage's tests check both, and play every root and hop in the real
+  engine. The first-timer bot doesn't climb back out of a catch, so on climbs (4-1 too) it runs out its 6 minutes: read its lives a minute
+  and its stuck spots, not whether it finished.
+- **Ledges in the air: nothing floats** (6-8 v4, the lead's review, 2026-10-29). A stump, root arch or den (and any slab on spreading
+  roots) grows out of the ground: hung in mid-air it looks wrong, however varied the pieces. It goes only where its own roots stand on
+  the ledge under it or it stands on stilt posts (two, never one balanced pole); every stretch of a plank or log is held by a climbing
+  root, a post, a brace to a trunk or a rope. Don't run a post from every plank down to the water: about 90 poles a stage read as a
+  cage. Short holds to what is near, long posts only where nothing is (the crown). Check it in `w6Stages.test.ts` ("nothing floats").
+  Posts are the ledge set's own lashed stilts, never the plain gauge post: those read as grey pipes, all one width (v5).
+  World 6's ledge set (`src/assets/w6/ledges.webp`) has the supports painted on: lay its tall piece cut off where the supports reach
+  the ledge under it (`SET_ROWS` says where they are at each depth), so one picture fits any drop.
+
 ## 7. Where things are
 
 - Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's
-  stage (`5-M`) via `extraStages.ts`; 5-7 and 5-9 from the new generator (`src/game/gen2/`, its 16 curated rolls each: `gen2/game.ts`); 5-6, 5-8 and
+  stage (`5-M`) via `extraStages.ts`; 6-8 Stilt Climb in `src/game/w6Stages.ts` (its rising tide: `risingTide.ts`); 5-7 and 5-9 from the new generator (`src/game/gen2/`, its 16 curated rolls each: `gen2/game.ts`); 5-6, 5-8 and
   Worlds 6-10 from the old `stageGenerator.ts` (to be replaced by the new generator). Stage names and goals: `stagePlan.ts`. The validator: `levelCheck.ts`. Stage length: `stageTime.ts`.
 - The inspector: `tools/inspect/` (README in `tools/README.md`). Matt's art sheets: `reference/prop-sheets/`. Story:
   `reference/STORY-REVIEW-2026-10-27.md`, `reference/VOICE.md`. Everything else: `reference/HANDOFF.md`.

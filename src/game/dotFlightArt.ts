@@ -49,6 +49,12 @@ function back(n: BackName): HTMLImageElement | null {
   return b.ok ? b.im : null;
 }
 
+/** whether her pieces have loaded (starts the load): World 5's web patches draw her silk too (zoneArt.ts) */
+export function dotPropsReady(): boolean {
+  load();
+  return ready && !!img;
+}
+
 /** start loading her pieces, her frames and the paintings the stage uses */
 export function warmDotFlight(st: DotStage) {
   load();

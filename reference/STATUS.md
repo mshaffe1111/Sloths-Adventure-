@@ -1,28 +1,39 @@
 # Status board (the lead session keeps this current; see reference/LEAD-PLAYBOOK.md)
 
-Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
+Last updated: 2026-10-29 3:00 PM ET (supervision round).
 
+Every polish-report item, with its owner and status: reference/polish-report/TRACKER.md (keep it current with this board).
 ## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
 
 Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as on 2026-10-28. Effort levels still by job (LEAD-PLAYBOOK §7).
 
 | Job | Who | Branch | Notes |
 |---|---|---|---|
-| 6-8 Stilt Climb (W6 special, hand-built) | cloud session_01FhBbYMt17qa4tAv8V6jvxN | w6-stilt-climb | mock-up first, then stops for Matt |
-| World 7 kit, ground/crumble, hook-up, curation | cloud session_01FhBbYNKK8iPP5FQajUs6u5 | gen2-w7 | Pokey teaches himself (Dot absent) |
+| 6-8 Stilt Climb (W6 special, hand-built) | cloud session_01FhBbYMt17qa4tAv8V6jvxN | w6-stilt-climb | mock-up first, then stops for Matt v3 reviewed 12:40 PM ET: variety and upright framing PASS; sent back floating stumps/dens (support rule), the start bank cut, the crown row. Ledge set prompt queued for Matt (4b) |
+| World 7 kit, ground/crumble, hook-up, curation | cloud session_01FhBbYNKK8iPP5FQajUs6u5 | gen2-w7 | Pokey teaches himself (Dot absent) | round 3 reviewed 3:00 PM ET: chairs/sentry/anchors/walls PASS; sent back the repeated "Brown vines" line, patchwork bank faces (use hf-art-ground soil), floating slabs, one plain wall strip (HF), 7-5 sentry meeting |
 | World 7 swings + rooms | cloud session_01FhBbYL6bqh18b851MMeCgA | gen2-w7-swing | merges into gen2-w7 before curation |
-| World 8 kit, ground/darkness, hook-up, curation | cloud session_01FhBbYL7oX9aYPA1U8CKGQ9 | gen2-w8 | lantern + fireflies |
+| World 8 kit, ground/darkness, hook-up, curation | cloud session_01FhBbYL7oX9aYPA1U8CKGQ9 | gen2-w8 | lantern + fireflies reviewed 12:45 PM ET (mid-curation): sent back Dot spoiler lines on room entry, boxes in the dark, glowing square spike block, black void upright; bounce mushrooms to HF |
 | World 8 swings + rooms | cloud session_01FhBbYM8NXWsJ1fXfGP892s | gen2-w8-swing | merges into gen2-w8 before curation |
 | QA leftovers 2-6 (tip timing, plank ends), 3-3 counter | cloud session_01FhBbYMWcFJmuZ592k3J1vs | qa-fix-w123b | |
 | Better look-alike measure (Matt chose it over relaxing the rule) | cloud session_01FhBbYKxYezKsEn4iBnvKHP | gen2-lookalike | era + curate share one measure; W7/W8 switch on merge |
 | Art pickup: HF creatures + Gemini sheets cut-in | local helper (worktree) | art-pickup | no new HF spend |
 | Swimming (Matt: build it, first swim in 6-7's well; calm water from w6/water.jpg) | cloud session_01FhBbYJzbeg3VTVJMDHy4EK | swim | dirty/fast stays deadly |
-| Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | v3 reviewed 12:20 PM ET: web patch + swing ring PASS; falls FAIL (straight cyan pillars, no lip, clash with backdrop). Waiting on Matt's Gemini falls sheet (prompt: reference/prop-sheets/gemini-prompts/w4-waterfalls.md) |
-| 7-4 The Slide (W7 special; Matt: NOT a climb: side-on run, floor crumbles, behind-the-back slide, steer and jump; art: slomatt/02_sliding-from-behind) | cloud session_01FhBbYJXeB8XaDrrUgxfuHR | w7-slide | mock-up first |
-| Polish A1: picture and screens (VI-2, AN-4, VI-3, VI-4, VI-7, ST-1 code, UI-1, UI-3, UI-11, UI-14, LV-1) | cloud session_01FhBbYLAhepkzSTfrwKHSBm | polish-a1 | reference/polish-report/PLAN.md |
+| Painted swaps where art exists (spore mushrooms, web patches, 4-3 log) | cloud session_01FhBbYKjmhzsBKK3zWd2cgB | painted-swaps | v3 reviewed 12:20 PM ET: web patch + swing ring PASS; falls FAIL (straight cyan pillars, no lip, clash with backdrop). Waiting on Matt's Gemini falls sheet (prompt: reference/prop-sheets/gemini-prompts/w4-waterfalls.md) | v4 PASSED 2:45 PM ET (HF falls); merging with web + swing after the gate |
+| 7-4 The Slide (W7 special; Matt: NOT a climb: side-on run, floor crumbles, behind-the-back slide, steer and jump; art: slomatt/02_sliding-from-behind) | cloud session_01FhBbYJXeB8XaDrrUgxfuHR | w7-slide | v5 17e7f89 PASS 3:30 PM ET (HF 2x Pokey, empty paws, both leans, fixes); stills and clip sent to Matt; merge after gate3 |
+| Polish A1: picture and screens (VI-2, AN-4, VI-3, VI-4, VI-7, ST-1 code, UI-1, UI-3, UI-11, UI-14, LV-1) | cloud session_01FhBbYLAhepkzSTfrwKHSBm | polish-a1 | reference/polish-report/PLAN.md spot-checked 12:50 PM ET: win card, confetti, mode chip, map, text sizes PASS; asked about clipped story text upright and a see-through 7-1 figure |
 | Polish A2: levels, sound (LV-6/9/11/12/13, CT-8 step 1, CT-20, SN-2/5/6/7, AN-9; its Dot items moved to the Dot helper) | cloud session_01FhBbYPEyi9ZZvvRqRyf8wK | polish-a2 | |
-| Dot rework (Matt: "constantly nagging", "gives away the puzzle", "weird blue box/circle"): Tips speaks only first-times, water, locked exits, real struggle; >=30 s gaps; no answers on room entry; no highlight boxes, Dot perches on the object; DOT-1..17 | cloud session_01FhBbYKJkZarvUhKDPsuRvk | polish-dot | before/after preview first |
+| Dot rework (Matt: "constantly nagging", "gives away the puzzle", "weird blue box/circle"): Tips speaks only first-times, water, locked exits, real struggle; >=30 s gaps; no answers on room entry; no highlight boxes, Dot perches on the object; DOT-1..17 | cloud session_01FhBbYKJkZarvUhKDPsuRvk | polish-dot | before/after preview first added 12:50 PM ET: no box over Pokey (wayside placement, hold during reveals); floating world-space lesson labels game-wide |
 | Music and sound (Matt: "repetitive or boring", "wrong feel for the world", effects "more tied into the game"): song forms with sections and variations per stage, adaptive layers (danger, dark, puzzle rooms, bosses, story), the SN-3 missing effects, SN-8 loop seams, SN-9 ambience, SN-10 boss card; A2 keeps only SN-2/5/6/7 loudness via sfx.ts TRIMS | cloud session_01FhBbYMtoVBrf58j7276oA4 | polish-audio | listenable before/after previews first (reference/audio-previews/v1/) |
+| QA batch E fixes: replay drops to 2 fps (Sally, seed 56672, Short hops), Facebook iPhone frozen start after skipOffer (Age), opening difficulty options (Matt decides), mid-run sheet-load stalls | cloud session_01FhBbYJnGzLi5a2LUwVEvaw | qa-fix-e | started 12:18 PM ET |
+| HF art 1, blocking sheets: W7 vine anchors, W7 temple walls, W4 waterfalls + wet pillar, W6 ledge set ($10 cap) | local agent (worktree) | hf-art-blocking | started 1:10 PM ET; art only, owners wire | DONE, passed, MERGED 2:05 PM ET; owners wiring |
+| HF art 2, every-stage pieces: checkpoint marker, exit gate per world, pit water W1/3/4/5, thorn gate, pickups, 4-8 netting + painted nests, story finds ($14 cap) | local agent (worktree) | hf-art-stage | started 1:10 PM ET; report 3:25 PM ET (4bbee96, $1.17): flag, shut gates, pickups, thorn gate, finds PASS; sent back the open gates (dark hole), the 4-8 net (too big, covers Pokey), W5 water repeat, journal preload |
+| HF art 3, ground and World 5: soil textures + lip + bank per world with the VI-8 code, W5 props + water sign, W5 dressing sets, W6 water repaint ($14 cap) | local agent (worktree) | hf-art-ground | started 1:10 PM ET; makes and wires | moved to its own cloud session session_01FhBbYMb4PGpZ7nUd2Eyre1 at 2:50 PM ET (Matt: helpers get their own machine) |
+| HF art 4, Pokey: swim satchel fix (tread, under), 7-4 pole stubs painted out + 2x upscale; pokey LoRA v2 only if asked ($12 cap) | local agent (worktree) | hf-art-pokey | started 1:10 PM ET | DONE, passed 2:50 PM ET (swim satchel, 7-4 paws + 2x); merge after the gate; slide builder wiring |
+| 7-3 ring of chairs (HF, ~$0.25) | local agent (worktree) | hf-w7-chairs | DONE, passed, MERGED into ccr 1:25 PM ET; gen2-w7 wires |
+| HF art 5, bosses and effects: lairs (wire 6 unused + 3 new plates), shared warning marker, boss effects, dust/sparks, Venom Fang, Queen clips, shimmy ropes, 4-D/5-M bits ($10 cap) | local agent (worktree) | hf-art-bosses | started 1:30 PM ET | moved to its own cloud session session_01FhBbYMvPygG5P2B8VV2Fzu at 2:50 PM ET; round 4 a29669d ($1.49 total) PASS 3:35 PM ET except the name card clipping upright and the Queen's tea beat (sent back) |
+| HF art 6, native-resolution near/mid backdrops W1-5 first, into src/assets/backdrops-hd/ (swap after polish-edges) ($10 cap) | local agent (worktree) | hf-art-backdrops | started 1:30 PM ET |
+| Polish C, screens and feel: UI-2, AN-11, UI-5, UI-9, UI-10, UI-12, UI-13, UI-15, AN-6, AN-10, PF-3 | cloud session_01FhBbYJojJwqFxv2u9mo8uR | polish-c | started 1:35 PM ET; big screen changes shown first |
+| Polish levels: LV-8, LV-14, LV-4, LV-5, LV-7, LV-15, then LV-2 (proposal first) | cloud session_01FhBbYLyE75iwttyDZRWPxT | polish-levels | started 1:35 PM ET |
 | Polish B1: controls never misread (CT-1..4, 6, 7, 9, 10, 12; CT-5 waits for Matt) | cloud session_01FhBbYKmJjBAbBHVVVBnhLE | polish-controls | replay tester touches |
 | Polish B2: clean backdrop edges (VI-1, VI-5, VI-6) | cloud session_01FhBbYNmvX29Yt9L2XxEWqJ | polish-edges | |
 | Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
@@ -35,7 +46,7 @@ painted); rope traverse (helper running); W4 waterfalls (code on purpose); web p
 no art: HF list); 4-3's pool log (painted log exists, unused). SWIMMING DOES NOT EXIST in the game yet (pokey-swim sheets are in
 reference/animation-sheets/pokey-swim/, not wired); question to Matt.
 
-Hugging Face: about $12 left (Matt, 2026-10-29: "any art that we need, use that"). Plan: one run for the props/creatures/backdrops the
+Hugging Face: Matt reloaded it to $91 (2026-10-29 ~1:05 PM ET): ALL art from Hugging Face, no more Gemini; music may use it too (polish-audio, $15 round). Wave 1 caps: $10+$14+$14+$12. Earlier: about $12 left (Matt, 2026-10-29: "any art that we need, use that"). Plan: one run for the props/creatures/backdrops the
 World 7 and 8 builders and the code-drawn-looks audit list (img2img from the world kits, as the W6-10 prop run); Pokey and story characters
 stay Gemini (Pokey drifts off model on HF). Stop new jobs at $1 left.
 

@@ -19,7 +19,7 @@ import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
-import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, SAFE } from './physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
 import { validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
@@ -38,6 +38,7 @@ import { DOT_HELP, KNOT_TEACH, type Chime, type DotKnot } from './w4Kit.ts';
 import { buildWaterfallSteps } from './w4Stage43.ts';
 import type { CliffNest, NestKind } from './w4Nests.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
+import { buildStiltClimb } from './w6Stages.ts';
 import { buildAerie } from './w4Stage49.ts';
 import { buildW5Stage } from './w5Stages.ts';
 import { buildW5Stage54 } from './w5Stage54.ts';
@@ -52,8 +53,8 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
 
@@ -107,6 +108,19 @@ export interface ProtoExtras {
   ring?: { x0: number; x1: number; wallId: number; waves: Array<Array<{ x: number; surface: number; kind: 'snake' | 'boa' | 'ocelot' | 'jaguar' }>> };
   /** the collapse that chases him along the long branch (1-8: chase.ts) */
   chase?: import('./chase.ts').ChasePlan;
+  /** the dirty tide that comes in under him as he climbs (6-8: risingTide.ts) */
+  tide?: import('./risingTide.ts').TidePlan;
+  /**
+   * the top of a climb opening onto the next world (6-8: the ruins of World 7): from height `from` to `full` (world y) the backdrop turns
+   * to `strips` (backdrop stems) in golden light, loaded once he is above `load`; standing on the crown (`crown`, its top) the view pulls back
+   */
+  reveal?: { from: number; full: number; load: number; crown: number; strips: { far: string; mid: string; near: string } };
+  /** 6-8's dressing from Matt's painted World 6 pieces: hides and arches on the shelves, the root wall behind (w6StiltArt.ts) */
+  stilt?: import('./w6StiltArt.ts').StiltDecor[];
+  /** 6-8's ledges painted in Matt's other World 6 pieces (their platforms are art 'stilt': w6StiltArt.ts) */
+  stiltLedges?: import('./w6StiltArt.ts').StiltLedge[];
+  /** a stage that shows more of the world than usual (engine applyZoom: world px tall sideways, wide upright), as 4-7's w4.view */
+  view?: { land: number; port: number };
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
   bushes?: import('./watcher.ts').Bush[];
   watch?: import('./watcher.ts').WatchZone[];
@@ -203,6 +217,11 @@ export const PIT_ESCAPE = 170;
 export const PIT_CLIMB = 100;
 /** the tallest stump one jump from the ground climbs with room to spare */
 const STUMP_REACH = 90;
+/** the control test's line before its first two-jump gap (its words for the new look: dotLinesData.ts ctest.gap3) */
+export const CTEST_GAP3 = 'This one needs two jumps: jump, then jump again in the air';
+/** the long jumps' own tip, on the single jumps (dotLinesData.ts ctest.gaps; Matt, 2026-10-29: one line for each move, the second jump's
+ * at gap 3) */
+const CTEST_GAPS = 'Jump across the gaps';
 /** before the second jump is taught (1-1's stepping stones): how far below a stone's lower side a gap's floor sits, an easy single hop */
 export const PLAIN_CLIMB = 75;
 /** 1-1's practice shelf for the second jump: this far past the start of the twist (the tip is said at 60), and this high above the path */
@@ -291,8 +310,8 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * where the snakes sit, the order of the pieces inside a beat, and the dressing. Every rolled piece is checked against the physics
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
-export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
-  const st = buildPlan(config, seed, plan);
+export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto', easy = false): GeneratedStage & { proto: ProtoExtras } {
+  const st = buildPlan(config, seed, plan, easy);
   // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
   const w = config.worldIndex;
   if ((w === 3 || w === 4) && /^[34]-[1-9]$/.test(plan) || (w === 1 && /^1-[467]$/.test(config.id))) {
@@ -302,7 +321,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   return st;
 }
 
-function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): GeneratedStage & { proto: ProtoExtras } {
+/** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */
+function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = false): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
@@ -313,6 +333,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   if (plan === '5-1' || plan === '5-2' || plan === '5-3') return buildW5Stage(config, seed, plan);
   if (plan === '5-4') return buildW5Stage54(config, seed);
   if (plan === '5-5') return buildW5Stage(config, seed, plan);
+  if (plan === '6-8') return buildStiltClimb(config, seed);
   if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
@@ -872,16 +893,32 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   function gaps() {
     const x0 = x;
     run(R.r(200, 260));
-    const one = reachJump(0, false), two = reachJump(0, true);
-    for (const w of [one * 0.5, one * 0.75, two * 0.7, two * 0.85]) {
+    // (Easy's own reach, a thumb that lets go at about 70%, physics.ts EASY_HOLD: 73 / 109 / 200 / 242 px where Normal's are 87 / 131 /
+    // 219 / 267, which on Easy were 90% of a single jump and 94% of a double; QA batch E, 2026-10-29, every new player fell back here, and
+    // Matt chose this with the flags below)
+    const reach = easy ? reachJumpHeld : reachJump;
+    const one = reach(0, false), two = reach(0, true);
+    const ws = [one * 0.5, one * 0.75, two * 0.7, two * 0.85];
+    ws.forEach((w, k) => {
       const edge = x;
       close();
       const far = Math.round(edge + w);
       softPit(edge, far);
       flower(edge + w / 2, G - 120, 'hibiscus');
       open(far);
+      // a flag on the far bank once the single jumps are done, and another before the last gap, so a missed double jump starts again
+      // just before it (there was none for 2,100 px on Normal)
+      if (k === 1 || k === 2) checkpoints.push({ x: far + 70, y: G, reached: false });
+      // and Dot teaches the second jump on the bank before the first gap that needs it, once he stands on it (never mid-jump: belowY
+      // waits for him on the ground), the first time on this phone (Matt, 2026-10-29: the kids missed gaps 3 and 4 with one jump)
+      // (the stretch's own tip, on the same move, comes down there, or it held the bubble until after his try at the gap: passX)
+      if (k === 1) {
+        const intro = hints.find((h) => h.text === CTEST_GAPS);
+        if (intro) intro.passX = far + 20;
+        hint(far + 20, CTEST_GAP3, CTEST_GAP3, CTEST_GAP3, G - 4);
+      }
       run(R.r(260, 320));
-    }
+    });
     expert += (x - x0) / RUN + 2;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
@@ -2220,7 +2257,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
     });
     beat('Long jumps', () => {
-      hint(x + 60, 'Jump the gaps. The last two need a second jump');
+      hint(x + 60, CTEST_GAPS);
       gaps();
       flag();
     });

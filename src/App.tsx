@@ -2,6 +2,8 @@ import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { GameScreen, LevelConfig, BossEntity } from './game/types.ts';
 import { generateAllLevels } from './game/worldsData.ts';
+import { mergeBest, type StageBest } from './game/stageBest.ts';
+import { runDifficulty, startRun } from './game/difficulty.ts';
 import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
 import { enterWorld } from './game/atlasLoader.ts';
@@ -254,6 +256,8 @@ export default function App() {
   // Initialize Input Engine once
   useEffect(() => {
     inputEngineRef.current = new InputEngine();
+    // (the control test: a blur that came while a finger was down, and was let pass: inputEngine.ts handleBlur)
+    inputEngineRef.current.onBlurKept = () => recorder.glitch('blurKept', `fingers ${inputEngineRef.current?.touchesDown ?? 0}`);
     return () => {
       inputEngineRef.current?.destroy();
     };
@@ -510,7 +514,8 @@ export default function App() {
     };
   }
 
-  // dev only: the running engine, for screenshots and tests
+  // dev only: the running engine, for screenshots and tests (the one hook: the engine used to set window.__engine to itself as it was
+  // made, which replaced this function with an engine object, so a script's __engine() threw after a Play again)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __engine?: () => unknown }).__engine = () => engineRef.current;
   }
@@ -533,6 +538,21 @@ export default function App() {
     };
   }
 
+  // dev only: the stage-cleared card for a stage with this many stars, as if it had just been won (for screenshots)
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __win?: (id: string, stars: number) => void }).__win = (id: string, stars: number) => {
+      const lvl = allLevels.find((l) => l.id === id);
+      if (!lvl) return;
+      setActiveLevel(lvl);
+      setStarsEarned(stars);
+      setClearTime(154);
+      setScore(4210);
+      setNewBest(true);
+      setLastStats({ win: true, stars, livesLost: 0, heartsLost: 1, floraTotal: 36, floraCollected: 31, timeSec: 154, timeLimit: 300, maxStompChain: 2, maxCombo: 3, stomps: 4, kills: { snake: 3, frog: 2 }, seen: [], id } as StageStats);
+      setScreen('victory');
+    };
+  }
+
   // dev only: show the new-medal toast for these medal ids (for screenshots)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __medals?: (ids: string[]) => void }).__medals = (ids: string[]) => setFreshBadges(BADGES.filter((b) => ids.includes(b.id)));
@@ -545,6 +565,30 @@ export default function App() {
     else if (screen === 'world_story' || screen === 'boss_intro') void preloadStage(activeLevel, canvasRef.current, inPlay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, activeLevel.id]);
+
+  // the control test's stage: 1-2, asking only to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
+  const ctestLevel = (): LevelConfig | null => {
+    const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
+    return base ? { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 } : null;
+  };
+  // and its sheets, loaded, decoded and drawn once while the tester reads the front page and types a name: started only at Start, a slow
+  // connection had the eagle's and the snakes' sheets arrive mid-run and stall the frames they first drew in (QA 2026-10-29, Safari 18,
+  // 130-220 ms right after each 'sheet' line)
+  useEffect(() => {
+    if (!ctestGate) return;
+    const lvl = ctestLevel();
+    if (lvl) void preloadStage(lvl, canvasRef.current, inPlay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctestGate]);
+
+  // the questions after a control-test run are up: the next run's mix is chosen now, and its sheets loaded while they are answered (the
+  // last mix's creatures that this one does not draw are let go first: stagePreload.ts)
+  useEffect(() => {
+    if (!ctestDone) return;
+    newMix();
+    void preloadStage(ctestDone, canvasRef.current, inPlay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctestDone]);
 
   // World 8's flashback (the promise) plays inside its world card: it counts as seen once that card opens
   useEffect(() => {
@@ -602,6 +646,8 @@ export default function App() {
     // the stage's picture sheets, loaded and decoded behind the menu (stagePreload.ts): what is still on its way gets a moment more,
     // so the first frames of play are not the browser decoding a 10 to 20 MB sheet (QA's 376 to 472 ms freezes as a stage began)
     const seq = ++launchSeq.current;
+    // (the mode this run is played on: a change in the menu applies from the next stage, so this is the one its results are kept with)
+    startRun();
     void readyToStart(lvl, canvasRef.current, inPlay).then(() => {
       if (seq !== launchSeq.current) return;
       // Slight delay to allow canvas element mounting
@@ -662,7 +708,10 @@ export default function App() {
             setScore(finalScore);
 
             // the control test is over at its shrine: thank the tester (nothing is saved, and the game does not go on to 1-3)
+            // (and the stage stops: under the questions it kept drawing 30 times a second for as long as they took, minutes, and on Sally's
+            // Android the frames there slowed and the picture dropped to its lightest before the replay, QA 2026-10-29)
             if (ctestEnabled() && lvl.id === CTEST_STAGE_ID) {
+              engine.stop();
               setCtestDone(lvl);
               return;
             }
@@ -723,7 +772,7 @@ export default function App() {
   const saveLevelProgress = (id: string, stars: number, lvlScore: number, bestTime: number) => {
     try {
       // keep the player's best: a worse replay must never overwrite a better stored result
-      let prevStored: { stars?: number; highScore?: number; bestTime?: number } = {};
+      let prevStored: Partial<StageBest> = {};
       try {
         const raw = localStorage.getItem(`sloth_lvl_${id}`);
         const parsed = raw ? JSON.parse(raw) : null;
@@ -735,13 +784,8 @@ export default function App() {
       const prevScore = typeof prevStored.highScore === 'number' ? prevStored.highScore : 0;
       setNewBest(lvlScore > prevScore);
       setBestScore(Math.max(prevScore, lvlScore));
-      const prevTime = typeof prevStored.bestTime === 'number' && prevStored.bestTime > 0 ? prevStored.bestTime : 0;
-      const saved = {
-        completed: true,
-        stars: Math.max(prevStored.stars ?? 0, stars),
-        highScore: Math.max(prevStored.highScore ?? 0, lvlScore),
-        bestTime: prevTime === 0 ? bestTime : bestTime > 0 ? Math.min(prevTime, bestTime) : prevTime,
-      };
+      // (each best is kept with the mode it was set on: stageBest.ts, LV-1)
+      const saved = mergeBest(prevStored, { stars, score: lvlScore, time: bestTime }, runDifficulty());
       localStorage.setItem(`sloth_lvl_${id}`, JSON.stringify(saved));
       askToKeepStorage();
       setNewSkills(newlyLearned(id, skillsBefore));
@@ -874,9 +918,7 @@ export default function App() {
           onStart={() => {
             setCtestGate(false);
             setRecording(true);
-            const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
-            // the test only asks him to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
-            const lvl = base && { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 };
+            const lvl = ctestLevel();
             if (lvl) {
               setActiveLevel(lvl);
               setSelectedWorldId(lvl.worldIndex);
@@ -890,7 +932,7 @@ export default function App() {
           onDone={() => {
             // ending early: note where he was, stop the stage, and go to the questions
             recorder.event('quit');
-            engineRef.current?.pause();
+            engineRef.current?.stop();
             setCtestDone(activeLevel);
           }}
         />
@@ -902,8 +944,7 @@ export default function App() {
             const lvl = ctestDone;
             setCtestDone(null);
             recorder.event('playAgain');
-            // a new mix of stretches for the next run
-            newMix();
+            // (the new mix was chosen, and its sheets loaded, while the questions were up: the effect below)
             launchEngine(lvl);
           }}
         />

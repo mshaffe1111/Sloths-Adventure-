@@ -5,7 +5,7 @@ falling from nowhere, and clash with the soft white painted falls in the World 4
 waterfall (left side of painted-swaps/v3/falls-wide-after-sideways.png) for the look, and painted-swaps/v3/poollog-after-sideways.png
 for where they sit.
 
-> Make a sprite sheet for a cute hand-painted 2D side-scrolling jungle platformer, in exactly the style of the first attached picture:
+> Make a sprite sheet for a cute hand-painted 2D side-scrolling jungle platformer, in exactly the style of the waterfalls in the attached picture:
 > soft cel shading, gentle dark outlines, white water with soft blue-grey shadow streaks, misty and slightly see-through. Flat pure
 > magenta (#FF00FF) background, every piece separate with wide magenta gaps, all side-on, no text, no characters.
 > 1. Three tall waterfall bodies of different widths (narrow, medium, wide), each about 1:4 tall, that repeat seamlessly top to bottom.

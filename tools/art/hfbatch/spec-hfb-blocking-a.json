@@ -1,0 +1,202 @@
+{
+ "note": "hf-art-blocking batch (W7 anchors and walls, W4 falls, W6 ledges) by img2img from blockstart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, sloth character",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1a57dda0dd577b1d2579ee1e6d615385cb0bb3a8/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w7anchors-a-s55-5",
+   "start": "start-w7anchors.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet: four separate broken ends of carved stone temple lintels from an ancient ruined jungle temple, each a heavy grey-green weathered stone beam with a carved key pattern band, its top edge cut off flat as if it runs on above the screen, one end broken off rough and jagged with chips and cracks, soft green moss and a few dry brown leaves on it. A thick brown liana is knotted round each beam in several tight wraps with a big knot under the beam and a short loose end, then hangs straight down out of the bottom of the frame. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1216,
+   "h": 896
+  },
+  {
+   "name": "w7anchors-a-s55-17",
+   "start": "start-w7anchors.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet: four separate broken ends of carved stone temple lintels from an ancient ruined jungle temple, each a heavy grey-green weathered stone beam with a carved key pattern band, its top edge cut off flat as if it runs on above the screen, one end broken off rough and jagged with chips and cracks, soft green moss and a few dry brown leaves on it. A thick brown liana is knotted round each beam in several tight wraps with a big knot under the beam and a short loose end, then hangs straight down out of the bottom of the frame. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1216,
+   "h": 896
+  },
+  {
+   "name": "w7anchors-a-s68-5",
+   "start": "start-w7anchors.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet: four separate broken ends of carved stone temple lintels from an ancient ruined jungle temple, each a heavy grey-green weathered stone beam with a carved key pattern band, its top edge cut off flat as if it runs on above the screen, one end broken off rough and jagged with chips and cracks, soft green moss and a few dry brown leaves on it. A thick brown liana is knotted round each beam in several tight wraps with a big knot under the beam and a short loose end, then hangs straight down out of the bottom of the frame. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.68,
+   "seed": 5,
+   "w": 1216,
+   "h": 896
+  },
+  {
+   "name": "w7anchors-a-s68-17",
+   "start": "start-w7anchors.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet: four separate broken ends of carved stone temple lintels from an ancient ruined jungle temple, each a heavy grey-green weathered stone beam with a carved key pattern band, its top edge cut off flat as if it runs on above the screen, one end broken off rough and jagged with chips and cracks, soft green moss and a few dry brown leaves on it. A thick brown liana is knotted round each beam in several tight wraps with a big knot under the beam and a short loose end, then hangs straight down out of the bottom of the frame. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.68,
+   "seed": 17,
+   "w": 1216,
+   "h": 896
+  },
+  {
+   "name": "w7walls-a-s55-5",
+   "start": "start-w7walls.webp",
+   "prompt": "slothadv style, painted storybook illustration, four tall vertical strips of ruined jungle temple wall for a 2D platform game, each strip filled edge to edge: weathered grey-green stone blocks of mixed sizes with dark mortar joints, carved key-pattern meander bands, cracks and chipped corners, a thin dry brown fig root creeping down, soft green moss creeping down over the block edges; the third strip has an old worn carved stone face of a sloth in the stone, eroded and mossy. Flat front-on wall texture. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1280,
+   "h": 1216,
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, living animal"
+  },
+  {
+   "name": "w7walls-a-s55-17",
+   "start": "start-w7walls.webp",
+   "prompt": "slothadv style, painted storybook illustration, four tall vertical strips of ruined jungle temple wall for a 2D platform game, each strip filled edge to edge: weathered grey-green stone blocks of mixed sizes with dark mortar joints, carved key-pattern meander bands, cracks and chipped corners, a thin dry brown fig root creeping down, soft green moss creeping down over the block edges; the third strip has an old worn carved stone face of a sloth in the stone, eroded and mossy. Flat front-on wall texture. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1280,
+   "h": 1216,
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, living animal"
+  },
+  {
+   "name": "w7walls-a-s68-5",
+   "start": "start-w7walls.webp",
+   "prompt": "slothadv style, painted storybook illustration, four tall vertical strips of ruined jungle temple wall for a 2D platform game, each strip filled edge to edge: weathered grey-green stone blocks of mixed sizes with dark mortar joints, carved key-pattern meander bands, cracks and chipped corners, a thin dry brown fig root creeping down, soft green moss creeping down over the block edges; the third strip has an old worn carved stone face of a sloth in the stone, eroded and mossy. Flat front-on wall texture. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.68,
+   "seed": 5,
+   "w": 1280,
+   "h": 1216,
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, living animal"
+  },
+  {
+   "name": "w7walls-a-s68-17",
+   "start": "start-w7walls.webp",
+   "prompt": "slothadv style, painted storybook illustration, four tall vertical strips of ruined jungle temple wall for a 2D platform game, each strip filled edge to edge: weathered grey-green stone blocks of mixed sizes with dark mortar joints, carved key-pattern meander bands, cracks and chipped corners, a thin dry brown fig root creeping down, soft green moss creeping down over the block edges; the third strip has an old worn carved stone face of a sloth in the stone, eroded and mossy. Flat front-on wall texture. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.68,
+   "seed": 17,
+   "w": 1280,
+   "h": 1216,
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, living animal"
+  },
+  {
+   "name": "w4falls-a-s62-5",
+   "start": "start-w4falls.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet of waterfall pieces for a misty mountain world: three tall falling water sheets of different widths, soft white water with soft blue-grey shadow streaks running straight down, misty and slightly see-through, ragged uneven edges with thin side streams peeling off and little spray; a tall wet dark blue-grey stone pillar with a trickle of water and a fern; three mossy blue-grey rock lips with white water curling over the front edge in a thick pour that thins as it drops; two wide strips of churned white foam and spray, bubbly and uneven; two soft white mist clouds and a tall spray plume. Soft white and pale blue-grey water, never turquoise, never cyan, no straight edges. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1536,
+   "h": 1152,
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, turquoise water, cyan, bright blue, glass, ice, straight edges"
+  },
+  {
+   "name": "w4falls-a-s62-17",
+   "start": "start-w4falls.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet of waterfall pieces for a misty mountain world: three tall falling water sheets of different widths, soft white water with soft blue-grey shadow streaks running straight down, misty and slightly see-through, ragged uneven edges with thin side streams peeling off and little spray; a tall wet dark blue-grey stone pillar with a trickle of water and a fern; three mossy blue-grey rock lips with white water curling over the front edge in a thick pour that thins as it drops; two wide strips of churned white foam and spray, bubbly and uneven; two soft white mist clouds and a tall spray plume. Soft white and pale blue-grey water, never turquoise, never cyan, no straight edges. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1536,
+   "h": 1152,
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, turquoise water, cyan, bright blue, glass, ice, straight edges"
+  },
+  {
+   "name": "w4falls-a-s76-5",
+   "start": "start-w4falls.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet of waterfall pieces for a misty mountain world: three tall falling water sheets of different widths, soft white water with soft blue-grey shadow streaks running straight down, misty and slightly see-through, ragged uneven edges with thin side streams peeling off and little spray; a tall wet dark blue-grey stone pillar with a trickle of water and a fern; three mossy blue-grey rock lips with white water curling over the front edge in a thick pour that thins as it drops; two wide strips of churned white foam and spray, bubbly and uneven; two soft white mist clouds and a tall spray plume. Soft white and pale blue-grey water, never turquoise, never cyan, no straight edges. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.76,
+   "seed": 5,
+   "w": 1536,
+   "h": 1152,
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, turquoise water, cyan, bright blue, glass, ice, straight edges"
+  },
+  {
+   "name": "w4falls-a-s76-17",
+   "start": "start-w4falls.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet of waterfall pieces for a misty mountain world: three tall falling water sheets of different widths, soft white water with soft blue-grey shadow streaks running straight down, misty and slightly see-through, ragged uneven edges with thin side streams peeling off and little spray; a tall wet dark blue-grey stone pillar with a trickle of water and a fern; three mossy blue-grey rock lips with white water curling over the front edge in a thick pour that thins as it drops; two wide strips of churned white foam and spray, bubbly and uneven; two soft white mist clouds and a tall spray plume. Soft white and pale blue-grey water, never turquoise, never cyan, no straight edges. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.76,
+   "seed": 17,
+   "w": 1536,
+   "h": 1152,
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, character, animal, turquoise water, cyan, bright blue, glass, ice, straight edges"
+  },
+  {
+   "name": "w6ledges-a-s55-5",
+   "start": "start-w6ledges.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet for a mangrove swamp world, four separate ledges to stand on, each with a flat walkable top and visibly held up: a twisted grey-green mangrove root bent into a flat mossy shelf with prop roots curling down under it; an old stilt-house plank deck lashed with rope to two wooden posts running down out of the bottom; a broken old boardwalk, planks missing, on two leaning posts; a mossy fallen branch wedged between two arching stilt roots. Grey-green weathered mangrove wood, soft moss, pale shelf fungus, dark outlines. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1536,
+   "h": 896
+  },
+  {
+   "name": "w6ledges-a-s55-17",
+   "start": "start-w6ledges.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet for a mangrove swamp world, four separate ledges to stand on, each with a flat walkable top and visibly held up: a twisted grey-green mangrove root bent into a flat mossy shelf with prop roots curling down under it; an old stilt-house plank deck lashed with rope to two wooden posts running down out of the bottom; a broken old boardwalk, planks missing, on two leaning posts; a mossy fallen branch wedged between two arching stilt roots. Grey-green weathered mangrove wood, soft moss, pale shelf fungus, dark outlines. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1536,
+   "h": 896
+  },
+  {
+   "name": "w6ledges-a-s68-5",
+   "start": "start-w6ledges.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet for a mangrove swamp world, four separate ledges to stand on, each with a flat walkable top and visibly held up: a twisted grey-green mangrove root bent into a flat mossy shelf with prop roots curling down under it; an old stilt-house plank deck lashed with rope to two wooden posts running down out of the bottom; a broken old boardwalk, planks missing, on two leaning posts; a mossy fallen branch wedged between two arching stilt roots. Grey-green weathered mangrove wood, soft moss, pale shelf fungus, dark outlines. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.68,
+   "seed": 5,
+   "w": 1536,
+   "h": 896
+  },
+  {
+   "name": "w6ledges-a-s68-17",
+   "start": "start-w6ledges.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet for a mangrove swamp world, four separate ledges to stand on, each with a flat walkable top and visibly held up: a twisted grey-green mangrove root bent into a flat mossy shelf with prop roots curling down under it; an old stilt-house plank deck lashed with rope to two wooden posts running down out of the bottom; a broken old boardwalk, planks missing, on two leaning posts; a mossy fallen branch wedged between two arching stilt roots. Grey-green weathered mangrove wood, soft moss, pale shelf fungus, dark outlines. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.68,
+   "seed": 17,
+   "w": 1536,
+   "h": 896
+  },
+  {
+   "name": "w6perches-a-s55-5",
+   "start": "start-w6perches.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet for a mangrove swamp world, four separate short narrow perches to stand on, each with a flat walkable top and visibly held up: a twisted grey-green mangrove root bent into a flat mossy shelf with prop roots curling down under it; an old stilt-house plank deck lashed with rope to two wooden posts running down out of the bottom; a broken old boardwalk, planks missing, on two leaning posts; a mossy fallen branch wedged between two arching stilt roots. Grey-green weathered mangrove wood, soft moss, pale shelf fungus, dark outlines. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w6perches-a-s55-17",
+   "start": "start-w6perches.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet for a mangrove swamp world, four separate short narrow perches to stand on, each with a flat walkable top and visibly held up: a twisted grey-green mangrove root bent into a flat mossy shelf with prop roots curling down under it; an old stilt-house plank deck lashed with rope to two wooden posts running down out of the bottom; a broken old boardwalk, planks missing, on two leaning posts; a mossy fallen branch wedged between two arching stilt roots. Grey-green weathered mangrove wood, soft moss, pale shelf fungus, dark outlines. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w6perches-a-s68-5",
+   "start": "start-w6perches.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet for a mangrove swamp world, four separate short narrow perches to stand on, each with a flat walkable top and visibly held up: a twisted grey-green mangrove root bent into a flat mossy shelf with prop roots curling down under it; an old stilt-house plank deck lashed with rope to two wooden posts running down out of the bottom; a broken old boardwalk, planks missing, on two leaning posts; a mossy fallen branch wedged between two arching stilt roots. Grey-green weathered mangrove wood, soft moss, pale shelf fungus, dark outlines. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.68,
+   "seed": 5,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w6perches-a-s68-17",
+   "start": "start-w6perches.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game prop sheet for a mangrove swamp world, four separate short narrow perches to stand on, each with a flat walkable top and visibly held up: a twisted grey-green mangrove root bent into a flat mossy shelf with prop roots curling down under it; an old stilt-house plank deck lashed with rope to two wooden posts running down out of the bottom; a broken old boardwalk, planks missing, on two leaning posts; a mossy fallen branch wedged between two arching stilt roots. Grey-green weathered mangrove wood, soft moss, pale shelf fungus, dark outlines. Soft cel shading, thin dark outline, light from the upper left, evenly lit, side-on view for a 2D platform game, on one flat plain pure magenta background, no sky, no ground, no cast shadow, no text",
+   "strength": 0.68,
+   "seed": 17,
+   "w": 1536,
+   "h": 768
+  }
+ ]
+}

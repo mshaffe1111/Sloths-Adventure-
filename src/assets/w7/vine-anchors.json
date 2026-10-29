@@ -1,0 +1,169 @@
+{
+ "sheet": "vine-anchors.webp",
+ "size": {
+  "w": 2048,
+  "h": 527
+ },
+ "anchor": "ax, ay: the middle of the liana where it leaves the bottom of the frame (hang the game liana from there); the top edge is the lintel running on above the screen",
+ "takes": {
+  "anchor-1": "w7anchors-b-s62-17",
+  "liana-a1": "w7anchors-b-s62-17",
+  "anchor-2": "w7anchors-b-s62-17",
+  "liana-a2": "w7anchors-b-s62-17",
+  "anchor-3": "w7anchors-b-s62-17",
+  "liana-a3": "w7anchors-b-s62-17",
+  "anchor-4": "w7anchors-b-s62-17",
+  "liana-a4": "w7anchors-b-s62-17",
+  "liana-1": "w7anchors-b-s62-17",
+  "liana-2": "w7anchors-b-s62-17",
+  "liana-3": "w7anchors-b-s62-17",
+  "liana-4": "w7anchors-b-s62-17",
+  "liana-5": "w7anchors-b-s62-17",
+  "liana-6": "w7anchors-b-s62-17"
+ },
+ "method": "img2img (Qwen-Image + slothadv style model) from blockstart.py w7anchors (W7 kit stone + liana)",
+ "frames": {
+  "anchor-1": {
+   "x": 0,
+   "y": 0,
+   "w": 300,
+   "h": 220,
+   "ax": 251.3,
+   "ay": 220,
+   "lianaW": 22.6
+  },
+  "liana-a1": {
+   "x": 304,
+   "y": 0,
+   "w": 68,
+   "h": 42,
+   "ax": 33.9,
+   "ay": 0,
+   "tile": "vertical",
+   "note": "anchor-1 own liana, repeats top to bottom; line its ax up with the anchor ax"
+  },
+  "anchor-2": {
+   "x": 376,
+   "y": 0,
+   "w": 300,
+   "h": 220,
+   "ax": 105.6,
+   "ay": 220,
+   "lianaW": 23.9
+  },
+  "liana-a2": {
+   "x": 680,
+   "y": 0,
+   "w": 71,
+   "h": 37,
+   "ax": 35.5,
+   "ay": 0,
+   "tile": "vertical",
+   "note": "anchor-2 own liana, repeats top to bottom; line its ax up with the anchor ax"
+  },
+  "anchor-3": {
+   "x": 755,
+   "y": 0,
+   "w": 300,
+   "h": 220,
+   "ax": 256.5,
+   "ay": 220,
+   "lianaW": 23.7
+  },
+  "liana-a3": {
+   "x": 1059,
+   "y": 0,
+   "w": 71,
+   "h": 50,
+   "ax": 35.3,
+   "ay": 0,
+   "tile": "vertical",
+   "note": "anchor-3 own liana, repeats top to bottom; line its ax up with the anchor ax"
+  },
+  "anchor-4": {
+   "x": 1134,
+   "y": 0,
+   "w": 300,
+   "h": 220,
+   "ax": 90.8,
+   "ay": 220,
+   "lianaW": 21.7
+  },
+  "liana-a4": {
+   "x": 1438,
+   "y": 0,
+   "w": 64,
+   "h": 43,
+   "ax": 32.2,
+   "ay": 0,
+   "tile": "vertical",
+   "note": "anchor-4 own liana, repeats top to bottom; line its ax up with the anchor ax"
+  },
+  "liana-1": {
+   "x": 1506,
+   "y": 0,
+   "w": 64,
+   "h": 527,
+   "ax": 28.5,
+   "ay": 0,
+   "tile": "vertical",
+   "stemW": 31,
+   "note": "hangs under any anchor: line its top ax up with the anchor ax; repeats top to bottom"
+  },
+  "liana-2": {
+   "x": 1574,
+   "y": 0,
+   "w": 86,
+   "h": 527,
+   "ax": 45.0,
+   "ay": 0,
+   "tile": "vertical",
+   "stemW": 44,
+   "note": "hangs under any anchor: line its top ax up with the anchor ax; repeats top to bottom"
+  },
+  "liana-3": {
+   "x": 1664,
+   "y": 0,
+   "w": 71,
+   "h": 527,
+   "ax": 29.0,
+   "ay": 0,
+   "tile": "vertical",
+   "stemW": 50,
+   "note": "hangs under any anchor: line its top ax up with the anchor ax; repeats top to bottom"
+  },
+  "liana-4": {
+   "x": 1739,
+   "y": 0,
+   "w": 80,
+   "h": 527,
+   "ax": 45.5,
+   "ay": 0,
+   "tile": "vertical",
+   "stemW": 67,
+   "note": "hangs under any anchor: line its top ax up with the anchor ax; repeats top to bottom"
+  },
+  "liana-5": {
+   "x": 1823,
+   "y": 0,
+   "w": 50,
+   "h": 527,
+   "ax": 27.0,
+   "ay": 0,
+   "tile": "vertical",
+   "stemW": 28,
+   "note": "hangs under any anchor: line its top ax up with the anchor ax; repeats top to bottom"
+  },
+  "liana-6": {
+   "x": 1877,
+   "y": 0,
+   "w": 76,
+   "h": 527,
+   "ax": 43.0,
+   "ay": 0,
+   "tile": "vertical",
+   "stemW": 38,
+   "note": "hangs under any anchor: line its top ax up with the anchor ax; repeats top to bottom"
+  }
+ }
+}

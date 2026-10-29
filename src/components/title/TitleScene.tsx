@@ -604,16 +604,11 @@ export const TitleScene = React.forwardRef<
         const kk = height / ih;
         const tw = iw * kk;
         const pad = w * 0.4;
-        const off = -((t * speed + 0.5 * tw) % (tw * 2)) - pad;
-        for (let x = off, i = 0; x < w + pad; x += tw, i++) {
+        // (the strips are seamless, scripts/strip-seamless.py: every copy the same way round, no mirrored twins)
+        const off = -((t * speed + 0.5 * tw) % tw) - pad;
+        for (let x = off; x < w + pad; x += tw) {
           if (x + tw < -pad) continue;
-          if (i % 2) {
-            c.save();
-            c.translate(x + tw, top);
-            c.scale(-1, 1);
-            c.drawImage(im, 0, 0, tw + 0.5, height);
-            c.restore();
-          } else c.drawImage(im, x, top, tw + 0.5, height);
+          c.drawImage(im, x, top, tw + 0.5, height);
         }
       };
       const paint = (s: World, alpha: number, k: number) => {
