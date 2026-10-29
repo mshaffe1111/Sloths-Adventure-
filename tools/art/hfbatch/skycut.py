@@ -27,7 +27,7 @@ _spec.loader.exec_module(bs)
 EDGE = {'w5': dict(keep_line=True), 'w1c': dict(ink=True, ring=3)}
 HD_MID = dict(ink=True, ring=4.5, px=1.9)
 BACK = ROOT / 'src/assets/backdrops'
-SKY_OVERLAP = 0.12  # scenery.ts SKY_OVERLAP
+SKY_OVERLAP = 0.05  # scenery.ts SKY_OVERLAP: the inpaint mask (skygpu.py) is binarized half way down its 11% ramp, so only the top 5.5% of the strip is repainted; the sky file ends there
 
 
 def cut(stem, canvas):
@@ -66,6 +66,7 @@ def cut(stem, canvas):
         o = EDGE.get('w5' if stem.startswith('w5') else stem, HD_MID)
         out, _ = process(out, scale=1, ring=o.get('ring', 1.5), ink=o.get('ink', False), keep_line=o.get('keep_line', False),
                          do_despill=True, px=o.get('px', 1.0))
+    # the fade into the strip, over the rows that lie on it (above the strip's top nothing is behind the sky but the stand-in gradient)
     t = np.linspace(0, 1, keep, dtype=np.float32)
     out[E:, :, 3] = np.round(out[E:, :, 3] * (1 - t * t * (3 - 2 * t))[:, None]).astype(np.uint8)
     name = f'{stem}-{"midtop" if mid else "sky"}.webp'

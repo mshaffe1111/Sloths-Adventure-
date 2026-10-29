@@ -8,7 +8,7 @@ from pathlib import Path
 STYLE = ('slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, '
          'thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text')
 # (the words "side-scrolling game" brought a row of stone ledge blocks with them, pilot 3: nothing up there is a platform)
-NEG = ('ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, text, letters, watermark, frame, border, photo, 3d '
+NEG = ('ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d '
        'render, people, animal, sloth, horizontal band, seam, blurry, smeared')
 SKY = 'open sky with a few soft painted clouds'
 # what carries on above each far strip's top edge (looked at, 2026-10-29: tools/art/edges contact sheet of the far strips)

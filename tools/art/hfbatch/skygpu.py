@@ -91,13 +91,21 @@ def start(rgb, E, C, seed):
     band = rgb[: max(16, H // 4)][::-1]  # the top quarter, turned over: its top row now meets the strip's top row
     tex = np.asarray(Image.fromarray(band.astype(np.uint8)).resize((W, E), Image.BICUBIC)).astype(np.float32)[::-1]
     tex = np.roll(tex, int(W * 0.37), axis=1)  # shifted along, so it is no mirror of the strip below
-    near = blur_x(rgb[:4].mean(0, keepdims=True), 3)
+    # only its colours, not its shapes: the inpaint pipeline blends the start in, and shapes came through as see-through ghost branches
+    # (pilot 5); blurred along and down, the model gets the right light and paints the shapes itself
+    tex = blur_x(tex, 40)
+    k = max(1, E // 24)
+    for _ in range(3):
+        c = np.cumsum(np.pad(tex, ((k, k), (0, 0), (0, 0)), mode='edge'), 0)
+        tex = (c[2 * k:] - c[:-2 * k]) / (2 * k)
+    tex = tex[:E]
+    near = blur_x(rgb[:4].mean(0, keepdims=True), 12)
     y = np.arange(E, dtype=np.float32)[:, None, None]
-    t = np.clip((E - 1 - y) / (E * 0.22), 0, 1)  # 0 at the strip's top, 1 a fifth of the way up
+    t = np.clip((E - 1 - y) / (E * 0.1), 0, 1)  # 0 at the strip's top, 1 a tenth of the way up
     t = t * t * (3 - 2 * t)
     up = near * (1 - t) + tex * t
     rng = np.random.default_rng(seed)
-    up = up + blur_x(rng.normal(0, 1, (E, W, 1)).astype(np.float32), 4) * 10
+    up = up + blur_x(rng.normal(0, 1, (E, W, 1)).astype(np.float32), 3) * 16
     return np.clip(np.concatenate([up, rgb[:C]], 0), 0, 255)
 
 
