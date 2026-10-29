@@ -8,6 +8,7 @@ import { getStageClue } from './stageClue.ts';
 import type { StageStats } from '../game/badges.ts';
 import { ClrChips, ClrRibbon, useShortScreen, type ChipSpec } from './ClrParts.tsx';
 import { praiseFor, totalKills } from './stageSummary.ts';
+import { ModeChip } from './ModeChip.tsx';
 import { confettiPieces, type ConfettiPiece } from './fx/confetti.ts';
 import './hud/cleared.css';
 
@@ -142,7 +143,9 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
 
         <div className="clr-main">
           <div className="flex flex-col items-center gap-1">
-            <div className="clr-stage">{secret ? 'Secret stage' : `Stage ${levelConfig.id}`} &middot; {levelConfig.name}</div>
+            <div className="clr-stage">
+              {secret ? 'Secret stage' : `Stage ${levelConfig.id}`} &middot; {levelConfig.name} <ModeChip />
+            </div>
             {!secret && (
               <div className="clr-starrow">
               {/* (upright the hero column is gone, so Pokey stands here, beside his stars: UI-1) */}

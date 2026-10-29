@@ -944,3 +944,9 @@
 .tr-painted .tr-emblem { filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.6)); }
 .tr-toast:not(.tr-toast-group) { width: min(92vw, 360px); }
 .tr-toast-p { margin-top: 2px; font-size: 12px; font-weight: 800; color: #86efac; }
+
+/* the Easy / Normal chip (LV-1): on the stage card, the pause header and the Stage Cleared card */
+.mode-chip { display: inline-flex; align-items: center; vertical-align: middle; padding: 1px 8px; border-radius: 99px; font-family: var(--font-ui); font-size: 12px; font-weight: 800; letter-spacing: 0.04em; line-height: 1.5; text-transform: none; white-space: nowrap; border: 1.5px solid; }
+.mode-chip.easy { color: #14532d; background: #bbf7d0; border-color: #4ade80; }
+.mode-chip.normal { color: #7c2d12; background: #fed7aa; border-color: #fb923c; }
+.ng-diff-ask { opacity: 1; font-weight: 700; color: #8a3f00; }
