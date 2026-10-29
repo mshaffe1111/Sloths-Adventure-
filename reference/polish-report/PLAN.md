@@ -59,7 +59,7 @@ Matt: prioritize easy wins first; run another agent or two on the hardest things
 - Art waves (Matt's Gemini): native backdrops (VI-2 art), soil kits, painted water W1-5, flags and exit, pickups, story cels.
 
 ## Decisions for Matt, one at a time
-1. Build 1: it was made in another session and is not on GitHub. Push it to a branch so it can be merged.
+1. Build 1: Matt is having the other session push it to a GitHub branch (polish-build1); the lead reviews and merges it.
 2. SN-1: orchestral effects only?
 3. CT-5: a second thumb's straight flick on a vine climbs?
 4. DOT-12: 8 words or under 10?
