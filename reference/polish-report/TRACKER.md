@@ -204,7 +204,7 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 Matt's seven calls (2026-10-29, "Yes, all seven"): slowness costs once at the World 6 tea; Pokey's parents in one painted background with no
 words; add Dot's lost pocket; the player's thumb does the let-go; three keepsakes in the finale, the rest in the satchel; the garden hub later
-(after steps 1-8); a playable prologue morning if there's time. Missing: the SR-1 to SR-43 list the report points to (asked Matt for it).
+(after steps 1-8); a playable prologue morning if there's time. SR-1 to SR-43 arrived from Matt 3:05 PM ET: reference/story-report/story-review-SR-1-to-SR-43.txt (SR-38 to SR-43, Dot in play and menu text, go to polish-dot).
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
