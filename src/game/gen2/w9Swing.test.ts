@@ -73,7 +73,7 @@ test('9-3 on 20 raw rolls, Normal and Easy: levelCheck, every chain swung, 2:00 
       for (const e of st.enemies) assert.ok(e.patrolMinX > open, `${at}: a ${e.type} ${e.patrolMinX - st.spawnX} px in`);
       const xs = [st.spawnX, ...(st.checkpoints ?? []).map((c) => c.x).sort((a, b) => a - b), st.exitTotemX];
       for (let k = 1; k < xs.length; k++) assert.ok(xs[k] - xs[k - 1] <= FLAG_SPAN.max, `${at}: ${xs[k] - xs[k - 1]} px with no flag`);
-      const kinds = new Set(st.gen2.falls.map((f) => f.kind));
+      const kinds = new Set((st.gen2.falls ?? []).map((f) => f.kind));
       if (difficulty === 'easy') assert.deepEqual([...kinds], ['soft'], `${at}: a deadly fall on Easy`);
       else assert.ok(kinds.has('void'), `${at}: no lava on Normal`);
       for (const s of st.gen2.sections) if (s.template.startsWith('w9s-')) seen.add(s.template);
