@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage, type CheckGraph } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, glideGap, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds, VINE } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, CLIMB_CLEAR, chooseVersions, difficultyScore, glideGap, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds, VINE } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
@@ -687,9 +687,9 @@ test('a liana swings by itself and its perch is sized from the release window (E
       assert.ok(placed.every((s) => !s.mirrored), `${what}: a swing is never flipped`);
       for (const l of lianas) assert.equal(st.vines.find((v) => v.id === l.vine)?.vineType, 'swing_liana');
       swings += placed.length;
-      // every climb's high ledge is reached, and only a climb gets that high
+      // every climb's high ledge is reached (the vine stands CLIMB_CLEAR px out in front of its face: clearClimbs), and only a climb gets that high
       for (const v of st.vines.filter((x) => x.vineType === 'tree_climb')) {
-        const top = st.platforms.find((p) => p.y === v.topY && (p.x === v.x || p.x + p.width === v.x))!;
+        const top = st.platforms.find((p) => p.y === v.topY && (p.x - CLIMB_CLEAR === v.x || p.x + p.width + CLIMB_CLEAR === v.x))!;
         assert.ok(top && res.reachableIds.includes(top.id), `${what}: the ledge over the vine at ${v.x}`);
         assert.ok(v.bottomY - v.topY > DOUBLE_RISE, `${what}: a ${v.bottomY - v.topY} px climb a double jump could make`);
         climbs++;

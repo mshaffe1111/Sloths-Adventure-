@@ -17,7 +17,7 @@ import { stageSheets } from '../stageSheets.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { LevelConfig } from '../types.ts';
 import { GEN2_STAGES, gen2SeedFor, gen2SeedIndex, gen2Water, isGen2Stage } from './game.ts';
-import { buildGen2Stage, FLAG_SPAN } from './pipeline.ts';
+import { buildGen2Stage, CLIMB_CLEAR, FLAG_SPAN } from './pipeline.ts';
 import { GEN2_SEEDS } from './seeds.ts';
 import type { Gen2Stage } from './types.ts';
 import { W6_ROOM_STAGES } from './worlds/w6.ts';
@@ -200,4 +200,22 @@ test('the pipeline\'s flags: on 30 raw rolls of each gen2 stage, Normal and Easy
       }
     }
   }
+});
+
+test("every climbing vine on every shipped roll of Worlds 5-8, Normal and Easy, stands in front of a bough, never inside or on its face (the pipeline's clearClimbs)", () => {
+  const near = CLIMB_CLEAR / 2;
+  const bad: string[] = [];
+  for (const id of Object.keys(GEN2_STAGES).filter((id) => Number(id.split('-')[0]) >= 5 && Number(id.split('-')[0]) <= 8)) {
+    for (let i = 0; i < (GEN2_SEEDS[id]?.seeds.length ?? 0); i++) {
+      for (const easy of [false, true]) {
+        const st = played(id, i, easy);
+        for (const v of st.vines) {
+          if (v.vineType !== 'tree_climb') continue;
+          const p = st.platforms.find((q) => q.type === 'solid' && v.x >= q.x - near && v.x <= q.x + q.width + near && v.topY >= q.y - 2 && v.topY < q.y + q.height);
+          if (p) bad.push(`${id} roll ${i}${easy ? ' Easy' : ''}: the vine at ${Math.round(v.x)} tops out in the bough ${Math.round(p.x)}-${Math.round(p.x + p.width)}`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(bad, []);
 });
