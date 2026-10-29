@@ -95,7 +95,7 @@ def main(rev, out):
             sc = edge_stats(np.asarray(Image.open(cp).convert('RGBA'))) if cp and cp.exists() else None
             dk = lambda v: ' '.join(f'{x:.2f}' for x in v)
             rows.append(f'| {n} | {sb[0]:.2f} / {sb[1]:.2f} | {dk(sb[4])} | {sa[0]:.2f} / {sa[1]:.2f} | {dk(sa[4])} | '
-                        f'{"%.2f / %.2f" % sc[:2] if sc else "(kept line)"} | {sb[2] * 100:.1f}% -> {sa[2] * 100:.1f}% | '
+                        f'{"%.2f / %.2f" % sc[:2] if sc else ("(own line kept)" if s.startswith("w5") else "-")} | {sb[2] * 100:.1f}% -> {sa[2] * 100:.1f}% | '
                         f'{zb // 1024} -> {za // 1024} KB | {bi.width}x{bi.height}{"" if bi.size == ai.size else " -> %dx%d" % ai.size} |')
         print(s)
     (out / 'edges.md').write_text('\n'.join(rows) + '\n')

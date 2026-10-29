@@ -170,9 +170,13 @@ def bleed(rgb, trusted, reach=16):
 
 
 def ink_line(rgb, alpha, width=1.6, k=0.42):
-    """an even line along the cut: colour darkened to k x local within `width` px of the alpha edge, smoothly"""
+    """an even line along the cut: colour darkened to k x local within `width` px of the alpha edge, smoothly. Only where the paint
+    has a solid body (4+ px thick) within 3 px: see-through water ripples and wisps get no outline"""
     d = ndimage.distance_transform_edt(alpha >= 0.5)
     t = np.clip(width + 0.5 - d, 0, 1)  # 1 inside the line, ramps off over its last px
+    yy, xx = np.mgrid[-2:3, -2:3]
+    body = ndimage.binary_opening(alpha > 0.97, structure=xx * xx + yy * yy <= 4)
+    t = t * np.clip(1.5 - ndimage.distance_transform_edt(~body) / 3, 0, 1)
     f = 1 - (1 - k) * t
     return rgb * f[..., None]
 
