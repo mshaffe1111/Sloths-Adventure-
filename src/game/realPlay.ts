@@ -14,7 +14,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
 import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
 import { setLayoutVariant } from './stageGenerator.ts';
-import { newAirDrive } from './physics.ts';
+import { newAirDrive, swingClockAt, swingSetup, vineAmp, vineAngle, vineOmega } from './physics.ts';
 import { newGlide } from './glide.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, InputState, LevelConfig, Platform, PlayerState, Rope, Vine } from './types.ts';
@@ -180,7 +180,7 @@ export class RealPlay {
     });
     p.invincibleTimer = this.safe ? 1e9 : 0;
     Object.assign(e, {
-      coyoteTimer: 0, jumpBufferTimer: 0, upIntent: 0, climbGrace: 0, climbAssist: 0, climbSideTimer: 0, swingGrace: 0, vineCooldownTimer: 0,
+      coyoteTimer: 0, jumpBufferTimer: 0, upIntent: 0, climbGrace: 0, climbAssist: 0, climbSideTimer: 0, swingGrace: 0, vineCooldownTimer: 0, swungOff: -1,
       lastReleasedVineId: -1, launched: false, airDrive: newAirDrive(), glide: newGlide(), inputGrace: 0, ropeCooldown: 0, ropeGrace: 0,
       atk: null, atkQueue: null, standingOnId: -1, isGameOver: false,
     });
@@ -219,19 +219,37 @@ export class RealPlay {
     this.e.ropeId = r.id;
   }
 
-  /** swinging on a liana in a given swing state (as caught: see `swingState`) */
-  swing(v: Vine, s: { angle: number; omega: number; len: number }) {
+  /**
+   * swinging on a liana in a given swing state (as caught: see `swingState`). The vines swing on their own clock (physics.ts, the
+   * self-swing): a state with its clock (`t`) sets the clock back to it; one without sets the clock to the moment the vine is at that
+   * angle, turning that way (every vine of the stage moves with it, as in the game).
+   */
+  swing(v: Vine, s: { angle: number; omega: number; len: number; t?: number }) {
     this.settle();
     const p = this.p;
+    const t = s.t ?? swingClockAt(v, s.angle, s.omega);
+    this.e.vineClock = t;
+    const angle = vineAngle(v, t);
+    const omega = vineOmega(v, t);
+    for (const q of this.vines) if (q.vineType !== 'tree_climb') q.swingAngle = vineAngle(q, t);
     Object.assign(p, {
-      x: v.x + Math.sin(s.angle) * s.len, y: v.topY + Math.cos(s.angle) * s.len, grounded: false, isVineSwinging: true, swingVineId: v.id,
-      swingAngle: s.angle, swingAngularVelocity: s.omega, swingLength: s.len,
+      x: v.x + Math.sin(angle) * s.len, y: v.topY + Math.cos(angle) * s.len, grounded: false, isVineSwinging: true, swingVineId: v.id,
+      swingAngle: angle, swingAngularVelocity: omega, swingLength: s.len,
     });
   }
 
-  swingState(): { angle: number; omega: number; len: number } {
+  swingState(): { angle: number; omega: number; len: number; t: number; amp?: number } {
     const p = this.p;
-    return { angle: p.swingAngle ?? 0, omega: p.swingAngularVelocity ?? 0, len: p.swingLength ?? 100 };
+    const v = this.vines.find((q) => q.id === p.swingVineId);
+    return { angle: p.swingAngle ?? 0, omega: p.swingAngularVelocity ?? 0, len: p.swingLength ?? 100, t: this.e.vineClock, amp: v ? vineAmp(v) : undefined };
+  }
+
+  /** the vines' swing clock (physics.ts vineAngle) */
+  get vineClock(): number {
+    return this.e.vineClock;
+  }
+  set vineClock(t: number) {
+    this.e.vineClock = t;
   }
 
   /** one frame with these controls */
@@ -274,6 +292,7 @@ export class RealPlay {
   bare(platforms: Platform[], vines: Vine[] = [], ropes: Rope[] = []) {
     const e = this.e;
     Object.assign(e, { platforms, vines, ropes, collectibles: [], w4: null, proto: null });
+    swingSetup(vines);
     const st = e.currentStage as GeneratedStage;
     Object.assign(st, { zones: [], waterY: undefined, rivers: [], exitTotemX: 0, checkpoints: [], config: { ...st.config, levelHeight: 100000, levelWidth: 100000 } });
   }

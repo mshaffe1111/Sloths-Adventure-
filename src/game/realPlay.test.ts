@@ -6,7 +6,7 @@
 import { RealPlay } from './realPlay.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DOUBLE_RISE, reachGlide, reachJump, setTimedSwing, TIMED } from './physics.ts';
+import { DOUBLE_RISE, reachGlide, reachJump, setTimedSwing, swingClockAt, TIMED } from './physics.ts';
 import { buildProtoStage, HAND_STAGES, PIT_CLIMB, PIT_ESCAPE } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { levelConfig } from './realPlay.ts';
@@ -113,6 +113,8 @@ test('a liana is caught as close as the timed swing says: 60 px on Normal, 76 on
     // flying past it at its middle height, moving sideways (as a jump would carry him)
     sim.fly(liana.x - dx, G - 300, 0, 0);
     sim.p.vx = 60;
+    // (the vines swing on their own clock, physics.ts the self-swing: this one hangs straight down on the frame he passes it)
+    sim.vineClock = swingClockAt(liana, 0, 1) - 1 / 30;
     sim.frame({});
     return !!sim.p.isVineSwinging;
   };
