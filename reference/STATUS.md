@@ -2,7 +2,14 @@
 
 Last updated: 2026-10-29 ~08:00 UTC (standstill; release PR open for Matt).
 
-## STANDSTILL (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
+## Running (2026-10-29 ~08:10 ET; Matt: "Let's start 7" and "start World 6's special stage")
+
+- 6-8 Stilt Climb (World 6's special stage, hand-built): cloud session_01FhBbYMt17qa4tAv8V6jvxN, branch w6-stilt-climb. Step 1 is a
+  mock-up for Matt (layout plan + blockout screenshots), then it stops; build only after Matt approves.
+- World 7 on gen2 (one builder, B12 checklist): cloud session (see below), branch gen2-w7. Matt: Pokey teaches himself in World 7
+  (Dot is gone in the story); STAGE-RULES §1.
+
+## STANDSTILL, earlier (2026-10-29 ~04:00 ET; Matt: "Open the PR, I'll merge it in the morning. Don't start 7.")
 
 - Nothing is running. W6 cloud sessions (gen2-w6, gen2-w6-swing) archived; the wind-down check-in is disabled.
 - Release PR #46 (https://github.com/mshaffe1111/Sloths-Adventure-/pull/46) is open for Matt to merge (everything since PR #45; test link v229): World 6 on gen2 (6-1..6-7, 6-9; 6-8 hand-built and the

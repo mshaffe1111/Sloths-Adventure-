@@ -27,6 +27,10 @@ Last updated 2026-10-29.
 - **Show first.** Big screen changes are shown to Matt (screenshots, mock-ups) before they are built in.
 - **Story.** Stage names, story beats and goal text stay as approved. Any new line is marked "(new, needs Matt's approval)".
 
+- **World 7: Pokey teaches himself (Matt, 2026-10-29).** Dot is gone for all of World 7 (the story's "Alone" chapter; she comes back in
+  World 8). Pokey says the teaching lines and explains any locked exit himself, in his own voice, under 10 words ("Cracked tiles.
+  Don't stand still."). No Dot perch, no Dot lines in World 7 stages.
+
 ## 1b. The game gets harder as it goes (Matt, 2026-10-28)
 
 - **Each world sits in its own difficulty band, and the bands climb world by world.** Inside a world, stages can go up and down
