@@ -39,7 +39,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, DOUBLE_RISE, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -4022,8 +4022,9 @@ export class GameEngine {
       }
     }
   }
-  /** a solid face just in front of him, standing on the ground, taller than one jump climbs (or, given, between `lo` and `hi` px tall) */
-  private wallAhead(lo = 100, hi = 320): boolean {
+  /** a solid face just in front of him, standing on the ground, taller than one jump climbs but one a double jump clears (or, given,
+   * between `lo` and `hi` px tall): Dot's "jump twice" tip must never point at a face a double jump can't clear (QA 2026-10-29, 4-5) */
+  private wallAhead(lo = 100, hi = DOUBLE_RISE + 10): boolean {
     const p = this.player;
     const f = p.facing >= 0 ? 1 : -1;
     for (const q of this.platforms) {
