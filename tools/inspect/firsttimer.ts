@@ -898,8 +898,12 @@ export class FirstTimerRun {
   }
 
   floorAt(x: number, y: number, down = 40): Platform | null {
+    // (a top under the water is no floor to him: a cage's lift resting in its pool, 10 px under the surface, round 5 2-8, read as a
+    // step down and was walked onto, a drowning, again and again; a person sees it is under water)
+    const river = (this.sim.stage.rivers ?? []).find((r) => x > r.x0 && x < r.x1);
     for (const q of this.sim.platforms) {
       if (!this.solid(q)) continue;
+      if (river && q.type !== 'drift' && q.y > river.surfaceY) continue;
       if (x >= q.x && x <= q.x + q.width && q.y >= y - 6 && q.y <= y + down) return q;
     }
     return null;
