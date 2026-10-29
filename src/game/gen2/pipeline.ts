@@ -951,6 +951,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   // the shrine's bank (a walk on from the last section)
   const shrine = mk(cur.x, cur.y, SHRINE_BANK, 'bank', 0);
   const exitX = R(shrine.x + 300);
+  clearClimbs(vines, platforms);
   return {
     sections,
     plan,
@@ -1015,6 +1016,23 @@ export function backPit(x0: number, x1: number, lipY: number, farY: number, pitD
   const depth = Math.max(pitDepth, farY + DOUBLE_RISE + PIT.face - Math.max(lipY, farY));
   const out = pitSteps(x0, x1, farY, lipY, depth, hop, PIT.tread);
   return { floor: out.floor, steps: out.steps.map((s) => ({ ...s, x: x0 + x1 - (s.x + s.w) })) };
+}
+
+/** how far a climbing vine stands out in front of the face of the bough it leads up to (px): Pokey's half-width (21) and a little */
+export const CLIMB_CLEAR = 26;
+
+/**
+ * Every climbing vine that stands on the face of a bough it leads up to (an `over` piece on a vine starts at the vine's x) is moved
+ * CLIMB_CLEAR px out in front of it. The engine snaps Pokey to the vine's x, so on the face he hung 21 px inside the bough: climbing back
+ * down and hopping off, he went up through its one-way top and fell out of the bottom of its body, a life (the first-timer bot, World 8,
+ * 2026-10-29). The vault off the vine's top still lands on the bough.
+ */
+export function clearClimbs(vines: Vine[], platforms: readonly Platform[]): void {
+  for (const v of vines) {
+    if (v.vineType !== 'tree_climb') continue;
+    const face = platforms.find((p) => p.type === 'solid' && Math.abs(p.y - v.topY) <= 2 && (Math.abs(p.x - v.x) <= 2 || Math.abs(p.x + p.width - v.x) <= 2));
+    if (face) v.x += Math.abs(face.x - v.x) <= 2 ? -CLIMB_CLEAR : CLIMB_CLEAR;
+  }
 }
 
 /** a stage id's place in the game ('5-7' -> 507), for lessons taught by an earlier stage */
