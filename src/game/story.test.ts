@@ -279,3 +279,11 @@ test('the plates listed are the plates painted, and each has a floor to stand on
   assert.deepEqual(files.sort(), Object.keys(PLATES).sort(), 'every picture is listed and every listed plate has its picture');
   for (const [k, v] of Object.entries(PLATES)) assert.ok(v.ground > 0.4 && v.ground < 0.95, `${k}: the floor is on the picture`);
 });
+
+test('every stage has a real name and line of its own (no generic mission names to fall back on, polish report ST-8)', async () => {
+  const { generateAllLevels } = await import('./worldsData.ts');
+  for (const l of generateAllLevels()) {
+    assert.ok(l.name && !/Sprint|Gauntlet|Idol Hunt|Thicket|Boss Lair|Purge/.test(l.name), `${l.id}: "${l.name}"`);
+    assert.ok(l.description && !/Exit Shrine|sanctuary|reach the exit/i.test(l.description), `${l.id}: "${l.description}"`);
+  }
+});

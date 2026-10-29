@@ -247,32 +247,6 @@ export const WORLDS_DATA: WorldInfo[] = [
   },
 ];
 
-const OBJECTIVE_NAMES: Record<ObjectiveType, string> = {
-  sprint: 'Canopy Sprint',
-  harvest: 'Botanical Bloom',
-  purge: 'Predator Purge',
-  ascent: 'Treetop Ascent',
-  stealth: 'Stealth Thicket',
-  vine_runner: 'Vine Swing',
-  relic_hunt: 'Idol Hunt',
-  rescue: 'Canopy Rescue',
-  gauntlet: 'Apex Gauntlet',
-  boss_lair: 'Stage Boss Lair',
-};
-
-const OBJECTIVE_DESCRIPTIONS: Record<ObjectiveType, (target: number) => string> = {
-  sprint: () => 'Run through the treetops and reach the shrine.',
-  harvest: (target) => `Gather ${target} flowers.`,
-  purge: (target) => `Clear ${target} foes off the branches.`,
-  ascent: () => 'Climb the vines up through the trees to the top.',
-  stealth: () => 'Hide from the eagles under the leaves, and reach the end.',
-  vine_runner: () => 'Swing on the hanging vines across the gaps.',
-  relic_hunt: (target) => `Search the hollow trees for ${target} hidden relics.`,
-  rescue: (target) => `Break the cages and free ${target} little ones.`,
-  gauntlet: (target) => `Fight your way through. Defeat ${target} and reach the shrine.`,
-  boss_lair: () => 'Face the guardian. Watch for the warning before each attack, then hit back.',
-};
-
 /**
  * Stage length is set in SECONDS (stageTime.ts: targetSeconds, a typical first-time player, about 2:15 in World 1 and 4:00 in World 10) and turned into pixels with
  * the stage's own pace: this many px of stage width per second of modelled play. The generator measures what it built with the same model and
@@ -398,7 +372,8 @@ export function generateAllLevels(): LevelConfig[] {
         worldIndex: world.id,
         miniIndex,
         id,
-        name: objType === 'boss_lair' ? `${world.bossName}'s Lair` : spec?.name ?? OBJECTIVE_NAMES[objType],
+        // (every stage but the lair is one of the plan's, with its own name and line: stagePlan.ts)
+        name: objType === 'boss_lair' || !spec ? `${world.bossName}'s Lair` : spec.name,
         objectiveType: objType,
         targetCount,
         timeLimit,
@@ -406,9 +381,7 @@ export function generateAllLevels(): LevelConfig[] {
         levelHeight,
         description: spec?.desc
           ? spec.desc.replace('{n}', String(targetCount))
-          : objType === 'boss_lair'
-            ? `Face ${world.bossName}. Watch for the warning before each attack, then hit back.`
-            : OBJECTIVE_DESCRIPTIONS[objType](targetCount),
+          : `Face ${world.bossName}. Watch for the warning before each attack, then hit back.`,
         unlocked,
         completed,
         stars,
