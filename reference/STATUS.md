@@ -8,6 +8,16 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
+## Update 2026-10-28 ~21:20 ET
+
+- LIVE: PR #45 vine hotfix (self-swinging vines; deployed, APK built). Test link v225 = ccr with the vines.
+- W4 round 6 (catch ledges, Matt's earlier call; climb rocks) merged in ccr, gate running → test link. W4 round 7 (QA C5/C6/D5) sent.
+- QA batch 2026-10-29 assigned: qa-fix-w123 (3-1 water gap BLOCKER, 2-2 ponds/flags, 1-7, 2-6, 3-3), qa-fix-dot (heart tip at full hp,
+  misfiring/long lines, mid-stage sheet loads), qa-fix-meeca (room nudges, room 2 upright, pick-up teaching, carving ring, counter label).
+- World 6 hook-up: gen2-w6 session on gen2-w6-hook. gen2 core DONE (f443b11).
+- Art: gallery published; Gemini prompt page https://claude.ai/artifact/59Dv4xofbzSP7U5mz4CDyW (17 prop sheets + 3 characters). Matt's
+  first 10 sheets in reference/prop-sheets/gemini-batch-2026-10-28/ (redo asked: W7 plates, Reaver walk). Art helper cutting them in.
+
 ## Live and test link (2026-10-28 ~20:30 ET)
 
 - LIVE: PR #43 (polish, W1/W2/W4 round 2, gen2 core, Dot fix) and PR #44 (Meeca's trails rebuilt; Matt tested and approved, and
