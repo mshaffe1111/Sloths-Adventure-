@@ -4,7 +4,7 @@ Source: Matt's polish report (reference/polish-report/polish-report-1.txt, 2026-
 something starts, reports, passes review, merges or is decided. "HF" = the art is made on Hugging Face (Matt, 2026-10-29: all art from
 Hugging Face, $91 loaded). Nothing is marked done until it passed the lead's review and is merged into the work branch.
 
-Last updated: 2026-10-29 1:45 PM ET.
+Last updated: 2026-10-29 2:35 PM ET.
 
 ## Visuals (18)
 
@@ -111,23 +111,23 @@ Last updated: 2026-10-29 1:45 PM ET.
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| DOT-1 | Tips are used up when they're sent, not when they're shown |  | polish-dot | in progress (before/after preview first) |
-| DOT-2 | Puzzle rooms give the solution as you walk in |  | polish-dot | in progress (before/after preview first) |
+| DOT-1 | Tips are used up when they're sent, not when they're shown |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
+| DOT-2 | Puzzle rooms give the solution as you walk in |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
 | DOT-3 | Boss lines too long to read mid-fight |  | Build 1 (Matt's other session, polish-build1) | built, waiting for that session to push to GitHub |
 | DOT-4 | Dot never explains the locked ring wall in 1-9 |  | polish-a2 | in progress |
 | DOT-5 | Skip tips sits on the very first coach line |  | polish-a2 | in progress |
 | DOT-6 | Lines get cut and replayed |  | polish-a2 | in progress |
 | DOT-7 | Reading time is lost to Dot's flight |  | polish-a2 | in progress |
 | DOT-8 | World 5 has no calm rules |  | polish-a2 | in progress |
-| DOT-9 | Just reminders drops first-time explanations |  | polish-dot | in progress (before/after preview first) |
+| DOT-9 | Just reminders drops first-time explanations |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
 | DOT-10 | Death help is always generic |  | polish-a2 | in progress |
-| DOT-11 | Stuck help runs on a clock |  | polish-dot | in progress (before/after preview first) |
+| DOT-11 | Stuck help runs on a clock |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
 | DOT-12 | Unreviewed and over-long lines |  | polish-dot | waiting on Matt's decision (8 words or under 10?) |
-| DOT-13 | Move lines that don't name the thumb move |  | polish-dot | in progress (before/after preview first) |
-| DOT-14 | The Hush Fern secret is solved for you every time |  | polish-dot | in progress (before/after preview first) |
-| DOT-15 | The idol lesson points at a hidden relic and says "up high" |  | polish-dot | in progress (before/after preview first) |
-| DOT-16 | Two bosses get no coaching |  | polish-dot | in progress (before/after preview first) |
-| DOT-17 | Small things |  | polish-dot | in progress (before/after preview first) |
+| DOT-13 | Move lines that don't name the thumb move |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
+| DOT-14 | The Hush Fern secret is solved for you every time |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
+| DOT-15 | The idol lesson points at a hidden relic and says "up high" |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
+| DOT-16 | Two bosses get no coaching |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
+| DOT-17 | Small things |  | polish-dot | preview APPROVED by Matt 2:30 PM ET (Tips on Normal / Help on Easy; Help no repeats in a stage; all new lines); full rework running |
 
 ## Levels (18)
 
