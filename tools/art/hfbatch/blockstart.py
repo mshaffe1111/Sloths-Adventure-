@@ -77,13 +77,16 @@ def jag_mask(w, h, side, depth, seed):
 def w7anchors():
     W, H = 1216, 896
     S = Image.new('RGBA', (W, H), MAG)
-    branch, moss = opaque(kit(7, 'branch')), opaque(kit(7, 'mossStrip'))
-    bank = opaque(kit(7, 'bank'))
+    # (trimmed before they are made opaque: the kit cells' clear margins would otherwise turn into a black line along the top)
+    branch, moss = opaque(trim(kit(7, 'branch'))), opaque(trim(kit(7, 'mossStrip')))
+    bank = opaque(trim(kit(7, 'bank')))
     lia = trim(kit(7, 'liana'))
     body = lia.crop((0, 120, lia.width, 520))   # the liana's straight stretch
     # four lintels: (source, crop box, broken side, slot)
-    specs = [(branch, (0, 0, 300, 95), 'r', 0, 0, 1.45), (moss, (40, 0, 340, 95), 'l', 1, 0, 1.4),
-             (bank, (0, 0, 360, 120), 'r', 0, 1, 1.15), (branch, (250, 0, 560, 95), 'l', 1, 1, 1.35)]
+    # (round b: thicker lintels, about half the 300 x 220 frame's height, and running on above the cell's top so no outline
+    # crosses the frame's top edge)
+    specs = [(branch, (0, 0, 260, 95), 'r', 0, 0, 1.7), (moss, (60, 0, 320, 95), 'l', 1, 0, 1.65),
+             (bank, (0, 0, 300, 120), 'r', 0, 1, 1.35), (branch, (300, 0, 560, 95), 'l', 1, 1, 1.6)]
     rnd = random.Random(7)
     for i, (src, box, side, cx, cy, k) in enumerate(specs):
         x0, y0 = cx * 608, cy * 448
@@ -102,7 +105,7 @@ def w7anchors():
         a[edge, :3] *= 0.72
         lin = outline(Image.fromarray(a.astype(np.uint8), 'RGBA'), 2)
         px = x0 + (608 - lw) // 2 + (30 if side == 'l' else -30)
-        py = y0 + 0          # the top edge sits on the cell's top: the lintel runs on above
+        py = y0 - 14         # the top edge runs off the cell's top: the lintel runs on above
         # the hanging liana: from the knot near the broken end, straight down past the cell's foot
         ko = (95, 140, 75, 120)[i]
         kx = px + (lw - ko if side == 'r' else ko)
@@ -164,7 +167,7 @@ def w7walls():
                 h = rnd.choice([110, 140, 170, 200, 230, 90])
             h = min(h, SH - y) if SH - y > 70 else SH - y
             # a carved meander band every so often
-            if row in (1, 5) and s != 2 or (s == 2 and row == 6):
+            if row in ((1, 5), (3,), (6,), (0, 4))[s]:
                 band = rs(branch.crop((20, 30, 560, 80)), SW * 1.8, 64).crop((rnd.randint(0, 200), 0, rnd.randint(0, 200) + SW, 64))
                 T.alpha_composite(band, (0, y)); ImageDraw.Draw(T).line([(0, y), (SW, y)], fill=INK, width=3)
                 y += 64; row += 1; continue
@@ -207,13 +210,12 @@ def w7walls():
         r = roots.crop((rx0, rnd.randint(0, 60), rx0 + roots.width // 2, roots.height))
         if rnd.random() < 0.5:
             r = r.transpose(Image.FLIP_LEFT_RIGHT)
-        r = rs(r, SW * rnd.uniform(0.6, 0.9), SH * rnd.uniform(0.3, 0.5))
-        if face_y is not None:  # (keep the root clear of the carved face)
-            ry = face_y + 310 if face_y + 310 + r.height < SH * 0.88 else max(int(SH * 0.12), face_y - r.height - 10)
-        else:
-            ry = rnd.randint(int(SH * 0.12), int(SH * 0.88) - r.height)
-        if face_y is None:  # (the face strip has no root: the face is its feature)
-            T.alpha_composite(r, (rnd.randint(-30, SW - r.width + 30), ry))
+        # (round b: a root on strips 1 and 4 only, high on one and low on the other, so side by side the roots never line up;
+        # the face strip and strip 2 have none)
+        r = rs(r, SW * rnd.uniform(0.45, 0.6), SH * rnd.uniform(0.24, 0.32))
+        ry = (int(SH * 0.14), None, None, int(SH * 0.56))[s]
+        if ry is not None:
+            T.alpha_composite(r, (rnd.randint(-10, SW - r.width + 10), ry))
         dd = ImageDraw.Draw(T)
         for j in range(5):
             mx, my = rnd.randint(0, SW - 40), rnd.randint(int(SH * 0.12), int(SH * 0.85))
@@ -462,5 +464,83 @@ def w6set(short):
     S.convert('RGB').save(OUT / ('start-w6perches.webp' if short else 'start-w6ledges.webp'), 'WEBP', quality=92)
 
 
-w7anchors(); w7walls(); w4falls(); w6set(False); w6set(True)
+# ------------------------------------------------------------------------------------------------------------- W7 liana runs
+def w7lianas():
+    """six hanging liana runs (round b) to match the anchors' knotted liana: thick brown, a little wavy, a few leaf stubs"""
+    W, H = 1216, 896
+    S = Image.new('RGBA', (W, H), MAG)
+    d = ImageDraw.Draw(S)
+    rnd = random.Random(77)
+    col, hi, lo = (128, 86, 66, 255), (162, 114, 86, 255), (98, 64, 50, 255)
+    for i in range(6):
+        cx = 100 + i * 200
+        w = (40, 52, 44, 58, 36, 48)[i]
+        ph = rnd.uniform(0, 6.28)
+        pts = [(cx + 7 * math.sin(ph + y / 140), y) for y in range(10, H - 10, 8)]
+        d.line(pts, fill=INK, width=w + 6, joint='curve')
+        d.line(pts, fill=col, width=w, joint='curve')
+        d.line([(x + w * 0.22, y) for x, y in pts], fill=lo, width=max(4, w // 5), joint='curve')
+        d.line([(x - w * 0.22, y) for x, y in pts], fill=hi, width=max(3, w // 7), joint='curve')
+        if i in (1, 3):  # two strands twisted round each other
+            for y0 in range(30, H - 60, 70):
+                d.line([(cx - w / 2, y0), (cx + w / 2, y0 + 34)], fill=INK, width=5)
+        for _ in range(4):  # leaf stubs and thorns
+            y = rnd.randint(60, H - 80)
+            x = cx + 7 * math.sin(ph + y / 140)
+            sd = rnd.choice((-1, 1))
+            leaf = [(x + sd * w / 2, y), (x + sd * (w / 2 + 26), y + 10), (x + sd * (w / 2 + 10), y + 30)]
+            d.polygon(leaf, fill=(118, 82, 52, 255), outline=INK)
+    S.convert('RGB').save(OUT / 'start-w7lianas.webp', 'WEBP', quality=92)
+
+
+# ------------------------------------------------------------------------------------------------------------------ W4 mist
+def w4mist():
+    """round b: two mist clouds and a spray plume, soft and see-through (round a's came back as hard cartoon clouds)"""
+    W, H = 1216, 640
+    S = Image.new('RGBA', (W, H), MAG)
+    rnd = random.Random(44)
+
+    def soft(w, h, blobs, shape, blur):
+        M = Image.new('L', (w, h), 0)
+        md = ImageDraw.Draw(M)
+        for _ in range(blobs):
+            cx, cy, rx, ry = shape(rnd)
+            md.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=rnd.randint(150, 230))
+        M = M.filter(ImageFilter.GaussianBlur(blur))
+        T = Image.new('RGBA', (w, h), (234, 238, 242, 255))
+        sh = Image.new('RGBA', (w, h), (190, 200, 208, 255))
+        nz = Image.fromarray((np.random.RandomState(rnd.randint(0, 999)).rand(h // 40 + 2, w // 40 + 2) * 255).astype(np.uint8))
+        sh.putalpha(nz.resize((w, h), Image.BICUBIC).filter(ImageFilter.GaussianBlur(14)).point(lambda v: int(v * 0.6)))
+        T.alpha_composite(sh)
+        T.putalpha(M)
+        return T
+    S.alpha_composite(soft(500, 240, 16, lambda r: (r.randint(90, 410), r.randint(90, 150), r.randint(50, 110), r.randint(26, 50)), 22), (20, 60))
+    S.alpha_composite(soft(420, 220, 14, lambda r: (r.randint(80, 340), r.randint(80, 140), r.randint(40, 90), r.randint(22, 44)), 20), (540, 80))
+    S.alpha_composite(soft(220, 560, 18, lambda r: (110 + r.randint(-35, 35), r.randint(80, 500), r.randint(26, 64), r.randint(30, 70)), 18), (980, 40))
+    S.convert('RGB').save(OUT / 'start-w4mist.webp', 'WEBP', quality=92)
+
+
+# --------------------------------------------------------------------------------------------------------- W6 wedged branch
+def w6wedge():
+    """round b: a round fallen log (bark, a broken end) wedged in the crotch between two arching stilt roots that rise past its
+    ends, as a 3:1 ledge (768 x 448 cell) and two 1.3:1 perches (384 x 768 cells, the roots running on down)"""
+    W, H = 1536, 768
+    S = Image.new('RGBA', (W, H), MAG)
+    log = trim(prop('w6d', 'log'))
+    log = log.crop((0, 0, int(log.width * 0.72), log.height))
+    sl, sr = trim(kit(6, 'snapL')), trim(kit(6, 'snapR'))
+    for cx, cw, ch, pw, lh, rh in ((0, 768, 448, 620, 120, 330), (768, 384, 768, 280, 96, 600), (1152, 384, 768, 260, 104, 560)):
+        px0 = cx + (cw - pw) // 2
+        top = 70 if cw == 768 else 230
+        lg = rs(log, pw * 0.92, lh)
+        if cx == 1152:
+            lg = lg.transpose(Image.FLIP_LEFT_RIGHT)
+        S.alpha_composite(lg, (px0 + int(pw * 0.04), top + 26))
+        for r, fx in ((sl, 0.06), (sr, 0.94)):
+            q = rs(r, pw * 0.34, rh)
+            S.alpha_composite(q, (round(px0 + pw * fx - q.width / 2), top))
+    S.convert('RGB').save(OUT / 'start-w6wedge.webp', 'WEBP', quality=92)
+
+
+w7anchors(); w7walls(); w4falls(); w6set(False); w6set(True); w7lianas(); w4mist(); w6wedge()
 print('ok', sorted(p.name for p in OUT.glob('start-*')))
