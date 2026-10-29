@@ -26,6 +26,7 @@ import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
 import { gen2Water, isGen2Stage } from './gen2/game.ts';
 import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
+import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
 import type { LevelConfig } from './types.ts';
 
 /**
@@ -48,8 +49,8 @@ export const STAGE_ANIMS: Record<string, readonly string[]> = {
   '5-9': ['spider'],
 };
 
-/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room) */
-const GEN2_ROOMS: ReadonlySet<string> = new Set<string>(W5_ROOM_STAGES);
+/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms) */
+const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W6_ROOM_STAGES]);
 
 /** World 1's stages with puzzle rooms (protoStage.ts: the squirrels' lift, the seesaw, the acorn meadow) */
 const W1_ROOMS: ReadonlySet<string> = new Set(['1-4', '1-6', '1-7']);

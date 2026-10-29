@@ -48,7 +48,21 @@ export type Setting = 'normal' | 'easy';
 export type Waivable = 'quiet' | 'dead';
 
 /** one stage to curate: its id in the seed table, the game's config, the world kit */
-export interface CurateStage { key: string; config: LevelConfig; kit: WorldKit; kitName: string }
+export interface CurateStage {
+  key: string;
+  config: LevelConfig;
+  kit: WorldKit;
+  kitName: string;
+  /** the kit on a difficulty and the world's finishing step, when the game builds the stage so (gen2/game.ts GEN2_STAGES: World 6) */
+  kitFor?: (difficulty: Setting) => WorldKit;
+  finish?: (st: Gen2Stage) => Gen2Stage;
+}
+
+/** a roll of a stage on one difficulty, built the way the game builds it (its entry's kit on that difficulty, then its finish) */
+export function buildFor(stage: CurateStage, seed: number, recent: string[], difficulty: Setting): Gen2Stage {
+  const st = buildGen2Stage({ config: stage.config, kit: stage.kitFor ? stage.kitFor(difficulty) : stage.kit, seed, recent, difficulty });
+  return stage.finish ? stage.finish(st) : st;
+}
 
 /** one setting of one roll, measured */
 export interface SideMeasure {
@@ -188,9 +202,8 @@ export function failsOf(m: Pick<RollMeasure, 'normal' | 'easy'>, floor: { target
 
 /** one roll, both settings */
 export function measureRoll(stage: CurateStage, seed: number, recent: string[], waive: readonly Waivable[]): RollMeasure {
-  const req = { config: stage.config, kit: stage.kit, seed, recent };
-  const n = buildGen2Stage({ ...req, difficulty: 'normal' });
-  const e = buildGen2Stage({ ...req, difficulty: 'easy' });
+  const n = buildFor(stage, seed, recent, 'normal');
+  const e = buildFor(stage, seed, recent, 'easy');
   const type = stage.config.objectiveType;
   const N = measureSide(n, type, 'normal');
   const E = measureSide(e, type, 'easy');
@@ -219,12 +232,12 @@ const floors = (st: Gen2Stage) => ({ target: st.gen2.budget.seconds.target, fast
 
 /** the slow part, for a roll about to be picked: the kid and adult jump bots, and the band score */
 export function botCheck(stage: CurateStage, m: RollMeasure, recent: string[]): NonNullable<RollMeasure['bots']> & { band: { normal: number; easy: number } } {
-  const req = { config: stage.config, kit: stage.kit, seed: m.seed, recent };
+
   const type = stage.config.objectiveType;
   const rates = { normal: [] as number[], easy: [] as number[] };
   const band = { normal: 0, easy: 0 };
   for (const setting of ['normal', 'easy'] as const) {
-    const st = buildGen2Stage({ ...req, difficulty: setting });
+    const st = buildFor(stage, m.seed, recent, setting);
     const R = pickRoute(type, st as unknown as Stage);
     const js = inspectJumps(st as unknown as Stage, R.used.route, setting === 'easy', setting === 'easy' ? KID : ADULT);
     rates[setting] = js.filter((j) => j.rate !== null && !j.unflyable).map((j) => j.rate!);
@@ -385,6 +398,14 @@ export async function resolveStage(key: string, kitOverride?: string): Promise<C
   if (toy) {
     const { kit } = await import('../../src/game/gen2/toyWorld.ts');
     return { key, config: { ...config, unlocked: true }, kit, kitName: 'toyWorld.ts:kit' };
+  }
+  // (a stage the game lists is curated on its entry, the same kit on each difficulty and the same finish: gen2/game.ts)
+  if (!kitOverride) {
+    const { GEN2_STAGES } = await import('../../src/game/gen2/game.ts');
+    const entry = GEN2_STAGES[id];
+    if (entry?.finish || entry?.kit.length) {
+      return { key, config: { ...config, unlocked: true }, kit: entry.kit('normal'), kitName: entry.kitName, kitFor: (d) => entry.kit(d), finish: entry.finish };
+    }
   }
   const kits = await worldKits(config.worldIndex, kitOverride, config.miniIndex);
   const found = kits.find((k) => !k.kit.manifest.handBuilt.includes(id) && k.kit.manifest.sections.length);

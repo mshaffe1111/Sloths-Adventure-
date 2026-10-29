@@ -154,7 +154,7 @@ test('every shipped roll holds the jumping spiders its sheet list loads, and dra
 
 test('the pipeline\'s flags: on 30 raw rolls of each gen2 stage, Normal and Easy, never more than FLAG_SPAN.max px without one, and every flag clear of the animals', () => {
   for (const id of Object.keys(GEN2_STAGES)) {
-    const kit = GEN2_STAGES[id].kit();
+    const kit = GEN2_STAGES[id].kit('normal');
     for (let seed = 1; seed <= 30; seed++) {
       for (const difficulty of ['normal', 'easy'] as const) {
         const st = buildGen2Stage({ config: lv(id), kit, seed, difficulty });

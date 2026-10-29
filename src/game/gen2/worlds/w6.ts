@@ -155,9 +155,9 @@ export const W6_SOFT_STAGES: readonly number[] = [4, 6];
 /** the stages of World 6 gen2 builds (6-8 Stilt Climb stays hand-built; 6-10 is the guardian's lair) */
 export const W6_GEN2_STAGES = ['6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9'] as const;
 
-/** the stages of World 6 that may hold a puzzle room (2-3 puzzle moments a world, STAGE-RULES §3): 6-3 and 6-7 (raise the water,
- *  lower the water). The rooms are the swing builder's (gen2-w6-swing) */
-export const W6_ROOM_STAGES = ['6-3', '6-7'] as const;
+/** the stages of World 6 that hold a puzzle room (STAGE-RULES §3): 6-3's root seesaw, 6-6's dark hollow, 6-7's water well (w6Rooms.ts,
+ *  required on every roll: w6Game.ts) */
+export const W6_ROOM_STAGES = ['6-3', '6-6', '6-7'] as const;
 
 /**
  * Dot's first-time lines (under 10 words). All new: each needs Matt's approval before it ships (STAGE-RULES §1 "Story"). The water
