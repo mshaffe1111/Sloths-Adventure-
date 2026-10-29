@@ -155,3 +155,10 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   ctx.restore();
   return true;
 }
+
+/** the sheets this sprite draws from (sheetWarm.ts spriteSheets: asked for before the stage starts, not when it first comes on screen) */
+export const EAGLE_SHEETS: readonly string[] = [new URL('../assets/enemies/eagle-atlas.webp', import.meta.url).href];
+/** start loading them now (the stage preload and the stage start; QA's mid-stage 'blank wait' lines, 2026-10-29) */
+export function warmEagleSprite(): void {
+  if (eagleSpriteEnabled()) load();
+}

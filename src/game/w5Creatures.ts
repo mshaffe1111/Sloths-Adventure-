@@ -5,7 +5,7 @@
  * until her trained clips come). The Dangler, Orchid Mantis and Dozer moth sheets are in no stage yet, so nothing loads them.
  *
  * All are World 5 sheets: they start loading when a World 5 stage that holds the creature starts (W5Play's constructor, and
- * stageSheets.ts STAGE_ANIMS for the spider's clips), and are let go when play moves to another world (atlasLoader.ts). Every draw
+ * stageSheets.ts STAGE_DRAWS for the spider's clips), and are let go when play moves to another world (atlasLoader.ts). Every draw
  * returns false until its sheet is in, and the caller draws what it drew before (the spider's painted stills or its vector rig, the
  * Butler's stand-in), so nothing ever disappears.
  */

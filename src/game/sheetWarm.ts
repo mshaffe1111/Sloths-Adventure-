@@ -15,6 +15,7 @@ import { sheetWarm, warmSheets } from './atlasLoader.ts';
 import { creatureAnimUrl, warmCreatureAnims } from './creatureAnim.ts';
 import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
 import { PROTO2_URL, warmProto2 } from './protoArt.ts';
+import { warmSprites } from './spriteSheets.ts';
 
 /** a creature's clip sheet name: a snake draws the golden snake's clips, a royal turtle the guard's */
 export function animOf(type: string, royal?: boolean): string {
@@ -54,11 +55,15 @@ export function stageExtras(st: StageDraws): { vine: boolean; props2: boolean } 
   return { vine, props2 };
 }
 
-/** start every sheet the stage can draw loading (its creatures' clips, and the extras it needs); their addresses */
+/** start every sheet the stage can draw loading (its creatures' clips and painted poses, and the extras it needs); their addresses */
 export function warmStageSheets(st: StageDraws): string[] {
-  const names = stageAnims(st).filter((n) => !!creatureAnimUrl(n));
+  const all = stageAnims(st);
+  const names = all.filter((n) => !!creatureAnimUrl(n));
   warmCreatureAnims(names);
   const urls = names.map((n) => creatureAnimUrl(n)!);
+  // (and each creature's painted poses: the golden snake's heads, the eagle's sheet, which a sprite needs before it draws at all; they
+  // were asked for only when each first came on screen, QA 2026-10-29: 'blank wait' at 80 s, 179 s and 201 s)
+  urls.push(...warmSprites(all));
   const x = stageExtras(st);
   if (x.vine) {
     warmHeroVine();
