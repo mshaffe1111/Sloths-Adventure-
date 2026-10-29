@@ -15,6 +15,7 @@
  * many vines each chain has, how far apart and how high they hang, the length of every stretch, the snakes, and the order inside a beat.
  * Every rolled piece is checked against the shared physics (protoCheck.ts) and rolled again if it fails (see protoStage.test.ts).
  */
+import { teachWater } from './waterTeach.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -324,7 +325,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const kd = dressStage({ world: w, stage: config.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
     if (kd.length) st.proto.kitDecor = kd;
   }
-  return st;
+  // water taught before it costs a life (LV-8)
+  return teachWater(st);
 }
 
 /** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */

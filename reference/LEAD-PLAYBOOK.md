@@ -134,3 +134,12 @@ Anything that plays over and over (warnings, grit, splashes, sparks, debris) get
 
 ## Review rule: walk the stages, not the spots (Matt, 2026-10-29 4:08 PM ET)
 Once tools/inspect/walk.mjs + the seam detector land (polish-clean), every helper that changes a look attaches a clean walk of the stages it touched (upright and sideways, the detector's counts before/after). No walk, no merge. The lead looks at the whole contact sheet and the clip, not only the helper's chosen shots.
+
+## Dot and in-stage lines: the lead approves (Matt, 2026-10-29 4:45 PM ET)
+"I'm approving all the dot lines going forward. You should have a pretty good idea how the wording should be based upon the whole story audit."
+Matt no longer reviews Dot's in-play lines or Pokey's in-stage thought lines; the lead approves them, line by line, before merge. Bar:
+- in play (tips, warnings, room tiers): under 10 words, plain, readable at a glance on a phone, never the answer (name the problem; the move only on Help after struggle), danger names only where the danger can't be seen first;
+- Dot's voice (reference/VOICE.md, the story audit "road to A+"): warm, chatty, a run-on talker; in play she is short because he is busy, and her personality shows in rest-point lines (checkpoint, standing still), where one run-on is allowed; going short in a story scene means something is wrong;
+- Pokey: short, flat, dry;
+- no repeats in a stage (Help), Tips >= 30 s apart, first-time hazards taught once per save.
+Story scene lines (cutscenes, the journal, the finale): the lead approves these too (Matt, 2026-10-29 5:00 PM ET), by VOICE.md and the story audit; Matt sees them in context with the story art.

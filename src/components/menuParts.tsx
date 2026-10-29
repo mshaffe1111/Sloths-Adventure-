@@ -8,7 +8,7 @@ import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
 import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
 import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, type GameSpeed } from '../game/assist.ts';
-import { DIFFICULTY_LABEL, difficulty, setDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
+import { DIFFICULTY_LABEL, difficulty, switchDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGuideHelp.ts';
 import { dotSaid } from '../game/dotGuide.ts';
 import { DotFace } from './DotFace.tsx';
@@ -331,7 +331,7 @@ export const DifficultySetting: React.FC = () => {
             { id: 'normal', label: DIFFICULTY_LABEL.normal.name },
           ]}
           onPick={(v) => {
-            setDifficulty(v);
+            switchDifficulty(v);
             setLevel(v);
           }}
         />
