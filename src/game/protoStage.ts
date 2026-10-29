@@ -2546,6 +2546,33 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * chain, a vine over a gap): the first-timer drowned before it where the first drop was not a run of stones (new, needs Matt's approval)
    */
   const deepTip = (at: number) => once('deep', () => hint(at - 260, 'No moss down there. Jump true!'));
+  /**
+   * World 3's first water (3-1, QA 2026-10-29: plain hops lost all three lives in about 10 s at 3-1's first gap over the stream, with no
+   * tip before it: Dot's line waited behind the spores' tip and the lessons, and the gap came 270 px out of the spore cloud, 56-64 px
+   * wide, a slot the eye barely sees). Dot's water line first, on open floor in the light (no spores, no dark, no stone to land on), two
+   * grotto rocks to hop on the way, then one level gap over the stream: a plain jump (40-45% of one, wider than the slot, well inside
+   * the shortest flick from a run), petals over it where the hop goes, and a wide landing. Every later water of the stage comes after it.
+   */
+  function firstWater() {
+    const x0 = x;
+    run(R.r(180, 220));
+    // (Dot's line about 1500 px, five seconds, before the edge: it may wait behind a lesson, she keeps ten seconds between lines)
+    once('deep', () => hint(x, 'No moss down there. Jump true!'));
+    for (let k = 0; k < 3; k++) {
+      run(R.r(240, 280));
+      logHop(R.i(34, 42));
+    }
+    run(R.r(300, 340));
+    const edge = x;
+    close();
+    const far = Math.round(edge + reachJump(0, false) * R.r(0.4, 0.45));
+    arc(edge - 40, far + 40, G - 110, 3);
+    open(far);
+    // (the landing: plain floor, nothing on it for a long hop that runs on)
+    run(R.r(340, 380));
+    expert += (x - x0) / RUN + 0.6;
+    pieces.push({ k: 'gorge', x0, x1: x });
+  }
   /** a stone pillar standing up out of the deep (no floor under it: the water below costs a life) */
   const deepStone = (x0: number, w: number, top: number) => {
     const p: Platform = { id: pid++, x: Math.round(x0), y: Math.round(top), width: Math.round(w), height: WATER + 40 - Math.round(top), type: 'solid', style: 'moss_stone' };
@@ -2808,8 +2835,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Learn: the grotto stones', () => {
       if (v.learn === 0) w3Order(() => stumps(), () => busy(1), () => w3Stones([60, 120, 60], [0.5, 0.62]));
-      else w3Order(() => w3Stones([50, 90, 130, 80], [0.5, 0.62]), () => highRoadOver());
+      // (the mushroom first: its lesson well before the water's tip, which waits ten seconds after any line before it)
+      else { highRoadOver(); w3Stones([50, 90, 130, 80], [0.5, 0.62]); }
       busy(1);
+      // (QA 2026-10-29: the stage's first water, taught, before anything else over the stream on every roll; late in the Learn, so the
+      // first lessons have had their say and Dot's line is not held back behind them)
+      firstWater();
       flag();
     });
     beat('Develop: the sleepy spores', () => {
