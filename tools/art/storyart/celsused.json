@@ -1,0 +1,120 @@
+{
+"cel:GR": [
+"gr.box_sit",
+"gr.giggle",
+"gr.hand_chest",
+"gr.hum_sit",
+"gr.laugh",
+"gr.look_up",
+"gr.point",
+"gr.stand_hands",
+"gr.water",
+"gr.wave",
+"gr.wave_talk"
+],
+"cel:PX": [
+"mx.kneel_sad",
+"mx.petal_glow",
+"mx.petal_wrist",
+"mx.read_a",
+"mx.read_cry"
+],
+"cel:TC": [
+"tc.announce",
+"tc.hat_shout",
+"tc.hat_stand",
+"tc.point_bell",
+"tc.scroll"
+],
+"cel:PO": [
+"po.carry_stand",
+"po.carry_walk",
+"po.offer_parcel",
+"po.walk_parcel"
+],
+"cel:PB": [
+"db.tie_stand"
+],
+"cel:PA": [
+"da.kneel_tie",
+"da.lean_rest",
+"da.reach_slump",
+"da.tie_closeup"
+],
+"cel:PH": [
+"hug.arm_around",
+"hug.cheek_glad",
+"hug.heart_hands",
+"hug.nuzzle",
+"hug.sit_hug"
+],
+"cel:MS": [
+"pk.bow_head",
+"pk.carve_wall",
+"pk.chair_chin",
+"pk.chair_wait",
+"pk.chair_window",
+"pk.cheer_fist",
+"pk.content",
+"pk.desk_write_a",
+"pk.desk_write_b",
+"pk.fume",
+"pk.happy_tears",
+"pk.hips",
+"pk.holler",
+"pk.laugh",
+"pk.stand_wait",
+"pk.startled",
+"pk.stomp_angry"
+],
+"cel:LP": [
+"lp.bow",
+"lp.cap_in_hand",
+"lp.hands_clasped",
+"lp.hopeful",
+"lp.lantern_look",
+"lp.lantern_walk",
+"lp.mend_coat",
+"lp.peek_door",
+"lp.salute_nervous",
+"lp.sew_table",
+"lp.shrug",
+"lp.stand_worry",
+"lp.tray_walk"
+],
+"cel:MF": [
+"face.drowsy",
+"face.weary"
+],
+"cel:GN": [
+"gn.dim",
+"gn.glare",
+"gn.lids",
+"gn.narrow",
+"gn.ready_a",
+"gn.ready_b",
+"gn.ready_c",
+"gn.shut",
+"gn.sleep_b",
+"gv.stand_m"
+],
+"cel:GY": [
+"gy.stand_b",
+"gy.turn_away"
+],
+"cel:PN": [
+"mc.sing_reach"
+],
+"cel:GV": [
+"gv.letter",
+"gv.reach_a",
+"gv.scout",
+"gv.sit",
+"gv.sorrow",
+"gv.sorrow_b",
+"gv.stand",
+"gv.tea",
+"gv.walk_a",
+"gv.wipe_eye"
+]
+}

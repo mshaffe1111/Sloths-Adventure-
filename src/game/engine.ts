@@ -256,6 +256,21 @@ export const STEP_UP = { min: 20, max: 96, near: 14 } as const;
 export const LIP_IN = 13;
 const STUCK_HOLD = 7;
 
+/** what the shrine says when Pokey steps into it, one line per world in its own voice (polish report ST-5: it said "SANCTUARY UNLOCKED!
+ * VICTORY!" on every stage of every world, and World 10's fortress is no sanctuary) */
+const SHRINE_LINE: Record<number, string> = {
+  1: 'The canopy lets you through.',
+  2: 'The village waves you on.',
+  3: 'The glowworms light the way out.',
+  4: 'Out of the mist, and on.',
+  5: 'Still standing. Good.',
+  6: 'Out of the black water.',
+  7: 'The old stones let you pass.',
+  8: 'One more branch behind you.',
+  9: 'Through the heat, and on.',
+  10: 'A few steps closer to her.',
+};
+
 /** the swing's sweet-spot glow on the vine (a soft warm disc), painted once */
 let sweetGlowCv: HTMLCanvasElement | null = null;
 function sweetGlowPic(): HTMLCanvasElement | null {
@@ -2937,7 +2952,7 @@ export class GameEngine {
           sound.playExitChime();
           buzz('clear');
           this.spawnSparkBurst(this.currentStage.exitTotemX, p.y - 30, '#34d399');
-          this.addFloatingText('SANCTUARY UNLOCKED! VICTORY!', p.x, p.y - 60, '#34d399');
+          this.addFloatingText(SHRINE_LINE[this.currentStage.config.worldIndex] ?? 'Onward.', p.x, p.y - 60, '#34d399');
         } else {
           // Push player back gently from sealed barrier and show clear reminder
           p.x = this.currentStage.exitTotemX - 35;
@@ -3616,7 +3631,9 @@ export class GameEngine {
       this.daisyRescued = true;
       sound.playBossVictory();
       this.camera.trauma = end ? 0.3 : 0.9;
-      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : end ? 'VICTORY!' : 'VICTORY! MEECA IS SAVED!', b.x, b.y - 70, '#ec4899');
+      // (it said "VICTORY! MEECA IS SAVED!" after every guardian, World 1 on: the story only frees her at the top of the mountain)
+      const won = this.currentStage.config.secret ? 'Thornbark is free.' : end ? 'Victory!' : this.currentStage.config.worldIndex === 10 ? 'The General is down.' : 'The way north is open.';
+      this.addFloatingText(won, b.x, b.y - 70, '#ec4899');
       if (!end) this.spawnDebrisBurst(b.x, b.y, '#dc2626');
       this.bossShove = 0;
       this.bossGust = 0;

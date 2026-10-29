@@ -12,6 +12,10 @@ export type GameScreen =
   | 'world_story'
   /** the scene halfway through a world: Dot and a note from Meeca (once) */
   | 'world_mid'
+  /** the scene at the guardian's door after a world's ninth stage (World 10: the fortress gate, once) */
+  | 'world_gate'
+  /** a short scene after the ending (the stopwatch, if it was found) */
+  | 'ending_tag'
   | 'boss_defeat'
   | 'ending_story'
   /** a remembered scene (a flashback between worlds, or one replayed from the Library) */

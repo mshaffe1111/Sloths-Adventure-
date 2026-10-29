@@ -24,8 +24,8 @@ import { ControlSwitch } from './components/ControlSwitch.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
 import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
-import { INTRO_PANELS, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
-import { MEMORIES, finalePanels, loadMemories, nextAfterBoss, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
+import { INTRO_PANELS, WORLD_GATE, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
+import { MEMORIES, endTagPanels, finalePanels, loadMemories, nextAfterBoss, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
 import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
@@ -113,6 +113,34 @@ function markGuardianCardSeen(lvl: LevelConfig) {
 function markMidStorySeen(w: number) {
   try {
     localStorage.setItem(midStoryKey(w), '1');
+  } catch {}
+}
+/** a guardian's intro has been seen (a long one is shortened on the retries: storyBosses.ts RETRY_INTRO_LINES) */
+const bossIntroKey = (w: number) => `sloth_story_b${w}`;
+function hasSeenBossIntro(w: number): boolean {
+  try {
+    return localStorage.getItem(bossIntroKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markBossIntroSeen(w: number) {
+  try {
+    localStorage.setItem(bossIntroKey(w), '1');
+  } catch {}
+}
+/** the scene at the guardian's door, after a world's ninth stage (World 10's gate), plays once */
+const gateStoryKey = (w: number) => `sloth_story_g${w}`;
+function hasSeenGateStory(w: number): boolean {
+  try {
+    return localStorage.getItem(gateStoryKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markGateStorySeen(w: number) {
+  try {
+    localStorage.setItem(gateStoryKey(w), '1');
   } catch {}
 }
 
@@ -441,7 +469,7 @@ export default function App() {
     const worldAmbient = (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).ambientType;
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
-    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
+    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'world_gate' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
     else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
     else sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
@@ -779,6 +807,9 @@ export default function App() {
               // plays inside 5-5, at the rest branch: midScene.ts)
               // halfway through a world, Dot catches up with a note from Meeca
               setScreen('world_mid');
+            } else if (lvl.miniIndex === 9 && WORLD_GATE[lvl.worldIndex] && !hasSeenGateStory(lvl.worldIndex)) {
+              // at the fortress gate, Dot goes around to the cookhouse seam and leaves Flicker with him
+              setScreen('world_gate');
             } else {
               setScreen('victory');
             }
@@ -1067,17 +1098,35 @@ export default function App() {
         />
       )}
 
+      {/* At the guardian's door, after the ninth stage (first time only) */}
+      {screen === 'world_gate' && WORLD_GATE[activeLevel.worldIndex] && (
+        <StoryPlayer
+          key={`gate${activeLevel.worldIndex}`}
+          panels={WORLD_GATE[activeLevel.worldIndex]}
+          finishLabel="Onward"
+          skipLabel="Skip scene"
+          onFinish={() => {
+            markGateStorySeen(activeLevel.worldIndex);
+            setScreen('victory');
+          }}
+        />
+      )}
+
       {/* Boss showdown */}
       {screen === 'boss_intro' && !bossCard && (
         <StoryPlayer
           panels={
             activeLevel.secret
               ? thornbarkPanels('intro')
-              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
+              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName, hasSeenBossIntro(activeLevel.worldIndex))
           }
           finishLabel="FIGHT!" finishIcon="swords"
           skipLabel="Skip to fight"
-          onFinish={() => (hasSeenGuardianCard(activeLevel) ? launchEngine(activeLevel) : setBossCard(true))}
+          onFinish={() => {
+            if (!activeLevel.secret) markBossIntroSeen(activeLevel.worldIndex);
+            if (hasSeenGuardianCard(activeLevel)) launchEngine(activeLevel);
+            else setBossCard(true);
+          }}
         />
       )}
       {/* after the guardian's scene, the first time in this save: its card, with Dot's one line, then the fight (UI-5) */}
@@ -1150,6 +1199,15 @@ export default function App() {
       {screen === 'ending_story' && (
         <StoryPlayer
           panels={finalePanels(foundIds)}
+          finishLabel="The End" finishIcon="heart"
+          onFinish={() => setScreen(endTagPanels(foundIds).length ? 'ending_tag' : 'story_ending')}
+        />
+      )}
+
+      {/* After the end: the stopwatch, if it was found */}
+      {screen === 'ending_tag' && (
+        <StoryPlayer
+          panels={endTagPanels(foundIds)}
           finishLabel="The End" finishIcon="heart"
           onFinish={() => setScreen('story_ending')}
         />

@@ -1,0 +1,531 @@
+{
+ "tag": "r2",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
+  ],
+  "meeca": [
+   "mshaffe111/meeca-qwen-lora",
+   "meeca_qwen_v1.safetensors"
+  ],
+  "dot": [
+   "mshaffe111/dot-qwen-lora",
+   "dot_qwen_v1.safetensors"
+  ],
+  "general": [
+   "mshaffe111/general-qwen-lora",
+   "general_qwen_v1.safetensors"
+  ],
+  "ironclaw": [
+   "mshaffe111/ironclaw-qwen-lora",
+   "ironclaw_qwen_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e876a643cd11505479e363db204e4aecb971eab8/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "r2-pk-idle-s50",
+   "start": "r2-pokey-idle.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, standing relaxed and smiling, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-pk-idle-s62",
+   "start": "r2-pokey-idle.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, standing relaxed and smiling, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-pk-worried-s50",
+   "start": "r2-pokey-worried.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, standing worried, hands on top of his head, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-pk-worried-s62",
+   "start": "r2-pokey-worried.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, standing worried, hands on top of his head, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-pk-duck-s50",
+   "start": "r2-pokey-duck.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, crouching low and scared, gripping the ground with both paws, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-pk-duck-s62",
+   "start": "r2-pokey-duck.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, crouching low and scared, gripping the ground with both paws, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-mc-sing_reach-s55",
+   "start": "r2-cel-mc-sing_reach.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, standing and reaching one paw out in front of him, palm open, offering his hand, eyes soft, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-mc-sing_reach-s68",
+   "start": "r2-cel-mc-sing_reach.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, standing and reaching one paw out in front of him, palm open, offering his hand, eyes soft, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-mx-petal_glow-s55",
+   "start": "r2-cel-mx-petal_glow.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, holding up his wrist in both paws where a small glowing pink petal is tied with a ribbon, looking at it in wonder, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-mx-petal_glow-s68",
+   "start": "r2-cel-mx-petal_glow.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, holding up his wrist in both paws where a small glowing pink petal is tied with a ribbon, looking at it in wonder, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-meeca-idle-s50",
+   "start": "r2-meeca-idle.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, standing relaxed and smiling, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-meeca-idle-s62",
+   "start": "r2-meeca-idle.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, standing relaxed and smiling, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "r2-grandma-s55",
+   "start": "r2-cel-gr-stand_hands.png",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, a green gardening apron, standing with her paws folded in front of her, smiling warmly, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "r2-ged-idle-3",
+   "edit": true,
+   "start": "r2-gen-idle.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-idle-8",
+   "edit": true,
+   "start": "r2-gen-idle.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 8,
+   "neg": "robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-roar-3",
+   "edit": true,
+   "start": "r2-gen-roar.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-roar-8",
+   "edit": true,
+   "start": "r2-gen-roar.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 8,
+   "neg": "robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-fallen-3",
+   "edit": true,
+   "start": "r2-gen-fallen.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-fallen-8",
+   "edit": true,
+   "start": "r2-gen-fallen.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 8,
+   "neg": "robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-ready_a-3",
+   "edit": true,
+   "start": "r2-cel-gn-ready_a.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-ready_a-8",
+   "edit": true,
+   "start": "r2-cel-gn-ready_a.png",
+   "prompt": "Redraw this same sloth as a grieving old grandfather who has become a war general. Keep exactly his pose, his size and position, his spiked wooden club, the spiked silver plate on his shoulder, his red scarf and torn crimson cape, and his glowing red eyes. Dress him in a long dark green soldier's greatcoat with two rows of brass buttons and a wide leather belt, worn under the cape and open over his belly. Give him thick, real, shaggy brown sloth fur with darker tips, an old lined face, grey in his brows and around his muzzle, heavy tired eyes. He is a sloth, not a robot: no helmet, no metal suit, no plume. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 8,
+   "neg": "robot, armour suit, helmet, plume, toy, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-gv-3",
+   "edit": true,
+   "start": "r2-cel-gv-stand.png",
+   "prompt": "Redraw this same old sloth in the same pose, size and position: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 3,
+   "neg": "robot, armour, helmet, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-ged-gv-8",
+   "edit": true,
+   "start": "r2-cel-gv-stand.png",
+   "prompt": "Redraw this same old sloth in the same pose, size and position: thick, real, shaggy brown sloth fur with darker tips, an old lined gentle face, grey in his brows and around his muzzle, sad tired brown eyes, his rust-coloured scarf, wrapped wrists, and an old unbuttoned dark green soldier's greatcoat with brass buttons hanging open. Same painted storybook style with dark ink outlines and soft cel shading. Plain flat grey background.",
+   "seed": 8,
+   "neg": "robot, armour, helmet, text, watermark, extra limbs, blurry"
+  },
+  {
+   "name": "r2-gen-idle-on",
+   "then": "r2-ged-idle-3",
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, a tired grieving old soldier, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.35,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "ironclaw",
+     0.7
+    ],
+    [
+     "general",
+     0.6
+    ]
+   ]
+  },
+  {
+   "name": "r2-gen-roar-on",
+   "then": "r2-ged-roar-3",
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, a tired grieving old soldier, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.35,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "ironclaw",
+     0.7
+    ],
+    [
+     "general",
+     0.6
+    ]
+   ]
+  },
+  {
+   "name": "r2-gen-ready_a-on",
+   "then": "r2-ged-ready_a-3",
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, a tired grieving old soldier, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.35,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "ironclaw",
+     0.7
+    ],
+    [
+     "general",
+     0.6
+    ]
+   ]
+  },
+  {
+   "name": "r2-pl-courtyard-s85-5",
+   "start": "r2-plate-courtyard.png",
+   "mask": "r2-plate-courtyard-mask.png",
+   "prompt": "slothadv style, painted storybook illustration, a stormy evening courtyard of an old stone fortress, a tall round grey stone tower on the left rising high up into heavy dark blue storm clouds, its top a pointed slate roof, one small warm lit arched window, black thorn vines climbing the stone, rain, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.85,
+   "seed": 5,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "r2-pl-courtyard-s95-5",
+   "start": "r2-plate-courtyard.png",
+   "mask": "r2-plate-courtyard-mask.png",
+   "prompt": "slothadv style, painted storybook illustration, a stormy evening courtyard of an old stone fortress, a tall round grey stone tower on the left rising high up into heavy dark blue storm clouds, its top a pointed slate roof, one small warm lit arched window, black thorn vines climbing the stone, rain, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.95,
+   "seed": 5,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "r2-pl-courtyard-s85-11",
+   "start": "r2-plate-courtyard.png",
+   "mask": "r2-plate-courtyard-mask.png",
+   "prompt": "slothadv style, painted storybook illustration, a stormy evening courtyard of an old stone fortress, a tall round grey stone tower on the left rising high up into heavy dark blue storm clouds, its top a pointed slate roof, one small warm lit arched window, black thorn vines climbing the stone, rain, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.85,
+   "seed": 11,
+   "w": 1280,
+   "h": 1360,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "r2-pl-courtyard-edit-2",
+   "edit": true,
+   "start": "r2-plate-courtyard-canvas.png",
+   "seed": 2,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Fill the empty white top of this picture so the painting carries on upward: the round grey stone tower on the left goes on up past the lit window to a pointed slate roof, the stone wall on the right goes up a little and ends in battlements, and above everything heavy dark blue storm clouds with rain. Keep the painted bottom part exactly as it is. Same painted storybook style. No characters, no text.",
+   "neg": "white, blank, frame, border, text, characters"
+  },
+  {
+   "name": "r2-pl-courtyard-edit-6",
+   "edit": true,
+   "start": "r2-plate-courtyard-canvas.png",
+   "seed": 6,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Fill the empty white top of this picture so the painting carries on upward: the round grey stone tower on the left goes on up past the lit window to a pointed slate roof, the stone wall on the right goes up a little and ends in battlements, and above everything heavy dark blue storm clouds with rain. Keep the painted bottom part exactly as it is. Same painted storybook style. No characters, no text.",
+   "neg": "white, blank, frame, border, text, characters"
+  },
+  {
+   "name": "r2-gr-w1-s40",
+   "start": "r2-ground-w1.png",
+   "prompt": "slothadv style, painted storybook illustration, the top edge of a lush rainforest floor seen from the side: soft dark green moss and leaf litter with small fern sprouts, a few pink petals and tiny red mushrooms, tufts of grass along its top edge, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "r2-gr-w1-s55",
+   "start": "r2-ground-w1.png",
+   "prompt": "slothadv style, painted storybook illustration, the top edge of a lush rainforest floor seen from the side: soft dark green moss and leaf litter with small fern sprouts, a few pink petals and tiny red mushrooms, tufts of grass along its top edge, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ]
+}

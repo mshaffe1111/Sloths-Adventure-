@@ -1,0 +1,1302 @@
+{
+ "tag": "r4a",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
+  ],
+  "meeca": [
+   "mshaffe111/meeca-qwen-lora",
+   "meeca_qwen_v1.safetensors"
+  ],
+  "ironclaw": [
+   "mshaffe111/ironclaw-qwen-lora",
+   "ironclaw_qwen_v1.safetensors"
+  ],
+  "general": [
+   "mshaffe111/general-qwen-lora",
+   "general_qwen_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1d437dfc077002bdedb1203a7b2fee7c9780fd14/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "pokey-alarm-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     492,
+     220,
+     163,
+     202
+    ],
+    "scale": 4.0,
+    "ox": 128,
+    "oy": 130,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, alarmed and shocked, eyes wide open, mouth open, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "pokey-crossed-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     260,
+     220,
+     105,
+     206
+    ],
+    "scale": 4.0,
+    "ox": 376,
+    "oy": 110,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, arms crossed, grumpy and stubborn, frowning, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "pokey-impatient-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     732,
+     431,
+     104,
+     196
+    ],
+    "scale": 4.0,
+    "ox": 416,
+    "oy": 150,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, arms crossed, impatient and annoyed, frowning, tapping his foot, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "pokey-point_a-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     253,
+     431,
+     186,
+     198
+    ],
+    "scale": 4.0,
+    "ox": 328,
+    "oy": 142,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, pointing ahead, frowning and serious, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "pokey-point_b-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     659,
+     220,
+     155,
+     201
+    ],
+    "scale": 4.0,
+    "ox": 388,
+    "oy": 134,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, pointing ahead, upset and crying out, mouth open, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "pokey-tired-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     443,
+     431,
+     139,
+     198
+    ],
+    "scale": 4.0,
+    "ox": 348,
+    "oy": 142,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, exhausted and sad, tears in his eyes, slumped, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "pokey-wipe-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     131,
+     1218,
+     124,
+     179
+    ],
+    "scale": 4.0,
+    "ox": 224,
+    "oy": 218,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, wiping a tear from his eye with one paw, crying, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "pokey-slump-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     523,
+     1218,
+     151,
+     171
+    ],
+    "scale": 4.0,
+    "ox": 360,
+    "oy": 250,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, slumped down sitting exhausted, head hanging, eyes closed, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "pokey-worried-s42",
+   "start": {
+    "src": [
+     "src/assets/hero/hero-story.webp",
+     0,
+     431,
+     117,
+     199
+    ],
+    "scale": 4.0,
+    "ox": 332,
+    "oy": 142,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, worried and wincing, both paws on top of his head, one eye squeezed shut, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.glare-x",
+   "edit": true,
+   "start": "bucket:storyart/r3a2/out/gen-gn.glare-s30.png",
+   "seed": 3,
+   "prompt": "Change only his eyes: his red eyes wide open, glowing bright red and glaring. Keep everything else in the picture exactly the same, every line and colour, his face, his pose, his clothes. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "gen-gn.glare-xs",
+   "then": "gen-gn.glare-x",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.narrow-x",
+   "edit": true,
+   "start": "bucket:storyart/r3a2/out/gen-gn.glare-s30.png",
+   "seed": 3,
+   "prompt": "Change only his eyes: his glowing red eyes narrowed, the glow a little softer. Keep everything else in the picture exactly the same, every line and colour, his face, his pose, his clothes. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "gen-gn.narrow-xs",
+   "then": "gen-gn.narrow-x",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.dim-x",
+   "edit": true,
+   "start": "bucket:storyart/r3a2/out/gen-gn.glare-s30.png",
+   "seed": 3,
+   "prompt": "Change only his eyes: his eyes half open, the red glow in them fading to a dull dark red. Keep everything else in the picture exactly the same, every line and colour, his face, his pose, his clothes. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "gen-gn.dim-xs",
+   "then": "gen-gn.dim-x",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.lids-x",
+   "edit": true,
+   "start": "bucket:storyart/r3a2/out/gen-gn.glare-s30.png",
+   "seed": 3,
+   "prompt": "Change only his eyes: his heavy eyelids drooping low over tired eyes, only a faint red left. Keep everything else in the picture exactly the same, every line and colour, his face, his pose, his clothes. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "gen-gn.lids-xs",
+   "then": "gen-gn.lids-x",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.shut-x",
+   "edit": true,
+   "start": "bucket:storyart/r3a2/out/gen-gn.glare-s30.png",
+   "seed": 3,
+   "prompt": "Change only his eyes: his eyes gently closed. Keep everything else in the picture exactly the same, every line and colour, his face, his pose, his clothes. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "gen-gn.shut-xs",
+   "then": "gen-gn.shut-x",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.sleep_b-x",
+   "edit": true,
+   "start": "bucket:storyart/r3a2/out/gen-gn.glare-s30.png",
+   "seed": 3,
+   "prompt": "Change only his eyes: his eyes closed and his head bowed a little lower, as if he is falling asleep on his feet. Keep everything else in the picture exactly the same, every line and colour, his face, his pose, his clothes. Plain flat grey background.",
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry"
+  },
+  {
+   "name": "gen-gn.sleep_b-xs",
+   "then": "gen-gn.sleep_b-x",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.card_idle-f",
+   "edit": true,
+   "start": "bucket:storyart/r3a2/out/gen-gn.card_idle-s30.png",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry",
+   "prompt": "Change only two things: make his long cape a torn deep crimson-red, and put a spiked silver plate on his shoulder. Keep everything else exactly the same: his face, his eyes, his pose, his greatcoat, his club. Plain flat grey background."
+  },
+  {
+   "name": "gen-gn.card_idle-fs",
+   "then": "gen-gn.card_idle-f",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "gen-gn.card_roar-f",
+   "edit": true,
+   "start": "bucket:storyart/r3a2/out/gen-gn.card_roar-s30.png",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry",
+   "prompt": "Change only two things: make his long cape a torn deep crimson-red, and put a spiked silver plate on his shoulder. Keep everything else exactly the same: his face, his eyes, his pose, his greatcoat, his club. Plain flat grey background."
+  },
+  {
+   "name": "gen-gn.card_roar-fs",
+   "then": "gen-gn.card_roar-f",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "ironclawwar, generalsloth, a huge old broad brown sloth general, thick shaggy brown fur, an old weathered grieving face with heavy brows and tired glowing red eyes, a long dark green soldier's greatcoat with brass buttons and a leather belt, a spiked silver pauldron on one shoulder, a red scarf, a torn crimson cape, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, robot, metal body, full plate armour, helmet, plume, toy, mask, tin can, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "loras": [
+    [
+     "ironclaw",
+     0.5
+    ],
+    [
+     "general",
+     0.5
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "new-grip_wall-9-on",
+   "start": "bucket:storyart/r3a2/out/new-grip_wall-9.png",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, seen from behind, both paws raised holding on to a wall, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail, wall"
+  },
+  {
+   "name": "new-reach_back-9-on",
+   "start": "bucket:storyart/r3a2/out/new-reach_back-9.png",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, reaching one paw out to the side, offering his hand, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail, wall"
+  },
+  {
+   "name": "cel-da.kneel_tie-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     0,
+     1135,
+     214,
+     165
+    ],
+    "scale": 4.0,
+    "ox": 84,
+    "oy": 262,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, kneel tie, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-da.lean_rest-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     417,
+     614,
+     207,
+     174
+    ],
+    "scale": 4.0,
+    "ox": 98,
+    "oy": 226,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, lean rest, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-da.reach_slump-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     316,
+     1135,
+     206,
+     163
+    ],
+    "scale": 4.0,
+    "ox": 100,
+    "oy": 270,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, reach slump, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-da.side_by_side-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     748,
+     243,
+     136,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 240,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, side by side, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-da.tie_closeup-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     242,
+     0,
+     226,
+     227
+    ],
+    "scale": 3.608810572687225,
+    "ox": 104,
+    "oy": 102,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, tie closeup, painted storybook illustration",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-db.side_by_side-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     0,
+     243,
+     190,
+     187
+    ],
+    "scale": 4.0,
+    "ox": 132,
+    "oy": 174,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, side by side, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-db.tie_stand-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1101,
+     432,
+     205,
+     178
+    ],
+    "scale": 4.0,
+    "ox": 102,
+    "oy": 210,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, tie stand, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.arm_around-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     915,
+     0,
+     185,
+     191
+    ],
+    "scale": 4.0,
+    "ox": 142,
+    "oy": 158,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, arm around, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.cheek_glad-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1258,
+     0,
+     144,
+     190
+    ],
+    "scale": 4.0,
+    "ox": 224,
+    "oy": 162,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, cheek glad, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.heart_hands-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     192,
+     243,
+     168,
+     187
+    ],
+    "scale": 4.0,
+    "ox": 176,
+    "oy": 174,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, heart hands, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.hug_a-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1094,
+     243,
+     141,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 230,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, hug a, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.hug_b-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     634,
+     0,
+     138,
+     192
+    ],
+    "scale": 4.0,
+    "ox": 236,
+    "oy": 154,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, hug b, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.hug_c-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1102,
+     0,
+     154,
+     190
+    ],
+    "scale": 4.0,
+    "ox": 204,
+    "oy": 162,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, hug c, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.nuzzle-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     362,
+     243,
+     165,
+     186
+    ],
+    "scale": 4.0,
+    "ox": 182,
+    "oy": 178,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, nuzzle, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.sit_hug-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1644,
+     614,
+     183,
+     172
+    ],
+    "scale": 4.0,
+    "ox": 146,
+    "oy": 234,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, sit hug, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  },
+  {
+   "name": "cel-hug.stand_close-s40",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1237,
+     243,
+     168,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 176,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "strength": 0.4,
+   "loras": [
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ],
+    [
+     "style",
+     0.5
+    ]
+   ],
+   "prompt": "two young sloths together: the boy with warm orange-brown fur, a brown leather satchel and white bandaged wrists, and the girl with a pink headband, a pink vest with a white race bib 07, teal shorts and pink shoes, keep each of them exactly as they are, stand close, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail"
+  }
+ ],
+ "q": 92,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1d437dfc077002bdedb1203a7b2fee7c9780fd14/",
+ "keep": [
+  "pokey-alarm-s42",
+  "pokey-crossed-s42",
+  "pokey-impatient-s42",
+  "pokey-point_a-s42",
+  "pokey-point_b-s42",
+  "pokey-tired-s42",
+  "pokey-wipe-s42",
+  "pokey-slump-s42",
+  "pokey-worried-s42",
+  "gen-gn.glare-xs",
+  "gen-gn.narrow-xs",
+  "gen-gn.dim-xs",
+  "gen-gn.lids-xs",
+  "gen-gn.shut-xs",
+  "gen-gn.sleep_b-xs",
+  "gen-gn.card_idle-fs",
+  "gen-gn.card_roar-fs",
+  "new-grip_wall-9-on",
+  "new-reach_back-9-on",
+  "cel-da.kneel_tie-s40",
+  "cel-da.lean_rest-s40",
+  "cel-da.reach_slump-s40",
+  "cel-da.side_by_side-s40",
+  "cel-da.tie_closeup-s40",
+  "cel-db.side_by_side-s40",
+  "cel-db.tie_stand-s40",
+  "cel-hug.arm_around-s40",
+  "cel-hug.cheek_glad-s40",
+  "cel-hug.heart_hands-s40",
+  "cel-hug.hug_a-s40",
+  "cel-hug.hug_b-s40",
+  "cel-hug.hug_c-s40",
+  "cel-hug.nuzzle-s40",
+  "cel-hug.sit_hug-s40",
+  "cel-hug.stand_close-s40"
+ ]
+}

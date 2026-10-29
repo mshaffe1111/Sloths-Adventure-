@@ -121,8 +121,8 @@ export const EndingCard: React.FC<{ onOpenMap: () => void; onOpenTitle: () => vo
   return (
     <div className="clr-scrim ending select-none">
       <GhostOnExit />
-      <div className="clr-card ending-card" role="dialog" aria-label="Meeca is saved">
-        <ClrRibbon title="Meeca is saved!" />
+      <div className="clr-card ending-card" role="dialog" aria-label="Meeca is home">
+        <ClrRibbon title="Meeca is home" />
         <div className="ending-pair" aria-hidden="true">
           <HeroPose frame="cheer_b" height={h} maxWidth={h * 0.8} className="ending-pokey" />
           <Icon name="heart" size={Math.round(h * 0.22)} className="ending-heart" />
@@ -131,7 +131,7 @@ export const EndingCard: React.FC<{ onOpenMap: () => void; onOpenTitle: () => vo
         <div className="clr-main">
           <div className="clr-praise in">
             <b>Home at last</b>
-            <span>Ten worlds, a hundred trials, and General Iron-Claw himself. Meeca is home, the Heartbloom glows, and the canopy is at peace.</span>
+            <span>Pokey crossed ten realms and climbed a thousand steps, slowly, the whole way. The Heartbloom is open, the guardians are free, and there is tea at four.</span>
           </div>
           <div className="clr-chips" style={{ ['--n' as string]: 1 }}>
             <div className="clr-chip">
