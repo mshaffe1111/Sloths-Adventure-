@@ -314,5 +314,10 @@ def canvases():
         can.save(OUT / f'canvas-{f.stem}.png')
 
 
+def bands():
+    for w in range(1, 11):
+        band(w).save(OUT / f'band-w{w}.png')
+
+
 if __name__ == '__main__':
     globals()[sys.argv[1]]()

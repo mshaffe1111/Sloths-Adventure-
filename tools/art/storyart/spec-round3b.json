@@ -1,0 +1,3810 @@
+{
+ "tag": "r3b",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
+  ],
+  "meeca": [
+   "mshaffe111/meeca-qwen-lora",
+   "meeca_qwen_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/tools/art/hfbatch/starts/storyart/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/HEAD/",
+ "items": [
+  {
+   "name": "gr-w1-s40",
+   "start": "band-w1.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: soft dark green moss and leaf litter with small fern sprouts, a few pink petals and tiny red mushrooms, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w1-s55",
+   "start": "band-w1.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: soft dark green moss and leaf litter with small fern sprouts, a few pink petals and tiny red mushrooms, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w2-s40",
+   "start": "band-w2.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: a muddy river bank with smooth brown pebbles, tufts of reeds and wet sand, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w2-s55",
+   "start": "band-w2.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: a muddy river bank with smooth brown pebbles, tufts of reeds and wet sand, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w3-s40",
+   "start": "band-w3.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: dark wet cave stone with glowing teal mushrooms and moss, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w3-s55",
+   "start": "band-w3.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: dark wet cave stone with glowing teal mushrooms and moss, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w4-s40",
+   "start": "band-w4.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: flat grey cliff stones with moss and little ferns, mountain grass, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w4-s55",
+   "start": "band-w4.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: flat grey cliff stones with moss and little ferns, mountain grass, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w5-s40",
+   "start": "band-w5.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: bright green moss over tangled tree roots with white flowers and pink petals, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w5-s55",
+   "start": "band-w5.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: bright green moss over tangled tree roots with white flowers and pink petals, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w6-s40",
+   "start": "band-w6.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: dark mangrove mud with roots and wet stones, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w6-s55",
+   "start": "band-w6.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: dark mangrove mud with roots and wet stones, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w7-s40",
+   "start": "band-w7.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: old cracked temple paving stones with roots and leaves, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w7-s55",
+   "start": "band-w7.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: old cracked temple paving stones with roots and leaves, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w8-s40",
+   "start": "band-w8.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: a dark night forest floor of blue-green ferns and pale star flowers, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w8-s55",
+   "start": "band-w8.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: a dark night forest floor of blue-green ferns and pale star flowers, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w9-s40",
+   "start": "band-w9.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: black volcanic rock with glowing orange cracks and red flowers, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w9-s55",
+   "start": "band-w9.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: black volcanic rock with glowing orange cracks and red flowers, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w10-s40",
+   "start": "band-w10.png",
+   "strength": 0.4,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: wet dark slate stones of a mountain path in the rain, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "gr-w10-s55",
+   "start": "band-w10.png",
+   "strength": 0.55,
+   "seed": 3,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, the top edge of the ground seen from the side: wet dark slate stones of a mountain path in the rain, its top edge uneven and natural with little tufts, plain flat grey background above the ground, no characters, no text",
+   "neg": "characters, people, animals, sloths, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry"
+  },
+  {
+   "name": "cel-da.kneel_tie-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     0,
+     1135,
+     214,
+     165
+    ],
+    "scale": 4.0,
+    "ox": 84,
+    "oy": 262,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, kneel tie, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-da.lean_rest-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     417,
+     614,
+     207,
+     174
+    ],
+    "scale": 4.0,
+    "ox": 98,
+    "oy": 226,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, lean rest, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-da.reach_slump-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     316,
+     1135,
+     206,
+     163
+    ],
+    "scale": 4.0,
+    "ox": 100,
+    "oy": 270,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, reach slump, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-da.side_by_side-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     748,
+     243,
+     136,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 240,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, side by side, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-da.tie_closeup-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     242,
+     0,
+     226,
+     227
+    ],
+    "scale": 3.608810572687225,
+    "ox": 104,
+    "oy": 102,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, tie closeup, in the same pose and expression, painted storybook illustration",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.45,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-db.side_by_side-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     0,
+     243,
+     190,
+     187
+    ],
+    "scale": 4.0,
+    "ox": 132,
+    "oy": 174,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, side by side, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-db.tie_stand-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1101,
+     432,
+     205,
+     178
+    ],
+    "scale": 4.0,
+    "ox": 102,
+    "oy": 210,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, tie stand, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-face.beam-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1287,
+     0,
+     209,
+     209
+    ],
+    "scale": 3.919617224880383,
+    "ox": 102,
+    "oy": 102,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, a close-up of her face, beam, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-face.drowsy-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     0,
+     0,
+     217,
+     217
+    ],
+    "scale": 3.775115207373272,
+    "ox": 102,
+    "oy": 102,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, a close-up of her face, drowsy, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-face.weary-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     637,
+     219,
+     217,
+     209
+    ],
+    "scale": 3.919617224880383,
+    "ox": 87,
+    "oy": 102,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, a close-up of her face, weary, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.box_sit-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1730,
+     2254,
+     112,
+     140
+    ],
+    "scale": 4.0,
+    "ox": 288,
+    "oy": 362,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, box sit, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.giggle-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1549,
+     2080,
+     100,
+     161
+    ],
+    "scale": 4.0,
+    "ox": 312,
+    "oy": 278,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, giggle, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.hand_chest-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1337,
+     2080,
+     100,
+     162
+    ],
+    "scale": 4.0,
+    "ox": 312,
+    "oy": 274,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, hand chest, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.hum_sit-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1248,
+     2254,
+     115,
+     148
+    ],
+    "scale": 4.0,
+    "ox": 282,
+    "oy": 330,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, hum sit, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.laugh-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     895,
+     2080,
+     103,
+     163
+    ],
+    "scale": 4.0,
+    "ox": 306,
+    "oy": 270,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, laugh, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.look_up-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     326,
+     2080,
+     83,
+     167
+    ],
+    "scale": 4.0,
+    "ox": 346,
+    "oy": 254,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, look up, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.point-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     0,
+     2254,
+     130,
+     160
+    ],
+    "scale": 4.0,
+    "ox": 252,
+    "oy": 282,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, point, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.stand_hands-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     542,
+     2080,
+     96,
+     166
+    ],
+    "scale": 4.0,
+    "ox": 320,
+    "oy": 258,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, stand hands, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.water-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1487,
+     2254,
+     145,
+     143
+    ],
+    "scale": 4.0,
+    "ox": 222,
+    "oy": 350,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, water, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.wave-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     132,
+     2254,
+     126,
+     160
+    ],
+    "scale": 4.0,
+    "ox": 260,
+    "oy": 282,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, wave, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-gr.wave_talk-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1907,
+     2080,
+     126,
+     160
+    ],
+    "scale": 4.0,
+    "ox": 260,
+    "oy": 282,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, wave talk, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.arm_around-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     915,
+     0,
+     185,
+     191
+    ],
+    "scale": 4.0,
+    "ox": 142,
+    "oy": 158,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, arm around, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.cheek_glad-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1258,
+     0,
+     144,
+     190
+    ],
+    "scale": 4.0,
+    "ox": 224,
+    "oy": 162,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, cheek glad, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.heart_hands-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     192,
+     243,
+     168,
+     187
+    ],
+    "scale": 4.0,
+    "ox": 176,
+    "oy": 174,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, heart hands, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.hug_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1094,
+     243,
+     141,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 230,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, hug a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.hug_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     634,
+     0,
+     138,
+     192
+    ],
+    "scale": 4.0,
+    "ox": 236,
+    "oy": 154,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, hug b, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.hug_c-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1102,
+     0,
+     154,
+     190
+    ],
+    "scale": 4.0,
+    "ox": 204,
+    "oy": 162,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, hug c, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.nuzzle-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     362,
+     243,
+     165,
+     186
+    ],
+    "scale": 4.0,
+    "ox": 182,
+    "oy": 178,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, nuzzle, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.sit_hug-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1644,
+     614,
+     183,
+     172
+    ],
+    "scale": 4.0,
+    "ox": 146,
+    "oy": 234,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, sit hug, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-hug.stand_close-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1237,
+     243,
+     168,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 176,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth with a pink headband, a pink vest with the race bib 07 and teal shorts, stand close, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.55
+    ],
+    [
+     "meeca",
+     0.55
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.bow-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     260,
+     2254,
+     118,
+     154
+    ],
+    "scale": 4.0,
+    "ox": 276,
+    "oy": 306,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, bow, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.cap_in_hand-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1132,
+     2254,
+     114,
+     149
+    ],
+    "scale": 4.0,
+    "ox": 284,
+    "oy": 326,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, cap in hand, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.hands_clasped-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     640,
+     2080,
+     88,
+     165
+    ],
+    "scale": 4.0,
+    "ox": 336,
+    "oy": 262,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, hands clasped, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.hopeful-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1216,
+     1893,
+     101,
+     183
+    ],
+    "scale": 4.0,
+    "ox": 310,
+    "oy": 190,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, hopeful, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.lantern_look-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1625,
+     1893,
+     142,
+     180
+    ],
+    "scale": 4.0,
+    "ox": 228,
+    "oy": 202,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, lantern look, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.lantern_walk-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     0,
+     2080,
+     135,
+     172
+    ],
+    "scale": 4.0,
+    "ox": 242,
+    "oy": 234,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, lantern walk, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.mend_coat-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1913,
+     1893,
+     128,
+     175
+    ],
+    "scale": 4.0,
+    "ox": 256,
+    "oy": 222,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, mend coat, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.peek_door-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     137,
+     2080,
+     59,
+     169
+    ],
+    "scale": 4.0,
+    "ox": 394,
+    "oy": 246,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, peek door, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.salute_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1096,
+     1893,
+     118,
+     183
+    ],
+    "scale": 4.0,
+    "ox": 276,
+    "oy": 190,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, salute a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.salute_nervous-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1403,
+     1893,
+     118,
+     181
+    ],
+    "scale": 4.0,
+    "ox": 276,
+    "oy": 198,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, salute nervous, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.sew_table-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1181,
+     2080,
+     154,
+     163
+    ],
+    "scale": 4.0,
+    "ox": 204,
+    "oy": 270,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, sew table, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.shrug-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     730,
+     2080,
+     163,
+     165
+    ],
+    "scale": 4.0,
+    "ox": 186,
+    "oy": 262,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, shrug, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.stand_worry-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1523,
+     1893,
+     100,
+     180
+    ],
+    "scale": 4.0,
+    "ox": 312,
+    "oy": 202,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, stand worry, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-lp.tray_walk-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     411,
+     2080,
+     129,
+     167
+    ],
+    "scale": 4.0,
+    "ox": 254,
+    "oy": 254,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     210,
+     80,
+     200
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, tray walk, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-mb.idle-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     0,
+     791,
+     103,
+     171
+    ],
+    "scale": 4.0,
+    "ox": 306,
+    "oy": 238,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth as a small cub, a friendly little three-toed sloth with orange-brown fur and a cream face, a little pink bow on his head, a small satchel strap, idle, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.8
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-mb.run_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     187,
+     614,
+     133,
+     174
+    ],
+    "scale": 4.0,
+    "ox": 246,
+    "oy": 226,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth as a small cub, a friendly little three-toed sloth with orange-brown fur and a cream face, a little pink bow on his head, a small satchel strap, run a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.8
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-mb.run_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1239,
+     614,
+     134,
+     172
+    ],
+    "scale": 4.0,
+    "ox": 244,
+    "oy": 234,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth as a small cub, a friendly little three-toed sloth with orange-brown fur and a cream face, a little pink bow on his head, a small satchel strap, run b, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.8
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-mb.walk_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     105,
+     791,
+     113,
+     171
+    ],
+    "scale": 4.0,
+    "ox": 286,
+    "oy": 238,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth as a small cub, a friendly little three-toed sloth with orange-brown fur and a cream face, a little pink bow on his head, a small satchel strap, walk a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.8
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-mb.walk_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     109,
+     964,
+     114,
+     169
+    ],
+    "scale": 4.0,
+    "ox": 284,
+    "oy": 246,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth as a small cub, a friendly little three-toed sloth with orange-brown fur and a cream face, a little pink bow on his head, a small satchel strap, walk b, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     0.8
+    ],
+    [
+     "style",
+     0.4
+    ]
+   ]
+  },
+  {
+   "name": "cel-mc.idle-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1829,
+     614,
+     115,
+     171
+    ],
+    "scale": 4.0,
+    "ox": 282,
+    "oy": 238,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, idle, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mc.run_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1362,
+     791,
+     136,
+     170
+    ],
+    "scale": 4.0,
+    "ox": 240,
+    "oy": 242,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, run a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mc.run_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     458,
+     964,
+     141,
+     168
+    ],
+    "scale": 4.0,
+    "ox": 230,
+    "oy": 250,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, run b, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mc.sing_reach-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     816,
+     964,
+     144,
+     168
+    ],
+    "scale": 4.0,
+    "ox": 224,
+    "oy": 250,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, sing reach, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mc.walk_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1500,
+     791,
+     122,
+     169
+    ],
+    "scale": 4.0,
+    "ox": 268,
+    "oy": 246,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, walk a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mc.walk_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     1624,
+     791,
+     131,
+     169
+    ],
+    "scale": 4.0,
+    "ox": 250,
+    "oy": 246,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, walk b, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mx.kneel_sad-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     265,
+     1302,
+     127,
+     153
+    ],
+    "scale": 4.0,
+    "ox": 258,
+    "oy": 310,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, kneel sad, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mx.petal_glow-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     550,
+     1302,
+     143,
+     152
+    ],
+    "scale": 4.0,
+    "ox": 226,
+    "oy": 314,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, petal glow, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mx.petal_wrist-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     695,
+     1302,
+     114,
+     152
+    ],
+    "scale": 4.0,
+    "ox": 284,
+    "oy": 314,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, petal wrist, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mx.read_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     0,
+     1302,
+     130,
+     155
+    ],
+    "scale": 4.0,
+    "ox": 252,
+    "oy": 302,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, read a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mx.read_cry-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     132,
+     1302,
+     131,
+     154
+    ],
+    "scale": 4.0,
+    "ox": 250,
+    "oy": 306,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, read cry, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-mx.stand-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pair.webp",
+     536,
+     791,
+     107,
+     171
+    ],
+    "scale": 4.0,
+    "ox": 298,
+    "oy": 238,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm orange-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, stand, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.bow_head-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     703,
+     992,
+     80,
+     172
+    ],
+    "scale": 4.0,
+    "ox": 352,
+    "oy": 234,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, bow head, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.box_sit_dream-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1931,
+     992,
+     106,
+     158
+    ],
+    "scale": 4.0,
+    "ox": 300,
+    "oy": 290,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, box sit dream, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.box_sit_smile-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1816,
+     992,
+     113,
+     158
+    ],
+    "scale": 4.0,
+    "ox": 286,
+    "oy": 290,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, box sit smile, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.box_sit_wind-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1158,
+     992,
+     124,
+     168
+    ],
+    "scale": 4.0,
+    "ox": 264,
+    "oy": 250,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, box sit wind, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.carve_wall-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     162,
+     430,
+     155,
+     194
+    ],
+    "scale": 4.0,
+    "ox": 202,
+    "oy": 146,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, carve wall, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.chair_chin-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1583,
+     992,
+     111,
+     165
+    ],
+    "scale": 4.0,
+    "ox": 290,
+    "oy": 262,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, chair chin, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.chair_wait-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1561,
+     626,
+     109,
+     179
+    ],
+    "scale": 4.0,
+    "ox": 294,
+    "oy": 206,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, chair wait, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.chair_window-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1634,
+     219,
+     176,
+     201
+    ],
+    "scale": 4.0,
+    "ox": 160,
+    "oy": 118,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, chair window, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.cheer_fist-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1807,
+     626,
+     136,
+     178
+    ],
+    "scale": 4.0,
+    "ox": 240,
+    "oy": 210,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, cheer fist, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.content-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     110,
+     812,
+     101,
+     178
+    ],
+    "scale": 4.0,
+    "ox": 310,
+    "oy": 210,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, content, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.desk_write_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     413,
+     992,
+     143,
+     173
+    ],
+    "scale": 4.0,
+    "ox": 226,
+    "oy": 230,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, desk write a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.desk_write_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     558,
+     992,
+     143,
+     173
+    ],
+    "scale": 4.0,
+    "ox": 226,
+    "oy": 230,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, desk write b, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.fume-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1279,
+     626,
+     158,
+     179
+    ],
+    "scale": 4.0,
+    "ox": 196,
+    "oy": 206,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, fume, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.happy_tears-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1447,
+     430,
+     127,
+     186
+    ],
+    "scale": 4.0,
+    "ox": 258,
+    "oy": 178,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, happy tears, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.hips-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1668,
+     430,
+     116,
+     185
+    ],
+    "scale": 4.0,
+    "ox": 280,
+    "oy": 182,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, hips, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.holler-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     0,
+     992,
+     159,
+     174
+    ],
+    "scale": 4.0,
+    "ox": 194,
+    "oy": 226,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, holler, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.hum-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     161,
+     992,
+     102,
+     174
+    ],
+    "scale": 4.0,
+    "ox": 308,
+    "oy": 226,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, hum, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.laugh-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     0,
+     812,
+     108,
+     178
+    ],
+    "scale": 4.0,
+    "ox": 296,
+    "oy": 210,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, laugh, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.open_calm-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     0,
+     626,
+     145,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 222,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, open calm, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.pace_a-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     872,
+     626,
+     88,
+     180
+    ],
+    "scale": 4.0,
+    "ox": 336,
+    "oy": 202,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, pace a, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.pace_b-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     472,
+     626,
+     126,
+     182
+    ],
+    "scale": 4.0,
+    "ox": 260,
+    "oy": 194,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, pace b, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.sing_heart-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1089,
+     430,
+     108,
+     189
+    ],
+    "scale": 4.0,
+    "ox": 296,
+    "oy": 166,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, sing heart, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.sing_joy-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1786,
+     430,
+     189,
+     185
+    ],
+    "scale": 4.0,
+    "ox": 134,
+    "oy": 182,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, sing joy, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.sing_wide-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     319,
+     430,
+     189,
+     192
+    ],
+    "scale": 4.0,
+    "ox": 134,
+    "oy": 154,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, sing wide, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.stand_wait-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     784,
+     626,
+     86,
+     181
+    ],
+    "scale": 4.0,
+    "ox": 340,
+    "oy": 198,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, stand wait, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.startled-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     147,
+     626,
+     97,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 318,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, startled, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-pk.stomp_angry-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-pokey.webp",
+     1839,
+     812,
+     139,
+     174
+    ],
+    "scale": 4.0,
+    "ox": 234,
+    "oy": 226,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, stomp angry, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "cel-po.carry_stand-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     327,
+     1893,
+     107,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 298,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a calm grey sloth mail carrier with a brown postbag on a strap and a flat cap, carry stand, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-po.carry_walk-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1346,
+     1700,
+     120,
+     186
+    ],
+    "scale": 4.0,
+    "ox": 272,
+    "oy": 178,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a calm grey sloth mail carrier with a brown postbag on a strap and a flat cap, carry walk, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-po.offer_parcel-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1823,
+     1700,
+     110,
+     185
+    ],
+    "scale": 4.0,
+    "ox": 292,
+    "oy": 182,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a calm grey sloth mail carrier with a brown postbag on a strap and a flat cap, offer parcel, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-po.walk_parcel-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     566,
+     1893,
+     134,
+     184
+    ],
+    "scale": 4.0,
+    "ox": 244,
+    "oy": 186,
+    "size": [
+     1024,
+     1024
+    ],
+    "key": [
+     60,
+     170,
+     90
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a calm grey sloth mail carrier with a brown postbag on a strap and a flat cap, walk parcel, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-tc.announce-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     380,
+     2254,
+     156,
+     154
+    ],
+    "scale": 4.0,
+    "ox": 200,
+    "oy": 306,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a small pompous old tamarin monkey town crier with a white mane and a patterned brown coat, announce, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-tc.hat_shout-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1768,
+     2080,
+     137,
+     161
+    ],
+    "scale": 4.0,
+    "ox": 238,
+    "oy": 278,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a small pompous old tamarin monkey town crier with a white mane and a patterned brown coat, hat shout, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-tc.hat_stand-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     1651,
+     2080,
+     115,
+     161
+    ],
+    "scale": 4.0,
+    "ox": 282,
+    "oy": 278,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a small pompous old tamarin monkey town crier with a white mane and a patterned brown coat, hat stand, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-tc.point_bell-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     682,
+     2254,
+     158,
+     153
+    ],
+    "scale": 4.0,
+    "ox": 196,
+    "oy": 310,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a small pompous old tamarin monkey town crier with a white mane and a patterned brown coat, point bell, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "cel-tc.scroll-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/cels-folk.webp",
+     538,
+     2254,
+     142,
+     153
+    ],
+    "scale": 4.0,
+    "ox": 228,
+    "oy": 310,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "prompt": "slothadv style, a small pompous old tamarin monkey town crier with a white mane and a patterned brown coat, scroll, in the same pose and expression, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ],
+ "q": 92
+}

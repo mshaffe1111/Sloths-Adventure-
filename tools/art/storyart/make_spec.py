@@ -249,6 +249,65 @@ def round3a(commit):
             'keep': [x['name'] for x in it if not x['name'].endswith('-e') and '-up' not in x['name']], 'q': 90}
 
 
+GRANDMA = 'slothadv style, a kind old grandmother sloth with pale grey-white fur, a cream face, round spectacles and a green gardening apron, '
+PELL = 'slothadv style, a nervous gentle young sloth lieutenant with grey-brown fur in a neat olive-green army uniform and a peaked cap, '
+CRIER = 'slothadv style, a small pompous old tamarin monkey town crier with a white mane and a patterned brown coat, '
+MAIL = 'slothadv style, a calm grey sloth mail carrier with a brown postbag on a strap and a flat cap, '
+PAIR = ('a friendly young sloth with orange-brown fur and a cream face, a brown satchel and bandaged wrists, together with a young female sloth '
+        'with a pink headband, a pink vest with the race bib 07 and teal shorts, ')
+CUB = ('pokeysloth as a small cub, a friendly little three-toed sloth with orange-brown fur and a cream face, a little pink bow on his head, a '
+       'small satchel strap, ')
+CEL_LOOK = {  # prefix: (words, loras, key colour)
+    'pk': (MEECA, [['meeca', 1.0], ['style', 0.35]], None), 'face': (MEECA + 'a close-up of her face, ', [['meeca', 1.0], ['style', 0.35]], None),
+    'mc': (POKEY, [['pokey', 1.0], ['style', 0.35]], None), 'mx': (POKEY, [['pokey', 1.0], ['style', 0.35]], None),
+    'mb': (CUB, [['pokey', 0.8], ['style', 0.4]], None),
+    'da': (PAIR, [['pokey', 0.55], ['meeca', 0.55], ['style', 0.4]], None), 'db': (PAIR, [['pokey', 0.55], ['meeca', 0.55], ['style', 0.4]], None),
+    'hug': (PAIR, [['pokey', 0.55], ['meeca', 0.55], ['style', 0.4]], None),
+    'gr': (GRANDMA, [['style', 1.0]], (60, 170, 90)), 'lp': (PELL, [['style', 1.0]], (210, 80, 200)), 'tc': (CRIER, [['style', 1.0]], None),
+    'po': (MAIL, [['style', 1.0]], (60, 170, 90)),
+}
+
+
+def cels(commit, strength=0.55):
+    """every story-sheet cel but the General's (general()), on its character's model (or the style model for the folk)"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-cel.json').read_text())
+    it = []
+    for key, m in meta.items():
+        pre, pose = key[4:].split('.')
+        if pre not in CEL_LOOK:
+            continue
+        words, loras, kc = CEL_LOOK[pre]
+        raw = m['cel'].get('c') == 'raw'
+        st = {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']}
+        if kc:
+            st['key'] = list(kc)
+        it.append({'name': f'{key}-s{round(strength * 100)}', 'start': st, 'seed': 7, 'w': m['size'][0], 'h': m['size'][1],
+                   'prompt': words + f'{pose.replace("_", " ")}, in the same pose and expression' + (', painted storybook illustration' if raw else END),
+                   'neg': NEG_FIG + SOFT, 'strength': 0.45 if raw else strength, 'loras': loras})
+    return it
+
+
+def grounds(commit):
+    """each world's ground strip, from the floor of its own near backdrop (starts.py band)"""
+    words = {1: 'soft dark green moss and leaf litter with small fern sprouts, a few pink petals and tiny red mushrooms',
+             2: 'a muddy river bank with smooth brown pebbles, tufts of reeds and wet sand', 3: 'dark wet cave stone with glowing teal mushrooms and moss',
+             4: 'flat grey cliff stones with moss and little ferns, mountain grass', 5: 'bright green moss over tangled tree roots with white flowers and pink petals',
+             6: 'dark mangrove mud with roots and wet stones', 7: 'old cracked temple paving stones with roots and leaves',
+             8: 'a dark night forest floor of blue-green ferns and pale star flowers', 9: 'black volcanic rock with glowing orange cracks and red flowers',
+             10: 'wet dark slate stones of a mountain path in the rain'}
+    return [{'name': f'gr-w{w}-s{round(st * 100)}', 'start': f'band-w{w}.png', 'strength': st, 'seed': 3, 'w': 2048, 'h': 512, 'loras': [['style', 1.0]],
+             'prompt': (f'slothadv style, painted storybook illustration, the top edge of the ground seen from the side: {d}, its top edge uneven and '
+                        'natural with little tufts, plain flat grey background above the ground, no characters, no text'), 'neg': PLATE_NEG}
+            for w, d in words.items() for st in (0.4, 0.55)]
+
+
+def round3b(commit):
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    it = grounds(commit) + cels(commit)
+    return {'tag': 'r3b', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca')}, 'base': base,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'items': it, 'q': 92}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '

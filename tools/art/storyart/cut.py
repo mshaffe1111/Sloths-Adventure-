@@ -23,8 +23,9 @@ def cut_figure(gen, meta, old, k_new, anchor=None, grow=14, lo=14, hi=46, rect_m
     bg = bg_colour(g)
     d = np.sqrt(((g - bg) ** 2).sum(-1))
     # (saturation counts double: a pale fur edge on grey is still fur when it has any colour)
-    mx, mn = g.max(-1), g.min(-1)
-    d = np.maximum(d, (mx - mn) * 2.2)
+    if bg.max() - bg.min() < 20:
+        mx, mn = g.max(-1), g.min(-1)
+        d = np.maximum(d, (mx - mn) * 2.2)
     ak = np.clip((d - lo) / (hi - lo), 0, 1)
     # the old silhouette, where the start put it, grown by `grow` px
     s, ox, oy = meta['scale'], meta['ox'], meta['oy']

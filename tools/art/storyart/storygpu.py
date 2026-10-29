@@ -54,7 +54,7 @@ def build(b):
     fig = starts[key].crop((x, y, x + w, y + h))
     s = b['scale']
     big = fig.resize((max(1, round(w * s)), max(1, round(h * s))), Image.LANCZOS)
-    bg = Image.new('RGBA', tuple(b['size']), (128, 128, 128, 255))
+    bg = Image.new('RGBA', tuple(b['size']), tuple(b.get('key', (128, 128, 128))) + (255,))
     bg.alpha_composite(big, (b['ox'], b['oy']))
     return bg.convert('RGB').filter(ImageFilter.UnsharpMask(radius=3, percent=90, threshold=2))
 
