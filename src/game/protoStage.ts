@@ -5283,8 +5283,16 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     T.push(tree);
     V.push({ id: vid++, x, topY: perchY - 2, bottomY: groundY - 6, swaySpeed: 0.9, swayPhase: (x * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id });
   };
-  /** is there already a branch across this span within about a body's height and a half of y (above or below)? */
-  const blocked = (x0: number, x1: number, y: number) => P.some((p) => p !== P[0] && p.x < x1 + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130);
+  /**
+   * the air a puzzle room needs kept empty: over its basket and lift, where the acorn is thrown and the plank rides up (1-4, Matt
+   * 2026-10-29: "The 2nd basket on the 1-4 climb level is impossible. Has a platform that blocks the rock": the hops after a room were
+   * laid across it, about 300 up, over the high basket and the lift)
+   */
+  const air: { x0: number; x1: number; y0: number; y1: number }[] = [];
+  /** is there already a branch across this span within about a body's height and a half of y (above or below), or a room's air? */
+  const blocked = (x0: number, x1: number, y: number) =>
+    P.some((p) => p !== P[0] && p.x < x1 + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130) ||
+    air.some((a) => x0 < a.x1 && x1 > a.x0 && y > a.y0 && y < a.y1);
   const flower = (x: number, y: number, v: Collectible['botanicalVariant'] = 'orchid') =>
     C.push({ id: cid++, type: 'flower', botanicalVariant: v, x: Math.round(x), y: Math.round(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   const row = (x0: number, x1: number, y: number, n: number, v: Collectible['botanicalVariant'] = 'orchid') => {
@@ -5425,6 +5433,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const near = (u: number) => (d === 1 ? floor.x + u : floor.x + floor.width - u);
     const stashX = near(90);
     const basketX = well.x - 40;
+    // (from past the basket to the lift's far side, from the room's top down to a body above the branch)
+    air.push({ x0: Math.min(basketX, well.x) - 90, x1: well.x + well.width + 30, y0: y - 440, y1: y - 40 });
     const n = ROOMS.length;
     const thing = knot ? 'stone' : 'acorn';
     ROOMS.push({
