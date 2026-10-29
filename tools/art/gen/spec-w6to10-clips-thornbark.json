@@ -1,0 +1,190 @@
+{
+ "tag": "w6to10-thornbark",
+ "script": "tools/art/anim/animgpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "start": {
+  "idle": "idle",
+  "march": "march2",
+  "gallop": "gallop1",
+  "roar": "roar",
+  "whip": "hook",
+  "slam": "overhead",
+  "claw": "claw",
+  "leap": "leapprep",
+  "guard": "block",
+  "rest": "rest"
+ },
+ "clips": [
+  {
+   "name": "w6t-thornbark-idle-s3",
+   "src": "../stills/wtb-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, prowls in place hunched low, breathing heavily, his cape stirring, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-idle-s11",
+   "src": "../stills/wtb-idle.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, prowls in place hunched low, breathing heavily, his cape stirring, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-march-s3",
+   "src": "../stills/wtb-march2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, stalks forward in place with heavy hunched steps, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-march-s11",
+   "src": "../stills/wtb-march2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, stalks forward in place with heavy hunched steps, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-gallop-s3",
+   "src": "../stills/wtb-gallop1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, gallops forward in place on all fours, fast and low, a smooth repeating running cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-gallop-s11",
+   "src": "../stills/wtb-gallop1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, gallops forward in place on all fours, fast and low, a smooth repeating running cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-roar-s3",
+   "src": "../stills/wtb-roar.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, rears back and roars furiously, his arms spread wide, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-roar-s11",
+   "src": "../stills/wtb-roar.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, rears back and roars furiously, his arms spread wide, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-whip-s3",
+   "src": "../stills/wtb-hook.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, draws his arm back and holds, then lashes a long thorny briar whip forward and pulls it back, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-whip-s11",
+   "src": "../stills/wtb-hook.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, draws his arm back and holds, then lashes a long thorny briar whip forward and pulls it back, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-slam-s3",
+   "src": "../stills/wtb-overhead.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, raises both fists high above his head and holds, then slams them down onto the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-thornbark-slam-s11",
+   "src": "../stills/wtb-overhead.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, raises both fists high above his head and holds, then slams them down onto the ground, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-thornbark-claw-s3",
+   "src": "../stills/wtb-claw.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, rakes the air in front of him with his claws in a fast flurry of swipes, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-claw-s11",
+   "src": "../stills/wtb-claw.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, rakes the air in front of him with his claws in a fast flurry of swipes, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-leap-s3",
+   "src": "../stills/wtb-leapprep.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, crouches low and holds, then leaps up and lands heavily, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-leap-s11",
+   "src": "../stills/wtb-leapprep.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, crouches low and holds, then leaps up and lands heavily, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-guard-s3",
+   "src": "../stills/wtb-block.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, crosses his arms in front of his face in a guard and braces, trembling, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-guard-s11",
+   "src": "../stills/wtb-block.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, crosses his arms in front of his face in a guard and braces, trembling, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6t-thornbark-rest-s3",
+   "src": "../stills/wtb-rest.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, stands calmly with his bone club resting on his shoulder, breathing slowly, his face gentle and tired, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 576
+  },
+  {
+   "name": "w6t-thornbark-rest-s11",
+   "src": "../stills/wtb-rest.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a hulking dark brown sloth with burning red eyes, a rusted spiked shoulder plate, leather straps, a torn purple cape and a tattered purple banner on a pole on his back, stands calmly with his bone club resting on his shoulder, breathing slowly, his face gentle and tired, a smooth repeating idle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 576
+  }
+ ]
+}
