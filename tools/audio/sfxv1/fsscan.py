@@ -111,12 +111,13 @@ CATS4 = {
     'wingbeat': ([r'\b(wings?|wingbeats?|flapping|takes? off|taking off|flutter\w*)\b', r'\b(bird|pigeon|dove|crow|owl|bat|duck|goose)\w*\b'], 4, 20),
 }
 # PASS=ids: exactly the clips tagscan.py picked by their uploaders' tags (hfbatch/sfx/tagpicks.json), whatever their captions say
-IDPICK = {}
+IDPICK, IDTITLE = {}, {}
 if os.environ.get('PASS') == 'ids':
     AMBCATS = {'rainforest', 'forest_birds', 'stream', 'waterfall', 'cave', 'night', 'swamp', 'wind', 'rain', 'lava', 'fire'}
     for cat, rows in json.load(open('/out/hfbatch/sfx/tagpicks.json')).items():
         for r in rows[: (12 if cat in AMBCATS else 30)]:   # (the carriers stay ~80 MB)
             IDPICK.setdefault(int(r[0]), cat)
+            IDTITLE[int(r[0])] = (r[1], r[2])
     CATS = {c: ('.', 30 if c in AMBCATS else 6, 400 if c in AMBCATS else 30) for c in set(IDPICK.values())}
 if os.environ.get('PASS') == '4':
     CATS = CATS4
@@ -178,8 +179,9 @@ for sh in os.environ['SHARDS'].split(','):
                     continue
                 name = f'{cat}__{j.get("freesound_id")}.ogg'
                 cap = ' '.join(str(x) for x in [j.get('comprehensive_caption') or ''])
+                tt = IDTITLE.get(int(j.get('freesound_id')), ('', []))
                 meta.append({'file': name, 'cat': cat, 'freesound_id': j.get('freesound_id'), 'user': j.get('username'), 'license': j.get('license'),
-                             'dur': (j.get('duration_ms') or 0) / 1000, 'caption': cap[:200]})
+                             'dur': (j.get('duration_ms') or 0) / 1000, 'caption': cap[:200], 'title': tt[0], 'tags': tt[1]})
                 if size + len(o) > 6_300_000: flush()
                 files.append((name, o)); size += len(o)
                 continue
