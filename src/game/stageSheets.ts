@@ -127,8 +127,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch'];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   // 7-4's slide (w7Slide.ts): World 7's kit for the hall and the chamber (the slide's own pictures load as it starts: w7SlideArt.ts
-  // warmSlide); World 7 has no Dot, so no perch
-  if (cfg.id === SLIDE_STAGE_ID && sw.hand && !cfg.secret) return ['kit:1', 'kit:7'];
+  // warmSlide), and Dot's perch as on every stage (her guide is still the engine's, though World 7 gives her no lines)
+  if (cfg.id === SLIDE_STAGE_ID && sw.hand && !cfg.secret) return ['kit:1', 'kit:7', 'perch'];
   if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier', 'anim:flicker'];
   const w = cfg.worldIndex;
   // (a gen2 stage is built like a hand-built one, with World 5's dressing, whatever the switch: gen2/game.ts)
