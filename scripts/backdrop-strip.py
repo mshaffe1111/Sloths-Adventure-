@@ -1,5 +1,5 @@
 """Turn a Gemini background strip into a game layer: crop the side bands, key out the flat key colour (magenta, cyan or yellow),
-the game repeats it mirrored every other time, so it needs no seam work. Usage: python3 scripts/backdrop-strip.py <in> src/assets/backdrops/w<N>-<far|mid|near>.webp <far|mid|near> [scale]"""
+then make it seamless (strip-seamless.py: the right edge crossfaded into the left), since the game repeats it side by side, unflipped. Usage: python3 scripts/backdrop-strip.py <in> src/assets/backdrops/w<N>-<far|mid|near>.webp <far|mid|near> [scale]"""
 import sys, numpy as np
 from PIL import Image
 
@@ -56,12 +56,51 @@ def key_out(rgb, key):
     alpha = alpha * np.clip((60 - spill) / 30, 0, 1)
     return out, alpha
 
-def seamless(rgba, band):
-    """crossfade the last `band` columns into the first ones, so the strip repeats with no visible join (premultiplied)"""
+def _blur(v, r):
+    """a soft blur (three box passes of radius `r` along both axes), with the outside counted as zero"""
+    for ax in (0, 1):
+        for _ in range(3):
+            c = np.cumsum(np.pad(v, [(r + 1, r) if i == ax else (0, 0) for i in range(v.ndim)]), axis=ax)
+            n = v.shape[ax]
+            v = (np.take(c, np.arange(2 * r + 1, 2 * r + 1 + n), axis=ax) - np.take(c, np.arange(0, n), axis=ax)) / (2 * r + 1)
+    return v
+
+
+def seamless(rgba, band, feather=6):
+    """Join the last `band` columns onto the first ones so the strip repeats with no visible join, unflipped (polish report VI-4).
+    A plain crossfade across the band left both pictures half see-through on top of each other (ghost flowers and trunks on w5gold2-mid,
+    2026-10-29), so the two are cut along the seam where they look most alike instead (texture quilting): the cheapest path from top to
+    bottom through the band, by how different the two pictures are there, each row switching from the right edge's paint to the left
+    edge's paint at that path, softened over `feather` columns. Works on premultiplied colour; `rgba` alpha is 0-1."""
     H, W, _ = rgba.shape
     rgb = rgba[..., :3] * rgba[..., 3:4]
-    a = rgba[..., 3:4].copy()
-    t = np.linspace(0, 1, band)[None, :, None]  # 0 at the join -> 1 into the picture
+    a = rgba[..., 3:4]
+    L = np.concatenate([rgb[:, :band], a[:, :band] * 255], axis=-1)
+    R = np.concatenate([rgb[:, W - band:], a[:, W - band:] * 255], axis=-1)
+    cost = np.abs(L - R).sum(axis=-1)
+    # (the cut keeps clear of the band's ends, so the wrap from the last column to the first is always the right edge's own paint)
+    lo, hi = feather + 2, band - feather - 2
+    cost[:, :lo] = 1e9
+    cost[:, hi:] = 1e9
+    acc = cost.copy()
+    for y in range(1, H):
+        prev = acc[y - 1]
+        best = np.minimum(prev, np.minimum(np.r_[1e18, prev[:-1]], np.r_[prev[1:], 1e18]))
+        acc[y] += best
+    cut = np.zeros(H, int)
+    cut[-1] = int(np.argmin(acc[-1]))
+    for y in range(H - 2, -1, -1):
+        c = cut[y + 1]
+        js = [j for j in (c - 1, c, c + 1) if 0 <= j < band]
+        cut[y] = min(js, key=lambda j: acc[y, j])
+    x = np.arange(band)[None, :]
+    t_cut = np.clip((x - cut[:, None] + feather / 2) / feather, 0, 1)  # 0: the right edge's paint, 1: the left edge's
+    # a cut through a smooth glow (a sky, a haze) is a step in brightness, and a plain crossfade there ghosts nothing (it has no detail):
+    # so where both pictures are smooth the join is a plain crossfade, and where either has detail it is the cut
+    lin = np.linspace(0, 1, band)[None, :]
+    grad = lambda v: np.abs(np.diff(v, axis=1, append=v[:, -1:])).sum(-1) + np.abs(np.diff(v, axis=0, append=v[-1:])).sum(-1)
+    detail = np.clip(_blur(grad(L) + grad(R), 10) / 14, 0, 1)
+    t = (t_cut * detail + lin * (1 - detail))[..., None]
     head_rgb = rgb[:, :band] * t + rgb[:, W - band:] * (1 - t)
     head_a = a[:, :band] * t + a[:, W - band:] * (1 - t)
     rgb2 = np.concatenate([head_rgb, rgb[:, band:W - band]], axis=1)
@@ -81,7 +120,6 @@ def main(src, dst, kind, scale=2.0, band_frac=0.07):
     else:
         rgb, al = key_out(a, key_colour(a))
         rgba = np.concatenate([rgb, al[..., None]], axis=-1)
-    # no cross-fade: the game repeats a strip mirrored every other time, so any edge meets its own reflection and never shows a seam
     out = Image.fromarray(np.dstack([np.clip(rgba[..., :3], 0, 255), np.clip(rgba[..., 3] * 255, 0, 255)]).astype(np.uint8), 'RGBA')
     if scale != 1:
         out = out.resize((round(out.width * scale), round(out.height * scale)), Image.LANCZOS)
@@ -89,6 +127,11 @@ def main(src, dst, kind, scale=2.0, band_frac=0.07):
         out = out.convert('RGB')
     out.save(dst, 'WEBP', quality=88, method=6)
     print(dst, 'crop', cut, 'size', out.size)
+    # the game tiles strips unflipped (VI-4), so the ends are crossfaded into each other
+    import importlib.util, os
+    spec = importlib.util.spec_from_file_location('seam', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'strip-seamless.py'))
+    seam = importlib.util.module_from_spec(spec); spec.loader.exec_module(seam)
+    seam.make_seamless(dst)
 
 if __name__ == '__main__':
     main(sys.argv[1], sys.argv[2], sys.argv[3], float(sys.argv[4]) if len(sys.argv) > 4 else 2.0)
