@@ -17,6 +17,8 @@ function rig(world: { air?: boolean; vine?: boolean; swing?: boolean } = {}) {
     jumpPress: () => log.push('jump'),
     jumpRelease: () => log.push('jumpUp'),
     punch: () => log.push('punch'),
+    // (a jab thrown as a finger landed and taken back as it flicked off was never a punch: CT-17)
+    punchCancel: () => void (log.includes('punch') && log.splice(log.lastIndexOf('punch'), 1)),
     kick: () => log.push('kick'),
     mega: () => log.push('mega'),
     climb: (d) => log.push(`climb:${d}`),
