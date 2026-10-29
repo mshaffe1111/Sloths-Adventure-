@@ -10,4 +10,6 @@ pokey-edit1b  6ae38154ad9610e5cb31436b  17:24:36-18:10    ~45.5 min  ~$2.09  spe
 pokey-clips1  6ae3849dad9610e5cb314782  17:38:37-17:57    ~18.5 min  ~$0.85  spec-clips1.json @ 14fcce3: Wan 2.2 + motion model clips from edits/tread-start-s1 (seeds 3, 11)
               and edits/under-start-s2 (seeds 11, 3); picked hfp-tread-tread-start-s1-s11 frames 22-37 and hfp-under-under-start-s2-s11 frames 24-43
               (s3 tread: eyes shut the whole loop; s3 under: crawls along a floor line, arms smeared)
-pokey-edit2   6ae38d54ad9610e5cb3150c0  18:15:48-         running  spec-edit2.json @ 5fc7b89: 7-4 poles out with the pose kept (fists), so leanR keeps its lean
+pokey-edit2   6ae38d54ad9610e5cb3150c0  18:15:48-18:22     ~7 min   ~$0.32  spec-edit2.json @ 5fc7b89: 7-4 poles out with the pose kept (fists up where the paws gripped);
+              kept only as the alternative sheet (qa-notes/hf-art-pokey/slide/sheet5-pokey-behind-alt-fists.jpg): raised fists read as flexing
+total ~79.5 min of GPU, ~$3.33 (cap $12)
