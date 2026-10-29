@@ -110,5 +110,5 @@ All paths are under `reference/prop-sheets/qa-notes/polish-edges/`.
 ## Checks
 
 - `npx tsc --noEmit -p .`
-- The full suite: see the lead's message.
+- The full suite passes: 1665 tests, 0 failures (1 known TODO).
 - `npx vite build`, with nothing over 4 MiB.
