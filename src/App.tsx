@@ -532,6 +532,21 @@ export default function App() {
     };
   }
 
+  // dev only: the stage-cleared card for a stage with this many stars, as if it had just been won (for screenshots)
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __win?: (id: string, stars: number) => void }).__win = (id: string, stars: number) => {
+      const lvl = allLevels.find((l) => l.id === id);
+      if (!lvl) return;
+      setActiveLevel(lvl);
+      setStarsEarned(stars);
+      setClearTime(154);
+      setScore(4210);
+      setNewBest(true);
+      setLastStats({ win: true, stars, livesLost: 0, heartsLost: 1, floraTotal: 36, floraCollected: 31, timeSec: 154, timeLimit: 300, maxStompChain: 2, maxCombo: 3, stomps: 4, kills: { snake: 3, frog: 2 }, seen: [], id } as StageStats);
+      setScreen('victory');
+    };
+  }
+
   // dev only: show the new-medal toast for these medal ids (for screenshots)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __medals?: (ids: string[]) => void }).__medals = (ids: string[]) => setFreshBadges(BADGES.filter((b) => ids.includes(b.id)));
