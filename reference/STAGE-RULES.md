@@ -66,7 +66,7 @@ Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
 | Pacing | Gemini's density table (Part 2 §4), per difficulty. Action density 0.75-1.15 actions/s Normal, 0.35-0.55 Easy, 1.1-1.4 a chase; bursts (rhythm groups) 10-14 s with 8-12 actions Normal, 6-8 s with 3-4 Easy, 15-20 s a chase; rest pads between bursts 1.0-1.2 s Normal, 2.0-2.5 s Easy, 0.8 s a chase; no walk with no action over 2.0 s Normal, 3.0 s Easy, 1.2 s a chase. | inspector `pacing.ts` (each card's pacing block) |
 | Tension | Aim: a sawtooth across the stage (Part 1 §4): build, a breather in the middle, the climax near the end, an easy walk out. Not flat, not front-loaded. | inspector `pacing.ts` (tension in 9 parts) |
 | Difficulty bands | §1b, measured: a 0-100 score per stage and setting (first-timer lives lost a minute, the noisy bot's hardest jumps, peak stress, the narrowest input window, dead time, length); each world's spread is its band. | inspector `bands.ts` (the band chart) |
-| Sameness | No two stages of a world alike: cosine of weighted action 3-grams under ~0.78, and no matching 20-second stretch. | inspector `similar` |
+| Sameness | No two stages of a world alike: cosine of weighted action 3-grams under ~0.78, and no 20-second stretch that plays alike. A stretch is compared beat by beat by what each beat is, not only its letter: a jump's size, height and what is under it (a floor, water, a pit), a liana against a climb or a rope, which animal, which hazard or mechanic, which puzzle (the look-alike measure, `tools/inspect/lookalike.ts`, 2026-10-29). Two stretches closer than 0.30 play alike (set by judgement on 20 calibration pairs of Worlds 1-6: `reference/prop-sheets/qa-notes/lookalike/`). | `tools/inspect/era.ts` (look-alikes), curation `--apart`; inspector `similar` still on the letters |
 | Variety across rolls | Two rolls of the same stage must really differ: diversity (mean 1 - cosine between rolls) about 0.35 or more. Today most hand stages are 0.87-1.00 alike between rolls: that is the next big job. Set pieces with no variety target (the lead, 2026-10-28): 4-3 Waterfall Steps and 4-7 The Long Drop; every other rule still holds for them. Accepted below the target (the lead, 2026-10-29): 4-6 Mist Kapok at about 0.20 (its mist, nest and pinwheel lessons are a fixed spine, and most wide ledges sit in the mist or by a flag or a nest, so a flavour has little room of its own) and 4-9 The Aerie at about 0.27 (World 4's finale reprises every idea, each taught part on every roll, so about half the stage is shared); the taught spine stays. | `tools/inspect/era.ts` over 200 rolls |
 | Opening seconds | Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches. | first-timer bot |
 | Plain walk | No step, lip or dip that stops a plain walk dead; every dip has a one-jump way out; a jump into a face carries over its lip. | first-timer bot, kid bot |
@@ -255,6 +255,20 @@ plan); never ship the rough version as finished.
   versions of a section that use the same moves (hops and the dark, in another order) read 90-95% alike. A version has to lean on a move
   the others don't (lianas or roots, real jumps, prowlers, the eyes), and the roll's sections should lean the same way (a theme), or the
   stage still reads ~0.7 alike. A fixed piece in every roll (a climax, a teaching room) pulls the rolls back together.
+- **A look-alike measure has to see what a player sees: what each move is, not only its letter** (2026-10-29, Matt: "build a better
+  measure"). The 20 s window rule compared the seven action letters, so a liana and a climb were both V, the dark and the tide both Z,
+  a jump over water and a jump onto a floor both J: World 6 could not meet `--apart` (6-3 matched 6-1 on every roll, 6-4 matched
+  every stage of the world, the swing stages included). The measure now gives each beat a kind (`tools/inspect/lookalike.ts`: a
+  jump's size, height and what is under it, liana / climb / rope, which animal, hazard or puzzle) and swaps letters by Gemini's
+  matrix; era.ts and curate.ts import the one function. The threshold (0.30) was set by judging 20 window pairs by eye and in the game
+  (`reference/prop-sheets/qa-notes/lookalike/`). It cut the old false alarms: on World 6's raw rolls, matches on stretches made of
+  entirely different sections fell from 37% of roll pairs to 4%; on era, stage pairs flagged per roll fell about two thirds in every
+  world (Worlds 1-5 4,520 -> 1,394, World 6 784 -> 252) and no stage flags more than before. **But a better measure can't separate
+  stages built from the same sections.** Under `--apart` 6-2 now keeps 161 of 400 rolls and 6-4 56 (both 0 before); 6-1, 6-3, 6-6
+  and 6-7 still keep none (they all draw on the same swing sections, and a liana chain is a liana chain to any player), nor do 6-5 and
+  6-9 (w6-cat-banks, w6-prowl-knees and w6-tayra-banks in both). Two stages stay apart only if their sections do: decide it per
+  stage in the world's game kit (`forStage`), and give each swing stage its own kind of swing stretch. And stages that play apart can
+  still *look* alike (one art kit per world: 6-2 and 6-4 are the same root banks), which is the art's job, not this measure's.
 - **A climb detour is invisible**: a tree to climb up and back down beside the path was walked past by the quick route (quiet stretches,
   short stages). Climbing counts only where the way on goes up it (a root up a wall too high to jump, `rootClimb`).
 - **A high way the floor walks under is scenery** (Meeca's stage, 2026-10-28, Matt: "climbing is unneeded because you can just run

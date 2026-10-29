@@ -19,7 +19,8 @@ import type { LevelConfig } from '../../src/game/types.ts';
 import type { Stage } from './stages.ts';
 import { findRoute, isLiana, type Route } from './route.ts';
 import { findBeats, sampleRoute, type Beat, type Letter } from './beats.ts';
-import { actionTokens, deadTime, profile, tokenString, windows, NORMAL_GAP, type Dead, type Win } from './analyze.ts';
+import { actionTokens, deadTime, profile, tokenString, NORMAL_GAP, type Dead } from './analyze.ts';
+import { LOOK, lookWindows, type LookWin } from './lookalike.ts';
 import { inspectJumps, routeJumps, ADULT, KID } from './jumps.ts';
 
 /** STAGE-RULES.md §2, as the 200-roll tool counts them */
@@ -31,9 +32,10 @@ export const RULES = {
   quietMax: 4,
   /** dead time beyond this share of the stage (the tool's own budget: at 2 s gaps, a fifth of the stage spent quiet is a lot) */
   deadShare: 0.2,
-  /** two stages of a world alike: cosine of weighted action 3-grams over 0.78, or a 20 s stretch closer than 0.28 ("Sameness") */
+  /** two stages of a world alike: cosine of weighted action 3-grams over 0.78, or a 20 s stretch closer than LOOK.alike on the
+   *  look-alike measure (lookalike.ts: each beat by its kind; "Sameness") */
   cosine: 0.78,
-  window: 0.28,
+  window: LOOK.alike,
   /** rolls of one stage should differ: mean 1 - cosine about 0.35 or more ("Variety across rolls") */
   diversity: 0.35,
   /** the kid bot (Easy) makes every jump at least 85% of the time, the adult bot (Normal) 70% ("Hotspots") */
@@ -70,7 +72,8 @@ export interface RollResult {
   /** the action string (walks included) and its weighted 3-gram profile */
   action: string;
   prof: Array<[string, number]>;
-  wins: Win[];
+  /** the 20 s windows of beat kinds (lookalike.ts) */
+  wins: LookWin[];
   linearity: number;
   leniency: number;
   vertical: number;
@@ -318,7 +321,7 @@ export function measureRoll(cfg: LevelConfig, variant: number, opt: RollOptions 
     mix,
     action: tokenString(tokens),
     prof: [...profile(tokens)],
-    wins: windows(tokens, br.total),
+    wins: lookWindows(br.beats, br.total),
     linearity: linearity(centres),
     leniency: leniency(st, route, br.beats),
     vertical: ys.length ? Math.max(...ys) - Math.min(...ys) : 0,
