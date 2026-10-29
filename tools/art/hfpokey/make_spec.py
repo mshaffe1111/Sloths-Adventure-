@@ -1,9 +1,9 @@
 """Write the hf-art-pokey job specs (2026-10-29).
 
     python3 -I tools/art/hfpokey/make_spec.py edit1 <commit of this branch with starts/>   -> spec-edit1.json
-    python3 -I tools/art/hfpokey/make_spec.py args <spec>                                    -> the hf_jobs run args
+    python3 -I tools/art/hfpokey/make_spec.py args <spec> <commit>                           -> the hf_jobs run args
 
-Upload pokeygpu.py and the spec to hf://buckets/mshaffe111/w5-xfer/hfpokey/jobs/ with hf_fs_write, then run the job.
+Commit and push the spec; the job copies pokeygpu.py and the spec from raw GitHub at that commit into the bucket's hfpokey/jobs/.
 """
 import json, sys
 from pathlib import Path
@@ -68,10 +68,13 @@ def edit1(commit):
     print(len(ed), 'edit items', sum(len(e['seeds']) for e in ed), 'images')
 
 
-def args(spec):
+def args(spec, commit):
     name = Path(spec).name
+    gh = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfpokey/'
     tag = json.loads(Path(spec).read_text())['tag']
-    cmd = ('python -c "from diffusers import QwenImageEditPlusPipeline" 2>/dev/null || pip install -q -U diffusers; '
+    cmd = (f'mkdir -p /out/hfpokey/jobs && curl -fsSL {gh}pokeygpu.py -o /out/hfpokey/jobs/pokeygpu.py && '
+           f'curl -fsSL {gh}{name} -o /out/hfpokey/jobs/{name} && '
+           'python -c "from diffusers import QwenImageEditPlusPipeline" 2>/dev/null || pip install -q -U diffusers; '
            'pip install -q spandrel; python -c "import diffusers; print(diffusers.__version__)"; '
            f'sha256sum /out/hfpokey/jobs/pokeygpu.py && SPEC=hfpokey/jobs/{name} python /out/hfpokey/jobs/pokeygpu.py')
     print(json.dumps({'image': 'ostris/aitoolkit:latest', 'flavor': 'rtx-pro-6000', 'timeout': '2h', 'detach': True,
@@ -83,4 +86,4 @@ if __name__ == '__main__':
     if sys.argv[1] == 'edit1':
         edit1(sys.argv[2])
     else:
-        args(sys.argv[2])
+        args(sys.argv[2], sys.argv[3])
