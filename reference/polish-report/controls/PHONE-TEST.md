@@ -44,3 +44,26 @@ From the polish report's 10-minute test, cut to what Build 2 changed. Use the te
 Not in this build:
 - **CT-5** (the second thumb's straight flick on a vine still lets go) waits for your call.
 - **CT-8** step 1 and **CT-20** are another helper's.
+
+# Build 3 (about 8 minutes, after Build 2's steps)
+
+10. **Show touches, 1 minute (CT-14).** In a World 1 stage, Screen mode, steer and jump, punch and hold for a mega.
+    - *Before:* nothing on screen; on an iPhone no buzz either.
+    - *Now:* a faint ring under the steering thumb with arrows the way he runs, and each move flashes its name at the finger. In World 2 and on they are gone (Settings, Show touches: On keeps them, Off hides them).
+11. **Second-thumb taps, 1 minute (CT-15, CT-17).** Run right with the left thumb in portrait so it slides toward the middle; tap with the right thumb close beside it, 10 times. Then 10 quick flicks up with that thumb.
+    - *Before:* taps near the steering thumb vanished, and a punch came only as the thumb lifted.
+    - *Now:* every tap punches, the moment the thumb lands. The flicks jump and throw no punch (at most one in a hundred might).
+12. **Grip, 1 minute (CT-16).** Hold the phone with the palm or a finger resting on a side edge, then steer with the thumb.
+    - *Before:* the grip could take the steering, and Pokey would not run.
+    - *Now:* the grip is ignored; the thumb steers.
+13. **Pad buttons, 2 minutes (CT-17, CT-18, CT-26).** Switch to Pad. Press Punch: it punches on the press; hold it: the mega. Tap just off the edge of each button, and in the gap between Jump and Kick. With the pad pushed up (a jump), press Jump in mid-air.
+    - *Before:* Punch waited for the release, near-misses did nothing, and Jump with the pad up gave no second jump.
+    - *Now:* near-misses press the nearest button, and Jump with the pad up is the second jump.
+14. **Ropes, 1 minute (CT-21).** Shimmy along a rope one way, then flick up and the other way.
+    - *Before:* he hopped the way he crept.
+    - *Now:* he hops the way you flicked.
+15. **Double jumps, 1 minute (CT-24).** Jump, and let the thumb drift down and back up slowly in the air, 10 times.
+    - *Before:* the drift often gave a second jump.
+    - *Now:* only a quick wiggle or flick does.
+16. **Settings, 1 minute (CT-28).** Sensitivity at 135%: small flicks jump more easily; at 75% it takes a bigger flick. Steer with: Right, and steer with the right thumb.
+    - *Now:* the right half steers at once and the left half taps, flicks and punches. "Either" comes with CT-8.
