@@ -9,3 +9,7 @@ running total ~35.9 min = ~$1.65
 finished: hfg-art3 18:06:52Z (1.6 min, ~$0.07); running total ~37.5 min = ~$1.72
 hfg-ground-d 6ae39ab5ad9610e5cb316079 rtx-pro-6000 created 19:12:53Z: spec-ground-d.json (World 10 soil redo from starts3.py: 2 bases x 3 variants)
 finished: hfg-ground-d 19:15:18Z (2.4 min, ~$0.11); pick fill-w10-c (packfill.py); running total ~39.9 min = ~$1.83
+hfg-art4 6ae3a68e0e0338d1bb7c1ea7 rtx-pro-6000 created 20:03:26Z: spec-art4.json (World 5 soil retake x2 bases x3, bounce caps x3 x2 seeds, stalks x3)
+finished: hfg-art4 20:06:53Z (3.5 min, ~$0.16); running total ~43.4 min = ~$1.99
+hfg-art5 6ae3a7b30e0338d1bb7c1ff3 rtx-pro-6000 created 20:08:19Z: spec-art5.json (bounce caps redo x3 x2 strengths)
+finished: hfg-art5 20:09:57Z (1.6 min, ~$0.07); running total ~45.0 min = ~$2.06

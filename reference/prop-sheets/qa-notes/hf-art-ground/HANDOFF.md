@@ -136,3 +136,15 @@ cost). No job is running.
 - Water signs: gen2 stood the sign at the higher of a gap's two lips, so on 6-1 it hung 80 units in the air; it now stands on the near
   lip (gen2/pipeline.ts). `after-6-1-sign-*.jpg`.
 - Before/after: `ba-<stage>.jpg` (upright and sideways, before above, after below).
+
+## Round 3 (2026-10-29, ~4:45 PM ET; the lead's review)
+- World 5 soil retaken: start `starts4.py` fill-w5r (World 1's soil warmed), job hfg-art4, pick fill-w5-r (packfill.py).
+  `review-w5-soil-redo.jpg`, `r3-5-1-x2000.jpg`, `r3-5-4-x1500.jpg`, `r3-5-7-x3000.jpg`.
+- The green blocks in 5-1's and 1-2's pits were the soft pit's low step (moss_stone, 55 tall) drawn by terrain's code body. The step
+  and the pit walls now carry `soil: true` (protoStage, w5Stages, w5Stage54): the step is painted as soil (bare: no end pieces, lip to
+  its ends), the walls are left to the bank above them; drawProtoScene draws the lowest pieces first and closes a bank's end where a
+  piece stands on it. `r3-1-2-x4250.jpg`, `r3-1-2-x11500.jpg`, `r3-5-1-x7300.jpg`.
+- The white bar in 10-1 was the code-drawn toadstool's stalk. The bounce plants are painted now (job hfg-art4 stalks, hfg-art5 caps;
+  `packbounce.py`, `picks-bounce.json`, `src/assets/props/bounce.webp`, `bounceArt.ts`); spanArt.ts's drawBounce is deleted. The stalk
+  darkens downward; the cap and cue draw again over the painted ground (terrain.ts drawBounceCaps). `r3-10-1-x500.jpg`,
+  `r3-1-2L4-x11600.jpg`, `review-bounce-caps.jpg`, `bounce-packed-*.jpg`.

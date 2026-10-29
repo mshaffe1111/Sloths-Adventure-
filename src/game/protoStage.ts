@@ -369,14 +369,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   const softPit = (edge: number, far: number) => {
     const wallTop = G + BANK_H;
     const wallH = HOLLOW_Y - wallTop + 4;
-    P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone' });
-    P.push({ id: pid++, x: far, y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone', soil: true });
+    P.push({ id: pid++, x: far, y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone', soil: true });
     bank(edge - 60, far + 60, HOLLOW_Y, 'moss_stone');
     // a low mossy step at the foot of the far wall: the pit is deeper than one jump rises, so without it only the second jump got him
     // out, and beginners who had not found the second jump were stuck there (the control test, 2026-10-23)
     // (a narrow pit gets its whole floor raised instead: a sliver of a step is no help)
     const sw = far - edge < 170 ? far - edge : 70;
-    P.push({ id: pid++, x: far - sw, y: HOLLOW_Y - PIT_STEP, width: sw, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: far - sw, y: HOLLOW_Y - PIT_STEP, width: sw, height: PIT_STEP, type: 'solid', style: 'moss_stone', soil: true });
   };
   /**
    * the gaps stepping stones leave in a soft pit (between the banks at `edge` and `far`): a gap between two stones that both stand higher
@@ -3723,8 +3723,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    */
   const steppedPit = (edge: number, farX: number, cuts: number[]) => {
     const wallTop = G + BANK_H;
-    P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
-    P.push({ id: pid++, x: farX, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone', soil: true });
+    P.push({ id: pid++, x: farX, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone', soil: true });
     const xs = [edge - 60, ...cuts, farX + 60];
     // (up a step and down again in turn, so a long pit's floor never climbs toward the bank)
     let fy = HOLLOW_Y;
@@ -3732,7 +3732,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       fy = k % 2 ? HOLLOW_Y - 30 : HOLLOW_Y;
       bank(xs[k], xs[k + 1], fy, 'moss_stone');
     }
-    P.push({ id: pid++, x: farX - 70, y: fy - PIT_STEP, width: 70, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: farX - 70, y: fy - PIT_STEP, width: 70, height: PIT_STEP, type: 'solid', style: 'moss_stone', soil: true });
   };
   const gustZone = (x0: number, x1: number, dir: 1 | -1, chimeX: number, force = 120) => {
     GZ.push({ kind: 'wind', x0: Math.round(x0), x1: Math.round(x1), top: G - 560, bottom: G + 40, baseY: G, dir, period: 2.8 + 1.4 + 2.2, warn: 1.4, active: 2.2, force, offset: Math.round(R.r(0, 6.4) * 10) / 10 });
@@ -3760,7 +3760,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     else steppedPit(edge, far, [Math.round(edge + gap / 2)]);
     // `back` (the lesson's drops): a step at the near wall too, so a glide that falls short is two hops back up and the trunk again, a
     // few seconds, not a wall only the second jump climbs (QA, 2026-10-26: a short flick dropped a tester in 4-2's first pit, 6 tries out)
-    if (back) P.push({ id: pid++, x: edge, y: HOLLOW_Y - PIT_STEP, width: BACK_STEP, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
+    if (back) P.push({ id: pid++, x: edge, y: HOLLOW_Y - PIT_STEP, width: BACK_STEP, height: PIT_STEP, type: 'solid', style: 'moss_stone', soil: true });
     for (let i = 1; i <= 4; i++) {
       const u = i / 5;
       flower(Math.round(edge + gap * u), Math.round(perchY - 10 + (G - 70 - perchY) * u * u), 'orchid');

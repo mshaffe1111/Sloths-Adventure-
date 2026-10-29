@@ -38,7 +38,7 @@ export function setGroundPaint(on: boolean) {
 }
 /** a bank the painted ground covers whole (drawProtoScene's banks, not a moss floor), once its sheets are in */
 export function bankPainted(p: Platform): boolean {
-  return groundOn && p.height >= 90 && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
+  return groundOn && (p.height >= 90 || !!p.soil) && !p.push && !p.broken && !p.art && protoArtReady() && warmGround(kitWorld);
 }
 /** whether a world has its own painted kit yet */
 export function hasKit(w: number): boolean {
@@ -510,7 +510,7 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
  */
 export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
 ): boolean {
   if (!protoArtReady()) return false;
   if (moss) {
@@ -562,9 +562,10 @@ export function drawBankArt(
   }
   drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, viewBottom, view?.y0);
   ctx.restore();
-  // the top lip, under the end pieces' own lip corners
-  const la = open.left ? p.x + 30 : p.x - 1;
-  const lb = open.right ? p.x + p.width - 30 : p.x + p.width + 1;
+  // the top lip, under the end pieces' own lip corners (`bare`: a pit's low step, too narrow for the end pieces, which are wider than it
+  // and see-through below their rims: its soil keeps the end's wobbling face and the lip runs to its ends)
+  const la = open.left && !open.bare ? p.x + 30 : p.x - 1;
+  const lb = open.right && !open.bare ? p.x + p.width - 30 : p.x + p.width + 1;
   ctx.save();
   ctx.beginPath();
   ctx.rect(la, p.y - 120, lb - la, 260);
@@ -577,6 +578,7 @@ export function drawBankArt(
     if (view && (x < view.x0 - 260 || x > view.x1 + 260)) return;
     drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : step + 26);
   };
+  if (open.bare) return true;
   if (open.right) end(true, open.rightStep);
   if (open.left) end(false, open.leftStep);
   return true;
@@ -649,17 +651,28 @@ export function drawProtoScene(
 ): boolean {
   if (!protoArtReady()) return false;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
-  const banks = platforms.filter((p) => p.height >= 90 && !p.push && !p.broken && !p.art);
-  for (const p of banks) {
+  const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  // (the lowest first: a pit's floor and its step go under the banks either side, whose faces then cover their ends)
+  for (const p of [...banks].sort((a, b) => b.y - a.y)) {
     if (!vis(p)) continue;
-    const touches = (side: 'l' | 'r') => banks.some((q) => q !== p && q.y <= p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2));
+    // (a pit's wall under a bank's end is that bank's soil already)
+    if (p.soil && banks.some((q) => q !== p && !q.soil && Math.abs(q.y + q.height - p.y) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)) continue;
+    // (a side is closed where the next bank meets it, or where a piece stands right on top of its end: a pit's floor runs on under the
+    // walls, and its end pieces' lip corners showed through the banks' undercut faces above it)
+    const touches = (side: 'l' | 'r') => {
+      const ex = side === 'l' ? p.x : p.x + p.width;
+      return banks.some((q) => q !== p && ((q.y <= p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2)) ||
+        (q.y < p.y && q.y + q.height >= p.y - 4 && q.x <= ex + 1 && q.x + q.width >= ex - 1)));
+    };
     // the high canopy: a wall face on the side that faces the yard
     const isWall = banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
     if (isWall) drawWallArt(ctx, p.x, p.y, banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6, 230);
     // (a side whose neighbour is lower is a step down to it, not a drop)
-    const lower = (side: 'l' | 'r') => banks.find((q) => q !== p && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2))?.y;
+    // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
+    const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
+    const lower = (side: 'l' | 'r') => banks.find((q) => q !== p && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2))?.y ?? floor;
     // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r') }, false, view.y1 ?? 0, view);
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);
   }
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;

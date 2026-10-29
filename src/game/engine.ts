@@ -64,7 +64,7 @@ import { drawSpiderSprite } from './spiderSprite.ts';
 import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
-import { renderWorldObjects, drawWater } from './terrain.ts';
+import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
 import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
@@ -5346,6 +5346,8 @@ export class GameEngine {
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
+    if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
