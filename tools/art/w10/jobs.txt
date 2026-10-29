@@ -20,3 +20,4 @@ w10-props verdicts (review sheets in reference/prop-sheets/qa-notes/w10/):
   wind    not cut (item dropped).
 w10-props2    6ae3bc1c0e0338d1bb7c35ec rtx-pro-6000 created 21:35:24Z: spec-w10-props2.json (starts2.py @75124775: rods charged/spent,
   rod fx on black, cracked rampart; s35/s45 (fx s45/s60) x seeds 7/23 = 16 takes)
+w10-props2 finished 21:38:37Z (3.2 min, ~$0.15).

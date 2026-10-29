@@ -1,0 +1,74 @@
+{
+ "image": "rampart.webp",
+ "size": [
+  1464,
+  182
+ ],
+ "frames": {
+  "rampart-whole": {
+   "x": 0,
+   "y": 0,
+   "w": 331,
+   "h": 142,
+   "ax": 0,
+   "ay": 1.0
+  },
+  "rampart-cracked": {
+   "x": 335,
+   "y": 0,
+   "w": 331,
+   "h": 142,
+   "ax": 0,
+   "ay": 1.0
+  },
+  "rampart-breaking": {
+   "x": 670,
+   "y": 0,
+   "w": 371,
+   "h": 182,
+   "ax": 20.0,
+   "ay": 21.0
+  },
+  "rubble-0": {
+   "x": 1045,
+   "y": 0,
+   "w": 50,
+   "h": 52,
+   "ax": 25.0,
+   "ay": 26.0
+  },
+  "rubble-1": {
+   "x": 1099,
+   "y": 0,
+   "w": 50,
+   "h": 39,
+   "ax": 25.0,
+   "ay": 19.5
+  },
+  "rubble-2": {
+   "x": 1153,
+   "y": 0,
+   "w": 38,
+   "h": 25,
+   "ax": 19.0,
+   "ay": 12.5
+  },
+  "rubble-3": {
+   "x": 1195,
+   "y": 0,
+   "w": 43,
+   "h": 52,
+   "ax": 21.5,
+   "ay": 26.0
+  },
+  "scorch": {
+   "x": 1242,
+   "y": 0,
+   "w": 222,
+   "h": 60,
+   "ax": 111.0,
+   "ay": 30.0
+  }
+ },
+ "note": "World 10 crumbling rampart (HF img2img, tools/art/w10/cut2.py): rampart-whole/cracked/breaking share the anchor ax/ay = the left end of the slab's top surface (where Pokey stands); 330 px wide = 110 game units at 1/3. rubble-0..3 falling chunks (anchor = centre). scorch: soot decal for the floor where a bolt hits, anchor = centre (normal blend; its embers can take a small code glow)."
+}

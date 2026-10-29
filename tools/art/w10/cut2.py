@@ -42,6 +42,15 @@ SPLIT = 640  # rows above this come from the state's repaint; the shaft is plain
 ramp = np.clip((SPLIT - np.arange(dull.shape[0])) / 60, 0, 1)[:, None, None]
 for st in ('charge', 'spent'):
     rep = np.asarray(key_magenta(load(PICK[st]))).astype(np.float32)
+    if st == 'charge':
+        # (the repaint lit the iron a pale grey-blue that reads as white wrap on the coil: where it brightened the dull iron, push the hue to
+        # the bolts' cyan-white and lift it, so the lit parts read as glowing at phone size)
+        L0, L1 = dull[..., :3].mean(2), rep[..., :3].mean(2)
+        g = np.clip((L1 - L0 - 25) / 70, 0, 1) * (rep[..., 3] > 0)
+        g = ndimage.gaussian_filter(g, 1.5)[..., None]
+        lum = rep[..., :3].mean(2, keepdims=True)
+        tint = np.clip(np.array([0.62, 0.9, 1.12]) * lum * 1.12 + np.array([0, 10, 30]), 0, 255)
+        rep[..., :3] = rep[..., :3] * (1 - g) + tint * g
     states[st] = rep * ramp + dull * (1 - ramp)
 frames, tips = [], {}
 for look, (x0, x1, tip) in (('a', (120, 400, (256, 66))), ('b', (630, 910, (768, 150)))):
@@ -72,13 +81,13 @@ write(OUT, 'rods', frames, {'tips': tips, 'note': (
     'wisp\'s base) after a strike. halo/afterglow/smoke were painted on black: draw them with "lighter".')})
 # review: the three states side by side per look, with the fx placed
 F = {n: (im, ax, ay) for n, im, ax, ay in frames}
-row = Image.new('RGBA', (6 * 150, 620), (0, 0, 0, 0))
+row = Image.new('RGBA', (6 * 150, 690), (0, 0, 0, 0))
 from w10lib import on_add  # noqa: E402
 k = 0
 for look in 'ab':
     for st in ('dull', 'charge', 'spent'):
         im, ax, ay = F[f'rod-{look}-{st}']
-        ox, oy = round(k * 150 + 75 - ax), round(610 - ay)
+        ox, oy = round(k * 150 + 75 - ax), round(680 - ay)
         row.alpha_composite(im, (ox, oy))
         tx, ty = tips[f'rod-{look}']
         extra = {'charge': [f'halo-{look}'], 'spent': ['afterglow', 'smoke-0']}.get(st, [])
