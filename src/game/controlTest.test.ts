@@ -12,10 +12,16 @@ const cfg = {
   levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
 } as LevelConfig;
 
-test('control test: off unless the address asks for it, and only in a QA build (UI-15)', () => {
+test('control test: off unless the address asks for it (#ctest or ?ctest=1), and then on in any build, the live site too', () => {
   assert.equal(ctestEnabled(), false);
-  // (outside a Vite dev or test-link build there is no QA build: the shipped game never opens it)
   assert.equal(qaBuild(), false);
+  const g = globalThis as unknown as { location?: unknown };
+  const was = g.location;
+  g.location = { hash: '#ctest', search: '' };
+  assert.equal(ctestEnabled(), true, 'the testers\' link opens it on the live site');
+  g.location = { hash: '', search: '?level=1-2' };
+  assert.equal(ctestEnabled(), false, 'the full game is unaffected');
+  g.location = was;
 });
 
 const SEEDS = Array.from({ length: 40 }, (_, i) => 1 + i * 7919);
