@@ -2,6 +2,7 @@
 
 Last updated: 2026-10-29 12:55 PM ET (supervision round).
 
+Every polish-report item, with its owner and status: reference/polish-report/TRACKER.md (keep it current with this board).
 ## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
 
 Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as on 2026-10-28. Effort levels still by job (LEAD-PLAYBOOK §7).
@@ -28,7 +29,11 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | HF art 2, every-stage pieces: checkpoint marker, exit gate per world, pit water W1/3/4/5, thorn gate, pickups, 4-8 netting + painted nests, story finds ($14 cap) | local agent (worktree) | hf-art-stage | started 1:10 PM ET; makes and wires |
 | HF art 3, ground and World 5: soil textures + lip + bank per world with the VI-8 code, W5 props + water sign, W5 dressing sets, W6 water repaint ($14 cap) | local agent (worktree) | hf-art-ground | started 1:10 PM ET; makes and wires |
 | HF art 4, Pokey: swim satchel fix (tread, under), 7-4 pole stubs painted out + 2x upscale; pokey LoRA v2 only if asked ($12 cap) | local agent (worktree) | hf-art-pokey | started 1:10 PM ET |
-| 7-3 ring of chairs (HF, ~$0.19) | local agent (worktree) | hf-w7-chairs | v2 PASS (varied chairs, depth); eleventh chair repaint landing; W7 builder wires |
+| 7-3 ring of chairs (HF, ~$0.25) | local agent (worktree) | hf-w7-chairs | DONE, passed, MERGED into ccr 1:25 PM ET; gen2-w7 wires |
+| HF art 5, bosses and effects: lairs (wire 6 unused + 3 new plates), shared warning marker, boss effects, dust/sparks, Venom Fang, Queen clips, shimmy ropes, 4-D/5-M bits ($10 cap) | local agent (worktree) | hf-art-bosses | started 1:30 PM ET |
+| HF art 6, native-resolution near/mid backdrops W1-5 first, into src/assets/backdrops-hd/ (swap after polish-edges) ($10 cap) | local agent (worktree) | hf-art-backdrops | started 1:30 PM ET |
+| Polish C, screens and feel: UI-2, AN-11, UI-5, UI-9, UI-10, UI-12, UI-13, UI-15, AN-6, AN-10, PF-3 | cloud session_01FhBbYJojJwqFxv2u9mo8uR | polish-c | started 1:35 PM ET; big screen changes shown first |
+| Polish levels: LV-8, LV-14, LV-4, LV-5, LV-7, LV-15, then LV-2 (proposal first) | cloud session_01FhBbYLyE75iwttyDZRWPxT | polish-levels | started 1:35 PM ET |
 | Polish B1: controls never misread (CT-1..4, 6, 7, 9, 10, 12; CT-5 waits for Matt) | cloud session_01FhBbYKmJjBAbBHVVVBnhLE | polish-controls | replay tester touches |
 | Polish B2: clean backdrop edges (VI-1, VI-5, VI-6) | cloud session_01FhBbYNmvX29Yt9L2XxEWqJ | polish-edges | |
 | Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
