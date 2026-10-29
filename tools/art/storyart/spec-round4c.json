@@ -6,7 +6,7 @@
    "slothadv_style_v1.safetensors"
   ]
  },
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/x/tools/art/hfbatch/starts/storyart/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dec38b0e8b4384dcafcb1de342d5c6d2fbd3587b/tools/art/hfbatch/starts/storyart/",
  "items": [
   {
    "name": "pl-grandma-door-e",
@@ -40,7 +40,7 @@
   }
  ],
  "q": 90,
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/x/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dec38b0e8b4384dcafcb1de342d5c6d2fbd3587b/",
  "keep": [
   "pl-grandma-door"
  ]
