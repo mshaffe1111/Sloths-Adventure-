@@ -239,6 +239,18 @@ export function easyStage(stage: Stage): Stage {
   // Easy keeps the stage's own lower bar (goals.ts raised Normal's to its share of what the stage holds)
   if (stage.easyGoal !== undefined) stage.config = { ...stage.config, targetCount: stage.easyGoal };
 
+  // (World 2's lily pads 40 px wider on Easy, QA 2026-10-29: a kid's hop that came down past a pad's middle ran on off its far end; the
+  // gaps between them shrink to match, and Easy's other ledge widening leaves pads alone)
+  // (and its creek stones and reed islands, 2026-10-29, the moss stones standing up out of still water: 30 px wider)
+  // (never one that is a river's bank, a reed island or the landing step at the foot of a bank: the river keeps its banks where it ends)
+  const bankOf = (p: Platform) => (stage.rivers ?? []).some((r) => Math.abs(p.x - r.x1) <= 2 || Math.abs(p.x + p.width - r.x0) <= 2);
+  const creek = (p: Platform) => stage.config.worldIndex === 2 && p.style === 'moss_stone' && p.height === 110 && p.type === 'solid' && !bankOf(p);
+  for (const p of stage.platforms) {
+    const d = p.lily ? 20 : creek(p) ? 15 : 0;
+    if (!d) continue;
+    p.x -= d;
+    p.width += 2 * d;
+  }
   // far jumps
   if (!climb && !chase && !gen2) stage.platforms.push(...easyStones(stage));
   // and no jump that needs a full hold (a hand-built stage; again while it softens something, as one jump can open the way to the

@@ -5,6 +5,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildProtoStage, G } from './protoStage.ts';
+import { buildW2Stage, ISLAND_TOP } from './w2Stages.ts';
+import { w2Picks } from './w2Sections.ts';
 import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
 import { reachJump } from './physics.ts';
@@ -46,11 +48,11 @@ test('3-1: the first water is taught well before it, and is one plain level jump
       const gaps = deepGaps(st.platforms, st.spawnX, st.exitTotemX, water);
       assert.ok(gaps.length > 0, `roll ${s}: 3-1 has water`);
       const [edge, far] = gaps[0];
-      const tip = st.proto.hints.find((h) => h.text === DEEP_TIP);
+      const tip = st.proto!.hints.find((h) => h.text === DEEP_TIP);
       assert.ok(tip, `roll ${s}: Dot's water line is in the stage`);
       assert.ok(tip!.x <= edge - 1200, `roll ${s}${easy ? ' Easy' : ''}: Dot's water line ${Math.round(edge - tip!.x)} px before the first water (want 1200+)`);
       // (nothing else of Dot's comes between her water line and the water: the spores' line comes after it)
-      const between = st.proto.hints.filter((h) => h.x > tip!.x && h.x < edge);
+      const between = st.proto!.hints.filter((h) => h.x > tip!.x && h.x < edge);
       assert.deepEqual(between.map((h) => h.text), [], `roll ${s}: no other line of Dot's between the water line and the water`);
       const w = far - edge;
       assert.ok(w >= 64 && w <= reachJump(0, false) * 0.46, `roll ${s}: the first water is ${w} px across (a plain jump, wide enough to see)`);
@@ -92,5 +94,80 @@ test('3-1: in the real engine a short running flick clears the first water, and 
     r.died = false;
     for (let i = 0; i < 60 && !r.died; i++) r.frame({ right: true });
     assert.ok(r.died, `roll ${s}: a plain walk off the bank falls in`);
+  }
+});
+
+// QA 2 (rules 2/3/4): 2-2's lily ponds cost Matt 14 lives, four in a row at one crossing, three of them falling with no sideways
+// speed; the first five sent him back to the very start. The pads were 84-104 px, so a hop that came down past a pad's middle ran on
+// off its far end, and the last hop was up onto a bank 20-34 px above the pads and stones (over the 26 px hoist): short, it met the
+// bank's face and slid down it. The ponds' roll had 7000 px between flags.
+const W2_ROLLS = Array.from({ length: 40 }, (_, i) => 1 + i);
+const pondRolls = W2_ROLLS.filter((s) => w2Picks('2-2', s).flavour === 'ponds');
+
+test("2-2: wide lily pads (wider still on Easy), and every crossing of pads or stones ends on a level step at the bank's foot", () => {
+  assert.ok(pondRolls.length >= 3);
+  for (const s of W2_ROLLS) {
+    for (const easy of [false, true]) {
+      const built = withGoals(buildW2Stage(cfg('2-2', 'harvest'), s, '2-2'));
+      const st = easy ? easyStage(built) : built;
+      for (const p of st.platforms.filter((q) => q.lily)) assert.ok(p.width >= (easy ? 164 : 124), `roll ${s}${easy ? ' Easy' : ''}: a ${p.width} px lily pad`);
+      for (const r of st.rivers ?? []) {
+        if (r.speed !== 0) continue;
+        const inside = st.platforms.filter((p) => p.type === 'solid' && p.x > r.x0 && p.x + p.width < r.x1 && p.y < r.surfaceY + 10);
+        if (inside.length < 2) continue;
+        // (a crossing of pads or stones: the far end is a step at the stones' own height, and the bank a walk-up above it)
+        const step = st.platforms.find((p) => Math.abs(p.x - r.x1) <= 2 && p.type === 'solid');
+        assert.ok(step && step.y === ISLAND_TOP, `roll ${s}: still water at ${Math.round(r.x0)} ends on a level step (got ${step?.y})`);
+        const bank = st.platforms.find((p) => Math.abs(p.x - (step!.x + step!.width)) <= 2 && p.type === 'solid');
+        assert.ok(bank && step!.y - bank.y <= 22, `roll ${s}: the bank is a walk-up step above it`);
+      }
+    }
+  }
+});
+
+test('2-2: a flag before the first water that costs a life, and never more than 4100 px between flags (every roll)', () => {
+  for (const s of W2_ROLLS) {
+    const st = withGoals(buildW2Stage(cfg('2-2', 'harvest'), s, '2-2'));
+    const flags = (st.checkpoints ?? []).map((c) => c.x).sort((a, b) => a - b);
+    const deadly = (st.rivers ?? []).filter((r) => !r.safe).sort((a, b) => a.x0 - b.x0)[0];
+    assert.ok(flags[0] < deadly.x0, `roll ${s}: a flag (${flags[0]}) before the first deadly water (${Math.round(deadly.x0)})`);
+    const marks = [st.spawnX, ...flags, st.exitTotemX];
+    for (let i = 1; i < marks.length; i++) assert.ok(marks[i] - marks[i - 1] <= 4100, `roll ${s}: ${Math.round(marks[i] - marks[i - 1])} px between flags at ${Math.round(marks[i - 1])}`);
+  }
+});
+
+test('2-2: in the real engine, a hop from each lily pad lands on the next and stays there with the thumb lifted (ponds rolls)', () => {
+  setDifficulty('normal');
+  for (const s of pondRolls.slice(0, 3)) {
+    const r = new RealPlay('2-2', s);
+    const pads = r.platforms.filter((p) => p.lily).sort((a, b) => a.x - b.x);
+    let tried = 0;
+    for (let i = 0; i + 1 < pads.length; i++) {
+      const [a, b] = [pads[i], pads[i + 1]];
+      if (b.x - (a.x + a.width) > 200) continue;
+      for (const hold of [0.07, 0.15, 0.25]) {
+        for (const at of [-40, -15, 5]) {
+          r.stand(a.x + 20, a.y);
+          r.died = false;
+          let pressed = false;
+          let held = 0;
+          let landed = false;
+          for (let f = 0; f < 70 && !r.died; f++) {
+            const pad: Record<string, boolean> = {};
+            if (!landed) pad.right = true;
+            if (!pressed && r.p.x >= a.x + a.width + at) {
+              pressed = true;
+              pad.press = pad.jump = true;
+            } else if (pressed && held < hold) pad.jump = true;
+            if (pressed) held += 1 / 30;
+            r.frame(pad);
+            if (pressed && held > 0.1 && r.p.grounded) landed = true;
+          }
+          assert.ok(!r.died && r.standingOn === b.id, `roll ${s}: a ${hold} s hop ${at} px from pad ${i}'s end stays on pad ${i + 1} (on ${r.standingOn})`);
+          tried++;
+        }
+      }
+    }
+    assert.ok(tried > 20, `roll ${s}: pads tried`);
   }
 });
