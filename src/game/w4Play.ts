@@ -841,82 +841,117 @@ function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
   }
 }
 
-/** a fall's painted water: columns of the lip's pour about this wide side by side, falling about this fast (px/s) */
-const POUR_COL = 64;
+/** a fall's painted water falls about this fast (px/s) */
 const POUR_SPEED = 380;
 
 /** the painted water fades in over this many px below a fall's top, so it spills from the lip with no hard edge */
 const POUR_FADE_IN = 60;
 
 /**
- * The painted water pouring down the box (x, top) to (x + width, bottom): the lip's own falling water (w4Art.ts drawW4Pour) in columns
- * side by side, each scrolling down at its own pace so the sheet never reads as a grid, fading in at the top; `alphaAt(u)` how solid
- * it is across it (0 left edge .. 1 right edge). False until the atlas has loaded.
+ * A wide fall is a curtain of separate streams with gaps between them, never one sheet: each stream about `min`..`max` wide, the gaps
+ * `gapMin`..`gapMax`; a fall up to `one` wide is a single stream. A stream up to `half` wide is the whole strip stretched, a wider one
+ * two strips back to back (each with its rim facing out), so the strip is never stretched much.
  */
-function drawPouring(ctx: CanvasRenderingContext2D, x: number, top: number, width: number, bottom: number, t: number, alphaAt: (u: number) => number): boolean {
+const STREAM = { min: 44, max: 96, gapMin: 26, gapMax: 64, one: 100, half: 60 };
+/** 4-5's curtain (140 wide, in front of him): finer streams closer together, so it still hides him but reads as falling water */
+const CURTAIN: typeof STREAM = { min: 28, max: 46, gapMin: 10, gapMax: 22, one: 50, half: 60 };
+
+interface Stream { x: number; w: number; k: number }
+/** a fall's streams across [x0, x0 + width], the same every frame (from its place), the first on its left edge and the last on its right */
+function fallStreams(x0: number, width: number, S: typeof STREAM): Stream[] {
+  if (width <= S.one) return [{ x: x0, w: width, k: 0 }];
+  const out: Stream[] = [];
+  const x1 = x0 + width;
+  for (let cx = x0, k = 0; cx < x1 - 1; k++) {
+    const r = (k * 0.618034 + x0 * 0.00137) % 1;
+    const g = (k * 0.754877 + x0 * 0.00071) % 1;
+    let sw = S.min + (S.max - S.min) * r;
+    // (the last stream runs on to the fall's edge rather than leave a sliver)
+    if (x1 - (cx + sw) < S.min + S.gapMin) sw = x1 - cx;
+    out.push({ x: cx, w: sw, k });
+    cx += sw + S.gapMin + (S.gapMax - S.gapMin) * g;
+  }
+  return out;
+}
+
+/**
+ * The painted water pouring down a fall between x0 and x0 + width, from `top` to `bottom`: its streams (fallStreams), each the lip's
+ * own falling water (w4Art.ts drawW4Pour) scrolling down at its own pace and fading in at the top, `scale` of its full width (a fall
+ * easing off narrows each stream about its middle). `each(x, w)` then draws whatever goes with a stream (its spill and its foam). False
+ * until the atlas has loaded.
+ */
+function drawStreams(
+  ctx: CanvasRenderingContext2D, x0: number, width: number, top: number, bottom: number, t: number, scale: number,
+  each: (x: number, w: number) => void = () => {}, spec: typeof STREAM = STREAM,
+): boolean {
   if (!w4ArtReady()) return false;
-  const n = Math.max(1, Math.round(width / POUR_COL));
-  const cw = width / n;
   const base = ctx.globalAlpha;
-  /** the columns' tiles that fall in [y0, y1], at `fade` of their strength */
-  const band = (y0: number, y1: number, fade: number): boolean => {
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(x, y0, width, y1 - y0);
-    ctx.clip();
-    for (let k = 0; k < n; k++) {
-      // (the white rims only at the fall's two edges: inside it the columns run into each other)
-      const strip = n === 1 ? 'full' : k === 0 || k === n - 1 ? 'edge' : 'core';
-      const right = n > 1 && k === n - 1;
-      const th = cw * pourAspect(strip);
-      const r1 = (k * 0.618034 + x * 0.0013) % 1;
-      const r2 = (k * 0.414214 + x * 0.0007) % 1;
-      const off = (t * POUR_SPEED * (0.85 + 0.3 * r1) + r2 * th) % th;
-      ctx.globalAlpha = base * fade * alphaAt((k + 0.5) / n);
+  const list = fallStreams(x0, width, spec);
+  for (const st of list) {
+    const sw = st.w * scale;
+    const sx = st.x + (st.w - sw) / 2;
+    const two = sw > spec.half;
+    const pw = two ? sw / 2 : sw;
+    const th = pw * pourAspect(two ? 'edge' : 'full');
+    const r1 = (st.k * 0.618034 + x0 * 0.0013) % 1;
+    const r2 = (st.k * 0.414214 + x0 * 0.0007) % 1;
+    const off = (t * POUR_SPEED * (0.85 + 0.3 * r1) + r2 * th) % th;
+    /** the stream's tiles that fall in [y0, y1], at `fade` of its strength */
+    const band = (y0: number, y1: number, fade: number): boolean => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(sx, y0, sw, y1 - y0);
+      ctx.clip();
+      ctx.globalAlpha = base * fade;
       // (edge to edge, no overlap: the water is see-through, so an overlap would show as a darker line)
       const first = top - th + off + Math.max(0, Math.floor((y0 - (top - th + off)) / th)) * th;
-      for (let y = first; y < y1; y += th) {
-        // (a fall's right edge is its left one turned round, so both rims face out)
-        if (right) {
+      let ok = true;
+      for (let y = first; y < y1 && ok; y += th) {
+        if (!two) ok = drawW4Pour(ctx, sx, y, sw, th, 'full');
+        else {
+          ok = drawW4Pour(ctx, sx, y, pw, th, 'edge');
+          // (the right half is the left one turned round, so both rims face out)
           ctx.save();
-          ctx.translate(2 * (x + k * cw) + cw, 0);
+          ctx.translate(2 * (sx + pw) + pw, 0);
           ctx.scale(-1, 1);
-        }
-        const drawn = drawW4Pour(ctx, x + k * cw, y, cw, th, strip);
-        if (right) ctx.restore();
-        if (!drawn) {
+          ok = ok && drawW4Pour(ctx, sx + pw, y, pw, th, 'edge');
           ctx.restore();
-          return false;
         }
       }
+      ctx.restore();
+      return ok;
+    };
+    const fadeTo = Math.min(bottom, top + POUR_FADE_IN);
+    const steps = 6;
+    for (let i = 0; i < steps; i++) {
+      if (!band(top + ((fadeTo - top) * i) / steps, top + ((fadeTo - top) * (i + 1)) / steps, (i + 0.5) / steps)) return false;
     }
-    ctx.restore();
-    return true;
-  };
-  const fadeTo = Math.min(bottom, top + POUR_FADE_IN);
-  const steps = 6;
-  for (let i = 0; i < steps; i++) {
-    const y0 = top + ((fadeTo - top) * i) / steps;
-    const y1 = top + ((fadeTo - top) * (i + 1)) / steps;
-    if (!band(y0, y1, (i + 0.5) / steps)) return false;
+    if (fadeTo < bottom && !band(fadeTo, bottom, 1)) return false;
+    ctx.globalAlpha = base;
+    each(sx, sw);
   }
-  return fadeTo >= bottom || band(fadeTo, bottom, 1);
+  return true;
 }
 
 function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
   if (flow <= 0.02) return;
   ctx.save();
-  const width = w.width * (0.25 + 0.75 * flow);
-  const x = w.x + (w.width - width) / 2;
-  // (see-through: the steps behind the water show; thicker the harder it pours)
-  ctx.globalAlpha = 0.3 + 0.4 * flow;
-  if (drawPouring(ctx, x, w.top, width, w.bottom, t, () => 1)) {
+  // the painted streams, a little see-through (the steps behind them show), thicker and wider the harder it pours, each spilling white
+  // over the lip and churning where it lands
+  ctx.globalAlpha = 0.55 + 0.35 * flow;
+  const painted = drawStreams(ctx, w.x, w.width, w.top, w.bottom, t, 0.25 + 0.75 * flow, (sx, sw) => {
+    const a = ctx.globalAlpha;
     ctx.globalAlpha = 1;
-    drawSpill(ctx, x, width, w.top, flow, t);
-    drawFoot(ctx, x, width, w.bottom, flow, t);
+    drawSpill(ctx, sx, sw, w.top, flow, t);
+    drawFoot(ctx, sx, sw, w.bottom, flow, t);
+    ctx.globalAlpha = a;
+  });
+  if (painted) {
     ctx.restore();
     return;
   }
+  const width = w.width * (0.25 + 0.75 * flow);
+  const x = w.x + (w.width - width) / 2;
   // (the shapes below are the stand-in while the World 4 sheet loads)
   ctx.globalAlpha = 0.25 + 0.4 * flow; // (see-through: the steps behind the water show)
   const g = ctx.createLinearGradient(x, 0, x + width, 0);
@@ -999,9 +1034,18 @@ function drawFoot(ctx: CanvasRenderingContext2D, x: number, width: number, botto
 function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
   const x0 = w.x, x1 = w.x + w.width, top = w.top, bot = w.bottom;
   ctx.save();
-  // the painted pour, thicker at its sides and thin in the middle, so he shows standing behind it
-  if (drawPouring(ctx, x0, top, w.width, bot, t, (u) => 0.45 + 0.45 * Math.abs(2 * u - 1))) {
-    drawVeilFoot(ctx, w, t);
+  // the painted pour, see-through enough that he shows standing behind it
+  ctx.globalAlpha = 0.75;
+  const painted = drawStreams(ctx, x0, w.width, top, bot, t, 1, (sx, sw) => {
+    const a = ctx.globalAlpha;
+    ctx.globalAlpha = 1;
+    drawFoot(ctx, sx, sw, bot, 1, t);
+    ctx.globalAlpha = a;
+  }, CURTAIN);
+  ctx.globalAlpha = 1;
+  if (painted) {
+    // (each stream churns at its foot; the spray bouncing off the stone, without the stand-in's cloud of mist)
+    drawVeilFoot(ctx, w, t, false);
     ctx.restore();
     return;
   }
@@ -1043,18 +1087,20 @@ function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
   ctx.restore();
 }
 
-/** where a curtain lands: a cloud of mist, and spray bouncing up off the stone */
-function drawVeilFoot(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
+/** where a curtain lands: spray bouncing up off the stone, and (`withMist`, the stand-in) a cloud of mist */
+function drawVeilFoot(ctx: CanvasRenderingContext2D, w: Waterfall, t: number, withMist = true) {
   const x0 = w.x, x1 = w.x + w.width, bot = w.bottom;
   ctx.save();
   const cx = (x0 + x1) / 2;
-  const mist = ctx.createRadialGradient(cx, bot - 10, 10, cx, bot - 10, w.width);
-  mist.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
-  mist.addColorStop(1, 'rgba(255, 255, 255, 0)');
-  ctx.fillStyle = mist;
-  ctx.beginPath();
-  ctx.ellipse(cx, bot - 12, w.width * 0.95, 46, 0, 0, Math.PI * 2);
-  ctx.fill();
+  if (withMist) {
+    const mist = ctx.createRadialGradient(cx, bot - 10, 10, cx, bot - 10, w.width);
+    mist.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
+    mist.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = mist;
+    ctx.beginPath();
+    ctx.ellipse(cx, bot - 12, w.width * 0.95, 46, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
   ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
   for (let k = 0; k < 8; k++) {
     const u = (t * 1.6 + k * 0.37) % 1;
