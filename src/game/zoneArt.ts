@@ -773,7 +773,7 @@ export function drawDarkness(
   ctx.globalAlpha = 0.9 * level;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'low';
-  ctx.drawImage(darkCanvas, 0, 0, cw, ch, 0, 0, cw / dpr, ch / dpr);
+  ctx.drawImage(darkCanvas, 0, 0, cw, ch, 0, 0, vw, vh);
   ctx.restore();
   // the fireflies themselves: small warm points in each light (World 3's lights are glowworms, drawn by the stage)
   if (opts.fireflies === false) return;
