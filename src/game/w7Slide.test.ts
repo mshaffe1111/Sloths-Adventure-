@@ -2,6 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildCourse, buildSlideStage, checkSlide, CRUMBLE_X0, CRUMBLE_X1, KINDS, SLIDE, SlideSim, slideSeconds, type SlideCourse } from './w7Slide.ts';
 import type { LevelConfig } from './types.ts';
+import { buildScene, lightAt, POKEY_MIN } from './w7SlideScene.ts';
+import { pokeyLight } from './w7SlideArt.ts';
 
 const cfg: LevelConfig = {
   worldIndex: 7, miniIndex: 4, id: '7-4', name: 'The Way Down', objectiveType: 'ascent', targetCount: 1, timeLimit: 0, levelWidth: 8000,
@@ -101,4 +103,42 @@ test('7-4 side-on: the crumble drops into the chute, a back wall stops him walki
   assert.ok(st.platforms.some((p) => p.x < CRUMBLE_X0 && p.x + p.width > CRUMBLE_X1 && p.y > 580), 'the catch floor');
   assert.ok(st.exitTotemX > slide.outAt.x);
   assert.equal(st.config.objectiveType, 'sprint');
+});
+
+test('every move is needed (Matt: "everything can be done just by avoiding objects"): a player who only steers is hit by every wall, gap and doorway after the taught ones', () => {
+  for (const easy of [false, true]) for (const seed of [1, 2, 3]) {
+    const c = buildCourse(seed, easy);
+    const across = c.obstacles.filter((o) => o.lanes.length === 3);
+    assert.ok(across.length >= c.obstacles.length * 0.4, `${across.length} of ${c.obstacles.length} across the whole chute`);
+    for (const k of ['rubble', 'gap', 'beam'] as const) assert.ok(across.filter((o) => o.kind === k).length >= 3, `${k} on ${easy ? 'Easy' : 'Normal'}`);
+    // a steerer: always in a lane clear of statues and columns, never jumps or ducks
+    const s = new SlideSim(c);
+    for (let f = 0; f < 30 * 200 && !s.done; f++) {
+      const block = s.sorted.find((o) => (o.kind === 'head' || o.kind === 'column') && o.z + o.len > s.z && o.z < s.z + c.speed * 1.3);
+      let want = Math.round(s.x / SLIDE.lane) + 1;
+      if (block?.lanes.includes(want)) want = [0, 1, 2].filter((l) => !block.lanes.includes(l)).sort((a, b) => Math.abs(a - want) - Math.abs(b - want))[0];
+      const tx = (want - 1) * SLIDE.lane;
+      s.step(1 / 30, { left: tx < s.x - 0.1, right: tx > s.x + 0.1, jumpPressed: false, down: false });
+    }
+    // (each across-the-chute thing he meets costs a heart, unless it came in the moment of safety after the one before)
+    assert.ok(s.hits + s.stumbles >= across.length * 0.6, `${easy ? 'Easy' : 'Normal'} roll ${seed}: only ${s.hits + s.stumbles} of ${across.length}`);
+  }
+});
+
+test('the dark under the temple: every obstacle has its own light, well above the ambient, and Pokey never goes below 60%', () => {
+  const ambient = lightAt({ lights: [], props: [], beats: [] }, 0, 0, 0);
+  for (const easy of [false, true]) for (const seed of [1, 2, 3]) {
+    const c = buildCourse(seed, easy);
+    const sc = buildScene(c);
+    for (const o of c.obstacles) {
+      const y = o.kind === 'beam' ? 1.0 : o.kind === 'gap' ? 0 : 0.5;
+      for (const l of o.kind === 'head' || o.kind === 'column' ? o.lanes : [0, 1, 2]) {
+        const lit = lightAt(sc, (l - 1) * SLIDE.lane, y, o.z);
+        assert.ok(lit >= ambient * 2, `${easy ? 'Easy' : 'Normal'} roll ${seed}: ${o.kind} at ${o.z} lane ${l} is lit ${lit.toFixed(2)} (ambient ${ambient.toFixed(2)})`);
+      }
+    }
+    // the colour script: torch-lit, then the fungus cavern, then the narrow dark, then the way out
+    assert.deepEqual([...new Set(sc.beats.map((b) => b.beat))], ['torch', 'fungus', 'dark', 'end']);
+    for (let z = 0; z < c.length; z += 2) for (const k of pokeyLight(sc, 0, 0.6, z)) assert.ok(k >= POKEY_MIN - 1e-9);
+  }
 });

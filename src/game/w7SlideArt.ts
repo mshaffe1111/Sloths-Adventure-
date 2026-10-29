@@ -1,45 +1,41 @@
 /**
- * w7SlideArt — drawing 7-4's slide from behind Pokey's back (w7Slide.ts), v2 (Matt, 2026-10-29: the first look was "copy-pasted").
+ * w7SlideArt — drawing 7-4's slide from behind Pokey's back (w7Slide.ts): v2, the wooden flume through the dark under the temple
+ * (Matt's concept picture, reference/prop-sheets/gemini-batch-2026-10-29/7-4-slide-concept-gemini.jpg, and the lead's lighting brief).
  *
- * The chute is built the classic way (OutRun, Space Harrier), from painted art in true perspective and painted pieces that zoom at the
- * camera, all from the art helper's Hugging Face set (src/assets/w7slide, manifest.json):
- *   - the floor, the walls and the ceiling are the seamless textures laid in perspective one screen row (floor, ceiling) or one screen
- *     column (walls) at a time, so every slab keeps its own edges and shrinks with the distance (no stretched strips);
- *   - beyond the drawn distance, the painted chute running on into the dark (and, near the end, the painted way out into daylight);
- *   - pieces stand in it, scaled with their distance: carved doorways the chute passes through (the lintels), statues on the ledges,
- *     roots hanging from the ceiling, torches; and the obstacles (front views from obstacles.webp, and World 7's statue and column);
- *   - the light: everything fades into the dark with its distance, the torches throw warm light round them, dust hangs in it, and
- *     speed streaks run out from the middle.
- * Code draws only the small touches (the torch flames and their glow, the dust, the streaks, the shadow under him, the petals).
+ * How a frame is made (cheap enough for the 30 fps loop):
+ *   1. the scene, unlit: the cave's rock and roof and the flume's bed and rails, laid in true perspective one screen row (bed, roof) or
+ *      one screen column (rock, rails) at a time; then the pieces far to near, each scaled with its distance (trestles, gantries, torch
+ *      posts, lanterns, fungus, statues, roots, the obstacles, petals);
+ *   2. the light: a light map (half size) filled with the cave's ambient (#142430), each light added on as a pre-made soft sprite
+ *      (warm torches and lanterns with a slow flicker, green and purple fungus, the cool daylight of the way out), then multiplied over
+ *      the scene, so nothing shows unless a light is near it and depth goes into darkness;
+ *   3. what gives light, painted on top bright: the flames, the lantern glass, the fungus caps, the eyes in the rock, the way out;
+ *   4. Pokey, lit by the light where he is (a warm key that sweeps over him as each torch rushes by, a cool rim from the far end), never
+ *      darker than POKEY_MIN, with his shadow under him.
  *
- * The view: a camera a little behind and above him, looking down the chute to its vanishing point. A point (x across, y up, z along)
- * goes to the screen at cx + (x - camX)·f/dz, horizon + (camY - y)·f/dz, with dz its distance ahead of the camera.
+ * STAND-INS until Matt's Gemini sheets come (v2/GEMINI-PROMPTS.md): the flume's wood (a plank texture drawn once in code), the posts,
+ * gantries, trestles, lanterns and fungus (drawn in code), the gap's broken planks. Painted already: the cave rock and roof, the
+ * statues, the rubble, the doorways and root curtains (src/assets/w7slide, Hugging Face; w7c), Pokey (the slide stills).
  */
 import { trackAtlas } from './atlasLoader.ts';
-import { KINDS, SLIDE, type Obstacle, type SlideCourse, type SlideSim } from './w7Slide.ts';
+import { KINDS, SLIDE, type Obstacle, type SlideSim } from './w7Slide.ts';
+import { AMBIENT, CAVE_ROOF, CAVE_X, LIGHT_RGB, POKEY_MIN, RAIL_H, RAIL_X, buildScene, type LightKind, type Scene } from './w7SlideScene.ts';
 
 const U = (n: string) => new URL(`../assets/w7slide/${n}`, import.meta.url).href;
 const URLS = {
-  floor: U('chute-floor-3lane.webp'),
-  roots: U('chute-wall-roots.webp'),
-  glyph: U('chute-wall-glyph.webp'),
-  ceiling: U('chute-ceiling.webp'),
-  far: U('chute-far-dark.webp'),
+  rock: U('chute-wall-roots.webp'),
+  roof: U('chute-ceiling.webp'),
   end: U('chute-end-light.webp'),
   obs: U('obstacles.webp'),
   pokey: U('pokey-slide-stills.webp'),
   w7c: new URL('../assets/w6to10/props-made/w7c.webp', import.meta.url).href,
 };
 type Key = keyof typeof URLS;
-/** pieces: which sheet, x, y, w, h (obstacles.webp and pokey-slide-stills.webp frames from the manifest; w7c's from its json) */
 const PIECE: Record<string, [Key, number, number, number, number]> = {
   lintelA: ['obs', 0, 0, 413, 245],
   lintelB: ['obs', 1327, 0, 418, 250],
   rubbleA: ['obs', 417, 0, 448, 157],
   rubbleB: ['obs', 0, 254, 403, 136],
-  farLip: ['obs', 407, 254, 463, 204],
-  head: ['obs', 874, 254, 357, 252],
-  pile: ['obs', 1235, 254, 353, 214],
   roots: ['obs', 0, 510, 457, 392],
   statue: ['w7c', 0, 0, 253, 468],
   column: ['w7c', 487, 0, 457, 237],
@@ -47,7 +43,6 @@ const PIECE: Record<string, [Key, number, number, number, number]> = {
   leanL: ['pokey', 529, 0, 765, 512],
   jump: ['pokey', 1298, 0, 536, 512],
 };
-/** where a lintel's slab ends, as a share of its height from the top (the rest is its two posts) */
 const SLAB = 0.31;
 
 const imgs: Partial<Record<Key, HTMLImageElement | null>> = {};
@@ -65,6 +60,109 @@ export function warmSlide() {
   for (const k of Object.keys(URLS) as Key[]) img(k);
 }
 
+// ── canvases made once ──
+const canvas = (w: number, h: number): HTMLCanvasElement | null => {
+  if (typeof document === 'undefined') return null;
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  return c;
+};
+let wood: HTMLCanvasElement | null = null;
+let rail: HTMLCanvasElement | null = null;
+/** the flume's bed (a stand-in until Matt's Sheet 1): six boards along the chute, darker seams at the lane lines, grain, nails */
+function woodTex(): HTMLCanvasElement | null {
+  if (wood) return wood;
+  const c = canvas(384, 512);
+  if (!c) return null;
+  const g = c.getContext('2d')!;
+  const tones = ['#7a5232', '#6e4a2c', '#80573a', '#734d2f', '#7c5434', '#6a462a'];
+  for (let i = 0; i < 6; i++) {
+    g.fillStyle = tones[i];
+    g.fillRect(i * 64, 0, 64, 512);
+    g.strokeStyle = 'rgba(40, 24, 12, 0.35)';
+    g.lineWidth = 1.5;
+    for (let k = 0; k < 6; k++) {
+      g.beginPath();
+      const x0 = i * 64 + 6 + k * 10;
+      for (let y = 0; y <= 512; y += 16) g.lineTo(x0 + Math.sin(y / 40 + i * 2 + k) * 2.5, y);
+      g.stroke();
+    }
+    // a board's end, staggered, with its nails
+    const ey = (i * 157) % 512;
+    g.fillStyle = 'rgba(30, 18, 8, 0.7)';
+    g.fillRect(i * 64, ey, 64, 3);
+    g.fillStyle = '#c9b48a';
+    g.fillRect(i * 64 + 14, ey + 7, 3, 3);
+    g.fillRect(i * 64 + 46, ey + 7, 3, 3);
+  }
+  // the seams between the boards, darker where the lanes part (1/3 and 2/3)
+  for (let i = 1; i < 6; i++) {
+    g.fillStyle = i % 2 === 0 ? 'rgba(20, 10, 4, 0.85)' : 'rgba(30, 18, 8, 0.5)';
+    g.fillRect(i * 64 - (i % 2 === 0 ? 2 : 1), 0, i % 2 === 0 ? 4 : 2, 512);
+  }
+  // worn smooth down the middle of each lane
+  for (const cx of [64, 192, 320]) {
+    const gr = g.createLinearGradient(cx - 40, 0, cx + 40, 0);
+    gr.addColorStop(0, 'rgba(255, 220, 170, 0)');
+    gr.addColorStop(0.5, 'rgba(255, 220, 170, 0.12)');
+    gr.addColorStop(1, 'rgba(255, 220, 170, 0)');
+    g.fillStyle = gr;
+    g.fillRect(cx - 40, 0, 80, 512);
+  }
+  wood = c;
+  return c;
+}
+/** the rails' inner face (a stand-in): two boards, a lighter worn top edge */
+function railTex(): HTMLCanvasElement | null {
+  if (rail) return rail;
+  const c = canvas(512, 96);
+  if (!c) return null;
+  const g = c.getContext('2d')!;
+  g.fillStyle = '#5e3f25';
+  g.fillRect(0, 0, 512, 96);
+  g.fillStyle = '#4f341e';
+  g.fillRect(0, 48, 512, 48);
+  g.fillStyle = 'rgba(20, 10, 4, 0.8)';
+  g.fillRect(0, 46, 512, 3);
+  g.fillStyle = '#a07a52';
+  g.fillRect(0, 0, 512, 8);
+  for (let x = 30; x < 512; x += 128) {
+    g.fillStyle = '#c9b48a';
+    g.fillRect(x, 20, 3, 3);
+    g.fillRect(x, 70, 3, 3);
+  }
+  rail = c;
+  return c;
+}
+/** a soft light, one per colour, made once and scaled per light */
+const lightSprites = new Map<LightKind, HTMLCanvasElement>();
+function lightSprite(k: LightKind): HTMLCanvasElement | null {
+  const have = lightSprites.get(k);
+  if (have) return have;
+  const c = canvas(128, 128);
+  if (!c) return null;
+  const g = c.getContext('2d')!;
+  const [r, gg, b] = LIGHT_RGB[k].map((v) => Math.round(v * 255));
+  const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  // (the scene's falloff: (1 - d/r)² from the middle out)
+  for (let i = 0; i <= 8; i++) gr.addColorStop(i / 8, `rgba(${r}, ${gg}, ${b}, ${(1 - i / 8) ** 2})`);
+  g.fillStyle = gr;
+  g.fillRect(0, 0, 128, 128);
+  lightSprites.set(k, c);
+  return c;
+}
+let lmap: HTMLCanvasElement | null = null;
+let pk: HTMLCanvasElement | null = null;
+
+/** each course's set pieces and lights, made once */
+const scenes = new WeakMap<object, Scene>();
+function sceneOf(sim: SlideSim): Scene {
+  let s = scenes.get(sim.c);
+  if (!s) scenes.set(sim.c, (s = buildScene(sim.c)));
+  return s;
+}
+
 interface View {
   W: number;
   H: number;
@@ -75,42 +173,29 @@ interface View {
   camY: number;
   camZ: number;
 }
-
 const CAM_BACK = 4.2;
 const CAM_H = 1.7;
-/** the floor texture covers the three lanes (its grooves at 1/3 and 2/3) and this much of the chute (m) */
-const FLOOR_TILE = 2 * SLIDE.halfW;
-/** a wall texture covers the wall's height and this much along the chute (square); the walls swap texture every few panels */
-const PANEL = SLIDE.roof;
-const CEIL_TILE = 2 * SLIDE.wallX;
-/** a doorway (an arch frame) every this many m, a torch every this many, a statue on a ledge, hanging roots */
-const ARCH_EVERY = 10;
-const TORCH_EVERY = 6;
-const STATUE_EVERY = 16;
-const ROOTS_EVERY = 7;
+const BED_TILE = 2 * RAIL_X;
+const ROCK_PANEL = 3.2;
+const ROOF_TILE = 2 * CAVE_X;
+const ROCK_LOW = -3.5;
 
 function view(sim: SlideSim, W: number, H: number): View {
   const portrait = H > W;
   const f = portrait ? W * 0.98 : Math.min(W * 0.7, H * 1.1);
   return { W, H, cx: W / 2, hy: H * (portrait ? 0.45 : 0.36), f, camX: sim.x * 0.55, camY: CAM_H + sim.y * 0.3, camZ: sim.z - CAM_BACK };
 }
-
-/** the screen point of (x, y, z) and its scale (px per m); null behind the camera */
 function P(v: View, x: number, y: number, z: number): [number, number, number] | null {
   const dz = z - v.camZ;
   if (dz < 0.3) return null;
   const s = v.f / dz;
   return [v.cx + (x - v.camX) * s, v.hy + (v.camY - y) * s, s];
 }
-
-/** how dark a thing at distance dz is (0 near, 1 lost in the dark at the far end) */
-function darkAt(dz: number): number {
-  return Math.max(0, Math.min(1, (dz - 4) / (SLIDE.far - 4))) ** 0.8;
-}
-/** how much of a thing shows through the far fade (an obstacle comes up out of the dark) */
 const fadeIn = (dz: number) => Math.max(0, Math.min(1, (SLIDE.far - dz) / SLIDE.fade));
-
-/** a piece into a box on the screen (srcH: the share of the source to take from the top, for a doorway sunk into the floor) */
+const hash = (n: number) => {
+  const s = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+  return s - Math.floor(s);
+};
 function piece(ctx: CanvasRenderingContext2D, n: string, x: number, y: number, w: number, h: number, flipY = false, srcH = 1): boolean {
   const [k, fx, fy, fw, fh] = PIECE[n];
   const im = img(k);
@@ -125,189 +210,100 @@ function piece(ctx: CanvasRenderingContext2D, n: string, x: number, y: number, w
   return true;
 }
 
-/** a cheap repeatable noise in 0..1 for the placing of the decor */
-const hash = (n: number) => {
-  const s = Math.sin(n * 127.1 + 311.7) * 43758.5453;
-  return s - Math.floor(s);
-};
+/** how far the light of the drop has come back (0: black, as he falls in; 1 a second later, the first torch blooming ahead) */
+const exposure = (sim: SlideSim) => Math.max(0, Math.min(1, (sim.clock - 0.35) / 1.0));
 
 export function drawSlide(ctx: CanvasRenderingContext2D, sim: SlideSim, W: number, H: number, dpr: number, say: { text: string; t: number } | null) {
   const c = sim.c;
+  const sc = sceneOf(sim);
   const v = view(sim, W, H);
   ctx.save();
-  // (css px: the engine's own scale holds its world zoom, which the slide does not use)
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.imageSmoothingEnabled = true;
-  ctx.fillStyle = '#0b0907';
+  ctx.fillStyle = '#05080b';
   ctx.fillRect(0, 0, W, H);
-  const farZ = Math.min(sim.z + SLIDE.far, c.length);
-  const toEnd = c.length - sim.z;
+  const farZ = Math.min(sim.z + SLIDE.far, c.length + 4);
   const gaps = sim.sorted.filter((o) => o.kind === 'gap' && o.z + o.len > v.camZ && o.z < farZ);
   const inGap = (z: number) => gaps.some((o) => z > o.z && z < o.z + o.len);
-
-  // 1. the far view, in the chute's cross-section at the far distance: the painted chute running on into the dark, and near the end
-  // the painted way out (it grows as he comes, since it is the real end of the chute)
-  {
-    const a = P(v, -SLIDE.wallX, SLIDE.roof, farZ), b = P(v, SLIDE.wallX, 0, farZ);
-    if (a && b) {
-      const w = b[0] - a[0], h = b[1] - a[1];
-      // (the paintings' vanishing point is about (0.5, 0.42): drawn a touch bigger than the cross-section so their own walls carry on ours)
-      const k = 1.5;
-      const ox = a[0] - (w * (k - 1)) / 2, oy = a[1] - h * (k - 1) * 0.42;
-      const far = img('far'), end = img('end');
-      const light = Math.max(0, Math.min(1, 1 - (toEnd - SLIDE.far) / 12));
-      if (far && light < 1) {
-        ctx.globalAlpha = 0.55;
-        ctx.drawImage(far, ox, oy, w * k, h * k);
-      }
-      if (end && light > 0) {
-        ctx.globalAlpha = light;
-        ctx.drawImage(end, ox, oy, w * k, h * k);
-      }
-      ctx.globalAlpha = 1;
-    }
-  }
-
-  // 2. the floor, row by row from the bottom of the screen to the far distance (the lanes' slabs, and the stone ledges either side)
-  const floorTex = img('floor');
   const step = H > 700 || W > 700 ? 2 : 1.5;
-  if (floorTex) {
-    const yFar = v.hy + (v.camY * v.f) / (farZ - v.camZ);
-    for (let y = H; y > yFar; y -= step) {
-      const dz = (v.camY * v.f) / (y - v.hy);
-      const dz2 = (v.camY * v.f) / (y - step - v.hy);
-      const z = v.camZ + dz;
-      if (inGap(z)) continue;
-      const s = v.f / dz;
-      const xl = v.cx + (-SLIDE.halfW - v.camX) * s, xr = v.cx + (SLIDE.halfW - v.camX) * s;
-      const wl = v.cx + (-SLIDE.wallX - v.camX) * s, wr = v.cx + (SLIDE.wallX - v.camX) * s;
-      const tv = ((((z / FLOOR_TILE) % 1) + 1) % 1) * floorTex.height;
-      // (a row never reads past the texture's foot: Chrome draws nothing for a source box that runs off the picture)
-      const th = Math.min(Math.max(1, ((dz2 - dz) / FLOOR_TILE) * floorTex.height), floorTex.height - tv);
-      const lit = 1 - darkAt(dz);
-      ctx.globalAlpha = lit;
-      ctx.drawImage(floorTex, 0, tv, floorTex.width, th, xl, y - step, xr - xl, step + 0.6);
-      // the ledges: the floor's own edge stones, darker
-      ctx.globalAlpha = lit * 0.55;
-      ctx.drawImage(floorTex, 0, tv, floorTex.width * 0.14, th, wl, y - step, xl - wl, step + 0.6);
-      ctx.drawImage(floorTex, floorTex.width * 0.86, tv, floorTex.width * 0.14, th, xr, y - step, wr - xr, step + 0.6);
-    }
-    ctx.globalAlpha = 1;
-  }
 
-  // 3. the ceiling, row by row from the top of the screen down to the far distance
-  const ceilTex = img('ceiling');
-  if (ceilTex) {
-    const up = SLIDE.roof - v.camY;
-    const yFar = v.hy - (up * v.f) / (farZ - v.camZ);
-    for (let y = 0; y < yFar; y += step) {
-      const dz = (up * v.f) / (v.hy - y);
-      const dz2 = (up * v.f) / (v.hy - y - step);
-      const z = v.camZ + dz;
-      const s = v.f / dz;
-      const wl = v.cx + (-SLIDE.wallX - v.camX) * s, wr = v.cx + (SLIDE.wallX - v.camX) * s;
-      const tv = ((((z / CEIL_TILE) % 1) + 1) % 1) * ceilTex.height;
-      const th = Math.min(Math.max(1, ((dz2 - dz) / CEIL_TILE) * ceilTex.height), ceilTex.height - tv);
-      ctx.globalAlpha = (1 - darkAt(dz)) * 0.8;
-      ctx.drawImage(ceilTex, 0, tv, ceilTex.width, th, wl, y, wr - wl, step + 0.6);
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  // 4. the walls, column by column from the screen's edges in to the far distance (the root wall, now and then the glyph wall)
-  const roots = img('roots'), glyph = img('glyph');
-  if (roots && glyph) {
+  // 1a. the cave's rock either side and its roof (painted, row and column at a time)
+  const rock = img('rock'), roof = img('roof');
+  if (rock) {
     for (const side of [-1, 1]) {
-      const X = side * SLIDE.wallX;
+      const X = side * CAVE_X;
       const xFar = v.cx + (X - v.camX) * (v.f / (farZ - v.camZ));
-      const near = side < 0 ? 0 : W;
-      for (let x = near; side < 0 ? x < xFar : x > xFar; x += -side * step) {
+      for (let x = side < 0 ? 0 : W; side < 0 ? x < xFar : x > xFar; x += -side * step) {
         const s = (x - v.cx) / (X - v.camX);
         if (s <= 0) continue;
         const dz = v.f / s;
         if (dz < 0.3) continue;
         const z = v.camZ + dz;
-        const top = v.hy + (v.camY - SLIDE.roof) * s, bot = v.hy + v.camY * s;
-        const panel = Math.floor(z / PANEL);
-        const tex = hash(Math.floor(panel / 3) * 3.7 + side) < 0.3 ? glyph : roots;
-        // (the right wall reads its panels the other way, so the two walls are not the same picture)
-        let u = ((((z / PANEL) % 1) + 1) % 1) * tex.width;
-        if (side > 0) u = tex.width - 2 - u;
-        ctx.globalAlpha = (1 - darkAt(dz)) * 0.92;
-        ctx.drawImage(tex, Math.max(0, Math.min(tex.width - 1.5, u)), 0, 1.5, tex.height, x - (side < 0 ? 0 : step), top, step + 0.6, bot - top);
+        let u = ((((z / ROCK_PANEL) % 1) + 1) % 1) * rock.width;
+        if (side > 0) u = rock.width - 2 - u;
+        const top = v.hy + (v.camY - CAVE_ROOF) * s, bot = v.hy + (v.camY - ROCK_LOW) * s;
+        ctx.globalAlpha = fadeIn(dz);
+        ctx.drawImage(rock, Math.max(0, Math.min(rock.width - 1.5, u)), 0, 1.5, rock.height, x - (side < 0 ? 0 : step), top, step + 0.6, bot - top);
       }
     }
-    ctx.globalAlpha = 1;
   }
-
-  // 5. the gaps: the dark under the floor (the floor's rows were left out), and the far lip's broken face
-  for (const o of gaps) {
-    const a = P(v, -SLIDE.halfW - 0.05, 0.12, o.z + o.len), b = P(v, SLIDE.halfW + 0.05, -1.1, o.z + o.len);
-    if (!a || !b) continue;
-    ctx.globalAlpha = fadeIn(o.z + o.len - v.camZ);
-    piece(ctx, 'farLip', a[0], a[1], b[0] - a[0], b[1] - a[1]);
-    ctx.globalAlpha = 1;
+  if (roof) {
+    const up = CAVE_ROOF - v.camY;
+    const yFar = v.hy - (up * v.f) / (farZ - v.camZ);
+    for (let y = 0; y < yFar; y += step) {
+      const dz = (up * v.f) / (v.hy - y), dz2 = (up * v.f) / (v.hy - y - step);
+      const z = v.camZ + dz, s = v.f / dz;
+      const tv = ((((z / ROOF_TILE) % 1) + 1) % 1) * roof.height;
+      const th = Math.min(Math.max(1, ((dz2 - dz) / ROOF_TILE) * roof.height), roof.height - tv);
+      ctx.globalAlpha = fadeIn(dz);
+      ctx.drawImage(roof, 0, tv, roof.width, th, v.cx + (-CAVE_X - v.camX) * s, y, 2 * CAVE_X * s, step + 0.6);
+    }
   }
-
-  // 6. the torchlight on the walls and the floor (warm, added on), before the pieces stand in front of it
-  const torches: Array<{ z: number; side: number }> = [];
-  for (let z = Math.ceil(v.camZ / TORCH_EVERY) * TORCH_EVERY; z < farZ; z += TORCH_EVERY) torches.push({ z, side: Math.floor(z / TORCH_EVERY) % 2 ? 1 : -1 });
-  ctx.globalCompositeOperation = 'lighter';
-  for (const t of torches) {
-    const p = P(v, t.side * (SLIDE.wallX - 0.05), 1.9, t.z);
-    if (!p) continue;
-    const r = p[2] * 2.6;
-    const flick = 0.85 + 0.15 * Math.sin(sim.clock * 11 + t.z);
-    const g = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], r);
-    g.addColorStop(0, `rgba(255, 170, 80, ${0.42 * flick * (1 - darkAt(t.z - v.camZ) * 0.7)})`);
-    g.addColorStop(1, 'rgba(255, 140, 60, 0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(p[0] - r, p[1] - r, r * 2, r * 2);
+  // the trestles under the flume (stand-in timber), before the bed, which covers their tops
+  for (let z = Math.floor((farZ - 0.1) / 4) * 4; z > v.camZ + 0.8; z -= 4) if (!inGap(z)) drawTrestle(ctx, v, z);
+  // 1b. the flume's bed, row by row, and its rails, column by column (the gaps left out: the dark shows through)
+  const bed = woodTex(), rl = railTex();
+  if (bed) {
+    const yFar = v.hy + (v.camY * v.f) / (farZ - v.camZ);
+    for (let y = H; y > yFar; y -= step) {
+      const dz = (v.camY * v.f) / (y - v.hy), dz2 = (v.camY * v.f) / (y - step - v.hy);
+      const z = v.camZ + dz;
+      if (inGap(z) || z > c.length + 2) continue;
+      const s = v.f / dz;
+      const tv = ((((z / BED_TILE) % 1) + 1) % 1) * bed.height;
+      const th = Math.min(Math.max(1, ((dz2 - dz) / BED_TILE) * bed.height), bed.height - tv);
+      ctx.globalAlpha = fadeIn(dz);
+      ctx.drawImage(bed, 0, tv, bed.width, th, v.cx + (-RAIL_X - v.camX) * s, y - step, 2 * RAIL_X * s, step + 0.6);
+    }
   }
-  ctx.globalCompositeOperation = 'source-over';
-
-  // 7. the pieces, far to near: doorways, statues on the ledges, hanging roots, torches, obstacles, petals, and Pokey at his place
+  if (rl) {
+    for (const side of [-1, 1]) {
+      const X = side * RAIL_X;
+      const xFar = v.cx + (X - v.camX) * (v.f / (farZ - v.camZ));
+      for (let x = side < 0 ? 0 : W; side < 0 ? x < xFar : x > xFar; x += -side * step) {
+        const s = (x - v.cx) / (X - v.camX);
+        if (s <= 0) continue;
+        const dz = v.f / s;
+        if (dz < 0.3) continue;
+        const z = v.camZ + dz;
+        if (inGap(z) || z > c.length + 2) continue;
+        const u = ((((z / 2.6) % 1) + 1) % 1) * (rl.width - 2);
+        const top = v.hy + (v.camY - RAIL_H) * s, bot = v.hy + v.camY * s;
+        ctx.globalAlpha = fadeIn(dz);
+        ctx.drawImage(rl, u, 0, 1.5, rl.height, x - (side < 0 ? 0 : step), top, step + 0.6, bot - top);
+      }
+    }
+  }
+  ctx.globalAlpha = 1;
+  // 1c. the pieces, far to near
   type Thing = { z: number; draw: () => void };
   const things: Thing[] = [];
   const z0 = v.camZ + 0.8;
-  for (let z = Math.ceil(z0 / ARCH_EVERY) * ARCH_EVERY; z < farZ; z += ARCH_EVERY) {
-    things.push({ z, draw: () => {
-      const a = P(v, -SLIDE.wallX - 0.12, SLIDE.roof + 0.15, z), b = P(v, SLIDE.wallX + 0.12, 0, z);
-      if (!a || !b) return;
-      // (fading as it passes over him: up close a doorway is only a blur of its slab)
-      ctx.globalAlpha = fadeIn(z - v.camZ) * (1 - darkAt(z - v.camZ) * 0.75) * Math.min(1, Math.max(0, (z - v.camZ - 4.5) / 2.5));
-      piece(ctx, Math.floor(z / ARCH_EVERY) % 2 ? 'lintelA' : 'lintelB', a[0], a[1], b[0] - a[0], b[1] - a[1]);
-      ctx.globalAlpha = 1;
-    } });
+  for (const p of sc.props) {
+    if (p.z < z0 || p.z > farZ) continue;
+    things.push({ z: p.z, draw: () => drawProp(ctx, v, p.kind, p.x, p.y, p.z) });
   }
-  for (let z = Math.ceil(z0 / STATUE_EVERY) * STATUE_EVERY + 5; z < farZ; z += STATUE_EVERY) {
-    const side = hash(z) < 0.5 ? -1 : 1;
-    const n = hash(z + 9) < 0.6 ? 'statue' : hash(z + 3) < 0.5 ? 'head' : 'pile';
-    things.push({ z, draw: () => {
-      const cxm = side * (SLIDE.halfW + 0.3), w = n === 'statue' ? 0.55 : 0.7, h = n === 'statue' ? 1.05 : 0.5;
-      const a = P(v, cxm - w / 2, h, z), b = P(v, cxm + w / 2, 0, z);
-      if (!a || !b) return;
-      ctx.globalAlpha = fadeIn(z - v.camZ) * (1 - darkAt(z - v.camZ) * 0.8);
-      piece(ctx, n, a[0], a[1], b[0] - a[0], b[1] - a[1]);
-      ctx.globalAlpha = 1;
-    } });
-  }
-  for (let z = Math.ceil(z0 / ROOTS_EVERY) * ROOTS_EVERY + 2; z < farZ; z += ROOTS_EVERY) {
-    const side = hash(z * 1.3) < 0.5 ? -1 : 1;
-    things.push({ z, draw: () => {
-      // hanging from the ceiling by the wall, over the ledge (never down in the lanes: they are not an obstacle)
-      const cxm = side * (SLIDE.wallX - 0.45);
-      const a = P(v, cxm - 0.5, SLIDE.roof, z), b = P(v, cxm + 0.5, SLIDE.roof - 1.1, z);
-      if (!a || !b) return;
-      ctx.globalAlpha = fadeIn(z - v.camZ) * (1 - darkAt(z - v.camZ) * 0.8);
-      piece(ctx, 'roots', a[0], a[1], b[0] - a[0], b[1] - a[1], true);
-      ctx.globalAlpha = 1;
-    } });
-  }
-  for (const t of torches) {
-    if (t.z < z0) continue;
-    things.push({ z: t.z, draw: () => drawTorch(ctx, v, t.z, t.side, sim.clock) });
-  }
+  // the gaps' far lips (broken planks: a stand-in)
+  for (const o of gaps) things.push({ z: o.z + o.len, draw: () => drawLip(ctx, v, o.z + o.len) });
   sim.sorted.forEach((o, i) => {
     if (o.kind === 'gap' || o.z + o.len < z0 || o.z > farZ) return;
     things.push({ z: o.z, draw: () => drawObstacle(ctx, v, o, sim.wasMet(i)) });
@@ -316,64 +312,255 @@ export function drawSlide(ctx: CanvasRenderingContext2D, sim: SlideSim, W: numbe
     if (sim.petalsGot.has(i) || p.z < sim.z - 0.3 || p.z > farZ) return;
     things.push({ z: p.z, draw: () => drawPetal(ctx, v, p.x, p.y + 0.1 * Math.sin(sim.clock * 4 + p.z), p.z, sim.clock) });
   });
-  things.push({ z: sim.z, draw: () => drawPokey(ctx, v, sim) });
+  // his contact shadow, in the scene so the light falls on it too
+  things.push({ z: sim.z + 0.01, draw: () => {
+    const g = P(v, sim.x, 0, sim.z);
+    if (!g) return;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+    ctx.beginPath();
+    ctx.ellipse(g[0], g[1], g[2] * 0.45 * (1 - Math.min(0.5, sim.y * 0.35)), g[2] * 0.12, 0, 0, Math.PI * 2);
+    ctx.fill();
+  } });
   things.sort((a, b) => b.z - a.z);
   for (const t of things) t.draw();
 
-  // 8. dust in the torchlight, and speed streaks running out from the middle
-  drawAir(ctx, v, sim);
-  // the dark at the screen's edges, a warm middle
-  const vg = ctx.createRadialGradient(v.cx, v.hy + H * 0.1, Math.min(W, H) * 0.25, v.cx, v.hy + H * 0.1, Math.max(W, H) * 0.75);
+  // 2. the light map, multiplied over the scene
+  const ex = exposure(sim);
+  const lw = Math.ceil(W / 2), lh = Math.ceil(H / 2);
+  if (!lmap) lmap = canvas(lw, lh);
+  if (lmap) {
+    if (lmap.width !== lw || lmap.height !== lh) {
+      lmap.width = lw;
+      lmap.height = lh;
+    }
+    const g = lmap.getContext('2d')!;
+    g.globalCompositeOperation = 'source-over';
+    g.globalAlpha = 1;
+    g.fillStyle = `rgb(${AMBIENT.map((a) => Math.round(a * 255 * ex)).join(',')})`;
+    g.fillRect(0, 0, lw, lh);
+    g.globalCompositeOperation = 'lighter';
+    for (const l of sc.lights) {
+      if (l.z + l.r < v.camZ || l.z - l.r > farZ + 4) continue;
+      const p = P(v, l.x, l.y, Math.max(l.z, v.camZ + 0.6));
+      if (!p) continue;
+      const spr = lightSprite(l.kind);
+      if (!spr) continue;
+      const flick = l.kind === 'torch' || l.kind === 'lantern' ? 0.93 + 0.07 * Math.sin(sim.clock * 6.3 + l.z * 1.7) : 1;
+      const r = (l.r * p[2]) / 2;
+      g.globalAlpha = Math.min(1, l.i * flick * ex);
+      g.drawImage(spr, p[0] / 2 - r, p[1] / 2 - r, r * 2, r * 2);
+    }
+    g.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.drawImage(lmap, 0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  // 3. what gives light, bright on top: the way out, flames, lantern glass, fungus caps, eyes
+  {
+    const toEnd = c.length - sim.z;
+    const end = img('end');
+    if (end && toEnd < SLIDE.far + 10) {
+      const a = P(v, -RAIL_X * 1.8, 3.2, c.length + 3), b = P(v, RAIL_X * 1.8, -0.4, c.length + 3);
+      if (a && b) {
+        ctx.globalAlpha = Math.max(0, Math.min(1, 1 - (toEnd - SLIDE.far) / 10)) * ex;
+        ctx.drawImage(end, 256, 200, 512, 512, a[0], a[1], b[0] - a[0], b[1] - a[1]);
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+  ctx.globalCompositeOperation = 'lighter';
+  for (const p of sc.props) {
+    if (p.z < z0 || p.z > farZ) continue;
+    drawGlow(ctx, v, p.kind, p.x, p.y, p.z, sim.clock, ex);
+  }
+  ctx.globalCompositeOperation = 'source-over';
+  // the speed: streaks out from the middle, faint
+  drawStreaks(ctx, v, sim);
+
+  // 4. Pokey, lit where he is
+  drawPokey(ctx, v, sim, sc, ex);
+
+  // the screen's edges a little darker
+  const vg = ctx.createRadialGradient(v.cx, v.hy + H * 0.12, Math.min(W, H) * 0.3, v.cx, v.hy + H * 0.12, Math.max(W, H) * 0.8);
   vg.addColorStop(0, 'rgba(0, 0, 0, 0)');
-  vg.addColorStop(1, 'rgba(6, 4, 2, 0.6)');
+  vg.addColorStop(1, 'rgba(0, 0, 0, 0.45)');
   ctx.fillStyle = vg;
   ctx.fillRect(0, 0, W, H);
-
-  // his line, in a bubble over him (World 7: Pokey teaches himself; it is his voice, not Dot's banner)
   if (say && say.t > 0) {
     const pz = P(v, sim.x, sim.y + 1.25, sim.z);
     if (pz) drawBubble(ctx, say.text, pz[0], pz[1], W, Math.min(1, say.t * 3));
   }
-  // out into the light
   if (sim.outT >= 0) {
-    ctx.fillStyle = `rgba(255, 244, 214, ${Math.min(1, sim.outT / SLIDE.outro)})`;
+    ctx.fillStyle = `rgba(240, 248, 255, ${Math.min(1, sim.outT / SLIDE.outro)})`;
     ctx.fillRect(0, 0, W, H);
   }
   ctx.restore();
 }
 
+function drawTrestle(ctx: CanvasRenderingContext2D, v: View, z: number) {
+  const a = P(v, -RAIL_X + 0.2, -0.05, z), b = P(v, -RAIL_X + 0.35, -3.4, z);
+  const c2 = P(v, RAIL_X - 0.2, -0.05, z), d = P(v, RAIL_X - 0.35, -3.4, z);
+  if (!a || !b || !c2 || !d) return;
+  ctx.globalAlpha = fadeIn(z - v.camZ);
+  ctx.strokeStyle = '#4a3220';
+  ctx.lineWidth = Math.max(1, a[2] * 0.14);
+  ctx.beginPath();
+  ctx.moveTo(a[0], a[1]);
+  ctx.lineTo(b[0], b[1]);
+  ctx.moveTo(c2[0], c2[1]);
+  ctx.lineTo(d[0], d[1]);
+  ctx.lineWidth = Math.max(1, a[2] * 0.08);
+  ctx.moveTo(a[0], a[1] + (b[1] - a[1]) * 0.15);
+  ctx.lineTo(d[0], d[1] - (d[1] - c2[1]) * 0.3);
+  ctx.moveTo(c2[0], c2[1] + (d[1] - c2[1]) * 0.15);
+  ctx.lineTo(b[0], b[1] - (b[1] - a[1]) * 0.3);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+}
+
+function drawProp(ctx: CanvasRenderingContext2D, v: View, kind: string, x: number, y: number, z: number) {
+  const p = P(v, x, y, z);
+  if (!p) return;
+  const s = p[2];
+  ctx.globalAlpha = fadeIn(z - v.camZ);
+  if (kind === 'post') {
+    // a torch on a timber post (stand-in), standing from the dark below up beside the flume
+    const t = P(v, x, 1.55, z), bt = P(v, x, -1.2, z);
+    if (t && bt) {
+      ctx.fillStyle = '#5a3c24';
+      ctx.fillRect(t[0] - s * 0.07, t[1], s * 0.14, bt[1] - t[1]);
+      ctx.fillStyle = '#3a2616';
+      ctx.fillRect(t[0] - s * 0.11, t[1] - s * 0.05, s * 0.22, s * 0.08);
+    }
+  } else if (kind === 'gantry') {
+    // a timber frame over the flume (stand-in): two posts and a beam high overhead
+    const l = P(v, -RAIL_X - 0.5, 3.3, z), lb = P(v, -RAIL_X - 0.5, -1.5, z), r = P(v, RAIL_X + 0.5, 3.3, z), rb = P(v, RAIL_X + 0.5, -1.5, z);
+    if (l && lb && r && rb) {
+      ctx.fillStyle = '#4e3420';
+      ctx.fillRect(l[0] - s * 0.09, l[1], s * 0.18, lb[1] - l[1]);
+      ctx.fillRect(r[0] - s * 0.09, r[1], s * 0.18, rb[1] - r[1]);
+      ctx.fillRect(l[0] - s * 0.15, l[1] - s * 0.05, r[0] - l[0] + s * 0.3, s * 0.2);
+    }
+  } else if (kind === 'lantern') {
+    // a lantern hanging on its rope (stand-in); its glass glows on top (drawGlow)
+    const top = P(v, x, y + 0.9, z);
+    if (top) {
+      ctx.strokeStyle = '#2a1e14';
+      ctx.lineWidth = Math.max(1, s * 0.02);
+      ctx.beginPath();
+      ctx.moveTo(top[0], top[1]);
+      ctx.lineTo(p[0], p[1] - s * 0.12);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#2d241c';
+    ctx.fillRect(p[0] - s * 0.1, p[1] - s * 0.14, s * 0.2, s * 0.28);
+  } else if (kind === 'fungusG' || kind === 'fungusP') {
+    // a few mushrooms (stand-in stems; the caps glow on top)
+    ctx.fillStyle = '#cfc6b4';
+    for (let k = 0; k < 3; k++) {
+      const ox = (k - 1) * s * 0.14, h = s * (0.18 + 0.1 * hash(z * 3 + k));
+      ctx.fillRect(p[0] + ox - s * 0.015, p[1] - h, s * 0.03, h);
+    }
+  } else if (kind === 'statue') {
+    const a = P(v, x - 0.35, y + 1.3, z), b = P(v, x + 0.35, y, z);
+    if (a && b) piece(ctx, 'statue', a[0], a[1], b[0] - a[0], b[1] - a[1]);
+  } else if (kind === 'roots') {
+    const a = P(v, x - 0.7, y, z), b = P(v, x + 0.7, y - 1.6, z);
+    if (a && b) piece(ctx, 'roots', a[0], a[1], b[0] - a[0], b[1] - a[1], true);
+  }
+  ctx.globalAlpha = 1;
+}
+
+/** the bright parts, added on after the light map: flames, lantern glass, fungus caps, eyes */
+function drawGlow(ctx: CanvasRenderingContext2D, v: View, kind: string, x: number, y: number, z: number, t: number, ex: number) {
+  const fade = fadeIn(z - v.camZ) * ex;
+  if (fade <= 0) return;
+  const dot = (px: number, py: number, rx: number, ry: number, inner: string, outer: string) => {
+    const g = ctx.createRadialGradient(px, py, 0, px, py, Math.max(rx, ry));
+    g.addColorStop(0, inner);
+    g.addColorStop(1, outer);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(px, py, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+  };
+  ctx.globalAlpha = fade;
+  if (kind === 'post') {
+    const p = P(v, x, 1.72, z);
+    if (!p) return;
+    const fl = 1 + 0.12 * Math.sin(t * 17 + z);
+    dot(p[0], p[1], p[2] * 0.12 * fl, p[2] * 0.24 * fl, 'rgba(255, 240, 190, 1)', 'rgba(255, 120, 30, 0)');
+  } else if (kind === 'lantern') {
+    const p = P(v, x, y, z);
+    if (!p) return;
+    dot(p[0], p[1], p[2] * 0.1, p[2] * 0.13, 'rgba(255, 230, 160, 0.95)', 'rgba(255, 150, 60, 0)');
+  } else if (kind === 'fungusG' || kind === 'fungusP') {
+    const p = P(v, x, y, z);
+    if (!p) return;
+    const col = kind === 'fungusG' ? ['rgba(190, 255, 190, 0.95)', 'rgba(60, 255, 120, 0)'] : ['rgba(235, 200, 255, 0.95)', 'rgba(170, 80, 255, 0)'];
+    for (let k = 0; k < 3; k++) {
+      const ox = (k - 1) * p[2] * 0.14, h = p[2] * (0.18 + 0.1 * hash(z * 3 + k));
+      dot(p[0] + ox, p[1] - h, p[2] * 0.09, p[2] * 0.05, col[0], col[1]);
+    }
+  } else if (kind === 'eyes') {
+    const p = P(v, x, y, z);
+    if (!p) return;
+    // pinpoints that light nothing; now and then they blink
+    if (Math.sin(t * 0.9 + z * 3) > 0.92) return;
+    const e = Math.max(1, p[2] * 0.035);
+    for (const dx of [-1, 1]) dot(p[0] + dx * p[2] * 0.06, p[1], e * 1.6, e, 'rgba(255, 240, 120, 1)', 'rgba(255, 200, 40, 0)');
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawLip(ctx: CanvasRenderingContext2D, v: View, z: number) {
+  // the broken far end of the flume past a gap (stand-in): splintered plank ends and the bed's edge
+  const a = P(v, -RAIL_X, RAIL_H, z), b = P(v, RAIL_X, -0.5, z);
+  if (!a || !b) return;
+  ctx.globalAlpha = fadeIn(z - v.camZ);
+  const w = b[0] - a[0], top = P(v, 0, 0, z)![1], h = b[1] - top;
+  ctx.fillStyle = '#5c3d24';
+  ctx.beginPath();
+  ctx.moveTo(a[0], top);
+  for (let i = 0; i <= 12; i++) ctx.lineTo(a[0] + (w * i) / 12, top + h * (0.55 + 0.45 * hash(z + i)));
+  ctx.lineTo(b[0], top);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#8a6440';
+  ctx.fillRect(a[0], top - h * 0.06, w, h * 0.12);
+  ctx.globalAlpha = 1;
+}
+
 function drawObstacle(ctx: CanvasRenderingContext2D, v: View, o: Obstacle, met: boolean) {
   const dz = o.z - v.camZ;
-  ctx.globalAlpha = fadeIn(dz) * (1 - darkAt(dz) * 0.55);
+  ctx.globalAlpha = fadeIn(dz);
   const k = KINDS[o.kind];
   const box = (n: string, x0: number, x1: number, y0: number, y1: number, srcH = 1) => {
     const a = P(v, x0, y1, o.z), b = P(v, x1, y0, o.z);
     if (a && b) piece(ctx, n, a[0], a[1], b[0] - a[0], b[1] - a[1], false, srcH);
   };
   if (o.kind === 'head') {
-    // one lane each: a statue too tall to jump, or a curtain of roots down to the floor
     for (const l of o.lanes) {
       const x = (l - 1) * SLIDE.lane;
-      if (o.look === 2) box('roots', x - 0.58, x + 0.58, -0.05, SLIDE.roof);
+      if (o.look === 2) box('roots', x - 0.58, x + 0.58, -0.05, CAVE_ROOF - 0.6);
       else box('statue', x - 0.5, x + 0.5, 0, 1.85);
     }
   } else if (o.kind === 'rubble') {
-    // a wall of rubble right across the chute, wall to wall
-    box(o.look % 2 ? 'rubbleB' : 'rubbleA', -SLIDE.wallX + 0.1, SLIDE.wallX - 0.1, -0.05, k.low! + 0.12);
+    box(o.look % 2 ? 'rubbleB' : 'rubbleA', -RAIL_X - 0.15, RAIL_X + 0.15, -0.05, k.low! + 0.12);
   } else if (o.kind === 'column') {
     for (const l of o.lanes) {
       const x = (l - 1) * SLIDE.lane;
       box('column', x - 0.6, x + 0.6, 0, k.low! + 0.05);
     }
   } else if (o.kind === 'beam') {
-    // a fallen doorway sunk in the floor: its slab across the chute at head height, its posts going down into the floor
-    const w = 2 * SLIDE.wallX - 0.1;
+    const w = 2 * RAIL_X + 0.6;
     const h = (w * 245) / 413;
     const top = k.high! + SLAB * h;
     box(o.look % 2 ? 'lintelB' : 'lintelA', -w / 2, w / 2, 0, top, top / h);
   }
   if (met) {
-    ctx.globalAlpha = 0.35 * fadeIn(dz);
+    ctx.globalAlpha = 0.3 * fadeIn(dz);
     ctx.fillStyle = '#e7dcc4';
     const p = P(v, 0, 0.5, o.z);
     if (p) {
@@ -382,32 +569,6 @@ function drawObstacle(ctx: CanvasRenderingContext2D, v: View, o: Obstacle, met: 
       ctx.fill();
     }
   }
-  ctx.globalAlpha = 1;
-}
-
-function drawTorch(ctx: CanvasRenderingContext2D, v: View, z: number, side: number, t: number) {
-  // the flame and its bright core (a stand-in sconce: a stroke of iron)
-  const p = P(v, side * (SLIDE.wallX - 0.08), 1.9, z);
-  if (!p) return;
-  const s = p[2];
-  ctx.globalAlpha = fadeIn(z - v.camZ);
-  ctx.strokeStyle = '#2a2018';
-  ctx.lineWidth = Math.max(1, s * 0.06);
-  ctx.beginPath();
-  ctx.moveTo(p[0], p[1] + s * 0.05);
-  ctx.lineTo(p[0] - side * s * 0.12, p[1] + s * 0.3);
-  ctx.stroke();
-  const fl = 1 + 0.15 * Math.sin(t * 17 + z);
-  ctx.globalCompositeOperation = 'lighter';
-  const g = ctx.createRadialGradient(p[0], p[1] - s * 0.08, 0, p[0], p[1] - s * 0.08, s * 0.35 * fl);
-  g.addColorStop(0, 'rgba(255, 236, 170, 0.95)');
-  g.addColorStop(0.4, 'rgba(255, 160, 60, 0.7)');
-  g.addColorStop(1, 'rgba(255, 110, 30, 0)');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.ellipse(p[0], p[1] - s * 0.1, s * 0.12 * fl, s * 0.26 * fl, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalCompositeOperation = 'source-over';
   ctx.globalAlpha = 1;
 }
 
@@ -430,51 +591,72 @@ function drawPetal(ctx: CanvasRenderingContext2D, v: View, x: number, y: number,
   ctx.globalAlpha = 1;
 }
 
-function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim) {
-  const ground = P(v, sim.x, 0, sim.z);
+/** the light on Pokey where he is: the ambient plus each light near him (r, g, b, 0..1+), never below POKEY_MIN */
+export function pokeyLight(sc: Scene, x: number, y: number, z: number): [number, number, number] {
+  const c = [...AMBIENT] as [number, number, number];
+  for (const l of sc.lights) {
+    if (Math.abs(l.z - z) > l.r) continue;
+    const d = Math.hypot(l.x - x, l.y - y, l.z - z);
+    if (d >= l.r) continue;
+    const f = l.i * (1 - d / l.r) ** 2;
+    for (let k = 0; k < 3; k++) c[k] += f * LIGHT_RGB[l.kind][k];
+  }
+  // (a neutral floor of POKEY_MIN, so the cave's teal never turns him blue, and the lights' own colour on top: the warm key as a torch
+  // rushes by, the green of the fungus)
+  return c.map((k, i) => Math.min(1.05, POKEY_MIN + (1 - POKEY_MIN) * Math.min(1, (k - AMBIENT[i]) * 1.6))) as [number, number, number];
+}
+
+function drawPokey(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim, sc: Scene, ex: number) {
   const body = P(v, sim.x, sim.y, sim.z);
-  if (!ground || !body) return;
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-  ctx.beginPath();
-  ctx.ellipse(ground[0], ground[1], ground[2] * 0.45 * (1 - Math.min(0.5, sim.y * 0.35)), ground[2] * 0.12, 0, 0, Math.PI * 2);
-  ctx.fill();
+  if (!body) return;
   if (sim.safeT > 0 && Math.floor(sim.clock * 10) % 2 === 0) return;
-  // the painted stills (slide, lean left, jump). There is no right lean yet (a mirror puts his satchel on the wrong side): the slide
-  // pose tipped right stands in for it until Matt's sheet comes
   const air = !sim.grounded;
   const n = air ? 'jump' : sim.lean < -0.4 ? 'leanL' : 'slide';
-  const [, , , fw, fh] = PIECE[n];
+  const [k, fx, fy, fw, fh] = PIECE[n];
+  const im = img(k);
+  if (!im) return;
   const tall = 1.0 * body[2];
-  const sc = tall / fh;
+  const scl = tall / fh;
   const duck = sim.ducking ? 0.6 : 1;
+  const dw = Math.ceil(fw * scl * (sim.ducking ? 1.1 : 1)), dh = Math.ceil(fh * scl * duck);
+  if (dw < 2 || dh < 2) return;
+  if (!pk) pk = canvas(dw, dh);
+  if (!pk) return;
+  if (pk.width < dw || pk.height < dh) {
+    pk.width = Math.max(pk.width, dw);
+    pk.height = Math.max(pk.height, dh);
+  }
+  const g = pk.getContext('2d')!;
+  g.clearRect(0, 0, pk.width, pk.height);
+  g.globalCompositeOperation = 'source-over';
+  g.drawImage(im, fx, fy, fw, fh, 0, 0, dw, dh);
+  // his light: multiplied over him (warm as he passes a torch, green in the fungus), then a cool rim from the far end along his top
+  const [r, gg, b] = pokeyLight(sc, sim.x, 0.6 + sim.y, sim.z).map((c) => Math.round(Math.min(1, c * (0.5 + 0.5 * ex)) * 255));
+  g.globalCompositeOperation = 'multiply';
+  g.fillStyle = `rgb(${r}, ${gg}, ${b})`;
+  g.fillRect(0, 0, dw, dh);
+  g.globalCompositeOperation = 'source-atop';
+  const rim = g.createLinearGradient(0, 0, 0, dh * 0.35);
+  rim.addColorStop(0, 'rgba(170, 210, 255, 0.28)');
+  rim.addColorStop(1, 'rgba(170, 210, 255, 0)');
+  g.fillStyle = rim;
+  g.fillRect(0, 0, dw, dh);
+  // (the multiply filled his empty corners too: cut back to his own shape)
+  g.globalCompositeOperation = 'destination-in';
+  g.drawImage(im, fx, fy, fw, fh, 0, 0, dw, dh);
+  g.globalCompositeOperation = 'source-over';
   ctx.save();
   ctx.translate(body[0], body[1] + body[2] * 0.05);
   ctx.rotate(n === 'slide' ? sim.lean * 0.14 : 0);
-  ctx.scale(sc * (sim.ducking ? 1.1 : 1), sc * duck);
-  // (the lean left's body sits right of its frame's middle: it is drawn so his body stays over his shadow)
-  const ox = n === 'leanL' ? -fw * 0.62 : -fw / 2;
-  if (!piece(ctx, n, ox, -fh, fw, fh)) {
-    ctx.fillStyle = '#8a5a34';
-    ctx.beginPath();
-    ctx.ellipse(0, -fh / 2, fw / 2.5, fh / 2, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  // (the lean left's body sits right of its frame's middle; the right lean is the slide pose tipped right: there is none painted yet)
+  const ox = n === 'leanL' ? -dw * 0.62 : -dw / 2;
+  ctx.drawImage(pk, 0, 0, dw, dh, ox, -dh, dw, dh);
   ctx.restore();
 }
 
-/** dust hanging in the air (lit near the torches), and streaks running out from the vanishing point with the speed */
-function drawAir(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim) {
+function drawStreaks(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim) {
   ctx.save();
-  for (let i = 0; i < 40; i++) {
-    const zz = Math.floor(sim.z / 2) * 2 + (i % 20) * 1.1 - 2 + hash(i) * 1.1;
-    const x = (hash(i * 3.1) - 0.5) * 2 * SLIDE.wallX * 0.9 + Math.sin(sim.clock * 0.7 + i) * 0.1;
-    const y = 0.3 + hash(i * 7.7) * 2.3 + Math.sin(sim.clock * 0.5 + i * 2) * 0.08;
-    const p = P(v, x, y, zz);
-    if (!p) continue;
-    ctx.fillStyle = `rgba(255, 220, 170, ${0.35 * (1 - darkAt(zz - v.camZ))})`;
-    ctx.fillRect(p[0], p[1], Math.max(1, p[2] * 0.02), Math.max(1, p[2] * 0.02));
-  }
-  ctx.strokeStyle = 'rgba(255, 236, 200, 0.12)';
+  ctx.strokeStyle = 'rgba(200, 220, 255, 0.08)';
   ctx.lineWidth = 1.5;
   const R = Math.hypot(v.W, v.H) * 0.6;
   for (let i = 0; i < 14; i++) {

@@ -240,7 +240,8 @@ export function buildCourse(seed: number, easy: boolean): SlideCourse {
   across(Math.max(t, 22.5), 'rubble');
   t = next(2.6, 3);
   while (t < 33) {
-    const r = R();
+    // (each section asks for its move at least three times, Easy too)
+    const r = obstacles.filter((o) => o.kind === 'rubble').length < 3 ? 0.5 : R();
     if (r < 0.4) pair(t, 'rubble');
     else if (r < 0.7) across(t, 'rubble');
     else heads(t, 1);
@@ -253,7 +254,8 @@ export function buildCourse(seed: number, easy: boolean): SlideCourse {
   across(Math.max(lastT + 2, 38.5), 'gap');
   t = next(2.6, 3);
   while (t < 49) {
-    const r = R();
+    // (each section asks for its move at least three times, Easy too)
+    const r = obstacles.filter((o) => o.kind === 'gap').length < 3 ? 0.5 : R();
     if (r < 0.45) pair(t, 'gap');
     else if (r < 0.75) across(t, 'gap');
     else heads(t, 1);
@@ -266,7 +268,8 @@ export function buildCourse(seed: number, easy: boolean): SlideCourse {
   across(Math.max(lastT + 2, 54.5), 'beam');
   t = next(2.6, 3);
   while (t < 65) {
-    const r = R();
+    // (each section asks for its move at least three times, Easy too)
+    const r = obstacles.filter((o) => o.kind === 'beam').length < 3 ? 0.5 : R();
     if (r < 0.4) pair(t, 'beam');
     else if (r < 0.65) across(t, 'beam');
     else if (r < 0.85) across(t, 'rubble');

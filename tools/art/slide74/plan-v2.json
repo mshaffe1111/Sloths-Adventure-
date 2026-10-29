@@ -1,7 +1,8 @@
 [["crumble", 75, "e.player.x = 3150;"],
- ["drop+statues", 210, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'head')[0].z - 26;"],
- ["rubble walls", 180, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'rubble')[1].z - 26;"],
- ["gaps", 180, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'gap')[1].z - 26;"],
- ["doorways", 180, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'beam')[1].z - 26;"],
- ["climax", 120, "const s = e.slideRun.sim; s.z = s.c.sections.find((x) => x.name === 'climax').z0 + 10;"],
- ["the light", 105, "const s = e.slideRun.sim; s.z = s.c.length - 26;"]]
+ ["the drop: dark, then the first torch", 45, ""],
+ ["torch-lit flume: statues", 120, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'head')[1].z - 22;"],
+ ["rubble walls", 120, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'rubble')[1].z - 20;"],
+ ["fungus cavern: gaps", 120, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'gap')[1].z - 20;"],
+ ["low doorways", 120, "const s = e.slideRun.sim; s.z = s.sorted.filter((o) => o.kind === 'beam')[1].z - 20;"],
+ ["the narrow dark", 120, "const s = e.slideRun.sim; s.z = s.c.sections.find((x) => x.name === 'climax').z0 + 6;"],
+ ["the way out", 100, "const s = e.slideRun.sim; s.z = s.c.length - 22;"]]
