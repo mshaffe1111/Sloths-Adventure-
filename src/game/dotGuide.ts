@@ -26,7 +26,7 @@ import type { GlyphKind } from '../components/GestureGlyph.tsx';
 export type GuideKind = 'must' | 'danger' | 'teach' | 'goal' | 'struggle' | 'info' | 'story' | 'journal';
 /** a move a tip asks for: the tip stays until the guide sees it done (dotGuideMoves.ts) */
 export type MoveId = 'run' | 'jump' | 'double' | 'grab' | 'climb' | 'leap' | 'glide' | 'punch' | 'kick' | 'crouch' | 'push' | 'bounce';
-/** the kind of thing a line is about, for the ring and arrow (dotGuideTarget.ts) */
+/** the kind of thing a line is about: where Dot flies and perches to point at it (dotGuidePerch.ts) */
 export type TopicId =
   | 'vine' | 'trunk' | 'rope' | 'log' | 'foe' | 'gap' | 'ledge' | 'petal' | 'cage' | 'bush' | 'fern' | 'mushroom'
   | 'crumble' | 'moving' | 'water' | 'heart' | 'power' | 'relic' | 'flag' | 'exit' | 'controls'
@@ -87,6 +87,8 @@ export interface GuideLine {
   said?: string;
   /** a first-time hazard about to hit: it does not wait out the gap between lines (it never cuts in over a line, as a warning does) */
   soon?: boolean;
+  /** one of the control test's lines (dotLines.ts): the test itself, said whatever the help setting has heard before */
+  ctest?: boolean;
   /** where it came from: an engine line can be taken down by the engine ("the moment has passed") */
   source: 'engine' | 'lesson' | 'coach' | 'story' | 'journal' | 'struggle';
 }

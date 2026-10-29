@@ -41,7 +41,7 @@ const same = (l: LessonLine[]): Record<InputMode, LessonLine[]> => ({ screen: l,
 export const LESSONS: Record<LessonId, Lesson> = {
   foe: {
     id: 'foe',
-    title: 'A foe ahead!',
+    title: "Somebody's in the way",
     face: 'face_surprised',
     intro: 'Touching it costs a heart. Hit it first, or land on its head.',
     lines: {
@@ -66,14 +66,14 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   nostomp: {
     id: 'nostomp',
-    title: 'Not this one!',
+    title: 'Not that one!',
     face: 'face_surprised',
     intro: 'Spiders and ants cannot be stomped, so do not land on them. Punch or kick them, or jump right over.',
     lines: same([{ how: 'Punch or kick', what: 'Beat it', sub: 'one hit does it' }]),
   },
   eagle: {
     id: 'eagle',
-    title: 'Swooping bird!',
+    title: 'Swooping bird',
     face: 'face_surprised',
     intro: 'It circles, then dives at you. Dodge the dive, then hit it when it comes in low.',
     lines: {
@@ -87,14 +87,14 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   tough: {
     id: 'tough',
-    title: 'A big one!',
+    title: 'A big one',
     face: 'face_surprised',
     intro: 'Big animals take several hits and are hard to shove. Watch for it rearing back. That is when it strikes, so step away, then hit it as it recovers.',
     lines: same([{ how: 'Keep at it', what: 'It takes a few hits', sub: 'a mega punch hits hardest, and landing on a caiman only bounces you off' }]),
   },
   gap: {
     id: 'gap',
-    title: 'A gap ahead!',
+    title: 'Mind the gap',
     face: 'face_surprised',
     intro: 'Falling into water or a pit costs a life. Run up and jump a little before the edge, not at it.',
     lines: {
@@ -108,7 +108,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   climb: {
     id: 'climb',
-    title: 'A tree to climb!',
+    title: 'A tree to climb',
     face: 'face_cheer',
     intro: 'Pokey can scale a trunk with a vine on it. Grab on, climb to the top, and he vaults onto the branch.',
     lines: {
@@ -132,7 +132,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   swing: {
     id: 'swing',
-    title: 'A swinging vine!',
+    title: 'A swinging vine',
     face: 'face_cheer',
     intro: 'Grab the vine, swing out over the gap, and let go to leap across.',
     lines: {
@@ -147,7 +147,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   rope: {
     id: 'rope',
-    title: 'A rope to hang from!',
+    title: 'A rope to hang from',
     face: 'face_calm',
     intro: 'Stand by the post at its end and jump straight up: Pokey grabs the rope and hangs on by himself. Creep along it to the far ledge.',
     lines: {
@@ -162,21 +162,21 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   bounce: {
     id: 'bounce',
-    title: 'A bouncy mushroom!',
+    title: 'A bouncy mushroom',
     face: 'face_happy',
     intro: 'Land on it and it springs you much higher than any jump. Good for reaching the high ledges.',
     lines: same([{ how: 'Land on it', what: 'Boing!', sub: 'steer in the air to aim your landing' }]),
   },
   crumble: {
     id: 'crumble',
-    title: 'A crumbling branch!',
+    title: "This branch won't hold",
     face: 'face_surprised',
     intro: 'It breaks about a second after you land on it. Keep moving and do not stop on it.',
     lines: same([{ how: 'Keep moving', what: 'Cross quickly' }]),
   },
   moving: {
     id: 'moving',
-    title: 'A moving platform!',
+    title: 'A moving platform',
     face: 'face_calm',
     intro: 'It slides back and forth and carries you with it. Wait for it to swing close, then hop on.',
     lines: same([{ how: 'Hop on when it is close', what: 'Ride it' }]),
@@ -190,21 +190,21 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   fruit: {
     id: 'fruit',
-    title: 'Fruit and flowers!',
+    title: 'Fruit and flowers',
     face: 'face_happy',
     intro: 'Touch them to score points. Some stages ask you to gather a number of them before the exit opens.',
     lines: same([{ how: 'Just touch them', what: 'Score points' }]),
   },
   heart: {
     id: 'heart',
-    title: 'A heart!',
+    title: 'A heart',
     face: 'face_happy',
     intro: 'When you are hurt, touch it to heal one heart. At full health it stays where it is, waiting for when you need it.',
     lines: same([{ how: 'Touch it when you are hurt', what: 'Heals a heart', sub: 'at full health you cannot pick it up' }]),
   },
   cage: {
     id: 'cage',
-    title: 'A friend in a cage!',
+    title: 'Someone in a cage',
     face: 'face_cheer',
     intro: 'Hit the cage a few times to crack it open and set the friend free.',
     lines: {
@@ -215,28 +215,28 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   idol: {
     id: 'idol',
-    title: 'Something hidden!',
+    title: 'Something hidden',
     face: 'face_wink',
     intro: 'Some stages hide things to find: Grandma\'s keepsakes, Meeca\'s messages, old relics. Look in the high and out-of-the-way places.',
     lines: same([{ how: 'Just touch it', what: 'Collect it' }]),
   },
   power: {
     id: 'power',
-    title: 'A power-up!',
+    title: 'A power-up',
     face: 'face_cheer',
     intro: 'Each one lasts a few seconds. Speed makes you run faster, the sun makes you invincible, and the nectar magnet pulls fruit and hearts to you.',
     lines: same([{ how: 'Just touch it', what: 'Take it' }]),
   },
   checkpoint: {
     id: 'checkpoint',
-    title: 'A checkpoint!',
+    title: 'A checkpoint',
     face: 'face_happy',
     intro: 'You just passed a flag, and the game remembers. If you lose a life, you start again from here, not the beginning.',
     lines: same([{ how: 'Run past a flag', what: 'Saves your place' }]),
   },
   shrine: {
     id: 'shrine',
-    title: 'The exit shrine!',
+    title: 'The exit shrine',
     face: 'face_cheer',
     intro: 'Touch it to finish the stage. If the stage asked for something first, such as fruit, foes, or friends, the shrine opens once you have done it.',
     lines: same([{ how: 'Reach it', what: 'Finish the stage' }]),

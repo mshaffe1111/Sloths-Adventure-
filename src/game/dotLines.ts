@@ -10,6 +10,7 @@ import { W5_DOT_LINES, W5_SCENE_IDS, W5_SPEAKERS, W5_THING_TIPS } from './w5Line
 import type { GuideKind, GuideLine, GuideWho, MoveId, TopicId } from './dotGuide.ts';
 import { GUIDE, classifyLine, topicOf } from './dotGuide.ts';
 import { firstOf, PUZZLE_LATER, PUZZLE_STEPS, roomLineOf } from './dotTips.ts';
+import { ctestEnabled } from './playRecorder.ts';
 
 export interface DotLine {
   id: string;
@@ -252,6 +253,10 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     // (a puzzle's first line belongs to the puzzle, not to a spot he runs past: it may wait its turn while he is there; the room takes
     // it down when he leaves, puzzlePlay.ts passTip)
     ...(step ? { step, ...(step === 'name' ? { waitMs: PUZZLE_NAME_WAIT_MS, soon: true } : {}) } : {}),
+    // (the control test's lines are the test itself: each is said, every run, and none is dropped for a move he made before it came.
+    // Seed 7920 said nothing for 24 s: "Run to the flowers" and "Turn around" went because he was already running at 2.5 s)
+    // (only while the control test runs: a stage's own words can match a test row, "Flick up onto the mushroom to bounce" in 1-3)
+    ...(sw?.line.id.startsWith('ctest.') && ctestEnabled() ? { soon: true, ctest: true } : {}),
     said: text,
     source: 'engine',
   };

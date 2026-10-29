@@ -45,6 +45,8 @@ export class DotSay {
 
   /** may this line be said now? */
   allows(l: GuideLine): boolean {
+    // (the control test's lines are the test: on Tips and Help alike, never cut as known; Quiet is quiet)
+    if (l.ctest) return this.help !== 'quiet';
     if (!helpAllows(l, this.help, this.seen, this.storyOn)) return false;
     // (Tips: not a stage tip for a move already done in an earlier stage)
     if (this.help !== 'teach' && this.queue.calm && knownMoveTip(l, this.movesBefore)) return false;

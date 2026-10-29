@@ -108,14 +108,14 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   'Too high. Stay close to the firefly, Pokey.': 'firefly',
   'High water swells that root door shut.': 'w6water',
   // (the zones' first lines, engine.ts ZONE_LINE: the same things the stage hints teach, so each is said once)
-  'Sticky webs slow you. Go above them.': 'web',
-  'The tide rises on a beat. Cross when low.': 'tide',
+  'Sticky webs slow you down.': 'web',
+  'The tide rises and falls on a beat.': 'tide',
   'So dark. Follow the fireflies.': 'firefly',
   'Too dark to see. Stand still and listen...': 'dark',
-  'These tiles crumble. Keep moving!': 'crumbleTiles',
-  'Spores puff on a beat. Wait them out.': 'spores',
+  'These tiles crumble!': 'crumbleTiles',
+  'Spores puff on a beat.': 'spores',
   'Gusts blow on a beat. Watch the leaves.': 'gusts',
-  'Vents erupt on a beat. Stand between them.': 'vents',
+  'Vents erupt on a beat.': 'vents',
   'Lightning strikes where the rods charge.': 'lightning',
   'Head-on it hides. Flick sideways to kick!': 'snapper',
   'Head-on he blocks. Flick sideways to kick!': 'spearGuard',
@@ -208,14 +208,14 @@ export function thingOf(l: { key: string; mech?: string; move?: string; kind: st
 
 /** the first time each kind of zone is close (engine.ts): in Dot's bubble, short and in normal case, not as words floating in the world */
 export const ZONE_LINE: Readonly<Record<string, string>> = {
-  web: 'Sticky webs slow you. Go above them.',
-  tide: 'The tide rises on a beat. Cross when low.',
+  web: 'Sticky webs slow you down.',
+  tide: 'The tide rises and falls on a beat.',
   dark: 'So dark. Follow the fireflies.',
   darkStill: 'Too dark to see. Stand still and listen...',
-  crumble: 'These tiles crumble. Keep moving!',
-  spore: 'Spores puff on a beat. Wait them out.',
+  crumble: 'These tiles crumble!',
+  spore: 'Spores puff on a beat.',
   wind: 'Gusts blow on a beat. Watch the leaves.',
-  geyser: 'Vents erupt on a beat. Stand between them.',
+  geyser: 'Vents erupt on a beat.',
   bolt: 'Lightning strikes where the rods charge.',
 };
 

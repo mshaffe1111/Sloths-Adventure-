@@ -255,7 +255,6 @@ export interface BossEntity extends Enemy {
   specialAttackTimer: number;
   shieldActive: boolean;
   dialogueIntro: string;
-  dialogueDefeat: string;
   /** the move-by-move brain (bossAI.ts) */
   ai?: import('./bossAI.ts').BossBrain;
 }

@@ -7,6 +7,8 @@ an earlier stage, never twice in one stage; and the 10 room lines, the setting n
 Nothing here is released.
 
 - [LINES-FOR-MATT.md](LINES-FOR-MATT.md): every new line, room by room, for Matt's yes or no.
+- [ROUND-2.md](ROUND-2.md): round 2, after the lead's four notes: every stage line that gave the answer (Matt on 4-4), Dot's voice
+  (SR-38, SR-39), clues, boss quotes and card titles (SR-40 to SR-43), the control test's silent start, old and new.
 - [TIMELINES.md](TIMELINES.md): every stage of Worlds 1-8, before and after, on both settings, line by line.
 - `clips/`: before (top) and after (bottom), 1-6 and 4-3, on both settings. `shots/`: the Polish check's pictures.
 - `data/`: the measurements (`before-*.json`, `after-*.json`) and the harness that made them (`pace-harness.mts`).
@@ -45,13 +47,13 @@ their own branches).
 
 | World | Lines a stage | Lines a minute | Busiest 30 s | Stages over 2 in 30 s |
 |---|---|---|---|---|
-| 1 | 4.1 → 3.2 | 1.97 → **1.55** | 4 → 3 | 5 → 2 |
-| 2 | 1.9 → 1.8 | 0.98 → **0.92** | 2 → 2 | 0 → 0 |
-| 3 | 3.9 → 1.9 | 1.68 → **0.81** | 4 → 3 | 3 → 2 |
-| 4 | 3.0 → 2.4 | 1.12 → **0.91** | 6 → 2 | 3 → 0 |
-| 5 | 6.4 → 2.2 | 3.20 → **1.10** | 6 → 3 | 7 → 1 |
+| 1 | 4.1 → 3.1 | 1.97 → **1.49** | 4 → 3 | 5 → 2 |
+| 2 | 1.9 → 1.7 | 0.98 → **0.87** | 2 → 2 | 0 → 0 |
+| 3 | 3.9 → 1.4 | 1.68 → **0.62** | 4 → 3 | 3 → 2 |
+| 4 | 3.0 → 2.0 | 1.12 → **0.75** | 6 → 2 | 3 → 0 |
+| 5 | 6.4 → 2.4 | 3.20 → **1.20** | 6 → 3 | 7 → 1 |
 | 6 | 2.3 → 1.1 | 1.12 → **0.53** | 5 → 1 | 2 → 0 |
-| 7 | 1.6 → 0.2 | 0.85 → **0.12** | 2 → 1 | 0 → 0 |
+| 7 | 1.6 → 0.2 | 0.85 → **0.13** | 2 → 1 | 0 → 0 |
 | 8 | 0.7 → 0.1 | 0.35 → **0.06** | 2 → 1 | 0 → 0 |
 
 The five Tips stages still at 3 in some 30 s, and why:
@@ -67,13 +69,13 @@ In each, the third line is a first-time hazard or a warning, the two kinds that 
 
 | World | Lines a stage | Lines a minute | Busiest 30 s |
 |---|---|---|---|
-| 1 | 5.6 → 5.8 | 2.67 → 2.77 | 5 → 4 |
-| 2 | 4.1 → 4.3 | 2.13 → 2.25 | 3 → 4 |
-| 3 | 6.0 → 5.9 | 2.59 → 2.54 | 4 → 5 |
-| 4 | 9.1 → 6.9 | 3.40 → 2.57 | 6 → 3 |
-| 5 | 8.6 → 6.4 | 4.30 → 3.20 | 9 → 4 |
-| 6 | 4.2 → 3.1 | 2.02 → 1.49 | 4 → 3 |
-| 7 | 1.6 → 1.3 | 0.85 → 0.72 | 2 → 2 |
+| 1 | 5.6 → 5.4 | 2.67 → 2.61 | 5 → 4 |
+| 2 | 4.1 → 3.9 | 2.13 → 2.02 | 3 → 4 |
+| 3 | 6.0 → 5.6 | 2.59 → 2.40 | 4 → 5 |
+| 4 | 9.1 → 5.2 | 3.40 → 1.95 | 6 → 3 |
+| 5 | 8.6 → 6.3 | 4.30 → 3.15 | 9 → 4 |
+| 6 | 4.2 → 3.3 | 2.02 → 1.58 | 4 → 3 |
+| 7 | 1.6 → 1.3 | 0.85 → 0.80 | 2 → 2 |
 | 8 | 0.7 → 1.3 | 0.35 → 0.70 | 2 → 1 |
 
 Help says about as much as before in Worlds 1-3 and less from World 4 on. It is the setting for new kids, and every puzzle room now has
@@ -127,4 +129,4 @@ Rough spots, named plainly:
 
 ## Checks
 
-`npx tsc --noEmit -p .` clean; the full suite 1821 tests, 1819 pass, 0 fail, 2 to-do (the known 4-3 boulder item and one other); `npx vite build` clean, no asset over 4 MiB.
+`npx tsc --noEmit -p .` clean; the full suite (round 2, on the work branch merged in) 1903 tests, 1901 pass, 0 fail, 2 to-do (the known 4-3 boulder item and one other); `npx vite build` clean, no asset over 4 MiB.

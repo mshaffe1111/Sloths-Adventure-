@@ -65,9 +65,9 @@
   "id": "1-3",
   "world": 1,
   "seconds": 109,
-  "n": 3,
-  "perMin": 1.66,
-  "busiest": 2,
+  "n": 2,
+  "perMin": 1.11,
+  "busiest": 1,
   "lines": [
    {
     "t": 8.8,
@@ -77,18 +77,11 @@
     "n": 1
    },
    {
-    "t": 21.4,
-    "text": "Tap to punch the sleeping snake.",
-    "kind": "teach",
-    "key": "engine:hint.1-3.sleeper",
-    "n": 2
-   },
-   {
     "t": 108.5,
     "text": "It's sealed. Defeat 16 more predators first.",
     "kind": "must",
     "key": "engine:lock.sealed",
-    "n": 3
+    "n": 2
    }
   ]
  },
@@ -270,10 +263,10 @@
   "busiest": 1,
   "lines": [
    {
-    "t": 4.6,
-    "text": "Tap to punch it after it strikes.",
-    "kind": "teach",
-    "key": "engine:hint.1-9.guard",
+    "t": 5.2,
+    "text": "Big ones take several hits. Step back when it rears.",
+    "kind": "info",
+    "key": "lesson:tough:0",
     "n": 1
    },
    {
@@ -377,30 +370,23 @@
   "id": "2-5",
   "world": 2,
   "seconds": 77,
-  "n": 3,
-  "perMin": 2.35,
-  "busiest": 2,
+  "n": 2,
+  "perMin": 1.57,
+  "busiest": 1,
   "lines": [
    {
-    "t": 2.5,
-    "text": "Snappers! Hit one from behind, or jump on it.",
-    "kind": "info",
-    "key": "engine:hint.2-5.snappers",
-    "n": 1
-   },
-   {
-    "t": 9.2,
+    "t": 6.5,
     "text": "Head-on it hides. Flick sideways to kick!",
     "kind": "teach",
     "key": "engine:hint.2-5.kick",
-    "n": 2
+    "n": 1
    },
    {
     "t": 76.6,
     "text": "It's sealed. Defeat 32 more predators first.",
     "kind": "must",
     "key": "engine:lock.sealed",
-    "n": 3
+    "n": 2
    }
   ]
  },
@@ -423,7 +409,7 @@
   "lines": [
    {
     "t": 26.2,
-    "text": "Step into the basket. It carries you up!",
+    "text": "That basket goes up and down.",
     "kind": "info",
     "key": "engine:hint.2-7.basket",
     "n": 1
@@ -447,13 +433,13 @@
   "lines": [
    {
     "t": 1.5,
-    "text": "The water's rising! Free them, then back to the bank!",
+    "text": "The water's rising!",
     "kind": "must",
     "key": "engine:eng.flood",
     "n": 1
    },
    {
-    "t": 8.7,
+    "t": 6.2,
     "text": "The water's rising round that cage!",
     "kind": "teach",
     "key": "engine:The water's rising round that cage!",
@@ -558,30 +544,16 @@
   "id": "3-3",
   "world": 3,
   "seconds": 142,
-  "n": 3,
-  "perMin": 1.27,
+  "n": 1,
+  "perMin": 0.42,
   "busiest": 1,
   "lines": [
-   {
-    "t": 4,
-    "text": "A prowler! Tap twice, or flick to kick.",
-    "kind": "teach",
-    "key": "engine:hint.3-3.prowler",
-    "n": 1
-   },
-   {
-    "t": 48.8,
-    "text": "Flick up when it crouches. Three hits!",
-    "kind": "teach",
-    "key": "engine:hint.3-3.jaguar",
-    "n": 2
-   },
    {
     "t": 141.9,
     "text": "It's sealed. Defeat 14 more predators first.",
     "kind": "must",
     "key": "engine:lock.sealed",
-    "n": 3
+    "n": 1
    }
   ]
  },
@@ -656,47 +628,32 @@
   "id": "3-8",
   "world": 3,
   "seconds": 126,
-  "n": 1,
-  "perMin": 0.48,
-  "busiest": 1,
-  "lines": [
-   {
-    "t": 2.5,
-    "text": "Thorn vines between the lianas. Don't touch the thorns!",
-    "kind": "info",
-    "key": "engine:hint.3-8.thorns",
-    "n": 1
-   }
-  ]
+  "n": 0,
+  "perMin": 0,
+  "busiest": 0,
+  "lines": []
  },
  {
   "id": "3-9",
   "world": 3,
   "seconds": 162,
-  "n": 3,
-  "perMin": 1.11,
-  "busiest": 2,
+  "n": 2,
+  "perMin": 0.74,
+  "busiest": 1,
   "lines": [
-   {
-    "t": 28,
-    "text": "Big ones take several hits. Step back when it rears.",
-    "kind": "info",
-    "key": "lesson:tough:0",
-    "n": 1
-   },
    {
     "t": 51,
     "text": "Prowlers! Drive them all off to open the way.",
     "kind": "must",
     "key": "engine:lock.ring.prowlers",
-    "n": 2
+    "n": 1
    },
    {
     "t": 162.2,
     "text": "It's sealed. Defeat 21 more predators first.",
     "kind": "must",
     "key": "engine:lock.sealed",
-    "n": 3
+    "n": 2
    }
   ]
  },
@@ -704,25 +661,10 @@
   "id": "4-1",
   "world": 4,
   "seconds": 139,
-  "n": 2,
-  "perMin": 0.87,
-  "busiest": 1,
-  "lines": [
-   {
-    "t": 6,
-    "text": "Rocks! Stop at the shadow. Go once it falls.",
-    "kind": "info",
-    "key": "engine:hint.4-1.rocks",
-    "n": 1
-   },
-   {
-    "t": 135.4,
-    "text": "A curled fern. Stand still beside it and wait.",
-    "kind": "info",
-    "key": "engine:hint.4-1.frond",
-    "n": 2
-   }
-  ]
+  "n": 0,
+  "perMin": 0,
+  "busiest": 0,
+  "lines": []
  },
  {
   "id": "4-2",
@@ -741,14 +683,14 @@
    },
    {
     "t": 16.6,
-    "text": "Chimes! Wind's coming. Jump with it behind you.",
+    "text": "Chimes! Wind's coming.",
     "kind": "info",
     "key": "engine:w4.chime",
     "n": 2
    },
    {
     "t": 40.5,
-    "text": "Chimes swinging at you? Headwind. Wait for it to drop.",
+    "text": "Chimes swinging at you? That's a headwind.",
     "kind": "info",
     "key": "engine:hint.4-2.head",
     "n": 3
@@ -765,23 +707,23 @@
   "lines": [
    {
     "t": 11.2,
-    "text": "The water pushes you down. Climb up and stop it.",
+    "text": "The water pushes you down.",
     "kind": "info",
     "key": "engine:hint.4-3.push",
     "n": 1
    },
    {
-    "t": 30.1,
-    "text": "Monkey by that petal! If it grabs it, chase it.",
+    "t": 30.5,
+    "text": "Hey! It took a petal!",
     "kind": "info",
-    "key": "engine:hint.4-3.thiefWarn",
+    "key": "engine:w4.thief",
     "n": 2
    },
    {
-    "t": 63.2,
-    "text": "Climb when it goes quiet. Wait in the cave.",
+    "t": 124.5,
+    "text": "This one comes and goes.",
     "kind": "info",
-    "key": "engine:hint.4-3.quiet",
+    "key": "engine:hint.4-3.comes",
     "n": 3
    }
   ]
@@ -790,23 +732,16 @@
   "id": "4-4",
   "world": 4,
   "seconds": 146,
-  "n": 2,
-  "perMin": 0.82,
-  "busiest": 2,
+  "n": 1,
+  "perMin": 0.41,
+  "busiest": 1,
   "lines": [
    {
-    "t": 11.6,
-    "text": "No wind? Flick up again as you fly.",
-    "kind": "teach",
-    "key": "engine:hint.4-4.noWind",
-    "n": 1
-   },
-   {
     "t": 31.4,
-    "text": "Tied too high! Stand on the glowing spot. I'll untie it.",
+    "text": "Tied too high for you!",
     "kind": "info",
     "key": "engine:w4.knot",
-    "n": 2
+    "n": 1
    }
   ]
  },
@@ -820,7 +755,7 @@
   "lines": [
    {
     "t": 2.5,
-    "text": "The Sky Sovereign is hunting. Stay under cover!",
+    "text": "The Sky Sovereign is hunting.",
     "kind": "info",
     "key": "engine:hint.4-5.hunting",
     "n": 1
@@ -874,10 +809,10 @@
     "n": 2
    },
    {
-    "t": 87.6,
-    "text": "Eaglets! Go while they sleep. Freeze when one peeks.",
-    "kind": "info",
-    "key": "engine:hint.4-6.eaglets",
+    "t": 95.1,
+    "text": "Shh! One's waking. Lift your thumb and freeze.",
+    "kind": "teach",
+    "key": "engine:w4.nestStir",
     "n": 3
    }
   ]
@@ -886,30 +821,23 @@
   "id": "4-7",
   "world": 4,
   "seconds": 202,
-  "n": 3,
-  "perMin": 0.89,
-  "busiest": 2,
+  "n": 2,
+  "perMin": 0.59,
+  "busiest": 1,
   "lines": [
    {
     "t": 34.7,
-    "text": "Rocks drop through the gaps. Watch for grit, then go.",
+    "text": "Rocks drop through the gaps.",
     "kind": "info",
     "key": "engine:hint.4-7.grit",
     "n": 1
-   },
-   {
-    "t": 56.2,
-    "text": "A cave below! Step off, turn round, drop in.",
-    "kind": "info",
-    "key": "engine:hint.4-7.cave",
-    "n": 2
    },
    {
     "t": 69.1,
     "text": "Warm air! Glide into it and it lifts you.",
     "kind": "info",
     "key": "engine:hint.4-7.warm",
-    "n": 3
+    "n": 2
    }
   ]
  },
@@ -917,8 +845,8 @@
   "id": "4-8",
   "world": 4,
   "seconds": 138,
-  "n": 4,
-  "perMin": 1.74,
+  "n": 3,
+  "perMin": 1.3,
   "busiest": 2,
   "lines": [
    {
@@ -929,25 +857,18 @@
     "n": 1
    },
    {
-    "t": 27,
-    "text": "A capuchin guard! The wind knocks it over when chimes ring.",
-    "kind": "info",
-    "key": "engine:hint.4-8.guard",
-    "n": 2
-   },
-   {
     "t": 111.8,
     "text": "The capuchin took our stone!",
     "kind": "teach",
     "key": "engine:The capuchin took our stone!",
-    "n": 3
+    "n": 2
    },
    {
     "t": 138.3,
     "text": "It's sealed. Free 20 more animals first.",
     "kind": "must",
     "key": "engine:lock.sealed",
-    "n": 4
+    "n": 3
    }
   ]
  },
@@ -955,10 +876,18 @@
   "id": "4-9",
   "world": 4,
   "seconds": 198,
-  "n": 0,
-  "perMin": 0,
-  "busiest": 0,
-  "lines": []
+  "n": 1,
+  "perMin": 0.3,
+  "busiest": 1,
+  "lines": [
+   {
+    "t": 20.8,
+    "text": "It won't let you pass.",
+    "kind": "info",
+    "key": "engine:w4.guard",
+    "n": 1
+   }
+  ]
  },
  {
   "id": "5-M",
@@ -973,8 +902,8 @@
   "id": "5-1",
   "world": 5,
   "seconds": 144,
-  "n": 2,
-  "perMin": 0.83,
+  "n": 4,
+  "perMin": 1.67,
   "busiest": 2,
   "lines": [
    {
@@ -990,6 +919,20 @@
     "kind": "teach",
     "key": "engine:w5.spider",
     "n": 2
+   },
+   {
+    "t": 37.2,
+    "text": "Wide gap! Flick up again midair.",
+    "kind": "teach",
+    "key": "engine:hint.5-1.double",
+    "n": 3
+   },
+   {
+    "t": 49.8,
+    "text": "Tall stump! Flick up again midair.",
+    "kind": "teach",
+    "key": "engine:hint.5-1.tall",
+    "n": 4
    }
   ]
  },
@@ -1341,7 +1284,7 @@
  {
   "id": "6-8",
   "world": 6,
-  "seconds": 117,
+  "seconds": 124,
   "n": 0,
   "perMin": 0,
   "busiest": 0,
@@ -1409,7 +1352,7 @@
  {
   "id": "7-4",
   "world": 7,
-  "seconds": 122,
+  "seconds": 29,
   "n": 0,
   "perMin": 0,
   "busiest": 0,

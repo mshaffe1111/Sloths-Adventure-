@@ -686,8 +686,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       for (const k of stageKo) run.hard.push(k);
       const w = weakSpotRect(v);
       if (w) run.hard.push(w);
-      // the way forward (the platform tops ahead and the next landing, QA v189: it sat along a pillar's top in 4-2) and her own ring
-      // and the thing it is on
+      // the way forward (the platform tops ahead and the next landing, QA v189: it sat along a pillar's top in 4-2) and the thing she
+      // points at
       landingRects(v, run.hard);
       const t = p?.target;
       if (t) {
@@ -956,7 +956,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
             const b = p.bub;
             const bx = b ? (p.mode === 'perch' ? spot.x + p.bubDx : b.x) : 0;
             const by = b ? (p.mode === 'perch' ? spot.y + p.bubDy : b.y) : 0;
-            // (Pokey, the open weak spot, the way ahead, her ring: whatever has come under it since it was placed)
+            // (Pokey, the open weak spot, the way ahead, the thing she points at: whatever has come under it since it was placed)
             let covered = false;
             if (b) {
               const ty = by - BUBBLE_TAG_H;

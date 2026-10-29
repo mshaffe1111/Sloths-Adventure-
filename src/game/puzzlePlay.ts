@@ -254,7 +254,8 @@ function drawReedWall(ctx: CanvasRenderingContext2D, x: number, top: number, bot
 /** where each seesaw painting's round pivot is across its frame (atlas px, measured from puzzle-kit.webp) */
 const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = { seesawLevel: 105, seesawUpR: 105, seesawUpL: 90 };
 
-/** the active part: where it is, how big a ring Dot's pointer wants, and which piece it is (none: the room's middle) */
+/** the active part: where it is, how big it is (Dot perches beside it and a sparkle twinkles on it), and which piece it is (none: the
+ *  room's middle) */
 type Focus = { x: number; y: number; r: number; id?: string };
 
 /** Pokey's pose while he carries, throws or sets down (null: his own sprite) */

@@ -1,5 +1,7 @@
 # Dot's new lines, for Matt's yes or no
 
+> Round 2 (the spoiler sweep, Dot's voice, clues, boss quotes and card titles) is in [ROUND-2.md](ROUND-2.md).
+
 The Dot rework, 2026-10-29. Matt approved the first 10 room lines (1-6 and 4-3), the setting names Help / Tips / Quiet with their
 two descriptions, and "Hear Dot's tips again". Everything below is new words beyond those, all under 10 words. Puzzle rooms follow the
 approved pattern: **walking in** names the problem, the **nudge** comes after struggle (back and forth, or two falls), and the **move**
@@ -71,11 +73,9 @@ The guards come looking."
 
 ## The weather and zone lines (were floating labels in the world, now Dot's bubble, once each)
 
-- "Sticky webs slow you. Go above them." (old words, now in her bubble)
-- "The tide rises on a beat. Cross when low."
-- "So dark. Follow the fireflies."
-- "Spores puff on a beat. Wait them out."
-- (and the old words for dark, crumbling tiles, gusts and vents)
+Cut down in round 2 to the rule alone, never the answer (ROUND-2.md): "Sticky webs slow you down.", "The tide rises and falls on a
+beat.", "These tiles crumble!", "Spores puff on a beat.", "Vents erupt on a beat.", and kept "So dark. Follow the fireflies.",
+"Too dark to see. Stand still and listen..." and "Gusts blow on a beat. Watch the leaves."
 
 ## The Hush Fern secret (DOT-14)
 

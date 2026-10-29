@@ -188,3 +188,36 @@ test("a watcher's pass: one call to hide, not three in other words, even when th
   q.tick(45000, env);
   assert.equal(q.cur?.line.text, 'Hide! Into a bush!', 'the next pass, half a minute on');
 });
+
+test('the control test: the opener teaches the jump and gap 3 the double jump (qa-fix-e, Matt-approved rows ctest.gaps and ctest.gap3)', () => {
+  const opener = engineGuideLine('Jump across the gaps', 'ctest', { dot: true })!;
+  assert.equal(opener.text, 'Flick up to jump the gaps.');
+  assert.equal(opener.move, 'jump');
+  const gap3 = engineGuideLine('This one needs two jumps: jump, then jump again in the air', 'ctest', { dot: true })!;
+  assert.equal(gap3.text, 'Flick up again midair to jump twice.');
+  assert.equal(gap3.move, 'double');
+  // seed 7920 said nothing for 24 s: the opening lines were dropped because he was already running when Dot could first speak
+  const g = globalThis as unknown as { location?: unknown };
+  const was = g.location;
+  g.location = { hash: '#ctest', search: '' };
+  for (const help of ['reminders', 'teach'] as const) {
+    const q = new GuideQueue(true);
+    const say = new DotSay(q, help, new Set(['move:run']), new Set(['run']));
+    assert.ok(say.say(engineGuideLine('Run to the flowers and stop on them', '1-2', { dot: true })!, 0), help);
+    q.tick(2600, { danger: false, moveCount: (m: MoveId) => (m === 'run' ? 40 : 0) });
+    assert.equal(q.cur?.line.key, 'engine:ctest.runStop', `${help}: said, though he is running and has run before`);
+  }
+  g.location = was;
+  // a stage's own words that match a test row are an ordinary tip there (1-3 said the bounce in every stage)
+  const bounce = engineGuideLine('Flick up onto the mushroom to bounce.', '1-3', { dot: true });
+  assert.ok(!bounce?.ctest);
+});
+
+test('no ring and no arrow, for good (Matt, 2026-10-29: "Lets remove this from the game. Its ugly and gives everything away.")', async () => {
+  const fs = await import('node:fs');
+  const files = ['src/components/dot/DotGuide.tsx', 'src/components/dot/dotGuide.css', 'src/components/hud/painted.tsx'];
+  for (const f of files) {
+    const s = fs.readFileSync(f, 'utf8');
+    assert.doesNotMatch(s, /dg-ring|dg-arrow|ringBox|dotGuideTarget/, f);
+  }
+});
