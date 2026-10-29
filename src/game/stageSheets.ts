@@ -24,6 +24,9 @@
  *   anim:<name>    a clip sheet on its own (Meeca's stage: Pell and the soldiers)
  *   props2         World 1's second sheet (bushes, trunk hollows: protoArt.ts PROTO2_URL), for the stages that have them (STAGE_DRAWS)
  *   perch          Dot's perched poses (components/hud/painted.tsx), in every stage she flies in
+ *   stage-art      the painted checkpoint post, hearts, power-ups, Thorn Gate, story finds and 4-8's netting (stageArt.ts): every stage
+ *   gate:<w>       the world's painted exit gate, shut and open (stageArt.ts): every stage
+ *   pit-water:<w>  Worlds 1, 3, 4 and 5's painted pit water (stageArt.ts): every stage in those worlds
  *
  * (QA 2026-10-29, Android Chrome: 'blank wait' at 80 s and 179 s for the golden snake's heads and the snake sheet, at 201 s for the
  * eagle, at 650 s for Dot's perch: those sheets were asked for only when each first came on screen. stageSheets.test.ts builds every
@@ -125,9 +128,9 @@ export interface SheetSwitches {
 
 export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>, sw: SheetSwitches): string[] {
   // the puzzle kit's test room: World 1's painted ground, the kit's pieces, and World 4's sheet for the trade room's capuchin
-  if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch'];
+  if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props', 'perch', ...everyStage(1)];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
-  if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier', 'anim:flicker'];
+  if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier', 'anim:flicker', ...everyStage(5)];
   const w = cfg.worldIndex;
   // (a gen2 stage is built like a hand-built one, with World 5's dressing, whatever the switch: gen2/game.ts)
   const built = !cfg.secret && ((sw.ctest && cfg.id === CTEST_STAGE_ID) || (sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])) || isGen2Stage(cfg));
@@ -159,5 +162,15 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (isGen2Stage(cfg) && W6_SWIM_STAGES.includes(cfg.id)) out.push('swim');
   // Dot's perched poses: she perches in every stage (not her own flight, nor Meeca's stage, which has no Dot)
   out.push('perch');
+  out.push(...everyStage(w));
   return out;
 }
+
+/** the painted pieces every stage shows (stageArt.ts): the shared sheet, the world's exit gate and, in Worlds 1, 3, 4 and 5, its pit water */
+export function everyStage(w: number): string[] {
+  const out = ['stage-art', `gate:${Math.max(1, Math.min(10, w))}`];
+  if (PIT_WATER_WORLDS.includes(w)) out.push(`pit-water:${w}`);
+  return out;
+}
+/** the worlds with painted pit water of their own (World 2 has its rivers, Worlds 6-10 the dirty water) */
+export const PIT_WATER_WORLDS: readonly number[] = [1, 3, 4, 5];

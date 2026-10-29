@@ -41,6 +41,7 @@ import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
 import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
 import { perfNote } from './perfLog.ts';
+import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stageArtReady } from './stageArt.ts';
 import type { LevelConfig } from './types.ts';
 
 type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
@@ -101,6 +102,20 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'perch') {
       perchArtReady();
       urls.push(DOT_PERCH_URL);
+    } else if (k === 'stage-art') {
+      stageArtReady();
+      urls.push(STAGE_ART_URL);
+    } else if (k.startsWith('gate:')) {
+      const w = Number(k.slice(5));
+      gateArtReady(w);
+      urls.push(gateUrl(w));
+    } else if (k.startsWith('pit-water:')) {
+      const w = Number(k.slice(10));
+      const u = pitWaterUrl(w);
+      if (u) {
+        pitWaterReady(w);
+        urls.push(u);
+      }
     } else if (k.startsWith('anim:')) {
       const n = k.slice(5);
       warmCreatureAnims([n]);

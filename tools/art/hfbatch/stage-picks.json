@@ -16,5 +16,15 @@
  "gate-w7": "gate-w7-s70-7",
  "gate-w8": "gate-w8-s70-23",
  "gate-w9": "gate-w9-s70-7",
- "gate-w10": "gate-w10-s70-7"
+ "gate-w10": "gate-w10-s70-7",
+ "gate-w5": "gate-w5-s55-7",
+ "gateopen-w1": "gateopen-w1-s60-7",
+ "gateopen-w2": "gateopen-w2-s60-7",
+ "gateopen-w3": "gateopen-w3-s60-7",
+ "gateopen-w4": "gateopen-w4-s60-7",
+ "gateopen-w6": "gateopen-w6-s60-7",
+ "gateopen-w7": "gateopen-w7-s60-7",
+ "gateopen-w8": "gateopen-w8-s60-7",
+ "gateopen-w9": "gateopen-w9-s60-7",
+ "gateopen-w10": "gateopen-w10-s60-7"
 }

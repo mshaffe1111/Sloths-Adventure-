@@ -92,6 +92,7 @@ import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
+import { drawCheckpointArt } from './stageArt.ts';
 import { drawW4Bush } from './w4Art.ts';
 import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
 import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
@@ -4588,43 +4589,14 @@ export class GameEngine {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
       // World 5: the painted lace pennant
       if (this.w5?.drawFlag(ctx, cp, t, world.id)) continue;
-      ctx.save();
-      ctx.translate(cp.x, cp.y);
+      // the painted leaf-pennant post (stageArt.ts): unlit, then lit and fluttering once reached
       if (!cp.reached) {
         ctx.save();
-        ctx.translate(20, -52);
+        ctx.translate(cp.x + 20, cp.y - 52);
         drawAura(ctx, 'take', world.id, 30, 40, t, cp.x * 0.01);
         ctx.restore();
       }
-      ctx.strokeStyle = '#6b4423';
-      ctx.lineWidth = 6;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, -78);
-      ctx.stroke();
-      const wave = Math.sin(t * 5) * 4;
-      ctx.fillStyle = cp.reached ? '#fde047' : '#e5e7eb';
-      ctx.beginPath();
-      ctx.moveTo(2, -76);
-      ctx.quadraticCurveTo(26, -80 + wave, 46, -66 + wave * 0.6);
-      ctx.quadraticCurveTo(26, -58 + wave, 2, -52);
-      ctx.closePath();
-      ctx.fill();
-      ctx.fillStyle = cp.reached ? '#f59e0b' : '#9ca3af';
-      ctx.beginPath();
-      ctx.arc(22, -66 + wave * 0.5, 5, 0, Math.PI * 2);
-      ctx.fill();
-      if (cp.reached) {
-        const g = ctx.createRadialGradient(0, -60, 4, 0, -60, 60);
-        g.addColorStop(0, 'rgba(253, 224, 71, 0.45)');
-        g.addColorStop(1, 'rgba(253, 224, 71, 0)');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(0, -60, 60, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
+      drawCheckpointArt(ctx, cp.x, cp.y, cp.reached, t);
     }
     // the new generator's water warnings (gen2 proto.gen2.waterWarnings): the painted warning sign at the water's edge (World 5's garden
     // sign, the jungle one in the other worlds: waterSign.ts), a plain post with a wave on it while its sheet loads
