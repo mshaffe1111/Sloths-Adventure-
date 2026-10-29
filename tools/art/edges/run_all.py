@@ -43,8 +43,9 @@ RECIPES = [
     (['w5night'], '1baf7ca', ['--scale', '1', '--keep-line', '--despill', '--q', '82']),
 ]
 # the middle strips whose top edge is solid paint (trees, the cave roof run off it): upright that edge is on screen, so their top 7% fades
-# out into the far strip's painted sky (sideways those rows are always above the screen). Measured: alpha in their top rows.
-TOPFADE = {'w1', 'w1c', 'w3', 'w5', 'w5gold2', 'w5dusk1', 'w5dusk2', 'w5twi1', 'w5twi2', 'w5night', 'w7'}
+# out into the far strip's painted sky (sideways those rows are always above the screen). Measured: alpha in their top rows; w8's trees
+# start lower but are cut off just as straight (the fade starts at the first painted row).
+TOPFADE = {'w1', 'w1c', 'w3', 'w5', 'w5gold2', 'w5dusk1', 'w5dusk2', 'w5twi1', 'w5twi2', 'w5night', 'w7', 'w8'}
 
 # (before the native-resolution strips, 2026-10-29, Worlds 1-4, 6, 7 and 10 came from the 1024 px originals at 18bedcc^ with
 # ['--scale', '2', '--esrgan', '--ink'], and Worlds 8-9 from 9f2dbfe with ['--scale', '1', '--esrgan', '--ring', '2', '--ink'])

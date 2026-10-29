@@ -274,9 +274,11 @@ def process(src_rgba, scale=2.0, use_esrgan=False, ring=1.5, ink=False, do_despi
     if topfade > 0:
         # a middle strip whose top is solid paint: its top rows fade out (sideways they are always off screen; upright the trees
         # dissolve into the far strip's painted sky instead of ending in a straight cut)
+        # (from the strip's first painted row: w8-mid's trees start a quarter of the way down, cut off straight by the original crop)
+        r0 = int(np.argmax((out[..., 3] > 128).mean(1) > 0.01))
         n = max(1, int(round(out.shape[0] * topfade)))
         tt = np.linspace(0, 1, n, dtype=np.float32)
-        out[:n, :, 3] = np.round(out[:n, :, 3] * (tt * tt * (3 - 2 * tt))[:, None]).astype(np.uint8)
+        out[r0:r0 + n, :, 3] = np.round(out[r0:r0 + n, :, 3] * (tt * tt * (3 - 2 * tt))[: out.shape[0] - r0, None]).astype(np.uint8)
     return out, info
 
 

@@ -133,3 +133,10 @@ hfsky-pilot5  6ae3aaecc78863f9c62dd08a rtx-pro-6000 20:22:04Z-20:28:50Z (6.8 min
   Middle strips (w1-midtop): whole new misty scenes at the wrong scale in a pink haze, not keyable: dropped; the middle strips with a
   solid top fade out over their top 7% instead (defringe.py --topfade).
 pilots ~18 min = ~$0.83
+hfsky-all     6ae3acd4c78863f9c62dd2c1 rtx-pro-6000 cancelled at start (Matt 4:20 PM ET: no upscaling/outpaint from the low-res strips).
+X-16 hdset    6ae3afb40e0338d1bb7c2945 rtx-pro-6000 20:42:28Z-21:31:58Z (49.5 min, ~$2.27): ONE batched job (hdset.sh): all 34 far
+  strips and the 14 World 5 mood / W1 canopy middle and near strips repainted at native resolution (striphdgpu.py, s25, the HD near/mid
+  way), then the sky above each new far strip (skygpu.py, inpaint s100). KEPT: all 48 strips; 18 skies. 16 skies failed review (a
+  second landscape stacked above w6/w7/w9dawn/w3sinkhole, tile-panel ghosts on w1sunrise/w2/w5dusk2/w9, dark streaks on w5twi):
+  redone in round 2.
+X-16 skies r2 6ae3bc140e0338d1bb7c35e5 rtx-pro-6000 started 21:35:16Z: the 16, plain start, overlap 512, sky-only prompt, 2 seeds.
