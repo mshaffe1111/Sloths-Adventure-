@@ -16,7 +16,7 @@
  */
 import { rollLook } from '../artRoll.ts';
 import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
-import { airStep, DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, SWING, TAKEOFF_SLACK, type AirBody } from '../physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, pressWindow, reachGlide, reachJump, setTimedSwing, TAKEOFF_SLACK, TIMED } from '../physics.ts';
 import { skillGuaranteedAt } from '../skills.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
@@ -103,96 +103,31 @@ export const riseLimit = (dbl: boolean, share: number): number => share * (dbl ?
 // ───────────────────────────── the liana's reach ─────────────────────────────
 
 /**
- * The engine's self-swinging vine (branch vine-fix 7d09039, Matt-approved 2026-10-28), mirrored here until it is on main: one there-and-
- * back every `period` s (Normal 2.85, Easy 3.3), at most `amp` radians either side, the sweet spot (a let-go there is the Tarzan leap)
- * between these shares of the swing past straight down, the press forgiveness (RELEASE), the flights a let-go can make (LETGO_FLIGHTS)
- * and the grips a check tries (shares of the vine's length). The pipeline test fails if physics.ts's own numbers drift from these.
+ * The engine's self-swinging vine (physics.ts TIMED, setTimedSwing): one there-and-back every `period` s (Normal 2.85, Easy 3.3), at
+ * most `amp` radians either side, the sweet spot (a let-go there is the Tarzan leap) between these shares of the swing past straight
+ * down. The swing a liana gets when its setting names none; the pipeline test fails if physics.ts's own numbers drift from these.
  */
 export const VINE = {
   period: { normal: 2.85, easy: 3.3 },
   amp: 0.45,
   sweet: { normal: [-0.15, 0.9], easy: [-0.4, 1.2] },
-  release: { late: 0.36, early: 0.32, lateFrom: 0.375, earlyFrom: -0.875 },
-  flights: [{ held: 99, dbl: 99 }, { held: 7, dbl: 99 }, { held: 99, dbl: 0.15 }, { held: 99, dbl: 0.3 }, { held: 99, dbl: 0.45 }],
-  grips: [0.7, 0.95],
 } as const;
 
 /**
  * The release window of a liana (s): of ONE swing, how long a press to let go toward the perch gets him onto it (its top `far.y`, from
- * `far.x` for `far.w` px), the worse of his two grips. The ONE place gen2 sizes a swing by, and the same calculation as vine-fix's
- * physics.ts pressWindow: the vine swings by itself (`swing`: amp, period on the game clock); in the sweet spot the let-go is the
- * Tarzan leap; a beat early the press waits for it, a beat late it is the sweet spot's leap; anywhere else a hop off the vine; each
- * flight tries the jump held, a flick and the second jump at three moments.
+ * `far.x` for `far.w` px), the worse of his two grips. The ONE place gen2 sizes a swing by: the engine's own physics.ts pressWindow (the
+ * press as engine.ts plays it, RELEASE's forgiveness, timedLaunch's leap, LETGO_FLIGHTS) on this difficulty's swing (setTimedSwing, put
+ * back as it was after).
  */
 export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, far: { x: number; y: number; w: number }, difficulty: Difficulty): number {
-  const DT = 1 / 30;
-  const L = v.bottomY - v.topY;
-  const { amp, period } = swing;
-  const [sweetFrom, sweetTo] = VINE.sweet[difficulty];
-  const n = Math.round(period / DT);
-  const w = (2 * Math.PI) / period;
-  const top = amp * w;
-  const sweetAt = (a: number, om: number) => amp < 0.05 || (om > 0 && Math.abs(om) > 0.075 * top && a / amp >= sweetFrom && a / amp <= sweetTo);
-  let worst = Infinity;
-  for (const g of VINE.grips) {
-    // (the grip a check takes: caught 40 px short of the vine, `g` of the way down it; swingGrab)
-    const len = Math.max(SWING.minLen, Math.min(Math.max(SWING.minLen, L - 10), Math.hypot(-40, Math.max(Math.min(L * g, L - 20), SWING.minLen * 0.6))));
-    const st: Array<{ a: number; om: number; x: number; y: number; sweet: boolean }> = [];
-    for (let k = 0; k < 2 * n + 20; k++) {
-      const t = (k + 1) * DT;
-      const a = amp * Math.sin(w * t);
-      const om = top * Math.cos(w * t);
-      st.push({ a, om, x: v.x + Math.sin(a) * len, y: v.topY + Math.cos(a) * len, sweet: sweetAt(a, om) });
-    }
-    const launch = (q: (typeof st)[number]) => {
-      const tang = q.om * len;
-      const vx = Math.cos(q.a) * tang;
-      const vy = -Math.sin(q.a) * tang;
-      if (q.sweet) return { vx: Math.max(SWING.leapMin, Math.min(SWING.leapMax, Math.abs(vx) * 1.15 + 120)), vy: Math.max(SWING.leapVyMin, Math.min(-PHYS.vineReleaseV, vy - 300)) };
-      return { vx: Math.max(-300, Math.min(300, vx * 0.6)), vy: Math.max(vy * 0.6, -260) - 120 };
-    };
-    let lastSweet = -1e9;
-    let snap: (typeof st)[number] | null = null;
-    for (let k = 0; k < n; k++) if (st[k].sweet) (lastSweet = k), (snap = st[k]);
-    let ok = 0;
-    for (let k = n; k < 2 * n; k++) {
-      if (st[k].sweet) (lastSweet = k), (snap = st[k]);
-      const q = st[k];
-      const a = q.a / (amp || 1);
-      const call = q.sweet ? 'sweet' : (k - lastSweet) * DT <= VINE.release.late && a >= VINE.release.lateFrom ? 'late' : q.om > 0 && a >= VINE.release.earlyFrom && a < sweetFrom ? 'early' : 'now';
-      let at = k;
-      let from = q;
-      if (call === 'late' && snap) from = snap;
-      if (call === 'early') {
-        let m = k;
-        while (m < k + Math.round(VINE.release.early / DT) && !st[m].sweet) m++;
-        at = m;
-        from = st[m];
-      }
-      const l = launch(from);
-      let made = false;
-      for (const f of VINE.flights) {
-        const c: AirBody = { x: st[at].x, y: st[at].y, vx: l.vx, vy: l.vy };
-        let t = 0;
-        let used = false;
-        for (let i = 1; i <= 90 && !made; i++) {
-          if (!used && t >= f.dbl) {
-            c.vy = -PHYS.doubleV;
-            used = true;
-          }
-          const prevY = c.y;
-          airStep(c, DT, 1, i <= f.held);
-          t += DT;
-          if (c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w) made = true;
-          if (c.y > v.bottomY + 500) break;
-        }
-        if (made) break;
-      }
-      if (made) ok++;
-    }
-    worst = Math.min(worst, ok * DT);
+  const was = { ...TIMED };
+  setTimedSwing(difficulty === 'easy');
+  try {
+    const A = { x: v.x, topY: v.topY, bottomY: v.bottomY, swingAmp: swing.amp, swingPeriod: swing.period, swingPhase: 0 };
+    return pressWindow(A, (c, _t, prevY) => c.vy >= 0 && prevY <= far.y + 14 && c.y >= far.y && c.x > far.x + 10 && c.x < far.x + far.w) / 1000;
+  } finally {
+    Object.assign(TIMED, was);
   }
-  return worst;
 }
 
 /**
