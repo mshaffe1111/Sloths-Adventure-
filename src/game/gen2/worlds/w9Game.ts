@@ -24,9 +24,9 @@ const forStage = (stage: number, id: string): boolean => (id === 'w9-first-geyse
 
 // (the plain lava chasm stays every theme's: a fallback that fits any node)
 const LAVA = ['w9-lava-rise', 'w9-lava-drop', 'w9-crust-gaps'];
-const GEYSERS = ['w9-geyser-pair', 'w9-geyser-row', 'w9-geyser-chasm', 'w9-geyser-ledge'];
+const GEYSERS = ['w9-geyser-pair', 'w9-geyser-row', 'w9-geyser-chasm', 'w9-geyser-ledge', 'w9-geyser-brink'];
 const BASALT = ['w9-basalt-run', 'w9-basalt-twin'];
-const HUNT = ['w9-hunter-run', 'w9-cat-chasm'];
+const HUNT = ['w9-hunter-run', 'w9-cat-chasm', 'w9-hunter-brink'];
 const CATS = ['w9-cat-den', 'w9-jaguar-leap'];
 const HARPIES = ['w9-harpy-field', 'w9-harpy-gap'];
 const BOAS = ['w9-boa-vents', 'w9-boa-knobs'];

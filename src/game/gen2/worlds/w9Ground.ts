@@ -8,10 +8,10 @@
  * waited out, an animal, a glide, the watcher's pass. No flat runs much over 400 px without one, so nothing is quiet for 2 s on Normal.
  * Every rise is one hop, every gap a share of the jump the difficulty allows.
  *
- * Falls (w9.ts header): a chasm is lava on Normal (a life), so a plain chasm is a third to a little over half of the jump envelope (`lava`,
- * STAGE-RULES §6), and the basalt between two chasms is 360 px or more (the leaf carries him over a shorter one and both chasms: the
- * glide trap, World 6's lesson). Wide (`wide`) and second-jump (`leap`) gaps keep a soft crust floor on every setting (w9Falls marks the
- * second-jump ones; `wide` is soft by its rule).
+ * Falls (w9.ts header): a chasm is lava on Normal (a life). A plain chasm (`lava`) is a half to four fifths of the jump envelope and a wide
+ * one (`wide`) nearly all of it (World 9 sits above World 8: STAGE-RULES §1b), every one in view before it is jumped, and the basalt
+ * between two chasms is 360 px or more (the leaf carries him over a shorter one and both chasms: the glide trap, World 6's lesson).
+ * Second-jump (`leap`) and glide gaps keep a soft crust floor on every setting (w9Falls), and Easy's falls are all soft.
  *
  * Geysers (w9.ts emitters): a `geyser` prop socket lays a column over its piece. Two columns on one flat stand 200 px or more apart (the
  * check's safe pocket is 110 px between their edges); an animal never stands on a flat with a geyser (nothing stands in a zone), so the
@@ -73,12 +73,14 @@ const bank = (key: string, w: W, place: SectionPiece['place'] = { kind: 'start' 
 const up = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'walk', after, dy: -dy });
 const down = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'walk', after, dy });
 /** a lava chasm jumped: a third to a little over half of the envelope (a life on Normal) */
-const lava = (key: string, after: string, w: W, share: W = [0.36, 0.56], landing = false): SectionPiece =>
+const lava = (key: string, after: string, w: W, share: W = [0.55, 0.8], landing = false): SectionPiece =>
   bank(key, w, { kind: 'pit', after, jump: 'jump', share }, landing ? { landing } : {});
+/** a chasm at the edge of a jump (the hard ones of the hot sections: the noisy thumb misses some) */
+const BRINK: W = [0.86, 0.98];
 /** a lava chasm up or down a step: a jump with a rise */
-const lavaUp = (key: string, after: string, dy: W, w: W, share: W = [0.4, 0.58]): SectionPiece => bank(key, w, { kind: 'jump', after, dy, share }, { landing: true });
+const lavaUp = (key: string, after: string, dy: W, w: W, share: W = [0.55, 0.78]): SectionPiece => bank(key, w, { kind: 'jump', after, dy, share }, { landing: true });
 /** a wide chasm with a soft crust floor: the jump's own width (a real jump, never a life) */
-const wide = (key: string, after: string, w: W, share: W = [0.76, 0.92]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share, soft: true }, { landing: true });
+const wide = (key: string, after: string, w: W, share: W = [0.84, 0.96]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share }, { landing: true });
 /** a wide chasm crossed with the second jump, soft (w9Falls) */
 const leap = (key: string, after: string, w: W, share: W = [0.5, 0.72]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'double', share }, { landing: true });
 /** a chasm only the leaf crosses (pipeline glideGap), soft and climbing back to the take-off (w9Falls) */
@@ -248,8 +250,8 @@ const restNook = section({
   archetypes: 'any',
   phases: ['rest', 'goal'],
   difficulty: 1,
-  pieces: [bank('a', [180, 220]), down('nook', 'a', 40, [260, 300]), up('k', 'nook', 32, [140, 160]), up('b', 'k', 8, [160, 200])],
-  last: 'b',
+  pieces: [bank('a', [150, 180]), down('nook', 'a', 40, [230, 260]), up('k', 'nook', 32, [130, 150]), up('b', 'k', 8, [120, 140]), up('k2', 'b', 30, [130, 150]), down('c', 'k2', 30, [140, 160])],
+  last: 'c',
   exitDy: 0,
   sockets: [scenery('ohia', 'a', [0.3, 0.5], 0.8), flag('nook', 0.5), petals('nook', 'nook', 0.2, 1), petals('k', 'k', 0.5, 1), scenery('smoke', 'b', [0.5, 0.7], 0.5)],
   mirrorable: false,
@@ -262,13 +264,13 @@ const restWarm = section({
   archetypes: 'any',
   phases: ['rest', 'goal'],
   difficulty: 1,
-  pieces: [bank('a', [180, 220]), up('shelf', 'a', 44, [280, 320]), down('s', 'shelf', 22, [140, 160]), down('b', 's', 22, [180, 220])],
-  last: 'b',
+  pieces: [bank('a', [150, 180]), up('shelf', 'a', 44, [240, 270]), down('s', 'shelf', 22, [120, 140]), down('b', 's', 22, [130, 150]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [140, 160])],
+  last: 'c',
   sockets: [scenery('smoke', 'a', [0.4, 0.6], 1), flag('shelf', 0.5), petals('s1', 'shelf', 0.2, 1), petals('s', 's', 0.5, 1)],
   mirrorable: false,
 });
 
-const ashK = knobs('', 'a', 2, [160, 190], [30, 36]);
+const ashK = knobs('', 'a', 3, [130, 150], [30, 36]);
 /** 9-6's and 9-9's breather: a bank of ash by a charred log, two knobs */
 const restAsh = section({
   id: 'w9-rest-ash',
@@ -289,8 +291,8 @@ const restLedge = section({
   archetypes: 'any',
   phases: ['rest', 'goal'],
   difficulty: 1,
-  pieces: [bank('a', [160, 200]), up('s1', 'a', 36, [140, 160]), up('top', 's1', 36, [240, 280]), down('s2', 'top', 36, [140, 160]), down('b', 's2', 36, [160, 200])],
-  last: 'b',
+  pieces: [bank('a', [140, 170]), up('s1', 'a', 36, [130, 150]), up('top', 's1', 36, [220, 250]), down('s2', 'top', 36, [130, 150]), down('b', 's2', 36, [120, 140]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [140, 160])],
+  last: 'c',
   sockets: [petals('s1', 's1', 0.5, 1), flag('top', 0.5), scenery('ohia', 'top', [0.8, 0.9], 0.7), petals('s2', 's2', 0.5, 1)],
   mirrorable: false,
 });
@@ -319,7 +321,7 @@ const lavaRise = section({
   phases: MID,
   difficulty: 5,
   weight: SHARED,
-  pieces: [bank('a', [360, 400]), lavaUp('b', 'a', [-56, -44], [380, 420]), up('k', 'b', 30, [140, 160]), down('b2', 'k', 30, [200, 240]), lava('c', 'b2', [380, 420], [0.36, 0.5])],
+  pieces: [bank('a', [360, 400]), lavaUp('b', 'a', [-56, -44], [380, 420]), up('k', 'b', 30, [140, 160]), down('b2', 'k', 30, [200, 240]), lava('c', 'b2', [380, 420], BRINK)],
   last: 'c',
   sockets: [petals('a', 'a', 0.45, 2, 90), petals('k', 'k', 0.5, 1), petals('b2', 'b2', 0.5, 1), foe('foe', 'c', [0.5, 0.6], ANY, 3, { phases: HOT, chance: 0.6 })],
   mirrorable: true,
@@ -414,7 +416,7 @@ const geyserChasm = section({
   difficulty: 7,
   uses: [GEYSER],
   extraSeconds: GEYSER_WAIT * 2,
-  pieces: [bank('a', [420, 460]), lava('b', 'a', [420, 460], [0.36, 0.5]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  pieces: [bank('a', [420, 460]), lava('b', 'a', [420, 460], BRINK), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
   last: 'c',
   sockets: [geyser('g1', 'a', 0.72), petals('a', 'a', 0.3, 1), geyser('g2', 'b', 0.3), petals('b', 'b', 0.7, 1), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
@@ -433,6 +435,21 @@ const geyserLedge = section({
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'ledge', 0.5), petals('l1', 'ledge', 0.15, 1), petals('l2', 'ledge', 0.85, 1), petals('k', 'k', 0.5, 1), scenery('ohia', 'c', [0.5, 0.7], 0.5)],
   exitDy: 0,
+  mirrorable: true,
+});
+
+/** a chasm at the edge of a jump onto a flat with a geyser on it: time the jump to land in its quiet spell, then a second chasm */
+const geyserBrink = section({
+  id: 'w9-geyser-brink',
+  name: 'chasm onto a geyser',
+  archetypes: 'any',
+  phases: HOT,
+  difficulty: 8,
+  uses: [GEYSER],
+  extraSeconds: GEYSER_WAIT,
+  pieces: [bank('a', [300, 340]), lava('b', 'a', [440, 480], BRINK, true), lava('c', 'b', [300, 340], [0.62, 0.8])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'b', 0.42), petals('b', 'b', 0.85, 1), petals('c', 'c', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -494,9 +511,22 @@ const catChasm = section({
   phases: LIVE,
   difficulty: 6,
   weight: SHARED,
-  pieces: [bank('a', [520, 560]), lava('b', 'a', [480, 520], [0.38, 0.52]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  pieces: [bank('a', [520, 560]), lava('b', 'a', [480, 520], BRINK), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
   last: 'c',
   sockets: [foe('cat', 'a', [0.4, 0.5], CATS, 5), petals('a', 'a', 0.85, 1), foe('small', 'b', [0.45, 0.55], SMALL, 3, { phases: HOT, chance: 0.7 }), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** a chasm at the edge of a jump onto a hunter's flat: land, and it is already coming */
+const hunterBrink = section({
+  id: 'w9-hunter-brink',
+  name: 'chasm onto a hunter',
+  archetypes: 'any',
+  phases: HOT,
+  difficulty: 8,
+  pieces: [bank('a', [300, 340]), lava('b', 'a', [520, 560], BRINK, true), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [180, 220])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -550,7 +580,7 @@ const ventLanding = section({
   difficulty: 7,
   uses: [W9_THEME.vents, GEYSER],
   extraSeconds: GEYSER_WAIT,
-  pieces: [bank('a', [380, 420]), lava('b', 'a', [520, 560], [0.36, 0.5], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  pieces: [bank('a', [380, 420]), lava('b', 'a', [520, 560], [0.55, 0.72], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'b', 0.62), petals('b', 'b', 0.25, 1), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
@@ -564,7 +594,7 @@ const chasmChain = section({
   phases: ALL,
   difficulty: 7,
   uses: [W9_THEME.chasms],
-  pieces: [bank('a', [280, 320]), lava('b', 'a', [360, 380]), lavaUp('c', 'b', [-48, -36], [360, 380]), lava('d', 'c', [360, 400], [0.38, 0.54])],
+  pieces: [bank('a', [280, 320]), lava('b', 'a', [360, 380]), lavaUp('c', 'b', [-48, -36], [360, 380]), lava('d', 'c', [360, 400], [0.58, 0.76])],
   last: 'd',
   sockets: [petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.3, 1)],
   exitDy: -42,
@@ -579,7 +609,7 @@ const chasmDrop = section({
   phases: ALL,
   difficulty: 6,
   uses: [W9_THEME.chasms],
-  pieces: [bank('a', [360, 400]), wide('b', 'a', [380, 420]), lavaUp('c', 'b', [40, 56], [520, 560], [0.38, 0.52])],
+  pieces: [bank('a', [360, 400]), wide('b', 'a', [380, 420]), lavaUp('c', 'b', [40, 56], [520, 560], [0.58, 0.76])],
   last: 'c',
   exitDy: 48,
   sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 90), foe('cat', 'c', [0.5, 0.6], CATS, 5, { phases: LIVE, chance: 0.7 })],
@@ -677,7 +707,7 @@ const spireChasm = section({
   difficulty: 7,
   uses: [W9_THEME.spires],
   extraSeconds: 3,
-  pieces: [bank('a', [380, 420]), lava('b', 'a', [380, 420], [0.36, 0.5]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [320, 360])],
+  pieces: [bank('a', [380, 420]), lava('b', 'a', [380, 420], BRINK), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [320, 360])],
   last: 'c',
   sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.5), petals('b0', 'b', 0.2, 1), watch('b', 0.05, 'watch2'), hideAt('h2', 'b', 0.6), watch('c', 0.05, 'watch3'), hideAt('h3', 'c', 0.55), foe('foe', 'c', [0.85, 0.9], SMALL, 3, { phases: HOT, chance: 0.4 })],
   mirrorable: true,
@@ -755,7 +785,7 @@ const glideHigh = section({
   phases: LIVE,
   difficulty: 7,
   uses: [W9_THEME.glides],
-  pieces: [bank('a', [340, 380]), glide('b', 'a', [440, 480], [0.6, 0.72]), lava('c', 'b', [380, 420], [0.36, 0.5])],
+  pieces: [bank('a', [340, 380]), glide('b', 'a', [440, 480], [0.6, 0.72]), lava('c', 'b', [380, 420], [0.55, 0.72])],
   last: 'c',
   sockets: [vent('v1', 'a'), petals('b', 'b', 0.5, 2, 100), petals('c', 'c', 0.5, 1), scenery('ohia', 'c', [0.6, 0.8], 0.5)],
   mirrorable: false,
@@ -833,7 +863,7 @@ const jaguarLeap = section({
   archetypes: ['purge', 'gauntlet'],
   phases: LIVE,
   difficulty: 8,
-  pieces: [bank('a', [380, 420]), lava('b', 'a', [560, 600], [0.36, 0.5], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  pieces: [bank('a', [380, 420]), lava('b', 'a', [560, 600], BRINK, true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), foe('jag', 'b', [0.55, 0.65], ['jaguar'], 5), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
@@ -923,7 +953,7 @@ const highLedge = section({
   phases: ALL,
   difficulty: 5,
   uses: [W9_THEME.ledges],
-  pieces: [bank('a', [240, 280]), up('s1', 'a', 52, [160, 180]), up('top', 's1', 52, [340, 380]), lavaUp('c', 'top', [80, 96], [400, 440], [0.4, 0.55])],
+  pieces: [bank('a', [240, 280]), up('s1', 'a', 52, [160, 180]), up('top', 's1', 52, [340, 380]), lavaUp('c', 'top', [80, 96], [400, 440], [0.58, 0.76])],
   last: 'c',
   exitDy: -16,
   sockets: [petals('s1', 's1', 0.5, 1), thread('r', 'top', 0.6), petals('top', 'top', 0.25, 1), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 })],
@@ -968,7 +998,7 @@ const ventThread = section({
   difficulty: 7,
   uses: [W9_THEME.channels, GEYSER],
   extraSeconds: GEYSER_WAIT,
-  pieces: [bank('a', [360, 400]), lava('b', 'a', [520, 560], [0.36, 0.5], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [240, 280])],
+  pieces: [bank('a', [360, 400]), lava('b', 'a', [520, 560], BRINK, true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [240, 280])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'b', 0.45), thread('r', 'b', 0.85), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
@@ -993,10 +1023,12 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
   geyserRow,
   geyserChasm,
   geyserLedge,
+  geyserBrink,
   basaltRun,
   basaltTwin,
   hunterRun,
   catChasm,
+  hunterBrink,
   ...pepperGates,
   ventField,
   ventLanding,
