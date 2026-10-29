@@ -43,5 +43,11 @@ Rough spots named plainly:
 ## Checks
 
 - `npx tsc --noEmit -p .`: clean.
-- Full suite (audio, game, gen2, gen2/worlds, components, components/**, tools/inspect, tools/gen2): 1823 tests, 1820 pass, 1 TODO (4-3's boulder test, marked TODO before this branch). The one failure in that run was the far-strip width test, which it ran before I updated it. The 11 files those late changes touch were re-run on the final strips: 25 of 25 pass.
+- Full suite (audio, game, gen2, gen2/worlds, components, components/**, tools/inspect, tools/gen2) on f57f673: 1823 tests, 1821 pass, 0 fail, 2 TODO (4-3's boulder test among them, marked TODO before this branch).
 - `npx vite build`: clean, nothing in dist/assets over 4 MiB.
+
+## Lead spot-check answers (2026-10-29)
+
+1. `st1-after-1-1-up-1` ending "THE SLOTH, w" was the typewriter caught mid-line. The words box reserves the whole text from the start (the rest is laid out invisible), so nothing is clipped. With the typing done, the line ends "with an arrow pointing up." (`st1-after-1-1-up-0.jpg`). Upright, the picture is now a 4:3 window sitting on the words box (it was 16:9 and centred). The words area keeps a steady 290 px, so the picture stays put from panel to panel. A dark band stays above the picture: filling it would need a window taller than 4:3, which shows less than 720 units of scene and cuts figures standing near the edges. That is a framing call for the story art, not this pass.
+2. The 7-1 figure is not drawn at partial alpha: the 'tired' frame is opaque in the atlas, and it is drawn at full alpha (the bloom and the cap never touch alpha). What reads as see-through is the 'dusk' mood, a 35% purple-to-orange fill over the whole picture, actors included, which flattens his browns toward the ruins. The before shot has the same wash; its legs were just cropped off by the zoom. The fix is ST-2 (light the actors on their own), not part of A1. Crops: `st1-7-1-figure.jpg` (before, after, the frame as painted). While checking, I found and fixed a real see-through case: story busts (frames painted cut off at the chest) melt away over their bottom fifth, and the sideways lift would have stood that melt over the picture. With a bust in the panel, the melt now stays behind the box top.
+3. See Checks above.
