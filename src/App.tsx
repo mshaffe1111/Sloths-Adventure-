@@ -28,6 +28,7 @@ import { MEMORIES, finalePanels, loadMemories, nextAfterBoss, saveMemories, with
 import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
+import { BossIntroCard } from './components/BossCards.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
@@ -264,6 +265,8 @@ export default function App() {
   const [badgeStore, setBadgeStore] = useState<BadgeStore>(() => loadBadgeStore());
   const [cosmetic, setCosmetic] = useState<CosmeticChoice>(() => loadCosmetic());
   const [freshBadges, setFreshBadges] = useState<BadgeDef[]>([]);
+  /** the guardian's card is up (after its scene, before the fight) */
+  const [bossCard, setBossCard] = useState(false);
   // the one-time tip for a phone that can't keep up (slowTip.ts): opened inside an app's own browser, or far too slow in play
   const [slowTip, setSlowTip] = useState<string | null>(() =>
     typeof navigator !== 'undefined' && inAppOf(navigator.userAgent) && !slowTipShown() ? slowTipText(navigator.userAgent) : null,
@@ -331,6 +334,10 @@ export default function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, allLevels, secretFound, thornHeart]);
+  // the guardian's card belongs to this one visit to its scene
+  useEffect(() => {
+    if (screen !== 'boss_intro') setBossCard(false);
+  }, [screen]);
   // the stage-cleared card showed this run's medals in its own row (UI-9): no pop-up for the same medals once the card closes
   const wasVictory = useRef(false);
   useEffect(() => {
@@ -537,7 +544,9 @@ export default function App() {
       const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
       if (!lvl) return;
       setActiveLevel(lvl);
-      setScreen(scr as never);
+      // ('boss_card': the guardian's card that follows its scene)
+      setBossCard(scr === 'boss_card');
+      setScreen((scr === 'boss_card' ? 'boss_intro' : scr) as never);
     };
   }
 
@@ -1003,7 +1012,7 @@ export default function App() {
       )}
 
       {/* Boss showdown */}
-      {screen === 'boss_intro' && (
+      {screen === 'boss_intro' && !bossCard && (
         <StoryPlayer
           panels={
             activeLevel.secret
@@ -1012,7 +1021,17 @@ export default function App() {
           }
           finishLabel="FIGHT!" finishIcon="swords"
           skipLabel="Skip to fight"
-          onFinish={() => launchEngine(activeLevel)}
+          onFinish={() => setBossCard(true)}
+        />
+      )}
+      {/* after the guardian's scene: its card, with Dot's one line, then the fight (UI-5) */}
+      {screen === 'boss_intro' && bossCard && (
+        <BossIntroCard
+          levelConfig={activeLevel}
+          onGo={() => {
+            setBossCard(false);
+            launchEngine(activeLevel);
+          }}
         />
       )}
 
@@ -1251,7 +1270,6 @@ export default function App() {
             engineRef.current?.stop();
             setScreen('story_cutscene');
           }}
-          onStartBossFight={() => launchEngine(activeLevel)}
         />
       )}
 
