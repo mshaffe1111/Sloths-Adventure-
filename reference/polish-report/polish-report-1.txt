@@ -1,0 +1,1852 @@
+Sloths Rainforest Adventures: polish review and grades
+
+Oct 29, 2026 · @Matt Shaffer
+
+Start here
+
+This is the one hand-off document for the polish work: the graded
+review, what Build 1 changed, what comes next, and the decisions only
+Matt can make. Each issue below has its file and line, the fix and any
+art needed, so it can be picked up without a conversation.
+
+Where the game stands: C against big-studio mobile platformers and B−
+against independent ones. For a first game that's a strong place to
+stand. The art direction, World 6 on the new generator, the wood-kit
+menus and the idea of Dot are already at indie-A level. What pulls the
+grade down is finish, not vision: controls that misread a few percent of
+the time, backdrops blurred and outlined by an upscale, effects that are
+loud and pingy, story scenes softer than the gameplay, and older stages
+that break rules the new generator already follows. Matt's target is A+
+against indies and B or better against big studios, ideally an A. Indie
+A+ is reachable; B+ against big studios is realistic for Worlds 1-6, and
+an A is possible with the hardest gaps closed (Path to the target).
+
+What the testers show: the control-test sheet is real people from Matt's
+tester link and the Facebook app, and everyone plays through now. Matt,
+Jen and Steph are the experienced players. Sally had never played a
+game; she finishes stages on Easy and has finished some on Normal, which
+is the best evidence that the on-ramp works.
+
+What's being worked on elsewhere: Worlds 7-10 and bosses 6-10 are being
+polished by the team right now, so they're noted, not graded. The new
+stage-piece generator shows from 5-7 and in all of World 6, and it's the
+reference look for the older worlds.
+
+Done:
+
+-   Build 1, the first-impression fixes, is built and on Matt's test
+    link. Every game test passes. It's waiting on Matt's phone check and
+    is not pushed to GitHub. Details and merge warnings are in Builds,
+    Build 1.
+
+-   This review: every category graded, both modes graded, Worlds 2-5,
+    4-D, 5-M, bosses 2-5 and the Stage Cleared screen covered.
+
+Next, in order:
+
+1.  Matt plays Build 1 on his phone (what to try is in Build 1).
+
+2.  Merge Build 1's branch into the main test branch, checking the
+    collision spots listed there against the Worlds 7-10 and bosses 6-10
+    work.
+
+3.  Build 2, the controls, is the recommended next build: the biggest
+    grade gain per day, all code.
+
+4.  Then Builds 3 to 12 in order. Matt can start the art for Builds 8
+    and 9 now.
+
+Open decisions for Matt (one at a time):
+
+-   Build 1: approve the four new 3-10 Dot tips, and "shrine" as the
+    exit's name everywhere.
+
+-   LV-3: should Easy hold back the double jump? Today both modes need
+    it from 1-6.
+
+-   CT-5: on a vine, should the second thumb's straight flick climb or
+    let go?
+
+-   CT-19: which side should the Pad default to?
+
+-   CT-13 and CT-27: should a Pad tap be a short hop, and should a
+    slanted standing flick carry forward?
+
+-   SN-1: keep the orchestral effects as the only set, or the old ones?
+
+-   DOT-12: is Dot's limit 8 words or under 10?
+
+Scorecard
+
+  ------------------------------------------------------------------------
+  Category         vs AAA  vs indies Why, in one line
+  ---------------- ------- --------- -------------------------------------
+  Overall          C       B−        Strong vision and art direction, held
+                                     back by finish
+
+  Visuals and art  C+      B         Lovely painted kits; blurred,
+                                     outlined backdrops and code-drawn
+                                     hazards
+
+  Animation and    C−      C+        Good hitstop and camera; no landing
+  game feel                          dust, stuttering background, no death
+                                     beat
+
+  Controls         C       B−        93% of clean flicks jump; the misses
+                                     cluster on grips and on vines; no
+                                     tilt
+
+  Sound and music  C−      C+        Ambitious live orchestral music;
+                                     pingy, uneven effects and silent
+                                     moments
+
+  Story and        C−      C+        Real heart; scenes softer than
+  cutscenes                          gameplay, the carvings payoff missing
+
+  Dot and hints    C       B−        Works for newcomers; spoils puzzles
+                                     and loses tips before they're shown
+
+  Level design and C+      B         Worlds 1-4 teach well, World 6 is A−;
+  difficulty                         Normal goes flat, World 5 is three
+                                     builders
+
+  Easy mode        C+      B         A real on-ramp (Sally finishes
+                                     stages); invisible, and harsher on
+                                     old stages
+
+  Normal mode      C       B−        Assist fades well; stages stop
+                                     getting harder after World 2
+
+  Menus and UI     C+      B         Menus and Game Over are B+; Stage
+                                     Cleared is static and hides Pokey in
+                                     portrait
+
+  Performance and  C       B−        Android holds 30 fps; iPhone portrait
+  tech                               dips to 21
+  ------------------------------------------------------------------------
+
+Reference games: Super Mario Run and Rayman Adventures / Rayman Jungle
+Run for AAA; Leo's Fortune, Oddmar and Alto's Adventure for indies.
+Worlds 7-10 and bosses 6-10 are being polished and aren't graded.
+
+How this was reviewed
+
+The review is against main at 02ac7f5 and the live GitHub Pages site,
+and nothing in the repo was changed.
+
+-   Played: Worlds 1, 2, 3, 4-D, 5-M, 5-7 (the new generator), 6, 7 and
+    9, the 1-10 boss and a game over, in a desktop browser held at
+    landscape phone size. Portrait can't be played in that browser, so
+    portrait was judged from the code and from measurements.
+
+-   Read and measured: the engine, touch recogniser, HUD, Stage Cleared
+    and other cards, story player, Dot's guide, audio and every shipped
+    image and sound file. Image claims (blur, edge darkness, seams,
+    tiling) come from measuring the actual asset files at real phone
+    sizes. Sound claims come from measuring the files; nothing was
+    heard.
+
+-   Scripted: the engine and gesture code were run headless to confirm
+    the control bugs (the scripts are in the scratchpad check folder and
+    can become real tests). The repo's own inspectors were run for
+    pacing, difficulty bands, dead time, checkpoint spacing, Dot's
+    pacing and 16-roll variety on Worlds 1-6.
+
+-   Real players: the Sloths control tests sheet, 86 sessions from the
+    tester link and the Facebook app, every touch decoded. Data from Oct
+    26 on (after Dot's help) is weighted most. Matt, Jen and Steph are
+    the experienced baseline; Sally, who had never played a game, is the
+    newcomer baseline, and her finishing stages on Easy, and some on
+    Normal, is the best evidence that the on-ramp works.
+
+-   Both modes, Easy and Normal, are reviewed and graded.
+
+-   Worlds 7-10 and bosses 6-10 are being polished now, so they're noted
+    but not graded. 5-7 and all of World 6 use the new stage-piece
+    generator and are treated as the reference look the older worlds
+    should match.
+
+-   Build 1 (the first-impression fixes) is built and waiting on Matt's
+    phone check. Its items are marked "in Build 1" below; Builds, Build
+    1 says what changed.
+
+Reference games for the two grades. Against big studios (AAA): Super
+Mario Run and Rayman Adventures / Rayman Jungle Run. Against
+independents: Leo's Fortune, Oddmar and Alto's Adventure. A means it
+holds up next to the best of that group; B is solid and shippable in
+that group; C is noticeably behind it; D is a clear weak spot.
+
+Priorities: P1 is noticed in the first minutes or breaks play; P2 is
+noticeable once you play a while or in one area; P3 is finish. Effort: S
+is under half a day, M is 1-3 days, L is a week or more. Issue ids start
+with their category (VI visuals, AN animation, CT controls, SN sound, ST
+story, DOT Dot, LV level design, UI menus, PF performance); "was #7"
+points to the first report's numbering.
+
+Visuals and art: C+ against AAA, B against indies
+
+The verdict: the art direction is the game's best asset. The painted
+kits for Worlds 1-7 share one soft, hand-painted style, Pokey and every
+enemy are painted and crisp, and World 6 on the new generator looks like
+a real storybook game. What drags it down is mostly pipeline, not
+painting: the backdrops are blurred by an upscale-on-an-upscale and
+carry a dark cut-out ring, the soil seams and repeats, and the things
+that matter most to play (water, flags, the exit door, ropes, pickups,
+boss attacks) are still drawn in code. Rayman Adventures and Alto's
+Adventure win on exactly those things: clean edges, no visible tiling,
+and every interactive object painted. Most of this is coder days, not
+repainting.
+
+Grades inside: backdrops C+, ground and soil C, hero and enemies B+,
+hazards and props C−, World 6 / new generator A−.
+
+VI-1. A dark outline around every painted backdrop strip (P1, M, no new
+art). Where: the near and mid strips (src/assets/**/w*-near.webp,
+w*-mid.webp), loaded by paintedBackdrops.ts and drawn by scenery.ts
+drawStrip (1662-1695). The outer 3 px of every leaf and trunk is 40-61%
+as bright as the paint just inside (W1 near; W2, W4, W6, W7, W10 measure
+0.38-0.55; W5 near 0.32-0.44). Cause, from git: commit 18bedcc upscaled
+the colour 4x with the transparent areas filled black
+(tools/art/upscale/up.py) and the alpha separately, so black smeared
+into every edge. This is also the "jagged dark edges" on World 1's trees
+(was #15). It reads as a cheap sticker outline. Fix, all scripted: start
+from the originals at 18bedcc^; un-premultiply and bleed the edge colour
+16 px outward into the transparent area (a normalised Gaussian fill)
+before upscaling; then erode the alpha 1 px and feather it 1-1.5 px;
+protect features under 4 px wide (hair vines) from the erode. Optionally
+add an even 1.6 px ink line at 0.42x the local colour so the edge looks
+drawn on purpose. A working prototype for World 1 is in the scratchpad
+(va/defringe2.py, with before and after images); edge brightness goes
+from 0.40-0.75 to 0.98-1.0. About 1.5 days for every world.
+
+VI-2. Backdrops are blurry in portrait (P1; 10 minutes of code, then
+art). On a normal phone in portrait the strips are magnified 1.7-2.5x
+(tablet 2.7-3.3x), and since the real brushwork is only 1024 px wide
+(the 2048 files are AI 2x upscales), the actual detail is stretched
+3.5-4.5x. Portrait shows only about 24% of a strip's width. The canvas
+also never sets imageSmoothingQuality, so it's plain bilinear. Next to
+the crisp Pokey it looks smeared. Fix: set ctx.imageSmoothingQuality =
+'high' after each resize in engine.ts resizeCanvas (785-832). The real
+fix is art: repaint the near and mid strips natively at 3072-4096 px
+wide (far strips can stay 2048), on flat magenta, tiling left to right.
+What Matt makes, per world: one near strip 4096x1736 and one mid strip
+3072x1302, transparent after keying. Gemini prompt: "Wide horizontal
+side-scrolling game background layer, hand-painted storybook rainforest
+style, soft gouache and watercolor brushwork, [WORLD: e.g. sunny lowland
+jungle with kapok trunks, hanging lianas, broad monstera leaves].
+Foreground silhouette band only: trees, vines and leaves along the top
+and sides, nothing in the middle, open sky area left empty. Paint on a
+flat pure magenta (#FF00FF) background so it can be cut out cleanly. No
+outline glow, no drop shadows, no text, no characters. The left edge and
+right edge must line up so the image tiles seamlessly side by side.
+Ultra-wide 2.36:1 aspect, highest resolution." Key it with VI-1's fixed
+pipeline and VI-6's spill fix.
+
+VI-3. Backdrops pop in after the stage starts (P1, S; was #16). Where:
+stagePreload.ts:137 preloads the backdrop but never adds its URLs to the
+list whenSheetsReady waits on, and readyToStart gives up after 900 ms.
+Meanwhile scenery.ts waitingSky (397-409) draws a gradient stand-in, and
+onPaintedReady swaps the painting in with no fade. The canopy strips
+load on first use, a second pop. KEEP_WORLDS = 2 counts sets, not
+worlds, so World 5's dusk and twilight sets are dropped early. Fix: add
+the stage's backdrop and canopy URLs to the readyToStart list, allow up
+to 2500 ms for backdrops, crossfade anything still late over 250-300 ms,
+and make KEEP_WORLDS count worlds.
+
+VI-4. Mirror seams and "inkblot" twins where strips repeat (P2, S).
+Where: drawStrip draws every other copy mirrored. Edge columns are much
+darker or lighter than the paint 10-30 px in (w7-near right edge 0.27x,
+w2-near 0.56x, w3-mid 0.71x), and mirroring puts the same tree twice
+facing itself. Fix: stop mirroring. Use the seamless() crossfade that
+already exists unused in scripts/backdrop-strip.py (blend a 128-256 px
+band from the right edge into the left) and tile without flipping.
+Delete the mirror path; new replaces old.
+
+VI-5. A white halo on the World 1 canopy strips (P2, in VI-1's batch).
+w1c-mid and w1c-near were keyed off white: edges are 2.4x brighter than
+the inside. Run the same decontaminate script.
+
+VI-6. Magenta leaking on World 5 dusk and twilight (P2, 2 hours).
+2.6-4.4% of edge pixels are pink on w5dusk1-near, w5dusk2-near,
+w5dusk2-mid and w5twi1-mid. The keyer in backdrop-strip.py barely
+suppresses spill. Fix: after keying, clamp red and blue to no more than
+green plus a small margin near the key colour (or desaturate toward the
+local foliage colour), then run VI-1.
+
+VI-7. Grey seams in the soil, including on the new generator (P1, S for
+the code part). Where: World 6's kit bank piece (397x359) drawn by
+drawBankArt (protoArt.ts:441) has a grey stone slab in its bottom rows
+(saturation 0.06-0.10 against 0.34 for the soil above), and its height
+is fixed at 110, so it's drawn only 121 wide and repeats often. In 5-7 I
+saw a vertical seam (about x 963 at 1024 wide), a horizontal seam (about
+y 585) and a dark sliver at the far left. Fix now: crop the slab rows
+out of the source rect. Long term: VI-8's soil kit.
+
+VI-8. Ground tiles repeat and band (P1 for Worlds 6-7, P2 elsewhere; was
+#14). Where: the kit fill piece (World 6: 397x176) drawn by
+drawGroundFill (protoArt.ts:471) at 230 wide, repeating every 228 x 100
+units with no flip, no variation and no darkening with depth. World 6's
+tile has a lit grey bevel at rows 26-34 and dark bands top and bottom,
+so a stripe shows every 100 units; World 7's top/bottom mismatch is the
+worst (34.8). The soil is 45% of a portrait frame (feet sit at 0.55 of
+screen height; 0.68 on short landscape screens), so it matters. Code fix
+(about 1 day): crop the bevel and dark rows from the source rect;
+alternate horizontal flips per tile; offset each row by half a tile;
+hash between 2-3 variants; overlay one large, low-frequency darkening
+pass (600-900-unit blobs at 8-12%); add a vertical gradient so the soil
+is 35-55% darker by the bottom of the view (groundArt.ts already does
+this for the code-drawn soil; the painted fill ignores it). Art, per
+world: one seamless soil-and-roots texture tiling on both axes,
+1024x1024, opaque, no lit lip, no border; 2-3 variants; a separate
+transparent top-lip strip 1024x160 that tiles left to right; and a bank
+piece without the stone slab. Gemini prompt: "Seamless tileable texture,
+hand-painted storybook style matching a rainforest platformer, rich dark
+soil cross-section with tangled tree roots, small pebbles and earthy
+clumps, [WORLD palette]. Even lighting, no highlight band, no border, no
+horizon, no grass on top. Must tile seamlessly in all four directions.
+Square, 1024x1024." Lip: "Horizontal tileable strip, hand-painted
+storybook rainforest style, mossy grass edge with small ferns and roots
+hanging down, on a flat magenta background, left and right edges must
+line up seamlessly, 1024x160." Optional design call: feet at 0.6 of the
+screen instead of 0.55 shows less soil.
+
+VI-9. Pit water is code-drawn in Worlds 1, 3, 4 and 5 (P1, breaks Matt's
+painted-hazard rule; was #17). Where: engine.ts drawWaterAndFlags (4537)
+calls terrain.drawWater; the painted drawBadWater is only used from
+World 6, and World 2 has painted rivers. In 2-3 it's a flat teal
+rectangle with hard edges. Art per world: a water surface strip
+1024x256, transparent, tiling left to right, plus a 4-6 frame shine loop
+(or a separate shine strip), optionally a 6-frame 256x256 splash. Gemini
+prompt: "Horizontal tileable strip of murky jungle pit water seen from
+the side, hand-painted storybook style, [W1: tea-brown with floating
+leaves / W3: dark blue night water with faint glow / W4 / W5], darker
+toward the bottom, soft surface highlight line, on flat magenta
+background, left and right edges must tile seamlessly, 1024x256." Code:
+half a day to route it through drawBadWater.
+
+VI-10. Exit door and checkpoint flags are code-drawn in every world but
+World 5 (P1; was #7). Where: sanctuaryDoor.ts (vectorArt.ts about 1428)
+and the flag in engine.ts 4546-4585. World 5's painted pennant and totem
+show the target. Art: a checkpoint marker per world (or one shared),
+unlit and lit, 256x384 transparent, ideally a 4-frame flutter when lit.
+Prompt: "Game checkpoint marker for a sloth rainforest platformer, small
+carved wooden post with a leaf-woven pennant, two versions side by side:
+unlit (muted) and lit (glowing warm yellow), hand-painted storybook
+style, flat magenta background, 512x384." And an exit gate or totem per
+world, closed and open, 512x640 transparent. Code: when a flag is
+reached, raise the pennant with a short bounce (a small touch,
+code-drawn is fine).
+
+VI-11. Shimmy ropes are a dashed yellow line (P2; was #18). Where:
+ropeArt.ts and the lair ropes (lairCrocObjects.ts 539-600). Art: a rope
+segment that tiles along its length, 64x512 transparent, painted twisted
+vine; an end post 128x256. Code: draw the rope as a textured strip along
+the existing curve with a little sag.
+
+VI-12. Pickups and the thorn gate are vector shapes (P2; was #17).
+Hearts, super hearts and the three power-ups in vectorArt.ts 1263-1420,
+with gradients rebuilt every frame. The thorn gate hurts Pokey, so by
+Matt's rule it should be painted (256x256, two states). Paint the
+pickups to match the HUD hearts.
+
+VI-13. World 5's props are pastel stickers with thick outlines (P2,
+art). The cupcakes and chairs, and water-signs.webp in a heavy-outline
+comic style, clash with the painted kits. Art: repaint about 12 World 5
+props in the kit style (no black outline, darker hue edge, light from
+the upper left) and one carved wooden water sign, about 160x200 px in
+two frames (still, rattled).
+
+VI-14. Boss lairs: one painted, the rest code-drawn, while finished lair
+art sits unused (P2). Only the Shadow Prowler has a painted lair plate.
+Painted lairs for six later bosses already exist and nothing uses them:
+src/assets/w6to10/lairs/lair-{drake,general,golem,monarch,queen,reaver}-{calm,rage}.webp
+(1664x928). Wiring those is about 1 day with no new art. Still needed: a
+calm and a phase-3 plate (2048x1152) plus a foreground strip for the
+Moonlit Mire (Crocus Rex), the Sky Sovereign's aerie and Silk Hollow
+(check whether lair-queen covers Silk Hollow first).
+
+VI-15. Boss projectiles, hazards and danger rings are vector shapes (P2,
+L; was #8). bossArt.ts 406-1010 and bossCues.ts 80-100 (dashed red and
+white rings with chevrons). Art: a painted effects sheet per boss
+(projectile, impact, puddle) and one painted warning marker used by
+every boss.
+
+VI-16. Code-drawn stand-ins still in shipped stages (P2, S each). The
+4-8 rescue nests (engine.ts:5268 calls drawNest from w4Nests.ts,
+"stand-ins") while painted nestEaglet, nestEmpty and eagletFly are
+already used elsewhere: switch to them and paint only a netting overlay
+(256x192, whole and torn). The Hush Fern and Keeper's Bell story finds
+(findArt.ts): two painted 256 px icons with a glow frame. Sleeping
+animals' Z marks (engine.ts:6786), P3.
+
+VI-17. World 1 and World 5 look the same every visit (P2, M plus art).
+Only World 3, World 4 and World 2's thrown stones rotate their dressing
+(artDress.ts, artRoll.ts); the new generator rotates every decor job
+with a cooldown. Extend artDress.ts to Worlds 1, 2 and 5 with 2-3 sets
+per job (bank, hanging, ground clutter). World 1's three painted sheets
+probably cover two sets. World 5 needs about 15 new pieces in the World
+6 kit style: two bank sets of 3, one hanging set of 2, two
+ground-clutter sets of 3, and real edge and cap pieces to replace its
+flat brown swatch.
+
+VI-18. Smaller visual notes (P3). World 4's backdrop is grey with
+visible strip edges: grade the far and mid layers up 10-15% saturation
+with warmer highlights and re-export with 8 px feathered edges. World
+6's water texture is only 183x372 px: repaint at 512 px or more. 4-D's
+rope bridge is washed out and reads as backdrop: add contrast and a soft
+shadow line under it. 5-M's intro title overlaps the characters on the
+left: move it right or up. The 4-D "Scratches" counter is a plain grey
+box next to the wood HUD: reskin it in the wood kit.
+
+Animation and game feel: C− against AAA, C+ against indies
+
+The verdict: the bones are better than the grade. The per-move hitstop
+and knockback data, coyote time, the jump buffer, variable jump height
+and the camera (dead zone, look-ahead, portrait framing) are already at
+a good indie standard, so leave them alone. What's missing is the layer
+of small reactions that make Rayman and Oddmar feel alive: a beat when
+you die, dust when you land, sparks that pop, a background that glides
+instead of stutters, and a buzz in your hand. Several of these are
+already in Build 1.
+
+AN-1. Losing a life has no beat (P1, M; was #2, in Build 1). Instant
+teleport under a white flash, no KO pose, and the Game Over card takes
+taps on the frame it appears. Build 1 adds a 0.6-0.8 s beat with the KO
+pose or splash, a dark iris, and a 0.5 s tap guard.
+
+AN-2. The invulnerability blink is uneven at 30 fps (P2, S; was #13, in
+Build 1). Build 1 blinks on whole frames at 0.3 alpha and gives the
+Solar power-up its own glow.
+
+AN-3. Pop-up text is constant and arcade-style (P1, M; was #5, in Build
+1).
+
+AN-4. The background stutters while you run (P1, 30 minutes). Where:
+drawStrip (scenery.ts 1662-1695) and drawTile (about 1615) floor x to
+whole world units. At 30 fps and 200 units/s the far layer sits still
+two frames then jumps 2 device pixels, while the ground snaps to device
+pixels, so the layers shudder against each other. Fix: snap to device
+pixels, x_dev = Math.round(x * dpr * zoom) / (dpr * zoom), or drop the
+floor and draw at fractional x (fine once VI-1 removes the dark edges
+that would shimmer).
+
+AN-5. No landing dust, a five-dot take-off puff and flat circle hit
+sparks (P2, M; was #12). Where: engine.ts spawnJumpDust (about 1845,
+2051), the take-off puff (6901-6915), hit particles (5448-5464), defeat
+debris always green (3945). Fix: a soft dust puff for landings and
+take-offs scaled by fall speed; a hit-spark sprite with a brief glow;
+debris coloured per creature; one pooled particle system with a cap.
+Small touches, so code-drawn is fine.
+
+AN-6. Enemy hurt flash uses canvas filters (P2, M; was #10). About 20
+sites set ctx.filter = 'brightness(2.2)' (creatures.ts 187, predators.ts
+163, goldSnake.ts 191): costly on phones and silently missing where
+filters aren't supported. Fix: one shared helper that draws a pre-baked
+white silhouette, or fills source-atop over the sprite.
+
+AN-7. Venom Fang's lunge is a straight, stiff tube (P2, M; was #9). Draw
+the body along a curved S-path with a taper, or use painted lunge
+frames.
+
+AN-8. The Tarantula Queen's animation clips are unused (P2, S-M).
+queen-anim.webp exists but queenAnimData only defines a URL. Hook it up
+the way croc-anim and prowler-anim are. The Sky Sovereign has pose
+sheets but no clips (P3).
+
+AN-9. Haptics only on button presses, and none on iPhone (P2, S).
+TouchController buzzes 15-35 ms for jump, punch, kick and mega, and
+nothing for getting hurt, a hard landing, a boss slam, a checkpoint or a
+clear. Add hurt 40 ms, hard land 20 ms, boss slam a 60 ms pattern,
+checkpoint two short pulses, and a clear pattern, behind a setting. iOS
+Safari ignores navigator.vibrate, so on iPhone the on-screen feedback in
+CT-14 has to carry it.
+
+AN-10. Screen shake is random jitter with no setting (P3, S; was #27).
+engine.ts 5098-5129: use a smooth decaying shake that moves the backdrop
+too, follow reduced motion, and add a setting.
+
+AN-11. The Stage Cleared card doesn't move (P2, see UI-1 to UI-3): no
+count-up, static confetti.
+
+Controls: C against AAA, B− against indies
+
+The verdict: the touch rules are clever and mostly work. Across about
+3,800 clean, quick up-flicks from real players, 93% jumped, and Sally,
+who had never played a game, now clears stages. Testers do finish. What
+holds the grade down isn't that the controls fail; it's that they
+misread a few percent of the time in ways a player can feel and can't
+explain, and the misreads cluster on certain grips. Super Mario Run and
+Rayman Jungle Run get an A by asking the thumb for almost nothing (one
+tap, auto-run). Leo's Fortune and Oddmar ask for more, like this game
+does, and earn their B+ by never misreading. That's the bar here: a
+gesture game can reach an A only if a clear gesture always does what the
+player meant.
+
+Grades inside the category (from code reading, scripted tests in the
+engine, and the tester touches): the gesture recogniser B−; vine and
+trunk climbing C−; the Pad C−; tilt F, because it doesn't exist yet;
+screen edges and the home bar D; feedback in Screen mode D; reading
+input at 30 fps A−.
+
+Matt's five control rules, checked
+
+-   On a vine, straight up or down always climbs, and only a diagonal
+    jumps off. Mostly true now. In the Oct 23-25 builds, 28 of Matt's
+    near-vertical strokes leapt off; since Oct 26, only 3 have. Three
+    holes remain: a climbing stroke 22-25° off vertical still leaps
+    (CT-3), the second thumb's straight-up flick lets go of a vine
+    (CT-5), and on the Pad, up leaps off a trunk (CT-2).
+
+-   The controls suit every finger and grip. Not yet. Missed jumps (a
+    clear up-flick that didn't jump) by player since Oct 26: Mike 15%
+    (two thumbs, phone in one hand), yana 9.5%, Cheddarbob 8.8% (index
+    finger on a small iPhone), Jane 6.6%, Steph 4.5%, Matt 2.6%, Sasa
+    2.8%, Sally 1.1%, Jen 0%. Portrait misses 3.1% against 0.9% in
+    landscape. The causes are CT-9 (short flicks), CT-7 (a resting thumb
+    fires the mega move) and CT-15 (the palm rule eats taps).
+
+-   Special controls only appear in special spots. True, with one leak:
+    the carve-spot flag isn't cleared, so carving can carry into the
+    next stage (CT-20).
+
+-   Tilt and slide are both selectable. Not met. There is no tilt
+    anywhere in the code. CT-29 is the full specification.
+
+-   Left-handed players can mirror the pad. Met for the Pad (Settings,
+    Pad side: Right or Left). Two gaps: the Pad defaults to the right
+    for everyone (CT-19, a decision for Matt), and in Screen mode the
+    two halves behave differently, so a left-hander's experience isn't a
+    true mirror (CT-8).
+
+What the tester touches show
+
+The Sloths control tests sheet is real players from the tester link and
+the Facebook app: 86 sessions, decoded in full. Everything since Oct 26
+(when Dot's help arrived) counts most; Matt, Jen and Steph are the
+experienced baseline and Sally the never-played baseline.
+
+-   Jumps on the ground: 154 of 5,533 clear up-flicks (2.8%) didn't
+    jump.
+
+-   Running jumps that ended in a lost life were held a median 213 ms
+    against 257 ms for all jumps. That's the signature of CT-1: lift the
+    thumb early on a running jump and the jump comes up short.
+
+-   Kicks: 254 of 347 came from the steering finger (the move fires
+    about 150 ms in, the kick on lift), almost all Matt's. He kicks when
+    he means to steer and flick.
+
+-   Taps: 331 of 1,559 quick taps did nothing; 329 of those were one
+    Easy player tapping Dot and the cards, so that is a learning issue,
+    not a control fault.
+
+-   Swing releases: 216, with 11 hurts and 3 lost lives within 2.5 s.
+    Swings are fine.
+
+-   Where lives went (Oct 26 on): Push the log 12 (all on Easy), the
+    crown finish 7, falling rocks 5, flowers over the water 5, only the
+    leaf 4, run and stop 4. Most hurts: keep moving 12, hide from the
+    eagle 11, snapping turtles 9.
+
+Issues, in fix order
+
+CT-1. A one-thumb running jump loses 40% of its distance about half the
+time (P1, 3-4 hours plus a test). Confirmed by script. Where:
+src/game/engine.ts 1810-1815 and 1831. A one-thumb player flicks up and
+lifts quickly. If the lift ("move none", touchGestures.ts:425) reaches
+the engine before the next frame, ground braking (groundDec 3400 x 1/30
+= 113 px/s) runs on the take-off frame before the jump code, so take-off
+speed drops from 285 to 172 px/s, and the refined air rules never give
+it back. Scripted result (check/c1.test.ts): thumb still on the glass,
+the jump carries 170 px; thumb lifted first, 109 px. The safe
+single-jump gap the stage builder uses is SAFE.gap1 = 140 px
+(physics.ts:136), so identical flicks sometimes clear a gap and
+sometimes fall in. The tester data fits: running jumps followed by a
+lost life were held a median 213 ms against 257 ms overall. Fix: on the
+frame a grounded jump fires, skip ground braking when dir is 0 (or
+decide the jump before braking). In the recogniser add an intent lock:
+while the steering finger is rising (at least 0.3 px/ms over the last 60
+ms, rise at least 1.5x the sideways travel) and for 120 ms after a jump
+press, hold the run direction, with no stop and no reverse, until the
+rise ends or the finger lifts. Turn c1.test.ts into a regression test
+that requires at least 165 px.
+
+CT-2. Pad: you can't climb a liana, and pushing up again on a trunk
+leaps off (P1, 3-4 hours). Confirmed by script. Where: PadController.tsx
+40-63 sends pad up as a jump (triggerTouchUp; padControl.ts:27). On a
+trunk every fresh up after the 0.3 s grab grace is "Exit C: leap off"
+(engine.ts 1558-1578); on a liana it's the Tarzan leap after 0.25 s
+(1621, 1692). A diagonal push only steers sideways, which then triggers
+the sideways hop-off from CT-4. That's the exact opposite of Matt's vine
+rule. Fix: when inputEngine.onVine is true and the input is the pad, pad
+up and down call triggerTouchClimb(+1/-1) and never jump. Only the Jump
+button, or a pad push at least 45 degrees over with 38 px or more of up,
+leaps, carrying a lean of +1/-1. Do the same for keyboard and game
+controller (Up climbs on a vine, Space or A leaps).
+
+CT-3. Ordinary climbing strokes leap off a trunk or liana (P1, about 1
+day with replay). Confirmed by script. Where: touchGestures.ts
+vineSteer, 727-729. A leap needs a 34 px rise within 160 ms at 20-50
+degrees, but finger history is trimmed to 150 ms (line 374), so the only
+real speed floor is 0.23 px/ms, a gentle climb. Scripted: a 22 degree
+stroke at 0.3 px/ms and a 25 degree stroke at 0.4 px/ms both climb and
+then jump. Thumbs and index fingers naturally climb 15-30 degrees off
+vertical; this is Jen's index-finger complaint. Fix: angle buckets with
+hysteresis plus a fresh-flick test. Leap only when the rise, measured
+from the finger's last low point (riseFrom, as the ground rule does),
+began within 120 ms, runs at least 0.6 px/ms, sits at least 28 degrees
+off vertical (22 if it's 1.0 px/ms or faster), and the finger wasn't
+already climbing in the 100 ms before. Everything else climbs. Tune by
+replaying the recorded tester touches.
+
+CT-4. Stopping on a trunk overshoots about 90 px, then a thumb left
+slightly sideways drops him off (P1, 2-3 hours). Confirmed by script.
+Where: engine.ts 1500-1510 and 1580-1593. climbAssist is set to 0.45 at
+the grab and never decays while up is held, so he climbs 0.45 s past
+where the finger stopped (88 px in check/c4.test.ts). And any climbing
+stroke leaves sideways steering on: even a 10 degree, 100 px stroke
+reads move right, which only releases below dx 9.6 (touchGestures.ts
+601-604), while climb goes to 0 within 16 px (738). So when the player
+stops, right is still held with no up or down, and Exit D hops him off
+after 0.2 s. The Pad does the same whenever dx > 14 and dy < 38. Players
+feel it as "I stopped to wait for the snake and he fell off." Fix: let
+climbAssist decay even while up is held, and zero it on an explicit
+climb(0). On a trunk, hop-off needs a fresh sideways stroke (dx at least
+40 px, at least 2x dy, 0.3 px/ms or faster, held 0.35 s), or drop Exit D
+for touch entirely, since Matt's rule says only a diagonal leaves.
+Re-centre the sideways anchor whenever a climb starts.
+
+CT-5. The other thumb's straight-up flick lets go of a vine (P1, 1-2
+hours, needs Matt's call). Where: the vertical flick in judge
+(touchGestures.ts 763-778), the jump-help slide-up (814-821) and the
+palm-flick path (397-406) never check vine() when a steering finger
+exists; only a lone finger is covered (756). vineFollowUps.test.ts
+311-321 locks this in. Two-thumb players naturally climb with the jump
+thumb and drop off instead. Fix: when vine() is true, an action finger
+moving within 20-25 degrees of vertical calls setClimb(+1/-1) and never
+jumps. Matt's rule says climb, so the recommendation is climb and change
+the test, but it's his decision.
+
+CT-6. A back swipe from the screen edge can leave the game (P1 on
+Android with gesture navigation, P2 on iPhone; 2-3 hours). Where:
+nothing listens for back navigation (no pushState or popstate anywhere),
+and the touch layer covers the screen to the edges
+(TouchController.tsx:156). In landscape the left thumb rests at the
+edge, so a run started there is Android's back gesture: the touch is
+cancelled and the browser goes back, off the game. Safari's left-edge
+swipe does the same when there's page history. On iPhone a flick
+starting in the bottom 20 px or so is the home-bar gesture, which eats
+the jump and pops Safari's toolbar back. Fix: on stage start call
+history.pushState({sloth:1}, ''); on popstate, pause, show the pause
+menu and push again. Teach "thumbs a finger's width off the edges" in
+the coach, and keep the Pad's ghost pad clear of the edges.
+
+CT-7. Resting the action thumb fires a mega, and its next flick is eaten
+(P1 for two-thumb players, 1-2 hours). Confirmed by script. Where:
+touchGestures.ts 845-853 fires mega after a second finger is held still
+460 ms within 20 px and marks the finger used up; 745-747 then ignore it
+until it lifts. Scripted: rest 540 ms, flick up 60 px, result mega and
+no jump. Resting the jump thumb on the glass is the normal two-thumb
+posture, so every rest throws a mega (heavy shake, 30% move speed,
+facing locked 0.3 s, 1 s cooldown) and the jump that follows does
+nothing. This is likely part of Mike's 15% misses. Fix: never use up a
+finger on mega, so a later flick still jumps; raise the hold to 550 ms;
+consider hold-then-release for mega.
+
+CT-8. The two halves of the screen behave differently (P2; 10 minutes
+for the first step, about a day for all of it). Where: splitAt 0.5
+(touchGestures.ts 96, 346-349); the early drag at 60 ms / 18 px,
+sideways only (826); decideMs 210 (836). The early drag is wrongly gated
+on assistOn() (826), so with Jump help Off a run started on the right
+half waits 210 ms. The camera leads 90 px the way Pokey faces
+(cameraFollow.ts CAM.lookAhead), so an index finger kept on Pokey (Jen's
+grip) steers instantly one way and lags the other, and one-handed
+portrait players always land on the right half. Fix: remove the assistOn
+gate now. Then make any lone first finger the steering finger at once,
+anywhere; its lift already handles tap to punch and flick to kick
+(415-447). Keep the wait-and-see rules only for a second finger.
+
+CT-9. Short quick flicks on the ground do nothing, or punch (P1, 3-4
+hours plus replay). Confirmed by script. Where: the thresholds differ by
+finger. A lone right-half finger needs 41.4 px at 0.6 px/ms (judge,
+768), a second finger 30 px (slideUpPx), the steering thumb 34 px, and
+on the ground nothing is checked again at lift (moverFlickOnLift,
+483-498, covers only vines and air). Under 22 px is a tap, which
+punches. Scripted: a 26 or 36 px flick in 56 ms from a lone right-half
+finger does nothing; 18 px from either finger punches with a 60-150 px/s
+lunge; the steering thumb's 30 px flick just stops Pokey. Small-phone
+and landscape thumbs flick 20-35 px, which matches the higher miss rates
+for Mike, yana and Cheddarbob. Fix: one rule at lift for every finger.
+If the last 150 ms rose 18 px or more at 0.4 px/ms or faster, and the
+rise is at least 1.2x the sideways travel, it's a jump. A tap also needs
+peak speed under 0.35 px/ms or a rise under 12 px. Bring ground jump
+distance to about 26 px for every finger.
+
+CT-10. A jump near a trunk grabs the trunk (P2, 2 hours). Where: any
+jump press sets upIntent for 0.35 s (engine.ts:1484), and wantGrab
+(1486) grabs any trunk within 54 px (1462); holding down in the air also
+grabs. Fix: a ground jump grabs only if it's straight up (jumpLean 0) or
+leans toward the trunk and isn't steering away. An air grab needs up
+held or movement toward the trunk.
+
+CT-11. The thumb's arc reverses the steering at take-off (P2). Direction
+stops below dx 9.6 and reverses below -16, about 46 px of travel back
+from a full push. Fixed by CT-1's intent lock; no separate work.
+
+CT-12. Jump height jitters, and a jump right after a hit comes out low
+(P2, 2 hours). Where: the touch jump's 220 ms minimum hold is timed on
+the wall clock from the press (inputEngine.ts 7, 289-304), not from
+take-off; the cut-off is at engine.ts:1870. Take-off comes 0-33 ms after
+the press, so heights range 100-108 px. During hitstop (0.045-0.11 s,
+fight.ts MOVES) the engine is frozen but the timer runs, so a jump
+flicked as a punch lands gives about 57 px instead of 108. Below 20 fps
+the 0.05 s frame cap (engine.ts:948) does the same. Fix: keep jumpHeld
+true until 0.22 s of game time after take-off, for touch and Pad.
+
+CT-13. The Pad lesson's text is false (P2, 15 minutes for the text).
+CoachOverlay.tsx:15 says "Hold Jump a little longer to go higher", but
+the 220 ms minimum hold already runs past the point where the cut-off
+matters, so tap and hold differ by 8 px at most, and touch has no short
+hop at all. Fix: change the text, or let the Pad's Jump skip the minimum
+so a tap is a hop. That's a design call for Matt.
+
+CT-14. No feedback in Screen mode, and iPhones have no vibration (P2,
+about 1 day). Where: TouchController.tsx 150-160 draws nothing; the only
+feedback is haptics (39-42), which iOS doesn't support. Fix: a light
+overlay with a faint ring at the steering anchor and a chevron for the
+run direction, plus a 150 ms burst and label at the finger for Jump,
+Punch, Kick or Mega. Make it a Show touches setting, on by default for
+the first stages.
+
+CT-15. The palm rule eats second-thumb taps (P2, 2 hours). Where: a
+second finger within 70 px of the steering thumb is ignored except for a
+flick up (touchGestures.ts 341, 397-406, 458). In portrait on a 320-390
+px phone, running right slides the steering thumb toward the other one,
+and taps and kicks vanish. Fix: palmPx 45, and ignore a finger only if
+its reported radius is 22 px or more or it never moves.
+
+CT-16. A gripping palm, or a finger whose lift was never reported, can
+take over steering (P2, 3 hours). There's no rejection by touch radius
+or screen edge, the finger list is never checked against e.touches, and
+recovery waits for every finger to lift (TouchController.tsx 82-95). On
+big phones the gripping palm touches the edge first, and the real thumb
+then counts as a wobble, so Pokey won't run. Fix: ignore a touch for 150
+ms if its radius is 25 px or more, or it starts within 6 px of a side
+edge, unless it moves. On every touchstart, drop fingers not in
+e.touches.
+
+CT-17. Punches wait for the finger to lift (P2, half a day). Where: a
+gesture tap punches on lift (touchGestures.ts 442, 471); the Pad's Punch
+fires on release (PadController.tsx 164-178) while its Kick fires on
+press. Fix: on the Pad, punch on press and upgrade to mega at 320 ms.
+For gestures, start the jab on press for the action finger and cancel it
+if the finger travels more than 22 px within 60 ms (the jab's startup is
+0.06 s).
+
+CT-18. Pad buttons have no extra touch area (P2, 2-3 hours). A touch
+that misses by a few px does nothing; the gap between Jump and Kick is
+15-22 px (PadController.tsx 222-224). Fix: an invisible hit area 1.3x
+each button, and any touch in the buttons' half goes to the nearest
+button.
+
+CT-19. The Pad's default side (P2, decision for Matt, 5 minutes). The
+movement pad defaults under the right thumb (controlPrefs.ts:37); most
+mobile games put movement on the left. Recommended: left by default, or
+ask once the first time someone switches to Pad.
+
+CT-20. Circle-carving can leak out of Meeca's stage (P2, 30 minutes).
+Where: carveSpot is only written when this.mc exists (engine.ts:1165);
+the InputEngine lives for the whole app (App.tsx:255) and clearAll never
+resets it. Leave 5-M while standing on a carving spot and later stages
+read curved swipes as circles. Dot's stage (stepDot, engine.ts
+5759-5763) doesn't reset onSwing, inCover or carveSpot either. Fix: set
+carveSpot = !!this.mc?.carveSpot every frame, and reset those flags in
+clearAll and stepDot.
+
+CT-21 to CT-27 (P3, under 4 hours together). CT-21: the rope hop ignores
+the flick's lean (engine.ts:4274); use leapDir. CT-22: a still press of
+421-460 ms does nothing (tapMs 420, holdMs 460), and a left-half
+steering finger can never mega by holding; set tapMs 400 and holdMs 450
+and count the in-between as a punch. CT-23: two "20 degree" constants
+differ (vineLeapSlant 0.36, leanSlant 0.364); make them one. CT-24:
+accidental double jumps, because the one-finger wiggle accepts a rise as
+slow as 0.1 px/ms (pumpSpeed, 108) and the second finger's re-jump
+(airAgain, 511-528) has no speed check; set pumpSpeed 0.25, pumpDown 16,
+and require 0.3 px/ms in airAgain. CT-25: the Pad re-renders React on
+every touchmove (PadController.tsx:137); move the knob through a ref and
+a CSS transform. CT-26: pressing Jump while the pad is held up gives no
+new press because of the jumpSrc set (40-50). CT-27: a decision for
+Matt: should a standing flick leaning 35 degrees or more carry forward
+at 0.75 of run speed? Today it goes straight up (physics.ts 83-92).
+
+CT-28. No sensitivity or handedness settings in Screen mode (P2, half a
+day after CT-8). Add a sensitivity slider (0.75 to 1.35) that scales
+every distance threshold, and "Steer with: Left / Right / Either".
+Either is CT-8's unified behaviour; Left and Right flip splitAt, which
+gives left-handed players a true mirror in Screen mode too.
+
+CT-29. Tilt mode needs building (P2, 2-3 days plus phone testing).
+Settings: Touch controls becomes Screen | Pad | Tilt, with Calibrate,
+Sensitivity and Invert. iPhone: the first enable must call
+DeviceMotionEvent.requestPermission() and
+DeviceOrientationEvent.requestPermission() from inside a tap; if denied,
+fall back to Screen and say so. Android needs no prompt; check that
+events arrive within 1 s. Read devicemotion accelerationIncludingGravity
+and rotate it into screen axes by screen.orientation.angle (left-right
+is device x at 0, device y at 90 and 270 with opposite signs, -x at 180;
+verify the signs on a real phone). Low-pass filter alpha about 0.25;
+zero point captured at Calibrate, at each stage start and on every
+orientation change; dead zone 6 degrees with 2 degrees of hysteresis;
+full run at 20 degrees, well below the angle that rotates the screen. In
+tilt, finger steering is off; jump, punch, kick and climb stay as
+gestures and every finger is an action finger. Pause on
+visibilitychange. Motion sensors may be blocked inside Matt's Claude
+test link (an iframe), so test tilt on the GitHub Pages site.
+
+What only a real phone can tell you
+
+The touch latency, how a small iPhone feels in one hand, the back swipe,
+haptics, and tilt. The 10-minute phone test at the end of this review
+covers each one.
+
+Sound and music: C− against AAA, C+ against indies
+
+The verdict: the music is ambitious and mostly works. It's composed live
+from sampled orchestral instruments, with a theme for each screen and
+each world, which few first games attempt. The effects are the weak
+side: the default set is the "pingy" one Matt dislikes, loudness swings
+20 dB between effects, several big moments are silent or borrow the
+wrong sound, and nothing ducks under speech. Alto's Adventure and Leo's
+Fortune are the reference here: few sounds, all from one family, all
+sitting under the music. No sound was heard for this review; every
+number comes from measuring the files and reading the code, so a
+listening pass on a phone comes after these fixes.
+
+Grades inside: effects C−, music B−, mix and feel C−.
+
+SN-1. The old "pingy" effects are the default (P1, S once decided; was
+#6). Where: src/audio/sfxOrch.ts:42 DEFAULT_ORCH_SFX = false, so players
+hear the classic set (bells, kalimba, steelpan; the checkpoint is synth
+bells, marimba and a 6.5 kHz hiss) unless they find the switch in
+menuParts.tsx 288-318. The master chain in src/audio/core.ts adds a +5
+dB shelf at 3.2 kHz on everything, which sharpens the ping. Decision for
+Matt: make the orchestral set the only set and delete the switch
+(recommended, and it matches "new replaces old"), or keep the old one.
+Either way cut the master shelf to about +2 dB.
+
+SN-2. Effects swing 20 dB in loudness (P1, S). The 151 Kenney effects
+run from −25.2 LUFS (uiClick_0) to −5.5 (uiConfirm_3); variants of the
+same sound differ up to 10 dB (uiGlass, swishD 9.4, uiSelect 9.2), so
+one button tap is loud and the next quiet. uiClick_3 and uiGlass_3 peak
+over 0 dBTP. Jump and flower, the two most frequent sounds, have the
+highest trim (1.45). Fix: batch-normalise every effect to about −16 LUFS
+short-term with true peak at −1 dBTP or lower (two-pass ffmpeg
+loudnorm), keep variants within 1.5 dB, then reset TRIMS in sfx.ts
+(about 1067) so most sit at 0.8-1.2, with jump and flower lowest so they
+sit under the music. The per-effect table is in the scratchpad
+(va/sfx_k.tsv).
+
+SN-3. Silent or wrong sounds at key moments (P1 for death and respawn,
+P2 for the rest; was #19). Respawn makes no sound (loseLife, engine.ts
+4342, only plays playDefeat at Game Over). Falling into water plays a
+whoosh and a punch hit, never a splash (2096-2103). playBossAppear,
+playOneUp, playUiConfirm and playUiBack exist and are never called.
+Small hops land silently (landing only sounds above vy 140). Puzzle
+events borrow unrelated sounds (5643-5648, 6557-6618, 6743-6749): the
+whoosh for six different actions, the checkpoint sound for reset, and
+the player-hurt sound for "wrap", which tells the player they were hurt
+when they weren't. Fix: add a splash (2-3 variants), a respawn pop, a
+boss-appear roar and sting, a real checkpoint stinger (0.8-1.2 s,
+bright, in key), a soft landing for every landing scaled by fall speed,
+and one sound per puzzle action (about 12). Wire the four unused calls
+or delete them. About 20 new effects, CC0 (Kenney, Sonniss GDC bundles,
+Freesound with the CC0 filter), 44.1 kHz mono, normalised as SN-2, 3-5
+variants each.
+
+SN-4. Every boss tell sounds like a jaguar (P2, S; was #11, in Build 1).
+
+SN-5. The victory sting fires in the level, so the Stage Cleared card
+has only star chimes (P2, S). engine.ts 2659-2661 plays the full sting
+with "SANCTUARY UNLOCKED! VICTORY!" on reaching the exit. Play a short
+chime in the level and save the full sting for when the card's ribbon
+lands, with count-up ticks (UI-2).
+
+SN-6. Pausing switches to the World 1 tune (P3, S). audio/scenes.ts
+168-180. Keep the current world's tune at 45% volume through a low-pass
+filter while paused.
+
+SN-7. Nothing ducks under speech, and Dot is silent in play (P2, S).
+Story stings duck the music to 0.12 but speech blips never duck it. Duck
+the music 4-6 dB (attack 80 ms, release 400 ms) under any speech or
+story line, and give Dot a soft chirp when her bubble opens (once per
+line, not per word). Her voice exists in speech.ts and the DOT motifs,
+used only in the story player.
+
+SN-8. Some instruments jump in volume at their loop point (P3, P2 if
+Matt hears it; 1 day). 115 of 220 sustained samples loop over a 1.8 s
+region, with level steps up to 7 dB (oboe_89 7.08, oboe_82 6.63,
+flute_96 6.62). Mp3 encoder delay makes the seams worse. Re-pick loop
+regions in a steady part of each note matched within 1 dB, and store
+samples as WAV or Opus with exact loop points.
+
+SN-9. Ambience is fully synthesized (P2, S plus sourcing). Add one
+recorded rainforest bed per world type, CC0, 60-90 s, seamless, about
+−28 LUFS.
+
+SN-10. The boss intro card plays no sound (P3). Use the boss-appear
+sting from SN-3.
+
+Story and cutscenes: C− against AAA, C+ against indies
+
+The verdict: the story has heart (Pokey, Dot, Meeca's trail, the
+carvings in 5-M) and Matt says it's what keeps players going, so it
+deserves the most polish per hour. Right now the cutscenes are softer
+than the gameplay, the characters look pasted onto the paintings, and
+two story threads are left hanging: the 5-6 payoff for Meeca's carvings
+was never built, and the Stage Cleared clue lines repeat every world.
+Oddmar's comic panels and Rayman's short intros are the bar: few frames,
+every one of them crisp.
+
+ST-1. Story scenes are blurry, stand on a code-drawn strip, and
+sometimes don't match the words (P1, M; was #1). Where:
+src/components/StoryPlayer.tsx:162 caps the canvas at dpr 1.25 in
+landscape and 1.5 in portrait, so on a 1080p-class phone the browser
+stretches the story canvas 2.1x. A standing Pokey cel is 171 px in the
+atlas (storyCels.ts, CEL_K = 270/205) and ends up about 609 physical
+pixels tall at the story camera's 1.35 zoom: a 3.6x upscale (3.85x on an
+844x390 phone). The 1024x572 plates come out about 2.35x. paintFinish
+(storyArt.ts:1181) then blends a 1/6-size bloom at 0.34 over everything.
+The figures stand on a green scalloped strip drawn in code (drawBranch,
+storyArt.ts 81-137) that slices through the painting, the text box
+covers Pokey from the waist down in 7-1, and in 7-1 and the World 1
+opening the words describe things the picture doesn't show. Fix, cheap
+first (1-2 hours): raise the story dpr cap to 2 in both orientations
+(about 1830x824, 6 MB), cut the bloom to 0.15-0.2 and apply it only to
+highlights, cap close-ups so nothing draws above 1.5x its source, and
+keep feet above the text box in both orientations. Then the art:
+AI-upscale every cel 2.5x with VI-1's edge fix and hand-touch the faces
+(2-3 days), or repaint them (2-3 weeks); a standing Pokey becomes about
+430-450 px (CEL_K about 270/512). Plates at 2560x1430. Load atlases per
+scene, not all three. Gemini prompt per plate: "Hand-painted storybook
+rainforest scene, [scene description], soft gouache and watercolor, warm
+cinematic lighting, clear open ground along the bottom third where
+characters will stand, no characters, no text, 16:9, 2560x1440." Audit
+every scene for words that don't match the picture and list the missing
+pictures for Matt.
+
+ST-2. Characters aren't lit like the scene, and their shadows are weak
+(P2, about 1 day of code). storyArt.ts drawStoryScene (1281) applies the
+world grade before drawing the actors, so they never take on the scene's
+colour. The contact shadow (shadowFor, storyActors.ts) is one flat
+cool-grey ellipse at 0.55. The folk cels have a light grey halo from the
+grey key. Fix: apply the grade after the actors, or tint actors 8-15%
+toward each plate's main colour with a thin rim light on the lit side;
+use a two-layer shadow (a tight dark ellipse, ry about 0.12 of rx at
+0.6, plus a soft broad one at 0.25) tinted from the floor colour;
+defringe cels-folk with VI-1's script; replace the code-drawn branch
+with the painting's own ground or a painted 2048x300 ground strip per
+world.
+
+ST-3. Meeca's carvings never pay off (P2, M-L). 5-M has Meeca carve five
+messages. 5-6 "Where She Ran" was meant to be where Pokey finds them,
+but meecaCarved.ts:4 says "it is not built yet" and carvingsForPokey()
+is never called; 5-6 is a generic hunt for three "messages" using World
+1-3 animals. Fix: build 5-6 on the new generator with the five carvings
+as the relics, each read in Meeca's words, and call carvingsForPokey().
+Check whether meecaCarveData already has the carving plates; if not,
+five painted plates.
+
+ST-4. The Stage Cleared clue repeats every world (P2, S code, M
+writing). stageClue.ts 2-18 has 9 clues keyed by stage number only, for
+102 stages. 5-M reads "M" as no number, falls back to 1, and shows
+"Meeca's Petal… She came this way" on Meeca's own stage; every boss
+stage shows "Another Petal". Fix: key clues by full stage id and write
+one short line per stage (about 100), with their own lines for 5-M, 4-D
+and each boss.
+
+ST-5. The exit has three names and the same victory line everywhere (P2,
+S; was #21, in Build 1, plus one more spot). Build 1 settles sanctuary,
+Exit Shrine and shrine. Also change engine.ts 2659-2661, which shows
+"SANCTUARY UNLOCKED! VICTORY!" in caps on every stage of every world
+(World 10's fortress isn't a sanctuary), and stagePlan.ts:171 ("to open
+the sanctuary" everywhere): one sentence-case exit line and goal noun
+per world.
+
+ST-6. Boss quotes and aim text read as placeholder (P3, S).
+worldsData.ts boss quotes ("Sssilly sloth…") and all-caps aim text ("TOO
+TOUGH! HIT THE GLOW"). Rewrite in the story's voice, in sentence case,
+spoken by Dot.
+
+ST-7. The ending card's copy is out of date (P2, with UI-5).
+StatusModals.tsx 189-192: "passed one hundred trials" (there are 102
+stages), "MEECA IS SAVED!" and "VISIT WORLD MAP" in caps. Final copy in
+sentence case when the card is rebuilt.
+
+ST-8. Placeholder stage names (P3, S). For example 1-5 "More Petals".
+One pass over every stage name.
+
+Dot and hints: C against AAA, B− against indies
+
+The verdict: Dot works, and the tester data shows it. Outside testers
+almost all play with Teach me, and newcomers finish stages. The system
+under her is thoughtful (a calm pace in Worlds 1-4, priorities, an
+approved-line table, a help setting, once-only tips), and at her best
+she's short and warm: "The way up is up there somewhere, out of the
+light." Three things hold her back: tips are thrown away before the
+player sees them, puzzle rooms say the answer as you walk in, and the
+longest unreviewed lines play in the middle of boss fights. Super Mario
+Run teaches almost entirely through level design and Oddmar with a few
+short prompts; the A-grade version of Dot speaks a little less, never
+spoils, and is always readable. Fix the P1s and she's a B+ to A−.
+
+How often she talks (Teach me, the default)
+
+-   Worlds 1-4: 9.5 lines per stage, about 4.2 a minute, median gap 10.1
+    s between lines. 1-1 adds three coach lines.
+
+-   World 5: 11.6 lines per stage, 5.2 a minute, median gap 7.9 s,
+    because World 5 has no calm rules.
+
+-   Busiest stages: 4-9 (18 lines), 4-3 (16), 5-5 and 5-7 (16), 5-3
+    (15). Busiest 30 seconds: 9 lines in 5-7.
+
+-   Just reminders: 6.9 per stage in Worlds 1-4 (World 4 drops hard, for
+    example 4-7 from 13 to 5). Quiet: 0.7 per stage.
+
+-   Repeats: after a death, stage hints, lessons and boss lines don't
+    repeat, which is right. On a replay of a cleared stage only struggle
+    help, "Still N to collect!", the sealed-door line and the "Hide!"
+    calls come back.
+
+Those rates are about right for a children's on-ramp in Worlds 1-2 and
+on the high side after that. Turning on calm for World 5 (DOT-8) and
+fixing the cut-and-repeat stutter (DOT-6) bring the busiest stretches
+down without removing any teaching.
+
+The first-checkpoint Dot line (from issue 7 in the first report)
+
+Don't add one; it already exists. lesson.checkpoint, "A flag! Fall, and
+you start again here." (dotLinesData.ts:47, lessons.ts 230-236 and 428),
+fires once per device at the first flag, and the flag already plays its
+sparkle and sound. The problem is delivery: the line is often cut after
+1.0-1.2 s by the next lesson and repeats later (DOT-6), Dot has nothing
+to point at, and the flag only changes colour. Recommendation: let the
+flag carry it with a painted flag that raises (VI-10) and fix the cut.
+If Matt wants Dot involved, move her one-time line to the first respawn
+at a flag, "Back at the flag!", which teaches it when it matters and
+takes a line out of a busy stretch.
+
+Issues
+
+DOT-1. Tips are used up when they're sent, not when they're shown (P1,
+M). Where: engine.ts 2359-2382 (stage hints), 2945-2952 (boss),
+6520-6600 (World 4 and puzzle-room tips), puzzlePlay.ts room tips, and
+lessons at 4903-4904 all call markTipHeard (tipMemory.ts:23,
+localStorage sloth_tips_<stageId>) or mark the lesson the moment the
+line is handed to Dot, before her queue or the help setting decides
+whether to show it. On the brisk route, 93 lines in Worlds 1-4 were sent
+but never shown (327 shown), for example "Shaky branches drop." in 1-5,
+the log line in 1-6, "Too far to run this time. Take an acorn!" in 1-7,
+and the chimes warnings in 4-2, 4-4 and 4-8; 4-8 lost 10 and 4-9 lost
+14. Once lost they're gone on that phone for good, and a player who taps
+Skip tips or picks Quiet and later turns Teach me back on finds every
+lesson already used up. Nothing resets them, not even New Game
+(saveFile.ts 23-41 and 190). Fix: mark a tip heard from GuideQueue only
+after it has been on screen for minShowMs; don't mark lines the help
+setting dropped; clear sloth_tips_* and sloth_lessons on New Game, or
+add "Hear Dot's tips again" next to the help setting.
+
+DOT-2. Puzzle rooms give the solution as you walk in (P1, M; players
+meet it in 1-6). puzzlePlay.ts:969 fires each room's enter tip at once.
+Replace the enter tips with ones that name the problem, not the answer,
+then escalate: a stuck tip after two failed tries (or about 20 s of
+back-and-forth) points at the piece, and only a third step (about 40 s)
+says the move, the way Meeca's Flicker already does (STAGE-RULES.md
+249-252). Suggested rewrites: 1-6 twist (protoStage.ts:711) "The log's
+moved. Hmm, that won't tip now."; 1-6 learn room (664) "Too high! That
+log could help."; the seesaw kit tip "Too high. That root tips, though."
+(already in the game); 2-8 (w2Sections.ts:1031) "Something to throw
+would help."; 2-9 (w2Sections.ts:1146, w2Stages.ts:1096) "Too many
+guards. Can we distract them?" with "That bell up there is loud." as the
+stuck tip; 2-2 "A raft! How do we untie it?"; 4-5 (protoStage.ts:4265)
+"Two lookouts. One can't see the falls."; 4-3 (dotLinesData 250, 300)
+"That pool's too deep. Something heavy?"; 4-8 "The capuchin took our
+stone! Hmm, hungry?"; "Two plates. One of me." (already exists); "So
+dark… something here glows."; "Too high. Look around!"; "Too far to run
+this time."
+
+DOT-3. Boss lines too long to read mid-fight (P1, S). Build 1 fixes the
+three known ones (was #3): Venom Fang's start (19 words) and the 3-10
+boss's start and phase-3 lines. Two more play on an attack's first tell,
+with 1.5-1.8 s before the hit: bossDefs.ts:532 shadow step (19 words)
+and :590 streak (21 words). Write approved rows of 8 words or fewer that
+name the thumb move, for example "He hides! Stand by the moon pool." and
+"He dashes! Flick up twice to jump him."
+
+DOT-4. Dot never explains the locked ring wall in 1-9 (P1, trivial). The
+engine sends "Snakes from above! Clear them all to open the way"
+(engine.ts:5923, protoStage.ts:2083), but swapLine (dotLines.ts 102-117)
+picks the stage's own row first, hint.1-9.ring, whose approved text is
+null (dotLinesData.ts:136), so the line is cut and the approved
+lock.ring.snakes row is never reached. Delete the null row or point it
+at the lock text.
+
+DOT-5. Skip tips sits on the very first coach line (P2, S). offersSkip
+(dotGuideHelp.ts 115-162) puts the button on "Slide your thumb to run.
+Keep it down." A newcomer tapping to make the bubble go away sets Quiet
+before learning the controls, and with DOT-1 the tips never come back.
+Offer Skip from the second stage on, or after the three coach lines.
+
+DOT-6. Lines get cut and replayed (P2, S). In calm mode a first-time
+lesson may cut an info or story line (dotGuide.ts 276-287) without
+honouring minShowMs, so the cut line returns 10-15 s later. Seen in
+about 16 stages, including the checkpoint lesson in 1-6, 3-1 and 4-3.
+Honour minShowMs (1.5 s) for the lesson cut, or wait when the current
+line has been up more than 0.5 s.
+
+DOT-7. Reading time is lost to Dot's flight (P2, S). The reading clock
+starts when a line leaves the queue, but the bubble only appears after
+Dot lands (600 ms, or about 1.2 s if she re-flies; DotGuide.tsx 600-613,
+777-778), so a 4 s line shows for about 3 s. Start the clock when the
+bubble shows.
+
+DOT-8. World 5 has no calm rules (P2, trivial). Move tips stay up to 20
+s and come back once; median gap 7.9 s. Turn on calm for World 5, or at
+least the 10 s gap.
+
+DOT-9. Just reminders drops first-time explanations (P2, S). helpAllows
+(dotGuideHelp.ts 102-112) drops plain info lines with no skill tag, so a
+Just reminders player never hears what rocks, mist, warm air, caves,
+knots and chimes do, which breaks "the first appearance of a mechanic is
+taught". Tag each first-time mechanic line with a skill or a "new" flag
+so Just reminders keeps it the first time.
+
+DOT-10. Death help is always generic (P2, S-M). On a second death in the
+same spot (dotGuideWatch.ts 164-172) Dot picks from three generic lines,
+so drowning twice in the river gets "Flick up a little before the edge."
+Thirteen approved, specific lines are wired nowhere: help.pushLog,
+pushLog2, riverLogs, riverRide, runStop, shortHops, swingGrab,
+swingLeap, turnBack, twice.crumble, twice.gapWide, twice.vine and
+twice.water. Map the cause of death (water, crumble, gap, vine, river)
+to them in death(). Push the log is where Easy players lost the most
+lives (12 since Oct 26), so this one is worth doing early.
+
+DOT-11. Stuck help runs on a clock (P2, M). dotGuideWatch.ts 118-131 and
+192-211: 15 s with a thumb down and no new best position, then "This
+way, Pokey!" and "Still stuck? Follow my arrow." every 45 s.
+STAGE-RULES.md:80 says stuck means back-and-forth or two failed tries,
+"not a clock". It nags in puzzle rooms while the player is thinking, and
+the arrow points at the nearest trunk or ledge (DotGuide.tsx:1129), not
+the way on. Use the back-and-forth test, suppress it in puzzle rooms,
+and point at the next route node or don't promise an arrow.
+
+DOT-12. Unreviewed and over-long lines (P2, M; one review pass with
+Matt). 22 raw stage hints still show (for example "Up to the gallery!
+Ring the bell, and come down behind the guards.", 13 words and a
+giveaway; "A guard up a tied-up vine. Dot first, then wait for the
+chimes", where Dot speaks of herself in the third person). About 92
+puzzle-room tips bypass the approved table (35 over 8 words). 98
+approved non-story lines are over 8 words, mostly World 4 hints of 9-12
+words. Decision for Matt first: STAGE-RULES.md 80 and 152 say "under 10
+words", which conflicts with his 8-word rule. Settle which stands, then
+trim. Story lines of up to 12 words are fine.
+
+DOT-13. Move lines that don't name the thumb move (P2 for 1-1, P3 for
+the rest). lesson.bounce "Jump onto the mushroom to bounce high." also
+duplicates the 1-1 hint "Flick up onto the mushroom to bounce." 25 s
+later; keep the hint and add the pair to SAME_TIPS (dotGuide.ts
+147-156). Others: help.pushLog2, riverRide, stuck15/30, twice.crumble,
+twice.generic, hint.1-6.log, hint.1-6.fell, boss.venom.start,
+hint.2-1.missed, hint.2-4.missed, w4.drySteps, w4.floor, w4.rockHit,
+w4.nestBlow, w5.wrapGentle, w5.ate, w5.steam.
+
+DOT-14. The Hush Fern secret is solved for you every time (P2, S).
+Within 150 px of the secret fern Dot says "Slide down beside the fern to
+search it." once per stage (engine.ts 2430-2440), on top of the
+stage-start aside. Teach the search move once per device; after that
+keep only the aside, or say "Hmm, that fern…" after the player has
+walked past twice.
+
+DOT-15. The idol lesson points at a hidden relic and says "up high" (P2,
+S). It first fires in 3-6, where all nine relics are in ferns;
+pickLesson (lessons.ts:426) and findTarget (dotGuidePerch.ts 133-134)
+don't skip hidden relics. Skip them, and fire the lesson where a relic
+is visibly high.
+
+DOT-16. Two bosses get no coaching (P2, S each). Crocus Rex and the
+Tarantula Queen have no in-fight lines, and the Queen has the shortest
+tells of the four (0.55-1.0 s). Add guide blocks (start, phase 2, phase
+3, one per move) using the Sky Sovereign's block (bossDefs.ts 819-1168)
+as the template, for example "He's rolling! Get him to hit the wall!"
+BOSS_TIPS (bossDefs.ts 2422+) covers one move per boss; add two or three
+each.
+
+DOT-17. Small things (P3). Golden-seed teasers in Worlds 1-4 need the
+Leaf Glide from World 4, so add "too far, for now" ("Something shiny,
+far away… too far, for now."). Don't say "Still N to collect!" on
+replays of a stage already collected in full. Hold non-urgent lines
+until Pokey is grounded or has been airborne under 0.3 s. Fade move-tip
+bubbles out like the others (DotGuide.tsx:942). Let Dot linger on her
+perch if the next line is due within 4 s instead of flying away and
+back. Fire "Reach the shrine to finish the stage." earlier, or drop it
+after the first stage. Fix the lessons.ts header, which says New Game
+re-teaches lessons when it doesn't.
+
+Level design and difficulty: C+ against AAA, B against indies
+
+The verdict: Worlds 1-4 are well taught and hand-built, and their
+teaching is the best in the game. The new generator (5-7, 5-9 and World
+6) is the best level design in the game, A− on its own: 46-57% different
+on every visit, 10-18 s of dead time, checkpoints never more than about
+4000 px apart, water always signposted, and every new animal introduced
+safely. The rest is held back by three things: Normal's difficulty stops
+rising after World 2, World 5 is three different builders stitched
+together, and the older stages break rules the new generator follows
+(water before it's taught, long checkpoint gaps, padding). Leo's Fortune
+and Rayman are the bar for a rising curve and for never killing a player
+with something they haven't been shown.
+
+By world
+
+-   World 1, the lowlands: well taught, B+. Look-alike pair 1-1 and 1-5
+    (98% alike), checkpoints up to 8019 px apart, one look per visit.
+
+-   World 2, the river village: mostly finished, B. Water is taught too
+    late in 2-3, 2-4 runs about 8 minutes on a phone, and 2-1 on Easy
+    loses more lives than on Normal (hand-check).
+
+-   World 3, the grotto: the most finished of Worlds 2-5, B+. 3-5, 3-7
+    and 3-8 have hits nothing teaches, and 3-8 can drown the player
+    before the tip.
+
+-   World 4, the Mist Cascades: lots of content but rough, B−. 4-7 is
+    under 2 minutes for a fast player, a jump in 4-8 failed every
+    scripted try in both modes, the eagle's first strike in 4-5 has no
+    cover nearby.
+
+-   4-D, Dot's Netting Flight: carefully designed (each flower is a
+    checkpoint, every roll is proven flyable), provisionally B. The
+    inspector skips it, so it needs a hand test on a phone in both
+    orientations.
+
+-   5-M, Meeca's stage: a strong idea (five puzzle rooms, none costs a
+    life, each fits an upright phone), provisionally B− until its payoff
+    exists (ST-3).
+
+-   World 5, the Orchid Sanctuary: the least finished of Worlds 1-6, C.
+    5-1 to 5-5 are hand-built, 97-98% the same on every visit, with
+    22-32% dead time; 5-6 and 5-8 are on the old generator (5-6 even
+    uses World 1-3 animals); 5-7 and 5-9 are on the new one. Three
+    looks, three levels of quality, and only 6-7 Dot lines in the whole
+    world.
+
+-   World 6: the reference, A−.
+
+-   Bosses 2-5, B−: inventive with clear tells (the Shadow Prowler's
+    "glowcaps go dark" phase is the best set piece), held back by
+    missing coaching (DOT-16), code-drawn lairs (VI-14) and the old
+    intro card (UI-5).
+
+Easy and Normal
+
+Easy, C+ against AAA and B against indies. It's a real on-ramp, and
+Sally is the proof: she'd never played a game and now finishes stages.
+It gives longer coyote time and jump buffer (0.167 s against 0.133), a
+12 px landing allowance (8 on Normal), full assist for the whole game,
+softer jump heights, stepping stones over deep drops, wider lily pads
+and creek stones, gentler and fewer animals, 0.6x fight goals, a flag
+every 1800 px with a heart at each, slower vines with a 300 ms release
+window, and bosses with 0.7x the hits and 1.3x the tells. Its gaps: the
+player can't see they're on Easy (LV-1), it's kinder on new-generator
+stages than on the hand-built ones (LV-4), it loses more lives than
+Normal on 2-1 and 4-7 (LV-5), and some targets are hollow (LV-6).
+
+Normal, C against AAA and B− against indies. Its assist fades from full
+at 1-1 to nothing by stage 25, which is a good ramp, but the stages
+themselves stop getting harder (LV-2), and checkpoint gaps of 7000-8000
+px on hand-built stages mean 45-60 s of replay after a death.
+
+Two findings that differ from what Matt expected. The first is an open
+decision for him (LV-3), not a settled fix:
+
+-   Easy doesn't hold back the double jump. Pokey has it from 1-1 in
+    both modes; it's taught in 1-1 ("Flick up again in the air to jump
+    twice", a practice shelf and the gap card), and layouts may require
+    it from the 6th stage in both modes (levelCheck.ts:114,
+    doubleAllowed ignores difficulty). The scripted check finds the same
+    required double jumps on Easy and Normal, first in 1-6 at about x
+    14290, then 1-7, 1-8, 1-9, 2-9, 3-1, 3-4, 3-9, 4-2 and 39 of them in
+    4-3. What makes Easy feel gentler is the softer jumps and the
+    stepping stones. See LV-3 for the choice.
+
+-   "Normal felt too easy, collect 80 of 133." 80 is Easy's bar (2-2
+    asks 80 of 136 on Easy and 119 of 136 on Normal). A new game
+    silently starts on Easy (NewGameDialog: hasProgress ? difficulty() :
+    'easy') and the mode shows only in the pause menu, so that playtest
+    was almost certainly on Easy. Real Normal is also too flat after
+    World 2 (LV-2), so both are true.
+
+Issues
+
+LV-1. The mode is invisible, and a new game silently starts on Easy (P1,
+S). Where: NewGameDialog.tsx default; menuParts.tsx 212-235 is the only
+place it shows. Fix: an explicit two-button choice in New Game with
+neither preselected on a first save; a small Easy or Normal chip on the
+stage-intro card, pause header and Stage Cleared card; store the mode
+with each best time and star score.
+
+LV-2. Normal's difficulty curve goes flat, then backwards (P1, L). The
+middle difficulty band on Normal is 22.5, 24.2, 24.0, 27.6, 22.2 and
+24.1 for Worlds 1-6 (16.5-20.2 in Worlds 7-10), against targets of about
+20, 30, 40 and 50 for Worlds 1-4. From World 3 on, Normal plays like
+World 1 in new scenery. Fix: raise Normal's jump share of reach per
+world (0.82 for Worlds 1-2, 0.86 for World 3, 0.88-0.90 for Worlds 4-5;
+on hand-built stages, widen the chosen gaps); 25% more creatures per
+world from World 3; pair hazards (thorns on moving platforms, wind over
+gaps); halve mid-stage hearts on Normal from World 3; and make the bands
+tool a gate (World 3 middle at least 32, World 4 at least 40).
+
+LV-3. Decide whether Easy holds back the double jump (P2, decision for
+Matt). Option a (M): make doubleAllowed depend on difficulty (Easy from
+stage 16, the start of World 2) and have easyStones place a stone
+mid-gap wherever levelCheck flags a double-only jump on Easy before
+that. Option b (S): keep it as is, and add a safe practice spot and a
+Dot line just before the first required double jump at 1-6 ("Remember:
+flick up twice!").
+
+LV-4. Easy is kinder on new-generator stages than on the old ones (P2,
+M). Soft pits on land exist only on new-generator stages (gen2/DESIGN.md
+Part A), so a child on Easy finds Worlds 1-5 harsher than World 6. On
+Easy, turn every land pit on hand-built stages into a soft pit with a
+one-hop step out, reusing the new generator's backPit pattern in
+easyMode.ts.
+
+LV-5. Easy loses more lives than Normal in places (P2, M; hand-check).
+Scripted first-timer: 2-1 lost 100 lives to water on Easy against 49 on
+Normal, 4-7 lost 71 to pits against 30. Likely cause: Easy's softened
+full-hold jump falls short where the route needs a long jump. In
+easyHoldSoften skip any jump the route needs at full hold, or add an
+Easy stone there, and re-run firsttimer.ts until Easy loses no more
+lives than Normal on any stage. The real-player data agrees that Easy
+has a sore spot: Push the log cost 12 lives since Oct 26, all on Easy.
+
+LV-6. Some Easy targets are hollow (P2, S). For example 2-5 asks 8 of
+21, 5-9 asks 5 of 18, 4-8 asks 8 of 20. Easy target = round(Normal x
+0.8) with a floor of 60% of what's available, dropping the min() with
+the stage's own quota.
+
+LV-7. Switching from Easy to Normal mid-game is a cliff (P2, S-M). A
+player switching in World 3 loses all assist at once (Normal's is gone
+by stage 25) and goals jump about 50%. On a switch, fade Normal's assist
+in over the next five stages and say so in one line on the next stage
+card.
+
+LV-8. Water kills before it's taught (P1, S-M). 2-3 drowns the player at
+18.2 s with the tip at 56.7 s; 3-8 at 18.7 s with the tip at 54.1 s; 5-6
+at 4.5 s if you hold forward from the spawn. Port the new generator's
+rule to hand-built stages: Dot's "Careful, water! Flick up and over."
+plus a sign 480 px before every water edge (the painted sign is VI-13),
+the first water of each stage a third of a jump wide, and in 5-6 the
+first water at least 1200 px past the spawn.
+
+LV-9. Checkpoints too far apart on Normal (P2, S). Hand-built stages run
+up to 7048 (1-1), 7672 (1-2), 8019 (1-3), 6998 (1-5), 7538 (4-2), 7542
+(4-5) and 5962 px (3-9) between flags. Cap spacing at 4000 px on every
+hand-built stage by inserting flags at the nearest safe flat.
+
+LV-10. World 5 is padded and never changes (P1 for World 5; S stopgap, L
+real fix). Dead time is 41 s (22%) in 5-1, 69 s (30%) in 5-2, 60 s (32%)
+in 5-4 and 55 s (24%) in 5-5. Stopgap: trim every empty flat to 400 px
+or less between beats, the new generator's rule. Real fix: port 5-1 to
+5-6 and 5-8 onto the new generator (gen2/worlds/w5.ts and w5Sections.ts
+already exist for 5-7 and 5-9; about 30 sections per the DESIGN.md B12
+checklist, many already written), with 5-6 rebuilt as the carvings
+payoff (ST-3) and the kit pieces from VI-17. Keep Worlds 1-4 hand-built
+and retrofit them (LV-8, LV-9, VI-17) rather than port them.
+
+LV-11. Players get stuck in dips (P2, S). In 2-3 a 200 px wall sits in a
+200 px dip and the scripted player fell back 6-7 times; in 5-8 it was
+stuck 19 times in 196-267 px dips. Add a 60-80 px step or a short
+climbing vine in each.
+
+LV-12. One jump in 4-8 failed every scripted try in both modes (P2, S;
+hand-check). Shorten the gap 15% or widen the landing 40 px, then
+confirm by hand.
+
+LV-13. In 4-5 the eagle's first strike lands with the nearest bush 196
+px away (P2, S). Put cover within 100 px of the first strike, with Dot's
+"Hide in the bush!" one beat before. Hide from the eagle is the
+second-most-hurt section in the tester data (11 hurts since Oct 26).
+
+LV-14. Hits nobody teaches (P2, S each). 3-5, 3-7 and 3-8, and the
+ocelot in 5-8. A Dot tip and a safe first meeting before the first of
+each kind.
+
+LV-15. Stage lengths at the extremes (P2, M). 2-4 is about 8 minutes
+typical; cut it about 40% or split it at a checkpoint into two stages.
+4-7 is 84 s for a fast player, under the 2-minute rule; add one 40 s
+section.
+
+LV-16. Look-alike stages (P2, M). 1-1 and 1-5 are 98% alike; also 2-1
+and 2-7, 3-1 and 3-7, and 5-1 with 5-5 and 5-2. Change the action mix of
+one stage in each pair (for example a climb or vine stretch in 1-5
+instead of a run stretch), not just the order.
+
+LV-17. Bosses' third phases repeat a template (P3, M). Crocus Rex and
+the Sky Sovereign both end with creeping strips. Give the Sovereign its
+own, for example the wind changing direction every 6 s, or pillars
+collapsing in turn.
+
+LV-18. Secrets and replay (P3). Most World 1-5 stages hide 0-1 finds
+(the keepsake hunts 3-6 and 3-7 hide 9); how the hidden Thorn Gate and
+seeds are signposted wasn't checked in play. Replay is strong on
+new-generator stages (never the same twice in a row) and weak on
+hand-built Worlds 1, 4 and 5; stars, best times and medals help.
+
+Menus and UI: C+ against AAA, B against indies
+
+The verdict: the wood-kit screens are genuinely good. The title, world
+map (with stage-type icons, Meeca's crest for 5-M and a hummingbird for
+4-D), pause menu, journal, trophy room and story reader all match and
+handle notches, and the Game Over card is warm and forgiving (B+ on its
+own). The reward moment is the weak spot: the Stage Cleared card doesn't
+move, hides Pokey in portrait, and repeats its clue line, and the boss
+intro and ending cards are still in an older, plainer style. Super Mario
+Run's results screen is the bar: numbers count up, the hero celebrates,
+one tap moves you on.
+
+Grades inside: menus and map B+, Game Over B+, Stage Cleared C+, boss
+intro and ending cards D+, in-play HUD B−.
+
+What the Stage Cleared card does today (StageCleared.tsx, ClrParts.tsx,
+index.css 397-480, hud/cleared.css): a 0.5 s pop-in with the "STAGE
+CLEARED!" ribbon, Pokey in a pose that depends on stars (he only bobs at
+3 stars) with Dot perched, the stage id and name, three stars that pop
+in with chimes (350 ms, then every 260 ms) and a praise line, chips for
+time, score, best or New!, flowers, foes, hits, lives lost and best
+combo, the "Meeca's trail" clue card, and buttons for Next stage,
+Previous, Play again and World map, over the results music.
+
+UI-1. In portrait the win card hides Pokey (P1, S). index.css 456-458
+hides him on the win card while the loss card shows him (line 509), so
+the reward moment loses its hero on the way most phones are held. Show a
+96 px Pokey beside the stars in portrait and fit the chips into two rows
+of three.
+
+UI-2. Nothing counts up (P2, M). Score, time and flowers appear at their
+final values. Count the score up over 0.8 s with an ease-out and a soft
+tick every 50 ms (16 ticks at most), count flowers as x of y, land the
+stars after the counts, tap anywhere to skip, and respect reduced
+motion. Audio: one tick and one total chime from the existing effects,
+plus the full sting moved here (SN-5).
+
+UI-3. The confetti is a still image (P2, S). StageCleared.tsx:71.
+Animate 24 pieces falling once over 1.6 s, with a bigger burst at 3
+stars.
+
+UI-4. The clue line repeats every world (P2; see ST-4).
+
+UI-5. The boss intro and ending cards use the old plain style (P2, S-M).
+StatusModals.tsx 138-170: a red gradient, "STAGE BOSS LAIR", an italic
+monospace quote and "COMMENCE BATTLE!". In portrait it says "Turn your
+phone sideways to see the whole fight." (line 160), which breaks the
+rule that the game plays in both orientations. Rebuild it in the wood
+kit: a plaque, the boss's painted portrait (it exists), one
+sentence-case line from Dot and a "Let's go!" button, with the sideways
+line removed (and check the portrait camera frames each arena). The
+ending card (189-192) gets the same treatment with final copy (ST-7).
+
+UI-6. Card screens ignore notch safe areas (P2, S; was #22, in Build 1).
+index.css:397 .clr-scrim padding. The fix to use: padding: max(34px,
+env(safe-area-inset-top) + 22px) max(12px, env(safe-area-inset-right))
+max(12px, env(safe-area-inset-bottom)) max(12px,
+env(safe-area-inset-left)).
+
+UI-7. Boss HUD flashes the wrong name, and Dot covers the boss bar (P1,
+S; was #4, in Build 1).
+
+UI-8. Power-up HUD timers don't match the engine (P2, S; was #23, in
+Build 1).
+
+UI-9. Medals earned show only as a separate pop-up (P3, S-M). Add a row
+of earned medals under the stars, reusing the medal art.
+
+UI-10. The flowers chip means different things on different cards (P3,
+S). The win card shows the stage total and Game Over shows the goal. One
+format on both, for example "Goal reached · 124 of 136".
+
+UI-11. The map's star total says /300 (P3, S). WorldMap.tsx 225-227; 4-D
+and 5-M also give stars, so 306 are possible. Compute levels.length x 3.
+
+UI-12. Small misfits (P3, S; was #24). The world title card's Skip
+button is dark on dark; the story Next button is glossy orange where
+every other button is wood; the Game Over panel is flat pale grey where
+other cards use parchment; Game Over shows "Score 0" when nothing was
+scored (hide it, or show petals); check that phones never show "For your
+keyboard" in the journal.
+
+UI-13. Five font families plus strays, and two overlapping stylesheets
+(P3, M; was #25). --font-fun (Cherry Bomb One), --font-sub (Baloo 2),
+--font-heading (Fredoka), --font-ui (Outfit), --font-read (Atkinson
+Hyperlegible Next), plus Georgia (index.css 558, storyArt.ts 578,
+w5Look.ts 308) and plain sans-serif in canvas text (vectorArt.ts 1256,
+w4Play.ts, lairCroc.ts 368, findArt.ts 122, creatures.ts 695,
+eagleSprite.ts 121). gameUi.css reskins index.css and 71 selectors are
+defined in both. Settle on three families (display, UI, reading), route
+canvas text through the same variables, and merge the stylesheets.
+
+UI-14. Text as small as 9-10.5 px (P3, S; was #26). Locked map medal
+numbers (index.css 221) and the trophy room, chips and credits. 12 px
+minimum on phones.
+
+UI-15. The control-test page is reachable in the shipped game (P3, S).
+#ctest (ControlTestGate) in App. Put it behind a dev flag before
+release, but keep it for testers until then.
+
+Performance and tech: C against AAA, B− against indies
+
+The verdict: Android holds 30 fps well, and input sampling at 30 fps is
+solid (A−). iPhones in portrait are where it slips, and the causes are
+known, ordinary canvas costs. The download is heavy for a phone game.
+Super Mario Run and Alto's Adventure never drop a frame on mid-range
+phones, and that smoothness is a big part of why they feel premium.
+
+PF-1. iPhones in portrait drop frames (P1 on iPhone, M). From the
+testers' own frame logs: iPhone portrait median 27.4 fps with the worst
+10% of moments at 21; Android landscape 30 and 29.6; Android tablet 28.2
+and 26.3. Across all 86 sessions the recorder logged 247 stalls, 226
+long frames, 135 blank frames and 92 camera jumps. Known causes in the
+code: shadowBlur set while drawing at about 29 sites (the swing
+sweet-spot ring every frame, engine.ts:5399); gradients rebuilt every
+frame for hearts, glows, rope posts and water; ctx.filter hurt flashes
+(AN-6); particles and pop-ups allocating new objects every frame with no
+cap. Fix: cache gradients and glow sprites once, pre-render the glows
+that use shadowBlur, pool particles with a cap, and replace the filters.
+Then split the recorder's blank and camera-jump events by device and
+stage to find any that remain.
+
+PF-2. The download is heavy (P3, M-L; was #28). The main JavaScript is
+one 3.25 MB chunk (1.03 MB gzipped). The offline precache is 574 files,
+76 MB, and every first visit downloads all of it, Worlds 5-10 included.
+Precache Worlds 1-2 and the shell, cache later worlds on demand, and
+split the code by world. If the story cels are upscaled (ST-1), load
+atlases per scene to keep memory flat.
+
+PF-3. Leftovers (P3, S; was #29). package.json is still named
+react-example. Unused dependencies: @google/genai, express, dotenv,
+@types/express, lucide-react, motion. metadata.json declares the AI
+Studio Gemini capability and still describes a sloth saving "his
+kidnapped girlfriend". vite.config.ts has devOptions.enabled on, which
+is why dev-dist/ keeps changing. reference/HANDOFF.md is out of date
+(creature sheets are now released per world; the precache is 76 MB, not
+52).
+
+Worlds 7-10 and bosses 6-10: work in progress, not graded
+
+These are being polished now, so this is a checklist for that work, not
+a grade. Worlds 8 and 10 (and 7 and 9 when I played them) still run on
+the old generator.
+
+-   Old look (was #20): code-drawn red spoke flowers and mushroom blobs
+    everywhere, black code-drawn spikes, swamp-green water in the
+    volcano world. Move each world to the new generator with painted
+    kits and hazards and world-specific water.
+
+-   Dead time of 25-40% on stages that aren't climbs (8-4 has 66 s, 10-1
+    has 63 s); the new generator's 400 px rule fixes it.
+
+-   Difficulty: the middle band is 16.5-20.2, lower than World 1. Set
+    targets that keep rising past World 6.
+
+-   Hazards are taught only by an all-caps floating text (engine.ts
+    1293-1310). Use Dot, as the new generator does.
+
+-   Stage descriptions promise mechanics that don't exist yet: fireflies
+    (8-1), bat roosts (8-4), thunder (10-3, 10-4), iron netting (10-6).
+
+-   I lost a life within two seconds of starting 9-3 just by running
+    right, and couldn't see what hit me. Keep the rule that nothing can
+    hurt Pokey in the first 5 seconds.
+
+-   Painted lair plates and animation clips for bosses 6-10 already
+    exist in src/assets/w6to10 and aren't used yet (VI-14 covers wiring
+    them).
+
+-   The Drake has only 4 moves and one weak point, thin next to the
+    others. Reaver 20 hits, Golem 22, Monarch 23, Drake 24, General
+    Iron-Claw 26; Thornbark is the secret boss.
+
+-   w10-far.webp is 1702 px wide against 2048 for the rest, and the
+    painted dawn, dusk and night far layers for Worlds 7-10 aren't in
+    FAR_BY_STAGE yet.
+
+-   Everything in Visuals, Sound and Dot applies here too, especially
+    VI-1 (edge ring) and VI-8 (soil tiling) for any new kit art.
+
+Path to the target
+
+The target: at least A+ against indies, and the B range against big
+studios, ideally an A. Here's what each category needs and which builds
+get it there. Builds 1 to 7 are mostly code; my estimate is that they
+take the game to about A− against indies and B− against AAA. Builds 8 to
+10 add Matt's art and take it to A or A+ against indies and B to B+
+against AAA for Worlds 1-6. Builds 11 and 12 are the last steps to A+.
+
+  --------------------------------------------------------------------------
+  Category      Now      Target   Builds    What it takes
+  ------------- -------- -------- --------- --------------------------------
+  Visuals       C+ / B   B+ / A+  3, 9, 10  Clean edges and no visible
+                                            tiling, then native-resolution
+                                            backdrops, painted hazards and
+                                            soil kits
+
+  Animation     C− / C+  B / A    1, 7, 11  Death beat, smooth parallax,
+                                            dust, sparks, haptics, a moving
+                                            reward screen
+
+  Controls      C / B−   B+ / A+  2, 11     No misreads on any grip, Matt's
+                                            vine rule everywhere, tilt and
+                                            sensitivity
+
+  Sound         C− / C+  B / A    6         One effect family, even
+                                            loudness, no silent moments,
+                                            ducking, a listening pass
+
+  Story         C− / C+  B+ / A+  3, 7, 8,  Crisp, lit scenes; the carvings
+                                  10        payoff; one clue line per stage
+
+  Dot           C / B−   A− / A+  1, 4      Never spoil, never lose a tip,
+                                            always readable, coach every
+                                            boss
+
+  Level design  C+ / B   B+ / A+  5, 10     A rising Normal curve, visible
+                                            modes, water taught first, World
+                                            5 on the new generator
+
+  Menus and UI  C+ / B   A− / A+  1, 7      Pokey on every win card, counts
+                                            and confetti, boss cards in the
+                                            wood kit
+
+  Performance   C / B−   B+ / A   12 (PF-1  Steady 30 fps on iPhone
+                                  earlier   portrait, lighter download
+                                  if        
+                                  needed)   
+  --------------------------------------------------------------------------
+
+The hardest gaps for one developer working with AI, in order:
+
+1.  Feel on real phones. AI can script the engine and replay the
+    testers' touches, but it can't hold a phone. Every controls build
+    needs Matt and a few testers to run the phone test, with the
+    recorder as the referee. This is the one place AI can't close the
+    loop alone.
+
+2.  Art consistency at high resolution. Image tools drift in style from
+    piece to piece, and the targets are big (native 3072-4096 px
+    backdrops for ten worlds, soil kits, about 15 World 5 pieces, 349
+    story cels). Use one style reference sheet and one prompt template
+    per world, generate on flat magenta, and run everything through the
+    fixed edge pipeline. Upscale the cels before considering a repaint.
+
+3.  Sound taste. Normalising and measuring is mechanical; choosing
+    effects that sound like one family, and judging the mix on phone
+    speakers, needs ears. Plan one focused listening session after Build
+    6.
+
+4.  Animation depth, the gap to an A against AAA. Rayman's characters
+    have dozens of hand-animated frames per move. The motion model and
+    the existing clips can carry Pokey and the bosses to a B+; an A here
+    would take hand-animation or a hired animator.
+
+5.  Tuning difficulty across about 100 stages. LV-2 is long, careful
+    work. The bands inspector and the scripted first-timer make it
+    measurable, so it's grind, not mystery.
+
+An honest read on the AAA A: it's within reach for a polished Worlds 1-6
+slice, and much harder across all ten worlds at once. If the goal is to
+show what one person with AI can do, the strongest proof is a Worlds 1-6
+build polished to this standard before Worlds 7-10 grow further.
+
+Builds in order of grade gained
+
+Each build can be handed off as it stands. Coder time is rough. Build 1
+is done pending Matt's phone check; Build 2 (controls) is the
+recommended next one. Builds 2 to 7 are code first, so they can start
+now while Matt makes the art for Builds 8 and 9.
+
+Build 1: first-impression fixes (built, waiting on Matt's phone check, not pushed)
+
+Covers AN-1, DOT-3 (the three known boss lines), UI-7, AN-3, SN-4, AN-2,
+ST-5, UI-6 and UI-8. Status: on Matt's test link (the Claude artifact),
+every game test passes, not pushed to GitHub. It stayed out of Worlds
+7-10 and bosses 6-10 code and data.
+
+What changed, so testers know what to look for:
+
+-   Losing a life: the world pauses while Pokey goes down, a dark circle
+    closes on him, and he pops back up at the flag with one small "lives
+    left" note in place of the white flash. On the last life the Game
+    Over card waits a beat and ignores taps for half a second.
+
+-   Pop-ups: one small number per pickup, and no HP words.
+
+-   Boss bar: it only comes up once the boss has a name, and it no
+    longer sits under Dot's bubble.
+
+-   Boss warnings: Crocus Rex, the Sky Sovereign and the Tarantula Queen
+    each have their own tell sound instead of the jaguar growl.
+
+-   Dot's approved short boss lines now show instead of the long ones.
+
+-   The hurt blink is even, power-up timers match the engine, and the
+    end-of-stage cards respect notches upright and sideways.
+
+-   The exit is called "shrine" everywhere, to match the map and How to
+    Play (pending Matt's OK).
+
+Pending Matt's OK: four new 8-word Dot tips for the 3-10 boss, which had
+no approved short tips: "Stand by a moon pool. Hit his glow!", "Glowcaps
+out! Watch his eyes and the rings.", "He fades! Keep a moon pool behind
+you." and "Dash coming! Flick up twice, or climb high." (These also
+cover DOT-3's shadow step and streak lines.)
+
+What Matt checks on his phone: lose a life a few times (in water too),
+pick up flowers and power-ups, start a boss fight and watch the bar and
+Dot, listen to the three boss warnings, take a hit and watch the blink,
+and finish a stage on a notched phone upright and sideways.
+
+Merge and collision warning for the team working on Worlds 7-10 and
+bosses 6-10: Build 1 touches shared code they may also be changing.
+Check these spots when merging: engine.ts (losing a life, pop-up text,
+pickups, boss warnings), the boss bar (VineHud.tsx), the goal lines in
+Dot's line table (dotLinesData.ts), and the sound effects file. The
+Build 1 branch has to be merged into the main test branch, or the next
+test build will drop it.
+
+Left for the team: bosses 6-10 still use the jaguar growl on their
+tells. Give each its own tell sound in bossDefs.ts (tellCall), the same
+way Build 1 did for bosses 2-5.
+
+Build 2: controls that never misread (code, about 4-5 days)
+
+CT-1, CT-2, CT-3, CT-4, CT-9, CT-7, CT-5 (after Matt's call), CT-6, CT-8
+(the assistOn gate first), CT-20, CT-12, CT-10, with CT-11 coming free
+with CT-1. Replay the recorded tester touches before and after each
+change, and keep the scratchpad scripts as regression tests. Grade gain:
+Controls C to B against AAA, B− to A− against indies. This is the
+biggest gain per day because every second of play goes through it.
+
+Build 3: a clean picture (code and scripts, about 4 days)
+
+VI-1 and VI-5 (edge ring and halo), VI-6 (magenta spill), VI-2 code part
+(smoothing quality), VI-3 (pop-in), VI-4 (mirror seams), AN-4
+(background stutter), VI-7 and VI-8 code parts (crop the slab and bevel,
+flips, offsets, depth gradient), ST-1 code part (story dpr 2, lighter
+bloom, zoom cap). Grade gain: Visuals C+ to B and B to A−; Story C− to
+C+ and C+ to B.
+
+Build 4: Dot teaches without spoiling (code and writing, about 3-4 days plus one review pass with Matt)
+
+DOT-1, DOT-2, DOT-4, DOT-3 (the two new boss lines), DOT-5, DOT-6,
+DOT-7, DOT-8, DOT-9, DOT-10, DOT-16, then DOT-12 and DOT-13 once Matt
+settles 8 words or under-10. Grade gain: Dot C to B+ and B− to A.
+
+Build 5: fair levels and a visible mode (code, about 1-2 weeks)
+
+LV-1, LV-8, LV-9, LV-5, LV-6, LV-7, LV-4, LV-11 to LV-15, LV-3 (after
+Matt's call), then LV-2, the difficulty curve, which is the long one.
+Grade gain: Level design C+ to B+ and B to A.
+
+Build 6: sound pass (code and sourcing, about 3 days plus Matt's ears)
+
+SN-1 (Matt's call on the effect set), SN-2, SN-3, SN-5, SN-7, SN-6,
+SN-10, SN-9, and AN-9 haptics. Grade gain: Sound C− to B− and C+ to A−
+(B against AAA needs a listening pass on phones).
+
+Build 7: reward screens and boss framing (code, about 3-4 days)
+
+UI-1, UI-2, UI-3, UI-5, ST-4 (with Matt's clue lines), ST-7, ST-6, UI-9,
+UI-10, UI-11, AN-8 (the Queen's clips), and VI-14's wiring of the
+finished lair art. Grade gain: Menus C+ to B+ and B to A; Animation up a
+step.
+
+Build 8: story scenes in full resolution (Matt's art, then about 2-3 days of code)
+
+ST-1 art (upscaled or repainted cels, 2560 px plates), ST-2 (lighting
+and shadows), and the scene-by-scene picture and words audit. Grade
+gain: Story C+ to B and B to A−.
+
+Build 9: painted hazards, props and ground (Matt's art, then about 3-4 days of code)
+
+VI-9 water, VI-10 flags and exit, VI-12 pickups and the thorn gate,
+VI-11 ropes, VI-8 soil kits, VI-2 native-resolution backdrops, VI-13
+World 5 props and the water sign, VI-16 stand-ins, VI-15 boss effects,
+and the VI-14 lair plates still missing. Grade gain: Visuals B to B+ and
+A− to A+.
+
+Build 10: World 5 on the new generator (code, L, plus about 15 kit pieces)
+
+LV-10, ST-3 (5-6 as the carvings payoff), VI-17, LV-16. Grade gain:
+lifts Level design and Story to their targets, and World 5 stops being
+the weak world.
+
+Build 11: touch options and movement juice (code, about 1 week)
+
+CT-29 tilt, CT-28 sensitivity and handedness, CT-14 on-screen touch
+feedback, CT-13, CT-15 to CT-19, CT-21 to CT-27, AN-5 dust and sparks,
+AN-6 hurt flash, AN-7 Venom Fang's lunge, AN-10 shake. Grade gain:
+Controls B to B+ and A− to A+; Animation C− to B and C+ to A−.
+
+Build 12: finish and under the hood (code, about 1 week)
+
+PF-1 frame rate on iPhone (move this earlier if testers on iPhone keep
+reporting stutter), PF-2, PF-3, UI-12 to UI-15, ST-8, DOT-14, DOT-15,
+DOT-17, SN-8, LV-17, LV-18, VI-18. Grade gain: Performance C to B and B−
+to A, and the last few points everywhere.
+
+Phone test you can run yourself (about 10 minutes)
+
+Use the GitHub Pages build, landscape first, then portrait. Write down
+the counts; they tell the coders which fixes landed.
+
+1.  Distance jumps, 2 minutes. On a flat run with a gap, run right with
+    one thumb and flick up and forward, lifting at once, 10 times. Then
+    10 more keeping the thumb on the glass. If the lift-off jumps land
+    shorter or vary more, that's CT-1.
+
+2.  Trunk and liana, 2 minutes. Climb with relaxed, slightly slanted
+    strokes, stop halfway and hold still for a second. Count unwanted
+    leaps (CT-3), slides past where you stopped, and drops off the side
+    (CT-4). Switch to Pad: climb, let go, push up again. If he leaps,
+    that's CT-2. Try a liana with the Pad.
+
+3.  Two thumbs, 1 minute. Steer with the left thumb, rest the right
+    thumb on the glass about a second, then flick it up. A mega and no
+    jump is CT-7. On a vine, flick the right thumb straight up: if he
+    lets go, that's CT-5.
+
+4.  Small flicks, 1 minute. Standing still, do 10 tiny, quick flicks up
+    (about 1 cm). Count jumps, punches and nothing (CT-9).
+
+5.  Edges, 1 minute. Start a run from the very left edge; on Android
+    watch for the back arrow or leaving the page. Start a jump flick
+    from the bottom edge: is it eaten, or does the toolbar appear
+    (CT-6)?
+
+6.  Finger on Pokey, 1 minute. Facing right, then left, start runs by
+    touching Pokey. Does one way feel slower (CT-8)?
+
+7.  Picture, 1 minute, portrait. In 1-1 and 6-2, look at the leaf edges
+    for a dark outline (VI-1), whether the backdrop looks soft next to
+    Pokey (VI-2), whether it shudders while you run (AN-4), and the soil
+    for seams and repeats (VI-7, VI-8).
+
+8.  Sound, 1 minute, phone speaker at middle volume. Collect flowers and
+    jump for 30 seconds: do they poke above the music (SN-2)? Fall in
+    water: is there a splash (SN-3)? Pause: does the tune change (SN-6)?
+
+9.  Win card, portrait. Finish any stage: is Pokey on the card (UI-1)?
+
+Optional: film your thumb and the screen together in slow motion (240
+fps) and count frames from the thumb moving to Pokey moving. More than
+about 20 frames (over 80 ms) feels sluggish.

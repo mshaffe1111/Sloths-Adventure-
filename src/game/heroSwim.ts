@@ -65,24 +65,40 @@ export function swimFrame(p: Pick<PlayerState, 'vx' | 'swim'>, time: number): { 
   return { move, i: Math.floor(time * m.fps) % m.at.length };
 }
 
-/** draws Pokey swimming; false when he is not in the water or the sheet is still loading */
-export function drawSwimHero(ctx: CanvasRenderingContext2D, p: PlayerState, time: number): boolean {
-  if (!p.swim || !swimAtlasReady()) return false;
-  const { move, i } = swimFrame(p, time);
+/** a change of move (treading to the crawl, the first-swim moment to treading) cross-fades over this long (s): no pop between poses */
+const FADE = 0.22;
+/** the move on screen, the one before it and when it changed (one Pokey swims at a time; a gap in the drawing starts afresh) */
+let shown: { move: SwimMoveName; i: number; since: number; at: number; prev?: { move: SwimMoveName; i: number } } | null = null;
+
+/** draws one frame of a move, anchored as the move is (the waterline on the water's top, the dive about the middle of his body) */
+function drawMove(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, move: SwimMoveName, i: number, alpha: number) {
+  if (alpha <= 0.01) return;
   const m = SWIM_MOVES[move];
   const [fx, fy] = m.at[i];
-  // the waterline on the water's top, with a slow bob; the dive about the middle of his body
   // (each a little high in the water, LIFT: a kid has to see him swim, his head, shoulders and arms out, not a head on the water)
-  const y = move === 'under' ? p.y - SWIM.float + 16 : p.swim.surfaceY - LIFT[move] + Math.sin(time * 2.4) * 1.5;
+  const y = move === 'under' ? p.y - SWIM.float + 16 : p.swim!.surfaceY - LIFT[move] + Math.sin(time * 2.4) * 1.5;
   ctx.save();
   ctx.translate(p.x, y);
   ctx.scale(p.facing, 1);
+  ctx.globalAlpha *= alpha;
   if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha *= 0.55;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   const k = unit();
   ctx.drawImage(heroCoatSheet(img!), fx, fy, m.w, m.h, -m.ax * k, -m.ay * k, m.w * k, m.h * k);
   ctx.restore();
+}
+
+/** draws Pokey swimming; false when he is not in the water or the sheet is still loading */
+export function drawSwimHero(ctx: CanvasRenderingContext2D, p: PlayerState, time: number): boolean {
+  if (!p.swim || !swimAtlasReady()) return false;
+  const { move, i } = swimFrame(p, time);
+  if (!shown || time < shown.at || time - shown.at > 0.3) shown = { move, i, since: -Infinity, at: time };
+  else if (shown.move !== move) shown = { move, i, since: time, at: time, prev: { move: shown.move, i: shown.i } };
+  else Object.assign(shown, { i, at: time });
+  const u = Math.min(1, (time - shown.since) / FADE);
+  if (u < 1 && shown.prev) drawMove(ctx, p, time, shown.prev.move, shown.prev.i, 1 - u);
+  drawMove(ctx, p, time, move, i, Math.min(1, u * 1.7));
   return true;
 }
 
