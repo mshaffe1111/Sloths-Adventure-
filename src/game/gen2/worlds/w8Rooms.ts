@@ -48,8 +48,10 @@ const along = (on: string, w: number) => (px: number, dy?: number) => ({ on, at:
 
 export const HOLLOW = {
   ...W6_DARK_ROOM,
-  /** one more knot than World 6's: the hollow 130 px wider, the bough 70 px higher */
-  hollow: W6_DARK_ROOM.hollow + 130,
+  /** one more knot than World 6's: the hollow 100 px wider (the knots 125 px apart, not 130: the room still fits an upright phone), the
+   *  bough 70 px higher; floor E 100 px (its post and a step's run-up) */
+  floorE: 100,
+  hollow: W6_DARK_ROOM.hollow + 100,
   bankUp: W6_DARK_ROOM.bankUp + 70,
 } as const;
 
@@ -60,21 +62,21 @@ const hb = along('bank', HOLLOW.bankW);
 export const hollowRoomSpec: LocalRoomSpec = {
   id: 'hollow',
   left: he(4),
-  right: hb(140),
+  right: hb(100),
   above: 510,
   below: HOLLOW.down + 50,
   pieces: [
     { kind: 'reset', id: 'post', at: he(20) },
     { kind: 'glow', id: 'firefly', r: HOLLOW.glow },
-    // (World 6's knots, 70 px apart in height and 130 across, and a fourth)
-    { kind: 'ledge', id: 'stepA', at: hh(60, -200), w: 100 },
-    { kind: 'ledge', id: 'stepB', at: hh(190, -270), w: 100 },
-    { kind: 'ledge', id: 'stepC', at: hh(320, -340), w: 100 },
-    { kind: 'ledge', id: 'stepD', at: hh(450, -410), w: 100 },
-    { kind: 'moonflower', id: 'moon', at: hb(200), r: 900 },
+    // (World 6's knots, 70 px apart in height, 125 across, and a fourth)
+    { kind: 'ledge', id: 'stepA', at: hh(55, -200), w: 100 },
+    { kind: 'ledge', id: 'stepB', at: hh(180, -270), w: 100 },
+    { kind: 'ledge', id: 'stepC', at: hh(305, -340), w: 100 },
+    { kind: 'ledge', id: 'stepD', at: hh(430, -410), w: 100 },
+    { kind: 'moonflower', id: 'moon', at: hb(90), r: 900 },
   ],
   exit: 'moon',
-  beyond: hb(80),
+  beyond: hb(70),
   ground: ['floorE'],
   tips: {
     enter: 'Too high. The firefly will find the knots.', // (new, needs Matt's approval)

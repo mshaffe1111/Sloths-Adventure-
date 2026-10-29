@@ -511,7 +511,6 @@ const bloomDark = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   teaches: DARK,
-  uses: [W8_THEME.darkBlooms],
   pieces: [
     bank('in', [180, 210]),
     down('a', 'in', 30, [180, 210]),
@@ -533,7 +532,7 @@ const bloomDarkClimb = section({
   id: 'w8-bloom-dark-climb',
   name: 'blooms up the dark trunk (pickups, run)',
   archetypes: ['harvest'],
-  phases: ['sho', 'ten', 'ketsu'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 6,
   teaches: DARK,
   uses: [W8_THEME.darkBlooms],
@@ -627,7 +626,7 @@ const roostHollows = section({
   uses: [W8_THEME.hollows],
   pieces: [bank('a', [180, 200]), up('ak', 'a', 30, [140, 160]), down('a2', 'ak', 30, [200, 230]), ...hollowK.pieces],
   last: hollowK.last,
-  sockets: [roost('a'), hideAt('h1', 'a', 0.4), petals('ak', 'ak', 0.5, 1), hideAt('h2', 'a2', 0.5), petals('k1', 'k1', 0.5, 1), hideAt('h3', 'f1', 0.2), foe('cat', 'f1', [0.6, 0.7], CATS, 5, { phases: LIVE, chance: 0.7 }), petals('k2', 'k2', 0.5, 1)],
+  sockets: [roost('a'), hideAt('h1', 'a', 0.4), petals('ak', 'ak', 0.5, 1), hideAt('h2', 'a2', 0.5), petals('k1', 'k1', 0.5, 1), hideAt('h3', 'f1', 0.2), foe('cat', 'f1', [0.6, 0.7], CATS, 5), petals('k2', 'k2', 0.5, 1), foe('f2', 'f2', [0.55, 0.65], SMALL, 3, { phases: LIVE })],
   mirrorable: true,
 });
 
@@ -641,7 +640,7 @@ const roostHollowGap = section({
   uses: [W8_THEME.hollows],
   pieces: [bank('a', [180, 200]), up('ak', 'a', 30, [140, 160]), down('a2', 'ak', 30, [200, 240]), wide('b', 'a2', [200, 240]), up('bk', 'b', 30, [140, 160]), down('b2', 'bk', 30, [320, 350]), up('ck', 'b2', 30, [130, 150]), down('c', 'ck', 30, [150, 170])],
   last: 'c',
-  sockets: [roost('a'), hideAt('h1', 'a2', 0.4), petals('ak', 'ak', 0.5, 1), hideAt('h2', 'b', 0.5), petals('bk', 'bk', 0.5, 1), hideAt('h3', 'b2', 0.15), foe('foe', 'b2', [0.6, 0.7], [...CATS, 'boa'], 5, { phases: HOT, chance: 0.7 })],
+  sockets: [roost('a'), hideAt('h1', 'a2', 0.4), petals('ak', 'ak', 0.5, 1), hideAt('h2', 'b', 0.5), petals('bk', 'bk', 0.5, 1), hideAt('h3', 'b2', 0.15), foe('foe', 'b2', [0.6, 0.7], [...CATS, 'boa'], 5, { phases: LIVE })],
   mirrorable: true,
 });
 
@@ -653,9 +652,9 @@ const roostCurtains = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [W8_THEME.curtains],
-  pieces: [bank('a', [170, 200]), ...knots('', 'a', 3, [170, 200], [30, 40], [140, 160]).pieces],
-  last: 'f3',
-  sockets: [roost('a'), hideAt('h1', 'a', 0.6), petals('k1', 'k1', 0.5, 1), hideAt('h2', 'f1'), petals('k2', 'k2', 0.5, 1), hideAt('h3', 'f2'), petals('k3', 'k3', 0.5, 1), hideAt('h4', 'f3', 0.6)],
+  pieces: [bank('a', [170, 200]), up('k1', 'a', 34, [140, 160]), down('f1', 'k1', 34, [180, 210]), wide('b', 'f1', [180, 210]), up('k2', 'b', 36, [140, 160]), down('f2', 'k2', 36, [180, 210]), wide('c', 'f2', [200, 230])],
+  last: 'c',
+  sockets: [roost('a', 0.03, 'roostHere1'), hideAt('h1', 'f1', 0.5), petals('k1', 'k1', 0.5, 1), roost('b', 0.03, 'roostHere2'), hideAt('h2', 'f2', 0.5), petals('k2', 'k2', 0.5, 1), petals('c', 'c', 0.5, 2, 80)],
   mirrorable: true,
 });
 
@@ -667,13 +666,13 @@ const roostCurtainGaps = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W8_THEME.curtains],
-  pieces: [bank('a', [240, 270]), hop('b', 'a', [240, 270]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [160, 190]), hop('d', 'c', [320, 350]), up('dk', 'd', 30, [130, 150]), down('e', 'dk', 30, [150, 170])],
+  pieces: [bank('a', [240, 270]), wide('b', 'a', [240, 270]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [160, 190]), wide('d', 'c', [320, 350]), up('dk', 'd', 30, [130, 150]), down('e', 'dk', 30, [150, 170])],
   last: 'e',
   sockets: [roost('a', 0.03, 'roostHere1'), hideAt('h1', 'a', 0.6), roost('b', 0.03, 'roostHere2'), hideAt('h2', 'b', 0.55), petals('k', 'k', 0.5, 1), petals('c', 'c', 0.5, 1), foe('foe', 'd', [0.55, 0.65], SMALL, 3, { phases: LIVE, chance: 0.7 })],
   mirrorable: true,
 });
 
-/** climbs: a trunk up to a watched high bough with hollows, down the far side */
+/** climbs: a trunk up to the roost tree's high bough, down the far side, a hunter past it (the roosts are the dark edge's and the long bough's) */
 const roostClimb = section({
   id: 'w8-roost-climb',
   name: 'the roost tree climb cover',
@@ -692,7 +691,8 @@ const roostClimb = section({
     down('d', 'ck', 30, [150, 170]),
   ],
   last: 'd',
-  sockets: [petals('a', 'a', 0.4, 2, 80), roost('wall'), hideAt('h1', 'wall', 0.5), petals('wk', 'wk', 0.5, 1), hideAt('h2', 'w2', 0.6), foe('foe', 'c', [0.55, 0.65], SMALL, 3, { phases: LIVE, chance: 0.6 })],
+  // (no roost on the trunk's top: a wait for the bats right after the climb left 3.5 s with nothing to do, the inspector's dead time)
+  sockets: [petals('a', 'a', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), petals('wk', 'wk', 0.5, 1), scenery('nest', 'w2', [0.4, 0.6]), foe('foe', 'c', [0.55, 0.65], SMALL, 3, { phases: LIVE, chance: 0.8 })],
   mirrorable: false,
 });
 
@@ -704,7 +704,6 @@ const roostDark = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   teaches: DARK,
-  uses: [W8_THEME.climbs],
   pieces: [
     bank('in', [180, 210]),
     down('a', 'in', 30, [180, 210]),
@@ -718,6 +717,35 @@ const roostDark = section({
   last: 'd',
   sockets: [darkTip('in'), ...darkEnds('a', 'c'), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), roost('out', 0.03, 'roostOut'), hideAt('h1', 'out', 0.6), petals('k2', 'k2', 0.5, 1), hideAt('h2', 'd', 0.6)],
   mirrorable: false,
+});
+
+/** curtains: a leaf curtain at each side of a gap only the second jump crosses, and a wide gap after */
+const roostCurtainLeap = section({
+  id: 'w8-roost-curtain-leap',
+  name: 'the curtained leap cover',
+  archetypes: ['stealth'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  needs: ['double'],
+  uses: [W8_THEME.curtains],
+  pieces: [bank('a', [240, 270]), leap('b', 'a', [240, 270]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [160, 190]), wide('d', 'c', [200, 230])],
+  last: 'd',
+  sockets: [roost('a', 0.03, 'roostHere1'), hideAt('h1', 'a', 0.6), roost('b', 0.03, 'roostHere2'), hideAt('h2', 'b', 0.6), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
+  mirrorable: true,
+});
+
+/** hollows: the hunters' roost: two cats' flats under the roost, a hollow by each */
+const roostProwl = section({
+  id: 'w8-roost-prowl',
+  name: 'the prowled roost cover',
+  archetypes: ['stealth'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  uses: [W8_THEME.hollows],
+  pieces: [bank('a', [180, 210]), up('k1', 'a', 30, [140, 160]), down('b', 'k1', 30, [320, 350]), up('k2', 'b', 30, [140, 160]), down('c', 'k2', 30, [320, 350]), up('k3', 'c', 30, [130, 150]), down('d', 'k3', 30, [150, 170])],
+  last: 'd',
+  sockets: [roost('a'), hideAt('h1', 'a', 0.5), petals('k1', 'k1', 0.5, 1), hideAt('h2', 'b', 0.15), foe('f1', 'b', [0.6, 0.7], SMALL, 3), petals('k2', 'k2', 0.5, 1), hideAt('h3', 'c', 0.15), foe('f2', 'c', [0.6, 0.7], CATS, 5, { phases: LIVE })],
+  mirrorable: true,
 });
 
 /** any roost stage: a long watched bough with a hollow and a curtain, a boa guard past them */
@@ -744,6 +772,7 @@ const glideFirst = section({
   phases: ['ki', 'sho'],
   difficulty: 4,
   teaches: GLIDE,
+  maxPerStage: 1,
   pieces: [bank('a', [340, 380]), glide('b', 'a', [300, 340], [0.8, 0.88]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [200, 240])],
   last: 'c',
   sockets: [tip(GLIDE, 'a', 0.3), petals('a', 'a', 0.4, 2, 80), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1), scenery('nest', 'c', [0.5, 0.7])],
@@ -757,7 +786,7 @@ const glidePair = section({
   archetypes: ['sprint'],
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
-  uses: [GLIDE],
+  uses: [GLIDE, W8_THEME.leapers],
   pieces: [bank('a', [220, 260]), glide('b', 'a', [180, 220]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [180, 220]), glide('d', 'c', [260, 300])],
   last: 'd',
   sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
@@ -771,7 +800,7 @@ const glideTrunk = section({
   archetypes: ['sprint'],
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
-  uses: [GLIDE],
+  uses: [GLIDE, W8_THEME.climbers],
   pieces: [bank('a', [260, 300]), ...climbWall('v', 'a', 'wall', 220, [200, 240]), down('b', 'wall', 60, [180, 220]), glide('c', 'b', [420, 460]), down('d', 'c', 160, [200, 240])],
   last: 'd',
   exitDy: 0,
@@ -786,7 +815,7 @@ const glideHunter = section({
   archetypes: ['sprint'],
   phases: ['ten', 'ketsu'],
   difficulty: 7,
-  uses: [GLIDE],
+  uses: [GLIDE, W8_THEME.prowlers],
   pieces: [bank('a', [220, 260]), up('k', 'a', 34, [140, 160]), down('b', 'k', 34, [180, 220]), glide('c', 'b', [440, 480]), hop('d', 'c', [200, 240])],
   last: 'd',
   sockets: [petals('k', 'k', 0.5, 1), petals('b', 'b', 0.5, 1), foe('foe', 'c', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: LIVE }), petals('d', 'd', 0.5, 2, 80)],
@@ -875,7 +904,7 @@ const catBoughs = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W8_THEME.cats],
-  pieces: [bank('a', [340, 370]), up('k', 'a', 34, [140, 160]), down('b', 'k', 34, [160, 190]), wide('c', 'b', [340, 370]), up('k2', 'c', 30, [140, 160]), down('d', 'k2', 30, [150, 180])],
+  pieces: [bank('a', [340, 370]), up('k', 'a', 34, [140, 160]), down('b', 'k', 34, [160, 190]), up('m', 'b', 40, [130, 150]), down('c', 'm', 40, [340, 370]), up('k2', 'c', 30, [140, 160]), down('d', 'k2', 30, [150, 180])],
   last: 'd',
   sockets: [foe('f1', 'a', [0.55, 0.65], ['ocelot'], 3), petals('k', 'k', 0.5, 1), foe('f2', 'c', [0.5, 0.6], CATS, 5, { phases: LIVE }), petals('k2', 'k2', 0.5, 1)],
   mirrorable: true,
@@ -903,6 +932,28 @@ const jaguarHigh = section({
   mirrorable: false,
 });
 
+/** cats: two trunks with a cat on each high bough */
+const catTrunks = section({
+  id: 'w8-cat-trunks',
+  name: 'cats up the trunks arena',
+  archetypes: ['purge', 'gauntlet'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  uses: [W8_THEME.cats],
+  pieces: [
+    bank('a', [200, 230]),
+    ...climbWall('v', 'a', 'wall', 210, [340, 370]),
+    down('b', 'wall', 210, [160, 190]),
+    up('k', 'b', 34, [130, 150]),
+    down('c', 'k', 34, [160, 190]),
+    ...climbWall('v2', 'c', 'wall2', 210, [340, 370]),
+    down('d', 'wall2', 210, [160, 190]),
+  ],
+  last: 'd',
+  sockets: [foe('f1', 'wall', [0.55, 0.65], ['ocelot', 'tayra'], 3), petals('k', 'k', 0.5, 1), foe('f2', 'wall2', [0.55, 0.65], CATS, 5, { phases: LIVE })],
+  mirrorable: false,
+});
+
 /** harpies: a long bough for the harpy's slide, a wide gap, another */
 const harpyBough = section({
   id: 'w8-harpy-bough',
@@ -911,7 +962,7 @@ const harpyBough = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W8_THEME.harpies],
-  pieces: [bank('a', [400, 430]), up('k', 'a', 34, [140, 160]), down('b', 'k', 34, [160, 190]), wide('c', 'b', [360, 390]), up('ck', 'c', 30, [130, 150]), down('d', 'ck', 30, [150, 170])],
+  pieces: [bank('a', [400, 430]), up('k', 'a', 34, [140, 160]), down('b', 'k', 34, [160, 190]), wide('c', 'b', [400, 430]), up('ck', 'c', 30, [130, 150]), down('d', 'ck', 30, [150, 170])],
   last: 'd',
   sockets: [foe('f1', 'a', [0.5, 0.6], ['harpy'], 4), petals('k', 'k', 0.5, 1), petals('b', 'b', 0.5, 1), foe('f2', 'c', [0.5, 0.6], ['harpy', 'tayra'], 4, { phases: LIVE })],
   mirrorable: true,
@@ -926,9 +977,23 @@ const harpyLeap = section({
   difficulty: 8,
   needs: ['double'],
   uses: [W8_THEME.harpies],
-  pieces: [bank('a', [380, 410]), leap('b', 'a', [360, 390]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [150, 180])],
+  pieces: [bank('a', [400, 430]), up('ak', 'a', 30, [130, 150]), down('a2', 'ak', 30, [150, 170]), leap('b', 'a2', [400, 430]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [150, 180])],
   last: 'c',
   sockets: [foe('f1', 'a', [0.45, 0.55], ['harpy', 'ocelot'], 4), foe('f2', 'b', [0.5, 0.6], ['harpy', 'jaguar'], 5, { phases: LIVE }), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** harpies: two wide gaps between the harpies' boughs */
+const harpyGaps = section({
+  id: 'w8-harpy-gaps',
+  name: 'harpy gaps arena',
+  archetypes: ['purge', 'gauntlet'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  uses: [W8_THEME.harpies],
+  pieces: [bank('a', [200, 230]), wide('b', 'a', [400, 430]), up('bk', 'b', 30, [130, 150]), down('b2', 'bk', 30, [150, 170]), wide('d', 'b2', [400, 430]), up('k', 'd', 30, [130, 150]), down('e', 'k', 30, [150, 170])],
+  last: 'e',
+  sockets: [foe('f1', 'b', [0.5, 0.6], ['harpy', 'tayra'], 4), petals('bk', 'bk', 0.5, 1), foe('f2', 'd', [0.5, 0.6], ['harpy', 'ocelot'], 4, { phases: LIVE }), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -954,7 +1019,6 @@ const guardDark = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 7,
   teaches: DARK,
-  uses: [W8_THEME.guards],
   pieces: [
     bank('in', [340, 370]),
     down('a', 'in', 30, [180, 210]),
@@ -971,6 +1035,99 @@ const guardDark = section({
   mirrorable: false,
 });
 
+/** guards: the guards' night: a second dark stretch, a guard at each lit end (World 8's fights in the dark: nothing stands in it) */
+const guardNight: SectionTemplate = { ...guardDark, id: 'w8-guard-night', name: 'guards and the night arena (run)', uses: [W8_THEME.guards], weight: 2 };
+
+/** guards: knots on knots, a boa on the long flat */
+const guardKnots = section({
+  id: 'w8-guard-knots',
+  name: 'guards on the knots arena',
+  archetypes: ['purge', 'gauntlet'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  uses: [W8_THEME.guards],
+  pieces: [bank('a', [160, 190]), ...knots('', 'a', 2, [150, 170], [32, 44], [130, 150]).pieces, hop('b', 'f2', [330, 360]), ...knots('b', 'b', 2, [150, 170], [32, 44], [130, 150]).pieces],
+  last: 'bf2',
+  sockets: [petals('k1', 'k1', 0.5, 1), petals('k2', 'k2', 0.5, 1), foe('f1', 'b', [0.5, 0.6], ['boa', 'tayra'], 3), petals('bk1', 'bk1', 0.5, 1), petals('bk2', 'bk2', 0.5, 1)],
+  mirrorable: true,
+});
+
+// ───────────────────────────── 8-9 Monarch's Wood: its own boughs (8-8 Night Hunters is the stage before: no two alike) ─────────────
+
+/** the Monarch's wood's dark: a longer stretch with a second-jump gap in it, a guard at each lit end (8-9's required dark) */
+const monarchDark = section({
+  id: 'w8-monarch-dark',
+  name: 'the Monarch\'s dark arena (run)',
+  archetypes: ['gauntlet'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 8,
+  teaches: DARK,
+  needs: ['double'],
+  pieces: [
+    bank('in', [340, 370]),
+    down('a', 'in', 30, [170, 200]),
+    up('k', 'a', 44, [130, 150]),
+    down('b', 'k', 44, [160, 190]),
+    leap('c', 'b', [170, 200]),
+    up('k2', 'c', 40, [130, 150]),
+    down('d', 'k2', 40, [160, 190]),
+    hop('e', 'd', [170, 200]),
+    up('out', 'e', 30, [340, 370]),
+    up('ok', 'out', 30, [130, 150]),
+    down('f', 'ok', 30, [150, 170]),
+  ],
+  last: 'f',
+  sockets: [foe('f1', 'in', [0.35, 0.45], ['boa', 'ocelot'], 3), darkTip('in'), ...darkEnds('a', 'e'), petals('k', 'k', 0.5, 1), petals('c', 'c', 0.5, 1), petals('k2', 'k2', 0.5, 1), foe('f2', 'out', [0.55, 0.65], ['jaguar', 'harpy'], 5, { phases: LIVE })],
+  mirrorable: false,
+});
+
+/** cats: a wide gap between two cats' boughs, a knot after */
+const monarchCats = section({
+  id: 'w8-monarch-cats',
+  name: 'the Monarch\'s cats arena',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  uses: [W8_THEME.cats],
+  pieces: [bank('a', [340, 370]), up('k', 'a', 36, [130, 150]), down('b', 'k', 36, [160, 190]), ...climbWall('v', 'b', 'wall', 210, [340, 370]), down('c', 'wall', 210, [160, 190]), up('k2', 'c', 30, [130, 150]), down('d', 'k2', 30, [150, 170])],
+  last: 'd',
+  sockets: [foe('f1', 'a', [0.5, 0.6], CATS, 5), petals('k', 'k', 0.5, 1), foe('f2', 'wall', [0.55, 0.65], ['jaguar'], 5, { phases: LIVE }), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** harpies: a second-jump gap, then a wide one, harpies on the far boughs */
+const monarchHarpies = section({
+  id: 'w8-monarch-harpies',
+  name: 'the Monarch\'s harpies arena',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 8,
+  needs: ['double'],
+  uses: [W8_THEME.harpies],
+  pieces: [bank('a', [200, 230]), leap('b', 'a', [400, 430]), up('bk', 'b', 30, [130, 150]), down('b2', 'bk', 30, [150, 170]), wide('c', 'b2', [400, 430]), up('k', 'c', 30, [130, 150]), down('d', 'k', 30, [150, 170])],
+  last: 'd',
+  sockets: [foe('f1', 'b', [0.5, 0.6], ['harpy'], 4), foe('f2', 'c', [0.5, 0.6], ['harpy', 'jaguar'], 5, { phases: LIVE }), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** guards: the Monarch's guard posts: three long flats, a knot between each (the guards' theme's animals stand here: the dark holds none) */
+const monarchGuardPosts = section({
+  id: 'w8-monarch-guard-posts',
+  name: 'the Monarch\'s guard posts arena',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  weight: 2,
+  uses: [W8_THEME.guards],
+  pieces: [bank('a', [340, 370]), up('k1', 'a', 36, [130, 150]), down('b', 'k1', 36, [340, 370]), up('k2', 'b', 40, [130, 150]), down('c', 'k2', 40, [340, 370]), up('k3', 'c', 30, [130, 150]), down('d', 'k3', 30, [150, 170])],
+  last: 'd',
+  sockets: [foe('f1', 'a', [0.5, 0.6], ['boa', 'ocelot'], 3), petals('k1', 'k1', 0.5, 1), foe('f2', 'b', [0.5, 0.6], ['boa', 'tayra'], 3, { phases: LIVE }), petals('k2', 'k2', 0.5, 1), foe('f3', 'c', [0.5, 0.6], ['jaguar', 'boa'], 5, { phases: LIVE }), petals('k3', 'k3', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** guards: boas on the knots and a short dark between */
+const monarchGuards: SectionTemplate = { ...nightOf(darkBoughs, 'w8-monarch-guard-dark'), name: 'the Monarch\'s guards in the dark (run)', archetypes: ['gauntlet'], uses: [W8_THEME.guards], weight: 2 };
+
 // ───────────────────────────── the list, and which stage holds which ─────────────────────────────
 
 export const W8_SECTIONS: SectionTemplate[] = [
@@ -978,9 +1135,10 @@ export const W8_SECTIONS: SectionTemplate[] = [
   knotHops, boughGap, doubleGap, trunkClimb, rise, drop, climbRun, prowlBough,
   darkBoughs, darkGap, darkClimb, darkLong, ...nightSections,
   ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomDarkClimb, bloomGaps, bloomLeap,
-  ...roostGates, roostHollows, roostHollowGap, roostCurtains, roostCurtainGaps, roostClimb, roostDark, roostLong,
+  ...roostGates, roostHollows, roostHollowGap, roostCurtains, roostCurtainGaps, roostCurtainLeap, roostProwl, roostClimb, roostDark, roostLong,
   glideFirst, glidePair, glideTrunk, glideHunter, glideDark,
-  ...huntGates, hunterBough, sunkenFork, catBoughs, jaguarHigh, harpyBough, harpyLeap, boaKnots, guardDark,
+  ...huntGates, hunterBough, sunkenFork, catBoughs, catTrunks, jaguarHigh, harpyBough, harpyGaps, harpyLeap, boaKnots, guardDark, guardNight, guardKnots,
+  monarchDark, monarchCats, monarchHarpies, monarchGuards, monarchGuardPosts,
 ];
 
 /** the shared fillers, kept out of the themed stages (8-2, 8-4, 8-8, 8-9: there the theme carries the stage) */
@@ -994,6 +1152,20 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   ...Object.fromEntries(DARKS.map((id) => [id, [1, 3, 5, 6]])),
   // (the long dark is 8-1's; each lit gate its stages')
   'w8-dark-long': [1],
+  // (the shared arenas made every fight theme read alike: the themes carry 8-8 and 8-9; kept for no stage today)
+  'w8-hunter-bough': [],
+  'w8-sunken-fork': [],
+  // (8-8 and 8-9 are neighbours: each theme's sections are split between them, and 8-9 has its own dark)
+  'w8-cat-boughs': [8],
+  'w8-cat-trunks': [8],
+  'w8-harpy-bough': [8],
+  'w8-harpy-gaps': [8],
+  'w8-boa-knots': [8],
+  'w8-guard-knots': [8],
+  'w8-guard-dark': [8],
+  'w8-jaguar-high': [9],
+  'w8-harpy-leap': [9],
+  'w8-guard-night': [9],
   // (the moonlight glides are 8-6's: Glide by Moonlight)
   ...Object.fromEntries(['w8-glide-first', 'w8-glide-pair', 'w8-glide-trunk', 'w8-glide-hunter', 'w8-glide-dark'].map((id) => [id, [6]])),
   ...Object.fromEntries(nightSections.map((t) => [t.id, [1]])),
