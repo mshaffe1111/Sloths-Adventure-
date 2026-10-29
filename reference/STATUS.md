@@ -35,7 +35,7 @@ Cost mode is lifted (Matt, 2026-10-29): full capacity, two builders per world as
 | Polish C, screens and feel: UI-2, AN-11, UI-5, UI-9, UI-10, UI-12, UI-13, UI-15, AN-6, AN-10, PF-3 | cloud session_01FhBbYJojJwqFxv2u9mo8uR | polish-c | started 1:35 PM ET; big screen changes shown first |
 | Polish levels: LV-8, LV-14, LV-4, LV-5, LV-7, LV-15, then LV-2 (proposal first) | cloud session_01FhBbYLyE75iwttyDZRWPxT | polish-levels | started 1:35 PM ET |
 | Polish B1: controls never misread (CT-1..4, 6, 7, 9, 10, 12; CT-5 waits for Matt) | cloud session_01FhBbYKmJjBAbBHVVVBnhLE | polish-controls | replay tester touches |
-| Polish B2: clean backdrop edges (VI-1, VI-5, VI-6) | cloud session_01FhBbYNmvX29Yt9L2XxEWqJ | polish-edges | |
+| Polish B2: clean backdrop edges (VI-1, VI-5, VI-6) + the backdrops-hd swap + X-16 upright fade (Matt 3:45 PM ET, "just build it"): strips sized as sideways, sky outpainted upward on HF (~$2) | cloud session_01FhBbYNmvX29Yt9L2XxEWqJ | polish-edges | X-16 sent 3:47 PM ET |
 | Rope traverse (DONE, Matt: "Looks good", merged): Gemini frames 1-7, World 2's painted rope and posts; HF in-betweens all drifted off model ($0.84) | local helper | rope-traverse | |
 | Audit: major looks still drawn in code (DONE) | local read-only | none | findings below |
 
