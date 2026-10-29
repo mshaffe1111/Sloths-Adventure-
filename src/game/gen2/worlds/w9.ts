@@ -214,9 +214,9 @@ export function ventFloor(platforms: readonly Platform[], x: number, lipY: numbe
 export function w9Emitters(stage: number): Record<W9PropId, PropEmitter> {
   const hide = (kind: Bush['kind']): PropEmitter => (f, p, out) => {
     const w = W9_HIDE_W[p.id as keyof typeof W9_HIDE_W] ?? 150;
-    const b: Bush = { x: R(f.x - w / 2), w, y: f.y, kind };
+    const b: Bush = { x: R(f.x - w / 2), w, y: f.y, kind, look: look(p, f.x, 1) };
     (out.proto.bushes ??= []).push(b);
-    (w9Of(out, stage).hides ??= []).push({ x: b.x, w, y: f.y, look: look(p, f.x, 1) });
+    (w9Of(out, stage).hides ??= []).push({ x: b.x, w, y: f.y, look: b.look! });
   };
   const scenery = (salt: number, w0: number, dw: number): PropEmitter => (f, p, out) =>
     void (w9Of(out, stage).scenery ??= []).push({ n: look(p, f.x, salt), x: f.x, b: f.y, w: R(w0 + dw * hash01(f.x, salt + 1)), ...(hash01(f.x, salt + 2) < 0.5 ? { flip: true } : {}) });
@@ -311,14 +311,20 @@ export const CLIMB_CLEAR = 26;
 
 /**
  * The stage as the engine plays it (the hook-up and the curation tool call this after buildGen2Stage; calling it twice changes nothing):
+ *  - the crumbling tiles are the kit's cracked basalt (Platform.art 'basalt');
  *  - the soft pits' floors and steps out (the pipeline's 'moss_stone' blocks) are cooled crust, in the world's rock;
  *  - a climbing vine stands CLIMB_CLEAR px in front of the ledge's face (World 8's lesson: snapped to a vine on the face, he hung inside
  *    the ledge and fell out of its body);
- *  - no stage tip is said twice.
+ *  - no water sign stands at the lava (its picture is a wave; Dot's line before the first chasm stays).
  */
-export function w9Finish<S extends { spawnX?: number; platforms?: Platform[]; vines?: Vine[]; proto?: { hints?: StageHint[] } }>(st: S): S {
+export function w9Finish<S extends { spawnX?: number; platforms?: Platform[]; vines?: Vine[]; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
+  // (the water signs the pipeline stands at a deadly chasm's lip show a wave: the lava shows itself, and Dot names it before the first)
+  if (st.proto?.gen2?.waterWarnings) delete st.proto.gen2.waterWarnings;
   for (const p of st.platforms ?? []) {
-    if (p.type !== 'solid' || p.style !== 'moss_stone') continue;
+    // (the crumbling tiles are the kit's cracked basalt slabs: w9Art.ts drawW9Crumble)
+    if (p.type === 'fragile' && p.crumbleAfter !== undefined) p.art = 'basalt';
+    // (a soft pit's floor and its steps; a channel's solid slab between two runs of tiles (26 px) stays a slab)
+    if (p.type !== 'solid' || p.style !== 'moss_stone' || p.height <= 26) continue;
     p.style = 'log';
     p.height = Math.max(p.height, W9_GROUND.bankH + 70);
   }

@@ -1,5 +1,6 @@
 import { buzz } from './haptics.ts';
 import { SlowWatch } from './slowTip.ts';
+import { drawW9Bush, drawW9Scenery, type W9SceneryItem } from './w9Art.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
@@ -2289,10 +2290,13 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
-        this.spawnWaterSplash(p.x, waterY);
+        // (World 9's water line is lava: a burst of embers, not a splash)
+        const lava = this.currentStage.config.worldIndex === 9;
+        if (lava) this.spawnSparkBurst(p.x, waterY - 10, '#fb923c');
+        else this.spawnWaterSplash(p.x, waterY);
         sound.playWhoosh();
         sound.playHitImpact(true);
-        this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
+        this.addFloatingText(lava ? 'TOO HOT!' : 'SPLASH!', p.x, waterY - 40, lava ? '#fdba74' : '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (!this.softFall()) {
@@ -5643,6 +5647,12 @@ export class GameEngine {
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
+    // World 9's set dressing on gen2 (Matt's w9c sheets: w9Art.ts), behind the basalt's front lip
+    const w9x = (this.proto?.gen2 as { w9?: { decor?: W9SceneryItem[]; scenery?: W9SceneryItem[] } } | undefined)?.w9;
+    if (w9x) {
+      drawW9Scenery(ctx, w9x.decor, this.camera.x, this.camera.x + this.camera.viewportWidth);
+      drawW9Scenery(ctx, w9x.scenery, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    }
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     // 6-8: its ledges in Matt's other World 6 pieces (over the roots that top out on them, as the kit's planks are)
@@ -7422,6 +7432,7 @@ export class GameEngine {
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
       // (World 4 has its own painted cover: w4Art.ts)
       if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      if (b.look && drawW9Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });

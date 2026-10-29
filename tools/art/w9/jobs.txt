@@ -1,0 +1,12 @@
+World 9 hazard art (2026-10-29, cap $10), branch gen2-w9: starts tools/art/w9/lavastart.py (round 1) and lavastart2.py (round 2), spec
+make_spec.py, cut cut.py (-> src/assets/w9/hazards.webp, src/game/w9ArtData.ts), drawn by src/game/w9Art.ts. rtx-pro-6000 at ~$2.75/h.
+Raw takes in the bucket mshaffe111/w5-xfer under hfbatch/w9/props/ (fetched with hf_fs attach).
+w9-hazards    6ae3ba1bc78863f9c62de399 21:26:51Z-21:30:05Z (3.2 min, ~$0.15): lava, geyser, haze, s(62/78, 55/70, 60/75) x seeds 7/23.
+  KEPT w9lava-s78-7 (molten surface, crust plates, the rock rim behind; strip ends cross-faded 160 px), w9geyser-s70-23 cells 1-2 (the
+  quiet vent rock; the same rock glowing with its steam). THROWN: every eruption column (kept the start's flat slab: reads as a drawn
+  pillar), every haze take (kept the start's stacked discs), lava s62 (the start's ovals show as a beat).
+w9-hazards-r2 6ae3bb09c78863f9c62de471 21:30:49Z-21:33:47Z (3.0 min, ~$0.14): burst frames from blob fountains, haze from S ribbons.
+  KEPT w9burst-s86-23 (a liquid fountain in three moments: the burst, the full fountain, falling back; each cut above its own little
+  cone so it stands in the vent rock's mouth), w9haze2-s75-7 (six soft wisps, faded at both ends). THROWN: burst s72 (the column reads as
+  a carved wooden post), burst s86-7 (a flame, not lava).
+total ~6.2 min = ~$0.28 of the $10 cap.

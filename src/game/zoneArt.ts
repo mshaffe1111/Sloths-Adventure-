@@ -8,6 +8,7 @@
 import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
+import { drawW9Crumble, drawW9Eruption, drawW9Vent } from './w9Art.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
 import { drawW5Box, w5ArtReady } from './w5Art.ts';
 import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
@@ -297,6 +298,8 @@ export function drawDrowsyVeil(ctx: CanvasRenderingContext2D, vw: number, vh: nu
 
 /** a crack in the ground that glows hotter as the eruption nears */
 function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  // (World 9's painted vent rock: w9Art.ts; the shapes below while its sheet loads)
+  if (drawW9Vent(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const w = z.x1 - z.x0;
   const heat = st.phase === 'warn' ? 0.35 + 0.65 * st.u : st.phase === 'active' ? 1 : 0.12 + 0.08 * Math.sin(t * 2 + cx);
@@ -335,6 +338,7 @@ function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
 }
 
 function drawEruption(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  if (drawW9Eruption(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const w = z.x1 - z.x0;
   const full = z.baseY - z.top;
@@ -700,6 +704,8 @@ export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly 
   for (const p of plats) {
     if (p.crumbleAfter === undefined || p.broken) continue;
     if (p.x + p.width < cam.x - 40 || p.x > cam.x + cam.w + 40) continue;
+    // (World 9's cracked basalt is its kit's painted slab: w9Art.ts)
+    if (p.art === 'basalt' && drawW9Crumble(ctx, p, t)) continue;
     const timer = p.fragileTimer;
     const prog = timer === undefined ? 0 : Math.max(0, Math.min(1, 1 - timer / p.crumbleAfter));
     ctx.save();
