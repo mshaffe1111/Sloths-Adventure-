@@ -10,6 +10,7 @@
  *   vine, rope    Pokey on a liana, on a shimmy rope (and the painted rope)
  *   boss:<w>      the world's guardian, or World 4's watcher (asked for by drawing a still of it off screen: stageReady.ts)
  *   meeca-standard Meeca waiting to be rescued (the boss lairs and the rescue stages)
+ *   meeca-night   her night poses, in a World 5 stage with puzzle rooms
  *   w2-props      a river (World 2's logs and pads, wherever a river runs)
  *   bad-water     Worlds 6-10's dirty water, when the stage has water
  *   bounce        the bounce mushrooms
@@ -30,6 +31,7 @@ export interface BuiltStage extends StageDraws {
   platforms: ReadonlyArray<{ type?: string; crumbleAfter?: number }>;
   boss?: unknown;
   daisyX?: number;
+  kit?: unknown;
   rivers?: readonly unknown[];
   waterY?: number;
 }
@@ -47,6 +49,8 @@ export function builtStageKeys(st: BuiltStage): string[] {
   // (World 4's watcher over a watched stretch is the Sky Sovereign herself, in her painted boss frames: engine.ts, 4-5 at 6 s)
   if (w === 4 && st.proto?.watch?.length) out.add('boss:4');
   if (st.daisyX !== undefined) out.add('meeca-standard');
+  // (a World 5 stage with puzzle rooms shows Meeca in her night poses: meecaArt.ts, 5-9 at 15 s)
+  if (w === 5 && st.kit) out.add('meeca-night');
   if (st.rivers?.length) out.add('w2-props');
   if (w >= 6 && (st.waterY !== undefined || !!st.rivers?.length)) out.add('bad-water');
   if (st.platforms.some((p) => p.type === 'bouncy')) out.add('bounce');
