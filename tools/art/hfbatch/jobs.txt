@@ -264,3 +264,6 @@ hfboss910c    6ae4e1c7c78863f9c62ea004 18:28Z-~18:39Z (~11 min, ~$0.5): the 9-10
   tools/art/hfdrake/picks910.json (ledges/ribs/rubble at 0.88; crust, lava, table, chairs, netting, hedge at 0.8). Not packed yet: the
   new fights are not built (cut910.py packs them when they are).
 running spend of the $80: ~$1.04 + this round ~$4.3 = ~$5.3 (this round's cap $15)
+hficon2       6ae4ec0fc78863f9c62ea84c 19:12Z-~19:19Z (~7 min, ~$0.32; cancelled once its six edits were saved, before it loaded a model
+  it did not need): the app icon redo, front-facing, three looks x 2 seeds. Options A gold (gold-6), B green + Meeca petal (petal-6),
+  C green (green-6): reference/store/icon-options/, launcher check icon-options-launcher.jpg. Not swapped in: Matt picks first.
