@@ -155,7 +155,7 @@ import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar 
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
-import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
+import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
@@ -250,8 +250,8 @@ export interface GameEngineCallbacks {
 }
 
 /** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
-/** px of ground between two footstep sounds (52 until 2026-10-30) */
-export const STEP_PX = 80;
+/** a footstep sound on every this-many footfalls of his run frames (2026-10-30; until then one every 52 px, unsynced) */
+export const STEP_EVERY = 2;
 export const STEP_FACE = { min: 30, max: 100 } as const;
 /**
  * World 5's step help (takeOff): a step this many px above his feet (one plain jump's climb: it rises about 108), with its face no more
@@ -3178,7 +3178,9 @@ export class GameEngine {
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
   private soundTimer = 0;
-  private stepDist = 0;
+  private stepCycle = 0;
+  private footfalls = 0;
+  private airAt = -1;
   private updateSound(dt: number, groundedBefore: boolean, vyBefore: number, progress: number) {
     const p = this.player;
     // the stage is over (game over / victory screen up): no heartbeat, and the screen's own music intensity stands
@@ -3191,15 +3193,18 @@ export class GameEngine {
       // (a hard landing buzzes: AN-9)
       if (vyBefore > HARD_LAND_VY) buzz('hardLand');
     }
-    // footsteps: a soft pad every STEP_PX on the ground (Matt, 2026-10-30: the longer stride, about 3.6 a second at a full run)
-    if (p.grounded && !p.climbing && Math.abs(p.vx) > 25) {
-      this.stepDist += Math.abs(p.vx) * dt;
-      if (this.stepDist > STEP_PX) {
-        this.stepDist = 0;
+    // footsteps: a soft pad as a foot comes down in his run frames (heroClips RUN_FOOTFALLS), every STEP_EVERY-th one so it stays calm
+    // (Matt, 2026-10-30: about 3.3 a second at a full run). Only a footfall passed fires one, so starting or stopping adds none, and
+    // none in the 0.15 s after he lands (the landing has its own sound)
+    const falls = footfallsBetween(this.stepCycle, p.walkCycle);
+    this.stepCycle = p.walkCycle;
+    if (!p.grounded) this.airAt = this.gameTime;
+    else if (falls > 0 && !p.climbing && Math.abs(p.vx) > 25 && this.gameTime - this.airAt > 0.15) {
+      this.footfalls += falls;
+      if (this.footfalls >= STEP_EVERY) {
+        this.footfalls = 0;
         sound.playStep();
       }
-    } else if (!p.grounded) {
-      this.stepDist = STEP_PX / 2;
     }
 
     this.soundTimer -= dt;
