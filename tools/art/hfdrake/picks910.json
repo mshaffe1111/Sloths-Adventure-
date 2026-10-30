@@ -1,0 +1,6 @@
+{"poses": {"drake-tea": "drake-teap-2", "drake-breathdown": "drake-breathdownp-6", "drake-winded": "drake-windedp-6", "drake-cling": "drake-clingp-6",
+           "gen-aboutface": "gen-aboutfacep-6", "gen-chairlift": "gen-chairliftp-6", "gen-throw": "gen-throwp-2", "gen-peek": "gen-peekp-6", "gen-paw": "gen-pawp-6"},
+ "tea": "tea-s68-23",
+ "ledges": "910-ledges-s88-7", "ribs": "910-ribs-s88-7", "crust": "910-crust-s80-7", "lava": "910-lava-s80-7",
+ "table": "1010-table-s80-7", "chairs": "1010-chairs-s80-7", "net": "1010-net-s80-7", "hedge": "1010-hedge-s80-7", "rubble": "1010-rubble-s88-7",
+ "hall-wide": "hall-wide-2", "hall-tall": "hall-tall-6", "break-crack": "break-crack-6"}

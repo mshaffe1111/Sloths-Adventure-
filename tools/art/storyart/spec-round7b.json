@@ -1,0 +1,52 @@
+{
+ "tag": "r7b",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/7e2a30fc0b0cdd60f192c2c1357fb440a3476497/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "card-magma-drake-w58",
+   "start": "fix-magma-drake.png",
+   "mask": "cardmask-magma-drake.png",
+   "strength": 0.58,
+   "seed": 4,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, two used china teacups with saucers standing on a flat dark rock beside the dragon, lit warm orange by the lava glow, a ring of tea in each, thin steam rising, painted at the same scale as the scene, crisp clean outlines, rich painted detail",
+   "neg": "text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry"
+  },
+  {
+   "name": "card-magma-drake-w68",
+   "start": "fix-magma-drake.png",
+   "mask": "cardmask-magma-drake.png",
+   "strength": 0.68,
+   "seed": 9,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, two used china teacups with saucers standing on a flat dark rock beside the dragon, lit warm orange by the lava glow, a ring of tea in each, thin steam rising, painted at the same scale as the scene, crisp clean outlines, rich painted detail",
+   "neg": "text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry"
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/7e2a30fc0b0cdd60f192c2c1357fb440a3476497/",
+ "keep": [
+  "card-magma-drake-w58",
+  "card-magma-drake-w68"
+ ]
+}

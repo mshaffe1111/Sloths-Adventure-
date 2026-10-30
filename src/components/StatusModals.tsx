@@ -41,6 +41,7 @@ interface StatusModalsProps {
   onOpenTitle: () => void;
   onOpenTrophies: () => void;
   onOpenCards: () => void;
+  onOpenSatchel: () => void;
   /** Meeca's stage: ask Flicker for a hint (null when he cannot be asked now) */
   onAskHint?: () => string | null;
   onViewStory?: () => void;
@@ -75,8 +76,9 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   onOpenTitle,
   onOpenTrophies,
   onOpenCards,
+  onOpenSatchel,
 }) => {
-  // --- 1. PAUSE MENU (opened by the Menu button) ---
+  // --- 1. SETTINGS, THE PAUSE CARD (opened by the Settings button) ---
   if (screen === 'paused') {
     return (
       <PauseMenu
@@ -87,7 +89,9 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         onRestart={onRestart}
         onOpenTrophies={onOpenTrophies}
         onOpenCards={onOpenCards}
+        onOpenSatchel={onOpenSatchel}
         onOpenMap={onOpenMap}
+        onOpenTitle={onOpenTitle}
         trophyCount={trophyCount}
         trophyTotal={trophyTotal}
         skills={skills}

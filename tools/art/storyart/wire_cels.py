@@ -19,6 +19,18 @@ HD = 2.0
 ST = REPO / 'tools/art/hfbatch/starts/storyart'
 # the old three sheets the starts were cut from (replaced in the game by the repainted pages): read from git, where they still are
 OLD_SHEETS_AT = '0e433bd'
+# new poses made after the first sheets (2026-10-30): cel key -> the way the figure faces
+NEW_POSES = {'mc.hold_branch': 1, 'da.hands_rim': 0}
+# cut-outs ready at cel size (Matt's Gemini sheet 25 for the sequel tag, 2026-10-30: cut off its magenta, numbers removed, scaled to
+# Meeca's standing cel): key -> (file in the starts folder, the way the figure faces)
+READY = {'pk.scarf_hug': ('seq-scarf_hug.png', 0), 'pk.scarf_ready': ('seq-scarf_ready.png', 0), 'pk.scarf_walk': ('seq-scarf_walk.png', 1),
+         'pk.scarf_go': ('seq-scarf_go.png', 1), 'pk.dot_fly': ('seq-dot_fly.png', 1),
+         # (the Drake's tea, hf-art-bosses' cut-outs at d8112754, src/assets/story/drake/, all facing right: he at Pokey's height and a half,
+         # the good china small, his own tin mug and pot bigger)
+         'dr.bowed': ('drk-bowed.png', 1), 'dr.sit': ('drk-sit.png', 1), 'dr.cup': ('drk-cup.png', 1), 'ts.pot': ('drk-pot.png', 1), 'ts.pottin': ('drk-pottin.png', 1), 'ts.mug': ('drk-mug.png', 1),
+         'ts.cups': ('drk-cups.png', 0), 'ts.cup0': ('drk-cup0.png', 1), 'ts.cup1': ('drk-cup1.png', 1)}
+# start px per old-sheet px for each (an HD story frame, 2x old, drawn on the start at 2.5x and 2x: tools/art/storyart, round8 starts)
+NEW_SCALE = {'mc.hold_branch': 5.0, 'da.hands_rim': 3.98}
 
 
 def old_sheet(atlas):
@@ -61,6 +73,12 @@ def main():
             old = Image.open(REPO / atlas).convert('RGBA').crop((x, y, x + w, y + h))
             face, raw, cut_c = 0, False, None
             general = True
+        elif key in NEW_POSES:
+            # (new pictures from an HD story frame on grey, start new-<pose>.png at 1024: the frame's size in old px is the cut's own)
+            m = {'scale': NEW_SCALE[key], 'ox': 0, 'oy': 0, 'size': (1024, 1024)}
+            old = Image.new('RGBA', (1, 1))
+            face, raw, cut_c = NEW_POSES[key], False, None
+            general = True
         else:
             m = meta[f'cel-{key}']
             atlas, x, y, w, h = m['src']
@@ -73,6 +91,10 @@ def main():
             s, ox, oy = m['scale'], m['ox'], m['oy']
             im = gen.convert('RGBA').crop((ox, oy, round(ox + old.width * s), round(oy + old.height * s))).resize((round(old.width * HD), round(old.height * HD)), Image.LANCZOS)
             mg = 0
+        elif key in NEW_POSES:
+            im, _ = cut_figure(gen, m, old, HD, limit=False, drop_grey=True)
+            mg = 0
+            old = im.resize((max(1, round(im.width / HD)), max(1, round(im.height / HD))), Image.LANCZOS)
         else:
             im, mg = cut_figure(gen, m, old, HD, rect_margin=30 if general else 6, limit=not general, drop_grey=take.startswith('new-'))
         if re.search(r'-p[sij]\d*$', take):
@@ -80,6 +102,10 @@ def main():
             im = pokey_tone(im)
         figs[key] = im
         info[key] = (face, cut_c, mg, old)
+    for key, (f, face) in READY.items():
+        im = Image.open(ST / f).convert('RGBA')
+        figs[key] = im
+        info[key] = (face, None, 0, im.resize((max(1, round(im.width / HD)), max(1, round(im.height / HD))), Image.LANCZOS))
     pages, places = pack(figs, max_w=2048, max_h=2048)
     out = REPO / 'src/assets/characters'
     for f in out.glob('cels-*.webp'):

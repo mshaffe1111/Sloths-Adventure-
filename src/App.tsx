@@ -42,6 +42,7 @@ import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStat
 import { anyCakeEaten } from './game/w5Kit.ts';
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
 import { TrophyRoom } from './components/TrophyRoom.tsx';
+import { Satchel, type SatchelTab } from './components/Satchel.tsx';
 import { inAppOf } from './game/deviceInfo.ts';
 import { markSlowTipShown, slowTipShown, slowTipText } from './game/slowTip.ts';
 import { BadgeToast } from './components/BadgeToast.tsx';
@@ -326,12 +327,13 @@ export default function App() {
   };
   const [trophyFrom, setTrophyFrom] = useState<'title' | 'world_map' | 'paused'>('title');
   /** which tab the Trophy Room opens on (the pause menu's Jungle Cards go straight to the creature journal) */
-  const [trophyTab, setTrophyTab] = useState<'badges' | 'journal' | 'library'>('badges');
+  const [trophyTab, setTrophyTab] = useState<'badges' | 'journal'>('badges');
+  const [satchelTab, setSatchelTab] = useState<SatchelTab>('satchel');
   // ---- story finds: the notes, books and keepsakes picked up, and the one being read ----
   const [foundIds, setFoundIds] = useState<string[]>(() => loadFinds());
   // ---- flashbacks: the ones seen so far, and the one playing ----
   const [memoriesSeen, setMemoriesSeen] = useState<MemoryId[]>(() => loadMemories());
-  const [memoryPlay, setMemoryPlay] = useState<{ id: MemoryId; back: 'victory' | 'trophy' } | null>(null);
+  const [memoryPlay, setMemoryPlay] = useState<{ id: MemoryId; back: 'victory' | 'satchel' } | null>(null);
   const markMemorySeen = (id: MemoryId) => {
     setMemoriesSeen((cur) => {
       const next = withMemory(cur, id);
@@ -669,7 +671,7 @@ export default function App() {
   // dev only: play a flashback
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __memory?: (id: MemoryId) => void }).__memory = (id: MemoryId) => {
-      setMemoryPlay({ id, back: 'trophy' });
+      setMemoryPlay({ id, back: 'satchel' });
       setScreen('memory');
     };
   }
@@ -772,6 +774,7 @@ export default function App() {
             const next = withFind(known, id);
             saveFinds(next);
             setFoundIds(next);
+            if (FIND_BY_ID[id].kind === 'snail') return;
             engineRef.current?.pause();
             pausedForFind.current = true;
             setReadingCompletes(allFound(next));
@@ -1210,9 +1213,9 @@ export default function App() {
               }
             }
             setMemoryPlay(null);
-            if (back === 'trophy') {
-              setTrophyTab('library');
-              setScreen('trophy');
+            if (back === 'satchel') {
+              setSatchelTab('scenes');
+              setScreen('satchel');
             } else setScreen('victory');
           }}
         />
@@ -1223,14 +1226,14 @@ export default function App() {
         <StoryPlayer
           panels={finalePanels(foundIds)}
           finishLabel="The End" finishIcon="heart"
-          onFinish={() => setScreen(endTagPanels(foundIds).length ? 'ending_tag' : 'story_ending')}
+          onFinish={() => setScreen(endTagPanels(foundIds, thornHeart).length ? 'ending_tag' : 'story_ending')}
         />
       )}
 
-      {/* After the end: the stopwatch, if it was found */}
+      {/* After the end: the stopwatch, if it was found, then the sequel hint (Thornbark's part only if he was freed) */}
       {screen === 'ending_tag' && (
         <StoryPlayer
-          panels={endTagPanels(foundIds)}
+          panels={endTagPanels(foundIds, thornHeart)}
           finishLabel="The End" finishIcon="heart"
           onFinish={() => setScreen('story_ending')}
         />
@@ -1255,6 +1258,11 @@ export default function App() {
             setTrophyTab('badges');
             setScreen('trophy');
           }}
+          onOpenSatchel={() => {
+            setTrophyFrom('world_map');
+            setSatchelTab('satchel');
+            setScreen('satchel');
+          }}
         />
       )}
 
@@ -1269,9 +1277,20 @@ export default function App() {
           onChoice={changeCosmetic}
           initialTab={trophyTab}
           finds={foundIds}
+          onBack={() => setScreen(trophyFrom)}
+        />
+      )}
+
+      {/* Pokey's satchel: the finds, his journal, the story scenes (from the pause menu and the map) */}
+      {screen === 'satchel' && (
+        <Satchel
+          world={activeLevel.worldIndex}
+          finds={foundIds}
+          levels={allLevels}
           memories={memoriesSeen}
+          initialTab={satchelTab}
           onReplayMemory={(id) => {
-            setMemoryPlay({ id, back: 'trophy' });
+            setMemoryPlay({ id, back: 'satchel' });
             setScreen('memory');
           }}
           onOpenFind={(id) => { setReadingCompletes(false); setReading(id); }}
@@ -1396,6 +1415,11 @@ export default function App() {
             setTrophyFrom('paused');
             setTrophyTab('journal');
             setScreen('trophy');
+          }}
+          onOpenSatchel={() => {
+            setTrophyFrom('paused');
+            setSatchelTab('satchel');
+            setScreen('satchel');
           }}
           onOpenMap={() => {
             engineRef.current?.stop();

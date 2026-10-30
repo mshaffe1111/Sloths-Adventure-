@@ -78,6 +78,7 @@ export function speakerX(scene: StoryScene, speaker: string): number | null {
     if (speaker === 'Dot' && k === 'dot') return at(a, 0.5);
     if (speaker === 'Flicker' && k === 'flicker') return at(a, 0.5);
     if (speaker === 'Thornbark' && k === 'thornbark') return at(a, 0.6);
+    if (speaker === 'Soldier' && k === 'soldier') return at(a, 0.7);
     if (k === 'boss' && GUARDIAN_WORLD[speaker] !== undefined && a.world === GUARDIAN_WORLD[speaker]) return at(a, 0.7);
     if (k === 'cel' && a.cel) {
       const c = CEL_CAST[a.cel];
@@ -307,9 +308,10 @@ export function directScene(panels: StoryPanel[]): Direction[] {
     else if (cue === 'war' || cue === 'chase') tone.db = 1;
     else if (cue === 'comedy') tone.semis = 0.5;
 
-    // the music
+    // the music (the closing card is silence: the picture goes dark and the words come up on their own)
     let music: MusicMove = cue === 'hush' ? 'under' : 'keep';
     if (o?.music) music = o.music;
+    if (p.closing) (music = 'silence'), why.push('the closing card: silence');
     // (a hand-directed line gives its own reason; the rules' reasons are for the lines they direct alone)
     if (o) why.splice(0, why.length, o.note, ...why.filter((w) => w.includes('pages')));
     out.push({ enter, beat, typeMs: ms, pages, shot, camera, tone, music, why, noLift });

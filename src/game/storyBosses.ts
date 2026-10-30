@@ -16,6 +16,8 @@ export interface BossLine {
   cue?: StoryCue;
   intensity?: number;
   sting?: StorySting;
+  /** said instead once the player has fallen (the General counts): {N} in words; dropped on a retry's short intro */
+  withFalls?: string;
 }
 
 export interface BossStory {
@@ -38,7 +40,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'Wait till the neighbors hear.', sting: 'laugh' },
       { speaker: 'Venom Fang', text: 'If anyone asks, I tied myself in this knot on purpose.' },
       { speaker: 'Pokey', text: 'Sure you did.' },
-      { speaker: 'Venom Fang', text: 'Don\'t look at the collar. It itches. It always itches. She thanked me too, on the way past. Nobody thanks me. The king at the river has a crown now. Don\'t laugh at it.', boss: 'calm', cue: 'tender', intensity: 0.4 },
+      { speaker: 'Venom Fang', text: 'Don\'t look at the collar. It itches. It always itches. She thanked me too, on the way past. I am not often thanked. The king at the river has a crown now. Don\'t laugh at it.', boss: 'calm', cue: 'tender', intensity: 0.4 },
       { speaker: 'Pokey', text: 'May I go past now?' },
       { speaker: 'Venom Fang', text: 'You asked. Nobody asks.', boss: 'calm' },
     ],
@@ -66,7 +68,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Shadow Prowler', text: 'Word came down the river that the snake lost to a sloth. I did not believe it. I still do not.', boss: 'calm' },
       { speaker: 'Shadow Prowler', text: 'You will not hit what you cannot find, little sloth. I am the dark between the threads. I try to be.' },
       { speaker: 'Pokey', text: 'I can wait.' },
-      { speaker: 'Shadow Prowler', text: 'Everyone says that. Then they hurry. Everyone hurries. Nobody has ever lasted me past the second hour.', boss: 'calm' },
+      { speaker: 'Shadow Prowler', text: 'Everyone says that. Then they hurry. Everyone hurries. Not one has lasted me past the second hour.', boss: 'calm' },
       { speaker: 'Pokey', text: 'I never learned how to hurry.', pokey: 'determined' },
     ],
     defeat: [
@@ -118,7 +120,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'I\'m taller upside down.', sting: 'laugh' },
     ],
     defeat: [
-      { speaker: 'Marsh Reaver', text: 'You waded in at LUNCH and won. Nobody wins at lunch. The runners are going to sing about this.' },
+      { speaker: 'Marsh Reaver', text: 'You waded in at LUNCH and won. Lunch has never lost. The runners are going to sing about this.' },
       { speaker: 'Pokey', text: 'Your lunch is getting cold.' },
       { speaker: 'Marsh Reaver', text: 'It is cold now. Hrmph. Go.', boss: 'calm', sting: 'laugh' },
       { speaker: 'Narrator', text: 'When Pokey looked back, the Reaver had left half his lunch on a root, facing the path. He was pretending he hadn\'t.', boss: 'calm', cue: 'tender', intensity: 0.35 },
@@ -178,7 +180,10 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   },
   10: {
     intro: [
-      { speaker: 'General Iron-Claw', text: 'Nine hundred and ninety-nine steps. One more. The General has broken stronger things than a sloth. Still slow, boy.' },
+      {
+        speaker: 'General Iron-Claw', text: 'Nine hundred and ninety-nine steps. One more. The General has broken stronger things than a sloth. Still slow, boy.',
+        withFalls: 'Nine hundred and ninety-nine steps. One more. {N} falls, boy. {N} times you got up. The General has broken stronger things than a sloth. Still slow, boy.',
+      },
       { speaker: 'Pokey', text: 'Still here, sir. I\'ve come for Meeca. Where\'s Dot?', pokey: 'determined', cue: 'resolve', intensity: 0.5 },
       { speaker: 'General Iron-Claw', text: 'I do not know where your bird is, and I find that I mind. You stopped for tea, boy. The General counted.', cue: 'war', intensity: 0.6 },
       { speaker: 'Pokey', text: 'It was very good tea, sir.', pokey: 'determined' },
@@ -230,6 +235,7 @@ export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: st
     if (line.cue) b.cue = line.cue;
     if (line.intensity !== undefined) b.i = line.intensity;
     if (line.sting) b.sting = line.sting;
+    if (line.withFalls && !short) b.withFalls = line.withFalls;
     if (kind === 'intro' && i === lines.length - 1) b.tip = story.tip;
     return b;
   });
@@ -257,7 +263,7 @@ export function thornbarkPanels(kind: 'intro' | 'defeat'): StoryPanel[] {
     { speaker: 'Thornbark', text: 'A sloth. They sent a sloth? No. Nobody sent you.' },
     { speaker: 'Pokey', text: 'I didn\'t beat them. I just kept coming back until they got tired of me.' },
     { speaker: 'Pokey', text: 'You were right, you know. Not to kneel.' },
-    { speaker: 'Thornbark', text: 'Nobody has said that to me since the Pact. The keeper before her sat in my roots through the long afternoons, humming. Your Meeca hums the same song. Tell her an old tree is listening.' },
+    { speaker: 'Thornbark', text: 'I have not heard that since the Pact. The keeper before her sat in my roots through the long afternoons, humming. Your Meeca hums the same song. Tell her an old tree is listening.' },
     { speaker: 'Thornbark', text: 'Take this Thorn Heart. Go and bring your Meeca home.' },
   ];
   const lines = kind === 'intro' ? intro : defeat;

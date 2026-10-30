@@ -11,6 +11,7 @@ export const VOICES: Readonly<Record<string, VoiceSpec>> = {
   grandfather: { takes: 8, gap: 150, every: 4, type: 36 },
   flicker: { takes: 6, gap: 55, every: 2, type: 24 },
   squirrel: { takes: 6, gap: 58, every: 2, type: 22 },
+  soldier: { takes: 6, gap: 110, every: 3, type: 30 },
   crier: { takes: 6, gap: 190, every: 4, type: 46 },
   thornbark: { takes: 6, gap: 200, every: 4, type: 40 },
   venom: { takes: 6, gap: 110, every: 3, type: 34 },

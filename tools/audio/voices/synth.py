@@ -203,6 +203,9 @@ V = {
                     sylls=['b-i', 's-i', 't-i', 'p-e', 'd-i', 'w-i'], gap=55, every=2, type=24, level=-23),
     'squirrel': dict(f0=520, dur=0.06, size=1.5, glide=1.08, breath=0.08, lp=7000, attack=0.003, release=0.02,
                      sylls=['ch-i', 't-ae', 'k-i', 'ch-e', 't-i', 'p-ae'], gap=58, every=2, type=22, level=-22),
+    # one of the General's soldiers: gruff, clipped, a little bored
+    'soldier': dict(f0=124, dur=0.1, size=0.92, glide=0.93, breath=0.12, fry=0.3, lp=3000, attack=0.006, release=0.04,
+                    sylls=['g-uh', 'd-a', 'h-o', 'k-uh', 't-a', 'b-uh'], gap=110, every=3, type=30, level=-19),
     # the village crier: old, booming, in no hurry at all, a tremble in it
     'crier': dict(f0=132, dur=0.21, size=0.93, glide=0.96, breath=0.12, vib=(0.04, 4.2), fgain=(1.0, 0.9, 0.6, 0.3), lp=3400, attack=0.02,
                   release=0.09, sylls=['h-o', 'y-e', 'f-uh', 'l-oo', 'd-a', 'w-o'], gap=190, every=4, type=46, level=-18),

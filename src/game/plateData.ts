@@ -24,7 +24,10 @@ export const PLATES: Record<string, PlateInfo> = {
   'nest-storm': { ground: 0.74, what: "the old nest on the branch in the storm, the sky turning, Pokey's mother and father out on the far branch (the singing-storm memory)" },
   'nest-night': { ground: 0.74, what: 'the same nest in the same storm, nobody on the branch (the singing-storm memory, the cub and Meeca in the nest)' },
   steps: { ground: 0.86, what: "the courtyard after the storm turns, the wet stone steps down from the tower's door (Pokey and Meeca sit on them)" },
-  'nest-morning': { ground: 0.74, what: 'the same nest the morning after: washed light, nobody on the branch' },
+  'nest-morning': { ground: 0.86, what: "Matt's sequel card: the misty morning branch, empty, a black thorn grown out of it with the scarf hanging from it (the sequel tag)" },
+  'storm-returns': { ground: 0.86, what: "Matt's sequel card: the storm comes back at night, Pokey asleep on his branch with the scarf trailing down (painted in: no actors over it)" },
+  raft: { ground: 0.84, what: "World 2's riverbank village building Pokey's raft at village speed: two logs lashed, the rest still a pile (hf-art-bosses, HF row 9)" },
+  gorge: { ground: 0.9, what: "World 4's misty gorge: Pokey hanging from the vine's end over the mist, Dot pulling at his claw (no floor: he hangs; hf-art-bosses, HF row 9)" },
   council: { ground: 0.84, what: 'the clearing with the council fire and the seats of the ten' },
   gates: { ground: 0.85, what: 'the fortress from the foot of the thousand steps: the gates standing open, ten green lights along the wall tops, rain and a lightning fork' },
   'grandma-door': { ground: 0.85, what: "Grandma's round door in the hollow of the great tree at dusk: lit window, lantern, a fern in a pot, the long path" },
@@ -33,6 +36,7 @@ export const PLATES: Record<string, PlateInfo> = {
   cookhouse: { ground: 0.84, what: 'the fortress cookhouse: the black stove steaming, copper pots on the rafters, a pie and a ham on the long table' },
   ruins: { ground: 0.85, what: 'the council ruins: ten mossy stone seats in a ring round a cracked floor with a faint sigil, an eleventh plain chair apart with leaves on it' },
   village: { ground: 0.86, what: "the village the morning after the storm, with Lieutenant Pell's tailor shop and a tea table" },
+  'drake-cave': { ground: 0.85, what: "the Magma Drake's cave from inside: lava light through a crack, everything he owns heaped behind a big boulder at the left with his gold, a huge lumpy red knitted tea cosy slumped against it" },
 };
 
 export function isPlate(key: string | undefined): key is string {

@@ -50,8 +50,8 @@ held a reading time, then Next). Recorder: `tools/story-delivery/record.mjs`.
 - **The music.** keep, or *under* (half) in a hush. The hand-directed lines add *silence* (the music fades out under that picture and
   comes back on the next) and *swell* (it rises a step).
 
-**Totals:** 59 scenes, 768 pictures. 49 had a camera move of their own (6%); every other picture had the
-same slow push. 96 lines were walls of text. Directed: 167 lines get a beat of 0.6 s or more before them, 12 get silence under them.
+**Totals:** 59 scenes, 806 pictures. 49 had a camera move of their own (6%); every other picture had the
+same slow push. 95 lines were walls of text. Directed: 171 lines get a beat of 0.6 s or more before them, 12 get silence under them.
 
 **Reading the tables.** *In*: how the picture arrives (cut, soft = a quick half-dark dip for a new place, dip = the full dip from dark
 for a new chapter). *Beat*: silence before the first letter. *Type*: ms a letter. *Camera*: the shot, zoom from→to, over how long
@@ -108,7 +108,7 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 20 | Narrator | Dot stopped in the air. And way off in the distance, up in the Highla… | cut | 700 ms | 30 ms | drift 1.24→1.26 10.0s | -0.5 st, -1 dB | silence | still no music: the thunder is the first sound back |
 | 21 | Pokey | Did I just hear thunder? You know how I feel about thunder. | cut | 180 ms | 40 ms | single 1.34→1.40 4.4s | -0.5 st, -1 dB | keep |  |
 | 22 | Narrator | His hands were already on the branch. Both of them. | cut | 180 ms | 30 ms | drift 1.24→1.26 10.0s | -0.5 st, -1 dB | keep |  |
-| 23 | Pokey | It's only weather. It's only weather. | cut | 180 ms | 40 ms | single 1.34→1.40 3.5s | -0.5 st, -1 dB | keep |  |
+| 23 | Pokey | It's only weather. It's only weather. | cut | 180 ms | 40 ms | single 1.34→1.40 3.5s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 24 | Narrator | Meeca looked at his hands. Then, to be kind, she looked at the sky. D… | cut | 180 ms | 30 ms | drift 1.24→1.26 10.0s | -0.5 st, -1 dB | keep |  |
 | 25 | Dot | That's not weather. Inside. Both of you, inside, right now. Meeca, le… | soft | 320 ms | 22 ms | single 1.34→1.40 5.5s | -0.5 st, -1 dB | keep |  |
 | 26 | Narrator | The Heartbloom closed up, petal over petal, and its light went out. | cut | 600 ms | 30 ms | slowPush 1.30→1.48 6.3s | -0.5 st, -1 dB | keep | the light going out is a moment: hold on the flower |
@@ -391,7 +391,7 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 0 | Shadow Prowler | Word came down the river that the snake lost to a sloth. I did not be… | dip | 450 ms | 36 ms | push 1.50→1.58 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 1 | Shadow Prowler | You will not hit what you cannot find, little sloth. I am the dark be… | cut | 180 ms | 36 ms | push 1.58→1.65 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 2 | Pokey | I can wait. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room |
-| 3 | Shadow Prowler | Everyone says that. Then they hurry. Everyone hurries. Nobody has eve… | cut | 180 ms | 36 ms | single 1.68→1.75 6.0s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
+| 3 | Shadow Prowler | Everyone says that. Then they hurry. Everyone hurries. Not one has la… | cut | 180 ms | 36 ms | single 1.68→1.75 5.9s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 4 | Pokey | I never learned how to hurry. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
 
 ## World 3 guardian defeat (`w3-boss-defeat`, 3 pictures)
@@ -674,7 +674,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
-| 0 | Marsh Reaver | You waded in at LUNCH and won. Nobody wins at lunch. The runners are… | dip | 450 ms | 36 ms | push 1.50→1.58 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
+| 0 | Marsh Reaver | You waded in at LUNCH and won. Lunch has never lost. The runners are… | dip | 450 ms | 36 ms | push 1.50→1.58 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 1 | Pokey | Your lunch is getting cold. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room |
 | 2 | Marsh Reaver | It is cold now. Hrmph. Go. | cut | 180 ms | 36 ms | single 1.68→1.75 3.1s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 3 | Narrator | When Pokey looked back, the Reaver had left half his lunch on a root,… | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep |  |
@@ -749,12 +749,12 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 4 | Stone Idol Golem | I... always... do. | cut | 180 ms | 44 ms | single 1.68→1.75 3.7s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 5 | Stone Idol Golem | There is... a photograph. The General asked me... to keep it... from… | cut | 180 ms | 44 ms | push 1.75→1.83 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 
-## World 8 arrival (`w8-arrival`, 37 pictures)
+## World 8 arrival (`w8-arrival`, 38 pictures)
 
 **What's flat**
 
-- Every one of the 37 pictures dips in from black today; directed, 33 become cuts inside one setup.
-- 34 of 37 pictures have only the shared 4% push (3 have a camera move of their own).
+- Every one of the 38 pictures dips in from black today; directed, 34 become cuts inside one setup.
+- 35 of 38 pictures have only the shared 4% push (3 have a camera move of their own).
 - 6 lines are over 150 letters, a wall of text on an upright phone: split into pages.
 - No line has a beat before it: the words start the moment the picture lands.
 
@@ -783,20 +783,21 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 20 | Flicker | Then you'll know where he keeps the snacks. | cut | 180 ms | 28 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 21 | Pokey | Dot. You came back. You're bleeding. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep |  |
 | 22 | Dot | Never mind me, look at you, you've lost weight, have you been eating,… | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.5s | -0.5 st, -1.5 dB | keep |  |
-| 23 | Dot | I found a seam in the net, behind some kind of cookhouse, that was ju… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 9.9s | -0.5 st, -1.5 dB | keep |  |
-| 24 | Dot | "Pokey, I bet you're asleep right now. It's fine. I would be too. Kee… (2 pages) | cut | 180 ms | 22 ms | push 1.71→1.80 6.5s | own | keep |  |
-| 25 | Pokey | She knows. Meeca knows. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room |
-| 26 | Dot | She worked it out by herself, up there, in the dark. She said she tri… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 10.6s | -1 st, -3 dB | keep |  |
-| 27 | Pokey | Dot, sit down. I have to tell you something. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 28 | Dot | I'm sitting. It's hover-sitting. It takes core. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 29 | Pokey | The General is her grandfather. I found the photograph in the ruins. | cut | 180 ms | 40 ms | single 1.68→1.75 4.7s | own | keep |  |
-| 30 | Dot | I know. I've known since the morning he left. I saw which way he went… | cut | 180 ms | 25 ms | slowPush 1.50→1.71 7.2s | -1 st, -3 dB | keep |  |
-| 31 | Narrator | Dot landed on the branch. Pokey couldn't remember the last time he'd… | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | keep |  |
-| 32 | Pokey | You never said. | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | a short line after a long one: give it room |
-| 33 | Dot | I can't tell you half of it. Grandma gave me a letter for him that ni… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 8.1s | -1 st, -3 dB | keep |  |
-| 34 | Pokey | She's been up there by herself with all of it. | cut | 180 ms | 40 ms | single 1.68→1.75 3.7s | own | keep |  |
-| 35 | Dot | Yes. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep |  |
-| 36 | Pokey | Then we should go. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 23 | Dot | And don't tell me it's the soup, I read the note, everybody's read th… | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.6s | -0.5 st, -1.5 dB | keep |  |
+| 24 | Dot | I found a seam in the net, behind some kind of cookhouse, that was ju… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 9.9s | -0.5 st, -1.5 dB | keep |  |
+| 25 | Dot | "Pokey, I bet you're asleep right now. It's fine. I would be too. Kee… (2 pages) | cut | 180 ms | 22 ms | push 1.71→1.80 6.5s | own | keep |  |
+| 26 | Pokey | She knows. Meeca knows. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room |
+| 27 | Dot | She worked it out by herself, up there, in the dark. She said she tri… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 10.6s | -1 st, -3 dB | keep |  |
+| 28 | Pokey | Dot, sit down. I have to tell you something. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 29 | Dot | I'm sitting. It's hover-sitting. It takes core. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 30 | Pokey | The General is her grandfather. I found the photograph in the ruins. | cut | 180 ms | 40 ms | single 1.68→1.75 4.7s | own | keep |  |
+| 31 | Dot | I know. I've known since the morning he left. I saw which way he went… | cut | 180 ms | 25 ms | slowPush 1.50→1.71 7.2s | -1 st, -3 dB | keep |  |
+| 32 | Narrator | Dot landed on the branch. Pokey couldn't remember the last time he'd… | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | keep |  |
+| 33 | Pokey | You never said. | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | a short line after a long one: give it room |
+| 34 | Dot | I can't tell you half of it. Grandma gave me a letter for him that ni… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 8.1s | -1 st, -3 dB | keep |  |
+| 35 | Pokey | She's been up there by herself with all of it. | cut | 180 ms | 40 ms | single 1.68→1.75 3.7s | own | keep |  |
+| 36 | Dot | Yes. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep |  |
+| 37 | Pokey | Then we should go. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
 
 ## World 8 midpoint (`w8-mid`, 13 pictures)
 
@@ -1072,7 +1073,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 1 | Thornbark | A sloth. They sent a sloth? No. Nobody sent you. | cut | 180 ms | 40 ms | push 1.58→1.65 4.3s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 2 | Pokey | I didn't beat them. I just kept coming back until they got tired of m… | cut | 180 ms | 40 ms | single 1.68→1.75 4.9s | own | keep |  |
 | 3 | Pokey | You were right, you know. Not to kneel. | cut | 180 ms | 40 ms | push 1.75→1.83 3.6s | own | keep |  |
-| 4 | Thornbark | Nobody has said that to me since the Pact. The keeper before her sat… (2 pages) | cut | 180 ms | 40 ms | single 1.68→1.75 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
+| 4 | Thornbark | I have not heard that since the Pact. The keeper before her sat in my… (2 pages) | cut | 180 ms | 40 ms | single 1.68→1.75 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 5 | Thornbark | Take this Thorn Heart. Go and bring your Meeca home. | cut | 180 ms | 40 ms | push 1.75→1.83 4.1s | own | keep | framed chest-up: lifting the feet clear would cut off the head |
 
 ## Memory: The Waiting (`memory-waiting`, 13 pictures)
@@ -1128,12 +1129,12 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 14 | Shadow Prowler | Forgive me, little one. Forgive me. | cut | 180 ms | 31 ms | single 1.68→1.75 3.1s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 15 | Narrator | The ledge went the way a dropped plate goes. Dot screamed Pokey's nam… | cut | 1330 ms | 35 ms | reveal 1.51→1.26 2.4s | -1 st, -3 dB | under | a beat before the cliffhanger; hush: let it be quiet first |
 
-## Memory: The Map (`memory-map`, 16 pictures)
+## Memory: The Map (`memory-map`, 18 pictures)
 
 **What's flat**
 
-- Every one of the 16 pictures dips in from black today; directed, 15 become cuts inside one setup.
-- 13 of 16 pictures have only the shared 4% push (3 have a camera move of their own).
+- Every one of the 18 pictures dips in from black today; directed, 17 become cuts inside one setup.
+- 15 of 18 pictures have only the shared 4% push (3 have a camera move of their own).
 - 1 line is over 150 letters, a wall of text on an upright phone: split into pages.
 - No line has a beat before it: the words start the moment the picture lands.
 
@@ -1150,11 +1151,13 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 8 | General Iron-Claw | He has not gone around anything. Not the river. Not the Grotto. He wa… | cut | 180 ms | 36 ms | single 1.46→1.52 5.6s | -0.5 st, -1 dB | keep |  |
 | 9 | Lieutenant Pell | That is very foolish of him, sir. | cut | 180 ms | 27 ms | single 1.12→1.17 3.0s | -0.5 st, -1 dB | keep |  |
 | 10 | General Iron-Claw | Yes. | cut | 180 ms | 41 ms | slowPush 1.20→1.37 6.0s | -1 st, -3 dB | keep |  |
-| 11 | General Iron-Claw | Go to bed, Lieutenant. Leave the lantern. | cut | 180 ms | 41 ms | slowPush 1.20→1.37 6.0s | -1 st, -3 dB | keep |  |
-| 12 | Lieutenant Pell | Yes, sir. Good night, sir. I am sorry about the spoons. | cut | 180 ms | 31 ms | slowPush 1.00→1.14 6.0s | -1 st, -3 dB | keep |  |
-| 13 | Narrator | When the door had closed, the General took a spoon from the tray and… | cut | 680 ms | 35 ms | drift 1.44→1.47 10.0s | -1 st, -3 dB | under | hush: let it be quiet first |
-| 14 | General Iron-Claw | I used to walk straight through. | cut | 180 ms | 41 ms | slowPush 1.40→1.60 6.0s | -1 st, -3 dB | keep |  |
-| 15 | General Iron-Claw | Forty-five. | cut | 680 ms | 41 ms | slowPush 1.40→1.60 6.0s | -1 st, -3 dB | under | hush: let it be quiet first |
+| 11 | General Iron-Claw | Lieutenant. The prisoner will have a blanket. That is an order. It is… | cut | 180 ms | 41 ms | slowPush 1.20→1.37 7.7s | -1 st, -3 dB | keep |  |
+| 12 | Lieutenant Pell | Yes, sir. Not from you, sir. | cut | 630 ms | 31 ms | slowPush 1.00→1.14 6.0s | -1 st, -3 dB | keep | a short line after a long one: give it room |
+| 13 | General Iron-Claw | Go to bed, Lieutenant. Leave the lantern. | cut | 180 ms | 41 ms | slowPush 1.20→1.37 6.0s | -1 st, -3 dB | keep |  |
+| 14 | Lieutenant Pell | Yes, sir. Good night, sir. I am sorry about the spoons. | cut | 180 ms | 31 ms | slowPush 1.00→1.14 6.0s | -1 st, -3 dB | keep |  |
+| 15 | Narrator | When the door had closed, the General took a spoon from the tray and… | cut | 680 ms | 35 ms | drift 1.44→1.47 10.0s | -1 st, -3 dB | under | hush: let it be quiet first |
+| 16 | General Iron-Claw | I used to walk straight through. | cut | 180 ms | 41 ms | slowPush 1.40→1.60 6.0s | -1 st, -3 dB | keep |  |
+| 17 | General Iron-Claw | Forty-five. | cut | 680 ms | 41 ms | slowPush 1.40→1.60 6.0s | -1 st, -3 dB | under | hush: let it be quiet first |
 
 ## Memory: Grandma's Garden (`memory-garden`, 11 pictures)
 
@@ -1173,7 +1176,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 4 | Narrator | Young Pokey, all elbows, was watering the wrong plant, very carefully. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 5 | Pokey | I think I watered the fern. | cut | 180 ms | 46 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 6 | Meeca | You watered the fern, the snail, and my sandal. | cut | 180 ms | 37 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 7 | Grandma | Thank you for watering it anyway, Pokey. Nobody ever waters the fern.… | cut | 180 ms | 44 ms | slowPush 1.35→1.54 10.3s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off the head |
+| 7 | Grandma | Thank you for watering it anyway, Pokey. The fern never gets any. Tha… | cut | 180 ms | 44 ms | slowPush 1.35→1.54 10.1s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 8 | Pokey | It's Monday. | cut | 630 ms | 40 ms | single 1.51→1.58 3.0s | own | keep | a short line after a long one: give it room |
 | 9 | Grandma | You're staying for supper, Pokey. You always are. | cut | 180 ms | 44 ms | slowPush 1.35→1.54 6.2s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off the head |
 | 10 | Narrator | The frond unrolled another inch while they argued about the sandal. | cut | 180 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
@@ -1275,7 +1278,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 0 | Narrator | There were a hundred and twelve marks on the wall behind the bed, in… (2 pages) | dip | 450 ms | 35 ms | authored move | -1 st, -3 dB | keep |  |
 | 1 | Narrator | Her handwriting was very steady. It always was when she lied. | cut | 680 ms | 35 ms | drift 1.54→1.58 10.0s | -1 st, -3 dB | under | hush: let it be quiet first |
 | 2 | Meeca | Dear Pokey. Don't hurry. I'm not counting. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 3 | Narrator | There was nobody to carry it now. She wrote it anyway. | cut | 680 ms | 35 ms | drift 1.54→1.58 10.0s | -1 st, -3 dB | under | hush: let it be quiet first |
+| 3 | Narrator | There was no way to send it now. She wrote it anyway. | cut | 680 ms | 35 ms | drift 1.54→1.58 10.0s | -1 st, -3 dB | under | hush: let it be quiet first |
 | 4 | Lieutenant Pell | Miss Meeca? It is Lieutenant Pell. I am knocking. I am sorry about th… | cut | 1330 ms | 31 ms | slowPush 1.00→1.14 8.0s | -1 st, -3 dB | under | a beat before the door; hush: let it be quiet first |
 | 5 | Meeca | You don't have to knock, Pell. You're the one with the key. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.2s | -0.5 st, -1.5 dB | keep |  |
 | 6 | Lieutenant Pell | It is the General's key, Miss. I only carry it. I have brought a pill… | cut | 180 ms | 31 ms | slowPush 1.50→1.71 7.7s | -0.5 st, -1.5 dB | keep |  |
@@ -1378,19 +1381,19 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 8 | Narrator | Pokey went down the path with one hand on his satchel strap. The kett… | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -1 st, -3 dB | keep |  |
 | 9 | Narrator | Then the storm came, and took Meeca's grandma. For a year after, the… (2 pages) | soft | 1470 ms | 35 ms | drift 1.29→1.31 10.0s | -1 st, -3 dB | under | a beat before the darkness; hush: let it be quiet first |
 
-## Memory: The Open Gates (`memory-gates`, 27 pictures)
+## Memory: The Open Gates (`memory-gates`, 31 pictures)
 
 **What's flat**
 
-- Every one of the 27 pictures dips in from black today; directed, 25 become cuts inside one setup.
-- 25 of 27 pictures have only the shared 4% push (2 have a camera move of their own).
+- Every one of the 31 pictures dips in from black today; directed, 29 become cuts inside one setup.
+- 29 of 31 pictures have only the shared 4% push (2 have a camera move of their own).
 - 2 lines are over 150 letters, a wall of text on an upright phone: split into pages.
 - No line has a beat before it: the words start the moment the picture lands.
 
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Narrator | The night before the mountain, Pokey fell asleep against a warm rock… (2 pages) | dip | 450 ms | 35 ms | authored move | -0.5 st, -1.5 dB | keep |  |
-| 1 | Dot | You can turn that off, you know. Nobody needs it. I can see fine. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 1 | Dot | You can turn that off, you know, I don't need it, I can see fine, I c… | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.1s | -0.5 st, -1.5 dB | keep |  |
 | 2 | Flicker | You flew into a rock an hour ago. | cut | 180 ms | 28 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 3 | Dot | I was checking the rock. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 4 | Flicker | She got out, you know. Meeca. In the orchids. She was nearly all the… | cut | 180 ms | 28 ms | slowPush 1.50→1.71 6.5s | -1 st, -3 dB | keep |  |
@@ -1408,14 +1411,18 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 16 | Flicker | I won't. | cut | 630 ms | 28 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room |
 | 17 | Narrator | She sat down on the stone next to him. She didn't take up much room.… | cut | 180 ms | 35 ms | drift 1.54→1.58 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 18 | Narrator | The lava road ended where the mountain began. Above him, the fortress… | dip | 450 ms | 30 ms | authored move | -0.5 st, -1 dB | keep |  |
-| 19 | Dot | Pokey. Pokey! The front door is open. The big one, up there. Wide ope… (2 pages) | cut | 180 ms | 22 ms | single 1.68→1.75 7.0s | -0.5 st, -1 dB | keep |  |
+| 19 | Dot | Pokey. Pokey! The front door is open. The big one, up there. Wide ope… (2 pages) | cut | 180 ms | 22 ms | single 1.68→1.75 6.9s | -0.5 st, -1 dB | keep |  |
 | 20 | Pokey | Is that bad? | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | -0.5 st, -1 dB | keep | a short line after a long one: give it room |
 | 21 | Dot | Pokey. The last thing that was this nice to us had a doily. | cut | 430 ms | 22 ms | single 1.68→1.75 3.6s | -0.5 st, -1 dB | keep | an answer: a thinking beat |
-| 22 | Narrator | Along the great wall, one by one, the guardians took their places. Th… | cut | 180 ms | 30 ms | drift 1.03→1.05 10.0s | -0.5 st, -1 dB | keep |  |
-| 23 | Narrator | Above them, the great gates of the Highland Fortress groaned on their… | cut | 830 ms | 26 ms | drift 1.03→1.05 10.0s | 0 st, +1 dB | keep | a beat before the door |
-| 24 | General Iron-Claw | Come up, sloth. The General has counted every step you took. There ar… | cut | 180 ms | 31 ms | single 1.12→1.17 6.9s | 0 st, +1 dB | keep |  |
-| 25 | Dot | He counted your steps, Pokey. That's... I don't know what that is. Th… | cut | 180 ms | 22 ms | single 1.12→1.17 5.4s | +0.5 st, 0 dB | keep |  |
-| 26 | Narrator | Pokey looked up the thousand steps. Then he looked at the petal on hi… | cut | 830 ms | 30 ms | reveal 1.16→0.97 2.4s | own | keep | a beat before the cliffhanger |
+| 22 | Narrator | Two soldiers stood at the foot of the steps, the same two from the ga… | cut | 180 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
+| 23 | Soldier | Is that a hummingbird? | cut | 630 ms | 30 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
+| 24 | Soldier | Where? | cut | 180 ms | 30 ms | push 1.58→1.65 3.0s | +0.5 st, 0 dB | keep |  |
+| 25 | Narrator | Dot was already behind Pokey's ear. | cut | 180 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
+| 26 | Narrator | Along the great wall, one by one, the guardians took their places. Th… | cut | 180 ms | 30 ms | drift 1.03→1.05 10.0s | -0.5 st, -1 dB | keep |  |
+| 27 | Narrator | Above them, the great gates of the Highland Fortress groaned on their… | cut | 830 ms | 26 ms | drift 1.03→1.05 10.0s | 0 st, +1 dB | keep | a beat before the door |
+| 28 | General Iron-Claw | Come up, sloth. The General has counted every step you took. There ar… | cut | 180 ms | 31 ms | single 1.12→1.17 6.9s | 0 st, +1 dB | keep |  |
+| 29 | Dot | He counted your steps, Pokey. That's... I don't know what that is. Th… | cut | 180 ms | 22 ms | single 1.12→1.17 5.4s | +0.5 st, 0 dB | keep |  |
+| 30 | Narrator | Pokey looked up the thousand steps. Then he looked at the petal on hi… | cut | 830 ms | 30 ms | reveal 1.16→0.97 2.4s | own | keep | a beat before the cliffhanger |
 
 ## Memory: The Door (`memory-door`, 9 pictures)
 
@@ -1438,13 +1445,13 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 7 | Narrator | He didn't say three. | cut | 1130 ms | 35 ms | drift 1.39→1.42 10.0s | -1 st, -3 dB | under | hush: let it be quiet first; a short line after a long one: give it room |
 | 8 | Narrator | He set the bowl on the stool and moved it an inch, so it sat square t… (2 pages) | cut | 180 ms | 35 ms | authored move | -0.5 st, -1.5 dB | keep |  |
 
-## Ending (finale) (`ending`, 93 pictures)
+## Ending (finale) (`ending`, 124 pictures)
 
 **What's flat**
 
-- Every one of the 93 pictures dips in from black today; directed, 78 become cuts inside one setup.
-- 90 of 93 pictures have only the shared 4% push (3 have a camera move of their own).
-- 15 lines are over 150 letters, a wall of text on an upright phone: split into pages.
+- Every one of the 124 pictures dips in from black today; directed, 106 become cuts inside one setup.
+- 121 of 124 pictures have only the shared 4% push (3 have a camera move of their own).
+- 14 lines are over 150 letters, a wall of text on an upright phone: split into pages.
 - No line has a beat before it: the words start the moment the picture lands.
 
 **Direction**
@@ -1546,19 +1553,50 @@ the finale full.
 | 74 | Flicker | I'm staying, if that's all right. | cut | 180 ms | 28 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 75 | Dot | He's all right. Don't tell him. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 76 | Flicker | I'm right here. | cut | 180 ms | 28 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 77 | Narrator | On the first fine afternoon, at four o'clock exactly, the Tarantula Q… (2 pages) | cut | 180 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
-| 78 | Narrator | He sat down in it, put his feet up, and finished the whole cup. | cut | 900 ms | 35 ms | drift 1.18→1.21 10.0s | own | swell | the chair, at last |
-| 79 | Dot | It's a trap with cookies. I've had four. | cut | 300 ms | 25 ms | slowPush 1.35→1.54 6.0s | own | keep | the laugh, fast |
-| 80 | Narrator | Meeca had finished the scarf. It went around Pokey four times and sti… | cut | 180 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
-| 81 | Meeca | Was it a nice bush? | cut | 630 ms | 32 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
-| 82 | Dot | It was the best bush, it was a really excellent bush, I've been back,… | cut | 430 ms | 22 ms | single 1.51→1.58 4.5s | +0.5 st, 0 dB | keep | an answer: a thinking beat |
-| 83 | Narrator | She also gave him the letters from under her pillow, all of them, eve… (2 pages) | cut | 180 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
-| 84 | Narrator | Far off in the east, the last of the storm said something. Pokey was… | cut | 700 ms | 35 ms | drift 1.44→1.47 10.0s | -0.5 st, -1.5 dB | under | a held breath: does he grab? |
-| 85 | Lieutenant Pell | Shall I tell the General, sir? | cut | 180 ms | 27 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep |  |
-| 86 | Grandfather | Tell him he has retired. | cut | 700 ms | 36 ms | single 1.29→1.35 3.2s | +0.5 st, 0 dB | keep | the pause before the punchline |
-| 87 | Narrator | That spring he went down to the Sunlit Riverbank, to the place where… (2 pages) | soft | 320 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
-| 88 | Narrator | That evening, they climbed the hill to the old tree, where Meeca's gr… | dip | 450 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
-| 89 | Grandfather | Hello, love. I'm late. I brought the whole family. | cut | 1400 ms | 41 ms | slowPush 1.50→1.71 7.5s | -0.5 st, -1.5 dB | silence | at her tree: nothing under it |
-| 90 | Narrator | Home was exactly the way they'd left it, except that the Heartbloom w… (2 pages) | dip | 450 ms | 35 ms | drift 1.24→1.26 10.0s | -0.5 st, -1.5 dB | swell | home: the theme comes in full |
-| 91 | Pokey | He's gonna make it. He trained for it. | cut | 800 ms | 46 ms | slowPush 1.50→1.71 6.4s | -0.5 st, -1.5 dB | keep | the callback, after a breath |
-| 92 | Narrator | Meeca sat down on the garden path beside the snail. After a while, Po… | cut | 900 ms | 30 ms | drift 1.24→1.26 10.0s | own | swell | the last picture: slow, full |
+| 77 | Narrator | On the first cold morning, Pokey walked the lava road with a pot of t… | soft | 320 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
+| 78 | Narrator | The Drake had tidied. Everything he owned was in one corner of the ca… | soft | 320 ms | 30 ms | drift 1.15→1.18 10.0s | +0.5 st, 0 dB | keep |  |
+| 79 | Magma Drake | You came. | cut | 630 ms | 34 ms | single 1.25→1.31 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
+| 80 | Pokey | You asked. | cut | 180 ms | 40 ms | single 1.25→1.31 3.0s | +0.5 st, 0 dB | keep |  |
+| 81 | Magma Drake | There is nothing behind the rock. | cut | 180 ms | 34 ms | single 1.25→1.31 3.0s | +0.5 st, 0 dB | keep |  |
+| 82 | Dot | There's a sock behind the rock, I can see it from here, it's an enorm… | cut | 180 ms | 22 ms | single 1.25→1.31 5.1s | +0.5 st, 0 dB | keep |  |
+| 83 | Magma Drake | It is a tea cosy. I made it. It did not go well. | cut | 180 ms | 34 ms | single 1.25→1.31 3.8s | +0.5 st, 0 dB | keep |  |
+| 84 | Narrator | Pokey poured. The Drake held his cup in both claws and looked at it f… | cut | 180 ms | 35 ms | drift 1.26→1.28 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 85 | Magma Drake | It is too hot. | cut | 630 ms | 39 ms | slowPush 1.12→1.28 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room |
+| 86 | Pokey | You breathe fire. | cut | 180 ms | 46 ms | slowPush 1.12→1.28 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 87 | Magma Drake | Not any more. A visitor put it out. | cut | 180 ms | 39 ms | slowPush 1.12→1.28 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 88 | Narrator | He drank it anyway, and held the cup out, very carefully, for another. | cut | 180 ms | 35 ms | drift 1.15→1.18 10.0s | own | keep |  |
+| 89 | Magma Drake | Wednesday? | cut | 180 ms | 39 ms | slowPush 1.12→1.28 6.0s | own | keep |  |
+| 90 | Pokey | If you tidy. | cut | 430 ms | 46 ms | slowPush 1.12→1.28 6.0s | own | keep | an answer: a thinking beat |
+| 91 | Narrator | The Drake looked at the rock for a while. | cut | 180 ms | 35 ms | drift 1.18→1.21 10.0s | own | keep |  |
+| 92 | Narrator | On the first fine afternoon, at four o'clock exactly, the Tarantula Q… (2 pages) | soft | 320 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 93 | Narrator | He sat down in it, put his feet up, and finished the whole cup. | cut | 900 ms | 35 ms | drift 1.18→1.21 10.0s | own | swell | the chair, at last |
+| 94 | Dot | It's a trap with cookies. I've had four. | cut | 300 ms | 25 ms | slowPush 1.35→1.54 6.0s | own | keep | the laugh, fast |
+| 95 | Narrator | Meeca had finished the scarf. It went around Pokey four times and sti… | cut | 180 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
+| 96 | Meeca | Was it a nice bush? | cut | 630 ms | 32 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
+| 97 | Dot | It was the best bush, it was a really excellent bush, I've been back,… | cut | 430 ms | 22 ms | single 1.51→1.58 4.5s | +0.5 st, 0 dB | keep | an answer: a thinking beat |
+| 98 | Narrator | She also gave him the letters from under her pillow, all of them, eve… (2 pages) | cut | 180 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 99 | Narrator | Far off in the east, the last of the storm said something. Pokey was… | cut | 700 ms | 35 ms | drift 1.44→1.47 10.0s | -0.5 st, -1.5 dB | under | a held breath: does he grab? |
+| 100 | Lieutenant Pell | Shall I tell the General, sir? | cut | 180 ms | 27 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep |  |
+| 101 | Grandfather | Tell him he has retired. | cut | 700 ms | 36 ms | single 1.29→1.35 3.2s | +0.5 st, 0 dB | keep | the pause before the punchline |
+| 102 | Narrator | Pokey stops by on Thursdays. He always asks first. | soft | 320 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 103 | Narrator | He ferries the village across, three at a time. The crown is still cr… | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 104 | Narrator | He still sits on the ledge. Now somebody sits with him. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 105 | Narrator | She lets the wind lane run where it likes. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 106 | Narrator | Tea at four, every day. A guest always stays to the bottom of the cup. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 107 | Narrator | Lunch at noon, on a root by the path. He leaves half. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 108 | Narrator | He talks the slowest at the council now. The others wait. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 109 | Narrator | Pokey told her how the dream ended. She wrote it down. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 110 | Narrator | Two cups. Both used. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 111 | Narrator | Every spring he plants a tree by the river. He takes his time. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 112 | Narrator | Pell took their measurements. They didn't need new coats. They just w… | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 113 | Narrator | They put up a new sign. It says BACK ALREADY? | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 114 | Narrator | He has started a new warning. It is about Tuesday. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 115 | Narrator | His new package says NO HURRY. He is taking it very seriously. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 116 | Narrator | The sign still hangs crooked. The shop is never empty. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 117 | Narrator | He stays at Pell's shop. The light over the counter is steady. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 118 | Narrator | That evening, they climbed the hill to the old tree, where Meeca's gr… | dip | 450 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 119 | Grandfather | Hello, love. I'm late. I brought the whole family. | cut | 1400 ms | 41 ms | slowPush 1.50→1.71 7.5s | -0.5 st, -1.5 dB | silence | at her tree: nothing under it |
+| 120 | Narrator | Home was exactly the way they'd left it, except that the Heartbloom w… (2 pages) | dip | 450 ms | 35 ms | drift 1.24→1.26 10.0s | -0.5 st, -1.5 dB | swell | home: the theme comes in full |
+| 121 | Pokey | He's gonna make it. He trained for it. | cut | 800 ms | 46 ms | slowPush 1.50→1.71 6.4s | -0.5 st, -1.5 dB | keep | the callback, after a breath |
+| 122 | Narrator | Meeca sat down on the garden path beside the snail. After a while, Po… | cut | 900 ms | 30 ms | drift 1.24→1.26 10.0s | own | swell | the last picture: slow, full |
+| 123 | Narrator | Dot went to get snacks. She was back before they'd finished sitting d… | cut | 180 ms | 30 ms | drift 1.18→1.21 10.0s | own | keep |  |

@@ -1,0 +1,172 @@
+{
+ "note": "hfdrake1: the Drake teacup ending, 2026-10-30",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/7f451050ca8b39b63c6bc5926ab27fbefd116acf/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "drake-sit-2",
+   "start": "bucket:stills/w9d-idle.png",
+   "edit": true,
+   "prompt": "Keep this exact same dragon: the same huge dark green armoured lizard drake, same head, same scales, same pale bony back spikes, same long thick tail, same proportions, side view facing right. Change only his pose and mood: he has given up the fight and sits down quietly on his haunches like a tired old dog, front legs straight, his long tail curled round in front of his feet, his head lowered, eyes half shut and gentle, looking down at a small rusty tin tea mug standing on the ground in front of his front claws. All his colours a little paler and greyer, as if his fire has gone out, a little grey ash dusted on his back, no glow anywhere. The whole dragon fully in the picture with space all round. Solid flat magenta background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, extra legs, extra heads, two dragons, sloth, fire, flames, glow"
+  },
+  {
+   "name": "drake-sitp-2",
+   "then": "drake-sit-2",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, a big dark green armoured drake with pale back spikes, calm and tired, a small rusty tin mug in front of him, on a flat magenta background. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style."
+  },
+  {
+   "name": "drake-sit-6",
+   "start": "bucket:stills/w9d-idle.png",
+   "edit": true,
+   "prompt": "Keep this exact same dragon: the same huge dark green armoured lizard drake, same head, same scales, same pale bony back spikes, same long thick tail, same proportions, side view facing right. Change only his pose and mood: he has given up the fight and sits down quietly on his haunches like a tired old dog, front legs straight, his long tail curled round in front of his feet, his head lowered, eyes half shut and gentle, looking down at a small rusty tin tea mug standing on the ground in front of his front claws. All his colours a little paler and greyer, as if his fire has gone out, a little grey ash dusted on his back, no glow anywhere. The whole dragon fully in the picture with space all round. Solid flat magenta background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, extra legs, extra heads, two dragons, sloth, fire, flames, glow"
+  },
+  {
+   "name": "drake-sitp-6",
+   "then": "drake-sit-6",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, a big dark green armoured drake with pale back spikes, calm and tired, a small rusty tin mug in front of him, on a flat magenta background. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style."
+  },
+  {
+   "name": "drake-lie-2",
+   "start": "bucket:stills/w9d-idle.png",
+   "edit": true,
+   "prompt": "Keep this exact same dragon: the same huge dark green armoured lizard drake, same head, scales, pale bony back spikes and long thick tail, side view facing right. Make him lie down quietly on his belly with his chin resting on the ground and his tail curled round, eyes open and soft, looking at a small rusty tin tea mug just in front of his nose. His colours paler and greyer, his fire gone out, a little grey ash on his back, no glow. The whole dragon fully in the picture. Solid flat magenta background.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, extra legs, extra heads, two dragons, sloth, fire, flames, glow"
+  },
+  {
+   "name": "drake-liep-2",
+   "then": "drake-lie-2",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, a big dark green armoured drake with pale back spikes, calm and tired, a small rusty tin mug in front of him, on a flat magenta background. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style."
+  },
+  {
+   "name": "drake-lie-6",
+   "start": "bucket:stills/w9d-idle.png",
+   "edit": true,
+   "prompt": "Keep this exact same dragon: the same huge dark green armoured lizard drake, same head, scales, pale bony back spikes and long thick tail, side view facing right. Make him lie down quietly on his belly with his chin resting on the ground and his tail curled round, eyes open and soft, looking at a small rusty tin tea mug just in front of his nose. His colours paler and greyer, his fire gone out, a little grey ash on his back, no glow. The whole dragon fully in the picture. Solid flat magenta background.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, extra legs, extra heads, two dragons, sloth, fire, flames, glow"
+  },
+  {
+   "name": "drake-liep-6",
+   "then": "drake-lie-6",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, a big dark green armoured drake with pale back spikes, calm and tired, a small rusty tin mug in front of him, on a flat magenta background. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style."
+  },
+  {
+   "name": "tea-s55-7",
+   "start": "start-tea-things.webp",
+   "prompt": "slothadv style, a sprite sheet of separate props on a flat magenta background, side view, evenly lit: top row six small rusty, dented old tin tea mugs, one huge battered tin mug, and a big dented old tin teapot with a spout and a lid; bottom row a small fine china tea set kept with great care: two white china teacups with a blue band and a gold rim, full of tea, on saucers, and a little round white china teapot with a blue band and a gold knob. Each piece separate with clear space round it. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "tea-s55-23",
+   "start": "start-tea-things.webp",
+   "prompt": "slothadv style, a sprite sheet of separate props on a flat magenta background, side view, evenly lit: top row six small rusty, dented old tin tea mugs, one huge battered tin mug, and a big dented old tin teapot with a spout and a lid; bottom row a small fine china tea set kept with great care: two white china teacups with a blue band and a gold rim, full of tea, on saucers, and a little round white china teapot with a blue band and a gold knob. Each piece separate with clear space round it. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.",
+   "strength": 0.55,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "tea-s68-7",
+   "start": "start-tea-things.webp",
+   "prompt": "slothadv style, a sprite sheet of separate props on a flat magenta background, side view, evenly lit: top row six small rusty, dented old tin tea mugs, one huge battered tin mug, and a big dented old tin teapot with a spout and a lid; bottom row a small fine china tea set kept with great care: two white china teacups with a blue band and a gold rim, full of tea, on saucers, and a little round white china teapot with a blue band and a gold knob. Each piece separate with clear space round it. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.",
+   "strength": 0.68,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "tea-s68-23",
+   "start": "start-tea-things.webp",
+   "prompt": "slothadv style, a sprite sheet of separate props on a flat magenta background, side view, evenly lit: top row six small rusty, dented old tin tea mugs, one huge battered tin mug, and a big dented old tin teapot with a spout and a lid; bottom row a small fine china tea set kept with great care: two white china teacups with a blue band and a gold rim, full of tea, on saucers, and a little round white china teapot with a blue band and a gold knob. Each piece separate with clear space round it. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.",
+   "strength": 0.68,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ]
+}

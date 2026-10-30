@@ -199,6 +199,13 @@ export interface PlaybackOpts {
   real?: boolean;
   /** a piece written as one loop is laid out as a form (form.ts autoForm): the stage music */
   form?: boolean;
+  /**
+   * The recorder (tools/music): only the parts whose role passes are heard. Every part is still scheduled as if all of them played (the
+   * layers fully in, the state calm, the tempo steady), so the stems of one piece line up to the sample and add up to the whole.
+   */
+  stem?: (role: Role) => boolean;
+  /** the recorder: told the audio time of every bar line, with the section (form part) that bar begins, if it begins one */
+  onBar?: (bar: number, time: number, section: string | null) => void;
 }
 
 /** a note moved by whole octaves into a range */
@@ -269,6 +276,9 @@ export class Playback {
   private rand = rng(7);
   /** every part plays the recording of its instrument (see realize.ts) */
   private readonly real: boolean;
+  private readonly stem: ((role: Role) => boolean) | null;
+  private readonly onBar: PlaybackOpts['onBar'] | null;
+  private settled = false;
   /** skip tracks marked `lite` (slow phones) */
   liteMode = false;
   disposed = false;
@@ -287,6 +297,8 @@ export class Playback {
     this.theme = theme;
     this.spb = theme.stepsPerBar ?? 16;
     this.real = opts.real !== false;
+    this.stem = opts.stem ?? null;
+    this.onBar = opts.onBar ?? null;
     this.tempoScale = this.tempoTarget = clampTempo(opts.tempo ?? 1);
     this.tonic = noteMidi(theme.tonic);
     this.scale = SCALES[theme.scale];
@@ -300,7 +312,8 @@ export class Playback {
     this.out.connect(this.tone);
     this.tone.connect(core.music);
     this.accent = this.c.createGain();
-    this.accent.gain.value = 0.8;
+    // (the breakdown's riser and crash are drums: recorded with the beat)
+    this.accent.gain.value = this.stem && !this.stem('perc') ? 0 : 0.8;
     this.accent.connect(core.withReverb(this.out, 0.25, 'music'));
 
     this.barChords = [];
@@ -428,6 +441,7 @@ export class Playback {
 
   /** the game's state (adaptive.ts): the parts follow it from the next bar line, fading, never cutting */
   setState(s: Partial<MusicState>, snap = false) {
+    if (this.stem) return;
     this.stateTarget = { ...this.stateTarget, ...s };
     if (snap) this.state = this.stateTarget;
   }
@@ -539,7 +553,11 @@ export class Playback {
     // the whole piece also swells a little with intensity
     // (near the exit the whole piece swells about 3 dB, and a danger pushes about 2: each must be heard without being told, Matt 2026-10-29)
     const swell = 1 + 0.4 * this.state.exit + 0.25 * this.state.danger;
-    this.out.gain.setTargetAtTime((this.theme.level ?? 1) * (0.74 + 0.26 * this.intensity) * swell, Math.max(this.c.currentTime, this.nextTime - 0.02), 0.6);
+    // (the recorder: the piece's first bar must already sound as every later pass does, or the loop's start would not meet its end)
+    const settle = !!this.stem && !this.settled;
+    this.settled = true;
+    if (settle) this.out.gain.setValueAtTime((this.theme.level ?? 1) * (0.74 + 0.26 * this.intensity) * swell, Math.max(this.c.currentTime, this.nextTime - 0.02));
+    else this.out.gain.setTargetAtTime((this.theme.level ?? 1) * (0.74 + 0.26 * this.intensity) * swell, Math.max(this.c.currentTime, this.nextTime - 0.02), 0.6);
 
     // a chained piece adds its next chunk as the last one ends: it never comes round
     if (this.chain) while (this.bar >= this.partAt!.length) this.appendChunk();
@@ -551,6 +569,7 @@ export class Playback {
     const at = this.partAt?.[barInLoop];
     const part = at && form ? form[at.p] : undefined;
     const bip = at ? at.b : barInLoop;
+    this.onBar?.(this.bar, this.nextTime, part && bip === 0 ? part.name : null);
     const prevPart = at && form && this.partAt ? form[this.partAt[this.chain ? Math.max(0, barInLoop - 1) : (barInLoop - 1 + L) % L].p] : undefined;
     const lift = (part?.lift ?? 0) + intensityLift(this.state);
     const st = this.state;
@@ -603,9 +622,12 @@ export class Playback {
       const spec = rt.spec;
       // a layer comes in with the game's state alone; every other part with the intensity (and the section's lift), shaped by the state
       const resting = !!part?.rest && (part.rest.includes(rt.role) || part.rest.includes(spec.name));
-      const shape = resting ? 0 : layerMix(rt.role, st);
+      // (a stem: every layer fully in, as if all of them played; the gate opens only for the stem's own parts)
+      const shape = resting ? 0 : this.stem ? 1 : layerMix(rt.role, st);
       const g = (spec.layer ? 1 : this.gateFor(spec, lift)) * shape * spec.gain * (this.real ? trimOf(spec.kind === 'drums' ? spec.voice : spec.inst) : 1);
-      rt.gate.gain.setTargetAtTime(g, Math.max(now, this.nextTime - 0.02), 0.3);
+      const gv = this.stem && !this.stem(rt.role) ? 0 : g;
+      if (settle) rt.gate.gain.setValueAtTime(gv, Math.max(now, this.nextTime - 0.02));
+      else rt.gate.gain.setTargetAtTime(gv, Math.max(now, this.nextTime - 0.02), 0.3);
       if (g < 0.02 || (this.liteMode && spec.lite)) continue;
       if (spec.mask && spec.mask[bip % spec.mask.length] === '.') continue;
       if (inBreak && (spec.kind === 'drums' || (spec.kind === 'pattern' && LOW_INSTS.has(spec.inst)))) continue;
