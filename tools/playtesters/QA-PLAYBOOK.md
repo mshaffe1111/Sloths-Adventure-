@@ -110,7 +110,7 @@ Matt's weekly usage is tight. QA manages it:
   pulley, 4-6 wind shutter, 4-8 capuchin trade), against the checklist.
 - Retest when promoted: batch A items, and the earlier fixes (pause-menu memory freeze, no touch damage in boss tells, push-log wall,
   Skip tips 1.2 s, ducks, 4-7 rock glide, Meeca :line/:caught tags, camera easing, no 'blank wait').
-- Sheet last read through row 2194 (2026-10-28, Matt qlv8/63fc/oib0). Batch B (not sent) in PENDING.md.
+- Sheet last read through row 2708 (2026-10-30: Matt 8nh2 frame-rate read sent to coders; Kelsinator rows 2687-2694 not read yet).
 - 2026-10-28 evening: release PR #42 open (test link v219): Worlds 1-4 replay differently (2-4 versions per section), World 3 roots,
   stone-plate rooms, one-jump soft pits, new Jungle Cards, Dot's punch tip fixed. Coders ask: random Worlds 1-4 stages, 2-3 plays
   each, once live. Known, skip: 4-2 Easy tight jump in some versions, 1-8 dull stretch, long World 2 walks, difficulty not yet
