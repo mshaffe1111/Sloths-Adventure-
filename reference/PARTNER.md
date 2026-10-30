@@ -38,7 +38,7 @@ The polish is where this is won or lost.
 - Text: no placeholder or arcade words, nothing under the notch, nothing covering Pokey.
 - Every required piece reachable (the 1-4 basket lesson).
 - Every look-heavy change shown to Matt first.
-- Built for the Play Store app (Matt, 2026-10-29): it works inside the Android APK, not just a browser. Nothing tappable under the status bar or nav bar. No tracking of any kind in the store build. It's likely a paid app, so it must feel worth paying for.
+- Built for the Play Store app (Matt, 2026-10-29): it works inside the Android APK, not just a browser. Nothing tappable under the status bar or nav bar. No tracking of any kind in the store build. It's likely a paid app, so it must feel worth paying for. The full list is `reference/PLAY-STORE-RULES.md` (§6 is the check before every merge).
 
 ## Before a release, also
 
