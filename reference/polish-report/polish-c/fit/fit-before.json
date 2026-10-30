@@ -1,0 +1,1109 @@
+{
+ "fold-open-land/title": [
+  {
+   "kind": "off-screen",
+   "what": "Check for updates",
+   "rect": [
+    575,
+    702,
+    687,
+    740
+   ]
+  }
+ ],
+ "fold-open-land/menu": [],
+ "fold-open-land/map": [
+  {
+   "kind": "under-bar",
+   "what": "Save / Load",
+   "rect": [
+    747,
+    33,
+    860,
+    67
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Stage 1-10: Venom Fang's Lair, Boss, loc",
+   "rect": [
+    796,
+    366,
+    865,
+    435
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "PLAY",
+   "rect": [
+    713,
+    639,
+    845,
+    687
+   ]
+  }
+ ],
+ "fold-open-land/journal": [
+  {
+   "kind": "under-bar",
+   "what": "Close",
+   "rect": [
+    801,
+    99,
+    845,
+    143
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "A page still to come: Learned in World 1",
+   "rect": [
+    651,
+    161,
+    845,
+    305
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "A page still to come: Learned in World 4",
+   "rect": [
+    651,
+    315,
+    845,
+    459
+   ]
+  }
+ ],
+ "fold-open-land/trophies": [
+  {
+   "kind": "under-bar",
+   "what": "Library",
+   "rect": [
+    584,
+    195,
+    851,
+    237
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Moonlight Pokey2,500 points",
+   "rect": [
+    651,
+    428,
+    851,
+    536
+   ]
+  }
+ ],
+ "fold-open-land/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    783,
+    10,
+    864,
+    44
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Next",
+   "rect": [
+    754,
+    524,
+    855,
+    567
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "The Sunlit Riverbank was wide, brown, an",
+   "rect": [
+    12,
+    398,
+    872,
+    578
+   ]
+  }
+ ],
+ "fold-open-land/play": [],
+ "fold-open-land/pause": [],
+ "fold-open-land/lifelost": [],
+ "fold-open-land/gameover": [],
+ "fold-open-land/win": [],
+ "fold-open-land/bosscard": [],
+ "fold-open-land/boss": [
+  {
+   "kind": "under-bar",
+   "what": "DotWhen he rears back, get off the groun",
+   "rect": [
+    479,
+    88,
+    868,
+    181
+   ]
+  }
+ ],
+ "fold-open-port/title": [
+  {
+   "kind": "under-bar",
+   "what": "Shaffer",
+   "rect": [
+    268,
+    808,
+    322,
+    846
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Check for updates",
+   "rect": [
+    500,
+    808,
+    613,
+    846
+   ]
+  }
+ ],
+ "fold-open-port/menu": [],
+ "fold-open-port/map": [
+  {
+   "kind": "under-bar",
+   "what": "1",
+   "rect": [
+    28,
+    812,
+    80,
+    864
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "map-med locked",
+   "rect": [
+    87,
+    822,
+    129,
+    864
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "map-med locked",
+   "rect": [
+    136,
+    822,
+    178,
+    864
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "map-med locked",
+   "rect": [
+    185,
+    822,
+    227,
+    864
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "map-med locked",
+   "rect": [
+    234,
+    822,
+    276,
+    864
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "map-med locked",
+   "rect": [
+    283,
+    822,
+    299,
+    864
+   ]
+  }
+ ],
+ "fold-open-port/journal": [],
+ "fold-open-port/trophies": [],
+ "fold-open-port/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    635,
+    10,
+    716,
+    44
+   ]
+  }
+ ],
+ "fold-open-port/play": [],
+ "fold-open-port/pause": [],
+ "fold-open-port/lifelost": [],
+ "fold-open-port/gameover": [],
+ "fold-open-port/win": [],
+ "fold-open-port/bosscard": [],
+ "fold-open-port/boss": [],
+ "fold-cover-port/title": [
+  {
+   "kind": "off-screen",
+   "what": "Full screen",
+   "rect": [
+    302,
+    28,
+    346,
+    72
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Check for updates",
+   "rect": [
+    215,
+    806,
+    327,
+    844
+   ]
+  }
+ ],
+ "fold-cover-port/menu": [],
+ "fold-cover-port/map": [
+  {
+   "kind": "under-bar",
+   "what": "Back to the main menu",
+   "rect": [
+    12,
+    10,
+    102,
+    44
+   ]
+  }
+ ],
+ "fold-cover-port/journal": [],
+ "fold-cover-port/trophies": [],
+ "fold-cover-port/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    251,
+    10,
+    332,
+    44
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Next",
+   "rect": [
+    214,
+    835,
+    315,
+    878
+   ]
+  },
+  {
+   "kind": "off-screen",
+   "what": "The Sunlit Riverbank was wide, brown, an",
+   "rect": [
+    12,
+    544,
+    332,
+    889
+   ]
+  }
+ ],
+ "fold-cover-port/play": [],
+ "fold-cover-port/pause": [],
+ "fold-cover-port/lifelost": [],
+ "fold-cover-port/gameover": [],
+ "fold-cover-port/win": [],
+ "fold-cover-port/bosscard": [],
+ "fold-cover-port/boss": [],
+ "fold-cover-land/title": [
+  {
+   "kind": "off-screen",
+   "what": "Check for updates",
+   "rect": [
+    573,
+    310,
+    686,
+    348
+   ]
+  }
+ ],
+ "fold-cover-land/menu": [],
+ "fold-cover-land/map": [
+  {
+   "kind": "under-bar",
+   "what": "Back to the main menu",
+   "rect": [
+    24,
+    25,
+    114,
+    59
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Trophy Room",
+   "rect": [
+    591,
+    25,
+    638,
+    58
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Save / Load",
+   "rect": [
+    745,
+    25,
+    858,
+    59
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Stage 1-10: Venom Fang's Lair, Boss, loc",
+   "rect": [
+    795,
+    150,
+    864,
+    219
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "PLAY",
+   "rect": [
+    713,
+    269,
+    845,
+    314
+   ]
+  }
+ ],
+ "fold-cover-land/journal": [
+  {
+   "kind": "under-bar",
+   "what": "Close",
+   "rect": [
+    801,
+    38,
+    845,
+    82
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "A page still to come: Learned in World 1",
+   "rect": [
+    649,
+    94,
+    845,
+    203
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "A page still to come: Learned in World 4",
+   "rect": [
+    649,
+    211,
+    845,
+    310
+   ]
+  }
+ ],
+ "fold-cover-land/trophies": [
+  {
+   "kind": "under-bar",
+   "what": "Library",
+   "rect": [
+    582,
+    148,
+    849,
+    190
+   ]
+  }
+ ],
+ "fold-cover-land/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    781,
+    10,
+    862,
+    44
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Next",
+   "rect": [
+    752,
+    288,
+    843,
+    325
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "The Sunlit Riverbank was wide, brown, an",
+   "rect": [
+    24,
+    223,
+    858,
+    334
+   ]
+  }
+ ],
+ "fold-cover-land/play": [],
+ "fold-cover-land/pause": [],
+ "fold-cover-land/lifelost": [],
+ "fold-cover-land/gameover": [],
+ "fold-cover-land/win": [],
+ "fold-cover-land/bosscard": [],
+ "fold-cover-land/boss": [
+  {
+   "kind": "under-bar",
+   "what": "DotWhen he rears back, get off the groun",
+   "rect": [
+    478,
+    78,
+    866,
+    143
+   ]
+  }
+ ],
+ "se-port/title": [
+  {
+   "kind": "off-screen",
+   "what": "Shaffer",
+   "rect": [
+    238,
+    649,
+    291,
+    687
+   ]
+  },
+  {
+   "kind": "off-screen",
+   "what": "Check for updates",
+   "rect": [
+    230,
+    667,
+    342,
+    705
+   ]
+  }
+ ],
+ "se-port/menu": [],
+ "se-port/map": [
+  {
+   "kind": "under-bar",
+   "what": "Back to the main menu",
+   "rect": [
+    12,
+    10,
+    102,
+    44
+   ]
+  }
+ ],
+ "se-port/journal": [],
+ "se-port/trophies": [],
+ "se-port/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    282,
+    10,
+    363,
+    44
+   ]
+  }
+ ],
+ "se-port/play": [],
+ "se-port/pause": [],
+ "se-port/lifelost": [],
+ "se-port/gameover": [],
+ "se-port/win": [],
+ "se-port/bosscard": [],
+ "se-port/boss": [],
+ "promax-port/title": [
+  {
+   "kind": "under-bar",
+   "what": "Check for updates",
+   "rect": [
+    166,
+    870,
+    279,
+    908
+   ]
+  }
+ ],
+ "promax-port/menu": [],
+ "promax-port/map": [
+  {
+   "kind": "under-bar",
+   "what": "Back to the main menu",
+   "rect": [
+    12,
+    10,
+    102,
+    44
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Trophy Room",
+   "rect": [
+    155,
+    11,
+    202,
+    44
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Save / Load",
+   "rect": [
+    305,
+    10,
+    418,
+    44
+   ]
+  }
+ ],
+ "promax-port/journal": [],
+ "promax-port/trophies": [],
+ "promax-port/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    337,
+    10,
+    418,
+    44
+   ]
+  }
+ ],
+ "promax-port/play": [],
+ "promax-port/pause": [],
+ "promax-port/lifelost": [],
+ "promax-port/gameover": [],
+ "promax-port/win": [],
+ "promax-port/bosscard": [],
+ "promax-port/boss": [],
+ "promax-land/title": [
+  {
+   "kind": "under-bar",
+   "what": "Check for updates",
+   "rect": [
+    613,
+    381,
+    726,
+    419
+   ]
+  }
+ ],
+ "promax-land/menu": [],
+ "promax-land/map": [
+  {
+   "kind": "under-bar",
+   "what": "Back to the main menu",
+   "rect": [
+    24,
+    28,
+    114,
+    62
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Save / Load",
+   "rect": [
+    795,
+    28,
+    908,
+    62
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Stage 1-1: Into the Canopy, Sprint",
+   "rect": [
+    30,
+    219,
+    82,
+    270
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Stage 1-10: Venom Fang's Lair, Boss, loc",
+   "rect": [
+    842,
+    204,
+    911,
+    273
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "1",
+   "rect": [
+    28,
+    358,
+    80,
+    410
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "PLAY",
+   "rect": [
+    763,
+    355,
+    895,
+    400
+   ]
+  }
+ ],
+ "promax-land/journal": [
+  {
+   "kind": "under-bar",
+   "what": "Close",
+   "rect": [
+    851,
+    38,
+    895,
+    82
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Moving3/6",
+   "rect": [
+    37,
+    94,
+    229,
+    126
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Fighting1/8",
+   "rect": [
+    37,
+    130,
+    229,
+    162
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Climb & swing0/4",
+   "rect": [
+    37,
+    166,
+    229,
+    198
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Sneaking0/2",
+   "rect": [
+    37,
+    202,
+    229,
+    234
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Dangers0/5",
+   "rect": [
+    37,
+    238,
+    229,
+    270
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Finding things0/8",
+   "rect": [
+    37,
+    274,
+    229,
+    306
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Stars, lives & saving",
+   "rect": [
+    37,
+    366,
+    229,
+    396
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Duck",
+   "rect": [
+    738,
+    94,
+    895,
+    203
+   ]
+  }
+ ],
+ "promax-land/trophies": [
+  {
+   "kind": "under-bar",
+   "what": "Back",
+   "rect": [
+    41,
+    64,
+    85,
+    108
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Medals",
+   "rect": [
+    41,
+    148,
+    319,
+    190
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Library",
+   "rect": [
+    613,
+    148,
+    891,
+    190
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Berry Pokey250 points",
+   "rect": [
+    41,
+    361,
+    249,
+    430
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Moonlight Pokey2,500 points",
+   "rect": [
+    683,
+    361,
+    891,
+    430
+   ]
+  }
+ ],
+ "promax-land/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    831,
+    10,
+    912,
+    44
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Next",
+   "rect": [
+    802,
+    363,
+    893,
+    400
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "The Sunlit Riverbank was wide, brown, an",
+   "rect": [
+    24,
+    298,
+    908,
+    409
+   ]
+  }
+ ],
+ "promax-land/play": [
+  {
+   "kind": "under-bar",
+   "what": "DotShe said don't stop to smell the flow",
+   "rect": [
+    16,
+    93,
+    426,
+    158
+   ]
+  }
+ ],
+ "promax-land/pause": [],
+ "promax-land/lifelost": [
+  {
+   "kind": "under-bar",
+   "what": "DotShe said don't stop to smell the flow",
+   "rect": [
+    16,
+    93,
+    426,
+    158
+   ]
+  }
+ ],
+ "promax-land/gameover": [],
+ "promax-land/win": [],
+ "promax-land/bosscard": [],
+ "promax-land/boss": [
+  {
+   "kind": "under-bar",
+   "what": "DotWhen he rears back, get off the groun",
+   "rect": [
+    506,
+    54,
+    916,
+    119
+   ]
+  }
+ ],
+ "small-land/title": [
+  {
+   "kind": "off-screen",
+   "what": "Check for updates",
+   "rect": [
+    471,
+    286,
+    583,
+    324
+   ]
+  }
+ ],
+ "small-land/menu": [],
+ "small-land/map": [
+  {
+   "kind": "under-bar",
+   "what": "Back to the main menu",
+   "rect": [
+    24,
+    24,
+    114,
+    58
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Trophy Room",
+   "rect": [
+    349,
+    25,
+    396,
+    58
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Save / Load",
+   "rect": [
+    503,
+    24,
+    616,
+    58
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Stage 1-10: Venom Fang's Lair, Boss, loc",
+   "rect": [
+    572,
+    143,
+    628,
+    199
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "PLAY",
+   "rect": [
+    471,
+    245,
+    603,
+    290
+   ]
+  }
+ ],
+ "small-land/journal": [
+  {
+   "kind": "under-bar",
+   "what": "Dangers0/5",
+   "rect": [
+    593,
+    94,
+    603,
+    126
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Jump",
+   "rect": [
+    324,
+    140,
+    603,
+    249
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Duck",
+   "rect": [
+    324,
+    257,
+    603,
+    286
+   ]
+  }
+ ],
+ "small-land/trophies": [
+  {
+   "kind": "under-bar",
+   "what": "Library",
+   "rect": [
+    421,
+    148,
+    607,
+    190
+   ]
+  }
+ ],
+ "small-land/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    539,
+    10,
+    620,
+    44
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Next",
+   "rect": [
+    510,
+    264,
+    601,
+    301
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "The Sunlit Riverbank was wide, brown, an",
+   "rect": [
+    24,
+    178,
+    616,
+    310
+   ]
+  }
+ ],
+ "small-land/play": [],
+ "small-land/pause": [],
+ "small-land/lifelost": [],
+ "small-land/gameover": [],
+ "small-land/win": [],
+ "small-land/bosscard": [],
+ "small-land/boss": [
+  {
+   "kind": "under-bar",
+   "what": "DotWhen he rears back, get off the groun",
+   "rect": [
+    342,
+    78,
+    624,
+    162
+   ]
+  }
+ ],
+ "tablet-port/title": [
+  {
+   "kind": "under-bar",
+   "what": "Shaffer",
+   "rect": [
+    310,
+    1132,
+    364,
+    1170
+   ]
+  },
+  {
+   "kind": "under-bar",
+   "what": "Check for updates",
+   "rect": [
+    542,
+    1132,
+    655,
+    1170
+   ]
+  }
+ ],
+ "tablet-port/menu": [],
+ "tablet-port/map": [],
+ "tablet-port/journal": [],
+ "tablet-port/trophies": [],
+ "tablet-port/story": [
+  {
+   "kind": "under-bar",
+   "what": "Skip",
+   "rect": [
+    719,
+    10,
+    800,
+    44
+   ]
+  }
+ ],
+ "tablet-port/play": [],
+ "tablet-port/pause": [],
+ "tablet-port/lifelost": [],
+ "tablet-port/gameover": [],
+ "tablet-port/win": [],
+ "tablet-port/bosscard": [],
+ "tablet-port/boss": []
+}
