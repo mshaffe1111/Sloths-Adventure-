@@ -17,8 +17,16 @@ const b = await chromium.launch();
 for (const [dev, cw, ch, s] of SIZES) {
   for (const [tag, w, h] of [['up', cw, ch], ['side', ch, cw]]) {
     for (const [name, go, wait] of SCENES) {
+      if (process.env.ONLY && !name.includes(process.env.ONLY)) continue;
       const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: s, hasTouch: name !== '2-jungle', isMobile: true });
-      await p.addInitScript(() => localStorage.setItem('sloth_dot_help', 'quiet'));
+      await p.addInitScript((jungle) => {
+        localStorage.setItem('sloth_dot_help', 'quiet');
+        // (the jungle shot only: no wayside chatter and no speech bubble over the play, the lead's call 2026-10-30)
+        if (jungle) {
+          localStorage.setItem('sloth_wayside_off', '1');
+          document.addEventListener('DOMContentLoaded', () => { const st = document.createElement('style'); st.textContent = '.dg-bub-body, .dg-bub-art, .dg-tail, .dg-ptail { visibility: hidden !important; }'; document.head.appendChild(st); });
+        }
+      }, name === '2-jungle');
       await p.goto(`${url}?lessons=off`);
       await p.waitForTimeout(5000);
       try { if (go) await go(p); } catch (e) { console.log(name, dev, tag, 'could not open', String(e).slice(0, 100)); }
