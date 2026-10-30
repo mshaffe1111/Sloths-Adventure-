@@ -1477,3 +1477,8 @@
 
 /* "New look coming soon" (Worlds 8-10, newLookSoon.ts): a small tag beside "World 8 of 10", in the plaque's lettering and cream */
 .map-soon { display: inline-block; vertical-align: 1px; margin-left: 8px; padding: 0 9px 1px; text-transform: none; border-radius: 99px; font-family: var(--font-fun); font-weight: 400; font-size: 13px; letter-spacing: 0.02em; line-height: 1.35; color: #fff3c4; background: rgba(42, 24, 10, 0.72); border: 1.5px solid rgba(255, 214, 110, 0.55); text-shadow: 0 1px 0 rgba(20, 36, 22, 0.9); white-space: nowrap; }
+
+/* a long world name (World 10's "Stormy Highlands Fortress") steps down to fit, and on a very narrow screen it wraps rather than
+   being cut: text is never cut off on a phone */
+.map-title.long { font-size: clamp(16px, 2.4vh + 4px, 22px); }
+.map-title.long > span { white-space: normal; overflow: visible; text-overflow: clip; text-align: center; line-height: 1.1; }

@@ -214,7 +214,8 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 line, where there is room both ways, so the header keeps its shape) */}
             {newLookSoon(curWorld.id) && <span className="map-soon">New look coming soon</span>}
           </div>
-          <Plaque as="h1" className="map-title">
+          {/* (a long name, World 10's, steps its lettering down so it is never cut on a phone) */}
+          <Plaque as="h1" className={`map-title${curWorld.name.length > 18 ? ' long' : ''}`}>
             {curWorld.name}
           </Plaque>
         </div>
