@@ -38,7 +38,26 @@ The polish is where this is won or lost.
 - Text: no placeholder or arcade words, nothing under the notch, nothing covering Pokey.
 - Every required piece reachable (the 1-4 basket lesson).
 - Every look-heavy change shown to Matt first.
-- Built for the Play Store app (Matt, 2026-10-29): it works inside the Android APK, not just a browser. Nothing tappable under the status bar or nav bar. No tracking of any kind in the store build. It's likely a paid app, so it must feel worth paying for.
+- Built for the Play Store app (Matt, 2026-10-29): it works inside the Android APK, not just a browser. Nothing tappable under the status bar or nav bar. No tracking of any kind in the store build. It's likely a paid app, so it must feel worth paying for. The full list is `reference/PLAY-STORE-RULES.md` (§6 is the check before every merge).
+
+## The helpers' errors are my errors (Matt, 2026-10-30)
+
+Matt: "When I supervise people, their errors are my errors... when they make errors, I can't go and say, well, we'll just have to redo it again."
+
+I pick every helper, write its brief and approve what merges. A helper's mistake that reaches Matt is my mistake. My plan, held to every time:
+1. **Brief right:** every brief names the goal, the files the helper owns and the files it must not touch, the rules (STAGE-RULES, PERFORMANCE-RULES, PLAY-STORE-RULES), what proof it must bring, and the deadline. A vague brief is my error.
+2. **Supervise during the work, not at the end:** a check-in every 30 minutes while helpers run. I read their pushed diffs against the rules and the look, correct course early, unblock them, and pass findings between them. Helpers push after every fix so this works.
+3. **Review before merge:** I read every diff myself; the gate, the speed check (when built) and side-by-side screenshots must pass. A report is never enough.
+4. **Nothing half-done reaches Matt:** a slip goes back to the helper; it never goes in "for now", and Matt never hears "we'll have to redo it".
+5. **When something still slips:** I own it to Matt plainly, fix it first, and write here what I change so it can't happen again.
+
+## A miss to never repeat (2026-10-30)
+
+Matt: "How come we didn't do this to begin with?" The game grew from a Canvas 2D prototype into a rich painted game, and nobody re-examined whether the drawing foundation could carry it. Every feature added cost to every frame; checks ran on fast desktop browsers, not cheap phones; and no speed check guarded releases, so the v7 release shipped a slowdown nobody caught.
+
+- **Every few milestones, ask:** does the foundation (drawing, loading, sound, saves) still fit what we're building on it?
+- **Measure on real phones** (Matt's Pixel, Samsung and 2020 OnePlus), never only on desktop.
+- **No release without the speed check** (PERFORMANCE-RULES §8).
 
 ## Before a release, also
 

@@ -1,26 +1,35 @@
 /**
  * The hurt flash (polish report AN-6): a creature that has just been hit is drawn washed white for a moment. It used to set
  * ctx.filter = 'brightness(2.2)' at about twenty draw sites, which is slow on phones and silently does nothing where canvas filters are
- * missing (Safari before 18). Here the creature is drawn once onto a shared layer, the white is laid over only what was drawn
+ * missing (Safari before 18). Here the creature is drawn once onto a small layer the size of its box, the white is laid over only what was drawn
  * ('source-atop'), and the patch is put back onto the scene: the same on every browser, and only for the frames a hit flashes.
  */
 /** how white a hit creature goes (0 = not at all, 1 = a flat white silhouette) */
 export const HURT_WHITE = 0.62;
 
-let layer: HTMLCanvasElement | null = null;
-let lctx: CanvasRenderingContext2D | null = null;
+// A few small layers, each the size of a creature's box (not the screen), used in turn: a full-screen layer cost a whole-screen texture
+// on every flash, and drawing on it again while the scene still held the last copy made the browser copy all of it (several a frame in a
+// fight; Duet's second look, 2026-10-30; PERFORMANCE-RULES.md §2.9)
+const RING = 4;
+const layers: Array<{ cv: HTMLCanvasElement; g: CanvasRenderingContext2D } | null> = [];
+let turn = 0;
 
 function layerFor(w: number, h: number): CanvasRenderingContext2D | null {
   if (typeof document === 'undefined') return null;
-  if (!layer) {
-    layer = document.createElement('canvas');
-    lctx = layer.getContext('2d');
+  turn = (turn + 1) % RING;
+  let L = layers[turn];
+  if (!L) {
+    const cv = document.createElement('canvas');
+    const g = cv.getContext('2d');
+    if (!g) return null;
+    L = layers[turn] = { cv, g };
   }
-  if (layer.width < w || layer.height < h) {
-    layer.width = Math.max(layer.width, w);
-    layer.height = Math.max(layer.height, h);
+  // (grown in steps of 64 px, never shrunk, so a creature's box changing a little does not resize it every frame)
+  if (L.cv.width < w || L.cv.height < h) {
+    L.cv.width = Math.max(L.cv.width, Math.ceil(w / 64) * 64);
+    L.cv.height = Math.max(L.cv.height, Math.ceil(h / 64) * 64);
   }
-  return lctx;
+  return L.g;
 }
 
 /** the device-pixel box (clamped to the canvas) round a world-space box, under the context's current transform */
@@ -49,15 +58,16 @@ export function withHurtFlash(ctx: CanvasRenderingContext2D, on: boolean, x: num
   }
   const m = ctx.getTransform();
   const r = deviceBox(m, x, y, w, h, ctx.canvas.width, ctx.canvas.height);
-  const l = r.w > 0 && r.h > 0 ? layerFor(ctx.canvas.width, ctx.canvas.height) : null;
+  const l = r.w > 0 && r.h > 0 ? layerFor(r.w, r.h) : null;
   if (!l) {
     draw(ctx);
     return;
   }
   l.save();
   l.setTransform(1, 0, 0, 1, 0, 0);
-  l.clearRect(r.x, r.y, r.w, r.h);
-  l.setTransform(m);
+  l.clearRect(0, 0, r.w, r.h);
+  // (the scene's transform, moved so the box's corner is the layer's corner)
+  l.setTransform(m.a, m.b, m.c, m.d, m.e - r.x, m.f - r.y);
   l.imageSmoothingEnabled = ctx.imageSmoothingEnabled;
   l.imageSmoothingQuality = ctx.imageSmoothingQuality;
   draw(l);
@@ -66,10 +76,10 @@ export function withHurtFlash(ctx: CanvasRenderingContext2D, on: boolean, x: num
   l.setTransform(1, 0, 0, 1, 0, 0);
   l.globalCompositeOperation = 'source-atop';
   l.fillStyle = `rgba(255, 255, 255, ${HURT_WHITE})`;
-  l.fillRect(r.x, r.y, r.w, r.h);
+  l.fillRect(0, 0, r.w, r.h);
   l.restore();
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.drawImage(l.canvas, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
+  ctx.drawImage(l.canvas, 0, 0, r.w, r.h, r.x, r.y, r.w, r.h);
   ctx.restore();
 }

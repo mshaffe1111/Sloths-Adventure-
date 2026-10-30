@@ -16,6 +16,7 @@ import { JAGUAR_FRAMES } from './jaguarAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { JAGUAR_ANIM, JAGUAR_ANIM_UP, JAGUAR_ANIM_URL, JAGUAR_SEQ } from './jaguarAnimData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 /** the moving jaguar (2026-10-25): its own poses brought to life with the motion model; the single poses draw while it loads */
 const ANIM = makeCreatureAnim(JAGUAR_ANIM_URL, JAGUAR_ANIM, JAGUAR_SEQ, JAGUAR_ANIM_UP);
@@ -137,7 +138,7 @@ export function drawJaguarSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
     ANIM.draw(ctx, clip, K);
   } else {
     const ay = airborne ? f.h : f.ay;
-    ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -ay * K + sink, f.w * K, f.h * K);
+    drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -f.ax * K, -ay * K + sink, f.w * K, f.h * K);
   }
   ctx.restore();
   return true;
