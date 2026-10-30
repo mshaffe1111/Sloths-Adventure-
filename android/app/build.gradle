@@ -8,7 +8,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // (from CI: the run number, so every upload is higher, and the release tag; Play refuses a versionCode it has seen)
-        versionCode (System.getenv("APP_VERSION_CODE") ?: "1") as Integer
+        versionCode Integer.parseInt(System.getenv("APP_VERSION_CODE") ?: "1")
         versionName System.getenv("APP_VERSION_NAME") ?: "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

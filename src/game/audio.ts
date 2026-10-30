@@ -133,6 +133,10 @@ class SoundEngine {
     else this.away.delete(why);
     this.c.appHidden(this.away.size > 0);
   }
+  /** another app talks over the Android app for a moment: the game plays on, quieter */
+  appDucked(on: boolean) {
+    this.c.setDucked(on);
+  }
   dotChirp() {
     this.c.dotChirp();
   }

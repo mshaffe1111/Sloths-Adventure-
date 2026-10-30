@@ -19,7 +19,8 @@ import com.getcapacitor.BridgeActivity;
  * the game is in front: a phone dimming mid-jump is a lost life.
  *
  * Sound: the game holds Android's audio focus while it is in front, as games do (other music stops). When something else takes it (a call
- * ringing, an alarm, another app's sound) the page gets a "sloth-audio-focus" event with state "lost", and "back" when it returns
+ * ringing, an alarm, another app's sound) the page gets a "sloth-audio-focus" event with state "lost" (the game goes silent), "duck"
+ * (another app speaks for a moment, like directions: the game plays on quieter), and "back" when it returns
  * (App.tsx): the game's sound stops until then. Going to the background is the 'pause' event of @capacitor/app (App.tsx too).
  */
 public class MainActivity extends BridgeActivity {
@@ -42,9 +43,10 @@ public class MainActivity extends BridgeActivity {
     private AudioFocusRequest focusRequest;
     private final AudioManager.OnAudioFocusChangeListener onFocus = change -> {
         if (bridge == null) return;
-        boolean lost = change == AudioManager.AUDIOFOCUS_LOSS || change == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT
-            || change == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK;
-        bridge.triggerWindowJSEvent("sloth-audio-focus", lost ? "{ \"state\": \"lost\" }" : "{ \"state\": \"back\" }");
+        String state = change == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK ? "duck"
+            : change == AudioManager.AUDIOFOCUS_LOSS || change == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT ? "lost"
+            : "back";
+        bridge.triggerWindowJSEvent("sloth-audio-focus", "{ \"state\": \"" + state + "\" }");
     };
 
     @Override

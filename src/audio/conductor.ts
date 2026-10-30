@@ -199,6 +199,13 @@ export class Conductor {
     if (document.hidden || this.appAway) this.ctx.suspend().catch(() => {});
     else if (!this.muted) this.ctx.resume().catch(() => {});
   };
+  private ducked = false;
+  /** another app speaks for a moment over the Android app (directions, a notification): play on at a quarter of the volume */
+  setDucked(on: boolean) {
+    if (on === this.ducked) return;
+    this.ducked = on;
+    this.applyVolumes(false);
+  }
   /** the Android app went to the background or a call came in (its 'pause' event, which can come without the page being hidden), or came back */
   appHidden(away: boolean) {
     this.appAway = away;
@@ -465,7 +472,7 @@ export class Conductor {
       if (snap) p.setValueAtTime(v, t);
       else p.setTargetAtTime(v, t, 0.05);
     };
-    set(core.master.gain, this.muted ? 0 : 1);
+    set(core.master.gain, this.muted ? 0 : this.ducked ? 0.25 : 1);
     set(core.music.gain, 0.32 * this.musicVol);
     set(core.sfx.gain, 0.9 * this.sfxVol);
     set(core.amb.gain, (this.paused ? 0.18 : 0.6) * this.sfxVol);

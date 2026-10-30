@@ -57,6 +57,7 @@ import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { nativeApp } from './game/appShell.ts';
+import { LeaveDialog } from './components/LeaveDialog.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -500,7 +501,8 @@ export default function App() {
   const gameOverAt = useRef(0);
   // The Android app (reference/PLAY-STORE.md): the phone's Back button, and the app going to the background or a call coming in.
   // Back closes the open window first (its X), then: play pauses, the pause menu resumes, the end cards go to the map, the map goes to the
-  // title, the title leaves the app, and every other screen gets an Escape (a story skips, the start menu closes).
+  // title, the title asks "Leave the game?", and every other screen gets an Escape (a story skips, the start menu closes).
+  const [askLeave, setAskLeave] = useState(false);
   const androidBack = useRef<() => void>(() => {});
   androidBack.current = () => {
     const xs = Array.from(document.querySelectorAll<HTMLElement>('.ui-x')).filter((el) => el.offsetParent !== null);
@@ -518,7 +520,7 @@ export default function App() {
         setScreen('world_map');
       }
     } else if (screen === 'world_map') setScreen('title');
-    else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim')) void import('@capacitor/app').then((m) => m.App.minimizeApp());
+    else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim')) setAskLeave(true);
     else esc();
   };
   const androidAway = useRef<() => void>(() => {});
@@ -541,8 +543,13 @@ export default function App() {
       if (gone) add.forEach((h) => void h.remove());
       else subs.push(...add);
     });
-    // (sent by MainActivity.java when a call rings, an alarm sounds or another app plays, and when the sound is ours again)
-    const onFocus = (e: Event) => sound.appHidden((e as Event & { state?: string }).state === 'lost', 'focus');
+    // (sent by MainActivity.java: 'lost' when a call rings, an alarm sounds or another app plays; 'duck' when another app speaks for a
+    // moment, like directions; 'back' when the sound is ours again)
+    const onFocus = (e: Event) => {
+      const state = (e as Event & { state?: string }).state;
+      sound.appHidden(state === 'lost', 'focus');
+      sound.appDucked(state === 'duck');
+    };
     window.addEventListener('sloth-audio-focus', onFocus);
     return () => {
       gone = true;
@@ -1399,6 +1406,9 @@ export default function App() {
         </>
       )}
 
+      {askLeave && screen === 'title' && (
+        <LeaveDialog onStay={() => setAskLeave(false)} onLeave={() => void import('@capacitor/app').then((m) => m.App.exitApp())} />
+      )}
       {/* Status Modals: Paused, Victory, Game Over, Boss Intro, Story Ending */}
       {(screen === 'paused' ||
         (screen === 'victory' && newSkills.length === 0) ||
