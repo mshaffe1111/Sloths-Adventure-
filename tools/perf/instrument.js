@@ -277,6 +277,8 @@
     S.installed = false;
   }
 
+  // (window.__engine is a function in App.tsx, but the engine also sets it to itself as it is made (dev only), so it can be either)
+  S.engine = () => (typeof window.__engine === 'function' ? window.__engine() : window.__engine || null);
   S.install = install;
   S.uninstall = uninstall;
   S.reset = () => { S.sites = new Map(); S.frames = []; };

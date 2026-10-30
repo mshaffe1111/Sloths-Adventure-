@@ -80,7 +80,7 @@ async function playOne(browser, scen, orient) {
 
   // the harness's render(): pin Pokey, then time, count or just draw
   const info = await page.evaluate(({ n }) => {
-    const e = window.__engine();
+    const e = window.__perf.engine();
     if (!e) return { error: 'no engine' };
     const S = window.__perf;
     const R = Object.getPrototypeOf(e).render;
@@ -130,13 +130,13 @@ async function playOne(browser, scen, orient) {
   for (let si = 0; si < info.spots.length; si++) {
     const spot = info.spots[si];
     await page.evaluate(({ spot, si }) => {
-      const S = window.__perf, e = window.__engine();
+      const S = window.__perf, e = window.__perf.engine();
       S.pin = spot; S.spot = si; S.mode = 'plain';
       if (e.quality !== 0) { e.quality = 0; e.resizeCanvas(); }
     }, { spot, si });
     for (let k = 0; k < 3; k++) { await page.clock.runFor(SETTLE_MS / 3); await sleep(200); }
     const state = await page.evaluate(() => {
-      const e = window.__engine();
+      const e = window.__perf.engine();
       if (e.quality !== 0) { e.quality = 0; e.resizeCanvas(); }
       return { quality: e.quality, canvas: `${e.canvas.width}x${e.canvas.height}`, cam: [Math.round(e.camera.x), Math.round(e.camera.y)], paused: !!e.isPaused, running: !!e.isRunning, px: Math.round(e.player.x), py: Math.round(e.player.y) };
     });
