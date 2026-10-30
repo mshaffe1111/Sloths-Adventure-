@@ -31,6 +31,9 @@ const climbWall = (vine: string, on: string, wall: string, h: number, w: W): Sec
   bank(wall, w, { kind: 'over', on: vine, at: 0, dy: 0 }, { main: true }),
 ];
 const flag = (on: string, t: Socket['t']): Socket => ({ id: 'flag', role: 'flag', on, t });
+/** a soft gap only the second jump crosses, and one only the leaf crosses (w8Sections.ts's leap and glide) */
+const leap = (key: string, after: string, w: W, share: W = [0.5, 0.74]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'double', share }, { landing: true });
+const glide = (key: string, after: string, w: W, share: W = [0.8, 0.94]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'glide', share }, { landing: true });
 const darkTip = (on: string): Socket => ({ id: 'tip-dark', role: 'tip', on, t: 0.1, allow: [W8_LESSON.dark] });
 
 const branch = (s: Omit<SectionTemplate, 'entry' | 'exit' | 'exitDy' | 'archetypes' | 'mirrorable'> & { first: string; last: string }): SectionTemplate => {
@@ -100,6 +103,34 @@ const climbHunterSwing = branch({
   sockets: [foe('foe', 'a', [0.45, 0.55], HUNTERS, 5, { phases: ['sho', 'ten', 'ketsu'] }), petals('wall', 'wall', 0.5, 2, 90), petals('c', 'c', 0.4, 2, 80)],
 });
 
+/** a trunk, then a gap only the second jump crosses from the bough past it (8-5's variety: not every branch is reached by a swing) */
+const trunkLeap = branch({
+  id: 'w8b-trunk-leap',
+  name: 'up the trunk, a second jump to the next branch',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [W8_THEME.climbers],
+  pieces: [bank('a', [220, 260]), ...climbWall('v', 'a', 'wall', 240, [220, 250]), down('b', 'wall', 240, [220, 260]), leap('c', 'b', [240, 280]), up('k', 'c', 34, [140, 160]), down('d', 'k', 34, [200, 240])],
+  first: 'a',
+  last: 'd',
+  sockets: [petals('wall', 'wall', 0.5, 2, 90), petals('b', 'b', 0.5, 1), foe('foe', 'c', [0.5, 0.6], HUNTERS, 3, { phases: ['ten', 'ketsu'], chance: 0.5 }), petals('k', 'k', 0.5, 1), flag('d', 0.5)],
+});
+
+/** a trunk, then the leaf off its high bough down over a wide gap to the next branch */
+const trunkGlide = branch({
+  id: 'w8b-trunk-glide',
+  name: 'up the trunk, glide to the next branch',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [W8_THEME.climbers],
+  pieces: [bank('a', [220, 260]), ...climbWall('v', 'a', 'wall', 240, [220, 250]), glide('b', 'wall', [240, 280]), down('c', 'b', 240, [220, 260])],
+  first: 'a',
+  last: 'c',
+  sockets: [petals('a', 'a', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), petals('b', 'b', 0.5, 1), scenery('nest', 'c', [0.5, 0.7], 0.5), flag('c', 0.5)],
+});
+
 /** 8-5's dark stretch (required on every roll, so it opens no theme): a swing in the dark onto a bough, the trunk climbed in the
  *  firefly's light, and down out of the dark */
 const darkBranch = branch({
@@ -125,4 +156,4 @@ const darkBranch = branch({
 });
 
 /** 8-5's own sections (w8Game.ts adds them to 8-5 alone) */
-export const W8_BRANCH_SECTIONS: readonly SectionTemplate[] = [trunkHunter, climbSwing, trunkPair, climbHunterSwing, darkBranch];
+export const W8_BRANCH_SECTIONS: readonly SectionTemplate[] = [trunkHunter, climbSwing, trunkPair, climbHunterSwing, trunkLeap, trunkGlide, darkBranch];
