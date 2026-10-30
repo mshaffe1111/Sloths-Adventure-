@@ -169,6 +169,7 @@ import type { GuideView } from './dotGuideView.ts';
 import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
 import { shakeOffset } from './screenShake.ts';
+import { POWER_UP_SECS } from './powerUps.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -2832,22 +2833,22 @@ export class GameEngine {
           this.addFloatingText('MAX HP RESTORED + SHIELD!', c.x, c.y - 30, '#facc15');
         } else if (c.type === 'powerup_speed') {
           p.activePowerUp = 'speed';
-          p.powerUpTimer = 10.0;
-          p.maxPowerUpTimer = 10.0;
+          p.powerUpTimer = POWER_UP_SECS.speed;
+          p.maxPowerUpTimer = POWER_UP_SECS.speed;
           sound.playPowerUp('speed');
           this.spawnSparkBurst(c.x, c.y, '#34d399');
           this.addFloatingText('⚡ CHEETAH SPEED (10s)!', c.x, c.y - 35, '#34d399');
         } else if (c.type === 'powerup_invincible') {
           p.activePowerUp = 'invincible';
-          p.powerUpTimer = 8.0;
-          p.maxPowerUpTimer = 8.0;
+          p.powerUpTimer = POWER_UP_SECS.invincible;
+          p.maxPowerUpTimer = POWER_UP_SECS.invincible;
           sound.playPowerUp('invincible');
           this.spawnSparkBurst(c.x, c.y, '#facc15');
           this.addFloatingText('⭐ SOLAR INVINCIBLE (8s)!', c.x, c.y - 35, '#facc15');
         } else if (c.type === 'powerup_magnet') {
           p.activePowerUp = 'magnet';
-          p.powerUpTimer = 12.0;
-          p.maxPowerUpTimer = 12.0;
+          p.powerUpTimer = POWER_UP_SECS.magnet;
+          p.maxPowerUpTimer = POWER_UP_SECS.magnet;
           sound.playPowerUp('magnet');
           this.spawnSparkBurst(c.x, c.y, '#38bdf8');
           this.addFloatingText('🧲 NECTAR MAGNET (12s)!', c.x, c.y - 35, '#38bdf8');

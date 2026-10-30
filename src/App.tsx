@@ -258,6 +258,7 @@ export default function App() {
   /** Meeca's stage: its title card or its ending is up, so the HUD steps aside */
   const [cinematic, setCinematic] = useState(false);
   const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null>(null);
+  const fight = activeLevel.objectiveType === 'boss_lair' ? bossInfo : null;
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
   // Picks the tune for a stage. A new number each time a stage is entered gives a new composition; retrying keeps it.
@@ -691,6 +692,8 @@ export default function App() {
 
     setCoachStep(null);
     setLessonId(null);
+    // (a new stage starts with no boss: the last fight's name and bar must not show for a frame: UI-7)
+    setBossInfo(null);
     setRunId((n) => n + 1);
     setHp(maxHearts());
     setMaxHp(maxHearts());
@@ -746,7 +749,9 @@ export default function App() {
             setActivePowerUp(curPowerUp ?? null);
             setPowerUpTimer(curPowerTimer ?? 0);
           },
-          onBossUpdate: (info) => setBossInfo(info),
+          // (when the guardian goes down the engine sends nothing more: its bar stays, empty, under its own name, instead of falling
+          // back to a full bar called "Stage boss": UI-7)
+          onBossUpdate: (info) => setBossInfo((prev) => info ?? (prev ? { ...prev, hp: 0, entering: false } : null)),
           onCinematic: (on) => setCinematic(on),
           onCoach: (st) => setCoachStep(st),
           onLesson: (id) => setLessonId(id),
@@ -1287,13 +1292,14 @@ export default function App() {
             distanceRatio={distanceRatio}
             score={score}
             onMenu={pauseGame}
-            bossHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hp ?? 1 : undefined}
-            bossMaxHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.maxHp ?? 1 : undefined}
-            bossName={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.name : undefined}
-            bossPhase={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.phase : undefined}
-            bossHits={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hits : undefined}
-            bossAccent={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.color : undefined}
-            bossEntering={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.entering : activeLevel.id === MEECA_STAGE_ID ? cinematic : undefined}
+            // (the boss bar only once the engine has said which guardian this is: UI-7)
+            bossHp={fight?.hp}
+            bossMaxHp={fight?.maxHp}
+            bossName={fight?.name}
+            bossPhase={fight?.phase}
+            bossHits={fight?.hits}
+            bossAccent={fight?.color}
+            bossEntering={activeLevel.objectiveType === 'boss_lair' ? fight?.entering : activeLevel.id === MEECA_STAGE_ID ? cinematic : undefined}
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}
