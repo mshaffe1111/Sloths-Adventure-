@@ -1170,6 +1170,36 @@ const highLedge = section({
   mirrorable: false,
 });
 
+/** ledges: up three basalt steps over the lava, a thread on the top one, and a long drop down off it */
+const ledgeSteps = section({
+  id: 'w9-ledge-steps',
+  name: 'thread up the steps',
+  archetypes: ['relic_hunt'],
+  phases: ALL,
+  difficulty: 6,
+  uses: [W9_THEME.ledges],
+  pieces: [bank('a', [240, 280]), lavaUp('s1', 'a', [-48, -40], [200, 240], [0.5, 0.66]), lavaUp('s2', 's1', [-48, -40], [200, 240], [0.5, 0.66]), lavaUp('top', 's2', [-40, -32], [260, 300], [0.5, 0.66]), lavaUp('c', 'top', [120, 140], [360, 400], [0.55, 0.7])],
+  last: 'c',
+  exitDy: 0,
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), thread('r', 'top', 0.6), petals('c', 'c', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** ledges: a thread left on a basalt pillar out in the lava, between two banks */
+const ledgePillar = section({
+  id: 'w9-ledge-pillar',
+  name: 'thread on a pillar',
+  archetypes: ['relic_hunt'],
+  phases: LIVE,
+  difficulty: 7,
+  uses: [W9_THEME.ledges],
+  pieces: [bank('a', [300, 340]), pillar('p1', 'a', [-30, -10]), pillar('p2', 'p1', [-20, 0]), lava('b', 'p2', [360, 400], [0.5, 0.66], true)],
+  last: 'b',
+  exitDy: -30,
+  sockets: [petals('p1', 'p1', 0.5, 1), thread('r', 'p2', 0.5), petals('b', 'b', 0.5, 1), foe('foe', 'b', [0.6, 0.7], ['jaguar'], 5, { phases: HOT, chance: 0.6 })],
+  mirrorable: false,
+});
+
 /** ledges: a thread on a ledge over the run (a jump up from a knob), a hunter below */
 const overLedge = section({
   id: 'w9-over-ledge',
@@ -1280,6 +1310,8 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
   ...threadGates,
   highLedge,
   overLedge,
+  ledgeSteps,
+  ledgePillar,
   channelThread,
   ventThread,
 ];
@@ -1301,7 +1333,7 @@ export const W9_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object
   ...[...ventGates, glideTwin, glideHigh, burstLanding, burstRow, restWarm].map((s) => [s.id, [5]] as const),
   [geyserBrink.id, [1]] as const,
   ...[huntGates[0], huntGates[1], catDen, jaguarLeap, hunterRun, hunterBrink, catLedges, prowlCrust, catChasm].map((s) => [s.id, [6]] as const),
-  ...[...threadGates, highLedge, overLedge, channelThread, ventThread, basaltLong, basaltChasm, basaltRun, basaltTwin, restLedge].map((s) => [s.id, [8]] as const),
+  ...[...threadGates, highLedge, overLedge, ledgeSteps, ledgePillar, channelThread, ventThread, basaltLong, basaltChasm, basaltRun, basaltTwin, restLedge].map((s) => [s.id, [8]] as const),
   ...[huntGates[2], huntGates[3], harpyField, harpyGap, pillarRun, harpyPillars, boaChasm, boaLedges, hotRun, hoardPillars].map((s) => [s.id, [9]] as const),
   [restAsh.id, [6]] as const,
   [restHoard.id, [9]] as const,

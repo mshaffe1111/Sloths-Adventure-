@@ -20,7 +20,9 @@ export const W9_GAME_STAGES = ['9-1', '9-3', '9-4', '9-5', '9-6', '9-8', '9-9'] 
 export const W9_REQUIRED: NonNullable<WorldManifest['required']> = {
   '9-1': [{ section: 'w9-first-geyser', phase: 'ki' }],
   // (each stage's puzzle room, on every roll: w9Rooms.ts W9R_STAGE, 9-3 the chain lift, 9-5 the hot plates, 9-8 the plate that holds the gate)
-  ...Object.fromEntries(W9_ROOM_SECTIONS.map((s) => [W9R_STAGE[s.id], [{ section: s.id }]])),
+  // (9-8's lift room in its first Ten slot, well past the start: the stage's own line about the odd plant, said as it starts, never meets
+  // the room's entry line, the lead 2026-10-29)
+  ...Object.fromEntries(W9_ROOM_SECTIONS.map((s) => [W9R_STAGE[s.id], [W9R_STAGE[s.id] === '9-8' ? { section: s.id, phase: 'ten' as const } : { section: s.id }]])),
 };
 
 /** the vine stage (9-3 Ember Canopy) holds the chains (w9Swing.ts); no other stage does */
