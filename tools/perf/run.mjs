@@ -34,7 +34,12 @@ const SCENARIOS = [
   { id: 'ctest-mix14', stage: '1-2', q: 'ctest=1&mix=14', spots: 14 },
   { id: 'ctest-mix8', stage: '1-2', q: 'ctest=1&mix=8', spots: 14 },
   ...['1-1', '1-3', '2-1', '3-2', '4-1', '5-1', '6-1', '7-1'].map((s) => ({ id: s, stage: s, q: '', spots: 8 })),
-].filter((s) => !scenArg || scenArg.split(',').includes(s.id));
+];
+// (any other stage id given on the command line is played like the stages above)
+for (const id of (scenArg || '').split(',')) if (/^\d+-\d+$/.test(id) && !SCENARIOS.some((s) => s.id === id)) SCENARIOS.push({ id, stage: id, q: '', spots: 8 });
+const RUN = SCENARIOS.filter((s) => !scenArg || scenArg.split(',').includes(s.id));
+// PERF_Q=2 measures the lightest picture (q2, canvas at 1x CSS) instead of q0
+const QUALITY = Number(process.env.PERF_Q || 0);
 const ORIENTS = [
   { id: 'port', viewport: { width: 400, height: 880 } },
   { id: 'land', viewport: { width: 880, height: 400 } },
@@ -106,6 +111,8 @@ async function playOne(browser, scen, orient) {
       } else R.call(this);
     };
     S.main = e.canvas;
+    // the governor never changes the picture during a measurement (the quality is set by the harness at every spot)
+    if (e.gov) { e.gov.takeUp = () => false; e.gov.feed = () => false; }
     const st = e.currentStage;
     const plats = (st.platforms || []).filter((p) => p.type === 'solid' && p.width >= 60 && !p.broken);
     const xs = plats.map((p) => p.x), ys = plats.map((p) => p.y);
@@ -129,17 +136,17 @@ async function playOne(browser, scen, orient) {
   const spotsOut = [];
   for (let si = 0; si < info.spots.length; si++) {
     const spot = info.spots[si];
-    await page.evaluate(({ spot, si }) => {
+    await page.evaluate(({ spot, si, q }) => {
       const S = window.__perf, e = window.__perf.engine();
       S.pin = spot; S.spot = si; S.mode = 'plain';
-      if (e.quality !== 0) { e.quality = 0; e.resizeCanvas(); }
-    }, { spot, si });
+      if (e.quality !== q) { e.quality = q; e.resizeCanvas(); }
+    }, { spot, si, q: QUALITY });
     for (let k = 0; k < 3; k++) { await page.clock.runFor(SETTLE_MS / 3); await sleep(200); }
-    const state = await page.evaluate(() => {
+    const state = await page.evaluate((q) => {
       const e = window.__perf.engine();
-      if (e.quality !== 0) { e.quality = 0; e.resizeCanvas(); }
+      if (e.quality !== q) { e.quality = q; e.resizeCanvas(); }
       return { quality: e.quality, canvas: `${e.canvas.width}x${e.canvas.height}`, cam: [Math.round(e.camera.x), Math.round(e.camera.y)], paused: !!e.isPaused, running: !!e.isRunning, px: Math.round(e.player.x), py: Math.round(e.player.y) };
-    });
+    }, QUALITY);
     await page.evaluate(() => { window.__perf.mode = 'time'; });
     await page.clock.runFor(TIME_FRAMES * 33.4);
     await page.evaluate(() => { window.__perf.install(); window.__perf.mode = 'count'; });
@@ -202,13 +209,15 @@ log('vite up on', port);
 const browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
 const results = [];
 try {
-  for (const scen of SCENARIOS) for (const orient of ORIENTS) {
+  for (const scen of RUN) for (const orient of ORIENTS) {
     const t = Date.now();
     try {
       let r = await playOne(browser, scen, orient).catch((e) => ({ scenario: scen.id, orient: orient.id, error: e.message.slice(0, 500) }));
       // (one retry: a cold dev server can miss the first page)
       if (r.error) { log(scen.id, orient.id, 'retrying after', r.error.slice(0, 120)); r = await playOne(browser, scen, orient); }
       results.push(r);
+      fs.mkdirSync(outDir, { recursive: true });
+      fs.writeFileSync(path.join(outDir, `${name}.partial.json`), JSON.stringify({ build: name, quality: QUALITY, results }));
 
       log(scen.id, orient.id, `${((Date.now() - t) / 1000).toFixed(0)}s`, r.error || `${r.spots.length} spots, ${r.frames.length} counted frames, ${r.sites.length} sites`, r.errors.length ? `errors: ${r.errors.slice(0, 2).join(' / ')}` : '');
     } catch (e) {
@@ -223,5 +232,5 @@ try {
 }
 fs.mkdirSync(outDir, { recursive: true });
 const gitRev = (() => { try { return fs.readFileSync(path.join(dir, '.git'), 'utf8').trim(); } catch { return ''; } })();
-fs.writeFileSync(path.join(outDir, `${name}.json`), JSON.stringify({ build: name, dir, gitRev, settleMs: SETTLE_MS, timeFrames: TIME_FRAMES, countFrames: COUNT_FRAMES, results }));
+fs.writeFileSync(path.join(outDir, `${name}.json`), JSON.stringify({ build: name, quality: QUALITY, dir, gitRev, settleMs: SETTLE_MS, timeFrames: TIME_FRAMES, countFrames: COUNT_FRAMES, results }));
 log('wrote', path.join(outDir, `${name}.json`));
