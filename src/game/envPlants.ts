@@ -36,8 +36,8 @@ const bead = (ctx: CanvasRenderingContext2D, x: number, y: number, rr: number) =
   ctx.ellipse(x, y, rr, rr * 1.4, 0, 0, TAU);
   ctx.fill();
 };
-/** a soft added glow; drawn about its middle, so its gradient is kept by colour, size and strength, not made each frame */
-const glowDot = (ctx: CanvasRenderingContext2D, x: number, y: number, rad: number, col: string, a: number) => {
+/** a soft added glow (also envKit's); drawn about its middle, so its gradient is kept by colour, size and strength, not made each frame */
+export const glowDot = (ctx: CanvasRenderingContext2D, x: number, y: number, rad: number, col: string, a: number) => {
   let owner = glowOwners.get(col);
   if (!owner) glowOwners.set(col, (owner = {}));
   const g = keptGradient(owner, Math.round(rad * 16) * 1024 + Math.round(a * 1000), () => {
@@ -163,17 +163,22 @@ const pegs: PlantFn = (ctx, x, y, s, look, r) => {
     const h = s * (0.3 + r() * 0.7);
     const w = s * (0.05 + r() * 0.03);
     const lean = (r() - 0.5) * 5;
-    const g = ctx.createLinearGradient(px - w, 0, px + w, 0);
-    g.addColorStop(0, bark.light);
-    g.addColorStop(1, bark.dark);
-    ctx.fillStyle = g;
     ctx.beginPath();
     ctx.moveTo(px - w * 1.2, y + 2);
     ctx.lineTo(px - w * 0.6 + lean, y - h * 0.8);
     ctx.quadraticCurveTo(px + lean, y - h - w * 0.8, px + w * 0.6 + lean, y - h * 0.8);
     ctx.lineTo(px + w * 1.2, y + 2);
     ctx.closePath();
+    // the bark's side-to-side shading, kept by width and laid across the peg by a shift at the fill (the path is already placed)
+    ctx.fillStyle = keptGradient(bark, Math.round(w * 64), () => {
+      const g = ctx.createLinearGradient(-w, 0, w, 0);
+      g.addColorStop(0, bark.light);
+      g.addColorStop(1, bark.dark);
+      return g;
+    });
+    ctx.translate(px, 0);
     ctx.fill();
+    ctx.translate(-px, 0);
     ctx.strokeStyle = rgba(bark.deep, 0.8);
     ctx.lineWidth = 1.2;
     ctx.stroke();
