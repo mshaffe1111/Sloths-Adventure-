@@ -236,6 +236,12 @@ export const CTEST_GAP3 = 'This one needs two jumps: jump, then jump again in th
 /** the long jumps' own tip, on the single jumps (dotLinesData.ts ctest.gaps; Matt, 2026-10-29: one line for each move, the second jump's
  * at gap 3) */
 const CTEST_GAPS = 'Jump across the gaps';
+/** LV-3: Dot's line at the practice spot: on the screen, with the pad, with keys (approved 2026-10-29; dotLinesData.ts hint.1-6.double) */
+export const DBL_PRACTICE = [
+  'Double jump! Flick up, then flick up again midair.',
+  'Double jump! Press Jump, then Jump again midair.',
+  'Double jump! Press Space, then Space again midair.',
+] as const;
 /** LV-3's double-jump practice spot in 1-6 (dblPractice): the low rock up to it, the two ledges' height, the gap between them (px) */
 export const PRACTICE = { step: 52, ledge: 125, gap: 205 } as const;
 /** before the second jump is taught (1-1's stepping stones): how far below a stone's lower side a gap's floor sits, an easy single hop */
@@ -1237,6 +1243,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
    */
   function dblPractice() {
     const x0 = x;
+    // (Dot names the move once, as the spot comes into view, on the ground: DBL_PRACTICE, approved by the lead for Matt, 2026-10-29)
+    hint(x0 + 20, DBL_PRACTICE[0], DBL_PRACTICE[1], DBL_PRACTICE[2], G - 4);
     run(R.r(150, 190));
     // (World 1's own rock, sunk into the bank: a bare block drew as a grey box)
     logHop(PRACTICE.step);

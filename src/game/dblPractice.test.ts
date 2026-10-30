@@ -61,3 +61,17 @@ test('LV-3 in the real engine: from the near ledge one jump drops to the floor, 
     }
   }
 });
+
+test('LV-3: Dot names the move once, on the ground, as the spot comes into view, with each control scheme\'s words, under 10 words', async () => {
+  const { DBL_PRACTICE } = await import('./protoStage.ts');
+  for (const s of WITH) {
+    const st = buildProtoStage(cfg, s, 'proto');
+    const [a] = ledges(st.platforms)!;
+    const h = (st.proto.hints ?? []).filter((q) => q.text === DBL_PRACTICE[0]);
+    assert.equal(h.length, 1, `seed ${s}: said once`);
+    assert.ok(h[0].x < a.x - 150 && h[0].x > a.x - 600, `seed ${s}: before the spot, as it comes into view (${Math.round(a.x - h[0].x)} px ahead)`);
+    assert.equal(h[0].pad, DBL_PRACTICE[1]);
+    assert.equal(h[0].keys, DBL_PRACTICE[2]);
+  }
+  for (const t of DBL_PRACTICE) assert.ok(t.split(/\s+/).length < 10, t);
+});
