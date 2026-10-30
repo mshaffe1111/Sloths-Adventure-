@@ -18,6 +18,8 @@ import { STD_STAND_H } from './heroStandardData.ts';
 import { SWIM_MOVES, type SwimMoveName } from './heroSwimData.ts';
 import { SWIM } from './swim.ts';
 import type { PlayerState } from './types.ts';
+import { heroBlinkAlpha } from './heroBlink.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const SWIM_ATLAS_URL = new URL('../assets/hero/pokey-swim.webp', import.meta.url).href;
 /** how far over its own waterline each move is drawn (world units): his shoulders and the arm coming over show above the water */
@@ -81,11 +83,11 @@ function drawMove(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, m
   ctx.translate(p.x, y);
   ctx.scale(p.facing, 1);
   ctx.globalAlpha *= alpha;
-  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha *= 0.55;
+  ctx.globalAlpha *= heroBlinkAlpha(p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   const k = unit();
-  ctx.drawImage(heroCoatSheet(img!), fx, fy, m.w, m.h, -m.ax * k, -m.ay * k, m.w * k, m.h * k);
+  drawSheet(ctx, heroCoatSheet(img!), fx, fy, m.w, m.h, -m.ax * k, -m.ay * k, m.w * k, m.h * k);
   ctx.restore();
 }
 

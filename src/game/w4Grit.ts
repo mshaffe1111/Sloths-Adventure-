@@ -344,6 +344,45 @@ export function drawSoftColumn(ctx: CanvasRenderingContext2D, x: number, top: nu
   ctx.restore();
 }
 
+/** a glow that rises from the ground (a boss's danger zone): made once per colour, full at its foot and thinning to nothing at its
+ *  top, faded softly at both sides, so it has no edge anywhere */
+const glows = new Map<string, HTMLCanvasElement>();
+function riseGlow(rgb: string): HTMLCanvasElement | null {
+  const had = glows.get(rgb);
+  if (had) return had;
+  if (typeof document === 'undefined') return null;
+  const [r, g, b] = rgb.split(',').map(Number);
+  const c = document.createElement('canvas');
+  c.width = 64;
+  c.height = 256;
+  const x2 = c.getContext('2d');
+  if (!x2) return null;
+  const d = x2.createImageData(64, 256);
+  for (let y = 0; y < 256; y++) {
+    const v = (y / 255) ** 1.5 * Math.min(1, (255 - y) / 6);
+    for (let x = 0; x < 64; x++) {
+      const h = 1 - Math.abs(x - 31.5) / 32;
+      const i = (y * 64 + x) * 4;
+      d.data[i] = r;
+      d.data[i + 1] = g;
+      d.data[i + 2] = b;
+      d.data[i + 3] = Math.round(255 * v * Math.min(1, h * 2.2) ** 1.5);
+    }
+  }
+  x2.putImageData(d, 0, 0);
+  glows.set(rgb, c);
+  return c;
+}
+/** that glow, `w` wide, from the ground at `foot` up `h` (a little wider than the zone, so its soft sides still cover it) */
+export function drawRiseGlow(ctx: CanvasRenderingContext2D, cx: number, foot: number, w: number, h: number, alpha: number, rgb = '239,68,68') {
+  const c = riseGlow(rgb);
+  if (!c || alpha <= 0.01 || h <= 0) return;
+  ctx.save();
+  ctx.globalAlpha *= Math.min(1, alpha);
+  ctx.drawImage(c, cx - w * 0.65, foot - h, w * 1.3, h);
+  ctx.restore();
+}
+
 /** the camera nudge as a rock lands near him (0 when it is far): small, and only close by */
 export function rockShake(r: RockDrop, px: number, py: number): number {
   const d = Math.hypot(r.x - px, (r.land - py) * 1.5);

@@ -6,6 +6,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { DRESS_FRAMES, type DressName } from './dressAtlasData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DRESS_URL = new URL('../assets/props/dress.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;
@@ -49,7 +50,7 @@ export function drawDress(ctx: CanvasRenderingContext2D, items: readonly DressPi
     ctx.translate(d.x, top);
     if (d.flip) ctx.scale(-1, 1);
     if (d.alpha !== undefined) ctx.globalAlpha *= d.alpha;
-    ctx.drawImage(img!, f.x, f.y, f.w, f.h, -w / 2, 0, w, h);
+    drawSheet(ctx, img!, f.x, f.y, f.w, f.h, -w / 2, 0, w, h);
     ctx.restore();
   }
 }

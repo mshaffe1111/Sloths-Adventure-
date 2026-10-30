@@ -89,7 +89,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
   const platGot = earnedIds.has(plat.id);
 
   const metCount = PREDATOR_ORDER.filter((p) => predatorMet(p, store.seen, levels)).length;
-  const roadCount = ROAD_ENTRIES.filter((r) => roadMet(r, levels)).length;
+  const roadCount = ROAD_ENTRIES.filter((r) => roadMet(r, levels, store.seen)).length;
   const bossDone = (w: number) => levels.some((l) => l.worldIndex === w && l.miniIndex === 10 && l.completed);
 
   const wear = (coat: Coat) => onChoice({ ...choice, coat: choice.coat === coat ? 'none' : coat });
@@ -221,7 +221,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
             <div className="tr-sec">Met on the road</div>
             <div className="tr-grid tr-grid-j">
               {ROAD_ENTRIES.map((r) => {
-                const met = roadMet(r, levels);
+                const met = roadMet(r, levels, store.seen);
                 return (
                   <div key={r.id} className={`tr-card ${met ? '' : 'lock'}`}>
                     <div className="tr-cpic" style={cardWorld(r.first)}>

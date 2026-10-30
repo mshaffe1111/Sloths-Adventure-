@@ -67,3 +67,7 @@ for k in b:
         m[k] = None
 (HERE / 'filesmap.json').write_text(json.dumps(m, indent=1))
 print(f'{sum(v is not None for v in m.values())} new/changed, {sum(v is None for v in m.values())} removed -> tools/testlink/filesmap.json')
+# the published page is work-index.html (the Artifact's page): always the fresh build's index.html, so the page never points at
+# assets this publish removes (2026-10-29: a stale page loaded a blank screen on Matt's phone)
+shutil.copyfile(dist / 'index.html', HERE / 'work-index.html')
+print('work-index.html refreshed from dist/index.html')

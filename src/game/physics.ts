@@ -58,7 +58,8 @@ export function easeAssist(m: number): number {
  */
 export const EDGE = {
   inset: 12,
-  stepV: 80,
+  // (40: the slide back lasts about 0.6 s, as long as the painted step-back's steps, so his feet and the slide stop together; X-14)
+  stepV: 40,
   snapV: 600,
 };
 

@@ -9,6 +9,10 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { BOUNCE_FRAMES, BOUNCE_URL, type BounceFrame } from './bounceAtlasData.ts';
 import type { Platform } from './types.ts';
+import { viewRect, type ViewRect } from './artKit.ts';
+
+/** the view, kept for the stalk's cull */
+const stalkView: ViewRect = { x0: 0, y0: 0, x1: 0, y1: 0 };
 
 /** how far down the stalk darkens (world px) and how dark it ends */
 const FADE = { len: 260, dark: 0.62 };
@@ -79,9 +83,15 @@ export function drawBounce(ctx: CanvasRenderingContext2D, p: Platform, world: nu
     const ks = sw / sf.w;
     const b = bake(sp, sf, ks);
     if (part === 'plant' && b && bottomY > top) {
+      // only the stretch of the stalk the view shows (a plant high above it still runs its stalk down through it)
+      const v = viewRect(ctx, stalkView, 4);
       const fh = Math.min(FADE.len, bottomY - top);
-      ctx.drawImage(b.fade, 0, 0, sf.w, fh / ks, sx, top, sw, fh);
-      for (let y = top + FADE.len; y < bottomY; y += sf.h * ks - 1) ctx.drawImage(b.deep, sx, y, sw, sf.h * ks);
+      if (top + fh >= v.y0 && top <= v.y1) ctx.drawImage(b.fade, 0, 0, sf.w, fh / ks, sx, top, sw, fh);
+      const step = sf.h * ks - 1;
+      let y = top + FADE.len;
+      if (v.y0 - sf.h * ks > y) y += Math.floor((v.y0 - sf.h * ks - y) / step) * step;
+      const end = Math.min(bottomY, v.y1);
+      for (; y < end; y += step) ctx.drawImage(b.deep, sx, y, sw, sf.h * ks);
     }
     // the cap, squashing about its rim
     const squash = 1 + Math.sin(time * 3 + p.id) * 0.05;

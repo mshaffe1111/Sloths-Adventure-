@@ -225,3 +225,11 @@ test('no ring and no arrow, for good (Matt, 2026-10-29: "Lets remove this from t
     assert.doesNotMatch(s, /dg-ring|dg-arrow|ringBox|dotGuideTarget/, f);
   }
 });
+
+test('nothing marks the answer: no ring, arrow, twinkle or sparkle on a puzzle piece, Easy or Normal (Matt, 2026-10-29: "that horrible blue pointer, the helper, I want that out")', async () => {
+  const fs = await import('node:fs');
+  const dot = fs.readFileSync('src/components/dot/DotGuide.tsx', 'utf8') + fs.readFileSync('src/components/dot/dotGuide.css', 'utf8');
+  assert.doesNotMatch(dot, /dg-ring|dg-arrow|dg-twinkle|ringBox|dotGuideTarget/);
+  const kit = fs.readFileSync('src/game/puzzlePlay.ts', 'utf8');
+  assert.doesNotMatch(kit, /drawSparkle|\.sparkle\b/);
+});

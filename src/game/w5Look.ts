@@ -12,6 +12,7 @@
  * Sizes follow the concept art (scratchpad w5art): a chair a little taller than Pokey, the table about as tall as him, a cake the size of a
  * petal, the Butler a head taller than him. Colours from the sheets: rose and lilac velvet, cream silk, china white with gold rims.
  */
+import { drawFx } from './bossFx.ts';
 import { shakyLetters, type Carving } from './w5Kit.ts';
 import { drawButlerPose, type ButlerPose } from './w5Creatures.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
@@ -869,53 +870,18 @@ export function drawSilkSheet(ctx: CanvasRenderingContext2D, x0: number, x1: num
  */
 export function drawSilkOnPokey(ctx: CanvasRenderingContext2D, x: number, y: number, silk: number, t: number) {
   if (silk <= 0.02) return;
-  ctx.save();
   const k = Math.min(1, silk);
-  // the veil: his body goes pale and lilac under the silk
-  ctx.globalAlpha = 0.18 + 0.32 * k;
-  ctx.fillStyle = '#f5f0ff';
+  // painted (Matt 2026-10-29, repeating effects are painted; it was a code veil, strands and stroked wrap rings): the web splat pinning
+  // his feet to the ground, and the cocoon's wrapped silk (bossFx.ts) climbing him from the feet up as it takes hold, breathing a touch
+  drawFx(ctx, 'webSplat', x, y + 3, 54 + 30 * k, { ay: 0.6, alpha: Math.min(1, k * 2.2) * 0.95 });
+  const ch = 96, cw = 50;
+  const top = y + 2 - (8 + 58 * k);
+  ctx.save();
   ctx.beginPath();
-  ctx.ellipse(x, y - 4 - 25 * k, 21, 6 + 25 * k, 0, 0, Math.PI * 2);
-  ctx.fill();
-  // the strands tying him down: from his sides out to the ground, taut, with a glint running along them
-  for (let i = 0; i < 4; i++) {
-    const side = i % 2 ? 1 : -1;
-    const top = y - 8 - (i < 2 ? 18 : 34) * k;
-    const foot = x + side * (26 + i * 7);
-    ctx.globalAlpha = Math.min(1, k * 2.4) * 0.9;
-    ctx.strokeStyle = 'rgba(70, 50, 90, 0.5)';
-    ctx.lineWidth = 2.6;
-    ctx.beginPath();
-    ctx.moveTo(x + side * 9, top);
-    ctx.lineTo(foot, y + 1);
-    ctx.stroke();
-    ctx.strokeStyle = '#fdfaff';
-    ctx.lineWidth = 1.3;
-    ctx.stroke();
-    const g = (t * 0.9 + i * 0.27) % 1;
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(x + side * 9 + (foot - x - side * 9) * g, top + (y + 1 - top) * g, 1.6, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  // the wraps, from his feet up
-  const n = Math.ceil(silk * 7);
-  for (let i = 0; i < n; i++) {
-    const u = i / 7;
-    const yy = y - 4 - u * 50;
-    const a = Math.min(1, silk * 7 - i);
-    const rx = 18 - Math.abs(u - 0.5) * 6;
-    const rot = Math.sin(i * 1.9 + t * 0.4) * 0.35;
-    ctx.globalAlpha = 0.95 * a;
-    ctx.strokeStyle = 'rgba(70, 50, 90, 0.55)';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.ellipse(x, yy, rx, 5, rot, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.strokeStyle = '#fdfaff';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-  }
+  ctx.rect(x - cw, top, cw * 2, y + 6 - top);
+  ctx.clip();
+  // (the cocoon's top tenth is its thread: kept above the clip, so only the wrapped body shows)
+  drawFx(ctx, 'cocoon', x, y + 6, cw * (1 + 0.02 * Math.sin(t * 2.2)), { h: ch, ay: 1, alpha: 0.55 + 0.35 * k });
   ctx.restore();
 }
 
@@ -1449,21 +1415,64 @@ export function drawPennant(ctx: CanvasRenderingContext2D, x: number, ground: nu
 
 /** the golden afternoon (5-1 to 5-3), the dusk and the misty violet twilight: a wash over the whole view, never night */
 export function drawW5Light(ctx: CanvasRenderingContext2D, vw: number, vh: number, mood: 'gold' | 'dusk' | 'twilight', t: number) {
+  const L = w5LightFor(ctx, vw, vh, mood);
   ctx.save();
-  const g = ctx.createLinearGradient(0, 0, vw * 0.4, vh);
-  if (mood === 'gold') {
+  if (L.sun) {
     // the low sun from the upper left: a warm glow screened over the view (it lightens and warms, never muddies the lilac)
+    ctx.globalCompositeOperation = 'screen';
+    ctx.fillStyle = L.sun;
+    ctx.fillRect(0, 0, vw, vh);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  ctx.fillStyle = L.wash;
+  ctx.fillRect(0, 0, vw, vh);
+  if (L.beam) {
+    // long, soft sunbeams slanting down through the canopy (one gradient, laid at each beam by a shift at the fill)
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = L.beam;
+    for (let i = 0; i < 3; i++) {
+      const bx = ((i * 0.37 + 0.12 + Math.sin(t * 0.05 + i) * 0.02) % 1) * vw;
+      ctx.beginPath();
+      ctx.moveTo(bx - 30, 0);
+      ctx.lineTo(bx + 40, 0);
+      ctx.lineTo(bx + vh * 0.35 + 90, vh);
+      ctx.lineTo(bx + vh * 0.35 - 20, vh);
+      ctx.closePath();
+      ctx.translate(bx, 0);
+      ctx.fill();
+      ctx.translate(-bx, 0);
+    }
+  }
+  ctx.restore();
+}
+
+/**
+ * drawW5Light's gradients, kept for the view's size and the mood (PERFORMANCE-RULES §2.3: it made 2-5 a frame); the beam's is made in
+ * its own place and shifted to each beam, so the slow drift of the beams makes none.
+ */
+const w5Light = { vw: -1, vh: -1, mood: '', sun: null as CanvasGradient | null, wash: null as unknown as CanvasGradient, beam: null as CanvasGradient | null };
+function w5LightFor(ctx: CanvasRenderingContext2D, vw: number, vh: number, mood: 'gold' | 'dusk' | 'twilight') {
+  const L = w5Light;
+  if (L.vw === vw && L.vh === vh && L.mood === mood) return L;
+  L.vw = vw;
+  L.vh = vh;
+  L.mood = mood;
+  const g = ctx.createLinearGradient(0, 0, vw * 0.4, vh);
+  L.sun = null;
+  L.beam = null;
+  if (mood === 'gold') {
     const sun = ctx.createRadialGradient(vw * 0.1, -vh * 0.1, 0, vw * 0.1, -vh * 0.1, Math.max(vw, vh) * 1.1);
     sun.addColorStop(0, 'rgba(255, 206, 110, 0.5)');
     sun.addColorStop(0.5, 'rgba(255, 190, 110, 0.2)');
     sun.addColorStop(1, 'rgba(255, 180, 120, 0.06)');
-    ctx.globalCompositeOperation = 'screen';
-    ctx.fillStyle = sun;
-    ctx.fillRect(0, 0, vw, vh);
-    ctx.globalCompositeOperation = 'source-over';
+    L.sun = sun;
     g.addColorStop(0, 'rgba(255, 214, 128, 0.1)');
     g.addColorStop(0.55, 'rgba(255, 190, 120, 0.04)');
     g.addColorStop(1, 'rgba(255, 170, 150, 0.02)');
+    const beam = ctx.createLinearGradient(0, 0, vh * 0.35, vh);
+    beam.addColorStop(0, 'rgba(255, 226, 150, 0.12)');
+    beam.addColorStop(1, 'rgba(255, 226, 150, 0)');
+    L.beam = beam;
   } else if (mood === 'dusk') {
     g.addColorStop(0, 'rgba(255, 170, 120, 0.2)');
     g.addColorStop(1, 'rgba(160, 110, 170, 0.14)');
@@ -1471,27 +1480,8 @@ export function drawW5Light(ctx: CanvasRenderingContext2D, vw: number, vh: numbe
     g.addColorStop(0, 'rgba(170, 140, 220, 0.2)');
     g.addColorStop(1, 'rgba(120, 100, 180, 0.18)');
   }
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, vw, vh);
-  if (mood === 'gold') {
-    // long, soft sunbeams slanting down through the canopy
-    ctx.globalCompositeOperation = 'lighter';
-    for (let i = 0; i < 3; i++) {
-      const bx = ((i * 0.37 + 0.12 + Math.sin(t * 0.05 + i) * 0.02) % 1) * vw;
-      const beam = ctx.createLinearGradient(bx, 0, bx + vh * 0.35, vh);
-      beam.addColorStop(0, 'rgba(255, 226, 150, 0.12)');
-      beam.addColorStop(1, 'rgba(255, 226, 150, 0)');
-      ctx.fillStyle = beam;
-      ctx.beginPath();
-      ctx.moveTo(bx - 30, 0);
-      ctx.lineTo(bx + 40, 0);
-      ctx.lineTo(bx + vh * 0.35 + 90, vh);
-      ctx.lineTo(bx + vh * 0.35 - 20, vh);
-      ctx.closePath();
-      ctx.fill();
-    }
-  }
-  ctx.restore();
+  L.wash = g;
+  return L;
 }
 
 /**

@@ -6,6 +6,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { LEAF_FRAMES, type LeafFrame } from './leafAtlasData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_LEAVES = true;
 
@@ -83,7 +84,7 @@ export function drawPaintedLeaf(
   ctx.scale(flip, 1);
   ctx.globalAlpha = alpha * (big ? 0.88 : 0.95);
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }
@@ -106,7 +107,7 @@ export function drawGlideSprite(ctx: CanvasRenderingContext2D, x: number, y: num
   ctx.scale(open, 0.55 + 0.45 * open);
   ctx.globalAlpha = alpha * Math.min(1, open * 1.6);
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }
@@ -127,7 +128,7 @@ export function drawLeafBit(ctx: CanvasRenderingContext2D, set: 'green' | 'warm'
   ctx.rotate(rot);
   ctx.scale(Math.max(0.15, Math.abs(flip)), 1);
   ctx.globalAlpha *= Math.max(0, Math.min(1, alpha));
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

@@ -30,6 +30,7 @@ import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { BossIntroCard } from './components/BossCards.tsx';
+import { TAP_GUARD_MS } from './components/GameOverCard.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
@@ -53,6 +54,7 @@ import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
+import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
@@ -258,6 +260,7 @@ export default function App() {
   /** Meeca's stage: its title card or its ending is up, so the HUD steps aside */
   const [cinematic, setCinematic] = useState(false);
   const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null>(null);
+  const fight = activeLevel.objectiveType === 'boss_lair' ? bossInfo : null;
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
   // Picks the tune for a stage. A new number each time a stage is entered gives a new composition; retrying keeps it.
@@ -493,6 +496,11 @@ export default function App() {
     }
   }, []);
 
+  // when the Game Over card came up (its tap guard)
+  const gameOverAt = useRef(0);
+  useEffect(() => {
+    if (screen === 'game_over') gameOverAt.current = performance.now();
+  }, [screen]);
   // Global Key listeners for Pause (Esc / P) and Title start (Space / Enter)
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
@@ -528,7 +536,8 @@ export default function App() {
           else handleNextStage();
         }
       } else if (screen === 'game_over') {
-        if (e.code === 'Space' || e.code === 'Enter') {
+        // (the card's half-second guard holds for the keys too: GameOverCard.tsx TAP_GUARD_MS, AN-1)
+        if ((e.code === 'Space' || e.code === 'Enter') && performance.now() - gameOverAt.current >= TAP_GUARD_MS) {
           e.preventDefault();
           continueRun();
         }
@@ -692,6 +701,8 @@ export default function App() {
 
     setCoachStep(null);
     setLessonId(null);
+    // (a new stage starts with no boss: the last fight's name and bar must not show for a frame: UI-7)
+    setBossInfo(null);
     setRunId((n) => n + 1);
     setHp(maxHearts());
     setMaxHp(maxHearts());
@@ -707,6 +718,7 @@ export default function App() {
     // the stage's picture sheets, loaded and decoded behind the menu (stagePreload.ts): what is still on its way gets a moment more,
     // so the first frames of play are not the browser decoding a 10 to 20 MB sheet (QA's 376 to 472 ms freezes as a stage began)
     const seq = ++launchSeq.current;
+    const launchAt = performance.now();
     // (the mode this run is played on: a change in the menu applies from the next stage, so this is the one its results are kept with)
     startRun(lvl.id);
     void readyToStart(lvl, canvasRef.current, inPlay).then(() => {
@@ -747,7 +759,9 @@ export default function App() {
             setActivePowerUp(curPowerUp ?? null);
             setPowerUpTimer(curPowerTimer ?? 0);
           },
-          onBossUpdate: (info) => setBossInfo(info),
+          // (when the guardian goes down the engine sends nothing more: its bar stays, empty, under its own name, instead of falling
+          // back to a full bar called "Stage boss": UI-7)
+          onBossUpdate: (info) => setBossInfo((prev) => info ?? (prev ? { ...prev, hp: 0, entering: false } : null)),
           onCinematic: (on) => setCinematic(on),
           onCoach: (st) => setCoachStep(st),
           onLesson: (id) => setLessonId(id),
@@ -833,9 +847,15 @@ export default function App() {
 
         engineRef.current?.stop();
         engineRef.current = engine;
-        engine.start();
-        // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
-        window.dispatchEvent(new Event(STAGE_LIVE_EVENT));
+        // the built stage's every sheet, loaded, decoded, drawn once and baked under the title card before the first frame of play
+        // (stageReady.ts: QA's freezes after 'hud-atlas', 'crumble', 'props2' and the creatures' sheets arrived mid-run)
+        const go = () => {
+          if (seq !== launchSeq.current || engineRef.current !== engine) return;
+          engine.start();
+          // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
+          window.dispatchEvent(new Event(STAGE_LIVE_EVENT));
+        };
+        void readyBuiltStage(lvl, engine, canvasRef.current, inPlay, launchAt + READY_MS).then(go, go);
       }, 20);
     });
   }, []);
@@ -1288,13 +1308,14 @@ export default function App() {
             distanceRatio={distanceRatio}
             score={score}
             onMenu={pauseGame}
-            bossHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hp ?? 1 : undefined}
-            bossMaxHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.maxHp ?? 1 : undefined}
-            bossName={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.name : undefined}
-            bossPhase={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.phase : undefined}
-            bossHits={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hits : undefined}
-            bossAccent={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.color : undefined}
-            bossEntering={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.entering : activeLevel.id === MEECA_STAGE_ID ? cinematic : undefined}
+            // (the boss bar only once the engine has said which guardian this is: UI-7)
+            bossHp={fight?.hp}
+            bossMaxHp={fight?.maxHp}
+            bossName={fight?.name}
+            bossPhase={fight?.phase}
+            bossHits={fight?.hits}
+            bossAccent={fight?.color}
+            bossEntering={activeLevel.objectiveType === 'boss_lair' ? fight?.entering : activeLevel.id === MEECA_STAGE_ID ? cinematic : undefined}
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}

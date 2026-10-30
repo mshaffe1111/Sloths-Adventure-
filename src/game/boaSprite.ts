@@ -16,6 +16,7 @@ import { BOA_FRAMES } from './boaAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { BOA_ANIM, BOA_ANIM_UP, BOA_ANIM_URL, BOA_SEQ } from './boaAnimData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 /** the boa's moving moments (2026-10-25): its stagger and its coiled breathing, made with the motion model from its own poses */
 const ANIM = makeCreatureAnim(BOA_ANIM_URL, BOA_ANIM, BOA_SEQ, BOA_ANIM_UP);
@@ -138,7 +139,7 @@ export function drawBoaSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
     ctx.fill();
   }
   ctx.scale(sx, sy);
-  if (!(clip && ANIM.draw(ctx, clip, K))) ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
+  if (!(clip && ANIM.draw(ctx, clip, K))) drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();
   return true;
 }
