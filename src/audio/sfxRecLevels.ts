@@ -51,7 +51,7 @@ export const TAKE_DB: Readonly<Record<string, readonly number[]>> = {
   pz_lever: [-5.1],
   pz_lift: [4.28],
   pz_pick: [-6.52],
-  pz_press: [-6.43],
+  pz_press: [-6.57],
   pz_reset: [-11.9],
   pz_shift: [-4.79],
   pz_solved: [-10.5],
