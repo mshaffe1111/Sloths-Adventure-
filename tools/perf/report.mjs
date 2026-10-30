@@ -249,6 +249,24 @@ if (S.v7 && S.today) {
   for (const { b, a } of rows.slice(0, 10)) L(`| \`${b.site}\` (${b.fn}) | ${f1(b.weight)}→${a ? f1(a.weight) : 'gone'} | ${f1(b.perFrame.drawImage)}→${a ? f1(a.perFrame.drawImage) : 0} | ${f1(b.perFrame.drawMpx)}→${a ? f1(a.perFrame.drawMpx) : 0} | ${f1(b.perFrame.clips)}→${a ? f1(a.perFrame.clips) : 0} |`);
   L();
 }
+if (S.today && S.ccrground) {
+  L('## 8. ccr+ground (the lead\'s "Ground painted once") against today');
+  L();
+  L('### Heavier than today (top 10)');
+  L();
+  for (const l of fmtDiff(diffTop('today', 'ccrground', 10), 'today', 'ccr+ground')) L(l);
+  L();
+  L('### Lighter than today (top 12)');
+  L();
+  const A = S.ccrground, B = S.today;
+  const rows = [];
+  for (const b of B.sites.values()) { const a = A.sites.get(b.key); const delta = b.weight - (a ? a.weight : 0); if (delta > 0.001) rows.push({ b, a, delta }); }
+  rows.sort((x, y) => y.delta - x.delta);
+  L('| site (today) | weight today→ccr | drawImage today→ccr | img Mpx today→ccr | clips today→ccr | gradients today→ccr |');
+  L('|---|---:|---:|---:|---:|---:|');
+  for (const { b, a } of rows.slice(0, 12)) L(`| \`${b.site}\` (${b.fn}) | ${f1(b.weight)}→${a ? f1(a.weight) : 'gone'} | ${f1(b.perFrame.drawImage)}→${a ? f1(a.perFrame.drawImage) : 0} | ${f1(b.perFrame.drawMpx)}→${a ? f1(a.perFrame.drawMpx) : 0} | ${f1(b.perFrame.clips)}→${a ? f1(a.perFrame.clips) : 0} | ${f1(b.perFrame.gradients)}→${a ? f1(a.perFrame.gradients) : 0} |`);
+  L();
+}
 fs.writeFileSync(outMd, lines.join('\n') + '\n');
 if (outJson) {
   const j = {};
