@@ -85,3 +85,13 @@ loads (it is preloaded on every stage).
 w4Play drawFallWater, drawVeil, drawPool's rect, the boulder and chime fallbacks, drawFrond, drawStandInNest, drawBlownOff, the Sovereign
 silhouette; bossArt shards squares, warnRing ellipse, code cocoon, drawWebShot; engine cat-eye dots, bush mounds; zoneArt mushrooms, web,
 tide water; calmWaterArt plain water; scenery leaf ellipses; life.ts motes and ash (only without a painted backdrop).
+
+## Clean-sweep batch (2026-10-29 late, stopped for the night at 11:00 PM ET)
+
+On hazard-anim, cut from ccr b730dced. Done and pushed, tsc clean: S1 (W2 river: painted deep water under the strip and over the logs,
+deepWaterArt.ts), S4 (dirty water: two chop variants with the first strip's outline, mirrored at random, ten painted debris pieces with
+varied spacing/size/flip, the painted murky deep replacing the flat #30312c band, also G5), S2 (W9 obsidian and W10 iron junk painted and
+harmless-looking, rubbleArt.ts; the code spikes deleted from envPlants). H1 was already done in round 2.
+NEXT STEP: the full test suite and vite build on this commit (stopped mid-run), then the before/after videos
+(tools/art/hazard/rec.mjs 5174/5173 <dir> before|after river,dirty8,rubble9,rubble10 5, the base server on ccr), then the Polish check.
+Not yet looked at in game: the rubble's size on the ground and the debris against the chop (review sheet clean-review.jpg only).
