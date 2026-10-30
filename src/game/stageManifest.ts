@@ -8,7 +8,8 @@
  *   foe:<name>    every creature it holds, the animals a ring drops in, the eagle over a watched stretch (sheetWarm.ts stageAnims)
  *   props2        bushes, trunk hollows, or a liana (it hangs from a painted bush): World 1's second sheet
  *   vine, rope    Pokey on a liana, on a shimmy rope (and the painted rope)
- *   boss:<w>      the world's guardian, or World 4's watcher (asked for by drawing a still of it off screen: stageReady.ts)
+ *   boss:<w>      the world's guardian, or World 4's watcher (asked for by drawing a still of it off screen: stageReady.ts), and
+ *                 for a guardian World 4's sheet (its rocks and stone debris)
  *   meeca-standard Meeca waiting to be rescued (the boss lairs and the rescue stages)
  *   meeca-night   her night poses, in a World 5 stage with puzzle rooms
  *   w2-props      a river (World 2's logs and pads, wherever a river runs)
@@ -46,10 +47,14 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (x.vine) out.add('vine');
   if (x.rope) out.add('rope');
   const w = st.config.worldIndex;
-  if (st.boss) out.add(`boss:${w}`);
+  if (st.boss) {
+    out.add(`boss:${w}`);
+    // (a boss's thrown rocks and the stone bursting off a pillar are World 4's painted pieces: bossArt.ts, 7-10 at 6 s)
+    out.add('w4-props');
+  }
   // (World 7's crumbling tiles, bank faces, temple walls and puzzle pieces: every stage but the guardian's lair, 7-4's slide too, whose
   // hall's temple walls came in 6 s into it)
-  else if (w === 7 && !st.config.secret) out.add('crumble');
+  if (!st.boss && w === 7 && !st.config.secret) out.add('crumble');
   // (World 4's watcher over a watched stretch is the Sky Sovereign herself, in her painted boss frames: engine.ts, 4-5 at 6 s)
   if (w === 4 && st.proto?.watch?.length) out.add('boss:4');
   if (st.daisyX !== undefined) out.add('meeca-standard');
