@@ -12,7 +12,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const [dir, outMd, outJson] = process.argv.slice(2);
-const BUILDS = ['v6', 'v7', 'today', 'ccrground'].filter((b) => fs.existsSync(path.join(dir, `${b}.json`)));
+// (PERF_BUILDS picks and orders the columns; PERF_DIFF="a:b,c:d" adds a heavier/lighter section for each pair)
+const BUILDS = (process.env.PERF_BUILDS || 'v6,v7,today,ccrground,ccrnow,merged').split(',').filter((b) => fs.existsSync(path.join(dir, `${b}.json`)));
 const data = Object.fromEntries(BUILDS.map((b) => [b, JSON.parse(fs.readFileSync(path.join(dir, `${b}.json`), 'utf8'))]));
 
 const MPX = 1e6;
@@ -249,23 +250,28 @@ if (S.v7 && S.today) {
   for (const { b, a } of rows.slice(0, 10)) L(`| \`${b.site}\` (${b.fn}) | ${f1(b.weight)}→${a ? f1(a.weight) : 'gone'} | ${f1(b.perFrame.drawImage)}→${a ? f1(a.perFrame.drawImage) : 0} | ${f1(b.perFrame.drawMpx)}→${a ? f1(a.perFrame.drawMpx) : 0} | ${f1(b.perFrame.clips)}→${a ? f1(a.perFrame.clips) : 0} |`);
   L();
 }
-if (S.today && S.ccrground) {
-  L('## 8. ccr+ground (the lead\'s "Ground painted once") against today');
+function pairSection(base, next, title) {
+  L(`## ${title}`);
   L();
-  L('### Heavier than today (top 10)');
+  L(`### Heavier in ${next} than ${base} (top 10)`);
   L();
-  for (const l of fmtDiff(diffTop('today', 'ccrground', 10), 'today', 'ccr+ground')) L(l);
+  for (const l of fmtDiff(diffTop(base, next, 10), base, next)) L(l);
   L();
-  L('### Lighter than today (top 12)');
+  L(`### Lighter in ${next} than ${base} (top 12)`);
   L();
-  const A = S.ccrground, B = S.today;
+  const A = S[next], B = S[base];
   const rows = [];
   for (const b of B.sites.values()) { const a = A.sites.get(b.key); const delta = b.weight - (a ? a.weight : 0); if (delta > 0.001) rows.push({ b, a, delta }); }
   rows.sort((x, y) => y.delta - x.delta);
-  L('| site (today) | weight today→ccr | drawImage today→ccr | img Mpx today→ccr | clips today→ccr | gradients today→ccr |');
+  L(`| site (${base}) | weight | drawImage | img Mpx | clips | gradients |`);
   L('|---|---:|---:|---:|---:|---:|');
   for (const { b, a } of rows.slice(0, 12)) L(`| \`${b.site}\` (${b.fn}) | ${f1(b.weight)}→${a ? f1(a.weight) : 'gone'} | ${f1(b.perFrame.drawImage)}→${a ? f1(a.perFrame.drawImage) : 0} | ${f1(b.perFrame.drawMpx)}→${a ? f1(a.perFrame.drawMpx) : 0} | ${f1(b.perFrame.clips)}→${a ? f1(a.perFrame.clips) : 0} | ${f1(b.perFrame.gradients)}→${a ? f1(a.perFrame.gradients) : 0} |`);
   L();
+}
+if (S.today && S.ccrground) pairSection('today', 'ccrground', '8. ccr+ground (the lead\'s "Ground painted once") against today');
+for (const pr of (process.env.PERF_DIFF || '').split(',').filter(Boolean)) {
+  const [a, b] = pr.split(':');
+  if (S[a] && S[b]) pairSection(a, b, `${b} against ${a}`);
 }
 fs.writeFileSync(outMd, lines.join('\n') + '\n');
 if (outJson) {
