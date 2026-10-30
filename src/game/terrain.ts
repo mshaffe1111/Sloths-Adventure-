@@ -1340,8 +1340,9 @@ export function renderWorldObjects(
   const bounceBottom = cam.y + cam.viewportHeight + 60;
 
   // mushrooms first so the ground can cover their stalks
-  const ordered = [...platforms].sort((a, b) => (a.type === 'bouncy' ? 0 : 1) - (b.type === 'bouncy' ? 0 : 1));
-  for (const p of ordered) {
+  // (two passes, bouncy then the rest, each in stage order: the same order a stable sort gave, without a sorted copy every frame)
+  for (let pass = 0; pass < 2; pass++) for (const p of platforms) {
+    if ((p.type === 'bouncy') !== (pass === 0)) continue;
     if (p.x + p.width < left || p.x > right || p.broken) continue;
     const r = rng(Math.abs(p.id) * 97 + 13);
     ctx.save();
