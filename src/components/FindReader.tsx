@@ -19,10 +19,16 @@ export const KeepsakePic: React.FC<{ icon: KeepsakeIcon; size?: number }> = ({ i
   return <img className="fr-item" src={url} alt="" style={{ width: size * 1.18, height: size }} />;
 };
 
+/** a paragraph of a note: ~~words~~ are crossed out, the way she wrote them and then thought better of it */
+const struck = (para: string): React.ReactNode => {
+  const parts = para.split(/~~(.+?)~~/);
+  return parts.length === 1 ? para : parts.map((s, i) => (i % 2 ? <s key={i} className="fr-struck">{s}</s> : s));
+};
+
 const PaperText: React.FC<{ text?: string }> = ({ text }) => (
   <>
     {(text ?? '').split('\n\n').map((para, i) => (
-      <p key={i}>{para}</p>
+      <p key={i}>{struck(para)}</p>
     ))}
   </>
 );

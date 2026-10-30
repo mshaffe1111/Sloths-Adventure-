@@ -10,6 +10,7 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { W3_FRAMES } from './w3PropsData.ts';
 import { drawKitArt, kitArtReady, kitSize } from './puzzleArt.ts';
+import { FONT_UI } from './fonts.ts';
 
 export type W3Piece = keyof typeof W3_FRAMES;
 
@@ -190,7 +191,7 @@ export function drawGlowworm(ctx: CanvasRenderingContext2D, x: number, hands: nu
     ctx.save();
     ctx.globalAlpha = Math.sin(u * Math.PI) * 0.8;
     ctx.fillStyle = '#ccfbf1';
-    ctx.font = `700 ${10 + u * 6}px Fredoka, sans-serif`;
+    ctx.font = `700 ${10 + u * 6}px ${FONT_UI}`;
     ctx.fillText('z', x + 14 + u * 10, hands + 12 - u * 22);
     ctx.restore();
   }
@@ -389,7 +390,7 @@ export function drawThornVine(
     ctx.save();
     ctx.globalAlpha = Math.sin(zu * Math.PI) * 0.8;
     ctx.fillStyle = '#d9f99d';
-    ctx.font = `700 ${11 + zu * 7}px Fredoka, sans-serif`;
+    ctx.font = `700 ${11 + zu * 7}px ${FONT_UI}`;
     ctx.fillText('z', v.x + 16 + zu * 12, v.bud - 30 - zu * 26);
     ctx.restore();
   }

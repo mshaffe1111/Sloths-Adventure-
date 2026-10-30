@@ -1,0 +1,133 @@
+{
+ "note": "the bosses' attacks by img2img from tools/art/hazard/bossstarts.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f6a29bbbef48b5d579e87269376e9701b004a3b/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "bosscols-s70-7",
+   "start": "start-bosscols.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game effects sheet of six tall boss attacks erupting straight up out of the ground, side view, in a row, each separate: a roaring geyser of molten lava with glowing gold spray at its top, a thicket of dark brown thorny bramble stems with hooked thorns, three jagged grey stone spikes, a cluster of glowing pale blue crystals, white spider silk strands rising from a web, a green scaly crocodile tail bursting upward. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "bosscols-s70-23",
+   "start": "start-bosscols.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game effects sheet of six tall boss attacks erupting straight up out of the ground, side view, in a row, each separate: a roaring geyser of molten lava with glowing gold spray at its top, a thicket of dark brown thorny bramble stems with hooked thorns, three jagged grey stone spikes, a cluster of glowing pale blue crystals, white spider silk strands rising from a web, a green scaly crocodile tail bursting upward. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "bosscols-s82-7",
+   "start": "start-bosscols.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game effects sheet of six tall boss attacks erupting straight up out of the ground, side view, in a row, each separate: a roaring geyser of molten lava with glowing gold spray at its top, a thicket of dark brown thorny bramble stems with hooked thorns, three jagged grey stone spikes, a cluster of glowing pale blue crystals, white spider silk strands rising from a web, a green scaly crocodile tail bursting upward. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.82,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "bosscols-s82-23",
+   "start": "start-bosscols.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game effects sheet of six tall boss attacks erupting straight up out of the ground, side view, in a row, each separate: a roaring geyser of molten lava with glowing gold spray at its top, a thicket of dark brown thorny bramble stems with hooked thorns, three jagged grey stone spikes, a cluster of glowing pale blue crystals, white spider silk strands rising from a web, a green scaly crocodile tail bursting upward. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.82,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "bossbits-s70-7",
+   "start": "start-bossbits.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of boss attack pieces, side view, each separate: a hanging grey stone stalactite spike, a small purple bat with wings spread, a thrown wooden club, a thorn dart, a glob of molten lava, a glob of brown mud, a puddle of lava, a puddle of mud, a slate-blue stalactite spike, a second bat, a second club, a second thorn dart, a glob of green venom, a puddle of green venom, a cluster of glowing embers, a grey rock. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "bossbits-s70-23",
+   "start": "start-bossbits.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of boss attack pieces, side view, each separate: a hanging grey stone stalactite spike, a small purple bat with wings spread, a thrown wooden club, a thorn dart, a glob of molten lava, a glob of brown mud, a puddle of lava, a puddle of mud, a slate-blue stalactite spike, a second bat, a second club, a second thorn dart, a glob of green venom, a puddle of green venom, a cluster of glowing embers, a grey rock. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "bossbits-s82-7",
+   "start": "start-bossbits.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of boss attack pieces, side view, each separate: a hanging grey stone stalactite spike, a small purple bat with wings spread, a thrown wooden club, a thorn dart, a glob of molten lava, a glob of brown mud, a puddle of lava, a puddle of mud, a slate-blue stalactite spike, a second bat, a second club, a second thorn dart, a glob of green venom, a puddle of green venom, a cluster of glowing embers, a grey rock. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.82,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "bossbits-s82-23",
+   "start": "start-bossbits.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of boss attack pieces, side view, each separate: a hanging grey stone stalactite spike, a small purple bat with wings spread, a thrown wooden club, a thorn dart, a glob of molten lava, a glob of brown mud, a puddle of lava, a puddle of mud, a slate-blue stalactite spike, a second bat, a second club, a second thorn dart, a glob of green venom, a puddle of green venom, a cluster of glowing embers, a grey rock. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.82,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "bossstrips-s70-7",
+   "start": "start-bossstrips.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game effects sheet of nine long horizontal strips stacked, side view, each separate: a roaring jet of fire, a thorny green vine whip, a glowing violet magic energy beam, a white spear-thrust streak, a wave of jagged grey rock spikes rising from the ground, a wave of molten lava spikes, a wave of brown thorns, a row of flames burning along the ground, a strip of bubbling molten lava. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1536,
+   "h": 1152
+  },
+  {
+   "name": "bossstrips-s70-23",
+   "start": "start-bossstrips.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game effects sheet of nine long horizontal strips stacked, side view, each separate: a roaring jet of fire, a thorny green vine whip, a glowing violet magic energy beam, a white spear-thrust streak, a wave of jagged grey rock spikes rising from the ground, a wave of molten lava spikes, a wave of brown thorns, a row of flames burning along the ground, a strip of bubbling molten lava. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1536,
+   "h": 1152
+  },
+  {
+   "name": "bossstrips-s82-7",
+   "start": "start-bossstrips.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game effects sheet of nine long horizontal strips stacked, side view, each separate: a roaring jet of fire, a thorny green vine whip, a glowing violet magic energy beam, a white spear-thrust streak, a wave of jagged grey rock spikes rising from the ground, a wave of molten lava spikes, a wave of brown thorns, a row of flames burning along the ground, a strip of bubbling molten lava. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.82,
+   "seed": 7,
+   "w": 1536,
+   "h": 1152
+  },
+  {
+   "name": "bossstrips-s82-23",
+   "start": "start-bossstrips.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game effects sheet of nine long horizontal strips stacked, side view, each separate: a roaring jet of fire, a thorny green vine whip, a glowing violet magic energy beam, a white spear-thrust streak, a wave of jagged grey rock spikes rising from the ground, a wave of molten lava spikes, a wave of brown thorns, a row of flames burning along the ground, a strip of bubbling molten lava. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, seen from above, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, sky, scenery, ground plane, cast shadow, people, sloth",
+   "strength": 0.82,
+   "seed": 23,
+   "w": 1536,
+   "h": 1152
+  }
+ ]
+}

@@ -1,16 +1,18 @@
-import { sound } from '../../game/audio.ts';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { sound } from '../../game/audio.ts';
 import type { LevelConfig } from '../../game/types.ts';
 import type { GameEngine } from '../../game/engine.ts';
 import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
-import { lessonDotLine, lessonOfLine, lessonStale, type LessonId } from '../../game/lessons.ts';
+import { lessonDotLine, lessonOfLine, lessonSaidBy, lessonStale, type LessonId } from '../../game/lessons.ts';
+import { DotSay } from '../../game/dotSay.ts';
+import { PUZZLE_STEPS } from '../../game/dotTips.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
-import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
-import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
-import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, knownMoveTip, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips } from '../../game/dotGuideHelp.ts';
+import { countedText, GuideQueue, isUrgent, noteSaid, roomMaySay, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
+import { MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../game/dotGuideWatch.ts';
+import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips, type DotHelp } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
-import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
+import { emptyGuideView, toScreenX, toScreenY, type GuidePlatform, type GuideView } from '../../game/dotGuideView.ts';
 import {
   aheadRect,
   bubbleMaxW,
@@ -39,7 +41,7 @@ import { findForStage, loadFinds } from '../../game/finds.ts';
 import { DOT_ATLAS_SIZE, DOT_ATLAS_URL, DOT_FRAMES, flyFrame, warmDot } from '../../game/dotSprite.ts';
 import { COACH_TEXT } from '../CoachOverlay.tsx';
 import { fadeCovered, measurePieces, type FadePiece } from '../hud/seeThrough.ts';
-import { DOT_PERCH_FRAMES, DOT_PERCH_URL, TAIL_H, TAIL_W, drawBubble, perchArtReady, perchStyle, pieceStyle, ringBox, setPiece, useHudArt, hudArtReady, type PerchPose } from '../hud/painted.tsx';
+import { DOT_PERCH_FRAMES, DOT_PERCH_URL, TAIL_H, TAIL_W, drawBubble, perchArtReady, perchStyle, pieceStyle, useHudArt, type PerchPose } from '../hud/painted.tsx';
 import './dotGuide.css';
 
 warmDot();
@@ -47,13 +49,26 @@ warmDot();
 /**
  * Dot's guide (Matt's pick C, 2026-10-26). The one teaching surface in play: every line (stage tips, the
  * lessons, the first-stage coach, the goal, story asides, journal notes, struggle help) goes through one queue (game/dotGuide.ts), one at
- * a time. Dot flies in on a sparkle trail and perches on the scenery near the thing she is teaching, with a glowing ring and an arrow on
+ * a time. Dot flies in on a sparkle trail and perches on the scenery beside the thing she is teaching (no ring, no arrow: Matt, 2026-10-29), on
  * it; her parchment bubble sits beside her, on screen and clear of the HUD, the thumbs, the animals and Pokey. For the controls, or
  * with no perch in view, she hovers beside Pokey on the empty side behind him.
  *
  * It takes no touches (a tap is a punch): lines leave by themselves. It reads the stage each frame through engine.guideView (no
- * allocations), moves Dot, the ring and the arrow by writing their transforms directly, and only re-renders when the line changes.
+ * allocations), moves Dot and her bubble by writing their transforms directly, and only re-renders when
+ * the line changes.
  */
+/**
+ * The engine's lines as the app hands them over: the newest, and the last few with their numbers. Two lines can come in one frame (a
+ * room's first line and a stage tip passed on the same step), and the app's state keeps only the last, so the few before it ride along
+ * and none is lost (1-6: the first seesaw room's line vanished that way).
+ */
+export interface GuideFeed {
+  text: string;
+  ms: number;
+  n: number;
+  passed?: boolean;
+  recent?: ReadonlyArray<{ text: string; ms: number; n: number; passed?: boolean }>;
+}
 export interface DotGuideProps {
   level: LevelConfig;
   engine: () => GameEngine | null;
@@ -61,7 +76,7 @@ export interface DotGuideProps {
   playing: boolean;
   ratio: number;
   hp: number;
-  guide?: { text: string; ms: number; n: number; passed?: boolean } | null;
+  guide?: GuideFeed | null;
   coachStep?: CoachStep;
   coachStyle?: ControlStyle;
   lessonId?: LessonId | null;
@@ -92,12 +107,18 @@ function frameStyles(dotW: number): Record<string, FrameStyle> {
 
 const FLY_MS = 600;
 const LEAVE_AFTER_MS = 1600;
+/** with another line waiting, she stays this long before flying off */
+const LINGER_MS = 4000;
+/** a bubble fades out over this long when its line ends */
+const BUBBLE_FADE_MS = 300;
 const SPARKS = 7;
 
 /** perch: on the scenery by the thing; hover: beside Pokey; pokey: his own thought (no Dot); corner: a boss fight, out of the arena's middle */
 type Mode = 'perch' | 'hover' | 'pokey' | 'corner';
 interface Plan {
   mode: Mode;
+  /** perched on the thing itself (a log): she rides it, at this far from its left end */
+  on?: { plat: GuidePlatform; dx: number };
   /** perch: her feet in the world; hover: her middle on screen */
   wx: number;
   wy: number;
@@ -107,6 +128,10 @@ interface Plan {
   topic?: TopicId;
   /** the bubble, relative to her (perch) or on screen (hover, Pokey's own thought) */
   bub: BubblePlace | null;
+  /** Pokey's own thought: whether he was on a vine, a liana or a rope when it was placed (it moves once when he grabs or lets go) */
+  bubHeld?: boolean;
+  /** when Pokey's thought was last placed (performance.now ms): swinging, he may carry himself under it, and it moves at most this often */
+  bubAt?: number;
   bubDx: number;
   bubDy: number;
   placedAt: number;
@@ -132,6 +157,24 @@ class GuideRun {
   lastT = -1;
   help = dotHelp();
   seen = seenSkills();
+  /** this stage was cleared before on this save (a replay) */
+  replay = false;
+  /** when her bubble last moved off Pokey (performance.now ms) */
+  awayAt = -1e9;
+  /** the bubble of the line that just ended fades until then (performance.now ms) */
+  fadeUntil = 0;
+  /** how long he has been in the air (ms of play), not holding on */
+  airMs = 0;
+  /** the camera was showing something last frame */
+  wasReveal = false;
+  /** he was in a puzzle room last frame */
+  wasInRoom = false;
+  /** inside a puzzle room, what waits (made once: no new function each frame) */
+  hushRoom = (l: GuideLine): boolean => !roomMaySay(l);
+  /** while the camera shows something (a reveal), only the urgent lines: the story aside waits until after it (the lead, 2026-10-29) */
+  hushReveal = (l: GuideLine): boolean => !isUrgent(l);
+  /** what the setting lets her say, and what counts as heard (dotSay.ts) */
+  dotSay: DotSay;
   storyOn = waysideEnabled();
   applies: boolean;
   dot: boolean;
@@ -197,21 +240,28 @@ class GuideRun {
     this.world = level.worldIndex;
     this.mini = level.miniIndex;
     this.stageId = level.id;
+    this.replay = stageCleared(level.id);
     this.applies = waysideApplies(level);
     this.dot = dotPresent(this.world, this.mini);
     this.L = wasShown(this.world, this.mini, 'L');
     this.H = wasShown(this.world, this.mini, 'H');
     this.F = wasShown(this.world, this.mini, 'F');
     this.lastGuide = guideN;
-    this.queue = new GuideQueue(CALM_WORLDS.has(this.world) && !/-D$/.test(level.id));
+    // (calm in every world: World 5 had no calm rules, DOT-8; not Dot's own flight)
+    this.queue = new GuideQueue(!/-D$/.test(level.id));
+    this.dotSay = new DotSay(this.queue, this.help, this.seen, this.movesBefore, this.storyOn);
+  }
+
+  /** the setting (the menu, or Skip tips) */
+  setHelp(h: DotHelp): void {
+    this.help = h;
+    this.dotSay.setHelp(h);
   }
 
   /** queue a line if Dot's help lets it through */
   say(l: GuideLine): void {
-    if (!helpAllows(l, this.help, this.seen, this.storyOn)) return;
-    // (toned down: not a stage tip for a move already done in an earlier stage)
-    if (this.queue.calm && knownMoveTip(l, this.movesBefore)) return;
-    this.queue.push(l, this.clock);
+    this.dotSay.storyOn = this.storyOn;
+    this.dotSay.say(l, this.clock);
   }
 
   sayHelp(h: StruggleHelp, topic: TopicId | undefined): void {
@@ -225,7 +275,27 @@ class GuideRun {
   engineLine(text: string, ms: number): void {
     const v = this.view;
     const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms });
-    if (l) this.say(l);
+    if (!l) return;
+    // (a replay of a stage already cleared, its goal met in full: no "Still N to collect!", DOT-17)
+    if (l.counted && this.replay) return;
+    // (a puzzle's first line: its next steps come on struggle there, whether or not the setting says this one, dotTips.ts)
+    const steps = PUZZLE_STEPS[l.key.slice('engine:'.length)];
+    if (steps) this.puzzle = { key: l.key, x: v.px, y: v.py, n: 0, nudge: steps.nudge, move: steps.move, topic: steps.topic };
+    this.say(l);
+  }
+
+  /** the puzzle he is at (a stage-hint puzzle: 4-3's pool), and how far her help there has gone */
+  puzzle: { key: string; x: number; y: number; n: number; nudge: string; move?: string; topic?: TopicId } | null = null;
+
+  /** struggle at the puzzle: the nudge, then (Help only) the move */
+  puzzleHelp(): boolean {
+    const pz = this.puzzle;
+    if (!pz || pz.n >= 2) return false;
+    pz.n++;
+    const text = pz.n === 1 ? pz.nudge : pz.move;
+    if (!text) return true;
+    this.say({ key: `${pz.key}:${pz.n === 1 ? 'nudge' : 'move'}`, text, kind: 'struggle', who: this.dot ? 'Dot' : 'Pokey', topic: pz.topic, step: pz.n === 1 ? 'nudge' : 'move', source: 'struggle' });
+    return true;
   }
 
   /** the engine says he is past the spot an engine line was about (StageHint.passX): that line goes, done or not */
@@ -236,8 +306,60 @@ class GuideRun {
 }
 
 const storyKey = (f: WayFlag) => `story:${f}`;
-/** the worlds where Dot is toned down (Matt, 2026-10-28) */
-const CALM_WORLDS = new Set([1, 2, 3, 4]);
+/** cleared on this save (`sloth_lvl_<id>` holds { completed: true }) */
+function stageCleared(id: string): boolean {
+  try {
+    const raw = localStorage.getItem(`sloth_lvl_${id}`);
+    return !!raw && !!JSON.parse(raw)?.completed;
+  } catch {
+    return false;
+  }
+}
+/** the thing she is pointing at, when it is a platform she can sit on (a log he pushes, or one floating in a pool) */
+function thingUnder(v: GuideView, t: Target): GuidePlatform | null {
+  for (const p of v.platforms) if ((p.push || p.art === 'poolLog') && !p.broken && t.x >= p.x && t.x <= p.x + p.width && Math.abs(t.y - p.y) < 60) return p;
+  return null;
+}
+
+/** room kept clear round Pokey when her bubble is placed (px): it sat a hair over his head, upright at 2-1's river (the rework's
+ *  Polish check); "on him" for moving it away is still his own outline (pokeyRect 4) */
+const POKEY_ROOM = 24;
+
+/** the half of the screen away from Pokey (sideways: the other side; upright: the other end), within the safe area */
+function awayHalf(v: GuideView, safe: SafeArea, pr: Rect): SafeArea {
+  const r = { ...safe.rect };
+  const cx = (pr.x0 + pr.x1) / 2;
+  const cy = (pr.y0 + pr.y1) / 2;
+  if (v.cssW >= v.cssH) {
+    if (cx < v.cssW / 2) r.x0 = Math.max(r.x0, v.cssW / 2);
+    else r.x1 = Math.min(r.x1, v.cssW / 2);
+  } else if (cy > v.cssH / 2) r.y1 = Math.min(r.y1, v.cssH / 2);
+  else r.y0 = Math.max(r.y0, v.cssH / 2);
+  return { rect: r, keepOut: safe.keepOut };
+}
+
+/** a line where she points at the thing after struggle (she goes right by it; nothing is drawn on it) */
+const pointing = (l: GuideLine) => l.kind === 'struggle' || l.step === 'nudge' || l.step === 'move';
+/** a struggle within this far of a puzzle's first line is struggle at the puzzle (px) */
+const PUZZLE_NEAR = 900;
+
+const nearPushLog = (v: GuideView, x: number) => v.platforms.some((p) => p.push && Math.abs(p.x + p.width / 2 - x) < 500);
+
+/** what got him, for the help after a second death in one spot (DOT-10) */
+function deathCause(v: GuideView, at: { x: number; y: number; foe: boolean }, fell: boolean): DeathCause {
+  // (what the engine says got him, when it says: Polish A2's GuideView.lostTo, set in loseLife)
+  const lost = (v as unknown as { lostTo?: string }).lostTo;
+  if (lost === 'water' && !nearPushLog(v, at.x)) return 'water';
+  if (lost === 'hurt') return at.foe ? 'foe' : 'other';
+  if (at.foe && !fell) return 'foe';
+  if (!fell) return 'other';
+  // (by a log he was to push: the log first, where Easy players lost the most lives)
+  if (nearPushLog(v, at.x)) return 'pushLog';
+  for (const p of v.platforms) if (p.type === 'fragile' && Math.abs(p.x + p.width / 2 - at.x) < 200) return 'crumble';
+  // (World 2's rivers: a missed log)
+  if (v.stageId.startsWith('2-')) return 'water';
+  return 'fall';
+}
 /** a move tip about one of these is over once none of them is in view (dotGuide.ts CALM.goneMs) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 const MOVE_IDS: MoveId[] = ['run', 'jump', 'double', 'grab', 'climb', 'leap', 'glide', 'punch', 'kick', 'crouch', 'push', 'bounce'];
@@ -260,23 +382,12 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   const flipRef = useRef<HTMLDivElement>(null);
   const sprRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sparkRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const ringRef = useRef<SVGGElement>(null);
-  const ringA = useRef<SVGCircleElement>(null);
-  const ringB = useRef<SVGCircleElement>(null);
-  const arrowG = useRef<SVGGElement>(null);
-  const arrowA = useRef<SVGPathElement>(null);
-  const arrowB = useRef<SVGPathElement>(null);
   const bubRef = useRef<HTMLDivElement>(null);
-  // the painted pieces (hud/painted.tsx), once their sheet has loaded: the 9-slice bubble and its tail, the teal ring and arrow, and
-  // Dot's perched poses. The drawn stand-ins (the CSS bubble, the SVG ring, her old perch frame) until then.
+  // the painted pieces (hud/painted.tsx), once their sheet has loaded: the 9-slice bubble and its tail, and Dot's perched poses. The
+  // drawn stand-ins (the CSS bubble, her old perch frame) until then.
   const art = useHudArt();
   const bubArt = useRef<HTMLCanvasElement>(null);
   const tailRef = useRef<HTMLSpanElement>(null);
-  const pRing = useRef<HTMLSpanElement>(null);
-  const pRingA = useRef<HTMLSpanElement>(null);
-  const pRingB = useRef<HTMLSpanElement>(null);
-  const pArrow = useRef<HTMLSpanElement>(null);
-  const pArrowIn = useRef<HTMLSpanElement>(null);
   const perchRef = useRef<HTMLDivElement>(null);
   const toastRef = useRef<HTMLDivElement>(null);
   const toastArt = useRef<HTMLCanvasElement>(null);
@@ -314,7 +425,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       return;
     }
     recorder.event('skipTips', `${(shownMs / 1000).toFixed(1)}s ${show?.line.key ?? ''}`);
-    run.help = skipTips();
+    run.setHelp(skipTips());
     run.skipN = -1;
     // (what Quiet would not have said goes too; the locked-exit lines stay)
     run.queue.clear((l) => !helpAllows(l, 'quiet', run.seen, run.storyOn), run.clock, true);
@@ -334,25 +445,25 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   // a line from the engine (a stage tip, the goal, the sealed door, a warning); an empty one says the moment has passed
   useEffect(() => {
     if (!guide || guide.n <= run.lastGuide) return;
-    run.lastGuide = guide.n;
-    // (a move tip about a spot he is now past: it goes, up or waiting, done or not)
-    if (guide.passed) {
-      run.passedLine(guide.text);
-      return;
-    }
-    if (!guide.text) {
+    // (every line since the last one seen, in order: two in one frame are both said)
+    for (const g of guide.recent ?? [guide]) {
+      if (g.n <= run.lastGuide) continue;
+      run.lastGuide = g.n;
+      // (a move tip about a spot he is now past: it goes, up or waiting, done or not)
+      if (g.passed) run.passedLine(g.text);
       // (in a boss fight every line of hers belongs to an attack: its end takes it down)
-      run.queue.clear((l) => l.source === 'engine' && (l.kind === 'danger' || run.view.boss), run.clock);
-      return;
+      else if (!g.text) run.queue.clear((l) => l.source === 'engine' && (l.kind === 'danger' || run.view.boss), run.clock);
+      else run.engineLine(g.text, g.ms);
     }
-    run.engineLine(guide.text, guide.ms);
+    run.lastGuide = guide.n;
   }, [guide?.n]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // a first-time lesson: one of Dot's lines (the engine did not stop for it)
+  // a first-time lesson: one of Dot's lines, or Pokey's while she is away (the engine did not stop for it)
   useEffect(() => {
     // (already on the vine or the trunk: the lesson starts after its "grab it" step)
     const l = lessonId ? lessonDotLine(lessonId, undefined, run.view.swinging || run.view.climbing || run.view.hanging) : undefined;
-    if (l) run.say(l);
+    // (Dot's while she is with him; his own thought while she is away, World 7 above all)
+    if (l) run.say(lessonSaidBy(l, run.dot));
   }, [lessonId, run]);
 
   // the first-stage coach: each step is a line that stays until its move is done; a step that moves on takes its line down
@@ -418,8 +529,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     let flip = 0;
     let wings = false;
     let dotOn = false;
-    let ringOn = false;
-    let arrowOn = false;
     let bubIn = false;
     let bubOut = false;
     let styles: Record<string, FrameStyle> | null = null;
@@ -427,13 +536,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     let off = true;
     const v = run.view;
     // the painted pieces: what is on, and what was last written (so a frame writes only what changed)
-    let pRingOn = false;
-    let pArrowOn = false;
     let perchOn = false;
-    let ringD = 0;
-    let arrowW = 0;
-    let arrowH = 0;
-    let arrowSet = false;
     let perchPose = '';
     let perchK = 0;
     let tailL = NaN;
@@ -529,11 +632,24 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         return p;
       }
       let perch: Perch | null = null;
-      if (target && l.topic !== 'controls') perch = choosePerch(v, target, safe);
+      // pointing after struggle: she perches on the thing itself when it is something to stand on (the log), at its far end from him
+      const on = target && pointing(l) ? thingUnder(v, target) : null;
+      if (on) {
+        const dx = v.px < on.x + on.width / 2 ? on.width - 26 : 26;
+        p.on = { plat: on, dx };
+        perch = { x: on.x + dx, y: on.y };
+      } else if (target && l.topic !== 'controls') perch = choosePerch(v, target, safe);
       if (perch) {
         p.mode = 'perch';
         p.wx = perch.x;
         p.wy = perch.y;
+      } else if (target && l.topic !== 'controls' && pointing(l)) {
+        // no perch by it: she hovers just above the thing itself, a little to the side (she is the pointer: no ring, no arrow)
+        const tx = toScreenX(v, target.x);
+        const ty = toScreenY(v, target.y);
+        const side = tx > v.cssW / 2 ? -1 : 1;
+        p.sx = Math.max(safe.rect.x0 + 30, Math.min(safe.rect.x1 - 30, tx + side * 46));
+        p.sy = Math.max(safe.rect.y0 + 40, Math.min(safe.rect.y1 - 30, ty - 56));
       } else {
         const h = hoverSpot(v);
         p.sx = h.x;
@@ -545,6 +661,11 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     /** her spot on screen now (a perch moves with the scenery) */
     const spotNow = (p: Plan, out: { x: number; y: number }) => {
       if (p.mode === 'perch') {
+        // (on the thing itself: it may move, a log being pushed, and she rides it)
+        if (p.on) {
+          p.wx = p.on.plat.x + p.on.dx;
+          p.wy = p.on.plat.y;
+        }
         out.x = toScreenX(v, p.wx);
         out.y = toScreenY(v, p.wy);
       } else {
@@ -558,13 +679,13 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     /** what her bubble must cover least of all: Pokey, and a boss's open weak spot with its NOW! marker */
     const hardNow = (p?: Plan) => {
       run.hard.length = 0;
-      run.hard.push(pokeyRect(v, 4));
+      run.hard.push(pokeyRect(v, POKEY_ROOM));
       safeNow();
       for (const k of stageKo) run.hard.push(k);
       const w = weakSpotRect(v);
       if (w) run.hard.push(w);
-      // the way forward (the platform tops ahead and the next landing, QA v189: it sat along a pillar's top in 4-2) and her own ring
-      // and the thing it is on
+      // the way forward (the platform tops ahead and the next landing, QA v189: it sat along a pillar's top in 4-2) and the thing she
+      // points at
       landingRects(v, run.hard);
       const t = p?.target;
       if (t) {
@@ -586,16 +707,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       return a;
     };
 
-    /** the bubble is up: Dot chirps, once per line (SN-7) */
-    const bubbleUp = () => {
-      const s = run.show;
-      if (!s) return;
-      if (s.line.who === 'Dot' && run.chirpN !== s.n) {
-        run.chirpN = s.n;
-        sound.dotChirp();
-      }
-    };
-
     /** a boss fight: the corner band (and her spot beside it) */
     const placeCorner = (p: Plan) => {
       hardNow();
@@ -604,7 +715,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.sx = c.dot.x;
       p.sy = c.dot.y;
       p.placedAt = run.clock;
-      bubbleUp();
     };
 
     const placeBub = (p: Plan) => {
@@ -626,7 +736,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       const order = p.mode === 'perch' ? (['above', 'left', 'right', 'below'] as const) : hoverOrder(v);
       hardNow(p);
       // (Pokey himself, never under it while anywhere else is free: QA v200 upright)
-      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18, pokeyRect(v, 4));
+      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18, pokeyRect(v, POKEY_ROOM));
       if (p.mode === 'perch' && (p.bub.cost ?? 0) > 0) {
         // no room for her bubble beside this perch without covering Pokey, an animal or the HUD: she hovers beside him instead
         const h = hoverSpot(v);
@@ -646,7 +756,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       p.bubDy = p.bub.y - spot.y;
       p.ko = koCover(p.bub.x, p.bub.y);
       p.placedAt = run.clock;
-      bubbleUp();
     };
 
     const startLine = (s: Showing) => {
@@ -688,7 +797,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (off) {
         if (rootRef.current) delete rootRef.current.dataset.off;
         // (back from the menu: Dot's help or the story switch may have changed there)
-        run.help = dotHelp();
+        run.setHelp(dotHelp());
         run.storyOn = waysideEnabled();
       }
       off = false;
@@ -705,9 +814,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         // (her painted perched poses are at twice her flight sheet's scale: drawn at half, she is the same size sitting as flying)
         perchK = (dotW / 128) * 0.5;
         perchPose = '';
-        arrowW = dotW < 52 ? 22 : 26;
-        arrowH = (arrowW * 120) / 96;
-        arrowSet = false;
       }
 
       // the guide's clock: milliseconds of play (it stands still while paused, and holds while he is hurt)
@@ -722,8 +828,27 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       // the queue
       // (no line starts while the stage-start goal card is up: the two share the top-centre lane, QA v189)
       const cardUp = document.documentElement.dataset.hudCard === '1';
-      const danger = !v.flight && (inDanger(v) || v.boss || v.chase);
-      run.queue.tick(run.clock, { danger, hold: cardUp, moveCount: run.countMove, swinging: run.view.swinging, gone: run.gone, stale: run.stale });
+      // (and not mid-jump: a line that can wait waits until he is down, or has been in the air under 0.3 s, DOT-17)
+      const holding = v.climbing || v.swinging || v.hanging || v.gliding;
+      run.airMs = v.grounded || holding ? 0 : run.airMs + dt;
+      const danger = !v.flight && (inDanger(v) || v.boss || v.chase || run.airMs > 300);
+      // (in a puzzle room: the room's lines win, and no chatter while he thinks; walking in, chatter up for its minimum time goes)
+      const inRoom = v.kit.length > 0;
+      if (inRoom && !run.wasInRoom) {
+        run.queue.dropWaiting((l) => !roomMaySay(l) && l.kind !== 'story');
+        run.queue.clear((l) => !roomMaySay(l), run.clock);
+      }
+      run.wasInRoom = inRoom;
+      // (a reveal begins with a story aside up: it steps out of the way, and comes back after)
+      if (v.reveal && !run.wasReveal && run.queue.cur?.line.kind === 'story') {
+        const l = run.queue.cur.line;
+        run.queue.clear((q) => q.key === l.key, run.clock, true);
+        run.queue.push(l, run.clock);
+      }
+      run.wasReveal = v.reveal;
+      run.queue.tick(run.clock, { danger, hold: cardUp, moveCount: run.countMove, swinging: run.view.swinging, gone: run.gone, stale: run.stale, hush: v.reveal ? run.hushReveal : inRoom ? run.hushRoom : undefined });
+      // (a line up its minimum time is heard: its tip, its lesson and its thing are kept, DOT-1)
+      run.dotSay.keep(run.clock);
       // (the moves he has done, kept for later stages)
       if (run.queue.calm && run.movesMarked.size < MOVE_IDS.length) {
         for (const m of MOVE_IDS) if (!run.movesMarked.has(m) && run.moves.count(m) > 0) {
@@ -735,7 +860,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         if (ev.type === 'start') {
           noteSaid(ev.show.line);
           // her very first tip on this phone carries the Skip tips button (once per device)
-          if (!v.flight && offersSkip(ev.show.line, run.help, run.seen)) {
+          if (!v.flight && offersSkip(ev.show.line, run.help, run.stageId)) {
             markSkipOffered();
             run.skipN = ev.show.n;
           }
@@ -753,7 +878,10 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           if (run.show === ev.show) {
             run.show = null;
             run.endedAt = run.clock;
-            setShow(null);
+            // (its bubble fades out over 0.3 s, a move tip's too, rather than vanishing: DOT-17; a new line replaces it at once)
+            const n = ev.show.n;
+            run.fadeUntil = now + BUBBLE_FADE_MS;
+            window.setTimeout(() => setShow((s) => (s && s.n === n ? null : s)), BUBBLE_FADE_MS);
           }
         }
       }
@@ -768,7 +896,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
 
       // Dot's flight
       const p = run.plan;
-      if (!cur && run.state === 'there' && run.clock - run.endedAt > LEAVE_AFTER_MS) {
+      // (she stays on her perch a little longer when another line is waiting: not away and back again, DOT-17)
+      if (!cur && run.state === 'there' && run.clock - run.endedAt > (run.queue.size > 0 ? LINGER_MS : LEAVE_AFTER_MS)) {
         run.state = 'leaving';
         run.flyT0 = now;
         run.fromX = run.dsx;
@@ -825,7 +954,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
             const b = p.bub;
             const bx = b ? (p.mode === 'perch' ? spot.x + p.bubDx : b.x) : 0;
             const by = b ? (p.mode === 'perch' ? spot.y + p.bubDy : b.y) : 0;
-            // (Pokey, the open weak spot, the way ahead, her ring: whatever has come under it since it was placed)
+            // (Pokey, the open weak spot, the way ahead, the thing she points at: whatever has come under it since it was placed)
             let covered = false;
             if (b) {
               const ty = by - BUBBLE_TAG_H;
@@ -934,6 +1063,18 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (p?.mode === 'pokey' && cur && !p.bub && run.measuredN === cur.n && v.flight) {
         p.bub = { x: Math.max(16, (v.cssW - run.bw) / 2), y: p.sy, tail: 'b', at: 0 };
       }
+      const held = !!(v.climbing || v.swinging || v.hanging);
+      // (on a liana he swings under a bubble placed when he grabbed: it moves off him, now and then, never every frame)
+      const onHim = (b: BubblePlace) => {
+        const r = pokeyRect(v, 0);
+        return b.x < r.x1 && b.x + run.bw > r.x0 && b.y - BUBBLE_TAG_H < r.y1 && b.y + run.bh > r.y0;
+      };
+      if (p?.mode === 'pokey' && p.bub && !v.flight && (p.bubHeld !== held || (held && onHim(p.bub) && now - (p.bubAt ?? 0) > 700))) {
+        const r = pokeyRect(v, 0);
+        p.sx = (r.x0 + r.x1) / 2;
+        p.sy = r.y0 + 10;
+        p.bub = null;
+      }
       if (p?.mode === 'pokey' && cur && !p.bub && run.measuredN === cur.n) {
         const safe = safeNow();
         const rects = dangerRects(v, run.rects);
@@ -941,7 +1082,14 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         landingRects(v, rects);
         popupRects(v, rects);
         hardNow();
-        p.bub = placeBubble(p.sx, p.sy, run.bw, run.bh, safe, rects, ['above', v.facing > 0 ? 'left' : 'right', 'below'], 26, run.hard, 26, pokeyRect(v, 4));
+        // (on a vine, a liana or a rope what he needs to see is above him: his thought goes under him first, World 7's climbs above all)
+        const side = v.facing > 0 ? 'left' : 'right';
+        const order: Parameters<typeof placeBubble>[6] = held ? ['below', side, 'above'] : ['above', side, 'below'];
+        // (held, the bubble hangs from his feet: measured from his head, every spot under him lies on him)
+        const ay = held ? pokeyRect(v, 0).y1 - 10 : p.sy;
+        p.bub = placeBubble(p.sx, ay, run.bw, run.bh, safe, rects, order, 26, run.hard, 26, pokeyRect(v, POKEY_ROOM));
+        p.bubHeld = held;
+        p.bubAt = now;
       }
       if (bub && cur && p?.bub && there && run.measuredN === cur.n) {
         let bx = p.mode === 'perch' ? run.dsx + p.bubDx : p.bub.x;
@@ -949,10 +1097,31 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const safe = safeNow().rect;
         bx = Math.max(safe.x0, Math.min(safe.x1 - run.bw, bx));
         by = Math.max(safe.y0, Math.min(safe.y1 - run.bh, by));
+        // never on Pokey (the lead, 2026-10-29: a story box sat on him at 6-8's crown): if he has come under it, or the camera has
+        // carried him there, it moves to the half of the screen away from him (at most twice a second)
+        const pr = pokeyRect(v, 4);
+        if (bx < pr.x1 && bx + run.bw > pr.x0 && by - BUBBLE_TAG_H < pr.y1 && by + run.bh > pr.y0 && now - run.awayAt > 500) {
+          run.awayAt = now;
+          const far = awayHalf(v, safeNow(), pr);
+          const nb = placeBubble((far.rect.x0 + far.rect.x1) / 2, (far.rect.y0 + far.rect.y1) / 2, run.bw, run.bh, far, [], ['above', 'below', 'left', 'right'], 0, [pr], 0, pr);
+          bx = nb.x;
+          by = nb.y;
+          if (p.mode === 'perch') {
+            p.bubDx = bx - run.dsx;
+            p.bubDy = by - run.dsy;
+          } else p.bub = { ...nb };
+        }
         bub.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0)`;
         run.lastBx = bx;
         run.lastBy = by;
         bubIn = toggle(bub, 'in', true, bubIn);
+        // (its reading time counts from now, not from when it left the queue: DOT-7)
+        run.queue.onScreen(run.clock);
+        // and Dot chirps as her bubble opens, once per line (SN-7, Polish A2's sound)
+        if (cur.line.who === 'Dot' && run.chirpN !== cur.n) {
+          run.chirpN = cur.n;
+          sound.dotChirp();
+        }
         // an info line stays fully readable until its last 0.3 s
         const left = cur.line.move ? Infinity : showFor(cur.line) - (run.clock - cur.startedAt);
         bubOut = toggle(bub, 'out', left < 300, bubOut);
@@ -1002,104 +1171,15 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           }
           tail.style.display = p.mode === 'pokey' ? 'none' : '';
         }
+      } else if (bub && bubIn && !cur && now < run.fadeUntil) {
+        bubOut = toggle(bub, 'out', true, bubOut);
       } else {
         bubIn = toggle(bub, 'in', false, bubIn);
         bubOut = toggle(bub, 'out', false, bubOut);
       }
 
-      // the ring and the arrow on the thing she teaches
-      const tgt0 = cur && run.state === 'there' && p?.target ? p.target : null;
-      const tsx = tgt0 ? toScreenX(v, tgt0.x) : 0;
-      const tsy = tgt0 ? toScreenY(v, tgt0.y) : 0;
-      const tgt = tgt0 && tsx > -10 && tsx < v.cssW + 10 && tsy > -10 && tsy < v.cssH + 10 ? tgt0 : null;
-      const showRing = !!tgt;
-      // painted: the teal ring and arrow pieces (the SVG ones until the sheet is in)
-      const painted = hudArtReady() && !!pRing.current && !!pArrow.current;
-      if (painted && tgt) {
-        const tx = toScreenX(v, tgt.x);
-        const ty = toScreenY(v, tgt.y);
-        const r = Math.round(Math.max(18, Math.min(40, tgt.r * v.zoom)));
-        const ring = pRing.current!;
-        if (r !== ringD) {
-          ringD = r;
-          const d = ringBox(r);
-          const db = ringBox(r + 7);
-          ring.style.width = `${db.toFixed(1)}px`;
-          ring.style.height = `${db.toFixed(1)}px`;
-          if (pRingA.current) {
-            setPiece(pRingA.current, 'ring', d);
-            pRingA.current.style.left = pRingA.current.style.top = `${((db - d) / 2).toFixed(1)}px`;
-          }
-          if (pRingB.current) setPiece(pRingB.current, 'ringDashed', db);
-        }
-        const db = ringBox(r + 7);
-        ring.style.transform = `translate3d(${(tx - db / 2).toFixed(1)}px, ${(ty - db / 2).toFixed(1)}px, 0)`;
-        // the arrow: just outside the ring on her side of it, pointing in at the thing (above it when she is close, or not perched by it)
-        if (!arrowSet && pArrowIn.current && arrowW > 0) {
-          setPiece(pArrowIn.current, 'arrow', arrowW);
-          pArrow.current!.style.width = `${arrowW}px`;
-          pArrow.current!.style.height = `${arrowH.toFixed(1)}px`;
-          arrowSet = true;
-        }
-        let ux = run.dsx - tx;
-        let uy = run.dsy - (p?.mode === 'perch' ? 20 : 0) - ty;
-        const ul = Math.hypot(ux, uy);
-        if (p?.mode === 'pokey' || ul < r + arrowH + 24) {
-          ux = 0;
-          uy = -1;
-        } else {
-          ux /= ul;
-          uy /= ul;
-        }
-        const ad = r + arrowH * 0.5 + 6;
-        const ang = (Math.atan2(-uy, -ux) * 180) / Math.PI - 90;
-        pArrow.current!.style.transform = `translate3d(${(tx + ux * ad - arrowW / 2).toFixed(1)}px, ${(ty + uy * ad - arrowH / 2).toFixed(1)}px, 0) rotate(${ang.toFixed(1)}deg)`;
-      }
-      pRingOn = toggle(pRing.current, 'on', painted && showRing, pRingOn);
-      pArrowOn = toggle(pArrow.current, 'on', painted && showRing && arrowSet, pArrowOn);
-      if (painted) {
-        // (the SVG stand-ins stay off)
-        arrowOn = toggle(arrowG.current, 'on', false, arrowOn);
-        ringOn = toggle(ringRef.current, 'on', false, ringOn);
-        return;
-      }
-      if (tgt && ringA.current && ringB.current) {
-        const tx = toScreenX(v, tgt.x);
-        const ty = toScreenY(v, tgt.y);
-        const r = Math.max(18, Math.min(40, tgt.r * v.zoom));
-        ringA.current.setAttribute('cx', tx.toFixed(1));
-        ringA.current.setAttribute('cy', ty.toFixed(1));
-        ringA.current.setAttribute('r', r.toFixed(1));
-        ringB.current.setAttribute('cx', tx.toFixed(1));
-        ringB.current.setAttribute('cy', ty.toFixed(1));
-        ringB.current.setAttribute('r', (r + 8).toFixed(1));
-        // the arrow: a dotted curve from her to the ring's edge
-        const sx = run.dsx;
-        const sy = run.dsy - (p?.mode === 'perch' ? 18 : 0);
-        const dx = tx - sx;
-        const dy = ty - sy;
-        const len = Math.hypot(dx, dy);
-        const wantArrow = p?.mode !== 'pokey' && len > r + 50;
-        if (wantArrow && arrowA.current && arrowB.current) {
-          const ux = dx / len;
-          const uy = dy / len;
-          const x1 = sx + ux * 24;
-          const y1 = sy + uy * 24;
-          const x2 = tx - ux * (r + 10);
-          const y2 = ty - uy * (r + 10);
-          // bow the curve upward (away from the ground)
-          const nx = -uy * (ux > 0 ? 1 : -1);
-          const ny = ux * (ux > 0 ? 1 : -1);
-          const bow = Math.min(60, len * 0.18);
-          const cx = (x1 + x2) / 2 + nx * bow * (ny > 0 ? -1 : 1);
-          const cy = (y1 + y2) / 2 + ny * bow * (ny > 0 ? -1 : 1);
-          const d = `M${x1.toFixed(1)} ${y1.toFixed(1)}Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
-          arrowA.current.setAttribute('d', d);
-          arrowB.current.setAttribute('d', d);
-        }
-        arrowOn = toggle(arrowG.current, 'on', wantArrow, arrowOn);
-      } else arrowOn = toggle(arrowG.current, 'on', false, arrowOn);
-      ringOn = toggle(ringRef.current, 'on', showRing, ringOn);
+      // nothing drawn on the thing: no ring, no arrow, no sparkle (Matt, 2026-10-29: "that horrible blue pointer, the helper, I want that
+      // out"). After struggle she flies to the thing and perches by it; the words do the rest
     };
 
     /** what the guide notices each frame of play: story lines due, deaths, being stuck, kicking the air, new journal pages */
@@ -1125,8 +1205,10 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         }
         if (v.lives < run.prevLives) {
           const fell = run.alive.y > v.levelH - 140 || (run.alive.falling && !run.alive.foe);
-          const h = run.struggle.death(run.alive.x, run.alive.y, fell ? 'fall' : run.alive.foe ? 'foe' : 'other');
-          if (h) run.sayHelp(h, h.cause === 'fall' ? 'gap' : h.cause === 'foe' ? 'foe' : undefined);
+          const h = run.struggle.death(run.alive.x, run.alive.y, deathCause(v, run.alive, fell), run.help === 'teach');
+          // (two deaths at a puzzle are its two failed tries: the puzzle's own next step, not the death help)
+          const atPuzzle = !!run.puzzle && Math.abs(run.alive.x - run.puzzle.x) < PUZZLE_NEAR;
+          if (h && !(atPuzzle && run.puzzleHelp())) run.sayHelp(h, h.cause === 'fall' || h.cause === 'gapWide' ? 'gap' : h.cause === 'foe' ? 'foe' : h.cause === 'pushLog' || h.cause === 'water' ? 'log' : h.cause === 'crumble' ? 'crumble' : undefined);
           run.restartPending = true;
         }
         const k = run.moves.kicked;
@@ -1139,10 +1221,13 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           run.prevJumpRun = jr;
           run.struggle.otherMove();
         }
-        const s = run.struggle.step(dt, v.px, v.py, run.touching > 0);
-        if (s) {
+        // back and forth with no progress (never a clock, DOT-11); not in a puzzle room (the room's own watch helps there)
+        if (run.puzzle && Math.abs(v.px - run.puzzle.x) > PUZZLE_NEAR) run.puzzle = null;
+        const s = v.kit.length ? null : run.struggle.step(dt, v.px, v.py);
+        if (s && !run.puzzleHelp()) {
+          // (she flies to the way on: the next trunk, vine or ledge ahead; with none in view she says nothing, no promise of an arrow)
           const tp: TopicId | undefined = findTarget('trunk', v) ? 'trunk' : findTarget('vine', v) ? 'vine' : findTarget('ledge', v) ? 'ledge' : undefined;
-          run.sayHelp(s, tp);
+          if (tp) run.sayHelp(s, tp);
         }
       }
       run.prevLives = v.lives;
@@ -1202,21 +1287,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   const tag = l?.who === 'Petal' ? null : l?.who;
   return (
     <div ref={rootRef} className="dg-root" data-off="1" aria-hidden={!l && !toast}>
-      <svg className="dg-fx" aria-hidden="true">
-        <defs>
-          <marker id="dg-ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M0 0 L10 5 L0 10 z" fill="#fff4d8" stroke="#3a200c" strokeWidth="1.2" />
-          </marker>
-        </defs>
-        <g ref={ringRef} className="dg-ringg">
-          <circle ref={ringB} className="dg-ring2" cx="-100" cy="-100" r="30" />
-          <circle ref={ringA} className="dg-ring" cx="-100" cy="-100" r="22" />
-        </g>
-        <g ref={arrowG} className="dg-arrowg">
-          <path ref={arrowB} className="dg-arrow-sh" d="M0 0" />
-          <path ref={arrowA} className="dg-arrow" d="M0 0" markerEnd="url(#dg-ah)" />
-        </g>
-      </svg>
       {Array.from({ length: SPARKS }, (_, i) => (
         <span
           key={i}
@@ -1226,13 +1296,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           className="dg-spark"
         />
       ))}
-      <span ref={pRing} className="dg-pring" aria-hidden="true">
-        <span ref={pRingB} className="dg-pring-b" />
-        <span ref={pRingA} className="dg-pring-a" />
-      </span>
-      <span ref={pArrow} className="dg-parrow" aria-hidden="true">
-        <span ref={pArrowIn} className="dg-parrow-in" />
-      </span>
       <div ref={perchRef} className="dg-perch" style={{ backgroundImage: `url(${DOT_PERCH_URL})` }} />
       <div ref={dotRef} className="dg-dot">
         <div ref={flipRef} style={{ position: 'relative' }}>

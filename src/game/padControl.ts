@@ -70,7 +70,7 @@ export interface PadInputTarget {
   onVine: boolean;
   triggerTouchMove(d: 'left' | 'right' | 'none'): void;
   triggerTouchDuck(on: boolean): void;
-  triggerTouchUp(lean?: -1 | 0 | 1): void;
+  triggerTouchUp(lean?: -1 | 0 | 1, holdMs?: number): void;
   releaseTouchUp(): void;
   triggerTouchClimb(dir: -1 | 0 | 1): void;
   triggerHaptic(ms?: number): void;
@@ -108,6 +108,12 @@ export function pickButton<B extends string>(x: number, y: number, spots: PadBut
   return best;
 }
 
+/**
+ * the Jump button's minimum hold (ms): a quick tap is a short hop (62 px), held it goes full height (98 px), as the Pad lesson says
+ * (Matt, 2026-10-29, polish report CT-13 / CT-27). Every tap up to about 120 ms gives the same hop; touch jumps keep their 220 ms
+ */
+export const PAD_HOP_MS = 80;
+
 /** the Punch button held this long upgrades its punch to the mega (ms) */
 export const MEGA_HOLD_MS = 320;
 
@@ -133,7 +139,7 @@ export class PadInput {
     else s.delete(src);
     const after = s.size > 0;
     if (!before && after) {
-      this.inp.triggerTouchUp(lean);
+      this.inp.triggerTouchUp(lean, src === 'btn' ? PAD_HOP_MS : undefined);
       this.inp.triggerHaptic(15);
     } else if (before && !after) this.inp.releaseTouchUp();
   }
@@ -188,7 +194,7 @@ export class PadInput {
     // held up from before the grab): the pad holding Jump down swallowed it (polish report CT-26)
     if (on && this.jumpSrc.size > 0 && !this.jumpSrc.has('btn')) {
       this.jumpSrc.add('btn');
-      this.inp.triggerTouchUp();
+      this.inp.triggerTouchUp(0, PAD_HOP_MS);
       this.inp.triggerHaptic(15);
       return;
     }

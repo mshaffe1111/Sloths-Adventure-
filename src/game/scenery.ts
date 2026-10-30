@@ -7,9 +7,11 @@
  */
 import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
 import { drawPaintedLeaf } from './leafSprites.ts';
+import { drawPetal } from './petalSprites.ts';
 import { renderLifeBack, renderLifeFront } from './life.ts';
 import { setHeroScreen, clearHeroScreen, heroScreen, laneClear } from './heroLane.ts';
 import { glowPic } from './glow.ts';
+import { drawFx } from './bossFx.ts';
 import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
@@ -368,6 +370,8 @@ interface LayerSet {
   mid: Layer;
   /** null only for a painted world whose near strip is still to come */
   near: Layer | null;
+  /** the painted sky above a painted far strip (seen upright only: drawStrip) */
+  sky?: Layer | null;
   front: HTMLCanvasElement;
   /** the world's painted strips are in use */
   painted?: boolean;
@@ -1309,6 +1313,7 @@ function buildFront(look: Look, world: number, hangs = true): HTMLCanvasElement 
       drawBananaLeaf(ctx, xx + 80, -40, 110, 36, Math.PI + 0.4, rim[(r() * rim.length) | 0]);
     });
   }
+  findBands(cv);
   return cv;
 }
 
@@ -1476,6 +1481,8 @@ function mistDrift(ctx: CanvasRenderingContext2D, look: Look, vw: number, vh: nu
   if (look.weather !== 'mist') return;
   const pic = mistPuff(look.haze);
   ctx.save();
+  // (a soft round puff: plain smoothing looks the same and skips the high-quality filter's pass over the whole bank: PF-1)
+  ctx.imageSmoothingQuality = 'low';
   for (let i = 0; i < 5; i++) {
     const x = (((i * 0.3 + time * 0.01 * (1 + i * 0.2)) % 1.4) - 0.2) * vw;
     const rx = vw * 0.42;
@@ -1492,7 +1499,11 @@ function lanePool(ctx: CanvasRenderingContext2D, look: Look, world: number, vw: 
   const { col, a } = poolFor(look, world);
   const rx = Math.min(vw * 0.42, 360);
   const ry = Math.min(vh * 0.36, 190);
+  // (one soft gradient: plain smoothing looks the same and skips the high-quality filter's pass: PF-1)
+  const q = ctx.imageSmoothingQuality;
+  ctx.imageSmoothingQuality = 'low';
   ctx.drawImage(poolSprite(col, a), hs.x - rx, hs.y - 36 - ry, rx * 2, ry * 2);
+  ctx.imageSmoothingQuality = q;
 }
 
 function ensure(world: number): LayerSet {
@@ -1520,7 +1531,7 @@ function ensure(world: number): LayerSet {
   const painted = paintedFor(world, bakeScale > THUMB_BAKE);
   if (painted) {
     const set: LayerSet = {
-      world, seed: getSceneSeed(), far: painted.far, hills: null, mid: painted.mid, near: painted.near,
+      world, seed: getSceneSeed(), far: painted.far, hills: null, mid: painted.mid, near: painted.near, sky: painted.sky,
       front: buildFront(look, world, false), clouds: [], hazed: true, painted: true, at: painted.at,
     };
     sets.set(key, set);
@@ -1584,6 +1595,42 @@ export function devScale(ctx: CanvasRenderingContext2D): number {
  * jumping two device pixels, while the ground moved every frame, so the layers shuddered against each other (polish report AN-4) */
 export const snapDev = (v: number, k: number): number => Math.round(v * k) / k;
 
+/**
+ * The bands of rows a baked layer actually paints, found once per layer (PF-1). The front frame is clear but for its leaf clumps along
+ * the bottom (and the hanging leaves at the top over a drawn backdrop), yet drawing the whole clear tile over the screen cost a phone as
+ * much as an opaque one: drawn as just its bands, the picture is the same and the clear rows cost nothing. Found when the layer is baked
+ * (buildFront), so drawTile only looks them up.
+ */
+const bandsOf = new WeakMap<HTMLCanvasElement, Array<[number, number]>>();
+function findBands(cv: HTMLCanvasElement): void {
+  const w = cv.width;
+  const h = cv.height;
+  let bands: Array<[number, number]> = [[0, h]];
+  try {
+    const d = cv.getContext('2d')!.getImageData(0, 0, w, h).data;
+    const runs: Array<[number, number]> = [];
+    for (let y = 0; y < h; y++) {
+      let any = false;
+      for (let i = y * w * 4 + 3, e = i + w * 4; i < e; i += 4) {
+        if (d[i]) {
+          any = true;
+          break;
+        }
+      }
+      if (!any) continue;
+      // (a few clear rows of margin either side, so the smoothing at a band's edge reads the same clear pixels it always did)
+      const r0 = Math.max(0, y - 4);
+      const last = runs[runs.length - 1];
+      if (last && r0 <= last[1] + 16) last[1] = Math.min(h, y + 5);
+      else runs.push([r0, Math.min(h, y + 5)]);
+    }
+    if (runs.length <= 3) bands = runs;
+  } catch {
+    /* unreadable: draw it whole */
+  }
+  bandsOf.set(cv, bands);
+}
+
 function drawTile(ctx: CanvasRenderingContext2D, cv: Layer, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, alpha = 1, o?: TileOpt) {
   const pitch = tileW(cv) * s;
   const k = devScale(ctx);
@@ -1627,10 +1674,15 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: Layer, par: number, camX: n
       if (flip) ctx.restore();
     }
   } else {
+    // a layer that is mostly clear (the front frame) is drawn as just the rows it paints
+    const bands = cv instanceof HTMLCanvasElement && !(lv && lv.flip) ? bandsOf.get(cv) : undefined;
+    const lh = layerH(cv);
     for (let x = x0; x < vw; x += pitch) {
       const px = snapDev(x, k);
       const pw = snapDev(x + pitch, k) - px + 1 / k;
-      if (lv && lv.flip) {
+      if (bands) {
+        for (const [r0, r1] of bands) ctx.drawImage(cv, 0, r0, layerWpx(cv), r1 - r0, px, y0 + (dh * r0) / lh, pw, (dh * (r1 - r0)) / lh);
+      } else if (lv && lv.flip) {
         ctx.save();
         ctx.translate(px + pw, 0);
         ctx.scale(-1, 1);
@@ -1653,17 +1705,72 @@ export const STRIP_FIT: Record<'far' | 'mid' | 'near', { k: number; a: number; a
   near: { k: 1.05, a: 0.72, at: 0.63 },
 };
 
-/** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT. The strip files are made seamless
- * (scripts/strip-seamless.py: the right edge crossfaded into the left), so every copy is drawn the same way round: no mirrored
- * twins (polish report VI-4). */
-function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0) {
+/**
+ * The scale the painted strips are drawn at: `stripVh` / H. Sideways that is the view's own height; upright the engine passes the
+ * height sideways would show for the same width of world (Matt, 2026-10-29: fitted to the tall upright view the strips were drawn 2.2x
+ * closer than sideways, a soft crop of their misty middle, and the screen read faded). The strips keep their ground line (STRIP_FIT
+ * `at`, a share of the real view height), and the room upright leaves above the far strip is its painted sky.
+ */
+export function stripTop(part: keyof typeof STRIP_FIT, vh: number, s: number, yOff = 0): { top: number; dh: number } {
   const f = STRIP_FIT[part];
   const dh = H * s * f.k;
+  return { top: vh * f.at - f.a * dh + yOff, dh };
+}
+
+/** how much of its far strip a sky overlaps at the bottom, fading into it (tools/art/hfbatch/skycut.py makes them so). The middle strips
+ * whose top is solid paint fade out over their top 7% in the file instead (tools/art/edges/defringe.py --topfade): sideways those rows
+ * are always off screen, upright the trees dissolve into the far strip's sky */
+export const SKY_OVERLAP = 0.05;
+
+/** how tall a strip's painted sky is drawn: its rows at the strip's own scale */
+const skyRows = (sky: Layer, strip: Layer, dh: number): number => (dh * layerH(sky)) / layerH(strip);
+
+/**
+ * Where the painted far layer (the far strip, and its sky above when it has one) starts covering the view: everything below this is
+ * opaque paint, so the drawn sky (renderSky) is needed only above it (none when it is <= 0). The one place this is worked out, so
+ * anything that skips work under the far strip follows the upright fit (`s` is the strips' scale, renderScenery's ps).
+ */
+export function farCoverTop(far: Layer, sky: Layer | null | undefined, vh: number, s: number, yOff: number): number {
+  s = farScale(sky, vh, s, yOff);
+  const pl = stripTop('far', vh, s, yOff);
+  return sky && pl.top > 0 ? pl.top + pl.dh * SKY_OVERLAP - skyRows(sky, far, pl.dh) : pl.top;
+}
+
+/**
+ * The far strip's scale: the strips' own (`s`) when it has a painted sky to fill the room above it; without one (a set whose sky did not
+ * pass review), just large enough that its top reaches the top of the view (upright only: sideways it always does), so the view is
+ * never the drawn gradient over a painted scene. About 1.2x the sideways size on a phone, against 1.76x when everything was fitted to
+ * the tall view.
+ */
+export function farScale(sky: Layer | null | undefined, vh: number, s: number, yOff: number): number {
+  if (sky) return s;
+  const f = STRIP_FIT.far;
+  // top = vh * at - a * H * s * k + yOff <= 0
+  return Math.max(s, (vh * f.at + yOff) / (f.a * H * f.k));
+}
+
+/**
+ * A world whose strip carries one big landmark (World 7's near strip: the sleeping stone head) draws it larger, so one repeat is wider
+ * than a sideways phone screen and the landmark never shows twice in one view (STAGE-RULES §5b item 2, QA 2026-10-29)
+ */
+const STRIP_GROW: Partial<Record<number, Partial<Record<keyof typeof STRIP_FIT, number>>>> = { 7: { near: 1.75 } };
+const grown = (world: number, part: keyof typeof STRIP_FIT, s: number) => s * (STRIP_GROW[world]?.[part] ?? 1);
+
+/** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT. The strip files are made seamless
+ * (scripts/strip-seamless.py: the right edge crossfaded into the left), so every copy is drawn the same way round: no mirrored
+ * twins (polish report VI-4). A far strip with its painted sky `above` has it drawn above when there is room (upright), as wide as
+ * the strip and at the same scale: its bottom SKY_OVERLAP of the strip's height lies over the strip's top and fades into it. */
+function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, above: Layer | null = null) {
+  const pl = stripTop(part, vh, s, yOff);
+  const dh = pl.dh;
   const iw = layerWpx(img);
   const ih = layerH(img);
-  const pitch = tileW(img) * s * f.k;
+  const pitch = tileW(img) * s * STRIP_FIT[part].k;
   const k = devScale(ctx);
-  const top = snapDev(vh * f.at - f.a * dh + yOff, k);
+  const top = snapDev(pl.top, k);
+  // the sky, when the strip leaves room above it (upright): its rows at the strip's own scale
+  const sh = above && top > 0 ? skyRows(above, img, dh) : 0;
+  const skyTop = top + dh * SKY_OVERLAP - sh;
   let x0 = -((camX * par) % pitch);
   if (x0 > 0) x0 -= pitch;
   for (let x = x0; x < vw; x += pitch) {
@@ -1671,6 +1778,12 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
     const px = snapDev(x, k);
     const pw = snapDev(x + pitch, k) - px + 1 / k;
     ctx.drawImage(img, 0, 0, iw, ih, px, top, pw, dh);
+    if (sh > 0 && above) {
+      const sw = layerWpx(above), skh = layerH(above);
+      ctx.drawImage(above, 0, 0, sw, skh, px, skyTop, pw, sh);
+      // (a screen taller than any phone: the sky's top row carries on up to the edge)
+      if (skyTop > 0) ctx.drawImage(above, 0, 0, sw, 1, px, 0, pw, skyTop + 1 / k);
+    }
     // the strip is fitted to end a little above the bottom of the view, where the ground usually covers it; up a climb (1-4, the
     // ascents) the camera is in the air and that band showed the bare sky, so the strip's last rows carry on down to the edge
     const gap = vh - (top + dh);
@@ -1774,13 +1887,28 @@ export function setReveal(k: number, strips: PaintedSet | null): void {
   revealStrips = strips;
 }
 
-export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX: number, camY: number, vw: number, vh: number, time: number, lite = false) {
+/** `stripVh`: the view height the painted strips are fitted to (stripTop); upright the engine passes the sideways one */
+export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX: number, camY: number, vw: number, vh: number, time: number, lite = false, stripVh = vh) {
   const look = lookFor(world);
   const set = ensure(world);
   const s = vh / H;
-  renderSky(ctx, world, vw, vh, time, camX);
+  // (the painted strips' scale: s sideways, the sideways scale upright)
+  const ps = set.painted ? Math.min(vh, stripVh) / H : s;
   // how far the layers slide with the climb: gentle, so the stretch that keeps their edges covered stays unnoticeable
-  const yo = -Math.min(30, Math.max(-30, camY * 0.03)) * s;
+  const yo = -Math.min(30, Math.max(-30, camY * 0.03)) * ps;
+  // a painted world's far strip is opaque and covers the view from its top edge (or its painted sky's top) down, so once it has faded in,
+  // the drawn sky shows only above that edge: it is drawn there alone, or not at all (a full-screen gradient, the sun's full-screen glow
+  // and the clouds every frame: PF-1)
+  const skyTo = set.painted && fadeIn(set.at) >= 1 ? Math.min(vh, Math.ceil(farCoverTop(set.far, set.sky, vh, ps, yo * 0.3)) + 1) : vh;
+  if (skyTo >= vh) renderSky(ctx, world, vw, vh, time, camX);
+  else if (skyTo > 0) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, vw, skyTo);
+    ctx.clip();
+    renderSky(ctx, world, vw, vh, time, camX);
+    ctx.restore();
+  }
   // the polish pass (prototype, off by default): per-stage layer shifts/flips, wind, mist and light shafts
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
@@ -1788,14 +1916,15 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   if (set.painted) {
     // (strips that decoded a moment ago, after the stage was already on screen, fade in over the stand-in sky: VI-3)
     const fa = fadeIn(set.at);
+    // (the stand-in sky is a plain gradient: it still fills the whole view, at the view's own scale)
     if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
     ctx.globalAlpha = fa;
-    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null);
     const rv = revealK > 0.01 && revealStrips ? revealStrips : null;
     const rk = rv ? revealK : 0;
     if (rv) {
       ctx.globalAlpha = rk;
-      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, farScale(rv.sky, vh, ps, yo * 0.3), yo * 0.3, rv.sky);
       ctx.globalAlpha = 1;
     }
     // high in the trees the middle and near strips fade over to the canopy ones (setCanopy: 1-8's branch, the top of 1-4's climb)
@@ -1803,20 +1932,20 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     const k = cano ? canopyK * fadeIn(cano.at) : 0;
     if (k < 0.99 && rk < 0.99) {
       ctx.globalAlpha = (1 - k) * fa * (1 - rk);
-      drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo);
+      drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, ps, yo * 0.8);
+      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, grown(world, 'near', ps), yo);
       ctx.globalAlpha = 1;
     }
     if (cano && k > 0.01 && rk < 0.99) {
       ctx.globalAlpha = k * fa * (1 - rk);
-      drawStrip(ctx, cano.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-      drawStrip(ctx, cano.near, 'near', 0.42, camX, vw, vh, s, yo);
+      drawStrip(ctx, cano.mid, 'mid', 0.2, camX, vw, vh, ps, yo * 0.8);
+      drawStrip(ctx, cano.near, 'near', 0.42, camX, vw, vh, ps, yo);
       ctx.globalAlpha = 1;
     }
     if (rv) {
       ctx.globalAlpha = rk;
-      drawStrip(ctx, rv.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-      if (rv.near) drawStrip(ctx, rv.near, 'near', 0.42, camX, vw, vh, s, yo);
+      drawStrip(ctx, rv.mid, 'mid', 0.2, camX, vw, vh, ps, yo * 0.8);
+      if (rv.near) drawStrip(ctx, rv.near, 'near', 0.42, camX, vw, vh, ps, yo);
       ctx.globalAlpha = 1;
     }
     ctx.fillStyle = rgba(look.grade[0], look.grade[1] * (1 - rk));
@@ -1875,8 +2004,12 @@ function drawVignette(ctx: CanvasRenderingContext2D, col: string, vw: number, vh
     vigKey = key;
   }
   const prev = ctx.imageSmoothingEnabled;
+  const prevQ = ctx.imageSmoothingQuality;
   ctx.imageSmoothingEnabled = true;
+  // plain smoothing: the picture is one soft gradient, and the high-quality filter cost a full-screen pass of its own (PF-1)
+  ctx.imageSmoothingQuality = 'low';
   ctx.drawImage(vigPic, 0, 0, bw, bh, 0, 0, vw, vh);
+  ctx.imageSmoothingQuality = prevQ;
   ctx.imageSmoothingEnabled = prev;
 }
 
@@ -1959,55 +2092,36 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
     case 'storm': {
       const heavy = look.weather === 'storm';
       const drops = getMotes(world, heavy ? count : Math.round(count * 0.6));
+      // each drop one soft streak (rainStreak: tapered and feathered, so it reads as rain, not as a drawn line), leaning with the wind
+      const streak = rainStreak(heavy ? '200,214,255' : '230,244,255');
       ctx.save();
-      ctx.lineCap = 'round';
-      // three strengths of drop, each stroked as ONE path (a stroke per drop was the costliest thing in the storm)
-      for (let b = 0; b < 3; b++) {
-        const lo = b / 3;
-        const hi = (b + 1) / 3;
-        ctx.beginPath();
-        let any = false;
-        for (const d of drops) {
-          const u = (d.s - 0.4) / 0.9;
-          if (u < lo || u >= hi + (b === 2 ? 1 : 0)) continue;
-          const sp = (heavy ? 1.7 : 1.1) * (0.7 + d.s * 0.7);
-          const x = wrap01(d.x - time * 0.12 * sp + camX * 0.0001) * (vw + 80);
-          const y = wrap01(d.y + time * sp * 0.9) * (vh + 40) - 20;
-          const len = (heavy ? 26 : 18) * d.s;
-          ctx.moveTo(x, y);
-          ctx.lineTo(x - len * 0.28, y + len);
-          any = true;
-        }
-        if (!any) continue;
-        const mid = 0.4 + (lo + hi) * 0.5 * 0.9;
-        ctx.strokeStyle = `rgba(${heavy ? '200,214,255' : '230,244,255'},${0.18 + mid * 0.3})`;
-        ctx.lineWidth = 1 + mid * 0.9;
-        ctx.stroke();
+      const base = ctx.getTransform();
+      for (const d of drops) {
+        const sp = (heavy ? 1.7 : 1.1) * (0.7 + d.s * 0.7);
+        const x = wrap01(d.x - time * 0.12 * sp + camX * 0.0001) * (vw + 80);
+        const y = wrap01(d.y + time * sp * 0.9) * (vh + 40) - 20;
+        const len = (heavy ? 30 : 22) * d.s;
+        const mid = 0.4 + Math.min(1, Math.max(0, (d.s - 0.4) / 0.9)) * 0.9;
+        ctx.globalAlpha = Math.min(1, 0.3 + mid * 0.45);
+        ctx.setTransform(base);
+        ctx.translate(x, y);
+        ctx.rotate(0.27);
+        ctx.drawImage(streak, -2 - mid, 0, 4 + mid * 2, len);
       }
       ctx.restore();
       if (heavy) {
-        // lightning: two quick flashes every ~7s with a forked bolt
+        // lightning: two quick flashes every ~7s, with the painted bolt (bossFx.ts) forking down from the top
         const ph = time % 7.3;
         const f = ph < 0.12 ? 1 : ph > 0.28 && ph < 0.38 ? 0.7 : 0;
         if (f > 0) {
           ctx.fillStyle = `rgba(210,225,255,${0.4 * f})`;
           ctx.fillRect(0, 0, vw, vh);
           const r = rng(Math.floor(time / 7.3) + 5);
-          let bx = vw * (0.2 + r() * 0.6);
-          let by = 0;
-          ctx.strokeStyle = `rgba(255,255,255,${f})`;
-          ctx.lineWidth = 3;
-          ctx.shadowColor = '#bcd0ff';
-          ctx.shadowBlur = 18;
-          ctx.beginPath();
-          ctx.moveTo(bx, by);
-          while (by < vh * 0.6) {
-            bx += (r() - 0.5) * 60;
-            by += 30 + r() * 40;
-            ctx.lineTo(bx, by);
-          }
-          ctx.stroke();
-          ctx.shadowBlur = 0;
+          const bh = vh * (0.5 + 0.15 * r());
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          drawFx(ctx, 'bolt', vw * (0.2 + r() * 0.6), 0, (bh * 140) / 572, { h: bh, ax: 0.5, ay: 0, alpha: f, flipX: r() > 0.5 });
+          ctx.restore();
         }
       } else {
         const g = ctx.createLinearGradient(0, vh * 0.5, 0, vh);
@@ -2041,16 +2155,21 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
     case 'embers':
     case 'ash': {
       const list = getMotes(world, count);
+      const emberHot = glowPic('#ffd070', 'fly'), emberWarm = glowPic('#ff9a3c', 'fly'), emberCore = glowPic('#fff4c8', 'fly');
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       for (const m of list) {
         const x = wrap01(m.x + Math.sin(time * 0.8 + m.p) * 0.03 + time * 0.012 - camX * 0.0002) * vw;
         const y = (1 - wrap01(m.y + time * 0.07 * m.s)) * vh;
         const a = Math.min(1, (1 - y / vh) * 1.6) * (0.4 + 0.6 * Math.abs(Math.sin(time * 3 + m.p))) * laneClear(x, y, 0.35, 70);
-        ctx.fillStyle = `rgba(255,${150 + (m.c % 90)},40,${a})`;
-        ctx.beginPath();
-        ctx.arc(x, y, 1.4 + m.s * 2.2, 0, Math.PI * 2);
-        ctx.fill();
+        if (a < 0.02) continue;
+        // a soft glowing ember (the pre-rendered glow the fireflies use: a hot core thinning out, no hard dot)
+        const R = (1.4 + m.s * 2.2) * 4.2;
+        ctx.globalAlpha = a;
+        ctx.drawImage(m.c % 2 ? emberHot : emberWarm, x - R, y - R, R * 2, R * 2);
+        // (and its hot heart, so it reads as a spark against the bright sky as well as the dark rock)
+        const r = R * 0.38;
+        ctx.drawImage(emberCore, x - r, y - r, r * 2, r * 2);
       }
       ctx.restore();
       break;
@@ -2065,8 +2184,13 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
         const y = wrap01(m.y + time * 0.05 * m.s) * (vh + 40) - 20;
         const clear = laneClear(x, y, 0.18, 90);
         if (clear < 0.03) continue;
-        // painted leaves for the leaf worlds (the petals of Worlds 2 and 5 stay petals)
+        // painted leaves for the leaf worlds, painted petals for Worlds 2 and 5 (petalSprites.ts)
         if (look.weather === 'leaves' && drawPaintedLeaf(ctx, world, m, x, y, time, vh / 720, clear)) continue;
+        if (look.weather === 'petals') {
+          drawPetal(ctx, m.c / 1000 + m.p, x, y, (12 + m.s * 9) * Math.max(0.8, vh / 720), time * m.s * 1.2 + m.p, Math.cos(time * m.s + m.p), 0.95 * clear);
+          continue;
+        }
+        // (the leaves' stand-in while their sheet loads, or with ?leaves=classic)
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(time * m.s * 1.2 + m.p);
@@ -2084,6 +2208,35 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
       // the ground, the cliffs and Pokey alike: testers, 4-3, 4-4 and 4-7, 2026-10-25)
       break;
   }
+}
+
+/** one rain drop's streak, made once per colour: tapered from nothing at its top to its foot, feathered at its sides */
+const streaks = new Map<string, HTMLCanvasElement>();
+function rainStreak(rgb: string): HTMLCanvasElement {
+  let c = streaks.get(rgb);
+  if (c) return c;
+  c = document.createElement('canvas');
+  c.width = 8;
+  c.height = 64;
+  const g = c.getContext('2d');
+  if (g) {
+    const d = g.createImageData(8, 64);
+    for (let y = 0; y < 64; y++) {
+      const v = Math.min(1, (y / 63) * 1.3) * Math.min(1, (63 - y) / 5);
+      for (let x = 0; x < 8; x++) {
+        const h = 1 - Math.abs(x - 3.5) / 4;
+        const i = (y * 8 + x) * 4;
+        const [r, gg, b] = rgb.split(',').map(Number);
+        d.data[i] = r;
+        d.data[i + 1] = gg;
+        d.data[i + 2] = b;
+        d.data[i + 3] = Math.round(255 * v * h * h);
+      }
+    }
+    g.putImageData(d, 0, 0);
+  }
+  streaks.set(rgb, c);
+  return c;
 }
 
 export { tone as _tone };

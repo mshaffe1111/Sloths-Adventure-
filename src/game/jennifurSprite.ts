@@ -9,6 +9,8 @@
  * She is a little animation player: each mood is a timed loop over those frames (storyActors.ts: moodAt), a walk or run is chosen by the ground (gaitAt), so she
  * is never a still picture. The moods and the frames each plays are the tables below.
  */
+import { hdPage, hdReady, warmHd, type HdSet } from './storyHd.ts';
+import { HD_MEECA, HD_MEECA_FRAMES, HD_MEECA_PAGES } from './storyHdData_meeca.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { MEECA_FRAMES, MEECA_STAND_H } from './meecaStandardData.ts';
 import { gaitAt, gaitNaturalSpeed, moodAt, type GaitSpec, type MoodSpec, type StoryCharacter } from './storyActors.ts';
@@ -159,13 +161,44 @@ export function drawJennifurSprite(ctx: CanvasRenderingContext2D, mood: Jennifur
   return ok;
 }
 
-/** Meeca as the story engine's character (storyActors.ts showActor) */
+/** her story paintings (storyHd.ts): every frame a story shows, repainted at HD times its old size */
+const HD_SET: HdSet = { hd: HD_MEECA, pages: HD_MEECA_PAGES, frames: HD_MEECA_FRAMES };
+/** start fetching her story paintings */
+export function warmStoryMeeca() {
+  warmHd('meeca', HD_SET);
+}
+
+/** one frame of her story paintings, hung as drawMeecaFrame hangs the standard one (the bib turned back on a mirrored canvas too) */
+export function drawMeecaStoryFrame(ctx: CanvasRenderingContext2D, name: string, anchor = 1, scale = 1, flipped = false): boolean {
+  const f = MEECA_FRAMES[name];
+  const hf = HD_MEECA_FRAMES[name];
+  const img = hf ? hdPage('meeca', hf) : null;
+  if (!f || !hf || !img) return false;
+  const H = HD_MEECA;
+  const k = (K * f.s * scale) / H;
+  const x = (anchor * f.ax + (1 - anchor) * f.hx) * H + hf.m;
+  const ay = f.ay * H + hf.m;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, hf.x, hf.y, hf.w, hf.h, -x * k, -ay * k, hf.w * k, hf.h * k);
+  if (flipped && f.bib) {
+    const [bx, by, bw, bh] = f.bib.map((v) => v * H);
+    ctx.save();
+    ctx.translate((bx + hf.m + bw / 2 - x) * k, (by + hf.m + bh / 2 - ay) * k);
+    ctx.scale(-1, 1);
+    ctx.drawImage(img, hf.x + hf.m + bx, hf.y + hf.m + by, bw, bh, (-bw / 2) * k, (-bh / 2) * k, bw * k, bh * k);
+    ctx.restore();
+  }
+  return true;
+}
+
+/** Meeca as the story engine's character (storyActors.ts showActor): her story paintings */
 export const MEECA: StoryCharacter = {
-  ready: () => active(),
+  ready: () => hdReady('meeca', HD_SET),
   moods: MEECA_MOODS,
   gaits: MEECA_GAITS,
   resolve: (name) => (MEECA_FRAMES[name] ? name : undefined),
-  draw: (ctx, frame, anchor, flipped) => drawMeecaFrame(ctx, frame, anchor, 1, flipped),
+  draw: (ctx, frame, anchor, flipped) => drawMeecaStoryFrame(ctx, frame, anchor, 1, flipped),
   k: K,
   units: MEECA_UNITS,
   rest: 'idle',

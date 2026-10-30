@@ -60,6 +60,10 @@ interface Touch {
   did: string[];
   /** when each of its jumps fired */
   jt: number[];
+  /** how long after it landed it first steered (ms) */
+  mt?: number;
+  /** it landed on the steering hand's half */
+  near?: boolean;
   /** when each of its punches fired (a jab cancelled as the finger moved off is taken back: CT-17) */
   pt: number[];
   /** Pokey's state when it went down, and at its best flick */
@@ -105,9 +109,15 @@ for (const parts of sessions.values()) {
   let current: Touch | null = null;
   const live = new Map<number, Touch>();
   const sink: GestureSink = {
-    move: (d) => current?.did.push(`move:${d}`),
+    move: (d) => {
+      current?.did.push(`move:${d}`);
+      // (when a lone first finger first steered, from when it landed: CT-8)
+      if (current && d !== 'none' && current.mt === undefined) current.mt = clockT - current.pts[0].t;
+    },
     duck: (on) => current?.did.push(on ? 'duck' : 'duckOff'),
-    jumpPress: () => {
+    jumpPress: (_lean, slant) => {
+      // (a standing flick leaning 35 degrees or more now carries him: CT-27)
+      if (slant && state === 'g' && jumpsSinceGround === 0) current?.did.push(`slant:${slant}`);
       jumpsSinceGround++;
       if (onVineNow()) current?.did.push('jumpV');
       else current?.did.push('jump');
@@ -136,7 +146,10 @@ for (const parts of sessions.values()) {
   let vineHold = '';
   let clockT = 0;
   const onVineNow = () => state === 'c' || state === 's' || vineHold !== '';
+  /** HAND=right replays with Steer with: Right (CT-28) */
+  const hand = process.env.HAND === 'right' ? 'right' : 'left';
   const g = new TouchGestures(sink, () => dev.w, {
+    steerHand: () => hand,
     assist: () => true,
     air: () => state === 'a' && jumpsSinceGround < 2,
     megaReady: () => true,
@@ -173,7 +186,7 @@ for (const parts of sessions.values()) {
       // (the device line is noted once a part: a phone turned during it shows touches past its width, and it is sideways now)
       if ((l[3] as number) > dev.w) dev = { w: dev.h, h: dev.w, held: dev.held === 'portrait' ? 'landscape' : 'portrait' };
       if (state === 'c' || state === 's') vineHold = state;
-      const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], jt: [], pt: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0 };
+      const tch: Touch = { id, pts: [{ t, x: l[3] as number, y: l[4] as number }], did: [], jt: [], pt: [], st0: vineHold || state, held: dev.held, who, second: live.size > 0, near: hand === 'right' ? (l[3] as number) > dev.w / 2 : (l[3] as number) < dev.w / 2 };
       live.set(id, tch);
       touches.push(tch);
       current = tch;
@@ -368,5 +381,36 @@ for (const k of ['all', ...PLAYERS, 'others']) {
     const back = mine.reduce((a, tc) => a + tc.did.filter((d) => d === 'jabX').length, 0);
     if (!mine.length) continue;
     console.log(`| ${k} | ${taps.length} | ${q(waits, 0.5)} | ${q(waits, 0.9)} | ${other.length} | ${both.length} (${other.length ? ((100 * both.length) / other.length).toFixed(1) : 0}%) | ${back} |`);
+  }
+}
+
+// CT-27: standing first jumps from a lone or second finger, and how many leaned 35 degrees or more (now carried that way at 0.75 of a run)
+{
+  console.log('\nCT-27: standing jumps that leaned 35 degrees or more (carried)\n');
+  console.log('| who | standing jumps, nothing steering | slanted, carried |');
+  console.log('|---|---|---|');
+  for (const k of order) {
+    // (only a lone finger that was not steering: with a thumb steering the run carries him anyway, and the engine adds nothing)
+    const mine = touches.filter((tc) => (k === 'all' || tc.who === k || tc.held === k) && tc.st0 === 'g' && !tc.second && tc.did.some((d) => d === 'jump') && !tc.did.slice(0, tc.did.indexOf('jump')).some((d) => d.startsWith('move:') && d !== 'move:none'));
+    if (!mine.length) continue;
+    const sl = mine.filter((tc) => tc.did.some((d) => d.startsWith('slant:'))).length;
+    console.log(`| ${k} | ${mine.length} | ${sl} (${((100 * sl) / mine.length).toFixed(1)}%) |`);
+  }
+}
+
+// CT-8: a lone first finger on the ground that steered: how long after it landed, on the steering hand's half and on the other
+{
+  const q = (a: number[], f: number) => (a.length ? Math.round(a[Math.min(a.length - 1, Math.floor(a.length * f))]) : NaN);
+  console.log(`\nCT-8: lone first fingers that steered, how long after landing (ms), steering hand ${process.env.HAND === 'right' ? 'right' : 'left'}\n`);
+  console.log('| who | near half: steered | median | 90% within | far half: steered | median | 90% within |');
+  console.log('|---|---|---|---|---|---|---|');
+  for (const k of order) {
+    const mine = touches.filter((tc) => (k === 'all' || tc.who === k || tc.held === k) && !tc.second && tc.st0 === 'g' && tc.mt !== undefined);
+    if (!mine.length) continue;
+    const cell = (near: boolean) => {
+      const w = mine.filter((tc) => !!tc.near === near).map((tc) => tc.mt!).sort((a, b) => a - b);
+      return `${w.length} | ${q(w, 0.5)} | ${q(w, 0.9)}`;
+    };
+    console.log(`| ${k} | ${cell(true)} | ${cell(false)} |`);
   }
 }

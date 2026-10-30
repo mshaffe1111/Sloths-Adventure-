@@ -1,0 +1,53 @@
+{
+ "note": "drifting petals by img2img from tools/art/hfbatch/petalstart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/90a7ac7175615a0c150cc128a1300c568fb149c6/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "petals-s70-7",
+   "start": "start-petals.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid: sixteen single loose flower petals drifting on the wind, each one separate with space around it, every one a different shape and colour: soft pink, white, rose, lilac, violet, peach, orange, yellow and red tropical petals, some curled, some flat, a few tiny whole blossoms, a pink cherry petal, an orchid petal. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure green background, no stems, no leaves, no shadow, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, ground, cast shadow, drop shadow, leaves, stems, insects, faces, square edges, cut-off shapes",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "petals-s70-23",
+   "start": "start-petals.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid: sixteen single loose flower petals drifting on the wind, each one separate with space around it, every one a different shape and colour: soft pink, white, rose, lilac, violet, peach, orange, yellow and red tropical petals, some curled, some flat, a few tiny whole blossoms, a pink cherry petal, an orchid petal. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure green background, no stems, no leaves, no shadow, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, ground, cast shadow, drop shadow, leaves, stems, insects, faces, square edges, cut-off shapes",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "petals-s82-7",
+   "start": "start-petals.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid: sixteen single loose flower petals drifting on the wind, each one separate with space around it, every one a different shape and colour: soft pink, white, rose, lilac, violet, peach, orange, yellow and red tropical petals, some curled, some flat, a few tiny whole blossoms, a pink cherry petal, an orchid petal. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure green background, no stems, no leaves, no shadow, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, ground, cast shadow, drop shadow, leaves, stems, insects, faces, square edges, cut-off shapes",
+   "strength": 0.82,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "petals-s82-23",
+   "start": "start-petals.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid: sixteen single loose flower petals drifting on the wind, each one separate with space around it, every one a different shape and colour: soft pink, white, rose, lilac, violet, peach, orange, yellow and red tropical petals, some curled, some flat, a few tiny whole blossoms, a pink cherry petal, an orchid petal. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure green background, no stems, no leaves, no shadow, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, ground, cast shadow, drop shadow, leaves, stems, insects, faces, square edges, cut-off shapes",
+   "strength": 0.82,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

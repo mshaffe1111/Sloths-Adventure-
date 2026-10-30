@@ -273,20 +273,6 @@ export function drawBubble(canvas: HTMLCanvasElement, w: number, h: number): boo
 export const TAIL_W = HUD_PIECES.tail.w / S;
 export const TAIL_H = HUD_PIECES.tail.h / S;
 
-/** the ring piece drawn for a ring of radius r (its line is the middle 68%) */
-export const ringBox = (r: number) => (2 * r) / 0.68;
-
-/** the same as pieceStyle, written straight onto an element (for the pieces the guide moves itself, outside React) */
-export function setPiece(el: HTMLElement, name: HudPieceName, w: number, h?: number): void {
-  const s = pieceStyle(name, w, h);
-  el.style.width = `${(s.width as number).toFixed(2)}px`;
-  el.style.height = `${(s.height as number).toFixed(2)}px`;
-  el.style.backgroundImage = URL_CSS;
-  el.style.backgroundRepeat = 'no-repeat';
-  el.style.backgroundSize = s.backgroundSize as string;
-  el.style.backgroundPosition = s.backgroundPosition as string;
-}
-
 /** one of Dot's perched poses as a background (css px per atlas px `k`) */
 export function perchStyle(pose: PerchPose, k: number): { w: number; h: number; size: string; pos: string } {
   const f = DOT_PERCH_FRAMES[pose];

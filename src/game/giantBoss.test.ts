@@ -15,7 +15,7 @@ const mk = (state: 'idle' | 'tell' | 'act' | 'rec' | 'stun' | 'roar' | 'dying', 
     id: 1, type: 'boss', x: 1500, y: floor - drake.h / 2, vx: 0, vy: 0, width: drake.w, height: drake.h, hp: 48, maxHp: 48,
     facing, patrolMinX: 0, patrolMaxX: 0, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
-    specialAttackTimer: 0, shieldActive: false, dialogueIntro: '', dialogueDefeat: '', ai: newBrain(),
+    specialAttackTimer: 0, shieldActive: false, dialogueIntro: '', ai: newBrain(),
   } as BossEntity;
   b.ai!.state = state;
   return b;

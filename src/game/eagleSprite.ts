@@ -15,6 +15,7 @@ import { EAGLE_FLAP, EAGLE_FRAMES } from './eagleAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { EAGLE_ANIM, EAGLE_ANIM_UP, EAGLE_ANIM_URL, EAGLE_SEQ } from './eagleAnimData.ts';
+import { FONT_UI } from './fonts.ts';
 
 /** the clips of the eagle's own poses (2026-10-25): a full wing beat, the screech before a dive, the dive and the talons-out strike */
 const ANIM = makeCreatureAnim(EAGLE_ANIM_URL, EAGLE_ANIM, EAGLE_SEQ, EAGLE_ANIM_UP);
@@ -108,7 +109,6 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.4)';
 
   if (hover) {
     // the same "it is open to a hit" ring the code-drawn eagle shows
@@ -118,7 +118,7 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.beginPath();
     ctx.arc(0, -6, 40, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.font = 'bold 12px sans-serif';
+    ctx.font = `bold 12px ${FONT_UI}`;
     for (let k = 0; k < 3; k++) {
       const a = time * 5 + (k * Math.PI * 2) / 3;
       ctx.fillText('✨', 16 + Math.cos(a) * 22, -16 + Math.sin(a) * 12);
@@ -146,7 +146,7 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.arc(16, -56, 9, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 12px sans-serif';
+    ctx.font = `bold 12px ${FONT_UI}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('!', 16, -56);

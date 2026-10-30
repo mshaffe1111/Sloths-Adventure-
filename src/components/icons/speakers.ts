@@ -13,6 +13,7 @@ const ICONS: Record<string, IconName> = {
   Narrator: 'book',
   Petal: 'flower',
   Squirrel: 'paw',
+  Flicker: 'sparkle',
 };
 
 /** the speakers painted on the story sheets: their face sits beside the name (CelHead.tsx) */

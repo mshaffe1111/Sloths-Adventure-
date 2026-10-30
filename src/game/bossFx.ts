@@ -40,6 +40,9 @@ export interface FxOpts {
   rot?: number;
   flipX?: boolean;
   alpha?: number;
+  /** the piece re-coloured to this hue, keeping its own light and shade (made once per colour and kept): World 4's pale grey stone
+   *  dust from the tan dust strip */
+  recolor?: string;
 }
 
 /** one piece, `w` wide, with (x, y) at its anchor; false while the sheet loads or if the piece is missing */
@@ -56,7 +59,9 @@ export function drawFx(ctx: CanvasRenderingContext2D, name: FxName, x: number, y
   ctx.translate(x, y);
   if (o.rot) ctx.rotate(o.rot);
   if (o.flipX) ctx.scale(-1, 1);
-  ctx.drawImage(img, f.x, f.y, f.w, f.h, -w * ax, -h * ay, w, h);
+  const src = o.recolor ? tintedPiece(name, o.recolor, 'color') : null;
+  if (src) ctx.drawImage(src, 0, 0, f.w, f.h, -w * ax, -h * ay, w, h);
+  else ctx.drawImage(img, f.x, f.y, f.w, f.h, -w * ax, -h * ay, w, h);
   ctx.restore();
   return true;
 }
@@ -65,7 +70,7 @@ export function drawFx(ctx: CanvasRenderingContext2D, name: FxName, x: number, y
  * A piece laid along a run from x0 to x1 (a strip: the flood, the dash trail, the storm bank): the piece is drawn `h` tall and repeated,
  * every other copy mirrored so the joins match, the last copy cut to length. (x0, y) is the run's left end at the piece's `ay`.
  */
-export function drawFxRun(ctx: CanvasRenderingContext2D, name: FxName, x0: number, x1: number, y: number, h: number, o: { ay?: number; alpha?: number; offset?: number } = {}): boolean {
+export function drawFxRun(ctx: CanvasRenderingContext2D, name: FxName, x0: number, x1: number, y: number, h: number, o: { ay?: number; alpha?: number; offset?: number; recolor?: string } = {}): boolean {
   const f = BOSS_FX[name];
   if (!f) return false;
   load();
@@ -80,12 +85,14 @@ export function drawFxRun(ctx: CanvasRenderingContext2D, name: FxName, x0: numbe
   ctx.rect(x0, top - 2, len, h + 4);
   ctx.clip();
   const off = (((o.offset ?? 0) % (tw * 2)) + tw * 2) % (tw * 2);
+  const src = o.recolor ? tintedPiece(name, o.recolor, 'color') : null;
   for (let k = 0, x = x0 - off; x < x1; k++, x += tw) {
     const flip = k % 2 === 1;
     ctx.save();
     ctx.translate(x + (flip ? tw : 0), top);
     if (flip) ctx.scale(-1, 1);
-    ctx.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, tw + 0.5, h);
+    if (src) ctx.drawImage(src, 0, 0, f.w, f.h, 0, 0, tw + 0.5, h);
+    else ctx.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, tw + 0.5, h);
     ctx.restore();
   }
   ctx.restore();
@@ -98,10 +105,11 @@ export function fxFrame(base: 'dust' | 'spark', u: number): string {
   return `${base}${Math.max(0, Math.min(n - 1, Math.floor(u * n)))}`;
 }
 
-/** a piece re-coloured once per tint (multiplied by `tint`, its own alpha kept): the pale pennant cloths take their colours this way */
+/** a piece re-coloured once per tint (multiplied by `tint`, its own alpha kept): the pale pennant cloths take their colours this way;
+ *  with `mode` 'color', `tint` sets its hue and colour while its own lightness stays (the dust re-coloured to stone) */
 const tinted = new Map<string, HTMLCanvasElement>();
-function tintedPiece(name: FxName, tint: string): HTMLCanvasElement | null {
-  const key = `${name}|${tint}`;
+function tintedPiece(name: FxName, tint: string, mode: 'multiply' | 'color' = 'multiply'): HTMLCanvasElement | null {
+  const key = `${name}|${tint}|${mode}`;
   const hit = tinted.get(key);
   if (hit) return hit;
   const f = BOSS_FX[name];
@@ -112,7 +120,7 @@ function tintedPiece(name: FxName, tint: string): HTMLCanvasElement | null {
   const g = c.getContext('2d');
   if (!g) return null;
   g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
-  g.globalCompositeOperation = 'multiply';
+  g.globalCompositeOperation = mode;
   g.fillStyle = tint;
   g.fillRect(0, 0, f.w, f.h);
   g.globalCompositeOperation = 'destination-in';

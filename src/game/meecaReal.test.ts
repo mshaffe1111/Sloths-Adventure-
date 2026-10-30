@@ -271,9 +271,9 @@ test("Easy's sparkle comes for going back and forth with nothing changing, not f
     const ri = kit.rooms.indexOf(r);
     sim.stand(r.box.x0 + 200, MEECA_G);
     for (let i = 0; i < 30 * 30; i++) sim.frame();
-    assert.equal(kit.sparkling(ri), false, 'thirty seconds standing still: no clock');
+    assert.equal(kit.stuckHelped(ri), false, 'thirty seconds standing still: no clock');
     for (let k = 0; k < 12; k++) for (let i = 0; i < 12; i++) sim.frame(k % 2 ? { left: true } : { right: true });
-    assert.equal(kit.sparkling(ri), true, 'back and forth: the sparkle');
+    assert.equal(kit.stuckHelped(ri), true, 'back and forth: helped');
     // hints: the room's two steps, in order, then the last again
     const a = mc.askHint();
     const b = mc.askHint();

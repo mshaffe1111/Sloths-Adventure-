@@ -6,7 +6,7 @@
 import type { StoryPanel } from './story.ts';
 import { DOOR, GARDEN, GATES, BLESSING, HORN, MAP, PHOTOGRAPH, PROMISE_PANELS, SEAM, SEALED, STORM, TALLY, TEA, WAITING } from './storyMemories.ts';
 
-export { finalePanels } from './storyFinale.ts';
+export { endTagPanels, finalePanels } from './storyFinale.ts';
 export { PROMISE_PANELS } from './storyMemories.ts';
 
 // ───────────── the scenes ─────────────

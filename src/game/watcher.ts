@@ -34,6 +34,9 @@ export interface WatchZone {
    * 80 s on ?layout=1 upright; the easiest world's eagle shows each new stretch's rhythm once before it can strike)
    */
   freeFirst?: boolean;
+  /** this stretch's warning and sweep (s), when not WATCH's (World 4 on Normal, w4Normal.ts) */
+  warn?: number;
+  pass?: number;
 }
 
 export const WATCH = {
@@ -92,7 +95,7 @@ export function stepWatch(s: WatchState, dt: number, zone: WatchZone | undefined
     if (s.t >= s.dur) {
       s.phase = 'warn';
       s.t = 0;
-      s.dur = WATCH.warn;
+      s.dur = zone.warn ?? WATCH.warn;
       return { warned: true };
     }
     return {};
@@ -105,7 +108,7 @@ export function stepWatch(s: WatchState, dt: number, zone: WatchZone | undefined
     }
     s.phase = 'pass';
     s.t = 0;
-    s.dur = WATCH.pass;
+    s.dur = zone?.pass ?? WATCH.pass;
     s.seen = false;
     s.diveT = 0;
     return {};
@@ -133,7 +136,8 @@ export const harmlessPass = (s: WatchState) => s.passes === 0 || s.passes === s.
 
 /** where the shadow's middle is during a pass (world x): it crosses the view from beyond one edge to beyond the other */
 export function shadowX(s: WatchState, camX: number, viewW: number): number {
-  const u = Math.min(1, s.t / WATCH.pass);
+  // (the sweep's own length: a stretch may have its own, WatchZone.pass)
+  const u = Math.min(1, s.t / (s.phase === 'pass' ? s.dur : WATCH.pass));
   const from = s.dir === 1 ? camX - 160 : camX + viewW + 160;
   const to = s.dir === 1 ? camX + viewW + 160 : camX - 160;
   return from + (to - from) * u;

@@ -1,31 +1,33 @@
-import type { BossEntity, PlayerState } from './types.ts';
+import type { PlayerState } from './types.ts';
 import { drawPaintedCardBoss, drawPaintedBossFrame } from './bossArt.ts';
 import { POKEY, drawPokeyFace, VISEMES, warmStoryHero } from './heroStory.ts';
 import { cameraAt, drawFx, flashAt, poseAt, shakeAt } from './storyShots.ts';
 import { devScale, renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
-import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
-import { MEECA } from './jennifurSprite.ts';
+import { drawHeroSloth, drawGirlfriendDaisy } from './vectorArt.ts';
+import { MEECA, warmStoryMeeca } from './jennifurSprite.ts';
+import { releaseHd } from './storyHd.ts';
 import { actorDx, footing, followScroll, GROUNDED, groundOf, shadowFor, showActor, type StoryCharacter } from './storyActors.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor, ScenePhoto, BloomStage } from './story.ts';
 import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
-import { drawPaintedBird } from './birdSprites.ts';
-import { drawDotFrame, poseFrame, warmDot } from './dotSprite.ts';
+import { drawDotStoryFrame, poseFrame, warmStoryDot } from './dotSprite.ts';
+import { FLICKER_CLIPS } from './flickerClips.ts';
+import { FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP } from './flickerAnimData.ts';
 import { photoUrl } from './photos.ts';
 import { plateImage, preloadPlates, releasePlates } from './plates.ts';
 import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
-import { CEL_K, CELS, drawCel, warmCels } from './storyCels.ts';
+import { CEL_HD, CEL_K, CELS, drawCel, releaseCels, warmCels } from './storyCels.ts';
 import { capStoryZoom, liftForFeet } from './storyFrame.ts';
+import { GROUND_LINE, groundImage } from './storyGround.ts';
+import { isPlate, PLATES } from './plateData.ts';
+import { FONT_READ } from './fonts.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
+/** a plate's scene part (its bottom) as a share of its width: the old 1024 x 572 plates */
+export const PLATE_BASE = 572 / 1024;
 
-// the painted Pokey (the standard hero and the cutscene poses) starts loading as soon as a story can be shown, so the first picture never opens in vector art
-warmStoryHero();
-warmDot();
-// the story-sheet figures are 1.8 MB: fetched a moment later so they never compete with the first screen
-if (typeof window !== 'undefined') setTimeout(() => warmCels(), 1500);
 
 function makePlayer(pose: SceneActor['pose'], facing: 1 | -1): PlayerState {
   return {
@@ -38,15 +40,7 @@ function makePlayer(pose: SceneActor['pose'], facing: 1 | -1): PlayerState {
   };
 }
 
-function makeBoss(angry: boolean, beaten: boolean): BossEntity {
-  return {
-    id: 1, type: 'boss', x: 0, y: -17, vx: 0, vy: 0, width: 60, height: 60, hp: 10, maxHp: 10,
-    facing: 1, patrolMinX: 0, patrolMaxX: 0, attackCooldown: 0, telegraphTimer: 0,
-    isAttacking: angry, animTimer: 0, hitFlashTimer: 0, defeated: beaten, koTimer: 0,
-    behaviorTimer: 0, phase: 1, phaseMax: 3, specialAttackTimer: 0, shieldActive: false,
-    dialogueIntro: '', dialogueDefeat: '',
-  } as unknown as BossEntity;
-}
+
 
 let silCanvas: HTMLCanvasElement | null = null;
 /** Draw something as a flat dark silhouette (works regardless of nested ctx.filter calls). */
@@ -78,62 +72,42 @@ function drawSilhouette(
   ctx.restore();
 }
 
-/** the mossy branch every picture stands on; `scroll` (px) is how far the camera has travelled along it (the grooves, the moss and the flowers go by at that speed) */
-function drawBranch(ctx: CanvasRenderingContext2D, y: number, w: number, h: number, scroll = 0) {
-  const bark = ctx.createLinearGradient(0, y, 0, h);
-  bark.addColorStop(0, '#8a5a2b');
-  bark.addColorStop(0.5, '#5e3a1a');
-  bark.addColorStop(1, '#2f1c0c');
-  ctx.fillStyle = bark;
-  ctx.beginPath();
-  ctx.moveTo(-20, y + 6);
-  ctx.quadraticCurveTo(w * 0.5, y - 8, w + 20, y + 4);
-  ctx.lineTo(w + 20, h + 10);
-  ctx.lineTo(-20, h + 10);
-  ctx.closePath();
-  ctx.fill();
-  // bark grooves
-  ctx.strokeStyle = 'rgba(30, 16, 6, 0.45)';
-  ctx.lineWidth = 3;
-  const gp = w / 9;
-  const go = ((scroll % gp) + gp) % gp;
-  for (let i = -1; i < 11; i++) {
-    const x = i * gp + 20 - go;
-    ctx.beginPath();
-    ctx.moveTo(x, y + 22);
-    ctx.quadraticCurveTo(x + 18, y + 50, x - 6, y + 90);
-    ctx.stroke();
+/**
+ * The painted ground under the figures in a picture over a world's backdrop (storyGround.ts): the world's strip laid along the ground
+ * line at the scene's scale, repeated (every other copy turned over) as far as the camera travels, `scroll` px. While the strip is still
+ * on its way, a soft dark band stands in for it so nobody stands in the air.
+ */
+function drawGround(ctx: CanvasRenderingContext2D, scene: StoryScene, y: number, w: number, h: number, scroll: number, lift: number) {
+  const bottom = h * (1 + lift) + 8;
+  const im = groundImage(scene.world);
+  if (!im) {
+    const g = ctx.createLinearGradient(0, y - 6, 0, bottom);
+    g.addColorStop(0, 'rgba(20, 26, 16, 0)');
+    g.addColorStop(0.08, 'rgba(20, 26, 16, 0.85)');
+    g.addColorStop(1, 'rgba(10, 14, 8, 1)');
+    ctx.fillStyle = g;
+    ctx.fillRect(-20, y - 6, w + 40, bottom - y + 6);
+    return;
   }
-  // moss cap
-  const mg = ctx.createLinearGradient(0, y - 10, 0, y + 26);
-  mg.addColorStop(0, '#9be35a');
-  mg.addColorStop(1, '#3f9a3a');
-  ctx.fillStyle = mg;
-  ctx.beginPath();
-  ctx.moveTo(-20, y + 8);
-  ctx.quadraticCurveTo(w * 0.5, y - 10, w + 20, y + 6);
-  const mo = ((scroll % 26) + 26) % 26;
-  for (let x = w + 20 - mo; x >= -46; x -= 26) {
-    const wx = x + scroll;
-    ctx.quadraticCurveTo(x - 13, y + 30 + (((wx / 26) % 2 + 2) % 2) * 8, x - 26, y + 14);
-  }
-  ctx.closePath();
-  ctx.fill();
-  // tiny flowers
-  const fo = ((scroll % w) + w) % w;
-  for (let rep = -1; rep < 2; rep++) {
-    [[0.12, 1], [0.34, 0], [0.62, 1], [0.86, 0]].forEach(([fx, k]) => {
-      const x = fx * w + rep * w - fo;
-      if (x < -10 || x > w + 10) return;
-      ctx.fillStyle = k ? '#ff9a3c' : '#ff6b8e';
-      ctx.beginPath();
-      ctx.arc(x, y - 2 + Math.sin(fx * 9) * 3, 4.2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#ffe36a';
-      ctx.beginPath();
-      ctx.arc(x, y - 2 + Math.sin(fx * 9) * 3, 1.6, 0, Math.PI * 2);
-      ctx.fill();
-    });
+  const line = GROUND_LINE[scene.world] ?? 0.3;
+  // (the strip's part under its walk line reaches the bottom of the view with room to spare; never shrunk below a third of its size)
+  const k = Math.max(h / 3 / im.naturalHeight, (bottom - y) / ((1 - line) * im.naturalHeight));
+  const tw = im.naturalWidth * k;
+  const th = im.naturalHeight * k;
+  const top = y - line * th;
+  const off = ((scroll % (2 * tw)) + 2 * tw) % (2 * tw);
+  for (let i = -1; i * tw - off < w + 20; i++) {
+    const x = i * tw - off;
+    if (x + tw < -20) continue;
+    ctx.save();
+    if (i & 1) {
+      ctx.translate(x + tw, top);
+      ctx.scale(-1, 1);
+      ctx.drawImage(im, 0, 0, tw + 1, th);
+    } else {
+      ctx.drawImage(im, x, top, tw + 1, th);
+    }
+    ctx.restore();
   }
 }
 
@@ -339,20 +313,114 @@ function drawMood(ctx: CanvasRenderingContext2D, mood: StoryScene['mood'], w: nu
 /** feet stand this many px down into the moss of the branch (its top edge is the ground line), so they read as standing in it, not on its lip */
 const SINK = 5;
 
-/** a soft contact shadow on the ground line under something `bodyW` wide and `bodyH` tall (px) that is `lift` px off the ground */
+/** where the drawers below put contact shadows: the picture itself while the figures go to their own layer (drawFigures) */
+let shadowCtx: CanvasRenderingContext2D | null = null;
+/** the floor's colour under the shadows of this picture (ST-2: tinted from the ground, not one cool grey) */
+let shadowRgb = '14, 20, 30';
+
+/**
+ * A contact shadow on the ground line under something `bodyW` wide and `bodyH` tall (px) that is `lift` px off the ground (ST-2): a tight
+ * dark core where the feet press down and a soft broad pool around it, both in the floor's own darkest colour.
+ */
 function drawContactShadow(ctx: CanvasRenderingContext2D, x: number, y: number, bodyW: number, bodyH: number, lift: number) {
+  const c = shadowCtx ?? ctx;
   const sh = shadowFor(bodyW, bodyH, lift);
+  const k = sh.alpha / 0.55;
+  c.save();
+  if (shadowCtx && shadowCtx !== ctx) c.setTransform(ctx.getTransform());
+  c.translate(x, y + sh.ry * 0.25);
+  for (const [rx, ry, a] of [[sh.rx * 1.35, sh.ry * 1.5, 0.25 * k], [sh.rx * 0.8, sh.rx * 0.12, 0.6 * k]] as const) {
+    c.save();
+    c.scale(1, ry / rx);
+    const g = c.createRadialGradient(0, 0, 0, 0, 0, rx);
+    g.addColorStop(0, `rgba(${shadowRgb}, ${a})`);
+    g.addColorStop(0.55, `rgba(${shadowRgb}, ${a * 0.7})`);
+    g.addColorStop(1, `rgba(${shadowRgb}, 0)`);
+    c.fillStyle = g;
+    c.beginPath();
+    c.arc(0, 0, rx, 0, Math.PI * 2);
+    c.fill();
+    c.restore();
+  }
+  c.restore();
+}
+
+/** how each kind of scene lights its figures (ST-2): a rim on the side the light comes from, a little of the scene's colour over them */
+const LIGHT: Record<StoryScene['mood'], { rim: string; rimA: number; tint: string; tintA: number; shade: string }> = {
+  day: { rim: '255, 236, 190', rimA: 0.42, tint: '255, 214, 150', tintA: 0.06, shade: '28, 34, 14' },
+  dusk: { rim: '255, 172, 96', rimA: 0.55, tint: '150, 70, 110', tintA: 0.1, shade: '40, 18, 30' },
+  night: { rim: '150, 190, 255', rimA: 0.45, tint: '30, 44, 110', tintA: 0.16, shade: '6, 8, 22' },
+  storm: { rim: '178, 204, 255', rimA: 0.5, tint: '40, 50, 96', tintA: 0.14, shade: '8, 10, 24' },
+  glow: { rim: '255, 226, 160', rimA: 0.5, tint: '255, 200, 140', tintA: 0.08, shade: '40, 24, 14' },
+};
+
+let figCanvas: HTMLCanvasElement | null = null;
+let rimCanvas: HTMLCanvasElement | null = null;
+function layer(cv: HTMLCanvasElement | null, w: number, h: number): HTMLCanvasElement | null {
+  if (typeof document === 'undefined') return null;
+  const c = cv ?? document.createElement('canvas');
+  if (c.width !== w || c.height !== h) {
+    c.width = w;
+    c.height = h;
+  }
+  return c;
+}
+
+/**
+ * The figures of a picture, lit by it (ST-2): drawn on a layer of their own with the picture's camera, then a little of the scene's colour
+ * laid over them and a rim of its light along the edges that face the light (upper left, or `light` of the scene: the lamp, the window),
+ * then put down on the picture. Their contact shadows go straight onto the picture, under them.
+ */
+function drawFigures(ctx: CanvasRenderingContext2D, scene: StoryScene, draw: (c: CanvasRenderingContext2D) => void) {
+  const cv = ctx.canvas as HTMLCanvasElement;
+  const fig = (figCanvas = layer(figCanvas, cv.width, cv.height));
+  const rim = (rimCanvas = layer(rimCanvas, cv.width, cv.height));
+  const L = LIGHT[scene.mood] ?? LIGHT.day;
+  shadowRgb = L.shade;
+  const g = fig?.getContext('2d');
+  const r = rim?.getContext('2d');
+  if (!fig || !rim || !g || !r) {
+    draw(ctx);
+    return;
+  }
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.clearRect(0, 0, fig.width, fig.height);
+  g.setTransform(ctx.getTransform());
+  g.globalAlpha = ctx.globalAlpha;
+  shadowCtx = ctx;
+  try {
+    draw(g);
+  } finally {
+    shadowCtx = null;
+  }
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalAlpha = 1;
+  // the rim: the figures, less themselves moved away from the light, in the light's colour
+  const dir = scene.light ?? (scene.plate && isPlate(scene.plate) ? PLATES[scene.plate].light : undefined);
+  const lx = dir?.[0] ?? -0.7;
+  const ly = dir?.[1] ?? -0.7;
+  const d = Math.max(2, Math.round(cv.height / 300));
+  r.setTransform(1, 0, 0, 1, 0, 0);
+  r.globalCompositeOperation = 'copy';
+  r.drawImage(fig, 0, 0);
+  r.globalCompositeOperation = 'source-in';
+  r.fillStyle = `rgb(${L.rim})`;
+  r.fillRect(0, 0, rim.width, rim.height);
+  r.globalCompositeOperation = 'destination-out';
+  r.drawImage(fig, -lx * d, -ly * d);
+  r.globalCompositeOperation = 'source-over';
+  // the scene's colour over the figures, only where they are
+  g.globalCompositeOperation = 'source-atop';
+  g.fillStyle = `rgba(${L.tint}, ${L.tintA})`;
+  g.fillRect(0, 0, fig.width, fig.height);
+  g.globalAlpha = L.rimA;
+  g.globalCompositeOperation = 'lighter';
+  g.drawImage(rim, 0, 0);
+  g.globalAlpha = 1;
+  g.globalCompositeOperation = 'source-over';
   ctx.save();
-  ctx.translate(x, y + sh.ry * 0.3);
-  ctx.scale(1, sh.ry / sh.rx);
-  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, sh.rx);
-  g.addColorStop(0, `rgba(14, 20, 30, ${sh.alpha})`);
-  g.addColorStop(0.6, `rgba(14, 20, 30, ${sh.alpha * 0.75})`);
-  g.addColorStop(1, 'rgba(14, 20, 30, 0)');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.arc(0, 0, sh.rx, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.drawImage(fig, 0, 0);
   ctx.restore();
 }
 
@@ -493,24 +561,50 @@ export function preloadScenePlates(keys: Array<string | undefined>) {
 export function releaseStoryArt() {
   releasePlates();
   releaseLivePlates();
+  releaseHd();
+  releaseCels();
   photoImgs.clear();
 }
 
+/** a story is opening: start fetching its cast's paintings (Pokey, Meeca and Dot's story pages, the story cels) */
+export function warmStoryCast() {
+  warmStoryHero();
+  warmStoryMeeca();
+  warmStoryDot();
+  warmCels();
+}
+
 /** a plate fills the picture (cover), the painting's own floor under the actors; until it has loaded the picture is a dark ground, never another world's scenery */
-function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, lift: number, t = 0) {
+/**
+ * A plate's picture: its bottom 1024:572 is the scene (where the ground and every shot were framed), and a repainted plate goes on
+ * upward past it (PLATE_BASE), so an upright phone's room above the scene (`top`) shows more of the same painting.
+ */
+/** where this frame's plate lies in the scene (drawPlate), for the figures pinned to it */
+let plateMap: { ox: number; iw: number; bh: number } | null = null;
+/** a pinned figure on a plate: its x and y (shares of the plate's scene) to the scene's own shares */
+function pin(a: SceneActor, w: number, h: number): SceneActor {
+  if (!a.pinned || !plateMap) return a;
+  return { ...a, x: (plateMap.ox + a.x * plateMap.iw) / w, y: a.y === undefined ? a.y : (a.y * plateMap.bh) / h };
+}
+
+function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, lift: number, t = 0, top = 0) {
   const im = plateImage(key);
   const hh = h * (1 + lift) + 4;
   if (!im) {
     ctx.fillStyle = '#0a0f18';
-    ctx.fillRect(0, 0, w, hh);
+    ctx.fillRect(0, -top, w, hh + top);
     return;
   }
-  const s = Math.max(w / im.naturalWidth, hh / im.naturalHeight);
+  const bh = im.naturalWidth * PLATE_BASE;
+  const ext = im.naturalHeight - bh;
+  const s = Math.max(w / im.naturalWidth, hh / bh, ext > 0 ? 0 : (hh + top) / bh);
   const iw = im.naturalWidth * s;
-  const ih = im.naturalHeight * s;
-  ctx.drawImage(im, (w - iw) / 2, 0, iw, ih);
-  // the parts of the painting that move (livePlates.ts, test): fire, fireflies, rain, mist
-  drawLivePlate(ctx, key, (w - iw) / 2, 0, s, t);
+  const ox = (w - iw) / 2;
+  const oy = -ext * s;
+  plateMap = { ox, iw, bh: bh * s };
+  ctx.drawImage(im, ox, oy, iw, im.naturalHeight * s);
+  // the parts of the painting that move (livePlates.ts, test): fire, fireflies, rain, mist (painted over the scene part)
+  drawLivePlate(ctx, key, ox, 0, (s * im.naturalWidth) / 1024, t);
 }
 
 /** the look of a memory: colour drained and warmed, the edges melting into old paper, a faint projector flicker */
@@ -525,7 +619,8 @@ function drawMemoryWash(ctx: CanvasRenderingContext2D, w: number, h: number, t: 
   ctx.fillRect(0, 0, w, h);
   ctx.globalCompositeOperation = 'source-over';
   ctx.globalAlpha = 1;
-  const g = ctx.createRadialGradient(w / 2, h / 2, h * 0.36, w / 2, h / 2, w * 0.6);
+  // (an old photograph's paper edge, round the picture whatever its shape: upright it is taller than wide)
+  const g = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.36, w / 2, h / 2, Math.hypot(w, h) * 0.5);
   g.addColorStop(0, 'rgba(250, 232, 190, 0)');
   g.addColorStop(0.68, 'rgba(250, 232, 190, 0.34)');
   g.addColorStop(1, 'rgba(238, 210, 156, 0.92)');
@@ -576,7 +671,7 @@ function drawPhotoCard(ctx: CanvasRenderingContext2D, ph: ScenePhoto, w: number,
   ctx.strokeRect(-pw / 2, -chh / 2 + padTop, pw, ph_);
   if (ph.caption) {
     ctx.fillStyle = '#3b2f22';
-    ctx.font = 'italic 24px Georgia, "Times New Roman", serif';
+    ctx.font = `italic 24px ${FONT_READ}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(ph.caption, 0, chh / 2 - padBot / 2 + 2);
@@ -613,7 +708,7 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
   const y = (a.y ?? 0.45) * h + Math.sin(t * 3.1) * (hover ? 6 : 3);
   const sc = a.scale ?? 1;
   const face = a.facing === -1 ? -1 : 1;
-  if (drawDotFrame(ctx, poseFrame(pose, t), x, y, 0.95 * sc, face, hover ? 0.05 + Math.sin(t * 1.3) * 0.04 : 0)) {
+  if (drawDotStoryFrame(ctx, poseFrame(pose, t), x, y, 0.95 * sc, face, hover ? 0.05 + Math.sin(t * 1.3) * 0.04 : 0)) {
     if (pose === 'dizzy') {
       for (let i = 0; i < 3; i++) {
         const ang = t * 3 + (i * Math.PI * 2) / 3;
@@ -625,18 +720,63 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
         glint(ctx, x + (i - 1) * 52 * sc, y - (46 + ph * 26) * sc, (7 + 5 * Math.sin(ph * Math.PI)) * sc, Math.sin(ph * Math.PI));
       }
     }
-    return;
   }
-  const size = sc * 4.2;
-  if (!drawPaintedBird(ctx, 'hummer', x, y, t, 1, size, face, 0, -0.12)) {
-    ctx.save();
+  // (until her story paintings have loaded she is not drawn: no stand-in bird)
+}
+
+/** Flicker's height in scene units at scale 1 (a firefly: well under Dot's size) */
+const FLICKER_H = 44;
+/** the light's stutter, a second and a half around: when it is dark (his tell: he is not telling the whole truth) */
+const STUTTER: readonly [number, number][] = [[0.0, 0.07], [0.14, 0.2], [0.62, 0.7], [0.76, 0.8]];
+export function flickerLit(t: number, stutter: boolean): number {
+  if (!stutter) return 1;
+  const p = (t % 1.5) / 1.5;
+  return STUTTER.some(([a, b]) => p >= a && p < b) ? 0.12 : 1;
+}
+
+function lightGlow(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number) {
+  if (a <= 0.01) return;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, `rgba(226, 255, 160, ${0.6 * a})`);
+  g.addColorStop(0.4, `rgba(200, 255, 140, ${0.22 * a})`);
+  g.addColorStop(1, 'rgba(200, 255, 140, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/** Flicker: his painted clip hovering in place, the warm halo of his light around him (stuttering when `stutter` is set) */
+function drawFlickerActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, scroll = 0) {
+  const sc = a.scale ?? 1;
+  const x = a.x * w + Math.sin(t * 1.3 + a.x * 5) * 4 * sc - scroll;
+  const y = (a.y ?? 0.5) * h + Math.sin(t * 2.6) * 4 * sc;
+  const face = a.facing === -1 ? -1 : 1;
+  const lit = flickerLit(t, !!a.stutter);
+  const clip = a.clip ?? 'blink';
+  const glowR = (clip === 'glow' ? 120 : clip === 'doze' ? 60 : 92) * sc;
+  lightGlow(ctx, x - face * 8 * sc, y + 6 * sc, glowR, (clip === 'doze' ? 0.45 : 0.8) * lit);
+  ctx.save();
+  ctx.globalAlpha *= 0.82 + 0.18 * lit;
+  let drew = false;
+  if (FLICKER_CLIPS.ready()) {
     ctx.translate(x, y);
-    ctx.fillStyle = '#2f9d6a';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 16 * sc, 9 * sc, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    // (his clips face right: mirrored to face left)
+    ctx.scale(face, 1);
+    drew = FLICKER_CLIPS.draw(ctx, FLICKER_CLIPS.ping(clip, t, FLICKER_ANIM_FPS), (FLICKER_H * sc / FLICKER_ANIM_H) * FLICKER_ANIM_UP);
   }
+  ctx.restore();
+  if (!drew) {
+    ctx.fillStyle = '#6b4320';
+    ctx.beginPath();
+    ctx.arc(x, y, 9 * sc, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // the bright point of his tail
+  lightGlow(ctx, x - face * 10 * sc, y + 8 * sc, 18 * sc, lit);
 }
 
 /**
@@ -651,7 +791,7 @@ function bustBand(scene: StoryScene): number {
     for (const key of a.seq) {
       for (const f of Array.isArray(key.frame) ? key.frame : key.frame ? [key.frame] : []) {
         const c = CELS[f];
-        if (c?.c === 'b') m = Math.max(m, 0.2 * c.h * CEL_K * (a.scale ?? 1) * (key.sc ?? 1));
+        if (c?.c === 'b') m = Math.max(m, (0.2 * (c.h - 2 * c.m) * CEL_K * (a.scale ?? 1) * (key.sc ?? 1)) / CEL_HD);
       }
     }
   }
@@ -670,7 +810,10 @@ function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
   const k = CEL_K * (a.scale ?? 1) * pose.sc;
   const face = (a.facing === -1 ? -1 : 1) * (pose.flip ? -1 : 1) as 1 | -1;
   const bust = c.c === 'b';
-  if (c.c !== 'raw' && !bust) drawContactShadow(ctx, x, groundY, c.w * k * 0.6, c.h * k, Math.max(0, groundY - feetY));
+  // (the frame's own size, in px of the old sheets: the page holds it CEL_HD times bigger, grown by m)
+  const ow = (c.w - 2 * c.m) / CEL_HD;
+  const oh = (c.h - 2 * c.m) / CEL_HD;
+  if (c.c !== 'raw' && !bust) drawContactShadow(ctx, x, groundY, ow * k * 0.6, oh * k, Math.max(0, groundY - feetY));
   ctx.save();
   ctx.translate(x, feetY);
   ctx.rotate(pose.rot * face);
@@ -687,11 +830,13 @@ function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
 
 function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
   if (a.kind === 'dot') { drawDot(ctx, a, w, h, t, scroll); return; }
+  if (a.kind === 'flicker') { drawFlickerActor(ctx, a, w, h, t, scroll); return; }
   if (a.kind === 'cel') { drawCelActor(ctx, a, w, h, t, ground, scroll); return; }
   // Pokey and Meeca: the painted characters, one engine (moods, moves, ground, shadow)
   if (a.kind === 'milo' && a.portrait) { drawPortrait(ctx, a, w, h, t, ground, scroll); return; }
-  if (a.kind === 'milo' && drawCharacter(ctx, a, POKEY, w, h, t, ground, scroll, 'idle')) return;
-  else if ((a.kind === 'daisy' || a.kind === 'daisy_wave') && drawCharacter(ctx, a, MEECA, w, h, t, ground, scroll, a.kind === 'daisy_wave' ? 'scaredwave' : 'happy')) return;
+  // (only their paintings: until those have loaded the picture goes without them, never the old drawn stand-ins)
+  if (a.kind === 'milo') { drawCharacter(ctx, a, POKEY, w, h, t, ground, scroll, 'idle'); return; }
+  if (a.kind === 'daisy' || a.kind === 'daisy_wave') { drawCharacter(ctx, a, MEECA, w, h, t, ground, scroll, a.kind === 'daisy_wave' ? 'scaredwave' : 'happy'); return; }
   if (a.kind === 'boss' && a.seq && drawBossPerformer(ctx, a, w, h, t, ground, scroll)) return;
   const foot = footing(a, ground);
   const dx = actorDx(a, t, w);
@@ -702,17 +847,6 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
   ctx.save();
   ctx.translate(x, feetY);
   switch (a.kind) {
-    case 'milo': {
-      // the vector fallback, while the painted art loads (or with it switched off)
-      ctx.scale(s, s);
-      if (face === -1) ctx.scale(-1, 1);
-      const p = makePlayer(a.pose, 1);
-      if (a.pose === 'happy') {
-        p.y = -Math.abs(Math.sin(t * 5)) * 5;
-      }
-      drawHeroSloth(ctx, p, t);
-      break;
-    }
     case 'thornbark': {
       // the corrupted guardian; once freed he is the gentle Jungle Guardian again
       if (face === -1) ctx.scale(-1, 1);
@@ -728,18 +862,10 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
       }
       break;
     }
-    case 'daisy':
-    case 'daisy_wave': {
-      ctx.scale(s, s);
-      if (face === -1) ctx.scale(-1, 1);
-      drawGirlfriendDaisy(ctx, 0, 0, t, a.kind === 'daisy_wave');
-      break;
-    }
     case 'boss': {
       ctx.scale(s * 0.62, s * 0.62);
       if (face === -1) ctx.scale(-1, 1);
-      const b = makeBoss(!!a.angry, !!a.beaten);
-      if (a.beaten) {
+      if (a.beaten && a.world !== 10) {
         ctx.rotate(-0.1);
         ctx.globalAlpha = 0.92;
       }
@@ -747,24 +873,27 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
       const paintedCard = (c: CanvasRenderingContext2D) => {
         c.translate(0, 24);
         c.scale(1.3, 1.3);
+        // the General in a story is the grieving grandfather in his greatcoat (the story cels), not the stage's war-look sprite; his cards
+        // were painted from that sprite's frames, at its scale (0.72 world units to its pixel)
+        if (a.world === 10) return drawCel(c, `gn.card_${a.beaten ? 'fallen' : a.angry ? 'roar' : 'idle'}`, 0, 0, 0.72, 1);
         return drawPaintedCardBoss(c, a.world ?? 1, !!a.angry, !!a.beaten);
       };
+      // (only the painted guardian, never the old drawn stand-in: on a slow phone that showed the General as a tin robot; until the
+      // painting has loaded the picture goes without him)
       if (a.silhouette) {
         drawSilhouette(ctx, (c) => {
           c.save();
-          const ok = paintedCard(c);
+          paintedCard(c);
           c.restore();
-          if (!ok) drawBossEntity(c, b, t, a.world ?? 1);
         });
       } else {
         ctx.save();
-        const ok = paintedCard(ctx);
+        paintedCard(ctx);
         ctx.restore();
-        if (!ok) drawBossEntity(ctx, b, t, a.world ?? 1);
       }
-      if (a.beaten) {
+      if (a.beaten && a.world !== 10) {
         ctx.globalAlpha = 1;
-        // two dizzy sparkles over the beaten guardian: drawn four-point stars, gold with a darker rim
+        // two dizzy sparkles over the beaten guardian (not over the General: his fall in the courtyard is no joke): drawn four-point stars, gold with a darker rim
         for (const [sx, sy, sr] of [[-10, -105 + Math.sin(t * 3) * 3, 11], [24, -92 + Math.cos(t * 3) * 3, 9]] as const) {
           ctx.beginPath();
           for (let k = 0; k < 8; k++) {
@@ -861,12 +990,12 @@ function drawFortress(ctx: CanvasRenderingContext2D, w: number, h: number, t: nu
   ctx.fill();
 }
 
-function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryScene['mood'], w: number, h: number, t: number, castle?: number) {
+function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryScene['mood'], w: number, h: number, t: number, castle?: number, top = 0) {
   ctx.save();
   switch (world) {
     case 10: {
       // the painted castle fills the picture when it is loaded; the drawn storm clouds and fortress are the fallback and the classic look
-      if (drawCastleBackdrop(ctx, castle ?? FORTRESS_CASTLE, w, h, t)) {
+      if (drawCastleBackdrop(ctx, castle ?? FORTRESS_CASTLE, w, h, t, top)) {
         if (mood === 'storm') {
           const ph = (t % 5) / 5;
           if (ph < 0.1) {
@@ -1039,12 +1168,12 @@ function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryS
       break;
     }
     case 5: {
-      // giant orchid-draped spider webs
+      // giant orchid-draped spider webs (hung from the top of the view: upright, the old top is mid-screen, and its straight strand showed)
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
       ctx.lineWidth = 1.6;
       [[0.04, 0], [0.96, 0]].forEach(([cx, cy], k) => {
         const ox = cx * w;
-        const oy = cy * h;
+        const oy = cy * h - top;
         const dir = k ? -1 : 1;
         for (let r = 1; r <= 6; r++) {
           ctx.beginPath();
@@ -1148,7 +1277,9 @@ function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryS
       break;
     }
     default: {
-      // Emerald Canopy: warm sun shafts
+      // Emerald Canopy: warm sun shafts (from the top of the view, upright too)
+      ctx.translate(0, -top);
+      h += top;
       for (let i = 0; i < 4; i++) {
         const sx = w * (0.15 + i * 0.22);
         const g = ctx.createLinearGradient(sx, 0, sx + 80, h);
@@ -1243,9 +1374,9 @@ function paintFinish(ctx: CanvasRenderingContext2D, w: number, h: number, mood: 
 }
 
 /** the set piece (the trees, the castle) goes by at a slower speed than the branch; tiles are laid side by side, every other one turned over so the seams match */
-function drawSetPieceScrolled(ctx: CanvasRenderingContext2D, world: number, mood: StoryScene['mood'], w: number, h: number, t: number, castle: number | undefined, scroll: number) {
+function drawSetPieceScrolled(ctx: CanvasRenderingContext2D, world: number, mood: StoryScene['mood'], w: number, h: number, t: number, castle: number | undefined, scroll: number, top = 0) {
   if (Math.abs(scroll) < 0.5) {
-    drawSetPiece(ctx, world, mood, w, h, t, castle);
+    drawSetPiece(ctx, world, mood, w, h, t, castle, top);
     return;
   }
   const shift = scroll * 0.4;
@@ -1258,9 +1389,9 @@ function drawSetPieceScrolled(ctx: CanvasRenderingContext2D, world: number, mood
       ctx.scale(-1, 1);
     }
     ctx.beginPath();
-    ctx.rect(0, 0, w, h);
+    ctx.rect(0, -top, w, h + top);
     ctx.clip();
-    drawSetPiece(ctx, world, mood, w, h, t, castle);
+    drawSetPiece(ctx, world, mood, w, h, t, castle, top);
     ctx.restore();
   }
 }
@@ -1286,7 +1417,12 @@ function drawLineup(ctx: CanvasRenderingContext2D, w: number, h: number, t: numb
     ctx.translate(bx, by);
     ctx.scale(ls, ls);
     if (i % 5 > 1) ctx.scale(-1, 1);
-    drawSilhouette(ctx, (c) => drawBossEntity(c, makeBoss(false, false), t, i + 1), 0.9, i === 9 ? '#2a0a14' : '#0b1024');
+    drawSilhouette(ctx, (c) => {
+      c.translate(0, 24);
+      c.scale(1.3, 1.3);
+      if (i === 9) drawCel(c, 'gn.card_idle', 0, 0, 0.72, 1);
+      else drawPaintedCardBoss(c, i + 1, false, false);
+    }, 0.9, i === 9 ? '#2a0a14' : '#0b1024');
     ctx.restore();
   }
 }
@@ -1297,26 +1433,30 @@ const STORY_BAKE = 0.55;
 /**
  * Draw one story picture into a w x h scene space (the canvas is expected to be scaled to it). `lift` raises the
  * whole picture by at least that fraction of the height, and more if need be so the ground sits above `feetMax` of
- * the view: a dialogue bar over the bottom of the screen hides scenery instead of the characters' feet.
+ * the view: a dialogue bar over the bottom of the screen hides scenery instead of the characters' feet. `top` is the room an upright
+ * phone shows above the scene (scene units above y = 0, the canvas already moved down by it): the plates are painted tall enough to
+ * fill it and the backdrops are laid over the whole height, so the picture fills the screen instead of a band across its middle.
  */
-export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number, w = SCENE_W, h = SCENE_H, lift = 0, feetMax = 1) {
+export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number, w = SCENE_W, h = SCENE_H, lift = 0, feetMax = 1, top = 0) {
   ctx.save();
-  ctx.clearRect(0, 0, w, h);
+  const vh = h + top;
+  ctx.clearRect(0, -top, w, vh);
   // camera: close-up zoom with a slow push-in
   const cam = scene.camera ? cameraAt(scene.camera, t) : null;
   const big = scene.actors.reduce((m, a) => Math.max(m, a.scale ?? 1), 1);
   const z = capStoryZoom(cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1)), devScale(ctx), big);
   const fx = Math.min(w - w / (2 * z), Math.max(w / (2 * z), (cam ? cam.fx : scene.focusX ?? 0.5) * w));
-  const fy = Math.min(h - h / (2 * z), Math.max(h / (2 * z), (cam ? cam.fy : scene.focusY ?? 0.62) * h));
+  // (upright the view is taller than the scene: it stands on the scene's bottom edge and the room above shows the painting's top)
+  const fy = Math.min(h - vh / (2 * z), Math.max(-top + vh / (2 * z), (cam ? cam.fy : scene.focusY ?? 0.62) * h));
   // (the feet: where the ground lands in the view through this camera, raised clear of the words box; but a figure painted cut off
   // below the chest, a bust, melts away over its bottom fifth, and that melt must stay behind the box, not stand see-through over the
   // picture: then the ground goes as far under the box top as the melt is tall)
   const band = feetMax < 0.9 ? bustBand(scene) : 0;
-  lift = liftForFeet((groundOf(scene) * h - fy) * z + h / 2, h, band ? feetMax + 0.06 + (band * z) / h : feetMax, lift);
-  ctx.translate(0, -lift * h);
+  lift = liftForFeet((groundOf(scene) * h - fy) * z + vh / 2, vh, band ? feetMax + 0.06 + (band * z) / vh : feetMax, lift);
+  ctx.translate(0, -lift * vh);
   const [shx, shy] = shakeAt(scene.fx, t);
   ctx.translate(shx, shy);
-  ctx.translate(w / 2, h / 2);
+  ctx.translate(w / 2, -top + vh / 2);
   ctx.scale(z, z);
   ctx.translate(-fx, -fy);
   // the camera follows an actor that travels: the world goes by at the speed it walks (sky and hills at their own, slower, speeds)
@@ -1325,40 +1465,48 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   // the sky and hills drift slowly behind the actors
   const camX = (scene.camX ?? 400) + t * 9 + scroll;
   const plated = !!scene.plate;
+  plateMap = null;
   if (plated) {
-    drawPlate(ctx, scene.plate as string, w, h, lift, t);
+    drawPlate(ctx, scene.plate as string, w, h, lift, t, top);
   } else {
-    withBakeScale(STORY_BAKE, () => renderScenery(ctx, scene.world, camX, 0, w, h * (1 + lift) + 4, t, true));
-    drawSetPieceScrolled(ctx, scene.world, scene.mood, w, h, t, scene.castle, scroll);
+    ctx.save();
+    ctx.translate(0, -top);
+    withBakeScale(STORY_BAKE, () => renderScenery(ctx, scene.world, camX, 0, w, vh * (1 + lift) + 4, t, true));
+    ctx.restore();
+    drawSetPieceScrolled(ctx, scene.world, scene.mood, w, h, t, scene.castle, scroll, top);
   }
 
   if (scene.lineup) {
-    drawBranch(ctx, h * ground, w, h, scroll);
+    drawGround(ctx, scene, h * ground, w, h, scroll, lift);
     drawLineup(ctx, w, h, t, ground);
   } else {
-    if (!plated) drawBranch(ctx, h * ground, w, h, scroll);
-    scene.actors.forEach((a) => drawActor(ctx, a, w, h, t, ground, scroll));
+    if (!plated) drawGround(ctx, scene, h * ground, w, h, scroll, lift);
+    drawFigures(ctx, scene, (c) => scene.actors.forEach((a) => drawActor(c, pin(a, w, h), w, h, t, ground, scroll)));
   }
 
   drawFx(ctx, scene.fx, t, w, h);
-  drawParticles(ctx, scene.particles, w, h, t);
-  drawMood(ctx, scene.mood, w, h, t);
-  if (!plated) withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, h * (1 + lift) + 4, t, true));
+  ctx.save();
+  ctx.translate(0, -top);
+  drawParticles(ctx, scene.particles, w, vh, t);
+  drawMood(ctx, scene.mood, w, vh, t);
+  if (!plated) withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, vh * (1 + lift) + 4, t, true));
+  ctx.restore();
   ctx.restore();
   ctx.save();
-  if (scene.memory) drawMemoryWash(ctx, w, h, t);
-  if (scene.photo) drawPhotoCard(ctx, scene.photo, w, h, t);
-  paintFinish(ctx, w, h, scene.mood);
+  ctx.translate(0, -top);
+  if (scene.memory) drawMemoryWash(ctx, w, vh, t);
+  if (scene.photo) drawPhotoCard(ctx, scene.photo, w, vh, t);
+  paintFinish(ctx, w, vh, scene.mood);
   // cinematic vignette
-  const vg = ctx.createRadialGradient(w / 2, h / 2, h * 0.45, w / 2, h / 2, w * 0.7);
+  const vg = ctx.createRadialGradient(w / 2, vh / 2, Math.min(w, vh) * 0.45, w / 2, vh / 2, Math.max(w, vh) * 0.7);
   vg.addColorStop(0, 'rgba(0, 0, 0, 0)');
   vg.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
   ctx.fillStyle = vg;
-  ctx.fillRect(0, 0, w, h);
+  ctx.fillRect(0, 0, w, vh);
   const fl = flashAt(scene.fx, t);
   if (fl > 0) {
     ctx.fillStyle = `rgba(255,250,235,${fl})`;
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillRect(0, 0, w, vh);
   }
   ctx.restore();
 }

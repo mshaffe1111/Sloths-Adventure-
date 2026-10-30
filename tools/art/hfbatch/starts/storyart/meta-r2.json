@@ -1,0 +1,97 @@
+{
+ "r2-pokey-idle": {
+  "scale": 3.923444976076555,
+  "ox": 288,
+  "oy": 117
+ },
+ "r2-pokey-duck": {
+  "scale": 5.125,
+  "ox": 189,
+  "oy": 122
+ },
+ "r2-pokey-worried": {
+  "scale": 4.1206030150753765,
+  "ox": 327,
+  "oy": 118
+ },
+ "r2-cel-mc-sing_reach": {
+  "scale": 4.876190476190477,
+  "ox": 161,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   816,
+   964,
+   144,
+   168
+  ]
+ },
+ "r2-cel-mx-petal_glow": {
+  "scale": 5.389473684210526,
+  "ox": 127,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   550,
+   1302,
+   143,
+   152
+  ]
+ },
+ "r2-cel-gn-ready_a": {
+  "scale": 3.0340740740740744,
+  "ox": 54,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1412,
+   0,
+   302,
+   270
+  ]
+ },
+ "r2-cel-gv-stand": {
+  "scale": 4.158375634517767,
+  "ox": 198,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1092,
+   1493,
+   151,
+   197
+  ]
+ },
+ "r2-cel-gr-stand_hands": {
+  "scale": 4.934939759036145,
+  "ox": 275,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   542,
+   2080,
+   96,
+   166
+  ]
+ },
+ "r2-meeca-idle": {
+  "scale": 3.8497652582159625,
+  "ox": 269,
+  "oy": 117
+ },
+ "r2-gen-idle": {
+  "scale": 3.66568093385214,
+  "ox": 72,
+  "oy": 196
+ },
+ "r2-gen-roar": {
+  "scale": 3.438248175182482,
+  "ox": 17,
+  "oy": 251
+ },
+ "r2-gen-fallen": {
+  "scale": 2.211455399061033,
+  "ox": 52,
+  "oy": 524
+ }
+}

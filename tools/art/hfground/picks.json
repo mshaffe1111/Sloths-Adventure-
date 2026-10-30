@@ -1,0 +1,52 @@
+{
+ "1": {
+  "fill": "fill-w1-a",
+  "lip": "lip-w1-b-v9",
+  "end": "end-w1-a"
+ },
+ "2": {
+  "fill": "fill-w2-a",
+  "lip": "lip-w2-a-v9",
+  "end": "end-w2-a"
+ },
+ "3": {
+  "fill": "fill-w3-a",
+  "lip": "lip-w3-b-v9",
+  "end": "end-w3-a"
+ },
+ "4": {
+  "fill": "fill-w4-a",
+  "lip": "lip-w4-a-v9",
+  "end": "end-w4-a"
+ },
+ "5": {
+  "fill": "fill-w5-r",
+  "lip": "lip-w5-a-v9",
+  "end": "end-w5-a"
+ },
+ "6": {
+  "fill": "fill-w6-b",
+  "lip": "lip-w6-b-v9",
+  "end": "end-w6-a"
+ },
+ "7": {
+  "fill": "fill-w7-d",
+  "lip": "lip-w7-a-v9",
+  "end": "end-w7-a"
+ },
+ "8": {
+  "fill": "fill-w8-a",
+  "lip": "lip-w8-b-v9",
+  "end": "end-w8-a"
+ },
+ "9": {
+  "fill": "fill-w9-a",
+  "lip": "lip-w9-a-v9",
+  "end": "end-w9-a"
+ },
+ "10": {
+  "fill": "fill-w10-c",
+  "lip": "lip-w10-a-v9",
+  "end": "end-w10-b"
+ }
+}

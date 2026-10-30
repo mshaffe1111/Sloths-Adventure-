@@ -209,11 +209,11 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   const softPit = (edge: number, far: number) => {
     const wallTop = G + BANK_H;
     const wallH = HOLLOW_Y - wallTop + 4;
-    P.push({ id: pid++, x: r(edge - 60), y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone' });
-    P.push({ id: pid++, x: r(far), y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: r(edge - 60), y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone', soil: true });
+    P.push({ id: pid++, x: r(far), y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone', soil: true });
     bank(edge - 60, far + 60, HOLLOW_Y, 'moss_stone');
     const sw = far - edge < 170 ? far - edge : 70;
-    P.push({ id: pid++, x: r(far - sw), y: HOLLOW_Y - PIT_STEP, width: r(sw), height: PIT_STEP, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: r(far - sw), y: HOLLOW_Y - PIT_STEP, width: r(sw), height: PIT_STEP, type: 'solid', style: 'moss_stone', soil: true });
   };
   const flower = (x: number, y: number, v: Collectible['botanicalVariant'] = 'orchid') => {
     const c: Collectible = { id: cid++, type: 'flower', botanicalVariant: v, x: r(x), y: r(y), collected: false, bobPhase: (x * 0.031) % 6.28 };

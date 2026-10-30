@@ -36,6 +36,9 @@ export interface PaintedSet {
   mid: HTMLImageElement;
   /** the near strip is optional: a world can run on its far and middle strips while its near one is being remade */
   near: HTMLImageElement | null;
+  /** the painted sky above the far strip (<stem>-sky.webp, tools/art/hfbatch/skygpu.py), seen only upright, where the strips are drawn
+   * at the size sideways uses and the view runs taller than the far strip (scenery.ts drawStrip) */
+  sky: HTMLImageElement | null;
   /** when it finished decoding (performance.now()): the scenery fades a set in over FADE_IN_MS from then */
   at: number;
 }
@@ -47,11 +50,11 @@ export const FADE_IN_MS = 280;
 const now = (): number => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 
 type Part = keyof PaintedSet;
-const PARTS: Part[] = ['far', 'mid', 'near'];
+const PARTS: Part[] = ['far', 'mid', 'near', 'sky'];
 
 function urlFor(stem: string, part: Part): string | null {
   const own = FILES[`../assets/backdrops/${stem}-${part}.webp`];
-  if (own) return own;
+  if (own || part === 'sky') return own ?? null; // (the sky goes with its own far strip, never borrowed)
   // a far-only set (Worlds 1-4 through the day, stageBackdrops.ts) borrows its world's middle and near strips
   if (part !== 'far' && FAR_ONLY.includes(stem)) return FILES[`../assets/backdrops/w${worldOf(stem)}-${part}.webp`] ?? null;
   return null;
@@ -137,7 +140,7 @@ function loadSet(stem: string) {
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
     .then(() => {
       const at = (p: Part) => imgs[parts.indexOf(p)] ?? null;
-      ready.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near'), at: now() });
+      ready.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near'), sky: at('sky'), at: now() });
       listeners.forEach((fn) => fn(world));
       trim(stem);
     })
@@ -298,6 +301,9 @@ export function revealSet(parts: { far: string; mid: string; near: string }): Pa
   if (revealLoading.has(key) || typeof Image === 'undefined') return null;
   const urls = [parts.far, parts.mid, parts.near].map((n) => FILES[`../assets/backdrops/${n}.webp`]);
   if (urls.some((u) => !u)) return null;
+  // (and the far strip's own painted sky, for the upright view, when it has one)
+  const skyUrl = FILES[`../assets/backdrops/${parts.far.replace(/-far$/, '-sky')}.webp`];
+  if (skyUrl) urls.push(skyUrl);
   revealLoading.add(key);
   const imgs = urls.map((u) => {
     const im = new Image();
@@ -306,7 +312,7 @@ export function revealSet(parts: { far: string; mid: string; near: string }): Pa
     return im;
   });
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2], at: typeof performance !== 'undefined' ? performance.now() : 0 }))
+    .then(() => reveals.set(key, { far: imgs[0], mid: imgs[1], near: imgs[2], sky: imgs[3] ?? null, at: typeof performance !== 'undefined' ? performance.now() : 0 }))
     .catch(() => { /* no reveal: the world's own strips stay */ })
     .finally(() => revealLoading.delete(key));
   return null;

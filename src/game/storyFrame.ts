@@ -10,6 +10,8 @@ export const MAX_CEL_MAG = 1.5;
  * a smaller CEL_K gives the close-ups their room back by itself).
  */
 export function capStoryZoom(z: number, dev: number, actorScale = 1): number {
+  // (measured against the old sheets' size on purpose: the shots were framed under this cap, and letting the repainted cels zoom in
+  // further cut heads off at the top of the picture)
   const room = MAX_CEL_MAG / Math.max(1e-6, dev * CEL_K * actorScale);
   return Math.min(z, Math.max(1, room));
 }
