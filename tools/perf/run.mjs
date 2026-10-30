@@ -215,6 +215,18 @@ async function mapSites(results) {
 const vite = await startVite();
 log('vite up on', port);
 const browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
+// a first page that only loads the game: a fresh dev server optimizes its dependencies on the first load and then reloads the page,
+// which wiped a scenario's window.__play mid-start (the draw check's first runs, 2026-10-30)
+{
+  const page = await browser.newPage();
+  await page.goto(`http://127.0.0.1:${port}/?lessons=off`, { timeout: 180000 }).catch(() => {});
+  for (let t0 = Date.now(); Date.now() - t0 < 300000; ) {
+    if (await page.evaluate(() => typeof window.__play === 'function').catch(() => false)) break;
+    await sleep(1000);
+  }
+  await sleep(4000);
+  await page.close();
+}
 const results = [];
 try {
   for (const scen of RUN) for (const orient of ORIENTS) {
