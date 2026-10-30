@@ -9,7 +9,7 @@ import {
   BUTLER, CAKE, chairPull, COCOON, hitCocoon, humReaches, inSteam, newButler, newCocoon, newGate, newSit, orchidAt, potAt, punchReachesCocoon,
   admiring, seatedIn, silkSpeed, sitDrowsy, sleepySpeed, SIT, spoutOf, stepButler, stepGate, stepSit, TEAPOT, THREAD, threadTouched,
   touchesCake, trayAt, W5_TEACH, onScreen, SPIDER5, laced, newSeam, SEAMSTRESS, stepSeam, type ButlerState, type CocoonState,
-  type GateState, type SeamState, type SitState, type ViewBox, type W5Extras, WOBBLE,
+  type GateState, type SeamState, type SitState, type Teapot, type ViewBox, type W5Extras, WOBBLE,
 } from './w5Kit.ts';
 import { cocoonStop, onRest } from './w5Kit.ts';
 import { W5_POUCH } from './w5Lines.ts';
@@ -90,6 +90,8 @@ export class W5Play {
   private moved = false;
   /** seconds of sleepiness left (a cake, the steam, the Butler's tray), and how long this spell of it was (the moon's ring) */
   private sleepy = 0;
+  /** the puff each Normal pot last took a heart on (w5Normal.ts): one heart a puff, however long he stands in it */
+  private steamHurt = new Map<Teapot, number>();
   private sleepyFor = 1;
   /** seconds in which standing still does not count (the stuck-helper has just spoken: its line is read first, not the silk's) */
   private grace = 0;
@@ -414,6 +416,14 @@ export class W5Play {
       const ph = potAt(pot, h.t);
       if (ph.phase === 'puff' && ph.u < dt / pot.puff + 1e-6 && Math.abs(pot.x - p.x) < 700) h.sfx('puff');
       if (inSteam(pot, h.t, p.x, p.y)) {
+        // (on Normal a puff breathed costs a heart too, once a puff: w5Normal.ts)
+        if (pot.hurts) {
+          const puffNo = Math.floor((h.t + pot.offset) / (pot.idle + pot.warn + pot.puff));
+          if (this.steamHurt.get(pot) !== puffNo) {
+            this.steamHurt.set(pot, puffNo);
+            h.hurt(p.x < pot.x ? -1 : 1);
+          }
+        }
         doze(TEAPOT.sleepy);
         h.tip(said(W5_TEACH.steam), W5_TEACH.steam, 3);
       }
@@ -456,7 +466,7 @@ export class W5Play {
       const v = h.view;
       const seen = !v || onScreen(v, e.x, e.y, e.width, e.height, SPIDER5.edge);
       const shown = !v || onScreen(v, e.x, e.y, e.width, e.height);
-      const next = stepGate(g, { dx, dy, alarm: alarms.has(s.id), hunting: (e.alertT ?? 0) > 0, grounded: p.grounded, seen, shown }, dt);
+      const next = stepGate(g, { dx, dy, alarm: alarms.has(s.id), hunting: (e.alertT ?? 0) > 0, grounded: p.grounded, seen, shown, tell: s.tell }, dt);
       if (next.phase === 'windup' && g.phase === 'calm') {
         e.facing = dx >= 0 ? 1 : -1;
         h.float('!', e.x, e.y - 34, '#fb7185');

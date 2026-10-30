@@ -1,4 +1,5 @@
 import { w4Normal } from './w4Normal.ts';
+import { w5Normal } from './w5Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
@@ -2815,7 +2816,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
     const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
-    return difficulty === 'normal' ? w4Normal(st) : st;
+    // (World 5 the same way, w5Normal.ts)
+    return difficulty === 'normal' ? w5Normal(w4Normal(st)) : st;
   }
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
   if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) {
@@ -2836,7 +2838,8 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     const done = finishStage(stage, validateStage(stage).reachableIds);
     // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
     addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
-    return done;
+    // (World 5 sharper on Normal: w5Normal.ts, LV-2)
+    return difficulty === 'normal' ? w5Normal(done) : done;
   }
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {

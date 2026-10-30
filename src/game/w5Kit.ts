@@ -302,6 +302,8 @@ export interface Teapot {
   warn: number;
   puff: number;
   offset: number;
+  /** World 5 on Normal (w5Normal.ts): its steam costs a heart too, not only a doze (never the stage's first pot) */
+  hurts?: boolean;
 }
 
 export const TEAPOT = {
@@ -352,6 +354,8 @@ export interface Thread {
   x0: number;
   x1: number;
   y: number;
+  /** how far its hum carries along (px), when not THREAD.alert (World 5 on Normal: w5Normal.ts) */
+  alert?: number;
 }
 
 export const THREAD = {
@@ -372,7 +376,7 @@ export function threadTouched(th: Thread, px: number, py: number, ducking = fals
 
 /** does a hum from this thread reach a spider at (x, y)? */
 export const humReaches = (th: Thread, x: number, y: number): boolean =>
-  Math.abs(x - (th.x0 + th.x1) / 2) < THREAD.alert && Math.abs(y - th.y) < THREAD.alertDy;
+  Math.abs(x - (th.x0 + th.x1) / 2) < (th.alert ?? THREAD.alert) && Math.abs(y - th.y) < THREAD.alertDy;
 
 // ───────────────────────────── the spiders ─────────────────────────────
 
@@ -380,6 +384,8 @@ export const humReaches = (th: Thread, x: number, y: number): boolean =>
 export interface W5Spider {
   id: number;
   doze?: boolean;
+  /** its crouch (s), when not SPIDER5.tell (World 5 on Normal: w5Normal.ts; never under the world's 0.6 s rule) */
+  tell?: number;
 }
 
 export const SPIDER5 = {
@@ -448,7 +454,7 @@ const CALM: GateState = { phase: 'calm', t: 0, dozing: false, called: 0, lost: 0
  */
 export function stepGate(
   g: GateState,
-  inp: { dx: number; dy: number; alarm: boolean; hunting: boolean; grounded?: boolean; seen?: boolean; shown?: boolean },
+  inp: { dx: number; dy: number; alarm: boolean; hunting: boolean; grounded?: boolean; seen?: boolean; shown?: boolean; tell?: number },
   dt: number,
 ): GateState {
   const t = g.t + dt;
@@ -466,7 +472,7 @@ export function stepGate(
     if (!shown) return CALM;
     // (he got past it while it crouched: it crouches again, facing him, the whole warning over)
     if (g.dir && g.dir * inp.dx < -SPIDER5.past) return CALM;
-    return t >= SPIDER5.tell ? { ...CALM, phase: 'go', dir: g.dir } : { ...g, t };
+    return t >= (inp.tell ?? SPIDER5.tell) ? { ...CALM, phase: 'go', dir: g.dir } : { ...g, t };
   }
   // (he got past it: the rush is spent, and coming back needs a crouch of its own)
   if (g.dir && g.dir * inp.dx < -SPIDER5.past) return CALM;
