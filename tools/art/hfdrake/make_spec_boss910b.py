@@ -1,7 +1,8 @@
-"""hfboss910b (2026-10-30): the new 9-10 and 10-10 set pieces (reference/boss-design/9-10-and-10-10.md §6 on boss-design-9-10) from
+"""hfboss910b/c (2026-10-30): the new 9-10 and 10-10 set pieces (reference/boss-design/9-10-and-10-10.md §6 on boss-design-9-10) from
 boss910starts.py, 2 strengths x 2 seeds each with the style model; the council hall (wide and tall) and the wall break as edits of the
 warroom story plate by Qwen-Image-Edit-2509. Run by tools/art/hfdrake/storygpu.py.
-    python3 tools/art/hfdrake/make_spec_boss910b.py <commit with the starts>
+    python3 tools/art/hfdrake/make_spec_boss910b.py <commit with the starts> [c]   (c: hfboss910c, the set pieces again at 0.8/0.88,
+    seed 7, no edits: at 0.5-0.68 they stayed as flat as their plain starts)
 """
 import json, sys
 from pathlib import Path
@@ -31,10 +32,11 @@ P = {
     '1010-rubble': ((0.5, 0.62), SHEET + 'three heaps of broken grey castle stones, wet with rain, and a grey stone battlement wall with '
                     'merlons on top, its right half broken off in a jagged edge.'),
 }
+REDO = len(sys.argv) > 2 and sys.argv[2] == 'c'
 items = []
 for n, (ss, p) in P.items():
-    for s in ss:
-        for sd in (7, 23):
+    for s in ((0.8, 0.88) if REDO else ss):
+        for sd in ((7,) if REDO else (7, 23)):
             items.append({'name': f'{n}-s{round(s * 100)}-{sd}', 'start': f'start-{n}.webp', 'prompt': p + STYLE, 'strength': s, 'seed': sd,
                           'w': 2048, 'h': 512 if n in ('910-lava', '1010-hedge') else 1024, 'loras': [['style', 1.0]]})
 HALL = ('Turn this room into the great council hall of the same dark stone fortress at night in a storm: a long, high vaulted stone '
@@ -47,7 +49,7 @@ BREAK = ('Show only the far stone end wall of this same hall, filling the pictur
 CRACK = ('Show only a section of this same stone wall, filling the picture: big cracks spreading across the stones from the middle, '
          'dust puffing from the cracks, a few stones starting to bulge out. Solid flat magenta (#FF00FF) everywhere outside the wall. '
          'Same painted style and colours.')
-for sd in (2, 6):
+for sd in (() if REDO else (2, 6)):
     items.append({'name': f'hall-wide-{sd}', 'start': 'start-warroom.webp', 'edit': True, 'prompt': HALL + ' A very wide view.',
                   'seed': sd, 'w': 2048, 'h': 880})
     items.append({'name': f'hall-tall-{sd}', 'start': 'start-warroom.webp', 'edit': True, 'prompt': HALL, 'seed': sd,
@@ -56,8 +58,8 @@ for sd in (2, 6):
                   'w': 1024, 'h': 1024})
     items.append({'name': f'break-crack-{sd}', 'start': 'start-warroom.webp', 'edit': True, 'prompt': CRACK, 'seed': sd,
                   'w': 1024, 'h': 1024})
-spec = {'note': 'hfboss910b: 9-10 and 10-10 set pieces, 2026-10-30', 'base': BASE,
+spec = {'note': 'hfboss910c: the set pieces at 0.8/0.88' if REDO else 'hfboss910b: 9-10 and 10-10 set pieces, 2026-10-30', 'base': BASE,
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors']}, 'items': items}
-p = Path(__file__).resolve().parent / 'spec-hfboss910b.json'
+p = Path(__file__).resolve().parent / ('spec-hfboss910c.json' if REDO else 'spec-hfboss910b.json')
 p.write_text(json.dumps(spec, indent=1))
 print(p, len(items))
