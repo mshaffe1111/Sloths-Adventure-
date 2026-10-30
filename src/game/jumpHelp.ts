@@ -10,9 +10,9 @@
 export type JumpHelp = 'off' | 'keep' | 'forward';
 
 /**
- * On + forward. Matt (2026-10-30) had the special options start off, but this one stays on: with it off, a one-thumb player standing at
- * one of World 5's tall stumps cannot climb it (the thumb lifts to flick, so only the second jump's forward push carries him on; the
- * W5 fairness tests caught it). It is how touch play works, not an extra.
+ * On + forward. Every stage is playable with On or Off too (Matt, 2026-10-30: "We need to fix bugs that require that on"): a flick at a
+ * one-jump step, a jump into a face and a second flick beside a face it climbs carry him onto it whatever this says (engine takeOff,
+ * faceBeside), and the touch fairness tests pass in all three. The forward push on every second jump is the extra this setting adds.
  */
 export const DEFAULT_JUMP_HELP: JumpHelp = 'forward';
 

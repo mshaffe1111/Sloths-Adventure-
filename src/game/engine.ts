@@ -261,6 +261,8 @@ export const STEP_FACE = { min: 30, max: 100 } as const;
  * than `near` px from his body, is where a plain flick up with the thumb lifted carries him onto it
  */
 export const STEP_UP = { min: 20, max: 96, near: 14 } as const;
+/** how far off a face a second flick with nothing steering is still carried onto it (px: a stand two steps back, engine faceBeside) */
+export const FACE_NEAR = 90;
 /** World 5: how far over a ledge's edge the lip's hoist puts his body (px past the face), so a foot is on it (the floor check wants ~8) */
 export const LIP_IN = 13;
 const STUCK_HOLD = 7;
@@ -5706,13 +5708,25 @@ export class GameEngine {
     // a standing flick that leaned 35 degrees or more carries him that way at LEAN_SPEED of a run, Jump help or not (Matt, 2026-10-29,
     // polish report CT-27: it went straight up and down)
     const slant = this.input.source === 'gesture' && !second && steer === 0 ? inp.jumpSlant ?? 0 : 0;
-    // (Jump help off: a first jump starts clean; a second keeps what the first set going, so a step or face carry (below, and the wall
-    // carry in the frame) still lands a double flick into a tall stump)
+    // (a second jump with nothing steering keeps a carry the first set going, a step or face carry (below, and the wall carry in the
+    // frame), whatever the Jump help: so a double flick into a tall stump still lands on it)
+    const carry = second && steer === 0 && this.airDrive.drive !== 0 ? { ...this.airDrive } : null;
     if (help === 'off') {
       if (!second) this.airDrive = newAirDrive();
     } else {
       const kind = this.currentStage.config.objectiveType;
       airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
+      if (carry && this.airDrive.drive === 0) this.airDrive = carry;
+    }
+    // A second flick with nothing steering, beside a face the second jump climbs, carries him onto it, every touch setting (Matt,
+    // 2026-10-30: no stage may need On + forward). One thumb lifts to flick, so at one of World 5's tall stumps the pair went straight up
+    // and down beside it; this is aimed at that face only, not the forward push On + forward gives every second jump.
+    if (second && steer === 0 && this.airDrive.drive === 0 && this.stepHelp && this.input.source === 'gesture') {
+      const face: -1 | 1 = this.player.facing >= 0 ? 1 : -1;
+      if (this.faceBeside(face)) {
+        this.airDrive.drive = face;
+        this.airDrive.lean = true;
+      }
     }
     // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
     // to flick, so he jumped straight up beside the step and came down where he began: in the soft pits' dips QA's one-thumb player
@@ -5735,6 +5749,19 @@ export class GameEngine {
       this.airDrive = { drive: slant, lean: true };
       this.player.facing = slant;
     }
+  }
+
+  /** in the air: a face on the `dir` side, within FACE_NEAR of him, whose top is above his feet and within a second jump's reach */
+  private faceBeside(dir: -1 | 1): boolean {
+    const p = this.player;
+    for (const q of this.platforms) {
+      if (q.type !== 'solid' || q.broken || q.height < 50) continue;
+      const near = dir > 0 ? q.x - (p.x + 19) : p.x - 19 - (q.x + q.width);
+      if (near < -2 || near > FACE_NEAR) continue;
+      const rise = p.y - q.y;
+      if (rise > 0 && rise <= DOUBLE_RISE && q.y + q.height >= p.y - 12) return true;
+    }
+    return false;
   }
 
   /** a step one plain jump climbs (STEP_UP), right against him on the `dir` side, standing on the ground */
