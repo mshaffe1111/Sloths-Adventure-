@@ -289,6 +289,48 @@ export function drawGateArt(ctx: CanvasRenderingContext2D, world: number, ground
 /** one repeat of the water strip, world px */
 const TILE = 420;
 /**
+ * The strip and its shine baked once at the size a tile covers on screen (TILE world px times the canvas scale, in eighths, rounded up so
+ * a tile is never enlarged): the 1024 px sheet was shrunk with the main canvas's high-quality filter on every tile, every frame. Kept for
+ * one sheet at a time, made again only when the sheet or the scale changes (a new world, a quality step, the camera's zoom).
+ */
+const pitBake = { img: null as HTMLImageElement | null, k: 0, strip: null as HTMLCanvasElement | null, shine: null as HTMLCanvasElement | null };
+function bakeRow(cv: HTMLCanvasElement | null, img: HTMLImageElement, f: ArtFrame, w: number, h: number): HTMLCanvasElement {
+  const c = cv ?? document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const g = c.getContext('2d');
+  if (g) {
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, w, h);
+  }
+  return c;
+}
+function pitRows(ctx: CanvasRenderingContext2D, img: HTMLImageElement, w: (typeof PIT_WATER)[number]): [CanvasImageSource, CanvasImageSource, boolean] {
+  if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function') return [img, img, false];
+  const m = ctx.getTransform();
+  const k = Math.ceil(Math.hypot(m.a, m.b) * 8) / 8;
+  // already as small as the sheet itself (or smaller): drawn straight from the sheet
+  if (TILE * k >= w.strip.w) return [img, img, false];
+  if (pitBake.img !== img || pitBake.k !== k) {
+    const bw = Math.ceil(TILE * k);
+    const bh = Math.ceil((bw * w.strip.h) / w.strip.w);
+    pitBake.strip = bakeRow(pitBake.strip, img, w.strip, bw, bh);
+    pitBake.shine = bakeRow(pitBake.shine, img, w.shine, bw, bh);
+    pitBake.img = img;
+    pitBake.k = k;
+  }
+  return [pitBake.strip as HTMLCanvasElement, pitBake.shine as HTMLCanvasElement, true];
+}
+/** one row of tiles from x0 to x1, slid by `shift` (`f`: the frame on the sheet, or null for a baked row) */
+function pitRow(ctx: CanvasRenderingContext2D, src: CanvasImageSource, f: ArtFrame | null, shift: number, x0: number, x1: number, y: number, h: number) {
+  const s = ((shift % TILE) + TILE) % TILE;
+  for (let x = Math.floor((x0 - s) / TILE) * TILE + s; x < x1; x += TILE - 1) {
+    if (f) ctx.drawImage(src, f.x, f.y, f.w, f.h, x, y, TILE, h);
+    else ctx.drawImage(src, x, y, TILE, h);
+  }
+}
+/**
  * Worlds 1, 3, 4 and 5's painted pit water between x0 and x1, from its surface `waterY` down to `bottom`: the strip drifting slowly, its
  * deep colour under it, and its shine sliding the other way and breathing. False while its sheet loads (or for another world).
  */
@@ -300,19 +342,18 @@ export function drawPitWater(ctx: CanvasRenderingContext2D, world: number, x0: n
   const w = PIT_WATER[world];
   const th = (TILE * w.strip.h) / w.strip.w;
   const top = waterY - th * w.surface + Math.sin(t * 1.3) * 1.2;
+  // all of it below the view: nothing to draw
+  if (top - 4 >= bottom || x1 <= x0) return true;
+  const [strip, shine, baked] = pitRows(ctx, img, w);
   ctx.save();
   ctx.beginPath();
   ctx.rect(x0, top - 4, x1 - x0, bottom - top + 4);
   ctx.clip();
   ctx.fillStyle = w.deep;
   ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));
-  const row = (f: ArtFrame, shift: number, y: number, h: number) => {
-    const s = ((shift % TILE) + TILE) % TILE;
-    for (let x = Math.floor((x0 - s) / TILE) * TILE + s; x < x1; x += TILE - 1) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, TILE, h);
-  };
-  row(w.strip, t * 9, top, th);
+  pitRow(ctx, strip, baked ? null : w.strip, t * 9, x0, x1, top, th);
   ctx.globalAlpha = 0.55 + 0.3 * Math.sin(t * 1.7);
-  row(w.shine, -t * 16, top, th);
+  pitRow(ctx, shine, baked ? null : w.shine, -t * 16, x0, x1, top, th);
   ctx.globalAlpha = 1;
   ctx.restore();
   return true;
