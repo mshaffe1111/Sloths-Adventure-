@@ -220,3 +220,4 @@ finished: hfg-ground-v 02:53:18Z (7.6 min, ~$0.35); results hfground/gv (carrier
 hfg-water-810 6ae4d2bc0e0338d1bb7cc5d5 rtx-pro-6000 created 17:24:12Z: tools/art/hfground/spec-water-810.json (W8-10 pit water: chop x2 strengths, bits x2 seeds)
 finished: hfg-water-810 17:27:05Z (2.9 min, ~$0.13)
 hfg-face-810 6ae4d8d9c78863f9c62e9b9b rtx-pro-6000 created 17:50:17Z: tools/art/hfground/spec-face-810.json (W8-10 bank-face pieces: 4 a world x 2 seeds)
+finished: hfg-face-810 17:53:58Z (3.7 min, ~$0.17)
