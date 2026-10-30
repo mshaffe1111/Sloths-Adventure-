@@ -533,7 +533,8 @@ def puzzle():
         'drop': mix((thud, 0, 0), (leafy(1), 0.01, -8)),
         'wrap': mix((rp[0], 0, 0), (fade(lp(hp(loudest(src(CLOTH[2]), 0.3), 300), 4000), 0.01, 0.08), 0.05, -4)),
         'reset': mix((stroke(1, 0.9, 0.4, 300, 3000), 0, -2), (tap, 0.3, -2)),
-        'press': mix((fade(lp(kn[1], 3500), 0.001, 0.05), 0, 0), (thud, 0.05, -6)),
+        # a stone pressure plate sinking into its frame: a short, dry stone clunk ("stonehit1", lowered) over a soft thud (World 10's ask)
+        'press': fade(mix((env_decay(lp(hp(rate(slices_of(ROCK_HIT, 0.3, 0.25, 0.2, top=1)[0], 0.8), 90), 3500), 0.07), 0, 0), (thud, 0.01, -8)), 0.001, 0.06)[: int(0.3 * SR)],
         'lift': mix((rp[1], 0, 0), (leafy(2), 0.1, -10)),
         'lever': mix((rp[0], 0, -4), (fade(lp(kn[2], 3500), 0.001, 0.05), 0.25, 0)),
         'throw': stroke(2, 1.2, 0.3, 300, 4500),
