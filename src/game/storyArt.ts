@@ -12,6 +12,7 @@ import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor, ScenePhoto, BloomStage } from './story.ts';
 import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 import { drawDotStoryFrame, poseFrame, warmStoryDot } from './dotSprite.ts';
+import { warmStoryGuardians } from './storyGuard.ts';
 import { FLICKER_CLIPS } from './flickerClips.ts';
 import { FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP } from './flickerAnimData.ts';
 import { photoUrl } from './photos.ts';
@@ -568,6 +569,7 @@ export function releaseStoryArt() {
 
 /** a story is opening: start fetching its cast's paintings (Pokey, Meeca and Dot's story pages, the story cels) */
 export function warmStoryCast() {
+  warmStoryGuardians();
   warmStoryHero();
   warmStoryMeeca();
   warmStoryDot();
