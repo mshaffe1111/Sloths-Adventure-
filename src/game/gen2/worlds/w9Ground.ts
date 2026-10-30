@@ -1086,6 +1086,22 @@ const boaLedges = section({
   mirrorable: true,
 });
 
+/** the hoard: two short pillar hops onto a ledge where a geyser bursts, then a brink chasm down (no animal: the ground is the guard) */
+const hoardPillars = section({
+  id: 'w9-hoard-pillars',
+  name: 'the hoard: pillars and a burst',
+  archetypes: ['purge', 'gauntlet'],
+  phases: ALL,
+  difficulty: 8,
+  uses: [GEYSER],
+  extraSeconds: GEYSER_WAIT,
+  pieces: [bank('a', [260, 300]), pillar('p1', 'a'), pillar('p2', 'p1', [-36, -20]), lava('b', 'p2', [360, 400], [0.5, 0.66], true), lava('c', 'b', [280, 320], BRINK)],
+  last: 'c',
+  exitDy: -28,
+  sockets: [petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), geyser('g', 'b', 0.55), petals('c', 'c', 0.5, 1)],
+  mirrorable: false,
+});
+
 /** boas: a boa coiled on the landing past a brink chasm, another on the next flat */
 const boaChasm = section({
   id: 'w9-boa-chasm',
@@ -1240,6 +1256,7 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
   harpyPillars,
   boaChasm,
   boaLedges,
+  hoardPillars,
   ...threadGates,
   highLedge,
   overLedge,
@@ -1265,6 +1282,6 @@ export const W9_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object
   [geyserBrink.id, [1]] as const,
   ...[huntGates[0], huntGates[1], catDen, jaguarLeap, hunterRun, hunterBrink, catLedges, prowlCrust, catChasm].map((s) => [s.id, [6]] as const),
   ...[...threadGates, highLedge, overLedge, channelThread, ventThread, basaltLong, basaltChasm, basaltRun, basaltTwin, restLedge].map((s) => [s.id, [8]] as const),
-  ...[huntGates[2], huntGates[3], harpyField, harpyGap, pillarRun, harpyPillars, boaChasm, boaLedges, hotRun].map((s) => [s.id, [9]] as const),
+  ...[huntGates[2], huntGates[3], harpyField, harpyGap, pillarRun, harpyPillars, boaChasm, boaLedges, hotRun, hoardPillars].map((s) => [s.id, [9]] as const),
   [restAsh.id, [6, 9]] as const,
 ]);
