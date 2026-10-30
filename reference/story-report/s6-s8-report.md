@@ -54,7 +54,7 @@ Built as approved, with the lead's four edits. Stills, upright and sideways: `re
 | Soldiers at the gates | gates-soldiers-up.webp, -side | Drawn, feet on the ground, facing Pokey. Upright, the two overlap a little; acceptable. |
 | Falls at the gates and boss 10 | gates-falls-*.webp, boss10-falls-*.webp | Reads as the General, not a stat. |
 | Soup line | w8-soup-up.webp, -side | Clean. |
-| Squirrels | s7-stills/card-squirrels-*.webp | The card shows them; the old unpictured "Back already?" is gone. **Rough:** the painted sign has rows of ^ marks where the line says it reads BACK ALREADY?. I asked story-art to letter the board; it swaps in with no code change. |
+| Squirrels | s7-stills/card-squirrels-*.webp | Clean. The card shows them, under a sign that reads BACK ALREADY? (story-art relettered it); the old unpictured "Back already?" is gone. |
 | Ending cards, upright | s7-stills/card-*-up.webp | Clean. Card full width, set a little low, clear of the buttons; blurred painting above and below. |
 | Ending cards, sideways | s7-stills/card-*-side.webp | Clean. Full height, blurred side bars; the words box covers only the card's bottom margin. |
 | Snail in a stage | s7-stills/snail-7-3-*.webp | Clean. Small, on the ground, easy to walk past, which is the point. |
@@ -64,5 +64,4 @@ Built as approved, with the lead's four edits. Stills, upright and sideways: `re
 ## Still to do
 
 - Place the Under the Ruins note when the World 7 secret level is built.
-- The squirrels' sign lettering (story-art).
 - **A question for the lead:** the General's card says "Every spring he plants a tree by the river. He takes his time." The narration just before the cards already says "That spring he went down to the Sunlit Riverbank... and planted a tree. The next day he went back and planted another. He took his time." It's said twice in a row. My pick: cut the narration and let the card say it, the way the soldiers' and squirrels' lines went.
