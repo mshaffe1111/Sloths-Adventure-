@@ -37,19 +37,29 @@ for (const [o, w, h] of [['up', 390, 844], ['side', 844, 390]]) {
     for (let n = 0; n < +count; n++) {
       const f = `${tag}-${String(n).padStart(3, '0')}-${o}`;
       if (existsSync(`${out}/${f}.jpg`)) continue;
-      // (the dev server can reload the page: wait for the story hook, and open the page again if it does not come back)
-      for (let tries = 0; !(await p.evaluate(() => typeof window.__story === 'function').catch(() => false)); tries++) {
-        if (tries > 20) { await p.goto(`http://127.0.0.1:${port}/?lessons=off&storyAt=0`); tries = 0; }
-        await p.waitForTimeout(1000);
+      for (let attempt = 0; attempt < 4; attempt++) {
+        try {
+          // (the dev server can reload the page: wait for the story hook, and open the page again if it does not come back)
+          for (let tries = 0; !(await p.evaluate(() => typeof window.__story === 'function').catch(() => false)); tries++) {
+            if (tries > 20) { await p.goto(`http://127.0.0.1:${port}/?lessons=off&storyAt=0`); tries = 0; }
+            await p.waitForTimeout(1000);
+          }
+          await p.evaluate(([n]) => { history.replaceState(null, '', `/?lessons=off&storyAt=${n}`); window.__story('1-1', 'world_map'); }, [n]);
+          await p.waitForTimeout(120);
+          await p.evaluate(([i, s]) => { window.__mag = {}; s === 'memory' ? window.__memory(i) : window.__story(i, s); }, [id, scr]);
+          await p.waitForTimeout(+(process.env.WAIT ?? 1700));
+          await p.screenshot({ path: `${out}/${f}.jpg`, type: 'jpeg', quality: 72 });
+          const mag = await p.evaluate(() => window.__mag);
+          const text = await p.evaluate(() => [...document.querySelectorAll('p, .sp-text, [class*=text]')].map((e) => e.textContent).join(' ').slice(0, 400));
+          appendFileSync(`${out}/log-${wi}.jsonl`, JSON.stringify({ f, tag, n, o, mag, text }) + '\n');
+          break;
+        } catch (e) {
+          // (a reload in the middle of a step: open the page again and take this panel again)
+          console.log('retry', f, String(e).slice(0, 80));
+          await p.goto(`http://127.0.0.1:${port}/?lessons=off&storyAt=0`).catch(() => {});
+          await p.waitForTimeout(3000);
+        }
       }
-      await p.evaluate(([n]) => { history.replaceState(null, '', `/?lessons=off&storyAt=${n}`); window.__story('1-1', 'world_map'); }, [n]);
-      await p.waitForTimeout(120);
-      await p.evaluate(([i, s]) => { window.__mag = {}; s === 'memory' ? window.__memory(i) : window.__story(i, s); }, [id, scr]);
-      await p.waitForTimeout(+(process.env.WAIT ?? 1700));
-      await p.screenshot({ path: `${out}/${f}.jpg`, type: 'jpeg', quality: 72 });
-      const mag = await p.evaluate(() => window.__mag);
-      const text = await p.evaluate(() => [...document.querySelectorAll('p, .sp-text, [class*=text]')].map((e) => e.textContent).join(' ').slice(0, 400));
-      appendFileSync(`${out}/log-${wi}.jsonl`, JSON.stringify({ f, tag, n, o, mag, text }) + '\n');
     }
     console.log('done', tag, o);
   }
