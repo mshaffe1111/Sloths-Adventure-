@@ -18,3 +18,8 @@ Not done:
 Next step: re-run `npx tsx tools/inspect/walk.mjs --stages 1-5,2-3,2-8,4-3,5-6,6-8,8-1,4-D --keep-canvas` on this branch, compare
 each stage's counts with CLEAN-SWEEP-DETAIL-counts.json and the C1/C4/C5 crops before/after, run the full gate (suite + vite build),
 then C3 once polish-c answers, then report to the lead.
+
+polish-c's answer (11:52 PM ET): go ahead with the DotGuide.tsx change (hard keep-outs for the lives/score plaques, name tag
+included); adding the "+N" delta as a keep-out in VineHud.tsx won't clash (polish-c 287678 touches only setGuideSafeArea there). The
+upright boss name over the lives "×3" is BossHud/bossRect in hudLayout.ts: not polish-c's, ask the lead before taking it. After the
+change run tools/qa/fit.mjs (npm run test:fit, on polish-c's branch) so the safe-area checks stay green.
