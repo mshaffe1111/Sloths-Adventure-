@@ -27,11 +27,15 @@ RULES = [
     ('polish-edges', 'Backdrop strips: edges, halos, key colour, joins', lambda f, c, n: bool(STRIP.search(n)) and f['kind'] in ('fringe', 'key', 'line', 'repeat', 'style')),
     ('hazard-anim', 'Repeating effects drawn in code (lightning, rain, sparks, dust)', lambda f, c, n: f['kind'] == 'shape' and re.search(r'#ffffff|lightning|bolt|rain|spark|dust|grit', c, re.I) and f['sub'] in ('code line', 'dashed line')),
     ('hf-art-stage', 'Checkpoint flag, exit gates, water and pickups drawn in code', lambda f, c, n: f['kind'] == 'shape' and re.search(r'#e5e7eb|#9ca3af|#fde047|water|gate|door|flag', c, re.I)),
-    ('hf-art-stage', 'Water pieces (joins, repeats, blow-up)', lambda f, c, n: re.search(r'water', n, re.I) is not None),
-    ('hf-art-ground', 'Ground drawn in code: soil, caps, strata, roots, columns, shafts', lambda f, c, n: re.search(r'paint(Soil|Strata|GrassCap|MossCap|ReedCap|AshCap|RuinCap|StoneCap|Roots|Overhang|Lip|Bank)|tileCanvas|drawColumn|shaftPattern|groundTiles|getSoil|soil', c + n, re.I) is not None),
+    ('hf-art-stage', 'Water pieces (joins, repeats, blow-up)', lambda f, c, n: re.search(r'water|lanePool|poolPic|poolSprite|drawRiver', n + c, re.I) is not None),
+    ('hf-art-ground', 'Ground drawn in code: soil, caps, strata, roots, columns, shafts', lambda f, c, n: re.search(r'paint(Soil|Strata|GrassCap|MossCap|ReedCap|AshCap|RuinCap|StoneCap|Roots|Overhang|Lip|Bank|Slab|Blocks)|tileCanvas|drawColumn|shaftPattern|groundTiles|getSoil|soil|drawSoil|blobField|drawEnd|drawBankArt|seamlessBank|drawGroundBody|maskedFill', c + n, re.I) is not None),
     ('hf-art-ground', 'Ground outline strokes and fills drawn in code', lambda f, c, n: f['kind'] in ('shape', 'line') and re.search(r'#3b1f0c|#14100a|#331c0f|#291b10|#24170c|#282018|#655441|#2d302d|#0d0a12|code rect grad:lin', c) is not None),
     ('hf-art-ground', 'Ground and dressing pieces: tile joins, repeats, cut edges, floating dressing', lambda f, c, n: re.search(r'^w\d+(-props|-kit)?\.webp|props\d?-atlas|dress|flowers-atlas|plants-atlas|w\d+-ground|soil|lip', n) is not None and f['kind'] in ('line', 'repeat', 'float', 'style', 'shape')),
 ]
+
+
+# lines along the edge of the swaying foreground leaves are the leaves' own outline (hand-checked 2026-10-29): not listed
+SKIP = re.compile(r'renderSwayLeaves')
 
 
 def owner_of(f):
@@ -83,6 +87,8 @@ def main():
                 for fr, fs in byframe.items():
                     finds += postfilter(fs)
     causes = defaultdict(list)
+    skipped = [f for f in finds if f['kind'] == 'line' and SKIP.search(f['cause'])]
+    finds = [f for f in finds if not (f['kind'] == 'line' and SKIP.search(f['cause']))]
     for f in finds:
         causes[(f['kind'], f['sub'], f['cause'])].append(f)
     fams = defaultdict(list)
