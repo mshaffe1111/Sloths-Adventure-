@@ -26,6 +26,32 @@ Read this before building or changing anything that draws: stages, props, creatu
 
   Many run only while baking, but any of them that runs every frame is a suspect.
 
+
+### What the lead's own check of the code found (2026-10-30, headless Chromium, the control test upright at q1)
+
+These are measured facts about our code. A desktop browser can't reproduce the Pixel's GPU, so the timings themselves aren't comparable.
+
+- **The screen is painted 6.7 to 10.6 times over every frame, by `drawImage` alone** (visible pixels only; fills and gradients come on top). The biggest layers:
+  - the soil tiles (`groundPaint.ts` 128-133), 1 to 3.2 screens where banks overlap;
+  - a full-screen overlay stretched from a 54x112 image (`scenery.ts` 2893, 1 screen);
+  - the three backdrop layers (about 2.5 screens);
+  - a 160x160 haze (0.35 screens).
+- **The main canvas draws everything with `imageSmoothingQuality = 'high'`** (`engine.ts` `resizeCanvas`). In Chrome that's bicubic when enlarging and mipmaps when shrinking, on every scaled draw, every frame. This breaks §2.8.
+- **Gameplay sheets are plain `<img>` elements** (74 files use `new Image()`; 5 use `createImageBitmap`). Chrome may throw a decoded image away and decode it again in the middle of play.
+- **The decoded art adds up to about 3.5 GB in total**, and the control test pulls sheets from every world.
+- **Three sheets are taller than 4096 px**, the safe GPU texture limit (§2.7):
+  - `queen-anim` 2048x8172;
+  - `seamstress-anim` 2048x6664;
+  - `soldier-anim` 2048x5721.
+- **Five canvases are made with `willReadFrequently: true`** (CPU canvases), and four of them read pixels back with `getImageData`:
+  - `protoArt.ts` 413 and 732;
+  - `riverArt.ts` 320;
+  - `heroTint.ts` 76;
+  - `w4FallsArt.ts` 63.
+
+  `scenery.ts` 1610 reads pixels back from a baked layer. Any of these drawn every frame stays on the CPU.
+- **"Advanced" blend modes** (`multiply`, `overlay`, `soft-light`, `saturation`) are used in `w7SlideArt.ts`, `storyArt.ts`, `meecaArt.ts`, `scenery.ts` 1363, `w4Grit.ts`, `ropeArt.ts`, `polish.ts` and `bossFx.ts`. They're fine while baking, but expensive on a tile-based GPU (PowerVR) if they run every frame.
+
 ## 1. The budget
 
 - 30 fps means **33 ms per frame, all in**. Our own update plus draw must fit in **12 ms on a mid-range phone at q0**. That leaves room for the browser, the compositor, garbage collection and a busy or warm phone.
@@ -54,10 +80,32 @@ Read this before building or changing anything that draws: stages, props, creatu
 7. **Sprite sheets (atlases), not hundreds of small files.** Fewer textures means less switching. Any single texture stays at or under 4096 px on its longer side (the safe GPU limit on older iPhones and Androids).
 8. **Image smoothing:** `imageSmoothingQuality = 'high'` costs more on every scaled draw. Use 'high' only where a picture is scaled down a lot; use the default ('low') for anything drawn near its own size.
 
+9. **Readbacks never touch a canvas that's drawn every frame.**
+   - `getImageData`, `toDataURL` and `willReadFrequently: true` put a canvas on the CPU, and Chrome may keep it there.
+   - After any bake that reads pixels, copy the result into a fresh canvas made without the hint (or into `createImageBitmap(canvas)`), and draw only the copy.
+   - Never read back from the main canvas outside the debug timing (§6).
+10. **Only cheap blend modes every frame.**
+    - `source-over`, `lighter`, `screen`, `destination-*` and `source-atop` are "coefficient" modes the GPU blends for free.
+    - `multiply`, `overlay`, `soft-light`, `hard-light`, `color-*`, `hue`, `saturation` and `luminosity` make the GPU copy what's behind them. On a tile-based GPU that can split the frame into several passes. Bake them.
+11. **Clips:** rectangles only every frame. Curved or concave clips are slow on the GPU canvas; bake the clipped result instead.
+12. **Images live as `ImageBitmap`s.**
+    - Load each gameplay sheet with `createImageBitmap(await (await fetch(url)).blob())`. That decodes off the main thread and keeps the decoded copy alive, so Chrome can't throw it away and decode it again in the middle of play.
+    - Stamp each new one once (a 1x1 draw in a corner) while the stage loads, so its GPU upload happens before play.
+    - Release it with `.close()` when the world is left.
+13. **The decoded art is budgeted.**
+    - A sheet's cost is width x height x 4 bytes, however small the WebP file is.
+    - Keep what one stage has loaded under about 300 MB.
+    - Split any sheet over 4096 px on a side (three are over today: §0).
+
 ## 3. The rules for code (no hitches)
 
 1. **No allocations in the frame loop.** No new arrays, objects, closures (`forEach` with an arrow inside the loop), strings or gradients per frame in hot paths. Reuse objects (pools) for particles, petals, dust and pop-ups. Garbage-collection pauses of 5-30 ms are the classic "it hitches every few seconds".
-2. **Time-based movement, capped.** Movement uses the real `dt`, capped at 0.05 s (as now). The fix for slow phones is making frames cheaper, never raising the cap; raising it would make Pokey jump through things.
+2. **A fixed-step update, so a slow frame never slows the game.**
+   - Update in steps of exactly 1/30 s. A long frame runs up to 3 catch-up steps, and anything longer is dropped.
+   - Today a 100 ms frame moves the game only 50 ms (the 0.05 s cap). That makes Pokey truly slower on a struggling phone, which is the "sluggish" feeling.
+   - Each step stays the same small size, so nothing passes through walls.
+   - At a steady 30 fps the game plays exactly as it does now.
+   - Our update costs 0-2 ms, so the catch-up steps can't snowball.
 3. **Load before play, not during.** Every sheet, sound and backdrop a stage needs is decoded before its first frame (`stagePreload.ts`), so nothing decodes mid-run (the 232 ms first-frame stall after `hud-atlas` breaks this).
 4. **Text is baked.** The HUD numbers, Dot's bubble and the cards are drawn to a small canvas when they change, not re-measured and re-drawn every frame.
 5. **Nothing runs behind a menu** (already true since the memory work: the loop stops behind menus). Nothing keeps the screen or CPU awake when the app is in the background.
@@ -78,6 +126,14 @@ Read this before building or changing anything that draws: stages, props, creatu
   - turn off accessibility services while measuring (they can slow WebView), then test once with them on.
 - **High-refresh screens (90 and 120 Hz):** the 30 fps cap skips frames evenly (every 3rd or 4th), which is fine. Never assume 60 Hz.
 
+- **Android display rate (the APK):**
+  - pin the window to 60 Hz while playing (`WindowManager.LayoutParams.preferredDisplayModeId` / `preferredRefreshRate`), so the 30 fps lock lands on every second refresh and the phone saves power;
+  - from Android 15, apps marked as games get 60 Hz by default;
+  - check on the phone that it works inside the WebView.
+- **Debug builds of the APK** turn on `webContentsDebuggingEnabled`, so Chrome's remote DevTools can trace the app. Store builds turn it off.
+- **No WebGPU on PowerVR phones.** Chrome's WebGPU layer and PlayCanvas both work around or block this GPU family, and its drivers have known crashes. If we ever move off Canvas 2D, it's WebGL2.
+- **Heat:** the Pixel 11's GPU slows after a few minutes of stress. Every measurement includes a 15-minute run, judged at minute 10 as well as at the start.
+
 ## 5. The phones every release is measured on
 
 Measured with the control test (`#ctest`; QA reads it with `tools/playtesters/`) and the in-game frame check:
@@ -95,14 +151,48 @@ A stage passes only if it meets §1 on all of them in both orientations.
 ## 6. How a slow spot is hunted (PF-1's method)
 
 1. **Find where:** the control-test stall lines give the x position and the update/draw split. Draw-bound plus the same x in different runs means scenery at that x.
-2. **Find what:** turn the frame-time check on (`perf` menu switch) and log draw time per layer (backdrop far/mid/near, ground, props, creatures, effects, HUD) at that x. Strip layers one at a time until the time drops.
-3. **Fix it the §2 way:** bake it, swap a blur or filter for a sprite, cache the gradient, or cull it. Never by lowering the picture for everyone.
-4. **Prove it:** the same spot on the same phone, before and after numbers, and a frame-time strip in the report.
-5. **Guard it:** a test that fails if the per-frame path calls `shadowBlur`, `filter` or `create*Gradient` (a headless check of the draw calls over a stage), so the slow paths can't creep back.
+2. **Find what, timed honestly.** Our JS timer can't see GPU time: Chrome records our calls and runs them on the GPU later, so a slow "draw" is often the GPU or a decode that the timer only catches when the frame flushes.
+   - In the debug timing (test link only), force a flush after each layer group (`getImageData(0, 0, 1, 1)` on the main canvas, made with `willReadFrequently: false` stated outright), so each layer's time includes its GPU work.
+   - Log it per layer: backdrop far/mid/near, ground, props, creatures, effects, HUD.
+   - Then strip or swap one thing at a time (smoothing low vs high, `ImageBitmap` vs `<img>`, one layer off) and compare at the same spot.
+3. **The tools on a real phone:**
+   - **Chrome/Edge on Android:** `chrome://inspect` on a desktop with USB debugging, then the Performance panel on the device.
+     - "Decode Image" under `drawImage` means a decode;
+     - GC blocks mean garbage collection;
+     - long script time means our code;
+     - a long draw with little script inside it means the GPU.
+   - **The phone's GPU state:** `chrome://gpu` (`edge://gpu`) shows "Canvas: Hardware accelerated" or "Software only", plus "Problems Detected".
+   - **The APK:**
+     - `adb shell dumpsys gfxinfo <package> framestats` shows the last 120 frames;
+     - Android Performance Analyzer (Google's new profiler, Pixel 6 and later) records GPU counters and supports Imagination GPUs;
+     - Perfetto system traces with the Chrome probe.
+   - **iPhone:** Safari Web Inspector (Settings, Safari, Advanced) on a Mac, using the Timelines tab and its Frames view.
+
+| Bound by | How it looks | Usual fix |
+|---|---|---|
+| Our code (CPU) | script time fills the frame | less work per frame, culling |
+| GPU fill | better at a lower picture | less overdraw, cheaper blends |
+| Decode / upload / CPU canvas | no better at a lower picture; tied to particular art | ImageBitmaps, pre-upload, no readbacks |
+| Garbage collection | sawtooth memory; GC blocks at the hitches | no allocations per frame, pools |
+
+Matt's Pixel fits the third row: the stalls didn't get better at q2 and sit at the same art every run.
+4. **Fix it the §2 way:** bake it, swap a blur or filter for a sprite, cache the gradient, or cull it. Never by lowering the picture for everyone.
+5. **Prove it:** the same spot on the same phone, before and after numbers, and a frame-time strip in the report.
+6. **Guard it:** a test that fails if the per-frame path calls `shadowBlur`, `filter`, `create*Gradient`, an advanced blend mode or a readback (a headless check of the draw calls over a stage), so the slow paths can't creep back.
 
 ## 7. The bigger lever, if §2 isn't enough
 
 Canvas 2D with baked layers can hold 30 fps for a game our size. If, after the §2 hunt, a flagship still can't hold q0, the next step is drawing the baked layers through WebGL (for example PixiJS, which batches sprites that share a texture into a few GPU calls). That's an engine change of days, not hours, so it's Matt's call, made with numbers in hand, never started on a hunch. A poorly built WebGL scene (many textures, per-frame uploads) can even be slower than Canvas, so §2's rules apply either way.
+
+## Where the evidence is thin
+
+- Chrome's rule for moving a canvas to the CPU has changed over the years.
+- Its decode-cache budget on Android isn't documented.
+- No Canvas-2D bug specific to PowerVR has been found; the Pixel reports are about WebGL, WebGPU and compute.
+- Edge vs Chrome on the same phone has never been compared.
+- Whether a WebView can be held at 60 Hz needs testing on the phone.
+
+So every fix is proven on Matt's Pixel with before-and-after numbers, not assumed from this list.
 
 ## Sources
 
@@ -122,4 +212,27 @@ Canvas 2D with baked layers can hold 30 fps for a game our size. If, after the �
 - [Web game memory management and pooling](https://www.abratabia.com/web-game-performance/memory-management.php)
 - [Animation performance in Capacitor apps](https://capgo.app/blog/ultimate-guide-to-animation-performance-in-capacitor-apps/)
 - [Pixel 10 GPU driver updates (TechRadar)](https://www.techradar.com/phones/google-pixel-phones/google-promises-pixel-10-owners-that-more-gpu-updates-are-on-the-way)
+- [Chromium GPU driver bug list](https://chromium.googlesource.com/chromium/src/+/main/gpu/config/gpu_driver_bug_list.json)
+- [Chromium issue 349853784: canvas moved to CPU after readbacks](https://issuetracker.google.com/issues/349853784)
+- [willReadFrequently explained](https://www.schiener.io/2024-08-02/canvas-willreadfrequently)
+- [Skia blend modes (coefficient vs advanced)](https://github.com/google/skia/blob/main/include/core/SkBlendMode.h)
+- [Blink: imageSmoothingQuality](https://groups.google.com/a/chromium.org/g/blink-dev/c/PuXQBnfWRus/m/q6kXzSeYDQAJ)
+- [Non-blocking image decode for canvas (PerfPlanet 2025)](https://calendar.perfplanet.com/2025/non-blocking-image-canvas/)
+- [Image loading on the web (Castaño, 2026)](https://www.ludicon.com/castano/blog/2026/05/image-loading-on-the-web/)
+- [Fix your timestep (Gaffer on Games)](https://gafferongames.com/post/fix_your_timestep/)
+- [The spiral of death](https://www.gamedev.net/blogs/entry/2262574-thoughts-on-fix-your-timestep-and-the-spiral-of-death)
+- [web.dev: a performance mystery (GC)](https://web.dev/articles/performance-mystery)
+- [PowerVR: sorting objects on tile-based hardware](https://blog.imaginationtech.com/sorting-objects-and-geometry-on-powervr-hardware/)
+- [PlayCanvas: WebGPU blocked on img-tec GPUs](https://github.com/playcanvas/engine/issues/8874)
+- [Tensor G6 GPU tests (Android Authority)](https://www.androidauthority.com/tensor-g6-benchmarks-tests-3699714/)
+- [Pixel 10 GPU and old drivers (Android Police)](https://www.androidpolice.com/google-pixel-10-gpu-struggles-might-stem-from-old-drivers/)
+- [Android display refresh rate for games](https://developer.android.com/games/optimize/display-refresh-rate-change)
+- [Android adaptive refresh rate](https://developer.android.com/develop/ui/views/animations/adaptive-refresh-rate)
+- [Android Performance Analyzer](https://developer.android.com/android-performance-analyzer/run)
+- [WebView accessibility lag (Capacitor discussion 3899)](https://github.com/ionic-team/capacitor/discussions/3899)
+- [ADPF thermal best practices](https://developer.android.com/games/optimize/adpf/best-practices-adpf)
+- [Safari canvas memory limit (PQINA)](https://www.pqina.nl/blog/total-canvas-memory-use-exceeds-the-maximum-limit/)
+- [Safari GPU-process canvas regression (cordova-ios 1246)](https://github.com/apache/cordova-ios/issues/1246)
+- [Construct: boosting mobile HTML5 games](https://www.construct.net/en/blogs/construct-official-blog-1/boosting-mobile-html5-game-791)
+- [Construct: WebGPU vs WebGL on Pixel 7](https://github.com/Scirra/Construct-bugs/issues/7874)
 - [Tensor G5 GPU benchmarks (Notebookcheck)](https://www.notebookcheck.net/Tensor-G5-Disappointing-CPU-performance-and-atrocious-GPU-numbers-in-Google-Pixel-10-Pro-XL-hands-on-benchmarks.1097374.0.html)

@@ -7,6 +7,33 @@ Last updated: 2026-10-29 7:55 PM ET. HOTFIX PR #49 (#ctest on the testers' link 
 - **2026-10-30 11:44 PM ET:** release PR #50 merged and LIVE: deploy run 40996966989 ok, pages run 40998968889 ok, gh-pages 1e83d14e (bundle index-Dx0MEQsu.js, #ctest code present). The container can't open github.io, so Matt opens it on the phone to confirm.
 - **2026-10-30:** release PR #50 (release-2026-10-30 @ 50fe0e83, the v7 build) opened for Matt to merge. After the merge, check the deploy and #ctest. APK feedback: "a little buggy", weaker frame rate. Matt (2026-10-30): don't focus on the APK now; it's a roadmap item (PLAY-STORE-RULES §4), not Wave 1.
 
+
+## TOMORROW 2026-10-30: the frame-rate plan (Matt: "before we start any jobs... you alone, on the code")
+
+The lead works on this alone first, with no helpers. Rules: reference/PERFORMANCE-RULES.md.
+
+1. **Honest timing (lead, morning, first thing).** On the test link only, the control test logs per-layer draw time with a GPU flush after each layer group (§6.2), plus the canvas size, quality and smoothing. A test-link-only `?perfab=` switch tries one change at a time:
+   - smoothing low or medium instead of high;
+   - ImageBitmap sheets instead of `<img>`;
+   - the full-screen overlay off;
+   - the soil overdraw trimmed.
+
+   It never ships to main.
+2. **Matt, about 10 minutes:**
+   - a screenshot of `chrome://gpu` on the Pixel (is Canvas hardware accelerated, and what's under Problems Detected);
+   - three control tests in Chrome on the Pixel (normal, then two A/B switches);
+   - one in Edge.
+3. **The fixes, in order of the evidence:**
+   - **(a)** gameplay smoothing off 'high';
+   - **(b)** gameplay sheets as ImageBitmaps, kept alive and pre-uploaded;
+   - **(c)** readable canvases copied to plain ones;
+   - **(d)** the three sheets over 4096 px split;
+   - **(e)** advanced blend modes, `shadowBlur` and `filter` taken out of the per-frame path;
+   - **(f)** overdraw cut: the soil-tile overlaps, and the full-screen overlay baked into a layer;
+   - **(g)** a fixed-step update with catch-up, so a slow frame never slows Pokey (this one doesn't depend on the GPU, so it can go in first).
+4. **Prove it on the Pixel:** Chrome, Edge and the APK, before and after, plus a 15-minute run.
+5. **Then guard it:** a test that fails if a per-frame draw uses `shadowBlur`, `filter`, gradients, advanced blends or readbacks. Only then does PF-1 pick up the rest of the bake list, with helpers back on (waves per the schedule below, shifted by about 2 hours).
+
 ## THE FINISH LINE (lead manages; Matt 2026-10-29 ~7:55 PM ET: "take control again and really manage this... finishing the game and finishing the polish... keep up with people... make sure things are moving along and we're not going to run into issues")
 
 RELEASE (Matt ~8:05 PM ET): after he plays the 11 PM test link and says "push", that exact build is frozen as the release branch and the PR opened. Tracker refreshed 79186903 (165 items: 77 live, 49 merged-not-live, 7 running, unowned all assigned 8:05 PM ET). Cutscenes (ST-1/2): plates at 2560, dpr cap 2, cels repacked, merged-not-live; story-art doing a full scene pass + contact sheet for Matt.
