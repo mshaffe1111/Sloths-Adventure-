@@ -1631,9 +1631,22 @@ function findBands(cv: HTMLCanvasElement): void {
   bandsOf.set(cv, bands);
 }
 
-/** a banded layer (the front frame) fitted to its drawn size in device pixels: just its bands, at whole rows (drawTile) */
-const bandFits = new WeakMap<HTMLCanvasElement, { key: string; cv: HTMLCanvasElement; rows: Array<[number, number]> }[]>();
-function fittedBands(src: HTMLCanvasElement, bands: Array<[number, number]>, pitch: number, dh: number, k: number) {
+/**
+ * a banded layer (the front frame) fitted to its drawn size in device pixels, just its bands (drawTile). Kept in pieces at most
+ * BAND_PIECE_W wide, with only the painted rows packed one under another: fitted whole it was one canvas up to 5868 x 1761 at 2x (PERF-B
+ * 2026-10-30), over the 4096 px a phone's graphics chip is sure to take in one texture (PERFORMANCE-RULES §2.7), and mostly clear.
+ * Each piece is painted exactly as the whole canvas was (the same draws, shifted), then its painted rows are copied out 1:1.
+ */
+const BAND_PIECE_W = 2048;
+interface BandFit {
+  key: string;
+  /** the pieces, left to right: each `w` wide, starting `x` device px into the repeat */
+  pieces: Array<{ cv: HTMLCanvasElement; x: number; w: number }>;
+  /** the painted rows: device rows a..b of the fitted layer, kept at row `at` of each piece */
+  rows: Array<{ a: number; b: number; at: number }>;
+}
+const bandFits = new WeakMap<HTMLCanvasElement, BandFit[]>();
+function fittedBands(src: HTMLCanvasElement, bands: Array<[number, number]>, pitch: number, dh: number, k: number): BandFit {
   const bw = Math.ceil(pitch * k) + 1;
   const d = dh * k;
   const key = `${bw}|${d.toFixed(3)}`;
@@ -1641,16 +1654,42 @@ function fittedBands(src: HTMLCanvasElement, bands: Array<[number, number]>, pit
   const hit = list.find((f) => f.key === key);
   if (hit) return hit;
   const lh = src.height;
-  const cv = document.createElement('canvas');
-  cv.width = bw;
-  cv.height = Math.ceil(d);
-  const c = cv.getContext('2d')!;
-  c.imageSmoothingEnabled = true;
-  c.imageSmoothingQuality = 'high';
-  for (const [r0, r1] of bands) c.drawImage(src, 0, r0, src.width, r1 - r0, 0, (d * r0) / lh, bw, (d * (r1 - r0)) / lh);
-  const rows = bands.map(([r0, r1]): [number, number] => [Math.floor((d * r0) / lh), Math.min(cv.height, Math.ceil((d * r1) / lh))]);
-  const f = { key, cv, rows };
-  if (list.length >= 2) list.shift()!.cv.width = 0;
+  const fullH = Math.ceil(d);
+  // the painted rows, touching ones joined (a row two bands share is copied once, as the whole canvas held it once)
+  const spans = bands
+    .map(([r0, r1]): [number, number] => [Math.floor((d * r0) / lh), Math.min(fullH, Math.ceil((d * r1) / lh))])
+    .sort((p, q) => p[0] - q[0]);
+  const rows: BandFit['rows'] = [];
+  for (const [a, b] of spans) {
+    const last = rows[rows.length - 1];
+    if (last && a <= last.b) last.b = Math.max(last.b, b);
+    else rows.push({ a, b, at: 0 });
+  }
+  let packed = 0;
+  for (const r of rows) {
+    r.at = packed;
+    packed += r.b - r.a;
+  }
+  const pieces: BandFit['pieces'] = [];
+  const tmp = document.createElement('canvas');
+  for (let x = 0; x < bw; x += BAND_PIECE_W) {
+    const w = Math.min(BAND_PIECE_W, bw - x);
+    tmp.width = w;
+    tmp.height = fullH;
+    const t = tmp.getContext('2d')!;
+    t.imageSmoothingEnabled = true;
+    t.imageSmoothingQuality = 'high';
+    for (const [r0, r1] of bands) t.drawImage(src, 0, r0, src.width, r1 - r0, -x, (d * r0) / lh, bw, (d * (r1 - r0)) / lh);
+    const cv = document.createElement('canvas');
+    cv.width = w;
+    cv.height = Math.max(1, packed);
+    const c = cv.getContext('2d')!;
+    for (const r of rows) c.drawImage(tmp, 0, r.a, w, r.b - r.a, 0, r.at, w, r.b - r.a);
+    pieces.push({ cv, x, w });
+  }
+  tmp.width = tmp.height = 0;
+  const f: BandFit = { key, pieces, rows };
+  if (list.length >= 2) for (const p of list.shift()!.pieces) p.cv.width = 0;
   list.push(f);
   bandFits.set(src, list);
   return f;
@@ -1711,7 +1750,11 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: Layer, par: number, camX: n
       ctx.imageSmoothingQuality = 'low';
       for (let x = x0; x < vw; x += pitch) {
         const dx = Math.round(snapDev(x, k) * k);
-        for (const [a, b] of fb.rows) ctx.drawImage(fb.cv, 0, a, fb.cv.width, b - a, dx / k, (y0d + a) / k, fb.cv.width / k, (b - a) / k);
+        for (const pc of fb.pieces) {
+          // (a piece wholly off the view's sides: nothing of it shows)
+          if ((dx + pc.x + pc.w) / k < 0 || (dx + pc.x) / k > vw) continue;
+          for (const r of fb.rows) ctx.drawImage(pc.cv, 0, r.at, pc.w, r.b - r.a, (dx + pc.x) / k, (y0d + r.a) / k, pc.w / k, (r.b - r.a) / k);
+        }
       }
       ctx.imageSmoothingQuality = q;
       ctx.globalAlpha = prev;
