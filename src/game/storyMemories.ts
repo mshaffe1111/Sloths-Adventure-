@@ -250,10 +250,10 @@ const GATES_DAY = chapter({ name: 'WORLD 9 · THE OPEN GATES', w: 10, m: 'storm'
   P('Is that bad?', 'P:talk@.3 D@.6^.4 FL@.385^.44*.8>'),
   D('Pokey. The last thing that was this nice to us had a doily.', '=', { sting: 'laugh' }),
   // the two soldiers from the garden, back (2026-10-29 story report, people who come back)
-  N('Two soldiers stood at the foot of the steps, the same two from the garden, and a good deal more tired.', 'P:idle@.3 D@.6^.4 FL@.385^.44*.8>', { cue: 'comedy', i: 0.35 }),
-  say('Soldier')('Is that a hummingbird?', '='),
-  say('Soldier')('Where?', '='),
-  N('Dot was already behind Pokey\'s ear.', 'P:idle@.3 D:flinch@.33^.36*.8 FL@.385^.44*.8>', { sting: 'laugh' }),
+  N('Two soldiers stood at the foot of the steps, the same two from the garden, and a good deal more tired.', 'P:idle@.24 D@.42^.4 FL@.325^.44*.8> SO:idle_a@.66 SO:idle_b@.8', { cue: 'comedy', i: 0.35 }),
+  say('Soldier')('Is that a hummingbird?', 'P:idle@.24 D@.42^.4 FL@.325^.44*.8> SO:turn_a@.66 SO:idle_b@.8'),
+  say('Soldier')('Where?', 'P:idle@.24 D:flinch@.42^.4 FL@.325^.44*.8> SO:hold_a@.66 SO:turn_b@.8'),
+  N('Dot was already behind Pokey\'s ear.', 'P:idle@.24 D:flinch@.27^.36*.8 FL@.325^.44*.8> SO:back_a@.66 SO:hold_b@.8', { sting: 'laugh' }),
   N('Along the great wall, one by one, the guardians took their places. They didn\'t look down. Every collar was glowing.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'dread', i: 0.45, p: GATE_VIEW }),
   N('Above them, the great gates of the Highland Fortress groaned on their hinges, though no hand was on them. Lightning walked the length of the wall.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'war', i: 0.5, sting: 'door', p: { ...GATE_VIEW, fx: [{ at: 0.8, kind: 'flash', dur: 0.4, amount: 0.5 }, { at: 0.8, kind: 'shake', amount: 7, dur: 0.6 }] } }),
   GEN('Come up, sloth. The General has counted every step you took. There are a thousand more. The General is not tired. The General is never tired.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, {

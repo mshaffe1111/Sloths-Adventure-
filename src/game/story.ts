@@ -22,6 +22,8 @@ export type ActorKind =
   | 'dot'
   /** Flicker the firefly: hovers, his painted clips (`clip`), his light steady or stuttering */
   | 'flicker'
+  /** one of the General's soldiers (the two from the garden): his painted clips (`clip`: idle_a, turn_b...), feet on the ground */
+  | 'soldier'
   /** a painted figure from Matt's story sheets (Grandma, Lieutenant Pell, the General's forms, the pairs...): its frames come from `seq`; see storyCels.ts */
   | 'cel';
 

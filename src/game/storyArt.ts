@@ -14,6 +14,8 @@ import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 import { drawDotStoryFrame, poseFrame, warmStoryDot } from './dotSprite.ts';
 import { FLICKER_CLIPS } from './flickerClips.ts';
 import { FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP } from './flickerAnimData.ts';
+import { SOLDIER_CLIPS } from './soldierClips.ts';
+import { SOLDIER_ANIM, SOLDIER_ANIM_UP, SOLDIER_SEQ } from './soldierAnimData.ts';
 import { photoUrl } from './photos.ts';
 import { plateImage, preloadPlates, releasePlates } from './plates.ts';
 import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
@@ -724,6 +726,29 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
   // (until her story paintings have loaded she is not drawn: no stand-in bird)
 }
 
+/** a soldier's height in scene units at scale 1: a head taller than Pokey, as he was in the garden */
+const SOLDIER_H = 270;
+/** one of the General's soldiers: his painted clip (idle loops back and forth, a turn plays once and holds), feet on the ground line */
+function drawSoldierActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
+  if (!SOLDIER_CLIPS.ready()) return;
+  const clip = a.clip ?? 'idle_a';
+  const seq = SOLDIER_SEQ[clip] ?? SOLDIER_SEQ.idle_a;
+  const first = SOLDIER_ANIM[seq[0]];
+  if (!first) return;
+  const foot = footing(a, ground);
+  const x = a.x * w - scroll;
+  const y = foot.y * h + SINK;
+  const k = ((SOLDIER_H * (a.scale ?? 1)) / first.h) * SOLDIER_ANIM_UP;
+  const name = clip.startsWith('idle') || clip.startsWith('march') ? SOLDIER_CLIPS.ping(clip, t, 10) : SOLDIER_CLIPS.at(clip, Math.min(1, t / 1.2));
+  drawContactShadow(ctx, x, ground * h + SINK, first.w * (k / SOLDIER_ANIM_UP) * 0.6, SOLDIER_H, 0);
+  ctx.save();
+  ctx.translate(x, y);
+  // (his clips face right: mirrored to face left)
+  if (a.facing === -1) ctx.scale(-1, 1);
+  SOLDIER_CLIPS.draw(ctx, name, k);
+  ctx.restore();
+}
+
 /** Flicker's height in scene units at scale 1 (a firefly: well under Dot's size) */
 const FLICKER_H = 44;
 /** the light's stutter, a second and a half around: when it is dark (his tell: he is not telling the whole truth) */
@@ -831,6 +856,7 @@ function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
 function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
   if (a.kind === 'dot') { drawDot(ctx, a, w, h, t, scroll); return; }
   if (a.kind === 'flicker') { drawFlickerActor(ctx, a, w, h, t, scroll); return; }
+  if (a.kind === 'soldier') { drawSoldierActor(ctx, a, w, h, t, ground, scroll); return; }
   if (a.kind === 'cel') { drawCelActor(ctx, a, w, h, t, ground, scroll); return; }
   // Pokey and Meeca: the painted characters, one engine (moods, moves, ground, shadow)
   if (a.kind === 'milo' && a.portrait) { drawPortrait(ctx, a, w, h, t, ground, scroll); return; }
