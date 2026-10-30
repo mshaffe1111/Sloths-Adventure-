@@ -18,7 +18,11 @@ test('AN-9: each moment has its pattern, and the setting turns every buzz off', 
   assert.equal(HAPTIC.bossSlam.at(-1), 60);
   assert.equal(HAPTIC.checkpoint.filter((_, i) => i % 2 === 0).length, 2, 'two short pulses');
   assert.ok(HAPTIC.clear.length >= 3);
-  assert.equal(hapticsOn(), true, 'on unless turned off');
+  assert.equal(hapticsOn(), false, 'off unless turned on');
+  buzz('hurt');
+  vibrate(15);
+  assert.equal(buzzed.length, 0, 'nothing until turned on');
+  setHaptics(true);
   buzz('hurt');
   vibrate(15);
   assert.deepEqual(buzzed, [[40], 15]);
