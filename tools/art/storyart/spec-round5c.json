@@ -1,0 +1,266 @@
+{
+ "tag": "r5c",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5fe26548fd0f156ab2cd8e65f82f80dcdccd533f/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "card-squirrels-t50",
+   "start": "card-squirrels.png",
+   "strength": 0.5,
+   "seed": 4,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a family of red squirrels under the old vine in the rainforest laughing and waving, little kids, a new blank wooden sign on a post beside them, sunny, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+   "neg": "text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker"
+  },
+  {
+   "name": "card-squirrels-t58",
+   "start": "card-squirrels.png",
+   "strength": 0.58,
+   "seed": 9,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a family of red squirrels under the old vine in the rainforest laughing and waving, little kids, a new blank wooden sign on a post beside them, sunny, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+   "neg": "text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker"
+  },
+  {
+   "name": "card-crocus-rex-t55",
+   "start": "card-crocus-rex.png",
+   "strength": 0.55,
+   "seed": 4,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big crocodile with a crooked little crown swimming gently across the calm river like a ferry, three small passengers riding on his back, the tree village on the far bank, sunny, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+   "neg": "text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker"
+  },
+  {
+   "name": "card-crocus-rex-t62",
+   "start": "card-crocus-rex.png",
+   "strength": 0.62,
+   "seed": 9,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big crocodile with a crooked little crown swimming gently across the calm river like a ferry, three small passengers riding on his back, the tree village on the far bank, sunny, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+   "neg": "text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker"
+  },
+  {
+   "name": "card-tarantula-queen-t45",
+   "start": "card-tarantula-queen.png",
+   "strength": 0.45,
+   "seed": 4,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ],
+    [
+     "pokey",
+     0.35
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big friendly tarantula queen with a tiny crown at a little round table set for tea among the pink orchids, a china teapot and cups, a young sloth guest sitting with her finishing his cup, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+   "neg": "text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker"
+  },
+  {
+   "name": "card-tarantula-queen-t52",
+   "start": "card-tarantula-queen.png",
+   "strength": 0.52,
+   "seed": 9,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ],
+    [
+     "pokey",
+     0.35
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big friendly tarantula queen with a tiny crown at a little round table set for tea among the pink orchids, a china teapot and cups, a young sloth guest sitting with her finishing his cup, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+   "neg": "text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker"
+  },
+  {
+   "name": "card-marsh-reaver-t36",
+   "start": "card-marsh-reaver.png",
+   "strength": 0.36,
+   "seed": 4,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big marsh creature sitting on a mangrove root by a path at noon eating his lunch from a leaf, half of it left beside him, fireflies, clean still water, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+   "neg": "text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker"
+  },
+  {
+   "name": "card-marsh-reaver-t42",
+   "start": "card-marsh-reaver.png",
+   "strength": 0.42,
+   "seed": 9,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big marsh creature sitting on a mangrove root by a path at noon eating his lunch from a leaf, half of it left beside him, fireflies, clean still water, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+   "neg": "text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker"
+  },
+  {
+   "name": "notch-t38",
+   "start": "notch.png",
+   "strength": 0.38,
+   "seed": 3,
+   "w": 768,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of a single small brown twig standing upright with two little leaves, a long row of growth notches cut across it one above another showing pale wood, the lower notches small and neat, the upper ones rougher, a tiny fern scratched beside each upper notch, crisp clean dark outlines, soft cel shading, plain flat grey background",
+   "neg": "text, letters, numbers, hand, person, animal, background scenery, table, floor, shadow, blurry, ladder"
+  },
+  {
+   "name": "notch-t48",
+   "start": "notch.png",
+   "strength": 0.48,
+   "seed": 6,
+   "w": 768,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of a single small brown twig standing upright with two little leaves, a long row of growth notches cut across it one above another showing pale wood, the lower notches small and neat, the upper ones rougher, a tiny fern scratched beside each upper notch, crisp clean dark outlines, soft cel shading, plain flat grey background",
+   "neg": "text, letters, numbers, hand, person, animal, background scenery, table, floor, shadow, blurry, ladder"
+  },
+  {
+   "name": "snail-stretch-t50",
+   "start": "snail-stretch.png",
+   "strength": 0.5,
+   "seed": 3,
+   "w": 768,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft garden brown spiral shell, a pale tan body stretched out long as it creeps, two eye stalks up, crisp clean dark outlines, soft cel shading, a clean simple silhouette, plain flat grey background",
+   "neg": "text, background scenery, ground, floor, shadow, slime trail, blurry, extra eyes, two snails"
+  },
+  {
+   "name": "snail-stretch-t62",
+   "start": "snail-stretch.png",
+   "strength": 0.62,
+   "seed": 6,
+   "w": 768,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft garden brown spiral shell, a pale tan body stretched out long as it creeps, two eye stalks up, crisp clean dark outlines, soft cel shading, a clean simple silhouette, plain flat grey background",
+   "neg": "text, background scenery, ground, floor, shadow, slime trail, blurry, extra eyes, two snails"
+  },
+  {
+   "name": "snail-bunch-t50",
+   "start": "snail-bunch.png",
+   "strength": 0.5,
+   "seed": 3,
+   "w": 768,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft garden brown spiral shell, a pale tan body bunched up short as it creeps, two eye stalks up, crisp clean dark outlines, soft cel shading, a clean simple silhouette, plain flat grey background",
+   "neg": "text, background scenery, ground, floor, shadow, slime trail, blurry, extra eyes, two snails"
+  },
+  {
+   "name": "snail-bunch-t62",
+   "start": "snail-bunch.png",
+   "strength": 0.62,
+   "seed": 6,
+   "w": 768,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft garden brown spiral shell, a pale tan body bunched up short as it creeps, two eye stalks up, crisp clean dark outlines, soft cel shading, a clean simple silhouette, plain flat grey background",
+   "neg": "text, background scenery, ground, floor, shadow, slime trail, blurry, extra eyes, two snails"
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5fe26548fd0f156ab2cd8e65f82f80dcdccd533f/",
+ "keep": [
+  "card-squirrels-t50",
+  "card-squirrels-t58",
+  "card-crocus-rex-t55",
+  "card-crocus-rex-t62",
+  "card-tarantula-queen-t45",
+  "card-tarantula-queen-t52",
+  "card-marsh-reaver-t36",
+  "card-marsh-reaver-t42",
+  "notch-t38",
+  "notch-t48",
+  "snail-stretch-t50",
+  "snail-stretch-t62",
+  "snail-bunch-t50",
+  "snail-bunch-t62"
+ ]
+}
