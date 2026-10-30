@@ -221,4 +221,13 @@ hfui1         6ae4009c0e0338d1bb7c7408 rtx-pro-6000 02:27:40Z-02:35:51Z (8.2 min
   THROWN: kit-buttons-s62-23 (pink nails from the key), kit-panels-s62-23 (jagged parchment), kit-icons-s52 (mute became an arrow,
   save melted), the icon-full takes (his head cropped at the edge; the composite keeps him in the safe zone).
   The feature graphic, splash and store screenshots are the game's own title scene and play, no GPU (tools/art/store/storeshots.mjs).
-running spend of the $80: ~$0.38
+hfstory1      6ae404400e0338d1bb7c7572 rtx-pro-6000 02:43:12Z-02:48:29Z (5.3 min, ~$0.24): row 9, story plates #19 and #20
+  (tools/art/hfstory: platestarts.py, make_spec_plates1.py, platecut.py), 8 takes at 1600 x 1696. KEPT plate-raft-s55-23 (the bank
+  village, the river, the raft barely started) as src/assets/story/plates/raft.webp. THROWN: all four gorge takes (the start's dark
+  cliff slab came through as a hard block; Dot took the vine, not his claw; the lower half empty).
+hfstory2      6ae405d00e0338d1bb7c75db rtx-pro-6000 02:49:52Z-02:53:01Z (3.2 min, ~$0.14): #20 again from a start rebuilt on World 4's
+  own gorge (w4-far) and broken ledge with its vine end (w4-mid). KEPT plate-gorge-s45-7 as src/assets/story/plates/gorge.webp
+  (Pokey worried over the mist, the broken ledge, the vine). Rough: Dot reads as beside his free paw, not clearly gripping it.
+  #18 squirrels and #21 floury Dot were already painted (Gemini): cleaned with no GPU (white sticker rims peeled, the pink flour puffs
+  to flour white), platecut.py.
+running spend of the $80: ~$0.76
