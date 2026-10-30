@@ -4,7 +4,7 @@ import { buildCourse, buildSlideStage, checkSlide, CRUMBLE_X0, CRUMBLE_X1, KINDS
 import type { LevelConfig } from './types.ts';
 import { buildScene, lightAt, POKEY_MIN } from './w7SlideScene.ts';
 import { pokeyLight } from './w7SlideArt.ts';
-import { measure } from '../../tools/art/slide74/jumps.ts';
+import { measure, petalCheck } from '../../tools/art/slide74/jumps.ts';
 
 const cfg: LevelConfig = {
   worldIndex: 7, miniIndex: 4, id: '7-4', name: 'The Way Down', objectiveType: 'ascent', targetCount: 1, timeLimit: 0, levelWidth: 8000,
@@ -156,5 +156,14 @@ test('every jump is makeable by a real thumb (Matt, 2026-10-29: "Couldn\'t make 
       assert.ok(r.read >= 1.4, `${easy ? 'Easy' : 'Normal'} ${r.kind} at ${r.t.toFixed(1)} s: readable only ${r.read.toFixed(2)} s`);
       assert.ok(r.thumb >= (easy ? 0.85 : 0.9), `${easy ? 'Easy' : 'Normal'} ${r.kind} at ${r.t.toFixed(1)} s: the thumb makes it ${(r.thumb * 100).toFixed(0)}%`);
     }
+  }
+});
+
+test('every slide petal is possible, and none makes a required jump fail if he goes for it (Matt, 2026-10-29)', () => {
+  // petals can be hard, as long as they're possible: each is taken by a slide in its lane, or by some press inside the window of the
+  // jump it sits over (one that also clears the jump), never only by a press that fails the jump
+  for (const easy of [false, true]) {
+    const rows = petalCheck(buildCourse(1, easy));
+    for (const r of rows) assert.ok(r.how === 'ground' || r.how === 'with-jump' || r.how === 'air', `${easy ? 'Easy' : 'Normal'} petal at z ${r.z}: ${r.how}`);
   }
 });

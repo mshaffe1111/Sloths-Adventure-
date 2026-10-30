@@ -250,6 +250,24 @@ Easy, by a bot with a real thumb:
 
 After: 12 of 12 runs out, at most 2 of 5 hearts lost, never a life.
 
+**The petals** (Matt, 2026-10-29: petals in the slide sit too close to the jumps; then, "petals can be difficult, as long as they're
+possible": move only the ones that are impossible, or that make a required jump fail if he goes for them). Each petal was checked in
+the real SlideSim (`jumps.ts` `petalCheck`, `npx tsx tools/art/slide74/jumps.ts 1 petals`):
+
+- **ground**: a slide in its lane takes it;
+- **with-jump**: some press inside the window of the jump it sits over takes it and clears the jump;
+- **costs-jump**: only a press that fails the jump takes it;
+- **impossible**: nothing takes it.
+
+| Roll 1 | Before (v5 physics) | After (v6) |
+|---|---|---|
+| Normal, 116 petals | 74 ground, 42 with-jump, 0 costs-jump, 0 impossible | the same |
+| Easy, 104 petals | 62 ground, 42 with-jump, 0 costs-jump, 0 impossible | the same |
+
+So **none moved**. The arcs over the barriers and gaps follow the jump's own line: a jump that peaks over the obstacle takes them and
+clears it. The hard ones stay hard: an arc's outer petals need a well-timed jump. A test holds it ("every slide petal is possible, and
+none makes a required jump fail"). The side-on World 7 stages' petals are not part of this change.
+
 **The hardest stretch**: `clip-hardest-climax.mp4` (30 fps, Normal, sideways, about 11 s). The climax at 80-92 s has a crate pile,
 a beam, two gaps and a crate pile, with statues between them, about 1.3 s apart.
 

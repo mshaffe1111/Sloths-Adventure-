@@ -142,3 +142,52 @@ if (process.argv[1]?.endsWith('jumps.ts')) {
     console.log(`  failing: ${rows.filter((w) => w.fails.length).length}; expected misses a run ${exp.toFixed(1)}; a clean run ${(p * 100).toFixed(1)}%`);
   }
 }
+
+/**
+ * Every petal on the slide (Matt, 2026-10-29: petals can be hard as long as they're possible; move only the ones that are impossible or
+ * that make a required jump fail if you go for them): 'ground' a slide in its lane takes it; 'with-jump' some press inside the window of
+ * the required jump it sits over takes it and clears the jump; 'costs-jump' only a press outside that window takes it (going for it
+ * fails the jump); 'air' a jump on open floor takes it (no required jump near); 'impossible' nothing takes it.
+ */
+export function petalCheck(c: SlideCourse): Array<{ i: number; z: number; x: number; y: number; how: string }> {
+  const v = c.speed;
+  const obs = [...c.obstacles].sort((a, b) => a.z - b.z);
+  const takes = (press: number, from: number, p: { z: number; x: number; y: number }, o?: Obstacle) => {
+    // press: frames after `from` (z) the jump goes; returns [took the petal, cleared o]
+    const solo: SlideCourse = { ...c, obstacles: o ? [{ ...o, taught: false }] : [], petals: [p], lines: [], flags: [] };
+    const s = new SlideSim(solo);
+    s.z = from;
+    s.x = p.x;
+    let bad = false, took = false;
+    for (let f = 0; f < 90; f++) {
+      s.step(DT, { left: false, right: false, jumpPressed: f === press, down: false });
+      if (s.events.some((e) => e.k === 'hit' || e.k === 'fall')) bad = true;
+      if (s.events.some((e) => e.k === 'petal')) took = true;
+    }
+    return [took, !bad];
+  };
+  return c.petals.map((p, i) => {
+    const near = obs.find((o) => KINDS[o.kind].beat === 'jump' && p.z > o.z - 3 && p.z < o.z + o.len + 3);
+    const from = p.z - v * 1.2;
+    // on the ground?
+    if (takes(-1, from, p, undefined)[0]) return { i, ...p, how: 'ground' };
+    let any = false, withJump = false;
+    for (let k = 0; k < 36; k++) {
+      const [took, clear] = takes(k, from, p, near);
+      if (took) any = true;
+      if (took && clear) withJump = true;
+    }
+    if (!near) return { i, ...p, how: any ? 'air' : 'impossible' };
+    return { i, ...p, how: withJump ? 'with-jump' : any ? 'costs-jump' : 'impossible' };
+  });
+}
+
+if (process.argv[1]?.endsWith('jumps.ts') && process.argv[3] === 'petals') {
+  for (const easy of [false, true]) {
+    const rows = petalCheck(buildCourse(Number(process.argv[2] ?? 1), easy));
+    const n: Record<string, number> = {};
+    for (const r of rows) n[r.how] = (n[r.how] ?? 0) + 1;
+    console.log(easy ? 'EASY' : 'NORMAL', JSON.stringify(n));
+    for (const r of rows.filter((r) => r.how === 'costs-jump' || r.how === 'impossible')) console.log('  ', r.how, 'z', r.z, 'x', r.x, 'y', r.y.toFixed(2));
+  }
+}
