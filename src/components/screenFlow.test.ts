@@ -10,24 +10,25 @@ function walk(steps: { screen: GameScreen; hold: StageHold }[]): boolean {
   return engine;
 }
 
-test("Matt's freeze: Menu → Trophies → Library → watch a memory → Back → Back keeps the paused stage", () => {
+test("Matt's freeze: Menu → Satchel → watch a memory → Back → Back keeps the paused stage (the Library moved into the satchel)", () => {
   const fromPause: StageHold = { trophyFrom: 'paused', memoryBack: null };
   const steps: { screen: GameScreen; hold: StageHold }[] = [
     { screen: 'playing', hold: fromPause },
     { screen: 'paused', hold: fromPause },
-    { screen: 'trophy', hold: fromPause },
-    { screen: 'memory', hold: { trophyFrom: 'paused', memoryBack: 'trophy' } },
-    { screen: 'trophy', hold: fromPause },
+    { screen: 'satchel', hold: fromPause },
+    { screen: 'memory', hold: { trophyFrom: 'paused', memoryBack: 'satchel' } },
+    { screen: 'satchel', hold: fromPause },
     { screen: 'paused', hold: fromPause },
   ];
   assert.equal(walk(steps), true, 'the stage must still be there for Resume');
-  // the Jungle Cards tab is the same Trophy Room
+  // the Trophy Room (and its Jungle Cards tab) from the pause menu keeps it too
   assert.equal(releasesStage('trophy', fromPause), false);
+  assert.equal(releasesStage('satchel', fromPause), false);
 });
 
 test('a memory from the title or the map, or after a guardian falls, still frees the stage', () => {
-  assert.equal(releasesStage('memory', { trophyFrom: 'title', memoryBack: 'trophy' }), true);
-  assert.equal(releasesStage('memory', { trophyFrom: 'world_map', memoryBack: 'trophy' }), true);
+  assert.equal(releasesStage('memory', { trophyFrom: 'title', memoryBack: 'satchel' }), true);
+  assert.equal(releasesStage('memory', { trophyFrom: 'world_map', memoryBack: 'satchel' }), true);
   // a boss defeat: the Trophy Room had been opened from a pause earlier in the session, but this memory is the boss's
   assert.equal(releasesStage('memory', { trophyFrom: 'paused', memoryBack: 'victory' }), true);
   for (const s of ['title', 'world_map', 'story_cutscene', 'world_story', 'boss_intro', 'boss_defeat', 'ending_story'] as GameScreen[]) {

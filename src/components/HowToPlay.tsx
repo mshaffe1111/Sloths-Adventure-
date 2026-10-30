@@ -163,9 +163,9 @@ const Extras: React.FC = () => (
       <p className="ui-copy ui-warn">New Game erases your progress. It offers a backup first, so use it.</p>
     </section>
     <section className="htp-sec">
-      <h3 className="ui-label">The Menu</h3>
+      <h3 className="ui-label">Settings</h3>
       <p className="ui-copy">
-        In a stage, <b>Menu</b> at the top pauses the game. It has Resume, Restart, Trophies, the World Map, this journal, how you control the game, and the sound.
+        In a stage, <b>Settings</b> (the leaf at the top) pauses the game. It has Resume, Restart, Trophies, the World Map, the start screen, this journal, how you control the game, and the sound.
       </p>
       <p className="ui-copy">
         The phone's <b>Back</b> swipe pauses the game too, instead of leaving it. Keep your thumbs <b>a finger's width in from the edges</b>: the phone keeps swipes that start at the very edge for itself.
@@ -210,7 +210,7 @@ const Intro: React.FC<{ mode: InputMode; onGo: () => void; onMore: () => void }>
           </div>
         }
       />
-      <p className="jr-foot-note">Every new move you meet gets its own page in Pokey's Journal. Find it in the Menu.</p>
+      <p className="jr-foot-note">Every new move you meet gets its own page in Pokey's Journal. Find it in Settings.</p>
     </>
   );
 };
@@ -398,7 +398,7 @@ export function markHowToSeen() {
   }
 }
 
-/** how many pages are NEW (for a badge on the Menu's journal tile) */
+/** how many pages are NEW (for a badge on the journal tile in Settings) */
 export function journalNewCount(): number {
   const open = openPages();
   return PAGES.filter((p) => isNew(p.id, open)).length;

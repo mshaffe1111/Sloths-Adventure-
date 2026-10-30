@@ -514,8 +514,8 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
             className="vh-menu painted"
             data-hud-fade=""
             onClick={onMenu}
-            aria-label="Menu (pauses the game)"
-            title="Menu [Esc]"
+            aria-label="Settings (pauses the game)"
+            title="Settings [Esc]"
             style={{ right: g.gutter - (mbw - lw) / 2, top: base - Math.round(6 * k), width: mbw, height: mbh }}
           >
             <Piece name="menuLeaf" w={lw} className="vh-menu-leaf" style={{ left: (mbw - lw) / 2, top: 0 }} />
@@ -526,8 +526,8 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
             className="vh-menu"
             data-hud-fade=""
             onClick={onMenu}
-            aria-label="Menu (pauses the game)"
-            title="Menu [Esc]"
+            aria-label="Settings (pauses the game)"
+            title="Settings [Esc]"
             style={{ right: g.gutter - (g.menuHit - mw) / 2, top: base - 4, width: g.menuHit, height: g.menuHit + 6 }}
           >
             <Leaf frame="big_C10_0" w={mw} className="vh-menu-leaf" style={{ left: (g.menuHit - mw) / 2, top: -2 }} />

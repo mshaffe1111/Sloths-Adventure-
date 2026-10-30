@@ -1,0 +1,45 @@
+/* the start screen in the painted kit (mock): painted icons on every button, the credit on a painted backing */
+.gx2-ui .gx-plank > svg, .gx2-ui .gx-token > svg { background: center / contain no-repeat; width: 26px !important; height: 26px !important; filter: drop-shadow(0 1px 1px rgba(0,0,0,.45)); }
+.gx2-ui .gx-plank > svg > *, .gx2-ui .gx-token > svg > * { display: none; }
+.gx2-ui .gx-tags .gx-plank > svg { width: 22px !important; height: 22px !important; }
+.gx2-planks .gx-plank:nth-child(1) > svg { background-image: url(/mock/icon-map.png); }
+.gx2-planks .gx-plank:nth-child(2) > svg { background-image: url(/mock/icon-scroll.png); }
+.gx2-planks .gx-plank:nth-child(3) > svg { background-image: url(/mock/icon-bulb.png); }
+.gx2-planks .gx-plank:nth-child(4) > svg { background-image: url(/mock/icon-gear.png); }
+.gx-tags .gx-plank:nth-child(1) > svg { background-image: url(/mock/icon-trophy.png); }
+.gx-tags .gx-plank:nth-child(2) > svg { background-image: url(/mock/icon-save.png); }
+.gx-tags .gx-plank:nth-child(3) > svg { background-image: url(/mock/icon-leaf.png); }
+.gx2-ui .gx-mute svg { background: url(/mock/icon-speaker.png) center / contain no-repeat; width: 26px !important; height: 26px !important; }
+.gx2-ui .gx-mute svg > * { display: none; }
+.gx-mute[aria-pressed="true"] svg { background-image: url(/mock/icon-mute.png); }
+.gx2-top-r .gx-token:not(.gx-mute) > svg { background-image: url(/mock/icon-expand.png); width: 24px !important; height: 24px !important; }
+.gx2-sign::before { display: none; }
+.gx2-sign .gx-sign-t { position: static; }
+.gx2-sign .gx-sign-t::before { content: ''; position: absolute; left: 9px; top: 50%; width: 28px; height: 28px; transform: translateY(-50%); background: url(/mock/icon-play.png) center / contain no-repeat; filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)); }
+.gx2-credit { justify-self: center; box-sizing: border-box; width: fit-content; max-width: min(100%, 420px); padding: 2px 10px; font-size: 12.5px; line-height: 1.45; color: #fff1d6;
+  border-style: solid; border-width: 8px; border-image: url(/mock/textBox.png) 46 fill / 8px stretch; }
+/* the column can't be pushed past the 16 px gutter by the credit's line (it ran 2-7 px from the right edge) */
+@media (orientation: portrait) { .gx2-ui { grid-template-columns: minmax(0, 1fr); } }
+.gx2-credit { min-width: 0; }
+/* every tap at least 48 x 48 */
+.gx2-ui .gx-plank { min-height: 48px; box-sizing: border-box; }
+.gx2-ui .gx-token { width: 48px !important; height: 48px !important; }
+@media (orientation: portrait) { .gx2-sign { min-width: min(100%, 380px); max-width: 100%; box-sizing: border-box; } .gx2-planks { width: min(100%, 380px); } }
+@media (orientation: portrait) and (max-width: 340px) { .gx2-sign { padding-left: 32px; padding-right: 32px; } .gx2-sign .gx-sign-t { font-size: 19px; } }
+/* the sign's words make room for the play icon */
+.gx2-sign .gx-sign-t { padding-left: 14px; }
+@media (orientation: portrait) { .gx2-sign .gx-sign-t { font-size: min(6vw, 26px); } }
+.gx2-sign .gx-sign-t::before { width: 26px; height: 26px; left: 10px; }
+/* the three small boards always on one row, each a third */
+.gx2-ui .gx-tags { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: min(100%, 380px); flex-wrap: nowrap; }
+.gx2-ui .gx-tags .gx-plank { min-width: 0; padding: 4px 6px; gap: 4px; font-size: 12.5px; white-space: nowrap; justify-content: center; }
+.gx2-ui .gx-tags .gx-plank > svg { width: 18px !important; height: 18px !important; }
+@media (orientation: landscape) and (max-height: 430px) { .gx2-ui .gx-tags { width: auto; grid-template-columns: repeat(3, auto); } .gx2-ui .gx-tags .gx-plank { padding: 4px 10px; } }
+/* short upright phones: Pokey and Meeca's stage gives way so every board and the credit fit */
+@media (orientation: portrait) and (max-height: 700px) { .gx2-stage { min-height: 12vh; } .gx2-logo { margin-top: 0; } .gx2-carve { --lw: min(84vw, 360px); } .gx2-post { margin: 0 0 1vh; } }
+/* labels at 16 px on the big boards; the three small ones at 13.5 px (the most that fits three to a row on a 360 px phone) */
+@media (orientation: portrait) { .gx2-planks .gx-plank { font-size: 16px; padding: 8px 10px; } }
+@media (orientation: landscape) and (max-height: 430px) { .gx2-planks .gx-plank { font-size: 15px; } }
+.gx2-ui .gx-tags .gx-plank { font-size: 13.5px; }
+.gx2-sign { min-height: 48px; box-sizing: border-box; }
+@media (orientation: portrait) and (max-width: 340px) { .gx2-ui .gx-tags .gx-plank { font-size: 12px; padding: 4px 4px; gap: 3px; } .gx2-ui .gx-tags .gx-plank > svg { width: 16px !important; height: 16px !important; } }

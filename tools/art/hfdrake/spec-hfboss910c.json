@@ -1,0 +1,282 @@
+{
+ "note": "hfboss910c: the set pieces at 0.8/0.88",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/8d568a96e564315b52ee2be2b447889d4c545698/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "910-ledges-s80-7",
+   "start": "start-910-ledges.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: six black volcanic basalt rock shelves, each standing on its own thick rock column down to the bottom edge, heaped with shiny gold coins, rusty tin mugs, a dented old teapot and a battered wooden treasure chest. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "910-ledges-s88-7",
+   "start": "start-910-ledges.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: six black volcanic basalt rock shelves, each standing on its own thick rock column down to the bottom edge, heaped with shiny gold coins, rusty tin mugs, a dented old teapot and a battered wooden treasure chest. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "910-ribs-s80-7",
+   "start": "start-910-ribs.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: three tall narrow jagged black basalt rock spires standing on the ground, cracked, faint warm light on their edges. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "910-ribs-s88-7",
+   "start": "start-910-ribs.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: three tall narrow jagged black basalt rock spires standing on the ground, cracked, faint warm light on their edges. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "910-crust-s80-7",
+   "start": "start-910-crust.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: long thin flat strips of cooling volcanic crust floating on lava, five rows: glowing molten orange; orange with dark cooling patches; dark grey-black with thin glowing orange cracks; cold matte black basalt; broken into black plates with glowing orange gaps between. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "910-crust-s88-7",
+   "start": "start-910-crust.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: long thin flat strips of cooling volcanic crust floating on lava, five rows: glowing molten orange; orange with dark cooling patches; dark grey-black with thin glowing orange cracks; cold matte black basalt; broken into black plates with glowing orange gaps between. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "910-lava-s80-7",
+   "start": "start-910-lava.webp",
+   "prompt": "slothadv style, a side view of a lava surface filling the lower part of the picture, a bright glowing yellow-orange top edge with slow swirls and a few bubbles, deepening to dark red at the bottom, above it flat magenta. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "910-lava-s88-7",
+   "start": "start-910-lava.webp",
+   "prompt": "slothadv style, a side view of a lava surface filling the lower part of the picture, a bright glowing yellow-orange top edge with slow swirls and a few bubbles, deepening to dark red at the bottom, above it flat magenta. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-table-s80-7",
+   "start": "start-1010-table.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: a very long, heavy, plain old bare-oak council table with thick legs and scratches; the same table tipped up on one end as a tall wooden wall; the table splintered into three broken pieces. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-table-s88-7",
+   "start": "start-1010-table.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: a very long, heavy, plain old bare-oak council table with thick legs and scratches; the same table tipped up on one end as a tall wooden wall; the table splintered into three broken pieces. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-chairs-s80-7",
+   "start": "start-1010-chairs.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: ten heavy old wooden council chairs with tall backs, each back carved with a different sign (a fang, a crown, an eye, a feather, a spider web, reeds, a stone block, a moth, a flame, a thorn), one taller grander dark head chair with iron studs, one chair tumbling through the air, one fallen on its side, one broken in pieces. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-chairs-s88-7",
+   "start": "start-1010-chairs.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: ten heavy old wooden council chairs with tall backs, each back carved with a different sign (a fang, a crown, an eye, a feather, a spider web, reeds, a stone block, a moth, a flame, a thorn), one taller grander dark head chair with iron studs, one chair tumbling through the air, one fallen on its side, one broken in pieces. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-net-s80-7",
+   "start": "start-1010-net.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: black wrought-iron diamond lattice netting panels between square grey stone pillars topped with iron spikes, wet with rain, and one netting panel bent and torn open; the magenta shows through the holes of the lattice. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-net-s88-7",
+   "start": "start-1010-net.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: black wrought-iron diamond lattice netting panels between square grey stone pillars topped with iron spikes, wet with rain, and one netting panel bent and torn open; the magenta shows through the holes of the lattice. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-hedge-s80-7",
+   "start": "start-1010-hedge.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: a low hedge of black twisted thorny iron vines with long sharp thorns, clearly dangerous, and its tapering end piece on the right. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-hedge-s88-7",
+   "start": "start-1010-hedge.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: a low hedge of black twisted thorny iron vines with long sharp thorns, clearly dangerous, and its tapering end piece on the right. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-rubble-s80-7",
+   "start": "start-1010-rubble.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: three heaps of broken grey castle stones, wet with rain, and a grey stone battlement wall with merlons on top, its right half broken off in a jagged edge. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "1010-rubble-s88-7",
+   "start": "start-1010-rubble.webp",
+   "prompt": "slothadv style, a sprite sheet of separate side-view platformer props on a flat magenta background, each piece separate: three heaps of broken grey castle stones, wet with rain, and a grey stone battlement wall with merlons on top, its right half broken off in a jagged edge. Soft painted storybook illustration, soft cel shading, thick dark outline, evenly lit, slothadv style.",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ]
+}

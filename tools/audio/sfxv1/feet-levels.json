@@ -1,0 +1,19 @@
+{
+ "_why": "Pokey's steps (Matt's pick F, 2026-10-30): each take's gain so it plays at the level he heard on the footstep page, 4 dB under the old steps as a phone plays them; +6 cancels sfxRec.ts MIX_DB's -6 for steps. Set by footcand.py's takes, not by calib.py.",
+ "stepMoss": [
+  6.07,
+  7.97,
+  6.97,
+  6.47,
+  5.77,
+  13.27
+ ],
+ "stepWood": [
+  4.87,
+  4.47,
+  6.67,
+  8.77,
+  9.27,
+  11.07
+ ]
+}

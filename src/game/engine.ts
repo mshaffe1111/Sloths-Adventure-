@@ -1,4 +1,6 @@
 import { buzz } from './haptics.ts';
+import { nativeApp } from './appShell.ts';
+import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
 import { SlowWatch } from './slowTip.ts';
 import { drawW7Chairs } from './w7ChairsArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
@@ -155,7 +157,8 @@ import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar 
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
-import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
+import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
+import { releaseDecorPics } from './envKit.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
@@ -249,6 +252,8 @@ export interface GameEngineCallbacks {
   onCinematic?: (on: boolean) => void;
 }
 
+/** a footstep sound on every this-many footfalls of his run frames (2026-10-30; until then one every 52 px, unsynced) */
+export const STEP_EVERY = 2;
 /** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
 export const STEP_FACE = { min: 30, max: 100 } as const;
 /**
@@ -1060,6 +1065,11 @@ export class GameEngine {
     this.lastRenderTime = this.lastTime;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     const cfg = this.currentStage.config;
+    // the Android app, after the phone cut the last run of this stage off: start at the flag it had reached (flagResume.ts). Not in the
+    // stages with their own runs (a slide, Dot's flight, a rising tide), which keep their own flags.
+    const back = !this.flagTried && nativeApp() && !this.slideRun && !this.dotRun && !this.tide ? flagFor(cfg.id) : null;
+    this.flagTried = true;
+    if (back) this.startAtFlag(back);
     if (coachWanted(cfg.id, cfg.secret)) {
       this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), markCoachDone);
       markCoachDone(); // once per device: leaving halfway does not bring it back
@@ -1076,6 +1086,12 @@ export class GameEngine {
   /** a note, book or keepsake is picked up: a burst, a line of text, and the app opens it */
   private collectFind(c: Collectible) {
     c.collected = true;
+    // the snail: a tiny sound and nothing else, no stopping (the app keeps him, App.tsx onFind)
+    if (FIND_BY_ID[c.findId ?? '']?.kind === 'snail') {
+      sound.playUiTap();
+      this.callbacks.onFind?.(c.findId!);
+      return;
+    }
     this.runScore += 300;
     sound.playRelicFound();
     this.spawnSparkBurst(c.x, c.y, '#fde68a');
@@ -1129,6 +1145,8 @@ export class GameEngine {
   private graceMoves = -1;
 
   public stop() {
+    // the stage ended the normal way (cleared, restarted, left): nothing to come back to
+    clearFlag();
     // (the banner goes back to its usual place for whatever comes next)
     if (typeof document !== 'undefined') {
       delete document.documentElement.dataset.wayLow;
@@ -1147,8 +1165,9 @@ export class GameEngine {
     clearTimeout(this.screenTimer);
     recorder.stage(this, false);
     sound.setLowHealth(false);
-    // (the painted ground squares go with the stage)
+    // (the painted ground squares and ground-plant pictures go with the stage)
     releaseGroundChunks();
+    releaseDecorPics();
   }
 
   private loop = (now: number) => {
@@ -2207,6 +2226,8 @@ export class GameEngine {
             const nx = Math.max(plat.push.min, Math.min(plat.push.max - plat.width, plat.x + dir * PUSH_SPEED * dt));
             if (nx !== plat.x) {
               plat.x = nx;
+              // a log that was standing still gives a wooden knock as it starts to roll; then the bark scrapes along
+              if (this.gameTime - (this.protoScene.movedAt.get(plat.id) ?? -9) > 0.5) sound.playLog();
               this.protoScene.movedAt.set(plat.id, this.gameTime);
               this.pushSoundT -= dt;
               if (this.pushSoundT <= 0) {
@@ -2399,7 +2420,11 @@ export class GameEngine {
           recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
           const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
-          if (further) this.checkpoint = { x: cp.x, y: cp.y };
+          if (further) {
+            this.checkpoint = { x: cp.x, y: cp.y };
+            // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
+            if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y);
+          }
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
           sound.playCheckpoint();
@@ -2726,6 +2751,7 @@ export class GameEngine {
           this.camera.trauma = 0.7;
           this.spawnSparkBurst(c.x, c.y, '#a78bfa');
           this.addFloatingText('The thorn gate opens.', c.x, c.y - 30, '#c4b5fd');
+          sound.playGate();
           sound.playBossRoar(this.currentStage.config.worldIndex);
           this.callbacks.onSecret?.();
         }
@@ -3173,7 +3199,9 @@ export class GameEngine {
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
   private soundTimer = 0;
-  private stepDist = 0;
+  private stepCycle = 0;
+  private footfalls = 0;
+  private airAt = -1;
   private updateSound(dt: number, groundedBefore: boolean, vyBefore: number, progress: number) {
     const p = this.player;
     // the stage is over (game over / victory screen up): no heartbeat, and the screen's own music intensity stands
@@ -3186,15 +3214,18 @@ export class GameEngine {
       // (a hard landing buzzes: AN-9)
       if (vyBefore > HARD_LAND_VY) buzz('hardLand');
     }
-    // footsteps: one leaf-crunch every few body-lengths on the ground
-    if (p.grounded && !p.climbing && Math.abs(p.vx) > 25) {
-      this.stepDist += Math.abs(p.vx) * dt;
-      if (this.stepDist > 52) {
-        this.stepDist = 0;
+    // footsteps: a soft pad as a foot comes down in his run frames (heroClips RUN_FOOTFALLS), every STEP_EVERY-th one so it stays calm
+    // (Matt, 2026-10-30: about 3.3 a second at a full run). Only a footfall passed fires one, so starting or stopping adds none, and
+    // none in the 0.15 s after he lands (the landing has its own sound)
+    const falls = footfallsBetween(this.stepCycle, p.walkCycle);
+    this.stepCycle = p.walkCycle;
+    if (!p.grounded) this.airAt = this.gameTime;
+    else if (falls > 0 && !p.climbing && Math.abs(p.vx) > 25 && this.gameTime - this.airAt > 0.15) {
+      this.footfalls += falls;
+      if (this.footfalls >= STEP_EVERY) {
+        this.footfalls = 0;
         sound.playStep();
       }
-    } else if (!p.grounded) {
-      this.stepDist = 26;
     }
 
     this.soundTimer -= dt;
@@ -4850,6 +4881,22 @@ export class GameEngine {
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
     return true;
+  }
+
+  private flagTried = false;
+  /** start the stage at a flag from a run the phone cut off: the flags up to it count as reached, and he appears there as after a fall */
+  private startAtFlag(at: { x: number; y: number }) {
+    const cps = this.currentStage.checkpoints ?? [];
+    const flag = cps.find((cp) => Math.abs(cp.x - at.x) < 2 && Math.abs(cp.y - at.y) < 2);
+    if (!flag) return; // the stage changed since (a new build): start at the beginning
+    const ascent = this.currentStage.config.objectiveType === 'ascent';
+    const descent = !!this.proto?.w4?.descent;
+    for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
+    this.checkpoint = { x: flag.x, y: flag.y };
+    this.respawnAtCheckpoint('pit');
+    const p = this.player;
+    this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
+    this.addFloatingText('Back at your flag', p.x, p.y - 74, '#fde68a', 1.6);
   }
 
   private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {
@@ -7274,13 +7321,13 @@ export class GameEngine {
       if (ear && ph.phase === 'look' && !this.vineLash.has(i) && this.vineStruck.get(i) !== ear.t) {
         this.vineStruck.set(i, ear.t);
         this.vineLash.set(i, { at: this.gameTime, dir: ear.x >= v.x ? 1 : -1, landed: true, cycle });
-        sound.playWhoosh();
+        sound.playThorns();
       }
       if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, !!ear)) {
         // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
         // (an awake vine swats him back the way he came)
         this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: v.awake ? (p.facing >= 0 ? -1 : 1) : p.x >= v.x ? 1 : -1, landed: false, cycle });
-        sound.playWhoosh();
+        sound.playThorns();
       }
       const l = this.vineLash.get(i);
       if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {

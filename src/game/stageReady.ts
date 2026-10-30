@@ -21,6 +21,7 @@ import { warmStageArt } from './stageArt.ts';
 import { warmBadWater } from './badWaterArt.ts';
 import { creatureAnimsReady, settleCreatureBakes } from './creatureAnim.ts';
 import { settleSheetBakes } from './sheetBake.ts';
+import { releaseDecorPics, settleDecorBakes } from './envKit.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
 import { perfNote } from './perfLog.ts';
@@ -55,6 +56,8 @@ export async function readyBuiltStage(
   live: () => boolean,
   deadline: number,
 ): Promise<void> {
+  // (the last stage's ground-plant pictures go; this stage's are painted from its frames below)
+  releaseDecorPics();
   if (typeof Image === 'undefined' || !preloadEnabled()) return;
   const t0 = performance.now();
   const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
@@ -108,6 +111,8 @@ export async function readyBuiltStage(
   }
   // (the painted sprites drawn through sheetBake.ts bake their sheets at the size the frames above drew them at: only here, never in play)
   if (!live()) settleSheetBakes();
+  // (and the ground plants those frames met become pictures, stamped from the first frame of play: envKit.ts)
+  if (!live()) settleDecorBakes();
   const late = pendingSheets();
   const line = `ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`;
   perfNote(line);

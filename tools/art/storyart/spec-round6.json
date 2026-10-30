@@ -1,0 +1,560 @@
+{
+ "tag": "r6",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/914d25ff0bb27ea10d098ec801922ede2bd8e28c/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "guard-sovereign.glide-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/sovereign-atlas.webp",
+     533,
+     0,
+     242,
+     79
+    ],
+    "scale": 3.6363636363636362,
+    "ox": 72,
+    "oy": 368,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a great harpy eagle with grey and white feathers and a crest, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-sovereign.alert-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/sovereign-atlas.webp",
+     194,
+     231,
+     245,
+     100
+    ],
+    "scale": 3.5918367346938775,
+    "ox": 72,
+    "oy": 332,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a great harpy eagle with grey and white feathers and a crest, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-sovereign.dead-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/sovereign-atlas.webp",
+     605,
+     231,
+     217,
+     60
+    ],
+    "scale": 4.055299539170507,
+    "ox": 72,
+    "oy": 390,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a great harpy eagle with grey and white feathers and a crest, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-queen.idle-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/queen-atlas.webp",
+     0,
+     0,
+     196,
+     98
+    ],
+    "scale": 4.489795918367347,
+    "ox": 72,
+    "oy": 292,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big black tarantula queen with a small gold crown, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-queen.screech-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/queen-atlas.webp",
+     0,
+     102,
+     180,
+     119
+    ],
+    "scale": 4.888888888888889,
+    "ox": 72,
+    "oy": 221,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big black tarantula queen with a small gold crown, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-queen.dead-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/queen-atlas.webp",
+     209,
+     223,
+     173,
+     83
+    ],
+    "scale": 5.086705202312139,
+    "ox": 72,
+    "oy": 301,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big black tarantula queen with a small gold crown, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-reaver.idle-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/reaver-atlas.webp",
+     0,
+     0,
+     167,
+     109
+    ],
+    "scale": 5.269461077844311,
+    "ox": 72,
+    "oy": 225,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big shaggy brown marsh otter warrior with a long wooden spear, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-reaver.deadheap-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/reaver-atlas.webp",
+     496,
+     237,
+     246,
+     82
+    ],
+    "scale": 3.5772357723577235,
+    "ox": 72,
+    "oy": 365,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big shaggy brown marsh otter warrior with a long wooden spear, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-reaver.roar-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/reaver-atlas.webp",
+     496,
+     0,
+     132,
+     105
+    ],
+    "scale": 6.666666666666667,
+    "ox": 72,
+    "oy": 162,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big shaggy brown marsh otter warrior with a long wooden spear, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-golem.march1-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/golem-atlas.webp",
+     309,
+     0,
+     131,
+     114
+    ],
+    "scale": 6.717557251908397,
+    "ox": 72,
+    "oy": 129,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a huge mossy stone golem made of ancient carved rocks, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-golem.roar-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/golem-atlas.webp",
+     154,
+     119,
+     108,
+     115
+    ],
+    "scale": 7.6521739130434785,
+    "ox": 99,
+    "oy": 72,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a huge mossy stone golem made of ancient carved rocks, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-golem.defeat2-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/golem-atlas.webp",
+     0,
+     713,
+     212,
+     83
+    ],
+    "scale": 4.150943396226415,
+    "ox": 72,
+    "oy": 339,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a huge mossy stone golem made of ancient carved rocks, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-monarch.fl_1-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/monarch-atlas.webp",
+     361,
+     0,
+     179,
+     72
+    ],
+    "scale": 4.916201117318436,
+    "ox": 72,
+    "oy": 335,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a huge night butterfly monarch with dark patterned wings, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-monarch.deadcollapse-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/monarch-atlas.webp",
+     0,
+     214,
+     174,
+     49
+    ],
+    "scale": 5.057471264367816,
+    "ox": 72,
+    "oy": 388,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a huge night butterfly monarch with dark patterned wings, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-drake.idle-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/drake-atlas.webp",
+     0,
+     0,
+     185,
+     103
+    ],
+    "scale": 4.756756756756757,
+    "ox": 72,
+    "oy": 267,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big red and green scaled lava dragon, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-drake.petrified-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/drake-atlas.webp",
+     375,
+     221,
+     213,
+     63
+    ],
+    "scale": 4.131455399061033,
+    "ox": 72,
+    "oy": 382,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big red and green scaled lava dragon, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-drake.enrage-s34",
+   "start": {
+    "src": [
+     "src/assets/enemies/drake-atlas.webp",
+     187,
+     0,
+     202,
+     110
+    ],
+    "scale": 4.356435643564357,
+    "ox": 72,
+    "oy": 272,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big red and green scaled lava dragon, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.34,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  }
+ ],
+ "q": 92,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/914d25ff0bb27ea10d098ec801922ede2bd8e28c/",
+ "keep": [
+  "guard-sovereign.glide-s34",
+  "guard-sovereign.alert-s34",
+  "guard-sovereign.dead-s34",
+  "guard-queen.idle-s34",
+  "guard-queen.screech-s34",
+  "guard-queen.dead-s34",
+  "guard-reaver.idle-s34",
+  "guard-reaver.deadheap-s34",
+  "guard-reaver.roar-s34",
+  "guard-golem.march1-s34",
+  "guard-golem.roar-s34",
+  "guard-golem.defeat2-s34",
+  "guard-monarch.fl_1-s34",
+  "guard-monarch.deadcollapse-s34",
+  "guard-drake.idle-s34",
+  "guard-drake.petrified-s34",
+  "guard-drake.enrage-s34"
+ ]
+}

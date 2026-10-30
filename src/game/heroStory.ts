@@ -13,6 +13,7 @@ import { heroCoatSheet, HERO_UNITS, HERO_SPRITE_SCALE } from './heroSprite.ts';
 import { STORY_FRAMES, STD_HEAD, STD_FOOT } from './heroStoryData.ts';
 import { hdPage, hdReady, warmHd, type HdSet } from './storyHd.ts';
 import { HD_POKEY, HD_POKEY_FRAMES, HD_POKEY_PAGES } from './storyHdData_pokey.ts';
+import { HD_POKEYFACE, HD_POKEYFACE_FRAMES, HD_POKEYFACE_PAGES } from './storyHdData_pokeyface.ts';
 import { gaitAt, gaitNaturalSpeed, moodAt, type GaitSpec, type MoodSpec, type StoryCharacter } from './storyActors.ts';
 
 export type PokeyMood =
@@ -76,14 +77,17 @@ export const POKEY_GAITS: Record<string, GaitSpec> = {
 
 /** his story paintings (storyHd.ts): every frame below repainted at HD times its old size; until they have loaded he is not drawn */
 const HD_SET: HdSet = { hd: HD_POKEY, pages: HD_POKEY_PAGES, frames: HD_POKEY_FRAMES };
+/** his face close-ups again at 3x (2026-10-30 cutscene audit: at 2x a close-up was drawn at up to 2.1 screen px per painted px) */
+const FACE_SET: HdSet = { hd: HD_POKEYFACE, pages: HD_POKEYFACE_PAGES, frames: HD_POKEYFACE_FRAMES };
 /** start fetching his story paintings */
 export function warmStoryHero() {
   warmHd('pokey', HD_SET);
+  warmHd('pokeyface', FACE_SET);
 }
 
 /** his story paintings have loaded: Pokey can be painted in a cutscene */
 export function storyHeroReady(): boolean {
-  return hdReady('pokey', HD_SET);
+  return hdReady('pokey', HD_SET) && hdReady('pokeyface', FACE_SET);
 }
 
 /** the frame a name stands for in the story hero: one of the cutscene poses, a standard frame, or an old name that stands in for one; undefined when there is none */
@@ -110,8 +114,9 @@ function headOf(name: string): number {
  */
 export function drawPokeyFrame(ctx: CanvasRenderingContext2D, name: string, anchor = 1): boolean {
   const real = pokeyResolve(name);
-  const f = real ? HD_POKEY_FRAMES[real] : undefined;
-  const img = f ? hdPage('pokey', f) : null;
+  const face = real ? HD_POKEYFACE_FRAMES[real] : undefined;
+  const f = face ?? (real ? HD_POKEY_FRAMES[real] : undefined);
+  const img = f ? hdPage(face ? 'pokeyface' : 'pokey', f) : null;
   if (!real || !f || !img) return false;
   const sf = STORY_FRAMES[real] ?? STD_FRAMES[real];
   if (!sf) return false;
@@ -126,8 +131,9 @@ export function drawPokeyFrame(ctx: CanvasRenderingContext2D, name: string, anch
 /** a face portrait: `name` is one of the dialogue faces (face_calm, face_oh...), drawn into the square (x, y, size). False while the art loads. */
 export function drawPokeyFace(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, size: number): boolean {
   const real = pokeyResolve(name);
-  const f = real ? HD_POKEY_FRAMES[real] : undefined;
-  const img = f ? hdPage('pokey', f) : null;
+  const face = real ? HD_POKEYFACE_FRAMES[real] : undefined;
+  const f = face ?? (real ? HD_POKEY_FRAMES[real] : undefined);
+  const img = f ? hdPage(face ? 'pokeyface' : 'pokey', f) : null;
   if (!real || !f || !img) return false;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';

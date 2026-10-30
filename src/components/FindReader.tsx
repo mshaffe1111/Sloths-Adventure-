@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { snailUrl } from '../game/findArt.ts';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import type { FindDef, KeepsakeIcon } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
 import { Icon } from './icons/index.tsx';
+import { DotPerched } from './KitParts.tsx';
+
+/** the Notch's painted cut-out (story-art, src/assets/story/finds/notch.webp): none until it is painted, and then the card shows it */
+const NOTCH_URL: string | null =
+  (Object.values(import.meta.glob('../assets/story/finds/notch.webp', { eager: true, query: '?url', import: 'default' }))[0] as string | undefined) ?? null;
 
 interface Props {
   find: FindDef;
@@ -40,11 +46,11 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === 'ArrowRight' && find.kind === 'book') setPage((p) => Math.min(last, p + 1));
-      else if (e.code === 'ArrowLeft' && find.kind === 'book') setPage((p) => Math.max(0, p - 1));
+      if (e.code === 'ArrowRight' && last > 0) setPage((p) => Math.min(last, p + 1));
+      else if (e.code === 'ArrowLeft' && last > 0) setPage((p) => Math.max(0, p - 1));
       else if (e.code === 'Escape') onClose();
       else if (e.code === 'Enter' || e.code === 'Space') {
-        if (find.kind === 'book' && page < last) setPage(page + 1);
+        if (page < last) setPage(page + 1);
         else onClose();
       } else return;
       // the reader owns these keys while it is open (the game underneath is paused)
@@ -53,15 +59,15 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [find.kind, last, page, onClose]);
+  }, [last, page, onClose]);
 
   const label =
-    find.kind === 'note' ? 'A note' : find.kind === 'book' ? 'A photo album' : 'A keepsake';
+    find.kind === 'note' ? 'A note' : find.kind === 'book' ? 'A photo album' : find.kind === 'pocket' ? "Something of Dot's" : find.kind === 'notch' ? 'From the old nest' : find.kind === 'snail' ? 'On the path' : 'A keepsake';
 
   return (
     <div className="ui-scrim fr-scrim" role="dialog" aria-modal="true" aria-label={find.title} onClick={onClose}>
       <GhostOnExit />
-      <div className={`fr-card fr-${find.kind} ${find.kind === 'note' ? `fr-paper-${find.paper ?? 'leaf'}` : ''}`} onClick={(e) => e.stopPropagation()}>
+      <div className={`fr-card fr-${find.kind === 'pocket' || find.kind === 'notch' || find.kind === 'snail' ? 'keepsake' : find.kind} ${find.kind === 'note' ? `fr-paper-${find.paper ?? 'leaf'}` : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="fr-label">{label} · {find.world > 0 ? `World ${find.world}` : 'Quest bonus'}</div>
         <h2 className="fr-title">{find.title}</h2>
 
@@ -80,6 +86,26 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
           </div>
         )}
 
+        {(find.kind === 'pocket' || find.kind === 'notch' || find.kind === 'snail') && (
+          <div className="fr-keep">
+            {find.kind === 'pocket' ? (
+              <DotPerched size={96} className="fr-dot" />
+            ) : find.kind === 'snail' ? (
+              <span className="sc-snail fr-snail" style={{ backgroundImage: `url(${snailUrl() ?? ''})` }} />
+            ) : (
+              NOTCH_URL && <img className="fr-notch" src={NOTCH_URL} alt="" />
+            )}
+            <div className="fr-text">
+              <PaperText text={pg.text} />
+            </div>
+          </div>
+        )}
+        {find.said && (
+          <p className="fr-said">
+            <b>{find.said.who}</b> {find.said.text}
+          </p>
+        )}
+
         {find.kind === 'book' && (
           <div className="fr-page">
             <div className="fr-photo">
@@ -93,7 +119,7 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
         )}
 
         <div className="fr-foot">
-          {find.kind === 'book' ? (
+          {last > 0 ? (
             <>
               <button type="button" className="fr-btn" onClick={() => setPage(Math.max(0, page - 1))} disabled={page === 0} aria-label="Previous page">
                 <Icon name="arrow" size={18} rotate={180} />
@@ -112,7 +138,7 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
             Close
           </button>
         </div>
-        <div className={`fr-saved${completes ? " done" : ""}`}>{completes ? "That is all 30! Something new is waiting in the Library." : "Saved to the Library in the Trophy Room"}</div>
+        <div className={`fr-saved${completes ? " done" : ""}`}>{completes ? "That is all 30! Something new is waiting in the satchel." : "Saved in Pokey's satchel"}</div>
       </div>
     </div>
   );

@@ -10,12 +10,13 @@
  */
 import { drawGroundFlora, groundFlora } from './paintedScenery.ts';
 import { drawW8Stones } from './w810FaceArt.ts';
-import { tone, mix, rgba, lighten, darken, type RNG, type Tone } from './artKit.ts';
+import { tone, mix, rgba, lighten, darken, rng, type RNG, type Tone } from './artKit.ts';
 import { fernFrond } from './flora.ts';
 import { leaf } from './rainforest.ts';
 import { hangingBat } from './territoryTrees.ts';
 import { EXTRA_PLANTS, SWAYS, plantGlow, plantGradient, type PlantDef, type SwayFn } from './envPlants.ts';
 import type { Look } from './scenery.ts';
+import { canvasLost } from './canvasLost.ts';
 
 const TAU = Math.PI * 2;
 
@@ -551,8 +552,249 @@ export function paintDecorAt(ctx: CanvasRenderingContext2D, world: number, look:
   if (name === 'w8stones') return drawW8Stones(ctx, px, py + 2, 40 + r() * 14, r() < 0.5, r());
   const def = PLANTS[name];
   if (!def) return false;
-  def.draw(ctx, px, py, def.decor[0] + r() * (def.decor[1] - def.decor[0]), look, r);
+  const size = def.decor[0] + r() * (def.decor[1] - def.decor[0]);
+  if (!stampDecor(ctx, world, look, name, def, px, py, size, r)) def.draw(ctx, px, py, size, look, r);
   return true;
+}
+
+/**
+ * A ground plant drawn from a picture of itself (PERFORMANCE-RULES.md §2.1). A plant here is dozens of path fills (a fern clump is a fan
+ * of fronds, each a fill and a stroke), and the screen holds dozens of plants: 345 to 1050 path fills and strokes a frame on 3-3, 6-3 and
+ * 7-3 (perf-sprites, 2026-10-30). Each one is the same every frame (its dice are put back to where it began: terrain.ts topDecor), so it
+ * is painted once into a small canvas at the screen's scale and from then on stamped, the wind's lean applied around the stamp as before;
+ * its dice are then moved on to where drawing it leaves them, so everything after it is drawn as before. The painting is never done on a
+ * frame: a plant met for the first time is drawn as paths and put in a queue, which is painted in the browser's idle time between frames
+ * and while the stage gets ready (settleDecorBakes). A plant that blends ('lighter' glows) or reaches past its canvas stays paths.
+ */
+interface DecorPic {
+  cv: HTMLCanvasElement | null;
+  /** where the picture's top left sits from the plant's foot, in device pixels */
+  ox: number;
+  oy: number;
+  /** device pixels per world unit it was painted at */
+  k: number;
+  /** the dice once the plant is drawn */
+  end: number;
+}
+interface DecorJob {
+  key: string;
+  def: PlantDef;
+  look: Look;
+  px: number;
+  py: number;
+  size: number;
+  k: number;
+  s0: number;
+}
+const decorPics = new Map<string, DecorPic>();
+const decorQueue = new Map<string, DecorJob>();
+/** the plant pictures kept for a stage, at most (the oldest let go first; each 10 to 60 KB): they are let go when the next stage gets ready */
+const DECOR_BYTES_MAX = 4 * 1024 * 1024;
+let decorBytes = 0;
+/** a plant is only painted in idle time that has this long left (ms): painting one takes about that on a slow phone */
+const IDLE_BAKE_MS = 8;
+/**
+ * The last frame's gap (ms), from when the first plant of each frame is drawn, and its recent average: the half-second fallback only paints
+ * after a frame no worse than 1.5 times the average (not on a stall). A phone always slower than 30 fps still gets its pictures, one paint
+ * of a few ms every half second, each one taking about as much off every frame after it.
+ */
+let frameAt = 0;
+let frameGap = 0;
+let frameAvg = 0;
+const lookIds = new WeakMap<object, number>();
+let lookCount = 0;
+let bakeCanvas: HTMLCanvasElement | null = null;
+let idleAsked = false;
+
+function stampDecor(ctx: CanvasRenderingContext2D, world: number, look: Look, name: string, def: PlantDef, px: number, py: number, size: number, r: RNG): boolean {
+  if (typeof document === 'undefined' || !r.state || !r.seek || typeof ctx.getTransform !== 'function') return false;
+  const m = ctx.getTransform();
+  const k = Math.hypot(m.a, m.b);
+  if (!(k > 0)) return false;
+  let lid = lookIds.get(look);
+  if (lid === undefined) lookIds.set(look, (lid = ++lookCount));
+  const now = performance.now();
+  if (now - frameAt > 8) {
+    if (frameAt) {
+      frameGap = now - frameAt;
+      // (a gap over a second is a pause, a menu or a hidden tab: not a frame)
+      if (frameGap < 1000) frameAvg = frameAvg ? frameAvg * 0.9 + frameGap * 0.1 : frameGap;
+    }
+    frameAt = now;
+  }
+  // (painted at the screen's scale rounded up to a step of 1/16 of a doubling, about 4%: the camera eases its zoom at a stage's start,
+  // and one picture per step, stamped up to 4% smaller, stands for every scale in the step)
+  const step = Math.ceil(Math.log2(k) * 16);
+  const kb = 2 ** (step / 16);
+  const s0 = r.state();
+  const key = world + '|' + lid + '|' + name + '|' + s0 + '|' + size + '|' + step;
+  let pic = decorPics.get(key);
+  if (pic?.cv && canvasLost(pic.cv, 'decor plant')) {
+    // (its picture was taken back by the phone: drawn as paths again, and painted again in idle time)
+    dropPic(key, pic);
+    pic = undefined;
+  }
+  if (!pic) {
+    if (!decorQueue.has(key)) {
+      decorQueue.set(key, { key, def, look, px, py, size, k: kb, s0 });
+      askIdle();
+    }
+    return false;
+  }
+  if (!pic.cv) return false;
+  r.seek(pic.end);
+  const w = pic.cv.width / pic.k;
+  const h = pic.cv.height / pic.k;
+  let x = px + pic.ox / pic.k;
+  let y = py + pic.oy / pic.k;
+  if (m.b === 0 && m.c === 0) {
+    // (its corner on a whole device pixel, as the paths were drawn into it, so the picture is as sharp as the paths)
+    x = (Math.round(m.a * x + m.e) - m.e) / m.a;
+    y = (Math.round(m.d * y + m.f) - m.f) / m.d;
+  }
+  ctx.drawImage(pic.cv, x, y, w, h);
+  return true;
+}
+
+/** paint queued plants until `more()` says stop */
+function runDecorQueue(more: () => boolean) {
+  for (const job of decorQueue.values()) {
+    if (!more()) return;
+    decorQueue.delete(job.key);
+    const dice = rng(0);
+    dice.seek!(job.s0);
+    const pic = bakeDecor(job.def, job.look, job.px, job.py, job.size, dice, job.k, job.s0);
+    const bytes = pic.cv ? pic.cv.width * pic.cv.height * 4 : 0;
+    while (decorBytes + bytes > DECOR_BYTES_MAX && decorPics.size) {
+      const first = decorPics.keys().next().value as string;
+      dropPic(first, decorPics.get(first)!);
+    }
+    decorPics.set(job.key, pic);
+    decorBytes += bytes;
+  }
+}
+
+function dropPic(key: string, pic: DecorPic) {
+  if (pic.cv) {
+    decorBytes -= pic.cv.width * pic.cv.height * 4;
+    pic.cv.width = pic.cv.height = 0;
+  }
+  decorPics.delete(key);
+}
+
+/** let every plant picture go, and the queue (a new stage getting ready: stageReady.ts) */
+export function releaseDecorPics() {
+  for (const [key, pic] of decorPics) dropPic(key, pic);
+  decorPics.clear();
+  decorQueue.clear();
+  decorBytes = 0;
+}
+
+/**
+ * The queue painted in the browser's idle time after a frame, only where that idle time covers a painting. A phone too busy to have any
+ * paints one plant (a few ms) between frames every half second instead, and only after a frame no slower than usual (not a stall).
+ */
+function askIdle() {
+  if (idleAsked) return;
+  idleAsked = true;
+  type Idle = { timeRemaining(): number; didTimeout?: boolean };
+  const w = typeof window !== 'undefined' ? (window as Window & { requestIdleCallback?: (cb: (d: Idle) => void, o?: { timeout: number }) => number }) : null;
+  const go = (d: Idle) => {
+    idleAsked = false;
+    // (idle time that covers a painting; on a phone with none, one plant at most, and only after a frame no slower than usual)
+    let one = !!d.didTimeout && frameGap > 0 && frameAvg > 0 && frameGap <= frameAvg * 1.5;
+    runDecorQueue(() => {
+      if (one) {
+        one = false;
+        return true;
+      }
+      return !d.didTimeout && d.timeRemaining() >= IDLE_BAKE_MS;
+    });
+    if (decorQueue.size) askIdle();
+  };
+  if (w?.requestIdleCallback) w.requestIdleCallback(go, { timeout: 500 });
+  else setTimeout(() => go({ timeRemaining: () => 0, didTimeout: true }), 100);
+}
+
+/**
+ * Paint every plant waiting in the queue now: for a stage getting ready under its title card (stageReady.ts, after its frames), so the
+ * plants its first frames met are pictures from its first frame of play.
+ */
+export function settleDecorBakes() {
+  if (typeof document === 'undefined') return;
+  runDecorQueue(() => true);
+}
+
+function bakeDecor(def: PlantDef, look: Look, px: number, py: number, size: number, r: RNG, k: number, s0: number): DecorPic {
+  const none: DecorPic = { cv: null, ox: 0, oy: 0, k, end: s0 };
+  // a scratch canvas big enough for any plant (a plant of `size` reaches about 2 sizes up and 1.5 across; one reaching the edge is not baked)
+  const W = Math.ceil(size * 5 * k) + 8;
+  const H = Math.ceil(size * 5 * k) + 8;
+  if (!bakeCanvas) bakeCanvas = document.createElement('canvas');
+  const c = bakeCanvas;
+  if (c.width < W || c.height < H) {
+    c.width = Math.max(c.width, W);
+    c.height = Math.max(c.height, H);
+  }
+  const g = c.getContext('2d', { willReadFrequently: true });
+  if (!g) return none;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.globalCompositeOperation = 'source-over';
+  g.globalAlpha = 1;
+  g.clearRect(0, 0, W, H);
+  const fx = Math.round(W / 2);
+  const fy = Math.round(H * 0.72);
+  g.setTransform(k, 0, 0, k, fx - px * k, fy - py * k);
+  // (a plant that blends with what is under it cannot be a picture: watch for any mode but source-over while it is painted)
+  let blends = false;
+  const proto = Object.getPrototypeOf(g) as CanvasRenderingContext2D;
+  const d = Object.getOwnPropertyDescriptor(proto, 'globalCompositeOperation');
+  if (d?.set && d.get) {
+    Object.defineProperty(g, 'globalCompositeOperation', {
+      configurable: true,
+      get: () => d.get!.call(g),
+      set: (v: GlobalCompositeOperation) => {
+        if (v !== 'source-over') blends = true;
+        d.set!.call(g, v);
+      },
+    });
+  }
+  try {
+    def.draw(g, px, py, size, look, r);
+  } finally {
+    delete (g as unknown as Record<string, unknown>).globalCompositeOperation;
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.globalCompositeOperation = 'source-over';
+    g.globalAlpha = 1;
+  }
+  const end = r.state!();
+  if (blends) return none;
+  // the painted part's box (from the alpha: each pixel read as one 32-bit word, its top byte the alpha on a little-endian phone, any
+  // byte order caught by testing the whole word for zero)
+  const px32 = new Uint32Array(g.getImageData(0, 0, W, H).data.buffer);
+  let x0 = W, y0 = H, x1 = -1, y1 = -1;
+  for (let y = 0; y < H; y++) {
+    const row = y * W;
+    let first = -1;
+    let last = -1;
+    for (let x = 0; x < W; x++) if (px32[row + x] !== 0) { first = x; break; }
+    if (first < 0) continue;
+    for (let x = W - 1; x >= first; x--) if (px32[row + x] !== 0) { last = x; break; }
+    if (first < x0) x0 = first;
+    if (last > x1) x1 = last;
+    if (y < y0) y0 = y;
+    y1 = y;
+  }
+  if (x1 < 0) return { ...none, end };
+  if (x0 === 0 || y0 === 0 || x1 === W - 1 || y1 === H - 1) return none;
+  // copied into a canvas of its own, without the read-back hint (PERFORMANCE-RULES.md §2.9)
+  const cv = document.createElement('canvas');
+  cv.width = x1 - x0 + 1;
+  cv.height = y1 - y0 + 1;
+  const cg = cv.getContext('2d');
+  if (!cg) return none;
+  cg.drawImage(c, x0, y0, cv.width, cv.height, 0, 0, cv.width, cv.height);
+  return { cv, ox: x0 - fx, oy: y0 - fy, k, end };
 }
 
 // ───────────────────────────── the registry ─────────────────────────────

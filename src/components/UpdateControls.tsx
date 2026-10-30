@@ -1,6 +1,7 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import { Icon } from './icons/index.tsx';
 import { applyUpdate, checkForUpdate, subscribeUpdate, updateAvailable } from '../game/updates.ts';
+import { storeBuild } from '../game/appShell.ts';
 
 /** true once a newer build of the game has been found (the page that is open is an old one) */
 export function useUpdateAvailable(): boolean {
@@ -14,6 +15,8 @@ export function useUpdateAvailable(): boolean {
 export const UpdateLink: React.FC = () => {
   const ready = useUpdateAvailable();
   const [state, setState] = useState<'idle' | 'checking' | 'same' | 'unknown'>('idle');
+  // the Play Store app: Google Play delivers updates, so there is nothing to check here (reference/PLAY-STORE.md §2.2)
+  if (storeBuild()) return null;
   if (ready) {
     return (
       <button type="button" className="title-credit-btn upd-ready" onClick={() => void applyUpdate()}>

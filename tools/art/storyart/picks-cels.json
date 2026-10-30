@@ -127,5 +127,7 @@
  "tc.hat_shout": "cel-tc.hat_shout-s55",
  "tc.hat_stand": "cel-tc.hat_stand-s55",
  "tc.point_bell": "cel-tc.point_bell-s55",
- "tc.scroll": "cel-tc.scroll-s55"
+ "tc.scroll": "cel-tc.scroll-s55",
+ "mc.hold_branch": "new-hold_branch-e2",
+ "da.hands_rim": "new-hands_rim-e2"
 }

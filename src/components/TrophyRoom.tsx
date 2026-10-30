@@ -7,10 +7,6 @@ import { BadgeMedal } from './BadgeMedal.tsx';
 import { CoatPreview } from './CoatPreview.tsx';
 import { CreaturePic } from './CreaturePic.tsx';
 import { Icon } from './icons/index.tsx';
-import { BONUS_FIND, FINDS, allFound, type FindDef } from '../game/finds.ts';
-import { photoUrl } from '../game/photos.ts';
-import { itemUrl } from '../game/items.ts';
-import { MEMORIES, MEMORY_ORDER, type MemoryId } from '../game/storyChapters.ts';
 import { SceneBackdrop } from './title/TitleScene.tsx';
 import { DotPerched, Plaque } from './KitParts.tsx';
 
@@ -23,14 +19,9 @@ interface Props {
   onChoice: (c: CosmeticChoice) => void;
   onBack: () => void;
   /** which tab to open on (default: the badges) */
-  initialTab?: 'badges' | 'journal' | 'library';
-  /** the ids of the notes, books and keepsakes found so far */
+  initialTab?: 'badges' | 'journal';
+  /** the ids of the finds so far (the medals count them; reading them again is the satchel's: Satchel.tsx) */
   finds: string[];
-  /** open one of them to read it again */
-  onOpenFind: (id: string) => void;
-  /** the flashbacks seen so far, and a way to watch one again */
-  memories?: MemoryId[];
-  onReplayMemory?: (id: MemoryId) => void;
   /** the world whose painting lives behind the room (the one last played) */
   world?: number;
 }
@@ -77,8 +68,8 @@ const MedalCell: React.FC<{ b: BadgeDef; got: boolean; ctx: EvalContext }> = ({ 
   );
 };
 
-export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind, memories = [], onReplayMemory, world = 1 }) => {
-  const [tab, setTab] = useState<'badges' | 'journal' | 'library'>(initialTab);
+export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, world = 1 }) => {
+  const [tab, setTab] = useState<'badges' | 'journal'>(initialTab);
   const ctx = useMemo<EvalContext>(() => ({ store, levels, gateFound, thornHeart, finds }), [store, levels, gateFound, thornHeart, finds]);
   const earnedIds = useMemo(() => new Set(evaluate(ctx)), [ctx]);
   const earnedCount = earnedIds.size;
@@ -123,9 +114,6 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
           </button>
           <button type="button" role="tab" aria-selected={tab === 'journal'} className={tab === 'journal' ? 'on' : ''} onClick={() => setTab('journal')}>
             Jungle Journal
-          </button>
-          <button type="button" role="tab" aria-selected={tab === 'library'} className={tab === 'library' ? 'on' : ''} onClick={() => setTab('library')}>
-            Library
           </button>
         </div>
 
@@ -258,90 +246,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
             </div>
           </>
         )}
-        {tab === 'library' && (
-          <>
-            <div className="tr-sub tr-jsub">
-              {FINDS.filter((f) => finds.includes(f.id)).length} of {FINDS.length} found · tap a found one to read it again
-            </div>
-            {([['note', 'Notes from Meeca'], ['book', 'Photo albums'], ['keepsake', 'Keepsakes']] as const).map(([kind, title]) => (
-              <React.Fragment key={kind}>
-                <div className="tr-sec">{title}</div>
-                <div className="tr-grid tr-grid-j">
-                  {FINDS.filter((f) => f.kind === kind).map((f) => {
-                    const got = finds.includes(f.id);
-                    return (
-                      <div
-                        key={f.id}
-                        className={`tr-card tr-find ${got ? 'open' : 'lock'}`}
-                        role={got ? 'button' : undefined}
-                        tabIndex={got ? 0 : undefined}
-                        onClick={got ? () => onOpenFind(f.id) : undefined}
-                        onKeyDown={got ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFind(f.id); } } : undefined}
-                      >
-                        <div className="tr-cpic">{got ? findPic(f) : <Icon name="lock" size={34} />}</div>
-                        <div className="tr-cn">{got ? f.title : '???'}</div>
-                        <div className="tr-ct">{got ? `World ${f.world}` : f.hint}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </React.Fragment>
-            ))}
-            {onReplayMemory && (
-              <>
-                <div className="tr-sec">Story scenes</div>
-                <div className="tr-grid tr-grid-j">
-                  {MEMORY_ORDER.map((id) => {
-                    const got = memories.includes(id);
-                    return (
-                      <div
-                        key={id}
-                        className={`tr-card tr-find tr-memory ${got ? 'open' : 'lock'}`}
-                        role={got ? 'button' : undefined}
-                        tabIndex={got ? 0 : undefined}
-                        onClick={got ? () => onReplayMemory(id) : undefined}
-                        onKeyDown={got ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onReplayMemory(id); } } : undefined}
-                      >
-                        <div className="tr-cpic">{got ? <Icon name={MEMORIES[id].kind === 'memory' ? 'heart' : 'scroll'} size={42} /> : <Icon name="lock" size={34} />}</div>
-                        <div className="tr-cn">{got ? MEMORIES[id].title : '???'}</div>
-                        <div className="tr-ct">{got ? 'Tap to watch again' : MEMORIES[id].hint}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-            <div className="tr-sec">Quest bonus</div>
-            <div className="tr-grid tr-grid-j">
-              {(() => {
-                const open = allFound(finds);
-                return (
-                  <div
-                    className={`tr-card tr-find ${open ? 'open' : 'lock'}`}
-                    role={open ? 'button' : undefined}
-                    tabIndex={open ? 0 : undefined}
-                    onClick={open ? () => onOpenFind(BONUS_FIND.id) : undefined}
-                    onKeyDown={open ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFind(BONUS_FIND.id); } } : undefined}
-                  >
-                    <div className="tr-cpic">{open ? findPic(BONUS_FIND) : <Icon name="lock" size={34} />}</div>
-                    <div className="tr-cn">{open ? BONUS_FIND.title : '???'}</div>
-                    <div className="tr-ct">{open ? 'Quest bonus' : BONUS_FIND.hint}</div>
-                  </div>
-                );
-              })()}
-            </div>
-          </>
-        )}
       </div>
     </div>
   );
 };
-
-function findPic(f: FindDef): React.ReactNode {
-  if (f.kind === 'book') {
-    const url = photoUrl(f.pages[0]?.photo);
-    return url ? <img className="tr-thumb" src={url} alt="" /> : <Icon name="book" size={42} />;
-  }
-  const url = itemUrl(f.kind === 'keepsake' ? f.icon ?? 'petal' : 'scroll');
-  return url ? <img className="tr-thumb tr-item" src={url} alt="" /> : <Icon name={f.kind === 'keepsake' ? 'key' : 'scroll'} size={42} />;
-}

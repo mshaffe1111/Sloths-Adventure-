@@ -1,0 +1,116 @@
+{
+ "note": "hfdrake2: the Drake tea scene for story-a, 2026-10-30",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1e9342b344cb750c7bfa3179950c69eb59c1ad04/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "drake-cave-e2",
+   "start": "start-lair-drake-calm.webp",
+   "edit": true,
+   "prompt": "Turn this into the inside of the same volcano dragon cave, seen from the side, on a quiet cold morning after: the cave has been tidied in a hurry, all the gold coins, mugs and junk shoved into one heap in the left corner with a big round boulder pushed in front of it, and a huge lumpy hand-knitted tea cosy, far too big, poking out from behind the boulder. Warm orange lava glow from a crack in the back wall, dark rock walls and a rocky ceiling, a flat empty stone floor across the bottom fifth of the picture. No characters. Same painted style and colours.",
+   "seed": 2,
+   "w": 1280,
+   "h": 1360
+  },
+  {
+   "name": "drake-cave-2",
+   "then": "drake-cave-e2",
+   "up": [
+    2560,
+    2720
+   ],
+   "tile": [
+    1280,
+    192
+   ],
+   "strength": 0.3,
+   "seed": 7,
+   "w": 2560,
+   "h": 2720,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, the inside of a volcano dragon cave, warm lava glow, a heap of junk behind a boulder, a huge knitted tea cosy, flat stone floor. Soft painted storybook illustration, soft cel shading, thick dark outline, slothadv style."
+  },
+  {
+   "name": "drake-sit-2",
+   "start": "bucket:hfboss910a/out/drake-teap-2.png",
+   "edit": true,
+   "prompt": "Keep this exact same dragon: the same big grey-green armoured lizard drake, same reptile head with a long flat snout, same big plate scales and pale back spikes, same long tail, side view facing right. Change only his pose: he sits upright on his haunches facing right, front legs straight, tail curled round his feet, head up, calm but a little stiff and formal, like a nervous host, eyes open and kind. No mug. Solid flat pure bright magenta (#FF00FF) background.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, extra legs, extra heads, two dragons, sloth, fire, glow"
+  },
+  {
+   "name": "drake-cup-2",
+   "start": "bucket:hfboss910a/out/drake-teap-2.png",
+   "edit": true,
+   "prompt": "Keep this exact same dragon: the same big grey-green armoured lizard drake, same reptile head with a long flat snout, same big plate scales and pale back spikes, same long tail, side view facing right. Change only his front claws: he sits upright facing right and holds a small white china teacup with a blue band carefully in both front claws in front of his chest, looking down at it, shy. No other mug. Solid flat pure bright magenta (#FF00FF) background.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, extra legs, extra heads, two dragons, sloth, fire, glow"
+  },
+  {
+   "name": "drake-cave-e6",
+   "start": "start-lair-drake-calm.webp",
+   "edit": true,
+   "prompt": "Turn this into the inside of the same volcano dragon cave, seen from the side, on a quiet cold morning after: the cave has been tidied in a hurry, all the gold coins, mugs and junk shoved into one heap in the left corner with a big round boulder pushed in front of it, and a huge lumpy hand-knitted tea cosy, far too big, poking out from behind the boulder. Warm orange lava glow from a crack in the back wall, dark rock walls and a rocky ceiling, a flat empty stone floor across the bottom fifth of the picture. No characters. Same painted style and colours.",
+   "seed": 6,
+   "w": 1280,
+   "h": 1360
+  },
+  {
+   "name": "drake-cave-6",
+   "then": "drake-cave-e6",
+   "up": [
+    2560,
+    2720
+   ],
+   "tile": [
+    1280,
+    192
+   ],
+   "strength": 0.3,
+   "seed": 7,
+   "w": 2560,
+   "h": 2720,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, the inside of a volcano dragon cave, warm lava glow, a heap of junk behind a boulder, a huge knitted tea cosy, flat stone floor. Soft painted storybook illustration, soft cel shading, thick dark outline, slothadv style."
+  },
+  {
+   "name": "drake-sit-6",
+   "start": "bucket:hfboss910a/out/drake-teap-2.png",
+   "edit": true,
+   "prompt": "Keep this exact same dragon: the same big grey-green armoured lizard drake, same reptile head with a long flat snout, same big plate scales and pale back spikes, same long tail, side view facing right. Change only his pose: he sits upright on his haunches facing right, front legs straight, tail curled round his feet, head up, calm but a little stiff and formal, like a nervous host, eyes open and kind. No mug. Solid flat pure bright magenta (#FF00FF) background.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, extra legs, extra heads, two dragons, sloth, fire, glow"
+  },
+  {
+   "name": "drake-cup-6",
+   "start": "bucket:hfboss910a/out/drake-teap-2.png",
+   "edit": true,
+   "prompt": "Keep this exact same dragon: the same big grey-green armoured lizard drake, same reptile head with a long flat snout, same big plate scales and pale back spikes, same long tail, side view facing right. Change only his front claws: he sits upright facing right and holds a small white china teacup with a blue band carefully in both front claws in front of his chest, looking down at it, shy. No other mug. Solid flat pure bright magenta (#FF00FF) background.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, extra legs, extra heads, two dragons, sloth, fire, glow"
+  }
+ ]
+}

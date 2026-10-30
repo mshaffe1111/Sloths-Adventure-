@@ -164,7 +164,7 @@ export const ShakeSetting: React.FC = () => {
   );
 };
 
-/** the phone's buzz for a hurt, a hard landing, a boss's slam, a flag and a clear, and the button presses (AN-9; on unless turned off) */
+/** the phone's buzz for a hurt, a hard landing, a boss's slam, a flag and a clear, and the button presses (AN-9; off unless turned on) */
 export const HapticsToggle: React.FC = () => {
   const [on, setOn] = React.useState(() => hapticsOn());
   return (

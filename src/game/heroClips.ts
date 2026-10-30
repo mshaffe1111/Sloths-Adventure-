@@ -156,6 +156,23 @@ export const JUMP_VY: [number, number] = [-720, 620];
 const STRIDE_RATE = 0.6;
 const WALK_MAX = 90;
 
+/**
+ * The run sheet's footfalls: the frames where a foot comes down at the front (measured on move-run.webp, the ground line under each
+ * frame: the planted foot slides back and a new one lands at 4, 9 and 13). The 15-frame loop is about a stride and a half.
+ */
+export const RUN_FOOTFALLS: readonly number[] = [4, 9, 13];
+
+/** pure: how many footfalls his feet pass between two walkCycle values (the cycle only grows), so a step sound lands on a foot */
+export function footfallsBetween(prev: number, now: number, n = 15): number {
+  if (!(now > prev)) return 0;
+  const loop = (c: number) => (c * STRIDE_RATE) / (Math.PI * 2);
+  const a = loop(prev) * n;
+  const b = loop(now) * n;
+  let k = 0;
+  for (const f of RUN_FOOTFALLS) k += Math.floor((b - f) / n) - Math.floor((a - f) / n);
+  return k;
+}
+
 /** pure: which frame of an n-frame sheet a move at progress u (0..1) shows */
 export function moveIndex(n: number, u: number): number {
   return Math.max(0, Math.min(n - 1, Math.floor(u * n)));

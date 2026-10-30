@@ -1,7 +1,7 @@
 /**
  * The phone's buzz (AN-9, polish report 1, 2026-10-29): the button presses had one (TouchController), and nothing that happens TO Pokey
  * did. Now a hurt, a hard landing, a boss's slam, a flag and a clear each have their own pattern, all behind the "Vibration" setting
- * (menuParts.tsx, on unless turned off, kept on the device). iPhone browsers ignore navigator.vibrate: there the on-screen feedback carries
+ * (menuParts.tsx, off unless turned on, kept on the device: Matt, 2026-10-30). iPhone browsers ignore navigator.vibrate: there the on-screen feedback carries
  * it (CT-14), and the setting says so.
  */
 type Mem = Pick<Storage, 'getItem' | 'setItem'>;
@@ -18,9 +18,9 @@ let on: boolean | null = null;
 export function hapticsOn(s: Pick<Storage, 'getItem'> | null = store()): boolean {
   if (on === null) {
     try {
-      on = s?.getItem(KEY) !== 'off';
+      on = s?.getItem(KEY) === 'on';
     } catch {
-      on = true;
+      on = false;
     }
   }
   return on;

@@ -1,0 +1,53 @@
+{
+ "note": "hfstory1: story plates #19 and #20, 2026-10-30",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/857f6c08d34a058b1e2318fdf85ff6e31310b54e/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "plate-gorge-s45-7",
+   "start": "start-plate-gorge.webp",
+   "prompt": "slothadv style, an emotional storybook illustration: a deep misty gorge at dusk, the broken edge of a dark rocky cliff ledge above, and from it one long green vine. At the very end of the vine a friendly orange-brown three-toed sloth with a brown leather satchel hangs by one arm over the long white mist, worried, mouth closed, looking down, scared but calm. A tiny emerald-green hummingbird has hold of one of his claws in her feet and pulls upward with her wings beating so hard they blur, far too small to lift him, trying anyway. Long white mist below, far rock spires in a purple and orange sky. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.",
+   "neg": "text, letters, words, watermark, frame, border, photo, 3d render, blurry, extra limbs, extra arms, two sloths, two birds, smiling, laughing, open mouth",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 1600,
+   "h": 1696
+  },
+  {
+   "name": "plate-gorge-s45-23",
+   "start": "start-plate-gorge.webp",
+   "prompt": "slothadv style, an emotional storybook illustration: a deep misty gorge at dusk, the broken edge of a dark rocky cliff ledge above, and from it one long green vine. At the very end of the vine a friendly orange-brown three-toed sloth with a brown leather satchel hangs by one arm over the long white mist, worried, mouth closed, looking down, scared but calm. A tiny emerald-green hummingbird has hold of one of his claws in her feet and pulls upward with her wings beating so hard they blur, far too small to lift him, trying anyway. Long white mist below, far rock spires in a purple and orange sky. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.",
+   "neg": "text, letters, words, watermark, frame, border, photo, 3d render, blurry, extra limbs, extra arms, two sloths, two birds, smiling, laughing, open mouth",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 1600,
+   "h": 1696
+  },
+  {
+   "name": "plate-gorge-s58-7",
+   "start": "start-plate-gorge.webp",
+   "prompt": "slothadv style, an emotional storybook illustration: a deep misty gorge at dusk, the broken edge of a dark rocky cliff ledge above, and from it one long green vine. At the very end of the vine a friendly orange-brown three-toed sloth with a brown leather satchel hangs by one arm over the long white mist, worried, mouth closed, looking down, scared but calm. A tiny emerald-green hummingbird has hold of one of his claws in her feet and pulls upward with her wings beating so hard they blur, far too small to lift him, trying anyway. Long white mist below, far rock spires in a purple and orange sky. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.",
+   "neg": "text, letters, words, watermark, frame, border, photo, 3d render, blurry, extra limbs, extra arms, two sloths, two birds, smiling, laughing, open mouth",
+   "strength": 0.58,
+   "seed": 7,
+   "w": 1600,
+   "h": 1696
+  },
+  {
+   "name": "plate-gorge-s58-23",
+   "start": "start-plate-gorge.webp",
+   "prompt": "slothadv style, an emotional storybook illustration: a deep misty gorge at dusk, the broken edge of a dark rocky cliff ledge above, and from it one long green vine. At the very end of the vine a friendly orange-brown three-toed sloth with a brown leather satchel hangs by one arm over the long white mist, worried, mouth closed, looking down, scared but calm. A tiny emerald-green hummingbird has hold of one of his claws in her feet and pulls upward with her wings beating so hard they blur, far too small to lift him, trying anyway. Long white mist below, far rock spires in a purple and orange sky. Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.",
+   "neg": "text, letters, words, watermark, frame, border, photo, 3d render, blurry, extra limbs, extra arms, two sloths, two birds, smiling, laughing, open mouth",
+   "strength": 0.58,
+   "seed": 23,
+   "w": 1600,
+   "h": 1696
+  }
+ ]
+}

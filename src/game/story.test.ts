@@ -9,11 +9,12 @@ import { AFTER_BOSS, MEMORIES, MEMORY_ORDER, nextAfterBoss, parseMemories, type 
 import { FINALE_KEEPSAKES, KEEPSAKE_LINES, SATCHEL_KEEPSAKES, endTagPanels, finalePanels } from './storyFinale.ts';
 import { FINDS } from './finds.ts';
 import { PLATES, isPlate } from './plateData.ts';
+import { END_CARDS } from './endCardsData.ts';
 
 const CUES: StoryCue[] = ['pokey', 'meeca', 'bloom', 'grandma', 'journey', 'comedy', 'tender', 'sorrow', 'dread', 'war', 'chase', 'reveal', 'resolve', 'triumph', 'mercy', 'finale', 'hush'];
 const STINGS: StorySting[] = ['cliffhanger', 'reveal', 'laugh', 'blow', 'bloom', 'darkness', 'door', 'heartbreak', 'triumph'];
 const SPEAKERS = [
-  'Narrator', 'Pokey', 'Meeca', 'Dot', 'Flicker', 'Grandma', 'Grandfather', 'Lieutenant Pell', 'Gruntlewick', 'Squirrel', 'General Iron-Claw', 'Thornbark',
+  'Narrator', 'Pokey', 'Meeca', 'Dot', 'Flicker', 'Grandma', 'Grandfather', 'Lieutenant Pell', 'Gruntlewick', 'Squirrel', 'Soldier', 'General Iron-Claw', 'Thornbark',
   'Venom Fang', 'Crocus Rex', 'Shadow Prowler', 'Sky Sovereign', 'Tarantula Queen', 'Marsh Reaver', 'Stone Idol Golem', 'Night-Wing Monarch', 'Magma Drake',
 ];
 
@@ -179,9 +180,14 @@ test('the ending shows three keepsakes, plants the seeds, and keeps every other 
   const at = (s: string) => all.findIndex((p) => p.text.includes(s));
   assert.ok(at('half a ribbon') >= 0 && at('half a ribbon') < at('a key in a fern') && at('a key in a fern') < at('Somebody is coming home'));
   assert.ok(!all.some((p) => p.text.includes('Is that my rattle') || p.text.includes('I let you.')), 'the satchel keepsakes stay out of the finale');
-  // the stopwatch plays after the end, only when it was found
-  assert.deepEqual(endTagPanels([]), []);
-  assert.ok(endTagPanels(['w9_keepsake']).some((p) => p.text === 'I let you.'));
+  // after the end: the stopwatch only when it was found, Thornbark's part only when he was freed, then months later, always, in that order
+  const chapters = (ps: StoryPanel[]) => [...new Set(ps.map((p) => p.chapter))];
+  assert.deepEqual(chapters(endTagPanels([])), ['AFTER THE END · MONTHS LATER']);
+  assert.ok(!endTagPanels([]).some((p) => p.text === 'I let you.' || p.speaker === 'Thornbark'));
+  assert.deepEqual(chapters(endTagPanels(['w9_keepsake'], true)), ['AFTER THE END · THE STOPWATCH', 'AFTER THE END · THE HOLLOW', 'AFTER THE END · MONTHS LATER']);
+  const tag = endTagPanels([]);
+  assert.equal(tag[tag.length - 1].text, 'To be continued.', 'it ends on the card');
+  assert.equal(tag.find((p) => p.speaker === 'Dot')?.text, 'Faster than him.', "Dot's one short line, on purpose");
   const full = finalePanels(FINDS.map((f) => f.id));
   assert.ok(full.length > base + 12, 'finding everything lengthens the ending');
   assert.ok(full.some((p) => p.text.includes('Every last thing of hers')), 'and earns Grandma\'s last word');
@@ -278,6 +284,13 @@ test('the plates listed are the plates painted, and each has a floor to stand on
   const files = readdirSync(new URL('../assets/story/plates/', import.meta.url)).filter((f) => f.endsWith('.webp')).map((f) => f.replace(/\.webp$/, ''));
   assert.deepEqual(files.sort(), Object.keys(PLATES).sort(), 'every picture is listed and every listed plate has its picture');
   for (const [k, v] of Object.entries(PLATES)) assert.ok(v.ground > 0.4 && v.ground < 0.95, `${k}: the floor is on the picture`);
+});
+
+test('the ending cards listed are the cards painted, and the finale shows each once, in order (S-7)', () => {
+  const files = readdirSync(new URL('../assets/story/cards/', import.meta.url)).filter((f) => f.endsWith('.webp')).map((f) => f.replace(/\.webp$/, ''));
+  assert.deepEqual(files.sort(), END_CARDS.map(([k]) => k).sort(), 'every card is listed and every listed card has its picture');
+  const shown = finalePanels([]).filter((p) => p.scene.card).map((p) => [p.scene.card, p.text]);
+  assert.deepEqual(shown, END_CARDS.map(([k, l]) => [k, l]));
 });
 
 test('every stage has a real name and line of its own (no generic mission names to fall back on, polish report ST-8)', async () => {

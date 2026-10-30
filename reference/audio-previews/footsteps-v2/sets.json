@@ -1,0 +1,103 @@
+{
+ "ref_lufs": -35.1,
+ "quiet_db": -4.0,
+ "sets": {
+  "A": {
+   "name": "Padded paws",
+   "words": "A low, soft thump, like a padded paw settling, with the faintest brush of fur. On wood: the same thump and a muffled hollow knock.",
+   "phone_lu_vs_today": -4.0,
+   "parts": {
+    "52": [
+     0.0,
+     3.3,
+     6.3,
+     9.6
+    ]
+   }
+  },
+  "B": {
+   "name": "Leaf brush",
+   "words": "The foot brushing through moss and leaves, a slow swish with a very light thump under it, no crunch. On wood: a real foot on boards, muffled.",
+   "phone_lu_vs_today": -4.0,
+   "parts": {
+    "52": [
+     0.0,
+     3.3,
+     6.3,
+     9.6
+    ]
+   }
+  },
+  "C": {
+   "name": "Muffled forest",
+   "words": "Today's real forest-floor footsteps with the crunch taken out: only their low, muffled part, slowed a little. On wood: real steps on boards, the same way. One leaf step keeps a faint low hum.",
+   "phone_lu_vs_today": -4.0,
+   "parts": {
+    "52": [
+     0.0,
+     3.3,
+     6.3,
+     9.6
+    ]
+   }
+  },
+  "D": {
+   "name": "Paws and bare feet",
+   "words": "Real recordings: an animal's paws on soft earth for leafy ground, and soft bare feet on wooden boards for planks. Their bright top is rolled off.",
+   "phone_lu_vs_today": -4.0,
+   "parts": {
+    "52": [
+     0.0,
+     3.3,
+     6.3,
+     9.6
+    ]
+   }
+  },
+  "E": {
+   "name": "Footsteps, with paws for weight",
+   "words": "Today's real footsteps with the crunch taken out (C), and D's paws on earth 6 dB under them for weight. On wood: a padded step on planks, mostly a soft low thump.",
+   "phone_lu_vs_today": -4.0,
+   "parts": {
+    "52": [
+     0.0,
+     3.3,
+     6.3,
+     9.6
+    ],
+    "80": [
+     0.0,
+     4.75,
+     8.72,
+     13.48
+    ]
+   }
+  },
+  "F": {
+   "name": "Paws, with a footstep on top",
+   "words": "D's paws on earth, with today's footstep texture (crunch taken out) 6 dB on top. On wood: the same padded step on planks.",
+   "phone_lu_vs_today": -4.0,
+   "parts": {
+    "52": [
+     0.0,
+     3.3,
+     6.3,
+     9.6
+    ],
+    "80": [
+     0.0,
+     4.75,
+     8.72,
+     13.48
+    ]
+   }
+  }
+ },
+ "page_lift_db": -2.8,
+ "today_parts": [
+  0.0,
+  3.3,
+  6.3,
+  9.6
+ ]
+}
