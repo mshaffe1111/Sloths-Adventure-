@@ -158,6 +158,8 @@ export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHu
   const has = (n: string) => !!STD_FRAMES[n];
   const out = (c: StdChoice): StdChoice | null => (has(c.name) ? c : null);
 
+  // (lost a life: flat on his back for the beat before the respawn, AN-1)
+  if (p.downed) return out({ name: 'ko', bob: 0 });
   if (p.isVineSwinging) {
     // hanging by both hands from the vine (Matt, 2026-10-24: the leaping poses let go of it): the whole body turns with the vine,
     // so the hands stay on it, and trails a little behind the swing
