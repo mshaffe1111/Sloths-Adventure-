@@ -13,7 +13,7 @@ Each new line from GAP-MAP.md, caught in play on story-gaps e2e263ef, sideways (
 | 6-8 | Petal: "He saves Dot's spot. Flicker takes it. Roomy, for a firefly." | 6-8-1-side | 6-8-1-up |
 | 7-6 | Pokey: "Flicker's quiet. When I say Meeca's name, his light goes funny." | 7-6-1-side | 7-6-1-up |
 | 8-3 | Dot / Flicker / Dot / Flicker: safe branch, faster, resting, hovering | 8-3-1..4-side | 8-3-1..4-up |
-| 8-6 | Petal: "Flicker's family blinks on along the branch ahead, one by one." | 8-6-1-side | (see the lead's note) |
+| 8-6 | Petal: "Flicker's family blinks on along the branch ahead, one by one." | 8-6-1-side | 8-6-1-up |
 | 9-5 | Dot: "Leaf up, I didn't raise you to wobble. I didn't raise you." | 9-5-1-side | 9-5-1-up |
 | 9-9 | Dot / Flicker / Dot / Flicker: the plan, "What do I do?", "Glow quietly.", "I don't have a quiet setting." | 9-9-1..4-side | 9-9-1..3-up |
 | 10-3 | Flicker: "Hold on. I'm keeping my light up, so she can find us." | 10-3-1-side | 10-3-1-up |
@@ -30,4 +30,4 @@ Polish check, against STAGE-RULES §5b:
 Known, not fixed today (code freeze):
 - **An exchange's replies wait for its first bubble to be read.** If a fall or an urgent tip cuts that bubble short, the replies don't come. My first 10-6 run lost its replies that way (the script moved Pokey to the next checkpoint mid-line). With nothing cutting it, all three bubbles came, as shown here.
 - **Flicker is not drawn beside Pokey in play.** His lines come with his tag, but you can't see him. That needs art, so the lead routes it.
-- **Some missing upright shots.** The dev server stopped twice in this run, so 9-9's fourth bubble, 10-6's third and 8-6 are missing upright. Their sideways shots show them working, but none of the three was caught upright.
+- **Some missing upright shots.** The dev server stopped twice in this run, so 9-9's fourth bubble and 10-6's third are missing upright. Their sideways shots show them working, but neither was caught upright.
