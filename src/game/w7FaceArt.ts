@@ -22,6 +22,8 @@ const FACE_EVERY = 520;
 const FACE_TOP = 64;
 /** a tall bank's next row of pieces this far under the one above */
 const ROW_EVERY = 300;
+/** how much soil an upright view shows under the floor he stands on (DEPTH_BELOW 0.45 of a 900 view), for laying out a bank's rows */
+const SOIL_SHOWN = 405;
 /** how far in from a bank's ends a piece keeps */
 const EDGE = 14;
 
@@ -62,14 +64,18 @@ const hash01 = (x: number, salt: number): number => {
 export function drawW7Face(ctx: CanvasRenderingContext2D, p: Platform, bottom: number, view?: { x0: number; x1: number }) {
   if (!w7FaceReady() || p.width < 150) return;
   const top = p.y + FACE_TOP;
-  if (bottom - top < 120) return;
+  // (laid out from the bank alone: its own height, or the soil an upright view shows under a floor, whichever is more. `bottom` is only
+  // where the square being painted ends (the ground is painted once into squares), so rows and pieces laid out from it changed from one
+  // square to the next and showed cut off at a square's edge, the lead's 2026-10-30 report; it still clips, which only trims what the
+  // square doesn't cover)
+  const depth = Math.max(p.height, SOIL_SHOWN);
   ctx.save();
   ctx.beginPath();
   ctx.rect(p.x + 8, top, p.width - 16, bottom - top);
   ctx.clip();
   // (slots along the bank, from its own left end, so a bank always carries the same pieces; a tall bank, a wall under a high ledge,
   // carries a row more every ROW_EVERY px down it, never the same piece above itself)
-  const rows = Math.max(1, Math.min(3, Math.floor((bottom - top) / ROW_EVERY)));
+  const rows = Math.max(1, Math.min(3, Math.floor((p.y + depth - top) / ROW_EVERY)));
   const narrow = p.width < FACE_EVERY;
   for (let sx = p.x + (narrow ? p.width / 2 - 60 : 60); sx < p.x + p.width - (narrow ? 0 : 120); sx += FACE_EVERY) {
     for (let row = 0; row < rows; row++) {
