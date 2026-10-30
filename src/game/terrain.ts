@@ -1449,6 +1449,28 @@ function thinPlanFor(plan: StagePlan, p: Platform): ThinPlan {
   return { look, variant: Math.abs(p.id) % VARIANTS[look] };
 }
 
+/**
+ * the water's top-to-bottom gradient, kept for the last few (look, surface, view bottom) it was asked for, to the whole pixel: the
+ * view's bottom only moves when the camera does, so a level stretch reuses one gradient instead of making one every frame
+ */
+const waterGrads: Array<{ look: Look | null; y: number; b: number; g: CanvasGradient | null }> = [0, 1, 2, 3].map(() => ({ look: null, y: 0, b: 0, g: null }));
+let waterGradNext = 0;
+function waterGradient(ctx: CanvasRenderingContext2D, look: Look, waterY: number, bottom: number): CanvasGradient {
+  const y = Math.round(waterY);
+  const b = Math.round(bottom);
+  for (const e of waterGrads) if (e.g && e.look === look && e.y === y && e.b === b) return e.g;
+  const e = waterGrads[waterGradNext];
+  waterGradNext = (waterGradNext + 1) % waterGrads.length;
+  const g = ctx.createLinearGradient(0, y, 0, b);
+  g.addColorStop(0, rgba(look.water.top, 0.92));
+  g.addColorStop(1, rgba(look.water.bottom, 1));
+  e.look = look;
+  e.y = y;
+  e.b = b;
+  e.g = g;
+  return g;
+}
+
 export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: number, x1: number, waterY: number, bottom: number, time: number) {
   // Worlds 6-10: Matt's painted dirty, fast water (badWaterArt.ts); Worlds 1, 3, 4 and 5: their painted pit water (stageArt.ts, VI-9).
   // The drawn version below is World 2's pit water (its rivers are painted: riverArt.ts) and the stand-in while a sheet loads.
@@ -1456,10 +1478,7 @@ export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: nu
   if (drawPitWater(ctx, worldId, x0, x1, waterY, bottom, time)) return;
   const look = lookFor(worldId);
   const w = look.water;
-  const g = ctx.createLinearGradient(0, waterY, 0, bottom);
-  g.addColorStop(0, rgba(w.top, 0.92));
-  g.addColorStop(1, rgba(w.bottom, 1));
-  ctx.fillStyle = g;
+  ctx.fillStyle = waterGradient(ctx, look, waterY, bottom);
   ctx.beginPath();
   ctx.moveTo(x0, bottom);
   ctx.lineTo(x0, waterY);
