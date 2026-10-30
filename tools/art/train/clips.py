@@ -79,6 +79,12 @@ SOURCE = {
     # the mega punch: crouch and pull both arms back, then a lunging two-paw shove (a-mega; frame 23 is a glitched turn, 24 a smeared paw)
     'move-mega': ('a-mega', [10, 11, 12, 13, 14, 25, 26, 27, 28, 30, 32, 34, 38, 41, 44, 46], None),
     'move-kick2': ('a-kick-2', [18, 19, 20, 22, 24, 26, 28, 29, 30, 31], None),
+    # X-14, at a ledge's end (hfpokey/spec-x14-clips1.json): the step back is x14-stepback-s3's step, arms up for balance, the back foot
+    # lifted and set down, then settling; the teeter is that step's own off-balance moment (both arms out wide, the back foot up),
+    # played there and back, each end held a frame, so it loops with no jump (the lead's call: x14-teeter-s3's raised arm read as a
+    # wave at game size)
+    'teeter': ('x14-stepback-s3', [20, 20, 21, 22, 23, 24, 24, 23, 22, 21], None),
+    'step-back': ('x14-stepback-s3', list(range(15, 31)), None),
 }
 # sheets whose frames are re-centred on his torso one by one (a run or walk drifts a little in the clip; in the game the body must stay put)
 RECENTER = {'move-run', 'move-walk'}

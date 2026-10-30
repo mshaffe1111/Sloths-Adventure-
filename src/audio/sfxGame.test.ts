@@ -1,10 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { GAME_SFX, PUZZLE_KIND, PUZZLE_SOUNDS, playGameFx } from './sfxGame.ts';
+import { PUZZLE_KIND, PUZZLE_SOUNDS } from './sfxGame.ts';
+import { recForPuzzle } from './sfxRec.ts';
 import { CUE_NAMES, cuePlan, degreeMidi } from './cues.ts';
-import { AudioCore } from './core.ts';
-import { fakeCtx } from './testCtx.ts';
 import { parseOrchName } from './orchNames.ts';
 
 const KEYS = [
@@ -53,14 +52,13 @@ test('twelve puzzle sounds, and every puzzle event the stages fire has one of th
   assert.notEqual(PUZZLE_KIND.reset, undefined);
 });
 
-test('every new effect plays (on a stand-in context) without error, in every version', () => {
-  const core = new AudioCore(fakeCtx(), { lightRoom: true });
-  for (const name of Object.keys(GAME_SFX)) {
-    for (const a of name === 'puzzle' ? PUZZLE_SOUNDS.map((_, i) => i) : name === 'splash' ? [0, 1, 2] : [0, 0.1, 0.5, 1]) {
-      assert.equal(playGameFx(name, core, KEYS[1], a), true, name);
-    }
+test('every puzzle sound has its recorded takes (sfxRec.ts recForPuzzle)', () => {
+  const pack = fs.readFileSync(new URL('../assets/sfxrec/takes.mp3', import.meta.url));
+  const files = (JSON.parse(pack.subarray(4, 4 + pack.readUInt32LE(0)).toString('utf8')) as Array<[string, number]>).map(([n]) => n);
+  for (const k of PUZZLE_SOUNDS) {
+    const fx = recForPuzzle(k).fx;
+    assert.ok(files.some((f) => f.startsWith(fx + '_')), `${k} -> ${fx} has no takes`);
   }
-  assert.equal(playGameFx('nothing', core, KEYS[0]), false);
 });
 
 test('an orchestra file names its loop exactly (SN-8): start in ms and, for a held note, length in samples', () => {

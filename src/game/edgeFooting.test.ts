@@ -24,7 +24,12 @@ function at(plats: Platform[], x: number, on = plats[0]) {
 test('standing still past the end of a ledge, he is drawn back until about a quarter of him is over the air, and teeters there', () => {
   for (const [side, x] of [[1, 1000 + 11], [-1, 600 - 11]] as const) {
     const r = at([floor(600, 400)], x);
-    r.wait(1.2);
+    // the slide back takes about as long as the painted step-back's steps (EDGE.stepV, about 0.6 s for his 23 px): still going at 0.3 s
+    r.wait(0.3);
+    assert.ok(Math.abs(r.p.drawDx ?? 0) > 3 && !r.p.teeter, 'still stepping back at 0.3 s');
+    r.wait(0.5);
+    assert.ok((r.p.teeter as number | undefined) === side, 'settled by 0.8 s');
+    r.wait(0.4);
     const drawn = r.p.x + (r.p.drawDx ?? 0);
     const past = side > 0 ? drawn - 1000 : 600 - drawn;
     assert.ok(r.p.grounded, 'still on the ledge');

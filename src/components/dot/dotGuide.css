@@ -37,16 +37,12 @@
 .dg-tail.t { top: -10px; transform: rotate(-135deg); }
 .dg-tail.r { right: -10px; transform: rotate(-45deg); }
 .dg-tail.l { left: -10px; transform: rotate(135deg); }
-.dg-glyph { flex: none; display: grid; place-items: center; width: 50px; height: 40px; border-radius: 11px; background: linear-gradient(180deg, #4a2e14, #2e1b0b); border: 2px solid #2a1608; box-shadow: inset 0 1px 0 rgba(255, 220, 170, .25); }
-.dg-glyph .cg { width: 46px; height: auto; }
 @media (max-height: 430px) and (orientation: landscape) {
   .dg-bub { padding: 11px 11px 7px 9px; gap: 8px; }
   .dg-bub p { font-size: 14.5px; }
-  .dg-glyph { width: 44px; height: 36px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dg-bub.in { animation: none; opacity: 1; }
-  .dg-twinkle.on::before { animation: none; }
 }
 
 /* the painted pieces (hud/painted.tsx), once their sheet has loaded */
@@ -58,13 +54,6 @@
 .dg-bub.painted .dg-tag { top: -11px; left: 14px; z-index: 2; }
 .dg-bub-art { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .dg-ptail { position: absolute; z-index: -1; display: block; }
-/* when she points after struggle: a small sparkle twinkling on the thing itself (a small touch, code-drawn is fine) */
-.dg-twinkle { position: absolute; left: 0; top: 0; width: 30px; height: 30px; margin: -15px 0 0 -15px; opacity: 0; transition: opacity .3s ease; will-change: transform; }
-.dg-twinkle.on { opacity: 1; }
-.dg-twinkle::before { content: ''; position: absolute; inset: 0; background: #fffbe0; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
-  filter: drop-shadow(0 0 3px #ffe58a) drop-shadow(0 0 9px rgba(255, 214, 90, .95)); }
-.dg-twinkle.on::before { animation: dg-twinkle 1.6s ease-in-out infinite; }
-@keyframes dg-twinkle { 0%, 100% { transform: scale(.55) rotate(0deg); opacity: .5; } 50% { transform: scale(1) rotate(45deg); opacity: 1; } }
 /* Dot perched, in her painted poses (her feet on the same spot in each) */
 .dg-perch { position: absolute; left: 0; top: 0; background-repeat: no-repeat; opacity: 0; will-change: transform; transform-origin: 50% 50%;
   filter: drop-shadow(0 0 4px rgba(205, 255, 215, .7)) drop-shadow(0 2px 1.5px rgba(20, 10, 0, .4)); }

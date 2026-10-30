@@ -12,6 +12,7 @@
  * (stars, cleared stages, finds) are re-derived from the records each time, and a medal once earned stays earned.
  */
 import { FINDS, allFound } from './finds.ts';
+import { cardMet, ROAD_IDS, roadCardsIn } from './journalMet.ts';
 
 export type Tier = 'bronze' | 'silver' | 'gold' | 'platinum';
 export const TIERS: Tier[] = ['platinum', 'gold', 'silver', 'bronze'];
@@ -22,6 +23,8 @@ export const TIER_NAME: Record<Tier, string> = { bronze: 'Bronze', silver: 'Silv
 /** the predators a player can meet, in journal order */
 export const PREDATORS = ['snake', 'tayra', 'ocelot', 'jaguar', 'boa', 'eagle', 'spider', 'caiman', 'turtle', 'frog', 'harpy'] as const;
 export type PredatorId = (typeof PREDATORS)[number];
+/** the journal's creature cards the Naturalist medal counts: the eleven predators and the seven met on the road (journalMet.ts) */
+export const JOURNAL_CARDS: readonly string[] = [...PREDATORS, ...ROAD_IDS];
 
 /** the ten worlds' names, as worldsData.ts has them (kept here so this file stays light; badges.test.ts checks they match) */
 export const WORLD_NAMES = [
@@ -374,8 +377,11 @@ export const BADGES: BadgeDef[] = [
   one('sky_stomper', 'Sky Stomper', 'silver', 'boot', 'boot', 'Stomp 6 enemies without touching the ground', (c) => (c.stage?.maxStompChain ?? 0) >= 6),
   one('garden_keeper', 'Garden Keeper', 'silver', 'flower', 'flower', 'Pick every flower, leaf and fruit in a stage without being hit',
     (c) => won(c) && c.stage!.floraTotal >= 5 && c.stage!.floraCollected >= c.stage!.floraTotal && c.stage!.heartsLost === 0),
-  one('naturalist', 'Naturalist', 'silver', 'book', 'book', `Meet all ${PREDATORS.length} predators of the jungle`,
-    (c) => PREDATORS.every((p) => c.store.seen.includes(p)), { progress: (c) => count(PREDATORS.filter((p) => c.store.seen.includes(p)).length, PREDATORS.length) }),
+  // (every card in the journal but the guardians: the predators and the ones met on the road, Matt 2026-10-29. Its id stays, so a
+  // medal already won for the 11 predators stays won)
+  one('naturalist', 'Naturalist', 'silver', 'book', 'book', `Meet all ${JOURNAL_CARDS.length} creatures in the journal`,
+    (c) => JOURNAL_CARDS.every((id) => cardMet(id, c.store.seen, c.levels)),
+    { progress: (c) => count(JOURNAL_CARDS.filter((id) => cardMet(id, c.store.seen, c.levels)).length, JOURNAL_CARDS.length) }),
   one('thorn_finder', 'Thorn Finder', 'silver', 'key', 'key', 'Find the secret gate', (c) => c.gateFound),
   one('not_one_scratch', 'Not One Scratch', 'silver', 'bird', 'hummingbird', "Fly Dot through the General's netting (4-D) without a single scratch",
     (c) => won(c) && c.stage!.id === '4-D' && c.stage!.scratches === 0),
@@ -460,7 +466,8 @@ export function evaluate(c: EvalContext): string[] {
 export function recordStage(store: BadgeStore, s: StageStats): BadgeStore {
   const kills = { ...store.kills };
   for (const [k, n] of Object.entries(s.kills)) kills[k] = (kills[k] ?? 0) + n;
-  const seen = Array.from(new Set([...store.seen, ...s.seen]));
+  // (and the road cards a cleared stage meets: they are stage actors, which the engine does not count as seen, journalMet.ts)
+  const seen = Array.from(new Set([...store.seen, ...s.seen, ...(s.win && s.id ? roadCardsIn(s.id) : [])]));
   const c = store.counters;
   // a clean clear (won, no life lost) extends the streak; anything else ends it
   const streak = s.win && s.livesLost === 0 ? c.streak + 1 : 0;

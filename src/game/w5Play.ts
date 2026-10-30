@@ -5,6 +5,9 @@
  * steps them against Pokey each frame, and draws them (w5Look.ts: stand-ins until the World 5 art lands). The engine only hands it
  * what it needs through `W5Host`, as World 4 does (w4Play.ts).
  */
+import { drawPetal } from './petalSprites.ts';
+import { drawPaintedButterfly } from './butterflySprites.ts';
+import { drawFx } from './bossFx.ts';
 import {
   BUTLER, CAKE, chairPull, COCOON, hitCocoon, humReaches, inSteam, newButler, newCocoon, newGate, newSit, orchidAt, potAt, punchReachesCocoon,
   admiring, seatedIn, silkSpeed, sitDrowsy, sleepySpeed, SIT, spoutOf, stepButler, stepGate, stepSit, TEAPOT, THREAD, threadTouched,
@@ -656,17 +659,13 @@ export class W5Play {
       if (f && f.y < view.y1 + 200) drawFlyingTray(ctx, f.x, f.y, (t - f.at) * 12);
     });
     if (w5.petals) {
-      // petals drifting down through the light
+      // painted petals drifting down through the light, tumbling (petalSprites.ts)
       const vw = view.x1 - view.x0, vh = view.y1 - view.y0;
       ctx.save();
       for (let i = 0; i < 14; i++) {
         const x = view.x0 + ((((i * 173.3 + t * (22 + (i % 4) * 6)) % (vw + 120)) + vw + 120) % (vw + 120)) - 60;
         const y = view.y0 + ((i * 97.1 + t * (34 + (i % 3) * 8)) % (vh + 80)) - 40;
-        ctx.globalAlpha = 0.75;
-        ctx.fillStyle = i % 3 === 0 ? '#fbcfe8' : i % 3 === 1 ? '#f9a8d4' : '#fde68a';
-        ctx.beginPath();
-        ctx.ellipse(x + Math.sin(t * 1.3 + i) * 12, y, 5, 2.6, t * 1.7 + i, 0, Math.PI * 2);
-        ctx.fill();
+        drawPetal(ctx, i * 0.137, x + Math.sin(t * 1.3 + i) * 12, y, 15 + (i % 3) * 3, t * 1.7 + i, Math.cos(t * 1.1 + i * 2), 0.85);
       }
       ctx.restore();
     }
@@ -868,7 +867,7 @@ export class W5Play {
     }
   }
 
-  /** a creature just freed from a cocoon: a pale moth that flutters up and away (2.4 s) */
+  /** a creature just freed from a cocoon: a painted butterfly that flutters up and away (2.4 s) */
   private drawFreed(ctx: CanvasRenderingContext2D, t: number, vis: (x: number, pad?: number) => boolean) {
     (this.w5.cocoons ?? []).forEach((c, i) => {
       const st = this.cocoons[i];
@@ -876,24 +875,10 @@ export class W5Play {
       const u = st.since / 2.4;
       const x = c.x + Math.sin(u * 7 + c.x) * 18 + u * 70;
       const y = c.y - 60 - u * 220;
-      const flap = Math.abs(Math.sin(t * 22));
+      // one of World 5's painted butterflies (butterflySprites.ts), fluttering up and away (it was a moth of code ellipses)
       ctx.save();
       ctx.globalAlpha = Math.min(1, (1 - u) * 3);
-      ctx.translate(x, y);
-      ctx.scale(1.7, 1.7);
-      ctx.fillStyle = '#ede9fe';
-      ctx.strokeStyle = '#5b4a6e';
-      ctx.lineWidth = 1.5;
-      for (const sgn of [-1, 1]) {
-        ctx.beginPath();
-        ctx.ellipse(sgn * 7 * (0.4 + 0.6 * flap), -2, 8 * (0.4 + 0.6 * flap), 6, sgn * 0.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-      }
-      ctx.fillStyle = '#5b4a6e';
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 2.2, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      drawPaintedButterfly(ctx, 5, Math.round(c.x / 37), x, y, t, 1.35, 1.1, 1, -0.35);
       ctx.restore();
     });
   }
@@ -902,31 +887,20 @@ export class W5Play {
 /** the Seamstress's lace flying from her needles (fx, fy) to him (tx, ty): `u` how far it has got, `a` how much of it is still to see */
 function drawLaceThrow(ctx: CanvasRenderingContext2D, fx: number, fy: number, tx: number, ty: number, u: number, a: number, t: number) {
   if (a <= 0) return;
-  ctx.save();
-  ctx.globalAlpha = Math.max(0, Math.min(1, a));
-  ctx.lineCap = 'round';
+  // the painted silk thread (bossFx.ts silkRipple) laid along the arc of her throw a piece at a time, and the painted silk bundle at its
+  // head (no stroked curve or drawn loops, Matt 2026-10-29)
   const ex = fx + (tx - fx) * u, ey = fy + (ty - fy) * u;
   const mx = (fx + ex) / 2, my = Math.min(fy, ey) - 40;
-  for (const [c, w] of [['rgba(90, 60, 110, 0.5)', 6], ['#fffaf2', 3]] as const) {
-    ctx.strokeStyle = c;
-    ctx.lineWidth = w;
-    ctx.beginPath();
-    ctx.moveTo(fx, fy);
-    ctx.quadraticCurveTo(mx, my, ex, ey);
-    ctx.stroke();
+  const at = (k: number) => ({ x: (1 - k) * (1 - k) * fx + 2 * (1 - k) * k * mx + k * k * ex, y: (1 - k) * (1 - k) * fy + 2 * (1 - k) * k * my + k * k * ey });
+  const al = Math.max(0, Math.min(1, a));
+  const n = 8;
+  for (let i = 0; i < n; i++) {
+    const p0 = at(i / n), p1 = at((i + 1) / n);
+    const len = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+    if (len < 1) continue;
+    drawFx(ctx, 'silkRipple', (p0.x + p1.x) / 2, (p0.y + p1.y) / 2 + Math.sin(t * 9 + i) * 1.5, len * 1.15, { h: 12, rot: Math.atan2(p1.y - p0.y, p1.x - p0.x), alpha: al, flipX: i % 2 === 1 });
   }
-  // little lace loops along it
-  ctx.strokeStyle = '#fffaf2';
-  ctx.lineWidth = 1.6;
-  for (let i = 1; i <= 5; i++) {
-    const k = (i / 6) * u;
-    const x = (1 - k) * (1 - k) * fx + 2 * (1 - k) * k * mx + k * k * ((fx + (tx - fx) * u));
-    const y = (1 - k) * (1 - k) * fy + 2 * (1 - k) * k * my + k * k * ey;
-    ctx.beginPath();
-    ctx.arc(x, y + Math.sin(t * 9 + i) * 2, 4.5, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  ctx.restore();
+  drawFx(ctx, 'silkBall', ex, ey, 18 + 6 * Math.sin(t * 8), { rot: t * 4, alpha: al });
 }
 /** a wiggle this recent (s) means he is pulling free, not lingering in front of a silk sheet */
 export const WIGGLE_HOLD = 0.5;

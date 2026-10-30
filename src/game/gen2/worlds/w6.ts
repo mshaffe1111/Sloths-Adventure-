@@ -164,12 +164,12 @@ export const W6_ROOM_STAGES = ['6-3', '6-6', '6-7'] as const;
  * line is Matt's own (types.ts WATER_LINE, approved 2026-10-28).
  */
 export const W6_TIPS: Record<string, string> = {
-  [W6_LESSON.watch]: "The water's watching. Duck into the roots!", // (new, needs Matt's approval)
-  [W6_LESSON.tide]: 'Mud! Cross while the tide is out.', // (new, needs Matt's approval)
-  [W6_LESSON.caiman]: "A caiman! Don't stomp it. Punch, or hop over.", // (new, needs Matt's approval)
-  [W6_LESSON.frog]: 'Poison frog. Stomp it, never touch it.', // (new, needs Matt's approval)
-  [W6_LESSON.tayra]: 'A tayra! Quick, so punch it early.', // (new, needs Matt's approval)
-  [W6_LESSON.harpy]: 'A harpy! It slides, then stomps. Jump clear.', // (new, needs Matt's approval)
+  [W6_LESSON.watch]: "The water's watching. The roots hide you.", // (new, needs Matt's approval)
+  [W6_LESSON.tide]: 'Mud flats. The tide comes back.', // (new, needs Matt's approval)
+  [W6_LESSON.caiman]: 'A caiman! Too tough to stomp.', // (new, needs Matt's approval)
+  [W6_LESSON.frog]: 'Poison frog. Touching it hurts.', // (new, needs Matt's approval)
+  [W6_LESSON.tayra]: "A tayra! It's quick.", // (new, needs Matt's approval)
+  [W6_LESSON.harpy]: 'A harpy! It slides, then stomps.', // (new, needs Matt's approval)
   [W6_LESSON.hunt]: "The shrine's shut. Chase the hunters off first!", // (new, needs Matt's approval)
   [W6_LESSON.fight]: "The shrine's shut. Fight through to open it.", // (new, needs Matt's approval)
 };
