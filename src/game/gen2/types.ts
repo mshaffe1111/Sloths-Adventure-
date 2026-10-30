@@ -169,7 +169,8 @@ export interface LianaSwing {
  *                        its soft pit climbs back to the take-off, as a liana's does, so walking down and out the far side is no way over)
  *   on                   an obstacle standing on `on`'s top, `at` (0..1) along it, `h` px tall (a stump, a block)
  *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top (over a
- *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
+ *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top);
+ *                        `align: 'end'` puts its RIGHT end there instead (an ascent's turn: the shelf at a climb's top runs back)
  *   swing                a liana (shape 'liana') hanging past `after`'s end: its anchor `top` px above `after`'s top, `reach` px out
  *                        from the end (what a running jump grabs), swinging by itself (`amp` at most 0.45 rad, `period`: LianaSwing;
  *                        default the engine's, pipeline VINE: 0.45, Normal 2.85 s, Easy 3.3 s). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
@@ -190,7 +191,7 @@ export type PlaceRule =
   | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
-  | { kind: 'over'; on: string; at: Range; dy: Range }
+  | { kind: 'over'; on: string; at: Range; dy: Range; align?: 'start' | 'end' }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range };
@@ -338,6 +339,17 @@ export interface SectionTemplate {
   zones?: SectionZone[];
   /** may be flipped left to right (a room never is: it reads left to right; painted light stays upper left) */
   mirrorable: boolean;
+  /**
+   * which way of stage may draw it (default 'right'): a horizontal stage's sections, an ascent's climbing sections ('up': pipeline
+   * layAscent), or both. An ascent zig-zags up a column: its sections are laid across the column the way the climb is heading (flipped
+   * end to end on the way back), and a `turn` section takes it up to the next row and back the other way
+   */
+  flow?: 'right' | 'up' | 'both';
+  /**
+   * an ascent's turn (flow 'up'): the climb at a row's end. Its exit piece runs BACK over it (an `over` with `align: 'end'`), the next
+   * section starts from that piece's far end, and the climb heads the other way from there. Narrow (its pieces within ASCENT.turnW)
+   */
+  turn?: boolean;
   /** how often the bag holds it (default 1) */
   weight?: number;
   /** extra seconds a typical first-timer spends here beyond walking its length (a room, a fight) */
@@ -406,7 +418,7 @@ export interface MissionNode {
 
 export interface MissionGraph {
   archetype: Archetype;
-  /** horizontal stages run right; an ascent runs up (phase 2) */
+  /** horizontal stages run right; an ascent runs up (zig-zagging across a column: pipeline ASCENT) */
   flow: 'right' | 'up';
   nodes: MissionNode[];
 }
@@ -444,6 +456,17 @@ export interface PlacedSection {
   beats: Array<{ x: number; letter: SectionBeat['letter'] }>;
   /** the seconds the time model expects (the walk plus extraSeconds) */
   seconds: number;
+  /**
+   * an ascent's (flow 'up'): the way its row heads (1 right, -1 left: laid end to end turned), whether it is a turn, its progress along
+   * the climb at its entry and exit (px of route: what the passes after the stitcher read where a horizontal stage reads x), and its
+   * pieces' highest top and lowest top (world y)
+   */
+  dir?: 1 | -1;
+  turn?: boolean;
+  along0?: number;
+  along1?: number;
+  top?: number;
+  bottom?: number;
 }
 
 export interface FilledSocket {

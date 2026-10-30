@@ -26,6 +26,7 @@ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, 
 import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
+import { alongOf, ASCENT, catchGaps, clearOf, climbSeconds, climbSteps, dropUnder, shiftAll, thick, worldX, type ClimbStep } from './ascent.ts';
 import {
   EASY_ENEMY_SHARE,
   EASY_LANDING,
@@ -54,6 +55,7 @@ import {
   type Phase,
   type PlacedSection,
   type PlanSlot,
+  type PlaceRule,
   type PortKind,
   type Range,
   type Repair,
@@ -215,6 +217,8 @@ export const lianaSeconds = (swing: LianaSwing, window: number): number => (swin
  */
 export function gen2Model(st: GeneratedStage & { proto?: ProtoExtras }, P: ModelParams): number {
   let t = modelStage(st, P).total;
+  // (an ascent's climb steps already price each swing: modelAscent)
+  if (st.config.objectiveType === 'ascent') return t;
   const lianas = ((st.proto as { gen2?: { lianas?: Array<LianaSwing & { window?: number; x0?: number; x1?: number }> } } | undefined)?.gen2?.lianas ?? []);
   for (const l of lianas) {
     if (l.window === undefined || l.x0 === undefined || l.x1 === undefined) continue;
@@ -307,11 +311,10 @@ const WANT: Partial<Record<Archetype, string[]>> = {
 /**
  * The archetype's graph (Part 1 Pass 2, our stagePlan.ts kinds): the sawtooth, rewritten per kind. A rescue or a search spreads its
  * quota items over the Sho/Ten/Ketsu nodes (in proportion to their share); a purge or gauntlet runs hotter; a gauntlet gets one more
- * twist. TODO(phase 2): an ascent's graph runs up (flow 'up'), and rescue/search alcoves become real side branches.
+ * twist. An ascent's graph is the same spine running up (flow 'up': ascent.ts). TODO: rescue/search alcoves become real side branches.
  */
 export function missionGraph(budget: StageBudget): MissionGraph {
   const a = budget.archetype;
-  if (a === 'ascent') throw new Error('gen2: ascent stages run up (flow "up"): phase 2');
   const nodes: MissionNode[] = SPINE.map((n, i) => ({ ...n, id: `n${i + 1}` }));
   if (a === 'gauntlet') nodes.splice(7, 0, { id: 'n7b', role: 'twist', phase: 'ten', tension: 0.9, share: 0.08 });
   const hot = a === 'purge' || a === 'gauntlet' ? 0.08 : 0;
@@ -332,7 +335,8 @@ export function missionGraph(budget: StageBudget): MissionGraph {
       left -= k;
     });
   }
-  return { archetype: a, flow: 'right', nodes };
+  // (an ascent runs up: the same spine, zig-zagging up a column, ascent.ts)
+  return { archetype: a, flow: a === 'ascent' ? 'up' : 'right', nodes };
 }
 
 // ───────────────────────────── pass 3: sections, stitched ─────────────────────────────
@@ -352,6 +356,8 @@ interface LocalPiece {
   hop: boolean;
   /** a crumbling ruin tile (SectionPiece.crumble) */
   crumble?: boolean;
+  /** how it was placed (its rule's kind): an ascent's time model reads how each ledge is reached */
+  via?: PlaceRule['kind'];
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
 }
@@ -374,7 +380,8 @@ export interface LocalLayout {
   pieces: LocalPiece[];
   gaps: LocalGap[];
   entry: { piece: string; kind: PortKind };
-  exit: { piece: string; kind: PortKind; x: number; y: number };
+  /** the exit anchor: the exit piece's right end (`x`) and top; `x0` its left end (an ascent's turn leaves from there, back the other way) */
+  exit: { piece: string; kind: PortKind; x: number; y: number; x0: number };
   width: number;
   mirrored: boolean;
   /** the section's sockets and its rolled sub-block versions' sockets */
@@ -392,6 +399,10 @@ export interface LayLocalOptions {
   once?: WorldOnce<string>;
   /** the world's soft pit depth (manifest.pitDepth): a perch past a liana keeps clear of the steps out of the pit under it */
   pitDepth?: number;
+  /** an ascent's turn (SectionTemplate.turn): px added to its climbs, so the row it climbs to stands clear of the one under it */
+  lift?: number;
+  /** an ascent: Easy's wider landings reach back over their gaps (the pieces after them stay where Normal's are) */
+  padBack?: boolean;
 }
 
 /**
@@ -472,6 +483,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     let y = 0;
     let h = pc.h ?? 24;
     let hang: LocalPiece['hang'];
+    let endAt: number | undefined;
+    const gapsBefore = gaps.length;
     const pl = pc.place;
     const ref = (k: string) => by.get(k)!;
     if (pl.kind === 'start') {
@@ -555,7 +568,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
-      h = roll(rng, pl.h);
+      h = roll(rng, pl.h) + (tpl.turn ? lo.lift ?? 0 : 0);
       x = a.x + roll(rng, pl.at) * a.w;
       y = a.y - h;
       w = 0;
@@ -570,14 +583,25 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const a = ref(pl.on);
       x = a.x + roll(rng, pl.at) * a.w;
       y = a.y + roll(rng, pl.dy);
+      // (its right end at the anchor: an ascent's turn, the shelf at the climb's top running back; placed once its width is final)
+      if (pl.align === 'end') endAt = x;
     }
     // (a crumbling tile is a tile's width whatever the roll or Easy's pad: levelCheck holds every tile to it; never main, never needed)
     const crumble = !!pc.crumble && !hang;
     const landing = (!!pc.landing || pl.kind === 'land') && pl.kind !== 'start' && !hang && !crumble;
-    if (landing) w += budget.landingPad;
+    // (an ascent's Easy landing reaches back over its gap instead of on past its far end: the pieces after it stand where Normal's do,
+    // so the rows Normal laid clear of each other stay clear on Easy)
+    const gapIn = gaps.length > gapsBefore ? gaps[gaps.length - 1] : undefined;
+    if (landing && lo.padBack && gapIn) {
+      const k = Math.max(0, Math.min(budget.landingPad, x - gapIn.x0 - 60));
+      x -= k;
+      w += k;
+      gapIn.x1 -= k;
+    } else if (landing) w += budget.landingPad;
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
+    if (endAt !== undefined) x = endAt - w;
     const p: LocalPiece = {
-      key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
+      key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', via: pl.kind,
       ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}),
     };
     by.set(pc.key, p);
@@ -611,7 +635,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
   }
   const xp = by.get(exitP.piece);
   if (!xp) throw new Error(`gen2 section ${tpl.id}: its exit piece ${exitP.piece} is not laid`);
-  return { pieces: out, gaps, entry, exit: { ...exitP, x: xp.x + xp.w, y: xp.y }, width: right - left, mirrored, sockets, versions };
+  return { pieces: out, gaps, entry, exit: { ...exitP, x: xp.x + xp.w, y: xp.y, x0: xp.x }, width: right - left, mirrored, sockets, versions };
 }
 
 /** everything pass 3 hands on */
@@ -620,7 +644,7 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean; deep?: boolean }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
   spawn: { x: number; y: number; piece: Platform };
@@ -632,6 +656,15 @@ export interface Laid {
   nextId: number;
   /** the sections the roll's theme favoured (undefined: it favoured them all) */
   theme?: string[];
+  /**
+   * an ascent (ascent.ts): its flow, progress along the climb at a point (what the later passes read where a horizontal stage reads x),
+   * the climb's steps for the time model, and the catches laid under its gaps (platform ids). A gap marked `deep` has nothing within
+   * ASCENT.maxFall under it: a fall there goes on down (to the stage's lava or water, where it has one)
+   */
+  flow?: 'up';
+  along?: (x: number, y: number) => number;
+  chain?: ClimbStep[];
+  catches?: number[];
 }
 
 export interface LayOptions {
@@ -697,6 +730,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const pickRng = rngFor(seed, 3);
   const platforms: Platform[] = [];
   let pid = 1;
+  // (an ascent zig-zags up a column, laid from y 0 upward and shifted at the end: ascent.ts)
+  const up = graph.flow === 'up';
   const baseline = M.corridor.bottom + M.ground.bankH;
   const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style'], crumble = false): Platform => {
     const p: Platform = crumble
@@ -706,7 +741,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           x: R(x),
           y: R(y),
           width: R(w),
-          height: shape === 'bank' ? Math.max(M.ground.bankH, R(baseline - y)) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : R(h),
+          // (an ascent's bank is a ledge of the bank's own depth: nothing runs down through the rows under it)
+          height: shape === 'bank' ? (up ? M.ground.bankH : Math.max(M.ground.bankH, R(baseline - y))) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : R(h),
           type: shape === 'bouncy' ? 'bouncy' : 'solid',
           style: style ?? (shape === 'bank' ? M.ground.style : shape === 'branch' ? 'branch' : 'moss_stone'),
         };
@@ -717,7 +753,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const vines: Vine[] = [];
   const zones: Zone[] = [];
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
-    if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
+    // (an ascent lays no pit: a miss falls to a catch or the row below, ascent.ts)
+    if (up || (budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
     if (back) {
       const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
@@ -730,9 +767,18 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
   };
 
-  // the runway
-  const runway = mk(0, M.ground.y, RUNWAY, 'bank', 0);
-  let cur = { x: RUNWAY, y: M.ground.y, kind: 'ground' as PortKind, piece: runway };
+  // the runway (an ascent's at the foot of its column)
+  const runway = up ? mk(0, 0, ASCENT.runway, 'bank', 0) : mk(0, M.ground.y, RUNWAY, 'bank', 0);
+  let cur = { x: runway.x + runway.width, y: runway.y, kind: 'ground' as PortKind, piece: runway };
+  // (an ascent: the way the row heads, the row (each platform's), progress along the climb, the climb's steps, the gaps to catch)
+  let dir: 1 | -1 = 1;
+  let row = 0;
+  const rowOf = new Map<Platform, number>([[runway, 0]]);
+  const vineRow = new Map<Vine, number>();
+  let along: number = ASCENT.runway;
+  const chain: ClimbStep[] = [];
+  const toCatch: Array<{ x0: number; x1: number; lips: [Platform, Platform]; liana?: { ledge: Platform } }> = [];
+  const colRoom = () => (dir > 0 ? ASCENT.column - cur.x : cur.x);
   const sections: PlacedSection[] = [];
   const plan: PlanSlot[] = [];
   const coolN = Math.max(1, Math.min(4, Math.floor(M.sections.length / 2)));
@@ -761,7 +807,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const must = M.required?.[budget.id] ?? [];
   const placedReq = new Set<string>();
 
+  // (an ascent draws its climbing sections, a horizontal stage its own: SectionTemplate.flow; a turn only where the row ends, and a
+  // section that did not fit the column at this slot is passed over: `misfit`)
+  const flowOK = (t: SectionTemplate) => (t.flow ?? 'right') === 'both' || (t.flow ?? 'right') === (up ? 'up' : 'right');
+  let wantTurn = false;
+  const misfit = new Set<string>();
   const fits = (t: SectionTemplate, n: MissionNode, i: number) =>
+    flowOK(t) &&
+    !!t.turn === wantTurn &&
+    !misfit.has(t.id) &&
     t.phases.includes(n.phase) &&
     (t.archetypes === 'any' || t.archetypes.includes(budget.archetype)) &&
     (t.needs ?? []).every((m) => budget.moves.includes(m)) &&
@@ -778,7 +832,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (!t) throw new Error(`gen2 ${budget.id}: the required section ${r.section} is not in the world`);
       // (inside the corridor, like any pick: a later slot takes it otherwise)
       const endY = cur.y + t.exitDy;
-      if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && fits(t, n, i) && endY >= M.corridor.top && endY <= M.corridor.bottom) return t;
+      if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && fits(t, n, i) && (up || (endY >= M.corridor.top && endY <= M.corridor.bottom))) return t;
     }
     // (a required section is never drawn by weight: it comes once, where the plan puts it)
     const cands = M.sections.filter((t) => fits(t, n, i) && !must.some((r) => r.section === t.id));
@@ -791,13 +845,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (n.want?.some((tag) => t.sockets.some((s) => s.allow?.includes(tag)) || t.name.includes(tag))) w *= 3;
       // (the corridor clamp, Part 3 §1: near the top lean to sections that go down, near the bottom to ones that go up; one that
       // would leave the corridor is never picked)
+      // (an ascent's corridor is its column across: ascent.ts, checked once the section is laid)
+      if (up) return w;
       const endY = cur.y + t.exitDy;
       if (endY < room.top || endY > room.bottom) return 0;
       if (lean !== 0) w *= Math.sign(t.exitDy) === lean ? 3 : t.exitDy === 0 ? 1 : 0.3;
       return w;
     };
     // the node's bag holds its candidates by weight; the cooldown passes over the ones used just now
-    const key = `${n.phase}|${cands.map((c) => c.id).join(',')}`;
+    const key = `${n.phase}|${wantTurn ? 'turn|' : ''}${cands.map((c) => c.id).join(',')}`;
     let bag = bags.get(key);
     if (!bag) {
       bag = new ShuffleBag(pickRng, themed(cands), (t) => Math.max(1, Math.round(weight(t) * 3)));
@@ -814,52 +870,131 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     return t;
   };
 
+  /**
+   * One section laid at slot `i` from the cursor: its own rolls (the slot's stream), the join, and where its pieces go in the world.
+   * Nothing is added to the stage yet. An ascent (flow 'up') lays it the way the row heads (turned end to end on the way back) and
+   * returns null when it does not fit: outside the column, without room left for the turn after it, or too close over an earlier row
+   * (ascent.ts clearOf). A turn is lifted until the row it climbs to stands clear of everything under it.
+   */
+  type Attempt = {
+    tpl: SectionTemplate; L: LocalLayout; join: PlanSlot['join']; dx: number; dy: number; ox: number; oy: number; wx: (lx: number, w?: number) => number;
+    boxes: Array<{ lp: LocalPiece; x: number; y: number; width: number; height: number }>; mirrored: boolean; salt: number; srng: Rng;
+  };
+  const layAt = (tpl: SectionTemplate, n: MissionNode, i: number, fixed: PlanSlot | undefined, lift = 0): Attempt | null => {
+    // (the slot's stream: salted by the swaps made at it; a plan carries Normal's salt so Easy rolls the slot as Normal did)
+    const salt = fixed ? fixed.salt ?? 0 : opt.bans?.get(i)?.size ?? 0;
+    const srng = rngFor(seed, 11, i, salt);
+    // (the flip is drawn whether or not a plan fixes it, so the geometry after it rolls from the same numbers on Easy and Normal)
+    const flip = tpl.mirrorable ? srng() : 1;
+    // (a section that swings is never flipped: its perch is sized for a swing toward it, the way the stage runs; nor an ascent's turn)
+    const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing') && !tpl.turn;
+    const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: M.pitDepth, lift, padBack: up });
+    // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
+    const jrng = rngFor(seed, 13, i);
+    let join: PlanSlot['join'];
+    // (drawn the same way with or without a plan, so the join's sizes below come from the same numbers on Easy and Normal)
+    if (cur.kind === 'ground' && L.entry.kind === 'ground') {
+      const quiet = n.phase === 'start' || n.phase === 'rest' || n.phase === 'goal' || (tpl.room && true);
+      const pitW = quiet ? 0 : n.tension * 1.2;
+      const r0 = jrng() * (1 + 0.6 + pitW);
+      join = fixed ? fixed.join : r0 < 1 ? 'walk' : r0 < 1.6 ? 'step' : 'pit';
+    } else join = fixed ? fixed.join : 'jump';
+    const j = jrng();
+    let dx = 0;
+    let dy = 0;
+    const lim1 = riseLimit(false, budget.riseShare);
+    if (join === 'step') {
+      // (up or down by a hop, leaning back toward the corridor's middle; an ascent's steps go up)
+      const middle = (M.corridor.top + M.corridor.bottom) / 2;
+      const sd = up || cur.y + L.exit.y > middle ? -1 : 1;
+      dy = sd * (20 + j * (lim1 * 0.8 - 20));
+    } else if (join === 'pit' || join === 'jump') {
+      // (an ascent's hops go up or level, never down: the climb never gives height back)
+      if (join === 'jump') dy = up ? -lim1 * 0.7 * j : -lim1 * 0.6 + j * (lim1 * 0.6 + 80);
+      const g = maxGap(-dy, false, budget.margin);
+      dx = Math.max(60, R((0.5 + 0.3 * budget.heat + 0.15 * jrng()) * g));
+    }
+    if (!up) dy = Math.max(M.corridor.top - cur.y, Math.min(M.corridor.bottom - cur.y, dy));
+    const ox = cur.x + dir * dx;
+    const oy = R(cur.y + dy);
+    const wx = (lx: number, w = 0) => worldX(ox, dir, lx, w);
+    const boxes = L.pieces.filter((lp) => !lp.hang).map((lp) => ({ lp, x: R(wx(lp.x, lp.w)), y: R(oy + lp.y), width: R(lp.w), height: lp.shape === 'bank' ? M.ground.bankH : lp.shape === 'branch' ? 24 : lp.shape === 'stone' ? 22 : R(lp.h) }));
+    if (up) {
+      const x0 = Math.min(...boxes.map((b) => b.x));
+      const x1 = Math.max(...boxes.map((b) => b.x + b.width));
+      // (inside the column; a row's section leaves room at its end for the turn after it (and the goal's for the shrine's ledge))
+      // (a turn may stand out past the column a little: the row before it kept it room, and the climb is moved into place at the end)
+      const keep = tpl.turn ? -ASCENT.turnRoom : n.phase === 'goal' ? ASCENT.shrine : ASCENT.turnRoom;
+      // (a plan is held to the column too while Normal's own loop follows it (a slot that no longer fits is chosen again); Easy
+      // following Normal's plan lays it as it is)
+      const held = !fixed || !!opt.open;
+      if (held && (dir > 0 ? x1 > ASCENT.column - keep || x0 < -ASCENT.turnRoom : x0 < keep || x1 > ASCENT.column + ASCENT.turnRoom)) {
+        if (process.env.GEN2_DEBUG) console.log('room', tpl.id, dir, x0, x1, keep);
+        return null;
+      }
+      // (clear of every earlier row: a turn's own shelf at the top is the next row's, clear of its own ledges under it)
+      const exitKey = L.exit.piece;
+      const lower = (b: (typeof boxes)[number]) => tpl.turn && b.lp.key === exitKey ? row + 1 : row;
+      const own = new Set<Platform>([cur.piece]);
+      let need = 0;
+      for (const b0 of boxes) {
+        const r1 = lower(b0);
+        // (a turn's shelf is the next row's start: it clears the rows under it for ASCENT.ahead on, the way the next row heads)
+        const b = r1 > row ? { ...b0, x: dir > 0 ? b0.x - ASCENT.ahead : b0.x, width: b0.width + ASCENT.ahead } : b0;
+        const others = [...platforms.filter((q) => (rowOf.get(q) ?? 0) < r1), ...(r1 > row ? boxes.filter((c) => c !== b0).map((c) => ({ ...c, id: -1, type: 'solid' }) as Platform) : [])];
+        const hit = clearOf(b, others, own);
+        // (a liana of an earlier row: its rope and its swing stay clear of this piece)
+        const rope = vines.find((v) => v.isSwingingVine && (vineRow.get(v) ?? 0) !== r1 && b.x < v.x + 200 && b.x + b.width > v.x - 200 && b.y + thick(b) > v.topY - 60 && b.y < v.bottomY);
+        if (!hit && !rope) continue;
+        if (process.env.GEN2_DEBUG) console.log('clear', tpl.id, b0.lp.key, b.x, b.y, hit && [hit.id, hit.x, hit.y, hit.width], rope && [rope.x, rope.topY]);
+        if (!tpl.turn || r1 === row) {
+          if (held) return null;
+          continue;
+        }
+        const under = hit ? (hit.y >= b.y ? hit.y - ASCENT.clear - thick(b) : -Infinity) : -Infinity;
+        const above = rope ? rope.topY - 60 - thick(b) : -Infinity;
+        need = Math.max(need, b.y - Math.min(...[under, above].filter(Number.isFinite)) + 2);
+      }
+      if (need > 0) return lift < 600 ? layAt(tpl, n, i, fixed, lift + need) : null;
+    }
+    return { tpl, L, join, dx, dy, ox, oy, wx, boxes, mirrored, salt, srng };
+  };
+
   for (const n of graph.nodes) {
     let secs = 0;
     const want = n.share * budget.seconds.target * aim;
     let first = true;
-    // (the start and the goal are a single plain section each: the runway and the shrine's bank are laid by the stitcher)
+    // (the start and the goal are a single plain section each: the runway and the shrine's bank are laid by the stitcher; an ascent's
+    // turn before it does not count)
     // (following a plan, the node takes exactly the slots the plan gave it: Easy's sections are Normal's, whatever their seconds)
     while (opt.plan ? opt.plan[slot]?.node === n.id : first || secs < want) {
       first = false;
       const i = slot++;
       const fixed = opt.open?.has(i) ? undefined : opt.plan?.[i];
-      const tpl = fixed ? byId.get(fixed.template)! : choose(n, i);
-      // (the slot's stream: salted by the swaps made at it; a plan carries Normal's salt so Easy rolls the slot as Normal did)
-      const salt = fixed ? fixed.salt ?? 0 : opt.bans?.get(i)?.size ?? 0;
-      const srng = rngFor(seed, 11, i, salt);
-      // (the flip is drawn whether or not a plan fixes it, so the geometry after it rolls from the same numbers on Easy and Normal)
-      const flip = tpl.mirrorable ? srng() : 1;
-      // (a section that swings is never flipped: its perch is sized for a swing toward it, the way the stage runs)
-      const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing');
-      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: M.pitDepth });
-      // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
-      const jrng = rngFor(seed, 13, i);
-      let join: PlanSlot['join'];
-      // (drawn the same way with or without a plan, so the join's sizes below come from the same numbers on Easy and Normal)
-      if (cur.kind === 'ground' && L.entry.kind === 'ground') {
-        const quiet = n.phase === 'start' || n.phase === 'rest' || n.phase === 'goal' || (tpl.room && true);
-        const pitW = quiet ? 0 : n.tension * 1.2;
-        const r0 = jrng() * (1 + 0.6 + pitW);
-        join = fixed ? fixed.join : r0 < 1 ? 'walk' : r0 < 1.6 ? 'step' : 'pit';
-      } else join = fixed ? fixed.join : 'jump';
-      const j = jrng();
-      let dx = 0;
-      let dy = 0;
-      const lim1 = riseLimit(false, budget.riseShare);
-      if (join === 'step') {
-        // (up or down by a hop, leaning back toward the corridor's middle)
-        const middle = (M.corridor.top + M.corridor.bottom) / 2;
-        const dir = cur.y + L.exit.y > middle ? -1 : 1;
-        dy = dir * (20 + j * (lim1 * 0.8 - 20));
-      } else if (join === 'pit' || join === 'jump') {
-        if (join === 'jump') dy = -lim1 * 0.6 + j * (lim1 * 0.6 + 80);
-        const g = maxGap(-dy, false, budget.margin);
-        dx = Math.max(60, R((0.5 + 0.3 * budget.heat + 0.15 * jrng()) * g));
+      misfit.clear();
+      // (an ascent turns where the row has no room left for a section and the turn after it)
+      wantTurn = up && colRoom() < ASCENT.turnRoom + 520 + (n.phase === 'goal' ? ASCENT.shrine : 0);
+      let at: Attempt | null = null;
+      if (fixed) at = layAt(byId.get(fixed.template)!, n, i, fixed);
+      // (a slot of the plan that no longer fits the column (the length loop moved the slots after it): chosen fresh)
+      if (fixed && !at && !opt.open) throw new Error(`gen2 ${budget.id}: slot ${i + 1} of the plan (${fixed.template}) cannot be laid`);
+      for (let tries = 0; !at; tries++) {
+        if (!M.sections.some((t) => fits(t, n, i) && !must.some((r) => r.section === t.id))) {
+          if (!up || wantTurn) throw new Error(`gen2 ${budget.id}: no ${wantTurn ? 'turn' : 'section'} fits node ${n.id} (${n.phase}) at slot ${i + 1}${up ? ` (${R(colRoom())} px of the column left)` : ''}`);
+          wantTurn = true;
+          misfit.clear();
+        }
+        const tpl = choose(n, i);
+        at = layAt(tpl, n, i, undefined);
+        if (!at) misfit.add(tpl.id);
       }
-      dy = Math.max(M.corridor.top - cur.y, Math.min(M.corridor.bottom - cur.y, dy));
-      const ox = cur.x + dx;
-      const oy = R(cur.y + dy);
+      const { tpl, L, join, dx, dy, ox, oy, wx, mirrored, salt, srng } = at;
+      if (process.env.GEN2_DEBUG) console.log('slot', i, tpl.id, 'dir', dir, 'cur', R(cur.x), R(cur.y), 'ox', ox, 'boxes', at.boxes.map((b) => `${b.lp.key}:${b.x}..${b.x + b.width}@${b.y}`).join(' '));
+      const x0w = up ? Math.min(...at.boxes.map((b) => b.x)) : ox;
+      const x1w = up ? Math.max(...at.boxes.map((b) => b.x + b.width)) : ox + L.width;
+      const exitP0 = L.pieces.find((lp) => lp.key === L.exit.piece)!;
+      // (an ascent's turn leaves from its top shelf's far end, back the other way)
+      const exitX = tpl.turn ? wx(L.exit.x0) : wx(L.exit.x);
       const placed: PlacedSection = {
         uid: `s${i + 1}`,
         template: tpl.id,
@@ -868,16 +1003,18 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         tension: n.tension,
         mirrored,
         entry: { x: ox, y: oy },
-        exit: { x: ox + L.exit.x, y: oy + L.exit.y },
-        x0: ox,
-        x1: ox + L.width,
+        exit: { x: R(exitX), y: oy + L.exit.y },
+        x0: x0w,
+        x1: x1w,
         pieces: [],
         seam: [],
         vines: [],
         sockets: [],
         beats: [],
         seconds: 0,
+        ...(up ? { dir, ...(tpl.turn ? { turn: true } : {}) } : {}),
       };
+      void exitP0;
       if (dx > 0) {
         const before = platforms.length;
         pitUnder(cur.x, ox, cur.y, oy);
@@ -887,20 +1024,24 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (lp.hang) {
           // (a liana or a climbing vine: the engine's Vine; a liana's own swing goes with it, for the engine's self-swinging vines)
           const liana = lp.hang.kind === 'liana';
+          const vx = R(wx(lp.x));
           const v: Vine = {
-            id: vines.length + 1, x: R(ox + lp.x), topY: R(oy + lp.y), bottomY: R(oy + lp.y + lp.h), swaySpeed: 1.1, swayPhase: ((ox + lp.x) * 0.013) % 6.28,
+            id: vines.length + 1, x: vx, topY: R(oy + lp.y), bottomY: R(oy + lp.y + lp.h), swaySpeed: 1.1, swayPhase: (vx * 0.013) % 6.28,
             vineType: liana ? 'swing_liana' : 'tree_climb', ...(liana ? { isSwingingVine: true } : {}),
           };
           // (its own swing on the Vine itself, for vine-fix's engine and checks: Vine.swingAmp / swingPeriod once that is on main; ignored
           // before. Its phase is the engine's (swingSetup))
           if (lp.hang.swing) Object.assign(v, { swingAmp: lp.hang.swing.amp, swingPeriod: lp.hang.swing.period });
           vines.push(v);
+          vineRow.set(v, row);
           const h = lp.hang;
-          placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(h.gap ? { gap: [R(ox + h.gap[0]), R(ox + h.gap[1])] as [number, number] } : {}) });
+          const gw = h.gap ? ([R(wx(h.gap[0])), R(wx(h.gap[1]))].sort((a, b) => a - b) as [number, number]) : undefined;
+          placed.vines.push({ key: lp.key, vine: v, ...(h.swing ? { swing: h.swing } : {}), ...(h.window !== undefined ? { window: h.window } : {}), ...(gw ? { gap: gw } : {}) });
           continue;
         }
-        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
+        const p = mk(wx(lp.x, lp.w), oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
+        if (up) rowOf.set(p, tpl.turn && lp.key === L.exit.piece ? row + 1 : row);
       }
       const pieceOf = (k: string) => {
         const q = placed.pieces.find((pp) => pp.key === k);
@@ -908,10 +1049,27 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         return q.platform;
       };
       const entryP = pieceOf(L.entry.piece);
-      if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
+      if (dx > 0) {
+        const g0 = dir > 0 ? cur.x : ox;
+        const g1 = dir > 0 ? ox : cur.x;
+        gaps.push({ x0: g0, x1: g1, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
+        if (up) toCatch.push({ x0: g0, x1: g1, lips: [cur.piece, entryP] });
+      }
       for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
+        const gx0 = R(dir > 0 ? wx(g.x0) : wx(g.x1));
+        const gx1 = R(dir > 0 ? wx(g.x1) : wx(g.x0));
+        const g0 = { x0: gx0, x1: gx1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}), ...(g.soft ? { soft: true } : {}) };
         gaps.push(g0);
+        if (up && !g.water) {
+          // (the two lips: the pieces whose ends meet the gap, at the gap's own ends)
+          const lip = (x: number) => placed.pieces.map((pp) => pp.platform).filter((q) => Math.abs(q.x - x) < 3 || Math.abs(q.x + q.width - x) < 3).sort((a, b) => a.y - b.y)[0];
+          const a = lip(gx0);
+          const b = lip(gx1);
+          if (a && b) {
+            const ledge = dir > 0 ? a : b;
+            toCatch.push({ x0: gx0, x1: gx1, lips: [a, b], ...(g.back ? { liana: { ledge } } : {}) });
+          }
+        }
         if (g.pit && !g.water) {
           const before = platforms.length;
           if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
@@ -919,14 +1077,17 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.seam.push(...platforms.slice(before));
         }
       }
-      // the sockets, bound to their piece (t along its top, dn above it)
+      // the sockets, bound to their piece (t along its top, dn above it; on an ascent's way back, read from the other end)
       for (const s of L.sockets) {
         const p = pieceOf(s.on);
         const t0 = Math.max(0, Math.min(1, roll(srng, s.t)));
-        const t = mirrored ? 1 - t0 : t0;
+        const t = mirrored !== dir < 0 ? 1 - t0 : t0;
         placed.sockets.push({ socket: s, x: R(p.x + t * p.width), y: R(p.y - (s.dn ?? 0)), piece: p });
       }
-      if (tpl.room) placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id);
+      if (tpl.room) {
+        if (dir < 0) throw new Error(`gen2 section ${tpl.id}: a room reads left to right, and an ascent's row heads left here`);
+        placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id);
+      }
       // its zones, over its placed pieces (their numbers from the slot's stream, after everything else it rolls)
       for (const z of tpl.zones ?? []) {
         if (z.kind === 'tide') {
@@ -950,14 +1111,28 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const low = Math.max(...tiles.map((t) => t.y));
         zones.push({ kind: 'crumble', x0, x1, top: top - 200, bottom: low + CRUMBLE_H, baseY: low, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0 });
       }
-      for (const g of L.gaps) placed.beats.push({ x: ox + g.x0, letter: 'J' });
-      for (const lp of L.pieces) if (lp.hop) placed.beats.push({ x: ox + lp.x, letter: 'h' });
+      // (an ascent: progress along the climb at its entry and exit, and its beats in progress, not x)
+      const along0 = along + dx + Math.abs(dy);
+      const rise = Math.max(0, oy - Math.min(oy + L.exit.y, ...at.boxes.map((b) => b.y)));
+      const along1 = along0 + (x1w - x0w) * (tpl.turn ? 0.5 : 1) + rise;
+      const bx = (lx: number) => (up ? along0 + Math.max(0, Math.min(along1 - along0, tpl.turn ? (along1 - along0) / 2 : dir > 0 ? wx(lx) - x0w : x1w - wx(lx))) : ox + lx);
+      for (const g of L.gaps) placed.beats.push({ x: bx(g.x0), letter: 'J' });
+      for (const lp of L.pieces) if (lp.hop) placed.beats.push({ x: bx(lp.x), letter: 'h' });
       // (a swing or a climb is a world move)
-      for (const lp of L.pieces) if (lp.hang) placed.beats.push({ x: ox + lp.x, letter: 'V' });
+      for (const lp of L.pieces) if (lp.hang) placed.beats.push({ x: bx(lp.x), letter: 'V' });
       placed.beats.sort((a, b) => a.x - b.x);
-      if (dx > 0) placed.beats.unshift({ x: cur.x, letter: 'J' });
-      else if (join === 'step') placed.beats.unshift({ x: cur.x, letter: 'h' });
-      placed.seconds = sectionSeconds(L, tpl, budget) + dx / budget.walkSpeed;
+      if (dx > 0) placed.beats.unshift({ x: up ? along : cur.x, letter: 'J' });
+      else if (join === 'step') placed.beats.unshift({ x: up ? along : cur.x, letter: 'h' });
+      if (up) {
+        const steps = climbSteps(L, dx > 0);
+        chain.push(...steps);
+        placed.along0 = R(along0);
+        placed.along1 = R(along1);
+        placed.top = Math.min(...placed.pieces.map((pp) => pp.platform.y));
+        placed.bottom = Math.max(...placed.pieces.map((pp) => pp.platform.y));
+        placed.seconds = climbSeconds(steps, MODEL_TYPICAL) + sectionSeconds(L, tpl, budget) - L.width / budget.walkSpeed;
+        along = along1;
+      } else placed.seconds = sectionSeconds(L, tpl, budget) + dx / budget.walkSpeed;
       secs += placed.seconds;
       sections.push(placed);
       plan.push({ template: tpl.id, mirrored, node: n.id, join, ...(Object.keys(L.versions).length ? { versions: L.versions } : {}), ...(salt ? { salt } : {}) });
@@ -966,27 +1141,63 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (must.some((r) => r.section === tpl.id)) placedReq.add(tpl.id);
       if (tpl.teaches) taught.add(tpl.teaches);
       const exitP = pieceOf(L.exit.piece);
-      cur = { x: ox + L.exit.x, y: oy + L.exit.y, kind: L.exit.kind, piece: exitP };
-      if (n.phase === 'start' || n.phase === 'goal') break;
+      cur = { x: placed.exit.x, y: placed.exit.y, kind: L.exit.kind, piece: exitP };
+      if (tpl.turn) {
+        dir = dir > 0 ? -1 : 1;
+        row++;
+      }
+      if ((n.phase === 'start' || n.phase === 'goal') && !tpl.turn) break;
     }
   }
   for (const r of must) if (!placedReq.has(r.section)) throw new Error(`gen2 ${budget.id}: the required section ${r.section} fits no node of the stage${r.phase ? ` (${r.phase})` : ''}`);
-  // the shrine's bank (a walk on from the last section)
-  const shrine = mk(cur.x, cur.y, SHRINE_BANK, 'bank', 0);
-  const exitX = R(shrine.x + 300);
+  // the shrine's bank (a walk on from the last section; an ascent's the way the top row heads)
+  const shrine = mk(up && dir < 0 ? cur.x - (up ? ASCENT.shrine : SHRINE_BANK) : cur.x, cur.y, up ? ASCENT.shrine : SHRINE_BANK, 'bank', 0);
+  if (up) rowOf.set(shrine, row);
+  const exitX = R(up && dir < 0 ? shrine.x + shrine.width - 300 : shrine.x + 300);
+  const exit = { x: exitX, y: shrine.y, piece: shrine };
+  const spawn = { x: SPAWN_X, y: runway.y, piece: runway };
+  if (!up) {
+    return {
+      sections,
+      plan,
+      platforms,
+      gaps,
+      spawn,
+      exit,
+      vines,
+      zones,
+      width: R(shrine.x + shrine.width + 40),
+      bottom: baseline,
+      nextId: pid,
+      ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
+    };
+  }
+  // an ascent: a catch under every gap (ascent.ts), then the climb moved to the bottom of a level just tall enough
+  const catches = catchGaps(toCatch, platforms, vines, mk, budget);
+  const gapFalls = gaps.map((g) => dropUnder(g.x0 + 10, g.x1 - 10, g.y, platforms));
+  const minX = Math.min(...platforms.map((p) => p.x), ...vines.map((v) => v.x - 40));
+  const maxX = Math.max(...platforms.map((p) => p.x + p.width), ...vines.map((v) => v.x + 40));
+  const minY = Math.min(...platforms.map((p) => p.y), ...vines.map((v) => v.topY));
+  shiftAll(R(ASCENT.side - minX), R(ASCENT.top - minY), { platforms, vines, zones, gaps, sections, points: [spawn, exit] });
+  spawn.x = runway.x + SPAWN_X;
+  const bottom = Math.max(...platforms.map((p) => p.y)) + M.ground.bankH;
   return {
     sections,
     plan,
     platforms,
-    gaps,
-    spawn: { x: SPAWN_X, y: runway.y, piece: runway },
-    exit: { x: exitX, y: shrine.y, piece: shrine },
+    gaps: gaps.map((g, k) => (gapFalls[k] > ASCENT.maxFall ? { ...g, deep: true } : g)),
+    spawn,
+    exit,
     vines,
     zones,
-    width: R(shrine.x + shrine.width + 40),
-    bottom: baseline,
+    width: R(maxX - minX + 2 * ASCENT.side),
+    bottom: R(bottom),
     nextId: pid,
     ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
+    flow: 'up',
+    along: alongOf(sections),
+    chain,
+    catches,
   };
 }
 
@@ -1109,6 +1320,14 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   };
   const tipsSaid = new Set<string>();
+  // (progress along the route: x, or an ascent's climb: ascent.ts. What spacing, the opening seconds and the flags are measured in)
+  const up = laid.flow === 'up';
+  const along = laid.along ?? ((x: number) => x);
+  // (a line said at a spot: on an ascent only at that height, and on a row heading left as he comes to it from the right)
+  const lineAt = (x: number, piece: Platform, sec: PlacedSection | undefined, text: string): StageHint =>
+    up
+      ? { ...((sec?.dir ?? 1) > 0 ? { x } : { x: 0, beforeX: x }), text, pad: text, keys: text, aboveY: R(piece.y + 10), belowY: R(piece.y - 150) }
+      : { x, text, pad: text, keys: text };
   // (lessons from earlier stages need no tip here)
   for (const [m, st] of Object.entries(M.lessons ?? {})) if (stageOrder(st) < stageOrder(budget.id)) tipsSaid.add(m);
 
@@ -1117,13 +1336,20 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // top-up keep clear of it (the safe spots below), and a flag can always land
   let lastFlagT = 0;
   let t = 0;
+  const lastAlong = () => (checkpoints.length ? along(checkpoints.at(-1)!.x, checkpoints.at(-1)!.y) : along(laid.spawn.x, laid.spawn.y));
   const flagSpot = (s: PlacedSection): { x: number; piece: Platform } | null => {
-    const lastX = checkpoints.at(-1)?.x ?? SPAWN_X;
-    const ok = (x: number, piece: Platform | undefined): piece is Platform => !!piece && x - piece.x > 30 && piece.x + piece.width - x > 30 && x > lastX + 600 && !flagInZone(laid.zones, x, piece.y);
+    const lastA = lastAlong();
+    const lastY = checkpoints.at(-1)?.y ?? laid.spawn.y;
+    // (an ascent's flag stands higher than the last: the engine takes a flag as further on only when it is higher, engine.ts)
+    const ok = (x: number, piece: Platform | undefined): piece is Platform =>
+      !!piece && x - piece.x > 30 && piece.x + piece.width - x > 30 && along(x, piece.y) > lastA + 600 && !flagInZone(laid.zones, x, piece.y) && (!up || piece.y < lastY - 40);
     const flagSock = s.sockets.find((k) => k.socket.role === 'flag');
     if (flagSock && ok(flagSock.x, flagSock.piece)) return { x: flagSock.x, piece: flagSock.piece };
-    const exitPiece = s.pieces.find((p) => p.platform.y === s.exit.y && p.platform.x + p.platform.width >= s.exit.x - 1)?.platform;
-    if (ok(s.exit.x - 80, exitPiece)) return { x: s.exit.x - 80, piece: exitPiece };
+    // (near its exit: on an ascent's row heading left, the exit is the piece's left end)
+    const back = (s.dir ?? 1) < 0 && !s.turn;
+    const exitPiece = s.pieces.find((p) => p.platform.y === s.exit.y && (back ? Math.abs(p.platform.x - s.exit.x) <= 1 : p.platform.x + p.platform.width >= s.exit.x - 1))?.platform;
+    const ex = back ? s.exit.x + 80 : s.exit.x - 80;
+    if (ok(ex, exitPiece)) return { x: ex, piece: exitPiece };
     // (else the rightmost wide main piece of the section, near its end, outside a room)
     if (s.room) return null;
     for (const p of [...s.pieces].filter((q) => q.main && q.platform.width >= FLAG_SPAN.pad).sort((a, b) => b.platform.x - a.platform.x)) {
@@ -1135,9 +1361,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   laid.sections.forEach((s, i) => {
     t += s.seconds;
     if (s.phase === 'goal') return;
-    const lastX = checkpoints.at(-1)?.x ?? SPAWN_X;
-    const nextEnd = laid.sections[i + 1] && laid.sections[i + 1].phase !== 'goal' ? laid.sections[i + 1].exit.x : laid.exit.x;
-    const due = t - lastFlagT > 35 || nextEnd - lastX > FLAG_SPAN.max - FLAG_SPAN.slack;
+    const lastA = lastAlong();
+    const next = laid.sections[i + 1] && laid.sections[i + 1].phase !== 'goal' ? laid.sections[i + 1].exit : laid.exit;
+    const due = t - lastFlagT > 35 || along(next.x, next.y) - lastA > FLAG_SPAN.max - FLAG_SPAN.slack;
     if (s.phase !== 'rest' && !due) return;
     const at = flagSpot(s);
     if (!at) return;
@@ -1148,6 +1374,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // (where an animal may walk on each piece: clear of the jumps on and off it)
   const clear = jumpClearance(laid.platforms);
   const openX = laid.spawn.x + OPEN_SECONDS * budget.walkSpeed;
+  const openA = along(laid.spawn.x, laid.spawn.y) + OPEN_SECONDS * budget.walkSpeed;
 
   // props and pairs
   const propBag = new Map<string, ShuffleBag<string>>();
@@ -1167,9 +1394,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     fills.push(f);
     if (!what) return;
     const def = M.props.find((p) => p.id === what)!;
-    props.push({ x: k.x, kind: what, fill: f });
+    const ka = up ? along(k.x, k.y) : k.x;
+    props.push({ x: ka, kind: what, fill: f });
     kit.emit?.[what]?.(f, def, sink);
-    if (def.beat) sec.beats.push({ x: k.x, letter: 'S' });
+    if (def.beat) sec.beats.push({ x: ka, letter: 'S' });
   };
 
   const propThreat = (id: string) => M.props.find((p) => p.id === id)?.threat ?? 0;
@@ -1194,7 +1422,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (m && !tipsSaid.has(m)) {
           tipsSaid.add(m);
           const text = M.tips?.[m] ?? m;
-          hints.push({ x: k.x, text, pad: text, keys: text });
+          hints.push(lineAt(k.x, k.piece, sec, text));
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y });
         }
       } else if (s.role === 'receptor') {
@@ -1226,7 +1454,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           const kept = normalFoes.get(`${sec.uid}/${s.id}`);
           c = kept === undefined ? undefined : M.creatures.find((cr) => cr.id === kept);
         }
-        if (!want || !c || (dropOnEasy && !c.easyFirst) || k.x < openX) continue;
+        if (!want || !c || (dropOnEasy && !c.easyFirst) || along(k.x, k.y) < openA) continue;
         const pf = patchFor(k.x, k.piece, safe, c.minGround, clear.get(k.piece));
         if (!pf) continue;
         threat -= c.threat;
@@ -1234,7 +1462,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (foeInZone(sink.zones, pf.at, k.piece.y - (c.footY ?? c.h / 2))) continue;
         const e = makeEnemy(c, pf.at, k.piece.y, pf.patch, sink.nextEnemyId(), easy && s.easy === 'soften');
         const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: pf.at, y: k.y };
-        foes.push({ x: pf.at, kind: c.id, e, fill, sec });
+        foes.push({ x: up ? along(pf.at, k.piece.y) : pf.at, kind: c.id, e, fill, sec });
       } else if (s.role === 'pickup') {
         if (!want) continue;
         const n = s.count ?? 1;
@@ -1266,8 +1494,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     minGapAny: ANY_APART,
     maxGap: budget.quiet * budget.walkSpeed,
     fixed: [...props, ...beats],
-    start: laid.spawn.x + OPEN_SECONDS * budget.walkSpeed,
-    end: laid.exit.x - 200,
+    start: openA,
+    end: along(laid.exit.x, laid.exit.y) - 200,
   });
   const kept = new Set(spaced.placed);
   // Easy's enemy budget (Part 1 §3: 60%): of each kind the first stays (the stage still shows what it teaches), then 60% of the rest,
@@ -1293,7 +1521,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const topped = topUpFoes(laid, budget, kit, seed, sink, safe, openX, [...foes.filter((f) => kept.has(f)), ...props]);
   fills.push(...topped);
   // (rests are allowed to be quiet: only barren stretches outside them are reported, and a top-up animal fills the stretch it is in)
-  const restSpans = laid.sections.filter((s) => s.phase === 'rest' || s.phase === 'start' || s.phase === 'goal').map((s) => [s.x0, s.x1] as const);
+  const restSpans = laid.sections.filter((s) => s.phase === 'rest' || s.phase === 'start' || s.phase === 'goal').map((s) => (up ? [s.along0 ?? s.x0, s.along1 ?? s.x1] : [s.x0, s.x1]) as readonly [number, number]);
   const barren = spaced.unfilled
     .filter((g) => !restSpans.some(([a, b]) => g.from >= a - 60 && g.to <= b + 60))
     .filter((g) => !topped.some((f) => f.x > g.from && f.x < g.to))
@@ -1324,9 +1552,28 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // only (the teaching rule); Easy at every water gap once WATER_WARN.every seconds of walking passed since the last warning.
   // (a deep chasm, a world's `void` falls on Normal, costs a life the same way: it shows the world's dirty water far below as its line,
   // painted, and is warned the same way)
+  // (an ascent's gap is deadly only where nothing catches him within ASCENT.maxFall under it: `deep`)
   // (a soft gap in a deadly world, World 8's dark and World 9's crust chasms, lands soft: no warning, no sign)
-  const wet = laid.gaps.filter((g) => g.water || ((budget.pit === 'water' || budget.pit === 'void') && !g.soft));
-  if (wet.length) {
+  const wet = laid.gaps.filter((g) => (g.water || ((budget.pit === 'water' || budget.pit === 'void') && !g.soft)) && (!up || g.deep));
+  if (wet.length && up) {
+    // (an ascent: the line at the first one, at its near lip's height, as he comes to it; Easy again after WATER_WARN.every s of climb)
+    const text = M.tips?.water ?? WATER_LINE;
+    let last = -Infinity;
+    const aOf = (g: (typeof wet)[number]) => along((g.x0 + g.x1) / 2, g.y);
+    for (const g of [...wet].sort((a, b) => aOf(a) - aOf(b))) {
+      const a = aOf(g);
+      if (last > -Infinity && (!easy || a - last < WATER_WARN.every * budget.walkSpeed)) continue;
+      const sec = laid.sections.find((s) => s.uid === g.section);
+      const d = sec?.dir ?? 1;
+      const lipX = d > 0 ? g.x0 : g.x1;
+      const lip = laid.platforms.filter((q) => q.x <= lipX + 2 && q.x + q.width >= lipX - 2 && q.y >= g.y - 1).sort((p, q) => p.y - q.y)[0];
+      if (!lip) continue;
+      const x = R(d > 0 ? Math.max(lip.x, lipX - WATER_WARN.lead) : Math.min(lip.x + lip.width, lipX + WATER_WARN.lead));
+      hints.push(lineAt(x, lip, sec, text));
+      fills.push({ section: g.section ?? '', socket: 'water', role: 'tip', what: 'water', x, y: R(g.y) });
+      last = a;
+    }
+  } else if (wet.length) {
     const every = WATER_WARN.every * budget.walkSpeed;
     const text = M.tips?.water ?? WATER_LINE;
     const signs = (sink.extras.waterWarnings ??= []) as Array<{ x: number; y: number }>;
@@ -1588,7 +1835,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const platforms = laid.platforms;
   if (rooms.length) addKitPlatforms(platforms, { rooms });
   sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
-  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(laid.bottom + 120)) };
+  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: laid.flow === 'up' ? R(laid.bottom + 120) : Math.max(req.config.levelHeight, R(laid.bottom + 120)) };
   const meta: Gen2Meta = {
     seed,
     plan: laid.plan,
@@ -1603,7 +1850,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     modelled: { typical: 0, fast: 0 },
     errors: [],
     barren: filled.barren,
-    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })),
+    // (an ascent's gap ends in a catch or the row below, soft, unless nothing is within ASCENT.maxFall under it: `deep`)
+    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (laid.flow === 'up' && !g.deep ? 'soft' : g.water ? 'water' : g.soft ? 'soft' : budget.pit) as PitKind })),
   };
   const stage: Gen2Stage = {
     config,
@@ -1623,7 +1871,14 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
-    meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },
+    meta: {
+      attempt: seed,
+      chunks: laid.sections.map((s) => s.template),
+      width: laid.width,
+      pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })),
+      // (an ascent's steps, for the time model: stageTime.ts modelAscent)
+      ...(laid.chain ? { ascentChain: laid.chain } : {}),
+    },
     gen2: meta,
   };
   return { stage, laid };
