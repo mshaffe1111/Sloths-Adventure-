@@ -156,6 +156,7 @@ import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, se
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
+import { releaseDecorPics } from './envKit.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
@@ -1147,8 +1148,9 @@ export class GameEngine {
     clearTimeout(this.screenTimer);
     recorder.stage(this, false);
     sound.setLowHealth(false);
-    // (the painted ground squares go with the stage)
+    // (the painted ground squares and ground-plant pictures go with the stage)
     releaseGroundChunks();
+    releaseDecorPics();
   }
 
   private loop = (now: number) => {
