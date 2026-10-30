@@ -104,10 +104,39 @@ export const FINALE_KEEPSAKES = ['w4_keepsake', 'w1_keepsake', 'w10_keepsake'] a
 /** the keepsakes that open from the satchel instead (the seeds are planted on the hill) */
 export const SATCHEL_KEEPSAKES = ['w2_keepsake', 'w3_keepsake', 'w5_keepsake', 'w6_keepsake', 'w7_keepsake', 'w9_keepsake'] as const;
 
-/** the short scene after the end: the stopwatch, if the player found it */
-export function endTagPanels(found: string[] = []): StoryPanel[] {
-  if (!found.includes('w9_keepsake')) return [];
-  return chapter({ name: 'AFTER THE END · THE STOPWATCH', w: 2, m: 'day', cue: 'tender', i: 0.4, base: { particles: 'sparkles' } }, KEEPSAKE_LINES.w9_keepsake!);
+const TB = say('Thornbark');
+
+/**
+ * After the end (Matt, 2026-10-30: the sequel hint, A + B, after the stopwatch so the ending itself stays whole and happy):
+ *   the stopwatch, if it was found;
+ *   B, only if Thornbark was freed: the thorns were never Iron-Claw's, and one comes up by Pokey's branch;
+ *   A, always: the storm comes back for Pokey, and this time Meeca goes. Dot's one short line, on purpose: the one time she doesn't run on.
+ * (The storm-night pictures are the old nest's plates and the story cels until Matt's Gemini cards come: the scarf on the thorn, the thorn
+ * coming up, and Meeca holding the scarf are the three still waiting on their art.)
+ */
+export function endTagPanels(found: string[] = [], thornHeart = false): StoryPanel[] {
+  const out: StoryPanel[] = [];
+  if (found.includes('w9_keepsake')) {
+    out.push(...chapter({ name: 'AFTER THE END · THE STOPWATCH', w: 2, m: 'day', cue: 'tender', i: 0.4, base: { particles: 'sparkles' } }, KEEPSAKE_LINES.w9_keepsake!));
+  }
+  if (thornHeart) {
+    out.push(...chapter({ name: 'AFTER THE END · THE HOLLOW', w: 7, m: 'night', cue: 'dread', i: 0.3, base: { particles: 'none' } }, [
+      N('Far away, in his hollow, Thornbark\'s roots were trembling.', 'T@.6', { p: { zoom: 1.3, focusX: 0.6, fx: [{ kind: 'shake', at: 0.4, dur: 1.2, amount: 2 }] } }),
+      TB('The thorns did not come from Iron-Claw. They came from the east, with the storm. And they are growing back.', 'T@.6', { p: { zoom: 1.5, focusX: 0.6 } }),
+      N('By Pokey\'s branch, in the dark, a single black thorn pushed up out of the bark.', '', { m: 'storm', p: { plate: 'nest-night', zoom: 1.35, focusX: 0.5, particles: 'rain' } }),
+    ]));
+  }
+  out.push(...chapter({ name: 'AFTER THE END · MONTHS LATER', w: 1, m: 'storm', cue: 'dread', i: 0.35, base: { particles: 'rain' } }, [
+    N('Months later, the storm came back from the east. It came at night.', '', { p: { plate: 'nest-storm', zoom: 1.1 } }),
+    N('Pokey was asleep on his branch. The end of the scarf hung down off it, most of the way to the ground.', 'P:sleep@.5', { p: { plate: 'nest-night', zoom: 1.3, focusX: 0.5 } }),
+    N('In the morning the branch was empty.', '', { m: 'day', cue: 'sorrow', i: 0.3, p: { plate: 'nest-morning', particles: 'none', zoom: 1.2 } }),
+    N('The scarf was still there. It hung from a black thorn that had not been there the night before.', '', { p: { plate: 'nest-morning', particles: 'none', zoom: 1.6, focusX: 0.55 } }),
+    M('Dot. How fast can you fly?', 'MS:stand_wait@.44*.85 D@.62^.42', { cue: 'tender', i: 0.4, p: { plate: 'nest-morning', particles: 'none' } }),
+    D('Faster than him.', 'MS:stand_wait@.44*.85 D@.6^.4', { p: { plate: 'nest-morning', particles: 'none' } }),
+    M('Good. This time, I\'m the one coming.', 'MS:hips@.44*.85 D@.6^.4', { cue: 'finale', i: 0.6, sting: 'bloom', p: { plate: 'nest-morning', particles: 'none', zoom: 1.4, focusX: 0.48 } }),
+    N('To be continued.', '', { m: 'night', p: { plate: 'nest-morning', particles: 'none', zoom: 1 } }),
+  ]));
+  return out;
 }
 
 export function finalePanels(found: string[] = []): StoryPanel[] {

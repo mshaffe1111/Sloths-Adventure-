@@ -180,9 +180,14 @@ test('the ending shows three keepsakes, plants the seeds, and keeps every other 
   const at = (s: string) => all.findIndex((p) => p.text.includes(s));
   assert.ok(at('half a ribbon') >= 0 && at('half a ribbon') < at('a key in a fern') && at('a key in a fern') < at('Somebody is coming home'));
   assert.ok(!all.some((p) => p.text.includes('Is that my rattle') || p.text.includes('I let you.')), 'the satchel keepsakes stay out of the finale');
-  // the stopwatch plays after the end, only when it was found
-  assert.deepEqual(endTagPanels([]), []);
-  assert.ok(endTagPanels(['w9_keepsake']).some((p) => p.text === 'I let you.'));
+  // after the end: the stopwatch only when it was found, Thornbark's part only when he was freed, then months later, always, in that order
+  const chapters = (ps: StoryPanel[]) => [...new Set(ps.map((p) => p.chapter))];
+  assert.deepEqual(chapters(endTagPanels([])), ['AFTER THE END · MONTHS LATER']);
+  assert.ok(!endTagPanels([]).some((p) => p.text === 'I let you.' || p.speaker === 'Thornbark'));
+  assert.deepEqual(chapters(endTagPanels(['w9_keepsake'], true)), ['AFTER THE END · THE STOPWATCH', 'AFTER THE END · THE HOLLOW', 'AFTER THE END · MONTHS LATER']);
+  const tag = endTagPanels([]);
+  assert.equal(tag[tag.length - 1].text, 'To be continued.', 'it ends on the card');
+  assert.equal(tag.find((p) => p.speaker === 'Dot')?.text, 'Faster than him.', "Dot's one short line, on purpose");
   const full = finalePanels(FINDS.map((f) => f.id));
   assert.ok(full.length > base + 12, 'finding everything lengthens the ending');
   assert.ok(full.some((p) => p.text.includes('Every last thing of hers')), 'and earns Grandma\'s last word');

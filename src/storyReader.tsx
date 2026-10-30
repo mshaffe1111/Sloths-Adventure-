@@ -36,7 +36,7 @@ function build(): Piece[] {
   const everything = [...FINDS.map((f) => f.id), BONUS_FIND.id];
   out.push({ id: 'ending', group: 'The ending', title: 'The ending, no finds collected', panels: ENDING_PANELS });
   out.push({ id: 'ending-full', group: 'The ending', title: 'The ending, every find collected', panels: finalePanels(everything) });
-  out.push({ id: 'ending-tag', group: 'The ending', title: 'After the end: the stopwatch (if found)', panels: endTagPanels(everything) });
+  out.push({ id: 'ending-tag', group: 'The ending', title: 'After the end: the stopwatch (if found), Thornbark (if freed), months later', panels: endTagPanels(everything, true) });
   return out;
 }
 

@@ -1226,14 +1226,14 @@ export default function App() {
         <StoryPlayer
           panels={finalePanels(foundIds)}
           finishLabel="The End" finishIcon="heart"
-          onFinish={() => setScreen(endTagPanels(foundIds).length ? 'ending_tag' : 'story_ending')}
+          onFinish={() => setScreen(endTagPanels(foundIds, thornHeart).length ? 'ending_tag' : 'story_ending')}
         />
       )}
 
-      {/* After the end: the stopwatch, if it was found */}
+      {/* After the end: the stopwatch, if it was found, then the sequel hint (Thornbark's part only if he was freed) */}
       {screen === 'ending_tag' && (
         <StoryPlayer
-          panels={endTagPanels(foundIds)}
+          panels={endTagPanels(foundIds, thornHeart)}
           finishLabel="The End" finishIcon="heart"
           onFinish={() => setScreen('story_ending')}
         />
