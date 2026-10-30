@@ -7,6 +7,7 @@
  * at the ends) or a looping clock; while the sheet loads they draw their old frames, so nothing ever disappears.
  */
 import { trackAtlas } from './atlasLoader.ts';
+import { canvasLost } from './canvasLost.ts';
 
 export interface AnimFrame {
   x: number;
@@ -43,6 +44,23 @@ export function warmCreatureAnims(names: Iterable<string>) {
   for (const n of names) ALL.get(n)?.ready();
 }
 
+/** each sheet's settle: a smaller bake once its draws have shown the size it is really drawn at (makeCreatureAnim) */
+const settlers = new Set<() => void>();
+/**
+ * While a stage loads (stageReady.ts), never during play: each clip sheet shrinks its bake to the size its draws so far have needed
+ * (its first bake, at half size as it arrived, is the guess; a draw that needs more bakes it bigger at once, as before).
+ */
+export function settleCreatureBakes() {
+  for (const f of settlers) f();
+}
+
+/** whether every one of these creatures that has clips has its sheet loaded and baked (asking starts the load) */
+export function creatureAnimsReady(names: Iterable<string>): boolean {
+  let all = true;
+  for (const n of names) if (ALL.has(n) && !ALL.get(n)!.ready()) all = false;
+  return all;
+}
+
 /** a creature's clip sheet address, by its name (undefined for a creature with no clips) */
 export const creatureAnimUrl = (name: string): string | undefined => URLS.get(name);
 const URLS = new Map<string, string>();
@@ -53,7 +71,7 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
   // 20 MB clip sheet shrunk 2 to 5 times with smoothing 'high' needed mipmaps over the whole texture, rebuilt each time Chrome dropped
   // and re-uploaded it: the snake and eagle stretches stalled 100-170 ms at a time on a Pixel 11, at every picture quality (QA and
   // Duet, 2026-10-30). So it is baked once, shrunk to the largest size it is actually drawn at (in eighths, a little over), and
-  // baked again only if a later draw needs it bigger; a few seconds in it settles on the size seen so far.
+  // baked again only if a later draw needs it bigger; it shrinks to the size seen so far only while the next stage loads (settleCreatureBakes).
   // (baked by drawing the sheet once into a plain canvas, which works in every browser: with createImageBitmap's own resize the creatures
   // went missing on Matt's Pixel, 2026-10-30)
   let baked: HTMLCanvasElement | null = null;
@@ -103,6 +121,11 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
       () => { img = null; loaded = false; drop(); }
     );
   };
+  // (a bake smaller than the one held, once enough draws have shown it is all the screen needs: done while a stage loads, settleCreatureBakes,
+  // never in play, where redrawing a 13 to 20 MB sheet was a freeze of its own)
+  settlers.add(() => {
+    if (loaded && img && checks >= 120 && sizeFor(need) < bakedR) bake(sizeFor(need));
+  });
   const seqOf = (s: string) => seqs[s] ?? [];
   const anim: CreatureAnim = {
     ready() {
@@ -136,9 +159,10 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
         const n = s * Math.hypot(m.a, m.b);
         if (n > need) need = n;
         if (sizeFor(need) > bakedR) bake(sizeFor(need));
-        else if (checks === 120 && sizeFor(need) < bakedR) bake(sizeFor(need));
       }
       checks++;
+      // (a bake the phone took back draws nothing: drawn from the sheet until it is baked again)
+      if (baked && canvasLost(baked, 'creature clips')) drop();
       if (baked) {
         // (half a pixel in from the frame's edge when shrunk, so a neighbour frame never bleeds in)
         const r = bakedR;

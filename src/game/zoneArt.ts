@@ -671,10 +671,12 @@ function drawTide(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
 
 /** cracks on every ruin tile, and dust and a shudder on the ones that have started to go */
 export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly Platform[], cam: View, t: number) {
-  const painted = crumbleArtReady();
+  // (asked for only once a crumbling tile is on screen: asked every frame, every stage loaded the sheet, and froze as it arrived mid-run)
+  let painted: boolean | null = null;
   for (const p of plats) {
     if (p.crumbleAfter === undefined) continue;
     if (p.x + p.width < cam.x - 40 || p.x > cam.x + cam.w + 40) continue;
+    painted ??= crumbleArtReady();
     // (a tile just broken: its painted pieces fall, crumbleArt.ts; the painted slab carries its own cracks, so only the dust is drawn here)
     if (p.broken) {
       if (painted) drawCrumbleTile(ctx, p, t);

@@ -1415,21 +1415,64 @@ export function drawPennant(ctx: CanvasRenderingContext2D, x: number, ground: nu
 
 /** the golden afternoon (5-1 to 5-3), the dusk and the misty violet twilight: a wash over the whole view, never night */
 export function drawW5Light(ctx: CanvasRenderingContext2D, vw: number, vh: number, mood: 'gold' | 'dusk' | 'twilight', t: number) {
+  const L = w5LightFor(ctx, vw, vh, mood);
   ctx.save();
-  const g = ctx.createLinearGradient(0, 0, vw * 0.4, vh);
-  if (mood === 'gold') {
+  if (L.sun) {
     // the low sun from the upper left: a warm glow screened over the view (it lightens and warms, never muddies the lilac)
+    ctx.globalCompositeOperation = 'screen';
+    ctx.fillStyle = L.sun;
+    ctx.fillRect(0, 0, vw, vh);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  ctx.fillStyle = L.wash;
+  ctx.fillRect(0, 0, vw, vh);
+  if (L.beam) {
+    // long, soft sunbeams slanting down through the canopy (one gradient, laid at each beam by a shift at the fill)
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = L.beam;
+    for (let i = 0; i < 3; i++) {
+      const bx = ((i * 0.37 + 0.12 + Math.sin(t * 0.05 + i) * 0.02) % 1) * vw;
+      ctx.beginPath();
+      ctx.moveTo(bx - 30, 0);
+      ctx.lineTo(bx + 40, 0);
+      ctx.lineTo(bx + vh * 0.35 + 90, vh);
+      ctx.lineTo(bx + vh * 0.35 - 20, vh);
+      ctx.closePath();
+      ctx.translate(bx, 0);
+      ctx.fill();
+      ctx.translate(-bx, 0);
+    }
+  }
+  ctx.restore();
+}
+
+/**
+ * drawW5Light's gradients, kept for the view's size and the mood (PERFORMANCE-RULES §2.3: it made 2-5 a frame); the beam's is made in
+ * its own place and shifted to each beam, so the slow drift of the beams makes none.
+ */
+const w5Light = { vw: -1, vh: -1, mood: '', sun: null as CanvasGradient | null, wash: null as unknown as CanvasGradient, beam: null as CanvasGradient | null };
+function w5LightFor(ctx: CanvasRenderingContext2D, vw: number, vh: number, mood: 'gold' | 'dusk' | 'twilight') {
+  const L = w5Light;
+  if (L.vw === vw && L.vh === vh && L.mood === mood) return L;
+  L.vw = vw;
+  L.vh = vh;
+  L.mood = mood;
+  const g = ctx.createLinearGradient(0, 0, vw * 0.4, vh);
+  L.sun = null;
+  L.beam = null;
+  if (mood === 'gold') {
     const sun = ctx.createRadialGradient(vw * 0.1, -vh * 0.1, 0, vw * 0.1, -vh * 0.1, Math.max(vw, vh) * 1.1);
     sun.addColorStop(0, 'rgba(255, 206, 110, 0.5)');
     sun.addColorStop(0.5, 'rgba(255, 190, 110, 0.2)');
     sun.addColorStop(1, 'rgba(255, 180, 120, 0.06)');
-    ctx.globalCompositeOperation = 'screen';
-    ctx.fillStyle = sun;
-    ctx.fillRect(0, 0, vw, vh);
-    ctx.globalCompositeOperation = 'source-over';
+    L.sun = sun;
     g.addColorStop(0, 'rgba(255, 214, 128, 0.1)');
     g.addColorStop(0.55, 'rgba(255, 190, 120, 0.04)');
     g.addColorStop(1, 'rgba(255, 170, 150, 0.02)');
+    const beam = ctx.createLinearGradient(0, 0, vh * 0.35, vh);
+    beam.addColorStop(0, 'rgba(255, 226, 150, 0.12)');
+    beam.addColorStop(1, 'rgba(255, 226, 150, 0)');
+    L.beam = beam;
   } else if (mood === 'dusk') {
     g.addColorStop(0, 'rgba(255, 170, 120, 0.2)');
     g.addColorStop(1, 'rgba(160, 110, 170, 0.14)');
@@ -1437,27 +1480,8 @@ export function drawW5Light(ctx: CanvasRenderingContext2D, vw: number, vh: numbe
     g.addColorStop(0, 'rgba(170, 140, 220, 0.2)');
     g.addColorStop(1, 'rgba(120, 100, 180, 0.18)');
   }
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, vw, vh);
-  if (mood === 'gold') {
-    // long, soft sunbeams slanting down through the canopy
-    ctx.globalCompositeOperation = 'lighter';
-    for (let i = 0; i < 3; i++) {
-      const bx = ((i * 0.37 + 0.12 + Math.sin(t * 0.05 + i) * 0.02) % 1) * vw;
-      const beam = ctx.createLinearGradient(bx, 0, bx + vh * 0.35, vh);
-      beam.addColorStop(0, 'rgba(255, 226, 150, 0.12)');
-      beam.addColorStop(1, 'rgba(255, 226, 150, 0)');
-      ctx.fillStyle = beam;
-      ctx.beginPath();
-      ctx.moveTo(bx - 30, 0);
-      ctx.lineTo(bx + 40, 0);
-      ctx.lineTo(bx + vh * 0.35 + 90, vh);
-      ctx.lineTo(bx + vh * 0.35 - 20, vh);
-      ctx.closePath();
-      ctx.fill();
-    }
-  }
-  ctx.restore();
+  L.wash = g;
+  return L;
 }
 
 /**
