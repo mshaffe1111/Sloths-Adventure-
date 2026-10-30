@@ -9,6 +9,7 @@ import { GUARD_FRAMES, GUARD_STAND_H } from './guardAtlasData.ts';
 import { GUARD, TURTLE } from './predatorAI.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { GUARD_ANIM, GUARD_ANIM_UP, GUARD_ANIM_URL, GUARD_SEQ } from './guardAnimData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 /** the moving guard (2026-10-25): his own poses brought to life with the motion model; the single poses draw while it loads */
 const ANIM = makeCreatureAnim(GUARD_ANIM_URL, GUARD_ANIM, GUARD_SEQ, GUARD_ANIM_UP);
@@ -78,7 +79,7 @@ export function drawGuardSprite(ctx: CanvasRenderingContext2D, e: Enemy, t: numb
     ctx.fill();
   }
   const clip = guardClip(e, t);
-  if (!(clip && ANIM.draw(ctx, clip, K))) ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
+  if (!(clip && ANIM.draw(ctx, clip, K))) drawSheet(ctx, img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
   ctx.restore();
   return true;
 }

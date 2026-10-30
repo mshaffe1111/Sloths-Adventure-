@@ -14,6 +14,7 @@ import { bodyFor } from './creatureRig.ts';
 import { HARPY_FRAMES } from './harpyAtlasData.ts';
 import { HARPY, harpyShockReach } from './predatorAI.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_HARPY = true;
 /** world units per atlas pixel: an upright harpy stands about 70 units tall */
@@ -161,7 +162,7 @@ export function drawHarpySprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   if (name === 'dizzy' && !enemy.defeated) ctx.rotate(Math.sin(time * 7 + enemy.id) * 0.05);
   // the warning crouch trembles, so it reads as "something is about to happen"
   if (st === 'crouch' && hk === 'none') ctx.translate(Math.sin(time * 70) * 1.4, 0);
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();
 
   if (name === 'dizzy' && !enemy.defeated) {

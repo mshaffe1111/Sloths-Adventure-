@@ -45,6 +45,7 @@
  */
 import { buildProtoStage, HAND_STAGES, W3_PUZZLES } from './protoStage.ts';
 import { stageAnims, stageExtras } from './sheetWarm.ts';
+import { builtStageKeys } from './stageManifest.ts';
 import { W2_PUZZLES, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID } from './extraStages.ts';
 import { SLIDE_STAGE_ID } from './w7Slide.ts';
@@ -103,8 +104,9 @@ export const CTEST_FOES: readonly string[] = ['boa', 'eagle', 'goldsnake', 'turt
  * (props2). Built as the engine will build it (13 to 44 ms; the last few kept). A mix holds one to three of the four creatures, so asking
  * for all four decoded about 175 MB a run for a phone to hold (QA 2026-10-29: an Android in Facebook's browser fell to 2 fps on a replay).
  */
-const mixDraws = new Map<number, { foes: string[]; props2: boolean }>();
-export function ctestMixDraws(seed: number): { foes: string[]; props2: boolean } {
+const mixDraws = new Map<number, { foes: string[]; props2: boolean; built: string[] }>();
+/** (and `built`: everything the mix's built stage can draw, stageManifest.ts, so the front page preloads all of it) */
+export function ctestMixDraws(seed: number): { foes: string[]; props2: boolean; built: string[] } {
   const hit = mixDraws.get(seed);
   if (hit) return hit;
   const cfg = {
@@ -112,7 +114,7 @@ export function ctestMixDraws(seed: number): { foes: string[]; props2: boolean }
     levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   } as LevelConfig;
   const st = buildProtoStage(cfg, seed, 'ctest');
-  const v = { foes: stageAnims(st).filter((n) => CTEST_FOES.includes(n)), props2: stageExtras(st).props2 };
+  const v = { foes: stageAnims(st).filter((n) => CTEST_FOES.includes(n)), props2: stageExtras(st).props2, built: builtStageKeys(st) };
   if (mixDraws.size > 4) mixDraws.delete(mixDraws.keys().next().value!);
   mixDraws.set(seed, v);
   return v;

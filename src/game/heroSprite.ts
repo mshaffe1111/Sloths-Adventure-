@@ -22,6 +22,7 @@ import { drawVineHang } from './heroVine.ts';
 import { drawSwimHero } from './heroSwim.ts';
 import { drawRopeHang } from './heroRope.ts';
 import { heroBlinkAlpha } from './heroBlink.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -119,7 +120,7 @@ export function heroFace(ctx: CanvasRenderingContext2D, name: string, x: number,
   const st = stdStill(name);
   if (st) {
     ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(stdSheet(st.img), st.f.x, st.f.y, st.f.w, st.f.h, x, y, size, size);
+    drawSheet(ctx, stdSheet(st.img), st.f.x, st.f.y, st.f.w, st.f.h, x, y, size, size);
     return true;
   }
   const f = HERO_FRAMES[name];
@@ -147,7 +148,7 @@ export function heroStill(ctx: CanvasRenderingContext2D, name: string, shadow = 
   }
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(st ? stdSheet(st.img) : sheet() ?? atlas!, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
+  drawSheet(ctx, st ? stdSheet(st.img) : sheet() ?? atlas!, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
   return true;
 }
 
@@ -372,7 +373,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   ctx.imageSmoothingQuality = 'high';
   const dx = choice.centred ? -(f.w * fk) / 2 : -(choice.byHand && f.hx !== undefined ? f.hx : f.ax) * fk;
   const dy = choice.centred ? -pivot - (f.h * fk) / 2 : -f.ay * fk + choice.bob;
-  ctx.drawImage(src, f.x, f.y, f.w, f.h, dx, dy, f.w * fk, f.h * fk);
+  drawSheet(ctx, src, f.x, f.y, f.w, f.h, dx, dy, f.w * fk, f.h * fk);
   ctx.restore();
   return true;
 }
@@ -443,7 +444,7 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
     const rim = rimFor(`${ch.name}|${coat}`, sheetImg, f, STD_RIM_R);
     if (rim) ctx.drawImage(rim.img, dx - rim.pad * k, dy - rim.pad * k, rim.img.width * k, rim.img.height * k);
   }
-  ctx.drawImage(sheetImg, f.x, f.y, f.w, f.h, dx, dy, f.w * k, f.h * k);
+  drawSheet(ctx, sheetImg, f.x, f.y, f.w, f.h, dx, dy, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }
