@@ -190,7 +190,7 @@ export class Conductor {
       document.addEventListener('visibilitychange', this.onVisibility);
       this.timer = setInterval(this.tick, TICK_MS);
     }
-    if (this.ctx.state !== 'running' && !this.muted && !document.hidden) {
+    if (this.ctx.state !== 'running' && !this.muted && !document.hidden && !this.appAway) {
       if (fromTap) this.wokeAt = performance.now();
       this.ctx.resume().then(this.announce, () => {});
     }
@@ -215,11 +215,24 @@ export class Conductor {
       .catch(() => {});
   }
 
+  private appAway = false;
   private onVisibility = () => {
     if (!this.ctx) return;
-    if (document.hidden) this.ctx.suspend().catch(() => {});
+    if (document.hidden || this.appAway) this.ctx.suspend().catch(() => {});
     else if (!this.muted) this.ctx.resume().catch(() => {});
   };
+  private ducked = false;
+  /** another app speaks for a moment over the Android app (directions, a notification): play on at a quarter of the volume */
+  setDucked(on: boolean) {
+    if (on === this.ducked) return;
+    this.ducked = on;
+    this.applyVolumes(false);
+  }
+  /** the Android app went to the background or a call came in (its 'pause' event, which can come without the page being hidden), or came back */
+  appHidden(away: boolean) {
+    this.appAway = away;
+    this.onVisibility();
+  }
 
   // ------------------------------------------------------------------------------------------- music
 
@@ -465,7 +478,7 @@ export class Conductor {
     const ctx = this.ctx;
     if (!ctx) return;
     if (m) setTimeout(() => this.muted && ctx.suspend().catch(() => {}), 350);
-    else if (!document.hidden) ctx.resume().catch(() => {});
+    else if (!document.hidden && !this.appAway) ctx.resume().catch(() => {});
   }
 
   setMusicVolume(v: number) {
@@ -489,7 +502,7 @@ export class Conductor {
       if (snap) p.setValueAtTime(v, t);
       else p.setTargetAtTime(v, t, 0.05);
     };
-    set(core.master.gain, this.muted ? 0 : 1);
+    set(core.master.gain, this.muted ? 0 : this.ducked ? 0.25 : 1);
     set(core.music.gain, MUSIC_LEVEL * this.musicVol);
     set(core.sfx.gain, 0.9 * this.sfxVol);
     set(core.amb.gain, (this.paused ? 0.18 : 0.6) * this.sfxVol);

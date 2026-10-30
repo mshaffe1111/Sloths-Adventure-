@@ -1,4 +1,6 @@
 import { buzz } from './haptics.ts';
+import { nativeApp } from './appShell.ts';
+import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
 import { SlowWatch } from './slowTip.ts';
 import { drawW7Chairs } from './w7ChairsArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
@@ -250,9 +252,9 @@ export interface GameEngineCallbacks {
   onCinematic?: (on: boolean) => void;
 }
 
-/** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
 /** a footstep sound on every this-many footfalls of his run frames (2026-10-30; until then one every 52 px, unsynced) */
 export const STEP_EVERY = 2;
+/** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
 export const STEP_FACE = { min: 30, max: 100 } as const;
 /**
  * World 5's step help (takeOff): a step this many px above his feet (one plain jump's climb: it rises about 108), with its face no more
@@ -1063,6 +1065,11 @@ export class GameEngine {
     this.lastRenderTime = this.lastTime;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     const cfg = this.currentStage.config;
+    // the Android app, after the phone cut the last run of this stage off: start at the flag it had reached (flagResume.ts). Not in the
+    // stages with their own runs (a slide, Dot's flight, a rising tide), which keep their own flags.
+    const back = !this.flagTried && nativeApp() && !this.slideRun && !this.dotRun && !this.tide ? flagFor(cfg.id) : null;
+    this.flagTried = true;
+    if (back) this.startAtFlag(back);
     if (coachWanted(cfg.id, cfg.secret)) {
       this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), markCoachDone);
       markCoachDone(); // once per device: leaving halfway does not bring it back
@@ -1138,6 +1145,8 @@ export class GameEngine {
   private graceMoves = -1;
 
   public stop() {
+    // the stage ended the normal way (cleared, restarted, left): nothing to come back to
+    clearFlag();
     // (the banner goes back to its usual place for whatever comes next)
     if (typeof document !== 'undefined') {
       delete document.documentElement.dataset.wayLow;
@@ -2241,7 +2250,8 @@ export class GameEngine {
       // World 5, by touch: jumping into a face carries him on into it until he is over its top, unless the thumb steers away. One thumb
       // steers to the face, lifts and flicks: the face stopped him dead, and with the thumb off the glass he rose past its top and came
       // straight back down beside it (QA v198: the same flick worked one try and not the next, by whether the thumb was still on).
-      if (wallSide !== 0 && this.stepHelp && this.touchHelp() !== 'off') {
+      // Always on for touch, whatever the Jump help setting: it fixes that misread, it is not an extra (Matt, 2026-10-30: the options start off)
+      if (wallSide !== 0 && this.stepHelp && this.input.source === 'gesture') {
         const steerNow = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
         if (steerNow !== -wallSide && !this.input.state.down) this.airDrive = { drive: wallSide as -1 | 1, lean: true };
       }
@@ -2411,7 +2421,11 @@ export class GameEngine {
           recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
           const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
-          if (further) this.checkpoint = { x: cp.x, y: cp.y };
+          if (further) {
+            this.checkpoint = { x: cp.x, y: cp.y };
+            // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
+            if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y);
+          }
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
           sound.playCheckpoint();
@@ -4870,6 +4884,22 @@ export class GameEngine {
     return true;
   }
 
+  private flagTried = false;
+  /** start the stage at a flag from a run the phone cut off: the flags up to it count as reached, and he appears there as after a fall */
+  private startAtFlag(at: { x: number; y: number }) {
+    const cps = this.currentStage.checkpoints ?? [];
+    const flag = cps.find((cp) => Math.abs(cp.x - at.x) < 2 && Math.abs(cp.y - at.y) < 2);
+    if (!flag) return; // the stage changed since (a new build): start at the beginning
+    const ascent = this.currentStage.config.objectiveType === 'ascent';
+    const descent = !!this.proto?.w4?.descent;
+    for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
+    this.checkpoint = { x: flag.x, y: flag.y };
+    this.respawnAtCheckpoint('pit');
+    const p = this.player;
+    this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
+    this.addFloatingText('Back at your flag', p.x, p.y - 74, '#fde68a', 1.6);
+  }
+
   private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {
     const p = this.player;
     // the rising rivers go back down: he comes back to water at its starting level
@@ -5676,17 +5706,16 @@ export class GameEngine {
     // a standing flick that leaned 35 degrees or more carries him that way at LEAN_SPEED of a run, Jump help or not (Matt, 2026-10-29,
     // polish report CT-27: it went straight up and down)
     const slant = this.input.source === 'gesture' && !second && steer === 0 ? inp.jumpSlant ?? 0 : 0;
-    if (help === 'off') {
-      this.airDrive = slant ? { drive: slant, lean: true } : newAirDrive();
-      if (slant) this.player.facing = slant;
-      return;
+    if (help === 'off') this.airDrive = newAirDrive();
+    else {
+      const kind = this.currentStage.config.objectiveType;
+      airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
     }
-    const kind = this.currentStage.config.objectiveType;
-    airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
     // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
     // to flick, so he jumped straight up beside the step and came down where he began: in the soft pits' dips QA's one-thumb player
     // stayed stuck, and only an up-and-right flick now and then got out (v198, 2026-10-26). A one-step ledge takes one ordinary jump.
-    if (!second && steer === 0 && this.stepHelp) {
+    // (every touch jump, Jump help or not: it fixes that misread, it is not an extra; Matt, 2026-10-30: the options start off)
+    if (!second && steer === 0 && this.stepHelp && this.input.source === 'gesture') {
       const lean = inp.jumpLean ?? 0;
       const face: -1 | 1 = this.player.facing >= 0 ? 1 : -1;
       // (the way the flick leaned first; then, with no step that way, the way he faces. A thumb's flick leans 20 to 40 degrees either

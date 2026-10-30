@@ -7,6 +7,7 @@
  * screen at all (only videos): there the game is full screen only when it is added to the Home Screen, and the button is hidden.
  */
 import { enterWideMode, leaveWideMode } from './wideMode.ts';
+import { nativeApp } from './appShell.ts';
 
 const KEY = 'sloth_fullscreen';
 const TIP_KEY = 'sloth_fs_tip';
@@ -47,6 +48,8 @@ export function fullscreenSupported(): boolean {
 
 /** launched from the Home Screen (or as an installed app): already without browser bars */
 export function launchedAsApp(): boolean {
+  // the Play Store app runs full screen by itself (MainActivity hides the bars), so it never offers the web full-screen switch
+  if (nativeApp()) return true;
   try {
     // (a page put in full screen by the button also matches display-mode: fullscreen, so that only counts when no element is full screen)
     return (

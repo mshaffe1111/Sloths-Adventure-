@@ -27,10 +27,13 @@ import { controlStyle, padSide, subscribeControls } from './controlPrefs.ts';
 import { BlinkWatch, ErrSeen, errLine, errWhere, RateLimiter } from './glitchWatch.ts';
 import { browserShort, envDetail } from './deviceInfo.ts';
 
-export const COLLECTOR =
-  'https://script.google.com/macros/s/AKfycbxS0Yk2y7S7Ket_n7VwIpk3aKFGKVueZHi5XXn8XhvuyMy7PxcTIwJ5wJu9iKg0HzGZ/exec';
+/** a store build (the Android app) carries no collector at all: the address and key fold away at build time (appShell.ts storeBuild) */
+const STORE = (import.meta as unknown as { env?: { VITE_STORE_BUILD?: string } }).env?.VITE_STORE_BUILD === '1';
+export const COLLECTOR = STORE
+  ? ''
+  : 'https://script.google.com/macros/s/AKfycbxS0Yk2y7S7Ket_n7VwIpk3aKFGKVueZHi5XXn8XhvuyMy7PxcTIwJ5wJu9iKg0HzGZ/exec';
 /** the collector ignores anything without this (it only stops stray traffic; it is not a secret) */
-const KEY = 'sct-57496e7010785ac1';
+const KEY = STORE ? '' : 'sct-57496e7010785ac1';
 /** a sheet cell holds 50,000 characters; the collector refuses more than 48,000 */
 const CELL = 47000;
 const FLUSH_MS = 20000;
@@ -80,6 +83,7 @@ export function qaBuild(): boolean {
  *  site included: the testers' link opens it there (Matt, 2026-10-29: "Only for that link. The full game should be unaffected"), and a
  *  player without that link never sees it */
 export function ctestEnabled(): boolean {
+  if (STORE) return false;
   try {
     return typeof location !== 'undefined' && (/(^#|[#&])ctest\b/.test(location.hash) || /[?&]ctest=1\b/.test(location.search));
   } catch {
@@ -397,6 +401,7 @@ class PlayRecorder {
   }
 
   private send(body: object, leaving: boolean) {
+    if (STORE || !COLLECTOR) return; // the store build never sends anything anywhere
     const text = JSON.stringify(body);
     if (leaving && navigator.sendBeacon) {
       try {

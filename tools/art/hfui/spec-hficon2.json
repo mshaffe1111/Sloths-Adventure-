@@ -1,0 +1,72 @@
+{
+ "note": "hficon2: the app icon, front-facing, 2026-10-30",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2d4d79c9cfdcd41a45cfbcf229a5bdf057ed6741/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "icon-green-2",
+   "start": "start-pokey-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same character: the same cute orange-brown three-toed sloth with a cream face, dark brown eye patches, small dark nose, rosy cheeks, the same painted cartoon style and colours. Make a mobile game app icon: only his head and the top of his shoulders, turned to face the viewer straight on, big friendly warm smile, eyes open and bright, filling most of the square, centred, on a solid flat bold leaf-green background, nothing else. Clean, simple, strong silhouette.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, watermark, border, frame, rounded corners, shadow, two sloths, body, legs, satchel strap"
+  },
+  {
+   "name": "icon-green-6",
+   "start": "start-pokey-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same character: the same cute orange-brown three-toed sloth with a cream face, dark brown eye patches, small dark nose, rosy cheeks, the same painted cartoon style and colours. Make a mobile game app icon: only his head and the top of his shoulders, turned to face the viewer straight on, big friendly warm smile, eyes open and bright, filling most of the square, centred, on a solid flat bold leaf-green background, nothing else. Clean, simple, strong silhouette.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, watermark, border, frame, rounded corners, shadow, two sloths, body, legs, satchel strap"
+  },
+  {
+   "name": "icon-gold-2",
+   "start": "start-pokey-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same character: the same cute orange-brown three-toed sloth with a cream face, dark brown eye patches, small dark nose, rosy cheeks, the same painted cartoon style and colours. Make a mobile game app icon: only his head and the top of his shoulders, turned to face the viewer straight on, big friendly warm smile, eyes open and bright, filling most of the square, centred, on a solid flat warm golden-yellow background, nothing else. Clean, simple, strong silhouette.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, watermark, border, frame, rounded corners, shadow, two sloths, body, legs, satchel strap"
+  },
+  {
+   "name": "icon-gold-6",
+   "start": "start-pokey-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same character: the same cute orange-brown three-toed sloth with a cream face, dark brown eye patches, small dark nose, rosy cheeks, the same painted cartoon style and colours. Make a mobile game app icon: only his head and the top of his shoulders, turned to face the viewer straight on, big friendly warm smile, eyes open and bright, filling most of the square, centred, on a solid flat warm golden-yellow background, nothing else. Clean, simple, strong silhouette.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, watermark, border, frame, rounded corners, shadow, two sloths, body, legs, satchel strap"
+  },
+  {
+   "name": "icon-petal-2",
+   "start": "start-pokey-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same character: the same cute orange-brown three-toed sloth with a cream face, dark brown eye patches, small dark nose, rosy cheeks, the same painted cartoon style and colours. Make a mobile game app icon: only his head and the top of his shoulders, turned to face the viewer straight on, big friendly warm smile, eyes open and bright, a single small pink flower petal tucked behind one ear, filling most of the square, centred, on a solid flat bold leaf-green background, nothing else. Clean, simple, strong silhouette.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, watermark, border, frame, rounded corners, shadow, two sloths, body, legs, satchel strap"
+  },
+  {
+   "name": "icon-petal-6",
+   "start": "start-pokey-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same character: the same cute orange-brown three-toed sloth with a cream face, dark brown eye patches, small dark nose, rosy cheeks, the same painted cartoon style and colours. Make a mobile game app icon: only his head and the top of his shoulders, turned to face the viewer straight on, big friendly warm smile, eyes open and bright, a single small pink flower petal tucked behind one ear, filling most of the square, centred, on a solid flat bold leaf-green background, nothing else. Clean, simple, strong silhouette.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, letters, watermark, border, frame, rounded corners, shadow, two sloths, body, legs, satchel strap"
+  }
+ ]
+}

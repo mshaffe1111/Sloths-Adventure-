@@ -2,7 +2,7 @@ import { chromium } from '/opt/node-tools/node_modules/playwright/index.mjs';
 import fs from 'fs';
 const out = '/tmp/claude-0/kit3/wired'; fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
-const SIZES = [['up', 390, 844], ['side', 844, 390], ['small', 360, 640], ['se', 320, 568], ['phoneside', 640, 360], ['fold', 673, 841]];
+const SIZES = [['up', 390, 844], ['side', 844, 390], ['small', 360, 640], ['se', 320, 568], ['phoneside', 640, 360], ['fold', 673, 841], ['foldside', 841, 673], ['tab', 1280, 800], ['tabup', 800, 1280]];
 for (const [tag, w, h] of SIZES) {
   const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, reducedMotion: 'reduce' });
   await p.addInitScript(() => localStorage.setItem('sloth_lvl_1-1', JSON.stringify({ completed: true, stars: 2, bestScore: 900, bestTime: 90 })));
@@ -16,6 +16,8 @@ for (const [tag, w, h] of SIZES) {
       if (q.left < 15.5 || q.right > innerWidth - 15.5 || q.top < 0 || q.bottom > innerHeight) r.push(['out', l, Math.round(q.left), Math.round(q.right), Math.round(q.top), Math.round(q.bottom)]);
       if (q.width < 47.5 || q.height < 47.5) r.push(['small', l, Math.round(q.width), Math.round(q.height)]);
     }
+    const pl = document.querySelector('.ttl-play'), pt = document.querySelector('.ttl-play-t');
+    if (pl && pt) { const a = pl.getBoundingClientRect(), t = pt.getBoundingClientRect(); if (t.left < a.left + a.width * 0.05 || t.right > a.right - a.width * 0.05) r.push(['sign text overflows', Math.round(t.width), Math.round(a.width)]); }
     return r;
   });
   console.log(tag, JSON.stringify(bad));
