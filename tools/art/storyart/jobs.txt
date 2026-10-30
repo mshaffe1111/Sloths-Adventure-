@@ -43,4 +43,4 @@ r6   6ae3fc14 guardians' story frames at 4x (audit)                         ~$0.
 r7   6ae3fd3e signs, Drake's cups, snail repaint                            ~$0.30
 r7b  6ae3ffb4 Drake's cups again                                            ~$0.08
 r8   6ae401f5 croc stills, venom body 4x, both-hands, hands-on-rim cels      ~$0.15
-r9   6ae4d988 croc defeated frame gentler, Meeca's kind smile at the nest      (running)
+r9   6ae4d988 croc defeated frame gentler, Meeca's kind smile (neither usable) ~$0.08
