@@ -153,3 +153,4 @@ X-16 skies r5 6ae3dd5ec78863f9c62e0ae9 rtx-pro-6000 started 23:57:18Z (the lead'
   Cancelled at about 00:07Z (~10 min, ~$0.45): the first take had a giant sloth's head painted into the sky (the style model in the
   text-to-image step) and hard tile edges at the join. Fixed in skyt2i.py: the sky without the style model, the join in one full-width
   pass plus a wrap pass.
+X-16 skies r5b 6ae3ded30e0338d1bb7c5983 rtx-pro-6000 started 00:03:31Z at f9c46ffc, same 22 takes; timeout 50 min.
