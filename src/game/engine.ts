@@ -166,7 +166,9 @@ import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
 import { FONT_UI } from './fonts.ts';
-import { withHurtFlash } from './hurtFlash.ts';
+import { withHurtFlash, withAlpha } from './hurtFlash.ts';
+/** how long (s) a creature's drawn stand-in takes to fade into its painting when the sheet arrives mid-stage */
+const ART_FADE = 0.25;
 import { shakeOffset } from './screenShake.ts';
 import { POWER_UP_SECS } from './powerUps.ts';
 
@@ -4483,6 +4485,32 @@ export class GameEngine {
   }
 
   /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
+  /**
+   * A creature's painted clips, or its drawn stand-in while their sheet is on its way. When the sheet arrives with the creature on screen,
+   * the stand-in fades out under the painting fading in over ART_FADE seconds, instead of one swapping for the other between two frames.
+   * (`artFade`: a creature shown as its stand-in, and when, in game time, its painting arrived: NaN until then.)
+   */
+  private artFade = new Map<number, number>();
+  private drawEnemyArt(ctx: CanvasRenderingContext2D, e: Enemy, painted: (c: CanvasRenderingContext2D) => boolean, standIn: (c: CanvasRenderingContext2D) => void) {
+    const since = this.artFade.get(e.id);
+    if (since === undefined) {
+      if (!painted(ctx)) {
+        standIn(ctx);
+        this.artFade.set(e.id, NaN);
+      }
+      return;
+    }
+    const b = bodyRect(e);
+    const pad = Math.max(b.w, b.h) * 0.9 + 60;
+    const box = [b.x - pad, b.y - pad, b.w + pad * 2, b.h + pad * 2] as const;
+    const a = Number.isNaN(since) ? 0 : Math.min(1, (this.gameTime - since) / ART_FADE);
+    withAlpha(ctx, 1 - a, ...box, (c) => standIn(c));
+    // (until it has arrived the painting draws nothing; the frame it does, the fade begins)
+    const drew = withAlpha(ctx, a, ...box, painted);
+    if (drew && Number.isNaN(since)) this.artFade.set(e.id, this.gameTime);
+    if (a >= 1) this.artFade.delete(e.id);
+  }
+
   private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, paint: (c: CanvasRenderingContext2D) => void) {
     // a creature just hit flashes white (hurtFlash.ts, AN-6); the box it is drawn in is its body with room for legs, tails and wings
     const draw = () => {
@@ -5971,38 +5999,52 @@ export class GameEngine {
         drawAura(ctx, 'danger', world.id, enemy.width * 0.8, enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
         ctx.restore();
       }
+      // its painted clips, and the drawn stand-in shown while their sheet is on its way
+      const t = this.gameTime;
+      let painted: (c: CanvasRenderingContext2D) => boolean;
+      let standIn: (c: CanvasRenderingContext2D) => void;
+      if (enemy.type === 'snake') {
+        painted = (c) => drawGoldSnake(c, enemy, t) || drawSnakeSprite(c, enemy, t);
+        standIn = (c) => drawTreeSnake(c, enemy, t);
+      } else if (enemy.type === 'eagle') {
+        painted = (c) => drawEagleSprite(c, enemy, t);
+        standIn = (c) => drawHarpyEagle(c, enemy, t);
+      } else if (enemy.type === 'ocelot') {
+        // (World 7's Stone Sentry: a prowler's body, the sentry's painted clips)
+        painted = (c) => (enemy.look === 'sentry' && drawSentrySprite(c, enemy, t)) || drawOcelotSprite(c, enemy, t);
+        standIn = (c) => drawOcelot(c, enemy, t);
+      } else if (enemy.type === 'jaguar') {
+        painted = (c) => drawJaguarSprite(c, enemy, t);
+        standIn = (c) => drawJaguar(c, enemy, t);
+      } else if (enemy.type === 'boa') {
+        painted = (c) => drawBoaSprite(c, enemy, t);
+        standIn = (c) => drawBoa(c, enemy, t);
+      } else if (enemy.type === 'caiman') {
+        painted = (c) => drawCaimanSprite(c, enemy, t);
+        standIn = (c) => drawCaiman(c, enemy, t);
+      } else if (enemy.type === 'tayra') {
+        painted = (c) => drawTayraSprite(c, enemy, t);
+        standIn = (c) => drawTayra(c, enemy, t);
+      } else if (enemy.type === 'turtle') {
+        painted = (c) => (enemy.royal ? drawGuardSprite(c, enemy, t) : drawTurtleSprite(c, enemy, t));
+        standIn = (c) => drawTurtle(c, enemy, t);
+      } else if (enemy.type === 'harpy') {
+        painted = (c) => drawHarpySprite(c, enemy, t);
+        standIn = (c) => drawHarpyFallback(c, enemy, t);
+      } else if (enemy.type === 'frog') {
+        painted = (c) => drawFrogSprite(c, enemy, t);
+        standIn = (c) => drawHazardEntity(c, enemy, t);
+      } else if (enemy.type === 'spider') {
+        // (World 5's jumping spiders: their trained clips, w5Play.ts)
+        painted = (c) => !!this.w5?.drawSpider(c, enemy, t, this.player.x) || drawSpiderSprite(c, enemy, t, this.player.x);
+        standIn = (c) => drawHazardEntity(c, enemy, t);
+      } else {
+        painted = () => false;
+        standIn = (c) => drawHazardEntity(c, enemy, t);
+      }
       const draw = (ctx: CanvasRenderingContext2D) => {
-        if (enemy.type === 'snake') {
-          if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
-          if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
-        } else if (enemy.type === 'eagle') {
-          if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'ocelot') {
-          // (World 7's Stone Sentry: a prowler's body, the sentry's painted clips)
-          if (enemy.look === 'sentry' && drawSentrySprite(ctx, enemy, this.gameTime)) return;
-          if (!drawOcelotSprite(ctx, enemy, this.gameTime)) drawOcelot(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'jaguar') {
-          if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'boa') {
-          if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'caiman') {
-          if (!drawCaimanSprite(ctx, enemy, this.gameTime)) drawCaiman(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'tayra') {
-          if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'turtle') {
-          if (enemy.royal) {
-            if (!drawGuardSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
-          } else if (!drawTurtleSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'harpy') {
-          if (!drawHarpySprite(ctx, enemy, this.gameTime)) drawHarpyFallback(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'frog') {
-          if (!drawFrogSprite(ctx, enemy, this.gameTime)) drawHazardEntity(ctx, enemy, this.gameTime);
-        } else if (enemy.type === 'spider') {
-          // (World 5's jumping spiders: their trained clips, w5Play.ts)
-          if (!this.w5?.drawSpider(ctx, enemy, this.gameTime, this.player.x) && !drawSpiderSprite(ctx, enemy, this.gameTime, this.player.x)) drawHazardEntity(ctx, enemy, this.gameTime);
-        } else {
-          drawHazardEntity(ctx, enemy, this.gameTime);
-        }
+        this.drawEnemyArt(ctx, enemy, painted, standIn);
+        if (enemy.type === 'snake' && enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
       };
       this.drawWithReaction(ctx, enemy, draw);
     });

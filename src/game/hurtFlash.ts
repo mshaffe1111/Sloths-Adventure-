@@ -73,3 +73,45 @@ export function withHurtFlash(ctx: CanvasRenderingContext2D, on: boolean, x: num
   ctx.drawImage(l.canvas, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
   ctx.restore();
 }
+
+let fadeLayer: HTMLCanvasElement | null = null;
+let fctx: CanvasRenderingContext2D | null = null;
+
+/**
+ * Draw `draw` onto ctx at `alpha`, all of it at once (a drawing that sets its own globalAlpha cannot undo it): drawn onto a layer of its
+ * own and put back at that alpha (at 0, not put back at all). (x, y, w, h) is a world-space box the drawing stays inside. Returns what `draw` returned. Used for a
+ * creature whose painted sheet has just arrived: its drawn stand-in fades out under the painting fading in (engine.ts, no pop).
+ */
+export function withAlpha(ctx: CanvasRenderingContext2D, alpha: number, x: number, y: number, w: number, h: number, draw: (c: CanvasRenderingContext2D) => boolean | void): boolean {
+  // (at 0 it is drawn onto the layer only, to learn whether it drew anything: a painting not yet arrived draws nothing)
+  if (alpha >= 0.999) return draw(ctx) !== false;
+  const m = ctx.getTransform();
+  const r = deviceBox(m, x, y, w, h, ctx.canvas.width, ctx.canvas.height);
+  if (r.w <= 0 || r.h <= 0 || typeof document === 'undefined') return false;
+  if (!fadeLayer) {
+    fadeLayer = document.createElement('canvas');
+    fctx = fadeLayer.getContext('2d');
+  }
+  if (!fctx) return draw(ctx) !== false;
+  if (fadeLayer.width < ctx.canvas.width || fadeLayer.height < ctx.canvas.height) {
+    fadeLayer.width = Math.max(fadeLayer.width, ctx.canvas.width);
+    fadeLayer.height = Math.max(fadeLayer.height, ctx.canvas.height);
+  }
+  const l = fctx;
+  l.save();
+  l.setTransform(1, 0, 0, 1, 0, 0);
+  l.clearRect(r.x, r.y, r.w, r.h);
+  l.setTransform(m);
+  l.imageSmoothingEnabled = ctx.imageSmoothingEnabled;
+  l.imageSmoothingQuality = ctx.imageSmoothingQuality;
+  const drew = draw(l) !== false;
+  l.restore();
+  if (drew && alpha > 0.001) {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha *= alpha;
+    ctx.drawImage(l.canvas, r.x, r.y, r.w, r.h, r.x, r.y, r.w, r.h);
+    ctx.restore();
+  }
+  return drew;
+}
