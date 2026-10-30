@@ -5,6 +5,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { BossPlay } from './bossPlay.ts';
 import { venomPose, VF } from './venomFang.ts';
 import { darkReveal } from './bossCues.ts';
@@ -23,7 +24,8 @@ test("1-10: Dot's tip comes before the first lunge, which rears back for at leas
   assert.ok(lunges.length >= 2);
   assert.ok(lunges[0].t0 - tip.t >= 3, `the first lunge came ${(lunges[0].t0 - tip.t).toFixed(1)} s after Dot's tip`);
   for (const l of lunges.slice(0, -1)) assert.ok(l.dur >= 0.6, `a wind-up of ${l.dur.toFixed(2)} s`);
-  assert.equal(sim.def.tellCall, 'boa');
+  // (his hiss as he rears back is his own tell sound: audio.ts playBossTell, SN-4)
+  assert.match(readFileSync(new URL('./engine.ts', import.meta.url), 'utf8'), /sound\.playBossTell\(/);
   // the head draws up and back over the first 0.6 s of the wind-up, so it reads as a rear-back, not a twitch
   assert.ok(VF.rear >= 0.6);
   const b = sim.boss;

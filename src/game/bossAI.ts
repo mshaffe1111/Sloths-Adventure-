@@ -330,8 +330,6 @@ export interface BossDef {
   openCue?: boolean;
   /** seconds he waits after the entrance before his first move (0.8 when unset): time to read Dot's first tip */
   firstIdle?: number;
-  /** the call heard as every wind-up starts (a jaguar's growl when unset) */
-  tellCall?: 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
   /** the guide's lines for this fight: at the start, and at each new phase (said once per device) */
   guide?: { start?: string; 2?: string; 3?: string };
   /** where the floor sits in the view (0..1 from the top; the usual 0.7 leaves a band of earth under a low fight) */

@@ -3532,7 +3532,8 @@ export class GameEngine {
         sound.setTempo(1.04);
       }
     }
-    if (br.state === 'tell' && prevState !== 'tell') sound.playPredator(def.tellCall ?? 'jaguar', 0);
+    // every guardian winds up with its own sound (SN-4: it was a jaguar's growl for all but Venom Fang; polish-sfx's recordings)
+    if (br.state === 'tell' && prevState !== 'tell') sound.playBossTell(this.currentStage.config.secret ? 11 : this.currentStage.config.worldIndex);
     if (br.state === 'act' && prevState !== 'act') {
       if (br.move === 'screech') sound.playEagleScreech();
       else sound.playWhoosh();
