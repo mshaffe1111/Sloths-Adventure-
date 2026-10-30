@@ -454,7 +454,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     swingEdges = 0;
     climbEdges = 0;
     const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
-    blocks = plats.filter((p) => p.type === 'solid' && p.height >= 50 && !p.broken);
+    // (a boulder is the push's own wall, cut out of the ground it stands on above: World 4)
+    blocks = plats.filter((p) => p.type === 'solid' && p.height >= 50 && !p.broken && !p.push);
 
     // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
     // To the right the window is 460 px. To the left a platform can only be reached if the gap is within the furthest any jump
