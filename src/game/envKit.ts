@@ -13,7 +13,7 @@ import { tone, mix, rgba, lighten, darken, type RNG, type Tone } from './artKit.
 import { fernFrond } from './flora.ts';
 import { leaf } from './rainforest.ts';
 import { hangingBat } from './territoryTrees.ts';
-import { EXTRA_PLANTS, SWAYS, type PlantDef, type SwayFn } from './envPlants.ts';
+import { EXTRA_PLANTS, SWAYS, glowDot, type PlantDef, type SwayFn } from './envPlants.ts';
 import type { Look } from './scenery.ts';
 
 const TAU = Math.PI * 2;
@@ -273,14 +273,7 @@ function parkia(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, 
     ctx.quadraticCurveTo(sx + (r() - 0.5) * 20, y - len * 0.6, hx, hy);
     ctx.stroke();
     const R = s * 0.15;
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    const g = ctx.createRadialGradient(hx, hy + R, 0, hx, hy + R, R * 3);
-    g.addColorStop(0, rgba(col, 0.35));
-    g.addColorStop(1, rgba(col, 0));
-    ctx.fillStyle = g;
-    ctx.fillRect(hx - R * 3, hy - R * 2, R * 6, R * 6);
-    ctx.restore();
+    glowDot(ctx, hx, hy + R, R * 3, col, 0.35);
     ctx.fillStyle = col;
     ctx.beginPath();
     ctx.ellipse(hx, hy + R, R, R * 1.15, 0, 0, TAU);
@@ -380,14 +373,7 @@ function foxfireLog(ctx: CanvasRenderingContext2D, x: number, y: number, s: numb
     const mx = x + (r() - 0.5) * w * 0.85;
     const my = y - h + r() * h * 0.5;
     const ms = 4 + r() * 5;
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    const g = ctx.createRadialGradient(mx, my - ms, 0, mx, my - ms, ms * 3);
-    g.addColorStop(0, rgba(fox, 0.28));
-    g.addColorStop(1, rgba(fox, 0));
-    ctx.fillStyle = g;
-    ctx.fillRect(mx - ms * 3, my - ms * 4, ms * 6, ms * 6);
-    ctx.restore();
+    glowDot(ctx, mx, my - ms, ms * 3, fox, 0.28);
     ctx.strokeStyle = rgba(fox, 0.95);
     ctx.lineWidth = 1.5;
     ctx.beginPath();

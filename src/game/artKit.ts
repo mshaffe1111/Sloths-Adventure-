@@ -76,14 +76,64 @@ export interface Tone {
 
 /** Build a five-step tone ramp from one base colour. `shadow` hue-shifts the dark side. */
 export function tone(base: string, shadow = '#10203c'): Tone {
+  // kept: platforms and props ask for the same few ramps every frame (the ramp is never changed by a caller)
+  let byBase = tones.get(shadow);
+  if (!byBase) tones.set(shadow, (byBase = new Map()));
+  let t = byBase.get(base);
+  if (t) return t;
   const b = norm(base);
-  return {
+  t = {
     hi: lighten(b, 0.62),
     light: lighten(b, 0.28),
     mid: b,
     dark: mix(darken(b, 0.18), shadow, 0.28),
     deep: mix(darken(b, 0.45), shadow, 0.42),
   };
+  if (byBase.size >= 256) byBase.clear();
+  byBase.set(base, t);
+  return t;
+}
+const tones = new Map<string, Map<string, Tone>>();
+
+/**
+ * A gradient kept by the numbers that shape it (PERFORMANCE-RULES §2.3: none made per frame). `key` is a whole number built from them,
+ * `make` builds it the first time; drawn in its own local space (after a translate), one gradient serves every place it stands.
+ */
+export function keptGradient(owner: object, key: number, make: () => CanvasGradient): CanvasGradient {
+  let m = keptGrads.get(owner);
+  if (!m) keptGrads.set(owner, (m = new Map()));
+  let g = m.get(key);
+  if (!g) {
+    if (m.size >= 512) m.clear();
+    m.set(key, (g = make()));
+  }
+  return g;
+}
+const keptGrads = new WeakMap<object, Map<number, CanvasGradient>>();
+
+/** a world rectangle (what the canvas shows: viewRect) */
+export interface ViewRect {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+/**
+ * The world rectangle the canvas shows under ctx's current transform, grown by `margin`, written into `out` (kept by the caller, so
+ * nothing is made per frame). A rotated or skewed transform (a shake, a lean) leaves `out` as everything, so nothing is culled by mistake.
+ */
+export function viewRect(ctx: CanvasRenderingContext2D, out: ViewRect, margin = 0): ViewRect {
+  const m = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
+  if (!m || m.b !== 0 || m.c !== 0 || m.a <= 0 || m.d <= 0) {
+    out.x0 = out.y0 = -Infinity;
+    out.x1 = out.y1 = Infinity;
+    return out;
+  }
+  out.x0 = -m.e / m.a - margin;
+  out.x1 = (ctx.canvas.width - m.e) / m.a + margin;
+  out.y0 = -m.f / m.d - margin;
+  out.y1 = (ctx.canvas.height - m.f) / m.d + margin;
+  return out;
 }
 
 export function tau(n: number) {
@@ -288,47 +338,61 @@ const FLOWER_PICS_MAX = 110;
 /** how far a head reaches from its middle, in its own radius: measured at 1.2 for every species the ledges use, so this leaves a margin */
 const FLOWER_PAD = 1.6;
 
-/** Toadstool, optionally glowing. */
+/** Toadstool, optionally glowing. Drawn about its foot, so its gradients are kept by size and colour, not made each frame. */
 export function drawMushroom(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, cap: string, spot: string, glow = false) {
   const ct = tone(cap, '#2a0a30');
+  const key = Math.round(s * 64);
+  ctx.translate(x, y);
   if (glow) {
-    const g = ctx.createRadialGradient(x, y - s * 0.7, s * 0.2, x, y - s * 0.7, s * 2.4);
-    g.addColorStop(0, ct.hi + '');
-    g.addColorStop(1, 'rgba(0,0,0,0)');
+    const g = keptGradient(ct, -1 - key, () => {
+      const gr = ctx.createRadialGradient(0, -s * 0.7, s * 0.2, 0, -s * 0.7, s * 2.4);
+      gr.addColorStop(0, ct.hi + '');
+      gr.addColorStop(1, 'rgba(0,0,0,0)');
+      return gr;
+    });
     ctx.globalAlpha = 0.35;
     ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.arc(x, y - s * 0.7, s * 2.4, 0, Math.PI * 2);
+    ctx.arc(0, -s * 0.7, s * 2.4, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = 1;
   }
-  const sg = ctx.createLinearGradient(x - s * 0.3, 0, x + s * 0.3, 0);
-  sg.addColorStop(0, '#fff6e0');
-  sg.addColorStop(1, '#d8c39a');
-  ctx.fillStyle = sg;
+  ctx.fillStyle = keptGradient(MUSH_STEM, key, () => {
+    const sg = ctx.createLinearGradient(-s * 0.3, 0, s * 0.3, 0);
+    sg.addColorStop(0, '#fff6e0');
+    sg.addColorStop(1, '#d8c39a');
+    return sg;
+  });
   ctx.beginPath();
-  ctx.moveTo(x - s * 0.22, y);
-  ctx.quadraticCurveTo(x - s * 0.16, y - s * 0.5, x - s * 0.2, y - s * 0.75);
-  ctx.lineTo(x + s * 0.2, y - s * 0.75);
-  ctx.quadraticCurveTo(x + s * 0.16, y - s * 0.5, x + s * 0.22, y);
+  ctx.moveTo(-s * 0.22, 0);
+  ctx.quadraticCurveTo(-s * 0.16, -s * 0.5, -s * 0.2, -s * 0.75);
+  ctx.lineTo(s * 0.2, -s * 0.75);
+  ctx.quadraticCurveTo(s * 0.16, -s * 0.5, s * 0.22, 0);
   ctx.closePath();
   ctx.fill();
-  const cg = ctx.createRadialGradient(x - s * 0.25, y - s * 1.15, s * 0.1, x, y - s * 0.7, s * 0.95);
-  cg.addColorStop(0, ct.light);
-  cg.addColorStop(0.55, ct.mid);
-  cg.addColorStop(1, ct.dark);
-  ctx.fillStyle = cg;
+  ctx.fillStyle = keptGradient(ct, key, () => {
+    const cg = ctx.createRadialGradient(-s * 0.25, -s * 1.15, s * 0.1, 0, -s * 0.7, s * 0.95);
+    cg.addColorStop(0, ct.light);
+    cg.addColorStop(0.55, ct.mid);
+    cg.addColorStop(1, ct.dark);
+    return cg;
+  });
   ctx.beginPath();
-  ctx.ellipse(x, y - s * 0.72, s * 0.78, s * 0.52, 0, Math.PI, 0);
-  ctx.quadraticCurveTo(x, y - s * 0.6, x - s * 0.78, y - s * 0.72);
+  ctx.ellipse(0, -s * 0.72, s * 0.78, s * 0.52, 0, Math.PI, 0);
+  ctx.quadraticCurveTo(0, -s * 0.6, -s * 0.78, -s * 0.72);
   ctx.fill();
   ctx.fillStyle = spot;
-  for (const [dx, dy, dr] of [[-0.35, -1.0, 0.1], [0.1, -1.12, 0.13], [0.4, -0.92, 0.09]]) {
+  for (let i = 0; i < 9; i += 3) {
+    const dr = MUSH_SPOTS[i + 2];
     ctx.beginPath();
-    ctx.ellipse(x + dx * s, y + dy * s, dr * s, dr * s * 0.75, 0, 0, Math.PI * 2);
+    ctx.ellipse(MUSH_SPOTS[i] * s, MUSH_SPOTS[i + 1] * s, dr * s, dr * s * 0.75, 0, 0, Math.PI * 2);
     ctx.fill();
   }
+  ctx.translate(-x, -y);
 }
+const MUSH_STEM = {};
+/** the cap's three spots: x, y and radius in the toadstool's size */
+const MUSH_SPOTS = [-0.35, -1.0, 0.1, 0.1, -1.12, 0.13, 0.4, -0.92, 0.09];
 
 /** Rounded boulder with a lit top-left. */
 export function drawRock(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, t: Tone, outline?: string) {
