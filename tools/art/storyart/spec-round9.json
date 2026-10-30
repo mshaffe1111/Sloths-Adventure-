@@ -1,0 +1,98 @@
+{
+ "tag": "r9",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/955202939a6f23e51b1abe93d46d935d40d4be81/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "guard-croc.defeated_024-s20",
+   "start": {
+    "src": [
+     "src/assets/enemies/croc-anim.webp",
+     2651,
+     1672,
+     348,
+     119
+    ],
+    "scale": 2.586206896551724,
+    "ox": 62,
+    "oy": 358,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big green crocodile lying upside down on his back, beaten, a small crooked gold crown, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail, white shards, broken, fragments",
+   "strength": 0.2,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "guard-croc.defeated_024-s26",
+   "start": {
+    "src": [
+     "src/assets/enemies/croc-anim.webp",
+     2651,
+     1672,
+     348,
+     119
+    ],
+    "scale": 2.586206896551724,
+    "ox": 62,
+    "oy": 358,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "slothadv style, a big green crocodile lying upside down on his back, beaten, a small crooked gold crown, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail, white shards, broken, fragments",
+   "strength": 0.26,
+   "seed": 11,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ]
+  },
+  {
+   "name": "new-hands_rim-k3",
+   "edit": true,
+   "start": "bucket:storyart/r8/out/new-hands_rim-e2.png",
+   "seed": 3,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry",
+   "prompt": "Change only the girl sloth with the pink headband: she smiles kindly and warmly at the boy, her eyes soft. Keep the boy looking worried, and keep everything else exactly the same: their hands together, their poses, their clothes. Plain flat grey background."
+  },
+  {
+   "name": "new-hands_rim-k9",
+   "edit": true,
+   "start": "bucket:storyart/r8/out/new-hands_rim-e2.png",
+   "seed": 9,
+   "neg": "robot, armour suit, helmet, plume, toy, white outline, sticker, border, text, watermark, extra limbs, extra arms, blurry",
+   "prompt": "Change only the girl sloth with the pink headband: she smiles kindly and warmly at the boy, her eyes soft. Keep the boy looking worried, and keep everything else exactly the same: their hands together, their poses, their clothes. Plain flat grey background."
+  }
+ ],
+ "q": 92,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/955202939a6f23e51b1abe93d46d935d40d4be81/",
+ "keep": [
+  "guard-croc.defeated_024-s20",
+  "guard-croc.defeated_024-s26",
+  "new-hands_rim-k3",
+  "new-hands_rim-k9"
+ ]
+}
