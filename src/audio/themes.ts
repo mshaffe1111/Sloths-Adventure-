@@ -552,7 +552,7 @@ THEMES.ending = composeStory('ending');
 /** which world's instrument flavour (see orchestrate.ts) each written non-world piece uses */
 const FLAVOUR_OF: Record<string, number> = { bossA: 5, bossB: 7, bossC: 9, bossFinal: 10, results: 1, gameover: 3 };
 
-/** 'world3~c' is the written world 3 theme dressed in the orchestra for a climbing stage; 'bossB~b', 'title~c' and the like work the same way (see orchestrate.ts) */
+/** 'world3~c' is the written world 3 theme dressed in the orchestra for a climbing stage; 'bossB~b', 'results~c' and the like work the same way (see orchestrate.ts) */
 function orchestratedById(id: string): Theme | null {
   const m = /^([A-Za-z]+)(\d{0,2})~([a-z])$/.exec(id);
   const pace = m ? paceFromCode(m[3]) : null;
