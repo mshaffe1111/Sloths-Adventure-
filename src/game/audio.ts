@@ -9,6 +9,7 @@
  *   ambience.ts    the sound of each world
  *   voice.ts       the story's voices: each character's babble (voiceLine.ts says when a syllable is due)
  */
+import type { Tone } from '../audio/voiceLine.ts';
 import { Conductor, type SceneOptions } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
 import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
@@ -80,6 +81,7 @@ class SoundEngine {
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
   screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string) {
     this.held = null;
+    this.c.storyMusic('keep');
     // the stage's state (a dark zone, a danger, a boss phase) belongs to that stage: any other screen, or another stage, starts calm
     const stage = screen === 'playing' || screen === 'paused' ? levelId : '';
     if (stage !== this.stateStage) this.c.setMusicState(CALM);
@@ -99,6 +101,10 @@ class SoundEngine {
     // the storm belongs to the storm panels only: the quiet scenes after it must not keep the thunder
     this.c.setAmbient(panel.chapter.toUpperCase().startsWith('THE STORM') ? 'thunderstorm' : 'gentle_breeze');
     this.c.warmStoryStings();
+  }
+  /** the story's hand on the music under a picture: keep, under (half), silence, swell (storyDirect.ts) */
+  storyMusic(move: 'keep' | 'under' | 'silence' | 'swell') {
+    this.c.storyMusic(move);
   }
   /** the short sting a story panel asks for, played once as its picture appears (see StoryPlayer) */
   storySting(name: string) {
@@ -130,8 +136,8 @@ class SoundEngine {
     this.c.dotChirp();
   }
   /** letter `index` of a story line has appeared: its speaker's voice says a syllable when one is due */
-  speak(speaker: string, text: string, index: number) {
-    this.c.speak(speaker, text, index);
+  speak(speaker: string, text: string, index: number, tone?: Tone) {
+    this.c.speak(speaker, text, index, tone);
   }
   /** fetch the voices of these speakers (a story's cast, as it opens) */
   warmVoices(speakers: Iterable<string>) {

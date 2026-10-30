@@ -13,7 +13,7 @@ import { Playback, type KeyInfo } from './music.ts';
 import { SFX, runFx } from './sfx.ts';
 import { playRec, recFor, recForPuzzle, type Surface } from './sfxRec.ts';
 import { loadVoices, playSyllable } from './voice.ts';
-import { Speech, voiceOf } from './voiceLine.ts';
+import { Speech, voiceOf, type Tone } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { themeById } from './themes.ts';
 import { CALM, type MusicState } from './adaptive.ts';
@@ -296,6 +296,23 @@ export class Conductor {
     return this.playback?.key() ?? DEFAULT_KEY;
   }
 
+  /**
+   * The story's hand on the music under a picture (storyDirect.ts): `silence` fades it right out (about a second), `under` to half,
+   * `keep` and `swell` back to full (a swell also lifts the piece a step fuller). Any other screen puts it back to full.
+   */
+  storyMusic(move: 'keep' | 'under' | 'silence' | 'swell') {
+    const core = this.core;
+    if (!core) return;
+    const g = core.storyLevel.gain;
+    const t = core.ctx.currentTime;
+    const to = move === 'silence' ? 0 : move === 'under' ? 0.5 : 1;
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(g.value, t);
+    // (out over about a second; back in a little slower, so the music finds its way back rather than snapping on)
+    g.setTargetAtTime(to, t, to < g.value ? 0.35 : 0.6);
+    if (move === 'swell') this.setIntensity(this.intensity + 0.2);
+  }
+
   /** dip the music to `level` for `hold` seconds, then ease back */
   duck(level: number, hold: number, release = 1.0) {
     const core = this.core;
@@ -391,14 +408,14 @@ export class Conductor {
 
   private speech = new Speech();
   /** letter `index` of a story line has just appeared: its speaker's voice says a syllable if one is due (voiceLine.ts) */
-  speak(speaker: string, text: string, index: number) {
+  speak(speaker: string, text: string, index: number, tone?: Tone) {
     const core = this.core;
     if (!core || this.muted || core.ctx.state !== 'running') return;
     const v = voiceOf(speaker);
     if (!v) return;
     void loadVoices(core, [v.slug]);
     const now = core.ctx.currentTime;
-    const due = this.speech.next(speaker, text, index, now);
+    const due = this.speech.next(speaker, text, index, now, tone);
     if (due && playSyllable(core, due.slug, due.syl) > 0) {
       this.speech.played(text, index, now);
       this.speechDip();

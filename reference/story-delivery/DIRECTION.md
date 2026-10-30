@@ -90,7 +90,7 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 2 | Pokey | Well. It seems to me that it's still morning. | cut | 180 ms | 40 ms | single 1.34→1.40 3.8s | +0.5 st, 0 dB | keep |  |
 | 3 | Dot | Yesterday morning. I meant yesterday morning. | cut | 180 ms | 22 ms | single 1.34→1.40 3.0s | +0.5 st, 0 dB | keep |  |
 | 4 | Pokey | Oh. Well, you're really late then. | cut | 180 ms | 40 ms | single 1.34→1.40 3.4s | +0.5 st, 0 dB | keep |  |
-| 5 | Dot | There was a headwind over the river, I hit it head on, and then there… | cut | 180 ms | 22 ms | single 1.34→1.40 6.3s | +0.5 st, 0 dB | keep |  |
+| 5 | Dot | There was a headwind over the river, I hit it head on, and then there… (2 pages) | cut | 180 ms | 22 ms | single 1.34→1.40 6.3s | +0.5 st, 0 dB | keep |  |
 | 6 | Narrator | She stopped and looked at him properly. | cut | 180 ms | 35 ms | drift 1.24→1.26 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 7 | Dot | You look thin. Have you lost weight? Have you been eating? | cut | 180 ms | 25 ms | slowPush 1.20→1.37 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 8 | Meeca | Dot. If I've told you once, I've told you twice. It's fine. It's just… | cut | 430 ms | 37 ms | slowPush 1.20→1.37 9.9s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat |
@@ -166,13 +166,13 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 8 | Pokey | She pressed it flat. With a soldier on each arm. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.2s | -0.5 st, -1.5 dB | keep |  |
 | 9 | Dot | Pokey! Pokey, there you are, oh, thank goodness. Don't move. Don't yo… | cut | 180 ms | 22 ms | single 1.68→1.75 4.0s | +0.5 st, 0 dB | keep |  |
 | 10 | Pokey | Historically, not a problem. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep |  |
-| 11 | Dot | Do you know how many pink things there are in this forest? Do you hav… (2 pages) | cut | 180 ms | 22 ms | single 1.68→1.75 7.5s | +0.5 st, 0 dB | keep |  |
+| 11 | Dot | Do you know how many pink things there are in this forest? Do you hav… (3 pages) | cut | 180 ms | 22 ms | single 1.68→1.75 7.5s | +0.5 st, 0 dB | keep |  |
 | 12 | Pokey | You said you'd be straight back. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep |  |
 | 13 | Narrator | Dot's wing went to the pouch at her side. | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | keep |  |
-| 14 | Dot | I know what I said, I know, and I also said don't you go anywhere wit… | cut | 180 ms | 25 ms | slowPush 1.50→1.71 8.3s | -1 st, -3 dB | keep |  |
+| 14 | Dot | I know what I said, I know, and I also said don't you go anywhere wit… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 8.3s | -1 st, -3 dB | keep |  |
 | 15 | Pokey | Not very fast. | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | a short line after a long one: give it room |
 | 16 | Pokey | Did you see her? Is she okay? | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 17 | Dot | She's okay. She's okay. They took her all the way up to the Highlands… (2 pages) | cut | 430 ms | 25 ms | slowPush 1.50→1.71 11.0s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat |
+| 17 | Dot | She's okay. She's okay. They took her all the way up to the Highlands… (3 pages) | cut | 430 ms | 25 ms | slowPush 1.50→1.71 11.0s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat |
 | 18 | Pokey | Did they see you? | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room |
 | 19 | Dot | One of them looked right at me and said, "Is that a hummingbird?" And… (2 pages) | cut | 430 ms | 25 ms | slowPush 1.50→1.71 9.5s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat |
 | 20 | Dot | Okay. Now listen. They put her in a tower. And there's this netting,… (3 pages) | cut | 180 ms | 22 ms | push 1.71→1.80 7.3s | -0.5 st, -1 dB | keep |  |
@@ -425,7 +425,7 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 3 | Narrator | She had hold of one of his claws and was pulling with everything she… | cut | 180 ms | 26 ms | drift 1.34→1.37 10.0s | 0 st, +1 dB | keep |  |
 | 4 | Pokey | Dot. Let go. If I fall, I'm not taking you with me. | cut | 680 ms | 46 ms | slowPush 1.50→1.71 7.0s | -1 st, -3 dB | under | hush: let it be quiet first |
 | 5 | Dot | Don't you dare say that. Don't you dare. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep |  |
-| 6 | Narrator | She didn't let go. It took Pokey the better part of an hour to climb… (2 pages) | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep |  |
+| 6 | Narrator | She didn't let go. It took Pokey the better part of an hour to climb… (3 pages) | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 7 | Pokey | That wasn't the Prowler. That was the General. He used the Prowler li… | cut | 180 ms | 40 ms | single 1.68→1.75 5.3s | -0.5 st, -1 dB | keep |  |
 | 8 | Dot | I know. | cut | 680 ms | 25 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | under | hush: let it be quiet first |
 | 9 | Pokey | The Prowler said sorry. He was still saying it when the ledge went. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 7.1s | -1 st, -3 dB | keep |  |
@@ -514,7 +514,7 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 5 | Narrator | Dot stopped and looked at the letters again. | cut | 680 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | under | hush: let it be quiet first |
 | 6 | Dot | With a hairpin. She's so resourceful. She's the most resourceful pers… (3 pages) | cut | 180 ms | 22 ms | single 1.68→1.75 8.1s | +0.5 st, 0 dB | keep |  |
 | 7 | Dot | If she carved one, she carved more. She never leaves just one of anyt… | cut | 180 ms | 22 ms | push 1.75→1.83 4.2s | +0.5 st, 0 dB | keep |  |
-| 8 | Narrator | A little table stood in the middle of the path, set for two: china cu… (2 pages) | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | +0.5 st, 0 dB | keep |  |
+| 8 | Narrator | A little table stood in the middle of the path, set for two: china cu… (3 pages) | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | +0.5 st, 0 dB | keep |  |
 | 9 | Pokey | That's very polite. | cut | 630 ms | 40 ms | single 1.68→1.75 3.1s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
 | 10 | Dot | That's what makes it scary. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep |  |
 | 11 | Narrator | Pokey looked at the chairs. They looked back. | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | +0.5 st, 0 dB | keep |  |
@@ -1250,7 +1250,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 2 | Meeca | You're holding the nest with both hands. | cut | 180 ms | 32 ms | single 1.68→1.75 3.1s | -0.5 st, -1 dB | keep |  |
 | 3 | Pokey | It's a very good nest. I want it to stay. | cut | 180 ms | 40 ms | single 1.68→1.75 3.7s | -0.5 st, -1 dB | keep |  |
 | 4 | Narrator | It had been his parents' nest. He remembered a few small things about… (2 pages) | soft | 320 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | keep |  |
-| 5 | Narrator | On a night like this one they'd gone out along the far branches, and… (2 pages) | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | keep |  |
+| 5 | Narrator | On a night like this one they'd gone out along the far branches, and… (3 pages) | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | keep |  |
 | 6 | Meeca | Can I sit? | soft | 770 ms | 37 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | a short line after a long one: give it room |
 | 7 | Pokey | It's small. | cut | 430 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | an answer: a thinking beat |
 | 8 | Meeca | I'm small. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
@@ -1492,7 +1492,7 @@ the finale full.
 | 20 | Meeca | Hello, Grandpa. | cut | 1300 ms | 37 ms | slowPush 1.35→1.54 6.0s | -1 st, -3 dB | keep | two words, a long time coming |
 | 21 | Grandfather | Little bloom. | cut | 900 ms | 41 ms | slowPush 1.15→1.31 6.0s | -0.5 st, -1.5 dB | keep | he tries |
 | 22 | Meeca | No. You don't get to say that yet. | cut | 250 ms | 32 ms | single 1.46→1.52 3.2s | -0.5 st, -1 dB | keep | she cuts him off |
-| 23 | Meeca | You left. You sat in her chair for a whole year, and I kept the kettl… (2 pages) | cut | 180 ms | 37 ms | slowPush 1.30→1.48 11.0s | -1 st, -3 dB | keep |  |
+| 23 | Meeca | You left. You sat in her chair for a whole year, and I kept the kettl… (3 pages) | cut | 180 ms | 37 ms | slowPush 1.30→1.48 11.0s | -1 st, -3 dB | keep |  |
 | 24 | Meeca | Then you put me in a room with a lock and sent me soup. I ate all of… (2 pages) | cut | 180 ms | 37 ms | slowPush 1.30→1.48 11.0s | -1 st, -3 dB | keep |  |
 | 25 | Meeca | And every night, somebody stood outside my door and never knocked. El… | cut | 830 ms | 32 ms | push 1.48→1.56 7.3s | -0.5 st, -1 dB | keep | a beat before the heartbreak |
 | 26 | Narrator | The General looked down at his empty hands. He had held a club in the… | cut | 900 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | under | hold on the hands |
@@ -1518,7 +1518,7 @@ the finale full.
 | 46 | Meeca | There you are. I wondered where my light went. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 47 | Flicker | I'm sorry. | cut | 180 ms | 28 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
 | 48 | Meeca | You got me a whole night out. Come here. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 49 | Narrator | The sun was just coming up over the wall when a small, white, very du… | dip | 450 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
+| 49 | Narrator | The sun was just coming up over the wall when a small, white, very du… (2 pages) | dip | 450 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
 | 50 | Dot | Hello! Everybody stay calm. I'm alive! I fell into the cookhouse. Int… | cut | 180 ms | 22 ms | single 1.51→1.58 4.7s | +0.5 st, 0 dB | keep |  |
 | 51 | Lieutenant Pell | She has been no trouble at all, Miss. Sir. Everyone. I apologize. | cut | 180 ms | 27 ms | drift 1.03→1.05 10.0s | +0.5 st, 0 dB | keep |  |
 | 52 | Pokey | Dot! | cut | 180 ms | 40 ms | single 1.51→1.58 3.0s | own | keep |  |
@@ -1559,6 +1559,6 @@ the finale full.
 | 87 | Narrator | That spring he went down to the Sunlit Riverbank, to the place where… (2 pages) | soft | 320 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 88 | Narrator | That evening, they climbed the hill to the old tree, where Meeca's gr… | dip | 450 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 89 | Grandfather | Hello, love. I'm late. I brought the whole family. | cut | 1400 ms | 41 ms | slowPush 1.50→1.71 7.5s | -0.5 st, -1.5 dB | silence | at her tree: nothing under it |
-| 90 | Narrator | Home was exactly the way they'd left it, except that the Heartbloom w… | dip | 450 ms | 35 ms | drift 1.24→1.26 10.0s | -0.5 st, -1.5 dB | swell | home: the theme comes in full |
+| 90 | Narrator | Home was exactly the way they'd left it, except that the Heartbloom w… (2 pages) | dip | 450 ms | 35 ms | drift 1.24→1.26 10.0s | -0.5 st, -1.5 dB | swell | home: the theme comes in full |
 | 91 | Pokey | He's gonna make it. He trained for it. | cut | 800 ms | 46 ms | slowPush 1.50→1.71 6.4s | -0.5 st, -1.5 dB | keep | the callback, after a breath |
 | 92 | Narrator | Meeca sat down on the garden path beside the snail. After a while, Po… | cut | 900 ms | 30 ms | drift 1.24→1.26 10.0s | own | swell | the last picture: slow, full |

@@ -7,6 +7,13 @@
  */
 import { SPEAKER_VOICE, VOICES, type VoiceSpec } from './voiceData.ts';
 
+/** a line's tone of voice (storyDirect.ts): pitch and level on the voice's own, or none at all (a sung line) */
+export interface Tone {
+  semis: number;
+  db: number;
+  silent?: boolean;
+}
+
 export interface Syllable {
   /** which of the voice's takes */
   take: number;
@@ -73,13 +80,13 @@ export function syllableAt(text: string, i: number, slug: string, spec: VoiceSpe
 export class Speech {
   private said = { text: '', at: -1, t: -10 };
   /** letter `index` of `text` has appeared at time `now` (s): the syllable to play, or null */
-  next(speaker: string, text: string, index: number, now: number): { slug: string; syl: Syllable } | null {
+  next(speaker: string, text: string, index: number, now: number, tone?: Tone): { slug: string; syl: Syllable } | null {
     const v = voiceOf(speaker);
-    if (!v) return null;
+    if (!v || tone?.silent) return null;
     if (this.said.text !== text) this.said = { text, at: -1, t: -10 };
     const syl = syllableAt(text, index, v.slug, v.spec, this.said.at);
     if (!syl || now - this.said.t < v.spec.gap / 1000) return null;
-    return { slug: v.slug, syl };
+    return { slug: v.slug, syl: tone ? { ...syl, semis: syl.semis + tone.semis, db: syl.db + tone.db } : syl };
   }
   /** the syllable did play */
   played(text: string, index: number, now: number) {

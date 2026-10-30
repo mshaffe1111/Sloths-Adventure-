@@ -90,17 +90,23 @@ function setup(s: StoryScene): string {
 /** a line split into pages at the sentence ends nearest its middle, when it is longer than PAGE_MAX (a sung line is never split) */
 export function pagesOf(text: string, max = PAGE_MAX): string[] {
   if (text.length <= max || text.includes('♪')) return [text];
-  const cuts: number[] = [];
-  const re = /[.!?…—]["”]?\s+(?=\S)/g;
-  for (let m = re.exec(text); m; m = re.exec(text)) cuts.push(m.index + m[0].length);
+  // at a sentence end where there is one, else (one long run-on, Dot's way) at a comma
+  const find = (re: RegExp) => {
+    const at: number[] = [];
+    for (let m = re.exec(text); m; m = re.exec(text)) {
+      const c = m.index + m[0].length;
+      // (no page of a few words: each side at least 24 letters)
+      if (text.slice(0, c).trimEnd().length >= 24 && text.length - c >= 24) at.push(c);
+    }
+    return at;
+  };
+  let cuts = find(/[.!?…—]["”]?\s+(?=\S)/g);
+  if (!cuts.length) cuts = find(/,\s+(?=\S)/g);
   if (!cuts.length) return [text];
   const mid = text.length / 2;
   let best = cuts[0];
   for (const c of cuts) if (Math.abs(c - mid) < Math.abs(best - mid)) best = c;
-  const a = text.slice(0, best).trimEnd();
-  const b = text.slice(best);
-  if (a.length < 24 || b.length < 24) return [text];
-  return [...pagesOf(a, max), ...pagesOf(b, max)];
+  return [...pagesOf(text.slice(0, best).trimEnd(), max), ...pagesOf(text.slice(best), max)];
 }
 
 /** how long a line takes to type at `ms` a letter, roughly (the breaths at stops included) */

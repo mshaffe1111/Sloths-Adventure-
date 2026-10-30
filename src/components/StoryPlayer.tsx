@@ -6,7 +6,7 @@ import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
-import { typeMs } from '../audio/voiceLine.ts';
+import { directScene } from '../game/storyDirect.ts';
 import { Icon, type IconName } from './icons/index.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 
@@ -100,10 +100,19 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   }, [panels]);
   const [shown, setShown] = useState(0);
   const panel = panels[idx];
+  // how each picture is delivered: its entrance, the beat before the words, the pace, pages, camera, voice and music (storyDirect.ts)
+  const dirs = useMemo(() => directScene(panels), [panels]);
+  const dir = dirs[idx];
+  // a long line comes a page at a time
+  // (which page, of which picture: a new picture starts on its first page without waiting for an effect)
+  const [pageAt, setPageAt] = useState({ idx: 0, n: 0 });
+  const page = pageAt.idx === idx ? pageAt.n : 0;
+  const text = dir.pages[Math.min(page, dir.pages.length - 1)] ?? panel.text;
+  const lastPage = page >= dir.pages.length - 1;
   const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;
   const wantsCard = panel.chapter !== prevChapter;
   const [cardUp, setCardUp] = useState(wantsCard);
-  const done = shown >= panel.text.length;
+  const done = shown >= text.length;
   const last = idx === panels.length - 1;
 
   // a new chapter opens with its title card
@@ -114,28 +123,31 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     return () => clearTimeout(id);
   }, [idx, wantsCard]);
 
-  // typewriter (time-based so a slow frame never stalls the text); waits for the title card
+  // typewriter (time-based so a slow frame never stalls the text); waits for the title card, then the picture's beat (a later page
+  // follows at once)
   useEffect(() => {
     setShown(0);
     if (cardUp) return;
-    const start = performance.now();
-    const when = typeSchedule(panel.text, typeMs(panel.speaker));
+    const start = performance.now() + (page === 0 ? dir.beat : 120);
+    const when = typeSchedule(text, dir.typeMs);
     let k = 0;
     let raf = 0;
     const tick = (now: number) => {
       while (k < when.length && when[k] <= now - start) k++;
       const n = k;
       setShown((prev) => (prev === n ? prev : Math.max(prev, n)));
-      if (n < panel.text.length) raf = requestAnimationFrame(tick);
+      if (n < text.length) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [idx, panel.text, panel.speaker, cardUp]);
+  }, [idx, page, text, dir, cardUp]);
 
   // the music follows the story: each panel's chapter and mood choose the piece (same piece = no restart)
+  // and the direction's hand on it: keep, under, silence or swell
   useEffect(() => {
     sound.storyPanel(panel);
-  }, [panel]);
+    sound.storyMusic(dir.music);
+  }, [panel, dir]);
 
   // a panel's own sting plays once, as its picture appears: after the title card has gone and the first letter is typed (at once for a picture
   // with no words). Going Back and forward again does not play it a second time. (The first pass for a new panel still holds the last panel's
@@ -146,10 +158,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const fresh = lastIdx.current !== idx;
     lastIdx.current = idx;
     if (!panel.sting || stung.current.has(idx)) return;
-    if (!stingDue({ fresh, wantsCard, cardUp, shown, textLength: panel.text.length })) return;
+    if (!stingDue({ fresh, wantsCard, cardUp, shown, textLength: text.length })) return;
     stung.current.add(idx);
     sound.storySting(panel.sting);
-  }, [idx, panel, wantsCard, cardUp, shown]);
+  }, [idx, panel, text, wantsCard, cardUp, shown]);
 
   // the speaker's voice as the line types, a syllable every few letters (not when the whole line is skipped to)
   // (a slow frame can bring several letters at once: they are still spoken, the voice's own gap keeps it from gabbling; a tap that
@@ -159,13 +171,13 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   useEffect(() => {
     spoken.current = 0;
     skipped.current = false;
-  }, [idx]);
+  }, [idx, page]);
   useEffect(() => {
     const from = spoken.current;
     spoken.current = shown;
     if (skipped.current) return;
-    for (let i = from; i < shown; i++) sound.speak(panel.speaker, panel.text, i);
-  }, [shown, panel]);
+    for (let i = from; i < shown; i++) sound.speak(panel.speaker, text, i, dir.tone);
+  }, [shown, panel, text, dir]);
 
   // ── the picture: full screen on landscape, a 16:9 window above the text on tall screens
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -204,6 +216,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   }, [wide, idx, cardUp, view.w, view.h]);
 
   const startRef = useRef(performance.now());
+  /** how this picture arrives (storyDirect.ts): the full dip from dark for a new chapter, a quick half-dark one for a new place, a cut */
+  const enterRef = useRef(dir.enter);
+  enterRef.current = dir.enter;
   // (a picture's own timeline starts when the title card has gone, so an action beat is never played out behind the card)
   useEffect(() => {
     startRef.current = performance.now();
@@ -272,7 +287,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     sound.setAmbient('thunderstorm');
     return () => sound.setAmbient('gentle_breeze');
   }, [hold]);
-  const scene = hold && phase === 'reach' ? hold.reach : panel.scene;
+  // (the picture through the direction's camera, unless the scene moves its own)
+  const directed = useMemo(() => (dir.camera ? { ...panel.scene, camera: dir.camera } : panel.scene), [panel, dir]);
+  const scene = hold && phase === 'reach' ? hold.reach : directed;
   const showPrompt = !!hold && phase !== 'reach' && (isEasy() || tries.current === 0);
 
   useEffect(() => {
@@ -311,10 +328,11 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
         ctx.fillStyle = `rgba(235,240,255,${sk.flash})`;
         ctx.fillRect(-20, -top - 20, sw + 40, sh + top + 40);
       }
-      // dip in from dark at every new picture
-      const k = Math.max(0, 1 - (now - startRef.current) / 520);
+      // a new chapter dips in from dark, a new place half-dark and quicker, and a picture in the same place is a cut
+      const ent = enterRef.current;
+      const k = ent === 'cut' ? 0 : Math.max(0, 1 - (now - startRef.current) / (ent === 'dip' ? 520 : 300));
       if (k > 0) {
-        ctx.fillStyle = `rgba(6,10,8,${k * 0.9})`;
+        ctx.fillStyle = `rgba(6,10,8,${k * (ent === 'dip' ? 0.9 : 0.55)})`;
         ctx.fillRect(0, -top, sw, sh + top);
       }
     };
@@ -331,12 +349,13 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     }
     if (!done) {
       skipped.current = true;
-      setShown(panel.text.length);
+      setShown(text.length);
       return;
     }
-    if (last) onFinish();
+    if (!lastPage) setPageAt({ idx, n: page + 1 });
+    else if (last) onFinish();
     else setIdx((i) => i + 1);
-  }, [hold, cardUp, done, last, onFinish, panel.text.length]);
+  }, [hold, cardUp, done, last, lastPage, onFinish, text.length, idx, page]);
 
   const back = useCallback(() => setIdx((i) => Math.max(0, i - 1)), []);
 
@@ -369,10 +388,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
         </span>
       )}
       <p className={`sp-text ${narrator ? 'narr' : ''}`}>
-        {lyrics(panel.text.slice(0, shown))}
-        <span className="opacity-0">{lyrics(panel.text.slice(shown))}</span>
+        {lyrics(text.slice(0, shown))}
+        <span className="opacity-0">{lyrics(text.slice(shown))}</span>
       </p>
-      {panel.tip && done && (
+      {panel.tip && done && lastPage && (
         <p className="sp-tip">
           <Icon name="bulb" size={16} /> {panel.tip}
         </p>
@@ -397,7 +416,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
             </button>
           )}
           {!hold && <button type="button" className="sp-next" onClick={(e) => { e.stopPropagation(); next(); }}>
-            {last && done ? (
+            {last && done && lastPage ? (
               <>
                 {finishLabel} <Icon name={finishIcon} size={15} />
               </>
