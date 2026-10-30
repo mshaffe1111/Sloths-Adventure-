@@ -20,6 +20,7 @@ import { warmScenery } from './scenery.ts';
 import { warmStageArt } from './stageArt.ts';
 import { warmBadWater } from './badWaterArt.ts';
 import { creatureAnimsReady, settleCreatureBakes } from './creatureAnim.ts';
+import { settleSheetBakes } from './sheetBake.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
 import { perfNote } from './perfLog.ts';
@@ -105,6 +106,8 @@ export async function readyBuiltStage(
     if (live()) return;
     drawn += warm(ctx, plains, deadline);
   }
+  // (the painted sprites drawn through sheetBake.ts bake their sheets at the size the frames above drew them at: only here, never in play)
+  if (!live()) settleSheetBakes();
   const late = pendingSheets();
   const line = `ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`;
   perfNote(line);
