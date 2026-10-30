@@ -41,11 +41,11 @@ const STAGE_THEMES: Readonly<Record<number, ReadonlyArray<[W9Theme, readonly str
   4: [[W9_THEME.coils, ['w9-boa-knobs', 'w9-boa-vents']]],
   6: [[W9_THEME.cats, ['w9-cat-den', 'w9-jaguar-leap', 'w9-cat-ledges']], [W9_THEME.prowl, ['w9-hunter-run', 'w9-hunter-brink', 'w9-prowl-crust', 'w9-cat-chasm']]],
   8: [[W9_THEME.channels, ['w9-basalt-run', 'w9-basalt-twin']]],
-  // (9-9: the guards, harpies and boas on the ash; or the hoard's own ground, pillars and bursts over the lava with a guard at the end)
-  9: [[W9_THEME.harpies, ['w9-harpy-field', 'w9-harpy-gap', 'w9-boa-ledges', 'w9-boa-chasm']], [W9_THEME.boas, ['w9-pillar-run', 'w9-hot-run', 'w9-harpy-pillars', 'w9-hoard-pillars']]],
+  // (9-9: the guards on the landings past the chasms; or the hoard's own ground, pillars and bursts over the lava)
+  9: [[W9_THEME.harpies, ['w9-harpy-gap', 'w9-harpy-pillars', 'w9-boa-chasm', 'w9-hot-run']], [W9_THEME.boas, ['w9-pillar-run', 'w9-hoard-pillars', 'w9-pillar-hop']]],
 };
 /** the ground of 9-3 that asks most, between its chains: weighed as a theme's (the vine stage is no breather: World 9's band) */
-const HOT_GROUND = ['w9-crust-gaps', 'w9-pillar-hop', 'w9-lava-drop'];
+const HOT_GROUND = ['w9-crust-gaps', 'w9-lava-drop'];
 /** a shared section given to the stage's theme that leans on it (it then waits for that theme's gate) */
 function themed(stage: number, s: SectionTemplate): SectionTemplate {
   if (stage === 3 && HOT_GROUND.includes(s.id)) return { ...s, weight: 1 };
