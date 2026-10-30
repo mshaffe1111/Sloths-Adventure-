@@ -28,25 +28,25 @@
 import type { Difficulty, LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit, WorldManifest } from '../types.ts';
 
 /**
- * Pokey's room lines (under 10 words). All new: the lead approves each before it ships (LEAD-PLAYBOOK "Dot and in-stage lines").
+ * Pokey's room lines (under 10 words). Approved by the lead, 2026-10-29 (LEAD-PLAYBOOK "Dot and in-stage lines").
  */
 export const W10R_TIPS = {
   hoistEnter: 'Too high to climb. In this rain, too.',
-  hoistEnterNormal: 'Too high. And somebody locked the rubble up.',
+  hoistEnterNormal: "Too high. And the rubble's locked away.",
   hoistHold: 'Heavy. Good.',
   hoistOpen: "Going up. I won't look down.",
   beamEnter: "That wall's taller than me. Most things are.",
-  beamHold: 'A stone. Heavier than it looks.',
+  beamHold: "A stone. That'll do.",
   beamOpen: 'It holds. Up I go, then.',
-  gateEnter: 'Shut. Somebody here really likes locks.',
-  gateHold: 'Rubble. Not mine, but heavy.',
+  gateEnter: 'Shut. Locks on everything here.',
+  gateHold: 'Rubble. Part of a wall, once.',
   gateOpen: 'Open. Through, before it changes its mind.',
 } as const;
 export const W10R_NEW_LINES: readonly string[] = Object.values(W10R_TIPS);
 
 /** the rooms' hints, asked for (Matt: only when asked, in steps, never the answer; under 10 words). New lines: the lead approves them */
 export const W10R_ROOM_HINTS: Record<string, readonly [string, string]> = {
-  hoist: ['The basket pulls the plank up.', 'A flick up throws what I hold.'],
+  hoist: ['The cage pulls the grate up.', 'A flick up throws what I hold.'],
   beam: ['Which end goes down when I stand there?', "I'm heavier than one stone."],
   gate: ['That gate wants two things.', 'Something up on those crates.'],
 };

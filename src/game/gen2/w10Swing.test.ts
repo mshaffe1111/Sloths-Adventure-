@@ -54,7 +54,7 @@ test('which stages take which swings: 10-6, 10-7 and 10-9\'s finale (10-3 none);
     assert.deepEqual(got, want, `10-${s}`);
   }
   assert.ok(w10SwingFor(6, 'w10s-chain-run') && !w10SwingFor(3, 'w10s-chain-pair') && !w10SwingFor(7, 'w10s-storm-ropes'));
-  assert.deepEqual(W10_SWING_SECTIONS.filter((x) => w10SwingFor(9, x.id)).map((x) => x.id).sort(), ['w10s-cage-guard', 'w10s-cage-pair', 'w10s-chain-pair']);
+  assert.deepEqual(W10_SWING_SECTIONS.filter((x) => w10SwingFor(9, x.id)).map((x) => x.id).sort(), ['w10s-chain-pair', 'w10s-guard-pair', 'w10s-guard-wall']);
 });
 
 for (const id of STAGES) {
@@ -78,7 +78,7 @@ for (const id of STAGES) {
         const swings = route.segs.filter((s) => s.kind === 'swing');
         for (const v of st.vines.filter((x) => x.vineType === 'swing_liana')) {
           assert.ok(swings.some((s) => Math.min(s.x0, s.x1) <= v.x + 40 && Math.max(s.x0, s.x1) >= v.x - 40), `${at}: the liana at ${v.x} is never swung`);
-          assert.ok(['chain', 'banner', 'cage', 'rope'].includes(v.hangLook ?? ''), `${at}: the liana at ${v.x} looks ${v.hangLook}`);
+          assert.ok(['chain', 'banner', 'rope'].includes(v.hangLook ?? ''), `${at}: the liana at ${v.x} looks ${v.hangLook}`);
         }
         if (!W10S_STAGES.includes(Number(id.split('-')[1]))) assert.ok(!st.vines.some((v) => v.vineType === 'swing_liana'), `${at}: a swing in ${id}`);
       }
@@ -94,5 +94,5 @@ test('the looks: a retry keeps every look (the same roll), and the rolls between
     assert.deepEqual(a.vines.map((v) => v.hangLook), b.vines.map((v) => v.hangLook), `${seed}`);
     for (const v of a.vines) if (v.hangLook) seen.add(v.hangLook);
   }
-  assert.deepEqual([...seen].sort(), ['banner', 'cage', 'chain', 'rope']);
+  assert.deepEqual([...seen].sort(), ['banner', 'chain', 'rope']);
 });

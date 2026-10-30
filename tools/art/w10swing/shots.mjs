@@ -34,7 +34,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
   const p = await ctx.newPage();
   p.on('pageerror', (e) => { if (!/AudioParam|AudioContext/.test(e.message)) console.log('ERR', e.message); });
   // ── the swings ──
-  for (const look of ['chain', 'banner', 'cage', 'rope']) {
+  for (const look of ['chain', 'banner', 'rope']) {
     await start(p, w, h, '10-6');
     const spot = await p.evaluate((look) => {
       const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;

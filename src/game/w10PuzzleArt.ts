@@ -1,8 +1,10 @@
 /**
  * World 10's puzzle pieces (gen2/worlds/w10Rooms.ts), in the world's own painted sheets, drawn over the kit's own by puzzlePlay.ts (the
  * kit's art stands in until a sheet loads):
- *   the iron lever on its block, the stone pressure plate, the portcullis down and up: props-made/w10a.webp (each pair on one canvas and
- *     anchor, the middle of the foot, so the two states swap in place)
+ *   the iron lever on its block, the portcullis down and up: props-made/w10a.webp (each pair on one canvas and anchor, the middle of the
+ *     foot, so the two states swap in place)
+ *   the pressure plate: a mossy slab in a riveted iron frame, raised and pressed (w10/plate.webp: Hugging Face, from the kit's own plate,
+ *     2026-10-29; the kit's w10a plate read as a flat grey slab of flooring, the lead's review)
  *   the hoist's plank: the iron grate hung on two chains (props-made/w10b 'hanging-iron'), its chains run on up off the screen
  *   the hoist's counterweight: a cage on a chain (props-made/w10alt 'cage-b'), the stones in it once they are thrown in
  *   the beam: the iron-banded plank (gemini/w9w10-bridges 'plank-ring') turned on a block of the wall's rock (the kit's 'boulder')
@@ -16,6 +18,7 @@ const URLS = {
   alt: new URL('../assets/w6to10/props-made/w10alt.webp', import.meta.url).href,
   br: new URL('../assets/w6to10/gemini/w9w10-bridges.webp', import.meta.url).href,
   kit: new URL('../assets/kits/w10.webp', import.meta.url).href,
+  plate: new URL('../assets/w10/plate.webp', import.meta.url).href,
 } as const;
 type Sheet = keyof typeof URLS;
 export const W10_PUZZLE_FRAMES = {
@@ -57,6 +60,17 @@ export function drawW10Piece(ctx: CanvasRenderingContext2D, n: W10PieceName, x: 
   const f = W10_PUZZLE_FRAMES[n];
   const s = h / f.h;
   ctx.drawImage(img, f.x, f.y, f.w, f.h, x - f.ax * s, bottom - f.ay * s, f.w * s, f.h * s);
+  return true;
+}
+
+/** the pressure plate's two states, side by side in w10/plate.webp on the same box (its iron frame's foot at the bottom middle) */
+const PLATE = { w: 389, h: 157, gap: 4 };
+/** the pressure plate, raised or pressed, `w` px wide, the middle of its frame's foot at (x, bottom); false until the sheet has loaded */
+export function drawW10Plate(ctx: CanvasRenderingContext2D, down: boolean, x: number, bottom: number, w: number): boolean {
+  const img = sheet('plate');
+  if (!img) return false;
+  const h = (w * PLATE.h) / PLATE.w;
+  ctx.drawImage(img, down ? PLATE.w + PLATE.gap : 0, 0, PLATE.w, PLATE.h, x - w / 2, bottom - h, w, h);
   return true;
 }
 

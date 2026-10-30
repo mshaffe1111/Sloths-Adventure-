@@ -133,3 +133,8 @@ hfb-w4pebbles 6ae3a561c78863f9c62dc965 rtx-pro-6000 19:58:25Z-20:00:15Z (1.8 min
   brightness in a warm grey. 19 pebbles + 20 chips; review sheet reference/prop-sheets/qa-notes/hazard-anim/grit-review.jpg.
 total ~1.8 min on rtx-pro-6000 = ~$0.08 of the $5 cap. Stopped there: everything else reuses painted pieces already in the game
   (boss-fx dust, spark, splash, gust, warnArrow and feather; the leaves atlas; the waterfall set).
+hfb-w10plate 6ae3e39b0e0338d1bb7c5cad rtx-pro-6000 00:23:55Z-~00:26Z (~2 min, ~$0.09): s60/s72 x seeds 7/23 from start-w10plate
+  (the kit's own stone plate in a riveted iron frame, raised and pressed side by side; the lead: the kit's plate read as a flat grey
+  slab). w10plate-s72-23 KEPT as src/assets/w10/plate.webp (platecut.py; both states on one box). s72-7 not used (rain streaks painted
+  in), s60-7 and s60-23 not used (plainer, no moss).
+running total ~$0.17 of the $6 cap. Review: reference/prop-sheets/qa-notes/w10-swing/plate.jpg, gate-plate-shut-open.png
