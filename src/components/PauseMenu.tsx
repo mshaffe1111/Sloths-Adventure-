@@ -19,6 +19,8 @@ interface PauseMenuProps {
   onOpenTrophies: () => void;
   onOpenCards: () => void;
   onOpenMap: () => void;
+  /** leave the stage for the start screen (its place kept as leaving for the map keeps it) */
+  onOpenTitle: () => void;
   trophyCount: number;
   trophyTotal: number;
   /** the skills Pokey has learned so far */
@@ -147,11 +149,11 @@ export const Sliders: React.FC = () => {
   );
 };
 
-/** The pause menu: opens when the player taps Menu (the game is paused behind it). */
-export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenMap, trophyCount, trophyTotal, skills, onAskHint }) => (
+/** Settings, the pause card: opens when the player taps Settings (the game is paused behind it). */
+export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenMap, onOpenTitle, trophyCount, trophyTotal, skills, onAskHint }) => (
   <MenuFrame
-    label="Menu"
-    title="Paused"
+    label="Settings"
+    title="Settings"
     sub={`${levelConfig.secret ? 'Secret stage' : `Stage ${levelConfig.id}`} · ${levelConfig.name}`}
     subChip={<ModeChip />}
     notice={<UpdateRow />}
@@ -164,6 +166,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
         <MenuTile icon="trophy" name="Trophies" line={`${trophyCount} of ${trophyTotal} earned`} onClick={onOpenTrophies} />
         <MenuTile icon="cards" name="Jungle Cards" line="Meet every creature" onClick={onOpenCards} />
         <MenuTile icon="map" name="World Map" line="Leave this stage" onClick={onOpenMap} />
+        <MenuTile icon="sloth" name="Start Screen" line="Back to the title" onClick={onOpenTitle} />
         <HowToTile />
       </>
     }

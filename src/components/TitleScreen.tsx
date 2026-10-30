@@ -219,9 +219,9 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               <Icon name="bulb" size={20} />
               How to Play
             </button>
-            <button type="button" onClick={() => setMenuOpen(true)} className="gx-plank" aria-label="Menu" data-menu="true" style={{ ['--i' as string]: 4 }}>
+            <button type="button" onClick={() => setMenuOpen(true)} className="gx-plank" aria-label="Settings" data-menu="true" style={{ ['--i' as string]: 4 }}>
               <Icon name="gear" size={20} />
-              Menu
+              Settings
             </button>
           </div>
           <div className="gx-tags">

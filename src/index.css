@@ -157,7 +157,9 @@
 .map-node:active { transform: scale(.92); }
 .map-node.ready { background: radial-gradient(circle at 35% 30%, #ffd36a, #ff9a14); color: #4a2400; box-shadow: 0 4px 0 #a85c00, 0 0 18px rgba(255,190,60,.7); }
 .map-node.done { background: radial-gradient(circle at 35% 30%, #58d08a, #1f8a52); border-color: #d9ffe6; box-shadow: 0 4px 0 #0f4b2b, 0 6px 12px rgba(0,0,0,.35); }
-.map-node.locked { background: radial-gradient(circle at 35% 30%, #5b6a60, #36423a); border-color: #8d9a91; color: #aab6ad; cursor: not-allowed; box-shadow: 0 3px 0 #1d2620; opacity: .88; }
+/* a locked stage is the kit's painted wooden lock badge (option A, Matt 2026-10-30) */
+.map-node.locked { background: none; border-color: transparent; color: #aab6ad; cursor: not-allowed; box-shadow: none; }
+.map-node.locked .map-lockbadge { position: absolute; inset: -3px; width: calc(100% + 6px); height: calc(100% + 6px); filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .45)); }
 /* the boss stage is its guardian's painted crest: no button disc, the medallion is the node */
 .map-node.boss, .map-node.boss.ready, .map-node.boss.done, .map-node.boss.locked { background: none; border: 0; box-shadow: none; opacity: 1; color: #fff; }
 .map-node.sel { outline: 3px solid #fff; outline-offset: 3px; transform: scale(1.12); }
@@ -167,15 +169,13 @@
 /* the stage type, as a small badge on the node's corner */
 .map-tbadge { position: absolute; right: -7px; top: -7px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #0f3b27; border: 1.5px solid #fff3c4; box-shadow: 0 2px 3px rgba(0,0,0,.5); pointer-events: none; }
 .map-node.locked .map-tbadge { opacity: .72; filter: saturate(.55); border-color: #aab6ad; }
-.map-node.locked > .ic { filter: saturate(.3) brightness(1.08); }
 .map-node.done .map-tbadge { border-color: #d9ffe6; }
 /* a soft pulse ring on the stage to play next */
 .map-ring { position: absolute; z-index: 1; border-radius: 50%; border: 3px solid rgba(255, 214, 110, .85); pointer-events: none; animation: map-ring 2.4s ease-out infinite; }
 @keyframes map-ring { 0% { transform: scale(1); opacity: .85; } 100% { transform: scale(1.7); opacity: 0; } }
 
 .map-stars { position: absolute; z-index: 2; width: 40px; display: flex; justify-content: center; gap: 0; line-height: 1; pointer-events: none; }
-.map-stars .ic { filter: grayscale(1) brightness(.8) opacity(.4); }
-.map-stars .ic.on { filter: drop-shadow(0 1px 1px rgba(0,0,0,.7)); }
+.map-stars .ic { filter: drop-shadow(0 1px 1px rgba(0,0,0,.7)); }
 /* Pokey stands on the next stage: painted, a slow idle bob, a soft shadow on the node */
 .map-here { position: absolute; z-index: 4; transform: translateX(-50%); pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
 .map-here::before { content: ""; position: absolute; left: 50%; bottom: -2px; width: 64%; height: 9px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0,0,0,.5), rgba(0,0,0,0) 70%); }
@@ -392,8 +392,9 @@
 .clr-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: max(34px, calc(env(safe-area-inset-top, 0px) + 22px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); background: rgba(2, 20, 14, 0.74); font-family: var(--font-ui); overflow-x: hidden; overflow-y: auto; color: var(--gx-ink); }
 .clr-confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .clr-card { position: relative; width: 100%; max-width: 800px; box-sizing: border-box; border-radius: 30px; background: linear-gradient(180deg, #0b3a2c, #06261d); border: 3px solid #6ee7b7; box-shadow: 0 20px 56px rgba(0, 0, 0, 0.6); padding: 54px 30px 24px; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 26px; margin: auto; flex: none; animation: clr-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.clr-ribbon { position: absolute; left: 50%; top: -30px; transform: translateX(-50%); width: min(440px, 94%); display: flex; align-items: center; justify-content: center; z-index: 3; }
-.clr-ribbon h2 { position: relative; font-size: 28px; letter-spacing: 1px; }
+.clr-ribbon { position: absolute; left: 50%; top: -30px; transform: translateX(-50%); width: min(440px, calc(100% + 30px)); display: flex; align-items: center; justify-content: center; z-index: 3; }
+.clr-ribbon h2 { position: relative; font-size: min(28px, 6.8vw); letter-spacing: 1px; }
+/* (the plaque sits across the painted frame's top, so it may run over the frame's width, never the words out of it) */
 .clr-hero { position: relative; display: flex; align-items: flex-end; justify-content: center; min-height: 0; }
 .clr-hero::before { content: ""; position: absolute; left: 50%; bottom: 14%; width: 200px; height: 200px; margin-left: -100px; border-radius: 50%; background: radial-gradient(circle, rgba(253, 230, 138, 0.5), rgba(253, 230, 138, 0) 68%); }
 .clr-hero > * { position: relative; }
@@ -1096,15 +1097,15 @@
   .gx2-credit { font-size: 12px; }
 }
 
-/* ───────── the menus (start menu and pause menu, MenuFrame.tsx): parchment in a wooden frame (2026-10-28) ───────── */
+/* ───────── the menus (start menu and pause menu, MenuFrame.tsx): parchment in a wooden frame (2026-10-28); the frame painted
+   (menu kit option A, Matt 2026-10-30: src/assets/ui/card.webp, Hugging Face takes in the game's style) ───────── */
 .pm-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; box-sizing: border-box;
   padding: max(10px, env(safe-area-inset-top, 0px)) max(10px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px));
   background: radial-gradient(ellipse at 50% 42%, rgba(10, 24, 14, .52), rgba(4, 10, 6, .8)); color: var(--gx-ink); font-family: var(--font-fun); animation: fx-scrim-in .22s ease both; }
 .pm-card {
   position: relative; width: 100%; max-width: 560px; max-height: 100%; overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;
-  border: 11px solid transparent; border-radius: 24px; padding: 16px 16px 16px; color: var(--gx-ink);
-  background: var(--gx-parch) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #a86d38, #7a4a20) border-box;
-  box-shadow: 0 0 0 3px #2a1608, inset 0 0 0 2px rgba(120, 80, 30, .35), inset 0 0 26px rgba(140, 90, 30, .32), 0 18px 44px rgba(0, 0, 0, .55);
+  border: 22px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 22px stretch; padding: 6px 6px 6px; color: var(--gx-ink);
+  background: none; box-shadow: 0 18px 44px rgba(0, 0, 0, .55);
   scrollbar-color: #a86d38 transparent; animation: fx-card-in .42s cubic-bezier(.2, 1.25, .4, 1) both;
 }
 .pm-head { display: flex; align-items: center; gap: 12px; }
@@ -1128,16 +1129,15 @@
 /* the picture tiles: two by two upright, a lone last one across the whole row */
 .pm-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .pm-tile { --band: #3f9a5a; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 0; min-height: 112px; padding: 12px 8px 10px;
-  text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; color: var(--gx-ink); font-family: inherit; border-radius: 15px;
-  border: 2px solid color-mix(in srgb, var(--band) 55%, #3b2412); background: linear-gradient(180deg, #fffaf0, #f2e3c0);
-  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--band) 25%, transparent), 0 3px 0 rgba(90, 60, 20, .35), 0 6px 12px rgba(60, 40, 10, .14);
+  text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; color: var(--gx-ink); font-family: inherit;
+  border: 12px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 12px stretch; background: none;
+  box-shadow: 0 4px 10px rgba(60, 40, 10, .22);
   transition: transform .09s ease, box-shadow .09s ease, background .15s ease; }
 .pm-tile:hover { background: linear-gradient(180deg, #fffdf6, #f7ead0); }
 .pm-tile:active { transform: translateY(2px) scale(.98); box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--band) 25%, transparent), 0 1px 0 rgba(90, 60, 20, .35); }
-.pm-tile-ic { flex: none; width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center;
-  background: radial-gradient(circle at 38% 32%, color-mix(in srgb, var(--band) 30%, #fff8e6), color-mix(in srgb, var(--band) 80%, #fff) 70%, var(--band));
-  border: 2.5px solid color-mix(in srgb, var(--band) 50%, #2a1608); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16), inset 0 2px 0 rgba(255, 255, 255, .45), 0 2px 0 rgba(60, 40, 10, .3); }
-.pm-tile-ic .ic { filter: drop-shadow(0 1.5px 0 rgba(40, 20, 5, .4)); }
+/* the tile's picture: the painted kit icon on its own, as big as the old disc (option A) */
+.pm-tile-ic { flex: none; width: 50px; height: 50px; display: grid; place-items: center; }
+.pm-tile-ic .ic { width: 100%; height: 100%; filter: drop-shadow(0 2px 1px rgba(40, 20, 5, .35)); }
 .pm-tile-t { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; max-width: 100%; }
 .pm-tile b { display: block; font-family: var(--font-fun); font-weight: 400; font-size: 16px; line-height: 1.1; color: var(--gx-ink); white-space: nowrap; }
 .pm-tile small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--font-ui); font-weight: 600; font-size: 12px; line-height: 1.25; color: var(--gx-ink-soft); text-wrap: balance; }
@@ -1204,8 +1204,7 @@
   .pm-tiles > :last-child:nth-child(odd) .pm-tile-t { align-items: center; }
   .pm-tiles > :nth-last-child(2):nth-child(3n+1), .pm-tiles > :last-child:nth-child(3n+2) { grid-column: span 3; }
   .pm-tiles > :last-child:nth-child(3n+1) { grid-column: 1 / -1; }
-  .pm-tile-ic { width: 34px; height: 34px; border-width: 2px; }
-  .pm-tile-ic .ic { width: 20px; height: 20px; }
+  .pm-tile-ic { width: 36px; height: 36px; }
   .pm-tile b { font-size: 14px; }
   .pm-tile small { font-size: 12px; -webkit-line-clamp: 1; }
   .pm-skills { padding: 7px 10px; }
@@ -1247,10 +1246,10 @@
 
 /* ───────── the stage-cleared, new-skill and out-of-lives cards: parchment in a wooden frame ───────── */
 
+/* the frame painted (menu kit option A, Matt 2026-10-30: src/assets/ui/card.webp) */
 .clr-card {
-  border: 12px solid transparent; border-radius: 28px; color: var(--gx-ink);
-  background: var(--gx-parch) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #a86d38, #7a4a20) border-box;
-  box-shadow: 0 0 0 3px #2a1608, inset 0 0 0 2px rgba(120, 80, 30, .35), inset 0 0 30px rgba(140, 90, 30, .32), 0 20px 50px rgba(0, 0, 0, .6);
+  border: 22px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 22px stretch; color: var(--gx-ink);
+  background: none; box-shadow: 0 20px 50px rgba(0, 0, 0, .6);
 }
 .clr-hero::before { background: radial-gradient(circle, rgba(255, 214, 110, .55), rgba(255, 214, 110, 0) 68%); }
 .clr-stage { color: var(--gx-ink-soft); font-weight: 700; }
@@ -1266,11 +1265,8 @@
 
 .sk-name { font-size: 30px; }
 
-/* out of lives: the same parchment as every card, in the dusk light (UI-12: it was a flat pale grey, the one card off the kit) */
-.clr-card.lost { border-color: transparent;
-  background: radial-gradient(ellipse at 50% 30%, #f6ead0 0%, #e6d3ad 60%, #c8b088 100%) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #7a6a5a, #4f4236) border-box;
-  box-shadow: 0 0 0 3px #1e1812, inset 0 0 30px rgba(60, 70, 80, .3), 0 20px 56px rgba(0, 0, 0, .65);
-}
+/* out of lives: the same painted card as every other (UI-12: it was a flat pale grey, the one card off the kit) */
+.clr-card.lost { border-color: transparent; background: none; box-shadow: 0 20px 56px rgba(0, 0, 0, .65); }
 .clr-card.lost .clr-stage { color: #4a5560; }
 .clr-card.lost .clr-chip span { color: #f3d9a6; }
 .clr-praise.lost b { color: #b4541a; }
@@ -1461,8 +1457,7 @@
   .pm-tiles:has(> :nth-child(6)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .pm-tile b { font-size: 12.5px; white-space: normal; line-height: 1.05; }
   .pm-tile small { display: none; }
-  .pm-tile-ic { width: 30px; height: 30px; }
-  .pm-tile-ic .ic { width: 18px; height: 18px; }
+  .pm-tile-ic { width: 32px; height: 32px; }
   .pm-tile-badge { top: 3px; right: 3px; }
   .pm-sound { padding: 7px 0 6px; gap: 3px; }
   .pm-polish-note { font-size: 12px; }

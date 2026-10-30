@@ -9,7 +9,7 @@ import { SceneBackdrop } from './title/TitleScene.tsx';
 import { Plaque } from './KitParts.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { HeroPose } from './HeroPose.tsx';
-import { Icon } from './icons/index.tsx';
+import { Icon, KitPiece } from './icons/index.tsx';
 import { Crest } from './icons/Crest.tsx';
 import { stageTypeInfo } from './icons/stageTypes.ts';
 import { MEECA_STAGE_ID } from '../game/extraStages.ts';
@@ -203,9 +203,9 @@ export const WorldMap: React.FC<WorldMapProps> = ({
 
       {/* header */}
       <div className="relative z-10 flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 px-3 sm:px-6 pt-2.5 sm:pt-4">
-        <button type="button" onClick={onBackToTitle} className="ui-chip ui-chip-btn" aria-label="Back to the main menu">
+        <button type="button" onClick={onBackToTitle} className="ui-chip ui-chip-btn" aria-label="Back to the start screen">
           <Icon name="arrow" size={13} rotate={180} />
-          Menu
+          Start
         </button>
         <div className="text-center min-w-0 order-3 basis-full sm:order-none sm:basis-auto">
           <div className="ui-kicker">
@@ -305,7 +305,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 ) : (
                   <>
                     {/* an extra stage between the world's own (extraStages.ts) shows whose it is, not a number: Dot's flier, Meeca's face */}
-                    {!open ? <Icon name="lock" size={Math.round(size * 0.5)} /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <Icon name="hummingbird" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
+                    {!open ? <KitPiece piece="lockBadge" width={size} className="map-lockbadge" /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <Icon name="hummingbird" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
                     <span className="map-tbadge" style={{ width: badgePx, height: badgePx }} title={type.label}>
                       <Icon name={type.icon} size={Math.round(badgePx * 0.78)} />
                     </span>
@@ -315,7 +315,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
               {open && lvl.completed && (
                 <div className="map-stars" style={{ left: p.x - 20, top: p.y + size / 2 + (sel ? 6 : 2) }} aria-hidden="true">
                   {[1, 2, 3].map((n) => (
-                    <Icon key={n} name="star" size={11} className={n <= lvl.stars ? 'on' : ''} />
+                    <KitPiece key={n} piece={n <= lvl.stars ? 'starFull' : 'starEmpty'} width={11} className={n <= lvl.stars ? 'ic on' : 'ic'} />
                   ))}
                 </div>
               )}

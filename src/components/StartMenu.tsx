@@ -19,7 +19,7 @@ interface StartMenuProps {
   skills: Set<SkillId>;
 }
 
-/** The menu on the start screen: everything the in-game menu shows (trophies, jungle cards, map, skills, sound), minus the parts that belong to a stage in progress. */
+/** Settings on the start screen: everything the in-game menu shows (trophies, jungle cards, map, skills, sound), minus the parts that belong to a stage in progress. */
 export const StartMenu: React.FC<StartMenuProps> = ({ isMuted, onToggleMute, onClose, onOpenTrophies, onOpenCards, onOpenMap, onViewStory, trophyCount, trophyTotal, skills }) => {
   // Esc closes it
   React.useEffect(() => {
@@ -34,8 +34,8 @@ export const StartMenu: React.FC<StartMenuProps> = ({ isMuted, onToggleMute, onC
   }, [onClose]);
   return (
     <MenuFrame
-      label="Menu"
-      title="Menu"
+      label="Settings"
+      title="Settings"
       sub="Sloths Rainforest Adventures"
       onScrim={onClose}
       go={{ label: 'Back to the title', onClick: onClose, title: COARSE ? undefined : 'Esc' }}

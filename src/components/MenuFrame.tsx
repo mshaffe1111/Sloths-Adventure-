@@ -67,7 +67,7 @@ export const MenuFrame: React.FC<{
           <div className="pm-side">
             <div className="pm-sec-h">
               <Icon name="gear" size={20} />
-              Settings
+              Options
             </div>
             <div className="pm-settings">
               {sound}
