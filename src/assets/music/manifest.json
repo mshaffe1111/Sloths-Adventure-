@@ -108,6 +108,674 @@
     "form": false
    },
    "sections": []
+  },
+  "menu": {
+   "stems": {
+    "mix": "menu.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 49.655166666666666,
+   "bars": 32,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.45,
+   "level": 1.0208,
+   "source": {
+    "id": "menu",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "B",
+    "B2",
+    "break"
+   ]
+  },
+  "map-1": {
+   "stems": {
+    "mix": "map-1.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 49.655166666666666,
+   "bars": 32,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1,
+   "source": {
+    "id": "map-1",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "B",
+    "C",
+    "B2"
+   ]
+  },
+  "map-2": {
+   "stems": {
+    "mix": "map-2.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 49.655166666666666,
+   "bars": 32,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.0505,
+   "source": {
+    "id": "map-2",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "A3",
+    "B2",
+    "C2"
+   ]
+  },
+  "signature": {
+   "stems": {
+    "mix": "signature.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 109.09091666666667,
+   "bars": 80,
+   "beat": 0.45454545454545453,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.7,
+   "level": 1.7018,
+   "source": {
+    "id": "signature",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "intro",
+    "A",
+    "B",
+    "A2",
+    "break",
+    "A3",
+    "intro",
+    "A",
+    "B",
+    "A2",
+    "break",
+    "A3"
+   ]
+  },
+  "map-3": {
+   "stems": {
+    "mix": "map-3.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 99.31035416666667,
+   "bars": 64,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1,
+   "source": {
+    "id": "map-3",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "A2",
+    "B2",
+    "A3",
+    "C2",
+    "C",
+    "B",
+    "break"
+   ]
+  },
+  "map-4": {
+   "stems": {
+    "mix": "map-4.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 62.068958333333335,
+   "bars": 40,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.4798,
+   "source": {
+    "id": "map-4",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "C",
+    "C2",
+    "A3",
+    "B2"
+   ]
+  },
+  "map-5": {
+   "stems": {
+    "mix": "map-5.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 62.068958333333335,
+   "bars": 40,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1,
+   "source": {
+    "id": "map-5",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "B",
+    "A2",
+    "B2",
+    "C"
+   ]
+  },
+  "map-6": {
+   "stems": {
+    "mix": "map-6.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 49.655166666666666,
+   "bars": 32,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.3153,
+   "source": {
+    "id": "map-6",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "B",
+    "C2",
+    "B2"
+   ]
+  },
+  "map-8": {
+   "stems": {
+    "mix": "map-8.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 49.655166666666666,
+   "bars": 32,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.032,
+   "source": {
+    "id": "map-8",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "A2",
+    "B",
+    "break"
+   ]
+  },
+  "map-7": {
+   "stems": {
+    "mix": "map-7.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 86.89654166666666,
+   "bars": 56,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.8972,
+   "source": {
+    "id": "map-7",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "B",
+    "A3",
+    "B2",
+    "C2",
+    "break",
+    "C"
+   ]
+  },
+  "map-9": {
+   "stems": {
+    "mix": "map-9.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 74.48275,
+   "bars": 48,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.282,
+   "source": {
+    "id": "map-9",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "A3",
+    "C",
+    "B",
+    "break",
+    "C2"
+   ]
+  },
+  "map-10": {
+   "stems": {
+    "mix": "map-10.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 49.655166666666666,
+   "bars": 32,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 58,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.4166,
+   "source": {
+    "id": "map-10",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": [
+    "A",
+    "C",
+    "A3",
+    "break"
+   ]
+  },
+  "gameover~s": {
+   "stems": {
+    "mix": "gameover~s.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 64,
+   "bars": 16,
+   "beat": 1,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 69,
+    "scale": [
+     0,
+     2,
+     3,
+     5,
+     7,
+     8,
+     10
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1,
+   "source": {
+    "id": "gameover~s",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "results~c": {
+   "stems": {
+    "mix": "results~c.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 91.4285625,
+   "bars": 32,
+   "beat": 0.7142857142857143,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 65,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.6,
+   "level": 1,
+   "source": {
+    "id": "results~c",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_pokey": {
+   "stems": {
+    "mix": "score_pokey.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 87.99747916666666,
+   "bars": 32,
+   "beat": 0.6818181818181818,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 65,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.1648,
+   "source": {
+    "id": "score_pokey",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_meeca": {
+   "stems": {
+    "mix": "score_meeca.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 65.93285416666667,
+   "bars": 30,
+   "beat": 0.7142857142857143,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.6,
+   "level": 1.0648,
+   "source": {
+    "id": "score_meeca",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "ending": {
+   "stems": {
+    "mix": "ending.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 114.28570833333333,
+   "bars": 40,
+   "beat": 0.7142857142857143,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 65,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.8,
+   "level": 1.1807,
+   "source": {
+    "id": "ending",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_grandma": {
+   "stems": {
+    "mix": "score_grandma.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 59.80758333333333,
+   "bars": 16,
+   "beat": 0.9090909090909091,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 55,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.274,
+   "source": {
+    "id": "score_grandma",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_bloom": {
+   "stems": {
+    "mix": "score_bloom.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 103.93602083333333,
+   "bars": 24,
+   "beat": 1.0714285714285714,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1,
+   "source": {
+    "id": "score_bloom",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
   }
  },
  "stages": {
