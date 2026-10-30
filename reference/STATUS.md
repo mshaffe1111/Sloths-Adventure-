@@ -42,6 +42,7 @@ The lead works on this alone first, with no helpers. Rules: reference/PERFORMANC
      - PERF-C effects: session_01FhBbYM5NT1K4UngYcmDpFR, branch perf-fx (pit water, gradients in terrain/artKit/river, eagle sparkle, smoothing; not engine/protoArt/groundPaint/scenery).
    - **DECIDED (Matt, ~10:00 AM ET): finish the 1 PM bake-once fixes, then move the game's drawing to a GPU renderer (PixiJS on WebGL) starting tomorrow** (how today's best 2D teams draw: textures on the GPU, batched draws). A written plan, helpers, proven on the Pixel, Samsung and OnePlus. Game logic, levels and art stay; only the draw layer changes. Plus the automatic perf gate (PERFORMANCE-RULES §8) so a slow build never ships unnoticed again.
    - **PERF-F (sprites) started:** session_01FhBbYNDmkaRGQfsqCAZKEe, branch perf-sprites. All helpers deliver proven work by 12:00 PM ET; the lead merges ~12:15; test link 1 PM ET. Matt's bar: his 2020 OnePlus playable.
+   - **10:35 AM ET:** Matt kept all six helpers running to noon (tokens are tight this week; the GPU renderer waits for his new week: reference/GPU-RENDERER-PLAN.md, awaiting approval). Ground fix committed (the lead), gate18 running.
    - Duet's other items, queued:
      - trackAtlas bitmaps for every sheet (b);
      - eagle sparkle `fillText` -> sprite;
