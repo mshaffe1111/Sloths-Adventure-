@@ -165,12 +165,16 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
       <>
         {onAskHint && <HintTile ask={onAskHint} />}
         <MenuTile icon="restart" name="Restart" line="Start this stage over" onClick={onRestart} title={COARSE ? undefined : 'R'} />
-        <MenuTile icon="trophy" name="Trophies" line={`${trophyCount} of ${trophyTotal} earned`} onClick={onOpenTrophies} />
-        <MenuTile icon="cards" name="Jungle Cards" line="Meet every creature" onClick={onOpenCards} />
         <MenuTile icon="book" name="Satchel" line="His finds and his journal" onClick={onOpenSatchel} />
         <MenuTile icon="map" name="World Map" line="Leave this stage" onClick={onOpenMap} />
         <MenuTile icon="sloth" name="Start Screen" line="Back to the title" onClick={onOpenTitle} />
         <HowToTile />
+      </>
+    }
+    trophies={
+      <>
+        <MenuTile icon="trophy" name="Trophies" line={`${trophyCount} of ${trophyTotal} earned`} onClick={onOpenTrophies} />
+        <MenuTile icon="cards" name="Jungle Cards" line="Meet every creature" onClick={onOpenCards} />
       </>
     }
     sound={<SoundSetting isMuted={isMuted} onToggleMute={onToggleMute} keyTitle={COARSE ? undefined : 'M'} sliders={<Sliders />} />}

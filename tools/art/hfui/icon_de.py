@@ -87,3 +87,24 @@ for i, (k, bg) in enumerate(opts.items()):
             L_.paste(mid.resize((sz, sz), Image.LANCZOS), (px + (96 - sz) // 2, py + (96 - sz) // 2), m)
 L_.save(GAME / 'reference/prop-sheets/qa-notes/hf-ui/icon-options-DE.jpg', quality=90)
 print('ok')
+
+# ───── the chosen icon (Matt, 2026-10-30: E) into the store and web icons ─────
+if len(sys.argv) > 3 and sys.argv[3] == '--use-E':
+    bg = opts['E-bark-leaf']
+    full = bg.copy()
+    full.alpha_composite(fg)
+    full = full.convert('RGB')
+    ST = GAME / 'reference/store'
+    full.resize((512, 512), Image.LANCZOS).save(ST / 'icon-512.png')
+    fg.resize((432, 432), Image.LANCZOS).save(ST / 'icon-fg-432.png')
+    bg.convert('RGB').resize((432, 432), Image.LANCZOS).save(ST / 'icon-bg-432.png')
+    PUB = GAME / 'public'
+    # (the icons nothing masks, the web app's, the iPhone's and the tab's, show the middle 72 of the 108 dp, as a launcher would;
+    # the maskable one keeps the whole canvas for the system to cut)
+    mid = full.crop((146, 146, 878, 878))
+    mid.resize((512, 512), Image.LANCZOS).save(PUB / 'pwa-512x512.png')
+    mid.resize((192, 192), Image.LANCZOS).save(PUB / 'pwa-192x192.png')
+    mid.resize((180, 180), Image.LANCZOS).save(PUB / 'apple-touch-icon.png')
+    full.resize((512, 512), Image.LANCZOS).save(PUB / 'pwa-maskable-512x512.png')
+    mid.resize((48, 48), Image.LANCZOS).save(PUB / 'favicon-48.png')
+    print('icon E in place')
