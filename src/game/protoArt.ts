@@ -862,8 +862,11 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
 const CHUNK = 256;
 /** painted a little past each side, so the soil, lip and end pieces that cross a square's edge are whole in it */
 const CHUNK_PAD = 2;
-/** squares kept (the oldest out of view go first): ~1 MB each at 2x */
-const CHUNK_KEEP = 36;
+/**
+ * the painted squares' memory, at most (the oldest out of view go first): 36 squares at 2x, but only 12 at 3.5x, where each is ~3.4 MB.
+ * The squares on screen are always kept, whatever this says (PERFORMANCE-RULES.md §2.13: the 4 GB OnePlus)
+ */
+const CHUNK_BYTES = 40 * 1024 * 1024;
 /** squares painted per frame at most: the rest of the view is painted live that frame */
 const CHUNK_BUDGET = 3;
 interface GroundChunks {
@@ -917,14 +920,21 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
       c.order.push(k);
     }
   // (the oldest squares out of view go once too many are kept)
-  for (let i = 0; i < c.order.length && c.order.length > CHUNK_KEEP; ) {
+  const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
+  const keep = Math.max(8, Math.floor(CHUNK_BYTES / (side * side * 4)));
+  // (an empty square, where no ground reaches, costs nothing, so only painted ones count; the empty ones are capped at 400 entries)
+  let painted = 0;
+  for (const cv of c.tiles.values()) if (cv) painted++;
+  for (let i = 0; i < c.order.length && (painted > keep || c.order.length > 400); ) {
     const k = c.order[i];
+    const cv = c.tiles.get(k);
     const [x, y] = k.split(',').map(Number);
-    if (x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1) {
+    if ((x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1) || (!cv && c.order.length <= 400)) {
       i++;
       continue;
     }
-    freeTile(c.tiles.get(k));
+    if (cv) painted--;
+    freeTile(cv);
     c.tiles.delete(k);
     c.order.splice(i, 1);
   }
@@ -970,7 +980,10 @@ export function drawProtoScene(
   st: ProtoSceneState,
 ): boolean {
   if (!protoArtReady()) return false;
-  const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
+  // (up and down too: a tall stage's branches and trunks above or below the screen were drawn every frame, PERF-F 2026-10-30;
+  // 200 over for the art that hangs past a platform's box)
+  const vy0 = view.y0 ?? -Infinity, vy1 = view.y1 ?? Infinity;
+  const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
   const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
   if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
@@ -979,6 +992,7 @@ export function drawProtoScene(
     // (a vine hanging down a cliff is not a trunk: its stage draws it)
     if (v.vineType !== 'tree_climb' || v.rope || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
+    if (bottom + 14 < vy0 - 40 || v.topY - 30 > vy1 + 40) continue;
     // (World 7's brown vines up the old walls: the story's "the vines on the old walls hung brown". A climb whose top meets a wall's
     // top-left corner is drawn as three of the kit's painted brown vines hanging down the wall's face, not the pale climbing pillar,
     // which stood half over the air like a pasted pane, QA 2026-10-29)
@@ -993,8 +1007,12 @@ export function drawProtoScene(
     ctx.rect(v.x - tw, v.topY - 30, tw * 2, bottom + 14 - (v.topY - 30));
     ctx.clip();
     const vine = st.pillars && drawFallsPillar(ctx, v.x, tw, v.topY - 30, bottom + 14) ? trunkVine() : null;
-    if (vine) for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) ctx.drawImage(vine, v.x - tw / 2, y, tw, th);
-    else for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
+    // (the pieces stay where they were, counted up from the ground; only those on screen are drawn)
+    for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) {
+      if (y > vy1 + 20 || y + th < vy0 - 20) continue;
+      if (vine) ctx.drawImage(vine, v.x - tw / 2, y, tw, th);
+      else blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
+    }
     ctx.restore();
   }
   // branches (a perch where a climb trunk ends under one)
