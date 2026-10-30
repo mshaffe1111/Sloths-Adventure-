@@ -179,3 +179,8 @@ X-16 skies r3 6ae3bd320e0338d1bb7c3687 started 21:40:02Z: round 1's prompt (nega
 X-16 skies r4 6ae3cdb10e0338d1bb7c4633 rtx-pro-6000 started 22:50:25Z (the lead's go): tallstart.py, each native far strip with a sky
   stacked above (a passed sky of the same world recoloured where the light fits, else a smooth gradient of the strip's own top), one
   img2img pass over the whole tall picture at s30/s38 (striphdgpu.py, full-height tiles), 32 takes.
+hfb-w10plate 6ae3e39b0e0338d1bb7c5cad rtx-pro-6000 00:23:55Z-~00:26Z (~2 min, ~$0.09): s60/s72 x seeds 7/23 from start-w10plate
+  (the kit's own stone plate in a riveted iron frame, raised and pressed side by side; the lead: the kit's plate read as a flat grey
+  slab). w10plate-s72-23 KEPT as src/assets/w10/plate.webp (platecut.py; both states on one box). s72-7 not used (rain streaks painted
+  in), s60-7 and s60-23 not used (plainer, no moss).
+running total ~$0.17 of the $6 cap. Review: reference/prop-sheets/qa-notes/w10-swing/plate.jpg, gate-plate-shut-open.png

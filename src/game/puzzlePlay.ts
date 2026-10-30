@@ -12,7 +12,7 @@ import {
   type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind, type Wire, wireIds,
 } from './puzzleKit.ts';
 import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
-import { drawW10Beam, drawW10Counterweight, drawW10Hoist, drawW10Piece, loadW10RoomArt } from './w10PuzzleArt.ts';
+import { drawW10Beam, drawW10Counterweight, drawW10Hoist, drawW10Piece, drawW10Plate, loadW10RoomArt } from './w10PuzzleArt.ts';
 import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
 import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
@@ -1770,8 +1770,8 @@ export class KitPlay {
           drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + 6, { w: pw * 1.5, h: ph * 0.7 });
           if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
         }
-        // (World 7: Matt's carved stone plate, w7PuzzleArt.ts; World 10: the stone pressure plate of its own sheet, sunk a little while held down)
-        const drew = (this.look.world === 10 && drawW10Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 8 + pl.show * 3, 22)) || (this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)) || (stoneP
+        // (World 7: Matt's carved stone plate, w7PuzzleArt.ts; World 10: its pressure plate, a mossy slab in a riveted iron frame, sunk into the frame while held down)
+        const drew = (this.look.world === 10 && drawW10Plate(ctx, pl.show > 0.5, pl.x, pl.y + 12, pw * 1.3)) || (this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)) || (stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
           : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph }));
         ctx.restore();

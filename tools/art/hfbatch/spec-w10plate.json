@@ -1,0 +1,54 @@
+{
+ "note": "World 10's pressure plate by img2img from tools/art/hfbatch/w10platestart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, floor tiles, button, glowing",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/e58aad06218e6b78be6c360d3f4a9039bbcfd893/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w10plate-s60-7",
+   "start": "start-w10plate.webp",
+   "prompt": "slothadv style, painted storybook illustration, side view for a side-scrolling platform game: two copies of the same heavy fortress pressure plate, a thick square slab of worn grey stone set in a low dark riveted iron frame, a carved arrow mark pointing down on the slab's front edge. On the left the slab stands raised well above the frame; on the right the same plate pressed down, the slab sunk level with the iron frame's lip. Weathered, rain-darkened, a little moss in the cracks. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, floor tiles, button, glowing",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "w10plate-s60-23",
+   "start": "start-w10plate.webp",
+   "prompt": "slothadv style, painted storybook illustration, side view for a side-scrolling platform game: two copies of the same heavy fortress pressure plate, a thick square slab of worn grey stone set in a low dark riveted iron frame, a carved arrow mark pointing down on the slab's front edge. On the left the slab stands raised well above the frame; on the right the same plate pressed down, the slab sunk level with the iron frame's lip. Weathered, rain-darkened, a little moss in the cracks. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, floor tiles, button, glowing",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "w10plate-s72-7",
+   "start": "start-w10plate.webp",
+   "prompt": "slothadv style, painted storybook illustration, side view for a side-scrolling platform game: two copies of the same heavy fortress pressure plate, a thick square slab of worn grey stone set in a low dark riveted iron frame, a carved arrow mark pointing down on the slab's front edge. On the left the slab stands raised well above the frame; on the right the same plate pressed down, the slab sunk level with the iron frame's lip. Weathered, rain-darkened, a little moss in the cracks. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, floor tiles, button, glowing",
+   "strength": 0.72,
+   "seed": 7,
+   "w": 1024,
+   "h": 384
+  },
+  {
+   "name": "w10plate-s72-23",
+   "start": "start-w10plate.webp",
+   "prompt": "slothadv style, painted storybook illustration, side view for a side-scrolling platform game: two copies of the same heavy fortress pressure plate, a thick square slab of worn grey stone set in a low dark riveted iron frame, a carved arrow mark pointing down on the slab's front edge. On the left the slab stands raised well above the frame; on the right the same plate pressed down, the slab sunk level with the iron frame's lip. Weathered, rain-darkened, a little moss in the cracks. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, floor tiles, button, glowing",
+   "strength": 0.72,
+   "seed": 23,
+   "w": 1024,
+   "h": 384
+  }
+ ]
+}

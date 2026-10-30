@@ -3,12 +3,12 @@
  * stretch of the iron netting overhead (the World 10 kit's grate, kits/w10.webp 'branch', held up by two chains running off the top of the
  * screen, so nothing floats), and is one of:
  *   chain   the kit's own chain (its 'liana': a ring, links, a hook), the links laid one after another at their painted size, never stretched
- *   cage    the chain with a hanging cage under its hook (props-made/w10alt 'cage-b' or gemini/w10c 'cage', by the vine), under his feet
  *   rope    the twisted rope of the shimmy kit (props/rope-kit.webp, World 2's painted rope cut to tile), a hook tied on at its end
  *   banner  a torn war banner on its ring (w10/swing-banners.webp: Hugging Face, from the world's own banner, 2026-10-29); its cloth
  *           stretches only in its plain middle, the ring and the torn end keep their painted size
  * The swing itself is the engine's (physics.ts): the look turns with the vine about its anchor. Until a sheet has loaded the caller draws
- * the kit's chain (protoArt.ts drawSwingLianaArt).
+ * the kit's chain (protoArt.ts drawSwingLianaArt). (A chain with a cage under his feet was a fourth look until the lead's review,
+ * 2026-10-29: it read as a cage he swings over, not one he rides, and his grip slides along the swing, so it was taken out.)
  */
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { ROPE_KIT } from './ropeKitData.ts';
@@ -16,8 +16,6 @@ import { W10_BANNERS } from './w10SwingArtData.ts';
 
 const URL_OF = {
   kit: new URL('../assets/kits/w10.webp', import.meta.url).href,
-  alt: new URL('../assets/w6to10/props-made/w10alt.webp', import.meta.url).href,
-  dress: new URL('../assets/w6to10/gemini/w10c-set-dressing.webp', import.meta.url).href,
   rope: new URL('../assets/props/rope-kit.webp', import.meta.url).href,
   banner: new URL('../assets/w10/swing-banners.webp', import.meta.url).href,
 } as const;
@@ -38,13 +36,6 @@ function sheet(n: Sheet): HTMLImageElement | null {
 export function loadW10SwingArt(): void {
   for (const n of Object.keys(URL_OF) as Sheet[]) sheet(n);
 }
-
-/** the cages, where they sit in their sheets (props-made/w10alt.json 'cage-b', gemini/w10c-set-dressing.json 'cage'), and the middle of
- *  the top ring each hangs from (ax: the cage's own body, its open door to the right) */
-const CAGES = [
-  { sheet: 'alt' as const, x: 864, y: 0, w: 405, h: 419, ax: 144 },
-  { sheet: 'dress' as const, x: 517, y: 0, w: 247, h: 249, ax: 87 },
-];
 
 /** the kit's chain: its picture, the ring (rows 0-RING), two links that tile pinch to pinch (LINK), the hook (rows HOOK on) */
 const CHAIN = KIT_FRAMES[10].liana;
@@ -97,7 +88,7 @@ export function drawW10Liana(ctx: CanvasRenderingContext2D, v: { x: number; topY
   const kit = sheet('kit');
   if (!kit) return false;
   const look = v.hangLook ?? 'chain';
-  const need: Sheet | null = look === 'cage' ? CAGES[Math.abs(v.id) % 2].sheet : look === 'rope' ? 'rope' : look === 'banner' ? 'banner' : null;
+  const need: Sheet | null = look === 'rope' ? 'rope' : look === 'banner' ? 'banner' : null;
   const img2 = need ? sheet(need) : null;
   if (need && !img2) return false;
   netting(ctx, kit, v);
@@ -134,14 +125,7 @@ export function drawW10Liana(ctx: CanvasRenderingContext2D, v: { x: number; topY
     // the chain: the ring at the anchor, links down to the hook
     ctx.drawImage(kit, CHAIN.x, CHAIN.y, CHAIN.w, RING, -CHAIN_AX * CHAIN_K, -RING * CHAIN_K * 0.6, CHAIN.w * CHAIN_K, RING * CHAIN_K);
     links(ctx, kit, 0, RING * CHAIN_K * 0.35, len - RING * CHAIN_K * 0.35);
-    const hh = hook(ctx, kit, len);
-    if (look === 'cage') {
-      // (a cage on the hook, under his feet: it hangs from its top ring, swinging with the chain)
-      const c = CAGES[Math.abs(v.id) % 2];
-      const ch = 150;
-      const cw = (c.w * ch) / c.h;
-      ctx.drawImage(img2!, c.x, c.y, c.w, c.h, -(c.ax * ch) / c.h, len + hh * 0.75, cw, ch);
-    }
+    hook(ctx, kit, len);
   }
   ctx.restore();
   return true;

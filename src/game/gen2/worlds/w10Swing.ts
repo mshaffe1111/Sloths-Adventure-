@@ -1,6 +1,6 @@
 /**
  * gen2/worlds/w10Swing — World 10's swings across the fortress (DESIGN.md B11, B12 step 2): chains off the iron netting, the walls' torn
- * banners, the hanging cages and the storm-tossed ropes (reference/STORY-REWRITE.md "World 10: Stormy Highlands Fortress": "Iron thorns,
+ * banners and the storm ropes (reference/STORY-REWRITE.md "World 10: Stormy Highlands Fortress": "Iron thorns,
  * floor to cloud, humming faintly in the wind"; stagePlan 10-6 "The Iron Netting: Swing along the iron netting").
  *
  * Every swing here is the engine's one liana (physics.ts, World 6's vine-fix: it swings by itself, up and down climb, left and right only
@@ -22,7 +22,7 @@
  * World 10 is the climb Pokey makes alone (Dot goes ahead along the netting in the world's first scene: wayside.ts dotPresent). The swing
  * is a move he has had since World 4, so no section here teaches it and none says a line.
  *
- * Which stages: 10-6 The Iron Netting (a vine runner: every section here), and as heavy beats among the ground, 10-7 The Walls (purge) and, in its finale, 10-9 The Fortress Gate (a gauntlet: the cage and chain pairs and the guarded cage only) (W10S_STAGES; the chain runs and the three-swing chain only in 10-6, W10S_ONLY, so no two stages of the world
+ * Which stages: 10-6 The Iron Netting (a vine runner: every section here), and as heavy beats among the ground, 10-7 The Walls (purge) and, in its finale, 10-9 The Fortress Gate (a gauntlet: the two guarded swings and the chain pair only) (W10S_STAGES; the chain runs and the three-swing chain only in 10-6, W10S_ONLY, so no two stages of the world
  * share a 20 s stretch; 10-3 Thunder takes none: its storm-watched stretches need the room, w10.test.ts: STAGE-RULES §2 "Sameness"). The main World 10 builder (gen2-w10) folds them in with withW10Swing.
  */
 import type { Difficulty, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
@@ -35,12 +35,12 @@ export const W10S_STAGES: readonly number[] = [6, 7, 9];
 export const W10S_ONLY: Record<string, number[]> = {
   'w10s-chain-run': [6],
   'w10s-storm-ropes': [6],
-  'w10s-cage-pair': [6, 7, 9],
+  'w10s-guard-pair': [6, 7, 9],
   'w10s-chain-pair': [6, 7, 9],
-  'w10s-cage-guard': [6, 7, 9],
+  'w10s-guard-wall': [6, 7, 9],
 };
 /** 10-9 The Fortress Gate (a gauntlet) takes only these, its finale's swings over the gate's chasm (the rest stay out of it) */
-const GATE_SWINGS = new Set(['w10s-cage-pair', 'w10s-chain-pair', 'w10s-cage-guard']);
+const GATE_SWINGS = new Set(['w10s-guard-pair', 'w10s-chain-pair', 'w10s-guard-wall']);
 /**
  * The animals a swing section's sockets may hold, by the world's creature tags (w10.ts W10_TAG once the main builder's kit is in: the
  * fortress's guards on the walls). Until then the stand-in kit's tags (w10SwingHarness.ts) are World 6's: 'hunter' (prowlers), 'quick'.
@@ -50,21 +50,21 @@ export const W10S_FOES = { guard: ['hunter', 'guard'], small: ['quick', 'hunter'
 export const W10S_SCENERY = 'scenery';
 
 /**
- * How each swing looks (w10SwingArt.ts): a chain off the netting (the kit's own), a torn banner, a chain with a cage hung under his feet,
+ * How each swing looks (w10SwingArt.ts): a chain off the netting (the kit's own), a torn banner,
  * a storm rope. Per section, per liana (in the order they hang, left to right): the looks it may take; the roll picks one by where it
  * hangs (w10SwingLooks), so a retry keeps the look and a fresh roll may change it.
  */
-export type W10LianaLook = 'chain' | 'banner' | 'cage' | 'rope';
+export type W10LianaLook = 'chain' | 'banner' | 'rope';
 export const W10_LIANA_LOOK: Record<string, readonly (readonly W10LianaLook[])[]> = {
   'w10s-first-chain': [['chain']],
-  'w10s-chain-pair': [['chain', 'banner'], ['chain', 'cage']],
-  'w10s-chain-run': [['chain'], ['cage', 'banner'], ['chain', 'rope']],
+  'w10s-chain-pair': [['chain', 'banner'], ['chain', 'rope']],
+  'w10s-chain-run': [['chain'], ['banner'], ['chain', 'rope']],
   'w10s-banner-stair': [['banner']],
-  'w10s-cage-guard': [['cage']],
+  'w10s-guard-wall': [['chain', 'banner']],
   'w10s-swing-crenels': [['chain', 'rope', 'banner']],
   'w10s-storm-ropes': [['rope'], ['rope']],
   'w10s-tower-gap': [['chain', 'banner']],
-  'w10s-cage-pair': [['cage'], ['chain', 'banner']],
+  'w10s-guard-pair': [['chain', 'rope'], ['banner', 'chain']],
 };
 
 // ───────────────────────────── helpers ─────────────────────────────
@@ -136,10 +136,10 @@ const bannerStair = swingSection({
   sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.4, 1), petals('b', 'b', 0.5, 2, 80), foe('foe', 'c', [0.6, 0.85], W10S_FOES.small, 2.5, { phases: ['ten'], chance: 0.5 }), flag('b', 0.6)],
 });
 
-/** a chain with a cage hung under it, onto a wall walk where a guard keeps watch: land, then deal with him */
-const cageGuard = swingSection({
-  id: 'w10s-cage-guard',
-  name: 'swing the cage onto the guarded wall',
+/** a swing onto a wall walk where a guard keeps watch: land, then deal with him */
+const guardWall = swingSection({
+  id: 'w10s-guard-wall',
+  name: 'swing onto the guarded wall',
   phases: ['ten', 'ketsu'],
   difficulty: 6,
   weight: 2,
@@ -260,10 +260,10 @@ const stormRopes = swingSection({
   sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 80), petals('d', 'd', 0.5, 1), foe('foe', 'e', [0.6, 0.85], W10S_FOES.small, 2.5, { chance: 0.5 }), flag('b', 0.6)],
 });
 
-/** a cage swing, a guarded merlon, a chain or banner swing off its far end, down to the wall walk */
-const cagePair = swingSection({
-  id: 'w10s-cage-pair',
-  name: 'the cage, the guard, the second swing',
+/** a swing, a guarded merlon, a second swing off its far end, down to the wall walk */
+const guardPair = swingSection({
+  id: 'w10s-guard-pair',
+  name: 'a swing, the guard, the second swing',
   phases: ['ten', 'ketsu'],
   difficulty: 7,
   maxPerStage: 1,
@@ -288,8 +288,8 @@ const cagePair = swingSection({
 
 /** World 10's swing sections */
 export const W10_SWING_SECTIONS: readonly SectionTemplate[] = [
-  firstChain, bannerStair, cageGuard, swingCrenels, towerGap,
-  chainPair, chainRun, stormRopes, cagePair,
+  firstChain, bannerStair, guardWall, swingCrenels, towerGap,
+  chainPair, chainRun, stormRopes, guardPair,
 ];
 
 /** does stage `stage` take section `id` (W10S_STAGES, W10S_ONLY) */
