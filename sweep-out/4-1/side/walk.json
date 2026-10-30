@@ -1,0 +1,35 @@
+{
+ "id": "4-1",
+ "orient": "side",
+ "seed": 1,
+ "how": "ground (no route)",
+ "dist": "/tmp/walkdist",
+ "size": [
+  844,
+  390
+ ],
+ "dpr": 2,
+ "difficulty": null,
+ "frames": [
+  {
+   "i": 0,
+   "why": "start",
+   "x": 200,
+   "y": 7506
+  },
+  {
+   "i": 1,
+   "why": "x794",
+   "x": 794,
+   "y": 7506
+  },
+  {
+   "i": 2,
+   "why": "end",
+   "x": 1476,
+   "y": 7506
+  }
+ ],
+ "errors": [],
+ "secs": 25
+}
