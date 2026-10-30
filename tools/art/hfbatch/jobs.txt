@@ -213,3 +213,6 @@ hfb-bossatk   6ae3e0cb0e0338d1bb7c5ae2 rtx-pro-6000 00:11:55Z-00:16:58Z (5.05 mi
   tools/art/hazard/bosscut.py). Not used: the ground-spike waves (no attack uses them), s82-7's club with a lava drip, s82-23's spear
   (a crossguard grew halfway along), the s70 columns (flatter paint), the croc tail in s70 takes (a plain green sausage).
 running total for hazard-anim ~8.9 min on rtx-pro-6000 = ~$0.40 of the $5 cap.
+
+hf-art-ground clean sweep (G1/G2), 2026-10-30, from Matt's last pool:
+hfg-ground-v 6ae404d70e0338d1bb7c75b2 rtx-pro-6000 created 02:45:43Z: spec-ground-v.json (tools/art/hfground; per world 1 soil variant x2 seeds, 2 lip variants, 2 bank ends x2 seeds; 40 items)

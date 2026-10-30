@@ -16,7 +16,7 @@ import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
-import { drawEnd, drawLip, drawSoil, endFace, warmGround } from './groundPaint.ts';
+import { drawEnd, drawLip, drawSoil, endFace, shadeSoil, warmGround } from './groundPaint.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -514,29 +514,14 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
 }
 
 /**
- * A bank of earth (hf-art-ground, 2026-10-29; polish report VI-8): the world's painted soil (groundPaint.ts) from the bank's top all the way
- * down, darkening with depth, the painted top lip along it, and where it drops away the painted bank end, its face carrying on down with a
- * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
+ * A bank's soil inside its outline (straight down where it meets the next bank, the end's face where it drops away), and World 7's faces
+ * and temple walls. `soilPath`: its darkening left out and its outline added there (drawProtoScene darkens every bank's soil at once).
  */
-export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
-  high?: { foot: number; runTop: number; left: boolean; right: boolean },
-): boolean {
-  if (!protoArtReady()) return false;
-  if (moss) {
-    const { f } = frameOf('mossStrip');
-    const th = 46, tw = (th * f.w) / f.h;
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(p.x - (open.left ? 26 : 1), p.y - 30, p.width + (open.left ? 26 : 1) + (open.right ? 26 : 1), th + 40);
-    ctx.clip();
-    const { start, end } = stripSpan(Math.floor((p.x - (open.left ? 18 : 0)) / (tw - 2)) * (tw - 2), p.x + p.width + 18, tw, view?.x0, view?.x1);
-    for (let x = start; x < end; x += tw - 2) blit(ctx, 'mossStrip', x, p.y - 14, tw, th);
-    ctx.restore();
-    return true;
-  }
-  const w = kitWorld;
-  if (!warmGround(w)) return false;
+function bankSoil(
+  ctx: CanvasRenderingContext2D, w: number, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean },
+  viewBottom: number, view: { x0: number; x1: number; y0?: number } | undefined, high: { foot: number; runTop: number; left: boolean; right: boolean } | undefined,
+  soilPath?: Path2D | null,
+) {
   const bottom = Math.max(p.y + p.height, viewBottom);
   const soilTop = p.y + 6;
   // the outline of the bank's soil: straight down where it meets the next bank (a unit under it, so no hairline), the end's face where
@@ -566,12 +551,21 @@ export function drawBankArt(
   for (let i = L.length - 1; i >= 0; i--) ctx.lineTo(...clampY(L[i]));
   ctx.closePath();
   ctx.clip();
+  if (soilPath) {
+    soilPath.moveTo(...clampY(L[0]));
+    for (const pt of R) soilPath.lineTo(...clampY(pt));
+    soilPath.lineTo(R[R.length - 1][0], bottom + 2);
+    soilPath.lineTo(L[L.length - 1][0], bottom + 2);
+    for (let i = L.length - 1; i >= 0; i--) soilPath.lineTo(...clampY(L[i]));
+    soilPath.closePath();
+  }
   let x0 = Math.min(...L.map((q) => q[0])), x1 = Math.max(...R.map((q) => q[0]));
   if (view) {
     x0 = Math.max(x0, view.x0 - 20);
     x1 = Math.min(x1, view.x1 + 20);
   }
-  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, viewBottom, view?.y0);
+  // (`soilPath` null: no Path2D here, so each bank keeps its own darkening)
+  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, viewBottom, view?.y0, !soilPath);
   // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
   // w7FaceArt.ts)
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
@@ -587,6 +581,38 @@ export function drawBankArt(
     drawW7Face(ctx, p, bottom, view);
     ctx.restore();
   }
+}
+
+/**
+ * A bank of earth (hf-art-ground, 2026-10-29; polish report VI-8): the world's painted soil (groundPaint.ts) from the bank's top all the way
+ * down, darkening with depth, the painted top lip along it, and where it drops away the painted bank end, its face carrying on down with a
+ * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
+ */
+export function drawBankArt(
+  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  high?: { foot: number; runTop: number; left: boolean; right: boolean },
+  // (`phase`: 'soil' the soil only, its darkening left out and its outline added to `soilPath`, for one darkening pass over every bank's
+  // soil together (drawProtoScene, the clean sweep's G3); 'top' the lip and the ends only. Left out: the whole bank)
+  phase?: 'soil' | 'top',
+  soilPath?: Path2D,
+): boolean {
+  if (!protoArtReady()) return false;
+  if (moss) {
+    const { f } = frameOf('mossStrip');
+    const th = 46, tw = (th * f.w) / f.h;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(p.x - (open.left ? 26 : 1), p.y - 30, p.width + (open.left ? 26 : 1) + (open.right ? 26 : 1), th + 40);
+    ctx.clip();
+    const { start, end } = stripSpan(Math.floor((p.x - (open.left ? 18 : 0)) / (tw - 2)) * (tw - 2), p.x + p.width + 18, tw, view?.x0, view?.x1);
+    for (let x = start; x < end; x += tw - 2) blit(ctx, 'mossStrip', x, p.y - 14, tw, th);
+    ctx.restore();
+    return true;
+  }
+  const w = kitWorld;
+  if (!warmGround(w)) return false;
+  if (phase !== 'top') bankSoil(ctx, w, p, open, viewBottom, view, high, phase === 'soil' ? soilPath ?? null : undefined);
+  if (phase === 'soil') return true;
   // the top lip, under the end pieces' own lip corners (`bare`: a pit's low step, too narrow for the end pieces, which are wider than it
   // and see-through below their rims: its soil keeps the end's wobbling face and the lip runs to its ends)
   const la = open.left && !open.bare ? p.x + 30 : p.x - 1;
@@ -815,10 +841,14 @@ export function drawProtoScene(
   const shadeUpTo = (y: number) => {
     for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); pitShade(ctx, o); }
   };
-  // (the lowest first: a pit's floor and its step go under the banks either side, whose faces then cover their ends)
+  // (the lowest first: a pit's floor and its step go under the banks either side, whose faces then cover their ends). Every bank's soil
+  // first, then one darkening pass over all of it, then each bank's lip and ends with the pits' shade between them (G3: darkened bank by
+  // bank, two soils overlapping by a unit were darkened twice, a dark line where they met)
+  const soilPath = typeof Path2D !== 'undefined' ? new Path2D() : undefined;
+  const bankTops: Array<() => void> = [];
+  let sTop = Infinity;
   for (const p of [...banks].sort((a, b) => b.y - a.y)) {
     if (!vis(p)) continue;
-    shadeUpTo(p.y);
     // (a pit's wall under a bank's end is that bank's soil already)
     if (p.soil && banks.some((q) => q !== p && !q.soil && Math.abs(q.y + q.height - p.y) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)) continue;
     // (a side is closed where the next bank meets it, or where a piece stands right on top of its end: a pit's floor runs on under the
@@ -845,8 +875,21 @@ export function drawProtoScene(
       return !q || q.y - p.y >= HIGH_LEDGE;
     };
     const wall = high && { ...high, left: drop('l'), right: drop('r') };
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view, wall || undefined);
+    const open = { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil };
+    drawBankArt(ctx, p, open, false, view.y1 ?? 0, view, wall || undefined, 'soil', soilPath);
+    sTop = Math.min(sTop, p.y);
+    bankTops.push(() => {
+      shadeUpTo(p.y);
+      drawBankArt(ctx, p, open, false, view.y1 ?? 0, view, wall || undefined, 'top');
+    });
   }
+  if (soilPath && bankTops.length) {
+    ctx.save();
+    ctx.clip(soilPath);
+    shadeSoil(ctx, kitWorld, view.x0 - 20, view.x1 + 20, sTop, Math.max(view.y1 ?? sTop + 900, sTop + 900) + 2, view.y1 ?? 0, view.y0);
+    ctx.restore();
+  }
+  for (const t of bankTops) t();
   shadeUpTo(-Infinity);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
