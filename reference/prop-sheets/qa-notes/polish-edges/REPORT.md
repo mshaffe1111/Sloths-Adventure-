@@ -57,7 +57,7 @@ near and mid strips). `src/assets/backdrops-hd/` is folded in and deleted.
     - **Still held back: 11.** w1kapok, w1sunrise (the donor sky's yellow-red streak and a seam), w3sinkhole (a flat band and a second
       roof), w5dusk2 (a ragged cloud seam), w5twi1, w5twi2, w6dawn, w7dawn, w7dusk (a dark smoke slab with a straight bottom edge),
       w10after and w7 (a straight line where the sky meets the strip). These keep the cover fit described above.
-- **Spend:** about $4.75 of the $8 X-16 budget (pilots $0.83, batch $2.27, two cancelled retries $0.46, round 4 $1.15), logged in
+- **Spend:** about $6.8 of the $8 X-16 budget (pilots $0.83, batch $2.27, two cancelled retries $0.46, round 4 $1.15, round 5 $2.07), logged in
   `tools/art/hfbatch/jobs.txt`.
 - **In-game proof:** `x16/<stage>-up.jpg` (before and after upright) and `x16/<stage>-side.jpg` (before and after sideways), for 15
   stages covering every world plus the mood sets: 1-5, 1-8, 2-1, 3-1, 3-7, 4-5, 4-8, 5-1, 5-5, 6-5, 6-8, 7-1, 8-1, 9-1, 10-1.
@@ -95,8 +95,13 @@ HSV saturation balloons on dark pixels. The paired shots show the colour itself 
 ## Rough spots, named
 
 - **11 skies still held back** (listed above). Those sets look right upright (cover fit) but don't have the taller painted sky.
-  Round 4's repaint barely changed its start picture, so a fix for these needs a better start (a hand-picked or Gemini-painted sky
-  for each), not more img2img.
+  - Round 5 (`skyt2i.py`, about $2.07, `skies-r5/failures.jpg`) painted the sky from text: the skies themselves came out well, with
+    the right light, no horizon and no second landscape. But the join over trees the strip cuts off at its top never worked.
+    - Inpaint at 1.0 paints new things into it: a second sun, drips, a flat-topped canopy band.
+    - At 0.85 it came back grey.
+    - At 0.75 it left a hard line.
+  - What's left is painted art for these 11 (Matt's rule for anything that changes a major part of the look): a Gemini sheet per
+    set, with the strip's top edge given, to be joined by hand. Not more HF rounds.
 - **A faint soft band where the sky meets the far strip on some worlds** (5-1, 1-8 at the top). It's a smooth fade, not a cut, and
   sits under the HUD.
 - **Unchanged from before:** w5dusk2-near's join (the log ends in an abrupt point), and 8-1's layer line under the HUD sideways, which
