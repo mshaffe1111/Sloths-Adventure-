@@ -218,3 +218,54 @@ hfb-bossatk   6ae3e0cb0e0338d1bb7c5ae2 rtx-pro-6000 00:11:55Z-00:16:58Z (5.05 mi
   tools/art/hazard/bosscut.py). Not used: the ground-spike waves (no attack uses them), s82-7's club with a lava drip, s82-23's spear
   (a crossguard grew halfway along), the s70 columns (flatter paint), the croc tail in s70 takes (a plain green sausage).
 running total for hazard-anim ~8.9 min on rtx-pro-6000 = ~$0.40 of the $5 cap.
+
+HF shopping list (2026-10-30, Matt's last ~$80, $6 reserve, 9-10/10-10 boss art held), branch hf-art-bosses. Running spend below.
+hfui1         6ae4009c0e0338d1bb7c7408 rtx-pro-6000 02:27:40Z-02:35:51Z (8.2 min, ~$0.38): rows 1 and 4, 24 takes (tools/art/hfui:
+  kitstarts.py, make_spec_ui1.py, uicut.py). KEPT kit-buttons-s62-7 (planks and chips), kit-panels-s62-7 (card, text box, tile,
+  slider, lock, stars), kit-icons-s40-7 (24 icons, every shape kept), icon-bg-s60-7 + icon-fg-s35-7 (the app icon, composited).
+  THROWN: kit-buttons-s62-23 (pink nails from the key), kit-panels-s62-23 (jagged parchment), kit-icons-s52 (mute became an arrow,
+  save melted), the icon-full takes (his head cropped at the edge; the composite keeps him in the safe zone).
+  The feature graphic, splash and store screenshots are the game's own title scene and play, no GPU (tools/art/store/storeshots.mjs).
+hfstory1      6ae404400e0338d1bb7c7572 rtx-pro-6000 02:43:12Z-02:48:29Z (5.3 min, ~$0.24): row 9, story plates #19 and #20
+  (tools/art/hfstory: platestarts.py, make_spec_plates1.py, platecut.py), 8 takes at 1600 x 1696. KEPT plate-raft-s55-23 (the bank
+  village, the river, the raft barely started) as src/assets/story/plates/raft.webp. THROWN: all four gorge takes (the start's dark
+  cliff slab came through as a hard block; Dot took the vine, not his claw; the lower half empty).
+hfstory2      6ae405d00e0338d1bb7c75db rtx-pro-6000 02:49:52Z-02:53:01Z (3.2 min, ~$0.14): #20 again from a start rebuilt on World 4's
+  own gorge (w4-far) and broken ledge with its vine end (w4-mid). KEPT plate-gorge-s45-7 as src/assets/story/plates/gorge.webp
+  (Pokey worried over the mist, the broken ledge, the vine). Rough: Dot reads as beside his free paw, not clearly gripping it.
+  #18 squirrels and #21 floury Dot were already painted (Gemini): cleaned with no GPU (white sticker rims peeled, the pink flour puffs
+  to flour white), platecut.py.
+hfzones1      6ae407e90e0338d1bb7c769b rtx-pro-6000 02:58:49Z-03:05Z (~6 min, ~$0.28): row 11, World 9's lava vents and eruptions and
+  World 10's lightning rods (they hurt Pokey and were code: zoneArt.ts). tools/art/hfzones: zonestarts.py, make_spec_zones.py,
+  zonecut.py (packed into boss-fx). KEPT zones-s72-23 (vents cool and hot, three lava fountain frames, rods dark and lit, scorch).
+  THROWN: s72-7 (lava like dripping wax), s84-23 (pale columns), s84-7 (the rod fell over). The bolt is boss-fx's painted one.
+running spend of the $80: ~$1.04
+── round of 2026-10-30 afternoon (hf-art-bosses, Matt: "get what we need now to finish the game"; cap $15 this round) ──
+hfdrake1      6ae4d3a50e0338d1bb7cc62f rtx-pro-6000 from 17:28Z: the Drake teacup ending (tools/art/hfdrake: teastarts.py,
+  make_spec_drake1.py, story-art's storygpu.py): his grey sitting pose as edits of his idle still (Qwen-Image-Edit-2509), his tea things
+  (tin mugs, his huge mug, the battered pot, his good china) at 0.55/0.68. Early look: the sit poses are right but "like a tired old
+  dog" in the prompt gave him a dog's head (off model) -> redone in hfboss910a with his lizard head and plate scales named.
+hfboss910a    6ae4d430c78863f9c62e9983 rtx-pro-6000 from 17:30Z: the teacup sit again (drake-tea: on model) and the new 9-10/10-10
+  poses as edits of their stills: Drake breath-down, winded, wall cling; Iron-Claw about-face, chair lift, throw, peek, paw.
+hfboss910b    6ae4d4e0c78863f9c62e99ad rtx-pro-6000 from 17:33Z: the 9-10/10-10 set pieces from boss910starts.py (hoard shelves, ribs,
+  crust, lava strip, table, chairs, netting, hedge, rubble) and the council hall (wide, tall) and wall break as edits of the warroom plate.
+results: hfdrake1 17:28Z-~17:36Z (~8 min, ~$0.37); hfboss910a 17:30Z-17:49Z (~19 min, ~$0.87); hfboss910b 17:33Z-17:58Z (~25 min,
+  ~$1.15). Picks (tools/art/hfdrake/picks910.json): the teacup sit drake-teap-2 (on model, facing right; drake-tea-6 faces left), tea
+  things tea-s68-23; poses breathdown-6, winded-6, cling-6, Iron-Claw aboutface-6, chairlift-6, paw-6, peek-6 (cut above the drawn
+  wall), throw-2 (throw-6 has a white halo; chairlift-2/peek-2 gave him a black mask). Hall: hall-wide-2, hall-tall-6; wall crack
+  break-crack-6. THROWN: the burst-open wall (both takes show another indoor hall, not the courtyard, and no wall round the hole);
+  every hfboss910b set piece (ledges, ribs, crust, lava, table, chairs, netting, hedge, rubble) stayed as flat as its plain start at
+  0.5-0.68: redo at 0.75-0.85.
+hftrails1     6ae4dd20c78863f9c62e9da8 rtx-pro-6000 from 18:08Z: the ten world-map trails (tools/art/hfui: trailstarts.py,
+  make_spec_trails.py), 2 sheets x 0.7/0.8 x 2 seeds.
+running spend of the $80: ~$1.04 + this round ~$2.4 + hftrails1 (~$0.4 est.)
+hftrails1 18:08Z-~18:14Z (~6 min, ~$0.28): KEPT trails-a-s70-7, trails-b-s70-23 (wired: src/assets/ui/trails.webp). Thrown: b-s80-23
+  (the boardwalk turned to stone), the s80 a-sheets (orchid lost its flowers).
+hfdrake2      6ae4ddf2c78863f9c62e9e09 rtx-pro-6000 from 18:12Z: the Drake's cave plate, sitting stiff, holding a cup (story-a).
+hfui2         6ae4de790e0338d1bb7cc9b4 rtx-pro-6000 18:14Z-~18:18Z (~4 min, ~$0.2): the start screen's painted pieces (hanging signs,
+  carved token, leaf token, vine, tag). KEPT kit2-s80-23 (tools/art/hfui/kit2cut.py), used in the two layout mocks.
+hfdrake2 18:12Z-~18:22Z (~10 min, ~$0.46): KEPT drake-cave-6 (the plate), drake-sit-6, drake-cup-6 (src/assets/story/drake/, story-a wired).
+hfboss910c    6ae4e1c7c78863f9c62ea004 18:28Z-~18:39Z (~11 min, ~$0.5): the 9-10/10-10 set pieces at 0.8/0.88: painted now. Picks in
+  tools/art/hfdrake/picks910.json (ledges/ribs/rubble at 0.88; crust, lava, table, chairs, netting, hedge at 0.8). Not packed yet: the
+  new fights are not built (cut910.py packs them when they are).
+running spend of the $80: ~$1.04 + this round ~$4.3 = ~$5.3 (this round's cap $15)

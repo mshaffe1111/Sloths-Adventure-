@@ -47,7 +47,7 @@ export const ScreenVeil: React.FC<{ screen: GameScreen; stage: { kicker: string;
         window.clearTimeout(hold);
       };
     }
-    if (screen === 'world_map' || screen === 'trophy') {
+    if (screen === 'world_map' || screen === 'trophy' || screen === 'satchel') {
       const n = ++seq.current;
       setVeil({ kind: 'dip', n, open: true, kicker: '', name: '' });
     } else if (screen !== 'playing') setVeil(null);

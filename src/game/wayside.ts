@@ -259,10 +259,13 @@ export function dotPresent(world: number, mini: number): boolean {
   return !(world === 6 && mini >= 6) && world !== 7 && world !== 10;
 }
 
-/** does this stage hide a find in a Hush Fern (a keepsake in stage 5 (3 in World 4), a book in stage 8)? */
+/**
+ * does this stage hide a find in a Hush Fern (a keepsake in stage 5 (3 in World 4), a book in stage 8, Dot's lost pocket in stage 6 of
+ * Worlds 4-9, the Notch in 1-4)? A note hangs in Meeca's bell and the snail is out in the open: neither is in a fern.
+ */
 export function hidesFern(world: number, mini: number): boolean {
   const f = findForStage(world, mini);
-  return !!f && f.kind !== 'note';
+  return !!f && f.kind !== 'note' && f.kind !== 'snail';
 }
 
 /**

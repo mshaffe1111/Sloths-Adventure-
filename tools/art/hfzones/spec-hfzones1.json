@@ -1,0 +1,53 @@
+{
+ "note": "hfzones1: World 9 vents and eruptions, World 10 rods, 2026-10-30",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/f786d6354125a1c3faf69ebb01fd368e9ab6a998/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "zones-s72-7",
+   "start": "start-zones.webp",
+   "prompt": "slothadv style, a sheet of separate painted game hazard pieces, each apart on the background: top left a low crater vent of black volcanic rock with a dull red lava mouth and cracks running out of it; next to it the same vent glowing hot, its mouth bright yellow-orange lava, the cracks glowing; on the right three tall fountains of molten lava shooting straight up out of the ground, white-yellow and thick at the foot, orange in the middle, breaking into red lava blobs and sparks at the top; bottom left an old iron lightning rod wound with copper wire on an iron foot, with a dark glass orb on top; next to it the same rod with its orb charged, glowing pale blue-white and crackling with little sparks; at the bottom a dark scorched burn mark on the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, watermark, frame, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, character",
+   "strength": 0.72,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "zones-s72-23",
+   "start": "start-zones.webp",
+   "prompt": "slothadv style, a sheet of separate painted game hazard pieces, each apart on the background: top left a low crater vent of black volcanic rock with a dull red lava mouth and cracks running out of it; next to it the same vent glowing hot, its mouth bright yellow-orange lava, the cracks glowing; on the right three tall fountains of molten lava shooting straight up out of the ground, white-yellow and thick at the foot, orange in the middle, breaking into red lava blobs and sparks at the top; bottom left an old iron lightning rod wound with copper wire on an iron foot, with a dark glass orb on top; next to it the same rod with its orb charged, glowing pale blue-white and crackling with little sparks; at the bottom a dark scorched burn mark on the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, watermark, frame, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, character",
+   "strength": 0.72,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "zones-s84-7",
+   "start": "start-zones.webp",
+   "prompt": "slothadv style, a sheet of separate painted game hazard pieces, each apart on the background: top left a low crater vent of black volcanic rock with a dull red lava mouth and cracks running out of it; next to it the same vent glowing hot, its mouth bright yellow-orange lava, the cracks glowing; on the right three tall fountains of molten lava shooting straight up out of the ground, white-yellow and thick at the foot, orange in the middle, breaking into red lava blobs and sparks at the top; bottom left an old iron lightning rod wound with copper wire on an iron foot, with a dark glass orb on top; next to it the same rod with its orb charged, glowing pale blue-white and crackling with little sparks; at the bottom a dark scorched burn mark on the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, watermark, frame, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, character",
+   "strength": 0.84,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "zones-s84-23",
+   "start": "start-zones.webp",
+   "prompt": "slothadv style, a sheet of separate painted game hazard pieces, each apart on the background: top left a low crater vent of black volcanic rock with a dull red lava mouth and cracks running out of it; next to it the same vent glowing hot, its mouth bright yellow-orange lava, the cracks glowing; on the right three tall fountains of molten lava shooting straight up out of the ground, white-yellow and thick at the foot, orange in the middle, breaking into red lava blobs and sparks at the top; bottom left an old iron lightning rod wound with copper wire on an iron foot, with a dark glass orb on top; next to it the same rod with its orb charged, glowing pale blue-white and crackling with little sparks; at the bottom a dark scorched burn mark on the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, watermark, frame, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, character",
+   "strength": 0.84,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  }
+ ]
+}

@@ -2815,11 +2815,13 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
     const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+    addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
   if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) {
     const st = flagsCapped(buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]));
+    addMissingFind(st);
     addDress(st, layoutVariant ?? 1);
     return st;
   }
@@ -2934,6 +2936,16 @@ function hash32(s: string): number {
 }
 
 /**
+ * A hand-built stage places its own note, keepsake or book where its builder means it to go; one that holds a find its builder does not
+ * place (Dot's pocket things, the Notch, the snail: finds.ts EXTRA_FINDS) gets it the generated stages' way, on a platform the level check
+ * already reaches, without touching the layout.
+ */
+export function addMissingFind(stage: GeneratedStage) {
+  if (stage.collectibles.some((c) => c.type === 'find')) return;
+  addFinds(stage);
+}
+
+/**
  * The story finds (notes, books, keepsakes, see finds.ts): one per world in the stages that hold them. Like the secrets they are put
  * in after the layout has been checked, on a platform the player can reach, well away from the start, the flags, the exit and every
  * animal. A hidden find (a book or keepsake) takes one of the higher platforms so it feels like a detour; a note takes a lower one,
@@ -2944,11 +2956,16 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   if (cfg.secret || cfg.objectiveType === 'boss_lair') return;
   const find = findForStage(cfg.worldIndex, cfg.miniIndex);
   if (!find) return;
-  const hidden = find.kind !== 'note';
+  // (the snail is out in the open, like a note: he is just touched)
+  const hidden = find.kind !== 'note' && find.kind !== 'snail';
   const reach = new Set(reachableIds ?? validateStage(stage).reachableIds);
   const cps = (stage.checkpoints ?? []).map((c) => c.x);
+  // (World 5's carvings, Meeca's messages cut into trunks 124 wide, are in by now (gen2's finish runs before this): a fern never stands at one)
+  const carvings = ((stage as { proto?: { w5?: { carvings?: Array<{ x: number }> } } }).proto?.w5?.carvings ?? []).map((c) => c.x);
   type P = GeneratedStage['platforms'][number];
   const clearOf = (x: number, p: P) =>
+    carvings.every((cx) => Math.abs(cx - x) >= 120) &&
+    stage.collectibles.every((c) => c.type !== 'relic' || Math.abs(c.x - x) >= 120) &&
     Math.abs(x - stage.spawnX) > 320 &&
     Math.abs(x - stage.exitTotemX) > 320 &&
     cps.every((c) => Math.abs(c - x) > 220) &&

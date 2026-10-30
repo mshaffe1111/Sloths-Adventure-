@@ -17,6 +17,17 @@ import { getSoil, capTransform } from './soil.ts';
 import { rgba } from './artKit.ts';
 import { paletteFor } from './platformPalette.ts';
 import { groundFace, stoneCap, faceTransform, deepOf, TILE_H, CAP_TOP, type Treat } from './groundTiles.ts';
+
+/** gradients kept by their colours (made once, laid in place with a shift) */
+const keptGrads = new Map<string, CanvasGradient>();
+function keptGrad(key: string, make: () => CanvasGradient): CanvasGradient {
+  let g = keptGrads.get(key);
+  if (!g) {
+    if (keptGrads.size > 256) keptGrads.clear();
+    keptGrads.set(key, (g = make()));
+  }
+  return g;
+}
 import type { GroundPlan } from './platformPlan.ts';
 
 type C = CanvasRenderingContext2D;
@@ -71,11 +82,16 @@ function fillFace(c: C, look: Look, world: number, kind: Kind, x0: number, x1: n
     c.fillRect(x0, y, x1 - x0, h);
     // the soil tile does not end on the deep colour by itself; the other faces do
     const deep = deepOf(look);
-    const gr = c.createLinearGradient(0, y + 230, 0, y + TILE_H);
-    gr.addColorStop(0, rgba(deep, 0));
-    gr.addColorStop(1, rgba(deep, 1));
-    c.fillStyle = gr;
-    c.fillRect(x0, y + 230, x1 - x0, Math.max(0, h - 230));
+    // (the gradient is kept by colour and laid at y with a shift, not made each frame: PERFORMANCE-RULES §2.3)
+    c.translate(0, y);
+    c.fillStyle = keptGrad(`deep|${deep}`, () => {
+      const gr = c.createLinearGradient(0, 230, 0, TILE_H);
+      gr.addColorStop(0, rgba(deep, 0));
+      gr.addColorStop(1, rgba(deep, 1));
+      return gr;
+    });
+    c.fillRect(x0, 230, x1 - x0, Math.max(0, h - 230));
+    c.translate(0, -y);
     return;
   }
   const pat = groundFace(c, look, world, kind);
@@ -124,19 +140,29 @@ export function drawGroundBody(ctx: C, p: Platform, gp: GroundPlan, look: Look, 
   // volume: the lit left edge, the shaded right edge, and the cliff faces that turn away from the light
   const a = Math.max(p.x, left - 30);
   const b = Math.min(p.x + p.width, right + 30);
+  // (both edge gradients kept by colour and laid with a shift, not made each frame)
   if (a < p.x + 34 && b > p.x) {
-    const gl = ctx.createLinearGradient(p.x, 0, p.x + 34, 0);
-    gl.addColorStop(0, rgba(g.outline, 0.34));
-    gl.addColorStop(1, rgba(g.outline, 0));
-    ctx.fillStyle = gl;
-    ctx.fillRect(p.x, y, 34, depth);
+    ctx.translate(p.x, 0);
+    ctx.fillStyle = keptGrad(`lit|${g.outline}`, () => {
+      const gl = ctx.createLinearGradient(0, 0, 34, 0);
+      gl.addColorStop(0, rgba(g.outline, 0.34));
+      gl.addColorStop(1, rgba(g.outline, 0));
+      return gl;
+    });
+    ctx.fillRect(0, y, 34, depth);
+    ctx.translate(-p.x, 0);
   }
   if (b > p.x + p.width - 44 && a < p.x + p.width) {
-    const gr = ctx.createLinearGradient(p.x + p.width - 44, 0, p.x + p.width, 0);
-    gr.addColorStop(0, rgba(g.outline, 0));
-    gr.addColorStop(1, rgba(g.outline, 0.42));
-    ctx.fillStyle = gr;
-    ctx.fillRect(p.x + p.width - 44, y, 44, depth);
+    const sx = p.x + p.width - 44;
+    ctx.translate(sx, 0);
+    ctx.fillStyle = keptGrad(`shade|${g.outline}`, () => {
+      const gr = ctx.createLinearGradient(0, 0, 44, 0);
+      gr.addColorStop(0, rgba(g.outline, 0));
+      gr.addColorStop(1, rgba(g.outline, 0.42));
+      return gr;
+    });
+    ctx.fillRect(0, y, 44, depth);
+    ctx.translate(-sx, 0);
   }
   ctx.restore();
   // re-stroke the outline over the clipped faces

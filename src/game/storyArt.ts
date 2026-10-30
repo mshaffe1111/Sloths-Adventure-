@@ -12,8 +12,11 @@ import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor, ScenePhoto, BloomStage } from './story.ts';
 import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 import { drawDotStoryFrame, poseFrame, warmStoryDot } from './dotSprite.ts';
+import { leaveStoryGuardians, warmStoryGuardians } from './storyGuard.ts';
 import { FLICKER_CLIPS } from './flickerClips.ts';
 import { FLICKER_ANIM_FPS, FLICKER_ANIM_H, FLICKER_ANIM_UP } from './flickerAnimData.ts';
+import { SOLDIER_CLIPS } from './soldierClips.ts';
+import { SOLDIER_ANIM, SOLDIER_ANIM_UP, SOLDIER_SEQ } from './soldierAnimData.ts';
 import { photoUrl } from './photos.ts';
 import { plateImage, preloadPlates, releasePlates } from './plates.ts';
 import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
@@ -22,6 +25,7 @@ import { capStoryZoom, liftForFeet } from './storyFrame.ts';
 import { GROUND_LINE, groundImage } from './storyGround.ts';
 import { isPlate, PLATES } from './plateData.ts';
 import { FONT_READ } from './fonts.ts';
+import { CARD_H, CARD_SAFE_H, CARD_SAFE_W, CARD_W, cardUrl } from './endCards.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
@@ -270,11 +274,27 @@ function drawParticles(ctx: CanvasRenderingContext2D, kind: StoryScene['particle
   }
 }
 
-function drawMood(ctx: CanvasRenderingContext2D, mood: StoryScene['mood'], w: number, h: number, t: number) {
+function drawMood(ctx: CanvasRenderingContext2D, mood: StoryScene['mood'], w: number, h: number, t: number, moonlit = false) {
   switch (mood) {
     case 'storm': {
-      ctx.fillStyle = 'rgba(22, 14, 56, 0.55)';
-      ctx.fillRect(0, 0, w, h);
+      if (moonlit) {
+        // (a painted storm plate is dark already: a light veil and the moon through the clouds, so it reads as a moonlit storm, not murk
+        // (Matt's audit, 2026-10-30: the singing-storm memory was all murk under the wash))
+        ctx.fillStyle = 'rgba(22, 20, 60, 0.16)';
+        ctx.fillRect(0, 0, w, h);
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        const mg = ctx.createRadialGradient(w * 0.72, h * 0.12, 10, w * 0.72, h * 0.12, Math.max(w, h) * 0.75);
+        mg.addColorStop(0, 'rgba(200, 214, 255, 0.5)');
+        mg.addColorStop(0.45, 'rgba(120, 140, 200, 0.18)');
+        mg.addColorStop(1, 'rgba(60, 70, 120, 0)');
+        ctx.fillStyle = mg;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+      } else {
+        ctx.fillStyle = 'rgba(22, 14, 56, 0.55)';
+        ctx.fillRect(0, 0, w, h);
+      }
       const phase = (t % 5) / 5;
       if (phase < 0.06) {
         ctx.fillStyle = `rgba(230, 235, 255, ${0.55 * (1 - phase / 0.06)})`;
@@ -557,17 +577,76 @@ export function preloadScenePlates(keys: Array<string | undefined>) {
   preloadLivePlates(keys.filter(Boolean).slice(0, 1));
 }
 
+// ───────────── the ending cards (S-7) ─────────────
+
+const cardImgs = new Map<string, { im: HTMLImageElement; soft?: HTMLCanvasElement }>();
+function cardImage(key: string) {
+  let c = cardImgs.get(key);
+  if (!c) {
+    const url = cardUrl(key);
+    if (!url || typeof Image === 'undefined') return null;
+    const im = new Image();
+    im.src = url;
+    c = { im };
+    cardImgs.set(key, c);
+  }
+  return c.im.complete && c.im.naturalWidth > 0 ? c : null;
+}
+
+/** start loading the ending cards the next panels will show */
+export function preloadSceneCards(keys: Array<string | undefined>) {
+  for (const k of keys) if (k) cardImage(k);
+}
+
+/**
+ * an ending card over the whole picture, in the room above the words: as big as it goes without losing any of its middle 1440 x 880,
+ * the rest of the screen the same painting, soft and dark (shrunk to a few pixels and stretched back: a blur for nothing, every frame)
+ */
+function drawEndCard(ctx: CanvasRenderingContext2D, key: string, w: number, vh: number, feetMax: number, t: number) {
+  ctx.fillStyle = '#0b0906';
+  ctx.fillRect(0, 0, w, vh);
+  const c = cardImage(key);
+  if (!c) return;
+  const fade = Math.min(1, t / 0.6);
+  if (!c.soft && typeof document !== 'undefined') {
+    const soft = document.createElement('canvas');
+    soft.width = 48;
+    soft.height = 27;
+    soft.getContext('2d')?.drawImage(c.im, 0, 0, 48, 27);
+    c.soft = soft;
+  }
+  const room = vh * Math.min(1, feetMax);
+  ctx.save();
+  ctx.globalAlpha = fade;
+  if (c.soft) {
+    const bs = Math.max(w / CARD_W, vh / CARD_H);
+    ctx.drawImage(c.soft, (w - CARD_W * bs) / 2, (vh - CARD_H * bs) / 2, CARD_W * bs, CARD_H * bs);
+    ctx.fillStyle = 'rgba(8, 6, 4, 0.55)';
+    ctx.fillRect(0, 0, w, vh);
+  }
+  const s = Math.min(Math.max(w / CARD_W, room / CARD_H), w / CARD_SAFE_W, room / CARD_SAFE_H) * (1 + 0.03 * Math.min(t / 9, 1));
+  const cw = CARD_W * s;
+  const ch = CARD_H * s;
+  // (upright there is room to spare: the card sits a little low, clear of the buttons along the top)
+  const slack = room - ch;
+  ctx.drawImage(c.im, (w - cw) / 2, slack > 0 ? slack * 0.62 : slack / 2, cw, ch);
+  ctx.restore();
+}
+
 /** a story has closed: let go of its plates, their moving parts and its photographs (they load again, from the offline cache, if it is played again) */
 export function releaseStoryArt() {
   releasePlates();
   releaseLivePlates();
   releaseHd();
+  leaveStoryGuardians();
   releaseCels();
   photoImgs.clear();
+  cardImgs.clear();
 }
 
 /** a story is opening: start fetching its cast's paintings (Pokey, Meeca and Dot's story pages, the story cels) */
 export function warmStoryCast() {
+  warmStoryGuardians();
   warmStoryHero();
   warmStoryMeeca();
   warmStoryDot();
@@ -585,6 +664,12 @@ let plateMap: { ox: number; iw: number; bh: number } | null = null;
 function pin(a: SceneActor, w: number, h: number): SceneActor {
   if (!a.pinned || !plateMap) return a;
   return { ...a, x: (plateMap.ox + a.x * plateMap.iw) / w, y: a.y === undefined ? a.y : (a.y * plateMap.bh) / h };
+}
+
+/** true for a plate with no painting above its scene (the 1024 x 572 ones), once it has loaded */
+function shortPlate(key: string): boolean {
+  const im = plateImage(key);
+  return !!im && im.naturalHeight <= im.naturalWidth * PLATE_BASE + 1;
 }
 
 function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, lift: number, t = 0, top = 0) {
@@ -610,9 +695,13 @@ function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: num
 /** the look of a memory: colour drained and warmed, the edges melting into old paper, a faint projector flicker */
 function drawMemoryWash(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) {
   ctx.save();
-  ctx.globalCompositeOperation = 'saturation';
-  ctx.fillStyle = 'hsl(32, 36%, 50%)';
+  // (an old photograph's sepia: the hue and colour of warm paper over each pixel's own light, mostly. It was a 'saturation' fill, which
+  // gave every dark pixel the same strength of its own noisy hue: the night nest of the singing storm came out in rainbow stripes)
+  ctx.globalCompositeOperation = 'color';
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = 'hsl(32, 40%, 50%)';
   ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = 1;
   ctx.globalCompositeOperation = 'soft-light';
   ctx.globalAlpha = 0.55;
   ctx.fillStyle = '#ffcf7a';
@@ -724,6 +813,29 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
   // (until her story paintings have loaded she is not drawn: no stand-in bird)
 }
 
+/** a soldier's height in scene units at scale 1: a head taller than Pokey, as he was in the garden */
+const SOLDIER_H = 270;
+/** one of the General's soldiers: his painted clip (idle loops back and forth, a turn plays once and holds), feet on the ground line */
+function drawSoldierActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
+  if (!SOLDIER_CLIPS.ready()) return;
+  const clip = a.clip ?? 'idle_a';
+  const seq = SOLDIER_SEQ[clip] ?? SOLDIER_SEQ.idle_a;
+  const first = SOLDIER_ANIM[seq[0]];
+  if (!first) return;
+  const foot = footing(a, ground);
+  const x = a.x * w - scroll;
+  const y = foot.y * h + SINK;
+  const k = ((SOLDIER_H * (a.scale ?? 1)) / first.h) * SOLDIER_ANIM_UP;
+  const name = clip.startsWith('idle') || clip.startsWith('march') ? SOLDIER_CLIPS.ping(clip, t, 10) : SOLDIER_CLIPS.at(clip, Math.min(1, t / 1.2));
+  drawContactShadow(ctx, x, ground * h + SINK, first.w * (k / SOLDIER_ANIM_UP) * 0.6, SOLDIER_H, 0);
+  ctx.save();
+  ctx.translate(x, y);
+  // (his clips face right: mirrored to face left)
+  if (a.facing === -1) ctx.scale(-1, 1);
+  SOLDIER_CLIPS.draw(ctx, name, k);
+  ctx.restore();
+}
+
 /** Flicker's height in scene units at scale 1 (a firefly: well under Dot's size) */
 const FLICKER_H = 44;
 /** the light's stutter, a second and a half around: when it is dark (his tell: he is not telling the whole truth) */
@@ -831,6 +943,7 @@ function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
 function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
   if (a.kind === 'dot') { drawDot(ctx, a, w, h, t, scroll); return; }
   if (a.kind === 'flicker') { drawFlickerActor(ctx, a, w, h, t, scroll); return; }
+  if (a.kind === 'soldier') { drawSoldierActor(ctx, a, w, h, t, ground, scroll); return; }
   if (a.kind === 'cel') { drawCelActor(ctx, a, w, h, t, ground, scroll); return; }
   // Pokey and Meeca: the painted characters, one engine (moods, moves, ground, shadow)
   if (a.kind === 'milo' && a.portrait) { drawPortrait(ctx, a, w, h, t, ground, scroll); return; }
@@ -1444,7 +1557,13 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   // camera: close-up zoom with a slow push-in
   const cam = scene.camera ? cameraAt(scene.camera, t) : null;
   const big = scene.actors.reduce((m, a) => Math.max(m, a.scale ?? 1), 1);
-  const z = capStoryZoom(cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1)), devScale(ctx), big);
+  // (a plate painted before the tall repaints, 1024 x 572, has nothing above the scene: upright the camera comes in just far enough that
+  // the view stays inside the painting, so no dark band shows over it; the figures stand in the same space, so their feet do not move)
+  const short = scene.plate ? shortPlate(scene.plate) : false;
+  const z = Math.max(
+    capStoryZoom(cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1)), devScale(ctx), big),
+    short ? vh / h : 0,
+  );
   const fx = Math.min(w - w / (2 * z), Math.max(w / (2 * z), (cam ? cam.fx : scene.focusX ?? 0.5) * w));
   // (upright the view is taller than the scene: it stands on the scene's bottom edge and the room above shows the painting's top)
   const fy = Math.min(h - vh / (2 * z), Math.max(-top + vh / (2 * z), (cam ? cam.fy : scene.focusY ?? 0.62) * h));
@@ -1488,7 +1607,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   ctx.save();
   ctx.translate(0, -top);
   drawParticles(ctx, scene.particles, w, vh, t);
-  drawMood(ctx, scene.mood, w, vh, t);
+  drawMood(ctx, scene.mood, w, vh, t, !!scene.plate && isPlate(scene.plate));
   if (!plated) withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, vh * (1 + lift) + 4, t, true));
   ctx.restore();
   ctx.restore();
@@ -1496,6 +1615,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   ctx.translate(0, -top);
   if (scene.memory) drawMemoryWash(ctx, w, vh, t);
   if (scene.photo) drawPhotoCard(ctx, scene.photo, w, vh, t);
+  if (scene.card) drawEndCard(ctx, scene.card, w, vh, feetMax, t);
   paintFinish(ctx, w, vh, scene.mood);
   // cinematic vignette
   const vg = ctx.createRadialGradient(w / 2, vh / 2, Math.min(w, vh) * 0.45, w / 2, vh / 2, Math.max(w, vh) * 0.7);
