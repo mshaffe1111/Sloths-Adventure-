@@ -176,8 +176,8 @@ export const W10_MANIFEST: WorldManifest = {
   sections: W10_GROUND_SECTIONS,
   handBuilt: ['10-2', '10-4', '10-5', '10-8', '10-10'],
   // (the cats were met in World 3, the tayra and the harpy in World 6, the gusts in World 4 and the crumbling floors in World 7; the
-  // rods and the spikes are 10-1's, the storm's watch 10-3's)
-  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.storm]: '10-3' },
+  // rods, the spikes, the ramparts and the gusts are 10-1's (his line there on first meeting), the storm's watch 10-3's)
+  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3' },
   tips: W10_TIPS,
 };
 

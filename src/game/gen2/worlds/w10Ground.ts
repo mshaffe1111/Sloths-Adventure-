@@ -239,8 +239,9 @@ const gapKnee = section({
   phases: ['ki', 'sho', 'ten'],
   difficulty: 3,
   weight: SHARED,
-  pieces: [bank('a', [360, 400]), chasm('b', 'a', [380, 420]), up('c', 'b', 36, [140, 160]), down('d', 'c', 36, [300, 340])],
-  last: 'd',
+  pieces: [bank('a', [360, 400]), chasm('b', 'a', [380, 420]), up('c', 'b', 36, [140, 160]), down('d', 'c', 36, [300, 340]), up('k2', 'd', 30, [140, 160]), down('e', 'k2', 30, [180, 220])],
+  // (one more battlement off its end: a flat with no beat after the guard read quiet)
+  last: 'e',
   sockets: [petals('a', 'a', 0.5, 2, 80), petals('c', 'c', 0.5, 1), foe('foe', 'd', [0.55, 0.65], SMALL, 3, { phases: LIVE, chance: 0.7 })],
   mirrorable: true,
 });
@@ -254,15 +255,18 @@ const rise = section({
   difficulty: 4,
   weight: SHARED,
   pieces: [
-    bank('a', [360, 400]),
-    bank('b', [380, 420], { kind: 'jump', after: 'a', dy: [-50, -40], share: [0.4, 0.55] }, { landing: true }),
+    // (a battlement on the way to the jump: the run-up is a bank of 470 px or more, so a chasm before it is no glide trap)
+    bank('a', [180, 220]),
+    up('ka', 'a', 30, [140, 160]),
+    down('a2', 'ka', 30, [180, 220]),
+    bank('b', [320, 360], { kind: 'jump', after: 'a2', dy: [-50, -40], share: [0.4, 0.55] }, { landing: true }),
     up('k', 'b', 30, [140, 160]),
-    down('c', 'k', 30, [200, 240]),
-    down('d', 'c', 40, [220, 260]),
+    down('c', 'k', 30, [180, 220]),
+    down('d', 'c', 40, [200, 240]),
   ],
   last: 'd',
   exitDy: 0,
-  sockets: [petals('a', 'a', 0.5, 2, 90), petals('k', 'k', 0.5, 1), foe('foe', 'b', [0.45, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 }), scenery('banner', 'd', [0.4, 0.6])],
+  sockets: [petals('ka', 'ka', 0.5, 1), petals('k', 'k', 0.5, 1), foe('foe', 'b', [0.45, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 }), scenery('banner', 'd', [0.4, 0.6])],
   mirrorable: true,
 });
 
@@ -274,7 +278,7 @@ const doubleGap = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
   weight: SHARED,
-  pieces: [bank('a', [240, 280]), up('k0', 'a', 30, [140, 160]), down('a2', 'k0', 30, [220, 260]), leap('far', 'a2', [360, 400]), up('k', 'far', 32, [140, 160]), down('b', 'k', 32, [220, 260])],
+  pieces: [bank('a', [200, 240]), up('k0', 'a', 30, [140, 160]), down('a2', 'k0', 30, [180, 220]), leap('far', 'a2', [220, 260]), up('k', 'far', 32, [140, 160]), down('b', 'k', 32, [180, 220])],
   last: 'b',
   sockets: [petals('k0', 'k0', 0.5, 1), petals('k', 'k', 0.5, 1), foe('foe', 'far', [0.5, 0.6], ['tayra', 'ocelot'], 3, { phases: HOT, chance: 0.5 })],
   mirrorable: true,
@@ -370,7 +374,7 @@ const rodRow = section({
   pieces: [bank('a', [480, 520]), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [460, 500])],
   zones: [rod('a', [0.3, 0.34]), rod('a', [0.72, 0.76]), rod('b', [0.45, 0.55])],
   last: 'b',
-  sockets: [petals('a1', 'a', 0.52, 1), petals('k', 'k', 0.5, 1), petals('b', 'b', 0.2, 1), scenery('banner', 'b', [0.85, 0.9], 0.5)],
+  sockets: [petals('a1', 'a', 0.52, 1), petals('k', 'k', 0.5, 1), petals('b', 'b', 0.2, 1), foe('foe', 'b', [0.7, 0.8], SMALL, 3, { phases: LIVE, chance: 0.6 })],
   mirrorable: true,
 });
 
@@ -434,7 +438,7 @@ const spikeRun = section({
   uses: [W10_THEME.spikes, SPIKES],
   pieces: [bank('a', [300, 340]), spikes('b', 'a', [260, 300]), spikes('c', 'b', [260, 300]), spikes('d', 'c', [300, 340])],
   last: 'd',
-  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), scenery('rack', 'd', [0.5, 0.7], 0.5)],
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), foe('foe', 'd', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 })],
   mirrorable: true,
 });
 
@@ -495,7 +499,7 @@ const rampartGallery = section({
   uses: [W10_THEME.ramparts],
   pieces: [bank('a', [300, 340]), ...ramp1.pieces],
   last: ramp1.last,
-  sockets: [tip(RAMPART, 'a', 0.2), petals('t', ramp1.tiles[1], 0.5, 1), petals('hall', 'hhall', 0.5, 2, 120), petals('b', 'hb', 0.5, 1)],
+  sockets: [tip(RAMPART, 'a', 0.2), petals('t', ramp1.tiles[1], 0.5, 1), petals('hall', 'hhall', 0.5, 2, 120), foe('foe', 'hb', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 })],
   mirrorable: false,
 });
 
@@ -540,7 +544,7 @@ const rampartChasm = section({
   uses: [W10_THEME.ramparts, RAMPART],
   pieces: [bank('a', [360, 400]), chasm('c', 'a', [380, 420], [0.55, 0.72]), ...ramp4.pieces],
   last: ramp4.last,
-  sockets: [petals('a', 'a', 0.5, 1), petals('t', ramp4.tiles[1], 0.5, 1), petals('b', 'hb', 0.5, 1)],
+  sockets: [foe('foe', 'a', [0.3, 0.4], SMALL, 3, { phases: LIVE, chance: 0.6 }), petals('t', ramp4.tiles[1], 0.5, 1), petals('b', 'hb', 0.5, 1)],
   mirrorable: false,
 });
 
@@ -657,10 +661,10 @@ const stormWall = section({
   archetypes: ['stealth'],
   phases: MID,
   difficulty: 4,
-  weight: 0.5,
-  pieces: [bank('a', [300, 340]), up('k', 'a', 30, [140, 160]), down('wall', 'k', 30, [560, 600]), up('k2', 'wall', 30, [140, 160]), down('b', 'k2', 30, [260, 300])],
+  weight: 0.25,
+  pieces: [bank('a', [260, 300]), up('k', 'a', 30, [140, 160]), down('wall', 'k', 30, [560, 600]), up('k2', 'wall', 30, [140, 160]), down('b', 'k2', 30, [480, 520])],
   last: 'b',
-  sockets: [storm('wall'), hideAt('h1', 'wall', 0.15), petals('w', 'wall', 0.32, 1), hideAt('h2', 'wall', 0.52), hideAt('h3', 'wall', 0.88), petals('k2', 'k2', 0.5, 1), foe('g', 'b', [0.55, 0.65], GUARDS, 3, { phases: LIVE, chance: 0.6 })],
+  sockets: [storm('wall'), hideAt('h1', 'wall', 0.15), petals('w', 'wall', 0.32, 1), hideAt('h2', 'wall', 0.52), hideAt('h3', 'wall', 0.88), petals('k2', 'k2', 0.5, 1), foe('g', 'b', [0.5, 0.6], GUARDS, 3, { phases: LIVE, chance: 0.8 })],
   mirrorable: true,
 });
 
@@ -673,7 +677,7 @@ const stormSteps = (() => {
     archetypes: ['stealth'],
     phases: MID,
     difficulty: 5,
-    weight: 0.5,
+    weight: 0.25,
     pieces: [bank('a', [260, 300]), ...m.pieces],
     last: m.last,
     sockets: [storm('f1', 'storm1'), hideAt('h1', 'f1', 0.35), storm('f2', 'storm2'), hideAt('h2', 'f2', 0.35), storm('f3', 'storm3'), hideAt('h3', 'f3', 0.35), petals('k2', 'k2', 0.5, 1)],
@@ -688,7 +692,7 @@ const stormGap = section({
   archetypes: ['stealth'],
   phases: LIVE,
   difficulty: 6,
-  weight: 0.5,
+  weight: 0.25,
   pieces: [bank('a', [420, 460]), chasm('b', 'a', [440, 480], [0.5, 0.64])],
   last: 'b',
   sockets: [storm('a', 'stormA'), hideAt('h1', 'a', 0.35), storm('b', 'stormB'), hideAt('h2', 'b', 0.3), hideAt('h3', 'b', 0.8), petals('b', 'b', 0.55, 1)],
@@ -777,6 +781,41 @@ const stormRodSteps = (() => {
   });
 })();
 
+/** a soldier walking a watched wall between two crate stacks: wait behind one for both the storm and the guard (the fight is a choice) */
+const stormPatrol = section({
+  id: 'w10-storm-patrol',
+  name: 'watched patrol cover',
+  archetypes: ['stealth'],
+  phases: LIVE,
+  difficulty: 6,
+  weight: 1.5,
+  uses: [W10_THEME.spikes],
+  pieces: [bank('a', [240, 280]), up('k', 'a', 30, [140, 160]), down('wall', 'k', 30, [740, 780]), up('k2', 'wall', 30, [140, 160]), down('b', 'k2', 30, [200, 240])],
+  last: 'b',
+  sockets: [storm('wall'), hideAt('h1', 'wall', 0.1), foe('g', 'wall', [0.48, 0.52], GUARDS, 3), hideAt('h2', 'wall', 0.9), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** a high battlement road over a watched yard: up on the road the flash finds him; down in the yard the crates hide him, and a cat waits */
+const stormYard = section({
+  id: 'w10-storm-yard',
+  name: 'watched yard cover',
+  archetypes: ['stealth'],
+  phases: LIVE,
+  difficulty: 6,
+  weight: 1.5,
+  uses: [W10_THEME.ramparts],
+  pieces: [
+    bank('a', [300, 340]),
+    down('yard', 'a', 60, [700, 740]),
+    up('b', 'yard', 60, [300, 340]),
+    { key: 'road', shape: 'block', w: [220, 260], h: 26, place: { kind: 'over', on: 'yard', at: [0.3, 0.36], dy: -150 }, main: false, style: 'moss_stone' },
+  ],
+  last: 'b',
+  sockets: [storm('yard'), hideAt('h1', 'yard', 0.1), foe('c', 'yard', [0.48, 0.54], ['ocelot', 'soldier', 'tayra'], 3), hideAt('h2', 'yard', 0.9), petals('road', 'road', 0.5, 3, 160)],
+  mirrorable: true,
+});
+
 // ───────────────────────────── 10-7 The Walls and 10-9 The Fortress Gate: the guards ─────────────────────────────
 
 /** a hunt gate (10-7 purge, 10-9 gauntlet): Pokey explains the shut shrine before any guard, and the roll's theme opens */
@@ -821,7 +860,7 @@ const guardYard = section({
   difficulty: 6,
   maxPerStage: 3,
   weight: 2,
-  uses: [BOLT],
+  uses: [W10_THEME.rods, BOLT],
   pieces: [bank('a', [240, 280]), down('s', 'a', 40, [140, 160]), down('yard', 's', 40, [620, 680]), up('s2', 'yard', 40, [140, 160]), up('b', 's2', 40, [260, 300])],
   // (a rod at the foot of the stairs: the fight is past it, and on Easy, with fewer guards, the yard still has its beat)
   zones: [rod('yard', [0.2, 0.24])],
@@ -959,6 +998,21 @@ const gatehouseRun = section({
   mirrorable: true,
 });
 
+/** 10-9's approach: the outer wall under the gatehouse, a soldier on it, a battlement and a rod past it (the gauntlet's gentle start) */
+const gateApproach = section({
+  id: 'w10-gate-approach',
+  name: 'outer wall arena',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho'],
+  difficulty: 4,
+  uses: [BOLT],
+  pieces: [bank('a', [460, 500]), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [360, 400]), up('k2', 'b', 30, [140, 160]), down('c', 'k2', 30, [220, 260])],
+  zones: [rod('b', [0.48, 0.52])],
+  last: 'c',
+  sockets: [foe('g', 'a', [0.45, 0.55], GUARDS, 3), petals('k', 'k', 0.5, 1), petals('k2', 'k2', 0.5, 1), scenery('banner', 'c', [0.4, 0.6], 0.6)],
+  mirrorable: true,
+});
+
 /** 10-9: the drawbridge chains: a battlement, a wide chasm, a second-jump gap (soft), soldiers on the far wall */
 const drawbridge = section({
   id: 'w10-drawbridge',
@@ -967,7 +1021,7 @@ const drawbridge = section({
   phases: LIVE,
   difficulty: 8,
   maxPerStage: 2,
-  pieces: [bank('a', [220, 260]), up('k', 'a', 30, [140, 160]), down('a2', 'k', 30, [240, 280]), wide('b', 'a2', [380, 420]), leap('c', 'b', [540, 580])],
+  pieces: [bank('a', [220, 260]), up('k', 'a', 30, [140, 160]), down('a2', 'k', 30, [240, 280]), wide('b', 'a2', [380, 420]), leap('c', 'b', [460, 500])],
   last: 'c',
   sockets: [petals('k', 'k', 0.5, 1), petals('b', 'b', 0.5, 1), foe('g1', 'c', [0.55, 0.62], GUARDS, 3), scenery('cage', 'a', [0.3, 0.5], 0.6)],
   mirrorable: true,
@@ -1012,6 +1066,8 @@ export const W10_GROUND_SECTIONS: SectionTemplate[] = [
   stormSpikes,
   stormGusts,
   stormRodSteps,
+  stormPatrol,
+  stormYard,
   ...huntGates,
   guardWall,
   guardYard,
@@ -1024,6 +1080,7 @@ export const W10_GROUND_SECTIONS: SectionTemplate[] = [
   portcullisYard,
   gatehouseRun,
   drawbridge,
+  gateApproach,
 ];
 
 /** the ids of the required lessons (w10Game.ts W10_REQUIRED) */
@@ -1037,7 +1094,15 @@ export const W10_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   [landing.id]: [6],
   [firstRods.id]: [1],
   [firstSpikes.id]: [1],
-  // (10-7 The Walls and 10-9 The Fortress Gate are both fights: each keeps its own arenas, so no 20 s stretch is alike between them)
+  // (each stage keeps its own sections, so no 20 s stretch is alike between two of them, curation's --apart: 10-1 the sprint's themes and
+  // the shared fillers; 10-3 the storm's watched walls; 10-7 The Walls' arenas, rods and spikes; 10-9 The Fortress Gate's, ramparts,
+  // gusts and rods; the rests go everywhere)
+  ...Object.fromEntries(
+    [gapKnee, rise, doubleGap, highRoad, rodRow, rodGap, rodMerlons, rodStairs, spikeRun, spikeMerlon, spikeChasm, rampartGallery, rampartTwin, rampartStair, rampartChasm, gustGap, gustPair, gustRise, gustLeap].map((s) => [s.id, [1]] as const),
+  ),
   ...Object.fromEntries([guardWall, guardYard, spikeYard, harpyWall, wallPatrol, towerSteps].map((s) => [s.id, [7]] as const)),
-  ...Object.fromEntries([guardRods, guardGusts, guardRampart, portcullisYard, gatehouseRun, drawbridge].map((s) => [s.id, [9]] as const)),
+  ...Object.fromEntries([guardRods, guardGusts, guardRampart, portcullisYard, gatehouseRun, drawbridge, gateApproach].map((s) => [s.id, [9]] as const)),
+  // (the purge opens rods or spikes, the gauntlet ramparts, gusts or rods: each gate's theme has its own arenas there)
+  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-hunt-gate-') && !/rods|spikes/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
+  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-fight-gate-') && /spikes/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
 };
