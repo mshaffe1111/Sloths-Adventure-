@@ -65,3 +65,9 @@ Built as approved, with the lead's four edits. Stills, upright and sideways: `re
 
 - Place the Under the Ruins note when the World 7 secret level is built.
 - **A question for the lead:** the General's card says "Every spring he plants a tree by the river. He takes his time." The narration just before the cards already says "That spring he went down to the Sunlit Riverbank... and planted a tree. The next day he went back and planted another. He took his time." It's said twice in a row. My pick: cut the narration and let the card say it, the way the soldiers' and squirrels' lines went.
+
+## Where I stopped (2026-10-29, about 11:00 PM ET)
+
+- story-a holds S-6, S-8, the new Under the Ruins note, the S-7 cards, the snail and the Notch art, merged with story-art 9b9a942.
+- The full gate was stopped part-way, on the lead's call to stop for the night. typecheck was clean. The story, finds and World 5 tests passed on their own.
+- Next step: run the full gate and the build on the story-a head, then send the lead the report, plus the General's tree-line question above.
