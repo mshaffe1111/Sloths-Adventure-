@@ -56,12 +56,12 @@ function useUpright(): boolean {
 }
 
 /** the chips the upright card has room for (two rows of three), the ones that say most about the run first */
-const UPRIGHT_ORDER = ['Time', 'Score', 'Best', 'Your best', 'Flowers', 'Flower goal', 'Hits taken', 'Lives lost', 'Foes', 'Best combo'];
+const UPRIGHT_ORDER = ['Time', 'Score', 'Best', 'Your best', 'Petals', 'Petal goal', 'Hits taken', 'Lives lost', 'Foes', 'Best combo'];
 const uprightChips = (chips: ChipSpec[]): ChipSpec[] =>
   [...chips].sort((a, b) => UPRIGHT_ORDER.indexOf(a.label) - UPRIGHT_ORDER.indexOf(b.label)).slice(0, 6);
 
 /** sideways, seven chips share one row: the two-word labels are cut to one, so none wraps at 12 px (UI-14) */
-const SHORT_LABEL: Record<string, string> = { 'Flower goal': 'Flowers', 'Hits taken': 'Hits', 'Best combo': 'Combo', 'Lives lost': 'Lives', 'Your best': 'Best' };
+const SHORT_LABEL: Record<string, string> = { 'Petal goal': 'Petals', 'Hits taken': 'Hits', 'Best combo': 'Combo', 'Lives lost': 'Lives', 'Your best': 'Best' };
 const shortLabel = (c: ChipSpec): ChipSpec => (SHORT_LABEL[c.label] ? { ...c, label: SHORT_LABEL[c.label] } : c);
 
 const CONFETTI_PATH: Record<ConfettiPiece['kind'], React.ReactNode> = {

@@ -1,3 +1,4 @@
+import { petalPass } from './petalPass.ts';
 import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
@@ -2885,7 +2886,8 @@ function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[])
     { platforms: stage.platforms, vines: stage.vines, ropes: stage.ropes, waterY: stage.waterY, glide: skillHeldAt('glide', (config.worldIndex - 1) * 10 + config.miniIndex), onRoute: new Set(reachableIds) },
     stage.collectibles,
   );
-  return stage;
+  // and the petal trail: one pickup, no clutter, all of it reachable (petalPass.ts)
+  return petalPass(stage);
 }
 
 /**

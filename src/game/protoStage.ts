@@ -16,6 +16,7 @@
  * Every rolled piece is checked against the shared physics (protoCheck.ts) and rolled again if it fails (see protoStage.test.ts).
  */
 import { teachWater } from './waterTeach.ts';
+import { petalPass } from './petalPass.ts';
 import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -343,8 +344,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const kd = dressStage({ world: w, stage: config.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
     if (kd.length) st.proto.kitDecor = kd;
   }
-  // water taught before it costs a life (LV-8); then the dressing, once the stage is final
-  const out = teachWater(st);
+  // water taught before it costs a life (LV-8), the petal trail (petalPass.ts); then the dressing, once the stage is final
+  const out = petalPass(teachWater(st));
   addDress(out, seed);
   return out;
 }

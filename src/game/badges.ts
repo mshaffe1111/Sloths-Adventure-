@@ -275,10 +275,11 @@ export const BADGES: BadgeDef[] = [
     ['silver', 200, 'Stomp 200 enemies'],
     ['gold', 1000, 'Stomp 1,000 enemies'],
   ], (c) => c.store.counters.stomps),
-  ...tiered('flora', 'Fruit Basket', 'flower', 'harvest', [
-    ['bronze', 250, 'Pick 250 flowers, leaves and fruit'],
-    ['silver', 2000, 'Pick 2,000 flowers, leaves and fruit'],
-    ['gold', 10000, 'Pick 10,000 flowers, leaves and fruit'],
+  // (one pickup since 2026-10-29, Meeca's petal: petals.ts. The counts are the petals' share of the old trails: about 0.8)
+  ...tiered('flora', 'Petal Basket', 'flower', 'harvest', [
+    ['bronze', 200, 'Pick 200 petals'],
+    ['silver', 1600, 'Pick 1,600 petals'],
+    ['gold', 8000, 'Pick 8,000 petals'],
   ], (c) => c.store.counters.flora),
   ...tiered('stars', 'Star Collector', 'star', 'star', [
     ['bronze', 30, 'Collect 30 stars'],
@@ -375,7 +376,7 @@ export const BADGES: BadgeDef[] = [
   one('ghost_walk', 'Ghost Walk', 'silver', 'feather', 'ghost', 'Clear 10 stages without taking a single hit',
     (c) => c.store.counters.noHitClears >= 10, { progress: (c) => count(c.store.counters.noHitClears, 10) }),
   one('sky_stomper', 'Sky Stomper', 'silver', 'boot', 'boot', 'Stomp 6 enemies without touching the ground', (c) => (c.stage?.maxStompChain ?? 0) >= 6),
-  one('garden_keeper', 'Garden Keeper', 'silver', 'flower', 'flower', 'Pick every flower, leaf and fruit in a stage without being hit',
+  one('garden_keeper', 'Garden Keeper', 'silver', 'flower', 'flower', 'Pick every petal in a stage without being hit',
     (c) => won(c) && c.stage!.floraTotal >= 5 && c.stage!.floraCollected >= c.stage!.floraTotal && c.stage!.heartsLost === 0),
   // (every card in the journal but the guardians: the predators and the ones met on the road, Matt 2026-10-29. Its id stays, so a
   // medal already won for the 11 predators stays won)

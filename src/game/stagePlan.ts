@@ -145,7 +145,8 @@ export function stageSpec(world: number, mini: number): StageSpec | null {
 }
 
 /** World 1's harvests gather Meeca's petals, not flowers */
-export const isPetalStage = (world: number, mini: number) => world === 1 && stageSpec(world, mini)?.type === 'harvest';
+/** Meeca's petal is every stage's pickup (petals.ts, Matt 2026-10-29), but World 8's harvests: their night blooms are the goal's own */
+export const isPetalStage = (world: number, mini: number) => !(world === 8 && stageSpec(world, mini)?.type === 'harvest');
 
 /** what a search (relic hunt) turns up in a world: one of the painted keepsakes (items/<name>.webp), or the golden idol (null) */
 export function relicArt(world: number, k: number): string | null {
@@ -174,7 +175,7 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
 }
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {
-    const [one, many] = world === 1 ? ['petal', 'petals'] : world === 8 ? ['night bloom', 'night blooms'] : ['flower', 'flowers'];
+    const [one, many] = world === 8 ? ['night bloom', 'night blooms'] : ['petal', 'petals'];
     return { verb: 'Collect', one, many };
   }
   if (type === 'relic_hunt') {
