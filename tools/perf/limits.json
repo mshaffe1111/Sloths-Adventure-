@@ -1,0 +1,74 @@
+{
+  "why": "PERFORMANCE-RULES.md \u00a78.1. Per-frame limits on the main canvas, judged at each scenario's worst spot, q0 (canvas 2x CSS). Set by the lead's brief (2026-10-30) and calibrated about 25% over the merged build's numbers so the check passes on ebc13e43.",
+  "scenarios": [
+    "ctest-mix14",
+    "1-4",
+    "2-6",
+    "3-3",
+    "4-1",
+    "7-3"
+  ],
+  "spots": 4,
+  "limits": {
+    "gradients": {
+      "max": 1,
+      "why": "brief: gradients created per frame <= 1"
+    },
+    "shadowOrFilter": {
+      "max": 0,
+      "why": "brief: no shadowBlur or filter set in a frame"
+    },
+    "readbacks": {
+      "max": 0,
+      "why": "brief: no getImageData/putImageData (gpuprof is off)"
+    },
+    "drawImageScreens": {
+      "max": 7.5,
+      "why": "brief: drawImage visible area <= 7.5 screens"
+    },
+    "drawImageCalls": {
+      "max": 400,
+      "why": "brief: drawImage calls <= 400"
+    },
+    "fillStrokeCalls": {
+      "max": 400,
+      "why": "brief: fill+stroke calls <= 400"
+    },
+    "clips": {
+      "max": 6,
+      "why": "brief: clip() calls <= 6"
+    },
+    "shrunkOver2_5x": {
+      "max": 20,
+      "why": "brief: a sheet shrunk more than 2.5x at q0 is reported; over 20 per frame fails"
+    }
+  },
+  "blends": {
+    "why": "advanced blends are emulated with a copy on PowerVR (PERFORMANCE-RULES \u00a72.10); the coefficient modes below are cheap",
+    "allowed": [
+      "source-over",
+      "lighter",
+      "source-atop",
+      "destination-out"
+    ],
+    "allowlist": []
+  },
+  "art": {
+    "why": "PERFORMANCE-RULES \u00a78.2: no image over 4096 px on a side. These 13 clip sheets were already over it on 2026-10-30 (sheetBake/creatureAnim bake them smaller once at stage start, but the full sheet is still decoded and uploaded once); they are debts to split, and a new one fails the check.",
+    "knownOver4096": [
+      "src/assets/enemies/dangler-anim.webp",
+      "src/assets/enemies/dozer-anim.webp",
+      "src/assets/enemies/mantis-anim.webp",
+      "src/assets/enemies/queen-anim.webp",
+      "src/assets/enemies/seamstress-anim.webp",
+      "src/assets/enemies/soldier-anim.webp",
+      "src/assets/w6to10/bosses/drake-anim.webp",
+      "src/assets/w6to10/bosses/golem-anim.webp",
+      "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+      "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+      "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+      "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+      "src/assets/w6to10/bosses/thornbark-anim-2.webp"
+    ]
+  }
+}
