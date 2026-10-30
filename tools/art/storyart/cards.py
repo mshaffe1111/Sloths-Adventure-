@@ -71,12 +71,35 @@ def hd(who, name):
 
 def squirrel(name):
     j = json.loads((REPO / 'src/assets/w6to10/gemini/story18-squirrels.json').read_text())['frames'][name]
-    return Image.open(REPO / 'src/assets/w6to10/gemini/story18-squirrels.webp').convert('RGBA').crop((j['x'], j['y'], j['x'] + j['w'], j['y'] + j['h']))
+    im = Image.open(REPO / 'src/assets/w6to10/gemini/story18-squirrels.webp').convert('RGBA').crop((j['x'], j['y'], j['x'] + j['w'], j['y'] + j['h']))
+    # (the sheet's cut-outs carry a white sticker outline, which the repaint kept: the pale edge goes, and the edge comes in a little)
+    import numpy as np
+    a = np.asarray(im).astype(np.int16)
+    edge = np.asarray(im.split()[3].filter(ImageFilter.MinFilter(25))) < 200
+    pale = (a[..., :3].min(-1) > 175) & ((a[..., :3].max(-1) - a[..., :3].min(-1)) < 55)
+    a[..., 3] = np.where(edge & pale, 0, a[..., 3])
+    out = Image.fromarray(a.astype(np.uint8), 'RGBA')
+    out.putalpha(out.split()[3].filter(ImageFilter.MinFilter(3)))
+    return out
 
 
 def flicker(name='glow_00'):
     f = frames('flickerAnimData.ts', 'FLICKER_ANIM:')[name]
     return Image.open(REPO / 'src/assets/characters/flicker-anim.webp').convert('RGBA').crop((f['x'], f['y'], f['x'] + f['w'], f['y'] + f['h']))
+
+
+def tea_table():
+    """a small round tea table with a teapot and two cups, drawn plainly for the repaint to paint"""
+    from PIL import ImageDraw
+    im = Image.new('RGBA', (420, 300), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.ellipse((20, 110, 400, 170), fill=(170, 120, 80, 255), outline=(60, 40, 25, 255), width=5)
+    d.rectangle((190, 160, 230, 290), fill=(140, 95, 60, 255), outline=(60, 40, 25, 255), width=4)
+    d.ellipse((150, 50, 260, 140), fill=(245, 240, 230, 255), outline=(60, 50, 50, 255), width=4)
+    d.polygon([(255, 85), (310, 60), (300, 80), (258, 105)], fill=(245, 240, 230, 255), outline=(60, 50, 50, 255))
+    for cx in (90, 330):
+        d.rectangle((cx - 26, 105, cx + 26, 140), fill=(245, 240, 230, 255), outline=(60, 50, 50, 255), width=3)
+    return im
 
 
 def trim(im):
@@ -104,7 +127,7 @@ CARDS = {
                        'a black panther lying quietly on a mossy rock ledge in a glowworm cave in the evening, a young sloth sitting beside him, neither of them talking, both looking out, peaceful'),
     'sky-sovereign': (4, [(lambda: sprite(E + 'sovereign-atlas.webp', 'sovereignAtlasData.ts', 'glide'), .48, .26, False, .5), (lambda: sprite(E + 'sovereign-atlas.webp', 'sovereignAtlasData.ts', 'glide'), .66, .13, False, .36), (lambda: sprite(E + 'sovereign-atlas.webp', 'sovereignAtlasData.ts', 'glide'), .33, .12, False, .32)],
                       'a great harpy eagle flying free on the wind over the misty valley and waterfalls, two young grown eaglets flying with her, the wind blowing where it likes'),
-    'tarantula-queen': (5, [(lambda: sprite(E + 'queen-atlas.webp', 'queenAtlasData.ts', 'idle2'), .58, .34, False), (lambda: hd('pokey', 'idle'), .38, .36, False)],
+    'tarantula-queen': (5, [(lambda: sprite(E + 'queen-atlas.webp', 'queenAtlasData.ts', 'idle2'), .66, .34, False), (lambda: hd('pokey', 'idle'), .3, .36, False), (lambda: tea_table(), .47, .18, False)],
                         'a big friendly tarantula queen with a tiny crown at a little round table set for tea among the pink orchids, a china teapot and cups, a young sloth guest sitting with her finishing his cup'),
     'marsh-reaver': (6, [(lambda: sprite(E + 'reaver-atlas.webp', 'reaverAtlasData.ts', 'idle'), .52, .42, False)],
                      'a big marsh creature sitting on a mangrove root by a path at noon eating his lunch from a leaf, half of it left beside him, fireflies, clean still water'),
