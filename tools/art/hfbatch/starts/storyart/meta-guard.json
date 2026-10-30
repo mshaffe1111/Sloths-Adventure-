@@ -1,0 +1,322 @@
+{
+ "guard-sovereign.glide": {
+  "src": [
+   "src/assets/enemies/sovereign-atlas.webp",
+   533,
+   0,
+   242,
+   79
+  ],
+  "scale": 3.6363636363636362,
+  "ox": 72,
+  "oy": 368,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-sovereign.alert": {
+  "src": [
+   "src/assets/enemies/sovereign-atlas.webp",
+   194,
+   231,
+   245,
+   100
+  ],
+  "scale": 3.5918367346938775,
+  "ox": 72,
+  "oy": 332,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-sovereign.dead": {
+  "src": [
+   "src/assets/enemies/sovereign-atlas.webp",
+   605,
+   231,
+   217,
+   60
+  ],
+  "scale": 4.055299539170507,
+  "ox": 72,
+  "oy": 390,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-queen.idle": {
+  "src": [
+   "src/assets/enemies/queen-atlas.webp",
+   0,
+   0,
+   196,
+   98
+  ],
+  "scale": 4.489795918367347,
+  "ox": 72,
+  "oy": 292,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-queen.screech": {
+  "src": [
+   "src/assets/enemies/queen-atlas.webp",
+   0,
+   102,
+   180,
+   119
+  ],
+  "scale": 4.888888888888889,
+  "ox": 72,
+  "oy": 221,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-queen.dead": {
+  "src": [
+   "src/assets/enemies/queen-atlas.webp",
+   209,
+   223,
+   173,
+   83
+  ],
+  "scale": 5.086705202312139,
+  "ox": 72,
+  "oy": 301,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-reaver.idle": {
+  "src": [
+   "src/assets/enemies/reaver-atlas.webp",
+   0,
+   0,
+   167,
+   109
+  ],
+  "scale": 5.269461077844311,
+  "ox": 72,
+  "oy": 225,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-reaver.deadheap": {
+  "src": [
+   "src/assets/enemies/reaver-atlas.webp",
+   496,
+   237,
+   246,
+   82
+  ],
+  "scale": 3.5772357723577235,
+  "ox": 72,
+  "oy": 365,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-reaver.roar": {
+  "src": [
+   "src/assets/enemies/reaver-atlas.webp",
+   496,
+   0,
+   132,
+   105
+  ],
+  "scale": 6.666666666666667,
+  "ox": 72,
+  "oy": 162,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-golem.march1": {
+  "src": [
+   "src/assets/enemies/golem-atlas.webp",
+   309,
+   0,
+   131,
+   114
+  ],
+  "scale": 6.717557251908397,
+  "ox": 72,
+  "oy": 129,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-golem.roar": {
+  "src": [
+   "src/assets/enemies/golem-atlas.webp",
+   154,
+   119,
+   108,
+   115
+  ],
+  "scale": 7.6521739130434785,
+  "ox": 99,
+  "oy": 72,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-golem.defeat2": {
+  "src": [
+   "src/assets/enemies/golem-atlas.webp",
+   0,
+   713,
+   212,
+   83
+  ],
+  "scale": 4.150943396226415,
+  "ox": 72,
+  "oy": 339,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-monarch.fl_1": {
+  "src": [
+   "src/assets/enemies/monarch-atlas.webp",
+   361,
+   0,
+   179,
+   72
+  ],
+  "scale": 4.916201117318436,
+  "ox": 72,
+  "oy": 335,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-monarch.deadcollapse": {
+  "src": [
+   "src/assets/enemies/monarch-atlas.webp",
+   0,
+   214,
+   174,
+   49
+  ],
+  "scale": 5.057471264367816,
+  "ox": 72,
+  "oy": 388,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-drake.idle": {
+  "src": [
+   "src/assets/enemies/drake-atlas.webp",
+   0,
+   0,
+   185,
+   103
+  ],
+  "scale": 4.756756756756757,
+  "ox": 72,
+  "oy": 267,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-drake.petrified": {
+  "src": [
+   "src/assets/enemies/drake-atlas.webp",
+   375,
+   221,
+   213,
+   63
+  ],
+  "scale": 4.131455399061033,
+  "ox": 72,
+  "oy": 382,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-drake.enrage": {
+  "src": [
+   "src/assets/enemies/drake-atlas.webp",
+   187,
+   0,
+   202,
+   110
+  ],
+  "scale": 4.356435643564357,
+  "ox": 72,
+  "oy": 272,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-croc.idle_005": {
+  "src": [
+   "src/assets/enemies/croc-anim.webp",
+   3476,
+   1254,
+   366,
+   137
+  ],
+  "scale": 2.459016393442623,
+  "ox": 62,
+  "oy": 343,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-croc.defeated_024": {
+  "src": [
+   "src/assets/enemies/croc-anim.webp",
+   2651,
+   1672,
+   348,
+   119
+  ],
+  "scale": 2.586206896551724,
+  "ox": 62,
+  "oy": 358,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-croc.roar_020": {
+  "src": [
+   "src/assets/enemies/croc-anim.webp",
+   1330,
+   639,
+   399,
+   157
+  ],
+  "scale": 2.255639097744361,
+  "ox": 62,
+  "oy": 335,
+  "size": [
+   1024,
+   1024
+  ]
+ }
+}

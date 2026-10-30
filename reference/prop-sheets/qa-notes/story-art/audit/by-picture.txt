@@ -1,0 +1,27 @@
+ 4.19x  reaver-atlas.webp            drawn in   54 shots, over 1.5x in   28  boss6d boss6i prologue world6
+ 4.02x  golem-atlas.webp             drawn in   52 shots, over 1.5x in   22  boss7d boss7i
+ 3.14x  queen-atlas.webp             drawn in   96 shots, over 1.5x in   50  boss5d boss5i mem-tea
+ 2.97x  sovereign-atlas.webp         drawn in   57 shots, over 1.5x in   24  boss4d boss4i
+ 2.79x  monarch-atlas.webp           drawn in   47 shots, over 1.5x in   18  boss8d boss8i
+ 2.79x  drake-atlas.webp             drawn in   54 shots, over 1.5x in   20  boss9d boss9i
+ 2.10x  pokey-3.webp                 drawn in   57 shots, over 1.5x in   13  boss1d mem-tea mid10 prologue world5 world8
+ 2.01x  venom-body.webp              drawn in   46 shots, over 1.5x in   21  boss1d boss1i
+ 1.93x  pokey-2.webp                 drawn in  335 shots, over 1.5x in   25  boss1d gate10 mem-photograph mem-sealed mem-tea mid10 mid6 prologue world10 world5 world8
+ 1.86x  croc-anim.webp               drawn in   50 shots, over 1.5x in   15  boss2d boss2i
+ 1.52x  cels-3.webp                  drawn in   86 shots, over 1.5x in    2  mem-promise world8
+ 1.36x  prowler-anim.webp            drawn in   73 shots, over 1.5x in    0  
+ 1.34x  thornbark-atlas.webp         drawn in    2 shots, over 1.5x in    0  
+ 1.26x  cels-2.webp                  drawn in  136 shots, over 1.5x in    0  
+ 1.05x  cels-5.webp                  drawn in  102 shots, over 1.5x in    0  
+ 1.05x  cels-4.webp                  drawn in  147 shots, over 1.5x in    0  
+ 0.98x  meeca-1.webp                 drawn in   70 shots, over 1.5x in    0  
+ 0.98x  meeca-2.webp                 drawn in   30 shots, over 1.5x in    0  
+ 0.97x  pokey-1.webp                 drawn in  820 shots, over 1.5x in    0  
+ 0.97x  pokey-0.webp                 drawn in  715 shots, over 1.5x in    0  
+ 0.95x  meeca-0.webp                 drawn in  138 shots, over 1.5x in    0  
+ 0.95x  cels-6.webp                  drawn in   68 shots, over 1.5x in    0  
+ 0.90x  cels-0.webp                  drawn in   48 shots, over 1.5x in    0  
+ 0.90x  cels-1.webp                  drawn in   52 shots, over 1.5x in    0  
+ 0.58x  flicker-anim.webp            drawn in  445 shots, over 1.5x in    0  
+ 0.48x  venom2-atlas.webp            drawn in   58 shots, over 1.5x in    0  
+ 0.46x  dot-0.webp                   drawn in  834 shots, over 1.5x in    0  

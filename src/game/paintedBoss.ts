@@ -10,6 +10,7 @@ import type { BossEntity } from './types.ts';
 import type { BossBrain, BossDef, MoveDef } from './bossAI.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { bossMotion } from './bossMotion.ts';
+import { guardianFrame } from './storyGuard.ts';
 import { withHurtFlash } from './hurtFlash.ts';
 
 export interface BossFrameRect {
@@ -98,7 +99,11 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
         ctx.shadowColor = spec.glow;
         ctx.shadowBlur = 12;
       }
-      ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
+      // (in a story, the frame's own story painting when it has loaded: storyGuard.ts)
+      const hd = guardianFrame(spec.param, name);
+      if (hd === 'wait') return true;
+      if (hd) ctx.drawImage(hd.img, hd.x, hd.y, hd.w, hd.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
+      else ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
       return true;
     },
     draw(ctx, b, def, time, feetY) {
