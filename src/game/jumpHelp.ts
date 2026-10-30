@@ -9,8 +9,12 @@
  */
 export type JumpHelp = 'off' | 'keep' | 'forward';
 
-/** off unless the player turns it on (Matt, 2026-10-30: the special options start off, Dot's help aside) */
-export const DEFAULT_JUMP_HELP: JumpHelp = 'off';
+/**
+ * On + forward. Matt (2026-10-30) had the special options start off, but this one stays on: with it off, a one-thumb player standing at
+ * one of World 5's tall stumps cannot climb it (the thumb lifts to flick, so only the second jump's forward push carries him on; the
+ * W5 fairness tests caught it). It is how touch play works, not an extra.
+ */
+export const DEFAULT_JUMP_HELP: JumpHelp = 'forward';
 
 const KEY = 'sloth_jump_help';
 let help: JumpHelp | null = null;
