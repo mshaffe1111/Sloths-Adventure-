@@ -11,7 +11,7 @@ import type { Difficulty, SectionTemplate, WorldKit, WorldManifest } from '../ty
 import { w9Falls, w9Kit } from './w9.ts';
 import { W9_GROUND_SECTIONS, W9_STAGE_ONLY, W9_THEME, type W9Theme } from './w9Ground.ts';
 import { W9_ROOM_SECTIONS, W9R_STAGE, w9RoomsFor } from './w9Rooms.ts';
-import { W9_SWING_SECTIONS } from './w9Swing.ts';
+import { W9_SWING_SECTIONS, W9S_THEME } from './w9Swing.ts';
 
 /** the stages of World 9 the game builds with gen2 */
 export const W9_GAME_STAGES = ['9-1', '9-3', '9-4', '9-5', '9-6', '9-8', '9-9'] as const;
@@ -44,11 +44,20 @@ const STAGE_THEMES: Readonly<Record<number, ReadonlyArray<[W9Theme, readonly str
   // (9-9: the guards, harpies and boas on the ash; or the hoard's own ground, pillars and bursts over the lava with a guard at the end)
   9: [[W9_THEME.harpies, ['w9-harpy-field', 'w9-harpy-gap', 'w9-boa-ledges', 'w9-boa-chasm']], [W9_THEME.boas, ['w9-pillar-run', 'w9-hot-run', 'w9-harpy-pillars', 'w9-hoard-pillars']]],
 };
-/** the ground of 9-3 that asks most, between its chains: weighed as a theme's (the vine stage is no breather: World 9's band) */
-const HOT_GROUND = ['w9-crust-gaps', 'w9-pillar-hop', 'w9-lava-drop'];
+/**
+ * 9-3's ground given to the swing helper's themes (w9Swing.ts W9S_THEME, opened by its gates, 9-3's start): the crust gaps are the
+ * crust runs', the pillars the walls' (the lava drop stays every roll's: the Ki slots' filler); a chain-runs roll is chains between the rests (diversity: the shared ground made every roll
+ * read alike, 0.23-0.30 against the 0.35 rule)
+ */
+const THEMES_9_3: ReadonlyArray<[string, readonly string[]]> = [[W9S_THEME.crust, ['w9-crust-gaps']], [W9S_THEME.climbs, ['w9-pillar-hop']]];
 /** a shared section given to the stage's theme that leans on it (it then waits for that theme's gate) */
-function themed(stage: number, s: SectionTemplate): SectionTemplate {
-  if (stage === 3 && HOT_GROUND.includes(s.id)) return { ...s, weight: 1 };
+function themed(stage: number, s: SectionTemplate): SectionTemplate | null {
+  if (stage === 3) {
+    // (9-3's start is always a theme's gate)
+    if (s.id === 'w9-landing') return null;
+    const t3 = THEMES_9_3.find(([, ids]) => ids.includes(s.id));
+    if (t3) return { ...s, uses: [...(s.uses ?? []), t3[0]], weight: 1 };
+  }
   const t = STAGE_THEMES[stage]?.find(([, ids]) => ids.includes(s.id));
   return t ? { ...s, uses: [...(s.uses ?? []), t[0]], weight: 1 } : s;
 }
@@ -58,6 +67,7 @@ export function w9GameKit(stage: number, _difficulty: Difficulty = 'normal'): Wo
   const k = w9Kit(stage);
   const sections = W9_GROUND_SECTIONS.filter((s) => forStage(stage, s.id))
     .map((s) => themed(stage, s))
+    .filter((s): s is SectionTemplate => !!s)
     .map(w9Falls);
   const swings = W9_SWING_STAGES.includes(stage) ? W9_SWING_SECTIONS.map(w9Falls) : [];
   return { ...k, manifest: { ...k.manifest, sections: [...sections, ...swings, ...w9RoomsFor(stage, _difficulty)], required: W9_REQUIRED } };

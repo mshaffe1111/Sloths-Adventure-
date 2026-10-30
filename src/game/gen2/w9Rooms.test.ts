@@ -102,7 +102,9 @@ function play(t: SectionTemplate, d: Difficulty, w: number, h: number) {
   e.introT = 99;
   e.applyZoom();
   sim.safe = false;
-  sim.stand(RUNWAY - 120, G);
+  // (on the room's floor, past any knee on the way in)
+  const floor = st.platforms.find((p) => p.id === st.room.left.on)!;
+  sim.stand(Math.max(RUNWAY - 120, floor.x + 10), floor.y);
   sim.frame();
   return { sim, kit: kp, st };
 }

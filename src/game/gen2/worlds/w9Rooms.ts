@@ -135,15 +135,21 @@ const bucketRoomOf = (d: Difficulty): SectionTemplate => ({
   weight: 40,
   // (a stone, onto the plank, flicked up into the bucket, the ride: about 12 s for a first-timer)
   extraSeconds: 12,
+  // (a basalt knee on the way in and on the way out: a hop each, so the walk up to the room and down from it is never a long quiet
+  // stretch; 9-3 read 5.3-5.5 s quiet from a lava drop's last flat across the floor. Neither is on the stone's carry path)
   pieces: [
-    bank('floor', BUCKET.floor, { kind: 'start' }),
+    bank('in', [130, 150], { kind: 'start' }),
+    bank('knee', [110, 130], { kind: 'walk', after: 'in', dy: -40 }),
+    bank('floor', BUCKET.floor, { kind: 'walk', after: 'knee', dy: 40 }),
     bank('pit', BUCKET.pit, { kind: 'walk', after: 'floor', dy: BUCKET.dip }),
     // (the high ledge, a whole bank down to the ground past the pit: a wall beside a pit reaches the pit's floor)
     bank('top', BUCKET.top, { kind: 'over', on: 'pit', at: 1, dy: -(BUCKET.dip + BUCKET.rise) }, { main: true }),
-    bank('out', [240, 300], { kind: 'walk', after: 'top', dy: BUCKET.rise }),
+    bank('out', [140, 160], { kind: 'walk', after: 'top', dy: BUCKET.rise }),
+    bank('knee2', [110, 130], { kind: 'walk', after: 'out', dy: -40 }),
+    bank('out2', [140, 170], { kind: 'walk', after: 'knee2', dy: 40 }),
   ],
-  entry: { piece: 'floor', kind: 'ground' },
-  exit: { piece: 'out', kind: 'ground' },
+  entry: { piece: 'in', kind: 'ground' },
+  exit: { piece: 'out2', kind: 'ground' },
   exitDy: 0,
   sockets: [],
   room: bucketSpec(d),
