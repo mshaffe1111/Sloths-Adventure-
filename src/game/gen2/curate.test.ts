@@ -13,7 +13,7 @@ import '../headlessDom.ts';
 import { buildGen2Stage, checkStage } from './pipeline.ts';
 import { closingSections, curateStage, distance, failsOf, pickSpread, plainReason, renderReport, renderTable, resolveStage, sharedWith, toEntry, type RollMeasure, type SideMeasure } from '../../../tools/gen2/curate.ts';
 
-const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, nearJumps: 0, ...o });
+const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ unswung: 0, ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, nearJumps: 0, ...o });
 const roll = (seed: number, prof: Record<string, number>, quality = 0.5, plan: string[] = []): RollMeasure => ({
   seed, layoutSeed: seed, rerolls: 0, swaps: 0, plan, normal: side(), easy: side(), action: '', prof: new Map(Object.entries(prof)), wins: [], fails: [], quality,
 });
