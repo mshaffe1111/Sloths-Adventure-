@@ -1280,6 +1280,8 @@
 
 /* the map comes on in order (2026-10-28): the trail draws itself along, the stages pop up one after another, Pokey drops onto his,
    and the stage card rises; a new world plays it again */
+.map-road { filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .6)); }
+.map-road.ahead { opacity: .72; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .6)) saturate(.7); }
 .map-trail { animation: map-trail-in .9s cubic-bezier(.4, 0, .2, 1) .08s backwards; }
 @keyframes map-trail-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 .map-node { animation: map-node-in .5s cubic-bezier(.2, 1.6, .4, 1) calc(.18s + var(--i, 0) * .055s) backwards; }
