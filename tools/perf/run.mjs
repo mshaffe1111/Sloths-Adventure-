@@ -44,7 +44,10 @@ const ORIENTS = [
   { id: 'port', viewport: { width: 400, height: 880 } },
   { id: 'land', viewport: { width: 880, height: 400 } },
 ].filter((o) => !orientArg || o.id === orientArg);
-const SETTLE_MS = 1500, TIME_FRAMES = 20, COUNT_FRAMES = 8;
+const SETTLE_MS = 1500, COUNT_FRAMES = 8;
+// PERF_TIME_FRAMES=0 skips the timing pass (the draw check only counts); PERF_SPOTS=n plays n spots per scenario
+const TIME_FRAMES = Number(process.env.PERF_TIME_FRAMES ?? 20);
+const SPOTS = Number(process.env.PERF_SPOTS || 0);
 
 const log = (...a) => console.log(`[${name} ${new Date().toISOString().slice(11, 19)}]`, ...a);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -79,9 +82,14 @@ async function playOne(browser, scen, orient) {
     if (await page.evaluate(() => typeof window.__play === 'function')) break;
     await sleep(1000);
   }
-  await page.evaluate((id) => window.__play(id), scen.stage);
-  // load: the sheets arrive on the real clock, the game moves on the fake one
-  for (let i = 0; i < 12; i++) { await page.clock.runFor(250); await sleep(300); }
+  // let the front screens settle first: a menu screen that comes up after __play lets go of the stage (screenFlow.ts releasesStage)
+  for (let i = 0; i < 6; i++) { await page.clock.runFor(500); await sleep(200); }
+  // load: the sheets arrive on the real clock, the game moves on the fake one (and the stage waits for them: stageReady.ts)
+  for (let tries = 0; tries < 3; tries++) {
+    await page.evaluate((id) => window.__play(id), scen.stage);
+    for (let i = 0; i < 12; i++) { await page.clock.runFor(250); await sleep(300); }
+    if (await page.evaluate(() => !!window.__perf.engine())) break;
+  }
 
   // the harness's render(): pin Pokey, then time, count or just draw
   const info = await page.evaluate(({ n }) => {
@@ -130,7 +138,7 @@ async function playOne(browser, scen, orient) {
       spawn: [st.spawnX, st.spawnY], exit: [st.exitTotemX, st.exitTotemY], spots,
       dotRun: !!e.dotRun, slideRun: !!e.slideRun, proto: !!e.proto,
     };
-  }, { n: scen.spots });
+  }, { n: SPOTS || scen.spots });
   if (info.error) { await ctx.close(); return { scenario: scen.id, orient: orient.id, error: info.error, errors }; }
 
   const spotsOut = [];
@@ -148,7 +156,7 @@ async function playOne(browser, scen, orient) {
       return { quality: e.quality, canvas: `${e.canvas.width}x${e.canvas.height}`, cam: [Math.round(e.camera.x), Math.round(e.camera.y)], paused: !!e.isPaused, running: !!e.isRunning, px: Math.round(e.player.x), py: Math.round(e.player.y) };
     }, QUALITY);
     await page.evaluate(() => { window.__perf.mode = 'time'; });
-    await page.clock.runFor(TIME_FRAMES * 33.4);
+    if (TIME_FRAMES) await page.clock.runFor(TIME_FRAMES * 33.4);
     await page.evaluate(() => { window.__perf.install(); window.__perf.mode = 'count'; });
     await page.clock.runFor(COUNT_FRAMES * 33.4);
     await page.evaluate(() => { window.__perf.mode = 'plain'; window.__perf.uninstall(); });
@@ -207,6 +215,18 @@ async function mapSites(results) {
 const vite = await startVite();
 log('vite up on', port);
 const browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
+// a first page that only loads the game: a fresh dev server optimizes its dependencies on the first load and then reloads the page,
+// which wiped a scenario's window.__play mid-start (the draw check's first runs, 2026-10-30)
+{
+  const page = await browser.newPage();
+  await page.goto(`http://127.0.0.1:${port}/?lessons=off`, { timeout: 180000 }).catch(() => {});
+  for (let t0 = Date.now(); Date.now() - t0 < 300000; ) {
+    if (await page.evaluate(() => typeof window.__play === 'function').catch(() => false)) break;
+    await sleep(1000);
+  }
+  await sleep(4000);
+  await page.close();
+}
 const results = [];
 try {
   for (const scen of RUN) for (const orient of ORIENTS) {
