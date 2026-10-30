@@ -928,10 +928,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a plan is held to the column too while Normal's own loop follows it (a slot that no longer fits is chosen again); Easy
       // following Normal's plan lays it as it is)
       const held = !fixed || !!opt.open;
-      if (held && (dir > 0 ? x1 > ASCENT.column - keep || x0 < -ASCENT.turnRoom : x0 < keep || x1 > ASCENT.column + ASCENT.turnRoom)) {
-        if (process.env.GEN2_DEBUG) console.log('room', tpl.id, dir, x0, x1, keep);
-        return null;
-      }
+      if (held && (dir > 0 ? x1 > ASCENT.column - keep || x0 < -ASCENT.turnRoom : x0 < keep || x1 > ASCENT.column + ASCENT.turnRoom)) return null;
       // (clear of every earlier row: a turn's own shelf at the top is the next row's, clear of its own ledges under it)
       const exitKey = L.exit.piece;
       const lower = (b: (typeof boxes)[number]) => tpl.turn && b.lp.key === exitKey ? row + 1 : row;
@@ -946,7 +943,6 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         // (a liana of an earlier row: its rope and its swing stay clear of this piece)
         const rope = vines.find((v) => v.isSwingingVine && (vineRow.get(v) ?? 0) !== r1 && b.x < v.x + 200 && b.x + b.width > v.x - 200 && b.y + thick(b) > v.topY - 60 && b.y < v.bottomY);
         if (!hit && !rope) continue;
-        if (process.env.GEN2_DEBUG) console.log('clear', tpl.id, b0.lp.key, b.x, b.y, hit && [hit.id, hit.x, hit.y, hit.width], rope && [rope.x, rope.topY]);
         if (!tpl.turn || r1 === row) {
           if (held) return null;
           continue;
@@ -989,7 +985,6 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (!at) misfit.add(tpl.id);
       }
       const { tpl, L, join, dx, dy, ox, oy, wx, mirrored, salt, srng } = at;
-      if (process.env.GEN2_DEBUG) console.log('slot', i, tpl.id, 'dir', dir, 'cur', R(cur.x), R(cur.y), 'ox', ox, 'boxes', at.boxes.map((b) => `${b.lp.key}:${b.x}..${b.x + b.width}@${b.y}`).join(' '));
       const x0w = up ? Math.min(...at.boxes.map((b) => b.x)) : ox;
       const x1w = up ? Math.max(...at.boxes.map((b) => b.x + b.width)) : ox + L.width;
       const exitP0 = L.pieces.find((lp) => lp.key === L.exit.piece)!;
