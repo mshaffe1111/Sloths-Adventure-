@@ -629,9 +629,13 @@ function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: num
 /** the look of a memory: colour drained and warmed, the edges melting into old paper, a faint projector flicker */
 function drawMemoryWash(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) {
   ctx.save();
-  ctx.globalCompositeOperation = 'saturation';
-  ctx.fillStyle = 'hsl(32, 36%, 50%)';
+  // (an old photograph's sepia: the hue and colour of warm paper over each pixel's own light, mostly. It was a 'saturation' fill, which
+  // gave every dark pixel the same strength of its own noisy hue: the night nest of the singing storm came out in rainbow stripes)
+  ctx.globalCompositeOperation = 'color';
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = 'hsl(32, 40%, 50%)';
   ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = 1;
   ctx.globalCompositeOperation = 'soft-light';
   ctx.globalAlpha = 0.55;
   ctx.fillStyle = '#ffcf7a';
