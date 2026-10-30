@@ -133,17 +133,23 @@ export function drawW9Beam(ctx: CanvasRenderingContext2D, x0: number, x1: number
   const im = imgs.bridges!;
   ctx.drawImage(im, c.x, c.y, cap, c.h, x0, top, capW + 1, h);
   ctx.drawImage(im, c.x + c.w - cap, c.y, cap, c.h, x1 - capW - 1, top, capW + 1, h);
+  // (each middle piece a different cut of the slab's middle, of a different length, every other one flipped: no two alike side by side)
   let n = 0;
-  for (let x = x0 + capW; x < x1 - capW; x += midW - 2, n++) {
-    const w = Math.min(midW, x1 - capW - x);
+  let seed = Math.abs(Math.round(x0 * 7 + y * 13)) % 997;
+  for (let x = x0 + capW; x < x1 - capW - 1; n++) {
+    seed = (seed * 73 + 41) % 997;
+    const len = mid * (0.55 + 0.45 * ((seed % 100) / 100));
+    const off = (mid - len) * (((seed >> 3) % 50) / 50);
+    const w = Math.min(len * k, x1 - capW - x);
     const sw = w / k;
     ctx.save();
     if (n % 2) {
       ctx.translate(x + w, 0);
       ctx.scale(-1, 1);
-      ctx.drawImage(im, c.x + cap, c.y, sw, c.h, 0, top, w + 1, h);
-    } else ctx.drawImage(im, c.x + cap, c.y, sw, c.h, x, top, w + 1, h);
+      ctx.drawImage(im, c.x + cap + off, c.y, sw, c.h, 0, top, w + 1, h);
+    } else ctx.drawImage(im, c.x + cap + off, c.y, sw, c.h, x, top, w + 1, h);
     ctx.restore();
+    x += w - 2;
   }
   return true;
 }
