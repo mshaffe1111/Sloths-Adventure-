@@ -1,0 +1,5 @@
+The recorded effect set (takes.mp3, a pack of 270 takes; bed1_0.mp3 to bed10_0.mp3, the world beds) is cut from 148 Freesound recordings,
+every one released under Creative Commons Zero (CC0 1.0, public domain): free for any use, no attribution required. Each recording, its
+uploader and title, and what it is used for are listed in reference/audio-previews/sfx-v1/LICENCES.md. Built by tools/audio/sfxv1/build.py,
+levelled by calib.py, packed by pack.py. Crediting the recordists is not required; they are listed there with thanks.
+https://creativecommons.org/publicdomain/zero/1.0/
