@@ -30,6 +30,7 @@ The lead works on this alone first, with no helpers. Rules: reference/PERFORMANC
      - **hurtFlash.ts:** box-sized layers in a ring of 4, not a full-screen layer.
      - **engine.ts:** late frames run in up to 3 steps, and gpuprof per-layer timing.
      - Test link v8 after the gate.
+   - **Test link v8 PUBLISHED ~2:35 AM ET** (EBKij version 1793339121-6c99, bundle index-C7bEmyTJ.js; gate16: 2029 tests, 2027 pass, 0 fail, 2 todo). Matt's morning test: EBKij#ctest&gpuprof=1, one run each on the Pixel, the Samsung and the older OnePlus. The testers' link EnK5 stays on the release.
    - Duet's other items, queued:
      - trackAtlas bitmaps for every sheet (b);
      - eagle sparkle `fillText` -> sprite;
