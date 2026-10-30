@@ -33,7 +33,10 @@ import { jennifurSpriteReady, MEECA_STANDARD_URL } from './jennifurSprite.ts';
 import { MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
-import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
+import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy, standInReady } from './paintedBackdrops.ts';
+
+/** how long a stage waits at most for its backdrop's small stand-ins (they are a few KB: only a lost connection takes this long) */
+const STAND_IN_WAIT_MS = 6000;
 import { CTEST_FOES, ctestMixDraws, stageSheets } from './stageSheets.ts';
 import { SPRITES, warmSprites } from './spriteSheets.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
@@ -194,6 +197,8 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   const mix = ctestEnabled() && cfg.id === CTEST_STAGE_ID ? ctestSeed() : undefined;
   const id = mix ? `${cfg.id}#${mix}` : cfg.id;
   if (pending?.id === id) return pending.done;
+  // (its backdrop's small stand-ins are asked for before any sheet: on a slow connection they are what the stage opens on)
+  void standInReady(cfg.worldIndex, cfg.id);
   // (a stage in another world: the last world's sheets go first, as starting the stage would do)
   enterWorld(cfg.worldIndex);
   if (mix && !live()) releaseCtestFoes(ctestMixDraws(mix).foes);
@@ -256,9 +261,13 @@ export function readyToStart(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   if (typeof Image === 'undefined' || !preloadEnabled()) return Promise.resolve();
   let started = false;
   const wait = (p: Promise<void>, t: number) => Promise.race([p, new Promise<void>((r) => setTimeout(r, t))]);
+  // (the backdrop's small painted stand-ins, a few KB, are asked for first, ahead of the stage's big sheets on a slow connection, and the
+  // stage always waits for them: it never opens on a flat sky, whatever the connection; the cap is only for a connection gone for good)
+  const standIn = wait(standInReady(cfg.worldIndex, cfg.id), STAND_IN_WAIT_MS);
   return Promise.all([
-    wait(preloadStage(cfg, canvas, () => started || live()), ms),
+    standIn,
     wait(backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg)), backMs),
+    wait(preloadStage(cfg, canvas, () => started || live()), ms),
   ]).then(() => {
     started = true;
   });

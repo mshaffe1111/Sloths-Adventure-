@@ -28,6 +28,14 @@ try {
 } catch {
   FILES = {};
 }
+/** each strip at a sixth of its size (tools/art/backdroplo/make.py): a few KB, decoded long before the strips, shown in their place
+ * until they arrive, so a stage never opens on a flat sky (lead, 2026-10-29: the river stage played its first seconds on a flat colour) */
+let LO: Record<string, string> = {};
+try {
+  LO = import.meta.glob('../assets/backdrops-lo/w*-*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+} catch {
+  LO = {};
+}
 
 import { FAR_ONLY, stageBackdropStem } from './stageBackdrops.ts';
 
@@ -52,11 +60,13 @@ const now = (): number => (typeof performance !== 'undefined' ? performance.now(
 type Part = keyof PaintedSet;
 const PARTS: Part[] = ['far', 'mid', 'near', 'sky'];
 
-function urlFor(stem: string, part: Part): string | null {
-  const own = FILES[`../assets/backdrops/${stem}-${part}.webp`];
+function urlFor(stem: string, part: Part, lo = false): string | null {
+  const files = lo ? LO : FILES;
+  const dir = lo ? 'backdrops-lo' : 'backdrops';
+  const own = files[`../assets/${dir}/${stem}-${part}.webp`];
   if (own || part === 'sky') return own ?? null; // (the sky goes with its own far strip, never borrowed)
   // a far-only set (Worlds 1-4 through the day, stageBackdrops.ts) borrows its world's middle and near strips
-  if (part !== 'far' && FAR_ONLY.includes(stem)) return FILES[`../assets/backdrops/w${worldOf(stem)}-${part}.webp`] ?? null;
+  if (part !== 'far' && FAR_ONLY.includes(stem)) return files[`../assets/${dir}/w${worldOf(stem)}-${part}.webp`] ?? null;
   return null;
 }
 
@@ -126,7 +136,64 @@ export function onPaintedReady(fn: (world: number) => void): () => void {
   return () => listeners.delete(fn);
 }
 
+/** the small stand-ins (LO), by set: decoded ones, ones on their way, ones that failed, and the calls waiting for them */
+const loReady = new Map<string, PaintedSet>();
+const loLoading = new Set<string>();
+const loFailed = new Set<string>();
+const loSettled = new Map<string, (() => void)[]>();
+
+function loadLo(stem: string) {
+  if (loReady.has(stem) || loLoading.has(stem) || loFailed.has(stem) || typeof Image === 'undefined') return;
+  const parts = PARTS.filter((p) => !!urlFor(stem, p, true));
+  if (!parts.includes('far') || !parts.includes('mid')) {
+    loFailed.add(stem);
+    return;
+  }
+  loLoading.add(stem);
+  const imgs = parts.map((p) => {
+    const im = new Image();
+    im.decoding = 'async';
+    // (ahead of the big sheets the stage asks for at the same moment)
+    (im as HTMLImageElement & { fetchPriority?: string }).fetchPriority = 'high';
+    im.src = urlFor(stem, p, true)!;
+    return im;
+  });
+  Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
+    .then(() => {
+      const at = (p: Part) => imgs[parts.indexOf(p)] ?? null;
+      loReady.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near'), sky: at('sky'), at: now() });
+      // (a few sets at most: the oldest go)
+      for (const k of [...loReady.keys()]) if (loReady.size > 4 && k !== stem) loReady.delete(k);
+      // (the scenery swaps its flat stand-in for these, unless the strips themselves beat them to it)
+      if (!ready.has(stem)) listeners.forEach((fn) => fn(worldOf(stem)));
+    })
+    .catch(() => loFailed.add(stem))
+    .finally(() => {
+      loLoading.delete(stem);
+      const w = loSettled.get(stem);
+      loSettled.delete(stem);
+      w?.forEach((fn) => fn());
+    });
+}
+
+/** the small painted stand-ins for the set a world shows now, once decoded (null before, or when it has none) */
+export function standInFor(world: number): PaintedSet | null {
+  if (!hasPainted(world)) return null;
+  return loReady.get(stemFor(world)) ?? null;
+}
+
+/** resolves once a stage's small stand-ins have decoded (or failed, or there are none): the stage never starts before them */
+export function standInReady(world: number, stageId: string): Promise<void> {
+  if (!hasPainted(world) || typeof Image === 'undefined') return Promise.resolve();
+  const stem = backdropStem(world, stageId);
+  loadLo(stem);
+  if (loReady.has(stem) || loFailed.has(stem) || !loLoading.has(stem)) return Promise.resolve();
+  return new Promise<void>((res) => loSettled.set(stem, [...(loSettled.get(stem) ?? []), res]));
+}
+
 function loadSet(stem: string) {
+  // (the stand-ins first: a few KB, so they are on screen long before the strips)
+  loadLo(stem);
   if (ready.has(stem) || loading.has(stem) || failed.has(stem) || typeof Image === 'undefined') return;
   const world = worldOf(stem);
   loading.add(stem);
@@ -208,6 +275,7 @@ export function setsToDrop(order: readonly string[], keep: string, keepWorlds = 
 function trim(keep: string) {
   for (const k of setsToDrop([...ready.keys()], keep)) {
     ready.delete(k);
+    loReady.delete(k);
     const w = worldOf(k);
     if (ownMid(k) && ![...ready.keys()].some((q) => worldOf(q) === w && ownMid(q))) canopyReady.delete(w);
     listeners.forEach((fn) => fn(w));

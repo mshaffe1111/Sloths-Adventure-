@@ -14,7 +14,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
+import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted, standInFor, FADE_IN_MS, type PaintedSet } from './paintedBackdrops.ts';
 import { w5Mood, type W5Mood } from './w5Backdrop.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
@@ -1536,7 +1536,13 @@ function ensure(world: number): LayerSet {
     return set;
   }
   if (hasPainted(world)) {
-    const set: LayerSet = {
+    // the strips are still on their way: their small painted stand-ins take their place (soft, but the same painting, never a flat sky),
+    // or, for the moment before even those arrive, the plain sky
+    const lo = bakeScale > THUMB_BAKE ? standInFor(world) : null;
+    const set: LayerSet = lo ? {
+      world, seed: getSceneSeed(), far: lo.far, hills: null, mid: lo.mid, near: lo.near, sky: lo.sky,
+      front: buildFront(look, world, false), clouds: [], hazed: true, painted: true, waiting: true,
+    } : {
       world, seed: getSceneSeed(), far: waitingSky(look), hills: null, mid: clearStrip(), near: null,
       front: buildFront(look, world, false), clouds: [], hazed: true, painted: true, waiting: true,
     };
@@ -1914,8 +1920,14 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   if (set.painted) {
     // (strips that decoded a moment ago, after the stage was already on screen, fade in over the stand-in sky: VI-3)
     const fa = fadeIn(set.at);
-    // (the stand-in sky is a plain gradient: it still fills the whole view, at the view's own scale)
-    if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+    // (under strips fading in: their small painted stand-ins when they came first, so it is the same picture sharpening; the plain sky,
+    // filling the whole view at the view's own scale, only when even those were late)
+    const lo = fa < 1 && !set.waiting ? standInFor(world) : null;
+    if (lo) {
+      drawStrip(ctx, lo.far, 'far', 0.05, camX, vw, vh, farScale(lo.sky, vh, ps, yo * 0.3), yo * 0.3, lo.sky ?? null);
+      drawStrip(ctx, lo.mid, 'mid', 0.2, camX, vw, vh, ps, yo * 0.8);
+      if (lo.near) drawStrip(ctx, lo.near, 'near', 0.42, camX, vw, vh, grown(world, 'near', ps), yo);
+    } else if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
     ctx.globalAlpha = fa;
     drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null);
     const rv = revealK > 0.01 && revealStrips ? revealStrips : null;
