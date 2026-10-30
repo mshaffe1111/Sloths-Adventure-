@@ -5,7 +5,7 @@
  },
  "crocus-rex": {
   "world": 2,
-  "words": "a big crocodile with a crooked little crown swimming gently across the calm river like a ferry, three small passengers riding on his back, the tree village on the far bank, sunny"
+  "words": "a big crocodile with a crooked little crown swimming gently across the calm blue river like a ferry, three small villagers clearly riding on his back, a little sloth, a sloth mail carrier and an old marmoset, the tree village on the far bank, sunny"
  },
  "shadow-prowler": {
   "world": 3,
@@ -21,19 +21,19 @@
  },
  "marsh-reaver": {
   "world": 6,
-  "words": "a big marsh creature sitting on a mangrove root by a path at noon eating his lunch from a leaf, half of it left beside him, fireflies, clean still water"
+  "words": "a big marsh creature sitting contentedly on a mangrove root beside a forest path at bright noon, half of his lunch left on a leaf on the root facing the path for a passer-by, sunlight through the mangroves, clean clear water"
  },
  "stone-golem": {
   "world": "ruins",
-  "words": "a mossy stone golem speaking slowly at a council in the ancient ruins, every stone chair in the ring taken by forest guardians listening patiently, sun through the trees"
+  "words": "a mossy stone golem speaking slowly at a council in the ancient ruins, the other forest guardians sitting on the stone chairs around him listening patiently, a tarantula queen, a red dragon, a black panther and a green snake with a crown, sun through the trees"
  },
  "night-wing-monarch": {
   "world": 8,
-  "words": "a huge night butterfly monarch perched on a branch under the moon writing in a little book, a young sloth beside her telling her how a dream ended, fireflies"
+  "words": "a huge night butterfly monarch resting on a mossy branch under the moon writing in a little book, a young sloth beside her telling her how a dream ended, fireflies"
  },
  "magma-drake": {
   "world": 9,
-  "words": "a red dragon at a tidy little table by the volcano with two used teacups, two young sloths visiting him, a girl sloth in a pink headband and a boy sloth with a satchel, his cave swept neat and tidy, warm glow"
+  "words": "a red dragon by the volcano with two young sloths visiting, a girl sloth in a pink headband and a boy sloth with a satchel, in the front two used teacups on saucers with a ring of tea in each and steam rising, his cave swept tidy, warm glow"
  },
  "general": {
   "world": 2,
@@ -45,22 +45,22 @@
  },
  "squirrels": {
   "world": 1,
-  "words": "a family of red squirrels under the old vine in the rainforest laughing and waving, little kids, a new blank wooden sign on a post beside them, sunny"
+  "words": "a family of red squirrels under the old vine proudly pointing at their new hand-made wooden sign on a post, the sign painted with rough hand lettering, little kids cheering, sunny rainforest"
  },
  "gruntlewick": {
   "world": "village",
   "words": "an old marmoset town crier with a white beard reading a brand new warning from a scroll in the tree village, very serious about it, proud"
  },
  "mailman": {
-  "world": "village",
-  "words": "a sloth mail carrier with a cap and a mail bag carrying a parcel very carefully and seriously through the tree village, taking his time"
+  "world": 1,
+  "words": "a sloth mail carrier with a cap and a mail bag walking slowly along a forest road carrying a parcel very carefully and seriously in both arms, taking his time, morning light"
  },
  "pell": {
   "world": "cookhouse",
-  "words": "a sloth lieutenant in his own little tailor shop sewing at the counter, a crooked wooden shop sign, customers waiting happily, warm lamp light, a busy friendly shop"
+  "words": "a sloth lieutenant in his own little tailor shop sewing at the counter, a crooked wooden shop sign hanging askew above him, customers waiting happily, warm daylight, a busy friendly shop"
  },
  "flicker": {
   "world": "cookhouse",
-  "words": "a small glowing firefly hovering steady over a wooden shop counter, a warm steady light over the counter, a quiet tailor shop at night"
+  "words": "a small firefly glowing bright warm yellow over a wooden shop counter at night, his glow the only light, a warm steady pool of golden light on the counter, the rest of the shop dark and cosy"
  }
 }

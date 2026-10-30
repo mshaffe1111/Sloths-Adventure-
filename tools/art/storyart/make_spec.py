@@ -599,6 +599,29 @@ def round5c(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
+def round5d(commit):
+    """the lead's redo of nine cards (each must show what its line names) and The Notch from a twig-like start"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-cards.json').read_text())
+    who = {'night-wing-monarch': ['pokey'], 'magma-drake': ['pokey', 'meeca']}
+    sts = {'flicker': (0.42, 0.52), 'marsh-reaver': (0.4, 0.48)}
+    it = []
+    for k in ('crocus-rex', 'magma-drake', 'night-wing-monarch', 'squirrels', 'flicker', 'mailman', 'pell', 'stone-golem', 'marsh-reaver'):
+        for st, sd in zip(sts.get(k, (0.5, 0.6)), (5, 8)):
+            lo = [['style', 0.9]] + [[w, 0.35] for w in who.get(k, [])]
+            it.append({'name': f'card-{k}-u{round(st * 100)}', 'start': f'card-{k}.png', 'strength': st, 'seed': sd, 'w': 1920, 'h': 1080, 'loras': lo,
+                       'prompt': f"slothadv style, painted storybook illustration, {meta[k]['words']}, warm and gentle, crisp clean outlines, rich painted detail",
+                       'neg': 'readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp'})
+    for st, sd in ((0.32, 3), (0.42, 6)):
+        it.append({'name': f'notch-u{round(st * 100)}', 'start': 'notch.png', 'strength': st, 'seed': sd, 'w': 768, 'h': 1024, 'loras': [['style', 1.0]],
+                   'prompt': ('slothadv style, painted storybook illustration of a single small crooked brown twig standing upright with two little leaves, rough '
+                              'bark, small uneven notches cut into its sides one above another showing pale wood, tiny fern drawings scratched beside the '
+                              'higher notches, crisp clean dark outlines, soft cel shading, plain flat grey background'),
+                   'neg': 'text, letters, numbers, ladder, rungs, hand, person, animal, background scenery, table, floor, shadow, blurry'})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r5d', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca')}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '

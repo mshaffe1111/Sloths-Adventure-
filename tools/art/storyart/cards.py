@@ -102,13 +102,74 @@ def tea_table():
     return im
 
 
+def cups():
+    """two used teacups on saucers, a ring of tea in each and steam, big for the foreground"""
+    from PIL import ImageDraw
+    im = Image.new('RGBA', (520, 260), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    for cx in (130, 390):
+        d.ellipse((cx - 110, 190, cx + 110, 240), fill=(240, 236, 226, 255), outline=(70, 55, 50, 255), width=5)
+        d.polygon([(cx - 75, 110), (cx + 75, 110), (cx + 55, 205), (cx - 55, 205)], fill=(246, 242, 232, 255), outline=(70, 55, 50, 255))
+        d.ellipse((cx - 75, 96, cx + 75, 126), fill=(150, 95, 50, 255), outline=(70, 55, 50, 255), width=4)
+        d.arc((cx + 55, 125, cx + 105, 180), -90, 90, fill=(70, 55, 50, 255), width=10)
+        for k in range(2):
+            d.arc((cx - 30 + k * 28, 10, cx + 10 + k * 28, 95), 200, 340, fill=(235, 235, 235, 200), width=6)
+    return im
+
+
+def sign(crooked=False, letters=True):
+    """a hand-made wooden sign on a post (scribbled strokes for its lettering), crooked if asked"""
+    from PIL import ImageDraw
+    im = Image.new('RGBA', (420, 460), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    if not crooked:
+        d.rectangle((195, 160, 225, 460), fill=(110, 75, 45, 255), outline=(55, 35, 20, 255), width=4)
+    d.rounded_rectangle((20, 30, 400, 190), radius=14, fill=(186, 140, 92, 255), outline=(70, 45, 25, 255), width=7)
+    if letters:
+        for row in (75, 130):
+            x = 50
+            while x < 360:
+                w = 18 + (x * 7) % 26
+                d.line([(x, row + 12), (x + w // 2, row - 14), (x + w, row + 12)], fill=(60, 38, 22, 255), width=7)
+                x += w + 16
+    if crooked:
+        d.line([(80, 30), (130, -2)], fill=(80, 70, 60, 255), width=5); d.line([(340, 30), (300, -2)], fill=(80, 70, 60, 255), width=5)
+        im = im.rotate(-9, resample=Image.BICUBIC, expand=True)
+    return im
+
+
+def lunch():
+    """half a lunch left on a leaf"""
+    from PIL import ImageDraw
+    im = Image.new('RGBA', (300, 140), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.ellipse((10, 40, 290, 130), fill=(92, 150, 70, 255), outline=(40, 70, 30, 255), width=5)
+    d.line([(20, 85), (280, 85)], fill=(50, 90, 40, 255), width=3)
+    d.pieslice((70, 30, 220, 120), 180, 360, fill=(214, 160, 90, 255), outline=(90, 60, 30, 255), width=4)
+    for x in (110, 150):
+        d.ellipse((x, 50, x + 22, 72), fill=(200, 60, 60, 255), outline=(90, 30, 30, 255), width=3)
+    return im
+
+
+def glow(cv, cx, cy, r, rgb=(255, 214, 120)):
+    """a warm pool of light painted onto the start (the firefly's light over the counter)"""
+    import numpy as np
+    a = np.asarray(cv).astype(np.float32)
+    yy, xx = np.mgrid[0:H, 0:W]
+    k = np.clip(1 - np.hypot(xx - cx * W, (yy - cy * H) * 1.3) / (r * W), 0, 1) ** 1.6
+    a[..., :3] = a[..., :3] * (0.32 + 0.68 * k[..., None]) + np.array(rgb) * 0.85 * k[..., None]
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'RGBA')
+
+
 def trim(im):
     b = im.split()[3].point(lambda v: 255 if v > 10 else 0).getbbox()
     return im.crop(b) if b else im
 
 
-def place(cv, im, cx, height, flip=False, foot=GROUND, y=None):
+def place(cv, im, cx, height, flip=False, foot=GROUND, y=None, crop_top=0.0):
     im = trim(im)
+    if crop_top:
+        im = trim(im.crop((0, round(im.height * crop_top), im.width, im.height)))
     if flip:
         im = im.transpose(Image.FLIP_LEFT_RIGHT)
     s = height * H / im.height
@@ -154,6 +215,32 @@ CARDS = {
 }
 
 
+CARDS.update({
+    'crocus-rex': (2, [(lambda: sprite(E + 'croc-atlas.webp', 'crocAtlasData.ts', 'idle'), .5, .26, False, .9), (lambda: cel('mb.idle'), .4, .2, False, .79),
+                       (lambda: cel('po.carry_stand'), .5, .22, False, .79), (lambda: cel('tc.hat_stand'), .6, .22, False, .79)],
+                   'a big crocodile with a crooked little crown swimming gently across the calm blue river like a ferry, three small villagers clearly riding on his back, a little sloth, a sloth mail carrier and an old marmoset, the tree village on the far bank, sunny'),
+    'magma-drake': (9, [(lambda: sprite(E + 'drake-atlas.webp', 'drakeAtlasData.ts', 'idle'), .64, .42, True), (lambda: cel('db.side_by_side'), .36, .44, False), (lambda: cups(), .5, .2, False, .99)],
+                    'a red dragon by the volcano with two young sloths visiting, a girl sloth in a pink headband and a boy sloth with a satchel, in the front two used teacups on saucers with a ring of tea in each and steam rising, his cave swept tidy, warm glow'),
+    'night-wing-monarch': (8, [(lambda: sprite(E + 'monarch-atlas.webp', 'monarchAtlasData.ts', 'perched'), .6, .3, True, .84, None, .22), (lambda: hd('pokey', 'talk_b'), .4, .44, False)],
+                           'a huge night butterfly monarch resting on a mossy branch under the moon writing in a little book, a young sloth beside her telling her how a dream ended, fireflies'),
+    'squirrels': (1, [(lambda: sign(), .64, .4, False), (lambda: squirrel('laughing'), .4, .3, False), (lambda: squirrel('kids'), .5, .18, False)],
+                  'a family of red squirrels under the old vine proudly pointing at their new hand-made wooden sign on a post, the sign painted with rough hand lettering, little kids cheering, sunny rainforest'),
+    'flicker': ('cookhouse', [(lambda: flicker('glow_00'), .5, .2, False, .5)],
+                'a small firefly glowing bright warm yellow over a wooden shop counter at night, his glow the only light, a warm steady pool of golden light on the counter, the rest of the shop dark and cosy'),
+    'mailman': (1, [(lambda: cel('po.walk_parcel'), .5, .5, False)],
+                'a sloth mail carrier with a cap and a mail bag walking slowly along a forest road carrying a parcel very carefully and seriously in both arms, taking his time, morning light'),
+    'pell': ('cookhouse', [(lambda: sign(crooked=True, letters=True), .5, .3, False, .34), (lambda: cel('lp.sew_table'), .5, .48, False),
+                           (lambda: sprite(E + 'guard-atlas.webp', 'guardAtlasData.ts', 'sit1'), .23, .26, False), (lambda: squirrel('laughing'), .78, .24, False)],
+             'a sloth lieutenant in his own little tailor shop sewing at the counter, a crooked wooden shop sign hanging askew above him, customers waiting happily, warm daylight, a busy friendly shop'),
+    'stone-golem': ('ruins', [(lambda: sprite(E + 'queen-atlas.webp', 'queenAtlasData.ts', 'idle2'), .22, .13, False, .7), (lambda: sprite(E + 'drake-atlas.webp', 'drakeAtlasData.ts', 'idle'), .35, .14, False, .68),
+                              (lambda: sprite(E + 'prowler-atlas.webp', 'prowlerAtlasData.ts', 'curl'), .65, .11, True, .68), (lambda: sprite(E + 'venom-atlas.webp', 'venomAtlasData.ts', 'n_idle'), .78, .14, True, .7),
+                              (lambda: sprite(E + 'golem-atlas.webp', 'golemAtlasData.ts', 'idle'), .5, .36, False)],
+                    'a mossy stone golem speaking slowly at a council in the ancient ruins, the other forest guardians sitting on the stone chairs around him listening patiently, a tarantula queen, a red dragon, a black panther and a green snake with a crown, sun through the trees'),
+    'marsh-reaver': (6, [(lambda: sprite(E + 'reaver-atlas.webp', 'reaverAtlasData.ts', 'idle'), .44, .4, False), (lambda: lunch(), .6, .1, False, .86)],
+                     'a big marsh creature sitting contentedly on a mangrove root beside a forest path at bright noon, half of his lunch left on a leaf on the root facing the path for a passer-by, sunlight through the mangroves, clean clear water'),
+})
+
+
 def main():
     want = sys.argv[1:] or list(CARDS)
     OUT.mkdir(parents=True, exist_ok=True)
@@ -161,9 +248,17 @@ def main():
     for k in want:
         world, figs, words = CARDS[k]
         cv = backdrop(world)
+        if k == 'marsh-reaver':
+            # (his line is noon: the mangrove backdrop is a storm-grey one, so the start is lifted to daylight)
+            from PIL import ImageEnhance
+            cv = ImageEnhance.Brightness(ImageEnhance.Color(cv.convert('RGB')).enhance(1.25)).enhance(1.35).convert('RGBA')
         for fig in figs:
             fn, x, h, fl = fig[:4]
-            place(cv, fn(), x, h, fl, *(fig[4:] or ([PLATE_FOOT] if isinstance(world, str) else [])))
+            extra = list(fig[4:]) or ([PLATE_FOOT] if isinstance(world, str) else [])
+            place(cv, fn(), x, h, fl, *extra)
+        if k == 'flicker':
+            cv = glow(cv, .5, .55, .32)
+
         cv.convert('RGB').save(OUT / f'card-{k}.png')
         meta[k] = {'world': world, 'words': words}
         print(k)
