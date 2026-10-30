@@ -175,3 +175,10 @@ Attach `hero-standard.webp` (the face frames) so Gemini keeps Pokey on-model. On
 - Paid apps and pricing: https://support.google.com/googleplay/android-developer/answer/6334373
 - Play App Signing: https://support.google.com/googleplay/android-developer/answer/9842756
 - Capacitor 8.6 Android template and SystemBars: the pinned packages in node_modules.
+
+## Where it stopped (2026-10-29, 11:00 PM ET, Matt's stop for the night)
+
+All ten of the lead's fixes are pushed on `polish-a2`. CI run 18 (f1ee3f83, with the Filesystem/Share plugins) is green with the
+debug APK; typecheck, the web build and the store build with the no-tracking check pass. The full test suite was stopped for the
+night after 636 passing files with 0 failures, before it finished. **Next:** finish the full suite on this commit, then the lead
+merges and Matt runs the §7 phone test.
