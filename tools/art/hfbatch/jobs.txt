@@ -201,3 +201,15 @@ sfx-tagscan     6ae3be3e0e0338d1bb7c3778 cpu-upgrade ~20 min: tagscan.py, CC0 ro
 sfx-ids-a/b/c   6ae3c3d90e0338d1bb7c3bde / 6ae3c3dd0e0338d1bb7c3be6 / 6ae3c3e0c78863f9c62dec21 cpu-upgrade 22:08Z-22:11:30Z (3 x 3.5 min):
   fsscan.py PASS=ids, the tag picks -> carrier-ia/ib/ic-*.png (925 clips; 148 used, LICENCES.md).
 total for polish-sfx ~110 min on cpu-upgrade (~$0.06 at $0.03/h) + cpu-basic minutes: well under $0.10 of the $8 cap. No GPU.
+hfb-petals    6ae3dd2fc78863f9c62e0ac6 rtx-pro-6000 23:56:31Z-23:58:30Z (2.0 min, ~$0.09): drifting petals, 4 takes from petalstart.py (crops
+  of the game's own painted flowers on green), s70/s82 x seeds 7/23. KEPT: petals-s82-7 (11: cells 0,2,3,5,6,7,9,10,12,13,14),
+  petals-s70-7 cells 7 and 9, petals-s70-23 cells 1 and 15, petals-s82-23 cells 4 and 15 -> src/assets/flora/petals.webp (17 petals,
+  tools/art/hazard/petalcut.py, green key). Not used: the roses and cherries (not petals), cells with a green stem, s70-23's grape bunch.
+hfb-bossatk   6ae3e0cb0e0338d1bb7c5ae2 rtx-pro-6000 00:11:55Z-00:16:58Z (5.05 min, ~$0.23): the bosses' attacks, 12 takes from
+  tools/art/hazard/bossstarts.py (plain shapes in each attack's colours), three sheets x s70/s82 x seeds 7/23. KEPT: bosscols-s82-7 (all
+  six columns: lava geyser, bramble, stone spikes, crystals, web strands, the croc rising), bossbits-s82-7 (stalactites, bat, clubs,
+  fireball, mud, lava puddle, venom glob and puddle, embers, rock), bossbits-s70-7 (thorn darts, mud puddle), bossstrips-s82-23 (flame
+  jet, vine whip, energy beam, ground fire, lava strip), bossstrips-s70-7 (spear thrust) -> src/assets/bosses/boss-atk.webp (27 pieces,
+  tools/art/hazard/bosscut.py). Not used: the ground-spike waves (no attack uses them), s82-7's club with a lava drip, s82-23's spear
+  (a crossguard grew halfway along), the s70 columns (flatter paint), the croc tail in s70 takes (a plain green sausage).
+running total for hazard-anim ~8.9 min on rtx-pro-6000 = ~$0.40 of the $5 cap.

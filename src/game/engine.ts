@@ -76,7 +76,7 @@ import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
 import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
-import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
@@ -4921,21 +4921,15 @@ export class GameEngine {
       const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
         if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
-        // the current: pale streaks sliding along the surface the way the logs go (still water, a lily pond, has none)
-        if (r.speed > 0) {
-          ctx.strokeStyle = painted ? 'rgba(235,250,245,0.38)' : 'rgba(255,255,255,0.55)';
-          ctx.lineWidth = 2.4;
-          ctx.lineCap = 'round';
+        // the current: the river's own painted foam sliding along the surface the way the logs go (still water, a lily pond, has
+        // none; the old pale code streaks are gone, Matt 2026-10-29: repeating effects are painted)
+        if (r.speed > 0 && painted) {
           const span = 140;
           for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
-            for (let row = 0; row < 3; row++) {
-              const sx = (((k * span + row * 47 + (r.flowT ?? t) * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
+            for (let row = 0; row < 2; row++) {
+              const sx = (((k * span + row * 71 + (r.flowT ?? t) * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
               const x = r.x0 + sx - span * 0.5;
-              const y = wave(x) + 7 + row * 9;
-              ctx.beginPath();
-              ctx.moveTo(x, y);
-              ctx.lineTo(x + r.dir * 26, y);
-              ctx.stroke();
+              drawRiverFoam(ctx, k * 3 + row, x, wave(x) + 8 + row * 11, 62 - row * 14, 0.75 - row * 0.2, r.dir < 0);
             }
           }
         }
@@ -4952,15 +4946,8 @@ export class GameEngine {
         ctx.lineTo(b, bottom);
         ctx.closePath();
         ctx.fill();
-        // foam where the logs cut the surface
-        ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        for (let x = a; x <= b + 12; x += 12) {
-          if (x === a) ctx.moveTo(x, wave(x));
-          else ctx.lineTo(x, wave(x));
-        }
-        ctx.stroke();
+        // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line)
+        if (painted) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       }
       ctx.restore();
     }

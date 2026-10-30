@@ -22,7 +22,9 @@ import { drawW4 } from './w4Art.ts';
 import { rollLook } from './artRoll.ts';
 import { drawW2Cage } from './riverArt.ts';
 import { drawGlow, drawNightPiece } from './meecaNightArt.ts';
-import { drawW5 } from './w5Art.ts';
+import { drawW5, steamPuff } from './w5Art.ts';
+import { drawFx } from './bossFx.ts';
+import { glowPic } from './glow.ts';
 import { noteRoomLine, ROOM_STEP } from './dotTips.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
 
@@ -1776,12 +1778,11 @@ export class KitPlay {
         ctx.restore();
         // (Meeca's night: an empty plate's rim breathes a pale light, so it reads as something to stand on, not a stump in the path)
         if (this.night && drew && pl.show < 0.5) {
+          // (a soft breathing glow over its top, the pre-rendered glow stretched flat: no stroked ring)
           ctx.save();
-          ctx.strokeStyle = `rgba(255, 244, 210, ${(0.45 + 0.25 * Math.sin(this.t * 3.2 + pl.x * 0.01)).toFixed(3)})`;
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.ellipse(pl.x, pl.y - 7, pw * 0.42, 8, 0, 0, Math.PI * 2);
-          ctx.stroke();
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.globalAlpha = 0.5 + 0.3 * Math.sin(this.t * 3.2 + pl.x * 0.01);
+          ctx.drawImage(glowPic('#fff4d2'), pl.x - pw * 0.55, pl.y - 7 - 12, pw * 1.1, 24);
           ctx.restore();
         }
         if (!drew) {
@@ -2005,15 +2006,15 @@ export class KitPlay {
     if (this.night && since >= 0 && since < 1.4) {
       const u = since / 1.4;
       drawGlow(ctx, g.x, g.y - KIT.doorH / 2, 70 + 90 * u, 'rgba(255, 230, 150, A)', 0.95 * (1 - u));
+      // (motes of light flying out of it: soft glows, no hard dots)
+      const mote = glowPic('#fff3c4', 'fly');
       ctx.save();
-      ctx.fillStyle = '#fff3c4';
       for (let i = 0; i < 8; i++) {
         const a = (i / 8) * Math.PI * 2 + 0.4;
         const r = 30 + 80 * u;
+        const m = 14 - 6 * u;
         ctx.globalAlpha = 1 - u;
-        ctx.beginPath();
-        ctx.arc(g.x + Math.cos(a) * r, g.y - KIT.doorH / 2 + Math.sin(a) * r * 0.8, 4 - 2 * u, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.drawImage(mote, g.x + Math.cos(a) * r - m / 2, g.y - KIT.doorH / 2 + Math.sin(a) * r * 0.8 - m / 2, m, m);
       }
       ctx.restore();
     }
@@ -2284,20 +2285,12 @@ export class KitPlay {
       ctx.fill();
     }
     if (u < NOISE.dur) {
-      // the ring going out: soft arcs either side
-      ctx.save();
-      ctx.strokeStyle = `rgba(253, 230, 138, ${0.7 * (1 - u / NOISE.dur)})`;
-      ctx.lineWidth = 3;
-      for (let i = 0; i < 3; i++) {
-        const rr = 30 + ((u * 90 + i * 40) % 120);
-        ctx.beginPath();
-        ctx.arc(b.x, b.y - 60, rr, -0.6, 0.6);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(b.x, b.y - 60, rr, Math.PI - 0.6, Math.PI + 0.6);
-        ctx.stroke();
+      // the ring going out either side: the painted sound wave (bossFx.ts screech), gold, rolling out and fading
+      for (let i = 0; i < 2; i++) {
+        const rr = 30 + ((u * 90 + i * 60) % 120);
+        const a = 0.8 * (1 - u / NOISE.dur) * (1 - (rr - 30) / 120);
+        for (const side of [-1, 1]) drawFx(ctx, 'screech', b.x + side * rr, b.y - 60, 30 + rr * 0.4, { h: 12, rot: Math.PI / 2, alpha: a, recolor: '#fde68a' });
       }
-      ctx.restore();
     }
   }
 
@@ -2430,35 +2423,15 @@ export class KitPlay {
         ctx.fill();
       }
       // its sleepy steam (World 5's "don't drink" teapot), while it stands
-      if (!tipped) {
-        ctx.save();
-        for (let i = 0; i < 3; i++) {
-          const u = (this.t * 0.5 + i / 3) % 1;
-          ctx.globalAlpha = 0.35 * (1 - u);
-          ctx.strokeStyle = '#e9e3ff';
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          const sx = tp.x - 18 + i * 6;
-          ctx.moveTo(sx, tp.y - 44 - u * 50);
-          ctx.quadraticCurveTo(sx + 10, tp.y - 54 - u * 50, sx, tp.y - 64 - u * 50);
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
+      // (World 5's painted steam, w5Art.ts steamPuff: no stroked curls)
+      if (!tipped) steamPuff(ctx, tp.x - 14, tp.y - 44, 0.6, this.t, 0.6);
     }
   }
 
   /** silk wrapped round whoever is in the chair (when no sheet of theirs shows it) */
   private drawWrap(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, t: number) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(245, 245, 255, 0.8)';
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < 6; i++) {
-      ctx.beginPath();
-      ctx.ellipse(x, y, r, r * 0.45, i * 0.9 + t * 0.4, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-    ctx.restore();
+    // (the painted silk bundle, bossFx.ts silkBall, wound round them and turning slowly: no stroked rings)
+    drawFx(ctx, 'silkBall', x, y, r * 2.1, { rot: t * 0.4, alpha: 0.8 });
   }
 
   /** the trough from the pot to the basket, and the tea in it once the pot is tipped; the stains the spill leaves stay */
@@ -2477,15 +2450,8 @@ export class KitPlay {
       // the tea running along it
       if (tp.tipped) {
         const u = Math.max(0, Math.min(1, (tp.t / TEA.run) * (pts.length - 1) - i));
-        if (u > 0) {
-          ctx.strokeStyle = 'rgba(176, 106, 40, 0.92)';
-          ctx.lineWidth = 6;
-          ctx.lineCap = 'round';
-          ctx.beginPath();
-          ctx.moveTo(0, 2);
-          ctx.lineTo(len * u, 2);
-          ctx.stroke();
-        }
+        // (the painted flood water, bossFx.ts, re-coloured to tea and laid along the trough as it runs: no stroked line)
+        if (u > 0) drawFx(ctx, 'flood', (len * u) / 2, 2, len * u, { h: 10, alpha: 0.95, recolor: '#a8632a' });
       }
       ctx.restore();
     }
@@ -2496,14 +2462,8 @@ export class KitPlay {
     if (!tp.tipped) return;
     const end = pts[pts.length - 1];
     if (tp.t > TEA.run * 0.8 && tp.t < TEA.run + 0.9) {
-      ctx.save();
-      ctx.strokeStyle = 'rgba(176, 106, 40, 0.85)';
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(end.x, end.y + 4);
-      ctx.lineTo(end.x + 2, end.y + 40);
-      ctx.stroke();
-      ctx.restore();
+      // (the painted jet, bossFx.ts venomJet, re-coloured to tea and turned to pour down into the basket)
+      drawFx(ctx, 'venomJet', end.x + 1, end.y + 22, 40, { h: 9, rot: Math.PI / 2, alpha: 0.9, recolor: '#a8632a' });
     }
   }
 
