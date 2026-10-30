@@ -549,7 +549,7 @@ export function paintDecorAt(ctx: CanvasRenderingContext2D, world: number, look:
     return drawGroundFlora(ctx, kind, num, px, py + 2, size, r() < 0.5);
   }
   // World 8's painted mossy stones (w810FaceArt.ts; they replace the code-drawn white stalagmites, which read as thorns on a safe ledge)
-  if (name === 'w8stones') return drawW8Stones(ctx, px, py + 2, 40 + r() * 14, r() < 0.5, r());
+  if (name === 'w8stones') return drawW8Stones(ctx, px, py + 2, 56 + r() * 14, r() < 0.5, r());
   const def = PLANTS[name];
   if (!def) return false;
   const size = def.decor[0] + r() * (def.decor[1] - def.decor[0]);
@@ -931,7 +931,7 @@ ENV[7] = {
 };
 ENV[8] = {
   near: [['jadevine', 3], ['parkia', 2], ['moonflower', 3], ['foxfire', 2]],
-  decor: [['foxfire', 26], ['pflower', 20], ['ferncrown', 14], ['pplant', 14], ['w8stones', 12], ['parkia', 6], ['karstpebbles', 8]],
+  decor: [['foxfire', 26], ['pflower', 20], ['ferncrown', 14], ['pplant', 14], ['w8stones', 20], ['parkia', 6], ['karstpebbles', 8]],
   sway: 'jadevine', front: 'fern',
 };
 ENV[9] = {
