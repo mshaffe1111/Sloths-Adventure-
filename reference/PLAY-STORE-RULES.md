@@ -77,6 +77,7 @@ Status key: **done** (in the code now), **branch** (built on polish-a2, not merg
 5. Sound stops when the app goes to the background, and nothing keeps the phone awake behind a menu.
 6. Leaving and coming back (and rotating) keeps the player's place.
 7. No dead ends or placeholder screens in the store build.
+8. Saves survive everything: an app update, the phone killing the app, a crash mid-stage, a full phone. Before the closed test, run a "kill it at the worst moment" check (mid-save, mid-stage, mid-story) on a real phone (Matt, 2026-10-30: "saves and frame rate and just other little things").
 
 ## Sources
 
