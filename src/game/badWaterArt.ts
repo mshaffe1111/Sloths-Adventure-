@@ -7,6 +7,7 @@
  * drawBadWater returns false until the sheet has loaded, and the caller then draws the old shapes.
  */
 import { trackAtlas } from './atlasLoader.ts';
+import { bakeStep } from './artKit.ts';
 
 export const BAD_WATER_URL = new URL('../assets/props/w6-water.webp', import.meta.url).href;
 // (hf-art-ground 2026-10-29, polish report VI-18: the strip was 183 px wide; repainted on Hugging Face at 1024 from Matt's, the same
@@ -44,13 +45,74 @@ function load() {
     },
   );
 }
+/**
+ * Bake the pieces for a view drawn at `scale` device px a world unit, before play (stageReady, for a stage with this water): a bake costs
+ * 7-20 ms on a slow phone, too much for a frame of play. Nothing happens until the sheet has loaded. `stampOn`: the canvas that
+ * will show it (the game's), so the bake is uploaded to the GPU before play as well.
+ */
+export function warmBadWater(scale: number, stampOn?: CanvasRenderingContext2D): void {
+  load();
+  bakeScale(scale);
+  // (a 1x1 stamp of each bake in a corner, so its upload to the GPU happens now too: PERFORMANCE-RULES §2.12)
+  if (stampOn && bakes.img === img) for (const c of Object.values(bakes.cv)) if (c) stamp(stampOn, c);
+}
+function stamp(ctx: CanvasRenderingContext2D, c: CanvasImageSource) {
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.drawImage(c, 0, 0, 1, 1);
+  ctx.restore();
+}
 /** whether the sheet has loaded (starts the load) */
 export function badWaterReady(): boolean {
   load();
   return ready && !!img;
 }
 
+/** how wide each piece is drawn, in world units (the chop strip one TILE; the streaks and leaves as drawBadWater sizes them) */
+const DRAWN_W: Record<keyof typeof FRAMES, number> = { chop: TILE, streaks: 120, leaves: 70 };
+/**
+ * The three pieces baked once at the size they cover on screen (world width times the canvas scale, on artKit's bakeStep ladder, so a
+ * piece is never enlarged and a zoom inside one step bakes nothing): the 1024 px strip was shrunk about 4.4x from the sheet on every tile, every frame. Made again only when the sheet
+ * or the scale changes (a new world, a quality step, the camera's zoom).
+ */
+const bakes = { img: null as HTMLImageElement | null, k: 0, cv: {} as Partial<Record<keyof typeof FRAMES, HTMLCanvasElement>> };
+function bakeAt(ctx: CanvasRenderingContext2D) {
+  if (typeof ctx.getTransform !== 'function') return;
+  const m = ctx.getTransform();
+  bakeScale(Math.hypot(m.a, m.b));
+}
+function bakeScale(scale: number) {
+  if (typeof document === 'undefined' || !img || !ready) return;
+  const k = bakeStep(scale);
+  if (bakes.img === img && bakes.k === k) return;
+  bakes.img = img;
+  bakes.k = k;
+  for (const n of Object.keys(FRAMES) as Array<keyof typeof FRAMES>) {
+    const f = FRAMES[n];
+    const w = Math.ceil(DRAWN_W[n] * k);
+    // (already as small as the sheet itself: drawn straight from the sheet)
+    if (w >= f.w) {
+      delete bakes.cv[n];
+      continue;
+    }
+    const c = bakes.cv[n] ?? document.createElement('canvas');
+    c.width = w;
+    c.height = Math.ceil((w * f.h) / f.w);
+    const g = c.getContext('2d');
+    if (!g) continue;
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(img!, f.x, f.y, f.w, f.h, 0, 0, c.width, c.height);
+    bakes.cv[n] = c;
+  }
+}
+
 function blit(ctx: CanvasRenderingContext2D, n: keyof typeof FRAMES, x: number, y: number, w: number, h: number) {
+  const c = bakes.img === img ? bakes.cv[n] : undefined;
+  if (c) {
+    ctx.drawImage(c, x, y, w, h);
+    return;
+  }
   const f = FRAMES[n];
   ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);
 }
@@ -66,6 +128,9 @@ export function drawBadWater(ctx: CanvasRenderingContext2D, x0: number, x1: numb
   if (!badWaterReady()) return false;
   const th = (TILE * FRAMES.chop.h) / FRAMES.chop.w;
   const top = waterY - th * SURFACE;
+  // all of it below the view: nothing to draw (the leaves ride no higher than the strip's top)
+  if (top - 4 >= bottom || x1 <= x0) return true;
+  bakeAt(ctx);
   ctx.save();
   ctx.beginPath();
   ctx.rect(x0, top - 4, x1 - x0, bottom - top + 4);

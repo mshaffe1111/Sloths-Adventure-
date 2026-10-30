@@ -9,6 +9,7 @@ import { DOT_ATLAS_SIZE, DOT_FRAMES, type DotFrame } from './dotAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { hdPage, warmHd, type HdSet } from './storyHd.ts';
 import { HD_DOT, HD_DOT_FRAMES, HD_DOT_PAGES } from './storyHdData_dot.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DOT_ATLAS_URL = new URL('../assets/characters/dot-atlas.webp', import.meta.url).href;
 export { DOT_ATLAS_SIZE, DOT_FRAMES };
@@ -88,7 +89,7 @@ export function drawDotFrame(ctx: CanvasRenderingContext2D, name: string, x: num
   if (f.f !== face) ctx.scale(-1, 1);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }
@@ -111,7 +112,7 @@ export function drawDotStoryFrame(ctx: CanvasRenderingContext2D, name: string, x
   if (f.f !== face) ctx.scale(-1, 1);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(img, hf.x, hf.y, hf.w, hf.h, (-hf.w * kh) / 2, (-hf.h * kh) / 2, hf.w * kh, hf.h * kh);
+  drawSheet(ctx, img, hf.x, hf.y, hf.w, hf.h, (-hf.w * kh) / 2, (-hf.h * kh) / 2, hf.w * kh, hf.h * kh);
   ctx.restore();
   return true;
 }

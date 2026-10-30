@@ -845,6 +845,9 @@ export default function App() {
 
         engineRef.current?.stop();
         engineRef.current = engine;
+        // (stageReady.ts, readying every sheet under the title card, is held back: with it the creatures went missing on Matt's Pixel,
+        // 2026-10-30; it comes back once the step that does it is found)
+        if (seq !== launchSeq.current || engineRef.current !== engine) return;
         engine.start();
         // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
         window.dispatchEvent(new Event(STAGE_LIVE_EVENT));

@@ -16,6 +16,7 @@ import { OCELOT_FRAMES } from './ocelotAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { OCELOT_ANIM, OCELOT_ANIM_UP, OCELOT_ANIM_URL, OCELOT_SEQ } from './ocelotAnimData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 /** the moving ocelot (2026-10-25): its own poses brought to life with the motion model; the single poses draw while it loads */
 const ANIM = makeCreatureAnim(OCELOT_ANIM_URL, OCELOT_ANIM, OCELOT_SEQ, OCELOT_ANIM_UP);
@@ -126,7 +127,7 @@ export function drawOcelotSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
     ANIM.draw(ctx, clip, K);
   } else {
     const ay = airborne ? f.h : f.ay;
-    ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -ay * K, f.w * K, f.h * K);
+    drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -f.ax * K, -ay * K, f.w * K, f.h * K);
   }
   ctx.restore();
   return true;

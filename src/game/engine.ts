@@ -156,7 +156,7 @@ import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, se
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -1037,6 +1037,16 @@ export class GameEngine {
     this.camera.viewportHeight = h / this.zoom;
   }
 
+  /** the stage as built, for stageReady.ts to read what it can draw before its first frame */
+  public builtStage(): GeneratedStage {
+    return this.currentStage;
+  }
+
+  /** where the next frame draws: the camera and the device pixels per scene unit (stageReady.ts fits the backdrop strips to them) */
+  public viewNow(): { x: number; y: number; vw: number; vh: number; k: number } {
+    return { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight, k: this.renderDpr() * this.zoom };
+  }
+
   /** a stage is under way (running, not yet won or lost): stagePreload.ts draws nothing on the canvas then */
   public inPlay(): boolean {
     return this.isRunning && !this.isGameOver;
@@ -1137,6 +1147,8 @@ export class GameEngine {
     clearTimeout(this.screenTimer);
     recorder.stage(this, false);
     sound.setLowHealth(false);
+    // (the painted ground squares go with the stage)
+    releaseGroundChunks();
   }
 
   private loop = (now: number) => {
@@ -5816,6 +5828,7 @@ export class GameEngine {
     // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
     const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
     if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    setDepthView(this.camera.viewportHeight);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
