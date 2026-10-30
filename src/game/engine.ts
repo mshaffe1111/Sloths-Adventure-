@@ -2336,7 +2336,6 @@ export class GameEngine {
       if (pool && p.y > waterY! + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY!);
         sound.playWhoosh();
-        this.addFloatingText('SPLASH!', p.x, waterY! - 40, '#7dd3fc');
         p.x = pool.backX;
         p.y = pool.backY;
         p.vx = 0;
@@ -2347,7 +2346,6 @@ export class GameEngine {
         // a teaching river (2-1): a splash and back to the bank to try again, no life lost
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
-        this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         p.x = river.safe.backX;
         p.y = river.safe.backY;
         p.vx = 0;
@@ -2360,13 +2358,11 @@ export class GameEngine {
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
         sound.playHitImpact(true);
-        this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY);
         sound.playWhoosh();
         sound.playHitImpact(true);
-        this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (!this.softFall()) {
@@ -2383,7 +2379,6 @@ export class GameEngine {
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
           const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
           if (further) this.checkpoint = { x: cp.x, y: cp.y };
-          this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
           sound.playCheckpoint();
           buzz('checkpoint');
@@ -3835,7 +3830,6 @@ export class GameEngine {
     else {
       sound.playMegaPunch();
       this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
-      this.addFloatingText('MEGA PUNCH!', p.x, p.y - 50, '#fde047');
     }
     if (m.lunge && p.grounded) p.vx = Math.max(-380, Math.min(380, p.vx + p.facing * m.lunge));
   }
