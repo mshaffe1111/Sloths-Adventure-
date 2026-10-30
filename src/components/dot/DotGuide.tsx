@@ -54,7 +54,7 @@ warmDot();
  * with no perch in view, she hovers beside Pokey on the empty side behind him.
  *
  * It takes no touches (a tap is a punch): lines leave by themselves. It reads the stage each frame through engine.guideView (no
- * allocations), moves Dot, her bubble and the sparkle she puts on a thing by writing their transforms directly, and only re-renders when
+ * allocations), moves Dot and her bubble by writing their transforms directly, and only re-renders when
  * the line changes.
  */
 /**
@@ -338,7 +338,7 @@ function awayHalf(v: GuideView, safe: SafeArea, pr: Rect): SafeArea {
   return { rect: r, keepOut: safe.keepOut };
 }
 
-/** a line where she points at the thing after struggle (she goes right by it, and a sparkle twinkles on it) */
+/** a line where she points at the thing after struggle (she goes right by it; nothing is drawn on it) */
 const pointing = (l: GuideLine) => l.kind === 'struggle' || l.step === 'nudge' || l.step === 'move';
 /** a struggle within this far of a puzzle's first line is struggle at the puzzle (px) */
 const PUZZLE_NEAR = 900;
@@ -383,7 +383,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   const sprRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sparkRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const bubRef = useRef<HTMLDivElement>(null);
-  const twinkleRef = useRef<HTMLSpanElement>(null);
   // the painted pieces (hud/painted.tsx), once their sheet has loaded: the 9-slice bubble and its tail, and Dot's perched poses. The
   // drawn stand-ins (the CSS bubble, her old perch frame) until then.
   const art = useHudArt();
@@ -538,7 +537,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     const v = run.view;
     // the painted pieces: what is on, and what was last written (so a frame writes only what changed)
     let perchOn = false;
-    let twinkleOn = false;
     let perchPose = '';
     let perchK = 0;
     let tailL = NaN;
@@ -1180,17 +1178,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bubOut = toggle(bub, 'out', false, bubOut);
       }
 
-      // no ring and no arrow (Matt, 2026-10-29: "a weird blue circle... doesn't even show where it's at"): she perches by the thing itself,
-      // and when she is pointing after struggle, a small sparkle twinkles on the thing (at its true spot, as the canvas draws it)
-      const tw = twinkleRef.current;
-      const point = !!cur && run.state === 'there' && !!p?.target && pointing(cur.line);
-      if (tw) {
-        const tx = point ? toScreenX(v, p!.target!.x) : -100;
-        const ty = point ? toScreenY(v, p!.target!.y) : -100;
-        const onScr = point && tx > 0 && tx < v.cssW && ty > 0 && ty < v.cssH;
-        twinkleOn = toggle(tw, 'on', onScr, twinkleOn);
-        if (onScr) tw.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0)`;
-      }
+      // nothing drawn on the thing: no ring, no arrow, no sparkle (Matt, 2026-10-29: "that horrible blue pointer, the helper, I want that
+      // out"). After struggle she flies to the thing and perches by it; the words do the rest
     };
 
     /** what the guide notices each frame of play: story lines due, deaths, being stuck, kicking the air, new journal pages */
@@ -1307,7 +1296,6 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           className="dg-spark"
         />
       ))}
-      <span ref={twinkleRef} className="dg-twinkle" aria-hidden="true" />
       <div ref={perchRef} className="dg-perch" style={{ backgroundImage: `url(${DOT_PERCH_URL})` }} />
       <div ref={dotRef} className="dg-dot">
         <div ref={flipRef} style={{ position: 'relative' }}>

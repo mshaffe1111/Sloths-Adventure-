@@ -23,6 +23,11 @@ export interface AudioCoreOptions {
   hallSeconds?: number;
   /** a phone: one light room built from short delays instead of the two big convolution rooms (see makeLightRoom) */
   lightRoom?: boolean;
+  /**
+   * The game: the music comes recorded (loops.ts), with its hall, its echo and its tone already in it, so the music bus goes straight
+   * from its ducks and its pause filter to the master, and no music hall is built. (The recorder, tools/music, builds the core without it.)
+   */
+  recorded?: boolean;
 }
 
 export class AudioCore {
@@ -117,13 +122,16 @@ export class AudioCore {
     this.musicDuck.connect(this.speechDuck);
     this.speechDuck.connect(this.musicFilter);
     // nothing below ~40 Hz can be heard on any speaker, but it uses up the compressor's headroom and makes the whole mix pump
-    const musicHp = c.createBiquadFilter();
-    musicHp.type = 'highpass';
-    musicHp.frequency.value = 40;
-    musicHp.Q.value = 0.5;
-    this.musicFilter.connect(musicHp);
-    musicHp.connect(this.musicBody);
-    this.musicBody.connect(this.master);
+    if (opts.recorded) this.musicFilter.connect(this.master);
+    else {
+      const musicHp = c.createBiquadFilter();
+      musicHp.type = 'highpass';
+      musicHp.frequency.value = 40;
+      musicHp.Q.value = 0.5;
+      this.musicFilter.connect(musicHp);
+      musicHp.connect(this.musicBody);
+      this.musicBody.connect(this.master);
+    }
     this.amb.connect(this.master);
 
     // ---- reverb
@@ -173,7 +181,9 @@ export class AudioCore {
     // the music has a hall of its own: a longer, darker room with the first reflections in it, so the orchestra sits on a stage instead of in a box.
     // A phone shares the light room instead: the two long convolution rooms were the heaviest work in the mix, and on a busy iPhone the whole sound
     // came through only in short bursts as each effect started, with near silence between (a tester's climb on 1-1, 2026-10-28)
-    if (opts.lightRoom) {
+    if (opts.recorded) {
+      // (no music plays live: nothing is sent to a music hall)
+    } else if (opts.lightRoom) {
       const hallOut = c.createGain();
       hallOut.gain.value = 0.85;
       this.sends.music.connect(hallOut);

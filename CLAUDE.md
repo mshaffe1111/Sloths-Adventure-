@@ -22,6 +22,8 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
 - **Show first**: show big screen changes as screenshots, a mock-up or a preview video before building them in.
 - **Co-creator (Matt, 2026-10-29): the lead is Matt's partner, not just his manager.** "You can disagree and have discussions with me about direction and priorities... If this fails, you fail with it." Say what you think about direction, scope and priorities, push back when you disagree, and own the result; Matt still has the final say.
 - **Talking to Matt**: ask him one multiple-choice question at a time. Explain in plain spoken terms, give honest pushback, no apologies. Give times in Eastern time (ET), never UTC (Matt, 2026-10-29).
+- **Play Store (Matt, 2026-10-30):** everything is built to pass Google Play. Read `reference/PLAY-STORE-RULES.md` before building any screen, menu, sound, save or setting, and run its §6 check before a merge.
+- **Performance (Matt, 2026-10-30):** "silky smooth" on every phone. Read `reference/PERFORMANCE-RULES.md` before building or changing anything that draws; its §1 budget is a pass/fail check.
 - **Phone game**:
   - touch controls only;
   - every stage works in portrait and landscape;
@@ -35,4 +37,4 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
   - the first appearance of a mechanic is taught;
   - Dot explains any locked exit.
 - **Hugging Face token**: it never goes in code, commits, shared files or memory (`tools/README.md`).
-- **Checks**: `npx tsc --noEmit -p .`, then `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts`, then `npx vite build` (no asset over 4 MiB).
+- **Checks**: `npx tsc --noEmit -p .`, then `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts`, then `npx vite build` (no asset over 4 MiB), then the perf gate: `node tools/perf/artcheck.mjs` (seconds: no image over 4096 px) and `node tools/perf/drawcheck.mjs` (about 6 minutes: per-frame canvas limits in `tools/perf/limits.json`, PERFORMANCE-RULES §8; a breach prints the call sites).

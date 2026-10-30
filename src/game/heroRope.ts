@@ -14,6 +14,7 @@ import { HANG_DROP } from './rope.ts';
 import { ROPE_CYCLE, ROPE_FRAMES, ROPE_STAND_PX, ROPE_STILL, ROPE_STRIDE_PX } from './heroRopeData.ts';
 import type { PlayerState } from './types.ts';
 import { heroBlinkAlpha } from './heroBlink.ts';
+import { drawSheet } from './sheetBake.ts';
 
 let img: HTMLImageElement | null = null;
 let ready = false;
@@ -67,7 +68,7 @@ export function drawRopeHang(ctx: CanvasRenderingContext2D, p: PlayerState, time
   ctx.globalAlpha *= heroBlinkAlpha(p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * k, -f.gy * k, f.w * k, f.h * k);
+  drawSheet(ctx, img, f.x, f.y, f.w, f.h, -f.ax * k, -f.gy * k, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

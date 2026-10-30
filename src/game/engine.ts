@@ -158,12 +158,14 @@ import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, se
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { releaseDecorPics } from './envKit.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
+import { gpuProfOn, profBegin, profEnd, profMark } from './gpuProf.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
@@ -761,7 +763,8 @@ export class GameEngine {
     callbacks: GameEngineCallbacks
   ) {
     this.canvas = canvas;
-    const ctx = canvas.getContext('2d', { alpha: false });
+    // (the per-layer timing reads one pixel back each layer: told outright, the canvas stays on the GPU through it: gpuProf.ts)
+    const ctx = canvas.getContext('2d', gpuProfOn() ? { alpha: false, willReadFrequently: false } : { alpha: false });
     if (!ctx) throw new Error('Could not get Canvas2D context');
     this.ctx = ctx;
     this.input = input;
@@ -1037,6 +1040,16 @@ export class GameEngine {
     this.camera.viewportHeight = h / this.zoom;
   }
 
+  /** the stage as built, for stageReady.ts to read what it can draw before its first frame */
+  public builtStage(): GeneratedStage {
+    return this.currentStage;
+  }
+
+  /** where the next frame draws: the camera and the device pixels per scene unit (stageReady.ts fits the backdrop strips to them) */
+  public viewNow(): { x: number; y: number; vw: number; vh: number; k: number } {
+    return { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight, k: this.renderDpr() * this.zoom };
+  }
+
   /** a stage is under way (running, not yet won or lost): stagePreload.ts draws nothing on the canvas then */
   public inPlay(): boolean {
     return this.isRunning && !this.isGameOver;
@@ -1144,6 +1157,9 @@ export class GameEngine {
     clearTimeout(this.screenTimer);
     recorder.stage(this, false);
     sound.setLowHealth(false);
+    // (the painted ground squares and ground-plant pictures go with the stage)
+    releaseGroundChunks();
+    releaseDecorPics();
   }
 
   private loop = (now: number) => {
@@ -1159,7 +1175,11 @@ export class GameEngine {
     }
     this.lastRenderTime = elapsed < this.frameIntervalMs + 2 ? now : now - (elapsed % this.frameIntervalMs);
 
-    const dt = Math.min(elapsed / 1000, 0.05);
+    // a frame that came late is played in up to three steps, so the game keeps real time: one long step capped at 0.05 s made Pokey
+    // truly slower whenever a phone dropped under 20 fps (a Pixel's 100-170 ms stalls felt "sluggish"; PERFORMANCE-RULES.md §3.2).
+    // Each step stays at most 0.05 s, as before, so nothing can pass through anything; at a steady 30 fps it is one step, as before.
+    const steps = elapsed < this.frameIntervalMs * 1.5 ? 1 : Math.min(3, Math.round(elapsed / this.frameIntervalMs));
+    const dt = Math.min(elapsed / steps / 1000, 0.05);
     // the frame-time check (menu switch, off by default): how long this frame's update and draw took on their own
     const pl = perfEnabled() ? perfLog : null;
     // (the control test times it too: a stall line says how much of the gap was the game's own work, js below)
@@ -1167,7 +1187,7 @@ export class GameEngine {
     let tUpd = 0;
 
     try {
-      if (!this.isPaused) {
+      for (let i = 0; i < steps && !this.isPaused && this.isRunning; i++) {
         if (this.hitstopTimer > 0) {
           // Hitstop freeze: the world holds for a few ticks; keep the camera shake settling
           this.hitstopTimer -= dt;
@@ -1181,10 +1201,10 @@ export class GameEngine {
           }
           const u0 = timed ? performance.now() : 0;
           this.update(sdt);
-          if (timed) tUpd = performance.now() - u0;
-          if (recorder.on) this.watchGlitches(now);
+          if (timed) tUpd += performance.now() - u0;
         }
       }
+      if (!this.isPaused && this.hitstopTimer <= 0 && recorder.on) this.watchGlitches(now);
 
       const r0 = timed ? performance.now() : 0;
       this.render();
@@ -2063,6 +2083,7 @@ export class GameEngine {
           const d = this.edgeTarget - cur;
           p.drawDx = Math.abs(d) <= rate ? this.edgeTarget : cur + Math.sign(d) * rate;
           p.teeter = this.edgeTarget !== 0 && Math.abs(this.edgeTarget - p.drawDx) < 1 ? (this.edgeTarget < 0 ? 1 : -1) : 0;
+          p.edgeSide = this.edgeTarget === 0 ? 0 : this.edgeTarget < 0 ? 1 : -1;
           this.edgeTarget = 0;
         }
 
@@ -5727,6 +5748,7 @@ export class GameEngine {
     const ctx = this.ctx;
     const dpr = this.renderDpr();
     const world = WORLDS_DATA[this.currentStage.config.worldIndex - 1] || WORLDS_DATA[0];
+    profBegin(ctx);
     // (a sheet of this stage's that has just arrived: drawn once into the corner, under this frame)
     this.arrivals.frame(ctx);
 
@@ -5777,6 +5799,7 @@ export class GameEngine {
       ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
     }
 
+    profMark(ctx, 'bg');
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();
     // (snapped to whole device pixels: whole CSS pixels moved the world in steps of three on a phone while he moved smoothly)
@@ -5836,10 +5859,12 @@ export class GameEngine {
     // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
     const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
     if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    setDepthView(this.camera.viewportHeight);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
     if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
+    profMark(ctx, 'ground');
     // 6-8: its ledges in Matt's other World 6 pieces (over the roots that top out on them, as the kit's planks are)
     if (this.proto?.stiltLedges) drawStiltLedges(ctx, this.proto.stiltLedges, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 6-8's crown: a warm light behind him as the view pulls back, so he stands out against the ruins at dusk (the lead's review)
@@ -5966,6 +5991,7 @@ export class GameEngine {
       }
     }
 
+    profMark(ctx, 'decor');
     // polish prototype: this stage's lighting rig (null when the switch is off)
     const rig: Rig | null = polishEnabled() && polishTier() < 2 ? rigFor(lookFor(world.id), world.id, getSceneSeed()) : null;
     if (rig) {
@@ -6037,6 +6063,7 @@ export class GameEngine {
       if (this.skyPillars && !this.boss.defeated) drawScreechCue(ctx, this.boss, floor, this.gameTime, (this.bossDef.moves.screech?.tell ?? 1) * (this.bossCtx?.tellMul ?? 1));
     }
 
+    profMark(ctx, 'enemies');
     // Leaf Glide: he floats on a small leaf under his feet (it spreads when the glide starts and is gone after he lands)
     // (never once he stands or holds on: the frame he landed used to still draw it open under his feet)
     const gl = this.player;
@@ -6093,6 +6120,7 @@ export class GameEngine {
     this.kit?.drawFront(ctx, this.player, kitPose);
     this.drawCalmWater(ctx, true);
     heroClipsLive(false);
+    profMark(ctx, 'hero');
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
@@ -6155,6 +6183,7 @@ export class GameEngine {
     }
 
     if (this.tide?.on) this.drawTideFront(ctx);
+    profMark(ctx, 'front');
     ctx.restore(); // end world transform
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
     if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
@@ -6276,6 +6305,8 @@ export class GameEngine {
     }
 
     ctx.restore(); // end DPR transform
+    profMark(ctx, 'overlay');
+    profEnd(this.player.x, (what, detail) => recorder.event(what, detail));
   }
 
   // --- Meeca's stage (meecaPlay.ts does the work; these lend it his physics, the camera, the canvas and the clear) ---

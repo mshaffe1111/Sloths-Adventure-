@@ -396,7 +396,7 @@ const swingRun: SectionTemplate = {
 
 /** the dark's lesson key and Dot's line (new, needs Matt's approval) */
 export const W6_DARK = 'w6:dark';
-export const W6S_TIPS: Record<string, string> = { [W6_DARK]: 'The roots go dark. Stay in the firefly\'s light.' };
+export const W6S_TIPS: Record<string, string> = { [W6_DARK]: 'The roots go dark. Only the firefly glows.' };
 
 /** the props that lay a dark stretch: its start, its end (with the firefly's lights), and a room's end (no lights: its firefly is the
  *  room's own glow, puzzleKit 'glow') */

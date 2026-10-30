@@ -1,0 +1,80 @@
+{
+  "why": "PERFORMANCE-RULES.md \u00a78.1. Per-frame limits on the main canvas, judged at each scenario's worst spot, q0 (canvas 2x CSS). Start from the lead's brief (2026-10-30); where ebc13e43 (the build live at 12:40 PM ET) is already over the brief's number, the limit is about 25% over that build's worst spot, so the check passes today, and the 'lower to' note says where it goes once the named fix lands. Calibration: DRAWCHECK_VERBOSE=1 node tools/perf/drawcheck.mjs.",
+  "scenarios": [
+    "ctest-mix14",
+    "1-4",
+    "2-6",
+    "3-3",
+    "4-1",
+    "7-3"
+  ],
+  "spots": 4,
+  "limits": {
+    "gradients": {
+      "max": 2,
+      "why": "brief <= 1; ebc13e43 worst 2 (ctest-mix14 sideways: groundArt.ts:128/135 drawGroundBody, columnArt.ts:462). Lower to 1 once those are baked."
+    },
+    "shadowOrFilter": {
+      "max": 0,
+      "why": "brief: none in a frame; ebc13e43 has 0"
+    },
+    "readbacks": {
+      "max": 0,
+      "why": "brief: no getImageData/putImageData in a frame (gpuprof is off); ebc13e43 has 0"
+    },
+    "drawImageScreens": {
+      "max": 7.5,
+      "why": "brief <= 7.5 screens of visible drawImage area; ebc13e43 worst 7.22 (3-3 sideways). The harness's spots are fixed and its clock fake, so the numbers repeat run to run."
+    },
+    "drawImageCalls": {
+      "max": 400,
+      "why": "brief <= 400; ebc13e43 worst 359 (4-1 sideways: w4Grit.ts:56 piece, fernFrond's stage)"
+    },
+    "fillStrokeCalls": {
+      "max": 1800,
+      "why": "brief <= 400; ebc13e43 worst 1440 (2-6 sideways), 1273 (7-3 sideways), 1155 (4-1 sideways): nearly all flora.ts:696/705 fernFrond (PERF-F's fern bake). Lower to 400 once that lands."
+    },
+    "clips": {
+      "max": 19,
+      "why": "brief <= 6; ebc13e43 worst 15 (7-3 sideways: w7TempleArt.ts:237 run, about 4 a frame per temple). Lower to 6 once the temple clips are baked; every other scenario is at 5 or under."
+    },
+    "shrunkOver2_5x": {
+      "max": 32,
+      "why": "brief: report any sheet drawn shrunk more than 2.5x at q0 (printed as notes), fail over 20 a frame; ebc13e43 worst 25 (1-4 upright: protoArt.ts:492 drawBranchArt, sheetBake.ts:125 drawSheet), so 32 until those draw from baked copies, then 20."
+    }
+  },
+  "blends": {
+    "why": "advanced blends are emulated with a copy of the backdrop on PowerVR (PERFORMANCE-RULES \u00a72.10); the four coefficient modes in 'allowed' are cheap. Bakes into offscreen canvases (e.g. groundPaint.ts endFaded 'destination-in') are not judged.",
+    "allowed": [
+      "source-over",
+      "lighter",
+      "source-atop",
+      "destination-out"
+    ],
+    "allowlist": [
+      {
+        "site": "src/game/w5Look.ts#drawW5Light",
+        "mode": "screen",
+        "why": "World 5's light (5-1 and on), 'screen' on the main canvas about 2 times a frame; the only advanced blend on the main canvas in ebc13e43's control test and 8-stage runs. Matched by file#function so a line move does not break it; a file:line entry works too."
+      }
+    ]
+  },
+  "art": {
+    "why": "PERFORMANCE-RULES \u00a78.2: no image over 4096 px on a side. These 13 clip sheets were already over it on 2026-10-30 (sheetBake/creatureAnim bake them smaller once at stage start, but the full sheet is still decoded and uploaded once); they are debts to split, and a new one fails the check.",
+    "knownOver4096": [
+      "src/assets/enemies/dangler-anim.webp",
+      "src/assets/enemies/dozer-anim.webp",
+      "src/assets/enemies/mantis-anim.webp",
+      "src/assets/enemies/queen-anim.webp",
+      "src/assets/enemies/seamstress-anim.webp",
+      "src/assets/enemies/soldier-anim.webp",
+      "src/assets/w6to10/bosses/drake-anim.webp",
+      "src/assets/w6to10/bosses/golem-anim.webp",
+      "src/assets/w6to10/bosses/ironclaw-anim-0.webp",
+      "src/assets/w6to10/bosses/ironclaw-anim-1.webp",
+      "src/assets/w6to10/bosses/thornbark-anim-0.webp",
+      "src/assets/w6to10/bosses/thornbark-anim-1.webp",
+      "src/assets/w6to10/bosses/thornbark-anim-2.webp"
+    ]
+  }
+}

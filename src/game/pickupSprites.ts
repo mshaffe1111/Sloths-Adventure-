@@ -3,6 +3,8 @@
  * Meeca's petals in World 1's harvests, Grandma's things in World 3's searches, Meeca's messages in World 5's, the lieutenant's thread in
  * World 9's (stagePlan.ts says which). Small and loaded only when first drawn; until then the drawn pickup stands in.
  */
+import { drawSheet } from './sheetBake.ts';
+
 // (no bundler under the test runner, so no glob: nothing is painted there and the drawn pickups are what get tested)
 let FILES: Record<string, string> = {};
 try {
@@ -42,7 +44,7 @@ export function drawPickup(ctx: CanvasRenderingContext2D, name: string, size: nu
   if (tilt) ctx.rotate(tilt);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(im, -w / 2, -h / 2, w, h);
+  drawSheet(ctx, im, 0, 0, im.naturalWidth, im.naturalHeight, -w / 2, -h / 2, w, h);
   ctx.restore();
   return true;
 }

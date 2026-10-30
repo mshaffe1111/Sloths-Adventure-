@@ -1,7 +1,11 @@
 /**
- * The Conductor runs the live sound of the game: it owns the Web Audio context, plays whichever piece of music
- * fits the scene, crossfades between pieces, raises and lowers the music's intensity with the action, ducks it
- * under stingers, muffles it when the game is paused, and fires the sound effects.
+ * The Conductor runs the sound of the game: it owns the Web Audio context, plays whichever piece of music fits the
+ * scene, crossfades between pieces, raises and lowers the music's intensity with the action, ducks it under
+ * stingers, muffles it when the game is paused, and fires the sound effects.
+ *
+ * The music is recorded (loops.ts): each piece was played once by its orchestra, offline (tools/music), and the
+ * game plays the recordings back, mixing their stems with the game's state. Nothing is composed while the game
+ * runs; the effects, stingers and cues are still played live.
  *
  * Browsers only allow audio after a tap or key press, so nothing is created until `unlock()` is called from a
  * user gesture; scene changes asked for before that are remembered and start the moment audio is allowed.
@@ -9,19 +13,26 @@
 import { Ambience, type AmbientType } from './ambience.ts';
 import { COMBO_WINDOW, nextVariant } from './combat.ts';
 import { AudioCore } from './core.ts';
-import { Playback, type KeyInfo } from './music.ts';
+import type { KeyInfo } from './music.ts';
+import { LoopPlayer } from './loops.ts';
+import { recordingFor } from './recordings.ts';
 import { SFX, runFx } from './sfx.ts';
 import { playRec, recFor, recForPuzzle, type Surface } from './sfxRec.ts';
 import { speechBlip } from './speech.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
-import { themeById } from './themes.ts';
 import { CALM, type MusicState } from './adaptive.ts';
-import { CUE_DUCK, playCue, type CueName } from './cues.ts';
+import { CUE_DUCK, CUE_NAMES, cuePlan, playCue, type CueName } from './cues.ts';
+import { STINGS } from './stingers.ts';
 
-// how far ahead of the audio clock the music is scheduled: long enough to ride out a stalled main thread
-// (a level loading, a garbage collection) without the music dropping out and then firing in one burst
+// how far ahead of the audio clock the ambience is scheduled: long enough to ride out a stalled main thread
+// (a level loading, a garbage collection) without it dropping out and then firing in one burst
 const LOOKAHEAD = 0.6;
-const TICK_MS = 25;
+// (the music needs no clock: it is recorded. The ambience and the heartbeat are all the tick schedules)
+const TICK_MS = 100;
+/** the music bus level: the recordings already carry the old bus's 0.32 */
+const MUSIC_LEVEL = 1;
+/** a stage's piece is most often followed by the results' */
+const AFTER_STAGE = 'results~c';
 const DEFAULT_KEY: KeyInfo = { tonic: 60, scale: [0, 2, 4, 5, 7, 9, 11] };
 
 /** a phone or tablet (they get the lighter sound and the roomier buffer) */
@@ -77,7 +88,7 @@ export class Conductor {
   private ctx: AudioContext | null = null;
   private core: AudioCore | null = null;
   private amb: Ambience | null = null;
-  private playback: Playback | null = null;
+  private loops: LoopPlayer | null = null;
   private timer: ReturnType<typeof setInterval> | null = null;
 
   private wantTheme: string | null = null;
@@ -142,7 +153,7 @@ export class Conductor {
         const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession;
         if (session) session.type = 'playback';
         // a phone gets the light room (core.ts): the two long convolution rooms were too much for a busy iPhone's sound
-        this.core = new AudioCore(ctx, { lightRoom: PHONE });
+        this.core = new AudioCore(ctx, { lightRoom: PHONE, recorded: true });
       } catch {
         this.core = null;
         // the context was made before the core failed: close it, or every later tap would make (and leak) another one
@@ -159,6 +170,17 @@ export class Conductor {
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
       // the recorded effect set: decoded at once, the frequent moves first, so the first jump already has its sound
       void import('./sfxRecLoader.ts').then((m) => m.loadRec(this.core as AudioCore)).catch(() => {});
+      // the orchestra the game's stingers and cues play on (the music no longer needs it: it is recorded)
+      this.warmEffects();
+      // the recorded music: its manifest and files' addresses, then whatever piece was asked for in the meantime
+      const core = this.core;
+      void import('./musicFiles.ts')
+        .then((m) => {
+          if (this.core !== core) return;
+          this.loops = new LoopPlayer(ctx, core.music, m.manifest, m.musicUrl);
+          if (this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
+        })
+        .catch(() => {});
       this.amb = new Ambience(this.core);
       // every phone plays the lighter arrangement (fewer voices at once): the full one was too much for a busy phone's sound
       this.lite = PHONE;
@@ -174,7 +196,7 @@ export class Conductor {
     }
     this.announce();
     // anything asked for before audio was allowed
-    if (this.core && !this.playback && this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
+    if (this.core && this.loops && !this.loops.playing && this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
     if (this.core && this.wantAmbient && this.amb && !this.amb.type) this.amb.start(this.wantAmbient);
   }
 
@@ -230,38 +252,45 @@ export class Conductor {
   }
 
   private startTheme(id: string | null, opts: SceneOptions, first: boolean) {
+    const loops = this.loops;
+    if (!loops) return;
+    const fade = first ? 0.02 : opts.fade ?? 1.4;
+    const rec = id ? recordingFor(loops.manifest, id, opts.seed) : null;
+    loops.setIntensity(opts.intensity ?? this.intensity, true);
+    loops.setState(this.mstate, true);
+    // the piece most likely to come next is decoded while this one plays: once the crossfade is over, so no more than two pieces are
+    // ever held at once (the phones' memory: 35 MB playing, 70 at the most)
+    loops.prefetch(null);
+    if (this.aheadTimer) clearTimeout(this.aheadTimer);
+    this.aheadTimer = null;
+    void loops.play(rec, fade, !!opts.restart).then(() => {
+      if (!opts.form || loops.playing !== rec) return;
+      this.aheadTimer = setTimeout(() => {
+        if (loops.playing === rec) loops.prefetch(AFTER_STAGE);
+      }, (fade + 1) * 1000);
+    });
+  }
+
+  private aheadTimer: ReturnType<typeof setTimeout> | null = null;
+  private effectsWarm = false;
+  /** fetch, once, the recordings the game's stingers and cues play (the victory, the boss's arrival, the checkpoint's bells) */
+  private warmEffects() {
     const core = this.core;
-    if (!core) return;
-    const fade = opts.fade ?? 1.4;
-    const old = this.playback;
-    this.playback = null;
-    if (old) {
-      old.retire(fade);
-      setTimeout(() => old.dispose(), (fade + 4) * 1000);
-    }
-    if (!id) return;
-    const theme = themeById(id);
-    if (!theme) return;
-    const begin = () => {
-      const pb = new Playback(core, theme, core.ctx.currentTime + 0.08, undefined, !first || !!old, { seed: opts.seed, tempo: opts.tempo, form: opts.form });
-      pb.liteMode = this.lite;
-      pb.setIntensity(opts.intensity ?? this.intensity, true);
-      pb.setState(this.mstate, true);
-      this.playback = pb;
-      pb.update(core.ctx.currentTime + LOOKAHEAD);
-    };
-    // the recorded orchestra is fetched the first time a piece needs it: the piece starts once it is in (or after a moment, with the
-    // synthesized stand-ins covering anything that is late), so it never opens with the wrong instruments
-    const key = this.wantKey;
+    if (!core || this.effectsWarm) return;
+    this.effectsWarm = true;
     void import('./orchLoader.ts')
-      .then(async (m) => {
-        const need = m.groupsFor(theme).filter((g) => !core.orch.has(g));
-        if (need.length) await Promise.race([m.loadOrch(core, need), new Promise((r) => setTimeout(r, 2500))]);
+      .then((m) => {
+        const voices = new Set<string>();
+        for (const n of Object.keys(STINGS)) for (const v of stingVoices(n)) voices.add(v);
+        for (const n of CUE_NAMES) {
+          const p = cuePlan(n, DEFAULT_KEY, 0.5);
+          for (const x of [...p.notes, ...p.chords, ...p.hits]) voices.add(x.voice);
+        }
+        const need = new Set<string>();
+        for (const v of voices) for (const g of m.VOICE_GROUPS[v] ?? []) need.add(g);
+        return m.loadOrch(core, need);
       })
-      .catch(() => {})
-      .then(() => {
-        if (this.wantKey === key && !this.playback) begin();
-      });
+      .catch(() => {});
   }
 
   get scene() {
@@ -270,7 +299,7 @@ export class Conductor {
 
   setIntensity(v: number) {
     this.intensity = Math.max(0, Math.min(1, v));
-    this.playback?.setIntensity(this.intensity);
+    this.loops?.setIntensity(this.intensity);
   }
 
   /**
@@ -279,7 +308,7 @@ export class Conductor {
    */
   setMusicState(s: Partial<MusicState>) {
     this.mstate = { ...this.mstate, ...s };
-    this.playback?.setState(s);
+    this.loops?.setState(s);
   }
 
   get musicState(): MusicState {
@@ -291,21 +320,22 @@ export class Conductor {
     const core = this.core;
     if (!core || this.muted || core.ctx.state !== 'running') return 0;
     const now = core.ctx.currentTime + 0.03;
-    const pb = this.playback;
-    const t = pb ? pb.gridAfter(now) : now;
-    const dur = playCue(core, name, this.key(), t, pb?.beatDur ?? 0.5);
+    const lp = this.loops;
+    const t = lp ? lp.gridAfter(now) : now;
+    const dur = playCue(core, name, this.key(), t, lp?.beatDur ?? 0.5);
     this.duck(CUE_DUCK[name], Math.max(0.2, dur * 0.6), 0.8);
     return dur;
   }
 
-  /** speed the music up or down (1 = as written); eases in over a few bars. Used when a boss enrages. */
-  setTempo(scale: number) {
-    this.playback?.setTempo(scale);
-  }
+  /**
+   * Speed the music up or down (1 = as written). The music is recorded at its written speed, so this does nothing now (a recording
+   * played faster rises in pitch); kept so the game's calls stay as they were.
+   */
+  setTempo(_scale: number) {}
 
   /** the key of the music right now (sound effects play in it) */
   key(): KeyInfo {
-    return this.playback?.key() ?? DEFAULT_KEY;
+    return this.loops?.key() ?? DEFAULT_KEY;
   }
 
   /** dip the music to `level` for `hold` seconds, then ease back */
@@ -448,7 +478,7 @@ export class Conductor {
     const ctx = this.ctx;
     if (!ctx) return;
     if (m) setTimeout(() => this.muted && ctx.suspend().catch(() => {}), 350);
-    else if (!document.hidden) ctx.resume().catch(() => {});
+    else if (!document.hidden && !this.appAway) ctx.resume().catch(() => {});
   }
 
   setMusicVolume(v: number) {
@@ -473,7 +503,7 @@ export class Conductor {
       else p.setTargetAtTime(v, t, 0.05);
     };
     set(core.master.gain, this.muted ? 0 : this.ducked ? 0.25 : 1);
-    set(core.music.gain, 0.32 * this.musicVol);
+    set(core.music.gain, MUSIC_LEVEL * this.musicVol);
     set(core.sfx.gain, 0.9 * this.sfxVol);
     set(core.amb.gain, (this.paused ? 0.18 : 0.6) * this.sfxVol);
     // the reverb and echo tails follow the same volumes as the dry sound
@@ -502,11 +532,11 @@ export class Conductor {
       state: this.ctx?.state ?? 'none',
       time: this.ctx?.currentTime ?? 0,
       scene: this.wantTheme,
-      playing: this.playback?.theme.id ?? null,
-      section: this.playback?.section ?? '',
+      playing: this.loops?.playing ?? null,
+      section: '',
       musicState: this.mstate,
-      seed: this.playback?.seed ?? null,
-      tempo: this.playback?.tempo ?? null,
+      seed: this.wantOpts.seed ?? null,
+      tempo: this.loops?.playing ? 1 : null,
       ambient: this.amb?.type ?? null,
       intensity: this.intensity,
       muted: this.muted,
@@ -530,6 +560,7 @@ export class Conductor {
   private meterBuf: Float32Array<ArrayBuffer> | null = null;
   private lastTickReal = 0;
   private lastTickAudio = 0;
+  private ticks = 0;
   /** a short line for the control test's recording: light or full sound, the buffer, and the sound lost since the last call */
   report(): string {
     const ctx = this.ctx;
@@ -557,7 +588,8 @@ export class Conductor {
     }
     this.lastTickReal = real;
     this.lastTickAudio = now;
-    if (this.playback && !this.paused && !this.muted) {
+    // (every other tick: the meter's read is the costliest thing the tick does)
+    if (this.loops?.playing && !this.paused && !this.muted && (this.ticks++ & 1) === 0) {
       // the meter holds the last ~40 ms of the final output: music that is playing is never that quiet
       const buf = (this.meterBuf ??= new Float32Array(new ArrayBuffer(core.meter.fftSize * 4)));
       core.meter.getFloatTimeDomainData(buf);
@@ -566,9 +598,7 @@ export class Conductor {
       this.heardTicks++;
       if (peak < 0.0005) this.silentTicks++;
     }
-    const until = now + LOOKAHEAD;
-    this.playback?.update(until);
-    this.amb?.update(until);
+    this.amb?.update(now + LOOKAHEAD);
     if (this.lowHealth && !this.paused && !this.muted && now >= this.nextHeartbeat) {
       this.nextHeartbeat = now + 1.15;
       SFX.heartbeat(core, this.key());

@@ -44,7 +44,7 @@ export default defineConfig(() => {
         // the painted sprite sheets are cached with the app, so they load instantly and work offline
         // the animated boss sheets and the game's own script are each a little over Workbox's 2 MiB default, and a file over the limit
         // fails the whole build, so the limit is raised to 4 MiB
-        workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3,woff2}'], maximumFileSizeToCacheInBytes: 4 * 1024 * 1024 },
+        workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3,webm,woff2}'], maximumFileSizeToCacheInBytes: 4 * 1024 * 1024 },
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
         manifest: {
           id: base,

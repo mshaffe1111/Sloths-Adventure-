@@ -8,6 +8,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { BUTTERFLY_FRAMES } from './butterflyAtlasData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_BUTTERFLIES = true;
 
@@ -116,7 +117,7 @@ export function drawPaintedButterfly(
   ctx.scale(heading > 0 ? -squash : squash, 1);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }
