@@ -14,6 +14,9 @@ import { rng, rgba, mixToHex, lighten, darken } from './artKit.ts';
 import { paletteFor, type Palette } from './platformPalette.ts';
 import { bakeSprite, shaftPattern, blit, RES } from './platformSprites.ts';
 import { leafAt, pebble } from './platformKit.ts';
+
+/** the column's sink-into-shadow gradient, by outline colour */
+const sinkGrads = new Map<string, CanvasGradient>();
 import type { GroundPlan } from './platformPlan.ts';
 
 type C = CanvasRenderingContext2D;
@@ -459,11 +462,19 @@ function drawColumn(
     ctx.fillStyle = pat;
     ctx.fillRect(x, y0, w, depth);
     // the column sinks into shadow with depth
-    const gr = ctx.createLinearGradient(0, y0 + 40, 0, y0 + 260);
-    gr.addColorStop(0, rgba(look.ground.outline, 0));
-    gr.addColorStop(1, rgba(look.ground.outline, 0.62));
+    // (kept by colour, laid at y0 with a shift: PERFORMANCE-RULES §2.3)
+    const outline = look.ground.outline;
+    let gr = sinkGrads.get(outline);
+    if (!gr) {
+      gr = ctx.createLinearGradient(0, 40, 0, 260);
+      gr.addColorStop(0, rgba(outline, 0));
+      gr.addColorStop(1, rgba(outline, 0.62));
+      sinkGrads.set(outline, gr);
+    }
+    ctx.translate(0, y0);
     ctx.fillStyle = gr;
-    ctx.fillRect(x, y0 + 40, w, Math.max(0, depth - 40));
+    ctx.fillRect(x, 40, w, Math.max(0, depth - 40));
+    ctx.translate(0, -y0);
   }
   blit(ctx, spr, p.x, p.y);
 }
