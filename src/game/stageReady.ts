@@ -16,7 +16,7 @@
  */
 import { pendingSheets, unwarmedSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { drawPaintedCardBoss } from './bossArt.ts';
-import * as scenery from './scenery.ts';
+import { warmScenery } from './scenery.ts';
 import { creatureAnimsReady, settleCreatureBakes } from './creatureAnim.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
@@ -25,9 +25,11 @@ import { builtStageKeys, type BuiltStage } from './stageManifest.ts';
 import { preloadEnabled, start } from './stagePreload.ts';
 import type { LevelConfig } from './types.ts';
 
-/** what stageReady needs of the engine: its built stage, and drawing one frame (never while it plays) */
+/** what stageReady needs of the engine (GameEngine): its built stage, where it draws, and drawing one frame (never while it plays) */
 export interface ReadyEngine {
   render(): void;
+  builtStage(): BuiltStage;
+  viewNow(): { x: number; y: number; vw: number; vh: number; k: number };
 }
 
 /**
@@ -39,13 +41,12 @@ export const READY_MS = 6500;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, Math.max(0, ms)));
 
 /**
- * Get the built stage's sheets in before its first frame. `stage` is the engine's built stage; `canvas` the game's own (the title card
+ * Get the built stage's sheets in before its first frame. `engine` has built it; `canvas` is the game's own (the title card
  * covers it); `live` says the stage is already being played (then nothing is drawn); resolves by `deadline` (performance.now()) at the
  * latest, whatever is still on its way then arriving during play as before (sheetWarm.ts ArrivalWarm draws each the frame it lands).
  */
 export async function readyBuiltStage(
   cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>,
-  stage: BuiltStage,
   engine: ReadyEngine,
   canvas: HTMLCanvasElement | null,
   live: () => boolean,
@@ -54,7 +55,7 @@ export async function readyBuiltStage(
   if (typeof Image === 'undefined' || !preloadEnabled()) return;
   const t0 = performance.now();
   const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
-  const keys = builtStageKeys(stage);
+  const keys = builtStageKeys(engine.builtStage());
   const urls = start(keys);
   const plains = plainUrls(keys);
   const plainDone = loadPlain(plains);
@@ -94,26 +95,21 @@ export async function readyBuiltStage(
     drawn += warm(ctx, plains, deadline);
   }
   const late = pendingSheets();
-  perfNote(`ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`);
+  const line = `ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`;
+  perfNote(line);
+  // (the dev server's console too, for the headless checks)
+  if (import.meta.env?.DEV) console.info(line);
 }
 
 /**
- * The painted backdrop strips resampled once at the size this screen draws them (scenery.ts warmScenery, PERF-A's hook, on its own
- * branch until both are merged: asked for by name, so this builds either way). After the scene seed is rolled (the engine's
- * constructor) and the backdrop has decoded (the wait above); without it the first frames of play make one fit each.
+ * The painted backdrop strips resampled once at the size this screen draws them (scenery.ts warmScenery): after the scene seed is
+ * rolled (the engine's constructor) and the backdrop has decoded (the wait above), so no frame of play makes a fit.
  */
 function fitScenery(world: number, engine: ReadyEngine) {
-  const warmScenery = (scenery as unknown as { warmScenery?: (w: number, x: number, y: number, vw: number, vh: number, k: number, stripVh?: number) => boolean }).warmScenery;
-  // (the engine's own camera and picture scale, read as render() reads them; upright, the strips are drawn at the height sideways uses
-  // for the same width of world: engine.ts WORLD_VIEW_H 540 over PORTRAIT_VIEW_W 440)
-  const e = engine as unknown as { camera?: { x: number; y: number; viewportWidth: number; viewportHeight: number }; zoom?: number; renderDpr?: () => number };
-  if (!warmScenery || !e.camera || typeof e.renderDpr !== 'function') return;
-  const { x, y, viewportWidth: vw, viewportHeight: vh } = e.camera;
-  try {
-    warmScenery(world, x, y, vw, vh, e.renderDpr() * (e.zoom ?? 1), vh > vw ? (540 * vw) / 440 : vh);
-  } catch {
-    /* the first frames of play fit them, as before */
-  }
+  const v = engine.viewNow();
+  // (upright, the strips are drawn at the height sideways uses for the same width of world: engine.ts WORLD_VIEW_H 540 over
+  // PORTRAIT_VIEW_W 440)
+  warmScenery(world, v.x, v.y, v.vw, v.vh, v.k, v.vh > v.vw ? (540 * v.vw) / 440 : v.vh);
 }
 
 let scratch: CanvasRenderingContext2D | null = null;

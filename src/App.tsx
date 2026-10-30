@@ -55,7 +55,6 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
-import type { BuiltStage } from './game/stageManifest.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
@@ -856,8 +855,7 @@ export default function App() {
           // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
           window.dispatchEvent(new Event(STAGE_LIVE_EVENT));
         };
-        const built = (engine as unknown as { currentStage: BuiltStage }).currentStage;
-        void readyBuiltStage(lvl, built, engine, canvasRef.current, inPlay, launchAt + READY_MS).then(go, go);
+        void readyBuiltStage(lvl, engine, canvasRef.current, inPlay, launchAt + READY_MS).then(go, go);
       }, 20);
     });
   }, []);

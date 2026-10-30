@@ -1037,6 +1037,16 @@ export class GameEngine {
     this.camera.viewportHeight = h / this.zoom;
   }
 
+  /** the stage as built, for stageReady.ts to read what it can draw before its first frame */
+  public builtStage(): GeneratedStage {
+    return this.currentStage;
+  }
+
+  /** where the next frame draws: the camera and the device pixels per scene unit (stageReady.ts fits the backdrop strips to them) */
+  public viewNow(): { x: number; y: number; vw: number; vh: number; k: number } {
+    return { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight, k: this.renderDpr() * this.zoom };
+  }
+
   /** a stage is under way (running, not yet won or lost): stagePreload.ts draws nothing on the canvas then */
   public inPlay(): boolean {
     return this.isRunning && !this.isGameOver;
