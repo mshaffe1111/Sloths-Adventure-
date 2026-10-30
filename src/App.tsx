@@ -57,7 +57,7 @@ import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
-import { nativeApp } from './game/appShell.ts';
+import { keepScreenOn, nativeApp } from './game/appShell.ts';
 import { LeaveDialog } from './components/LeaveDialog.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
 
@@ -524,6 +524,10 @@ export default function App() {
     else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim')) setAskLeave(true);
     else esc();
   };
+  // the Android app keeps the screen on only while a stage is played; a menu, the map or a story lets the phone sleep (KeepAwakePlugin.java)
+  useEffect(() => {
+    keepScreenOn(screen === 'playing');
+  }, [screen]);
   const androidAway = useRef<() => void>(() => {});
   androidAway.current = () => {
     if (screen === 'playing') pauseGame();

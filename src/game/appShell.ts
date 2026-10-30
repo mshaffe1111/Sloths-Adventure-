@@ -25,3 +25,12 @@ export function nativeApp(): boolean {
     return false;
   }
 }
+
+type KeepAwake = { set(o: { on: boolean }): Promise<void> };
+let keepAwakePlugin: Promise<KeepAwake> | null = null;
+/** the Android app: keep the screen on (a stage in play) or let it sleep as usual (anything else); KeepAwakePlugin.java */
+export function keepScreenOn(on: boolean) {
+  if (!nativeApp()) return;
+  keepAwakePlugin ??= import('@capacitor/core').then(({ registerPlugin }) => registerPlugin<KeepAwake>('KeepAwake'));
+  void keepAwakePlugin.then((p) => p.set({ on })).catch(() => {});
+}

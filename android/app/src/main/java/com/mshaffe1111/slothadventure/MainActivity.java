@@ -6,7 +6,6 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.WindowManager;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -15,8 +14,8 @@ import com.getcapacitor.BridgeActivity;
 /**
  * The game full screen (Play Store job, 2026-10-29: Matt could not skip the story, its button was under the status bar's Wi-Fi icon).
  * Immersive: the status and navigation bars are hidden, and a swipe from the edge brings them back for a moment. The page still gets the
- * notch's insets (Capacitor's SystemBars plugin: --safe-area-inset-* CSS variables, and env() on WebView 140+). The screen stays on while
- * the game is in front: a phone dimming mid-jump is a lost life.
+ * notch's insets (Capacitor's SystemBars plugin: --safe-area-inset-* CSS variables, and env() on WebView 140+). The screen stays on only
+ * during play (KeepAwakePlugin.java).
  *
  * Sound: the game holds Android's audio focus while it is in front, as games do (other music stops). When something else takes it (a call
  * ringing, an alarm, another app's sound) the page gets a "sloth-audio-focus" event with state "lost" (the game goes silent), "duck"
@@ -27,8 +26,9 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // (registered before the bridge starts: the screen stays on only during play, KeepAwakePlugin.java)
+        registerPlugin(KeepAwakePlugin.class);
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         hideSystemBars();
     }
 
