@@ -65,8 +65,11 @@ const FPS = 30;
  * 2026-10-29); the scene keeps its width and the room above it shows the top of the painting (storyArt.ts drawStoryScene `top`) */
 /** the room kept for the words under it (six lines in the reading font, the Back and Next row, the top chips: 290 plus 60 to spare, or
  *  a long line pushed Next off the bottom of the screen) */
-const UPRIGHT_WORDS = 290;
-const uprightH = (v: { w: number; h: number }) => Math.round(Math.max(160, v.h - UPRIGHT_WORDS - 60));
+/** upright, the picture fills the whole screen and the words box sits over its bottom, as tall as its words (a two-word line had a box
+ *  with a hand's width of dark under it: Matt via the lead, 2026-10-30). The figures stand clear of the tallest box a page makes (four
+ *  lines of the reading font, the name and the Back and Next row), at the same place for every line, so nobody jumps when the box changes */
+const UPRIGHT_WORDS = 250;
+const uprightFeet = (v: { w: number; h: number }) => Math.max(0.5, Math.min(0.95, (v.h - UPRIGHT_WORDS) / v.h - 0.02));
 
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
   // a picture the player plays with their thumbs needs a touch screen; without one it reads as a picture, with the narration that says
@@ -201,7 +204,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const cv = canvasRef.current;
     const bx = boxRef.current;
     if (!wide || !cv || !bx) {
-      feetRef.current = 0.95;
+      feetRef.current = wide ? 0.95 : uprightFeet(view);
       return;
     }
     const measure = () => {
@@ -213,7 +216,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const ro = new ResizeObserver(measure);
     ro.observe(bx);
     return () => ro.disconnect();
-  }, [wide, idx, cardUp, view.w, view.h]);
+  }, [wide, idx, cardUp, view]);
 
   const startRef = useRef(performance.now());
   /** how this picture arrives (storyDirect.ts): the full dip from dark for a new chapter, a quick half-dark one for a new place, a cut */
@@ -300,7 +303,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     // (sharp on a phone either way: ST-1, the old 1.25 / 1.5 caps had the browser stretch the picture 2.1x on a 1080p phone)
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cssW = wide ? view.w : view.w;
-    const cssH = wide ? view.h : uprightH(view);
+    const cssH = view.h;
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
     ctx.imageSmoothingEnabled = true;
@@ -395,7 +398,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
           {panel.speaker}
         </span>
       )}
-      <p className={`sp-text ${narrator ? 'narr' : ''}`}>
+      {/* (upright the box is as tall as its words: no two-line floor under a one-line line; the hidden rest of the line already holds
+          the box at its full height while it types) */}
+      <p className={`sp-text ${narrator ? 'narr' : ''}`} style={wide ? undefined : { minHeight: 0 }}>
         {lyrics(text.slice(0, shown))}
         <span className="opacity-0">{lyrics(text.slice(shown))}</span>
       </p>
@@ -441,16 +446,8 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
 
   return (
     <div ref={rootRef} className="fixed inset-0 z-50 bg-[#070d09] text-white select-none font-game overflow-hidden flex flex-col">
-      {wide ? (
-        <canvas ref={canvasRef} onClick={next} className="absolute inset-0 w-full h-full cursor-pointer" />
-      ) : (
-        <div className="relative shrink-0">
-          <canvas ref={canvasRef} onClick={next} className="block w-full cursor-pointer" style={{ height: uprightH(view) }} />
-          {/* (the picture melts into the words panel instead of stopping at a hard edge) */}
-          <div className="absolute inset-x-0 bottom-0 h-10 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(7,13,9,1), rgba(7,13,9,0))' }} />
-        </div>
-      )}
-      {wide && <div className="absolute inset-x-0 bottom-0 h-[44%] pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' }} />}
+      <canvas ref={canvasRef} onClick={next} className="absolute inset-0 w-full h-full cursor-pointer" />
+      <div className={`absolute inset-x-0 bottom-0 ${wide ? 'h-[44%]' : 'h-[30%]'} pointer-events-none`} style={{ background: 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' }} />
 
       {/* (above the world's title card, which used to dim Skip into the dark: UI-12) */}
       <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
@@ -460,16 +457,14 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
         </button>
       </div>
 
-      {/* (a steady height for six lines of words, so the picture above stays put from one panel to the next; a longer line still grows it) */}
-      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS + 60 }}>{!cardUp && box}</div>}
-      {wide && !cardUp && (
+      {!cardUp && (
         <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
           {box}
         </div>
       )}
 
       {hold && (
-        <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(uprightH(view) * 0.42) }}>
+        <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(view.h * 0.32) }}>
           <div className="sp-hold-thumbs" aria-hidden="true">
             <span className={`sp-thumb gx-token ${thumbs >= 1 ? 'on' : ''}`}><Icon name="paw" size={17} /></span>
             <span className={`sp-thumb gx-token ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`}><Icon name="paw" size={17} /></span>
