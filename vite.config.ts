@@ -43,7 +43,7 @@ export default defineConfig(() => {
         // the animated boss sheets and the game's own script are each a little over Workbox's 2 MiB default, and a file over the limit
         // fails the whole build, so the limit is raised to 4 MiB
         workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3,woff2}'], maximumFileSizeToCacheInBytes: 4 * 1024 * 1024 },
-        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
+        includeAssets: ['favicon-48.png', 'apple-touch-icon.png'],
         manifest: {
           id: base,
           name: 'Sloths Rainforest Adventures',
