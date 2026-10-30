@@ -3,7 +3,7 @@
 // (Playwright video has no sound: the voices are heard on the sample page. Serve a development build (`NODE_ENV=development npx vite
 // build --mode development`, any static server): the dev server is too heavy for several recorders at once)
 import { createRequire } from 'module';
-import { mkdirSync, readFileSync, unlinkSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, unlinkSync } from 'fs';
 import { execFileSync } from 'child_process';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const args = process.argv.slice(2);
@@ -13,7 +13,8 @@ const jobs = Number(args[args.indexOf('--jobs') + 1] || 4);
 const orient = (process.env.ORIENT ?? 'up,side').split(',');
 mkdirSync(out, { recursive: true });
 const scenes = JSON.parse(readFileSync(new URL('./scenes.json', import.meta.url))).filter((s) => !only || only.has(s.key));
-const work = scenes.flatMap((s) => orient.map((o) => ({ s, o })));
+// (a video already made is kept: run it again to fill in any that failed)
+const work = scenes.flatMap((s) => orient.map((o) => ({ s, o }))).filter(({ s, o }) => !existsSync(`${out}/${s.key}-${o}.mp4`));
 const b = await chromium.launch();
 async function one({ s, o }) {
   const [w, h] = o === 'up' ? [390, 844] : [844, 390];
@@ -22,7 +23,7 @@ async function one({ s, o }) {
   // (the first tap asks for full screen, which in a headless browser shrinks the recorded picture)
   await p.addInitScript(() => { Element.prototype.requestFullscreen = () => Promise.resolve(); });
   p.on('pageerror', (e) => { if (!/AudioParam/.test(e.message)) console.log(s.key, 'ERR', e.message); });
-  await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+  await p.goto(`http://127.0.0.1:${port}/?lessons=off`, { timeout: 120000 });
   await p.waitForTimeout(2500);
   const t0 = Date.now();
   await p.evaluate(([i, sc]) => (sc === 'memory' ? window.__memory(i) : window.__story(i, sc)), [s.open.id, s.open.screen]);
