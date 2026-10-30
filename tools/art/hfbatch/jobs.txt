@@ -254,3 +254,8 @@ results: hfdrake1 17:28Z-~17:36Z (~8 min, ~$0.37); hfboss910a 17:30Z-17:49Z (~19
 hftrails1     6ae4dd20c78863f9c62e9da8 rtx-pro-6000 from 18:08Z: the ten world-map trails (tools/art/hfui: trailstarts.py,
   make_spec_trails.py), 2 sheets x 0.7/0.8 x 2 seeds.
 running spend of the $80: ~$1.04 + this round ~$2.4 + hftrails1 (~$0.4 est.)
+hftrails1 18:08Z-~18:14Z (~6 min, ~$0.28): KEPT trails-a-s70-7, trails-b-s70-23 (wired: src/assets/ui/trails.webp). Thrown: b-s80-23
+  (the boardwalk turned to stone), the s80 a-sheets (orchid lost its flowers).
+hfdrake2      6ae4ddf2c78863f9c62e9e09 rtx-pro-6000 from 18:12Z: the Drake's cave plate, sitting stiff, holding a cup (story-a).
+hfui2         6ae4de790e0338d1bb7cc9b4 rtx-pro-6000 18:14Z-~18:18Z (~4 min, ~$0.2): the start screen's painted pieces (hanging signs,
+  carved token, leaf token, vine, tag). KEPT kit2-s80-23 (tools/art/hfui/kit2cut.py), used in the two layout mocks.
