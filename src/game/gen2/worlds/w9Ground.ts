@@ -259,6 +259,20 @@ const restNook = section({
   mirrorable: false,
 });
 
+const hollowK = knobs('', 'a', 1, [200, 240], [28, 32]);
+/** 9-4's other breather: under an overhang of basalt (no eye above it), ash ferns and a knob */
+const restHollow = section({
+  id: 'w9-rest-hollow',
+  name: 'basalt hollow',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 1,
+  pieces: [bank('a', [180, 220]), up('s', 'a', 40, [200, 240]), ...hollowK.pieces.map((q) => (q.key === 'k1' ? { ...q, place: { ...q.place, after: 's' } as typeof q.place } : q))],
+  last: hollowK.last,
+  sockets: [scenery('ohia', 'a', [0.3, 0.5], 0.7), flag('s', 0.5), petals('k1', 'k1', 0.5, 1), scenery('smoke', 'f1', [0.5, 0.7], 0.6)],
+  mirrorable: true,
+});
+
 /** 9-5's breather: a warm shelf over a smoke crack, up a step and down two */
 const restWarm = section({
   id: 'w9-rest-warm',
@@ -999,7 +1013,7 @@ const boaVents = section({
   extraSeconds: GEYSER_WAIT * 2,
   pieces: [bank('a', [300, 340]), up('k', 'a', 32, [140, 160]), down('boa', 'k', 32, [460, 500]), up('k2', 'boa', 34, [140, 160]), down('c', 'k2', 34, [300, 340])],
   last: 'c',
-  sockets: [geyser('g1', 'a', 0.5), petals('k', 'k', 0.5, 1), foe('boa', 'boa', [0.45, 0.55], ['boa'], 3), petals('k2', 'k2', 0.5, 1), geyser('g2', 'c', 0.5)],
+  sockets: [geyser('g1', 'a', 0.5), petals('k', 'k', 0.5, 1), watch('boa', 0.05), hideAt('h1', 'boa', 0.2), foe('boa', 'boa', [0.68, 0.75], ['boa'], 3), petals('k2', 'k2', 0.5, 1), geyser('g2', 'c', 0.5)],
   mirrorable: true,
 });
 
@@ -1013,7 +1027,7 @@ const boaKnobs = section({
   difficulty: 6,
   pieces: [bank('a', [440, 480]), ...boaK.pieces],
   last: boaK.last,
-  sockets: [foe('b1', 'a', [0.5, 0.6], ['boa'], 3), petals('k1', 'k1', 0.5, 1), foe('b2', 'f1', [0.45, 0.55], ['boa', 'tayra'], 3, { phases: LIVE }), petals('k2', 'k2', 0.5, 1), foe('t', 'f2', [0.5, 0.6], ['tayra', 'ocelot'], 3, { phases: HOT, chance: 0.7 })],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.2), foe('b1', 'a', [0.65, 0.72], ['boa'], 3), petals('k1', 'k1', 0.5, 1), hideAt('h2', 'f1', 0.2), foe('b2', 'f1', [0.65, 0.72], ['boa'], 3, { phases: LIVE }), petals('k2', 'k2', 0.5, 1), hideAt('h3', 'f2', 0.25), foe('b3', 'f2', [0.68, 0.75], ['boa'], 3, { phases: HOT, chance: 0.7 })],
   mirrorable: true,
 });
 
@@ -1172,6 +1186,7 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
   restSteps,
   restOhia,
   restNook,
+  restHollow,
   restWarm,
   restAsh,
   restLedge,
@@ -1245,7 +1260,7 @@ export const W9_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object
   ...[...pepperGates, ventField, ventLanding, chasmChain, chasmDrop, geyserPair, geyserRow, geyserLedge, geyserChasm, lavaHop, lavaRise, restOhia].map((s) => [s.id, [1]] as const),
   [restSteps.id, [1, 3]] as const,
   ...[landing, crustGaps, lavaDrop, pillarHop].map((s) => [s.id, [3]] as const),
-  ...[...watchGates, spireRun, spireChasm, fernVents, fernGap, watchSteps, watchPillars, fernLong, boaVents, boaKnobs, restNook].map((s) => [s.id, [4]] as const),
+  ...[...watchGates, spireRun, spireChasm, fernVents, fernGap, watchSteps, watchPillars, fernLong, boaVents, boaKnobs, restNook, restHollow].map((s) => [s.id, [4]] as const),
   ...[...ventGates, glideTwin, glideHigh, burstLanding, burstRow, restWarm].map((s) => [s.id, [5]] as const),
   [geyserBrink.id, [1]] as const,
   ...[huntGates[0], huntGates[1], catDen, jaguarLeap, hunterRun, hunterBrink, catLedges, prowlCrust, catChasm].map((s) => [s.id, [6]] as const),
