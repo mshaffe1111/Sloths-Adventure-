@@ -1,0 +1,35 @@
+{
+ "id": "9-10",
+ "orient": "side",
+ "seed": 1,
+ "how": "arena walk",
+ "dist": "/tmp/walkdist",
+ "size": [
+  844,
+  390
+ ],
+ "dpr": 2,
+ "difficulty": null,
+ "frames": [
+  {
+   "i": 0,
+   "why": "start",
+   "x": 820,
+   "y": 560
+  },
+  {
+   "i": 1,
+   "why": "x1480",
+   "x": 1480,
+   "y": 560
+  },
+  {
+   "i": 2,
+   "why": "end",
+   "x": 2041,
+   "y": 560
+  }
+ ],
+ "errors": [],
+ "secs": 77
+}
