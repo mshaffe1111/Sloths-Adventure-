@@ -73,6 +73,8 @@ A helper's report is not proof. Before merging:
    it").** Publish it as soon as a merge passes the type check, the full suite and the build, with the known issues in the round's
    note; don't hold it for the inspector, the 200-roll tool or a second round. Those gates still hold for QA builds and releases.
 
+**Drawing changes (Matt, 2026-10-30):** any change that draws, loads art or adds a creature is checked against reference/PERFORMANCE-RULES.md §2 and §8 before it merges. The shared drawing files (§8.3) are the lead's; a helper proposes, the lead merges. Once the draw check and the art size gate exist (§8.1-2), both must pass.
+
 ## 5. The QA session
 
 - QA gets a build only after §4 passed. With it goes: what changed, what to test, what to skip (known and being fixed), and the

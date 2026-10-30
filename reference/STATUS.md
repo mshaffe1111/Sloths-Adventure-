@@ -2,6 +2,55 @@
 
 Last updated: 2026-10-29 7:55 PM ET. HOTFIX PR #49 (#ctest on the testers' link only) MERGED and LIVE 7:36 PM ET. Matt's bug "2nd basket on 1-4 impossible, a platform blocks the rock": fixed by the lead, 1a6ba43 (liftRoom keeps its air clear; test over 40 layouts both ways), gate13 running, goes in test link v7. PF-1 merged b4337d7. PAUSE LIFTED (Matt ~7:55 PM ET, via PF-1: "let's start getting some jobs turned back on"): resumed 8:00 PM ET polish-levels (LV-2 approved, option A: Normal W3 + W5+, bands gate W3>=32 W4>=40), polish-audio (v4 title/menu/map APPROVED 7:50 PM ET, wiring), W7 r5, W8 (+swing), 8-4, W9 (+swing), W10 (+swing), W5 rebuild, polish-clean (+sweeps), polish-dot W5-8 sweep; PF-1b step 1 started (ground decor + plants baked, pixel-identical). polish-sfx waits on Matt's listen of 27 previews. polish-edges DONE d1b21a2d (5 skies; 11 held), merge for v7. Work test link v6 (early 10 PM build) published 7:30 PM ET: music, Dot, ground, controls b4, W7, HD backdrops + upright, story art, W4 Normal, #ctest (7 stale files still to null: scratchpad/ebkB.json). Gate11 2015/2013/0 fail. RELEASE PR #48 MERGED and LIVE (deploy succeeded 6:31 PM ET), waiting on Matt to merge; testers link EnK5 v231 = the release build (replaced Build 1 per Matt). PAUSED (Matt 5:33 PM ET, budget): story-art, polish-sfx, polish-clean + 4 sweeps, W7, W8, 8-4, W9 x2, W10 x2, W5 rebuild, polish-levels, polish-dot follow-up. RUNNING for 9 PM: polish-audio (wiring), hf-art-ground (ccr merge), polish-edges (X-16 + HD), PF-1, polish-controls b4. Test link moved to 10 PM ET (Matt 5:40 PM), merge cutoff 9:10 PM; World 7 r5 and polish-levels W4 Normal resumed to make it; HF art work exempt from the pause (story-art, sfx gen, 8-4 art, W9/W10 art, W5 repaint). Reevaluate after 10 PM. Merged 4:20 PM ET: polish-a2, controls b3, hf-art-stage (gate5 running). Sent back: polish-edges (interior blur, X-16), W7 r4 (wall seams, see-through faces, plinth ghosts), polish-dot 776c001 (4-4 rocks line + hint sweep, old base). Decided: W8 lit-bough falls deadly on Normal, dark gaps soft. Music v3 sent to Matt to listen. polish-c rebasing. Matt's QA session blocked on his approval.
 
+- **2026-10-30:** W9 helper stopped late (11:40 PM ET), pushed gen2-w9 dbbef254, no seeds yet. Restart: merge gen2-w9-swing a3b4d97, then the 300-roll curation (w9/NEXT.md).
+- **2026-10-30 ~12:00 AM ET, frame rate (QA read of Matt 20261029-2344-8nh2, rows 2696-2708, Edge browser on Matt's Pixel 11 Pro Ultra, a flagship (Tensor, Imagination PowerVR GPU; 'Android 10' and '8 GB' are the browser's capped reports, not the real phone)):** about 27.5 fps on average; worst window 20.2; never under 20. The governor sat at q2 (lowest) almost all the time. 31 stalls of 100-167 ms, nearly all the game's own DRAW (update 0-2 ms, draw 95-113 ms), at the same control-test x in both runs: x ~7900-9800 and ~11.6-13.0k (scenery at that x?). First frame 232 ms after hud-atlas. No APK data exists (the recorder only runs on #ctest). PF-1 restart: find the draw call that this GPU's driver chokes on at those x (canvas filters, shadowBlur, big alpha layers, huge drawImage scales are the usual suspects) and fix. The APK runs in Android WebView on the same GPU, so this is likely the APK sluggishness too. polish-c stopped at 287678 (foldable/safe-area pass 1 + tools/qa/fit.mjs 40/117 -> 0 fails; restart: vite build, polish review of fit/ sheets, report).
+- **2026-10-30 11:44 PM ET:** release PR #50 merged and LIVE: deploy run 40996966989 ok, pages run 40998968889 ok, gh-pages 1e83d14e (bundle index-Dx0MEQsu.js, #ctest code present). The container can't open github.io, so Matt opens it on the phone to confirm.
+- **2026-10-30:** release PR #50 (release-2026-10-30 @ 50fe0e83, the v7 build) opened for Matt to merge. After the merge, check the deploy and #ctest. APK feedback: "a little buggy", weaker frame rate. Matt (2026-10-30): don't focus on the APK now; it's a roadmap item (PLAY-STORE-RULES §4), not Wave 1.
+
+
+## TOMORROW 2026-10-30: the frame-rate plan (Matt: "before we start any jobs... you alone, on the code")
+
+The lead works on this alone first, with no helpers. Rules: reference/PERFORMANCE-RULES.md.
+
+1. **Honest timing (lead, morning, first thing).** On the test link only, the control test logs per-layer draw time with a GPU flush after each layer group (§6.2), plus the canvas size, quality and smoothing. A test-link-only `?perfab=` switch tries one change at a time:
+   - smoothing low or medium instead of high;
+   - ImageBitmap sheets instead of `<img>`;
+   - the full-screen overlay off;
+   - the soil overdraw trimmed.
+
+   It never ships to main.
+2. **Matt, about 10 minutes:** (chrome://gpu DONE 12:25 AM ET, see PERFORMANCE-RULES §0: hardware accelerated, GaneshVulkan, advanced blends emulated, Android 17 beta)
+   - three control tests in Chrome on the Pixel (normal, then two A/B switches);
+   - one in Edge.
+   - DONE 12:30 AM ET, Chrome (9big) vs Edge (8nh2) on the Pixel: the same. Chrome averaged 26.5 fps with one window at 18.4; Edge averaged 27.5. Both were draw-bound at q2.
+   - **The stalls follow the SECTIONS, not x:** Snake ring, Snakes on branches and Hide from the eagle, in both browsers.
+   - So step 1 starts on the snake and eagle drawing (creatures.ts, snakeSprite.ts, creatureRig.ts, the eagle's sheet eagle-anim 2048x2545, the bush hiding).
+   - DONE ~1:45 AM ET (lead, from QA plus Duet's second look 253fc225):
+     - **creatureAnim.ts:** every animated creature's clip sheet is baked as an ImageBitmap at the largest size it's drawn (in eighths); the eagle ~1/4 instead of a 20 MB texture. This covers ALL creatures in W1-10, the W6-10 ones too: no work needed from their builders.
+     - **hurtFlash.ts:** box-sized layers in a ring of 4, not a full-screen layer.
+     - **engine.ts:** late frames run in up to 3 steps, and gpuprof per-layer timing.
+     - Test link v8 after the gate.
+   - **Test link v8 PUBLISHED ~2:35 AM ET** (EBKij version 1793339121-6c99, bundle index-C7bEmyTJ.js; gate16: 2029 tests, 2027 pass, 0 fail, 2 todo). Matt's morning test: EBKij#ctest&gpuprof=1, one run each on the Pixel, the Samsung and the older OnePlus. The testers' link EnK5 stays on the release.
+   - Duet's other items, queued:
+     - trackAtlas bitmaps for every sheet (b);
+     - eagle sparkle `fillText` -> sprite;
+     - gradients rebuilt every frame in watch/chase edges, stone (terrain 82), mushroom (artKit 269/280), soil (groundPaint 140), pitShade (protoArt 765/798), sky (scenery 2702/2725), rivers (engine 4800);
+     - soil 2048 sheet drawn 7-9 times a frame;
+     - the 2880x864 overlay drawn enlarged;
+     - pit water: bake the strip at tile size, cull off-screen tiles;
+     - snakeSprite and goldsnake head/sleep/wake still plain Image elements.
+   - **Profiler caution (Duet):** if per-layer times climb over a run, suspect the readback itself.
+3. **The fixes, in order of the evidence:**
+   - **(a)** gameplay smoothing off 'high';
+   - **(b)** gameplay sheets as ImageBitmaps, kept alive and pre-uploaded;
+   - **(c)** readable canvases copied to plain ones;
+   - **(d)** the three sheets over 4096 px split;
+   - **(e)** advanced blend modes, `shadowBlur` and `filter` taken out of the per-frame path;
+   - **(f)** overdraw cut: the soil-tile overlaps, and the full-screen overlay baked into a layer;
+   - **(g)** a fixed-step update with catch-up, so a slow frame never slows Pokey (this one doesn't depend on the GPU, so it can go in first).
+4. **Prove it on the Pixel:** Chrome, Edge and the APK, before and after, plus a 15-minute run.
+5. **Then guard it (PERFORMANCE-RULES §8):** the draw check and the art size gate in the gate; ownership of the shared drawing files; the checklist in the W7-10 and boss briefs; QA sorting frame data by GPU; and a Pixel baseline per stage in reference/perf-baseline.md. Then: a test that fails if a per-frame draw uses `shadowBlur`, `filter`, gradients, advanced blends or readbacks. Only then does PF-1 pick up the rest of the bake list, with helpers back on (waves per the schedule below, shifted by about 2 hours).
+
 ## THE FINISH LINE (lead manages; Matt 2026-10-29 ~7:55 PM ET: "take control again and really manage this... finishing the game and finishing the polish... keep up with people... make sure things are moving along and we're not going to run into issues")
 
 RELEASE (Matt ~8:05 PM ET): after he plays the 11 PM test link and says "push", that exact build is frozen as the release branch and the PR opened. Tracker refreshed 79186903 (165 items: 77 live, 49 merged-not-live, 7 running, unowned all assigned 8:05 PM ET). Cutscenes (ST-1/2): plates at 2560, dpr cap 2, cels repacked, merged-not-live; story-art doing a full scene pass + contact sheet for Matt.

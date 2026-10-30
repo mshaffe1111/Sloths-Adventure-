@@ -49,12 +49,59 @@ const URLS = new Map<string, string>();
 
 export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>, seqs: Record<string, readonly string[]>, up: number): CreatureAnim {
   let img: HTMLImageElement | null = null;
+  // The sheet, decoded, at the size the screen needs (PERFORMANCE-RULES.md §2.12, §2.13). Drawn straight from the <img>, a
+  // 20 MB clip sheet shrunk 2 to 5 times with smoothing 'high' needed mipmaps over the whole texture, rebuilt each time Chrome dropped
+  // and re-uploaded it: the snake and eagle stretches stalled 100-170 ms at a time on a Pixel 11, at every picture quality (QA and
+  // Duet, 2026-10-30). So it is baked once, shrunk to the largest size it is actually drawn at (in eighths, a little over), and
+  // baked again only if a later draw needs it bigger; a few seconds in it settles on the size seen so far.
+  // (baked by drawing the sheet once into a plain canvas, which works in every browser: with createImageBitmap's own resize the creatures
+  // went missing on Matt's Pixel, 2026-10-30)
+  let baked: HTMLCanvasElement | null = null;
+  let bakedR = 0;
   let loaded = false;
+  let need = 0;
+  let checks = 0;
+  const sizeFor = (n: number) => Math.min(1, Math.max(1 / 8, Math.ceil(n * 1.1 * 8) / 8));
+  const bake = (r: number) => {
+    const im = img;
+    if (!im || typeof document === 'undefined') return;
+    const w = Math.max(1, Math.round((im.naturalWidth || im.width) * r));
+    const h = Math.max(1, Math.round((im.naturalHeight || im.height) * r));
+    const cv = document.createElement('canvas');
+    cv.width = w;
+    cv.height = h;
+    const g = cv.getContext('2d');
+    if (!g) return;
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(im, 0, 0, w, h);
+    if (baked) baked.width = baked.height = 0;
+    baked = cv;
+    bakedR = r;
+  };
+  const drop = () => {
+    if (baked) baked.width = baked.height = 0;
+    baked = null;
+    bakedR = 0;
+    need = 0;
+    checks = 0;
+  };
   const load = () => {
     if (img || typeof Image === 'undefined') return;
     const im = new Image();
     img = im;
-    trackAtlas(im, url, () => { loaded = true; }, () => { img = null; }, () => { img = null; loaded = false; });
+    trackAtlas(
+      im,
+      url,
+      () => {
+        if (img !== im) return;
+        // (a first guess: half size covers most creatures; the draws then set the real size)
+        bake(0.5);
+        loaded = true;
+      },
+      () => { img = null; },
+      () => { img = null; loaded = false; drop(); }
+    );
   };
   const seqOf = (s: string) => seqs[s] ?? [];
   const anim: CreatureAnim = {
@@ -83,7 +130,21 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
       const f = frames[name];
       if (!f) return false;
       const s = k / up;
-      ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
+      // how many device pixels one sheet pixel covers here (looked at for the first 120 draws, then every 30th)
+      if ((checks < 120 || checks % 30 === 0) && typeof ctx.getTransform === 'function') {
+        const m = ctx.getTransform();
+        const n = s * Math.hypot(m.a, m.b);
+        if (n > need) need = n;
+        if (sizeFor(need) > bakedR) bake(sizeFor(need));
+        else if (checks === 120 && sizeFor(need) < bakedR) bake(sizeFor(need));
+      }
+      checks++;
+      if (baked) {
+        // (half a pixel in from the frame's edge when shrunk, so a neighbour frame never bleeds in)
+        const r = bakedR;
+        const e = r < 1 ? 0.5 : 0;
+        ctx.drawImage(baked, f.x * r + e, f.y * r + e, f.w * r - 2 * e, f.h * r - 2 * e, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
+      } else ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
       return true;
     },
   };
