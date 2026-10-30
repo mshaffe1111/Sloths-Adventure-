@@ -213,3 +213,12 @@ hfb-bossatk   6ae3e0cb0e0338d1bb7c5ae2 rtx-pro-6000 00:11:55Z-00:16:58Z (5.05 mi
   tools/art/hazard/bosscut.py). Not used: the ground-spike waves (no attack uses them), s82-7's club with a lava drip, s82-23's spear
   (a crossguard grew halfway along), the s70 columns (flatter paint), the croc tail in s70 takes (a plain green sausage).
 running total for hazard-anim ~8.9 min on rtx-pro-6000 = ~$0.40 of the $5 cap.
+
+HF shopping list (2026-10-30, Matt's last ~$80, $6 reserve, 9-10/10-10 boss art held), branch hf-art-bosses. Running spend below.
+hfui1         6ae4009c0e0338d1bb7c7408 rtx-pro-6000 02:27:40Z-02:35:51Z (8.2 min, ~$0.38): rows 1 and 4, 24 takes (tools/art/hfui:
+  kitstarts.py, make_spec_ui1.py, uicut.py). KEPT kit-buttons-s62-7 (planks and chips), kit-panels-s62-7 (card, text box, tile,
+  slider, lock, stars), kit-icons-s40-7 (24 icons, every shape kept), icon-bg-s60-7 + icon-fg-s35-7 (the app icon, composited).
+  THROWN: kit-buttons-s62-23 (pink nails from the key), kit-panels-s62-23 (jagged parchment), kit-icons-s52 (mute became an arrow,
+  save melted), the icon-full takes (his head cropped at the edge; the composite keeps him in the safe zone).
+  The feature graphic, splash and store screenshots are the game's own title scene and play, no GPU (tools/art/store/storeshots.mjs).
+running spend of the $80: ~$0.38
