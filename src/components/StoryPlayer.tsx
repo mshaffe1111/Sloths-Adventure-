@@ -74,6 +74,8 @@ const FPS = 30;
  *  with a hand's width of dark under it: Matt via the lead, 2026-10-30). The figures stand clear of the tallest box a page makes (four
  *  lines of the reading font, the name and the Back and Next row), at the same place for every line, so nobody jumps when the box changes */
 const UPRIGHT_WORDS = 250;
+/** how much closer the camera comes upright than sideways */
+const UPRIGHT_ZOOM = 1.22;
 const uprightFeet = (v: { w: number; h: number }) => Math.max(0.5, Math.min(0.95, (v.h - UPRIGHT_WORDS) / v.h - 0.02));
 
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
@@ -298,7 +300,14 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     return () => sound.setAmbient('gentle_breeze');
   }, [hold]);
   // (the picture through the direction's camera, unless the scene moves its own)
-  const directed = useMemo(() => (dir.camera ? { ...panel.scene, camera: dir.camera } : panel.scene), [panel, dir]);
+  // (upright the picture is the whole screen: a little closer in, so the cast fills it rather than the canopy above them)
+  const directed = useMemo(() => {
+    const s = dir.camera ? { ...panel.scene, camera: dir.camera } : panel.scene;
+    if (wide) return s;
+    const k = UPRIGHT_ZOOM;
+    const cam = s.camera;
+    return cam ? { ...s, camera: { ...cam, from: { ...cam.from, zoom: cam.from.zoom * k }, to: { ...cam.to, zoom: cam.to.zoom * k } } } : { ...s, zoom: (s.zoom ?? 1) * k };
+  }, [panel, dir, wide]);
   const scene = hold && phase === 'reach' ? hold.reach : directed;
   const showPrompt = !!hold && phase !== 'reach' && (isEasy() || tries.current === 0);
 
@@ -455,7 +464,11 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   return (
     <div ref={rootRef} className="fixed inset-0 z-50 bg-[#070d09] text-white select-none font-game overflow-hidden flex flex-col">
       <canvas ref={canvasRef} onClick={next} className="absolute inset-0 w-full h-full cursor-pointer" />
-      <div className={`absolute inset-x-0 bottom-0 ${wide ? 'h-[44%]' : 'h-[30%]'} pointer-events-none`} style={{ background: 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' }} />
+      {/* (upright the fade is deeper and nearly solid behind the box: the painting's bottom edge, raised clear of the words, melts away) */}
+      <div
+        className={`absolute inset-x-0 bottom-0 ${wide ? 'h-[44%]' : 'h-[42%]'} pointer-events-none`}
+        style={{ background: wide ? 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' : 'linear-gradient(to top, rgba(6,12,8,1) 0%, rgba(6,12,8,.94) 40%, rgba(6,12,8,0) 100%)' }}
+      />
 
       {/* (above the world's title card, which used to dim Skip into the dark: UI-12) */}
       <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
