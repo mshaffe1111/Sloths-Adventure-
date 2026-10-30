@@ -3,7 +3,7 @@
  * and everything its attacks throw into the arena.
  */
 import type { BossEntity } from './types.ts';
-import { drawGritBit } from './w4Grit.ts';
+import { drawGritBit, drawRiseGlow, drawSoftShadow } from './w4Grit.ts';
 import type { BossHazard } from './bossAI.ts';
 import type { BossDef, MoveDef } from './bossAI.ts';
 import { EASY_OPEN_MUL, openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
@@ -26,7 +26,9 @@ import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawW4 } from './w4Art.ts';
 import { drawSkyPush } from './sovereignArt.ts';
 import { FONT_UI } from './fonts.ts';
-import { drawFx, drawFxRun } from './bossFx.ts';
+import { drawFx, drawFxRun, fxFrame } from './bossFx.ts';
+import { glowPic } from './glow.ts';
+import { atkHeight, drawAtk, drawAtkRun } from './bossAtk.ts';
 
 /** the bosses that have a painted version */
 const PAINTED: Record<number, PaintedBoss> = { 1: venomRig, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 5: queenSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
@@ -259,13 +261,8 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
 
   // shadow stays on the ground however high a flyer is
   const sh = Math.max(0.35, 1 - air / 380);
-  ctx.save();
-  ctx.globalAlpha = 0.38 * sh * alpha;
-  ctx.fillStyle = '#0f172a';
-  ctx.beginPath();
-  ctx.ellipse(b.x, floor - 2, (def.w * 0.5 + 10) * sh, 8 * sh, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+  // (the soft shadow sprite, w4Grit.ts: no hard oval edge)
+  drawSoftShadow(ctx, b.x, floor - 2, (def.w + 30) * sh * 1.25, 26 * sh, 0.6 * sh * alpha);
 
   // wind-up aura on the floor and around the body: red means "this one is coming, do not poke it"
   if (br.state === 'tell' && m) {
@@ -497,12 +494,8 @@ function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, 
   if (h.kind === 'column' || h.kind === 'drop') {
     const zh = h.kind === 'column' ? h.h : 340;
     const zw = Math.max(34, h.w);
-    const g = ctx.createLinearGradient(0, fl - zh, 0, fl);
-    g.addColorStop(0, 'rgba(239,68,68,0)');
-    g.addColorStop(1, 'rgba(239,68,68,1)');
-    ctx.globalAlpha = (0.18 + 0.32 * u) * strength * (0.85 + 0.15 * pulse);
-    ctx.fillStyle = g;
-    ctx.fillRect(h.x - zw / 2, fl - zh, zw, zh);
+    // (one soft sprite, faded at its sides and up to nothing at its top: the old gradient box had hard sides, Matt 2026-10-29)
+    drawRiseGlow(ctx, h.x, fl, zw, zh, (0.22 + 0.4 * u) * strength * (0.85 + 0.15 * pulse));
   }
 
   // the painted ring on the ground: it swells a little and brightens as the moment comes
@@ -533,6 +526,9 @@ function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, 
   drawFx(ctx, 'warnDown', h.x, fl - 30 - 6 * Math.abs(Math.sin(time * 6)), 26, { ay: 1 });
 }
 
+/** which painted column each look erupts as (bossAtk.ts); the lightning is the painted bolt, drawn in its own case */
+const COL_PIECE: Partial<Record<string, string>> = { lava: 'colLava', thorn: 'colThorn', rock: 'colRock', crystal: 'colCrystal', web: 'colWeb', tail: 'colTail' };
+
 function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const age = h.maxLife - h.life;
   if (h.look === 'shards') {
@@ -544,11 +540,7 @@ function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) 
       const r = 30 + u * (90 + (k % 3) * 40);
       const x = h.x + Math.cos(a) * r * (h.w / 150);
       const y = h.floorY - h.h * 0.55 + Math.sin(a) * r * 0.8 + u * u * 60;
-      if (!drawW4(ctx, pieces[k % 4], x, y, 22, { rot: u * (k - 5), alpha: 1 - u * 0.6 })) {
-        ctx.fillStyle = k % 2 ? '#a8a29e' : '#57534e';
-        ctx.globalAlpha = 1 - u * 0.6;
-        ctx.fillRect(x - 6, y - 6, 12, 12);
-      }
+      if (!drawW4(ctx, pieces[k % 4], x, y, 22, { rot: u * (k - 5), alpha: 1 - u * 0.6 })) drawGritBit(ctx, k * 0.137, x, y, 16, u * (k - 5), 1 - u * 0.6);
     }
     return;
   }
@@ -558,6 +550,19 @@ function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) 
   const x = h.x;
   const fl = h.floorY;
   ctx.globalAlpha = fade;
+  // the painted columns (bossAtk.ts): erupting up out of the floor to their full height, a touch of life in them while they stand (lava
+  // churning, the bramble and the silk swaying, the croc breathing); the code shapes below only while the sheet loads
+  const col = COL_PIECE[h.look];
+  if (col && H > 1) {
+    const ph = atkHeight(col, 100);
+    const w = Math.max(h.w * 1.6, (H * 100) / Math.max(1, ph)) * (h.look === 'lava' ? 1 + 0.04 * Math.sin(time * 22) : 1);
+    const sway = h.look === 'thorn' || h.look === 'web' ? Math.sin(time * 3 + h.seed) * 0.03 : 0;
+    if (h.look === 'web') drawFx(ctx, 'webSplat', x, fl + 1, 76, { ay: 0.75, alpha: fade });
+    if (drawAtk(ctx, col, x, fl + 6, w, { h: H + 6, ay: 1, rot: sway, flipX: (Math.round(h.seed) % 2) === 1, alpha: fade })) {
+      if (h.look === 'lava' || h.look === 'crystal') drawRiseGlow(ctx, x, fl, w * 1.2, H * 0.9, 0.35 * fade, h.look === 'lava' ? '255,150,40' : '150,220,255');
+      return;
+    }
+  }
   switch (h.look) {
     case 'tail': {
       // a thick scaly tail bursting up, curling at the tip
@@ -679,37 +684,17 @@ function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) 
       break;
     }
     case 'lightning': {
-      // a bolt out of the roof that forks as it comes down, a hot white core in a violet glow, and a flash where it lands
+      // the painted bolt (bossFx.ts) out of the roof to the floor, flickering between two mirror-turns, a violet glow round it and a
+      // flash where it lands (soft glows: no stroked zigzag or flat oval)
       const top = fl - 560;
-      const path = (jit: number) => {
-        ctx.beginPath();
-        ctx.moveTo(x + jit * 0.3, top);
-        const n = 9;
-        for (let i = 1; i <= n; i++) {
-          const yy = top + ((fl - top) * i) / n;
-          const wob = i === n ? 0 : Math.sin(h.seed * 11 + i * 2.3 + Math.floor(time * 18) * 1.7) * (14 + jit);
-          ctx.lineTo(x + wob, yy);
-        }
-      };
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = h.color2;
-      ctx.globalAlpha = fade * 0.45;
-      ctx.lineWidth = 30;
-      path(4);
-      ctx.stroke();
-      ctx.globalAlpha = fade;
-      ctx.strokeStyle = h.color;
-      ctx.lineWidth = 11;
-      path(4);
-      ctx.stroke();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 4.2;
-      path(4);
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(233, 213, 255, 0.6)';
-      ctx.beginPath();
-      ctx.ellipse(x, fl - 4, 56 * rise, 11, 0, 0, Math.PI * 2);
-      ctx.fill();
+      const flick = Math.floor(time * 18 + h.seed) % 2 === 0;
+      drawRiseGlow(ctx, x, fl, 120, fl - top, 0.5 * fade, '196,160,255');
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      drawFx(ctx, 'bolt', x, top, ((fl - top) * 140) / 572, { h: fl - top, ax: 0.5, ay: 0, alpha: fade, flipX: flick });
+      ctx.globalAlpha = fade * 0.7;
+      ctx.drawImage(glowPic('#e9d5ff'), x - 70 * rise, fl - 26, 140 * rise, 40);
+      ctx.restore();
       break;
     }
     case 'crystal': {
@@ -820,15 +805,18 @@ function drawDrop(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   // a stone from a broken pillar (4-10): World 4's painted rock, tumbling
   if (h.look === 'rock' && drawW4(ctx, (Math.round(h.seed) % 2) ? 'rockMoss' : 'rock', h.x, h.y + s * 0.55, s * 1.25, { rot: time * 5 + h.seed })) return;
   ctx.translate(h.x, h.y);
-  // a faint ground shadow so you can see where it is going to land
+  // a ground shadow so you can see where it is going to land (the soft shadow sprite: no hard red oval)
   ctx.save();
   ctx.translate(-h.x, -h.y);
-  ctx.globalAlpha = 0.35;
-  ctx.fillStyle = '#ef4444';
-  ctx.beginPath();
-  ctx.ellipse(h.x, h.floorY - 3, s * 0.6, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
+  drawSoftShadow(ctx, h.x, h.floorY - 3, s * 1.6, 16, 0.55);
   ctx.restore();
+  // the painted ones (bossAtk.ts); the code shapes below only while the sheet loads
+  if (h.look === 'spike' && drawAtk(ctx, (Math.round(h.seed) % 2) ? 'spikeIce' : 'spikeStone', 0, 0, s * 0.95, { h: s * 1.9, ay: 0.4 })) return;
+  if (h.look === 'bat') {
+    const flap = 0.55 + 0.25 * Math.sin(time * 26 + h.seed);
+    if (drawAtk(ctx, 'bat', 0, 0, s * 1.7, { h: atkHeight('bat', s * 1.7) * flap, rot: Math.PI })) return;
+  }
+  if (!['spike', 'bat', 'cocoon'].includes(h.look) && drawAtk(ctx, 'rock', 0, 0, s * 1.15, { rot: time * 3 + h.seed })) return;
   if (h.look === 'spike') {
     ctx.fillStyle = h.color2;
     ctx.beginPath();
@@ -908,6 +896,17 @@ function drawDrop(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
 function drawPuddle(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const fade = clamp01(h.life / 0.8);
   const grow = ease(clamp01((h.maxLife - h.life) / 0.2));
+  // the painted puddle (bossAtk.ts) spreading out, with soft glowing bubbles rising off it; the code below only while the sheet loads
+  const pud = h.look === 'lava' ? 'puddleLava' : h.look === 'venom' ? 'puddleVenom' : 'puddleMud';
+  if (drawAtk(ctx, pud, h.x, h.floorY + 4, h.w * 1.15 * grow * (1 + 0.03 * Math.sin(time * 6 + h.seed)), { ay: 1, alpha: 0.95 * fade, flipX: (Math.round(h.seed) % 2) === 1 })) {
+    const pic = glowPic(h.look === 'lava' ? '#fde68a' : h.look === 'venom' ? '#ecfccb' : '#e7d3b0', 'fly');
+    for (let i = 0; i < 3; i++) {
+      const ph = (time * 1.4 + i * 0.37 + h.seed) % 1;
+      ctx.globalAlpha = 0.7 * fade * (1 - ph);
+      ctx.drawImage(pic, h.x + (i - 1) * h.w * 0.22 - 6, h.floorY - 12 - ph * 12, 12, 12);
+    }
+    return;
+  }
   ctx.globalAlpha = 0.85 * fade;
   const fl = h.floorY;
   const w = h.w * 0.5 * grow;
@@ -935,6 +934,9 @@ function drawGlob(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const sq = 1 + Math.min(0.25, Math.abs(h.vy) / 2400);
   ctx.translate(h.x, h.y);
   ctx.rotate(Math.atan2(h.vy, h.vx) * 0.3);
+  // the painted glob (bossAtk.ts), stretched along its flight; the code below only while the sheet loads
+  const gl = h.look === 'lava' ? 'globLava' : h.look === 'venom' ? 'globVenom' : 'globMud';
+  if (drawAtk(ctx, gl, 0, 0, r * 2.6 * sq, { h: atkHeight(gl, r * 2.6) / sq, rot: Math.sin(time * 9 + h.seed) * 0.15 })) return;
   ctx.fillStyle = h.color2;
   ctx.beginPath();
   ctx.ellipse(0, 0, r * 1.15 * sq, r * 0.95 / sq, 0, 0, Math.PI * 2);
@@ -987,35 +989,14 @@ function drawWebShot(ctx: CanvasRenderingContext2D, h: BossHazard, time: number)
 }
 
 function drawShock(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
-  const fl = h.floorY;
-  const hh = h.h;
   const fade = clamp01(h.life / 0.5);
-  ctx.globalAlpha = fade;
-  ctx.translate(h.x, fl);
-  ctx.scale(h.dir, 1);
-  // a rolling lump of the ground, leaning into its direction of travel
-  ctx.fillStyle = h.color2;
-  ctx.beginPath();
-  ctx.moveTo(-h.w * 0.6, 0);
-  ctx.quadraticCurveTo(-h.w * 0.1, -hh * 0.5, h.w * 0.35, -hh * 1.0);
-  ctx.quadraticCurveTo(h.w * 0.55, -hh * 0.4, h.w * 0.6, 0);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillStyle = h.color;
-  ctx.beginPath();
-  ctx.moveTo(-h.w * 0.4, 0);
-  ctx.quadraticCurveTo(-h.w * 0.05, -hh * 0.4, h.w * 0.3, -hh * 0.85);
-  ctx.quadraticCurveTo(h.w * 0.42, -hh * 0.35, h.w * 0.45, 0);
-  ctx.closePath();
-  ctx.fill();
-  // dust behind it
-  ctx.fillStyle = 'rgba(255,255,255,.35)';
-  for (let i = 0; i < 3; i++) {
-    const ph = (time * 3 + i * 0.33) % 1;
-    ctx.globalAlpha = fade * (1 - ph) * 0.6;
-    ctx.beginPath();
-    ctx.arc(-h.w * 0.5 - ph * 30, -4 - ph * 12, 3 + ph * 4, 0, Math.PI * 2);
-    ctx.fill();
+  // a rolling lump of the ground: the painted breaking mud wave (bossFx.ts) recoloured to the attack's earth, leaning the way it runs,
+  // with puffs of painted dust thrown up behind it (no code curves or dots)
+  const wob = 1 + 0.05 * Math.sin(time * 16);
+  drawFx(ctx, 'mudWave', h.x, h.floorY + 2, h.w * 1.5 * wob, { h: h.h * 1.15, ay: 1, flipX: h.dir < 0, alpha: fade, recolor: h.color2 });
+  for (let i = 0; i < 2; i++) {
+    const ph = (time * 3 + i * 0.5) % 1;
+    drawFx(ctx, fxFrame('dust', ph), h.x - h.dir * (h.w * 0.6 + ph * 30), h.floorY + 2, 30 + ph * 16, { ay: 0.9, alpha: fade * (1 - ph) * 0.8, flipX: h.dir < 0 });
   }
 }
 
@@ -1027,23 +1008,12 @@ function drawWave(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     const wob = 1 + 0.04 * Math.sin(time * 18);
     if (drawFx(ctx, h.look === 'mud' ? 'mudWave' : 'silkRipple', h.x, h.floorY + 2, w * wob, { ay: 1, flipX: h.dir < 0, alpha: fade })) return;
   }
-  ctx.translate(h.x, h.y);
-  ctx.scale(h.dir, 1);
-  ctx.lineCap = 'round';
-  for (let i = 0; i < 3; i++) {
+  // the rest (rock, lava, thorn and the like): the painted shock streak (bossFx.ts screech) stood upright as the wave's front, in the
+  // attack's own colour, rolling the way it runs with two fainter ones trailing (no stroked arcs or flat oval)
+  for (let i = 2; i >= 0; i--) {
     const k = 1 - i * 0.22;
-    ctx.globalAlpha = fade * (0.95 - i * 0.28);
-    ctx.strokeStyle = i === 0 ? '#ffffff' : h.color;
-    ctx.lineWidth = 4 - i;
-    ctx.beginPath();
-    ctx.arc(-i * 11 - 4, 0, h.h * 0.5 * k + Math.sin(time * 18 + i) * 1.2, -Math.PI * 0.42, Math.PI * 0.42);
-    ctx.stroke();
+    drawFx(ctx, 'screech', h.x - h.dir * i * 14, h.y, h.h * k + Math.sin(time * 18 + i) * 2, { h: 16 + 8 * k, rot: Math.PI / 2, flipX: h.dir < 0, alpha: fade * (0.95 - i * 0.3), recolor: i === 0 ? '#ffffff' : h.color });
   }
-  ctx.globalAlpha = fade * 0.25;
-  ctx.fillStyle = h.color;
-  ctx.beginPath();
-  ctx.ellipse(0, 0, h.w * 0.5, h.h * 0.5, 0, 0, Math.PI * 2);
-  ctx.fill();
 }
 
 function drawBeam(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
@@ -1056,6 +1026,12 @@ function drawBeam(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   ctx.translate(x0, h.y);
   ctx.scale(h.dir, 1);
   const th = h.h;
+  // the painted ones (bossAtk.ts): reaching out to their full length, flickering; the code below only while the sheet loads
+  const flick = 1 + 0.08 * Math.sin(time * 30 + h.seed);
+  if (h.look === 'fire' && drawAtk(ctx, 'jetFire', 0, 0, Math.max(20, len), { h: th * 1.7 * flick, ax: 0 })) return;
+  if (h.look === 'vine' && drawAtk(ctx, 'whipVine', 0, Math.sin(time * 30) * 2, Math.max(20, len), { h: 30, ax: 0 })) return;
+  if (h.look === 'jab' && drawAtk(ctx, 'jabSpear', 0, 0, Math.max(20, len), { h: 18, ax: 1, flipX: true, alpha: 0.85 })) return;
+  if (!['fire', 'vine', 'venom', 'jab', 'tongue'].includes(h.look) && drawAtk(ctx, 'beamMagic', 0, 0, Math.max(20, len), { h: th * 1.5 * flick, ax: 0 })) return;
   if (h.look === 'fire') {
     const g = ctx.createLinearGradient(0, 0, len, 0);
     g.addColorStop(0, '#fff7ed');
@@ -1157,6 +1133,21 @@ function drawBolt(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   ctx.translate(h.x, h.y);
   const ang = Math.atan2(h.vy, h.vx);
   ctx.rotate(ang);
+  // the painted ones (bossAtk.ts); the code shapes below only while the sheet loads
+  if (h.look === 'club') {
+    ctx.save();
+    ctx.rotate(-ang + time * 16 * (h.vx >= 0 ? 1 : -1));
+    const ok = drawAtk(ctx, h.id % 2 ? 'club2' : 'club', 0, 0, 58);
+    ctx.restore();
+    if (ok) return;
+  }
+  if (h.look === 'spear' && drawAtk(ctx, 'jabSpear', 0, 0, h.w * 1.7, { h: 16, flipX: true })) return;
+  if (h.look === 'thorn' && drawAtk(ctx, h.id % 2 ? 'dart2' : 'dart', 0, 0, 40, { flipX: true })) return;
+  if (h.look === 'bat') {
+    // (wings beating: the painted bat squashed and stretched on the beat; it flies sideways, never upside down)
+    const flap = 0.62 + 0.38 * Math.abs(Math.sin(time * 22 + h.id * 1.7));
+    if (drawAtk(ctx, 'bat', 0, 0, 62, { h: atkHeight('bat', 62) * flap, rot: Math.abs(ang) > Math.PI / 2 ? Math.PI : 0, flipX: Math.abs(ang) > Math.PI / 2 })) return;
+  }
   if (h.look === 'club') {
     // the general's spiked club, tumbling end over end
     ctx.rotate(-ang + time * 16 * (h.vx >= 0 ? 1 : -1));
@@ -1317,23 +1308,18 @@ function drawFlood(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const full = h.growTo ?? h.w;
   if (h.warn > 0) {
     // the warning: rings spread and the mud darkens along where the water is going to reach
+    // (soft: the mud darkening in overlapping soft shadows, thinning toward where the water will reach, and little painted splashes
+    // welling up along it: no hard band or stroked rings)
     const u = 1 - h.warn / Math.max(0.01, h.warnMax);
     const pulse = 0.55 + 0.45 * Math.sin(time * (8 + u * 16));
-    const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
-    g.addColorStop(0, h.color);
-    g.addColorStop(1, 'rgba(63,143,134,0)');
-    ctx.globalAlpha = (0.3 + 0.4 * u) * pulse;
-    ctx.fillStyle = g;
-    ctx.fillRect(Math.min(edge, edge + dir * full), fl - 10, full, 10);
-    ctx.globalAlpha = 0.6 * u;
-    ctx.strokeStyle = '#99f6e4';
-    ctx.lineWidth = 2;
+    for (let k = 0; k <= Math.ceil(full / 50); k++) {
+      const f = (k * 50) / full;
+      drawSoftShadow(ctx, edge + dir * k * 50, fl - 4, 110, 22, (0.3 + 0.4 * u) * pulse * (1 - f * 0.8));
+    }
     for (let i = 0; i < 4; i++) {
       const px = edge + dir * (full * ((i + 0.5) / 4));
-      const r = ((time * 1.4 + i * 0.3) % 1) * 22;
-      ctx.beginPath();
-      ctx.ellipse(px, fl - 3, r, r * 0.22, 0, 0, Math.PI * 2);
-      ctx.stroke();
+      const ph = (time * 1.4 + i * 0.3) % 1;
+      drawFx(ctx, 'splash', px, fl + 2, 14 + ph * 26, { ay: 1, alpha: 0.7 * u * (1 - ph) });
     }
     ctx.globalAlpha = 1;
     return;
@@ -1372,12 +1358,7 @@ function drawStorm(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     // the warning: a violet haze thickens along where the storm is going to reach, with now and then a flicker
     const u = 1 - h.warn / Math.max(0.01, h.warnMax);
     const pulse = 0.55 + 0.45 * Math.sin(time * (8 + u * 16));
-    const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
-    g.addColorStop(0, h.color);
-    g.addColorStop(1, 'rgba(70,50,130,0)');
-    ctx.globalAlpha = (0.3 + 0.4 * u) * pulse;
-    ctx.fillStyle = g;
-    ctx.fillRect(Math.min(edge, edge + dir * full), fl - 12, full, 12);
+    for (let k = 0; k <= Math.ceil(full / 60); k++) drawRiseGlow(ctx, edge + dir * k * 60, fl + 4, 110, 46, (0.3 + 0.4 * u) * pulse * (1 - (k * 60) / full * 0.8), '120,90,200');
     ctx.globalAlpha = 1;
     for (let i = 0; i < 3; i++) cloud(edge + dir * (full * (0.2 + i * 0.3)), fl - 14, 16 + 8 * u, 0.4 * u, i);
     return;
@@ -1408,16 +1389,15 @@ function drawBlaze(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   if (h.warn > 0) {
     const u = 1 - h.warn / Math.max(0.01, h.warnMax);
     const pulse = 0.55 + 0.45 * Math.sin(time * (8 + u * 16));
-    const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
-    g.addColorStop(0, h.color);
-    g.addColorStop(1, 'rgba(127,29,29,0)');
-    ctx.globalAlpha = (0.3 + 0.4 * u) * pulse;
-    ctx.fillStyle = g;
-    ctx.fillRect(Math.min(edge, edge + dir * full), fl - 14, full, 14);
+    // (a heat haze rising off the floor where it will burn: the soft rising glow, no hard band)
+    for (let k = 0; k <= Math.ceil(full / 60); k++) drawRiseGlow(ctx, edge + dir * k * 60, fl + 4, 110, 56, (0.3 + 0.4 * u) * pulse * (1 - (k * 60) / full * 0.8), '239,68,68');
     ctx.globalAlpha = 1;
     return;
   }
   const x0 = Math.min(edge, edge + dir * h.w);
+  // the painted flames along the floor (bossAtk.ts groundFire), flickering, over a soft glow; the code below only while it loads
+  for (let k = 0; k <= Math.ceil(h.w / 70); k++) drawRiseGlow(ctx, x0 + k * 70, fl + 4, 120, 80, 0.45, '251,146,60');
+  if (drawAtkRun(ctx, 'groundFire', x0, x0 + h.w, fl + 4, 54 * (1 + 0.06 * Math.sin(time * 14 + h.seed)), { offset: time * 26 })) return;
   // the glow on the floor under it
   const gl = ctx.createLinearGradient(0, fl - 70, 0, fl);
   gl.addColorStop(0, 'rgba(251,146,60,0)');
@@ -1474,15 +1454,29 @@ function drawStrip(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     // the warning: the floor glows red along where the lava is going to reach
     const u = 1 - h.warn / Math.max(0.01, h.warnMax);
     const pulse = 0.55 + 0.45 * Math.sin(time * (10 + u * 18));
-    ctx.globalAlpha = (0.25 + 0.4 * u) * pulse;
-    const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
-    g.addColorStop(0, h.color);
-    g.addColorStop(1, h.look === 'venom' ? 'rgba(163,230,53,0)' : 'rgba(239,68,68,0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(Math.min(edge, edge + dir * full), fl - 12, full, 12);
+    // (the floor glowing where it will reach: the soft rising glow, no hard band)
+    for (let k = 0; k <= Math.ceil(full / 60); k++) drawRiseGlow(ctx, edge + dir * k * 60, fl + 4, 110, 46, (0.25 + 0.4 * u) * pulse * (1 - (k * 60) / full * 0.8), h.look === 'venom' ? '163,230,53' : '239,68,68');
     return;
   }
   const x0 = Math.min(edge, edge + dir * h.w);
+  // the painted lava (bossAtk.ts lavaStrip; venom is the painted flood water turned green), sliding as it churns, a soft heat glow over it
+  // and soft glowing bubbles; the code below only while the sheet loads
+  const venom = h.look === 'venom';
+  const painted = venom
+    ? drawFxRun(ctx, 'flood', x0, x0 + h.w, fl + 2, 24, { ay: 1, offset: time * 18, recolor: '#8fd63a' })
+    : drawAtkRun(ctx, 'lavaStrip', x0, x0 + h.w, fl + 2, 22, { offset: time * 18 });
+  if (painted) {
+    for (let k = 0; k <= Math.ceil(h.w / 60); k++) drawRiseGlow(ctx, x0 + k * 60, fl - 10, 110, 60, 0.3 + 0.1 * Math.sin(time * 5), venom ? '163,230,53' : '251,146,60');
+    const pic = glowPic(venom ? '#ecfccb' : '#fef3c7', 'fly');
+    const nb = Math.max(2, Math.floor(h.w / 38));
+    for (let i = 0; i < nb; i++) {
+      const ph = (time * 1.3 + i * 0.41 + h.seed) % 1;
+      ctx.globalAlpha = 0.8 * (1 - ph);
+      ctx.drawImage(pic, x0 + ((i + 0.5) * h.w) / nb - 7, fl - 15 - ph * 22, 14, 14);
+    }
+    ctx.globalAlpha = 1;
+    return;
+  }
   ctx.globalAlpha = 1;
   ctx.fillStyle = h.color2;
   ctx.fillRect(x0, fl - 16, h.w, 16);

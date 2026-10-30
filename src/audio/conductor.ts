@@ -11,12 +11,12 @@ import { COMBO_WINDOW, nextVariant } from './combat.ts';
 import { AudioCore } from './core.ts';
 import { Playback, type KeyInfo } from './music.ts';
 import { SFX, runFx } from './sfx.ts';
+import { playRec, recFor, recForPuzzle, type Surface } from './sfxRec.ts';
 import { speechBlip } from './speech.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { themeById } from './themes.ts';
 import { CALM, type MusicState } from './adaptive.ts';
 import { CUE_DUCK, playCue, type CueName } from './cues.ts';
-import { GAME_SFX, playGameFx } from './sfxGame.ts';
 
 // how far ahead of the audio clock the music is scheduled: long enough to ride out a stalled main thread
 // (a level loading, a garbage collection) without the music dropping out and then firing in one burst
@@ -157,6 +157,8 @@ export class Conductor {
       ctx.onstatechange = this.announce;
       // the recorded sounds load in the background; until they are ready the effects use their synthesized layers
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
+      // the recorded effect set: decoded at once, the frequent moves first, so the first jump already has its sound
+      void import('./sfxRecLoader.ts').then((m) => m.loadRec(this.core as AudioCore)).catch(() => {});
       this.amb = new Ambience(this.core);
       // every phone plays the lighter arrangement (fewer voices at once): the full one was too much for a busy phone's sound
       this.lite = PHONE;
@@ -315,10 +317,26 @@ export class Conductor {
 
   // ------------------------------------------------------------------------------------------- effects
 
+  /** what he is walking on (the footsteps): set by the game per world, and to water while he wades */
+  surface: Surface = 'moss';
+
+  /** a puzzle kit's action, by its sound's kind (sfxGame.ts PUZZLE_SOUNDS): the recorded set's sound for it */
+  puzzleFx(kind: string) {
+    const core = this.core;
+    if (!core || this.muted || !core.ctx || core.ctx.state !== 'running') return;
+    playRec(core, recForPuzzle(kind));
+  }
+
   fx(name: string, arg?: number) {
     const core = this.core;
     if (!core || this.muted || !core.ctx || core.ctx.state !== 'running') return;
-    if (!SFX[name] && !GAME_SFX[name]) return;
+    // the recorded set (sfxRec.ts) plays everything it covers, with its own takes, gaps and caps
+    const rec = recFor(name, arg, this.surface);
+    if (rec) {
+      playRec(core, rec);
+      return;
+    }
+    if (!SFX[name]) return;
     const now = core.ctx.currentTime;
     const gap = MIN_GAP[name] ?? 0.02;
     if (now - (this.lastFx.get(name) ?? -1) < gap) return;
@@ -337,7 +355,7 @@ export class Conductor {
     } else if (name === 'defeat' && now - this.lastHitAt >= COMBO_WINDOW) {
       this.streak = 0;
     }
-    if (!playGameFx(name, core, this.key(), arg)) runFx(name, core, this.key(), arg, { variant, streak: this.streak });
+    runFx(name, core, this.key(), arg, { variant, streak: this.streak });
   }
 
   /** a piece of written music over the top; the music underneath ducks */

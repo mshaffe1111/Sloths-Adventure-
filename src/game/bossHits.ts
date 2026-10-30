@@ -17,10 +17,10 @@ export function hitsLeft(hp: number, maxHp: number, hits?: number): number {
   return Math.max(0, Math.ceil(hp / per - 1e-6));
 }
 
-/** the words popped over the spot a blow landed on: what came off the bar, and the points */
-export function hitLabel(before: number, after: number, crit: boolean, pts: number): string {
+/** the words popped over the spot a blow landed on: what came off the bar */
+export function hitLabel(before: number, after: number, _crit: boolean, _pts: number): string {
+  // (calm and small, AN-3: what came off the bar, and nothing shouted; a critical shows in its colour, the score in the corner)
   const n = before - after;
-  if (crit) return n >= 2 ? `CRITICAL ×${n}! +${pts}` : `CRITICAL! +${pts}`;
-  if (n <= 0) return `½ HIT +${pts}`;
-  return n === 1 ? `BOSS HIT! +${pts}` : `×${n} HITS! +${pts}`;
+  if (n <= 0) return '½ hit';
+  return n === 1 ? '1 hit' : `${n} hits`;
 }

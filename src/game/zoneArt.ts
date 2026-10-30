@@ -15,6 +15,8 @@ import { drawW5Box, w5ArtReady } from './w5Art.ts';
 import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
 import { drawFx } from './bossFx.ts';
 import { drawLeafBit } from './leafSprites.ts';
+import { glowPic } from './glow.ts';
+import { drawSoftShadow } from './w4Grit.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -190,16 +192,21 @@ function drawCloud(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof
     ctx.drawImage(sporePuffPic(), x - r, y - r, r * 2, r * 2);
   }
   ctx.globalAlpha = 1;
-  // glittering spores
+  // glittering spores: each a tiny soft glow, twinkling (the pre-rendered glow, no square)
   if (st.phase === 'active') {
-    ctx.fillStyle = `rgba(253, 246, 178, ${0.85 * st.strength})`;
+    const pic = glowPic('#fdf6b2', 'fly');
     const m = Math.round(w / 14);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < m; i++) {
       const s = hash(i * 1.7 + z.x1 * 0.011);
       const x = z.x0 + s * w + Math.sin(t * 1.3 + i) * 10;
       const y = z.baseY - 12 - (((t * (14 + s * 22) + s * 400) % h) );
-      ctx.fillRect(x, y, 2.4, 2.4);
+      const r = 4 + 2 * Math.sin(t * 5 + i * 2.1);
+      ctx.globalAlpha = 0.9 * st.strength;
+      ctx.drawImage(pic, x - r, y - r, r * 2, r * 2);
     }
+    ctx.restore();
   }
   ctx.restore();
 }
@@ -567,14 +574,17 @@ function drawWeb(ctx: CanvasRenderingContext2D, z: Zone, t: number) {
 
 /** beads of dew on the silk, up to `rise` over the ground */
 function drawDew(ctx: CanvasRenderingContext2D, z: Zone, n: number, rise: number) {
+  // (each bead a tiny soft glint, the pre-rendered glow: no hard dot)
   const w = z.x1 - z.x0;
-  ctx.fillStyle = 'rgba(200, 240, 255, 0.9)';
+  const pic = glowPic('#c8f0ff', 'fly');
+  ctx.save();
+  ctx.globalAlpha = 0.9;
   for (let i = 0; i < Math.round(n * 0.8); i++) {
     const sd = hash(i * 6.1 + z.x0 * 0.02);
-    ctx.beginPath();
-    ctx.arc(z.x0 + sd * w, z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * rise, 1.8, 0, Math.PI * 2);
-    ctx.fill();
+    const x = z.x0 + sd * w, y = z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * rise;
+    ctx.drawImage(pic, x - 4.5, y - 4.5, 9, 9);
   }
+  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------
@@ -601,16 +611,18 @@ function drawTide(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
   ctx.rect(z.x0, z.top, w, bottom - z.top);
   ctx.clip();
   // wet mud shine at low tide
+  // (soft: a damp darkening laid on in overlapping soft shadows, and long soft sheens of sky on the wet, no box and no flat ovals)
   if (level < 0.1) {
-    ctx.fillStyle = 'rgba(80, 54, 34, 0.35)';
-    ctx.fillRect(z.x0, z.baseY - 2, w, 14);
-    ctx.fillStyle = 'rgba(190, 230, 240, 0.5)';
+    for (let x = z.x0 + 30; x < z.x1; x += 60) drawSoftShadow(ctx, x, z.baseY + 5, 120, 22, 0.3);
+    const sheen = glowPic('#bee6f0');
+    ctx.save();
+    ctx.globalAlpha = 0.5;
     for (let i = 0; i < Math.round(w / 70); i++) {
       const sd = hash(i * 4.4 + z.x0 * 0.02);
-      ctx.beginPath();
-      ctx.ellipse(z.x0 + 20 + sd * (w - 40), z.baseY + 2, 14 + sd * 12, 2.4, 0, 0, Math.PI * 2);
-      ctx.fill();
+      const rx = 16 + sd * 14;
+      ctx.drawImage(sheen, z.x0 + 20 + sd * (w - 40) - rx, z.baseY - 1, rx * 2, 6);
     }
+    ctx.restore();
   }
   // the tide is fast water (Matt, 2026-10-29: from World 6 the deadly water is dirty or fast): Matt's painted sheet, rushing toward the
   // bank it sweeps you to; the drawn water below only until the sheet has loaded
@@ -653,23 +665,9 @@ function drawTide(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
   if (st.phase === 'warn' || (st.phase === 'active' && st.u < 0.25)) {
     const a = st.phase === 'warn' ? 0.3 + 0.6 * Math.abs(Math.sin(st.u * Math.PI * 5)) : 0.8;
     const cx = (z.x0 + z.x1) / 2;
-    ctx.save();
-    ctx.strokeStyle = `rgba(255, 255, 255, ${a})`;
-    ctx.shadowColor = 'rgba(15, 23, 42, 0.8)';
-    ctx.shadowBlur = 4;
-    ctx.lineWidth = 5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    for (let k = -1; k <= 1; k++) {
-      const x = cx + k * 34;
-      const y = z.baseY - 130 - (st.phase === 'warn' ? st.u * 14 : 0);
-      ctx.beginPath();
-      ctx.moveTo(x - 13, y + 9);
-      ctx.lineTo(x, y - 9);
-      ctx.lineTo(x + 13, y + 9);
-      ctx.stroke();
-    }
-    ctx.restore();
+    // (the painted arrow, recoloured a pale sea-white and turned to point up: no stroked chevrons)
+    const y = z.baseY - 130 - (st.phase === 'warn' ? st.u * 14 : 0);
+    drawFx(ctx, 'warnArrow', cx, y, 64, { rot: -Math.PI / 2, alpha: a, recolor: '#e6fbff' });
   }
 }
 

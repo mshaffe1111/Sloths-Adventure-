@@ -358,6 +358,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   const boulderX = (id: number) => rolledTo.get(id) ?? byId.get(id)?.x ?? NaN;
   let pouring: Waterfall[] = [];
   let plats: Platform[] = [];
+  let blocks: Platform[] = [];
   const keys = new WeakMap<Platform, string>();
   const layout = () => {
     pouring = falls.filter((w) => fallPours(w, (id) => (byId.has(id) ? boulderX(id) : undefined)));
@@ -383,6 +384,23 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
         plats.push(piece);
       });
     }
+  };
+  /**
+   * does a solid block stand between the take-off `a` and the landing `b`, its top higher than any jump from `a` rises? The engine's wall
+   * check (engine.ts "Solid ground blocks": a solid 50 px tall or more) stops him at its face, so the way is up it (a climb) or onto it,
+   * never through it. (Until 2026-10-29 the check's jumps and glides passed through such a trunk: World 8's climbs read as optional.)
+   */
+  const blockBetween = (a: Platform, b: Platform, ax0: number, ax1: number, bx0: number, bx1: number): boolean => {
+    const [lx1, rx0] = ax1 <= bx0 ? [ax1, bx0] : bx1 <= ax0 ? [bx1, ax0] : [NaN, NaN];
+    if (!(rx0 > lx1)) return false;
+    // (over it, the feet clear its top only if the highest jump from the take-off rises past it; onto it, the hoist included, is a link of
+    // its own)
+    const top = a.y - maxRise();
+    for (const c of blocks) {
+      if (c.x + c.width <= lx1 + 2 || c.x >= rx0 - 2 || c.id === a.id || c.id === b.id) continue;
+      if (c.y < top && c.y + c.height > Math.min(a.y, b.y) - BODY_H) return true;
+    }
+    return false;
   };
   /** does pouring water stand between two pieces of ground (or a trunk: x0 === x1), across the heights a jump between them passes? */
   const waterBetween = (ax0: number, ax1: number, ay: number, bx0: number, bx1: number, by: number): boolean => {
@@ -436,6 +454,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     swingEdges = 0;
     climbEdges = 0;
     const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
+    // (a boulder is the push's own wall, cut out of the ground it stands on above: World 4)
+    blocks = plats.filter((p) => p.type === 'solid' && p.height >= 50 && !p.broken && !p.push);
 
     // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
     // To the right the window is 460 px. To the left a platform can only be reached if the gap is within the furthest any jump
@@ -487,6 +507,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
         }
         if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
           if (pouring.length && waterBetween(ax0, ax1, a.y, bx0, bx1, b.y)) continue;
+          if (a.type !== 'bouncy' && blockBetween(a, b, ax0, ax1, bx0, bx1)) continue;
           link(pid(a), pid(b));
           if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
         }

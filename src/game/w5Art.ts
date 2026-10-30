@@ -10,6 +10,7 @@
  * keep a stand-in for that moment. The sheet is a World 5 sheet: it is let go when play moves to another world (atlasLoader.ts), and
  * stagePreload.ts decodes it before a hand-built World 5 stage starts ('w5-props' in stageSheets.ts).
  */
+import { drawFx, fxFrame } from './bossFx.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
 
@@ -98,31 +99,23 @@ export function drawW5Orchid(ctx: CanvasRenderingContext2D, x: number, bottom: n
 }
 
 /**
- * The sleepy steam from a warm teapot (DON'T DRINK): soft pale puffs rising and spreading from the spout at (x, y), `k` 0 to 1 how
- * strong the puff is now (the hazard's own rhythm), `t` the game time in seconds. Plain circles, no picture: it draws at once.
+ * The sleepy steam from a warm teapot (DON'T DRINK): puffs of the painted dust strip (bossFx.ts) rising and unfurling from the spout at
+ * (x, y), re-coloured to steam: `k` 0 to 1 how strong the puff is now (the hazard's own rhythm), `t` the game time in seconds. `strong`
+ * 0..1: the hazard's puff, thicker and a sleepy lilac so it reads against the pale gold garden at a glance (the old flat discs with a
+ * stroked lilac rim are gone, Matt 2026-10-29). Nothing draws until the effects sheet has loaded (it is asked for on every stage).
  */
 export function steamPuff(ctx: CanvasRenderingContext2D, x: number, y: number, k: number, t: number, scale = 1, strong = 0): void {
   if (k <= 0.01) return;
-  ctx.save();
-  // (`strong` 0..1: the hazard's puff, thicker and edged in a sleepy lilac so it reads against the pale gold garden at a glance)
-  const body = 0.42 + 0.36 * strong;
+  const body = 0.5 + 0.4 * strong;
   for (let i = 0; i < 6; i++) {
     const age = (t * 0.55 + i / 6) % 1;
     const r = (6 + age * 22) * scale;
     const px = x + Math.sin(age * 5 + i * 1.7) * 9 * scale + age * 10 * scale;
     const py = y - age * 70 * scale;
-    ctx.globalAlpha = k * body * (1 - age) * Math.min(1, age * 6);
-    ctx.fillStyle = strong > 0 ? (i % 2 ? '#ead8ff' : '#f8dcf4') : i % 2 ? '#f6ecff' : '#ffe8f2';
-    ctx.beginPath();
-    ctx.arc(px, py, r, 0, Math.PI * 2);
-    ctx.fill();
-    if (strong > 0) {
-      ctx.strokeStyle = `rgba(130, 92, 190, ${0.55 * strong})`;
-      ctx.lineWidth = 1.6;
-      ctx.stroke();
-    }
+    const a = k * body * (1 - age) * Math.min(1, age * 6);
+    const tint = strong > 0.5 ? (i % 2 ? '#c4a3f2' : '#dcb6ee') : i % 2 ? '#f3e8ff' : '#fde6f3';
+    drawFx(ctx, fxFrame('dust', 0.1 + 0.8 * age), px, py, r * 2.8, { ay: 0.55, alpha: a, flipX: i % 2 === 1, recolor: tint });
   }
-  ctx.restore();
 }
 
 /** where each trunk's blank bark is, as shares of its picture (x0, y0, x1, y1): Meeca's words go in this box */
