@@ -1,4 +1,5 @@
 import { starsPossible } from './mapStars.ts';
+import { newLookSoon } from '../game/newLookSoon.ts';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { testUnlockOn } from '../game/testUnlock.ts';
 import type { LevelConfig } from '../game/types.ts';
@@ -207,7 +208,12 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           Menu
         </button>
         <div className="text-center min-w-0 order-3 basis-full sm:order-none sm:basis-auto">
-          <div className="ui-kicker">World {curWorld.id} of 10</div>
+          <div className="ui-kicker">
+            World {curWorld.id} of 10
+            {/* (a world still waiting on its rebuild: it plays as it is, and says its new look is on the way, newLookSoon.ts; on the kicker's
+                line, where there is room both ways, so the header keeps its shape) */}
+            {newLookSoon(curWorld.id) && <span className="map-soon">New look coming soon</span>}
+          </div>
           <Plaque as="h1" className="map-title">
             {curWorld.name}
           </Plaque>
