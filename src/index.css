@@ -600,6 +600,11 @@
 .tr-find .tr-cpic { height: 104px; }
 .tr-find .tr-item { object-fit: contain; background: #efd5a0; }
 @media (max-height: 480px) { .fr-item { width: 100px !important; height: 85px !important; } }
+/* the Notch: a tall painted twig cut out on its own, so it stands as it is (never cropped into the keepsake frame) */
+.fr-notch { display: block; flex: 0 0 auto; height: 128px; width: auto; object-fit: contain; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .35)); }
+@media (max-height: 480px) { .fr-notch { height: 100px; } }
+/* the snail on his card: a little bigger than in the satchel's grid */
+.fr-snail { width: 112px; height: 57px; flex: 0 0 auto; align-self: center; }
 @media (max-height: 480px) { .fr-saved.done { display: block; } }
 
 /* ---------- How to play ---------- */

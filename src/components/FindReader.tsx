@@ -91,9 +91,9 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
             {find.kind === 'pocket' ? (
               <DotPerched size={96} className="fr-dot" />
             ) : find.kind === 'snail' ? (
-              <span className="sc-snail" style={{ backgroundImage: `url(${snailUrl() ?? ''})` }} />
+              <span className="sc-snail fr-snail" style={{ backgroundImage: `url(${snailUrl() ?? ''})` }} />
             ) : (
-              NOTCH_URL && <img className="fr-item" src={NOTCH_URL} alt="" style={{ height: 118 }} />
+              NOTCH_URL && <img className="fr-notch" src={NOTCH_URL} alt="" />
             )}
             <div className="fr-text">
               <PaperText text={pg.text} />
