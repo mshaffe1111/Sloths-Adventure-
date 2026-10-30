@@ -17,7 +17,7 @@ export const CLIPS = [
   { key: 'reunion', screen: 'ending_story', id: '10-10', from: 19, n: 27 },
   { key: 'tea', screen: 'ending_story', id: '10-10', from: 92, n: 10 },
 ];
-const work = CLIPS.filter((c) => !only || only.has(c.key)).flatMap((c) => ['up', 'side'].map((o) => ({ c, o })));
+const work = CLIPS.filter((c) => !only || only.has(c.key)).flatMap((c) => (process.env.ORIENT ?? 'up,side').split(',').map((o) => ({ c, o })));
 const b = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 async function one({ c, o }) {
   const [w, h] = o === 'up' ? [390, 844] : [844, 390];
