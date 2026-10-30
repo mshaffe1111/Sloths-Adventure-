@@ -19,4 +19,7 @@ x14-clips1    6ae3ddc40e0338d1bb7c58b2  2026-10-29 23:59-00:20Z  ~20.7 min  ~$0.
               starts/ref-stand-satchel.png, teeter and step-back x seeds 3, 11. KEPT x14-teeter-s3 frames 26-31 there and back (the clean
               arms-out wobble; 4-20 smear his face, 32-34 a paw over his head) and x14-stepback-s3 frames 15-30 (arms up, the back foot
               lifted and set down, a relieved smile). THROWN: teeter-s11 (mushy face in its lean), stepback-s11 (a blue splash under his foot).
-              Cut by tools/art/train/clips.py (teeter, step-back). Review: reference/prop-sheets/qa-notes/hf-x14/picks.jpg
+              Cut by tools/art/train/clips.py (teeter, step-back). Review: reference/prop-sheets/qa-notes/hf-x14/picks-v1.jpg
+              Lead's review: the step-back passes; the s3 teeter read as a wave at game size. The teeter is now the step-back's own
+              off-balance frames (x14-stepback-s3 20-24, there and back, ends held), no new job: hf-x14/teeter-compare-60px.jpg.
+              No pink palm pads in those frames (only his open mouth is pink), so no tint was needed.

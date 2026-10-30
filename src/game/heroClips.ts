@@ -6,6 +6,7 @@
  * - ouch: standing still just after a hit, he rubs his sore head
  * - push: leaning into the hollow log of 1-6
  * - cheer: at the exit, before the stage clears
+ * - step-back, teeter: standing still at a ledge's end facing the drop, he steps back with his arms up, then teeters there (X-14)
  *
  * Off by default while testers play (the switch in the menus, saved on the device, or ?clips=1 for one visit). Anything he does (a step, a jump,
  * a hit) stops a clip at once, so the clips never get in the way of control.
@@ -76,6 +77,27 @@ function frameOf(name: string, i: number, blend = 1): ClipFrame | null {
   return { img, name: `${name}#${k}`, blend, f: { x: (k % c.cols) * c.w, y: Math.floor(k / c.cols) * c.h, w: c.w, h: c.h, ax: c.ax, ay: c.ay, hx: c.ax } };
 }
 
+/** when he came to a ledge's end facing the drop (game seconds, -1 not there), and whether he was still stepping back then */
+let edgeAt = -1;
+let edgeStep = false;
+
+/**
+ * pure: the step-back and teeter frame for `dt` seconds at a ledge's end (`step`: he arrived while stepping back, so the step-back plays
+ * first; already settled, the teeter loops at once). Null where a clip is missing.
+ */
+export function edgeClip(dt: number, step: boolean, have: (n: string) => boolean): { name: string; i: number; blend: number } | null {
+  const sb = HERO_CLIPS['step-back'];
+  let t = dt;
+  if (step && sb && have('step-back')) {
+    const i = Math.floor(t * sb.fps);
+    if (i < sb.n) return { name: 'step-back', i, blend: Math.min(1, t / CLIP_FADE) };
+    t -= sb.n / sb.fps;
+  }
+  const te = HERO_CLIPS.teeter;
+  if (!te || !have('teeter')) return null;
+  return { name: 'teeter', i: Math.floor(t * te.fps) % te.n, blend: step ? 1 : Math.min(1, t / CLIP_FADE) };
+}
+
 /** what is playing now, and since when (game seconds) */
 let playing: { name: string; at: number } | null = null;
 let stillSince = -1;
@@ -95,6 +117,7 @@ export function resetHeroClips() {
   stillSince = -1;
   lastTime = -1;
   ouchFor = -1;
+  edgeAt = -1;
 }
 
 export interface ClipCalm {
@@ -203,6 +226,20 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
       return mv;
     }
   }
+  // at a ledge's end facing the drop: the step back, then the teeter (facing away, the ordinary frame keeps its lean, heroSprite.ts)
+  const edge = p.edgeSide ?? 0;
+  if (edge !== 0 && p.facing === edge && isCalm(p, time, ev)) {
+    if (edgeAt < 0) {
+      edgeAt = time;
+      edgeStep = !p.teeter;
+    }
+    const e = edgeClip(time - edgeAt, edgeStep, hasClip);
+    if (e) {
+      playing = null;
+      stillSince = time;
+      return frameOf(e.name, e.i, e.blend);
+    }
+  } else edgeAt = -1;
   if (p.pushing && hasClip('push')) {
     const c = HERO_CLIPS.push;
     playing = null;

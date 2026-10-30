@@ -139,10 +139,10 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
  "teeter": {
   "n": 10,
   "cols": 8,
-  "w": 188,
-  "h": 212,
-  "ax": 63.4,
-  "ay": 210.2,
+  "w": 192,
+  "h": 201,
+  "ax": 103.9,
+  "ay": 198.3,
   "fps": 16
  },
  "step-back": {

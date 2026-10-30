@@ -100,6 +100,9 @@ export interface PlayerState {
   teeter?: -1 | 0 | 1;
   /** where he is drawn, px from where he stands: a step back from a ledge's end while he stands at it (engine.ts edgeOffset) */
   drawDx?: number;
+  /** standing still at a ledge's end, stepping back from it or settled there, the drop this way (1 its right end, -1 its left; 0 not at
+   * one): the step-back and teeter clips play while he faces it (heroClips.ts) */
+  edgeSide?: -1 | 0 | 1;
   /** leaning into a log that moves (the push clip, heroClips.ts) */
   pushing?: boolean;
   /** game time he reached the exit, while the cheer plays before the stage clears (heroClips.ts) */

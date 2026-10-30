@@ -2044,6 +2044,7 @@ export class GameEngine {
           const d = this.edgeTarget - cur;
           p.drawDx = Math.abs(d) <= rate ? this.edgeTarget : cur + Math.sign(d) * rate;
           p.teeter = this.edgeTarget !== 0 && Math.abs(this.edgeTarget - p.drawDx) < 1 ? (this.edgeTarget < 0 ? 1 : -1) : 0;
+          p.edgeSide = this.edgeTarget === 0 ? 0 : this.edgeTarget < 0 ? 1 : -1;
           this.edgeTarget = 0;
         }
 
