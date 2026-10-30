@@ -8,7 +8,7 @@ On top of S-6/S-8/S-7 (`s6-s8-report.md`), merged with ccr (today's speed work a
 
 **The General's trees, said once.** The narration line before the cards is cut; his card says it under its picture, the way the soldiers' and squirrels' lines went.
 
-**After the end: the sequel hint** (Matt, A + B). After The End: the stopwatch (if found), then B (only if Thornbark was freed), then A (always), then To be continued. Matt's dialogue is word for word; the narration lines are new (sent to the lead). story.test.ts checks the order, the conditions, Dot's one short line and the closing card.
+**After the end: the sequel hint** (Matt, A + B; the narration approved by the lead). After The End: the stopwatch (if found), then B (only if Thornbark was freed), then A (always), then the To be continued card. Matt's dialogue is word for word. story.test.ts checks the order, the conditions, Dot's one short line and the closing card.
 
 **Fixed on the way**
 - The Notch's painted twig was cropped into the keepsake frame sideways; it now stands on its own (`.fr-notch`), upright and sideways.
@@ -30,7 +30,8 @@ On top of S-6/S-8/S-7 (`s6-s8-report.md`), merged with ccr (today's speed work a
 | Snail in a stage | s7-stills/snail-7-3-up/side | Clean. |
 | **Drake's two cups** | s9-stills/drake-*-up/side | **Rough, waiting on art (hf-art-bosses):** it plays on the World 9 lava road with the Drake's prowling idle frame. No cave, no rock, no tea cosy, no cups are drawn, though the lines name them. The cave plate and a sitting / cup-holding Drake are asked for; it swaps in by name (DRAKE_CAVE in storyFinale.ts). |
 | Sequel tag, B (the hollow) | s9-stills/tag-b*-up/side | Thornbark reads, dark as his hollow is. **Waiting on art:** the black thorn coming up is not drawn (the nest-night plate shows the nest in the rain). |
-| Sequel tag, A (months later) | s9-stills/tag-a*-up/side | Storm, sleeping Pokey, Meeca (hands on hips for her last line) and Dot read well sideways. **Waiting on art (the Gemini cards):** the scarf (on Pokey and on the thorn) and the thorn are not drawn; nest-morning is the old 1024 plate, so upright it has a dark band above the picture; To be continued is a line over the dim plate, not yet a card. |
+| Sequel tag, A (months later) | s9-stills/tag-a*-up/side | Storm, sleeping Pokey, Meeca (hands on hips for her last line) and Dot read well both ways. Upright, an old 1024 plate (nest-morning, council) now fills the view with no dark band: the camera comes in just far enough (storyArt.ts shortPlate), and the figures keep their footing. **Waiting on art (the Gemini cards):** the scarf (on Pokey and on the thorn) and the thorn itself are not drawn. |
+| To be continued | s9-stills/tag-a8-silence-*, tag-a8-continued-* | Clean. The picture goes dark, a beat of silence (2 s, the music hushed), then "To be continued" comes up on the menu kit's carved log plaque, then "tap to finish". Fits a 412-wide phone. |
 
 ## Gate
 
