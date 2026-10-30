@@ -1785,11 +1785,34 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
     // the strip is fitted to end a little above the bottom of the view, where the ground usually covers it; up a climb (1-4, the
     // ascents) the camera is in the air and that band showed the bare sky, so the strip's last rows carry on down to the edge
     const gap = vh - (top + dh);
-    if (gap > 0) {
+    if (gap > 0 && part === 'mid' && canopyK > 0.01) {
+      // (the middle strip's trees carry on down instead, the lower half of the strip again and again: the forest below him in the
+      // distance, not its last rows stretched into a wash (5-8, the lead's review 2026-10-29); the cool dark over them is drawn once
+      // for the whole view, after the copies: midDepth)
+      const band = Math.round(ih * 0.5), bh = dh * 0.5;
+      for (let y = top + dh - 1 / k; y < vh; y += bh - 1 / k) ctx.drawImage(img, 0, ih - band, iw, band, px, y, pw, bh);
+    } else if (gap > 0) {
       const rows = Math.max(1, Math.round(ih * 0.03));
       ctx.drawImage(img, 0, ih - rows, iw, rows, px, top + dh - 1 / k, pw, gap + 2);
     }
   }
+  // (up a climb only: on the ground the bank covers the strip's foot)
+  if (part === 'mid' && canopyK > 0.01 && vh - (pl.top + pl.dh) > 0) midDepth(ctx, pl, vw, vh, Math.min(1, canopyK * 4));
+}
+
+/** under the middle strip, up a climb: the forest below in shadow, from nothing at the strip's foot to a cool deep dusk at the bottom */
+function midDepth(ctx: CanvasRenderingContext2D, pl: { top: number; dh: number }, vw: number, vh: number, k: number) {
+  const y0 = pl.top + pl.dh * 0.85;
+  if (y0 >= vh) return;
+  const g = ctx.createLinearGradient(0, y0, 0, vh);
+  g.addColorStop(0, 'rgba(18, 22, 46, 0)');
+  g.addColorStop(Math.min(1, 220 / Math.max(1, vh - y0)), 'rgba(18, 22, 46, 0.38)');
+  g.addColorStop(1, 'rgba(12, 16, 36, 0.62)');
+  ctx.save();
+  ctx.globalAlpha = k;
+  ctx.fillStyle = g;
+  ctx.fillRect(0, y0, vw, vh - y0);
+  ctx.restore();
 }
 
 /** how strong the haze is over the far, hill and mid layers (top of the veil is a fifth of this) */
