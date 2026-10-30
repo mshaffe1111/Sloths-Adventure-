@@ -186,3 +186,10 @@ sfx-licheck2    6ae3b265c78863f9c62dda08 cpu-upgrade 20:54Z-21:12:41Z (18.7 min)
 sfx-licheck3    6ae3b978c78863f9c62de338 cpu-upgrade 21:24Z-~21:45Z (~20 min): the same for the 115 ids the build touched (with pass 4's)
   -> hfbatch/sfx/licences-used.json.
 total ~65 min on cpu-upgrade = ~$0.05 of the $8 cap (no GPU used; Stable Audio Open is gated for this account and was not run).
+polish-sfx, the rebuild by real titles (2026-10-29 ET evening):
+sfx-licpick     6ae3bd2a0e0338d1bb7c3681 cpu-basic ~1 min: 20 licences read back from licences.json.
+sfx-titles      6ae3bdf20e0338d1bb7c372b cpu-upgrade ~15 min: titles.py (titles of the scanned clips; superseded by tagscan).
+sfx-tagscan     6ae3be3e0e0338d1bb7c3778 cpu-upgrade ~20 min: tagscan.py, CC0 rows of benjamin-paine/freesound-laion-640k by their own tags/titles.
+sfx-ids-a/b/c   6ae3c3d90e0338d1bb7c3bde / 6ae3c3dd0e0338d1bb7c3be6 / 6ae3c3e0c78863f9c62dec21 cpu-upgrade 22:08Z-22:11:30Z (3 x 3.5 min):
+  fsscan.py PASS=ids, the tag picks -> carrier-ia/ib/ic-*.png (925 clips; 148 used, LICENCES.md).
+total for polish-sfx ~110 min on cpu-upgrade (~$0.06 at $0.03/h) + cpu-basic minutes: well under $0.10 of the $8 cap. No GPU.
