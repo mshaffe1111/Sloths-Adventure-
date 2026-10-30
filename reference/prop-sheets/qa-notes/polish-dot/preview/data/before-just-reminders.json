@@ -1,0 +1,1563 @@
+[
+{
+"id": "1-1",
+"world": 1,
+"seconds": 133,
+"n": 6,
+"perMin": 2.7,
+"busiest": 4,
+"lines": [
+{
+"t": 12.8,
+"kind": "info",
+"text": "A flag! Fall, and you start again here."
+},
+{
+"t": 15.6,
+"kind": "teach",
+"text": "Flick up just before the edge."
+},
+{
+"t": 27.8,
+"kind": "teach",
+"text": "Jump onto the mushroom to bounce high."
+},
+{
+"t": 40.4,
+"kind": "teach",
+"text": "Flick up again midair to jump twice."
+},
+{
+"t": 53.3,
+"kind": "teach",
+"text": "Flick up onto the mushroom to bounce."
+},
+{
+"t": 132.2,
+"kind": "info",
+"text": "Reach the shrine to finish the stage."
+}
+]
+},
+{
+"id": "1-2",
+"world": 1,
+"seconds": 139,
+"n": 2,
+"perMin": 0.86,
+"busiest": 1,
+"lines": [
+{
+"t": 96.4,
+"kind": "goal",
+"text": "Still 77 petals to collect!"
+},
+{
+"t": 139.3,
+"kind": "must",
+"text": "It's sealed. Collect 67 more petals first."
+}
+]
+},
+{
+"id": "1-3",
+"world": 1,
+"seconds": 109,
+"n": 5,
+"perMin": 2.76,
+"busiest": 3,
+"lines": [
+{
+"t": 8.8,
+"kind": "teach",
+"text": "Tap to punch it when it's close."
+},
+{
+"t": 21.4,
+"kind": "teach",
+"text": "Tap to punch the sleeping snake."
+},
+{
+"t": 34,
+"kind": "teach",
+"text": "Flick up onto the mushroom to bounce."
+},
+{
+"t": 76,
+"kind": "goal",
+"text": "Still 16 predators to defeat!"
+},
+{
+"t": 108.5,
+"kind": "must",
+"text": "It's sealed. Defeat 16 more predators first."
+}
+]
+},
+{
+"id": "1-4",
+"world": 1,
+"seconds": 99,
+"n": 2,
+"perMin": 1.22,
+"busiest": 2,
+"lines": [
+{
+"t": 2.6,
+"kind": "teach",
+"text": "Slide your thumb up to climb."
+},
+{
+"t": 8.8,
+"kind": "teach",
+"text": "Slide your thumb to creep along."
+}
+]
+},
+{
+"id": "1-5",
+"world": 1,
+"seconds": 128,
+"n": 4,
+"perMin": 1.87,
+"busiest": 1,
+"lines": [
+{
+"t": 3.4,
+"kind": "teach",
+"text": "Flick up onto the mushroom to bounce."
+},
+{
+"t": 34.2,
+"kind": "info",
+"text": "Shaky branches drop. Don't stop on them!"
+},
+{
+"t": 89.3,
+"kind": "goal",
+"text": "Still 82 petals to collect!"
+},
+{
+"t": 128.3,
+"kind": "must",
+"text": "It's sealed. Collect 72 more petals first."
+}
+]
+},
+{
+"id": "1-6",
+"world": 1,
+"seconds": 122,
+"n": 6,
+"perMin": 2.95,
+"busiest": 3,
+"lines": [
+{
+"t": 2.6,
+"kind": "teach",
+"text": "Flick up as you swing forward to leap."
+},
+{
+"t": 23.3,
+"kind": "info",
+"text": "That vine is too high. Climb the tree!"
+},
+{
+"t": 29.4,
+"kind": "teach",
+"text": "Flick up onto the mushroom to bounce."
+},
+{
+"t": 47.1,
+"kind": "teach",
+"text": "Keep sliding into the log to push it"
+},
+{
+"t": 66.3,
+"kind": "struggle",
+"text": "Fell? Climb the next tree back up"
+},
+{
+"t": 94.9,
+"kind": "teach",
+"text": "The log's on the far side. Push it back onto the far end!"
+}
+]
+},
+{
+"id": "1-7",
+"world": 1,
+"seconds": 181,
+"n": 5,
+"perMin": 1.66,
+"busiest": 3,
+"lines": [
+{
+"t": 2.5,
+"kind": "teach",
+"text": "Slide down in a bush to hide."
+},
+{
+"t": 37.2,
+"kind": "danger",
+"text": "Slide down in a bush to hide!"
+},
+{
+"t": 42.2,
+"kind": "danger",
+"text": "It saw you! Slide down in a bush!"
+},
+{
+"t": 47.8,
+"kind": "danger",
+"text": "Hide! Into a bush!"
+},
+{
+"t": 68.9,
+"kind": "danger",
+"text": "Hide! Into a bush!"
+}
+]
+},
+{
+"id": "1-8",
+"world": 1,
+"seconds": 137,
+"n": 4,
+"perMin": 1.76,
+"busiest": 4,
+"lines": [
+{
+"t": 2.5,
+"kind": "story",
+"text": "This branch goes on and on"
+},
+{
+"t": 6.5,
+"kind": "teach",
+"text": "Slide down beside the fern to search it."
+},
+{
+"t": 13.9,
+"kind": "must",
+"text": "It's breaking behind us! Keep moving!"
+},
+{
+"t": 19,
+"kind": "teach",
+"text": "Slide down beside the fern to search it."
+}
+]
+},
+{
+"id": "1-9",
+"world": 1,
+"seconds": 77,
+"n": 3,
+"perMin": 2.35,
+"busiest": 2,
+"lines": [
+{
+"t": 4.6,
+"kind": "teach",
+"text": "Tap to punch it after it strikes."
+},
+{
+"t": 53.5,
+"kind": "goal",
+"text": "Still 20 predators to defeat!"
+},
+{
+"t": 76.5,
+"kind": "must",
+"text": "It's sealed. Defeat 20 more predators first."
+}
+]
+},
+{
+"id": "2-1",
+"world": 2,
+"seconds": 104,
+"n": 1,
+"perMin": 0.58,
+"busiest": 1,
+"lines": [
+{
+"t": 5.1,
+"kind": "struggle",
+"text": "Missed? Splash! Try again from the bank."
+}
+]
+},
+{
+"id": "2-2",
+"world": 2,
+"seconds": 105,
+"n": 2,
+"perMin": 1.15,
+"busiest": 1,
+"lines": [
+{
+"t": 74.1,
+"kind": "goal",
+"text": "Still 79 flowers to collect!"
+},
+{
+"t": 104.6,
+"kind": "must",
+"text": "It's sealed. Collect 54 more flowers first."
+}
+]
+},
+{
+"id": "2-3",
+"world": 2,
+"seconds": 117,
+"n": 3,
+"perMin": 1.55,
+"busiest": 1,
+"lines": [
+{
+"t": 2.6,
+"kind": "teach",
+"text": "Tap twice to break the cage."
+},
+{
+"t": 79.4,
+"kind": "goal",
+"text": "Still 5 animals to free!"
+},
+{
+"t": 116.4,
+"kind": "must",
+"text": "It's sealed. Free 5 more animals first."
+}
+]
+},
+{
+"id": "2-4",
+"world": 2,
+"seconds": 168,
+"n": 1,
+"perMin": 0.36,
+"busiest": 1,
+"lines": [
+{
+"t": 4.5,
+"kind": "struggle",
+"text": "Missed? Splash! Try again from the bank."
+}
+]
+},
+{
+"id": "2-5",
+"world": 2,
+"seconds": 77,
+"n": 4,
+"perMin": 3.13,
+"busiest": 2,
+"lines": [
+{
+"t": 6.5,
+"kind": "teach",
+"text": "Head-on it hides. Flick sideways to kick!"
+},
+{
+"t": 19.1,
+"kind": "info",
+"text": "Kick a shell into the others!"
+},
+{
+"t": 53.2,
+"kind": "goal",
+"text": "Still 32 predators to defeat!"
+},
+{
+"t": 76.6,
+"kind": "must",
+"text": "It's sealed. Defeat 32 more predators first."
+}
+]
+},
+{
+"id": "2-6",
+"world": 2,
+"seconds": 140,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "2-7",
+"world": 2,
+"seconds": 151,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "2-8",
+"world": 2,
+"seconds": 99,
+"n": 3,
+"perMin": 1.82,
+"busiest": 1,
+"lines": [
+{
+"t": 1.5,
+"kind": "must",
+"text": "The water's rising! Free them, then back to the bank!"
+},
+{
+"t": 68.4,
+"kind": "goal",
+"text": "Still 10 animals to free!"
+},
+{
+"t": 98.7,
+"kind": "must",
+"text": "It's sealed. Free 10 more animals first."
+}
+]
+},
+{
+"id": "2-9",
+"world": 2,
+"seconds": 79,
+"n": 3,
+"perMin": 2.27,
+"busiest": 2,
+"lines": [
+{
+"t": 2.5,
+"kind": "teach",
+"text": "Head-on he blocks. Hit him from behind, or kick him!"
+},
+{
+"t": 56.5,
+"kind": "goal",
+"text": "Still 23 predators to defeat!"
+},
+{
+"t": 79.3,
+"kind": "must",
+"text": "It's sealed. Defeat 23 more predators first."
+}
+]
+},
+{
+"id": "3-1",
+"world": 3,
+"seconds": 154,
+"n": 1,
+"perMin": 0.39,
+"busiest": 1,
+"lines": [
+{
+"t": 42.4,
+"kind": "danger",
+"text": "Glowworms! They light up when you stand still."
+}
+]
+},
+{
+"id": "3-2",
+"world": 3,
+"seconds": 146,
+"n": 4,
+"perMin": 1.65,
+"busiest": 3,
+"lines": [
+{
+"t": 5.1,
+"kind": "danger",
+"text": "Glowworms! They light up when you stand still."
+},
+{
+"t": 23.5,
+"kind": "danger",
+"text": "Eyes! Slide down in a fern to hide."
+},
+{
+"t": 29,
+"kind": "danger",
+"text": "Slide down in a fern to hide!"
+},
+{
+"t": 39.6,
+"kind": "danger",
+"text": "Hide! Into a fern!"
+}
+]
+},
+{
+"id": "3-3",
+"world": 3,
+"seconds": 142,
+"n": 6,
+"perMin": 2.54,
+"busiest": 2,
+"lines": [
+{
+"t": 4,
+"kind": "teach",
+"text": "A prowler! Tap twice, or flick to kick."
+},
+{
+"t": 24,
+"kind": "story",
+"text": "Footprints... a prowler is near"
+},
+{
+"t": 48.8,
+"kind": "teach",
+"text": "Flick up when it crouches. Three hits!"
+},
+{
+"t": 63.2,
+"kind": "danger",
+"text": "Glowworms! They light up when you stand still."
+},
+{
+"t": 98.7,
+"kind": "goal",
+"text": "Still 14 predators to defeat!"
+},
+{
+"t": 141.9,
+"kind": "must",
+"text": "It's sealed. Defeat 14 more predators first."
+}
+]
+},
+{
+"id": "3-4",
+"world": 3,
+"seconds": 126,
+"n": 1,
+"perMin": 0.48,
+"busiest": 1,
+"lines": [
+{
+"t": 7.4,
+"kind": "danger",
+"text": "Lift your thumb and freeze! A vine's waking."
+}
+]
+},
+{
+"id": "3-5",
+"world": 3,
+"seconds": 105,
+"n": 4,
+"perMin": 2.29,
+"busiest": 3,
+"lines": [
+{
+"t": 2.5,
+"kind": "story",
+"text": "Grandma said the old thorn vines were asleep..."
+},
+{
+"t": 23.9,
+"kind": "danger",
+"text": "Lift your thumb and freeze! A vine's waking."
+},
+{
+"t": 30.8,
+"kind": "teach",
+"text": "Slide down beside the fern to search it."
+},
+{
+"t": 46.1,
+"kind": "danger",
+"text": "Glowworms! They light up when you stand still."
+}
+]
+},
+{
+"id": "3-6",
+"world": 3,
+"seconds": 132,
+"n": 5,
+"perMin": 2.27,
+"busiest": 2,
+"lines": [
+{
+"t": 2.5,
+"kind": "teach",
+"text": "Slide down by a rustling fern to search."
+},
+{
+"t": 15.2,
+"kind": "info",
+"text": "Some stages hide things up high. Have a look."
+},
+{
+"t": 34.1,
+"kind": "danger",
+"text": "Glowworms! They light up when you stand still."
+},
+{
+"t": 90.9,
+"kind": "goal",
+"text": "Still 5 keepsakes to find!"
+},
+{
+"t": 132,
+"kind": "must",
+"text": "It's sealed. Find 5 more keepsakes first."
+}
+]
+},
+{
+"id": "3-7",
+"world": 3,
+"seconds": 159,
+"n": 8,
+"perMin": 3.01,
+"busiest": 4,
+"lines": [
+{
+"t": 2.5,
+"kind": "teach",
+"text": "More! Slide down by a rustling fern."
+},
+{
+"t": 15.7,
+"kind": "danger",
+"text": "Lift your thumb and freeze! A vine's waking."
+},
+{
+"t": 21.8,
+"kind": "danger",
+"text": "Glowworms! They light up when you stand still."
+},
+{
+"t": 27.3,
+"kind": "danger",
+"text": "The eyes are back. Search between their looks."
+},
+{
+"t": 32.8,
+"kind": "danger",
+"text": "Slide down in a fern to hide!"
+},
+{
+"t": 52.3,
+"kind": "info",
+"text": "Here, crouching by a fern does three things at once."
+},
+{
+"t": 108,
+"kind": "goal",
+"text": "Still 6 keepsakes to find!"
+},
+{
+"t": 159.3,
+"kind": "must",
+"text": "It's sealed. Find 6 more keepsakes first."
+}
+]
+},
+{
+"id": "3-8",
+"world": 3,
+"seconds": 126,
+"n": 2,
+"perMin": 0.95,
+"busiest": 2,
+"lines": [
+{
+"t": 16.6,
+"kind": "danger",
+"text": "Lift your thumb and freeze! A vine's waking."
+},
+{
+"t": 29.5,
+"kind": "teach",
+"text": "Slide down beside the fern to search it."
+}
+]
+},
+{
+"id": "3-9",
+"world": 3,
+"seconds": 162,
+"n": 4,
+"perMin": 1.48,
+"busiest": 1,
+"lines": [
+{
+"t": 2.5,
+"kind": "story",
+"text": "Pawprints in a circle, and they all go one way..."
+},
+{
+"t": 51,
+"kind": "must",
+"text": "Prowlers! Drive them all off to open the way."
+},
+{
+"t": 111.7,
+"kind": "goal",
+"text": "Still 21 predators to defeat!"
+},
+{
+"t": 162.2,
+"kind": "must",
+"text": "It's sealed. Defeat 21 more predators first."
+}
+]
+},
+{
+"id": "4-1",
+"world": 4,
+"seconds": 139,
+"n": 1,
+"perMin": 0.43,
+"busiest": 1,
+"lines": [
+{
+"t": 24.9,
+"kind": "danger",
+"text": "Ouch! Stop before the shadow. Go once it falls."
+}
+]
+},
+{
+"id": "4-2",
+"world": 4,
+"seconds": 157,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "4-3",
+"world": 4,
+"seconds": 168,
+"n": 5,
+"perMin": 1.79,
+"busiest": 3,
+"lines": [
+{
+"t": 20.3,
+"kind": "info",
+"text": "Another fall. Hop up beside it and stop it."
+},
+{
+"t": 47.2,
+"kind": "teach",
+"text": "Flick up twice from the log's near end."
+},
+{
+"t": 67.9,
+"kind": "teach",
+"text": "Slide down beside the fern to search it."
+},
+{
+"t": 82.4,
+"kind": "teach",
+"text": "Flick up twice when it's at the top."
+},
+{
+"t": 95,
+"kind": "danger",
+"text": "Ouch! Stop before the shadow. Go once it falls."
+}
+]
+},
+{
+"id": "4-4",
+"world": 4,
+"seconds": 146,
+"n": 2,
+"perMin": 0.82,
+"busiest": 1,
+"lines": [
+{
+"t": 11.6,
+"kind": "teach",
+"text": "No wind? Flick up again as you fly."
+},
+{
+"t": 84.6,
+"kind": "info",
+"text": "Another knot! Stand on the glowing spot. I'll untie it."
+}
+]
+},
+{
+"id": "4-5",
+"world": 4,
+"seconds": 140,
+"n": 6,
+"perMin": 2.58,
+"busiest": 6,
+"lines": [
+{
+"t": 4.2,
+"kind": "danger",
+"text": "Her shadow! Slide down in a bush."
+},
+{
+"t": 9.3,
+"kind": "danger",
+"text": "Slide down in a bush. Or behind falls!"
+},
+{
+"t": 19.1,
+"kind": "teach",
+"text": "Tap to knock its fruit down. It'll eat."
+},
+{
+"t": 21.3,
+"kind": "danger",
+"text": "Hide! Water or a bush!"
+},
+{
+"t": 25.9,
+"kind": "teach",
+"text": "Tap to knock its fruit down. It'll eat."
+},
+{
+"t": 32.7,
+"kind": "danger",
+"text": "Hide! Water or a bush!"
+}
+]
+},
+{
+"id": "4-D",
+"world": 4,
+"seconds": 0,
+"n": 1,
+"perMin": null,
+"busiest": 1,
+"lines": [
+{
+"t": 1.5,
+"kind": "teach",
+"text": "Slide to fly me. Flick up to flap."
+}
+]
+},
+{
+"id": "4-6",
+"world": 4,
+"seconds": 157,
+"n": 2,
+"perMin": 0.76,
+"busiest": 1,
+"lines": [
+{
+"t": 10.6,
+"kind": "teach",
+"text": "Snakes! Tap to punch, or hop over."
+},
+{
+"t": 98.1,
+"kind": "danger",
+"text": "Ouch! Stop before the shadow. Go once it falls."
+}
+]
+},
+{
+"id": "4-7",
+"world": 4,
+"seconds": 202,
+"n": 2,
+"perMin": 0.59,
+"busiest": 1,
+"lines": [
+{
+"t": 19.2,
+"kind": "struggle",
+"text": "Slipped? Flick up and hold. Your leaf opens."
+},
+{
+"t": 68,
+"kind": "danger",
+"text": "Ouch! Stop before the shadow. Go once it falls."
+}
+]
+},
+{
+"id": "4-8",
+"world": 4,
+"seconds": 138,
+"n": 3,
+"perMin": 1.3,
+"busiest": 1,
+"lines": [
+{
+"t": 4,
+"kind": "teach",
+"text": "Tap twice to tear the netting"
+},
+{
+"t": 96.4,
+"kind": "goal",
+"text": "Still 20 animals to free!"
+},
+{
+"t": 138.3,
+"kind": "must",
+"text": "It's sealed. Free 20 more animals first."
+}
+]
+},
+{
+"id": "4-9",
+"world": 4,
+"seconds": 198,
+"n": 6,
+"perMin": 1.82,
+"busiest": 3,
+"lines": [
+{
+"t": 2.5,
+"kind": "story",
+"text": "There, Pokey. That heap of sticks up top. Her aerie."
+},
+{
+"t": 15.6,
+"kind": "goal",
+"text": "8 guards stand between us and her."
+},
+{
+"t": 28.6,
+"kind": "story",
+"text": "That was her. She's up there. Keep low."
+},
+{
+"t": 105.3,
+"kind": "story",
+"text": "That feather was hers. She's not far now."
+},
+{
+"t": 120.6,
+"kind": "danger",
+"text": "Ouch! Stop before the shadow. Go once it falls."
+},
+{
+"t": 196.2,
+"kind": "story",
+"text": "Her aerie's right above us. I'm staying beside you. All the way."
+}
+]
+},
+{
+"id": "5-M",
+"world": 5,
+"seconds": 1,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "5-1",
+"world": 5,
+"seconds": 144,
+"n": 9,
+"perMin": 3.75,
+"busiest": 4,
+"lines": [
+{
+"t": 1.5,
+"kind": "story",
+"text": "She carved it with a hairpin. So resourceful."
+},
+{
+"t": 7.7,
+"kind": "teach",
+"text": "Slide past the chairs. Never sit."
+},
+{
+"t": 16,
+"kind": "teach",
+"text": "Tap to punch the spider, or stomp it."
+},
+{
+"t": 19.8,
+"kind": "teach",
+"text": "Tap to punch it. Don't stomp this one."
+},
+{
+"t": 40.4,
+"kind": "teach",
+"text": "Wide gap! Flick up again midair."
+},
+{
+"t": 61.1,
+"kind": "teach",
+"text": "Tall stump! Flick up again midair."
+},
+{
+"t": 81.7,
+"kind": "teach",
+"text": "Tap to punch it. Don't stomp this one."
+},
+{
+"t": 102.4,
+"kind": "teach",
+"text": "Wide gap! Flick up again midair."
+},
+{
+"t": 123.1,
+"kind": "teach",
+"text": "Tall stump! Flick up again midair."
+}
+]
+},
+{
+"id": "5-2",
+"world": 5,
+"seconds": 176,
+"n": 13,
+"perMin": 4.44,
+"busiest": 6,
+"lines": [
+{
+"t": 1.5,
+"kind": "teach",
+"text": "Don't sit. That's the one on the tree."
+},
+{
+"t": 7.7,
+"kind": "teach",
+"text": "Sleeping spiders. Flick up over them. Shh."
+},
+{
+"t": 11.3,
+"kind": "teach",
+"text": "Tap to punch the spider, or stomp it."
+},
+{
+"t": 16.1,
+"kind": "danger",
+"text": "It hummed! Spiders coming!"
+},
+{
+"t": 20.7,
+"kind": "teach",
+"text": "Flick up over the threads. Spiders listen."
+},
+{
+"t": 29.1,
+"kind": "teach",
+"text": "Cakes make you slow! Flick up over them."
+},
+{
+"t": 32.7,
+"kind": "teach",
+"text": "That cake made you slow. It wears off."
+},
+{
+"t": 38.3,
+"kind": "teach",
+"text": "A butler! Tap to punch his tray away."
+},
+{
+"t": 47.4,
+"kind": "teach",
+"text": "Slide past the chairs. Never sit."
+},
+{
+"t": 55.8,
+"kind": "teach",
+"text": "Another wide one. Flick up again midair."
+},
+{
+"t": 76.5,
+"kind": "teach",
+"text": "Another wide one. Flick up again midair."
+},
+{
+"t": 97.3,
+"kind": "teach",
+"text": "Tall stumps. Flick up again midair."
+},
+{
+"t": 118,
+"kind": "teach",
+"text": "Tall stumps. Flick up again midair."
+}
+]
+},
+{
+"id": "5-3",
+"world": 5,
+"seconds": 141,
+"n": 6,
+"perMin": 2.56,
+"busiest": 3,
+"lines": [
+{
+"t": 7,
+"kind": "teach",
+"text": "Quick! Flick up before the orchid shuts!"
+},
+{
+"t": 21.2,
+"kind": "teach",
+"text": "Cakes make you slow! Flick up over them."
+},
+{
+"t": 30.1,
+"kind": "teach",
+"text": "Tap to punch the spider, or stomp it."
+},
+{
+"t": 48.2,
+"kind": "teach",
+"text": "Slide past the chairs. Never sit."
+},
+{
+"t": 98.9,
+"kind": "goal",
+"text": "Still 109 flowers to collect!"
+},
+{
+"t": 140.7,
+"kind": "must",
+"text": "It's sealed. Collect 83 more flowers first."
+}
+]
+},
+{
+"id": "5-4",
+"world": 5,
+"seconds": 167,
+"n": 6,
+"perMin": 2.16,
+"busiest": 5,
+"lines": [
+{
+"t": 6.9,
+"kind": "teach",
+"text": "Flick up into the silk to swing."
+},
+{
+"t": 13,
+"kind": "must",
+"text": "Then flick up and forward to let go."
+},
+{
+"t": 22.1,
+"kind": "teach",
+"text": "Slide straight past the silk. Don't look."
+},
+{
+"t": 26.5,
+"kind": "teach",
+"text": "Flick up at the front. Next silk line!"
+},
+{
+"t": 32.9,
+"kind": "teach",
+"text": "The Seamstress! Slide past before she looks up."
+},
+{
+"t": 53.6,
+"kind": "teach",
+"text": "Tap to punch the spider, or stomp it."
+}
+]
+},
+{
+"id": "5-5",
+"world": 5,
+"seconds": 150,
+"n": 11,
+"perMin": 4.41,
+"busiest": 6,
+"lines": [
+{
+"t": 7.3,
+"kind": "teach",
+"text": "Somebody's in there! Tap to punch it open."
+},
+{
+"t": 14.4,
+"kind": "story",
+"text": "They stopped to rest where the orchids hung in rows."
+},
+{
+"t": 21.7,
+"kind": "story",
+"text": "Pokey stood, because the note said so."
+},
+{
+"t": 29.4,
+"kind": "teach",
+"text": "Tap to punch the spider, or stomp it."
+},
+{
+"t": 34.4,
+"kind": "teach",
+"text": "Flick up over the threads. Spiders listen."
+},
+{
+"t": 38.2,
+"kind": "danger",
+"text": "It hummed! Spiders coming!"
+},
+{
+"t": 42.9,
+"kind": "teach",
+"text": "Flick up into the silk to swing."
+},
+{
+"t": 46.2,
+"kind": "must",
+"text": "Then flick up and forward to let go."
+},
+{
+"t": 104.9,
+"kind": "goal",
+"text": "Still 20 animals to free!"
+},
+{
+"t": 146.4,
+"kind": "teach",
+"text": "Slide down beside the fern to search it."
+},
+{
+"t": 150.9,
+"kind": "must",
+"text": "It's sealed. Free 20 more animals first."
+}
+]
+},
+{
+"id": "5-6",
+"world": 5,
+"seconds": 97,
+"n": 4,
+"perMin": 2.49,
+"busiest": 2,
+"lines": [
+{
+"t": 6.8,
+"kind": "teach",
+"text": "Slide down to duck under its dive."
+},
+{
+"t": 27.4,
+"kind": "teach",
+"text": "Slide down to duck under its dive."
+},
+{
+"t": 68,
+"kind": "goal",
+"text": "Still 3 messages to find!"
+},
+{
+"t": 95.3,
+"kind": "must",
+"text": "It's sealed. Find 3 more messages first."
+}
+]
+},
+{
+"id": "5-7",
+"world": 5,
+"seconds": 121,
+"n": 7,
+"perMin": 3.47,
+"busiest": 3,
+"lines": [
+{
+"t": 6.8,
+"kind": "teach",
+"text": "Cakes make you slow! Flick up over them."
+},
+{
+"t": 12.5,
+"kind": "teach",
+"text": "Quick! Flick up before the orchid shuts!"
+},
+{
+"t": 33,
+"kind": "danger",
+"text": "It hummed! Spiders coming!"
+},
+{
+"t": 37.7,
+"kind": "teach",
+"text": "Tap to punch the spider, or stomp it."
+},
+{
+"t": 47.3,
+"kind": "teach",
+"text": "Slide straight past the silk. Don't look."
+},
+{
+"t": 64.3,
+"kind": "teach",
+"text": "The Seamstress! Slide past before she looks up."
+},
+{
+"t": 100.9,
+"kind": "teach",
+"text": "A butler! Tap to punch his tray away."
+}
+]
+},
+{
+"id": "5-8",
+"world": 5,
+"seconds": 102,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "5-9",
+"world": 5,
+"seconds": 102,
+"n": 8,
+"perMin": 4.71,
+"busiest": 4,
+"lines": [
+{
+"t": 6.9,
+"kind": "teach",
+"text": "Tap to punch the spider, or stomp it."
+},
+{
+"t": 17.9,
+"kind": "danger",
+"text": "It hummed! Spiders coming!"
+},
+{
+"t": 22.5,
+"kind": "teach",
+"text": "Cakes make you slow! Flick up over them."
+},
+{
+"t": 26.7,
+"kind": "teach",
+"text": "Slide past the pot between puffs."
+},
+{
+"t": 71.3,
+"kind": "goal",
+"text": "Still 21 predators to defeat!"
+},
+{
+"t": 76,
+"kind": "teach",
+"text": "A butler! Tap to punch his tray away."
+},
+{
+"t": 82.7,
+"kind": "struggle",
+"text": "Sleepy steam! Go between the puffs."
+},
+{
+"t": 101.9,
+"kind": "must",
+"text": "It's sealed. Defeat 21 more predators first."
+}
+]
+},
+{
+"id": "6-1",
+"world": 6,
+"seconds": 143,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "6-2",
+"world": 6,
+"seconds": 154,
+"n": 8,
+"perMin": 3.11,
+"busiest": 5,
+"lines": [
+{
+"t": 2.1,
+"kind": "teach",
+"text": "The water's watching. Duck into the roots!"
+},
+{
+"t": 15.2,
+"kind": "danger",
+"text": "Slide down in a bush to hide!"
+},
+{
+"t": 20.2,
+"kind": "danger",
+"text": "It saw you! Slide down in a bush!"
+},
+{
+"t": 26.3,
+"kind": "teach",
+"text": "The water's watching. Duck into the roots!"
+},
+{
+"t": 38.7,
+"kind": "danger",
+"text": "Hide! Into a bush!"
+},
+{
+"t": 43.4,
+"kind": "teach",
+"text": "The water's watching. Duck into the roots!"
+},
+{
+"t": 64.1,
+"kind": "teach",
+"text": "The water's watching. Duck into the roots!"
+},
+{
+"t": 91.4,
+"kind": "danger",
+"text": "Hide! Into a bush!"
+}
+]
+},
+{
+"id": "6-3",
+"world": 6,
+"seconds": 145,
+"n": 3,
+"perMin": 1.24,
+"busiest": 2,
+"lines": [
+{
+"t": 98.5,
+"kind": "danger",
+"text": "Slide down in a bush to hide!"
+},
+{
+"t": 103.6,
+"kind": "danger",
+"text": "It saw you! Slide down in a bush!"
+},
+{
+"t": 132.3,
+"kind": "danger",
+"text": "Hide! Into a bush!"
+}
+]
+},
+{
+"id": "6-4",
+"world": 6,
+"seconds": 118,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "6-5",
+"world": 6,
+"seconds": 80,
+"n": 4,
+"perMin": 2.99,
+"busiest": 2,
+"lines": [
+{
+"t": 17.8,
+"kind": "teach",
+"text": "Slide down beside the fern to search it."
+},
+{
+"t": 38.4,
+"kind": "teach",
+"text": "Slide down beside the fern to search it."
+},
+{
+"t": 59.1,
+"kind": "goal",
+"text": "Still 17 predators to defeat!"
+},
+{
+"t": 80.3,
+"kind": "must",
+"text": "It's sealed. Defeat 17 more predators first."
+}
+]
+},
+{
+"id": "6-6",
+"world": 6,
+"seconds": 142,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "6-7",
+"world": 6,
+"seconds": 143,
+"n": 4,
+"perMin": 1.68,
+"busiest": 3,
+"lines": [
+{
+"t": 36.2,
+"kind": "danger",
+"text": "Slide down in a bush to hide!"
+},
+{
+"t": 41.3,
+"kind": "danger",
+"text": "It saw you! Slide down in a bush!"
+},
+{
+"t": 64.6,
+"kind": "danger",
+"text": "Hide! Into a bush!"
+},
+{
+"t": 92.8,
+"kind": "danger",
+"text": "Hide! Into a bush!"
+}
+]
+},
+{
+"id": "6-8",
+"world": 6,
+"seconds": 117,
+"n": 0,
+"perMin": 0,
+"busiest": 0,
+"lines": []
+},
+{
+"id": "6-9",
+"world": 6,
+"seconds": 88,
+"n": 2,
+"perMin": 1.37,
+"busiest": 2,
+"lines": [
+{
+"t": 61.3,
+"kind": "goal",
+"text": "Still 23 predators to defeat!"
+},
+{
+"t": 87.7,
+"kind": "must",
+"text": "It's sealed. Defeat 23 more predators first."
+}
+]
+}
+]

@@ -1,0 +1,293 @@
+{
+ "note": "VI-2 native-resolution strips, tools/art/hfbatch/striphdgpu.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w6-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w6-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a murky grey-green mangrove swamp edge: arching mangrove roots, reeds, a fallen log, still dark water with lily pads and ripples, mossy stones",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w6-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a murky grey-green mangrove swamp edge: arching mangrove roots, reeds, a fallen log, still dark water with lily pads and ripples, mossy stones",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w6-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. grey-green mangrove trees standing in still swamp water on tall arching stilt roots, hanging grey moss, a broken stump, an old spear stuck in the water",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w6-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w6-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. grey-green mangrove trees standing in still swamp water on tall arching stilt roots, hanging grey moss, a broken stump, an old spear stuck in the water",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w7-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a ruined jungle temple floor: cracked grey-green flagstones, toppled carved stone blocks, a fallen carved stone head, ferns, dry roots and leaves",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w7-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a ruined jungle temple floor: cracked grey-green flagstones, toppled carved stone blocks, a fallen carved stone head, ferns, dry roots and leaves",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w7-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a ruined jungle temple: a carved stone tower with faces, stone stairs, broken arches and pillars, stone chairs, roots and red vines creeping over the stone",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w7-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w7-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a ruined jungle temple: a carved stone tower with faces, stone stairs, broken arches and pillars, stone chairs, roots and red vines creeping over the stone",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w8-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark blue night jungle floor: dark blue-green leaves and ferns, white star-shaped night flowers, tiny glowing fireflies",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w8-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark blue night jungle floor: dark blue-green leaves and ferns, white star-shaped night flowers, tiny glowing fireflies",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w8-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark blue night forest: huge banyan trees with hanging aerial roots, moonlit blue leaves, white night flowers at their feet, tiny fireflies",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w8-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w8-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark blue night forest: huge banyan trees with hanging aerial roots, moonlit blue leaves, white night flowers at their feet, tiny fireflies",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w9-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a volcanic ground: black ash soil, cracked dark lava rock slabs with glowing orange cracks, a small smoking vent, red flowers",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w9-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a volcanic ground: black ash soil, cracked dark lava rock slabs with glowing orange cracks, a small smoking vent, red flowers",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w9-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. volcanic land: a tall dark basalt column rock with orange lava glow and steam, smoking vents, a dead twisted tree, basalt columns, a few green shoots and red flowers",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w9-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w9-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. volcanic land: a tall dark basalt column rock with orange lava glow and steam, smoking vents, a dead twisted tree, basalt columns, a few green shoots and red flowers",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10-near-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w10-near.webp",
+   "h": 1736,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark wet slate highland at night in the rain: dark jagged rocks, wet shining stone, stone steps, dry grass tufts",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10-near-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w10-near.webp",
+   "h": 1736,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark wet slate highland at night in the rain: dark jagged rocks, wet shining stone, stone steps, dry grass tufts",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10-mid-s25-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w10-mid.webp",
+   "h": 1302,
+   "strength": 0.25,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark rainy slate highland: jagged standing stones, stone stairs, wooden posts with rope nets and small blue lanterns, bare thorny branches, wet rocks",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w10-mid-s35-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w10-mid.webp",
+   "h": 1302,
+   "strength": 0.35,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. a dark rainy slate highland: jagged standing stones, stone stairs, wooden posts with rope nets and small blue lanterns, bare thorny branches, wet rocks",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

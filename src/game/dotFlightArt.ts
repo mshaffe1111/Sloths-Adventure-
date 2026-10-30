@@ -14,6 +14,7 @@ import { DOT_PROP_FRAMES } from './dotPropsData.ts';
 import { drawDotFrame, flyFrame, warmDot } from './dotSprite.ts';
 import { BLOOM, DOT, MIST, TOP, gustState, openingY, type BackName, type DotStage, type Nectar, type NetWall, type Thorn } from './dotFlightStage.ts';
 import type { DotFlight } from './dotFlight.ts';
+import { FONT_UI } from './fonts.ts';
 import { hudArtImage } from '../components/hud/painted.tsx';
 import { HUD_PIECES } from './hudAtlasData.ts';
 
@@ -1047,7 +1048,7 @@ function drawSlimHud(ctx: CanvasRenderingContext2D, fl: DotFlight, t: number, at
   ctx.moveTo(sx + 5, y + 16);
   ctx.lineTo(sx + 9, y + 6);
   ctx.stroke();
-  ctx.font = '700 12px Fredoka, sans-serif';
+  ctx.font = `700 12px ${FONT_UI}`;
   ctx.textBaseline = 'middle';
   woodText(ctx, String(fl.scratches), sx + 13, y + h / 2 + 1);
   ctx.restore();
@@ -1083,7 +1084,7 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
   ctx.roundRect(x + 26, y + 10, Math.max(4, (w - 36) * u), 10, 5);
   ctx.fill();
   // scratches: nine little marks
-  ctx.font = '700 11px Fredoka, sans-serif';
+  ctx.font = `700 11px ${FONT_UI}`;
   ctx.textBaseline = 'middle';
   woodText(ctx, 'Scratches', x + 9, y + 36);
   const tx = x + 66;
@@ -1104,7 +1105,7 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
   if (fl.silkGot.size > 0) {
     woodPanel(ctx, x + w + 14, y, 62, h);
     drawPiece(ctx, 'silkWide', x + w + 32, y + 25, 28);
-    ctx.font = '700 14px Fredoka, sans-serif';
+    ctx.font = `700 14px ${FONT_UI}`;
     woodText(ctx, `${fl.silkGot.size}/${fl.stage.silk.length}`, x + w + 48, y + 26);
   }
   ctx.restore();

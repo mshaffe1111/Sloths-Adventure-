@@ -20,6 +20,22 @@ for (const spec of stages) {
     await p.waitForTimeout(6000);
     const info = await p.evaluate(() => { let e = window.__engine; if (typeof e === "function") e = e(); return { W: e.currentStage.config.levelWidth, vw: e.camera.viewportWidth }; });
     let n = 0;
+    // (a climb: up the stage instead, Pokey stood on a ledge every half screen of height, bottom to top)
+    const up = await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e(); return e.currentStage.config.objectiveType === 'ascent'; });
+    if (up) {
+      const ledges = await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e(); return { vh: e.camera.viewportHeight, l: e.platforms.filter((q) => q.width >= 90).map((q) => [q.x + q.width / 2, q.y]).sort((a, b) => b[1] - a[1]) }; });
+      let last = Infinity;
+      for (const [x, y] of ledges.l) {
+        if (last - y < ledges.vh * step) continue;
+        last = y;
+        await p.evaluate(([x, y]) => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player; pl.x = x - pl.width / 2; pl.y = y - pl.height; pl.vx = 0; pl.vy = 0; pl.invincibleTimer = 0; }, [x, y]);
+        await p.waitForTimeout(900);
+        await p.screenshot({ path: `${out}/${id}${layout ? 'L' + layout : ''}-${o}-${String(n++).padStart(3, '0')}-y${Math.round(y)}.jpg`, type: 'jpeg', quality: 70 });
+      }
+      console.log(id, o, n, 'frames (climb)');
+      await ctx.close();
+      continue;
+    }
     for (let x = 40; x < info.W; x += Math.max(150, info.vw * step)) {
       await p.evaluate((x) => {
         let e = window.__engine; if (typeof e === "function") e = e(); const pl = e.player;

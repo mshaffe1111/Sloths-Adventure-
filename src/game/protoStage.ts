@@ -20,8 +20,9 @@ import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
+import type { W5Extras } from './w5Kit.ts';
 import { DOUBLE_RISE, JUMP_RISE, PHYS, reachGlide, reachJump, reachJumpHeld, SAFE } from './physics.ts';
-import { validateStage, type CheckGraph } from './levelCheck.ts';
+import { SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
@@ -55,8 +56,8 @@ import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, t
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '6-8' | '7-4';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '6-8': '6-8' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2' | '5-3' | '5-4' | '5-5' | '5-8' | '6-8' | '7-4';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2', '5-3': '5-3', '5-4': '5-4', '5-8': '5-8', '6-8': '6-8' };
 // 5-5 Caught in Silk (w5Stages.ts): the cocoons and the pouch scene
 HAND_STAGES['5-5'] = '5-5';
 // 7-4 The Way Down (Matt, 2026-10-29: not a climb; the floor crumbles into a slide seen from behind: w7Slide.ts)
@@ -92,6 +93,12 @@ export interface StageHint {
    * goes, done or not (engine.ts; QA 5-1, 2026-10-26: "Wide gap!" stayed up from the gap on to the next stumps)
    */
   passX?: number;
+  /**
+   * the thing this line teaches the first time (a mechanic, a creature, a hazard): said once on this device, in the first stage that
+   * reaches it, never again in a later stage (Matt's rule: a lesson line is said once per save). Without it the line is the stage's own
+   * (said the first time that stage is played)
+   */
+  firstOf?: string;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
@@ -327,9 +334,10 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const kd = dressStage({ world: w, stage: config.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
     if (kd.length) st.proto.kitDecor = kd;
   }
-  addDress(st, seed);
-  // water taught before it costs a life (LV-8)
-  return teachWater(st);
+  // water taught before it costs a life (LV-8); then the dressing, once the stage is final
+  const out = teachWater(st);
+  addDress(out, seed);
+  return out;
 }
 
 /** Worlds 1, 2 and 5: the dressing sets (artDress.ts dressSets), on any of their built stages (hand-built, World 2's, the new generator's) */
@@ -349,6 +357,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
   if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
+  // (5-8 Up the Bloom Trees: the kapok climb in World 5's bloom trees, its spiders and its dressing)
+  if (plan === '5-8') return buildKapok(config, seed, false, false, false, false, true);
   if (plan === '4-7') return buildLongDrop(config, seed);
   if (plan === '7-4') return buildSlideStage(config, seed);
   if (plan === '4-9') return buildAerie(config, seed);
@@ -688,7 +698,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         id: `seesaw-show-${ROOMS.length}`,
         left: onP(floor, edge - 150), right: { on: pit.id, at: 1, dx: 40 }, above: 420, below: SEE.pit + 10,
         pieces: kit, exit: id, beyond: { on: ledge.id, at: 0.5 }, ground: [floor.id, pit.id],
-        tips: { enter: 'The log holds that end down. Hop up the other end!' },
+        // (the seesaw's first room: the room shows the idea by itself, and Dot names what it shows; the move only after struggle)
+        tips: { enter: 'See? The log holds that end down.', nudge: 'That high end makes a step.', move: 'Hop up the other end!' },
+        mech: 'seesaw',
       });
       open(edge + SEE.w);
       run(R.r(260, 320));
@@ -704,7 +716,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       id: `seesaw-${ROOMS.length}`,
       left: onP(floor, logX - 60), right: { on: top.id, at: 0, dx: 60 }, above: 420, below: SEE.pit + 10,
       pieces: kit, exit: id, beyond: { on: top.id, at: 0.3 }, ground: [floor.id, pit.id],
-      tips: { enter: 'Too high! Push the log onto the near end.' },
+      // (the problem on walking in, never the answer: DOT-2)
+      tips: { enter: 'Too high! That log could help.', nudge: 'That log looks heavy.', move: 'Push the log onto the near end.' },
     });
     // down off the far end of the bank onto the floor again, and a dip to jump on the way on
     open(top.x + top.width);
@@ -751,7 +764,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         { kind: 'seesaw', id, at: onP(pit, pivot, -SEE.pit), w: SEE.w, rise, rest: 1 },
       ],
       exit: id, beyond: { on: top.id, at: 0.4 }, ground: [floor.id, pit.id, farFloor.id],
-      tips: { enter: "The log's on the far side. Push it back onto the far end!" },
+      tips: { enter: "The log's moved. Hmm, that won't tip now.", nudge: "The log's past the seesaw now.", move: 'Push it back onto the far end!' },
     });
     open(top.x + top.width);
     run(R.r(110, 150));
@@ -1927,8 +1940,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         // first stretch is crossable without it, the second only with it: the first room says what an acorn is for, the second that
         // this time it is needed. Both lines new, need Matt's approval)
         tips: first
-          ? { enter: 'The squirrels\' acorn tree! An acorn can fool the eagle.', hold: 'When it screeches, flick up to throw it. Keep running!' }
-          : { enter: 'Too far to run this time. Take an acorn!' },
+          ? { enter: "The squirrels' acorn tree, and that eagle!", hold: 'When it screeches, flick up to throw it.', nudge: 'An acorn could fool that eagle.', move: 'Take an acorn. Throw it when it screeches.' }
+          : { enter: 'Too far to run without an acorn.', nudge: 'That acorn tree again. Hmm.', move: 'Take an acorn!' },
+        // (Dot's lines: the problem on walking in, a nudge on struggle, the move only on Help: dotTips.ts)
+        mech: first ? 'acornDecoy' : undefined,
       });
       flower(oakX + 300, G - 34, 'hibiscus');
       // the rest of the stretch: a rock or two to hop once his hands are free, then the next bush
@@ -2746,8 +2761,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       left: onP(before, door - 30), right: onP(floor, door + span - 10), above: 400, below: 60,
       pieces: parts, exit: `roots${n}`, beyond: onP(floor, door + span - 30), ground,
       tips: two
-        ? { enter: 'Two stone plates this time.', hold: 'One pebble each. Tap to set it down.' }
-        : { enter: 'Roots! That stone plate opens them. Stepping off shuts them.', hold: 'Pebbles are heavy enough. Tap to set it down.', open: 'Held open!' },
+        ? { enter: 'Two stone plates this time.', hold: 'Tap to set it down.', nudge: 'Two plates. Two pebbles?', move: 'One pebble on each plate.' }
+        : { enter: 'Roots! Stepping off the plate shuts them.', hold: 'Tap to set it down.', open: 'Held open!', nudge: 'Something heavy could hold the plate.', move: 'Set a pebble on the plate.' },
+      mech: two ? undefined : 'plate',
     });
     run(R.r(90, 130));
     logHop(R.i(34, 44));
@@ -2811,8 +2827,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       left: onP(before, door - 30), right: { on: top.id, at: 0, dx: 80 }, above: high ? 520 : 440, below: 60,
       pieces: parts, exit: `way${n}`, beyond: { on: top.id, at: 0.35 }, ground,
       tips: high
-        ? { enter: 'The way up is up there somewhere, out of the light.', hold: 'From down here its light only reaches so high.', open: 'There it is!' }
-        : { enter: 'No glowworms down here, and that bank is too high. That little mushroom glows, though.', hold: 'It lights wherever it goes. Tap to set it down.', open: 'A ledge, in the light!' },
+        ? { enter: 'Somewhere up there, out of the light.', hold: 'From down here its light only reaches so high.', open: 'There it is!', nudge: 'Its light needs to be higher.', move: 'Carry it up onto the stone.' }
+        : { enter: 'Too dark, and that bank is too high.', hold: 'Tap to set it down.', open: 'A ledge, in the light!', nudge: 'That little mushroom glows.', move: 'Carry the mushroom. Its light finds ledges.' },
+      mech: high ? undefined : 'glow',
     });
     // the room's own dark, a glowworm by the door and one over the bank (standing still wakes them, but only the mushroom finds a ledge)
     roomDark(door - 140, top.x + 240, [[door + 30, G - 175], [top.x + 150, top.y - 170]]);
@@ -3233,9 +3250,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     const rock = block(past, past + 120, 40);
     flower(past + 60, G - 74, 'hibiscus');
     const tips: RoomSpec['tips'] =
-      kind === 'bell' ? { enter: "This old vine is wide awake. It won't let anyone by." }
-        : kind === 'pebble' ? { enter: 'Another one awake, and no bell this time.', hold: 'Pebbles clack when they land.' }
-          : { enter: 'Two of them, both awake.' };
+      kind === 'bell' ? { enter: 'This old vine is wide awake. Nobody gets by.', nudge: 'That bell looks loud.', move: 'Ring the bell. The vine turns to look.' }
+        : kind === 'pebble' ? { enter: 'Another one awake, and no bell this time.', hold: 'Pebbles clack when they land.', nudge: 'Any noise turns its head.', move: 'Throw a pebble past it. Then go.' }
+          : { enter: 'Two of them, both awake.', nudge: 'One clack each?', move: 'Throw a pebble past each one.' };
     ROOMS.push({
       id: `${kind === 'bell' ? 'vineBell' : kind === 'pebble' ? 'pebbles' : 'pebblesTwo'}-${n}`,
       // (the room ends past the last vine's reach: narrow enough for an upright phone)
@@ -3484,8 +3501,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       left: onP(before, door - 30), right: onP(floor, door + 830), above: 420, below: 60,
       pieces: parts, exit: `shroom${n}`, beyond: onP(floor, door + 820), ground: [floor.id],
       tips: first
-        ? { enter: 'Oh! I marked the right fern with a stone. A stone just like that one.', hold: 'Its light shows the stones. Find the twin.' }
-        : { enter: 'I marked this one too. Same kind of stone as the one by the door.' },
+        ? { enter: 'I marked the right fern with a stone.', hold: 'Its light shows the stones.', nudge: 'Look at the stone by the door.', move: 'Find its twin by a fern. Search there.' }
+        : { enter: 'I marked this one too.', nudge: 'Same stone as the one by the door.', move: 'Find its twin by a fern. Search there.' },
     });
     roomDark(door - 140, door + 900, [[door + 40, G - 175], [door + 560, G - 190]]);
     // (out of the room, a stone to hop)
@@ -4915,7 +4932,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
         exit: `lift${n}`,
         beyond: { on: top.id, at: 0.5 },
         ground: [floor.id, well.id],
-        tips: { enter: 'The capuchin took our stone. It loves mangoes!', hold: 'Tap by the capuchin to offer it.', open: 'Stone in, up you go!' },
+        tips: { enter: 'The capuchin took our stone!', hold: 'Tap by the capuchin to offer it.', open: 'Stone in, up you go!', nudge: 'Hmm. It looks hungry.', move: 'Bring it a mango. Tap by it.' },
+        mech: 'trader',
       });
       row(top.x + 60, top.x + 130, top.y - 34, 2, 'orchid');
       nest(top.x + top.width - 70, top, 'trade');
@@ -5207,7 +5225,7 @@ const MIST_LEAVES = 160;
 interface KnotPulley { tips: RoomTips; plats: number[] }
 /** 4-6: the seconds of the climb across the tree that its second pinwheel lift takes the place of (2026-10-28) */
 const PINWHEEL_AGAIN = 16;
-export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley! Fill the basket.', hold: 'Stand on the lift. Tap to drop it in.', open: 'Up you go!' };
+export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley!', hold: 'Stand on the lift. Tap to drop it in.', open: 'Up you go!', nudge: 'That basket looks empty.', move: 'Fill the basket to raise the lift.' };
 
 /**
  * 1-4 Up the Kapok: going up. Learn: climb a trunk to its branch, twice, straight up from the floor. Test: a zigzag of rope, branch and
@@ -5242,7 +5260,39 @@ export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley! Fill 
  * mist in turn; then the crown and the shrine. It is a long stage (stageSeconds('4-6'), four minutes). No glide is needed (4-7 is the
  * first stage that needs the leaf).
  */
-export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false): GeneratedStage & { proto: ProtoExtras } {
+/**
+ * 5-8 Up the Bloom Trees: World 5's extras for the bloom-tree climb (buildKapok's `bloom`): misty violet twilight (w5Mood), its spiders
+ * (w5Play.ts gates only the ones listed), and the garden's dressing from World 5's own painted pieces on the boughs (ferns, orchid
+ * sprouts, moss roots, a blossom), clear of every trunk, rope end and pickup; the silk it climbs above lying on the floor (a lump of silk,
+ * a cocoon, a wrapped stool). Pictures only: nothing here is stood on or hurts.
+ */
+function bloomExtras(P: Platform[], V: Vine[], ropes: Rope[], crown: Platform, spiders: Array<{ id: number }>, seed: number): W5Extras {
+  const R = stream(seed * 31 + 7);
+  const decor: NonNullable<W5Extras['decor']> = [];
+  const clear = (x: number, y: number, half: number) =>
+    V.every((v) => v.topY > y + 10 || v.bottomY < y - 10 || Math.abs(v.x - x) > half + 40) &&
+    ropes.every((r) => (Math.abs(r.g0 - y) > 12 && Math.abs(r.g1 - y) > 12) || (Math.abs(r.x0 - x) > half + 30 && Math.abs(r.x1 - x) > half + 30));
+  const BOUGH = ['fern', 'orchidSprout', 'mossRoot', 'orchidSprout2', 'blossom', 'mossRoot2'] as const;
+  let k = Math.floor(R.r(0, BOUGH.length));
+  for (const p of P) {
+    if (p === P[0] || p === crown || p.width < 200 || p.art) continue;
+    const at = [0.3, 0.7, 0.5].map((u) => p.x + p.width * u).find((x) => clear(x, p.y, 50));
+    if (at === undefined) continue;
+    const n = BOUGH[k++ % BOUGH.length];
+    decor.push({ n, x: Math.round(at), b: p.y + 6, w: n === 'fern' ? 110 : n.startsWith('moss') ? 100 : 64, ...(k % 2 ? { flip: true } : {}) });
+  }
+  // the silk below: what was caught on the floor of the bloom trees
+  const FLOOR = ['silkLump', 'cocoon', 'wrappedStool', 'silkLump'] as const;
+  let i = 0;
+  for (let fx = 560; fx < P[0].x + P[0].width - 200; fx += R.r(380, 560)) {
+    if (!clear(fx, P[0].y, 60)) continue;
+    const n = FLOOR[i++ % FLOOR.length];
+    decor.push({ n, x: Math.round(fx), b: P[0].y + 4, w: n === 'silkLump' ? 90 : n === 'cocoon' ? 70 : 60 });
+  }
+  return { mood: 'twilight', petals: false, spiders, decor };
+}
+
+export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false, bloom = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const W = KAPOK_W;
   const P: Platform[] = [];
@@ -5270,14 +5320,34 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     T.push(tree);
     V.push({ id: vid++, x, topY: perchY - 2, bottomY: groundY - 6, swaySpeed: 0.9, swayPhase: (x * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id });
   };
-  /** is there already a branch across this span within about a body's height and a half of y (above or below)? */
-  const blocked = (x0: number, x1: number, y: number) => P.some((p) => p !== P[0] && p.x < x1 + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130);
+  /**
+   * the air a puzzle room needs kept empty: over its basket and lift, where the acorn is thrown and the plank rides up (1-4, Matt
+   * 2026-10-29: "The 2nd basket on the 1-4 climb level is impossible. Has a platform that blocks the rock": the hops after a room were
+   * laid across it, about 300 up, over the high basket and the lift)
+   */
+  const air: { x0: number; x1: number; y0: number; y1: number }[] = [];
+  /** is there already a branch across this span within about a body's height and a half of y (above or below), or a room's air? */
+  const blocked = (x0: number, x1: number, y: number) =>
+    P.some((p) => p !== P[0] && p.x < x1 + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130) ||
+    air.some((a) => x0 < a.x1 && x1 > a.x0 && y > a.y0 && y < a.y1);
   const flower = (x: number, y: number, v: Collectible['botanicalVariant'] = 'orchid') =>
     C.push({ id: cid++, type: 'flower', botanicalVariant: v, x: Math.round(x), y: Math.round(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   const row = (x0: number, x1: number, y: number, n: number, v: Collectible['botanicalVariant'] = 'orchid') => {
     for (let i = 0; i < n; i++) flower(x0 + ((x1 - x0) * i) / Math.max(1, n - 1), y, v);
   };
+  /** 5-8: World 5's jumping spider on a wide bough (w5Stages.ts spider(): it crouches in full view, then rushes; a stomp or punch beats it) */
+  const spider = (x: number, surface: number, range: number) => {
+    const id = 500 + eid++;
+    E.push({
+      id, type: 'spider', x, y: surface - 12, vx: 0, vy: 0, width: 34, height: 22, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1, hitW: 60,
+      patrolMinX: x - range / 2, patrolMaxX: x + range / 2, attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0,
+      hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, edgeMinX: x - range / 2, edgeMaxX: x + range / 2, noThread: true,
+    } as Enemy);
+    spiders.push({ id });
+  };
+  const spiders: Array<{ id: number }> = [];
   const snake = (x: number, surface: number, range: number) => {
+    if (bloom) return spider(x, surface, range);
     E.push({
       id: eid++, type: 'snake', x, y: surface - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1,
       patrolMinX: x - range / 2, patrolMaxX: x + range / 2, attackCooldown: 2, telegraphTimer: 0, isAttacking: false,
@@ -5378,7 +5448,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
 
   // ---- 1-4's squirrels' lift (the shared puzzle kit, puzzleKit.ts: the counterweight basket and its lift), 2026-10-28
   /** only the kapok of 1-4 has the squirrels' lift (the bank houses, the sinkhole and the cliffs climb as they did) */
-  const squirrels = !village && !grotto && !cliff && !mist;
+  const squirrels = !village && !grotto && !cliff && !mist && !bloom;
   const ROOMS: RoomSpec[] = [];
   const onL = (p: Platform, ax: number, dy = 0): Anchor => ({ on: p.id, at: (ax - p.x) / p.width, ...(dy ? { dy } : {}) });
   /**
@@ -5412,6 +5482,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const near = (u: number) => (d === 1 ? floor.x + u : floor.x + floor.width - u);
     const stashX = near(90);
     const basketX = well.x - 40;
+    // (from past the basket to the lift's far side, from the room's top down to a body above the branch)
+    air.push({ x0: Math.min(basketX, well.x) - 90, x1: well.x + well.width + 30, y0: y - 440, y1: y - 40 });
     const n = ROOMS.length;
     const thing = knot ? 'stone' : 'acorn';
     ROOMS.push({
@@ -5431,8 +5503,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       beyond: { on: up.id, at: 0.5 },
       ground: [floor.id, well.id],
       tips: knot?.tips ?? (high
-        ? { enter: 'The basket hangs high this time.', hold: 'Stand on the lift. Flick up to throw!' }
-        : { enter: "The squirrels' lift! Fill the basket to raise it.", hold: 'Stand on the lift. Tap to drop it in.' }),
+        ? { enter: 'The basket hangs high this time.', hold: 'Stand on the lift. Flick up to throw!', nudge: 'Too high to reach. Throw?', move: 'Stand on the lift. Throw stones in.' }
+        : { enter: "The squirrels' lift! It won't rise.", hold: 'Stand on the lift. Tap to drop it in.', nudge: 'That basket looks empty.', move: 'Fill the basket to raise it.' }),
+      mech: knot || high ? undefined : 'pulley',
     });
     knot?.plats.push(floor.id, well.id, up.id);
     row(near(150), near(250), y - 34, 2, 'hibiscus');
@@ -5452,6 +5525,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     if (village) hint('Up through the village! Slide up a post to climb', 'Up through the village! Hold up on a post to climb', 'Up through the village! Hold up on a post to climb');
     else if (grotto) hint('Up the sinkhole, toward the moonlight! Slide up a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb');
     else if (mist) hint('Up toward the eagle nests, above the mist! Slide up a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb');
+    // (5-8: the lead's line, new 2026-10-29: climbing is World 1's, so it names the place, not the move)
+    else if (bloom) hint('Up the bloom trees, above the webs!', 'Up the bloom trees, above the webs!', 'Up the bloom trees, above the webs!');
     else if (cliff) hint('The ledge broke away! Climb back up. Slide up a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb');
     else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
     firstTrunkX = climb(Math.round(R.r(280, 320)), 4);
@@ -5477,15 +5552,17 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   // ---- Test: across and up, rope, branch and trunk, back and forth; a side trunk with a hollow
   beat('Test: zigzag up', () => {
     if (mist) hint('A rope! Stand by its post and jump straight up to grab it, then slide the way to go', 'A rope! Stand by its post and jump straight up to grab it, then hold the way to go', 'A rope! Stand by its post and jump straight up to grab it, then hold the way to go', cur.y + 10);
-    else hint('Jump up to the rope, then slide along it', 'Jump up to the rope, then hold the way to go', 'Jump up to the rope, then hold the way to go', cur.y + 10);
+    // (5-8: the ropes are World 1's, long learned: no tip, STAGE-RULES §1 "Dot is a guide")
+    else if (!bloom) hint('Jump up to the rope, then slide along it', 'Jump up to the rope, then hold the way to go', 'Jump up to the rope, then hold the way to go', cur.y + 10);
     // (4-1 sets off up the cliff's wide ledges by hops, 2026-10-28: the tree's first rope is 4-6's)
     if (cliff) hops(2, true);
     else rope(Math.round(R.r(390, 440)), Math.round(R.r(300, 360)));
     climb(Math.round(R.r(270, 320)));
     // (a long branch: the side trunk stands at its near end, the way on at its far end)
     rope(Math.round(R.r(390, 450)), Math.round(R.r(410, 450)));
-    // the secret: a side trunk at the near end of this branch, up to a dead end, with a hollow halfway (a golden seed inside)
-    {
+    // the secret: a side trunk at the near end of this branch, up to a dead end, with a hollow halfway (a golden seed inside; World 1's
+    // seeds, so not in 5-8's bloom trees)
+    if (!bloom) {
       const sx = Math.round(dir === 1 ? cur.x + 60 : cur.x + cur.width - 60);
       const h = Math.round(R.r(380, 420));
       trunk(sx, cur.y, cur.y - h);
@@ -5534,7 +5611,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
       // (the cliff has its falling rocks instead)
-      if (n >= 2 && cur.width >= 320 && R.chance(climb14?.snakes ?? 0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      if (n >= 2 && cur.width >= 320 && R.chance(climb14?.snakes ?? (bloom ? 0.8 : 0.4)) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -5594,7 +5671,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       exit: `lift${n}`,
       beyond: { on: up.id, at: 0.5 },
       ground: [floor.id, well.id],
-      tips: { enter: 'The shutter stops the wind. Pinwheels wind lifts!', open: 'Wound right up!' },
+      tips: { enter: 'The lift needs winding. No wind in here.', open: 'Wound right up!', nudge: 'That shutter holds the wind back.', move: 'Pull the lever. Let the wind in.' },
+      mech: 'pinwheel',
     });
     row(up.x + 70, up.x + up.width - 70, up.y - 34, 3, 'orchid');
     // (a quick player: the walk in, the lever, and two or three gusts on the lift while the winch takes him up)
@@ -6202,7 +6280,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     else a.width = gr - a.x;
     return true;
   };
-  if (cliff || mist) {
+  if (cliff || mist || bloom) {
     const CATCH = { max: 400, rises: [150, 165, 135, 175], reach: DOUBLE_RISE + 15 };
     const made = new Set<number>();
     const misty = new Set(mistSpots.flatMap((m) => m.hides));
@@ -6289,6 +6367,29 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   // the bank's face rises from the floor to just under the top porch, where the village opens onto the sky
   const bankWall = village ? { x0: 0, x1: W, top: crown.y + 40, bottom: floorY + 10 } : undefined;
   const exitX = Math.round(crown.x + crown.width - 140);
+  // 5-8: each spider's patch kept SAFE_APPROACH (and 30 more) clear of every flag, the start and the shrine within 400 px of its height
+  // (levelCheck's fairness rule), on the widest stretch of its bough that is; one with under 140 px left is taken away
+  if (bloom) {
+    const spots = [{ x: 200, y: floorY }, ...checkpoints, { x: exitX, y: crown.y }];
+    for (const e of [...E]) {
+      if (e.type !== 'spider') continue;
+      let parts: Array<[number, number]> = [[e.patrolMinX, e.patrolMaxX]];
+      for (const q of spots) {
+        if (Math.abs(e.y - q.y) >= 400) continue;
+        const a = q.x - SAFE_APPROACH - 30, b = q.x + SAFE_APPROACH + 30;
+        parts = parts.flatMap(([u, v]) => (v <= a || u >= b ? [[u, v]] : [[u, a], [b, v]].filter(([m, n]) => n - m > 0)) as Array<[number, number]>);
+      }
+      const best = parts.sort((p1, p2) => p2[1] - p2[0] - (p1[1] - p1[0]))[0];
+      if (!best || best[1] - best[0] < 140) {
+        E.splice(E.indexOf(e), 1);
+        spiders.splice(spiders.findIndex((k) => k.id === e.id), 1);
+        continue;
+      }
+      e.patrolMinX = e.edgeMinX = Math.round(best[0]);
+      e.patrolMaxX = e.edgeMaxX = Math.round(best[1]);
+      e.x = Math.round((best[0] + best[1]) / 2);
+    }
+  }
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crown.y - 30, collected: false, bobPhase: 0 });
   cid = heartsAtFlags(C, checkpoints, cid);
 
@@ -6318,6 +6419,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       hints, covers: [], beats, movedPickups, hollows, ...(catches.length ? { catches } : {}), ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
       ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [], rockTip: ROCKS_LOOSE } } : {}),
       ...(mist ? { w4: { patience: mistSpots, nests, floor: { y: floorY, trunkX: firstTrunkX }, ...(rocks.length ? { rocks, rockTip: ROCKS_LOOSE } : {}) } } : {}),
+      ...(bloom ? { w5: bloomExtras(P, V, ROPES, crown, spiders, seed) } : {}),
     },
   };
   // (the catch branches, judged by the level check itself: one that lets any place be reached in fewer moves than without the catches

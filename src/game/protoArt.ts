@@ -5,6 +5,10 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
+import { drawCrumbleTile } from './crumbleArt.ts';
+import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
+import { drawW7Face } from './w7FaceArt.ts';
+import { shakeOffset } from './spanArt.ts';
 import { drawFallsPillar } from './w4FallsArt.ts';
 import type { Collectible, Platform } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
@@ -32,6 +36,8 @@ let kitWorld = 1;
 export function setKitWorld(w: number) {
   kitWorld = hasKit(w) ? w : 1;
 }
+/** a step down to the next bank this short (px) is a plinth's: its painted end stops at the lower bank's top with no fade */
+const SHORT_STEP = 60;
 let groundOn = false;
 /** whether this stage paints its banks (engine.ts paintKit): the drawn ground then leaves them to the painted soil (bankPainted) */
 export function setGroundPaint(on: boolean) {
@@ -266,6 +272,8 @@ const LIANA_THICK = 15;
  */
 export function drawSwingLianaArt(ctx: CanvasRenderingContext2D, v: { x: number; topY: number; bottomY: number; id: number }, ang: number): boolean {
   if (!protoArtReady()) return false;
+  // (World 7: a stone lintel with its own knotted liana, not the leafy clump: w7TempleArt.ts)
+  if (kitWorld === 7 && drawW7SwingLiana(ctx, v, ang)) return true;
   // World 2's painted rope (a coil at the top and a loop at the bottom) read as a noose, and World 9's is a swing seat on two ropes:
   // those worlds swing on World 1's jungle liana instead
   const borrow = SWING_LIANA_FROM_W1.has(kitWorld);
@@ -512,6 +520,7 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
  */
 export function drawBankArt(
   ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  high?: { foot: number; runTop: number; left: boolean; right: boolean },
 ): boolean {
   if (!protoArtReady()) return false;
   if (moss) {
@@ -540,7 +549,8 @@ export function drawBankArt(
     const step = right ? open.rightStep : open.leftStep;
     const face = endFace(w, x, p.y, bottom, right);
     if (step === undefined) return face;
-    const cut = step + 24;
+    // (a short step, a plinth: the face stops at the lower bank's top; the full end's fade into the air left a see-through box)
+    const cut = step - p.y < SHORT_STEP ? step : step + 24;
     const pts = face.filter((q) => q[1] < cut);
     return [...pts, [pts.length ? pts[pts.length - 1][0] : x, cut], [x + d, cut], [x + d, bottom]];
   };
@@ -562,7 +572,21 @@ export function drawBankArt(
     x1 = Math.min(x1, view.x1 + 20);
   }
   drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, viewBottom, view?.y0);
+  // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
+  // w7FaceArt.ts)
+  if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
   ctx.restore();
+  // (a World 7 high ledge is faced with the old temple's carved wall to its own edge, w7TempleArt.ts; the painted end then wraps its
+  // soil round the wall's corner, over the stone, where the soil's outline slopes back in: inside that outline the corner showed the
+  // backdrop through, the lead's QA 2026-10-29)
+  if (w === 7 && view && high !== undefined && !drawW7TempleWall(ctx, p, bottom, view, high.foot, viewBottom, high.runTop, high)) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(p.x, p.y, p.width, bottom - p.y);
+    ctx.clip();
+    drawW7Face(ctx, p, bottom, view);
+    ctx.restore();
+  }
   // the top lip, under the end pieces' own lip corners (`bare`: a pit's low step, too narrow for the end pieces, which are wider than it
   // and see-through below their rims: its soil keeps the end's wobbling face and the lip runs to its ends)
   const la = open.left && !open.bare ? p.x + 30 : p.x - 1;
@@ -577,11 +601,15 @@ export function drawBankArt(
     const x = right ? p.x + p.width : p.x;
     // (only an end on screen: a long bank's far end is thousands of units off)
     if (view && (x < view.x0 - 260 || x > view.x1 + 260)) return;
-    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : step + 26);
+    const short = step !== undefined && step - p.y < SHORT_STEP;
+    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : short ? step : step + 26, short ? 0 : undefined);
   };
   if (open.bare) return true;
   if (open.right) end(true, open.rightStep);
   if (open.left) end(false, open.leftStep);
+  // (a World 7 high ledge's corner over a drop: the lip rounds over it, the painted end cut just under the lip, over the soil wrap)
+  if (high?.right && !open.right && (!view || (p.x + p.width > view.x0 - 260 && p.x + p.width < view.x1 + 260))) drawEnd(ctx, w, p.x + p.width, p.y, true, p.y + 46, 18);
+  if (high?.left && !open.left && (!view || (p.x > view.x0 - 260 && p.x < view.x1 + 260))) drawEnd(ctx, w, p.x, p.y, false, p.y + 46, 18);
   return true;
 }
 
@@ -720,6 +748,21 @@ export interface ProtoSceneState {
   pillars?: boolean;
 }
 
+/** three painted brown vines hanging from a wall's lip down its face to the floor, each its own length and side */
+function drawWallVines(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number) {
+  // (the Hugging Face set's brown runs, w7TempleArt.ts; the kit's liana until they load)
+  if (drawW7WallVines(ctx, x, top, bottom)) return;
+  const { img, f } = frameOf('liana');
+  const h = bottom - top + 18;
+  for (const [dx, w, k, flip] of [[8, 44, 1, false], [30, 38, 0.86, true], [52, 34, 0.7, false]] as const) {
+    ctx.save();
+    ctx.translate(x + dx, top - 8);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(img, f.x, f.y, f.w, f.h, -w / 2, 0, w, h * k);
+    ctx.restore();
+  }
+}
+
 /**
  * The painted layer of the hand-built stage, drawn after the ground: the bank tops, the moss floors and the root wall over the drawn
  * ground, then the branches, perches, the rock and the log. Returns false (draw nothing) until the atlas is loaded.
@@ -771,12 +814,21 @@ export function drawProtoScene(
     };
     // the high canopy: a wall face on the side that faces the yard
     const isWall = banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
-    if (isWall) drawWallArt(ctx, p.x, p.y, banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6, 230);
+    // (a World 7 high ledge: its foot, the floor beside it, and whether no bank touches it at all)
+    const high = kitWorld === 7 ? highLedge(p, banks) : undefined;
+    // (World 7's high ledges are faced with the temple wall: no root wall beside it)
+    if (isWall && !high) drawWallArt(ctx, p.x, p.y, banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6, 230);
     // (a side whose neighbour is lower is a step down to it, not a drop)
     // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
     const floor = p.soil || p.mound ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
     const lower = (side: 'l' | 'r') => banks.find((q) => q !== p && q.y > p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2))?.y ?? floor;
     // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
+    // (a World 7 high ledge's sides over a floor HIGH_LEDGE or more below: the soil wraps round the wall's corner there, w7TempleArt.ts)
+    const drop = (side: 'l' | 'r') => {
+      const q = banks.find((o) => o !== p && (side === 'l' ? Math.abs(o.x + o.width - p.x) < 2 : Math.abs(p.x + p.width - o.x) < 2));
+      return !q || q.y - p.y >= HIGH_LEDGE;
+    };
+    const wall = high && { ...high, left: drop('l'), right: drop('r') };
     // (a bank beside a higher one runs its soil on 60 under that one's end: the higher end's curved face showed the backdrop through a
     // sliver, and the lower bank's closed end as a ruled line, at every step down; the higher bank, drawn after, covers the rest)
     const under = (side: 'l' | 'r') => banks.some((q) => q !== p && q.y < p.y - 2 && q.y + q.height >= p.y && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2));
@@ -792,7 +844,7 @@ export function drawProtoScene(
       ctx.clip();
       ctx.filter = 'brightness(1.16) saturate(1.12)';
     }
-    drawBankArt(ctx, box, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view);
+    drawBankArt(ctx, box, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view, wall || undefined);
     if (p.mound) ctx.restore();
   }
   shadeUpTo(-Infinity);
@@ -802,6 +854,13 @@ export function drawProtoScene(
     // (a vine hanging down a cliff is not a trunk: its stage draws it)
     if (v.vineType !== 'tree_climb' || v.rope || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
+    // (World 7's brown vines up the old walls: the story's "the vines on the old walls hung brown". A climb whose top meets a wall's
+    // top-left corner is drawn as three of the kit's painted brown vines hanging down the wall's face, not the pale climbing pillar,
+    // which stood half over the air like a pasted pane, QA 2026-10-29)
+    if (kitWorld === 7 && banks.some((q) => Math.abs(q.x - v.x) < 4 && Math.abs(q.y - v.topY) < 4)) {
+      drawWallVines(ctx, v.x, v.topY, bottom);
+      continue;
+    }
     const tw = 84;
     const th = (tw * tf.h) / tf.w;
     ctx.save();
@@ -821,6 +880,11 @@ export function drawProtoScene(
     if (trunk && p.width <= 220) {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);
       continue;
+    }
+    // (World 7's crumbling tiles: Matt's painted crumble frames, crumbleArt.ts; their falling pieces are zoneArt's drawCrumbleTiles)
+    if (p.crumbleAfter !== undefined && !p.broken) {
+      const [dx, dy] = shakeOffset(p, t);
+      if (drawCrumbleTile(ctx, p, t, dx, dy)) continue;
     }
     if (p.type === 'fragile') {
       if (p.broken) {

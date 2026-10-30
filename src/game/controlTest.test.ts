@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { buildProtoStage, G } from './protoStage.ts';
 import { reachJump } from './physics.ts';
 import { maxRise } from './protoCheck.ts';
-import { ctestEnabled } from './playRecorder.ts';
+import { ctestEnabled, qaBuild } from './playRecorder.ts';
 import { validateStage } from './levelCheck.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -12,8 +12,16 @@ const cfg = {
   levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
 } as LevelConfig;
 
-test('control test: off unless the address asks for it', () => {
+test('control test: off unless the address asks for it (#ctest or ?ctest=1), and then on in any build, the live site too', () => {
   assert.equal(ctestEnabled(), false);
+  assert.equal(qaBuild(), false);
+  const g = globalThis as unknown as { location?: unknown };
+  const was = g.location;
+  g.location = { hash: '#ctest', search: '' };
+  assert.equal(ctestEnabled(), true, 'the testers\' link opens it on the live site');
+  g.location = { hash: '', search: '?level=1-2' };
+  assert.equal(ctestEnabled(), false, 'the full game is unaffected');
+  g.location = was;
 });
 
 const SEEDS = Array.from({ length: 40 }, (_, i) => 1 + i * 7919);

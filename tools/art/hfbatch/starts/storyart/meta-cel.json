@@ -1,0 +1,3102 @@
+{
+ "cel-da.kneel_tie": {
+  "scale": 4.0,
+  "ox": 84,
+  "oy": 262,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   0,
+   1135,
+   214,
+   165
+  ],
+  "cel": {
+   "a": 1,
+   "x": 0,
+   "y": 1135,
+   "w": 214,
+   "h": 165,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-da.lean_rest": {
+  "scale": 4.0,
+  "ox": 98,
+  "oy": 226,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   417,
+   614,
+   207,
+   174
+  ],
+  "cel": {
+   "a": 1,
+   "x": 417,
+   "y": 614,
+   "w": 207,
+   "h": 174,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-da.reach_slump": {
+  "scale": 4.0,
+  "ox": 100,
+  "oy": 270,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   316,
+   1135,
+   206,
+   163
+  ],
+  "cel": {
+   "a": 1,
+   "x": 316,
+   "y": 1135,
+   "w": 206,
+   "h": 163,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-da.side_by_side": {
+  "scale": 4.0,
+  "ox": 240,
+  "oy": 186,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   748,
+   243,
+   136,
+   184
+  ],
+  "cel": {
+   "a": 1,
+   "x": 748,
+   "y": 243,
+   "w": 136,
+   "h": 184,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-da.tie_closeup": {
+  "scale": 3.608810572687225,
+  "ox": 104,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   242,
+   0,
+   226,
+   227
+  ],
+  "cel": {
+   "a": 1,
+   "x": 242,
+   "y": 0,
+   "w": 226,
+   "h": 227,
+   "f": 0,
+   "c": "raw"
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-db.side_by_side": {
+  "scale": 4.0,
+  "ox": 132,
+  "oy": 174,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   0,
+   243,
+   190,
+   187
+  ],
+  "cel": {
+   "a": 1,
+   "x": 0,
+   "y": 243,
+   "w": 190,
+   "h": 187,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-db.tie_stand": {
+  "scale": 4.0,
+  "ox": 102,
+  "oy": 210,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1101,
+   432,
+   205,
+   178
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1101,
+   "y": 432,
+   "w": 205,
+   "h": 178,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-face.beam": {
+  "scale": 3.919617224880383,
+  "ox": 102,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1287,
+   0,
+   209,
+   209
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1287,
+   "y": 0,
+   "w": 209,
+   "h": 209,
+   "f": 0,
+   "c": "b"
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-face.drowsy": {
+  "scale": 3.775115207373272,
+  "ox": 102,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   0,
+   0,
+   217,
+   217
+  ],
+  "cel": {
+   "a": 0,
+   "x": 0,
+   "y": 0,
+   "w": 217,
+   "h": 217,
+   "f": 0,
+   "c": "b"
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-face.weary": {
+  "scale": 3.919617224880383,
+  "ox": 87,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   637,
+   219,
+   217,
+   209
+  ],
+  "cel": {
+   "a": 0,
+   "x": 637,
+   "y": 219,
+   "w": 217,
+   "h": 209,
+   "f": 0,
+   "c": "b"
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gb.stare": {
+  "scale": 4.476502732240437,
+  "ox": 87,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   702,
+   1893,
+   190,
+   183
+  ],
+  "cel": {
+   "a": 2,
+   "x": 702,
+   "y": 1893,
+   "w": 190,
+   "h": 183,
+   "f": 1,
+   "c": "b"
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gc.hand": {
+  "scale": 4.0,
+  "ox": 74,
+  "oy": 30,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1259,
+   810,
+   219,
+   223
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1259,
+   "y": 810,
+   "w": 219,
+   "h": 223,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.dim": {
+  "scale": 3.1507692307692308,
+  "ox": 41,
+  "oy": 36,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   302,
+   0,
+   299,
+   281
+  ],
+  "cel": {
+   "a": 2,
+   "x": 302,
+   "y": 0,
+   "w": 299,
+   "h": 281,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.glare": {
+  "scale": 3.2825087108013937,
+  "ox": 41,
+  "oy": 32,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1123,
+   0,
+   287,
+   271
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1123,
+   "y": 0,
+   "w": 287,
+   "h": 271,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.lids": {
+  "scale": 3.109174917491749,
+  "ox": 41,
+  "oy": 95,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1383,
+   283,
+   303,
+   266
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1383,
+   "y": 283,
+   "w": 303,
+   "h": 266,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.narrow": {
+  "scale": 3.182702702702703,
+  "ox": 41,
+  "oy": 34,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   603,
+   0,
+   296,
+   279
+  ],
+  "cel": {
+   "a": 2,
+   "x": 603,
+   "y": 0,
+   "w": 296,
+   "h": 279,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.ready_a": {
+  "scale": 3.1194701986754967,
+  "ox": 41,
+  "oy": 79,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1412,
+   0,
+   302,
+   270
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1412,
+   "y": 0,
+   "w": 302,
+   "h": 270,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.ready_b": {
+  "scale": 3.1194701986754967,
+  "ox": 41,
+  "oy": 82,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   0,
+   283,
+   302,
+   269
+  ],
+  "cel": {
+   "a": 2,
+   "x": 0,
+   "y": 283,
+   "w": 302,
+   "h": 269,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.ready_c": {
+  "scale": 3.1402666666666668,
+  "ox": 41,
+  "oy": 39,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   0,
+   0,
+   300,
+   281
+  ],
+  "cel": {
+   "a": 2,
+   "x": 0,
+   "y": 0,
+   "w": 300,
+   "h": 281,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.shut": {
+  "scale": 3.109174917491749,
+  "ox": 41,
+  "oy": 85,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   609,
+   283,
+   303,
+   269
+  ],
+  "cel": {
+   "a": 2,
+   "x": 609,
+   "y": 283,
+   "w": 303,
+   "h": 269,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gn.sleep_b": {
+  "scale": 3.0989473684210527,
+  "ox": 41,
+  "oy": 94,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1077,
+   283,
+   304,
+   267
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1077,
+   "y": 283,
+   "w": 304,
+   "h": 267,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gp.calm": {
+  "scale": 3.4133333333333336,
+  "ox": 125,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   238,
+   810,
+   227,
+   240
+  ],
+  "cel": {
+   "a": 2,
+   "x": 238,
+   "y": 810,
+   "w": 227,
+   "h": 240,
+   "f": 0,
+   "c": "b"
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.box_sit": {
+  "scale": 4.0,
+  "ox": 288,
+  "oy": 362,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1730,
+   2254,
+   112,
+   140
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1730,
+   "y": 2254,
+   "w": 112,
+   "h": 140,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.giggle": {
+  "scale": 4.0,
+  "ox": 312,
+  "oy": 278,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1549,
+   2080,
+   100,
+   161
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1549,
+   "y": 2080,
+   "w": 100,
+   "h": 161,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.hand_chest": {
+  "scale": 4.0,
+  "ox": 312,
+  "oy": 274,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1337,
+   2080,
+   100,
+   162
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1337,
+   "y": 2080,
+   "w": 100,
+   "h": 162,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.hum_sit": {
+  "scale": 4.0,
+  "ox": 282,
+  "oy": 330,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1248,
+   2254,
+   115,
+   148
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1248,
+   "y": 2254,
+   "w": 115,
+   "h": 148,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.laugh": {
+  "scale": 4.0,
+  "ox": 306,
+  "oy": 270,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   895,
+   2080,
+   103,
+   163
+  ],
+  "cel": {
+   "a": 2,
+   "x": 895,
+   "y": 2080,
+   "w": 103,
+   "h": 163,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.look_up": {
+  "scale": 4.0,
+  "ox": 346,
+  "oy": 254,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   326,
+   2080,
+   83,
+   167
+  ],
+  "cel": {
+   "a": 2,
+   "x": 326,
+   "y": 2080,
+   "w": 83,
+   "h": 167,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.point": {
+  "scale": 4.0,
+  "ox": 252,
+  "oy": 282,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   0,
+   2254,
+   130,
+   160
+  ],
+  "cel": {
+   "a": 2,
+   "x": 0,
+   "y": 2254,
+   "w": 130,
+   "h": 160,
+   "f": -1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.stand_hands": {
+  "scale": 4.0,
+  "ox": 320,
+  "oy": 258,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   542,
+   2080,
+   96,
+   166
+  ],
+  "cel": {
+   "a": 2,
+   "x": 542,
+   "y": 2080,
+   "w": 96,
+   "h": 166,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.water": {
+  "scale": 4.0,
+  "ox": 222,
+  "oy": 350,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1487,
+   2254,
+   145,
+   143
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1487,
+   "y": 2254,
+   "w": 145,
+   "h": 143,
+   "f": -1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.wave": {
+  "scale": 4.0,
+  "ox": 260,
+  "oy": 282,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   132,
+   2254,
+   126,
+   160
+  ],
+  "cel": {
+   "a": 2,
+   "x": 132,
+   "y": 2254,
+   "w": 126,
+   "h": 160,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gr.wave_talk": {
+  "scale": 4.0,
+  "ox": 260,
+  "oy": 282,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1907,
+   2080,
+   126,
+   160
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1907,
+   "y": 2080,
+   "w": 126,
+   "h": 160,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.letter": {
+  "scale": 4.0,
+  "ox": 166,
+  "oy": 170,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1171,
+   1700,
+   173,
+   188
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1171,
+   "y": 1700,
+   "w": 173,
+   "h": 188,
+   "f": -1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.reach_a": {
+  "scale": 4.0,
+  "ox": 76,
+  "oy": 122,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   718,
+   1493,
+   218,
+   200
+  ],
+  "cel": {
+   "a": 2,
+   "x": 718,
+   "y": 1493,
+   "w": 218,
+   "h": 200,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.scout": {
+  "scale": 4.0,
+  "ox": 152,
+  "oy": 142,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1592,
+   1493,
+   180,
+   195
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1592,
+   "y": 1493,
+   "w": 180,
+   "h": 195,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.sit": {
+  "scale": 4.0,
+  "ox": 210,
+  "oy": 158,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   157,
+   1700,
+   151,
+   191
+  ],
+  "cel": {
+   "a": 2,
+   "x": 157,
+   "y": 1700,
+   "w": 151,
+   "h": 191,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.sorrow": {
+  "scale": 4.0,
+  "ox": 240,
+  "oy": 90,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1451,
+   1275,
+   136,
+   208
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1451,
+   "y": 1275,
+   "w": 136,
+   "h": 208,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.sorrow_b": {
+  "scale": 4.0,
+  "ox": 228,
+  "oy": 110,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   420,
+   1493,
+   142,
+   203
+  ],
+  "cel": {
+   "a": 2,
+   "x": 420,
+   "y": 1493,
+   "w": 142,
+   "h": 203,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.stand": {
+  "scale": 4.0,
+  "ox": 210,
+  "oy": 134,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1092,
+   1493,
+   151,
+   197
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1092,
+   "y": 1493,
+   "w": 151,
+   "h": 197,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.stand_m": {
+  "scale": 4.0,
+  "ox": 138,
+  "oy": 134,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1245,
+   1493,
+   187,
+   197
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1245,
+   "y": 1493,
+   "w": 187,
+   "h": 197,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.tea": {
+  "scale": 4.0,
+  "ox": 248,
+  "oy": 146,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1774,
+   1493,
+   132,
+   194
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1774,
+   "y": 1493,
+   "w": 132,
+   "h": 194,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.walk_a": {
+  "scale": 4.0,
+  "ox": 200,
+  "oy": 142,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1434,
+   1493,
+   156,
+   195
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1434,
+   "y": 1493,
+   "w": 156,
+   "h": 195,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gv.wipe_eye": {
+  "scale": 4.0,
+  "ox": 210,
+  "oy": 102,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   0,
+   1493,
+   151,
+   205
+  ],
+  "cel": {
+   "a": 2,
+   "x": 0,
+   "y": 1493,
+   "w": 151,
+   "h": 205,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gy.smile": {
+  "scale": 4.0,
+  "ox": 176,
+  "oy": 46,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1016,
+   1053,
+   168,
+   219
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1016,
+   "y": 1053,
+   "w": 168,
+   "h": 219,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gy.stand": {
+  "scale": 4.0,
+  "ox": 210,
+  "oy": 134,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1092,
+   1493,
+   151,
+   197
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1092,
+   "y": 1493,
+   "w": 151,
+   "h": 197,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gy.stand_b": {
+  "scale": 4.0,
+  "ox": 208,
+  "oy": 126,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   938,
+   1493,
+   152,
+   199
+  ],
+  "cel": {
+   "a": 2,
+   "x": 938,
+   "y": 1493,
+   "w": 152,
+   "h": 199,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-gy.turn_away": {
+  "scale": 4.0,
+  "ox": 206,
+  "oy": 90,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1296,
+   1275,
+   153,
+   208
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1296,
+   "y": 1275,
+   "w": 153,
+   "h": 208,
+   "f": -1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.arm_around": {
+  "scale": 4.0,
+  "ox": 142,
+  "oy": 158,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   915,
+   0,
+   185,
+   191
+  ],
+  "cel": {
+   "a": 1,
+   "x": 915,
+   "y": 0,
+   "w": 185,
+   "h": 191,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.cheek_glad": {
+  "scale": 4.0,
+  "ox": 224,
+  "oy": 162,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1258,
+   0,
+   144,
+   190
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1258,
+   "y": 0,
+   "w": 144,
+   "h": 190,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.heart_hands": {
+  "scale": 4.0,
+  "ox": 176,
+  "oy": 174,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   192,
+   243,
+   168,
+   187
+  ],
+  "cel": {
+   "a": 1,
+   "x": 192,
+   "y": 243,
+   "w": 168,
+   "h": 187,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.hug_a": {
+  "scale": 4.0,
+  "ox": 230,
+  "oy": 186,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1094,
+   243,
+   141,
+   184
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1094,
+   "y": 243,
+   "w": 141,
+   "h": 184,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.hug_b": {
+  "scale": 4.0,
+  "ox": 236,
+  "oy": 154,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   634,
+   0,
+   138,
+   192
+  ],
+  "cel": {
+   "a": 1,
+   "x": 634,
+   "y": 0,
+   "w": 138,
+   "h": 192,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.hug_c": {
+  "scale": 4.0,
+  "ox": 204,
+  "oy": 162,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1102,
+   0,
+   154,
+   190
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1102,
+   "y": 0,
+   "w": 154,
+   "h": 190,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.nuzzle": {
+  "scale": 4.0,
+  "ox": 182,
+  "oy": 178,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   362,
+   243,
+   165,
+   186
+  ],
+  "cel": {
+   "a": 1,
+   "x": 362,
+   "y": 243,
+   "w": 165,
+   "h": 186,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.sit_hug": {
+  "scale": 4.0,
+  "ox": 146,
+  "oy": 234,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1644,
+   614,
+   183,
+   172
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1644,
+   "y": 614,
+   "w": 183,
+   "h": 172,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-hug.stand_close": {
+  "scale": 4.0,
+  "ox": 176,
+  "oy": 186,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1237,
+   243,
+   168,
+   184
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1237,
+   "y": 243,
+   "w": 168,
+   "h": 184,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.bow": {
+  "scale": 4.0,
+  "ox": 276,
+  "oy": 306,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   260,
+   2254,
+   118,
+   154
+  ],
+  "cel": {
+   "a": 2,
+   "x": 260,
+   "y": 2254,
+   "w": 118,
+   "h": 154,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.cap_in_hand": {
+  "scale": 4.0,
+  "ox": 284,
+  "oy": 326,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1132,
+   2254,
+   114,
+   149
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1132,
+   "y": 2254,
+   "w": 114,
+   "h": 149,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.hands_clasped": {
+  "scale": 4.0,
+  "ox": 336,
+  "oy": 262,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   640,
+   2080,
+   88,
+   165
+  ],
+  "cel": {
+   "a": 2,
+   "x": 640,
+   "y": 2080,
+   "w": 88,
+   "h": 165,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.hopeful": {
+  "scale": 4.0,
+  "ox": 310,
+  "oy": 190,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1216,
+   1893,
+   101,
+   183
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1216,
+   "y": 1893,
+   "w": 101,
+   "h": 183,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.lantern_look": {
+  "scale": 4.0,
+  "ox": 228,
+  "oy": 202,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1625,
+   1893,
+   142,
+   180
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1625,
+   "y": 1893,
+   "w": 142,
+   "h": 180,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.lantern_walk": {
+  "scale": 4.0,
+  "ox": 242,
+  "oy": 234,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   0,
+   2080,
+   135,
+   172
+  ],
+  "cel": {
+   "a": 2,
+   "x": 0,
+   "y": 2080,
+   "w": 135,
+   "h": 172,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.mend_coat": {
+  "scale": 4.0,
+  "ox": 256,
+  "oy": 222,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1913,
+   1893,
+   128,
+   175
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1913,
+   "y": 1893,
+   "w": 128,
+   "h": 175,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.peek_door": {
+  "scale": 4.0,
+  "ox": 394,
+  "oy": 246,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   137,
+   2080,
+   59,
+   169
+  ],
+  "cel": {
+   "a": 2,
+   "x": 137,
+   "y": 2080,
+   "w": 59,
+   "h": 169,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.salute_a": {
+  "scale": 4.0,
+  "ox": 276,
+  "oy": 190,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1096,
+   1893,
+   118,
+   183
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1096,
+   "y": 1893,
+   "w": 118,
+   "h": 183,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.salute_nervous": {
+  "scale": 4.0,
+  "ox": 276,
+  "oy": 198,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1403,
+   1893,
+   118,
+   181
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1403,
+   "y": 1893,
+   "w": 118,
+   "h": 181,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.sew_table": {
+  "scale": 4.0,
+  "ox": 204,
+  "oy": 270,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1181,
+   2080,
+   154,
+   163
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1181,
+   "y": 2080,
+   "w": 154,
+   "h": 163,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.shrug": {
+  "scale": 4.0,
+  "ox": 186,
+  "oy": 262,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   730,
+   2080,
+   163,
+   165
+  ],
+  "cel": {
+   "a": 2,
+   "x": 730,
+   "y": 2080,
+   "w": 163,
+   "h": 165,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.stand_worry": {
+  "scale": 4.0,
+  "ox": 312,
+  "oy": 202,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1523,
+   1893,
+   100,
+   180
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1523,
+   "y": 1893,
+   "w": 100,
+   "h": 180,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-lp.tray_walk": {
+  "scale": 4.0,
+  "ox": 254,
+  "oy": 254,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   411,
+   2080,
+   129,
+   167
+  ],
+  "cel": {
+   "a": 2,
+   "x": 411,
+   "y": 2080,
+   "w": 129,
+   "h": 167,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mb.idle": {
+  "scale": 4.0,
+  "ox": 306,
+  "oy": 238,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   0,
+   791,
+   103,
+   171
+  ],
+  "cel": {
+   "a": 1,
+   "x": 0,
+   "y": 791,
+   "w": 103,
+   "h": 171,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mb.run_a": {
+  "scale": 4.0,
+  "ox": 246,
+  "oy": 226,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   187,
+   614,
+   133,
+   174
+  ],
+  "cel": {
+   "a": 1,
+   "x": 187,
+   "y": 614,
+   "w": 133,
+   "h": 174,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mb.run_b": {
+  "scale": 4.0,
+  "ox": 244,
+  "oy": 234,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1239,
+   614,
+   134,
+   172
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1239,
+   "y": 614,
+   "w": 134,
+   "h": 172,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mb.walk_a": {
+  "scale": 4.0,
+  "ox": 286,
+  "oy": 238,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   105,
+   791,
+   113,
+   171
+  ],
+  "cel": {
+   "a": 1,
+   "x": 105,
+   "y": 791,
+   "w": 113,
+   "h": 171,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mb.walk_b": {
+  "scale": 4.0,
+  "ox": 284,
+  "oy": 246,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   109,
+   964,
+   114,
+   169
+  ],
+  "cel": {
+   "a": 1,
+   "x": 109,
+   "y": 964,
+   "w": 114,
+   "h": 169,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mc.idle": {
+  "scale": 4.0,
+  "ox": 282,
+  "oy": 238,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1829,
+   614,
+   115,
+   171
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1829,
+   "y": 614,
+   "w": 115,
+   "h": 171,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mc.run_a": {
+  "scale": 4.0,
+  "ox": 240,
+  "oy": 242,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1362,
+   791,
+   136,
+   170
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1362,
+   "y": 791,
+   "w": 136,
+   "h": 170,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mc.run_b": {
+  "scale": 4.0,
+  "ox": 230,
+  "oy": 250,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   458,
+   964,
+   141,
+   168
+  ],
+  "cel": {
+   "a": 1,
+   "x": 458,
+   "y": 964,
+   "w": 141,
+   "h": 168,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mc.sing_reach": {
+  "scale": 4.0,
+  "ox": 224,
+  "oy": 250,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   816,
+   964,
+   144,
+   168
+  ],
+  "cel": {
+   "a": 1,
+   "x": 816,
+   "y": 964,
+   "w": 144,
+   "h": 168,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mc.walk_a": {
+  "scale": 4.0,
+  "ox": 268,
+  "oy": 246,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1500,
+   791,
+   122,
+   169
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1500,
+   "y": 791,
+   "w": 122,
+   "h": 169,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mc.walk_b": {
+  "scale": 4.0,
+  "ox": 250,
+  "oy": 246,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   1624,
+   791,
+   131,
+   169
+  ],
+  "cel": {
+   "a": 1,
+   "x": 1624,
+   "y": 791,
+   "w": 131,
+   "h": 169,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mx.kneel_sad": {
+  "scale": 4.0,
+  "ox": 258,
+  "oy": 310,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   265,
+   1302,
+   127,
+   153
+  ],
+  "cel": {
+   "a": 1,
+   "x": 265,
+   "y": 1302,
+   "w": 127,
+   "h": 153,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mx.petal_glow": {
+  "scale": 4.0,
+  "ox": 226,
+  "oy": 314,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   550,
+   1302,
+   143,
+   152
+  ],
+  "cel": {
+   "a": 1,
+   "x": 550,
+   "y": 1302,
+   "w": 143,
+   "h": 152,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mx.petal_wrist": {
+  "scale": 4.0,
+  "ox": 284,
+  "oy": 314,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   695,
+   1302,
+   114,
+   152
+  ],
+  "cel": {
+   "a": 1,
+   "x": 695,
+   "y": 1302,
+   "w": 114,
+   "h": 152,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mx.read_a": {
+  "scale": 4.0,
+  "ox": 252,
+  "oy": 302,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   0,
+   1302,
+   130,
+   155
+  ],
+  "cel": {
+   "a": 1,
+   "x": 0,
+   "y": 1302,
+   "w": 130,
+   "h": 155,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mx.read_cry": {
+  "scale": 4.0,
+  "ox": 250,
+  "oy": 306,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   132,
+   1302,
+   131,
+   154
+  ],
+  "cel": {
+   "a": 1,
+   "x": 132,
+   "y": 1302,
+   "w": 131,
+   "h": 154,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-mx.stand": {
+  "scale": 4.0,
+  "ox": 298,
+  "oy": 238,
+  "src": [
+   "src/assets/characters/cels-pair.webp",
+   536,
+   791,
+   107,
+   171
+  ],
+  "cel": {
+   "a": 1,
+   "x": 536,
+   "y": 791,
+   "w": 107,
+   "h": 171,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.bow_head": {
+  "scale": 4.0,
+  "ox": 352,
+  "oy": 234,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   703,
+   992,
+   80,
+   172
+  ],
+  "cel": {
+   "a": 0,
+   "x": 703,
+   "y": 992,
+   "w": 80,
+   "h": 172,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.box_sit_dream": {
+  "scale": 4.0,
+  "ox": 300,
+  "oy": 290,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1931,
+   992,
+   106,
+   158
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1931,
+   "y": 992,
+   "w": 106,
+   "h": 158,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.box_sit_smile": {
+  "scale": 4.0,
+  "ox": 286,
+  "oy": 290,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1816,
+   992,
+   113,
+   158
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1816,
+   "y": 992,
+   "w": 113,
+   "h": 158,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.box_sit_wind": {
+  "scale": 4.0,
+  "ox": 264,
+  "oy": 250,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1158,
+   992,
+   124,
+   168
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1158,
+   "y": 992,
+   "w": 124,
+   "h": 168,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.carve_wall": {
+  "scale": 4.0,
+  "ox": 202,
+  "oy": 146,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   162,
+   430,
+   155,
+   194
+  ],
+  "cel": {
+   "a": 0,
+   "x": 162,
+   "y": 430,
+   "w": 155,
+   "h": 194,
+   "f": -1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.chair_chin": {
+  "scale": 4.0,
+  "ox": 290,
+  "oy": 262,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1583,
+   992,
+   111,
+   165
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1583,
+   "y": 992,
+   "w": 111,
+   "h": 165,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.chair_wait": {
+  "scale": 4.0,
+  "ox": 294,
+  "oy": 206,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1561,
+   626,
+   109,
+   179
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1561,
+   "y": 626,
+   "w": 109,
+   "h": 179,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.chair_window": {
+  "scale": 4.0,
+  "ox": 160,
+  "oy": 118,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1634,
+   219,
+   176,
+   201
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1634,
+   "y": 219,
+   "w": 176,
+   "h": 201,
+   "f": -1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.cheer_fist": {
+  "scale": 4.0,
+  "ox": 240,
+  "oy": 210,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1807,
+   626,
+   136,
+   178
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1807,
+   "y": 626,
+   "w": 136,
+   "h": 178,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.content": {
+  "scale": 4.0,
+  "ox": 310,
+  "oy": 210,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   110,
+   812,
+   101,
+   178
+  ],
+  "cel": {
+   "a": 0,
+   "x": 110,
+   "y": 812,
+   "w": 101,
+   "h": 178,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.desk_write_a": {
+  "scale": 4.0,
+  "ox": 226,
+  "oy": 230,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   413,
+   992,
+   143,
+   173
+  ],
+  "cel": {
+   "a": 0,
+   "x": 413,
+   "y": 992,
+   "w": 143,
+   "h": 173,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.desk_write_b": {
+  "scale": 4.0,
+  "ox": 226,
+  "oy": 230,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   558,
+   992,
+   143,
+   173
+  ],
+  "cel": {
+   "a": 0,
+   "x": 558,
+   "y": 992,
+   "w": 143,
+   "h": 173,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.fume": {
+  "scale": 4.0,
+  "ox": 196,
+  "oy": 206,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1279,
+   626,
+   158,
+   179
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1279,
+   "y": 626,
+   "w": 158,
+   "h": 179,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.happy_tears": {
+  "scale": 4.0,
+  "ox": 258,
+  "oy": 178,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1447,
+   430,
+   127,
+   186
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1447,
+   "y": 430,
+   "w": 127,
+   "h": 186,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.hips": {
+  "scale": 4.0,
+  "ox": 280,
+  "oy": 182,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1668,
+   430,
+   116,
+   185
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1668,
+   "y": 430,
+   "w": 116,
+   "h": 185,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.holler": {
+  "scale": 4.0,
+  "ox": 194,
+  "oy": 226,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   0,
+   992,
+   159,
+   174
+  ],
+  "cel": {
+   "a": 0,
+   "x": 0,
+   "y": 992,
+   "w": 159,
+   "h": 174,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.hum": {
+  "scale": 4.0,
+  "ox": 308,
+  "oy": 226,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   161,
+   992,
+   102,
+   174
+  ],
+  "cel": {
+   "a": 0,
+   "x": 161,
+   "y": 992,
+   "w": 102,
+   "h": 174,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.laugh": {
+  "scale": 4.0,
+  "ox": 296,
+  "oy": 210,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   0,
+   812,
+   108,
+   178
+  ],
+  "cel": {
+   "a": 0,
+   "x": 0,
+   "y": 812,
+   "w": 108,
+   "h": 178,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.open_calm": {
+  "scale": 4.0,
+  "ox": 222,
+  "oy": 186,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   0,
+   626,
+   145,
+   184
+  ],
+  "cel": {
+   "a": 0,
+   "x": 0,
+   "y": 626,
+   "w": 145,
+   "h": 184,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.pace_a": {
+  "scale": 4.0,
+  "ox": 336,
+  "oy": 202,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   872,
+   626,
+   88,
+   180
+  ],
+  "cel": {
+   "a": 0,
+   "x": 872,
+   "y": 626,
+   "w": 88,
+   "h": 180,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.pace_b": {
+  "scale": 4.0,
+  "ox": 260,
+  "oy": 194,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   472,
+   626,
+   126,
+   182
+  ],
+  "cel": {
+   "a": 0,
+   "x": 472,
+   "y": 626,
+   "w": 126,
+   "h": 182,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.sing_heart": {
+  "scale": 4.0,
+  "ox": 296,
+  "oy": 166,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1089,
+   430,
+   108,
+   189
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1089,
+   "y": 430,
+   "w": 108,
+   "h": 189,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.sing_joy": {
+  "scale": 4.0,
+  "ox": 134,
+  "oy": 182,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1786,
+   430,
+   189,
+   185
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1786,
+   "y": 430,
+   "w": 189,
+   "h": 185,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.sing_wide": {
+  "scale": 4.0,
+  "ox": 134,
+  "oy": 154,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   319,
+   430,
+   189,
+   192
+  ],
+  "cel": {
+   "a": 0,
+   "x": 319,
+   "y": 430,
+   "w": 189,
+   "h": 192,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.stand_wait": {
+  "scale": 4.0,
+  "ox": 340,
+  "oy": 198,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   784,
+   626,
+   86,
+   181
+  ],
+  "cel": {
+   "a": 0,
+   "x": 784,
+   "y": 626,
+   "w": 86,
+   "h": 181,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.startled": {
+  "scale": 4.0,
+  "ox": 318,
+  "oy": 186,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   147,
+   626,
+   97,
+   184
+  ],
+  "cel": {
+   "a": 0,
+   "x": 147,
+   "y": 626,
+   "w": 97,
+   "h": 184,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-pk.stomp_angry": {
+  "scale": 4.0,
+  "ox": 234,
+  "oy": 226,
+  "src": [
+   "src/assets/characters/cels-pokey.webp",
+   1839,
+   812,
+   139,
+   174
+  ],
+  "cel": {
+   "a": 0,
+   "x": 1839,
+   "y": 812,
+   "w": 139,
+   "h": 174,
+   "f": -1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-po.carry_stand": {
+  "scale": 4.0,
+  "ox": 298,
+  "oy": 186,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   327,
+   1893,
+   107,
+   184
+  ],
+  "cel": {
+   "a": 2,
+   "x": 327,
+   "y": 1893,
+   "w": 107,
+   "h": 184,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-po.carry_walk": {
+  "scale": 4.0,
+  "ox": 272,
+  "oy": 178,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1346,
+   1700,
+   120,
+   186
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1346,
+   "y": 1700,
+   "w": 120,
+   "h": 186,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-po.offer_parcel": {
+  "scale": 4.0,
+  "ox": 292,
+  "oy": 182,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1823,
+   1700,
+   110,
+   185
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1823,
+   "y": 1700,
+   "w": 110,
+   "h": 185,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-po.walk_parcel": {
+  "scale": 4.0,
+  "ox": 244,
+  "oy": 186,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   566,
+   1893,
+   134,
+   184
+  ],
+  "cel": {
+   "a": 2,
+   "x": 566,
+   "y": 1893,
+   "w": 134,
+   "h": 184,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-tc.announce": {
+  "scale": 4.0,
+  "ox": 200,
+  "oy": 306,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   380,
+   2254,
+   156,
+   154
+  ],
+  "cel": {
+   "a": 2,
+   "x": 380,
+   "y": 2254,
+   "w": 156,
+   "h": 154,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-tc.hat_shout": {
+  "scale": 4.0,
+  "ox": 238,
+  "oy": 278,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1768,
+   2080,
+   137,
+   161
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1768,
+   "y": 2080,
+   "w": 137,
+   "h": 161,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-tc.hat_stand": {
+  "scale": 4.0,
+  "ox": 282,
+  "oy": 278,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   1651,
+   2080,
+   115,
+   161
+  ],
+  "cel": {
+   "a": 2,
+   "x": 1651,
+   "y": 2080,
+   "w": 115,
+   "h": 161,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-tc.point_bell": {
+  "scale": 4.0,
+  "ox": 196,
+  "oy": 310,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   682,
+   2254,
+   158,
+   153
+  ],
+  "cel": {
+   "a": 2,
+   "x": 682,
+   "y": 2254,
+   "w": 158,
+   "h": 153,
+   "f": 1,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "cel-tc.scroll": {
+  "scale": 4.0,
+  "ox": 228,
+  "oy": 310,
+  "src": [
+   "src/assets/characters/cels-folk.webp",
+   538,
+   2254,
+   142,
+   153
+  ],
+  "cel": {
+   "a": 2,
+   "x": 538,
+   "y": 2254,
+   "w": 142,
+   "h": 153,
+   "f": 0,
+   "c": null
+  },
+  "size": [
+   1024,
+   1024
+  ]
+ }
+}

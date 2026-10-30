@@ -142,4 +142,7 @@ Matt no longer reviews Dot's in-play lines or Pokey's in-stage thought lines; th
 - Dot's voice (reference/VOICE.md, the story audit "road to A+"): warm, chatty, a run-on talker; in play she is short because he is busy, and her personality shows in rest-point lines (checkpoint, standing still), where one run-on is allowed; going short in a story scene means something is wrong;
 - Pokey: short, flat, dry;
 - no repeats in a stage (Help), Tips >= 30 s apart, first-time hazards taught once per save.
-Story scene lines (cutscenes, the journal, the finale) still go to Matt with the story art.
+Story scene lines (cutscenes, the journal, the finale): the lead approves these too (Matt, 2026-10-29 5:00 PM ET), by VOICE.md and the story audit; Matt sees them in context with the story art.
+
+## Releases come from a frozen branch (2026-10-29)
+Open the release PR from a branch cut at the checked commit (e.g. `release-YYYY-MM-DD`), never from the work branch: later merges onto the work branch silently join an open PR (PR #47 picked up four unreleased merges and was replaced by #48).

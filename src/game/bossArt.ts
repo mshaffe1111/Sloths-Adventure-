@@ -3,11 +3,13 @@
  * and everything its attacks throw into the arena.
  */
 import type { BossEntity } from './types.ts';
+import { drawGritBit } from './w4Grit.ts';
 import type { BossHazard } from './bossAI.ts';
 import type { BossDef, MoveDef } from './bossAI.ts';
 import { EASY_OPEN_MUL, openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
 import { isEasy } from './difficulty.ts';
 import { drawBossEntity } from './vectorArt.ts';
+import { withHurtFlash } from './hurtFlash.ts';
 import { demoPlayer, drawMilo } from './miloVariants.ts';
 import { queenSprite } from './queenSprite.ts';
 import type { PaintedBoss } from './paintedBoss.ts';
@@ -23,6 +25,7 @@ import { golemSprite } from './golemSprite.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawW4 } from './w4Art.ts';
 import { drawSkyPush } from './sovereignArt.ts';
+import { FONT_UI } from './fonts.ts';
 import { drawFx, drawFxRun } from './bossFx.ts';
 
 /** the bosses that have a painted version */
@@ -220,10 +223,15 @@ function poseFor(b: BossEntity, m: MoveDef | null, time: number): PoseXf {
 }
 
 /** the boss itself, posed for what it is doing, standing on `floor` */
+/** the drawn boss (while the painted one loads), with the shared white flash when hit (hurtFlash.ts, AN-6): it is drawn 1.5x round its middle */
+function drawFallbackBoss(ctx: CanvasRenderingContext2D, b: BossEntity, time: number, world: number) {
+  withHurtFlash(ctx, b.hitFlashTimer > 0, b.x - 280, b.y - 300, 560, 420, (c) => drawBossEntity(c, b, time, world));
+}
+
 export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, world: number, floor: number) {
   const br = b.ai;
   if (!br) {
-    drawBossEntity(ctx, b, time, world);
+    drawFallbackBoss(ctx, b, time, world);
     return;
   }
   const m = br.move ? def.moves[br.move] ?? null : null;
@@ -290,7 +298,7 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
     // painted boss
   } else {
     const art: BossEntity = { ...b, y: feetY - ART_FEET + def.artDy };
-    drawBossEntity(ctx, art, time, world);
+    drawFallbackBoss(ctx, art, time, world);
   }
   ctx.restore();
 
@@ -453,20 +461,21 @@ export function drawHazards(ctx: CanvasRenderingContext2D, list: BossHazard[], t
   }
 }
 
-/** grit trickling down over the spot a stone is about to fall on (World 4's warning), thickening as it comes */
+/** grit trickling down over the spot a stone is about to fall on (World 4's warning), thickening as it comes: the painted chips and
+ *  pebbles (w4Grit.ts), each spinning, its own size, fading in at the top and out at the floor */
 function drawGrit(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const u = 1 - h.warn / Math.max(0.01, h.warnMax || 1);
   const top = h.floorY - 520;
   const span = 520;
   const n = 6 + Math.round(12 * u);
   ctx.save();
-  ctx.globalAlpha = 0.6 + 0.4 * u;
+  ctx.globalAlpha = 0.7 + 0.3 * u;
   for (let k = 0; k < n; k++) {
-    const gx = h.x - 14 + ((k * 7 + h.seed) % 28);
+    const gx = h.x - 14 + ((k * 7 + h.seed) % 28) + Math.sin(k * 2.3 + h.seed) * 3;
     const gy = top + ((time * 380 + k * (span / n) + h.seed * 3) % span);
-    const sz = 3 + (k % 3) * 2;
-    ctx.fillStyle = k % 2 ? '#a8a29e' : '#78716c';
-    ctx.fillRect(gx, gy, sz, sz);
+    const end = Math.min(1, (gy - top) / 60, (h.floorY - gy) / 30);
+    if (end <= 0) continue;
+    drawGritBit(ctx, ((k * 0.137 + h.seed * 0.0711) % 1), gx, gy, 6 + (k % 3) * 2.5, time * (k % 2 ? 6 : -5) + k, end);
   }
   ctx.restore();
 }
@@ -510,7 +519,7 @@ function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, 
     ctx.globalAlpha = strength * (0.8 + 0.2 * pulse);
     for (const d of [-1, 1]) drawFx(ctx, 'warnArrow', h.x + d * (rw * 1.25 + 26 + 5 * pulse), fl - 16, 46, { flipX: d < 0 });
     ctx.globalAlpha = strength;
-    ctx.font = '800 22px Fredoka, sans-serif';
+    ctx.font = `800 22px ${FONT_UI}`;
     ctx.textAlign = 'center';
     ctx.lineWidth = 5;
     ctx.strokeStyle = '#7f1d1d';

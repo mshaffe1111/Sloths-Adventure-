@@ -342,7 +342,11 @@ Follow these steps in order. Each one points at World 6, which did all of them, 
    - nothing that a flag or an animal must stand in sits inside a zone;
    - an animal needs a flat long enough to stay 120 px from every hop on and off it (`JUMP_CLEAR`). The pipeline drops it from a shorter
      one, so a knee flat holds no animal;
-   - a section with a tip on its first piece is never mirrored.
+   - a section with a tip on its first piece is never mirrored;
+   - a mechanic gen2 does not have yet goes in the pipeline as a general piece or zone (World 7's crumbling tiles: `SectionPiece.crumble`),
+     and a rule about it goes in `checkStage` (tiles never needed: the stage is checked again without them), so the repair loop, curation
+     and every test hold it, not only the world's own tests;
+   - a puzzle room on one level floor reads quiet (the inspector counts a room as one beat): step down to the plate, hop up past the door.
 3. **Rooms** (`worlds/wNRooms.ts`, as `w6Rooms.ts`): each stage's puzzle room goes in `WorldManifest.required` (B11), never by
    weight, and the stage's sheet list loads the kit pieces (`stageSheets.ts` `GEN2_ROOMS`).
 4. **The game's kit** (`worlds/wNGame.ts`, as `w6Game.ts`): one kit per stage and difficulty, folding in the ground, the swings and

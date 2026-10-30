@@ -1,16 +1,18 @@
 /**
- * "Dot's help", the menu setting (the new look): how much she says.
- *   - Teach me: every tip.
- *   - Just reminders: no first-time teaching for a skill already seen on this phone; the goal, struggle help and the must-know lines.
+ * "Dot's help", the menu setting (the new look): how much she says (Matt, 2026-10-29: she was "constantly nagging").
+ *   - Help (stored as 'teach'): for new players. Every tip, each new move where it is needed, and the next step of a puzzle after more
+ *     struggle. Still calm: one line at a time, 10 s apart, never the answer on walking in.
+ *   - Tips (stored as 'reminders'): each new thing once per save, the warnings the first time, why an exit is locked, and help only
+ *     after real struggle (dotTips.ts). 30 s at least between lines that can wait.
  *   - Quiet: only the must-know lines (why an exit is locked, a sudden rule change) and the story lines the player opted into.
- * A device setting, like the sound and the controls. What has been taught is kept on the device too.
+ * A device setting, like the sound and the controls. What has been taught is kept in the save (a New Game teaches it again).
  */
 import type { GuideLine } from './dotGuide.ts';
 
 export type DotHelp = 'teach' | 'reminders' | 'quiet';
 export const DOT_HELP_LABEL: Record<DotHelp, { name: string; blurb: string }> = {
-  teach: { name: 'Teach me', blurb: 'Dot shows each new move once, right where you need it, and helps if you get stuck.' },
-  reminders: { name: 'Just reminders', blurb: 'Dot skips moves you have seen before. She still says the goal and helps if you get stuck.' },
+  teach: { name: 'Help', blurb: 'Dot shows each new move, and helps more when you are stuck.' },
+  reminders: { name: 'Tips', blurb: 'Dot explains each new thing once, and helps if you struggle.' },
   quiet: { name: 'Quiet', blurb: 'Dot only speaks when she must, such as why an exit is locked.' },
 };
 
@@ -25,12 +27,17 @@ const store = (): Mem | null => {
   }
 };
 
+/**
+ * the setting: what the player picked, or by the difficulty picked at New Game (Matt, 2026-10-29): Help on Easy (the newcomer's pick),
+ * Tips on Normal
+ */
 export function dotHelp(s: Pick<Storage, 'getItem'> | null = store()): DotHelp {
   try {
     const v = s?.getItem(HELP_KEY);
-    return v === 'reminders' || v === 'quiet' ? v : 'teach';
+    if (v === 'teach' || v === 'reminders' || v === 'quiet') return v;
+    return s?.getItem('sloth_difficulty') === 'easy' ? 'teach' : 'reminders';
   } catch {
-    return 'teach';
+    return 'reminders';
   }
 }
 export function setDotHelp(v: DotHelp, s: Pick<Storage, 'setItem'> | null = store()): void {
@@ -95,26 +102,46 @@ export function knownMoveTip(l: Pick<GuideLine, 'kind' | 'move' | 'thing' | 'sou
   return l.kind === 'teach' && !!l.move && !l.thing && l.source === 'engine' && !UNCUT_MOVES.has(l.move) && before.has(l.move);
 }
 
+/** the skill that says a Tips line has been taught (seen once, it is not said again on Tips) */
+type TipsLine = Pick<GuideLine, 'kind'> & Partial<Pick<GuideLine, 'skill' | 'mech' | 'step' | 'key' | 'move' | 'thing' | 'source'>>;
+export function tipsSkill(l: TipsLine): string | undefined {
+  if (l.mech) return `mech:${l.mech}`;
+  return l.skill;
+}
+
 /**
  * Does the setting let this line be said? `storyOn`: the "Story lines in stages" switch (story is not help, so it keeps its own switch;
  * the story lines only reach the guide when it is on).
  */
-export function helpAllows(l: Pick<GuideLine, 'kind' | 'skill'>, help: DotHelp, seen: ReadonlySet<string>, storyOn = true): boolean {
-  if (l.kind === 'story') return storyOn;
+export function helpAllows(l: TipsLine, help: DotHelp, seen: ReadonlySet<string>, storyOn = true): boolean {
+  // (the wayside story beats keep their own switch; a stage's own story chatter in play is for Help)
+  if (l.kind === 'story') return storyOn && (l.source === 'story' || help === 'teach');
   if (l.kind === 'must') return true;
   if (help === 'quiet') return false;
+  // (the shrine opening: the other half of why an exit is locked, on Tips too)
+  if (l.key === 'goal:done') return true;
+  // (a puzzle's move itself is only ever for Help, and only after struggle)
+  if (l.step === 'move') return help === 'teach';
   if (help === 'teach') return true;
-  // Just reminders
-  if (l.kind === 'danger' || l.kind === 'goal' || l.kind === 'struggle') return true;
-  // first-time teaching only for what this phone has not seen yet; plain stage chatter and journal notes stay quiet
-  if ((l.kind === 'teach' || l.kind === 'info') && l.skill) return !seen.has(l.skill);
+  // Tips (dotTips.ts): a nudge after real struggle; help after two deaths in one spot (not the clock's stuck help, not the kicks)
+  if (l.step === 'nudge') return true;
+  if (l.kind === 'struggle') return l.source === 'struggle' && !!l.key?.startsWith('struggle:death');
+  // a puzzle's first line only when its thing is brand new; its other moments are chatter
+  if (l.step) return !!l.mech && !seen.has(`mech:${l.mech}`);
+  // the first time: a lesson, the first stage's coach, a move never done, a new thing, a warning
+  const k = tipsSkill(l);
+  // (a warning only when it is about a new hazard: the same warning again, each time the eagle passes, is a reminder)
+  if (l.kind === 'danger' && !l.mech) return false;
+  if (l.source === 'lesson' || l.source === 'coach' || l.mech || l.thing) return !!k && !seen.has(k);
+  if (l.kind === 'teach' && l.move) return !!k && !seen.has(k);
+  // reminders, the goal again, chatter, journal notes
   return false;
 }
 
 /**
- * "Skip tips" (Matt, 2026-10-26): Dot's very first tip on a phone carries a button that turns tips off ("Dot's help" to Quiet). It is
- * offered once per device, on the first tip she gives in a fresh game (nothing taught on this phone yet), and only while the setting is
- * still Teach me. A player who does not tap it keeps Teach me. Quiet still says the must-know lines (why an exit is locked).
+ * "Skip tips" (Matt, 2026-10-26): one of Dot's first tips on a phone carries a button that turns tips off ("Dot's help" to Quiet). It is
+ * offered once per device, on her first tip after the first stage (never on 1-1's coach lines: DOT-5). A player who does not tap it
+ * keeps the setting. Quiet still says the must-know lines (why an exit is locked).
  */
 const SKIP_KEY = 'sloth_dot_skip_offered';
 /** the words she says when it is tapped (about 2 s) */
@@ -142,8 +169,9 @@ export function skipOffered(s: Pick<Storage, 'getItem'> | null = store()): boole
   }
 }
 /** does this line, just going up, carry the Skip tips button? (a tip from Dot; not a must-know line, a warning or a story) */
-export function offersSkip(l: Pick<GuideLine, 'kind' | 'who'>, help: DotHelp, seen: ReadonlySet<string>, s: Pick<Storage, 'getItem'> | null = store()): boolean {
-  if (help !== 'teach' || seen.size > 0 || l.who !== 'Dot') return false;
+export function offersSkip(l: Pick<GuideLine, 'kind' | 'who'> & Partial<Pick<GuideLine, 'source'>>, help: DotHelp, stageId: string, s: Pick<Storage, 'getItem'> | null = store()): boolean {
+  // (not on the first stage's coach lines: a newcomer tapping the bubble away turned tips off before learning to run, DOT-5)
+  if (help === 'quiet' || l.who !== 'Dot' || l.source === 'coach' || stageId === '1-1') return false;
   if (l.kind !== 'teach' && l.kind !== 'info' && l.kind !== 'goal' && l.kind !== 'struggle') return false;
   return !skipOffered(s);
 }

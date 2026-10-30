@@ -12,8 +12,8 @@ export function plateUrl(key?: string): string | null {
 }
 
 const imgs = new Map<string, HTMLImageElement>();
-/** plates kept decoded at once (a plate is up to 2 MB; the one showing and the next few are all a story needs) */
-const KEEP = 4;
+/** plates kept decoded at once (a repainted plate is 2560 x 2720, about 28 MB decoded: the one showing and the next) */
+const KEEP = 2;
 
 /** the loaded picture for a plate, or null while it is still on its way */
 export function plateImage(key: string): HTMLImageElement | null {

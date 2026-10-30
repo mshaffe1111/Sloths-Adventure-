@@ -5,6 +5,7 @@
  * stuck, and the piece Dot points at. The engine only lends it what it needs through `KitHost`, as World 4 and 5 do (w4Play.ts,
  * w5Play.ts), and reads the intents it took (engine.ts kitControls).
  */
+import { drawW7Piece } from './w7PuzzleArt.ts';
 import {
   anchorAt, BEETLE, CHAIR, evalWire, knotBox, GLOW, SAPLING, SILK, TEA, tipText, type TipLine, falseLeaves, flowRate, flyStep, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox,
   seesawDy, seesawTilt, setDownX, sluiceFlow, stepBeetle, stepFlow, throwStart, THROW, tradeTakes, useReach, isLit, type BeetleState, type Body,
@@ -22,6 +23,7 @@ import { rollLook } from './artRoll.ts';
 import { drawW2Cage } from './riverArt.ts';
 import { drawGlow, drawNightPiece } from './meecaNightArt.ts';
 import { drawW5 } from './w5Art.ts';
+import { noteRoomLine, ROOM_STEP } from './dotTips.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
 
 /** what of the stage the kit's pieces reach beyond its platforms: the gust lanes a shutter shuts, the rivers a sluice runs, the reed cages
@@ -194,6 +196,8 @@ interface RoomRun {
   fails: number;
   lastDir: number;
   sparkle: boolean;
+  /** how many times Dot has helped here on struggle (a nudge, then the move) */
+  helped: number;
   told: Set<string>;
 }
 
@@ -251,7 +255,8 @@ function drawReedWall(ctx: CanvasRenderingContext2D, x: number, top: number, bot
 /** where each seesaw painting's round pivot is across its frame (atlas px, measured from puzzle-kit.webp) */
 const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = { seesawLevel: 105, seesawUpR: 105, seesawUpL: 90 };
 
-/** the active part: where it is, how big a ring Dot's pointer wants, and which piece it is (none: the room's middle) */
+/** the active part: where it is, how big it is (Dot perches beside it and a sparkle twinkles on it), and which piece it is (none: the
+ *  room's middle) */
 type Focus = { x: number; y: number; r: number; id?: string };
 
 /** Pokey's pose while he carries, throws or sets down (null: his own sprite) */
@@ -286,9 +291,20 @@ export class KitPlay {
   private held: { room: number; item: number } | null = null;
   private pose: Pose = null;
   private pan: { x: number; y: number; t: number } | null = null;
+  /** the camera is panning to a far gate (Dot holds her lines that can wait) */
+  get panning(): boolean {
+    return !!this.pan;
+  }
+  /** each room's span (world x), for the lessons: no jump's lesson at a room's pieces (lessons.ts LessonScene.rooms) */
+  get roomSpans(): ReadonlyArray<{ x0: number; x1: number }> {
+    return (this.spans ??= this.rooms.map((r) => r.box));
+  }
+  private spans?: ReadonlyArray<{ x0: number; x1: number }>;
   /** the puzzle piece Dot points at (GuideView.kit): the active part while he is in a room, nothing outside one */
   readonly guideThings: Array<{ x: number; y: number; r: number }> = [];
   private focusPt: Focus = { x: 0, y: 0, r: 30 };
+  /** where Dot points and Easy's sparkle goes (pointAt) */
+  private pointPt: Focus = { x: 0, y: 0, r: 30 };
   private t = 0;
   /** a room's lines still to take down, one a frame */
   private passing: string[] = [];
@@ -312,15 +328,24 @@ export class KitPlay {
       stone: w === 2 ? rollLook(['riverStone', 'stone'] as const, world.stage ?? 1, roll, 2) : 'stone',
     };
     this.extraZones = (world.zones ?? []).filter((z) => z.kind === 'wind');
-    this.noClock = !!world.noClock;
+    // (stuck is back and forth with nothing changing, or two failed tries: never a clock, STAGE-RULES §3)
+    this.noClock = world.noClock ?? true;
     this.night = !!world.night;
     kit.rooms.forEach((spec, ri) => {
+      // (Dot's guide reads which step of the room a line is from its words: dotTips.ts)
+      // (the first time he carries or throws, its hold line teaches the control: Tips says that one, once per save)
+      for (const [k, line] of Object.entries(spec.tips ?? {})) {
+        if (!line || k === 'mech') continue;
+        const t = tipText(line as TipLine);
+        const mech = k === 'enter' ? spec.mech ?? spec.tips?.mech : k === 'hold' ? (/throw|flick/i.test(t) ? 'throw' : /\btap\b/i.test(t) ? 'carry' : undefined) : undefined;
+        noteRoomLine(t, { step: ROOM_STEP[k] ?? 'event', mech });
+      }
       const at = (pc: PieceSpec) => ('at' in pc && pc.at ? anchorAt(pc.at, byId) : null);
       const room: RoomRun = {
         spec, ri, box: roomBox(spec, byId), beyond: anchorAt(spec.beyond, byId), items: [], plates: [], gates: [], levers: [], baskets: [], lifts: [], beetles: [], sources: [], resets: [],
         seesaws: [], bells: [], ledges: [], marks: [], shutters: [], pinwheels: [], sluices: [], traders: [],
         chairs: [], saplings: [], silks: [], knots: [], ladders: [], teapots: [], glows: [], moons: [], cups: 0,
-        ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, sparkle: false, told: new Set(),
+        ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, sparkle: false, helped: 0, told: new Set(),
       };
       for (const pc of spec.pieces) {
         const a = at(pc);
@@ -666,7 +691,8 @@ export class KitPlay {
       }));
       // (a trader asked with empty hands: Dot says what it wants)
       room.traders.forEach((t) => {
-        if (!t.done) consider(t.x, t.y, () => h.float(`IT WANTS A ${t.spec.wants.toUpperCase()}`, t.x, t.y - 120, '#fde68a'));
+        // (what it wants is the room's nudge, in Dot's bubble: no words floating in the world)
+        if (!t.done) consider(t.x, t.y, () => h.float('?', t.x, t.y - 120, '#fde68a'));
       });
       room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h, platforms)));
       // a teapot: a tap by it tips it over (rude), for good
@@ -939,7 +965,7 @@ export class KitPlay {
     this.inRoom = this.rooms.findIndex((r) => p.x >= r.box.x0 && p.x <= r.box.x1 && p.y >= r.box.y0 && p.y <= r.box.y1);
     // out of a room: its lines are old news (one still waiting must not come in the next room)
     // (one a frame: the app keeps only the engine's last line of a frame)
-    if (was >= 0 && was !== this.inRoom) for (const text of Object.values(this.rooms[was].spec.tips ?? {})) if (text) this.passing.push(tipText(text));
+    if (was >= 0 && was !== this.inRoom) for (const [k, text] of Object.entries(this.rooms[was].spec.tips ?? {})) if (text && k !== 'mech') this.passing.push(tipText(text as TipLine));
     const next = this.passing.shift();
     if (next) h.passTip?.(next);
     for (const room of this.rooms) this.stepRoom(room, dt, h, platforms);
@@ -952,9 +978,11 @@ export class KitPlay {
     // what Dot points at: the active part, while he is in a room
     this.guideThings.length = 0;
     if (this.inRoom >= 0) {
-      const f = this.focus(this.rooms[this.inRoom]);
+      const room = this.rooms[this.inRoom];
+      const f = this.focus(room);
       this.focusPt = f;
-      this.guideThings.push(f);
+      this.pointPt = this.pointAt(room, f);
+      this.guideThings.push(this.pointPt);
     }
     // (carrying, he walks slower; sleepy from the Butler's steam, slower still for a moment)
     return (this.held ? KIT.carrySpeed : 1) * (this.sipT > 0 ? 0.45 : 1);
@@ -1192,11 +1220,16 @@ export class KitPlay {
       if (dir) room.lastDir = dir;
       // (without the clock, Matt's research rule: back and forth with nothing changing, or two failed tries)
       const stuck = this.noClock ? room.turns >= STUCK.turns || room.fails >= STUCK.fails : room.calm >= STUCK.calm || (room.turns >= STUCK.turns && room.calm >= STUCK.turnsCalm) || room.fails >= STUCK.fails;
-      if (stuck && !room.sparkle) {
-        room.sparkle = h.easy;
+      if (stuck && (!room.sparkle || room.helped < 2)) {
+        room.sparkle = room.sparkle || h.easy;
         h.stuck?.(room.spec.id);
-        // (Normal: nothing automatic; the hook above is where Flicker's on-request hints come in)
-        if (!h.easy) { room.calm = 0; room.turns = 0; room.fails = 0; }
+        // Dot's next step (DOT-2): the first time a nudge that points at the piece, the next time the move (her help setting decides
+        // whether the move is said: Help only)
+        room.helped++;
+        this.told(room, room.helped === 1 ? 'nudge' : 'move', h, 4);
+        room.calm = 0;
+        room.turns = 0;
+        room.fails = 0;
       }
     }
   }
@@ -1257,7 +1290,6 @@ export class KitPlay {
         // (in Meeca's night the ledge's own glow and Flicker's line say it: no floating word over her dark room)
         if (lit && !room.told.has('lit')) {
           room.told.add('lit');
-          if (!this.night) h.float('A LEDGE!', l.plat.x + l.plat.width / 2, l.plat.y - 40, '#a7f3d0');
         }
       }
       l.show += ((l.lit ? 1 : 0) - l.show) * Math.min(1, dt * 5);
@@ -1532,6 +1564,24 @@ export class KitPlay {
   }
 
   /**
+   * Where Dot points (and Easy's sparkle goes): the piece he should go to now, at the spot it is drawn. Mostly the camera's focus; but
+   * in a seesaw room it is the log that weighs an end down (until one does), then the raised end, his step: the seesaw's pivot, which
+   * the camera frames, is neither (Matt, 2026-10-29: the ring "doesn't even show where it's at").
+   */
+  pointAt(room: RoomRun, f: Focus): Focus {
+    const ss = room.seesaws.find((q) => q.spec.id === room.spec.exit);
+    if (!ss) return f;
+    const logs = this.platforms.filter((lg) => lg.push && !lg.broken && lg.x + lg.width >= room.box.x0 && lg.x <= room.box.x1);
+    const onEnd = (e: Platform) => logs.some((lg) => lg.x + lg.width / 2 >= e.x && lg.x + lg.width / 2 <= e.x + e.width && Math.abs(lg.y + lg.height - e.y) <= 8);
+    if (!ss.ends.some(onEnd) && logs.length) {
+      const lg = logs.reduce((a, b) => (Math.abs(b.x - ss.x) < Math.abs(a.x - ss.x) ? b : a));
+      return { x: lg.x + lg.width / 2, y: lg.y + Math.min(20, lg.height / 2), r: Math.max(30, lg.width / 2), id: f.id };
+    }
+    const hi = ss.ends[0].y <= ss.ends[1].y ? ss.ends[0] : ss.ends[1];
+    return { x: hi.x + hi.width / 2, y: hi.y - 6, r: 34, id: f.id };
+  }
+
+  /**
    * The part of the puzzle that matters now: what he holds goes to its target; else, of the parts the way on still waits for, a thing
    * meant for one that is not there yet, or the part itself; and when nothing is left, the way on.
    */
@@ -1717,7 +1767,10 @@ export class KitPlay {
           drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + 6, { w: pw * 1.5, h: ph * 0.7 });
           if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
         }
-        const drew = stoneP
+        // (World 7: Matt's carved stone plate, w7PuzzleArt.ts)
+        const drew = this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)
+          ? true
+          : stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
           : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
         ctx.restore();
@@ -1738,6 +1791,8 @@ export class KitPlay {
       }
       for (const l of room.levers) {
         if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
+        // (World 7: Matt's stone lever, w7PuzzleArt.ts)
+        if (this.look.world === 7 && drawW7Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 78)) continue;
         if (!drawKitArt(ctx, l.show > 0.5 ? 'leverOn' : 'leverOff', l.x, l.y + 4)) {
           ctx.strokeStyle = '#6b4a2b';
           ctx.lineWidth = 6;
@@ -1788,7 +1843,7 @@ export class KitPlay {
   drawFront(ctx: CanvasRenderingContext2D, p: Player, drewPose: boolean) {
     for (const room of this.rooms) {
       for (const it of room.items) if (it.mode === 'fly') this.drawItem(ctx, it, it.body.x, it.body.y, it.spin);
-      if (room.sparkle && room === this.rooms[this.inRoom]) this.drawSparkle(ctx, this.focusPt);
+      if (room.sparkle && room === this.rooms[this.inRoom]) this.drawSparkle(ctx, this.pointPt);
     }
     if (this.held && !drewPose) {
       const it = this.rooms[this.held.room].items[this.held.item];
@@ -1933,7 +1988,10 @@ export class KitPlay {
     const gw = KIT.gateW + 50;
     // World 1: Matt's branch gate, drawn up out of the way as it opens; World 3: Grandma's fern stone door, rolled aside
     const lw = this.look.world;
-    const drew = !g.spec.look && lw === 1
+    // (World 7: Matt's stone door, shut and open, w7PuzzleArt.ts)
+    const drew = !g.spec.look && lw === 7 && drawW7Piece(ctx, g.show > 0.5 ? 'door-open' : 'door-closed', g.x, g.y + 6, gw + 30, KIT.doorH + 16)
+      ? true
+      : !g.spec.look && lw === 1
       ? g.show > 0.98 || drawKitArt(ctx, 'branchGate', g.x, g.y + 4 - g.show * (KIT.doorH + 20), { w: gw + 20, h: KIT.doorH + 14, alpha: 1 - g.show * 0.85 })
       : !g.spec.look && lw === 3
         ? drawKitArt(ctx, g.show > 0.5 ? 'fernDoorOpen' : 'fernDoorShut', g.x, g.y + 6, { w: gw + 40, h: KIT.doorH + 20 })

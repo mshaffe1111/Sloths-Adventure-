@@ -142,10 +142,10 @@ test('the art made ready for the worlds being built: every file the manifest nam
   }
   // (and each far strip of Worlds 7-10 is in, at the far layers' size)
   for (const s of ['w7dawn', 'w7dusk', 'w8sunset', 'w8night', 'w9dawn', 'w9night', 'w10dusk', 'w10after']) {
-    // (the far layers' height; up to 2048 wide, less once made seamless by scripts/strip-seamless.py: VI-4)
+    // (the far layers' height: repainted at native resolution, 1302 tall, X-16 2026-10-29; seamless, VI-4)
     const { w, h } = webpSize(fileURLToPath(new URL(`../assets/backdrops/${s}-far.webp`, import.meta.url)));
-    assert.equal(h, 868, s);
-    assert.ok(w >= 1600 && w <= 2048, `${s}: ${w} wide`);
+    assert.equal(h, 1302, s);
+    assert.ok(w >= 2100 && w <= 2800, `${s}: ${w} wide`);
   }
 });
 

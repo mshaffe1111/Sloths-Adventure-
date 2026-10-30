@@ -414,12 +414,15 @@ export const SFX: Record<string, Fx> = {
   },
 
   /** grabbing a vine: a rope tightening, wood creaking, leaves shaking */
-  vine(core) {
+  vine(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.12);
     noise(core, { t, type: 'bandpass', f0: 350, f1: 900, q: 3, peak: 0.16, dec: 0.12, dst: d });
     tone(core, { t, type: 'sawtooth', f0: 190 * jit(), f1: 240, dec: 0.1, peak: 0.07, dst: d, lp: 700 });
     woodblock(core, d, t + 0.02, 0.6);
+    // a soft kalimba note of the stage's key under the grab, so swinging along a run of vines plays with the music (Matt: the effects
+    // should match the game)
+    note(core, kalimba, t + 0.015, ladder(key, pick([0, 2, 4])), 0.28, d);
     noise(core, { t: t + 0.04, type: 'bandpass', f0: 4200, q: 1, peak: 0.08, dec: 0.15, dst: d, pink: true });
   },
 
@@ -678,7 +681,8 @@ export const SFX: Record<string, Fx> = {
     const d = out(core, 0.4);
     [0, 2, 3].forEach((n, i) => note(core, bell, t + i * 0.09, ladder(key, n), 0.7, d));
     note(core, marimba, t, ladder(key, 0) - 12, 0.7, d);
-    noise(core, { t: t + 0.1, type: 'highpass', f0: 6500, peak: 0.07, dec: 0.4, dst: d });
+    // (it ended in a 6.5 kHz hiss, the harsh part Matt heard: the top note's octave on the kalimba, softly, rings it out instead)
+    note(core, kalimba, t + 0.27, ladder(key, 7), 0.35, d);
   },
 
   /** an extra life: a quick fanfare */

@@ -1,5 +1,53 @@
 {
- "toad": {"cap": "bounce-toad-p76", "stalk": "stalk-toad-v9"},
- "parasol": {"cap": "bounce-parasol-p76", "stalk": "stalk-parasol-v9"},
- "bloom": {"cap": "bounce-bloom-p76", "stalk": "stalk-bloom-v9"}
+ "w1": {
+  "cap": "bounce-w1-s9",
+  "stalk": "stalkw-w1-v9",
+  "span": 1.08
+ },
+ "w2": {
+  "cap": "bounce-w2-s5",
+  "stalk": "stalkw-w2-v9",
+  "span": 1.18
+ },
+ "w3": {
+  "cap": "bounce-w3-s9",
+  "stalk": "stalkw-w3-v9",
+  "span": 1.08
+ },
+ "w4": {
+  "cap": "bounce-w4-s9",
+  "stalk": "stalkw-w4-v9",
+  "span": 1.2
+ },
+ "w5": {
+  "cap": "bounce-w5-s9",
+  "stalk": "stalkw-w5-v9",
+  "span": 1.12
+ },
+ "w6": {
+  "cap": "bounce-w6-s5",
+  "stalk": "stalkw-w6-v9",
+  "span": 1.14
+ },
+ "w7": {
+  "cap": "bounce-w7-s5",
+  "stalk": "stalkw-w7-v9",
+  "span": 1.14
+ },
+ "w8": {
+  "cap": "bounce-w8-s9",
+  "stalk": "stalkw-w8-v9",
+  "span": 1.16
+ },
+ "w9": {
+  "cap": "bounce-w9-s9",
+  "stalk": "stalkw-w9-v9",
+  "span": 1.08
+ },
+ "w10": {
+  "cap": "bounce-w10-s9",
+  "stalk": "stalkw-w10-v9",
+  "span": 1.14,
+  "lift": 1.5
+ }
 }

@@ -14,7 +14,7 @@ function makeBoss(world: number): BossEntity {
     id: 1, type: 'boss', x: ARENA.right - 160, y: ARENA.floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
     facing: -1, patrolMinX: ARENA.left, patrolMaxX: ARENA.right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
-    specialAttackTimer: 0, shieldActive: false, dialogueIntro: '', dialogueDefeat: '', ai: newBrain(),
+    specialAttackTimer: 0, shieldActive: false, dialogueIntro: '', ai: newBrain(),
   };
 }
 

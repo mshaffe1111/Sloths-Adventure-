@@ -21,6 +21,8 @@ import { w5ArenaKit } from './worlds/w5Arena.ts';
 import { w5RunFinish, w5RunKit } from './worlds/w5Run.ts';
 import { w6Finish } from './worlds/w6.ts';
 import { W6_GAME_STAGES, w6GameKit } from './worlds/w6Game.ts';
+import { W7_GAME_STAGES, w7GameKit } from './worlds/w7Game.ts';
+import { w7Finish } from './worlds/w7.ts';
 
 export interface Gen2Entry {
   /**
@@ -47,6 +49,15 @@ const w6Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
   ...o,
 });
 
+/** World 7's stages (w7Game.ts): its sections and the stage's room in one kit, on the difficulty played; w7Finish puts Pokey's line
+ *  before 7-5's first Stone Sentry (the other animals were taught in earlier worlds) */
+const w7Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
+  kit: (d) => w7GameKit(stage, d ?? 'normal'),
+  kitName: `w7Game.ts:w7GameKit(${stage})`,
+  finish: w7Finish,
+  ...o,
+});
+
 /**
  * The stages gen2 builds, each with its kit (the per-stage chooser). 6-8 Stilt Climb is hand-built (w6Stages.ts).
  */
@@ -57,6 +68,7 @@ export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   // (5-9 Easy: the kid beat 5, 5, 9, 10, 10 and 10 spiders on seeds 1-3 before the shrine; 5 opens it in all six)
   '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', easyGoal: 5 },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
+  ...Object.fromEntries(W7_GAME_STAGES.map((id) => [id, w7Entry(Number(id.split('-')[1]))])),
 };
 
 /** is this stage built by gen2 (a secret stage of the same number never is) */
@@ -69,7 +81,13 @@ export const isGen2Stage = (cfg: Pick<LevelConfig, 'id' | 'secret'>): boolean =>
 export function gen2Water(id: string): boolean {
   const M = GEN2_STAGES[id]?.kit('normal').manifest;
   if (!M) return false;
-  return M.pit === 'water' || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
+  return M.pit === 'water' || M.pit === 'void' || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
+}
+
+/** the creature sheets a gen2 stage's world can lay (its manifest's animals, by clip-sheet name: a snake draws the golden snake's) */
+export function gen2Creatures(id: string): string[] {
+  const M = GEN2_STAGES[id]?.kit('normal').manifest;
+  return M ? [...new Set(M.creatures.map((c) => (c.enemy === 'snake' ? 'goldsnake' : c.enemy)))] : [];
 }
 
 /** how many rolls a stage ships (0: none, or not a gen2 stage) */

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CARD_SAFE, DONE_LESSONS, LESSONS, cardSafe, lessonDone, lessonOfLine, lessonStale, pickLesson, type CardSafety, type LessonId, type LessonScene } from './lessons.ts';
+import { CARD_SAFE, DONE_LESSONS, LESSONS, cardSafe, lessonDone, lessonDotLine, lessonOfLine, lessonSaidBy, lessonStale, pickLesson, type CardSafety, type LessonId, type LessonScene } from './lessons.ts';
 import { isSaveKey } from './saveFile.ts';
 
 const none: ReadonlySet<LessonId> = new Set();
@@ -37,6 +37,7 @@ test('after the fighting lesson, each new kind of foe teaches its own thing once
   const seen = new Set<LessonId>(['foe']);
   assert.equal(pickLesson(scene({ enemies: [{ type: 'eagle', x: 1200, y: 400, defeated: false }] }), seen), 'eagle');
   assert.equal(pickLesson(scene({ enemies: [{ type: 'spider', x: 1200, y: 500, defeated: false }] }), seen), 'nostomp');
+  assert.equal(pickLesson(scene({ enemies: [{ type: 'spider', x: 1200, y: 500, defeated: false, stompable: true }] }), seen), null, 'a spider a stomp beats (World 5)');
   assert.equal(pickLesson(scene({ enemies: [{ type: 'caiman', x: 1200, y: 500, defeated: false }] }), seen), 'tough');
   assert.equal(pickLesson(scene({ enemies: [{ type: 'snake', x: 1200, y: 500, defeated: false }] }), seen), null);
   seen.add('eagle');
@@ -65,7 +66,10 @@ test('pick-ups and the exit: one lesson each, the cage before the fruit beside i
   assert.equal(pickLesson(col('fruit'), none), 'fruit');
   assert.equal(pickLesson({ ...col('heart'), hp: 4, maxHp: 5 }, none), 'heart');
   assert.equal(pickLesson(col('cage'), none), 'cage');
-  assert.equal(pickLesson(col('relic'), none), 'idol');
+  // the relic lesson is for one he can see, high above him (a relic beside him he just takes)
+  assert.equal(pickLesson(col('relic'), none), null);
+  assert.equal(pickLesson(scene({ collectibles: [{ type: 'relic', x: 1150, y: 300, collected: false }] }), none), 'idol');
+  assert.equal(pickLesson(scene({ collectibles: [{ type: 'relic', x: 1150, y: 300, collected: false, hidden: true }] }), none), null, 'not a hidden one');
   assert.equal(pickLesson(col('powerup_magnet'), none), 'power');
   assert.equal(pickLesson(col('exit_totem'), none), 'shrine');
   assert.equal(pickLesson(scene({ collectibles: [{ type: 'fruit', x: 1150, y: 480, collected: true }] }), none), null, 'already taken');
@@ -147,4 +151,14 @@ test('a lesson whose thing he has done already is not said: 5 flowers picked, no
   assert.equal(pickLesson(scene({ enemies: [{ type: 'snake', x: 600, y: 500, defeated: true }, { type: 'snake', x: 1200, y: 500, defeated: false }] }), none), null);
   assert.equal(lessonOfLine({ key: 'lesson:fruit:0', source: 'lesson' }), 'fruit');
   assert.equal(lessonOfLine({ key: 'lesson:fruit:0', source: 'engine' }), null);
+});
+
+test('a lesson is said by whoever is with Pokey: Dot, or his own thought while she is away (all of World 7)', async () => {
+  const { dotPresent } = await import('./wayside.ts');
+  const l = lessonDotLine('swing', 'screen')!;
+  assert.ok(l);
+  assert.equal(lessonSaidBy(l, dotPresent(4, 6)).who, 'Dot');
+  const w7 = lessonSaidBy(l, dotPresent(7, 5));
+  for (let x: typeof w7 | undefined = w7; x; x = x.next) assert.equal(x.who, 'Pokey', x.text);
+  assert.equal(w7.text, l.text);
 });

@@ -34,8 +34,8 @@ function missDrop(st: GeneratedStage, a: Platform, b: Platform): number {
   return Math.max(under(gl + 10), under((gl + gr) / 2), under(gr - 10)) - top;
 }
 
-test('the climbs: no miss off a hop gap falls more than 450 px (4-1, 4-6, 4-3, 4-9; 50 rolls each)', () => {
-  for (const id of ['4-1', '4-6', '4-3', '4-9']) {
+test('the climbs: no miss off a hop gap falls more than 450 px (4-1, 4-6, 4-3, 4-9, 5-8; 50 rolls each)', () => {
+  for (const id of ['4-1', '4-6', '4-3', '4-9', '5-8']) {
     for (const s of SEEDS) {
       const st = build(id, s);
       const skip = new Set((st.proto.catches ?? []).map((c) => c.plat));
@@ -67,7 +67,7 @@ function moves(st: GeneratedStage): number {
 }
 
 test('the catch branches are never a shortcut: without them the check\'s way to the shrine is just as long (4-1, 4-6)', () => {
-  for (const id of ['4-1', '4-6']) {
+  for (const id of ['4-1', '4-6', '5-8']) {
     let catches = 0;
     for (const s of SEEDS.slice(0, 20)) {
       const st = build(id, s);
