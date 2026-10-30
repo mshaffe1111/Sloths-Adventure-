@@ -1159,10 +1159,7 @@ export class GameEngine {
 
     try {
       if (!this.isPaused) {
-        if (this.down) {
-          // a life lost: the world holds for the beat (AN-1)
-          this.stepDown(dt);
-        } else if (this.hitstopTimer > 0) {
+        if (this.hitstopTimer > 0) {
           // Hitstop freeze: the world holds for a few ticks; keep the camera shake settling
           this.hitstopTimer -= dt;
           this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
@@ -1325,6 +1322,11 @@ export class GameEngine {
    * Main Physics & Simulation Tick (30 FPS)
    */
   private update(dt: number) {
+    // a life lost: the world holds for the beat (AN-1; in update, so the bots that play the engine directly have it too)
+    if (this.down) {
+      this.stepDown(dt);
+      return;
+    }
     this.gameTime += dt;
     this.irisOpen = Math.max(0, this.irisOpen - dt);
     this.vineClock += dt;
