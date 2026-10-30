@@ -259,3 +259,8 @@ hftrails1 18:08Z-~18:14Z (~6 min, ~$0.28): KEPT trails-a-s70-7, trails-b-s70-23 
 hfdrake2      6ae4ddf2c78863f9c62e9e09 rtx-pro-6000 from 18:12Z: the Drake's cave plate, sitting stiff, holding a cup (story-a).
 hfui2         6ae4de790e0338d1bb7cc9b4 rtx-pro-6000 18:14Z-~18:18Z (~4 min, ~$0.2): the start screen's painted pieces (hanging signs,
   carved token, leaf token, vine, tag). KEPT kit2-s80-23 (tools/art/hfui/kit2cut.py), used in the two layout mocks.
+hfdrake2 18:12Z-~18:22Z (~10 min, ~$0.46): KEPT drake-cave-6 (the plate), drake-sit-6, drake-cup-6 (src/assets/story/drake/, story-a wired).
+hfboss910c    6ae4e1c7c78863f9c62ea004 18:28Z-~18:39Z (~11 min, ~$0.5): the 9-10/10-10 set pieces at 0.8/0.88: painted now. Picks in
+  tools/art/hfdrake/picks910.json (ledges/ribs/rubble at 0.88; crust, lava, table, chairs, netting, hedge at 0.8). Not packed yet: the
+  new fights are not built (cut910.py packs them when they are).
+running spend of the $80: ~$1.04 + this round ~$4.3 = ~$5.3 (this round's cap $15)
