@@ -1,52 +1,58 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Recorded Music A/B</title>
+<title>Sloth Music A/B</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
-  :root { --bg: #f6f4ee; --card: #fff; --ink: #1f2a1f; --muted: #5d6b5d; --line: #dfe3d8; --accent: #2f7a46; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #141a15; --card: #1d251e; --ink: #e8efe6; --muted: #9fb09f; --line: #2e3a2f; --accent: #6cc48a; } }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
-  main { max-width: 760px; margin: 0 auto; padding: 20px 16px 48px; }
-  h1 { font-size: 1.5rem; margin: 0 0 4px; }
-  p.lead { color: var(--muted); margin: 0 0 20px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 0 0 16px; }
-  .card h2 { font-size: 1.1rem; margin: 0 0 4px; }
-  .card .what { color: var(--muted); font-size: .92rem; margin: 0 0 12px; }
-  .row { display: grid; grid-template-columns: 5.5rem 1fr; gap: 8px; align-items: center; margin: 6px 0; }
-  .row b { font-size: .9rem; }
-  audio { width: 100%; }
-  ol { color: var(--muted); font-size: .9rem; padding-left: 1.2rem; margin: 8px 0 0; }
+  /* one column of listening cards: each piece's old/new/seam players stacked, the notes at the end */
+  :root { --bg: #f2f4ec; --card: #ffffff; --ink: #1e2a1f; --muted: #5a6a58; --line: #d9dfd0; --accent: #2f7a46;
+          --display: 'Fraunces', Georgia, serif; --body: 'Atkinson Hyperlegible', system-ui, sans-serif; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #131a14; --card: #1b241c; --ink: #e6eee3; --muted: #9db09b; --line: #2c3a2d; --accent: #73c98f; color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #131a14; --card: #1b241c; --ink: #e6eee3; --muted: #9db09b; --line: #2c3a2d; --accent: #73c98f; color-scheme: dark; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  main { max-width: 720px; margin: 0 auto; padding-block: 24px 48px; display: grid; gap: 16px; }
+  h1 { font: 600 1.7rem/1.2 var(--display); margin: 0; text-wrap: balance; }
+  p.lead { color: var(--muted); margin: 0; max-width: 65ch; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 8px; min-width: 0; }
+  .card h2 { font: 600 1.15rem/1.3 var(--display); margin: 0; color: var(--ink); }
+  .card .what { color: var(--muted); font-size: .93rem; margin: 0 0 4px; }
+  .row { display: grid; grid-template-columns: 3.6rem minmax(0, 1fr); gap: 10px; align-items: center; }
+  .row b { font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
+  audio { width: 100%; min-width: 0; }
+  ol { color: var(--muted); font-size: .93rem; padding-left: 1.2rem; margin: 0; display: grid; gap: 6px; }
 </style>
-</head>
-<body>
 <main>
   <h1>Recorded music: old vs new</h1>
   <p class="lead">Each pair plays the same 90 seconds of a piece, with the same things happening in the game. <b>Old</b> is the live orchestra the game plays today. <b>New</b> is the recording, played by the new loop player. The <b>Seam</b> clip is the last 8 seconds of the loop running into its start, so you can listen for the join.</p>
 
   <section class="card">
-    <h2>World 2 stage (2-4)</h2>
-    <p class="what">A run stage. Timeline: calm, then an animal close (danger: drums and string ostinato come in, the tune steps back), calm again, a puzzle room, calm, then the exit in reach (bells and high strings).</p>
-    <div class="row"><b>Old</b><audio controls preload="none" src="t-2-4.live.mp3"></audio></div>
-    <div class="row"><b>New</b><audio controls preload="none" src="t-2-4.loop.mp3"></audio></div>
-    <div class="row"><b>Seam</b><audio controls preload="none" src="t-2-4.seam.mp3"></audio></div>
+    <h2>World 2 stage tune</h2>
+    <p class="what">Every World 2 stage plays this one (Matt's pick: one stage tune per world). Timeline: calm, an animal close at 0:15 (danger: drums and string ostinato come in, the tune steps back), calm at 0:30, a puzzle room at 0:45 (only the held chords and a soft figure), calm at 1:00, the exit in reach at 1:15 (bells and high strings).</p>
+    <div class="row"><b>Old</b><audio controls preload="none" src="stage-w2.live.mp3"></audio></div>
+    <div class="row"><b>New</b><audio controls preload="none" src="stage-w2.loop.mp3"></audio></div>
+    <div class="row"><b>Seam</b><audio controls preload="none" src="stage-w2.seam.mp3"></audio></div>
   </section>
 
   <section class="card">
-    <h2>World 3 stage (3-6), with a dark zone</h2>
-    <p class="what">Calm, danger, calm, then a dark zone (the music falls to a low drone and a sparse bell, the treble closes), out of the dark, then the exit.</p>
-    <div class="row"><b>Old</b><audio controls preload="none" src="t-3-6.live.mp3"></audio></div>
-    <div class="row"><b>New</b><audio controls preload="none" src="t-3-6.loop.mp3"></audio></div>
-    <div class="row"><b>Seam</b><audio controls preload="none" src="t-3-6.seam.mp3"></audio></div>
+    <h2>World 3 stage tune, with a dark zone</h2>
+    <p class="what">Calm, danger at 0:15, calm at 0:30, a dark zone at 0:45 (the music falls to a low drone and a sparse bell, the treble closes), out of the dark at 1:00, the exit at 1:15.</p>
+    <div class="row"><b>Old</b><audio controls preload="none" src="stage-w3.live.mp3"></audio></div>
+    <div class="row"><b>New</b><audio controls preload="none" src="stage-w3.loop.mp3"></audio></div>
+    <div class="row"><b>Seam</b><audio controls preload="none" src="stage-w3.seam.mp3"></audio></div>
   </section>
 
   <section class="card">
     <h2>World 4 boss</h2>
     <p class="what">Phase 1, then phase 2 at 0:30 (the drive layer), then phase 3 at 1:00 (taiko and brass on top).</p>
-    <div class="row"><b>Old</b><audio controls preload="none" src="t-4-10.live.mp3"></audio></div>
-    <div class="row"><b>New</b><audio controls preload="none" src="t-4-10.loop.mp3"></audio></div>
-    <div class="row"><b>Seam</b><audio controls preload="none" src="t-4-10.seam.mp3"></audio></div>
+    <div class="row"><b>Old</b><audio controls preload="none" src="bossB~b.live.mp3"></audio></div>
+    <div class="row"><b>New</b><audio controls preload="none" src="bossB~b.loop.mp3"></audio></div>
+    <div class="row"><b>Seam</b><audio controls preload="none" src="bossB~b.seam.mp3"></audio></div>
+  </section>
+
+  <section class="card">
+    <h2>Before the memory savings (for comparison)</h2>
+    <p class="what">An earlier test of a different World 2 stage tune, recorded before the memory savings: longer loop (77 s), stereo layers, sharper top. Same timeline as above. Listen for whether the new version above lost anything you miss.</p>
+    <div class="row"><b>Old</b><audio controls preload="none" src="t-2-4.live.mp3"></audio></div>
+    <div class="row"><b>New</b><audio controls preload="none" src="t-2-4.loop.mp3"></audio></div>
   </section>
 
   <section class="card">
@@ -55,8 +61,7 @@
       <li>New has the fuller desktop sound (full arrangement, big hall) on every phone. Phones used to get a thinner version.</li>
       <li>Danger and a boss's anger no longer speed the music up. A recording played faster would go up in pitch.</li>
       <li>A part that fades in with how busy the moment is now rises and falls as a level change, not as an instrument entering.</li>
+      <li>To fit the old phones' memory, the loops are short (20 to 42 seconds for a stage), the danger, exit and dark layers are mono, and everything but the tune is kept to 12 kHz (as the old orchestra's instruments already were).</li>
     </ol>
   </section>
 </main>
-</body>
-</html>

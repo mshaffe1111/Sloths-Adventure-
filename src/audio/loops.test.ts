@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CALM, type MusicState } from './adaptive.ts';
-import { stemLevel, STEM_ROLES, type LoopManifest, type StemName } from './loops.ts';
+import { DECODE_RATE, stemLevel, STEM_ROLES, type LoopManifest, type StemName } from './loops.ts';
 import { recordingFor, stageOf } from './recordings.ts';
 import { sceneForScreen, sceneForPanel, meecaStageMusic } from './scenes.ts';
 import { CUES } from './score.ts';
@@ -41,8 +41,8 @@ test('every role is in exactly one of the stems a stage records, and the mix hol
 });
 
 const M: LoopManifest = {
-  pieces: { signature: {} as never, 'stage-w3-s-0': {} as never, 'stage-w3-r-0': {} as never, 'stage-w3-r-1': {} as never },
-  stages: { 'w3-s': ['stage-w3-s-0'], 'w3-r': ['stage-w3-r-0', 'stage-w3-r-1'] },
+  pieces: { signature: {} as never, 'stage-w3': {} as never, 'stage-w4a': {} as never, 'stage-w4b': {} as never },
+  stages: { w3: ['stage-w3'], w4: ['stage-w4a', 'stage-w4b'] },
 };
 
 test('a stage piece is known by its world and pace', () => {
@@ -52,12 +52,13 @@ test('a stage piece is known by its world and pace', () => {
   assert.equal(stageOf('bossA~b'), null);
 });
 
-test("a piece plays its own recording; a stage's composition one of its world's, for its pace, by the roll", () => {
+test("a piece plays its own recording; a stage's composition its world's, whatever its pace", () => {
   assert.equal(recordingFor(M, 'signature'), 'signature');
-  assert.equal(recordingFor(M, 'gen-3-77-s', 5), 'stage-w3-s-0');
-  assert.equal(recordingFor(M, 'gen-3-77-r', 4), 'stage-w3-r-0');
-  assert.equal(recordingFor(M, 'gen-3-77-r', 5), 'stage-w3-r-1');
-  assert.equal(recordingFor(M, 'gen-3-77-c', 5), 'stage-w3-r-1', 'a pace the world has no recording for: its runs');
+  for (const pace of ['r', 's', 'c', 'f']) assert.equal(recordingFor(M, `gen-3-77-${pace}`, 5), 'stage-w3', pace);
+  assert.equal(recordingFor(M, 'world3s-12', 5), 'stage-w3');
+  assert.equal(recordingFor(M, 'gen-4-77-r', 4), 'stage-w4a', 'a world with two: picked by the roll');
+  assert.equal(recordingFor(M, 'gen-4-77-r', 5), 'stage-w4b');
+  assert.equal(recordingFor(M, 'gen-5-77-r', 5), null, 'a world with none');
   assert.equal(recordingFor(M, 'nothing'), null);
 });
 
@@ -82,6 +83,17 @@ test('every piece the game can ask for has a recording (the screens, every stage
     for (const ch of [...chapters, `WORLD ${w}`, 'BOSS']) for (const mood of ['', 'storm', 'dusk', 'glow', 'night']) want(sceneForPanel({ chapter: ch, scene: { world: w, mood } }).id);
   }
   assert.deepEqual([...missing], []);
+});
+
+test('every world has its stage piece, and each piece fits the phones\' memory (35 MB decoded)', () => {
+  const m = MANIFEST as unknown as LoopManifest;
+  for (let w = 1; w <= 10; w++) assert.ok(m.stages[`w${w}`]?.length, `world ${w}`);
+  const mono = new Set<StemName>(['drive', 'shine', 'dark', 'boss']);
+  for (const [name, p] of Object.entries(m.pieces)) {
+    let mb = 0;
+    for (const stem of Object.keys(p.stems) as StemName[]) mb += (p.length * DECODE_RATE[stem] * (mono.has(stem) ? 1 : 2) * 4) / 1e6;
+    assert.ok(mb <= 35, `${name}: ${mb.toFixed(1)} MB`);
+  }
 });
 
 test('the manifest is whole: every stem file it names exists, and every loop is longer than a few bars', async () => {

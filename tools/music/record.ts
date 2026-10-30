@@ -34,6 +34,8 @@ export interface PieceSpec {
   intensity?: number;
   /** the loop should last at least this long (seconds) */
   target: number;
+  /** and at most this long (the decoded stems' memory: loops.ts DECODE_RATE) */
+  max?: number;
 }
 
 export interface LoopPlan {
@@ -86,16 +88,23 @@ async function plan(spec: PieceSpec): Promise<LoopPlan> {
   const spb = theme.stepsPerBar ?? 16;
   let endBar: number;
   if (chained) {
-    pb.update(START + spec.target * 2.5);
-    // the first A section at or after the target; any section if none comes in time
-    const at = (pred: (s: string) => boolean) => bars.find((b) => b.section !== null && b.t - START >= spec.target && pred(b.section));
-    const pick = at((s) => s.startsWith('A')) ?? at(() => true);
+    const max = spec.max ?? spec.target * 2;
+    pb.update(START + max + 30);
+    // the first A section from the target on (no longer than the most); else the last section start under the most
+    const fits = (b: (typeof bars)[number]) => b.section !== null && b.t - START <= max;
+    const pick =
+      bars.find((b) => fits(b) && b.t - START >= spec.target && b.section!.startsWith('A')) ??
+      [...bars].reverse().find((b) => fits(b) && b.t - START >= spec.target * 0.6);
     if (!pick) throw new Error('no loop point for ' + spec.id);
     endBar = pick.bar;
   } else {
     // a piece that goes round its loop is dressed differently on each of four passes (Playback.phaseOf): the loop is all four,
     // unless the piece is a still one (always dressed the same)
-    const passes = theme.still ? 1 : 4;
+    // (or two, or one, to stay under the most: two passes come round from the answer to the statement, as the piece does)
+    const max = spec.max ?? Infinity;
+    while (!bars.some((b) => b.bar === pb.loopBars)) pb.update((bars.length ? bars[bars.length - 1].t : START) + 30);
+    const pass = bars.find((b) => b.bar === pb.loopBars)!.t - START;
+    const passes = theme.still ? 1 : [4, 2, 1].find((n) => n * pass <= max) ?? 1;
     endBar = pb.loopBars * passes;
     while (!bars.some((b) => b.bar === endBar)) pb.update((bars.length ? bars[bars.length - 1].t : START) + 30);
   }

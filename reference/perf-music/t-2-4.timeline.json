@@ -1,1 +1,0 @@
-[{"t":0,"intensity":0.45},{"t":15,"intensity":0.75,"state":{"danger":1}},{"t":30,"intensity":0.45,"state":{"danger":0}},{"t":45,"state":{"puzzle":1}},{"t":60,"state":{"puzzle":0}},{"t":75,"state":{"exit":1},"intensity":0.6}]

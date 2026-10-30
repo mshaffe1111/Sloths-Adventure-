@@ -67,7 +67,7 @@ export interface LoopPiece {
 
 export interface LoopManifest {
   pieces: Record<string, LoopPiece>;
-  /** a stage's music by world and pace: the recorded pieces it may play ("w3-s" -> ids) */
+  /** a stage's music by world: the recorded pieces its stages play ("w3" -> ids) */
   stages: Record<string, string[]>;
 }
 
@@ -98,10 +98,11 @@ export function smoothSeam(d: Float32Array, rate: number, guard: number, length:
 /**
  * The rate each stem is decoded at. A decoded stem is raw 32-bit sound, so the rate is its memory: a minute of stereo is 11.5 MB at
  * 24 kHz and 23 MB at 48. The old live orchestra already played its pitched instruments from 24 kHz recordings with their tops filtered
- * under 13 kHz (orchLoader.ts decodeRate), so the stems of them lose nothing at 24 kHz; the drums, the cymbals and the bells (the beat,
- * the shine, the one-stem pieces) keep 32 kHz, which holds everything up to 16 kHz.
+ * under 13 kHz (orchLoader.ts decodeRate), so the stems of them lose little at 24 kHz. The tune and its figures (glockenspiel and harp
+ * on top) and the one-stem pieces keep 32 kHz, which holds everything up to 16 kHz. The layers are mono (tools/music/record.mjs). A minute
+ * of a stage piece is then about 50 MB, and its loop is kept under 42 s: 35 MB (the phones' limit, 2026-10-30).
  */
-export const DECODE_RATE: Record<StemName, number> = { mix: 32000, bed: 24000, beat: 32000, top: 24000, drive: 24000, shine: 32000, dark: 24000, boss: 32000 };
+export const DECODE_RATE: Record<StemName, number> = { mix: 32000, bed: 24000, beat: 24000, top: 32000, drive: 24000, shine: 24000, dark: 24000, boss: 24000 };
 
 interface Loaded {
   id: string;
@@ -124,19 +125,19 @@ interface Voice {
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 
 /**
- * How the whole piece swells with the intensity and the state (as the live piece did: Playback.beginBar). A puzzle room and the dark also
- * lowered the intensity the live parts' gates read (adaptive.ts intensityLift), thinning the piece about 2 dB and 1 dB more than their
- * stems' own levels do: measured against the live render (tools/music/ab.mjs), and taken off the whole here.
+ * How the whole piece swells with the intensity and the state (as the live piece did: Playback.beginBar). A puzzle room also lowered the
+ * intensity the live parts' gates read (adaptive.ts intensityLift), thinning the piece about 2 dB more than its stems' own levels do:
+ * measured against the live render (tools/music/ab.mjs), and taken off the whole here.
  */
 export function pieceGain(p: LoopPiece, k: number, s: MusicState) {
-  const swell = (1 + 0.4 * s.exit + 0.25 * s.danger) * (1 - 0.2 * s.puzzle - 0.1 * s.dark);
+  const swell = (1 + 0.4 * s.exit + 0.25 * s.danger) * (1 - 0.2 * s.puzzle);
   return ((0.74 + 0.26 * k) / (0.74 + 0.26 * p.intensity)) * swell;
 }
 
 export class LoopPlayer {
   private readonly ctx: BaseAudioContext;
   private readonly dest: AudioNode;
-  private readonly manifest: LoopManifest;
+  readonly manifest: LoopManifest;
   private readonly source: StemSource;
   private voice: Voice | null = null;
   private state: MusicState = CALM;
@@ -339,6 +340,10 @@ export class LoopPlayer {
   setState(s: Partial<MusicState>, snap = false) {
     const before = this.state;
     this.state = { ...this.state, ...s };
+    // (the live state moved 70% of the way each bar when it rose and 40% when it fell (adaptive.ts stepState): time constants of 0.83
+    // and 1.96 bars. A stem follows the slower whenever any of the state it answers is falling: the tune coming back after a puzzle room
+    // is the puzzle fading, and it came back slowly)
+    const falls = (['danger', 'dark', 'exit', 'puzzle'] as const).some((k) => this.state[k] < before[k]) || this.state.boss < before.boss;
     const v = this.voice;
     if (!v) return;
     const t = this.ctx.currentTime;
@@ -348,9 +353,8 @@ export class LoopPlayer {
       const to = stemLevel(stem, this.state);
       const from = stemLevel(stem, before);
       if (Math.abs(to - from) < 1e-4 && !snap) continue;
-      // (the live state moved 70% of the way each bar going up and 40% coming down: adaptive.ts stepState)
       g.gain.cancelScheduledValues(at);
-      g.gain.setTargetAtTime(to, at, snap ? 0.02 : to > from ? bar * 0.8 : bar * 2);
+      g.gain.setTargetAtTime(to, at, snap ? 0.02 : falls ? bar * 1.96 : bar * 0.83);
     }
     v.tone.frequency.setTargetAtTime(toneCutoff(this.state), at, snap ? 0.02 : 0.35 + bar * 0.5);
     v.out.gain.setTargetAtTime(v.piece.level * pieceGain(v.piece, this.intensity, this.state), at, 0.6);

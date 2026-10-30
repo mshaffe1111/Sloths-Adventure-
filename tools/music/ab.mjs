@@ -27,7 +27,7 @@ if (boss) {
   else ev.push({ t: 3 * q, state: { puzzle: 1 } }, { t: 4 * q, state: { puzzle: 0 } });
   ev.push({ t: 5 * q, state: { exit: 1 }, intensity: 0.6 });
 }
-fs.writeFileSync(path.join(outDir, `${name}.timeline.json`), JSON.stringify(ev));
+
 
 function wav(f32, ch, rate) {
   const n = f32.length;

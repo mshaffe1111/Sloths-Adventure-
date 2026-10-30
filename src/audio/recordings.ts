@@ -3,8 +3,9 @@
  *
  *   a piece recorded under its own id (the title, the map, the results, the story, the bosses, Meeca's march) plays that recording
  *   a stage's own composition (composer.ts `gen-<world>-<seed>-<pace>`, themes.ts `world<n>s-<seed>`) has no recording of its own: a
- *     stage is a new composition on every entry, and they cannot all be recorded. It plays one of its world's recordings for that pace
- *     (the manifest's `stages`), chosen by the stage's seed, so the choice changes from entry to entry as the composition did
+ *     stage is a new composition on every entry, and they cannot all be recorded. Every stage of a world plays its world's one recording
+ *     (the manifest's `stages`; Matt, 2026-10-30: one stage tune per world, the paces share it). A world given more than one has them
+ *     picked by the stage's seed, so the choice changes from entry to entry as the composition did
  */
 import type { LoopManifest } from './loops.ts';
 
@@ -22,11 +23,6 @@ export function recordingFor(m: LoopManifest, id: string, seed = 0): string | nu
   if (m.pieces[id]) return id;
   const st = stageOf(id);
   if (!st) return null;
-  const pick = (list: string[] | undefined) => (list?.length ? list[(seed >>> 0) % list.length] : null);
-  // the world's recordings for this pace; or else for any pace of the world (run first: most stages are runs)
-  return (
-    pick(m.stages[`w${st.world}-${st.pace}`]) ??
-    pick(m.stages[`w${st.world}-r`]) ??
-    pick(Object.entries(m.stages).find(([k]) => k.startsWith(`w${st.world}-`))?.[1])
-  );
+  const list = m.stages[`w${st.world}`];
+  return list?.length ? list[(seed >>> 0) % list.length] : null;
 }

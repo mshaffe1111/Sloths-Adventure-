@@ -17,7 +17,9 @@ const RATE = 48000;
 /** guard either side of the loop in each file (seconds): longer than any decoder's start delay */
 const GUARD = 0.25;
 /** Opus bit rates: the stems that carry the piece get more than the layers */
-const KBPS = { mix: 80, bed: 64, beat: 64, top: 64, drive: 48, shine: 48, dark: 40, boss: 48 };
+const KBPS = { mix: 80, bed: 64, beat: 64, top: 64, drive: 40, shine: 40, dark: 32, boss: 40 };
+/** the layers are one channel: half the memory, and they sit in the middle of the piece (their pans were small) */
+const MONO = new Set(['drive', 'shine', 'dark', 'boss']);
 const ROLES = {
   mix: ['lead', 'counter', 'perc', 'low', 'bed', 'stab', 'color'], bed: ['bed', 'low'], beat: ['perc', 'stab'], top: ['lead', 'counter', 'color'],
   drive: ['drive'], shine: ['shine'], dark: ['dark'], boss: ['boss'],
@@ -72,7 +74,12 @@ try {
       full.set(f, g * 2);
       full.set(f.subarray(0, g * 2), (n + g) * 2);
       const w = path.join(tmp, `${name}.${stem}.wav`);
-      fs.writeFileSync(w, wav(full, 2, RATE));
+      if (MONO.has(stem)) {
+        // (the middle of the two: a mono buffer plays equally in both speakers, so what was in the middle keeps its level)
+        const mono = new Float32Array(full.length / 2);
+        for (let i = 0; i < mono.length; i++) mono[i] = (full[i * 2] + full[i * 2 + 1]) / 2;
+        fs.writeFileSync(w, wav(mono, 1, RATE));
+      } else fs.writeFileSync(w, wav(full, 2, RATE));
       if (process.env.KEEP_WAV) fs.writeFileSync(path.join(process.env.KEEP_WAV, `${name}.${stem}.loop.wav`), wav(f, 2, RATE));
       const file = `${name}.${stem}.webm`;
       execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', w, '-c:a', 'libopus', '-b:a', `${KBPS[stem]}k`, '-vbr', 'on', '-application', 'audio', path.join(outDir, file)]);

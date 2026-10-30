@@ -4,7 +4,8 @@
    "spec": {
     "id": "signature",
     "intensity": 0.7,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -14,7 +15,8 @@
    "spec": {
     "id": "menu",
     "intensity": 0.45,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -24,7 +26,8 @@
    "spec": {
     "id": "map-1",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -34,7 +37,8 @@
    "spec": {
     "id": "map-2",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -44,7 +48,8 @@
    "spec": {
     "id": "map-3",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -54,7 +59,8 @@
    "spec": {
     "id": "map-4",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -64,7 +70,8 @@
    "spec": {
     "id": "map-5",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -74,7 +81,8 @@
    "spec": {
     "id": "map-6",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -84,7 +92,8 @@
    "spec": {
     "id": "map-7",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -94,7 +103,8 @@
    "spec": {
     "id": "map-8",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -104,7 +114,8 @@
    "spec": {
     "id": "map-9",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -114,7 +125,8 @@
    "spec": {
     "id": "map-10",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -124,7 +136,8 @@
    "spec": {
     "id": "results~c",
     "intensity": 0.6,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -134,7 +147,8 @@
    "spec": {
     "id": "gameover~s",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -144,7 +158,8 @@
    "spec": {
     "id": "ending",
     "intensity": 0.8,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -154,7 +169,8 @@
    "spec": {
     "id": "score_pokey",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -164,7 +180,8 @@
    "spec": {
     "id": "score_meeca",
     "intensity": 0.6,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -174,7 +191,8 @@
    "spec": {
     "id": "score_bloom",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -184,7 +202,8 @@
    "spec": {
     "id": "score_grandma",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -194,7 +213,8 @@
    "spec": {
     "id": "score_journey",
     "intensity": 0.6,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -204,7 +224,8 @@
    "spec": {
     "id": "score_comedy",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -214,7 +235,8 @@
    "spec": {
     "id": "score_tender",
     "intensity": 0.4,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -224,7 +246,8 @@
    "spec": {
     "id": "score_sorrow",
     "intensity": 0.4,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -234,7 +257,8 @@
    "spec": {
     "id": "score_dread",
     "intensity": 0.35,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -244,7 +268,8 @@
    "spec": {
     "id": "score_war",
     "intensity": 0.6,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -254,7 +279,8 @@
    "spec": {
     "id": "score_chase",
     "intensity": 0.7,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -264,7 +290,8 @@
    "spec": {
     "id": "score_reveal",
     "intensity": 0.35,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -274,7 +301,8 @@
    "spec": {
     "id": "score_resolve",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -284,7 +312,8 @@
    "spec": {
     "id": "score_triumph",
     "intensity": 0.7,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -294,7 +323,8 @@
    "spec": {
     "id": "score_mercy",
     "intensity": 0.6,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -304,7 +334,8 @@
    "spec": {
     "id": "score_finale",
     "intensity": 0.7,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -314,7 +345,8 @@
    "spec": {
     "id": "score_hush",
     "intensity": 0.2,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -324,7 +356,8 @@
    "spec": {
     "id": "jennifur",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -334,7 +367,8 @@
    "spec": {
     "id": "storyDusk",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -344,7 +378,8 @@
    "spec": {
     "id": "storyStorm",
     "intensity": 0.5,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -354,7 +389,8 @@
    "spec": {
     "id": "world1~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -364,7 +400,8 @@
    "spec": {
     "id": "world2~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -374,7 +411,8 @@
    "spec": {
     "id": "world3~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -384,7 +422,8 @@
    "spec": {
     "id": "world4~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -394,7 +433,8 @@
    "spec": {
     "id": "world5~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -404,7 +444,8 @@
    "spec": {
     "id": "world6~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -414,7 +455,8 @@
    "spec": {
     "id": "world7~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -424,7 +466,8 @@
    "spec": {
     "id": "world8~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -434,7 +477,8 @@
    "spec": {
     "id": "world9~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -444,7 +488,8 @@
    "spec": {
     "id": "world10~c",
     "intensity": 0.12,
-    "target": 40
+    "target": 40,
+    "max": 120
    },
    "stems": [
     "mix"
@@ -456,7 +501,8 @@
     "seed": 3061331602,
     "tempo": 1,
     "intensity": 0.7,
-    "target": 60
+    "target": 60,
+    "max": 75
    },
    "stems": [
     "mix",
@@ -470,7 +516,8 @@
     "seed": 549284803,
     "tempo": 1,
     "intensity": 0.7,
-    "target": 60
+    "target": 60,
+    "max": 75
    },
    "stems": [
     "mix",
@@ -484,7 +531,8 @@
     "seed": 3304593783,
     "tempo": 1,
     "intensity": 0.7,
-    "target": 60
+    "target": 60,
+    "max": 75
    },
    "stems": [
     "mix",
@@ -498,7 +546,8 @@
     "seed": 1331141786,
     "tempo": 1,
     "intensity": 0.7,
-    "target": 60
+    "target": 60,
+    "max": 75
    },
    "stems": [
     "mix",
@@ -513,7 +562,8 @@
     "tempo": 0.86,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -523,14 +573,15 @@
     "shine"
    ]
   },
-  "stage-w1-r-0": {
+  "stage-w1": {
    "spec": {
     "id": "world1s-3829387862",
     "seed": 3829387862,
     "tempo": 1.0213,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -540,65 +591,15 @@
     "shine"
    ]
   },
-  "stage-w1-f-0": {
-   "spec": {
-    "id": "gen-1-3795832624-f",
-    "seed": 3795832624,
-    "tempo": 1.03,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w1-c-0": {
-   "spec": {
-    "id": "gen-1-3913275957-c",
-    "seed": 3913275957,
-    "tempo": 0.97,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w1-s-0": {
-   "spec": {
-    "id": "gen-1-3862943100-s",
-    "seed": 3862943100,
-    "tempo": 0.97,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w2-r-0": {
+  "stage-w2": {
    "spec": {
     "id": "gen-2-3071713563-r",
     "seed": 3071713563,
     "tempo": 1.0046,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -608,48 +609,15 @@
     "shine"
    ]
   },
-  "stage-w2-f-0": {
-   "spec": {
-    "id": "gen-2-3138824039-f",
-    "seed": 3138824039,
-    "tempo": 1.03,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w2-c-0": {
-   "spec": {
-    "id": "gen-2-3155601658-c",
-    "seed": 3155601658,
-    "tempo": 0.97,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w3-r-0": {
+  "stage-w3": {
    "spec": {
     "id": "gen-3-3527966820-r",
     "seed": 3527966820,
     "tempo": 1,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 47
    },
    "stems": [
     "bed",
@@ -660,85 +628,15 @@
     "dark"
    ]
   },
-  "stage-w3-s-0": {
-   "spec": {
-    "id": "gen-3-3578299677-s",
-    "seed": 3578299677,
-    "tempo": 1,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine",
-    "dark"
-   ]
-  },
-  "stage-w3-f-0": {
-   "spec": {
-    "id": "gen-3-3561522058-f",
-    "seed": 3561522058,
-    "tempo": 1,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine",
-    "dark"
-   ]
-  },
-  "stage-w3-c-0": {
-   "spec": {
-    "id": "gen-3-3477633963-c",
-    "seed": 3477633963,
-    "tempo": 1,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine",
-    "dark"
-   ]
-  },
-  "stage-w4-c-0": {
-   "spec": {
-    "id": "gen-4-757336865-c",
-    "seed": 757336865,
-    "tempo": 0.98,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w4-r-0": {
+  "stage-w4": {
    "spec": {
     "id": "gen-4-707004008-r",
     "seed": 707004008,
     "tempo": 1.02,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -748,48 +646,15 @@
     "shine"
    ]
   },
-  "stage-w4-s-0": {
-   "spec": {
-    "id": "gen-4-824447341-s",
-    "seed": 824447341,
-    "tempo": 0.98,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w4-f-0": {
-   "spec": {
-    "id": "gen-4-623115913-f",
-    "seed": 623115913,
-    "tempo": 1.02,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w5-r-0": {
+  "stage-w5": {
    "spec": {
     "id": "gen-5-3101746114-r",
     "seed": 3101746114,
     "tempo": 1.0171,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -799,65 +664,15 @@
     "shine"
    ]
   },
-  "stage-w5-s-0": {
-   "spec": {
-    "id": "gen-5-3084968495-s",
-    "seed": 3084968495,
-    "tempo": 0.97,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w5-c-0": {
-   "spec": {
-    "id": "gen-5-3252744685-c",
-    "seed": 3252744685,
-    "tempo": 0.97,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w5-f-0": {
-   "spec": {
-    "id": "gen-5-3235967066-f",
-    "seed": 3235967066,
-    "tempo": 1.03,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w6-r-0": {
+  "stage-w6": {
    "spec": {
     "id": "gen-6-2338848935-r",
     "seed": 2338848935,
     "tempo": 1.0088,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -867,65 +682,15 @@
     "shine"
    ]
   },
-  "stage-w6-s-0": {
-   "spec": {
-    "id": "gen-6-2355626554-s",
-    "seed": 2355626554,
-    "tempo": 0.98,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w6-f-0": {
-   "spec": {
-    "id": "gen-6-2271738459-f",
-    "seed": 2271738459,
-    "tempo": 1.02,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w6-c-0": {
-   "spec": {
-    "id": "gen-6-2187850364-c",
-    "seed": 2187850364,
-    "tempo": 0.98,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w7-r-0": {
+  "stage-w7": {
    "spec": {
     "id": "gen-7-2247875792-r",
     "seed": 2247875792,
     "tempo": 1,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -935,48 +700,15 @@
     "shine"
    ]
   },
-  "stage-w7-c-0": {
-   "spec": {
-    "id": "gen-7-2298208649-c",
-    "seed": 2298208649,
-    "tempo": 1,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w7-f-0": {
-   "spec": {
-    "id": "gen-7-2314986268-f",
-    "seed": 2314986268,
-    "tempo": 1,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w8-r-0": {
+  "stage-w8": {
    "spec": {
     "id": "gen-8-1350502205-r",
     "seed": 1350502205,
     "tempo": 1,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 47
    },
    "stems": [
     "bed",
@@ -987,68 +719,15 @@
     "dark"
    ]
   },
-  "stage-w8-s-0": {
-   "spec": {
-    "id": "gen-8-1266614110-s",
-    "seed": 1266614110,
-    "tempo": 1,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine",
-    "dark"
-   ]
-  },
-  "stage-w8-c-0": {
-   "spec": {
-    "id": "gen-8-1249836491-c",
-    "seed": 1249836491,
-    "tempo": 1,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine",
-    "dark"
-   ]
-  },
-  "stage-w8-f-0": {
-   "spec": {
-    "id": "gen-8-1199503634-f",
-    "seed": 1199503634,
-    "tempo": 1,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine",
-    "dark"
-   ]
-  },
-  "stage-w9-r-0": {
+  "stage-w9": {
    "spec": {
     "id": "gen-9-3674123102-r",
     "seed": 3674123102,
     "tempo": 1.0213,
     "form": true,
     "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -1058,116 +737,15 @@
     "shine"
    ]
   },
-  "stage-w9-c-0": {
-   "spec": {
-    "id": "gen-9-3657345483-c",
-    "seed": 3657345483,
-    "tempo": 0.97,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w9-s-0": {
-   "spec": {
-    "id": "gen-9-3758011197-s",
-    "seed": 3758011197,
-    "tempo": 0.97,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w9-f-0": {
-   "spec": {
-    "id": "gen-9-3724455959-f",
-    "seed": 3724455959,
-    "tempo": 1.03,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w10-r-0": {
+  "stage-w10": {
    "spec": {
     "id": "gen-10-2675751182-r",
     "seed": 2675751182,
     "tempo": 1.02,
     "form": true,
     "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w10-c-0": {
-   "spec": {
-    "id": "gen-10-2658973563-c",
-    "seed": 2658973563,
-    "tempo": 0.98,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w10-s-0": {
-   "spec": {
-    "id": "gen-10-2642195944-s",
-    "seed": 2642195944,
-    "tempo": 0.98,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
-   },
-   "stems": [
-    "bed",
-    "beat",
-    "top",
-    "drive",
-    "shine"
-   ]
-  },
-  "stage-w10-f-0": {
-   "spec": {
-    "id": "gen-10-2709306420-f",
-    "seed": 2709306420,
-    "tempo": 1.02,
-    "form": true,
-    "intensity": 0.45,
-    "target": 50
+    "target": 30,
+    "max": 42
    },
    "stems": [
     "bed",
@@ -1179,119 +757,35 @@
   }
  },
  "stages": {
-  "w1-r": [
-   "stage-w1-r-0"
+  "w1": [
+   "stage-w1"
   ],
-  "w1-f": [
-   "stage-w1-f-0"
+  "w2": [
+   "stage-w2"
   ],
-  "w1-c": [
-   "stage-w1-c-0"
+  "w3": [
+   "stage-w3"
   ],
-  "w1-s": [
-   "stage-w1-s-0"
+  "w4": [
+   "stage-w4"
   ],
-  "w2-r": [
-   "stage-w2-r-0"
+  "w5": [
+   "stage-w5"
   ],
-  "w2-f": [
-   "stage-w2-f-0"
+  "w6": [
+   "stage-w6"
   ],
-  "w2-c": [
-   "stage-w2-c-0"
+  "w7": [
+   "stage-w7"
   ],
-  "w3-r": [
-   "stage-w3-r-0"
+  "w8": [
+   "stage-w8"
   ],
-  "w3-s": [
-   "stage-w3-s-0"
+  "w9": [
+   "stage-w9"
   ],
-  "w3-f": [
-   "stage-w3-f-0"
-  ],
-  "w3-c": [
-   "stage-w3-c-0"
-  ],
-  "w4-c": [
-   "stage-w4-c-0"
-  ],
-  "w4-r": [
-   "stage-w4-r-0"
-  ],
-  "w4-s": [
-   "stage-w4-s-0"
-  ],
-  "w4-f": [
-   "stage-w4-f-0"
-  ],
-  "w5-r": [
-   "stage-w5-r-0"
-  ],
-  "w5-s": [
-   "stage-w5-s-0"
-  ],
-  "w5-c": [
-   "stage-w5-c-0"
-  ],
-  "w5-f": [
-   "stage-w5-f-0"
-  ],
-  "w6-r": [
-   "stage-w6-r-0"
-  ],
-  "w6-s": [
-   "stage-w6-s-0"
-  ],
-  "w6-f": [
-   "stage-w6-f-0"
-  ],
-  "w6-c": [
-   "stage-w6-c-0"
-  ],
-  "w7-r": [
-   "stage-w7-r-0"
-  ],
-  "w7-c": [
-   "stage-w7-c-0"
-  ],
-  "w7-f": [
-   "stage-w7-f-0"
-  ],
-  "w8-r": [
-   "stage-w8-r-0"
-  ],
-  "w8-s": [
-   "stage-w8-s-0"
-  ],
-  "w8-c": [
-   "stage-w8-c-0"
-  ],
-  "w8-f": [
-   "stage-w8-f-0"
-  ],
-  "w9-r": [
-   "stage-w9-r-0"
-  ],
-  "w9-c": [
-   "stage-w9-c-0"
-  ],
-  "w9-s": [
-   "stage-w9-s-0"
-  ],
-  "w9-f": [
-   "stage-w9-f-0"
-  ],
-  "w10-r": [
-   "stage-w10-r-0"
-  ],
-  "w10-c": [
-   "stage-w10-c-0"
-  ],
-  "w10-s": [
-   "stage-w10-s-0"
-  ],
-  "w10-f": [
-   "stage-w10-f-0"
+  "w10": [
+   "stage-w10"
   ]
  }
 }

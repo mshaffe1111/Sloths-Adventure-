@@ -14,9 +14,8 @@ import { Ambience, type AmbientType } from './ambience.ts';
 import { COMBO_WINDOW, nextVariant } from './combat.ts';
 import { AudioCore } from './core.ts';
 import type { KeyInfo } from './music.ts';
-import { LoopPlayer, type LoopManifest } from './loops.ts';
+import { LoopPlayer } from './loops.ts';
 import { recordingFor } from './recordings.ts';
-import MANIFEST from '../assets/music/manifest.json';
 import { SFX, runFx } from './sfx.ts';
 import { playRec, recFor, recForPuzzle, type Surface } from './sfxRec.ts';
 import { speechBlip } from './speech.ts';
@@ -24,10 +23,6 @@ import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers
 import { CALM, type MusicState } from './adaptive.ts';
 import { CUE_DUCK, CUE_NAMES, cuePlan, playCue, type CueName } from './cues.ts';
 import { STINGS } from './stingers.ts';
-
-/** the recorded music's files, by name (the bundler gives each its address; nothing is fetched until a piece is played) */
-const MUSIC_FILES = import.meta.glob('../assets/music/*.webm', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
-const musicUrl = (file: string) => MUSIC_FILES[`../assets/music/${file}`];
 
 // how far ahead of the audio clock the ambience is scheduled: long enough to ride out a stalled main thread
 // (a level loading, a garbage collection) without it dropping out and then firing in one burst
@@ -177,7 +172,15 @@ export class Conductor {
       void import('./sfxRecLoader.ts').then((m) => m.loadRec(this.core as AudioCore)).catch(() => {});
       // the orchestra the game's stingers and cues play on (the music no longer needs it: it is recorded)
       this.warmEffects();
-      this.loops = new LoopPlayer(ctx, this.core.music, MANIFEST as LoopManifest, musicUrl);
+      // the recorded music: its manifest and files' addresses, then whatever piece was asked for in the meantime
+      const core = this.core;
+      void import('./musicFiles.ts')
+        .then((m) => {
+          if (this.core !== core) return;
+          this.loops = new LoopPlayer(ctx, core.music, m.manifest, m.musicUrl);
+          if (this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
+        })
+        .catch(() => {});
       this.amb = new Ambience(this.core);
       // every phone plays the lighter arrangement (fewer voices at once): the full one was too much for a busy phone's sound
       this.lite = PHONE;
@@ -239,14 +242,23 @@ export class Conductor {
     const loops = this.loops;
     if (!loops) return;
     const fade = first ? 0.02 : opts.fade ?? 1.4;
-    const rec = id ? recordingFor(MANIFEST as LoopManifest, id, opts.seed) : null;
+    const rec = id ? recordingFor(loops.manifest, id, opts.seed) : null;
     loops.setIntensity(opts.intensity ?? this.intensity, true);
     loops.setState(this.mstate, true);
-    void loops.play(rec, fade, !!opts.restart);
-    // the piece most likely to come next is decoded while this one plays
-    loops.prefetch(opts.form ? AFTER_STAGE : null);
+    // the piece most likely to come next is decoded while this one plays: once the crossfade is over, so no more than two pieces are
+    // ever held at once (the phones' memory: 35 MB playing, 70 at the most)
+    loops.prefetch(null);
+    if (this.aheadTimer) clearTimeout(this.aheadTimer);
+    this.aheadTimer = null;
+    void loops.play(rec, fade, !!opts.restart).then(() => {
+      if (!opts.form || loops.playing !== rec) return;
+      this.aheadTimer = setTimeout(() => {
+        if (loops.playing === rec) loops.prefetch(AFTER_STAGE);
+      }, (fade + 1) * 1000);
+    });
   }
 
+  private aheadTimer: ReturnType<typeof setTimeout> | null = null;
   private effectsWarm = false;
   /** fetch, once, the recordings the game's stingers and cues play (the victory, the boss's arrival, the checkpoint's bells) */
   private warmEffects() {
