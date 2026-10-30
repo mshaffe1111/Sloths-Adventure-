@@ -12,6 +12,10 @@ export type GameScreen =
   | 'world_story'
   /** the scene halfway through a world: Dot and a note from Meeca (once) */
   | 'world_mid'
+  /** the scene at the guardian's door after a world's ninth stage (World 10: the fortress gate, once) */
+  | 'world_gate'
+  /** a short scene after the ending (the stopwatch, if it was found) */
+  | 'ending_tag'
   | 'boss_defeat'
   | 'ending_story'
   /** a remembered scene (a flashback between worlds, or one replayed from the Library) */
@@ -92,10 +96,15 @@ export interface LevelConfig {
 }
 
 export interface PlayerState {
+  /** down for a moment after losing a life (engine.ts lifeLost): drawn in his knocked-out pose (AN-1) */
+  downed?: boolean;
   /** standing still right at the end of a ledge, facing out over it this way (1 its right end, -1 its left; engine.ts edgeOffset) */
   teeter?: -1 | 0 | 1;
   /** where he is drawn, px from where he stands: a step back from a ledge's end while he stands at it (engine.ts edgeOffset) */
   drawDx?: number;
+  /** standing still at a ledge's end, stepping back from it or settled there, the drop this way (1 its right end, -1 its left; 0 not at
+   * one): the step-back and teeter clips play while he faces it (heroClips.ts) */
+  edgeSide?: -1 | 0 | 1;
   /** leaning into a log that moves (the push clip, heroClips.ts) */
   pushing?: boolean;
   /** game time he reached the exit, while the cheer plays before the stage clears (heroClips.ts) */
@@ -223,6 +232,9 @@ export interface Enemy {
   /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
    *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
   royal?: boolean;
+  /** drawn as another creature than its kind: World 7's Stone Sentry fights as a prowler (an ocelot's brain, score and checks) and only
+   *  looks like a sentry (sentrySprite.ts) */
+  look?: 'sentry';
   /** a snapper listening to the puzzle kit's noise (noise.ts): where the noise is; it walks there along its ground and notices nobody */
   lureX?: number;
   /** predator AI: where it started this move, and where it is going */
@@ -255,7 +267,6 @@ export interface BossEntity extends Enemy {
   specialAttackTimer: number;
   shieldActive: boolean;
   dialogueIntro: string;
-  dialogueDefeat: string;
   /** the move-by-move brain (bossAI.ts) */
   ai?: import('./bossAI.ts').BossBrain;
 }
@@ -300,6 +311,9 @@ export interface Platform {
   /** a knot of wood standing at the end of a high branch (4-6; a mailbox post on 2-6's porches): a little wall, so he cannot walk off it
    *  into a very long fall */
   lip?: boolean;
+  /** a small piece of the ground under 90 tall (a soft pit's low step, or its walls under the banks): painted as the soil like a bank, or
+   *  (a wall under a bank) left to that bank's soil, never drawn as a platform (protoArt.ts drawProtoScene, terrain.ts) */
+  soil?: boolean;
 }
 
 /**
@@ -414,6 +428,9 @@ export interface Collectible {
   hidden?: boolean;
   /** how far the search has got, 0..1 (hidden finds) */
   search?: number;
+  /** a Hush Fern: he is walking by it now, and how many times he has walked past it (Dot's "Hmm, that fern...", DOT-14) */
+  fernBy?: boolean;
+  fernPasses?: number;
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
   /**
@@ -483,6 +500,8 @@ export interface InputState {
    * (touchGestures.ts); 0 or unset for a straight-up flick, a key or the pad. Letting go of a vine or a trunk leaps that way.
    */
   jumpLean?: -1 | 0 | 1;
+  /** … and leaned 35 degrees or more, this way: a standing jump carries him that way (touchGestures.ts slantOf, CT-27) */
+  jumpSlant?: -1 | 0 | 1;
   jumpHeld: boolean;
   punchPressed: boolean;
   /** take back a punch pressed a moment ago, if its swing has not struck yet (a touch jab the finger outran, CT-17) */

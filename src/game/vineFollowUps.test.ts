@@ -312,7 +312,7 @@ test('a straight-up flick after a pump still climbs the vine and carries no lean
   }
 });
 
-test('the other thumb: a flick up that leans 20 degrees or more carries its lean, a nearly straight one does not', () => {
+test('the other thumb: a flick up that leans 20 degrees or more leaps that way, a nearly straight one climbs (Matt, CT-5)', () => {
   for (const [view, v] of Object.entries(VIEWS)) {
     for (const [lean, want] of [[35, 1], [-35, -1], [24, 1], [-24, -1], [8, 0], [-8, 0], [0, 0]] as const) {
       const t = rig(v.w);
@@ -323,7 +323,11 @@ test('the other thumb: a flick up that leans 20 degrees or more carries its lean
       t.g.down(2, a.x, a.y, 1200);
       for (let k = 1; k <= 6; k++) t.g.move(2, a.x + Math.sin(rad(lean)) * 15 * k, a.y - Math.cos(rad(lean)) * 15 * k, 1200 + k * 11);
       t.g.up(2, a.x + Math.sin(rad(lean)) * 90, a.y - Math.cos(rad(lean)) * 90, 1280);
-      assert.deepEqual(t.jumps(), [`jump:${want}`], `${view} ${lean} degrees: ${t.log.join(' ')}`);
+      // (straight up on a vine always climbs, whichever thumb: it used to leap off with no lean, polish report CT-5)
+      if (want === 0) {
+        assert.deepEqual(t.jumps(), [], `${view} ${lean} degrees: ${t.log.join(' ')}`);
+        assert.ok(t.log.includes('climb:-1'), `${view} ${lean} degrees climbs: ${t.log.join(' ')}`);
+      } else assert.deepEqual(t.jumps(), [`jump:${want}`], `${view} ${lean} degrees: ${t.log.join(' ')}`);
     }
     // a quick sideways flick of the other thumb on a swing leaps the way it was flicked
     for (const side of [1, -1]) {

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clipPick, heroClipsLive, isCalm, IDLE_CLIPS } from './heroClips.ts';
+import { clipPick, edgeClip, heroClipsLive, isCalm, IDLE_CLIPS } from './heroClips.ts';
 import { HERO_CLIPS } from './heroClipsData.ts';
 import type { PlayerState } from './types.ts';
 
@@ -28,4 +28,20 @@ test('clips: every sheet is cut at the standard hero size, feet inside the frame
     assert.ok(c.h < 320, `${name}: ${c.h} px tall, the standing hero is 200`);
   }
   assert.ok(IDLE_CLIPS.some((n) => HERO_CLIPS[n]), 'at least one idle clip');
+});
+
+test('clips: at a ledge end he steps back once, then teeters in a loop; arriving already settled, he teeters at once (X-14)', () => {
+  const all = () => true;
+  const sb = HERO_CLIPS['step-back'];
+  const te = HERO_CLIPS.teeter;
+  assert.ok(sb && te, 'both sheets are cut');
+  assert.deepEqual(edgeClip(0, true, all), { name: 'step-back', i: 0, blend: 0 });
+  assert.equal(edgeClip((sb.n - 0.5) / sb.fps, true, all)?.name, 'step-back');
+  const after = sb.n / sb.fps;
+  assert.equal(edgeClip(after + 0.01, true, all)?.name, 'teeter');
+  // the loop wraps
+  assert.equal(edgeClip(after + te.n / te.fps + 0.01, true, all)?.i, 0);
+  assert.equal(edgeClip(0.01, false, all)?.name, 'teeter');
+  assert.equal(edgeClip(0.01, true, (n) => n !== 'step-back')?.name, 'teeter', 'no step-back sheet: straight to the teeter');
+  assert.equal(edgeClip(5, true, () => false), null);
 });

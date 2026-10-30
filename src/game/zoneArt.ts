@@ -8,11 +8,14 @@
 import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
+import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
 import { drawW5Box, w5ArtReady } from './w5Art.ts';
 import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
 import { drawFx } from './bossFx.ts';
 import { drawLeafBit } from './leafSprites.ts';
+import { glowPic } from './glow.ts';
+import { drawSoftShadow } from './w4Grit.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -186,16 +189,21 @@ function drawCloud(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof
     ctx.drawImage(sporePuffPic(), x - r, y - r, r * 2, r * 2);
   }
   ctx.globalAlpha = 1;
-  // glittering spores
+  // glittering spores: each a tiny soft glow, twinkling (the pre-rendered glow, no square)
   if (st.phase === 'active') {
-    ctx.fillStyle = `rgba(253, 246, 178, ${0.85 * st.strength})`;
+    const pic = glowPic('#fdf6b2', 'fly');
     const m = Math.round(w / 14);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < m; i++) {
       const s = hash(i * 1.7 + z.x1 * 0.011);
       const x = z.x0 + s * w + Math.sin(t * 1.3 + i) * 10;
       const y = z.baseY - 12 - (((t * (14 + s * 22) + s * 400) % h) );
-      ctx.fillRect(x, y, 2.4, 2.4);
+      const r = 4 + 2 * Math.sin(t * 5 + i * 2.1);
+      ctx.globalAlpha = 0.9 * st.strength;
+      ctx.drawImage(pic, x - r, y - r, r * 2, r * 2);
     }
+    ctx.restore();
   }
   ctx.restore();
 }
@@ -560,14 +568,17 @@ function drawWeb(ctx: CanvasRenderingContext2D, z: Zone, t: number) {
 
 /** beads of dew on the silk, up to `rise` over the ground */
 function drawDew(ctx: CanvasRenderingContext2D, z: Zone, n: number, rise: number) {
+  // (each bead a tiny soft glint, the pre-rendered glow: no hard dot)
   const w = z.x1 - z.x0;
-  ctx.fillStyle = 'rgba(200, 240, 255, 0.9)';
+  const pic = glowPic('#c8f0ff', 'fly');
+  ctx.save();
+  ctx.globalAlpha = 0.9;
   for (let i = 0; i < Math.round(n * 0.8); i++) {
     const sd = hash(i * 6.1 + z.x0 * 0.02);
-    ctx.beginPath();
-    ctx.arc(z.x0 + sd * w, z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * rise, 1.8, 0, Math.PI * 2);
-    ctx.fill();
+    const x = z.x0 + sd * w, y = z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * rise;
+    ctx.drawImage(pic, x - 4.5, y - 4.5, 9, 9);
   }
+  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------
@@ -594,16 +605,18 @@ function drawTide(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
   ctx.rect(z.x0, z.top, w, bottom - z.top);
   ctx.clip();
   // wet mud shine at low tide
+  // (soft: a damp darkening laid on in overlapping soft shadows, and long soft sheens of sky on the wet, no box and no flat ovals)
   if (level < 0.1) {
-    ctx.fillStyle = 'rgba(80, 54, 34, 0.35)';
-    ctx.fillRect(z.x0, z.baseY - 2, w, 14);
-    ctx.fillStyle = 'rgba(190, 230, 240, 0.5)';
+    for (let x = z.x0 + 30; x < z.x1; x += 60) drawSoftShadow(ctx, x, z.baseY + 5, 120, 22, 0.3);
+    const sheen = glowPic('#bee6f0');
+    ctx.save();
+    ctx.globalAlpha = 0.5;
     for (let i = 0; i < Math.round(w / 70); i++) {
       const sd = hash(i * 4.4 + z.x0 * 0.02);
-      ctx.beginPath();
-      ctx.ellipse(z.x0 + 20 + sd * (w - 40), z.baseY + 2, 14 + sd * 12, 2.4, 0, 0, Math.PI * 2);
-      ctx.fill();
+      const rx = 16 + sd * 14;
+      ctx.drawImage(sheen, z.x0 + 20 + sd * (w - 40) - rx, z.baseY - 1, rx * 2, 6);
     }
+    ctx.restore();
   }
   // the tide is fast water (Matt, 2026-10-29: from World 6 the deadly water is dirty or fast): Matt's painted sheet, rushing toward the
   // bank it sweeps you to; the drawn water below only until the sheet has loaded
@@ -646,23 +659,9 @@ function drawTide(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
   if (st.phase === 'warn' || (st.phase === 'active' && st.u < 0.25)) {
     const a = st.phase === 'warn' ? 0.3 + 0.6 * Math.abs(Math.sin(st.u * Math.PI * 5)) : 0.8;
     const cx = (z.x0 + z.x1) / 2;
-    ctx.save();
-    ctx.strokeStyle = `rgba(255, 255, 255, ${a})`;
-    ctx.shadowColor = 'rgba(15, 23, 42, 0.8)';
-    ctx.shadowBlur = 4;
-    ctx.lineWidth = 5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    for (let k = -1; k <= 1; k++) {
-      const x = cx + k * 34;
-      const y = z.baseY - 130 - (st.phase === 'warn' ? st.u * 14 : 0);
-      ctx.beginPath();
-      ctx.moveTo(x - 13, y + 9);
-      ctx.lineTo(x, y - 9);
-      ctx.lineTo(x + 13, y + 9);
-      ctx.stroke();
-    }
-    ctx.restore();
+    // (the painted arrow, recoloured a pale sea-white and turned to point up: no stroked chevrons)
+    const y = z.baseY - 130 - (st.phase === 'warn' ? st.u * 14 : 0);
+    drawFx(ctx, 'warnArrow', cx, y, 64, { rot: -Math.PI / 2, alpha: a, recolor: '#e6fbff' });
   }
 }
 
@@ -672,11 +671,18 @@ function drawTide(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
 
 /** cracks on every ruin tile, and dust and a shudder on the ones that have started to go */
 export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly Platform[], cam: View, t: number) {
+  const painted = crumbleArtReady();
   for (const p of plats) {
-    if (p.crumbleAfter === undefined || p.broken) continue;
+    if (p.crumbleAfter === undefined) continue;
     if (p.x + p.width < cam.x - 40 || p.x > cam.x + cam.w + 40) continue;
+    // (a tile just broken: its painted pieces fall, crumbleArt.ts; the painted slab carries its own cracks, so only the dust is drawn here)
+    if (p.broken) {
+      if (painted) drawCrumbleTile(ctx, p, t);
+      continue;
+    }
     const timer = p.fragileTimer;
     const prog = timer === undefined ? 0 : Math.max(0, Math.min(1, 1 - timer / p.crumbleAfter));
+    if (painted && prog <= 0) continue;
     ctx.save();
     ctx.translate(p.x, p.y);
     if (prog > 0) ctx.translate(Math.sin(t * 70) * 2.2 * prog, Math.sin(t * 83) * 1.2 * prog);
@@ -684,7 +690,7 @@ export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly 
     ctx.lineWidth = 2;
     ctx.lineJoin = 'round';
     const seed = p.x * 0.017;
-    for (let k = 0; k < 2; k++) {
+    for (let k = 0; k < (painted ? 0 : 2); k++) {
       const x0 = p.width * (0.2 + 0.4 * k) + (hash(seed + k) - 0.5) * 10;
       ctx.beginPath();
       ctx.moveTo(x0, 2);
@@ -694,8 +700,11 @@ export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly 
       ctx.stroke();
     }
     if (prog > 0) {
-      ctx.fillStyle = `rgba(220, 120, 60, ${0.28 * prog})`;
-      ctx.fillRect(0, 0, p.width, p.height);
+      // (the old plank's warm tint: the painted slab shows its breaking frame instead)
+      if (!painted) {
+        ctx.fillStyle = `rgba(220, 120, 60, ${0.28 * prog})`;
+        ctx.fillRect(0, 0, p.width, p.height);
+      }
       ctx.fillStyle = `rgba(214, 196, 160, ${0.8 * (1 - prog * 0.4)})`;
       for (let i = 0; i < 6; i++) {
         const sd = hash(i * 5.3 + seed);
@@ -712,6 +721,8 @@ export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly 
 // ---------------------------------------------------------------------------
 
 let darkCanvas: HTMLCanvasElement | null = null;
+/** pixels per CSS pixel the dark veil is painted at (drawDarkness) */
+const DARK_RES = 0.5;
 
 /**
  * The dark itself, drawn over the finished scene in screen space: a near-black veil with soft holes cut out for Pokey's lantern
@@ -724,7 +735,9 @@ export function drawDarkness(
 ) {
   if (level <= 0.01 || typeof document === 'undefined') return;
   if (!darkCanvas) darkCanvas = document.createElement('canvas');
-  const dpr = (ctx.getTransform?.().a ?? 1) || 1;
+  // the veil is all soft edges, so it is painted at half the CSS resolution and stretched over the screen: a phone used to fill, cut and
+  // blend a canvas the size of the whole screen every frame (PF-1)
+  const dpr = Math.min(DARK_RES, (ctx.getTransform?.().a ?? 1) || 1);
   const cw = Math.max(1, Math.round(vw * dpr));
   const ch = Math.max(1, Math.round(vh * dpr));
   if (darkCanvas.width !== cw || darkCanvas.height !== ch) { darkCanvas.width = cw; darkCanvas.height = ch; }
@@ -755,9 +768,10 @@ export function drawDarkness(
   }
   d.globalCompositeOperation = 'source-over';
   ctx.save();
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.globalAlpha = 0.9 * level;
-  ctx.drawImage(darkCanvas, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'low';
+  ctx.drawImage(darkCanvas, 0, 0, cw, ch, 0, 0, vw, vh);
   ctx.restore();
   // the fireflies themselves: small warm points in each light (World 3's lights are glowworms, drawn by the stage)
   if (opts.fireflies === false) return;

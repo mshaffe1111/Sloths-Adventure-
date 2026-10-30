@@ -6,7 +6,8 @@ export const CelHead: React.FC<{ name: string; size?: number }> = ({ name, size 
   const spec = HEADS[name];
   const c = spec ? CELS[spec.key] : undefined;
   if (!spec || !c) return null;
-  const side = spec.s * c.w; // atlas px the window covers
+  const w0 = c.w - 2 * c.m; // the old rect's width, in page px (the painting is grown by m all round)
+  const side = spec.s * w0; // page px the window covers
   const k = size / side;
   const dim = CEL_ATLAS_SIZES[c.a];
   return (
@@ -19,7 +20,7 @@ export const CelHead: React.FC<{ name: string; size?: number }> = ({ name, size 
           backgroundImage: `url(${CEL_ATLAS_URLS[c.a]})`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: `${dim.w * k}px ${dim.h * k}px`,
-          backgroundPosition: `${-(c.x + spec.x * c.w) * k}px ${-(c.y + spec.y * c.w) * k}px`,
+          backgroundPosition: `${-(c.x + c.m + spec.x * w0) * k}px ${-(c.y + c.m + spec.y * w0) * k}px`,
         }}
       />
     </span>

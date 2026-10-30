@@ -9,6 +9,11 @@ import { DOT_LINES, type DotLineKind, type DotLineRow } from './dotLinesData.ts'
 import { W5_DOT_LINES, W5_SCENE_IDS, W5_SPEAKERS, W5_THING_TIPS } from './w5Lines.ts';
 import type { GuideKind, GuideLine, GuideWho, MoveId, TopicId } from './dotGuide.ts';
 import { GUIDE, classifyLine, topicOf } from './dotGuide.ts';
+import { firstOf, PUZZLE_LATER, PUZZLE_STEPS, roomLineOf } from './dotTips.ts';
+import { ctestEnabled } from './playRecorder.ts';
+
+/** first-time control tips that may not wait (GuideLine.soon) */
+const SOON_TIPS: ReadonlySet<string> = new Set(['w5.silk']);
 
 export interface DotLine {
   id: string;
@@ -167,6 +172,8 @@ export function gestureMove(gesture: string | null, topic: TopicId | undefined):
   }
 }
 
+/** how long a puzzle's first line may wait its turn (ms) */
+export const PUZZLE_NAME_WAIT_MS = 45000;
 /** how long a line of a scene played in a stage (5-5's pouch scene) may wait its turn (ms) */
 export const SCENE_WAIT_MS = 150000;
 /** a tip about a new thing rather than a new move (dotGuide.ts GuideLine.thing): World 5's first-time tips */
@@ -182,6 +189,8 @@ export const isThingTip = (id: string): boolean => W5_THING_TIPS.has(id);
 export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number } = {}): GuideLine | null {
   const sw = swapLine(text, stageId);
   if (sw && sw.text === null) return null;
+  // (a puzzle's later step, the move itself, is never said as he walks up: only after struggle there, dotTips.ts)
+  if (sw && PUZZLE_LATER.has(sw.line.id)) return null;
   const c = classifyLine(text, !!o.boss);
   const said = sw?.text ?? text;
   let kind: GuideKind = c.kind;
@@ -192,7 +201,8 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     const k = sw.line.kind;
     kind = k === 'move' || thing ? 'teach' : k === 'story' ? 'story' : k === 'help' ? 'struggle' : k === 'lock' ? 'must' : k === 'goal' ? 'goal' : 'info';
     topic = targetTopic(sw.line.target) ?? c.topic;
-    move = kind === 'teach' ? c.move ?? gestureMove(sw.line.gesture, topic) : undefined;
+    // (only a move row asks for a move: a thing's tip that names the thing and its rule, never the move, is read and goes)
+    move = k === 'move' ? c.move ?? gestureMove(sw.line.gesture, topic) : undefined;
   }
   // Dot's own flight: she is the one flying, so her tips are read, not watched for
   if (o.flight && kind !== 'must') {
@@ -203,6 +213,21 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
   const who: GuideWho = (sw && W5_SPEAKERS.get(sw.line.id)) ?? (o.dot === false ? 'Pokey' : 'Dot');
   const scene = !!sw && W5_SCENE_IDS.has(sw.line.id);
   const key = `engine:${sw?.line.id ?? text}`;
+  // (what Tips says, dotTips.ts: the first line about a new thing, and a puzzle's steps)
+  const room = roomLineOf(text);
+  const id = sw?.line.id ?? '';
+  const step: GuideLine['step'] = room?.step ?? (PUZZLE_STEPS[id] ? 'name' : PUZZLE_LATER.has(id) ? 'move' : undefined);
+  // (a boss's line is about that boss's attack: Tips says each one the first time, as a new hazard)
+  const mech = room?.mech ?? firstOf(id || text) ?? PUZZLE_STEPS[id]?.mech ?? (o.boss && !o.flight ? `boss:${id || text}` : undefined);
+  if (room) {
+    // (a room's lines are about its pieces: she perches by the one that matters now, or by the log a line names)
+    topic = topicOf(said) === 'log' ? 'log' : 'puzzle';
+    if (room.step === 'nudge' || room.step === 'move') kind = 'struggle';
+    move = undefined;
+  }
+  // (a puzzle's first line is said as he walks in, ahead of a plain line: waiting behind one, it was taken down when he left the room
+  // unsaid, 1-6 on Help)
+  if (step === 'name') kind = 'teach';
   // (World 5's let-go on the silk follows the grab at once, with no breath: a quick thumb let go in the first sweet spot, and the line
   // came after it, QA v198 sideways. It is said while he swings, before he needs it)
   const thenNow = sw?.line.id === 'w5.silk';
@@ -228,6 +253,18 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     // (a thing's tip is read, not held for its move: one the player never does, a punch, kept the screen 20 s and the next tips waited)
     capMs: o.boss && kind !== 'must' ? GUIDE.bossLineMs : thing ? THING_CAP_MS : undefined,
     next: then,
+    ...(mech ? { mech } : {}),
+    // (a puzzle's first line belongs to the puzzle, not to a spot he runs past: it may wait its turn while he is there; the room takes
+    // it down when he leaves, puzzlePlay.ts passTip)
+    ...(step ? { step, ...(step === 'name' ? { waitMs: PUZZLE_NAME_WAIT_MS, soon: true } : {}) } : {}),
+    // (the control test's lines are the test itself: each is said, every run, and none is dropped for a move he made before it came.
+    // Seed 7920 said nothing for 24 s: "Run to the flowers" and "Turn around" went because he was already running at 2.5 s)
+    // (only while the control test runs: a stage's own words can match a test row, "Flick up onto the mushroom to bounce" in 1-3)
+    ...(sw?.line.id.startsWith('ctest.') && ctestEnabled() ? { soon: true, ctest: true } : {}),
+    // (a control taught the first time it is needed, where the thing is right there: it may not wait out the busy cap. 5-5's silk line
+    // came 255 px late once the spiders' and the threads' first lines named the danger instead of the move, the lead's sweep)
+    ...(sw && SOON_TIPS.has(sw.line.id) ? { soon: true } : {}),
+    said: text,
     source: 'engine',
   };
 }

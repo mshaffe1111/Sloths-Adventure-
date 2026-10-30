@@ -196,9 +196,8 @@ const VENOM: BossDef = {
   // the coils while he sat up)
   bodyGrace: 99,
   // (2026-10-26, QA: the first lunge came 1.2 s after Dot's tip, before it could be read) he sizes you up first, and he hisses as
-  // he rears back
+  // he rears back (his tell sound, audio.ts playBossTell)
   firstIdle: 3.2,
-  tellCall: 'boa',
   weakAt: (b, floor) => venomWeak(b, floor),
   openAfter: ['sweep'],
   aimText: 'HIT HIS HEAD WHEN IT IS DOWN!',
@@ -339,12 +338,19 @@ const CROC: BossDef = {
     c.text('THE RIVER FLOODS!', c.arena.left + 300, c.arena.floor - 270, '#5eead4');
     c.shake(0.6);
   },
+  // (DOT-16: Crocus Rex had no coaching: start, phase 2, phase 3, one line a move, 8 words or fewer)
+  guide: {
+    start: 'Hit his head when the jaws open!',
+    2: 'Angrier now. Watch that tail!',
+    3: 'The river floods! Up on the boardwalk!',
+  },
   moves: {
     // rears back with the jaws wide, then rolls across the whole arena. Crashing into the wall leaves him dizzy
     // (dizzy, he reels round and staggers back toward you, so a crash at the far fence is not out of reach)
-    deathRoll: { ...chargeMove({ tell: 1.2, maxT: 2.3, rec: 1.0, speed: 560, stun: 2.6, text: 'DIZZY!', min: 220 }), stunStep: { speed: 200, stop: 235 }, softBody: true },
+    deathRoll: { ...chargeMove({ tell: 1.2, maxT: 2.3, rec: 1.0, speed: 560, stun: 2.6, text: 'DIZZY!', min: 220 }), stunStep: { speed: 200, stop: 235 }, softBody: true, guide: "He's rolling! Get him to hit the wall!" },
     // a low spinning sweep of the tail on both sides: jump it
     tailWhip: {
+      guide: 'Tail! Flick up to jump it.',
       tell: 0.7,
       act: 0.4,
       // the whip spins him round, and he lurches on toward you with his jaws open: the opening comes to you
@@ -359,6 +365,7 @@ const CROC: BossDef = {
     },
     // slams the floor and sends mud waves both ways
     mudSurge: {
+      guide: 'Mud waves! Flick up over them.',
       tell: 0.95,
       act: 0.15,
       rec: 2.4,
@@ -378,6 +385,7 @@ const CROC: BossDef = {
     },
     // mud geysers burst up on marked spots along the bank
     geysers: {
+      guide: 'Geysers! Keep off the marked spots.',
       tell: 1.0,
       act: 0.3,
       rec: 2.4,
@@ -1264,9 +1272,16 @@ const QUEEN: BossDef = {
     c.text('THE BROOD HATCHES!', c.arena.left + 330, c.arena.floor - 300, '#fca5a5');
     c.shake(0.55);
   },
+  // (DOT-16: the Queen had no coaching, and the shortest tells of the four: start, phase 2, phase 3, one line a move, 8 words or fewer)
+  guide: {
+    start: 'Hit whatever glows on her, Pokey.',
+    2: 'Faster now. Watch her legs!',
+    3: 'Babies everywhere! Keep moving.',
+  },
   moves: {
     // a sticky shot that slows you for a few seconds
     webShot: {
+      guide: 'Web shot! Slide out of its way.',
       tell: 0.6,
       act: 0.25,
       rec: 1.1,
@@ -1279,6 +1294,7 @@ const QUEEN: BossDef = {
     },
     // calls spiderlings down from the roof of the hollow (or spits if the nest is already full)
     callBrood: {
+      guide: 'Spiderlings! Tap to punch them.',
       tell: 0.9,
       act: 0.2,
       rec: 1.4,
@@ -1301,7 +1317,7 @@ const QUEEN: BossDef = {
       },
     },
     // springs across the floor and bites where it lands
-    pounceBite: leapMove({
+    pounceBite: { ...leapMove({
       tell: 0.55,
       act: 0.6,
       rec: 1.1,
@@ -1312,9 +1328,10 @@ const QUEEN: BossDef = {
         impact(b, c, 0.5, '#9ca3af');
         b.ai!.d.bite = 1;
       },
-    }),
+    }), guide: 'She pounces! Slide back out of reach.' },
     // rears up and stamps her front legs: a short, low sweep of legs both sides and a wave along the floor each way
     legStomp: {
+      guide: 'She stomps! Flick up over the wave.',
       tell: 0.7,
       act: 0.5,
       rec: 1.3,
@@ -1331,6 +1348,7 @@ const QUEEN: BossDef = {
     },
     // a jet of venom straight out of her mouth along the floor: a warning band first, then the blast. Jump it
     venomBlast: {
+      guide: 'Venom on the floor! Flick up over it.',
       tell: 0.75,
       act: 0.7,
       rec: 1.3,
@@ -1345,6 +1363,7 @@ const QUEEN: BossDef = {
     },
     // strands of web rise (marked first) either side of where you stand: a gap in the middle stays open
     webCurtain: {
+      guide: 'Webs rising! Stay in the gap.',
       tell: 1.0,
       act: 0.3,
       rec: 1.4,
@@ -1363,6 +1382,7 @@ const QUEEN: BossDef = {
     },
     // cocoons fall from the roof of the hollow on marked spots, leaving a clear lane around where you stand
     cocoonDrop: {
+      guide: 'Cocoons falling! Stay in your lane.',
       tell: 0.9,
       act: 0.4,
       rec: 1.3,

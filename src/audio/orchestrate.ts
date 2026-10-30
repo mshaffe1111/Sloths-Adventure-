@@ -84,17 +84,17 @@ const FLAVOUR: Record<number, Flavour> = {
   // ---- Act II, The Cost: somber. Bowed basses (no bouncing pizzicato), cellos for the pulse, nothing glittering, no snare
   // 4 the mystery: bowed cello and bass, a little harp, no drums to speak of
   4: { bass: ['cello', 'contra'], ost: ['celloStac', 'celloStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 0.6, snare: false, triangle: false, choir: false },
-  // 5 the cost gets personal: cellos and bassoon, a heavier timpani
-  5: { bass: ['cello', 'bassoon'], ost: ['celloStac', 'violinStac'], ostHi: 'celloStac', brass: 'horn', weight: 1, pad: 'orchStrings', harp: 0.4, snare: false, triangle: false, choir: false },
-  // 6 low and slow-hearted: bassoon and cello, a thin harp
-  6: { bass: ['bassoon', 'cello'], ost: ['celloStac', 'celloStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 0.5, snare: false, triangle: false, choir: false },
+  // 5 the cost gets personal (orchid and silk): pizzicato strings under the oboe, a heavier timpani
+  5: { bass: ['contraPizz', 'cello'], ost: ['violinStac', 'violinStac'], ostHi: 'violinStac', brass: 'horn', weight: 1, pad: 'orchStrings', harp: 0.4, snare: false, triangle: false, choir: false },
+  // 6 low and slow-hearted (the mangrove): the bassoon's tune over plucked double basses, a thin harp
+  6: { bass: ['contraPizz', 'contraPizz'], ost: ['celloStac', 'celloStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 0.5, snare: false, triangle: false, choir: false },
   // 7 the General: tuba, trombone and a marching snare under a choir. The march is coming
   7: { bass: ['tuba', 'contra'], ost: ['celloStac', 'hornStac'], ostHi: 'hornStac', brass: 'trombone', weight: 1, pad: 'orchBrass', harp: 0, snare: true, triangle: false, choir: true },
   // ---- Act III, The Iron Road: heavy
   // 8 the night world, the rest: violas and violins, harp, a choir, hardly any drum
   8: { bass: ['cello', 'contra'], ost: ['violinStac', 'violinStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 1, snare: false, triangle: true, choir: true },
-  // 9 driving phrygian: contrabass, 16th cellos, trombone stabs and snare
-  9: { bass: ['contra', 'tuba'], ost: ['celloStac', 'celloStac'], ostHi: 'hornStac', brass: 'trombone', weight: 2, pad: 'orchStrings', harp: 0, snare: true, triangle: false, choir: false },
+  // 9 driving phrygian (the volcano march): tuba under the trombone's tune, 16th cellos, trombone stabs and snare
+  9: { bass: ['tuba', 'contra'], ost: ['celloStac', 'celloStac'], ostHi: 'hornStac', brass: 'trombone', weight: 2, pad: 'orchStrings', harp: 0, snare: true, triangle: false, choir: false },
   // 10 the final world: tuba, trombone and horns, a choir, timpani, bass drum
   10: { bass: ['tuba', 'contra'], ost: ['celloStac', 'hornStac'], ostHi: 'hornStac', brass: 'trombone', weight: 2, pad: 'orchBrass', harp: 0.4, snare: true, triangle: false, choir: true },
 };

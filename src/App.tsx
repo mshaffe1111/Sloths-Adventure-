@@ -15,6 +15,7 @@ import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { LessonCard } from './components/LessonCard.tsx';
 import { Wayside } from './components/Wayside.tsx';
+import type { GuideFeed } from './components/dot/DotGuide.tsx';
 import { MeecaWords } from './components/MeecaWords.tsx';
 import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
@@ -23,12 +24,13 @@ import { ControlSwitch } from './components/ControlSwitch.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
 import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
-import { INTRO_PANELS, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
-import { MEMORIES, finalePanels, loadMemories, nextAfterBoss, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
+import { INTRO_PANELS, WORLD_GATE, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
+import { MEMORIES, endTagPanels, finalePanels, loadMemories, nextAfterBoss, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
 import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { BossIntroCard } from './components/BossCards.tsx';
+import { TAP_GUARD_MS } from './components/GameOverCard.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
@@ -112,6 +114,34 @@ function markGuardianCardSeen(lvl: LevelConfig) {
 function markMidStorySeen(w: number) {
   try {
     localStorage.setItem(midStoryKey(w), '1');
+  } catch {}
+}
+/** a guardian's intro has been seen (a long one is shortened on the retries: storyBosses.ts RETRY_INTRO_LINES) */
+const bossIntroKey = (w: number) => `sloth_story_b${w}`;
+function hasSeenBossIntro(w: number): boolean {
+  try {
+    return localStorage.getItem(bossIntroKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markBossIntroSeen(w: number) {
+  try {
+    localStorage.setItem(bossIntroKey(w), '1');
+  } catch {}
+}
+/** the scene at the guardian's door, after a world's ninth stage (World 10's gate), plays once */
+const gateStoryKey = (w: number) => `sloth_story_g${w}`;
+function hasSeenGateStory(w: number): boolean {
+  try {
+    return localStorage.getItem(gateStoryKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markGateStorySeen(w: number) {
+  try {
+    localStorage.setItem(gateStoryKey(w), '1');
   } catch {}
 }
 
@@ -222,13 +252,14 @@ export default function App() {
   const [currentCount, setCurrentCount] = useState<number>(0);
   const [targetCount, setTargetCount] = useState<number>(1);
   /** the guiding line Dot is saying (a stage tip, the goal, the sealed door): from the engine, shown by Wayside */
-  const [guideLine, setGuideLine] = useState<{ text: string; ms: number; n: number; passed?: boolean } | null>(null);
+  const [guideLine, setGuideLine] = useState<GuideFeed | null>(null);
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
   /** Meeca's stage: its title card or its ending is up, so the HUD steps aside */
   const [cinematic, setCinematic] = useState(false);
   const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null>(null);
+  const fight = activeLevel.objectiveType === 'boss_lair' ? bossInfo : null;
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
   // Picks the tune for a stage. A new number each time a stage is entered gives a new composition; retrying keeps it.
@@ -438,9 +469,10 @@ export default function App() {
     const w = activeLevel.worldIndex;
     sound.screen(screen, w, activeLevel.objectiveType === 'boss_lair', activeLevel.id, activeLevel.miniIndex, musicSalt, activeLevel.objectiveType);
     const worldAmbient = (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).ambientType;
+    sound.setWorld(w);
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
-    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
+    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'world_gate' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
     else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
     else sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
@@ -463,6 +495,11 @@ export default function App() {
     }
   }, []);
 
+  // when the Game Over card came up (its tap guard)
+  const gameOverAt = useRef(0);
+  useEffect(() => {
+    if (screen === 'game_over') gameOverAt.current = performance.now();
+  }, [screen]);
   // Global Key listeners for Pause (Esc / P) and Title start (Space / Enter)
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
@@ -498,7 +535,8 @@ export default function App() {
           else handleNextStage();
         }
       } else if (screen === 'game_over') {
-        if (e.code === 'Space' || e.code === 'Enter') {
+        // (the card's half-second guard holds for the keys too: GameOverCard.tsx TAP_GUARD_MS, AN-1)
+        if ((e.code === 'Space' || e.code === 'Enter') && performance.now() - gameOverAt.current >= TAP_GUARD_MS) {
           e.preventDefault();
           continueRun();
         }
@@ -662,6 +700,8 @@ export default function App() {
 
     setCoachStep(null);
     setLessonId(null);
+    // (a new stage starts with no boss: the last fight's name and bar must not show for a frame: UI-7)
+    setBossInfo(null);
     setRunId((n) => n + 1);
     setHp(maxHearts());
     setMaxHp(maxHearts());
@@ -694,7 +734,12 @@ export default function App() {
           onSlowDevice: () => {
             if (!slowTipShown()) setSlowTip(slowTipText(navigator.userAgent));
           },
-          onGuide: (text, seconds, passed) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) })),
+          // (the last few ride along: two lines in one frame are both said, DotGuide.tsx GuideFeed)
+          onGuide: (text, seconds, passed) =>
+            setGuideLine((g) => {
+              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) };
+              return { ...line, recent: [...(g?.recent ?? []).slice(-5), line] };
+            }),
           onStageStats: (s) => {
             pendingStats.current = s;
             setLastStats(s);
@@ -705,12 +750,16 @@ export default function App() {
             setScore(curScore);
             setHp(curHp);
             if (distRatio !== undefined) {
-              setDistanceRatio(distRatio);
+              // in steps of a quarter percent (under a pixel on the HUD's trail): the exact share changed every frame he moved, so the
+              // whole app re-rendered 30 times a second while he ran (PF-1)
+              setDistanceRatio(Math.round(distRatio * 400) / 400);
             }
             setActivePowerUp(curPowerUp ?? null);
             setPowerUpTimer(curPowerTimer ?? 0);
           },
-          onBossUpdate: (info) => setBossInfo(info),
+          // (when the guardian goes down the engine sends nothing more: its bar stays, empty, under its own name, instead of falling
+          // back to a full bar called "Stage boss": UI-7)
+          onBossUpdate: (info) => setBossInfo((prev) => info ?? (prev ? { ...prev, hp: 0, entering: false } : null)),
           onCinematic: (on) => setCinematic(on),
           onCoach: (st) => setCoachStep(st),
           onLesson: (id) => setLessonId(id),
@@ -773,6 +822,9 @@ export default function App() {
               // plays inside 5-5, at the rest branch: midScene.ts)
               // halfway through a world, Dot catches up with a note from Meeca
               setScreen('world_mid');
+            } else if (lvl.miniIndex === 9 && WORLD_GATE[lvl.worldIndex] && !hasSeenGateStory(lvl.worldIndex)) {
+              // at the fortress gate, Dot goes around to the cookhouse seam and leaves Flicker with him
+              setScreen('world_gate');
             } else {
               setScreen('victory');
             }
@@ -1061,17 +1113,35 @@ export default function App() {
         />
       )}
 
+      {/* At the guardian's door, after the ninth stage (first time only) */}
+      {screen === 'world_gate' && WORLD_GATE[activeLevel.worldIndex] && (
+        <StoryPlayer
+          key={`gate${activeLevel.worldIndex}`}
+          panels={WORLD_GATE[activeLevel.worldIndex]}
+          finishLabel="Onward"
+          skipLabel="Skip scene"
+          onFinish={() => {
+            markGateStorySeen(activeLevel.worldIndex);
+            setScreen('victory');
+          }}
+        />
+      )}
+
       {/* Boss showdown */}
       {screen === 'boss_intro' && !bossCard && (
         <StoryPlayer
           panels={
             activeLevel.secret
               ? thornbarkPanels('intro')
-              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
+              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName, hasSeenBossIntro(activeLevel.worldIndex))
           }
           finishLabel="FIGHT!" finishIcon="swords"
           skipLabel="Skip to fight"
-          onFinish={() => (hasSeenGuardianCard(activeLevel) ? launchEngine(activeLevel) : setBossCard(true))}
+          onFinish={() => {
+            if (!activeLevel.secret) markBossIntroSeen(activeLevel.worldIndex);
+            if (hasSeenGuardianCard(activeLevel)) launchEngine(activeLevel);
+            else setBossCard(true);
+          }}
         />
       )}
       {/* after the guardian's scene, the first time in this save: its card, with Dot's one line, then the fight (UI-5) */}
@@ -1144,6 +1214,15 @@ export default function App() {
       {screen === 'ending_story' && (
         <StoryPlayer
           panels={finalePanels(foundIds)}
+          finishLabel="The End" finishIcon="heart"
+          onFinish={() => setScreen(endTagPanels(foundIds).length ? 'ending_tag' : 'story_ending')}
+        />
+      )}
+
+      {/* After the end: the stopwatch, if it was found */}
+      {screen === 'ending_tag' && (
+        <StoryPlayer
+          panels={endTagPanels(foundIds)}
           finishLabel="The End" finishIcon="heart"
           onFinish={() => setScreen('story_ending')}
         />
@@ -1221,13 +1300,14 @@ export default function App() {
             distanceRatio={distanceRatio}
             score={score}
             onMenu={pauseGame}
-            bossHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hp ?? 1 : undefined}
-            bossMaxHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.maxHp ?? 1 : undefined}
-            bossName={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.name : undefined}
-            bossPhase={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.phase : undefined}
-            bossHits={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hits : undefined}
-            bossAccent={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.color : undefined}
-            bossEntering={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.entering : activeLevel.id === MEECA_STAGE_ID ? cinematic : undefined}
+            // (the boss bar only once the engine has said which guardian this is: UI-7)
+            bossHp={fight?.hp}
+            bossMaxHp={fight?.maxHp}
+            bossName={fight?.name}
+            bossPhase={fight?.phase}
+            bossHits={fight?.hits}
+            bossAccent={fight?.color}
+            bossEntering={activeLevel.objectiveType === 'boss_lair' ? fight?.entering : activeLevel.id === MEECA_STAGE_ID ? cinematic : undefined}
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}

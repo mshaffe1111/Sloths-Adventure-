@@ -1,6 +1,6 @@
 import React from 'react';
 import type { SkillId } from '../game/skills.ts';
-import { Sliders, COARSE, OrchSfxToggle } from './PauseMenu.tsx';
+import { Sliders, COARSE } from './PauseMenu.tsx';
 import { ControlsSetting, ShakeSetting, FullscreenSetting, AssistSetting, WaysideToggle, HapticsToggle, PerfToggle, DifficultySetting } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 import { MenuFrame, MenuTile, SoundSetting } from './MenuFrame.tsx';
@@ -60,7 +60,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({ isMuted, onToggleMute, onC
           <WaysideToggle />
           <HapticsToggle />
           <PerfToggle />
-          <OrchSfxToggle />
         </>
       }
     />

@@ -7,9 +7,10 @@ import assert from 'node:assert/strict';
 import { ACT_MIX, ACTS, actOfThemeId, actOfWorld, fitShift, LEAD_BAND, LEAD_SIT, MIN_BPM, leadWindow } from './acts.ts';
 import { composeStageFull, composeStage } from './composer.ts';
 import { orchestrate, PACES } from './orchestrate.ts';
-import { BOSS_THEME, THEMES } from './themes.ts';
+import { BOSS_THEME, THEMES, themeById } from './themes.ts';
 import { stageMusic } from './scenes.ts';
 import { lullaby, stepBy } from './motifs.ts';
+import { STYLES } from './styles.ts';
 import { SLOMATT_A } from './tunes.ts';
 import { noteMidi, parseMelodyBar, SCALES } from './theory.ts';
 import { VOICE_RANGE } from './scoreKit.ts';
@@ -36,11 +37,14 @@ test('the bosses follow the acts', () => {
   assert.equal(actOfThemeId(`${BOSS_THEME(5)}~b`), 'cost');
 });
 
-test('every act keeps running: a stage is never written slower than its act allows, and the saddest act is still a run', () => {
+test("every world keeps to its own style's tempo band (styles.ts): the canopy bounces, the grotto and the ruins are slow", () => {
   for (let w = 1; w <= 10; w++) {
-    for (const seed of SEEDS) assert.ok(composeStage(w, seed).bpm >= MIN_BPM[actOfWorld(w)], `world ${w} seed ${seed}`);
+    for (const seed of SEEDS) {
+      const bpm = composeStage(w, seed).bpm;
+      assert.ok(bpm >= STYLES[w].bpm[0] && bpm <= STYLES[w].bpm[1], `world ${w} seed ${seed}: ${bpm}`);
+    }
   }
-  assert.ok(MIN_BPM.cost >= 96, 'a somber act still runs');
+  assert.ok(STYLES[1].bpm[0] > STYLES[3].bpm[1] + 40 && STYLES[7].bpm[1] < 80);
 });
 
 test('the story\'s own tunes are quoted exactly, each in its own act and mode', () => {
@@ -60,7 +64,9 @@ test('the story\'s own tunes are quoted exactly, each in its own act and mode', 
       assert.ok(t.acts.includes(actOfWorld(w)), `world ${w} quotes ${info.tune}`);
       assert.equal(theme.scale, t.mode);
       const lead = theme.tracks.find((k) => k.name === 'lead') as MelodyTrack;
-      assert.deepEqual(lead.bars.slice(0, 8), t.bars, `${theme.id}: the first eight bars are the ${info.tune} tune`);
+      // (a world in three sings the lullaby in its own 6/8 counting: World 8)
+      const want = theme.stepsPerBar === 12 && info.tune === 'lullaby' ? lullaby('68') : t.bars;
+      assert.deepEqual(lead.bars.slice(0, 8), want, `${theme.id}: the first eight bars are the ${info.tune} tune`);
       assert.equal(lead.bars.length, 16);
     }
   }
@@ -92,7 +98,7 @@ test('the tune sits in the lead\'s range: the lead and anyone who takes over fro
       assert.equal(lead.inst, info.lead);
       const shift = lead.shift ?? 0;
       const tonic = noteMidi(theme.tonic);
-      const notes = lead.bars.flatMap((b) => parseMelodyBar(b!, tonic, SCALES[theme.scale], 16)).flatMap((n) => (n.midi === null ? [] : [n.midi + shift]));
+      const notes = lead.bars.flatMap((b) => parseMelodyBar(b!, tonic, SCALES[theme.scale], theme.stepsPerBar ?? 16)).flatMap((n) => (n.midi === null ? [] : [n.midi + shift]));
       const lo = Math.min(...notes);
       const hi = Math.max(...notes);
       for (const inst of [lead.inst, ...(lead.altInst ? [lead.altInst] : [])]) {
@@ -104,7 +110,7 @@ test('the tune sits in the lead\'s range: the lead and anyone who takes over fro
       // a quoted tune is placed where its instrument is comfortable
       if (info.tune) {
         const band = LEAD_BAND[lead.inst];
-        const tune = lead.bars.slice(0, 8).flatMap((b) => parseMelodyBar(b!, tonic, SCALES[theme.scale], 16)).flatMap((n) => (n.midi === null ? [] : [n.midi + shift]));
+        const tune = lead.bars.slice(0, 8).flatMap((b) => parseMelodyBar(b!, tonic, SCALES[theme.scale], theme.stepsPerBar ?? 16)).flatMap((n) => (n.midi === null ? [] : [n.midi + shift]));
         assert.ok(Math.min(...tune) >= band[0] && Math.max(...tune) <= band[1], `${theme.id}: ${info.tune} on the ${lead.inst}`);
       }
     }
@@ -124,7 +130,7 @@ test('the placing rules: a tune takes the nearest octave that fits, and a tune t
     assert.ok(lo >= LEAD_BAND[inst][0] && hi <= LEAD_BAND[inst][1]);
     assert.ok(inst in VOICE_RANGE, `${inst} is a recorded voice`);
   }
-  assert.deepEqual(Object.keys(LEAD_SIT).sort(), ['cello', 'horn']);
+  assert.deepEqual(Object.keys(LEAD_SIT).sort(), ['bassoon', 'cello', 'horn', 'trombone']);
 });
 
 test('Act I is sunny, Act II somber, Act III heavy', () => {
@@ -156,16 +162,18 @@ test('Act I is sunny, Act II somber, Act III heavy', () => {
   const low = (iron.leads.get('cello') ?? 0) + (iron.leads.get('horn') ?? 0);
   assert.ok(low / iron.n > 0.3, `Act III: ${low}/${iron.n} stages led by cello or horn`);
   // the heavy act drives hardest; the sunny act is brighter than the somber one
-  assert.ok(iron.bpm > trail.bpm, `${iron.bpm} vs ${trail.bpm}`);
+  // (tempo is each world's own now, styles.ts: the march of Act III is faster than the somber Act II)
+  assert.ok(iron.bpm > cost.bpm, `${iron.bpm} vs ${cost.bpm}`);
 });
 
-test('Act II is dressed without the bouncing pizzicato, the snare and the triangle', () => {
+test('Act II is dressed without the snare and the triangle, and only its silk and mangrove worlds pluck', () => {
   for (const w of [4, 5, 6]) {
     for (const pace of PACES) {
       for (const seed of SEEDS.slice(0, 12)) {
         const t = orchestrate(composeStage(w, seed), { world: w, pace, seed });
         const bass = t.tracks.find((k) => k.name === 'orchBass');
-        assert.ok(bass && bass.kind === 'pattern' && bass.inst !== 'contraPizz', `world ${w} ${pace}: bass ${bass && 'inst' in bass ? bass.inst : '?'}`);
+        // (World 5's pizzicato strings and World 6's plucked double basses are those worlds' own colour: Matt, 2026-10-29)
+        if (w === 4) assert.ok(bass && bass.kind === 'pattern' && bass.inst !== 'contraPizz', `world ${w} ${pace}: bass ${bass && 'inst' in bass ? bass.inst : '?'}`);
         assert.ok(!t.tracks.some((k) => k.name === 'snareR' || k.name === 'triR'), `world ${w} ${pace}`);
       }
     }
@@ -182,10 +190,17 @@ test('the dressing leaves the tune to the fuller orchestra: no second set of dou
 test('only Act I falls back to a written world theme; the later acts always get their own composed sound', () => {
   let trailWritten = 0;
   for (let i = 0; i < 400; i++) {
-    for (const w of [1, 2, 3]) if (/^world\d+~/.test(stageMusic(w, `lvl-${i}`, 3, 0, undefined).id)) trailWritten++;
+    // (dressed in the world's own style: 'world2s-<seed>'; World 3, in 6/8, always composes its own)
+    for (const w of [1, 2]) if (/^world\ds-\d+$/.test(stageMusic(w, `lvl-${i}`, 3, 0, undefined).id)) trailWritten++;
+    assert.match(stageMusic(3, `lvl-${i}`, 3, 0, undefined).id, /^gen-/);
     for (const w of [4, 5, 6, 7, 8, 9, 10]) assert.match(stageMusic(w, `lvl-${i}`, 3, 0, undefined).id, /^gen-/, `world ${w}`);
   }
-  assert.ok(trailWritten > 100, `${trailWritten} written themes in Act I`);
+  assert.ok(trailWritten > 70, `${trailWritten} written themes in Act I`);
+  for (const id of ['world1s-123', 'world2s-456']) {
+    const t = themeById(id)!;
+    assert.ok(t.chain && t.form, id);
+    assert.equal((t.tracks.find((k) => k.name === 'lead') as MelodyTrack).inst, id.startsWith('world1') ? 'flute' : 'clarinet', `${id}: on the world's own lead`);
+  }
 });
 
 test('each act\'s mix thins or thickens the orchestra the way its sound needs', () => {

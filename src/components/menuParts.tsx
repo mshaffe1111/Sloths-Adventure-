@@ -1,5 +1,4 @@
 import React from 'react';
-import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
 import { setShakeLevel, shakeLevel, type ShakeLevel } from '../game/screenShake.ts';
@@ -13,12 +12,14 @@ import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, ty
 import { DIFFICULTY_LABEL, difficulty, switchDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGuideHelp.ts';
 import { dotSaid } from '../game/dotGuide.ts';
+import { hearTipsAgain } from '../game/dotMemory.ts';
 import { DotFace } from './DotFace.tsx';
 import { Icon as Glyph, type IconName } from './icons/index.tsx';
 
-/** "Dot's help" (the new look): Teach me / Just reminders / Quiet, with her last three lines under it */
+/** "Dot's help" (the new look): Help / Tips / Quiet, "Hear Dot's tips again", and her last three lines under it */
 export const DotHelpSetting: React.FC = () => {
   const [help, setHelp] = React.useState<DotHelp>(() => dotHelp());
+  const [again, setAgain] = React.useState(false);
   const said = dotSaid();
   return (
     <div className="pm-sound">
@@ -41,6 +42,17 @@ export const DotHelpSetting: React.FC = () => {
         />
       </div>
       <small className="pm-polish-note">{DOT_HELP_LABEL[help].blurb} A locked exit is always explained.</small>
+      <button
+        type="button"
+        className="pm-mute pm-dot-again"
+        disabled={again}
+        onClick={() => {
+          hearTipsAgain();
+          setAgain(true);
+        }}
+      >
+        {again ? 'Dot will teach it all again' : "Hear Dot's tips again"}
+      </button>
       {said.length > 0 && (
         <div className="pm-dotsaid" aria-label="Dot said">
           <small className="pm-polish-note" style={{ fontWeight: 700 }}>
@@ -231,8 +243,8 @@ export const ControlsSetting: React.FC = () => {
           <Seg
             value={side}
             options={[
-              { id: 'right', label: 'Right' },
               { id: 'left', label: 'Left' },
+              { id: 'right', label: 'Right' },
             ]}
             onPick={(v) => {
               setPadSide(v);
@@ -262,7 +274,7 @@ export const ControlsSetting: React.FC = () => {
       )}
       <small className="pm-polish-note">
         {style === 'pad'
-          ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.'
+          ? 'A pad for running under your left thumb, and Jump, Punch and Kick buttons on the other side. Flip it to run with your right thumb.'
           : help === 'off'
             ? 'No buttons: slide, flick and tap anywhere on the screen. A tap punches and every jump is a move up. The second jump needs a quick flick up.'
             : help === 'keep'
@@ -417,41 +429,6 @@ export const AssistSetting: React.FC = () => {
     </div>
   );
 };
-
-/** the orchestral sound-effects switch (saved on the device): pickups, hits and animals played by the music's own instruments, no bells or glass */
-export const OrchSfxToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => orchSfxEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <SetIcon name="note" />
-          Orchestra sound effects
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setOrchSfxPref(v);
-            if (v) sound.warmOrchSfx();
-            // a flower and a defeat, so the change is heard at once (the recordings may still be arriving: whatever is ready plays)
-            window.setTimeout(() => {
-              sound.playFlowerPickup(1);
-              window.setTimeout(() => sound.playEnemyDefeated('jaguar'), 450);
-            }, 500);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">Pickups, hits and each animal's sounds played by the same instruments as the music: no bells or glass, and a different instrument each time. Off by default; switch it on if you like it.</small>
-    </div>
-  );
-};
-
 
 /** full screen on or off (the game starts full screen; this is the way out, and back): hidden where the browser cannot do it */
 export const FullscreenSetting: React.FC = () => {

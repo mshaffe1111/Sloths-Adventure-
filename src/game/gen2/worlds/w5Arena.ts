@@ -809,6 +809,9 @@ export const cakeRoomSpec: LocalRoomSpec = {
     enter: 'The plate opens the gate. One of you.', // (new, needs Matt's approval)
     hold: 'Cake! Set it down. Gently.', // (new, needs Matt's approval)
     open: 'Fast asleep on the plate. Through we go!', // (new, needs Matt's approval)
+    // (on struggle: a nudge at the piece, then on Help the move; the Dot rework, dotTips.ts)
+    nudge: 'Beetles love cake.',
+    move: 'Set the cake down on the plate.',
   },
 };
 
@@ -869,6 +872,8 @@ export const teaRoomSpec: LocalRoomSpec = {
     enter: "He won't move. He's too polite.", // (new, needs Matt's approval)
     tipped: 'Tipped! Somebody should mop that.', // (new, needs Matt's approval)
     open: 'Up and over. Rude, but over.', // (new, needs Matt's approval)
+    nudge: 'That teapot looks wobbly.',
+    move: 'Tap by the teapot to tip it.',
   },
 };
 

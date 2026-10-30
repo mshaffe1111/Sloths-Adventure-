@@ -1,0 +1,83 @@
+{
+ "note": "painted sky above the far strips, tools/art/hfbatch/skygpu.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1kapok-sky-s88-7",
+   "strength": 0.88,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w1kapok-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. the great kapok tree's leafy green canopy overhead with lilac orchids, patches of blue sky between the leaves"
+  },
+  {
+   "name": "w1kapok-sky-s95-7",
+   "strength": 0.95,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w1kapok-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. the great kapok tree's leafy green canopy overhead with lilac orchids, patches of blue sky between the leaves"
+  },
+  {
+   "name": "w3-sky-s88-7",
+   "strength": 0.88,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w3-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dark cave roof overhead: dark teal rock, hanging roots and glowworm threads with tiny glowing dots"
+  },
+  {
+   "name": "w3-sky-s95-7",
+   "strength": 0.95,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w3-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dark cave roof overhead: dark teal rock, hanging roots and glowworm threads with tiny glowing dots"
+  },
+  {
+   "name": "w6-sky-s88-7",
+   "strength": 0.88,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w6-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a grey misty swamp sky, the dark mangrove trees and hanging moss rising out of the top"
+  },
+  {
+   "name": "w6-sky-s95-7",
+   "strength": 0.95,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w6-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a grey misty swamp sky, the dark mangrove trees and hanging moss rising out of the top"
+  },
+  {
+   "name": "w5dusk2-sky-s88-7",
+   "strength": 0.88,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w5dusk2-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges"
+  },
+  {
+   "name": "w5dusk2-sky-s95-7",
+   "strength": 0.95,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w5dusk2-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges"
+  },
+  {
+   "name": "w8night-sky-s88-7",
+   "strength": 0.88,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w8night-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a deep blue night sky full of stars, dark leaves at the edges"
+  },
+  {
+   "name": "w8night-sky-s95-7",
+   "strength": 0.95,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b238c800a061b656ea5e6bdf469ae711356094d1/src/assets/backdrops/w8night-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a deep blue night sky full of stars, dark leaves at the edges"
+  }
+ ]
+}

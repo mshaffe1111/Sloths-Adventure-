@@ -1,7 +1,8 @@
+import { w4Normal } from './w4Normal.ts';
 import { groundToFloor } from './groundFloor.ts';
 import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
-import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
+import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
@@ -2616,7 +2617,7 @@ function buildBoss(gen: Gen): GeneratedStage {
     id: 1, type: 'boss', x: def.startDx !== undefined ? left + def.startDx : right - Math.max(160, def.w / 2 + 40), y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
     facing: -1, patrolMinX: left, patrolMaxX: right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
-    specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',
+    specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote,
     ai: newBrain(),
   };
   if (perchList.length) {
@@ -2811,9 +2812,17 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   if (config.id === MEECA_STAGE_ID) return meecaGeneratedStage(config, layoutVariant ?? 1);
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
-  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+  // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
+  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+    return difficulty === 'normal' ? w4Normal(st) : st;
+  }
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
-  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) return flagsCapped(buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]));
+  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) {
+    const st = flagsCapped(buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]));
+    addDress(st, layoutVariant ?? 1);
+    return st;
+  }
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below
   if (isGen2Stage(config)) {
     const stage = buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
@@ -2824,7 +2833,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
     [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
-    return finishStage(stage, validateStage(stage).reachableIds);
+    const done = finishStage(stage, validateStage(stage).reachableIds);
+    // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
+    addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
+    return done;
   }
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {

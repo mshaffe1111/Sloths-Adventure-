@@ -1,0 +1,29 @@
+VI-2 native-resolution backdrop strips (2026-10-29, cap $10), branch hf-art-backdrops. GPU striphdgpu.py, spec make_striphd_spec.py,
+cut + phone crops striphdcut.py. Run time x ~$2.75/h on rtx-pro-6000.
+
+hfb-striphd-w1a 6ae384325ddcdc08302635ce rtx-pro-6000 17:36:50Z-17:41:33Z (4.7 min, ~$0.22): w1 near/mid, Lanczos-scaled start on
+  magenta, s30/s45. THROWN: s30 adds no detail (still the soft upscale); s45 changes things (a new petal, mushroom shapes) and is
+  still soft; on magenta the thin vines turn dark-purple and the key cut gaps into them.
+hfb-striphd-w1b 6ae3866fad9610e5cb31496f rtx-pro-6000 17:46:23Z-17:47:18Z (0.9 min, ~$0.04): FAILED, pip refused spandrel (PEP 668).
+hfb-striphd-w1c 6ae3878cad9610e5cb314aaa rtx-pro-6000 17:51:08Z-17:55:27Z (4.3 min, ~$0.20): w1 near/mid, Real-ESRGAN anime 6B start
+  on flat grey (the alpha sharpened the same way), s25/s35. KEPT w1-near-s25-7 and w1-mid-s25-7 as src/assets/backdrops-hd/w1-near.webp
+  (3214x1736, 0.19 MiB) and w1-mid.webp (2442x1302, 0.25 MiB), cut2 'paint' (the repaint inside, the start's outline on the outer
+  5 px: the repaint moved edges a pixel and the outline came out ragged; on the old shape a rim the repaint lost to grey keeps the old
+  colour, off it the grey halo is cut). s35 not used: mushroom stems melt a little at the foot, the line shifts. The mid's leaf clumps
+  come out a little softer than the start's cel blocks (named in the review).
+running total ~9.9 min = ~$0.45. Review: reference/prop-sheets/qa-notes/hf-art-backdrops/w1-*.jpg
+w1-mid re-cut as cut2 'mix5' (half repaint, half Real-ESRGAN start inside): the plain repaint had softened the cel-shaded leaf clumps.
+hfb-striphd-w2to5 6ae38bdbad9610e5cb314f37 rtx-pro-6000 18:09:31Z-18:23:52Z (14.4 min, ~$0.66): w2-w5 near/mid, s25/s35, the w1c way.
+  KEPT (all s25): w2-near 'paint', w2-mid 'mix5', w3-near 'mix5' (the plain repaint dimmed the glowing mushroom caps), w3-mid 'mix5',
+  w4-near 'paint', w5-near 'paint', w5-mid 'mix5'. s35 not used anywhere: white specks (w4-near water), a pale blob in the reeds
+  (w2-near), darker mushroom caps (w3-near), more drawn-over lines. w4-mid HELD: both repaints draw a second set of thin crack lines
+  beside the old ones (ghost cracks), mix5 too; a lower-strength retry follows.
+running total ~24.3 min = ~$1.11
+hfb-striphd-w6to10 6ae38e975ddcdc0830263ffc rtx-pro-6000 18:21:11Z-18:39:35Z (18.4 min, ~$0.84): w6-w10 near/mid, s25/s35.
+  KEPT (all s25): every near 'paint', every mid 'mix5'. cut2 now keeps the Real-ESRGAN start's paint on small lights (a spot much
+  brighter than what is round it): the repaint had turned w8's round fireflies into little yellow arrowheads. s35 not used: more
+  drawn-over lines, a faint straight tile edge in w8-near's leaves.
+running total ~42.7 min = ~$1.96
+hfb-striphd-w4mid 6ae3963e5ddcdc083026474a rtx-pro-6000 18:53:50Z-18:55:32Z (1.7 min, ~$0.08): w4-mid at s15 (seed 7) and s20 (seed 11).
+  KEPT w4-mid-s15-7 'paint': no ghost cracks, a little brush texture. s20 not used: some doubled cracks again.
+TOTAL ~44.4 min = ~$2.04 of the $10 cap. Every near and mid strip of Worlds 1-10 is in src/assets/backdrops-hd/ (not wired in).

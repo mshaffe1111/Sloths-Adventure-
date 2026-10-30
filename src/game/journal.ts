@@ -11,6 +11,7 @@
  *   - guardians: one per world, opened by beating its 10th stage.
  */
 import { GUARDIANS, PREDATORS, type PredatorId } from './badges.ts';
+import { cardMet, PREDATOR_ALSO_IN, ROAD_STAGES } from './journalMet.ts';
 
 export interface PredatorEntry {
   id: PredatorId;
@@ -25,7 +26,7 @@ export interface PredatorEntry {
 export const PREDATOR_ENTRIES: Record<PredatorId, PredatorEntry> = {
   snake: { id: 'snake', name: 'Golden Tree Snake', tip: 'Rears up, sways, then strikes. Tap to punch it after.', first: 1 },
   boa: { id: 'boa', name: 'Boa Constrictor', tip: 'Coiled and watching. Let it strike, then punch it three times.', first: 1 },
-  eagle: { id: 'eagle', name: 'Harpy Eagle', tip: 'Circles, then dives. Slide down to duck, or hide in a bush.', first: 1, alsoIn: ['1-7'] },
+  eagle: { id: 'eagle', name: 'Harpy Eagle', tip: 'Circles, then dives. Slide down to duck, or hide in a bush.', first: 1, alsoIn: PREDATOR_ALSO_IN.eagle },
   turtle: { id: 'turtle', name: 'Snapping Turtle', tip: 'Head-on it hides. Flick sideways to kick the shell.', first: 2 },
   ocelot: { id: 'ocelot', name: 'Ocelot', tip: 'Crouches, then pounces. Tap twice, or flick sideways to kick.', first: 3 },
   jaguar: { id: 'jaguar', name: 'Jaguar', tip: 'Flick up when it crouches to leap. Three hits beat it.', first: 3 },
@@ -52,13 +53,13 @@ export interface RoadEntry {
 }
 
 export const ROAD_ENTRIES: readonly RoadEntry[] = [
-  { id: 'royal_guard', name: "River King's Guard", tip: 'Head-on he blocks. Flick sideways to kick, or hit from behind.', first: 2, stages: ['2-9'] },
-  { id: 'capuchin', name: 'Capuchin Monkey', tip: 'Never hurts. Catch the thief, hide from lookouts, wait out guards.', first: 4, stages: ['4-3', '4-5', '4-8', '4-9'] },
-  { id: 'eaglet', name: 'Harpy Eaglets', tip: 'Go while they sleep. Lift your thumb and freeze when one peeks.', first: 4, stages: ['4-6'] },
-  { id: 'butler', name: 'The Butler', tip: 'Offers sleepy cake. Tap to punch the tray, or flick up over.', first: 5, stages: ['5-2', '5-M'] },
-  { id: 'seamstress', name: 'The Seamstress', tip: "Don't watch her knit. Slide on past before she looks up.", first: 5, stages: ['5-4'] },
-  { id: 'soldier', name: "Iron-Claw's Soldiers", tip: 'They march Meeca north. In camp they sleep: never wake them.', first: 5, stages: ['5-M'] },
-  { id: 'pell', name: 'Lieutenant Pell', tip: "Iron-Claw's lieutenant. He found Meeca when she stopped to look.", first: 5, stages: ['5-M'] },
+  { id: 'royal_guard', name: "River King's Guard", tip: 'Head-on he blocks. Flick sideways to kick, or hit from behind.', first: 2, stages: ROAD_STAGES.royal_guard },
+  { id: 'capuchin', name: 'Capuchin Monkey', tip: 'Never hurts. Catch the thief, hide from lookouts, wait out guards.', first: 4, stages: ROAD_STAGES.capuchin },
+  { id: 'eaglet', name: 'Harpy Eaglets', tip: 'Go while they sleep. Lift your thumb and freeze when one peeks.', first: 4, stages: ROAD_STAGES.eaglet },
+  { id: 'butler', name: 'The Butler', tip: 'Offers sleepy cake. Tap to punch the tray, or flick up over.', first: 5, stages: ROAD_STAGES.butler },
+  { id: 'seamstress', name: 'The Seamstress', tip: "Don't watch her knit. Slide on past before she looks up.", first: 5, stages: ROAD_STAGES.seamstress },
+  { id: 'soldier', name: "Iron-Claw's Soldiers", tip: 'They march Meeca north. In camp they sleep: never wake them.', first: 5, stages: ROAD_STAGES.soldier },
+  { id: 'pell', name: 'Lieutenant Pell', tip: "Iron-Claw's lieutenant. He found Meeca when she stopped to look.", first: 5, stages: ROAD_STAGES.pell },
 ];
 
 export interface GuardianEntry {
@@ -79,11 +80,9 @@ interface Cleared {
   id: string;
   completed: boolean;
 }
-const cleared = (levels: readonly Cleared[], stages: readonly string[]) => levels.some((l) => l.completed && stages.includes(l.id));
 
 /** has the player met this predator? (seen on screen, or a stage that holds it in another way cleared) */
-export const predatorMet = (id: PredatorId, seen: readonly string[], levels: readonly Cleared[]): boolean =>
-  seen.includes(id) || cleared(levels, PREDATOR_ENTRIES[id].alsoIn ?? []);
+export const predatorMet = (id: PredatorId, seen: readonly string[], levels: readonly Cleared[]): boolean => cardMet(id, seen, levels);
 
 /** has the player met this one on the road? (a stage that holds it cleared) */
-export const roadMet = (e: RoadEntry, levels: readonly Cleared[]): boolean => cleared(levels, e.stages);
+export const roadMet = (e: RoadEntry, levels: readonly Cleared[], seen: readonly string[] = []): boolean => cardMet(e.id, seen, levels);

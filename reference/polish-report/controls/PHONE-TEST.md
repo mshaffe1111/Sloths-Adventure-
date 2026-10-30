@@ -67,3 +67,22 @@ Not in this build:
     - *Now:* only a quick wiggle or flick does.
 16. **Settings, 1 minute (CT-28).** Sensitivity at 135%: small flicks jump more easily; at 75% it takes a bigger flick. Steer with: Right, and steer with the right thumb.
     - *Now:* the right half steers at once and the left half taps, flicks and punches. "Either" comes with CT-8.
+
+# Build 4: Matt's four calls (about 5 minutes)
+
+17. **Straight up on a vine (CT-5).** On a trunk, rest the steering thumb and flick the other thumb straight up, 5 times. Then 5 times leaning well over.
+    - *Before:* the straight flicks let go.
+    - *Now:* straight flicks climb a little each time; leaning ones leap off that way.
+18. **Slanted standing flick (CT-27).** Standing still, nothing steering, flick up and clearly over to one side (45 degrees), 5 times each way. Then 10 ordinary flicks on a small platform.
+    - *Now:* the slanted ones carry Pokey that way at a gentle run. Watch the ordinary ones: if a careless flick carries him off a small platform, say so (about 1 standing jump in 10 leans that far by chance).
+19. **Pad side and hop (CT-19, CT-13).** Clear site data or use a fresh browser, open the game, switch to Pad.
+    - *Now:* the movement pad is under the left thumb and the buttons on the right. Settings can flip it.
+    - Tap Jump quickly: a short hop. Hold it: full height, as the lesson says.
+
+# CT-8 step 2: steering from anywhere (about 2 minutes)
+
+20. **One thumb, the "wrong" half.** In Screen mode, put one thumb down on the RIGHT half (the half that is not for steering) and slide left and right, 10 times, upright and sideways.
+    - *Before:* the run started a beat later than on the left half.
+    - *Now:* it starts as soon as the thumb slides, the same as on the left half.
+    - From the same spot, a quick flick up still jumps (no run), a tap still punches, and holding still is still the mega.
+21. **Left-handed.** Settings, Touch controls, Steer with: Right. Repeat step 20 with the thumb on the LEFT half. Then set it back.

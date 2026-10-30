@@ -1,0 +1,285 @@
+{
+ "note": "painted sky above the far strips, tools/art/hfbatch/skygpu.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w1-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a bright morning open sky with a few soft painted clouds, pale blue fading to warm near the horizon",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w10-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w10-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dark stormy night sky with heavy rain clouds and a flash of lightning",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w10after-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w10after-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a stormy golden sky with heavy dark clouds breaking up",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w10dusk-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w10dusk-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a stormy purple dusk sky with heavy clouds and lightning",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w1kapok-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w1kapok-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. the great kapok tree's leafy green canopy overhead with lilac orchids, patches of blue sky between the leaves",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w1sunrise-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w1sunrise-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a sunrise open sky with a few soft painted clouds, pale gold and blue",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w2-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w2-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a warm hazy golden afternoon open sky with a few soft painted clouds",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w2evening-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w2evening-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a warm orange evening open sky with a few soft painted clouds",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w2rapids-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w2rapids-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. the green jungle canopy and hanging vines overhead, a bright pale sky glowing between the leaves",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w3-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w3-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dark cave roof overhead: dark teal rock, hanging roots and glowworm threads with tiny glowing dots",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w3cavern-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w3cavern-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dark cave roof overhead: dark teal rock, hanging roots and glowworm threads with tiny glowing dots",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w3sinkhole-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w3sinkhole-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. the grey-green rock wall of the sinkhole rising overhead with hanging vines, misty",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w4-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w4-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pale misty grey-white mountain open sky with a few soft painted clouds",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w4mist-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w4mist-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a warm orange dusk open sky with a few soft painted clouds over misty mountains",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w4terraces-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w4terraces-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pale bright misty open sky with a few soft painted clouds with soft sun rays",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w5-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w5-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a soft peach and gold afternoon open sky with a few soft painted clouds",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w5dusk1-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w5dusk1-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pink and lilac dusk open sky with a few soft painted clouds",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w5dusk2-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w5dusk2-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pink and lilac dusk open sky with a few soft painted clouds, orchid branches at the edges",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w5gold2-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w5gold2-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a soft peach and gold afternoon open sky with a few soft painted clouds, orchid branches at the edges",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w5night-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w5night-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a deep blue night sky with a few stars, dark blue tree canopy at the edges",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w5twi1-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w5twi1-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a lilac and violet twilight sky with soft clouds, dark tree tops at the edges",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w5twi2-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w5twi2-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a lilac and violet twilight sky with soft clouds, dark tree tops at the edges",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w6-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w6-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a grey misty swamp sky, the dark mangrove trees and hanging moss rising out of the top",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w6dawn-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w6dawn-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a pale pink dawn sky over the swamp, the dark mangrove trees and hanging moss rising out of the top",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w6dusk-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w6dusk-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dark teal dusk sky with a few stars, dark tree canopy at the edges",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w7-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w7-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a grey-green overcast sky over the jungle ruins, soft clouds",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w7dawn-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w7dawn-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a warm pale dawn sky over the ruins, the great carved tree and its leaves rising out of the top",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w7dusk-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w7dusk-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dim green-gold dusk sky over the ruins, soft clouds",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w8-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w8-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a deep blue night sky with soft moonlit clouds and a few stars",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w8night-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w8night-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a deep blue night sky full of stars, dark leaves at the edges",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w8sunset-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w8sunset-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a violet and orange sunset sky with a few stars and a shooting star",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w9-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w9-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a smoky brown-orange sky full of drifting volcanic smoke and ash clouds",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w9dawn-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w9dawn-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a soft pink dawn sky with a thin trail of volcanic smoke",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  },
+  {
+   "name": "w9night-sky-s100-7",
+   "strength": 1.0,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/2756d13f9a5134087508873786be07f25e7f9872/src/assets/backdrops/w9night-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide landscape painting, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. a dark red night sky full of ash clouds lit orange from below",
+   "neg": "ledge, platform, stone blocks, bricks, wall, ground, floor, path, bridge, horizon, distant hills, mountains, text, letters, watermark, frame, border, photo, 3d render, people, animal, sloth, horizontal band, seam, blurry, smeared"
+  }
+ ]
+}

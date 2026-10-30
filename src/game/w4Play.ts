@@ -20,7 +20,8 @@ import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
 import { rockAt, rockHits, type RockDrop } from './rockfall.ts';
-import { drawRockFx, drawSoftColumn, drawSoftShadow, rockShake } from './w4Grit.ts';
+import { drawGritBit, drawRockFx, drawSoftColumn, drawSoftShadow, rockShake } from './w4Grit.ts';
+import { glowPic } from './glow.ts';
 import { FALLS, fallPush, fallWall, inColumn, inFall, plugged, poolLogY, stepFlow, stepPool, type Pool, type Waterfall } from './waterfalls.ts';
 import { chimeLean, dotAtKnot, DOT_HELP, KNOT_TEACH, knotMark, knotSpotX, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
 import { zoneState, type Zone } from './zones.ts';
@@ -133,7 +134,7 @@ export interface W4Host {
   screech(x: number): void;
   /** a nudge of the camera (0..1 of trauma), for a rock landing close by */
   shake?(amount: number): void;
-  sfx(kind: 'rock' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash' | 'gust' | 'cry'): void;
+  sfx(kind: 'rock' | 'rockWarn' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash' | 'gust' | 'cry'): void;
   /** he fell into the mist (deepFall) */
   fellOff?(): void;
   /** 4-9: a guard he was close to was blown off its ledge (the aerie's goal counts them) */
@@ -274,6 +275,11 @@ export class W4Play {
       const s = rockAt(r, h.t);
       const cycle = `${i}:${Math.floor((h.t + r.offset) / r.every)}`;
       // (the stage's own hint teaches the rocks where the first one falls; this is only the line after a hit)
+      // the grit trickling down as the warning starts: heard as well as seen (once a rock, and only one he is near)
+      if (s.phase === 'warn' && !this.rockHit.has(cycle + 'w')) {
+        this.rockHit.add(cycle + 'w');
+        if (Math.abs(r.x - p.x) < 600) h.sfx('rockWarn');
+      }
       if (s.phase === 'shatter' && !this.rockHit.has(cycle + 's')) {
         this.rockHit.add(cycle + 's');
         if (Math.abs(r.x - p.x) < 700) h.sfx('rock');
@@ -319,7 +325,6 @@ export class W4Play {
         const pl = h.platforms.find((q) => q.id === s.platformId);
         if (pl) pl.broken = false;
         h.sfx('frond');
-        h.float('SLOW IS NOT STOPPED', p.x, p.y - 100, '#bbf7d0');
       }
       // the mist rising again after it has shown him the way: Dot says to remember it (once)
       if (s.kind === 'mist' && was.level >= 0.99 && now.level < was.level) h.tip('w4:mist', 'The mist is coming back! Remember where the ledges were', 3.2);
@@ -811,15 +816,14 @@ function drawSettleGlow(ctx: CanvasRenderingContext2D, s: PatienceSpot, reveal: 
   ctx.arc(0, 0, half, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
+  // motes rising off it: each a tiny soft glow (the pre-rendered glow, no hard dot)
+  const mote = glowPic('#fef9c3', 'fly');
   ctx.save();
-  ctx.fillStyle = `rgba(254, 249, 195, ${0.8 * a})`;
   for (let k = 0; k < 5; k++) {
     const u = (t * 0.45 + k * 0.2) % 1;
     const mx = cx + (((k * 53) % 100) / 100 - 0.5) * (half * 1.4);
-    ctx.globalAlpha = Math.sin(u * Math.PI);
-    ctx.beginPath();
-    ctx.arc(mx, s.y - 6 - u * 46, 2.4, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.globalAlpha = Math.sin(u * Math.PI) * Math.min(1, a * 1.3);
+    ctx.drawImage(mote, mx - 6, s.y - 12 - u * 46, 12, 12);
   }
   ctx.restore();
 }
@@ -1074,14 +1078,8 @@ function drawFloatLog(ctx: CanvasRenderingContext2D, p: Platform, t: number) {
   const painted = drawLogArt(ctx, p, false);
   ctx.restore();
   if (painted) {
-    // ripples where it sits in the water
-    ctx.save();
-    ctx.strokeStyle = 'rgba(224,242,254,0.8)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.ellipse(x + w / 2, y + h - 2, w * 0.6 + Math.sin(t * 3) * 4, 5, 0, 0, Math.PI);
-    ctx.stroke();
-    ctx.restore();
+    // the water lapping where it sits: a low strip of the waterfall set's painted white water (no stroked ring)
+    drawFallsBit(ctx, 'splash1', x + w / 2, y + h + 6, w * 1.25 + Math.sin(t * 3) * 6, { h: 16 + Math.sin(t * 2.4) * 2, alpha: 0.7 });
     return;
   }
   const r = h / 2;
@@ -1285,19 +1283,12 @@ function drawKnot(ctx: CanvasRenderingContext2D, k: DotKnot, st: KnotState & { f
     ctx.arc(k.x + shake, k.y, 10, 0, Math.PI * 2 * left);
     ctx.stroke();
     if (st.phase === 'picking') {
-      // bits of fibre flicking off
-      ctx.strokeStyle = '#a16207';
-      ctx.lineWidth = 2;
+      // bits of fibre flicking off: painted chips, tinted the vine's brown, tumbling down
       for (let i = 0; i < 3; i++) {
         const u = (st.t * 2.4 + i / 3) % 1;
         const a = i * 2.1 + 0.6;
-        ctx.globalAlpha = 1 - u;
-        ctx.beginPath();
-        ctx.moveTo(k.x + Math.cos(a) * (12 + u * 20), k.y + Math.sin(a) * 8 + u * 26);
-        ctx.lineTo(k.x + Math.cos(a) * (18 + u * 20), k.y + Math.sin(a) * 8 + u * 30);
-        ctx.stroke();
+        drawGritBit(ctx, 0.11 + i * 0.29, k.x + Math.cos(a) * (15 + u * 20), k.y + Math.sin(a) * 8 + u * 28, 7, u * 9 + i, 1 - u, '#b07a3a');
       }
-      ctx.globalAlpha = 1;
     }
   }
   // Dot: out by his head while he waits, flying up to the knot, then pecking it loose
@@ -1307,13 +1298,15 @@ function drawKnot(ctx: CanvasRenderingContext2D, k: DotKnot, st: KnotState & { f
       // a faint trail behind her, so the flight reads
       const back = dotAtKnot(k, { phase: 'flying', t: Math.max(0, st.t - 0.12) }, t);
       if (back) {
-        ctx.strokeStyle = 'rgba(167, 243, 208, 0.5)';
-        ctx.lineWidth = 3;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(back.x, back.y);
-        ctx.lineTo(d.x, d.y);
-        ctx.stroke();
+        // (soft glows along her path, fading behind her: no drawn line)
+        const pic = glowPic('#a7f3d0', 'fly');
+        for (let i = 1; i <= 4; i++) {
+          const f = i / 4;
+          ctx.globalAlpha = 0.45 * (1 - f * 0.8);
+          const px = d.x + (back.x - d.x) * f, py = d.y + (back.y - d.y) * f;
+          ctx.drawImage(pic, px - 8, py - 8, 16, 16);
+        }
+        ctx.globalAlpha = 1;
       }
     }
     if (!drawDotFrame(ctx, flyFrame(t), d.x, d.y, 0.6, d.face, d.pecking ? 0.25 : 0)) {
@@ -1592,19 +1585,11 @@ function drawNest(ctx: CanvasRenderingContext2D, n: Nest, t: number, sinceBlow: 
     ctx.fillStyle = '#dc2626';
     ctx.fillText('!', 0, -86);
   }
-  // a flurry of wind lines when they blow him back
+  // a flurry of the painted wind (the gust strip, bossFx.ts) out both ways when they blow him back
   if (blowing) {
-    ctx.globalAlpha = Math.max(0, 1 - sinceBlow / (NEST.blow + 0.3));
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 3;
-    for (let k = 0; k < 4; k++) {
-      for (const side of [-1, 1]) {
-        const x0 = side * (50 + sinceBlow * 260 + k * 8);
-        ctx.beginPath();
-        ctx.moveTo(x0, -20 - k * 12);
-        ctx.lineTo(x0 + side * 40, -22 - k * 12);
-        ctx.stroke();
-      }
+    const a = Math.max(0, 1 - sinceBlow / (NEST.blow + 0.3));
+    for (let k = 0; k < 2; k++) {
+      for (const side of [-1, 1]) drawFx(ctx, 'gust', side * (90 + sinceBlow * 260 + k * 14), -24 - k * 22, 110 - k * 20, { h: 22 - k * 4, alpha: a, flipX: side < 0 });
     }
   }
   ctx.restore();

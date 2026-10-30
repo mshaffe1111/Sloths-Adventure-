@@ -7,6 +7,8 @@
  */
 import { DOT_ATLAS_SIZE, DOT_FRAMES, type DotFrame } from './dotAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { hdPage, warmHd, type HdSet } from './storyHd.ts';
+import { HD_DOT, HD_DOT_FRAMES, HD_DOT_PAGES } from './storyHdData_dot.ts';
 
 export const DOT_ATLAS_URL = new URL('../assets/characters/dot-atlas.webp', import.meta.url).href;
 export { DOT_ATLAS_SIZE, DOT_FRAMES };
@@ -87,6 +89,29 @@ export function drawDotFrame(ctx: CanvasRenderingContext2D, name: string, x: num
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  ctx.restore();
+  return true;
+}
+
+/** her story paintings (storyHd.ts): every frame repainted at HD times its old size, for the story pictures */
+const HD_SET: HdSet = { hd: HD_DOT, pages: HD_DOT_PAGES, frames: HD_DOT_FRAMES };
+export function warmStoryDot() {
+  warmHd('dot', HD_SET);
+}
+/** drawDotFrame from her story paintings (`k` still canvas pixels per pixel of the old frame); false while they load */
+export function drawDotStoryFrame(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, k: number, face: -1 | 1, tilt = 0): boolean {
+  const f = DOT_FRAMES[name];
+  const hf = HD_DOT_FRAMES[name];
+  const img = hf ? hdPage('dot', hf) : null;
+  if (!f || !hf || !img) return false;
+  const kh = k / HD_DOT;
+  ctx.save();
+  ctx.translate(x, y);
+  if (tilt) ctx.rotate(tilt * face);
+  if (f.f !== face) ctx.scale(-1, 1);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, hf.x, hf.y, hf.w, hf.h, (-hf.w * kh) / 2, (-hf.h * kh) / 2, hf.w * kh, hf.h * kh);
   ctx.restore();
   return true;
 }

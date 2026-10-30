@@ -1,0 +1,48 @@
+{
+ "note": "World 7's temple wall as one seamless tile, from make_walltile.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "border, frame, edge, horizon, sky, grass, highlight band, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, face, statue, vertical stripes, columns, pillars",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ebfb71d99b08c1b0226ee967f7106984d3782202/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "kind": "tile",
+   "name": "w7walltile-s50",
+   "start": "start-w7walltile.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game: the face of an old ruined jungle temple wall, weathered grey-green stone blocks of mixed sizes laid in courses with dark mortar joints, a few carved key-pattern meander bands running across, cracks and chipped corners, soft green moss creeping down over some block edges, one thin dry brown root. Flat front-on wall, the same density all over, no top, no bottom, no border, soft cel shading, thin dark outline, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, highlight band, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, face, statue, vertical stripes, columns, pillars",
+   "s1": 0.5,
+   "seed": 17,
+   "s2": 0.38,
+   "seeds2": [
+    3,
+    5
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "tile",
+   "name": "w7walltile-s60",
+   "start": "start-w7walltile.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game: the face of an old ruined jungle temple wall, weathered grey-green stone blocks of mixed sizes laid in courses with dark mortar joints, a few carved key-pattern meander bands running across, cracks and chipped corners, soft green moss creeping down over some block edges, one thin dry brown root. Flat front-on wall, the same density all over, no top, no bottom, no border, soft cel shading, thin dark outline, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, highlight band, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, face, statue, vertical stripes, columns, pillars",
+   "s1": 0.6,
+   "seed": 17,
+   "s2": 0.38,
+   "seeds2": [
+    3,
+    5
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  }
+ ]
+}

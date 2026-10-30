@@ -33,7 +33,7 @@ export interface GestureSink {
    * a jump. `lean`: the flick behind it leaned 20 degrees or more off straight up, this way (-1 left, 1 right); 0 or unset when it went
    * (nearly) straight up. Off a vine or a trunk he leaps the way it leaned (engine.ts leapDir).
    */
-  jumpPress(lean?: -1 | 0 | 1): void;
+  jumpPress(lean?: -1 | 0 | 1, slant?: -1 | 0 | 1): void;
   jumpRelease(): void;
   /** a punch; `holdMs`: it may still be taken back (punchCancel) for this long, so its swing waits in its wind-up until then */
   punch(holdMs?: number): void;
@@ -187,8 +187,8 @@ export const TUNING = {
    * six frames. Now a clearly sideways slide starts the run after this long (and this far), and if the finger then lifts like a flick it
    * is still the kick it always was.
    */
-  earlyDragMs: 60,
-  earlyDragPx: 18,
+  earlyDragMs: 0,
+  earlyDragPx: 16,
   /**
    * the steering thumb's flick up, measured from its last low point (it drifts down the glass while it steers): a rise of jumpDy at this
    * speed (px per ms) or more, that goes up at least this far for each px across (0.6: up to about 59 degrees over), within this long
@@ -224,6 +224,10 @@ export const TUNING = {
   /** on a trunk a steer starts only on a stroke this far sideways (px), at least twice as far across as up or down, this quick (px per ms) */
   trunkSidePx: 40,
   trunkSideSpeed: 0.3,
+  /** a standing flick leaning this far off straight up (degrees) carries him that way at LEAN_SPEED of a run (Matt, CT-27) */
+  slantDeg: 35,
+  /** a straight flick up on a vine climbs on this long after its finger lifts (ms): about 55 px, a flick's worth (CT-5) */
+  vineFlickClimbMs: 250,
 } as const;
 
 /**
@@ -335,6 +339,8 @@ interface Finger {
   edgeWait?: boolean;
   /** when it threw its jab as it went down (CT-17); lifting must not punch again */
   jabT?: number;
+  /** its straight flick on a vine is climbing him (CT-5) */
+  flickClimb?: boolean;
 }
 
 export class TouchGestures {
@@ -378,6 +384,8 @@ export class TouchGestures {
   }
   private climbDir: -1 | 0 | 1 = 0;
   private setClimb(d: -1 | 0 | 1) {
+    // (a straight flick's climb is not stopped by the resting steering thumb's wobble: CT-5)
+    if (d === 0 && this.flickClimbUntil > this.now) return;
     if (d === this.climbDir) return;
     this.climbDir = d;
     this.sink.climb?.(d);
@@ -396,12 +404,45 @@ export class TouchGestures {
     return !!this.env && this.env.assist() && this.env.air() && this.now - this.lastAir > TUNING.airLockMs;
   }
   /** which way a flick that moved `dx` across while rising `rise` px leans: 0 unless it is 20 degrees or more off straight up */
+  /** the lean leanOf last measured was `slantDeg` or more, this way (fireJump passes it on: a standing jump carries him, CT-27) */
+  private slantSeen: -1 | 0 | 1 = 0;
   private leanOf(dx: number, rise: number): -1 | 0 | 1 {
+    this.slantSeen = Math.abs(dx) >= 4 && Math.abs(dx) >= Math.max(0, rise) * Math.tan((TUNING.slantDeg * Math.PI) / 180) ? (dx < 0 ? -1 : 1) : 0;
     if (Math.abs(dx) < 4 || Math.abs(dx) < Math.max(0, rise) * TUNING.leanSlant) return 0;
     return dx < 0 ? -1 : 1;
   }
   /** a jump the finger asked for: `air` marks it as the second jump, so another cannot fire on its heels; `lean`, which way it leaned */
+  /**
+   * a flick that began straight up (climbing, CT-5) and bends 20 degrees or more over while still quick, within flickLiftMs of landing,
+   * or ends in a fresh flick up and over: a leap after all, that way. A flick is decided once it has risen 26 px, often while its start
+   * is still straight
+   */
+  private flickBend(f: Finger, t: number) {
+    const rise = f.y0 - f.y;
+    let lean = t - f.t0 <= TUNING.flickLiftMs && rise >= TUNING.groundJumpPx ? this.leanOf(f.x - f.x0, rise) : 0;
+    // … or a climbing stroke whose last moments are a fresh flick up and over: the steering thumb's own let-go (vineFlick, CT-3)
+    if (!lean) {
+      const w = this.vineFlick(f);
+      if (w) lean = this.leanOf(w.mx, w.rise);
+    }
+    if (!lean) return;
+    this.flickClimbUntil = NaN;
+    this.setClimb(0);
+    this.fireJump(f, false, lean);
+    f.flickClimb = false;
+  }
+  /** a straight flick on a vine or trunk climbs until this time (ms; Infinity while its finger is down): CT-5 */
+  private flickClimbUntil = NaN;
   private fireJump(f: Finger, air: boolean, lean: -1 | 0 | 1 = 0) {
+    // on a vine or a trunk, straight up always climbs, whichever thumb flicks it (Matt, 2026-10-29, polish report CT-5): a second thumb's
+    // straight flick let go and leapt. It climbs while the finger is down and `vineFlickClimbMs` after; leaning 20 degrees or more leaps
+    if (this.vine() && lean === 0 && !f.flickClimb) {
+      f.consumed = true;
+      f.flickClimb = true;
+      this.flickClimbUntil = Infinity;
+      this.setClimb(-1);
+      return;
+    }
     if (f.role !== 'mover') f.consumed = true;
     else this.lockUntil = this.now + TUNING.lockAfterJumpMs;
     f.jumped = true;
@@ -410,7 +451,10 @@ export class TouchGestures {
     f.trX = f.x;
     if (air) this.lastAir = this.now;
     this.sink.feedback('jump', f.x, f.y);
-    this.sink.jumpPress(lean);
+    // (the lean the caller just measured, if it was 35 degrees or more that same way; a sideways flick that jumps is well over)
+    const slant = lean !== 0 && this.slantSeen === lean ? lean : 0;
+    this.slantSeen = 0;
+    this.sink.jumpPress(lean, slant);
   }
 
   private mover(): Finger | undefined {
@@ -518,7 +562,8 @@ export class TouchGestures {
       // (beside the steering thumb the palm rule's flick still counts: a second thumb flicking up and over from there, 45 to 60 degrees,
       // jumped while the palm rule took it, and the ordinary rules want a flick more upright, CT-15)
       if (f.nearThumb && !f.consumed) this.palmFlick(f, t);
-      if (!f.consumed || f.jumped) this.judge(f, t, false);
+      if (f.flickClimb) this.flickBend(f, t);
+      else if (!f.consumed || f.jumped) this.judge(f, t, false);
     } else if (f.role === 'ignored') this.palmFlick(f, t);
   }
 
@@ -552,6 +597,12 @@ export class TouchGestures {
     this.now = t;
     const f = this.fingers.get(id);
     if (!f) return;
+    if (f.flickClimb) {
+      f.x = x;
+      f.y = y;
+      this.flickBend(f, t);
+    }
+    if (f.flickClimb) this.flickClimbUntil = t + TUNING.vineFlickClimbMs;
     this.jabMoved(f, x, y, t);
     f.x = x;
     f.y = y;
@@ -713,6 +764,7 @@ export class TouchGestures {
   cancelFinger(id: number, t: number) {
     const f = this.fingers.get(id);
     if (!f) return;
+    if (f.flickClimb) this.flickClimbUntil = t + TUNING.vineFlickClimbMs;
     if (f.role === 'mover') this.setClimb(0);
     this.fingers.delete(id);
     if (f.jumped) this.sink.jumpRelease();
@@ -741,6 +793,7 @@ export class TouchGestures {
   }
 
   cancelAll() {
+    this.flickClimbUntil = NaN;
     this.setClimb(0);
     for (const f of this.fingers.values()) {
       if (f.jumped) this.sink.jumpRelease();
@@ -755,13 +808,18 @@ export class TouchGestures {
   /** call a few times a second while any finger is down: drives holds and undecided fingers that stopped moving */
   tick(t: number) {
     this.now = t;
+    // a straight flick's climb has run its course (a steering thumb still climbing says so again on its next move)
+    if (t >= this.flickClimbUntil) {
+      this.flickClimbUntil = NaN;
+      this.setClimb(0);
+    }
     for (const f of this.fingers.values()) {
       if (f.role === 'pending' || f.role === 'action') this.judge(f, t, false);
     }
   }
 
   get active(): boolean {
-    return this.fingers.size > 0;
+    return this.fingers.size > 0 || this.flickClimbUntil > this.now;
   }
 
   /** where the steering thumb is anchored, and the way it runs him (-1 left, 0 standing, 1 right): the ring on screen (CT-14) */
@@ -1103,6 +1161,7 @@ export class TouchGestures {
           // on a swinging vine, the other thumb's quick sideways flick lets go and leaps the way it was flicked
           if (this.vine() && this.env?.onSwing?.() && f.role === 'action') {
             f.consumed = true;
+            this.slantSeen = dx < 0 ? -1 : 1;
             this.fireJump(f, false, dx < 0 ? -1 : 1);
             return true;
           }
@@ -1110,6 +1169,7 @@ export class TouchGestures {
           // did nothing at all, QA v200: "a flick must always jump")
           if (f.role === 'action' && !this.vine() && dy < 0 && ay >= 24 && ay >= ax * TUNING.flickJumpSlant) {
             f.consumed = true;
+            this.slantSeen = dx < 0 ? -1 : 1;
             this.fireJump(f, this.canAir(), dx < 0 ? -1 : 1);
             return true;
           }
@@ -1144,8 +1204,9 @@ export class TouchGestures {
 
     if (lifting) return false;
 
-    // a lone undecided finger that is clearly sliding sideways starts the run now, not 210 ms from now (with Jump help on or off: CT-8,
-    // with it off a run started on the right half waited the 210 ms)
+    // a lone undecided finger that is clearly sliding sideways steers at once, anywhere on the screen: the moment it has slid moveDead
+    // (16 px), as a finger on the steering half does (polish report CT-8, step 2; it waited 60 ms and 18 px, and before step 1 with Jump
+    // help off 210 ms). Only mostly sideways: a stroke going up or down is still judged as a flick first, so it is never misread as a run
     if (f.role === 'pending' && !this.mover() && el >= TUNING.earlyDragMs && ax >= TUNING.earlyDragPx && ax >= ay * 1.2 && !this.actorOther(f)) {
       f.role = 'mover';
       f.early = true;

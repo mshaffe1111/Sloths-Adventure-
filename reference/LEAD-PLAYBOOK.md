@@ -85,6 +85,8 @@ A helper's report is not proof. Before merging:
 
 ## 6. Releases
 
+Step zero of every test link and every release: read reference/PARTNER.md and go through its "little pieces" list (Matt, 2026-10-29).
+
 Only when Matt says "push". Before: §4 passed on everything in it; STATUS.md lists what is in and what is not. After the merge:
 check the deploy and the Android build, update STATUS.md and the roadmap, tell the QA session what went live.
 
@@ -143,3 +145,6 @@ Matt no longer reviews Dot's in-play lines or Pokey's in-stage thought lines; th
 - Pokey: short, flat, dry;
 - no repeats in a stage (Help), Tips >= 30 s apart, first-time hazards taught once per save.
 Story scene lines (cutscenes, the journal, the finale): the lead approves these too (Matt, 2026-10-29 5:00 PM ET), by VOICE.md and the story audit; Matt sees them in context with the story art.
+
+## Releases come from a frozen branch (2026-10-29)
+Open the release PR from a branch cut at the checked commit (e.g. `release-YYYY-MM-DD`), never from the work branch: later merges onto the work branch silently join an open PR (PR #47 picked up four unreleased merges and was replaced by #48).

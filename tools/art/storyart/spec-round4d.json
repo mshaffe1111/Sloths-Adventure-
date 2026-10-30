@@ -1,0 +1,244 @@
+{
+ "tag": "r4d",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
+  ],
+  "meeca": [
+   "mshaffe111/meeca-qwen-lora",
+   "meeca_qwen_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/89a2637ac74d0ccc06ae249f26439afcf8a78364/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "cel-da.kneel_tie-pa3",
+   "mask": "pairmask-da.kneel_tie-r.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm muted caramel-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, no clothes, kneeling, holding out his bandaged wrist to her, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 3,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "start": "bucket:storyart/r4b/out/cel-da.kneel_tie-ps.png"
+  },
+  {
+   "name": "cel-da.kneel_tie-pi3",
+   "mask": "pairmask-da.kneel_tie-l.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, kneeling, tying a small petal on his wrist, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 3,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "then": "cel-da.kneel_tie-pa3"
+  },
+  {
+   "name": "cel-da.kneel_tie-pa8",
+   "mask": "pairmask-da.kneel_tie-r.png",
+   "prompt": "pokeysloth, a friendly young three-toed sloth with warm muted caramel-brown fur, a cream face and belly, dark brown eye patches, a brown leather satchel on a strap over his left shoulder with the bag at his right hip, white bandage wraps on both wrists, no clothes, kneeling, holding out his bandaged wrist to her, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 8,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "pokey",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "start": "bucket:storyart/r4b/out/cel-da.kneel_tie-ps.png"
+  },
+  {
+   "name": "cel-da.kneel_tie-pi8",
+   "mask": "pairmask-da.kneel_tie-l.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, kneeling, tying a small petal on his wrist, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 8,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "then": "cel-da.kneel_tie-pa8"
+  },
+  {
+   "name": "cel-db.side_by_side-pi3",
+   "mask": "pairmask-db.side_by_side-l.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, standing beside him, looking at him, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 3,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "start": "bucket:storyart/r4b/out/cel-db.side_by_side-ps.png"
+  },
+  {
+   "name": "cel-db.side_by_side-pi8",
+   "mask": "pairmask-db.side_by_side-l.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, standing beside him, looking at him, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 8,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "start": "bucket:storyart/r4b/out/cel-db.side_by_side-ps.png"
+  },
+  {
+   "name": "cel-db.tie_stand-pi3",
+   "mask": "pairmask-db.tie_stand-l.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, standing, reaching out to tie a small petal on his wrist, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 3,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "start": "bucket:storyart/r4b/out/cel-db.tie_stand-ps.png"
+  },
+  {
+   "name": "cel-db.tie_stand-pi8",
+   "mask": "pairmask-db.tie_stand-l.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, standing, reaching out to tie a small petal on his wrist, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 8,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "start": "bucket:storyart/r4b/out/cel-db.tie_stand-ps.png"
+  },
+  {
+   "name": "cel-hug.hug_a-pi3",
+   "mask": "pairmask-hug.hug_a-r.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, hugging him happily, her eyes closed, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 3,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "start": "bucket:storyart/r4b/out/cel-hug.hug_a-ps.png"
+  },
+  {
+   "name": "cel-hug.hug_a-pi8",
+   "mask": "pairmask-hug.hug_a-r.png",
+   "prompt": "meecasloth, a young female sloth with soft brown fur and a cream face, a pink headband, a pink running vest with a white race bib number 07, teal shorts and pink running shoes, hugging him happily, her eyes closed, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.9,
+   "seed": 8,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "meeca",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ],
+   "start": "bucket:storyart/r4b/out/cel-hug.hug_a-ps.png"
+  }
+ ],
+ "q": 92,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/89a2637ac74d0ccc06ae249f26439afcf8a78364/",
+ "keep": [
+  "cel-da.kneel_tie-pa3",
+  "cel-da.kneel_tie-pi3",
+  "cel-da.kneel_tie-pa8",
+  "cel-da.kneel_tie-pi8",
+  "cel-db.side_by_side-pi3",
+  "cel-db.side_by_side-pi8",
+  "cel-db.tie_stand-pi3",
+  "cel-db.tie_stand-pi8",
+  "cel-hug.hug_a-pi3",
+  "cel-hug.hug_a-pi8"
+ ]
+}

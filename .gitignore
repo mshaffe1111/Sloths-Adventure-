@@ -9,3 +9,4 @@ coverage/
 
 # (the dev server no longer writes a service worker here: PF-3)
 dev-dist/
+__pycache__/
