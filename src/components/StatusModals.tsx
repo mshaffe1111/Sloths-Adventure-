@@ -76,7 +76,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   onOpenTrophies,
   onOpenCards,
 }) => {
-  // --- 1. PAUSE MENU (opened by the Menu button) ---
+  // --- 1. SETTINGS, THE PAUSE CARD (opened by the Settings button) ---
   if (screen === 'paused') {
     return (
       <PauseMenu
@@ -88,6 +88,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         onOpenTrophies={onOpenTrophies}
         onOpenCards={onOpenCards}
         onOpenMap={onOpenMap}
+        onOpenTitle={onOpenTitle}
         trophyCount={trophyCount}
         trophyTotal={trophyTotal}
         skills={skills}

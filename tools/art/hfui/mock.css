@@ -1,0 +1,14 @@
+/* mock-up only: the painted kit over the CSS button family, panels and tiles (not shipped) */
+.gx-plank, .clr-btn2, .gx-plank-sm { background: none !important; box-shadow: none !important; border-style: solid !important; border-color: transparent !important;
+  border-width: 9px 16px !important; border-image: url(/mock/plankBrownSm.png) 30 40 fill / 9px 16px stretch !important; }
+.gx-plank-go, .pm-go { background: none !important; box-shadow: none !important; border-style: solid !important; border-color: transparent !important;
+  border-width: 10px 18px !important; border-image: url(/mock/plankGreen.png) 34 46 fill / 10px 18px stretch !important; }
+.gx-plank-gold, .gx-sign { background: none !important; box-shadow: none !important; border-style: solid !important; border-color: transparent !important;
+  border-width: 11px 20px !important; border-image: url(/mock/plankGold.png) 34 46 fill / 11px 20px stretch !important; }
+.gx-sign::before, .gx-sign::after, .gx-shine { display: none !important; }
+.pm-card, .clr-card { background: none !important; box-shadow: 0 10px 30px rgba(0,0,0,.45) !important; border-style: solid !important; border-color: transparent !important;
+  border-width: 22px !important; border-image: url(/mock/card.png) 70 fill / 22px stretch !important; }
+.clr-bit { background: none !important; box-shadow: none !important; border-style: solid !important; border-color: transparent !important;
+  border-width: 10px !important; border-image: url(/mock/statTile.png) 34 fill / 10px stretch !important; }
+.pm-tile { background: none !important; box-shadow: none !important; border-style: solid !important; border-color: transparent !important;
+  border-width: 12px !important; border-image: url(/mock/card.png) 70 fill / 12px stretch !important; }

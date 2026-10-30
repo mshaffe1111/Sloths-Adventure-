@@ -157,7 +157,9 @@
 .map-node:active { transform: scale(.92); }
 .map-node.ready { background: radial-gradient(circle at 35% 30%, #ffd36a, #ff9a14); color: #4a2400; box-shadow: 0 4px 0 #a85c00, 0 0 18px rgba(255,190,60,.7); }
 .map-node.done { background: radial-gradient(circle at 35% 30%, #58d08a, #1f8a52); border-color: #d9ffe6; box-shadow: 0 4px 0 #0f4b2b, 0 6px 12px rgba(0,0,0,.35); }
-.map-node.locked { background: radial-gradient(circle at 35% 30%, #5b6a60, #36423a); border-color: #8d9a91; color: #aab6ad; cursor: not-allowed; box-shadow: 0 3px 0 #1d2620; opacity: .88; }
+/* a locked stage is the kit's painted wooden lock badge (option A, Matt 2026-10-30) */
+.map-node.locked { background: none; border-color: transparent; color: #aab6ad; cursor: not-allowed; box-shadow: none; }
+.map-node.locked .map-lockbadge { position: absolute; inset: -3px; width: calc(100% + 6px); height: calc(100% + 6px); filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .45)); }
 /* the boss stage is its guardian's painted crest: no button disc, the medallion is the node */
 .map-node.boss, .map-node.boss.ready, .map-node.boss.done, .map-node.boss.locked { background: none; border: 0; box-shadow: none; opacity: 1; color: #fff; }
 .map-node.sel { outline: 3px solid #fff; outline-offset: 3px; transform: scale(1.12); }
@@ -167,15 +169,13 @@
 /* the stage type, as a small badge on the node's corner */
 .map-tbadge { position: absolute; right: -7px; top: -7px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #0f3b27; border: 1.5px solid #fff3c4; box-shadow: 0 2px 3px rgba(0,0,0,.5); pointer-events: none; }
 .map-node.locked .map-tbadge { opacity: .72; filter: saturate(.55); border-color: #aab6ad; }
-.map-node.locked > .ic { filter: saturate(.3) brightness(1.08); }
 .map-node.done .map-tbadge { border-color: #d9ffe6; }
 /* a soft pulse ring on the stage to play next */
 .map-ring { position: absolute; z-index: 1; border-radius: 50%; border: 3px solid rgba(255, 214, 110, .85); pointer-events: none; animation: map-ring 2.4s ease-out infinite; }
 @keyframes map-ring { 0% { transform: scale(1); opacity: .85; } 100% { transform: scale(1.7); opacity: 0; } }
 
 .map-stars { position: absolute; z-index: 2; width: 40px; display: flex; justify-content: center; gap: 0; line-height: 1; pointer-events: none; }
-.map-stars .ic { filter: grayscale(1) brightness(.8) opacity(.4); }
-.map-stars .ic.on { filter: drop-shadow(0 1px 1px rgba(0,0,0,.7)); }
+.map-stars .ic { filter: drop-shadow(0 1px 1px rgba(0,0,0,.7)); }
 /* Pokey stands on the next stage: painted, a slow idle bob, a soft shadow on the node */
 .map-here { position: absolute; z-index: 4; transform: translateX(-50%); pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
 .map-here::before { content: ""; position: absolute; left: 50%; bottom: -2px; width: 64%; height: 9px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0,0,0,.5), rgba(0,0,0,0) 70%); }
@@ -392,8 +392,9 @@
 .clr-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: max(34px, calc(env(safe-area-inset-top, 0px) + 22px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); background: rgba(2, 20, 14, 0.74); font-family: var(--font-ui); overflow-x: hidden; overflow-y: auto; color: var(--gx-ink); }
 .clr-confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .clr-card { position: relative; width: 100%; max-width: 800px; box-sizing: border-box; border-radius: 30px; background: linear-gradient(180deg, #0b3a2c, #06261d); border: 3px solid #6ee7b7; box-shadow: 0 20px 56px rgba(0, 0, 0, 0.6); padding: 54px 30px 24px; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 26px; margin: auto; flex: none; animation: clr-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.clr-ribbon { position: absolute; left: 50%; top: -30px; transform: translateX(-50%); width: min(440px, 94%); display: flex; align-items: center; justify-content: center; z-index: 3; }
-.clr-ribbon h2 { position: relative; font-size: 28px; letter-spacing: 1px; }
+.clr-ribbon { position: absolute; left: 50%; top: -30px; transform: translateX(-50%); width: min(440px, calc(100% + 30px)); display: flex; align-items: center; justify-content: center; z-index: 3; }
+.clr-ribbon h2 { position: relative; font-size: min(28px, 6.8vw); letter-spacing: 1px; }
+/* (the plaque sits across the painted frame's top, so it may run over the frame's width, never the words out of it) */
 .clr-hero { position: relative; display: flex; align-items: flex-end; justify-content: center; min-height: 0; }
 .clr-hero::before { content: ""; position: absolute; left: 50%; bottom: 14%; width: 200px; height: 200px; margin-left: -100px; border-radius: 50%; background: radial-gradient(circle, rgba(253, 230, 138, 0.5), rgba(253, 230, 138, 0) 68%); }
 .clr-hero > * { position: relative; }
@@ -942,9 +943,8 @@
 }
 
 /* ───────── wood: the game's one button family (2026-10-28). Every button a player presses is a carved board: warm grain, a dark edge,
-   a lit top, a shadow under it that it presses down into. The big sign has two pegs; the planks and the small boards have none, so a
-   word never runs into a nail. Colours: --wood-* (brown, green "go", gold). ───────── */
-.gx-plank, .gx-sign {
+   a lit top, a shadow under it that it presses down into. Colours: --wood-* (brown, green "go", gold). ───────── */
+.gx-plank {
   --wood-hi: #c99256; --wood: #9b6331; --wood-lo: #74461f; --edge: #3a200c; --drop: #24130a; --rot: 0deg;
   position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap;
   font-family: var(--font-fun); font-weight: 400; letter-spacing: .01em; color: #fff4d8; cursor: pointer; -webkit-tap-highlight-color: transparent;
@@ -954,38 +954,19 @@
   text-shadow: 0 2px 0 var(--edge), 1px 0 0 var(--edge), -1px 0 0 var(--edge);
   transition: transform .09s ease, box-shadow .09s ease, filter .15s ease;
 }
-.gx-plank:hover, .gx-sign:hover { filter: brightness(1.06); }
-.gx-plank:active, .gx-sign:active { transform: translateY(3px) rotate(var(--rot)) scale(.985); filter: brightness(.96);
+.gx-plank:hover { filter: brightness(1.06); }
+.gx-plank:active { transform: translateY(3px) rotate(var(--rot)) scale(.985); filter: brightness(.96);
   box-shadow: inset 0 2px 0 rgba(255, 232, 190, .4), inset 0 -2px 0 rgba(0, 0, 0, .2), 0 1px 0 var(--drop), 0 4px 8px rgba(0, 0, 0, .3); }
-.gx-plank:focus-visible, .gx-sign:focus-visible, .gx-token:focus-visible { outline: 3px solid #fff6c8; outline-offset: 3px; }
-.gx-sign::before, .gx-sign::after {
-  content: ''; position: absolute; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #f3e3c0, #8a7556 55%, #2a2016); box-shadow: 0 1px 0 rgba(255, 255, 255, .25), inset 0 -1px 1px rgba(0, 0, 0, .4);
-}
-.gx-sign::before { left: 12px; }
-.gx-sign::after { right: 12px; }
+.gx-plank:focus-visible, .gx-token:focus-visible { outline: 3px solid #fff6c8; outline-offset: 3px; }
 .gx-plank { font-size: clamp(14px, 2.2vh, 17px); padding: 9px 18px; min-width: 132px; }
-.gx-plank .ic, .gx-sign .ic { flex: none; filter: drop-shadow(0 1.5px 0 rgba(40, 20, 5, .75)); }
+.gx-plank .ic { flex: none; filter: drop-shadow(0 1.5px 0 rgba(40, 20, 5, .75)); }
 .gx-plank-sm { --wood-hi: #b5804a; --wood: #8a5628; --wood-lo: #66401c; font-size: 13px; padding: 6px 13px 6px 10px; min-width: 0; gap: 6px; border-width: 2.5px; border-radius: 10px 13px 11px 9px;
   box-shadow: inset 0 2px 0 rgba(255, 232, 190, .38), inset 0 -2px 0 rgba(0, 0, 0, .2), 0 3px 0 var(--drop), 0 6px 10px rgba(0, 0, 0, .32); }
 .gx-plank-sm:active { box-shadow: inset 0 2px 0 rgba(255, 232, 190, .35), 0 1px 0 var(--drop), 0 3px 6px rgba(0, 0, 0, .3); }
 .gx-plank-go { --wood-hi: #7cc35a; --wood: #4f9a39; --wood-lo: #357525; --edge: #1d4a1b; --drop: #133512; }
 .gx-plank-gold { --wood-hi: #f0b04a; --wood: #d9822b; --wood-lo: #a85a17; --edge: #4a2208; --drop: #2e1404; }
 
-/* the big sign */
-.gx-sign { flex-direction: column; gap: 0; padding: 11px 40px 10px; border-width: 4px; border-radius: 14px 18px 15px 12px; overflow: hidden;
-  --wood-hi: #f0b04a; --wood: #d9822b; --wood-lo: #a85a17; --edge: #4a2208; --drop: #2e1404; }
-.gx-sign-t { position: relative; font-size: clamp(22px, 3.6vh, 30px); letter-spacing: .04em; line-height: 1.1; white-space: nowrap; }
-.gx-sign-s { position: relative; font-family: var(--font-ui); font-weight: 700; font-size: 12.5px; color: #fff1cf; text-shadow: 0 1px 0 #4a2208; display: inline-flex; align-items: center; gap: 4px; }
-.gx-sign-s i { font-style: normal; opacity: .7; }
-/* a soft shine that runs across the big sign now and then */
-.gx-shine { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
-.gx-shine::before { content: ''; position: absolute; top: -20%; bottom: -20%; left: 0; width: 34%; transform: translateX(-160%) skewX(-18deg);
-  background: linear-gradient(90deg, rgba(255, 250, 220, 0), rgba(255, 250, 220, .5) 50%, rgba(255, 250, 220, 0)); animation: gx-shine 5.2s ease-in-out 2.4s infinite; }
-@keyframes gx-shine { 0% { transform: translateX(-160%) skewX(-18deg); } 20%, 100% { transform: translateX(420%) skewX(-18deg); } }
-
-/* the small boards in a row, and the round wooden token */
-.gx-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+/* the round wooden token */
 .gx-token { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 3px solid #3a200c; color: #fff4d8; display: grid; place-items: center; cursor: pointer; padding: 0; -webkit-tap-highlight-color: transparent;
   background: var(--gx-wood-grain), radial-gradient(circle at 40% 35%, #d9a064, #9b6331 60%, #6a3f1b); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .4), 0 3px 0 #24130a, 0 6px 10px rgba(0, 0, 0, .35);
   transition: transform .09s ease, box-shadow .09s ease; }
@@ -993,22 +974,46 @@
 .gx-token:active { transform: translateY(2px) scale(.96); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .35), 0 1px 0 #24130a, 0 3px 6px rgba(0, 0, 0, .3); }
 .gx-token.wait { animation: chip-wait 1.6s ease-in-out infinite; }
 
-/* ───────── the title: the logo and the pair on one side, the signpost of buttons on the other (upright: logo, pair, signpost) ───────── */
+/* ───────── the title (layout B, Matt 2026-10-30): the scene and the pair own the screen; one painted trail sign to play, three leaf
+   tokens tucked under it as one group; sound and Settings as two small tokens in the corner. Everything else lives in Settings. ───────── */
 .gx2 { position: fixed; inset: 0; z-index: 40; overflow: hidden; color: #fff6df; user-select: none; background: #0b1a13; --t: 1; }
 .gx2-back { --t: .45; }
 .ts-scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .gx2-ui { position: relative; z-index: 2; height: 100%; box-sizing: border-box;
-  padding: max(10px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(6px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
-  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto 1fr auto; grid-template-areas: 'top top' 'logo post' 'stage post' 'stage credit'; }
-.gx2-top { grid-area: top; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.gx2-top-r { display: flex; align-items: center; gap: 8px; }
-.gx2-tag { font-family: var(--font-ui); font-weight: 900; font-size: 12px; letter-spacing: .08em; color: #fff1cf; text-shadow: 0 1px 0 #2a1608;
-  padding: 5px 12px; border-radius: 9px 12px 10px 8px; border: 2px solid rgba(255, 220, 160, .22); background: var(--gx-wood-grain), linear-gradient(180deg, rgba(110, 64, 25, .82), rgba(70, 40, 14, .82)); box-shadow: 0 3px 8px rgba(0, 0, 0, .3); }
+  padding: max(10px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: 'top top' 'logo post' 'stage post'; }
+.gx2-top { grid-area: top; display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
 .gx2-logo { grid-area: logo; position: relative; display: flex; flex-direction: column; align-items: center; margin-top: clamp(0px, 2vh, 20px); }
 .gx2-stage { grid-area: stage; min-height: 0; }
-.gx2-post { grid-area: post; align-self: center; justify-self: center; display: flex; flex-direction: column; align-items: center; gap: clamp(9px, 1.8vh, 14px); position: relative; z-index: 0; }
-.gx2-credit { grid-area: credit; margin: 0; text-align: center; font-family: var(--font-ui); font-size: 12px; color: rgba(255, 240, 210, .78); text-shadow: 0 1px 3px rgba(0, 0, 0, .8); }
-.gx2-credit i { font-style: normal; opacity: .6; padding: 0 2px; }
+.gx2-post { grid-area: post; align-self: center; justify-self: center; display: flex; flex-direction: column; align-items: center; gap: 2px; position: relative; z-index: 0; }
+
+/* the corner tokens: the painted carved token with a painted icon, 52 px */
+.ttl-token { flex: none; width: 52px; height: 52px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  background: url(./assets/ui/token.webp) center / contain no-repeat; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .45)); transition: transform .09s ease; }
+.ttl-token:active { transform: translateY(2px) scale(.95); }
+.ttl-token.wait { animation: chip-wait 1.6s ease-in-out infinite; }
+.ttl-token:focus-visible, .ttl-play:focus-visible, .ttl-leaf:focus-visible { outline: 3px solid #fff6c8; outline-offset: 3px; border-radius: 14px; }
+
+/* the play sign: the painted board hanging on its two vines (the vines are the top 28% of the picture, so the words sit lower, in the
+   middle of the board) */
+.ttl-play { position: relative; width: min(86vw, 360px); aspect-ratio: 700 / 361; padding: 25% 7% 4%; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  background: url(./assets/ui/sign-big.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .45)); transition: transform .09s ease, filter .15s ease; }
+.ttl-play:active { transform: translateY(3px) scale(.985); filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .45)) brightness(.96); }
+.ttl-play-t { display: flex; align-items: center; gap: .32em; font-family: var(--font-fun); font-size: clamp(22px, 6.2vw, 31px); letter-spacing: .03em; white-space: nowrap; color: #fff4d8;
+  text-shadow: 0 2px 0 #4a2208, 2px 0 0 #4a2208, -2px 0 0 #4a2208, 0 -2px 0 #4a2208, 0 3px 5px rgba(0, 0, 0, .35); }
+.ttl-play-t .ic { width: 1.05em; height: 1.05em; filter: drop-shadow(0 2px 1px rgba(40, 20, 5, .5)); }
+.ttl-play-s { display: inline-flex; align-items: center; gap: 4px; font: 700 14px var(--font-ui); color: #fff1cf; text-shadow: 0 1px 0 #4a2208, 0 0 4px rgba(74, 34, 8, .8); }
+.ttl-play-s i { font-style: normal; opacity: .7; }
+
+/* the three leaf tokens, close under the sign as one group (Matt: "brought up a little bit higher underneath the start") */
+.ttl-leaves { display: flex; justify-content: center; gap: clamp(10px, 4vw, 26px); margin-top: -6px; }
+.ttl-leaf { width: 96px; min-height: 84px; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; font-family: var(--font-fun); font-size: 16px; line-height: 1.1; color: #fff4d8; white-space: nowrap;
+  text-shadow: 0 2px 0 #2a1608, 1.5px 0 0 #2a1608, -1.5px 0 0 #2a1608, 0 0 6px rgba(0, 0, 0, .7); transition: transform .09s ease; }
+.ttl-leaf:active { transform: translateY(2px) scale(.96); }
+.ttl-leaf-ic { width: 60px; height: 60px; display: grid; place-items: center; background: url(./assets/ui/leaf-token.webp) center / contain no-repeat; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .45)); }
+.ttl-leaf-ic .ic { filter: drop-shadow(0 1px 1px rgba(10, 30, 8, .6)); }
 
 /* the name, carved into a mossy log (title/CarvedLogo.tsx): the canvas reaches a little below the log, for the chips and the leaves
    that fall as it is carved, without taking that room from the layout */
@@ -1023,16 +1028,7 @@
 .gx2-glint.g3 { left: 79%; top: 36%; width: 18px; height: 18px; }
 @keyframes gx-glint { 0%, 100% { opacity: 0; transform: scale(0) rotate(0); } 6% { opacity: 1; transform: scale(1.15) rotate(45deg); } 13% { opacity: 0; transform: scale(0) rotate(90deg); } }
 
-/* the signpost: a pole behind, the sign and the planks nailed on a little off true */
-.gx2-post::before { content: ''; position: absolute; left: 50%; top: 8px; bottom: -14px; width: 22px; margin-left: -11px; z-index: -1; border-radius: 6px;
-  border: 3px solid #2a1608; background: repeating-linear-gradient(90deg, rgba(60, 30, 8, .25) 0 2px, transparent 2px 7px), linear-gradient(90deg, #6e4019, #a86d38 45%, #7a4a20);
-  box-shadow: 4px 0 10px rgba(0, 0, 0, .35); }
-.gx2-sign { min-width: min(80vw, 330px); }
-.gx2-planks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
-.gx2-planks .gx-plank { min-width: 150px; }
-.gx2-planks .gx-plank:nth-child(4n+1), .gx2-planks .gx-plank:nth-child(4n+4) { --rot: -1.2deg; }
-.gx2-planks .gx-plank:nth-child(4n+2), .gx2-planks .gx-plank:nth-child(4n+3) { --rot: 1deg; }
-.gx2-tip { position: absolute; left: 50%; top: max(60px, calc(env(safe-area-inset-top, 0px) + 56px)); transform: translateX(-50%); z-index: 5; width: min(92vw, 360px);
+.gx2-tip { position: absolute; left: 50%; top: max(70px, calc(env(safe-area-inset-top, 0px) + 66px)); transform: translateX(-50%); z-index: 5; width: min(92vw, 360px);
   display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 14px; color: var(--gx-ink); font-family: var(--font-ui); font-size: 13px; line-height: 1.35;
   background: var(--gx-parch); border: 3px solid #6b4421; box-shadow: 0 10px 24px rgba(0, 0, 0, .45); }
 .gx2-tip b { font-family: var(--font-fun); font-weight: 400; }
@@ -1040,71 +1036,63 @@
 
 /* ---- the entrance (TitleScreen.tsx): nothing shows until the splash goes, then it all arrives in order ---- */
 .gx2-wait .gx2-ui { visibility: hidden; }
-/* the reveal (with the scene's camera drawing back out of the dark, TitleScene.tsx): the name is carved into its log (CarvedLogo.tsx),
-   then the buttons come up in turn; the glints start once it is carved */
-/* (the buttons wait for the name: until it is carved they are not there; then they come up in turn) */
-.gx2-arrive:not(.gx2-named) .gx2-post, .gx2-arrive:not(.gx2-named) .gx2-top, .gx2-arrive:not(.gx2-named) .gx2-credit { visibility: hidden; }
+/* (the buttons wait for the name: until it is carved they are not there; then they come up in turn, the sign first; the glints start
+   once it is carved) */
+.gx2-arrive:not(.gx2-named) .gx2-post, .gx2-arrive:not(.gx2-named) .gx2-top { visibility: hidden; }
 .gx2-named .gx2-top { animation: gx-down .6s ease .15s backwards; }
 .gx2-arrive .gx2-glint.g1 { animation: gx-glint 5.6s ease-out calc(var(--t) * 4s + .2s) infinite; }
 .gx2-arrive .gx2-glint.g2 { animation: gx-glint 5.6s ease-out calc(var(--t) * 4s + 2.1s) infinite; }
 .gx2-arrive .gx2-glint.g3 { animation: gx-glint 5.6s ease-out calc(var(--t) * 4s + 3.9s) infinite; }
-.gx2-named .gx2-sign, .gx2-named .gx2-planks > *, .gx2-named .gx-tags > * { animation: gx-rise .6s cubic-bezier(.2, 1.45, .4, 1) calc(var(--t) * var(--i, 0) * .07s) backwards; }
-.gx2-named .gx2-credit { animation: gx-fade .8s ease .7s backwards; }
+.gx2-named .ttl-play, .gx2-named .ttl-leaf { animation: gx-rise .6s cubic-bezier(.2, 1.45, .4, 1) calc(var(--t) * var(--i, 0) * .07s) backwards; }
 /* leaving: the logo lifts away, the buttons drop, then the next screen comes on */
 .gx2-leave .gx2-ui > * { transition: opacity .22s ease, transform .24s ease; opacity: 0; }
 .gx2-leave .gx2-logo, .gx2-leave .gx2-top { transform: translateY(-18px); }
 .gx2-leave .gx2-post { transform: translateY(22px); }
 .gx2-leave .ts-scene { transition: opacity .24s ease; opacity: .55; }
 @media (prefers-reduced-motion: reduce) {
-  .gx2-arrive .gx2-carve, .gx2-named .gx2-top, .gx2-named .gx2-sign, .gx2-named .gx2-planks > *, .gx2-named .gx-tags > *, .gx2-named .gx2-credit { animation: gx-fade .45s ease backwards; }
-  .gx2-arrive .gx2-glint, .gx-shine::before { animation: none; }
+  .gx2-arrive .gx2-carve, .gx2-named .gx2-top, .gx2-named .ttl-play, .gx2-named .ttl-leaf { animation: gx-fade .45s ease backwards; }
+  .gx2-arrive .gx2-glint { animation: none; }
   .gx2-leave .gx2-ui > * { transform: none !important; }
 }
 
-/* upright phones: the logo on top, Pokey and Meeca on their log, the signpost under them where a thumb reaches */
+/* upright phones: the logo on top, Pokey and Meeca on their log, the sign and its leaves under them where a thumb reaches */
 @media (orientation: portrait) {
-  .gx2-ui { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr auto auto; grid-template-areas: 'top' 'logo' 'stage' 'post' 'credit'; }
-  .gx2-stage { min-height: 24vh; }
-  .gx2-logo { margin-top: 2vh; }
+  .gx2-ui { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr auto; grid-template-areas: 'top' 'logo' 'stage' 'post'; }
+  .gx2-stage { min-height: 22vh; }
+  .gx2-logo { margin-top: 0; }
   .gx2-carve { --lw: min(96vw, 430px); }
-  .gx2-post { margin: 1vh 0 2vh; align-self: end; }
-  .gx2-post::before { display: none; }
-  .gx2-planks { width: min(92vw, 380px); }
-  .gx2-planks .gx-plank { min-width: 0; padding: 10px 12px; font-size: 14.5px; }
-  .gx2-sign { min-width: min(92vw, 380px); padding-left: 36px; padding-right: 36px; }
-  .gx2-sign .gx-sign-t { font-size: min(6.6vw, 28px); }
-  .gx2-credit { font-size: 12px; }
+  .gx2-post { margin: 0 0 max(1vh, 6px); align-self: end; }
 }
-/* a phone on its side: everything a size smaller */
+/* short upright phones (360 x 640 and so on): the sign a little smaller so the pair keep their room */
+@media (orientation: portrait) and (max-height: 700px) {
+  .gx2-carve { --lw: min(84vw, 360px); }
+  .ttl-play { width: min(80vw, 300px); }
+}
+/* a phone on its side: the sign and its leaves on the right, a size smaller */
 @media (max-height: 430px) and (orientation: landscape) {
   .gx2-carve { --lw: min(36vw, 74vh, 310px); }
-  .gx2-planks .gx-plank { min-width: 128px; padding: 7px 12px; font-size: 13.5px; }
-  .gx2-sign { min-width: 280px; padding: 8px 34px 7px; }
-  .gx2-sign .gx-sign-t { font-size: 20px; }
-  .gx2-post { gap: 8px; }
-  .gx-token { width: 38px; height: 38px; }
-  .gx2-tag { font-size: 12px; padding: 4px 10px; }
+  .gx2-top { margin-bottom: -40px; position: relative; z-index: 3; }
+  .ttl-play { width: min(40vw, 320px); }
+  .ttl-play-t { font-size: clamp(19px, 2.6vw, 25px); }
 }
-/* a small phone on its side (640 x 320 and so on): the boards a size smaller again, the small ones kept on one row */
+@media (max-height: 430px) and (orientation: landscape) and (max-width: 700px) { .ttl-leaves { gap: 4px; } }
+/* the narrowest phones (320 wide): the three leaves share the width */
+@media (max-width: 340px) { .ttl-leaves { gap: 0; } .ttl-leaf { width: 96px; font-size: 15px; } }
 @media (max-height: 350px) and (orientation: landscape) {
-  .gx2-planks .gx-plank { min-width: 112px; padding: 5px 10px; font-size: 12.5px; }
-  .gx2-sign { min-width: 250px; padding: 6px 30px 5px; }
-  .gx2-sign .gx-sign-t { font-size: 18px; }
-  .gx-tags { flex-wrap: nowrap; gap: 6px; }
-  .gx-plank-sm { font-size: 12px; padding: 4px 9px 4px 8px; }
-  .gx2-post { gap: 6px; }
-  .gx2-credit { font-size: 12px; }
+  .ttl-play { width: min(36vw, 270px); }
+  .ttl-leaf { min-height: 76px; }
+  .ttl-leaf-ic { width: 52px; height: 52px; }
 }
 
-/* ───────── the menus (start menu and pause menu, MenuFrame.tsx): parchment in a wooden frame (2026-10-28) ───────── */
+/* ───────── the menus (start menu and pause menu, MenuFrame.tsx): parchment in a wooden frame (2026-10-28); the frame painted
+   (menu kit option A, Matt 2026-10-30: src/assets/ui/card.webp, Hugging Face takes in the game's style) ───────── */
 .pm-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; box-sizing: border-box;
   padding: max(10px, env(safe-area-inset-top, 0px)) max(10px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px));
   background: radial-gradient(ellipse at 50% 42%, rgba(10, 24, 14, .52), rgba(4, 10, 6, .8)); color: var(--gx-ink); font-family: var(--font-fun); animation: fx-scrim-in .22s ease both; }
 .pm-card {
   position: relative; width: 100%; max-width: 560px; max-height: 100%; overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;
-  border: 11px solid transparent; border-radius: 24px; padding: 16px 16px 16px; color: var(--gx-ink);
-  background: var(--gx-parch) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #a86d38, #7a4a20) border-box;
-  box-shadow: 0 0 0 3px #2a1608, inset 0 0 0 2px rgba(120, 80, 30, .35), inset 0 0 26px rgba(140, 90, 30, .32), 0 18px 44px rgba(0, 0, 0, .55);
+  border: 22px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 22px stretch; padding: 6px 6px 6px; color: var(--gx-ink);
+  background: none; box-shadow: 0 18px 44px rgba(0, 0, 0, .55);
   scrollbar-color: #a86d38 transparent; animation: fx-card-in .42s cubic-bezier(.2, 1.25, .4, 1) both;
 }
 .pm-head { display: flex; align-items: center; gap: 12px; }
@@ -1128,16 +1116,15 @@
 /* the picture tiles: two by two upright, a lone last one across the whole row */
 .pm-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .pm-tile { --band: #3f9a5a; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 0; min-height: 112px; padding: 12px 8px 10px;
-  text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; color: var(--gx-ink); font-family: inherit; border-radius: 15px;
-  border: 2px solid color-mix(in srgb, var(--band) 55%, #3b2412); background: linear-gradient(180deg, #fffaf0, #f2e3c0);
-  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--band) 25%, transparent), 0 3px 0 rgba(90, 60, 20, .35), 0 6px 12px rgba(60, 40, 10, .14);
+  text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; color: var(--gx-ink); font-family: inherit;
+  border: 12px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 12px stretch; background: none;
+  box-shadow: 0 4px 10px rgba(60, 40, 10, .22);
   transition: transform .09s ease, box-shadow .09s ease, background .15s ease; }
 .pm-tile:hover { background: linear-gradient(180deg, #fffdf6, #f7ead0); }
 .pm-tile:active { transform: translateY(2px) scale(.98); box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--band) 25%, transparent), 0 1px 0 rgba(90, 60, 20, .35); }
-.pm-tile-ic { flex: none; width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center;
-  background: radial-gradient(circle at 38% 32%, color-mix(in srgb, var(--band) 30%, #fff8e6), color-mix(in srgb, var(--band) 80%, #fff) 70%, var(--band));
-  border: 2.5px solid color-mix(in srgb, var(--band) 50%, #2a1608); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .16), inset 0 2px 0 rgba(255, 255, 255, .45), 0 2px 0 rgba(60, 40, 10, .3); }
-.pm-tile-ic .ic { filter: drop-shadow(0 1.5px 0 rgba(40, 20, 5, .4)); }
+/* the tile's picture: the painted kit icon on its own, as big as the old disc (option A) */
+.pm-tile-ic { flex: none; width: 50px; height: 50px; display: grid; place-items: center; }
+.pm-tile-ic .ic { width: 100%; height: 100%; filter: drop-shadow(0 2px 1px rgba(40, 20, 5, .35)); }
 .pm-tile-t { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; max-width: 100%; }
 .pm-tile b { display: block; font-family: var(--font-fun); font-weight: 400; font-size: 16px; line-height: 1.1; color: var(--gx-ink); white-space: nowrap; }
 .pm-tile small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: var(--font-ui); font-weight: 600; font-size: 12px; line-height: 1.25; color: var(--gx-ink-soft); text-wrap: balance; }
@@ -1184,6 +1171,53 @@
 .pm-vol-thumb { position: absolute; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; pointer-events: none; border-radius: 4px 16px 4px 16px; transform: rotate(-20deg);
   background: linear-gradient(180deg, #6cc04f, #2f7a26); border: 2px solid #1d4a1b; box-shadow: 0 2px 0 #133512; }
 .pm-vol:focus-visible .pm-vol-thumb { box-shadow: 0 0 0 4px rgba(253, 230, 138, .8); }
+
+/* ───────── Settings on the start screen (TitleSettings.tsx, layout B): the painted card, painted tab chips, one section at a time ───────── */
+.st-scrim { z-index: 60; padding-top: max(34px, calc(env(safe-area-inset-top, 0px) + 30px)); }
+.st-card { position: relative; width: 100%; max-width: 560px; max-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; color: var(--gx-ink);
+  border: 22px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 22px stretch; padding: 26px 6px 6px; filter: drop-shadow(0 16px 30px rgba(0, 0, 0, .5));
+  animation: fx-card-in .42s cubic-bezier(.2, 1.25, .4, 1) both; }
+.st-plaque { position: absolute; left: 50%; top: -48px; transform: translateX(-50%); font-size: 26px; z-index: 2; }
+.st-x { position: absolute; right: -32px; top: -36px; z-index: 2; width: 52px; height: 52px; padding: 0; border: 0; display: grid; place-items: center; cursor: pointer;
+  background: url(./assets/ui/token.webp) center / contain no-repeat; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .45)); color: #fff4d8; -webkit-tap-highlight-color: transparent; }
+.st-x:active { transform: scale(.94); }
+.st-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; flex: none; }
+.st-tab { min-height: 56px; padding: 4px 2px; border: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  background: url(./assets/ui/chip-off.webp) center / 100% 100% no-repeat; font-family: var(--font-fun); font-size: 14px; color: #fff4d8; text-shadow: 0 1.5px 0 #3a200c, 1px 0 0 #3a200c, -1px 0 0 #3a200c;
+  -webkit-tap-highlight-color: transparent; }
+.st-tab.on { background-image: url(./assets/ui/chip-on.webp); }
+.st-tab .ic { filter: drop-shadow(0 1px 1px rgba(40, 20, 5, .6)); }
+/* (five tabs on a narrow phone: the icon alone, its name spoken; the open tab's name is the section's own heading) */
+@media (max-width: 359px) { .st-tab span { display: none; } }
+.st-page { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 4px; scrollbar-color: #a86d38 transparent; }
+.st-page .pm-tiles { padding: 4px 0; }
+.st-rows { display: flex; flex-direction: column; }
+.st-row { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 6px 2px; border-bottom: 1.5px solid rgba(120, 80, 30, .2); }
+.st-row:last-child { border-bottom: 0; }
+.st-row > .ic { flex: none; }
+.st-row-t { flex: 1; min-width: 0; font-family: var(--font-fun); font-size: 18px; color: #4a2a10; }
+.st-row-t small { display: block; margin-top: 2px; font: 600 14px var(--font-ui); color: var(--gx-ink-soft); }
+.st-row-t small .title-credit-btn { color: #8a3b10; font-weight: 800; }
+.st-btn { flex: none; min-width: 92px; min-height: 48px; padding: 0 14px; cursor: pointer; font-family: var(--font-fun); font-size: 17px; color: #fff4d8;
+  text-shadow: 0 2px 0 #3a200c, 1px 0 0 #3a200c, -1px 0 0 #3a200c; border: 3px solid #3a200c; border-radius: 12px 16px 13px 10px;
+  background: var(--gx-wood-grain), linear-gradient(180deg, #c99256, #9b6331 52%, #74461f); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .45), 0 3px 0 #24130a; }
+.st-btn:active { transform: translateY(2px); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .4), 0 1px 0 #24130a; }
+.st-btn-wide { width: 80%; margin: 0 auto; }
+.st-done { flex: none; }
+.st-confirm { position: absolute; inset: -22px; z-index: 3; display: flex; align-items: center; justify-content: center; padding: 12px; background: rgba(6, 14, 8, .62); border-radius: 18px; }
+.st-confirm-card { width: min(100%, 360px); box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; text-align: center;
+  border: 20px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 20px stretch; padding: 8px 6px 6px; filter: drop-shadow(0 10px 20px rgba(0, 0, 0, .5)); }
+.st-confirm-card h3 { margin: 0; font-family: var(--font-fun); font-weight: 400; font-size: 24px; color: #8a3b10; }
+.st-confirm-card p { margin: 0; font: 600 16px var(--font-ui); line-height: 1.35; }
+/* a phone on its side: the card uses the height, the plaque sits inside its top edge so it never meets the screen's */
+@media (max-height: 430px) and (orientation: landscape) {
+  .st-scrim { padding-top: max(10px, env(safe-area-inset-top, 0px)); }
+  .st-card { padding-top: 34px; gap: 8px; }
+  .st-plaque { top: -14px; font-size: 22px; }
+  .st-x { right: -16px; top: -16px; width: 46px; height: 46px; }
+  .st-tab { min-height: 48px; flex-direction: row; gap: 6px; }
+  .st-row { min-height: 54px; }
+}
 .pm-seg { display: inline-flex; padding: 3px; gap: 3px; border-radius: 12px; background: rgba(120, 80, 30, .14); border: 1px solid rgba(120, 80, 30, .3); }
 .pm-seg button { padding: 6px 13px; border: 0; border-radius: 9px; cursor: pointer; background: transparent; color: var(--gx-ink-soft); font-family: var(--font-fun); font-weight: 400; font-size: 14px; white-space: nowrap; }
 .pm-seg button.on { color: #fff4d8; text-shadow: 0 1px 0 #1d4a1b; background: linear-gradient(180deg, #6cc04f, #3a8a2e); box-shadow: 0 2px 0 #1d4a1b; }
@@ -1204,8 +1238,7 @@
   .pm-tiles > :last-child:nth-child(odd) .pm-tile-t { align-items: center; }
   .pm-tiles > :nth-last-child(2):nth-child(3n+1), .pm-tiles > :last-child:nth-child(3n+2) { grid-column: span 3; }
   .pm-tiles > :last-child:nth-child(3n+1) { grid-column: 1 / -1; }
-  .pm-tile-ic { width: 34px; height: 34px; border-width: 2px; }
-  .pm-tile-ic .ic { width: 20px; height: 20px; }
+  .pm-tile-ic { width: 36px; height: 36px; }
   .pm-tile b { font-size: 14px; }
   .pm-tile small { font-size: 12px; -webkit-line-clamp: 1; }
   .pm-skills { padding: 7px 10px; }
@@ -1247,10 +1280,10 @@
 
 /* ───────── the stage-cleared, new-skill and out-of-lives cards: parchment in a wooden frame ───────── */
 
+/* the frame painted (menu kit option A, Matt 2026-10-30: src/assets/ui/card.webp) */
 .clr-card {
-  border: 12px solid transparent; border-radius: 28px; color: var(--gx-ink);
-  background: var(--gx-parch) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #a86d38, #7a4a20) border-box;
-  box-shadow: 0 0 0 3px #2a1608, inset 0 0 0 2px rgba(120, 80, 30, .35), inset 0 0 30px rgba(140, 90, 30, .32), 0 20px 50px rgba(0, 0, 0, .6);
+  border: 22px solid transparent; border-image: url(./assets/ui/card.webp) 70 fill / 22px stretch; color: var(--gx-ink);
+  background: none; box-shadow: 0 20px 50px rgba(0, 0, 0, .6);
 }
 .clr-hero::before { background: radial-gradient(circle, rgba(255, 214, 110, .55), rgba(255, 214, 110, 0) 68%); }
 .clr-stage { color: var(--gx-ink-soft); font-weight: 700; }
@@ -1266,11 +1299,8 @@
 
 .sk-name { font-size: 30px; }
 
-/* out of lives: the same parchment as every card, in the dusk light (UI-12: it was a flat pale grey, the one card off the kit) */
-.clr-card.lost { border-color: transparent;
-  background: radial-gradient(ellipse at 50% 30%, #f6ead0 0%, #e6d3ad 60%, #c8b088 100%) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #7a6a5a, #4f4236) border-box;
-  box-shadow: 0 0 0 3px #1e1812, inset 0 0 30px rgba(60, 70, 80, .3), 0 20px 56px rgba(0, 0, 0, .65);
-}
+/* out of lives: the same painted card as every other (UI-12: it was a flat pale grey, the one card off the kit) */
+.clr-card.lost { border-color: transparent; background: none; box-shadow: 0 20px 56px rgba(0, 0, 0, .65); }
 .clr-card.lost .clr-stage { color: #4a5560; }
 .clr-card.lost .clr-chip span { color: #f3d9a6; }
 .clr-praise.lost b { color: #b4541a; }
@@ -1284,6 +1314,8 @@
 
 /* the map comes on in order (2026-10-28): the trail draws itself along, the stages pop up one after another, Pokey drops onto his,
    and the stage card rises; a new world plays it again */
+.map-road { filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .6)); }
+.map-road.ahead { opacity: .72; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .6)) saturate(.7); }
 .map-trail { animation: map-trail-in .9s cubic-bezier(.4, 0, .2, 1) .08s backwards; }
 @keyframes map-trail-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 .map-node { animation: map-node-in .5s cubic-bezier(.2, 1.6, .4, 1) calc(.18s + var(--i, 0) * .055s) backwards; }
@@ -1461,8 +1493,7 @@
   .pm-tiles:has(> :nth-child(6)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .pm-tile b { font-size: 12.5px; white-space: normal; line-height: 1.05; }
   .pm-tile small { display: none; }
-  .pm-tile-ic { width: 30px; height: 30px; }
-  .pm-tile-ic .ic { width: 18px; height: 18px; }
+  .pm-tile-ic { width: 32px; height: 32px; }
   .pm-tile-badge { top: 3px; right: 3px; }
   .pm-sound { padding: 7px 0 6px; gap: 3px; }
   .pm-polish-note { font-size: 12px; }

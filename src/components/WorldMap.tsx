@@ -9,10 +9,14 @@ import { SceneBackdrop } from './title/TitleScene.tsx';
 import { Plaque } from './KitParts.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { HeroPose } from './HeroPose.tsx';
-import { Icon } from './icons/index.tsx';
+import { Icon, KitPiece } from './icons/index.tsx';
 import { Crest } from './icons/Crest.tsx';
 import { stageTypeInfo } from './icons/stageTypes.ts';
 import { MEECA_STAGE_ID } from '../game/extraStages.ts';
+import { TRAILS, TRAILS_SIZE } from '../game/trailsData.ts';
+import { trailStamps, type TrailStamp } from './mapTrail.ts';
+
+const TRAILS_URL = new URL('../assets/ui/trails.webp', import.meta.url).href;
 
 interface WorldMapProps {
   levels: LevelConfig[];
@@ -33,51 +37,6 @@ interface WorldMapProps {
 }
 
 const fmtTime = (s: number) => (s > 0 ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '—');
-
-/** smooth curve through points (Catmull-Rom as cubic beziers) */
-function curve(pts: { x: number; y: number }[]): string {
-  if (pts.length < 2) return '';
-  let d = `M${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i - 1] || pts[i];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[i + 2] || p2;
-    const c1x = p1.x + (p2.x - p0.x) / 6;
-    const c1y = p1.y + (p2.y - p0.y) / 6;
-    const c2x = p2.x - (p3.x - p1.x) / 6;
-    const c2y = p2.y - (p3.y - p1.y) / 6;
-    d += `C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
-  }
-  return d;
-}
-
-/** each stretch of the trail between two stages on its own, with the point and direction at its middle (for the claw prints) */
-function segments(pts: { x: number; y: number }[]): { d: string; mx: number; my: number; angle: number }[] {
-  const out: { d: string; mx: number; my: number; angle: number }[] = [];
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i - 1] || pts[i];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[i + 2] || p2;
-    const c1x = p1.x + (p2.x - p0.x) / 6;
-    const c1y = p1.y + (p2.y - p0.y) / 6;
-    const c2x = p2.x - (p3.x - p1.x) / 6;
-    const c2y = p2.y - (p3.y - p1.y) / 6;
-    // a cubic at t = .5: the point, and its slope
-    const mx = (p1.x + 3 * c1x + 3 * c2x + p2.x) / 8;
-    const my = (p1.y + 3 * c1y + 3 * c2y + p2.y) / 8;
-    const dx = 0.75 * (p2.x + c2x - c1x - p1.x);
-    const dy = 0.75 * (p2.y + c2y - c1y - p1.y);
-    out.push({
-      d: `M${p1.x.toFixed(1)} ${p1.y.toFixed(1)}C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`,
-      mx,
-      my,
-      angle: (Math.atan2(dy, dx) * 180) / Math.PI,
-    });
-  }
-  return out;
-}
 
 export const WorldMap: React.FC<WorldMapProps> = ({
   levels,
@@ -182,13 +141,26 @@ export const WorldMap: React.FC<WorldMapProps> = ({
     return { pts, wide };
   }, [box, worldLevels.length]);
 
-  const pathD = useMemo(() => curve(nodes.pts), [nodes]);
-  const segs = useMemo(() => segments(nodes.pts), [nodes]);
   // the stages are drawn bigger when there is room between them (a portrait phone has two rows of five)
   const gap = nodes.pts.length > 1 ? Math.min(...nodes.pts.slice(1).map((p, i) => Math.hypot(p.x - nodes.pts[i].x, p.y - nodes.pts[i].y))) : 80;
   const nodeSize = nodes.wide ? Math.max(34, Math.min(46, box.w / 17)) : Math.max(36, Math.min(46, gap * 0.56));
   const bossSize = Math.round(nodeSize * 1.5);
   const badgePx = Math.max(18, Math.round(nodeSize * 0.42));
+  // (each piece a little longer than the gap between them, so a rope or a chain reads as one line and stones as a row of steps)
+  const trailPieces = TRAILS[activeWorldId] ?? TRAILS[1];
+  const pieceLen = nodeSize * 1.15;
+  const stamps = useMemo(() => trailStamps(nodes.pts, pieceLen * 0.72), [nodes, pieceLen]);
+  const drawPiece = (t: TrailStamp, i: number) => {
+    const f = trailPieces[t.v];
+    const h = (pieceLen * f.h) / f.w;
+    return (
+      <g key={i} transform={`translate(${t.x.toFixed(1)} ${t.y.toFixed(1)}) rotate(${t.angle.toFixed(1)})`}>
+        <svg x={-pieceLen / 2} y={-h / 2} width={pieceLen} height={h} viewBox={`${f.x} ${f.y} ${f.w} ${f.h}`} preserveAspectRatio="none">
+          <image href={TRAILS_URL} width={TRAILS_SIZE.w} height={TRAILS_SIZE.h} />
+        </svg>
+      </g>
+    );
+  };
 
   const hereIdx = worldLevels.findIndex((l) => l.id === resumeId);
   // the next stage to play in this world: it gets the pulse ring (and the boss a glow)
@@ -203,9 +175,9 @@ export const WorldMap: React.FC<WorldMapProps> = ({
 
       {/* header */}
       <div className="relative z-10 flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 px-3 sm:px-6 pt-2.5 sm:pt-4">
-        <button type="button" onClick={onBackToTitle} className="ui-chip ui-chip-btn" aria-label="Back to the main menu">
+        <button type="button" onClick={onBackToTitle} className="ui-chip ui-chip-btn" aria-label="Back to the start screen">
           <Icon name="arrow" size={13} rotate={180} />
-          Menu
+          Start
         </button>
         <div className="text-center min-w-0 order-3 basis-full sm:order-none sm:basis-auto">
           <div className="ui-kicker">
@@ -245,26 +217,12 @@ export const WorldMap: React.FC<WorldMapProps> = ({
       {/* the trail */}
       <div ref={trailRef} className="relative z-10 flex-1 min-h-0">
         <svg key={activeWorldId} className="map-trail absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${box.w} ${box.h}`} aria-hidden="true">
-          {/* the road: dark edge, then every stretch in its own colour. Warm gold where Pokey has been, muted sand for what is still ahead */}
-          <path d={pathD} fill="none" stroke="rgba(10,18,12,.55)" strokeWidth={nodeSize * 0.62} strokeLinecap="round" strokeLinejoin="round" />
-          {segs.map((s, i) => {
-            const cleared = !!worldLevels[i]?.completed;
-            return (
-              <g key={i}>
-                <path d={s.d} fill="none" stroke={cleared ? '#f6c244' : '#bfae86'} strokeWidth={nodeSize * 0.4} strokeLinecap="round" opacity={cleared ? 1 : 0.55} />
-                {cleared && <path d={s.d} fill="none" stroke="#fde9a3" strokeWidth={nodeSize * 0.13} strokeLinecap="round" opacity=".55" />}
-                <path d={s.d} fill="none" stroke={cleared ? '#9a5a14' : '#6d5a3a'} strokeWidth="2" strokeDasharray="2 9" strokeLinecap="round" opacity={cleared ? 0.75 : 0.5} />
-              </g>
-            );
-          })}
-          {/* a few tiny claw prints, only where Pokey has already walked */}
-          {segs.map((s, i) =>
-            worldLevels[i]?.completed && i % 2 === 0 ? (
-              <g key={`c${i}`} transform={`translate(${s.mx.toFixed(1)} ${s.my.toFixed(1)}) rotate(${s.angle.toFixed(1)}) translate(0 ${i % 4 === 0 ? -1 : 1})`} opacity=".6">
-                <path d="M-3.4-3.3q3.4-1.2 6.8 0M-3.9 0q3.9-1.2 7.8 0M-3.4 3.3q3.4-1.2 6.8 0" fill="none" stroke="#6b3d0c" strokeWidth="1.25" strokeLinecap="round" />
-              </g>
-            ) : null,
-          )}
+          {/* the road: this world's own painted pieces laid along the path (Matt, 2026-10-30: vine rope, stepping stones, glowworm
+              roots, clouds, orchid stems, boardwalk, temple steps, moonlit roots, cooled lava, iron chain), in full colour where Pokey
+              has been, dimmed for the road still ahead */}
+          {/* (a soft shadow under the whole road so it reads on the darkest backdrops; the road ahead a little faded, never faint) */}
+          <g className="map-road ahead">{stamps.filter((t) => !worldLevels[t.seg]?.completed).map(drawPiece)}</g>
+          <g className="map-road">{stamps.filter((t) => worldLevels[t.seg]?.completed).map(drawPiece)}</g>
         </svg>
 
         {secretFound && activeWorldId === 7 && onPlaySecret && (
@@ -305,7 +263,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 ) : (
                   <>
                     {/* an extra stage between the world's own (extraStages.ts) shows whose it is, not a number: Dot's flier, Meeca's face */}
-                    {!open ? <Icon name="lock" size={Math.round(size * 0.5)} /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <Icon name="hummingbird" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
+                    {!open ? <KitPiece piece="lockBadge" width={size} className="map-lockbadge" /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <Icon name="hummingbird" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
                     <span className="map-tbadge" style={{ width: badgePx, height: badgePx }} title={type.label}>
                       <Icon name={type.icon} size={Math.round(badgePx * 0.78)} />
                     </span>
@@ -315,7 +273,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
               {open && lvl.completed && (
                 <div className="map-stars" style={{ left: p.x - 20, top: p.y + size / 2 + (sel ? 6 : 2) }} aria-hidden="true">
                   {[1, 2, 3].map((n) => (
-                    <Icon key={n} name="star" size={11} className={n <= lvl.stars ? 'on' : ''} />
+                    <KitPiece key={n} piece={n <= lvl.stars ? 'starFull' : 'starEmpty'} width={11} className={n <= lvl.stars ? 'ic on' : 'ic'} />
                   ))}
                 </div>
               )}
