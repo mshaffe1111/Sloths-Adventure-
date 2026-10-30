@@ -75,6 +75,8 @@ export interface KitHost {
   stuck?(room: string): void;
   /** a hanging reed cage came all the way up and its floor dropped open: the little one in it is free (World 2) */
   freeCage?(c: Collectible): void;
+  /** a soft painted dust puff at (x, y), `size` px, drifting `vx` (World 10's plate as it is pressed down) */
+  puff?(x: number, y: number, size: number, vx: number): void;
 }
 export type KitSfx = 'pick' | 'drop' | 'throw' | 'land' | 'press' | 'gate' | 'lever' | 'munch' | 'lift' | 'reset' | 'lost' | 'ring' | 'tilt' | 'trade' | 'noise'
   | 'sink' | 'wiggle' | 'pop' | 'stick' | 'snap' | 'unroll' | 'bend' | 'tip' | 'pour' | 'bloom' | 'sip';
@@ -1129,6 +1131,8 @@ export class KitPlay {
         pl.down = down;
         room.changes++;
         if (down) h.sfx('press');
+        // (World 10: dust breathes out of the iron frame's sides as the slab sinks, so the press can't be missed on a phone)
+        if (down && this.look.world === 10) for (const d of [-1, 1]) h.puff?.(pl.x + d * (pl.w * 0.6), pl.y + 4, 30, d * 60);
       }
       pl.show += ((pl.down ? 1 : 0) - pl.show) * Math.min(1, dt * 14);
     }
@@ -1773,7 +1777,8 @@ export class KitPlay {
           if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
         }
         // (World 7: Matt's carved stone plate, w7PuzzleArt.ts; World 10: its pressure plate, a mossy slab in a riveted iron frame, sunk into the frame while held down)
-        const drew = (this.look.world === 10 && drawW10Plate(ctx, pl.show > 0.5, pl.x, pl.y + 12, pw * 1.3)) || (this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)) || (stoneP
+        // (its slab sinks 10 px in the painting, and the whole plate 6 px more into the floor: 16 px, the lead's review)
+        const drew = (this.look.world === 10 && drawW10Plate(ctx, pl.show > 0.5, pl.x, pl.y + 12 + pl.show * 6, pw * 1.3)) || (this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)) || (stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
           : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph }));
         ctx.restore();
