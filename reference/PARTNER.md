@@ -40,6 +40,14 @@ The polish is where this is won or lost.
 - Every look-heavy change shown to Matt first.
 - Built for the Play Store app (Matt, 2026-10-29): it works inside the Android APK, not just a browser. Nothing tappable under the status bar or nav bar. No tracking of any kind in the store build. It's likely a paid app, so it must feel worth paying for. The full list is `reference/PLAY-STORE-RULES.md` (§6 is the check before every merge).
 
+## A miss to never repeat (2026-10-30)
+
+Matt: "How come we didn't do this to begin with?" The game grew from a Canvas 2D prototype into a rich painted game, and nobody re-examined whether the drawing foundation could carry it. Every feature added cost to every frame; checks ran on fast desktop browsers, not cheap phones; and no speed check guarded releases, so the v7 release shipped a slowdown nobody caught.
+
+- **Every few milestones, ask:** does the foundation (drawing, loading, sound, saves) still fit what we're building on it?
+- **Measure on real phones** (Matt's Pixel, Samsung and 2020 OnePlus), never only on desktop.
+- **No release without the speed check** (PERFORMANCE-RULES §8).
+
 ## Before a release, also
 
 - Release from a frozen branch, never the moving work branch.
