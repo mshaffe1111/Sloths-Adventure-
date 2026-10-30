@@ -54,7 +54,7 @@ export const FINDS: FindDef[] = [
     id: 'w1_note', world: 1, kind: 'note', paper: 'leaf',
     title: 'The first petal',
     hint: 'World 1, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey, if you're reading this, you're already further than they think you'll get. They walk too fast to look down. I've been dropping things the whole way and nobody's noticed. Keep your eyes low.\n\nSorry about the handwriting. I'm writing this walking.\n\nP.S. If you see Dot, tell her I saw her in that bush.\n\nLove, M." }],
+    pages: [{ text: "Pokey, if you're reading this, you're already further than they think you'll get. They walk too fast to look down. I've been dropping things the whole way and not one of them has noticed. Keep your eyes low.\n\nSorry about the handwriting. I'm writing this walking.\n\nP.S. If you see Dot, tell her I saw her in that bush.\n\nLove, M." }],
   },
   {
     id: 'w1_keepsake', world: 1, kind: 'keepsake', icon: 'key',
@@ -187,7 +187,7 @@ export const FINDS: FindDef[] = [
     title: 'The Guardian',
     hint: 'World 6, hidden. A photo album in a fern.',
     pages: [
-      { photo: 's1_11', caption: 'On patrol', text: 'The armor was heavy. He wore it so that nobody else would have to.' },
+      { photo: 's1_11', caption: 'On patrol', text: 'The armor was heavy. He wore it so the others would not have to.' },
       { photo: 's1_12', caption: 'Festival day', text: 'Confetti, a sash, a wave. He waved back at everyone, including the macaws.' },
       { photo: 's1_15', caption: "Guardian's watch", text: 'Evenings he watched the river road, in case anyone needed him.' },
       { photo: 's1_16', caption: 'A handshake', text: 'A traveler with a heavy pack and a lazy smile. They talked until dawn.' },
@@ -246,7 +246,7 @@ export const FINDS: FindDef[] = [
     id: 'w9_note', world: 9, kind: 'note', paper: 'leaf',
     title: 'Through the door',
     hint: 'World 9, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey, last night the General said something through my door, to nobody in particular: \"Fast people are the ones who arrive in time.\"\n\nI told him my friend is the slowest person I know and has never once failed to arrive. He didn't answer. He didn't leave, either.\n\nP.S. Tell Dot the bars aren't getting any wider.\n\nP.P.S. Somebody's on the stairs. It isn't Pell. I have to" }],
+    pages: [{ text: "Pokey, last night the General said something through my door, to the corridor in general: \"Fast people are the ones who arrive in time.\"\n\nI told him my friend is the slowest person I know and has never once failed to arrive. He didn't answer. He didn't leave, either.\n\nP.S. Tell Dot the bars aren't getting any wider.\n\nP.P.S. Somebody's on the stairs. It isn't Pell. I have to" }],
   },
   {
     id: 'w9_keepsake', world: 9, kind: 'keepsake', icon: 'stopwatch',

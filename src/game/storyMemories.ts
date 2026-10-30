@@ -284,7 +284,7 @@ export const MAP = chapter({ name: 'THE TOWER · THE MAP', w: 3, m: 'day', cue: 
   OFF('That is very foolish of him, sir.', 'GN:ready@.8*.8 LP:hands_clasped@.16*.8', { p: { zoom: 1.0 } }),
   GEN('Yes.', 'GN:ready@.8*.8 LP:hands_clasped@.16*.8', { cue: 'sorrow', i: 0.3, p: { zoom: 1.2, focusX: 0.75 } }),
   GEN('Lieutenant. The prisoner will have a blanket. That is an order. It is not from me.', '=', { p: { zoom: 1.2, focusX: 0.75 } }),
-  OFF('Yes, sir. Not from you, sir. I am sorry. Yes.', 'GN:ready@.8*.8 LP:salute_nervous@.16*.8', { p: { zoom: 1.0 } }),
+  OFF('Yes, sir. Not from you, sir.', 'GN:ready@.8*.8 LP:salute_nervous@.16*.8', { p: { zoom: 1.0 } }),
   GEN('Go to bed, Lieutenant. Leave the lantern.', 'GN:ready@.8*.8 LP:hands_clasped@.16*.8', { p: { zoom: 1.2, focusX: 0.75 } }),
   OFF('Yes, sir. Good night, sir. I am sorry about the spoons.', 'GN:ready@.8*.8 LP:salute_nervous@.16*.8', { p: { zoom: 1.0 } }),
   N('When the door had closed, the General took a spoon from the tray and drove it into the map beside the last fork, bowl up.', 'GN:ready@.8*.8', { cue: 'hush', i: 0.2, p: { zoom: 1.4, focusX: 0.62, focusY: 0.72 } }),
