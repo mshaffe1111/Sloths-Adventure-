@@ -177,7 +177,7 @@ function bridges(d: DressInput, out: KitDecor[], inRoom: (x: number, pad: number
  *   clutter  small things lying along the long floors
  * Pictures only, like the rest of this file: never a platform or a pickup, and no draw from the stage's own random stream.
  */
-export const DRESS_SETS: Record<1 | 2 | 5 | 8 | 9 | 10, Record<'bank' | 'hang' | 'clutter', DressName[][]> & { face?: DressName[][] }> = {
+export const DRESS_SETS: Record<1 | 2 | 5 | 8 | 9 | 10, Record<'bank' | 'hang' | 'clutter', DressName[][]>> = {
   1: {
     bank: [['w1Fern', 'w1Mushroom', 'w1Pebble'], ['w1Stump', 'w1Acorns', 'w1Sprig']],
     hang: [['w1Hang1', 'w1Hang2'], ['w1Hang2', 'w1Hang1']],
@@ -228,7 +228,7 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
     const { w, h } = dressSize(n);
     return !d.platforms.some((q) => q !== on && q.x < x + w / 2 + 12 && q.x + q.width > x - w / 2 - 12 && q.y < b - 4 && q.y + q.height > b - h - 12);
   };
-  const pick = (job: 'bank' | 'hang' | 'clutter' | 'face', salt: number) => rollLook(sets[job] ?? [[]], d.stage, d.seed, salt + d.world * 11);
+  const pick = (job: 'bank' | 'hang' | 'clutter', salt: number) => rollLook(sets[job], d.stage, d.seed, salt + d.world * 11);
   // (each set laid in a turned order, so the same three in the same order do not come round bank after bank)
   const turn = (set: DressName[], k: number) => {
     const i = Math.floor(lookHash(d.seed + k, 41) * set.length);
@@ -317,20 +317,6 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
         out.push(...laid);
         sets3++;
       }
-    }
-  }
-  // face (Worlds 8-10): pieces set into a long bank's soil face under its lip (a hollow, an ember vein, a buried girder), every 760 or so,
-  // well in from its ends, like World 7's statues and World 6's roots; painted into the world's own soil, their edges feathered into it
-  const faceSet = sets.face ? pick('face', 59) : [];
-  let faces = 0;
-  for (const p of faceSet.length ? banks : []) {
-    if (p.width < 640) continue;
-    for (let x = p.x + 240 + lookHash(d.seed + Math.round(p.x), 61) * 160; x < p.x + p.width - 240 && faces < 10; x += 760) {
-      const n = faceSet[faces % faceSet.length];
-      const { w, h } = dressSize(n);
-      if (x - w / 2 < p.x + 120 || x + w / 2 > p.x + p.width - 120) continue;
-      out.push({ n, x, b: p.y + 64 + h, flip: lookHash(d.seed + Math.round(x), 63) < 0.5 });
-      faces++;
     }
   }
   return out;
