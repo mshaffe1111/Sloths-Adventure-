@@ -93,7 +93,7 @@ import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { SlideRun } from './w7SlideRun.ts';
 import { drawJarMeter, jarFrame, jarHeroImage, LanternRun } from './w8LanternRun.ts';
-import { LANTERN_LINES } from './w8Lantern.ts';
+import { LANTERN_LINES, LANTERN_NIGHT, LANTERN_VIEW, TREE_CROWN } from './w8Lantern.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
 import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
@@ -5048,6 +5048,13 @@ export class GameEngine {
     // (not up the last root: there the view is the reveal's)
     const revealing = !!this.proto?.reveal && p.y < this.proto.reveal.from;
     if (this.tide?.on && !revealing) this.camera.targetY = Math.max(this.camera.targetY, this.tide.y - vh * 0.86);
+    // 8-4, upright: his feet low on the screen, the canopy above and the bough ahead in view instead of the drop under him (w8Lantern.ts)
+    if (this.lanternRun && this.viewCssH > this.viewCssW && Number.isFinite(this.camAnchorY)) this.camera.targetY = Math.min(this.camera.targetY, this.camAnchorY - vh * LANTERN_VIEW.uprightFeetAt);
+    // (and at the firefly tree, the view rises to its crown, as far as keeps his feet in the bottom of the view)
+    if (this.lanternRun && this.lanternRun.swarm >= 0) {
+      const crown = this.lanternRun.plan.swarmTree.y - TREE_CROWN;
+      this.camera.targetY = Math.min(this.camera.targetY, Math.max(crown - vh * 0.22, p.y - vh * 0.9));
+    }
 
     // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
     // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
@@ -6024,7 +6031,7 @@ export class GameEngine {
       // World 3 has no lantern: Pokey is dim, but steady (a small glow of his own), and the grotto's dark is green-black
       const grotto = this.currentStage.config.worldIndex === 3;
       if (this.watchShadowAt) lights.push({ x: this.watchShadowAt.x - cx0, y: this.player.y - 40 - cy0, r: 150 * this.watchShadowAt.a * 2 });
-      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : this.lanternRun ? { heroR: this.lanternRun.radius() } : undefined);
+      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : this.lanternRun ? { heroR: this.lanternRun.radius(), ...LANTERN_NIGHT } : undefined);
       if (this.lanternRun) {
         this.lanternRun.drawOver(ctx, cx0, cy0, this.gameTime);
         // (the jar gauge under the lives, in screen px)
@@ -6660,6 +6667,12 @@ export class GameEngine {
     } else if (ev === 'swarm') {
       sound.playShrineUnlocked();
     }
+    // the firefly tree: as the swarm rises the view pulls back to take in the tree and its crown (6-8's reveal does the same)
+    const want = lr.swarm >= 0 ? (this.viewCssH > this.viewCssW ? 0.86 : 0.7) : 1;
+    const prev = this.revealZoom;
+    this.revealZoom += (want - this.revealZoom) * Math.min(1, dt * 1.2);
+    if (Math.abs(want - this.revealZoom) < 0.002) this.revealZoom = want;
+    if (this.revealZoom !== prev) this.applyZoom();
   }
 
   /** 8-4: a fall past the bottom: soft (back on the bough he left) on Easy or from an unlit take-off, else a life (lantern.ts) */

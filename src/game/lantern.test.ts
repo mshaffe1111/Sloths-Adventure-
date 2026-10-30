@@ -114,3 +114,25 @@ test('8-4: sideways, at least 2 minutes, flowers close enough for a careful play
     assert.ok(l.plan.flowers[0].x - st.spawnX < 400);
   }
 });
+
+test('8-4: the first hops and every liana are soft; Dot warns of the drop before the first that is not; each trunk stands clear of its wall', () => {
+  for (const seed of [1, 2, 3]) {
+    const st = buildLanternRun(CFG, seed);
+    const l = st.lantern84;
+    const gaps = [...l.plan.gaps].sort((a, b) => a.x0 - b.x0);
+    assert.ok(gaps.slice(0, 3).every((g) => g.soft), `${seed}: the first three hops are soft`);
+    for (const li of l.lianas) {
+      const to = st.platforms.find((p) => p.id === li.to)!;
+      assert.ok(gaps.find((g) => g.x1 === to.x)?.soft, `${seed}: the liana onto ${to.id} is soft`);
+    }
+    const firstHard = gaps.find((g) => !g.soft)!;
+    const drop = st.proto.hints.find((h) => h.text === "Careful! It's a long way down.");
+    assert.ok(drop && drop.x < firstHard.x0, `${seed}: the drop line comes before the first deadly gap`);
+    for (const v of st.vines.filter((q) => q.vineType === 'tree_climb')) {
+      const up = st.platforms.find((p) => Math.abs(p.y - (v.topY + 2)) < 4 && p.x > v.x)!;
+      const low = st.platforms.filter((p) => Math.abs(p.y - (v.bottomY + 6)) < 4 && p.x < v.x).sort((a, b) => b.x - a.x)[0];
+      assert.equal(up.x - v.x, 26, `${seed}: the trunk at ${v.x} stands 26 px in front of the bough it leads up to`);
+      assert.ok(low.x + low.width >= v.x + 20, `${seed}: the bough under the trunk at ${v.x} reaches it`);
+    }
+  }
+});

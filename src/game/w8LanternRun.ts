@@ -6,6 +6,7 @@
 import { glowPic } from './glow.ts';
 import { LANTERN_FRAMES, POKEY_JAR_FRAMES, type LanternFrame } from './w8LanternAtlas.ts';
 import type { StdFrame } from './heroStandardData.ts';
+import { TREE_CROWN, TREE_H } from './w8Lantern.ts';
 import { jarAt, LANTERN, lanternRadius, newLantern, setbackTo, stepLantern, takeoff, type LanternEvent, type LanternPlan, type LanternSetting, type LanternState } from './lantern.ts';
 
 /** how full the jar is as the stage starts: half, so the first flower (just ahead) fills it before anything can go wrong */
@@ -84,6 +85,8 @@ export class LanternRun {
   private stood: { x: number; y: number } = { x: 0, y: 0 };
   /** the swarm: seconds since he opened the jar under the firefly tree (-1: not yet) */
   swarm = -1;
+  /** where the jar was as he opened it (the swarm streams from there up into the tree) */
+  private swarmFrom = { x: 0, y: 0 };
   /** the flowers' fill bursts (flower id -> game seconds when it last filled the jar) */
   private burst = new Map<number, number>();
 
@@ -125,6 +128,7 @@ export class LanternRun {
     }
     if (p.x >= this.plan.swarmX && p.grounded) {
       this.swarm = 0;
+      this.swarmFrom = jarAt(p.x + p.facing * 12, p.y - 14);
       return 'swarm';
     }
     const ev = stepLantern(this.st, this.plan, this.set, dt, p.x, p.y, punch);
@@ -160,6 +164,13 @@ export class LanternRun {
 
   /** the glowing flowers (behind him): World 8's painted bloom, its glow, and the burst as it fills the jar */
   drawBack(ctx: CanvasRenderingContext2D, x0: number, x1: number, t: number): void {
+    // the firefly tree (Hugging Face, w8LanternAtlas.ts): standing on the last bough, its crown lit by the swarm at the end
+    const tree = this.plan.swarmTree;
+    const tp = pieces();
+    if (tp && tree.x > x0 - 600 && tree.x < x1 + 600) {
+      const f = LANTERN_FRAMES.tree;
+      blitPiece(ctx, tp, f, tree.x, tree.y + 24, TREE_H / f.h);
+    }
     const pic = bloom();
     for (const f of this.plan.flowers) {
       if (f.x < x0 - 300 || f.x > x1 + 300) continue;
@@ -232,16 +243,23 @@ export class LanternRun {
       ctx.drawImage(dust, m.x - cx - 14, m.y - cy - 14, 28, 28);
     }
     if (this.swarm >= 0) {
+      // (the fireflies stream out of the jar one after another, rise in a loose spiral and settle round the tree's crown, blinking)
       const fly = glowPic('#fef08a', 'fly');
       const tree = this.plan.swarmTree;
-      for (let k = 0; k < 90; k++) {
-        const u = Math.min(1, Math.max(0, (this.swarm - k * 0.015) / 2.5));
-        const a = k * 2.399 + t * (0.4 + (k % 7) * 0.05);
-        const rad = 40 + (k % 13) * 22;
-        const fx = tree.x + Math.cos(a) * rad * u - cx;
-        const fy = tree.y + 260 * (1 - u) + Math.sin(a * 1.2) * rad * 0.5 * u - cy;
-        ctx.globalAlpha = 0.8;
-        ctx.drawImage(fly, fx - 10, fy - 10, 20, 20);
+      const cy0 = tree.y - TREE_CROWN;
+      const from = this.swarmFrom;
+      for (let k = 0; k < 110; k++) {
+        const u0 = Math.min(1, Math.max(0, (this.swarm - k * 0.02) / 2.2));
+        const u = u0 * u0 * (3 - 2 * u0);
+        const a = k * 2.399 + t * (0.35 + (k % 7) * 0.05);
+        const rad = 30 + (k % 13) * 21;
+        const ox = tree.x + Math.cos(a) * rad, oy = cy0 + Math.sin(a * 1.2) * rad * 0.55;
+        const sx = from.x + (ox - from.x) * u + Math.sin(u * 9 + k) * 30 * (1 - u);
+        const sy = from.y + (oy - from.y) * u;
+        if (u0 <= 0) continue;
+        ctx.globalAlpha = 0.55 + 0.45 * Math.sin(t * (3 + (k % 5)) + k);
+        const sz = 14 + (k % 3) * 5;
+        ctx.drawImage(fly, sx - cx - sz / 2, sy - cy - sz / 2, sz, sz);
       }
     }
     ctx.restore();

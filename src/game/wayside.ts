@@ -178,11 +178,11 @@ export const WAYSIDE: Record<number, WorldWay> = {
   },
 
   // ── ACT III · THE IRON ROAD: Dot is back and hurt, then gone again ──
-  // 2 Night Blooms · 3 Long Swings · 4 Bat Roosts · 5 Next Branch · 6 Glide by Moonlight · 7 The Tallest Tree · 8 Night Hunters · 9 Monarch's Wood
+  // 2 Night Blooms · 3 Long Swings · 4 Lantern Run · 5 Next Branch · 6 Glide by Moonlight · 7 The Tallest Tree · 8 Night Hunters · 9 Monarch's Wood
   8: {
     stages: {
       2: dot('start', 'I had a joke saved for you in the mangrove. Three days of flying and it\'s gone. It had a bird in it.'),
-      4: pokey('start', 'Sneaking\'s the one thing I\'ve always done at full speed.'),
+      4: pokey('start', 'Brave as far as the jar reaches.'),
       5: pokey('start', 'I tell myself, "Next branch, then the one after." That\'s all a long way is.'),
       6: petal('half', 'Fireflies blink on along the branch ahead, one by one, like a lamp left lit just in case.'),
       7: pokey('near', 'I\'m climbing slowly so Dot can rest. Turns out I\'ve been training for this my whole life.'),

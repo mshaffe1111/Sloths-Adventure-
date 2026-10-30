@@ -448,7 +448,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.8.hurt1", "", "wayside", "story", "I'm not counting your scratches. I've got enough of my own.", "I'm not counting your scratches. I've got enough of my own.", null, null, null],
   ["way.8.hurt2", "", "wayside", "story", "One branch, then the next. You told me that. I'm telling you.", "One branch, then the next. You told me that. I'm telling you.", null, null, null],
   ["way.8-2", "8-2", "wayside", "story", "I had a joke saved for you in the mangrove. Three days of flying and it's gone. It had a bird in it.", "My saved joke's gone. It had a bird in it.", null, null, null],
-  ["way.8-4", "8-4", "wayside", "story", "Sneaking's the one thing I've always done at full speed.", "Sneaking's the one thing I've always done at full speed.", null, null, null],
+  ["way.8-4", "8-4", "wayside", "story", "Brave as far as the jar reaches.", "Brave as far as the jar reaches.", null, null, null],
   ["way.8-5", "8-5", "wayside", "story", "I tell myself, \"Next branch, then the one after.\" That's all a long way is.", "\"Next branch, then the one after.\"", null, null, null],
   ["way.8-6", "8-6", "wayside", "story", "Fireflies blink on along the branch ahead, one by one, like a lamp left lit just in case.", "Fireflies light the branch ahead, like a lamp left on for him.", null, null, null],
   ["way.8-7", "8-7", "wayside", "story", "I'm climbing slowly so Dot can rest. Turns out I've been training for this my whole life.", "Climbing slow so Dot can rest. Trained my whole life for this.", null, null, null],

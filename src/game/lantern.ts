@@ -67,6 +67,8 @@ export interface LanternGap {
   /** the far bough's top (the near one's is `y0`) */
   y0: number;
   y1: number;
+  /** a soft gap whatever the light (the stage's first hops) */
+  soft?: boolean;
 }
 
 export interface LanternPlan {
@@ -142,7 +144,7 @@ export function takeoff(plan: LanternPlan, set: LanternSetting, level: number, x
   if (!ahead.length) return null;
   const gap = ahead.sort((a, b) => Math.abs((dir >= 0 ? a.x0 : a.x1) - x) - Math.abs((dir >= 0 ? b.x0 : b.x1) - x))[0];
   const lip = dir >= 0 ? { x: gap.x1 + 10, y: gap.y1 } : { x: gap.x0 - 10, y: gap.y0 };
-  return { gap, lit: litAt(plan, set, level, jarAt(x, feet), lip.x, lip.y) };
+  return { gap, lit: !gap.soft && litAt(plan, set, level, jarAt(x, feet), lip.x, lip.y) };
 }
 
 export type LanternEvent = 'filled' | 'low' | 'empty' | 'setback' | 'stolen' | null;
