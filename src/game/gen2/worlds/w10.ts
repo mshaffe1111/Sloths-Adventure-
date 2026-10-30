@@ -5,7 +5,7 @@
  * Everything comes from the story (storyWorlds.ts W10, wayside.ts World 10): the Stormy Highlands begin where the trees stop, the rain
  * has nothing to hit but rock, a thousand steps go up to the Highland Fortress, and Dot has gone into the iron netting ahead of him. So
  * Pokey is alone again, and as in World 7 he teaches himself: every first-use line and every locked exit is his own short, dry thought
- * (W10_TIPS, under 10 words, approved by the lead); there is no Dot line in a World 10 stage (wayside.ts dotPresent).
+ * (W10_TIPS, under 10 words, approved by the lead 2026-10-29 7:54 PM ET); there is no Dot line in a World 10 stage (wayside.ts dotPresent).
  *   hazards     LIGHTNING on a beat (zones.ts 'bolt'): a rod charges, then the bolt strikes its column (SectionZone 'bolt'); IRON SPIKES
  *               in the floor of a pit (a gap rule's `spikes`: a heart on Normal, a plain soft pit on Easy); CRUMBLING RAMPARTS (the
  *               battlement slabs crumble under him: SectionPiece.crumble, World 7's tiles, never needed); WIND across the gaps between
@@ -148,9 +148,9 @@ export const W10_TIPS: Record<string, string> = {
   [W10_LESSON.storm]: 'Every flash lights the wall. And me.',
   [W10_LESSON.soldier]: "A soldier. The General's, by the coat.",
   [W10_LESSON.hunt]: "Gate's shut. The guards have to go.",
-  [W10_LESSON.fight]: "Shut tight. I'll fight my way through.",
-  [W10_LESSON.drop]: "Long way down. Let's not.",
-  water: "Long way down. Let's not.",
+  [W10_LESSON.fight]: 'Shut again. More guards, then.',
+  [W10_LESSON.drop]: 'No ledge under that one.',
+  water: 'No ledge under that one.',
 };
 export const W10_NEW_LINES: readonly string[] = [...new Set(Object.values(W10_TIPS))];
 
