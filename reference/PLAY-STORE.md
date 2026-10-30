@@ -31,15 +31,16 @@ is what Matt installs for the phone test (§7). The web side was checked here:
 | 1.1 | **Story skip under the Wi-Fi icon** (Matt's bug) | **FIXED, TO TEST** | The app now runs truly full screen (immersive). `MainActivity.java` hides the status and navigation bars on every screen. A swipe from the edge brings them back for a moment, then they hide again. With the bars gone, nothing covers the story's Skip button, the HUD or the menus. The page still gets the notch's insets, two ways: Capacitor's SystemBars plugin (`insetsHandling: 'css'` in `capacitor.config.ts`) sets `--safe-area-inset-*` CSS variables, and `env(safe-area-inset-*)` works on WebView 140+. | polish-a2 |
 | 1.2 | Insets in CSS | **ASKED** | polish-c was asked to read both, so older WebViews get the notch too: `max(env(safe-area-inset-top, 0px), var(--safe-area-inset-top, 0px))`, and the same for right, bottom and left. Every screen hides the bars, so no screen needs the bar insets. | polish-c |
 | 1.3 | Android project | **FIXED** | A real Capacitor project is committed in `android/`, with Capacitor pinned at 8.6.0 and `@capacitor/app` at 8.1.2. CI no longer runs `cap init` / `cap add` on every build; it only copies the game in (`npx cap sync android`). | polish-a2 |
-| 1.4 | App ID and name | **FIXED (Matt confirms)** | The ID is `com.mshaffe1111.slothadventure`, the same one the old APK used, so the new app installs over it. The name is "Sloths Rainforest Adventures". **The ID can never change after the first Play upload.** Matt: say now if you want a different one. | Matt |
+| 1.4 | App ID and name | **FIXED (placeholders)** | Placeholders for now (Matt isn't setting up the Play account yet): the ID `com.mshaffe1111.slothadventure`, the same one the old APK used, so the new app installs over it, and the name "Sloths Rainforest Adventures". Both can change freely until the first Play upload; after that the ID is fixed forever. To change them: `appId`/`appName` in `capacitor.config.ts`, `namespace`/`applicationId` in `android/app/build.gradle`, the Java package folder of `MainActivity.java`, and `res/values/strings.xml`. | Matt (before the first upload) |
 | 1.5 | Icon and splash | **FIXED (stand-in), FAIL (final art)** | `tools/android/make_icons.py` makes the adaptive launcher icons and the splash from Pokey's happy face (the hero sheet) on a rainforest-green circle. The splash is dark green with the icon. This is a stand-in: the face is 142 px, upscaled, so it's soft. Preview: `reference/prop-sheets/qa-notes/play-store/icon-512-standin.png`. The real icon needs painted art (the Gemini prompt is in §8). The old web icons (`public/pwa-*.png`, `apple-touch-icon.png`) aren't real icons either: they're crops of a title-screen screenshot. | Matt (art), polish-a2 (wiring it in) |
 | 1.6 | Orientation | **PASS, TO TEST** | Not locked: every stage plays upright and sideways (Matt's rule). The activity handles rotation and folding itself (`configChanges`), so turning the phone resizes the page without restarting the game. Android 16 ignores orientation locks on big screens anyway. | phone test |
-| 1.7 | Back button | **FIXED, TO TEST** | `App.tsx` listens for `@capacitor/app`'s `backButton` (in the app only). Back first closes any open window with an X: Save & Load, New Game, How to Play, the Trophy Room. Otherwise, by screen: <ul><li>in a stage: pause;</li><li>on the pause menu: resume;</li><li>on Stage Clear or Game Over: go to the map (or dismiss a new-skill card first);</li><li>on the map: go to the title;</li><li>on the title: put the app in the background (it doesn't close, and nothing is lost);</li><li>anywhere else, including a story: act as Escape (a story skips; the start menu closes).</li></ul> | polish-a2 |
-| 1.8 | Background and calls | **FIXED, TO TEST** | Going to the background (home, switching apps, locking the phone, answering a call) fires `@capacitor/app`'s `pause` event. A stage in play pauses, and the sound stops until the app is back. The app also holds Android's audio focus while it's in front, as games do. When a call rings, an alarm sounds or another app plays, `MainActivity.java` tells the page, and the game's sound stops until the focus comes back (`sound.appHidden`, `conductor.ts`). The page's own hidden-tab pause still works too. | polish-a2 |
-| 1.9 | Saves survive the app being killed | **PASS, TO TEST** | Progress is written to the WebView's storage at once, at each stage clear and each settings change. That storage lives in the app's data, so it survives kills, restarts and updates, and Android's backup covers it (`allowBackup`). A kill mid-stage loses only that run of the stage. | phone test |
+| 1.7 | Back button | **FIXED, TO TEST** | `App.tsx` listens for `@capacitor/app`'s `backButton` (in the app only). Back first closes any open window with an X: Save & Load, New Game, How to Play, the Trophy Room. Otherwise, by screen: <ul><li>in a stage: pause;</li><li>on the pause menu: resume;</li><li>on Stage Clear or Game Over: go to the map (or dismiss a new-skill card first);</li><li>on the map: go to the title;</li><li>on the title: ask "Leave the game?" (`LeaveDialog.tsx`: Keep playing / Leave; Back again or a tap outside keeps playing). The only place Back can close the app;</li><li>anywhere else, including a story: act as Escape (a story skips; the start menu closes).</li></ul> | polish-a2 |
+| 1.8 | Background and calls | **FIXED, TO TEST** | Going to the background (home, switching apps, locking the phone, answering a call) fires `@capacitor/app`'s `pause` event. A stage in play pauses, and the sound stops until the app is back. The app also holds Android's audio focus while it's in front, as games do. When a call rings, an alarm sounds or another app plays, `MainActivity.java` tells the page, and the game's sound stops until the focus comes back (`sound.appHidden`, `conductor.ts`). When another app only speaks for a moment (directions, a notification sound), the game ducks to a quarter of its volume and plays on (`sound.appDucked`). The page's own hidden-tab pause still works too. | polish-a2 |
+| 1.9 | Saves survive the app being killed | **PASS, TO TEST** | Progress is written to the WebView's storage at once, at each stage clear and each settings change. That storage lives in the app's data, so it survives kills, restarts and updates, and Android's backup covers it (`allowBackup`). | phone test |
+| 1.9b | Killed mid-stage: back at the last flag | **FIXED, TO TEST** | In the app, reaching a flag writes it (`flagResume.ts`); the next start of that same stage begins at that flag, with the flags before it counted, the iris opening on Pokey and "Back at your flag". Ending the stage the normal way (cleared, restarted, left for the map or title) forgets it, and so does a day passing. The app reopens at the title, as any app does after a kill; the player's next Play of that stage starts at the flag. Slides, Dot's flights and the rising tide keep their own flags and start over. | polish-a2 |
 | 1.10 | Screen stays on | **FIXED** | `FLAG_KEEP_SCREEN_ON` while the game is in front: a phone dimming mid-jump costs a life. | polish-a2 |
 | 1.11 | Vibration | **FIXED** | Added the `VIBRATE` permission. It's a normal permission: no prompt, and nothing to declare on the Data safety form. Without it, the Vibration setting did nothing in the app. | polish-a2 |
-| 1.12 | Web-only buttons in the app | **FIXED** | Hidden in the app: <ul><li>the full-screen button (`fullscreen.ts` treats the app as launched full screen);</li><li>"Save to file", since the WebView can't download ("Copy save code" stays);</li><li>the install prompt (it never fires in the app);</li><li>the update check and the service worker (§2).</li></ul> | polish-a2 |
+| 1.12 | Web-only buttons in the app | **FIXED** | Hidden in the app: <ul><li>the full-screen button (`fullscreen.ts` treats the app as launched full screen);</li><li>"Save to file" works differently: the WebView can't download, so the app writes the file and opens Android's share sheet (Drive, Files, email; `@capacitor/filesystem` and `@capacitor/share`). "Load from file" uses Android's file picker;</li><li>the install prompt (it never fires in the app);</li><li>the update check and the service worker (§2).</li></ul> | polish-a2 |
 | 1.13 | Release bundle (.aab), signed | **FIXED (needs Matt's secrets)** | When the four secrets in §3 exist, the workflow builds a signed `bundleRelease`. Until then it skips that step, stays green and leaves a note. The keystore is never in the repo: CI writes it from a secret into the runner's temp folder and deletes it afterwards. | Matt (secrets) |
 | 1.14 | Version code / name | **FIXED** | The versionCode is the workflow's run number, which always grows (Play refuses a code it has already seen). The versionName is the tag (`v1.0.0`), or `1.0.<run>` without one. | polish-a2 |
 | 1.15 | Target / min API | **PASS** | Target and compile API 36, Play's rule since 2026-08-31. Min API 24 (Android 7.0). There are no native libraries, so the 64-bit and 16 KB page rules are met. | polish-a2 |
@@ -58,9 +59,17 @@ Matt wants nothing trackable. The store build is `npm run build:store`, which se
 | 2.4 | Network calls | **PASS** | The store build contains no web addresses except SVG/XML name tags, which are names and never fetched. Fonts, art and sound all ship inside the app, so the only loading is of the game's own files. |
 | 2.5 | **The test that keeps it out** | **FIXED** | `tools/store/checkStoreBuild.mjs` reads every built file and fails if it finds: <ul><li>the collector (`script.google.com`, its key, or `sendBeacon`);</li><li>any analytics, ad or crash-reporting kit by name: Google Analytics, Tag Manager, Firebase, AdMob, DoubleClick, Facebook, Sentry, Mixpanel, Amplitude, Segment, Hotjar, Clarity, PostHog, Bugsnag, Unity Ads, AppLovin;</li><li>a service worker or manifest file;</li><li>any web address that isn't an SVG/XML name tag.</li></ul> `npm run build:store` runs it. The Android workflow runs it too, along with `tools/store/checkStoreBuild.test.ts` (with `STORE_DIST=dist`), before packing the app. So a tracker in the build fails the run, and no APK or AAB gets made. Checked here: the store build passes, and the normal web build fails with 11 hits (the collector, the beacon, the service worker), as it should. |
 | 2.6 | Data safety form | **Matt** | With 2.1-2.5 in place, the answer is **No data collected, no data shared.** Saves stay on the phone. |
-| 2.7 | Privacy policy page | **FAIL** | Required for every app, kids' apps included. A short public page saying: no personal data is collected, saves stay on the device, no ads, no third parties, plus a contact email. Owner: web (Matt approves the text). |
+| 2.7 | Privacy policy page | **FIXED (Matt approves the text)** | `public/privacy.html`, hosted with the game (the live site's `/privacy.html`, which is the URL for the Play Console) and inside the app. It says no data is collected, saves stay on the device, no ads, no third parties, no internet, and explains the web-only test link. Contact: it points at the Play listing's email until Matt picks one. |
 
-## 3. Signing: what Matt sets up (once)
+## 3. Matt's later steps (when he sets up Play), short
+
+1. Pick the app ID and name (1.4) before the first upload.
+2. Make the upload key and add the four GitHub secrets (below). The next workflow run then makes the signed `.aab` by itself.
+3. Play Console: developer account (4.9), payments profile and price (4.1-4.5), target audience and content rating (5.1, 5.2), Data
+   safety "no data collected" (2.6), the privacy URL (2.7), the store listing art and text (5.4-5.8).
+4. Upload the `.aab` to a closed test, accept Play App Signing, run the phone test (§7) on the Play-installed copy.
+
+## 3b. Signing: making the upload key (once)
 
 1. Make the upload key on any computer with Java:
    ```
@@ -110,13 +119,16 @@ Matt wants nothing trackable. The store build is `npm run build:store`, which se
 | 5.6 | Phone screenshots (2-8) and tablet ones | **FAIL** | Clean shots with no debug overlays: sideways at 1920x1080 and upright at 1080x1920. | web |
 | 5.7 | Short (80 characters) and full (4000) descriptions | **FAIL** | For example: "Swing, climb and glide through the rainforest with Pokey the sloth." (66 characters). | Matt approves |
 | 5.8 | Category, contact email, website | **FAIL (5 min)** | Games → Adventure; Matt's support email; the live site. | Matt |
-| 5.9 | Unused packages | **tidy** | `@google/genai`, `express` and `dotenv` are in package.json but not in the build. | web |
+| 5.9 | Unused packages | **PASS** | `@google/genai`, `express` and `dotenv` are already gone from package.json. | - |
 
 ## 6. Proof on Android
 
 - **In this container:** no emulator and no Android SDK, because dl.google.com is blocked here (403). Gradle can't fetch Google's
   Android plugin, so nothing Android was compiled here.
-- **In CI:** the workflow on `polish-a2` builds the store game and runs the tracking check. Then it builds the debug APK
+- **In CI: green.** Run 17 on `polish-a2` built the store game, passed the tracking check, compiled the native code and made the
+  debug APK (105 MB); the signed bundle step skipped cleanly (no secrets yet). Run 16 had failed on a versionCode typo in
+  `build.gradle`, fixed.
+- **How it works:** the workflow on `polish-a2` builds the store game and runs the tracking check. Then it builds the debug APK
   (`assembleDebug`) for installing by hand, and, once the secrets are set, the signed bundle (`bundleRelease`). The run's result and
   the APK link go to the lead with this report. If the native code fails to compile, that run is where it shows first.
 
@@ -127,13 +139,16 @@ Matt wants nothing trackable. The store build is `npm run build:store`, which se
 2. **Pause:** in a stage, tap pause, then resume. Press **Back**: it pauses. Press Back again: it resumes.
 3. **Game Over:** lose all your hearts. Continue should work, and Back should go to the map.
 4. **Menus:** from the title, open the Menu, Save & Load, How to Play, the Trophy Room and the world map. Back should close each one, or
-   go up one screen. Back on the title puts the game away; open it again and it should be where you left it.
+   go up one screen. Back on the title asks "Leave the game?": Keep playing stays, Leave closes it.
 5. **Background and calls:**
    - Mid-stage, press Home, then come back: the stage should be paused and silent until you resume.
    - Play music in another app, then open the game: the music should stop and the game's music should play.
    - Have someone call you mid-stage: the game should go silent while the phone rings.
+   - With map directions talking (or a notification sound), the game should get quieter for a moment, not stop.
 6. **Saves:** clear a stage, then swipe the app away from recent apps (this kills it). Open it again: the stage should still be
-   cleared, and your settings kept.
+   cleared, and your settings kept. Then start a stage, touch its first flag, and swipe the app away. Open it and play that stage:
+   Pokey should start at the flag ("Back at your flag").
+   In Save & Load, "Save to file" should open the share sheet (save it to Drive or Files), and "Load from file" should load it back.
 7. **Orientation:** turn the phone in a stage, on the map and in a story. Everything should fit both ways, with nothing under the notch
    or the camera hole.
 8. **Foldable (if you have one):** play folded, then unfold mid-stage, then fold it back. The game should resize and keep going.

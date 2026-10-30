@@ -34,7 +34,28 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
     }
   })();
 
+  // the Android app: the WebView cannot download, so the file is written to the app's cache and handed to the share sheet
+  // (Drive, Files, email, a message), which is where a phone keeps a file anyway
+  const doShareFile = async () => {
+    try {
+      const name = saveFileName();
+      const text = JSON.stringify(buildSave(browserStore()), null, 2);
+      const [{ Filesystem, Directory, Encoding }, { Share }] = await Promise.all([import('@capacitor/filesystem'), import('@capacitor/share')]);
+      const { uri } = await Filesystem.writeFile({ path: name, data: text, directory: Directory.Cache, encoding: Encoding.UTF8 });
+      await Share.share({ title: 'Sloths Rainforest Adventures save', files: [uri], dialogTitle: 'Keep your save file' });
+      setNote({ kind: 'ok', text: `Made ${name}. Keep it somewhere safe.` });
+    } catch (e) {
+      // closing the share sheet without picking anything is not a failure
+      if (/cancel/i.test(String((e as { message?: string })?.message ?? e))) return;
+      setNote({ kind: 'bad', text: 'Could not make the file here. Try "Copy save code" instead.' });
+    }
+  };
+
   const doDownload = () => {
+    if (nativeApp()) {
+      void doShareFile();
+      return;
+    }
     try {
       const save = buildSave(browserStore());
       const blob = new Blob([JSON.stringify(save, null, 2)], { type: 'application/json' });
@@ -136,12 +157,9 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
               Saves every stage result, the stories you have seen and your sound settings into one small file. You can load it later, or on another device.
             </p>
             <div className="ui-row">
-              {/* (the Android app's WebView cannot download a file, so the app keeps the save code only) */}
-              {!nativeApp() && (
-                <button type="button" className="ui-btn ui-btn-gold" onClick={doDownload}>
-                  Save to file
-                </button>
-              )}
+              <button type="button" className="ui-btn ui-btn-gold" onClick={doDownload}>
+                Save to file
+              </button>
               <button type="button" className="ui-btn ui-btn-green" onClick={doCopy}>
                 Copy save code
               </button>
