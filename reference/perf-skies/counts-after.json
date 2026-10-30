@@ -1,0 +1,730 @@
+[
+ {
+  "id": "1-2",
+  "world": 1,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas3010x1484 src 811x1484 -> 802x1467 (x0.99,0.99)",
+    "canvas3010x1484 src 3010x44 -> 2975x297 (x0.99,6.69)",
+    "canvas1843x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas1843x982 src 1843x29 -> 1843x439 (x1.00,14.93)",
+    "canvas1910x1031 src 432x1031 -> 432x1031 (x1.00,1.00)",
+    "canvas1910x1031 src 1910x31 -> 1910x366 (x1.00,11.85)",
+    "canvas1910x1031 src 371x1031 -> 371x1031 (x1.00,1.00)",
+    "canvas1910x1031 src 1910x31 -> 1910x366 (x1.00,11.85)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.53,
+   "fillScreens": 1
+  },
+  "ms": 11.88,
+  "view": "up"
+ },
+ {
+  "id": "2-2",
+  "world": 2,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas2390x1585 src 801x1387 -> 801x1387 (x1.00,1.00)",
+    "canvas2390x1585 src 2390x35 -> 2390x378 (x1.00,10.70)",
+    "canvas1992x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas1992x982 src 1992x29 -> 1992x439 (x1.00,14.93)",
+    "canvas2030x1031 src 552x1031 -> 552x1031 (x1.00,1.00)",
+    "canvas2030x1031 src 2030x31 -> 2030x366 (x1.00,11.85)",
+    "canvas2030x1031 src 251x1031 -> 251x1031 (x1.00,1.00)",
+    "canvas2030x1031 src 2030x31 -> 2030x366 (x1.00,11.85)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.61,
+   "fillScreens": 1
+  },
+  "ms": 8.86,
+  "view": "up"
+ },
+ {
+  "id": "3-2",
+  "world": 3,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas2390x1585 src 801x1387 -> 801x1387 (x1.00,1.00)",
+    "canvas2390x1585 src 2390x35 -> 2390x378 (x1.00,10.70)",
+    "canvas1805x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas1805x982 src 1805x29 -> 1805x439 (x1.00,14.93)",
+    "canvas1902x1031 src 424x1031 -> 424x1031 (x1.00,1.00)",
+    "canvas1902x1031 src 1902x31 -> 1902x366 (x1.00,11.85)",
+    "canvas1902x1031 src 379x1031 -> 379x1031 (x1.00,1.00)",
+    "canvas1902x1031 src 1902x31 -> 1902x366 (x1.00,11.85)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.48,
+   "fillScreens": 1
+  },
+  "ms": 11.26,
+  "view": "up"
+ },
+ {
+  "id": "4-2",
+  "world": 4,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 14,
+   "fills": 1,
+   "clip": 0,
+   "save": 1,
+   "comp": {
+    "source-over": 15
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas2390x1585 src 801x1387 -> 801x1387 (x1.00,1.00)",
+    "canvas2390x1585 src 2390x35 -> 2390x378 (x1.00,10.70)",
+    "canvas1843x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas1843x982 src 1843x29 -> 1843x439 (x1.00,14.93)",
+    "canvas1935x1031 src 457x1031 -> 457x1031 (x1.00,1.00)",
+    "canvas1935x1031 src 1935x31 -> 1935x366 (x1.00,11.85)",
+    "canvas1935x1031 src 346x1031 -> 346x1031 (x1.00,1.00)",
+    "canvas1935x1031 src 1935x31 -> 1935x366 (x1.00,11.85)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 5.6,
+   "fillScreens": 1
+  },
+  "ms": 14.45,
+  "view": "up"
+ },
+ {
+  "id": "5-2",
+  "world": 5,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas2390x1585 src 801x1387 -> 801x1387 (x1.00,1.00)",
+    "canvas2390x1585 src 2390x35 -> 2390x378 (x1.00,10.70)",
+    "canvas1852x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas1852x982 src 1852x29 -> 1852x439 (x1.00,14.93)",
+    "canvas2092x1031 src 614x1031 -> 614x1031 (x1.00,1.00)",
+    "canvas2092x1031 src 2092x31 -> 2092x366 (x1.00,11.85)",
+    "canvas2092x1031 src 189x1031 -> 189x1031 (x1.00,1.00)",
+    "canvas2092x1031 src 2092x31 -> 2092x366 (x1.00,11.85)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.6,
+   "fillScreens": 1
+  },
+  "ms": 11.6,
+  "view": "up"
+ },
+ {
+  "id": "6-2",
+  "world": 6,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas3010x1484 src 811x1484 -> 802x1467 (x0.99,0.99)",
+    "canvas3010x1484 src 3010x44 -> 2975x297 (x0.99,6.69)",
+    "canvas1823x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas1823x982 src 1823x29 -> 1823x439 (x1.00,14.93)",
+    "canvas1915x1031 src 437x1031 -> 437x1031 (x1.00,1.00)",
+    "canvas1915x1031 src 1915x31 -> 1915x366 (x1.00,11.85)",
+    "canvas1915x1031 src 366x1031 -> 366x1031 (x1.00,1.00)",
+    "canvas1915x1031 src 1915x31 -> 1915x366 (x1.00,11.85)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.53,
+   "fillScreens": 1
+  },
+  "ms": 13.12,
+  "view": "up"
+ },
+ {
+  "id": "7-2",
+  "world": 7,
+  "vw": 440,
+  "vh": 968,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 7,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 8
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas3010x1484 src 821x1484 -> 802x1450 (x0.98,0.98)",
+    "canvas3010x1484 src 3010x44 -> 2941x314 (x0.98,7.07)",
+    "canvas1808x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas1808x982 src 1808x29 -> 1808x471 (x1.00,16.01)",
+    "canvas3441x1805 src 801x1574 -> 801x1574 (x1.00,1.00)",
+    "canvas3441x1805 src 3441x54 -> 3441x191 (x1.00,3.53)",
+    "canvas160x160 src 160x160 -> 672x691 (x4.20,4.32)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.34,
+   "fillScreens": 1
+  },
+  "ms": 12.09,
+  "view": "up"
+ },
+ {
+  "id": "8-2",
+  "world": 8,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas2390x1585 src 801x1387 -> 801x1387 (x1.00,1.00)",
+    "canvas2390x1585 src 2390x35 -> 2390x378 (x1.00,10.70)",
+    "canvas2415x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas2415x982 src 2415x29 -> 2415x439 (x1.00,14.93)",
+    "canvas2091x1031 src 613x1031 -> 613x1031 (x1.00,1.00)",
+    "canvas2091x1031 src 2091x31 -> 2091x366 (x1.00,11.85)",
+    "canvas2091x1031 src 190x1031 -> 190x1031 (x1.00,1.00)",
+    "canvas2091x1031 src 2091x31 -> 2091x366 (x1.00,11.85)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.77,
+   "fillScreens": 1
+  },
+  "ms": 9.13,
+  "view": "up"
+ },
+ {
+  "id": "9-2",
+  "world": 9,
+  "vw": 440,
+  "vh": 968,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas2390x1585 src 801x1374 -> 801x1374 (x1.00,1.00)",
+    "canvas2390x1585 src 2390x35 -> 2390x390 (x1.00,11.06)",
+    "canvas2020x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas2020x982 src 2020x29 -> 2020x471 (x1.00,16.01)",
+    "canvas2091x1031 src 716x1031 -> 716x1031 (x1.00,1.00)",
+    "canvas2091x1031 src 2091x31 -> 2091x407 (x1.00,13.17)",
+    "canvas2091x1031 src 86x1031 -> 86x1031 (x1.00,1.00)",
+    "canvas2091x1031 src 2091x31 -> 2091x407 (x1.00,13.17)",
+    "canvas160x160 src 160x160 -> 672x691 (x4.20,4.32)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.8,
+   "fillScreens": 1
+  },
+  "ms": 9.37,
+  "view": "up"
+ },
+ {
+  "id": "10-2",
+  "world": 10,
+  "vw": 440,
+  "vh": 968,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1987x1585 src 801x1374 -> 801x1374 (x1.00,1.00)",
+    "canvas1987x1585 src 1987x35 -> 1987x390 (x1.00,11.06)",
+    "canvas1820x982 src 801x982 -> 801x982 (x1.00,1.00)",
+    "canvas1820x982 src 1820x29 -> 1820x471 (x1.00,16.01)",
+    "canvas1911x1031 src 536x1031 -> 536x1031 (x1.00,1.00)",
+    "canvas1911x1031 src 1911x31 -> 1911x407 (x1.00,13.17)",
+    "canvas1911x1031 src 266x1031 -> 266x1031 (x1.00,1.00)",
+    "canvas1911x1031 src 1911x31 -> 1911x407 (x1.00,13.17)",
+    "canvas160x160 src 160x160 -> 672x691 (x4.20,4.32)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 4.52,
+   "fillScreens": 1
+  },
+  "ms": 9.44,
+  "view": "up"
+ },
+ {
+  "id": "1-2",
+  "world": 1,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1948x960 src 1760x746 -> 1760x746 (x1.00,1.00)",
+    "canvas1948x960 src 1948x29 -> 1948x57 (x1.00,1.98)",
+    "canvas1502x800 src 969x704 -> 969x704 (x1.00,1.00)",
+    "canvas1502x800 src 1502x24 -> 1502x99 (x1.00,4.13)",
+    "canvas1502x800 src 793x704 -> 793x704 (x1.00,1.00)",
+    "canvas1502x800 src 1502x24 -> 1502x99 (x1.00,4.13)",
+    "canvas1557x840 src 437x730 -> 437x730 (x1.00,1.00)",
+    "canvas1557x840 src 1557x25 -> 1557x73 (x1.00,2.90)",
+    "canvas1557x840 src 1325x730 -> 1325x730 (x1.00,1.00)",
+    "canvas1557x840 src 1557x25 -> 1557x73 (x1.00,2.90)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 2,
+   "drawScreens": 3.6,
+   "fillScreens": 1
+  },
+  "ms": 8.69,
+  "view": "side"
+ },
+ {
+  "id": "2-2",
+  "world": 2,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1948x960 src 1760x746 -> 1760x746 (x1.00,1.00)",
+    "canvas1948x960 src 1948x29 -> 1948x57 (x1.00,1.98)",
+    "canvas1624x800 src 1091x704 -> 1091x704 (x1.00,1.00)",
+    "canvas1624x800 src 1624x24 -> 1624x99 (x1.00,4.13)",
+    "canvas1624x800 src 671x704 -> 671x704 (x1.00,1.00)",
+    "canvas1624x800 src 1624x24 -> 1624x99 (x1.00,4.13)",
+    "canvas1654x840 src 534x730 -> 534x730 (x1.00,1.00)",
+    "canvas1654x840 src 1654x25 -> 1654x73 (x1.00,2.90)",
+    "canvas1654x840 src 1227x730 -> 1227x730 (x1.00,1.00)",
+    "canvas1654x840 src 1654x25 -> 1654x73 (x1.00,2.90)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 2,
+   "drawScreens": 3.63,
+   "fillScreens": 1
+  },
+  "ms": 9.36,
+  "view": "side"
+ },
+ {
+  "id": "3-2",
+  "world": 3,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1948x960 src 1760x746 -> 1760x746 (x1.00,1.00)",
+    "canvas1948x960 src 1948x29 -> 1948x57 (x1.00,1.98)",
+    "canvas1471x800 src 938x704 -> 938x704 (x1.00,1.00)",
+    "canvas1471x800 src 1471x24 -> 1471x99 (x1.00,4.13)",
+    "canvas1471x800 src 824x704 -> 824x704 (x1.00,1.00)",
+    "canvas1471x800 src 1471x24 -> 1471x99 (x1.00,4.13)",
+    "canvas1550x840 src 430x730 -> 430x730 (x1.00,1.00)",
+    "canvas1550x840 src 1550x25 -> 1550x73 (x1.00,2.90)",
+    "canvas1550x840 src 1332x730 -> 1332x730 (x1.00,1.00)",
+    "canvas1550x840 src 1550x25 -> 1550x73 (x1.00,2.90)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 2,
+   "drawScreens": 3.6,
+   "fillScreens": 1
+  },
+  "ms": 8.68,
+  "view": "side"
+ },
+ {
+  "id": "4-2",
+  "world": 4,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 16,
+   "fills": 1,
+   "clip": 0,
+   "save": 1,
+   "comp": {
+    "source-over": 17
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1948x960 src 1760x746 -> 1760x746 (x1.00,1.00)",
+    "canvas1948x960 src 1948x29 -> 1948x57 (x1.00,1.98)",
+    "canvas1502x800 src 969x704 -> 969x704 (x1.00,1.00)",
+    "canvas1502x800 src 1502x24 -> 1502x99 (x1.00,4.13)",
+    "canvas1502x800 src 793x704 -> 793x704 (x1.00,1.00)",
+    "canvas1502x800 src 1502x24 -> 1502x99 (x1.00,4.13)",
+    "canvas1577x840 src 457x730 -> 457x730 (x1.00,1.00)",
+    "canvas1577x840 src 1577x25 -> 1577x73 (x1.00,2.90)",
+    "canvas1577x840 src 1305x730 -> 1305x730 (x1.00,1.00)",
+    "canvas1577x840 src 1577x25 -> 1577x73 (x1.00,2.90)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 2,
+   "drawScreens": 4.7,
+   "fillScreens": 1
+  },
+  "ms": 13.68,
+  "view": "side"
+ },
+ {
+  "id": "5-2",
+  "world": 5,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1948x960 src 1760x746 -> 1760x746 (x1.00,1.00)",
+    "canvas1948x960 src 1948x29 -> 1948x57 (x1.00,1.98)",
+    "canvas1509x800 src 976x704 -> 976x704 (x1.00,1.00)",
+    "canvas1509x800 src 1509x24 -> 1509x99 (x1.00,4.13)",
+    "canvas1509x800 src 785x704 -> 785x704 (x1.00,1.00)",
+    "canvas1509x800 src 1509x24 -> 1509x99 (x1.00,4.13)",
+    "canvas1705x840 src 585x730 -> 585x730 (x1.00,1.00)",
+    "canvas1705x840 src 1705x25 -> 1705x73 (x1.00,2.90)",
+    "canvas1705x840 src 1177x730 -> 1177x730 (x1.00,1.00)",
+    "canvas1705x840 src 1705x25 -> 1705x73 (x1.00,2.90)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 2,
+   "drawScreens": 3.62,
+   "fillScreens": 1
+  },
+  "ms": 8.64,
+  "view": "side"
+ },
+ {
+  "id": "6-2",
+  "world": 6,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1948x960 src 1760x746 -> 1760x746 (x1.00,1.00)",
+    "canvas1948x960 src 1948x29 -> 1948x57 (x1.00,1.98)",
+    "canvas1486x800 src 953x704 -> 953x704 (x1.00,1.00)",
+    "canvas1486x800 src 1486x24 -> 1486x99 (x1.00,4.13)",
+    "canvas1486x800 src 809x704 -> 809x704 (x1.00,1.00)",
+    "canvas1486x800 src 1486x24 -> 1486x99 (x1.00,4.13)",
+    "canvas1561x840 src 441x730 -> 441x730 (x1.00,1.00)",
+    "canvas1561x840 src 1561x25 -> 1561x73 (x1.00,2.90)",
+    "canvas1561x840 src 1321x730 -> 1321x730 (x1.00,1.00)",
+    "canvas1561x840 src 1561x25 -> 1561x73 (x1.00,2.90)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 2,
+   "drawScreens": 3.6,
+   "fillScreens": 1
+  },
+  "ms": 8.83,
+  "view": "side"
+ },
+ {
+  "id": "7-2",
+  "world": 7,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1948x960 src 1760x739 -> 1760x739 (x1.00,1.00)",
+    "canvas1948x960 src 1948x29 -> 1948x64 (x1.00,2.22)",
+    "canvas1474x800 src 941x685 -> 941x685 (x1.00,1.00)",
+    "canvas1474x800 src 1474x24 -> 1474x118 (x1.00,4.92)",
+    "canvas1474x800 src 821x685 -> 821x685 (x1.00,1.00)",
+    "canvas1474x800 src 1474x24 -> 1474x118 (x1.00,4.92)",
+    "canvas2804x1470 src 1684x800 -> 1684x800 (x1.00,1.00)",
+    "canvas2804x1470 src 77x800 -> 77x800 (x1.00,1.00)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 3,
+   "drawScreens": 3.54,
+   "fillScreens": 1
+  },
+  "ms": 10.27,
+  "view": "side"
+ },
+ {
+  "id": "8-2",
+  "world": 8,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1947x960 src 1760x746 -> 1760x746 (x1.00,1.00)",
+    "canvas1947x960 src 1947x29 -> 1947x57 (x1.00,1.98)",
+    "canvas1968x800 src 1435x704 -> 1435x704 (x1.00,1.00)",
+    "canvas1968x800 src 1968x24 -> 1968x99 (x1.00,4.13)",
+    "canvas1968x800 src 327x704 -> 327x704 (x1.00,1.00)",
+    "canvas1968x800 src 1968x24 -> 1968x99 (x1.00,4.13)",
+    "canvas1704x840 src 584x730 -> 584x730 (x1.00,1.00)",
+    "canvas1704x840 src 1704x25 -> 1704x73 (x1.00,2.90)",
+    "canvas1704x840 src 1177x730 -> 1177x730 (x1.00,1.00)",
+    "canvas1704x840 src 1704x25 -> 1704x73 (x1.00,2.90)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 2,
+   "drawScreens": 3.69,
+   "fillScreens": 1
+  },
+  "ms": 9.09,
+  "view": "side"
+ },
+ {
+  "id": "9-2",
+  "world": 9,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1947x960 src 1760x739 -> 1760x739 (x1.00,1.00)",
+    "canvas1947x960 src 1947x29 -> 1947x64 (x1.00,2.22)",
+    "canvas1646x800 src 1113x685 -> 1113x685 (x1.00,1.00)",
+    "canvas1646x800 src 1646x24 -> 1646x118 (x1.00,4.92)",
+    "canvas1646x800 src 648x685 -> 648x685 (x1.00,1.00)",
+    "canvas1646x800 src 1646x24 -> 1646x118 (x1.00,4.92)",
+    "canvas1704x840 src 584x706 -> 584x706 (x1.00,1.00)",
+    "canvas1704x840 src 1704x25 -> 1704x97 (x1.00,3.85)",
+    "canvas1704x840 src 1177x706 -> 1177x706 (x1.00,1.00)",
+    "canvas1704x840 src 1704x25 -> 1704x97 (x1.00,3.85)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 2,
+   "drawScreens": 3.69,
+   "fillScreens": 1
+  },
+  "ms": 9.32,
+  "view": "side"
+ },
+ {
+  "id": "10-2",
+  "world": 10,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 13,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 14
+   },
+   "smoothHigh": 0,
+   "scaled": [
+    "canvas1619x960 src 1486x739 -> 1486x739 (x1.00,1.00)",
+    "canvas1619x960 src 1619x29 -> 1619x64 (x1.00,2.22)",
+    "canvas1619x960 src 276x739 -> 276x739 (x1.00,1.00)",
+    "canvas1619x960 src 1619x29 -> 1619x64 (x1.00,2.22)",
+    "canvas1484x800 src 951x685 -> 951x685 (x1.00,1.00)",
+    "canvas1484x800 src 1484x24 -> 1484x118 (x1.00,4.92)",
+    "canvas1484x800 src 811x685 -> 811x685 (x1.00,1.00)",
+    "canvas1484x800 src 1484x24 -> 1484x118 (x1.00,4.92)",
+    "canvas1558x840 src 438x706 -> 438x706 (x1.00,1.00)",
+    "canvas1558x840 src 1558x25 -> 1558x97 (x1.00,3.85)",
+    "canvas1558x840 src 1324x706 -> 1324x706 (x1.00,1.00)",
+    "canvas1558x840 src 1558x25 -> 1558x97 (x1.00,3.85)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 1,
+   "drawScreens": 3.7,
+   "fillScreens": 1
+  },
+  "ms": 10.71,
+  "view": "side"
+ }
+]

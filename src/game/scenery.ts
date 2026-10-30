@@ -1760,7 +1760,7 @@ const grown = (world: number, part: keyof typeof STRIP_FIT, s: number) => s * (S
  * (scripts/strip-seamless.py: the right edge crossfaded into the left), so every copy is drawn the same way round: no mirrored
  * twins (polish report VI-4). A far strip with its painted sky `above` has it drawn above when there is room (upright), as wide as
  * the strip and at the same scale: its bottom SKY_OVERLAP of the strip's height lies over the strip's top and fades into it. */
-function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, above: Layer | null = null) {
+function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, above: Layer | null = null, fitS = s) {
   const pl = stripTop(part, vh, s, yOff);
   const dh = pl.dh;
   const iw = layerWpx(img);
@@ -1768,6 +1768,10 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
   const pitch = tileW(img) * s * STRIP_FIT[part].k;
   const k = devScale(ctx);
   const top = snapDev(pl.top, k);
+  if (bakeScale >= 1 && img instanceof HTMLImageElement) {
+    drawFitted(ctx, img, part, par, camX, vw, vh, s, Math.max(s, fitS), top, dh, pitch, k, above && top > 0 ? above : null);
+    return;
+  }
   // the sky, when the strip leaves room above it (upright): its rows at the strip's own scale
   const sh = above && top > 0 ? skyRows(above, img, dh) : 0;
   const skyTop = top + dh * SKY_OVERLAP - sh;
@@ -1794,6 +1798,93 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
   }
 }
 
+/**
+ * A painted strip resampled ONCE to the size it is drawn at, in device pixels, with its painted sky above it when it has one
+ * (PERFORMANCE-RULES §2.1, §2.6, §2.8). The engine draws with imageSmoothingQuality 'high', and the full-size strips were resampled with
+ * that filter every frame: the far strip enlarged 1.15x upright, the near one shrunk to 0.6x, the bottom bands stretched up to 12x,
+ * about ten screens of filtered pixels a frame. Resampled here once with the same filter, each copy is stamped pixel for pixel. Kept per
+ * picture, two sizes each (upright and sideways; the quality governor stepping down makes a new one), and only in gameplay: menus and
+ * story scenes, baked small, draw the strips as before.
+ */
+interface Fitted {
+  key: string;
+  cv: HTMLCanvasElement;
+  /** the device row of the canvas where the strip's own top sits (its sky, if any, is above it) */
+  oy: number;
+  /** the strip's height in device pixels (fractional, as it was drawn) */
+  d: number;
+  /** the first whole row of the sky, carried on up to the top of the view on a screen taller than it */
+  sky0: number;
+}
+const fits = new WeakMap<Layer, Fitted[]>();
+function fitted(img: HTMLImageElement, sky: Layer | null, pitch: number, dh: number, k: number): Fitted {
+  const bw = Math.ceil(pitch * k) + 1;
+  const d = dh * k;
+  const sh = sky ? skyRows(sky, img, dh) * k : 0;
+  const key = `${bw}|${d.toFixed(3)}|${sh.toFixed(3)}`;
+  const list = fits.get(img) ?? [];
+  const hit = list.find((f) => f.key === key);
+  if (hit) return hit;
+  const skyY = d * SKY_OVERLAP - sh;
+  const oy = sky ? Math.ceil(-skyY) : 0;
+  const cv = document.createElement('canvas');
+  cv.width = bw;
+  cv.height = oy + Math.ceil(d);
+  const c = cv.getContext('2d')!;
+  c.imageSmoothingEnabled = true;
+  c.imageSmoothingQuality = 'high';
+  // (the same two draws drawStrip made every frame, in the same order: the strip, then its sky fading into its top)
+  c.drawImage(img, 0, 0, layerWpx(img), layerH(img), 0, oy, bw, d);
+  if (sky) c.drawImage(sky, 0, 0, layerWpx(sky), layerH(sky), 0, oy + skyY, bw, sh);
+  const f: Fitted = { key, cv, oy, d, sky0: sky ? Math.ceil(oy + skyY) : 0 };
+  // (the oldest size goes: its pixels are freed now, not whenever the collector gets to them)
+  if (list.length >= 2) list.shift()!.cv.width = 0;
+  list.push(f);
+  fits.set(img, list);
+  return f;
+}
+
+/**
+ * drawStrip with the strip fitted to its drawn size: one stamp a copy, at whole device pixels, with plain smoothing (it is not
+ * resized). `fitS` is the scale it is fitted at, the most it is ever drawn at: only a far strip with no painted sky changes size with the
+ * climb (farScale), and it is drawn that little (at most 2%) smaller from its largest fit.
+ */
+function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, fitS: number, top: number, dh: number, pitch: number, k: number, sky: Layer | null) {
+  const r = fitS > s ? s / fitS : 1;
+  // (worked out from fitS itself, never as pitch / r: a size that came out a hair different each frame would be fitted again each frame)
+  const f = fitted(img, sky, tileW(img) * fitS * STRIP_FIT[part].k, H * fitS * STRIP_FIT[part].k, k);
+  const cv = f.cv;
+  const bw = cv.width;
+  const ih = layerH(img);
+  const q = ctx.imageSmoothingQuality;
+  ctx.imageSmoothingQuality = 'low';
+  // the top of the canvas on screen, in device pixels (whole: `top` is snapped, `oy` a whole row)
+  const y0 = Math.round(top * k) - f.oy * r;
+  const sh = sky ? skyRows(sky, img, dh) : 0;
+  const skyTop = top + dh * SKY_OVERLAP - sh;
+  const gap = vh - (top + dh);
+  const rows = Math.max(1, Math.round(ih * 0.03)) * (f.d / ih);
+  const W = Math.ceil(vw * k);
+  const Hd = Math.ceil(vh * k);
+  let x0 = -((camX * par) % pitch);
+  if (x0 > 0) x0 -= pitch;
+  for (let x = x0; x < vw; x += pitch) {
+    const px = snapDev(x, k);
+    const dx = Math.round(px * k);
+    // just the part of the copy that is on screen (whole rows and columns of the canvas: at r 1 each lands on a whole device pixel)
+    const sx = Math.max(0, Math.floor(-dx / r));
+    const sw = Math.min(bw, Math.ceil((W - dx) / r)) - sx;
+    const sy = Math.max(0, Math.floor(-y0 / r));
+    const sh2 = Math.min(cv.height, Math.ceil((Hd - y0) / r)) - sy;
+    if (sw > 0 && sh2 > 0) ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0 + sy * r) / k, (sw * r) / k, (sh2 * r) / k);
+    // (a screen taller than any phone: the sky's top row carries on up to the edge)
+    if (sky && skyTop > 0) ctx.drawImage(cv, 0, f.sky0, bw, 1, px, 0, (bw * r) / k, skyTop + 1 / k);
+    // the strip's last rows carry on down to the bottom of the view (up a climb the camera is in the air: drawStrip)
+    if (gap > 0) ctx.drawImage(cv, 0, f.oy + f.d - rows, bw, rows, px, top + dh - 1 / k, (bw * r) / k, gap + 2);
+  }
+  ctx.imageSmoothingQuality = q;
+}
+
 /** how strong the haze is over the far, hill and mid layers (top of the veil is a fifth of this) */
 const HAZE_FAR = 0.09;
 const HAZE_HILLS = 0.07;
@@ -1813,16 +1904,50 @@ function bakeHaze(cv: HTMLCanvasElement, col: string, a: number) {
   if (c) veil(c, col, a, cv.width, cv.height);
 }
 
+/** the drawn sky's gradient and its sun's glow, made once per look and view size (PERFORMANCE-RULES §2.3: they were made every frame) */
+const skyGradCache = new WeakMap<Look, { key: string; sky: CanvasGradient; glow: CanvasGradient | null }>();
+function skyGrads(ctx: CanvasRenderingContext2D, look: Look, vw: number, vh: number): { sky: CanvasGradient; glow: CanvasGradient | null } {
+  const key = `${vw}x${vh}`;
+  const hit = skyGradCache.get(look);
+  if (hit && hit.key === key) return hit;
+  const sky = ctx.createLinearGradient(0, 0, 0, vh);
+  sky.addColorStop(0, look.sky[0]);
+  sky.addColorStop(0.4, look.sky[1]);
+  sky.addColorStop(0.72, look.sky[2]);
+  sky.addColorStop(1, look.sky[3]);
+  let glow: CanvasGradient | null = null;
+  if (look.sun) {
+    const sx = vw * look.sun.x;
+    const sy = vh * look.sun.y;
+    const R = look.sun.r * (vh / H);
+    glow = ctx.createRadialGradient(sx, sy, R * 0.5, sx, sy, R * 7);
+    glow.addColorStop(0, rgba(look.sun.glow, 0.7));
+    glow.addColorStop(0.35, rgba(look.sun.glow, 0.22));
+    glow.addColorStop(1, rgba(look.sun.glow, 0));
+  }
+  const g = { key, sky, glow };
+  skyGradCache.set(look, g);
+  return g;
+}
+
+/** the golden light over the ruins at the top of a reveal (6-8), made once per view height and faded with globalAlpha */
+let goldGrad: { vh: number; g: CanvasGradient } | null = null;
+function goldLight(ctx: CanvasRenderingContext2D, vh: number): CanvasGradient {
+  if (goldGrad && goldGrad.vh === vh) return goldGrad.g;
+  const g = ctx.createLinearGradient(0, 0, 0, vh);
+  g.addColorStop(0, 'rgba(255, 196, 110, 0.3)');
+  g.addColorStop(0.6, 'rgba(255, 170, 80, 0.16)');
+  g.addColorStop(1, 'rgba(255, 170, 80, 0)');
+  goldGrad = { vh, g };
+  return g;
+}
+
 export function renderSky(ctx: CanvasRenderingContext2D, world: number, vw: number, vh: number, time: number, camX: number) {
   const look = lookFor(world);
   const set = ensure(world);
   const s = vh / H;
-  const g = ctx.createLinearGradient(0, 0, 0, vh);
-  g.addColorStop(0, look.sky[0]);
-  g.addColorStop(0.4, look.sky[1]);
-  g.addColorStop(0.72, look.sky[2]);
-  g.addColorStop(1, look.sky[3]);
-  ctx.fillStyle = g;
+  const grads = skyGrads(ctx, look, vw, vh);
+  ctx.fillStyle = grads.sky;
   ctx.fillRect(0, 0, vw, vh);
 
   if (look.stars) {
@@ -1841,11 +1966,7 @@ export function renderSky(ctx: CanvasRenderingContext2D, world: number, vw: numb
     const sx = vw * look.sun.x;
     const sy = vh * look.sun.y;
     const R = look.sun.r * s;
-    const glow = ctx.createRadialGradient(sx, sy, R * 0.5, sx, sy, R * 7);
-    glow.addColorStop(0, rgba(look.sun.glow, 0.7));
-    glow.addColorStop(0.35, rgba(look.sun.glow, 0.22));
-    glow.addColorStop(1, rgba(look.sun.glow, 0));
-    ctx.fillStyle = glow;
+    ctx.fillStyle = grads.glow!;
     ctx.fillRect(0, 0, vw, vh);
     ctx.fillStyle = rgba(look.sun.glow, 0.35);
     ctx.beginPath();
@@ -1899,7 +2020,10 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   // a painted world's far strip is opaque and covers the view from its top edge (or its painted sky's top) down, so once it has faded in,
   // the drawn sky shows only above that edge: it is drawn there alone, or not at all (a full-screen gradient, the sun's full-screen glow
   // and the clouds every frame: PF-1)
-  const skyTo = set.painted && fadeIn(set.at) >= 1 ? Math.min(vh, Math.ceil(farCoverTop(set.far, set.sky, vh, ps, yo * 0.3)) + 1) : vh;
+  // A painted sky's top row is carried up to the top of the view (drawStrip), and a far strip with none is drawn large enough to reach it
+  // (farScale), both opaque: once the strip has faded in, nothing of the drawn sky shows (it was still drawn, a row deep, under them).
+  const cover = set.painted && fadeIn(set.at) >= 1 ? (set.sky ? 0 : farCoverTop(set.far, set.sky, vh, ps, yo * 0.3)) : vh;
+  const skyTo = Math.round(cover * devScale(ctx)) <= 0 ? 0 : Math.min(vh, Math.ceil(cover) + 1);
   if (skyTo >= vh) renderSky(ctx, world, vw, vh, time, camX);
   else if (skyTo > 0) {
     ctx.save();
@@ -1919,12 +2043,14 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     // (the stand-in sky is a plain gradient: it still fills the whole view, at the view's own scale)
     if (fa < 1) drawStrip(ctx, waitingSky(look), 'far', 0.05, camX, vw, vh, s, yo * 0.3);
     ctx.globalAlpha = fa;
-    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null);
+    // (a far strip with no painted sky grows a little as the view climbs, farScale: it is fitted once at the most it grows to)
+    const farMax = 0.3 * 30 * ps;
+    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, farScale(set.sky, vh, ps, yo * 0.3), yo * 0.3, set.sky ?? null, farScale(set.sky, vh, ps, farMax));
     const rv = revealK > 0.01 && revealStrips ? revealStrips : null;
     const rk = rv ? revealK : 0;
     if (rv) {
       ctx.globalAlpha = rk;
-      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, farScale(rv.sky, vh, ps, yo * 0.3), yo * 0.3, rv.sky);
+      drawStrip(ctx, rv.far, 'far', 0.05, camX, vw, vh, farScale(rv.sky, vh, ps, yo * 0.3), yo * 0.3, rv.sky, farScale(rv.sky, vh, ps, farMax));
       ctx.globalAlpha = 1;
     }
     // high in the trees the middle and near strips fade over to the canopy ones (setCanopy: 1-8's branch, the top of 1-4's climb)
@@ -1952,12 +2078,10 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     ctx.fillRect(0, 0, vw, vh);
     if (rv) {
       // golden light from the low sun over the ruins
-      const g = ctx.createLinearGradient(0, 0, 0, vh);
-      g.addColorStop(0, `rgba(255, 196, 110, ${0.3 * rk})`);
-      g.addColorStop(0.6, `rgba(255, 170, 80, ${0.16 * rk})`);
-      g.addColorStop(1, 'rgba(255, 170, 80, 0)');
-      ctx.fillStyle = g;
+      ctx.globalAlpha = rk;
+      ctx.fillStyle = goldLight(ctx, vh);
       ctx.fillRect(0, 0, vw, vh);
+      ctx.globalAlpha = 1;
     }
     mistDrift(ctx, look, vw, vh, time);
     lanePool(ctx, look, world, vw, vh);
