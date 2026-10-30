@@ -23,6 +23,17 @@ from seams import postfilter  # noqa: E402
 STRIP = re.compile(r'(^|[-_/])(far|mid|near|sky|strip|backdrop)([-_.]|$)|w\dc-|sunrise|kapok|rapids|evening|cavern|sinkhole|terraces|-mist|dawn|dusk|twi\d|gold\d', re.I)
 
 # (owner, family, test on the finding) in order: the first that matches wins
+# code colours and functions looked at by hand (crops, 2026-10-29): what they draw and whose it is
+MANUAL = [
+    ('hf-art-stage', 'Hazards drawn in code (spikes and thorn shards that hurt Pokey)', r'#12101a|#2a2830'),
+    ('hf-art-stage', 'Stand-in stage pieces drawn in code (World 7 stone blocks and boards, tablets)', r'#5a4630|#c7b895|#342c22|#8a7a64'),
+    ('hf-art-stage', 'Pit water drawn in code (World 2: flat teal rects and gradient paths)', r'#264247|code gradient path|flat area under code path grad:lin|repeating pixels in code path grad:lin'),
+    ('hf-art-ground', 'Dressing drawn in code (stick plants, flower stems and leaves, sand blobs, slabs, logs, mushroom domes, root arches)',
+     r'#251a18|#2c2222|#442f1e|#6a4a30|#ff5a5a|#ffd23a|#ff8a2a|#ff9ad0|#63647b|#706640|#577370|#655341|#355654|#282018|#655441'),
+    ('hf-art-ground', 'Ground drawn in code: pit insides, flat bands under the soil, ground outlines', r'#30312c|#060f19|#040f16|#07141d|#0a0505|#4a2a10|#3b1f0c|#14100a|#331c0f|#16242c'),
+    ('hf-art-ground', 'Platforms drawn in code (thin ledges and slabs: platformSprites)', r'drawThin|spriteFor'),
+]
+
 RULES = [
     ('polish-edges', 'Backdrop strips: edges, halos, key colour, joins', lambda f, c, n: bool(STRIP.search(n)) and f['kind'] in ('fringe', 'key', 'line', 'repeat', 'style')),
     ('hazard-anim', 'Repeating effects drawn in code (lightning, rain, sparks, dust)', lambda f, c, n: f['kind'] == 'shape' and re.search(r'#ffffff|lightning|bolt|rain|spark|dust|grit', c, re.I) and f['sub'] in ('code line', 'dashed line')),
@@ -30,7 +41,7 @@ RULES = [
     ('hf-art-stage', 'Water pieces (joins, repeats, blow-up)', lambda f, c, n: re.search(r'water|lanePool|poolPic|poolSprite|drawRiver', n + c, re.I) is not None),
     ('hf-art-ground', 'Ground drawn in code: soil, caps, strata, roots, columns, shafts', lambda f, c, n: re.search(r'paint(Soil|Strata|GrassCap|MossCap|ReedCap|AshCap|RuinCap|StoneCap|Roots|Overhang|Lip|Bank|Slab|Blocks)|tileCanvas|drawColumn|shaftPattern|groundTiles|getSoil|soil|drawSoil|blobField|drawEnd|drawBankArt|seamlessBank|drawGroundBody|maskedFill', c + n, re.I) is not None),
     ('hf-art-ground', 'Ground outline strokes and fills drawn in code', lambda f, c, n: f['kind'] in ('shape', 'line') and re.search(r'#3b1f0c|#14100a|#331c0f|#291b10|#24170c|#282018|#655441|#2d302d|#0d0a12|code rect grad:lin', c) is not None),
-    ('hf-art-ground', 'Ground and dressing pieces: tile joins, repeats, cut edges, floating dressing', lambda f, c, n: re.search(r'^w\d+(-props|-kit)?\.webp|props\d?-atlas|dress|flowers-atlas|plants-atlas|w\d+-ground|soil|lip', n) is not None and f['kind'] in ('line', 'repeat', 'float', 'style', 'shape')),
+    ('hf-art-ground', 'Ground and dressing pieces: tile joins, repeats, cut edges, floating dressing', lambda f, c, n: re.search(r'^w\d+(-props|-kit|-water)?\.webp|props\d?-atlas|dress|flowers-atlas|plants-atlas|w\d+-ground|soil|lip|bounce|crumble', n) is not None and f['kind'] in ('line', 'repeat', 'float', 'style', 'shape')),
 ]
 
 
@@ -41,7 +52,10 @@ SKIP = re.compile(r'renderSwayLeaves')
 def owner_of(f):
     c = f.get('cause', '')
     n = (f.get('piece') or {}).get('n') or ''
-    n = re.sub(r'-[A-Za-z0-9_]{8}\.(webp|png)$', r'.\1', n)
+    n = re.sub(r'-[A-Za-z0-9_-]{8}\.(webp|png)$', r'.\1', n)
+    for own, fam, pat in MANUAL:
+        if re.search(pat, c):
+            return own, fam
     for own, fam, test in RULES:
         try:
             if test(f, c, n):

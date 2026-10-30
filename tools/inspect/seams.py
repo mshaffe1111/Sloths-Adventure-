@@ -21,6 +21,8 @@ What it flags (kind: what):
             dashed line, a large smooth gradient blob, or a flat area of one colour the log cannot explain
   float     a prop with a flat, solid base drawn with empty space between its base and the ground under it (colliders from the stage)
   hud       a HUD element or text cut off by the screen's edges, or text on top of other text
+  bg        no painted backdrop in the frame: a flat stand-in sky (walk.mjs also checks the first 3 s of every stage: start.json)
+  clutter   more than 6 pickups on one screen (walk.mjs also counts the most anywhere in the stage: start.json)
 
 Outputs, in WALKDIR: seams.json (every finding), seams.md (by cause, with counts per stage), and per stage and orientation
 finds/*.jpg (a crop of each finding, the spot boxed) and sheet.jpg (the contact sheet of the walk, findings marked).
@@ -702,6 +704,31 @@ def find_floating(meta, assets):
     return out
 
 
+def find_bands(L, x0, y0, x1, y1, px=1.0):
+    """horizontal bands repeating down a fill (a soil texture tiling top to bottom with a visible join): the row brightness, with
+    its slow change taken out, correlating with itself every P px. Returns (period px, strength 0-1, amplitude) or None.
+    px: picture pixels per CSS pixel."""
+    reg = L[int(y0):int(y1), int(x0):int(x1)]
+    if reg.shape[0] < 120 * px or reg.shape[1] < 60 * px:
+        return None
+    prof = np.median(reg, axis=1).astype(np.float64)
+    k = int(90 * px) | 1
+    slow = np.convolve(np.pad(prof, k // 2, mode='edge'), np.ones(k) / k, mode='valid')
+    r = prof - slow
+    amp = float(r.std())
+    if amp < 2.0:
+        return None
+    r = (r - r.mean()) / (r.std() + 1e-6)
+    best = None
+    for lag in range(int(30 * px), min(int(220 * px), len(r) // 2)):
+        c = float((r[:-lag] * r[lag:]).mean())
+        if best is None or c > best[1]:
+            best = (lag, c)
+    if best and best[1] > 0.45:
+        return (round(best[0] / px), round(best[1], 2), round(amp, 1))
+    return None
+
+
 def find_hud(meta):
     out = []
     for h in meta.get('hud', []):
@@ -744,6 +771,45 @@ def _boxes(f):
     return f.get('boxes') or ([f['box']] if 'box' in f else [])
 
 
+# surfaces where a straight line is a fault: the world kits' soil and stone sheets (w3.webp, w6-water.webp...), ground drawn by code
+SURFACE = re.compile(r'^w\d+[a-z]?(-water|-ground|-soil)?(-[A-Za-z0-9_-]{8})?\.webp$|^code (rect|poly)|^pattern |paint(Soil|Strata|GrassCap|MossCap|StoneCap|Roots|Overhang|Slab|Blocks)|tileCanvas|drawColumn|shaftPattern|drawSoil|blobField|drawEnd|drawGroundBody|maskedFill|drawBankArt')
+
+
+def wanted(f):
+    """what the hand check (2026-10-29, 40 random findings) showed is drawn on purpose, left out:
+    - a line inside a prop, plant, rope, web or creature (its own outline or a painted stroke): lines count on surfaces only;
+    - a dark ring round a cut-out (the painted outline; the strips' old dark edge, VI-1, was fixed by polish-edges);
+    - halos on creatures (warning glows, rim light);
+    - a flat area under a code gradient (fog, sky, the shade of a pit), under a picture, or a dark one (pit shade); a black rect
+      (a lair's letterbox);
+    - floating for big tiles and waterfalls (they hang or fill on purpose)."""
+    piece = (f.get('piece') or {}).get('n') or ''
+    name = short(piece) if piece else ''
+    cause = f.get('cause', '')
+    if f['kind'] == 'line':
+        src = name or re.sub(r'^(pattern )', 'pattern ', cause)
+        if not (SURFACE.search(name) or SURFACE.search(cause)):
+            return False
+    if f['kind'] == 'fringe' and (f['sub'] == 'dark ring' or ACTOR.search(piece)):
+        return False
+    if f['kind'] == 'shape' and f['sub'] == 'flat area':
+        col = f.get('colour')
+        if 'grad' in cause or 'cache[' in cause or '.webp' in cause:
+            return False
+        if col and len(col) == 7:
+            r, g, b = (int(col[i:i + 2], 16) for i in (1, 3, 5))
+            if 0.299 * r + 0.587 * g + 0.114 * b < 45:
+                return False
+    # (black: a boss lair's letterbox and dark ground, drawn black on purpose)
+    if f['kind'] == 'shape' and f['sub'] == 'flat rect' and cause.endswith('#000000'):
+        return False
+    if f['kind'] == 'float':
+        sr = (f.get('piece') or {}).get('s') or [0, 0, 0, 0]
+        if 'falls' in name or sr[2] >= 512:
+            return False
+    return True
+
+
 def postfilter(fs):
     """drops what reads as drawn on purpose: the joints of a block wall (thin dark lines or steps that meet another line at a
     corner or a T, so they outline blocks: mortar, not seams) and flat areas under no piece at all (a smooth sky).
@@ -764,6 +830,8 @@ def postfilter(fs):
 
     out = []
     for f in fs:
+        if not wanted(f):
+            continue
         if f['kind'] == 'shape' and f['sub'] == 'flat area' and f['cause'].endswith('under unknown'):
             continue
         if f['kind'] == 'line' and ('dark line' in f['sub'] or 'step' in f['sub']):
@@ -812,6 +880,11 @@ def frame_finds(job):
         fs += find_floating(meta, assets)
     if 'hud' in kinds:
         fs += find_hud(meta)
+    # no painted backdrop in the frame (a flat stand-in sky) and more than six pickups on one screen (the lead, 2026-10-29)
+    if 'bg' in kinds and meta.get('backdrop') is False and w['id'] not in ('4-D',):
+        fs.append({'kind': 'bg', 'sub': 'flat background', 'conf': 'edge', 'box': [0, 0, W, H // 2], 'cause': 'no painted backdrop in the frame'})
+    if 'clutter' in kinds and meta.get('pickups', 0) > 6:
+        fs.append({'kind': 'clutter', 'sub': 'pickup clutter', 'conf': 'edge', 'box': [0, 0, W, H], 'cause': 'more than 6 pickups on one screen', 'pickups': meta['pickups']})
     fs = postfilter(fs)
     # one finding per cause in a frame: its spots under it, the biggest one shown
     groups = defaultdict(list)
@@ -965,7 +1038,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('walk')
     ap.add_argument('--stages')
-    ap.add_argument('--kinds', default='line,fringe,key,repeat,style,shape,float,hud')
+    ap.add_argument('--kinds', default='line,fringe,key,repeat,style,shape,float,hud,bg,clutter')
     ap.add_argument('--no-crops', action='store_true')
     ap.add_argument('--one', help='only this walk dir (WALKDIR/<stage>/<orient>); the report is not rewritten')
     ap.add_argument('--report-only', action='store_true', help='rebuild seams.md/json from each walk\'s seams.json')
@@ -1009,7 +1082,7 @@ def write_report(root, walks, allf):
     per = defaultdict(lambda: defaultdict(int))
     for f in allf:
         per[f"{f['stage']} {f['orient']}"][f['kind']] += 1
-    kinds = ['line', 'fringe', 'key', 'repeat', 'style', 'shape', 'float', 'hud']
+    kinds = ['line', 'fringe', 'key', 'repeat', 'style', 'shape', 'float', 'hud', 'bg', 'clutter']
     L = ['# Stage walk: findings by cause', '',
          f"{len(walks)} walks, {sum(len(w['frames']) for w in walks)} frames, {len(allf)} findings, {len(causes)} causes.", '',
          '## Count per stage', '', '| stage | ' + ' | '.join(kinds) + ' | all |', '|---|' + '---|' * (len(kinds) + 1)]

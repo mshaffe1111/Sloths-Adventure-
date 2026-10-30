@@ -40,6 +40,7 @@ const arg = (k, d) => {
   return i < 0 ? d : process.argv[i + 1];
 };
 const flag = (k) => process.argv.includes('--' + k);
+// (--start-only: just the first 3 s of each stage and the pickup count, no walk and no detector)
 
 const OUT = arg('out', '/tmp/walk');
 const SEED = +arg('seed', '1');
@@ -225,7 +226,7 @@ const grab = () => {
     }
   return {
     png: e.canvas.toDataURL('image/png'),
-    meta: { W, H, s, dpr, zoom: e.zoom, cam: { x: cam.x, y: cam.y, vw: cam.viewportWidth, vh: cam.viewportHeight }, player: { x: e.player.x, y: e.player.y, ...Object.fromEntries([toC(e.player.x, e.player.y)].map(([a, b]) => [['cx', a], ['cy', b]]).flat()) }, gameTime: e.gameTime, plats, draws, hud, cssW: innerWidth, cssH: innerHeight },
+    meta: { pickups: e.collectibles.filter((c) => !c.collected && ['fruit', 'flower', 'leaf', 'seed', 'heart', 'super_heart', 'powerup_speed', 'powerup_invincible', 'powerup_magnet', 'relic', 'find'].includes(c.type)).filter((c) => c.x > cam.x && c.x < cam.x + cam.viewportWidth / e.zoom && c.y > cam.y && c.y < cam.y + cam.viewportHeight / e.zoom).length, backdrop: log.some((d) => d.k === 'img' && !d.w && d.b && d.b[2] - d.b[0] >= 0.6 * W), W, H, s, dpr, zoom: e.zoom, cam: { x: cam.x, y: cam.y, vw: cam.viewportWidth, vh: cam.viewportHeight }, player: { x: e.player.x, y: e.player.y, ...Object.fromEntries([toC(e.player.x, e.player.y)].map(([a, b]) => [['cx', a], ['cy', b]]).flat()) }, gameTime: e.gameTime, plats, draws, hud, cssW: innerWidth, cssH: innerHeight },
   };
 };
 
@@ -276,6 +277,40 @@ function pathFrom(stage) {
   return { pts, how };
 }
 
+/** in the page: draw one frame with the log on and say whether a painted backdrop covers the view */
+const backdropNow = () => {
+  const e = window.__weng();
+  window.__wmain = e.canvas;
+  window.__wcam = [e.camera.x, e.camera.y];
+  Object.assign(e.ctx, { __clip: null, __ws: [], __w: false });
+  window.__wlog = [];
+  try {
+    e.render();
+  } catch {}
+  const log = window.__wlog;
+  window.__wlog = null;
+  const W = e.canvas.width;
+  // a backdrop strip: a picture drawn outside the world, across most of the view
+  const strips = log.filter((d) => d.k === 'img' && !d.w && d.b && d.b[2] - d.b[0] >= 0.6 * W && d.b[2] > 0 && d.b[0] < W);
+  return { backdrop: strips.length > 0, strips: [...new Set(strips.map((d) => d.n))].slice(0, 6) };
+};
+
+/** the most pickups in one screen anywhere along the stage (a window the size of the view slid over every pickup) */
+const PICKUP = new Set(['fruit', 'flower', 'leaf', 'seed', 'heart', 'super_heart', 'powerup_speed', 'powerup_invincible', 'powerup_magnet', 'relic', 'find']);
+function clutter(stage, vw, vh) {
+  const ps = (stage.collectibles || []).filter((c) => PICKUP.has(c.type) && !c.collected);
+  let best = { max: 0, x: 0, y: 0 };
+  for (const a of ps) {
+    // windows with a pickup on their left edge, at a few heights round it
+    for (const dy of [-0.8, -0.5, -0.2]) {
+      const x0 = a.x, y0 = a.y + dy * vh;
+      const n = ps.filter((c) => c.x >= x0 && c.x <= x0 + vw && c.y >= y0 && c.y <= y0 + vh).length;
+      if (n > best.max) best = { max: n, x: Math.round(x0), y: Math.round(y0) };
+    }
+  }
+  return { ...best, total: ps.length };
+}
+
 // ─── one stage, one way up ───
 async function walkOne(id, orient) {
   const [w, h] = SIZES[orient];
@@ -293,6 +328,18 @@ async function walkOne(id, orient) {
   await page.waitForFunction(() => typeof window.__play === 'function', null, { timeout: 30000 });
   await page.evaluate(([id, seed]) => window.__play(id, seed), [id, SEED]);
   await page.waitForFunction(() => window.__weng && window.__weng() && window.__weng().currentStage, null, { timeout: 30000 });
+  // the first seconds, as the player sees them: is the painted backdrop there yet, or a flat stand-in? (the lead, 2026-10-29:
+  // a flat background in any frame fails, above all at the start)
+  mkdirSync(dir, { recursive: true });
+  const start = [];
+  const tStart = Date.now();
+  for (const at of [0.2, 0.6, 1.2, 2.0, 3.0]) {
+    const wait = at * 1000 - (Date.now() - tStart);
+    if (wait > 0) await page.waitForTimeout(wait);
+    const r = await page.evaluate(backdropNow);
+    await page.screenshot({ path: join(dir, `start-${at.toFixed(1)}.jpg`), type: 'jpeg', quality: 70, scale: 'css' });
+    start.push({ at, ...r });
+  }
   await page.waitForLoadState('networkidle').catch(() => {});
   await page.waitForTimeout(2500);
   // the goal card goes to its counter on a timer or on the first touch; a walk does not wait on either
@@ -309,6 +356,14 @@ async function walkOne(id, orient) {
   }
   const info = await page.evaluate(freeze);
   const stage = JSON.parse(info.json);
+  const view = await page.evaluate(() => ({ vw: window.__weng().camera.viewportWidth / window.__weng().zoom, vh: window.__weng().camera.viewportHeight / window.__weng().zoom }));
+  const pickups = clutter(stage, view.vw, view.vh);
+  writeFileSync(join(dir, 'start.json'), JSON.stringify({ id, orient, start, pickups, view }, null, 1));
+  if (flag('start-only')) {
+    await ctx.close();
+    console.log(`${id} ${orient}: backdrop at ${start.map((s) => (s.backdrop ? 'Y' : 'n')).join('')} (0.2-3 s), pickups max ${pickups.max} on one screen`);
+    return;
+  }
   const kind = kindOf(id);
   let pts = [], how = kind;
   if (kind === 'route') ({ pts, how } = pathFrom(stage));
@@ -389,7 +444,7 @@ await Promise.all(Array.from({ length: Math.min(JOBS, queue.length) }, async () 
     const [id, o] = queue.shift();
     try {
       await walkOne(id, o);
-      if (!flag('no-detect')) {
+      if (!flag('no-detect') && !flag('start-only')) {
         // the detector on this walk straight away, then the canvas pictures go (about 1.5 GB a world otherwise)
         const dir = join(OUT, id, o);
         await new Promise((res) => execFile('python3', [join(HERE, 'seams.py'), OUT, '--one', dir, '--procs', String(DPROCS)], { maxBuffer: 1 << 26 }, (err, _o, e) => {
@@ -409,4 +464,4 @@ await browser.close();
 server.kill();
 if (failed.length) writeFileSync(join(OUT, 'failed.txt'), failed.join('\n') + '\n');
 
-if (!flag('no-detect')) execFileSync('python3', [join(HERE, 'seams.py'), OUT, '--report-only'], { stdio: 'inherit' });
+if (!flag('no-detect') && !flag('start-only')) execFileSync('python3', [join(HERE, 'seams.py'), OUT, '--report-only'], { stdio: 'inherit' });
