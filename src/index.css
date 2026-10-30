@@ -1499,3 +1499,25 @@
    being cut: text is never cut off on a phone */
 .map-title.long { font-size: clamp(16px, 2.4vh + 4px, 22px); }
 .map-title.long > span { white-space: normal; overflow: visible; text-overflow: clip; text-align: center; line-height: 1.1; }
+
+/* the title on every phone shape (polish-c, Matt's foldable): the corner tag gives way before the round buttons do (a 344 px cover
+   screen pushed the full-screen button off its edge), the credit line keeps room under it for its links' tap areas (they reach 10 px
+   past the words), and a short upright phone (an SE) gives the sloths' stage less height so the credit line stays on screen */
+.gx2-top-r { flex: none; }
+.gx2-tag { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gx2-credit { padding-bottom: 10px; }
+@media (orientation: portrait) and (max-height: 700px) {
+  .gx2-stage { min-height: 14vh; }
+  .gx2-logo { margin-top: 0; }
+  .gx2-carve { --lw: min(84vw, 360px); }
+  .gx2-post { margin: 0.5vh 0 1vh; }
+}
+/* (upright, the one column never grows past the screen inside its edges: the carved name at 96 vw was wider than that on a 344 px
+   cover screen and pushed the round buttons off its right side) */
+@media (orientation: portrait) {
+  .gx2-ui { grid-template-columns: minmax(0, 1fr); }
+  .gx2-carve { --lw: min(calc(100vw - 32px), 430px); }
+}
+@media (orientation: portrait) and (max-height: 700px) {
+  .gx2-carve { --lw: min(84vw, 360px); }
+}

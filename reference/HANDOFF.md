@@ -198,6 +198,7 @@ npx vite --port=4301 --host=127.0.0.1 --strictPort      # dev server
 npx tsc --noEmit -p .                                     # type check
 npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts   # what CI runs
 npx vite build                                            # what the deploy runs; no file in dist/assets may exceed 4 MiB
+npm run test:fit                                          # with the dev server up: every screen at every phone shape, system bars simulated (tools/qa/fit.mjs; any card cut off or button under a bar fails)
 npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer   # stage inspector + kid/adult bots + the first-timer bot (pre-QA pass, §6)
 npx tsx --test tools/inspect/*.test.ts                    # the inspector's own tests (not in CI)
 ```
