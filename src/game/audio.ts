@@ -7,7 +7,7 @@
  *   sfx.ts         layered sound effects
  *   stingers.ts    short written fanfares
  *   ambience.ts    the sound of each world
- *   speech.ts      dialogue blips for the story
+ *   voice.ts       the story's voices: each character's babble (voiceLine.ts says when a syllable is due)
  */
 import { Conductor, type SceneOptions } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
@@ -129,8 +129,13 @@ class SoundEngine {
   dotChirp() {
     this.c.dotChirp();
   }
-  speak(speaker: string, ch: string, index: number) {
-    this.c.speak(speaker, ch, index);
+  /** letter `index` of a story line has appeared: its speaker's voice says a syllable when one is due */
+  speak(speaker: string, text: string, index: number) {
+    this.c.speak(speaker, text, index);
+  }
+  /** fetch the voices of these speakers (a story's cast, as it opens) */
+  warmVoices(speakers: Iterable<string>) {
+    this.c.warmVoices(speakers);
   }
 
   // ------------------------------------------------------------------ the old API (same names, new sounds)

@@ -12,7 +12,8 @@ import { AudioCore } from './core.ts';
 import { Playback, type KeyInfo } from './music.ts';
 import { SFX, runFx } from './sfx.ts';
 import { playRec, recFor, recForPuzzle, type Surface } from './sfxRec.ts';
-import { speechBlip } from './speech.ts';
+import { loadVoices, playSyllable } from './voice.ts';
+import { Speech, voiceOf } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { themeById } from './themes.ts';
 import { CALM, type MusicState } from './adaptive.ts';
@@ -376,21 +377,43 @@ export class Conductor {
     return dur;
   }
 
-  speak(speaker: string, ch: string, index: number) {
+  /** the voices of a story's speakers, fetched as the story opens (a voice not yet arrived is silent) */
+  warmVoices(speakers: Iterable<string>) {
     const core = this.core;
-    if (!core || this.muted || core.ctx.state !== 'running') return;
-    this.speechDip();
-    speechBlip(core, speaker, ch, index);
+    if (!core) return;
+    const slugs = new Set<string>();
+    for (const s of speakers) {
+      const v = voiceOf(s);
+      if (v) slugs.add(v.slug);
+    }
+    void loadVoices(core, slugs);
   }
 
-  /** a soft chirp from Dot as her bubble opens, once per line (SN-7: her lines in play had no sound at all) */
+  private speech = new Speech();
+  /** letter `index` of a story line has just appeared: its speaker's voice says a syllable if one is due (voiceLine.ts) */
+  speak(speaker: string, text: string, index: number) {
+    const core = this.core;
+    if (!core || this.muted || core.ctx.state !== 'running') return;
+    const v = voiceOf(speaker);
+    if (!v) return;
+    void loadVoices(core, [v.slug]);
+    const now = core.ctx.currentTime;
+    const due = this.speech.next(speaker, text, index, now);
+    if (due && playSyllable(core, due.slug, due.syl) > 0) {
+      this.speech.played(text, index, now);
+      this.speechDip();
+    }
+  }
+
+  /** a soft chirp from Dot as her bubble opens, once per line (SN-7: her lines in play had no sound at all): two of her syllables, "chirrup" */
   dotChirp() {
     const core = this.core;
     if (!core || this.muted || core.ctx.state !== 'running') return;
-    // (two of her blips, a hop apart: "chirrup")
-    speechBlip(core, 'Dot', 'd', 0);
-    window.setTimeout(() => this.core && speechBlip(this.core, 'Dot', 'o', 2), 70);
-    this.speechDip(0.5);
+    void loadVoices(core, ['dot']);
+    if (playSyllable(core, 'dot', { take: 0, semis: 0, db: -3 }) > 0) {
+      window.setTimeout(() => this.core && playSyllable(this.core, 'dot', { take: 2, semis: 2, db: -4 }), 80);
+      this.speechDip(0.5);
+    }
   }
 
   /**

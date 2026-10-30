@@ -1,0 +1,48 @@
+/** written by tools/audio/voices/synth.py: each voice's takes (in src/assets/voices/<slug>.mp3), the shortest gap between two syllables
+ *  (ms), a syllable every `every` letters, and how fast its lines type (ms a letter) */
+export interface VoiceSpec { takes: number; gap: number; every: number; type: number }
+export const VOICES: Readonly<Record<string, VoiceSpec>> = {
+  pokey: { takes: 8, gap: 170, every: 4, type: 40 },
+  dot: { takes: 10, gap: 62, every: 2, type: 22 },
+  meeca: { takes: 8, gap: 120, every: 3, type: 32 },
+  general: { takes: 8, gap: 150, every: 4, type: 36 },
+  pell: { takes: 8, gap: 80, every: 2, type: 27 },
+  grandma: { takes: 8, gap: 150, every: 4, type: 38 },
+  grandfather: { takes: 8, gap: 150, every: 4, type: 36 },
+  flicker: { takes: 6, gap: 55, every: 2, type: 24 },
+  squirrel: { takes: 6, gap: 58, every: 2, type: 22 },
+  crier: { takes: 6, gap: 190, every: 4, type: 46 },
+  thornbark: { takes: 6, gap: 200, every: 4, type: 40 },
+  venom: { takes: 6, gap: 110, every: 3, type: 34 },
+  croc: { takes: 6, gap: 160, every: 4, type: 36 },
+  prowler: { takes: 6, gap: 135, every: 3, type: 36 },
+  sky: { takes: 6, gap: 100, every: 3, type: 30 },
+  queen: { takes: 6, gap: 115, every: 3, type: 33 },
+  reaver: { takes: 6, gap: 150, every: 4, type: 36 },
+  golem: { takes: 5, gap: 240, every: 5, type: 44 },
+  monarch: { takes: 6, gap: 135, every: 3, type: 36 },
+  drake: { takes: 6, gap: 150, every: 4, type: 34 },
+};
+/** the story's speakers to their voices (the Narrator has none: the narration is read, not spoken) */
+export const SPEAKER_VOICE: Readonly<Record<string, string>> = {
+  Pokey: 'pokey',
+  Dot: 'dot',
+  Meeca: 'meeca',
+  'General Iron-Claw': 'general',
+  'Lieutenant Pell': 'pell',
+  Grandma: 'grandma',
+  Grandfather: 'grandfather',
+  Gruntlewick: 'crier',
+  Flicker: 'flicker',
+  Squirrel: 'squirrel',
+  Thornbark: 'thornbark',
+  'Venom Fang': 'venom',
+  'Crocus Rex': 'croc',
+  'Shadow Prowler': 'prowler',
+  'Sky Sovereign': 'sky',
+  'Tarantula Queen': 'queen',
+  'Marsh Reaver': 'reaver',
+  'Stone Idol Golem': 'golem',
+  'Night-Wing Monarch': 'monarch',
+  'Magma Drake': 'drake',
+};

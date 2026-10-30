@@ -6,6 +6,7 @@ import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
+import { typeMs } from '../audio/voiceLine.ts';
 import { Icon, type IconName } from './icons/index.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 
@@ -93,6 +94,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     warmStoryCast();
     return () => releaseStoryArt();
   }, []);
+  // and the voices of everyone who speaks in it
+  useEffect(() => {
+    sound.warmVoices(new Set(panels.map((p) => p.speaker)));
+  }, [panels]);
   const [shown, setShown] = useState(0);
   const panel = panels[idx];
   const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;
@@ -114,7 +119,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     setShown(0);
     if (cardUp) return;
     const start = performance.now();
-    const when = typeSchedule(panel.text);
+    const when = typeSchedule(panel.text, typeMs(panel.speaker));
     let k = 0;
     let raf = 0;
     const tick = (now: number) => {
@@ -125,7 +130,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [idx, panel.text, cardUp]);
+  }, [idx, panel.text, panel.speaker, cardUp]);
 
   // the music follows the story: each panel's chapter and mood choose the piece (same piece = no restart)
   useEffect(() => {
@@ -146,7 +151,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     sound.storySting(panel.sting);
   }, [idx, panel, wantsCard, cardUp, shown]);
 
-  // a soft voice blip for each letter as it is typed (not when the whole line is skipped to)
+  // the speaker's voice as the line types, a syllable every few letters (not when the whole line is skipped to)
   const spoken = useRef(0);
   useEffect(() => {
     spoken.current = 0;
@@ -155,7 +160,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const from = spoken.current;
     spoken.current = shown;
     if (shown - from > 4) return;
-    for (let i = from; i < shown; i++) sound.speak(panel.speaker, panel.text[i] ?? ' ', i);
+    for (let i = from; i < shown; i++) sound.speak(panel.speaker, panel.text, i);
   }, [shown, panel]);
 
   // ── the picture: full screen on landscape, a 16:9 window above the text on tall screens
