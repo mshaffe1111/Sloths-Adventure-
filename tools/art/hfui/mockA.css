@@ -1,0 +1,17 @@
+/* mock-up only (option A): painted frames, icons, lock badges and stars over today's screens; the CSS plank buttons stay */
+.pm-card, .clr-card { background-color: transparent !important; box-shadow: 0 10px 30px rgba(0,0,0,.45) !important; border-style: solid !important; border-color: transparent !important;
+  border-width: 22px !important; border-image: url(/mock/card.png) 70 fill / 22px stretch !important; }
+.pm-tile { background: none !important; box-shadow: none !important; border-style: solid !important; border-color: transparent !important;
+  border-width: 12px !important; border-image: url(/mock/card.png) 70 fill / 12px stretch !important; }
+.pm-tile-ic { background: none center / contain no-repeat !important; box-shadow: none !important; border: none !important; }
+.pm-tile-ic > svg { visibility: hidden !important; }
+.pm-tiles > .pm-tile:nth-child(1) .pm-tile-ic { background-image: url(/mock/icon-restart.png) !important; }
+.pm-tiles > .pm-tile:nth-child(2) .pm-tile-ic { background-image: url(/mock/icon-trophy.png) !important; }
+.pm-tiles > .pm-tile:nth-child(3) .pm-tile-ic { background-image: url(/mock/icon-cards.png) !important; }
+.pm-tiles > .pm-tile:nth-child(4) .pm-tile-ic { background-image: url(/mock/icon-map.png) !important; }
+.pm-tiles > .pm-tile:nth-child(5) .pm-tile-ic { background-image: url(/mock/icon-book.png) !important; }
+.clr-star > path { visibility: hidden; }
+.clr-star { background: url(/mock/starEmpty.png) center / contain no-repeat; }
+.clr-star.on { background-image: url(/mock/starFull.png); }
+.map-node.locked { background: url(/mock/lockBadge.png) center / contain no-repeat !important; box-shadow: none !important; border: none !important; }
+.map-node.locked > svg { visibility: hidden !important; }
