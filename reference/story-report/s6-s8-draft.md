@@ -101,7 +101,7 @@ Shown as a run of cards between the weeks after and the hill. Each card is 1920x
 - crocus-rex: He ferries the village across, three at a time. The crown is still crooked.
 - shadow-prowler: He still sits on the ledge. Now somebody sits with him.
 - sky-sovereign: She lets the wind lane run where it likes.
-- tarantula-queen: Tea at four, every day. Somebody always stays to the bottom of the cup.
+- tarantula-queen: Tea at four, every day. A guest always stays to the bottom of the cup.
 - marsh-reaver: Lunch at noon, on a root by the path. He leaves half.
 - stone-golem: He talks the slowest at the council now. The others wait.
 - night-wing-monarch: Pokey told her how the dream ended. She wrote it down.
