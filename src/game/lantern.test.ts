@@ -136,3 +136,15 @@ test('8-4: the first hops and every liana are soft; Dot warns of the drop before
     }
   }
 });
+
+test("8-4: Meeca's petal is the only scattered pickup, in trails that mark the way, never more than 6 on a screen, all reachable", () => {
+  for (const seed of [1, 2, 3]) {
+    const st = buildLanternRun(CFG, seed);
+    const kinds = new Set(st.collectibles.map((c) => c.type));
+    for (const k of kinds) assert.ok(['flower', 'heart', 'exit_totem'].includes(k), `${seed}: a ${k} pickup`);
+    const xs = st.collectibles.filter((c) => c.type === 'flower').map((c) => c.x).sort((a, b) => a - b);
+    // (the widest view, sideways zoomed out at the firefly tree, is about 1700 px of world)
+    for (let i = 0; i < xs.length; i++) assert.ok(xs.filter((x) => x >= xs[i] && x < xs[i] + 1700).length <= 6, `${seed}: crowded at ${xs[i]}`);
+    assert.equal(st.proto.movedPickups, 0, `${seed}: every petal where he can get it`);
+  }
+});

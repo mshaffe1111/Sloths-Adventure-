@@ -165,6 +165,8 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     // before its catches; the retry still costs the jar's light)
     gaps.push({ x0, x1: cur.x, y0, y1: cur.y, soft: true });
     lianas.push({ vine: vine.id, from: fromId, to: cur.id });
+    // (a petal in the leap off the liana, on the way to the perch: Meeca's petals mark the way, never filler)
+    petal((vx + cur.x) / 2, cur.y - 110);
     arrive('liana');
   };
   /** a trunk at this bough's end, up `h` to a bough `w` wide running on (too high to jump: the trunk is the way) */
@@ -180,6 +182,8 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     T.push(tree);
     V.push({ id: vid++, x: r(tx), topY: r(top) - 2, bottomY: r(cur.y) - 6, swaySpeed: 0.9, swayPhase: (tx * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id });
     expert += h / CLIMB + 0.6;
+    // (and one partway up the trunk: the way on is up)
+    petal(tx, cur.y - h * 0.55);
     cur = bough(tx + CLIMB_CLEAR, tx + CLIMB_CLEAR + w, top);
     arrive('climb');
   };
