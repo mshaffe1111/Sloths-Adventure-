@@ -116,9 +116,11 @@ const clipStr = (a) => Object.entries(a.clipKinds).sort((x, y) => y[1] - x[1]).m
 const specialStr = (a, nf) => Object.entries(a.special).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([k, v]) => `${k} ${f1(v / nf)}`).join(', ');
 const gcoStr = (a) => Object.keys(a.gco).filter((k) => !k.startsWith('smoothing')).join(' ');
 
-L('# Frame cost by build: v6 (192cd165), v7 (412f54f), today (913677f)');
+const REVS = { v6: '192cd165', v7: '412f54f', today: '913677f', ccrground: '06cbcf12 (ccr + ground baked)', ccrnow: 'b83de6e6 (ccr at 10:45 ET)', merged: '9a76f161 (the merge, 12:20 ET)' };
+const QUAL = data[BUILDS[0]].quality ?? 0;
+L(`# Frame cost by build: ${BUILDS.map((b) => `${b} (${REVS[b] || '?'})`).join(', ')}`);
 L();
-L(`Measured ${new Date().toISOString().slice(0, 10)} by the perf harness (\`tools/perf/\`). Headless Chromium (SwiftShader), deviceScaleFactor 3, picture forced to q0 (canvas at 2x CSS). Every number is per frame on the main canvas unless it says otherwise, averaged over every counted frame of every spot.`);
+L(`Measured ${new Date().toISOString().slice(0, 10)} by the perf harness (\`tools/perf/\`). Headless Chromium (SwiftShader), deviceScaleFactor 3, picture held at q${QUAL} (canvas at ${['2x', '1.5x', '1x'][QUAL]} CSS). Every number is per frame on the main canvas unless it says otherwise, averaged over every counted frame of every spot.`);
 L();
 L('**Read the counts, areas and clip types as the evidence.** CPU ms is headless software raster on a 4-core container, a hint of relative weight only, not the phone.');
 L();
@@ -229,7 +231,7 @@ if (S.v6 && S.v7) {
   top15 = diffTop('v6', 'v7');
   L('## 5. TOP 15 call sites v7 added or made heavier than v6');
   L();
-  L('Ranked by the growth in device megapixels touched per frame (drawImage + fill area), with curved clips (x0.25 each), clip area (x0.5), blended/filtered/shadowed draws and gradients weighted in. "Mpx" = millions of device pixels; one q0 upright screen is 800x1760 = 1.41 Mpx.');
+  L('Ranked by the growth in device megapixels touched per frame (drawImage + fill area), with curved clips (x0.25 each), clip area (x0.5), blended/filtered/shadowed draws and gradients weighted in. "Mpx" = millions of device pixels; one q0 upright screen is 800x1760 = 1.41 Mpx (q2: 400x880 = 0.35 Mpx).');
   L();
   for (const l of fmtDiff(top15, 'v6', 'v7')) L(l);
   L();

@@ -13550,6 +13550,3381 @@
    }
   ]
  },
+ "merged": {
+  "totals": {
+   "drawImage": 96.32692307692308,
+   "drawImageArea": 7937582.078462183,
+   "fills": 73.21581196581197,
+   "fillArea": 114731.58736855924,
+   "blendArea": 0,
+   "clips": 1.0854700854700854,
+   "complexClips": 0.03418803418803419,
+   "gradients": 0.1581196581196581,
+   "patterns": 0,
+   "saves": 40.79059829059829,
+   "readbacks": 0,
+   "shadowSets": 0,
+   "filterSets": 0,
+   "gcoSets": 0,
+   "newCanvas": 0,
+   "canvasArea": 1408000,
+   "overdraw": 5.637487271635073,
+   "fillOverdraw": 0.08148550239244264
+  },
+  "frameCount": 468,
+  "perRun": [
+   {
+    "run": "ctest-mix14 port",
+    "frames": 116,
+    "canvas": "800x1760",
+    "quality": "0",
+    "errors": 0,
+    "drawImage": 67.43103448275862,
+    "drawImageArea": 7364127.334172289,
+    "fills": 53.810344827586206,
+    "fillArea": 181131.1960021161,
+    "blendArea": 0,
+    "clips": 1,
+    "complexClips": 0,
+    "gradients": 0.06896551724137931,
+    "patterns": 0,
+    "saves": 31.474137931034484,
+    "readbacks": 0,
+    "shadowSets": 0,
+    "filterSets": 0,
+    "gcoSets": 0,
+    "newCanvas": 0,
+    "overdraw": 5.230204072565546,
+    "fillOverdraw": 0.128644315342412,
+    "renderMs": 47.299999999813735,
+    "renderP90": 80.70000000018626,
+    "renderFlushMs": 59.5,
+    "renderFlushP90": 98.8999999994412
+   },
+   {
+    "run": "ctest-mix14 land",
+    "frames": 118,
+    "canvas": "1760x800",
+    "quality": "0",
+    "errors": 0,
+    "drawImage": 127.72881355932203,
+    "drawImageArea": 8562992.91586588,
+    "fills": 96.01694915254237,
+    "fillArea": 55794.3801493677,
+    "blendArea": 0,
+    "clips": 1.1355932203389831,
+    "complexClips": 0.13559322033898305,
+    "gradients": 0.3474576271186441,
+    "patterns": 0,
+    "saves": 50.78813559322034,
+    "readbacks": 0,
+    "shadowSets": 0,
+    "filterSets": 0,
+    "gcoSets": 0,
+    "newCanvas": 0,
+    "overdraw": 6.081671105018381,
+    "fillOverdraw": 0.03962669044699411,
+    "renderMs": 46,
+    "renderP90": 76.79999999981374,
+    "renderFlushMs": 61.5,
+    "renderFlushP90": 97.5
+   },
+   {
+    "run": "ctest-mix8 port",
+    "frames": 118,
+    "canvas": "800x1760",
+    "quality": "0",
+    "errors": 0,
+    "drawImage": 66.26271186440678,
+    "drawImageArea": 7372530.455385146,
+    "fills": 52.99152542372882,
+    "fillArea": 165548.13504091548,
+    "blendArea": 0,
+    "clips": 1,
+    "complexClips": 0,
+    "gradients": 0,
+    "patterns": 0,
+    "saves": 30.25423728813559,
+    "readbacks": 0,
+    "shadowSets": 0,
+    "filterSets": 0,
+    "gcoSets": 0,
+    "newCanvas": 0,
+    "overdraw": 5.23617219842695,
+    "fillOverdraw": 0.11757680045519565,
+    "renderMs": 45.299999999813735,
+    "renderP90": 87.19999999925494,
+    "renderFlushMs": 56.90000000037253,
+    "renderFlushP90": 109.8999999994412
+   },
+   {
+    "run": "ctest-mix8 land",
+    "frames": 116,
+    "canvas": "1760x800",
+    "quality": "0",
+    "errors": 0,
+    "drawImage": 123.86206896551724,
+    "drawImageArea": 8449636.932316335,
+    "fills": 90,
+    "fillArea": 56592.649653334796,
+    "blendArea": 0,
+    "clips": 1.206896551724138,
+    "complexClips": 0,
+    "gradients": 0.21551724137931033,
+    "patterns": 0,
+    "saves": 50.6551724137931,
+    "readbacks": 0,
+    "shadowSets": 0,
+    "filterSets": 0,
+    "gcoSets": 0,
+    "newCanvas": 0,
+    "overdraw": 6.001162593974669,
+    "fillOverdraw": 0.04019364321969801,
+    "renderMs": 44.40000000037253,
+    "renderP90": 81.60000000149012,
+    "renderFlushMs": 58,
+    "renderFlushP90": 103.40000000037253
+   }
+  ],
+  "topSites": [
+   {
+    "key": "src/game/scenery.ts|drawFitted|if (sw > 0 && sh2 > 0) ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0 + sy * r) / k, (sw * r) / k, (sh2 * r) / k);|main",
+    "site": "src/game/scenery.ts:1967",
+    "fn": "drawFitted",
+    "siteText": "if (sw > 0 && sh2 > 0) ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0 + sy * r) / k, (sw * r) / k, (sh2 * r) / k);",
+    "target": "main",
+    "n": {
+     "drawImage": 2272,
+     "src:canvas": 2272
+    },
+    "area": {
+     "drawImage": 1553229791.7235692
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "3010x1484",
+    "srcMax": 4466840,
+    "upMax": 1.0000000000000002,
+    "layers": [
+     "src/game/engine.ts:5755  if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 4.854700854700854,
+     "drawMpx": 3.318867076332413,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 3.318867076332413
+   },
+   {
+    "key": "src/game/scenery.ts|drawVignette|ctx.drawImage(vigPic, 0, 0, bw, bh, 0, 0, vw, vh);|main",
+    "site": "src/game/scenery.ts:2274",
+    "fn": "drawVignette",
+    "siteText": "ctx.drawImage(vigPic, 0, 0, bw, bh, 0, 0, vw, vh);",
+    "target": "main",
+    "n": {
+     "drawImage": 468,
+     "src:canvas": 468
+    },
+    "area": {
+     "drawImage": 658943978.3981323
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "149x68",
+    "srcMax": 10132,
+    "upMax": 15.686274531053352,
+    "layers": [
+     "src/game/engine.ts:6171  else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 1,
+     "drawMpx": 1.407999953842163,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 1.407999953842163
+   },
+   {
+    "key": "src/game/protoArt.ts|drawGroundChunks|if (cv) ctx.drawImage(cv, pad, pad, px, px, cx * CHUNK, cy * CHUNK, CHUNK, CHUNK);|main",
+    "site": "src/game/protoArt.ts:1068",
+    "fn": "drawGroundChunks",
+    "siteText": "if (cv) ctx.drawImage(cv, pad, pad, px, px, cx * CHUNK, cy * CHUNK, CHUNK, CHUNK);",
+    "target": "main",
+    "n": {
+     "drawImage": 5711,
+     "src:canvas": 5711
+    },
+    "area": {
+     "drawImage": 558092863.0176538
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "509x509",
+    "srcMax": 259081,
+    "upMax": 1,
+    "layers": [
+     "src/game/engine.ts:5832  if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines,"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 12.202991452991453,
+     "drawMpx": 1.1925061175590894,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 1.1925061175590894
+   },
+   {
+    "key": "src/game/scenery.ts|drawFitted|if (gap > 0) ctx.drawImage(cv, 0, f.oy + f.d - rows, bw, rows, px, top + dh - 1 / k, (bw * r) / k, gap + 2);|main",
+    "site": "src/game/scenery.ts:1971",
+    "fn": "drawFitted",
+    "siteText": "if (gap > 0) ctx.drawImage(cv, 0, f.oy + f.d - rows, bw, rows, px, top + dh - 1 / k, (bw * r) / k, gap + 2);",
+    "target": "main",
+    "n": {
+     "drawImage": 2272,
+     "src:canvas": 2272
+    },
+    "area": {
+     "drawImage": 295138315.73659784
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "3010x1484",
+    "srcMax": 4466840,
+    "upMax": 14.930410588765389,
+    "layers": [
+     "src/game/engine.ts:5755  if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 4.854700854700854,
+     "drawMpx": 0.6306374267876023,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.6306374267876023
+   },
+   {
+    "key": "src/game/scenery.ts|lanePool|ctx.drawImage(poolSprite(col, a), hs.x - rx, hs.y - 36 - ry, rx * 2, ry * 2);|main",
+    "site": "src/game/scenery.ts:1505",
+    "fn": "lanePool",
+    "siteText": "ctx.drawImage(poolSprite(col, a), hs.x - rx, hs.y - 36 - ry, rx * 2, ry * 2);",
+    "target": "main",
+    "n": {
+     "drawImage": 468,
+     "src:canvas": 468
+    },
+    "area": {
+     "drawImage": 231026128.28365162
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "160x160",
+    "srcMax": 25600,
+    "upMax": 6.6666664481163025,
+    "layers": [
+     "src/game/engine.ts:5755  if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 1,
+     "drawMpx": 0.4936455732556658,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.4936455732556658
+   },
+   {
+    "key": "src/game/stageArt.ts|pitRow|else ctx.drawImage(src, x, y, TILE, h);|main",
+    "site": "src/game/stageArt.ts:380",
+    "fn": "pitRow",
+    "siteText": "else ctx.drawImage(src, x, y, TILE, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 2726,
+     "src:canvas": 2726
+    },
+    "area": {
+     "drawImage": 166323778.00535804
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "840x210",
+    "srcMax": 176400,
+    "upMax": 0.9777777791023277,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 5.8247863247863245,
+     "drawMpx": 0.35539268804563684,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.35539268804563684
+   },
+   {
+    "key": "src/game/scenery.ts|drawTile|for (const [a, b] of fb.rows) ctx.drawImage(fb.cv, 0, a, fb.cv.width, b - a, dx / k, (y0d + a) / k, fb.cv.width / k, (b - a) / k);|main",
+    "site": "src/game/scenery.ts:1714",
+    "fn": "drawTile",
+    "siteText": "for (const [a, b] of fb.rows) ctx.drawImage(fb.cv, 0, a, fb.cv.width, b - a, dx / k, (y0d + a) / k, fb.cv.width / k, (b - a) / k);",
+    "target": "main",
+    "n": {
+     "drawImage": 685,
+     "src:canvas": 685
+    },
+    "area": {
+     "drawImage": 85292826
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "5868x1761",
+    "srcMax": 10333548,
+    "upMax": 1.000000000000001,
+    "layers": [
+     "src/game/engine.ts:6171  else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 1.4636752136752136,
+     "drawMpx": 0.18224962820512822,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.18224962820512822
+   },
+   {
+    "key": "src/game/stageArt.ts|drawPitWater|ctx.clip();|main",
+    "site": "src/game/stageArt.ts:401",
+    "fn": "drawPitWater",
+    "siteText": "ctx.clip();",
+    "target": "main",
+    "n": {
+     "clip": 460,
+     "clip:pathPoints": 1840
+    },
+    "area": {
+     "clip(bbox)": 129533329.60996944
+    },
+    "clipKinds": {
+     "rect": 460
+    },
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0.9829059829059829,
+     "complexClips": 0,
+     "clipMpx": 0.27678061882472105,
+     "clipPts": 4,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.13839030941236052
+   },
+   {
+    "key": "src/game/life.ts|renderSwayLeaves|ctx.drawImage(sprite, -180 * k, 0, 360 * k, 360 * k);|main",
+    "site": "src/game/life.ts:808",
+    "fn": "renderSwayLeaves",
+    "siteText": "ctx.drawImage(sprite, -180 * k, 0, 360 * k, 360 * k);",
+    "target": "main",
+    "n": {
+     "drawImage": 1020,
+     "src:canvas": 1020
+    },
+    "area": {
+     "drawImage": 49282256.14158461
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "360x360",
+    "srcMax": 129600,
+    "upMax": 1.6450886222538523,
+    "layers": [
+     "src/game/engine.ts:6171  else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 2.1794871794871793,
+     "drawMpx": 0.10530396611449704,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.10530396611449704
+   },
+   {
+    "key": "src/game/stageArt.ts|drawPitWater|ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));|main",
+    "site": "src/game/stageArt.ts:403",
+    "fn": "drawPitWater",
+    "siteText": "ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));",
+    "target": "main",
+    "n": {
+     "fillRect": 460
+    },
+    "area": {
+     "fillRect": 44517446.28989118
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.9829059829059829,
+     "fillMpx": 0.09512274848267348,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.09512274848267348
+   },
+   {
+    "key": "src/game/readable.ts|drawAura|ctx.drawImage(pool, -rx * 1.65, -ry * 1.65, rx * 3.3, ry * 3.3);|main",
+    "site": "src/game/readable.ts:85",
+    "fn": "drawAura",
+    "siteText": "ctx.drawImage(pool, -rx * 1.65, -ry * 1.65, rx * 3.3, ry * 3.3);",
+    "target": "main",
+    "n": {
+     "drawImage": 1877,
+     "src:canvas": 1877
+    },
+    "area": {
+     "drawImage": 23446193.00670857
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "96x96",
+    "srcMax": 9216,
+    "upMax": 2.688888892531395,
+    "layers": [
+     "src/game/engine.ts:5917  this.collectibles.forEach((item) => {",
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);",
+     "src/game/engine.ts:5975  this.enemies.forEach((enemy) => {",
+     "src/game/engine.ts:5792  drawAura(ctx, 'take', world.id, pl.width * 0.55, 30, this.gameTime, pl.x * 0.013);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 4.010683760683761,
+     "drawMpx": 0.050098703005787545,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.050098703005787545
+   },
+   {
+    "key": "src/game/readable.ts|drawAura|ctx.drawImage(ring, -rx * 1.5, -ry * 1.5, rx * 3, ry * 3);|main",
+    "site": "src/game/readable.ts:87",
+    "fn": "drawAura",
+    "siteText": "ctx.drawImage(ring, -rx * 1.5, -ry * 1.5, rx * 3, ry * 3);",
+    "target": "main",
+    "n": {
+     "drawImage": 1877,
+     "src:canvas": 1877
+    },
+    "area": {
+     "drawImage": 19395161.97174194
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "96x96",
+    "srcMax": 9216,
+    "upMax": 2.4444444477558136,
+    "layers": [
+     "src/game/engine.ts:5917  this.collectibles.forEach((item) => {",
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);",
+     "src/game/engine.ts:5975  this.enemies.forEach((enemy) => {",
+     "src/game/engine.ts:5792  drawAura(ctx, 'take', world.id, pl.width * 0.55, 30, this.gameTime, pl.x * 0.013);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 4.010683760683761,
+     "drawMpx": 0.04144265378577338,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.04144265378577338
+   },
+   {
+    "key": "src/game/sheetBake.ts|drawSheet|} else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);|main",
+    "site": "src/game/sheetBake.ts:118",
+    "fn": "drawSheet",
+    "siteText": "} else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);",
+    "target": "main",
+    "n": {
+     "drawImage": 2503,
+     "src:img": 2503
+    },
+    "area": {
+     "drawImage": 13562114.788349401
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "1536x1831",
+    "srcMax": 2812416,
+    "upMax": 1.473045286976896,
+    "layers": [
+     "src/game/engine.ts:5917  this.collectibles.forEach((item) => {",
+     "src/game/engine.ts:6087  } else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);",
+     "src/game/engine.ts:6171  else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);",
+     "src/game/engine.ts:5867  if (this.proto?.dress) drawDress(ctx, this.proto.dress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera."
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix8/port"
+    ],
+    "perFrame": {
+     "drawImage": 5.348290598290598,
+     "drawMpx": 0.028978877752883336,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.028978877752883336
+   },
+   {
+    "key": "src/game/protoArt.ts|drawBranchArt|for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c.sx * fr.w, fr.y, c.sw * fr.w, fr.h, c.dx, y, c.dw|main",
+    "site": "src/game/protoArt.ts:491",
+    "fn": "drawBranchArt",
+    "siteText": "for (const c of branchSlices(p, measure(name), fr.w, fr.h, h)) ctx.drawImage(img, fr.x + c.sx * fr.w, fr.y, c.sw * fr.w, fr.h, c.dx, y, c.dw",
+    "target": "main",
+    "n": {
+     "drawImage": 1401,
+     "src:img": 1401
+    },
+    "area": {
+     "drawImage": 10389471.762371797
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "2048x1782",
+    "srcMax": 3649536,
+    "upMax": 1.1774747202000926,
+    "layers": [
+     "src/game/engine.ts:5832  if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines,"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 2.9935897435897436,
+     "drawMpx": 0.022199725987973925,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.022199725987973925
+   },
+   {
+    "key": "src/game/vectorArt.ts|fillGlow|ctx.drawImage(cv, cx - r1, cy - r1, 2 * r1, 2 * r1);|main",
+    "site": "src/game/vectorArt.ts:1009",
+    "fn": "fillGlow",
+    "siteText": "ctx.drawImage(cv, cx - r1, cy - r1, 2 * r1, 2 * r1);",
+    "target": "main",
+    "n": {
+     "drawImage": 1100,
+     "src:canvas": 1100
+    },
+    "area": {
+     "drawImage": 10161462.7480238
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "96x96",
+    "srcMax": 9216,
+    "upMax": 1.3688888674312178,
+    "layers": [
+     "src/game/engine.ts:5917  this.collectibles.forEach((item) => {"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 2.3504273504273505,
+     "drawMpx": 0.021712527239367098,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.021712527239367098
+   },
+   {
+    "key": "src/game/sheetBake.ts|drawSheet|ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy + ey * ky, dw - 2 * ex * kx, dh - 2 * ey * ky);|main",
+    "site": "src/game/sheetBake.ts:117",
+    "fn": "drawSheet",
+    "siteText": "ctx.drawImage(b.cv, sx * r + ex, sy * r + ey, bw - 2 * ex, bh - 2 * ey, dx + ex * kx, dy + ey * ky, dw - 2 * ex * kx, dh - 2 * ey * ky);",
+    "target": "main",
+    "n": {
+     "drawImage": 3189,
+     "src:canvas": 3189
+    },
+    "area": {
+     "drawImage": 8975844.897135206
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "1152x1373",
+    "srcMax": 1581696,
+    "upMax": 1.2729002489402315,
+    "layers": [
+     "src/game/engine.ts:5917  this.collectibles.forEach((item) => {",
+     "src/game/engine.ts:6087  } else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);",
+     "src/game/engine.ts:6171  else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);",
+     "src/game/engine.ts:5867  if (this.proto?.dress) drawDress(ctx, this.proto.dress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera."
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 6.814102564102564,
+     "drawMpx": 0.019179155763109416,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.019179155763109416
+   },
+   {
+    "key": "src/game/stageArt.ts|drawCheckpointArt|ctx.drawImage(src, ox + sx * b, oy, sw * b, sh, left + sx * k, top + dy, sw * k, f.h * k);|main",
+    "site": "src/game/stageArt.ts:178",
+    "fn": "drawCheckpointArt",
+    "siteText": "ctx.drawImage(src, ox + sx * b, oy, sw * b, sh, left + sx * k, top + dy, sw * k, f.h * k);",
+    "target": "main",
+    "n": {
+     "drawImage": 10272,
+     "src:canvas": 10272
+    },
+    "area": {
+     "drawImage": 6951528.245650693
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "175x272",
+    "srcMax": 47600,
+    "upMax": 0.9413579938312377,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 21.94871794871795,
+     "drawMpx": 0.01485369283258695,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.01485369283258695
+   },
+   {
+    "key": "src/game/paintedScenery.ts|drawGroundFlora|ctx.drawImage(spr, -w / 2, y - h, w, h);|main",
+    "site": "src/game/paintedScenery.ts:102",
+    "fn": "drawGroundFlora",
+    "siteText": "ctx.drawImage(spr, -w / 2, y - h, w, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 2669,
+     "src:canvas": 2669
+    },
+    "area": {
+     "drawImage": 4680054.6386255985
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "125x102",
+    "srcMax": 12750,
+    "upMax": 0.814795537215321,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 5.702991452991453,
+     "drawMpx": 0.010000116749199997,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.010000116749199997
+   },
+   {
+    "key": "src/game/stageArt.ts|glow|ctx.drawImage(cv, x - r, y - r, 2 * r, 2 * r);|main",
+    "site": "src/game/stageArt.ts:120",
+    "fn": "glow",
+    "siteText": "ctx.drawImage(cv, x - r, y - r, 2 * r, 2 * r);",
+    "target": "main",
+    "n": {
+     "drawImage": 260,
+     "src:canvas": 260
+    },
+    "area": {
+     "drawImage": 4601693.141425464
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "128x128",
+    "srcMax": 16384,
+    "upMax": 1.9555555582046509,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);",
+     "src/game/engine.ts:5917  this.collectibles.forEach((item) => {"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.5555555555555556,
+     "drawMpx": 0.009832677652618513,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.009832677652618513
+   },
+   {
+    "key": "src/game/paintedScenery.ts|drawGroundFlora|} else ctx.drawImage(spr, x - w / 2, y - h, w, h);|main",
+    "site": "src/game/paintedScenery.ts:104",
+    "fn": "drawGroundFlora",
+    "siteText": "} else ctx.drawImage(spr, x - w / 2, y - h, w, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 2851,
+     "src:canvas": 2851
+    },
+    "area": {
+     "drawImage": 4408631.435302449
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "125x102",
+    "srcMax": 12750,
+    "upMax": 0.7850096558437818,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 6.0918803418803416,
+     "drawMpx": 0.009420152639535148,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.009420152639535148
+   },
+   {
+    "key": "src/game/groundArt.ts|drawGroundBody|ctx.clip();|main",
+    "site": "src/game/groundArt.ts:110",
+    "fn": "drawGroundBody",
+    "siteText": "ctx.clip();",
+    "target": "main",
+    "n": {
+     "clip": 16,
+     "clip:pathPoints": 64
+    },
+    "area": {
+     "clip(bbox)": 232167.2496330819
+    },
+    "clipKinds": {
+     "polygon-convex": 16
+    },
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0.03418803418803419,
+     "complexClips": 0.03418803418803419,
+     "clipMpx": 0.0004960838667373544,
+     "clipPts": 4,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.008795050480377225
+   },
+   {
+    "key": "src/game/protoArt.ts|blit|ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, w, h);|main",
+    "site": "src/game/protoArt.ts:231",
+    "fn": "blit",
+    "siteText": "ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, w, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 101,
+     "src:img": 101
+    },
+    "area": {
+     "drawImage": 2145228.8945957916
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "2048x1782",
+    "srcMax": 3649536,
+    "upMax": 0.9781894750093165,
+    "layers": [
+     "src/game/engine.ts:5832  if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines,"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.21581196581196582,
+     "drawMpx": 0.004583822424349982,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.004583822424349982
+   },
+   {
+    "key": "src/game/artKit.ts|drawGrass|ctx.fill();|main",
+    "site": "src/game/artKit.ts:295",
+    "fn": "drawGrass",
+    "siteText": "ctx.fill();",
+    "target": "main",
+    "n": {
+     "fill": 20205
+    },
+    "area": {
+     "fill(bbox)": 2057029.3430836853
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 43.17307692307692,
+     "fillMpx": 0.004395361844195909,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.004395361844195909
+   },
+   {
+    "key": "src/game/stageArt.ts|drawCheckpointArt|ctx.drawImage(src, ox, oy, poleW * b, sh, left, top, poleW * k, f.h * k);|main",
+    "site": "src/game/stageArt.ts:168",
+    "fn": "drawCheckpointArt",
+    "siteText": "ctx.drawImage(src, ox, oy, poleW * b, sh, left, top, poleW * k, f.h * k);",
+    "target": "main",
+    "n": {
+     "drawImage": 428,
+     "src:canvas": 428
+    },
+    "area": {
+     "drawImage": 1990427.3291233012
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "175x272",
+    "srcMax": 47600,
+    "upMax": 0.9413579938312377,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.9145299145299145,
+     "drawMpx": 0.004253049848554062,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.004253049848554062
+   },
+   {
+    "key": "src/game/creatureAnim.ts|draw|ctx.drawImage(baked, f.x * r + e, f.y * r + e, f.w * r - 2 * e, f.h * r - 2 * e, -f.ax * s, -f.ay * s, f.w * s, f.h * s);|main",
+    "site": "src/game/creatureAnim.ts:167",
+    "fn": "draw",
+    "siteText": "ctx.drawImage(baked, f.x * r + e, f.y * r + e, f.w * r - 2 * e, f.h * r - 2 * e, -f.ax * s, -f.ay * s, f.w * s, f.h * s);",
+    "target": "main",
+    "n": {
+     "drawImage": 221,
+     "src:canvas": 221
+    },
+    "area": {
+     "drawImage": 1960386.9543372113
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "1792x2256",
+    "srcMax": 4042752,
+    "upMax": 0.9022842389483785,
+    "layers": [
+     "src/game/engine.ts:5975  this.enemies.forEach((enemy) => {",
+     "src/game/engine.ts:6045  if (this.proto?.watch) this.drawWatchBack(ctx);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.4722222222222222,
+     "drawMpx": 0.00418886101354105,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.00418886101354105
+   },
+   {
+    "key": "src/game/platformSprites.ts|blit|ctx.drawImage(sp.cv, Math.round(x) - sp.ox, Math.round(y) - sp.oy, sp.cv.width / RES, sp.cv.height / RES);|main",
+    "site": "src/game/platformSprites.ts:160",
+    "fn": "blit",
+    "siteText": "ctx.drawImage(sp.cv, Math.round(x) - sp.ox, Math.round(y) - sp.oy, sp.cv.width / RES, sp.cv.height / RES);",
+    "target": "main",
+    "n": {
+     "drawImage": 68,
+     "src:canvas": 68
+    },
+    "area": {
+     "drawImage": 1825301.838216153
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "240x264",
+    "srcMax": 63360,
+    "upMax": 0.9777777791023254,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.1452991452991453,
+     "drawMpx": 0.003900217603025968,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.003900217603025968
+   },
+   {
+    "key": "src/game/columnArt.ts|drawColumn|ctx.fillRect(x, y0, w, depth);|main",
+    "site": "src/game/columnArt.ts:460",
+    "fn": "drawColumn",
+    "siteText": "ctx.fillRect(x, y0, w, depth);",
+    "target": "main",
+    "n": {
+     "fillRect": 26
+    },
+    "area": {
+     "fillRect": 1726949.9453269804
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.05555555555555555,
+     "fillMpx": 0.003690063985741411,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.003690063985741411
+   },
+   {
+    "key": "src/game/columnArt.ts|drawColumn|ctx.fillRect(x, y0 + 40, w, Math.max(0, depth - 40));|main",
+    "site": "src/game/columnArt.ts:466",
+    "fn": "drawColumn",
+    "siteText": "ctx.fillRect(x, y0 + 40, w, Math.max(0, depth - 40));",
+    "target": "main",
+    "n": {
+     "fillRect": 26
+    },
+    "area": {
+     "fillRect": 1446550.943010658
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.05555555555555555,
+     "fillMpx": 0.0030909208183988422,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0030909208183988422
+   },
+   {
+    "key": "src/game/envPlants.ts|hollowlog|ctx.fill();|main",
+    "site": "src/game/envPlants.ts:1254",
+    "fn": "hollowlog",
+    "siteText": "ctx.fill();",
+    "target": "main",
+    "n": {
+     "fill": 3540
+    },
+    "area": {
+     "fill(bbox)": 1223373.3747101454
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 7.564102564102564,
+     "fillMpx": 0.0026140456724575755,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0026140456724575755
+   },
+   {
+    "key": "src/game/protoArt.ts|blit2|ctx.drawImage(img2, f.x, f.y, f.w, f.h, x, y, w, h);|main",
+    "site": "src/game/protoArt.ts:92",
+    "fn": "blit2",
+    "siteText": "ctx.drawImage(img2, f.x, f.y, f.w, f.h, x, y, w, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 33,
+     "src:img": 33
+    },
+    "area": {
+     "drawImage": 952404.7797170419
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "1024x598",
+    "srcMax": 612352,
+    "upMax": 0.9290762038979951,
+    "layers": [
+     "src/game/engine.ts:6093  if (this.proto?.bushes) this.drawBushes(ctx);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.07051282051282051,
+     "drawMpx": 0.0020350529481133373,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0020350529481133373
+   },
+   {
+    "key": "src/game/riverArt.ts|blit|ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);|main",
+    "site": "src/game/riverArt.ts:48",
+    "fn": "blit",
+    "siteText": "ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 48,
+     "src:img": 48
+    },
+    "area": {
+     "drawImage": 934667.735145775
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "2048x2166",
+    "srcMax": 4435968,
+    "upMax": 0.694444421678782,
+    "layers": [
+     "src/game/engine.ts:5814  for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(c",
+     "src/game/engine.ts:5781  this.drawRivers(ctx, world, false);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.10256410256410256,
+     "drawMpx": 0.001997153280226015,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.001997153280226015
+   },
+   {
+    "key": "src/game/engine.ts|drawRivers|ctx.clip();|main",
+    "site": "src/game/engine.ts:4938",
+    "fn": "drawRivers",
+    "siteText": "ctx.clip();",
+    "target": "main",
+    "n": {
+     "clip": 32,
+     "clip:pathPoints": 128
+    },
+    "area": {
+     "clip(bbox)": 1275666.1320130061
+    },
+    "clipKinds": {
+     "rect": 32
+    },
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5781  this.drawRivers(ctx, world, false);",
+     "src/game/engine.ts:5827  this.drawRivers(ctx, world, true);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0.06837606837606838,
+     "complexClips": 0,
+     "clipMpx": 0.0027257823333611242,
+     "clipPts": 4,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0013628911666805621
+   },
+   {
+    "key": "src/game/stageArt.ts|blitAt|ctx.drawImage(img, f.x, f.y, f.w, f.h, x - f.ax * k, y - f.ay * k, f.w * k, f.h * k);|main",
+    "site": "src/game/stageArt.ts:96",
+    "fn": "blitAt",
+    "siteText": "ctx.drawImage(img, f.x, f.y, f.w, f.h, x - f.ax * k, y - f.ay * k, f.w * k, f.h * k);",
+    "target": "main",
+    "n": {
+     "drawImage": 201,
+     "src:img": 201
+    },
+    "area": {
+     "drawImage": 544528.8971463152
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "1024x1003",
+    "srcMax": 1027072,
+    "upMax": 0.5449821867992983,
+    "layers": [
+     "src/game/engine.ts:5917  this.collectibles.forEach((item) => {"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.42948717948717946,
+     "drawMpx": 0.0011635232845006735,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0011635232845006735
+   },
+   {
+    "key": "src/game/terrain.ts|stroked|ctx.fill();|main",
+    "site": "src/game/terrain.ts:56",
+    "fn": "stroked",
+    "siteText": "ctx.fill();",
+    "target": "main",
+    "n": {
+     "fill": 1588,
+     "fill@gradient": 1588
+    },
+    "area": {
+     "fill(bbox)": 525819.0339768907
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 3.393162393162393,
+     "fillMpx": 0.0011235449443950656,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0011235449443950656
+   },
+   {
+    "key": "src/game/columnArt.ts|drawColumn|const gr = ctx.createLinearGradient(0, y0 + 40, 0, y0 + 260);|main",
+    "site": "src/game/columnArt.ts:462",
+    "fn": "drawColumn",
+    "siteText": "const gr = ctx.createLinearGradient(0, y0 + 40, 0, y0 + 260);",
+    "target": "main",
+    "n": {
+     "createLinearGradient": 26
+    },
+    "area": {},
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0.05555555555555555,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0011111111111111111
+   },
+   {
+    "key": "src/game/artKit.ts|drawMushroom|ctx.fill();|main",
+    "site": "src/game/artKit.ts:380",
+    "fn": "drawMushroom",
+    "siteText": "ctx.fill();",
+    "target": "main",
+    "n": {
+     "fill": 6480,
+     "fill@gradient": 2592
+    },
+    "area": {
+     "fill(bbox)": 508211.88028196245
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 13.846153846153847,
+     "fillMpx": 0.0010859228211153045,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0010859228211153045
+   },
+   {
+    "key": "src/game/engine.ts|drawRivers|ctx.fill();|main",
+    "site": "src/game/engine.ts:4967",
+    "fn": "drawRivers",
+    "siteText": "ctx.fill();",
+    "target": "main",
+    "n": {
+     "fill": 16,
+     "fill@gradient": 16
+    },
+    "area": {
+     "fill(bbox)": 420437.4265777531
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5827  this.drawRivers(ctx, world, true);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.03418803418803419,
+     "fillMpx": 0.0008983705696105835,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0008983705696105835
+   },
+   {
+    "key": "src/game/riverArt.ts|drawRiverFoam|ctx.drawImage(c, -w / 2, -h / 2, w, h);|main",
+    "site": "src/game/riverArt.ts:353",
+    "fn": "drawRiverFoam",
+    "siteText": "ctx.drawImage(c, -w / 2, -h / 2, w, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 152,
+     "src:canvas": 152
+    },
+    "area": {
+     "drawImage": 328218.32644940517
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "120x44",
+    "srcMax": 5280,
+    "upMax": 0.8641975025335947,
+    "layers": [
+     "src/game/engine.ts:5781  this.drawRivers(ctx, world, false);",
+     "src/game/engine.ts:5827  this.drawRivers(ctx, world, true);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.3247863247863248,
+     "drawMpx": 0.0007013212103619769,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0007013212103619769
+   },
+   {
+    "key": "src/game/groundArt.ts|drawGroundBody|const gl = ctx.createLinearGradient(p.x, 0, p.x + 34, 0);|main",
+    "site": "src/game/groundArt.ts:128",
+    "fn": "drawGroundBody",
+    "siteText": "const gl = ctx.createLinearGradient(p.x, 0, p.x + 34, 0);",
+    "target": "main",
+    "n": {
+     "createLinearGradient": 16
+    },
+    "area": {},
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0.03418803418803419,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0006837606837606839
+   },
+   {
+    "key": "src/game/groundArt.ts|drawGroundBody|const gr = ctx.createLinearGradient(p.x + p.width - 44, 0, p.x + p.width, 0);|main",
+    "site": "src/game/groundArt.ts:135",
+    "fn": "drawGroundBody",
+    "siteText": "const gr = ctx.createLinearGradient(p.x + p.width - 44, 0, p.x + p.width, 0);",
+    "target": "main",
+    "n": {
+     "createLinearGradient": 16
+    },
+    "area": {},
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0.03418803418803419,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0006837606837606839
+   },
+   {
+    "key": "src/game/engine.ts|drawRivers|const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);|main",
+    "site": "src/game/engine.ts:4956",
+    "fn": "drawRivers",
+    "siteText": "const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);",
+    "target": "main",
+    "n": {
+     "createLinearGradient": 16
+    },
+    "area": {},
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5827  this.drawRivers(ctx, world, true);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0.03418803418803419,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0006837606837606839
+   },
+   {
+    "key": "src/game/groundArt.ts|drawGroundBody|ctx.fillRect(p.x, y, p.width, depth);|main",
+    "site": "src/game/groundArt.ts:112",
+    "fn": "drawGroundBody",
+    "siteText": "ctx.fillRect(p.x, y, p.width, depth);",
+    "target": "main",
+    "n": {
+     "fillRect": 16
+    },
+    "area": {
+     "fillRect": 260739.86988779722
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.03418803418803419,
+     "fillMpx": 0.0005571364741192249,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0005571364741192249
+   },
+   {
+    "key": "src/game/groundArt.ts|fillFace|c.fillRect(x0, y, x1 - x0, h);|main",
+    "site": "src/game/groundArt.ts:84",
+    "fn": "fillFace",
+    "siteText": "c.fillRect(x0, y, x1 - x0, h);",
+    "target": "main",
+    "n": {
+     "fillRect": 16
+    },
+    "area": {
+     "fillRect": 260739.86988779722
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.03418803418803419,
+     "fillMpx": 0.0005571364741192249,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0005571364741192249
+   },
+   {
+    "key": "src/game/groundArt.ts|drawGroundBody|ctx.fillRect(p.x + p.width - 44, y, 44, depth);|main",
+    "site": "src/game/groundArt.ts:139",
+    "fn": "drawGroundBody",
+    "siteText": "ctx.fillRect(p.x + p.width - 44, y, 44, depth);",
+    "target": "main",
+    "n": {
+     "fillRect": 16
+    },
+    "area": {
+     "fillRect": 249403.35380571915
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.03418803418803419,
+     "fillMpx": 0.0005329131491575195,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0005329131491575195
+   },
+   {
+    "key": "src/game/riverArt.ts|drawRiverFoam|} else ctx.drawImage(c, x - w / 2, y - h / 2, w, h);|main",
+    "site": "src/game/riverArt.ts:354",
+    "fn": "drawRiverFoam",
+    "siteText": "} else ctx.drawImage(c, x - w / 2, y - h / 2, w, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 120,
+     "src:canvas": 120
+    },
+    "area": {
+     "drawImage": 201318.8453089698
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "120x44",
+    "srcMax": 5280,
+    "upMax": 0.8641975025335956,
+    "layers": [
+     "src/game/engine.ts:5781  this.drawRivers(ctx, world, false);",
+     "src/game/engine.ts:5827  this.drawRivers(ctx, world, true);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.2564102564102564,
+     "drawMpx": 0.00043016847288241403,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.00043016847288241403
+   },
+   {
+    "key": "src/game/groundArt.ts|drawGroundBody|ctx.fillRect(p.x, y, 34, depth);|main",
+    "site": "src/game/groundArt.ts:132",
+    "fn": "drawGroundBody",
+    "siteText": "ctx.fillRect(p.x, y, 34, depth);",
+    "target": "main",
+    "n": {
+     "fillRect": 16
+    },
+    "area": {
+     "fillRect": 192720.77339532838
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.03418803418803419,
+     "fillMpx": 0.00041179652434899226,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.00041179652434899226
+   },
+   {
+    "key": "src/game/goldSnake.ts|drawPainted|ctx.fill();|main",
+    "site": "src/game/goldSnake.ts:288",
+    "fn": "drawPainted",
+    "siteText": "ctx.fill();",
+    "target": "main",
+    "n": {
+     "fill": 183
+    },
+    "area": {
+     "fill(bbox)": 124611.8726437139
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5975  this.enemies.forEach((enemy) => {"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.391025641025641,
+     "fillMpx": 0.00026626468513614085,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.00026626468513614085
+   },
+   {
+    "key": "src/game/protoArt.ts|drawLogArt|ctx.fill();|main",
+    "site": "src/game/protoArt.ts:327",
+    "fn": "drawLogArt",
+    "siteText": "ctx.fill();",
+    "target": "main",
+    "n": {
+     "fill": 17
+    },
+    "area": {
+     "fill(bbox)": 76149.45746902877
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5832  if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines,"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.03632478632478633,
+     "fillMpx": 0.0001627125159594632,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.0001627125159594632
+   },
+   {
+    "key": "src/game/groundArt.ts|fillCap|c.fillRect(x0, y - CAP_TOP, x1 - x0, CAP_H);|main",
+    "site": "src/game/groundArt.ts:91",
+    "fn": "fillCap",
+    "siteText": "c.fillRect(x0, y - CAP_TOP, x1 - x0, CAP_H);",
+    "target": "main",
+    "n": {
+     "fillRect": 16
+    },
+    "area": {
+     "fillRect": 58153.0826069397
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0.03418803418803419,
+     "fillMpx": 0.00012425872351910192,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.00012425872351910192
+   },
+   {
+    "key": "src/game/terrain.ts|stone|ctx.fill();|main",
+    "site": "src/game/terrain.ts:123",
+    "fn": "stone",
+    "siteText": "ctx.fill();",
+    "target": "main",
+    "n": {
+     "fill": 1588
+    },
+    "area": {
+     "fill(bbox)": 46046.37193014076
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5802  else renderWorldObjects("
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 3.393162393162393,
+     "fillMpx": 0.00009838968361141189,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.00009838968361141189
+   },
+   {
+    "key": "src/game/riverArt.ts|blit|ctx.drawImage(img!, f.x, f.y, f.w, f.h, 0, 0, w, h);|main",
+    "site": "src/game/riverArt.ts:54",
+    "fn": "blit",
+    "siteText": "ctx.drawImage(img!, f.x, f.y, f.w, f.h, 0, 0, w, h);",
+    "target": "main",
+    "n": {
+     "drawImage": 16,
+     "src:img": 16
+    },
+    "area": {
+     "drawImage": 3835.178380304412
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "2048x2166",
+    "srcMax": 4435968,
+    "upMax": 0.6727272506735542,
+    "layers": [
+     "src/game/engine.ts:5814  for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(c"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0.03418803418803419,
+     "drawMpx": 0.00000819482559894105,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0.00000819482559894105
+   },
+   {
+    "key": "src/game/engine.ts|render|ctx.save();|main",
+    "site": "src/game/engine.ts:5724",
+    "fn": "render",
+    "siteText": "ctx.save();",
+    "target": "main",
+    "n": {
+     "save": 944
+    },
+    "area": {},
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5724  ctx.save();",
+     "src/game/engine.ts:5773  ctx.save();",
+     "src/game/engine.ts:5790  ctx.save();"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 2.017094017094017,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   },
+   {
+    "key": "src/game/engine.ts|render|ctx.clearRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);|main",
+    "site": "src/game/engine.ts:5728",
+    "fn": "render",
+    "siteText": "ctx.clearRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);",
+    "target": "main",
+    "n": {
+     "clearRect": 468
+    },
+    "area": {
+     "clearRect": 658943978.3981323
+    },
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5728  ctx.clearRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   },
+   {
+    "key": "src/game/scenery.ts|drawFitted|ctx.imageSmoothingQuality = 'low';|main",
+    "site": "src/game/scenery.ts:1948",
+    "fn": "drawFitted",
+    "siteText": "ctx.imageSmoothingQuality = 'low';",
+    "target": "main",
+    "n": {},
+    "area": {},
+    "clipKinds": {},
+    "gco": {
+     "smoothing:low": 1404
+    },
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5755  if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   },
+   {
+    "key": "src/game/scenery.ts|drawFitted|ctx.imageSmoothingQuality = q;|main",
+    "site": "src/game/scenery.ts:1973",
+    "fn": "drawFitted",
+    "siteText": "ctx.imageSmoothingQuality = q;",
+    "target": "main",
+    "n": {},
+    "area": {},
+    "clipKinds": {},
+    "gco": {
+     "smoothing:high": 1404
+    },
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5755  if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   },
+   {
+    "key": "src/game/scenery.ts|lanePool|ctx.imageSmoothingQuality = 'low';|main",
+    "site": "src/game/scenery.ts:1504",
+    "fn": "lanePool",
+    "siteText": "ctx.imageSmoothingQuality = 'low';",
+    "target": "main",
+    "n": {},
+    "area": {},
+    "clipKinds": {},
+    "gco": {
+     "smoothing:low": 468
+    },
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5755  if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   },
+   {
+    "key": "src/game/scenery.ts|lanePool|ctx.imageSmoothingQuality = q;|main",
+    "site": "src/game/scenery.ts:1506",
+    "fn": "lanePool",
+    "siteText": "ctx.imageSmoothingQuality = q;",
+    "target": "main",
+    "n": {},
+    "area": {},
+    "clipKinds": {},
+    "gco": {
+     "smoothing:high": 468
+    },
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5755  if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   },
+   {
+    "key": "src/game/stageArt.ts|drawPitWater|ctx.save();|main",
+    "site": "src/game/stageArt.ts:398",
+    "fn": "drawPitWater",
+    "siteText": "ctx.save();",
+    "target": "main",
+    "n": {
+     "save": 460
+    },
+    "area": {},
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0.9829059829059829,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   },
+   {
+    "key": "src/game/stageArt.ts|drawPitWater|ctx.restore();|main",
+    "site": "src/game/stageArt.ts:408",
+    "fn": "drawPitWater",
+    "siteText": "ctx.restore();",
+    "target": "main",
+    "n": {
+     "restore": 460
+    },
+    "area": {},
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   },
+   {
+    "key": "src/game/stageArt.ts|glow|ctx.save();|main",
+    "site": "src/game/stageArt.ts:118",
+    "fn": "glow",
+    "siteText": "ctx.save();",
+    "target": "main",
+    "n": {
+     "save": 260
+    },
+    "area": {},
+    "clipKinds": {},
+    "gco": {},
+    "special": {},
+    "srcMaxDims": "",
+    "srcMax": 0,
+    "upMax": 0,
+    "layers": [
+     "src/game/engine.ts:5778  this.drawWaterAndFlags(ctx, world);",
+     "src/game/engine.ts:5917  this.collectibles.forEach((item) => {"
+    ],
+    "offSize": "",
+    "runs": [
+     "ctest-mix14/port",
+     "ctest-mix14/land",
+     "ctest-mix8/port",
+     "ctest-mix8/land"
+    ],
+    "perFrame": {
+     "drawImage": 0,
+     "drawMpx": 0,
+     "fills": 0,
+     "fillMpx": 0,
+     "clips": 0,
+     "complexClips": 0,
+     "clipMpx": 0,
+     "clipPts": 0,
+     "gradients": 0,
+     "saves": 0.5555555555555556,
+     "special": 0,
+     "shadow": 0,
+     "filter": 0,
+     "gcoSets": 0,
+     "readbacks": 0,
+     "strokes": 0,
+     "notReady": 0
+    },
+    "weight": 0
+   }
+  ],
+  "layers": [
+   {
+    "layer": "src/game/engine.ts:5724",
+    "text": "ctx.save();",
+    "drawImage": 0,
+    "drawImageArea": 0,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 468,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5728",
+    "text": "ctx.clearRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);",
+    "drawImage": 0,
+    "drawImageArea": 0,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 0,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5755",
+    "text": "if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh",
+    "drawImage": 5012,
+    "drawImageArea": 2079394235.7438185,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 0,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5773",
+    "text": "ctx.save();",
+    "drawImage": 0,
+    "drawImageArea": 0,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 468,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5778",
+    "text": "this.drawWaterAndFlags(ctx, world);",
+    "drawImage": 14223,
+    "drawImageArea": 195106403.6737927,
+    "fills": 460,
+    "fillArea": 44517446.28989118,
+    "clips": 460,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 888,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5802",
+    "text": "else renderWorldObjects(",
+    "drawImage": 5636,
+    "drawImageArea": 10913987.9121442,
+    "fills": 33533,
+    "fillArea": 8555737.841904044,
+    "clips": 16,
+    "complexClips": 16,
+    "gradients": 58,
+    "saves": 7522,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5832",
+    "text": "if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines,",
+    "drawImage": 7213,
+    "drawImageArea": 570627563.6746215,
+    "fills": 17,
+    "fillArea": 76149.45746902877,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 17,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5917",
+    "text": "this.collectibles.forEach((item) => {",
+    "drawImage": 5204,
+    "drawImageArea": 39730613.10545746,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 2803,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:6087",
+    "text": "} else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);",
+    "drawImage": 468,
+    "drawImageArea": 10405508.244862787,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 468,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:6132",
+    "text": "if (!(lair === 'prowler' && prowlerGlow() < 0.98) && !this.w5) this.drawPopups(ctx);",
+    "drawImage": 0,
+    "drawImageArea": 0,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 468,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:6156",
+    "text": "ctx.restore(); // end world transform",
+    "drawImage": 0,
+    "drawImageArea": 0,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 0,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:6171",
+    "text": "else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);",
+    "drawImage": 5917,
+    "drawImageArea": 798690634.3239833,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 4764,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:6276",
+    "text": "ctx.restore(); // end DPR transform",
+    "drawImage": 0,
+    "drawImageArea": 0,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 0,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5867",
+    "text": "if (this.proto?.dress) drawDress(ctx, this.proto.dress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.",
+    "drawImage": 380,
+    "drawImageArea": 2524965.597661329,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 380,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5975",
+    "text": "this.enemies.forEach((enemy) => {",
+    "drawImage": 603,
+    "drawImageArea": 4862530.001996326,
+    "fills": 199,
+    "fillArea": 124611.8726437139,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 411,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5835",
+    "text": "if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlat",
+    "drawImage": 24,
+    "drawImageArea": 0,
+    "fills": 24,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 24,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5790",
+    "text": "ctx.save();",
+    "drawImage": 0,
+    "drawImageArea": 0,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 8,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5792",
+    "text": "drawAura(ctx, 'take', world.id, pl.width * 0.55, 30, this.gameTime, pl.x * 0.013);",
+    "drawImage": 16,
+    "drawImageArea": 15306.470830969602,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 0,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5793",
+    "text": "ctx.restore();",
+    "drawImage": 0,
+    "drawImageArea": 0,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 0,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:6093",
+    "text": "if (this.proto?.bushes) this.drawBushes(ctx);",
+    "drawImage": 33,
+    "drawImageArea": 952404.7797170419,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 33,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:6045",
+    "text": "if (this.proto?.watch) this.drawWatchBack(ctx);",
+    "drawImage": 16,
+    "drawImageArea": 96219.10613204891,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 48,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5814",
+    "text": "for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(c",
+    "drawImage": 40,
+    "drawImageArea": 350805.9192674924,
+    "fills": 0,
+    "fillArea": 0,
+    "clips": 0,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 16,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5781",
+    "text": "this.drawRivers(ctx, world, false);",
+    "drawImage": 184,
+    "drawImageArea": 770223.6545278414,
+    "fills": 16,
+    "fillArea": 0,
+    "clips": 16,
+    "complexClips": 0,
+    "gradients": 0,
+    "saves": 176,
+    "special": 0
+   },
+   {
+    "layer": "src/game/engine.ts:5827",
+    "text": "this.drawRivers(ctx, world, true);",
+    "drawImage": 112,
+    "drawImageArea": 347010.51148912066,
+    "fills": 16,
+    "fillArea": 420437.4265777531,
+    "clips": 16,
+    "complexClips": 0,
+    "gradients": 16,
+    "saves": 128,
+    "special": 0
+   }
+  ]
+ },
  "top15_v7_vs_v6": [
   {
    "site": "src/game/groundPaint.ts:126",
