@@ -65,6 +65,8 @@ export interface Beat {
   ifFound?: string;
   /** said instead once the player has fallen: {N} is the count, in words */
   withFalls?: string;
+  /** the closing card: dark, a beat of silence, then the words on the menu kit's plaque (StoryPlayer) */
+  closing?: boolean;
 }
 
 export interface ChapterSpec {
@@ -314,6 +316,7 @@ export function chapter(spec: ChapterSpec, beats: Beat[]): StoryPanel[] {
     if (b.narratedOnly) panel.narratedOnly = true;
     if (b.ifFound) panel.ifFound = b.ifFound;
     if (b.withFalls) panel.withFalls = b.withFalls;
+    if (b.closing) panel.closing = true;
     if (b.hold) {
       let reach: SceneActor[];
       try {

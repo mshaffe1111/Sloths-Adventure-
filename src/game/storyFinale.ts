@@ -134,7 +134,7 @@ export function endTagPanels(found: string[] = [], thornHeart = false): StoryPan
     M('Dot. How fast can you fly?', 'MS:stand_wait@.44*.85 D@.62^.42', { cue: 'tender', i: 0.4, p: { plate: 'nest-morning', particles: 'none' } }),
     D('Faster than him.', 'MS:stand_wait@.44*.85 D@.6^.4', { p: { plate: 'nest-morning', particles: 'none' } }),
     M('Good. This time, I\'m the one coming.', 'MS:hips@.44*.85 D@.6^.4', { cue: 'finale', i: 0.6, sting: 'bloom', p: { plate: 'nest-morning', particles: 'none', zoom: 1.4, focusX: 0.48 } }),
-    N('To be continued.', '', { m: 'night', p: { plate: 'nest-morning', particles: 'none', zoom: 1 } }),
+    N('To be continued.', '', { closing: true, cue: 'hush', i: 0, p: { plate: 'nest-morning', particles: 'none', zoom: 1.2 } }),
   ]));
   return out;
 }

@@ -9,6 +9,7 @@ import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlat
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
+import { Plaque } from './KitParts.tsx';
 import { Icon, type IconName } from './icons/index.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 
@@ -430,8 +431,8 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       </div>
 
       {/* (a steady height for six lines of words, so the picture above stays put from one panel to the next; a longer line still grows it) */}
-      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS + 60 }}>{!cardUp && box}</div>}
-      {wide && !cardUp && (
+      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS + 60 }}>{!cardUp && !panel.closing && box}</div>}
+      {wide && !cardUp && !panel.closing && (
         <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
           {box}
         </div>
@@ -444,6 +445,16 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
             <span className={`sp-thumb gx-token ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`}><Icon name="paw" size={17} /></span>
           </div>
           <div className="sp-hold-say kit-plaque"><span>{phase === 'lift' || phase === 'reach' ? hold.lift : hold.both}</span></div>
+        </div>
+      )}
+
+      {/* the closing card: the picture goes dark, a beat of silence, then the words on the menu kit's plaque; a tap ends it */}
+      {panel.closing && !cardUp && (
+        <div className="sp-close" onClick={onFinish} key={`close-${idx}`} role="button" aria-label={panel.text}>
+          <Plaque as="h2" className="sp-close-plaque">
+            {panel.text.replace(/\.$/, '')}
+          </Plaque>
+          <div className="sp-card-hint sp-close-hint">tap to finish</div>
         </div>
       )}
 

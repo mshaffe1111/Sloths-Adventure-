@@ -173,6 +173,8 @@ export interface StoryPanel {
   ifFound?: string;
   /** said instead of `text` once the player has fallen at least once: {N} is how many times, in words (storyNotice.ts) */
   withFalls?: string;
+  /** the closing card (the sequel hint's last word): the picture goes dark, a beat of silence, then `text` on the menu kit's plaque */
+  closing?: boolean;
 }
 
 /**

@@ -666,6 +666,12 @@ function pin(a: SceneActor, w: number, h: number): SceneActor {
   return { ...a, x: (plateMap.ox + a.x * plateMap.iw) / w, y: a.y === undefined ? a.y : (a.y * plateMap.bh) / h };
 }
 
+/** true for a plate with no painting above its scene (the 1024 x 572 ones), once it has loaded */
+function shortPlate(key: string): boolean {
+  const im = plateImage(key);
+  return !!im && im.naturalHeight <= im.naturalWidth * PLATE_BASE + 1;
+}
+
 function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, lift: number, t = 0, top = 0) {
   const im = plateImage(key);
   const hh = h * (1 + lift) + 4;
@@ -1547,7 +1553,13 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   // camera: close-up zoom with a slow push-in
   const cam = scene.camera ? cameraAt(scene.camera, t) : null;
   const big = scene.actors.reduce((m, a) => Math.max(m, a.scale ?? 1), 1);
-  const z = capStoryZoom(cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1)), devScale(ctx), big);
+  // (a plate painted before the tall repaints, 1024 x 572, has nothing above the scene: upright the camera comes in just far enough that
+  // the view stays inside the painting, so no dark band shows over it; the figures stand in the same space, so their feet do not move)
+  const short = scene.plate ? shortPlate(scene.plate) : false;
+  const z = Math.max(
+    capStoryZoom(cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1)), devScale(ctx), big),
+    short ? vh / h : 0,
+  );
   const fx = Math.min(w - w / (2 * z), Math.max(w / (2 * z), (cam ? cam.fx : scene.focusX ?? 0.5) * w));
   // (upright the view is taller than the scene: it stands on the scene's bottom edge and the room above shows the painting's top)
   const fy = Math.min(h - vh / (2 * z), Math.max(-top + vh / (2 * z), (cam ? cam.fy : scene.focusY ?? 0.62) * h));
