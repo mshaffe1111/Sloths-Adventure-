@@ -223,3 +223,7 @@ hfg-face-810 6ae4d8d9c78863f9c62e9b9b rtx-pro-6000 created 17:50:17Z: tools/art/
 finished: hfg-face-810 17:53:58Z (3.7 min, ~$0.17)
 hfg-face-89b 6ae4d9fdc78863f9c62e9c14 rtx-pro-6000 created 17:55:09Z: tools/art/hfground/spec-face-89b.json (W8-9 bank faces redo, 0.86)
 finished: hfg-face-89b 17:58:09Z (3.0 min, ~$0.14)
+hfg-pm-1030 6ae4e5280e0338d1bb7ccd26 rtx-pro-6000 created 18:42:48Z: tools/art/hfground/spec-pm-1030.json (lead's afternoon list: bank ends on a green key x10 worlds x2 seeds, W8 rounded stones x4, W10 faces x8; 32 items)
+finished: hfg-pm-1030 18:47:04Z (4.3 min, ~$0.20); results hfground/pm1030 (carrier-pm-0.png). KEPT: stones-w8-72-s61, stones-w8-72-s63 (faces810.webp stones row); face3-w10-2-s17 (porthole), face3-w10-3-s17 (shield), face3-w10-0-s17 (ringed boulder).
+  Not used: all twenty gend-* bank ends (no purple, but the whole body took a grey-green cast from the key and the tops
+  came out unlike each world's lip, e.g. World 10's orange; checked in the game and dropped, pack3.py kept for a redo); the four face3-w10-*-s15 (a whole landscape cross-section, no piece), face3-w10-1-s17 (green blob behind the chain), stones-w8-60-*.

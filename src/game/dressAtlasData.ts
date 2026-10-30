@@ -268,14 +268,14 @@ export const DRESS_FRAMES = {
   "y": 2071,
   "w": 125,
   "h": 163,
-  "units": 52
+  "units": 32
  },
  "w8FlowersB": {
   "x": 642,
   "y": 2071,
   "w": 130,
   "h": 150,
-  "units": 54
+  "units": 33
  },
  "w8Firefly": {
   "x": 774,

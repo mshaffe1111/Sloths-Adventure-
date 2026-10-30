@@ -14,7 +14,7 @@ ROOT = HERE.parents[2]
 PM = ROOT / 'src/assets/w6to10/props-made'
 # name: (sheet, frame, units drawn wide, hang)
 P = {
-    'w8Flowers': ('w8c', 'night-flowers', 52, 0), 'w8FlowersB': ('w8c-b', 'night-flowers', 54, 0),
+    'w8Flowers': ('w8c', 'night-flowers', 32, 0), 'w8FlowersB': ('w8c-b', 'night-flowers', 33, 0),
     'w8Firefly': ('w8c', 'firefly-leaf', 50, 0), 'w8FireflyB': ('w8c-b', 'firefly-leaf', 50, 0),
     'w8Nest': ('w8c', 'bird-nest', 70, 0), 'w8NestB': ('w8c-b', 'bird-nest', 74, 0),
     'w8Fungus': ('w8c', 'bark-fungus', 104, 0), 'w8Hollow': ('w8c', 'tree-hollow', 96, 0), 'w8HollowB': ('w8c-b', 'tree-hollow', 92, 0),

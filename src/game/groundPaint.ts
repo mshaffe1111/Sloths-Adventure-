@@ -116,10 +116,22 @@ function blobField(): HTMLCanvasElement | null {
 const BLOB_PERIOD = 3000;
 
 /**
+ * Where the darkening with depth runs at x: the view's top and bottom it is laid out for there ([viewTop, viewBottom]). Given, the
+ * darkening is drawn in strips DEPTH_STRIP wide, each laid out for its own x, so it follows one smooth line along the ground: laid out
+ * from each bank's own top, a pit's floor (lower) was lighter than the banks either side at the same height, a column of a different
+ * shade under every pit (the lead's W3 bands, 2026-10-30).
+ */
+export type DepthAt = (x: number) => [number, number];
+/** the strips the darkening is drawn in when it follows the ground (world units; drawn once, into the ground's squares) */
+const DEPTH_STRIP = 8;
+
+/**
  * Paint the world's soil over the box x0..x1 by top..bottom (already clipped by the caller to the bank's shape), with the darkening
  * passes (`shade`, shadeSoil). `viewBottom`: the bottom of the view, where the soil is darkest. Returns false until the sheet has loaded.
  */
-export function drawSoil(ctx: C, w: number, x0: number, x1: number, top: number, bottom: number, viewBottom: number, viewTop?: number, shade = true): boolean {
+export function drawSoil(
+  ctx: C, w: number, x0: number, x1: number, top: number, bottom: number, viewBottom: number, viewTop?: number, shade = true, depthAt?: DepthAt,
+): boolean {
   const s = sheet(w);
   if (!s) return false;
   if (x1 <= x0 || bottom <= top) return true;
@@ -129,7 +141,7 @@ export function drawSoil(ctx: C, w: number, x0: number, x1: number, top: number,
     // (a hair over a tile, so no gap shows between two at any zoom)
     ctx.drawImage(img, f.x, f.y, f.w, f.h, cell.x, cell.y, SOIL_TILE + 0.6, SOIL_TILE + 0.6);
   }
-  if (shade) shadeSoil(ctx, w, x0, x1, top, bottom, viewBottom, viewTop);
+  if (shade) shadeSoil(ctx, w, x0, x1, top, bottom, viewBottom, viewTop, depthAt);
   return true;
 }
 
@@ -138,7 +150,7 @@ export function drawSoil(ctx: C, w: number, x0: number, x1: number, top: number,
  * depth by the view. drawProtoScene draws them once over every bank's soil together (G3: drawn per bank, two banks' soils overlapping
  * by a unit were darkened twice, a dark line where they met).
  */
-export function shadeSoil(ctx: C, w: number, x0: number, x1: number, top: number, bottom: number, viewBottom: number, viewTop?: number): boolean {
+export function shadeSoil(ctx: C, w: number, x0: number, x1: number, top: number, bottom: number, viewBottom: number, viewTop?: number, depthAt?: DepthAt): boolean {
   const s = sheet(w);
   if (!s) return false;
   const { g } = s;
@@ -150,22 +162,31 @@ export function shadeSoil(ctx: C, w: number, x0: number, x1: number, top: number
   }
   // darker with depth, by the view: nothing above where he stands (about the middle of the view), DEPTH_DARK by its bottom, so two
   // banks of different heights side by side are darkened alike and meet with no step
-  const deep = g.deep;
-  const vt = viewTop ?? viewBottom - 900;
-  const y0 = vt + (viewBottom - vt) * 0.5;
-  const gr = bottom > y0 && typeof ctx.createLinearGradient === 'function' ? ctx.createLinearGradient(0, y0, 0, viewBottom) : null;
-  if (gr) {
-    gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
-    gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`);
-    ctx.fillStyle = gr;
-    const a = Math.max(top, y0);
-    ctx.fillRect(x0, a, x1 - x0, Math.min(bottom, viewBottom) - a);
-    if (bottom > viewBottom) {
-      ctx.fillStyle = `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`;
-      ctx.fillRect(x0, viewBottom, x1 - x0, bottom - viewBottom);
-    }
+  if (!depthAt) {
+    depthBand(ctx, g.deep, x0, x1, top, bottom, viewBottom, viewTop ?? viewBottom - 900);
+    return true;
+  }
+  for (let x = Math.floor(x0 / DEPTH_STRIP) * DEPTH_STRIP; x < x1; x += DEPTH_STRIP) {
+    const [vt, vb] = depthAt(x + DEPTH_STRIP / 2);
+    depthBand(ctx, g.deep, Math.max(x0, x), Math.min(x1, x + DEPTH_STRIP), top, bottom, vb, vt);
   }
   return true;
+}
+
+/** the darkening with depth over x0..x1: nothing above the view's middle, DEPTH_DARK by its bottom and below */
+function depthBand(ctx: C, deep: GroundSheet['deep'], x0: number, x1: number, top: number, bottom: number, viewBottom: number, vt: number) {
+  const y0 = vt + (viewBottom - vt) * 0.5;
+  const gr = bottom > y0 && typeof ctx.createLinearGradient === 'function' ? ctx.createLinearGradient(0, y0, 0, viewBottom) : null;
+  if (!gr) return;
+  gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
+  gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`);
+  ctx.fillStyle = gr;
+  const a = Math.max(top, y0);
+  ctx.fillRect(x0, a, x1 - x0, Math.min(bottom, viewBottom) - a);
+  if (bottom > viewBottom) {
+    ctx.fillStyle = `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`;
+    ctx.fillRect(x0, viewBottom, x1 - x0, bottom - viewBottom);
+  }
 }
 
 /** the top lip along x0..x1 with Pokey's walking line at y (repeats laid from the world's origin, so touching banks run on as one) */

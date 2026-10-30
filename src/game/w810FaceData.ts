@@ -2,3 +2,4 @@
  * the world's own soil and feathered at its edges. Drawn by w810FaceArt.ts. */
 export const FACE810_URL = new URL('../assets/props/faces810.webp', import.meta.url).href;
 export const FACE810_FRAMES: Record<number, Array<{ x: number; y: number; w: number; h: number }>> = {"8": [{"x": 0, "y": 0, "w": 384, "h": 384}, {"x": 386, "y": 0, "w": 384, "h": 384}, {"x": 772, "y": 0, "w": 384, "h": 384}], "9": [{"x": 1158, "y": 0, "w": 384, "h": 384}, {"x": 1544, "y": 0, "w": 384, "h": 384}, {"x": 0, "y": 386, "w": 384, "h": 384}, {"x": 386, "y": 386, "w": 384, "h": 384}], "10": [{"x": 772, "y": 386, "w": 384, "h": 384}, {"x": 1158, "y": 386, "w": 384, "h": 384}, {"x": 1544, "y": 386, "w": 384, "h": 384}]};
+export const FACE810_STONES: Array<{ x: number; y: number; w: number; h: number }> = [{"x": 0, "y": 772, "w": 395, "h": 181}, {"x": 397, "y": 772, "w": 391, "h": 185}];
