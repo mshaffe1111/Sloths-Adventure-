@@ -188,6 +188,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
   // (Worlds 1, 2 and 5 on their built stages, and Worlds 8-10 on every stage: the dressing sets' sheet, artDress.ts dressSets)
   if (((built && (w === 1 || w === 2 || w === 5)) || w >= 8) && cfg.objectiveType !== 'boss_lair') out.push('dress');
+  // (Worlds 8-10: the pieces set into their banks' faces, w810FaceArt.ts)
+  if (w >= 8 && cfg.objectiveType !== 'boss_lair') out.push('faces810');
   if (built && W4_FALL_STAGES.has(cfg.id)) out.push('w4-falls');
   // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
