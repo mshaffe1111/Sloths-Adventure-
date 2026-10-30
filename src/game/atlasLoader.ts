@@ -3,6 +3,8 @@ import { recorder } from './playRecorder.ts';
 
 /** the last picture sheet to finish loading, and when (performance.now()): the control test names it on a stall that follows */
 export const lastSheet = { name: '', at: 0 };
+/** counts every sheet that has finished loading: a picture baked from sheets (protoArt.ts groundChunks) is redone when it moves on */
+export const sheetEpoch = { n: 0 };
 
 /**
  * Loads a painted sprite atlas. The picture is decoded before the sprite counts as ready, so the first draw
@@ -27,6 +29,7 @@ export function trackAtlas(img: HTMLImageElement, url: string, onReady: () => vo
     lastSheet.at = performance.now();
     if (recorder.on) recorder.event('sheet', `${lastSheet.name} ${Math.round(performance.now() - t0)}ms`);
     sheet.ready = true;
+    sheetEpoch.n++;
     settle(sheet);
     onReady();
   };
