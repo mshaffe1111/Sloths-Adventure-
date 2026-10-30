@@ -12,4 +12,10 @@ Nothing here is built. The sequel waits until this game ships. Threads the story
 **The lead's recommendation (to Matt, 2026-10-30): keep the cliffhanger small.** A paid game should feel complete. One short scene after
 the credits: the storm in the east, a broken collar on the riverbank, Meeca picks it up and looks east; the last line becomes
 "...the last of the storm said something. This time, it said Pokey's name." One painted card (Gemini prompt for Matt first) and 2-3 lines.
-Waiting on Matt's yes.
+
+**DECIDED (Matt, 2026-10-30 ~2 PM ET): A + B, after the credits (after the stopwatch tag).**
+- A, for everyone: the storm returns from the east; Pokey's branch empty in the morning; the long scarf Meeca knitted hangs from a black
+  thorn. MEECA: "Dot. How fast can you fly?" DOT: "Faster than him." MEECA: "Good. This time, I'm the one coming." Then "To be continued".
+- B, only for players who beat the Thornbark secret boss, just before A: Thornbark: "The thorns did not come from Iron-Claw. They came from
+  the east, with the storm. And they are growing back." A black thorn sprouts by Pokey's branch (the one that holds the scarf in A).
+- Story-a writes and wires it; Pokey and Meeca cards are Gemini art from Matt (prompts by the lead); interim existing plates until then.

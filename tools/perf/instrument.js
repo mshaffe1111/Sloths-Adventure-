@@ -152,6 +152,9 @@
           if (sw0 * sh0 > r.srcMax) { r.srcMax = sw0 * sh0; r.srcMaxDims = `${sw0}x${sh0}`; }
           const up = Math.max(v.dw / Math.max(1, Math.abs(sw)), v.dh / Math.max(1, Math.abs(sh)));
           if (v.area > 0 && up > r.upMax) r.upMax = up;
+          // a sheet shrunk on the way in (source pixels per device pixel, the larger side): PERFORMANCE-RULES §8.1
+          const down = v.area > 0 ? Math.min(Math.abs(sw) / Math.max(1e-6, v.dw), Math.abs(sh) / Math.max(1e-6, v.dh)) : 0;
+          if (down > 2.5) { inc(r.n, 'shrunk>2.5x'); if (down > (r.downMax || 0)) r.downMax = down; if (r.target === 'main') fr().shrunk++; }
           const s = noteSpecial(this, r, 'drawImage');
           if (r.target === 'main') {
             const f = fr();
@@ -283,7 +286,7 @@
   S.uninstall = uninstall;
   S.reset = () => { S.sites = new Map(); S.frames = []; };
   S.beginFrame = (meta) => {
-    S.cur = { ...meta, drawImage: 0, drawImageArea: 0, fills: 0, fillArea: 0, blendArea: 0, strokes: 0, clips: 0, complexClips: 0, gradients: 0, patterns: 0, saves: 0, readbacks: 0, shadowSets: 0, filterSets: 0, gcoSets: 0, newCanvas: 0, newCanvasSites: {} };
+    S.cur = { ...meta, drawImage: 0, drawImageArea: 0, fills: 0, fillArea: 0, blendArea: 0, shrunk: 0, strokes: 0, clips: 0, complexClips: 0, gradients: 0, patterns: 0, saves: 0, readbacks: 0, shadowSets: 0, filterSets: 0, gcoSets: 0, newCanvas: 0, newCanvasSites: {} };
     S.inFrame = true;
   };
   S.endFrame = () => { S.inFrame = false; S.frames.push(S.cur); S.cur = null; };
