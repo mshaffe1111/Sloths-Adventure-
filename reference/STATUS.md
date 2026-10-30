@@ -20,6 +20,14 @@ MATT ~10:15 PM ET: HF $80 is the last money; no price approvals, spend it down t
 
 TEST LINK v7 PUBLISHED ~10:58 PM ET (EBK version 1793328309-e4f4, ccr 1655adfc; gate14 2029/2027/0 fail): tonight's build + the torn-band strip fix. Waiting on Matt's play and 'push' -> freeze a release branch from 1655adfc.
 
+NIGHT STOP (Matt ~11:00 PM ET): every helper told to push, kill background jobs, cancel reminders and stop. Lead check-ins cancelled. Nothing runs overnight.
+
+TOMORROW'S SCHEDULE (proposed to Matt; at most about 6 helpers at once, lead check-ins every 45 min, everything stops by 10:30 PM ET):
+- Wave 1, about 9 AM-12 PM ET, FINISH AND MERGE (cheap, nearly done): W5 rebuild (afd0d02b), satchel/journal/finds (story-a), arcade words (polish-c b5743d00), no-flat-background (PF-1 22a631f8), one-petal pass (polish-levels), 8-4 (after its re-shoot), ending cards + cutscene fixes (story-art), full-band sound (polish-sfx). Then test link v8 at about 12 PM ET.
+- Wave 2, about 1-5 PM ET, ART AND APP: ground tiles + pit ends (hf-art-ground), hazards/water (hazard-anim), menu kit mock then wiring + icon (hf-art-bosses), Android app fixes (polish-a2), safe areas + foldables (polish-c), cleanness C1-C5 (polish-clean). Test link v9 at about 5 PM ET.
+- Wave 3, about 6-10 PM ET, WORLDS: W8, W9, W10 curation and merge (heavy compute), Dot no-repeat + S-5 (polish-dot), PF-1b/PF-2. Test link v10 at about 10 PM ET.
+- Waiting on Matt: play v7 and say push; the Drake teacup ending yes/no (boss art and build wait); the W9-10 stage plan (canopy 'last trees', special stages); gen2-ascent stays stopped until then.
+
 How the lead runs it: a check-in every 30 min (send_later, re-armed each time). Each check-in: list_sessions; read every report; review against LEAD-PLAYBOOK §4; merge what passes (fetch first, one gate per batch); send back what doesn't; nudge anything idle or stuck with no report for 60+ min; update this board; tell Matt only decisions and finished things. Test link cutoff 10:40 PM ET, link 11 PM ET.
 
 Track A, finish the game (owner, next milestone):
