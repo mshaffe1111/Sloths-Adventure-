@@ -300,6 +300,19 @@ const restAsh = section({
   mirrorable: true,
 });
 
+/** 9-9's breather: a ledge of the hoard with a smoke crack, up a step and over a knob */
+const restHoard = section({
+  id: 'w9-rest-hoard',
+  name: 'the hoard ledge',
+  archetypes: 'any',
+  phases: ['rest', 'goal'],
+  difficulty: 1,
+  pieces: [bank('a', [160, 190]), up('ledge', 'a', 48, [260, 300]), up('k', 'ledge', 30, [130, 150]), down('b', 'k', 78, [160, 190])],
+  last: 'b',
+  sockets: [flag('ledge', 0.45), scenery('smoke', 'ledge', [0.8, 0.9], 0.8), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
 /** 9-8's breather: up two basalt steps to a lookout ledge (the flag), and down the far side */
 const restLedge = section({
   id: 'w9-rest-ledge',
@@ -931,6 +944,10 @@ const burstRow = section({
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
 const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas', line: 'hunt' | 'fight'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
+  // (the hoard's gate climbs a basalt stair to the Drake's door and down again, the ash fields' crosses two knobs: the two fight stages
+  // never open alike)
+  const stair: SectionPiece[] = [bank('a', [200, 240]), up('s1', 'a', 40, [150, 170]), up('s2', 's1', 40, [150, 170]), up('top', 's2', 40, [260, 300]), down('d1', 'top', 60, [160, 180]), down('f2', 'd1', 60, [200, 240])];
+  const fight = line === 'fight';
   return section({
     id: `w9-${line}-gate-${theme}`,
     name: `${line === 'hunt' ? 'the ash fields' : "the Drake's hoard"}: ${theme} (arena gate)`,
@@ -939,9 +956,11 @@ const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas', line: 'hunt' | '
     difficulty: 1,
     teaches: W9_THEME[theme],
     weight: 6,
-    pieces: [bank('a', [220, 260]), ...k.pieces],
-    last: k.last,
-    sockets: [tip(line === 'hunt' ? W9_LESSON.hunt : W9_LESSON.fight, 'a', 0.15), petals('k1', 'k1', 0.5, 1), petals('f1', 'f1', 0.5, 2, 80), petals('k2', 'k2', 0.5, 1), scenery('log', 'f2', [0.5, 0.7], 0.7)],
+    pieces: fight ? stair : [bank('a', [220, 260]), ...k.pieces],
+    last: fight ? 'f2' : k.last,
+    sockets: fight
+      ? [tip(W9_LESSON.fight, 'a', 0.15), petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('top', 'top', 0.5, 2, 90), scenery('smoke', 'f2', [0.5, 0.7], 0.7)]
+      : [tip(W9_LESSON.hunt, 'a', 0.15), petals('k1', 'k1', 0.5, 1), petals('f1', 'f1', 0.5, 2, 80), petals('k2', 'k2', 0.5, 1), scenery('log', 'f2', [0.5, 0.7], 0.7)],
     mirrorable: false,
   });
 };
@@ -1205,6 +1224,7 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
   restHollow,
   restWarm,
   restAsh,
+  restHoard,
   restLedge,
   lavaHop,
   lavaRise,
@@ -1283,5 +1303,6 @@ export const W9_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object
   ...[huntGates[0], huntGates[1], catDen, jaguarLeap, hunterRun, hunterBrink, catLedges, prowlCrust, catChasm].map((s) => [s.id, [6]] as const),
   ...[...threadGates, highLedge, overLedge, channelThread, ventThread, basaltLong, basaltChasm, basaltRun, basaltTwin, restLedge].map((s) => [s.id, [8]] as const),
   ...[huntGates[2], huntGates[3], harpyField, harpyGap, pillarRun, harpyPillars, boaChasm, boaLedges, hotRun, hoardPillars].map((s) => [s.id, [9]] as const),
-  [restAsh.id, [6, 9]] as const,
+  [restAsh.id, [6]] as const,
+  [restHoard.id, [9]] as const,
 ]);
