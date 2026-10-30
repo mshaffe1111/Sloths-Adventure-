@@ -222,6 +222,12 @@ class SoundEngine {
   playWindChime() { this.c.fx('windChime'); }
   /** a mushroom or a springy pad throwing him up (it used to be the jump) */
   playBounce() { this.c.fx('bounce'); }
+  /** a pushed log starting to roll (a wooden knock; the bark scrape that follows is the climb's) */
+  playLog() { this.c.fx('log'); }
+  /** World 3's thorn vines lashing (they used to whoosh) */
+  playThorns() { this.c.fx('thorns'); }
+  /** a wooden gate swinging open (the secret thorn gate; the puzzle gates play it through playPuzzle) */
+  playGate() { this.c.fx('gate'); }
   /** a crumbling ledge giving way (it used to be a heavy hit) */
   playCrumble() { this.c.fx('crumble'); }
   /** a guardian's tell, the wind-up before its attack (SN-4): its own sound, `world` 1..10, 11 Thornbark */

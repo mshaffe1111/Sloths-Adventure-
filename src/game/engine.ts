@@ -157,7 +157,7 @@ import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar 
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
-import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
+import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
@@ -252,6 +252,8 @@ export interface GameEngineCallbacks {
   onCinematic?: (on: boolean) => void;
 }
 
+/** a footstep sound on every this-many footfalls of his run frames (2026-10-30; until then one every 52 px, unsynced) */
+export const STEP_EVERY = 2;
 /** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
 export const STEP_FACE = { min: 30, max: 100 } as const;
 /**
@@ -2224,6 +2226,8 @@ export class GameEngine {
             const nx = Math.max(plat.push.min, Math.min(plat.push.max - plat.width, plat.x + dir * PUSH_SPEED * dt));
             if (nx !== plat.x) {
               plat.x = nx;
+              // a log that was standing still gives a wooden knock as it starts to roll; then the bark scrapes along
+              if (this.gameTime - (this.protoScene.movedAt.get(plat.id) ?? -9) > 0.5) sound.playLog();
               this.protoScene.movedAt.set(plat.id, this.gameTime);
               this.pushSoundT -= dt;
               if (this.pushSoundT <= 0) {
@@ -2747,6 +2751,7 @@ export class GameEngine {
           this.camera.trauma = 0.7;
           this.spawnSparkBurst(c.x, c.y, '#a78bfa');
           this.addFloatingText('The thorn gate opens.', c.x, c.y - 30, '#c4b5fd');
+          sound.playGate();
           sound.playBossRoar(this.currentStage.config.worldIndex);
           this.callbacks.onSecret?.();
         }
@@ -3194,7 +3199,9 @@ export class GameEngine {
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
   private soundTimer = 0;
-  private stepDist = 0;
+  private stepCycle = 0;
+  private footfalls = 0;
+  private airAt = -1;
   private updateSound(dt: number, groundedBefore: boolean, vyBefore: number, progress: number) {
     const p = this.player;
     // the stage is over (game over / victory screen up): no heartbeat, and the screen's own music intensity stands
@@ -3207,15 +3214,18 @@ export class GameEngine {
       // (a hard landing buzzes: AN-9)
       if (vyBefore > HARD_LAND_VY) buzz('hardLand');
     }
-    // footsteps: one leaf-crunch every few body-lengths on the ground
-    if (p.grounded && !p.climbing && Math.abs(p.vx) > 25) {
-      this.stepDist += Math.abs(p.vx) * dt;
-      if (this.stepDist > 52) {
-        this.stepDist = 0;
+    // footsteps: a soft pad as a foot comes down in his run frames (heroClips RUN_FOOTFALLS), every STEP_EVERY-th one so it stays calm
+    // (Matt, 2026-10-30: about 3.3 a second at a full run). Only a footfall passed fires one, so starting or stopping adds none, and
+    // none in the 0.15 s after he lands (the landing has its own sound)
+    const falls = footfallsBetween(this.stepCycle, p.walkCycle);
+    this.stepCycle = p.walkCycle;
+    if (!p.grounded) this.airAt = this.gameTime;
+    else if (falls > 0 && !p.climbing && Math.abs(p.vx) > 25 && this.gameTime - this.airAt > 0.15) {
+      this.footfalls += falls;
+      if (this.footfalls >= STEP_EVERY) {
+        this.footfalls = 0;
         sound.playStep();
       }
-    } else if (!p.grounded) {
-      this.stepDist = 26;
     }
 
     this.soundTimer -= dt;
@@ -7310,13 +7320,13 @@ export class GameEngine {
       if (ear && ph.phase === 'look' && !this.vineLash.has(i) && this.vineStruck.get(i) !== ear.t) {
         this.vineStruck.set(i, ear.t);
         this.vineLash.set(i, { at: this.gameTime, dir: ear.x >= v.x ? 1 : -1, landed: true, cycle });
-        sound.playWhoosh();
+        sound.playThorns();
       }
       if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, !!ear)) {
         // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
         // (an awake vine swats him back the way he came)
         this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: v.awake ? (p.facing >= 0 ? -1 : 1) : p.x >= v.x ? 1 : -1, landed: false, cycle });
-        sound.playWhoosh();
+        sound.playThorns();
       }
       const l = this.vineLash.get(i);
       if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {

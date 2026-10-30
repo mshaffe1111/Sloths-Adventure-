@@ -12,9 +12,15 @@ import glob, json, os, sys
 import numpy as np
 sys.path.insert(0, os.path.dirname(__file__))
 from kit import *
+import kit
+from measure import stats as measure_stats
 
 CLIPS, OUT = sys.argv[1], sys.argv[2]
-ONLY = set(sys.argv[3:])
+ONLY = set(a for a in sys.argv[3:] if not a.startswith('--'))
+if '--fullband' in sys.argv:
+    # full-band originals (fullband.py): the ceilings open up (kit.LP_SCALE)
+    import kit
+    kit.LP_SCALE = 1.8
 rng = np.random.default_rng(29)
 USED = {}
 
@@ -59,6 +65,22 @@ def slices(fid, dur=0.3, thr=0.2, mingap=0.15, pre=0.006):
         if len(s) > 0.04 * SR:
             out.append(fade(s, 0.001, min(0.06, len(s) / SR / 3)))
     return out
+
+
+AIR_MAX = 6.0
+
+
+def tame(x, most=AIR_MAX):
+    """the full-band originals carry real air above 6 kHz; past `most` % of the energy it reads as hiss on a phone speaker, so the
+    top is shelved down (up to -18 dB) until it is back under (every take, as it is written; calib.py then sets its level)"""
+    if kit.LP_SCALE <= 1.0 or not len(x) or np.abs(x).max() < 1e-4:
+        return x
+    lo = lp(x, 6000, 4, scale=False)
+    y, g = x, 1.0
+    while measure_stats(y, SR)["hf6k"] > most and g > 0.13:
+        g *= 0.8
+        y = (lo + g * (x - lo)).astype(np.float32)
+    return y
 
 
 def level(takes, lufs_target):
@@ -128,7 +150,7 @@ def note(m, dur=0.6, tau=0.25, lpf=2600):
     base = min(MARIMBA, key=lambda k: abs((m - k) % 12) + 0.01 * abs(m - k))
     x = trim(src(MARIMBA[base]), thr_db=-24, back=0.002)
     y = rate(x, 2 ** ((m - base) / 12))[: int(dur * SR)]
-    return fade(env_decay(lp(hp(y, 120), lpf, 4), tau), 0.002, min(0.15, dur / 3))
+    return fade(env_decay(lp(hp(y, 120), lpf, 4, scale=False), tau), 0.002, min(0.15, dur / 3))
 
 
 def leafy(i, dur=0.3, lpf=4500):
@@ -185,14 +207,81 @@ def steps(ids, dur, lpf, hpf, n, target, thr=0.2):
     return level([fade(lp(hp(rate(s, rng.uniform(0.95, 1.05)), hpf), lpf), 0.001, 0.05) for s in pool[:n]], target)
 
 
+# Pokey's steps on leaves and moss, and on wood (Matt, 2026-10-30: today's "sounds like somebody chewing"; he picked F of
+# tools/audio/sfxv1/footcand.py: paws with a footstep on top, and the padded plank). The same recipe and the same draws as the page he
+# heard (footcand.py's rng(30): 12 draws for its sets A and B, then 6 for C's footstep rates, then 6 for the planks)
+PAWS = [471837]   # "11-PatasTierra" (a creature's paws on earth; CC0)
+
+
+def _feet():
+    from scipy.signal import filtfilt, iirnotch
+    from measure import lufs as _lufs
+    r = np.random.default_rng(30)
+    r.uniform(size=12)
+    c_rates = [r.uniform(0.8, 0.88) for _ in range(6)]
+    plank_rates = [r.uniform(0.8, 0.9) for _ in range(6)]
+
+    def loud(x):
+        p = np.zeros(int(0.6 * SR), np.float32)
+        y = hp(x, 300, 2)
+        p[: min(len(y), len(p))] = y[: len(p)]
+        v = _lufs(p)
+        return -70.0 if v is None else v
+
+    def at(x, target):
+        return (x * 10 ** ((target - loud(x)) / 20)).astype(np.float32)
+
+    def soften(x, attack=0.008):
+        return fade(x, attack, 0.06)
+
+    def smooth(x, ms=12):
+        k = max(1, int(ms / 1000 * SR))
+        env = np.sqrt(np.convolve(x ** 2, np.ones(k) / k, mode='same')) + 1e-6
+        fast = np.sqrt(np.convolve(x ** 2, np.ones(16) / 16, mode='same')) + 1e-6
+        return (x * np.minimum(1.0, env / fast)).astype(np.float32)
+
+    leaves = slices_of(LEAVES, 0.24, 0.2, 0.15)
+
+    def brush(i, dur, cut):
+        """a foot brushing leaves: a slow swell, its crackle smoothed away"""
+        return fade(lp(smooth(hp(leaves[i % len(leaves)][: int(dur * SR)], 300)), cut, 4, scale=False), 0.03, 0.07)
+
+    def dehum(x):
+        # the paws recording has a steady whine near 1.55 kHz and 2.8 kHz under every step
+        for f0 in (1523, 1555, 1594, 1754, 2797):
+            bb, aa = iirnotch(f0, 12, SR)
+            x = filtfilt(bb, aa, x)
+        return x.astype(np.float32)
+
+    thumps = slices_of(THUD, 0.3, 0.3, 0.2, top=8)
+    wood_steps = slices_of(STEP_WOOD, 0.24, 0.2, 0.18, top=10)
+    forest = slices_of(STEP_FOREST, 0.26, 0.2, 0.18, top=12)
+    paws = slices(PAWS[0], 0.3, 0.25, 0.2)[:8]
+    paws.sort(key=lambda s: -np.abs(s).max())
+    # the paw on earth (dehummed), a wisp of leaf; the real footstep under the crunch (low-passed at 1.4 kHz, slowed), 6 dB over it
+    paw = [mix((soften(lp(dehum(hp(rate(s, 0.92), 140)), 1600, 4, scale=False), 0.008), 0, 0), (brush(i, 0.14, 1800), 0.01, -16))
+           for i, s in enumerate(paws[:6])]
+    step = [soften(lp(hp(rate(forest[i], c_rates[i]), 150), 1400, 4, scale=False), 0.012) for i in range(6)]
+    leaf = [mix((at(paw[i], -30.0), 0, 0), (at(step[(i + 2) % 6], -30.0), 0.004, -6)) for i in range(6)]
+
+    def pad(i, rr):
+        return soften(lp(hp(rate(thumps[i % len(thumps)], rr), 140), 1100, 4, scale=False), 0.01)
+
+    def plank(i, rr):
+        """a padded step on planks: mostly a soft low thump, the board a muffled tap under it, every attack rounded"""
+        board = fade(lp(hp(rate(wood_steps[(i + 1) % len(wood_steps)], 0.8), 160), 700, 4, scale=False), 0.015, 0.06)
+        return fade(lp(mix((pad(i, rr), 0, 0), (board, 0.004, -6)), 1500, 4, scale=False), 0.012, 0.06)
+    return leaf, [plank(i, plank_rates[i]) for i in range(6)]
+
+
 def stepMoss():
-    """a soft footfall on the forest floor"""
-    return steps(STEP_FOREST, 0.26, 4000, 120, 8, -30)
+    """Pokey padding over leaves and moss: a paw settling on soft earth, a muted footstep on top. Never crunchy, wet or mouth-like"""
+    return level(_feet()[0], -30)
 
 
 def stepWood():
-    """a footfall on a branch or a plank: a hollow knock"""
-    return steps(STEP_WOOD, 0.24, 4500, 100, 8, -29)
+    """Pokey on planks and branches: a padded step, mostly a soft low thump, never a knock or a click"""
+    return level(_feet()[1], -29)
 
 
 def stepStone():
@@ -340,7 +429,7 @@ KO = {
     'harpy':   ([583615, 583615, 387543], 0.55, 0.85),     # "Eagle", "corvo" (crow)
     'ocelot':  ([71408, 615893, 343927], 0.5, 1.0),        # "mau2" (cat cry, cat yell), "mew", "hiss2"
     'jaguar':  ([496131, 571287, 571288], 0.8, 0.95),      # "Tiger Growl", "jaguar growl roar", "tiger roar"
-    'caiman':  ([536746, 556788, 179312], 0.7, 0.75),      # "Pig" (grunt, snort), "Pig Sty" (grunt), "snort": a deep reptile grunt
+    'caiman':  ([527844, 527844, 527844], 0.8, 0.9),       # "Alligator Growls 02": three different growls from a real alligator
     'tayra':   ([134791, 536753, 128473], 0.4, 1.0),       # "Rats" (squeak), "Rat" (squeak), "a monkey" (squeal)
     'frog':    ([536759, 430176, 275845], 0.45, 1.0),      # "Frog" (croak, ribbit), "sapos" (croak), "Frog" (croaking)
     'spider':  ([392495, 392495, 392495], 0.3, 1.0),       # "CorreteoArdilla" (a scamper on a log) and a twig's crack
@@ -382,7 +471,7 @@ def bossTell():
         return fade(lp(x, hi), 0.02 if rev else 0.005, 0.08)
     takes = [
         mix((cut(343927, 0.45, 1.0, 300, 5000), 0, 0), (cut(343928, 0.45, 0.9, 300, 5000), 0.08, -4)),   # 1 snake: "hiss2" and "hiss3" (553374 "Snake Hiss" is too short and faint)
-        mix((cut(536746, 0.5, 0.7, 60, 2500), 0, 0), (cut(SPLASH[1], 0.5, 0.8, 80, 3000), 0.05, -8)),   # 2 croc: a deep grunt ("Pig", pitched down) and a water swell
+        mix((cut(527844, 0.5, 0.85, 60, 3000), 0, 0), (cut(SPLASH[1], 0.5, 0.8, 80, 3000), 0.05, -8)),   # 2 croc: "Alligator Growls 02", a little lower, and a water swell
         cut(496131, 0.55, 0.85, 60, 3500),                                        # 3 prowler: "Tiger Growl", low
         cut(583615, 0.45, 1.0, 300, 5500, rev=True),                              # 4 Sovereign: "Eagle" scream, reversed: a screech drawn in
         cut(134791, 0.4, 0.8, 300, 5000),                                         # 5 Queen: "Rats" squeak, lowered: a chitter
@@ -488,7 +577,7 @@ def ui():
     conf = [mix((tp[0], 0, 0), (rate(tp[2], 1.25), 0.07, 0)), mix((tp[1], 0, 0), (rate(tp[3], 1.25), 0.07, 0))]
     closing = leafy(0, 0.45, 3500)
     return {'uiTap': level(tp, -30), 'uiConfirm': level(conf, -28), 'uiBack': level([leafy(i, 0.35) for i in (1, 2, 3)], -30),
-            'pauseIn': [to_lufs(closing, -30)], 'pauseOut': [to_lufs(closing[::-1].copy(), -30)]}
+            'pauseIn': level([closing], -30), 'pauseOut': level([closing[::-1].copy()], -30)}
 
 
 def megaPunch():
@@ -515,7 +604,7 @@ def world():
     """world things: a log knocked or landing, stone crumbling, a thorn bush, a wooden gate"""
     logs = [fade(lp(hp(loudest(src(f), 0.6), 60), 4000), 0.002, 0.15) for f in LOG[:3]]
     crum = [fade(mix((lp(hp(loudest(src(ROCK_FALL[k]), 0.8), 200), 5000), 0, 0), (lp(hp(loudest(src(DIG[k]), 0.3), 400), 5000), 0.05, -6)), 0.01, 0.25) for k in (0, 2)]
-    thorn = [lp(fade(mix((leafy(i, 0.35), 0, 0), (lp(hp(loudest(src(SNAP[i]), 0.2), 600), 5500), 0.03, -6)), 0.01, 0.1), 4500) for i in range(3)]
+    thorn = [lp(fade(mix((leafy(i, 0.35), 0, 0), (lp(hp(loudest(src(SNAP[i]), 0.2), 600), 5500), 0.03, -6)), 0.01, 0.1), 4500, scale=False) for i in range(3)]   # (the bush is all top: its ceiling stays put)
     kn = slices_of(KNOCK, 0.3, 0.25, 0.1, top=2)
     gate = [fade(mix((lp(hp(loudest(src(CREAK[i]), 0.9), 120), 3000), 0, 0), (lp(kn[i], 3500), 0.7, -3)), 0.05, 0.15) for i in range(2)]
     return {'log': level(logs, -22), 'crumble': level(crum, -22), 'thorns': level(thorn, -26), 'gate': level(gate, -22)}
@@ -537,7 +626,7 @@ def puzzle():
         'press': fade(mix((env_decay(lp(hp(rate(slices_of(ROCK_HIT, 0.3, 0.25, 0.2, top=1)[0], 0.8), 90), 3500), 0.07), 0, 0), (thud, 0.01, -8)), 0.001, 0.06)[: int(0.3 * SR)],
         'lift': mix((rp[1], 0, 0), (leafy(2), 0.1, -10)),
         'lever': mix((rp[0], 0, -4), (fade(lp(kn[2], 3500), 0.001, 0.05), 0.25, 0)),
-        'throw': stroke(2, 1.2, 0.3, 300, 4500),
+        'throw': stroke(0, 1.1, 0.3, 300, 4500),
         'shift': mix((fade(lp(hp(loudest(src(ROCK_FALL[0]), 0.6), 200), 4000), 0.04, 0.2), 0, 0), (thud, 0.45, -6)),
         'solved': figure([67, 72, 76], 0.1, 0.4, ((leafy(3, 0.5), 0, -10),)),
     }
@@ -642,6 +731,8 @@ if __name__ == '__main__':
             jobs.update(fn())
     for name, takes in jobs.items():
         for i, t in enumerate(takes):
+            # (the places keep a little more: crickets, birds and rain live up there)
+            t = tame(t, 10.0 if name.startswith(('bed', 'shot')) else AIR_MAX)
             write_wav(os.path.join(OUT, f'{name}_{i}.wav'), t)
             if name.startswith('bed'):
                 write_mp3(os.path.join(OUT, f'{name}_{i}.mp3'), t, kbps=40, sr=24000)   # (the beds are long: smaller)

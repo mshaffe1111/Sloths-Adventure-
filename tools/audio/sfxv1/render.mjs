@@ -11,8 +11,31 @@ const many = Array.isArray(JSON.parse(fs.readFileSync(specPath, 'utf8')));
 const b = await chromium.launch();
 const p = await b.newPage();
 p.on('pageerror', (e) => console.log('PAGE', String(e)));
-await p.goto(`http://127.0.0.1:${port}/tools/audio/sfxv1/render/index.html`);
-await p.waitForFunction(() => window.ready, null, { timeout: 120000 });
+const open = async () => {
+  for (let tries = 0; ; tries++) {
+    try {
+      await p.goto(`http://127.0.0.1:${port}/tools/audio/sfxv1/render/index.html`);
+      await p.waitForFunction(() => window.ready, null, { timeout: 120000 });
+      return;
+    } catch (e) {
+      // (the dev server's own reload can interrupt this one)
+      if (tries >= 3 || !/interrupted|destroyed|navigation/i.test(String(e))) throw e;
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
+};
+await open();
+// (the dev server's dependency optimizer can reload the page mid-run: open it again and redo that one render)
+const evaluate = async (o) => {
+  for (let tries = 0; ; tries++) {
+    try {
+      return await p.evaluate((x) => window.renderMix(x), o);
+    } catch (e) {
+      if (tries >= 2 || !/context was destroyed|navigation/i.test(String(e))) throw e;
+      await open();
+    }
+  }
+};
 for (let si = 0; si < specs.length; si++) {
 const spec = specs[si];
 const out = many ? outPath.replace(/\.wav$/, `_${si}.wav`) : outPath;
@@ -21,7 +44,7 @@ const idx = (f) => { let i = files.indexOf(f); if (i < 0) { files.push(f); i = f
 const events = spec.events.map((e) => (e.file ? { t: e.t, buf: idx(e.file), gain: e.gain, rate: e.rate, pan: e.pan } : e));
 const bed = spec.bed ? { buf: idx(spec.bed.file), gain: spec.bed.gain } : undefined;
 const bufs = files.map((f) => fs.readFileSync(f).toString('base64'));
-const r = await p.evaluate((o) => window.renderMix(o), { events, dur: spec.dur, amb: spec.amb, bufs, bed });
+const r = await evaluate({ events, dur: spec.dur, amb: spec.amb, bufs, bed });
 const L = new Float32Array(Buffer.from(r.l, 'base64').buffer.slice(0));
 const R = new Float32Array(Buffer.from(r.r, 'base64').buffer.slice(0));
 // 16-bit stereo WAV at 48 kHz
