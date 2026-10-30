@@ -49,45 +49,40 @@ const URLS = new Map<string, string>();
 
 export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>, seqs: Record<string, readonly string[]>, up: number): CreatureAnim {
   let img: HTMLImageElement | null = null;
-  // The sheet as a decoded bitmap at the size the screen needs (PERFORMANCE-RULES.md §2.12, §2.13). Drawn straight from the <img>, a
+  // The sheet, decoded, at the size the screen needs (PERFORMANCE-RULES.md §2.12, §2.13). Drawn straight from the <img>, a
   // 20 MB clip sheet shrunk 2 to 5 times with smoothing 'high' needed mipmaps over the whole texture, rebuilt each time Chrome dropped
   // and re-uploaded it: the snake and eagle stretches stalled 100-170 ms at a time on a Pixel 11, at every picture quality (QA and
   // Duet, 2026-10-30). So it is baked once, shrunk to the largest size it is actually drawn at (in eighths, a little over), and
   // baked again only if a later draw needs it bigger; a few seconds in it settles on the size seen so far.
-  let bmp: ImageBitmap | null = null;
-  let bmpR = 0;
+  // (baked by drawing the sheet once into a plain canvas, which works in every browser: with createImageBitmap's own resize the creatures
+  // went missing on Matt's Pixel, 2026-10-30)
+  let baked: HTMLCanvasElement | null = null;
+  let bakedR = 0;
   let loaded = false;
-  let baking = false;
   let need = 0;
   let checks = 0;
   const sizeFor = (n: number) => Math.min(1, Math.max(1 / 8, Math.ceil(n * 1.1 * 8) / 8));
   const bake = (r: number) => {
     const im = img;
-    if (!im || baking || typeof createImageBitmap !== 'function') return;
-    baking = true;
-    const w = im.naturalWidth || im.width;
-    const h = im.naturalHeight || im.height;
-    const made = r < 1 ? createImageBitmap(im, { resizeWidth: Math.max(1, Math.round(w * r)), resizeHeight: Math.max(1, Math.round(h * r)), resizeQuality: 'high' }) : createImageBitmap(im);
-    made.then(
-      (b) => {
-        baking = false;
-        if (img !== im) return b.close();
-        bmp?.close();
-        bmp = b;
-        bmpR = r;
-        loaded = true;
-        if (sizeFor(need) > bmpR) bake(sizeFor(need));
-      },
-      () => {
-        baking = false;
-        if (img === im) loaded = true;
-      }
-    );
+    if (!im || typeof document === 'undefined') return;
+    const w = Math.max(1, Math.round((im.naturalWidth || im.width) * r));
+    const h = Math.max(1, Math.round((im.naturalHeight || im.height) * r));
+    const cv = document.createElement('canvas');
+    cv.width = w;
+    cv.height = h;
+    const g = cv.getContext('2d');
+    if (!g) return;
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(im, 0, 0, w, h);
+    if (baked) baked.width = baked.height = 0;
+    baked = cv;
+    bakedR = r;
   };
   const drop = () => {
-    bmp?.close();
-    bmp = null;
-    bmpR = 0;
+    if (baked) baked.width = baked.height = 0;
+    baked = null;
+    bakedR = 0;
     need = 0;
     checks = 0;
   };
@@ -101,8 +96,8 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
       () => {
         if (img !== im) return;
         // (a first guess: half size covers most creatures; the draws then set the real size)
-        if (typeof createImageBitmap === 'function') bake(0.5);
-        else loaded = true;
+        bake(0.5);
+        loaded = true;
       },
       () => { img = null; },
       () => { img = null; loaded = false; drop(); }
@@ -140,15 +135,15 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
         const m = ctx.getTransform();
         const n = s * Math.hypot(m.a, m.b);
         if (n > need) need = n;
-        if (sizeFor(need) > bmpR) bake(sizeFor(need));
-        else if (checks === 120 && sizeFor(need) < bmpR) bake(sizeFor(need));
+        if (sizeFor(need) > bakedR) bake(sizeFor(need));
+        else if (checks === 120 && sizeFor(need) < bakedR) bake(sizeFor(need));
       }
       checks++;
-      if (bmp) {
+      if (baked) {
         // (half a pixel in from the frame's edge when shrunk, so a neighbour frame never bleeds in)
-        const r = bmpR;
+        const r = bakedR;
         const e = r < 1 ? 0.5 : 0;
-        ctx.drawImage(bmp, f.x * r + e, f.y * r + e, f.w * r - 2 * e, f.h * r - 2 * e, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
+        ctx.drawImage(baked, f.x * r + e, f.y * r + e, f.w * r - 2 * e, f.h * r - 2 * e, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
       } else ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
       return true;
     },
