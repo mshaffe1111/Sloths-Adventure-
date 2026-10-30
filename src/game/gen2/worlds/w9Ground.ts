@@ -73,12 +73,12 @@ const bank = (key: string, w: W, place: SectionPiece['place'] = { kind: 'start' 
 const up = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'walk', after, dy: -dy });
 const down = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'walk', after, dy });
 /** a lava chasm jumped: a third to a little over half of the envelope (a life on Normal) */
-const lava = (key: string, after: string, w: W, share: W = [0.55, 0.8], landing = false): SectionPiece =>
+const lava = (key: string, after: string, w: W, share: W = [0.64, 0.88], landing = false): SectionPiece =>
   bank(key, w, { kind: 'pit', after, jump: 'jump', share }, landing ? { landing } : {});
 /** a chasm at the edge of a jump (the hard ones of the hot sections: the noisy thumb misses some) */
 const BRINK: W = [0.86, 0.98];
 /** a lava chasm up or down a step: a jump with a rise */
-const lavaUp = (key: string, after: string, dy: W, w: W, share: W = [0.55, 0.78]): SectionPiece => bank(key, w, { kind: 'jump', after, dy, share }, { landing: true });
+const lavaUp = (key: string, after: string, dy: W, w: W, share: W = [0.64, 0.86]): SectionPiece => bank(key, w, { kind: 'jump', after, dy, share }, { landing: true });
 /** a wide chasm with a soft crust floor: the jump's own width (a real jump, never a life) */
 const wide = (key: string, after: string, w: W, share: W = [0.84, 0.96]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share }, { landing: true });
 /** a wide chasm crossed with the second jump, soft (w9Falls) */
@@ -149,7 +149,7 @@ function channel(p: string, after: string, runs: number[], bW: W = [200, 240]): 
 const petals = (id: string, on: string, t: Socket['t'], count = 2, span = 120, o: Opt = {}): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span, ...o });
 const prop = (id: string, on: string, t: Socket['t'], allow: string[], o: Opt = {}): Socket => ({ id, role: 'prop', on, t, allow, ...o });
 /** a geyser over its piece (the lesson's, by its id, waits longer: w9.ts geyserBeat); Easy keeps every geyser (it is the world's beat) */
-const geyser = (id: string, on: string, t: Socket['t']) => prop(id, on, t, ['geyser'], { easy: 'keep' });
+const geyser = (id: string, on: string, t: Socket['t'], o: Opt = {}) => prop(id, on, t, ['geyser'], { easy: 'keep', ...o });
 /** a vent in the chasm after `on` (its emitter finds the chasm's floor past the lip: w9.ts) */
 const vent = (id: string, on: string) => prop(id, on, 1, ['vent'], { easy: 'keep' });
 const hideAt = (id: string, on: string, t: Socket['t'] = 0.5) => prop(id, on, t, ['hide', 'cover']);
@@ -299,7 +299,7 @@ const restLedge = section({
 
 // ───────────────────────────── shared Ki to Ketsu (they weigh little) ─────────────────────────────
 
-/** a lava chasm and a knob past it (the filler every theme keeps) */
+/** a lava chasm and a knob past it (the filler every theme keeps); in the hot nodes a geyser on the landing */
 const lavaHop = section({
   id: 'w9-lava-hop',
   name: 'lava chasm',
@@ -309,7 +309,7 @@ const lavaHop = section({
   weight: SHARED,
   pieces: [bank('a', [300, 340]), lava('b', 'a', [300, 340]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [180, 220])],
   last: 'c',
-  sockets: [petals('a', 'a', 0.5, 2, 80), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), scenery('smoke', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
+  sockets: [petals('a', 'a', 0.5, 2, 80), petals('b', 'b', 0.2, 1), geyser('gh', 'b', 0.55, { phases: HOT }), petals('k', 'k', 0.5, 1), scenery('smoke', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
   mirrorable: true,
 });
 
@@ -323,7 +323,7 @@ const lavaRise = section({
   weight: SHARED,
   pieces: [bank('a', [360, 400]), lavaUp('b', 'a', [-56, -44], [380, 420]), up('k', 'b', 30, [140, 160]), down('b2', 'k', 30, [200, 240]), lava('c', 'b2', [380, 420], BRINK)],
   last: 'c',
-  sockets: [petals('a', 'a', 0.45, 2, 90), petals('k', 'k', 0.5, 1), petals('b2', 'b2', 0.5, 1), foe('foe', 'c', [0.5, 0.6], ANY, 3, { phases: HOT, chance: 0.6 }), thread('r', 'c', 0.5)],
+  sockets: [petals('a', 'a', 0.45, 2, 90), geyser('gh', 'b', 0.6, { phases: HOT }), petals('k', 'k', 0.5, 1), petals('b2', 'b2', 0.5, 1), foe('foe', 'c', [0.5, 0.6], ANY, 3, { phases: LIVE, chance: 0.8 }), thread('r', 'c', 0.5)],
   mirrorable: true,
 });
 
@@ -337,7 +337,7 @@ const crustGaps = section({
   weight: SHARED,
   pieces: [bank('a', [260, 300]), wide('b', 'a', [300, 340]), leap('c', 'b', [300, 340]), up('k', 'c', 32, [140, 160]), down('d', 'k', 32, [160, 200])],
   last: 'd',
-  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 90), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 }), petals('k', 'k', 0.5, 1), thread('r', 'd', 0.5)],
+  sockets: [petals('a', 'a', 0.5, 1), geyser('gh', 'b', 0.5, { phases: HOT }), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 }), petals('k', 'k', 0.5, 1), thread('r', 'd', 0.5)],
   mirrorable: true,
 });
 
@@ -352,7 +352,7 @@ const lavaDrop = section({
   pieces: [bank('a', [220, 260]), down('b', 'a', 48, [200, 240]), up('k', 'b', 32, [140, 160]), down('b2', 'k', 32, [380, 420]), lava('c', 'b2', [380, 420])],
   last: 'c',
   exitDy: 48,
-  sockets: [petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), foe('foe', 'b2', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.6 }), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
+  sockets: [petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), geyser('gh', 'b2', 0.25, { phases: HOT }), foe('foe', 'b2', [0.68, 0.75], SMALL, 3, { phases: LIVE, chance: 0.8 }), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
   mirrorable: false,
 });
 
@@ -450,6 +450,49 @@ const geyserBrink = section({
   pieces: [bank('a', [300, 340]), lava('b', 'a', [440, 480], BRINK, true), lava('c', 'b', [300, 340], [0.62, 0.8])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), geyser('g', 'b', 0.42), petals('b', 'b', 0.85, 1), petals('c', 'c', 0.5, 1), thread('r', 'c', 0.5)],
+  mirrorable: true,
+});
+
+/**
+ * basalt pillars standing up out of the lava, a hop apart: narrow tops (90-110 px, a sure landing on Easy's wider pads), each its own
+ * column of basalt down into the lava (a bank: the kit's pillar ends), never a slab in the air
+ */
+const pillar = (key: string, after: string, dy: W = 0, share: W = [0.45, 0.62]): SectionPiece => bank(key, [90, 110], { kind: 'jump', after, dy, share }, { landing: true });
+const pillarHop = section({
+  id: 'w9-pillar-hop',
+  name: 'two basalt pillars',
+  archetypes: 'any',
+  phases: LIVE,
+  difficulty: 6,
+  pieces: [bank('a', [300, 340]), pillar('p1', 'a'), pillar('p2', 'p1', [-30, 0]), lava('b', 'p2', [300, 340], [0.45, 0.62], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [160, 200])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 1), petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), foe('foe', 'b', [0.55, 0.65], SMALL, 3, { phases: HOT, chance: 0.6 }), thread('r', 'c', 0.5)],
+  mirrorable: true,
+});
+const pillarRun = section({
+  id: 'w9-pillar-run',
+  name: 'a run of basalt pillars',
+  archetypes: 'any',
+  phases: HOT,
+  difficulty: 8,
+  pieces: [bank('a', [300, 340]), pillar('p1', 'a'), pillar('p2', 'p1', [-36, -20], [0.5, 0.66]), pillar('p3', 'p2', [20, 36], [0.5, 0.7]), pillar('p4', 'p3', [-20, 0], [0.55, 0.72]), lava('b', 'p4', [300, 340], [0.5, 0.66], true)],
+  last: 'b',
+  sockets: [petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), petals('p3', 'p3', 0.5, 1), petals('p4', 'p4', 0.5, 1), thread('r', 'b', 0.5)],
+  mirrorable: true,
+});
+
+/** the hot run: a brink chasm onto a geyser's flat, a hunter on the next, a chasm out (a burst: every beat inside a second or two) */
+const hotRun = section({
+  id: 'w9-hot-run',
+  name: 'chasm, geyser, hunter, chasm',
+  archetypes: 'any',
+  phases: HOT,
+  difficulty: 9,
+  uses: [GEYSER],
+  extraSeconds: GEYSER_WAIT,
+  pieces: [bank('a', [280, 320]), lava('b', 'a', [300, 340], BRINK, true), lava('c', 'b', [460, 500], [0.64, 0.84], true), lava('d', 'c', [280, 320], [0.64, 0.84])],
+  last: 'd',
+  sockets: [geyser('g', 'b', 0.5), foe('foe', 'c', [0.55, 0.65], [...SMALL, 'jaguar'], 5), petals('b', 'b', 0.15, 1), petals('d', 'd', 0.5, 1), thread('r', 'd', 0.6)],
   mirrorable: true,
 });
 
@@ -596,7 +639,7 @@ const chasmChain = section({
   uses: [W9_THEME.chasms],
   pieces: [bank('a', [280, 320]), lava('b', 'a', [360, 380]), lavaUp('c', 'b', [-48, -36], [360, 380]), lava('d', 'c', [360, 400], [0.58, 0.76])],
   last: 'd',
-  sockets: [petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.3, 1)],
+  sockets: [petals('b', 'b', 0.5, 1), geyser('gc', 'c', 0.5, { phases: ['sho', 'ten', 'ketsu'] }), petals('d', 'd', 0.3, 1), foe('foe', 'd', [0.6, 0.7], SMALL, 3, { phases: HOT, chance: 0.7 })],
   exitDy: -42,
   mirrorable: false,
 });
@@ -612,7 +655,7 @@ const chasmDrop = section({
   pieces: [bank('a', [360, 400]), wide('b', 'a', [380, 420]), lavaUp('c', 'b', [40, 56], [520, 560], [0.58, 0.76])],
   last: 'c',
   exitDy: 48,
-  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 90), foe('cat', 'c', [0.5, 0.6], CATS, 5, { phases: LIVE, chance: 0.7 })],
+  sockets: [petals('a', 'a', 0.5, 1), geyser('gh', 'b', 0.6, { phases: HOT }), foe('cat', 'c', [0.5, 0.6], CATS, 5, { phases: LIVE, chance: 0.8 })],
   mirrorable: false,
 });
 
@@ -956,7 +999,7 @@ const highLedge = section({
   pieces: [bank('a', [240, 280]), up('s1', 'a', 52, [160, 180]), up('top', 's1', 52, [340, 380]), lavaUp('c', 'top', [80, 96], [400, 440], [0.58, 0.76])],
   last: 'c',
   exitDy: -16,
-  sockets: [petals('s1', 's1', 0.5, 1), thread('r', 'top', 0.6), petals('top', 'top', 0.25, 1), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 })],
+  sockets: [petals('s1', 's1', 0.5, 1), thread('r', 'top', 0.85), petals('top', 'top', 0.15, 1), geyser('gh', 'top', 0.5, { phases: HOT }), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 })],
   mirrorable: false,
 });
 
@@ -1024,6 +1067,9 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
   geyserChasm,
   geyserLedge,
   geyserBrink,
+  pillarHop,
+  pillarRun,
+  hotRun,
   basaltRun,
   basaltTwin,
   hunterRun,
