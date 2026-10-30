@@ -1,0 +1,39 @@
+{
+ "note": "X-16 round 5, skyt2i.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "items": [
+  {
+   "name": "w1sunrise-r5-11",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/d1b21a2d7fb45787461429ad678630f5728f3420/src/assets/backdrops/w1sunrise-far.webp",
+   "seed": 11,
+   "neg": "ground, land, horizon, hills, mountains, trees, landscape, buildings, ruins, water, sea, frame, border, panel, text, letters, watermark, photo, 3d render, people, character, face, creature, animal, sloth, bird, blurry",
+   "sky": "painted storybook illustration, soft cel shading, thin dark outlines on the clouds, hand-painted gouache brushwork, looking up at the sky, the whole picture is sky. a soft sunrise sky, pale blue above fading to warm gold, soft pink and gold clouds",
+   "join": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, hand-painted gouache brushwork. a sunrise open sky with a few soft painted clouds, pale gold and blue; the leaves, branches, rock and smoke at the top of the scene reach a little way up into the open sky and end in a natural ragged silhouette",
+   "neg_join": "floating island, rock slab, cliff, second landscape, stacked scenes, horizon line, ground, frame, border, panel, picture in picture, horizontal band, seam, straight line, text, letters, watermark, people, animal, sloth, blurry"
+  },
+  {
+   "name": "w7dawn-r5-11",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/d1b21a2d7fb45787461429ad678630f5728f3420/src/assets/backdrops/w7dawn-far.webp",
+   "seed": 11,
+   "neg": "ground, land, horizon, hills, mountains, trees, landscape, buildings, ruins, water, sea, frame, border, panel, text, letters, watermark, photo, 3d render, people, character, face, creature, animal, sloth, bird, blurry",
+   "sky": "painted storybook illustration, soft cel shading, thin dark outlines on the clouds, hand-painted gouache brushwork, looking up at the sky, the whole picture is sky. a warm pale dawn sky, soft blue above fading to cream and gold, a few soft clouds",
+   "join": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, hand-painted gouache brushwork. a warm pale dawn sky over the ruins, the great carved tree and its leaves rising out of the top; the leaves, branches, rock and smoke at the top of the scene reach a little way up into the open sky and end in a natural ragged silhouette",
+   "neg_join": "floating island, rock slab, cliff, second landscape, stacked scenes, horizon line, ground, frame, border, panel, picture in picture, horizontal band, seam, straight line, text, letters, watermark, people, animal, sloth, blurry"
+  },
+  {
+   "name": "w5twi1-r5-11",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/d1b21a2d7fb45787461429ad678630f5728f3420/src/assets/backdrops/w5twi1-far.webp",
+   "seed": 11,
+   "neg": "ground, land, horizon, hills, mountains, trees, landscape, buildings, ruins, water, sea, frame, border, panel, text, letters, watermark, photo, 3d render, people, character, face, creature, animal, sloth, bird, blurry",
+   "sky": "painted storybook illustration, soft cel shading, thin dark outlines on the clouds, hand-painted gouache brushwork, looking up at the sky, the whole picture is sky. a lilac and violet twilight sky with soft pink clouds and a few first stars",
+   "join": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, hand-painted gouache brushwork. a lilac and violet twilight sky with soft clouds, dark tree tops at the edges; the leaves, branches, rock and smoke at the top of the scene reach a little way up into the open sky and end in a natural ragged silhouette",
+   "neg_join": "floating island, rock slab, cliff, second landscape, stacked scenes, horizon line, ground, frame, border, panel, picture in picture, horizontal band, seam, straight line, text, letters, watermark, people, animal, sloth, blurry"
+  }
+ ]
+}

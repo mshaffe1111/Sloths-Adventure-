@@ -1,13 +1,13 @@
 """Write the spec for skyt2i.py (X-16 round 5, 2026-10-29): the 11 skies still on the cover fit after round 4, two seeds each, the worlds
 Matt plays most upright first.
-    python3 tools/art/hfbatch/make_sky5_spec.py <commit>     writes tools/art/hfbatch/specs/spec-hdsky5.json
+    python3 tools/art/hfbatch/make_sky5_spec.py <commit> [<tag> [<stem,...> [<seed,...>]]]   writes tools/art/hfbatch/specs/spec-<tag>.json
 The far strip is src/assets/backdrops/<stem>-far.webp at <commit> on GitHub."""
 import json, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from make_sky_spec import STYLE, WHAT  # noqa: E402
+from make_sky_spec import WHAT  # noqa: E402
 
 ORDER = ['w1kapok', 'w1sunrise', 'w3sinkhole', 'w5dusk2', 'w5twi1', 'w5twi2', 'w7', 'w7dawn', 'w7dusk', 'w10after', 'w6dawn']
 # (no 'slothadv style' trigger: skyt2i.py paints the sky without the style model, which put a sloth's head in the first take)
@@ -29,26 +29,29 @@ SKY_ONLY = {
 }
 NEG_SKY = ('ground, land, horizon, hills, mountains, trees, landscape, buildings, ruins, water, sea, frame, border, panel, text, letters, '
            'watermark, photo, 3d render, people, character, face, creature, animal, sloth, bird, blurry')
-NEG_JOIN = ('second landscape, stacked scenes, horizon line, ground, frame, border, panel, picture in picture, horizontal band, seam, '
+# (make_sky_spec.STYLE's "the upper part of a wide landscape painting" made a floating rock slab over w1sunrise, round 5b)
+JOIN_STYLE = 'slothadv style, painted storybook illustration, soft cel shading, thin dark outline, hand-painted gouache brushwork'
+NEG_JOIN = ('floating island, rock slab, cliff, second landscape, stacked scenes, horizon line, ground, frame, border, panel, picture in picture, horizontal band, seam, '
             'straight line, text, letters, watermark, people, animal, sloth, blurry')
 
 
-def items(commit):
+def items(commit, stems=None, seeds=(11, 23)):
     base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/src/assets/backdrops/'
     out = []
-    for stem in ORDER:
-        for seed in (11, 23):
+    for stem in stems or ORDER:
+        for seed in seeds:
             out.append({'name': f'{stem}-r5-{seed}', 'src': f'{base}{stem}-far.webp', 'seed': seed, 'neg': NEG_SKY,
                         'sky': f'{SKY_STYLE}. {SKY_ONLY[stem]}',
-                        'join': f'{STYLE}. {WHAT[stem]}; the trees, branches, rock and smoke at the top of the scene carry on up into it and end '
-                                'in a natural ragged silhouette against the open sky, one continuous painting'})
+                        'join': f'{JOIN_STYLE}. {WHAT[stem]}; the leaves, branches, rock and smoke at the top of the scene reach a little way up '
+                                'into the open sky and end in a natural ragged silhouette'})
             out[-1]['neg_join'] = NEG_JOIN
     return out
 
 
 if __name__ == '__main__':
     spec = {'note': 'X-16 round 5, skyt2i.py, 2026-10-29', 'loras': {'style': ['mshaffe111/slothadv-style-lora',
-            'slothadv_style_v1.safetensors', 0.8]}, 'items': items(sys.argv[1])}
-    p = HERE / 'specs' / 'spec-hdsky5.json'
+            'slothadv_style_v1.safetensors', 0.8]}, 'items': items(sys.argv[1], sys.argv[3].split(',') if len(sys.argv) > 3 else None,
+            [int(x) for x in sys.argv[4].split(',')] if len(sys.argv) > 4 else (11, 23))}
+    p = HERE / 'specs' / f'spec-{sys.argv[2] if len(sys.argv) > 2 else "hdsky5"}.json'
     p.write_text(json.dumps(spec, indent=1))
     print(p, len(spec['items']))

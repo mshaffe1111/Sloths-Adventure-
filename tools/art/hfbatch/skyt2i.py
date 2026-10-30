@@ -5,7 +5,7 @@ Per take (Qwen-Image, one load for both pipelines):
   1. sky    text-to-image, sky only (TW2 x TH2), WITHOUT the style model: with it (and its trigger word) the first take of round 5 painted
             a giant sloth's head into the sky, "sloth" in the negative or not (job 6ae3dd5e, cancelled)
   2. start  the sky Lanczos-scaled to the strip's width (+ a wrap margin crossfaded into its left end, so it repeats like the strip), its
-            bottom rows squeezed into the E rows above the strip, matched in colour to the strip's top rows, eased into its top row
+            bottom rows squeezed into the E rows above the strip, moved a third of the way to the strip's top colour, eased into its top row
   3. join   inpainted with the style model across the join (from JA x E above the strip's top, fading in over its upper half, to JB x H
             into the strip) in ONE pass the strip's full width, then a second narrow pass over the wrap point (the picture turned half
             way round), so the strip's trunks, leaves and smoke carry on up and the join is painted, not a straight crossfade (round 4).
@@ -34,7 +34,7 @@ TAG = os.environ.get('TAG', 'sky5')
 t0 = time.time()
 
 E_SHARE, O_SHARE, C_SHARE = 0.35, 0.16, 0.45  # tallstart.py E_SHARE, skycut.py O, the strip shown below the join for context
-JA, JB = 0.60, 0.10  # the join band: this share of E above the strip's top, this share of H into the strip
+JA, JB = 0.40, 0.10  # the join band: this share of E above the strip's top, this share of H into the strip
 TW, TW2, TH2 = 1024, 1664, 640
 
 
@@ -88,9 +88,10 @@ def start(sky, rgb, E):
     big = big[:, :W]
     take = min(h, round(E * 1.4))
     up = np.asarray(Image.fromarray(big[h - take:].astype(np.uint8)).resize((W, E), Image.LANCZOS)).astype(np.float32)
+    # a third of the way to the strip's top rows' mean colour: matched fully (the spread too), a blue sky over leaves came out green
+    # (round 5b); the prompt already gives the light
     top = rgb[: max(8, H // 8)].reshape(-1, 3)
-    a = up[-max(8, E // 4):].reshape(-1, 3)  # matched where it meets the strip, so the light at the join is the strip's own
-    up = (up - a.mean(0)) / np.maximum(a.std(0), 1) * (0.5 * a.std(0) + 0.5 * top.std(0)) + top.mean(0)
+    up = up + (top.mean(0) - up[-max(8, E // 4):].reshape(-1, 3).mean(0)) / 3
     k = int(E * 0.10)
     t = np.linspace(0, 1, k, dtype=np.float32)[:, None, None]
     t = t * t * (3 - 2 * t)
@@ -132,8 +133,10 @@ for it in SPEC['items']:
             w = img.shape[1]
             w16 = math.ceil(w / 16) * 16
             cols = np.arange(w16) % w
+            # the pipeline keys on a hard mask (half way): given the soft one it left everything above its half-way line as it was, and the
+            # blend below jumped there (round 5b); so it repaints wherever the soft mask is above zero, and the soft mask blends it in
             res = inp(prompt=it['join'], negative_prompt=it.get('neg_join', it['neg']), image=Image.fromarray(np.clip(img[:, cols], 0, 255).astype(np.uint8)),
-                      mask_image=Image.fromarray((mask[:, cols] * 255).astype(np.uint8), 'L'), strength=1.0, width=w16, height=img.shape[0],
+                      mask_image=Image.fromarray(((mask[:, cols] > 0.01) * 255).astype(np.uint8), 'L'), strength=it.get('strength', 0.75), width=w16, height=img.shape[0],
                       num_inference_steps=28, true_cfg_scale=4.0, generator=torch.Generator('cuda').manual_seed(seed)).images[0].convert('RGB')
             m = mask[..., None]
             return img * (1 - m) + np.asarray(res, np.float32)[:, :w] * m

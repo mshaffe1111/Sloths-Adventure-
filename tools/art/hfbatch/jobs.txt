@@ -154,3 +154,7 @@ X-16 skies r5 6ae3dd5ec78863f9c62e0ae9 rtx-pro-6000 started 23:57:18Z (the lead'
   text-to-image step) and hard tile edges at the join. Fixed in skyt2i.py: the sky without the style model, the join in one full-width
   pass plus a wrap pass.
 X-16 skies r5b 6ae3ded30e0338d1bb7c5983 rtx-pro-6000 started 00:03:31Z at f9c46ffc, same 22 takes; timeout 50 min.
+  Cancelled at about 00:15Z (~12 min, ~$0.55; round 5 so far ~$0.85): a straight edge at the band's top (the pipeline keys on a hard
+  mask half way up the soft one), a floating rock slab over w1sunrise (the "upper part of a landscape" prompt at strength 1.0), and
+  blue skies matched green to leafy strip tops. Fixed: the pipeline repaints all of the soft mask, strength 0.75, a narrower band,
+  the plain style prompt, a light colour shift only. A 3-take pilot (hdsky5p.sh) before the rest.
