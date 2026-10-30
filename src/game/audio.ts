@@ -160,6 +160,8 @@ class SoundEngine {
   playEagleScreech() { this.c.fx('eagle'); }
   /** `world` 1..10: each world's boss has its own voice */
   playBossRoar(world = 0) { this.c.fx('roar', world); }
+  /** a guardian's tell, the wind-up before its attack (SN-4): its own sound, `world` 1..10, 11 Thornbark */
+  playBossTell(world: number) { this.c.fx('bossTell', world); }
   playVictory() { this.c.sting('victory'); }
   /** reaching the shrine: a short chime, the brightest of the results' star chimes (the victory sting plays when the Stage Cleared
    *  card lands: SN-5) */
