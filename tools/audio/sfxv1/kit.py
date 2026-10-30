@@ -68,7 +68,13 @@ def hp(x, f, order=2):
     return sosfilt(butter(order, f, 'highpass', fs=SR, output='sos'), x).astype(np.float32)
 
 
-def lp(x, f, order=2):
+# the low-pass ceilings were set for sources that stop at 8 kHz; with full-band originals (build.py --fullband) they open up by LP_SCALE,
+# so the air and crispness above the old ceiling come back (a recipe that must stay dull, the pickups' marimba, passes scale=False)
+LP_SCALE = 1.0
+
+
+def lp(x, f, order=2, scale=True):
+    f = f * (LP_SCALE if scale else 1.0)
     return sosfilt(butter(order, min(f, SR / 2 - 100), 'lowpass', fs=SR, output='sos'), x).astype(np.float32)
 
 

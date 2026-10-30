@@ -14,7 +14,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 from kit import *
 
 CLIPS, OUT = sys.argv[1], sys.argv[2]
-ONLY = set(sys.argv[3:])
+ONLY = set(a for a in sys.argv[3:] if not a.startswith('--'))
+if '--fullband' in sys.argv:
+    # full-band originals (fullband.py): the ceilings open up (kit.LP_SCALE)
+    import kit
+    kit.LP_SCALE = 1.8
 rng = np.random.default_rng(29)
 USED = {}
 
@@ -128,7 +132,7 @@ def note(m, dur=0.6, tau=0.25, lpf=2600):
     base = min(MARIMBA, key=lambda k: abs((m - k) % 12) + 0.01 * abs(m - k))
     x = trim(src(MARIMBA[base]), thr_db=-24, back=0.002)
     y = rate(x, 2 ** ((m - base) / 12))[: int(dur * SR)]
-    return fade(env_decay(lp(hp(y, 120), lpf, 4), tau), 0.002, min(0.15, dur / 3))
+    return fade(env_decay(lp(hp(y, 120), lpf, 4, scale=False), tau), 0.002, min(0.15, dur / 3))
 
 
 def leafy(i, dur=0.3, lpf=4500):
