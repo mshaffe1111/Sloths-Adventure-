@@ -14,6 +14,7 @@ On top of S-6/S-8/S-7 (`s6-s8-report.md`), merged with ccr (today's speed work a
 - The Notch's painted twig was cropped into the keepsake frame sideways; it now stands on its own (`.fr-notch`), upright and sideways.
 - The snail is bigger on his reader card.
 - The ending cards no longer use `shadowBlur` (PERFORMANCE-RULES §2: none in the per-frame path).
+- The fern hint (wayside.ts hidesFern): the snail is out in the open, not in a fern, so 1-3 and the other snail stages no longer get "one of these plants looks different"; Dot's pocket stages and 1-4 (the Notch) do. wayside.test.ts names them.
 
 ## Polish check (STAGE-RULES §5b)
 
@@ -28,9 +29,9 @@ On top of S-6/S-8/S-7 (`s6-s8-report.md`), merged with ccr (today's speed work a
 | World 6 note, page 2 | s9-stills/reader-w6_note-up/side | Clean. |
 | Ending cards | s7-stills/card-*-up/side | Clean, the squirrels' sign lettered. |
 | Snail in a stage | s7-stills/snail-7-3-up/side | Clean. |
-| **Drake's two cups** | s9-stills/drake-*-up/side | **Rough, waiting on art (hf-art-bosses):** it plays on the World 9 lava road with the Drake's prowling idle frame. No cave, no rock, no tea cosy, no cups are drawn, though the lines name them. The cave plate and a sitting / cup-holding Drake are asked for; it swaps in by name (DRAKE_CAVE in storyFinale.ts). |
-| Sequel tag, B (the hollow) | s9-stills/tag-b*-up/side | Thornbark reads, dark as his hollow is. **Waiting on art:** the black thorn coming up is not drawn (the nest-night plate shows the nest in the rain). |
-| Sequel tag, A (months later) | s9-stills/tag-a*-up/side | Storm, sleeping Pokey, Meeca (hands on hips for her last line) and Dot read well both ways. Upright, an old 1024 plate (nest-morning, council) now fills the view with no dark band: the camera comes in just far enough (storyArt.ts shortPlate), and the figures keep their footing. **Waiting on art (the Gemini cards):** the scarf (on Pokey and on the thorn) and the thorn itself are not drawn. |
+| Drake's two cups | s9-stills/drake-*-up/side | Clean. In his own cave (hf-art-bosses' plate drake-cave): the boulder, his gold and the lumpy knitted cosy heaped at the left, which is exactly what Dot calls a sock. The Drake (story-art's DR cels from hf-art-bosses' paintings) sits stiff for "You came.", bows over the cosy, then holds the good china cup in both claws with his eyes half shut; Pokey's pot, then his own cup, at his feet. Framed so the sitting Drake's head stays in the picture sideways. |
+| Sequel tag, B (the hollow) | s9-stills/tag-b*-up/side | Thornbark reads, dark as his hollow is. **Still waiting on art:** the black thorn coming up at night is not drawn (nest-night shows the nest in the rain); Matt's 24 has the thorn, but in the morning with the scarf already on it. |
+| Sequel tag, A (months later) | s9-stills/tag-a*-up/side | Clean, on Matt's Gemini cards: the storm and the sleeping Pokey with the scarf trailing (storm-returns), the empty branch with the scarf on the black thorn (nest-morning, now Matt's 24, tall, so no band upright), Meeca clutching the scarf, then setting off with Dot beside her (her new scarf cels). Brought in close upright so Meeca carries her last line. |
 | To be continued | s9-stills/tag-a8-silence-*, tag-a8-continued-* | Clean. The picture goes dark, a beat of silence (2 s, the music hushed), then "To be continued" comes up on the menu kit's carved log plaque, then "tap to finish". Fits a 412-wide phone. |
 
 ## Gate
