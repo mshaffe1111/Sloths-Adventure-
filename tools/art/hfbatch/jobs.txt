@@ -132,6 +132,13 @@ hfb-stage-3 6ae39f625ddcdc08302650d1 rtx-pro-6000 19:32:50Z-19:39:27Z (6.6 min, 
   THROWN (the start's piece seams show as vertical lines).
 running total ~32.1 min on rtx-pro-6000 = ~$1.47 of the $14 cap.
 
+World 10 swing banner (2026-10-29, cap $6), branch gen2-w10-swing: start w10bannerstart.py, spec make_w10banner_spec.py, cut
+tools/art/w10swing/bannercut.py. Results in the bucket under hfbatch/w10swing/props/.
+hfb-w10banner 6ae3bcadc78863f9c62de57d rtx-pro-6000 21:37:50Z-21:39:30Z (~1.7 min, ~$0.08): s50/s65 x seeds 7/23 from start-w10banner
+  (three banners each: the world's own cloth on rings, the pole cut away). All four clean (no pole, torn ends, the kit's red).
+  w10banner-s50-23 all three KEPT and w10banner-s65-23's right one KEPT as src/assets/w10/swing-banners.webp (four looks). s65-23's
+  left one not used (magenta through a rip), its middle one not used (a wide rip down one side); s50-7 and s65-7 not used (plainer).
+running total ~$0.08 of the $6 cap. Review: reference/prop-sheets/qa-notes/w10-swing/banners.jpg
 Repeating hazard animations (2026-10-29, cap $5), branch hazard-anim: start pebblestart.py (16 bits of World 4's own rock, rockMoss,
 shardA-D, boulderSmall, boulderRound pieces), spec make_pebbles_spec.py, cut tools/art/hazard/gritcut.py -> src/assets/props/w4-grit.webp.
 hfb-w4pebbles 6ae3a561c78863f9c62dc965 rtx-pro-6000 19:58:25Z-20:00:15Z (1.8 min, ~$0.08): 4 takes, s50/s66 x seeds 7/23, 1024 x 1024.

@@ -1,0 +1,54 @@
+{
+ "note": "World 10's swing banner by img2img from tools/art/hfbatch/w10bannerstart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "pole, stick, flagpole, staff, spear, perspective, three-quarter view, isometric, text, letters, numbers, emblem, logo, symbol, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, pink cloth",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b0e0e016904e0b06949c2a209c139bb10c8ae09e/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w10banner-s50-7",
+   "start": "start-w10banner.webp",
+   "prompt": "slothadv style, painted storybook illustration, three tall narrow tattered war banners for a side-scrolling platform game, each hanging straight down from a round black iron ring on a short dark wooden crossbar, no pole below the cloth. Heavy dark red wool cloth, worn and rain-soaked, soft folds running down its length, the bottom torn into ragged points, a few small holes and frayed edges, each banner torn differently. A grim mountain fortress in a storm. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text, no emblem",
+   "neg": "pole, stick, flagpole, staff, spear, perspective, three-quarter view, isometric, text, letters, numbers, emblem, logo, symbol, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, pink cloth",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w10banner-s50-23",
+   "start": "start-w10banner.webp",
+   "prompt": "slothadv style, painted storybook illustration, three tall narrow tattered war banners for a side-scrolling platform game, each hanging straight down from a round black iron ring on a short dark wooden crossbar, no pole below the cloth. Heavy dark red wool cloth, worn and rain-soaked, soft folds running down its length, the bottom torn into ragged points, a few small holes and frayed edges, each banner torn differently. A grim mountain fortress in a storm. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text, no emblem",
+   "neg": "pole, stick, flagpole, staff, spear, perspective, three-quarter view, isometric, text, letters, numbers, emblem, logo, symbol, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, pink cloth",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w10banner-s65-7",
+   "start": "start-w10banner.webp",
+   "prompt": "slothadv style, painted storybook illustration, three tall narrow tattered war banners for a side-scrolling platform game, each hanging straight down from a round black iron ring on a short dark wooden crossbar, no pole below the cloth. Heavy dark red wool cloth, worn and rain-soaked, soft folds running down its length, the bottom torn into ragged points, a few small holes and frayed edges, each banner torn differently. A grim mountain fortress in a storm. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text, no emblem",
+   "neg": "pole, stick, flagpole, staff, spear, perspective, three-quarter view, isometric, text, letters, numbers, emblem, logo, symbol, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, pink cloth",
+   "strength": 0.65,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w10banner-s65-23",
+   "start": "start-w10banner.webp",
+   "prompt": "slothadv style, painted storybook illustration, three tall narrow tattered war banners for a side-scrolling platform game, each hanging straight down from a round black iron ring on a short dark wooden crossbar, no pole below the cloth. Heavy dark red wool cloth, worn and rain-soaked, soft folds running down its length, the bottom torn into ragged points, a few small holes and frayed edges, each banner torn differently. A grim mountain fortress in a storm. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no sky, no shadow, no text, no emblem",
+   "neg": "pole, stick, flagpole, staff, spear, perspective, three-quarter view, isometric, text, letters, numbers, emblem, logo, symbol, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, animal, sloth, pink cloth",
+   "strength": 0.65,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

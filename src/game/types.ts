@@ -387,6 +387,8 @@ export interface Vine {
   kit?: boolean;
   /** not there now (a ladder still rolled up, a sapling bent over): it cannot be grabbed */
   off?: boolean;
+  /** how a swinging liana is drawn where the world has more than one look (World 10: 'chain', 'banner', 'cage', 'rope', w10SwingArt.ts) */
+  hangLook?: string;
 }
 
 /** A rope stretched across a gap. Pokey can hang from it and shimmy along it once he has learned the skill (see rope.ts). */

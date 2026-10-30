@@ -14,6 +14,7 @@ import type { Collectible, Platform } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
+import { drawW10Liana } from './w10SwingArt.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
 import { drawEnd, drawLip, drawSoil, endFace, warmGround } from './groundPaint.ts';
@@ -270,10 +271,12 @@ const LIANA_THICK = 15;
  * kit): the painting turns with the vine about the point it hangs from, its top and bottom keep their shape and the twisted middle
  * stretches to the vine's length. A painted leafy clump hides where it hangs from. False until the kit has loaded.
  */
-export function drawSwingLianaArt(ctx: CanvasRenderingContext2D, v: { x: number; topY: number; bottomY: number; id: number }, ang: number): boolean {
+export function drawSwingLianaArt(ctx: CanvasRenderingContext2D, v: { x: number; topY: number; bottomY: number; id: number; hangLook?: string }, ang: number, t = 0): boolean {
   if (!protoArtReady()) return false;
   // (World 7: a stone lintel with its own knotted liana, not the leafy clump: w7TempleArt.ts)
   if (kitWorld === 7 && drawW7SwingLiana(ctx, v, ang)) return true;
+  // (World 10: chains, banners, cages and ropes off the iron netting, w10SwingArt.ts; the kit's chain until its sheets load)
+  if (kitWorld === 10 && drawW10Liana(ctx, v, ang, t)) return true;
   // World 2's painted rope (a coil at the top and a loop at the bottom) read as a noose, and World 9's is a swing seat on two ropes:
   // those worlds swing on World 1's jungle liana instead
   const borrow = SWING_LIANA_FROM_W1.has(kitWorld);
@@ -298,7 +301,8 @@ export function drawSwingLianaArt(ctx: CanvasRenderingContext2D, v: { x: number;
   ctx.restore();
   // the leafy clump it hangs from (the painted bush, hung upside down from the canopy)
   load2();
-  const bush = ready2 && lianaTops ? img2 : null;
+  // (no leafy clump in World 10's fortress: its swings hang from the iron netting, w10SwingArt.ts)
+  const bush = ready2 && lianaTops && kitWorld !== 10 ? img2 : null;
   if (bush) {
     const b = PROTO2_FRAMES.bushWide;
     const bw = 150 + (Math.abs(v.id) % 3) * 16;
