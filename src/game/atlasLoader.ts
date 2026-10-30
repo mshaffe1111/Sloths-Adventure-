@@ -196,3 +196,17 @@ export function warmSheets(urls: readonly string[], ctx: CanvasRenderingContext2
   }
   return n;
 }
+
+/** every sheet asked for that has not loaded yet: what a stage about to start still waits for, whoever asked (stageReady.ts) */
+export function pendingSheets(): string[] {
+  const out: string[] = [];
+  for (const [u, s] of sheets) if (!s.ready) out.push(u);
+  return out;
+}
+
+/** every sheet that has loaded and not been drawn once yet (stageReady.ts draws them all before a stage's first frame) */
+export function unwarmedSheets(): string[] {
+  const out: string[] = [];
+  for (const [u, s] of sheets) if (s.ready && !s.warm) out.push(u);
+  return out;
+}
