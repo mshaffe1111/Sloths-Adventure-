@@ -14,7 +14,11 @@ from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
 from huggingface_hub import HfFileSystem
 
-ids = {int(l) for l in open(os.environ['IDS']) if l.strip()}
+ids = {int(l) for l in open(os.environ['IDS']) if l.strip()} if os.environ.get('IDS') else set()
+# TAGS mode: instead of ids, every CC0 clip whose own tags include one of TAGS (and none of NOT), up to LIMIT (the caiman's voice)
+TAGS = set(filter(None, os.environ.get('TAGS', '').split(',')))
+NOT = set(filter(None, os.environ.get('NOT', '').split(',')))
+LIMIT = int(os.environ.get('LIMIT', '40'))
 TAG = os.environ.get('TAG', 'fb')
 OUT = '/out/hfbatch/sfx/carriers'
 os.makedirs(OUT, exist_ok=True)
@@ -30,6 +34,15 @@ def scan(f):
             pf = pq.ParquetFile(fh)
             hits = []
             for g in range(pf.num_row_groups):
+                if TAGS:
+                    t = pf.read_row_group(g, columns=['freesound_id', 'license', 'tags']).to_pydict()
+                    for fid, lic, tags in zip(t['freesound_id'], t['license'], t['tags']):
+                        tg = {x.lower() for x in (tags or [])}
+                        if lic == 0 and tg & TAGS and not tg & NOT:
+                            ids.add(int(fid))
+                            if g not in hits:
+                                hits.append(g)
+                    continue
                 col = pf.read_row_group(g, columns=['freesound_id']).column(0).to_pylist()
                 if ids.intersection(int(x) for x in col):
                     hits.append(g)
@@ -83,10 +96,10 @@ with ThreadPoolExecutor(16) as pool:
     for i, (f, groups) in enumerate(pool.map(scan, files)):
         for g in groups:
             with fs.open(f, 'rb', block_size=1024 * 1024) as fh:
-                t = pq.ParquetFile(fh).read_row_group(g, columns=['freesound_id', 'audio', 'title', 'license']).to_pylist()
+                t = pq.ParquetFile(fh).read_row_group(g, columns=['freesound_id', 'audio', 'title', 'license', 'tags']).to_pylist()
             for row in t:
                 fid = int(row['freesound_id'])
-                if fid not in ids or fid in found:
+                if fid not in ids or fid in found or (TAGS and len(found) >= LIMIT) or (TAGS and row['license'] != 0):
                     continue
                 raw = (row['audio'] or {}).get('bytes')
                 if not raw:
@@ -96,7 +109,7 @@ with ThreadPoolExecutor(16) as pool:
                 if not o:
                     continue
                 found.add(fid)
-                m = {'freesound_id': fid, 'title': row['title'], 'license': row['license'], 'src_rate': pr.get('sample_rate'), 'codec': pr.get('codec_name'),
+                m = {'freesound_id': fid, 'title': row['title'], 'license': row['license'], 'tags': row.get('tags'), 'src_rate': pr.get('sample_rate'), 'codec': pr.get('codec_name'),
                      'bw99': bandwidth(raw), 'bytes_in': len(raw)}
                 meta.append(m)
                 print('GOT', json.dumps(m), flush=True)

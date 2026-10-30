@@ -2178,6 +2178,8 @@ export class GameEngine {
             const nx = Math.max(plat.push.min, Math.min(plat.push.max - plat.width, plat.x + dir * PUSH_SPEED * dt));
             if (nx !== plat.x) {
               plat.x = nx;
+              // a log that was standing still gives a wooden knock as it starts to roll; then the bark scrapes along
+              if (this.gameTime - (this.protoScene.movedAt.get(plat.id) ?? -9) > 0.5) sound.playLog();
               this.protoScene.movedAt.set(plat.id, this.gameTime);
               this.pushSoundT -= dt;
               if (this.pushSoundT <= 0) {
@@ -2697,6 +2699,7 @@ export class GameEngine {
           this.camera.trauma = 0.7;
           this.spawnSparkBurst(c.x, c.y, '#a78bfa');
           this.addFloatingText('THE THORN GATE OPENS...', c.x, c.y - 30, '#c4b5fd');
+          sound.playGate();
           sound.playBossRoar(this.currentStage.config.worldIndex);
           this.callbacks.onSecret?.();
         }
@@ -7222,13 +7225,13 @@ export class GameEngine {
       if (ear && ph.phase === 'look' && !this.vineLash.has(i) && this.vineStruck.get(i) !== ear.t) {
         this.vineStruck.set(i, ear.t);
         this.vineLash.set(i, { at: this.gameTime, dir: ear.x >= v.x ? 1 : -1, landed: true, cycle });
-        sound.playWhoosh();
+        sound.playThorns();
       }
       if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, !!ear)) {
         // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
         // (an awake vine swats him back the way he came)
         this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: v.awake ? (p.facing >= 0 ? -1 : 1) : p.x >= v.x ? 1 : -1, landed: false, cycle });
-        sound.playWhoosh();
+        sound.playThorns();
       }
       const l = this.vineLash.get(i);
       if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {
