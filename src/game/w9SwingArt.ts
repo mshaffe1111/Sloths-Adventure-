@@ -119,30 +119,51 @@ export function drawW9Post(ctx: CanvasRenderingContext2D, x: number, top: number
 }
 
 /**
+ * The lintel's middle pieces between its two painted ends: each a different cut (`off`, `len` in the slab's own px) of the slab's middle,
+ * at `x` `w` wide, every other one flipped, so no two alike side by side. Pure, and always onward (a few px left is the last piece), so it
+ * ends for any span (w9SwingArt.test.ts)
+ */
+export function beamPieces(x0: number, x1: number, h: number, y = 0): Array<{ x: number; w: number; off: number; flip: boolean }> {
+  const c = W9_BRIDGE_CELLS.emberSlab;
+  const k = h / c.h;
+  const cap = c.w * 0.2, mid = c.w - 2 * cap;
+  const capW = cap * k;
+  const out: Array<{ x: number; w: number; off: number; flip: boolean }> = [];
+  let seed = Math.abs(Math.round(x0 * 7 + y * 13)) % 997;
+  for (let x = x0 + capW, n = 0; x < x1 - capW - 3; n++) {
+    seed = (seed * 73 + 41) % 997;
+    const len = mid * (0.55 + 0.45 * ((seed % 100) / 100));
+    const off = (mid - len) * (((seed >> 3) % 50) / 50);
+    const w = Math.min(len * k, x1 - capW - x);
+    out.push({ x, w, off, flip: n % 2 === 1 });
+    x += Math.max(1, w - 2);
+  }
+  return out;
+}
+
+/**
  * The lintel from x0 to x1, its middle at y, `h` thick: the bridges sheet's cooled ember slab at its own scale (never stretched: its
- * outline would thicken past the kit's), its two painted ends, and between them its middle laid end to end, every other piece flipped
- * so the cracks never line up (the stage walk's detector: one stretched slab read 3.4 px of outline against the kit's 0.6)
+ * outline would thicken past the kit's), its two painted ends, and between them its middle in different cuts (beamPieces; the stage
+ * walk's detector: one stretched slab read 3.4 px of outline against the kit's 0.6, and one middle piece repeated read as copy-paste)
  */
 export function drawW9Beam(ctx: CanvasRenderingContext2D, x0: number, x1: number, y: number, h: number): boolean {
   if (!ok.bridges) return false;
   const c = W9_BRIDGE_CELLS.emberSlab;
   const k = h / c.h;
-  const cap = c.w * 0.2, mid = c.w - 2 * cap;
-  const capW = cap * k, midW = mid * k;
+  const cap = c.w * 0.2;
+  const capW = cap * k;
   const top = y - h / 2;
   const im = imgs.bridges!;
   ctx.drawImage(im, c.x, c.y, cap, c.h, x0, top, capW + 1, h);
   ctx.drawImage(im, c.x + c.w - cap, c.y, cap, c.h, x1 - capW - 1, top, capW + 1, h);
-  let n = 0;
-  for (let x = x0 + capW; x < x1 - capW; x += midW - 2, n++) {
-    const w = Math.min(midW, x1 - capW - x);
-    const sw = w / k;
+  for (const p of beamPieces(x0, x1, h, y)) {
+    const sw = p.w / k;
     ctx.save();
-    if (n % 2) {
-      ctx.translate(x + w, 0);
+    if (p.flip) {
+      ctx.translate(p.x + p.w, 0);
       ctx.scale(-1, 1);
-      ctx.drawImage(im, c.x + cap, c.y, sw, c.h, 0, top, w + 1, h);
-    } else ctx.drawImage(im, c.x + cap, c.y, sw, c.h, x, top, w + 1, h);
+      ctx.drawImage(im, c.x + cap + p.off, c.y, sw, c.h, 0, top, p.w + 1, h);
+    } else ctx.drawImage(im, c.x + cap + p.off, c.y, sw, c.h, p.x, top, p.w + 1, h);
     ctx.restore();
   }
   return true;

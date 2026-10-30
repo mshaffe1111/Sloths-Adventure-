@@ -60,10 +60,13 @@ const firstChain = swingSection({
   phases: ['ki', 'sho'],
   difficulty: 3,
   weight: 2,
-  pieces: [bank('a', [220, 260]), chain('l1', 'a'), perch('b', 'l1', [260, 300]), up('k', 'b', 40, [120, 150]), down('c', 'k', 40 - RAISE, [220, 260])],
+  // (once a stage: it is the stage's first chain; 9-3's curation found it twice in every roll)
+  maxPerStage: 1,
+  // (after the perch a step down and a hop over the crust: Easy has no animal here, and a plain knee left 3.6 s quiet)
+  pieces: [bank('a', [220, 260]), chain('l1', 'a'), perch('b', 'l1', [220, 260]), down('b2', 'b', -RAISE, [130, 160]), hop('c', 'b2', [220, 260])],
   first: 'a',
   last: 'c',
-  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.4, 2, 80), petals('k', 'k', 0.5, 1), scenery('rock', 'c', [0.5, 0.8], 0.5), flag('c', 0.6)],
+  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.4, 2, 80), petals('b2', 'b2', 0.5, 1), scenery('rock', 'c', [0.5, 0.8], 0.5), flag('c', 0.6)],
 });
 
 /** two chains, a basalt perch between */
@@ -73,10 +76,11 @@ const chainPair = swingSection({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
   weight: 2,
-  pieces: [bank('a', [200, 240]), chain('l1', 'a'), perch('p1', 'l1', [190, 230]), down('p1d', 'p1', -RAISE, [140, 170]), chain('l2', 'p1d'), perch('b', 'l2', [220, 260]), down('c', 'b', -RAISE, [200, 240])],
+  // (a hop over the crust after the second perch: 3.8 s quiet on Easy without it)
+  pieces: [bank('a', [200, 240]), chain('l1', 'a'), perch('p1', 'l1', [190, 230]), down('p1d', 'p1', -RAISE, [140, 170]), chain('l2', 'p1d'), perch('b', 'l2', [220, 260]), down('c', 'b', -RAISE, [130, 160]), hop('d', 'c', [200, 240])],
   first: 'a',
-  last: 'c',
-  sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 90), flag('c', 0.5)],
+  last: 'd',
+  sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 90), flag('d', 0.5)],
 });
 
 /** three chains, perches between (the ember canopy's long crossing) */
@@ -112,10 +116,11 @@ const chainClimb = swingSection({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
   weight: 2,
-  pieces: [bank('a', [200, 240]), chain('l1', 'a'), perch('b', 'l1', [260, 320]), ...climbWall('v', 'b', 'wall', 230, [220, 260]), down('c', 'wall', 230 - RAISE, [400, 440])],
+  // (the run down off the wall split by a hop over the crust: on Easy, with its animal gone, it read 3.9-4.8 s quiet)
+  pieces: [bank('a', [200, 240]), chain('l1', 'a'), perch('b', 'l1', [260, 320]), ...climbWall('v', 'b', 'wall', 230, [220, 260]), down('c', 'wall', 230 - RAISE, [180, 210]), hop('d', 'c', [380, 420])],
   first: 'a',
-  last: 'c',
-  sockets: [petals('b', 'b', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'c', [0.55, 0.65], [W9S_TAG.small], 3, { phases: LIVE, chance: 0.5 })],
+  last: 'd',
+  sockets: [petals('b', 'b', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), petals('c', 'c', 0.5, 1), foe('foe', 'd', [0.55, 0.65], [W9S_TAG.small], 3, { phases: LIVE, chance: 0.5 })],
 });
 
 /** a chain onto a hunter's ledge: land, then deal with it */
@@ -192,11 +197,13 @@ const chainDropClimb = swingSection({
     perch('b', 'l1', [220, 250]),
     down('b2', 'b', -RAISE, [160, 190]),
     ...climbWall('v', 'b2', 'wall', 200, [200, 240]),
-    down('c', 'wall', 200, [380, 420]),
+    // (split by a hop: 3.4-3.8 s quiet on Easy with its animal gone)
+    down('c', 'wall', 200, [160, 190]),
+    hop('d', 'c', [280, 320]),
   ],
   first: 'a',
-  last: 'c',
-  sockets: [petals('b', 'b', 0.5, 1), petals('b2', 'b2', 0.5, 1), petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'c', [0.55, 0.65], [W9S_TAG.small], 3, { phases: ['ten', 'ketsu'], chance: 0.4 })],
+  last: 'd',
+  sockets: [petals('b', 'b', 0.5, 1), petals('b2', 'b2', 0.5, 1), petals('wall', 'wall', 0.5, 2, 90), petals('c', 'c', 0.5, 1), foe('foe', 'd', [0.55, 0.65], [W9S_TAG.small], 3, { phases: ['ten', 'ketsu'], chance: 0.4 })],
 });
 
 /** World 9's chain sections (the vine stage: w9Game.ts) */
