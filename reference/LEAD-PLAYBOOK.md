@@ -74,6 +74,7 @@ A helper's report is not proof. Before merging:
    note; don't hold it for the inspector, the 200-roll tool or a second round. Those gates still hold for QA builds and releases.
 
 **Watch the helpers (Matt, 2026-10-30: "you have to babysit the helpers to make sure that nothing slips in that shouldn't be"):**
+- **Every brief names the files the helper owns, and no two running helpers own the same file.** Before sending a brief, check its file list against every other running helper's. (2026-10-30: PERF-C and PERF-F were both given the ropes and the plant glows; both fixed ropeArt/envPlants/envKit, double the tokens and a reconcile at the deadline.)
 - The lead reads every helper diff before it merges; a helper's report is never enough.
 - Any change that draws: nothing redrawn every frame that could be painted once; nothing drawn off screen (cull x AND y); no gradients, filters, blurs, advanced blends or readbacks in the frame; no sheet drawn shrunk more than ~1.5x (bake it); nothing loaded mid-play.
 - When the automatic speed check exists, a slower build never merges, whoever wrote it.
