@@ -235,7 +235,8 @@ function lessonsOf(id: Id, st: Built): Lesson[] {
     out.push({ name: 'the silk line', text: W5_TEACH.silk, at: inf.firstLine.x });
     out.push({ name: "Dot's fifth rule", text: W5_HINTS.s54admire.old, at: sheet0.x0 });
     out.push({ name: 'the silk sheet', text: W5_TEACH.sheet, at: sheet0.x0 });
-    out.push({ name: 'two silk lines', text: W5_HINTS.s54chain.old, at: two.edge });
+    // (two silk lines in a row: no line, the swing's own tip teaches the let-go; "Flick up at the front" was cut, the lead's sweep)
+    void two;
     out.push({ name: 'the Seamstress', text: W5_TEACH.seamstress, at: seam.x0 });
     out.push({ name: 'the high bridge', text: W5_HINTS.s54high.old, at: step });
     out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: sp.x, reach: SPIDER5.sense });
@@ -310,8 +311,9 @@ test('the new look says a tip about a new thing even when its move was done earl
   const q = new GuideQueue();
   const cake = engineGuideLine(W5_TEACH.cake, '5-2', { dot: true })!;
   assert.equal(cake.thing, true);
-  assert.equal(cake.kind, 'teach');
-  assert.equal(cake.text, 'Cakes make you slow! Flick up over them.');
+  // (it names the cake and what it does, never the move: the lead's line bar, 2026-10-29)
+  assert.equal(cake.text, 'Cakes make you slow!');
+  assert.equal(cake.move, undefined);
   let jumps = 40;
   const env = { danger: false, moveCount: (m: MoveId) => (m === 'jump' ? jumps : 0) };
   q.push(cake, 0);
@@ -320,8 +322,8 @@ test('the new look says a tip about a new thing even when its move was done earl
   jumps++;
   q.tick(1400, env);
   assert.equal(q.cur?.line.key, cake.key, 'up for its minimum time');
-  q.tick(2600, env);
-  assert.equal(q.cur, null, 'done once he jumps (over the cakes)');
+  q.tick(30000, env);
+  assert.equal(q.cur, null, 'read, then gone');
   // a plain move tip is still dropped when the move was done (QA v189)
   const q2 = new GuideQueue();
   const plain = engineGuideLine('Flick up again in the air to jump twice', '1-1', { dot: true })!;
@@ -334,7 +336,7 @@ test('the new look says a tip about a new thing even when its move was done earl
   assert.equal(rules.kind, 'teach');
   assert.equal(rules.move, undefined);
   const butler = engineGuideLine(W5_TEACH.butler, '5-2', { dot: true })!;
-  assert.ok(butler.thing && butler.move === 'punch' && /tray away/.test(butler.text));
+  assert.ok(butler.thing && /butler/i.test(butler.text) && !/tap|punch/i.test(butler.text), butler.text);
 });
 
 test("Matt's line rules: World 5's new tips are 8 words or fewer, and the cake and the Butler say what they do", () => {
@@ -346,7 +348,9 @@ test("Matt's line rules: World 5's new tips are 8 words or fewer, and the cake a
   assert.match(engineGuideLine(W5_TEACH.cake, '5-2')!.text, /slow/i);
   assert.match(engineGuideLine(W5_TEACH.ate, '5-2')!.text, /slow/i);
   assert.match(W5_TEACH.cake, /slow/);
-  assert.match(engineGuideLine(W5_TEACH.butler, '5-2')!.text, /punch his tray away/);
+  // (the Butler named, never how to beat him: the lead's line bar)
+  assert.match(engineGuideLine(W5_TEACH.butler, '5-2')!.text, /butler/i);
+  assert.doesNotMatch(engineGuideLine(W5_TEACH.butler, '5-2')!.text, /tap|punch/i);
 });
 
 for (const id of ['5-1', '5-2'] as const) {
@@ -516,7 +520,10 @@ function lessons55(st: Built): Lesson[] {
  * `tail` seconds more at the end, standing at the shrine (sealed: a player who has run past the cocoons goes back for them)
  */
 function newLookShown55(run: ReturnType<typeof holdRight>, tail = 0): Map<string, { x: number; t: number }> {
-  const q = new GuideQueue();
+  // (calm, as the app runs it, DotGuide.tsx: a line a warning cut once it had been read its minimum time is heard, not said again. The
+  // threads' first line names the danger now, the lead's sweep, so it is read, not dropped as a move done; repeated in full it held
+  // the silk line 255 px late)
+  const q = new GuideQueue(true);
   const shown = new Map<string, { x: number; t: number }>();
   const lines = run.said.map((s) => ({ s, l: engineGuideLine(s.text, '5-5', { dot: true }) }));
   const t0 = run.frames[0].t;
@@ -877,9 +884,9 @@ function guideViewAt(sim: RealPlay, x: number, y: number, w: number, h: number):
 
 test("5-3: Dot's ring for the first closing orchid's tip is on the orchid, not on Pokey, upright and sideways", () => {
   const l = engineGuideLine(W5_TEACH.orchid, '5-3', { dot: true })!;
-  assert.equal(l.text, 'Quick! Flick up before the orchid shuts!');
+  assert.equal(l.text, 'Orchids! They close, then open again.');
   assert.equal(l.topic, 'orchid', 'the tip is about the orchid');
-  assert.equal(l.move, 'jump');
+  assert.equal(l.move, undefined, 'it names the orchid, never the move');
   for (const seed of [1, 38, 75]) {
     const st = build('5-3', seed);
     const first = st.w5info.orchids[0];

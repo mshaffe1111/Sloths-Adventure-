@@ -43,8 +43,8 @@ export const W5_HINTS = {
   },
   // (before the first sleeper and the first thread: a sleeper wakes if he walks into it, and a thread's hum wakes them all)
   s52doze: {
-    stage: '5-2', kind: 'move', old: 'Spiders, asleep on their webs. Let\'s keep it that way. Hop right over them',
-    text: 'Sleeping spiders. Flick up over them. Shh.', gesture: 'flick-up', target: 'spider',
+    stage: '5-2', kind: 'info', old: 'Spiders, asleep on their webs. Let\'s keep it that way. Hop right over them',
+    text: 'Sleeping spiders. Shh.', target: 'spider',
   },
   // (before the first stump only the second jump climbs, in each stage)
   s51tall: {
@@ -72,13 +72,13 @@ export const W5_HINTS = {
   // (halfway on: the orchids stay open for less of their beat from here, the stage's "closing early")
   s53sooner: {
     stage: '5-3', kind: 'info', old: 'They\'re shutting sooner and sooner. Go the moment one opens, and don\'t stand there waiting',
-    text: 'They shut sooner now. Go when one opens.',
+    text: 'They shut sooner now.',
   },
   s53end: { stage: '5-3', kind: 'info', old: 'The last of the orchids. Nearly through, Pokey', text: 'The last orchids. Nearly through.' },
   // ── 5-4 Silk Bridges (dusk: the light going as the orchids close) ──
   s54start: {
     stage: '5-4', kind: 'info', old: 'It\'s getting late, Pokey, and the orchids are closing. Swing across on the silk, and don\'t stop',
-    text: 'Getting late. Swing on the silk.',
+    text: 'Getting late. Silk lines ahead.',
   },
   // (Dot's fifth rule, before the first silk sheet: the sheet's own tip, "Slide straight past the silk", follows as it comes into view.
   // It names the silk: QA found "And don't admire it" unclear, the "it" naming nothing)
@@ -89,12 +89,12 @@ export const W5_HINTS = {
   // (before the first chain of two: let go at the front of the swing, and the next line is there to catch)
   s54chain: {
     stage: '5-4', kind: 'move', old: 'Two silk lines in a row. Flick up at the front of the swing, and catch the next one',
-    text: 'Flick up at the front. Next silk line!', gesture: 'flick-up', target: 'vine',
+    text: null, gesture: 'flick-up', target: 'vine',
   },
   // (before the first high bridge: the branches up, and the branch under it that catches a miss)
   s54high: {
     stage: '5-4', kind: 'info', old: 'A silk bridge, way up high. Hop up the branches. If you miss a line, there\'s a branch below to catch you',
-    text: 'Hop up high. A branch below catches misses.',
+    text: 'Silk way up high. A branch catches misses.',
   },
   s54end: { stage: '5-4', kind: 'info', old: 'Nearly across. Don\'t look back at the silk', text: 'Nearly across. Don\'t look back at it.' },
 } as const satisfies Record<string, W5Hint>;
@@ -114,20 +114,20 @@ const TEACH_ROWS: DotLineRow[] = [
   ['w5.sit', '', 'guide', 'move', T.sit, 'Slide left and right to shake it off.', null, 'slide', 'pokey'],
   ['w5.wrapped', '', 'guide', 'help', T.wrapped, 'Keep moving! Slide your thumb to wiggle free.', null, null, 'pokey'],
   ['w5.wrapGentle', '', 'guide', 'help', T.wrapGentle, 'Wake up, Pokey! Keep sliding along.', null, null, 'pokey'],
-  ['w5.chair', '', 'guide', 'move', T.chair, 'Slide past the chairs. Never sit.', null, 'slide', 'soft chair'],
-  ['w5.cake', '', 'guide', 'move', T.cake, 'Cakes make you slow! Flick up over them.', null, 'flick-up', 'cake'],
+  ['w5.chair', '', 'guide', 'info', T.chair, 'Soft chairs. They keep whoever sits.', null, null, 'soft chair'],
+  ['w5.cake', '', 'guide', 'info', T.cake, 'Cakes make you slow!', null, null, 'cake'],
   ['w5.ate', '', 'guide', 'help', T.ate, 'That cake made you slow. Keep sliding.', null, null, 'pokey'],
-  ['w5.butler', '', 'guide', 'move', T.butler, 'A butler! Tap to punch his tray away.', null, 'tap', 'tray'],
-  ['w5.pot', '', 'guide', 'move', T.pot, 'Slide past the pot between puffs.', null, 'slide', 'teapot'],
+  ['w5.butler', '', 'guide', 'info', T.butler, 'A butler! He won\'t let you by.', null, null, 'tray'],
+  ['w5.pot', '', 'guide', 'info', T.pot, 'That teapot puffs sleepy steam.', null, null, 'teapot'],
   ['w5.steam', '', 'guide', 'help', T.steam, 'Sleepy steam! Slide past between puffs.', null, null, 'pokey'],
-  ['w5.thread', '', 'guide', 'move', T.thread, 'Flick up over the threads. Spiders listen.', null, 'flick-up', 'thread'],
+  ['w5.thread', '', 'guide', 'info', T.thread, 'Threads! The spiders listen to them.', null, null, 'thread'],
   ['w5.hummed', '', 'guide', 'info', T.hummed, 'It hummed! Spiders coming!', null, null, 'spider'],
-  ['w5.sheet', '', 'guide', 'move', T.sheet, 'Slide straight past the silk. Don\'t look.', null, 'slide', 'silk sheet'],
-  ['w5.orchid', '', 'guide', 'move', T.orchid, 'Quick! Flick up before the orchid shuts!', null, 'flick-up', 'orchid'],
-  ['w5.cocoon', '', 'guide', 'move', T.cocoon, 'Somebody\'s in there! Tap to punch it open.', null, 'tap', 'cocoon'],
+  ['w5.sheet', '', 'guide', 'info', T.sheet, 'The silk sheets catch whoever looks.', null, null, 'silk sheet'],
+  ['w5.orchid', '', 'guide', 'info', T.orchid, 'Orchids! They close, then open again.', null, null, 'orchid'],
+  ['w5.cocoon', '', 'guide', 'info', T.cocoon, 'Somebody\'s in there!', null, null, 'cocoon'],
   ['w5.silk', '', 'guide', 'move', T.silk, 'Flick up into the silk to swing.', 'Then flick up and forward to let go.', 'flick-up', 'vine'],
-  ['w5.spider', '', 'guide', 'move', T.spider, 'Tap to punch the spider, or stomp it.', null, 'tap', 'spider'],
-  ['w5.seamstress', '', 'guide', 'move', T.seamstress, 'The Seamstress! Slide past before she looks up.', null, 'slide', 'seamstress'],
+  ['w5.spider', '', 'guide', 'info', T.spider, 'Spiders! These ones are soft.', null, null, 'spider'],
+  ['w5.seamstress', '', 'guide', 'info', T.seamstress, 'The Seamstress. She sews whoever she sees.', null, null, 'seamstress'],
   ['w5.laced', '', 'guide', 'help', T.laced, 'She saw you looking! Slide left and right.', null, null, 'pokey'],
   ['w5.step', '', 'guide', 'help', W5_STEP_HELP, 'Keep sliding forward as you flick up.', null, 'flick-up', 'step'],
 ];

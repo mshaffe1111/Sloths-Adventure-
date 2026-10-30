@@ -22,11 +22,11 @@ import type { Difficulty, LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit
 export const W7R_TIPS = {
   // (Normal plays on Tips: a room's first line names the problem, never the answer (polish-dot DOT-2); Easy plays on Help, a nudge)
   sealEnter: "Sealed. This old door won't budge.",
-  sealEnterEasy: 'Sealed. A stone on that plate, maybe.',
+  sealEnterEasy: "Sealed. This old door won't budge.",
   sealHold: "One stone isn't enough. I need another.",
   sealOpen: 'Open! Heavy work for one small sloth.',
   leverEnter: 'Another sealed door. How does this one open?',
-  leverEnterEasy: 'A lever by the door. Worth a pull.',
+  leverEnterEasy: 'Another sealed door. How does this one open?',
   leverHold: 'Now the plate needs a stone.',
   leverOpen: "Both done. The door's open.",
 } as const;

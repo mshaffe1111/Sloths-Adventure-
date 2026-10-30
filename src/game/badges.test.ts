@@ -147,11 +147,27 @@ test('Ghost Walk: ten clears without a hit, over any number of stages', () => {
   assert.ok(has({ store: s, ...base }, 'ghost_walk'));
 });
 
-test('naturalist needs every predator seen', () => {
-  let s = recordStage(emptyStore(), stage({ seen: ['snake', 'tayra', 'ocelot', 'jaguar', 'boa', 'eagle', 'spider', 'caiman', 'frog', 'harpy'] }));
-  assert.ok(!has({ store: s, ...base }, 'naturalist'), 'the river snapper counts too');
-  s = recordStage(s, stage({ seen: ['turtle'] }));
+test('naturalist needs all 18 journal creatures: the 11 predators and the 7 met on the road', () => {
+  const nat = BADGE_BY_ID.naturalist;
+  assert.equal(nat.desc, 'Meet all 18 creatures in the journal');
+  const predators = ['snake', 'tayra', 'ocelot', 'jaguar', 'boa', 'eagle', 'spider', 'caiman', 'turtle', 'frog', 'harpy'];
+  let s = recordStage(emptyStore(), stage({ seen: predators }));
+  assert.ok(!has({ store: s, ...base }, 'naturalist'), 'the eleven predators alone are not enough any more');
+  assert.deepEqual(nat.progress!({ store: s, ...base }), { have: 11, need: 18 });
+  // the road cards are stage actors: a won stage that holds them puts them in the store (one stage at a time)
+  for (const id of ['2-9', '4-3', '4-6', '5-2', '5-4']) s = recordStage(s, stage({ id }));
+  assert.deepEqual(nat.progress!({ store: s, ...base }), { have: 16, need: 18 });
+  assert.ok(!has({ store: s, ...base }, 'naturalist'), 'Pell and the soldiers are still to meet');
+  assert.ok(!recordStage(s, stage({ id: '5-M', win: false })).seen.includes('pell'), 'a lost stage meets nobody');
+  s = recordStage(s, stage({ id: '5-M' }));
+  for (const r of ['royal_guard', 'capuchin', 'eaglet', 'butler', 'seamstress', 'soldier', 'pell']) assert.ok(s.seen.includes(r), r);
   assert.ok(has({ store: s, ...base }, 'naturalist'));
+  // a save from before the change: its road stages were cleared, but nothing put the road cards in the store; they count from the clears
+  const old = recordStage(emptyStore(), stage({ seen: predators }));
+  const cleared: LevelRecord[] = ['2-9', '4-5', '4-6', '5-2', '5-4', '5-M'].map((id) => ({ id, worldIndex: +id[0], miniIndex: 0, completed: true, stars: 1 }));
+  assert.ok(has({ store: old, ...base, levels: [...none, ...cleared] }, 'naturalist'));
+  // and a medal already won for the eleven predators stays won (its id is the same)
+  assert.ok(has({ store: { ...emptyStore(), earned: { naturalist: 1 } }, ...base }, 'naturalist'));
 });
 
 test('a perfect save earns every record-based medal; world medals follow their world', () => {

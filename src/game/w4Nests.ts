@@ -12,6 +12,7 @@
 import { WIND_GROUND_SHARE } from './zones.ts';
 import { drawW4, w4ArtReady, w4Height } from './w4Art.ts';
 import { drawNetArt } from './stageArt.ts';
+import { drawFx } from './bossFx.ts';
 
 /** (`trade`: up a terrace on Dot's knot pulley, its stone got back from a capuchin with a mango: the puzzle kit's room, 2026-10-28) */
 export type NestKind = 'plain' | 'knot' | 'fall' | 'guard' | 'glide' | 'trade';
@@ -94,23 +95,15 @@ function drawParent(ctx: CanvasRenderingContext2D, x: number, y: number, t: numb
 /** streaks of air blowing along the parent's lane, in front of the nest */
 function drawWingWind(ctx: CanvasRenderingContext2D, c: { x: number; y: number }, s: number, t: number) {
   if (s <= 0.02) return;
+  // (the painted wind, the gust strip in bossFx.ts, racing along with the tailwind: no stroked curves)
   const floor = c.y + 26;
-  ctx.save();
-  ctx.strokeStyle = `rgba(240, 253, 250, ${0.55 * s})`;
-  ctx.lineWidth = 2.5;
-  ctx.lineCap = 'round';
   const len = NEST_WIND.ahead + NEST_WIND.back;
-  for (let k = 0; k < 14; k++) {
+  for (let k = 0; k < 10; k++) {
     const u = (t * 0.9 + k * 0.137) % 1;
     const sx = c.x - NEST_WIND.back + u * len;
     const sy = floor - 120 + ((k * 61) % 520);
-    ctx.globalAlpha = Math.sin(u * Math.PI);
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-    ctx.quadraticCurveTo(sx + 40, sy - 8, sx + 80, sy);
-    ctx.stroke();
+    drawFx(ctx, 'gust', sx + 50, sy, 110, { h: 20, alpha: 0.75 * s * Math.sin(u * Math.PI) });
   }
-  ctx.restore();
 }
 
 /**

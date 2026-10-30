@@ -48,4 +48,4 @@ Wired in (2026-10-20, 18:50, test hero only, uncommitted): `cutStandard.py --set
 
 ## In production (2026-10-20, 19:50)
 
-The standard hero is no longer a test: it is Pokey in the game, the menu switch is gone, and `cutStandard.py` now builds the second-round set (`--set v2`) by default (`--set old` still rebuilds the first-round atlas). `?std=0` turns it off for a debugging session. The older hero (heroSprite.ts) still draws while the atlas loads and for any pose with no standard frame. The orchestra sound effects (`sfxOrch.ts`) stay opt-in, off by default, in the menu.
+The standard hero is no longer a test: it is Pokey in the game, the menu switch is gone, and `cutStandard.py` now builds the second-round set (`--set v2`) by default (`--set old` still rebuilds the first-round atlas). `?std=0` turns it off for a debugging session. The older hero (heroSprite.ts) still draws while the atlas loads and for any pose with no standard frame. The orchestral sound effects were deleted (Matt, 2026-10-29).

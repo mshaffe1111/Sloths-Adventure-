@@ -3,7 +3,7 @@
 **The problem.** The footing lets him stand with his middle up to 11 px past a platform's end (about 16 px with the early-stage help). In the QA screenshots that left about half his body past the painted edge: he visibly stood in the air (polish item 3).
 
 **The fix:**
-- `engine.ts edgeOffset`. He is standing still: no steer, attack, duck or push. His middle is past the end of the platform under him, and nothing at that height carries on beyond it. Then he is **drawn** a small step back (at 80 px/s) until his drawn middle is 12 px inside the end (`p.drawDx`, applied in `heroSprite.ts`).
+- `engine.ts edgeOffset`. He is standing still: no steer, attack, duck or push. His middle is past the end of the platform under him, and nothing at that height carries on beyond it. Then he is **drawn** a small step back (at 40 px/s, as long as the painted step-back clip's steps) until his drawn middle is 12 px inside the end (`p.drawDx`, applied in `heroSprite.ts`).
 - His standing picture is 53-57 px wide (`heroSprite.ts`), so about a quarter of him is then over the air.
 - There he teeters: a slow lean out over the drop and back, about his feet, up to about 3.4° (`heroSprite.ts drawStandard`).
 - When he moves or jumps, the picture rejoins his footing at 600 px/s (within two frames), so a run-off or a jump starts from where he really is.
@@ -64,7 +64,7 @@ What they show:
 8. **Every move needed:** reach unchanged (where he stands does not move); see above.
 9. **Moments:** n/a.
 10. **Motion:**
-    - The step back lasts about 0.3 s (23 px at 80 px/s) and reads as a small shuffle back.
+    - The step back lasts about 0.6 s (23 px at 40 px/s) and reads as a small shuffle back.
     - **Rough spot, named plainly:** it slides the standing pose back rather than taking steps. That is the one place a painted step-back pose would help.
     - Moving off, the picture catches up within two frames (20 px a frame); at 30 fps that reads as him starting to walk.
 

@@ -227,9 +227,9 @@ test('5-5 in the real engine: three taps free a creature, Dot says what to do fi
   for (let i = 0; i < 200 && sim.p.x < c.x - 50; i++) sim.frame({ right: true });
   const tip = sim.said.find((s) => s.text === W5_TEACH.cocoon);
   assert.ok(tip && tip.x < c.x - 250, `Dot's cocoon line came at ${tip?.x}, the cocoon at ${c.x}`);
-  assert.equal(engineGuideLine(W5_TEACH.cocoon, '5-5')!.text, 'Somebody\'s in there! Tap to punch it open.');
+  // (it names what is inside, never the move: the lead's line bar, 2026-10-29)
+  assert.equal(engineGuideLine(W5_TEACH.cocoon, '5-5')!.text, 'Somebody\'s in there!');
   assert.ok(wordCount(engineGuideLine(W5_TEACH.cocoon, '5-5')!.text) <= 8);
-  assert.equal(engineGuideLine(W5_TEACH.cocoon, '5-5')!.move, 'punch');
   const before = sim.p.crittersRescued;
   for (let k = 0; k < 3; k++) {
     sim.frame({ punch: true });

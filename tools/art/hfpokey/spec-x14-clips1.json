@@ -1,0 +1,52 @@
+{
+ "tag": "x14-clips1",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "x14-teeter-s3",
+   "src": "gh:7918690:tools/art/hfpokey/starts/ref-stand-satchel.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, stands right at the very edge of a drop just in front of his toes; he wobbles, leaning forward out over the edge and back again, windmilling both arms in small quick circles to keep his balance, eyes wide and worried, his feet planted in the same spot, a smooth repeating wobble, he stays in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, falling, jumping, background scenery, cliff, ground, text, watermark, blurry, photo, 3d render, camera movement, zoom",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "x14-teeter-s11",
+   "src": "gh:7918690:tools/art/hfpokey/starts/ref-stand-satchel.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, stands right at the very edge of a drop just in front of his toes; he wobbles, leaning forward out over the edge and back again, windmilling both arms in small quick circles to keep his balance, eyes wide and worried, his feet planted in the same spot, a smooth repeating wobble, he stays in the middle of the frame",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, falling, jumping, background scenery, cliff, ground, text, watermark, blurry, photo, 3d render, camera movement, zoom",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "x14-stepback-s3",
+   "src": "gh:7918690:tools/art/hfpokey/starts/ref-stand-satchel.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, stands at the edge of a drop just in front of his toes, sees it with wide eyes, and takes two small careful steps backward away from the edge, arms raised a little for balance, then settles and gives a little sigh of relief, still facing right",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, falling, jumping, background scenery, cliff, ground, text, watermark, blurry, photo, 3d render, camera movement, zoom",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "x14-stepback-s11",
+   "src": "gh:7918690:tools/art/hfpokey/starts/ref-stand-satchel.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, stands at the edge of a drop just in front of his toes, sees it with wide eyes, and takes two small careful steps backward away from the edge, arms raised a little for balance, then settles and gives a little sigh of relief, still facing right",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, falling, jumping, background scenery, cliff, ground, text, watermark, blurry, photo, 3d render, camera movement, zoom",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  }
+ ]
+}
