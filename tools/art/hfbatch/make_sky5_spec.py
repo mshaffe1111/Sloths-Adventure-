@@ -38,8 +38,8 @@ NEG_JOIN = ('floating island, rock slab, cliff, second landscape, stacked scenes
 def items(commit, stems=None, seeds=(11, 23)):
     base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/src/assets/backdrops/'
     out = []
-    for stem in stems or ORDER:
-        for seed in seeds:
+    for seed in seeds:  # (one take of every strip first, in order, then the second seed)
+        for stem in stems or ORDER:
             out.append({'name': f'{stem}-r5-{seed}', 'src': f'{base}{stem}-far.webp', 'seed': seed, 'neg': NEG_SKY,
                         'sky': f'{SKY_STYLE}. {SKY_ONLY[stem]}',
                         'join': f'{JOIN_STYLE}. {WHAT[stem]}; the leaves, branches, rock and smoke at the top of the scene reach a little way up '
