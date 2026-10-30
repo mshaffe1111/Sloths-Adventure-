@@ -16,6 +16,7 @@ const CAST = [
   ['Grandfather', '#b9a37a', "the General's voice with the iron gone", "Hello, love. I'm late. I brought the whole family."],
   ['Flicker', '#d8f27a', 'a firefly: tiny, high, buzzing', "I'm staying, if that's all right."],
   ['Squirrel', '#c98a4b', 'quick chatter', 'North! At that speed? See you next year!'],
+  ['Soldier', '#8c7f6a', "one of the General's soldiers: gruff, clipped", 'Is that a hummingbird?'],
   ['Gruntlewick', '#d9b26a', 'the village crier: booming, in no hurry at all', "Young man. You've come a long way. Are your folks behind you?"],
   ['Thornbark', '#7a9a3c', 'old wood creaking', 'They are gone. I can hear myself think. It is very loud in here.'],
   ['Venom Fang', '#7bd34f', 'a hiss through every word', "You'll have to get through me, ssloth. Take all the time you need."],
