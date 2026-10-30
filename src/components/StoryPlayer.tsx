@@ -2,6 +2,9 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import type { StoryPanel } from '../game/story.ts';
 import { isEasy } from '../game/difficulty.ts';
 import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
+import { noticed } from '../game/storyNotice.ts';
+import { loadFinds } from '../game/finds.ts';
+import { loadBadgeStore } from '../game/badgeStore.ts';
 import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
@@ -28,6 +31,7 @@ const SPEAKERS: Record<string, { dot: string }> = {
   Grandma: { dot: '#c9a8e8' },
   'Lieutenant Pell': { dot: '#9aa3ad' },
   Squirrel: { dot: '#c98a4b' },
+  Soldier: { dot: '#8c7f6a' },
   'General Iron-Claw': { dot: '#e0524a' },
   Grandfather: { dot: '#b9a37a' },
   Thornbark: { dot: '#7a9a3c' },
@@ -71,10 +75,11 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // a picture the player plays with their thumbs needs a touch screen; without one it reads as a picture, with the narration that says
   // what the thumbs would have done
   const touchy = useMemo(() => typeof window !== 'undefined' && ('ontouchstart' in window || (navigator.maxTouchPoints ?? 0) > 0), []);
-  const panels = useMemo(
-    () => (touchy ? script.filter((p) => !p.narratedOnly) : script.map((p) => (p.hold ? { ...p, hold: undefined } : p))),
-    [script, touchy],
-  );
+  const panels = useMemo(() => {
+    // (and the world notices what this player did: the lines for what they found, the falls the General counted: storyNotice.ts)
+    const heard = noticed(script, loadFinds(), loadBadgeStore().counters.falls);
+    return touchy ? heard.filter((p) => !p.narratedOnly) : heard.map((p) => (p.hold ? { ...p, hold: undefined } : p));
+  }, [script, touchy]);
   // dev only: `?storyAt=N` opens a story on its Nth picture (for before/after screenshots)
   const [idx, setIdx] = useState(() => {
     if (!import.meta.env.DEV || typeof window === 'undefined') return 0;

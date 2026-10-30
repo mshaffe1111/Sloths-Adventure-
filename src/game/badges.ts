@@ -106,6 +106,9 @@ export interface BadgeCounters {
   /** the General beaten (1 = yes), and beaten on Normal */
   finished: number;
   finishedNormal: number;
+  // ── counted from 2026-10-30 on ──
+  /** lives lost, across every stage ever played: the General counts them (storyNotice.ts) */
+  falls: number;
 }
 
 export interface BadgeStore {
@@ -121,6 +124,7 @@ export interface BadgeStore {
 export const emptyCounters = (): BadgeCounters => ({
   stomps: 0, bestCombo: 0, glide: 0, shimmy: 0, flora: 0, streak: 0, bestStreak: 0,
   playSec: 0, swings: 0, punches: 0, kicks: 0, freed: 0, cakesAvoided: 0, orchidPetals: 0, silkShed: 0, noHitClears: 0, finished: 0, finishedNormal: 0,
+  falls: 0,
 });
 export const emptyStore = (): BadgeStore => ({ v: 1, earned: {}, kills: {}, seen: [], counters: emptyCounters(), quiet: [] });
 
@@ -491,6 +495,7 @@ export function recordStage(store: BadgeStore, s: StageStats): BadgeStore {
       noHitClears: c.noHitClears + (s.win && s.heartsLost === 0 && s.livesLost === 0 ? 1 : 0),
       finished: end ? 1 : c.finished,
       finishedNormal: end && s.difficulty !== 'easy' ? 1 : c.finishedNormal,
+      falls: c.falls + Math.max(0, s.livesLost || 0),
     },
   };
 }

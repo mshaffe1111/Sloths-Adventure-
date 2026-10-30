@@ -3,11 +3,16 @@
  *  - a NOTE from Meeca in plain sight (a Keeper's Bell flower you just touch), in the world's 2nd stage,
  *  - a KEEPSAKE hidden in a Hush Fern (crouch beside it), in the 5th stage,
  *  - a BOOK, a photo album, hidden the same way, in the 8th stage.
- * They are a bonus layer: the cutscenes tell the whole story, and these deepen it. Every find that has been picked up stays in the
- * Trophy Room's Library, where it can be read again at any time.
+ * They are a bonus layer: the cutscenes tell the whole story, and these deepen it. Every find that has been picked up stays in
+ * Pokey's satchel (Satchel.tsx), where it can be read again at any time.
+ *
+ * And the finds that tell Pokey's, Dot's and the guardians' side (EXTRA_FINDS, the 2026-10-29 story report, approved):
+ *  - DOT'S LOST POCKET, six things that fell out of her pouch in the thorns (4-D), one per world 4-9, in the 6th stage,
+ *  - THE NOTCH, the growth-notch twig from the old nest, in 1-4 (not 1-1: a fern there would teach the crouch before 1-5 does),
+ *  - THE SNAIL, once in every world, in the 3rd stage (4-9 in World 4; only once his painted sprite is in: SNAIL_PAINTED).
  */
 
-export type FindKind = 'note' | 'book' | 'keepsake';
+export type FindKind = 'note' | 'book' | 'keepsake' | 'pocket' | 'notch' | 'snail';
 export type PaperKind = 'leaf' | 'journal' | 'letter';
 export type KeepsakeIcon = 'key' | 'locket' | 'medal' | 'ribbon' | 'petal' | 'rattle' | 'teddy' | 'seeds' | 'stopwatch' | 'bell' | 'token';
 
@@ -32,12 +37,14 @@ export interface FindDef {
   /** keepsakes only: the little picture */
   icon?: KeepsakeIcon;
   pages: FindPage[];
+  /** what someone says about it, under the words (Dot's run-on for her pocket things) */
+  said?: { who: string; text: string };
 }
 
 /** the stage of each world (1..9) that hides each kind of find; stage 7 hides the Thorn Gate in World 7 and stage 10 is the boss */
-export const FIND_STAGE: Record<FindKind, number> = { note: 2, keepsake: 5, book: 8 };
+export const FIND_STAGE: Record<FindKind, number> = { note: 2, keepsake: 5, book: 8, pocket: 6, notch: 4, snail: 3 };
 /** a world whose stages hide a find somewhere else, by design (World 4: the ribbon is behind the falls in 4-3, Waterfall Steps) */
-export const FIND_STAGE_IN: Record<number, Partial<Record<FindKind, number>>> = { 4: { keepsake: 3 } };
+export const FIND_STAGE_IN: Record<number, Partial<Record<FindKind, number>>> = { 4: { keepsake: 3, snail: 9 } };
 /** the stage of world `world` that hides each kind of find */
 export const findStage = (world: number, kind: FindKind): number => FIND_STAGE_IN[world]?.[kind] ?? FIND_STAGE[kind];
 
@@ -284,7 +291,44 @@ export const FINDS: FindDef[] = [
   },
 ];
 
-export const FIND_BY_ID: Record<string, FindDef> = Object.fromEntries(FINDS.map((f) => [f.id, f]));
+/** Dot's lost pocket: what fell out of her pouch in the thorns, and what she says when it turns up */
+const pocket = (world: number, title: string, card: string, dot: string): FindDef => ({
+  id: `w${world}_pocket`, world, kind: 'pocket', title, hint: `World ${world}, hidden. Something of Dot's.`, pages: [{ text: card }], said: { who: 'Dot', text: dot },
+});
+export const POCKET_FINDS: FindDef[] = [
+  pocket(4, 'A button', 'A plain brown button, the thread still in it.',
+    "That's mine, that's off my pouch, the thorns took a few things, I'm not going to list them, it's a button, give it here, thank you."),
+  pocket(5, 'A bent pin', 'A pin, bent double, the kind that holds an envelope shut.',
+    "That's for pinning letters shut, no, not that letter, other letters, normal letters, mail, it's just mail."),
+  pocket(6, 'A grey feather', "A grey feather, far too big to be Dot's. It smells of her pouch.",
+    "That's not mine, I know it's not mine, it's from a friend, a messenger friend, from a long time ago, a bad night, can we look at the button again."),
+  pocket(7, 'A blue ribbon', 'A strip of blue ribbon, the kind you tie on a nest so you can find it in the dark.',
+    "I tied one of those on a nest once, on the far branches, so I'd find it fast, and I didn't find it fast."),
+  pocket(8, 'A tiny map', "A map the size of a leaf, one tree circled over and over. Pokey's tree.",
+    "That's my map, from before you could walk, I circled your tree so I'd never get lost getting to it, and I never did, not once, I came every morning."),
+  pocket(9, 'An envelope scrap', 'A torn corner of yellowed envelope, with a faded petal pressed in the seal.',
+    "Don't, don't open the pouch, that's off the letter, the corner tore, the letter's fine, the letter's still in here, I'm giving it to him, I am, at the top."),
+];
+/** the twig from the old nest: his parents' notches, and Grandma's */
+export const NOTCH_FIND: FindDef = {
+  id: 'w1_notch', world: 1, kind: 'notch', title: 'The Notch', hint: 'World 1, hidden. Crouch beside a fern.',
+  pages: [{ text: 'A twig from the old nest, notched up its length, one notch a year. The low notches are cut deep and neat. The higher ones are in a different hand, and each has a tiny fern drawn beside it.' }],
+};
+/** the snail from the prologue, on the same trip, once in every world, a little further along each time (a tap, a tiny sound, nothing else) */
+export const SNAIL_FINDS: FindDef[] = Array.from({ length: 10 }, (_, i) => ({
+  id: `w${i + 1}_snail`, world: i + 1, kind: 'snail' as const, title: 'The snail', hint: `World ${i + 1}. He's out there somewhere.`,
+  pages: [{ text: 'The snail from the garden path, a little further along. He does not stop.' }],
+}));
+/** the snail is only hidden in the stages once his painted sprite is in (story-art): never a code-drawn stand-in */
+export const SNAIL_PAINTED = false;
+/** the finds beyond the thirty notes, albums and keepsakes (they do not count toward "every find" or the secret token) */
+export const EXTRA_FINDS: FindDef[] = [...POCKET_FINDS, NOTCH_FIND, ...(SNAIL_PAINTED ? SNAIL_FINDS : [])];
+export const ALL_FINDS: FindDef[] = [...FINDS, ...EXTRA_FINDS];
+
+/** Pokey's note pushed up through the floor of the Under the Ruins level (SECRET-LEVELS.md): written, waiting for that level to give it */
+export const RUINS_NOTE = { id: 'w7_ruins', text: "Meeca. I'm coming. It's taking a while. I'm fine. P.\n\nP.S. My handwriting's wobbling. That's the rain." };
+
+export const FIND_BY_ID: Record<string, FindDef> = Object.fromEntries(ALL_FINDS.map((f) => [f.id, f]));
 
 /** the reward for finding all of them: it is never hidden in a stage, it opens in the Library when every other find is there */
 export const BONUS_FIND: FindDef = {
@@ -295,12 +339,15 @@ export const BONUS_FIND: FindDef = {
 };
 FIND_BY_ID[BONUS_FIND.id] = BONUS_FIND;
 
-const REAL_IDS = new Set(FINDS.map((f) => f.id));
+const REAL_IDS = new Set(ALL_FINDS.map((f) => f.id));
 
-/** true once every note, album and keepsake in the stages has been found */
+/** true once every note, album and keepsake in the stages has been found (the extra finds are their own sets: allOf) */
 export function allFound(found: string[]): boolean {
   return FINDS.every((f) => found.includes(f.id));
 }
+
+/** true once every find of a set has been found (Dot's pocket, the snails) */
+export const allOf = (set: FindDef[], found: string[]) => set.length > 0 && set.every((f) => found.includes(f.id));
 
 /** the find that hides in this stage, if there is one */
 export function findForStage(world: number, mini: number): FindDef | null {

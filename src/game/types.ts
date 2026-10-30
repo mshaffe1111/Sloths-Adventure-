@@ -2,6 +2,8 @@ export type GameScreen =
   | 'title'
   | 'world_map'
   | 'trophy'
+  /** Pokey's satchel: the finds, his journal, the story scenes (Satchel.tsx) */
+  | 'satchel'
   | 'story_cutscene'
   | 'playing'
   | 'paused'

@@ -2815,11 +2815,13 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
     const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+    addMissingFind(st);
     return difficulty === 'normal' ? w4Normal(st) : st;
   }
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
   if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) {
     const st = flagsCapped(buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]));
+    addMissingFind(st);
     addDress(st, layoutVariant ?? 1);
     return st;
   }
@@ -2931,6 +2933,16 @@ function hash32(s: string): number {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
   return h >>> 0;
+}
+
+/**
+ * A hand-built stage places its own note, keepsake or book where its builder means it to go; one that holds a find its builder does not
+ * place (Dot's pocket things, the Notch, the snail: finds.ts EXTRA_FINDS) gets it the generated stages' way, on a platform the level check
+ * already reaches, without touching the layout.
+ */
+export function addMissingFind(stage: GeneratedStage) {
+  if (stage.collectibles.some((c) => c.type === 'find')) return;
+  addFinds(stage);
 }
 
 /**

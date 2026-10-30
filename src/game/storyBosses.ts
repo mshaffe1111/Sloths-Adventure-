@@ -16,6 +16,8 @@ export interface BossLine {
   cue?: StoryCue;
   intensity?: number;
   sting?: StorySting;
+  /** said instead once the player has fallen (the General counts): {N} in words; dropped on a retry's short intro */
+  withFalls?: string;
 }
 
 export interface BossStory {
@@ -178,7 +180,10 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   },
   10: {
     intro: [
-      { speaker: 'General Iron-Claw', text: 'Nine hundred and ninety-nine steps. One more. The General has broken stronger things than a sloth. Still slow, boy.' },
+      {
+        speaker: 'General Iron-Claw', text: 'Nine hundred and ninety-nine steps. One more. The General has broken stronger things than a sloth. Still slow, boy.',
+        withFalls: 'Nine hundred and ninety-nine steps. One more. {N} falls, boy. {N} times you got up. The General has broken stronger things than a sloth. Still slow, boy.',
+      },
       { speaker: 'Pokey', text: 'Still here, sir. I\'ve come for Meeca. Where\'s Dot?', pokey: 'determined', cue: 'resolve', intensity: 0.5 },
       { speaker: 'General Iron-Claw', text: 'I do not know where your bird is, and I find that I mind. You stopped for tea, boy. The General counted.', cue: 'war', intensity: 0.6 },
       { speaker: 'Pokey', text: 'It was very good tea, sir.', pokey: 'determined' },
@@ -230,6 +235,7 @@ export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: st
     if (line.cue) b.cue = line.cue;
     if (line.intensity !== undefined) b.i = line.intensity;
     if (line.sting) b.sting = line.sting;
+    if (line.withFalls && !short) b.withFalls = line.withFalls;
     if (kind === 'intro' && i === lines.length - 1) b.tip = story.tip;
     return b;
   });

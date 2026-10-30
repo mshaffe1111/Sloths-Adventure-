@@ -165,6 +165,10 @@ export interface StoryPanel {
   hold?: StoryHold;
   /** only read where the picture before it could not be played (no touch screen): it narrates what the player's thumbs would have done */
   narratedOnly?: boolean;
+  /** shown only when the player has found this (a find's id): the world noticing what you did (storyNotice.ts) */
+  ifFound?: string;
+  /** said instead of `text` once the player has fallen at least once: {N} is how many times, in words (storyNotice.ts) */
+  withFalls?: string;
 }
 
 /**

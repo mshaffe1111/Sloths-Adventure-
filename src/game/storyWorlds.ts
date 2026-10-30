@@ -337,6 +337,8 @@ const W8_B = chapter({ name: 'WORLD 8 · WAKE UP', w: 8, m: 'night', cue: 'tende
   FL('Then you\'ll know where he keeps the snacks.', 'P:tired@.3 D:yelp@.62^.4 FL:talk@.385^.44*.8>', { sting: 'laugh' }),
   P('Dot. You came back. You\'re bleeding.', 'P:surprised@.3 D@.62^.45', { cue: 'sorrow', i: 0.4, p: { memory: false } }),
   D('Never mind me, look at you, you\'ve lost weight, have you been eating, you haven\'t, I can tell from here.', '=', { cue: 'tender', i: 0.45 }),
+  // (only when the World 6 note was found: she has read about the soup)
+  D('And don\'t tell me it\'s the soup, I read the note, everybody\'s read the note, don\'t eat that soup, I mean it.', '=', { ifFound: 'w6_note' }),
   D('I found a seam in the net, behind some kind of cookhouse, that was just a little narrower than me, and I went through it anyway. Then I went up the wall to her window. It has bars. I fit between them, mostly. Here.',
     '=', { cue: 'tender', i: 0.45 }),
   D('"Pokey, I bet you\'re asleep right now. It\'s fine. I would be too. Keep going. I\'m still here. And I\'ve figured out who he is. I\'ll tell you when I can look at you."',

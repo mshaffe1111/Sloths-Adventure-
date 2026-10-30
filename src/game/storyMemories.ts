@@ -249,9 +249,18 @@ const GATES_DAY = chapter({ name: 'WORLD 9 · THE OPEN GATES', w: 10, m: 'storm'
   D('Pokey. Pokey! The front door is open. The big one, up there. Wide open, and not a guard in it. I\'ve been through a lot of doors, Pokey, a lot of doors, and not one of them did that on purpose!', 'P:idle@.3 D@.6^.4 FL@.385^.44*.8>'),
   P('Is that bad?', 'P:talk@.3 D@.6^.4 FL@.385^.44*.8>'),
   D('Pokey. The last thing that was this nice to us had a doily.', '=', { sting: 'laugh' }),
+  // the two soldiers from the garden, back (2026-10-29 story report, people who come back)
+  N('Two soldiers stood at the foot of the steps, the same two from the garden, and a good deal more tired.', 'P:idle@.3 D@.6^.4 FL@.385^.44*.8>', { cue: 'comedy', i: 0.35 }),
+  say('Soldier')('Is that a hummingbird?', '='),
+  say('Soldier')('Where?', '='),
+  N('Dot was already behind Pokey\'s ear.', 'P:idle@.3 D:flinch@.33^.36*.8 FL@.385^.44*.8>', { sting: 'laugh' }),
   N('Along the great wall, one by one, the guardians took their places. They didn\'t look down. Every collar was glowing.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'dread', i: 0.45, p: GATE_VIEW }),
   N('Above them, the great gates of the Highland Fortress groaned on their hinges, though no hand was on them. Lightning walked the length of the wall.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'war', i: 0.5, sting: 'door', p: { ...GATE_VIEW, fx: [{ at: 0.8, kind: 'flash', dur: 0.4, amount: 0.5 }, { at: 0.8, kind: 'shake', amount: 7, dur: 0.6 }] } }),
-  GEN('Come up, sloth. The General has counted every step you took. There are a thousand more. The General is not tired. The General is never tired.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'war', i: 0.7, sting: 'blow', p: GATE_VIEW }),
+  GEN('Come up, sloth. The General has counted every step you took. There are a thousand more. The General is not tired. The General is never tired.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, {
+    cue: 'war', i: 0.7, sting: 'blow', p: GATE_VIEW,
+    // (the General counts the player's real falls, once there are any: storyNotice.ts)
+    withFalls: 'Come up, sloth. The General has counted every step you took, and every fall. {N} of them. There are a thousand more. The General is not tired. The General is never tired.',
+  }),
   D('He counted your steps, Pokey. That\'s... I don\'t know what that is. That\'s a hobby. That\'s a very concerning hobby.', `P:worried@.3 D@.6^.4 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'comedy', i: 0.4, p: GATE_VIEW }),
   N('Pokey looked up the thousand steps. Then he looked at the petal on his wrist, which had begun, faintly, to glow.', `P:determined@.3 FL@.385^.44*.8> ${GATE_WALL}`, { cue: 'resolve', i: 0.5, sting: 'cliffhanger', p: { ...GATE_VIEW, fx: [{ at: 0.8, kind: 'glints', x: 0.3, y: 0.8 }] } }),
 ]);

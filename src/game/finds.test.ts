@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BONUS_FIND, FINDS, FIND_BY_ID, FIND_STAGE, allFound, findForStage, parseFinds, withFind } from './finds.ts';
+import { BONUS_FIND, FINDS, FIND_BY_ID, FIND_STAGE, FIND_STAGE_IN, allFound, findForStage, findStage, parseFinds, withFind, type FindKind } from './finds.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
@@ -25,7 +25,12 @@ test('finds never share a stage with a boss or the Thorn Gate', () => {
     assert.ok(mini >= 1 && mini <= 9, 'not the boss stage');
     assert.notEqual(mini, 7, 'stage 7 hides the Thorn Gate in World 7');
   }
-  assert.equal(new Set(Object.values(FIND_STAGE)).size, 3, 'a different stage for each kind');
+  assert.equal(new Set(Object.values(FIND_STAGE)).size, Object.keys(FIND_STAGE).length, 'a different stage for each kind');
+  for (const [w, kinds] of Object.entries(FIND_STAGE_IN)) {
+    const at = Object.keys(FIND_STAGE).map((k) => findStage(Number(w), k as FindKind));
+    assert.equal(new Set(at).size, at.length, `world ${w}: a different stage for each kind`);
+    for (const m of Object.values(kinds)) assert.ok(m! >= 1 && m! <= 9 && m !== 7, `world ${w}: not the boss or the Thorn Gate`);
+  }
 });
 
 test('each find sits in its own stage, on ground the player can reach, clear of the start and exit', () => {

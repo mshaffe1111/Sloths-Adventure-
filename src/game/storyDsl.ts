@@ -59,6 +59,10 @@ export interface Beat {
   hold?: { both: string; lift: string; reach: string; p?: Partial<StoryScene> };
   /** read only on a screen that could not play the picture before it */
   narratedOnly?: boolean;
+  /** shown only when the player has found this find */
+  ifFound?: string;
+  /** said instead once the player has fallen: {N} is the count, in words */
+  withFalls?: string;
 }
 
 export interface ChapterSpec {
@@ -298,6 +302,8 @@ export function chapter(spec: ChapterSpec, beats: Beat[]): StoryPanel[] {
     if (intensity !== undefined) panel.intensity = intensity;
     if (b.sting) panel.sting = b.sting;
     if (b.narratedOnly) panel.narratedOnly = true;
+    if (b.ifFound) panel.ifFound = b.ifFound;
+    if (b.withFalls) panel.withFalls = b.withFalls;
     if (b.hold) {
       let reach: SceneActor[];
       try {
