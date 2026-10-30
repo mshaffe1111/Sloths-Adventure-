@@ -8,17 +8,25 @@ import { hdLoaded, warmHd, type HdSet } from './storyHd.ts';
 import { HD_GUARD, HD_GUARD_FRAMES, HD_GUARD_PAGES } from './storyHdData_guard.ts';
 
 const SET: HdSet = { hd: HD_GUARD, pages: HD_GUARD_PAGES, frames: HD_GUARD_FRAMES };
+/** a story is open (its pages were asked for): a guardian with a story painting waits for it rather than flash the game frame first */
+let inStory = false;
 
 /** start loading the guardians' story pages (a story is opening) */
 export function warmStoryGuardians() {
+  inStory = true;
   warmHd('guard', SET);
 }
+/** a story has closed (storyArt.ts releaseStoryArt) */
+export function leaveStoryGuardians() {
+  inStory = false;
+}
 
-/** the story painting of a guardian's frame, if its page has loaded: the image and its source rect (the game frame's rect, times HD) */
-export function guardianFrame(param: string, name: string): { img: HTMLImageElement; x: number; y: number; w: number; h: number } | null {
+/** the story painting of a guardian's frame, if its page has loaded: the image and its source rect (the game frame's rect, times HD);
+ *  'wait' in a story while its page is still loading (draw nothing yet, as Pokey waits for his); null when there is none (draw the game frame) */
+export function guardianFrame(param: string, name: string): { img: HTMLImageElement; x: number; y: number; w: number; h: number } | 'wait' | null {
   const f = HD_GUARD_FRAMES[`${param}.${name}`];
   if (!f) return null;
   const img = hdLoaded('guard', f);
-  if (!img) return null;
+  if (!img) return inStory ? 'wait' : null;
   return { img, x: f.x + f.m, y: f.y + f.m, w: f.w - 2 * f.m, h: f.h - 2 * f.m };
 }
