@@ -14,6 +14,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { TAYRA_FRAMES } from './tayraAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_TAYRA = true;
 /** world units per atlas pixel (a walking tayra is about 85 units from nose to tail tip) */
@@ -101,7 +102,7 @@ export function drawTayraSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.ellipse(-2, 1, 22, 3.4, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K + lift, f.w * K, f.h * K);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K + lift, f.w * K, f.h * K);
   ctx.restore();
   return true;
 }

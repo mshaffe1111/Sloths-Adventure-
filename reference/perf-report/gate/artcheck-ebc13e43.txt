@@ -1,0 +1,19 @@
+art check: 489 images in src/assets
+note: 2 clip sheet(s) over 2048 wide:
+  src/assets/enemies/croc-anim.webp 4096x1898
+  src/assets/enemies/prowler-anim.webp 4096x2951
+note: 13 known sheet(s) over 4096 (limits.json art.knownOver4096; to be split):
+  src/assets/enemies/dangler-anim.webp 2048x5094
+  src/assets/enemies/dozer-anim.webp 2048x4870
+  src/assets/enemies/mantis-anim.webp 2048x4868
+  src/assets/enemies/queen-anim.webp 2048x8172
+  src/assets/enemies/seamstress-anim.webp 2048x6664
+  src/assets/enemies/soldier-anim.webp 2048x5721
+  src/assets/w6to10/bosses/drake-anim.webp 2048x6066
+  src/assets/w6to10/bosses/golem-anim.webp 2048x4551
+  src/assets/w6to10/bosses/ironclaw-anim-0.webp 2048x6889
+  src/assets/w6to10/bosses/ironclaw-anim-1.webp 2048x5755
+  src/assets/w6to10/bosses/thornbark-anim-0.webp 2048x6757
+  src/assets/w6to10/bosses/thornbark-anim-1.webp 2048x6899
+  src/assets/w6to10/bosses/thornbark-anim-2.webp 2048x6942
+PASS

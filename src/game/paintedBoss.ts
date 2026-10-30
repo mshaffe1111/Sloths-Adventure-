@@ -12,6 +12,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { bossMotion } from './bossMotion.ts';
 import { guardianFrame } from './storyGuard.ts';
 import { withHurtFlash } from './hurtFlash.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export interface BossFrameRect {
   x: number;
@@ -103,7 +104,7 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
       const hd = guardianFrame(spec.param, name);
       if (hd === 'wait') return true;
       if (hd) ctx.drawImage(hd.img, hd.x, hd.y, hd.w, hd.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
-      else ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
+      else drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
       return true;
     },
     draw(ctx, b, def, time, feetY) {

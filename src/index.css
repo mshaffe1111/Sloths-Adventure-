@@ -388,7 +388,8 @@
 .title-credit-btn.upd-ready { color: #ffe08a; text-decoration: underline; animation: chip-wait 1.6s ease-in-out infinite; }
 .title-credit-btn:disabled { opacity: .7; cursor: default; }
 
-.clr-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 34px 12px 12px; background: rgba(2, 20, 14, 0.74); font-family: var(--font-ui); overflow-x: hidden; overflow-y: auto; color: var(--gx-ink); }
+/* (the card screens keep clear of a notch, the rounded corners and the home bar, upright and sideways: UI-6) */
+.clr-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: max(34px, calc(env(safe-area-inset-top, 0px) + 22px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); background: rgba(2, 20, 14, 0.74); font-family: var(--font-ui); overflow-x: hidden; overflow-y: auto; color: var(--gx-ink); }
 .clr-confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .clr-card { position: relative; width: 100%; max-width: 800px; box-sizing: border-box; border-radius: 30px; background: linear-gradient(180deg, #0b3a2c, #06261d); border: 3px solid #6ee7b7; box-shadow: 0 20px 56px rgba(0, 0, 0, 0.6); padding: 54px 30px 24px; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 26px; margin: auto; flex: none; animation: clr-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .clr-ribbon { position: absolute; left: 50%; top: -30px; transform: translateX(-50%); width: min(440px, 94%); display: flex; align-items: center; justify-content: center; z-index: 3; }
@@ -1505,3 +1506,11 @@
   background-position: 0 0;
   background-repeat: no-repeat;
 }
+
+/* "New look coming soon" (Worlds 8-10, newLookSoon.ts): a small tag beside "World 8 of 10", in the plaque's lettering and cream */
+.map-soon { display: inline-block; vertical-align: 1px; margin-left: 8px; padding: 0 9px 1px; text-transform: none; border-radius: 99px; font-family: var(--font-fun); font-weight: 400; font-size: 13px; letter-spacing: 0.02em; line-height: 1.35; color: #fff3c4; background: rgba(42, 24, 10, 0.72); border: 1.5px solid rgba(255, 214, 110, 0.55); text-shadow: 0 1px 0 rgba(20, 36, 22, 0.9); white-space: nowrap; }
+
+/* a long world name (World 10's "Stormy Highlands Fortress") steps down to fit, and on a very narrow screen it wraps rather than
+   being cut: text is never cut off on a phone */
+.map-title.long { font-size: clamp(16px, 2.4vh + 4px, 22px); }
+.map-title.long > span { white-space: normal; overflow: visible; text-overflow: clip; text-align: center; line-height: 1.1; }

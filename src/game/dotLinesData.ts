@@ -136,6 +136,9 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["float.boss.venomAim", "1-10", "float", "info", "HIT HIS HEAD WHEN IT IS DOWN!", "HIT HIS HEAD WHILE IT'S DOWN!", null, null, "Venom Fang's head"],
   ["lock.ring.snakes", "1-9", "guide", "lock", "Snakes from above! Clear them all to open the way", "Snakes! Clear them all to open the way.", null, null, "thorn gate"],
   ["hint.1-6.fell", "1-6", "stage hint", "help", "Fell? Climb the next tree back up", "Fell? Slide up the next tree.", null, null, "next trunk"],
+  // (LV-3, approved by the lead for Matt 2026-10-29: the double-jump practice spot before 1-6's first double gaps; once per save, no target.
+  // A move tip, trimmed to 7 words: it closes when he double jumps)
+  ["hint.1-6.double", "1-6", "stage hint", "move", "Double jump! Flick up, then again in the air.", "Double jump! Flick up, then again midair.", null, "double-jump", null],
   ["way.1.hurt0", "", "wayside", "story", "Pokey's down! Wait... up again. Good. Carry on.", "Pokey's down, Pokey's down, no, he's up, good, carry on, carry on.", null, null, null],
   ["way.1.hurt1", "", "wayside", "story", "Meeca would know what to say here. I only have \"ow.\" So. Ow.", "Meeca would know what to say. I only have \"ow.\" Ow.", null, null, null],
   ["way.1.hurt2", "", "wayside", "story", "Ow! That one was yours, but I felt it.", "Ow! That one was yours, but I felt it.", null, null, null],

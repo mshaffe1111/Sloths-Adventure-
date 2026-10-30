@@ -13,6 +13,8 @@ import { trackAtlas } from './atlasLoader.ts';
 import { HANG_DROP } from './rope.ts';
 import { ROPE_CYCLE, ROPE_FRAMES, ROPE_STAND_PX, ROPE_STILL, ROPE_STRIDE_PX } from './heroRopeData.ts';
 import type { PlayerState } from './types.ts';
+import { heroBlinkAlpha } from './heroBlink.ts';
+import { drawSheet } from './sheetBake.ts';
 
 let img: HTMLImageElement | null = null;
 let ready = false;
@@ -63,10 +65,10 @@ export function drawRopeHang(ctx: CanvasRenderingContext2D, p: PlayerState, time
   ctx.translate(p.x, p.y - HANG_DROP + (p.hangDip ?? 0));
   ctx.scale(p.facing, 1);
   ctx.rotate(ropeSway(moving, travelled, time));
-  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha *= 0.55;
+  ctx.globalAlpha *= heroBlinkAlpha(p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * k, -f.gy * k, f.w * k, f.h * k);
+  drawSheet(ctx, img, f.x, f.y, f.w, f.h, -f.ax * k, -f.gy * k, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

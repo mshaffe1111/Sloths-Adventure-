@@ -12,6 +12,9 @@ import { GUIDE, classifyLine, topicOf } from './dotGuide.ts';
 import { firstOf, PUZZLE_LATER, PUZZLE_STEPS, roomLineOf } from './dotTips.ts';
 import { ctestEnabled } from './playRecorder.ts';
 
+/** first-time control tips that may not wait (GuideLine.soon) */
+const SOON_TIPS: ReadonlySet<string> = new Set(['w5.silk']);
+
 export interface DotLine {
   id: string;
   stage: string;
@@ -198,7 +201,8 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     const k = sw.line.kind;
     kind = k === 'move' || thing ? 'teach' : k === 'story' ? 'story' : k === 'help' ? 'struggle' : k === 'lock' ? 'must' : k === 'goal' ? 'goal' : 'info';
     topic = targetTopic(sw.line.target) ?? c.topic;
-    move = kind === 'teach' ? c.move ?? gestureMove(sw.line.gesture, topic) : undefined;
+    // (only a move row asks for a move: a thing's tip that names the thing and its rule, never the move, is read and goes)
+    move = k === 'move' ? c.move ?? gestureMove(sw.line.gesture, topic) : undefined;
   }
   // Dot's own flight: she is the one flying, so her tips are read, not watched for
   if (o.flight && kind !== 'must') {
@@ -257,6 +261,9 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     // Seed 7920 said nothing for 24 s: "Run to the flowers" and "Turn around" went because he was already running at 2.5 s)
     // (only while the control test runs: a stage's own words can match a test row, "Flick up onto the mushroom to bounce" in 1-3)
     ...(sw?.line.id.startsWith('ctest.') && ctestEnabled() ? { soon: true, ctest: true } : {}),
+    // (a control taught the first time it is needed, where the thing is right there: it may not wait out the busy cap. 5-5's silk line
+    // came 255 px late once the spiders' and the threads' first lines named the danger instead of the move, the lead's sweep)
+    ...(sw && SOON_TIPS.has(sw.line.id) ? { soon: true } : {}),
     said: text,
     source: 'engine',
   };

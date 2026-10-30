@@ -14,6 +14,7 @@ import { bodyFor } from './creatureRig.ts';
 import { bodyRect } from './fight.ts';
 import { CAIMAN_FRAMES } from './caimanAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_CAIMAN = true;
 /** world units per atlas pixel */
@@ -111,7 +112,7 @@ export function drawCaimanSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   }
   ctx.scale(sx, sy);
   const dx = name === 'dead' ? 0 : NOSE;
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, dx - f.ax * K, -f.ay * K, f.w * K, f.h * K);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, dx - f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();
   return true;
 }

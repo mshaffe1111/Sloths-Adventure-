@@ -118,10 +118,14 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.beginPath();
     ctx.arc(0, -6, 40, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.font = `bold 12px ${FONT_UI}`;
+    const sp = textStamp(SPARKLE, ctx);
+    if (!sp) ctx.font = SPARKLE.font;
     for (let k = 0; k < 3; k++) {
       const a = time * 5 + (k * Math.PI * 2) / 3;
-      ctx.fillText('✨', 16 + Math.cos(a) * 22, -16 + Math.sin(a) * 12);
+      const x = 16 + Math.cos(a) * 22;
+      const y = -16 + Math.sin(a) * 12;
+      if (sp) ctx.drawImage(sp.cv, x + sp.dx, y + sp.dy, sp.w, sp.h);
+      else ctx.fillText(SPARKLE.text, x, y);
     }
     ctx.restore();
   }
@@ -145,15 +149,67 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.beginPath();
     ctx.arc(16, -56, 9, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = `bold 12px ${FONT_UI}`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('!', 16, -56);
+    const bang = textStamp(BANG, ctx);
+    if (bang) ctx.drawImage(bang.cv, 16 + bang.dx, -56 + bang.dy, bang.w, bang.h);
+    else {
+      ctx.fillStyle = BANG.fill;
+      ctx.font = BANG.font;
+      ctx.textAlign = BANG.align;
+      ctx.textBaseline = BANG.baseline;
+      ctx.fillText(BANG.text, 16, -56);
+    }
     ctx.restore();
   }
   ctx.restore();
   return true;
+}
+
+// ───────── the sparkles and the "!" (text drawn once into a small picture, PERFORMANCE-RULES §3.4) ─────────
+interface StampSpec {
+  text: string;
+  font: string;
+  fill: string;
+  align: CanvasTextAlign;
+  baseline: CanvasTextBaseline;
+  /** the baked picture, and where its corner sits from the point fillText would be given (world units), at scale k */
+  baked?: { cv: HTMLCanvasElement; dx: number; dy: number; w: number; h: number; k: number } | null;
+}
+/** the "open to a hit" sparkles, as fillText drew them: the canvas's default black, from the left, on the baseline */
+const SPARKLE: StampSpec = { text: '✨', font: `bold 12px ${FONT_UI}`, fill: '#000000', align: 'start', baseline: 'alphabetic' };
+const BANG: StampSpec = { text: '!', font: `bold 12px ${FONT_UI}`, fill: '#ffffff', align: 'center', baseline: 'middle' };
+/**
+ * The text baked at the canvas's own scale (device px a world unit, in quarters, rounded up), so it is stamped at about its size and needs
+ * no high-quality shrink; made again only when that scale changes (a quality step, the camera's zoom). Null until the font is in.
+ */
+function textStamp(s: StampSpec, ctx: CanvasRenderingContext2D): StampSpec['baked'] {
+  const m = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
+  const k = m ? Math.max(1, Math.ceil(Math.hypot(m.a, m.b) * 4) / 4) : 4;
+  if (s.baked !== undefined && (s.baked === null || s.baked.k === k)) return s.baked;
+  if (typeof document === 'undefined') return null;
+  // the game's font may still be loading: draw the text as before until it is in, so the picture never keeps a stand-in font
+  if (document.fonts && !document.fonts.check(s.font)) return null;
+  const cv = s.baked?.cv ?? document.createElement('canvas');
+  const g = cv.getContext('2d');
+  if (!g) return (s.baked = null);
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.font = s.font;
+  g.textAlign = s.align;
+  g.textBaseline = s.baseline;
+  const tm = g.measureText(s.text);
+  const pad = 2;
+  const left = Math.ceil(tm.actualBoundingBoxLeft) + pad;
+  const up = Math.ceil(tm.actualBoundingBoxAscent) + pad;
+  const w = left + Math.ceil(tm.actualBoundingBoxRight) + pad;
+  const h = up + Math.ceil(tm.actualBoundingBoxDescent) + pad;
+  cv.width = Math.ceil(w * k);
+  cv.height = Math.ceil(h * k);
+  g.scale(cv.width / w, cv.height / h);
+  g.font = s.font;
+  g.textAlign = s.align;
+  g.textBaseline = s.baseline;
+  g.fillStyle = s.fill;
+  g.fillText(s.text, left, up);
+  return (s.baked = { cv, dx: -left, dy: -up, w, h, k });
 }
 
 /** the sheets this sprite draws from (sheetWarm.ts spriteSheets: asked for before the stage starts, not when it first comes on screen) */

@@ -1041,6 +1041,15 @@ export function drawCollectible(
 ) {
   // (the snail stays where he is once touched: he never stops)
   if (item.collected && item.type !== 'thorn_gate' && !item.findId?.endsWith('_snail')) return;
+  // (one off screen is skipped: 60% of the pickups drawn were, each an aura, a glow and a sprite: PERFORMANCE-RULES.md §2.5)
+  const m = ctx.getTransform();
+  if (m.b === 0 && m.c === 0 && m.a > 0) {
+    const big = item.type === 'exit_totem' || item.type === 'thorn_gate' || item.type === 'cage';
+    const pad = (big ? 280 : 90) * m.a;
+    const px = m.a * item.x + m.e;
+    const py = m.d * item.y + m.f;
+    if (px < -pad || px > ctx.canvas.width + pad || py < -pad - (big ? 200 * m.a : 0) || py > ctx.canvas.height + pad) return;
+  }
 
   ctx.save();
   ctx.translate(item.x, item.y);
