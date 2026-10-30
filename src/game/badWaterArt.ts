@@ -50,7 +50,47 @@ export function badWaterReady(): boolean {
   return ready && !!img;
 }
 
+/** how wide each piece is drawn, in world units (the chop strip one TILE; the streaks and leaves as drawBadWater sizes them) */
+const DRAWN_W: Record<keyof typeof FRAMES, number> = { chop: TILE, streaks: 120, leaves: 70 };
+/**
+ * The three pieces baked once at the size they cover on screen (world width times the canvas scale, in eighths, rounded up, so a piece
+ * is never enlarged): the 1024 px strip was shrunk about 4.4x from the sheet on every tile, every frame. Made again only when the sheet
+ * or the scale changes (a new world, a quality step, the camera's zoom).
+ */
+const bakes = { img: null as HTMLImageElement | null, k: 0, cv: {} as Partial<Record<keyof typeof FRAMES, HTMLCanvasElement>> };
+function bakeAt(ctx: CanvasRenderingContext2D) {
+  if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function') return;
+  const m = ctx.getTransform();
+  const k = Math.ceil(Math.hypot(m.a, m.b) * 8) / 8;
+  if (bakes.img === img && bakes.k === k) return;
+  bakes.img = img;
+  bakes.k = k;
+  for (const n of Object.keys(FRAMES) as Array<keyof typeof FRAMES>) {
+    const f = FRAMES[n];
+    const w = Math.ceil(DRAWN_W[n] * k);
+    // (already as small as the sheet itself: drawn straight from the sheet)
+    if (w >= f.w) {
+      delete bakes.cv[n];
+      continue;
+    }
+    const c = bakes.cv[n] ?? document.createElement('canvas');
+    c.width = w;
+    c.height = Math.ceil((w * f.h) / f.w);
+    const g = c.getContext('2d');
+    if (!g) continue;
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(img!, f.x, f.y, f.w, f.h, 0, 0, c.width, c.height);
+    bakes.cv[n] = c;
+  }
+}
+
 function blit(ctx: CanvasRenderingContext2D, n: keyof typeof FRAMES, x: number, y: number, w: number, h: number) {
+  const c = bakes.img === img ? bakes.cv[n] : undefined;
+  if (c) {
+    ctx.drawImage(c, x, y, w, h);
+    return;
+  }
   const f = FRAMES[n];
   ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);
 }
@@ -66,6 +106,9 @@ export function drawBadWater(ctx: CanvasRenderingContext2D, x0: number, x1: numb
   if (!badWaterReady()) return false;
   const th = (TILE * FRAMES.chop.h) / FRAMES.chop.w;
   const top = waterY - th * SURFACE;
+  // all of it below the view: nothing to draw (the leaves ride no higher than the strip's top)
+  if (top - 4 >= bottom || x1 <= x0) return true;
+  bakeAt(ctx);
   ctx.save();
   ctx.beginPath();
   ctx.rect(x0, top - 4, x1 - x0, bottom - top + 4);
