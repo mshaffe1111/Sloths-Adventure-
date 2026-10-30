@@ -36,4 +36,9 @@ On top of S-6/S-8/S-7 (`s6-s8-report.md`), merged with ccr (today's speed work a
 
 ## Gate
 
-(filled in below when the run on the final head finishes)
+On f1d7347b (story-a merged with ccr 4ef7e1ac):
+- `npx tsc --noEmit -p .`: clean.
+- Tests (audio, game, gen2, components, tools): 2050, 2048 pass, 0 fail, 2 todo (the known 4-3 boulder TODO is one).
+- `npx vite build`: OK, no file over 4 MiB.
+- `node tools/perf/artcheck.mjs`: PASS.
+- `node tools/perf/drawcheck.mjs`: PASS (the gradients breach on ctest-mix14 was the base's, fixed on ccr at 4ef7e1ac, and gone here).
