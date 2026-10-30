@@ -1,5 +1,10 @@
 # Sound effects v1: real sounds instead of synth pings (for Matt)
 
+> **Now in the game (lead, 7:51 PM ET: "don't wait for his listen... he'll hear them in context on tonight's test link and veto any he
+> doesn't like").** The recorded set replaces the old effects outright, no switch. `in-game/` has two clips recorded off the game itself
+> while it plays: 30 s of 4-4 with the rocks falling, and 30 s of 1-2 with World 1's new background. A veto is a one-line swap: the
+> commit message lists every effect with the real recordings it is made from.
+
 **What this is.** You said the effects are "pings everywhere... like pinball", the falling rocks worst of all, and that the classic set
 is crap too. This folder has old-versus-new pairs of a whole new effect set. Every new sound is cut from real recordings that people
 made and gave away free with no strings (the CC0 licence; LICENCES.md lists all 148). Each one was picked by what its recordist called

@@ -1,15 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FX_MIX, fxGain } from './sfxMix.ts';
+import { FX_MIX, FX_REF, fxGain } from './sfxMix.ts';
 
-test('SN-2: the mix: most effects trimmed 0.8-1.2, and the jump and the flower lowest', () => {
-  const v = Object.entries(FX_MIX);
-  const mid = v.filter(([, t]) => t >= 0.8 && t <= 1.2).length;
-  assert.ok(mid / v.length >= 0.7, `${mid} of ${v.length} in 0.8-1.2`);
-  const low = Math.min(...v.map(([, t]) => t));
-  assert.equal(FX_MIX.jump, low);
-  assert.equal(FX_MIX.flower, low);
-  // each effect is levelled to the reference by its own measured loudness first: the loud recipes come down, the quiet ones up
-  assert.ok(fxGain('shrine') < FX_MIX.shrine && fxGain('jump') > FX_MIX.jump);
+test('SN-2: a remaining synthesized effect is levelled to the reference by its own loudness, then trimmed', () => {
+  assert.ok(Math.abs(20 * Math.log10(fxGain('roar') / FX_MIX.roar) - (FX_REF - -15)) < 1e-9);
   assert.equal(fxGain('no-such-effect'), 1);
 });

@@ -14,7 +14,8 @@ import type { AmbientType } from '../audio/ambience.ts';
 import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
 import { CALM, type MusicState } from '../audio/adaptive.ts';
 import type { CueName } from '../audio/cues.ts';
-import { PUZZLE_KIND, PUZZLE_SOUNDS } from '../audio/sfxGame.ts';
+import { PUZZLE_KIND } from '../audio/sfxGame.ts';
+import { WORLD_SURFACE } from '../audio/sfxRec.ts';
 import { holdScene, sceneForPanel, sceneForScreen, type Held, type PanelInfo } from '../audio/scenes.ts';
 
 type PredatorKind = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
@@ -197,9 +198,25 @@ class SoundEngine {
   playPuzzle(kind: string): boolean {
     const s = PUZZLE_KIND[kind];
     if (!s) return false;
-    this.c.fx('puzzle', PUZZLE_SOUNDS.indexOf(s));
+    this.c.puzzleFx(s);
     return true;
   }
+
+  // ------------------------------------------------------------------ the recorded set's own (polish-sfx: sounds that borrowed others)
+  /** World 4's falling rock landing (it used to be a generic hit with a bell on top) */
+  playRock() { this.c.fx('rock'); }
+  /** the grit trickling down just before a rock lets go: a warning to hear */
+  playRockWarn() { this.c.fx('rockWarn'); }
+  /** 4-4's chimes swinging as the wind comes (they used to borrow the vine grab) */
+  playWindChime() { this.c.fx('windChime'); }
+  /** a mushroom or a springy pad throwing him up (it used to be the jump) */
+  playBounce() { this.c.fx('bounce'); }
+  /** a crumbling ledge giving way (it used to be a heavy hit) */
+  playCrumble() { this.c.fx('crumble'); }
+  /** the boss card's name landing (SN-10) */
+  playBossSlam() { this.c.fx('bossSlam'); }
+  /** what he walks on, for the footsteps (sfxRec.ts WORLD_SURFACE) */
+  setWorld(world: number) { this.c.surface = WORLD_SURFACE[world] ?? 'moss'; }
 }
 
 export const sound = new SoundEngine();

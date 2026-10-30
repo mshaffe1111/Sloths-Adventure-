@@ -2325,7 +2325,7 @@ export class GameEngine {
       const pool = waterY !== undefined && !river ? this.currentStage.safeWater?.find((s) => p.x > s.x0 && p.x < s.x1) : undefined;
       if (pool && p.y > waterY! + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY!);
-        sound.playWhoosh();
+        sound.playSplash(1);
         this.addFloatingText('SPLASH!', p.x, waterY! - 40, '#7dd3fc');
         p.x = pool.backX;
         p.y = pool.backY;
@@ -2336,7 +2336,7 @@ export class GameEngine {
       } else if (river?.safe && p.y > river.surfaceY + 8 && !this.isGameOver) {
         // a teaching river (2-1): a splash and back to the bank to try again, no life lost
         this.spawnWaterSplash(p.x, river.surfaceY);
-        sound.playWhoosh();
+        sound.playSplash(1);
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         p.x = river.safe.backX;
         p.y = river.safe.backY;
@@ -2348,14 +2348,12 @@ export class GameEngine {
         if (river.flood) this.floodAt.delete(river);
       } else if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, river.surfaceY);
-        sound.playWhoosh();
-        sound.playHitImpact(true);
+        sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY);
-        sound.playWhoosh();
-        sound.playHitImpact(true);
+        sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
@@ -2388,7 +2386,7 @@ export class GameEngine {
           plat.broken = true;
           plat.regrowAt = this.gameTime + regrowDelay(plat.id);
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
-          sound.playHitImpact(true);
+          sound.playCrumble();
         }
       }
       // a crumbled platform is a penalty (regrow.ts): it comes back only after half a minute or so, and only off screen, so it never
@@ -4722,7 +4720,7 @@ export class GameEngine {
     p.squashX = 0.78;
     p.squashY = 1.38;
     p.bounce = { kind: 'spring', t: 0 };
-    sound.playJump();
+    sound.playBounce();
     this.spawnSparkBurst(p.x, p.y, '#facc15');
   }
 
@@ -6254,6 +6252,7 @@ export class GameEngine {
       score: (n) => (this.runScore += n),
       stepAt: (dir) => this.stepAt(dir),
       sfx: (kind) => {
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'scratch') sound.playTreeClimb();
         else if (kind === 'cut') sound.playRelicFound();
         else if (kind === 'blink') sound.playWhoosh();
@@ -7346,8 +7345,9 @@ export class GameEngine {
       },
       sfx: (kind) => {
         if (kind === 'cry') sound.playEagleScreech();
-        else if (kind === 'rock') sound.playHitImpact();
-        else if (kind === 'chime') sound.playVineGrab();
+        else if (kind === 'rock') sound.playRock();
+        else if (kind === 'rockWarn') sound.playRockWarn();
+        else if (kind === 'chime') sound.playWindChime();
         else if (kind === 'monkey') sound.playPredator('tayra', 0);
         else if (kind === 'frond') sound.playShrineUnlocked();
         else if (kind === 'knot') sound.playRelicFound();
@@ -7382,6 +7382,8 @@ export class GameEngine {
       stuck: (room) => this.mc?.stuck(room),
       glowAt: () => this.mc?.flickerAt() ?? null,
       sfx: (kind) => {
+        // every puzzle action has its own recorded sound (sfxGame.ts PUZZLE_KIND); the rest keep their borrowed one below
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'pick') sound.playVineGrab();
         else if (kind === 'drop' || kind === 'land') sound.playLand(kind === 'drop' ? 0.4 : 0.25);
         else if (kind === 'throw' || kind === 'lost') sound.playWhoosh();
@@ -7523,6 +7525,7 @@ export class GameEngine {
         recordCake(id);
       },
       sfx: (kind) => {
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'hum') sound.playVineGrab();
         else if (kind === 'wrap') sound.playPlayerHurt();
         else if (kind === 'cake') sound.playFruitPickup();
