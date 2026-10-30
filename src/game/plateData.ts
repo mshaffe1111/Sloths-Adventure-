@@ -25,6 +25,8 @@ export const PLATES: Record<string, PlateInfo> = {
   'nest-night': { ground: 0.74, what: 'the same nest in the same storm, nobody on the branch (the singing-storm memory, the cub and Meeca in the nest)' },
   steps: { ground: 0.86, what: "the courtyard after the storm turns, the wet stone steps down from the tower's door (Pokey and Meeca sit on them)" },
   'nest-morning': { ground: 0.74, what: 'the same nest the morning after: washed light, nobody on the branch' },
+  raft: { ground: 0.84, what: "World 2's riverbank village building Pokey's raft at village speed: two logs lashed, the rest still a pile (hf-art-bosses, HF row 9)" },
+  gorge: { ground: 0.9, what: "World 4's misty gorge: Pokey hanging from the vine's end over the mist, Dot pulling at his claw (no floor: he hangs; hf-art-bosses, HF row 9)" },
   council: { ground: 0.84, what: 'the clearing with the council fire and the seats of the ten' },
   gates: { ground: 0.85, what: 'the fortress from the foot of the thousand steps: the gates standing open, ten green lights along the wall tops, rain and a lightning fork' },
   'grandma-door': { ground: 0.85, what: "Grandma's round door in the hollow of the great tree at dusk: lit window, lantern, a fern in a pot, the long path" },

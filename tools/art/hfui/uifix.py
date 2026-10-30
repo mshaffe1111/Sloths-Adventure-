@@ -54,8 +54,8 @@ frames0 = json.loads(re.search(r'UI_KIT: Record<string, UiFrame> = (\{.*\});', d
 atlas0 = Image.open(GAME / 'src/assets/ui/ui-kit.webp').convert('RGBA')
 lifted = {n: atlas0.crop((f['x'], f['y'], f['x'] + f['w'], f['y'] + f['h'])) for n, f in frames0.items() if n not in icons}
 # option A (Matt, 2026-10-30): the buttons stay CSS planks, so the atlas keeps only what the menus draw from it (the icons, the lock
-# badge, the star slots); the card frame and the story text box go to their own files for CSS border-image
-for n in ('card', 'textBox'):
+# badge, the star slots); the card frame goes to its own file for CSS border-image
+for n in ('card',):
     if n in lifted:
         lifted[n].save(GAME / f'src/assets/ui/{n.lower()}.webp', 'WEBP', quality=88, method=6)
 pieces = [(n, p) for n, p in lifted.items() if n in ('lockBadge', 'starEmpty', 'starFull')] + [(n, p) for n, p in icons.items() if n not in ('icon-arrow', 'icon-check', 'icon-cross')]  # (those three stay vector)
