@@ -12,7 +12,7 @@
  *      fallen iron thorns from the General's netting, rain puddles, chains on the way up. (The old war-camp props stay for the lair.)
  *   W1 lowland rainforest (the snake): shed skin, hollow logs, heliconia.
  */
-import { tone, mix, lighten, darken, rgba, type RNG, type Tone } from './artKit.ts';
+import { tone, mix, lighten, darken, rgba, keptGradient, type RNG, type Tone } from './artKit.ts';
 import { fernFrond } from './flora.ts';
 import { leaf, bromeliad } from './rainforest.ts';
 import type { Look } from './scenery.ts';
@@ -36,16 +36,24 @@ const bead = (ctx: CanvasRenderingContext2D, x: number, y: number, rr: number) =
   ctx.ellipse(x, y, rr, rr * 1.4, 0, 0, TAU);
   ctx.fill();
 };
+/** a soft added glow; drawn about its middle, so its gradient is kept by colour, size and strength, not made each frame */
 const glowDot = (ctx: CanvasRenderingContext2D, x: number, y: number, rad: number, col: string, a: number) => {
+  let owner = glowOwners.get(col);
+  if (!owner) glowOwners.set(col, (owner = {}));
+  const g = keptGradient(owner, Math.round(rad * 16) * 1024 + Math.round(a * 1000), () => {
+    const gr = ctx.createRadialGradient(0, 0, 0, 0, 0, rad);
+    gr.addColorStop(0, rgba(col, a));
+    gr.addColorStop(1, rgba(col, 0));
+    return gr;
+  });
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
-  const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
-  g.addColorStop(0, rgba(col, a));
-  g.addColorStop(1, rgba(col, 0));
+  ctx.translate(x, y);
   ctx.fillStyle = g;
-  ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+  ctx.fillRect(-rad, -rad, rad * 2, rad * 2);
   ctx.restore();
 };
+const glowOwners = new Map<string, object>();
 
 // ───────────────────────────── generic ─────────────────────────────
 
