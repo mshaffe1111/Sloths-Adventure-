@@ -20,7 +20,7 @@ import { GEN2_STAGES } from './game.ts';
 import { FLAG_SPAN } from './pipeline.ts';
 import { GEN2_SEEDS } from './seeds.ts';
 import type { Gen2Stage } from './types.ts';
-import { runWords, W5_RUN_REQUIRED } from './worlds/w5Run.ts';
+import { RUN_LINE, runWords, W5_RUN_REQUIRED } from './worlds/w5Run.ts';
 import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
 
 const levels = generateAllLevels();
@@ -68,6 +68,9 @@ test("every shipped roll: her hiding places once, five or six of her carvings, a
     // (in her order: the default one before her stage is played, the trail mark dropped when only five stand)
     assert.deepEqual(said, order.slice(order.length - said.length), at);
     assert.deepEqual(validateStage(st).errors, [], at);
+    // (Dot names the first carving once, before he reaches it)
+    const dot = (st.proto?.hints ?? []).filter((h) => h.text === RUN_LINE);
+    assert.ok(dot.length === 1 && dot[0].x < msgs[0].x, `${at}: Dot's line at the first carving`);
     assert.ok(st.config.targetCount <= msgs.length, `${at}: a goal of ${st.config.targetCount} with ${msgs.length} messages`);
   });
 });

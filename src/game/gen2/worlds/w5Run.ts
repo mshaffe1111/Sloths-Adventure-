@@ -323,8 +323,17 @@ export function w5RunFinish(st: Gen2Stage, words: string[][] = runWords()): Gen2
     const y = stand - TRUNK.up + (lines.length > 3 ? 0 : 20);
     carvings.push({ x: c.x, y, lines, size: TRUNK.size, trunk: { ground, w: TRUNK.w, h: Math.max(TRUNK.h, ground - y + 120) } });
   });
+  // (Dot's line as the first carving comes into view, approved by the lead 2026-10-29: she names what it is, never where the next one is)
+  if (msgs.length) {
+    const hints = (st.proto.hints ??= []);
+    if (!hints.some((h) => h.text === RUN_LINE)) hints.push({ x: Math.round(Math.max(st.spawnX + 40, msgs[0].x - 420)), text: RUN_LINE, pad: RUN_LINE, keys: RUN_LINE });
+    hints.sort((a, b) => a.x - b.x);
+  }
   return st;
 }
+
+/** Dot at 5-6's first carving (approved by the lead, 2026-10-29) */
+export const RUN_LINE = 'Her mark! She came this way.';
 
 /** the top of the piece the message floats over */
 function groundUnder(st: Gen2Stage, x: number, y: number): number {
