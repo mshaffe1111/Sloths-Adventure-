@@ -52,6 +52,20 @@ These are measured facts about our code. A desktop browser can't reproduce the P
   `scenery.ts` 1610 reads pixels back from a baked layer. Any of these drawn every frame stays on the CPU.
 - **"Advanced" blend modes** (`multiply`, `overlay`, `soft-light`, `saturation`) are used in `w7SlideArt.ts`, `storyArt.ts`, `meecaArt.ts`, `scenery.ts` 1363, `w4Grit.ts`, `ropeArt.ts`, `polish.ts` and `bossFx.ts`. They're fine while baking, but expensive on a tile-based GPU (PowerVR) if they run every frame.
 
+### Matt's Pixel, from its own `chrome://gpu` (2026-10-30, 12:25 AM ET)
+
+- **The phone:**
+  - Pixel 11 Pro XL running **Android 17 Developer Preview** (DP11.261002.005), a beta, so its GPU driver is beta too;
+  - Chrome 157;
+  - GPU: PowerVR C-Series CXTP-48-1536, Vulkan driver 1.693.3716.
+- **Canvas, compositing and rasterization are all "Hardware accelerated"**, so this isn't a software fallback.
+  - **"Multiple Raster Threads: Disabled".**
+  - **Skia backend: GaneshVulkan.** Canvas 2D runs on Skia's older backend straight over the PowerVR Vulkan driver.
+  - **Graphite is disabled on PowerVR** "due to rendering glitches" (crbug 496616828).
+- **`GL_KHR_blend_equation_advanced` is disabled** by a Chrome workaround (crbug 661715). Every `multiply`, `overlay`, `soft-light`, `saturation` and similar blend has to be emulated with a copy of what's behind it, so §2.10 is confirmed on this phone.
+- **Textures are limited to 8192 px.** `queen-anim` (8172) only just fits, and §2.7's 4096 still stands for older phones.
+- **No GPU process crashes, and no software rendering.** The stalls are slow GPU work or decode/upload, as §6's third row says.
+
 ## 1. The budget
 
 - 30 fps means **33 ms per frame, all in**. Our own update plus draw must fit in **12 ms on a mid-range phone at q0**. That leaves room for the browser, the compositor, garbage collection and a busy or warm phone.

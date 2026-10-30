@@ -19,8 +19,7 @@ The lead works on this alone first, with no helpers. Rules: reference/PERFORMANC
    - the soil overdraw trimmed.
 
    It never ships to main.
-2. **Matt, about 10 minutes:**
-   - a screenshot of `chrome://gpu` on the Pixel (is Canvas hardware accelerated, and what's under Problems Detected);
+2. **Matt, about 10 minutes:** (chrome://gpu DONE 12:25 AM ET, see PERFORMANCE-RULES §0: hardware accelerated, GaneshVulkan, advanced blends emulated, Android 17 beta)
    - three control tests in Chrome on the Pixel (normal, then two A/B switches);
    - one in Edge.
 3. **The fixes, in order of the evidence:**
