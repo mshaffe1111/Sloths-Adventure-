@@ -34,6 +34,8 @@ export const ROPE_DIP = 10;
 const POST_W = 15;
 /** the slice length the rope is laid in (world units): short enough that the sag reads as a smooth curve */
 const SLICE = 8;
+/** how far past the view's sides a rope or slice is still drawn (world px): more than a post's half-width and the rope's thickness */
+const VIEW_MARGIN = 40;
 
 /**
  * How much further down the rope is drawn at x, with Pokey's hands at `at` and his weight on it by `amt` (0..1): a V from post to post
@@ -62,7 +64,15 @@ export interface RopeLoad {
 }
 
 /** the painted rope laid through `pts` (a polyline), its twist running on along the length */
-function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: Array<[number, number]>, thick = ROPE_THICK, src = ROPE_KIT.tile) {
+function layRope(
+  ctx: CanvasRenderingContext2D,
+  im: CanvasImageSource,
+  pts: Array<[number, number]>,
+  thick = ROPE_THICK,
+  src = ROPE_KIT.tile,
+  vx0 = -Infinity,
+  vx1 = Infinity,
+) {
   const t = src;
   const k = thick / t.thick;
   const tileLen = t.w * k;
@@ -72,6 +82,11 @@ function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: Arra
     const [bx, by] = pts[i];
     const len = Math.hypot(bx - ax, by - ay);
     if (len < 0.01) continue;
+    // a slice wholly off the view (vx0..vx1) is skipped, its length still counted so the twist on screen is unchanged
+    if (Math.max(ax, bx) < vx0 || Math.min(ax, bx) > vx1) {
+      u += len;
+      continue;
+    }
     ctx.save();
     ctx.translate(ax, ay);
     ctx.rotate(Math.atan2(by - ay, bx - ax));
@@ -119,7 +134,17 @@ export function drawRopes(
 ) {
   load();
   const im = ready ? img : null;
+  // what the view covers in world x (with a margin for the posts and the rope's width); a rope wholly outside it is not drawn, and the
+  // slices of one that is partly in it are laid only where they show (the stage's ropes were all laid, slice by slice, every frame)
+  let vx0 = -Infinity;
+  let vx1 = Infinity;
+  const m = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
+  if (m && m.b === 0 && m.c === 0 && m.a > 0) {
+    vx0 = -m.e / m.a - VIEW_MARGIN;
+    vx1 = (ctx.canvas.width - m.e) / m.a + VIEW_MARGIN;
+  }
   for (const r of ropes) {
+    if (r.x1 < vx0 || r.x0 > vx1) continue;
     // the rope is only a rope to someone who has learned the skill; before that it is still drawn (it is part of the jungle)
     const n = Math.max(2, Math.ceil((r.x1 - r.x0) / SLICE));
     const pts: Array<[number, number]> = [];
@@ -134,7 +159,7 @@ export function drawRopes(
       if (i > 0) pts.splice(i, 0, [ld.x, ropeDrawY(r, ld.x, ld)]);
     }
     if (im) {
-      layRope(ctx, im, pts);
+      layRope(ctx, im, pts, ROPE_THICK, ROPE_KIT.tile, vx0, vx1);
       paintedPost(ctx, im, r.x0, r.g0, r.y);
       paintedPost(ctx, im, r.x1, r.g1, r.y);
     } else {
