@@ -13,14 +13,28 @@ def clip(name):
     return 'data:audio/mpeg;base64,' + base64.b64encode(open(os.path.join(D, f'{name}-walkrun.mp3'), 'rb').read()).decode()
 
 
+SHOW = (sys.argv[3] if len(sys.argv) > 3 else ','.join(meta['sets'])).split(',')
+lane = '<ol class="lane"><li>Walk, leaves</li><li>Run, leaves</li><li>Walk, wood</li><li>Run, wood</li></ol>'
+
+
+def button(name, label, parts):
+    return (f'<button class="play" aria-pressed="false" data-parts="{",".join(str(p) for p in parts)}" data-src="{clip(name)}">'
+            f'<span class="ico"></span><span class="lbl">{label}</span></button>')
+
+
 cards = []
-for key, s in meta['sets'].items():
+for key in SHOW:
+    s = meta['sets'][key]
+    parts = s.get('parts', {})
+    btns = [button(key, f'Play {key}' if '80' not in parts else f'{key}, today\'s stride', parts.get('52', [0, 3.3, 6.3, 9.6]))]
+    if '80' in parts:
+        btns.append(button(key + '80', f'{key}, longer stride', parts['80']))
     cards.append(f'''
   <article class="set" data-key="{key}">
     <header><span class="letter">{key}</span><h2>{html.escape(s["name"])}</h2></header>
     <p>{html.escape(s["words"])}</p>
-    <button class="play" aria-pressed="false" data-src="{clip(key)}"><span class="ico"></span><span class="lbl">Play {key}</span></button>
-    <ol class="lane"><li>Walk, leaves</li><li>Run, leaves</li><li>Walk, wood</li><li>Run, wood</li></ol>
+    <div class="btns">{"".join(btns)}</div>
+    {lane}
   </article>''')
 
 page = f'''<title>Pokey's Footsteps</title>
@@ -49,7 +63,8 @@ h1 {{ font: 600 2rem/1.15 var(--display); margin: 0; text-wrap: balance }}
 .today .letter {{ color: var(--bark); border-color: var(--bark); font-size: 0.8rem; font-family: var(--body); font-weight: 700 }}
 h2 {{ font: 600 1.25rem/1.2 var(--display); margin: 0 }}
 .set p {{ margin: 0; color: var(--muted) }}
-.play {{ justify-self: start; display: inline-flex; align-items: center; gap: 10px; font: 700 1rem var(--body); color: var(--bg);
+.btns {{ display: flex; flex-wrap: wrap; gap: 8px }}
+.play {{ display: inline-flex; align-items: center; gap: 10px; font: 700 1rem var(--body); color: var(--bg);
   background: var(--moss); border: 0; border-radius: 999px; padding: 10px 18px 10px 14px; cursor: pointer; min-height: 44px }}
 .today .play {{ background: var(--bark) }}
 .play:focus-visible {{ outline: 3px solid var(--ink); outline-offset: 2px }}
@@ -66,23 +81,23 @@ h2 {{ font: 600 1.25rem/1.2 var(--display); margin: 0 }}
 </style>
 <main>
   <h1>Pokey's footsteps</h1>
-  <p class="lede">You said today's walking sound is like someone chewing. Below are {len(meta["sets"])} quieter, softer replacements. Each plays
-  Pokey walking, then running, on leafy ground, and then the same on wooden planks, at the game's real step speed. Listen on your
-  phone's speaker and turn it up: footsteps are quiet in the game, and these are too. Start with today's, so you know what you're
-  comparing against.</p>
+  <p class="lede">Round two. You picked D but said it sounds like hammering, and that today's at least sounded like footsteps.
+  E and F mix the two: E is mostly today's real footsteps with the crunch taken out, F is mostly D's paws. Both have a softer
+  wood step, a padded thump instead of the bare-foot click. Each plays a walk then a run on leafy ground, then on wooden planks.
+  "Longer stride" is the same sound with fewer steps (about 3.6 a second at a full run instead of 5.5). Listen on your phone's
+  speaker, turned up.</p>
   <article class="set today" data-key="today">
     <header><span class="letter">NOW</span><h2>Today's steps</h2></header>
     <p>What the game plays now: people walking on dry leaves. The crunch is the chewing.</p>
-    <button class="play" aria-pressed="false" data-src="{clip("today")}"><span class="ico"></span><span class="lbl">Play today's</span></button>
+    <div class="btns">{button("today", "Play today's", meta.get("today_parts", [0, 3.3, 6.3, 9.6]))}</div>
     <ol class="lane"><li>Walk, leaves</li><li>Run, leaves</li><li>Walk, wood</li><li>Run, wood</li></ol>
   </article>
   {"".join(cards)}
-  <p class="ask"><strong>Pick one letter.</strong> Every set is quieter than today's (about 4 dB) and never plays the same step twice
-  in a row. Whichever you pick replaces today's sound outright.</p>
+  <p class="ask"><strong>Pick one letter, and today's or the longer stride.</strong> Every new set is about 4 dB quieter than
+  today's, keeps nothing above 4 kHz, and never plays the same step twice in a row.</p>
 </main>
 <script>
-// the four parts of every clip (s): walk on leaves, run on leaves, walk on wood, run on wood (footcand.py walkrun)
-const PARTS = [0, 3.3, 6.3, 9.6];
+// each button's data-parts: when its clip's four parts start (s): walk on leaves, run on leaves, walk on wood, run on wood
 const audio = new Audio();
 let cur = null;
 function stop() {{
@@ -99,7 +114,7 @@ document.querySelectorAll('.play').forEach(b => b.addEventListener('click', () =
 }}));
 audio.addEventListener('timeupdate', () => {{
   if (!cur) return;
-  let k = 0; PARTS.forEach((t, i) => {{ if (audio.currentTime >= t) k = i; }});
+  let k = 0; cur.dataset.parts.split(',').map(Number).forEach((t, i) => {{ if (audio.currentTime >= t) k = i; }});
   cur.closest('.set').querySelectorAll('.lane li').forEach((li, i) => li.classList.toggle('on', i === k));
 }});
 audio.addEventListener('ended', stop);

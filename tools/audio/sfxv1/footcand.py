@@ -139,6 +139,25 @@ if SOFT:
         SETS['D'] = ('Paws and bare feet', "Real recordings: an animal's paws on soft earth for leafy ground, and soft bare feet on "
                      'wooden boards for planks. Their bright top is rolled off.', leaf, wood)
 
+# the blends (lead, 2:19 PM ET; Matt on D: "sounds more like hammering... The original sounded like at least footsteps"). Wood for both
+# is a padded step on planks: mostly a low thump, the board only a muffled tap under it, every attack rounded (the barefoot-on-floor
+# click was the hammering)
+def soft_plank(i, r):
+    board = fade(lp(hp(rate(wood_steps[(i + 1) % len(wood_steps)], 0.8), 160), 700, 4, scale=False), 0.015, 0.06)
+    return fade(lp(mix((pad(i, r), 0, 0), (board, 0.004, -6)), 1500, 4, scale=False), 0.012, 0.06)
+
+
+if 'D' in SETS:
+    C_leaf, D_leaf = SETS['C'][2], SETS['D'][2]
+    norm = lambda x: at(x, -30.0)   # (each layer to the same loudness first, so -6 dB means -6 dB)
+    planks = [soft_plank(i, rng.uniform(0.8, 0.9)) for i in range(6)]
+    SETS['E'] = ('Footsteps, with paws for weight', "Today's real footsteps with the crunch taken out (C), and D's paws on earth "
+                 '6 dB under them for weight. On wood: a padded step on planks, mostly a soft low thump.',
+                 [mix((norm(C_leaf[i]), 0, 0), (norm(D_leaf[i]), 0.004, -6)) for i in range(6)], planks)
+    SETS['F'] = ('Paws, with a footstep on top', "D's paws on earth, with today's footstep texture (crunch taken out) 6 dB on top. "
+                 'On wood: the same padded step on planks.',
+                 [mix((norm(D_leaf[i]), 0, 0), (norm(C_leaf[(i + 2) % 6]), 0.004, -6)) for i in range(6)], planks)
+
 # today's (the game's takes and gains), for comparison
 def todays(fx):
     import re
@@ -155,13 +174,18 @@ ref = float(np.mean([loud(t) for t in today_leaf + today_wood]))
 QUIET = -4.0
 
 
-def walkrun(leaf, wood, seed):
-    """walk 6 steps then run 10, on leaves; then the same on wood. Every step gets the game's own jitter (pitch +-4%, gain +-1.5 dB)
-    from a shuffle bag, as sfxRec.ts plays them"""
+PARTS = {}
+
+
+def walkrun(leaf, wood, seed, stride=52):
+    """walk 6 steps then run 10, on leaves; then the same on wood, a step every `stride` px (the game: 52; at a walk ~0.45 s apart, at
+    a full run, 285 px/s, 0.18 s). Every step gets the game's own jitter (pitch +-4%, gain +-1.5 dB) from a shuffle bag, as sfxRec.ts
+    plays them. PARTS[stride] = when each of the four parts starts (s)"""
     r = np.random.default_rng(seed)
-    events, t = [], 0.3
+    events, t, parts = [], 0.3, []
     for takes in (leaf, wood):
-        for gap, n in ((0.45, 6), (0.18, 10)):
+        for gap, n in ((0.45 * stride / 52, 6), (0.18 * stride / 52, 10)):
+            parts.append(round(max(0.0, t - 0.3), 2))
             bag = []
             for _ in range(n):
                 if not bag:
@@ -171,6 +195,7 @@ def walkrun(leaf, wood, seed):
                 t += gap
             t += 0.6
         t += 0.6
+    PARTS[stride] = parts
     out = np.zeros(int((t + 0.5) * SR), np.float32)
     for x, s in events:
         a = int(s * SR)
@@ -185,6 +210,7 @@ def phone_lufs(x):
 # the whole walk, as a phone plays it, is what gets matched: each set sits QUIET dB under today's
 today_w = walkrun(today_leaf, today_wood, 7)
 ref_w = phone_lufs(today_w)
+today_parts = PARTS[52]
 meta = {'ref_lufs': round(float(ref), 1), 'quiet_db': QUIET, 'sets': {}}
 walks = {}
 for key, (name, words, leaf, wood) in SETS.items():
@@ -196,7 +222,12 @@ for key, (name, words, leaf, wood) in SETS.items():
         for i, x in enumerate(takes):
             write_wav(os.path.join(OUT, f'{key}-{surf}_{i}.wav'), x)
     walks[key] = walkrun(leaf, wood, 7)
-    meta['sets'][key] = {'name': name, 'words': words, 'phone_lu_vs_today': round(float(phone_lufs(walks[key]) - ref_w), 1)}
+    meta['sets'][key] = {'name': name, 'words': words, 'phone_lu_vs_today': round(float(phone_lufs(walks[key]) - ref_w), 1),
+                         'parts': {'52': PARTS[52]}}
+    if key in ('E', 'F'):
+        # the longer stride Matt is fine with: 80 px, about 3.6 steps a second at a run
+        walks[key + '80'] = walkrun(leaf, wood, 7, 80)
+        meta['sets'][key]['parts']['80'] = PARTS[80]
 # the page plays every clip `lift` dB up, the same for all so they compare as in the game, as far as the loudest candidate allows with
 # -1.5 dB to spare (no limiting on any candidate); today's boosted takes clip as they are, so it alone goes through a -1 dBFS limiter,
 # as the game's master chain limits it
@@ -206,6 +237,7 @@ for key, w in walks.items():
     w = w * 10 ** (lift / 20)
     write_wav(os.path.join(OUT, f'{key}-walkrun.wav'), w)
     write_mp3(os.path.join(OUT, f'{key}-walkrun.mp3'), w, kbps=96, sr=32000)
+meta['today_parts'] = today_parts
 w = limit(today_w * 10 ** (lift / 20), -1.0)
 write_wav(os.path.join(OUT, 'today-walkrun.wav'), w)
 write_mp3(os.path.join(OUT, 'today-walkrun.mp3'), w, kbps=96, sr=32000)
