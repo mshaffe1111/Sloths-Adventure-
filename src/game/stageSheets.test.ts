@@ -49,13 +49,12 @@ test('a boss lair and a generated stage get only what they draw', () => {
   // a boss lair draws no painted platforms and is not hand-built: its boss's minions (3-10's Prowler calls none) and Dot's perch
   assert.deepEqual(stageSheets(lvl('3-10'), on), ['perch', ...everyStage(3)]);
   assert.deepEqual(stageSheets(lvl('1-10'), on), ['foe:goldsnake', 'perch', ...everyStage(1)]);
-  // a generated stage: the kit when painting is on, and every creature its world's generator can place (rolled with the stage)
-  // (5-8: 5-1 to 5-4 are hand-built now)
-  const five = stageSheets(lvl('5-8'), on);
-  assert.deepEqual(five, ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'water-signs', 'perch', ...everyStage(5)]);
-  assert.deepEqual(stageSheets(lvl('5-8'), { ...on, paint: false }), [...genFoes(5).map((f) => `foe:${f}`), 'water-signs', 'perch', ...everyStage(5)]);
-  // (5-6 has webs, 5-8 is a climb with none: World 5's sheet too for its silk bridges, and Dot's pieces for its web patches)
-  assert.deepEqual(stageSheets(lvl('5-6'), on), ['kit:1', 'kit:5', ...genFoes(5).map((f) => `foe:${f}`), 'w5-props', 'dot-props', 'water-signs', 'perch', ...everyStage(5)]);
+  // (World 5 has no generated stage left, w5-rebuild 2026-10-29: 5-6 is gen2, 5-8 the hand-built bloom-tree climb: each its World 5
+  // sheets, its spiders and its dressing, painting on or off)
+  for (const paint of [true, false]) {
+    assert.deepEqual(stageSheets(lvl('5-6'), { ...on, paint }), ['kit:1', 'kit:5', 'w5-props', 'dress', 'foe:spider', 'perch', ...everyStage(5)]);
+    assert.deepEqual(stageSheets(lvl('5-8'), { ...on, paint }), ['kit:1', 'kit:5', 'w5-props', 'dress', 'foe:spider', 'water-signs', 'perch', ...everyStage(5)]);
+  }
   // with the hand-built stages switched off (?proto=0), 3-1 is a generated stage: no World 3 props
   assert.deepEqual(stageSheets(lvl('3-1'), { ...on, hand: false }).slice(0, 3), ['kit:1', 'kit:3', 'foe:goldsnake']);
 });

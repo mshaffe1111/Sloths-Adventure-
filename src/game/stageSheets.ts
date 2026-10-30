@@ -92,6 +92,7 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '5-5': ['foe:spider'],
   '5-8': ['foe:spider'], // Up the Bloom Trees (protoStage.ts buildKapok bloom): its spiders
   '6-8': ['foe:frog', 'foe:tayra'], // Stilt Climb (w6Stages.ts): its animals
+  '5-6': ['foe:spider'],
   '5-7': ['foe:spider'],
   '5-9': ['foe:spider'],
 };
