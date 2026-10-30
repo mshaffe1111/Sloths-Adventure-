@@ -1,0 +1,213 @@
+{
+ "note": "clean-sweep S1/S2/S4 by img2img from tools/art/hazard/cleanstarts.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/7620121448676fdd6fda472158817273aef30344/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "deep2-s45-7",
+   "start": "start-deep2.webp",
+   "prompt": "slothadv style, painted storybook illustration, a square seamless texture of deep clear jungle river water seen from the side underwater, deep teal-green, soft pale shafts of sunlight slanting down, tiny drifting specks of silt, faint darker shapes of stones far below, gentle, calm, no fish, no surface, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "deep2-s45-23",
+   "start": "start-deep2.webp",
+   "prompt": "slothadv style, painted storybook illustration, a square seamless texture of deep clear jungle river water seen from the side underwater, deep teal-green, soft pale shafts of sunlight slanting down, tiny drifting specks of silt, faint darker shapes of stones far below, gentle, calm, no fish, no surface, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "deep2-s60-7",
+   "start": "start-deep2.webp",
+   "prompt": "slothadv style, painted storybook illustration, a square seamless texture of deep clear jungle river water seen from the side underwater, deep teal-green, soft pale shafts of sunlight slanting down, tiny drifting specks of silt, faint darker shapes of stones far below, gentle, calm, no fish, no surface, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "deep2-s60-23",
+   "start": "start-deep2.webp",
+   "prompt": "slothadv style, painted storybook illustration, a square seamless texture of deep clear jungle river water seen from the side underwater, deep teal-green, soft pale shafts of sunlight slanting down, tiny drifting specks of silt, faint darker shapes of stones far below, gentle, calm, no fish, no surface, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "deep6-s45-7",
+   "start": "start-deep6.webp",
+   "prompt": "slothadv style, painted storybook illustration, a square seamless texture of deep murky swamp water seen from the side underwater, dark olive brown and grey-green, cloudy with silt, faint drifting specks and sediment swirls, dim, unpleasant, no fish, no surface, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "deep6-s45-23",
+   "start": "start-deep6.webp",
+   "prompt": "slothadv style, painted storybook illustration, a square seamless texture of deep murky swamp water seen from the side underwater, dark olive brown and grey-green, cloudy with silt, faint drifting specks and sediment swirls, dim, unpleasant, no fish, no surface, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "deep6-s60-7",
+   "start": "start-deep6.webp",
+   "prompt": "slothadv style, painted storybook illustration, a square seamless texture of deep murky swamp water seen from the side underwater, dark olive brown and grey-green, cloudy with silt, faint drifting specks and sediment swirls, dim, unpleasant, no fish, no surface, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "deep6-s60-23",
+   "start": "start-deep6.webp",
+   "prompt": "slothadv style, painted storybook illustration, a square seamless texture of deep murky swamp water seen from the side underwater, dark olive brown and grey-green, cloudy with silt, faint drifting specks and sediment swirls, dim, unpleasant, no fish, no surface, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "chop-s30-7",
+   "start": "start-chop.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip of fast dirty choppy river water, murky olive-brown, white foamy crests along the top, bubbles and churning silt, rushing current, on one flat plain pure magenta background above the water, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 528
+  },
+  {
+   "name": "chop-s30-23",
+   "start": "start-chop.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip of fast dirty choppy river water, murky olive-brown, white foamy crests along the top, bubbles and churning silt, rushing current, on one flat plain pure magenta background above the water, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.3,
+   "seed": 23,
+   "w": 1024,
+   "h": 528
+  },
+  {
+   "name": "chop-s42-7",
+   "start": "start-chop.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip of fast dirty choppy river water, murky olive-brown, white foamy crests along the top, bubbles and churning silt, rushing current, on one flat plain pure magenta background above the water, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 528
+  },
+  {
+   "name": "chop-s42-23",
+   "start": "start-chop.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-on strip of fast dirty choppy river water, murky olive-brown, white foamy crests along the top, bubbles and churning silt, rushing current, on one flat plain pure magenta background above the water, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.42,
+   "seed": 23,
+   "w": 1024,
+   "h": 528
+  },
+  {
+   "name": "debris-s62-7",
+   "start": "start-debris.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of things floating in dirty swamp water, each separate with space around it: soggy clumps of dead brown and green leaves, a rotten broken log chunk, a mossy stone, patches of dirty yellowish foam scum, tangles of dead twigs with leaves. Thin dark outline, on one flat plain pure magenta background, no water, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "debris-s62-23",
+   "start": "start-debris.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of things floating in dirty swamp water, each separate with space around it: soggy clumps of dead brown and green leaves, a rotten broken log chunk, a mossy stone, patches of dirty yellowish foam scum, tangles of dead twigs with leaves. Thin dark outline, on one flat plain pure magenta background, no water, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "debris-s75-7",
+   "start": "start-debris.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of things floating in dirty swamp water, each separate with space around it: soggy clumps of dead brown and green leaves, a rotten broken log chunk, a mossy stone, patches of dirty yellowish foam scum, tangles of dead twigs with leaves. Thin dark outline, on one flat plain pure magenta background, no water, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "debris-s75-23",
+   "start": "start-debris.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of things floating in dirty swamp water, each separate with space around it: soggy clumps of dead brown and green leaves, a rotten broken log chunk, a mossy stone, patches of dirty yellowish foam scum, tangles of dead twigs with leaves. Thin dark outline, on one flat plain pure magenta background, no water, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "rubble-s62-7",
+   "start": "start-rubble.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of small ground clutter, side view, each separate: in the top two rows low lumps of glossy black volcanic obsidian rock, rounded chunky stones with violet glints, lying on the ground; in the bottom two rows old rusty broken iron spikes lying flat on grey slate, half buried, bent, harmless junk. Thin dark outline, on one flat plain pure magenta background, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "rubble-s62-23",
+   "start": "start-rubble.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of small ground clutter, side view, each separate: in the top two rows low lumps of glossy black volcanic obsidian rock, rounded chunky stones with violet glints, lying on the ground; in the bottom two rows old rusty broken iron spikes lying flat on grey slate, half buried, bent, harmless junk. Thin dark outline, on one flat plain pure magenta background, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "rubble-s75-7",
+   "start": "start-rubble.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of small ground clutter, side view, each separate: in the top two rows low lumps of glossy black volcanic obsidian rock, rounded chunky stones with violet glints, lying on the ground; in the bottom two rows old rusty broken iron spikes lying flat on grey slate, half buried, bent, harmless junk. Thin dark outline, on one flat plain pure magenta background, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "rubble-s75-23",
+   "start": "start-rubble.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid of small ground clutter, side view, each separate: in the top two rows low lumps of glossy black volcanic obsidian rock, rounded chunky stones with violet glints, lying on the ground; in the bottom two rows old rusty broken iron spikes lying flat on grey slate, half buried, bent, harmless junk. Thin dark outline, on one flat plain pure magenta background, Soft cel shading, light from the upper left, evenly lit, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, people, sloth, animal, fish, sky",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}
