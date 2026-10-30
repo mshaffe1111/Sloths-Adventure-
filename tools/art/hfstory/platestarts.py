@@ -1,9 +1,9 @@
 """Starts for two story plates (HF shopping list row 9, 2026-10-30; ART-TO-GET #19, #20; STORY-ART-PROMPTS 19, 20), in the story plate
 shape (2560 x 2720 at the end; painted at 1280 x 1360), each a collage of the game's own painted pieces for img2img with the style model:
 
-  start-plate-gorge.webp  Dot holding on to Pokey's claw over the gorge (World 4, the start of Act II): the World 4 mist gorge
-                          (w4mist-far), a broken cliff ledge (dot-far-1), the vine, Pokey's painted vine hang (hero-vine 'still'),
-                          Dot's story picture (dot-0 'cheer', her wings up, pulling)
+  start-plate-gorge.webp  Dot holding on to Pokey's claw over the gorge (World 4, the start of Act II): World 4's misty gorge
+                          (w4-far), its broken ledge with a vine end (w4-mid), the vine, Pokey's painted vine hang (hero-vine
+                          'still'), Dot's story picture (dot-0 'cheer', her wings up, pulling) at his free paw
   start-plate-raft.webp   the village building the raft (World 2, halfway), no characters: World 2's river and its bank village
                           (w2-far, w2-mid), with a barely started
                           raft of two lashed logs on the bank, a pile of logs, a coil of rope, a stone hammer on a stump
@@ -27,40 +27,39 @@ def cover(im, w, h, fx=0.5, fy=0.5):
 
 
 # ───── the gorge ─────
-mist = Image.open(G / 'src/assets/backdrops/w4mist-far.webp').convert('RGB')
-# (above its rope bridge and waterfall: only the spires standing in the sea of mist)
-bg = cover(mist.crop((1000, 0, 1800, 850)), W, H, 0.5, 0.5).convert('RGBA')
-# (below him only deep mist: the long white nothing where the ledge used to be)
-fog = Image.new('L', (W, H), 0)
-ImageDraw.Draw(fog).rectangle((0, int(H * 0.55), W, H), fill=255)
-bg.paste((236, 232, 236), (0, 0), fog.filter(ImageFilter.GaussianBlur(120)))
-# the broken ledge, top left: the gorge's own dark cliffs, their edge broken off in a jagged line
-cliff = mist.crop((0, 260, 640, 960)).convert('RGBA').resize((760, 832), Image.LANCZOS)
-m = Image.new('L', cliff.size, 0)
-d = ImageDraw.Draw(m)
-d.polygon([(0, 0), (600, 0), (660, 120), (590, 210), (640, 330), (520, 470), (430, 620), (300, 832), (0, 832)], fill=255)
-cliff.putalpha(m.filter(ImageFilter.GaussianBlur(2)))
-bg.alpha_composite(cliff, (-180, -60))
+# World 4's own misty gorge of waterfalls (w4-far) and, above, its broken ledge with a vine end on it (w4-mid, keyed)
+far = Image.open(G / 'src/assets/backdrops/w4-far.webp').convert('RGB')
+bg = cover(far.crop((700, 0, 1900, 1302)), W, H, 0.5, 0.4).convert('RGBA')
+mid = Image.open(G / 'src/assets/backdrops/w4-mid.webp').convert('RGBA')
+ledge = mid.crop((0, 560, 1220, 1302))
+k = 1.05
+ledge = ledge.resize((round(ledge.width * k), round(ledge.height * k)), Image.LANCZOS)
+lx, ly = -420, -180
+# (its foot was cut straight by the crop: fade it into the mist)
+fade = Image.new('L', ledge.size, 255)
+fd = ImageDraw.Draw(fade)
+for i in range(220):
+    fd.line((0, ledge.height - 1 - i, ledge.width, ledge.height - 1 - i), fill=round(255 * i / 220))
+ledge.putalpha(Image.composite(ledge.getchannel('A'), Image.new('L', ledge.size, 0), fade))
+bg.alpha_composite(ledge, (lx, ly))
 d = ImageDraw.Draw(bg)
-# the vine from the broken lip down to Pokey's hand
-lip = (450, 140)
-hand = (560, 560)
-pts = [(lip[0] + (hand[0] - lip[0]) * u + 30 * math.sin(u * math.pi), lip[1] + (hand[1] - lip[1]) * u) for u in [i / 30 for i in range(31)]]
-d.line(pts, fill=(58, 82, 34), width=14)
-d.line(pts, fill=(90, 120, 50), width=6)
-for k in range(5):
-    x, y = pts[k * 6]
-    d.ellipse((x - 18, y - 8, x + 14, y + 10), fill=(72, 120, 48))
+# the vine, from the ledge's broken tip (its own vine end) down to Pokey's hand
+lip = (round(lx + 1160 * k), round(ly + 470 * k))  # the foot of the ledge's own painted vine end
+hand = (lip[0] + 12, 660)
+pts = [(lip[0] + (hand[0] - lip[0]) * u + 22 * math.sin(u * math.pi), lip[1] + (hand[1] - lip[1]) * u) for u in [i / 30 for i in range(31)]]
+d.line(pts, fill=(48, 56, 40), width=12)
+d.line(pts, fill=(84, 100, 60), width=5)
 # Pokey hanging from it by one arm (his painted vine hang), his grip on the vine's end
 vine = Image.open(G / 'src/assets/hero/hero-vine.webp').convert('RGBA')
 still = vine.crop((0, 0, 195, 431))
-k = 560 / 431
-po = still.resize((round(195 * k), 560), Image.LANCZOS)
-bg.alpha_composite(po, (round(hand[0] - 171.6 * k), round(hand[1] - 7.6 * k)))
-# Dot above his hand, wings up, pulling
+kp = 560 / 431
+po = still.resize((round(195 * kp), 560), Image.LANCZOS)
+px, py = round(hand[0] - 171.6 * kp), round(hand[1] - 7.6 * kp)
+bg.alpha_composite(po, (px, py))
+# Dot at his free paw (low on his near side), wings up, pulling
 hd = Image.open(G / 'src/assets/story/hd/dot-0.webp').convert('RGBA')
-dot = hd.crop((0, 0, 369, 396)).resize((220, 236), Image.LANCZOS)
-bg.alpha_composite(dot, (hand[0] - 150, hand[1] - 250))
+dot = hd.crop((0, 0, 369, 396)).resize((200, 215), Image.LANCZOS)
+bg.alpha_composite(dot, (px - 120, py + 250))
 bg.convert('RGB').save(OUT / 'start-plate-gorge.webp', quality=93)
 
 # ───── the raft ─────
