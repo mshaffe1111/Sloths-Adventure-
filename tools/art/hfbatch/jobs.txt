@@ -230,4 +230,8 @@ hfstory2      6ae405d00e0338d1bb7c75db rtx-pro-6000 02:49:52Z-02:53:01Z (3.2 min
   (Pokey worried over the mist, the broken ledge, the vine). Rough: Dot reads as beside his free paw, not clearly gripping it.
   #18 squirrels and #21 floury Dot were already painted (Gemini): cleaned with no GPU (white sticker rims peeled, the pink flour puffs
   to flour white), platecut.py.
-running spend of the $80: ~$0.76
+hfzones1      6ae407e90e0338d1bb7c769b rtx-pro-6000 02:58:49Z-03:05Z (~6 min, ~$0.28): row 11, World 9's lava vents and eruptions and
+  World 10's lightning rods (they hurt Pokey and were code: zoneArt.ts). tools/art/hfzones: zonestarts.py, make_spec_zones.py,
+  zonecut.py (packed into boss-fx). KEPT zones-s72-23 (vents cool and hot, three lava fountain frames, rods dark and lit, scorch).
+  THROWN: s72-7 (lava like dripping wax), s84-23 (pale columns), s84-7 (the rod fell over). The bolt is boss-fx's painted one.
+running spend of the $80: ~$1.04
