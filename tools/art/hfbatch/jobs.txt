@@ -244,3 +244,13 @@ hfboss910a    6ae4d430c78863f9c62e9983 rtx-pro-6000 from 17:30Z: the teacup sit 
   poses as edits of their stills: Drake breath-down, winded, wall cling; Iron-Claw about-face, chair lift, throw, peek, paw.
 hfboss910b    6ae4d4e0c78863f9c62e99ad rtx-pro-6000 from 17:33Z: the 9-10/10-10 set pieces from boss910starts.py (hoard shelves, ribs,
   crust, lava strip, table, chairs, netting, hedge, rubble) and the council hall (wide, tall) and wall break as edits of the warroom plate.
+results: hfdrake1 17:28Z-~17:36Z (~8 min, ~$0.37); hfboss910a 17:30Z-17:49Z (~19 min, ~$0.87); hfboss910b 17:33Z-17:58Z (~25 min,
+  ~$1.15). Picks (tools/art/hfdrake/picks910.json): the teacup sit drake-teap-2 (on model, facing right; drake-tea-6 faces left), tea
+  things tea-s68-23; poses breathdown-6, winded-6, cling-6, Iron-Claw aboutface-6, chairlift-6, paw-6, peek-6 (cut above the drawn
+  wall), throw-2 (throw-6 has a white halo; chairlift-2/peek-2 gave him a black mask). Hall: hall-wide-2, hall-tall-6; wall crack
+  break-crack-6. THROWN: the burst-open wall (both takes show another indoor hall, not the courtyard, and no wall round the hole);
+  every hfboss910b set piece (ledges, ribs, crust, lava, table, chairs, netting, hedge, rubble) stayed as flat as its plain start at
+  0.5-0.68: redo at 0.75-0.85.
+hftrails1     6ae4dd20c78863f9c62e9da8 rtx-pro-6000 from 18:08Z: the ten world-map trails (tools/art/hfui: trailstarts.py,
+  make_spec_trails.py), 2 sheets x 0.7/0.8 x 2 seeds.
+running spend of the $80: ~$1.04 + this round ~$2.4 + hftrails1 (~$0.4 est.)
