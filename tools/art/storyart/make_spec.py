@@ -670,6 +670,17 @@ def round7(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
+def round7b(commit):
+    """the Drake's cups again, from the earlier take of his card that had none: a rock and two cups by him, painted in gently"""
+    spec = round7(commit)
+    spec['tag'] = 'r7b'
+    it = [x for x in spec['items'] if x['name'].startswith('card-magma-drake')]
+    for x, (st, sd) in zip(it, ((0.58, 4), (0.68, 9))):
+        x['strength'], x['seed'], x['name'] = st, sd, f'card-magma-drake-w{round(st * 100)}'
+    spec['items'], spec['keep'] = it, [x['name'] for x in it]
+    return spec
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
