@@ -172,3 +172,32 @@ X-16 skies r3 6ae3bd320e0338d1bb7c3687 started 21:40:02Z: round 1's prompt (nega
 X-16 skies r4 6ae3cdb10e0338d1bb7c4633 rtx-pro-6000 started 22:50:25Z (the lead's go): tallstart.py, each native far strip with a sky
   stacked above (a passed sky of the same world recoloured where the light fits, else a smooth gradient of the strip's own top), one
   img2img pass over the whole tall picture at s30/s38 (striphdgpu.py, full-height tiles), 32 takes.
+  Finished about 23:15:44Z (~25 min, ~$1.15). Review sheets: reference/prop-sheets/qa-notes/polish-edges/skies-r4/review-1..4.jpg (A start, B s30, C s38).
+X-16 skies r5 6ae3dd5ec78863f9c62e0ae9 rtx-pro-6000 started 23:57:18Z (the lead's go, $3.25 left): skyt2i.py at 11d10552, the 11
+  held-back skies x 2 seeds: a sky painted from text, scaled and colour-matched above the far strip, the join inpainted (sequential
+  tiles). Estimate ~45 min, ~$2.2; timeout 65 min.
+  Cancelled at about 00:07Z (~10 min, ~$0.45): the first take had a giant sloth's head painted into the sky (the style model in the
+  text-to-image step) and hard tile edges at the join. Fixed in skyt2i.py: the sky without the style model, the join in one full-width
+  pass plus a wrap pass.
+X-16 skies r5b 6ae3ded30e0338d1bb7c5983 rtx-pro-6000 started 00:03:31Z at f9c46ffc, same 22 takes; timeout 50 min.
+# polish-sfx (2026-10-29, the recorded effect set; all CPU, no GPU; cap $8)
+sfx-scan-a/b/c  6ae3a61ac78863f9c62dcaa4 / 6ae3a61c0e0338d1bb7c1e1c / 6ae3a61f0e0338d1bb7c1e20 cpu-upgrade 20:01Z-20:04:40Z (3 x 3.2 min):
+  tools/audio/sfxv1/fsscan.py pass 1 over laion/freesound-commercially-permissive-subset-with-captions shards 0, 4, 8: CC0 clips by caption
+  -> bucket hfbatch/sfx/carriers (carrier-a/b/c-*.png).
+sfx-scan-d/e    6ae3a7740e0338d1bb7c1faa / 6ae3a7760e0338d1bb7c1fad cpu-upgrade 20:07Z-20:10:33Z (2.6 + 3.3 min): pass 2 (rocks, crumble, logs,
+  wood/grass/stone steps, flaps, rope, jungle/night/cave beds), shards 1-3 and 5-7, 9.
+sfx-scan-f      6ae3a8fbc78863f9c62dce1b cpu-upgrade 20:13Z-20:16Z (~2.5 min): pass 3 (rain, lava, fire, creature words, mallets, chimes, drums).
+sfx-scan-g      6ae3b23ac78863f9c62dd9df cpu-upgrade 20:53Z-20:58Z (5.0 min): pass 4 (animal voices as the captions word them).
+sfx-licheck     6ae3b1bbc78863f9c62dd950 cpu-upgrade 20:51Z, CANCELED after ~2.5 min (the dataset mount fetched whole 450 MB files).
+sfx-licheck2    6ae3b265c78863f9c62dda08 cpu-upgrade 20:54Z-21:12:41Z (18.7 min): licheck.py, every scanned id (2095) against
+  benjamin-paine/freesound-laion-640k by range reads -> hfbatch/sfx/licences.json: all 2095 found.
+sfx-licheck3    6ae3b978c78863f9c62de338 cpu-upgrade 21:24Z-~21:45Z (~20 min): the same for the 115 ids the build touched (with pass 4's)
+  -> hfbatch/sfx/licences-used.json.
+total ~65 min on cpu-upgrade = ~$0.05 of the $8 cap (no GPU used; Stable Audio Open is gated for this account and was not run).
+polish-sfx, the rebuild by real titles (2026-10-29 ET evening):
+sfx-licpick     6ae3bd2a0e0338d1bb7c3681 cpu-basic ~1 min: 20 licences read back from licences.json.
+sfx-titles      6ae3bdf20e0338d1bb7c372b cpu-upgrade ~15 min: titles.py (titles of the scanned clips; superseded by tagscan).
+sfx-tagscan     6ae3be3e0e0338d1bb7c3778 cpu-upgrade ~20 min: tagscan.py, CC0 rows of benjamin-paine/freesound-laion-640k by their own tags/titles.
+sfx-ids-a/b/c   6ae3c3d90e0338d1bb7c3bde / 6ae3c3dd0e0338d1bb7c3be6 / 6ae3c3e0c78863f9c62dec21 cpu-upgrade 22:08Z-22:11:30Z (3 x 3.5 min):
+  fsscan.py PASS=ids, the tag picks -> carrier-ia/ib/ic-*.png (925 clips; 148 used, LICENCES.md).
+total for polish-sfx ~110 min on cpu-upgrade (~$0.06 at $0.03/h) + cpu-basic minutes: well under $0.10 of the $8 cap. No GPU.

@@ -196,9 +196,8 @@ const VENOM: BossDef = {
   // the coils while he sat up)
   bodyGrace: 99,
   // (2026-10-26, QA: the first lunge came 1.2 s after Dot's tip, before it could be read) he sizes you up first, and he hisses as
-  // he rears back
+  // he rears back (his tell sound, audio.ts playBossTell)
   firstIdle: 3.2,
-  tellCall: 'boa',
   weakAt: (b, floor) => venomWeak(b, floor),
   openAfter: ['sweep'],
   aimText: 'HIT HIS HEAD WHEN IT IS DOWN!',

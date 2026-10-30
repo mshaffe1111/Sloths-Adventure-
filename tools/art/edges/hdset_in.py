@@ -67,7 +67,8 @@ def main(d, only=None):
                             topfade=0.07 if part == 'mid' and world in TOPFADE else 0.0)
         Image.fromarray(out, 'RGBA').save(old, 'WEBP', quality=95, method=6)
         print(old.name, out.shape[1], 'x', out.shape[0], old.stat().st_size // 1024, 'KB', info)
-    # (skies only those that passed review: a held-back one is listed in REJECTED, make_hdset_spec.py REDO)
+    # (skies only those that passed review: a held-back one is listed in REJECTED, make_hdset_spec.py REDO; five of those got a round 4
+    # sky instead, skycut.py --tall PASSED4, which this must not overwrite)
     for p in ([] if only == 'cutouts' else sorted(d.glob('*-sky.webp'))):
         if p.name[:-len('-sky.webp')] in REJECTED:
             continue
