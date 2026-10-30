@@ -1,0 +1,41 @@
+{
+ "note": "VI-2 native-resolution strips, tools/art/hfbatch/striphdgpu.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w4-mid-s15-7",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w4-mid.webp",
+   "h": 1302,
+   "strength": 0.15,
+   "seed": 7,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. grey cliff crags with waterfalls, wind-bent small trees on top of the rocks, a twig nest on a tall rock pillar",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  },
+  {
+   "name": "w4-mid-s20-11",
+   "pre": "esrgan",
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6f96c87dd9023d4b32deea6e248c8c983639b7b9/src/assets/backdrops/w4-mid.webp",
+   "h": 1302,
+   "strength": 0.2,
+   "seed": 11,
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background layer, soft cel shading, thin dark outline, crisp clean hand-painted gouache brushwork with fine leaf and bark detail, light from the upper left, evenly lit, on one flat plain grey background, no text. grey cliff crags with waterfalls, wind-bent small trees on top of the rocks, a twig nest on a tall rock pillar",
+   "bg": [
+    128,
+    128,
+    128
+   ]
+  }
+ ]
+}

@@ -9,11 +9,15 @@
  * folded-letter gap. Her own painted frames (dot-atlas.webp) fly her, scaled up. Every piece comes from dot-props.webp
  * (tools/art/dotstage), and draws nothing until it has loaded.
  */
+import { drawFx } from './bossFx.ts';
+import { glowPic } from './glow.ts';
+import { drawPetal } from './petalSprites.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { DOT_PROP_FRAMES } from './dotPropsData.ts';
 import { drawDotFrame, flyFrame, warmDot } from './dotSprite.ts';
 import { BLOOM, DOT, MIST, TOP, gustState, openingY, type BackName, type DotStage, type Nectar, type NetWall, type Thorn } from './dotFlightStage.ts';
 import type { DotFlight } from './dotFlight.ts';
+import { FONT_UI } from './fonts.ts';
 import { hudArtImage } from '../components/hud/painted.tsx';
 import { HUD_PIECES } from './hudAtlasData.ts';
 
@@ -236,32 +240,14 @@ export class DotFx {
       const a = Math.min(1, b.life / Math.min(0.5, b.max * 0.5));
       ctx.globalAlpha = a;
       if (b.kind === 'petal') {
-        ctx.save();
-        ctx.translate(b.x, b.y);
-        ctx.rotate(b.rot);
-        ctx.fillStyle = b.hue ?? '#f9a8d4';
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 6 * b.s, 3.2 * b.s, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+        // a painted petal (petalSprites.ts), pink or gold as asked, tumbling
+        drawPetal(ctx, (b.hue === '#fde68a' ? 0.5 : 0) + (b.s % 0.37), b.x, b.y, 15 * b.s, b.rot, Math.cos(b.rot * 2.3), a);
       } else if (b.kind === 'seed') {
-        ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        const r = 6 * b.s;
-        for (let k = 0; k < 5; k++) {
-          const ang = b.rot + (k / 5) * Math.PI - Math.PI;
-          ctx.moveTo(b.x, b.y);
-          ctx.lineTo(b.x + Math.cos(ang) * r, b.y + Math.sin(ang) * r);
-        }
-        ctx.moveTo(b.x, b.y);
-        ctx.lineTo(b.x, b.y + r * 1.3);
-        ctx.stroke();
+        // a fluffy seed: a small soft glow (the pre-rendered glow, no drawn lines)
+        const r = 7 * b.s;
+        ctx.drawImage(glowPic('#ffffff', 'fly'), b.x - r, b.y - r, r * 2, r * 2);
       } else if (b.kind === 'feather') {
-        if (!drawPiece(ctx, 'feather', b.x, b.y, 30, { rot: b.rot * 0.3 + 0.6 })) {
-          ctx.fillStyle = '#fff';
-          ctx.fillRect(b.x - 3, b.y - 8, 6, 16);
-        }
+        drawPiece(ctx, 'feather', b.x, b.y, 30, { rot: b.rot * 0.3 + 0.6 });
       } else {
         ctx.fillStyle = b.hue ?? '#fff7c2';
         const k = b.s * 1.6 * a;
@@ -706,13 +692,15 @@ function drawMist(ctx: CanvasRenderingContext2D, x0: number, x1: number, t: numb
   ctx.fillRect(x0, MIST - 90, x1 - x0, 170);
   ctx.fillStyle = 'rgba(236, 240, 246, 0.96)';
   ctx.fillRect(x0, MIST + 80, x1 - x0, Math.max(90, yBot - MIST - 60));
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  // banks drifting on its top: soft puffs (the pre-rendered glow, stretched flat), so no hard-edged white oval shows
+  const bank = glowPic('#ffffff');
+  ctx.save();
+  ctx.globalAlpha = 0.6;
   for (let x = Math.floor(x0 / 180) * 180; x < x1 + 180; x += 180) {
     const wob = Math.sin(t * 0.5 + x * 0.013) * 14;
-    ctx.beginPath();
-    ctx.ellipse(x + wob, MIST - 10 + Math.sin(x * 0.007) * 10, 130, 26, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.drawImage(bank, x + wob - 170, MIST - 10 + Math.sin(x * 0.007) * 10 - 36, 340, 72);
   }
+  ctx.restore();
 }
 
 /** an iron thorn strand: a twisted wire with steel barbs, painted knots of thorns along it */
@@ -802,10 +790,13 @@ function drawFlower(ctx: CanvasRenderingContext2D, f: Nectar, fl: DotFlight, t: 
   }
   // a drop of nectar now and then
   if (left > 0.3 && Math.sin(t * 1.7 + f.id * 2.1) > 0.97) {
-    ctx.fillStyle = 'rgba(255, 200, 80, 0.9)';
-    ctx.beginPath();
-    ctx.arc(f.x, f.y + 14 + ((t * 40) % 20), 3, 0, Math.PI * 2);
-    ctx.fill();
+    // (the painted dew drop, warmed to nectar gold with a soft glow: no flat dot)
+    const dy = f.y + 14 + ((t * 40) % 20);
+    ctx.save();
+    ctx.globalAlpha = 0.6;
+    ctx.drawImage(glowPic('#ffc850', 'fly'), f.x - 8, dy - 8, 16, 16);
+    ctx.restore();
+    drawPiece(ctx, 'dew', f.x, dy, 9, { ay: 0.5 });
   }
 }
 
@@ -907,32 +898,28 @@ export function drawDotWorld(ctx: CanvasRenderingContext2D, fl: DotFlight, view:
     const sway = Math.sin(t * 1.6 + p.id) * 0.12;
     drawPiece(ctx, p.id % 2 ? 'puff' : 'puff2', p.x, p.y, 52 * p.s, { rot: sway, ay: 0.4 });
   }
-  // the gusts while they blow: streaks of wind
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
-  ctx.lineWidth = 2;
-  ctx.lineCap = 'round';
+  // the gusts while they blow: the painted wind (bossFx.ts gust strip) racing along them, turned for a gust that blows up or down
   for (const g of st.gusts) {
     if (!on(g.x0, g.x1)) continue;
     const s = gustState(g, fl.t);
     if (!s.blowing) continue;
-    ctx.beginPath();
     for (let k = 0; k < 7; k++) {
       if (g.wx !== 0) {
         const y = g.y0 + ((k + 0.5) / 7) * (g.y1 - g.y0);
         const span = g.x1 - g.x0;
         const p = (((fl.t * Math.abs(g.wx) * 1.4 + k * 97) % span) + span) % span;
         const x = g.wx < 0 ? g.x1 - p : g.x0 + p;
-        ctx.moveTo(x, y);
-        ctx.quadraticCurveTo(x - Math.sign(g.wx) * 30, y - 6, x - Math.sign(g.wx) * 64, y);
+        const a = Math.min(1, p / 60, (span - p) / 60) * 0.8;
+        drawFx(ctx, 'gust', x - Math.sign(g.wx) * 40, y, 90, { h: 16, alpha: a, flipX: g.wx < 0 });
       } else {
         const x = g.x0 + ((k + 0.5) / 7) * (g.x1 - g.x0);
         const span = g.y1 - g.y0;
-        const y = g.y0 + ((fl.t * g.wy * 1.6 + k * 131) % span);
-        ctx.moveTo(x, y);
-        ctx.quadraticCurveTo(x + 5, y - 30, x, y - 64);
+        const p = (fl.t * g.wy * 1.6 + k * 131) % span;
+        const y = g.y0 + p;
+        const a = Math.min(1, Math.abs(p) / 60, (span - Math.abs(p)) / 60) * 0.8;
+        drawFx(ctx, 'gust', x, y - 40, 90, { h: 16, rot: g.wy < 0 ? -Math.PI / 2 : Math.PI / 2, alpha: a });
       }
     }
-    ctx.stroke();
   }
   drawMist(ctx, Math.max(0, view.x0 - 60), view.x1 + 60, t, view.y1 + 20);
 }
@@ -989,11 +976,12 @@ export function drawDotPlayer(ctx: CanvasRenderingContext2D, fl: DotFlight, t: n
   }
   // a hover buzz: a faint blur ring at the wings
   if (fl.hovering && !fl.waiting && fl.sipping < 0) {
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.ellipse(x + face * 6, y - 20, 26 + Math.sin(t * 40) * 3, 9, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    // (a soft blur, the pre-rendered glow stretched across her wings: no stroked ring)
+    const rw = 30 + Math.sin(t * 40) * 3;
+    ctx.save();
+    ctx.globalAlpha *= 0.35;
+    ctx.drawImage(glowPic('#ffffff'), x + face * 6 - rw, y - 20 - 11, rw * 2, 22);
+    ctx.restore();
   }
   ctx.restore();
 }
@@ -1047,7 +1035,7 @@ function drawSlimHud(ctx: CanvasRenderingContext2D, fl: DotFlight, t: number, at
   ctx.moveTo(sx + 5, y + 16);
   ctx.lineTo(sx + 9, y + 6);
   ctx.stroke();
-  ctx.font = '700 12px Fredoka, sans-serif';
+  ctx.font = `700 12px ${FONT_UI}`;
   ctx.textBaseline = 'middle';
   woodText(ctx, String(fl.scratches), sx + 13, y + h / 2 + 1);
   ctx.restore();
@@ -1083,7 +1071,7 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
   ctx.roundRect(x + 26, y + 10, Math.max(4, (w - 36) * u), 10, 5);
   ctx.fill();
   // scratches: nine little marks
-  ctx.font = '700 11px Fredoka, sans-serif';
+  ctx.font = `700 11px ${FONT_UI}`;
   ctx.textBaseline = 'middle';
   woodText(ctx, 'Scratches', x + 9, y + 36);
   const tx = x + 66;
@@ -1104,7 +1092,7 @@ export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: n
   if (fl.silkGot.size > 0) {
     woodPanel(ctx, x + w + 14, y, 62, h);
     drawPiece(ctx, 'silkWide', x + w + 32, y + 25, 28);
-    ctx.font = '700 14px Fredoka, sans-serif';
+    ctx.font = `700 14px ${FONT_UI}`;
     woodText(ctx, `${fl.silkGot.size}/${fl.stage.silk.length}`, x + w + 48, y + 26);
   }
   ctx.restore();

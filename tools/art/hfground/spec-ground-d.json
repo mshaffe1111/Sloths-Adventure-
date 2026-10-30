@@ -1,0 +1,50 @@
+{
+ "note": "hf-art-ground: World 10 soil redo from the new start (starts3.py), 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ad3fc598f7d715ee77d94bea93d3efe200c262e7/tools/art/hfground/starts/",
+ "items": [
+  {
+   "kind": "tile",
+   "name": "fill-w10-c",
+   "start": "fill-w10c.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: broken dark grey-brown volcanic rock, irregular angular chunks wider than tall, packed together with deep dark jagged cracks between them, rough pitted surfaces, a few dull rusty patches. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, scales, reptile skin, fish scales, feathers, leaves, pointed shapes, cobblestone path, paving, tiles, brick wall, mortar grid",
+   "s1": 0.62,
+   "seed": 11,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  },
+  {
+   "kind": "tile",
+   "name": "fill-w10-d",
+   "start": "fill-w10c.webp",
+   "prompt": "slothadv style, painted storybook illustration, a seamless tileable square texture for a side-scrolling platform game, a cross-section of the ground deep under the surface: broken dark grey-brown volcanic rock, irregular angular chunks wider than tall, packed together with deep dark jagged cracks between them, rough pitted surfaces, a few dull rusty patches. The same density all over, no top, no bottom, no border, no horizon, no grass on top, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, must tile seamlessly in all four directions",
+   "neg": "border, frame, edge, horizon, sky, grass, plants on top, highlight band, horizontal stripe, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, scales, reptile skin, fish scales, feathers, leaves, pointed shapes, cobblestone path, paving, tiles, brick wall, mortar grid",
+   "s1": 0.7,
+   "seed": 23,
+   "s2": 0.45,
+   "seeds2": [
+    3,
+    5,
+    7
+   ],
+   "w": 1024,
+   "h": 1024,
+   "band": 80
+  }
+ ]
+}

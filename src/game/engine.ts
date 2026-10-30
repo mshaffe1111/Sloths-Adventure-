@@ -1,9 +1,12 @@
 import { buzz } from './haptics.ts';
 import { SlowWatch } from './slowTip.ts';
+import { drawW7Chairs } from './w7ChairsArt.ts';
+import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
-import { markTipHeard, tipHeard } from './tipMemory.ts';
+import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
+import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
@@ -50,7 +53,7 @@ import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
-import { drawGlideSprite } from './leafSprites.ts';
+import { drawGlideSprite, drawLeafBit } from './leafSprites.ts';
 import { renderScenery, renderOverlay, setCanopy, setReveal, setWeatherAvoid, lookFor } from './scenery.ts';
 import { revealSet, setBackdropStage } from './paintedBackdrops.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
@@ -69,11 +72,11 @@ import { drawSpiderSprite } from './spiderSprite.ts';
 import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
-import { renderWorldObjects, drawWater } from './terrain.ts';
+import { renderWorldObjects, drawWater, drawBounceCaps } from './terrain.ts';
 import { deepEnough, kitPools, poolAt, startsSwim, SWIM, SWIM_CAM, SWIM_FIRST_LINE, SWIM_LINES, swimStep, underOf, type CalmPool, type SwimState } from './swim.ts';
 import { drawCalmWaterBack, drawCalmWaterFront, drawCalmWaterPlain } from './calmWaterArt.ts';
 import { swimHeadY } from './heroSwim.ts';
-import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
@@ -84,7 +87,8 @@ import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
 import { drawKitDecor } from './puzzleArt.ts';
-import { drawWaterSign } from './waterSign.ts';
+import { drawDress } from './dressArt.ts';
+import { drawWaterSign, signRattle } from './waterSign.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
@@ -111,7 +115,6 @@ import {
   drawHazardEntity,
   drawGirlfriendDaisy,
   drawCollectible,
-  pickupName,
 } from './vectorArt.ts';
 import {
   checkAABBCollision,
@@ -153,19 +156,27 @@ import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, se
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
+import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
-import { dotHelp } from './dotGuideHelp.ts';
+import { dotHelp, seenSkills } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
+import { FONT_UI } from './fonts.ts';
+import { withHurtFlash } from './hurtFlash.ts';
+import { shakeOffset } from './screenShake.ts';
+import { POWER_UP_SECS } from './powerUps.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
 /** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
 const HARD_LAND_VY = 560;
+/** the life-lost beat (AN-1): how long the world holds while he goes down and the dark closes in (s), and how long it takes to open at the flag */
+const DOWN_SECS = 0.75;
+const IRIS_OPEN_SECS = 0.45;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -248,6 +259,21 @@ export const STEP_UP = { min: 20, max: 96, near: 14 } as const;
 export const LIP_IN = 13;
 const STUCK_HOLD = 7;
 
+/** what the shrine says when Pokey steps into it, one line per world in its own voice (polish report ST-5: it said "SANCTUARY UNLOCKED!
+ * VICTORY!" on every stage of every world, and World 10's fortress is no sanctuary) */
+const SHRINE_LINE: Record<number, string> = {
+  1: 'The canopy lets you through.',
+  2: 'The village waves you on.',
+  3: 'The glowworms light the way out.',
+  4: 'Out of the mist, and on.',
+  5: 'Still standing. Good.',
+  6: 'Out of the black water.',
+  7: 'The old stones let you pass.',
+  8: 'One more branch behind you.',
+  9: 'Through the heat, and on.',
+  10: 'A few steps closer to her.',
+};
+
 /** the swing's sweet-spot glow on the vine (a soft warm disc), painted once */
 let sweetGlowCv: HTMLCanvasElement | null = null;
 function sweetGlowPic(): HTMLCanvasElement | null {
@@ -274,12 +300,39 @@ const DEBRIS_COLOR: Partial<Record<string, string>> = {
   tayra: '#5b3a24', frog: '#38bdf8', spider: '#6b4f3a', turtle: '#7c8a3a',
 };
 
-/** a painted puff or hit spark: the frame for how far through its life it is, fading at the end; the spark with a brief warm glow */
+/**
+ * A painted particle, by its type (types.ts Particle): the dust puff and the hit spark (a frame for how far through its life it is, fading
+ * at the end; the spark with a brief warm glow), a leaf tumbling, a chip of grit spinning, a puff of spray, the splash crown, a feather
+ * see-sawing down. Nothing is drawn while the sheets load (stagePreload has them ready before a stage starts).
+ */
 function drawFxParticle(ctx: CanvasRenderingContext2D, pt: Particle) {
   const u = 1 - pt.life / pt.maxLife;
-  if (pt.type === 'puff') {
-    drawFx(ctx, fxFrame('dust', u), pt.x, pt.y, pt.size, { ay: 0.9, alpha: Math.min(1, (1 - u) * 3) * 0.92 });
-    return;
+  const seed = pt.seed ?? 0.5;
+  const fade = Math.min(1, (1 - u) * 3);
+  const spin = (seed - 0.5) * 18;
+  switch (pt.type) {
+    case 'puff':
+      drawFx(ctx, fxFrame('dust', u), pt.x, pt.y, pt.size, { ay: 0.9, alpha: fade * 0.92 });
+      return;
+    case 'leaf':
+      drawLeafBit(ctx, pt.color === 'warm' ? 'warm' : 'green', seed, pt.x, pt.y, pt.size * 4.2, seed * 6 + spin * 0.4 * u, Math.cos(u * 9 + seed * 6), fade);
+      return;
+    case 'grit':
+      drawGritBit(ctx, seed, pt.x, pt.y, pt.size * 2.6, seed * 6 + spin * u, fade, pt.color || undefined);
+      return;
+    case 'water':
+      drawFx(ctx, fxFrame('dust', Math.min(0.99, 0.2 + u * 0.8)), pt.x, pt.y, pt.size * 5, { ay: 0.5, alpha: fade * 0.75, recolor: '#e0f2fe', flipX: seed > 0.5 });
+      return;
+    case 'splash':
+      drawFx(ctx, 'splash', pt.x, pt.y, pt.size * (0.7 + 0.45 * u), { ay: 1, h: pt.size * (0.75 + 0.35 * Math.sin(Math.PI * Math.min(1, u * 1.3))) * 0.75, alpha: Math.min(1, (1 - u) * 2.2) });
+      return;
+    case 'feather':
+      drawFx(ctx, 'feather', pt.x, pt.y, pt.size * 4.5, { rot: seed * 6 + Math.sin(u * 8 + seed * 5) * 0.8, alpha: fade, flipX: seed > 0.5 });
+      return;
+    case 'flash':
+      break;
+    default:
+      return;
   }
   if (u < 0.45) {
     ctx.save();
@@ -292,7 +345,22 @@ function drawFxParticle(ctx: CanvasRenderingContext2D, pt: Particle) {
     ctx.fillRect(pt.x - r, pt.y - r, r * 2, r * 2);
     ctx.restore();
   }
-  drawFx(ctx, fxFrame('spark', u), pt.x, pt.y, pt.size * (0.8 + 0.4 * u), { alpha: Math.min(1, (1 - u) * 3) });
+  drawFx(ctx, fxFrame('spark', u), pt.x, pt.y, pt.size * (0.8 + 0.4 * u), { alpha: fade });
+}
+
+/** what a burst of bits looks like for a colour: gold, yellow or bright red sparkles; green leaves; grey stone grit; anything else (wood,
+ *  earth, fur) brown-tinted grit under a dust puff */
+function debrisLook(color: string): 'star' | 'leaf' | 'grit' | 'earth' {
+  const m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(color);
+  if (!m) return 'grit';
+  const [r, g, b] = [m[1], m[2], m[3]].map((h) => parseInt(h, 16) / 255);
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+  const sat = mx === 0 ? 0 : (mx - mn) / mx;
+  if (sat < 0.25) return 'grit';
+  const hue = mx === r ? ((g - b) / (mx - mn) + 6) % 6 * 60 : mx === g ? ((b - r) / (mx - mn) + 2) * 60 : ((r - g) / (mx - mn) + 4) * 60;
+  if (hue >= 70 && hue <= 170) return 'leaf';
+  if (mx > 0.85 && ((hue >= 40 && hue < 70) || hue < 12 || hue > 340)) return 'star';
+  return 'earth';
 }
 
 export class GameEngine {
@@ -343,6 +411,8 @@ export class GameEngine {
   private kitSteer = 0;
   private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
+  /** when he came within reach of each water sign (its index), so it rattles for a moment (waterSign.ts signRattle) */
+  private signNear = new Map<number, number>();
   private pushSoundT = 0;
   /** a hint that rides above Pokey for a few seconds */
   private stageHint: { text: string; life: number } | null = null;
@@ -352,6 +422,8 @@ export class GameEngine {
   private bossDef: BossDef | null = null;
   private bossCtx: BossCtx | null = null;
   private bossIntro = false;
+  /** a stage's own reveal (a camera move to show something, 6-8's crown) runs until this game time: Dot's lines that can wait, wait */
+  public revealUntil = -1;
   /** a giant's entrance while it plays (the fight and the player wait) */
   /** `tea`: the Tarantula Queen's tea (bossDefs entrance.tea, the long version only): where the fight starts her, to walk back to */
   private entrance: { t: number; total: number; roared: boolean; named: boolean; tea: { home: number } | null } | null = null;
@@ -608,7 +680,10 @@ export class GameEngine {
   private softOn = false;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
-  private respawnFlash = 0;
+  /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
+  private irisOpen = 0;
+  /** a life just lost: the world holds while he goes down and the dark closes in, then he comes back at the flag (AN-1; null otherwise) */
+  private down: { t: number; reason: 'water' | 'pit' | 'hurt'; last: boolean } | null = null;
   /** where he stood when the exit cheer began (heroClips.ts) */
   private cheerX = 0;
   /** Seconds at the start of a stage / after a respawn where run input is ignored, so Pokey is dropped in standing still. */
@@ -701,6 +776,8 @@ export class GameEngine {
     // every stage load rolls a fresh look for the backdrop and ground (the layout itself does not change)
     setSceneSeed(rollSceneSeed());
 
+    // (a new run of a stage: tips sent but never shown in an earlier run may be said again, tipMemory.ts)
+    forgetSent();
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
@@ -788,6 +865,7 @@ export class GameEngine {
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
     setLianaTops(!this.proto?.decor?.some((d) => d.n === 'canopy' || d.n === 'swingFrame'));
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
+    setGroundPaint(this.paintKit);
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
       this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown && !pl.art);
@@ -1244,7 +1322,13 @@ export class GameEngine {
    * Main Physics & Simulation Tick (30 FPS)
    */
   private update(dt: number) {
+    // a life lost: the world holds for the beat (AN-1; in update, so the bots that play the engine directly have it too)
+    if (this.down) {
+      this.stepDown(dt);
+      return;
+    }
     this.gameTime += dt;
+    this.irisOpen = Math.max(0, this.irisOpen - dt);
     this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now
     for (const v of this.vines) {
@@ -1395,8 +1479,8 @@ export class GameEngine {
     if (!this.riverHinted && this.currentStage.rivers?.length) {
       const r0 = this.currentStage.rivers[0];
       if (p.x > r0.x0 - 380 && p.x < r0.x1) {
+        // (no words floating in the world: the water's lesson says it in Dot's bubble, the Dot rework 2026-10-29)
         this.riverHinted = true;
-        this.addFloatingText('LOGS DRIFT! HOP ON AND RIDE', p.x, p.y - 90, '#7dd3fc');
       }
     }
 
@@ -1406,7 +1490,6 @@ export class GameEngine {
       const bodyY = p.y - 30;
       const level = drowsyLevel(zoneEffect(zones, 'spore', p.x, bodyY, this.gameTime).strength);
       if (level > 0 && this.drowsy <= 0) {
-        if (!this.zoneHinted.sleepy) this.addFloatingText('SLEEPY SPORES...', p.x, p.y - 80, '#c4b5fd');
         this.zoneHinted.sleepy = true;
         this.zzzTimer = 0.3;
       }
@@ -1417,7 +1500,6 @@ export class GameEngine {
       this.dragJump = drag.jump;
       if (drag.speed < 0.5 && !this.zoneHinted.stuck && zones.some((z) => z.kind === 'web' && inZone(z, p.x, bodyY))) {
         this.zoneHinted.stuck = true;
-        this.addFloatingText('STUCK IN THE WEB!', p.x, p.y - 80, '#e2e8f0');
       }
       // lava geysers and lightning (Worlds 9 and 10): a firing column burns whoever stands in it
       const hot = columnHit(zones, p.x - 14, p.y - 64, 28, 64, this.gameTime);
@@ -1429,21 +1511,14 @@ export class GameEngine {
       for (const z of zones) {
         if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
         this.zoneHinted[z.kind] = true;
-        const hint: Record<string, [string, string]> = {
-          web: ['STICKY WEBS SLOW YOU. GO ABOVE THEM OR PUSH THROUGH', '#e2e8f0'],
-          tide: ['THE TIDE RISES ON A BEAT. CROSS WHILE IT IS LOW', '#7dd3fc'],
-          dark: ['IT IS DARK. FOLLOW THE FIREFLIES', '#fde68a'],
-          crumble: ['THESE TILES CRUMBLE. KEEP MOVING', '#fdba74'],
-          spore: ['SPORES PUFF ON A BEAT. WAIT FOR THEM TO CLEAR', '#c4b5fd'],
-          wind: ['GUSTS BLOW ON A BEAT. WATCH THE LEAVES', '#99f6e4'],
-          geyser: ['VENTS ERUPT ON A BEAT. STAND BETWEEN THEM', '#fdba74'],
-          bolt: ['LIGHTNING STRIKES WHERE THE RODS CHARGE', '#bae6fd'],
-        };
-        if (z.kind === 'dark' && z.lights?.some((l) => l.sleep)) {
-          this.addFloatingText('TOO DARK. STAND STILL AND LISTEN', p.x, p.y - 100, '#99f6e4');
-          continue;
+        // (said in Dot's bubble, or Pokey's thought when she is away, once a stage: no words floating in the world, the Dot rework
+        // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
+        const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;
+        const zid = this.currentStage.config.id;
+        if (ZONE_LINE[kind] && !tipHeard(zid, `zone:${kind}`)) {
+          markTipHeard(zid, `zone:${kind}`);
+          this.guide(ZONE_LINE[kind], 3.6);
         }
-        this.addFloatingText(hint[z.kind][0], p.x, p.y - 100, hint[z.kind][1]);
       }
     } else {
       this.windV = 0;
@@ -1489,7 +1564,6 @@ export class GameEngine {
       if (p.powerUpTimer <= 0) {
         p.activePowerUp = null;
         p.powerUpTimer = 0;
-        this.addFloatingText('POWER-UP EXPIRED', p.x, p.y - 45, '#94a3b8');
       }
     }
 
@@ -1556,7 +1630,6 @@ export class GameEngine {
       this.treeClimbAudioTimer -= dt;
     }
 
-    this.respawnFlash = Math.max(0, this.respawnFlash - dt);
     this.inputGrace = Math.max(0, this.inputGrace - dt);
     // the pause on steering after a respawn is for a thumb still held from before the fall: a fresh touch or key counts at once
     if (this.inputGrace > 0 && this.graceMoves >= 0 && this.input.moves !== this.graceMoves) this.inputGrace = 0;
@@ -1942,7 +2015,8 @@ export class GameEngine {
           // touch jump help: a second jump taken with nothing steering pushes him forward until he lands or the thumb takes over
           let dir: -1 | 0 | 1 = steer;
           let leaning = false;
-          if (this.touchHelp() === 'off' || p.grounded) {
+          // (with Jump help off only a slanted standing flick's carry runs: CT-27)
+          if ((this.touchHelp() === 'off' && this.airDrive.drive === 0) || p.grounded) {
             if (p.grounded) this.airDrive = newAirDrive();
           } else if (this.inputGrace <= 0) {
             dir = airCarry(this.airDrive, steer, this.input.state.down);
@@ -2053,7 +2127,7 @@ export class GameEngine {
           p.vy = glideLift(p.vy, dt);
           if (!this.zoneHinted.lift) {
             this.zoneHinted.lift = true;
-            this.addFloatingText('WARM AIR! HOLD THE LEAF OPEN TO RISE', p.x, p.y - 80, '#fdba74');
+            // (warm air is taught in Dot's bubble by 4-7's own line)
           }
         }
         this.glideOpen += ((this.glide.on ? 1 : 0) - this.glideOpen) * Math.min(1, dt * 16);
@@ -2239,7 +2313,7 @@ export class GameEngine {
               if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
               if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
                 this.zoneHinted.crumble = true;
-                this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
+                // (the crumble is taught by its lesson, in Dot's bubble)
               }
             }
           }
@@ -2261,7 +2335,7 @@ export class GameEngine {
       const pool = waterY !== undefined && !river ? this.currentStage.safeWater?.find((s) => p.x > s.x0 && p.x < s.x1) : undefined;
       if (pool && p.y > waterY! + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY!);
-        sound.playWhoosh();
+        sound.playSplash(1);
         this.addFloatingText('SPLASH!', p.x, waterY! - 40, '#7dd3fc');
         p.x = pool.backX;
         p.y = pool.backY;
@@ -2272,8 +2346,8 @@ export class GameEngine {
       } else if (river?.safe && p.y > river.surfaceY + 8 && !this.isGameOver) {
         // a teaching river (2-1): a splash and back to the bank to try again, no life lost
         this.spawnWaterSplash(p.x, river.surfaceY);
-        sound.playWhoosh();
-        this.addFloatingText('SPLASH! TRY AGAIN', p.x, river.surfaceY - 40, '#7dd3fc');
+        sound.playSplash(1);
+        this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         p.x = river.safe.backX;
         p.y = river.safe.backY;
         p.vx = 0;
@@ -2284,14 +2358,12 @@ export class GameEngine {
         if (river.flood) this.floodAt.delete(river);
       } else if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, river.surfaceY);
-        sound.playWhoosh();
-        sound.playHitImpact(true);
+        sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY);
-        sound.playWhoosh();
-        sound.playHitImpact(true);
+        sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
@@ -2324,7 +2396,7 @@ export class GameEngine {
           plat.broken = true;
           plat.regrowAt = this.gameTime + regrowDelay(plat.id);
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
-          sound.playHitImpact(true);
+          sound.playCrumble();
         }
       }
       // a crumbled platform is a penalty (regrow.ts): it comes back only after half a minute or so, and only off screen, so it never
@@ -2584,7 +2656,10 @@ export class GameEngine {
         // said once per stage on this device: not again on a replay or a retry (tipMemory.ts)
         const id = `tip:${h.text}`;
         if (tipHeard(this.currentStage.config.id, id)) continue;
+        // (a lesson line, once on this device whichever stage reaches it first: StageHint.firstOf)
+        if (h.firstOf && tipHeard(FIRST_OF_STAGE, h.firstOf)) continue;
         markTipHeard(this.currentStage.config.id, id);
+        if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
         this.guide(said, 3.6);
@@ -2631,7 +2706,7 @@ export class GameEngine {
           this.isGameOver = true;
           this.camera.trauma = 0.7;
           this.spawnSparkBurst(c.x, c.y, '#a78bfa');
-          this.addFloatingText('THE THORN GATE OPENS...', c.x, c.y - 30, '#c4b5fd');
+          this.addFloatingText('The thorn gate opens.', c.x, c.y - 30, '#c4b5fd');
           sound.playBossRoar(this.currentStage.config.worldIndex);
           this.callbacks.onSecret?.();
         }
@@ -2648,12 +2723,20 @@ export class GameEngine {
         const close = Math.abs(p.x - c.x) < 54 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
         c.near = close && !p.ducking;
         // the stage's opening line says one plant here looks different; beside it, the first time, Dot says what to do with it
-        if (!close && !p.ducking && p.grounded && Math.abs(p.x - c.x) < 150 && Math.abs(p.y - (c.y + 26)) < 26) {
+        // (once the search has been taught on this save, only a "Hmm, that fern..." after he has walked past it twice: DOT-14)
+        const by = !close && !p.ducking && p.grounded && Math.abs(p.x - c.x) < 150 && Math.abs(p.y - (c.y + 26)) < 26;
+        if (!by && c.fernBy) c.fernPasses = (c.fernPasses ?? 0) + 1;
+        c.fernBy = by;
+        if (by) {
           const stageId = this.currentStage.config.id;
-          if (!tipHeard(stageId, 'fern:near')) {
+          const taught = seenSkills().has('mech:hushFern');
+          if (!taught && !tipHeard(stageId, 'fern:near')) {
             markTipHeard(stageId, 'fern:near');
             const mode = lessonInputMode();
             this.guide(mode === 'screen' ? 'That fern looks different! Stand beside it and slide your thumb down to crouch and search it' : 'That fern looks different! Stand beside it and hold down to crouch and search it', 4.2);
+          } else if (taught && (c.fernPasses ?? 0) >= 2 && !tipHeard(stageId, 'fern:hmm')) {
+            markTipHeard(stageId, 'fern:hmm');
+            this.guide(FERN_HMM, 3);
           }
         }
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
@@ -2708,7 +2791,7 @@ export class GameEngine {
         if (c.type === 'heart' && p.hp >= p.maxHp) {
           if (!this.zoneHinted.fullHeart) {
             this.zoneHinted.fullHeart = true;
-            this.addFloatingText('FULL HEALTH! SAVE IT FOR LATER', c.x, c.y - 30, '#fda4af', 1.6);
+            // (the heart's lesson says when a heart can be taken)
           }
           continue;
         }
@@ -2728,54 +2811,43 @@ export class GameEngine {
 
           const pColor = c.type === 'flower' ? '#f43f5e' : '#4ade80';
           this.spawnSparkBurst(c.x, c.y, pColor);
-          // named for what is drawn (vectorArt.ts pickupName), not the variant the drawing never used
-          const cfg = this.currentStage.config;
-          const txt = `+100 ${pickupName(c, cfg.worldIndex, cfg.miniIndex)}!`;
-          this.addFloatingText(txt, c.x, c.y - 20, pColor);
-
-          if (this.comboCount > 1) {
-            const comboBonus = this.comboCount * 50;
-            this.runScore += comboBonus;
-            this.addFloatingText(`${this.comboCount}x COMBO! +${comboBonus}`, c.x, c.y - 42, '#facc15');
-          }
+          // one small number per pickup, the combo's bonus inside it (AN-3: no names or words over every flower)
+          const comboBonus = this.comboCount > 1 ? this.comboCount * 50 : 0;
+          this.runScore += comboBonus;
+          this.addFloatingText(`+${100 + comboBonus}`, c.x, c.y - 20, comboBonus ? '#facc15' : pColor);
         } else if (c.type === 'relic') {
           p.relicsFound++;
           this.runScore += 500;
           sound.playRelicFound();
           this.spawnSparkBurst(c.x, c.y, '#38bdf8');
-          this.addFloatingText('JUNGLE IDOL! +500', c.x, c.y - 30, '#38bdf8');
+          this.addFloatingText('+500', c.x, c.y - 30, '#38bdf8');
         } else if (c.type === 'heart') {
           p.hp = Math.min(p.maxHp, p.hp + 1);
           sound.playHeartPickup();
           this.spawnSparkBurst(c.x, c.y, '#f43f5e');
-          this.addFloatingText('+1 HP RESTORED', c.x, c.y - 20, '#f43f5e');
         } else if (c.type === 'super_heart') {
           p.hp = p.maxHp;
           p.invincibleTimer = 3.5;
           sound.playSuperHeart();
           this.spawnSparkBurst(c.x, c.y, '#facc15');
-          this.addFloatingText('MAX HP RESTORED + SHIELD!', c.x, c.y - 30, '#facc15');
         } else if (c.type === 'powerup_speed') {
           p.activePowerUp = 'speed';
-          p.powerUpTimer = 10.0;
-          p.maxPowerUpTimer = 10.0;
+          p.powerUpTimer = POWER_UP_SECS.speed;
+          p.maxPowerUpTimer = POWER_UP_SECS.speed;
           sound.playPowerUp('speed');
           this.spawnSparkBurst(c.x, c.y, '#34d399');
-          this.addFloatingText('⚡ CHEETAH SPEED (10s)!', c.x, c.y - 35, '#34d399');
         } else if (c.type === 'powerup_invincible') {
           p.activePowerUp = 'invincible';
-          p.powerUpTimer = 8.0;
-          p.maxPowerUpTimer = 8.0;
+          p.powerUpTimer = POWER_UP_SECS.invincible;
+          p.maxPowerUpTimer = POWER_UP_SECS.invincible;
           sound.playPowerUp('invincible');
           this.spawnSparkBurst(c.x, c.y, '#facc15');
-          this.addFloatingText('⭐ SOLAR INVINCIBLE (8s)!', c.x, c.y - 35, '#facc15');
         } else if (c.type === 'powerup_magnet') {
           p.activePowerUp = 'magnet';
-          p.powerUpTimer = 12.0;
-          p.maxPowerUpTimer = 12.0;
+          p.powerUpTimer = POWER_UP_SECS.magnet;
+          p.maxPowerUpTimer = POWER_UP_SECS.magnet;
           sound.playPowerUp('magnet');
           this.spawnSparkBurst(c.x, c.y, '#38bdf8');
-          this.addFloatingText('🧲 NECTAR MAGNET (12s)!', c.x, c.y - 35, '#38bdf8');
         }
       }
     }
@@ -2831,7 +2903,7 @@ export class GameEngine {
       this.wasQuotaMet = true;
       sound.playShrineUnlocked();
       this.spawnSparkBurst(p.x, p.y - 40, '#facc15');
-      this.addFloatingText('✨ SHRINE UNSEALED! ENTER TO CLEAR! ✨', p.x, p.y - 65, '#facc15');
+      // (Dot says it in her bubble: goal.done)
       this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
     }
 
@@ -2877,7 +2949,7 @@ export class GameEngine {
           sound.playExitChime();
           buzz('clear');
           this.spawnSparkBurst(this.currentStage.exitTotemX, p.y - 30, '#34d399');
-          this.addFloatingText('SANCTUARY UNLOCKED! VICTORY!', p.x, p.y - 60, '#34d399');
+          this.addFloatingText(SHRINE_LINE[this.currentStage.config.worldIndex] ?? 'Onward.', p.x, p.y - 60, '#34d399');
         } else {
           // Push player back gently from sealed barrier and show clear reminder
           p.x = this.currentStage.exitTotemX - 35;
@@ -2946,10 +3018,14 @@ export class GameEngine {
       }
       pt.x += pt.vx * dt;
       pt.y += pt.vy * dt;
-      if (pt.type === 'puff' || pt.type === 'flash') {
+      if (pt.type === 'puff' || pt.type === 'flash' || pt.type === 'splash') {
         // the painted puffs drift out and slow; they do not fall
         pt.vx *= Math.max(0, 1 - dt * 5);
         pt.vy *= Math.max(0, 1 - dt * 5);
+      } else if (pt.type === 'leaf' || pt.type === 'feather') {
+        // (leaves and feathers catch the air: they slow, and drift down gently)
+        pt.vx *= Math.max(0, 1 - dt * 2.2);
+        pt.vy = Math.min(pt.vy + 300 * dt, 70);
       } else pt.vy += 300 * dt; // gravity
     }
 
@@ -3120,6 +3196,30 @@ export class GameEngine {
     if (p.activePowerUp === 'invincible' || p.activePowerUp === 'speed') v = Math.max(v, 0.95);
     sound.setIntensity(Math.min(1, v));
     sound.setLowHealth(this.lives <= 1 && p.hp <= 1);
+    sound.setMusicState(this.musicState(near));
+  }
+
+  /**
+   * What is happening, for the music to follow (audio/adaptive.ts; Matt approved the music, 2026-10-29): it answers each change on its next
+   * bar line, so this only has to say what is true now.
+   *   danger  an animal within reach, 1-8's collapsing branch on the move, 6-8's tide close under him
+   *   dark    World 3's and World 8's dark stretches (the same fade the screen uses)
+   *   exit    the open exit totem coming into reach
+   *   puzzle  inside a puzzle room that is not solved yet (a quiet bed to think over)
+   *   boss    the fight's phase, 1 to 3 (0 when there is none, or it has fallen)
+   */
+  private musicState(near: number) {
+    const p = this.player;
+    const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
+    let danger = clamp01((300 - near) / 120);
+    if (this.chase?.active) danger = 1;
+    if (this.tide?.on && this.tide.y - p.y < 260) danger = 1;
+    const boss = this.boss && !this.boss.defeated ? Math.max(1, Math.min(3, this.boss.phase)) : 0;
+    const exitItem = boss ? undefined : this.collectibles.find((c) => c.type === 'exit_totem' && !c.isLocked);
+    const exit = exitItem ? clamp01((900 - Math.abs(exitItem.x - p.x)) / 500) : 0;
+    const room = this.kit?.inRoom ?? -1;
+    const puzzle = room >= 0 && !this.kit!.solved(room) ? 1 : 0;
+    return { danger: boss ? 0 : danger, dark: this.darkShow, exit, puzzle, boss };
   }
 
   // ===========================================================================================
@@ -3243,7 +3343,7 @@ export class GameEngine {
           this.bossShove = v;
           this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, 0.35));
           this.addFloatingText(p.ducking && p.grounded ? 'HOLD ON!' : 'BLOWN BACK!', p.x, p.y - 80, '#bae6fd');
-        } else if (free) this.addFloatingText('SAFE BEHIND THE ROCK!', p.x, p.y - 80, '#bbf7d0');
+        }
       } else if (h.look === 'gust' && free) {
         gust = gustPush({ ps, srcX: src, dir, phase: b.phase, px: p.x, bodyTop, floor, grounded: p.grounded, gliding: this.glide.on });
       }
@@ -3426,14 +3526,14 @@ export class GameEngine {
         }
         sound.setTempo(b.phase === 3 ? 1.08 : 1.04);
       } else if (b.phase === 3) {
+        // (a new phase is heard, in the music's tempo, and seen on the bar's gold notch: no words over the boss, AN-3)
         sound.setTempo(1.08);
-        this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - b.height, '#ef4444');
       } else {
         sound.setTempo(1.04);
-        this.addFloatingText('PHASE 2: SPEED UP!', b.x, b.y - b.height, '#f97316');
       }
     }
-    if (br.state === 'tell' && prevState !== 'tell') sound.playPredator(def.tellCall ?? 'jaguar', 0);
+    // every guardian winds up with its own sound (SN-4: it was a jaguar's growl for all but Venom Fang; polish-sfx's recordings)
+    if (br.state === 'tell' && prevState !== 'tell') sound.playBossTell(this.currentStage.config.secret ? 11 : this.currentStage.config.worldIndex);
     if (br.state === 'act' && prevState !== 'act') {
       if (br.move === 'screech') sound.playEagleScreech();
       else sound.playWhoosh();
@@ -3528,7 +3628,9 @@ export class GameEngine {
       this.daisyRescued = true;
       sound.playBossVictory();
       this.camera.trauma = end ? 0.3 : 0.9;
-      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : end ? 'VICTORY!' : 'VICTORY! MEECA IS SAVED!', b.x, b.y - 70, '#ec4899');
+      // (it said "VICTORY! MEECA IS SAVED!" after every guardian, World 1 on: the story only frees her at the top of the mountain)
+      const won = this.currentStage.config.secret ? 'Thornbark is free.' : end ? 'Victory!' : this.currentStage.config.worldIndex === 10 ? 'The General is down.' : 'The way north is open.';
+      this.addFloatingText(won, b.x, b.y - 70, '#ec4899');
       if (!end) this.spawnDebrisBurst(b.x, b.y, '#dc2626');
       this.bossShove = 0;
       this.bossGust = 0;
@@ -3744,7 +3846,7 @@ export class GameEngine {
     this.player.crittersRescued++;
     this.runScore += 400;
     sound.playCritterRescued();
-    this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
+    this.addFloatingText('+400', c.x, c.y - 30, '#c084fc');
   }
 
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
@@ -3840,7 +3942,7 @@ export class GameEngine {
       a.hits.add(1_000_000 + c.id);
       // (a reed cage hung over the water, World 2: too tough to break, the pulley lifts it out: puzzlePlay.ts)
       if (this.kit?.holdsCage(c)) {
-        this.addFloatingText('LIFT IT OUT!', c.x, c.y - 40, '#fde68a');
+        // (the cage room's own lines say the basket lifts it)
         continue;
       }
       a.connected = true;
@@ -3894,11 +3996,11 @@ export class GameEngine {
           e.vx = 0;
           if (e.royal) {
             // the river king's guard blocks with his spear
-            if (!this.guardTold) this.addFloatingText('BLOCKED! GET BEHIND HIM, OR KICK HIM', e.x, e.y - 60, '#cbd5e1');
+            if (!this.guardTold) this.guide('Head-on he blocks. Flick sideways to kick!', 3);
             else this.addFloatingText('CLANK!', e.x, e.y - 50, '#cbd5e1');
             this.guardTold = true;
           } else {
-            if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
+            if (!this.turtleTold) this.guide('Head-on it hides. Flick sideways to kick!', 3);
             else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
             this.turtleTold = true;
           }
@@ -4063,7 +4165,7 @@ export class GameEngine {
     if (def?.openCue && wr) {
       // what came off the bar (half a hit, one, two), over the spot that was hit
       this.addFloatingText(hitLabel(leftBefore, hitsLeft(b.hp, b.maxHp, this.bossHits), crit, pts), wr.x + wr.w / 2, wr.y - 12, crit ? '#fb923c' : '#facc15');
-    } else this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
+    } else this.addFloatingText(`+${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
   }
 
@@ -4115,7 +4217,7 @@ export class GameEngine {
     this.runScore += pts;
     this.statStomps++;
     recorder.event('stomp', 'boss');
-    this.addFloatingText(`${leaf ? 'LEAF DIVE!' : 'ON HER BACK!'} +${pts}`, b.x, b.y - b.height * 0.7, leaf ? '#86efac' : '#facc15');
+    this.addFloatingText(`+${pts}`, b.x, b.y - b.height * 0.7, leaf ? '#86efac' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
     return true;
   }
@@ -4137,7 +4239,6 @@ export class GameEngine {
     this.hitstopTimer = Math.max(this.hitstopTimer, 0.3);
     if (this.bossDef?.lair) this.slowMoLeft = 1.2; // a giant's last hit plays in slow motion, the camera pushing in
     this.camera.trauma = 1;
-    this.addFloatingText('K.O.!', b.x, b.y - b.height, '#fde047');
     this.spawnDebrisBurst(b.x, b.y, '#fde047');
   }
 
@@ -4382,7 +4483,13 @@ export class GameEngine {
   }
 
   /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
-  private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, draw: () => void) {
+  private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, paint: (c: CanvasRenderingContext2D) => void) {
+    // a creature just hit flashes white (hurtFlash.ts, AN-6); the box it is drawn in is its body with room for legs, tails and wings
+    const draw = () => {
+      const b = bodyRect(e);
+      const pad = Math.max(b.w, b.h) * 0.9 + 60;
+      withHurtFlash(ctx, e.hitFlashTimer > 0, b.x - pad, b.y - pad, b.w + pad * 2, b.h + pad * 2, paint);
+    };
     const recoil = e.recoil ?? 0;
     if (!e.defeated && recoil < 0.02) {
       draw();
@@ -4592,8 +4699,7 @@ export class GameEngine {
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
     buzz('hurt');
-    // (the hit that costs a life says so at the respawn instead: two lots of words on one spot were unreadable)
-    if (p.hp > 0) this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
+    // (no "-1 HP": the heart that empties on the HUD, the flinch and the sound say it, AN-3)
 
     if (p.hp <= 0 && !this.isGameOver) {
       this.loseLife('hurt');
@@ -4611,28 +4717,74 @@ export class GameEngine {
     p.squashX = 0.78;
     p.squashY = 1.38;
     p.bounce = { kind: 'spring', t: 0 };
-    sound.playJump();
+    sound.playBounce();
     this.spawnSparkBurst(p.x, p.y, '#facc15');
   }
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
+    if (this.down) return;
     recorder.event('lostLife', reason);
     this.lostTo = reason;
     if (this.bossGuideUp) this.clearGuide();
     this.lives -= 1;
     this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
-    if (this.lives <= 0) {
+    // the beat (AN-1): the world holds, he goes down (knocked flat by a hit; a splash or a fall is already its own picture), the dark
+    // closes in on him, and only then the flag, or on the last life the Game Over card
+    const last = this.lives <= 0;
+    if (last) {
       this.isGameOver = true;
       this.outOfLives = true;
       sound.playDefeat();
+    }
+    this.player.downed = reason === 'hurt';
+    this.player.vx = 0;
+    this.camera.trauma = Math.max(this.camera.trauma, 0.25);
+    this.down = { t: 0, reason, last };
+  }
+
+  /** the life-lost beat, one frame: when it is over, the flag (or the Game Over card) */
+  private stepDown(dt: number) {
+    const d = this.down!;
+    d.t += dt;
+    this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+    if (d.t < DOWN_SECS) return;
+    this.down = null;
+    this.player.downed = false;
+    if (d.last) {
       this.callbacks.onStageStats?.(this.buildStats(false, 0));
       this.callbacks.onDefeat(this.runScore);
       return;
     }
-    this.respawnAtCheckpoint(reason);
+    this.respawnAtCheckpoint(d.reason);
     // Dot's flight: she says a life went (QA, 2026-10-25: losing one came with no line)
     this.dotRun?.lostLife(this.lives);
+  }
+
+  /**
+   * The dark circle of the beat (AN-1), over the world and under the HUD: closing on him while he is down, opening on him at the flag.
+   * Centred on him, kept inside the view (a fall takes him off its bottom edge).
+   */
+  private drawIris(ctx: CanvasRenderingContext2D) {
+    const vw = this.camera.viewportWidth;
+    const vh = this.camera.viewportHeight;
+    let k = 0;
+    if (this.down) k = Math.min(1, Math.max(0, (this.down.t - DOWN_SECS * 0.3) / (DOWN_SECS * 0.7)));
+    else if (this.irisOpen > 0) k = this.irisOpen / IRIS_OPEN_SECS;
+    if (k <= 0) return;
+    const e = k * k * (3 - 2 * k);
+    const p = this.player;
+    const cx = Math.max(40, Math.min(vw - 40, p.x - this.camera.x));
+    const cy = Math.max(40, Math.min(vh - 40, p.y - 40 - this.camera.y));
+    const full = Math.hypot(Math.max(cx, vw - cx), Math.max(cy, vh - cy)) + 20;
+    const r = Math.max(0, full * (1 - e));
+    ctx.save();
+    ctx.fillStyle = 'rgba(5, 12, 9, 0.97)';
+    ctx.beginPath();
+    ctx.rect(0, 0, vw, vh);
+    ctx.arc(cx, cy, r, 0, Math.PI * 2, true);
+    ctx.fill('evenodd');
+    ctx.restore();
   }
 
   /**
@@ -4668,7 +4820,7 @@ export class GameEngine {
     this.letGoOfRope(0.5);
     p.jumpsLeft = 2;
     p.invincibleTimer = Math.max(p.invincibleTimer, 1.2);
-    this.respawnFlash = 0.6;
+    this.irisOpen = IRIS_OPEN_SECS;
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
@@ -4678,7 +4830,6 @@ export class GameEngine {
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
-    this.addFloatingText('TRY AGAIN!', p.x, p.y - 112, '#fde68a', 1.2);
     return true;
   }
 
@@ -4724,7 +4875,7 @@ export class GameEngine {
     this.letGoOfRope(0.5);
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
-    this.respawnFlash = 0.6;
+    this.irisOpen = IRIS_OPEN_SECS;
     // what he was carrying goes back to its source
     this.kit?.onRespawn();
     this.inputGrace = 0.35;
@@ -4741,8 +4892,8 @@ export class GameEngine {
     // above his head, one line over the other with room between (at his head they sat on top of him and of each other), and up long
     // enough to read; any older words still rising there go first
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
-    this.addFloatingText(reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!', p.x, p.y - 112, '#fca5a5', 1.4);
-    if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 88, '#fde68a', 1.4);
+    // one small note in place of "TRY AGAIN!" / "OH NO!" and "N LIVES LEFT" (AN-1, AN-3; a Game Over pick-up has them all back)
+    this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
@@ -4770,21 +4921,15 @@ export class GameEngine {
       const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
         if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
-        // the current: pale streaks sliding along the surface the way the logs go (still water, a lily pond, has none)
-        if (r.speed > 0) {
-          ctx.strokeStyle = painted ? 'rgba(235,250,245,0.38)' : 'rgba(255,255,255,0.55)';
-          ctx.lineWidth = 2.4;
-          ctx.lineCap = 'round';
+        // the current: the river's own painted foam sliding along the surface the way the logs go (still water, a lily pond, has
+        // none; the old pale code streaks are gone, Matt 2026-10-29: repeating effects are painted)
+        if (r.speed > 0 && painted) {
           const span = 140;
           for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
-            for (let row = 0; row < 3; row++) {
-              const sx = (((k * span + row * 47 + (r.flowT ?? t) * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
+            for (let row = 0; row < 2; row++) {
+              const sx = (((k * span + row * 71 + (r.flowT ?? t) * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
               const x = r.x0 + sx - span * 0.5;
-              const y = wave(x) + 7 + row * 9;
-              ctx.beginPath();
-              ctx.moveTo(x, y);
-              ctx.lineTo(x + r.dir * 26, y);
-              ctx.stroke();
+              drawRiverFoam(ctx, k * 3 + row, x, wave(x) + 8 + row * 11, 62 - row * 14, 0.75 - row * 0.2, r.dir < 0);
             }
           }
         }
@@ -4801,15 +4946,8 @@ export class GameEngine {
         ctx.lineTo(b, bottom);
         ctx.closePath();
         ctx.fill();
-        // foam where the logs cut the surface
-        ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        for (let x = a; x <= b + 12; x += 12) {
-          if (x === a) ctx.moveTo(x, wave(x));
-          else ctx.lineTo(x, wave(x));
-        }
-        ctx.stroke();
+        // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line)
+        if (painted) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       }
       ctx.restore();
     }
@@ -4878,7 +5016,12 @@ export class GameEngine {
     // (and the sign at a hand-built stage's first water: waterTeach.ts, LV-8)
     [...(this.proto?.gen2?.waterWarnings ?? []), ...(this.currentStage.waterSigns ?? [])].forEach((w, i) => {
       if (w.x < x0 - 80 || w.x > x1 + 80) return;
-      if (drawWaterSign(ctx, this.currentStage.config.worldIndex, w.x, w.y + 3, i)) return;
+      // (it rattles for a moment as he comes up to it: once each time he comes within reach)
+      const near = Math.abs(this.player.x + this.player.width / 2 - w.x) < 150 && Math.abs(this.player.y + this.player.height - w.y) < 200;
+      if (near && !this.signNear.has(i)) this.signNear.set(i, this.gameTime);
+      else if (!near) this.signNear.delete(i);
+      const since = this.signNear.has(i) ? this.gameTime - this.signNear.get(i)! : undefined;
+      if (drawWaterSign(ctx, this.currentStage.config.worldIndex, w.x, w.y + 3, signRattle(since))) return;
       const cy = w.y - 50;
       ctx.save();
       ctx.fillStyle = '#7c5a32';
@@ -4898,14 +5041,15 @@ export class GameEngine {
     });
   }
 
+  /** a splash, painted: the splash crown where he went in, and puffs of spray thrown up out of it */
   private spawnWaterSplash(x: number, y: number) {
-    for (let i = 0; i < 26; i++) {
-      const a = -Math.PI / 2 + (Math.random() - 0.5) * 1.5;
-      const sp = 160 + Math.random() * 260;
+    this.emit({ x, y: y + 6, vx: 0, vy: 0, color: '', size: 96, life: 0.55, maxLife: 0.55, type: 'splash' });
+    for (let i = 0; i < 9; i++) {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * 1.4;
+      const sp = 150 + Math.random() * 220;
       this.emit({
         x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-        color: Math.random() < 0.5 ? '#bae6fd' : '#ffffff',
-        size: 3 + Math.random() * 4, life: 0.8, maxLife: 0.8, type: 'water',
+        color: '', size: 3 + Math.random() * 3, life: 0.7, maxLife: 0.7, type: 'water',
       });
     }
   }
@@ -5205,6 +5349,7 @@ export class GameEngine {
         ropes: this.skills.has('shimmy') ? this.ropes : [],
         hp: p.hp,
         maxHp: p.maxHp,
+        rooms: this.kit?.roomSpans,
       },
       seen,
     );
@@ -5223,8 +5368,8 @@ export class GameEngine {
       return;
     }
     this.lessonWaiting = null;
+    // (not again this run; it is kept on the phone once Dot has shown it, DotGuide.tsx: one her help setting drops is taught later)
     seen.add(id);
-    markLessonSeen(id);
     // no card and no pause: the lesson is one of Dot's lines, said in play (dotGuide.ts)
     this.lessonQuietUntil = this.gameTime + 6;
     this.lessonAt = this.gameTime;
@@ -5273,6 +5418,7 @@ export class GameEngine {
     out.kickNear = this.input.kickNear;
     out.boss = !!this.boss || !!this.currentStage.arena;
     out.chase = !!this.chase;
+    out.reveal = !!this.kit?.panning || !!this.entrance || this.gameTime < this.revealUntil;
     out.levelH = cfg.levelHeight;
     out.enemies = this.enemies;
     out.platforms = this.platforms;
@@ -5488,9 +5634,16 @@ export class GameEngine {
     // (a touch or Pad jump's minimum hold counts from now, in game time: CT-12)
     (this.input as { noteTakeOff?: () => void }).noteTakeOff?.();
     const help = this.touchHelp();
-    if (help === 'off') return;
     const inp = this.input.state;
     const steer = this.inputGrace > 0 ? 0 : inp.left ? -1 : inp.right ? 1 : 0;
+    // a standing flick that leaned 35 degrees or more carries him that way at LEAN_SPEED of a run, Jump help or not (Matt, 2026-10-29,
+    // polish report CT-27: it went straight up and down)
+    const slant = this.input.source === 'gesture' && !second && steer === 0 ? inp.jumpSlant ?? 0 : 0;
+    if (help === 'off') {
+      this.airDrive = slant ? { drive: slant, lean: true } : newAirDrive();
+      if (slant) this.player.facing = slant;
+      return;
+    }
     const kind = this.currentStage.config.objectiveType;
     airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
     // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
@@ -5508,6 +5661,10 @@ export class GameEngine {
         this.airDrive.lean = true;
         this.player.facing = dir;
       }
+    }
+    if (slant) {
+      this.airDrive = { drive: slant, lean: true };
+      this.player.facing = slant;
     }
   }
 
@@ -5560,10 +5717,9 @@ export class GameEngine {
       return;
     }
 
-    // Apply Screen Shake (Trauma squared for punchy feel)
-    const shakeMag = this.camera.trauma * this.camera.trauma * 16;
-    const shakeX = (Math.random() - 0.5) * shakeMag;
-    const shakeY = (Math.random() - 0.5) * shakeMag;
+    // the screen shake: a smooth wobble that dies away with the trauma, turned down or off in the settings (screenShake.ts, AN-10)
+    // (on the real clock: in a hit's freeze the game clock stops, and the shake must keep settling, not hang off to one side)
+    const { x: shakeX, y: shakeY } = shakeOffset(this.camera.trauma, performance.now() / 1000, 16);
 
     // 1. Render Multi-Layer Parallax Background
     // a boss with its own lair: either the backdrop is darkened and re-lit, or (lairOwnsScene) the lair paints all of it itself
@@ -5571,7 +5727,12 @@ export class GameEngine {
     const ownScene = !!lair && lairOwnsScene(lair);
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
     setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
-    if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    // (the backdrop shakes with the world, each layer by its own depth, so the layers never slide against each other)
+    // (upright, the painted strips are drawn at the size sideways uses for the same width of world, so they are as sharp and as close
+    // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
+    const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
+    const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
+    if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
     // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
     if (this.proto?.w4?.deepFall !== undefined) {
       const lipY = this.camLedge?.y ?? this.player.y;
@@ -5643,8 +5804,13 @@ export class GameEngine {
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
-    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
+    // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
+    const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
+    if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // the bounce plants' caps and their cue over the painted ground, so one at a bank's end is never hidden under its lip
+    if (!(ownScene && lair)) drawBounceCaps(ctx, world.id, this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats), this.camera, this.gameTime);
     // 6-8: its ledges in Matt's other World 6 pieces (over the roots that top out on them, as the kit's planks are)
     if (this.proto?.stiltLedges) drawStiltLedges(ctx, this.proto.stiltLedges, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 6-8's crown: a warm light behind him as the view pulls back, so he stands out against the ruins at dusk (the lead's review)
@@ -5674,6 +5840,8 @@ export class GameEngine {
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     // Matt's World 3 and 4 puzzle sheets set in as dressing (artDress.ts)
     if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x, false, (id) => this.kit?.roomDone(id) ?? {});
+    // Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets)
+    if (this.proto?.dress) drawDress(ctx, this.proto.dress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // World 3's sleeping thorn vines (thornVine.ts)
     for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
       const v = this.proto!.thorns![i];
@@ -5790,13 +5958,15 @@ export class GameEngine {
         drawAura(ctx, 'danger', world.id, enemy.width * 0.8, enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
         ctx.restore();
       }
-      const draw = () => {
+      const draw = (ctx: CanvasRenderingContext2D) => {
         if (enemy.type === 'snake') {
           if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
           if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
+          // (World 7's Stone Sentry: a prowler's body, the sentry's painted clips)
+          if (enemy.look === 'sentry' && drawSentrySprite(ctx, enemy, this.gameTime)) return;
           if (!drawOcelotSprite(ctx, enemy, this.gameTime)) drawOcelot(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
@@ -5915,21 +6085,17 @@ export class GameEngine {
 
     // Render Particles
     this.particles.forEach((pt) => {
-      if (pt.type === 'puff' || pt.type === 'flash') return drawFxParticle(ctx, pt);
+      if (pt.type !== 'star') return drawFxParticle(ctx, pt);
+      // a four-pointed sparkle
+      const r = pt.size * (pt.life / pt.maxLife);
+      const k = r * 1.7;
       ctx.fillStyle = pt.color;
       ctx.beginPath();
-      const r = pt.size * (pt.life / pt.maxLife);
-      if (pt.type === 'star') {
-        // a four-pointed sparkle
-        const k = r * 1.7;
-        ctx.moveTo(pt.x, pt.y - k);
-        ctx.quadraticCurveTo(pt.x, pt.y, pt.x + k, pt.y);
-        ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y + k);
-        ctx.quadraticCurveTo(pt.x, pt.y, pt.x - k, pt.y);
-        ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y - k);
-      } else {
-        ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
-      }
+      ctx.moveTo(pt.x, pt.y - k);
+      ctx.quadraticCurveTo(pt.x, pt.y, pt.x + k, pt.y);
+      ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y + k);
+      ctx.quadraticCurveTo(pt.x, pt.y, pt.x - k, pt.y);
+      ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y - k);
       ctx.fill();
     });
 
@@ -5944,7 +6110,7 @@ export class GameEngine {
       const a = Math.min(1, h.life / 0.4, (3.6 - h.life) / 0.25);
       ctx.save();
       ctx.globalAlpha = Math.max(0, a);
-      ctx.font = '700 17px Fredoka, sans-serif';
+      ctx.font = `700 17px ${FONT_UI}`;
       ctx.textAlign = 'center';
       const w = ctx.measureText(h.text).width + 28;
       // kept inside the view, so on a narrow portrait screen the bubble is never cut off at the edge
@@ -6052,10 +6218,7 @@ export class GameEngine {
       }
       ctx.restore();
     }
-    if (this.respawnFlash > 0) {
-      ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
-      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
-    }
+    this.drawIris(ctx);
 
     if (this.entrance && this.boss && this.bossDef && this.currentStage.arena) {
       const head = weakRect(this.boss, this.bossDef, this.currentStage.arena.floor);
@@ -6115,6 +6278,7 @@ export class GameEngine {
       score: (n) => (this.runScore += n),
       stepAt: (dir) => this.stepAt(dir),
       sfx: (kind) => {
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'scratch') sound.playTreeClimb();
         else if (kind === 'cut') sound.playRelicFound();
         else if (kind === 'blink') sound.playWhoosh();
@@ -6219,7 +6383,7 @@ export class GameEngine {
         this.checkpoint = { x: this.slideRun!.st.chamberFlag.x, y: this.slideRun!.st.chamberFlag.y };
         this.camera.x = x - this.camera.viewportWidth * 0.3;
         this.camera.y = y - this.camera.viewportHeight * 0.5;
-        this.respawnFlash = 0.6;
+        this.irisOpen = IRIS_OPEN_SECS;
       },
     });
   }
@@ -6337,8 +6501,7 @@ export class GameEngine {
   }
 
   private renderDot(ctx: CanvasRenderingContext2D, dpr: number) {
-    const shakeMag = this.camera.trauma * this.camera.trauma * 14;
-    const shake = { x: (Math.random() - 0.5) * shakeMag, y: (Math.random() - 0.5) * shakeMag };
+    const shake = shakeOffset(this.camera.trauma, performance.now() / 1000, 14);
     // her panel: held sideways it sits under the hearts and lives (GameHUD.tsx), left; upright, the top is full (the stage card, Dot's banner), so it sits bottom left
     const portrait = this.viewCssH > this.viewCssW;
     // a short landscape screen has the compact HUD (index.css): her panel shrinks too and sits right under the hearts and lives
@@ -6352,7 +6515,7 @@ export class GameEngine {
     const snap = dpr * this.zoom;
     ctx.translate(-snapCam(this.camera.x, snap), -snapCam(this.camera.y, snap));
     ctx.textAlign = 'center';
-    ctx.font = 'bold 15px Fredoka, sans-serif';
+    ctx.font = `bold 15px ${FONT_UI}`;
     for (const ft of this.floatingTexts) {
       ctx.lineWidth = 3;
       ctx.strokeStyle = 'rgba(30, 20, 30, 0.6)';
@@ -6361,11 +6524,7 @@ export class GameEngine {
       ctx.fillText(ft.text, ft.x, ft.y);
     }
     ctx.restore();
-    if (this.respawnFlash > 0) {
-      this.respawnFlash = Math.max(0, this.respawnFlash - 1 / 30);
-      ctx.fillStyle = `rgba(255, 255, 255, ${(this.respawnFlash / 0.6) * 0.7})`;
-      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
-    }
+    this.drawIris(ctx);
   }
 
   /**
@@ -6379,7 +6538,7 @@ export class GameEngine {
     // (a boss fight is zoomed out to show both fighters: the words grow back to a readable size on the phone, QA gate)
     // (World 5's words, a tray knocked away or a cake eaten, are as large as upright on a short landscape screen too: cardScale)
     const fs = this.boss && !this.boss.defeated && this.zoom < 1 ? Math.round(Math.max(15, (15 / this.zoom) * 0.85)) : this.w5 ? Math.round(15 * cardScale(this.zoom)) : 15;
-    ctx.font = `bold ${fs}px Fredoka, sans-serif`;
+    ctx.font = `bold ${fs}px ${FONT_UI}`;
     ctx.lineJoin = 'round';
     const cam = this.camera;
     const placed: Array<{ x0: number; x1: number; y: number }> = [];
@@ -6539,12 +6698,7 @@ export class GameEngine {
       const u = Math.max(0, d.t - d.delay) / GameEngine.RING_DROP.t;
       const y0 = e.y;
       // where it will land: a shadow on the branch that darkens as it comes down
-      ctx.save();
-      ctx.fillStyle = `rgba(20, 10, 2, ${0.3 + 0.35 * u})`;
-      ctx.beginPath();
-      ctx.ellipse(e.x, y0 + (e.type === 'boa' ? 12 : 10), e.width * (0.55 + 0.3 * u), 7 + 3 * u, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+      drawSoftShadow(ctx, e.x, y0 + (e.type === 'boa' ? 12 : 10), e.width * (1.5 + 0.8 * u), 20 + 8 * u, 0.4 + 0.5 * u);
       e.y = y0 - GameEngine.RING_DROP.h * (1 - u * u);
       if (e.type === 'snake') {
         if (!drawGoldSnake(ctx, e, this.gameTime) && !drawSnakeSprite(ctx, e, this.gameTime)) drawTreeSnake(ctx, e, this.gameTime);
@@ -6824,8 +6978,9 @@ export class GameEngine {
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
       cry(0);
-      // every pass is called out, not only the first: a word over his head and a buzz on a phone (many play with the sound off)
-      this.addFloatingText(cliffs ? 'HIDE! WATER OR BUSH' : `HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
+      // every pass is called out, not only the first: an alarm mark over his head and a buzz on a phone (many play with the sound off);
+      // the words are Dot's, in her bubble (no words floating in the world, the Dot rework 2026-10-29)
+      this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
       this.input.triggerHaptic(120);
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
@@ -7008,18 +7163,11 @@ export class GameEngine {
       ctx.restore();
       return;
     }
-    // a dark oval on the grass (drawn after the front grass and the bushes, so they never hide it): a wide soft halo and a firmer
-    // core, plain enough to read against the dark soil at a glance
-    ctx.save();
-    ctx.fillStyle = `rgba(8, 12, 8, ${a * 0.45})`;
-    ctx.beginPath();
-    ctx.ellipse(x, gy - 6, 120, 20, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = `rgba(8, 12, 8, ${a})`;
-    ctx.beginPath();
-    ctx.ellipse(x, gy - 6, 82, 12, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    // a dark shadow on the grass (drawn after the front grass and the bushes, so they never hide it): a wide soft halo and a firmer
+    // core, plain enough to read against the dark soil at a glance; the soft shadow sprite (w4Grit.ts), so neither shows an edge
+    drawSoftShadow(ctx, x, gy - 6, 280, 46, a);
+    drawSoftShadow(ctx, x, gy - 6, 190, 30, a * 1.6);
+    drawSoftShadow(ctx, x, gy - 6, 150, 22, a * 1.4);
   }
 
   /** the bushes, in front of Pokey */
@@ -7201,7 +7349,7 @@ export class GameEngine {
           this.watch.t = 0;
           this.watch.dur = WATCH.warn;
           sound.playEagleScreech();
-          this.addFloatingText('HIDE!', p.x, p.y - 96, '#fbbf24');
+          this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
           this.input.triggerHaptic(120);
         }
       },
@@ -7214,10 +7362,14 @@ export class GameEngine {
       defeat: () => {
         p.enemiesDefeated++;
       },
+      shake: (n) => {
+        this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, n));
+      },
       sfx: (kind) => {
         if (kind === 'cry') sound.playEagleScreech();
-        else if (kind === 'rock') sound.playHitImpact();
-        else if (kind === 'chime') sound.playVineGrab();
+        else if (kind === 'rock') sound.playRock();
+        else if (kind === 'rockWarn') sound.playRockWarn();
+        else if (kind === 'chime') sound.playWindChime();
         else if (kind === 'monkey') sound.playPredator('tayra', 0);
         else if (kind === 'frond') sound.playShrineUnlocked();
         else if (kind === 'knot') sound.playRelicFound();
@@ -7252,6 +7404,8 @@ export class GameEngine {
       stuck: (room) => this.mc?.stuck(room),
       glowAt: () => this.mc?.flickerAt() ?? null,
       sfx: (kind) => {
+        // every puzzle action has its own recorded sound (sfxGame.ts PUZZLE_KIND); the rest keep their borrowed one below
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'pick') sound.playVineGrab();
         else if (kind === 'drop' || kind === 'land') sound.playLand(kind === 'drop' ? 0.4 : 0.25);
         else if (kind === 'throw' || kind === 'lost') sound.playWhoosh();
@@ -7393,6 +7547,7 @@ export class GameEngine {
         recordCake(id);
       },
       sfx: (kind) => {
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'hum') sound.playVineGrab();
         else if (kind === 'wrap') sound.playPlayerHurt();
         else if (kind === 'cake') sound.playFruitPickup();
@@ -7439,7 +7594,7 @@ export class GameEngine {
   /** a sleeping animal's Z's, drifting up from its head (a stand-in until the sleeping snake art arrives) */
   private drawSleepZ(ctx: CanvasRenderingContext2D, e: Enemy) {
     ctx.save();
-    ctx.font = '700 15px Fredoka, sans-serif';
+    ctx.font = `700 15px ${FONT_UI}`;
     ctx.textAlign = 'center';
     for (let i = 0; i < 3; i++) {
       const u = (this.gameTime * 0.45 + i / 3 + e.id * 0.13) % 1;
@@ -7448,7 +7603,7 @@ export class GameEngine {
       ctx.strokeStyle = 'rgba(20, 38, 26, 0.7)';
       ctx.lineWidth = 3;
       const zx = e.x + e.facing * 10 + u * 22, zy = e.y - 18 - u * 40;
-      ctx.font = `700 ${11 + u * 9}px Fredoka, sans-serif`;
+      ctx.font = `700 ${11 + u * 9}px ${FONT_UI}`;
       ctx.strokeText('z', zx, zy);
       ctx.fillText('z', zx, zy);
     }
@@ -7457,6 +7612,8 @@ export class GameEngine {
 
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
   private guide(text: string, seconds: number) {
+    // (the tips just marked sent are kept on the phone once this line has been shown: tipMemory.ts)
+    bindSent(text);
     this.stageHint = { text, life: seconds };
     this.bossGuideUp = false;
     this.guideN++;
@@ -7516,6 +7673,7 @@ export class GameEngine {
     q.life = p.life;
     q.maxLife = p.maxLife;
     q.type = p.type;
+    q.seed = p.seed ?? Math.random();
   }
 
   /** the painted hit spark (a brief glow and the star bursting into rays), `w` wide, and a few sparkles flying off it */
@@ -7544,26 +7702,30 @@ export class GameEngine {
         vx: (this.player.facing * spd * 0.8) + (Math.random() - 0.5) * 80,
         vy: (Math.random() - 0.5) * 120,
         color: isMega ? '#fef08a' : '#86efac',
-        size: 3.5,
+        size: 3.2,
         life: 0.35,
         maxLife: 0.35,
-        type: 'spark',
+        type: 'star',
       });
     }
   }
 
+  /** a burst of bits, painted (debrisLook: sparkles, leaves, stone grit, or earth-brown grit under a puff of dust) */
   private spawnDebrisBurst(x: number, y: number, color: string) {
-    for (let i = 0; i < 12; i++) {
+    const look = debrisLook(color);
+    if (look === 'earth') this.emit({ x, y: y + 6, vx: 0, vy: -10, color: '', size: 46, life: 0.5, maxLife: 0.5, type: 'puff' });
+    const n = look === 'star' ? 8 : look === 'leaf' ? 8 : 10;
+    for (let i = 0; i < n; i++) {
       this.emit({
         x: x + (Math.random() - 0.5) * 20,
         y: y + (Math.random() - 0.5) * 10,
         vx: (Math.random() - 0.5) * 180,
         vy: -80 - Math.random() * 160,
-        color,
-        size: 3 + Math.random() * 4,
+        color: look === 'star' ? color : look === 'earth' ? color : look === 'leaf' ? 'green' : '',
+        size: look === 'star' ? 2.6 + Math.random() * 1.4 : 3 + Math.random() * 3,
         life: 0.5 + Math.random() * 0.3,
         maxLife: 0.8,
-        type: 'leaf',
+        type: look === 'star' ? 'star' : look === 'leaf' ? 'leaf' : 'grit',
       });
     }
   }
@@ -7590,10 +7752,10 @@ export class GameEngine {
         y: y + Math.sin(angle) * 8,
         vx: Math.cos(angle) * spd,
         vy: Math.sin(angle) * spd + 40,
-        color: i % 2 === 0 ? '#4ade80' : '#86efac',
+        color: 'green',
         size: 3.5,
-        life: 0.45,
-        maxLife: 0.45,
+        life: 0.55,
+        maxLife: 0.55,
         type: 'leaf',
       });
     }
@@ -7609,11 +7771,11 @@ export class GameEngine {
         y,
         vx: (this.player.facing * spd * 0.9) + (Math.random() - 0.5) * 60,
         vy: (Math.random() - 0.5) * 140,
-        color: i % 2 === 0 ? '#f97316' : '#fde047',
-        size: 4,
+        color: i % 2 === 0 ? '#fdba74' : '#fde047',
+        size: 3.4,
         life: 0.38,
         maxLife: 0.38,
-        type: 'spark',
+        type: 'star',
       });
     }
   }
@@ -7627,11 +7789,11 @@ export class GameEngine {
         y: y + (Math.random() - 0.5) * 18,
         vx: Math.cos(angle) * spd,
         vy: Math.sin(angle) * spd - 35,
-        color: i % 3 === 0 ? '#f8fafc' : i % 3 === 1 ? '#64748b' : '#f59e0b',
-        size: 4,
-        life: 0.6,
-        maxLife: 0.6,
-        type: 'leaf',
+        color: '',
+        size: 3.6 + Math.random() * 1.4,
+        life: 0.9,
+        maxLife: 0.9,
+        type: 'feather',
       });
     }
   }

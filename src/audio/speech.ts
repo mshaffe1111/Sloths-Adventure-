@@ -43,6 +43,8 @@ const VOICES: Record<string, Voice> = {
   'Stone Idol Golem': { base: 36, hop: [0, 7, 12], type: 'triangle', dec: 0.12, peak: 0.22, lp: 450, glide: 0.98 },
   'Night-Wing Monarch': { base: 60, hop: MINOR, type: 'triangle', dec: 0.09, peak: 0.1, lp: 1500, breath: 0.5, glide: 0.98 },
   'Magma Drake': { base: 36, hop: MINOR, type: 'sawtooth', dec: 0.1, peak: 0.12, lp: 650, glide: 0.95 },
+  // Flicker, the firefly: small, high, short and dry
+  Flicker: { base: 74, hop: [0, 2, 7], type: 'sine', dec: 0.035, peak: 0.08, lp: 4200, glide: 1.0 },
   Squirrel: { base: 76, hop: PENT, type: 'square', dec: 0.04, peak: 0.07, lp: 3200, glide: 1.05 },
 };
 const FALLBACK: Voice = { base: 48, hop: PENT, type: 'triangle', dec: 0.08, peak: 0.12, lp: 1400, glide: 0.98 };

@@ -92,7 +92,8 @@ test("Dot's in-play lines keep under the QA rule's 10 words where QA found them 
 test("every line paired as saying the same thing (SAME_TIP) is a line of the review, and the pairs name each other", () => {
   const ids = new Set(ALL_DOT_LINES.map((l) => l.id));
   for (const [k, others] of SAME_TIP) {
-    assert.ok(ids.has(k.replace(/^engine:/, '')), k);
+    // (a line of the review, or one the engine says in its own words: "Hide! Into a bush!")
+    assert.ok(ids.has(k.replace(/^engine:/, '')) || /\s/.test(k), k);
     for (const o of others) assert.ok(SAME_TIP.get(o)?.includes(k), `${o} does not name ${k} back`);
   }
 });

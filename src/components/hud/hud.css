@@ -14,13 +14,13 @@
 .vh-hang svg, .vh-hang img { display: block; }
 
 /* numbers: warm cream with a dark-brown outline, on a small soft plate so they read on bright scenes (4-D's mist) */
-.vh-num { position: absolute; font-family: var(--font-heading); font-weight: 700; color: #FFF3D6; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill;
+.vh-num { position: absolute; font-family: var(--font-fun); font-weight: 400; color: #FFF3D6; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill;
   text-shadow: 0 2px 0 rgba(30, 15, 5, .4); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; font-feature-settings: 'liga' 0, 'calt' 0;
   padding: 3px 7px 4px; margin: -3px -7px -4px; border-radius: 12px; background: radial-gradient(ellipse at 50% 55%, rgba(28, 18, 8, .58), rgba(28, 18, 8, .32) 55%, rgba(28, 18, 8, 0) 78%);
   display: inline-flex; align-items: baseline; gap: 1px; transform-origin: 0 50%; transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), color .3s ease, filter .3s ease; }
 .vh-num small { -webkit-text-stroke-width: 3px; }
 .vh-num svg { align-self: center; margin-left: 4px; }
-.vh-tag, .vh-delta { font-family: var(--font-heading); font-weight: 700; font-size: 15px; line-height: 1; color: #ffd65a; -webkit-text-stroke: 3px #3a2414; paint-order: stroke fill; white-space: nowrap; }
+.vh-tag, .vh-delta { font-family: var(--font-ui); font-weight: 700; font-size: 15px; line-height: 1; color: #ffd65a; -webkit-text-stroke: 3px #3a2414; paint-order: stroke fill; white-space: nowrap; }
 .vh-tag { position: absolute; animation: vh-rise .9s ease-out both; }
 .vh-delta.bad { color: #ff9a9a; }
 .vh-delta { position: static; padding: 0; margin: 0 0 0 2px; background: none; }
@@ -41,12 +41,12 @@
   transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), filter .3s ease, box-shadow .3s ease; }
 .vh-cplate svg, .vh-cplate img { display: block; }
 .vh-goal-icon { display: flex; filter: drop-shadow(0 2px 0 rgba(30, 15, 5, .55)); transform: rotate(-6deg); }
-.vh-cnum { font-family: var(--font-heading); font-weight: 700; color: #FFF3D6; -webkit-text-stroke: 5px #3a2414; paint-order: stroke fill;
+.vh-cnum { font-family: var(--font-fun); font-weight: 400; color: #FFF3D6; -webkit-text-stroke: 5px #3a2414; paint-order: stroke fill;
   text-shadow: 0 2px 0 rgba(30, 15, 5, .45); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; font-feature-settings: 'liga' 0, 'calt' 0;
   display: inline-flex; align-items: baseline; transition: color .3s ease; }
 .vh-cnum small { -webkit-text-stroke-width: 4px; color: #f3dfb4; }
 /* (a word before the count: Meeca's "Warnings 1/5") */
-.vh-cword { font-family: var(--font-heading); font-weight: 700; color: #f3dfb4; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill;
+.vh-cword { font-family: var(--font-ui); font-weight: 700; color: #f3dfb4; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill;
   text-shadow: 0 2px 0 rgba(30, 15, 5, .45); line-height: 1; white-space: nowrap; }
 .vh-goal.bloom .vh-cplate { transform: scale(1.14); box-shadow: inset 0 1px 0 rgba(255, 236, 190, .3), 0 2px 0 rgba(30, 15, 5, .45), 0 0 16px 4px rgba(255, 220, 120, .45); }
 .vh-goal.bloom .vh-cnum { color: #ffe9a8; }
@@ -137,7 +137,7 @@
 .vh-card-row > :first-child { flex: none; filter: drop-shadow(0 2px 0 rgba(58, 36, 20, .45)); }
 .vh-card-text { display: flex; flex-direction: column; min-width: 0; }
 .vh-card-pre { font: 600 13px/1.15 var(--font-read); color: #6b4a2a; }
-.vh-card-big { font: 700 21px/1.12 var(--font-heading); color: #2b1a0e; }
+.vh-card-big { font: 700 21px/1.12 var(--font-ui); color: #2b1a0e; }
 .vh-card-sub { font: 600 13.5px/1.2 var(--font-read); color: #5a3c20; }
 .vh-card.quick { padding: 6px 14px 7px; width: auto !important; min-width: 120px; }
 .vh-card.quick .vh-card-big { font-size: 22px; font-variant-numeric: tabular-nums; }
@@ -160,7 +160,7 @@
 .boss-hud.vine { display: flex !important; flex-direction: column; width: 100%; gap: 3px; }
 .boss-hud.vine .boss-hud-name { text-shadow: none; padding: 0 4px; min-width: 0; }
 .boss-hud.vine .boss-hud-title { min-width: 0; font-size: 18px; letter-spacing: .08em; color: #FFF3D6; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill; text-shadow: 0 2px 0 rgba(30, 15, 5, .4); }
-.boss-hud.vine .boss-hud-count { font-family: var(--font-heading); font-size: 15px; letter-spacing: .02em; text-transform: none; color: #ffd65a; -webkit-text-stroke: 3px #3a2414; paint-order: stroke fill; display: inline-flex; align-items: center; gap: 3px; }
+.boss-hud.vine .boss-hud-count { font-family: var(--font-ui); font-size: 15px; letter-spacing: .02em; text-transform: none; color: #ffd65a; -webkit-text-stroke: 3px #3a2414; paint-order: stroke fill; display: inline-flex; align-items: center; gap: 3px; }
 .boss-hud.vine .boss-hud-bar { padding: 3px; border-radius: 9px; background: rgba(24, 30, 10, .86); border: 2.5px solid #3a2414;
   box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--boss-accent) 60%, #5f7f2c), 0 3px 0 rgba(30, 15, 5, .45), 0 5px 12px rgba(0, 0, 0, .35); }
 .boss-hud.vine .boss-hud-segs { height: 13px; }

@@ -7,6 +7,7 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { VINE_FRAMES, VINE_BODY_PX } from './heroVineData.ts';
 import type { PlayerState } from './types.ts';
+import { heroBlinkAlpha } from './heroBlink.ts';
 
 let img: HTMLImageElement | null = null;
 let ready = false;
@@ -64,7 +65,7 @@ export function drawVineHang(ctx: CanvasRenderingContext2D, p: PlayerState, alph
   ctx.scale(p.facing, 1);
   // the hurt blink, on the game's clock like every other pose (heroSprite.ts): it ran on the wall clock here, so it kept flickering
   // under a pause or a lesson and fell out of step with the 30 fps frames, and a still frame could catch him half see-through on the vine
-  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha *= 0.55;
+  ctx.globalAlpha *= heroBlinkAlpha(p, time);
   if (alpha < 1) ctx.globalAlpha *= alpha;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';

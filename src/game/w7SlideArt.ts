@@ -21,6 +21,7 @@ import { KINDS, SLIDE, type Obstacle, type SlideSim } from './w7Slide.ts';
 import { FLUME_SHEETS } from './w7SlideAtlas.ts';
 import { drawFlowerSprite, FLOWER_SIZE } from './flowerSprites.ts';
 import { AMBIENT, CAVE_ROOF, CAVE_X, GLOWS, HANGS, LIGHT_RGB, POKEY_MIN, RAIL_H, RAIL_X, buildScene, type LightKind, type Prop, type Scene } from './w7SlideScene.ts';
+import { FONT_UI } from './fonts.ts';
 
 const U = (n: string) => new URL(`../assets/w7slide/${n}`, import.meta.url).href;
 const URLS = {
@@ -815,7 +816,7 @@ function drawBubble(ctx: CanvasRenderingContext2D, text: string, x: number, y: n
   // (y: the bubble's top; its tail points up at him)
   ctx.save();
   ctx.globalAlpha = a;
-  ctx.font = 'bold 16px Fredoka, sans-serif';
+  ctx.font = `bold 16px ${FONT_UI}`;
   const w = Math.min(W - 24, ctx.measureText(text).width + 24);
   const h = 32;
   const bx = Math.max(12, Math.min(W - 12 - w, x - w / 2));

@@ -109,8 +109,10 @@ export function kitRooms(floor: Platform, well: Platform, cliff: Platform): KitE
     beyond: on(floor, 980),
     ground: [floor.id],
     tips: {
-      enter: 'The plate opens the gate. Fetch the acorn!',
-      hold: 'Hands full! Tap on the plate to drop it.',
+      enter: "The gate's shut. Hmm, that stone plate.",
+      hold: 'Hands full! Tap to set it down.',
+      nudge: 'Something heavy for the plate?',
+      move: 'Fetch the acorn. Set it on the plate.',
       open: 'The gate is open!',
     },
   };
@@ -130,8 +132,10 @@ export function kitRooms(floor: Platform, well: Platform, cliff: Platform): KitE
     beyond: on(floor, 1840),
     ground: [floor.id],
     tips: {
-      enter: 'Two plates, one sloth. Beetles love cake!',
-      hold: 'Set the cake on the far plate.',
+      enter: 'Two plates. One of me.',
+      hold: 'Tap to set it down.',
+      nudge: 'That beetle looks hungry.',
+      move: 'Set the cake on the far plate.',
       stuck: 'Asleep in the wrong spot. Tap the signpost.',
       open: 'Both plates down. Through you go!',
     },
@@ -150,8 +154,10 @@ export function kitRooms(floor: Platform, well: Platform, cliff: Platform): KitE
     beyond: { on: cliff.id, at: 0.15 },
     ground: [floor.id, well.id],
     tips: {
-      enter: 'Fill the basket to raise the lift.',
+      enter: "The lift won't rise. Hmm, that basket.",
       hold: 'Stand on the lift. Flick up to throw!',
+      nudge: 'That basket looks empty.',
+      move: 'Fill the basket to raise the lift.',
       open: 'Up she goes! Ride the lift.',
     },
   };
@@ -175,7 +181,9 @@ export function kitRooms2(g: KitGround2): RoomSpec[] {
     beyond: { on: g.bankB.id, at: 0.3 },
     ground: [g.floorB.id, g.pitB.id],
     tips: {
-      enter: 'Too high! Weigh the near end of the seesaw down.',
+      enter: 'Too high! That seesaw, though.',
+      nudge: 'That log looks heavy.',
+      move: 'Weigh the near end of the seesaw down.',
       open: 'The log holds it! Up the plank you go.',
     },
   };
@@ -192,8 +200,10 @@ export function kitRooms2(g: KitGround2): RoomSpec[] {
     beyond: on(g.floorC, R.bell + 600),
     ground: [g.floorC.id],
     tips: {
-      enter: 'The old vine wakes on a beat. Ring the bell, and it turns to look!',
-      hold: 'Throw it down the path: the clack turns the vine too.',
+      enter: 'That old vine is wide awake.',
+      hold: 'Pebbles clack when they land.',
+      nudge: 'That bell looks loud.',
+      move: 'Ring the bell. The vine turns to look.',
     },
   };
   const light: RoomSpec = {
@@ -210,8 +220,10 @@ export function kitRooms2(g: KitGround2): RoomSpec[] {
     beyond: { on: g.bankC.id, at: 0.4 },
     ground: [g.floorD.id],
     tips: {
-      enter: 'So dark! That mushroom glows. Carry it along.',
-      hold: 'Set it down by the bank. What does its light show?',
+      enter: "So dark! Can't see a thing.",
+      hold: 'Tap to set it down.',
+      nudge: 'That mushroom glows.',
+      move: 'Carry the mushroom. Its light finds ledges.',
       open: 'A ledge in the light!',
     },
   };
@@ -229,7 +241,9 @@ export function kitRooms2(g: KitGround2): RoomSpec[] {
     beyond: { on: g.cliffD.id, at: 0.2 },
     ground: [g.floorE.id, g.well.id],
     tips: {
-      enter: 'The shutter holds the wind back. The pinwheel winds the lift.',
+      enter: 'The lift needs winding. No wind in here.',
+      nudge: 'That shutter holds the wind back.',
+      move: 'Open the shutter. The pinwheel winds the lift.',
       open: 'Wound right up!',
     },
   };
@@ -245,7 +259,9 @@ export function kitRooms2(g: KitGround2): RoomSpec[] {
     beyond: { on: g.farE.id, at: 0.2 },
     ground: [g.floorF.id],
     tips: {
-      enter: 'The sluice holds the river still. Pull the lever to let it run!',
+      enter: "The river's still. No logs drift.",
+      nudge: 'That lever works the sluice.',
+      move: 'Pull the lever to let it run!',
       open: 'The logs are drifting! Pull it again to stop one.',
     },
   };
@@ -266,7 +282,9 @@ export function kitRooms2(g: KitGround2): RoomSpec[] {
     beyond: on(g.farE, R.trade + 680),
     ground: [g.farE.id],
     tips: {
-      enter: 'The capuchin has a stone. It loves mangoes!',
+      enter: 'The capuchin has our stone!',
+      nudge: 'Hmm. It looks hungry.',
+      move: 'Bring it a mango. Tap by it.',
       hold: 'Tap by the capuchin to offer it.',
       open: 'The gate is open!',
     },

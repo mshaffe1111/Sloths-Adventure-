@@ -2,18 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import {
-  BOSS_STORIES, ENDING_PANELS, INTRO_PANELS, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels,
+  BOSS_STORIES, ENDING_PANELS, INTRO_PANELS, WORLD_GATE, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels,
   type StoryCue, type StoryPanel, type StorySting,
 } from './story.ts';
 import { AFTER_BOSS, MEMORIES, MEMORY_ORDER, nextAfterBoss, parseMemories, type MemoryId } from './storyChapters.ts';
-import { finalePanels } from './storyFinale.ts';
+import { FINALE_KEEPSAKES, KEEPSAKE_LINES, SATCHEL_KEEPSAKES, endTagPanels, finalePanels } from './storyFinale.ts';
 import { FINDS } from './finds.ts';
 import { PLATES, isPlate } from './plateData.ts';
 
 const CUES: StoryCue[] = ['pokey', 'meeca', 'bloom', 'grandma', 'journey', 'comedy', 'tender', 'sorrow', 'dread', 'war', 'chase', 'reveal', 'resolve', 'triumph', 'mercy', 'finale', 'hush'];
 const STINGS: StorySting[] = ['cliffhanger', 'reveal', 'laugh', 'blow', 'bloom', 'darkness', 'door', 'heartbreak', 'triumph'];
 const SPEAKERS = [
-  'Narrator', 'Pokey', 'Meeca', 'Dot', 'Grandma', 'Grandfather', 'Lieutenant Pell', 'Gruntlewick', 'Squirrel', 'General Iron-Claw', 'Thornbark',
+  'Narrator', 'Pokey', 'Meeca', 'Dot', 'Flicker', 'Grandma', 'Grandfather', 'Lieutenant Pell', 'Gruntlewick', 'Squirrel', 'General Iron-Claw', 'Thornbark',
   'Venom Fang', 'Crocus Rex', 'Shadow Prowler', 'Sky Sovereign', 'Tarantula Queen', 'Marsh Reaver', 'Stone Idol Golem', 'Night-Wing Monarch', 'Magma Drake',
 ];
 
@@ -24,6 +24,7 @@ function everything(): { where: string; panels: StoryPanel[] }[] {
   const all: { where: string; panels: StoryPanel[] }[] = [{ where: 'intro', panels: INTRO_PANELS }, { where: 'ending', panels: ENDING_PANELS }];
   for (const [w, s] of Object.entries(WORLD_STORIES)) all.push({ where: `world ${w} arrival`, panels: s.panels });
   for (const [w, p] of Object.entries(WORLD_MID)) all.push({ where: `world ${w} halfway`, panels: p });
+  for (const [w, p] of Object.entries(WORLD_GATE)) all.push({ where: `world ${w} gate`, panels: p });
   for (const m of Object.values(MEMORIES)) all.push({ where: `scene ${m.id}`, panels: m.panels });
   for (let w = 1; w <= 10; w++) {
     all.push({ where: `boss ${w} intro`, panels: bossPanels(w, 'intro', BOSS_STORIES[w].intro[0].speaker) });
@@ -44,8 +45,10 @@ test('the story is long: hundreds of pictures, ten worlds, a halfway scene in ev
     assert.ok(WORLD_STORIES[w].panels.length >= 5, `world ${w} arrival is more than a line or two`);
     assert.ok(WORLD_MID[w] && WORLD_MID[w].length >= 3, `world ${w} has a halfway scene`);
     assert.ok(BOSS_STORIES[w], `world ${w} has a guardian`);
-    assert.ok(BOSS_STORIES[w].intro.length >= 3 && BOSS_STORIES[w].intro.length <= 5, `world ${w}: a guardian speaks before the fight`);
-    assert.ok(BOSS_STORIES[w].defeat.length >= 2 && BOSS_STORIES[w].defeat.length <= 6, `world ${w}: and after it`);
+    // (the intro replays on every attempt, so it stays short: five lines, six where Dot gets a word in, and the General's nine, the one
+    // argument of the game, 2026-10-29 story report)
+    assert.ok(BOSS_STORIES[w].intro.length >= 3 && BOSS_STORIES[w].intro.length <= (w === 10 ? 9 : w === 4 ? 6 : 5), `world ${w}: a guardian speaks before the fight`);
+    assert.ok(BOSS_STORIES[w].defeat.length >= 2 && BOSS_STORIES[w].defeat.length <= 7, `world ${w}: and after it`);
   }
 });
 
@@ -161,15 +164,26 @@ test('the saved list of seen scenes survives bad data', () => {
   assert.deepEqual(parseMemories(JSON.stringify({ v: 1, seen: ['tea', 'nope', 'horn'] })), ['horn', 'tea'], 'unknown ids go, order follows the Library');
 });
 
-test('the ending adds a small scene for each keepsake the player found', () => {
+test('the ending shows three keepsakes, plants the seeds, and keeps every other keepsake for the satchel', () => {
   const keepsakes = FINDS.filter((f) => f.kind === 'keepsake').map((f) => f.id);
   assert.equal(keepsakes.length, 10);
   const base = finalePanels([]).length;
-  let grew = 0;
-  for (const id of keepsakes) if (finalePanels([id]).length > base) grew++;
-  assert.ok(grew >= 8, `only ${grew} keepsakes change the ending`);
+  // the ribbon, the key and the bell play at the tea table, and the seeds go to the hill: those four, and only those, change the ending
+  const grew = keepsakes.filter((id) => finalePanels([id]).length > base).sort();
+  assert.deepEqual(grew, [...FINALE_KEEPSAKES, 'w8_keepsake'].sort());
+  // nothing found is lost: every keepsake has its lines (the seeds aside, which are planted), the finale's three and the satchel's six
+  assert.deepEqual([...FINALE_KEEPSAKES, ...SATCHEL_KEEPSAKES, 'w8_keepsake'].sort(), [...keepsakes].sort());
+  for (const id of [...FINALE_KEEPSAKES, ...SATCHEL_KEEPSAKES]) assert.ok(KEEPSAKE_LINES[id] && KEEPSAKE_LINES[id]!.length >= 2, `${id} has its lines`);
+  // in this order, the bell always last
+  const all = finalePanels(keepsakes);
+  const at = (s: string) => all.findIndex((p) => p.text.includes(s));
+  assert.ok(at('half a ribbon') >= 0 && at('half a ribbon') < at('a key in a fern') && at('a key in a fern') < at('Somebody is coming home'));
+  assert.ok(!all.some((p) => p.text.includes('Is that my rattle') || p.text.includes('I let you.')), 'the satchel keepsakes stay out of the finale');
+  // the stopwatch plays after the end, only when it was found
+  assert.deepEqual(endTagPanels([]), []);
+  assert.ok(endTagPanels(['w9_keepsake']).some((p) => p.text === 'I let you.'));
   const full = finalePanels(FINDS.map((f) => f.id));
-  assert.ok(full.length > base + 20, 'finding everything lengthens the ending');
+  assert.ok(full.length > base + 12, 'finding everything lengthens the ending');
   assert.ok(full.some((p) => p.text.includes('Every last thing of hers')), 'and earns Grandma\'s last word');
   assert.ok(!finalePanels([]).some((p) => p.text.includes('Every last thing of hers')));
   // the bell is rung, not just handed over; the seed packet says where it came from
@@ -183,7 +197,8 @@ test('the story keeps its promises: the lullaby, the letter, the bell, the seam'
   assert.ok(every.includes('Slow the rain, slow the thunder'), 'the lullaby is sung');
   assert.ok(every.includes('Slow is not stopped'), 'the family saying is spoken');
   assert.ok(every.includes('tailor'), 'the Lieutenant sews badly');
-  assert.ok(text(WORLD_STORIES[10].panels).includes('sew it badly'), 'Dot goes for the seam');
+  assert.ok(text(WORLD_STORIES[10].panels).includes('sew it badly'), 'the seam is sewn badly');
+  assert.ok(text(WORLD_GATE[10]).includes('The cookhouse seam'), 'and Dot goes for it at the gate');
   assert.ok(text(ENDING_PANELS).includes('I fell into the cookhouse'), 'and lands in the cookhouse');
   // the jokes that were planted early get their payoff in the epilogue
   assert.ok(text(ENDING_PANELS).includes('slow mailman finally delivered'), 'the one parcel arrives');
@@ -193,6 +208,36 @@ test('the story keeps its promises: the lullaby, the letter, the bell, the seam'
   assert.ok(!text(WORLD_STORIES[10].panels).includes('six years'));
   // the first meeting happens once: Dot is not introduced a second time on the road
   assert.ok(!text(WORLD_STORIES[1].panels).includes('Courier. Fastest wings'));
+});
+
+test('the 2026-10-29 story report: slowness costs once, the motive in three layers, the reunion, the answer, Flicker', () => {
+  const text = (ps: StoryPanel[]) => ps.map((p) => p.text).join('\n');
+  const lines = (w: number, k: 'intro' | 'defeat') => BOSS_STORIES[w][k].map((l) => l.text).join('\n');
+  // the one time slow costs something: the gap was sewn shut the night they stopped for tea, and the General counted
+  assert.ok(text(WORLD_MID[6]).includes('We stopped for tea.'));
+  assert.ok(lines(10, 'intro').includes('You stopped for tea, boy.') && lines(10, 'intro').includes('It was very good tea, sir.'));
+  // the argument he can't win, and the shell slamming shut on it
+  assert.ok(lines(10, 'intro').includes('It was a storm.'));
+  assert.equal(BOSS_STORIES[10].intro.at(-1)!.text, 'The General does not lose twice.');
+  // the motive: the public reason (tea), the excuse (the tower), the truth (the finale)
+  assert.ok(text(MEMORIES.tea.panels).includes('his whole Pact started to yawn'));
+  assert.ok(text(MEMORIES.tally.panels).includes('For your safety, Miss.'));
+  assert.ok(text(ENDING_PANELS).includes('So I put you somewhere nobody would ever be late for you.'));
+  // the reunion comes straight after "Mostly.", and Pokey answers Dot to her face
+  const end = ENDING_PANELS.map((p) => p.text);
+  assert.equal(end[end.indexOf('Mostly.') + 1].startsWith('Meeca turned around.'), true);
+  assert.ok(end.includes('You can sit down now.'));
+  assert.ok(end.includes('And you came back every time. I was counting.'));
+  assert.ok(!end.includes('Okay.'), 'the old answer is gone');
+  // who raised him
+  assert.ok(text(MEMORIES.garden.panels).includes('You\'re staying for supper, Pokey.'));
+  // Flicker: arrives as Dot leaves, meets her in World 8, makes peace the night before the mountain, and is handed the job at the gate
+  const fl = (ps: StoryPanel[]) => ps.some((p) => p.speaker === 'Flicker');
+  assert.ok(fl(WORLD_MID[6]) && fl(WORLD_STORIES[8].panels) && fl(MEMORIES.gates.panels) && fl(WORLD_MID[10]) && fl(WORLD_GATE[10]) && fl(ENDING_PANELS));
+  // his tell: the light stutters on "just passing", and holds steady on "I will"
+  const said = (s: string) => [...WORLD_MID[6], ...WORLD_GATE[10]].find((p) => p.text === s)!;
+  assert.ok(said('Flicker. Just passing.').scene.actors.some((a) => a.kind === 'flicker' && a.stutter));
+  assert.ok(said('I will.').scene.actors.some((a) => a.kind === 'flicker' && !a.stutter));
 });
 
 test('boss lines are short enough to read, and Pokey never speaks for a guardian', () => {
@@ -233,4 +278,12 @@ test('the plates listed are the plates painted, and each has a floor to stand on
   const files = readdirSync(new URL('../assets/story/plates/', import.meta.url)).filter((f) => f.endsWith('.webp')).map((f) => f.replace(/\.webp$/, ''));
   assert.deepEqual(files.sort(), Object.keys(PLATES).sort(), 'every picture is listed and every listed plate has its picture');
   for (const [k, v] of Object.entries(PLATES)) assert.ok(v.ground > 0.4 && v.ground < 0.95, `${k}: the floor is on the picture`);
+});
+
+test('every stage has a real name and line of its own (no generic mission names to fall back on, polish report ST-8)', async () => {
+  const { generateAllLevels } = await import('./worldsData.ts');
+  for (const l of generateAllLevels()) {
+    assert.ok(l.name && !/Sprint|Gauntlet|Idol Hunt|Thicket|Boss Lair|Purge/.test(l.name), `${l.id}: "${l.name}"`);
+    assert.ok(l.description && !/Exit Shrine|sanctuary|reach the exit/i.test(l.description), `${l.id}: "${l.description}"`);
+  }
 });
