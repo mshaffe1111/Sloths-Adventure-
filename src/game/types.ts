@@ -96,6 +96,8 @@ export interface LevelConfig {
 }
 
 export interface PlayerState {
+  /** down for a moment after losing a life (engine.ts lifeLost): drawn in his knocked-out pose (AN-1) */
+  downed?: boolean;
   /** standing still right at the end of a ledge, facing out over it this way (1 its right end, -1 its left; engine.ts edgeOffset) */
   teeter?: -1 | 0 | 1;
   /** where he is drawn, px from where he stands: a step back from a ledge's end while he stands at it (engine.ts edgeOffset) */

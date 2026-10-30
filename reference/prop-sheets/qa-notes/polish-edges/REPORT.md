@@ -44,15 +44,20 @@ near and mid strips). `src/assets/backdrops-hd/` is folded in and deleted.
     1736 px), the same way as the HD near and mid strips: img2img at 0.25 with the style model, tiled round the strip so it stays
     seamless.
   - Then the sky was inpainted above each new native far strip, from the native strip itself.
-  - **Skies kept: 18.** w1, w10, w10dusk, w2rapids, w3, w3cavern, w4, w4mist, w4terraces, w5, w5dusk1, w5gold2, w5night, w6dusk, w8,
-    w8night, w8sunset, w9night.
-  - **Skies held back: 16.** w1kapok, w1sunrise, w2, w2evening, w3sinkhole, w5dusk2, w5twi1, w5twi2, w6, w6dawn, w7, w7dawn, w7dusk,
-    w9, w9dawn, w10after.
-    - They stacked a second landscape above the strip, showed tile-panel ghosts, or went dark and streaky.
-    - Two retry rounds didn't fix it: a plain start and a sky-only prompt painted frames and panels, and one painted a sloth.
-    - These sets use the cover fit described above. That is the plain extension, and the reason it was chosen is that every AI take
-      failed review.
-- **Spend:** about $3.6 of the $8 X-16 budget (pilots $0.83, batch $2.27, two cancelled retries $0.46), logged in
+  - **Skies kept from the batch: 18.** w1, w10, w10dusk, w2rapids, w3, w3cavern, w4, w4mist, w4terraces, w5, w5dusk1, w5gold2,
+    w5night, w6dusk, w8, w8night, w8sunset, w9night.
+  - **16 failed the batch** (a second landscape stacked above the strip, tile-panel ghosts, dark streaks; two inpaint retries painted
+    frames, panels and once a sloth).
+  - **Round 4 (follow-up commit):** each of the 16 got a tall start picture (`tallstart.py`: the strip with a sky stacked above it,
+    from a passed sky of the same world or a smooth gradient of the strip's own top), then one img2img pass over the whole picture at
+    s30 and s38. Review sheets: `skies-r4/review-1..4.jpg` (A start, B s30, C s38).
+    - **Passed and in: 5** (C, s38): w2, w2evening, w6, w9, w9dawn. Cut with `skycut.py --tall` (list `PASSED4`). In game:
+      `skies-r4/2-1-up.jpg`, `2-7-up.jpg`, `6-5-up.jpg`, `9-1-up.jpg` (before is the cover fit, after the new sky). The sideways
+      shots are unchanged (`*-side.jpg`).
+    - **Still held back: 11.** w1kapok, w1sunrise (the donor sky's yellow-red streak and a seam), w3sinkhole (a flat band and a second
+      roof), w5dusk2 (a ragged cloud seam), w5twi1, w5twi2, w6dawn, w7dawn, w7dusk (a dark smoke slab with a straight bottom edge),
+      w10after and w7 (a straight line where the sky meets the strip). These keep the cover fit described above.
+- **Spend:** about $4.75 of the $8 X-16 budget (pilots $0.83, batch $2.27, two cancelled retries $0.46, round 4 $1.15), logged in
   `tools/art/hfbatch/jobs.txt`.
 - **In-game proof:** `x16/<stage>-up.jpg` (before and after upright) and `x16/<stage>-side.jpg` (before and after sideways), for 15
   stages covering every world plus the mood sets: 1-5, 1-8, 2-1, 3-1, 3-7, 4-5, 4-8, 5-1, 5-5, 6-5, 6-8, 7-1, 8-1, 9-1, 10-1.
@@ -89,8 +94,9 @@ HSV saturation balloons on dark pixels. The paired shots show the colour itself 
 
 ## Rough spots, named
 
-- **16 skies held back.** Those sets look right upright (cover fit) but don't have the taller painted sky. A clean retry needs a
-  different method (a dedicated sky painted on its own, then joined), not more rounds of the same inpaint.
+- **11 skies still held back** (listed above). Those sets look right upright (cover fit) but don't have the taller painted sky.
+  Round 4's repaint barely changed its start picture, so a fix for these needs a better start (a hand-picked or Gemini-painted sky
+  for each), not more img2img.
 - **A faint soft band where the sky meets the far strip on some worlds** (5-1, 1-8 at the top). It's a smooth fade, not a cut, and
   sits under the HUD.
 - **Unchanged from before:** w5dusk2-near's join (the log ends in an abrupt point), and 8-1's layer line under the HUD sideways, which
