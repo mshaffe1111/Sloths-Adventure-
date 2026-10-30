@@ -164,3 +164,5 @@ X-16 skies r5d 6ae3e30e0e0338d1bb7c5c56 rtx-pro-6000 started 00:21:34Z at 57cc1a
   Cancelled at about 00:31Z (~10 min, ~$0.45; round 5 so far ~$1.38 over 30 min): at 0.85 the full-width join came back a flat grey
   slab. Back to 0.75 (as the pilot), no easing, one seed (11) per strip.
 X-16 skies r5e 6ae3e523c78863f9c62e11c1 rtx-pro-6000 started 00:30:27Z at 3fa59012, 11 takes (seed 11); timeout 28 min.
+  Cancelled at about 00:38Z (~8 min, ~$0.37; round 5 so far ~$1.75): at 0.75 the join came back almost untouched, a hard line where
+  the sky meets the cut-off tree tops. Last try at 1.0 (the soft mask now honoured, the plain prompt).

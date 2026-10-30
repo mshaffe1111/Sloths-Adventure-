@@ -131,11 +131,11 @@ for it in SPEC['items']:
             w = img.shape[1]
             w16 = math.ceil(w / 16) * 16
             cols = np.arange(w16) % w
-            # (0.85 over the full width came back a flat grey slab in the middle of the band, round 5d: 0.75 as the pilot)
+            # (0.85 over the full width came back a flat grey slab, round 5d; 0.75 left the join almost as it was, a hard line, round 5e; 1.0)
             # the pipeline keys on a hard mask (half way): given the soft one it left everything above its half-way line as it was, and the
             # blend below jumped there (round 5b); so it repaints wherever the soft mask is above zero, and the soft mask blends it in
             res = inp(prompt=it['join'], negative_prompt=it.get('neg_join', it['neg']), image=Image.fromarray(np.clip(img[:, cols], 0, 255).astype(np.uint8)),
-                      mask_image=Image.fromarray(((mask[:, cols] > 0.01) * 255).astype(np.uint8), 'L'), strength=it.get('strength', 0.75), width=w16, height=img.shape[0],
+                      mask_image=Image.fromarray(((mask[:, cols] > 0.01) * 255).astype(np.uint8), 'L'), strength=it.get('strength', 1.0), width=w16, height=img.shape[0],
                       num_inference_steps=28, true_cfg_scale=4.0, generator=torch.Generator('cuda').manual_seed(seed)).images[0].convert('RGB')
             m = mask[..., None]
             return img * (1 - m) + np.asarray(res, np.float32)[:, :w] * m

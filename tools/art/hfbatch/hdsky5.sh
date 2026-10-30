@@ -4,4 +4,4 @@ set -e
 mkdir -p /out/hfbatch/hdset/jobs
 curl -sfL "$G/specs/spec-hdsky5.json" -o /out/hfbatch/hdset/jobs/spec-hdsky5.json
 curl -sfL "$G/skyt2i.py" -o /tmp/skyt2i.py
-SUB=hfbatch/hdset/r5e SPEC=hfbatch/hdset/jobs/spec-hdsky5.json TAG=hdsky5e python /tmp/skyt2i.py
+SUB=hfbatch/hdset/r5f SPEC=hfbatch/hdset/jobs/spec-hdsky5.json TAG=hdsky5f python /tmp/skyt2i.py
