@@ -6,7 +6,7 @@
  */
 import type { Platform, Vine, TreeStructure } from './types.ts';
 import {
-  rng, tone, mix, lighten, darken, rgba, drawCrown, drawFrond, drawGrass, drawFlower, drawMushroom,
+  rng, tone, mix, lighten, darken, rgba, drawCrown, drawFrond, drawGrass, drawFlower, drawMushroom, keptGradient,
   type RNG, type Tone,
 } from './artKit.ts';
 import { lookFor, type Look } from './scenery.ts';
@@ -103,10 +103,14 @@ function stone(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rot);
-  const g = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
-  g.addColorStop(0, st.light);
-  g.addColorStop(0.55, st.mid);
-  g.addColorStop(1, st.dark);
+  // kept by the stone's size (its tone is kept by artKit), not made each frame
+  const g = keptGradient(st, Math.round(w * 16) * 65536 + Math.round(h * 16), () => {
+    const gr = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
+    gr.addColorStop(0, st.light);
+    gr.addColorStop(0.55, st.mid);
+    gr.addColorStop(1, st.dark);
+    return gr;
+  });
   ctx.beginPath();
   ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
   stroked(ctx, g, rgba(outline, 0.75), 2);
