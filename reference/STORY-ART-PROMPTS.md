@@ -25,3 +25,25 @@ Sheets of poses go on a flat magenta background (#FF00FF) so they can be cut out
 ## Prompt 22: Pokey's parents going out into the storm (World 6 memory, World 10 confession)
 
 > In the same soft painted storybook style as the attached picture, a wide 16:9 illustration at night in a rainforest storm. Seen from behind, two grown sloths, a mother and a father, are going out along a long far branch into the wind and rain, holding on, heads down. In the foreground, a small round nest woven into a fork of branches, and over its rim just the two small hands of a sloth cub holding on tight. We never see the cub's face or the parents' faces. Lightning far away, heavy rain, deep blues and greens, one warm glow from the nest. Sad and quiet, not frightening.
+
+## Prompt 23: the post-credits card (sequel cliffhanger; reference/SEQUEL-IDEAS.md; NOT APPROVED YET, waiting on Matt's yes)
+
+Attach two pictures: the village story plate (`src/assets/story/plates/village.webp`) for the style, and a Meeca story sheet (her
+standing frames) so she stays on model. One card, wide 16:9, shown after the credits with 2-3 lines of text drawn by the game, so the
+picture has no words.
+
+> In the same soft painted storybook style as the first attached picture, a wide 16:9 illustration at dusk on the muddy bank of a slow
+> brown river at the edge of the rainforest. Meeca, the young sloth girl from the second attached picture (same face, same pink
+> headband, pink top, teal shorts and pink wristbands), stands at the water's edge, seen a little from behind and to the side, holding
+> up in both hands a broken iron collar with thorns on the inside, the kind the guardians wore, dripping and rusty, its clasp snapped.
+> She is not looking at the collar: she is looking far off to the east, where, over the treetops, a single dark storm cloud sits low on
+> the horizon with one thin flicker of lightning inside it. The rest of the sky is calm and warm, the last orange of sunset. Her face is
+> serious and brave, not scared: she has decided something. Behind her on the bank, small and in shadow, an empty spot in the grass
+> where someone was sitting. Quiet, a little cold, a hint of adventure. Leave the top third of the sky fairly open for two lines of
+> text. No text, no letters, no other characters.
+
+Why these choices: the storm and the east are the game's own last line ("Far off in the east, the last of the storm said something");
+the collar is the thread the game never explains (SEQUEL-IDEAS 3); Meeca faces away from home and toward the reader's next game,
+which is the cliffhanger Matt asked for ("go after Pokey, and we make Meeca the playable character"). Pokey is not in the picture: the
+empty spot in the grass says he's gone without showing anything frightening. Suggested lines (story-a to word them): "This time, the
+storm said Pokey's name." / "Meeca packed a satchel."
