@@ -997,10 +997,10 @@
 /* the play sign: the painted board hanging on its two vines (the vines are the top 28% of the picture, so the words sit lower, in the
    middle of the board) */
 .ttl-play { position: relative; width: min(86vw, 360px); aspect-ratio: 700 / 361; padding: 25% 7% 4%; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; container-type: inline-size;
   background: url(./assets/ui/sign-big.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .45)); transition: transform .09s ease, filter .15s ease; }
 .ttl-play:active { transform: translateY(3px) scale(.985); filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .45)) brightness(.96); }
-.ttl-play-t { display: flex; align-items: center; gap: .32em; font-family: var(--font-fun); font-size: clamp(22px, 6.2vw, 31px); letter-spacing: .03em; white-space: nowrap; color: #fff4d8;
+.ttl-play-t { display: flex; align-items: center; gap: .32em; font-family: var(--font-fun); font-size: 8.3cqi; letter-spacing: .03em; white-space: nowrap; color: #fff4d8;
   text-shadow: 0 2px 0 #4a2208, 2px 0 0 #4a2208, -2px 0 0 #4a2208, 0 -2px 0 #4a2208, 0 3px 5px rgba(0, 0, 0, .35); }
 .ttl-play-t .ic { width: 1.05em; height: 1.05em; filter: drop-shadow(0 2px 1px rgba(40, 20, 5, .5)); }
 .ttl-play-s { display: inline-flex; align-items: center; gap: 4px; font: 700 14px var(--font-ui); color: #fff1cf; text-shadow: 0 1px 0 #4a2208, 0 0 4px rgba(74, 34, 8, .8); }
@@ -1073,9 +1073,21 @@
   .gx2-carve { --lw: min(36vw, 74vh, 310px); }
   .gx2-top { margin-bottom: -40px; position: relative; z-index: 3; }
   .ttl-play { width: min(40vw, 320px); }
-  .ttl-play-t { font-size: clamp(19px, 2.6vw, 25px); }
 }
 @media (max-height: 430px) and (orientation: landscape) and (max-width: 700px) { .ttl-leaves { gap: 4px; } }
+/* tablets and open foldables: the whole group a size larger, never smaller than on a phone */
+@media (min-width: 600px) and (min-height: 600px) {
+  .ttl-play { width: min(60vw, 52vh, 460px); }
+  .ttl-play-s { font-size: 16px; }
+  .ttl-leaves { gap: 32px; margin-top: -4px; }
+  .ttl-leaf { width: 120px; min-height: 104px; font-size: 18px; }
+  .ttl-leaf-ic { width: 76px; height: 76px; }
+  .ttl-leaf-ic .ic { width: 38px; height: 38px; }
+  .ttl-token { width: 60px; height: 60px; }
+  .ttl-token .ic { width: 32px; height: 32px; }
+}
+/* (sideways the group shares half the width with the pair: the leaves sit closer) */
+@media (min-width: 600px) and (min-height: 600px) and (orientation: landscape) { .ttl-leaves { gap: 8px; } }
 /* the narrowest phones (320 wide): the three leaves share the width */
 @media (max-width: 340px) { .ttl-leaves { gap: 0; } .ttl-leaf { width: 96px; font-size: 15px; } }
 @media (max-height: 350px) and (orientation: landscape) {
