@@ -300,7 +300,7 @@ test('Easy: a silent sparkle on the important piece once he is stuck in the room
     const h = fakeHost(p, easy, stuck);
     // standing still to think is not stuck, however long (STAGE-RULES §3: not a clock)
     for (let t = 0; t < STUCK.calm * 3; t += 1 / 30) kit.step(1 / 30, h, st.platforms);
-    assert.equal(kit.sparkling(0), false);
+    assert.equal(kit.stuckHelped(0), false);
     assert.deepEqual(stuck, []);
     // back and forth with nothing changing is
     for (let t = 0; t < STUCK.turns / 2 + 0.5; t += 1 / 30) {
@@ -309,7 +309,7 @@ test('Easy: a silent sparkle on the important piece once he is stuck in the room
     }
     p.vx = 0;
     assert.equal(kit.inRoom, 0);
-    assert.equal(kit.sparkling(0), easy);
+    assert.equal(kit.stuckHelped(0), easy);
     assert.deepEqual(stuck, ['carry'], 'the hook for on-request hints is told either way');
     // the active part: the acorn (before it is picked up)
     assert.ok(Math.abs(kit.guideThings[0].x - 548) < 2);
@@ -342,5 +342,5 @@ test('turning back and forth with nothing changing also counts as stuck (Easy)',
     p.vx = Math.floor(t * 2) % 2 ? 200 : -200;
     kit.step(1 / 30, h, st.platforms);
   }
-  assert.equal(kit.sparkling(0), true);
+  assert.equal(kit.stuckHelped(0), true);
 });
