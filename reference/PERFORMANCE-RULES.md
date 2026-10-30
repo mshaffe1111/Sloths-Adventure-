@@ -208,7 +208,7 @@ Canvas 2D with baked layers can hold 30 fps for a game our size. If, after the ย
 
 The rules above say how to draw well; this section keeps them holding (Duet's second look, 2026-10-30, agreed by the lead).
 
-1. **An automatic draw check on every gate (to build):** a headless run of the control test and one stage per world, with every canvas call counted per frame. It fails when the per-frame path:
+1. **An automatic draw check on every gate (built 2026-10-30: `node tools/perf/drawcheck.mjs`, limits and allowlist in `tools/perf/limits.json`):** a headless run of the control test and one stage per world, with every canvas call counted per frame. It fails when the per-frame path:
    - creates gradients;
    - sets `shadowBlur` or `filter`;
    - uses an advanced blend;
@@ -217,7 +217,7 @@ The rules above say how to draw well; this section keeps them holding (Duet's se
    - draws any sheet shrunk more than 2.5x at q0.
 
    It runs with the gate (`tools/inspect`), not only at deploy, so a helper finds out before reporting.
-2. **An art size gate in the build and in the art packers (to build):** fail on any of these:
+2. **An art size gate in the build and in the art packers (first rule built 2026-10-30: `node tools/perf/artcheck.mjs`; the other two are still to build):** fail on any of these:
    - a sheet over 4096 px on a side;
    - a creature clip sheet more than about 2x its on-screen size at q0;
    - a world whose decoded sheets add up to more than its budget (ยง2.13).
