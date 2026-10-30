@@ -1166,11 +1166,15 @@
 .pm-row { display: grid; grid-template-columns: 62px 1fr 34px; align-items: center; gap: 10px; font-family: var(--font-ui); font-size: 14px; color: var(--gx-ink-soft); font-weight: 600; }
 .pm-row output { text-align: right; color: #8a4b12; font-weight: 700; font-variant-numeric: tabular-nums; }
 .pm-vol { position: relative; height: 44px; margin: 0 14px 0 10px; touch-action: none; cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
-.pm-vol-track { position: absolute; left: 0; right: 0; top: 50%; height: 10px; margin-top: -5px; border-radius: 99px; overflow: hidden; background: #b88a52; box-shadow: inset 0 2px 2px rgba(0, 0, 0, .35); }
-.pm-vol-fill { height: 100%; background: linear-gradient(180deg, #7cc35a, #3a8a2e); }
-.pm-vol-thumb { position: absolute; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; pointer-events: none; border-radius: 4px 16px 4px 16px; transform: rotate(-20deg);
-  background: linear-gradient(180deg, #6cc04f, #2f7a26); border: 2px solid #1d4a1b; box-shadow: 0 2px 0 #133512; }
+/* the painted slider (menu kit, 2026-10-30): the empty track, the green fill stretched to the value (its round ends kept), the knob */
+.pm-vol-track { position: absolute; left: -6px; right: -6px; top: 50%; height: 22px; margin-top: -11px; box-sizing: border-box; padding: 4px;
+  background: url(./assets/ui/slider-empty.webp) center / 100% 100% no-repeat; }
+.pm-vol-fill { height: 100%; min-width: 14px; box-sizing: border-box; border: 7px solid transparent; border-image: url(./assets/ui/slider-fill.webp) 14 fill / 7px stretch; }
+.pm-vol-fill[style*="width: 0%"] { visibility: hidden; }
+.pm-vol-thumb { position: absolute; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; pointer-events: none; border-radius: 50%;
+  background: url(./assets/ui/slider-knob.webp) center / contain no-repeat; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .35)); }
 .pm-vol:focus-visible .pm-vol-thumb { box-shadow: 0 0 0 4px rgba(253, 230, 138, .8); }
+@media (max-height: 430px) and (orientation: landscape) { .pm-vol-thumb { width: 34px; height: 34px; margin: -17px 0 0 -17px; } }
 
 /* ───────── Settings on the start screen (TitleSettings.tsx, layout B): the painted card, painted tab chips, one section at a time ───────── */
 .st-scrim { z-index: 60; padding-top: max(34px, calc(env(safe-area-inset-top, 0px) + 30px)); }
