@@ -3,6 +3,8 @@
 import { INTRO_PANELS, WORLD_STORIES, WORLD_MID, WORLD_GATE, bossPanels, thornbarkPanels, ENDING_PANELS, type StoryPanel } from '../../src/game/story.ts';
 import { MEMORIES, MEMORY_ORDER } from '../../src/game/storyChapters.ts';
 import { BOSS_STORIES } from '../../src/game/storyBosses.ts';
+import { victoryPanels } from '../../src/game/victoryScenes.ts';
+import { WORLDS_DATA } from '../../src/game/worldsData.ts';
 
 export interface SceneEntry { key: string; title: string; open: { screen: string; id: string }; panels: StoryPanel[] }
 
@@ -15,8 +17,10 @@ export function allScenes(): SceneEntry[] {
     if (WORLD_MID[w]) out.push({ key: `w${w}-mid`, title: `World ${w} midpoint`, open: { screen: 'world_mid', id: `${w}-5` }, panels: WORLD_MID[w] });
     if (WORLD_GATE[w]) out.push({ key: `w${w}-gate`, title: `World ${w} gate`, open: { screen: 'world_gate', id: `${w}-1` }, panels: WORLD_GATE[w] });
     if (BOSS_STORIES[w]) {
-      out.push({ key: `w${w}-boss-intro`, title: `World ${w} guardian intro`, open: { screen: 'boss_intro', id: `${w}-10` }, panels: bossPanels(w, 'intro', 'boss') });
-      out.push({ key: `w${w}-boss-defeat`, title: `World ${w} guardian defeat`, open: { screen: 'boss_defeat', id: `${w}-10` }, panels: bossPanels(w, 'defeat', 'boss') });
+      // (as App.tsx plays them: the guardian's own name, and its victory scene where it has one)
+      const name = WORLDS_DATA[w - 1].bossName;
+      out.push({ key: `w${w}-boss-intro`, title: `World ${w} guardian intro`, open: { screen: 'boss_intro', id: `${w}-10` }, panels: bossPanels(w, 'intro', name) });
+      out.push({ key: `w${w}-boss-defeat`, title: `World ${w} guardian defeat`, open: { screen: 'boss_defeat', id: `${w}-10` }, panels: victoryPanels(w, name) ?? bossPanels(w, 'defeat', name) });
     }
   }
   out.push({ key: 'thornbark-intro', title: 'Thornbark intro', open: { screen: 'boss_intro', id: 'thornbark' }, panels: thornbarkPanels('intro') });

@@ -1,6 +1,7 @@
 // records story scenes as they play, upright (390x844) and sideways (844x390), as a reader would: each line typed out, then held for
 // a reading time, then Next. node tools/story-delivery/record.mjs <port> <outDir> [key,key,...] [--jobs N]
-// (Playwright video has no sound: the voices are heard on the sample page)
+// (Playwright video has no sound: the voices are heard on the sample page. Serve a development build (`NODE_ENV=development npx vite
+// build --mode development`, any static server): the dev server is too heavy for several recorders at once)
 import { createRequire } from 'module';
 import { mkdirSync, readFileSync, unlinkSync } from 'fs';
 import { execFileSync } from 'child_process';
@@ -18,6 +19,8 @@ async function one({ s, o }) {
   const [w, h] = o === 'up' ? [390, 844] : [844, 390];
   const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, recordVideo: { dir: out, size: { width: w, height: h } } });
   const p = await ctx.newPage();
+  // (the first tap asks for full screen, which in a headless browser shrinks the recorded picture)
+  await p.addInitScript(() => { Element.prototype.requestFullscreen = () => Promise.resolve(); });
   p.on('pageerror', (e) => { if (!/AudioParam/.test(e.message)) console.log(s.key, 'ERR', e.message); });
   await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
   await p.waitForTimeout(2500);

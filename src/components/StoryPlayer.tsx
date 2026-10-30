@@ -152,14 +152,18 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   }, [idx, panel, wantsCard, cardUp, shown]);
 
   // the speaker's voice as the line types, a syllable every few letters (not when the whole line is skipped to)
+  // (a slow frame can bring several letters at once: they are still spoken, the voice's own gap keeps it from gabbling; a tap that
+  // finishes the line is `skipped`, and the rest of that line is silent)
   const spoken = useRef(0);
+  const skipped = useRef(false);
   useEffect(() => {
     spoken.current = 0;
+    skipped.current = false;
   }, [idx]);
   useEffect(() => {
     const from = spoken.current;
     spoken.current = shown;
-    if (shown - from > 4) return;
+    if (skipped.current) return;
     for (let i = from; i < shown; i++) sound.speak(panel.speaker, panel.text, i);
   }, [shown, panel]);
 
@@ -326,6 +330,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       return;
     }
     if (!done) {
+      skipped.current = true;
       setShown(panel.text.length);
       return;
     }
