@@ -1,5 +1,5 @@
 """Starts for the finale's ending cards (S-7): each card's world painted backdrop (its far, mid and near strips, as the stages draw them)
-with the game's own pictures of the characters on it, at 1280 x 960. The GPU job (storygpu.py, make_spec round5) paints them over on the
+with the game's own pictures of the characters on it, at 1920 x 1080. The GPU job (storygpu.py, make_spec round5) paints them over on the
 style model so the guardians stay the ones the player fought.
 
     python3 -I tools/art/storyart/cards.py [card ...]     -> tools/art/hfbatch/starts/storyart/card-<id>.png + a review sheet
@@ -10,9 +10,9 @@ from PIL import Image, ImageFilter
 
 REPO = Path(__file__).resolve().parents[3]
 OUT = REPO / 'tools/art/hfbatch/starts/storyart'
-W, H = 1280, 960
+W, H = 1920, 1080  # 16:9 (story-a, 2026-10-30): upright shows the middle 4:3, sideways a band; what matters stays in the middle 1440 x 880
 GROUND = 0.84  # where the feet stand, as a share of the height
-PLATE_FOOT = 0.95  # on a story plate (the plates carry a dark strip under their floor, cropped off)
+PLATE_FOOT = 0.88  # on a story plate (the plates carry a dark strip under their floor, cropped off)
 
 
 def backdrop(world):
@@ -20,7 +20,7 @@ def backdrop(world):
         # a story plate (2560 x 2720: the old scene at the bottom, sky room above): the bottom 4:3 of it
         # (the strip under the floor line is cut off, so the floor sits where the feet go: GROUND)
         im = Image.open(REPO / f'src/assets/story/plates/{world}.webp').convert('RGBA')
-        h = round(im.width * 3 / 4)
+        h = round(im.width * H / W)
         floor = im.height - im.width * 572 / 1024 * (1 - plate_ground(world))
         bottom = min(im.height, round(floor + h * (1 - PLATE_FOOT)))
         return im.crop((0, bottom - h, im.width, bottom)).resize((W, H), Image.LANCZOS)
@@ -96,38 +96,38 @@ def place(cv, im, cx, height, flip=False, foot=GROUND, y=None):
 E = 'src/assets/enemies/'
 # card: world, [figure (a function giving the picture), x share, height share, flip], the scene in words (the GPU prompt)
 CARDS = {
-    'venom-fang': (1, [(lambda: sprite(E + 'venom-atlas.webp', 'venomAtlasData.ts', 'n_idle'), .64, .42, True), (lambda: hd('pokey', 'talk_a'), .34, .44, False)],
-                   'a big green snake with a small gold crown resting in a loose coil in the rainforest, a young sloth with a satchel standing politely beside him asking how he is, a warm friendly visit'),
-    'crocus-rex': (2, [(lambda: sprite(E + 'croc-atlas.webp', 'crocAtlasData.ts', 'idle'), .52, .26, False)],
-                   'a big crocodile with a crown lying contentedly in the sun on the sandy riverbank, eyes half closed, the river calm and clear'),
-    'shadow-prowler': (3, [(lambda: sprite(E + 'prowler-atlas.webp', 'prowlerAtlasData.ts', 'curl'), .6, .3, True), (lambda: hd('pokey', 'slump'), .38, .3, False)],
-                       'a black panther lying quietly on a mossy rock ledge in a glowworm cave in the evening, a young sloth sitting beside him in silence, both looking out, peaceful'),
-    'sky-sovereign': (4, [(lambda: sprite(E + 'sovereign-atlas.webp', 'sovereignAtlasData.ts', 'screechPerch'), .55, .42, False)],
-                      'a great harpy eagle perched calmly on a high cliff branch, wind blowing freely through the misty valley and waterfalls, feathers ruffled by the wind'),
-    'tarantula-queen': (5, [(lambda: sprite(E + 'queen-atlas.webp', 'queenAtlasData.ts', 'idle2'), .5, .34, False)],
-                        'a big friendly tarantula queen with a tiny crown sitting at a little table set for tea among the pink orchids, a china teapot and cups, delicate webs'),
-    'marsh-reaver': (6, [(lambda: sprite(E + 'reaver-atlas.webp', 'reaverAtlasData.ts', 'idle'), .52, .4, False)],
-                     'a big marsh creature resting in the shallow clear water of the mangroves at peace, fireflies, the water clean and still'),
+    'venom-fang': (1, [(lambda: sprite(E + 'venom-atlas.webp', 'venomAtlasData.ts', 'n_idle'), .58, .44, True), (lambda: hd('pokey', 'talk_a'), .4, .46, False)],
+                   'a big green snake with a small gold crown resting in a loose coil by a mossy branch, looking pleased but pretending not to be, a young sloth with a satchel standing politely beside him asking first, a warm friendly visit in the rainforest'),
+    'crocus-rex': (2, [(lambda: sprite(E + 'croc-atlas.webp', 'crocAtlasData.ts', 'idle'), .5, .26, False, .9), (lambda: squirrel('kids'), .5, .16, False, .74)],
+                   'a big crocodile with a crooked little crown swimming gently across the calm river like a ferry, three small passengers riding on his back, the tree village on the far bank, sunny'),
+    'shadow-prowler': (3, [(lambda: sprite(E + 'prowler-atlas.webp', 'prowlerAtlasData.ts', 'curl'), .57, .32, True), (lambda: hd('pokey', 'slump'), .42, .32, False)],
+                       'a black panther lying quietly on a mossy rock ledge in a glowworm cave in the evening, a young sloth sitting beside him, neither of them talking, both looking out, peaceful'),
+    'sky-sovereign': (4, [(lambda: sprite(E + 'sovereign-atlas.webp', 'sovereignAtlasData.ts', 'glide'), .48, .26, False, .5), (lambda: sprite(E + 'sovereign-atlas.webp', 'sovereignAtlasData.ts', 'glide'), .66, .13, False, .36), (lambda: sprite(E + 'sovereign-atlas.webp', 'sovereignAtlasData.ts', 'glide'), .33, .12, False, .32)],
+                      'a great harpy eagle flying free on the wind over the misty valley and waterfalls, two young grown eaglets flying with her, the wind blowing where it likes'),
+    'tarantula-queen': (5, [(lambda: sprite(E + 'queen-atlas.webp', 'queenAtlasData.ts', 'idle2'), .58, .34, False), (lambda: hd('pokey', 'idle'), .38, .36, False)],
+                        'a big friendly tarantula queen with a tiny crown at a little round table set for tea among the pink orchids, a china teapot and cups, a young sloth guest sitting with her finishing his cup'),
+    'marsh-reaver': (6, [(lambda: sprite(E + 'reaver-atlas.webp', 'reaverAtlasData.ts', 'idle'), .52, .42, False)],
+                     'a big marsh creature sitting on a mangrove root by a path at noon eating his lunch from a leaf, half of it left beside him, fireflies, clean still water'),
     'stone-golem': ('ruins', [(lambda: sprite(E + 'golem-atlas.webp', 'golemAtlasData.ts', 'idle'), .5, .36, False)],
-                    'a mossy stone golem sitting peacefully among the ancient ruins and the ring of stone chairs, flowers growing on his shoulders, sun through the trees'),
-    'night-wing-monarch': (8, [(lambda: sprite(E + 'monarch-atlas.webp', 'monarchAtlasData.ts', 'perched'), .62, .34, True), (lambda: hd('pokey', 'talk_b'), .34, .42, False)],
-                           'a huge night butterfly monarch perched on a branch under the moon, writing in a little book, a young sloth sitting beside her telling a story, fireflies'),
-    'magma-drake': (9, [(lambda: sprite(E + 'drake-atlas.webp', 'drakeAtlasData.ts', 'idle'), .66, .4, True), (lambda: cel('db.side_by_side'), .3, .44, False)],
-                    'a red dragon sitting at a tidy little table by the volcano with two teacups, two young sloths visiting him, a girl sloth in a pink headband and a boy sloth with a satchel, warm glow, everything neat and tidy'),
-    'general': ('grandma-door-empty', [(lambda: cel('gv.sit'), .4, .44, False)],
-                'an old brown sloth in a rust red scarf sitting on the step by a round wooden door in the roots of a great tree, at peace, retired, soft morning light'),
-    'soldiers': ('cookhouse', [(lambda: sprite(E + 'guard-atlas.webp', 'guardAtlasData.ts', 'sit1'), .38, .36, False), (lambda: sprite(E + 'guard-atlas.webp', 'guardAtlasData.ts', 'sit2'), .62, .36, True)],
-                 'two tired soldier sloths in green coats sitting down at a wooden counter, relieved, warm lamp light, a tailor shop'),
-    'squirrels': (1, [(lambda: squirrel('laughing'), .4, .3, False), (lambda: squirrel('kids'), .62, .2, False), (lambda: squirrel('sign'), .82, .22, False)],
-                  'a family of red squirrels under the old vine in the rainforest, laughing and waving, little kids, their wooden sign, sunny'),
-    'gruntlewick': ('village', [(lambda: cel('tc.announce'), .5, .5, False)],
-                    'an old marmoset town crier with a white beard reading from a scroll in the tree village, finishing his announcement, proud'),
-    'mailman': ('village', [(lambda: cel('po.offer_parcel'), .5, .5, False)],
-                'a sloth mail carrier with a cap and a mail bag handing over a parcel in the tree village, smiling'),
-    'pell': ('cookhouse', [(lambda: cel('lp.sew_table'), .5, .5, False)],
-             'a sloth lieutenant in his own little tailor shop, sewing at the counter, a measuring tape round his neck, warm lamp light, content'),
-    'flicker': ('cookhouse', [(lambda: flicker('glow_00'), .5, .14, False, .52)],
-                'a small glowing firefly hovering steady over a wooden shop counter, warm steady light, a quiet tailor shop at night'),
+                    'a mossy stone golem speaking slowly at a council in the ancient ruins, every stone chair in the ring taken by forest guardians listening patiently, sun through the trees'),
+    'night-wing-monarch': (8, [(lambda: sprite(E + 'monarch-atlas.webp', 'monarchAtlasData.ts', 'perched'), .6, .34, True), (lambda: hd('pokey', 'talk_b'), .4, .44, False)],
+                           'a huge night butterfly monarch perched on a branch under the moon writing in a little book, a young sloth beside her telling her how a dream ended, fireflies'),
+    'magma-drake': (9, [(lambda: sprite(E + 'drake-atlas.webp', 'drakeAtlasData.ts', 'idle'), .62, .42, True), (lambda: cel('db.side_by_side'), .38, .44, False)],
+                    'a red dragon at a tidy little table by the volcano with two used teacups, two young sloths visiting him, a girl sloth in a pink headband and a boy sloth with a satchel, his cave swept neat and tidy, warm glow'),
+    'general': (2, [(lambda: cel('gv.reach_a'), .46, .46, False)],
+                'an old brown sloth in a rust red scarf and no armour planting a small young tree on the riverbank in spring, kneeling patiently, taking his time, gentle morning light'),
+    'soldiers': ('cookhouse', [(lambda: sprite(E + 'guard-atlas.webp', 'guardAtlasData.ts', 'sit1'), .42, .36, False), (lambda: sprite(E + 'guard-atlas.webp', 'guardAtlasData.ts', 'sit2'), .6, .36, True)],
+                 'two tired soldier sloths in green coats sitting down at a wooden counter in a little tailor shop, relieved to sit, a measuring tape on the counter, warm lamp light'),
+    'squirrels': (1, [(lambda: squirrel('laughing'), .42, .3, False), (lambda: squirrel('kids'), .6, .2, False)],
+                  'a family of red squirrels under the old vine in the rainforest laughing and waving, little kids, a new blank wooden sign on a post beside them, sunny'),
+    'gruntlewick': ('village', [(lambda: cel('tc.announce'), .5, .52, False)],
+                    'an old marmoset town crier with a white beard reading a brand new warning from a scroll in the tree village, very serious about it, proud'),
+    'mailman': ('village', [(lambda: cel('po.offer_parcel'), .5, .52, False)],
+                'a sloth mail carrier with a cap and a mail bag carrying a parcel very carefully and seriously through the tree village, taking his time'),
+    'pell': ('cookhouse', [(lambda: cel('lp.sew_table'), .5, .52, False)],
+             'a sloth lieutenant in his own little tailor shop sewing at the counter, a crooked wooden shop sign, customers waiting happily, warm lamp light, a busy friendly shop'),
+    'flicker': ('cookhouse', [(lambda: flicker('glow_00'), .5, .15, False, .52)],
+                'a small glowing firefly hovering steady over a wooden shop counter, a warm steady light over the counter, a quiet tailor shop at night'),
 }
 
 

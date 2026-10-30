@@ -1,66 +1,66 @@
 {
  "venom-fang": {
   "world": 1,
-  "words": "a big green snake with a small gold crown resting in a loose coil in the rainforest, a young sloth with a satchel standing politely beside him asking how he is, a warm friendly visit"
+  "words": "a big green snake with a small gold crown resting in a loose coil by a mossy branch, looking pleased but pretending not to be, a young sloth with a satchel standing politely beside him asking first, a warm friendly visit in the rainforest"
  },
  "crocus-rex": {
   "world": 2,
-  "words": "a big crocodile with a crown lying contentedly in the sun on the sandy riverbank, eyes half closed, the river calm and clear"
+  "words": "a big crocodile with a crooked little crown swimming gently across the calm river like a ferry, three small passengers riding on his back, the tree village on the far bank, sunny"
  },
  "shadow-prowler": {
   "world": 3,
-  "words": "a black panther lying quietly on a mossy rock ledge in a glowworm cave in the evening, a young sloth sitting beside him in silence, both looking out, peaceful"
+  "words": "a black panther lying quietly on a mossy rock ledge in a glowworm cave in the evening, a young sloth sitting beside him, neither of them talking, both looking out, peaceful"
  },
  "sky-sovereign": {
   "world": 4,
-  "words": "a great harpy eagle perched calmly on a high cliff branch, wind blowing freely through the misty valley and waterfalls, feathers ruffled by the wind"
+  "words": "a great harpy eagle flying free on the wind over the misty valley and waterfalls, two young grown eaglets flying with her, the wind blowing where it likes"
  },
  "tarantula-queen": {
   "world": 5,
-  "words": "a big friendly tarantula queen with a tiny crown sitting at a little table set for tea among the pink orchids, a china teapot and cups, delicate webs"
+  "words": "a big friendly tarantula queen with a tiny crown at a little round table set for tea among the pink orchids, a china teapot and cups, a young sloth guest sitting with her finishing his cup"
  },
  "marsh-reaver": {
   "world": 6,
-  "words": "a big marsh creature resting in the shallow clear water of the mangroves at peace, fireflies, the water clean and still"
+  "words": "a big marsh creature sitting on a mangrove root by a path at noon eating his lunch from a leaf, half of it left beside him, fireflies, clean still water"
  },
  "stone-golem": {
   "world": "ruins",
-  "words": "a mossy stone golem sitting peacefully among the ancient ruins and the ring of stone chairs, flowers growing on his shoulders, sun through the trees"
+  "words": "a mossy stone golem speaking slowly at a council in the ancient ruins, every stone chair in the ring taken by forest guardians listening patiently, sun through the trees"
  },
  "night-wing-monarch": {
   "world": 8,
-  "words": "a huge night butterfly monarch perched on a branch under the moon, writing in a little book, a young sloth sitting beside her telling a story, fireflies"
+  "words": "a huge night butterfly monarch perched on a branch under the moon writing in a little book, a young sloth beside her telling her how a dream ended, fireflies"
  },
  "magma-drake": {
   "world": 9,
-  "words": "a red dragon sitting at a tidy little table by the volcano with two teacups, two young sloths visiting him, a girl sloth in a pink headband and a boy sloth with a satchel, warm glow, everything neat and tidy"
+  "words": "a red dragon at a tidy little table by the volcano with two used teacups, two young sloths visiting him, a girl sloth in a pink headband and a boy sloth with a satchel, his cave swept neat and tidy, warm glow"
  },
  "general": {
-  "world": "grandma-door-empty",
-  "words": "an old brown sloth in a rust red scarf sitting on the step by a round wooden door in the roots of a great tree, at peace, retired, soft morning light"
+  "world": 2,
+  "words": "an old brown sloth in a rust red scarf and no armour planting a small young tree on the riverbank in spring, kneeling patiently, taking his time, gentle morning light"
  },
  "soldiers": {
   "world": "cookhouse",
-  "words": "two tired soldier sloths in green coats sitting down at a wooden counter, relieved, warm lamp light, a tailor shop"
+  "words": "two tired soldier sloths in green coats sitting down at a wooden counter in a little tailor shop, relieved to sit, a measuring tape on the counter, warm lamp light"
  },
  "squirrels": {
   "world": 1,
-  "words": "a family of red squirrels under the old vine in the rainforest, laughing and waving, little kids, their wooden sign, sunny"
+  "words": "a family of red squirrels under the old vine in the rainforest laughing and waving, little kids, a new blank wooden sign on a post beside them, sunny"
  },
  "gruntlewick": {
   "world": "village",
-  "words": "an old marmoset town crier with a white beard reading from a scroll in the tree village, finishing his announcement, proud"
+  "words": "an old marmoset town crier with a white beard reading a brand new warning from a scroll in the tree village, very serious about it, proud"
  },
  "mailman": {
   "world": "village",
-  "words": "a sloth mail carrier with a cap and a mail bag handing over a parcel in the tree village, smiling"
+  "words": "a sloth mail carrier with a cap and a mail bag carrying a parcel very carefully and seriously through the tree village, taking his time"
  },
  "pell": {
   "world": "cookhouse",
-  "words": "a sloth lieutenant in his own little tailor shop, sewing at the counter, a measuring tape round his neck, warm lamp light, content"
+  "words": "a sloth lieutenant in his own little tailor shop sewing at the counter, a crooked wooden shop sign, customers waiting happily, warm lamp light, a busy friendly shop"
  },
  "flicker": {
   "world": "cookhouse",
-  "words": "a small glowing firefly hovering steady over a wooden shop counter, warm steady light, a quiet tailor shop at night"
+  "words": "a small glowing firefly hovering steady over a wooden shop counter, a warm steady light over the counter, a quiet tailor shop at night"
  }
 }
