@@ -22,6 +22,9 @@ The lead works on this alone first, with no helpers. Rules: reference/PERFORMANC
 2. **Matt, about 10 minutes:** (chrome://gpu DONE 12:25 AM ET, see PERFORMANCE-RULES §0: hardware accelerated, GaneshVulkan, advanced blends emulated, Android 17 beta)
    - three control tests in Chrome on the Pixel (normal, then two A/B switches);
    - one in Edge.
+   - DONE 12:30 AM ET, Chrome (9big) vs Edge (8nh2) on the Pixel: the same. Chrome averaged 26.5 fps with one window at 18.4; Edge averaged 27.5. Both were draw-bound at q2.
+   - **The stalls follow the SECTIONS, not x:** Snake ring, Snakes on branches and Hide from the eagle, in both browsers.
+   - So step 1 starts on the snake and eagle drawing (creatures.ts, snakeSprite.ts, creatureRig.ts, the eagle's sheet eagle-anim 2048x2545, the bush hiding).
 3. **The fixes, in order of the evidence:**
    - **(a)** gameplay smoothing off 'high';
    - **(b)** gameplay sheets as ImageBitmaps, kept alive and pre-uploaded;

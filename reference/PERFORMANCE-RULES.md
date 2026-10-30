@@ -68,7 +68,7 @@ These are measured facts about our code. A desktop browser can't reproduce the P
   - Skia backend **GaneshGL** with **Vulkan: Disabled**, so Edge draws through OpenGL, which ANGLE then translates onto the same PowerVR Vulkan driver: one extra layer on every draw.
   - Chrome draws on Vulkan directly (GaneshVulkan).
   - Edge has the same advanced-blend workaround, the same 8192 limit and the same Graphite block.
-  - So Edge may simply be slower on this phone, and the APK's WebView may take either route: check `chrome://gpu` inside the app (the WebView's own report) when testing the APK.
+  - Measured: it makes no real difference (Chrome 26.5 fps, Edge 27.5, the same stalls). The stalls follow the snake and eagle sections in both browsers, so the cause is what we draw there, not the browser's route. Edge isn't slower; and the APK's WebView may take either route: check `chrome://gpu` inside the app (the WebView's own report) when testing the APK.
 - **No GPU process crashes, and no software rendering.** The stalls are slow GPU work or decode/upload, as §6's third row says.
 
 ## 1. The budget
