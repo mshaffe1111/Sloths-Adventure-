@@ -35,8 +35,10 @@ const OUT = { plate: undefined as string | undefined };
 const zoomOn = (x: number) => ({ ...OUT, zoom: 2.4, focusX: x, focusY: 0.66 });
 
 /** the Drake's cave on the lava road: Pokey with the tea, the Drake sitting across from him (and Dot, about the sock) */
-const DRAKE_CAVE = 'P:happy@.28*.95 B9@.7*.75<';
-const DRAKE_CAVE_DOT = 'P:happy@.28*.95 B9@.7*.75< D:puzzled@.46^.42';
+const DRAKE_CAVE = 'P:happy@.26*.95 TS:pot@.38 DR:bowed@.7*.85<';
+const DRAKE_CAVE_DOT = 'P:happy@.26*.95 TS:pot@.38 DR:bowed@.7*.85< D:puzzled@.46^.42';
+/** the tea poured: both cups down between them */
+const DRAKE_TEA = 'P:happy@.26*.95 TS:cups@.47 DR:bowed@.7*.85<';
 /** at the tea table: Pokey, Meeca, Dot, and the General in the chair at the head of the table, the one the Queen dusted every morning */
 const TEA = 'P:happy@.2*.9 M:happy@.42*.9 GV:sit@.72*1.12 D@.5^.5*.9';
 /** the same table a minute earlier: the General has his cup and is looking at that chair */
@@ -127,8 +129,8 @@ export function endTagPanels(found: string[] = [], thornHeart = false): StoryPan
     ]));
   }
   out.push(...chapter({ name: 'AFTER THE END · MONTHS LATER', w: 1, m: 'storm', cue: 'dread', i: 0.35, base: { particles: 'rain' } }, [
-    N('Months later, the storm came back from the east. It came at night.', '', { p: { plate: 'nest-storm', zoom: 1.1 } }),
-    N('Pokey was asleep on his branch. The end of the scarf hung down off it, most of the way to the ground.', 'P:sleep@.5', { p: { plate: 'nest-night', zoom: 1.3, focusX: 0.5 } }),
+    N('Months later, the storm came back from the east. It came at night.', '', { p: { plate: 'storm-returns', zoom: 1.35, focusX: 0.3, focusY: 0.4 } }),
+    N('Pokey was asleep on his branch. The end of the scarf hung down off it, most of the way to the ground.', '', { p: { plate: 'storm-returns', zoom: 1.1, focusX: 0.62 } }),
     N('In the morning the branch was empty.', '', { m: 'day', cue: 'sorrow', i: 0.3, p: { plate: 'nest-morning', particles: 'none', zoom: 1.2 } }),
     N('The scarf was still there. It hung from a black thorn that had not been there the night before.', '', { p: { plate: 'nest-morning', particles: 'none', zoom: 1.6, focusX: 0.55 } }),
     M('Dot. How fast can you fly?', 'MS:scarf_hug@.44*.85 D@.64^.42<', { cue: 'tender', i: 0.4, p: { plate: 'nest-morning', particles: 'none' } }),
@@ -272,11 +274,11 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     DRAKE('There is nothing behind the rock.', '=', { p: OUT }),
     D('There\'s a sock behind the rock, I can see it from here, it\'s an enormous sock, I\'m not going to ask about the sock, I\'m asking, why is there a sock.', DRAKE_CAVE_DOT, { sting: 'laugh', p: OUT }),
     DRAKE('It is a tea cosy. I made it. It did not go well.', '=', { p: OUT }),
-    N('Pokey poured. The Drake held his cup in both claws and looked at it for a long time.', DRAKE_CAVE, { cue: 'tender', i: 0.4, p: { ...OUT, zoom: 1.35, focusX: 0.62 } }),
+    N('Pokey poured. The Drake held his cup in both claws and looked at it for a long time.', DRAKE_TEA, { cue: 'tender', i: 0.4, p: { ...OUT, zoom: 1.35, focusX: 0.62 } }),
     DRAKE('It is too hot.', '=', { p: OUT }),
     P('You breathe fire.', '=', { p: OUT }),
     DRAKE('Not any more. A visitor put it out.', '=', { p: OUT }),
-    N('He drank it anyway, and held the cup out, very carefully, for another.', DRAKE_CAVE, { cue: 'mercy', i: 0.45, p: OUT }),
+    N('He drank it anyway, and held the cup out, very carefully, for another.', DRAKE_TEA, { cue: 'mercy', i: 0.45, p: OUT }),
     DRAKE('Wednesday?', '=', { p: OUT }),
     P('If you tidy.', '=', { sting: 'laugh', p: OUT }),
     N('The Drake looked at the rock for a while.', '=', { p: { ...OUT, zoom: 1.2 } }),
