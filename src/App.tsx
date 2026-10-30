@@ -30,6 +30,7 @@ import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { BossIntroCard } from './components/BossCards.tsx';
+import { TAP_GUARD_MS } from './components/GameOverCard.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
@@ -493,6 +494,11 @@ export default function App() {
     }
   }, []);
 
+  // when the Game Over card came up (its tap guard)
+  const gameOverAt = useRef(0);
+  useEffect(() => {
+    if (screen === 'game_over') gameOverAt.current = performance.now();
+  }, [screen]);
   // Global Key listeners for Pause (Esc / P) and Title start (Space / Enter)
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
@@ -528,7 +534,8 @@ export default function App() {
           else handleNextStage();
         }
       } else if (screen === 'game_over') {
-        if (e.code === 'Space' || e.code === 'Enter') {
+        // (the card's half-second guard holds for the keys too: GameOverCard.tsx TAP_GUARD_MS, AN-1)
+        if ((e.code === 'Space' || e.code === 'Enter') && performance.now() - gameOverAt.current >= TAP_GUARD_MS) {
           e.preventDefault();
           continueRun();
         }

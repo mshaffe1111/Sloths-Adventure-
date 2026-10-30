@@ -7,6 +7,9 @@ import { ClrChips, ClrRibbon, type ChipSpec } from './ClrParts.tsx';
 import { floraChip, totalKills, tuckeredLine } from './stageSummary.ts';
 import { shouldOfferHelp } from '../game/assist.ts';
 
+/** how long the card takes no taps after it opens (AN-1) */
+export const TAP_GUARD_MS = 500;
+
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
 
@@ -30,6 +33,17 @@ interface GameOverCardProps {
 /** Out of lives: the same card family as Stage Cleared, in dusk colours, with Pokey having a lie-down and a kind word. */
 export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, stats, onRetry, onContinue, onOpenMap, fails = 0, onTakeHelp }) => {
   const offerHelp = !!onTakeHelp && shouldOfferHelp(fails);
+  // the card ignores taps for its first half second, so a thumb still jabbing at the fight never starts over by accident (AN-1)
+  const [ready, setReady] = React.useState(false);
+  React.useEffect(() => {
+    const id = window.setTimeout(() => setReady(true), TAP_GUARD_MS);
+    return () => window.clearTimeout(id);
+  }, []);
+  const guard = (e: React.SyntheticEvent) => {
+    if (ready) return;
+    e.preventDefault();
+    e.stopPropagation();
+  };
   const heroW = typeof window === 'undefined' ? 240 : window.innerHeight <= 520 ? 130 : Math.min(240, window.innerWidth - 120);
   // with the extra-lives offer on the card, Pokey lies down smaller so the card still fits an upright phone (it ran off a 400 x 720 one)
   const heroH = Math.round(Math.max(offerHelp ? 64 : 90, Math.min(170, (typeof window !== 'undefined' ? window.innerHeight : 700) * (offerHelp ? 0.14 : 0.24))));
@@ -43,7 +57,7 @@ export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, 
 
 
   return (
-    <div className="clr-scrim lost select-none">
+    <div className="clr-scrim lost select-none" onClickCapture={guard} onPointerDownCapture={guard}>
       <GhostOnExit />
       <div className="clr-card lost" role="dialog" aria-label="Out of lives">
         <ClrRibbon title="TUCKERED OUT!" tone="dusk" />

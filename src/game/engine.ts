@@ -174,6 +174,9 @@ import { POWER_UP_SECS } from './powerUps.ts';
 const TEA_STAND = 150;
 /** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
 const HARD_LAND_VY = 560;
+/** the life-lost beat (AN-1): how long the world holds while he goes down and the dark closes in (s), and how long it takes to open at the flag */
+const DOWN_SECS = 0.75;
+const IRIS_OPEN_SECS = 0.45;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -677,7 +680,10 @@ export class GameEngine {
   private softOn = false;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
-  private respawnFlash = 0;
+  /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
+  private irisOpen = 0;
+  /** a life just lost: the world holds while he goes down and the dark closes in, then he comes back at the flag (AN-1; null otherwise) */
+  private down: { t: number; reason: 'water' | 'pit' | 'hurt'; last: boolean } | null = null;
   /** where he stood when the exit cheer began (heroClips.ts) */
   private cheerX = 0;
   /** Seconds at the start of a stage / after a respawn where run input is ignored, so Pokey is dropped in standing still. */
@@ -1153,7 +1159,10 @@ export class GameEngine {
 
     try {
       if (!this.isPaused) {
-        if (this.hitstopTimer > 0) {
+        if (this.down) {
+          // a life lost: the world holds for the beat (AN-1)
+          this.stepDown(dt);
+        } else if (this.hitstopTimer > 0) {
           // Hitstop freeze: the world holds for a few ticks; keep the camera shake settling
           this.hitstopTimer -= dt;
           this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
@@ -1317,6 +1326,7 @@ export class GameEngine {
    */
   private update(dt: number) {
     this.gameTime += dt;
+    this.irisOpen = Math.max(0, this.irisOpen - dt);
     this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now
     for (const v of this.vines) {
@@ -1618,7 +1628,6 @@ export class GameEngine {
       this.treeClimbAudioTimer -= dt;
     }
 
-    this.respawnFlash = Math.max(0, this.respawnFlash - dt);
     this.inputGrace = Math.max(0, this.inputGrace - dt);
     // the pause on steering after a respawn is for a thumb still held from before the fall: a fresh touch or key counts at once
     if (this.inputGrace > 0 && this.graceMoves >= 0 && this.input.moves !== this.graceMoves) this.inputGrace = 0;
@@ -4712,23 +4721,69 @@ export class GameEngine {
   }
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
+    if (this.down) return;
     recorder.event('lostLife', reason);
     this.lostTo = reason;
     if (this.bossGuideUp) this.clearGuide();
     this.lives -= 1;
     this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
-    if (this.lives <= 0) {
+    // the beat (AN-1): the world holds, he goes down (knocked flat by a hit; a splash or a fall is already its own picture), the dark
+    // closes in on him, and only then the flag, or on the last life the Game Over card
+    const last = this.lives <= 0;
+    if (last) {
       this.isGameOver = true;
       this.outOfLives = true;
       sound.playDefeat();
+    }
+    this.player.downed = reason === 'hurt';
+    this.player.vx = 0;
+    this.camera.trauma = Math.max(this.camera.trauma, 0.25);
+    this.down = { t: 0, reason, last };
+  }
+
+  /** the life-lost beat, one frame: when it is over, the flag (or the Game Over card) */
+  private stepDown(dt: number) {
+    const d = this.down!;
+    d.t += dt;
+    this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+    if (d.t < DOWN_SECS) return;
+    this.down = null;
+    this.player.downed = false;
+    if (d.last) {
       this.callbacks.onStageStats?.(this.buildStats(false, 0));
       this.callbacks.onDefeat(this.runScore);
       return;
     }
-    this.respawnAtCheckpoint(reason);
+    this.respawnAtCheckpoint(d.reason);
     // Dot's flight: she says a life went (QA, 2026-10-25: losing one came with no line)
     this.dotRun?.lostLife(this.lives);
+  }
+
+  /**
+   * The dark circle of the beat (AN-1), over the world and under the HUD: closing on him while he is down, opening on him at the flag.
+   * Centred on him, kept inside the view (a fall takes him off its bottom edge).
+   */
+  private drawIris(ctx: CanvasRenderingContext2D) {
+    const vw = this.camera.viewportWidth;
+    const vh = this.camera.viewportHeight;
+    let k = 0;
+    if (this.down) k = Math.min(1, Math.max(0, (this.down.t - DOWN_SECS * 0.3) / (DOWN_SECS * 0.7)));
+    else if (this.irisOpen > 0) k = this.irisOpen / IRIS_OPEN_SECS;
+    if (k <= 0) return;
+    const e = k * k * (3 - 2 * k);
+    const p = this.player;
+    const cx = Math.max(40, Math.min(vw - 40, p.x - this.camera.x));
+    const cy = Math.max(40, Math.min(vh - 40, p.y - 40 - this.camera.y));
+    const full = Math.hypot(Math.max(cx, vw - cx), Math.max(cy, vh - cy)) + 20;
+    const r = Math.max(0, full * (1 - e));
+    ctx.save();
+    ctx.fillStyle = 'rgba(5, 12, 9, 0.97)';
+    ctx.beginPath();
+    ctx.rect(0, 0, vw, vh);
+    ctx.arc(cx, cy, r, 0, Math.PI * 2, true);
+    ctx.fill('evenodd');
+    ctx.restore();
   }
 
   /**
@@ -4764,7 +4819,7 @@ export class GameEngine {
     this.letGoOfRope(0.5);
     p.jumpsLeft = 2;
     p.invincibleTimer = Math.max(p.invincibleTimer, 1.2);
-    this.respawnFlash = 0.6;
+    this.irisOpen = IRIS_OPEN_SECS;
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
@@ -4774,7 +4829,6 @@ export class GameEngine {
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
-    this.addFloatingText('TRY AGAIN!', p.x, p.y - 112, '#fde68a', 1.2);
     return true;
   }
 
@@ -4820,7 +4874,7 @@ export class GameEngine {
     this.letGoOfRope(0.5);
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
-    this.respawnFlash = 0.6;
+    this.irisOpen = IRIS_OPEN_SECS;
     // what he was carrying goes back to its source
     this.kit?.onRespawn();
     this.inputGrace = 0.35;
@@ -4837,8 +4891,8 @@ export class GameEngine {
     // above his head, one line over the other with room between (at his head they sat on top of him and of each other), and up long
     // enough to read; any older words still rising there go first
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
-    this.addFloatingText(reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!', p.x, p.y - 112, '#fca5a5', 1.4);
-    if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 88, '#fde68a', 1.4);
+    // one small note in place of "TRY AGAIN!" / "OH NO!" and "N LIVES LEFT" (AN-1, AN-3; a Game Over pick-up has them all back)
+    this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
@@ -6176,10 +6230,7 @@ export class GameEngine {
       }
       ctx.restore();
     }
-    if (this.respawnFlash > 0) {
-      ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
-      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
-    }
+    this.drawIris(ctx);
 
     if (this.entrance && this.boss && this.bossDef && this.currentStage.arena) {
       const head = weakRect(this.boss, this.bossDef, this.currentStage.arena.floor);
@@ -6343,7 +6394,7 @@ export class GameEngine {
         this.checkpoint = { x: this.slideRun!.st.chamberFlag.x, y: this.slideRun!.st.chamberFlag.y };
         this.camera.x = x - this.camera.viewportWidth * 0.3;
         this.camera.y = y - this.camera.viewportHeight * 0.5;
-        this.respawnFlash = 0.6;
+        this.irisOpen = IRIS_OPEN_SECS;
       },
     });
   }
@@ -6484,11 +6535,7 @@ export class GameEngine {
       ctx.fillText(ft.text, ft.x, ft.y);
     }
     ctx.restore();
-    if (this.respawnFlash > 0) {
-      this.respawnFlash = Math.max(0, this.respawnFlash - 1 / 30);
-      ctx.fillStyle = `rgba(255, 255, 255, ${(this.respawnFlash / 0.6) * 0.7})`;
-      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
-    }
+    this.drawIris(ctx);
   }
 
   /**
