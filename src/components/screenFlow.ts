@@ -23,17 +23,17 @@ export const RELEASING_SCREENS: readonly GameScreen[] = [
 ];
 
 export interface StageHold {
-  /** where the Trophy Room was opened from */
+  /** where the Trophy Room or the satchel was opened from */
   trophyFrom: 'title' | 'world_map' | 'paused';
   /** where the memory now playing goes back to (null when none is playing) */
-  memoryBack: 'victory' | 'trophy' | null;
+  memoryBack: 'victory' | 'satchel' | null;
 }
 
 /** true when a paused stage is waiting under this screen to be resumed (the pause menu itself, or a view opened from it) */
 export function stageHeld(screen: GameScreen, hold: StageHold): boolean {
   if (screen === 'paused') return true;
-  if (screen === 'trophy') return hold.trophyFrom === 'paused';
-  return screen === 'memory' && hold.memoryBack === 'trophy' && hold.trophyFrom === 'paused';
+  if (screen === 'trophy' || screen === 'satchel') return hold.trophyFrom === 'paused';
+  return screen === 'memory' && hold.memoryBack === 'satchel' && hold.trophyFrom === 'paused';
 }
 
 /** true when showing this screen should stop and free the stage's engine */

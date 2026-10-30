@@ -22,6 +22,8 @@ export type ActorKind =
   | 'dot'
   /** Flicker the firefly: hovers, his painted clips (`clip`), his light steady or stuttering */
   | 'flicker'
+  /** one of the General's soldiers (the two from the garden): his painted clips (`clip`: idle_a, turn_b...), feet on the ground */
+  | 'soldier'
   /** a painted figure from Matt's story sheets (Grandma, Lieutenant Pell, the General's forms, the pairs...): its frames come from `seq`; see storyCels.ts */
   | 'cel';
 
@@ -117,6 +119,8 @@ export interface StoryScene {
   memory?: boolean;
   /** a photograph held up over the picture */
   photo?: ScenePhoto;
+  /** an ending card (endCards.ts) drawn over the whole picture: the cast and the world behind it are not seen */
+  card?: string;
 }
 
 /**
@@ -165,6 +169,12 @@ export interface StoryPanel {
   hold?: StoryHold;
   /** only read where the picture before it could not be played (no touch screen): it narrates what the player's thumbs would have done */
   narratedOnly?: boolean;
+  /** shown only when the player has found this (a find's id): the world noticing what you did (storyNotice.ts) */
+  ifFound?: string;
+  /** said instead of `text` once the player has fallen at least once: {N} is how many times, in words (storyNotice.ts) */
+  withFalls?: string;
+  /** the closing card (the sequel hint's last word): the picture goes dark, a beat of silence, then `text` on the menu kit's plaque */
+  closing?: boolean;
 }
 
 /**

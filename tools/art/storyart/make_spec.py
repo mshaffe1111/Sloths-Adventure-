@@ -535,6 +535,225 @@ def round4e(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
+def round5b(commit):
+    """the cards again at 16:9, 1920 x 1080 (story-a: upright shows the middle 4:3, sideways the middle band), with story-a's lines"""
+    spec = round5(commit)
+    spec['tag'] = 'r5b'
+    for x in spec['items']:
+        if x['name'].startswith('card-'):
+            x['w'], x['h'] = 1920, 1080
+    return spec
+
+
+def round5(commit):
+    """the finale's ending cards (S-7; starts from cards.py: the game's own pictures of each character on its world) and The Notch, the
+    parents' find (a twig with growth notches in two hands), two strengths each"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-cards.json').read_text())
+    who = {'venom-fang': ['pokey'], 'shadow-prowler': ['pokey'], 'night-wing-monarch': ['pokey'], 'magma-drake': ['pokey', 'meeca'], 'general': ['general']}
+    it = []
+    for k, m in meta.items():
+        for st, sd in ((0.5, 3), (0.62, 6)):
+            lo = [['style', 0.9]] + [[w, 0.35] for w in who.get(k, [])]
+            it.append({'name': f'card-{k}-s{round(st * 100)}', 'start': f'card-{k}.png', 'strength': st, 'seed': sd, 'w': 1280, 'h': 960, 'loras': lo,
+                       'prompt': f"slothadv style, painted storybook illustration, {m['words']}, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+                       'neg': 'text, letters, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people'})
+    for st, sd in ((0.7, 3), (0.8, 6)):
+        it.append({'name': f'notch-s{round(st * 100)}', 'start': 'notch.png', 'strength': st, 'seed': sd, 'w': 768, 'h': 1024, 'loras': [['style', 1.0]],
+                   'prompt': ('slothadv style, painted storybook illustration of a single small twig with a few tiny leaves, standing upright, many short '
+                              'growth notches cut across it one above another, the lower notches small and neat, the upper ones rougher and deeper, '
+                              'each upper notch with a tiny fern scratched beside it, pale wood showing in each cut, crisp clean dark outlines, soft cel '
+                              'shading, plain flat grey background'),
+                   'neg': 'text, letters, numbers, hand, person, animal, background scenery, table, floor, shadow, blurry'})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r5', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca', 'general')}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
+def round5c(commit):
+    """the second look at the cards: the squirrels and the croc's passengers without the sheet's white outline, the Queen with her tea
+    table, the Reaver gentler (at 0.5 he stopped being himself); The Notch from a clearer start, gently; the snail (story-a's find), two
+    creep frames"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-cards.json').read_text())
+    it = []
+    for k, sts in (('squirrels', (0.5, 0.58)), ('crocus-rex', (0.55, 0.62)), ('tarantula-queen', (0.45, 0.52)), ('marsh-reaver', (0.36, 0.42))):
+        for st, sd in zip(sts, (4, 9)):
+            lo = [['style', 0.9]] + ([['pokey', 0.35]] if k == 'tarantula-queen' else [])
+            it.append({'name': f'card-{k}-t{round(st * 100)}', 'start': f'card-{k}.png', 'strength': st, 'seed': sd, 'w': 1920, 'h': 1080, 'loras': lo,
+                       'prompt': f"slothadv style, painted storybook illustration, {meta[k]['words']}, warm and gentle, crisp clean outlines, rich painted detail, no text, no letters",
+                       'neg': 'text, letters, words, writing, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker'})
+    for st, sd in ((0.38, 3), (0.48, 6)):
+        it.append({'name': f'notch-t{round(st * 100)}', 'start': 'notch.png', 'strength': st, 'seed': sd, 'w': 768, 'h': 1024, 'loras': [['style', 1.0]],
+                   'prompt': ('slothadv style, painted storybook illustration of a single small brown twig standing upright with two little leaves, a long '
+                              'row of growth notches cut across it one above another showing pale wood, the lower notches small and neat, the upper ones '
+                              'rougher, a tiny fern scratched beside each upper notch, crisp clean dark outlines, soft cel shading, plain flat grey background'),
+                   'neg': 'text, letters, numbers, hand, person, animal, background scenery, table, floor, shadow, blurry, ladder'})
+    for f in ('stretch', 'bunch'):
+        for st, sd in ((0.5, 3), (0.62, 6)):
+            it.append({'name': f'snail-{f}-t{round(st * 100)}', 'start': f'snail-{f}.png', 'strength': st, 'seed': sd, 'w': 768, 'h': 512, 'loras': [['style', 1.0]],
+                       'prompt': ('slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft '
+                                  'garden brown spiral shell, a pale tan body ' + ('stretched out long as it creeps' if f == 'stretch' else 'bunched up short as it creeps') +
+                                  ', two eye stalks up, crisp clean dark outlines, soft cel shading, a clean simple silhouette, plain flat grey background'),
+                       'neg': 'text, background scenery, ground, floor, shadow, slime trail, blurry, extra eyes, two snails'})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r5c', 'loras': {k: LORAS[k] for k in ('style', 'pokey')}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
+def round5d(commit):
+    """the lead's redo of nine cards (each must show what its line names) and The Notch from a twig-like start"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-cards.json').read_text())
+    who = {'night-wing-monarch': ['pokey'], 'magma-drake': ['pokey', 'meeca']}
+    sts = {'flicker': (0.42, 0.52), 'marsh-reaver': (0.4, 0.48)}
+    it = []
+    for k in ('crocus-rex', 'magma-drake', 'night-wing-monarch', 'squirrels', 'flicker', 'mailman', 'pell', 'stone-golem', 'marsh-reaver'):
+        for st, sd in zip(sts.get(k, (0.5, 0.6)), (5, 8)):
+            lo = [['style', 0.9]] + [[w, 0.35] for w in who.get(k, [])]
+            it.append({'name': f'card-{k}-u{round(st * 100)}', 'start': f'card-{k}.png', 'strength': st, 'seed': sd, 'w': 1920, 'h': 1080, 'loras': lo,
+                       'prompt': f"slothadv style, painted storybook illustration, {meta[k]['words']}, warm and gentle, crisp clean outlines, rich painted detail",
+                       'neg': 'readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp'})
+    for st, sd in ((0.32, 3), (0.42, 6)):
+        it.append({'name': f'notch-u{round(st * 100)}', 'start': 'notch.png', 'strength': st, 'seed': sd, 'w': 768, 'h': 1024, 'loras': [['style', 1.0]],
+                   'prompt': ('slothadv style, painted storybook illustration of a single small crooked brown twig standing upright with two little leaves, rough '
+                              'bark, small uneven notches cut into its sides one above another showing pale wood, tiny fern drawings scratched beside the '
+                              'higher notches, crisp clean dark outlines, soft cel shading, plain flat grey background'),
+                   'neg': 'text, letters, numbers, ladder, rungs, hand, person, animal, background scenery, table, floor, shadow, blurry'})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r5d', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca')}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
+GUARD = {'croc': 'a big green crocodile with a small crooked gold crown', 'reaver': 'a big shaggy brown marsh otter warrior with a long wooden spear', 'golem': 'a huge mossy stone golem made of ancient carved rocks',
+         'queen': 'a big black tarantula queen with a small gold crown', 'sovereign': 'a great harpy eagle with grey and white feathers and a crest',
+         'monarch': 'a huge night butterfly monarch with dark patterned wings', 'drake': 'a big red and green scaled lava dragon'}
+
+
+def round6(commit):
+    """the guardians as the story shows them (2026-10-30 audit: their game frames were drawn up to 4.2 screen px per painted px in the boss
+    scenes and read soft): each frame a story uses, from the game atlas, repainted at 4x on the style model, the same pose and outline"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-guard.json').read_text())
+    it = []
+    for key, m in meta.items():
+        who = key.split('-', 1)[1].split('.')[0]
+        it.append({'name': f'{key}-s34', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']},
+                   'prompt': f'slothadv style, {GUARD[who]}, in the same pose' + END, 'neg': NEG_FIG + SOFT, 'strength': 0.34, 'seed': 7,
+                   'w': 1024, 'h': 1024, 'loras': [['style', 0.8]]})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r6', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
+FIX = {'magma-drake': 'two used china teacups with saucers standing on a flat dark rock beside the dragon, lit warm orange by the lava glow, a ring of tea in each, thin steam rising, painted at the same scale as the scene',
+       'squirrels': 'a hand-made wooden sign board on a post with a carved and painted acorn symbol in the middle, rough painted wood grain',
+       'pell': 'a crooked hanging wooden shop sign on two ropes with a painted needle and red thread symbol, rough painted wood grain'}
+
+
+def round7(commit):
+    """the lead's last three fixes: the Drake's cups painted into the scene, the two signs carry a painted symbol (no fake writing), and
+    the snail painted the way the game's creatures are (outline, shading, a face), two frames"""
+    it = []
+    for k, words in FIX.items():
+        for st, sd in (((0.72, 4), (0.84, 9)) if k == 'magma-drake' else ((0.58, 4), (0.68, 9))):
+            it.append({'name': f'card-{k}-v{round(st * 100)}', 'start': f'fix-{k}.png', 'mask': f'cardmask-{k}.png', 'strength': st, 'seed': sd,
+                       'w': 1920, 'h': 1080, 'loras': [['style', 0.9]],
+                       'prompt': f'slothadv style, painted storybook illustration, {words}, crisp clean outlines, rich painted detail',
+                       'neg': 'text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry'})
+    for f in ('stretch', 'bunch'):
+        for st, sd in ((0.5, 3), (0.6, 6)):
+            it.append({'name': f'snail-{f}-v{round(st * 100)}', 'start': f'snail-{f}.png', 'strength': st, 'seed': sd, 'w': 768, 'h': 512, 'loras': [['style', 1.0]],
+                       'prompt': ('slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a '
+                                  'soft garden brown spiral shell with painted shading and highlights, a pale tan body ' + ('stretched out long as it creeps'
+                                  if f == 'stretch' else 'bunched up short as it creeps') + ', two eye stalks with shiny eyes, a small content smile, '
+                                  'crisp clean dark outlines, soft cel shading, plain flat grey background'),
+                       'neg': 'text, background scenery, ground, floor, shadow, slime trail, blurry, flat vector, clip art, extra eyes, two snails'})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r7', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
+def round7b(commit):
+    """the Drake's cups again, from the earlier take of his card that had none: a rock and two cups by him, painted in gently"""
+    spec = round7(commit)
+    spec['tag'] = 'r7b'
+    it = [x for x in spec['items'] if x['name'].startswith('card-magma-drake')]
+    for x, (st, sd) in zip(it, ((0.58, 4), (0.68, 9))):
+        x['strength'], x['seed'], x['name'] = st, sd, f'card-magma-drake-w{round(st * 100)}'
+    spec['items'], spec['keep'] = it, [x['name'] for x in it]
+    return spec
+
+
+def round8(commit):
+    """the lead's round after the audit: Crocus Rex's story stills at 4x (the guard set), Venom Fang's body tile at 4x, Pokey crouched with
+    both paws gripping the branch (prologue 22-23), and the cubs with her paw over both of his (the singing storm 9)"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-guard.json').read_text())
+    it = []
+    for key, m in meta.items():
+        if not key.startswith('guard-croc.'):
+            continue
+        it.append({'name': f'{key}-s34', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']},
+                   'prompt': f'slothadv style, {GUARD["croc"]}, in the same pose' + END, 'neg': NEG_FIG + SOFT, 'strength': 0.34, 'seed': 7,
+                   'w': 1024, 'h': 1024, 'loras': [['style', 0.8]]})
+    it.append({'name': 'venom-body-4x-s30', 'start': 'venom-body-4x.png', 'strength': 0.3, 'seed': 5, 'w': 1280, 'h': 288, 'loras': [['style', 0.7]],
+               'prompt': 'slothadv style, painted green snake scales, a seamless band of glossy scales, crisp painted detail, flat grey background',
+               'neg': 'text, blurry, eyes, head'})
+    for n, words, who in (('hold_branch', 'Make him crouch lower and hold on tight: both front paws gripping the branch under his feet, his eyes '
+                           'squeezed shut with worry. Keep his face, his fur, the satchel strap over his left shoulder and the bandages on his wrists exactly the same. '
+                           'Plain flat grey background.', [['pokey', 0.6], ['style', 0.4]]),
+                          ('hands_rim', 'Make the girl sloth with the pink headband put one paw gently over both of the boy sloth\'s paws, which are '
+                           'held together in front of him as if holding on to something, the boy looking worried and the girl smiling kindly at him. Keep '
+                           'both of them exactly the same otherwise, their faces, their fur, her pink vest with bib 07, his satchel. Plain flat grey background.',
+                           [['pokey', 0.4], ['meeca', 0.4], ['style', 0.4]])):
+        it.append({'name': f'new-{n}-e', 'edit': True, 'start': f'new-{n}.png', 'seed': 3, 'prompt': words, 'neg': EDIT_NEG})
+        it.append({'name': f'new-{n}-s', 'then': f'new-{n}-e', 'strength': 0.28, 'seed': 7, 'w': 1024, 'h': 1024, 'loras': who,
+                   'prompt': (POKEY + 'crouching, both paws gripping the branch, worried' if n == 'hold_branch' else
+                              'two young sloths together, the girl in a pink headband and pink vest with bib 07 puts her paw over both paws of the boy with the satchel') + END,
+                   'neg': NEG_FIG + SOFT})
+        it.append({'name': f'new-{n}-e2', 'edit': True, 'start': f'new-{n}.png', 'seed': 11, 'prompt': words, 'neg': EDIT_NEG})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r8', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca')}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
+def round9(commit):
+    """the two left from round 8: Crocus Rex's defeated frame (at 0.34 it broke into white shards: gentler), and the storm's cubs with
+    Meeca smiling kindly at him as the line has her (an edit of the take in the game)"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-guard.json').read_text())
+    m = meta['guard-croc.defeated_024']
+    it = []
+    for st, sd in ((0.2, 7), (0.26, 11)):
+        it.append({'name': f'guard-croc.defeated_024-s{round(st * 100)}', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']},
+                   'prompt': 'slothadv style, a big green crocodile lying upside down on his back, beaten, a small crooked gold crown' + END,
+                   'neg': NEG_FIG + SOFT + ', white shards, broken, fragments', 'strength': st, 'seed': sd, 'w': 1024, 'h': 1024, 'loras': [['style', 0.8]]})
+    for sd in (3, 9):
+        it.append({'name': f'new-hands_rim-k{sd}', 'edit': True, 'start': 'bucket:storyart/r8/out/new-hands_rim-e2.png', 'seed': sd, 'neg': EDIT_NEG,
+                   'prompt': ('Change only the girl sloth with the pink headband: she smiles kindly and warmly at the boy, her eyes soft. Keep the boy '
+                              'looking worried, and keep everything else exactly the same: their hands together, their poses, their clothes. Plain flat grey background.')})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r9', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
+SEQ = {'storm-returns': ('the storm clouds and the rain go on up into a dark churning night sky lit by the lightning, the tops of the great '
+                         'trees and their mossy branches reach up into it', 'a sloth asleep on a mossy branch in a night storm, lightning'),
+       'nest-morning': ('the misty morning rainforest goes on upward: the tall palms and the great tree reach up into a pale grey-green sky '
+                        'with soft mist and hanging vines', 'a wet mossy branch in the misty morning rainforest with a black thorn and a scarf')}
+
+
+def round10(commit):
+    """Matt's two sequel plates (Gemini cards 23, 24, 1024 x 572): extended upward and painted at 2560 like every other plate"""
+    it = []
+    for k, (up, say) in SEQ.items():
+        for sd in (2, 6):
+            it.append({'name': f'pl-{k}-up{sd}', 'edit': True, 'start': f'canvas-{k}.png', 'seed': sd, 'w': 1280, 'h': 1360,
+                       'prompt': f'Fill the empty white top of this picture so the painting carries on upward: {up}. Keep the bottom of the picture exactly as it is. Same painted storybook style, no text.',
+                       'neg': 'white, blank, frame, border, text, people'})
+            it.append({'name': f'pl-{k}-{sd}', 'then': f'pl-{k}-up{sd}', 'prompt': f'slothadv style, painted storybook illustration, {say}, no text',
+                       'neg': 'text, letters, watermark, frame, border, photo, 3d render, blurry', 'strength': 0.26, 'seed': 5, 'w': 2560, 'h': 2720,
+                       'tile': [1280, 256], 'loras': [['style', 0.9]]})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r10', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it if '-up' not in x['name']]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '

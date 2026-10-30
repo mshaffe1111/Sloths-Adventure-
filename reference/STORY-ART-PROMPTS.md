@@ -25,3 +25,19 @@ Sheets of poses go on a flat magenta background (#FF00FF) so they can be cut out
 ## Prompt 22: Pokey's parents going out into the storm (World 6 memory, World 10 confession)
 
 > In the same soft painted storybook style as the attached picture, a wide 16:9 illustration at night in a rainforest storm. Seen from behind, two grown sloths, a mother and a father, are going out along a long far branch into the wind and rain, holding on, heads down. In the foreground, a small round nest woven into a fork of branches, and over its rim just the two small hands of a sloth cub holding on tight. We never see the cub's face or the parents' faces. Lightning far away, heavy rain, deep blues and greens, one warm glow from the nest. Sad and quiet, not frightening.
+
+---
+
+## Prompts 23-25: the sequel tag after the credits (Matt, 2026-10-30: A + B)
+
+## Prompt 23: the storm comes back (night)
+
+> In the same soft painted storybook style as the attached picture, a wide 16:9 illustration at night. A storm is rolling in from the east over the rainforest canopy: heavy dark clouds lit from inside by distant lightning, rain starting to slant. In the foreground, high on a mossy branch, Pokey the orange-and-cream sloth sleeps curled up and peaceful, a very long knitted rust-and-cream scarf wound around his neck four times with its end trailing far down off the branch and swaying in the wind. He has no idea the storm is coming. Calm in the foreground, menace in the distance.
+
+## Prompt 24: the empty branch (morning)
+
+> In the same soft painted storybook style as the attached picture, a wide 16:9 illustration the morning after a storm, washed pale light, leaves still dripping. The same mossy branch from the night before, now empty. Growing from the branch where the sloth slept is a single long black thorn that does not belong to the rainforest, glossy and sharp, with a faint cold blue sheen. Caught and hanging from the black thorn, swaying, is a very long knitted rust-and-cream scarf. No characters. Quiet, wrong, a little eerie, still gentle enough for children.
+
+## Prompt 25: Meeca sets off (cutout sheet)
+
+> Using the attached Meeca and Dot sheets as the character references, draw on a flat solid magenta background (#FF00FF), each pose separate with space around it: Meeca the young sloth (outfit exactly as in the reference: pink racing vest with 07 and headband) holding the very long knitted rust-and-cream scarf to her chest with both arms, eyes looking up and to the side, scared but deciding; the same Meeca with the scarf now wound around her own neck, standing tall with a determined small smile, one paw gripping her apron strap; and Dot the tiny emerald-green hummingbird hovering beside her, chest puffed out, ready to fly. Same proportions and colours as the references.

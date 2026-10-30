@@ -1,0 +1,192 @@
+{
+ "tag": "r7",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6a7696c2702b461608d565ee5f23e79c19913b3b/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "card-magma-drake-v72",
+   "start": "fix-magma-drake.png",
+   "mask": "cardmask-magma-drake.png",
+   "strength": 0.72,
+   "seed": 4,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, two used china teacups with saucers standing on a flat dark rock beside the dragon, lit warm orange by the lava glow, a ring of tea in each, thin steam rising, painted at the same scale as the scene, crisp clean outlines, rich painted detail",
+   "neg": "text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry"
+  },
+  {
+   "name": "card-magma-drake-v84",
+   "start": "fix-magma-drake.png",
+   "mask": "cardmask-magma-drake.png",
+   "strength": 0.84,
+   "seed": 9,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, two used china teacups with saucers standing on a flat dark rock beside the dragon, lit warm orange by the lava glow, a ring of tea in each, thin steam rising, painted at the same scale as the scene, crisp clean outlines, rich painted detail",
+   "neg": "text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry"
+  },
+  {
+   "name": "card-squirrels-v58",
+   "start": "fix-squirrels.png",
+   "mask": "cardmask-squirrels.png",
+   "strength": 0.58,
+   "seed": 4,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a hand-made wooden sign board on a post with a carved and painted acorn symbol in the middle, rough painted wood grain, crisp clean outlines, rich painted detail",
+   "neg": "text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry"
+  },
+  {
+   "name": "card-squirrels-v68",
+   "start": "fix-squirrels.png",
+   "mask": "cardmask-squirrels.png",
+   "strength": 0.68,
+   "seed": 9,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a hand-made wooden sign board on a post with a carved and painted acorn symbol in the middle, rough painted wood grain, crisp clean outlines, rich painted detail",
+   "neg": "text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry"
+  },
+  {
+   "name": "card-pell-v58",
+   "start": "fix-pell.png",
+   "mask": "cardmask-pell.png",
+   "strength": 0.58,
+   "seed": 4,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a crooked hanging wooden shop sign on two ropes with a painted needle and red thread symbol, rough painted wood grain, crisp clean outlines, rich painted detail",
+   "neg": "text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry"
+  },
+  {
+   "name": "card-pell-v68",
+   "start": "fix-pell.png",
+   "mask": "cardmask-pell.png",
+   "strength": 0.68,
+   "seed": 9,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a crooked hanging wooden shop sign on two ropes with a painted needle and red thread symbol, rough painted wood grain, crisp clean outlines, rich painted detail",
+   "neg": "text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry"
+  },
+  {
+   "name": "snail-stretch-v50",
+   "start": "snail-stretch.png",
+   "strength": 0.5,
+   "seed": 3,
+   "w": 768,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft garden brown spiral shell with painted shading and highlights, a pale tan body stretched out long as it creeps, two eye stalks with shiny eyes, a small content smile, crisp clean dark outlines, soft cel shading, plain flat grey background",
+   "neg": "text, background scenery, ground, floor, shadow, slime trail, blurry, flat vector, clip art, extra eyes, two snails"
+  },
+  {
+   "name": "snail-stretch-v60",
+   "start": "snail-stretch.png",
+   "strength": 0.6,
+   "seed": 6,
+   "w": 768,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft garden brown spiral shell with painted shading and highlights, a pale tan body stretched out long as it creeps, two eye stalks with shiny eyes, a small content smile, crisp clean dark outlines, soft cel shading, plain flat grey background",
+   "neg": "text, background scenery, ground, floor, shadow, slime trail, blurry, flat vector, clip art, extra eyes, two snails"
+  },
+  {
+   "name": "snail-bunch-v50",
+   "start": "snail-bunch.png",
+   "strength": 0.5,
+   "seed": 3,
+   "w": 768,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft garden brown spiral shell with painted shading and highlights, a pale tan body bunched up short as it creeps, two eye stalks with shiny eyes, a small content smile, crisp clean dark outlines, soft cel shading, plain flat grey background",
+   "neg": "text, background scenery, ground, floor, shadow, slime trail, blurry, flat vector, clip art, extra eyes, two snails"
+  },
+  {
+   "name": "snail-bunch-v60",
+   "start": "snail-bunch.png",
+   "strength": 0.6,
+   "seed": 6,
+   "w": 768,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a soft garden brown spiral shell with painted shading and highlights, a pale tan body bunched up short as it creeps, two eye stalks with shiny eyes, a small content smile, crisp clean dark outlines, soft cel shading, plain flat grey background",
+   "neg": "text, background scenery, ground, floor, shadow, slime trail, blurry, flat vector, clip art, extra eyes, two snails"
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/6a7696c2702b461608d565ee5f23e79c19913b3b/",
+ "keep": [
+  "card-magma-drake-v72",
+  "card-magma-drake-v84",
+  "card-squirrels-v58",
+  "card-squirrels-v68",
+  "card-pell-v58",
+  "card-pell-v68",
+  "snail-stretch-v50",
+  "snail-stretch-v60",
+  "snail-bunch-v50",
+  "snail-bunch-v60"
+ ]
+}

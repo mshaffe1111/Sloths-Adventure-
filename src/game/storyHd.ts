@@ -46,6 +46,12 @@ export function hdReady(set: string, s: HdSet): boolean {
 export function hdPage(set: string, f: HdFrame): HTMLImageElement | null {
   return page(set, f.p);
 }
+/** the page a frame is on if it has already loaded, else null: never starts a load (for code also run in play, where these pages must
+ *  not be fetched: paintedBoss.ts) */
+export function hdLoaded(set: string, f: HdFrame): HTMLImageElement | null {
+  const key = `${set}-${f.p}`;
+  return ready.has(key) ? imgs.get(key) ?? null : null;
+}
 /** a story has closed: let the pages go (they load again, from the offline cache, for the next one) */
 export function releaseHd() {
   imgs.clear();

@@ -12,6 +12,7 @@ import { ModeChip } from './ModeChip.tsx';
 import { confettiPieces, type ConfettiPiece } from './fx/confetti.ts';
 import { COUNT_MS, COUNT_START_MS, countProgress, countValue, medalsAtMs, starTimes, tickTimes } from './fx/countUp.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
+import { KitPiece } from './icons/index.tsx';
 import type { BadgeDef } from '../game/badges.ts';
 import './hud/cleared.css';
 
@@ -39,8 +40,6 @@ interface StageClearedProps {
   onOpenMap: () => void;
 }
 
-const STAR_PATH = 'M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z';
-
 /** the card laid out in one column (a phone held upright): Pokey goes beside the stars, the chips in rows of three */
 const UPRIGHT = '(max-width: 640px) and (min-height: 521px)';
 function useUpright(): boolean {
@@ -56,12 +55,12 @@ function useUpright(): boolean {
 }
 
 /** the chips the upright card has room for (two rows of three), the ones that say most about the run first */
-const UPRIGHT_ORDER = ['Time', 'Score', 'Best', 'Your best', 'Flowers', 'Flower goal', 'Hits taken', 'Lives lost', 'Foes', 'Best combo'];
+const UPRIGHT_ORDER = ['Time', 'Score', 'Best', 'Your best', 'Flowers', 'Flower goal', 'Hits taken', 'Lives lost', 'Foes'];
 const uprightChips = (chips: ChipSpec[]): ChipSpec[] =>
   [...chips].sort((a, b) => UPRIGHT_ORDER.indexOf(a.label) - UPRIGHT_ORDER.indexOf(b.label)).slice(0, 6);
 
 /** sideways, seven chips share one row: the two-word labels are cut to one, so none wraps at 12 px (UI-14) */
-const SHORT_LABEL: Record<string, string> = { 'Flower goal': 'Flowers', 'Hits taken': 'Hits', 'Best combo': 'Combo', 'Lives lost': 'Lives', 'Your best': 'Best' };
+const SHORT_LABEL: Record<string, string> = { 'Flower goal': 'Flowers', 'Hits taken': 'Hits', 'Lives lost': 'Lives', 'Your best': 'Best' };
 const shortLabel = (c: ChipSpec): ChipSpec => (SHORT_LABEL[c.label] ? { ...c, label: SHORT_LABEL[c.label] } : c);
 
 const CONFETTI_PATH: Record<ConfettiPiece['kind'], React.ReactNode> = {
@@ -196,7 +195,6 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
   // ("Hits taken 0" after three falls read as a lie, 2026-10-25), and the green "clean run" colour only shows when neither happened
   if (stats) extra.push({ label: 'Hits taken', value: String(stats.heartsLost), colour: stats.heartsLost === 0 && stats.livesLost === 0 ? '#6ee7b7' : undefined });
   if (stats && stats.livesLost > 0) extra.push({ label: 'Lives lost', value: String(stats.livesLost) });
-  if (stats && stats.maxCombo >= 2) extra.push({ label: 'Best combo', value: `x${stats.maxCombo}` });
   const heroW = typeof window !== 'undefined' && window.innerHeight <= 520 ? 120 : 196;
   const heroH = Math.round(Math.max(130, Math.min(300, (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.42)));
   // (made once: the count re-draws the card 30 times a second for a moment, and Pokey and Dot never change in it)
@@ -237,9 +235,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
                   const on = s <= landed;
                   const size = s === 2 ? 70 : 56;
                   return (
-                    <svg key={s} width={size} height={size} viewBox="0 0 24 24" className={`clr-star ${on ? 'on' : ''}`} aria-hidden="true">
-                      <path d={STAR_PATH} fill={on ? '#fbbf24' : 'rgba(255,255,255,.1)'} stroke={on ? '#92400e' : '#6b7f77'} strokeWidth="1.2" strokeLinejoin="round" />
-                    </svg>
+                    <KitPiece key={s} piece={on ? 'starFull' : 'starEmpty'} width={size} className={`clr-star ${on ? 'on' : ''}`} />
                   );
                 })}
               </div>
