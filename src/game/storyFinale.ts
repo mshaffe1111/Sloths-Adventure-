@@ -34,6 +34,9 @@ const WALL = Array.from({ length: 10 }, (_, i) => `B${i + 1}@${wallX(i + 1).toFi
 const OUT = { plate: undefined as string | undefined };
 const zoomOn = (x: number) => ({ ...OUT, zoom: 2.4, focusX: x, focusY: 0.66 });
 
+/** the Drake's cave on the lava road: Pokey with the tea, the Drake sitting across from him (and Dot, about the sock) */
+const DRAKE_CAVE = 'P:happy@.28*.95 B9@.7*.75<';
+const DRAKE_CAVE_DOT = 'P:happy@.28*.95 B9@.7*.75< D:puzzled@.46^.42';
 /** at the tea table: Pokey, Meeca, Dot, and the General in the chair at the head of the table, the one the Queen dusted every morning */
 const TEA = 'P:happy@.2*.9 M:happy@.42*.9 GV:sit@.72*1.12 D@.5^.5*.9';
 /** the same table a minute earlier: the General has his cup and is looking at that chair */
@@ -231,8 +234,25 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     FL('I\'m staying, if that\'s all right.', 'M:happy@.3*.9 D@.6^.42 FL:talk@.42^.5 LP:sew_table@.8*.8', { cue: 'tender', i: 0.45, p: VIL }),
     D('He\'s all right. Don\'t tell him.', 'M:happy@.3*.9 D@.6^.42 FL@.42^.5 LP:sew_table@.8*.8', { p: VIL }),
     FL('I\'m right here.', 'M:laugh@.3*.9 D:flinch@.6^.42 FL:smug@.42^.5 LP:sew_table@.8*.8', { sting: 'laugh', p: VIL }),
+    // the Drake's two cups (Matt approved the teacup ending, 2026-10-30): his "Bring tea. Two cups." comes true, and Pokey's
+    // "Maybe. If you tidy." comes back as the answer
+    N('On the first cold morning, Pokey walked the lava road with a pot of tea and two cups.', 'P:walk@.3', { w: 9, m: 'day', cue: 'comedy', i: 0.4, p: { ...OUT, zoom: 1.15 } }),
+    N('The Drake had tidied. Everything he owned was in one corner of the cave, and a large rock had been rolled in front of the corner.', DRAKE_CAVE, { p: OUT }),
+    DRAKE('You came.', DRAKE_CAVE, { p: OUT }),
+    P('You asked.', '=', { p: OUT }),
+    DRAKE('There is nothing behind the rock.', '=', { p: OUT }),
+    D('There\'s a sock behind the rock, I can see it from here, it\'s an enormous sock, I\'m not going to ask about the sock, I\'m asking, why is there a sock.', DRAKE_CAVE_DOT, { sting: 'laugh', p: OUT }),
+    DRAKE('It is a tea cosy. I made it. It did not go well.', '=', { p: OUT }),
+    N('Pokey poured. The Drake held his cup in both claws and looked at it for a long time.', DRAKE_CAVE, { cue: 'tender', i: 0.4, p: { ...OUT, zoom: 1.35, focusX: 0.62 } }),
+    DRAKE('It is too hot.', '=', { p: OUT }),
+    P('You breathe fire.', '=', { p: OUT }),
+    DRAKE('Not any more. A visitor put it out.', '=', { p: OUT }),
+    N('He drank it anyway, and held the cup out, very carefully, for another.', DRAKE_CAVE, { cue: 'mercy', i: 0.45, p: OUT }),
+    DRAKE('Wednesday?', '=', { p: OUT }),
+    P('If you tidy.', '=', { sting: 'laugh', p: OUT }),
+    N('The Drake looked at the rock for a while.', '=', { p: { ...OUT, zoom: 1.2 } }),
     N('On the first fine afternoon, at four o\'clock exactly, the Tarantula Queen poured the tea. The General looked at the chair at the head of the table, the one she had dusted every morning for nine years.',
-      `${TEA_UP} B5@.92^.84*.45<`, { cue: 'tender', i: 0.4, p: VIL }),
+      `${TEA_UP} B5@.92^.84*.45<`, { w: 1, cue: 'tender', i: 0.4, p: VIL }),
     N('He sat down in it, put his feet up, and finished the whole cup.', `${TEA} B5@.92^.84*.45<`, { cue: 'mercy', i: 0.5, p: VIL }),
     D('It\'s a trap with cookies. I\'ve had four.', `${TEA} B5@.92^.84*.45<`, { sting: 'laugh', p: VIL }),
     N('Meeca had finished the scarf. It went around Pokey four times and still dragged on the ground. He was wearing it.', TEA, { cue: 'comedy', i: 0.4, p: VIL }),
@@ -256,7 +276,6 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     N('Far off in the east, the last of the storm said something. Pokey was holding a teacup in one hand. He went on holding it in one hand.', TEA, { cue: 'tender', i: 0.4, p: { ...VIL, zoom: 1.4, focusX: 0.3 } }),
     OFF('Shall I tell the General, sir?', `${TEA} LP:cap_in_hand@.92*.75`, { cue: 'comedy', i: 0.4, p: VIL }),
     GF('Tell him he has retired.', `${TEA} LP:salute_nervous@.92*.75`, { sting: 'laugh', p: VIL }),
-    N('That spring he went down to the Sunlit Riverbank, to the place where the bank had washed away, and planted a tree. The next day he went back and planted another. He took his time.', 'GV:walk_a@.5*1.12', { w: 2, cue: 'tender', i: 0.45, p: { zoom: 1.15 } }),
     // S-7: the ending cards, one a character, the line under each (endCards.ts; the soldiers' and the squirrels' weeks after are theirs)
     ...END_CARDS.map(([card, line], k) => N(line, '', { ...(k === 0 ? { cue: 'tender' as const, i: 0.45 } : {}), p: { card } })),
   ]);

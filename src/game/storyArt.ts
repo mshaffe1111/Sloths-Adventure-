@@ -627,8 +627,6 @@ function drawEndCard(ctx: CanvasRenderingContext2D, key: string, w: number, vh: 
   const s = Math.min(Math.max(w / CARD_W, room / CARD_H), w / CARD_SAFE_W, room / CARD_SAFE_H) * (1 + 0.03 * Math.min(t / 9, 1));
   const cw = CARD_W * s;
   const ch = CARD_H * s;
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
-  ctx.shadowBlur = 30;
   // (upright there is room to spare: the card sits a little low, clear of the buttons along the top)
   const slack = room - ch;
   ctx.drawImage(c.im, (w - cw) / 2, slack > 0 ? slack * 0.62 : slack / 2, cw, ch);
