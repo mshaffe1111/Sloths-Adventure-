@@ -9,7 +9,7 @@
  */
 import type { AudioCore } from './core.ts';
 import { DRUM_VOICES, NOTE_VOICES } from './instruments.ts';
-import { soften } from './sfxOrch.ts';
+import { soften } from './soften.ts';
 import type { KeyInfo } from './music.ts';
 import { midiHz } from './theory.ts';
 

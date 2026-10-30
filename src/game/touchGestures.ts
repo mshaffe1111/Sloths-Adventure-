@@ -187,8 +187,8 @@ export const TUNING = {
    * six frames. Now a clearly sideways slide starts the run after this long (and this far), and if the finger then lifts like a flick it
    * is still the kick it always was.
    */
-  earlyDragMs: 60,
-  earlyDragPx: 18,
+  earlyDragMs: 0,
+  earlyDragPx: 16,
   /**
    * the steering thumb's flick up, measured from its last low point (it drifts down the glass while it steers): a rise of jumpDy at this
    * speed (px per ms) or more, that goes up at least this far for each px across (0.6: up to about 59 degrees over), within this long
@@ -1204,8 +1204,9 @@ export class TouchGestures {
 
     if (lifting) return false;
 
-    // a lone undecided finger that is clearly sliding sideways starts the run now, not 210 ms from now (with Jump help on or off: CT-8,
-    // with it off a run started on the right half waited the 210 ms)
+    // a lone undecided finger that is clearly sliding sideways steers at once, anywhere on the screen: the moment it has slid moveDead
+    // (16 px), as a finger on the steering half does (polish report CT-8, step 2; it waited 60 ms and 18 px, and before step 1 with Jump
+    // help off 210 ms). Only mostly sideways: a stroke going up or down is still judged as a flick first, so it is never misread as a run
     if (f.role === 'pending' && !this.mover() && el >= TUNING.earlyDragMs && ax >= TUNING.earlyDragPx && ax >= ay * 1.2 && !this.actorOther(f)) {
       f.role = 'mover';
       f.early = true;

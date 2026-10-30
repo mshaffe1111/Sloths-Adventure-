@@ -133,7 +133,7 @@ export interface W4Host {
   screech(x: number): void;
   /** a nudge of the camera (0..1 of trauma), for a rock landing close by */
   shake?(amount: number): void;
-  sfx(kind: 'rock' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash' | 'gust' | 'cry'): void;
+  sfx(kind: 'rock' | 'rockWarn' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash' | 'gust' | 'cry'): void;
   /** he fell into the mist (deepFall) */
   fellOff?(): void;
   /** 4-9: a guard he was close to was blown off its ledge (the aerie's goal counts them) */
@@ -274,6 +274,11 @@ export class W4Play {
       const s = rockAt(r, h.t);
       const cycle = `${i}:${Math.floor((h.t + r.offset) / r.every)}`;
       // (the stage's own hint teaches the rocks where the first one falls; this is only the line after a hit)
+      // the grit trickling down as the warning starts: heard as well as seen (once a rock, and only one he is near)
+      if (s.phase === 'warn' && !this.rockHit.has(cycle + 'w')) {
+        this.rockHit.add(cycle + 'w');
+        if (Math.abs(r.x - p.x) < 600) h.sfx('rockWarn');
+      }
       if (s.phase === 'shatter' && !this.rockHit.has(cycle + 's')) {
         this.rockHit.add(cycle + 's');
         if (Math.abs(r.x - p.x) < 700) h.sfx('rock');

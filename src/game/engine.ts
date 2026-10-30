@@ -115,7 +115,6 @@ import {
   drawHazardEntity,
   drawGirlfriendDaisy,
   drawCollectible,
-  pickupName,
 } from './vectorArt.ts';
 import {
   checkAABBCollision,
@@ -169,11 +168,15 @@ import type { GuideView } from './dotGuideView.ts';
 import { FONT_UI } from './fonts.ts';
 import { withHurtFlash } from './hurtFlash.ts';
 import { shakeOffset } from './screenShake.ts';
+import { POWER_UP_SECS } from './powerUps.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
 /** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
 const HARD_LAND_VY = 560;
+/** the life-lost beat (AN-1): how long the world holds while he goes down and the dark closes in (s), and how long it takes to open at the flag */
+const DOWN_SECS = 0.75;
+const IRIS_OPEN_SECS = 0.45;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -677,7 +680,10 @@ export class GameEngine {
   private softOn = false;
   private softAt: { x: number; y: number } | null = null;
   private checkpoint = { x: 0, y: 0 };
-  private respawnFlash = 0;
+  /** the dark circle opening on him at the flag after a respawn (s left): it replaced a white flash (AN-1) */
+  private irisOpen = 0;
+  /** a life just lost: the world holds while he goes down and the dark closes in, then he comes back at the flag (AN-1; null otherwise) */
+  private down: { t: number; reason: 'water' | 'pit' | 'hurt'; last: boolean } | null = null;
   /** where he stood when the exit cheer began (heroClips.ts) */
   private cheerX = 0;
   /** Seconds at the start of a stage / after a respawn where run input is ignored, so Pokey is dropped in standing still. */
@@ -1316,7 +1322,13 @@ export class GameEngine {
    * Main Physics & Simulation Tick (30 FPS)
    */
   private update(dt: number) {
+    // a life lost: the world holds for the beat (AN-1; in update, so the bots that play the engine directly have it too)
+    if (this.down) {
+      this.stepDown(dt);
+      return;
+    }
     this.gameTime += dt;
+    this.irisOpen = Math.max(0, this.irisOpen - dt);
     this.vineClock += dt;
     // every liana swings on its own (the climbing vines hang still): it is drawn, and caught, where its swing puts it now
     for (const v of this.vines) {
@@ -1552,7 +1564,6 @@ export class GameEngine {
       if (p.powerUpTimer <= 0) {
         p.activePowerUp = null;
         p.powerUpTimer = 0;
-        this.addFloatingText('POWER-UP EXPIRED', p.x, p.y - 45, '#94a3b8');
       }
     }
 
@@ -1619,7 +1630,6 @@ export class GameEngine {
       this.treeClimbAudioTimer -= dt;
     }
 
-    this.respawnFlash = Math.max(0, this.respawnFlash - dt);
     this.inputGrace = Math.max(0, this.inputGrace - dt);
     // the pause on steering after a respawn is for a thumb still held from before the fall: a fresh touch or key counts at once
     if (this.inputGrace > 0 && this.graceMoves >= 0 && this.input.moves !== this.graceMoves) this.inputGrace = 0;
@@ -2325,7 +2335,7 @@ export class GameEngine {
       const pool = waterY !== undefined && !river ? this.currentStage.safeWater?.find((s) => p.x > s.x0 && p.x < s.x1) : undefined;
       if (pool && p.y > waterY! + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY!);
-        sound.playWhoosh();
+        sound.playSplash(1);
         this.addFloatingText('SPLASH!', p.x, waterY! - 40, '#7dd3fc');
         p.x = pool.backX;
         p.y = pool.backY;
@@ -2336,7 +2346,7 @@ export class GameEngine {
       } else if (river?.safe && p.y > river.surfaceY + 8 && !this.isGameOver) {
         // a teaching river (2-1): a splash and back to the bank to try again, no life lost
         this.spawnWaterSplash(p.x, river.surfaceY);
-        sound.playWhoosh();
+        sound.playSplash(1);
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         p.x = river.safe.backX;
         p.y = river.safe.backY;
@@ -2348,14 +2358,12 @@ export class GameEngine {
         if (river.flood) this.floodAt.delete(river);
       } else if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, river.surfaceY);
-        sound.playWhoosh();
-        sound.playHitImpact(true);
+        sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY);
-        sound.playWhoosh();
-        sound.playHitImpact(true);
+        sound.playSplash(0);
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
@@ -2388,7 +2396,7 @@ export class GameEngine {
           plat.broken = true;
           plat.regrowAt = this.gameTime + regrowDelay(plat.id);
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
-          sound.playHitImpact(true);
+          sound.playCrumble();
         }
       }
       // a crumbled platform is a penalty (regrow.ts): it comes back only after half a minute or so, and only off screen, so it never
@@ -2698,7 +2706,7 @@ export class GameEngine {
           this.isGameOver = true;
           this.camera.trauma = 0.7;
           this.spawnSparkBurst(c.x, c.y, '#a78bfa');
-          this.addFloatingText('THE THORN GATE OPENS...', c.x, c.y - 30, '#c4b5fd');
+          this.addFloatingText('The thorn gate opens.', c.x, c.y - 30, '#c4b5fd');
           sound.playBossRoar(this.currentStage.config.worldIndex);
           this.callbacks.onSecret?.();
         }
@@ -2803,54 +2811,43 @@ export class GameEngine {
 
           const pColor = c.type === 'flower' ? '#f43f5e' : '#4ade80';
           this.spawnSparkBurst(c.x, c.y, pColor);
-          // named for what is drawn (vectorArt.ts pickupName), not the variant the drawing never used
-          const cfg = this.currentStage.config;
-          const txt = `+100 ${pickupName(c, cfg.worldIndex, cfg.miniIndex)}!`;
-          this.addFloatingText(txt, c.x, c.y - 20, pColor);
-
-          if (this.comboCount > 1) {
-            const comboBonus = this.comboCount * 50;
-            this.runScore += comboBonus;
-            this.addFloatingText(`${this.comboCount}x COMBO! +${comboBonus}`, c.x, c.y - 42, '#facc15');
-          }
+          // one small number per pickup, the combo's bonus inside it (AN-3: no names or words over every flower)
+          const comboBonus = this.comboCount > 1 ? this.comboCount * 50 : 0;
+          this.runScore += comboBonus;
+          this.addFloatingText(`+${100 + comboBonus}`, c.x, c.y - 20, comboBonus ? '#facc15' : pColor);
         } else if (c.type === 'relic') {
           p.relicsFound++;
           this.runScore += 500;
           sound.playRelicFound();
           this.spawnSparkBurst(c.x, c.y, '#38bdf8');
-          this.addFloatingText('JUNGLE IDOL! +500', c.x, c.y - 30, '#38bdf8');
+          this.addFloatingText('+500', c.x, c.y - 30, '#38bdf8');
         } else if (c.type === 'heart') {
           p.hp = Math.min(p.maxHp, p.hp + 1);
           sound.playHeartPickup();
           this.spawnSparkBurst(c.x, c.y, '#f43f5e');
-          this.addFloatingText('+1 HP RESTORED', c.x, c.y - 20, '#f43f5e');
         } else if (c.type === 'super_heart') {
           p.hp = p.maxHp;
           p.invincibleTimer = 3.5;
           sound.playSuperHeart();
           this.spawnSparkBurst(c.x, c.y, '#facc15');
-          this.addFloatingText('MAX HP RESTORED + SHIELD!', c.x, c.y - 30, '#facc15');
         } else if (c.type === 'powerup_speed') {
           p.activePowerUp = 'speed';
-          p.powerUpTimer = 10.0;
-          p.maxPowerUpTimer = 10.0;
+          p.powerUpTimer = POWER_UP_SECS.speed;
+          p.maxPowerUpTimer = POWER_UP_SECS.speed;
           sound.playPowerUp('speed');
           this.spawnSparkBurst(c.x, c.y, '#34d399');
-          this.addFloatingText('⚡ CHEETAH SPEED (10s)!', c.x, c.y - 35, '#34d399');
         } else if (c.type === 'powerup_invincible') {
           p.activePowerUp = 'invincible';
-          p.powerUpTimer = 8.0;
-          p.maxPowerUpTimer = 8.0;
+          p.powerUpTimer = POWER_UP_SECS.invincible;
+          p.maxPowerUpTimer = POWER_UP_SECS.invincible;
           sound.playPowerUp('invincible');
           this.spawnSparkBurst(c.x, c.y, '#facc15');
-          this.addFloatingText('⭐ SOLAR INVINCIBLE (8s)!', c.x, c.y - 35, '#facc15');
         } else if (c.type === 'powerup_magnet') {
           p.activePowerUp = 'magnet';
-          p.powerUpTimer = 12.0;
-          p.maxPowerUpTimer = 12.0;
+          p.powerUpTimer = POWER_UP_SECS.magnet;
+          p.maxPowerUpTimer = POWER_UP_SECS.magnet;
           sound.playPowerUp('magnet');
           this.spawnSparkBurst(c.x, c.y, '#38bdf8');
-          this.addFloatingText('🧲 NECTAR MAGNET (12s)!', c.x, c.y - 35, '#38bdf8');
         }
       }
     }
@@ -3529,14 +3526,14 @@ export class GameEngine {
         }
         sound.setTempo(b.phase === 3 ? 1.08 : 1.04);
       } else if (b.phase === 3) {
+        // (a new phase is heard, in the music's tempo, and seen on the bar's gold notch: no words over the boss, AN-3)
         sound.setTempo(1.08);
-        this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - b.height, '#ef4444');
       } else {
         sound.setTempo(1.04);
-        this.addFloatingText('PHASE 2: SPEED UP!', b.x, b.y - b.height, '#f97316');
       }
     }
-    if (br.state === 'tell' && prevState !== 'tell') sound.playPredator(def.tellCall ?? 'jaguar', 0);
+    // every guardian winds up with its own sound (SN-4: it was a jaguar's growl for all but Venom Fang; polish-sfx's recordings)
+    if (br.state === 'tell' && prevState !== 'tell') sound.playBossTell(this.currentStage.config.secret ? 11 : this.currentStage.config.worldIndex);
     if (br.state === 'act' && prevState !== 'act') {
       if (br.move === 'screech') sound.playEagleScreech();
       else sound.playWhoosh();
@@ -3849,7 +3846,7 @@ export class GameEngine {
     this.player.crittersRescued++;
     this.runScore += 400;
     sound.playCritterRescued();
-    this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
+    this.addFloatingText('+400', c.x, c.y - 30, '#c084fc');
   }
 
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
@@ -4168,7 +4165,7 @@ export class GameEngine {
     if (def?.openCue && wr) {
       // what came off the bar (half a hit, one, two), over the spot that was hit
       this.addFloatingText(hitLabel(leftBefore, hitsLeft(b.hp, b.maxHp, this.bossHits), crit, pts), wr.x + wr.w / 2, wr.y - 12, crit ? '#fb923c' : '#facc15');
-    } else this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
+    } else this.addFloatingText(`+${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
   }
 
@@ -4220,7 +4217,7 @@ export class GameEngine {
     this.runScore += pts;
     this.statStomps++;
     recorder.event('stomp', 'boss');
-    this.addFloatingText(`${leaf ? 'LEAF DIVE!' : 'ON HER BACK!'} +${pts}`, b.x, b.y - b.height * 0.7, leaf ? '#86efac' : '#facc15');
+    this.addFloatingText(`+${pts}`, b.x, b.y - b.height * 0.7, leaf ? '#86efac' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
     return true;
   }
@@ -4242,7 +4239,6 @@ export class GameEngine {
     this.hitstopTimer = Math.max(this.hitstopTimer, 0.3);
     if (this.bossDef?.lair) this.slowMoLeft = 1.2; // a giant's last hit plays in slow motion, the camera pushing in
     this.camera.trauma = 1;
-    this.addFloatingText('K.O.!', b.x, b.y - b.height, '#fde047');
     this.spawnDebrisBurst(b.x, b.y, '#fde047');
   }
 
@@ -4703,8 +4699,7 @@ export class GameEngine {
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
     buzz('hurt');
-    // (the hit that costs a life says so at the respawn instead: two lots of words on one spot were unreadable)
-    if (p.hp > 0) this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
+    // (no "-1 HP": the heart that empties on the HUD, the flinch and the sound say it, AN-3)
 
     if (p.hp <= 0 && !this.isGameOver) {
       this.loseLife('hurt');
@@ -4722,28 +4717,74 @@ export class GameEngine {
     p.squashX = 0.78;
     p.squashY = 1.38;
     p.bounce = { kind: 'spring', t: 0 };
-    sound.playJump();
+    sound.playBounce();
     this.spawnSparkBurst(p.x, p.y, '#facc15');
   }
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
+    if (this.down) return;
     recorder.event('lostLife', reason);
     this.lostTo = reason;
     if (this.bossGuideUp) this.clearGuide();
     this.lives -= 1;
     this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
-    if (this.lives <= 0) {
+    // the beat (AN-1): the world holds, he goes down (knocked flat by a hit; a splash or a fall is already its own picture), the dark
+    // closes in on him, and only then the flag, or on the last life the Game Over card
+    const last = this.lives <= 0;
+    if (last) {
       this.isGameOver = true;
       this.outOfLives = true;
       sound.playDefeat();
+    }
+    this.player.downed = reason === 'hurt';
+    this.player.vx = 0;
+    this.camera.trauma = Math.max(this.camera.trauma, 0.25);
+    this.down = { t: 0, reason, last };
+  }
+
+  /** the life-lost beat, one frame: when it is over, the flag (or the Game Over card) */
+  private stepDown(dt: number) {
+    const d = this.down!;
+    d.t += dt;
+    this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+    if (d.t < DOWN_SECS) return;
+    this.down = null;
+    this.player.downed = false;
+    if (d.last) {
       this.callbacks.onStageStats?.(this.buildStats(false, 0));
       this.callbacks.onDefeat(this.runScore);
       return;
     }
-    this.respawnAtCheckpoint(reason);
+    this.respawnAtCheckpoint(d.reason);
     // Dot's flight: she says a life went (QA, 2026-10-25: losing one came with no line)
     this.dotRun?.lostLife(this.lives);
+  }
+
+  /**
+   * The dark circle of the beat (AN-1), over the world and under the HUD: closing on him while he is down, opening on him at the flag.
+   * Centred on him, kept inside the view (a fall takes him off its bottom edge).
+   */
+  private drawIris(ctx: CanvasRenderingContext2D) {
+    const vw = this.camera.viewportWidth;
+    const vh = this.camera.viewportHeight;
+    let k = 0;
+    if (this.down) k = Math.min(1, Math.max(0, (this.down.t - DOWN_SECS * 0.3) / (DOWN_SECS * 0.7)));
+    else if (this.irisOpen > 0) k = this.irisOpen / IRIS_OPEN_SECS;
+    if (k <= 0) return;
+    const e = k * k * (3 - 2 * k);
+    const p = this.player;
+    const cx = Math.max(40, Math.min(vw - 40, p.x - this.camera.x));
+    const cy = Math.max(40, Math.min(vh - 40, p.y - 40 - this.camera.y));
+    const full = Math.hypot(Math.max(cx, vw - cx), Math.max(cy, vh - cy)) + 20;
+    const r = Math.max(0, full * (1 - e));
+    ctx.save();
+    ctx.fillStyle = 'rgba(5, 12, 9, 0.97)';
+    ctx.beginPath();
+    ctx.rect(0, 0, vw, vh);
+    ctx.arc(cx, cy, r, 0, Math.PI * 2, true);
+    ctx.fill('evenodd');
+    ctx.restore();
   }
 
   /**
@@ -4779,7 +4820,7 @@ export class GameEngine {
     this.letGoOfRope(0.5);
     p.jumpsLeft = 2;
     p.invincibleTimer = Math.max(p.invincibleTimer, 1.2);
-    this.respawnFlash = 0.6;
+    this.irisOpen = IRIS_OPEN_SECS;
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
@@ -4789,7 +4830,6 @@ export class GameEngine {
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
-    this.addFloatingText('TRY AGAIN!', p.x, p.y - 112, '#fde68a', 1.2);
     return true;
   }
 
@@ -4835,7 +4875,7 @@ export class GameEngine {
     this.letGoOfRope(0.5);
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
-    this.respawnFlash = 0.6;
+    this.irisOpen = IRIS_OPEN_SECS;
     // what he was carrying goes back to its source
     this.kit?.onRespawn();
     this.inputGrace = 0.35;
@@ -4852,8 +4892,8 @@ export class GameEngine {
     // above his head, one line over the other with room between (at his head they sat on top of him and of each other), and up long
     // enough to read; any older words still rising there go first
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
-    this.addFloatingText(reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!', p.x, p.y - 112, '#fca5a5', 1.4);
-    if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 88, '#fde68a', 1.4);
+    // one small note in place of "TRY AGAIN!" / "OH NO!" and "N LIVES LEFT" (AN-1, AN-3; a Game Over pick-up has them all back)
+    this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'life' : 'lives'} left`, p.x, p.y - 74, '#fde68a', 1.6);
     // Dot's flight: she comes back at the last flower she drank at
     if (this.dotRun) this.dotRun.fl.respawn();
     if (this.slideRun?.sliding) this.slideRun.respawn();
@@ -6191,10 +6231,7 @@ export class GameEngine {
       }
       ctx.restore();
     }
-    if (this.respawnFlash > 0) {
-      ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
-      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
-    }
+    this.drawIris(ctx);
 
     if (this.entrance && this.boss && this.bossDef && this.currentStage.arena) {
       const head = weakRect(this.boss, this.bossDef, this.currentStage.arena.floor);
@@ -6254,6 +6291,7 @@ export class GameEngine {
       score: (n) => (this.runScore += n),
       stepAt: (dir) => this.stepAt(dir),
       sfx: (kind) => {
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'scratch') sound.playTreeClimb();
         else if (kind === 'cut') sound.playRelicFound();
         else if (kind === 'blink') sound.playWhoosh();
@@ -6358,7 +6396,7 @@ export class GameEngine {
         this.checkpoint = { x: this.slideRun!.st.chamberFlag.x, y: this.slideRun!.st.chamberFlag.y };
         this.camera.x = x - this.camera.viewportWidth * 0.3;
         this.camera.y = y - this.camera.viewportHeight * 0.5;
-        this.respawnFlash = 0.6;
+        this.irisOpen = IRIS_OPEN_SECS;
       },
     });
   }
@@ -6499,11 +6537,7 @@ export class GameEngine {
       ctx.fillText(ft.text, ft.x, ft.y);
     }
     ctx.restore();
-    if (this.respawnFlash > 0) {
-      this.respawnFlash = Math.max(0, this.respawnFlash - 1 / 30);
-      ctx.fillStyle = `rgba(255, 255, 255, ${(this.respawnFlash / 0.6) * 0.7})`;
-      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
-    }
+    this.drawIris(ctx);
   }
 
   /**
@@ -7346,8 +7380,9 @@ export class GameEngine {
       },
       sfx: (kind) => {
         if (kind === 'cry') sound.playEagleScreech();
-        else if (kind === 'rock') sound.playHitImpact();
-        else if (kind === 'chime') sound.playVineGrab();
+        else if (kind === 'rock') sound.playRock();
+        else if (kind === 'rockWarn') sound.playRockWarn();
+        else if (kind === 'chime') sound.playWindChime();
         else if (kind === 'monkey') sound.playPredator('tayra', 0);
         else if (kind === 'frond') sound.playShrineUnlocked();
         else if (kind === 'knot') sound.playRelicFound();
@@ -7382,6 +7417,8 @@ export class GameEngine {
       stuck: (room) => this.mc?.stuck(room),
       glowAt: () => this.mc?.flickerAt() ?? null,
       sfx: (kind) => {
+        // every puzzle action has its own recorded sound (sfxGame.ts PUZZLE_KIND); the rest keep their borrowed one below
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'pick') sound.playVineGrab();
         else if (kind === 'drop' || kind === 'land') sound.playLand(kind === 'drop' ? 0.4 : 0.25);
         else if (kind === 'throw' || kind === 'lost') sound.playWhoosh();
@@ -7523,6 +7560,7 @@ export class GameEngine {
         recordCake(id);
       },
       sfx: (kind) => {
+        if (sound.playPuzzle(kind)) return;
         if (kind === 'hum') sound.playVineGrab();
         else if (kind === 'wrap') sound.playPlayerHurt();
         else if (kind === 'cake') sound.playFruitPickup();

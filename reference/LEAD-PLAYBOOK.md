@@ -85,6 +85,8 @@ A helper's report is not proof. Before merging:
 
 ## 6. Releases
 
+Step zero of every test link and every release: read reference/PARTNER.md and go through its "little pieces" list (Matt, 2026-10-29).
+
 Only when Matt says "push". Before: §4 passed on everything in it; STATUS.md lists what is in and what is not. After the merge:
 check the deploy and the Android build, update STATUS.md and the roadmap, tell the QA session what went live.
 

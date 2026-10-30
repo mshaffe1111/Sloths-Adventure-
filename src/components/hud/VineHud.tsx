@@ -25,6 +25,7 @@ import { Bolt, GoalPic, Heart, HudDefs, Leaf, MenuLines, Star, Tick, Vine, vineY
 import { GoalCard } from './GoalCard.tsx';
 import { PaintedVine, PlateArt, Piece, Tendril, fillStyle, useHudArt } from './painted.tsx';
 import './hud.css';
+import { POWER_UP_SECS } from '../../game/powerUps.ts';
 
 export interface VineHudProps {
   levelConfig: LevelConfig;
@@ -51,10 +52,11 @@ export interface VineHudProps {
   runKey?: number;
 }
 
+/** (the pod empties over the engine's own durations, game/powerUps.ts: UI-8) */
 const POWER = {
-  speed: { label: 'Cheetah speed', color: '#6ee7b7', secs: 8 },
-  invincible: { label: 'Solar shield', color: '#fde047', secs: 8 },
-  magnet: { label: 'Nectar magnet', color: '#7dd3fc', secs: 10 },
+  speed: { label: 'Cheetah speed', color: '#6ee7b7', secs: POWER_UP_SECS.speed },
+  invincible: { label: 'Solar shield', color: '#fde047', secs: POWER_UP_SECS.invincible },
+  magnet: { label: 'Nectar magnet', color: '#7dd3fc', secs: POWER_UP_SECS.magnet },
 } as const;
 
 const THREADS = [7, 11, 8, 12, 9, 10, 8];
@@ -561,7 +563,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
           <Leaf frame="big_B03_0" w={tiny ? 28 : 34} className="vh-boss-leaf" style={{ left: -24, bottom: -10, transform: 'rotate(-160deg)', zIndex: 1 }} />
           <Leaf frame="big_C05_0" w={tiny ? 28 : 34} className="vh-boss-leaf" style={{ right: -24, bottom: -8, transform: 'rotate(20deg)', zIndex: 1 }} />
           <BossHud
-            name={props.bossName || 'Stage boss'}
+            name={props.bossName ?? ''}
             hp={props.bossHp!}
             maxHp={props.bossMaxHp!}
             phase={props.bossPhase ?? 1}

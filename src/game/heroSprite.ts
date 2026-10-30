@@ -21,6 +21,7 @@ import { clipPick, heroClipsAreLive, heroClipsLive } from './heroClips.ts';
 import { drawVineHang } from './heroVine.ts';
 import { drawSwimHero } from './heroSwim.ts';
 import { drawRopeHang } from './heroRope.ts';
+import { heroBlinkAlpha } from './heroBlink.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -365,7 +366,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
     ctx.rotate(rot);
     ctx.translate(0, pivot);
   }
-  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha = 0.55;
+  ctx.globalAlpha *= heroBlinkAlpha(p, time);
   drawAuras(ctx, p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
@@ -431,7 +432,7 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
     ctx.rotate(rot);
     ctx.translate(0, pivot);
   }
-  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha *= 0.55;
+  ctx.globalAlpha *= heroBlinkAlpha(p, time);
   drawAuras(ctx, p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';

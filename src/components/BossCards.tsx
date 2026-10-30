@@ -39,6 +39,11 @@ export const BossIntroCard: React.FC<{ levelConfig: LevelConfig; onGo: () => voi
   const key = levelConfig.secret ? 'thornbark' : levelConfig.worldIndex;
   const line = BOSS_DOT_LINE[levelConfig.secret ? 11 : levelConfig.worldIndex] ?? 'Watch for the red glow, Pokey.';
   const short = typeof window !== 'undefined' && window.innerHeight <= 520;
+  // the guardian's name lands with a slam (SN-10: the card used to open in silence)
+  React.useEffect(() => {
+    const id = window.setTimeout(() => sound.playBossSlam(), 250);
+    return () => window.clearTimeout(id);
+  }, []);
   return (
     <div className="clr-scrim boss select-none">
       <GhostOnExit />
