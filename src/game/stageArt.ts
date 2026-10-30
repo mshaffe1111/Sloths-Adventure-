@@ -156,9 +156,16 @@ export function drawCheckpointArt(ctx: CanvasRenderingContext2D, x: number, grou
   } else reachedAt.delete(x);
   const left = x - f.ax * k;
   const top = ground - f.ay * k - bounce;
+  // the post and pennant come from the flag baked at its drawn size (sheet px x b in the bake), or from the sheet while that can't be made
+  const bk = flagBake(ctx, img, f, reached, k);
+  const src: CanvasImageSource = bk ? bk.cv : img;
+  const b = bk ? bk.cv.width / f.w : 1;
+  const ox = bk ? 0 : f.x;
+  const oy = bk ? 0 : f.y;
+  const sh = bk ? bk.cv.height : f.h;
   // the post (left of the pennant) as it is
   const poleW = f.px ?? f.ax + 6;
-  ctx.drawImage(img, f.x, f.y, poleW, f.h, left, top, poleW * k, f.h * k);
+  ctx.drawImage(src, ox, oy, poleW * b, sh, left, top, poleW * k, f.h * k);
   // the pennant in slices: lit it flutters, unlit it only stirs
   const amp = reached ? 3.2 : 0.9;
   const sl = 8;
@@ -166,9 +173,39 @@ export function drawCheckpointArt(ctx: CanvasRenderingContext2D, x: number, grou
     const w = Math.min(sl, f.w - sx);
     const u = (sx - poleW) / (f.w - poleW);
     const dy = Math.sin(t * (reached ? 7 : 2.2) - u * 5 + x * 0.01) * amp * u;
-    ctx.drawImage(img, f.x + sx, f.y, w + 0.6, f.h, left + sx * k, top + dy, (w + 0.6) * k, f.h * k);
+    // (the last slice's hair of overlap would run past the bake's edge: kept inside it)
+    const sw = bk ? Math.min(w + 0.6, f.w - sx) : w + 0.6;
+    ctx.drawImage(src, ox + sx * b, oy, sw * b, sh, left + sx * k, top + dy, sw * k, f.h * k);
   }
   return true;
+}
+
+/**
+ * The checkpoint (unlit and lit) baked once at the size it covers on screen (FLAG_H world px times the canvas scale, in eighths, rounded
+ * up): the 384 px sheet frame was shrunk 1.4-2x on the post and every pennant slice, every frame. Remade only when the sheet or the scale
+ * changes.
+ */
+const flagBakes: Array<{ img: HTMLImageElement | null; k: number; cv: HTMLCanvasElement } | null> = [null, null];
+function flagBake(ctx: CanvasRenderingContext2D, img: HTMLImageElement, f: ArtFrame, lit: boolean, k: number) {
+  if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function') return null;
+  const m = ctx.getTransform();
+  const dk = Math.ceil(Math.hypot(m.a, m.b) * k * 8) / 8;
+  // (already as small as the sheet itself: drawn straight from the sheet)
+  if (dk >= 1) return null;
+  const i = lit ? 1 : 0;
+  let e = flagBakes[i];
+  if (e && e.img === img && e.k === dk) return e;
+  const cv = e?.cv ?? document.createElement('canvas');
+  cv.width = Math.ceil(f.w * dk);
+  cv.height = Math.ceil(f.h * dk);
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  g.imageSmoothingEnabled = true;
+  g.imageSmoothingQuality = 'high';
+  g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, cv.width, cv.height);
+  e = { img, k: dk, cv };
+  flagBakes[i] = e;
+  return e;
 }
 
 // ───────────────────────────── pickups ─────────────────────────────
