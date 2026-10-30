@@ -5706,8 +5706,11 @@ export class GameEngine {
     // a standing flick that leaned 35 degrees or more carries him that way at LEAN_SPEED of a run, Jump help or not (Matt, 2026-10-29,
     // polish report CT-27: it went straight up and down)
     const slant = this.input.source === 'gesture' && !second && steer === 0 ? inp.jumpSlant ?? 0 : 0;
-    if (help === 'off') this.airDrive = newAirDrive();
-    else {
+    // (Jump help off: a first jump starts clean; a second keeps what the first set going, so a step or face carry (below, and the wall
+    // carry in the frame) still lands a double flick into a tall stump)
+    if (help === 'off') {
+      if (!second) this.airDrive = newAirDrive();
+    } else {
       const kind = this.currentStage.config.objectiveType;
       airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
     }
