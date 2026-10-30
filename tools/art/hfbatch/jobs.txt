@@ -161,3 +161,5 @@ X-16 skies r5b 6ae3ded30e0338d1bb7c5983 rtx-pro-6000 started 00:03:31Z at f9c46f
 X-16 skies r5 pilot 6ae3e0c9c78863f9c62e0e1b started 00:11:53Z, 3 takes, ~5 min (~$0.25): painted skies good (no sloth, right light);
   a soft dark band left over cut-off tree tops (the start eased into the strip's top row). Fixed: no easing, join at 0.85.
 X-16 skies r5d 6ae3e30e0e0338d1bb7c5c56 rtx-pro-6000 started 00:21:34Z at 57cc1a79, 22 takes (seed 11 for all 11 first); timeout 40 min.
+  Cancelled at about 00:31Z (~10 min, ~$0.45; round 5 so far ~$1.38 over 30 min): at 0.85 the full-width join came back a flat grey
+  slab. Back to 0.75 (as the pilot), no easing, one seed (11) per strip.
