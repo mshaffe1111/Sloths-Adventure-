@@ -54,8 +54,8 @@ test('5-5: every cocoon opens to three taps from the ground (or the branch) it h
     });
   }
   assert.deepEqual(bad, []);
-  // (so no jump-punch is ever needed, and the tip is the tap: "Tap to punch it open")
-  assert.equal(engineGuideLine(W5_TEACH.cocoon, '5-5')!.move, 'punch');
+  // (so no jump-punch is ever needed. Dot's first line names what is inside, not the move: the lead's line bar, 2026-10-29)
+  assert.equal(engineGuideLine(W5_TEACH.cocoon, '5-5')!.move, undefined);
 });
 
 test('5-5: the wrapped chairs read as furniture (wood and cloth showing) and stand well away from the cocoons; none lies there shut', () => {

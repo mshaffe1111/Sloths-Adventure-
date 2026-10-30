@@ -151,17 +151,25 @@ test("5-4: the silk sheets hang on open ground, well away from every take-off, a
   }
 });
 
-test("5-4's lines: in Dot's voice and Matt's rules (tips 8 words or fewer that name the thumb move), naming the silk", () => {
+test("5-4's lines: in Dot's voice and the line bar (under 10 words; a first sight names the thing, never the answer), naming the silk", () => {
   const st = build(1);
   for (const h of [W5_HINTS.s54start, W5_HINTS.s54admire, W5_HINTS.s54chain, W5_HINTS.s54high, W5_HINTS.s54end]) {
     assert.ok(st.proto.hints.some((q) => q.text === h.old), `"${h.old}" is in the stage`);
+    // (the chain's "flick up at the front" is cut: it said when to let go, the lead's sweep 2026-10-29)
+    if (h.text === null) {
+      assert.equal(engineGuideLine(h.old, '5-4'), null);
+      continue;
+    }
     assert.ok(words(h.text) <= 8, `"${h.text}"`);
     assert.equal(engineGuideLine(h.old, '5-4')!.text, h.text);
   }
-  for (const t of [W5_TEACH.silk, W5_TEACH.sheet, W5_TEACH.seamstress, W5_TEACH.laced]) {
+  // the silk teaches its swing (a control, the first time it is needed) and the help after he is caught names the move; the sheet and
+  // the Seamstress name the danger and its rule, never the move
+  for (const t of [W5_TEACH.silk, W5_TEACH.laced]) assert.match(engineGuideLine(t, '5-4', { dot: true })!.text, /flick|slide|tap/i);
+  for (const t of [W5_TEACH.sheet, W5_TEACH.seamstress]) {
     const l = engineGuideLine(t, '5-4', { dot: true })!;
-    assert.ok(words(l.text) <= 8, `"${l.text}"`);
-    assert.match(l.text, /flick|slide|tap/i, `"${l.text}" names the thumb move`);
+    assert.ok(words(l.text) < 10, `"${l.text}"`);
+    assert.doesNotMatch(l.text, /flick|slide|tap/i, `"${l.text}" does not say the move`);
   }
   // the silk is named, never "it" alone (QA: "And don't admire it" named nothing)
   assert.match(engineGuideLine(W5_TEACH.sheet, '5-4')!.text, /silk/);

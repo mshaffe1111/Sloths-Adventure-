@@ -1,7 +1,7 @@
 /**
  * puzzlePlay — a stage's puzzle rooms during a run (the rules are puzzleKit.ts; the look is puzzleArt.ts): the things lying, held,
  * flying and coming back, the plates, gates, levers, baskets and lifts and their wires, the lure beetles, the room reset, Pokey's carry
- * poses, the camera's lean toward the puzzle part that matters now (puzzleCamera.ts), the silent sparkle on Easy when he is clearly
+ * poses, the camera's lean toward the puzzle part that matters now (puzzleCamera.ts), Dot's next step when he is clearly
  * stuck, and the piece Dot points at. The engine only lends it what it needs through `KitHost`, as World 4 and 5 do (w4Play.ts,
  * w5Play.ts), and reads the intents it took (engine.ts kitControls).
  */
@@ -70,7 +70,7 @@ export interface KitHost {
   /** a room's line whose moment has passed (he has left the room): taken down, up or still waiting */
   passTip?(text: string): void;
   sfx(kind: KitSfx): void;
-  /** he is clearly stuck in a room (Flicker's on-request hints hook in here later; Easy's sparkle is the kit's own) */
+  /** he is clearly stuck in a room (Flicker's on-request hints hook in here later) */
   stuck?(room: string): void;
   /** a hanging reed cage came all the way up and its floor dropped open: the little one in it is free (World 2) */
   freeCage?(c: Collectible): void;
@@ -197,7 +197,8 @@ interface RoomRun {
   turns: number;
   fails: number;
   lastDir: number;
-  sparkle: boolean;
+  /** Easy's stuck help has been given here (her nudge, then the move): not given again until something changes */
+  easyHelped: boolean;
   /** how many times Dot has helped here on struggle (a nudge, then the move) */
   helped: number;
   told: Set<string>;
@@ -257,7 +258,7 @@ function drawReedWall(ctx: CanvasRenderingContext2D, x: number, top: number, bot
 /** where each seesaw painting's round pivot is across its frame (atlas px, measured from puzzle-kit.webp) */
 const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = { seesawLevel: 105, seesawUpR: 105, seesawUpL: 90 };
 
-/** the active part: where it is, how big it is (Dot perches beside it and a sparkle twinkles on it), and which piece it is (none: the
+/** the active part: where it is, how big it is (Dot perches beside it after struggle; nothing is drawn on it), and which piece it is (none: the
  *  room's middle) */
 type Focus = { x: number; y: number; r: number; id?: string };
 
@@ -305,7 +306,7 @@ export class KitPlay {
   /** the puzzle piece Dot points at (GuideView.kit): the active part while he is in a room, nothing outside one */
   readonly guideThings: Array<{ x: number; y: number; r: number }> = [];
   private focusPt: Focus = { x: 0, y: 0, r: 30 };
-  /** where Dot points and Easy's sparkle goes (pointAt) */
+  /** where Dot perches when she points (pointAt) */
   private pointPt: Focus = { x: 0, y: 0, r: 30 };
   private t = 0;
   /** a room's lines still to take down, one a frame */
@@ -347,7 +348,7 @@ export class KitPlay {
         spec, ri, box: roomBox(spec, byId), beyond: anchorAt(spec.beyond, byId), items: [], plates: [], gates: [], levers: [], baskets: [], lifts: [], beetles: [], sources: [], resets: [],
         seesaws: [], bells: [], ledges: [], marks: [], shutters: [], pinwheels: [], sluices: [], traders: [],
         chairs: [], saplings: [], silks: [], knots: [], ladders: [], teapots: [], glows: [], moons: [], cups: 0,
-        ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, sparkle: false, helped: 0, told: new Set(),
+        ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, easyHelped: false, helped: 0, told: new Set(),
       };
       for (const pc of spec.pieces) {
         const a = at(pc);
@@ -899,7 +900,7 @@ export class KitPlay {
       tp.t = 0;
     }
     room.changes++;
-    room.sparkle = false;
+    room.easyHelped = false;
     h.sfx('reset');
     h.float('STARTING AGAIN', room.resets[0]?.x ?? h.player.x, (room.resets[0]?.y ?? h.player.y) - 110, '#fde68a');
   }
@@ -1208,12 +1209,12 @@ export class KitPlay {
         h.tip(`kit:${room.spec.id}:open`, room.spec.tips.open, 3);
       }
     }
-    // the stuck watch (Easy only, silent): a sparkle on the important piece once he is clearly stuck here
+    // the stuck watch: once he is clearly stuck here, Dot's next step (nothing is drawn on the piece)
     if (room.changes !== before) {
       room.calm = 0;
       room.turns = 0;
       room.fails = 0;
-      room.sparkle = false;
+      room.easyHelped = false;
     } else if (inside) {
       if (landedQuiet) room.fails++;
       if (!this.noClock) room.calm += dt;
@@ -1222,8 +1223,8 @@ export class KitPlay {
       if (dir) room.lastDir = dir;
       // (without the clock, Matt's research rule: back and forth with nothing changing, or two failed tries)
       const stuck = this.noClock ? room.turns >= STUCK.turns || room.fails >= STUCK.fails : room.calm >= STUCK.calm || (room.turns >= STUCK.turns && room.calm >= STUCK.turnsCalm) || room.fails >= STUCK.fails;
-      if (stuck && (!room.sparkle || room.helped < 2)) {
-        room.sparkle = room.sparkle || h.easy;
+      if (stuck && (!room.easyHelped || room.helped < 2)) {
+        room.easyHelped = room.easyHelped || h.easy;
         h.stuck?.(room.spec.id);
         // Dot's next step (DOT-2): the first time a nudge that points at the piece, the next time the move (her help setting decides
         // whether the move is said: Help only)
@@ -1519,9 +1520,9 @@ export class KitPlay {
   private noClock = false;
   private night = false;
 
-  /** is the room's sparkle on (Easy's stuck help) */
-  sparkling(room: number): boolean {
-    return !!this.rooms[room]?.sparkle;
+  /** has Easy's stuck help been given in this room (and nothing changed since) */
+  stuckHelped(room: number): boolean {
+    return !!this.rooms[room]?.easyHelped;
   }
 
   // ───────────────────────────── the active part ─────────────────────────────
@@ -1566,7 +1567,7 @@ export class KitPlay {
   }
 
   /**
-   * Where Dot points (and Easy's sparkle goes): the piece he should go to now, at the spot it is drawn. Mostly the camera's focus; but
+   * Where Dot points (she perches by it): the piece he should go to now, at the spot it is drawn. Mostly the camera's focus; but
    * in a seesaw room it is the log that weighs an end down (until one does), then the raised end, his step: the seesaw's pivot, which
    * the camera frames, is neither (Matt, 2026-10-29: the ring "doesn't even show where it's at").
    */
@@ -1840,11 +1841,10 @@ export class KitPlay {
     }
   }
 
-  /** over Pokey: what he holds (when his pose has no hands for it), things in flight, Easy's sparkle */
+  /** over Pokey: what he holds (when his pose has no hands for it), things in flight (nothing marks the answer: Matt, 2026-10-29) */
   drawFront(ctx: CanvasRenderingContext2D, p: Player, drewPose: boolean) {
     for (const room of this.rooms) {
       for (const it of room.items) if (it.mode === 'fly') this.drawItem(ctx, it, it.body.x, it.body.y, it.spin);
-      if (room.sparkle && room === this.rooms[this.inRoom]) this.drawSparkle(ctx, this.pointPt);
     }
     if (this.held && !drewPose) {
       const it = this.rooms[this.held.room].items[this.held.item];
@@ -2585,24 +2585,4 @@ export class KitPlay {
     return y;
   }
 
-  private drawSparkle(ctx: CanvasRenderingContext2D, f: { x: number; y: number; r: number }) {
-    ctx.save();
-    for (let i = 0; i < 5; i++) {
-      const a = this.t * 1.6 + (i * Math.PI * 2) / 5;
-      const u = (Math.sin(this.t * 4 + i * 1.7) + 1) / 2;
-      const x = f.x + Math.cos(a) * (f.r + 6);
-      const y = f.y + Math.sin(a) * (f.r * 0.7 + 4);
-      const k = 4 + u * 5;
-      ctx.globalAlpha = 0.45 + 0.55 * u;
-      ctx.fillStyle = '#fff3b0';
-      ctx.beginPath();
-      ctx.moveTo(x, y - k * 1.7);
-      ctx.quadraticCurveTo(x, y, x + k * 1.7, y);
-      ctx.quadraticCurveTo(x, y, x, y + k * 1.7);
-      ctx.quadraticCurveTo(x, y, x - k * 1.7, y);
-      ctx.quadraticCurveTo(x, y, x, y - k * 1.7);
-      ctx.fill();
-    }
-    ctx.restore();
-  }
 }
