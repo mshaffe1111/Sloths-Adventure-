@@ -45,7 +45,7 @@ import { warmBounce } from './bounceArt.ts';
 import { BOUNCE_URL } from './bounceAtlasData.ts';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
-import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
+import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterArt.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
@@ -105,7 +105,7 @@ export function start(keys: readonly string[]): string[] {
       urls.push(WATER_SIGN_URL);
     } else if (k === 'bad-water') {
       badWaterReady();
-      urls.push(BAD_WATER_URL);
+      urls.push(currentBadWaterUrl());
     } else if (k === 'sentry') {
       sentryReady();
       urls.push(...SENTRY_URLS);
@@ -221,6 +221,8 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   if (pending?.id === id) return pending.done;
   // (a stage in another world: the last world's sheets go first, as starting the stage would do)
   enterWorld(cfg.worldIndex);
+  // (the dirty water's sheet is the world's own from World 8 on: badWaterArt.ts)
+  if (cfg.worldIndex >= 6) setBadWaterWorld(cfg.worldIndex);
   if (mix && !live()) releaseCtestFoes(ctestMixDraws(mix).foes);
   // (and what every stage shows, and for the control test what its mix's built stage holds: stageManifest.ts; the rest of a stage's
   // built contents are got in once it is built, stageReady.ts)
