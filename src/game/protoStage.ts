@@ -236,6 +236,8 @@ export const CTEST_GAP3 = 'This one needs two jumps: jump, then jump again in th
 /** the long jumps' own tip, on the single jumps (dotLinesData.ts ctest.gaps; Matt, 2026-10-29: one line for each move, the second jump's
  * at gap 3) */
 const CTEST_GAPS = 'Jump across the gaps';
+/** LV-3's double-jump practice spot in 1-6 (dblPractice): the low rock up to it, the two ledges' height, the gap between them (px) */
+export const PRACTICE = { step: 52, ledge: 125, gap: 205 } as const;
 /** before the second jump is taught (1-1's stepping stones): how far below a stone's lower side a gap's floor sits, an easy single hop */
 export const PLAIN_CLIMB = 75;
 /** 1-1's practice shelf for the second jump: this far past the start of the twist (the tip is said at 60), and this high above the path */
@@ -1228,11 +1230,34 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
     pieces.push({ k: 'highrun', x0, x1: x });
   }
   /**
+   * LV-3 (Matt, 2026-10-29: the double jump stays on from the start on Easy, and 1-6 teaches it just before the first gap that needs
+   * it): a practice spot over solid floor, no fall and no clock. A low rock (52 px), then a ledge, then a second ledge across a gap at the same
+   * height that one jump falls short of (Normal's 175 px) and the second jump clears even with Easy's short hold (285 px); petals on the
+   * far ledge. Both ledges stand above one jump's rise (108 px), so the floor runs on under them and a plain walk passes beneath.
+   */
+  function dblPractice() {
+    const x0 = x;
+    run(R.r(150, 190));
+    // (World 1's own rock, sunk into the bank: a bare block drew as a grey box)
+    logHop(PRACTICE.step);
+    const ay = G - PRACTICE.ledge;
+    const a = branch(x + 30, x + 190, ay);
+    flower(a.x + a.width / 2, ay - 34, 'orchid');
+    const b = branch(a.x + a.width + PRACTICE.gap, a.x + a.width + PRACTICE.gap + 170, ay);
+    row(b.x + 45, b.x + b.width - 45, ay - 34, 2, 'hibiscus');
+    x = b.x + b.width;
+    run(R.r(140, 180));
+    expert += (x - x0) / RUN + 1.5;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+  /**
    * the high branches: a mushroom up to a run of branches 240 over the ground, short hops between them (a miss drops him onto the
    * ground below, a walk back to the mushroom), and the run ends on the top of a wall that only the branches reach. `dbl`: the gaps
    * want the second jump (across, never up)
    */
   function highLeaps(n: number, dbl = false, first = false, snakes = false) {
+    // (1-6: the first gaps that want the second jump get the practice spot just before them, LV-3)
+    if (dbl && plan === 'proto') once('dblPractice', dblPractice);
     const x0 = x;
     run(R.r(110, 150));
     if (first) once('bounceWall', () => hint(x - 120, 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high'));
