@@ -48,7 +48,7 @@ The lead works on this alone first, with no helpers. Rules: reference/PERFORMANC
    - **(f)** overdraw cut: the soil-tile overlaps, and the full-screen overlay baked into a layer;
    - **(g)** a fixed-step update with catch-up, so a slow frame never slows Pokey (this one doesn't depend on the GPU, so it can go in first).
 4. **Prove it on the Pixel:** Chrome, Edge and the APK, before and after, plus a 15-minute run.
-5. **Then guard it:** a test that fails if a per-frame draw uses `shadowBlur`, `filter`, gradients, advanced blends or readbacks. Only then does PF-1 pick up the rest of the bake list, with helpers back on (waves per the schedule below, shifted by about 2 hours).
+5. **Then guard it (PERFORMANCE-RULES §8):** the draw check and the art size gate in the gate; ownership of the shared drawing files; the checklist in the W7-10 and boss briefs; QA sorting frame data by GPU; and a Pixel baseline per stage in reference/perf-baseline.md. Then: a test that fails if a per-frame draw uses `shadowBlur`, `filter`, gradients, advanced blends or readbacks. Only then does PF-1 pick up the rest of the bake list, with helpers back on (waves per the schedule below, shifted by about 2 hours).
 
 ## THE FINISH LINE (lead manages; Matt 2026-10-29 ~7:55 PM ET: "take control again and really manage this... finishing the game and finishing the polish... keep up with people... make sure things are moving along and we're not going to run into issues")
 

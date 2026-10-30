@@ -203,6 +203,35 @@ Matt's Pixel fits the third row: the stalls didn't get better at q2 and sit at t
 
 Canvas 2D with baked layers can hold 30 fps for a game our size. If, after the §2 hunt, a flagship still can't hold q0, the next step is drawing the baked layers through WebGL (for example PixiJS, which batches sprites that share a texture into a few GPU calls). That's an engine change of days, not hours, so it's Matt's call, made with numbers in hand, never started on a hunch. A poorly built WebGL scene (many textures, per-frame uploads) can even be slower than Canvas, so §2's rules apply either way.
 
+## 8. Keeping it fast while three groups keep adding art and code
+
+The rules above say how to draw well; this section keeps them holding (Duet's second look, 2026-10-30, agreed by the lead).
+
+1. **An automatic draw check on every gate (to build):** a headless run of the control test and one stage per world, with every canvas call counted per frame. It fails when the per-frame path:
+   - creates gradients;
+   - sets `shadowBlur` or `filter`;
+   - uses an advanced blend;
+   - reads pixels back;
+   - draws onto a full-screen offscreen layer;
+   - draws any sheet shrunk more than 2.5x at q0.
+
+   It runs with the gate (`tools/inspect`), not only at deploy, so a helper finds out before reporting.
+2. **An art size gate in the build and in the art packers (to build):** fail on any of these:
+   - a sheet over 4096 px on a side;
+   - a creature clip sheet more than about 2x its on-screen size at q0;
+   - a world whose decoded sheets add up to more than its budget (§2.13).
+
+   This alone would have caught the eagle and the gold snake.
+3. **One owner for the shared drawing files:** the lead.
+   - Files: `engine.ts` render path, `creatureAnim.ts`, `atlasLoader.ts`, `hurtFlash.ts`, `gpuProf.ts`, `scenery.ts`, `groundPaint.ts`, `stageArt.ts`.
+   - Helpers propose changes to these in their report and don't merge them themselves.
+   - The lead's merge check (LEAD-PLAYBOOK §4) asks, for any drawing change: which §2 rules does it touch, and what are the draw check's numbers before and after.
+4. **Every helper brief that adds art or creatures** (Worlds 7-10, bosses 6-10) carries this doc as a checklist, with §2 and §8.2 called out. Their creatures load through the same loaders, so they get the fixes for free and must not route around them.
+5. **Tester frame data sorted by GPU.** The control test already records the GPU name next to the frame times (QA reads it), so QA reports stalls by GPU family (PowerVR, Mali, Adreno, Apple) and we can see whether only one family stalls.
+6. **A frame-time baseline per stage.** Once the Pixel fixes are in, save the Pixel's control-test numbers (average, worst window, stall count, per layer) in `reference/perf-baseline.md`. QA compares each new test link's numbers against it, and a build that gets worse by more than 10% on any stage doesn't go to the testers.
+
+   This doesn't mean asking Matt for numbers on every change. Matt's own control runs, and testers on other phones, supply the device numbers; the headless draw check covers each change in between.
+
 ## Where the evidence is thin
 
 - Chrome's rule for moving a canvas to the CPU has changed over the years.
