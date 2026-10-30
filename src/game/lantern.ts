@@ -79,6 +79,8 @@ export interface LanternPlan {
   swarmX: number;
   /** the tree the fireflies rise into (its top, world px) */
   swarmTree: { x: number; y: number };
+  /** the trunks he climbs (the vine's x, the bough it tops out on, the bough at its foot): drawn as World 8's painted trunk */
+  trunks?: Array<{ x: number; top: number; foot: number }>;
 }
 
 export type MothMode = 'rest' | 'seek' | 'flee' | 'gone';

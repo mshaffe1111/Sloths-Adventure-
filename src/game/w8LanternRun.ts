@@ -4,6 +4,7 @@
  * jar and the firefly tree's swarm.
  */
 import { glowPic } from './glow.ts';
+import { KIT_FRAMES } from './kitAtlasData.ts';
 import { LANTERN_FRAMES, POKEY_JAR_FRAMES, type LanternFrame } from './w8LanternAtlas.ts';
 import type { StdFrame } from './heroStandardData.ts';
 import { TREE_CROWN, TREE_H } from './w8Lantern.ts';
@@ -27,6 +28,19 @@ const pieces = (): HTMLImageElement | null => {
   }
   return piecesPic.complete && piecesPic.naturalWidth ? piecesPic : null;
 };
+/** World 8's kit (src/assets/kits/w8.webp, kitAtlasData.ts KIT_FRAMES[8]): its big trunk and its twisted vine, for the trunks he climbs */
+const KIT8_URL = new URL('../assets/kits/w8.webp', import.meta.url).href;
+const KIT8 = KIT_FRAMES[8] as Record<'wall' | 'liana', { x: number; y: number; w: number; h: number }>;
+let kit8Pic: HTMLImageElement | null = null;
+const kit8 = (): HTMLImageElement | null => {
+  if (typeof Image === 'undefined') return null;
+  if (!kit8Pic) {
+    kit8Pic = new Image();
+    kit8Pic.src = KIT8_URL;
+  }
+  return kit8Pic.complete && kit8Pic.naturalWidth ? kit8Pic : null;
+};
+
 /** Pokey with the jar in his paws (src/assets/w8/pokey-jar.webp): his frames for standing, the hurry and the air */
 const JAR_HERO_URL = new URL('../assets/w8/pokey-jar.webp', import.meta.url).href;
 let jarHeroPic: HTMLImageElement | null = null;
@@ -171,6 +185,7 @@ export class LanternRun {
       const f = LANTERN_FRAMES.tree;
       blitPiece(ctx, tp, f, tree.x, tree.y + 24, TREE_H / f.h);
     }
+    this.drawTrunks(ctx, x0, x1);
     const pic = bloom();
     for (const f of this.plan.flowers) {
       if (f.x < x0 - 300 || f.x > x1 + 300) continue;
@@ -201,6 +216,46 @@ export class LanternRun {
         }
         ctx.restore();
       }
+    }
+  }
+
+  /**
+   * the trunks he climbs: World 8's painted trunk (the kit's 'wall' piece, the big mossy blue trunk) at a real tree's girth, standing
+   * on the bough at its foot and rising past the one it leads up to, just behind the vine; the kit's twisted vine up its face where he
+   * climbs (the lead's review: the thin kapok trunk read as a purple pole against the boughs' walls)
+   */
+  private drawTrunks(ctx: CanvasRenderingContext2D, x0: number, x1: number): void {
+    const img = kit8();
+    if (!img) return;
+    for (const tr of this.plan.trunks ?? []) {
+      if (tr.x < x0 - 300 || tr.x > x1 + 300) continue;
+      const f = KIT8.wall, v = KIT8.liana;
+      const tw = 170, th = (tw * f.h) / f.w;
+      const cx = tr.x - 52;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(cx - tw / 2, tr.top - 260, tw, tr.foot + 14 - (tr.top - 260));
+      ctx.clip();
+      // (the piece once at the foot, its roots on the bough; above it only the piece's middle, so no cut top or root flare shows as a
+      // band partway up: §5b item 2)
+      const mid = { y: f.y + f.h * 0.18, h: f.h * 0.36 };
+      const mh = (tw * mid.h) / f.w;
+      for (let y = tr.foot + 10 - th * 0.82 - mh, k = 1; y > tr.top - 260 - mh; y -= mh, k++) {
+        ctx.save();
+        // (every other one flipped upside down: neighbours then meet on the same row of the picture, so there is no seam where they join)
+        if (k % 2 === 1) { ctx.translate(0, y * 2 + mh); ctx.scale(1, -1); }
+        ctx.drawImage(img, f.x, mid.y, f.w, mid.h, cx - tw / 2, y, tw, mh);
+        ctx.restore();
+      }
+      ctx.drawImage(img, f.x, f.y + f.h * 0.18, f.w, f.h * 0.82, cx - tw / 2, tr.foot + 10 - th * 0.82, tw, th * 0.82);
+      ctx.restore();
+      const vw = 44, vh = (vw * v.h) / v.w;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(tr.x - vw, tr.top - 10, vw * 2, tr.foot - tr.top + 16);
+      ctx.clip();
+      for (let y = tr.foot + 6 - vh; y > tr.top - 10 - vh; y -= vh - 6) ctx.drawImage(img, v.x, v.y, v.w, v.h, tr.x - vw / 2, y, vw, vh);
+      ctx.restore();
     }
   }
 

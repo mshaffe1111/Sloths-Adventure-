@@ -93,6 +93,7 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
   const gaps: LanternGap[] = [];
   /** the quick player's seconds on reaching each flower */
   const flowerT: number[] = [];
+  const trunks: LanternPlan['trunks'] = [];
   let pid = 1, vid = 1, tid = 1, cid = 1, fid = 1, mid = 1;
   let expert = 0;
   const RUN = 285, CLIMB = 220;
@@ -130,6 +131,8 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     dy = Math.max(-60, Math.min(140, dy + r((LANTERN_G - cur.y) * 0.45)));
     // (a hop up is a shorter hop: the first-timer's short flicks fell short of 170 px rising 50)
     if (dy < -20) gap = Math.min(gap, 130);
+    // (and no hop wider than 165: the first-timer fell short at 170-185 px on Normal, 1.7-2.4 lives a minute, above World 8's band)
+    gap = Math.min(gap, 165);
     expert += 0.3;
     const from = end();
     const y0 = cur.y;
@@ -180,7 +183,10 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     const tree: TreeStructure = { id: tid++, x: r(tx), groundY: r(cur.y), topY: r(top) - 150, trunkWidth: 70, hasClimbVine: true, canopyRadius: 120 };
     // (the bough he climbs from ends at the trunk: the way on is up it)
     T.push(tree);
-    V.push({ id: vid++, x: r(tx), topY: r(top) - 2, bottomY: r(cur.y) - 6, swaySpeed: 0.9, swayPhase: (tx * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id });
+    V.push({ id: vid++, x: r(tx), topY: r(top) - 2, bottomY: r(cur.y) - 6, swaySpeed: 0.9, swayPhase: (tx * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id, rope: true });
+    // (drawn as World 8's own painted trunk at its girth, the kit's twisted vine up its face: w8LanternRun.ts drawTrunks; `rope` keeps
+    // the thin kapok trunk the other stages draw off it)
+    trunks.push({ x: r(tx), top: r(top), foot: r(cur.y) });
     expert += h / CLIMB + 0.6;
     // (and one partway up the trunk: the way on is up)
     petal(tx, cur.y - h * 0.55);
@@ -208,13 +214,14 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
   // 2. LEARN: hops between flowers about 8 s apart (a quick player)
   section('Learn: flower to flower', () => {
     // (the first three hops are soft whatever the jar shows, and short: the stage's first jumps are learned, never a life)
-    hop(j(120, 140), j(-20, 20), j(420, 520), true);
-    hop(j(130, 150), j(-20, 30), j(380, 460), true);
+    hop(j(120, 140), j(-20, 20), j(500, 580), true);
+    hop(j(130, 150), j(-20, 30), j(460, 520), true);
     hop(j(130, 150), j(-30, 0), 560, true);
     flower(0.6);
     // (Dot's drop line on the far end of this bough, about 10 s after her first; the first flag waits for the next flower, so her
     // lines keep their gaps: STAGE-RULES §1)
-    hint(end() - 200, LANTERN_LINES.drop, end());
+    // (at this bough's near end: the base's own gap tip at the first hop comes first, and a line at the far end was dropped behind it)
+    hint(cur.x + 60, LANTERN_LINES.drop, end());
     hop(j(150, 175), j(0, 50), j(360, 440));
     hop(j(170, 195), j(-50, -20), j(380, 460));
     hop(j(150, 180), j(0, 40), j(360, 440));
@@ -346,7 +353,7 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
   cid = heartsAtFlags(C, checkpoints, cid);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C);
   const W = r(end() + 40);
-  const plan: LanternPlan = { flowers, moths, gaps, swarmX, swarmTree };
+  const plan: LanternPlan = { flowers, moths, gaps, swarmX, swarmTree, trunks };
   // the whole stage is night: one dark stretch, lit by the glowing flowers (the engine draws it; the jar is his own light)
   const zones: Zone[] = [{ kind: 'dark', x0: 0, x1: W, top: 0, bottom: LANTERN_H, baseY: G, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0, lights: [...flowers.map((f) => ({ x: f.x, y: f.y - 40, r: f.r })), { x: swarmTree.x, y: swarmTree.y - TREE_CROWN, r: 240 }] }];
   return {

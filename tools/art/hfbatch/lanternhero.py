@@ -16,6 +16,9 @@ from geminicut import cut_cell  # noqa: E402
 ROOT = Path(__file__).resolve().parents[3]
 TAKES, REVIEW = Path(sys.argv[1]), Path(sys.argv[2])
 picks = [a.split('=') for a in sys.argv[3:]]
+# how much wider than painted the jar frames from the carry poses are packed (2026-10-30: matches the standard idle's girth; the tuck
+# is painted from his standard frame already)
+WIDEN = 1.2
 
 
 def cut(stem):
@@ -52,7 +55,9 @@ cells = []
 for name, im in cuts.items():
     bb = im.getchannel('A').getbbox()
     im = im.crop(bb)
-    im = im.resize((round(im.width * k), round(im.height * k)), Image.LANCZOS)
+    # (widened: the carry poses are a slimmer sloth than his standard set, about 0.72 of its girth below the jar and 0.83 at the head;
+    # the lead's review asked for his standard build)
+    im = im.resize((round(im.width * k * (1 if name == 'tuck' else WIDEN)), round(im.height * k)), Image.LANCZOS)
     a = np.asarray(im)[..., 3]
     # feet: the middle of the lowest 8% of the picture's painted pixels
     rows = np.nonzero(a.max(axis=1) > 60)[0]
