@@ -34,7 +34,7 @@ export type TopicId =
   | 'cocoon' | 'orchid' | 'seamstress'
   // (a puzzle room's active part: GuideView.kit)
   | 'puzzle';
-export type GuideWho = 'Dot' | 'Pokey' | 'Petal';
+export type GuideWho = 'Dot' | 'Pokey' | 'Petal' | 'Flicker';
 
 export interface GuideLine {
   /** the same key is never queued twice */
