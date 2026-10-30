@@ -67,8 +67,9 @@ h2 {{ font: 600 1.25rem/1.2 var(--display); margin: 0 }}
 <main>
   <h1>Pokey's footsteps</h1>
   <p class="lede">You said today's walking sound is like someone chewing. Below are {len(meta["sets"])} quieter, softer replacements. Each plays
-  Pokey walking, then running, on leafy ground, and then the same on wooden planks, at the game's real step speed. Use your phone's
-  speaker, with the game's volume. Start with today's, so you know what you're comparing against.</p>
+  Pokey walking, then running, on leafy ground, and then the same on wooden planks, at the game's real step speed. Listen on your
+  phone's speaker and turn it up: footsteps are quiet in the game, and these are too. Start with today's, so you know what you're
+  comparing against.</p>
   <article class="set today" data-key="today">
     <header><span class="letter">NOW</span><h2>Today's steps</h2></header>
     <p>What the game plays now: people walking on dry leaves. The crunch is the chewing.</p>

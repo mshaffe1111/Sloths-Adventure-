@@ -1,0 +1,27 @@
+{
+ "ref_lufs": -35.1,
+ "quiet_db": -4.0,
+ "sets": {
+  "A": {
+   "name": "Padded paws",
+   "words": "A low, soft thump, like a padded paw settling, with the faintest brush of fur. On wood: the same thump and a muffled hollow knock.",
+   "phone_lu_vs_today": -4.0
+  },
+  "B": {
+   "name": "Leaf brush",
+   "words": "The foot brushing through moss and leaves, a slow swish with a very light thump under it, no crunch. On wood: a real foot on boards, muffled.",
+   "phone_lu_vs_today": -4.0
+  },
+  "C": {
+   "name": "Muffled forest",
+   "words": "Today's real forest-floor footsteps with the crunch taken out: only their low, muffled part, slowed a little. On wood: real steps on boards, the same way. One leaf step keeps a faint low hum.",
+   "phone_lu_vs_today": -4.0
+  },
+  "D": {
+   "name": "Paws and bare feet",
+   "words": "Real recordings: an animal's paws on soft earth for leafy ground, and soft bare feet on wooden boards for planks. Their bright top is rolled off.",
+   "phone_lu_vs_today": -4.0
+  }
+ },
+ "page_lift_db": -1.7
+}

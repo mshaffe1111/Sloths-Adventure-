@@ -17,7 +17,7 @@ SOFT = sys.argv[3] if len(sys.argv) > 3 else None
 sys.argv = [sys.argv[0], CLIPS, OUT, '--fullband']
 sys.path.insert(0, HERE)
 import build as B   # noqa: E402  (the recipes' sources and helpers; its main does not run on import)
-from kit import fade, hp, lp, mix, rate, write_mp3, write_wav, SR   # noqa: E402
+from kit import fade, hp, limit, lp, mix, rate, write_mp3, write_wav, SR   # noqa: E402
 from measure import lufs, load   # noqa: E402
 
 os.makedirs(OUT, exist_ok=True)
@@ -109,24 +109,35 @@ for i in range(6):
     leaf.append(soften(lp(hp(rate(forest[i], r), 150), 1400, 4, scale=False), 0.012))
     wood.append(soften(lp(hp(rate(wood_steps[i + 2], r), 160), 1500, 4, scale=False), 0.006))
 SETS['C'] = ('Muffled forest', "Today's real forest-floor footsteps with the crunch taken out: only their low, muffled part, slowed a "
-             'little. On wood: real steps on boards, the same way.', leaf, wood)
+             'little. On wood: real steps on boards, the same way. One leaf step keeps a faint low hum.', leaf, wood)
 
+PAWS = [471837]                                  # "11-PatasTierra" (a creature's paws on earth)
+BAREFOOT = [504010, 503988, 503933, 503932]      # "Wood Floor (Soft) Barefoot Footstep" (not the "Sticky" takes: they smack)
 if SOFT:
-    # D: real soft footfalls (barefoot, paws, sneaking: the soft-steps scan), their top rolled off
-    files = sorted(glob.glob(os.path.join(SOFT, '*.ogg')))
-    pool = []
-    for f in files:
-        x = load(f)
-        pool += B.slices(x, 0.28, 0.25, 0.2)[:4]   # (a few from each recording, so no one walker dominates)
-    if pool:
-        pool.sort(key=lambda s: -np.abs(s).max())
-        leaf = [mix((soften(lp(hp(rate(s, 0.9), 70), 1600, 4, scale=False), 0.008), 0, 0), (brush(i, 0.14, 2000), 0.01, -18))
-                for i, s in enumerate(pool[:6])]
-        wood = [mix((soften(lp(hp(rate(s, 0.85), 70), 1600, 4, scale=False), 0.006), 0, 0),
-                    (soften(lp(hp(rate(knocks[i % len(knocks)], 0.75), 150), 1000, 4, scale=False), 0.004), 0, -8))
-                for i, s in enumerate(pool[6:12] or pool[:6])]
-        SETS['D'] = ('Bare feet', 'Real recordings of bare feet and soft paws, their top rolled off, with a wisp of leaf. On wood: the '
-                     'same footfall with a muffled knock.', leaf, wood)
+    # D: real soft footfalls (the soft-steps scan): paws on earth for leafy ground, soft bare feet for wood; their top rolled off
+    def pool_of(ids, dur):
+        out = []
+        for f in ids:
+            hit = glob.glob(os.path.join(SOFT, f'*__{f}.ogg'))
+            if hit:
+                out += B.slices(load(hit[0]), dur, 0.25, 0.2)[:8]
+        out.sort(key=lambda s: -np.abs(s).max())
+        return out
+    paws, bare = pool_of(PAWS, 0.3), pool_of(BAREFOOT, 0.28)
+    if len(paws) >= 6 and len(bare) >= 4:
+        from scipy.signal import iirnotch, filtfilt
+
+        def dehum(x):
+            # the paws recording has a steady whine near 1.55 kHz and 2.8 kHz under every step (measured, after the 0.92 rate)
+            for f0 in (1523, 1555, 1594, 1754, 2797):
+                bb, aa = iirnotch(f0, 12, SR)
+                x = filtfilt(bb, aa, x)
+            return x.astype(np.float32)
+        leaf = [mix((soften(lp(dehum(hp(rate(s, 0.92), 140)), 1600, 4, scale=False), 0.008), 0, 0), (brush(i, 0.14, 1800), 0.01, -16))
+                for i, s in enumerate(paws[:6])]
+        wood = [soften(lp(hp(rate(s, 0.88), 140), 1100, 4, scale=False), 0.01) for s in bare[:6]]
+        SETS['D'] = ('Paws and bare feet', "Real recordings: an animal's paws on soft earth for leafy ground, and soft bare feet on "
+                     'wooden boards for planks. Their bright top is rolled off.', leaf, wood)
 
 # today's (the game's takes and gains), for comparison
 def todays(fx):
@@ -167,18 +178,35 @@ def walkrun(leaf, wood, seed):
     return out
 
 
-meta = {'ref_lufs': round(ref, 1), 'sets': {}}
+def phone_lufs(x):
+    return lufs(phone(x))
+
+
+# the whole walk, as a phone plays it, is what gets matched: each set sits QUIET dB under today's
+today_w = walkrun(today_leaf, today_wood, 7)
+ref_w = phone_lufs(today_w)
+meta = {'ref_lufs': round(float(ref), 1), 'quiet_db': QUIET, 'sets': {}}
+walks = {}
 for key, (name, words, leaf, wood) in SETS.items():
     leaf = [at(x, ref + QUIET) for x in leaf]
     wood = [at(x, ref + QUIET) for x in wood]
+    g = 10 ** ((ref_w + QUIET - phone_lufs(walkrun(leaf, wood, 7))) / 20)
+    leaf, wood = [x * g for x in leaf], [x * g for x in wood]
     for surf, takes in (('leaf', leaf), ('wood', wood)):
         for i, x in enumerate(takes):
             write_wav(os.path.join(OUT, f'{key}-{surf}_{i}.wav'), x)
-    w = walkrun(leaf, wood, 7)
+    walks[key] = walkrun(leaf, wood, 7)
+    meta['sets'][key] = {'name': name, 'words': words, 'phone_lu_vs_today': round(float(phone_lufs(walks[key]) - ref_w), 1)}
+# the page plays every clip `lift` dB up, the same for all so they compare as in the game, as far as the loudest candidate allows with
+# -1.5 dB to spare (no limiting on any candidate); today's boosted takes clip as they are, so it alone goes through a -1 dBFS limiter,
+# as the game's master chain limits it
+lift = -1.5 - max(20 * np.log10(np.abs(w).max()) for w in walks.values())
+meta['page_lift_db'] = round(float(lift), 1)
+for key, w in walks.items():
+    w = w * 10 ** (lift / 20)
     write_wav(os.path.join(OUT, f'{key}-walkrun.wav'), w)
     write_mp3(os.path.join(OUT, f'{key}-walkrun.mp3'), w, kbps=96, sr=32000)
-    meta['sets'][key] = {'name': name, 'words': words}
-w = walkrun(today_leaf, today_wood, 7)
+w = limit(today_w * 10 ** (lift / 20), -1.0)
 write_wav(os.path.join(OUT, 'today-walkrun.wav'), w)
 write_mp3(os.path.join(OUT, 'today-walkrun.mp3'), w, kbps=96, sr=32000)
 json.dump(meta, open(os.path.join(OUT, 'sets.json'), 'w'), indent=1)
