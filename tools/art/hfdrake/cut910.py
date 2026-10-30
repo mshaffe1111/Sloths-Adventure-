@@ -24,6 +24,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'hfbosses'))
 sys.path.insert(0, str(HERE))
 TAKES, GAME = Path(sys.argv[1]), Path(sys.argv[2])
+POSE_FLAG = '--poses' in sys.argv
 from bosscut_lib import cut, review  # noqa: E402
 from keyfix import flatten_key  # noqa: E402
 
@@ -66,7 +67,8 @@ POSES = {
 }
 up = {'drake': 1.0, 'ironclaw': 1.0}
 posed = []
-for boss, rows in POSES.items():
+# (the poses go into the boss atlases only once the new fights draw them: run with --poses then; until then posecut.py keeps them)
+for boss, rows in (POSES.items() if POSE_FLAG else []):
     dts = GAME / f'src/game/{boss}AtlasData.ts'
     src = dts.read_text()
     frames0 = json.loads(re.search(r'_FRAMES: Record<string, BossFrame> = (\{.*\});', src).group(1))
