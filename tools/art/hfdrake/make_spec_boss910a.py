@@ -1,4 +1,4 @@
-"""hfboss910a (2026-10-30): the new boss poses for 9-10 and 10-10 (reference/boss-design/9-10-and-10-10.md §6, 9-10 item 4 and 10-10
+"""hfboss910a (2026-10-30): the Drake's teacup sit again (hfdrake1's gave him a dog's head) and the new boss poses for 9-10 and 10-10 (reference/boss-design/9-10-and-10-10.md §6, 9-10 item 4 and 10-10
 item 4, on boss-design-9-10), as edits of each boss's own stills in the bucket (stills/w9d-*, stills/w10ic-*) by Qwen-Image-Edit-2509,
 two seeds each, then a 0.3 pass with the style model. Run by tools/art/hfdrake/storygpu.py.
     python3 tools/art/hfdrake/make_spec_boss910a.py
@@ -8,11 +8,16 @@ from pathlib import Path
 
 STYLE = ' Soft painted storybook illustration, soft cel shading, thin dark outline, slothadv style.'
 DRAKE = ('Keep this exact same dragon: the same huge dark green armoured lizard drake, same head, scales, pale bony back spikes, long '
-         'thick tail, glowing yellow eyes and proportions, side view facing right. ')
+         'thick tail, glowing yellow eyes and proportions: a reptile head with a long flat lizard snout and no ears, and the whole body covered '
+         'in big cracked plate-like scales, side view facing right. ')
 GEN = ('Keep this exact same character: the same big old armoured sloth general with dark grey-brown fur, red eyes, the spiked grey '
-       'shoulder plate, the torn dark red cape and red scarf, same face and proportions, side view. ')
-END = ' The whole body fully in the picture with space all round. Solid flat magenta background, nothing else.'
+       'shoulder plate, the torn dark red cape and red scarf, same sloth face with the dark eye mask and proportions, side view. ')
+END = ' The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.'
 POSES = {
+    'drake-tea': ('stills/w9d-idle.png', DRAKE + 'Change only his pose and mood: his fight is over and he sits down quietly on his '
+                  'haunches, front legs straight, his long tail curled round beside his feet, his head lowered, eyes half shut and '
+                  'gentle, looking down at a small rusty tin tea mug standing on the ground in front of his front claws. His colours '
+                  'a little paler and greyer, as if his fire has gone out, a little grey ash dusted on his back, no glow anywhere.'),
     'drake-breathdown': ('stills/w9d-enrage.png', DRAKE + 'Change only his pose: he rears up on his back legs, his back spikes glowing hot '
                          'orange, his neck bent and head pointing straight DOWN at the ground in front of him, mouth open, breathing a '
                          'short burst of fire down into the ground.'),
