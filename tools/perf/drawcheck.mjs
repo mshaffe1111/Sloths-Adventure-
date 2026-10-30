@@ -3,6 +3,7 @@
  *
  *   node tools/perf/drawcheck.mjs            (about 6 minutes; exit 1 on a breach, 2 when a scenario could not be played)
  *   DRAWCHECK_VERBOSE=1 node tools/perf/drawcheck.mjs   (also prints every worst-spot number, to set the limits)
+ *   DRAWCHECK_RESULTS=/tmp/drawcheck-xxxx node tools/perf/drawcheck.mjs   (judges a run's saved results again, in seconds)
  *
  * It plays a small fixed set (the control test mix 14 and five stages) at q0, upright and sideways, 4 spots each, through the perf
  * harness (run.mjs: its own vite on a free port in this repo, every Canvas 2D call counted per call site by instrument.js), and judges
@@ -19,7 +20,9 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..', '..');
 const L = JSON.parse(fs.readFileSync(path.join(here, 'limits.json'), 'utf8'));
 const SCENARIOS = L.scenarios;
-const out = fs.mkdtempSync(path.join(os.tmpdir(), 'drawcheck-'));
+// (DRAWCHECK_RESULTS=<dir>: judge an earlier run's results again, e.g. after changing limits.json, without playing)
+const again = process.env.DRAWCHECK_RESULTS;
+const out = again || fs.mkdtempSync(path.join(os.tmpdir(), 'drawcheck-'));
 
 const freePort = () => new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); });
 
@@ -38,7 +41,7 @@ async function play(orient) {
 
 const t0 = Date.now();
 console.log(`draw check: ${SCENARIOS.join(', ')} at q0, upright and sideways, ${L.spots} spots each`);
-await Promise.all([play('port'), play('land')]);
+if (!again) await Promise.all([play('port'), play('land')]);
 
 // ---- judge ---------------------------------------------------------------------------------------------------------------------
 const lim = L.limits;
@@ -85,7 +88,7 @@ for (const orient of ['port', 'land']) {
         const sites = main.map((s) => ({ s, v: m.site(s, px) / nf })).filter((x) => x.v > 0).sort((a, b) => b.v - a.v).slice(0, 5);
         const tag = reportOnly ? 'note' : '✗';
         if (!reportOnly) breaches++;
-        lines.push(`  ${tag} ${key} ${worst.toFixed(2)} at spot ${at} (x ${r.spots[at]?.x}) > limit ${l.max}`);
+        lines.push(`  ${tag} ${key} ${worst.toFixed(2)} at spot ${at} (x ${r.spots[at]?.x}) ${reportOnly ? `(reported; fails over ${l.max})` : `> limit ${l.max}`}`);
         for (const { s, v } of sites) lines.push(`      ${s.site} ${s.fn ? '(' + s.fn + ')' : ''} ${v.toFixed(2)}/frame  ${s.siteText ? '| ' + s.siteText.slice(0, 90) : ''}`);
       }
     }
