@@ -12,8 +12,17 @@ const b = await chromium.launch();
 const p = await b.newPage();
 p.on('pageerror', (e) => console.log('PAGE', String(e)));
 const open = async () => {
-  await p.goto(`http://127.0.0.1:${port}/tools/audio/sfxv1/render/index.html`);
-  await p.waitForFunction(() => window.ready, null, { timeout: 120000 });
+  for (let tries = 0; ; tries++) {
+    try {
+      await p.goto(`http://127.0.0.1:${port}/tools/audio/sfxv1/render/index.html`);
+      await p.waitForFunction(() => window.ready, null, { timeout: 120000 });
+      return;
+    } catch (e) {
+      // (the dev server's own reload can interrupt this one)
+      if (tries >= 3 || !/interrupted|destroyed|navigation/i.test(String(e))) throw e;
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
 };
 await open();
 // (the dev server's dependency optimizer can reload the page mid-run: open it again and redo that one render)
