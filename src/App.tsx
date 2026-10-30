@@ -56,6 +56,7 @@ import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
+import { nativeApp } from './game/appShell.ts';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -497,6 +498,58 @@ export default function App() {
 
   // when the Game Over card came up (its tap guard)
   const gameOverAt = useRef(0);
+  // The Android app (reference/PLAY-STORE.md): the phone's Back button, and the app going to the background or a call coming in.
+  // Back closes the open window first (its X), then: play pauses, the pause menu resumes, the end cards go to the map, the map goes to the
+  // title, the title leaves the app, and every other screen gets an Escape (a story skips, the start menu closes).
+  const androidBack = useRef<() => void>(() => {});
+  androidBack.current = () => {
+    const xs = Array.from(document.querySelectorAll<HTMLElement>('.ui-x')).filter((el) => el.offsetParent !== null);
+    if (xs.length) {
+      xs[xs.length - 1].click();
+      return;
+    }
+    const esc = () => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+    if (screen === 'playing') pauseGame();
+    else if (screen === 'paused') resumeGame();
+    else if (screen === 'victory' || screen === 'game_over') {
+      if (screen === 'victory' && newSkills.length > 0) setNewSkills((q) => q.slice(1));
+      else {
+        engineRef.current?.stop();
+        setScreen('world_map');
+      }
+    } else if (screen === 'world_map') setScreen('title');
+    else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim')) void import('@capacitor/app').then((m) => m.App.minimizeApp());
+    else esc();
+  };
+  const androidAway = useRef<() => void>(() => {});
+  androidAway.current = () => {
+    if (screen === 'playing') pauseGame();
+  };
+  useEffect(() => {
+    if (!nativeApp()) return;
+    let gone = false;
+    const subs: { remove: () => Promise<void> }[] = [];
+    void import('@capacitor/app').then(async ({ App: CapApp }) => {
+      const add = [
+        await CapApp.addListener('backButton', () => androidBack.current()),
+        await CapApp.addListener('pause', () => {
+          sound.appHidden(true);
+          androidAway.current();
+        }),
+        await CapApp.addListener('resume', () => sound.appHidden(false)),
+      ];
+      if (gone) add.forEach((h) => void h.remove());
+      else subs.push(...add);
+    });
+    // (sent by MainActivity.java when a call rings, an alarm sounds or another app plays, and when the sound is ours again)
+    const onFocus = (e: Event) => sound.appHidden((e as Event & { state?: string }).state === 'lost', 'focus');
+    window.addEventListener('sloth-audio-focus', onFocus);
+    return () => {
+      gone = true;
+      subs.forEach((h) => void h.remove());
+      window.removeEventListener('sloth-audio-focus', onFocus);
+    };
+  }, []);
   useEffect(() => {
     if (screen === 'game_over') gameOverAt.current = performance.now();
   }, [screen]);

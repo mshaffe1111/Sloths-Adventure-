@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { browserStore, buildSave, parseSave, applySave, saveFileName, type SaveFile } from '../game/saveFile.ts';
 import { Icon } from './icons/index.tsx';
+import { nativeApp } from '../game/appShell.ts';
 
 /**
  * Save and load a whole game as a file. Only ever mounted by the title screen and the world map, so it cannot be
@@ -135,9 +136,12 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
               Saves every stage result, the stories you have seen and your sound settings into one small file. You can load it later, or on another device.
             </p>
             <div className="ui-row">
-              <button type="button" className="ui-btn ui-btn-gold" onClick={doDownload}>
-                Save to file
-              </button>
+              {/* (the Android app's WebView cannot download a file, so the app keeps the save code only) */}
+              {!nativeApp() && (
+                <button type="button" className="ui-btn ui-btn-gold" onClick={doDownload}>
+                  Save to file
+                </button>
+              )}
               <button type="button" className="ui-btn ui-btn-green" onClick={doCopy}>
                 Copy save code
               </button>

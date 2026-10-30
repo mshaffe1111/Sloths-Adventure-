@@ -168,7 +168,7 @@ export class Conductor {
       document.addEventListener('visibilitychange', this.onVisibility);
       this.timer = setInterval(this.tick, TICK_MS);
     }
-    if (this.ctx.state !== 'running' && !this.muted && !document.hidden) {
+    if (this.ctx.state !== 'running' && !this.muted && !document.hidden && !this.appAway) {
       if (fromTap) this.wokeAt = performance.now();
       this.ctx.resume().then(this.announce, () => {});
     }
@@ -193,11 +193,17 @@ export class Conductor {
       .catch(() => {});
   }
 
+  private appAway = false;
   private onVisibility = () => {
     if (!this.ctx) return;
-    if (document.hidden) this.ctx.suspend().catch(() => {});
+    if (document.hidden || this.appAway) this.ctx.suspend().catch(() => {});
     else if (!this.muted) this.ctx.resume().catch(() => {});
   };
+  /** the Android app went to the background or a call came in (its 'pause' event, which can come without the page being hidden), or came back */
+  appHidden(away: boolean) {
+    this.appAway = away;
+    this.onVisibility();
+  }
 
   // ------------------------------------------------------------------------------------------- music
 
