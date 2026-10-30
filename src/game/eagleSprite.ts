@@ -118,7 +118,7 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.beginPath();
     ctx.arc(0, -6, 40, 0, Math.PI * 2);
     ctx.stroke();
-    const sp = textStamp(SPARKLE);
+    const sp = textStamp(SPARKLE, ctx);
     if (!sp) ctx.font = SPARKLE.font;
     for (let k = 0; k < 3; k++) {
       const a = time * 5 + (k * Math.PI * 2) / 3;
@@ -149,7 +149,7 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.beginPath();
     ctx.arc(16, -56, 9, 0, Math.PI * 2);
     ctx.fill();
-    const bang = textStamp(BANG);
+    const bang = textStamp(BANG, ctx);
     if (bang) ctx.drawImage(bang.cv, 16 + bang.dx, -56 + bang.dy, bang.w, bang.h);
     else {
       ctx.fillStyle = BANG.fill;
@@ -171,40 +171,45 @@ interface StampSpec {
   fill: string;
   align: CanvasTextAlign;
   baseline: CanvasTextBaseline;
-  /** the baked picture, and where its corner sits from the point fillText would be given (world units); null until its font is in */
-  baked?: { cv: HTMLCanvasElement; dx: number; dy: number; w: number; h: number } | null;
+  /** the baked picture, and where its corner sits from the point fillText would be given (world units), at scale k */
+  baked?: { cv: HTMLCanvasElement; dx: number; dy: number; w: number; h: number; k: number } | null;
 }
 /** the "open to a hit" sparkles, as fillText drew them: the canvas's default black, from the left, on the baseline */
 const SPARKLE: StampSpec = { text: '✨', font: `bold 12px ${FONT_UI}`, fill: '#000000', align: 'start', baseline: 'alphabetic' };
 const BANG: StampSpec = { text: '!', font: `bold 12px ${FONT_UI}`, fill: '#ffffff', align: 'center', baseline: 'middle' };
-/** how much finer than a world unit the text is baked: the eagle is drawn at up to about 2.2 device px a unit, so it is always shrunk */
-const STAMP_K = 4;
-function textStamp(s: StampSpec): StampSpec['baked'] {
-  if (s.baked !== undefined) return s.baked;
+/**
+ * The text baked at the canvas's own scale (device px a world unit, in quarters, rounded up), so it is stamped at about its size and needs
+ * no high-quality shrink; made again only when that scale changes (a quality step, the camera's zoom). Null until the font is in.
+ */
+function textStamp(s: StampSpec, ctx: CanvasRenderingContext2D): StampSpec['baked'] {
+  const m = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
+  const k = m ? Math.max(1, Math.ceil(Math.hypot(m.a, m.b) * 4) / 4) : 4;
+  if (s.baked !== undefined && (s.baked === null || s.baked.k === k)) return s.baked;
   if (typeof document === 'undefined') return null;
   // the game's font may still be loading: draw the text as before until it is in, so the picture never keeps a stand-in font
   if (document.fonts && !document.fonts.check(s.font)) return null;
-  const cv = document.createElement('canvas');
+  const cv = s.baked?.cv ?? document.createElement('canvas');
   const g = cv.getContext('2d');
   if (!g) return (s.baked = null);
+  g.setTransform(1, 0, 0, 1, 0, 0);
   g.font = s.font;
   g.textAlign = s.align;
   g.textBaseline = s.baseline;
-  const m = g.measureText(s.text);
+  const tm = g.measureText(s.text);
   const pad = 2;
-  const left = Math.ceil(m.actualBoundingBoxLeft) + pad;
-  const up = Math.ceil(m.actualBoundingBoxAscent) + pad;
-  const w = left + Math.ceil(m.actualBoundingBoxRight) + pad;
-  const h = up + Math.ceil(m.actualBoundingBoxDescent) + pad;
-  cv.width = w * STAMP_K;
-  cv.height = h * STAMP_K;
-  g.scale(STAMP_K, STAMP_K);
+  const left = Math.ceil(tm.actualBoundingBoxLeft) + pad;
+  const up = Math.ceil(tm.actualBoundingBoxAscent) + pad;
+  const w = left + Math.ceil(tm.actualBoundingBoxRight) + pad;
+  const h = up + Math.ceil(tm.actualBoundingBoxDescent) + pad;
+  cv.width = Math.ceil(w * k);
+  cv.height = Math.ceil(h * k);
+  g.scale(cv.width / w, cv.height / h);
   g.font = s.font;
   g.textAlign = s.align;
   g.textBaseline = s.baseline;
   g.fillStyle = s.fill;
   g.fillText(s.text, left, up);
-  return (s.baked = { cv, dx: -left, dy: -up, w, h });
+  return (s.baked = { cv, dx: -left, dy: -up, w, h, k });
 }
 
 /** the sheets this sprite draws from (sheetWarm.ts spriteSheets: asked for before the stage starts, not when it first comes on screen) */
