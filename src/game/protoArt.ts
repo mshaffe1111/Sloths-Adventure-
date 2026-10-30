@@ -16,7 +16,8 @@ import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
-import { drawEnd, drawLip, drawSoil, endFace, warmGround } from './groundPaint.ts';
+import { DEPTH_DARK, drawEnd, drawLip, drawSoil, endFace, warmGround } from './groundPaint.ts';
+import { GROUND_FRAMES } from './groundAtlasData.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -624,6 +625,10 @@ export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number;
   const a = Math.max(wall.x0, view.x0 - 10), b = Math.min(wall.x1, view.x1 + 10);
   const top = Math.max(wall.top, view.y0 - 10), bottom = Math.min(wall.bottom, view.y1 + 10);
   if (b <= a || bottom <= top) return true;
+  if (drawWallChunks(ctx, wall, view, a, b, top, bottom)) {
+    if (wall.top >= view.y0 - 60 && wall.top <= view.y1 + 60) drawLip(ctx, kitWorld, a, b, wall.top, view);
+    return true;
+  }
   ctx.save();
   ctx.beginPath();
   ctx.rect(a, top, b - a, bottom - top);
@@ -636,6 +641,121 @@ export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number;
   // the grassy lip where the bank meets the sky
   if (wall.top >= view.y0 - 60 && wall.top <= view.y1 + 60) drawLip(ctx, kitWorld, a, b, wall.top, view);
   return true;
+}
+
+/**
+ * The bank face behind 2-6's climb, painted once into squares like the ground (drawGroundChunks): its soil, the blob darkening and the
+ * set-back shade are all fixed to the world, so they are baked; only the darkening with depth follows the view, and is drawn live as one
+ * gradient. It used to be four full-screen layers every frame (the soil, the blob field stretched ~46x, the gradient and the shade).
+ * The set-back shade over the live darkening is folded into the gradient's colour: shade over (X darkened by g toward D) equals
+ * (X shaded) darkened by g toward D * 0.64 + shade * 0.36, the same pixels.
+ */
+const WALL_SET_BACK: [number, number, number, number] = [28, 18, 8, 0.36];
+let wallChunks: { key: string; tiles: Map<string, HTMLCanvasElement | null>; order: string[] } | null = null;
+function drawWallChunks(
+  ctx: CanvasRenderingContext2D, wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number },
+  a: number, b: number, top: number, bottom: number,
+): boolean {
+  if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function') return false;
+  const m = ctx.getTransform();
+  if (Math.abs(m.b) > 1e-6 || Math.abs(m.c) > 1e-6 || !(m.a > 0) || Math.abs(m.a - m.d) > 1e-6) return false;
+  const scale = m.a;
+  const deep = GROUND_FRAMES[kitWorld]?.deep;
+  if (!deep) return false;
+  const key = `${kitWorld}|${scale.toFixed(4)}|${sheetEpoch.n}|${wall.x0},${wall.x1},${wall.top},${wall.bottom}`;
+  if (!wallChunks || wallChunks.key !== key) {
+    releaseWallChunks();
+    wallChunks = { key, tiles: new Map(), order: [] };
+  }
+  const c = wallChunks;
+  const cx0 = Math.floor(a / CHUNK), cx1 = Math.floor((b - 1e-6) / CHUNK);
+  const cy0 = Math.floor(top / CHUNK), cy1 = Math.floor((bottom - 1e-6) / CHUNK);
+  let budget = CHUNK_BUDGET;
+  let missing = false;
+  for (let cy = cy0; cy <= cy1; cy++)
+    for (let cx = cx0; cx <= cx1; cx++) {
+      const k = cx + ',' + cy;
+      if (c.tiles.has(k)) continue;
+      if (budget-- <= 0) {
+        missing = true;
+        continue;
+      }
+      c.tiles.set(k, paintWallTile(wall, cx, cy, scale));
+      c.order.push(k);
+    }
+  const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
+  const keep = Math.max(8, Math.floor(CHUNK_BYTES / 2 / (side * side * 4)));
+  for (let i = 0; i < c.order.length && c.order.length > keep; ) {
+    const k = c.order[i];
+    const [x, y] = k.split(',').map(Number);
+    if (x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1) {
+      i++;
+      continue;
+    }
+    freeTile(c.tiles.get(k));
+    c.tiles.delete(k);
+    c.order.splice(i, 1);
+  }
+  // (a square not painted yet this frame: the whole wall is drawn live, as before)
+  if (missing) return false;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(a, top, b - a, bottom - top);
+  ctx.clip();
+  const px = CHUNK * scale;
+  const pad = CHUNK_PAD * scale;
+  for (let cy = cy0; cy <= cy1; cy++)
+    for (let cx = cx0; cx <= cx1; cx++) {
+      const cv = c.tiles.get(cx + ',' + cy);
+      if (cv) ctx.drawImage(cv, pad, pad, px, px, cx * CHUNK, cy * CHUNK, CHUNK, CHUNK);
+    }
+  // the darkening with depth, by the view (drawSoil's, with the set-back shade folded into its colour)
+  const [sr, sg, sb, sa] = WALL_SET_BACK;
+  const col = `${Math.round(deep[0] * (1 - sa) + sr * sa)},${Math.round(deep[1] * (1 - sa) + sg * sa)},${Math.round(deep[2] * (1 - sa) + sb * sa)}`;
+  const y0 = view.y0 + (view.y1 - view.y0) * 0.5;
+  if (bottom > y0) {
+    const gr = ctx.createLinearGradient(0, y0, 0, view.y1);
+    gr.addColorStop(0, `rgba(${col},0)`);
+    gr.addColorStop(1, `rgba(${col},${DEPTH_DARK})`);
+    ctx.fillStyle = gr;
+    const t = Math.max(top, y0);
+    ctx.fillRect(a, t, b - a, Math.min(bottom, view.y1) - t);
+    if (bottom > view.y1) {
+      ctx.fillStyle = `rgba(${col},${DEPTH_DARK})`;
+      ctx.fillRect(a, view.y1, b - a, bottom - view.y1);
+    }
+  }
+  ctx.restore();
+  return true;
+}
+
+function paintWallTile(wall: { x0: number; x1: number; top: number; bottom: number }, cx: number, cy: number, scale: number): HTMLCanvasElement | null {
+  const x = cx * CHUNK, y = cy * CHUNK;
+  const a = Math.max(wall.x0, x - CHUNK_PAD), b = Math.min(wall.x1, x + CHUNK + CHUNK_PAD);
+  const top = Math.max(wall.top, y - CHUNK_PAD), bottom = Math.min(wall.bottom, y + CHUNK + CHUNK_PAD);
+  if (b <= a || bottom <= top) return null;
+  const size = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = size;
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  g.imageSmoothingEnabled = true;
+  g.imageSmoothingQuality = 'high';
+  g.setTransform(scale, 0, 0, scale, -(x - CHUNK_PAD) * scale, -(y - CHUNK_PAD) * scale);
+  g.beginPath();
+  g.rect(a, top, b - a, bottom - top);
+  g.clip();
+  // (the soil and its blobs, with no darkening by depth: a view far below everything turns it off; it is drawn live over the squares)
+  drawSoil(g, kitWorld, a, b, top, bottom, 1e9, 1e9);
+  const [sr, sg, sb, sa] = WALL_SET_BACK;
+  g.fillStyle = `rgba(${sr}, ${sg}, ${sb}, ${sa})`;
+  g.fillRect(a, top, b - a, bottom - top);
+  return cv;
+}
+
+function releaseWallChunks() {
+  if (wallChunks) for (const cv of wallChunks.tiles.values()) freeTile(cv);
+  wallChunks = null;
 }
 
 /** the face of the high canopy wall: the painted root wall, once, from its mossy lip down to the ground */
@@ -884,6 +1004,7 @@ const freeTile = (cv: HTMLCanvasElement | null | undefined) => {
 export function releaseGroundChunks() {
   if (chunks) for (const cv of chunks.tiles.values()) freeTile(cv);
   chunks = null;
+  releaseWallChunks();
 }
 
 function bankSig(banks: Platform[]): number {
