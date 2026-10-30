@@ -192,4 +192,9 @@ sfx-titles      6ae3bdf20e0338d1bb7c372b cpu-upgrade ~15 min: titles.py (titles 
 sfx-tagscan     6ae3be3e0e0338d1bb7c3778 cpu-upgrade ~20 min: tagscan.py, CC0 rows of benjamin-paine/freesound-laion-640k by their own tags/titles.
 sfx-ids-a/b/c   6ae3c3d90e0338d1bb7c3bde / 6ae3c3dd0e0338d1bb7c3be6 / 6ae3c3e0c78863f9c62dec21 cpu-upgrade 22:08Z-22:11:30Z (3 x 3.5 min):
   fsscan.py PASS=ids, the tag picks -> carrier-ia/ib/ic-*.png (925 clips; 148 used, LICENCES.md).
-total for polish-sfx ~110 min on cpu-upgrade (~$0.06 at $0.03/h) + cpu-basic minutes: well under $0.10 of the $8 cap. No GPU.
+sfx-fullband    6ae3fb5b0e0338d1bb7c6f04 cpu-upgrade 02:05Z-02:14Z (9 min): fullband.py IDS=full-ids.txt, the 148 used recordings as their
+  48 kHz FLAC originals (benjamin-paine) -> carrier-fb-0..7.png (the archive copies stop at 8 kHz).
+sfx-reptile     6ae3fbc0c78863f9c62e256b cpu-upgrade 02:07Z-02:11Z (4 min): fullband.py TAGS mode (alligator, crocodile, caiman, lizard...),
+  CC0 only -> carrier-rp-0.png (16 clips; "Alligator Growls 02" 527844 is the caiman).
+sfx-licgator    6ae40536c78863f9c62e2d46 cpu-upgrade 02:47Z (~20 min): licheck.py for 527844 (uploader for LICENCES.md).
+total for polish-sfx ~145 min on cpu-upgrade (~$0.08 at $0.03/h) + cpu-basic minutes: well under $0.15 of the $8 cap. No GPU.
