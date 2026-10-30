@@ -207,14 +207,81 @@ def steps(ids, dur, lpf, hpf, n, target, thr=0.2):
     return level([fade(lp(hp(rate(s, rng.uniform(0.95, 1.05)), hpf), lpf), 0.001, 0.05) for s in pool[:n]], target)
 
 
+# Pokey's steps on leaves and moss, and on wood (Matt, 2026-10-30: today's "sounds like somebody chewing"; he picked F of
+# tools/audio/sfxv1/footcand.py: paws with a footstep on top, and the padded plank). The same recipe and the same draws as the page he
+# heard (footcand.py's rng(30): 12 draws for its sets A and B, then 6 for C's footstep rates, then 6 for the planks)
+PAWS = [471837]   # "11-PatasTierra" (a creature's paws on earth; CC0)
+
+
+def _feet():
+    from scipy.signal import filtfilt, iirnotch
+    from measure import lufs as _lufs
+    r = np.random.default_rng(30)
+    r.uniform(size=12)
+    c_rates = [r.uniform(0.8, 0.88) for _ in range(6)]
+    plank_rates = [r.uniform(0.8, 0.9) for _ in range(6)]
+
+    def loud(x):
+        p = np.zeros(int(0.6 * SR), np.float32)
+        y = hp(x, 300, 2)
+        p[: min(len(y), len(p))] = y[: len(p)]
+        v = _lufs(p)
+        return -70.0 if v is None else v
+
+    def at(x, target):
+        return (x * 10 ** ((target - loud(x)) / 20)).astype(np.float32)
+
+    def soften(x, attack=0.008):
+        return fade(x, attack, 0.06)
+
+    def smooth(x, ms=12):
+        k = max(1, int(ms / 1000 * SR))
+        env = np.sqrt(np.convolve(x ** 2, np.ones(k) / k, mode='same')) + 1e-6
+        fast = np.sqrt(np.convolve(x ** 2, np.ones(16) / 16, mode='same')) + 1e-6
+        return (x * np.minimum(1.0, env / fast)).astype(np.float32)
+
+    leaves = slices_of(LEAVES, 0.24, 0.2, 0.15)
+
+    def brush(i, dur, cut):
+        """a foot brushing leaves: a slow swell, its crackle smoothed away"""
+        return fade(lp(smooth(hp(leaves[i % len(leaves)][: int(dur * SR)], 300)), cut, 4, scale=False), 0.03, 0.07)
+
+    def dehum(x):
+        # the paws recording has a steady whine near 1.55 kHz and 2.8 kHz under every step
+        for f0 in (1523, 1555, 1594, 1754, 2797):
+            bb, aa = iirnotch(f0, 12, SR)
+            x = filtfilt(bb, aa, x)
+        return x.astype(np.float32)
+
+    thumps = slices_of(THUD, 0.3, 0.3, 0.2, top=8)
+    wood_steps = slices_of(STEP_WOOD, 0.24, 0.2, 0.18, top=10)
+    forest = slices_of(STEP_FOREST, 0.26, 0.2, 0.18, top=12)
+    paws = slices(PAWS[0], 0.3, 0.25, 0.2)[:8]
+    paws.sort(key=lambda s: -np.abs(s).max())
+    # the paw on earth (dehummed), a wisp of leaf; the real footstep under the crunch (low-passed at 1.4 kHz, slowed), 6 dB over it
+    paw = [mix((soften(lp(dehum(hp(rate(s, 0.92), 140)), 1600, 4, scale=False), 0.008), 0, 0), (brush(i, 0.14, 1800), 0.01, -16))
+           for i, s in enumerate(paws[:6])]
+    step = [soften(lp(hp(rate(forest[i], c_rates[i]), 150), 1400, 4, scale=False), 0.012) for i in range(6)]
+    leaf = [mix((at(paw[i], -30.0), 0, 0), (at(step[(i + 2) % 6], -30.0), 0.004, -6)) for i in range(6)]
+
+    def pad(i, rr):
+        return soften(lp(hp(rate(thumps[i % len(thumps)], rr), 140), 1100, 4, scale=False), 0.01)
+
+    def plank(i, rr):
+        """a padded step on planks: mostly a soft low thump, the board a muffled tap under it, every attack rounded"""
+        board = fade(lp(hp(rate(wood_steps[(i + 1) % len(wood_steps)], 0.8), 160), 700, 4, scale=False), 0.015, 0.06)
+        return fade(lp(mix((pad(i, rr), 0, 0), (board, 0.004, -6)), 1500, 4, scale=False), 0.012, 0.06)
+    return leaf, [plank(i, plank_rates[i]) for i in range(6)]
+
+
 def stepMoss():
-    """a soft footfall on the forest floor"""
-    return steps(STEP_FOREST, 0.26, 4000, 120, 8, -30)
+    """Pokey padding over leaves and moss: a paw settling on soft earth, a muted footstep on top. Never crunchy, wet or mouth-like"""
+    return level(_feet()[0], -30)
 
 
 def stepWood():
-    """a footfall on a branch or a plank: a hollow knock"""
-    return steps(STEP_WOOD, 0.24, 4500, 100, 8, -29)
+    """Pokey on planks and branches: a padded step, mostly a soft low thump, never a knock or a click"""
+    return level(_feet()[1], -29)
 
 
 def stepStone():

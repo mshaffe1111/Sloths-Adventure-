@@ -250,6 +250,8 @@ export interface GameEngineCallbacks {
 }
 
 /** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
+/** px of ground between two footstep sounds (52 until 2026-10-30) */
+export const STEP_PX = 80;
 export const STEP_FACE = { min: 30, max: 100 } as const;
 /**
  * World 5's step help (takeOff): a step this many px above his feet (one plain jump's climb: it rises about 108), with its face no more
@@ -3189,15 +3191,15 @@ export class GameEngine {
       // (a hard landing buzzes: AN-9)
       if (vyBefore > HARD_LAND_VY) buzz('hardLand');
     }
-    // footsteps: one leaf-crunch every few body-lengths on the ground
+    // footsteps: a soft pad every STEP_PX on the ground (Matt, 2026-10-30: the longer stride, about 3.6 a second at a full run)
     if (p.grounded && !p.climbing && Math.abs(p.vx) > 25) {
       this.stepDist += Math.abs(p.vx) * dt;
-      if (this.stepDist > 52) {
+      if (this.stepDist > STEP_PX) {
         this.stepDist = 0;
         sound.playStep();
       }
     } else if (!p.grounded) {
-      this.stepDist = 26;
+      this.stepDist = STEP_PX / 2;
     }
 
     this.soundTimer -= dt;

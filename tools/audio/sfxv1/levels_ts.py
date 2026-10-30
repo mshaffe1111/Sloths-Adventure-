@@ -11,6 +11,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 src = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'levels.json')
 dst = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, '..', '..', '..', 'src', 'audio', 'sfxRecLevels.ts')
 L = json.load(open(src))
+# Pokey's steps are levelled to the footstep page Matt picked from, not by calib.py (feet-levels.json)
+FEET = json.load(open(os.path.join(HERE, 'feet-levels.json')))
+L.update({k: v for k, v in FEET.items() if not k.startswith('_')})
 # measured in real play (capture.cjs), not in calib's one-effect renders
 TRIM = {'rock': -3.0}
 
