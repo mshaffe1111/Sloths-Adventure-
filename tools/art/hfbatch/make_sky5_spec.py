@@ -10,7 +10,8 @@ sys.path.insert(0, str(HERE))
 from make_sky_spec import STYLE, WHAT  # noqa: E402
 
 ORDER = ['w1kapok', 'w1sunrise', 'w3sinkhole', 'w5dusk2', 'w5twi1', 'w5twi2', 'w7', 'w7dawn', 'w7dusk', 'w10after', 'w6dawn']
-SKY_STYLE = ('slothadv style, painted storybook illustration, soft cel shading, thin dark outline, hand-painted gouache brushwork, '
+# (no 'slothadv style' trigger: skyt2i.py paints the sky without the style model, which put a sloth's head in the first take)
+SKY_STYLE = ('painted storybook illustration, soft cel shading, thin dark outlines on the clouds, hand-painted gouache brushwork, '
              'looking up at the sky, the whole picture is sky')
 # the picture painted from text: sky only (what the strip's top would run on into); nothing with a horizon, so no second landscape
 SKY_ONLY = {
@@ -27,7 +28,7 @@ SKY_ONLY = {
     'w10after': 'a stormy golden sky, heavy dark storm clouds breaking up, soft rain streaks',
 }
 NEG_SKY = ('ground, land, horizon, hills, mountains, trees, landscape, buildings, ruins, water, sea, frame, border, panel, text, letters, '
-           'watermark, photo, 3d render, people, animal, sloth, bird, blurry')
+           'watermark, photo, 3d render, people, character, face, creature, animal, sloth, bird, blurry')
 NEG_JOIN = ('second landscape, stacked scenes, horizon line, ground, frame, border, panel, picture in picture, horizontal band, seam, '
             'straight line, text, letters, watermark, people, animal, sloth, blurry')
 
@@ -39,8 +40,8 @@ def items(commit):
         for seed in (11, 23):
             out.append({'name': f'{stem}-r5-{seed}', 'src': f'{base}{stem}-far.webp', 'seed': seed, 'neg': NEG_SKY,
                         'sky': f'{SKY_STYLE}. {SKY_ONLY[stem]}',
-                        'join': f'{STYLE}. {WHAT[stem]}; the trees, branches, rock and smoke at the top of the scene carry on up into it, '
-                                'one continuous painting'})
+                        'join': f'{STYLE}. {WHAT[stem]}; the trees, branches, rock and smoke at the top of the scene carry on up into it and end '
+                                'in a natural ragged silhouette against the open sky, one continuous painting'})
             out[-1]['neg_join'] = NEG_JOIN
     return out
 

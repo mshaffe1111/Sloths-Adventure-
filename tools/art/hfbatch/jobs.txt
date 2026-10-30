@@ -150,3 +150,6 @@ X-16 skies r4 6ae3cdb10e0338d1bb7c4633 rtx-pro-6000 started 22:50:25Z (the lead'
 X-16 skies r5 6ae3dd5ec78863f9c62e0ae9 rtx-pro-6000 started 23:57:18Z (the lead's go, $3.25 left): skyt2i.py at 11d10552, the 11
   held-back skies x 2 seeds: a sky painted from text, scaled and colour-matched above the far strip, the join inpainted (sequential
   tiles). Estimate ~45 min, ~$2.2; timeout 65 min.
+  Cancelled at about 00:07Z (~10 min, ~$0.45): the first take had a giant sloth's head painted into the sky (the style model in the
+  text-to-image step) and hard tile edges at the join. Fixed in skyt2i.py: the sky without the style model, the join in one full-width
+  pass plus a wrap pass.

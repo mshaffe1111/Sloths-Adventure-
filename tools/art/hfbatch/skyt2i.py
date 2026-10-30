@@ -1,13 +1,15 @@
 """X-16 round 5 (the lead, 2026-10-29): fresh start pictures for the 11 skies round 4 left on the cover fit. Round 4 showed the img2img
 pass hardly moves its start, so the start has to be good already: here it is painted from text, not built from a donor sky or a gradient.
 
-Per take (Qwen-Image with the style model mshaffe111/slothadv-style-lora, one load for both pipelines):
-  1. sky    text-to-image, sky only (TW2 x TH2), the strip's world and light in the prompt, anything with a horizon in the negative
+Per take (Qwen-Image, one load for both pipelines):
+  1. sky    text-to-image, sky only (TW2 x TH2), WITHOUT the style model: with it (and its trigger word) the first take of round 5 painted
+            a giant sloth's head into the sky, "sloth" in the negative or not (job 6ae3dd5e, cancelled)
   2. start  the sky Lanczos-scaled to the strip's width (+ a wrap margin crossfaded into its left end, so it repeats like the strip), its
             bottom rows squeezed into the E rows above the strip, matched in colour to the strip's top rows, eased into its top row
-  3. join   inpainted across the join only (from JA x E above the strip's top to JB x H into it), sequential overlapping tiles round the
-            strip as a circle, each tile keeping what the tile before painted, so the strip's trunks, leaves and smoke carry on up and the
-            join is painted, not a straight crossfade (round 4's failure)
+  3. join   inpainted with the style model across the join (from JA x E above the strip's top, fading in over its upper half, to JB x H
+            into the strip) in ONE pass the strip's full width, then a second narrow pass over the wrap point (the picture turned half
+            way round), so the strip's trunks, leaves and smoke carry on up and the join is painted, not a straight crossfade (round 4).
+            Overlapping 1024 tiles, even each keeping what the one before painted, showed hard tile edges (the cancelled job)
 Results to the bucket mshaffe111/w5-xfer, under <SUB>/:
   <name>.webp            E + O rows (the canvas skycut.py cuts: the sky, then the strip's top 16%), q95
   start-<name>.jpg       step 2, before the join is painted
@@ -22,7 +24,6 @@ from pathlib import Path
 import numpy as np
 import torch
 from PIL import Image
-from scipy.ndimage import uniform_filter1d
 from huggingface_hub import hf_hub_download
 
 tok = os.environ['HF_TOKEN']
@@ -33,7 +34,7 @@ TAG = os.environ.get('TAG', 'sky5')
 t0 = time.time()
 
 E_SHARE, O_SHARE, C_SHARE = 0.35, 0.16, 0.45  # tallstart.py E_SHARE, skycut.py O, the strip shown below the join for context
-JA, JB = 0.40, 0.10  # the join band: this share of E above the strip's top, this share of H into the strip
+JA, JB = 0.60, 0.10  # the join band: this share of E above the strip's top, this share of H into the strip
 TW, TW2, TH2 = 1024, 1664, 640
 
 
@@ -65,7 +66,6 @@ except Exception as e:  # ai-toolkit key names, as striphdgpu.py
             k2 = 'transformer.' + k2
         sd2[k2] = v
     t2i.load_lora_weights(sd2, adapter_name='style')
-t2i.set_adapters(['style'], adapter_weights=[scale])
 inp = QwenImageInpaintPipeline(**t2i.components)  # the same weights, LoRA and all
 
 
@@ -108,37 +108,46 @@ for it in SPEC['items']:
         E = int(round(H * E_SHARE / 16) * 16)
         O = int(round(H * O_SHARE / 16) * 16)
         C = int(round(H * C_SHARE / 16) * 16)
-        g = torch.Generator('cuda').manual_seed(it['seed'])
+        t2i.set_adapters(['style'], adapter_weights=[0.0])
         sky = t2i(prompt=it['sky'], negative_prompt=it['neg'], width=TW2, height=TH2, num_inference_steps=28, true_cfg_scale=4.0,
-                  generator=g).images[0].convert('RGB')
+                  generator=torch.Generator('cuda').manual_seed(it['seed'])).images[0].convert('RGB')
         sky = np.asarray(sky)
         put(f"t2i-{it['name']}.jpg", jpg(sky))
         cv = np.concatenate([start(sky, rgb, E), rgb[:C]], 0)
         put(f"start-{it['name']}.jpg", jpg(cv[:E + O]))
         CH = E + C
-        # the join band's mask: full in the middle, ramping off over a third of its height each side
+        # the join band's mask: rising over the upper half of the part above the strip, full down to JB x H into the strip, off over 40 px
         ja, jb = int(E * JA), int(H * JB)
         rows = np.zeros(CH, np.float32)
         rows[E - ja:E + jb] = 1
-        ramp = max(8, (ja + jb) // 3)
-        rows[E - ja:E - ja + ramp] = np.linspace(0, 1, ramp)
-        rows[E + jb - ramp:E + jb] = np.linspace(1, 0, ramp)
-        painted = np.zeros(W, bool)
-        n = math.ceil(W / (TW - 320))
-        for i in range(n):
-            x0 = round(i * W / n)
-            cols = (x0 + np.arange(TW)) % W
-            # columns an earlier tile painted are kept (feathered over 96 px), so the tiles line up instead of being averaged into ghosts
-            colm = np.clip(1 - uniform_filter1d(painted[cols].astype(np.float32), 96, mode='nearest'), 0, 1)
-            mask = (rows[:, None] * colm[None, :] * 255).astype(np.uint8)
-            tile = Image.fromarray(np.clip(cv[:, cols], 0, 255).astype(np.uint8))
-            res = inp(prompt=it['join'], negative_prompt=it.get('neg_join', it['neg']), image=tile, mask_image=Image.fromarray(mask, 'L'), strength=0.9,
-                      width=TW, height=CH, num_inference_steps=28, true_cfg_scale=4.0,
-                      generator=torch.Generator('cuda').manual_seed(it['seed'] + i)).images[0].convert('RGB')
-            m = mask.astype(np.float32)[..., None] / 255
-            cv[:, cols] = cv[:, cols] * (1 - m) + np.asarray(res, np.float32) * m
-            painted[cols] = True
-            print('tile', it['name'], i, n, round(time.time() - t1), flush=True)
+        up = ja // 2
+        t = np.linspace(0, 1, up, dtype=np.float32)
+        rows[E - ja:E - ja + up] = t * t * (3 - 2 * t)
+        rows[E + jb - 40:E + jb] = np.linspace(1, 0, 40)
+        t2i.set_adapters(['style'], adapter_weights=[scale])
+
+        def paint(img, mask, seed):
+            """one inpaint pass, the picture padded on the right (wrapping round) to a multiple of 16 wide; the result laid in through the
+            soft mask (the pipeline itself keys on a hard one)"""
+            w = img.shape[1]
+            w16 = math.ceil(w / 16) * 16
+            cols = np.arange(w16) % w
+            res = inp(prompt=it['join'], negative_prompt=it.get('neg_join', it['neg']), image=Image.fromarray(np.clip(img[:, cols], 0, 255).astype(np.uint8)),
+                      mask_image=Image.fromarray((mask[:, cols] * 255).astype(np.uint8), 'L'), strength=1.0, width=w16, height=img.shape[0],
+                      num_inference_steps=28, true_cfg_scale=4.0, generator=torch.Generator('cuda').manual_seed(seed)).images[0].convert('RGB')
+            m = mask[..., None]
+            return img * (1 - m) + np.asarray(res, np.float32)[:, :w] * m
+
+        cv = paint(cv, np.repeat(rows[:, None], W, 1), it['seed'])
+        print('join', it['name'], round(time.time() - t1), flush=True)
+        # the wrap point: turned half way round it sits in the middle; a 1024-wide window over it, the middle 512 repainted
+        cv = np.roll(cv, W // 2, axis=1)
+        x0 = W // 2 - 512
+        x = np.arange(1024, dtype=np.float32)
+        colm = np.clip(np.minimum(x - 192, 832 - x) / 64, 0, 1)
+        cv[:, x0:x0 + 1024] = paint(cv[:, x0:x0 + 1024], rows[:, None] * colm[None, :], it['seed'] + 1)
+        cv = np.roll(cv, -(W // 2), axis=1)
+        print('wrap', it['name'], round(time.time() - t1), flush=True)
         b = io.BytesIO(); Image.fromarray(np.clip(cv[:E + O], 0, 255).astype(np.uint8)).save(b, 'WEBP', quality=95, method=4)
         put(f"{it['name']}.webp", b.getvalue())
         for f in (f"{it['name']}.webp", f"start-{it['name']}.jpg", f"t2i-{it['name']}.jpg"):
