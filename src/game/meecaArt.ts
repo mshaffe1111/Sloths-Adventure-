@@ -11,7 +11,8 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { PELL_ANIM, PELL_ANIM_UP, PELL_ANIM_URL, PELL_K, PELL_SEQ } from './pellAnimData.ts';
-import { SOLDIER_ANIM, SOLDIER_ANIM_UP, SOLDIER_ANIM_URL, SOLDIER_K, SOLDIER_SEQ } from './soldierAnimData.ts';
+import { SOLDIER_K, SOLDIER_SEQ } from './soldierAnimData.ts';
+import { SOLDIER_CLIPS } from './soldierClips.ts';
 import { MEECA_CARVE_FPS, MEECA_CARVE_FRAMES, MEECA_CARVE_SEQ, MEECA_CARVE_URL } from './meecaCarveData.ts';
 import { MEECA_BLANKET_FRAMES, MEECA_BLANKET_UP, MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { MEECA_FRAMES, MEECA_STAND_H } from './meecaStandardData.ts';
@@ -42,7 +43,7 @@ const PINK = '#f58ab4';
 const K = MEECA_UNITS / MEECA_STAND_H;
 
 export const PELL_CLIPS = makeCreatureAnim(PELL_ANIM_URL, PELL_ANIM, PELL_SEQ, PELL_ANIM_UP);
-export const SOLDIER_CLIPS = makeCreatureAnim(SOLDIER_ANIM_URL, SOLDIER_ANIM, SOLDIER_SEQ, SOLDIER_ANIM_UP);
+export { SOLDIER_CLIPS };
 
 /** a sheet of Meeca's own (carving, the blanket), loaded the first time it is asked for */
 function sheet(url: string) {

@@ -9,7 +9,8 @@
  */
 export type JumpHelp = 'off' | 'keep' | 'forward';
 
-export const DEFAULT_JUMP_HELP: JumpHelp = 'forward';
+/** off unless the player turns it on (Matt, 2026-10-30: the special options start off, Dot's help aside) */
+export const DEFAULT_JUMP_HELP: JumpHelp = 'off';
 
 const KEY = 'sloth_jump_help';
 let help: JumpHelp | null = null;

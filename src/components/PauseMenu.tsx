@@ -18,6 +18,8 @@ interface PauseMenuProps {
   onRestart: () => void;
   onOpenTrophies: () => void;
   onOpenCards: () => void;
+  /** Pokey's satchel: what he has found, and his journal */
+  onOpenSatchel: () => void;
   onOpenMap: () => void;
   /** leave the stage for the start screen (its place kept as leaving for the map keeps it) */
   onOpenTitle: () => void;
@@ -150,7 +152,7 @@ export const Sliders: React.FC = () => {
 };
 
 /** Settings, the pause card: opens when the player taps Settings (the game is paused behind it). */
-export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenMap, onOpenTitle, trophyCount, trophyTotal, skills, onAskHint }) => (
+export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenSatchel, onOpenMap, onOpenTitle, trophyCount, trophyTotal, skills, onAskHint }) => (
   <MenuFrame
     label="Settings"
     title="Settings"
@@ -163,6 +165,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
       <>
         {onAskHint && <HintTile ask={onAskHint} />}
         <MenuTile icon="restart" name="Restart" line="Start this stage over" onClick={onRestart} title={COARSE ? undefined : 'R'} />
+        <MenuTile icon="book" name="Satchel" line="His finds and his journal" onClick={onOpenSatchel} />
         <MenuTile icon="map" name="World Map" line="Leave this stage" onClick={onOpenMap} />
         <MenuTile icon="sloth" name="Start Screen" line="Back to the title" onClick={onOpenTitle} />
         <HowToTile />

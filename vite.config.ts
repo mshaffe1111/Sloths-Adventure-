@@ -20,6 +20,8 @@ function lastUpdate(): string {
 
 // GitHub Pages serves the game from /<repo-name>/, so the deploy build sets BASE_PATH. Locally it stays '/'.
 const base = process.env.BASE_PATH || '/';
+// the Play Store build (npm run build:store): no service worker, no web manifest, no tester collector (reference/PLAY-STORE.md)
+const store = process.env.VITE_STORE_BUILD === '1';
 
 export default defineConfig(() => {
   const buildTime = lastUpdate();
@@ -37,12 +39,12 @@ export default defineConfig(() => {
         },
       },
       tailwindcss(),
-      VitePWA({
+      !store && VitePWA({
         registerType: 'autoUpdate',
         // the painted sprite sheets are cached with the app, so they load instantly and work offline
         // the animated boss sheets and the game's own script are each a little over Workbox's 2 MiB default, and a file over the limit
         // fails the whole build, so the limit is raised to 4 MiB
-        workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3,woff2}'], maximumFileSizeToCacheInBytes: 4 * 1024 * 1024 },
+        workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3,webm,woff2}'], maximumFileSizeToCacheInBytes: 4 * 1024 * 1024 },
         includeAssets: ['favicon-48.png', 'apple-touch-icon.png'],
         manifest: {
           id: base,

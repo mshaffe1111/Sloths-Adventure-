@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clipPick, edgeClip, heroClipsLive, isCalm, IDLE_CLIPS } from './heroClips.ts';
+import { clipPick, edgeClip, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, RUN_FOOTFALLS } from './heroClips.ts';
 import { HERO_CLIPS } from './heroClipsData.ts';
 import type { PlayerState } from './types.ts';
 
@@ -44,4 +44,24 @@ test('clips: at a ledge end he steps back once, then teeters in a loop; arriving
   assert.equal(edgeClip(0.01, false, all)?.name, 'teeter');
   assert.equal(edgeClip(0.01, true, (n) => n !== 'step-back')?.name, 'teeter', 'no step-back sheet: straight to the teeter');
   assert.equal(edgeClip(5, true, () => false), null);
+});
+
+test('footsteps land on the run frames\' footfalls: three a loop, none twice, none when he stands still', () => {
+  const loop = (Math.PI * 2) / 0.6; // walkCycle per turn of the 15-frame run sheet
+  assert.equal(RUN_FOOTFALLS.length, 3);
+  assert.equal(footfallsBetween(0, loop), 3, 'one loop passes each footfall once');
+  assert.equal(footfallsBetween(0, loop * 10), 30);
+  assert.equal(footfallsBetween(1, 1), 0, 'standing still: none');
+  assert.equal(footfallsBetween(2, 1), 0, 'a reset cycle (a restart): none');
+  // walked a tick at a time (a full run at 30 fps), the ticks add up to the whole: no footfall counted twice or skipped
+  let c = 0;
+  let k = 0;
+  const d = (285 / 30) * 0.08;
+  for (let i = 0; i < 300; i++) {
+    k += footfallsBetween(c, c + d);
+    c += d;
+  }
+  assert.equal(k, footfallsBetween(0, c));
+  // at a full run (285 px/s) about 6.5 footfalls a second: every other one is the 3.3 a second Matt's calmer steps want
+  assert.ok(Math.abs(k / 10 - 6.5) < 0.2, `${k / 10} a second`);
 });

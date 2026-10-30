@@ -42,6 +42,7 @@ import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStat
 import { anyCakeEaten } from './game/w5Kit.ts';
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
 import { TrophyRoom } from './components/TrophyRoom.tsx';
+import { Satchel, type SatchelTab } from './components/Satchel.tsx';
 import { inAppOf } from './game/deviceInfo.ts';
 import { markSlowTipShown, slowTipShown, slowTipText } from './game/slowTip.ts';
 import { BadgeToast } from './components/BadgeToast.tsx';
@@ -57,6 +58,8 @@ import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
+import { keepScreenOn, nativeApp } from './game/appShell.ts';
+import { LeaveDialog } from './components/LeaveDialog.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -326,12 +329,13 @@ export default function App() {
   };
   const [trophyFrom, setTrophyFrom] = useState<'title' | 'world_map' | 'paused'>('title');
   /** which tab the Trophy Room opens on (the pause menu's Jungle Cards go straight to the creature journal) */
-  const [trophyTab, setTrophyTab] = useState<'badges' | 'journal' | 'library'>('badges');
+  const [trophyTab, setTrophyTab] = useState<'badges' | 'journal'>('badges');
+  const [satchelTab, setSatchelTab] = useState<SatchelTab>('satchel');
   // ---- story finds: the notes, books and keepsakes picked up, and the one being read ----
   const [foundIds, setFoundIds] = useState<string[]>(() => loadFinds());
   // ---- flashbacks: the ones seen so far, and the one playing ----
   const [memoriesSeen, setMemoriesSeen] = useState<MemoryId[]>(() => loadMemories());
-  const [memoryPlay, setMemoryPlay] = useState<{ id: MemoryId; back: 'victory' | 'trophy' } | null>(null);
+  const [memoryPlay, setMemoryPlay] = useState<{ id: MemoryId; back: 'victory' | 'satchel' } | null>(null);
   const markMemorySeen = (id: MemoryId) => {
     setMemoriesSeen((cur) => {
       const next = withMemory(cur, id);
@@ -498,6 +502,68 @@ export default function App() {
 
   // when the Game Over card came up (its tap guard)
   const gameOverAt = useRef(0);
+  // The Android app (reference/PLAY-STORE.md): the phone's Back button, and the app going to the background or a call coming in.
+  // Back closes the open window first (its X), then: play pauses, the pause menu resumes, the end cards go to the map, the map goes to the
+  // title, the title asks "Leave the game?", and every other screen gets an Escape (a story skips, the start menu closes).
+  const [askLeave, setAskLeave] = useState(false);
+  const androidBack = useRef<() => void>(() => {});
+  androidBack.current = () => {
+    const xs = Array.from(document.querySelectorAll<HTMLElement>('.ui-x')).filter((el) => el.offsetParent !== null);
+    if (xs.length) {
+      xs[xs.length - 1].click();
+      return;
+    }
+    const esc = () => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+    if (screen === 'playing') pauseGame();
+    else if (screen === 'paused') resumeGame();
+    else if (screen === 'victory' || screen === 'game_over') {
+      if (screen === 'victory' && newSkills.length > 0) setNewSkills((q) => q.slice(1));
+      else {
+        engineRef.current?.stop();
+        setScreen('world_map');
+      }
+    } else if (screen === 'world_map') setScreen('title');
+    else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim')) setAskLeave(true);
+    else esc();
+  };
+  // the Android app keeps the screen on only while a stage is played; a menu, the map or a story lets the phone sleep (KeepAwakePlugin.java)
+  useEffect(() => {
+    keepScreenOn(screen === 'playing');
+  }, [screen]);
+  const androidAway = useRef<() => void>(() => {});
+  androidAway.current = () => {
+    if (screen === 'playing') pauseGame();
+  };
+  useEffect(() => {
+    if (!nativeApp()) return;
+    let gone = false;
+    const subs: { remove: () => Promise<void> }[] = [];
+    void import('@capacitor/app').then(async ({ App: CapApp }) => {
+      const add = [
+        await CapApp.addListener('backButton', () => androidBack.current()),
+        await CapApp.addListener('pause', () => {
+          sound.appHidden(true);
+          androidAway.current();
+        }),
+        await CapApp.addListener('resume', () => sound.appHidden(false)),
+      ];
+      if (gone) add.forEach((h) => void h.remove());
+      else subs.push(...add);
+    });
+    // (sent by MainActivity.java: 'lost' when a call rings, an alarm sounds or another app plays; 'duck' when another app speaks for a
+    // moment, like directions; 'back' when the sound is ours again)
+    const onFocus = (e: Event) => {
+      const state = (e as Event & { state?: string }).state;
+      sound.appHidden(state === 'lost', 'focus');
+      sound.appDucked(state === 'duck');
+    };
+    window.addEventListener('sloth-audio-focus', onFocus);
+    return () => {
+      gone = true;
+      subs.forEach((h) => void h.remove());
+      window.removeEventListener('sloth-audio-focus', onFocus);
+    };
+  }, []);
   useEffect(() => {
     if (screen === 'game_over') gameOverAt.current = performance.now();
   }, [screen]);
@@ -669,7 +735,7 @@ export default function App() {
   // dev only: play a flashback
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __memory?: (id: MemoryId) => void }).__memory = (id: MemoryId) => {
-      setMemoryPlay({ id, back: 'trophy' });
+      setMemoryPlay({ id, back: 'satchel' });
       setScreen('memory');
     };
   }
@@ -772,6 +838,7 @@ export default function App() {
             const next = withFind(known, id);
             saveFinds(next);
             setFoundIds(next);
+            if (FIND_BY_ID[id].kind === 'snail') return;
             engineRef.current?.pause();
             pausedForFind.current = true;
             setReadingCompletes(allFound(next));
@@ -1210,9 +1277,9 @@ export default function App() {
               }
             }
             setMemoryPlay(null);
-            if (back === 'trophy') {
-              setTrophyTab('library');
-              setScreen('trophy');
+            if (back === 'satchel') {
+              setSatchelTab('scenes');
+              setScreen('satchel');
             } else setScreen('victory');
           }}
         />
@@ -1223,14 +1290,14 @@ export default function App() {
         <StoryPlayer
           panels={finalePanels(foundIds)}
           finishLabel="The End" finishIcon="heart"
-          onFinish={() => setScreen(endTagPanels(foundIds).length ? 'ending_tag' : 'story_ending')}
+          onFinish={() => setScreen(endTagPanels(foundIds, thornHeart).length ? 'ending_tag' : 'story_ending')}
         />
       )}
 
-      {/* After the end: the stopwatch, if it was found */}
+      {/* After the end: the stopwatch, if it was found, then the sequel hint (Thornbark's part only if he was freed) */}
       {screen === 'ending_tag' && (
         <StoryPlayer
-          panels={endTagPanels(foundIds)}
+          panels={endTagPanels(foundIds, thornHeart)}
           finishLabel="The End" finishIcon="heart"
           onFinish={() => setScreen('story_ending')}
         />
@@ -1255,6 +1322,11 @@ export default function App() {
             setTrophyTab('badges');
             setScreen('trophy');
           }}
+          onOpenSatchel={() => {
+            setTrophyFrom('world_map');
+            setSatchelTab('satchel');
+            setScreen('satchel');
+          }}
         />
       )}
 
@@ -1269,9 +1341,20 @@ export default function App() {
           onChoice={changeCosmetic}
           initialTab={trophyTab}
           finds={foundIds}
+          onBack={() => setScreen(trophyFrom)}
+        />
+      )}
+
+      {/* Pokey's satchel: the finds, his journal, the story scenes (from the pause menu and the map) */}
+      {screen === 'satchel' && (
+        <Satchel
+          world={activeLevel.worldIndex}
+          finds={foundIds}
+          levels={allLevels}
           memories={memoriesSeen}
+          initialTab={satchelTab}
           onReplayMemory={(id) => {
-            setMemoryPlay({ id, back: 'trophy' });
+            setMemoryPlay({ id, back: 'satchel' });
             setScreen('memory');
           }}
           onOpenFind={(id) => { setReadingCompletes(false); setReading(id); }}
@@ -1354,6 +1437,9 @@ export default function App() {
         </>
       )}
 
+      {askLeave && screen === 'title' && (
+        <LeaveDialog onStay={() => setAskLeave(false)} onLeave={() => void import('@capacitor/app').then((m) => m.App.exitApp())} />
+      )}
       {/* Status Modals: Paused, Victory, Game Over, Boss Intro, Story Ending */}
       {(screen === 'paused' ||
         (screen === 'victory' && newSkills.length === 0) ||
@@ -1396,6 +1482,11 @@ export default function App() {
             setTrophyFrom('paused');
             setTrophyTab('journal');
             setScreen('trophy');
+          }}
+          onOpenSatchel={() => {
+            setTrophyFrom('paused');
+            setSatchelTab('satchel');
+            setScreen('satchel');
           }}
           onOpenMap={() => {
             engineRef.current?.stop();

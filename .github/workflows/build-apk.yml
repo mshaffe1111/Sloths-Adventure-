@@ -1,5 +1,11 @@
 name: Build Sloths Adventure Android APK
 
+# The Android app is the committed Capacitor project in android/ (reference/PLAY-STORE.md). Every run builds the store version of the
+# game (npm run build:store: no tester collector, no service worker, no outside addresses), checks it, and makes:
+# - a debug APK to install by hand on a phone (always);
+# - a signed release bundle (.aab) for Google Play, only when the four ANDROID_* secrets are set (PLAY-STORE.md §3 says how).
+# The keystore never goes in the repo: it comes from the ANDROID_KEYSTORE_BASE64 secret and is written to the runner for this run only.
+
 # One `push` key only: GitHub rejects a workflow that lists it twice (the runs failed at once, with no step run)
 on:
   push:
@@ -8,12 +14,16 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # the tagged-release step attaches the APK
+  contents: write # the tagged-release step attaches the debug APK
 
 jobs:
   build-apk:
-    name: Build Android APK (Sloths Adventure)
+    name: Build Android APK and bundle (Sloths Adventure)
     runs-on: ubuntu-latest
+    env:
+      # Google Play needs a bigger version code on every upload: the run number always grows
+      APP_VERSION_CODE: ${{ github.run_number }}
+      APP_VERSION_NAME: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || format('1.0.{0}', github.run_number) }}
     steps:
       - name: Checkout Sloths-Adventure Repository
         uses: actions/checkout@v4
@@ -27,8 +37,14 @@ jobs:
       - name: Install Game Dependencies
         run: npm install --no-audit --no-fund --legacy-peer-deps
 
-      - name: Build Vite Web Game (Outputs to dist/)
-        run: npm run build
+      - name: Build the store version of the game (Outputs to dist/)
+        run: npm run build:store
+
+      # fails the run if any tracking, ads, the tester collector or a service worker got into the build
+      - name: Check the store build carries no tracking
+        run: |
+          node tools/store/checkStoreBuild.mjs dist
+          STORE_DIST=dist npx tsx --test tools/store/checkStoreBuild.test.ts
 
       # Capacitor 7 and up build with Java 21 (Gradle refuses 17)
       - name: Setup Java JDK 21
@@ -44,12 +60,8 @@ jobs:
         with:
           packages: 'platform-tools'
 
-      - name: Initialize Capacitor Android (Auto-Wrap)
-        run: |
-          npm install --no-audit --no-fund --legacy-peer-deps @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Sloths Adventure" "com.mshaffe1111.slothadventure" --web-dir dist
-          npx cap add android
-          npx cap sync android
+      - name: Copy the game into the Android project
+        run: npx cap sync android
 
       - name: Build Android Debug APK
         run: |
@@ -64,9 +76,39 @@ jobs:
           path: android/app/build/outputs/apk/debug/*.apk
           retention-days: 14
 
+      # the upload key, from the repo's secrets (Settings > Secrets and variables > Actions); skipped when they are not set yet
+      - name: Build signed release bundle (.aab) for Google Play
+        id: aab
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ] || [ -z "$ANDROID_KEYSTORE_PASSWORD" ] || [ -z "$ANDROID_KEY_ALIAS" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
+            echo "The ANDROID_* signing secrets are not set: no release bundle this run (reference/PLAY-STORE.md §3)."
+            echo "built=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/upload.jks"
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$ANDROID_KEYSTORE_FILE"
+          cd android
+          ./gradlew bundleRelease
+          rm -f "$ANDROID_KEYSTORE_FILE"
+          echo "built=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload signed release bundle
+        if: steps.aab.outputs.built == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sloths-adventure-aab
+          path: android/app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
       - name: Publish to GitHub Release (If Git Tag)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          # (the debug APK only: the paid store bundle is never posted where anyone can download it)
           files: android/app/build/outputs/apk/debug/*.apk
           generate_release_notes: true
