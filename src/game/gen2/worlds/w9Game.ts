@@ -35,15 +35,14 @@ const forStage = (stage: number, id: string): boolean => (id === 'w9-first-geyse
  * is jumps, all the way through. Which stage holds which section is w9Ground's W9_STAGE_ONLY (every section has its stages).
  */
 const STAGE_THEMES: Readonly<Record<number, ReadonlyArray<[W9Theme, readonly string[]]>>> = {
-  1: [[W9_THEME.vents, ['w9-geyser-pair', 'w9-geyser-row', 'w9-geyser-ledge']], [W9_THEME.chasms, ['w9-lava-rise', 'w9-geyser-chasm']]],
+  1: [[W9_THEME.vents, ['w9-geyser-pair', 'w9-geyser-row', 'w9-geyser-ledge']], [W9_THEME.chasms, ['w9-lava-rise', 'w9-geyser-chasm', 'w9-geyser-brink']]],
   4: [[W9_THEME.coils, ['w9-boa-knobs', 'w9-boa-vents']]],
-  5: [[W9_THEME.bursts, ['w9-geyser-brink', 'w9-hot-run']]],
-  6: [[W9_THEME.cats, ['w9-cat-den', 'w9-jaguar-leap', 'w9-cat-ledges']], [W9_THEME.prowl, ['w9-hunter-run', 'w9-hunter-brink', 'w9-prowl-crust']]],
+  6: [[W9_THEME.cats, ['w9-cat-den', 'w9-jaguar-leap', 'w9-cat-ledges']], [W9_THEME.prowl, ['w9-hunter-run', 'w9-hunter-brink', 'w9-prowl-crust', 'w9-cat-chasm']]],
   8: [[W9_THEME.channels, ['w9-basalt-run', 'w9-basalt-twin']]],
-  9: [[W9_THEME.harpies, ['w9-harpy-field', 'w9-harpy-gap', 'w9-harpy-pillars']], [W9_THEME.boas, ['w9-boa-chasm', 'w9-pillar-run', 'w9-boa-ledges']]],
+  9: [[W9_THEME.harpies, ['w9-harpy-field', 'w9-harpy-gap', 'w9-harpy-pillars']], [W9_THEME.boas, ['w9-boa-chasm', 'w9-pillar-run', 'w9-boa-ledges', 'w9-hot-run']]],
 };
 /** the ground of 9-3 that asks most, between its chains: weighed as a theme's (the vine stage is no breather: World 9's band) */
-const HOT_GROUND = ['w9-crust-gaps', 'w9-pillar-hop', 'w9-cat-chasm', 'w9-lava-drop'];
+const HOT_GROUND = ['w9-crust-gaps', 'w9-pillar-hop', 'w9-lava-drop'];
 /** a shared section given to the stage's theme that leans on it (it then waits for that theme's gate) */
 function themed(stage: number, s: SectionTemplate): SectionTemplate {
   if (stage === 3 && HOT_GROUND.includes(s.id)) return { ...s, weight: 1 };

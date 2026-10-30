@@ -209,6 +209,22 @@ export function geyserBeat(stage: number, lesson: boolean): { idle: number; acti
 /** a vent in a chasm: a short column (its top under the lip, so the eruption never reaches the route) on a slow, lazy beat */
 export const VENT = { w: 80, h: 70, warn: 1.3, idle: 3.2, active: 0.9 } as const;
 
+/** the longest a watched stretch runs (px): a section's run of basalt, not the stage */
+const WATCH_MAX = 1400;
+/** the basalt the eagle looks along: the piece under the spot and those walked on from it with no gap between (a knob or a step up
+ *  and down: the same run), up to WATCH_MAX; a chasm ends it */
+function watchedRun(out: StageSink, x: number, y: number): [number, number] | null {
+  const p0 = pieceAt(out, x, y);
+  if (!p0) return null;
+  const near = out.platforms.filter((p) => p.type !== 'fragile' && Math.abs(p.y - p0.y) <= 60);
+  let x1 = p0.x + p0.width;
+  for (let grown = true; grown && x1 - p0.x < WATCH_MAX; ) {
+    grown = false;
+    for (const p of near) if (Math.abs(p.x - x1) <= 2 && p.x + p.width > x1) (x1 = Math.min(p.x + p.width, p0.x + WATCH_MAX)), (grown = true);
+  }
+  return [p0.x, x1];
+}
+
 /** a chasm's floor past a lip at (x, lipY): the deepest solid piece starting within a chasm's width past it, under the lip (null: none) */
 export function ventFloor(platforms: readonly Platform[], x: number, lipY: number): Platform | null {
   const under = platforms.filter((p) => p.type === 'solid' && p.y > lipY + 60 && p.y < lipY + 260 && p.x >= x - 4 && p.x < x + 200 && p.width >= 140);
@@ -254,9 +270,10 @@ export function w9Emitters(stage: number): Record<W9PropId, PropEmitter> {
     },
     rockHide: hide('wide'),
     fernHide: hide('tall'),
+    // (one watched stretch a section: the piece it stands on and those walked on from it with no gap between, clipped to the hiding
+    // places along it by w9Decorate; a watch per flat stacked the eagle's passes, and the doorstep read as nothing but waiting)
     watch: (f, _p, out) => {
-      const own = pieceAt(out, f.x, f.y);
-      const run = own ? [own.x, own.x + own.width] : [f.x - 300, f.x + 300];
+      const run = watchedRun(out, f.x, f.y) ?? [f.x - 300, f.x + 300];
       const z: WatchZone = { x0: R(run[0] + 40), x1: R(run[1] - 40), calm: calm(f.socket === 'watchLesson') };
       const zones = (out.proto.watch ??= []);
       if (!zones.some((q) => q.x0 < z.x1 && z.x0 < q.x1)) zones.push(z);
@@ -307,7 +324,8 @@ export function w9Falls(t: SectionTemplate): SectionTemplate {
 
 /** World 9's base kit for one stage (the sections are added by w9Game.ts) */
 export function w9Kit(stage: number): WorldKit {
-  const creatures = W9_HARPY_STAGES.includes(stage) ? W9_CREATURES : W9_CREATURES.filter((c) => c.id !== W9_CREATURE.harpy);
+  // (9-3 Ember Canopy's danger is the chains over the lava: no animals, so no stretch of it plays like 9-6's hunt)
+  const creatures = stage === 3 ? [] : W9_HARPY_STAGES.includes(stage) ? W9_CREATURES : W9_CREATURES.filter((c) => c.id !== W9_CREATURE.harpy);
   return { manifest: { ...W9_MANIFEST, creatures }, emit: w9Emitters(stage), decorate: w9Decorate(stage), spawn: w9Spawn() };
 }
 

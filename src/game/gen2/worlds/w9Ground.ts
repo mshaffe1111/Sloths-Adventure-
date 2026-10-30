@@ -494,7 +494,7 @@ const hotRun = section({
   extraSeconds: GEYSER_WAIT,
   pieces: [bank('a', [280, 320]), lava('b', 'a', [300, 340], BRINK, true), lava('c', 'b', [460, 500], [0.64, 0.84], true), lava('d', 'c', [280, 320], [0.64, 0.84])],
   last: 'd',
-  sockets: [geyser('g', 'b', 0.5), foe('foe', 'c', [0.55, 0.65], [...SMALL, 'jaguar'], 5), petals('b', 'b', 0.15, 1), petals('d', 'd', 0.5, 1), thread('r', 'd', 0.6)],
+  sockets: [geyser('g', 'b', 0.5), foe('foe', 'c', [0.55, 0.65], ['harpy', 'boa'], 3), petals('b', 'b', 0.15, 1), petals('d', 'd', 0.5, 1), thread('r', 'd', 0.6)],
   mirrorable: true,
 });
 
@@ -738,7 +738,7 @@ const spireRun = section({
   extraSeconds: 3,
   pieces: [bank('a', [320, 360]), ...spireK.pieces],
   last: spireK.last,
-  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), petals('k1', 'k1', 0.5, 1), watch('f1', 0.05, 'watch2'), hideAt('h2', 'f1', 0.55), petals('k2', 'k2', 0.5, 1), watch('f2', 0.05, 'watch3'), hideAt('h3', 'f2', 0.6)],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), petals('k1', 'k1', 0.5, 1), hideAt('h2', 'f1', 0.55), petals('k2', 'k2', 0.5, 1), hideAt('h3', 'f2', 0.6)],
   mirrorable: true,
 });
 
@@ -753,7 +753,7 @@ const spireChasm = section({
   extraSeconds: 3,
   pieces: [bank('a', [380, 420]), lava('b', 'a', [380, 420], BRINK), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [320, 360])],
   last: 'c',
-  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.5), petals('b0', 'b', 0.2, 1), watch('b', 0.05, 'watch2'), hideAt('h2', 'b', 0.6), watch('c', 0.05, 'watch3'), hideAt('h3', 'c', 0.55), foe('foe', 'c', [0.85, 0.9], SMALL, 3, { phases: HOT, chance: 0.4 })],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.5), petals('b0', 'b', 0.2, 1), hideAt('h2', 'b', 0.6), hideAt('h3', 'c', 0.55), foe('foe', 'c', [0.85, 0.9], SMALL, 3, { phases: HOT, chance: 0.4 })],
   mirrorable: true,
 });
 
@@ -769,7 +769,7 @@ const fernVents = section({
   extraSeconds: 3 + GEYSER_WAIT,
   pieces: [bank('a', [320, 360]), ...fernK.pieces, up('k2', fernK.last, 30, [140, 160]), down('c', 'k2', 30, [300, 340])],
   last: 'c',
-  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), petals('k1', 'k1', 0.5, 1), watch('f1', 0.05, 'watch2'), hideAt('h2', 'f1', 0.2), geyser('g', 'f1', 0.6), hideAt('h3', 'c', 0.55), petals('k2', 'k2', 0.5, 1)],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), petals('k1', 'k1', 0.5, 1), hideAt('h2', 'f1', 0.2), geyser('g', 'f1', 0.6), hideAt('h3', 'c', 0.55), petals('k2', 'k2', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -784,7 +784,7 @@ const fernGap = section({
   extraSeconds: 3,
   pieces: [bank('a', [360, 400]), wide('b', 'a', [380, 420]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [240, 280])],
   last: 'c',
-  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.55), petals('b0', 'b', 0.2, 1), watch('b', 0.05, 'watch2'), hideAt('h2', 'b', 0.6), petals('k', 'k', 0.5, 1)],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.55), petals('b0', 'b', 0.2, 1), hideAt('h2', 'b', 0.6), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -800,7 +800,7 @@ const watchSteps = section({
   pieces: [bank('a', [300, 340]), up('s1', 'a', 44, [280, 320]), up('s2', 's1', 44, [300, 340]), lavaUp('b', 's2', [60, 80], [280, 320], [0.55, 0.72])],
   last: 'b',
   exitDy: 0,
-  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), watch('s1', 0.05, 'watch2'), hideAt('h2', 's1', 0.55), watch('s2', 0.05, 'watch3'), hideAt('h3', 's2', 0.5), petals('b', 'b', 0.5, 1)],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), hideAt('h2', 's1', 0.55), hideAt('h3', 's2', 0.5), petals('b', 'b', 0.5, 1)],
   mirrorable: false,
 });
 
@@ -815,7 +815,7 @@ const watchPillars = section({
   extraSeconds: 3,
   pieces: [bank('a', [320, 360]), bank('p1', [90, 110], { kind: 'jump', after: 'a', share: [0.45, 0.6] }, { landing: true }), bank('p2', [90, 110], { kind: 'jump', after: 'p1', share: [0.45, 0.6] }, { landing: true }), lava('b', 'p2', [340, 380], [0.45, 0.6], true)],
   last: 'b',
-  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.55), petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), watch('b', 0.05, 'watch2'), hideAt('h2', 'b', 0.6)],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.55), petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), hideAt('h2', 'b', 0.6)],
   mirrorable: true,
 });
 
@@ -831,7 +831,7 @@ const fernLong = section({
   extraSeconds: 3,
   pieces: [bank('a', [300, 340]), ...fernLongK.pieces],
   last: fernLongK.last,
-  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), petals('k1', 'k1', 0.5, 1), watch('f1', 0.05, 'watch2'), hideAt('h2', 'f1', 0.45), petals('k2', 'k2', 0.5, 1), hideAt('h3', 'f2', 0.35)],
+  sockets: [watch('a', 0.05), hideAt('h1', 'a', 0.6), petals('k1', 'k1', 0.5, 1), hideAt('h2', 'f1', 0.45), petals('k2', 'k2', 0.5, 1), hideAt('h3', 'f2', 0.35)],
   mirrorable: true,
 });
 
@@ -1239,16 +1239,17 @@ export const W9_GROUND_SECTIONS: SectionTemplate[] = [
 export const W9_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object.fromEntries([
   // (every section has its stages: the look-alike measure compares what each beat is, a geyser against a watcher, a cat against a
   // harpy, so each stage keeps its own hazards and animals and two stages never share a 20 s stretch (STAGE-RULES §2 "Sameness"):
-  //   9-1 the geysers and the plain chasms, no animals; 9-3 the chains, the crust and the pillars; 9-4 the watcher; 9-5 the glides
-  //   and the bursts; 9-6 the cats and the small hunters; 9-8 the cracked basalt and the ledges; 9-9 the harpies and the pillars; the boas
+  //   9-1 the geysers and the plain chasms, no animals; 9-3 the chains, the crust and the pillars, no animals; 9-4 the watcher; 9-5 the
+  //   glides over the vents; 9-6 the cats and the small hunters; 9-8 the cracked basalt and the ledges; 9-9 the harpies and the pillars; the boas
   //   coil on 9-4's doorstep, and one past 9-9's brink)
   ...[...pepperGates, ventField, ventLanding, chasmChain, chasmDrop, geyserPair, geyserRow, geyserLedge, geyserChasm, lavaHop, lavaRise, restOhia].map((s) => [s.id, [1]] as const),
   [restSteps.id, [1, 3]] as const,
-  ...[landing, crustGaps, lavaDrop, pillarHop, catChasm].map((s) => [s.id, [3]] as const),
+  ...[landing, crustGaps, lavaDrop, pillarHop].map((s) => [s.id, [3]] as const),
   ...[...watchGates, spireRun, spireChasm, fernVents, fernGap, watchSteps, watchPillars, fernLong, boaVents, boaKnobs, restNook].map((s) => [s.id, [4]] as const),
-  ...[...ventGates, glideTwin, glideHigh, burstLanding, burstRow, geyserBrink, hotRun, restWarm].map((s) => [s.id, [5]] as const),
-  ...[huntGates[0], huntGates[1], catDen, jaguarLeap, hunterRun, hunterBrink, catLedges, prowlCrust].map((s) => [s.id, [6]] as const),
+  ...[...ventGates, glideTwin, glideHigh, burstLanding, burstRow, restWarm].map((s) => [s.id, [5]] as const),
+  [geyserBrink.id, [1]] as const,
+  ...[huntGates[0], huntGates[1], catDen, jaguarLeap, hunterRun, hunterBrink, catLedges, prowlCrust, catChasm].map((s) => [s.id, [6]] as const),
   ...[...threadGates, highLedge, overLedge, channelThread, ventThread, basaltLong, basaltChasm, basaltRun, basaltTwin, restLedge].map((s) => [s.id, [8]] as const),
-  ...[huntGates[2], huntGates[3], harpyField, harpyGap, pillarRun, harpyPillars, boaChasm, boaLedges].map((s) => [s.id, [9]] as const),
+  ...[huntGates[2], huntGates[3], harpyField, harpyGap, pillarRun, harpyPillars, boaChasm, boaLedges, hotRun].map((s) => [s.id, [9]] as const),
   [restAsh.id, [6, 9]] as const,
 ]);
