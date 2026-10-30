@@ -14,6 +14,12 @@ const LEDGE = `const ledge = (x, y = -1e9) => { const ps = e.platforms.filter((p
 const ZONE = (kind, dx = 0) => `const z = e.currentStage.zones.find((q) => q.kind === '${kind}'); const x = (z.x0 + z.x1) / 2 + ${dx};
   const pl = ledge(x, (z.baseY ?? z.top ?? 0) - 300); Object.assign(e.player, { x, y: pl ? pl.y : z.baseY, vx: 0, vy: 0 });`;
 const HOLD = `setInterval(() => { e.player.invincibleTimer = 9; }, 100);`;
+// (stand at the edge of the first pit after the start: the gap between two ground platforms at the same height)
+const PIT = `const g = e.platforms.filter((p) => p.type !== 'drift' && !p.lily && p.width > 120).sort((a, b) => a.x - b.x);
+  const wy = e.currentStage.waterY ?? 1e9; let best = null;
+  for (let i = 1; i < g.length; i++) { const a = g[i - 1], b = g[i]; if (a.x > 400 && b.x - (a.x + a.width) > 80 && Math.abs(a.y - b.y) < 30) {
+    if (!best || wy - a.y < wy - best.y) best = a; } }
+  if (best) Object.assign(e.player, { x: best.x + best.width - 60, y: best.y, vx: 0, vy: 0 });`;
 const SCENES = {
   // World 2: the river's current and the foam where the logs ride (2-1)
   river: { stage: '2-1', setup: `const r = e.currentStage.rivers[0]; const x = r.x0 - 60; const pl = ledge(x, r.surfaceY - 400) ?? ledge(r.x0 - 120);
@@ -37,6 +43,13 @@ const SCENES = {
   dotflight: { stage: '4-D', setup: `` },
   // 4-6: the glow on the mist's spots, and its motes
   settle: { stage: '4-6', setup: `const s = e.proto.w4.patience.find((q) => q.kind === 'mist'); Object.assign(e.player, { x: s.x0 - 120, y: s.y, vx: 0, vy: 0 });` },
+  // the clean-sweep batch: World 2's pit water (S1), the dirty water of Worlds 6-10 and its debris (S4), World 9's obsidian and
+  // World 10's iron junk on the ground (S2)
+  pit2: { stage: '2-3', setup: PIT },
+  dirty6: { stage: '6-2', setup: PIT },
+  dirty8: { stage: '8-3', setup: PIT },
+  rubble9: { stage: '9-3', setup: PIT },
+  rubble10: { stage: '10-3', setup: PIT },
   // the Sky Sovereign's fight (4-10): her drop warnings, the stones, her shadow
   boss: { stage: '4-10', setup: ``, wait: 9000 },
   // the other bosses' attacks (round 3): lava columns (9-10), falling rocks and ground shocks (7-10), thrown clubs (10-10), the mud

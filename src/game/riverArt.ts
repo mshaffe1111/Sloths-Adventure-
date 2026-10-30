@@ -9,6 +9,7 @@ import { W2_FRAMES } from './w2PropsData.ts';
 import type { Platform } from './types.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
+import { drawDeep } from './deepWaterArt.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -94,8 +95,12 @@ export function drawRiverWater(
   const th = (WATER_TILE * f.h) / f.w;
   // the strip's wave crests sit a few rows down its picture: line them up with the surface
   const top = surfaceY - th * 0.045;
-  ctx.fillStyle = RIVER_DEEP;
-  ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));
+  // the deep water under the strip: the painted deep river (deepWaterArt.ts), starting under the strip's own deep rows so the two meet
+  // softly, and drifting slowly with the current; the plain fill only while its sheet loads
+  if (!drawDeep(ctx, 'river', x0, x1, top + th * 0.7, bottom, t * speed * 0.12 * dir)) {
+    ctx.fillStyle = RIVER_DEEP;
+    ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));
+  }
   // the water slides with the current, a good deal slower than the logs (it reads as flow, not as a conveyor belt)
   const shift = (((t * speed * 0.35 * dir) % WATER_TILE) + WATER_TILE) % WATER_TILE;
   const start = Math.floor((x0 - shift) / WATER_TILE) * WATER_TILE + shift;

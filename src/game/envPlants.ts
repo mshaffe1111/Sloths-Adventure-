@@ -860,40 +860,6 @@ const lichenrock: PlantFn = (ctx, x, y, s, look, r) => {
   }
 };
 
-const obsidian: PlantFn = (ctx, x, y, s, look, r) => {
-  glowDot(ctx, x, y - s * 0.3, s * 0.9, look.glow ?? '#ff7a1a', 0.25);
-  const n = 3 + ((r() * 2) | 0);
-  for (let k = 0; k < n; k++) {
-    const bx = x + (k - (n - 1) / 2) * s * 0.32;
-    const h = s * (0.4 + r() * 0.5);
-    const w = s * 0.14;
-    const lean = (k - (n - 1) / 2) * 0.14;
-    ctx.save();
-    ctx.translate(bx, y + 2);
-    ctx.rotate(lean);
-    ctx.fillStyle = '#12101a';
-    ctx.strokeStyle = '#05040a';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.moveTo(-w, 0);
-    ctx.lineTo(-w * 0.8, -h * 0.7);
-    ctx.lineTo(0, -h);
-    ctx.lineTo(w * 0.8, -h * 0.6);
-    ctx.lineTo(w, 0);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(180,170,230,0.5)';
-    ctx.beginPath();
-    ctx.moveTo(-w * 0.7, -h * 0.1);
-    ctx.lineTo(-w * 0.6, -h * 0.65);
-    ctx.lineTo(-w * 0.2, -h * 0.8);
-    ctx.lineTo(-w * 0.3, -h * 0.1);
-    ctx.fill();
-    ctx.restore();
-  }
-};
-
 // ───────────────────────────── W10: the mountain above the treeline ─────────────────────────────
 
 /** a wet slate rock, split along its layers, shining with rain */
@@ -948,39 +914,6 @@ const wiregrass: PlantFn = (ctx, x, y, s, _look, r) => {
     ctx.quadraticCurveTo(bx + len * lean * 0.4, y - len * 0.7, bx + len * lean, y - len * 0.55);
     ctx.stroke();
   }
-};
-
-/** one of the General's iron thorns, broken off the netting and lying in the rock, rusting */
-const ironthorn: PlantFn = (ctx, x, y, s, look, r) => {
-  const dir = r() > 0.5 ? 1 : -1;
-  ctx.save();
-  ctx.translate(x, y + 2);
-  ctx.rotate(dir * (0.35 + r() * 0.3));
-  ctx.fillStyle = '#2a2830';
-  ctx.strokeStyle = look.ground.outline;
-  ctx.lineWidth = 1.4;
-  ctx.beginPath();
-  ctx.moveTo(-s * 0.08, 0);
-  ctx.quadraticCurveTo(-s * 0.12, -s * 0.5, dir * s * 0.15, -s * 0.95);
-  ctx.quadraticCurveTo(s * 0.02, -s * 0.45, s * 0.08, 0);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  // rust streaks
-  ctx.strokeStyle = 'rgba(150,80,40,0.7)';
-  ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.moveTo(-s * 0.03, -s * 0.15);
-  ctx.lineTo(-s * 0.02, -s * 0.45);
-  ctx.stroke();
-  ctx.restore();
-  // the stub of the netting it broke from
-  ctx.strokeStyle = '#3a3846';
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.moveTo(x - s * 0.3, y + 1);
-  ctx.lineTo(x + s * 0.25, y - s * 0.08);
-  ctx.stroke();
 };
 
 /** rain pooled in a hollow of the rock */
@@ -1415,7 +1348,6 @@ export const EXTRA_PLANTS: Record<string, PlantDef> = {
   steamvent: { draw: steamvent, near: 1.4, decor: [24, 32] },
   lavafern: { draw: lavafern, near: 1.4, decor: [26, 34] },
   lichenrock: { draw: lichenrock, near: 1.4, decor: [20, 28] },
-  obsidian: { draw: obsidian, near: 1.4, decor: [24, 34] },
   stump: { draw: stump, near: 1.5, decor: [26, 34] },
   stakes: { draw: stakes, near: 1.5, decor: [28, 38] },
   logpile: { draw: logpile, near: 1.4, decor: [26, 34] },
@@ -1425,7 +1357,6 @@ export const EXTRA_PLANTS: Record<string, PlantDef> = {
   hollowlog: { draw: hollowlog, near: 1.4, decor: [26, 34] },
   slaterock: { draw: slaterock, near: 1.4, decor: [22, 32] },
   wiregrass: { draw: wiregrass, near: 1.4, decor: [22, 32] },
-  ironthorn: { draw: ironthorn, near: 1.3, decor: [24, 34] },
   puddle: { draw: puddle, near: 1, decor: [16, 24] },
 };
 

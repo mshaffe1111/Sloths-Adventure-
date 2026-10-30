@@ -159,6 +159,7 @@ import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
+import { drawDeep } from './deepWaterArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
@@ -4935,18 +4936,26 @@ export class GameEngine {
           }
         }
       } else {
-        const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
-        // (the painted river's own colours when it is painted, so the logs sink into the same water)
-        g.addColorStop(0, painted ? 'rgba(96, 160, 152, 0.3)' : 'rgba(56, 148, 168, 0.55)');
-        g.addColorStop(1, painted ? 'rgba(38, 66, 71, 0.75)' : 'rgba(24, 90, 120, 0.8)');
-        ctx.fillStyle = g;
+        // the water over the logs' lower half, so they sit in it: the painted deep river (deepWaterArt.ts) under the wave line, thin at
+        // the surface and closing over them below; a gradient fill only before the sheet has loaded
         ctx.beginPath();
         ctx.moveTo(a, bottom);
         ctx.lineTo(a, wave(a));
         for (let x = a; x <= b + 12; x += 12) ctx.lineTo(x, wave(x));
         ctx.lineTo(b, bottom);
         ctx.closePath();
-        ctx.fill();
+        ctx.save();
+        ctx.clip();
+        const deep = painted && drawDeep(ctx, 'river', a, b, r.surfaceY - 6, r.surfaceY + 14, t * r.speed * 0.12 * r.dir, 0.4)
+          && drawDeep(ctx, 'river', a, b, r.surfaceY + 14, bottom, t * r.speed * 0.12 * r.dir, 0.8);
+        ctx.restore();
+        if (!deep) {
+          const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
+          g.addColorStop(0, painted ? 'rgba(96, 160, 152, 0.3)' : 'rgba(56, 148, 168, 0.55)');
+          g.addColorStop(1, painted ? 'rgba(38, 66, 71, 0.75)' : 'rgba(24, 90, 120, 0.8)');
+          ctx.fillStyle = g;
+          ctx.fill();
+        }
         // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line)
         if (painted) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       }

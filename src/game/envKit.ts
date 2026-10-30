@@ -8,6 +8,7 @@
  *      jade vine, Parkia pompoms and pale night-opening moonflowers, with foxfire fungus glowing on the rotting wood.
  * A world with no kit here keeps the shared jungle undergrowth (see scenery.buildNear).
  */
+import { drawRubble } from './rubbleArt.ts';
 import { drawGroundFlora, groundFlora } from './paintedScenery.ts';
 import { tone, mix, rgba, lighten, darken, type RNG, type Tone } from './artKit.ts';
 import { fernFrond } from './flora.ts';
@@ -407,7 +408,10 @@ function foxfireLog(ctx: CanvasRenderingContext2D, x: number, y: number, s: numb
 export function paintNearPlant(ctx: CanvasRenderingContext2D, world: number, look: Look, x: number, y: number, size: number, r: RNG): boolean {
   const kit = ENV[world];
   if (!kit || kit.near.length === 0) return false;
-  const def = PLANTS[pickWeighted(r, kit.near)];
+  const name = pickWeighted(r, kit.near);
+  // (World 9's obsidian and World 10's iron junk are painted, rubbleArt.ts: their old code shapes read as spikes)
+  if (name === 'obsidian' || name === 'ironthorn') return drawRubble(ctx, name, x, y, size * (name === 'obsidian' ? 1.6 : 1.8), r(), r() < 0.5);
+  const def = PLANTS[name];
   if (!def) return false;
   def.draw(ctx, x, y, size * def.near, look, r);
   return true;
@@ -592,6 +596,7 @@ export function paintDecorAt(ctx: CanvasRenderingContext2D, world: number, look:
     const size = kind === 'flower' ? 22 + r() * 8 : 28 + r() * 12;
     return drawGroundFlora(ctx, kind, num, px, py + 2, size, r() < 0.5);
   }
+  if (name === 'obsidian' || name === 'ironthorn') return drawRubble(ctx, name, px, py, 34 + r() * 18, r(), r() < 0.5);
   const def = PLANTS[name];
   if (!def) return false;
   def.draw(ctx, px, py, def.decor[0] + r() * (def.decor[1] - def.decor[0]), look, r);

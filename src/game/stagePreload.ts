@@ -27,6 +27,9 @@ import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
 import { W4_GRIT_URL, w4GritReady } from './w4Grit.ts';
 import { PETALS_URL, petalsReady } from './petalSprites.ts';
+import { RUBBLE_URL, rubbleReady } from './rubbleArt.ts';
+import { DEEP_WATER_URL, deepWaterReady } from './deepWaterArt.ts';
+import { BAD_WATER2_URL, badWater2Ready } from './badWaterArt.ts';
 import { W5_PROPS_URL, w5ArtReady } from './w5Art.ts';
 import { KIT_ART_URL, kitArtReady } from './puzzleArt.ts';
 import { NIGHT_ART_URL, nightArtReady } from './meecaNightArt.ts';
@@ -222,6 +225,17 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   // (and the bosses' painted attacks: small, and a boss can close any world)
   bossAtkReady();
   urls.push(BOSS_ATK_URL);
+  // (the painted deep water under World 2's river and the dirty water of Worlds 6-10)
+  if (cfg.worldIndex === 2 || cfg.worldIndex >= 6) {
+    deepWaterReady();
+    urls.push(DEEP_WATER_URL);
+    if (cfg.worldIndex >= 6) {
+      badWater2Ready();
+      urls.push(BAD_WATER2_URL);
+    }
+  }
+  rubbleReady();
+  urls.push(RUBBLE_URL);
   // (the painted petals: Worlds 2 and 5's weather and petals, and the petals blown about in Dot's flight too)
   petalsReady();
   urls.push(PETALS_URL);
