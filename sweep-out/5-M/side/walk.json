@@ -1,0 +1,29 @@
+{
+ "id": "5-M",
+ "orient": "side",
+ "seed": 1,
+ "how": "route (check)",
+ "dist": "/tmp/walkdist",
+ "size": [
+  844,
+  390
+ ],
+ "dpr": 2,
+ "difficulty": null,
+ "frames": [
+  {
+   "i": 0,
+   "why": "start",
+   "x": 250,
+   "y": 580
+  },
+  {
+   "i": 1,
+   "why": "end",
+   "x": 85,
+   "y": 580
+  }
+ ],
+ "errors": [],
+ "secs": 26
+}
