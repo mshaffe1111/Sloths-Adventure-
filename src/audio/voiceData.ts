@@ -34,6 +34,7 @@ export const SPEAKER_VOICE: Readonly<Record<string, string>> = {
   Grandma: 'grandma',
   Grandfather: 'grandfather',
   Gruntlewick: 'crier',
+  Soldier: 'soldier',
   Flicker: 'flicker',
   Squirrel: 'squirrel',
   Thornbark: 'thornbark',

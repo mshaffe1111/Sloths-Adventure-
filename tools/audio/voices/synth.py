@@ -235,7 +235,7 @@ V = {
 # the story's speaker names to the voices (the Narrator has none: the narration is read, not spoken)
 SPEAKERS = {
     'Pokey': 'pokey', 'Dot': 'dot', 'Meeca': 'meeca', 'General Iron-Claw': 'general', 'Lieutenant Pell': 'pell', 'Grandma': 'grandma',
-    'Grandfather': 'grandfather', 'Gruntlewick': 'crier', 'Flicker': 'flicker', 'Squirrel': 'squirrel', 'Thornbark': 'thornbark', 'Venom Fang': 'venom',
+    'Grandfather': 'grandfather', 'Gruntlewick': 'crier', 'Soldier': 'soldier', 'Flicker': 'flicker', 'Squirrel': 'squirrel', 'Thornbark': 'thornbark', 'Venom Fang': 'venom',
     'Crocus Rex': 'croc', 'Shadow Prowler': 'prowler', 'Sky Sovereign': 'sky', 'Tarantula Queen': 'queen', 'Marsh Reaver': 'reaver',
     'Stone Idol Golem': 'golem', 'Night-Wing Monarch': 'monarch', 'Magma Drake': 'drake',
 }

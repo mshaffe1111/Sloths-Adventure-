@@ -323,7 +323,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const sc = canvas.width / sw;
     const top = Math.max(0, canvas.height / sc - sh);
     // (a close shot the direction frames chest-up is not raised to keep feet above the words box: storyDirect.ts noLift)
-    const chestUp = wide && !!dir.noLift && !hold;
+    const chestUp = wide && !!dir.noLift;
     const lift = wide && !chestUp ? 0.09 : 0;
     const t0 = performance.now();
     let raf = 0;
@@ -398,7 +398,8 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   const card = splitChapter(panel.chapter);
 
   const box = (
-    <div ref={boxRef} className={`sp-box ${wide ? 'sp-box-over' : ''}`} onClick={next}>
+    // (through the beat before the words the box is not there yet: an empty box on screen read as a fault; it rises with the first letter)
+    <div ref={boxRef} className={`sp-box ${wide ? 'sp-box-over' : ''} ${shown === 0 && !done ? 'sp-box-wait' : ''}`} onClick={next}>
       {!narrator && (
         <span className="sp-name" style={{ ['--dot' as string]: who.dot }}>
           <SpeakerMark name={panel.speaker} size={22} talking={!done} />

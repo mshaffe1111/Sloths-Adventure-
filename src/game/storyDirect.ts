@@ -101,6 +101,12 @@ function speakerHeight(scene: StoryScene, speaker: string): number {
   return h;
 }
 
+/** the tallest figure standing in a picture (share of its height) */
+function tallestHeight(scene: StoryScene): number {
+  const names = ['Pokey', 'Meeca', 'Grandfather', 'General Iron-Claw', 'Lieutenant Pell', 'Grandma', 'Soldier', 'Thornbark', ...Object.keys(GUARDIAN_WORLD)];
+  return Math.max(0, ...names.map((n) => speakerHeight(scene, n)));
+}
+
 /** the scene player's sideways framing, roughly: where the feet may come down to (the words box), and the least the picture is raised */
 const FEET_MAX = 0.66;
 const WIDE_LIFT = 0.09;
@@ -292,12 +298,13 @@ export function directScene(panels: StoryPanel[]): Direction[] {
     // a close shot whose lift (feet above the words box) would push the speaker's head off the top: framed chest-up instead
     let noLift: boolean | undefined;
     const end = camera?.to ?? { zoom: z0 * 1.04, fx: f0.fx, fy: f0.fy };
-    const hgt = speakerHeight(scene, p.speaker);
+    // (narration frames the picture, so the tallest figure in it counts; a line spoken by someone in it, theirs)
+    const hgt = p.speaker === 'Narrator' ? tallestHeight(scene) : speakerHeight(scene, p.speaker);
     if (hgt > 0 && end.zoom >= 1.2) {
       const g = scene.ground ?? (scene.plate ? PLATES[scene.plate]?.ground : undefined) ?? 0.8;
       const view = (y: number) => (y - end.fy) * end.zoom + 0.5;
       const lift = Math.max(WIDE_LIFT, view(g) - FEET_MAX);
-      if (view(g - hgt) - lift < 0.04) (noLift = true), why.push('framed chest-up: lifting the feet clear would cut off the head');
+      if (view(g - hgt) - lift < 0.04) (noLift = true), why.push('framed chest-up: lifting the feet clear would cut off a head');
     }
 
     // the voice
