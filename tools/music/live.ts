@@ -38,8 +38,8 @@ export async function renderPreview(spec: PreviewSpec): Promise<Float32Array> {
   pb.setIntensity(m.intensity ?? 0.55, true);
   const events = [...(spec.events ?? [])].sort((a, b) => a.t - b.t);
   let ei = 0;
-  for (let t = 0; t < spec.seconds; t += 0.1) {
-    void ctx.suspend(Math.round(t * 10) / 10).then(() => {
+  for (let i = 0; i < Math.round(spec.seconds * 10); i++) {
+    void ctx.suspend(i / 10).then(() => {
       while (ei < events.length && events[ei].t <= ctx.currentTime + 1e-6) {
         const e = events[ei++];
         if (e.intensity !== undefined) pb.setIntensity(e.intensity);

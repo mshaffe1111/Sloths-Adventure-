@@ -25,14 +25,21 @@ export async function renderPlayer(spec: PlayerSpec): Promise<Float32Array> {
   core.music.gain.value = 1;
   const player = new LoopPlayer(ctx, core.music, spec.manifest, (f) => spec.base + f);
   player.setIntensity(spec.intensity ?? 0.55, true);
-  await player.load(spec.id);
+  if (!(await player.load(spec.id))) throw new Error('could not load ' + spec.id);
   // (started at 0.05 s less the player's own 0.05 s lead, as the live render starts its piece at 0.05 s)
   void player.play(spec.id, 0);
-  const events = [...(spec.events ?? [])].sort((a, b) => a.t - b.t);
-  for (const e of events) {
-    void ctx.suspend(Math.round(e.t * 10) / 10).then(() => {
-      if (e.intensity !== undefined) player.setIntensity(e.intensity);
-      if (e.state) player.setState(e.state);
+  // (one suspend per moment: the context allows no more)
+  const at = new Map<number, TimedChange[]>();
+  for (const e of spec.events ?? []) {
+    const t = Math.max(0.1, Math.round(e.t * 10) / 10);
+    at.set(t, [...(at.get(t) ?? []), e]);
+  }
+  for (const [t, list] of at) {
+    void ctx.suspend(t).then(() => {
+      for (const e of list) {
+        if (e.intensity !== undefined) player.setIntensity(e.intensity);
+        if (e.state) player.setState(e.state);
+      }
       void ctx.resume();
     });
   }

@@ -8,7 +8,7 @@ import { sound } from '../../src/game/audio.ts';
 function start(world: number, levelId: string, mini: number, objective: string) {
   sound.unlock();
   sound.screen('playing', world, objective === 'boss_lair', levelId, mini, 0, objective);
-  sound.setAmbient('river_flow' as never);
+  if (!location.search.includes('noamb')) sound.setAmbient('river_flow' as never);
   let i = 0;
   // the engine's sound tick: every 0.25 s
   setInterval(() => {

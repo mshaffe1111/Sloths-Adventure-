@@ -74,8 +74,34 @@ export interface LoopManifest {
 /** where the stems are fetched from (the game: the bundled files; the tools: anything) */
 export type StemSource = (file: string) => string | undefined;
 
-/** the rate the stems are decoded at: 32 kHz holds everything up to 16 kHz at two thirds of a 48 kHz context's memory */
-export const DECODE_RATE = 32000;
+/** how long the seam's blend lasts (seconds) */
+export const SEAM_BLEND = 0.02;
+
+/**
+ * The seam, smoothed: a lossy file's loop end and loop start are coded apart, so the step from its last sample back to its first carries
+ * the two codings' small differences, a tick under a quiet drone. The guard before the loop holds the same music as the loop's end, coded
+ * as the run-up to the loop's start, so the loop's last moments are blended into it: the last sample played is then the one the coder put
+ * right before the first.
+ */
+export function smoothSeam(d: Float32Array, rate: number, guard: number, length: number, blend = SEAM_BLEND) {
+  const g = Math.round(guard * rate);
+  const n = Math.round(length * rate);
+  const m = Math.min(Math.round(blend * rate), g);
+  if (g + n > d.length || m < 2) return;
+  for (let k = 0; k < m; k++) {
+    const w = (k + 1) / m;
+    const i = g + n - m + k;
+    d[i] = d[i] * (1 - w) + d[g - m + k] * w;
+  }
+}
+
+/**
+ * The rate each stem is decoded at. A decoded stem is raw 32-bit sound, so the rate is its memory: a minute of stereo is 11.5 MB at
+ * 24 kHz and 23 MB at 48. The old live orchestra already played its pitched instruments from 24 kHz recordings with their tops filtered
+ * under 13 kHz (orchLoader.ts decodeRate), so the stems of them lose nothing at 24 kHz; the drums, the cymbals and the bells (the beat,
+ * the shine, the one-stem pieces) keep 32 kHz, which holds everything up to 16 kHz.
+ */
+export const DECODE_RATE: Record<StemName, number> = { mix: 32000, bed: 24000, beat: 32000, top: 24000, drive: 24000, shine: 32000, dark: 24000, boss: 32000 };
 
 interface Loaded {
   id: string;
@@ -97,9 +123,13 @@ interface Voice {
 
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 
-/** how the whole piece swells with the intensity and the state (as the live piece did: Playback.beginBar) */
-function pieceGain(p: LoopPiece, k: number, s: MusicState) {
-  const swell = 1 + 0.4 * s.exit + 0.25 * s.danger;
+/**
+ * How the whole piece swells with the intensity and the state (as the live piece did: Playback.beginBar). A puzzle room and the dark also
+ * lowered the intensity the live parts' gates read (adaptive.ts intensityLift), thinning the piece about 2 dB and 1 dB more than their
+ * stems' own levels do: measured against the live render (tools/music/ab.mjs), and taken off the whole here.
+ */
+export function pieceGain(p: LoopPiece, k: number, s: MusicState) {
+  const swell = (1 + 0.4 * s.exit + 0.25 * s.danger) * (1 - 0.2 * s.puzzle - 0.1 * s.dark);
   return ((0.74 + 0.26 * k) / (0.74 + 0.26 * p.intensity)) * swell;
 }
 
@@ -114,7 +144,7 @@ export class LoopPlayer {
   /** decoded pieces: the one playing and at most one ahead (the phones' memory) */
   private readonly decoded = new Map<string, Promise<Loaded | null>>();
   private ahead: string | null = null;
-  private decoder: BaseAudioContext | null | undefined;
+  private readonly decoders = new Map<number, BaseAudioContext | null>();
   /** the piece asked for last (a slow load must not start a piece that was asked away in the meantime) */
   private want: string | null = null;
 
@@ -138,19 +168,22 @@ export class LoopPlayer {
     return this.voice?.piece ?? null;
   }
 
-  private decodeCtx(): BaseAudioContext | null {
-    if (this.decoder === undefined) {
+  /** an offline context at `rate`, only for decoding (a buffer plays in any context: its source resamples it as it plays) */
+  private decodeCtx(rate: number): BaseAudioContext | null {
+    if (!this.decoders.has(rate)) {
+      let d: BaseAudioContext | null = null;
       try {
-        this.decoder = this.ctx.sampleRate > DECODE_RATE && typeof OfflineAudioContext !== 'undefined' ? new OfflineAudioContext(1, 1, DECODE_RATE) : null;
+        if (this.ctx.sampleRate > rate && typeof OfflineAudioContext !== 'undefined') d = new OfflineAudioContext(1, 1, rate);
       } catch {
-        this.decoder = null;
+        d = null;
       }
+      this.decoders.set(rate, d);
     }
-    return this.decoder;
+    return this.decoders.get(rate)!;
   }
 
-  private async decode(bytes: ArrayBuffer): Promise<AudioBuffer> {
-    const low = this.decodeCtx();
+  private async decode(bytes: ArrayBuffer, rate: number): Promise<AudioBuffer> {
+    const low = this.decodeCtx(rate);
     if (low) {
       try {
         return await low.decodeAudioData(bytes.slice(0));
@@ -175,7 +208,9 @@ export class LoopPlayer {
           if (!url) throw new Error('missing stem ' + file);
           const res = await fetch(url);
           if (!res.ok) throw new Error(`${file}: ${res.status}`);
-          bufs[stem] = await this.decode(await res.arrayBuffer());
+          const buf = await this.decode(await res.arrayBuffer(), DECODE_RATE[stem]);
+          for (let c = 0; c < buf.numberOfChannels; c++) smoothSeam(buf.getChannelData(c), buf.sampleRate, piece.guard, piece.length);
+          bufs[stem] = buf;
         }),
       );
       return { id, piece, bufs };

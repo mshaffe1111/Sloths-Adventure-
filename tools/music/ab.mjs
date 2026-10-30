@@ -53,7 +53,7 @@ const decode = (b64) => {
 const REPO = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
 // (no hot reload and no file watching: an edit made while it runs must not reload the page mid-render)
 const { createServer } = await import(path.resolve(REPO, 'node_modules/vite/dist/node/index.js'));
-const vite = await createServer({ root: REPO, configFile: path.join(REPO, 'vite.config.ts'), logLevel: 'error', server: { port: 0, hmr: false, watch: null } });
+const vite = await createServer({ root: REPO, configFile: path.join(REPO, 'vite.config.ts'), logLevel: 'error', server: { port: 0, hmr: false, watch: null, fs: { strict: false } } });
 await vite.listen();
 const port = vite.httpServer.address().port;
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });

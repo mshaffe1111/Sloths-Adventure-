@@ -9,13 +9,15 @@ const { chromium } = createRequire(import.meta.url)('playwright');
 
 const REPO = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
 const [listPath, outDir = 'src/assets/music'] = process.argv.slice(2);
-const list = JSON.parse(fs.readFileSync(listPath, 'utf8'));
+// (pieces.ts writes { pieces, stages }; a bare { name: entry } list works too)
+const listFile = JSON.parse(fs.readFileSync(listPath, 'utf8'));
+const list = listFile.pieces ?? listFile;
 const only = process.env.ONLY ? new Set(process.env.ONLY.split(',')) : null;
 const RATE = 48000;
 /** guard either side of the loop in each file (seconds): longer than any decoder's start delay */
 const GUARD = 0.25;
 /** Opus bit rates: the stems that carry the piece get more than the layers */
-const KBPS = { mix: 96, bed: 80, beat: 80, top: 80, drive: 64, shine: 64, dark: 48, boss: 64 };
+const KBPS = { mix: 80, bed: 64, beat: 64, top: 64, drive: 48, shine: 48, dark: 40, boss: 48 };
 const ROLES = {
   mix: ['lead', 'counter', 'perc', 'low', 'bed', 'stab', 'color'], bed: ['bed', 'low'], beat: ['perc', 'stab'], top: ['lead', 'counter', 'color'],
   drive: ['drive'], shine: ['shine'], dark: ['dark'], boss: ['boss'],
@@ -23,6 +25,7 @@ const ROLES = {
 fs.mkdirSync(outDir, { recursive: true });
 const manPath = path.join(outDir, 'manifest.json');
 const manifest = fs.existsSync(manPath) ? JSON.parse(fs.readFileSync(manPath, 'utf8')) : { pieces: {}, stages: {} };
+if (listFile.stages) manifest.stages = listFile.stages;
 
 export function wav(f32, ch, rate) {
   const n = f32.length;

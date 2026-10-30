@@ -18,7 +18,7 @@ const page = await ctx.newPage();
 const cdp = await ctx.newCDPSession(page);
 const bcdp = await browser.newBrowserCDPSession();
 await cdp.send('Performance.enable');
-await page.goto(`http://localhost:${port}/tools/music/bench.html`);
+await page.goto(`http://localhost:${port}/tools/music/bench.html${process.env.NOAMB ? '?noamb' : ''}`);
 await page.waitForFunction(() => document.getElementById('s')?.textContent === 'ready', null, { timeout: 120000 });
 const [w, m] = stage.split('-').map(Number);
 const objective = process.env.OBJ ?? 'collect';

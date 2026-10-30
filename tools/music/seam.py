@@ -28,7 +28,12 @@ for name, p in man['pieces'].items():
     g, n = round(p['guard'] * SR), round(p['length'] * SR)
     mix = np.zeros((n, 2), np.float32)
     for stem, f in p['stems'].items():
-        x = load(music / f)[g:g + n]
+        x = load(music / f)
+        # the player's blend into the guard (loops.ts smoothSeam)
+        m = round(0.02 * SR)
+        w = (np.arange(m) + 1)[:, None] / m
+        x[g + n - m:g + n] = x[g + n - m:g + n] * (1 - w) + x[g - m:g] * w
+        x = x[g:g + n]
         if len(x) < n:
             print(f'{name}.{stem}: file too short ({len(x)} < {n})'); bad += 1; continue
         steps = np.abs(np.diff(x, axis=0))
