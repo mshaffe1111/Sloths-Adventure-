@@ -1,5 +1,5 @@
 diff --git a/src/game/protoArt.ts b/src/game/protoArt.ts
-index 3ffb5296..8dbce7c1 100644
+index 3ffb5296..5e789d4e 100644
 --- a/src/game/protoArt.ts
 +++ b/src/game/protoArt.ts
 @@ -8,6 +8,7 @@
@@ -40,7 +40,7 @@ index 3ffb5296..8dbce7c1 100644
 +/** how far either side of a spot the ground line takes in (world units): the darkening's line eases from one bank's top to the next over this */
 +const LINE_REACH = 240;
 +/**
-+ * The line the soil's darkening is laid out from along the ground (drawGround sets it while it paints): at each x, the tops of the banks
++ * The line the soil's darkening is laid out from along the ground (paintTile sets it while it paints a square): at each x, the tops of the banks
 + * within LINE_REACH, each weighed by how much of that reach it covers, so the line eases across a pit or a step instead of jumping at a
 + * bank's edge (a pit's floor darkened from its own, lower top was a lighter column between the banks: the W3 bands, 2026-10-30).
 + */
@@ -66,19 +66,15 @@ index 3ffb5296..8dbce7c1 100644
  
  /**
   * The ground: the pits' shade and every bank of earth (its soil cut to its outline, its lip and its ends) that `view` takes in.
-@@ -933,6 +962,7 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
-     if (o) o.pieces.push(p);
-     else pits.set(k, { x0, x1, top: Math.max(L.y, R.y), pieces: [p] });
-   }
+@@ -1085,7 +1114,11 @@ function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: num
+   g.imageSmoothingEnabled = true;
+   g.imageSmoothingQuality = 'high';
+   g.setTransform(scale, 0, 0, scale, -(x - CHUNK_PAD) * scale, -(y - CHUNK_PAD) * scale);
++  // (the soil's darkening follows the ground line only here, painted once into the square: drawn live, a frame whose squares are not
++  // all painted yet keeps one gradient a bank, PERFORMANCE-RULES §8's per-frame limit)
 +  groundDepth = groundLine(banks);
-   const shaded = new Set<string>();
-   const shadeUpTo = (y: number) => {
-     for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); pitShade(ctx, o); }
-@@ -970,6 +1000,7 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
-     drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view, wall || undefined);
-   }
-   shadeUpTo(-Infinity);
+   drawGround(g, platforms, banks, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300, y0: y - CHUNK_PAD, y1: y + CHUNK + CHUNK_PAD + 4 });
 +  groundDepth = null;
+   return cv;
  }
  
- // ───────────────────────────── the ground, painted once ─────────────────────────────

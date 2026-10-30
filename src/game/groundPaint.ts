@@ -123,7 +123,7 @@ const BLOB_PERIOD = 3000;
  */
 export type DepthAt = (x: number) => [number, number];
 /** the strips the darkening is drawn in when it follows the ground (world units; drawn once, into the ground's squares) */
-const DEPTH_STRIP = 8;
+const DEPTH_STRIP = 16;
 
 /**
  * Paint the world's soil over the box x0..x1 by top..bottom (already clipped by the caller to the bank's shape), with the darkening
@@ -166,10 +166,14 @@ export function shadeSoil(ctx: C, w: number, x0: number, x1: number, top: number
     depthBand(ctx, g.deep, x0, x1, top, bottom, viewBottom, viewTop ?? viewBottom - 900);
     return true;
   }
+  // (strips where the line runs level are one band: over a flat bank that is one gradient, as before)
+  let run = -1, rt = 0, rb = 0;
   for (let x = Math.floor(x0 / DEPTH_STRIP) * DEPTH_STRIP; x < x1; x += DEPTH_STRIP) {
-    const [vt, vb] = depthAt(x + DEPTH_STRIP / 2);
-    depthBand(ctx, g.deep, Math.max(x0, x), Math.min(x1, x + DEPTH_STRIP), top, bottom, vb, vt);
+    const [vt, vb] = depthAt(x + DEPTH_STRIP / 2).map(Math.round);
+    if (run >= 0 && (vt !== rt || vb !== rb)) depthBand(ctx, g.deep, Math.max(x0, run), x, top, bottom, rb, rt);
+    if (run < 0 || vt !== rt || vb !== rb) { run = x; rt = vt; rb = vb; }
   }
+  if (run >= 0) depthBand(ctx, g.deep, Math.max(x0, run), x1, top, bottom, rb, rt);
   return true;
 }
 
