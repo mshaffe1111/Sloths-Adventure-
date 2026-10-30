@@ -66,7 +66,7 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
   return (
     <div className="ui-scrim fr-scrim" role="dialog" aria-modal="true" aria-label={find.title} onClick={onClose}>
       <GhostOnExit />
-      <div className={`fr-card fr-${find.kind} ${find.kind === 'note' ? `fr-paper-${find.paper ?? 'leaf'}` : ''}`} onClick={(e) => e.stopPropagation()}>
+      <div className={`fr-card fr-${find.kind === "pocket" || find.kind === "notch" ? "keepsake" : find.kind} ${find.kind === 'note' ? `fr-paper-${find.paper ?? 'leaf'}` : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="fr-label">{label} · {find.world > 0 ? `World ${find.world}` : 'Quest bonus'}</div>
         <h2 className="fr-title">{find.title}</h2>
 
