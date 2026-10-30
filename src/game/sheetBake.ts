@@ -10,6 +10,8 @@
  * the creatures went missing on Matt's Pixel, 2026-10-30.)
  */
 
+import { canvasLost } from './canvasLost.ts';
+
 interface Baked {
   im: HTMLImageElement;
   cv: HTMLCanvasElement | null;
@@ -104,6 +106,11 @@ export function drawSheet(
     if (b.cv && n > b.r) b.short = true;
   }
   b.checks++;
+  // (a copy the phone took back draws nothing: the sheet itself until the next settle bakes it again)
+  if (b.cv && canvasLost(b.cv, 'sheet copy')) {
+    b.cv = null;
+    b.r = 1;
+  }
   if (b.cv && !b.short) {
     // (half a baked pixel in from the frame's edge, so a neighbour frame never bleeds in; the place it lands moves in by the same
     // amount, so the sprite keeps its exact size and place)

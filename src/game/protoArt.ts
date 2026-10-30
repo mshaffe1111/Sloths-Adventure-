@@ -18,6 +18,7 @@ import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
 import { DEPTH_DARK, drawEnd, drawLip, drawSoil, endFace, warmGround } from './groundPaint.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
+import { canvasLost } from './canvasLost.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -675,13 +676,13 @@ function drawWallChunks(
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
-      if (c.tiles.has(k)) continue;
+      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'bank square')) continue;
       if (budget-- <= 0) {
         missing = true;
         continue;
       }
+      if (!c.tiles.has(k)) c.order.push(k);
       c.tiles.set(k, paintWallTile(wall, cx, cy, scale));
-      c.order.push(k);
     }
   const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
   const keep = Math.max(8, Math.floor(CHUNK_BYTES / 2 / (side * side * 4)));
@@ -1032,13 +1033,14 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
-      if (c.tiles.has(k)) continue;
+      // (a square the phone took back is painted again)
+      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'ground square')) continue;
       if (budget-- <= 0) {
         missing = true;
         continue;
       }
+      if (!c.tiles.has(k)) c.order.push(k);
       c.tiles.set(k, paintTile(platforms, banks, cx, cy, scale));
-      c.order.push(k);
     }
   // (the oldest squares out of view go once too many are kept)
   const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);

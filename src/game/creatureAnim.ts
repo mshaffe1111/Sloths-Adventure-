@@ -7,6 +7,7 @@
  * at the ends) or a looping clock; while the sheet loads they draw their old frames, so nothing ever disappears.
  */
 import { trackAtlas } from './atlasLoader.ts';
+import { canvasLost } from './canvasLost.ts';
 
 export interface AnimFrame {
   x: number;
@@ -160,6 +161,8 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
         if (sizeFor(need) > bakedR) bake(sizeFor(need));
       }
       checks++;
+      // (a bake the phone took back draws nothing: drawn from the sheet until it is baked again)
+      if (baked && canvasLost(baked, 'creature clips')) drop();
       if (baked) {
         // (half a pixel in from the frame's edge when shrunk, so a neighbour frame never bleeds in)
         const r = bakedR;

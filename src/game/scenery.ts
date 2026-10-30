@@ -6,6 +6,7 @@
  * draw live, which is what gives the scenes their depth and richness.
  */
 import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
+import { canvasLost } from './canvasLost.ts';
 import { drawPaintedLeaf } from './leafSprites.ts';
 import { drawPetal } from './petalSprites.ts';
 import { renderLifeBack, renderLifeFront } from './life.ts';
@@ -1652,7 +1653,9 @@ function fittedBands(src: HTMLCanvasElement, bands: Array<[number, number]>, pit
   const key = `${bw}|${d.toFixed(3)}`;
   const list = bandFits.get(src) ?? [];
   const hit = list.find((f) => f.key === key);
-  if (hit) return hit;
+  // (a fit the phone took back is made again)
+  if (hit && !hit.pieces.some((p) => canvasLost(p.cv, 'front frame fit'))) return hit;
+  if (hit) list.splice(list.indexOf(hit), 1);
   const lh = src.height;
   const fullH = Math.ceil(d);
   // the painted rows, touching ones joined (a row two bands share is copied once, as the whole canvas held it once)
@@ -1967,6 +1970,8 @@ function drawFitted(ctx: CanvasRenderingContext2D, img: HTMLImageElement, part: 
   const dhF = H * fitS * STRIP_FIT[part].k;
   const key = fitKey(img, sky, pitchF, dhF, k);
   const list = fits.get(img);
+  // (a fit the phone took back draws nothing: let go, so the plan makes it again and the frame draws the old way meanwhile)
+  if (list && stripMode === 'plan') for (let i = list.length - 1; i >= 0; i--) if (canvasLost(list[i].cv, 'backdrop fit')) list.splice(i, 1);
   let f = list?.find((x) => x.key === key);
   if (stripMode === 'plan') {
     if (f) return;
