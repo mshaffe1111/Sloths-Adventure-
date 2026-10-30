@@ -27,7 +27,7 @@ READY = {'pk.scarf_hug': ('seq-scarf_hug.png', 0), 'pk.scarf_ready': ('seq-scarf
          'pk.scarf_go': ('seq-scarf_go.png', 1), 'pk.dot_fly': ('seq-dot_fly.png', 1),
          # (the Drake's tea, hf-art-bosses' cut-outs at d8112754, src/assets/story/drake/, all facing right: he at Pokey's height and a half,
          # the good china small, his own tin mug and pot bigger)
-         'dr.bowed': ('drk-bowed.png', 1), 'ts.pot': ('drk-pot.png', 1), 'ts.pottin': ('drk-pottin.png', 1), 'ts.mug': ('drk-mug.png', 1),
+         'dr.bowed': ('drk-bowed.png', 1), 'dr.sit': ('drk-sit.png', 1), 'dr.cup': ('drk-cup.png', 1), 'ts.pot': ('drk-pot.png', 1), 'ts.pottin': ('drk-pottin.png', 1), 'ts.mug': ('drk-mug.png', 1),
          'ts.cups': ('drk-cups.png', 0), 'ts.cup0': ('drk-cup0.png', 1), 'ts.cup1': ('drk-cup1.png', 1)}
 # start px per old-sheet px for each (an HD story frame, 2x old, drawn on the start at 2.5x and 2x: tools/art/storyart, round8 starts)
 NEW_SCALE = {'mc.hold_branch': 5.0, 'da.hands_rim': 3.98}
