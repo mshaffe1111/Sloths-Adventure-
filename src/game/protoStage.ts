@@ -238,9 +238,11 @@ export const CTEST_GAP3 = 'This one needs two jumps: jump, then jump again in th
 const CTEST_GAPS = 'Jump across the gaps';
 /** LV-3: Dot's line at the practice spot: on the screen, with the pad, with keys (approved 2026-10-29; dotLinesData.ts hint.1-6.double) */
 export const DBL_PRACTICE = [
-  'Double jump! Flick up, then flick up again midair.',
-  'Double jump! Press Jump, then Jump again midair.',
-  'Double jump! Press Space, then Space again midair.',
+  // (the words the engine sends: the row shows "Double jump! Flick up, then again midair."; "again in the air" is what marks a tip as the
+  // double jump's, so it closes when he does one: dotGuide.ts classifyLine)
+  'Double jump! Flick up, then again in the air.',
+  'Double jump! Press Jump, then again midair.',
+  'Double jump! Press Space, then again midair.',
 ] as const;
 /** LV-3's double-jump practice spot in 1-6 (dblPractice): the low rock up to it, the two ledges' height, the gap between them (px) */
 export const PRACTICE = { step: 50, ledge: 125, gap: 205 } as const;

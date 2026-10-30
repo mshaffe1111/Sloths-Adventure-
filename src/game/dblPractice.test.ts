@@ -76,12 +76,14 @@ test('LV-3: Dot names the move once, on the ground, as the spot comes into view,
   for (const t of DBL_PRACTICE) assert.ok(t.split(/\s+/).length < 10, t);
 });
 
-test('LV-3: the line is an approved row, a move tip for the double jump with no ring target', async () => {
-  const { swapLine } = await import('./dotLines.ts');
+test('LV-3: the line is an approved row, a move tip that closes on the double jump, with no ring target', async () => {
+  const { swapLine, engineGuideLine } = await import('./dotLines.ts');
   const { DBL_PRACTICE } = await import('./protoStage.ts');
   const sw = swapLine(DBL_PRACTICE[0], '1-6');
   assert.equal(sw?.line.id, 'hint.1-6.double');
-  assert.equal(sw?.text, DBL_PRACTICE[0]);
+  assert.equal(sw?.text, 'Double jump! Flick up, then again midair.');
   assert.equal(sw?.line.gesture, 'double-jump');
   assert.equal(sw?.line.target, null);
+  assert.equal(sw?.line.kind, 'move');
+  assert.equal(engineGuideLine(DBL_PRACTICE[0], '1-6', { dot: true })?.move, 'double', 'it closes when he double jumps');
 });
