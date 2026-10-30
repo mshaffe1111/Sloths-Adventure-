@@ -27,16 +27,27 @@ import { stageAnims, stageExtras, type StageDraws } from './sheetWarm.ts';
 /** the sheets every stage draws or may draw from its first frame, whatever it holds */
 export const ALWAYS: readonly string[] = ['hud', 'perch', 'hero-clips', 'pickups'];
 
+/** the backdrop strips a stage reveals at its top (paintedBackdrops.ts revealSet: 6-8's crown) */
+export interface RevealStrips {
+  far: string;
+  mid: string;
+  near: string;
+}
+
 /** the parts of a built stage (stageGenerator.ts GeneratedStage) that say what it draws */
 export interface BuiltStage extends StageDraws {
   config: { worldIndex: number; id: string; secret?: string };
   platforms: ReadonlyArray<{ type?: string; crumbleAfter?: number }>;
   boss?: unknown;
+  proto?: (NonNullable<StageDraws['proto']> & { reveal?: { strips: RevealStrips } }) | null;
   daisyX?: number;
   kit?: unknown;
   rivers?: readonly unknown[];
   waterY?: number;
 }
+
+/** the strips this stage reveals at its top, if any (got in by stageReady.ts with the stage's own backdrop) */
+export const revealOf = (st: BuiltStage): RevealStrips | null => st.proto?.reveal?.strips ?? null;
 
 export function builtStageKeys(st: BuiltStage): string[] {
   const out = new Set<string>(ALWAYS);

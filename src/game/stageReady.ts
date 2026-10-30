@@ -19,9 +19,9 @@ import { drawPaintedCardBoss } from './bossArt.ts';
 import { warmScenery } from './scenery.ts';
 import { creatureAnimsReady, settleCreatureBakes } from './creatureAnim.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
-import { backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
+import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
 import { perfNote } from './perfLog.ts';
-import { builtStageKeys, type BuiltStage } from './stageManifest.ts';
+import { builtStageKeys, revealOf, type BuiltStage, type RevealStrips } from './stageManifest.ts';
 import { preloadEnabled, start } from './stagePreload.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -55,11 +55,14 @@ export async function readyBuiltStage(
   if (typeof Image === 'undefined' || !preloadEnabled()) return;
   const t0 = performance.now();
   const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
-  const keys = builtStageKeys(engine.builtStage());
+  const stage = engine.builtStage();
+  const keys = builtStageKeys(stage);
   const urls = start(keys);
   const plains = plainUrls(keys);
   const plainDone = loadPlain(plains);
-  const back = backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg));
+  // (and the strips it reveals at its top, 6-8's crown: World 7's, decoded on their own, paintedBackdrops.ts)
+  const reveal = revealOf(stage);
+  const back = Promise.all([backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg)), reveal ? revealReady(reveal, deadline) : null]);
   const left = () => deadline - performance.now();
   // the first frame, drawn here under the card: whatever it asks for starts loading now (a boss and its lair, a sheet a module loads
   // the first time something draws it), and everything asked for so far is waited for
@@ -85,6 +88,7 @@ export async function readyBuiltStage(
   // each sheet drawn once, a few pixels at its own size: its real decode and upload happen now, not on its first frame of play (up to
   // the deadline: one left over is drawn by play's first use of it, as before)
   let drawn = warm(ctx, plains, deadline);
+  if (reveal) drawn += warmReveal(reveal, ctx);
   fitScenery(cfg.worldIndex, engine);
   // and one more frame: the creatures and pieces on screen draw from their sheets (a clip sheet bakes itself at the size it is drawn),
   // and whatever that frame asks for besides (a creature's clips once its poses are in) is got in and drawn once too
@@ -110,6 +114,28 @@ function fitScenery(world: number, engine: ReadyEngine) {
   // (upright, the strips are drawn at the height sideways uses for the same width of world: engine.ts WORLD_VIEW_H 540 over
   // PORTRAIT_VIEW_W 440)
   warmScenery(world, v.x, v.y, v.vw, v.vh, v.k, v.vh > v.vw ? (540 * v.vw) / 440 : v.vh);
+}
+
+/** the revealed strips decoded (revealSet starts them and is null until they are in), or `deadline` */
+async function revealReady(r: RevealStrips, deadline: number): Promise<void> {
+  while (!revealSet(r) && performance.now() < deadline) await sleep(50);
+}
+/** each revealed strip drawn once, a few pixels 1:1, as the rest; how many */
+function warmReveal(r: RevealStrips, ctx: CanvasRenderingContext2D): number {
+  const set = revealSet(r);
+  if (!set) return 0;
+  let n = 0;
+  for (const im of [set.far, set.mid, set.near, set.sky]) {
+    if (!im) continue;
+    try {
+      ctx.drawImage(im, 0, 0, 4, 4, 0, 0, 4, 4);
+      ctx.clearRect(0, 0, 4, 4);
+      n++;
+    } catch {
+      /* play draws it as before */
+    }
+  }
+  return n;
 }
 
 let scratch: CanvasRenderingContext2D | null = null;
