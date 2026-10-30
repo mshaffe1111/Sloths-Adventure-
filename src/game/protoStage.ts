@@ -243,7 +243,7 @@ export const DBL_PRACTICE = [
   'Double jump! Press Space, then Space again midair.',
 ] as const;
 /** LV-3's double-jump practice spot in 1-6 (dblPractice): the low rock up to it, the two ledges' height, the gap between them (px) */
-export const PRACTICE = { step: 52, ledge: 125, gap: 205 } as const;
+export const PRACTICE = { step: 50, ledge: 125, gap: 205 } as const;
 /** before the second jump is taught (1-1's stepping stones): how far below a stone's lower side a gap's floor sits, an easy single hop */
 export const PLAIN_CLIMB = 75;
 /** 1-1's practice shelf for the second jump: this far past the start of the twist (the tip is said at 60), and this high above the path */
@@ -1237,19 +1237,23 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   }
   /**
    * LV-3 (Matt, 2026-10-29: the double jump stays on from the start on Easy, and 1-6 teaches it just before the first gap that needs
-   * it): a practice spot over solid floor, no fall and no clock. A low rock (52 px), then a ledge, then a second ledge across a gap at the same
+   * it): a practice spot over solid floor, no fall and no clock. A low rock (50 px), then a ledge, then a second ledge across a gap at the same
    * height that one jump falls short of (Normal's 175 px) and the second jump clears even with Easy's short hold (285 px); petals on the
    * far ledge. Both ledges stand above one jump's rise (108 px), so the floor runs on under them and a plain walk passes beneath.
    */
   function dblPractice() {
     const x0 = x;
-    // (Dot names the move once, as the spot comes into view, on the ground: DBL_PRACTICE, approved by the lead for Matt, 2026-10-29)
-    hint(x0 + 20, DBL_PRACTICE[0], DBL_PRACTICE[1], DBL_PRACTICE[2], G - 4);
     run(R.r(150, 190));
-    // (World 1's own rock, sunk into the bank: a bare block drew as a grey box)
-    logHop(PRACTICE.step);
+    // (a painted rock on the floor: a 50 px mossy stone draws as the boulder (protoArt.ts drawRockArt); a bare block drew as a grey box,
+    // and a rock sunk into the bank as a soil step with a hard cut face)
+    const rock = block(x, x + 110, PRACTICE.step);
+    flower(rock.x + rock.width / 2, rock.y - 34, 'orchid');
+    x = rock.x + rock.width;
     const ay = G - PRACTICE.ledge;
     const a = branch(x + 30, x + 190, ay);
+    // (Dot names the move once, on the ground, where the near ledge is on screen upright too (the upright view is about 420 px of the
+    // world wide): DBL_PRACTICE, approved by the lead for Matt, 2026-10-29)
+    hint(a.x - 170, DBL_PRACTICE[0], DBL_PRACTICE[1], DBL_PRACTICE[2], G - 4);
     flower(a.x + a.width / 2, ay - 34, 'orchid');
     const b = branch(a.x + a.width + PRACTICE.gap, a.x + a.width + PRACTICE.gap + 170, ay);
     row(b.x + 45, b.x + b.width - 45, ay - 34, 2, 'hibiscus');
