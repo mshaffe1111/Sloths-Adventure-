@@ -213,3 +213,11 @@ hfb-bossatk   6ae3e0cb0e0338d1bb7c5ae2 rtx-pro-6000 00:11:55Z-00:16:58Z (5.05 mi
   tools/art/hazard/bosscut.py). Not used: the ground-spike waves (no attack uses them), s82-7's club with a lava drip, s82-23's spear
   (a crossguard grew halfway along), the s70 columns (flatter paint), the croc tail in s70 takes (a plain green sausage).
 running total for hazard-anim ~8.9 min on rtx-pro-6000 = ~$0.40 of the $5 cap.
+hfb-clean     6ae403880e0338d1bb7c750b rtx-pro-6000 02:40:08Z-02:44:53Z (4.75 min, ~$0.22): the clean-sweep batch (CLEAN-SWEEP S1, S2, S4),
+  20 takes from tools/art/hazard/cleanstarts.py, five starts x two strengths x seeds 7/23. KEPT (tools/art/hazard/clean-picks.json,
+  cut by cleancut.py): deep2-s60-7 (World 2's deep river; its stones row cropped, its light shafts flattened and the take made seamless side
+  to side, or mirrored copies lined the shafts into stripes), deep6-s60-7 (the murky deep), chop-s42-7 and chop-s42-23 (the dirty water's
+  chop, the first strip's outline kept), debris-s62-7 (leaf mats, a leaf, rotten log ends, foam scum: 10 pieces), rubble-s75-7 (8 obsidian
+  lumps), rubble-s62-7 (5 rusty iron bits lying flat). Not used: debris stones (they would sink) and its smeared bottom row, rubble-s75's
+  iron (pink tufts), the iron standing up (reads as spikes), the s30 chops (too close to the first), the s45 deep takes (flatter).
+running total for hazard-anim ~13.65 min on rtx-pro-6000 = ~$0.63.
