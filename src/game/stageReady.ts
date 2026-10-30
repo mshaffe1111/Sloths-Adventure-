@@ -16,6 +16,7 @@
  */
 import { pendingSheets, unwarmedSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { drawPaintedCardBoss } from './bossArt.ts';
+import * as scenery from './scenery.ts';
 import { creatureAnimsReady, settleCreatureBakes } from './creatureAnim.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
@@ -83,6 +84,7 @@ export async function readyBuiltStage(
   // each sheet drawn once, a few pixels at its own size: its real decode and upload happen now, not on its first frame of play (up to
   // the deadline: one left over is drawn by play's first use of it, as before)
   let drawn = warm(ctx, plains, deadline);
+  fitScenery(cfg.worldIndex, engine);
   // and one more frame: the creatures and pieces on screen draw from their sheets (a clip sheet bakes itself at the size it is drawn),
   // and whatever that frame asks for besides (a creature's clips once its poses are in) is got in and drawn once too
   frame();
@@ -93,6 +95,25 @@ export async function readyBuiltStage(
   }
   const late = pendingSheets();
   perfNote(`ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`);
+}
+
+/**
+ * The painted backdrop strips resampled once at the size this screen draws them (scenery.ts warmScenery, PERF-A's hook, on its own
+ * branch until both are merged: asked for by name, so this builds either way). After the scene seed is rolled (the engine's
+ * constructor) and the backdrop has decoded (the wait above); without it the first frames of play make one fit each.
+ */
+function fitScenery(world: number, engine: ReadyEngine) {
+  const warmScenery = (scenery as unknown as { warmScenery?: (w: number, x: number, y: number, vw: number, vh: number, k: number, stripVh?: number) => boolean }).warmScenery;
+  // (the engine's own camera and picture scale, read as render() reads them; upright, the strips are drawn at the height sideways uses
+  // for the same width of world: engine.ts WORLD_VIEW_H 540 over PORTRAIT_VIEW_W 440)
+  const e = engine as unknown as { camera?: { x: number; y: number; viewportWidth: number; viewportHeight: number }; zoom?: number; renderDpr?: () => number };
+  if (!warmScenery || !e.camera || typeof e.renderDpr !== 'function') return;
+  const { x, y, viewportWidth: vw, viewportHeight: vh } = e.camera;
+  try {
+    warmScenery(world, x, y, vw, vh, e.renderDpr() * (e.zoom ?? 1), vh > vw ? (540 * vw) / 440 : vh);
+  } catch {
+    /* the first frames of play fit them, as before */
+  }
 }
 
 let scratch: CanvasRenderingContext2D | null = null;
