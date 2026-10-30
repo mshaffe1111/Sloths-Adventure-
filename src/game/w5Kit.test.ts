@@ -278,7 +278,7 @@ test("silk lines are lianas (the vine system swings them), drawn as silk; Meeca'
   for (const l of a) assert.ok(Math.abs(l.dy) <= 3 && Math.abs(l.rot) <= 0.12 && l.k > 0.9 && l.k < 1.1);
 });
 
-test('every World 5 line has its new-look words: a tip of 8 words or fewer that names the thumb move, and the old look keeps the old', () => {
+test('every World 5 line has its new-look words: a move tip of 8 words or fewer that names the thumb move, and the old look keeps the old', () => {
   const words = (s: string) => s.split(/\s+/).filter((t) => /[A-Za-z0-9]/.test(t)).length;
   const THUMB = /\b(slide|flick|tap|thumb)\b/i;
   for (const [k, old] of Object.entries(W5_TEACH)) {
@@ -293,6 +293,8 @@ test('every World 5 line has its new-look words: a tip of 8 words or fewer that 
   }
   for (const [k, h] of Object.entries(W5_HINTS)) {
     const sw = swapLine(h.old, h.stage);
+    // (a hint the line sweep cut, said in the old look only: 5-4's "flick up at the front" said when to let go)
+    if (h.text === null) continue;
     assert.ok(sw && sw.text, `${k}: no new-look line`);
     assert.ok(words(sw.text) <= 12, `${k}: ${sw.text}`);
   }

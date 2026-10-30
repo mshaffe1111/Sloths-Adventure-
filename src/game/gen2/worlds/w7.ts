@@ -137,13 +137,13 @@ export const W7_DECOR: WorldManifest['decor'] = [
  * ships (STAGE-RULES §1 "Story"); used meanwhile.
  */
 export const W7_TIPS: Record<string, string> = {
-  [W7_LESSON.crumble]: "Cracked tiles. Don't stand still.", // (new, needs Matt's approval: his own example)
+  [W7_LESSON.crumble]: "Cracked tiles. They won't hold long.", // (new, needs Matt's approval: his own example)
   [W7_LESSON.relics]: "The shrine's sealed. I'll find the relics first.", // (new, needs Matt's approval)
   [W7_LESSON.hunt]: "Shrine's shut. The guards have to go first.", // (new, needs Matt's approval)
   [W7_LESSON.fight]: "Shut tight. I'll have to fight through.", // (new, needs Matt's approval)
   [W7_LESSON.brown]: 'Brown vines. Still strong enough to climb.', // (new, needs Matt's approval)
-  [W7_LESSON.water]: "Dirty water down there. Hop it, don't touch.", // (new, needs Matt's approval)
-  [W7_LESSON.sentry]: 'A stone sentry. Hit it before it jabs.', // (new, needs Matt's approval)
+  [W7_LESSON.water]: 'Dirty water down there.', // (new, needs Matt's approval)
+  [W7_LESSON.sentry]: 'A stone sentry. It jabs.', // (new, needs Matt's approval)
 };
 export const W7_NEW_LINES: readonly string[] = Object.values(W7_TIPS);
 /** Pokey's lesson lines, by the thing each teaches (StageHint.firstOf: said once per save) */
