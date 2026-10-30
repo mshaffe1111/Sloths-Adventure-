@@ -82,6 +82,7 @@ const VIEWS = [
           },
         });
         const camX = 1800, camY = e.camera.y, time = 12.3;
+        const warmed = sc.warmScenery ? sc.warmScenery(world, camX, camY, vw, vh, K, stripVh) : null;
         hl.setHeroScreen(vw * 0.35, vh * 0.62);
         real.setTransform(K, 0, 0, K, 0, 0);
         real.imageSmoothingEnabled = true; real.imageSmoothingQuality = 'high'; smoothQ = 'high';
@@ -102,7 +103,7 @@ const VIEWS = [
           c2.getImageData(0, 0, 1, 1);
         }
         const ms = (performance.now() - t0) / N;
-        return { id, world, vw, vh, counts: { ...counts, drawScreens: +(counts.drawPx / screen).toFixed(2), fillScreens: +(counts.fillPx / screen).toFixed(2), fillPx: undefined, drawPx: undefined }, ms: +ms.toFixed(2), png };
+        return { id, world, vw, vh, warmed, counts: { ...counts, drawScreens: +(counts.drawPx / screen).toFixed(2), fillScreens: +(counts.fillPx / screen).toFixed(2), fillPx: undefined, drawPx: undefined }, ms: +ms.toFixed(2), png };
       }, { id });
       const file = path.join(out, `${v.name}-w${r.world}-${id}.png`);
       fs.writeFileSync(file, Buffer.from(r.png.split(',')[1], 'base64'));
