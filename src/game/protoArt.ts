@@ -11,7 +11,7 @@ import { drawW7Face } from './w7FaceArt.ts';
 import { shakeOffset } from './spanArt.ts';
 import { drawFallsPillar } from './w4FallsArt.ts';
 import type { Collectible, Platform } from './types.ts';
-import { trackAtlas } from './atlasLoader.ts';
+import { sheetEpoch, trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
@@ -571,7 +571,9 @@ export function drawBankArt(
     x0 = Math.max(x0, view.x0 - 20);
     x1 = Math.min(x1, view.x1 + 20);
   }
-  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, viewBottom, view?.y0);
+  // (its darkening with depth is the bank's own: from about where the middle of the view is when he stands on it to full dark where the
+  // bottom of that view is, so the soil looks the same however the view is placed and can be painted once: groundChunks)
+  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, p.y + DEPTH_BELOW * depthView, p.y - DEPTH_ABOVE * depthView);
   // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
   // w7FaceArt.ts)
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
@@ -779,22 +781,21 @@ function drawWallVines(ctx: CanvasRenderingContext2D, x: number, top: number, bo
   }
 }
 
+/** the view height the soil's darkening is laid out for (world units; the engine sets it from the view: setDepthView) */
+let depthView = 900;
+/** where the view's middle and bottom fall above and below the walking line he stands on (cameraFollow.ts FRAME.feetAt 0.55) */
+const DEPTH_ABOVE = 0.55;
+const DEPTH_BELOW = 0.45;
+export function setDepthView(vh: number) {
+  if (vh > 0) depthView = vh;
+}
+
 /**
- * The painted layer of the hand-built stage, drawn after the ground: the bank tops, the moss floors and the root wall over the drawn
- * ground, then the branches, perches, the rock and the log. Returns false (draw nothing) until the atlas is loaded.
+ * The ground: the pits' shade and every bank of earth (its soil cut to its outline, its lip and its ends) that `view` takes in.
+ * Nothing in it moves, so the frame draws it from groundChunks; this paints it.
  */
-export function drawProtoScene(
-  ctx: CanvasRenderingContext2D,
-  platforms: Platform[],
-  trees: Array<{ x: number; topY: number }>,
-  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean }>,
-  t: number,
-  view: { x0: number; x1: number; y0?: number; y1?: number },
-  st: ProtoSceneState,
-): boolean {
-  if (!protoArtReady()) return false;
+function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks: Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }) {
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
-  const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
   // the pits: a piece with a bank 60 or more higher on either side, close by. Their inside is shaded (pitShade) once the pieces in them
   // are drawn and before the banks either side, so a gap reads as a gap and not as more of the same lit soil
   const tall = banks.filter((q) => q.height >= 90 && !q.soil);
@@ -848,6 +849,130 @@ export function drawProtoScene(
     drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil }, false, view.y1 ?? 0, view, wall || undefined);
   }
   shadeUpTo(-Infinity);
+}
+
+// ───────────────────────────── the ground, painted once ─────────────────────────────
+/**
+ * The ground is painted once into squares and each frame only stamps the squares in view (PERFORMANCE-RULES.md §2.1). Painted live, every
+ * bank cut its curved outline, laid its soil tiles, darkening and shading, its lip and its ends 30 times a second: the new painted ground
+ * took the Pixel, the Samsung and an old OnePlus from ~29.7 fps to ~27 (10-19 on the OnePlus) the night it shipped (QA, 2026-10-30).
+ * A square is painted the first time it comes into view (a few a frame, the rest live until then), at the screen's own pixel size, and
+ * painted again only when the ground, the world, the view's scale or height, or a sheet that arrived since, changes.
+ */
+const CHUNK = 256;
+/** painted a little past each side, so the soil, lip and end pieces that cross a square's edge are whole in it */
+const CHUNK_PAD = 2;
+/** squares kept (the oldest out of view go first): ~1 MB each at 2x */
+const CHUNK_KEEP = 36;
+/** squares painted per frame at most: the rest of the view is painted live that frame */
+const CHUNK_BUDGET = 3;
+interface GroundChunks {
+  key: string;
+  plats: Platform[];
+  tiles: Map<string, HTMLCanvasElement | null>;
+  order: string[];
+}
+let chunks: GroundChunks | null = null;
+
+const freeTile = (cv: HTMLCanvasElement | null | undefined) => {
+  if (cv) cv.width = cv.height = 0;
+};
+/** let go of the painted ground (a new stage, or the art released when play leaves a world) */
+export function releaseGroundChunks() {
+  if (chunks) for (const cv of chunks.tiles.values()) freeTile(cv);
+  chunks = null;
+}
+
+function bankSig(banks: Platform[]): number {
+  let h = banks.length;
+  for (const p of banks) h = (Math.imul(h, 31) + Math.round(p.x * 7 + p.y * 13 + p.width * 17 + p.height * 19)) | 0;
+  return h;
+}
+
+function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], banks: Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }): boolean {
+  if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function' || view.y0 === undefined || view.y1 === undefined) return false;
+  const m = ctx.getTransform();
+  // (only a plain scale and shift: squares can't be stamped under a turn or a skew)
+  if (Math.abs(m.b) > 1e-6 || Math.abs(m.c) > 1e-6 || !(m.a > 0) || Math.abs(m.a - m.d) > 1e-6) return false;
+  const scale = m.a;
+  const key = `${kitWorld}|${scale.toFixed(4)}|${Math.round(depthView)}|${sheetEpoch.n}|${bankSig(banks)}`;
+  if (!chunks || chunks.key !== key || chunks.plats !== platforms) {
+    releaseGroundChunks();
+    chunks = { key, plats: platforms, tiles: new Map(), order: [] };
+  }
+  const c = chunks;
+  const cx0 = Math.floor(view.x0 / CHUNK), cx1 = Math.floor(view.x1 / CHUNK);
+  const cy0 = Math.floor(view.y0 / CHUNK), cy1 = Math.floor(view.y1 / CHUNK);
+  let budget = CHUNK_BUDGET;
+  let missing = false;
+  for (let cy = cy0; cy <= cy1; cy++)
+    for (let cx = cx0; cx <= cx1; cx++) {
+      const k = cx + ',' + cy;
+      if (c.tiles.has(k)) continue;
+      if (budget-- <= 0) {
+        missing = true;
+        continue;
+      }
+      c.tiles.set(k, paintTile(platforms, banks, cx, cy, scale));
+      c.order.push(k);
+    }
+  // (the oldest squares out of view go once too many are kept)
+  for (let i = 0; i < c.order.length && c.order.length > CHUNK_KEEP; ) {
+    const k = c.order[i];
+    const [x, y] = k.split(',').map(Number);
+    if (x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1) {
+      i++;
+      continue;
+    }
+    freeTile(c.tiles.get(k));
+    c.tiles.delete(k);
+    c.order.splice(i, 1);
+  }
+  if (missing) return false;
+  const px = CHUNK * scale;
+  const pad = CHUNK_PAD * scale;
+  for (let cy = cy0; cy <= cy1; cy++)
+    for (let cx = cx0; cx <= cx1; cx++) {
+      const cv = c.tiles.get(cx + ',' + cy);
+      if (cv) ctx.drawImage(cv, pad, pad, px, px, cx * CHUNK, cy * CHUNK, CHUNK, CHUNK);
+    }
+  return true;
+}
+
+/** one square of ground painted at the screen's pixel size, or null where no ground reaches it */
+function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: number, scale: number): HTMLCanvasElement | null {
+  const x = cx * CHUNK, y = cy * CHUNK;
+  // (a bank's soil runs on down out of sight, its lip and end pieces stand up to ~130 above its top and out ~260 past its ends)
+  if (!banks.some((p) => p.x - 300 < x + CHUNK && p.x + p.width + 300 > x && p.y - 140 < y + CHUNK)) return null;
+  const size = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = size;
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  g.imageSmoothingEnabled = true;
+  g.imageSmoothingQuality = 'high';
+  g.setTransform(scale, 0, 0, scale, -(x - CHUNK_PAD) * scale, -(y - CHUNK_PAD) * scale);
+  drawGround(g, platforms, banks, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300, y0: y - CHUNK_PAD, y1: y + CHUNK + CHUNK_PAD + 4 });
+  return cv;
+}
+
+/**
+ * The painted layer of the hand-built stage, drawn after the ground: the bank tops, the moss floors and the root wall over the drawn
+ * ground, then the branches, perches, the rock and the log. Returns false (draw nothing) until the atlas is loaded.
+ */
+export function drawProtoScene(
+  ctx: CanvasRenderingContext2D,
+  platforms: Platform[],
+  trees: Array<{ x: number; topY: number }>,
+  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean }>,
+  t: number,
+  view: { x0: number; x1: number; y0?: number; y1?: number },
+  st: ProtoSceneState,
+): boolean {
+  if (!protoArtReady()) return false;
+  const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
+  const banks = platforms.filter((p) => (p.height >= 90 || p.soil) && !p.push && !p.broken && !p.art);
+  if (!drawGroundChunks(ctx, platforms, banks, view)) drawGround(ctx, platforms, banks, view);
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {
