@@ -18,7 +18,7 @@ import { LoopPlayer } from './loops.ts';
 import { recordingFor } from './recordings.ts';
 import { SFX, runFx } from './sfx.ts';
 import { playRec, recFor, recForPuzzle, type Surface } from './sfxRec.ts';
-import { loadVoices, playSyllable } from './voice.ts';
+import { playSyllable, voiceReady } from './voiceBank.ts';
 import { Speech, voiceOf, type Tone } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { CALM, type MusicState } from './adaptive.ts';
@@ -433,7 +433,7 @@ export class Conductor {
       const v = voiceOf(s);
       if (v) slugs.add(v.slug);
     }
-    void loadVoices(core, slugs);
+    void import('./voice.ts').then((m) => m.loadVoices(core, slugs)).catch(() => {});
   }
 
   private speech = new Speech();
@@ -443,7 +443,7 @@ export class Conductor {
     if (!core || this.muted || core.ctx.state !== 'running') return;
     const v = voiceOf(speaker);
     if (!v) return;
-    void loadVoices(core, [v.slug]);
+    if (!voiceReady(v.slug)) void import('./voice.ts').then((m) => m.loadVoices(core, [v.slug])).catch(() => {});
     const now = core.ctx.currentTime;
     const due = this.speech.next(speaker, text, index, now, tone);
     if (due && playSyllable(core, due.slug, due.syl) > 0) {
@@ -456,7 +456,7 @@ export class Conductor {
   dotChirp() {
     const core = this.core;
     if (!core || this.muted || core.ctx.state !== 'running') return;
-    void loadVoices(core, ['dot']);
+    if (!voiceReady('dot')) void import('./voice.ts').then((m) => m.loadVoices(core, ['dot'])).catch(() => {});
     if (playSyllable(core, 'dot', { take: 0, semis: 0, db: -3 }) > 0) {
       window.setTimeout(() => this.core && playSyllable(this.core, 'dot', { take: 2, semis: 2, db: -4 }), 80);
       this.speechDip(0.5);
