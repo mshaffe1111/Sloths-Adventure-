@@ -10,6 +10,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { BOSS_FX } from './bossFxData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const BOSS_FX_URL = new URL('../assets/bosses/boss-fx.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;
@@ -61,7 +62,7 @@ export function drawFx(ctx: CanvasRenderingContext2D, name: FxName, x: number, y
   if (o.flipX) ctx.scale(-1, 1);
   const src = o.recolor ? tintedPiece(name, o.recolor, 'color') : null;
   if (src) ctx.drawImage(src, 0, 0, f.w, f.h, -w * ax, -h * ay, w, h);
-  else ctx.drawImage(img, f.x, f.y, f.w, f.h, -w * ax, -h * ay, w, h);
+  else drawSheet(ctx, img, f.x, f.y, f.w, f.h, -w * ax, -h * ay, w, h);
   ctx.restore();
   return true;
 }
@@ -70,7 +71,7 @@ export function drawFx(ctx: CanvasRenderingContext2D, name: FxName, x: number, y
  * A piece laid along a run from x0 to x1 (a strip: the flood, the dash trail, the storm bank): the piece is drawn `h` tall and repeated,
  * every other copy mirrored so the joins match, the last copy cut to length. (x0, y) is the run's left end at the piece's `ay`.
  */
-export function drawFxRun(ctx: CanvasRenderingContext2D, name: FxName, x0: number, x1: number, y: number, h: number, o: { ay?: number; alpha?: number; offset?: number } = {}): boolean {
+export function drawFxRun(ctx: CanvasRenderingContext2D, name: FxName, x0: number, x1: number, y: number, h: number, o: { ay?: number; alpha?: number; offset?: number; recolor?: string } = {}): boolean {
   const f = BOSS_FX[name];
   if (!f) return false;
   load();
@@ -85,12 +86,14 @@ export function drawFxRun(ctx: CanvasRenderingContext2D, name: FxName, x0: numbe
   ctx.rect(x0, top - 2, len, h + 4);
   ctx.clip();
   const off = (((o.offset ?? 0) % (tw * 2)) + tw * 2) % (tw * 2);
+  const src = o.recolor ? tintedPiece(name, o.recolor, 'color') : null;
   for (let k = 0, x = x0 - off; x < x1; k++, x += tw) {
     const flip = k % 2 === 1;
     ctx.save();
     ctx.translate(x + (flip ? tw : 0), top);
     if (flip) ctx.scale(-1, 1);
-    ctx.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, tw + 0.5, h);
+    if (src) ctx.drawImage(src, 0, 0, f.w, f.h, 0, 0, tw + 0.5, h);
+    else ctx.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, tw + 0.5, h);
     ctx.restore();
   }
   ctx.restore();

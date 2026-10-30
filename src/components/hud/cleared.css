@@ -4,7 +4,7 @@
  * whole card fits with nothing to scroll. (Scoped to the stage-cleared card; the Game Over card keeps its own layout.)
  */
 @media (max-height: 360px) and (orientation: landscape) {
-  .clr-scrim:has(> .clr-card.clr-won) { padding: 24px 10px 6px; align-items: flex-start; }
+  .clr-scrim:has(> .clr-card.clr-won) { padding: max(24px, calc(env(safe-area-inset-top, 0px) + 16px)) max(10px, env(safe-area-inset-right, 0px)) max(6px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px)); align-items: flex-start; }
   .clr-scrim > .clr-card.clr-won { padding: 26px 14px 8px; border-width: 9px; border-radius: 22px; gap: 10px; grid-template-columns: 104px minmax(0, 1fr); }
   .clr-scrim > .clr-card.clr-won .clr-ribbon { top: -22px; width: min(330px, 80%); }
   .clr-scrim > .clr-card.clr-won .clr-ribbon h2 { font-size: 19px; }

@@ -1,7 +1,7 @@
 /**
  * puzzlePlay — a stage's puzzle rooms during a run (the rules are puzzleKit.ts; the look is puzzleArt.ts): the things lying, held,
  * flying and coming back, the plates, gates, levers, baskets and lifts and their wires, the lure beetles, the room reset, Pokey's carry
- * poses, the camera's lean toward the puzzle part that matters now (puzzleCamera.ts), the silent sparkle on Easy when he is clearly
+ * poses, the camera's lean toward the puzzle part that matters now (puzzleCamera.ts), Dot's next step when he is clearly
  * stuck, and the piece Dot points at. The engine only lends it what it needs through `KitHost`, as World 4 and 5 do (w4Play.ts,
  * w5Play.ts), and reads the intents it took (engine.ts kitControls).
  */
@@ -22,7 +22,9 @@ import { drawW4 } from './w4Art.ts';
 import { rollLook } from './artRoll.ts';
 import { drawW2Cage } from './riverArt.ts';
 import { drawGlow, drawNightPiece } from './meecaNightArt.ts';
-import { drawW5 } from './w5Art.ts';
+import { drawW5, steamPuff } from './w5Art.ts';
+import { drawFx } from './bossFx.ts';
+import { glowPic } from './glow.ts';
 import { noteRoomLine, ROOM_STEP } from './dotTips.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
 
@@ -68,7 +70,7 @@ export interface KitHost {
   /** a room's line whose moment has passed (he has left the room): taken down, up or still waiting */
   passTip?(text: string): void;
   sfx(kind: KitSfx): void;
-  /** he is clearly stuck in a room (Flicker's on-request hints hook in here later; Easy's sparkle is the kit's own) */
+  /** he is clearly stuck in a room (Flicker's on-request hints hook in here later) */
   stuck?(room: string): void;
   /** a hanging reed cage came all the way up and its floor dropped open: the little one in it is free (World 2) */
   freeCage?(c: Collectible): void;
@@ -195,7 +197,8 @@ interface RoomRun {
   turns: number;
   fails: number;
   lastDir: number;
-  sparkle: boolean;
+  /** Easy's stuck help has been given here (her nudge, then the move): not given again until something changes */
+  easyHelped: boolean;
   /** how many times Dot has helped here on struggle (a nudge, then the move) */
   helped: number;
   told: Set<string>;
@@ -255,7 +258,7 @@ function drawReedWall(ctx: CanvasRenderingContext2D, x: number, top: number, bot
 /** where each seesaw painting's round pivot is across its frame (atlas px, measured from puzzle-kit.webp) */
 const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = { seesawLevel: 105, seesawUpR: 105, seesawUpL: 90 };
 
-/** the active part: where it is, how big it is (Dot perches beside it and a sparkle twinkles on it), and which piece it is (none: the
+/** the active part: where it is, how big it is (Dot perches beside it after struggle; nothing is drawn on it), and which piece it is (none: the
  *  room's middle) */
 type Focus = { x: number; y: number; r: number; id?: string };
 
@@ -303,7 +306,7 @@ export class KitPlay {
   /** the puzzle piece Dot points at (GuideView.kit): the active part while he is in a room, nothing outside one */
   readonly guideThings: Array<{ x: number; y: number; r: number }> = [];
   private focusPt: Focus = { x: 0, y: 0, r: 30 };
-  /** where Dot points and Easy's sparkle goes (pointAt) */
+  /** where Dot perches when she points (pointAt) */
   private pointPt: Focus = { x: 0, y: 0, r: 30 };
   private t = 0;
   /** a room's lines still to take down, one a frame */
@@ -345,7 +348,7 @@ export class KitPlay {
         spec, ri, box: roomBox(spec, byId), beyond: anchorAt(spec.beyond, byId), items: [], plates: [], gates: [], levers: [], baskets: [], lifts: [], beetles: [], sources: [], resets: [],
         seesaws: [], bells: [], ledges: [], marks: [], shutters: [], pinwheels: [], sluices: [], traders: [],
         chairs: [], saplings: [], silks: [], knots: [], ladders: [], teapots: [], glows: [], moons: [], cups: 0,
-        ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, sparkle: false, helped: 0, told: new Set(),
+        ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, easyHelped: false, helped: 0, told: new Set(),
       };
       for (const pc of spec.pieces) {
         const a = at(pc);
@@ -897,7 +900,7 @@ export class KitPlay {
       tp.t = 0;
     }
     room.changes++;
-    room.sparkle = false;
+    room.easyHelped = false;
     h.sfx('reset');
     h.float('STARTING AGAIN', room.resets[0]?.x ?? h.player.x, (room.resets[0]?.y ?? h.player.y) - 110, '#fde68a');
   }
@@ -1206,12 +1209,12 @@ export class KitPlay {
         h.tip(`kit:${room.spec.id}:open`, room.spec.tips.open, 3);
       }
     }
-    // the stuck watch (Easy only, silent): a sparkle on the important piece once he is clearly stuck here
+    // the stuck watch: once he is clearly stuck here, Dot's next step (nothing is drawn on the piece)
     if (room.changes !== before) {
       room.calm = 0;
       room.turns = 0;
       room.fails = 0;
-      room.sparkle = false;
+      room.easyHelped = false;
     } else if (inside) {
       if (landedQuiet) room.fails++;
       if (!this.noClock) room.calm += dt;
@@ -1220,8 +1223,8 @@ export class KitPlay {
       if (dir) room.lastDir = dir;
       // (without the clock, Matt's research rule: back and forth with nothing changing, or two failed tries)
       const stuck = this.noClock ? room.turns >= STUCK.turns || room.fails >= STUCK.fails : room.calm >= STUCK.calm || (room.turns >= STUCK.turns && room.calm >= STUCK.turnsCalm) || room.fails >= STUCK.fails;
-      if (stuck && (!room.sparkle || room.helped < 2)) {
-        room.sparkle = room.sparkle || h.easy;
+      if (stuck && (!room.easyHelped || room.helped < 2)) {
+        room.easyHelped = room.easyHelped || h.easy;
         h.stuck?.(room.spec.id);
         // Dot's next step (DOT-2): the first time a nudge that points at the piece, the next time the move (her help setting decides
         // whether the move is said: Help only)
@@ -1517,9 +1520,9 @@ export class KitPlay {
   private noClock = false;
   private night = false;
 
-  /** is the room's sparkle on (Easy's stuck help) */
-  sparkling(room: number): boolean {
-    return !!this.rooms[room]?.sparkle;
+  /** has Easy's stuck help been given in this room (and nothing changed since) */
+  stuckHelped(room: number): boolean {
+    return !!this.rooms[room]?.easyHelped;
   }
 
   // ───────────────────────────── the active part ─────────────────────────────
@@ -1564,7 +1567,7 @@ export class KitPlay {
   }
 
   /**
-   * Where Dot points (and Easy's sparkle goes): the piece he should go to now, at the spot it is drawn. Mostly the camera's focus; but
+   * Where Dot points (she perches by it): the piece he should go to now, at the spot it is drawn. Mostly the camera's focus; but
    * in a seesaw room it is the log that weighs an end down (until one does), then the raised end, his step: the seesaw's pivot, which
    * the camera frames, is neither (Matt, 2026-10-29: the ring "doesn't even show where it's at").
    */
@@ -1776,12 +1779,11 @@ export class KitPlay {
         ctx.restore();
         // (Meeca's night: an empty plate's rim breathes a pale light, so it reads as something to stand on, not a stump in the path)
         if (this.night && drew && pl.show < 0.5) {
+          // (a soft breathing glow over its top, the pre-rendered glow stretched flat: no stroked ring)
           ctx.save();
-          ctx.strokeStyle = `rgba(255, 244, 210, ${(0.45 + 0.25 * Math.sin(this.t * 3.2 + pl.x * 0.01)).toFixed(3)})`;
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.ellipse(pl.x, pl.y - 7, pw * 0.42, 8, 0, 0, Math.PI * 2);
-          ctx.stroke();
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.globalAlpha = 0.5 + 0.3 * Math.sin(this.t * 3.2 + pl.x * 0.01);
+          ctx.drawImage(glowPic('#fff4d2'), pl.x - pw * 0.55, pl.y - 7 - 12, pw * 1.1, 24);
           ctx.restore();
         }
         if (!drew) {
@@ -1839,11 +1841,10 @@ export class KitPlay {
     }
   }
 
-  /** over Pokey: what he holds (when his pose has no hands for it), things in flight, Easy's sparkle */
+  /** over Pokey: what he holds (when his pose has no hands for it), things in flight (nothing marks the answer: Matt, 2026-10-29) */
   drawFront(ctx: CanvasRenderingContext2D, p: Player, drewPose: boolean) {
     for (const room of this.rooms) {
       for (const it of room.items) if (it.mode === 'fly') this.drawItem(ctx, it, it.body.x, it.body.y, it.spin);
-      if (room.sparkle && room === this.rooms[this.inRoom]) this.drawSparkle(ctx, this.pointPt);
     }
     if (this.held && !drewPose) {
       const it = this.rooms[this.held.room].items[this.held.item];
@@ -2005,15 +2006,15 @@ export class KitPlay {
     if (this.night && since >= 0 && since < 1.4) {
       const u = since / 1.4;
       drawGlow(ctx, g.x, g.y - KIT.doorH / 2, 70 + 90 * u, 'rgba(255, 230, 150, A)', 0.95 * (1 - u));
+      // (motes of light flying out of it: soft glows, no hard dots)
+      const mote = glowPic('#fff3c4', 'fly');
       ctx.save();
-      ctx.fillStyle = '#fff3c4';
       for (let i = 0; i < 8; i++) {
         const a = (i / 8) * Math.PI * 2 + 0.4;
         const r = 30 + 80 * u;
+        const m = 14 - 6 * u;
         ctx.globalAlpha = 1 - u;
-        ctx.beginPath();
-        ctx.arc(g.x + Math.cos(a) * r, g.y - KIT.doorH / 2 + Math.sin(a) * r * 0.8, 4 - 2 * u, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.drawImage(mote, g.x + Math.cos(a) * r - m / 2, g.y - KIT.doorH / 2 + Math.sin(a) * r * 0.8 - m / 2, m, m);
       }
       ctx.restore();
     }
@@ -2284,20 +2285,12 @@ export class KitPlay {
       ctx.fill();
     }
     if (u < NOISE.dur) {
-      // the ring going out: soft arcs either side
-      ctx.save();
-      ctx.strokeStyle = `rgba(253, 230, 138, ${0.7 * (1 - u / NOISE.dur)})`;
-      ctx.lineWidth = 3;
-      for (let i = 0; i < 3; i++) {
-        const rr = 30 + ((u * 90 + i * 40) % 120);
-        ctx.beginPath();
-        ctx.arc(b.x, b.y - 60, rr, -0.6, 0.6);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(b.x, b.y - 60, rr, Math.PI - 0.6, Math.PI + 0.6);
-        ctx.stroke();
+      // the ring going out either side: the painted sound wave (bossFx.ts screech), gold, rolling out and fading
+      for (let i = 0; i < 2; i++) {
+        const rr = 30 + ((u * 90 + i * 60) % 120);
+        const a = 0.8 * (1 - u / NOISE.dur) * (1 - (rr - 30) / 120);
+        for (const side of [-1, 1]) drawFx(ctx, 'screech', b.x + side * rr, b.y - 60, 30 + rr * 0.4, { h: 12, rot: Math.PI / 2, alpha: a, recolor: '#fde68a' });
       }
-      ctx.restore();
     }
   }
 
@@ -2430,35 +2423,15 @@ export class KitPlay {
         ctx.fill();
       }
       // its sleepy steam (World 5's "don't drink" teapot), while it stands
-      if (!tipped) {
-        ctx.save();
-        for (let i = 0; i < 3; i++) {
-          const u = (this.t * 0.5 + i / 3) % 1;
-          ctx.globalAlpha = 0.35 * (1 - u);
-          ctx.strokeStyle = '#e9e3ff';
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          const sx = tp.x - 18 + i * 6;
-          ctx.moveTo(sx, tp.y - 44 - u * 50);
-          ctx.quadraticCurveTo(sx + 10, tp.y - 54 - u * 50, sx, tp.y - 64 - u * 50);
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
+      // (World 5's painted steam, w5Art.ts steamPuff: no stroked curls)
+      if (!tipped) steamPuff(ctx, tp.x - 14, tp.y - 44, 0.6, this.t, 0.6);
     }
   }
 
   /** silk wrapped round whoever is in the chair (when no sheet of theirs shows it) */
   private drawWrap(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, t: number) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(245, 245, 255, 0.8)';
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < 6; i++) {
-      ctx.beginPath();
-      ctx.ellipse(x, y, r, r * 0.45, i * 0.9 + t * 0.4, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-    ctx.restore();
+    // (the painted silk bundle, bossFx.ts silkBall, wound round them and turning slowly: no stroked rings)
+    drawFx(ctx, 'silkBall', x, y, r * 2.1, { rot: t * 0.4, alpha: 0.8 });
   }
 
   /** the trough from the pot to the basket, and the tea in it once the pot is tipped; the stains the spill leaves stay */
@@ -2477,15 +2450,8 @@ export class KitPlay {
       // the tea running along it
       if (tp.tipped) {
         const u = Math.max(0, Math.min(1, (tp.t / TEA.run) * (pts.length - 1) - i));
-        if (u > 0) {
-          ctx.strokeStyle = 'rgba(176, 106, 40, 0.92)';
-          ctx.lineWidth = 6;
-          ctx.lineCap = 'round';
-          ctx.beginPath();
-          ctx.moveTo(0, 2);
-          ctx.lineTo(len * u, 2);
-          ctx.stroke();
-        }
+        // (the painted flood water, bossFx.ts, re-coloured to tea and laid along the trough as it runs: no stroked line)
+        if (u > 0) drawFx(ctx, 'flood', (len * u) / 2, 2, len * u, { h: 10, alpha: 0.95, recolor: '#a8632a' });
       }
       ctx.restore();
     }
@@ -2496,14 +2462,8 @@ export class KitPlay {
     if (!tp.tipped) return;
     const end = pts[pts.length - 1];
     if (tp.t > TEA.run * 0.8 && tp.t < TEA.run + 0.9) {
-      ctx.save();
-      ctx.strokeStyle = 'rgba(176, 106, 40, 0.85)';
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(end.x, end.y + 4);
-      ctx.lineTo(end.x + 2, end.y + 40);
-      ctx.stroke();
-      ctx.restore();
+      // (the painted jet, bossFx.ts venomJet, re-coloured to tea and turned to pour down into the basket)
+      drawFx(ctx, 'venomJet', end.x + 1, end.y + 22, 40, { h: 9, rot: Math.PI / 2, alpha: 0.9, recolor: '#a8632a' });
     }
   }
 
@@ -2625,24 +2585,4 @@ export class KitPlay {
     return y;
   }
 
-  private drawSparkle(ctx: CanvasRenderingContext2D, f: { x: number; y: number; r: number }) {
-    ctx.save();
-    for (let i = 0; i < 5; i++) {
-      const a = this.t * 1.6 + (i * Math.PI * 2) / 5;
-      const u = (Math.sin(this.t * 4 + i * 1.7) + 1) / 2;
-      const x = f.x + Math.cos(a) * (f.r + 6);
-      const y = f.y + Math.sin(a) * (f.r * 0.7 + 4);
-      const k = 4 + u * 5;
-      ctx.globalAlpha = 0.45 + 0.55 * u;
-      ctx.fillStyle = '#fff3b0';
-      ctx.beginPath();
-      ctx.moveTo(x, y - k * 1.7);
-      ctx.quadraticCurveTo(x, y, x + k * 1.7, y);
-      ctx.quadraticCurveTo(x, y, x, y + k * 1.7);
-      ctx.quadraticCurveTo(x, y, x - k * 1.7, y);
-      ctx.quadraticCurveTo(x, y, x, y - k * 1.7);
-      ctx.fill();
-    }
-    ctx.restore();
-  }
 }

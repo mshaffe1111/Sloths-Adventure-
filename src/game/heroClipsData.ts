@@ -135,5 +135,23 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
   "ax": 146.2,
   "ay": 202.5,
   "fps": 16
+ },
+ "teeter": {
+  "n": 10,
+  "cols": 8,
+  "w": 192,
+  "h": 201,
+  "ax": 103.9,
+  "ay": 198.3,
+  "fps": 16
+ },
+ "step-back": {
+  "n": 16,
+  "cols": 8,
+  "w": 205,
+  "h": 205,
+  "ax": 99.9,
+  "ay": 200.1,
+  "fps": 16
  }
 };

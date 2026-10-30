@@ -14,6 +14,7 @@ import { HD_MEECA, HD_MEECA_FRAMES, HD_MEECA_PAGES } from './storyHdData_meeca.t
 import { trackAtlas } from './atlasLoader.ts';
 import { MEECA_FRAMES, MEECA_STAND_H } from './meecaStandardData.ts';
 import { gaitAt, gaitNaturalSpeed, moodAt, type GaitSpec, type MoodSpec, type StoryCharacter } from './storyActors.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export type JennifurMood =
   | 'idle' | 'talk' | 'happy' | 'laugh' | 'sing' | 'think' | 'surprised' | 'sad' | 'sob' | 'scared' | 'scaredwave' | 'cheer'
@@ -130,14 +131,14 @@ export function drawMeecaFrame(ctx: CanvasRenderingContext2D, name: string, anch
   const x = anchor * f.ax + (1 - anchor) * f.hx;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -x * k, -f.ay * k, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -x * k, -f.ay * k, f.w * k, f.h * k);
   if (flipped && f.bib) {
     // the bib, drawn again turned about its own middle: the mirrored canvas turns it back, and the number reads the right way round
     const [bx, by, bw, bh] = f.bib;
     ctx.save();
     ctx.translate((bx + bw / 2 - x) * k, (by + bh / 2 - f.ay) * k);
     ctx.scale(-1, 1);
-    ctx.drawImage(atlas, f.x + bx, f.y + by, bw, bh, (-bw / 2) * k, (-bh / 2) * k, bw * k, bh * k);
+    drawSheet(ctx, atlas, f.x + bx, f.y + by, bw, bh, (-bw / 2) * k, (-bh / 2) * k, bw * k, bh * k);
     ctx.restore();
   }
   return true;
@@ -180,13 +181,13 @@ export function drawMeecaStoryFrame(ctx: CanvasRenderingContext2D, name: string,
   const ay = f.ay * H + hf.m;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(img, hf.x, hf.y, hf.w, hf.h, -x * k, -ay * k, hf.w * k, hf.h * k);
+  drawSheet(ctx, img, hf.x, hf.y, hf.w, hf.h, -x * k, -ay * k, hf.w * k, hf.h * k);
   if (flipped && f.bib) {
     const [bx, by, bw, bh] = f.bib.map((v) => v * H);
     ctx.save();
     ctx.translate((bx + hf.m + bw / 2 - x) * k, (by + hf.m + bh / 2 - ay) * k);
     ctx.scale(-1, 1);
-    ctx.drawImage(img, hf.x + hf.m + bx, hf.y + hf.m + by, bw, bh, (-bw / 2) * k, (-bh / 2) * k, bw * k, bh * k);
+    drawSheet(ctx, img, hf.x + hf.m + bx, hf.y + hf.m + by, bw, bh, (-bw / 2) * k, (-bh / 2) * k, bw * k, bh * k);
     ctx.restore();
   }
   return true;

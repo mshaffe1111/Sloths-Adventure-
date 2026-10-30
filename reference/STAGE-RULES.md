@@ -423,6 +423,11 @@ plan); never ship the rough version as finished.
   pieces at every depth, not from the surfaces; straight edges of a painted layer far away are feathered into the dark.
 - **A speech bubble over the player's head in a behind-the-back view covers the road ahead** (7-4 v2): put it below him, on the empty
   near floor.
+- **A jump in a behind-the-back runner needs judgement in its thumb model** (7-4, Matt 2026-10-29: "Couldn't make it thru... let's
+  make sure it's possible."). With the house thumbs alone, the adult made every slide jump on paper, and Matt still couldn't get
+  through: in a runner only the picture says when to jump. Measure each jump's frame-exact window in the real sim. Add a judgement error
+  of about 70 ms either way to the thumb, and hold the adult at 90% (the kid at 85%) for every jump. Widen windows by lowering what is
+  jumped or shortening it, never by slowing the whole run (`tools/art/slide74/jumps.ts`).
 
 - **A vertical climb with water under it: every fall is the water** (6-8 Stilt Climb, 2026-10-29). The first build kept the rising tide
   about 240 px under Pokey, and the first-timer bot drowned 2-6 times a minute: not the tide catching a still player, but missed hops and

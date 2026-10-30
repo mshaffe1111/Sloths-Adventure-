@@ -1,12 +1,14 @@
 /**
- * Ambience: the sound of the place itself, under the music.
+ * Ambience: the sound of the place itself, under the music (polish report SN-9: the synthesized noise beds are replaced by real places).
  *
- * Each world has a bed (a few layers of filtered noise that slowly breathe, like wind, water or rain) and a set of
- * random events (a bird, a drip, a frog, thunder) that fire at irregular intervals. Events pan around the stereo
- * field so the forest feels wide, and are thrown into the reverb so caves sound like caves.
+ * Each world has a recorded bed (src/assets/sfxrec/bed<world>_0.mp3: a seamless 20 s loop made from CC0 field recordings, see
+ * tools/audio/sfxv1/build.py BEDS) and, for most, real one-shots (bird calls, cave drips, frog croaks, far thunder) scattered at random
+ * over it, panned around the stereo field, so the loop is never heard as a loop. The beds are levelled to the old places' loudness
+ * (about -28 LUFS in the game's mix; BED_DB). A bed is fetched only when its world's ambience starts.
  */
-import { AudioCore } from './core.ts';
-import { midiHz } from './theory.ts';
+import type { AudioCore } from './core.ts';
+import { BED_DB } from './sfxRecLevels.ts';
+import { recBank } from './sfxRec.ts';
 
 export type AmbientType =
   | 'gentle_breeze'
@@ -20,394 +22,40 @@ export type AmbientType =
   | 'volcanic_hum'
   | 'thunderstorm';
 
-const FLOOR = 0.0001;
+/** each place's recorded bed: the world it was made for */
+export const AMB_WORLD: Readonly<Record<AmbientType, number>> = {
+  gentle_breeze: 1, river_flow: 2, deep_cave: 3, waterfall: 4, tropical_birds: 5,
+  swamp_croaks: 6, ancient_echo: 7, twilight_crickets: 8, volcanic_hum: 9, thunderstorm: 10,
+};
+export const AMBIENT_TYPES = Object.keys(AMB_WORLD) as AmbientType[];
+
+/** a place's one-shots: which recorded set, seconds between them [min, max], and dB on top of the bed's level */
+export const AMB_SHOTS: Readonly<Partial<Record<AmbientType, { fx: string; gap: [number, number]; db: number }>>> = {
+  gentle_breeze: { fx: 'shotBirds', gap: [3, 8], db: 0 },
+  river_flow: { fx: 'shotBirds', gap: [4, 9], db: 0 },
+  deep_cave: { fx: 'shotDrips', gap: [1.2, 3.5], db: -6 },
+  waterfall: { fx: 'shotBirds', gap: [6, 12], db: 0 },
+  tropical_birds: { fx: 'shotBirds', gap: [2, 5], db: 0 },
+  swamp_croaks: { fx: 'shotCroaks', gap: [2, 6], db: 0 },
+  ancient_echo: { fx: 'shotBirdsFar', gap: [5, 10], db: 0 },
+  thunderstorm: { fx: 'shotThunder', gap: [7, 13], db: 0 },
+};
+
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
-
-/**
- * Each place's loudness brought to about -28 LUFS in the game's mix (polish report SN-9): measured by rendering every place alone
- * (tools/audio/render.mjs) they ran from -32.5 (the crickets) to -21 (the storm), so the waterfall and the storm drowned the music and the
- * crickets were barely there. dB added to the place's own level.
- */
-export const AMB_TRIM_DB: Record<AmbientType, number> = {
-  gentle_breeze: 2.2, river_flow: -3.8, deep_cave: 3.2, waterfall: -6.5, tropical_birds: 2.5,
-  swamp_croaks: 2.3, ancient_echo: 3.7, twilight_crickets: 4.5, volcanic_hum: 1.8, thunderstorm: -7,
-};
-
-/**
- * The noise the beds are made of: 8 seconds of it, looping seamlessly (its last quarter second cross-fades into the noise that comes before
- * its start). The beds used the effects' 2.5 s noise, and a rush of water or wind that repeats every 2.5 s is heard as a loop. It is made at
- * 22 kHz (the beds are filtered well under 11 kHz), so the pair costs about 1.4 MB.
- */
-const BED_RATE = 22050;
-const BED_SECONDS = 8;
-const bedNoises = new WeakMap<BaseAudioContext, { white: AudioBuffer; pink: AudioBuffer }>();
-export function bedNoise(ctx: BaseAudioContext, pink: boolean): AudioBuffer {
-  let have = bedNoises.get(ctx);
-  if (!have) {
-    const make = (isPink: boolean) => {
-      const n = BED_RATE * BED_SECONDS;
-      const f = Math.floor(BED_RATE * 0.25);
-      const z = new Float32Array(n + f);
-      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-      for (let i = 0; i < z.length; i++) {
-        const w = Math.random() * 2 - 1;
-        if (!isPink) {
-          z[i] = w;
-          continue;
-        }
-        // Paul Kellet's economy pink filter (as core.ts)
-        b0 = 0.99886 * b0 + w * 0.0555179;
-        b1 = 0.99332 * b1 + w * 0.0750759;
-        b2 = 0.969 * b2 + w * 0.153852;
-        b3 = 0.8665 * b3 + w * 0.3104856;
-        b4 = 0.55 * b4 + w * 0.5329522;
-        b5 = -0.7616 * b5 - w * 0.016898;
-        z[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11;
-        b6 = w * 0.115926;
-      }
-      const buf = ctx.createBuffer(1, n, BED_RATE);
-      const d = buf.getChannelData(0);
-      d.set(z.subarray(f, f + n));
-      // the end runs into the noise just before the start, equal power: wrapping around is a continuation, not a jump
-      for (let i = 0; i < f; i++) {
-        const t = i / f;
-        d[n - f + i] = z[f + n - f + i] * Math.cos((t * Math.PI) / 2) + z[i] * Math.sin((t * Math.PI) / 2);
-      }
-      return buf;
-    };
-    have = { white: make(false), pink: make(true) };
-    bedNoises.set(ctx, have);
-  }
-  return pink ? have.pink : have.white;
-}
-
-interface Bed {
-  pink: boolean;
-  type: BiquadFilterType;
-  f: number;
-  q?: number;
-  gain: number;
-  /** slow swell: [rate Hz, depth 0..1 of the gain] */
-  lfo?: [number, number];
-}
-
-interface AmbEvent {
-  /** seconds between firings [min, max] */
-  gap: [number, number];
-  fire: (core: AudioCore, dst: AudioNode, t: number) => void;
-}
-
-interface AmbDef {
-  beds: Bed[];
-  /** a steady low sine (volcano, cave) */
-  hum?: [hz: number, gain: number];
-  events: AmbEvent[];
-  /** reverb amount for the events */
-  rev: number;
-  /** overall loudness trim, measured so every place sits the same distance under the music */
-  level: number;
-}
-
-// ---------------------------------------------------------------------------------------------
-// One-shot sounds used by the events
-// ---------------------------------------------------------------------------------------------
-
-function pan(core: AudioCore, dst: AudioNode, p: number): GainNode {
-  const g = core.ctx.createGain();
-  const sp = core.ctx.createStereoPanner();
-  sp.pan.value = p;
-  g.connect(sp);
-  sp.connect(dst);
-  return g;
-}
-
-function blip(core: AudioCore, dst: AudioNode, t: number, o: { type?: OscillatorType; f0: number; f1?: number; dec: number; peak: number; attack?: number; vib?: [number, number] }) {
-  const c = core.ctx;
-  const os = c.createOscillator();
-  os.type = o.type ?? 'sine';
-  os.frequency.setValueAtTime(o.f0, t);
-  if (o.f1) os.frequency.exponentialRampToValueAtTime(o.f1, t + o.dec);
-  let lfo: OscillatorNode | null = null;
-  if (o.vib) {
-    lfo = c.createOscillator();
-    lfo.frequency.value = o.vib[0];
-    const lg = c.createGain();
-    lg.gain.value = o.vib[1];
-    lfo.connect(lg);
-    lg.connect(os.frequency);
-    lfo.start(t);
-    lfo.stop(t + o.dec + 0.05);
-  }
-  const g = c.createGain();
-  const a = o.attack ?? 0.006;
-  g.gain.setValueAtTime(FLOOR, t);
-  g.gain.linearRampToValueAtTime(o.peak, t + a);
-  g.gain.exponentialRampToValueAtTime(FLOOR, t + a + o.dec);
-  os.connect(g);
-  g.connect(dst);
-  os.start(t);
-  os.stop(t + a + o.dec + 0.03);
-}
-
-function noiseBurst(core: AudioCore, dst: AudioNode, t: number, o: { type: BiquadFilterType; f0: number; f1?: number; q?: number; peak: number; dec: number; attack?: number; pink?: boolean }) {
-  const c = core.ctx;
-  const a = o.attack ?? 0.002;
-  const src = core.noiseSource(t, o.dec + a + 0.05, o.pink);
-  const f = c.createBiquadFilter();
-  f.type = o.type;
-  f.frequency.setValueAtTime(o.f0, t);
-  if (o.f1) f.frequency.exponentialRampToValueAtTime(o.f1, t + a + o.dec);
-  f.Q.value = o.q ?? 0.8;
-  const g = c.createGain();
-  g.gain.setValueAtTime(FLOOR, t);
-  g.gain.linearRampToValueAtTime(o.peak, t + a);
-  g.gain.exponentialRampToValueAtTime(FLOOR, t + a + o.dec);
-  src.connect(f);
-  f.connect(g);
-  g.connect(dst);
-}
-
-/** a bird: one of four songs */
-function bird(core: AudioCore, dst: AudioNode, t: number, kind = Math.floor(Math.random() * 4), peak = 0.07) {
-  const d = pan(core, dst, rnd(-0.8, 0.8));
-  const base = rnd(0.9, 1.15);
-  if (kind === 0) {
-    for (let i = 0; i < 3; i++) blip(core, d, t + i * 0.1, { f0: 2500 * base, f1: 3500 * base, dec: 0.06, peak });
-  } else if (kind === 1) {
-    blip(core, d, t, { f0: 3000 * base, f1: 3400 * base, dec: 0.45, peak: peak * 0.8, attack: 0.05, vib: [18, 260] });
-  } else if (kind === 2) {
-    blip(core, d, t, { f0: 1900 * base, dec: 0.2, peak, attack: 0.03 });
-    blip(core, d, t + 0.26, { f0: 2400 * base, f1: 2250 * base, dec: 0.35, peak, attack: 0.03 });
-  } else {
-    for (let i = 0; i < 6; i++) blip(core, d, t + i * 0.055, { f0: (3300 + (i % 2) * 400) * base, f1: 2900 * base, dec: 0.03, peak: peak * 0.8 });
-  }
-}
-
-const drip = (core: AudioCore, dst: AudioNode, t: number) => {
-  const d = pan(core, dst, rnd(-0.6, 0.6));
-  const f = rnd(1300, 2700);
-  blip(core, d, t, { f0: f * 1.3, f1: f, dec: 0.22, peak: 0.09, attack: 0.002 });
-  blip(core, d, t + 0.34, { f0: f * 1.25, f1: f * 0.95, dec: 0.2, peak: 0.035, attack: 0.002 });
-};
-
-const croak = (core: AudioCore, dst: AudioNode, t: number) => {
-  const c = core.ctx;
-  const d = pan(core, dst, rnd(-0.85, 0.85));
-  const base = rnd(95, 150);
-  const pulses = Math.floor(rnd(2, 5));
-  for (let i = 0; i < pulses; i++) {
-    const tt = t + i * 0.085;
-    const os = c.createOscillator();
-    os.type = 'sawtooth';
-    os.frequency.setValueAtTime(base * 1.4, tt);
-    os.frequency.exponentialRampToValueAtTime(base, tt + 0.06);
-    const bp = c.createBiquadFilter();
-    bp.type = 'bandpass';
-    bp.frequency.value = rnd(380, 520);
-    bp.Q.value = 3;
-    const g = c.createGain();
-    g.gain.setValueAtTime(FLOOR, tt);
-    g.gain.linearRampToValueAtTime(0.16, tt + 0.01);
-    g.gain.exponentialRampToValueAtTime(FLOOR, tt + 0.075);
-    os.connect(bp);
-    bp.connect(g);
-    g.connect(d);
-    os.start(tt);
-    os.stop(tt + 0.1);
-  }
-};
-
-const cricket = (core: AudioCore, dst: AudioNode, t: number, hz: number) => {
-  const d = pan(core, dst, rnd(-0.9, 0.9));
-  const n = Math.floor(rnd(3, 6));
-  for (let i = 0; i < n; i++) blip(core, d, t + i * 0.062, { f0: hz * rnd(0.99, 1.01), dec: 0.03, peak: 0.028, attack: 0.004 });
-};
-
-const thunder = (core: AudioCore, dst: AudioNode, t: number) => {
-  const c = core.ctx;
-  noiseBurst(core, dst, t, { type: 'bandpass', f0: 1400, f1: 300, q: 0.6, peak: 0.34, dec: 0.18 });
-  noiseBurst(core, dst, t + 0.05, { type: 'lowpass', f0: 600, f1: 70, q: 0.7, peak: 0.55, dec: 3.2, attack: 0.15, pink: true });
-  blip(core, dst, t + 0.1, { f0: 60, f1: 32, dec: 2.2, peak: 0.34, attack: 0.1 });
-  // a second, further rumble
-  noiseBurst(core, dst, t + rnd(0.7, 1.4), { type: 'lowpass', f0: 300, f1: 60, q: 0.7, peak: 0.25, dec: 2.2, attack: 0.3, pink: true });
-  void c;
-};
-
-const gust = (core: AudioCore, dst: AudioNode, t: number) => {
-  const d = pan(core, dst, rnd(-0.5, 0.5));
-  noiseBurst(core, d, t, { type: 'bandpass', f0: 350, f1: 1100, q: 0.9, peak: 0.12, dec: rnd(1.4, 2.4), attack: 0.8, pink: true });
-};
-
-const plop = (core: AudioCore, dst: AudioNode, t: number) => {
-  const d = pan(core, dst, rnd(-0.7, 0.7));
-  const f = rnd(350, 700);
-  blip(core, d, t, { f0: f * 0.6, f1: f * 1.8, dec: 0.09, peak: 0.1, attack: 0.002 });
-};
-
-// ---------------------------------------------------------------------------------------------
-// The ten places
-// ---------------------------------------------------------------------------------------------
-
-const DEFS: Record<AmbientType, AmbDef> = {
-  gentle_breeze: {
-    level: 0.6,
-    rev: 0.25,
-    beds: [
-      { pink: true, type: 'lowpass', f: 650, gain: 0.2, lfo: [0.07, 0.5] },
-      { pink: true, type: 'bandpass', f: 1900, q: 0.6, gain: 0.05, lfo: [0.11, 0.6] },
-    ],
-    events: [
-      { gap: [2.5, 7], fire: (c, d, t) => bird(c, d, t) },
-      { gap: [6, 14], fire: (c, d, t) => bird(c, d, t, 2, 0.04) },
-      { gap: [5, 11], fire: (c, d, t) => noiseBurst(c, d, t, { type: 'bandpass', f0: 4200, q: 0.8, peak: 0.04, dec: 0.5, attack: 0.15, pink: true }) },
-    ],
-  },
-  river_flow: {
-    level: 0.4,
-    rev: 0.2,
-    beds: [
-      { pink: true, type: 'bandpass', f: 900, q: 0.4, gain: 0.28, lfo: [0.2, 0.25] },
-      { pink: false, type: 'highpass', f: 3500, gain: 0.04, lfo: [0.35, 0.5] },
-      { pink: true, type: 'lowpass', f: 220, gain: 0.12 },
-    ],
-    events: [
-      { gap: [0.9, 3.2], fire: plop },
-      { gap: [4, 9], fire: (c, d, t) => bird(c, d, t) },
-    ],
-  },
-  deep_cave: {
-    level: 0.5,
-    rev: 0.9,
-    hum: [48, 0.05],
-    beds: [
-      { pink: true, type: 'lowpass', f: 160, gain: 0.3, lfo: [0.05, 0.4] },
-      { pink: true, type: 'bandpass', f: 420, q: 3, gain: 0.035, lfo: [0.08, 0.8] },
-    ],
-    events: [
-      { gap: [1.2, 4.5], fire: drip },
-      { gap: [11, 22], fire: (c, d, t) => noiseBurst(c, d, t, { type: 'lowpass', f0: 150, f1: 70, peak: 0.2, dec: 2.5, attack: 1, pink: true }) },
-    ],
-  },
-  waterfall: {
-    level: 0.22,
-    rev: 0.35,
-    beds: [
-      { pink: false, type: 'bandpass', f: 2200, q: 0.3, gain: 0.2, lfo: [0.13, 0.12] },
-      { pink: true, type: 'lowpass', f: 420, gain: 0.34 },
-      { pink: false, type: 'highpass', f: 7000, gain: 0.04, lfo: [0.2, 0.4] },
-    ],
-    events: [
-      { gap: [6, 13], fire: (c, d, t) => bird(c, d, t, 2, 0.04) },
-      { gap: [3, 8], fire: (c, d, t) => noiseBurst(c, d, t, { type: 'highpass', f0: 5000, peak: 0.07, dec: 1.4, attack: 0.6 }) },
-    ],
-  },
-  tropical_birds: {
-    level: 1.3,
-    rev: 0.3,
-    beds: [
-      { pink: true, type: 'lowpass', f: 520, gain: 0.08, lfo: [0.06, 0.5] },
-      { pink: true, type: 'bandpass', f: 5400, q: 3, gain: 0.018, lfo: [6, 0.9] },
-    ],
-    events: [
-      { gap: [0.6, 2.4], fire: (c, d, t) => bird(c, d, t, undefined, 0.08) },
-      { gap: [1.6, 4], fire: (c, d, t) => bird(c, d, t, undefined, 0.06) },
-      { gap: [9, 20], fire: (c, d, t) => blip(c, pan(c, d, rnd(-0.8, 0.8)), t, { f0: 420, f1: 660, dec: 0.25, peak: 0.07, attack: 0.04, vib: [9, 40] }) },
-    ],
-  },
-  swamp_croaks: {
-    level: 0.85,
-    rev: 0.3,
-    beds: [
-      { pink: true, type: 'lowpass', f: 260, gain: 0.22, lfo: [0.05, 0.3] },
-      { pink: true, type: 'bandpass', f: 4600, q: 4, gain: 0.022, lfo: [9, 0.9] },
-    ],
-    events: [
-      { gap: [1.2, 3.6], fire: croak },
-      { gap: [2, 6], fire: croak },
-      { gap: [3, 9], fire: plop },
-    ],
-  },
-  ancient_echo: {
-    level: 0.65,
-    rev: 0.9,
-    beds: [
-      { pink: true, type: 'bandpass', f: 280, q: 1.2, gain: 0.2, lfo: [0.06, 0.6] },
-      { pink: true, type: 'lowpass', f: 90, gain: 0.26 },
-    ],
-    events: [
-      { gap: [6, 13], fire: (c, d, t) => { const f = midiHz([57, 60, 64, 67, 69][Math.floor(Math.random() * 5)]); blip(c, d, t, { f0: f, dec: 2.6, peak: 0.06, attack: 0.01 }); blip(c, d, t, { f0: f * 2.76, dec: 1.2, peak: 0.02, attack: 0.01 }); } },
-      { gap: [4, 10], fire: (c, d, t) => noiseBurst(c, pan(c, d, rnd(-0.7, 0.7)), t, { type: 'bandpass', f0: 1800, q: 3, peak: 0.05, dec: 0.12 }) },
-      { gap: [8, 16], fire: gust },
-    ],
-  },
-  twilight_crickets: {
-    level: 1.4,
-    rev: 0.3,
-    beds: [{ pink: true, type: 'lowpass', f: 420, gain: 0.07, lfo: [0.07, 0.5] }],
-    events: [
-      { gap: [0.8, 1.5], fire: (c, d, t) => cricket(c, d, t, 4300) },
-      { gap: [0.9, 1.7], fire: (c, d, t) => cricket(c, d, t, 4700) },
-      { gap: [1, 2], fire: (c, d, t) => cricket(c, d, t, 5200) },
-      {
-        gap: [11, 22],
-        fire: (c, d, t) => {
-          const p = pan(c, d, rnd(-0.6, 0.6));
-          blip(c, p, t, { f0: 430, f1: 390, dec: 0.28, peak: 0.07, attack: 0.05 });
-          blip(c, p, t + 0.45, { f0: 410, f1: 330, dec: 0.5, peak: 0.07, attack: 0.05 });
-        },
-      },
-    ],
-  },
-  volcanic_hum: {
-    level: 0.35,
-    rev: 0.5,
-    hum: [42, 0.1],
-    beds: [
-      { pink: true, type: 'lowpass', f: 90, gain: 0.45, lfo: [0.08, 0.3] },
-      { pink: true, type: 'bandpass', f: 900, q: 2, gain: 0.03, lfo: [0.2, 0.9] },
-    ],
-    events: [
-      { gap: [0.2, 0.9], fire: (c, d, t) => noiseBurst(c, pan(c, d, rnd(-0.8, 0.8)), t, { type: 'bandpass', f0: rnd(1800, 4200), q: 2, peak: 0.07, dec: 0.012 }) },
-      { gap: [6, 12], fire: (c, d, t) => noiseBurst(c, d, t, { type: 'highpass', f0: 1500, f1: 5000, peak: 0.1, dec: 2, attack: 0.5 }) },
-      { gap: [9, 18], fire: (c, d, t) => { noiseBurst(c, d, t, { type: 'lowpass', f0: 240, f1: 50, peak: 0.5, dec: 1.8, attack: 0.04, pink: true }); blip(c, d, t, { f0: 55, f1: 30, dec: 1.4, peak: 0.3, attack: 0.03 }); } },
-    ],
-  },
-  thunderstorm: {
-    level: 0.28,
-    rev: 0.7,
-    beds: [
-      { pink: false, type: 'highpass', f: 1800, gain: 0.1, lfo: [0.1, 0.2] },
-      { pink: true, type: 'bandpass', f: 3500, q: 0.3, gain: 0.12 },
-      { pink: true, type: 'bandpass', f: 520, q: 0.8, gain: 0.16, lfo: [0.09, 0.6] },
-    ],
-    events: [
-      { gap: [6, 15], fire: thunder },
-      { gap: [5, 12], fire: gust },
-    ],
-  },
-};
-
-/** every place that has a sound */
-export const AMBIENT_TYPES = Object.keys(DEFS) as AmbientType[];
-
-// ---------------------------------------------------------------------------------------------
-// The player of all that
-// ---------------------------------------------------------------------------------------------
+const dbGain = (db: number) => Math.pow(10, db / 20);
 
 interface Running {
   type: AmbientType;
-  def: AmbDef;
   mix: GainNode;
-  events: GainNode;
-  sources: AudioScheduledSourceNode[];
-  nodes: AudioNode[];
-  nextAt: number[];
+  src: AudioBufferSourceNode | null;
+  nextAt: number;
+  last: number;
 }
 
 export class Ambience {
   private cur: Running | null = null;
   private readonly core: AudioCore;
-  /** one-shot events that need the world quiet (low power) are skipped when true */
+  /** a slow phone: the one-shots are skipped (the bed alone still plays) */
   lite = false;
 
   constructor(core: AudioCore) {
@@ -422,97 +70,85 @@ export class Ambience {
     if (this.cur?.type === type) return;
     this.stop(fade);
     const c = this.core.ctx;
-    const def = DEFS[type];
     const now = c.currentTime;
+    const world = AMB_WORLD[type];
     const mix = c.createGain();
-    mix.gain.setValueAtTime(0, now);
-    mix.gain.linearRampToValueAtTime(def.level * Math.pow(10, AMB_TRIM_DB[type] / 20), now + fade);
+    mix.gain.value = 0;
     mix.connect(this.core.amb);
-    const events = this.core.withReverb(mix, def.rev, 'amb');
-    const run: Running = { type, def, mix, events, sources: [], nodes: [mix, events], nextAt: def.events.map((e) => now + rnd(0.5, e.gap[1])) };
-
-    for (const b of def.beds) {
-      const src = c.createBufferSource();
-      src.buffer = bedNoise(c, b.pink);
-      src.loop = true;
-      src.start(now, Math.random() * (src.buffer.duration - 0.1));
-      const f = c.createBiquadFilter();
-      f.type = b.type;
-      f.frequency.value = Math.min(b.f, c.sampleRate / 2 - 200);
-      f.Q.value = b.q ?? 0.7;
-      const g = c.createGain();
-      g.gain.value = b.gain;
-      src.connect(f);
-      f.connect(g);
-      g.connect(mix);
-      run.sources.push(src);
-      run.nodes.push(f, g);
-      if (b.lfo) {
-        const lfo = c.createOscillator();
-        lfo.frequency.value = b.lfo[0] * rnd(0.85, 1.15);
-        const lg = c.createGain();
-        lg.gain.value = b.gain * b.lfo[1];
-        lfo.connect(lg);
-        lg.connect(g.gain);
-        lfo.start(now);
-        run.sources.push(lfo);
-        run.nodes.push(lg);
-      }
-    }
-    if (def.hum) {
-      const o = c.createOscillator();
-      o.frequency.value = def.hum[0];
-      const g = c.createGain();
-      g.gain.value = def.hum[1];
-      o.connect(g);
-      g.connect(mix);
-      o.start(now);
-      run.sources.push(o);
-      run.nodes.push(g);
-    }
+    const run: Running = { type, mix, src: null, nextAt: now + rnd(1, 3), last: -1 };
     this.cur = run;
+    // (the loader is imported here, not at the top: only the browser can resolve its files, and the tests import this module)
+    void import('./sfxRecLoader.ts').then((m) => m.loadBed(this.core, world)).catch(() => null).then((buf) => {
+      if (!buf || this.cur !== run) return;
+      const t = c.currentTime;
+      const src = c.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+      src.connect(mix);
+      // (a random point in the loop, so a restart is not the same opening every time)
+      src.start(t, Math.random() * Math.max(0, buf.duration - 0.5));
+      run.src = src;
+      mix.gain.setValueAtTime(0, t);
+      mix.gain.linearRampToValueAtTime(dbGain(BED_DB[world] ?? 0), t + fade);
+    });
   }
 
-  /** schedule random events that fall before `until` */
+  /** scatter the place's one-shots that fall before `until` */
   update(until: number) {
     const r = this.cur;
-    if (!r) return;
-    const now = this.core.ctx.currentTime;
-    r.def.events.forEach((e, i) => {
-      let guard = 0;
-      while (r.nextAt[i] < until && guard++ < 8) {
-        const t = Math.max(r.nextAt[i], now + 0.02);
-        if (!(this.lite && e.gap[0] < 1)) e.fire(this.core, r.events, t);
-        r.nextAt[i] += rnd(e.gap[0], e.gap[1]);
+    if (!r || !r.src) return;
+    const shot = AMB_SHOTS[r.type];
+    if (!shot) return;
+    const list = recBank.get(shot.fx);
+    if (!list?.length) return;
+    const c = this.core.ctx;
+    let guard = 0;
+    while (r.nextAt < until && guard++ < 4) {
+      const t = Math.max(r.nextAt, c.currentTime + 0.02);
+      if (!this.lite) {
+        let k = Math.floor(Math.random() * list.length);
+        if (list.length > 1 && k === r.last) k = (k + 1) % list.length;
+        r.last = k;
+        const src = c.createBufferSource();
+        src.buffer = list[k];
+        src.playbackRate.value = 1 + rnd(-0.05, 0.05);
+        const g = c.createGain();
+        // (the bed's own level is on the mix already; a shot adds its own dB and a little spread)
+        g.gain.value = dbGain(shot.db + rnd(-2, 2));
+        src.connect(g);
+        let node: AudioNode = g;
+        if ('createStereoPanner' in c) {
+          const p = c.createStereoPanner();
+          p.pan.value = rnd(-0.6, 0.6);
+          g.connect(p);
+          node = p;
+        }
+        node.connect(r.mix);
+        src.start(t);
       }
-    });
+      r.nextAt += rnd(shot.gap[0], shot.gap[1]);
+    }
   }
 
   stop(fade = 0.8) {
     const r = this.cur;
     if (!r) return;
     this.cur = null;
-    const c = this.core.ctx;
-    const t = c.currentTime;
+    const t = this.core.ctx.currentTime;
     r.mix.gain.cancelScheduledValues(t);
     r.mix.gain.setValueAtTime(r.mix.gain.value, t);
     r.mix.gain.linearRampToValueAtTime(0, t + fade);
-    for (const s of r.sources) {
-      try {
-        s.stop(t + fade + 0.1);
-      } catch {
-        /* already stopped */
-      }
+    try {
+      r.src?.stop(t + fade + 0.1);
+    } catch {
+      /* already stopped */
     }
-    // let the reverb tail die, then free the nodes
     setTimeout(() => {
-      for (const n of r.nodes) {
-        try {
-          n.disconnect();
-        } catch {
-          /* gone */
-        }
+      try {
+        r.mix.disconnect();
+      } catch {
+        /* gone */
       }
-    }, (fade + 3) * 1000);
+    }, (fade + 1) * 1000);
   }
 }

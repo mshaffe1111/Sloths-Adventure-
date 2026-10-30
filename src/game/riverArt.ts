@@ -302,21 +302,71 @@ export function drawW2Lift(ctx: CanvasRenderingContext2D, p: Platform, postRight
 }
 
 /**
- * a ripple where the next log will slide out from under the bank (the logs used to appear with no warning: a tester could not see them
- * coming, 2026-10-24). Grows over the last second before the log shows.
+ * The painted river's own foam: the white flecks and streaks along the water strip's wave crests, lifted out once (only its bright
+ * pixels, feathered to nothing at the edges, so no box of water shows round them), four pieces from along the strip. Null before the
+ * sheet has loaded or where a canvas cannot be read.
  */
-export function drawLogComing(ctx: CanvasRenderingContext2D, x: number, surfaceY: number, k: number, t: number) {
-  ctx.save();
-  ctx.globalAlpha = 0.25 + 0.55 * k;
-  ctx.strokeStyle = '#eafcff';
-  ctx.lineWidth = 2;
-  for (let i = 0; i < 3; i++) {
-    const r = 10 + i * 9 + ((t * 26) % 9) + k * 8;
-    ctx.beginPath();
-    ctx.ellipse(x, surfaceY + 2, r, r * 0.28, 0, Math.PI * 1.05, Math.PI * 1.95);
-    ctx.stroke();
+let foam: HTMLCanvasElement[] | null = null;
+function foamBits(): HTMLCanvasElement[] | null {
+  if (foam) return foam;
+  if (!riverArtReady() || typeof document === 'undefined') return null;
+  const f = W2_FRAMES.water;
+  const out: HTMLCanvasElement[] = [];
+  const W = 120, H = 44, Y = Math.round(f.h * 0.03);
+  for (const fx of [0.03, 0.27, 0.52, 0.75]) {
+    const c = document.createElement('canvas');
+    c.width = W;
+    c.height = H;
+    const g = c.getContext('2d', { willReadFrequently: true });
+    if (!g) return null;
+    g.drawImage(img!, f.x + Math.round(f.w * fx), f.y + Y, W, H, 0, 0, W, H);
+    try {
+      const d = g.getImageData(0, 0, W, H);
+      for (let i = 0; i < d.data.length; i += 4) {
+        const lum = 0.3 * d.data[i] + 0.55 * d.data[i + 1] + 0.15 * d.data[i + 2];
+        const px = (i / 4) % W, py = Math.floor(i / 4 / W);
+        const edge = Math.min(1, px / 16, (W - 1 - px) / 16, py / 6, (H - 1 - py) / 6);
+        const k = Math.max(0, Math.min(1, (lum - 175) / 50)) * edge;
+        d.data[i + 3] = Math.round(d.data[i + 3] * k);
+      }
+      g.putImageData(d, 0, 0);
+    } catch {
+      return null;
+    }
+    out.push(c);
   }
+  foam = out;
+  return foam;
+}
+
+/** one piece of the river's foam, `w` wide, centred on (x, y); `k` picks which. False before the sheet has loaded. */
+export function drawRiverFoam(ctx: CanvasRenderingContext2D, k: number, x: number, y: number, w: number, alpha: number, flip = false): boolean {
+  const bits = foamBits();
+  if (!bits) return false;
+  const c = bits[((k % bits.length) + bits.length) % bits.length];
+  const h = (w * c.height) / c.width;
+  ctx.save();
+  ctx.globalAlpha *= Math.max(0, Math.min(1, alpha));
+  if (flip) {
+    ctx.translate(x, y);
+    ctx.scale(-1, 1);
+    ctx.drawImage(c, -w / 2, -h / 2, w, h);
+  } else ctx.drawImage(c, x - w / 2, y - h / 2, w, h);
   ctx.restore();
+  return true;
+}
+
+/**
+ * a stir of foam where the next log will slide out from under the bank (the logs used to appear with no warning: a tester could not see
+ * them coming, 2026-10-24): the river's own painted foam welling up and spreading out both ways, over the last second before the log
+ * shows. False before the sheet has loaded.
+ */
+export function drawLogComing(ctx: CanvasRenderingContext2D, x: number, surfaceY: number, k: number, t: number): boolean {
+  const a = 0.35 + 0.65 * k;
+  const spread = 6 + 22 * k + ((t * 20) % 6);
+  return drawRiverFoam(ctx, 1, x, surfaceY + 6, 46 + 20 * k, a)
+    && drawRiverFoam(ctx, 2, x - spread, surfaceY + 9, 40, a * 0.8, true)
+    && drawRiverFoam(ctx, 3, x + spread, surfaceY + 9, 40, a * 0.8);
 }
 
 /** the little ones' pictures: sad in the cage, happy when freed */

@@ -10,6 +10,7 @@ import { bodyRect } from './fight.ts';
 import { TURTLE_FRAMES, TURTLE_WALK_W } from './turtleAtlasData.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
 import { TURTLE_ANIM, TURTLE_ANIM_UP, TURTLE_ANIM_URL, TURTLE_SEQ } from './turtleAnimData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 const OL = '#2b2416';
 const SHELL = '#5f6b3a';
@@ -214,7 +215,7 @@ export function drawTurtleSprite(ctx: CanvasRenderingContext2D, e: Enemy, t: num
     ctx.fill();
   }
   const clip = turtleClip(e, t);
-  if (!(clip && ANIM.draw(ctx, clip, K))) ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
+  if (!(clip && ANIM.draw(ctx, clip, K))) drawSheet(ctx, img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
   ctx.restore();
   // a kicked shell leaves dust lines behind it (the dizzy pose has its own spiral eyes)
   if (e.state === 'slide' && !e.defeated) {

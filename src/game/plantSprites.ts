@@ -10,6 +10,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { PLANT_FRAMES } from './plantAtlasData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_PLANTS = true;
 
@@ -98,7 +99,7 @@ export function drawPlantSprite(ctx: CanvasRenderingContext2D, world: number, mi
   ctx.rotate(sway);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }
@@ -118,7 +119,7 @@ export function drawPlantAt(ctx: CanvasRenderingContext2D, num: number, x: numbe
   if (flip) ctx.scale(-1, 1);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, -f.h * k, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, -f.h * k, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

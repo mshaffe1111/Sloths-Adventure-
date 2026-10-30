@@ -5,14 +5,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { SFX } from './sfx.ts';
+import { recFor } from './sfxRec.ts';
 import { stingLength } from './stingers.ts';
 
 const src = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8');
 
 test('SN-5: the shrine plays the short chime; the victory sting waits for the card', () => {
   assert.match(src('../game/audio.ts'), /playExitChime\(\) \{ this\.c\.fx\('star', 2\); \}/, 'a short chime');
-  assert.ok(SFX.star);
+  assert.deepEqual(recFor('star', 2), { fx: 'star', takes: [2] }, 'the third star\'s recorded note');
   const engine = src('../game/engine.ts');
   const at = engine.indexOf('this.exitTotemReached = true;');
   const block = engine.slice(at, at + 400);
