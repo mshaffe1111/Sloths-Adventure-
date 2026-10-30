@@ -10,6 +10,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { bodyFor } from './creatureRig.ts';
 import type { Enemy } from './types.ts';
 import { SENTRY_FRAMES, SENTRY_SEQ, type SentryFrame } from './sentryAnimData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const SENTRY_URLS = [new URL('../assets/w6to10/creatures/sentry-anim-0.webp', import.meta.url).href, new URL('../assets/w6to10/creatures/sentry-anim-1.webp', import.meta.url).href] as const;
 const FRAMES: Record<string, SentryFrame> = SENTRY_FRAMES;
@@ -81,7 +82,7 @@ export function drawSentrySprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   ctx.ellipse(0, 1, 30, 5, 0, 0, Math.PI * 2);
   ctx.fill();
   // (the hit flash is the engine's, around every animal: hurtFlash.ts, AN-6)
-  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
+  drawSheet(ctx, img, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   // (the eyes and the rune glow softly, a little brighter as it winds up; out once it is beaten)
   if (!enemy.defeated) {
     const a = 0.32 + (st === 'windup' ? 0.25 : 0) + 0.06 * Math.sin(time * 3 + enemy.id);
