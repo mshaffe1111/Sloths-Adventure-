@@ -1077,6 +1077,12 @@ export class GameEngine {
   /** a note, book or keepsake is picked up: a burst, a line of text, and the app opens it */
   private collectFind(c: Collectible) {
     c.collected = true;
+    // the snail: a tiny sound and nothing else, no stopping (the app keeps him, App.tsx onFind)
+    if (FIND_BY_ID[c.findId ?? '']?.kind === 'snail') {
+      sound.playUiTap();
+      this.callbacks.onFind?.(c.findId!);
+      return;
+    }
     this.runScore += 300;
     sound.playRelicFound();
     this.spawnSparkBurst(c.x, c.y, '#fde68a');

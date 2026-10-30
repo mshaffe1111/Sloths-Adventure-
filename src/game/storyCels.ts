@@ -73,6 +73,8 @@ export const CEL_CAST: Record<string, CelCast> = {
   LP: { prefix: 'lp', name: 'Lieutenant Pell', x: 0.66, face: -1, rest: 'stand_worry', who: ['Lieutenant Pell'] },
   TC: { prefix: 'tc', name: 'the town crier', x: 0.66, face: -1, rest: 'scroll', who: ['Gruntlewick'] },
   PO: { prefix: 'po', name: 'the mail carrier', x: 0.66, face: -1, rest: 'carry_stand', who: ['Mailman'] },
+  DR: { prefix: 'dr', name: 'the Magma Drake at his tea', x: 0.66, face: 1, rest: 'bowed', who: ['Magma Drake'] },
+  TS: { prefix: 'ts', name: 'the tea set (the good china: pot, cups, cup0, cup1; his own tin: mug, pottin)', x: 0.5, face: 1, rest: 'pot', who: [] },
 };
 
 export function isCelCode(code: string): boolean {

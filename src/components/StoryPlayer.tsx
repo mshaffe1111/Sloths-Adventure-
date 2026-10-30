@@ -2,10 +2,14 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import type { StoryPanel } from '../game/story.ts';
 import { isEasy } from '../game/difficulty.ts';
 import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
-import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
+import { noticed } from '../game/storyNotice.ts';
+import { loadFinds } from '../game/finds.ts';
+import { loadBadgeStore } from '../game/badgeStore.ts';
+import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
+import { Plaque } from './KitParts.tsx';
 import { Icon, type IconName } from './icons/index.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 
@@ -28,6 +32,7 @@ const SPEAKERS: Record<string, { dot: string }> = {
   Grandma: { dot: '#c9a8e8' },
   'Lieutenant Pell': { dot: '#9aa3ad' },
   Squirrel: { dot: '#c98a4b' },
+  Soldier: { dot: '#8c7f6a' },
   'General Iron-Claw': { dot: '#e0524a' },
   Grandfather: { dot: '#b9a37a' },
   Thornbark: { dot: '#7a9a3c' },
@@ -71,10 +76,11 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // a picture the player plays with their thumbs needs a touch screen; without one it reads as a picture, with the narration that says
   // what the thumbs would have done
   const touchy = useMemo(() => typeof window !== 'undefined' && ('ontouchstart' in window || (navigator.maxTouchPoints ?? 0) > 0), []);
-  const panels = useMemo(
-    () => (touchy ? script.filter((p) => !p.narratedOnly) : script.map((p) => (p.hold ? { ...p, hold: undefined } : p))),
-    [script, touchy],
-  );
+  const panels = useMemo(() => {
+    // (and the world notices what this player did: the lines for what they found, the falls the General counted: storyNotice.ts)
+    const heard = noticed(script, loadFinds(), loadBadgeStore().counters.falls);
+    return touchy ? heard.filter((p) => !p.narratedOnly) : heard.map((p) => (p.hold ? { ...p, hold: undefined } : p));
+  }, [script, touchy]);
   // dev only: `?storyAt=N` opens a story on its Nth picture (for before/after screenshots)
   const [idx, setIdx] = useState(() => {
     if (!import.meta.env.DEV || typeof window === 'undefined') return 0;
@@ -87,6 +93,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const ahead = panels.slice(idx, idx + 3);
     preloadScenePhotos(ahead.map((p) => p.scene.photo?.key));
     preloadScenePlates(ahead.slice(1).map((p) => p.scene.plate));
+    preloadSceneCards(ahead.slice(1).map((p) => p.scene.card));
   }, [panels, idx]);
   // the cast's paintings load as the story opens, and a closed story lets its pictures go
   useEffect(() => {
@@ -424,8 +431,8 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       </div>
 
       {/* (a steady height for six lines of words, so the picture above stays put from one panel to the next; a longer line still grows it) */}
-      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS + 60 }}>{!cardUp && box}</div>}
-      {wide && !cardUp && (
+      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS + 60 }}>{!cardUp && !panel.closing && box}</div>}
+      {wide && !cardUp && !panel.closing && (
         <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
           {box}
         </div>
@@ -438,6 +445,16 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
             <span className={`sp-thumb gx-token ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`}><Icon name="paw" size={17} /></span>
           </div>
           <div className="sp-hold-say kit-plaque"><span>{phase === 'lift' || phase === 'reach' ? hold.lift : hold.both}</span></div>
+        </div>
+      )}
+
+      {/* the closing card: the picture goes dark, a beat of silence, then the words on the menu kit's plaque; a tap ends it */}
+      {panel.closing && !cardUp && (
+        <div className="sp-close" onClick={onFinish} key={`close-${idx}`} role="button" aria-label={panel.text}>
+          <Plaque as="h2" className="sp-close-plaque">
+            {panel.text.replace(/\.$/, '')}
+          </Plaque>
+          <div className="sp-card-hint sp-close-hint">tap to finish</div>
         </div>
       )}
 

@@ -15,23 +15,27 @@ from cut import cut_figure, on_dark  # noqa: E402
 from pack import pack  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
-SETS = {'pokey': 2.0, 'meeca': 2.0, 'dot': 3.0}
+SETS = {'pokey': 2.0, 'meeca': 2.0, 'dot': 3.0, 'guard': 4.0, 'pokeyface': 3.0}
+# a set cut from another set's takes (pokeyface: Pokey's face close-ups again at 3x, 2026-10-30 audit: at 2x they were drawn at up to 2.1x)
+FROM = {'pokeyface': ('pokey', 'face_')}
 
 
 def main():
     which, src = sys.argv[1], Path(sys.argv[2])
     hd = SETS[which]
     picks = json.loads(Path(sys.argv[3]).read_text()) if len(sys.argv) > 3 else {}
-    meta = json.loads((REPO / f'tools/art/hfbatch/starts/storyart/meta-{which}.json').read_text())
+    base, only = FROM.get(which, (which, ''))
+    meta = json.loads((REPO / f'tools/art/hfbatch/starts/storyart/meta-{base}.json').read_text())
+    meta = {k: v for k, v in meta.items() if only in k}
     takes = {}
     for p in sorted(src.iterdir()):
-        m = re.match(rf'{which}-(.+?)-(s\d+.*)\.(png|webp)$', p.name)
+        m = re.match(rf'{base}-(.+?)-(s\d+.*)\.(png|webp)$', p.name)
         if m:
             takes.setdefault(m.group(1), {})[m.group(2)] = p
     figs, olds = {}, {}
     missing = []
     for key, m in meta.items():
-        name = key[len(which) + 1:]
+        name = key[len(base) + 1:]
         t = takes.get(name)
         if not t:
             missing.append(name)

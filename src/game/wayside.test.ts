@@ -198,11 +198,11 @@ test('a saved game carries what was heard, but the switch stays on the device', 
 // ---- the Hush Fern hint ----
 import { dotPresent, fernLine, hidesFern } from './wayside.ts';
 
-test('only the stages that hide a fern (a keepsake in 5, or 3 in World 4; a book in 8) get the hint, and it never says where', () => {
+test('only the stages that hide a fern (a keepsake in 5, or 3 in World 4; a book in 8; Dot\'s pocket in 6 of Worlds 4-9; the Notch in 1-4) get the hint, and it never says where', () => {
   for (let w = 1; w <= 10; w++) {
     for (let m = 1; m <= 9; m++) {
       const line = fernLine(w, m);
-      const fern = m === (w === 4 ? 3 : 5) || m === 8;
+      const fern = m === (w === 4 ? 3 : 5) || m === 8 || (m === 6 && w >= 4 && w <= 9) || (w === 1 && m === 4);
       assert.equal(!!line, fern, `${w}-${m}`);
       assert.equal(hidesFern(w, m), fern);
       if (line) {

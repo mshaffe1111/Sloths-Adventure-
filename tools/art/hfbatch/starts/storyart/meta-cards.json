@@ -1,0 +1,66 @@
+{
+ "venom-fang": {
+  "world": 1,
+  "words": "a big green snake with a small gold crown resting in a loose coil by a mossy branch, looking pleased but pretending not to be, a young sloth with a satchel standing politely beside him asking first, a warm friendly visit in the rainforest"
+ },
+ "crocus-rex": {
+  "world": 2,
+  "words": "a big crocodile with a crooked little crown swimming gently across the calm blue river like a ferry, three small villagers clearly riding on his back, a little sloth, a sloth mail carrier and an old marmoset, the tree village on the far bank, sunny"
+ },
+ "shadow-prowler": {
+  "world": 3,
+  "words": "a black panther lying quietly on a mossy rock ledge in a glowworm cave in the evening, a young sloth sitting beside him, neither of them talking, both looking out, peaceful"
+ },
+ "sky-sovereign": {
+  "world": 4,
+  "words": "a great harpy eagle flying free on the wind over the misty valley and waterfalls, two young grown eaglets flying with her, the wind blowing where it likes"
+ },
+ "tarantula-queen": {
+  "world": 5,
+  "words": "a big friendly tarantula queen with a tiny crown at a little round table set for tea among the pink orchids, a china teapot and cups, a young sloth guest sitting with her finishing his cup"
+ },
+ "marsh-reaver": {
+  "world": 6,
+  "words": "a big marsh creature sitting contentedly on a mangrove root beside a forest path at bright noon, half of his lunch left on a leaf on the root facing the path for a passer-by, sunlight through the mangroves, clean clear water"
+ },
+ "stone-golem": {
+  "world": "ruins",
+  "words": "a mossy stone golem speaking slowly at a council in the ancient ruins, the other forest guardians sitting on the stone chairs around him listening patiently, a tarantula queen, a red dragon, a black panther and a green snake with a crown, sun through the trees"
+ },
+ "night-wing-monarch": {
+  "world": 8,
+  "words": "a huge night butterfly monarch resting on a mossy branch under the moon writing in a little book, a young sloth beside her telling her how a dream ended, fireflies"
+ },
+ "magma-drake": {
+  "world": 9,
+  "words": "a red dragon by the volcano with two young sloths visiting, a girl sloth in a pink headband and a boy sloth with a satchel, in the front two used teacups on saucers with a ring of tea in each and steam rising, his cave swept tidy, warm glow"
+ },
+ "general": {
+  "world": 2,
+  "words": "an old brown sloth in a rust red scarf and no armour planting a small young tree on the riverbank in spring, kneeling patiently, taking his time, gentle morning light"
+ },
+ "soldiers": {
+  "world": "cookhouse",
+  "words": "two tired soldier sloths in green coats sitting down at a wooden counter in a little tailor shop, relieved to sit, a measuring tape on the counter, warm lamp light"
+ },
+ "squirrels": {
+  "world": 1,
+  "words": "a family of red squirrels under the old vine proudly pointing at their new hand-made wooden sign on a post, the sign painted with rough hand lettering, little kids cheering, sunny rainforest"
+ },
+ "gruntlewick": {
+  "world": "village",
+  "words": "an old marmoset town crier with a white beard reading a brand new warning from a scroll in the tree village, very serious about it, proud"
+ },
+ "mailman": {
+  "world": 1,
+  "words": "a sloth mail carrier with a cap and a mail bag walking slowly along a forest road carrying a parcel very carefully and seriously in both arms, taking his time, morning light"
+ },
+ "pell": {
+  "world": "cookhouse",
+  "words": "a sloth lieutenant in his own little tailor shop sewing at the counter, a crooked wooden shop sign hanging askew above him, customers waiting happily, warm daylight, a busy friendly shop"
+ },
+ "flicker": {
+  "world": "cookhouse",
+  "words": "a small firefly glowing bright warm yellow over a wooden shop counter at night, his glow the only light, a warm steady pool of golden light on the counter, the rest of the shop dark and cosy"
+ }
+}

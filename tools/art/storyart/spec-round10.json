@@ -1,0 +1,140 @@
+{
+ "tag": "r10",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/c2e2318dbdf99b6e1069c176c2043487d7d96671/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "pl-storm-returns-up2",
+   "edit": true,
+   "start": "canvas-storm-returns.png",
+   "seed": 2,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Fill the empty white top of this picture so the painting carries on upward: the storm clouds and the rain go on up into a dark churning night sky lit by the lightning, the tops of the great trees and their mossy branches reach up into it. Keep the bottom of the picture exactly as it is. Same painted storybook style, no text.",
+   "neg": "white, blank, frame, border, text, people"
+  },
+  {
+   "name": "pl-storm-returns-2",
+   "then": "pl-storm-returns-up2",
+   "prompt": "slothadv style, painted storybook illustration, a sloth asleep on a mossy branch in a night storm, lightning, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.26,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ]
+  },
+  {
+   "name": "pl-storm-returns-up6",
+   "edit": true,
+   "start": "canvas-storm-returns.png",
+   "seed": 6,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Fill the empty white top of this picture so the painting carries on upward: the storm clouds and the rain go on up into a dark churning night sky lit by the lightning, the tops of the great trees and their mossy branches reach up into it. Keep the bottom of the picture exactly as it is. Same painted storybook style, no text.",
+   "neg": "white, blank, frame, border, text, people"
+  },
+  {
+   "name": "pl-storm-returns-6",
+   "then": "pl-storm-returns-up6",
+   "prompt": "slothadv style, painted storybook illustration, a sloth asleep on a mossy branch in a night storm, lightning, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.26,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ]
+  },
+  {
+   "name": "pl-nest-morning-up2",
+   "edit": true,
+   "start": "canvas-nest-morning.png",
+   "seed": 2,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Fill the empty white top of this picture so the painting carries on upward: the misty morning rainforest goes on upward: the tall palms and the great tree reach up into a pale grey-green sky with soft mist and hanging vines. Keep the bottom of the picture exactly as it is. Same painted storybook style, no text.",
+   "neg": "white, blank, frame, border, text, people"
+  },
+  {
+   "name": "pl-nest-morning-2",
+   "then": "pl-nest-morning-up2",
+   "prompt": "slothadv style, painted storybook illustration, a wet mossy branch in the misty morning rainforest with a black thorn and a scarf, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.26,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ]
+  },
+  {
+   "name": "pl-nest-morning-up6",
+   "edit": true,
+   "start": "canvas-nest-morning.png",
+   "seed": 6,
+   "w": 1280,
+   "h": 1360,
+   "prompt": "Fill the empty white top of this picture so the painting carries on upward: the misty morning rainforest goes on upward: the tall palms and the great tree reach up into a pale grey-green sky with soft mist and hanging vines. Keep the bottom of the picture exactly as it is. Same painted storybook style, no text.",
+   "neg": "white, blank, frame, border, text, people"
+  },
+  {
+   "name": "pl-nest-morning-6",
+   "then": "pl-nest-morning-up6",
+   "prompt": "slothadv style, painted storybook illustration, a wet mossy branch in the misty morning rainforest with a black thorn and a scarf, no text",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry",
+   "strength": 0.26,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "tile": [
+    1280,
+    256
+   ],
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/c2e2318dbdf99b6e1069c176c2043487d7d96671/",
+ "keep": [
+  "pl-storm-returns-2",
+  "pl-storm-returns-6",
+  "pl-nest-morning-2",
+  "pl-nest-morning-6"
+ ]
+}
