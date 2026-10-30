@@ -23,6 +23,7 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
 - **Co-creator (Matt, 2026-10-29): the lead is Matt's partner, not just his manager.** "You can disagree and have discussions with me about direction and priorities... If this fails, you fail with it." Say what you think about direction, scope and priorities, push back when you disagree, and own the result; Matt still has the final say.
 - **Talking to Matt**: ask him one multiple-choice question at a time. Explain in plain spoken terms, give honest pushback, no apologies. Give times in Eastern time (ET), never UTC (Matt, 2026-10-29).
 - **Play Store (Matt, 2026-10-30):** everything is built to pass Google Play. Read `reference/PLAY-STORE-RULES.md` before building any screen, menu, sound, save or setting, and run its §6 check before a merge.
+- **Performance (Matt, 2026-10-30):** "silky smooth" on every phone. Read `reference/PERFORMANCE-RULES.md` before building or changing anything that draws; its §1 budget is a pass/fail check.
 - **Phone game**:
   - touch controls only;
   - every stage works in portrait and landscape;
