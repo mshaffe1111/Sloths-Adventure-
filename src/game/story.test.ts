@@ -9,6 +9,7 @@ import { AFTER_BOSS, MEMORIES, MEMORY_ORDER, nextAfterBoss, parseMemories, type 
 import { FINALE_KEEPSAKES, KEEPSAKE_LINES, SATCHEL_KEEPSAKES, endTagPanels, finalePanels } from './storyFinale.ts';
 import { FINDS } from './finds.ts';
 import { PLATES, isPlate } from './plateData.ts';
+import { END_CARDS } from './endCardsData.ts';
 
 const CUES: StoryCue[] = ['pokey', 'meeca', 'bloom', 'grandma', 'journey', 'comedy', 'tender', 'sorrow', 'dread', 'war', 'chase', 'reveal', 'resolve', 'triumph', 'mercy', 'finale', 'hush'];
 const STINGS: StorySting[] = ['cliffhanger', 'reveal', 'laugh', 'blow', 'bloom', 'darkness', 'door', 'heartbreak', 'triumph'];
@@ -278,6 +279,13 @@ test('the plates listed are the plates painted, and each has a floor to stand on
   const files = readdirSync(new URL('../assets/story/plates/', import.meta.url)).filter((f) => f.endsWith('.webp')).map((f) => f.replace(/\.webp$/, ''));
   assert.deepEqual(files.sort(), Object.keys(PLATES).sort(), 'every picture is listed and every listed plate has its picture');
   for (const [k, v] of Object.entries(PLATES)) assert.ok(v.ground > 0.4 && v.ground < 0.95, `${k}: the floor is on the picture`);
+});
+
+test('the ending cards listed are the cards painted, and the finale shows each once, in order (S-7)', () => {
+  const files = readdirSync(new URL('../assets/story/cards/', import.meta.url)).filter((f) => f.endsWith('.webp')).map((f) => f.replace(/\.webp$/, ''));
+  assert.deepEqual(files.sort(), END_CARDS.map(([k]) => k).sort(), 'every card is listed and every listed card has its picture');
+  const shown = finalePanels([]).filter((p) => p.scene.card).map((p) => [p.scene.card, p.text]);
+  assert.deepEqual(shown, END_CARDS.map(([k, l]) => [k, l]));
 });
 
 test('every stage has a real name and line of its own (no generic mission names to fall back on, polish report ST-8)', async () => {

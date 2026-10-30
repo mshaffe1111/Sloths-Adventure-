@@ -9,7 +9,7 @@
  * And the finds that tell Pokey's, Dot's and the guardians' side (EXTRA_FINDS, the 2026-10-29 story report, approved):
  *  - DOT'S LOST POCKET, six things that fell out of her pouch in the thorns (4-D), one per world 4-9, in the 6th stage,
  *  - THE NOTCH, the growth-notch twig from the old nest, in 1-4 (not 1-1: a fern there would teach the crouch before 1-5 does),
- *  - THE SNAIL, once in every world, in the 3rd stage (4-9 in World 4; only once his painted sprite is in: SNAIL_PAINTED).
+ *  - THE SNAIL, once in every world, in the 3rd stage (4-9 and 5-9 in Worlds 4 and 5, whose 3rd stages hold their own things).
  */
 
 export type FindKind = 'note' | 'book' | 'keepsake' | 'pocket' | 'notch' | 'snail';
@@ -44,7 +44,7 @@ export interface FindDef {
 /** the stage of each world (1..9) that hides each kind of find; stage 7 hides the Thorn Gate in World 7 and stage 10 is the boss */
 export const FIND_STAGE: Record<FindKind, number> = { note: 2, keepsake: 5, book: 8, pocket: 6, notch: 4, snail: 3 };
 /** a world whose stages hide a find somewhere else, by design (World 4: the ribbon is behind the falls in 4-3, Waterfall Steps) */
-export const FIND_STAGE_IN: Record<number, Partial<Record<FindKind, number>>> = { 4: { keepsake: 3, snail: 9 } };
+export const FIND_STAGE_IN: Record<number, Partial<Record<FindKind, number>>> = { 4: { keepsake: 3, snail: 9 }, 5: { snail: 9 } };
 /** the stage of world `world` that hides each kind of find */
 export const findStage = (world: number, kind: FindKind): number => FIND_STAGE_IN[world]?.[kind] ?? FIND_STAGE[kind];
 
@@ -320,7 +320,7 @@ export const SNAIL_FINDS: FindDef[] = Array.from({ length: 10 }, (_, i) => ({
   pages: [{ text: 'The snail from the garden path, a little further along. He does not stop.' }],
 }));
 /** the snail is only hidden in the stages once his painted sprite is in (story-art): never a code-drawn stand-in */
-export const SNAIL_PAINTED = false;
+export const SNAIL_PAINTED = true;
 /** the finds beyond the thirty notes, albums and keepsakes (they do not count toward "every find" or the secret token) */
 export const EXTRA_FINDS: FindDef[] = [...POCKET_FINDS, NOTCH_FIND, ...(SNAIL_PAINTED ? SNAIL_FINDS : [])];
 export const ALL_FINDS: FindDef[] = [...FINDS, ...EXTRA_FINDS];

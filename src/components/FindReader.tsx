@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { snailUrl } from '../game/findArt.ts';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import type { FindDef, KeepsakeIcon } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
@@ -61,12 +62,12 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
   }, [last, page, onClose]);
 
   const label =
-    find.kind === 'note' ? 'A note' : find.kind === 'book' ? 'A photo album' : find.kind === 'pocket' ? "Something of Dot's" : find.kind === 'notch' ? 'From the old nest' : 'A keepsake';
+    find.kind === 'note' ? 'A note' : find.kind === 'book' ? 'A photo album' : find.kind === 'pocket' ? "Something of Dot's" : find.kind === 'notch' ? 'From the old nest' : find.kind === 'snail' ? 'On the path' : 'A keepsake';
 
   return (
     <div className="ui-scrim fr-scrim" role="dialog" aria-modal="true" aria-label={find.title} onClick={onClose}>
       <GhostOnExit />
-      <div className={`fr-card fr-${find.kind === "pocket" || find.kind === "notch" ? "keepsake" : find.kind} ${find.kind === 'note' ? `fr-paper-${find.paper ?? 'leaf'}` : ''}`} onClick={(e) => e.stopPropagation()}>
+      <div className={`fr-card fr-${find.kind === 'pocket' || find.kind === 'notch' || find.kind === 'snail' ? 'keepsake' : find.kind} ${find.kind === 'note' ? `fr-paper-${find.paper ?? 'leaf'}` : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="fr-label">{label} · {find.world > 0 ? `World ${find.world}` : 'Quest bonus'}</div>
         <h2 className="fr-title">{find.title}</h2>
 
@@ -85,9 +86,15 @@ export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
           </div>
         )}
 
-        {(find.kind === 'pocket' || find.kind === 'notch') && (
+        {(find.kind === 'pocket' || find.kind === 'notch' || find.kind === 'snail') && (
           <div className="fr-keep">
-            {find.kind === 'pocket' ? <DotPerched size={96} className="fr-dot" /> : NOTCH_URL && <img className="fr-item" src={NOTCH_URL} alt="" style={{ height: 118 }} />}
+            {find.kind === 'pocket' ? (
+              <DotPerched size={96} className="fr-dot" />
+            ) : find.kind === 'snail' ? (
+              <span className="sc-snail" style={{ backgroundImage: `url(${snailUrl() ?? ''})` }} />
+            ) : (
+              NOTCH_URL && <img className="fr-item" src={NOTCH_URL} alt="" style={{ height: 118 }} />
+            )}
             <div className="fr-text">
               <PaperText text={pg.text} />
             </div>

@@ -9,6 +9,7 @@ import { POKEY_JOURNAL, journalWritten } from '../game/pokeyJournal.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { SceneBackdrop } from './title/TitleScene.tsx';
 import { DotPerched, Plaque } from './KitParts.tsx';
+import { snailUrl } from '../game/findArt.ts';
 
 /**
  * Pokey's satchel (2026-10-29 story report, step 6): everything he picked up on the way, his journal, and the story scenes to watch
@@ -118,7 +119,7 @@ export const Satchel: React.FC<Props> = ({ finds, levels, memories, world = 1, i
             {group('Keepsakes', FINDS.filter((f) => f.kind === 'keepsake'), (f) => <img className="tr-thumb tr-item" src={itemUrl(f.icon ?? 'petal') ?? ''} alt="" />, (f) => setOpen(open === f.id ? null : f.id))}
             {group("Dot's lost pocket", POCKET_FINDS, () => <Icon name="hummingbird" size={42} />)}
             {group('From the old nest', [NOTCH_FIND], () => <Icon name="leaf" size={42} />)}
-            {SNAIL_PAINTED && group('The snail', SNAIL_FINDS, () => <Icon name="sloth" size={42} />)}
+            {SNAIL_PAINTED && group('The snail', SNAIL_FINDS, () => <span className="sc-snail" style={{ backgroundImage: `url(${snailUrl() ?? ''})` }} />)}
             {group('Notes from Meeca', FINDS.filter((f) => f.kind === 'note'), () => <img className="tr-thumb tr-item" src={itemUrl('scroll') ?? ''} alt="" />)}
             {group('Photo albums', FINDS.filter((f) => f.kind === 'book'), (f) => {
               const url = photoUrl(f.pages[0]?.photo);

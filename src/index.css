@@ -1495,3 +1495,13 @@
 .sc-w { font: 700 10.5px/var(--rule) var(--font-ui); color: #9a7a50; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
 .sc-hand { min-height: var(--rule); font-family: var(--font-fun); font-size: 17px; line-height: var(--rule); color: #2e3a6a; }
 @media (max-width: 480px) { .sc-journal { --rule: 31px; } .sc-hand { font-size: 15.5px; } .sc-entry { grid-template-columns: 62px 1fr; } }
+
+/* the snail's card in the satchel: the stretched frame of his two (story-art's strip, 512 x 130) */
+.sc-snail {
+  display: block;
+  width: 84px;
+  height: 43px;
+  background-size: 200% 100%;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}

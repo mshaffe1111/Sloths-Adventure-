@@ -119,6 +119,8 @@ export interface StoryScene {
   memory?: boolean;
   /** a photograph held up over the picture */
   photo?: ScenePhoto;
+  /** an ending card (endCards.ts) drawn over the whole picture: the cast and the world behind it are not seen */
+  card?: string;
 }
 
 /**

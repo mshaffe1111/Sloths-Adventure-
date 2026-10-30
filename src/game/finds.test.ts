@@ -45,7 +45,7 @@ test('each find sits in its own stage, on ground the player can reach, clear of 
     assert.equal(here.length, 1, `${l.id} hides exactly one find`);
     const c = here[0];
     assert.equal(c.findId, expected.id);
-    assert.equal(c.hidden, expected.kind !== 'note');
+    assert.equal(c.hidden, expected.kind !== 'note' && expected.kind !== 'snail', `${l.id}: a fern hides it, unless it is a note or the snail`);
     const res = validateStage(stage);
     assert.equal(res.ok, true, `${l.id} still passes the validator: ${res.errors.slice(0, 2).join('; ')}`);
     const plat = stage.platforms.find((p) => p.type === 'solid' && c.x >= p.x && c.x <= p.x + p.width && Math.abs(p.y - (c.y + 26)) < 1);

@@ -747,7 +747,7 @@ export class W5Play {
    */
   drawItem(ctx: CanvasRenderingContext2D, c: Collectible, t: number, world: number): boolean {
     if (c.collected) return false;
-    if (c.type === 'find' && !c.hidden) return drawPinkBell(ctx, c.x, c.y + 26, t, c.id);
+    if (c.type === 'find' && !c.hidden && !c.findId?.endsWith('_snail')) return drawPinkBell(ctx, c.x, c.y + 26, t, c.id);
     if (c.type === 'exit_totem' && !c.isLocked && w5ArtReady()) {
       ctx.save();
       ctx.translate(c.x, c.y - 100);

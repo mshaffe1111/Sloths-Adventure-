@@ -15,6 +15,7 @@ import { chapter, D, FL, GF, GM, M, N, OFF, P, pan, say, type Beat } from './sto
 import { LULLABY } from './storyMemories.ts';
 import { allFound, allOf, POCKET_FINDS, RUINS_NOTE, SNAIL_FINDS } from './finds.ts';
 import type { StoryPanel } from './story.ts';
+import { END_CARDS } from './endCardsData.ts';
 
 const VF = say('Venom Fang');
 const CROCUS = say('Crocus Rex');
@@ -25,7 +26,6 @@ const REAVER = say('Marsh Reaver');
 const GOLEM = say('Stone Idol Golem');
 const DRAKE = say('Magma Drake');
 const MONARCH = say('Night-Wing Monarch');
-const SQ = say('Squirrel');
 
 /** the guardians on the fortress walls in full colour: a cast string (Thornbark listens from his hollow, far away) */
 const wallX = (w: number) => 0.07 + (w - 1) * 0.0905;
@@ -231,7 +231,6 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     FL('I\'m staying, if that\'s all right.', 'M:happy@.3*.9 D@.6^.42 FL:talk@.42^.5 LP:sew_table@.8*.8', { cue: 'tender', i: 0.45, p: VIL }),
     D('He\'s all right. Don\'t tell him.', 'M:happy@.3*.9 D@.6^.42 FL@.42^.5 LP:sew_table@.8*.8', { p: VIL }),
     FL('I\'m right here.', 'M:laugh@.3*.9 D:flinch@.6^.42 FL:smug@.42^.5 LP:sew_table@.8*.8', { sting: 'laugh', p: VIL }),
-    N('Pell\'s first customers were two soldiers. He took their measurements. They didn\'t need new coats. They just wanted to sit down.', 'LP:sew_table@.5*.8', { cue: 'comedy', i: 0.4, p: VIL }),
     N('On the first fine afternoon, at four o\'clock exactly, the Tarantula Queen poured the tea. The General looked at the chair at the head of the table, the one she had dusted every morning for nine years.',
       `${TEA_UP} B5@.92^.84*.45<`, { cue: 'tender', i: 0.4, p: VIL }),
     N('He sat down in it, put his feet up, and finished the whole cup.', `${TEA} B5@.92^.84*.45<`, { cue: 'mercy', i: 0.5, p: VIL }),
@@ -258,6 +257,8 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     OFF('Shall I tell the General, sir?', `${TEA} LP:cap_in_hand@.92*.75`, { cue: 'comedy', i: 0.4, p: VIL }),
     GF('Tell him he has retired.', `${TEA} LP:salute_nervous@.92*.75`, { sting: 'laugh', p: VIL }),
     N('That spring he went down to the Sunlit Riverbank, to the place where the bank had washed away, and planted a tree. The next day he went back and planted another. He took his time.', 'GV:walk_a@.5*1.12', { w: 2, cue: 'tender', i: 0.45, p: { zoom: 1.15 } }),
+    // S-7: the ending cards, one a character, the line under each (endCards.ts; the soldiers' and the squirrels' weeks after are theirs)
+    ...END_CARDS.map(([card, line], k) => N(line, '', { ...(k === 0 ? { cue: 'tender' as const, i: 0.45 } : {}), p: { card } })),
   ]);
 
   // ───────────── THE END ─────────────
@@ -267,8 +268,6 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     ...when(has('w8_keepsake'), [
       N('Pokey took a paper packet out of his satchel, the one he\'d found in a fern in the Twilight Treetops. Meeca read the label. "For the hill," she said. "Plant when it is quiet." It was. They sat down in the grass together. Dot sat on Pokey\'s head and, for once, didn\'t say a word.', 'P:happy@.34*.9 M:happy@.54*.9 GV:sit@.74*1.12 D:perch@.34^.5', { cue: 'tender', i: 0.5, sting: 'bloom', p: { plate: 'hill', zoom: 1.35 } }),
     ]),
-    N('On the road home, a squirrel looked down from the old vine.', 'P:walk@.3 M:walk@.5', { w: 1, m: 'day', p: { zoom: 1.2 } }),
-    SQ('Back already?', '=', { sting: 'laugh' }),
     N('Home was exactly the way they\'d left it, except that the Heartbloom was open, and a snail who had set off across the garden path on the morning they took Meeca was half an inch from the finish line.', 'PH:arm_around@.34*1.1 H:epic@.68^.8', { cue: 'tender', i: 0.5, p: { zoom: 1.2 } }),
     P('He\'s gonna make it. He trained for it.', 'PH:cheek_glad@.34*1.1 H:epic@.68^.8', { sting: 'laugh' }),
     N('Meeca sat down on the garden path beside the snail. After a while, Pokey sat down too.', 'PH:sit_hug@.4*1.1 H:epic@.7^.8', { cue: 'finale', i: 0.8, sting: 'bloom', p: { zoom: 1.2 } }),

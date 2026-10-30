@@ -2956,7 +2956,8 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   if (cfg.secret || cfg.objectiveType === 'boss_lair') return;
   const find = findForStage(cfg.worldIndex, cfg.miniIndex);
   if (!find) return;
-  const hidden = find.kind !== 'note';
+  // (the snail is out in the open, like a note: he is just touched)
+  const hidden = find.kind !== 'note' && find.kind !== 'snail';
   const reach = new Set(reachableIds ?? validateStage(stage).reachableIds);
   const cps = (stage.checkpoints ?? []).map((c) => c.x);
   // (World 5's carvings, Meeca's messages cut into trunks 124 wide, are in by now (gen2's finish runs before this): a fern never stands at one)

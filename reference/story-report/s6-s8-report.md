@@ -21,7 +21,7 @@ Built as approved, with the lead's four edits. Stills, upright and sideways: `re
 - finds.test.ts checks every stage: in its own stage, on reachable ground, clear of the start and exit. It also checks that no two find kinds share a stage, in every world.
 - Agreed with the builders: w5-rebuild (5-6 is gen2 and runs finishStage; the carvings rule), the W8 builder (no change), and the W9 builder (asked).
 
-**The snail.** Data, placement (stage 3; 4-9 in World 4) and the payoff are all wired: with all ten found, the last line is "I saw him every day, you know. He never once stopped for tea." He stays hidden (SNAIL_PAINTED = false) until story-art's sprite lands; there's no code-drawn stand-in.
+**The snail.** Live now that story-art's sprite is in (SNAIL_PAINTED = true). He's in each world's 3rd stage (4-9 and 5-9 in Worlds 4 and 5, whose 3rd stages hold their own things). He sits out in the open on the ground, creeping on the spot in his two painted frames, facing right. Walking into him is the whole find: a tiny tap sound, no card, no stopping, and he stays where he is. The satchel shows him under "The snail", and his card opens in the reader. With all ten found, the last line is "I saw him every day, you know. He never once stopped for tea." Stills: `s7-stills/snail-7-3-*.webp`.
 
 **Under the Ruins.** The new note is in (finds.ts RUINS_NOTE): "Meeca. ~~I'm fine.~~ I'm tired too. Coming anyway. Save my chair. P.", struck through the same way as the World 7 note. Its tea payoff is wired and said only if it was found: MEECA "You crossed out 'I'm fine.'" / POKEY "It wasn't true." / MEECA "Mine wasn't either." (storyNotice.test.ts covers both ways). It waits for the World 7 secret level to place it.
 
@@ -31,9 +31,11 @@ Built as approved, with the lead's four edits. Stills, upright and sideways: `re
 - The count is in words up to ninety-nine, then "more than a hundred"; with no falls, the line is unchanged.
 - **World 8, only if the World 6 note was found:** Dot "And don't tell me it's the soup, I read the note, everybody's read the note, don't eat that soup, I mean it."
 
+**The ending cards (S-7).** story-art's 16 cards play as a run at the end of the weeks after, before the hill, with the approved line under each (endCardsData.ts; story.test.ts checks every card has its picture and plays once, in order). Each card is as big as it can be without losing its middle 1440 x 880. The rest of the screen is the same painting, soft and dark. The soldiers' and the squirrels' weeks-after narration is gone now that their cards say it. Stills: `s7-stills/card-*.webp`, upright and sideways.
+
 **People who come back.**
 - **The World 9 gates:** the two soldiers from the garden are now drawn, from their own painted clips (shared with Meeca's stage as soldierClips.ts). One turns to look and the other shrugs; "Is that a hummingbird?" / "Where?"; Dot is already behind Pokey's ear.
-- **The weeks after:** Pell's first customers (the two soldiers), and the squirrel's "Back already?" on the road home. Both move onto their ending cards when story-art's cards land, so nothing is said twice.
+- **The weeks after:** Pell's first customers (the two soldiers) and the squirrels' sign are on their ending cards now, so nothing is said twice.
 
 **Fixed on the way**
 - The reader only paged photo albums, so the World 6 note's second page (the letter to Grandma) could not be reached. It now pages any find with more than one page.
@@ -47,18 +49,20 @@ Built as approved, with the lead's four edits. Stills, upright and sideways: `re
 | Satchel, sideways | satchel-satchel-side.webp | Clean. The page runs wide and the cards sit below. |
 | Journal, upright and sideways | satchel-journal-up.webp, -side | The writing sits on the rules (a first pass didn't; fixed). "World 10" fits. Unwritten worlds are blank lines. |
 | Pocket card in the reader | reader-w8_pocket-up.webp, -side | Readable on the keepsake paper (a first pass was dark on dark; fixed). Dot's line is marked in her green. |
-| The Notch card | reader-w1_notch-up.webp | Text only until the painted twig lands. Named, not hidden. |
+| The Notch card | reader-w1_notch-up.webp | The painted twig is in now (notch.webp); the reader shows it beside the words. |
 | The World 6 note, page 2 | reader-w6_note-up.webp | Pages now; 2 / 2 shown. |
 | Soldiers at the gates | gates-soldiers-up.webp, -side | Drawn, feet on the ground, facing Pokey. Upright, the two overlap a little; acceptable. |
 | Falls at the gates and boss 10 | gates-falls-*.webp, boss10-falls-*.webp | Reads as the General, not a stat. |
 | Soup line | w8-soup-up.webp, -side | Clean. |
-| Squirrel "Back already?" | end-squirrel-up.webp | **Rough:** no squirrel is drawn (there's no squirrel story art). The line reads as heard from above. The squirrels' ending card fixes it when it lands. |
+| Squirrels | s7-stills/card-squirrels-*.webp | The card shows them; the old unpictured "Back already?" is gone. **Rough:** the painted sign has rows of ^ marks where the line says it reads BACK ALREADY?. I asked story-art to letter the board; it swaps in with no code change. |
+| Ending cards, upright | s7-stills/card-*-up.webp | Clean. Card full width, set a little low, clear of the buttons; blurred painting above and below. |
+| Ending cards, sideways | s7-stills/card-*-side.webp | Clean. Full height, blurred side bars; the words box covers only the card's bottom margin. |
+| Snail in a stage | s7-stills/snail-7-3-*.webp | Clean. Small, on the ground, easy to walk past, which is the point. |
 | Snacks, the last line | end-snacks-up.webp | Clean, and ends on the laugh. |
-| Snail | (none) | Hidden until his sprite lands, by design. |
 | Pocket item pictures | (none) | **Rough:** the cards use Dot's painted perch frame, not the item itself. Small painted items (button, pin, feather, ribbon, map, scrap) would be better; not asked for yet. |
 
 ## Still to do
 
 - Place the Under the Ruins note when the World 7 secret level is built.
-- Wire the cards (S-7) when story-art lands them, and move the soldiers' and squirrel's weeks-after lines onto them.
-- The snail sprite, and the Notch twig art.
+- The squirrels' sign lettering (story-art).
+- **A question for the lead:** the General's card says "Every spring he plants a tree by the river. He takes his time." The narration just before the cards already says "That spring he went down to the Sunlit Riverbank... and planted a tree. The next day he went back and planted another. He took his time." It's said twice in a row. My pick: cut the narration and let the card say it, the way the soldiers' and squirrels' lines went.

@@ -5,7 +5,7 @@ import { holdStep, LETGO, thunderShake, type HoldPhase } from './storyHold.ts';
 import { noticed } from '../game/storyNotice.ts';
 import { loadFinds } from '../game/finds.ts';
 import { loadBadgeStore } from '../game/badgeStore.ts';
-import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
+import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_H, warmStoryCast } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
@@ -92,6 +92,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const ahead = panels.slice(idx, idx + 3);
     preloadScenePhotos(ahead.map((p) => p.scene.photo?.key));
     preloadScenePlates(ahead.slice(1).map((p) => p.scene.plate));
+    preloadSceneCards(ahead.slice(1).map((p) => p.scene.card));
   }, [panels, idx]);
   // the cast's paintings load as the story opens, and a closed story lets its pictures go
   useEffect(() => {

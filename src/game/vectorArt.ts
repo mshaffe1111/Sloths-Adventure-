@@ -12,7 +12,7 @@ import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
 import { drawAura } from './readable.ts';
 import { drawPickupArt, drawThornGateArt } from './stageArt.ts';
-import { drawHushFern, drawKeepersBell, drawSearchHint } from './findArt.ts';
+import { drawHushFern, drawKeepersBell, drawSearchHint, drawSnail } from './findArt.ts';
 import { drawThingFern } from './w3Art.ts';
 import { leaf } from './rainforest.ts';
 import { drawGiantBat } from './bossBat.ts';
@@ -1039,7 +1039,8 @@ export function drawCollectible(
   world = 1,
   mini = 1
 ) {
-  if (item.collected && item.type !== 'thorn_gate') return;
+  // (the snail stays where he is once touched: he never stops)
+  if (item.collected && item.type !== 'thorn_gate' && !item.findId?.endsWith('_snail')) return;
 
   ctx.save();
   ctx.translate(item.x, item.y);
@@ -1068,7 +1069,8 @@ export function drawCollectible(
     case 'find': {
       // they stand on the ground: no bobbing
       ctx.translate(0, -bobY);
-      if (item.hidden) drawHushFern(ctx, item, time);
+      if (item.findId?.endsWith('_snail')) drawSnail(ctx, item, time);
+      else if (item.hidden) drawHushFern(ctx, item, time);
       else drawKeepersBell(ctx, item, time);
       break;
     }

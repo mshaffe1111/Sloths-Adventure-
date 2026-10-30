@@ -759,6 +759,7 @@ export default function App() {
             const next = withFind(known, id);
             saveFinds(next);
             setFoundIds(next);
+            if (FIND_BY_ID[id].kind === 'snail') return;
             engineRef.current?.pause();
             pausedForFind.current = true;
             setReadingCompletes(allFound(next));

@@ -24,6 +24,7 @@ import { capStoryZoom, liftForFeet } from './storyFrame.ts';
 import { GROUND_LINE, groundImage } from './storyGround.ts';
 import { isPlate, PLATES } from './plateData.ts';
 import { FONT_READ } from './fonts.ts';
+import { CARD_H, CARD_SAFE_H, CARD_SAFE_W, CARD_W, cardUrl } from './endCards.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
@@ -559,6 +560,64 @@ export function preloadScenePlates(keys: Array<string | undefined>) {
   preloadLivePlates(keys.filter(Boolean).slice(0, 1));
 }
 
+// ───────────── the ending cards (S-7) ─────────────
+
+const cardImgs = new Map<string, { im: HTMLImageElement; soft?: HTMLCanvasElement }>();
+function cardImage(key: string) {
+  let c = cardImgs.get(key);
+  if (!c) {
+    const url = cardUrl(key);
+    if (!url || typeof Image === 'undefined') return null;
+    const im = new Image();
+    im.src = url;
+    c = { im };
+    cardImgs.set(key, c);
+  }
+  return c.im.complete && c.im.naturalWidth > 0 ? c : null;
+}
+
+/** start loading the ending cards the next panels will show */
+export function preloadSceneCards(keys: Array<string | undefined>) {
+  for (const k of keys) if (k) cardImage(k);
+}
+
+/**
+ * an ending card over the whole picture, in the room above the words: as big as it goes without losing any of its middle 1440 x 880,
+ * the rest of the screen the same painting, soft and dark (shrunk to a few pixels and stretched back: a blur for nothing, every frame)
+ */
+function drawEndCard(ctx: CanvasRenderingContext2D, key: string, w: number, vh: number, feetMax: number, t: number) {
+  ctx.fillStyle = '#0b0906';
+  ctx.fillRect(0, 0, w, vh);
+  const c = cardImage(key);
+  if (!c) return;
+  const fade = Math.min(1, t / 0.6);
+  if (!c.soft && typeof document !== 'undefined') {
+    const soft = document.createElement('canvas');
+    soft.width = 48;
+    soft.height = 27;
+    soft.getContext('2d')?.drawImage(c.im, 0, 0, 48, 27);
+    c.soft = soft;
+  }
+  const room = vh * Math.min(1, feetMax);
+  ctx.save();
+  ctx.globalAlpha = fade;
+  if (c.soft) {
+    const bs = Math.max(w / CARD_W, vh / CARD_H);
+    ctx.drawImage(c.soft, (w - CARD_W * bs) / 2, (vh - CARD_H * bs) / 2, CARD_W * bs, CARD_H * bs);
+    ctx.fillStyle = 'rgba(8, 6, 4, 0.55)';
+    ctx.fillRect(0, 0, w, vh);
+  }
+  const s = Math.min(Math.max(w / CARD_W, room / CARD_H), w / CARD_SAFE_W, room / CARD_SAFE_H) * (1 + 0.03 * Math.min(t / 9, 1));
+  const cw = CARD_W * s;
+  const ch = CARD_H * s;
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+  ctx.shadowBlur = 30;
+  // (upright there is room to spare: the card sits a little low, clear of the buttons along the top)
+  const slack = room - ch;
+  ctx.drawImage(c.im, (w - cw) / 2, slack > 0 ? slack * 0.62 : slack / 2, cw, ch);
+  ctx.restore();
+}
+
 /** a story has closed: let go of its plates, their moving parts and its photographs (they load again, from the offline cache, if it is played again) */
 export function releaseStoryArt() {
   releasePlates();
@@ -566,6 +625,7 @@ export function releaseStoryArt() {
   releaseHd();
   releaseCels();
   photoImgs.clear();
+  cardImgs.clear();
 }
 
 /** a story is opening: start fetching its cast's paintings (Pokey, Meeca and Dot's story pages, the story cels) */
@@ -1522,6 +1582,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   ctx.translate(0, -top);
   if (scene.memory) drawMemoryWash(ctx, w, vh, t);
   if (scene.photo) drawPhotoCard(ctx, scene.photo, w, vh, t);
+  if (scene.card) drawEndCard(ctx, scene.card, w, vh, feetMax, t);
   paintFinish(ctx, w, vh, scene.mood);
   // cinematic vignette
   const vg = ctx.createRadialGradient(w / 2, vh / 2, Math.min(w, vh) * 0.45, w / 2, vh / 2, Math.max(w, vh) * 0.7);

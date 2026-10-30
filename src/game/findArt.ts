@@ -84,3 +84,26 @@ export function drawSearchHint(ctx: CanvasRenderingContext2D, item: Collectible,
 export function drawKeepersBell(ctx: CanvasRenderingContext2D, item: Collectible, time: number) {
   drawBellArt(ctx, GROUND, time, item.id);
 }
+
+/**
+ * The snail from the garden path (S-8): story-art's two painted frames side by side (src/assets/story/finds/snail.webp, 512 x 130,
+ * stretched then bunched, facing right). He creeps on the spot, left to right, and is just touched: a tiny sound, nothing else.
+ */
+const SNAIL_URL: string | null = new URL('../assets/story/finds/snail.webp', import.meta.url).href;
+let snailImg: HTMLImageElement | null = null;
+export function snailUrl(): string | null {
+  return SNAIL_URL;
+}
+export function drawSnail(ctx: CanvasRenderingContext2D, item: Collectible, time: number) {
+  if (!SNAIL_URL || typeof Image === 'undefined') return;
+  if (!snailImg) {
+    snailImg = new Image();
+    snailImg.src = SNAIL_URL;
+  }
+  if (!snailImg.complete || !snailImg.naturalWidth) return;
+  // (a stretch, then a bunch, each held a while: a snail's pace)
+  const f = Math.floor(time / 0.9 + item.id) % 2;
+  const w = 64;
+  const h = w * (130 / 256);
+  ctx.drawImage(snailImg, f * 256, 0, 256, 130, -w / 2, GROUND - h, w, h);
+}
