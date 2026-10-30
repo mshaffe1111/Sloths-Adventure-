@@ -216,3 +216,4 @@ running total for hazard-anim ~8.9 min on rtx-pro-6000 = ~$0.40 of the $5 cap.
 
 hf-art-ground clean sweep (G1/G2), 2026-10-30, from Matt's last pool:
 hfg-ground-v 6ae404d70e0338d1bb7c75b2 rtx-pro-6000 created 02:45:43Z: spec-ground-v.json (tools/art/hfground; per world 1 soil variant x2 seeds, 2 lip variants, 2 bank ends x2 seeds; 40 items)
+finished: hfg-ground-v 02:53:18Z (7.6 min, ~$0.35); results hfground/gv (carrier-gv-0.png), not yet packed
