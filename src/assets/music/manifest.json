@@ -776,6 +776,502 @@
     "form": false
    },
    "sections": []
+  },
+  "score_comedy": {
+   "stems": {
+    "mix": "score_comedy.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 61.16402083333333,
+   "bars": 32,
+   "beat": 0.47619047619047616,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 57,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1,
+   "source": {
+    "id": "score_comedy",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_tender": {
+   "stems": {
+    "mix": "score_tender.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 61.882020833333335,
+   "bars": 26,
+   "beat": 0.7692307692307693,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 55,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.4,
+   "level": 1,
+   "source": {
+    "id": "score_tender",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_journey": {
+   "stems": {
+    "mix": "score_journey.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 66.59791666666666,
+   "bars": 32,
+   "beat": 0.5172413793103449,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.6,
+   "level": 1,
+   "source": {
+    "id": "score_journey",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_sorrow": {
+   "stems": {
+    "mix": "score_sorrow.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 69.57435416666667,
+   "bars": 24,
+   "beat": 0.9090909090909091,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.4,
+   "level": 1.0827,
+   "source": {
+    "id": "score_sorrow",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_war": {
+   "stems": {
+    "mix": "score_war.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 60.52345833333333,
+   "bars": 16,
+   "beat": 0.9375,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     3,
+     5,
+     7,
+     8,
+     11
+    ]
+   },
+   "intensity": 0.6,
+   "level": 1.1866,
+   "source": {
+    "id": "score_war",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_dread": {
+   "stems": {
+    "mix": "score_dread.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 77.106375,
+   "bars": 16,
+   "beat": 1.2,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 50,
+    "scale": [
+     0,
+     2,
+     3,
+     5,
+     7,
+     8,
+     11
+    ]
+   },
+   "intensity": 0.35,
+   "level": 1.1378,
+   "source": {
+    "id": "score_dread",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_chase": {
+   "stems": {
+    "mix": "score_chase.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 38.39025,
+   "bars": 24,
+   "beat": 0.39473684210526316,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     3,
+     5,
+     7,
+     8,
+     11
+    ]
+   },
+   "intensity": 0.7,
+   "level": 1,
+   "source": {
+    "id": "score_chase",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_reveal": {
+   "stems": {
+    "mix": "score_reveal.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 69.89304166666666,
+   "bars": 14,
+   "beat": 1.2,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.35,
+   "level": 1.029,
+   "source": {
+    "id": "score_reveal",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_resolve": {
+   "stems": {
+    "mix": "score_resolve.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 69.71372916666667,
+   "bars": 24,
+   "beat": 0.7142857142857143,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 55,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.4463,
+   "source": {
+    "id": "score_resolve",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_triumph": {
+   "stems": {
+    "mix": "score_triumph.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 43.5791875,
+   "bars": 20,
+   "beat": 0.5357142857142857,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.7,
+   "level": 1.6044,
+   "source": {
+    "id": "score_triumph",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_hush": {
+   "stems": {
+    "mix": "score_hush.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 68.811375,
+   "bars": 12,
+   "beat": 1.3636363636363635,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.2,
+   "level": 1,
+   "source": {
+    "id": "score_hush",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_mercy": {
+   "stems": {
+    "mix": "score_mercy.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 108.53664583333334,
+   "bars": 28,
+   "beat": 0.9375,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.6,
+   "level": 1.5259,
+   "source": {
+    "id": "score_mercy",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "score_finale": {
+   "stems": {
+    "mix": "score_finale.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 115.68952083333333,
+   "bars": 28,
+   "beat": 1,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 62,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.7,
+   "level": 1.3579,
+   "source": {
+    "id": "score_finale",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "jennifur": {
+   "stems": {
+    "mix": "jennifur.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 116.12904166666667,
+   "bars": 40,
+   "beat": 0.967741935483871,
+   "stepsPerBar": 12,
+   "key": {
+    "tonic": 65,
+    "scale": [
+     0,
+     2,
+     4,
+     5,
+     7,
+     9,
+     11
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1,
+   "source": {
+    "id": "jennifur",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "storyDusk": {
+   "stems": {
+    "mix": "storyDusk.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 130.90908333333334,
+   "bars": 36,
+   "beat": 0.9090909090909091,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 69,
+    "scale": [
+     0,
+     2,
+     3,
+     5,
+     7,
+     8,
+     10
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.0912,
+   "source": {
+    "id": "storyDusk",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
+  },
+  "storyStorm": {
+   "stems": {
+    "mix": "storyStorm.mix.webm"
+   },
+   "guard": 0.25,
+   "length": 103.78379166666667,
+   "bars": 32,
+   "beat": 0.8108108108108109,
+   "stepsPerBar": 16,
+   "key": {
+    "tonic": 60,
+    "scale": [
+     0,
+     2,
+     3,
+     5,
+     7,
+     8,
+     10
+    ]
+   },
+   "intensity": 0.5,
+   "level": 1.1752,
+   "source": {
+    "id": "storyStorm",
+    "seed": 0,
+    "tempo": 1,
+    "form": false
+   },
+   "sections": []
   }
  },
  "stages": {
