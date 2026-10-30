@@ -324,6 +324,19 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     flag(0.15);
     runOn();
   });
+  // (never more than 3500 px without a flag (LV-9 allows 4000: flagSpan.test.ts): each longer stretch gets one by the glowing flower
+  // nearest its middle, or on the bough there. The engine's own top-up can't help: flags keep out of the dark, and the whole stage is night)
+  for (let k = 0; k < 20; k++) {
+    const xs = [200, ...checkpoints.map((c) => c.x).sort((m, n) => m - n), end() - 160];
+    const i = xs.findIndex((x, n) => n > 0 && x - xs[n - 1] > 3500);
+    if (i < 0) break;
+    const mid = (xs[i - 1] + xs[i]) / 2;
+    const f = flowers.filter((q) => q.x > xs[i - 1] + 700 && q.x < xs[i] - 700).sort((m, n) => Math.abs(m.x - mid) - Math.abs(n.x - mid))[0];
+    const at = f ? f.x - 130 : mid;
+    const on = P.filter((q) => q.x + 40 <= at && q.x + q.width - 40 >= at).sort((m, n) => m.y - n.y)[0]
+      ?? P.filter((q) => q.width > 200).sort((m, n) => Math.abs(m.x + m.width / 2 - mid) - Math.abs(n.x + n.width / 2 - mid))[0];
+    checkpoints.push({ x: r(Math.max(on.x + 40, Math.min(on.x + on.width - 40, at))), y: on.y, reached: false });
+  }
   const exitX = r(end() - 160);
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: cur.y - 30, collected: false, bobPhase: 0 });
   cid = heartsAtFlags(C, checkpoints, cid);

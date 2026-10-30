@@ -1511,7 +1511,8 @@ export class GameEngine {
         // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
         const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;
         const zid = this.currentStage.config.id;
-        if (ZONE_LINE[kind] && !tipHeard(zid, `zone:${kind}`)) {
+        // (8-4's whole stage is its dark, taught by its own jar lines: w8Lantern.ts LANTERN_LINES)
+        if (ZONE_LINE[kind] && !this.lanternRun && !tipHeard(zid, `zone:${kind}`)) {
           markTipHeard(zid, `zone:${kind}`);
           this.guide(ZONE_LINE[kind], 3.6);
         }
@@ -6788,8 +6789,9 @@ export class GameEngine {
       markTipHeard(id, 'lantern:low');
       this.guide(LANTERN_LINES.low, 3);
     } else if (ev === 'stolen') {
+      // (a puff of the jar's light scattering, no words in the world: the Dot rework, 2026-10-29)
       sound.playWhoosh();
-      this.addFloatingText('-LIGHT', p.x, p.y - 90, '#c4b5fd', 0.8);
+      this.spawnSparkBurst(p.x + p.facing * 12, p.y - 52, '#fde68a');
     } else if (ev === 'setback') {
       const at = lr.setbackAt();
       this.lanternSetBack(at.x, at.y);
