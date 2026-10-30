@@ -8,7 +8,7 @@
  *   foe:<name>    every creature it holds, the animals a ring drops in, the eagle over a watched stretch (sheetWarm.ts stageAnims)
  *   props2        bushes, trunk hollows, or a liana (it hangs from a painted bush): World 1's second sheet
  *   vine, rope    Pokey on a liana, on a shimmy rope (and the painted rope)
- *   boss:<w>      the world's guardian (its sheets are asked for by drawing it once, off screen: stageReady.ts)
+ *   boss:<w>      the world's guardian, or World 4's watcher (asked for by drawing a still of it off screen: stageReady.ts)
  *   meeca-standard Meeca waiting to be rescued (the boss lairs and the rescue stages)
  *   w2-props      a river (World 2's logs and pads, wherever a river runs)
  *   bad-water     Worlds 6-10's dirty water, when the stage has water
@@ -44,6 +44,8 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (x.rope) out.add('rope');
   const w = st.config.worldIndex;
   if (st.boss) out.add(`boss:${w}`);
+  // (World 4's watcher over a watched stretch is the Sky Sovereign herself, in her painted boss frames: engine.ts, 4-5 at 6 s)
+  if (w === 4 && st.proto?.watch?.length) out.add('boss:4');
   if (st.daisyX !== undefined) out.add('meeca-standard');
   if (st.rivers?.length) out.add('w2-props');
   if (w >= 6 && (st.waterY !== undefined || !!st.rivers?.length)) out.add('bad-water');

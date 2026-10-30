@@ -15,6 +15,7 @@
  * bake their clips at the size they are really drawn (creatureAnim.ts).
  */
 import { pendingSheets, unwarmedSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
+import { drawPaintedCardBoss } from './bossArt.ts';
 import { creatureAnimsReady, settleCreatureBakes } from './creatureAnim.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
@@ -59,34 +60,64 @@ export async function readyBuiltStage(
   const back = backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg));
   const left = () => deadline - performance.now();
   // the first frame, drawn here under the card: whatever it asks for starts loading now (a boss and its lair, a sheet a module loads
-  // the first time something draws it); then everything asked for so far is waited for, the frame drawn again (it may ask for more
-  // once the first sheets are in: a creature's clips once its poses are), up to three rounds
-  let rounds = 0;
-  for (; rounds < 3 && left() > 0 && !live(); rounds++) {
+  // the first time something draws it), and everything asked for so far is waited for
+  const frame = () => {
     try {
       engine.render();
     } catch {
       /* a frame that cannot draw yet: play's own first frame will */
     }
-    const wait = [...new Set([...urls, ...pendingSheets()])];
-    if (!pendingSheets().length && rounds > 0) break;
-    await Promise.race([Promise.all([whenSheetsReady(wait, Math.max(0, left())), plainDone, back]), sleep(left())]);
-  }
+  };
+  const waitAll = (extra: readonly string[]) =>
+    Promise.race([Promise.all([whenSheetsReady([...new Set([...extra, ...pendingSheets()])], Math.max(0, left())), plainDone, back]), sleep(left())]);
+  // (a boss's painted sheet: a still of it drawn into a scratch pixel starts it, wherever on the stage it first shows)
+  for (const k of keys) if (k.startsWith('boss:')) askBoss(Number(k.slice(5)));
+  frame();
+  await waitAll(urls);
   // each creature's clips baked (a clip sheet bakes as it arrives: this is a last check, for one still on its way), then shrunk to the
   // size the last stage's draws showed it needs: in play a bake only ever grows (creatureAnim.ts)
   const foes = keys.filter((k) => k.startsWith('foe:')).map((k) => k.slice(4));
   while (!creatureAnimsReady(foes) && left() > 0 && !live()) await sleep(Math.min(50, left()));
   if (live() || !ctx) return;
   settleCreatureBakes();
-  // each sheet drawn once, a few pixels at its own size: its real decode and upload happen now, not on its first frame of play
-  const all = unwarmedSheets();
-  const drawn = warmSheets(all, ctx) + warmPlain(plains, ctx);
-  // and one more frame: the creatures and pieces on screen draw from their sheets (a clip sheet bakes itself at the size it is drawn)
-  try {
-    engine.render();
-  } catch {
-    /* as above */
+  // each sheet drawn once, a few pixels at its own size: its real decode and upload happen now, not on its first frame of play (up to
+  // the deadline: one left over is drawn by play's first use of it, as before)
+  let drawn = warm(ctx, plains, deadline);
+  // and one more frame: the creatures and pieces on screen draw from their sheets (a clip sheet bakes itself at the size it is drawn),
+  // and whatever that frame asks for besides (a creature's clips once its poses are in) is got in and drawn once too
+  frame();
+  if (pendingSheets().length && left() > 0 && !live()) {
+    await waitAll([]);
+    if (live()) return;
+    drawn += warm(ctx, plains, deadline);
   }
   const late = pendingSheets();
-  perfNote(`ready ${cfg.id}: ${keys.length} keys, ${rounds} rounds, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`);
+  perfNote(`ready ${cfg.id}: ${keys.length} keys, ${drawn} sheets drawn once, ${late.length} still loading, ${Math.round(performance.now() - t0)} ms`);
+}
+
+let scratch: CanvasRenderingContext2D | null = null;
+function askBoss(world: number) {
+  if (typeof document === 'undefined') return;
+  if (!scratch) {
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = 1;
+    scratch = cv.getContext('2d');
+  }
+  if (scratch) drawPaintedCardBoss(scratch, world, false, false);
+}
+
+/** draw each loaded sheet once that has not been yet, until just after `deadline`; how many */
+function warm(ctx: CanvasRenderingContext2D, plains: readonly string[], deadline: number): number {
+  // (a second past the waiting's own deadline: the title card opens by itself at 8 s)
+  const until = deadline + 1000;
+  let n = 0;
+  for (const u of unwarmedSheets()) {
+    if (performance.now() > until) return n;
+    n += warmSheets([u], ctx);
+  }
+  for (const u of plains) {
+    if (performance.now() > until) return n;
+    n += warmPlain([u], ctx);
+  }
+  return n;
 }
