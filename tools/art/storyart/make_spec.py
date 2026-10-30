@@ -622,6 +622,26 @@ def round5d(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
+GUARD = {'reaver': 'a big shaggy brown marsh otter warrior with a long wooden spear', 'golem': 'a huge mossy stone golem made of ancient carved rocks',
+         'queen': 'a big black tarantula queen with a small gold crown', 'sovereign': 'a great harpy eagle with grey and white feathers and a crest',
+         'monarch': 'a huge night butterfly monarch with dark patterned wings', 'drake': 'a big red and green scaled lava dragon'}
+
+
+def round6(commit):
+    """the guardians as the story shows them (2026-10-30 audit: their game frames were drawn up to 4.2 screen px per painted px in the boss
+    scenes and read soft): each frame a story uses, from the game atlas, repainted at 4x on the style model, the same pose and outline"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-guard.json').read_text())
+    it = []
+    for key, m in meta.items():
+        who = key.split('-', 1)[1].split('.')[0]
+        it.append({'name': f'{key}-s34', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']},
+                   'prompt': f'slothadv style, {GUARD[who]}, in the same pose' + END, 'neg': NEG_FIG + SOFT, 'strength': 0.34, 'seed': 7,
+                   'w': 1024, 'h': 1024, 'loras': [['style', 0.8]]})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r6', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
