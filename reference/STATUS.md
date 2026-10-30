@@ -16,6 +16,8 @@ BUDGET PAUSE (Matt ~8:40 PM ET: 77% of his window, resets ~10:00 PM ET): paused 
 
 MATT ~9:55-10:03 PM ET: ONE PETAL game-wide (Meeca's petal replaces every scattered flower/leaf/fruit; goal items stay distinct; trails with purpose, about 6 on screen max; every petal fairly reachable, hard-but-possible OK; levelCheck rule + test) -> polish-levels, whole game at once, no mock-up stop. 7-4 slide jumps must be possible (very tough on Normal) -> 7-4 builder. Flat background at stage start = late backdrop load -> PF-1 (no flat fill ever). OPEN for Matt: lock Worlds 8-10 as coming soon in the next release until their rebuilds pass? hazard-anim rounds 2-3 merged f5949219.
 
+MATT ~10:15 PM ET: HF $80 is the last money; no price approvals, spend it down the ranked list (menus first), keep $6 reserve, boss 9-10/10-10 art waits on his boss-design answer (hf-art-bosses). BUILD TO PLAY STORE STANDARD from now: polish-a2 auditing (reference/PLAY-STORE.md). Worlds 8-10 stay playable with a 'New look coming soon' map tag (polish-a1). Foldable/status-bar layouts (polish-c). W5 rebuild SENT BACK (upright smear band, shared code).
+
 How the lead runs it: a check-in every 30 min (send_later, re-armed each time). Each check-in: list_sessions; read every report; review against LEAD-PLAYBOOK §4; merge what passes (fetch first, one gate per batch); send back what doesn't; nudge anything idle or stuck with no report for 60+ min; update this board; tell Matt only decisions and finished things. Test link cutoff 10:40 PM ET, link 11 PM ET.
 
 Track A, finish the game (owner, next milestone):
