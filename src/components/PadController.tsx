@@ -175,7 +175,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
   // the pad is on `side`; the buttons are on the other one, mirrored so the cluster always opens toward the thumb
   const btnSide: PadSide = side === 'right' ? 'left' : 'right';
   const edge = (v: string) => ({ [btnSide]: v }) as React.CSSProperties;
-  const pos = (rx: string, by: string): React.CSSProperties => ({ ...edge(`calc(${rx} + max(10px, env(safe-area-inset-${btnSide})))`), bottom: `calc(${by} + max(10px, env(safe-area-inset-bottom)))` });
+  const pos = (rx: string, by: string): React.CSSProperties => ({ ...edge(`calc(${rx} + max(10px, var(--sa-${btnSide})))`), bottom: `calc(${by} + max(10px, var(--sa-bottom)))` });
 
   return (
     <div

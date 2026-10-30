@@ -58,7 +58,7 @@ export const PerfReadout: React.FC<{ stageId: string }> = ({ stageId }) => {
   const btn: React.CSSProperties = { font: 'inherit', padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,.35)', background: 'rgba(255,255,255,.12)', color: '#fff' };
   return (
     <div
-      style={{ position: 'fixed', left: 6, top: 'calc(env(safe-area-inset-top, 0px) + 54px)', zIndex: 60, maxWidth: 'min(92vw, 560px)', font: '11px/1.35 ui-monospace, Menlo, monospace', color: '#fff', background: 'rgba(8,16,12,.78)', borderRadius: 10, padding: open ? 8 : '5px 10px', pointerEvents: 'auto' }}
+      style={{ position: 'fixed', left: 6, top: 'calc(var(--sa-top) + 54px)', zIndex: 60, maxWidth: 'min(92vw, 560px)', font: '11px/1.35 ui-monospace, Menlo, monospace', color: '#fff', background: 'rgba(8,16,12,.78)', borderRadius: 10, padding: open ? 8 : '5px 10px', pointerEvents: 'auto' }}
     >
       <div onClick={() => setOpen(!open)} style={{ cursor: 'pointer', fontSize: 15, fontWeight: 700, letterSpacing: 0.2 }}>
         {lv.secs}s · {st.fps} fps · now {lv.recent} ms · worst {st.max} ms · {st.hitches} freeze{st.hitches === 1 ? '' : 's'}

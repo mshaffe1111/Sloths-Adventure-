@@ -65,7 +65,9 @@ const FPS = 30;
 /** the room kept for the words under it (six lines in the reading font, the Back and Next row, the top chips: 290 plus 60 to spare, or
  *  a long line pushed Next off the bottom of the screen) */
 const UPRIGHT_WORDS = 290;
-const uprightH = (v: { w: number; h: number }) => Math.round(Math.max(160, v.h - UPRIGHT_WORDS - 60));
+/** upright, the words take UPRIGHT_WORDS and their margins, the bottom bar's room (`eb`, index.css --edge-bottom) under them; the picture the rest */
+const wordsH = (v: { eb: number }) => UPRIGHT_WORDS + 48 + v.eb;
+const uprightH = (v: { w: number; h: number; eb: number }) => Math.round(Math.max(160, v.h - wordsH(v)));
 
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
   // a picture the player plays with their thumbs needs a touch screen; without one it reads as a picture, with the narration that says
@@ -161,11 +163,12 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   // ── the picture: full screen on landscape, a 16:9 window above the text on tall screens
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [view, setView] = useState({ w: 844, h: 390 });
+  const [view, setView] = useState({ w: 844, h: 390, eb: 12 });
+  const edgeRef = useRef<HTMLSpanElement | null>(null);
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
-    const fit = () => setView({ w: el.clientWidth, h: el.clientHeight });
+    const fit = () => setView({ w: el.clientWidth, h: el.clientHeight, eb: edgeRef.current ? parseFloat(getComputedStyle(edgeRef.current).paddingBottom) || 12 : 12 });
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
@@ -404,10 +407,14 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
 
   return (
     <div ref={rootRef} className="fixed inset-0 z-50 bg-[#070d09] text-white select-none font-game overflow-hidden flex flex-col">
+      {/* (measures the bottom bar's room, index.css --edge-bottom, for the upright layout's sums) */}
+      <span ref={edgeRef} aria-hidden="true" style={{ position: 'absolute', visibility: 'hidden', paddingBottom: 'var(--edge-bottom)' }} />
       {wide ? (
         <canvas ref={canvasRef} onClick={next} className="absolute inset-0 w-full h-full cursor-pointer" />
       ) : (
-        <div className="relative shrink-0">
+        // (the picture gives way, cropping a little off its top, when the words need more room than planned: a narrow phone wraps them
+        // onto more lines, and the bottom bar takes room too; the words never go off the screen)
+        <div className="relative flex-1 min-h-0 overflow-hidden flex flex-col justify-end">
           <canvas ref={canvasRef} onClick={next} className="block w-full cursor-pointer" style={{ height: uprightH(view) }} />
           {/* (the picture melts into the words panel instead of stopping at a hard edge) */}
           <div className="absolute inset-x-0 bottom-0 h-10 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(7,13,9,1), rgba(7,13,9,0))' }} />
@@ -416,7 +423,8 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       {wide && <div className="absolute inset-x-0 bottom-0 h-[44%] pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' }} />}
 
       {/* (above the world's title card, which used to dim Skip into the dark: UI-12) */}
-      <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
+      {/* (clear of a status bar's clock and icons and of rounded corners, even where the phone reports no inset: index.css --edge-*) */}
+      <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2" style={{ paddingTop: 'var(--edge-top)', paddingLeft: 'var(--edge-left)', paddingRight: 'var(--edge-right)' }}>
         <span className={`ui-chip transition-opacity duration-300 ${cardUp ? 'opacity-0' : 'opacity-100'}`}>{panel.chapter}</span>
         <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn">
           {skipLabel} <Icon name="arrow" size={13} />
@@ -424,9 +432,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       </div>
 
       {/* (a steady height for six lines of words, so the picture above stays put from one panel to the next; a longer line still grows it) */}
-      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS + 60 }}>{!cardUp && box}</div>}
+      {!wide && <div className="shrink-0 pt-3" style={{ minHeight: wordsH(view), paddingBottom: 'var(--edge-bottom)', paddingLeft: 'max(12px, var(--sa-left))', paddingRight: 'max(12px, var(--sa-right))' }}>{!cardUp && box}</div>}
       {wide && !cardUp && (
-        <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
+        <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'var(--edge-bottom)', paddingLeft: 'var(--edge-left)', paddingRight: 'var(--edge-right)' }}>
           {box}
         </div>
       )}

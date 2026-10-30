@@ -195,7 +195,12 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   const nextIdx = worldLevels.findIndex((l) => (l.unlocked || firstOf(l)) && !l.completed);
 
   return (
-    <div className="fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden">
+    // (the header's buttons, the stage card and the world row keep clear of the system bars, and 24 px / 16 px from the screen's edges
+    // even where the phone reports none: index.css --edge-*; the header and card add their own 10-12 px on top)
+    <div
+      className="fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden"
+      style={{ paddingTop: 'max(0px, calc(var(--edge-top) - 10px))', paddingLeft: 'max(0px, calc(var(--edge-left) - 12px))', paddingRight: 'max(0px, calc(var(--edge-right) - 12px))', paddingBottom: 'var(--sa-bottom)' }}
+    >
       <div key={activeWorldId} className="absolute inset-0 map-fade">
         <SceneBackdrop world={activeWorldId} />
       </div>

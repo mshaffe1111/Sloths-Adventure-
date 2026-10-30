@@ -2,12 +2,12 @@
 
 .vh { position: fixed; inset: 0; z-index: 35; pointer-events: none; user-select: none; -webkit-user-select: none; transition: opacity .5s ease; }
 .vh.entering { opacity: 0; }
-.vh-probe { position: absolute; visibility: hidden; width: 0; height: 0; padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
-.vh-left { position: absolute; left: env(safe-area-inset-left, 0px); top: env(safe-area-inset-top, 0px); width: 640px; height: 200px; }
-.vh-right { position: absolute; right: env(safe-area-inset-right, 0px); top: env(safe-area-inset-top, 0px); width: 320px; height: 200px; }
+.vh-probe { position: absolute; visibility: hidden; width: 0; height: 0; padding: var(--sa-top) var(--sa-right) var(--sa-bottom) var(--sa-left); }
+.vh-left { position: absolute; left: var(--sa-left); top: var(--sa-top); width: 640px; height: 200px; }
+.vh-right { position: absolute; right: var(--sa-right); top: var(--sa-top); width: 320px; height: 200px; }
 .vh img, .vh-card img { max-width: none; }
-.vh-shade { position: absolute; left: calc(-20px - env(safe-area-inset-left, 0px)); top: calc(-16px - env(safe-area-inset-top, 0px)); pointer-events: none;
-  background: radial-gradient(ellipse at 18% 0%, rgba(10, 22, 8, .46), rgba(10, 22, 8, .18) 48%, transparent 72%); padding-top: env(safe-area-inset-top, 0px); box-sizing: content-box; }
+.vh-shade { position: absolute; left: calc(-20px - var(--sa-left)); top: calc(-16px - var(--sa-top)); pointer-events: none;
+  background: radial-gradient(ellipse at 18% 0%, rgba(10, 22, 8, .46), rgba(10, 22, 8, .18) 48%, transparent 72%); padding-top: var(--sa-top); box-sizing: content-box; }
 
 .vh-thread { position: absolute; width: 2px; background: #4a3218; box-shadow: 0 0 0 .5px rgba(255, 240, 200, .25); }
 .vh-hang { position: absolute; transform-origin: 50% 0; transform: rotate(var(--tilt, 0deg)) scale(var(--s, 1)); transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), filter .3s ease, opacity .2s ease; }

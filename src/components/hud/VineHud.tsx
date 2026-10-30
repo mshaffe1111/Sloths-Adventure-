@@ -230,7 +230,9 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     setGuideSafeArea((w, h) => {
       const f = fallbackSafeArea(w, h);
       const s = hudSafeRect(w, h, { boss: isBoss, hearts: nHearts, counter: cw, insets: ins });
-      return { rect: { ...f.rect, y0: Math.max(16, s.bandBottom + 6) }, keepOut: f.keepOut };
+      // (clear of the system's side and bottom bars too: a sideways Android nav bar or a notch took the end of her bubble)
+      const rect = { x0: Math.max(f.rect.x0, ins.left + 16), y0: Math.max(16, s.bandBottom + 6), x1: Math.min(f.rect.x1, w - ins.right - 16), y1: Math.min(f.rect.y1, h - ins.bottom - 10) };
+      return { rect, keepOut: f.keepOut };
     });
     return () => setGuideSafeArea(null);
   }, [isBoss, nHearts, cw, ins]);

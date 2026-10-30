@@ -292,7 +292,7 @@ export const RecordingBadge: React.FC<{ onDone?: () => void }> = ({ onDone }) =>
   return (
     <div
       className="fixed left-1/2 z-[55] flex -translate-x-1/2 items-center gap-2"
-      style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 6px)' }}
+      style={{ bottom: 'calc(var(--sa-bottom) + 6px)' }}
     >
       <div className="pointer-events-none flex items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-xs font-bold text-white" aria-label="Recording">
         <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />

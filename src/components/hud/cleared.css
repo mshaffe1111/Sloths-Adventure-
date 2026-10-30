@@ -4,7 +4,7 @@
  * whole card fits with nothing to scroll. (Scoped to the stage-cleared card; the Game Over card keeps its own layout.)
  */
 @media (max-height: 360px) and (orientation: landscape) {
-  .clr-scrim:has(> .clr-card.clr-won) { padding: max(24px, calc(env(safe-area-inset-top, 0px) + 16px)) max(10px, env(safe-area-inset-right, 0px)) max(6px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px)); align-items: flex-start; }
+  .clr-scrim:has(> .clr-card.clr-won) { padding: max(24px, calc(var(--sa-top) + 16px)) var(--edge-right) max(6px, var(--sa-bottom)) var(--edge-left); align-items: flex-start; }
   .clr-scrim > .clr-card.clr-won { padding: 26px 14px 8px; border-width: 9px; border-radius: 22px; gap: 10px; grid-template-columns: 104px minmax(0, 1fr); }
   .clr-scrim > .clr-card.clr-won .clr-ribbon { top: -22px; width: min(330px, 80%); }
   .clr-scrim > .clr-card.clr-won .clr-ribbon h2 { font-size: 19px; }
@@ -131,3 +131,29 @@
   .clr-card.boss-card { grid-template-columns: 190px minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { .boss-card-crest, .ending-heart { animation: none; } }
+
+/* a narrow phone held upright (a foldable's cover screen, 344 px; an SE, 375 px): the ribbon's words, the big board and the buttons a size
+   smaller and the card's room tighter, so the card fits without its title cut short ("STAGE CLEA...") or "Next stage 1-4" wrapping
+   (each rule under .clr-scrim: this sheet loads before index.css, so a tie in weight would go to index.css) */
+@media (max-width: 380px) and (min-height: 521px) {
+  .clr-scrim .clr-ribbon h2 { font-size: min(20px, 5.2vw); letter-spacing: 0.3px; }
+  .clr-scrim .clr-ribbon { width: 96%; }
+  .clr-scrim > .clr-card { padding: 44px 12px 14px; border-width: 9px; gap: 10px; }
+  .clr-scrim .clr-main { gap: 9px; }
+  .clr-scrim .clr-main .pm-go { min-height: 48px; font-size: 18px; gap: 6px; padding: 0 10px; white-space: nowrap; }
+  .clr-scrim .clr-main .pm-go svg { width: 20px; height: 20px; flex: none; }
+  .clr-scrim .clr-chips { gap: 6px; }
+  .clr-scrim .clr-chip { padding: 5px 4px; }
+  .clr-scrim .clr-chip b { font-size: 19px; }
+  .clr-scrim .clr-chip span { font-size: 12px; letter-spacing: 0.2px; }
+  .clr-scrim .clr-praise b { font-size: 23px; }
+  .clr-scrim .clr-praise span { font-size: 13px; }
+  .clr-scrim .clr-clue { padding: 8px 10px; gap: 8px; }
+  .clr-scrim .clr-clue h3 { font-size: 14px; }
+  .clr-scrim .clr-clue p { font-size: 13px; line-height: 1.3; }
+  .clr-scrim .clr-sec { gap: 6px; }
+  .clr-scrim .clr-btn2 { min-height: 44px; font-size: 13px; gap: 4px; padding: 0 4px; }
+  .clr-scrim .clr-btn2 svg { width: 15px; height: 15px; flex: none; }
+  .clr-scrim .clr-stars svg { width: 46px; height: 46px; }
+  .clr-scrim .clr-stars svg:nth-child(2) { width: 58px; height: 58px; }
+}
