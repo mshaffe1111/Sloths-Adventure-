@@ -560,6 +560,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (safeCache && t - safeAt < 400) return safeCache;
       const base = guideSafeArea(v.cssW, v.cssH);
       const keepOut = base.keepOut.slice();
+      const never: Rect[] = [];
       stageKo.length = 0;
       document.querySelectorAll('.hud-glass, [data-hud-keepout]').forEach((el) => {
         const r = el.getBoundingClientRect();
@@ -567,8 +568,10 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const k = { x0: r.left - 6, y0: r.top - 6, x1: r.right + 6, y1: r.bottom + 6 };
         keepOut.push(k);
         if (el.getAttribute('data-hud-keepout') === 'stage') stageKo.push(k);
+        // (the HUD's own pieces: never under a bubble or its name tag)
+        else never.push(k);
       });
-      safeCache = { rect: base.rect, keepOut };
+      safeCache = { rect: base.rect, keepOut, never };
       safeAt = t;
       return safeCache;
     };
