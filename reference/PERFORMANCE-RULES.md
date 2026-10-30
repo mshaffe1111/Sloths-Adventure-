@@ -173,6 +173,7 @@ A stage passes only if it meets §1 on all of them in both orientations.
 2. **Find what, timed honestly.** Our JS timer can't see GPU time: Chrome records our calls and runs them on the GPU later, so a slow "draw" is often the GPU or a decode that the timer only catches when the frame flushes.
    - In the debug timing (test link only), force a flush after each layer group (`getImageData(0, 0, 1, 1)` on the main canvas, made with `willReadFrequently: false` stated outright), so each layer's time includes its GPU work.
    - Log it per layer: backdrop far/mid/near, ground, props, creatures, effects, HUD.
+   - **Never judge speed or feel from a profiled run** (`gpuprof=1`). The flushes themselves wreck the frame rate: on Matt's Pixel, 2026-10-30, the same build ran 4-13 fps with it on and a steady 30 fps without it. Use it only in separate runs, labelled as profiled, for the ranking of the layers, not their milliseconds. The ctest link given to Matt for frame rate never carries it.
    - Then strip or swap one thing at a time (smoothing low vs high, `ImageBitmap` vs `<img>`, one layer off) and compare at the same spot.
 3. **The tools on a real phone:**
    - **Chrome/Edge on Android:** `chrome://inspect` on a desktop with USB debugging, then the Performance panel on the device.
