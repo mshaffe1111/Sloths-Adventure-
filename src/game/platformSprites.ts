@@ -50,6 +50,7 @@ function drop(key: string) {
   sp.cv.width = sp.cv.height = 0;
   cache.delete(key);
   used.delete(key);
+  stamps.delete(key);
 }
 
 export function clearSprites() {
@@ -161,3 +162,102 @@ export function blit(ctx: CanvasRenderingContext2D, sp: Sprite, x: number, y: nu
 }
 
 export type { ThinLook };
+
+/**
+ * A small piece drawn at a point (a plant, a tuft, a flower or a stone on a ledge top: terrain.ts topDecor), painted once at the screen's
+ * own scale and cropped to what it covers (PF-1b: a ground ledge's growing things were hundreds of path calls a frame, each one a fixed
+ * cost on an iPhone at any resolution). Its pixels sit on the screen's own pixel grid, so it is a straight copy, not a resample: it looks
+ * as the live drawing did. Kept under the sprites' byte budget and dropped with them on a new stage.
+ */
+export interface Stamp {
+  cv: HTMLCanvasElement;
+  /** the canvas's top-left in world units */
+  x: number;
+  y: number;
+  /** its size in world units */
+  w: number;
+  h: number;
+}
+const stamps = new Map<string, Stamp | null | undefined>();
+/** how many stamps have been painted (the caller counts its new ones a frame from it) */
+export let stampsPainted = 0;
+/** room round the anchor anything growing on a ledge may need: sideways, above, below (world units) */
+const STAMP_BOX = { x: 240, up: 380, down: 90 };
+let scratch: CanvasRenderingContext2D | null = null;
+onSceneSeedChange(() => stamps.clear());
+
+/**
+ * The stamp for `key` drawn by `paint` (world units, anchored at ax, ay) at screen scale `scale`, the world's screen offset being a whole
+ * number of pixels. Null when it draws nothing or when it cannot be made (no canvas): the caller draws it live then.
+ */
+export function stampFor(key: string, scale: number, ax: number, ay: number, paint: (c: CanvasRenderingContext2D) => void, mayPaint = true): Stamp | null | undefined {
+  const k = `${getSceneSeed()}:${scale}:${key}`;
+  if (stamps.has(k)) {
+    const st = stamps.get(k);
+    if (st) used.set(k, now());
+    return st;
+  }
+  if (!mayPaint || typeof document === 'undefined') return undefined;
+  // where it reaches: painted once at one pixel per unit into a scratch canvas and its covered rows and columns found
+  const bw = STAMP_BOX.x * 2;
+  const bh = STAMP_BOX.up + STAMP_BOX.down;
+  if (!scratch) {
+    const cv = document.createElement('canvas');
+    cv.width = bw;
+    cv.height = bh;
+    scratch = cv.getContext('2d', { willReadFrequently: true });
+    if (!scratch) return undefined;
+  }
+  const s = scratch;
+  s.setTransform(1, 0, 0, 1, 0, 0);
+  s.clearRect(0, 0, bw, bh);
+  s.setTransform(1, 0, 0, 1, STAMP_BOX.x - ax, STAMP_BOX.up - ay);
+  s.save();
+  paint(s);
+  s.restore();
+  const d = s.getImageData(0, 0, bw, bh).data;
+  let x0 = bw, x1 = -1, y0 = bh, y1 = -1;
+  for (let y = 0; y < bh; y++) {
+    const row = y * bw * 4;
+    for (let x = 0; x < bw; x++) {
+      if (d[row + x * 4 + 3]) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        y1 = y;
+      }
+    }
+  }
+  // (something reaching the edge of the room may be bigger than it: never cropped, it is drawn live for good)
+  if (x1 >= 0 && (x0 === 0 || y0 === 0 || x1 === bw - 1 || y1 === bh - 1)) {
+    stamps.set(k, undefined);
+    stampsPainted++;
+    return undefined;
+  }
+  if (x1 < 0) {
+    stamps.set(k, null);
+    stampsPainted++;
+    return null;
+  }
+  // (two units of margin for the smoothing at its edges, then whole screen pixels so it lands on the screen's own grid)
+  const wx0 = ax - STAMP_BOX.x + x0 - 2;
+  const wy0 = ay - STAMP_BOX.up + y0 - 2;
+  const px0 = Math.floor(wx0 * scale);
+  const py0 = Math.floor(wy0 * scale);
+  const pw = Math.ceil((x1 - x0 + 5) * scale) + 1;
+  const ph = Math.ceil((y1 - y0 + 5) * scale) + 1;
+  const cv = document.createElement('canvas');
+  cv.width = pw;
+  cv.height = ph;
+  const c = cv.getContext('2d');
+  if (!c) return undefined;
+  c.setTransform(scale, 0, 0, scale, -px0, -py0);
+  paint(c);
+  const st: Stamp = { cv, x: px0 / scale, y: py0 / scale, w: pw / scale, h: ph / scale };
+  // (held against the same byte budget as the platform sprites, the stalest let go first)
+  const sp: Sprite = { cv, ox: 0, oy: 0 };
+  store(k, sp);
+  stamps.set(k, st);
+  stampsPainted++;
+  return st;
+}

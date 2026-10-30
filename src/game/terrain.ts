@@ -13,7 +13,7 @@ import { lookFor, type Look } from './scenery.ts';
 import { getSoil, capTransform } from './soil.ts';
 import { isRich } from './rainforest.ts';
 import { paintDecorAt } from './envKit.ts';
-import { drawGroundFlora, groundFlora } from './paintedScenery.ts';
+import { drawGroundFlora, groundFlora, floraArtReady } from './paintedScenery.ts';
 import { polishEnabled, polishTier, rigFor, type Rig } from './polish.ts';
 import { getSceneSeed } from './sceneSeed.ts';
 import { fillCapWindy, windShear, lightBody, dapples, surfaceRoots, restShadow, liveBlades, soilGlints } from './terrainPolish.ts';
@@ -28,6 +28,7 @@ import { drawGroundBody, drawGroundCap } from './groundArt.ts';
 import { bankPainted, drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
+import { stampFor, stampsPainted } from './platformSprites.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { drawPitWater } from './stageArt.ts';
 
@@ -379,9 +380,11 @@ function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG
     if (sway) ctx.restore();
   };
   if (plan && entry !== undefined && plan.entry === entry && plan.x === p.x && plan.w === p.width && r.seek) {
-    for (const it of plan.items) {
+    for (let i = 0; i < plan.items.length; i++) {
+      const it = plan.items[i];
       if (it.x < curL - 150 || it.x > curR + 150) continue;
       r.seek((entry + it.d) | 0);
+      if (!curRig && stampScale > 0 && stampItem(ctx, p, look, r, it.x, i, capT)) continue;
       draw(it.x);
     }
     r.seek((entry + plan.total) | 0);
@@ -393,6 +396,31 @@ function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG
     draw(x);
   }
   if (entry !== undefined && r.seek) decorPlans.set(p, { x: p.x, w: p.width, entry, total: (r.state!() - entry) | 0, items });
+}
+
+/**
+ * PF-1b: what grows on a ledge top is drawn from a stamp painted once (platformSprites.ts stampFor) once the screen's scale has held still
+ * for a frame (a zoom on its way in or out would paint a new one every frame, so it draws live then). A few new stamps a frame at most, so
+ * a screenful arriving at once never makes a hitch: the rest draw live until their turn. True when it drew.
+ */
+let stampScale = 0;
+let lastScale = 0;
+let stampsLeft = 0;
+const STAMPS_PER_FRAME = 3;
+const whole = (v: number) => Math.abs(v - Math.round(v)) < 1e-3;
+function stampItem(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG, x: number, i: number, capT: Tone): boolean {
+  const px = x + (r() - 0.5) * 18;
+  const at = r.state!();
+  const key = `decor:${curWorld}:${p.id}:${Math.round(p.x)}:${Math.round(p.y)}:${i}`;
+  const before = stampsPainted;
+  const st = stampFor(key, stampScale, px, p.y, (c) => {
+    r.seek!(at);
+    topItem(c, p, look, r, px, capT);
+  }, stampsLeft > 0);
+  stampsLeft -= stampsPainted - before;
+  if (st === undefined) return false;
+  if (st) ctx.drawImage(st.cv, st.x, st.y, st.w, st.h);
+  return true;
 }
 
 function topItem(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG, px: number, capT: Tone) {
@@ -1318,6 +1346,13 @@ export function renderWorldObjects(
   curRig = polishEnabled() && polishTier() < 2 ? rigFor(look, worldId, getSceneSeed()) : null;
   curL = left;
   curR = right;
+  // (stamps only on the screen's pixel grid: a whole-pixel camera, no shake, a scale that held since the last frame)
+  const m = ctx.getTransform();
+  const sc = Math.round(m.a * 1000) / 1000;
+  // (and not before the painted plants and flowers have arrived: a stamp would keep the drawn stand-in for good)
+  stampScale = sc === lastScale && floraArtReady() && m.b === 0 && m.c === 0 && whole(m.e) && whole(m.f) ? sc : 0;
+  lastScale = sc;
+  stampsLeft = STAMPS_PER_FRAME;
   const bottom = cam.y + cam.viewportHeight + 60;
 
   for (const t of trees) {
