@@ -49,35 +49,60 @@ const URLS = new Map<string, string>();
 
 export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>, seqs: Record<string, readonly string[]>, up: number): CreatureAnim {
   let img: HTMLImageElement | null = null;
-  // the sheet as a decoded bitmap, held for as long as the world is: drawn from the <img>, Chrome may throw the decoded 20 MB away and
-  // decode it again in the middle of play, which stalled the snake and eagle stretches 100-170 ms at a time on a Pixel 11
-  // (PERFORMANCE-RULES.md §2.12)
+  // The sheet as a decoded bitmap at the size the screen needs (PERFORMANCE-RULES.md §2.12, §2.13). Drawn straight from the <img>, a
+  // 20 MB clip sheet shrunk 2 to 5 times with smoothing 'high' needed mipmaps over the whole texture, rebuilt each time Chrome dropped
+  // and re-uploaded it: the snake and eagle stretches stalled 100-170 ms at a time on a Pixel 11, at every picture quality (QA and
+  // Duet, 2026-10-30). So it is baked once, shrunk to the largest size it is actually drawn at (in eighths, a little over), and
+  // baked again only if a later draw needs it bigger; a few seconds in it settles on the size seen so far.
   let bmp: ImageBitmap | null = null;
+  let bmpR = 0;
   let loaded = false;
+  let baking = false;
+  let need = 0;
+  let checks = 0;
+  const sizeFor = (n: number) => Math.min(1, Math.max(1 / 8, Math.ceil(n * 1.1 * 8) / 8));
+  const bake = (r: number) => {
+    const im = img;
+    if (!im || baking || typeof createImageBitmap !== 'function') return;
+    baking = true;
+    const w = im.naturalWidth || im.width;
+    const h = im.naturalHeight || im.height;
+    const made = r < 1 ? createImageBitmap(im, { resizeWidth: Math.max(1, Math.round(w * r)), resizeHeight: Math.max(1, Math.round(h * r)), resizeQuality: 'high' }) : createImageBitmap(im);
+    made.then(
+      (b) => {
+        baking = false;
+        if (img !== im) return b.close();
+        bmp?.close();
+        bmp = b;
+        bmpR = r;
+        loaded = true;
+        if (sizeFor(need) > bmpR) bake(sizeFor(need));
+      },
+      () => {
+        baking = false;
+        if (img === im) loaded = true;
+      }
+    );
+  };
   const drop = () => {
     bmp?.close();
     bmp = null;
+    bmpR = 0;
+    need = 0;
+    checks = 0;
   };
   const load = () => {
     if (img || typeof Image === 'undefined') return;
     const im = new Image();
     img = im;
-    const ready = () => {
-      if (img === im) loaded = true;
-    };
     trackAtlas(
       im,
       url,
       () => {
-        if (typeof createImageBitmap !== 'function') return ready();
-        createImageBitmap(im).then(
-          (b) => {
-            if (img !== im) return b.close();
-            bmp = b;
-            ready();
-          },
-          ready
-        );
+        if (img !== im) return;
+        // (a first guess: half size covers most creatures; the draws then set the real size)
+        if (typeof createImageBitmap === 'function') bake(0.5);
+        else loaded = true;
       },
       () => { img = null; },
       () => { img = null; loaded = false; drop(); }
@@ -110,7 +135,21 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
       const f = frames[name];
       if (!f) return false;
       const s = k / up;
-      ctx.drawImage(bmp ?? img, f.x, f.y, f.w, f.h, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
+      // how many device pixels one sheet pixel covers here (looked at for the first 120 draws, then every 30th)
+      if ((checks < 120 || checks % 30 === 0) && typeof ctx.getTransform === 'function') {
+        const m = ctx.getTransform();
+        const n = s * Math.hypot(m.a, m.b);
+        if (n > need) need = n;
+        if (sizeFor(need) > bmpR) bake(sizeFor(need));
+        else if (checks === 120 && sizeFor(need) < bmpR) bake(sizeFor(need));
+      }
+      checks++;
+      if (bmp) {
+        // (half a pixel in from the frame's edge when shrunk, so a neighbour frame never bleeds in)
+        const r = bmpR;
+        const e = r < 1 ? 0.5 : 0;
+        ctx.drawImage(bmp, f.x * r + e, f.y * r + e, f.w * r - 2 * e, f.h * r - 2 * e, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
+      } else ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
       return true;
     },
   };

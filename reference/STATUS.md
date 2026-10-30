@@ -25,6 +25,20 @@ The lead works on this alone first, with no helpers. Rules: reference/PERFORMANC
    - DONE 12:30 AM ET, Chrome (9big) vs Edge (8nh2) on the Pixel: the same. Chrome averaged 26.5 fps with one window at 18.4; Edge averaged 27.5. Both were draw-bound at q2.
    - **The stalls follow the SECTIONS, not x:** Snake ring, Snakes on branches and Hide from the eagle, in both browsers.
    - So step 1 starts on the snake and eagle drawing (creatures.ts, snakeSprite.ts, creatureRig.ts, the eagle's sheet eagle-anim 2048x2545, the bush hiding).
+   - DONE ~1:45 AM ET (lead, from QA plus Duet's second look 253fc225):
+     - **creatureAnim.ts:** every animated creature's clip sheet is baked as an ImageBitmap at the largest size it's drawn (in eighths); the eagle ~1/4 instead of a 20 MB texture. This covers ALL creatures in W1-10, the W6-10 ones too: no work needed from their builders.
+     - **hurtFlash.ts:** box-sized layers in a ring of 4, not a full-screen layer.
+     - **engine.ts:** late frames run in up to 3 steps, and gpuprof per-layer timing.
+     - Test link v8 after the gate.
+   - Duet's other items, queued:
+     - trackAtlas bitmaps for every sheet (b);
+     - eagle sparkle `fillText` -> sprite;
+     - gradients rebuilt every frame in watch/chase edges, stone (terrain 82), mushroom (artKit 269/280), soil (groundPaint 140), pitShade (protoArt 765/798), sky (scenery 2702/2725), rivers (engine 4800);
+     - soil 2048 sheet drawn 7-9 times a frame;
+     - the 2880x864 overlay drawn enlarged;
+     - pit water: bake the strip at tile size, cull off-screen tiles;
+     - snakeSprite and goldsnake head/sleep/wake still plain Image elements.
+   - **Profiler caution (Duet):** if per-layer times climb over a run, suspect the readback itself.
 3. **The fixes, in order of the evidence:**
    - **(a)** gameplay smoothing off 'high';
    - **(b)** gameplay sheets as ImageBitmaps, kept alive and pre-uploaded;
