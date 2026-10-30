@@ -17,6 +17,8 @@
 import { pendingSheets, unwarmedSheets, warmSheets, whenSheetsReady } from './atlasLoader.ts';
 import { drawPaintedCardBoss } from './bossArt.ts';
 import { warmScenery } from './scenery.ts';
+import { warmStageArt } from './stageArt.ts';
+import { warmBadWater } from './badWaterArt.ts';
 import { creatureAnimsReady, settleCreatureBakes } from './creatureAnim.ts';
 import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
@@ -90,6 +92,11 @@ export async function readyBuiltStage(
   let drawn = warm(ctx, plains, deadline);
   if (reveal) drawn += warmReveal(reveal, ctx);
   fitScenery(cfg.worldIndex, engine);
+  // (the checkpoint flags and the pit water, and World 6-10's dirty water, baked at this view's scale and stamped once: stageArt.ts,
+  // badWaterArt.ts; each skips a sheet not in yet)
+  const k = engine.viewNow().k;
+  warmStageArt(cfg.worldIndex, k, ctx);
+  if (keys.includes('bad-water')) warmBadWater(k, ctx);
   // and one more frame: the creatures and pieces on screen draw from their sheets (a clip sheet bakes itself at the size it is drawn),
   // and whatever that frame asks for besides (a creature's clips once its poses are in) is got in and drawn once too
   frame();
