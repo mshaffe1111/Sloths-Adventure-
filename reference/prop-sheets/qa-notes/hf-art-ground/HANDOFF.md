@@ -161,3 +161,17 @@ cost). No job is running.
 - Bounce plants per world (Matt, 4:58 PM ET): starts5.py tints the round-3 caps toward each world, job hfg-art6 (10 caps x 2 seeds,
   10 stalks, ~$0.22), picks in picks-bounce.json (w1..w10, each with its span), packed by packbounce.py; bounceArt.ts draws the world's
   own (cap-w<N>). `review-bounce-worlds.jpg` (all 10, both seeds, on dark and grey), `r5-bounce-*.jpg` (Worlds 1, 7, 9, 10 in game).
+
+## Clean sweep (G1-G7), stopped for the night 2026-10-29 ~11 PM ET
+- Done and pushed: groundPaint.ts (4-texture soil chooser, lips and ends taken in turn/picked per end, shadeSoil), protoArt.ts
+  (drawBankArt phases; drawProtoScene: all soil, one darkening pass, then pit shade, lips, ends), groundgpu 'vary' kind, starts6.py,
+  make_spec7.py, pack2.py (repacks a world's sheet: 4 fills, 3 lips, 3 ends; 2048 x 2944). Works on the current sheets (3 fills, 1 lip,
+  1 end) unchanged in look apart from the single darkening pass.
+- Job hfg-ground-v (6ae404d70e0338d1bb7c75b2, logged in tools/art/hfbatch/jobs.txt) left to finish: results in the bucket
+  w5-xfer/hfground/gv (carrier-gv-*.png). Log its run time when it is read.
+- Next: attach and unpack the carrier to work/rawv; review (each world's new fill v21/v23, lips v31/v33, ends s41/s43 on dark and grey,
+  3x3 with the old fills); write picks2.json; `python3 tools/art/hfground/pack2.py work/rawv`; shoot before/after (upright and
+  sideways, every world); then merge w5-rebuild (afd0d02b) first and carry its rules into the bank loop: banks drawn 60 px wider under
+  a higher bank's end (`under()`, `box`), mounds (`p.mound`), and pitShade shading only the air (nothing over a pit's floor).
+- Then G3 lines along the lip, G4 bands (9-2, 5-10, 7-4, lairs), G5 code ground (columnArt drawStep/drawPillar for unpainted 50-89 px
+  pieces, flat bands), G6 code dressing, G7 code platforms (1-2, 1-7, 9-10).

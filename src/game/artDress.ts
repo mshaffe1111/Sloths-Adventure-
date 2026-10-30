@@ -177,7 +177,7 @@ function bridges(d: DressInput, out: KitDecor[], inRoom: (x: number, pad: number
  *   clutter  small things lying along the long floors
  * Pictures only, like the rest of this file: never a platform or a pickup, and no draw from the stage's own random stream.
  */
-export const DRESS_SETS: Record<1 | 2 | 5, Record<'bank' | 'hang' | 'clutter', DressName[][]>> = {
+export const DRESS_SETS: Record<1 | 2 | 5 | 8 | 9 | 10, Record<'bank' | 'hang' | 'clutter', DressName[][]>> = {
   1: {
     bank: [['w1Fern', 'w1Mushroom', 'w1Pebble'], ['w1Stump', 'w1Acorns', 'w1Sprig']],
     hang: [['w1Hang1', 'w1Hang2'], ['w1Hang2', 'w1Hang1']],
@@ -193,13 +193,30 @@ export const DRESS_SETS: Record<1 | 2 | 5, Record<'bank' | 'hang' | 'clutter', D
     hang: [['w5Hang1', 'w5Hang2'], ['w5Hang2', 'w5Hang1']],
     clutter: [['w5ClutA1', 'w5ClutA2', 'w5ClutA3'], ['w5ClutB1', 'w5ClutB2', 'w5ClutB3']],
   },
+  // (Worlds 8-10: Matt's props-made set dressing, packed and never drawn until now, hf-art-ground 2026-10-30. Worlds 9 and 10 have no
+  // hanging piece: World 10's hanging grate and scaffold read as ledges to stand on)
+  8: {
+    bank: [['w8Flowers', 'w8Firefly', 'w8Nest'], ['w8FlowersB', 'w8FireflyB', 'w8NestB']],
+    hang: [['w8Curtain'], ['w8CurtainB']],
+    clutter: [['w8Hollow', 'w8Fungus', 'w8Flowers'], ['w8HollowB', 'w8NestB', 'w8FireflyB']],
+  },
+  9: {
+    bank: [['w9Tree', 'w9Fern', 'w9Obsidian'], ['w9TreeB', 'w9FernB', 'w9ObsidianB']],
+    hang: [[], []],
+    clutter: [['w9Log', 'w9Smoke', 'w9Fern'], ['w9LogB', 'w9SmokeB', 'w9ObsidianB']],
+  },
+  10: {
+    bank: [['w10Banner', 'w10Brazier', 'w10Crates'], ['w10Rack', 'w10Cage', 'w10Crate']],
+    hang: [[], []],
+    clutter: [['w10Crates', 'w10Banner', 'w10Crate'], ['w10Cage', 'w10Brazier', 'w10Rack']],
+  },
 };
 /** the worlds dressed this way */
-export const DRESS_WORLDS = [1, 2, 5] as const;
+export const DRESS_WORLDS = [1, 2, 5, 8, 9, 10] as const;
 
 /** the dressing sets laid in a stage of World 1, 2 or 5 (empty for any other world) */
 export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }[] }): DressPiece[] {
-  const sets = DRESS_SETS[d.world as 1 | 2 | 5];
+  const sets = DRESS_SETS[d.world as 1 | 2 | 5 | 8 | 9 | 10];
   if (!sets) return [];
   const out: DressPiece[] = [];
   const boxes: Box[] = d.rooms.map((r) => roomBox(r, d.platforms));
@@ -230,6 +247,8 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
       if (touches(p, right) || out.length >= 18) continue;
       const edge = right ? p.x + p.width : p.x;
       if (Math.abs(edge - lastBank) < 700) continue;
+      // (none at the stage's start, where he stands as it opens: a set there piled up round him, W8-10's first screens)
+      if (edge < 300) continue;
       const dir = right ? -1 : 1;
       let at = edge + dir * 34;
       const laid: DressPiece[] = [];
@@ -257,7 +276,7 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   const ledges = d.platforms
     .filter((p) => p.height < 50 && p.width >= 110 && (p.type === 'solid' || p.type === 'fragile') && !p.art && !p.push)
     .sort((a, b) => a.x - b.x);
-  for (const p of ledges) {
+  for (const p of hangSet.length ? ledges : []) {
     if (hangs >= 6 || p.x - lastHang < 520 || inRoom(p.x + p.width / 2, 60)) continue;
     const under = p.y + p.height;
     const below = d.platforms.filter((q) => q !== p && q.x < p.x + p.width && q.x + q.width > p.x && q.y > under).reduce((m, q) => Math.min(m, q.y), Infinity);

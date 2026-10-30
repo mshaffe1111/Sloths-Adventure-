@@ -15,7 +15,9 @@ for (const spec of stages) {
     await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
     await p.waitForTimeout(2500);
     await p.evaluate(([i, l]) => window.__play(i, l === undefined ? undefined : +l), [id, layout]);
-    await p.waitForTimeout(3500);
+    // (the stage starts once its sheets are in: wait for the engine, then a moment)
+    await p.waitForFunction(() => { let e = window.__engine; if (typeof e === 'function') e = e(); return !!(e && e.player); }, null, { timeout: 30000 });
+    await p.waitForTimeout(1500);
     const put = async () => p.evaluate((x) => {
       let e = window.__engine; if (typeof e === 'function') e = e();
       const pl = e.player;

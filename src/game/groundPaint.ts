@@ -54,19 +54,29 @@ function sheet(w: number): { img: HTMLImageElement; g: GroundSheet } | null {
   return img ? { img, g: GROUND_FRAMES[w] } : null;
 }
 
-/** which of the three soils tile (col, row) wears: hashed, so no pattern of variants shows */
+/**
+ * which soil tile (col, row) wears. With four (the clean sweep, G1): (col + 2 row) mod 4, so a tile never matches the one beside it or
+ * either of the two above it on the brick bond, and the same tile comes back only four tiles on (2400 units, wider than any screen).
+ * With three: hashed.
+ */
 export function soilVariant(col: number, row: number, n = 3): number {
+  if (n >= 4) return (((col + 2 * row) % 4) + 4) % 4;
   return Math.floor(lookHash(col * 7919 + row * 104729, 61) * n) % n;
+}
+/** the bank end an end at x wears (each world has several: G2), the same for its face and its picture */
+function endFrame(g: GroundSheet, x: number): GroundSheet['end'] {
+  const es = g.ends ?? [g.end];
+  return es[Math.floor(lookHash(Math.round(x), 71) * es.length) % es.length];
 }
 /**
  * The soil tiles covering x0..x1 by y0..y1, laid from the world's origin in a brick bond: row r's tiles start at r * TILE / 2 (the
  * textures are made periodic on that lattice, so the rows meet with no seam).
  */
-export function soilCells(x0: number, x1: number, y0: number, y1: number, tile = SOIL_TILE): Array<{ x: number; y: number; v: number }> {
+export function soilCells(x0: number, x1: number, y0: number, y1: number, tile = SOIL_TILE, n = 3): Array<{ x: number; y: number; v: number }> {
   const out: Array<{ x: number; y: number; v: number }> = [];
   for (let r = Math.floor(y0 / tile); r * tile < y1; r++) {
     const off = (((r % 2) + 2) % 2) * (tile / 2);
-    for (let c = Math.floor((x0 - off) / tile); c * tile + off < x1; c++) out.push({ x: c * tile + off, y: r * tile, v: soilVariant(c, r) });
+    for (let c = Math.floor((x0 - off) / tile); c * tile + off < x1; c++) out.push({ x: c * tile + off, y: r * tile, v: soilVariant(c, r, n) });
   }
   return out;
 }
@@ -106,19 +116,44 @@ function blobField(): HTMLCanvasElement | null {
 const BLOB_PERIOD = 3000;
 
 /**
- * Paint the world's soil over the box x0..x1 by top..bottom (already clipped by the caller to the bank's shape), with the darkening
- * passes. `viewBottom`: the bottom of the view, where the soil is darkest. Returns false until the sheet has loaded.
+ * Where the darkening with depth runs at x: the view's top and bottom it is laid out for there ([viewTop, viewBottom]). Given, the
+ * darkening is drawn in strips DEPTH_STRIP wide, each laid out for its own x, so it follows one smooth line along the ground: laid out
+ * from each bank's own top, a pit's floor (lower) was lighter than the banks either side at the same height, a column of a different
+ * shade under every pit (the lead's W3 bands, 2026-10-30).
  */
-export function drawSoil(ctx: C, w: number, x0: number, x1: number, top: number, bottom: number, viewBottom: number, viewTop?: number): boolean {
+export type DepthAt = (x: number) => [number, number];
+/** the strips the darkening is drawn in when it follows the ground (world units; drawn once, into the ground's squares) */
+const DEPTH_STRIP = 16;
+
+/**
+ * Paint the world's soil over the box x0..x1 by top..bottom (already clipped by the caller to the bank's shape), with the darkening
+ * passes (`shade`, shadeSoil). `viewBottom`: the bottom of the view, where the soil is darkest. Returns false until the sheet has loaded.
+ */
+export function drawSoil(
+  ctx: C, w: number, x0: number, x1: number, top: number, bottom: number, viewBottom: number, viewTop?: number, shade = true, depthAt?: DepthAt,
+): boolean {
   const s = sheet(w);
   if (!s) return false;
   if (x1 <= x0 || bottom <= top) return true;
   const { img, g } = s;
-  for (const cell of soilCells(x0, x1, top, bottom)) {
+  for (const cell of soilCells(x0, x1, top, bottom, SOIL_TILE, g.fills.length)) {
     const f = g.fills[cell.v % g.fills.length];
     // (a hair over a tile, so no gap shows between two at any zoom)
     ctx.drawImage(img, f.x, f.y, f.w, f.h, cell.x, cell.y, SOIL_TILE + 0.6, SOIL_TILE + 0.6);
   }
+  if (shade) shadeSoil(ctx, w, x0, x1, top, bottom, viewBottom, viewTop, depthAt);
+  return true;
+}
+
+/**
+ * The darkening passes over soil already drawn (the caller clips to it): the large soft blobs, anchored to the world, and darker with
+ * depth by the view. drawProtoScene draws them once over every bank's soil together (G3: drawn per bank, two banks' soils overlapping
+ * by a unit were darkened twice, a dark line where they met).
+ */
+export function shadeSoil(ctx: C, w: number, x0: number, x1: number, top: number, bottom: number, viewBottom: number, viewTop?: number, depthAt?: DepthAt): boolean {
+  const s = sheet(w);
+  if (!s) return false;
+  const { g } = s;
   // the large soft darkening, anchored to the world
   const bf = blobField();
   if (bf) {
@@ -127,22 +162,35 @@ export function drawSoil(ctx: C, w: number, x0: number, x1: number, top: number,
   }
   // darker with depth, by the view: nothing above where he stands (about the middle of the view), DEPTH_DARK by its bottom, so two
   // banks of different heights side by side are darkened alike and meet with no step
-  const deep = g.deep;
-  const vt = viewTop ?? viewBottom - 900;
+  if (!depthAt) {
+    depthBand(ctx, g.deep, x0, x1, top, bottom, viewBottom, viewTop ?? viewBottom - 900);
+    return true;
+  }
+  // (strips where the line runs level are one band: over a flat bank that is one gradient, as before)
+  let run = -1, rt = 0, rb = 0;
+  for (let x = Math.floor(x0 / DEPTH_STRIP) * DEPTH_STRIP; x < x1; x += DEPTH_STRIP) {
+    const [vt, vb] = depthAt(x + DEPTH_STRIP / 2).map(Math.round);
+    if (run >= 0 && (vt !== rt || vb !== rb)) depthBand(ctx, g.deep, Math.max(x0, run), x, top, bottom, rb, rt);
+    if (run < 0 || vt !== rt || vb !== rb) { run = x; rt = vt; rb = vb; }
+  }
+  if (run >= 0) depthBand(ctx, g.deep, Math.max(x0, run), x1, top, bottom, rb, rt);
+  return true;
+}
+
+/** the darkening with depth over x0..x1: nothing above the view's middle, DEPTH_DARK by its bottom and below */
+function depthBand(ctx: C, deep: GroundSheet['deep'], x0: number, x1: number, top: number, bottom: number, viewBottom: number, vt: number) {
   const y0 = vt + (viewBottom - vt) * 0.5;
   const gr = bottom > y0 && typeof ctx.createLinearGradient === 'function' ? ctx.createLinearGradient(0, y0, 0, viewBottom) : null;
-  if (gr) {
-    gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
-    gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`);
-    ctx.fillStyle = gr;
-    const a = Math.max(top, y0);
-    ctx.fillRect(x0, a, x1 - x0, Math.min(bottom, viewBottom) - a);
-    if (bottom > viewBottom) {
-      ctx.fillStyle = `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`;
-      ctx.fillRect(x0, viewBottom, x1 - x0, bottom - viewBottom);
-    }
+  if (!gr) return;
+  gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
+  gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`);
+  ctx.fillStyle = gr;
+  const a = Math.max(top, y0);
+  ctx.fillRect(x0, a, x1 - x0, Math.min(bottom, viewBottom) - a);
+  if (bottom > viewBottom) {
+    ctx.fillStyle = `rgba(${deep[0]},${deep[1]},${deep[2]},${DEPTH_DARK})`;
+    ctx.fillRect(x0, viewBottom, x1 - x0, bottom - viewBottom);
   }
-  return true;
 }
 
 /** the top lip along x0..x1 with Pokey's walking line at y (repeats laid from the world's origin, so touching banks run on as one) */
@@ -150,11 +198,16 @@ export function drawLip(ctx: C, w: number, x0: number, x1: number, y: number, vi
   const s = sheet(w);
   if (!s) return false;
   const { img, g } = s;
+  // (several lips sharing their ends, taken in turn: the same one comes back only every third repeat, 2100 units: G1)
+  const ls = g.lips ?? [g.lip];
   const f = g.lip;
   const h = (LIP_W * f.h) / f.w;
   const a = Math.max(x0, view ? view.x0 - LIP_W : -Infinity), b = Math.min(x1, view ? view.x1 + LIP_W : Infinity);
   const top = y - f.surf * h;
-  for (let x = Math.floor(a / LIP_W) * LIP_W; x < b; x += LIP_W) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, top, LIP_W + 0.6, h);
+  for (let x = Math.floor(a / LIP_W) * LIP_W; x < b; x += LIP_W) {
+    const l = ls[((Math.round(x / LIP_W) % ls.length) + ls.length) % ls.length];
+    ctx.drawImage(img, l.x, l.y, l.w, l.h, x, top, LIP_W + 0.6, h);
+  }
   return true;
 }
 
@@ -165,7 +218,7 @@ export function drawLip(ctx: C, w: number, x0: number, x1: number, y: number, vi
 export function endFace(w: number, x: number, y: number, bottom: number, right: boolean): Array<[number, number]> {
   const g = GROUND_FRAMES[w];
   if (!g) return [[x, y], [x, bottom]];
-  const e = g.end;
+  const e = endFrame(g, x);
   const k = END_H / e.h;
   const ew = e.w * k;
   const dir = right ? 1 : -1;
@@ -190,7 +243,7 @@ const cutEnds = new Map<string, HTMLCanvasElement | null>();
  * once per world and cut (to 8 units), so a step's end has no hard line where it stops.
  */
 function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: number, fade = 46): HTMLCanvasElement | null {
-  const key = `${w}:${Math.round(cut / 8)}:${fade}`;
+  const key = `${w}:${e.x},${e.y}:${Math.round(cut / 8)}:${fade}`;
   if (cutEnds.has(key)) return cutEnds.get(key)!;
   let c: HTMLCanvasElement | null = null;
   try {
@@ -222,7 +275,7 @@ function endFaded(img: HTMLImageElement, e: GroundSheet['end'], w: number, cut: 
 export function drawEnd(ctx: C, w: number, x: number, y: number, right: boolean, cutAt?: number, fade?: number): boolean {
   const s = sheet(w);
   if (!s) return false;
-  const e = s.g.end;
+  const e = endFrame(s.g, x);
   const k = END_H / e.h;
   const ew = e.w * k;
   const top = y - e.surf * END_H;

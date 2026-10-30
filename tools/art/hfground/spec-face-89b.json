@@ -1,0 +1,190 @@
+{
+ "note": "hf-art-ground: W8-9 bank-face pieces redo (stronger), 2026-10-30",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/078eb465eb921695bb6df33b3de4e887b3782303/tools/art/hfground/starts/",
+ "items": [
+  {
+   "kind": "plain",
+   "name": "face2-w8-0-s11",
+   "start": "face-w8.webp",
+   "strength": 0.86,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a dark round tree hollow opening in the earth wall, glowing blue-green mushrooms around its rim, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w8-0-s13",
+   "start": "face-w8.webp",
+   "strength": 0.86,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a dark round tree hollow opening in the earth wall, glowing blue-green mushrooms around its rim, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w8-1-s11",
+   "start": "face-w8.webp",
+   "strength": 0.86,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: big glowing blue-green shelf fungus growing out of the earth wall in a cluster, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w8-1-s13",
+   "start": "face-w8.webp",
+   "strength": 0.86,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: big glowing blue-green shelf fungus growing out of the earth wall in a cluster, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w8-2-s11",
+   "start": "face-w8.webp",
+   "strength": 0.86,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: thick twisted pale tree roots breaking out of the earth wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w8-2-s13",
+   "start": "face-w8.webp",
+   "strength": 0.86,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: thick twisted pale tree roots breaking out of the earth wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w8-3-s11",
+   "start": "face-w8.webp",
+   "strength": 0.86,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a round owl nest hole in the earth wall lined with twigs and grey feathers, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w8-3-s13",
+   "start": "face-w8.webp",
+   "strength": 0.86,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a round owl nest hole in the earth wall lined with twigs and grey feathers, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w9-0-s11",
+   "start": "face-w9.webp",
+   "strength": 0.86,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a bright glowing orange lava vein crack running through the dark basalt rock wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w9-0-s13",
+   "start": "face-w9.webp",
+   "strength": 0.86,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a bright glowing orange lava vein crack running through the dark basalt rock wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w9-1-s11",
+   "start": "face-w9.webp",
+   "strength": 0.86,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a large shiny black obsidian crystal cluster growing out of the basalt rock wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w9-1-s13",
+   "start": "face-w9.webp",
+   "strength": 0.86,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a large shiny black obsidian crystal cluster growing out of the basalt rock wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w9-2-s11",
+   "start": "face-w9.webp",
+   "strength": 0.86,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: big white fossil bones and a skull half buried in the dark basalt rock wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w9-2-s13",
+   "start": "face-w9.webp",
+   "strength": 0.86,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: big white fossil bones and a skull half buried in the dark basalt rock wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w9-3-s11",
+   "start": "face-w9.webp",
+   "strength": 0.86,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a small cave hollow in the basalt wall with glowing red embers inside, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face2-w9-3-s13",
+   "start": "face-w9.webp",
+   "strength": 0.86,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, grass, sloth, animal, people, magenta, pink",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a small cave hollow in the basalt wall with glowing red embers inside, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  }
+ ]
+}

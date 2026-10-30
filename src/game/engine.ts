@@ -5914,7 +5914,8 @@ export class GameEngine {
     // Matt's World 3 and 4 puzzle sheets set in as dressing (artDress.ts)
     if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x, false, (id) => this.kit?.roomDone(id) ?? {});
     // Worlds 1, 2 and 5: the bank, hanging and clutter sets (artDress.ts dressSets)
-    if (this.proto?.dress) drawDress(ctx, this.proto.dress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+    const dress = this.proto?.dress ?? this.currentStage.dress;
+    if (dress) drawDress(ctx, dress, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // World 3's sleeping thorn vines (thornVine.ts)
     for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
       const v = this.proto!.thorns![i];
