@@ -229,8 +229,12 @@ const LASHED = [
   { lash: { x: 40, y: 381 + 90, w: 90, h: 145 }, shaft: { x: 54, y: 381 + 250, w: 62, h: 120 } },
   { lash: { x: 420, y: 381 + 90, w: 90, h: 145 }, shaft: { x: 434, y: 381 + 250, w: 62, h: 120 } },
 ] as const;
-function drawLashed(ctx: CanvasRenderingContext2D, x: number, b: number, foot: number, w: number, v: 0 | 1, view: View, flip = false) {
+/** how far a lashed stilt is drawn on into the ledge it stands on (drawn behind that ledge): ending level with the walkable top left a
+ * sliver of air wherever the painted top dips under it (the clean sweep's floating posts, 2026-10-29) */
+const STILT_SINK = 14;
+function drawLashed(ctx: CanvasRenderingContext2D, x: number, b: number, foot0: number, w: number, v: 0 | 1, view: View, flip = false) {
   const L = LASHED[v];
+  const foot = foot0 + STILT_SINK;
   const k = w / L.shaft.w;
   const lashH = Math.min(L.lash.h * k, foot - b);
   blit(ctx, 'set', { ...L.lash, h: lashH / k }, x - (L.lash.w * k) / 2, b, L.lash.w * k, lashH, flip);

@@ -146,6 +146,9 @@ const BELL_HANG = 0.37;
 const BELL_H = 0.4;
 /** the wheel on World 2's pulley post: its middle across and down the frame (shares) */
 const POST_WHEEL = { x: 0.66, y: 0.2 };
+/** the pulley post: the most it is drawn bigger than its picture, and the band of plain shaft (shares of its height) laid under it */
+const POST_MAX_K = 1.35;
+const POST_SHAFT = [0.62, 0.9] as const;
 /** Matt's anchor peg: its rock's top (atlas px from the frame's top), and the knot round it (shares across and down the frame) */
 const PEG_ROCK = 88;
 const PEG_KNOT = { x: 0.6, y: 0.32 };
@@ -2126,10 +2129,22 @@ export class KitPlay {
     const wheelX = (b.x + cx) / 2;
     const wheelY = Math.min(b.y - b.spec.mouth - kitSize('basket2').h, l.baseY - l.spec.rise - cageH) - 40;
     // Matt's pulley post (World 2's sheet), from the bank up to its wheel, the wheel where the ropes run (its hanging ropes are the game's)
+    // (never blown up past POST_MAX_K: a tall lift stretched the 179 px picture 3-5x, soft next to everything round it, the clean
+    // sweep 2026-10-29; the post keeps its picture's size and its plain lower shaft is laid again down to the bank)
     const pp = kitSize('pulleyPost');
-    const postH = (b.y + 6 - wheelY) / (1 - POST_WHEEL.y);
+    const fullH = (b.y + 6 - wheelY) / (1 - POST_WHEEL.y);
+    const postH = Math.min(fullH, pp.h * POST_MAX_K);
     const postW = (postH * pp.w) / pp.h;
-    const drewPost = drawKitArt(ctx, 'pulleyPost', wheelX - (POST_WHEEL.x - 0.5) * postW, b.y + 6, { w: postW, h: postH });
+    const postX = wheelX - (POST_WHEEL.x - 0.5) * postW;
+    const postBottom = wheelY + postH * (1 - POST_WHEEL.y);
+    let drewPost = drawKitArt(ctx, 'pulleyPost', postX, postBottom, { w: postW, h: postH });
+    if (drewPost) {
+      const shaftH = postH * (POST_SHAFT[1] - POST_SHAFT[0]);
+      for (let y = postBottom; y < b.y + 6 - 0.5; y += shaftH) {
+        const h = Math.min(shaftH, b.y + 6 - y);
+        drewPost = drawKitArt(ctx, 'pulleyPost', postX, y + h, { w: postW, h, band: [POST_SHAFT[0], POST_SHAFT[0] + (POST_SHAFT[1] - POST_SHAFT[0]) * (h / shaftH)] });
+      }
+    }
     ctx.save();
     if (!drewPost) {
       ctx.fillStyle = '#6b4a2b';

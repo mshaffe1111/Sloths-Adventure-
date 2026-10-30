@@ -28,40 +28,60 @@ def lum(c):
 def magenta(c):
     r, g, b = c[..., 0], c[..., 1], c[..., 2]
     # (dark too: the keyer tints the painted outline itself purple)
-    return (r - g > 30) & (b - g > 25) & (np.abs(r - b) < 0.5 * np.maximum(r, b))
+    # (the key's own hue: red and blue near equal and green well under both; a pink petal has far more green than this)
+    return (r - g > 30) & (b - g > 25) & (np.abs(r - b) < 0.5 * np.maximum(r, b)) & (g < 0.55 * np.minimum(r, b))
 
 
-def defringe(im, halo=34.0):
-    """returns the fixed RGBA array and the counts of halo and spill pixels changed"""
+def green(c):
+    # the green screen's spill: a pure, bright green the painting itself does not use
+    r, g, b = c[..., 0], c[..., 1], c[..., 2]
+    return (g > 120) & (g - np.maximum(r, b) > 60) & (r < 120)
+
+
+def defringe(im, halo=None):
+    """returns the fixed RGBA array and the counts of halo and spill pixels changed.
+
+    Spill: an edge pixel (within 6 px of clear) tinted magenta or green where the paint 6+ px inside is not, or shifted toward
+    magenta from that paint. It keeps its alpha and its lightness and takes the hue of the paint inside: a dark outline stays a dark
+    outline, a pink line under yellow soil goes soil-coloured.
+    Thin pieces with no paint 6 px in (web strands, glows, rope, hair) are never touched: what is round them is their own colour.
+    Halo (only with halo=N): an edge pixel lighter than the paint just inside it by N or more takes that paint's colour. Off by
+    default: on the sheets checked (2026-10-29) the light edges were glows and silk, drawn that way."""
     a = im[..., 3]
     rgb = im[..., :3].copy()
     clear = a < 40
     if clear.sum() < 20:
         return im, 0, 0
     dist = ndi.distance_transform_edt(~clear)
-    # clean paint: solid, at least 3 px in from the edge
-    core = (a > 200) & (dist >= 3.0)
-    if core.sum() < 50:
-        return im, 0, 0
-    _, (iy, ix) = ndi.distance_transform_edt(~core, return_indices=True)
-    near = rgb[iy, ix]
-    edge = (a > 8) & (dist < 3.0)
-    L, Ln = lum(rgb), lum(near)
-    halo_px = edge & (L - Ln > halo)
-    # (the keyer tints the whole painted outline, 3-5 px wide: spill is judged against the paint 6 px in)
     core6 = (a > 200) & (dist >= 6.0)
-    if core6.sum() >= 50:
-        _, (jy, jx) = ndi.distance_transform_edt(~core6, return_indices=True)
-        near6 = rgb[jy, jx]
-    else:
-        near6 = near
-    spill_px = (a > 8) & (dist < 6.0) & magenta(rgb) & ~magenta(near6)
+    if core6.sum() < 50:
+        return im, 0, 0
+    d6, (jy, jx) = ndi.distance_transform_edt(~core6, return_indices=True)
+    near6 = rgb[jy, jx]
+    L = lum(rgb)
+    # (no clean paint within 8 px: a thin piece, left alone)
+    thick = d6 <= 8.0
+    # the paint inside at this pixel's lightness: what the pixel would be without the screen's colour mixed in
+    want = np.clip(near6 * (L / np.maximum(lum(near6), 1.0))[..., None], 0, 255)
+    dv = rgb - want
+    # magenta mixed in: redder and bluer and less green than the paint inside (a pink line under yellow soil, a purple outline)
+    # (on the soft edge only: a solid purple leaf beside a fern is paint)
+    shift = (dv[..., 0] > 18) & (dv[..., 2] > 10) & (dv[..., 1] < -8) & (a < 230)
+    spill_px = (a > 8) & (dist < 6.0) & thick & (((magenta(rgb) | shift) & ~magenta(near6)) | (green(rgb) & ~green(near6)))
+    halo_px = np.zeros_like(spill_px)
+    if halo:
+        core = (a > 200) & (dist >= 3.0)
+        _, (iy, ix) = ndi.distance_transform_edt(~core, return_indices=True)
+        near = rgb[iy, ix]
+        halo_px = (a > 8) & (dist < 3.0) & thick & (L - lum(near) > halo)
+        rgb[halo_px] = near[halo_px]
     if not (halo_px.any() or spill_px.any()):
         return im, 0, 0
-    rgb[halo_px] = near[halo_px]
-    # spill keeps its lightness (a dark outline stays dark) and takes the hue of the paint inside
-    k = (L / np.maximum(lum(near6), 1.0))[..., None]
-    rgb[spill_px & ~halo_px] = np.clip(near6 * k, 0, 255)[spill_px & ~halo_px]
+    # (half the way to grey: where the nearest clean paint is another object, a fern beside a purple leaf, its full colour would
+    # put a bright speck on the edge)
+    grey = np.repeat(L[..., None], 3, axis=-1)
+    m = spill_px & ~halo_px
+    rgb[m] = (want * 0.5 + grey * 0.5)[m]
     out = im.copy()
     out[..., :3] = rgb
     return out, int(halo_px.sum()), int(spill_px.sum())
@@ -92,7 +112,7 @@ def main():
     ap.add_argument('files', nargs='+')
     ap.add_argument('--write', action='store_true')
     ap.add_argument('--preview')
-    ap.add_argument('--halo', type=float, default=34.0)
+    ap.add_argument('--halo', type=float, default=None, help='also fix light halos this much lighter than the paint inside (off by default)')
     ap.add_argument('--quality', type=int, default=92)
     a = ap.parse_args()
     if a.preview:

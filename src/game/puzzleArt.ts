@@ -41,6 +41,8 @@ export interface KitDrawOpts {
   /** stretched to this width (px) instead of its own (the lift's plank, the root wall) */
   w?: number;
   h?: number;
+  /** only this band of the picture, top to bottom as shares of its height (a post's plain shaft, laid again under its top) */
+  band?: [number, number];
 }
 
 /** draw a piece with the middle of its base (its feet) at (x, bottom). False until the sheet has loaded. */
@@ -59,6 +61,9 @@ export function drawKitArt(ctx: CanvasRenderingContext2D, n: KitArtName, x: numb
     ctx.translate(w / 2 - ax, -h / 2);
     ctx.rotate(o.rot);
     ctx.drawImage(img!, f.x, f.y, f.w, f.h, -w / 2, -h / 2, w, h);
+  } else if (o.band) {
+    const [b0, b1] = o.band;
+    ctx.drawImage(img!, f.x, f.y + f.h * b0, f.w, f.h * (b1 - b0), -ax, -h, w, h);
   } else ctx.drawImage(img!, f.x, f.y, f.w, f.h, -ax, -h, w, h);
   ctx.restore();
   return true;
