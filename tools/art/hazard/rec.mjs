@@ -51,7 +51,8 @@ const SCENES = {
 const b = await chromium.launch();
 for (const name of which.split(',').filter(Boolean)) {
   const sc = SCENES[name];
-  for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]]) {
+  // (ORI=side or ORI=up records one way only)
+  for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) => !process.env.ORI || process.env.ORI === o)) {
     const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
     p.on('pageerror', (er) => console.log('ERR', er.message));
     await p.goto(`http://127.0.0.1:${port}/?nodemo=1&lessons=off`);
@@ -61,7 +62,7 @@ for (const name of which.split(',').filter(Boolean)) {
     for (let i = 0; i < 4; i++) { const g = p.getByText('Skip tips'); if (await g.count()) { await g.first().click(); await p.waitForTimeout(300); } else break; }
     const err = await p.evaluate(`(() => { try { let e = window.__engine; if (typeof e === 'function') e = e(); ${LEDGE} ${sc.setup} return ''; } catch (x) { return String(x); } })()`);
     if (err) console.log(name, ori, 'setup:', err);
-    await p.waitForTimeout(sc.wait ?? 5000);
+    await p.waitForTimeout(Number(process.env.WAIT ?? sc.wait ?? 5000));
     const dir = join(out, `${tag}-${name}-${ori}-frames`);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir);
