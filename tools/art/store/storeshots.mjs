@@ -8,7 +8,8 @@ fs.mkdirSync(out, { recursive: true });
 const SIZES = [['phone', 412, 732, 2.625], ['tab7', 600, 960, 2], ['tab10', 800, 1280, 2]];
 const SCENES = [
   ['1-title', null, 0],
-  ['2-jungle', (p) => p.evaluate(() => window.__play('1-4', 3)), 9000],
+  // (a lively moment, 2026-10-30: Pokey running and mid-jump through 1-2's petals, the score popping, Dot quiet so no bubble covers it)
+  ['2-jungle', async (p) => { await p.evaluate(() => window.__play('1-2', 3)); await p.waitForTimeout(6500); await p.keyboard.down('ArrowRight'); await p.waitForTimeout(1400); await p.keyboard.down('Space'); }, 230],
   ['3-boss', (p) => p.evaluate(() => window.__play('2-10')), 12000],
   ['4-map', (p) => p.getByText('World Map', { exact: false }).first().click(), 2500],
 ];
@@ -16,7 +17,8 @@ const b = await chromium.launch();
 for (const [dev, cw, ch, s] of SIZES) {
   for (const [tag, w, h] of [['up', cw, ch], ['side', ch, cw]]) {
     for (const [name, go, wait] of SCENES) {
-      const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: s, hasTouch: true, isMobile: true });
+      const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: s, hasTouch: name !== '2-jungle', isMobile: true });
+      await p.addInitScript(() => localStorage.setItem('sloth_dot_help', 'quiet'));
       await p.goto(`${url}?lessons=off`);
       await p.waitForTimeout(5000);
       try { if (go) await go(p); } catch (e) { console.log(name, dev, tag, 'could not open', String(e).slice(0, 100)); }
