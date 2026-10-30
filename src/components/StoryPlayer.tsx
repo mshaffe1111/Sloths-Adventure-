@@ -76,6 +76,7 @@ const FPS = 30;
 const UPRIGHT_WORDS = 250;
 /** how much closer the camera comes upright than sideways */
 const UPRIGHT_ZOOM = 1.22;
+const UPRIGHT_ZOOM_MAX = 1.4;
 const uprightFeet = (v: { w: number; h: number }) => Math.max(0.5, Math.min(0.95, (v.h - UPRIGHT_WORDS) / v.h - 0.02));
 
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
@@ -304,9 +305,11 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   const directed = useMemo(() => {
     const s = dir.camera ? { ...panel.scene, camera: dir.camera } : panel.scene;
     if (wide) return s;
-    const k = UPRIGHT_ZOOM;
+    // (only a wide shot is brought in, and no further than UPRIGHT_ZOOM_MAX: a shot already close, brought in again, cut the one not
+    // speaking down to a sliver at the screen's edge)
+    const up = (z: number) => Math.max(z, Math.min(z * UPRIGHT_ZOOM, UPRIGHT_ZOOM_MAX));
     const cam = s.camera;
-    return cam ? { ...s, camera: { ...cam, from: { ...cam.from, zoom: cam.from.zoom * k }, to: { ...cam.to, zoom: cam.to.zoom * k } } } : { ...s, zoom: (s.zoom ?? 1) * k };
+    return cam ? { ...s, camera: { ...cam, from: { ...cam.from, zoom: up(cam.from.zoom) }, to: { ...cam.to, zoom: up(cam.to.zoom) } } } : { ...s, zoom: up(s.zoom ?? 1) };
   }, [panel, dir, wide]);
   const scene = hold && phase === 'reach' ? hold.reach : directed;
   const showPrompt = !!hold && phase !== 'reach' && (isEasy() || tries.current === 0);
