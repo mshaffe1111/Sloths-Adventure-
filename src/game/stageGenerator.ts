@@ -2959,8 +2959,12 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   const hidden = find.kind !== 'note';
   const reach = new Set(reachableIds ?? validateStage(stage).reachableIds);
   const cps = (stage.checkpoints ?? []).map((c) => c.x);
+  // (World 5's carvings, Meeca's messages cut into trunks 124 wide, are in by now (gen2's finish runs before this): a fern never stands at one)
+  const carvings = ((stage as { proto?: { w5?: { carvings?: Array<{ x: number }> } } }).proto?.w5?.carvings ?? []).map((c) => c.x);
   type P = GeneratedStage['platforms'][number];
   const clearOf = (x: number, p: P) =>
+    carvings.every((cx) => Math.abs(cx - x) >= 120) &&
+    stage.collectibles.every((c) => c.type !== 'relic' || Math.abs(c.x - x) >= 120) &&
     Math.abs(x - stage.spawnX) > 320 &&
     Math.abs(x - stage.exitTotemX) > 320 &&
     cps.every((c) => Math.abs(c - x) > 220) &&
