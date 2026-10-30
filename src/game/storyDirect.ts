@@ -298,8 +298,8 @@ export function directScene(panels: StoryPanel[]): Direction[] {
     // a close shot whose lift (feet above the words box) would push the speaker's head off the top: framed chest-up instead
     let noLift: boolean | undefined;
     const end = camera?.to ?? { zoom: z0 * 1.04, fx: f0.fx, fy: f0.fy };
-    // (narration frames the picture, so the tallest figure in it counts; a line spoken by someone in it, theirs)
-    const hgt = p.speaker === 'Narrator' ? tallestHeight(scene) : speakerHeight(scene, p.speaker);
+    // (every head in the picture counts, not only the speaker's: Meeca speaking beside the General had him lifted out of the top)
+    const hgt = Math.max(tallestHeight(scene), speakerHeight(scene, p.speaker));
     if (hgt > 0 && end.zoom >= 1.2) {
       const g = scene.ground ?? (scene.plate ? PLATES[scene.plate]?.ground : undefined) ?? 0.8;
       const view = (y: number) => (y - end.fy) * end.zoom + 0.5;

@@ -110,18 +110,18 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 22 | Narrator | His hands were already on the branch. Both of them. | cut | 180 ms | 30 ms | drift 1.24→1.26 10.0s | -0.5 st, -1 dB | keep |  |
 | 23 | Pokey | It's only weather. It's only weather. | cut | 180 ms | 40 ms | single 1.34→1.40 3.5s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 24 | Narrator | Meeca looked at his hands. Then, to be kind, she looked at the sky. D… | cut | 180 ms | 30 ms | drift 1.24→1.26 10.0s | -0.5 st, -1 dB | keep |  |
-| 25 | Dot | That's not weather. Inside. Both of you, inside, right now. Meeca, le… | soft | 320 ms | 22 ms | single 1.34→1.40 5.5s | -0.5 st, -1 dB | keep |  |
+| 25 | Dot | That's not weather. Inside. Both of you, inside, right now. Meeca, le… | soft | 320 ms | 22 ms | single 1.34→1.40 5.5s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 26 | Narrator | The Heartbloom closed up, petal over petal, and its light went out. | cut | 600 ms | 30 ms | slowPush 1.30→1.48 6.3s | -0.5 st, -1 dB | keep | the light going out is a moment: hold on the flower |
 | 27 | Narrator | Soldiers came, in two straight lines. The one in front was bigger tha… | cut | 300 ms | 26 ms | reveal 1.33→1.12 2.4s | 0 st, +1 dB | keep | a hard cut and a pull back to show the lines |
 | 28 | General Iron-Claw | The General does not knock. | cut | 800 ms | 31 ms | slowPush 1.35→1.54 6.0s | 0 st, +1 dB | keep | his first words: a beat of nothing, then slow |
 | 29 | Meeca | It's a garden. There's no door. | cut | 250 ms | 27 ms | single 1.51→1.58 3.0s | 0 st, +1 dB | keep | her comeback lands fast |
 | 30 | General Iron-Claw | That one. She's the keeper. Bring her to me. | cut | 180 ms | 31 ms | single 1.51→1.58 3.6s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 31 | Meeca | Excuse me? You're blocking my flower. | cut | 180 ms | 27 ms | single 1.51→1.58 3.0s | 0 st, +1 dB | keep |  |
+| 31 | Meeca | Excuse me? You're blocking my flower. | cut | 180 ms | 27 ms | single 1.51→1.58 3.0s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 32 | General Iron-Claw | Come, little bloom. You're coming with me. | cut | 180 ms | 36 ms | single 1.51→1.58 3.5s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 33 | Meeca | Who told you that? | cut | 180 ms | 32 ms | single 1.51→1.58 3.0s | -0.5 st, -1 dB | keep |  |
+| 33 | Meeca | Who told you that? | cut | 180 ms | 32 ms | single 1.51→1.58 3.0s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 34 | General Iron-Claw | Grab her. We're leaving. | cut | 430 ms | 31 ms | single 1.51→1.58 3.0s | 0 st, +1 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
-| 35 | Pokey | Excuse me, sir? I think there's been some kind of misunderstanding he… | cut | 180 ms | 34 ms | single 1.51→1.58 4.5s | 0 st, +1 dB | keep |  |
-| 36 | Pokey | Are you feeling okay? You seem a little grumpy. | cut | 180 ms | 34 ms | push 1.58→1.65 3.6s | 0 st, +1 dB | keep |  |
+| 35 | Pokey | Excuse me, sir? I think there's been some kind of misunderstanding he… | cut | 180 ms | 34 ms | single 1.51→1.58 4.5s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 36 | Pokey | Are you feeling okay? You seem a little grumpy. | cut | 180 ms | 34 ms | push 1.58→1.65 3.6s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 37 | General Iron-Claw | The General has flattened forts for less. | cut | 180 ms | 31 ms | single 1.51→1.58 3.1s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 38 | General Iron-Claw | One. | cut | 1000 ms | 31 ms | push 1.58→1.65 3.0s | 0 st, +1 dB | under | the count over almost nothing |
 | 39 | Narrator | Pokey looked over at Meeca, and he moved faster than he had ever move… | cut | 120 ms | 20 ms | drift 1.34→1.37 10.0s | 0 st, +1 dB | keep | the fastest he has ever moved: so is the cut |
@@ -220,10 +220,10 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Venom Fang | Ssloth. What are you doing on my branch? | dip | 450 ms | 34 ms | push 1.50→1.58 3.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | I'm going to get Meeca back. | cut | 430 ms | 40 ms | single 1.68→1.75 3.2s | own | keep | an answer: a thinking beat |
+| 1 | Pokey | I'm going to get Meeca back. | cut | 430 ms | 40 ms | single 1.68→1.75 3.2s | own | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Venom Fang | You're going to take her from him? From the General. Up there. I was… (2 pages) | cut | 180 ms | 34 ms | single 1.68→1.75 8.5s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Venom Fang | You'll have to get through me, ssloth. Take all the time you need. | cut | 180 ms | 34 ms | push 1.75→1.83 4.3s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 4 | Pokey | I usually do. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 4 | Pokey | I usually do. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 1 guardian defeat (`w1-boss-defeat`, 9 pictures)
 
@@ -312,9 +312,9 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Crocus Rex | HALT! You stand on the bank of Crocus Rex, King of the Sunlit Riverba… (2 pages) | dip | 450 ms | 36 ms | push 1.50→1.58 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | Nice crown. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room |
+| 1 | Pokey | Nice crown. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Crocus Rex | Don't look at it. It's crooked. The little keeper made it for me on t… (2 pages) | cut | 180 ms | 36 ms | single 1.68→1.75 7.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | It suits you. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room |
+| 3 | Pokey | It suits you. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Crocus Rex | Does it? No. NO. Nice try. It is a matter of professional pride that… | cut | 180 ms | 36 ms | single 1.68→1.75 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 2 guardian defeat (`w2-boss-defeat`, 5 pictures)
@@ -329,9 +329,9 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Crocus Rex | Upside down! I, Crocus Rex, King of the Sunlit Riverbank, upside down… (2 pages) | dip | 450 ms | 36 ms | push 1.50→1.58 8.2s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | They're pretty slow. You've got a few years. | cut | 180 ms | 40 ms | single 1.68→1.75 3.8s | own | keep |  |
+| 1 | Pokey | They're pretty slow. You've got a few years. | cut | 180 ms | 40 ms | single 1.68→1.75 3.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Crocus Rex | My crown! Where is my... oh. There. Fine. You may have the river. The… | cut | 180 ms | 41 ms | slowPush 1.50→1.71 11.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | I'll tell her. | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room |
+| 3 | Pokey | I'll tell her. | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Crocus Rex | Now go. Before I'm ordered to be unreasonable. | cut | 180 ms | 41 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 3 arrival (`w3-arrival`, 11 pictures)
@@ -353,8 +353,8 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 5 | Narrator | Pokey stopped to listen to the glowworms, and the glowworms noticed.… (2 pages) | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | own | keep |  |
 | 6 | Narrator | Between the stalactites hung the old thorn vines that Meeca's grandma… | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | -0.5 st, -1 dB | keep |  |
 | 7 | Narrator | On the floor, in the mud, were footprints. Each one was as wide as Po… (2 pages) | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | -0.5 st, -1 dB | keep |  |
-| 8 | Dot | I'm looking at them with my eyes closed. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | -0.5 st, -1 dB | keep |  |
-| 9 | Pokey | That doesn't make them smaller. | cut | 180 ms | 40 ms | single 1.68→1.75 3.1s | -0.5 st, -1 dB | keep |  |
+| 8 | Dot | I'm looking at them with my eyes closed. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 9 | Pokey | That doesn't make them smaller. | cut | 180 ms | 40 ms | single 1.68→1.75 3.1s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 10 | Narrator | Far back in the dark, two eyes opened, and didn't blink. Whatever it… | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | -0.5 st, -1 dB | keep |  |
 
 ## World 3 midpoint (`w3-mid`, 9 pictures)
@@ -390,9 +390,9 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Shadow Prowler | Word came down the river that the snake lost to a sloth. I did not be… | dip | 450 ms | 36 ms | push 1.50→1.58 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 1 | Shadow Prowler | You will not hit what you cannot find, little sloth. I am the dark be… | cut | 180 ms | 36 ms | push 1.58→1.65 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 2 | Pokey | I can wait. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room |
+| 2 | Pokey | I can wait. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Shadow Prowler | Everyone says that. Then they hurry. Everyone hurries. Not one has la… | cut | 180 ms | 36 ms | single 1.68→1.75 5.9s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 4 | Pokey | I never learned how to hurry. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 4 | Pokey | I never learned how to hurry. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 3 guardian defeat (`w3-boss-defeat`, 3 pictures)
 
@@ -405,7 +405,7 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Shadow Prowler | Two hours, and you did not look at the sky once. I got tired first. T… | dip | 450 ms | 36 ms | push 1.50→1.58 6.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | Two hours? Try two days on a vine sometime. | cut | 180 ms | 40 ms | single 1.68→1.75 3.7s | own | keep |  |
+| 1 | Pokey | Two hours? Try two days on a vine sometime. | cut | 180 ms | 40 ms | single 1.68→1.75 3.7s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Shadow Prowler | Meeca went north, toward the clouds. The thorns on our necks are call… | cut | 180 ms | 36 ms | single 1.68→1.75 7.5s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 4 arrival (`w4-arrival`, 17 pictures)
@@ -433,9 +433,9 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 11 | Dot | It was a horn, Pokey. A horn has somebody on the other end. I always… | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.6s | -0.5 st, -1.5 dB | keep |  |
 | 12 | Narrator | Waterfalls as tall as the sky. The water ran cloudy, which the old sl… | dip | 450 ms | 30 ms | authored move | own | keep |  |
 | 13 | Narrator | A feather drifted down out of the mist, as long as Pokey's whole arm. | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | own | keep |  |
-| 14 | Dot | That's Her Majesty the Sky Sovereign, so please, please be polite. Sh… | cut | 180 ms | 22 ms | single 1.68→1.75 4.6s | own | keep |  |
-| 15 | Pokey | I'll wait till she's done. | cut | 630 ms | 40 ms | single 1.68→1.75 3.3s | own | keep | a short line after a long one: give it room |
-| 16 | Dot | She started it this morning. It's a very long way down. | cut | 180 ms | 22 ms | single 1.68→1.75 3.2s | own | keep |  |
+| 14 | Dot | That's Her Majesty the Sky Sovereign, so please, please be polite. Sh… | cut | 180 ms | 22 ms | single 1.68→1.75 4.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 15 | Pokey | I'll wait till she's done. | cut | 630 ms | 40 ms | single 1.68→1.75 3.3s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
+| 16 | Dot | She started it this morning. It's a very long way down. | cut | 180 ms | 22 ms | single 1.68→1.75 3.2s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 4 midpoint (`w4-mid`, 11 pictures)
 
@@ -471,10 +471,10 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Sky Sovereign | Nothing climbs my cliffs. State your business, sloth, and keep it sho… | dip | 450 ms | 30 ms | push 1.50→1.58 5.1s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | I'm going to get Meeca back. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room |
+| 1 | Pokey | I'm going to get Meeca back. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Sky Sovereign | I saw her. She waved. I have orders concerning whatever follows her.… (2 pages) | cut | 180 ms | 30 ms | single 1.68→1.75 7.5s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | Slowly. | cut | 880 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room; an answer: a thinking beat |
-| 4 | Dot | He's very polite, he gets that from me, I mean he doesn't, I'm a bird… | cut | 180 ms | 22 ms | single 1.68→1.75 3.9s | own | keep |  |
+| 3 | Pokey | Slowly. | cut | 880 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room; an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
+| 4 | Dot | He's very polite, he gets that from me, I mean he doesn't, I'm a bird… | cut | 180 ms | 22 ms | single 1.68→1.75 3.9s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 5 | Sky Sovereign | The cat says you outwaited him. Cats lie. | cut | 180 ms | 30 ms | single 1.68→1.75 3.3s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 4 guardian defeat (`w4-boss-defeat`, 6 pictures)
@@ -489,10 +489,10 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Sky Sovereign | Enough. I am on the ground. I am never on the ground. The owls will b… | dip | 450 ms | 30 ms | push 1.50→1.58 5.7s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | I won't tell anybody. | cut | 630 ms | 40 ms | single 1.68→1.75 3.1s | own | keep | a short line after a long one: give it room |
-| 2 | Dot | I'm telling everybody. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 1 | Pokey | I won't tell anybody. | cut | 630 ms | 40 ms | single 1.68→1.75 3.1s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
+| 2 | Dot | I'm telling everybody. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Sky Sovereign | The cat did not lie, then. The cliff is yours. I am relieved, if you… (2 pages) | cut | 180 ms | 30 ms | single 1.68→1.75 7.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 4 | Pokey | I know. I heard who did. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room |
+| 4 | Pokey | I know. I heard who did. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 5 | Sky Sovereign | Good. Watch the next collar. The General's hand is on every one of th… | cut | 180 ms | 30 ms | single 1.68→1.75 5.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 5 arrival (`w5-arrival`, 14 pictures)
@@ -515,11 +515,11 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | 6 | Dot | With a hairpin. She's so resourceful. She's the most resourceful pers… (3 pages) | cut | 180 ms | 22 ms | single 1.68→1.75 8.1s | +0.5 st, 0 dB | keep |  |
 | 7 | Dot | If she carved one, she carved more. She never leaves just one of anyt… | cut | 180 ms | 22 ms | push 1.75→1.83 4.2s | +0.5 st, 0 dB | keep |  |
 | 8 | Narrator | A little table stood in the middle of the path, set for two: china cu… (3 pages) | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | +0.5 st, 0 dB | keep |  |
-| 9 | Pokey | That's very polite. | cut | 630 ms | 40 ms | single 1.68→1.75 3.1s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
-| 10 | Dot | That's what makes it scary. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep |  |
+| 9 | Pokey | That's very polite. | cut | 630 ms | 40 ms | single 1.68→1.75 3.1s | +0.5 st, 0 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
+| 10 | Dot | That's what makes it scary. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 11 | Narrator | Pokey looked at the chairs. They looked back. | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | +0.5 st, 0 dB | keep |  |
-| 12 | Pokey | Dot. Be honest. How bad would it be if I just sat for one minute? | cut | 180 ms | 40 ms | single 1.68→1.75 4.8s | +0.5 st, 0 dB | keep |  |
-| 13 | Dot | You'd be a chair, Pokey. You'd be, forever, a very still chair. | cut | 430 ms | 22 ms | single 1.68→1.75 3.7s | -0.5 st, -1 dB | keep | an answer: a thinking beat |
+| 12 | Pokey | Dot. Be honest. How bad would it be if I just sat for one minute? | cut | 180 ms | 40 ms | single 1.68→1.75 4.8s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 13 | Dot | You'd be a chair, Pokey. You'd be, forever, a very still chair. | cut | 430 ms | 22 ms | single 1.68→1.75 3.7s | -0.5 st, -1 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 5 midpoint (`w5-mid`, 13 pictures)
 
@@ -558,10 +558,10 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Tarantula Queen | Welcome, darling. Do stay awhile. Everyone does. Eventually. | dip | 450 ms | 33 ms | push 1.50→1.58 4.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | I can't stay. My friend's in a tower. | cut | 180 ms | 40 ms | single 1.68→1.75 3.5s | own | keep |  |
-| 2 | Dot | There's a doily, Pokey. Nothing good has ever had a doily. | cut | 180 ms | 22 ms | single 1.68→1.75 3.3s | own | keep |  |
+| 1 | Pokey | I can't stay. My friend's in a tower. | cut | 180 ms | 40 ms | single 1.68→1.75 3.5s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 2 | Dot | There's a doily, Pokey. Nothing good has ever had a doily. | cut | 180 ms | 22 ms | single 1.68→1.75 3.3s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Tarantula Queen | The eagle sent word a sloth was coming, so I set the table. A week ag… (2 pages) | cut | 180 ms | 33 ms | single 1.68→1.75 7.7s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 4 | Pokey | Sorry I'm late. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room |
+| 4 | Pokey | Sorry I'm late. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 5 guardian defeat (`w5-boss-defeat`, 3 pictures)
 
@@ -574,7 +574,7 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Tarantula Queen | My webs. All that silk, and a sloth walks straight through it. Well.… | dip | 450 ms | 33 ms | push 1.50→1.58 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | I'll send a thank-you note. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room |
+| 1 | Pokey | I'll send a thank-you note. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Tarantula Queen | Don't go yet. The pot's still warm. The cat told you to ask how it be… | cut | 180 ms | 38 ms | slowPush 1.50→1.71 8.5s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 6 arrival (`w6-arrival`, 9 pictures)
@@ -589,11 +589,11 @@ The kidnapping is the game's first impression, and today it plays at one pace fr
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Narrator | The roots of the Deep Mangrove stood up out of the water in a maze, a… (2 pages) | dip | 450 ms | 30 ms | authored move | -0.5 st, -1 dB | keep |  |
-| 1 | Pokey | Water that flat has something under it. | cut | 180 ms | 40 ms | single 1.68→1.75 3.4s | -0.5 st, -1 dB | keep |  |
+| 1 | Pokey | Water that flat has something under it. | cut | 180 ms | 40 ms | single 1.68→1.75 3.4s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Narrator | Out of the black water, a spear rose, slowly. It turned to look at th… | cut | 830 ms | 30 ms | drift 1.34→1.37 10.0s | -0.5 st, -1 dB | keep | a beat before the darkness |
-| 3 | Dot | Did the water just look at us? | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep |  |
-| 4 | Pokey | Somebody's holding it. | cut | 430 ms | 40 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | an answer: a thinking beat |
-| 5 | Dot | That's worse, that's so much worse, I'm fine, I've backed up about ni… | cut | 180 ms | 22 ms | single 1.68→1.75 4.8s | +0.5 st, 0 dB | keep |  |
+| 3 | Dot | Did the water just look at us? | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 4 | Pokey | Somebody's holding it. | cut | 430 ms | 40 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
+| 5 | Dot | That's worse, that's so much worse, I'm fine, I've backed up about ni… | cut | 180 ms | 22 ms | single 1.68→1.75 4.8s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 6 | Dot | "Pokey, the Reaver eats lunch at noon. Do NOT meet him at noon." That… | cut | 180 ms | 22 ms | push 1.75→1.83 5.3s | +0.5 st, 0 dB | keep |  |
 | 7 | Pokey | What time is it? | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
 | 8 | Dot | Noon. It's noon. I can see the sun, right there, straight down throug… | cut | 1080 ms | 22 ms | reveal 1.74→1.46 2.4s | -0.5 st, -1 dB | keep | a beat before the cliffhanger; an answer: a thinking beat |
@@ -660,9 +660,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Marsh Reaver | Who wades into the blackwater at noon? Nobody wades at noon. It is LU… | dip | 450 ms | 36 ms | push 1.50→1.58 5.1s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | I know what time it is. I'm not waiting. | cut | 180 ms | 40 ms | single 1.68→1.75 3.6s | own | keep |  |
+| 1 | Pokey | I know what time it is. I'm not waiting. | cut | 180 ms | 40 ms | single 1.68→1.75 3.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Marsh Reaver | Wait. You're the sloth. The runners talk about you when they bring my… (2 pages) | cut | 180 ms | 36 ms | single 1.68→1.75 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | I'm taller upside down. | cut | 630 ms | 40 ms | single 1.68→1.75 3.2s | own | keep | a short line after a long one: give it room |
+| 3 | Pokey | I'm taller upside down. | cut | 630 ms | 40 ms | single 1.68→1.75 3.2s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 6 guardian defeat (`w6-boss-defeat`, 4 pictures)
 
@@ -675,7 +675,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Marsh Reaver | You waded in at LUNCH and won. Lunch has never lost. The runners are… | dip | 450 ms | 36 ms | push 1.50→1.58 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | Your lunch is getting cold. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room |
+| 1 | Pokey | Your lunch is getting cold. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Marsh Reaver | It is cold now. Hrmph. Go. | cut | 180 ms | 36 ms | single 1.68→1.75 3.1s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Narrator | When Pokey looked back, the Reaver had left half his lunch on a root,… | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep |  |
 
@@ -727,9 +727,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Stone Idol Golem | I... heard... you were... coming. Three... weeks... ago. You... are..… | dip | 450 ms | 44 ms | push 1.50→1.58 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | First time for everything. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 1 | Pokey | First time for everything. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Stone Idol Golem | I... am... the guardian... of this... temple. None... may... pass. | cut | 180 ms | 44 ms | single 1.68→1.75 8.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | Finally. Somebody I can keep up with. | cut | 180 ms | 40 ms | single 1.68→1.75 3.5s | own | keep |  |
+| 3 | Pokey | Finally. Somebody I can keep up with. | cut | 180 ms | 40 ms | single 1.68→1.75 3.5s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Stone Idol Golem | I... have... waited... a thousand... years. For... | cut | 180 ms | 44 ms | single 1.68→1.75 6.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 7 guardian defeat (`w7-boss-defeat`, 6 pictures)
@@ -743,9 +743,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Stone Idol Golem | In... under... an hour. You are... so... fast. | dip | 450 ms | 44 ms | push 1.50→1.58 6.4s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | Say that again. Slower. I want to enjoy it. | cut | 180 ms | 40 ms | single 1.68→1.75 3.9s | own | keep |  |
+| 1 | Pokey | Say that again. Slower. I want to enjoy it. | cut | 180 ms | 40 ms | single 1.68→1.75 3.9s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Stone Idol Golem | The rune... is broken. The way up... is open. Behind... the rune... | cut | 180 ms | 44 ms | single 1.68→1.75 7.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | Take your time. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 3 | Pokey | Take your time. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Stone Idol Golem | I... always... do. | cut | 180 ms | 44 ms | single 1.68→1.75 3.7s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 5 | Stone Idol Golem | There is... a photograph. The General asked me... to keep it... from… | cut | 180 ms | 44 ms | push 1.75→1.83 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
@@ -835,9 +835,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Night-Wing Monarch | Good evening, little climber. They say you have beaten seven of us. I… | dip | 450 ms | 36 ms | push 1.50→1.58 6.9s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | I'm going to get Meeca back. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room |
+| 1 | Pokey | I'm going to get Meeca back. | cut | 630 ms | 40 ms | single 1.68→1.75 3.4s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Night-Wing Monarch | I am told to stop you. I will try to do it softly. You talk in your s… (2 pages) | cut | 180 ms | 36 ms | single 1.68→1.75 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | I hope I said something nice. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 3 | Pokey | I hope I said something nice. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 8 guardian defeat (`w8-boss-defeat`, 5 pictures)
 
@@ -850,9 +850,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Night-Wing Monarch | Hm. I was asked to stop you softly. I am not sure that counts. | dip | 450 ms | 36 ms | push 1.50→1.58 4.7s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | You were very soft about it. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 1 | Pokey | You were very soft about it. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Night-Wing Monarch | Will you tell me how it ends? The dream. The bird woke you before the… | cut | 180 ms | 36 ms | single 1.68→1.75 5.4s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | It ends with me getting there. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep |  |
+| 3 | Pokey | It ends with me getting there. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Night-Wing Monarch | Ah. A good ending. The Drake is next. He is bad at visitors. Be patie… | cut | 180 ms | 36 ms | single 1.68→1.75 5.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 9 arrival (`w9-arrival`, 6 pictures)
@@ -868,7 +868,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Narrator | The Volcanic Jungle glowed from underneath. The air tasted like peppe… | dip | 450 ms | 30 ms | authored move | +0.5 st, 0 dB | keep |  |
 | 1 | Narrator | A voice boomed, "A visitor!" There was a pause. Then, much smaller, i… | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | +0.5 st, 0 dB | keep |  |
-| 2 | Dot | "It's cold. I'm fine. He sent up another blanket. Please don't tell h… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 9.3s | -0.5 st, -1.5 dB | keep |  |
+| 2 | Dot | "It's cold. I'm fine. He sent up another blanket. Please don't tell h… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 9.3s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Pokey | She said thank you to him? | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room |
 | 4 | Dot | She says thank you to everybody. She said it to a thorn once. It had… | cut | 430 ms | 25 ms | slowPush 1.50→1.71 7.5s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat |
 | 5 | Narrator | Behind the smoke, the fortress stood up out of the thunder. | cut | 180 ms | 30 ms | authored move | -0.5 st, -1 dB | keep |  |
@@ -886,9 +886,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Narrator | The lantern was back, held low to the ground, which hadn't fooled any… | dip | 450 ms | 30 ms | drift 1.34→1.37 10.0s | +0.5 st, 0 dB | keep |  |
 | 1 | Lieutenant Pell | I am so sorry. It is me again. I told the kitchen I was out buying th… (2 pages) | cut | 180 ms | 27 ms | single 1.68→1.75 8.9s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 2 | Dot | Pell! I forgive you for the seam. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep |  |
+| 2 | Dot | Pell! I forgive you for the seam. | cut | 180 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Lieutenant Pell | Miss Meeca asked me to tell you one thing. She says, "Tell Pokey I'm… | cut | 180 ms | 31 ms | slowPush 1.50→1.71 8.9s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 4 | Pokey | Tell her I'll wear it. | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room |
+| 4 | Pokey | Tell her I'll wear it. | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 5 | Lieutenant Pell | I shall. Sir. Everyone. I am so sorry. I really must go. | cut | 180 ms | 31 ms | slowPush 1.50→1.71 6.3s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 6 | Dot | Pokey, you've been quiet since the lava, which is long even for you,… | cut | 180 ms | 22 ms | single 1.68→1.75 4.4s | +0.5 st, 0 dB | keep |  |
 | 7 | Pokey | I'm thinking about Meeca's grandfather. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep |  |
@@ -910,9 +910,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Magma Drake | You came. Eight of them said you would, and I did not tidy. I am to b… | dip | 450 ms | 34 ms | push 1.50→1.58 7.4s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | It starts with "I am to burn you." You did that part. | cut | 180 ms | 40 ms | single 1.68→1.75 4.1s | own | keep |  |
+| 1 | Pokey | It starts with "I am to burn you." You did that part. | cut | 180 ms | 40 ms | single 1.68→1.75 4.1s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Magma Drake | Don't be... What is that? On your wrist. It glows. Is it for me? | cut | 180 ms | 34 ms | single 1.68→1.75 5.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | No. | cut | 430 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | an answer: a thinking beat |
+| 3 | Pokey | No. | cut | 430 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Magma Drake | No. Of course not. Then we will see what it can do. | cut | 180 ms | 34 ms | single 1.68→1.75 3.9s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 9 guardian defeat (`w9-boss-defeat`, 5 pictures)
@@ -926,9 +926,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Magma Drake | My fire. A hundred years I kept that going, and the first visitor put… | dip | 450 ms | 34 ms | push 1.50→1.58 4.9s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | You sound terrible. Have some water. Actually, don't. | cut | 180 ms | 40 ms | single 1.68→1.75 4.3s | own | keep |  |
+| 1 | Pokey | You sound terrible. Have some water. Actually, don't. | cut | 180 ms | 40 ms | single 1.68→1.75 4.3s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Magma Drake | Will you come back? After. Bring tea. Two cups. | cut | 180 ms | 39 ms | slowPush 1.50→1.71 6.2s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | Maybe. If you tidy. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 3 | Pokey | Maybe. If you tidy. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Magma Drake | Go. Now. Before I say something nice. | cut | 180 ms | 39 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 10 arrival (`w10-arrival`, 24 pictures)
@@ -1019,13 +1019,13 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | General Iron-Claw | Nine hundred and ninety-nine steps. One more. The General has broken… | dip | 450 ms | 36 ms | push 1.50→1.58 6.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | Still here, sir. I've come for Meeca. Where's Dot? | cut | 180 ms | 40 ms | single 1.68→1.75 4.2s | own | keep |  |
+| 1 | Pokey | Still here, sir. I've come for Meeca. Where's Dot? | cut | 180 ms | 40 ms | single 1.68→1.75 4.2s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | General Iron-Claw | I do not know where your bird is, and I find that I mind. You stopped… | cut | 430 ms | 31 ms | single 1.68→1.75 5.7s | 0 st, +1 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | It was very good tea, sir. | cut | 630 ms | 34 ms | single 1.68→1.75 3.2s | 0 st, +1 dB | keep | a short line after a long one: give it room |
+| 3 | Pokey | It was very good tea, sir. | cut | 630 ms | 34 ms | single 1.68→1.75 3.2s | 0 st, +1 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 4 | General Iron-Claw | Slow gets people killed. | cut | 180 ms | 31 ms | single 1.68→1.75 3.0s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 5 | Pokey | I know it does, sir. My folks went out in a storm when I was little.… | cut | 680 ms | 46 ms | slowPush 1.50→1.71 10.3s | -1 st, -3 dB | under | hush: let it be quiet first |
+| 5 | Pokey | I know it does, sir. My folks went out in a storm when I was little.… | cut | 680 ms | 46 ms | slowPush 1.50→1.71 10.3s | -1 st, -3 dB | under | hush: let it be quiet first; framed chest-up: lifting the feet clear would cut off a head |
 | 6 | General Iron-Claw | Then you know what it costs. I buried her because help was late. Not… | cut | 680 ms | 41 ms | slowPush 1.50→1.71 7.8s | -1 st, -3 dB | under | hush: let it be quiet first; framed chest-up: lifting the feet clear would cut off a head |
-| 7 | Pokey | I've had a long time to work out who to blame, sir. It was a storm. | cut | 680 ms | 46 ms | slowPush 1.50→1.71 7.6s | -1 st, -3 dB | under | hush: let it be quiet first |
+| 7 | Pokey | I've had a long time to work out who to blame, sir. It was a storm. | cut | 680 ms | 46 ms | slowPush 1.50→1.71 7.6s | -1 st, -3 dB | under | hush: let it be quiet first; framed chest-up: lifting the feet clear would cut off a head |
 | 8 | General Iron-Claw | The General does not lose twice. | cut | 180 ms | 31 ms | single 1.68→1.75 3.0s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## World 10 guardian defeat (`w10-boss-defeat`, 4 pictures)
@@ -1039,9 +1039,9 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | General Iron-Claw | You climbed every step. Why did you not turn back? | dip | 950 ms | 41 ms | slowPush 1.50→1.71 6.8s | -1 st, -3 dB | under | hush: let it be quiet first; framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | She was at the top, sir. | cut | 930 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | under | hush: let it be quiet first; an answer: a thinking beat |
+| 1 | Pokey | She was at the top, sir. | cut | 930 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | under | hush: let it be quiet first; an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 2 | General Iron-Claw | I left the door open. I told myself it was a trap. | cut | 180 ms | 41 ms | slowPush 1.50→1.71 6.1s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 3 | Pokey | It was a good door, sir. It fit. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep |  |
+| 3 | Pokey | It was a good door, sir. It fit. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 
 ## Thornbark intro (`thornbark-intro`, 4 pictures)
 
@@ -1054,7 +1054,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | # | Who | Line | In | Beat | Type | Camera | Voice | Music | Why |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Thornbark | Leave my hollow, little sloth. The thorns do not like visitors. Today… | dip | 450 ms | 40 ms | push 1.50→1.58 5.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 1 | Pokey | Meeca's grandma told me about you. The thorns did this, didn't they? | cut | 180 ms | 40 ms | single 1.68→1.75 4.7s | own | keep |  |
+| 1 | Pokey | Meeca's grandma told me about you. The thorns did this, didn't they? | cut | 180 ms | 40 ms | single 1.68→1.75 4.7s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 2 | Thornbark | I would not kneel. The others did. So the thorns came to teach me how. | cut | 430 ms | 40 ms | single 1.68→1.75 5.2s | own | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Thornbark | I cannot hold them much longer. Run. Please. | cut | 180 ms | 40 ms | push 1.75→1.83 4.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
@@ -1071,8 +1071,8 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Thornbark | They are gone. I can hear myself think. It is very loud in here. | dip | 450 ms | 40 ms | push 1.50→1.58 5.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 1 | Thornbark | A sloth. They sent a sloth? No. Nobody sent you. | cut | 180 ms | 40 ms | push 1.58→1.65 4.3s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 2 | Pokey | I didn't beat them. I just kept coming back until they got tired of m… | cut | 180 ms | 40 ms | single 1.68→1.75 4.9s | own | keep |  |
-| 3 | Pokey | You were right, you know. Not to kneel. | cut | 180 ms | 40 ms | push 1.75→1.83 3.6s | own | keep |  |
+| 2 | Pokey | I didn't beat them. I just kept coming back until they got tired of m… | cut | 180 ms | 40 ms | single 1.68→1.75 4.9s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 3 | Pokey | You were right, you know. Not to kneel. | cut | 180 ms | 40 ms | push 1.75→1.83 3.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Thornbark | I have not heard that since the Pact. The keeper before her sat in my… (2 pages) | cut | 180 ms | 40 ms | single 1.68→1.75 9.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 5 | Thornbark | Take this Thorn Heart. Go and bring your Meeca home. | cut | 180 ms | 40 ms | push 1.75→1.83 4.1s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 
@@ -1116,10 +1116,10 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 1 | Dot | We did it. You did it. I was there, and I was loud. | cut | 180 ms | 22 ms | single 1.68→1.75 3.3s | +0.5 st, 0 dB | keep |  |
 | 2 | Pokey | You were really loud. It helped. | cut | 180 ms | 40 ms | single 1.68→1.75 3.3s | +0.5 st, 0 dB | keep |  |
 | 3 | Narrator | To the north, past the last of the trees, a dark point stood on the h… (2 pages) | cut | 180 ms | 30 ms | authored move | own | keep |  |
-| 4 | Pokey | She's up there. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room |
-| 5 | Dot | And the weather lives up there too. I've been trying not to say it. | cut | 180 ms | 22 ms | single 1.68→1.75 3.5s | own | keep |  |
+| 4 | Pokey | She's up there. | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
+| 5 | Dot | And the weather lives up there too. I've been trying not to say it. | cut | 180 ms | 22 ms | single 1.68→1.75 3.5s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 6 | Shadow Prowler | North, past the falls. Follow the wind, not the path. And, sloth. Whe… | cut | 180 ms | 36 ms | single 1.68→1.75 6.3s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 7 | Pokey | What horn? | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | -0.5 st, -1 dB | keep | a short line after a long one: give it room |
+| 7 | Pokey | What horn? | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | -0.5 st, -1 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 8 | Narrator | The note came down out of the north. It was so low he felt it in his… (2 pages) | soft | 970 ms | 30 ms | drift 1.34→1.37 10.0s | 0 st, +1 dB | keep | a beat before the darkness |
 | 9 | Narrator | It rolled on and on, like thunder. Pokey grabbed the ledge. | cut | 180 ms | 26 ms | drift 1.34→1.37 10.0s | 0 st, +1 dB | keep |  |
 | 10 | Narrator | The collar on the Prowler's neck turned the red of a coal. His eyes w… | cut | 180 ms | 26 ms | drift 1.54→1.58 10.0s | 0 st, +1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
@@ -1171,13 +1171,13 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Narrator | The Heartbloom garden, years ago. Meeca's grandma was teaching her ho… | dip | 450 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 1 | Grandma | Don't fuss at it, dear. Sit. | cut | 630 ms | 44 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
-| 2 | Meeca | But how will I know it's happy? | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 2 | Meeca | But how will I know it's happy? | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Grandma | When it opens. Until then, you bring a chair, and you sit with it, an… | cut | 430 ms | 44 ms | slowPush 1.50→1.71 10.1s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 4 | Narrator | Young Pokey, all elbows, was watering the wrong plant, very carefully. | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
-| 5 | Pokey | I think I watered the fern. | cut | 180 ms | 46 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 6 | Meeca | You watered the fern, the snail, and my sandal. | cut | 180 ms | 37 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 5 | Pokey | I think I watered the fern. | cut | 180 ms | 46 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 6 | Meeca | You watered the fern, the snail, and my sandal. | cut | 180 ms | 37 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 7 | Grandma | Thank you for watering it anyway, Pokey. The fern never gets any. Tha… | cut | 180 ms | 44 ms | slowPush 1.35→1.54 10.1s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 8 | Pokey | It's Monday. | cut | 630 ms | 40 ms | single 1.51→1.58 3.0s | own | keep | a short line after a long one: give it room |
+| 8 | Pokey | It's Monday. | cut | 630 ms | 40 ms | single 1.51→1.58 3.0s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 9 | Grandma | You're staying for supper, Pokey. You always are. | cut | 180 ms | 44 ms | slowPush 1.35→1.54 6.2s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 10 | Narrator | The frond unrolled another inch while they argued about the sandal. | cut | 180 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
 
@@ -1194,16 +1194,16 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Narrator | The Tarantula Queen didn't bow. She laid out four cups, a plate of sm… (2 pages) | dip | 450 ms | 30 ms | drift 1.34→1.37 10.0s | +0.5 st, 0 dB | keep |  |
 | 1 | Tarantula Queen | Sit. I know you're in a hurry. Sit anyway. I haven't poured for anyon… | cut | 180 ms | 33 ms | single 1.68→1.75 6.5s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 2 | Dot | Pokey, it's a trap. | cut | 630 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
-| 3 | Pokey | It's a tea. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep |  |
-| 4 | Dot | It's a trap with cookies, which is the worst kind. I'm not drinking a… | cut | 180 ms | 22 ms | single 1.68→1.75 4.6s | +0.5 st, 0 dB | keep |  |
+| 2 | Dot | Pokey, it's a trap. | cut | 630 ms | 22 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
+| 3 | Pokey | It's a tea. | cut | 180 ms | 40 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 4 | Dot | It's a trap with cookies, which is the worst kind. I'm not drinking a… | cut | 180 ms | 22 ms | single 1.68→1.75 4.6s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 5 | Narrator | Pokey drank the whole cup, down to the leaves. The Queen watched ever… | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep |  |
-| 6 | Dot | Sip. Don't gulp. She's watching you gulp. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 6 | Dot | Sip. Don't gulp. She's watching you gulp. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 7 | Tarantula Queen | You'll forgive an old queen for asking. It's a long road, and the Hig… | cut | 180 ms | 38 ms | slowPush 1.50→1.71 8.3s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 8 | Pokey | Because she waited for me once. | cut | 430 ms | 46 ms | slowPush 1.20→1.37 6.0s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat |
 | 9 | Tarantula Queen | Ah. | cut | 180 ms | 38 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 10 | Tarantula Queen | Mind that chair. I dust it every morning. He always put his feet up o… (2 pages) | cut | 180 ms | 38 ms | slowPush 1.50→1.71 11.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 11 | Pokey | Who sat there? | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | a short line after a long one: give it room |
+| 11 | Pokey | Who sat there? | cut | 630 ms | 46 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 12 | Tarantula Queen | Iron-Claw. Before he was anyone's General. Then came the storm. His w… (3 pages) | cut | 1080 ms | 33 ms | reveal 1.74→1.46 2.4s | own | keep | a beat before the reveal; an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 13 | Tarantula Queen | We said yes. All but one of us. That's all the Pact is. I poured him… | cut | 180 ms | 33 ms | push 1.46→1.53 7.1s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 14 | Tarantula Queen | Her flower puts our thorns to sleep, darling. The morning it opened,… | cut | 180 ms | 33 ms | push 1.53→1.60 5.3s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
@@ -1261,7 +1261,7 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 | 10 | Meeca | ♪ Slow the rain... slow the thunder... ♪ | soft | 1200 ms | 63 ms | slowPush 1.50→1.71 8.2s | silent (sung) | swell | the lullaby: sung slowly, the music carries it, no babble |
 | 11 | Narrator | The thunder kept coming. After a while, he could hear her over it. | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 12 | Pokey | Who taught you that? | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 13 | Meeca | Grandma. It was her song first. She has a music box that plays it, wi… | cut | 430 ms | 37 ms | slowPush 1.35→1.54 9.3s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat |
+| 13 | Meeca | Grandma. It was her song first. She has a music box that plays it, wi… | cut | 430 ms | 37 ms | slowPush 1.35→1.54 9.3s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 14 | Narrator | Down in the house, the music box ran down. She went on without it, an… | cut | 180 ms | 30 ms | drift 1.18→1.21 10.0s | own | keep |  |
 
 ## Memory: The Tally (`memory-tally`, 15 pictures)
@@ -1345,17 +1345,17 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Narrator | The Monarch was gone, and the fireflies came back one at a time. In t… (2 pages) | dip | 450 ms | 30 ms | authored move | +0.5 st, 0 dB | keep |  |
 | 1 | Lieutenant Pell | I am so sorry, but would you mind not looking at me? | cut | 180 ms | 27 ms | single 1.68→1.75 3.3s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 2 | Dot | Soldier! Pokey, there's a soldier! I'll distract him. I'm extremely d… | cut | 430 ms | 22 ms | single 1.68→1.75 5.1s | +0.5 st, 0 dB | keep | an answer: a thinking beat |
+| 2 | Dot | Soldier! Pokey, there's a soldier! I'll distract him. I'm extremely d… | cut | 430 ms | 22 ms | single 1.68→1.75 5.1s | +0.5 st, 0 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Lieutenant Pell | I am so sorry, but please do not scream. Everyone screams. I am Lieut… | cut | 180 ms | 27 ms | single 1.68→1.75 5.4s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 4 | Pokey | Is she okay? | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
+| 4 | Pokey | Is she okay? | cut | 630 ms | 40 ms | single 1.68→1.75 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 5 | Lieutenant Pell | She is very polite to me. I do not deserve it. I am sorry. Yes. | cut | 430 ms | 31 ms | slowPush 1.50→1.71 6.6s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 6 | Lieutenant Pell | I am not supposed to be here. I have come to tell you two things, and… | cut | 180 ms | 31 ms | slowPush 1.50→1.71 7.8s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 7 | Lieutenant Pell | The first. The General has asked the cook for the soup Miss Meeca lik… | cut | 180 ms | 31 ms | slowPush 1.50→1.71 8.8s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 8 | Lieutenant Pell | The second. There is a seam in the net behind the cookhouse. The bird… (2 pages) | cut | 180 ms | 31 ms | slowPush 1.50→1.71 10.3s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 9 | Lieutenant Pell | If I am ordered to sew it shut, I shall do it badly. I was a tailor's… | cut | 180 ms | 31 ms | slowPush 1.50→1.71 8.9s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 10 | Dot | On purpose? Do you know what that seam did to me? | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 10 | Dot | On purpose? Do you know what that seam did to me? | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 11 | Lieutenant Pell | I am so sorry about the seam. | cut | 430 ms | 31 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
-| 12 | Pokey | Thanks, Lieutenant. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 12 | Pokey | Thanks, Lieutenant. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 13 | Lieutenant Pell | Oh, I am sorry. Please do not thank me. It is embarrassing. | cut | 180 ms | 31 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 14 | Narrator | The lantern bobbed away into the dark. From somewhere down the slope,… | cut | 180 ms | 30 ms | drift 1.34→1.37 10.0s | own | keep |  |
 
@@ -1372,12 +1372,12 @@ Dot for 15 pictures, with the music going on under "We stopped for tea."
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | Narrator | Ten years ago, a few weeks before the storm, Pokey knocked on a door. | dip | 450 ms | 30 ms | drift 1.34→1.37 10.0s | own | keep |  |
 | 1 | Grandma | Don't loom in the doorway, dear. Come in. Sit. He doesn't bite. Often. | cut | 180 ms | 38 ms | single 1.51→1.58 5.2s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 2 | Pokey | Sir, I'd like your blessing. I'd like to walk beside Meeca for as lon… | cut | 180 ms | 40 ms | single 1.68→1.75 5.6s | own | keep |  |
+| 2 | Pokey | Sir, I'd like your blessing. I'd like to walk beside Meeca for as lon… | cut | 180 ms | 40 ms | single 1.68→1.75 5.6s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 3 | Grandfather | Boy. It took you fourteen minutes to come up my path. I timed it. | cut | 180 ms | 36 ms | single 1.68→1.75 4.5s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 4 | Pokey | Yes, sir. I stopped to look at your fern. | cut | 180 ms | 40 ms | single 1.74→1.81 3.7s | own | keep |  |
+| 4 | Pokey | Yes, sir. I stopped to look at your fern. | cut | 180 ms | 40 ms | single 1.74→1.81 3.7s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 5 | Narrator | The old soldier looked at him for a long time. The kettle in the next… (2 pages) | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 6 | Grandfather | Come back when you can protect her. | cut | 180 ms | 36 ms | single 1.68→1.75 3.1s | -0.5 st, -1 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 7 | Pokey | I will. Slowly. | cut | 180 ms | 40 ms | single 1.74→1.81 3.0s | own | keep |  |
+| 7 | Pokey | I will. Slowly. | cut | 180 ms | 40 ms | single 1.74→1.81 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 8 | Narrator | Pokey went down the path with one hand on his satchel strap. The kett… | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -1 st, -3 dB | keep |  |
 | 9 | Narrator | Then the storm came, and took Meeca's grandma. For a year after, the… (2 pages) | soft | 1470 ms | 35 ms | drift 1.29→1.31 10.0s | -1 st, -3 dB | under | a beat before the darkness; hush: let it be quiet first |
 
@@ -1499,22 +1499,22 @@ the finale full.
 | 20 | Meeca | Hello, Grandpa. | cut | 1300 ms | 37 ms | slowPush 1.35→1.54 6.0s | -1 st, -3 dB | keep | two words, a long time coming |
 | 21 | Grandfather | Little bloom. | cut | 900 ms | 41 ms | slowPush 1.15→1.31 6.0s | -0.5 st, -1.5 dB | keep | he tries |
 | 22 | Meeca | No. You don't get to say that yet. | cut | 250 ms | 32 ms | single 1.46→1.52 3.2s | -0.5 st, -1 dB | keep | she cuts him off |
-| 23 | Meeca | You left. You sat in her chair for a whole year, and I kept the kettl… (3 pages) | cut | 180 ms | 37 ms | slowPush 1.30→1.48 11.0s | -1 st, -3 dB | keep |  |
-| 24 | Meeca | Then you put me in a room with a lock and sent me soup. I ate all of… (2 pages) | cut | 180 ms | 37 ms | slowPush 1.30→1.48 11.0s | -1 st, -3 dB | keep |  |
-| 25 | Meeca | And every night, somebody stood outside my door and never knocked. El… | cut | 830 ms | 32 ms | push 1.48→1.56 7.3s | -0.5 st, -1 dB | keep | a beat before the heartbreak |
+| 23 | Meeca | You left. You sat in her chair for a whole year, and I kept the kettl… (3 pages) | cut | 180 ms | 37 ms | slowPush 1.30→1.48 11.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 24 | Meeca | Then you put me in a room with a lock and sent me soup. I ate all of… (2 pages) | cut | 180 ms | 37 ms | slowPush 1.30→1.48 11.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 25 | Meeca | And every night, somebody stood outside my door and never knocked. El… | cut | 830 ms | 32 ms | push 1.48→1.56 7.3s | -0.5 st, -1 dB | keep | a beat before the heartbreak; framed chest-up: lifting the feet clear would cut off a head |
 | 26 | Narrator | The General looked down at his empty hands. He had held a club in the… | cut | 900 ms | 35 ms | drift 1.34→1.37 10.0s | -1 st, -3 dB | under | hold on the hands |
 | 27 | Grandfather | She waited for help, and it came late. So I put you somewhere nobody… | cut | 700 ms | 41 ms | slowPush 1.35→1.54 8.5s | -1 st, -3 dB | keep | the truth, at last, slow in |
 | 28 | Grandfather | I should have knocked. | cut | 1500 ms | 41 ms | still 1.45→1.47 12.0s | -1 st, -3 dB | silence | the line the whole story answers: nothing under it |
 | 29 | Narrator | Meeca didn't say it was all right. She crossed the stones and took hi… | cut | 800 ms | 35 ms | drift 1.54→1.58 10.0s | -0.5 st, -1.5 dB | under | the music finds its way back as she takes his hand |
 | 30 | Grandfather | One. Two. | cut | 630 ms | 41 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
-| 31 | Meeca | Grandpa. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 31 | Meeca | Grandpa. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 32 | Grandfather | I have lost count. | cut | 1000 ms | 41 ms | slowPush 1.50→1.71 6.0s | own | swell | the mercy: the march melting into the lullaby |
 | 33 | Grandfather | Boy. | cut | 180 ms | 36 ms | push 1.71→1.40 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 34 | Pokey | Sir? | cut | 180 ms | 40 ms | single 1.51→1.58 3.0s | own | keep |  |
+| 34 | Pokey | Sir? | cut | 180 ms | 40 ms | single 1.51→1.58 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 35 | Grandfather | Come back when you can protect her, I said. You protected her from me… | cut | 430 ms | 36 ms | single 1.29→1.35 5.8s | own | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 36 | Grandfather | You may. Walk. With her. | cut | 630 ms | 41 ms | slowPush 1.15→1.31 6.0s | -0.5 st, -1.5 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 37 | Grandfather | Sometimes. | cut | 180 ms | 41 ms | slowPush 1.15→1.31 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 38 | Meeca | Grandpa! | cut | 180 ms | 32 ms | single 1.51→1.58 3.0s | own | keep |  |
+| 38 | Meeca | Grandpa! | cut | 180 ms | 32 ms | single 1.51→1.58 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 39 | Grandfather | Mostly. | cut | 180 ms | 36 ms | single 1.29→1.35 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 40 | Narrator | Meeca turned around. Pokey was standing where he'd stopped, soaked, i… | cut | 900 ms | 35 ms | reveal 1.51→1.26 2.4s | -1 st, -3 dB | silence | pull back: him, alone, soaked |
 | 41 | Meeca | You came. | cut | 1300 ms | 37 ms | slowPush 1.40→1.60 6.0s | -0.5 st, -1.5 dB | under | the reunion: two words |
@@ -1523,29 +1523,29 @@ the finale full.
 | 44 | Pokey | You can sit down now. | cut | 800 ms | 46 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep | the kindest line in the game |
 | 45 | Narrator | They sat on the wet steps. Neither of them said much. It was the best… | soft | 320 ms | 35 ms | drift 1.24→1.26 10.0s | -0.5 st, -1.5 dB | swell | her theme, full |
 | 46 | Meeca | There you are. I wondered where my light went. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 47 | Flicker | I'm sorry. | cut | 180 ms | 28 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 47 | Flicker | I'm sorry. | cut | 180 ms | 28 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 48 | Meeca | You got me a whole night out. Come here. | cut | 180 ms | 37 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 49 | Narrator | The sun was just coming up over the wall when a small, white, very du… (2 pages) | dip | 450 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
-| 50 | Dot | Hello! Everybody stay calm. I'm alive! I fell into the cookhouse. Int… | cut | 180 ms | 22 ms | single 1.51→1.58 4.7s | +0.5 st, 0 dB | keep |  |
+| 50 | Dot | Hello! Everybody stay calm. I'm alive! I fell into the cookhouse. Int… | cut | 180 ms | 22 ms | single 1.51→1.58 4.7s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 51 | Lieutenant Pell | She has been no trouble at all, Miss. Sir. Everyone. I apologize. | cut | 180 ms | 27 ms | drift 1.03→1.05 10.0s | +0.5 st, 0 dB | keep |  |
-| 52 | Pokey | Dot! | cut | 180 ms | 40 ms | single 1.51→1.58 3.0s | own | keep |  |
-| 53 | Dot | I'm so sorry I'm late! I know. I know. The seam was tiny, and I went… (3 pages) | cut | 180 ms | 22 ms | single 1.51→1.58 7.8s | own | keep |  |
-| 54 | Pokey | Seems to me it's still morning. | cut | 180 ms | 46 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep |  |
+| 52 | Pokey | Dot! | cut | 180 ms | 40 ms | single 1.51→1.58 3.0s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 53 | Dot | I'm so sorry I'm late! I know. I know. The seam was tiny, and I went… (3 pages) | cut | 180 ms | 22 ms | single 1.51→1.58 7.8s | own | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 54 | Pokey | Seems to me it's still morning. | cut | 180 ms | 46 ms | slowPush 1.35→1.54 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 55 | Narrator | Dot stopped. Then she took the pouch off her side and held it out in… | cut | 180 ms | 35 ms | drift 1.54→1.58 10.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 56 | Dot | General. I have something I should have given you a long time ago. | cut | 180 ms | 25 ms | slowPush 1.35→1.54 6.0s | -1 st, -3 dB | keep |  |
+| 56 | Dot | General. I have something I should have given you a long time ago. | cut | 180 ms | 25 ms | slowPush 1.35→1.54 6.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 57 | Narrator | It was a letter, yellow at the edges, sealed with one faded petal. | cut | 180 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
-| 58 | Dot | She gave it to me the night she died, in the storm. "Give him this wh… (3 pages) | cut | 180 ms | 25 ms | slowPush 1.35→1.54 11.0s | -1 st, -3 dB | keep |  |
+| 58 | Dot | She gave it to me the night she died, in the storm. "Give him this wh… (3 pages) | cut | 180 ms | 25 ms | slowPush 1.35→1.54 11.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 59 | Grandfather | Give it here, little courier. | cut | 180 ms | 41 ms | slowPush 1.15→1.31 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 60 | Grandma | My dearest. If you're reading this, you're sitting down, which means… (2 pages) | soft | 320 ms | 44 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 61 | Grandma | It isn't anybody's fault, my love. It was only weather. Don't build a… (2 pages) | cut | 180 ms | 44 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
-| 62 | Dot | She always had the kettle on when I got there. Every time. However la… | soft | 320 ms | 25 ms | slowPush 1.50→1.71 7.2s | -1 st, -3 dB | keep |  |
+| 62 | Dot | She always had the kettle on when I got there. Every time. However la… | soft | 320 ms | 25 ms | slowPush 1.50→1.71 7.2s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 63 | Grandfather | Courier. Sit. | soft | 770 ms | 41 ms | slowPush 1.15→1.31 6.0s | own | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
 | 64 | Narrator | Pokey stood very still. After a while, Dot landed on his head. | cut | 180 ms | 35 ms | drift 1.34→1.37 10.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
-| 65 | Pokey | I thought you came around because you liked me. | cut | 180 ms | 46 ms | slowPush 1.30→1.48 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 66 | Dot | I did! I do! It was both. I came because I owed you, and I stayed bec… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 9.8s | -1 st, -3 dB | keep |  |
-| 67 | Pokey | You were late every time, you know. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep |  |
-| 68 | Dot | I know. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep |  |
-| 69 | Pokey | And you came back every time. I was counting. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.1s | -0.5 st, -1.5 dB | keep |  |
+| 65 | Pokey | I thought you came around because you liked me. | cut | 180 ms | 46 ms | slowPush 1.30→1.48 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 66 | Dot | I did! I do! It was both. I came because I owed you, and I stayed bec… (2 pages) | cut | 180 ms | 25 ms | slowPush 1.50→1.71 9.8s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 67 | Pokey | You were late every time, you know. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.0s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 68 | Dot | I know. | cut | 180 ms | 25 ms | slowPush 1.50→1.71 6.0s | -1 st, -3 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
+| 69 | Pokey | And you came back every time. I was counting. | cut | 180 ms | 46 ms | slowPush 1.50→1.71 6.1s | -0.5 st, -1.5 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 70 | Narrator | Dot's wing went to the pouch at her side, which was empty, and she le… | cut | 680 ms | 35 ms | drift 1.65→1.68 10.0s | -1 st, -3 dB | under | hush: let it be quiet first; framed chest-up: lifting the feet clear would cut off a head |
 | 71 | Narrator | Down at the Sunlit Riverbank, Gruntlewick the crier reached the end o… (3 pages) | dip | 450 ms | 30 ms | drift 1.13→1.16 10.0s | +0.5 st, 0 dB | keep |  |
 | 72 | Narrator | In the ruins, the Stone Idol Golem finally finished his sentence. "..… | soft | 320 ms | 35 ms | drift 1.13→1.16 10.0s | -0.5 st, -1.5 dB | keep |  |
@@ -1572,11 +1572,11 @@ the finale full.
 | 93 | Narrator | He sat down in it, put his feet up, and finished the whole cup. | cut | 900 ms | 35 ms | drift 1.18→1.21 10.0s | own | swell | the chair, at last |
 | 94 | Dot | It's a trap with cookies. I've had four. | cut | 300 ms | 25 ms | slowPush 1.35→1.54 6.0s | own | keep | the laugh, fast |
 | 95 | Narrator | Meeca had finished the scarf. It went around Pokey four times and sti… | cut | 180 ms | 30 ms | drift 1.18→1.21 10.0s | +0.5 st, 0 dB | keep |  |
-| 96 | Meeca | Was it a nice bush? | cut | 630 ms | 32 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room |
-| 97 | Dot | It was the best bush, it was a really excellent bush, I've been back,… | cut | 430 ms | 22 ms | single 1.51→1.58 4.5s | +0.5 st, 0 dB | keep | an answer: a thinking beat |
+| 96 | Meeca | Was it a nice bush? | cut | 630 ms | 32 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep | a short line after a long one: give it room; framed chest-up: lifting the feet clear would cut off a head |
+| 97 | Dot | It was the best bush, it was a really excellent bush, I've been back,… | cut | 430 ms | 22 ms | single 1.51→1.58 4.5s | +0.5 st, 0 dB | keep | an answer: a thinking beat; framed chest-up: lifting the feet clear would cut off a head |
 | 98 | Narrator | She also gave him the letters from under her pillow, all of them, eve… (2 pages) | cut | 180 ms | 35 ms | drift 1.18→1.21 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 99 | Narrator | Far off in the east, the last of the storm said something. Pokey was… | cut | 700 ms | 35 ms | drift 1.44→1.47 10.0s | -0.5 st, -1.5 dB | under | a held breath: does he grab? |
-| 100 | Lieutenant Pell | Shall I tell the General, sir? | cut | 180 ms | 27 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep |  |
+| 100 | Lieutenant Pell | Shall I tell the General, sir? | cut | 180 ms | 27 ms | single 1.51→1.58 3.0s | +0.5 st, 0 dB | keep | framed chest-up: lifting the feet clear would cut off a head |
 | 101 | Grandfather | Tell him he has retired. | cut | 700 ms | 36 ms | single 1.29→1.35 3.2s | +0.5 st, 0 dB | keep | the pause before the punchline |
 | 102 | Narrator | Pokey stops by on Thursdays. He always asks first. | soft | 320 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
 | 103 | Narrator | He ferries the village across, three at a time. The crown is still cr… | cut | 180 ms | 35 ms | drift 1.29→1.31 10.0s | -0.5 st, -1.5 dB | keep |  |
