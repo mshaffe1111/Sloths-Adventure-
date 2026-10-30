@@ -11,7 +11,7 @@
  * Code adds only small touches: a soft glow behind what is lit, a pulse, the pennant's flutter and a short bounce when it is reached.
  */
 import { trackAtlas } from './atlasLoader.ts';
-import { viewRect, type ViewRect } from './artKit.ts';
+import { bakeStep, viewRect, type ViewRect } from './artKit.ts';
 import { GATE_FRAMES, PIT_WATER, STAGE_ART_FRAMES, type ArtFrame, type StageArtName } from './stageArtData.ts';
 
 export const STAGE_ART_URL = new URL('../assets/props/stage-art.webp', import.meta.url).href;
@@ -181,15 +181,19 @@ export function drawCheckpointArt(ctx: CanvasRenderingContext2D, x: number, grou
 }
 
 /**
- * The checkpoint (unlit and lit) baked once at the size it covers on screen (FLAG_H world px times the canvas scale, in eighths, rounded
- * up): the 384 px sheet frame was shrunk 1.4-2x on the post and every pennant slice, every frame. Remade only when the sheet or the scale
+ * The checkpoint (unlit and lit) baked once at the size it covers on screen (FLAG_H world px times the canvas scale, on artKit's
+ * bakeStep ladder): the 384 px sheet frame was shrunk 1.4-2x on the post and every pennant slice, every frame. Remade only when the sheet or the scale
  * changes.
  */
 const flagBakes: Array<{ img: HTMLImageElement | null; k: number; cv: HTMLCanvasElement } | null> = [null, null];
 function flagBake(ctx: CanvasRenderingContext2D, img: HTMLImageElement, f: ArtFrame, lit: boolean, k: number) {
   if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function') return null;
   const m = ctx.getTransform();
-  const dk = Math.ceil(Math.hypot(m.a, m.b) * k * 8) / 8;
+  return flagBakeAt(img, f, lit, Math.hypot(m.a, m.b) * k);
+}
+function flagBakeAt(img: HTMLImageElement, f: ArtFrame, lit: boolean, scale: number) {
+  if (typeof document === 'undefined') return null;
+  const dk = bakeStep(scale);
   // (already as small as the sheet itself: drawn straight from the sheet)
   if (dk >= 1) return null;
   const i = lit ? 1 : 0;
@@ -332,8 +336,8 @@ export function drawGateArt(ctx: CanvasRenderingContext2D, world: number, ground
 /** one repeat of the water strip, world px */
 const TILE = 420;
 /**
- * The strip and its shine baked once at the size a tile covers on screen (TILE world px times the canvas scale, in eighths, rounded up so
- * a tile is never enlarged): the 1024 px sheet was shrunk with the main canvas's high-quality filter on every tile, every frame. Kept for
+ * The strip and its shine baked once at the size a tile covers on screen (TILE world px times the canvas scale, on artKit's bakeStep
+ * ladder, so a tile is never enlarged and a zoom inside one step bakes nothing): the 1024 px sheet was shrunk with the main canvas's high-quality filter on every tile, every frame. Kept for
  * one sheet at a time, made again only when the sheet or the scale changes (a new world, a quality step, the camera's zoom).
  */
 const pitBake = { img: null as HTMLImageElement | null, k: 0, strip: null as HTMLCanvasElement | null, shine: null as HTMLCanvasElement | null };
@@ -352,7 +356,10 @@ function bakeRow(cv: HTMLCanvasElement | null, img: HTMLImageElement, f: ArtFram
 function pitRows(ctx: CanvasRenderingContext2D, img: HTMLImageElement, w: (typeof PIT_WATER)[number]): [CanvasImageSource, CanvasImageSource, boolean] {
   if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function') return [img, img, false];
   const m = ctx.getTransform();
-  const k = Math.ceil(Math.hypot(m.a, m.b) * 8) / 8;
+  return pitRowsAt(img, w, Math.hypot(m.a, m.b));
+}
+function pitRowsAt(img: HTMLImageElement, w: (typeof PIT_WATER)[number], scale: number): [CanvasImageSource, CanvasImageSource, boolean] {
+  const k = bakeStep(scale);
   // already as small as the sheet itself (or smaller): drawn straight from the sheet
   if (TILE * k >= w.strip.w) return [img, img, false];
   if (pitBake.img !== img || pitBake.k !== k) {
@@ -400,4 +407,31 @@ export function drawPitWater(ctx: CanvasRenderingContext2D, world: number, x0: n
   ctx.globalAlpha = 1;
   ctx.restore();
   return true;
+}
+
+/**
+ * Bake the checkpoint flags (unlit and lit) and, for Worlds 1, 3, 4 and 5, the pit water, for a view drawn at `scale` device px a world
+ * unit, before play (stageReady): each bake costs 6-20 ms on a slow phone, too much for a frame of play. Sheets not yet loaded are skipped.
+ * `stampOn`: the canvas that will show them (the game's), so each is uploaded to the GPU before play as well.
+ */
+export function warmStageArt(world: number, scale: number, stampOn?: CanvasRenderingContext2D): void {
+  const made: CanvasImageSource[] = [];
+  const flags = sheetFor(STAGE_ART_URL, false);
+  if (flags) {
+    for (const lit of [false, true]) {
+      const f = STAGE_ART_FRAMES[lit ? 'flagLit' : 'flagUnlit'];
+      const b = flagBakeAt(flags, f, lit, scale * (FLAG_H / f.h));
+      made.push(b ? b.cv : flags);
+    }
+  }
+  const u = pitWaterUrl(world);
+  const water = u ? sheetFor(u, true) : null;
+  if (water) made.push(...pitRowsAt(water, PIT_WATER[world], scale).slice(0, 2) as CanvasImageSource[]);
+  // (a 1x1 stamp of each in a corner, so its upload to the GPU happens now too: PERFORMANCE-RULES §2.12)
+  if (stampOn) {
+    stampOn.save();
+    stampOn.setTransform(1, 0, 0, 1, 0, 0);
+    for (const c of made) stampOn.drawImage(c, 0, 0, 1, 1);
+    stampOn.restore();
+  }
 }

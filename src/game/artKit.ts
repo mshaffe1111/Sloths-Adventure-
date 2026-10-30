@@ -111,6 +111,14 @@ export function keptGradient(owner: object, key: number, make: () => CanvasGradi
 }
 const keptGrads = new WeakMap<object, Map<number, CanvasGradient>>();
 
+/**
+ * The scale a picture is baked at for a draw at `k` device px a unit: the next step up on a ladder of square roots of 2, so a camera zoom
+ * or a quality step inside one step reuses the bake (drawn 0.71-1x, never enlarged) instead of baking again in the middle of play.
+ */
+export function bakeStep(k: number): number {
+  return k > 0 ? Math.pow(2, Math.ceil(Math.log2(k) * 2 - 1e-9) / 2) : 1;
+}
+
 /** a world rectangle (what the canvas shows: viewRect) */
 export interface ViewRect {
   x0: number;
