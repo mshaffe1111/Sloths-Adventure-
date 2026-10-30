@@ -115,7 +115,6 @@ import {
   drawHazardEntity,
   drawGirlfriendDaisy,
   drawCollectible,
-  pickupName,
 } from './vectorArt.ts';
 import {
   checkAABBCollision,
@@ -1553,7 +1552,6 @@ export class GameEngine {
       if (p.powerUpTimer <= 0) {
         p.activePowerUp = null;
         p.powerUpTimer = 0;
-        this.addFloatingText('POWER-UP EXPIRED', p.x, p.y - 45, '#94a3b8');
       }
     }
 
@@ -2699,7 +2697,7 @@ export class GameEngine {
           this.isGameOver = true;
           this.camera.trauma = 0.7;
           this.spawnSparkBurst(c.x, c.y, '#a78bfa');
-          this.addFloatingText('THE THORN GATE OPENS...', c.x, c.y - 30, '#c4b5fd');
+          this.addFloatingText('The thorn gate opens.', c.x, c.y - 30, '#c4b5fd');
           sound.playBossRoar(this.currentStage.config.worldIndex);
           this.callbacks.onSecret?.();
         }
@@ -2804,54 +2802,43 @@ export class GameEngine {
 
           const pColor = c.type === 'flower' ? '#f43f5e' : '#4ade80';
           this.spawnSparkBurst(c.x, c.y, pColor);
-          // named for what is drawn (vectorArt.ts pickupName), not the variant the drawing never used
-          const cfg = this.currentStage.config;
-          const txt = `+100 ${pickupName(c, cfg.worldIndex, cfg.miniIndex)}!`;
-          this.addFloatingText(txt, c.x, c.y - 20, pColor);
-
-          if (this.comboCount > 1) {
-            const comboBonus = this.comboCount * 50;
-            this.runScore += comboBonus;
-            this.addFloatingText(`${this.comboCount}x COMBO! +${comboBonus}`, c.x, c.y - 42, '#facc15');
-          }
+          // one small number per pickup, the combo's bonus inside it (AN-3: no names or words over every flower)
+          const comboBonus = this.comboCount > 1 ? this.comboCount * 50 : 0;
+          this.runScore += comboBonus;
+          this.addFloatingText(`+${100 + comboBonus}`, c.x, c.y - 20, comboBonus ? '#facc15' : pColor);
         } else if (c.type === 'relic') {
           p.relicsFound++;
           this.runScore += 500;
           sound.playRelicFound();
           this.spawnSparkBurst(c.x, c.y, '#38bdf8');
-          this.addFloatingText('JUNGLE IDOL! +500', c.x, c.y - 30, '#38bdf8');
+          this.addFloatingText('+500', c.x, c.y - 30, '#38bdf8');
         } else if (c.type === 'heart') {
           p.hp = Math.min(p.maxHp, p.hp + 1);
           sound.playHeartPickup();
           this.spawnSparkBurst(c.x, c.y, '#f43f5e');
-          this.addFloatingText('+1 HP RESTORED', c.x, c.y - 20, '#f43f5e');
         } else if (c.type === 'super_heart') {
           p.hp = p.maxHp;
           p.invincibleTimer = 3.5;
           sound.playSuperHeart();
           this.spawnSparkBurst(c.x, c.y, '#facc15');
-          this.addFloatingText('MAX HP RESTORED + SHIELD!', c.x, c.y - 30, '#facc15');
         } else if (c.type === 'powerup_speed') {
           p.activePowerUp = 'speed';
           p.powerUpTimer = POWER_UP_SECS.speed;
           p.maxPowerUpTimer = POWER_UP_SECS.speed;
           sound.playPowerUp('speed');
           this.spawnSparkBurst(c.x, c.y, '#34d399');
-          this.addFloatingText('⚡ CHEETAH SPEED (10s)!', c.x, c.y - 35, '#34d399');
         } else if (c.type === 'powerup_invincible') {
           p.activePowerUp = 'invincible';
           p.powerUpTimer = POWER_UP_SECS.invincible;
           p.maxPowerUpTimer = POWER_UP_SECS.invincible;
           sound.playPowerUp('invincible');
           this.spawnSparkBurst(c.x, c.y, '#facc15');
-          this.addFloatingText('⭐ SOLAR INVINCIBLE (8s)!', c.x, c.y - 35, '#facc15');
         } else if (c.type === 'powerup_magnet') {
           p.activePowerUp = 'magnet';
           p.powerUpTimer = POWER_UP_SECS.magnet;
           p.maxPowerUpTimer = POWER_UP_SECS.magnet;
           sound.playPowerUp('magnet');
           this.spawnSparkBurst(c.x, c.y, '#38bdf8');
-          this.addFloatingText('🧲 NECTAR MAGNET (12s)!', c.x, c.y - 35, '#38bdf8');
         }
       }
     }
@@ -3530,11 +3517,10 @@ export class GameEngine {
         }
         sound.setTempo(b.phase === 3 ? 1.08 : 1.04);
       } else if (b.phase === 3) {
+        // (a new phase is heard, in the music's tempo, and seen on the bar's gold notch: no words over the boss, AN-3)
         sound.setTempo(1.08);
-        this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - b.height, '#ef4444');
       } else {
         sound.setTempo(1.04);
-        this.addFloatingText('PHASE 2: SPEED UP!', b.x, b.y - b.height, '#f97316');
       }
     }
     if (br.state === 'tell' && prevState !== 'tell') sound.playPredator(def.tellCall ?? 'jaguar', 0);
@@ -3850,7 +3836,7 @@ export class GameEngine {
     this.player.crittersRescued++;
     this.runScore += 400;
     sound.playCritterRescued();
-    this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
+    this.addFloatingText('+400', c.x, c.y - 30, '#c084fc');
   }
 
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
@@ -4169,7 +4155,7 @@ export class GameEngine {
     if (def?.openCue && wr) {
       // what came off the bar (half a hit, one, two), over the spot that was hit
       this.addFloatingText(hitLabel(leftBefore, hitsLeft(b.hp, b.maxHp, this.bossHits), crit, pts), wr.x + wr.w / 2, wr.y - 12, crit ? '#fb923c' : '#facc15');
-    } else this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
+    } else this.addFloatingText(`+${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
   }
 
@@ -4221,7 +4207,7 @@ export class GameEngine {
     this.runScore += pts;
     this.statStomps++;
     recorder.event('stomp', 'boss');
-    this.addFloatingText(`${leaf ? 'LEAF DIVE!' : 'ON HER BACK!'} +${pts}`, b.x, b.y - b.height * 0.7, leaf ? '#86efac' : '#facc15');
+    this.addFloatingText(`+${pts}`, b.x, b.y - b.height * 0.7, leaf ? '#86efac' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
     return true;
   }
@@ -4243,7 +4229,6 @@ export class GameEngine {
     this.hitstopTimer = Math.max(this.hitstopTimer, 0.3);
     if (this.bossDef?.lair) this.slowMoLeft = 1.2; // a giant's last hit plays in slow motion, the camera pushing in
     this.camera.trauma = 1;
-    this.addFloatingText('K.O.!', b.x, b.y - b.height, '#fde047');
     this.spawnDebrisBurst(b.x, b.y, '#fde047');
   }
 
@@ -4704,8 +4689,7 @@ export class GameEngine {
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
     buzz('hurt');
-    // (the hit that costs a life says so at the respawn instead: two lots of words on one spot were unreadable)
-    if (p.hp > 0) this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
+    // (no "-1 HP": the heart that empties on the HUD, the flinch and the sound say it, AN-3)
 
     if (p.hp <= 0 && !this.isGameOver) {
       this.loseLife('hurt');

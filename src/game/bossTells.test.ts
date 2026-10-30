@@ -54,11 +54,11 @@ test('the hit pop says what came off the bar: half a hit, one, or two', () => {
   assert.equal(hitsLeft(12, 12, 6), 6);
   assert.equal(hitsLeft(11, 12, 6), 6);
   assert.equal(hitsLeft(10, 12, 6), 5);
-  assert.match(hitLabel(6, 6, false, 100), /½ HIT/);
-  assert.match(hitLabel(6, 5, false, 100), /BOSS HIT!/);
+  assert.equal(hitLabel(6, 6, false, 100), '½ hit');
+  assert.equal(hitLabel(6, 5, false, 100), '1 hit');
   // a hook on a stunned boss (3) can take two at once: it says so
   assert.equal(hitsLeft(3, 12, 6) - hitsLeft(0, 12, 6), 2);
-  assert.match(hitLabel(2, 0, true, 100), /CRITICAL ×2!/);
+  assert.equal(hitLabel(2, 0, true, 100), '2 hits');
 });
 
 test('3-10: his body never hurts by touch, before a move or during one: only his strikes do', () => {
