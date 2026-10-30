@@ -36,3 +36,22 @@ for name, im, box, mw in PIECES:
     out.append((name, p))
     print(name, p.size)
 review('kit2', out)
+
+# the slider for a live value: the painted track with its baked green fill painted out (the empty track), and the green fill on its
+# own (stretched to the value in CSS, border-image keeping its round ends)
+import numpy as np  # noqa: E402
+tr = np.asarray(Image.open(GAME / 'src/assets/ui/slider-track.webp').convert('RGBA')).astype(np.float32)
+g = (tr[..., 1] > tr[..., 0] + 25) & (tr[..., 1] > tr[..., 2] + 25) & (tr[..., 3] > 0)
+ys, xs = np.nonzero(g)
+inner = tr[ys.min():ys.max() + 1, xs.max() + 30:xs.max() + 60, :3].reshape(-1, 3).mean(axis=0)
+# (painting the fill out left its outline: the empty track is built from the clean right end instead, its round cap mirrored for the
+# left and one clean column between them)
+W = tr.shape[1]
+cap = tr[:, W - 26:]
+col = tr[:, W - 60:W - 59]
+empty = np.concatenate([cap[:, ::-1], np.repeat(col, W - 52, axis=1), cap], axis=1)
+Image.fromarray(empty.astype(np.uint8), 'RGBA').save(GAME / 'src/assets/ui/slider-empty.webp', 'WEBP', quality=90, method=6)
+fill = tr[ys.min() - 1:ys.max() + 2, xs.min() - 1:xs.max() + 2].copy()
+fill[..., 3] = np.where(g[ys.min() - 1:ys.max() + 2, xs.min() - 1:xs.max() + 2], 255, 0)
+Image.fromarray(fill.astype(np.uint8), 'RGBA').save(GAME / 'src/assets/ui/slider-fill.webp', 'WEBP', quality=90, method=6)
+print('slider', Image.open(GAME / 'src/assets/ui/slider-fill.webp').size, 'inset', int(ys.min()), int(xs.min()))
