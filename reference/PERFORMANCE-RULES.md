@@ -64,6 +64,11 @@ These are measured facts about our code. A desktop browser can't reproduce the P
   - **Graphite is disabled on PowerVR** "due to rendering glitches" (crbug 496616828).
 - **`GL_KHR_blend_equation_advanced` is disabled** by a Chrome workaround (crbug 661715). Every `multiply`, `overlay`, `soft-light`, `saturation` and similar blend has to be emulated with a copy of what's behind it, so §2.10 is confirmed on this phone.
 - **Textures are limited to 8192 px.** `queen-anim` (8172) only just fits, and §2.7's 4096 still stands for older phones.
+- **Edge on the same phone (`edge://gpu`, Edge 156) takes a different route:**
+  - Skia backend **GaneshGL** with **Vulkan: Disabled**, so Edge draws through OpenGL, which ANGLE then translates onto the same PowerVR Vulkan driver: one extra layer on every draw.
+  - Chrome draws on Vulkan directly (GaneshVulkan).
+  - Edge has the same advanced-blend workaround, the same 8192 limit and the same Graphite block.
+  - So Edge may simply be slower on this phone, and the APK's WebView may take either route: check `chrome://gpu` inside the app (the WebView's own report) when testing the APK.
 - **No GPU process crashes, and no software rendering.** The stalls are slow GPU work or decode/upload, as §6's third row says.
 
 ## 1. The budget
