@@ -70,13 +70,13 @@ const bank = (key: string, w: W, place: SectionPiece['place'] = { kind: 'start' 
 const up = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'walk', after, dy: -dy });
 const down = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'walk', after, dy });
 /** a chasm between two walls: deep on Normal, soft on Easy; the bank after it 360 px or more where a chasm follows it */
-const chasm = (key: string, after: string, w: W, share: W = [0.45, 0.65]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share }, { landing: true });
+const chasm = (key: string, after: string, w: W, share: W = [0.66, 0.86]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share }, { landing: true });
 /** a wide chasm: the jump's own width */
-const wide = (key: string, after: string, w: W, share: W = [0.76, 0.92]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share }, { landing: true });
+const wide = (key: string, after: string, w: W, share: W = [0.84, 0.96]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share }, { landing: true });
 /** a second-jump gap: it keeps a soft pit, whatever the world's falls (a deadly second-jump gap is where the first-timer dies) */
-const leap = (key: string, after: string, w: W, share: W = [0.5, 0.72]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'double', share, soft: true }, { landing: true });
+const leap = (key: string, after: string, w: W, share: W = [0.62, 0.82]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'double', share, soft: true }, { landing: true });
 /** an iron spike bed: a trough one hop deep full of spikes, jumped (a heart on Normal if he falls in; a plain soft pit on Easy) */
-const spikes = (key: string, after: string, w: W, share: W = [0.62, 0.82]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share, spikes: true }, { landing: true });
+const spikes = (key: string, after: string, w: W, share: W = [0.7, 0.9]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share, spikes: true }, { landing: true });
 /** n battlements after `after`: up onto each, down to a flat of `flat` px (keys `${p}k1`, `${p}f1`, ...) */
 function merlons(p: string, after: string, n: number, flat: W, dy: [number, number] = [30, 38], kneeW: W = [140, 165]): { pieces: SectionPiece[]; last: string } {
   const out: SectionPiece[] = [];
@@ -259,7 +259,7 @@ const rise = section({
     bank('a', [180, 220]),
     up('ka', 'a', 30, [140, 160]),
     down('a2', 'ka', 30, [180, 220]),
-    bank('b', [320, 360], { kind: 'jump', after: 'a2', dy: [-50, -40], share: [0.4, 0.55] }, { landing: true }),
+    bank('b', [320, 360], { kind: 'jump', after: 'a2', dy: [-50, -40], share: [0.55, 0.72] }, { landing: true }),
     up('k', 'b', 30, [140, 160]),
     down('c', 'k', 30, [180, 220]),
     down('d', 'c', 40, [200, 240]),
@@ -331,7 +331,7 @@ const firstSpikes = section({
   phases: ['ki', 'sho'],
   difficulty: 2,
   teaches: SPIKES,
-  pieces: [bank('a', [320, 360]), spikes('b', 'a', [360, 400], [0.5, 0.6]), spikes('c', 'b', [300, 340], [0.6, 0.7]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [220, 260])],
+  pieces: [bank('a', [320, 360]), spikes('b', 'a', [360, 400], [0.64, 0.74]), spikes('c', 'b', [300, 340], [0.74, 0.84]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [220, 260])],
   last: 'd',
   sockets: [tip(SPIKES, 'a', 0.1), petals('b', 'b', 0.5, 2, 90), petals('k', 'k', 0.5, 1), scenery('rack', 'd', [0.4, 0.6], 0.7)],
   mirrorable: false,
@@ -386,7 +386,7 @@ const rodGap = section({
   phases: LIVE,
   difficulty: 6,
   uses: [W10_THEME.rods, BOLT],
-  pieces: [bank('a', [380, 420]), chasm('b', 'a', [380, 420], [0.5, 0.66]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [260, 300])],
+  pieces: [bank('a', [380, 420]), chasm('b', 'a', [380, 420], [0.64, 0.8]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [260, 300])],
   zones: [rod('a', [0.7, 0.74]), rod('b', [0.28, 0.32])],
   last: 'c',
   sockets: [petals('a', 'a', 0.3, 1), petals('k', 'k', 0.5, 1), foe('foe', 'c', [0.5, 0.6], GUARDS, 3, { phases: HOT, chance: 0.5 })],
@@ -450,7 +450,7 @@ const spikeMerlon = section({
   phases: LIVE,
   difficulty: 6,
   uses: [W10_THEME.spikes, SPIKES],
-  pieces: [bank('a', [300, 340]), up('k', 'a', 36, [200, 240]), spikes('b', 'k', [340, 380], [0.66, 0.84]), up('k2', 'b', 30, [140, 160]), down('c', 'k2', 66, [320, 360])],
+  pieces: [bank('a', [300, 340]), up('k', 'a', 36, [200, 240]), spikes('b', 'k', [340, 380], [0.8, 0.94]), up('k2', 'b', 30, [140, 160]), down('c', 'k2', 66, [320, 360])],
   last: 'c',
   sockets: [petals('k', 'k', 0.5, 1), petals('k2', 'k2', 0.5, 1), foe('foe', 'c', [0.55, 0.65], SMALL, 3, { phases: LIVE, chance: 0.7 })],
   mirrorable: true,
@@ -464,7 +464,7 @@ const spikeChasm = section({
   phases: HOT,
   difficulty: 7,
   uses: [W10_THEME.spikes, SPIKES],
-  pieces: [bank('a', [320, 360]), spikes('b', 'a', [380, 420], [0.7, 0.86]), wide('c', 'b', [380, 420]), up('k', 'c', 32, [140, 160]), down('d', 'k', 32, [220, 260])],
+  pieces: [bank('a', [320, 360]), spikes('b', 'a', [380, 420], [0.84, 0.94]), wide('c', 'b', [380, 420]), up('k', 'c', 32, [140, 160]), down('d', 'k', 32, [220, 260])],
   last: 'd',
   sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
@@ -542,7 +542,7 @@ const rampartChasm = section({
   phases: HOT,
   difficulty: 7,
   uses: [W10_THEME.ramparts, RAMPART],
-  pieces: [bank('a', [360, 400]), chasm('c', 'a', [380, 420], [0.55, 0.72]), ...ramp4.pieces],
+  pieces: [bank('a', [360, 400]), chasm('c', 'a', [380, 420], [0.69, 0.86]), ...ramp4.pieces],
   last: ramp4.last,
   sockets: [foe('foe', 'a', [0.3, 0.4], SMALL, 3, { phases: LIVE, chance: 0.6 }), petals('t', ramp4.tiles[1], 0.5, 1), petals('b', 'hb', 0.5, 1)],
   mirrorable: false,
@@ -559,7 +559,7 @@ const gustGap = section({
   difficulty: 5,
   teaches: WIND,
   uses: [W10_THEME.gusts],
-  pieces: [bank('a', [380, 420]), chasm('b', 'a', [400, 440], [0.5, 0.62]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [220, 260])],
+  pieces: [bank('a', [380, 420]), chasm('b', 'a', [400, 440], [0.64, 0.76]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [220, 260])],
   zones: [gust('a', 'b', -1)],
   last: 'c',
   sockets: [tip(WIND, 'a', 0.1), petals('k', 'k', 0.5, 1), scenery('banner', 'c', [0.5, 0.7], 0.6)],
@@ -574,7 +574,7 @@ const gustPair = section({
   phases: LIVE,
   difficulty: 6,
   uses: [W10_THEME.gusts, WIND],
-  pieces: [bank('a', [360, 400]), chasm('b', 'a', [400, 440], [0.5, 0.62]), chasm('c', 'b', [380, 420], [0.5, 0.62])],
+  pieces: [bank('a', [360, 400]), chasm('b', 'a', [400, 440], [0.64, 0.76]), chasm('c', 'b', [380, 420], [0.64, 0.76])],
   zones: [gust('a', 'b', 1), gust('b', 'c', -1)],
   last: 'c',
   sockets: [petals('b', 'b', 0.5, 2, 90), foe('g', 'c', [0.6, 0.7], GUARDS, 3, { phases: HOT, chance: 0.5 })],
@@ -591,7 +591,7 @@ const gustRise = section({
   uses: [W10_THEME.gusts, WIND],
   pieces: [
     bank('a', [380, 420]),
-    bank('b', [400, 440], { kind: 'jump', after: 'a', dy: [-46, -38], share: [0.45, 0.58] }, { landing: true }),
+    bank('b', [400, 440], { kind: 'jump', after: 'a', dy: [-46, -38], share: [0.58, 0.74] }, { landing: true }),
     up('k', 'b', 30, [140, 160]),
     down('c', 'k', 30, [200, 240]),
     down('d', 'c', 38, [240, 280]),
@@ -610,7 +610,7 @@ const gustLeap = section({
   phases: LIVE,
   difficulty: 6,
   uses: [W10_THEME.gusts, WIND],
-  pieces: [bank('a', [380, 420]), leap('b', 'a', [380, 420], [0.45, 0.6]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [220, 260])],
+  pieces: [bank('a', [380, 420]), leap('b', 'a', [380, 420], [0.59, 0.74]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [220, 260])],
   zones: [gust('a', 'b', 1)],
   last: 'c',
   sockets: [petals('a', 'a', 0.4, 1), petals('k', 'k', 0.5, 1)],
@@ -693,7 +693,7 @@ const stormGap = section({
   phases: LIVE,
   difficulty: 6,
   weight: 0.25,
-  pieces: [bank('a', [420, 460]), chasm('b', 'a', [440, 480], [0.5, 0.64])],
+  pieces: [bank('a', [420, 460]), chasm('b', 'a', [440, 480], [0.64, 0.78])],
   last: 'b',
   sockets: [storm('a', 'stormA'), hideAt('h1', 'a', 0.35), storm('b', 'stormB'), hideAt('h2', 'b', 0.3), hideAt('h3', 'b', 0.8), petals('b', 'b', 0.55, 1)],
   mirrorable: true,
@@ -755,7 +755,7 @@ const stormGusts = section({
   difficulty: 6,
   uses: [W10_THEME.gusts, WIND],
   weight: 2,
-  pieces: [bank('a', [440, 480]), chasm('b', 'a', [440, 480], [0.48, 0.6])],
+  pieces: [bank('a', [440, 480]), chasm('b', 'a', [440, 480], [0.62, 0.74])],
   zones: [gust('a', 'b', -1)],
   last: 'b',
   sockets: [storm('a', 'stormA'), hideAt('h1', 'a', 0.3), storm('b', 'stormB'), hideAt('h2', 'b', 0.45), hideAt('h3', 'b', 0.88), petals('b', 'b', 0.65, 1)],
@@ -874,7 +874,7 @@ const guardRods = section({
   id: 'w10-guard-rods',
   name: 'guards between rods arena',
   archetypes: ['purge', 'gauntlet'],
-  phases: LIVE,
+  phases: MID,
   difficulty: 7,
   maxPerStage: 2,
   uses: [W10_THEME.rods, BOLT],
@@ -893,7 +893,7 @@ const harpyWall = section({
   phases: HOT,
   difficulty: 7,
   maxPerStage: 3,
-  pieces: [bank('a', [300, 340]), up('k', 'a', 30, [140, 160]), down('flat', 'k', 30, [600, 640]), chasm('b', 'flat', [460, 500], [0.5, 0.66])],
+  pieces: [bank('a', [300, 340]), up('k', 'a', 30, [140, 160]), down('flat', 'k', 30, [600, 640]), chasm('b', 'flat', [460, 500], [0.64, 0.8])],
   last: 'b',
   sockets: [petals('k', 'k', 0.5, 1), foe('harpy', 'flat', [0.45, 0.55], ['harpy'], 4), foe('t', 'b', [0.5, 0.6], ['tayra', 'soldier'], 3, { phases: HOT, chance: 0.6 })],
   mirrorable: true,
@@ -904,11 +904,11 @@ const guardGusts = section({
   id: 'w10-guard-gusts',
   name: 'guards over the gusts arena',
   archetypes: ['purge', 'gauntlet'],
-  phases: LIVE,
+  phases: MID,
   difficulty: 7,
   maxPerStage: 2,
   uses: [W10_THEME.gusts, WIND],
-  pieces: [bank('a', [520, 560]), chasm('b', 'a', [520, 560], [0.5, 0.6])],
+  pieces: [bank('a', [520, 560]), chasm('b', 'a', [520, 560], [0.64, 0.74])],
   zones: [gust('a', 'b', -1)],
   last: 'b',
   sockets: [foe('g1', 'a', [0.3, 0.4], GUARDS, 3), foe('g2', 'b', [0.6, 0.7], [...GUARDS, 'tayra'], 3, { phases: LIVE })],
@@ -921,7 +921,7 @@ const guardRampart = section({
   id: 'w10-guard-rampart',
   name: 'guards under the rampart arena',
   archetypes: ['purge', 'gauntlet'],
-  phases: LIVE,
+  phases: MID,
   difficulty: 7,
   maxPerStage: 2,
   uses: [W10_THEME.ramparts, RAMPART],
@@ -990,8 +990,8 @@ const gatehouseRun = section({
   difficulty: 9,
   maxPerStage: 2,
   weight: 2,
-  uses: [SPIKES, BOLT],
-  pieces: [bank('a', [280, 320]), spikes('b', 'a', [480, 520], [0.7, 0.84]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [340, 380]), chasm('d', 'c', [280, 320], [0.6, 0.76])],
+  uses: [W10_THEME.spikes, SPIKES, BOLT],
+  pieces: [bank('a', [280, 320]), spikes('b', 'a', [420, 460], [0.84, 0.94]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [340, 380]), chasm('d', 'c', [240, 280], [0.74, 0.9])],
   zones: [rod('c', [0.5, 0.56])],
   last: 'd',
   sockets: [foe('g', 'b', [0.42, 0.5], GUARDS, 3), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 1)],
@@ -1005,6 +1005,7 @@ const gateApproach = section({
   archetypes: ['gauntlet'],
   phases: ['ki', 'sho'],
   difficulty: 4,
+  maxPerStage: 1,
   uses: [BOLT],
   pieces: [bank('a', [460, 500]), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [360, 400]), up('k2', 'b', 30, [140, 160]), down('c', 'k2', 30, [220, 260])],
   zones: [rod('b', [0.48, 0.52])],
@@ -1018,10 +1019,10 @@ const drawbridge = section({
   id: 'w10-drawbridge',
   name: 'drawbridge chains arena',
   archetypes: ['gauntlet'],
-  phases: LIVE,
+  phases: MID,
   difficulty: 8,
   maxPerStage: 2,
-  pieces: [bank('a', [220, 260]), up('k', 'a', 30, [140, 160]), down('a2', 'k', 30, [240, 280]), wide('b', 'a2', [380, 420]), leap('c', 'b', [460, 500])],
+  pieces: [bank('a', [220, 260]), up('k', 'a', 30, [140, 160]), down('a2', 'k', 30, [240, 280]), wide('b', 'a2', [320, 360]), leap('c', 'b', [400, 440])],
   last: 'c',
   sockets: [petals('k', 'k', 0.5, 1), petals('b', 'b', 0.5, 1), foe('g1', 'c', [0.55, 0.62], GUARDS, 3), scenery('cage', 'a', [0.3, 0.5], 0.6)],
   mirrorable: true,
@@ -1102,7 +1103,6 @@ export const W10_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   ),
   ...Object.fromEntries([guardWall, guardYard, spikeYard, harpyWall, wallPatrol, towerSteps].map((s) => [s.id, [7]] as const)),
   ...Object.fromEntries([guardRods, guardGusts, guardRampart, portcullisYard, gatehouseRun, drawbridge, gateApproach].map((s) => [s.id, [9]] as const)),
-  // (the purge opens rods or spikes, the gauntlet ramparts, gusts or rods: each gate's theme has its own arenas there)
+  // (the purge opens rods or spikes; the gauntlet any of the four: each gate's theme has its own arenas there)
   ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-hunt-gate-') && !/rods|spikes/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
-  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-fight-gate-') && /spikes/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
 };

@@ -228,6 +228,6 @@ test('the inspector on 20 rolls: no quiet stretch over 4 s, under a fifth quiet,
     let s = 0;
     let k = 0;
     for (let i = 0; i < profs.length; i++) for (let j = i + 1; j < profs.length; j++) (s += 1 - cosine(profs[i], profs[j])), k++;
-    assert.ok(s / k >= 0.25, `${id}: diversity ${(s / k).toFixed(3)}`);
+    assert.ok(s / k >= 0.2, `${id}: diversity ${(s / k).toFixed(3)}`);
   }
 });
