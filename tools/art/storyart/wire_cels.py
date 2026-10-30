@@ -21,6 +21,10 @@ ST = REPO / 'tools/art/hfbatch/starts/storyart'
 OLD_SHEETS_AT = '0e433bd'
 # new poses made after the first sheets (2026-10-30): cel key -> the way the figure faces
 NEW_POSES = {'mc.hold_branch': 1, 'da.hands_rim': 0}
+# cut-outs ready at cel size (Matt's Gemini sheet 25 for the sequel tag, 2026-10-30: cut off its magenta, numbers removed, scaled to
+# Meeca's standing cel): key -> (file in the starts folder, the way the figure faces)
+READY = {'pk.scarf_hug': ('seq-scarf_hug.png', 0), 'pk.scarf_ready': ('seq-scarf_ready.png', 0), 'pk.scarf_walk': ('seq-scarf_walk.png', 1),
+         'pk.scarf_go': ('seq-scarf_go.png', 1), 'pk.dot_fly': ('seq-dot_fly.png', 1)}
 # start px per old-sheet px for each (an HD story frame, 2x old, drawn on the start at 2.5x and 2x: tools/art/storyart, round8 starts)
 NEW_SCALE = {'mc.hold_branch': 5.0, 'da.hands_rim': 3.98}
 
@@ -94,6 +98,10 @@ def main():
             im = pokey_tone(im)
         figs[key] = im
         info[key] = (face, cut_c, mg, old)
+    for key, (f, face) in READY.items():
+        im = Image.open(ST / f).convert('RGBA')
+        figs[key] = im
+        info[key] = (face, None, 0, im.resize((max(1, round(im.width / HD)), max(1, round(im.height / HD))), Image.LANCZOS))
     pages, places = pack(figs, max_w=2048, max_h=2048)
     out = REPO / 'src/assets/characters'
     for f in out.glob('cels-*.webp'):

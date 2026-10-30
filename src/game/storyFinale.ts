@@ -131,9 +131,9 @@ export function endTagPanels(found: string[] = [], thornHeart = false): StoryPan
     N('Pokey was asleep on his branch. The end of the scarf hung down off it, most of the way to the ground.', 'P:sleep@.5', { p: { plate: 'nest-night', zoom: 1.3, focusX: 0.5 } }),
     N('In the morning the branch was empty.', '', { m: 'day', cue: 'sorrow', i: 0.3, p: { plate: 'nest-morning', particles: 'none', zoom: 1.2 } }),
     N('The scarf was still there. It hung from a black thorn that had not been there the night before.', '', { p: { plate: 'nest-morning', particles: 'none', zoom: 1.6, focusX: 0.55 } }),
-    M('Dot. How fast can you fly?', 'MS:stand_wait@.44*.85 D@.62^.42', { cue: 'tender', i: 0.4, p: { plate: 'nest-morning', particles: 'none' } }),
-    D('Faster than him.', 'MS:stand_wait@.44*.85 D@.6^.4', { p: { plate: 'nest-morning', particles: 'none' } }),
-    M('Good. This time, I\'m the one coming.', 'MS:hips@.44*.85 D@.6^.4', { cue: 'finale', i: 0.6, sting: 'bloom', p: { plate: 'nest-morning', particles: 'none', zoom: 1.4, focusX: 0.48 } }),
+    M('Dot. How fast can you fly?', 'MS:scarf_hug@.44*.85 D@.64^.42<', { cue: 'tender', i: 0.4, p: { plate: 'nest-morning', particles: 'none' } }),
+    D('Faster than him.', 'MS:scarf_hug@.44*.85 D:hover@.64^.42<', { p: { plate: 'nest-morning', particles: 'none' } }),
+    M('Good. This time, I\'m the one coming.', 'MS:scarf_go@.46*.85', { cue: 'finale', i: 0.6, sting: 'bloom', p: { plate: 'nest-morning', particles: 'none', zoom: 1.4, focusX: 0.48 } }),
     N('To be continued.', '', { closing: true, cue: 'hush', i: 0, p: { plate: 'nest-morning', particles: 'none', zoom: 1.2 } }),
   ]));
   return out;

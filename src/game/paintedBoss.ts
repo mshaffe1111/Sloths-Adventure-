@@ -103,7 +103,7 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
       // (in a story, the frame's own story painting when it has loaded: storyGuard.ts)
       const hd = guardianFrame(spec.param, name);
       if (hd === 'wait') return true;
-      if (hd) ctx.drawImage(hd.img, hd.x, hd.y, hd.w, hd.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
+      if (hd) drawSheet(ctx, hd.img, hd.x, hd.y, hd.w, hd.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
       else drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
       return true;
     },

@@ -713,6 +713,47 @@ def round8(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
+def round9(commit):
+    """the two left from round 8: Crocus Rex's defeated frame (at 0.34 it broke into white shards: gentler), and the storm's cubs with
+    Meeca smiling kindly at him as the line has her (an edit of the take in the game)"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-guard.json').read_text())
+    m = meta['guard-croc.defeated_024']
+    it = []
+    for st, sd in ((0.2, 7), (0.26, 11)):
+        it.append({'name': f'guard-croc.defeated_024-s{round(st * 100)}', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']},
+                   'prompt': 'slothadv style, a big green crocodile lying upside down on his back, beaten, a small crooked gold crown' + END,
+                   'neg': NEG_FIG + SOFT + ', white shards, broken, fragments', 'strength': st, 'seed': sd, 'w': 1024, 'h': 1024, 'loras': [['style', 0.8]]})
+    for sd in (3, 9):
+        it.append({'name': f'new-hands_rim-k{sd}', 'edit': True, 'start': 'bucket:storyart/r8/out/new-hands_rim-e2.png', 'seed': sd, 'neg': EDIT_NEG,
+                   'prompt': ('Change only the girl sloth with the pink headband: she smiles kindly and warmly at the boy, her eyes soft. Keep the boy '
+                              'looking worried, and keep everything else exactly the same: their hands together, their poses, their clothes. Plain flat grey background.')})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r9', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
+SEQ = {'storm-returns': ('the storm clouds and the rain go on up into a dark churning night sky lit by the lightning, the tops of the great '
+                         'trees and their mossy branches reach up into it', 'a sloth asleep on a mossy branch in a night storm, lightning'),
+       'nest-morning': ('the misty morning rainforest goes on upward: the tall palms and the great tree reach up into a pale grey-green sky '
+                        'with soft mist and hanging vines', 'a wet mossy branch in the misty morning rainforest with a black thorn and a scarf')}
+
+
+def round10(commit):
+    """Matt's two sequel plates (Gemini cards 23, 24, 1024 x 572): extended upward and painted at 2560 like every other plate"""
+    it = []
+    for k, (up, say) in SEQ.items():
+        for sd in (2, 6):
+            it.append({'name': f'pl-{k}-up{sd}', 'edit': True, 'start': f'canvas-{k}.png', 'seed': sd, 'w': 1280, 'h': 1360,
+                       'prompt': f'Fill the empty white top of this picture so the painting carries on upward: {up}. Keep the bottom of the picture exactly as it is. Same painted storybook style, no text.',
+                       'neg': 'white, blank, frame, border, text, people'})
+            it.append({'name': f'pl-{k}-{sd}', 'then': f'pl-{k}-up{sd}', 'prompt': f'slothadv style, painted storybook illustration, {say}, no text',
+                       'neg': 'text, letters, watermark, frame, border, photo, 3d render, blurry', 'strength': 0.26, 'seed': 5, 'w': 2560, 'h': 2720,
+                       'tile': [1280, 256], 'loras': [['style', 0.9]]})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r10', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it if '-up' not in x['name']]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '

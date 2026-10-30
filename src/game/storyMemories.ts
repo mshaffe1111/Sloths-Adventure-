@@ -144,7 +144,7 @@ export const STORM = chapter({ name: 'MEMORY · THE SINGING STORM', w: 1, m: 'st
   M('Can I sit?', `${kn('duck')} ${mn('talk')}`),
   P('It\'s small.', `${kn('duck')} ${mn('talk')}`),
   M('I\'m small.', `${kn('worried')} ${mn('happy')}`, { cue: 'meeca', i: 0.4 }),
-  N('She put one hand over both of his on the rim of the nest. She didn\'t ask him to let go.', `${kn('worried')} ${mn('happy')}`, { cue: 'tender', i: 0.4 }),
+  N('She put one hand over both of his on the rim of the nest. She didn\'t ask him to let go.', 'PA:hands_rim@.26^.6%*.6', { cue: 'tender', i: 0.4 }),
   M('♪ Slow the rain... slow the thunder... ♪', `${kn('worried')} ${mn('sing')}`, { cue: 'meeca', i: 0.8, sting: 'bloom', m: 'dusk', p: { particles: 'petals' } }),
   N('The thunder kept coming. After a while, he could hear her over it.', `${kn('sleep')} ${mn('sing')}`, { cue: 'tender', i: 0.6 }),
   P('Who taught you that?', `${kn('happy')} ${mn('happy')}`),
