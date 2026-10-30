@@ -12,7 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const [dir, outMd, outJson] = process.argv.slice(2);
-const BUILDS = ['v6', 'v7', 'today'].filter((b) => fs.existsSync(path.join(dir, `${b}.json`)));
+const BUILDS = ['v6', 'v7', 'today', 'ccrground'].filter((b) => fs.existsSync(path.join(dir, `${b}.json`)));
 const data = Object.fromEntries(BUILDS.map((b) => [b, JSON.parse(fs.readFileSync(path.join(dir, `${b}.json`), 'utf8'))]));
 
 const MPX = 1e6;
