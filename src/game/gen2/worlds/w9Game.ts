@@ -29,31 +29,23 @@ export const W9_SWING_STAGES: readonly number[] = [3];
 /** which stage holds which sections (STAGE-RULES §2 "Sameness"): w9Ground's W9_STAGE_ONLY, the rest by archetype; the first geyser is 9-1's */
 const forStage = (stage: number, id: string): boolean => (id === 'w9-first-geyser' ? stage === 1 : !W9_STAGE_ONLY[id] || W9_STAGE_ONLY[id].includes(stage));
 
-// (the plain lava chasm stays every theme's: a fallback that fits any node)
-const LAVA = ['w9-lava-rise', 'w9-lava-drop', 'w9-crust-gaps', 'w9-pillar-hop', 'w9-pillar-run', 'w9-hot-run'];
-const GEYSERS = ['w9-geyser-pair', 'w9-geyser-row', 'w9-geyser-chasm', 'w9-geyser-ledge', 'w9-geyser-brink'];
-const BASALT = ['w9-basalt-run', 'w9-basalt-twin'];
-const HUNT = ['w9-hunter-run', 'w9-cat-chasm', 'w9-hunter-brink'];
-const CATS = ['w9-cat-den', 'w9-jaguar-leap'];
-const HARPIES = ['w9-harpy-field', 'w9-harpy-gap'];
-const BOAS = ['w9-boa-vents', 'w9-boa-knobs'];
-const HOT_GROUND = ['w9-hot-run', 'w9-geyser-brink', 'w9-hunter-brink', 'w9-geyser-chasm', 'w9-pillar-run', 'w9-geyser-row'];
 /**
- * Each themed stage's shared sections, given to one of its themes (STAGE-RULES §6: "a different mix of actions, not a different order"): a
- * roll's gate opens one theme, and then the shared geysers, chasms, cracked basalt and hunters come only with the theme that leans on
- * them, so a vents roll of 9-1 is geysers and a chasms roll is jumps, all the way through. 9-3 (the lianas) keeps them all.
+ * Each themed stage's own shared sections, given to one of its themes (STAGE-RULES §6: "a different mix of actions, not a different
+ * order"): a roll's gate opens one theme, and then those sections come only with it, so a vents roll of 9-1 is geysers and a chasms roll
+ * is jumps, all the way through. Which stage holds which section is w9Ground's W9_STAGE_ONLY (every section has its stages).
  */
 const STAGE_THEMES: Readonly<Record<number, ReadonlyArray<[W9Theme, readonly string[]]>>> = {
-  1: [[W9_THEME.vents, GEYSERS], [W9_THEME.chasms, [...LAVA, ...HUNT]], [W9_THEME.basalt, [...BASALT, 'w9-geyser-ledge', 'w9-geyser-row']]],
-  4: [[W9_THEME.spires, [...LAVA, ...HUNT]], [W9_THEME.ferns, [...GEYSERS, ...BASALT]], [W9_THEME.coils, ['w9-boa-knobs', 'w9-boa-vents']]],
-  5: [[W9_THEME.glides, [...LAVA, ...BASALT]], [W9_THEME.bursts, [...GEYSERS, ...HUNT]]],
-  6: [[W9_THEME.cats, [...LAVA, ...HUNT, ...CATS]], [W9_THEME.harpies, [...BASALT, ...HARPIES]], [W9_THEME.boas, [...GEYSERS, ...BOAS]]],
-  8: [[W9_THEME.ledges, [...LAVA, ...HUNT]], [W9_THEME.channels, [...BASALT, ...GEYSERS]]],
-  9: [[W9_THEME.cats, [...LAVA, ...HUNT, ...CATS]], [W9_THEME.harpies, [...BASALT, ...HARPIES]], [W9_THEME.boas, [...GEYSERS, ...BOAS]]],
+  1: [[W9_THEME.vents, ['w9-geyser-pair', 'w9-geyser-row', 'w9-geyser-ledge']], [W9_THEME.chasms, ['w9-lava-rise', 'w9-geyser-chasm']]],
+  4: [[W9_THEME.coils, ['w9-boa-knobs', 'w9-boa-vents']]],
+  5: [[W9_THEME.bursts, ['w9-geyser-brink', 'w9-hot-run']]],
+  6: [[W9_THEME.cats, ['w9-cat-den', 'w9-jaguar-leap', 'w9-cat-ledges']], [W9_THEME.prowl, ['w9-hunter-run', 'w9-hunter-brink', 'w9-prowl-crust']]],
+  8: [[W9_THEME.channels, ['w9-basalt-run', 'w9-basalt-twin']]],
+  9: [[W9_THEME.harpies, ['w9-harpy-field', 'w9-harpy-gap', 'w9-harpy-pillars']], [W9_THEME.boas, ['w9-boa-chasm', 'w9-pillar-run', 'w9-boa-ledges']]],
 };
+/** the ground of 9-3 that asks most, between its chains: weighed as a theme's (the vine stage is no breather: World 9's band) */
+const HOT_GROUND = ['w9-crust-gaps', 'w9-pillar-hop', 'w9-cat-chasm', 'w9-lava-drop'];
 /** a shared section given to the stage's theme that leans on it (it then waits for that theme's gate) */
-function themed(stage: number, s: SectionTemplate): SectionTemplate | null {
-  // (9-3 has no themes: between its chains, the ground that asks most weighs most, so the vine stage is no breather: World 9's band)
+function themed(stage: number, s: SectionTemplate): SectionTemplate {
   if (stage === 3 && HOT_GROUND.includes(s.id)) return { ...s, weight: 1 };
   const t = STAGE_THEMES[stage]?.find(([, ids]) => ids.includes(s.id));
   return t ? { ...s, uses: [...(s.uses ?? []), t[0]], weight: 1 } : s;
@@ -64,7 +56,6 @@ export function w9GameKit(stage: number, _difficulty: Difficulty = 'normal'): Wo
   const k = w9Kit(stage);
   const sections = W9_GROUND_SECTIONS.filter((s) => forStage(stage, s.id))
     .map((s) => themed(stage, s))
-    .filter((s): s is SectionTemplate => !!s)
     .map(w9Falls);
   const swings = W9_SWING_STAGES.includes(stage) ? W9_SWING_SECTIONS.map(w9Falls) : [];
   return { ...k, manifest: { ...k.manifest, sections: [...sections, ...swings, ...w9RoomsFor(stage, _difficulty)], required: W9_REQUIRED } };
