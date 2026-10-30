@@ -161,201 +161,201 @@
  },
  "bed-w1": {
   "old": {
-   "flatness": 0.034,
-   "pitched": 0.025,
-   "hf6k": 0.11,
-   "centroid": 252,
-   "peak": -11.7,
-   "lufs": -27.2,
+   "flatness": 0.04,
+   "pitched": 0.02,
+   "hf6k": 0.14,
+   "centroid": 259,
+   "peak": -12.8,
+   "lufs": -27.5,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.113,
-   "pitched": 0.049,
-   "hf6k": 5.95,
-   "centroid": 2836,
-   "peak": -9.1,
-   "lufs": -27.2,
+   "flatness": 0.312,
+   "pitched": 0.094,
+   "hf6k": 14.25,
+   "centroid": 3023,
+   "peak": -14.6,
+   "lufs": -27.7,
    "dur": 19.99
   }
  },
  "bed-w2": {
   "old": {
-   "flatness": 0.485,
-   "pitched": 0.002,
-   "hf6k": 24.4,
-   "centroid": 3690,
+   "flatness": 0.481,
+   "pitched": 0.004,
+   "hf6k": 24.34,
+   "centroid": 3681,
    "peak": -19.7,
    "lufs": -28.9,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.13,
-   "pitched": 0.031,
-   "hf6k": 4.71,
-   "centroid": 2876,
-   "peak": -12.9,
-   "lufs": -28.8,
+   "flatness": 0.352,
+   "pitched": 0.029,
+   "hf6k": 13.11,
+   "centroid": 3279,
+   "peak": -12.4,
+   "lufs": -28.9,
    "dur": 19.99
   }
  },
  "bed-w3": {
   "old": {
-   "flatness": 0.0,
-   "pitched": 0.039,
+   "flatness": 0.001,
+   "pitched": 0.054,
    "hf6k": 0.0,
-   "centroid": 61,
+   "centroid": 65,
    "peak": -11.8,
-   "lufs": -27.4,
+   "lufs": -27.2,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.0,
-   "pitched": 0.281,
-   "hf6k": 0.01,
-   "centroid": 764,
-   "peak": -12.7,
-   "lufs": -27.4,
+   "flatness": 0.001,
+   "pitched": 0.277,
+   "hf6k": 0.07,
+   "centroid": 763,
+   "peak": -12.2,
+   "lufs": -27.2,
    "dur": 19.99
   }
  },
  "bed-w4": {
   "old": {
-   "flatness": 0.543,
-   "pitched": 0.002,
-   "hf6k": 26.4,
-   "centroid": 4178,
-   "peak": -20.7,
-   "lufs": -27.5,
+   "flatness": 0.545,
+   "pitched": 0.001,
+   "hf6k": 26.61,
+   "centroid": 4207,
+   "peak": -19.6,
+   "lufs": -27.4,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.11,
-   "pitched": 0.017,
-   "hf6k": 3.34,
-   "centroid": 2029,
+   "flatness": 0.361,
+   "pitched": 0.006,
+   "hf6k": 19.46,
+   "centroid": 3158,
    "peak": -13.3,
-   "lufs": -27.6,
+   "lufs": -27.3,
    "dur": 19.99
   }
  },
  "bed-w5": {
   "old": {
-   "flatness": 0.018,
-   "pitched": 0.265,
+   "flatness": 0.017,
+   "pitched": 0.198,
    "hf6k": 0.14,
-   "centroid": 726,
-   "peak": -8.3,
-   "lufs": -24.7,
+   "centroid": 783,
+   "peak": -7.9,
+   "lufs": -24.6,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.045,
-   "pitched": 0.121,
-   "hf6k": 2.52,
-   "centroid": 3290,
-   "peak": -8.3,
-   "lufs": -24.7,
+   "flatness": 0.098,
+   "pitched": 0.122,
+   "hf6k": 4.08,
+   "centroid": 3352,
+   "peak": -7.0,
+   "lufs": -24.5,
    "dur": 19.99
   }
  },
  "bed-w6": {
   "old": {
    "flatness": 0.006,
-   "pitched": 0.016,
+   "pitched": 0.014,
    "hf6k": 0.01,
-   "centroid": 76,
-   "peak": -11.2,
-   "lufs": -27.4,
+   "centroid": 72,
+   "peak": -11.4,
+   "lufs": -27.3,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.023,
-   "pitched": 0.025,
-   "hf6k": 0.12,
-   "centroid": 1606,
-   "peak": -8.5,
-   "lufs": -27.4,
+   "flatness": 0.051,
+   "pitched": 0.034,
+   "hf6k": 0.66,
+   "centroid": 1736,
+   "peak": -5.9,
+   "lufs": -27.1,
    "dur": 19.99
   }
  },
  "bed-w7": {
   "old": {
-   "flatness": 0.013,
-   "pitched": 0.091,
+   "flatness": 0.012,
+   "pitched": 0.172,
    "hf6k": 0.01,
-   "centroid": 92,
-   "peak": -13.0,
-   "lufs": -27.4,
+   "centroid": 95,
+   "peak": -10.0,
+   "lufs": -27.2,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.013,
-   "pitched": 0.045,
-   "hf6k": 0.15,
-   "centroid": 606,
-   "peak": -12.7,
-   "lufs": -27.5,
+   "flatness": 0.06,
+   "pitched": 0.034,
+   "hf6k": 0.72,
+   "centroid": 767,
+   "peak": -11.9,
+   "lufs": -27.0,
    "dur": 19.99
   }
  },
  "bed-w8": {
   "old": {
    "flatness": 0.001,
-   "pitched": 0.086,
+   "pitched": 0.089,
    "hf6k": 0.0,
-   "centroid": 414,
-   "peak": -9.5,
+   "centroid": 352,
+   "peak": -9.1,
    "lufs": -26.3,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.04,
-   "pitched": 0.031,
-   "hf6k": 0.62,
-   "centroid": 2938,
-   "peak": -15.2,
-   "lufs": -26.2,
+   "flatness": 0.049,
+   "pitched": 0.024,
+   "hf6k": 4.1,
+   "centroid": 2746,
+   "peak": -16.0,
+   "lufs": -26.3,
    "dur": 19.99
   }
  },
  "bed-w9": {
   "old": {
-   "flatness": 0.058,
-   "pitched": 0.008,
-   "hf6k": 1.59,
-   "centroid": 225,
-   "peak": -10.3,
-   "lufs": -26.8,
-   "dur": 19.99
+   "flatness": 0.033,
+   "pitched": 0.023,
+   "hf6k": 1.17,
+   "centroid": 172,
+   "peak": -11.4,
+   "lufs": -27.6,
+   "dur": 19.98
   },
   "new": {
-   "flatness": 0.055,
+   "flatness": 0.243,
    "pitched": 0.005,
-   "hf6k": 0.97,
-   "centroid": 1476,
-   "peak": -5.8,
-   "lufs": -26.5,
+   "hf6k": 10.95,
+   "centroid": 2508,
+   "peak": -5.5,
+   "lufs": -27.6,
    "dur": 19.99
   }
  },
  "bed-w10": {
   "old": {
    "flatness": 0.356,
-   "pitched": 0.016,
-   "hf6k": 26.48,
-   "centroid": 3743,
-   "peak": -10.7,
-   "lufs": -28.2,
+   "pitched": 0.009,
+   "hf6k": 26.43,
+   "centroid": 3744,
+   "peak": -10.5,
+   "lufs": -28.3,
    "dur": 19.99
   },
   "new": {
-   "flatness": 0.102,
+   "flatness": 0.267,
    "pitched": 0.01,
-   "hf6k": 2.45,
-   "centroid": 2582,
-   "peak": -13.1,
-   "lufs": -28.2,
+   "hf6k": 5.68,
+   "centroid": 2704,
+   "peak": -12.7,
+   "lufs": -28.1,
    "dur": 19.99
   }
  },

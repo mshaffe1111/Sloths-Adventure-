@@ -12,7 +12,7 @@
  */
 import { Ambience, type AmbientType } from './ambience.ts';
 import { COMBO_WINDOW, nextVariant } from './combat.ts';
-import { AudioCore } from './core.ts';
+import { AudioCore, SFX_BUS } from './core.ts';
 import type { KeyInfo } from './music.ts';
 import { LoopPlayer } from './loops.ts';
 import { recordingFor } from './recordings.ts';
@@ -544,7 +544,7 @@ export class Conductor {
     };
     set(core.master.gain, this.muted ? 0 : this.ducked ? 0.25 : 1);
     set(core.music.gain, MUSIC_LEVEL * this.musicVol);
-    set(core.sfx.gain, 0.9 * this.sfxVol);
+    set(core.sfx.gain, SFX_BUS * this.sfxVol);
     set(core.amb.gain, (this.paused ? 0.18 : 0.6) * this.sfxVol);
     // the reverb and echo tails follow the same volumes as the dry sound
     set(core.sends.music.gain, this.musicVol);

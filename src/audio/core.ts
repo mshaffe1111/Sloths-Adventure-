@@ -30,6 +30,13 @@ export interface AudioCoreOptions {
   recorded?: boolean;
 }
 
+/**
+ * The effects bus level (before the player's effects volume). 0.9 until 2026-10-30; then +3 dB: against the recorded music loops (PERF-D)
+ * the effects sat about 6 LU under the music in real play (tools/audio/sfxv1/capture.cjs, 1-2), so pickups and petals could get lost; now
+ * about 3 LU under, still below the music (SN-2).
+ */
+export const SFX_BUS = 1.27;
+
 export class AudioCore {
   readonly ctx: BaseAudioContext;
   readonly master: GainNode;
@@ -116,7 +123,7 @@ export class AudioCore {
     this.musicBody.gain.value = 4.5;
     // levels: music sits under the effects so pickups and hits stay readable
     this.music.gain.value = 0.32;
-    this.sfx.gain.value = 0.9;
+    this.sfx.gain.value = SFX_BUS;
     this.amb.gain.value = 0.6;
     this.sfx.connect(this.master);
     this.speechDuck = c.createGain();
