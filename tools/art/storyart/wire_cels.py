@@ -19,6 +19,10 @@ HD = 2.0
 ST = REPO / 'tools/art/hfbatch/starts/storyart'
 # the old three sheets the starts were cut from (replaced in the game by the repainted pages): read from git, where they still are
 OLD_SHEETS_AT = '0e433bd'
+# new poses made after the first sheets (2026-10-30): cel key -> the way the figure faces
+NEW_POSES = {'mc.hold_branch': 1, 'da.hands_rim': 0}
+# start px per old-sheet px for each (an HD story frame, 2x old, drawn on the start at 2.5x and 2x: tools/art/storyart, round8 starts)
+NEW_SCALE = {'mc.hold_branch': 5.0, 'da.hands_rim': 3.98}
 
 
 def old_sheet(atlas):
@@ -61,6 +65,12 @@ def main():
             old = Image.open(REPO / atlas).convert('RGBA').crop((x, y, x + w, y + h))
             face, raw, cut_c = 0, False, None
             general = True
+        elif key in NEW_POSES:
+            # (new pictures from an HD story frame on grey, start new-<pose>.png at 1024: the frame's size in old px is the cut's own)
+            m = {'scale': NEW_SCALE[key], 'ox': 0, 'oy': 0, 'size': (1024, 1024)}
+            old = Image.new('RGBA', (1, 1))
+            face, raw, cut_c = NEW_POSES[key], False, None
+            general = True
         else:
             m = meta[f'cel-{key}']
             atlas, x, y, w, h = m['src']
@@ -73,6 +83,10 @@ def main():
             s, ox, oy = m['scale'], m['ox'], m['oy']
             im = gen.convert('RGBA').crop((ox, oy, round(ox + old.width * s), round(oy + old.height * s))).resize((round(old.width * HD), round(old.height * HD)), Image.LANCZOS)
             mg = 0
+        elif key in NEW_POSES:
+            im, _ = cut_figure(gen, m, old, HD, limit=False, drop_grey=True)
+            mg = 0
+            old = im.resize((max(1, round(im.width / HD)), max(1, round(im.height / HD))), Image.LANCZOS)
         else:
             im, mg = cut_figure(gen, m, old, HD, rect_margin=30 if general else 6, limit=not general, drop_grey=take.startswith('new-'))
         if re.search(r'-p[sij]\d*$', take):
