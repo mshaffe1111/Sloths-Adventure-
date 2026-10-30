@@ -959,7 +959,7 @@ const gatehouseRun = section({
   mirrorable: true,
 });
 
-/** 10-9: the drawbridge chains: a wide chasm, a second-jump gap (soft), soldiers on the far wall */
+/** 10-9: the drawbridge chains: a battlement, a wide chasm, a second-jump gap (soft), soldiers on the far wall */
 const drawbridge = section({
   id: 'w10-drawbridge',
   name: 'drawbridge chains arena',
@@ -967,9 +967,9 @@ const drawbridge = section({
   phases: LIVE,
   difficulty: 8,
   maxPerStage: 2,
-  pieces: [bank('a', [360, 400]), wide('b', 'a', [380, 420]), leap('c', 'b', [560, 600])],
+  pieces: [bank('a', [220, 260]), up('k', 'a', 30, [140, 160]), down('a2', 'k', 30, [240, 280]), wide('b', 'a2', [380, 420]), leap('c', 'b', [540, 580])],
   last: 'c',
-  sockets: [petals('b', 'b', 0.5, 1), foe('g1', 'c', [0.55, 0.62], GUARDS, 3), scenery('cage', 'a', [0.3, 0.5], 0.6)],
+  sockets: [petals('k', 'k', 0.5, 1), petals('b', 'b', 0.5, 1), foe('g1', 'c', [0.55, 0.62], GUARDS, 3), scenery('cage', 'a', [0.3, 0.5], 0.6)],
   mirrorable: true,
 });
 
