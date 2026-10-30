@@ -78,3 +78,11 @@ Not in this build:
 19. **Pad side and hop (CT-19, CT-13).** Clear site data or use a fresh browser, open the game, switch to Pad.
     - *Now:* the movement pad is under the left thumb and the buttons on the right. Settings can flip it.
     - Tap Jump quickly: a short hop. Hold it: full height, as the lesson says.
+
+# CT-8 step 2: steering from anywhere (about 2 minutes)
+
+20. **One thumb, the "wrong" half.** In Screen mode, put one thumb down on the RIGHT half (the half that is not for steering) and slide left and right, 10 times, upright and sideways.
+    - *Before:* the run started a beat later than on the left half.
+    - *Now:* it starts as soon as the thumb slides, the same as on the left half.
+    - From the same spot, a quick flick up still jumps (no run), a tap still punches, and holding still is still the mega.
+21. **Left-handed.** Settings, Touch controls, Steer with: Right. Repeat step 20 with the thumb on the LEFT half. Then set it back.
