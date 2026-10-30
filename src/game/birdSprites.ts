@@ -12,6 +12,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { BIRD_FRAMES } from './birdAtlasData.ts';
 import { rng } from './artKit.ts';
 import { getSceneSeed } from './sceneSeed.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_BIRDS = true;
 
@@ -122,7 +123,7 @@ export function drawPaintedBird(
   ctx.scale(face < 0 ? -1 : 1, 1);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

@@ -34,8 +34,6 @@ export const ROPE_DIP = 10;
 const POST_W = 15;
 /** the slice length the rope is laid in (world units): short enough that the sag reads as a smooth curve */
 const SLICE = 8;
-/** how far past the view's sides a rope or slice is still drawn (world px): more than a post's half-width and the rope's thickness */
-const VIEW_MARGIN = 40;
 
 /**
  * How much further down the rope is drawn at x, with Pokey's hands at `at` and his weight on it by `amt` (0..1): a V from post to post
@@ -64,32 +62,36 @@ export interface RopeLoad {
 }
 
 /** the painted rope laid through `pts` (a polyline), its twist running on along the length */
-function layRope(
-  ctx: CanvasRenderingContext2D,
-  im: CanvasImageSource,
-  pts: Array<[number, number]>,
-  thick = ROPE_THICK,
-  src = ROPE_KIT.tile,
-  vx0 = -Infinity,
-  vx1 = Infinity,
-) {
+function layRope(ctx: CanvasRenderingContext2D, im: CanvasImageSource, pts: ArrayLike<readonly [number, number]>, thick = ROPE_THICK, src = ROPE_KIT.tile) {
   const t = src;
   const k = thick / t.thick;
   const tileLen = t.w * k;
+  // Only the slices on screen are drawn (PERFORMANCE-RULES.md §2.5): a stage's ropes are hundreds of 8-unit slices, nearly all of them
+  // off screen, each one a drawImage and a save/restore (perf-sprites, 2026-10-30: 683 draws a frame in 1-4, 98% off screen). Each
+  // slice's turn is set straight on the transform the rope started with, instead of a save/translate/rotate/restore around it.
+  const m = ctx.getTransform();
+  const W = ctx.canvas.width;
+  const H = ctx.canvas.height;
+  const pad = thick * Math.hypot(m.a, m.b) * 2 + 2;
   let u = 0; // how far along the rope (world units), for the twist
+  let turned = false;
   for (let i = 1; i < pts.length; i++) {
     const [ax, ay] = pts[i - 1];
     const [bx, by] = pts[i];
     const len = Math.hypot(bx - ax, by - ay);
     if (len < 0.01) continue;
-    // a slice wholly off the view (vx0..vx1) is skipped, its length still counted so the twist on screen is unchanged
-    if (Math.max(ax, bx) < vx0 || Math.min(ax, bx) > vx1) {
+    const pax = m.a * ax + m.c * ay + m.e;
+    const pay = m.b * ax + m.d * ay + m.f;
+    const pbx = m.a * bx + m.c * by + m.e;
+    const pby = m.b * bx + m.d * by + m.f;
+    if (Math.max(pax, pbx) < -pad || Math.min(pax, pbx) > W + pad || Math.max(pay, pby) < -pad || Math.min(pay, pby) > H + pad) {
       u += len;
       continue;
     }
-    ctx.save();
-    ctx.translate(ax, ay);
-    ctx.rotate(Math.atan2(by - ay, bx - ax));
+    const cs = (bx - ax) / len;
+    const sn = (by - ay) / len;
+    ctx.setTransform(m.a * cs + m.c * sn, m.b * cs + m.d * sn, m.c * cs - m.a * sn, m.d * cs - m.b * sn, pax, pay);
+    turned = true;
     // one slice may run past the end of the tile: then it is drawn in two parts, the second from the tile's start
     let done = 0;
     while (done < len - 0.001) {
@@ -100,9 +102,9 @@ function layRope(
       ctx.drawImage(im, t.x + at / k, t.y, part / k, t.h, done, -t.mid * k, part + over, t.h * k);
       done += part;
     }
-    ctx.restore();
     u += len;
   }
+  if (turned) ctx.setTransform(m);
 }
 
 /** a painted post: its lashing's middle at the rope (tieY), the pole down to the ground (a little into it) */
@@ -126,6 +128,16 @@ function paintedPost(ctx: CanvasRenderingContext2D, im: HTMLImageElement, x: num
   ctx.drawImage(im, f.x, f.y + headRows, f.w, shaftRows, left, top + headH, w, shaftH);
 }
 
+/** the points a stage rope is laid through, kept from frame to frame (no new arrays per frame: PERFORMANCE-RULES.md §3.1) */
+const ropePts: Array<[number, number]> = [];
+const ptPool: Array<[number, number]> = [];
+function pt(i: number, x: number, y: number): [number, number] {
+  const p = ptPool[i] ?? (ptPool[i] = [0, 0]);
+  p[0] = x;
+  p[1] = y;
+  return p;
+}
+
 export function drawRopes(
   ctx: CanvasRenderingContext2D,
   ropes: Rope[],
@@ -134,23 +146,22 @@ export function drawRopes(
 ) {
   load();
   const im = ready ? img : null;
-  // what the view covers in world x (with a margin for the posts and the rope's width); a rope wholly outside it is not drawn, and the
-  // slices of one that is partly in it are laid only where they show (the stage's ropes were all laid, slice by slice, every frame)
-  let vx0 = -Infinity;
-  let vx1 = Infinity;
-  const m = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
-  if (m && m.b === 0 && m.c === 0 && m.a > 0) {
-    vx0 = -m.e / m.a - VIEW_MARGIN;
-    vx1 = (ctx.canvas.width - m.e) / m.a + VIEW_MARGIN;
-  }
+  // (a rope wholly off screen to the side is skipped; its posts too: PERFORMANCE-RULES.md §2.5)
+  const m = ctx.getTransform();
+  const flat = m.b === 0 && m.c === 0 && m.a > 0;
+  const W = ctx.canvas.width;
+  const H = ctx.canvas.height;
   for (const r of ropes) {
-    if (r.x1 < vx0 || r.x0 > vx1) continue;
+    if (flat && (m.a * (r.x1 + POST_W * 3) + m.e < 0 || m.a * (r.x0 - POST_W * 3) + m.e > W)) continue;
+    // (or wholly above or below it: the post caps reach a little over the tie, the poles down to the ground)
+    if (flat && m.d > 0 && (m.d * (Math.max(r.g0, r.g1) + 20) + m.f < 0 || m.d * (r.y - 80) + m.f > H)) continue;
     // the rope is only a rope to someone who has learned the skill; before that it is still drawn (it is part of the jungle)
     const n = Math.max(2, Math.ceil((r.x1 - r.x0) / SLICE));
-    const pts: Array<[number, number]> = [];
+    const pts = ropePts;
+    pts.length = 0;
     for (let i = 0; i <= n; i++) {
       const x = r.x0 + ((r.x1 - r.x0) * i) / n;
-      pts.push([x, ropeDrawY(r, x, opts.load)]);
+      pts.push(pt(i, x, ropeDrawY(r, x, opts.load)));
     }
     // (his hands are a point on the rope: a slice ends exactly there, so the V's corner is sharp under them)
     const ld = opts.load;
@@ -159,9 +170,11 @@ export function drawRopes(
       if (i > 0) pts.splice(i, 0, [ld.x, ropeDrawY(r, ld.x, ld)]);
     }
     if (im) {
-      layRope(ctx, im, pts, ROPE_THICK, ROPE_KIT.tile, vx0, vx1);
-      paintedPost(ctx, im, r.x0, r.g0, r.y);
-      paintedPost(ctx, im, r.x1, r.g1, r.y);
+      layRope(ctx, im, pts);
+      // (a post off to the side of the screen is skipped)
+      const postOn = (x: number) => !flat || (m.a * (x + POST_W * 3) + m.e >= 0 && m.a * (x - POST_W * 3) + m.e <= W);
+      if (postOn(r.x0)) paintedPost(ctx, im, r.x0, r.g0, r.y);
+      if (postOn(r.x1)) paintedPost(ctx, im, r.x1, r.g1, r.y);
     } else {
       // (the painted pieces are still on their way: a plain rope for a moment, so it never vanishes)
       ctx.strokeStyle = '#9a7656';

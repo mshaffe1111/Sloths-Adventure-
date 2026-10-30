@@ -12,7 +12,7 @@
  *      fallen iron thorns from the General's netting, rain puddles, chains on the way up. (The old war-camp props stay for the lair.)
  *   W1 lowland rainforest (the snake): shed skin, hollow logs, heliconia.
  */
-import { tone, mix, lighten, darken, rgba, keptGradient, type RNG, type Tone } from './artKit.ts';
+import { tone, mix, lighten, darken, rgba, type RNG, type Tone } from './artKit.ts';
 import { fernFrond } from './flora.ts';
 import { leaf, bromeliad } from './rainforest.ts';
 import type { Look } from './scenery.ts';
@@ -36,24 +36,77 @@ const bead = (ctx: CanvasRenderingContext2D, x: number, y: number, rr: number) =
   ctx.ellipse(x, y, rr, rr * 1.4, 0, 0, TAU);
   ctx.fill();
 };
-/** a soft added glow (also envKit's); drawn about its middle, so its gradient is kept by colour, size and strength, not made each frame */
-export const glowDot = (ctx: CanvasRenderingContext2D, x: number, y: number, rad: number, col: string, a: number) => {
-  let owner = glowOwners.get(col);
-  if (!owner) glowOwners.set(col, (owner = {}));
-  const g = keptGradient(owner, Math.round(rad * 16) * 1024 + Math.round(a * 1000), () => {
-    const gr = ctx.createRadialGradient(0, 0, 0, 0, 0, rad);
-    gr.addColorStop(0, rgba(col, a));
-    gr.addColorStop(1, rgba(col, 0));
-    return gr;
-  });
+// A glow dot is a baked glow of its colour (made once per colour), drawn at its alpha: the same fall-off as the radial gradient it was,
+// without a new gradient every frame (PERFORMANCE-RULES.md §2.3). (rgba(col, a) to rgba(col, 0) is col's glow scaled by a.)
+const glowPics = new Map<string, HTMLCanvasElement | null>();
+const GLOW_PX = 128;
+function glowPic(col: string): HTMLCanvasElement | null {
+  let c = glowPics.get(col);
+  if (c !== undefined) return c;
+  c = null;
+  if (typeof document !== 'undefined') {
+    c = document.createElement('canvas');
+    c.width = c.height = GLOW_PX;
+    const g = c.getContext('2d');
+    if (g) {
+      const h = GLOW_PX / 2;
+      const gr = g.createRadialGradient(h, h, 0, h, h, h);
+      gr.addColorStop(0, rgba(col, 1));
+      gr.addColorStop(1, rgba(col, 0));
+      g.fillStyle = gr;
+      g.fillRect(0, 0, GLOW_PX, GLOW_PX);
+    } else c = null;
+  }
+  glowPics.set(col, c);
+  return c;
+}
+const glowDot = (ctx: CanvasRenderingContext2D, x: number, y: number, rad: number, col: string, a: number) => {
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
-  ctx.translate(x, y);
-  ctx.fillStyle = g;
-  ctx.fillRect(-rad, -rad, rad * 2, rad * 2);
+  const pic = glowPic(col);
+  if (pic) {
+    ctx.globalAlpha *= Math.max(0, Math.min(1, a));
+    ctx.drawImage(pic, x - rad, y - rad, rad * 2, rad * 2);
+  } else {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+    g.addColorStop(0, rgba(col, a));
+    g.addColorStop(1, rgba(col, 0));
+    ctx.fillStyle = g;
+    ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+  }
   ctx.restore();
 };
-const glowOwners = new Map<string, object>();
+
+/**
+ * A linear gradient a plant fills with, made once and kept: a plant stands at the same world place every frame, so its gradient is the
+ * same object frame to frame (PERFORMANCE-RULES.md §2.3; the pegs alone made 23 a frame in 6-3).
+ */
+const grads = new Map<string, CanvasGradient>();
+export function plantGradient(ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number, stops: ReadonlyArray<readonly [number, string]>): CanvasGradient {
+  let key = x0 + ',' + y0 + ',' + x1 + ',' + y1;
+  for (const [at, col] of stops) key += '|' + at + col;
+  let g = grads.get(key);
+  if (!g) {
+    if (grads.size > 4000) grads.clear();
+    g = ctx.createLinearGradient(x0, y0, x1, y1);
+    for (const [at, col] of stops) g.addColorStop(at, col);
+    grads.set(key, g);
+  }
+  return g;
+}
+/** a radial glow a plant fills with (centre x, y, radius rad, from 0), made once and kept, as plantGradient */
+export function plantGlow(ctx: CanvasRenderingContext2D, x: number, y: number, rad: number, c0: string, c1: string): CanvasGradient {
+  const key = 'r' + x + ',' + y + ',' + rad + '|' + c0 + '|' + c1;
+  let g = grads.get(key);
+  if (!g) {
+    if (grads.size > 4000) grads.clear();
+    g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+    g.addColorStop(0, c0);
+    g.addColorStop(1, c1);
+    grads.set(key, g);
+  }
+  return g;
+}
 
 // ───────────────────────────── generic ─────────────────────────────
 
@@ -96,11 +149,7 @@ function pitcherShape(ctx: CanvasRenderingContext2D, x: number, topY: number, w:
   ctx.quadraticCurveTo(x, topY + w * 2.8, x + w * 0.8, topY + w * 2.0);
   ctx.bezierCurveTo(x + w * 1.0, topY + w * 1.2, x + w * 0.4, topY + w * 0.8, x + w * 0.6, topY);
   ctx.closePath();
-  const g = ctx.createLinearGradient(x - w, 0, x + w, 0);
-  g.addColorStop(0, '#8ac060');
-  g.addColorStop(0.5, '#5a9a40');
-  g.addColorStop(1, '#2f6a2f');
-  ctx.fillStyle = g;
+  ctx.fillStyle = plantGradient(ctx, x - w, 0, x + w, 0, [[0, '#8ac060'], [0.5, '#5a9a40'], [1, '#2f6a2f']]);
   ctx.fill();
   ctx.strokeStyle = 'rgba(20,40,20,0.8)';
   ctx.lineWidth = 1.3;
@@ -163,22 +212,14 @@ const pegs: PlantFn = (ctx, x, y, s, look, r) => {
     const h = s * (0.3 + r() * 0.7);
     const w = s * (0.05 + r() * 0.03);
     const lean = (r() - 0.5) * 5;
+    ctx.fillStyle = plantGradient(ctx, px - w, 0, px + w, 0, [[0, bark.light], [1, bark.dark]]);
     ctx.beginPath();
     ctx.moveTo(px - w * 1.2, y + 2);
     ctx.lineTo(px - w * 0.6 + lean, y - h * 0.8);
     ctx.quadraticCurveTo(px + lean, y - h - w * 0.8, px + w * 0.6 + lean, y - h * 0.8);
     ctx.lineTo(px + w * 1.2, y + 2);
     ctx.closePath();
-    // the bark's side-to-side shading, kept by width and laid across the peg by a shift at the fill (the path is already placed)
-    ctx.fillStyle = keptGradient(bark, Math.round(w * 64), () => {
-      const g = ctx.createLinearGradient(-w, 0, w, 0);
-      g.addColorStop(0, bark.light);
-      g.addColorStop(1, bark.dark);
-      return g;
-    });
-    ctx.translate(px, 0);
     ctx.fill();
-    ctx.translate(-px, 0);
     ctx.strokeStyle = rgba(bark.deep, 0.8);
     ctx.lineWidth = 1.2;
     ctx.stroke();
