@@ -563,4 +563,7 @@ export const CHORD_VOICES: Record<string, ChordVoice> = { pad, strings, choir, o
 export const DRUM_VOICES: Record<string, DrumVoice> = {
   kick, softKick, snare, rim, brush, hat, ohat, shaker, congaHi, congaLo, clave, woodblock, tom, taiko, timpani, crash, riser, bassDrum, gong, triangle,
   snareSoft, mute,
+  // the worlds' own percussion (styles.ts): a world's groove is its identity, so its hand drums, shaker, woodblock and kick keep their own
+  // voices when the music is the real orchestra (realize.ts silences or replaces the plain names)
+  handHi: congaHi, handLo: congaLo, shakerJ: shaker, woodJ: woodblock, kickJ: kick, rimJ: rim, claveJ: clave, tomJ: tom,
 };

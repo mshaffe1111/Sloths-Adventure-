@@ -9,9 +9,12 @@ What it does to every chosen recording:
   - mixes it to mono, normalises its loudness so neighbouring notes of an instrument match
   - sustained instruments (strings, brass) are cut to attack + a short steady stretch, and that stretch is made to loop
     seamlessly (the end cross-fades into the material just before the loop start), so a note can be held as long as the
-    music needs while the file stays small
+    music needs while the file stays small. The stretch is chosen note by note (pick_loop): the steadiest 1.8 s after the
+    attack whose two ends match in level, and what slow swell is left in it is evened out (level_loop), so a held note
+    never pumps at its loop point (polish report SN-8: steps of up to 7 dB at a fixed 1.3 s start)
   - short instruments (staccato, pizzicato, drums) are trimmed and faded
-  - writes <instrument>_<midi note>_<loop start in ms>.mp3; a loop start of 0 means a one-shot
+  - writes <instrument>_<midi note>_<loop start in ms>.mp3 (a one-shot: loop start 0), and for a sustained note
+    <instrument>_<midi note>_<loop start in ms>_<loop length in samples at 44.1 kHz>.mp3
 
 The note a recording was made at comes from its file name (VSCO names octaves one lower than the usual convention), and
 is double-checked against a measurement of the recording's pitch.
@@ -63,9 +66,14 @@ SETS = [
     ('marimba', 'perc', 'Percussion/Marimba/Marimba_hit_Outrigger_*_loud_01.wav', {'dur': 1.6, 'pitch': 'name'}),
 ]
 ONLY = set(os.environ['ONLY'].split(',')) if os.environ.get('ONLY') else None
-LOOP_START = 1.3  # seconds into a sustained note where the loop begins
+LOOP_START = 1.3  # the latest the old fixed loop began; pick_loop searches LOOP_EARLIEST..LOOP_LATEST
+LOOP_EARLIEST = 0.55
+LOOP_LATEST = 2.2
+LEVEL_WIN = float(os.environ.get("LEVEL_WIN", "0.12"))  # the window the swell is measured over: about a vibrato cycle
 LOOP_LEN = 1.8
-XFADE = 0.45
+GUARD = 0.03  # the last stretch of the loop is the sound just before its start exactly: a decoder that keeps the mp3's encoder delay (up to ~26 ms) still loops seamlessly
+REFINE = float(os.environ.get('REFINE', '0.25'))  # how far (s) the start may move to find a cross-fade in phase
+XFADE = 0.06  # short, and placed where the two stretches are in phase (refine_loop): a long one drifts out of phase with the vibrato and dips
 
 
 def load(p):
@@ -145,14 +153,92 @@ def encode(d, path):
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', t.name, '-ac', '1', '-ar', str(SR), '-codec:a', 'libmp3lame', '-q:a', '7', str(path)], check=True)
 
 
-def make_loop(d):
-    a = int(SR * LOOP_START)
-    b = a + int(SR * LOOP_LEN)
+def levels_db(d, w):
+    n = len(d) // w
+    x = d[: n * w].reshape(n, w)
+    return 20 * np.log10(np.sqrt((x**2).mean(1)) + 1e-9)
+
+
+def pick_loop(d):
+    """the loop start (seconds): the 1.8 s stretch whose two ends match in level and whose level wavers least, as early as that allows"""
+    w = int(SR * 0.05)
+    lv = levels_db(d, w)
+    span = int(LOOP_LEN * SR / w)
+    xf = int(XFADE * SR / w)
+    best, at = 1e9, LOOP_START
+    for i in range(int(LOOP_EARLIEST * SR / w), int(LOOP_LATEST * SR / w) + 1):
+        if i + span + 2 > len(lv) or i - xf < 0:
+            break
+        seg = lv[i - xf : i + span]
+        ends = abs(lv[i : i + 2].mean() - lv[i + span - 2 : i + span].mean())
+        cost = 4 * ends + np.std(seg) + 0.6 * (seg.max() - seg.min()) / 4 + 0.4 * (i * w / SR - LOOP_EARLIEST)
+        if cost < best:
+            best, at = cost, i * w / SR
+    return refine_loop(d, at)
+
+
+def refine_loop(d, start):
+    """the loop's exact start and length (in samples): a held note repeats its waveform every period, so a loop of a fixed length ends at
+    a fixed point of that period and its cross-fade cancels (a dip at every loop). Near the level-matched start and near LOOP_LEN, find the
+    start and the length (a whole number of periods, give or take the vibrato) where the cross-fade's two stretches are most alike."""
     f = int(SR * XFADE)
+    g = int(SR * GUARD)
+    span = int(SR * LOOP_LEN)
+    k = int(SR * 0.02)
+    best, at, length = -2.0, int(SR * start), span
+    for a in range(max(f + g, int(SR * (start - REFINE))), int(SR * (start + REFINE)) + 1, int(SR * 0.01)):
+        x = d[a - f - g : a - g]
+        lo = a + span - k - f - g
+        seg = d[lo : a + span + k - g]
+        if lo < 0 or len(seg) < 2 * k + f:
+            continue
+        num = np.correlate(seg, x, 'valid')
+        e = np.cumsum(np.concatenate(([0.0], seg**2)))
+        den = np.sqrt((e[f:] - e[:-f])[: len(num)] * (x**2).sum()) + 1e-12
+        c = num / den
+        i = int(np.argmax(c))
+        if c[i] > best:
+            best, at, length = float(c[i]), a, span - k + i
+    if os.environ.get('LOOP_DEBUG'):
+        print(f'      loop at {at / SR:.3f}s for {length / SR:.4f}s, cross-fade likeness {best:.3f}')
+    return at / SR, length
+
+
+def level_loop(d, start, length=None):
+    """even out the slow swell of the stretch (from the cross-fade before it to its end) toward its own average level, eased in after the attack"""
+    from scipy.ndimage import uniform_filter1d
+
+    a = int(SR * (start - XFADE))
+    b = int(SR * start) + (length or int(SR * LOOP_LEN))
+    env = np.sqrt(uniform_filter1d(d**2, int(SR * LEVEL_WIN)) + 1e-12)
+    target = float(np.sqrt((d[a:b] ** 2).mean()))
+    g = np.ones(len(d))
+    corr = uniform_filter1d(np.clip(target / env[a:b], 0.35, 2.8), int(SR * 0.03))
+    ease = int(SR * 0.2)
+    lead = np.linspace(1, corr[0], ease)
+    g[max(0, a - ease) : a] = lead[-(a - max(0, a - ease)) :] if a > 0 else lead[:0]
+    g[a:b] = corr
+    g[b:] = corr[-1]
+    return d * g
+
+
+def make_loop(d, start=LOOP_START, length=None):
+    a = int(round(SR * start))
+    b = a + (length or int(SR * LOOP_LEN))
+    f = int(SR * XFADE)
+    g = int(SR * GUARD)
     x = d[:b].copy()
-    # the loop's tail cross-fades into the stretch just before the loop start, so wrapping b -> a is continuous
+    # the loop's tail cross-fades into the stretch just before the loop start, and its last GUARD seconds are that stretch exactly, so wrapping
+    # b -> a is continuous (and stays so if a decoder shifts both points by its delay)
+    x[b - g : b] = d[a - g : a]
     t = np.linspace(0, 1, f)
-    x[b - f : b] = d[b - f : b] * np.cos(t * np.pi / 2) + d[a - f : a] * np.sin(t * np.pi / 2)
+    p, q = d[b - g - f : b - g], d[a - g - f : a - g]
+    # stretches in phase are cross-faded in level (their sum keeps its loudness); unlike ones in power
+    c = float((p * q).sum() / (np.sqrt((p * p).sum() * (q * q).sum()) + 1e-12))
+    if c > 0.6:
+        x[b - g - f : b - g] = p * (1 - t) + q * t
+    else:
+        x[b - g - f : b - g] = p * np.cos(t * np.pi / 2) + q * np.sin(t * np.pi / 2)
     return x
 
 
@@ -172,10 +258,10 @@ def main():
         for i, p in enumerate(files):
             d = load(p)
             if kind == 'sus':
-                if len(d) < SR * (LOOP_START + LOOP_LEN + 0.1):
+                if len(d) < SR * (LOOP_EARLIEST + LOOP_LEN + 0.1):
                     print('   too short', p.name)
                     continue
-                d = d[: int(SR * (LOOP_START + LOOP_LEN + 0.2))]
+                d = d[: int(SR * (LOOP_LATEST + LOOP_LEN + 0.2))]
             midi = name_midi(p.name)
             if opt.get('pitch') == 'measure':
                 midi = int(round(measure_midi(d)))
@@ -213,8 +299,14 @@ def main():
             d = d * (target / lv)
             ls = 0
             if kind == 'sus':
-                d = make_loop(d)
-                ls = int(LOOP_START * 1000)
+                # the file name carries the start in whole milliseconds: the head is trimmed by the fraction of a millisecond, so the start found
+                # (to the sample) lands exactly on one
+                exact, length = pick_loop(d)
+                trim = int(round((exact - np.floor(exact * 1000) / 1000) * SR))
+                d = d[trim:]
+                start = np.floor(exact * 1000) / 1000
+                d = make_loop(level_loop(d, start, length), start, length)
+                ls = int(round(start * 1000))
                 # a soft attack on the very first samples removes a click
                 k = int(SR * 0.004)
                 d[:k] *= np.linspace(0, 1, k)
@@ -224,7 +316,8 @@ def main():
                 fade = int(SR * min(0.35, opt['dur'] * 0.25))
                 d[-fade:] *= np.linspace(1, 0, fade)
             d = d / max(1e-9, np.abs(d).max()) * 0.8
-            out = OUT / f'{inst}_{midi}_{ls}.mp3'
+            # a sustained note's name also carries its loop's length, in samples at 44.1 kHz (orchLoader.parseOrchName)
+            out = OUT / (f'{inst}_{midi}_{ls}_{length}.mp3' if kind == 'sus' else f'{inst}_{midi}_{ls}.mp3')
             encode(d, out)
             total += out.stat().st_size
         print(f'{inst:11s} {len(seen):2d} samples')

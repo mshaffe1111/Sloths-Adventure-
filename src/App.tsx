@@ -15,6 +15,7 @@ import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { LessonCard } from './components/LessonCard.tsx';
 import { Wayside } from './components/Wayside.tsx';
+import type { GuideFeed } from './components/dot/DotGuide.tsx';
 import { MeecaWords } from './components/MeecaWords.tsx';
 import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
@@ -23,11 +24,12 @@ import { ControlSwitch } from './components/ControlSwitch.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
 import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
-import { INTRO_PANELS, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
-import { MEMORIES, finalePanels, loadMemories, nextAfterBoss, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
+import { INTRO_PANELS, WORLD_GATE, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
+import { MEMORIES, endTagPanels, finalePanels, loadMemories, nextAfterBoss, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
 import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
+import { BossIntroCard } from './components/BossCards.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
@@ -94,9 +96,51 @@ function hasSeenMidStory(w: number): boolean {
     return false;
   }
 }
+/** a guardian's card comes after its scene the first time only, in each save (UI-5; key 11 is Thornbark) */
+const guardianCardKey = (lvl: LevelConfig) => `sloth_story_g${lvl.secret ? 11 : lvl.worldIndex}`;
+function hasSeenGuardianCard(lvl: LevelConfig): boolean {
+  try {
+    return localStorage.getItem(guardianCardKey(lvl)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markGuardianCardSeen(lvl: LevelConfig) {
+  try {
+    localStorage.setItem(guardianCardKey(lvl), '1');
+  } catch {}
+}
 function markMidStorySeen(w: number) {
   try {
     localStorage.setItem(midStoryKey(w), '1');
+  } catch {}
+}
+/** a guardian's intro has been seen (a long one is shortened on the retries: storyBosses.ts RETRY_INTRO_LINES) */
+const bossIntroKey = (w: number) => `sloth_story_b${w}`;
+function hasSeenBossIntro(w: number): boolean {
+  try {
+    return localStorage.getItem(bossIntroKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markBossIntroSeen(w: number) {
+  try {
+    localStorage.setItem(bossIntroKey(w), '1');
+  } catch {}
+}
+/** the scene at the guardian's door, after a world's ninth stage (World 10's gate), plays once */
+const gateStoryKey = (w: number) => `sloth_story_g${w}`;
+function hasSeenGateStory(w: number): boolean {
+  try {
+    return localStorage.getItem(gateStoryKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markGateStorySeen(w: number) {
+  try {
+    localStorage.setItem(gateStoryKey(w), '1');
   } catch {}
 }
 
@@ -207,7 +251,7 @@ export default function App() {
   const [currentCount, setCurrentCount] = useState<number>(0);
   const [targetCount, setTargetCount] = useState<number>(1);
   /** the guiding line Dot is saying (a stage tip, the goal, the sealed door): from the engine, shown by Wayside */
-  const [guideLine, setGuideLine] = useState<{ text: string; ms: number; n: number; passed?: boolean } | null>(null);
+  const [guideLine, setGuideLine] = useState<GuideFeed | null>(null);
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
@@ -267,6 +311,8 @@ export default function App() {
   const [badgeStore, setBadgeStore] = useState<BadgeStore>(() => loadBadgeStore());
   const [cosmetic, setCosmetic] = useState<CosmeticChoice>(() => loadCosmetic());
   const [freshBadges, setFreshBadges] = useState<BadgeDef[]>([]);
+  /** the guardian's card is up (after its scene, before the fight) */
+  const [bossCard, setBossCard] = useState(false);
   // the one-time tip for a phone that can't keep up (slowTip.ts): opened inside an app's own browser, or far too slow in play
   const [slowTip, setSlowTip] = useState<string | null>(() =>
     typeof navigator !== 'undefined' && inAppOf(navigator.userAgent) && !slowTipShown() ? slowTipText(navigator.userAgent) : null,
@@ -327,12 +373,23 @@ export default function App() {
     setBadgeStore(r.store);
     saveBadgeStore(r.store);
     // a stage just ended: celebrate. Badges found when a save loads or the game opens are filed quietly.
+    // (on the stage-cleared card they get a row of their own, with the medal chime when it comes in: UI-9)
     if (stats && r.fresh.length) {
       setFreshBadges(r.fresh);
-      sound.playShrineUnlocked();
+      if (screen !== 'victory') sound.playShrineUnlocked();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, allLevels, secretFound, thornHeart]);
+  // the guardian's card belongs to this one visit to its scene
+  useEffect(() => {
+    if (screen !== 'boss_intro') setBossCard(false);
+  }, [screen]);
+  // the stage-cleared card showed this run's medals in its own row (UI-9): no pop-up for the same medals once the card closes
+  const wasVictory = useRef(false);
+  useEffect(() => {
+    if (wasVictory.current && screen !== 'victory') setFreshBadges([]);
+    wasVictory.current = screen === 'victory';
+  }, [screen]);
   const changeCosmetic = (c: CosmeticChoice) => {
     setCosmetic(c);
     saveCosmetic(c);
@@ -412,7 +469,7 @@ export default function App() {
     const worldAmbient = (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).ambientType;
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
-    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
+    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'world_gate' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
     else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
     else sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
@@ -534,13 +591,15 @@ export default function App() {
       const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
       if (!lvl) return;
       setActiveLevel(lvl);
-      setScreen(scr as never);
+      // ('boss_card': the guardian's card that follows its scene)
+      setBossCard(scr === 'boss_card');
+      setScreen((scr === 'boss_card' ? 'boss_intro' : scr) as never);
     };
   }
 
   // dev only: the stage-cleared card for a stage with this many stars, as if it had just been won (for screenshots)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
-    (window as unknown as { __win?: (id: string, stars: number) => void }).__win = (id: string, stars: number) => {
+    (window as unknown as { __win?: (id: string, stars: number, medals?: string[]) => void }).__win = (id: string, stars: number, medals?: string[]) => {
       const lvl = allLevels.find((l) => l.id === id);
       if (!lvl) return;
       setActiveLevel(lvl);
@@ -549,6 +608,7 @@ export default function App() {
       setScore(4210);
       setNewBest(true);
       setLastStats({ win: true, stars, livesLost: 0, heartsLost: 1, floraTotal: 36, floraCollected: 31, timeSec: 154, timeLimit: 300, maxStompChain: 2, maxCombo: 3, stomps: 4, kills: { snake: 3, frog: 2 }, seen: [], id } as StageStats);
+      setFreshBadges(medals ? BADGES.filter((b) => medals.includes(b.id)) : []);
       setScreen('victory');
     };
   }
@@ -663,7 +723,12 @@ export default function App() {
           onSlowDevice: () => {
             if (!slowTipShown()) setSlowTip(slowTipText(navigator.userAgent));
           },
-          onGuide: (text, seconds, passed) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) })),
+          // (the last few ride along: two lines in one frame are both said, DotGuide.tsx GuideFeed)
+          onGuide: (text, seconds, passed) =>
+            setGuideLine((g) => {
+              const line = { text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) };
+              return { ...line, recent: [...(g?.recent ?? []).slice(-5), line] };
+            }),
           onStageStats: (s) => {
             pendingStats.current = s;
             setLastStats(s);
@@ -674,7 +739,9 @@ export default function App() {
             setScore(curScore);
             setHp(curHp);
             if (distRatio !== undefined) {
-              setDistanceRatio(distRatio);
+              // in steps of a quarter percent (under a pixel on the HUD's trail): the exact share changed every frame he moved, so the
+              // whole app re-rendered 30 times a second while he ran (PF-1)
+              setDistanceRatio(Math.round(distRatio * 400) / 400);
             }
             setActivePowerUp(curPowerUp ?? null);
             setPowerUpTimer(curPowerTimer ?? 0);
@@ -742,6 +809,9 @@ export default function App() {
               // plays inside 5-5, at the rest branch: midScene.ts)
               // halfway through a world, Dot catches up with a note from Meeca
               setScreen('world_mid');
+            } else if (lvl.miniIndex === 9 && WORLD_GATE[lvl.worldIndex] && !hasSeenGateStory(lvl.worldIndex)) {
+              // at the fortress gate, Dot goes around to the cookhouse seam and leaves Flicker with him
+              setScreen('world_gate');
             } else {
               setScreen('victory');
             }
@@ -1030,17 +1100,46 @@ export default function App() {
         />
       )}
 
+      {/* At the guardian's door, after the ninth stage (first time only) */}
+      {screen === 'world_gate' && WORLD_GATE[activeLevel.worldIndex] && (
+        <StoryPlayer
+          key={`gate${activeLevel.worldIndex}`}
+          panels={WORLD_GATE[activeLevel.worldIndex]}
+          finishLabel="Onward"
+          skipLabel="Skip scene"
+          onFinish={() => {
+            markGateStorySeen(activeLevel.worldIndex);
+            setScreen('victory');
+          }}
+        />
+      )}
+
       {/* Boss showdown */}
-      {screen === 'boss_intro' && (
+      {screen === 'boss_intro' && !bossCard && (
         <StoryPlayer
           panels={
             activeLevel.secret
               ? thornbarkPanels('intro')
-              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
+              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName, hasSeenBossIntro(activeLevel.worldIndex))
           }
           finishLabel="FIGHT!" finishIcon="swords"
           skipLabel="Skip to fight"
-          onFinish={() => launchEngine(activeLevel)}
+          onFinish={() => {
+            if (!activeLevel.secret) markBossIntroSeen(activeLevel.worldIndex);
+            if (hasSeenGuardianCard(activeLevel)) launchEngine(activeLevel);
+            else setBossCard(true);
+          }}
+        />
+      )}
+      {/* after the guardian's scene, the first time in this save: its card, with Dot's one line, then the fight (UI-5) */}
+      {screen === 'boss_intro' && bossCard && (
+        <BossIntroCard
+          levelConfig={activeLevel}
+          onGo={() => {
+            markGuardianCardSeen(activeLevel);
+            setBossCard(false);
+            launchEngine(activeLevel);
+          }}
         />
       )}
 
@@ -1102,6 +1201,15 @@ export default function App() {
       {screen === 'ending_story' && (
         <StoryPlayer
           panels={finalePanels(foundIds)}
+          finishLabel="The End" finishIcon="heart"
+          onFinish={() => setScreen(endTagPanels(foundIds).length ? 'ending_tag' : 'story_ending')}
+        />
+      )}
+
+      {/* After the end: the stopwatch, if it was found */}
+      {screen === 'ending_tag' && (
+        <StoryPlayer
+          panels={endTagPanels(foundIds)}
           finishLabel="The End" finishIcon="heart"
           onFinish={() => setScreen('story_ending')}
         />
@@ -1238,6 +1346,7 @@ export default function App() {
           newBest={newBest}
           bestScore={bestScore}
           stats={lastStats}
+          medals={screen === 'victory' ? freshBadges : undefined}
           prevId={activeLevel.secret ? null : prevStage?.id ?? null}
           nextId={activeLevel.secret ? null : nextStage?.id ?? null}
           isMuted={isMuted}
@@ -1278,7 +1387,6 @@ export default function App() {
             engineRef.current?.stop();
             setScreen('story_cutscene');
           }}
-          onStartBossFight={() => launchEngine(activeLevel)}
         />
       )}
 

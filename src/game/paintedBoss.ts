@@ -10,6 +10,7 @@ import type { BossEntity } from './types.ts';
 import type { BossBrain, BossDef, MoveDef } from './bossAI.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { bossMotion } from './bossMotion.ts';
+import { withHurtFlash } from './hurtFlash.ts';
 
 export interface BossFrameRect {
   x: number;
@@ -136,7 +137,6 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
       ctx.translate(b.x + mo.dx * dir, feetY + mo.dy);
       ctx.rotate(-mo.rot * dir);
       ctx.scale(dir * mo.sx, mo.sy);
-      if (b.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
       if (spec.glow) {
         ctx.shadowColor = spec.glow;
         ctx.shadowBlur = 9;
@@ -150,7 +150,8 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
         ctx.rotate(turn);
         ctx.translate(-cx, -cy);
       }
-      ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
+      // (a hit: the shared white flash, hurtFlash.ts, AN-6)
+      withHurtFlash(ctx, b.hitFlashTimer > 0, -f.ax * k, -f.ay * k, f.w * k, f.h * k, (c) => c.drawImage(atlas!, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k));
       ctx.restore();
       return true;
     },

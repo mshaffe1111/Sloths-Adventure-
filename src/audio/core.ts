@@ -226,13 +226,18 @@ export class AudioCore {
   }
 }
 
+/** the most the final output ever reaches: -1 dBFS */
+export const CEILING = Math.pow(10, -1 / 20);
+
 /** gentle tanh-like saturation so a loud mix rounds off instead of cracking */
 function softClipCurve(): Float32Array<ArrayBuffer> {
   const n = 2048;
   const curve = new Float32Array(new ArrayBuffer(n * 4));
   for (let i = 0; i < n; i++) {
     const x = (i / (n - 1)) * 2 - 1;
-    curve[i] = Math.tanh(x * 1.15) / Math.tanh(1.15);
+    // (its ceiling is -1 dBFS, not full scale: a peak at full scale overshoots once it is encoded or resampled, and clips: the lead,
+    // 2026-10-29, nothing over -1 dBFS)
+    curve[i] = CEILING * (Math.tanh(x * 1.15) / Math.tanh(1.15));
   }
   return curve;
 }

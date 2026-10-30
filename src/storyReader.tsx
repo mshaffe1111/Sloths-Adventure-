@@ -5,12 +5,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
+import './gameUi.css';
 import { StoryPlayer } from './components/StoryPlayer.tsx';
-import { INTRO_PANELS, WORLD_STORIES, WORLD_MID, bossPanels, thornbarkPanels, ENDING_PANELS, type StoryPanel } from './game/story.ts';
-import { AFTER_BOSS, MEMORIES, finalePanels } from './game/storyChapters.ts';
+import { INTRO_PANELS, WORLD_STORIES, WORLD_MID, WORLD_GATE, bossPanels, thornbarkPanels, ENDING_PANELS, type StoryPanel } from './game/story.ts';
+import { AFTER_BOSS, MEMORIES, endTagPanels, finalePanels } from './game/storyChapters.ts';
 import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { FINDS, BONUS_FIND } from './game/finds.ts';
+import { FONT_READ } from './game/fonts.ts';
 
 interface Piece { id: string; group: string; title: string; panels: StoryPanel[] }
 
@@ -27,6 +29,7 @@ function build(): Piece[] {
       out.push({ id: 'tb-i', group: g, title: 'Thornbark, before the fight', panels: thornbarkPanels('intro') });
       out.push({ id: 'tb-d', group: g, title: 'Thornbark, after the fight', panels: thornbarkPanels('defeat') });
     }
+    if (WORLD_GATE[w]) out.push({ id: `g${w}`, group: g, title: 'At the gate', panels: WORLD_GATE[w] });
     out.push({ id: `b${w}`, group: g, title: `${info.bossName}, before the fight`, panels: bossPanels(w, 'intro', info.bossName) });
     out.push({ id: `d${w}`, group: g, title: `${info.bossName}, after the fight`, panels: victoryPanels(w, info.bossName) ?? bossPanels(w, 'defeat', info.bossName) });
     for (const id of AFTER_BOSS[w] ?? []) out.push({ id: `mem-${id}`, group: g, title: MEMORIES[id].title + (MEMORIES[id].kind === 'memory' ? ' (a memory)' : ''), panels: MEMORIES[id].panels });
@@ -34,6 +37,7 @@ function build(): Piece[] {
   const everything = [...FINDS.map((f) => f.id), BONUS_FIND.id];
   out.push({ id: 'ending', group: 'The ending', title: 'The ending, no finds collected', panels: ENDING_PANELS });
   out.push({ id: 'ending-full', group: 'The ending', title: 'The ending, every find collected', panels: finalePanels(everything) });
+  out.push({ id: 'ending-tag', group: 'The ending', title: 'After the end: the stopwatch (if found)', panels: endTagPanels(everything) });
   return out;
 }
 
@@ -63,7 +67,7 @@ function Reader() {
 
   let lastGroup = '';
   return (
-    <div style={{ minHeight: '100vh', background: '#0b1a13', color: '#e8f5ea', font: '16px/1.45 system-ui, sans-serif', padding: '28px max(16px, env(safe-area-inset-left)) 80px' }}>
+    <div style={{ minHeight: '100vh', background: '#0b1a13', color: '#e8f5ea', font: `16px/1.45 ${FONT_READ}`, padding: '28px max(16px, env(safe-area-inset-left)) 80px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto' }}>
         <div style={{ font: '600 12px system-ui', letterSpacing: '.14em', textTransform: 'uppercase', color: '#f4c85a' }}>Sloths Rainforest Adventures</div>
         <h1 style={{ margin: '6px 0 8px', font: '700 clamp(30px,7vw,46px)/1.05 system-ui', textWrap: 'balance' as never }}>The story draft</h1>

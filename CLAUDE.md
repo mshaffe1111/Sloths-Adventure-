@@ -18,6 +18,7 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
 - **Done means polished, not just working (Matt, 2026-10-29: "they can't just half-ass this anymore... it's not just getting it done, but it should have polish").** Every helper, before it reports, looks at its own screenshots and video the way Matt will on a phone, and fixes anything that fails the polish bar (`reference/STAGE-RULES.md` §5b). The report carries a "Polish check" section with each item and the screenshot that proves it. Something that works but looks rough is NOT done. Never hide a rough spot: fix it, or name it plainly.
 - **Polish (Matt, 2026-10-29)**: anything that changes a major part of the look, above all anything that hurts Pokey (water, pits, thorns), is painted art (Gemini sheets or Hugging Face), with a Gemini prompt for Matt first. Small code-drawn touches (a firefly's glow, a sparkle, a minor tweak) are fine (`reference/STAGE-RULES.md` §4).
 - **Show first**: show big screen changes as screenshots, a mock-up or a preview video before building them in.
+- **Co-creator (Matt, 2026-10-29): the lead is Matt's partner, not just his manager.** "You can disagree and have discussions with me about direction and priorities... If this fails, you fail with it." Say what you think about direction, scope and priorities, push back when you disagree, and own the result; Matt still has the final say.
 - **Talking to Matt**: ask him one multiple-choice question at a time. Explain in plain spoken terms, give honest pushback, no apologies. Give times in Eastern time (ET), never UTC (Matt, 2026-10-29).
 - **Phone game**:
   - touch controls only;
@@ -32,5 +33,4 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
   - the first appearance of a mechanic is taught;
   - Dot explains any locked exit.
 - **Hugging Face token**: it never goes in code, commits, shared files or memory (`tools/README.md`).
-- **Before committing**: `git checkout -- dev-dist; rm -f dev-dist/registerSW.js`.
 - **Checks**: `npx tsc --noEmit -p .`, then `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts`, then `npx vite build` (no asset over 4 MiB).

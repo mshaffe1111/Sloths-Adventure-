@@ -7,7 +7,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { buildProtoStage, HAND_STAGES, type StagePlan } from './protoStage.ts';
-import { dressStage, RIDDLE_FERNS } from './artDress.ts';
+import { DRESS_SETS, dressStage, RIDDLE_FERNS } from './artDress.ts';
+import { DRESS_FRAMES, type DressName } from './dressAtlasData.ts';
 import { KIT_ART } from './puzzleAtlasData.ts';
 import { generateAllLevels } from './worldsData.ts';
 import type { LevelConfig } from './types.ts';
@@ -94,5 +95,29 @@ test("World 1's rooms: the squirrels' nest door on 1-4's lifts, the branch gate 
     for (const r of s17.kit?.rooms ?? []) assert.ok((s17.proto.kitDecor ?? []).some((d) => d.n === 'petalBundle' && d.room === r.id), `seed ${seed} ${r.id}`);
     // (a picture, not a pickup: the stage's pickups are the same as without the dressing)
     for (const st of [s14, s16, s17]) assert.ok(!st.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
+  }
+});
+
+// (hf-art-ground, 2026-10-29; polish report VI-17) Worlds 1, 2 and 5's dressing sets
+test('the dressing sheet for Worlds 1, 2 and 5: every piece is in a set, every set piece is on the sheet', () => {
+  const used = new Set(Object.values(DRESS_SETS).flatMap((jobs) => Object.values(jobs).flat(2)));
+  for (const n of Object.keys(DRESS_FRAMES)) assert.ok(used.has(n as DressName), `${n} is packed but in no set`);
+  for (const n of used) assert.ok(DRESS_FRAMES[n], `${n} is in a set but not on the sheet`);
+  for (const [w, jobs] of Object.entries(DRESS_SETS)) for (const [job, sets] of Object.entries(jobs)) assert.ok(sets.length >= 2, `World ${w} ${job}: two sets or more`);
+});
+
+test('Worlds 1 and 5: their stages wear dressing sets, two stages in a row never the same bank set, and only pictures are added', () => {
+  for (const ids of [['1-2', '1-3'], ['5-1', '5-2']]) {
+    const looks = ids.map((id) => {
+      const st = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
+      const ds = st.proto.dress ?? [];
+      assert.ok(ds.length > 0, `${id}: dressed`);
+      // (the stage without it is the same: dressSets reads the stage, never its random stream)
+      const plain = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
+      assert.deepEqual(plain.platforms, st.platforms, `${id}: platforms unchanged`);
+      for (const d of ds) assert.ok(DRESS_FRAMES[d.n], `${id}: ${d.n}`);
+      return ds.filter((d) => /Bank|Fern$|Stump|Reed|Log/.test(d.n)).map((d) => d.n).sort().join();
+    });
+    assert.notEqual(looks[0], looks[1], `${ids.join(' and ')} wear different bank sets`);
   }
 });

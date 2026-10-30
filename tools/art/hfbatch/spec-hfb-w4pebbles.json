@@ -1,0 +1,53 @@
+{
+ "note": "World 4 falling-rock grit by img2img from tools/art/hfbatch/pebblestart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ef0748865dbce23753f181686b241d8a131691f4/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w4pebbles-s50-7",
+   "start": "start-w4pebbles.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid: sixteen small loose stones and pebbles broken off a mossy grey cliff, each one separate with space around it, every one a different shape: round river pebbles, flat chips, sharp angular shards, a cracked chunk, a few with a little green moss, and in the bottom row four small scatters of gravel. Weathered grey and warm tan stone, mostly bare, soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, gems, crystals, eggs, leaves, animals, faces",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4pebbles-s50-23",
+   "start": "start-w4pebbles.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid: sixteen small loose stones and pebbles broken off a mossy grey cliff, each one separate with space around it, every one a different shape: round river pebbles, flat chips, sharp angular shards, a cracked chunk, a few with a little green moss, and in the bottom row four small scatters of gravel. Weathered grey and warm tan stone, mostly bare, soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, gems, crystals, eggs, leaves, animals, faces",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4pebbles-s66-7",
+   "start": "start-w4pebbles.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid: sixteen small loose stones and pebbles broken off a mossy grey cliff, each one separate with space around it, every one a different shape: round river pebbles, flat chips, sharp angular shards, a cracked chunk, a few with a little green moss, and in the bottom row four small scatters of gravel. Weathered grey and warm tan stone, mostly bare, soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, gems, crystals, eggs, leaves, animals, faces",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4pebbles-s66-23",
+   "start": "start-w4pebbles.webp",
+   "prompt": "slothadv style, painted storybook illustration, a 2D game sprite sheet in a 4 by 4 grid: sixteen small loose stones and pebbles broken off a mossy grey cliff, each one separate with space around it, every one a different shape: round river pebbles, flat chips, sharp angular shards, a cracked chunk, a few with a little green moss, and in the bottom row four small scatters of gravel. Weathered grey and warm tan stone, mostly bare, soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no ground, no shadow, no text",
+   "neg": "perspective, isometric, text, letters, numbers, watermark, frame, border, grid lines, photo, 3d render, blurry, gradient background, ground, floor, cast shadow, drop shadow, gems, crystals, eggs, leaves, animals, faces",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

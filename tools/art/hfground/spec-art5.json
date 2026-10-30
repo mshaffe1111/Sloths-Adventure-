@@ -1,0 +1,80 @@
+{
+ "note": "hf-art-ground round 3b: bounce caps redo (painterly), 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "thick black outline, sticker, comic, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, grass, sloth, animal, people",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/3ae4e9db3ccb040e78404cca6e7f9f8d70d438eb/tools/art/hfground/starts/",
+ "items": [
+  {
+   "kind": "plain",
+   "name": "bounce-toad-p76",
+   "start": "bounce-toad.webp",
+   "strength": 0.76,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "thick black outline, sticker, comic, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, grass, sloth, animal, people, flat vector, clip art, flat colour",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a big bouncy toadstool mushroom, a domed glossy red cap with round cream spots and a pale cream rim underneath, the top of its thick cream stem, richly painted like a storybook, painterly texture, soft highlights and deep shade, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "bounce-toad-p84",
+   "start": "bounce-toad.webp",
+   "strength": 0.84,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "thick black outline, sticker, comic, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, grass, sloth, animal, people, flat vector, clip art, flat colour",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a big bouncy toadstool mushroom, a domed glossy red cap with round cream spots and a pale cream rim underneath, the top of its thick cream stem, richly painted like a storybook, painterly texture, soft highlights and deep shade, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "bounce-parasol-p76",
+   "start": "bounce-parasol.webp",
+   "strength": 0.76,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "thick black outline, sticker, comic, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, grass, sloth, animal, people, umbrella handle, hook, cane, flat vector, clip art, flat colour",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a big bouncy parasol mushroom, a wide frilled pink umbrella cap with fine ribs underneath, the top of its slender pale green stem, richly painted like a storybook, painterly texture, soft highlights and deep shade, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "bounce-parasol-p84",
+   "start": "bounce-parasol.webp",
+   "strength": 0.84,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "thick black outline, sticker, comic, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, grass, sloth, animal, people, umbrella handle, hook, cane, flat vector, clip art, flat colour",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a big bouncy parasol mushroom, a wide frilled pink umbrella cap with fine ribs underneath, the top of its slender pale green stem, richly painted like a storybook, painterly texture, soft highlights and deep shade, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "bounce-bloom-p76",
+   "start": "bounce-bloom.webp",
+   "strength": 0.76,
+   "seed": 11,
+   "w": 512,
+   "h": 512,
+   "neg": "thick black outline, sticker, comic, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, grass, sloth, animal, people, flat vector, clip art, flat colour",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a big bouncy jungle flower seen from the side, a flat golden pollen disc ringed by drooping orange petals, the top of its green stalk with two leaves, richly painted like a storybook, painterly texture, soft highlights and deep shade, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "bounce-bloom-p84",
+   "start": "bounce-bloom.webp",
+   "strength": 0.84,
+   "seed": 13,
+   "w": 512,
+   "h": 512,
+   "neg": "thick black outline, sticker, comic, text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, ground, grass, sloth, animal, people, flat vector, clip art, flat colour",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a big bouncy jungle flower seen from the side, a flat golden pollen disc ringed by drooping orange petals, the top of its green stalk with two leaves, richly painted like a storybook, painterly texture, soft highlights and deep shade, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  }
+ ]
+}

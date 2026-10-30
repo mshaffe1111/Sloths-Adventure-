@@ -4,11 +4,11 @@ import { CELS, CEL_ACTS, CEL_ATLAS_SIZES, CEL_CAST, CEL_FACES, celPoses, celTrac
 import { chapter, N } from './storyDsl.ts';
 
 test('every frame sits inside its atlas and no two frames overlap', () => {
-  const by: Record<number, Array<[string, (typeof CELS)[string]]>> = { 0: [], 1: [], 2: [] };
+  const by: Record<number, Array<[string, (typeof CELS)[string]]>> = {};
   for (const [k, c] of Object.entries(CELS)) {
     const size = CEL_ATLAS_SIZES[c.a];
     assert.ok(c.x >= 0 && c.y >= 0 && c.x + c.w <= size.w && c.y + c.h <= size.h, `${k} is inside atlas ${c.a}`);
-    by[c.a].push([k, c]);
+    (by[c.a] ??= []).push([k, c]);
   }
   for (const list of Object.values(by)) {
     for (let i = 0; i < list.length; i++) {
@@ -51,12 +51,13 @@ test('the cast string reaches the painted figures and the speaker frames them', 
 });
 
 test("Meeca's face busts are a portrait, change expression in a run, and speak as Meeca", () => {
-  assert.ok(CEL_FACES.includes('grin') && CEL_FACES.length === 16);
-  const [p] = chapter({ name: 't', w: 1, m: 'day' }, [N('Hm.', 'MF:fret+weary@.4')]);
+  // (the story-art repaint, 2026-10-29, kept the faces a story shows: the others went with the old sheets)
+  assert.ok(CEL_FACES.includes('beam') && CEL_FACES.includes('weary') && CEL_FACES.includes('drowsy'));
+  const [p] = chapter({ name: 't', w: 1, m: 'day' }, [N('Hm.', 'MF:drowsy+weary@.4')]);
   const [a] = p.scene.actors!;
   assert.equal(a.kind, 'cel');
   assert.equal(a.portrait, true);
-  assert.deepEqual(a.seq!.map((k) => k.frame), ['face.fret', 'face.weary']);
+  assert.deepEqual(a.seq!.map((k) => k.frame), ['face.drowsy', 'face.weary']);
   assert.ok(CEL_CAST.MF.who.includes('Meeca'));
   assert.throws(() => chapter({ name: 't', w: 1, m: 'day' }, [N('x', 'MF:nope')]), /not a pose of Meeca, face/);
 });

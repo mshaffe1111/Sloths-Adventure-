@@ -205,6 +205,13 @@ export interface SectionPiece {
   landing?: boolean;
   /** part of the main route (what the repair pass may stretch or bridge); a high road's branch is not */
   main?: boolean;
+  /**
+   * a crumbling ruin tile (World 7, zones.ts CRUMBLE_TILE_W wide, holding crumbleTime(stage) s once stood on): never on the main route
+   * and never needed (STAGE-RULES §1: a tile is a shortcut or a hurry; pipeline checkStage proves the stage without its tiles). The
+   * section's tiles lie in one crumble zone (its rules: levelCheck's runs of at most CRUMBLE_RUN_MAX, steps of at most CRUMBLE_STEP), so
+   * no animal or flag stands on or over them
+   */
+  crumble?: boolean;
 }
 
 /** what a socket can hold */

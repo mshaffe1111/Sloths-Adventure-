@@ -1,0 +1,927 @@
+{
+ "tag": "dot",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "dot": [
+   "mshaffe111/dot-qwen-lora",
+   "dot_qwen_v1.safetensors"
+  ]
+ },
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b27b29f827b2793531717cfea465ed5fe6b21857/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b27b29f827b2793531717cfea465ed5fe6b21857/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "dot-fly0-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     0,
+     227,
+     131,
+     92
+    ],
+    "scale": 6.121739130434783,
+    "ox": 111,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-fly1-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     366,
+     0,
+     130,
+     106
+    ],
+    "scale": 5.313207547169812,
+    "ox": 167,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-fly2-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     232,
+     0,
+     132,
+     107
+    ],
+    "scale": 5.263551401869159,
+    "ox": 165,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-fly3-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     0,
+     122,
+     121,
+     103
+    ],
+    "scale": 5.4679611650485445,
+    "ox": 181,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-perch-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     379,
+     122,
+     124,
+     94
+    ],
+    "scale": 5.991489361702128,
+    "ox": 141,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-yelp-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     322,
+     227,
+     112,
+     85
+    ],
+    "scale": 6.6258823529411774,
+    "ox": 141,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-dizzy-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     252,
+     122,
+     125,
+     96
+    ],
+    "scale": 5.866666666666667,
+    "ox": 145,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-flinch-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     123,
+     122,
+     127,
+     97
+    ],
+    "scale": 5.80618556701031,
+    "ox": 143,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-cheer-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     0,
+     0,
+     111,
+     120
+    ],
+    "scale": 4.693333333333333,
+    "ox": 252,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-puzzled-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     113,
+     0,
+     117,
+     113
+    ],
+    "scale": 4.984070796460178,
+    "ox": 220,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-sad-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     133,
+     227,
+     72,
+     87
+    ],
+    "scale": 6.473563218390805,
+    "ox": 279,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-gasp-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     207,
+     227,
+     113,
+     87
+    ],
+    "scale": 6.473563218390805,
+    "ox": 146,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-sleep-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     0,
+     452,
+     111,
+     59
+    ],
+    "scale": 8.487207207207208,
+    "ox": 41,
+    "oy": 267,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-closed-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     313,
+     321,
+     74,
+     62
+    ],
+    "scale": 9.083870967741936,
+    "ox": 176,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-small-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     389,
+     321,
+     75,
+     62
+    ],
+    "scale": 9.083870967741936,
+    "ox": 171,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-ee-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     395,
+     388,
+     80,
+     60
+    ],
+    "scale": 9.386666666666667,
+    "ox": 137,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-ah-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     146,
+     388,
+     80,
+     61
+    ],
+    "scale": 9.232786885245902,
+    "ox": 143,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-oh-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     0,
+     388,
+     78,
+     62
+    ],
+    "scale": 9.083870967741936,
+    "ox": 158,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-surprise-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     80,
+     388,
+     64,
+     62
+    ],
+    "scale": 9.083870967741936,
+    "ox": 221,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-wink-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     228,
+     388,
+     81,
+     61
+    ],
+    "scale": 9.232786885245902,
+    "ox": 138,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-grit-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     311,
+     388,
+     82,
+     61
+    ],
+    "scale": 9.232786885245902,
+    "ox": 133,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-starry-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     76,
+     321,
+     81,
+     63
+    ],
+    "scale": 8.93968253968254,
+    "ox": 150,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-yell-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     0,
+     321,
+     74,
+     65
+    ],
+    "scale": 8.664615384615386,
+    "ox": 191,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-angry-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     159,
+     321,
+     77,
+     63
+    ],
+    "scale": 8.93968253968254,
+    "ox": 168,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-sleepy-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     238,
+     321,
+     73,
+     63
+    ],
+    "scale": 8.93968253968254,
+    "ox": 186,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  },
+  {
+   "name": "dot-side-s55",
+   "start": {
+    "src": [
+     "src/assets/characters/dot-atlas.webp",
+     436,
+     227,
+     68,
+     69
+    ],
+    "scale": 8.162318840579712,
+    "ox": 234,
+    "oy": 205,
+    "size": [
+     1024,
+     1024
+    ]
+   },
+   "prompt": "dothummingbird, a small hummingbird with an emerald-green back, a magenta throat and a little brown pouch on a strap at her side, in the same pose, full body, painted storybook illustration, crisp clean dark outlines, soft cel shading, light from the upper left, plain flat grey background",
+   "neg": "background scenery, floor, ground, cast shadow, text, letters, watermark, frame, photo, 3d render, blurry, extra limbs, extra arms, extra legs, extra fingers, two heads, deformed, cropped, blurry, soft focus, airbrushed, smooth gradient shading, low detail",
+   "strength": 0.55,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "dot",
+     1.0
+    ],
+    [
+     "style",
+     0.35
+    ]
+   ]
+  }
+ ]
+}

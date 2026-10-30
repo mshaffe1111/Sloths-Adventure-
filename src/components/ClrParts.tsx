@@ -27,6 +27,8 @@ export interface ChipSpec {
   label: string;
   value: string;
   colour?: string;
+  /** the value has just arrived: it pops (the "New!" best after the count) */
+  pop?: boolean;
 }
 
 /** a row of small result chips; the row sizes itself to however many there are */
@@ -35,7 +37,7 @@ export const ClrChips: React.FC<{ chips: ChipSpec[]; small?: boolean; /** column
     {chips.map((c) => (
       <div className="clr-chip" key={c.label}>
         <span>{c.label}</span>
-        <b style={c.colour ? { color: c.colour } : undefined}>{c.value}</b>
+        <b className={c.pop ? 'pop' : undefined} style={c.colour ? { color: c.colour } : undefined}>{c.value}</b>
       </div>
     ))}
   </div>

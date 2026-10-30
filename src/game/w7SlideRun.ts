@@ -9,6 +9,7 @@ import { CRUMBLE_X0, CRUMBLE_X1, HALL_G, SlideSim, type SlideStage } from './w7S
 import { drawCrumble, drawFall, drawHallLight, drawSlide, prewarmSlide, warmSlide } from './w7SlideArt.ts';
 import type { InputState } from './types.ts';
 import { sound } from './audio.ts';
+import { FONT_UI } from './fonts.ts';
 
 export interface SlideHost {
   easy: boolean;
@@ -198,7 +199,7 @@ export class SlideRun {
       ctx.fillRect(0, 0, W, H);
     }
     if (this.say && this.say.t > 0 && this.phase !== 'fall') {
-      ctx.font = 'bold 16px Fredoka, sans-serif';
+      ctx.font = `bold 16px ${FONT_UI}`;
       const text = this.say.text;
       const w = ctx.measureText(text).width + 24;
       const bx = Math.max(12, Math.min(W - 12 - w, head[0] - w / 2));

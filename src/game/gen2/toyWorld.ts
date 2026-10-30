@@ -106,7 +106,7 @@ export const carryRoom: SectionTemplate = {
     exit: 'gate',
     beyond: { on: 'floor', at: 0.85 },
     ground: ['floor'],
-    tips: { enter: 'The plate opens the gate. Fetch the acorn!' },
+    tips: { enter: "The gate's shut. Hmm, that stone plate.", nudge: 'Something heavy for the plate?', move: 'Fetch the acorn. Set it on the plate.' },
   },
   mirrorable: false,
 };

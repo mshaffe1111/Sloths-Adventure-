@@ -53,6 +53,22 @@ const face = (r: RealPlay, d: 1 | -1) => {
   r.frame();
 };
 
+test('1-4: no branch is laid over a basket or its lift, where the acorn is thrown and the plank rides (Matt 2026-10-29: "Has a platform that blocks the rock")', () => {
+  for (let s = 1; s <= 40; s++) {
+    for (const easy of [false, true]) {
+      const st = buildProtoStage({ ...cfg, ...(easy ? { difficulty: 'easy' } : {}) } as LevelConfig, s, '1-4');
+      for (const r of st.kit!.rooms) {
+        const byId = (id: number | string) => st.platforms.find((p) => String(p.id) === String(id))!;
+        const floor = byId(r.ground[0]), well = byId(r.ground[1]), up = byId((r.right as { on: number }).on);
+        const bx = floor.x + (r.pieces.find((p) => p.kind === 'basket') as { at: { at: number } }).at.at * floor.width;
+        const x0 = Math.min(bx, well.x) - 60, x1 = well.x + well.width + 20;
+        const over = st.platforms.filter((p) => p !== floor && p !== well && p !== up && p.x < x1 && p.x + p.width > x0 && p.y > floor.y - 440 && p.y < floor.y - 40);
+        assert.deepEqual(over.map((p) => `${p.x}..${p.x + p.width} at ${floor.y - p.y} up`), [], `seed ${s} ${r.id}`);
+      }
+    }
+  }
+});
+
 test('1-4 in the real engine: the low basket takes a tap, the high one a throw, and each lift carries him up to the ledge', () => {
   const r = new RealPlay('1-4', 1);
   const kit = kitOf(r);

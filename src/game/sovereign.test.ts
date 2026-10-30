@@ -33,7 +33,7 @@ function makeBoss(x = ARENA.left + (sov.startDx ?? 1030)): BossEntity {
     id: 1, type: 'boss', x, y: FLOOR - sov.h / 2, vx: 0, vy: 0, width: sov.w, height: sov.h, hp: sov.hp!, maxHp: sov.hp!,
     facing: -1, patrolMinX: ARENA.left, patrolMaxX: ARENA.right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
-    specialAttackTimer: 0, shieldActive: false, dialogueIntro: '', dialogueDefeat: '', ai: newBrain(),
+    specialAttackTimer: 0, shieldActive: false, dialogueIntro: '', ai: newBrain(),
   };
 }
 

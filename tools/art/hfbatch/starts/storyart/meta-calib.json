@@ -1,0 +1,100 @@
+{
+ "calib-pokey-idle": {
+  "scale": 3.923444976076555,
+  "ox": 288,
+  "oy": 117,
+  "src": [
+   "src/assets/hero/hero-standard.webp",
+   674,
+   478,
+   127,
+   209
+  ],
+  "ax": 57.0,
+  "ay": 205.0
+ },
+ "calib-pokey-duck": {
+  "scale": 5.125,
+  "ox": 189,
+  "oy": 122,
+  "src": [
+   "src/assets/hero/hero-standard.webp",
+   1262,
+   1321,
+   127,
+   160
+  ],
+  "ax": 63.0,
+  "ay": 156.0
+ },
+ "calib-pokey-talk_b": {
+  "scale": 3.9613526570048307,
+  "ox": 274,
+  "oy": 117,
+  "src": [
+   "src/assets/hero/hero-story.webp",
+   0,
+   220,
+   139,
+   207
+  ],
+  "ax": 60.0,
+  "ay": 203.0
+ },
+ "calib-pokey-worried": {
+  "scale": 4.1206030150753765,
+  "ox": 327,
+  "oy": 118,
+  "src": [
+   "src/assets/hero/hero-story.webp",
+   0,
+   431,
+   117,
+   199
+  ],
+  "ax": 45.0,
+  "ay": 195.0
+ },
+ "calib-gen-idle": {
+  "scale": 3.66568093385214,
+  "ox": 72,
+  "oy": 196,
+  "src": [
+   "src/assets/enemies/ironclaw-atlas.webp",
+   0,
+   0,
+   257,
+   196
+  ],
+  "ax": 120.0,
+  "ay": 198
+ },
+ "calib-gen-roar": {
+  "scale": 3.438248175182482,
+  "ox": 17,
+  "oy": 251,
+  "src": [
+   "src/assets/enemies/ironclaw-atlas.webp",
+   428,
+   1337,
+   274,
+   193
+  ],
+  "ax": 144.0,
+  "ay": 195
+ },
+ "calib-gen-fallen": {
+  "scale": 2.211455399061033,
+  "ox": 52,
+  "oy": 524,
+  "src": [
+   "src/assets/enemies/ironclaw-atlas.webp",
+   0,
+   1337,
+   426,
+   178
+  ],
+  "ax": 208.0,
+  "ay": 180
+ }
+}

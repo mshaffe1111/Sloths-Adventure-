@@ -101,7 +101,6 @@ export function drawTayraSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.ellipse(-2, 1, 22, 3.4, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K + lift, f.w * K, f.h * K);
   ctx.restore();
   return true;

@@ -33,11 +33,12 @@ export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, 
   const heroW = typeof window === 'undefined' ? 240 : window.innerHeight <= 520 ? 130 : Math.min(240, window.innerWidth - 120);
   // with the extra-lives offer on the card, Pokey lies down smaller so the card still fits an upright phone (it ran off a 400 x 720 one)
   const heroH = Math.round(Math.max(offerHelp ? 64 : 90, Math.min(170, (typeof window !== 'undefined' ? window.innerHeight : 700) * (offerHelp ? 0.14 : 0.24))));
-  const chips: ChipSpec[] = [{ label: 'Score', value: score.toLocaleString(), colour: '#fde68a' }];
+  // (no "Score 0" when nothing was scored: UI-12)
+  const chips: ChipSpec[] = score > 0 ? [{ label: 'Score', value: score.toLocaleString(), colour: '#fde68a' }] : [];
   if (stats && stats.timeSec > 0) chips.push({ label: 'Time', value: fmtTime(stats.timeSec) });
-  // (on a gather stage, of the goal, as the HUD's bar counts it: stageSummary.ts floraChip)
+  // (the same chip as the win card's: on a gather stage, of the goal, as the HUD's bar counts it; stageSummary.ts floraChip, UI-10)
   const flora = floraChip(stats);
-  if (flora) chips.push({ label: 'Flowers', value: flora });
+  if (flora) chips.push({ label: flora.label, value: `${flora.cur}/${flora.of}`, colour: flora.full ? '#f9a8d4' : undefined });
   if (stats && totalKills(stats) > 0) chips.push({ label: 'Foes', value: String(totalKills(stats)) });
 
 
@@ -59,7 +60,7 @@ export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, 
             <span>{tuckeredLine(levelConfig.id)}</span>
           </div>
 
-          <ClrChips chips={chips} />
+          {chips.length > 0 && <ClrChips chips={chips} />}
 
           <p className="clr-safe">Your stars and finished stages are safe.</p>
 

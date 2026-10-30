@@ -1,6 +1,6 @@
 /**
- * Where Dot goes for a line (the new look, Matt's pick C, 2026-10-26): she perches on the scenery near the thing she is teaching, with a
- * glowing ring and an arrow on it, and her bubble sits beside her, on screen, clear of the HUD, the thumbs, the animals and Pokey. When no
+ * Where Dot goes for a line (the new look, Matt's pick C, 2026-10-26): she perches on the scenery beside the thing she is teaching (no ring
+ * and no arrow since 2026-10-29: she is the pointer), and her bubble sits beside her, on screen, clear of the HUD, the thumbs, the animals and Pokey. When no
  * perch is in view, or the lesson is the controls themselves, she hovers beside Pokey on the empty side behind him (option A).
  *
  * Pure geometry: world points in, world or screen points out. The screen's safe area comes from the HUD (setGuideSafeArea), with a
@@ -106,7 +106,8 @@ export function findTarget(topic: TopicId | undefined, v: GuideView): Target | n
       }
       break;
     case 'log':
-      for (const p of v.platforms) if (p.push) consider(p.x + p.width / 2, p.y + p.height / 2, Math.max(30, p.width / 2));
+      // (a log he can push, or a log floating in a pool: on its top middle, where it is drawn)
+      for (const p of v.platforms) if (p.push || p.art === 'poolLog') consider(p.x + p.width / 2, p.y + Math.min(20, p.height / 2), Math.max(30, p.width / 2));
       break;
     case 'foe':
       for (const e of v.enemies) if (!e.defeated && e.type !== 'boss') consider(e.x, e.y - (e.height ?? 40) / 2, 32);
@@ -131,7 +132,7 @@ export function findTarget(topic: TopicId | undefined, v: GuideView): Target | n
       for (const c of v.collectibles) if (!c.collected && c.type.startsWith('powerup')) consider(c.x, c.y, 24);
       break;
     case 'relic':
-      for (const c of v.collectibles) if (!c.collected && c.type === 'relic') consider(c.x, c.y, 24);
+      for (const c of v.collectibles) if (!c.collected && !c.hidden && c.type === 'relic') consider(c.x, c.y, 24);
       break;
     case 'exit':
       for (const c of v.collectibles) if (c.type === 'exit_totem') consider(c.x, c.y - 40, 44);
@@ -173,7 +174,9 @@ export function findTarget(topic: TopicId | undefined, v: GuideView): Target | n
             break;
           }
         }
-        if (open) consider(edge + f * 34, p.y + 6, 34);
+        // (the edge itself, where he jumps from: 34 px out over the gap was a spot in the air, and the ring there "doesn't even show
+        // where it's at", Matt 2026-10-29)
+        if (open) consider(edge - f * 12, p.y, 30);
       }
       break;
     }
@@ -200,8 +203,11 @@ export function perchOverrides(stageId: string): readonly Perch[] {
   return PERCH_OVERRIDES[stageId] ?? [];
 }
 
-/** how far from the thing she points at she likes to sit (screen px): close enough to be about it, far enough to leave it clear */
-export const PERCH_NEAR = { min: 60, best: 150, max: 320 } as const;
+/**
+ * how far from the thing she points at she likes to sit (screen px): close enough to be about it, far enough to leave it clear. With no
+ * ring and no arrow (2026-10-29) she is the pointer, so she sits beside it, not across the screen from it.
+ */
+export const PERCH_NEAR = { min: 40, best: 80, max: 220 } as const;
 
 function inRects(x: number, y: number, rs: readonly Rect[], m = 0): boolean {
   for (const r of rs) if (x >= r.x0 - m && x <= r.x1 + m && y >= r.y0 - m && y <= r.y1 + m) return true;
@@ -219,8 +225,7 @@ export function choosePerch(v: GuideView, t: Target, safe: SafeArea): Perch | nu
   const pcx = toScreenX(v, v.px + v.pw / 2);
   const pfy = toScreenY(v, v.py);
   const f = v.facing;
-  // (a tall upright screen has room for a longer arrow: the crown of a vine is well above where Pokey grabs it)
-  const maxD = Math.max(PERCH_NEAR.max, 0.5 * Math.max(v.cssW, v.cssH));
+  const maxD = PERCH_NEAR.max;
   const ok = (x: number, y: number): number => {
     const sx = toScreenX(v, x);
     const sy = toScreenY(v, y);
@@ -234,11 +239,11 @@ export function choosePerch(v: GuideView, t: Target, safe: SafeArea): Perch | nu
     if (ahead > 0 && ahead < Math.max(260, (Math.abs(tx - pcx) + 60)) && Math.abs(sy - pfy) < 70) return Infinity;
     // not on the target itself
     const d = Math.hypot(sx - tx, sy - ty);
-    if (d < Math.max(PERCH_NEAR.min, t.r * z + 30) || d > maxD) return Infinity;
+    if (d < Math.max(PERCH_NEAR.min, Math.min(t.r * z, 50) + 24) || d > maxD) return Infinity;
     // clear of animals and hazards
     for (const e of v.enemies) if (!e.defeated && Math.hypot(e.x - x, e.y - y) < 110) return Infinity;
     for (const h of v.hazards) if (Math.hypot(h.x - x, h.y - y) < 140) return Infinity;
-    // closer to the best distance is better; above the target a little better (the arrow points down at it, as in the mock-up)
+    // closer to the best distance is better; above the target a little better (she looks down at it)
     return Math.abs(d - PERCH_NEAR.best) + (sy < ty ? -25 : 0);
   };
   for (const p of perchOverrides(v.stageId)) if (ok(p.x, p.y) < Infinity) return p;

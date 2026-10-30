@@ -160,7 +160,6 @@ export function drawJaguar(ctx: CanvasRenderingContext2D, enemy: Enemy, time: nu
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   const GOLD = '#e6a137';
   const GOLD_D = '#c47a1f';
   const CREAM = '#fff0cc';
@@ -524,7 +523,6 @@ export function drawBoa(ctx: CanvasRenderingContext2D, enemy: Enemy, time: numbe
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   const wx = b.wx;
   const wy = b.wy;
   const pts: V2[] = r.chain.pts.map((p) => ({ x: (p.x - wx) * f, y: p.y - wy }));
@@ -810,7 +808,6 @@ export function drawCaiman(ctx: CanvasRenderingContext2D, enemy: Enemy, time: nu
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   const GREEN = '#6f9040';
   const GREEN_D = '#46632a';
   const PALE = '#e6e3a2';
@@ -1096,7 +1093,6 @@ export function drawTayra(ctx: CanvasRenderingContext2D, enemy: Enemy, time: num
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   const FUR = '#5c3b21';
   const FUR_D = '#33200f';
   const TAN = '#c9a46c';
