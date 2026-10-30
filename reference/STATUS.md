@@ -31,6 +31,7 @@ The lead works on this alone first, with no helpers. Rules: reference/PERFORMANC
      - **engine.ts:** late frames run in up to 3 steps, and gpuprof per-layer timing.
      - Test link v8 after the gate.
    - **Test link v8 PUBLISHED ~2:35 AM ET** (EBKij version 1793339121-6c99, bundle index-C7bEmyTJ.js; gate16: 2029 tests, 2027 pass, 0 fail, 2 todo). Matt's morning test: EBKij#ctest&gpuprof=1, one run each on the Pixel, the Samsung and the older OnePlus. The testers' link EnK5 stays on the release.
+   - **~3:50 AM ET:** v8 made the enemies go missing on Matt's Pixel (the createImageBitmap resize); fixed with a plain canvas bake (5d518ef3), test link v8b, Matt saw the enemies. Gate17 green. **RELEASE PR #51** (release-2026-10-30b @ 5d518ef3) opened for Matt to merge. After the merge: check the deploy, then Matt runs the live #ctest&gpuprof=1 on the Pixel, Samsung and OnePlus.
    - Duet's other items, queued:
      - trackAtlas bitmaps for every sheet (b);
      - eagle sparkle `fillText` -> sprite;
