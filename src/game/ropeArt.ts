@@ -150,8 +150,11 @@ export function drawRopes(
   const m = ctx.getTransform();
   const flat = m.b === 0 && m.c === 0 && m.a > 0;
   const W = ctx.canvas.width;
+  const H = ctx.canvas.height;
   for (const r of ropes) {
     if (flat && (m.a * (r.x1 + POST_W * 3) + m.e < 0 || m.a * (r.x0 - POST_W * 3) + m.e > W)) continue;
+    // (or wholly above or below it: the post caps reach a little over the tie, the poles down to the ground)
+    if (flat && m.d > 0 && (m.d * (Math.max(r.g0, r.g1) + 20) + m.f < 0 || m.d * (r.y - 80) + m.f > H)) continue;
     // the rope is only a rope to someone who has learned the skill; before that it is still drawn (it is part of the jungle)
     const n = Math.max(2, Math.ceil((r.x1 - r.x0) / SLICE));
     const pts = ropePts;
@@ -168,8 +171,10 @@ export function drawRopes(
     }
     if (im) {
       layRope(ctx, im, pts);
-      paintedPost(ctx, im, r.x0, r.g0, r.y);
-      paintedPost(ctx, im, r.x1, r.g1, r.y);
+      // (a post off to the side of the screen is skipped)
+      const postOn = (x: number) => !flat || (m.a * (x + POST_W * 3) + m.e >= 0 && m.a * (x - POST_W * 3) + m.e <= W);
+      if (postOn(r.x0)) paintedPost(ctx, im, r.x0, r.g0, r.y);
+      if (postOn(r.x1)) paintedPost(ctx, im, r.x1, r.g1, r.y);
     } else {
       // (the painted pieces are still on their way: a plain rope for a moment, so it never vanishes)
       ctx.strokeStyle = '#9a7656';
