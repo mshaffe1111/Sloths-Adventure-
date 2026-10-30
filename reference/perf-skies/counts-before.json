@@ -1,0 +1,737 @@
+[
+ {
+  "id": "1-2",
+  "world": 1,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 2,
+   "gradLin": 1,
+   "gradRad": 1,
+   "drawImage": 9,
+   "fills": 3,
+   "clip": 1,
+   "save": 1,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 8,
+   "scaled": [
+    "w1sunrise-far.webp src 2640x1302 -> 2975x1467 (x1.13,1.13)",
+    "w1sunrise-far.webp src 2640x39 -> 2975x297 (x1.13,7.62)",
+    "w1-mid.webp src 2442x1302 -> 1842x982 (x0.75,0.75)",
+    "w1-mid.webp src 2442x39 -> 1842x439 (x0.75,11.26)",
+    "w1-near.webp src 3214x1736 -> 1909x1031 (x0.59,0.59)",
+    "w1-near.webp src 3214x52 -> 1909x366 (x0.59,7.04)",
+    "w1-near.webp src 3214x1736 -> 1910x1031 (x0.59,0.59)",
+    "w1-near.webp src 3214x52 -> 1910x366 (x0.59,7.04)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 7,
+   "drawScreens": 9.73,
+   "fillScreens": 3
+  },
+  "ms": 17.76,
+  "view": "up"
+ },
+ {
+  "id": "2-2",
+  "world": 2,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 10,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 11
+   },
+   "smoothHigh": 9,
+   "scaled": [
+    "w2-far.webp src 2640x1302 -> 2390x1178 (x0.91,0.90)",
+    "w2-sky.webp src 2640x513 -> 2390x464 (x0.91,0.90)",
+    "w2-far.webp src 2640x39 -> 2390x378 (x0.91,9.69)",
+    "w2-mid.webp src 2640x1302 -> 1992x982 (x0.75,0.75)",
+    "w2-mid.webp src 2640x39 -> 1992x439 (x0.75,11.26)",
+    "w2-near.webp src 3416x1736 -> 2029x1031 (x0.59,0.59)",
+    "w2-near.webp src 3416x52 -> 2029x366 (x0.59,7.04)",
+    "w2-near.webp src 3416x1736 -> 2030x1031 (x0.59,0.59)",
+    "w2-near.webp src 3416x52 -> 2030x366 (x0.59,7.04)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 5,
+   "drawScreens": 9.82,
+   "fillScreens": 1
+  },
+  "ms": 18.12,
+  "view": "up"
+ },
+ {
+  "id": "3-2",
+  "world": 3,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 10,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 11
+   },
+   "smoothHigh": 9,
+   "scaled": [
+    "w3-far.webp src 2640x1302 -> 2390x1178 (x0.91,0.90)",
+    "w3-sky.webp src 2640x513 -> 2390x464 (x0.91,0.90)",
+    "w3-far.webp src 2640x39 -> 2390x378 (x0.91,9.69)",
+    "w3-mid.webp src 2392x1302 -> 1805x982 (x0.75,0.75)",
+    "w3-mid.webp src 2392x39 -> 1805x439 (x0.75,11.26)",
+    "w3-near.webp src 3200x1736 -> 1901x1031 (x0.59,0.59)",
+    "w3-near.webp src 3200x52 -> 1901x366 (x0.59,7.04)",
+    "w3-near.webp src 3200x1736 -> 1901x1031 (x0.59,0.59)",
+    "w3-near.webp src 3200x52 -> 1901x366 (x0.59,7.04)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 5,
+   "drawScreens": 9.38,
+   "fillScreens": 1
+  },
+  "ms": 21.42,
+  "view": "up"
+ },
+ {
+  "id": "4-2",
+  "world": 4,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 15,
+   "fills": 1,
+   "clip": 0,
+   "save": 1,
+   "comp": {
+    "source-over": 16
+   },
+   "smoothHigh": 9,
+   "scaled": [
+    "w4terraces-far.webp src 2640x1302 -> 2390x1178 (x0.91,0.90)",
+    "w4terraces-sky.webp src 2640x513 -> 2390x464 (x0.91,0.90)",
+    "w4terraces-far.webp src 2640x39 -> 2390x378 (x0.91,9.69)",
+    "w4-mid.webp src 2442x1302 -> 1842x982 (x0.75,0.75)",
+    "w4-mid.webp src 2442x39 -> 1842x439 (x0.75,11.26)",
+    "w4-near.webp src 3256x1736 -> 1934x1031 (x0.59,0.59)",
+    "w4-near.webp src 3256x52 -> 1934x366 (x0.59,7.04)",
+    "w4-near.webp src 3256x1736 -> 1935x1031 (x0.59,0.59)",
+    "w4-near.webp src 3256x52 -> 1935x366 (x0.59,7.04)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas128x128 src 128x128 -> 672x458 (x5.25,3.58)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 5,
+   "drawScreens": 10.57,
+   "fillScreens": 1
+  },
+  "ms": 19.92,
+  "view": "up"
+ },
+ {
+  "id": "5-2",
+  "world": 5,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 10,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 11
+   },
+   "smoothHigh": 9,
+   "scaled": [
+    "w5gold2-far.webp src 2640x1302 -> 2390x1178 (x0.91,0.90)",
+    "w5gold2-sky.webp src 2640x513 -> 2390x464 (x0.91,0.90)",
+    "w5gold2-far.webp src 2640x39 -> 2390x378 (x0.91,9.69)",
+    "w5gold2-mid.webp src 2454x1302 -> 1852x982 (x0.75,0.75)",
+    "w5gold2-mid.webp src 2454x39 -> 1852x439 (x0.75,11.26)",
+    "w5gold2-near.webp src 3520x1736 -> 2091x1031 (x0.59,0.59)",
+    "w5gold2-near.webp src 3520x52 -> 2091x366 (x0.59,7.04)",
+    "w5gold2-near.webp src 3520x1736 -> 2091x1031 (x0.59,0.59)",
+    "w5gold2-near.webp src 3520x52 -> 2091x366 (x0.59,7.04)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 5,
+   "drawScreens": 9.8,
+   "fillScreens": 1
+  },
+  "ms": 17.18,
+  "view": "up"
+ },
+ {
+  "id": "6-2",
+  "world": 6,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 2,
+   "gradLin": 1,
+   "gradRad": 1,
+   "drawImage": 9,
+   "fills": 3,
+   "clip": 1,
+   "save": 1,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 8,
+   "scaled": [
+    "w6dawn-far.webp src 2640x1302 -> 2975x1467 (x1.13,1.13)",
+    "w6dawn-far.webp src 2640x39 -> 2975x297 (x1.13,7.62)",
+    "w6-mid.webp src 2416x1302 -> 1823x982 (x0.75,0.75)",
+    "w6-mid.webp src 2416x39 -> 1823x439 (x0.75,11.26)",
+    "w6-near.webp src 3222x1736 -> 1914x1031 (x0.59,0.59)",
+    "w6-near.webp src 3222x52 -> 1914x366 (x0.59,7.04)",
+    "w6-near.webp src 3222x1736 -> 1914x1031 (x0.59,0.59)",
+    "w6-near.webp src 3222x52 -> 1914x366 (x0.59,7.04)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 7,
+   "drawScreens": 9.72,
+   "fillScreens": 3
+  },
+  "ms": 15.4,
+  "view": "up"
+ },
+ {
+  "id": "7-2",
+  "world": 7,
+  "vw": 440,
+  "vh": 968,
+  "counts": {
+   "grad": 2,
+   "gradLin": 1,
+   "gradRad": 1,
+   "drawImage": 7,
+   "fills": 3,
+   "clip": 1,
+   "save": 1,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 6,
+   "scaled": [
+    "w7-far.webp src 2640x1302 -> 2941x1450 (x1.11,1.11)",
+    "w7-far.webp src 2640x39 -> 2941x314 (x1.11,8.05)",
+    "w7-mid.webp src 2396x1302 -> 1808x982 (x0.75,0.75)",
+    "w7-mid.webp src 2396x39 -> 1808x471 (x0.75,12.07)",
+    "w7-near.webp src 3310x1736 -> 3441x1804 (x1.04,1.04)",
+    "w7-near.webp src 3310x52 -> 3441x191 (x1.04,3.66)",
+    "canvas160x160 src 160x160 -> 672x691 (x4.20,4.32)"
+   ],
+   "fullscreen": 6,
+   "drawScreens": 10.75,
+   "fillScreens": 3
+  },
+  "ms": 17.01,
+  "view": "up"
+ },
+ {
+  "id": "8-2",
+  "world": 8,
+  "vw": 409.0909090909091,
+  "vh": 900,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 10,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 11
+   },
+   "smoothHigh": 9,
+   "scaled": [
+    "w8-far.webp src 2639x1302 -> 2389x1178 (x0.91,0.90)",
+    "w8-sky.webp src 2639x513 -> 2389x464 (x0.91,0.90)",
+    "w8-far.webp src 2639x39 -> 2389x378 (x0.91,9.69)",
+    "w8-mid.webp src 3200x1302 -> 2414x982 (x0.75,0.75)",
+    "w8-mid.webp src 3200x39 -> 2414x439 (x0.75,11.26)",
+    "w8-near.webp src 3519x1736 -> 2090x1031 (x0.59,0.59)",
+    "w8-near.webp src 3519x52 -> 2090x366 (x0.59,7.04)",
+    "w8-near.webp src 3519x1736 -> 2091x1031 (x0.59,0.59)",
+    "w8-near.webp src 3519x52 -> 2091x366 (x0.59,7.04)",
+    "canvas160x160 src 160x160 -> 672x743 (x4.20,4.64)"
+   ],
+   "fullscreen": 5,
+   "drawScreens": 10.37,
+   "fillScreens": 1
+  },
+  "ms": 17.22,
+  "view": "up"
+ },
+ {
+  "id": "9-2",
+  "world": 9,
+  "vw": 440,
+  "vh": 968,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 10,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 11
+   },
+   "smoothHigh": 9,
+   "scaled": [
+    "w9-far.webp src 2639x1302 -> 2389x1178 (x0.91,0.90)",
+    "w9-sky.webp src 2639x513 -> 2389x464 (x0.91,0.90)",
+    "w9-far.webp src 2639x39 -> 2389x390 (x0.91,10.01)",
+    "w9-mid.webp src 2677x1302 -> 2020x982 (x0.75,0.75)",
+    "w9-mid.webp src 2677x39 -> 2020x471 (x0.75,12.07)",
+    "w9-near.webp src 3519x1736 -> 2091x1031 (x0.59,0.59)",
+    "w9-near.webp src 3519x52 -> 2091x407 (x0.59,7.82)",
+    "w9-near.webp src 3519x1736 -> 2091x1031 (x0.59,0.59)",
+    "w9-near.webp src 3519x52 -> 2091x407 (x0.59,7.82)",
+    "canvas160x160 src 160x160 -> 672x691 (x4.20,4.32)"
+   ],
+   "fullscreen": 5,
+   "drawScreens": 10.13,
+   "fillScreens": 1
+  },
+  "ms": 17.04,
+  "view": "up"
+ },
+ {
+  "id": "10-2",
+  "world": 10,
+  "vw": 440,
+  "vh": 968,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 10,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 11
+   },
+   "smoothHigh": 9,
+   "scaled": [
+    "w10-far.webp src 2194x1302 -> 1987x1178 (x0.91,0.90)",
+    "w10-sky.webp src 2194x513 -> 1987x464 (x0.91,0.90)",
+    "w10-far.webp src 2194x39 -> 1987x390 (x0.91,10.01)",
+    "w10-mid.webp src 2412x1302 -> 1820x982 (x0.75,0.75)",
+    "w10-mid.webp src 2412x39 -> 1820x471 (x0.75,12.07)",
+    "w10-near.webp src 3216x1736 -> 1911x1031 (x0.59,0.59)",
+    "w10-near.webp src 3216x52 -> 1911x407 (x0.59,7.82)",
+    "w10-near.webp src 3216x1736 -> 1911x1031 (x0.59,0.59)",
+    "w10-near.webp src 3216x52 -> 1911x407 (x0.59,7.82)",
+    "canvas160x160 src 160x160 -> 672x691 (x4.20,4.32)"
+   ],
+   "fullscreen": 5,
+   "drawScreens": 8.98,
+   "fillScreens": 1
+  },
+  "ms": 18.59,
+  "view": "up"
+ },
+ {
+  "id": "1-2",
+  "world": 1,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 10,
+   "scaled": [
+    "w1sunrise-far.webp src 2640x1302 -> 1947x960 (x0.74,0.74)",
+    "w1sunrise-far.webp src 2640x39 -> 1947x57 (x0.74,1.46)",
+    "w1-mid.webp src 2442x1302 -> 1501x800 (x0.61,0.61)",
+    "w1-mid.webp src 2442x39 -> 1501x99 (x0.61,2.54)",
+    "w1-mid.webp src 2442x1302 -> 1502x800 (x0.62,0.61)",
+    "w1-mid.webp src 2442x39 -> 1502x99 (x0.62,2.54)",
+    "w1-near.webp src 3214x1736 -> 1556x840 (x0.48,0.48)",
+    "w1-near.webp src 3214x52 -> 1556x73 (x0.48,1.40)",
+    "w1-near.webp src 3214x1736 -> 1556x840 (x0.48,0.48)",
+    "w1-near.webp src 3214x52 -> 1556x73 (x0.48,1.40)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 4,
+   "drawScreens": 5.77,
+   "fillScreens": 1
+  },
+  "ms": 21.59,
+  "view": "side"
+ },
+ {
+  "id": "2-2",
+  "world": 2,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 10,
+   "scaled": [
+    "w2-far.webp src 2640x1302 -> 1947x960 (x0.74,0.74)",
+    "w2-far.webp src 2640x39 -> 1947x57 (x0.74,1.46)",
+    "w2-mid.webp src 2640x1302 -> 1623x800 (x0.61,0.61)",
+    "w2-mid.webp src 2640x39 -> 1623x99 (x0.61,2.54)",
+    "w2-mid.webp src 2640x1302 -> 1623x800 (x0.61,0.61)",
+    "w2-mid.webp src 2640x39 -> 1623x99 (x0.61,2.54)",
+    "w2-near.webp src 3416x1736 -> 1654x840 (x0.48,0.48)",
+    "w2-near.webp src 3416x52 -> 1654x73 (x0.48,1.40)",
+    "w2-near.webp src 3416x1736 -> 1654x840 (x0.48,0.48)",
+    "w2-near.webp src 3416x52 -> 1654x73 (x0.48,1.40)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 6,
+   "drawScreens": 6.05,
+   "fillScreens": 1
+  },
+  "ms": 19.82,
+  "view": "side"
+ },
+ {
+  "id": "3-2",
+  "world": 3,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 10,
+   "scaled": [
+    "w3-far.webp src 2640x1302 -> 1947x960 (x0.74,0.74)",
+    "w3-far.webp src 2640x39 -> 1947x57 (x0.74,1.46)",
+    "w3-mid.webp src 2392x1302 -> 1470x800 (x0.61,0.61)",
+    "w3-mid.webp src 2392x39 -> 1470x99 (x0.61,2.54)",
+    "w3-mid.webp src 2392x1302 -> 1471x800 (x0.61,0.61)",
+    "w3-mid.webp src 2392x39 -> 1471x99 (x0.61,2.54)",
+    "w3-near.webp src 3200x1736 -> 1549x840 (x0.48,0.48)",
+    "w3-near.webp src 3200x52 -> 1549x73 (x0.48,1.40)",
+    "w3-near.webp src 3200x1736 -> 1550x840 (x0.48,0.48)",
+    "w3-near.webp src 3200x52 -> 1550x73 (x0.48,1.40)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 4,
+   "drawScreens": 5.72,
+   "fillScreens": 1
+  },
+  "ms": 22.9,
+  "view": "side"
+ },
+ {
+  "id": "4-2",
+  "world": 4,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 16,
+   "fills": 1,
+   "clip": 0,
+   "save": 1,
+   "comp": {
+    "source-over": 17
+   },
+   "smoothHigh": 10,
+   "scaled": [
+    "w4terraces-far.webp src 2640x1302 -> 1947x960 (x0.74,0.74)",
+    "w4terraces-far.webp src 2640x39 -> 1947x57 (x0.74,1.46)",
+    "w4-mid.webp src 2442x1302 -> 1501x800 (x0.61,0.61)",
+    "w4-mid.webp src 2442x39 -> 1501x99 (x0.61,2.54)",
+    "w4-mid.webp src 2442x1302 -> 1502x800 (x0.62,0.61)",
+    "w4-mid.webp src 2442x39 -> 1502x99 (x0.62,2.54)",
+    "w4-near.webp src 3256x1736 -> 1576x840 (x0.48,0.48)",
+    "w4-near.webp src 3256x52 -> 1576x73 (x0.48,1.40)",
+    "w4-near.webp src 3256x1736 -> 1577x840 (x0.48,0.48)",
+    "w4-near.webp src 3256x52 -> 1577x73 (x0.48,1.40)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas128x128 src 128x128 -> 1478x208 (x11.55,1.62)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 4,
+   "drawScreens": 6.89,
+   "fillScreens": 1
+  },
+  "ms": 26.36,
+  "view": "side"
+ },
+ {
+  "id": "5-2",
+  "world": 5,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 10,
+   "scaled": [
+    "w5gold2-far.webp src 2640x1302 -> 1947x960 (x0.74,0.74)",
+    "w5gold2-far.webp src 2640x39 -> 1947x57 (x0.74,1.46)",
+    "w5gold2-mid.webp src 2454x1302 -> 1509x800 (x0.61,0.61)",
+    "w5gold2-mid.webp src 2454x39 -> 1509x99 (x0.61,2.54)",
+    "w5gold2-mid.webp src 2454x1302 -> 1508x800 (x0.61,0.61)",
+    "w5gold2-mid.webp src 2454x39 -> 1508x99 (x0.61,2.54)",
+    "w5gold2-near.webp src 3520x1736 -> 1704x840 (x0.48,0.48)",
+    "w5gold2-near.webp src 3520x52 -> 1704x73 (x0.48,1.40)",
+    "w5gold2-near.webp src 3520x1736 -> 1704x840 (x0.48,0.48)",
+    "w5gold2-near.webp src 3520x52 -> 1704x73 (x0.48,1.40)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 4,
+   "drawScreens": 5.97,
+   "fillScreens": 1
+  },
+  "ms": 20.38,
+  "view": "side"
+ },
+ {
+  "id": "6-2",
+  "world": 6,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 10,
+   "scaled": [
+    "w6dawn-far.webp src 2640x1302 -> 1947x960 (x0.74,0.74)",
+    "w6dawn-far.webp src 2640x39 -> 1947x57 (x0.74,1.46)",
+    "w6-mid.webp src 2416x1302 -> 1485x800 (x0.61,0.61)",
+    "w6-mid.webp src 2416x39 -> 1485x99 (x0.61,2.54)",
+    "w6-mid.webp src 2416x1302 -> 1486x800 (x0.62,0.61)",
+    "w6-mid.webp src 2416x39 -> 1486x99 (x0.62,2.54)",
+    "w6-near.webp src 3222x1736 -> 1560x840 (x0.48,0.48)",
+    "w6-near.webp src 3222x52 -> 1560x73 (x0.48,1.40)",
+    "w6-near.webp src 3222x1736 -> 1560x840 (x0.48,0.48)",
+    "w6-near.webp src 3222x52 -> 1560x73 (x0.48,1.40)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 4,
+   "drawScreens": 5.75,
+   "fillScreens": 1
+  },
+  "ms": 21.21,
+  "view": "side"
+ },
+ {
+  "id": "7-2",
+  "world": 7,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 9,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 10
+   },
+   "smoothHigh": 8,
+   "scaled": [
+    "w7-far.webp src 2640x1302 -> 1947x960 (x0.74,0.74)",
+    "w7-far.webp src 2640x39 -> 1947x64 (x0.74,1.64)",
+    "w7-mid.webp src 2396x1302 -> 1473x800 (x0.61,0.61)",
+    "w7-mid.webp src 2396x39 -> 1473x118 (x0.61,3.02)",
+    "w7-mid.webp src 2396x1302 -> 1473x800 (x0.61,0.61)",
+    "w7-mid.webp src 2396x39 -> 1473x118 (x0.61,3.02)",
+    "w7-near.webp src 3310x1736 -> 2804x1470 (x0.85,0.85)",
+    "w7-near.webp src 3310x1736 -> 2804x1470 (x0.85,0.85)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 4,
+   "drawScreens": 9.62,
+   "fillScreens": 1
+  },
+  "ms": 20.9,
+  "view": "side"
+ },
+ {
+  "id": "8-2",
+  "world": 8,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 10,
+   "scaled": [
+    "w8-far.webp src 2639x1302 -> 1946x960 (x0.74,0.74)",
+    "w8-far.webp src 2639x39 -> 1946x57 (x0.74,1.46)",
+    "w8-mid.webp src 3200x1302 -> 1967x800 (x0.61,0.61)",
+    "w8-mid.webp src 3200x39 -> 1967x99 (x0.61,2.54)",
+    "w8-mid.webp src 3200x1302 -> 1967x800 (x0.61,0.61)",
+    "w8-mid.webp src 3200x39 -> 1967x99 (x0.61,2.54)",
+    "w8-near.webp src 3519x1736 -> 1704x840 (x0.48,0.48)",
+    "w8-near.webp src 3519x52 -> 1704x73 (x0.48,1.40)",
+    "w8-near.webp src 3519x1736 -> 1703x840 (x0.48,0.48)",
+    "w8-near.webp src 3519x52 -> 1703x73 (x0.48,1.40)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 6,
+   "drawScreens": 6.55,
+   "fillScreens": 1
+  },
+  "ms": 20.96,
+  "view": "side"
+ },
+ {
+  "id": "9-2",
+  "world": 9,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 11,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 12
+   },
+   "smoothHigh": 10,
+   "scaled": [
+    "w9-far.webp src 2639x1302 -> 1946x960 (x0.74,0.74)",
+    "w9-far.webp src 2639x39 -> 1946x64 (x0.74,1.64)",
+    "w9-mid.webp src 2677x1302 -> 1646x800 (x0.61,0.61)",
+    "w9-mid.webp src 2677x39 -> 1646x118 (x0.61,3.02)",
+    "w9-mid.webp src 2677x1302 -> 1645x800 (x0.61,0.61)",
+    "w9-mid.webp src 2677x39 -> 1645x118 (x0.61,3.02)",
+    "w9-near.webp src 3519x1736 -> 1704x840 (x0.48,0.48)",
+    "w9-near.webp src 3519x52 -> 1704x97 (x0.48,1.86)",
+    "w9-near.webp src 3519x1736 -> 1703x840 (x0.48,0.48)",
+    "w9-near.webp src 3519x52 -> 1703x97 (x0.48,1.86)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 6,
+   "drawScreens": 6.25,
+   "fillScreens": 1
+  },
+  "ms": 26.31,
+  "view": "side"
+ },
+ {
+  "id": "10-2",
+  "world": 10,
+  "vw": 1188,
+  "vh": 540,
+  "counts": {
+   "grad": 0,
+   "gradLin": 0,
+   "gradRad": 0,
+   "drawImage": 13,
+   "fills": 1,
+   "clip": 0,
+   "save": 0,
+   "comp": {
+    "source-over": 14
+   },
+   "smoothHigh": 12,
+   "scaled": [
+    "w10-far.webp src 2194x1302 -> 1618x960 (x0.74,0.74)",
+    "w10-far.webp src 2194x39 -> 1618x64 (x0.74,1.64)",
+    "w10-far.webp src 2194x1302 -> 1619x960 (x0.74,0.74)",
+    "w10-far.webp src 2194x39 -> 1619x64 (x0.74,1.64)",
+    "w10-mid.webp src 2412x1302 -> 1483x800 (x0.61,0.61)",
+    "w10-mid.webp src 2412x39 -> 1483x118 (x0.61,3.02)",
+    "w10-mid.webp src 2412x1302 -> 1483x800 (x0.61,0.61)",
+    "w10-mid.webp src 2412x39 -> 1483x118 (x0.61,3.02)",
+    "w10-near.webp src 3216x1736 -> 1557x840 (x0.48,0.48)",
+    "w10-near.webp src 3216x52 -> 1557x97 (x0.48,1.86)",
+    "w10-near.webp src 3216x1736 -> 1557x840 (x0.48,0.48)",
+    "w10-near.webp src 3216x52 -> 1557x97 (x0.48,1.86)",
+    "canvas160x160 src 160x160 -> 1067x563 (x6.67,3.52)"
+   ],
+   "fullscreen": 5,
+   "drawScreens": 6.79,
+   "fillScreens": 1
+  },
+  "ms": 21.86,
+  "view": "side"
+ }
+]

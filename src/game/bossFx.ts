@@ -10,6 +10,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { BOSS_FX } from './bossFxData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const BOSS_FX_URL = new URL('../assets/bosses/boss-fx.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;
@@ -61,7 +62,7 @@ export function drawFx(ctx: CanvasRenderingContext2D, name: FxName, x: number, y
   if (o.flipX) ctx.scale(-1, 1);
   const src = o.recolor ? tintedPiece(name, o.recolor, 'color') : null;
   if (src) ctx.drawImage(src, 0, 0, f.w, f.h, -w * ax, -h * ay, w, h);
-  else ctx.drawImage(img, f.x, f.y, f.w, f.h, -w * ax, -h * ay, w, h);
+  else drawSheet(ctx, img, f.x, f.y, f.w, f.h, -w * ax, -h * ay, w, h);
   ctx.restore();
   return true;
 }

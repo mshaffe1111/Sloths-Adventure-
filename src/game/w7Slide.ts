@@ -41,6 +41,9 @@ export const SLIDE = {
   settle: 2.6,
   /** a jump: straight up at this, pulled down at this (airtime 2*jumpV/g = 0.8 s, peak 1.3 m: over a rubble wall he can see) */
   jumpV: 6.5,
+  /** Easy's jump, a little stronger (airtime 0.86 s, peak 1.5 m): Easy is slower, so it spends longer over a barrier or a gap and its
+   *  window was the narrower one; the kid's thumb (late by about 90 ms) needs the room */
+  jumpVEasy: 7.0,
   g: 16.25,
   /** a jump pressed this long before landing still goes (buffer, s) */
   buffer: 0.15,
@@ -68,16 +71,18 @@ export type ObstacleKind = 'head' | 'rubble' | 'column' | 'gap' | 'beam';
 export const KINDS: Record<ObstacleKind, { beat: 'dodge' | 'jump' | 'duck' | 'jumpOrDodge'; len: number; low?: number; high?: number }> = {
   /** a statue (or a tower of crates) in one lane, too tall to jump (two lanes on Normal later on): steer round it */
   head: { beat: 'dodge', len: 1.0 },
-  /** a plank barrier nailed across every trough (Matt's Sheet 1): jump it */
-  rubble: { beat: 'jump', len: 0.8, low: 0.85 },
-  /** crates spilled across two lanes (Matt's Sheet 1): jump them or steer to the open lane */
-  column: { beat: 'jumpOrDodge', len: 0.9, low: 0.85 },
+  /** a plank barrier nailed across every trough (Matt's Sheet 1): jump it. (Its top was 0.85 m: a jump cleared it only in a 0.27-0.33 s
+   *  window, and the kid's thumb made it 59-67% of the time; at 0.65 m the window is about 0.45 s. Matt, 2026-10-29: "Couldn't make it
+   *  thru... let's make sure it's possible.") */
+  rubble: { beat: 'jump', len: 0.8, low: 0.65 },
+  /** crates spilled across two lanes (Matt's Sheet 1): jump them or steer to the open lane (as low as the barrier, for the same window) */
+  column: { beat: 'jumpOrDodge', len: 0.9, low: 0.65 },
   /** the floor is gone across the chute: jump it (len is Normal's; Easy's is shorter, see gapLen) */
-  gap: { beat: 'jump', len: 2.6 },
+  gap: { beat: 'jump', len: 2.3 },
   /** a beam across every trough at head height (Matt's Sheet 1): duck under it (high = its underside) */
   beam: { beat: 'duck', len: 0.6, high: 0.75 },
 };
-export const gapLen = (easy: boolean) => (easy ? 1.8 : 2.6);
+export const gapLen = (easy: boolean) => (easy ? 1.6 : 2.3);
 
 export interface Obstacle {
   z: number;
@@ -450,7 +455,7 @@ export class SlideSim {
     else this.bufT = Math.max(0, this.bufT - dt);
     const wasAir = !this.grounded;
     if (this.bufT > 0 && this.grounded && !this.overGap) {
-      this.vy = SLIDE.jumpV;
+      this.vy = c.easy ? SLIDE.jumpVEasy : SLIDE.jumpV;
       this.bufT = 0;
       this.duckT = 0;
       this.events.push({ k: 'jump' });

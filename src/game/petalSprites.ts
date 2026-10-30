@@ -6,6 +6,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { PETALS } from './petalData.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const PETALS_URL = new URL('../assets/flora/petals.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;
@@ -35,7 +36,7 @@ export function drawPetal(ctx: CanvasRenderingContext2D, c: number, x: number, y
   ctx.translate(x, y);
   ctx.rotate(rot);
   ctx.scale(Math.max(0.2, Math.abs(flip)), 1);
-  ctx.drawImage(img!, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  drawSheet(ctx, img!, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

@@ -14,6 +14,7 @@ import { bodyFor } from './creatureRig.ts';
 import { SNAKE_ATLAS_HEAD, SNAKE_FRAMES } from './snakeAtlasData.ts';
 import { SNAKE2_FRAMES } from './snake2AtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_SNAKE = true;
 /** world units per atlas pixel: the head is drawn about 18 units across */
@@ -159,7 +160,7 @@ export function drawSnakeSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   // a slow breath, so a snake that is waiting is never a still picture
   const breathe = r.mode === 'prowl' ? Math.sin(time * 5 + enemy.id) * 0.025 : 0;
   ctx.scale(1 - breathe, 1 + breathe);
-  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
+  drawSheet(ctx, img, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

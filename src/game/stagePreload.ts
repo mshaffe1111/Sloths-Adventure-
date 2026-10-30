@@ -36,9 +36,13 @@ import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { warmMeecaArt } from './meecaArt.ts';
 import { BACKDROP_WAIT_MS, backdropReady, stageUsesCanopy } from './paintedBackdrops.ts';
 import { CTEST_FOES, ctestMixDraws, stageSheets } from './stageSheets.ts';
+import { ALWAYS } from './stageManifest.ts';
+import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { SPRITES, warmSprites } from './spriteSheets.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
-import { DOT_PERCH_URL, perchArtReady } from '../components/hud/painted.tsx';
+import { DOT_PERCH_URL, HUD_ATLAS_URL, hudArtReady, perchArtReady } from '../components/hud/painted.tsx';
+import { warmBounce } from './bounceArt.ts';
+import { BOUNCE_URL } from './bounceAtlasData.ts';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
@@ -62,7 +66,7 @@ import type { LevelConfig } from './types.ts';
 type Cfg = Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>;
 
 /** start the loads for these sheet keys; the addresses to wait for */
-function start(keys: readonly string[]): string[] {
+export function start(keys: readonly string[]): string[] {
   const urls: string[] = [];
   // (the painted ground goes with the stage's own kit: the highest kit asked for, World 1's only when it is the only one)
   const kits = keys.filter((k) => k.startsWith('kit:')).map((k) => Number(k.slice(4)));
@@ -164,6 +168,25 @@ function start(keys: readonly string[]): string[] {
         pitWaterReady(w);
         urls.push(u);
       }
+    } else if (k === 'hud') {
+      hudArtReady();
+      urls.push(HUD_ATLAS_URL);
+    } else if (k === 'crumble-tile') {
+      crumbleArtReady();
+      urls.push(CRUMBLE_ART_URL);
+    } else if (k === 'meeca-standard') {
+      jennifurSpriteReady();
+      urls.push(MEECA_STANDARD_URL);
+    } else if (k === 'bounce') {
+      warmBounce();
+      urls.push(BOUNCE_URL);
+    } else if (k === 'vine') {
+      warmHeroVine();
+      urls.push(HERO_VINE_URL);
+    } else if (k === 'rope') {
+      warmHeroRope();
+      warmRopeKit();
+      urls.push(HERO_ROPE_URL, ROPE_KIT_URL);
     } else if (k.startsWith('anim:')) {
       const n = k.slice(5);
       warmCreatureAnims([n]);
@@ -199,8 +222,12 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   // (a stage in another world: the last world's sheets go first, as starting the stage would do)
   enterWorld(cfg.worldIndex);
   if (mix && !live()) releaseCtestFoes(ctestMixDraws(mix).foes);
-  const keys = stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled(), mix });
+  // (and what every stage shows, and for the control test what its mix's built stage holds: stageManifest.ts; the rest of a stage's
+  // built contents are got in once it is built, stageReady.ts)
+  const keys = [...new Set([...stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled(), mix }), ...(cfg.id === DOT_STAGE_ID ? [] : ALWAYS), ...(mix ? ctestMixDraws(mix).built : [])])];
   const urls = start(keys);
+  const plains = plainUrls(keys);
+  const plainDone = loadPlain(plains);
   // (and two small sheets nearly every stage draws: the falling leaves, and Pokey hanging from a liana; QA's 'blank wait leaves-atlas'
   // a second into a stage, 'wait hero-vine' at the first swing)
   if (cfg.id !== DOT_STAGE_ID) {
@@ -230,8 +257,8 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   void backdropReady(cfg.worldIndex, cfg.id, stageUsesCanopy(cfg));
   const t0 = performance.now();
   const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
-  const done = whenSheetsReady(urls, ms).then((n) => {
-    const drawn = live() ? 0 : warmSheets(urls, ctx);
+  const done = Promise.all([whenSheetsReady(urls, ms), Promise.race([plainDone, new Promise<void>((r) => setTimeout(r, ms))])]).then(([n]) => {
+    const drawn = live() || !ctx ? 0 : warmSheets(urls, ctx) + warmPlain(plains, ctx);
     perfNote(`preloaded ${cfg.id}: ${n}/${urls.length} sheets ready, ${drawn} drawn once, ${Math.round(performance.now() - t0)} ms`);
   });
   const mine = { id, done };
