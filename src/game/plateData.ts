@@ -34,6 +34,7 @@ export const PLATES: Record<string, PlateInfo> = {
   cookhouse: { ground: 0.84, what: 'the fortress cookhouse: the black stove steaming, copper pots on the rafters, a pie and a ham on the long table' },
   ruins: { ground: 0.85, what: 'the council ruins: ten mossy stone seats in a ring round a cracked floor with a faint sigil, an eleventh plain chair apart with leaves on it' },
   village: { ground: 0.86, what: "the village the morning after the storm, with Lieutenant Pell's tailor shop and a tea table" },
+  'drake-cave': { ground: 0.85, what: "the Magma Drake's cave from inside: lava light through a crack, everything he owns heaped behind a big boulder at the left with his gold, a huge lumpy red knitted tea cosy slumped against it" },
 };
 
 export function isPlate(key: string | undefined): key is string {

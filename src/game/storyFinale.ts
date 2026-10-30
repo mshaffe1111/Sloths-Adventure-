@@ -34,11 +34,15 @@ const WALL = Array.from({ length: 10 }, (_, i) => `B${i + 1}@${wallX(i + 1).toFi
 const OUT = { plate: undefined as string | undefined };
 const zoomOn = (x: number) => ({ ...OUT, zoom: 2.4, focusX: x, focusY: 0.66 });
 
-/** the Drake's cave on the lava road: Pokey with the tea, the Drake sitting across from him (and Dot, about the sock) */
-const DRAKE_CAVE = 'P:happy@.26*.95 TS:pot@.38 DR:bowed@.7*.85<';
-const DRAKE_CAVE_DOT = 'P:happy@.26*.95 TS:pot@.38 DR:bowed@.7*.85< D:puzzled@.46^.42';
-/** the tea poured: both cups down between them */
-const DRAKE_TEA = 'P:happy@.26*.95 TS:cups@.47 DR:bowed@.7*.85<';
+/** the Drake's cave (hf-art-bosses' plate: the boulder, his gold and the tea cosy heaped at the left): Pokey with the good china pot, the
+ * Drake sitting across from him, stiff and formal (and Dot over the heap, about the sock) */
+const CAVE = { plate: 'drake-cave' };
+const DRAKE_CAVE = 'P:happy@.44*.95 TS:pot@.54 DR:bowed@.76*.85<';
+const DRAKE_CAVE_DOT = 'P:happy@.44*.95 TS:pot@.54 DR:bowed@.76*.85< D:puzzled@.3^.5';
+/** embarrassed about the cosy */
+const DRAKE_COSY = 'P:happy@.44*.95 TS:pot@.54 DR:bowed@.76*.85< D@.3^.5';
+/** the tea poured: Pokey's cup by him, the Drake's in both claws */
+const DRAKE_TEA = 'P:happy@.44*.95 TS:cup0@.53 DR:bowed@.76*.85<';
 /** at the tea table: Pokey, Meeca, Dot, and the General in the chair at the head of the table, the one the Queen dusted every morning */
 const TEA = 'P:happy@.2*.9 M:happy@.42*.9 GV:sit@.72*1.12 D@.5^.5*.9';
 /** the same table a minute earlier: the General has his cup and is looking at that chair */
@@ -268,20 +272,20 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     // the Drake's two cups (Matt approved the teacup ending, 2026-10-30): his "Bring tea. Two cups." comes true, and Pokey's
     // "Maybe. If you tidy." comes back as the answer
     N('On the first cold morning, Pokey walked the lava road with a pot of tea and two cups.', 'P:walk@.3', { w: 9, m: 'day', cue: 'comedy', i: 0.4, p: { ...OUT, zoom: 1.15 } }),
-    N('The Drake had tidied. Everything he owned was in one corner of the cave, and a large rock had been rolled in front of the corner.', DRAKE_CAVE, { p: OUT }),
-    DRAKE('You came.', DRAKE_CAVE, { p: OUT }),
-    P('You asked.', '=', { p: OUT }),
-    DRAKE('There is nothing behind the rock.', '=', { p: OUT }),
-    D('There\'s a sock behind the rock, I can see it from here, it\'s an enormous sock, I\'m not going to ask about the sock, I\'m asking, why is there a sock.', DRAKE_CAVE_DOT, { sting: 'laugh', p: OUT }),
-    DRAKE('It is a tea cosy. I made it. It did not go well.', '=', { p: OUT }),
-    N('Pokey poured. The Drake held his cup in both claws and looked at it for a long time.', DRAKE_TEA, { cue: 'tender', i: 0.4, p: { ...OUT, zoom: 1.35, focusX: 0.62 } }),
-    DRAKE('It is too hot.', '=', { p: OUT }),
-    P('You breathe fire.', '=', { p: OUT }),
-    DRAKE('Not any more. A visitor put it out.', '=', { p: OUT }),
-    N('He drank it anyway, and held the cup out, very carefully, for another.', DRAKE_TEA, { cue: 'mercy', i: 0.45, p: OUT }),
-    DRAKE('Wednesday?', '=', { p: OUT }),
-    P('If you tidy.', '=', { sting: 'laugh', p: OUT }),
-    N('The Drake looked at the rock for a while.', '=', { p: { ...OUT, zoom: 1.2 } }),
+    N('The Drake had tidied. Everything he owned was in one corner of the cave, and a large rock had been rolled in front of the corner.', DRAKE_CAVE, { p: CAVE }),
+    DRAKE('You came.', DRAKE_CAVE, { p: CAVE }),
+    P('You asked.', '=', { p: CAVE }),
+    DRAKE('There is nothing behind the rock.', '=', { p: CAVE }),
+    D('There\'s a sock behind the rock, I can see it from here, it\'s an enormous sock, I\'m not going to ask about the sock, I\'m asking, why is there a sock.', DRAKE_CAVE_DOT, { sting: 'laugh', p: CAVE }),
+    DRAKE('It is a tea cosy. I made it. It did not go well.', DRAKE_COSY, { p: CAVE }),
+    N('Pokey poured. The Drake held his cup in both claws and looked at it for a long time.', DRAKE_TEA, { cue: 'tender', i: 0.4, p: { ...CAVE, zoom: 1.35, focusX: 0.66 } }),
+    DRAKE('It is too hot.', '=', { p: CAVE }),
+    P('You breathe fire.', '=', { p: CAVE }),
+    DRAKE('Not any more. A visitor put it out.', '=', { p: CAVE }),
+    N('He drank it anyway, and held the cup out, very carefully, for another.', DRAKE_TEA, { cue: 'mercy', i: 0.45, p: CAVE }),
+    DRAKE('Wednesday?', DRAKE_CAVE, { p: CAVE }),
+    P('If you tidy.', '=', { sting: 'laugh', p: CAVE }),
+    N('The Drake looked at the rock for a while.', '=', { p: { ...CAVE, zoom: 1.3, focusX: 0.4 } }),
     N('On the first fine afternoon, at four o\'clock exactly, the Tarantula Queen poured the tea. The General looked at the chair at the head of the table, the one she had dusted every morning for nine years.',
       `${TEA_UP} B5@.92^.84*.45<`, { w: 1, cue: 'tender', i: 0.4, p: VIL }),
     N('He sat down in it, put his feet up, and finished the whole cup.', `${TEA} B5@.92^.84*.45<`, { cue: 'mercy', i: 0.5, p: VIL }),
