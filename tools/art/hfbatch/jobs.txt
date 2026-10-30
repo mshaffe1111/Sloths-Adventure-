@@ -205,7 +205,13 @@ sfx-fullband    6ae3fb5b0e0338d1bb7c6f04 cpu-upgrade 02:05Z-02:14Z (9 min): full
 sfx-reptile     6ae3fbc0c78863f9c62e256b cpu-upgrade 02:07Z-02:11Z (4 min): fullband.py TAGS mode (alligator, crocodile, caiman, lizard...),
   CC0 only -> carrier-rp-0.png (16 clips; "Alligator Growls 02" 527844 is the caiman).
 sfx-licgator    6ae40536c78863f9c62e2d46 cpu-upgrade 02:47Z (~20 min): licheck.py for 527844 (uploader for LICENCES.md).
-total for polish-sfx ~145 min on cpu-upgrade (~$0.08 at $0.03/h) + cpu-basic minutes: well under $0.15 of the $8 cap. No GPU.
+sfx-licgator2   6ae4d9410e0338d1bb7cc7e1 cpu-upgrade 2026-10-30 17:52Z (~20 min): licheck.py for 527844 -> "Alligator Growls 02", D.jones, CC0-1.0
+  (sfx-licgator was cancelled at last night's stop).
+sfx-softsteps   6ae4d933c78863f9c62e9bb7 cpu-upgrade 17:51Z-18:07Z (16 min): fullband.py TAGS mode (barefoot, paws, sneaking, tiptoe, moss...;
+  not gravel, shoes, wet, voice...), CC0 only -> carrier-ss-0.png (40 clips): "11-PatasTierra" 471837 became Pokey's new steps (Matt's
+  pick F, 2026-10-30); the "Wood Floor Soft Barefoot Footstep" takes were set D's wood.
+sfx-licpaws     6ae4e3240e0338d1bb7ccbe2 cpu-upgrade 18:34Z (~20 min): licheck.py for 471837 -> wintuh, CC0-1.0.
+total for polish-sfx ~200 min on cpu-upgrade (~$0.10 at $0.03/h) + cpu-basic minutes: under $0.20 of the $8 cap. No GPU.
 hfb-petals    6ae3dd2fc78863f9c62e0ac6 rtx-pro-6000 23:56:31Z-23:58:30Z (2.0 min, ~$0.09): drifting petals, 4 takes from petalstart.py (crops
   of the game's own painted flowers on green), s70/s82 x seeds 7/23. KEPT: petals-s82-7 (11: cells 0,2,3,5,6,7,9,10,12,13,14),
   petals-s70-7 cells 7 and 9, petals-s70-23 cells 1 and 15, petals-s82-23 cells 4 and 15 -> src/assets/flora/petals.webp (17 petals,
