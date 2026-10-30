@@ -49,12 +49,39 @@ const URLS = new Map<string, string>();
 
 export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>, seqs: Record<string, readonly string[]>, up: number): CreatureAnim {
   let img: HTMLImageElement | null = null;
+  // the sheet as a decoded bitmap, held for as long as the world is: drawn from the <img>, Chrome may throw the decoded 20 MB away and
+  // decode it again in the middle of play, which stalled the snake and eagle stretches 100-170 ms at a time on a Pixel 11
+  // (PERFORMANCE-RULES.md §2.12)
+  let bmp: ImageBitmap | null = null;
   let loaded = false;
+  const drop = () => {
+    bmp?.close();
+    bmp = null;
+  };
   const load = () => {
     if (img || typeof Image === 'undefined') return;
     const im = new Image();
     img = im;
-    trackAtlas(im, url, () => { loaded = true; }, () => { img = null; }, () => { img = null; loaded = false; });
+    const ready = () => {
+      if (img === im) loaded = true;
+    };
+    trackAtlas(
+      im,
+      url,
+      () => {
+        if (typeof createImageBitmap !== 'function') return ready();
+        createImageBitmap(im).then(
+          (b) => {
+            if (img !== im) return b.close();
+            bmp = b;
+            ready();
+          },
+          ready
+        );
+      },
+      () => { img = null; },
+      () => { img = null; loaded = false; drop(); }
+    );
   };
   const seqOf = (s: string) => seqs[s] ?? [];
   const anim: CreatureAnim = {
@@ -83,7 +110,7 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
       const f = frames[name];
       if (!f) return false;
       const s = k / up;
-      ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
+      ctx.drawImage(bmp ?? img, f.x, f.y, f.w, f.h, -f.ax * s, -f.ay * s, f.w * s, f.h * s);
       return true;
     },
   };
