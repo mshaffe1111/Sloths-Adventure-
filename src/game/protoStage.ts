@@ -4906,9 +4906,13 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
       });
       row(top.x + 60, top.x + 130, top.y - 34, 2, 'orchid');
       nest(top.x + top.width - 70, top, 'trade');
-      // down off the terrace onto the path again, a dip, and a breath
+      // down off the terrace onto the path again, a dip, and a breath. Two steps down its far face (87 px each, a plain jump), so the way
+      // back is always open: past the terrace without a nest behind it, the goal could not be finished (live on every roll; the World 8
+      // builder's wall rule in levelCheck.ts caught it, 2026-10-29). The near face stays the lift's: the room is still never passed by
       open(top.x + top.width);
-      run(R.r(130, 170));
+      block(top.x + top.width, top.x + top.width + 80, Math.round(RISE * 2 / 3));
+      block(top.x + top.width + 80, top.x + top.width + 160, Math.round(RISE / 3));
+      run(R.r(130, 170) + 70);
       dip();
       run(R.r(240, 280));
       expert += (x - x0) / RUN + 1 + 2.5 + 1.5 + 2.5 + RISE / 120 + FREE + 1;
