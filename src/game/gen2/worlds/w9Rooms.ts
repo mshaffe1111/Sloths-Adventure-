@@ -56,7 +56,7 @@ export const W9R_TIERS: Record<'bucket' | 'plates' | 'lift', Tiers> = {
     open: 'Open! Through, quick.',
   },
   lift: {
-    enter: "The gate's shut, and it's way up there.",
+    enter: "The gate's shut, and it's high up there.",
     nudge: "That plate holds it open. You can't stay.",
     move: 'Stone on the plate. Then ride the plank up.',
     moveEasy: 'Step on the plate once. Then ride up.',
