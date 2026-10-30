@@ -33,6 +33,13 @@ The lead works on this alone first, with no helpers. Rules: reference/PERFORMANC
    - **Test link v8 PUBLISHED ~2:35 AM ET** (EBKij version 1793339121-6c99, bundle index-C7bEmyTJ.js; gate16: 2029 tests, 2027 pass, 0 fail, 2 todo). Matt's morning test: EBKij#ctest&gpuprof=1, one run each on the Pixel, the Samsung and the older OnePlus. The testers' link EnK5 stays on the release.
    - **~3:50 AM ET:** v8 made the enemies go missing on Matt's Pixel (the createImageBitmap resize); fixed with a plain canvas bake (5d518ef3), test link v8b, Matt saw the enemies. Gate17 green. **RELEASE PR #51** (release-2026-10-30b @ 5d518ef3) opened for Matt to merge. After the merge: check the deploy, then Matt runs the live #ctest&gpuprof=1 on the Pixel, Samsung and OnePlus.
    - **9:01 AM ET: release PR #51 MERGED and LIVE** (deploy 41056792033, pages run 41059723088 ok, gh-pages 56e745c5, bundle index-C1SCx20h.js with gpuprof). Next: Matt's live #ctest&gpuprof=1 runs on the Pixel, Samsung and OnePlus, then QA reads them by GPU.
+   - **9:35 AM ET:** QA cross-build read: the drop came with v7 (23:21), not today (19:17 build 29.5-29.8 fps, 1-2.4 stalls a minute, no governor steps; v7 and today ~27 fps, 10-11 stalls a minute, q2 held). OnePlus (Adreno 619, 4 GB): 10-19 fps. Suspects: the new painted ground (groundPaint.ts, new in v7: a concave clip per bank per frame) and the tall skies.
+   - **Matt:** fix how we draw, not by looking cheaper; fast but not crappy; get helpers.
+   - **The lead (himself):** the ground painted once into chunks (protoArt/groundPaint/engine).
+   - **Helpers started 9:37 AM ET (effort high, report within ~3 h):**
+     - PERF-A skies: session_01FhBbYNp3GZg9aFWqWYmTNp, branch perf-skies, scenery.ts only;
+     - PERF-B measure v6 vs v7 vs today: session_01FhBbYKaqBj8iwTQomLdHU1, branch perf-measure, no src changes, top-15 table within ~90 min;
+     - PERF-C effects: session_01FhBbYM5NT1K4UngYcmDpFR, branch perf-fx (pit water, gradients in terrain/artKit/river, eagle sparkle, smoothing; not engine/protoArt/groundPaint/scenery).
    - Duet's other items, queued:
      - trackAtlas bitmaps for every sheet (b);
      - eagle sparkle `fillText` -> sprite;
