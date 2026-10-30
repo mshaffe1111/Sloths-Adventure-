@@ -476,12 +476,35 @@ plan); never ship the rough version as finished.
   lives lost there, so anything that costs no life (Easy's soft falls) has to count as a setback in the bot too (`softFalls`), or it loops.
 - **One time model can be wrong by a world** (LV-15): stageTime.ts's old model gave 4-7 84 s (it doesn't model glide descents) while the
   200-roll tool's quick route says 3:07 at its shortest and the bots take 4-8 minutes. Check a length claim with era.ts and the bots.
+- **World 5 as one world, one style** (w5-rebuild, 2026-10-29). Lessons:
+  - *Two styles hide inside one sheet*: hf-art-ground repainted 18 of the 72 World 5 prop pieces, and the other 54 kept the old thick black
+    outline. The walk showed the clash (soft chairs beside sticker orchids). List every piece of a world's sheets with what draws it, and
+    repaint the lot or none (`tools/art/w5rebuild/art.py`). A piece nothing draws is deleted, not repainted.
+  - *A code box hides behind a magic number*: World 5's painted stump stands in only for a mossy block exactly 50 tall, so every other
+    height drew as a flat green box, six a stage. Now any World 5 block on a bank is a mound of the world's soil (`mound`). Look for the
+    `height === N` tests in the art code.
+  - *Pit shading over the pieces shows boxes*: shading painted down over a pit's floor and step in strips read as see-through boxes, and
+    banded wall shadows as ruled lines. Shade only the air in a pit (`protoArt.ts pitShade`). And a step down showed a backdrop sliver and a
+    ruled line until the lower bank's soil ran on under the higher one.
+  - *A climb shows the floor's backdrop in the air*: only World 1 has canopy strips, so on every other climb the near strip (undergrowth
+    and cliffs) hung across the middle of the screen. With no canopy set it fades out as he climbs (`scenery.ts`).
+  - *gen2 has no ascent*: `missionGraph` throws on 'ascent', so every world's ascent is hand-built (6-8, 7-2/7-4/7-8, 8-7, 5-8). 5-8 is
+    the kapok climb in World 5's bloom trees (`buildKapok` `bloom`). Animals added to a climb must keep SAFE_APPROACH from every flag
+    within 400 px of their height, or the level check fails 7 rolls in 10. Its catch ledges (`cliff || mist || bloom`) are what keep a
+    missed hop under 450 px.
+  - *A post-build pass and the shared passes run in an order*: a gen2 entry's `finish` runs before finishStage, so the finds see what
+    `finish` laid (5-6's carvings). Tell the next helper which runs first.
+  - *Tuning the knobs that slow him doesn't move the band*: on Normal, World 5's spider crouch 0.7 to 0.6 s, a x1.2 rush, two hearts in
+    three, steam that hurts, orchids x0.8 and hum x1.3 moved its band from 21.4 to 21.6 (`w5-normal-wip`, parked). The adult first-timer
+    loses no lives where pits are soft and hazards only slow him, so the score's lives, jump-miss and restart parts stay near zero. Harder
+    on Normal there means harder layouts (gaps, pairs of animals, busier climbs), and a real player's read first (the lead, 2026-10-29).
 
 ## 7. Where things are
 
 - Stage code: World 1, 3, 4 and 5-1..5-5 in `src/game/protoStage.ts` (`HAND_STAGES`), World 2 in `src/game/w2Stages.ts`, Meeca's
-  stage (`5-M`) via `extraStages.ts`; 6-8 Stilt Climb in `src/game/w6Stages.ts` (its rising tide: `risingTide.ts`); 5-7 and 5-9 from the new generator (`src/game/gen2/`, its 16 curated rolls each: `gen2/game.ts`); 5-6, 5-8 and
-  Worlds 6-10 from the old `stageGenerator.ts` (to be replaced by the new generator). Stage names and goals: `stagePlan.ts`. The validator: `levelCheck.ts`. Stage length: `stageTime.ts`.
+  stage (`5-M`) via `extraStages.ts`; 6-8 Stilt Climb in `src/game/w6Stages.ts` (its rising tide: `risingTide.ts`); 5-8 Up the Bloom Trees in `protoStage.ts`
+  (`buildKapok` `bloom`); 5-6, 5-7 and 5-9 from the new generator (`src/game/gen2/`, its 16 curated rolls each: `gen2/game.ts`; 5-6's kit
+  `gen2/worlds/w5Run.ts`), so World 5 has no stage left on the old `stageGenerator.ts`. Stage names and goals: `stagePlan.ts`. The validator: `levelCheck.ts`. Stage length: `stageTime.ts`.
 - The inspector: `tools/inspect/` (README in `tools/README.md`). Matt's art sheets: `reference/prop-sheets/`. Story:
   `reference/STORY-REVIEW-2026-10-27.md`, `reference/VOICE.md`. Everything else: `reference/HANDOFF.md`.
 

@@ -391,4 +391,4 @@ Follow these steps in order. Each one points at World 6, which did all of them, 
 2. **Easy's falls**: soft on land; water still costs a life on Easy, with a clear warning before it (B1; `planBudget`, `fillSockets`,
    tested). Dot's line, Matt's words: "Careful, water! Flick up and over." (`WATER_LINE`). The sign at the water's edge is on the art list; until then nothing draws it (gen2 only lays its spot, `proto.gen2.waterWarnings`; the hook-up draws a placeholder).
 3. **Sections per world**: about 30 (B9).
-4. **5-8 Up the Bloom Trees**: stays hand-built; the upward flow (piece C) is deferred (B2, B10).
+4. **5-8 Up the Bloom Trees**: stays hand-built; the upward flow (piece C) is deferred (B2, B10). Built 2026-10-29 (w5-rebuild): `protoStage.ts buildKapok` `bloom`; 5-6 is gen2 (`worlds/w5Run.ts`).
