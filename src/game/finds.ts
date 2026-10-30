@@ -325,8 +325,11 @@ export const SNAIL_PAINTED = false;
 export const EXTRA_FINDS: FindDef[] = [...POCKET_FINDS, NOTCH_FIND, ...(SNAIL_PAINTED ? SNAIL_FINDS : [])];
 export const ALL_FINDS: FindDef[] = [...FINDS, ...EXTRA_FINDS];
 
-/** Pokey's note pushed up through the floor of the Under the Ruins level (SECRET-LEVELS.md): written, waiting for that level to give it */
-export const RUINS_NOTE = { id: 'w7_ruins', text: "Meeca. I'm coming. It's taking a while. I'm fine. P.\n\nP.S. My handwriting's wobbling. That's the rain." };
+/**
+ * Pokey's note pushed up through the floor of the Under the Ruins level (SECRET-LEVELS.md): written, waiting for that level to give it.
+ * Matt and the lead's pick (2026-10-29): it crosses out "I'm fine" the way her World 7 note does (the same ~~strike~~ in the reader).
+ */
+export const RUINS_NOTE = { id: 'w7_ruins', text: "Meeca. ~~I'm fine.~~ I'm tired too. Coming anyway. Save my chair. P." };
 
 export const FIND_BY_ID: Record<string, FindDef> = Object.fromEntries(ALL_FINDS.map((f) => [f.id, f]));
 

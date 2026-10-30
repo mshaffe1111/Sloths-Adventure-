@@ -67,3 +67,11 @@ test('every life lost is counted for the General, across stages', () => {
   const b = recordStage(a, st(2));
   assert.equal(b.counters.falls, 5);
 });
+
+test('the Under the Ruins note crosses out "I\'m fine" like her World 7 note, and pays off at tea', async () => {
+  const { RUINS_NOTE, FIND_BY_ID } = await import('./finds.ts');
+  assert.ok(RUINS_NOTE.text.includes("~~I'm fine.~~"));
+  assert.ok(FIND_BY_ID.w7_note.pages[0].text!.includes("~~I'm fine.~~"), 'the same strike-through as hers');
+  assert.ok(finalePanels([RUINS_NOTE.id]).some((p) => p.text === "Mine wasn't either."));
+  assert.ok(!finalePanels([]).some((p) => p.text === "Mine wasn't either."));
+});

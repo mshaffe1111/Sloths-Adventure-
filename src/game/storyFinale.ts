@@ -242,9 +242,9 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     N('She also gave him the letters from under her pillow, all of them, every one saying she was fine. He read them one at a time. The handwriting never wobbled once.', TEA, { cue: 'tender', i: 0.45, p: VIL }),
     // (Pokey's own note from Under the Ruins, the one going the other way: SECRET-LEVELS.md)
     ...when(has(RUINS_NOTE.id), [
-      M('Your handwriting wobbled.', TEA, { p: VIL }),
-      P('It was raining.', '=', { p: VIL }),
-      M('You were underground, Pokey.', '=', { sting: 'laugh', p: VIL }),
+      M('You crossed out "I\'m fine."', TEA, { cue: 'tender', i: 0.4, p: VIL }),
+      P('It wasn\'t true.', '=', { p: VIL }),
+      M('Mine wasn\'t either.', '=', { p: VIL }),
     ]),
     // three keepsakes, in this order, the bell always last; the other six are in the satchel (KEEPSAKE_LINES) and the seeds go to the hill
     ...FINALE_KEEPSAKES.flatMap((id) => [

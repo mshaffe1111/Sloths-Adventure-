@@ -49,13 +49,12 @@ Stage 6 holds no find today; 7-7's Thorn Gate is untouched. The pocket tears in 
 - **Card:** A twig from the old nest, notched up its length, one notch a year. The low notches are cut deep and neat. The higher ones are in a different hand, and each has a tiny fern drawn beside it.
 - **Payoff:** it sits in the satchel next to the painting of his parents (S-11). No words.
 
-### The Under the Ruins note
+### The Under the Ruins note (replaced: Matt and the lead's pick, 2026-10-29)
 
-This depends on the World 7 secret level (SECRET-LEVELS.md), which isn't built yet. The words are ready for when it is:
-> Meeca. I'm coming. It's taking a while. I'm fine. P.
-> P.S. My handwriting's wobbling. That's the rain.
+Waiting for the World 7 secret level (SECRET-LEVELS.md); written and wired:
+> Meeca. ~~I'm fine.~~ I'm tired too. Coming anyway. Save my chair. P.
 
-**Payoff, at tea, if it was found:** MEECA "Your handwriting wobbled." / POKEY "It was raining." / MEECA "You were underground, Pokey."
+Payoff, at tea, if it was found: MEECA "You crossed out 'I'm fine.'" / POKEY "It wasn't true." / MEECA "Mine wasn't either."
 
 ### The snail: one per world
 
