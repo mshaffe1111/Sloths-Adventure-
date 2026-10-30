@@ -2289,7 +2289,7 @@ export class KitPlay {
       for (let i = 0; i < 2; i++) {
         const rr = 30 + ((u * 90 + i * 60) % 120);
         const a = 0.8 * (1 - u / NOISE.dur) * (1 - (rr - 30) / 120);
-        for (const side of [-1, 1]) drawFx(ctx, 'screech', b.x + side * rr, b.y - 60, 26 + rr * 0.25, { rot: side < 0 ? Math.PI : 0, alpha: a, recolor: '#fde68a' });
+        for (const side of [-1, 1]) drawFx(ctx, 'screech', b.x + side * rr, b.y - 60, 30 + rr * 0.4, { h: 12, rot: Math.PI / 2, alpha: a, recolor: '#fde68a' });
       }
     }
   }

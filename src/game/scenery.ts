@@ -2155,7 +2155,7 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
     case 'embers':
     case 'ash': {
       const list = getMotes(world, count);
-      const emberHot = glowPic('#ffd070', 'fly'), emberWarm = glowPic('#ff9a3c', 'fly');
+      const emberHot = glowPic('#ffd070', 'fly'), emberWarm = glowPic('#ff9a3c', 'fly'), emberCore = glowPic('#fff4c8', 'fly');
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       for (const m of list) {
@@ -2164,9 +2164,12 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
         const a = Math.min(1, (1 - y / vh) * 1.6) * (0.4 + 0.6 * Math.abs(Math.sin(time * 3 + m.p))) * laneClear(x, y, 0.35, 70);
         if (a < 0.02) continue;
         // a soft glowing ember (the pre-rendered glow the fireflies use: a hot core thinning out, no hard dot)
-        const R = (1.4 + m.s * 2.2) * 3.2;
+        const R = (1.4 + m.s * 2.2) * 4.2;
         ctx.globalAlpha = a;
         ctx.drawImage(m.c % 2 ? emberHot : emberWarm, x - R, y - R, R * 2, R * 2);
+        // (and its hot heart, so it reads as a spark against the bright sky as well as the dark rock)
+        const r = R * 0.38;
+        ctx.drawImage(emberCore, x - r, y - r, r * 2, r * 2);
       }
       ctx.restore();
       break;

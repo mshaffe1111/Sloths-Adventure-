@@ -11,6 +11,8 @@ mkdirSync(out, { recursive: true });
 
 // (a ledge under x: the highest platform top at x, at or below y)
 const LEDGE = `const ledge = (x, y = -1e9) => { const ps = e.platforms.filter((p) => !p.broken && p.x < x && p.x + p.width > x && p.y >= y).sort((a, b) => a.y - b.y); return ps[0]; };`;
+const ZONE = (kind, dx = 0) => `const z = e.currentStage.zones.find((q) => q.kind === '${kind}'); const x = (z.x0 + z.x1) / 2 + ${dx};
+  const pl = ledge(x, (z.baseY ?? z.top ?? 0) - 300); Object.assign(e.player, { x, y: pl ? pl.y : z.baseY, vx: 0, vy: 0 });`;
 const SCENES = {
   // World 2: the river's current and the foam where the logs ride (2-1)
   river: { stage: '2-1', setup: `const r = e.currentStage.rivers[0]; const x = r.x0 - 60; const pl = ledge(x, r.surfaceY - 400) ?? ledge(r.x0 - 120);
@@ -23,6 +25,17 @@ const SCENES = {
   // World 5: a teapot puffing its sleepy steam
   teapot: { stage: '5-9', setup: `const pot = e.proto.w5.pots[0]; const pl = ledge(pot.x - 140, pot.y - 200);
       Object.assign(e.player, { x: pot.x - 140, y: pl ? pl.y : pot.y, vx: 0, vy: 0 });` },
+  // a zone, by kind, on a stage that has one: Pokey stood in its middle (spore clouds 3-1, dew on the webs 5-6, the tide 6-5, wind 4-4)
+  spores: { stage: '3-1', setup: ZONE('spore') },
+  dew: { stage: '5-6', setup: ZONE('web') },
+  tide: { stage: '6-5', setup: ZONE('tide', -140) },
+  wind: { stage: '4-4', setup: ZONE('wind') },
+  // World 5: standing still, the silk creeping up him (5-2)
+  silk: { stage: '5-2', setup: `` , wait: 1500 },
+  // Dot's flight (4-D): the gusts, the mist, her hover
+  dotflight: { stage: '4-D', setup: `` },
+  // 4-6: the glow on the mist's spots, and its motes
+  settle: { stage: '4-6', setup: `const s = e.proto.w4.patience.find((q) => q.kind === 'mist'); Object.assign(e.player, { x: s.x0 - 120, y: s.y, vx: 0, vy: 0 });` },
   // the Sky Sovereign's fight (4-10): her drop warnings, the stones, her shadow
   boss: { stage: '4-10', setup: ``, wait: 9000 },
 };
@@ -40,7 +53,7 @@ for (const name of which.split(',').filter(Boolean)) {
     for (let i = 0; i < 4; i++) { const g = p.getByText('Skip tips'); if (await g.count()) { await g.first().click(); await p.waitForTimeout(300); } else break; }
     const err = await p.evaluate(`(() => { try { let e = window.__engine; if (typeof e === 'function') e = e(); ${LEDGE} ${sc.setup} return ''; } catch (x) { return String(x); } })()`);
     if (err) console.log(name, ori, 'setup:', err);
-    await p.waitForTimeout(sc.wait ?? 2500);
+    await p.waitForTimeout(sc.wait ?? 5000);
     const dir = join(out, `${tag}-${name}-${ori}-frames`);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir);

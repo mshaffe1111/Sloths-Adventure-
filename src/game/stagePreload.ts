@@ -52,6 +52,7 @@ import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
 import { HERO_ROPE_URL, warmHeroRope } from './heroRope.ts';
 import { ROPE_KIT_URL, warmRopeKit } from './ropeArt.ts';
 import { BOSS_FX_URL, warmBossFx } from './bossFx.ts';
+import { BOSS_ATK_URL, bossAtkReady } from './bossAtk.ts';
 import { perfNote } from './perfLog.ts';
 import { groundUrl, hasGround, warmGround } from './groundPaint.ts';
 import { DRESS_URL, dressReady } from './dressArt.ts';
@@ -218,6 +219,9 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   // (the painted effects: every stage's dust puffs and hit sparks, a boss fight's warnings and hazards, and the wind of Dot's gusts)
   warmBossFx();
   urls.push(BOSS_FX_URL);
+  // (and the bosses' painted attacks: small, and a boss can close any world)
+  bossAtkReady();
+  urls.push(BOSS_ATK_URL);
   // (the painted petals: Worlds 2 and 5's weather and petals, and the petals blown about in Dot's flight too)
   petalsReady();
   urls.push(PETALS_URL);
