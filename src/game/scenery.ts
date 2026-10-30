@@ -7,9 +7,11 @@
  */
 import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
 import { drawPaintedLeaf } from './leafSprites.ts';
+import { drawPetal } from './petalSprites.ts';
 import { renderLifeBack, renderLifeFront } from './life.ts';
 import { setHeroScreen, clearHeroScreen, heroScreen, laneClear } from './heroLane.ts';
 import { glowPic } from './glow.ts';
+import { drawFx } from './bossFx.ts';
 import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
@@ -2090,55 +2092,36 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
     case 'storm': {
       const heavy = look.weather === 'storm';
       const drops = getMotes(world, heavy ? count : Math.round(count * 0.6));
+      // each drop one soft streak (rainStreak: tapered and feathered, so it reads as rain, not as a drawn line), leaning with the wind
+      const streak = rainStreak(heavy ? '200,214,255' : '230,244,255');
       ctx.save();
-      ctx.lineCap = 'round';
-      // three strengths of drop, each stroked as ONE path (a stroke per drop was the costliest thing in the storm)
-      for (let b = 0; b < 3; b++) {
-        const lo = b / 3;
-        const hi = (b + 1) / 3;
-        ctx.beginPath();
-        let any = false;
-        for (const d of drops) {
-          const u = (d.s - 0.4) / 0.9;
-          if (u < lo || u >= hi + (b === 2 ? 1 : 0)) continue;
-          const sp = (heavy ? 1.7 : 1.1) * (0.7 + d.s * 0.7);
-          const x = wrap01(d.x - time * 0.12 * sp + camX * 0.0001) * (vw + 80);
-          const y = wrap01(d.y + time * sp * 0.9) * (vh + 40) - 20;
-          const len = (heavy ? 26 : 18) * d.s;
-          ctx.moveTo(x, y);
-          ctx.lineTo(x - len * 0.28, y + len);
-          any = true;
-        }
-        if (!any) continue;
-        const mid = 0.4 + (lo + hi) * 0.5 * 0.9;
-        ctx.strokeStyle = `rgba(${heavy ? '200,214,255' : '230,244,255'},${0.18 + mid * 0.3})`;
-        ctx.lineWidth = 1 + mid * 0.9;
-        ctx.stroke();
+      const base = ctx.getTransform();
+      for (const d of drops) {
+        const sp = (heavy ? 1.7 : 1.1) * (0.7 + d.s * 0.7);
+        const x = wrap01(d.x - time * 0.12 * sp + camX * 0.0001) * (vw + 80);
+        const y = wrap01(d.y + time * sp * 0.9) * (vh + 40) - 20;
+        const len = (heavy ? 30 : 22) * d.s;
+        const mid = 0.4 + Math.min(1, Math.max(0, (d.s - 0.4) / 0.9)) * 0.9;
+        ctx.globalAlpha = Math.min(1, 0.3 + mid * 0.45);
+        ctx.setTransform(base);
+        ctx.translate(x, y);
+        ctx.rotate(0.27);
+        ctx.drawImage(streak, -2 - mid, 0, 4 + mid * 2, len);
       }
       ctx.restore();
       if (heavy) {
-        // lightning: two quick flashes every ~7s with a forked bolt
+        // lightning: two quick flashes every ~7s, with the painted bolt (bossFx.ts) forking down from the top
         const ph = time % 7.3;
         const f = ph < 0.12 ? 1 : ph > 0.28 && ph < 0.38 ? 0.7 : 0;
         if (f > 0) {
           ctx.fillStyle = `rgba(210,225,255,${0.4 * f})`;
           ctx.fillRect(0, 0, vw, vh);
           const r = rng(Math.floor(time / 7.3) + 5);
-          let bx = vw * (0.2 + r() * 0.6);
-          let by = 0;
-          ctx.strokeStyle = `rgba(255,255,255,${f})`;
-          ctx.lineWidth = 3;
-          ctx.shadowColor = '#bcd0ff';
-          ctx.shadowBlur = 18;
-          ctx.beginPath();
-          ctx.moveTo(bx, by);
-          while (by < vh * 0.6) {
-            bx += (r() - 0.5) * 60;
-            by += 30 + r() * 40;
-            ctx.lineTo(bx, by);
-          }
-          ctx.stroke();
-          ctx.shadowBlur = 0;
+          const bh = vh * (0.5 + 0.15 * r());
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          drawFx(ctx, 'bolt', vw * (0.2 + r() * 0.6), 0, (bh * 140) / 572, { h: bh, ax: 0.5, ay: 0, alpha: f, flipX: r() > 0.5 });
+          ctx.restore();
         }
       } else {
         const g = ctx.createLinearGradient(0, vh * 0.5, 0, vh);
@@ -2172,16 +2155,18 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
     case 'embers':
     case 'ash': {
       const list = getMotes(world, count);
+      const emberHot = glowPic('#ffd070', 'fly'), emberWarm = glowPic('#ff9a3c', 'fly');
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       for (const m of list) {
         const x = wrap01(m.x + Math.sin(time * 0.8 + m.p) * 0.03 + time * 0.012 - camX * 0.0002) * vw;
         const y = (1 - wrap01(m.y + time * 0.07 * m.s)) * vh;
         const a = Math.min(1, (1 - y / vh) * 1.6) * (0.4 + 0.6 * Math.abs(Math.sin(time * 3 + m.p))) * laneClear(x, y, 0.35, 70);
-        ctx.fillStyle = `rgba(255,${150 + (m.c % 90)},40,${a})`;
-        ctx.beginPath();
-        ctx.arc(x, y, 1.4 + m.s * 2.2, 0, Math.PI * 2);
-        ctx.fill();
+        if (a < 0.02) continue;
+        // a soft glowing ember (the pre-rendered glow the fireflies use: a hot core thinning out, no hard dot)
+        const R = (1.4 + m.s * 2.2) * 3.2;
+        ctx.globalAlpha = a;
+        ctx.drawImage(m.c % 2 ? emberHot : emberWarm, x - R, y - R, R * 2, R * 2);
       }
       ctx.restore();
       break;
@@ -2196,8 +2181,13 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
         const y = wrap01(m.y + time * 0.05 * m.s) * (vh + 40) - 20;
         const clear = laneClear(x, y, 0.18, 90);
         if (clear < 0.03) continue;
-        // painted leaves for the leaf worlds (the petals of Worlds 2 and 5 stay petals)
+        // painted leaves for the leaf worlds, painted petals for Worlds 2 and 5 (petalSprites.ts)
         if (look.weather === 'leaves' && drawPaintedLeaf(ctx, world, m, x, y, time, vh / 720, clear)) continue;
+        if (look.weather === 'petals') {
+          drawPetal(ctx, m.c / 1000 + m.p, x, y, (12 + m.s * 9) * Math.max(0.8, vh / 720), time * m.s * 1.2 + m.p, Math.cos(time * m.s + m.p), 0.95 * clear);
+          continue;
+        }
+        // (the leaves' stand-in while their sheet loads, or with ?leaves=classic)
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(time * m.s * 1.2 + m.p);
@@ -2215,6 +2205,35 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
       // the ground, the cliffs and Pokey alike: testers, 4-3, 4-4 and 4-7, 2026-10-25)
       break;
   }
+}
+
+/** one rain drop's streak, made once per colour: tapered from nothing at its top to its foot, feathered at its sides */
+const streaks = new Map<string, HTMLCanvasElement>();
+function rainStreak(rgb: string): HTMLCanvasElement {
+  let c = streaks.get(rgb);
+  if (c) return c;
+  c = document.createElement('canvas');
+  c.width = 8;
+  c.height = 64;
+  const g = c.getContext('2d');
+  if (g) {
+    const d = g.createImageData(8, 64);
+    for (let y = 0; y < 64; y++) {
+      const v = Math.min(1, (y / 63) * 1.3) * Math.min(1, (63 - y) / 5);
+      for (let x = 0; x < 8; x++) {
+        const h = 1 - Math.abs(x - 3.5) / 4;
+        const i = (y * 8 + x) * 4;
+        const [r, gg, b] = rgb.split(',').map(Number);
+        d.data[i] = r;
+        d.data[i + 1] = gg;
+        d.data[i + 2] = b;
+        d.data[i + 3] = Math.round(255 * v * h * h);
+      }
+    }
+    g.putImageData(d, 0, 0);
+  }
+  streaks.set(rgb, c);
+  return c;
 }
 
 export { tone as _tone };

@@ -3,7 +3,7 @@
  * and everything its attacks throw into the arena.
  */
 import type { BossEntity } from './types.ts';
-import { drawGritBit } from './w4Grit.ts';
+import { drawGritBit, drawRiseGlow, drawSoftShadow } from './w4Grit.ts';
 import type { BossHazard } from './bossAI.ts';
 import type { BossDef, MoveDef } from './bossAI.ts';
 import { EASY_OPEN_MUL, openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
@@ -259,13 +259,8 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
 
   // shadow stays on the ground however high a flyer is
   const sh = Math.max(0.35, 1 - air / 380);
-  ctx.save();
-  ctx.globalAlpha = 0.38 * sh * alpha;
-  ctx.fillStyle = '#0f172a';
-  ctx.beginPath();
-  ctx.ellipse(b.x, floor - 2, (def.w * 0.5 + 10) * sh, 8 * sh, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+  // (the soft shadow sprite, w4Grit.ts: no hard oval edge)
+  drawSoftShadow(ctx, b.x, floor - 2, (def.w + 30) * sh * 1.25, 26 * sh, 0.6 * sh * alpha);
 
   // wind-up aura on the floor and around the body: red means "this one is coming, do not poke it"
   if (br.state === 'tell' && m) {
@@ -497,12 +492,8 @@ function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, 
   if (h.kind === 'column' || h.kind === 'drop') {
     const zh = h.kind === 'column' ? h.h : 340;
     const zw = Math.max(34, h.w);
-    const g = ctx.createLinearGradient(0, fl - zh, 0, fl);
-    g.addColorStop(0, 'rgba(239,68,68,0)');
-    g.addColorStop(1, 'rgba(239,68,68,1)');
-    ctx.globalAlpha = (0.18 + 0.32 * u) * strength * (0.85 + 0.15 * pulse);
-    ctx.fillStyle = g;
-    ctx.fillRect(h.x - zw / 2, fl - zh, zw, zh);
+    // (one soft sprite, faded at its sides and up to nothing at its top: the old gradient box had hard sides, Matt 2026-10-29)
+    drawRiseGlow(ctx, h.x, fl, zw, zh, (0.22 + 0.4 * u) * strength * (0.85 + 0.15 * pulse));
   }
 
   // the painted ring on the ground: it swells a little and brightens as the moment comes
@@ -820,14 +811,10 @@ function drawDrop(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   // a stone from a broken pillar (4-10): World 4's painted rock, tumbling
   if (h.look === 'rock' && drawW4(ctx, (Math.round(h.seed) % 2) ? 'rockMoss' : 'rock', h.x, h.y + s * 0.55, s * 1.25, { rot: time * 5 + h.seed })) return;
   ctx.translate(h.x, h.y);
-  // a faint ground shadow so you can see where it is going to land
+  // a ground shadow so you can see where it is going to land (the soft shadow sprite: no hard red oval)
   ctx.save();
   ctx.translate(-h.x, -h.y);
-  ctx.globalAlpha = 0.35;
-  ctx.fillStyle = '#ef4444';
-  ctx.beginPath();
-  ctx.ellipse(h.x, h.floorY - 3, s * 0.6, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
+  drawSoftShadow(ctx, h.x, h.floorY - 3, s * 1.6, 16, 0.55);
   ctx.restore();
   if (h.look === 'spike') {
     ctx.fillStyle = h.color2;

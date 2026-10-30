@@ -1,0 +1,59 @@
+// Before/after videos of the repeating effects swept on hazard-anim (2026-10-29): each scene plays a stage, puts Pokey where the effect
+// is, then records it at a true 30 fps (the page's clock stepped 1/30 s at a time, a screenshot per step) upright 390x844 and sideways
+// 844x390. Run it against a dev server of the base branch for "before" and of this branch for "after".
+//   node tools/art/hazard/rec.mjs <port> <out dir> <tag> <scene,...> [seconds]   (writes <tag>-<scene>-side.mp4 and -up.mp4)
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
+const { chromium } = await import(process.env.PW ?? '/opt/node-tools/node_modules/playwright/index.mjs');
+const [port = '5173', out = '.', tag = 'after', which = '', secs = '6'] = process.argv.slice(2);
+mkdirSync(out, { recursive: true });
+
+// (a ledge under x: the highest platform top at x, at or below y)
+const LEDGE = `const ledge = (x, y = -1e9) => { const ps = e.platforms.filter((p) => !p.broken && p.x < x && p.x + p.width > x && p.y >= y).sort((a, b) => a.y - b.y); return ps[0]; };`;
+const SCENES = {
+  // World 2: the river's current and the foam where the logs ride (2-1)
+  river: { stage: '2-1', setup: `const r = e.currentStage.rivers[0]; const x = r.x0 - 60; const pl = ledge(x, r.surfaceY - 400) ?? ledge(r.x0 - 120);
+      Object.assign(e.player, { x: pl ? Math.min(x, pl.x + pl.width - 30) : x, y: pl ? pl.y : r.surfaceY - 60, vx: 0, vy: 0 });` },
+  // World 2's petals drifting (2-2)
+  petals: { stage: '2-2', setup: `` },
+  // World 9's embers (9-1), World 10's storm (10-1)
+  embers: { stage: '9-1', setup: `` },
+  storm: { stage: '10-1', setup: `` },
+  // World 5: a teapot puffing its sleepy steam
+  teapot: { stage: '5-9', setup: `const pot = e.proto.w5.pots[0]; const pl = ledge(pot.x - 140, pot.y - 200);
+      Object.assign(e.player, { x: pot.x - 140, y: pl ? pl.y : pot.y, vx: 0, vy: 0 });` },
+  // the Sky Sovereign's fight (4-10): her drop warnings, the stones, her shadow
+  boss: { stage: '4-10', setup: ``, wait: 9000 },
+};
+
+const b = await chromium.launch();
+for (const name of which.split(',').filter(Boolean)) {
+  const sc = SCENES[name];
+  for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]]) {
+    const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+    p.on('pageerror', (er) => console.log('ERR', er.message));
+    await p.goto(`http://127.0.0.1:${port}/?nodemo=1&lessons=off`);
+    await p.waitForTimeout(2500);
+    await p.evaluate((s) => window.__play(s), sc.stage);
+    await p.waitForTimeout(6000);
+    for (let i = 0; i < 4; i++) { const g = p.getByText('Skip tips'); if (await g.count()) { await g.first().click(); await p.waitForTimeout(300); } else break; }
+    const err = await p.evaluate(`(() => { try { let e = window.__engine; if (typeof e === 'function') e = e(); ${LEDGE} ${sc.setup} return ''; } catch (x) { return String(x); } })()`);
+    if (err) console.log(name, ori, 'setup:', err);
+    await p.waitForTimeout(sc.wait ?? 2500);
+    const dir = join(out, `${tag}-${name}-${ori}-frames`);
+    rmSync(dir, { recursive: true, force: true });
+    mkdirSync(dir);
+    await p.clock.install();
+    const n = Math.round(Number(secs) * 30);
+    for (let i = 0; i < n; i++) {
+      await p.clock.runFor(1000 / 30);
+      await p.screenshot({ path: join(dir, `f${String(i).padStart(5, '0')}.png`) });
+    }
+    await p.close();
+    execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-framerate', '30', '-i', join(dir, 'f%05d.png'), '-c:v', 'libx264', '-crf', '26', '-pix_fmt', 'yuv420p', join(out, `${tag}-${name}-${ori}.mp4`)]);
+    if (!process.env.KEEP) rmSync(dir, { recursive: true, force: true });
+    console.log(name, ori, n, 'frames');
+  }
+}
+await b.close();
