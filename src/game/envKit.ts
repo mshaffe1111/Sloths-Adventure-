@@ -13,7 +13,7 @@ import { tone, mix, rgba, lighten, darken, type RNG, type Tone } from './artKit.
 import { fernFrond } from './flora.ts';
 import { leaf } from './rainforest.ts';
 import { hangingBat } from './territoryTrees.ts';
-import { EXTRA_PLANTS, SWAYS, type PlantDef, type SwayFn } from './envPlants.ts';
+import { EXTRA_PLANTS, SWAYS, plantGlow, plantGradient, type PlantDef, type SwayFn } from './envPlants.ts';
 import type { Look } from './scenery.ts';
 
 const TAU = Math.PI * 2;
@@ -79,11 +79,7 @@ function gunnera(ctx: CanvasRenderingContext2D, x: number, y: number, s: number,
   }
   ctx.quadraticCurveTo(x, topY + rh * 1.5, x - rw, topY);
   ctx.closePath();
-  const g = ctx.createLinearGradient(x - rw, topY, x + rw, topY);
-  g.addColorStop(0, t.dark);
-  g.addColorStop(0.45, t.mid);
-  g.addColorStop(1, t.light);
-  ctx.fillStyle = g;
+  ctx.fillStyle = plantGradient(ctx, x - rw, topY, x + rw, topY, [[0, t.dark], [0.45, t.mid], [1, t.light]]);
   ctx.fill();
   ctx.strokeStyle = t.deep;
   ctx.lineWidth = 1.6;
@@ -207,10 +203,7 @@ function raceme(ctx: CanvasRenderingContext2D, x: number, y: number, len: number
     const fx = x + side * 3;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    const g = ctx.createRadialGradient(fx, fy, 0, fx, fy, sz * 2);
-    g.addColorStop(0, 'rgba(79,224,192,0.35)');
-    g.addColorStop(1, 'rgba(79,224,192,0)');
-    ctx.fillStyle = g;
+    ctx.fillStyle = plantGlow(ctx, fx, fy, sz * 2, 'rgba(79,224,192,0.35)', 'rgba(79,224,192,0)');
     ctx.fillRect(fx - sz * 2, fy - sz * 2, sz * 4, sz * 4);
     ctx.restore();
     // the claw: a curved beak with a smaller keel under it
@@ -275,10 +268,7 @@ function parkia(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, 
     const R = s * 0.15;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    const g = ctx.createRadialGradient(hx, hy + R, 0, hx, hy + R, R * 3);
-    g.addColorStop(0, rgba(col, 0.35));
-    g.addColorStop(1, rgba(col, 0));
-    ctx.fillStyle = g;
+    ctx.fillStyle = plantGlow(ctx, hx, hy + R, R * 3, rgba(col, 0.35), rgba(col, 0));
     ctx.fillRect(hx - R * 3, hy - R * 2, R * 6, R * 6);
     ctx.restore();
     ctx.fillStyle = col;
@@ -318,10 +308,7 @@ function moonflower(ctx: CanvasRenderingContext2D, x: number, y: number, s: numb
       const fy = y - h - R * 0.3;
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      const g = ctx.createRadialGradient(sx, fy, 0, sx, fy, R * 2.4);
-      g.addColorStop(0, 'rgba(244,236,212,0.5)');
-      g.addColorStop(1, 'rgba(244,236,212,0)');
-      ctx.fillStyle = g;
+      ctx.fillStyle = plantGlow(ctx, sx, fy, R * 2.4, 'rgba(244,236,212,0.5)', 'rgba(244,236,212,0)');
       ctx.fillRect(sx - R * 2.4, fy - R * 2.4, R * 4.8, R * 4.8);
       ctx.restore();
       // five pleated petals fused into a disc, with the green-yellow throat
@@ -382,10 +369,7 @@ function foxfireLog(ctx: CanvasRenderingContext2D, x: number, y: number, s: numb
     const ms = 4 + r() * 5;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    const g = ctx.createRadialGradient(mx, my - ms, 0, mx, my - ms, ms * 3);
-    g.addColorStop(0, rgba(fox, 0.28));
-    g.addColorStop(1, rgba(fox, 0));
-    ctx.fillStyle = g;
+    ctx.fillStyle = plantGlow(ctx, mx, my - ms, ms * 3, rgba(fox, 0.28), rgba(fox, 0));
     ctx.fillRect(mx - ms * 3, my - ms * 4, ms * 6, ms * 6);
     ctx.restore();
     ctx.strokeStyle = rgba(fox, 0.95);
@@ -466,10 +450,7 @@ export function paintFrontClump(ctx: CanvasRenderingContext2D, world: number, lo
     for (let k = 0; k < 4; k++) {
       const gx = x + (k - 1.5) * 80;
       const gy = y - 20 - r() * 30;
-      const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, 12);
-      g.addColorStop(0, rgba(look.glow, 0.5));
-      g.addColorStop(1, rgba(look.glow, 0));
-      ctx.fillStyle = g;
+      ctx.fillStyle = plantGlow(ctx, gx, gy, 12, rgba(look.glow, 0.5), rgba(look.glow, 0));
       ctx.fillRect(gx - 12, gy - 12, 24, 24);
     }
     ctx.restore();

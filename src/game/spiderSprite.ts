@@ -13,6 +13,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { SPIDER_FRAMES } from './spiderAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { drawSheet } from './sheetBake.ts';
 
 export const DEFAULT_SPRITE_SPIDER = true;
 /** world units per atlas pixel */
@@ -97,7 +98,7 @@ export function drawSpiderSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
     ctx.fill();
   }
   ctx.scale(sx, sy);
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
+  drawSheet(ctx, atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();
   return true;
 }

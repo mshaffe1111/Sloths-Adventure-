@@ -6,7 +6,7 @@
  */
 import type { Platform, Vine, TreeStructure } from './types.ts';
 import {
-  rng, tone, mix, lighten, darken, rgba, drawCrown, drawFrond, drawGrass, drawFlower, drawMushroom,
+  rng, tone, mix, lighten, darken, rgba, drawCrown, drawFrond, drawGrass, drawFlower, drawMushroom, keptGradient,
   type RNG, type Tone,
 } from './artKit.ts';
 import { lookFor, type Look } from './scenery.ts';
@@ -37,6 +37,9 @@ let curWorld = 1;
 let curRig: Rig | null = null;
 let curL = 0;
 let curR = 0;
+/** the view's top and bottom (world y) this frame, for culling what grows on the ledges up and down (renderWorldObjects) */
+let curT = -Infinity;
+let curB = Infinity;
 const RICH_GROUND = (_look: Look) => isRich(curWorld);
 
 interface Cam {
@@ -103,10 +106,14 @@ function stone(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rot);
-  const g = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
-  g.addColorStop(0, st.light);
-  g.addColorStop(0.55, st.mid);
-  g.addColorStop(1, st.dark);
+  // kept by the stone's size (its tone is kept by artKit), not made each frame
+  const g = keptGradient(st, Math.round(w * 16) * 65536 + Math.round(h * 16), () => {
+    const gr = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
+    gr.addColorStop(0, st.light);
+    gr.addColorStop(0.55, st.mid);
+    gr.addColorStop(1, st.dark);
+    return gr;
+  });
   ctx.beginPath();
   ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
   stroked(ctx, g, rgba(outline, 0.75), 2);
@@ -379,6 +386,12 @@ function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG
     if (sway) ctx.restore();
   };
   if (plan && entry !== undefined && plan.entry === entry && plan.x === p.x && plan.w === p.width && r.seek) {
+    // (a ledge above or below the view: nothing it grows can show; 400 covers the tallest plant, 40 what hangs over its lip. A tall
+    // stage drew every ledge's ferns, up to 1000 path fills a frame in 2-6, PERF-B 2026-10-30)
+    if (p.y + 40 < curT || p.y - 400 > curB) {
+      r.seek((entry + plan.total) | 0);
+      return;
+    }
     for (const it of plan.items) {
       if (it.x < curL - 150 || it.x > curR + 150) continue;
       r.seek((entry + it.d) | 0);
@@ -1318,6 +1331,8 @@ export function renderWorldObjects(
   curRig = polishEnabled() && polishTier() < 2 ? rigFor(look, worldId, getSceneSeed()) : null;
   curL = left;
   curR = right;
+  curT = cam.y - 60;
+  curB = cam.y + cam.viewportHeight + 60;
   const bottom = cam.y + cam.viewportHeight + 60;
 
   for (const t of trees) {
@@ -1336,8 +1351,9 @@ export function renderWorldObjects(
   const bounceBottom = cam.y + cam.viewportHeight + 60;
 
   // mushrooms first so the ground can cover their stalks
-  const ordered = [...platforms].sort((a, b) => (a.type === 'bouncy' ? 0 : 1) - (b.type === 'bouncy' ? 0 : 1));
-  for (const p of ordered) {
+  // (two passes, bouncy then the rest, each in stage order: the same order a stable sort gave, without a sorted copy every frame)
+  for (let pass = 0; pass < 2; pass++) for (const p of platforms) {
+    if ((p.type === 'bouncy') !== (pass === 0)) continue;
     if (p.x + p.width < left || p.x > right || p.broken) continue;
     const r = rng(Math.abs(p.id) * 97 + 13);
     ctx.save();
@@ -1411,6 +1427,9 @@ export function renderWorldObjects(
     }
     ctx.restore();
   }
+  // (anything drawn outside this frame's world pass, a bake or a menu picture, culls nothing up or down)
+  curT = -Infinity;
+  curB = Infinity;
 }
 
 const planCache = new WeakMap<object, { n: number; world: number; seed: number; plan: StagePlan }>();
@@ -1445,6 +1464,28 @@ function thinPlanFor(plan: StagePlan, p: Platform): ThinPlan {
   return { look, variant: Math.abs(p.id) % VARIANTS[look] };
 }
 
+/**
+ * the water's top-to-bottom gradient, kept for the last few (look, surface, view bottom) it was asked for, to the whole pixel: the
+ * view's bottom only moves when the camera does, so a level stretch reuses one gradient instead of making one every frame
+ */
+const waterGrads: Array<{ look: Look | null; y: number; b: number; g: CanvasGradient | null }> = [0, 1, 2, 3].map(() => ({ look: null, y: 0, b: 0, g: null }));
+let waterGradNext = 0;
+function waterGradient(ctx: CanvasRenderingContext2D, look: Look, waterY: number, bottom: number): CanvasGradient {
+  const y = Math.round(waterY);
+  const b = Math.round(bottom);
+  for (const e of waterGrads) if (e.g && e.look === look && e.y === y && e.b === b) return e.g;
+  const e = waterGrads[waterGradNext];
+  waterGradNext = (waterGradNext + 1) % waterGrads.length;
+  const g = ctx.createLinearGradient(0, y, 0, b);
+  g.addColorStop(0, rgba(look.water.top, 0.92));
+  g.addColorStop(1, rgba(look.water.bottom, 1));
+  e.look = look;
+  e.y = y;
+  e.b = b;
+  e.g = g;
+  return g;
+}
+
 export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: number, x1: number, waterY: number, bottom: number, time: number) {
   // Worlds 6-10: Matt's painted dirty, fast water (badWaterArt.ts); Worlds 1, 3, 4 and 5: their painted pit water (stageArt.ts, VI-9).
   // The drawn version below is World 2's pit water (its rivers are painted: riverArt.ts) and the stand-in while a sheet loads.
@@ -1452,10 +1493,7 @@ export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: nu
   if (drawPitWater(ctx, worldId, x0, x1, waterY, bottom, time)) return;
   const look = lookFor(worldId);
   const w = look.water;
-  const g = ctx.createLinearGradient(0, waterY, 0, bottom);
-  g.addColorStop(0, rgba(w.top, 0.92));
-  g.addColorStop(1, rgba(w.bottom, 1));
-  ctx.fillStyle = g;
+  ctx.fillStyle = waterGradient(ctx, look, waterY, bottom);
   ctx.beginPath();
   ctx.moveTo(x0, bottom);
   ctx.lineTo(x0, waterY);

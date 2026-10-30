@@ -8,6 +8,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { VINE_FRAMES, VINE_BODY_PX } from './heroVineData.ts';
 import type { PlayerState } from './types.ts';
 import { heroBlinkAlpha } from './heroBlink.ts';
+import { drawSheet } from './sheetBake.ts';
 
 let img: HTMLImageElement | null = null;
 let ready = false;
@@ -69,7 +70,7 @@ export function drawVineHang(ctx: CanvasRenderingContext2D, p: PlayerState, alph
   if (alpha < 1) ctx.globalAlpha *= alpha;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.gx * K, -f.gy * K, f.w * K, f.h * K);
+  drawSheet(ctx, img, f.x, f.y, f.w, f.h, -f.gx * K, -f.gy * K, f.w * K, f.h * K);
   ctx.restore();
   return true;
 }
