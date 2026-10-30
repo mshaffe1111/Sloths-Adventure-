@@ -8,6 +8,8 @@ RELEASE (Matt ~8:05 PM ET): after he plays the 11 PM test link and says "push", 
 
 MATT'S CALLS ~8:10 PM ET: Build 1's 8 items rebuilt here (polish-c: AN-1/2/3, SN-4, DOT-3, UI-6/7/8); LV-3 keep the Easy double jump + a 1-6 practice spot and one Dot line (polish-a2); tilt CT-29 later (after W7-10 and the next releases); Naturalist medal = all 18 journal cards (polish-a1). Also assigned 8:05 PM ET: CT-8 step 2 (polish-controls), X-14 teeter frames (hf-art-bosses), PF-2 + X-10 cause (PF-1), S-12 Flicker stage lines + DOT-5/6/7 check (polish-dot), SR leftovers (story-a), lookalike 31d0341 check (W8).
 
+MATT'S FINISH PLAN (his checklist, tick items there as they reach the test link): https://claude.ai/artifact/7LZN3UfpNBtBYM9dVjFX7H (Claude Docs). Update it at every check-in.
+
 How the lead runs it: a check-in every 30 min (send_later, re-armed each time). Each check-in: list_sessions; read every report; review against LEAD-PLAYBOOK §4; merge what passes (fetch first, one gate per batch); send back what doesn't; nudge anything idle or stuck with no report for 60+ min; update this board; tell Matt only decisions and finished things. Test link cutoff 10:40 PM ET, link 11 PM ET.
 
 Track A, finish the game (owner, next milestone):
