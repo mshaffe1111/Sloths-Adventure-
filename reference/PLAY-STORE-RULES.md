@@ -4,6 +4,8 @@ What Google Play asks of an app (a game above all), worked out for Sloths. Read 
 
 Matt (2026-10-29): "building this also up to code for the Play Store", "I'm not going to like have anything trackable", "most likely be something that I charge for", and "make it to proper standards so that when I am ready, we can start testing it and we don't have to rebuild it all."
 
+polish-a2 also keeps `PLAY-STORE.md` (the build and signing steps, and Matt's steps at submit); this file is the rule list.
+
 Status key: **done** (in the code now), **branch** (built on polish-a2, not merged yet), **todo**, **at submit** (Play Console forms, done when Matt sets up the account).
 
 ## 1. Hard gates: the upload is refused without these
@@ -14,7 +16,7 @@ Status key: **done** (in the code now), **branch** (built on polish-a2, not merg
 | Target API: new apps and updates must target **Android 16 (API 36)** from 2026-08-31; this goes up by one every year | `targetSdkVersion = 36`, `compileSdkVersion = 36` on polish-a2. Re-check each summer | branch |
 | **16 KB memory pages** on 64-bit phones (updates blocked from 2027-02-01) | Capacitor and our plugins are Java/Kotlin, with no native libraries, so we should already pass. Confirm with Android Studio's APK check on the first real build | todo (check) |
 | A unique app ID that never changes after the first upload | Placeholder `com.mshaffe1111.slothadventure`. **Pick the final ID before the first upload**: it can never be changed | at submit (Matt) |
-| Privacy policy link (on the listing and inside the app) | Even with nothing collected. A short page saying "this game collects nothing", linked from the app's settings | todo |
+| Privacy policy link (on the listing and inside the app) | Even with nothing collected. A short page saying "this game collects nothing", linked from the app's settings. `public/privacy.html` is written on polish-a2; link it from the settings screen too | branch |
 | Data safety form | Answer "no data collected or shared". It only stays true if the store build has no tracking (§3) | at submit |
 | Content rating (the IARC questionnaire) | Cartoon peril, no blood, no chat, no purchases, so it should rate "Everyone" | at submit |
 | Target audience and content form | A decision for Matt later: if the ages include under-13s, the Families policy applies (§3). Recommended: yes, since we already meet it | at submit (Matt) |
