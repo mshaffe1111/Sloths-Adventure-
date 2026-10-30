@@ -622,7 +622,7 @@ def round5d(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
-GUARD = {'reaver': 'a big shaggy brown marsh otter warrior with a long wooden spear', 'golem': 'a huge mossy stone golem made of ancient carved rocks',
+GUARD = {'croc': 'a big green crocodile with a small crooked gold crown', 'reaver': 'a big shaggy brown marsh otter warrior with a long wooden spear', 'golem': 'a huge mossy stone golem made of ancient carved rocks',
          'queen': 'a big black tarantula queen with a small gold crown', 'sovereign': 'a great harpy eagle with grey and white feathers and a crest',
          'monarch': 'a huge night butterfly monarch with dark patterned wings', 'drake': 'a big red and green scaled lava dragon'}
 
@@ -679,6 +679,38 @@ def round7b(commit):
         x['strength'], x['seed'], x['name'] = st, sd, f'card-magma-drake-w{round(st * 100)}'
     spec['items'], spec['keep'] = it, [x['name'] for x in it]
     return spec
+
+
+def round8(commit):
+    """the lead's round after the audit: Crocus Rex's story stills at 4x (the guard set), Venom Fang's body tile at 4x, Pokey crouched with
+    both paws gripping the branch (prologue 22-23), and the cubs with her paw over both of his (the singing storm 9)"""
+    meta = json.loads((H.parent / 'hfbatch/starts/storyart/meta-guard.json').read_text())
+    it = []
+    for key, m in meta.items():
+        if not key.startswith('guard-croc.'):
+            continue
+        it.append({'name': f'{key}-s34', 'start': {'src': m['src'], 'scale': m['scale'], 'ox': m['ox'], 'oy': m['oy'], 'size': m['size']},
+                   'prompt': f'slothadv style, {GUARD["croc"]}, in the same pose' + END, 'neg': NEG_FIG + SOFT, 'strength': 0.34, 'seed': 7,
+                   'w': 1024, 'h': 1024, 'loras': [['style', 0.8]]})
+    it.append({'name': 'venom-body-4x-s30', 'start': 'venom-body-4x.png', 'strength': 0.3, 'seed': 5, 'w': 1280, 'h': 288, 'loras': [['style', 0.7]],
+               'prompt': 'slothadv style, painted green snake scales, a seamless band of glossy scales, crisp painted detail, flat grey background',
+               'neg': 'text, blurry, eyes, head'})
+    for n, words, who in (('hold_branch', 'Make him crouch lower and hold on tight: both front paws gripping the branch under his feet, his eyes '
+                           'squeezed shut with worry. Keep his face, his fur, the satchel strap over his left shoulder and the bandages on his wrists exactly the same. '
+                           'Plain flat grey background.', [['pokey', 0.6], ['style', 0.4]]),
+                          ('hands_rim', 'Make the girl sloth with the pink headband put one paw gently over both of the boy sloth\'s paws, which are '
+                           'held together in front of him as if holding on to something, the boy looking worried and the girl smiling kindly at him. Keep '
+                           'both of them exactly the same otherwise, their faces, their fur, her pink vest with bib 07, his satchel. Plain flat grey background.',
+                           [['pokey', 0.4], ['meeca', 0.4], ['style', 0.4]])):
+        it.append({'name': f'new-{n}-e', 'edit': True, 'start': f'new-{n}.png', 'seed': 3, 'prompt': words, 'neg': EDIT_NEG})
+        it.append({'name': f'new-{n}-s', 'then': f'new-{n}-e', 'strength': 0.28, 'seed': 7, 'w': 1024, 'h': 1024, 'loras': who,
+                   'prompt': (POKEY + 'crouching, both paws gripping the branch, worried' if n == 'hold_branch' else
+                              'two young sloths together, the girl in a pink headband and pink vest with bib 07 puts her paw over both paws of the boy with the satchel') + END,
+                   'neg': NEG_FIG + SOFT})
+        it.append({'name': f'new-{n}-e2', 'edit': True, 'start': f'new-{n}.png', 'seed': 11, 'prompt': words, 'neg': EDIT_NEG})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r8', 'loras': {k: LORAS[k] for k in ('style', 'pokey', 'meeca')}, 'base': base, 'items': it, 'q': 92,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
 def args(name, commit):

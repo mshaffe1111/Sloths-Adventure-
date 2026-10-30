@@ -271,11 +271,27 @@ function drawParticles(ctx: CanvasRenderingContext2D, kind: StoryScene['particle
   }
 }
 
-function drawMood(ctx: CanvasRenderingContext2D, mood: StoryScene['mood'], w: number, h: number, t: number) {
+function drawMood(ctx: CanvasRenderingContext2D, mood: StoryScene['mood'], w: number, h: number, t: number, moonlit = false) {
   switch (mood) {
     case 'storm': {
-      ctx.fillStyle = 'rgba(22, 14, 56, 0.55)';
-      ctx.fillRect(0, 0, w, h);
+      if (moonlit) {
+        // (a painted storm plate is dark already: a light veil and the moon through the clouds, so it reads as a moonlit storm, not murk
+        // (Matt's audit, 2026-10-30: the singing-storm memory was all murk under the wash))
+        ctx.fillStyle = 'rgba(22, 20, 60, 0.16)';
+        ctx.fillRect(0, 0, w, h);
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        const mg = ctx.createRadialGradient(w * 0.72, h * 0.12, 10, w * 0.72, h * 0.12, Math.max(w, h) * 0.75);
+        mg.addColorStop(0, 'rgba(200, 214, 255, 0.5)');
+        mg.addColorStop(0.45, 'rgba(120, 140, 200, 0.18)');
+        mg.addColorStop(1, 'rgba(60, 70, 120, 0)');
+        ctx.fillStyle = mg;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+      } else {
+        ctx.fillStyle = 'rgba(22, 14, 56, 0.55)';
+        ctx.fillRect(0, 0, w, h);
+      }
       const phase = (t % 5) / 5;
       if (phase < 0.06) {
         ctx.fillStyle = `rgba(230, 235, 255, ${0.55 * (1 - phase / 0.06)})`;
@@ -1491,7 +1507,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   ctx.save();
   ctx.translate(0, -top);
   drawParticles(ctx, scene.particles, w, vh, t);
-  drawMood(ctx, scene.mood, w, vh, t);
+  drawMood(ctx, scene.mood, w, vh, t, !!scene.plate && isPlate(scene.plate));
   if (!plated) withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, vh * (1 + lift) + 4, t, true));
   ctx.restore();
   ctx.restore();

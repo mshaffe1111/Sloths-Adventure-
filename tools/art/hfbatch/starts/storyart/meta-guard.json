@@ -270,5 +270,53 @@
    1024,
    1024
   ]
+ },
+ "guard-croc.idle_005": {
+  "src": [
+   "src/assets/enemies/croc-anim.webp",
+   3476,
+   1254,
+   366,
+   137
+  ],
+  "scale": 2.459016393442623,
+  "ox": 62,
+  "oy": 343,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-croc.defeated_024": {
+  "src": [
+   "src/assets/enemies/croc-anim.webp",
+   2651,
+   1672,
+   348,
+   119
+  ],
+  "scale": 2.586206896551724,
+  "ox": 62,
+  "oy": 358,
+  "size": [
+   1024,
+   1024
+  ]
+ },
+ "guard-croc.roar_020": {
+  "src": [
+   "src/assets/enemies/croc-anim.webp",
+   1330,
+   639,
+   399,
+   157
+  ],
+  "scale": 2.255639097744361,
+  "ox": 62,
+  "oy": 335,
+  "size": [
+   1024,
+   1024
+  ]
  }
 }
