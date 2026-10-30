@@ -118,10 +118,14 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.beginPath();
     ctx.arc(0, -6, 40, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.font = `bold 12px ${FONT_UI}`;
+    const sp = textStamp(SPARKLE);
+    if (!sp) ctx.font = SPARKLE.font;
     for (let k = 0; k < 3; k++) {
       const a = time * 5 + (k * Math.PI * 2) / 3;
-      ctx.fillText('✨', 16 + Math.cos(a) * 22, -16 + Math.sin(a) * 12);
+      const x = 16 + Math.cos(a) * 22;
+      const y = -16 + Math.sin(a) * 12;
+      if (sp) ctx.drawImage(sp.cv, x + sp.dx, y + sp.dy, sp.w, sp.h);
+      else ctx.fillText(SPARKLE.text, x, y);
     }
     ctx.restore();
   }
@@ -145,15 +149,62 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     ctx.beginPath();
     ctx.arc(16, -56, 9, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = `bold 12px ${FONT_UI}`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('!', 16, -56);
+    const bang = textStamp(BANG);
+    if (bang) ctx.drawImage(bang.cv, 16 + bang.dx, -56 + bang.dy, bang.w, bang.h);
+    else {
+      ctx.fillStyle = BANG.fill;
+      ctx.font = BANG.font;
+      ctx.textAlign = BANG.align;
+      ctx.textBaseline = BANG.baseline;
+      ctx.fillText(BANG.text, 16, -56);
+    }
     ctx.restore();
   }
   ctx.restore();
   return true;
+}
+
+// ───────── the sparkles and the "!" (text drawn once into a small picture, PERFORMANCE-RULES §3.4) ─────────
+interface StampSpec {
+  text: string;
+  font: string;
+  fill: string;
+  align: CanvasTextAlign;
+  baseline: CanvasTextBaseline;
+  /** the baked picture, and where its corner sits from the point fillText would be given (world units); null until its font is in */
+  baked?: { cv: HTMLCanvasElement; dx: number; dy: number; w: number; h: number } | null;
+}
+/** the "open to a hit" sparkles, as fillText drew them: the canvas's default black, from the left, on the baseline */
+const SPARKLE: StampSpec = { text: '✨', font: `bold 12px ${FONT_UI}`, fill: '#000000', align: 'start', baseline: 'alphabetic' };
+const BANG: StampSpec = { text: '!', font: `bold 12px ${FONT_UI}`, fill: '#ffffff', align: 'center', baseline: 'middle' };
+/** how much finer than a world unit the text is baked: the eagle is drawn at up to about 2.2 device px a unit, so it is always shrunk */
+const STAMP_K = 4;
+function textStamp(s: StampSpec): StampSpec['baked'] {
+  if (s.baked !== undefined) return s.baked;
+  if (typeof document === 'undefined') return null;
+  // the game's font may still be loading: draw the text as before until it is in, so the picture never keeps a stand-in font
+  if (document.fonts && !document.fonts.check(s.font)) return null;
+  const cv = document.createElement('canvas');
+  const g = cv.getContext('2d');
+  if (!g) return (s.baked = null);
+  g.font = s.font;
+  g.textAlign = s.align;
+  g.textBaseline = s.baseline;
+  const m = g.measureText(s.text);
+  const pad = 2;
+  const left = Math.ceil(m.actualBoundingBoxLeft) + pad;
+  const up = Math.ceil(m.actualBoundingBoxAscent) + pad;
+  const w = left + Math.ceil(m.actualBoundingBoxRight) + pad;
+  const h = up + Math.ceil(m.actualBoundingBoxDescent) + pad;
+  cv.width = w * STAMP_K;
+  cv.height = h * STAMP_K;
+  g.scale(STAMP_K, STAMP_K);
+  g.font = s.font;
+  g.textAlign = s.align;
+  g.textBaseline = s.baseline;
+  g.fillStyle = s.fill;
+  g.fillText(s.text, left, up);
+  return (s.baked = { cv, dx: -left, dy: -up, w, h });
 }
 
 /** the sheets this sprite draws from (sheetWarm.ts spriteSheets: asked for before the stage starts, not when it first comes on screen) */
