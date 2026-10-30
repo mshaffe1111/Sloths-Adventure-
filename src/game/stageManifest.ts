@@ -15,6 +15,7 @@
  *   bad-water     Worlds 6-10's dirty water, when the stage has water
  *   bounce        the bounce mushrooms
  *   crumble-tile  the painted crumbling tiles, when it has any
+ *   crumble       World 7's set (stageSheets.ts), every World 7 stage but the lair
  * plus what every stage shows (ALWAYS): the HUD sheet and Dot's perch, Pokey's moving clips and the keepsake pickups.
  *
  * QA's control-test runs (2026-10-30): a freeze right after 'hud-atlas' and 'crumble' finished loading on every run (127-761 ms), and
@@ -46,6 +47,9 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (x.rope) out.add('rope');
   const w = st.config.worldIndex;
   if (st.boss) out.add(`boss:${w}`);
+  // (World 7's crumbling tiles, bank faces, temple walls and puzzle pieces: every stage but the guardian's lair, 7-4's slide too, whose
+  // hall's temple walls came in 6 s into it)
+  else if (w === 7 && !st.config.secret) out.add('crumble');
   // (World 4's watcher over a watched stretch is the Sky Sovereign herself, in her painted boss frames: engine.ts, 4-5 at 6 s)
   if (w === 4 && st.proto?.watch?.length) out.add('boss:4');
   if (st.daisyX !== undefined) out.add('meeca-standard');
