@@ -93,3 +93,25 @@ polish-dot owns Dot's in-stage lines (S-5). From me:
 - the four pocket pick-up lines above.
 
 I've asked polish-dot to place them, so neither of us edits the same rows. The SR-pointer rows of S-1 are all applied (story-a 72374c9, merged).
+
+## S-7 ending cards: the line under each picture (draft; the pictures are story-art's)
+
+Shown as a run of cards between the weeks after and the hill. Each card is 1920x1080, with the safe area in the middle 1440x880.
+- venom-fang: Pokey stops by on Thursdays. He always asks first.
+- crocus-rex: He ferries the village across, three at a time. The crown is still crooked.
+- shadow-prowler: He still sits on the ledge. Now somebody sits with him.
+- sky-sovereign: She lets the wind lane run where it likes.
+- tarantula-queen: Tea at four, every day. Somebody always stays to the bottom of the cup.
+- marsh-reaver: Lunch at noon, on a root by the path. He leaves half.
+- stone-golem: He talks the slowest at the council now. The others wait.
+- night-wing-monarch: Pokey told her how the dream ended. She wrote it down.
+- magma-drake: Two cups. Both used.
+- general: Every spring he plants a tree by the river. He takes his time.
+- soldiers: Pell took their measurements. They didn't need new coats. They just wanted to sit down.
+- squirrels: They put up a new sign. It says BACK ALREADY?
+- gruntlewick: He has started a new warning. It is about Tuesday.
+- mailman: His new package says NO HURRY. He is taking it very seriously.
+- pell: The sign still hangs crooked. The shop is never empty.
+- flicker: He stays at Pell's shop. The light over the counter is steady.
+
+With the cards in, the weeks-after narration for the soldiers and the squirrels (above, under People who come back) moves onto their cards instead of being said twice.
