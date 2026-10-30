@@ -39,6 +39,8 @@ export class AudioCore {
   readonly musicDuck: GainNode;
   /** after musicDuck: dips the music a few dB under speech (SN-7), on its own so a sting's deeper duck is never undone by a line */
   readonly speechDuck: GainNode;
+  /** the story's own hand on the music (story-delivery): 1 as written, a half under a hush, nothing under the big silences */
+  readonly storyLevel: GainNode;
   readonly amb: GainNode;
   /** low-pass on the music bus: closes when the game is paused (a muffled "underwater" feel) */
   readonly musicFilter: BiquadFilterNode;
@@ -118,8 +120,10 @@ export class AudioCore {
     this.amb.gain.value = 0.6;
     this.sfx.connect(this.master);
     this.speechDuck = c.createGain();
+    this.storyLevel = c.createGain();
     this.music.connect(this.musicDuck);
-    this.musicDuck.connect(this.speechDuck);
+    this.musicDuck.connect(this.storyLevel);
+    this.storyLevel.connect(this.speechDuck);
     this.speechDuck.connect(this.musicFilter);
     // nothing below ~40 Hz can be heard on any speaker, but it uses up the compressor's headroom and makes the whole mix pump
     if (opts.recorded) this.musicFilter.connect(this.master);

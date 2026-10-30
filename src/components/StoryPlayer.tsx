@@ -9,6 +9,7 @@ import { drawStoryScene, preloadSceneCards, preloadScenePhotos, preloadScenePlat
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
+import { directScene } from '../game/storyDirect.ts';
 import { Plaque } from './KitParts.tsx';
 import { Icon, type IconName } from './icons/index.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
@@ -69,8 +70,14 @@ const FPS = 30;
  * 2026-10-29); the scene keeps its width and the room above it shows the top of the painting (storyArt.ts drawStoryScene `top`) */
 /** the room kept for the words under it (six lines in the reading font, the Back and Next row, the top chips: 290 plus 60 to spare, or
  *  a long line pushed Next off the bottom of the screen) */
-const UPRIGHT_WORDS = 290;
-const uprightH = (v: { w: number; h: number }) => Math.round(Math.max(160, v.h - UPRIGHT_WORDS - 60));
+/** upright, the picture fills the whole screen and the words box sits over its bottom, as tall as its words (a two-word line had a box
+ *  with a hand's width of dark under it: Matt via the lead, 2026-10-30). The figures stand clear of the tallest box a page makes (four
+ *  lines of the reading font, the name and the Back and Next row), at the same place for every line, so nobody jumps when the box changes */
+const UPRIGHT_WORDS = 250;
+/** how much closer the camera comes upright than sideways */
+const UPRIGHT_ZOOM = 1.22;
+const UPRIGHT_ZOOM_MAX = 1.4;
+const uprightFeet = (v: { w: number; h: number }) => Math.max(0.5, Math.min(0.95, (v.h - UPRIGHT_WORDS) / v.h - 0.02));
 
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
   // a picture the player plays with their thumbs needs a touch screen; without one it reads as a picture, with the narration that says
@@ -100,12 +107,25 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     warmStoryCast();
     return () => releaseStoryArt();
   }, []);
+  // and the voices of everyone who speaks in it
+  useEffect(() => {
+    sound.warmVoices(new Set(panels.map((p) => p.speaker)));
+  }, [panels]);
   const [shown, setShown] = useState(0);
   const panel = panels[idx];
+  // how each picture is delivered: its entrance, the beat before the words, the pace, pages, camera, voice and music (storyDirect.ts)
+  const dirs = useMemo(() => directScene(panels), [panels]);
+  const dir = dirs[idx];
+  // a long line comes a page at a time
+  // (which page, of which picture: a new picture starts on its first page without waiting for an effect)
+  const [pageAt, setPageAt] = useState({ idx: 0, n: 0 });
+  const page = pageAt.idx === idx ? pageAt.n : 0;
+  const text = dir.pages[Math.min(page, dir.pages.length - 1)] ?? panel.text;
+  const lastPage = page >= dir.pages.length - 1;
   const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;
   const wantsCard = panel.chapter !== prevChapter;
   const [cardUp, setCardUp] = useState(wantsCard);
-  const done = shown >= panel.text.length;
+  const done = shown >= text.length;
   const last = idx === panels.length - 1;
 
   // a new chapter opens with its title card
@@ -116,28 +136,31 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     return () => clearTimeout(id);
   }, [idx, wantsCard]);
 
-  // typewriter (time-based so a slow frame never stalls the text); waits for the title card
+  // typewriter (time-based so a slow frame never stalls the text); waits for the title card, then the picture's beat (a later page
+  // follows at once)
   useEffect(() => {
     setShown(0);
     if (cardUp) return;
-    const start = performance.now();
-    const when = typeSchedule(panel.text);
+    const start = performance.now() + (page === 0 ? dir.beat : 120);
+    const when = typeSchedule(text, dir.typeMs);
     let k = 0;
     let raf = 0;
     const tick = (now: number) => {
       while (k < when.length && when[k] <= now - start) k++;
       const n = k;
       setShown((prev) => (prev === n ? prev : Math.max(prev, n)));
-      if (n < panel.text.length) raf = requestAnimationFrame(tick);
+      if (n < text.length) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [idx, panel.text, cardUp]);
+  }, [idx, page, text, dir, cardUp]);
 
   // the music follows the story: each panel's chapter and mood choose the piece (same piece = no restart)
+  // and the direction's hand on it: keep, under, silence or swell
   useEffect(() => {
     sound.storyPanel(panel);
-  }, [panel]);
+    sound.storyMusic(dir.music);
+  }, [panel, dir]);
 
   // a panel's own sting plays once, as its picture appears: after the title card has gone and the first letter is typed (at once for a picture
   // with no words). Going Back and forward again does not play it a second time. (The first pass for a new panel still holds the last panel's
@@ -148,22 +171,26 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const fresh = lastIdx.current !== idx;
     lastIdx.current = idx;
     if (!panel.sting || stung.current.has(idx)) return;
-    if (!stingDue({ fresh, wantsCard, cardUp, shown, textLength: panel.text.length })) return;
+    if (!stingDue({ fresh, wantsCard, cardUp, shown, textLength: text.length })) return;
     stung.current.add(idx);
     sound.storySting(panel.sting);
-  }, [idx, panel, wantsCard, cardUp, shown]);
+  }, [idx, panel, text, wantsCard, cardUp, shown]);
 
-  // a soft voice blip for each letter as it is typed (not when the whole line is skipped to)
+  // the speaker's voice as the line types, a syllable every few letters (not when the whole line is skipped to)
+  // (a slow frame can bring several letters at once: they are still spoken, the voice's own gap keeps it from gabbling; a tap that
+  // finishes the line is `skipped`, and the rest of that line is silent)
   const spoken = useRef(0);
+  const skipped = useRef(false);
   useEffect(() => {
     spoken.current = 0;
-  }, [idx]);
+    skipped.current = false;
+  }, [idx, page]);
   useEffect(() => {
     const from = spoken.current;
     spoken.current = shown;
-    if (shown - from > 4) return;
-    for (let i = from; i < shown; i++) sound.speak(panel.speaker, panel.text[i] ?? ' ', i);
-  }, [shown, panel]);
+    if (skipped.current) return;
+    for (let i = from; i < shown; i++) sound.speak(panel.speaker, text, i, dir.tone);
+  }, [shown, panel, text, dir]);
 
   // ── the picture: full screen on landscape, a 16:9 window above the text on tall screens
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -187,7 +214,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const cv = canvasRef.current;
     const bx = boxRef.current;
     if (!wide || !cv || !bx) {
-      feetRef.current = 0.95;
+      feetRef.current = wide ? 0.95 : uprightFeet(view);
       return;
     }
     const measure = () => {
@@ -199,9 +226,12 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const ro = new ResizeObserver(measure);
     ro.observe(bx);
     return () => ro.disconnect();
-  }, [wide, idx, cardUp, view.w, view.h]);
+  }, [wide, idx, cardUp, view]);
 
   const startRef = useRef(performance.now());
+  /** how this picture arrives (storyDirect.ts): the full dip from dark for a new chapter, a quick half-dark one for a new place, a cut */
+  const enterRef = useRef(dir.enter);
+  enterRef.current = dir.enter;
   // (a picture's own timeline starts when the title card has gone, so an action beat is never played out behind the card)
   useEffect(() => {
     startRef.current = performance.now();
@@ -270,7 +300,18 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     sound.setAmbient('thunderstorm');
     return () => sound.setAmbient('gentle_breeze');
   }, [hold]);
-  const scene = hold && phase === 'reach' ? hold.reach : panel.scene;
+  // (the picture through the direction's camera, unless the scene moves its own)
+  // (upright the picture is the whole screen: a little closer in, so the cast fills it rather than the canopy above them)
+  const directed = useMemo(() => {
+    const s = dir.camera ? { ...panel.scene, camera: dir.camera } : panel.scene;
+    if (wide) return s;
+    // (only a wide shot is brought in, and no further than UPRIGHT_ZOOM_MAX: a shot already close, brought in again, cut the one not
+    // speaking down to a sliver at the screen's edge)
+    const up = (z: number) => Math.max(z, Math.min(z * UPRIGHT_ZOOM, UPRIGHT_ZOOM_MAX));
+    const cam = s.camera;
+    return cam ? { ...s, camera: { ...cam, from: { ...cam.from, zoom: up(cam.from.zoom) }, to: { ...cam.to, zoom: up(cam.to.zoom) } } } : { ...s, zoom: up(s.zoom ?? 1) };
+  }, [panel, dir, wide]);
+  const scene = hold && phase === 'reach' ? hold.reach : directed;
   const showPrompt = !!hold && phase !== 'reach' && (isEasy() || tries.current === 0);
 
   useEffect(() => {
@@ -281,7 +322,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     // (sharp on a phone either way: ST-1, the old 1.25 / 1.5 caps had the browser stretch the picture 2.1x on a 1080p phone)
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cssW = wide ? view.w : view.w;
-    const cssH = wide ? view.h : uprightH(view);
+    const cssH = view.h;
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
     ctx.imageSmoothingEnabled = true;
@@ -293,7 +334,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const sw = Math.max(720, Math.min(1500, sh * (cssW / cssH)));
     const sc = canvas.width / sw;
     const top = Math.max(0, canvas.height / sc - sh);
-    const lift = wide ? 0.09 : 0;
+    // (a close shot the direction frames chest-up is not raised to keep feet above the words box: storyDirect.ts noLift)
+    const chestUp = wide && !!dir.noLift;
+    const lift = wide && !chestUp ? 0.09 : 0;
     const t0 = performance.now();
     let raf = 0;
     let last = 0;
@@ -304,22 +347,28 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       // (while the player holds on, every roll of thunder shakes the picture a little, and the one that breaks shakes it hard)
       const sk = hold ? thunderShake(now - t0, breakAt.current ? now - breakAt.current : null) : { dx: 0, dy: 0, flash: 0 };
       ctx.setTransform(sc, 0, 0, sc, sk.dx * sc, (top + sk.dy) * sc);
-      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, feetRef.current, top);
+      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, chestUp ? 1.5 : feetRef.current, top);
       if (sk.flash > 0) {
         ctx.fillStyle = `rgba(235,240,255,${sk.flash})`;
         ctx.fillRect(-20, -top - 20, sw + 40, sh + top + 40);
       }
-      // dip in from dark at every new picture
-      const k = Math.max(0, 1 - (now - startRef.current) / 520);
+      // a new chapter dips in from dark, a new place half-dark and quicker, and a picture in the same place is a cut
+      const ent = enterRef.current;
+      const k = ent === 'cut' ? 0 : Math.max(0, 1 - (now - startRef.current) / (ent === 'dip' ? 520 : 300));
       if (k > 0) {
-        ctx.fillStyle = `rgba(6,10,8,${k * 0.9})`;
+        ctx.fillStyle = `rgba(6,10,8,${k * (ent === 'dip' ? 0.9 : 0.55)})`;
         ctx.fillRect(0, -top, sw, sh + top);
       }
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [scene, hold, wide, view.w, view.h, cardUp]);
+  }, [scene, hold, wide, view.w, view.h, cardUp, dir.noLift]);
 
+  // (a line that has just finished typing is not left by the same quick double tap that finished it: it gets a moment to be read)
+  const doneAt = useRef(0);
+  useEffect(() => {
+    if (done) doneAt.current = performance.now();
+  }, [done, idx, page]);
   const next = useCallback(() => {
     // (a played picture moves on when it is played, not on a tap)
     if (hold) return;
@@ -328,12 +377,15 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       return;
     }
     if (!done) {
-      setShown(panel.text.length);
+      skipped.current = true;
+      setShown(text.length);
       return;
     }
-    if (last) onFinish();
+    if (performance.now() - doneAt.current < 350) return;
+    if (!lastPage) setPageAt({ idx, n: page + 1 });
+    else if (last) onFinish();
     else setIdx((i) => i + 1);
-  }, [hold, cardUp, done, last, onFinish, panel.text.length]);
+  }, [hold, cardUp, done, last, lastPage, onFinish, text.length, idx, page]);
 
   const back = useCallback(() => setIdx((i) => Math.max(0, i - 1)), []);
 
@@ -358,18 +410,21 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
   const card = splitChapter(panel.chapter);
 
   const box = (
-    <div ref={boxRef} className={`sp-box ${wide ? 'sp-box-over' : ''}`} onClick={next}>
+    // (through the beat before the words the box is not there yet: an empty box on screen read as a fault; it rises with the first letter)
+    <div ref={boxRef} className={`sp-box ${wide ? 'sp-box-over' : ''} ${shown === 0 && !done ? 'sp-box-wait' : ''}`} onClick={next}>
       {!narrator && (
         <span className="sp-name" style={{ ['--dot' as string]: who.dot }}>
           <SpeakerMark name={panel.speaker} size={22} talking={!done} />
           {panel.speaker}
         </span>
       )}
-      <p className={`sp-text ${narrator ? 'narr' : ''}`}>
-        {lyrics(panel.text.slice(0, shown))}
-        <span className="opacity-0">{lyrics(panel.text.slice(shown))}</span>
+      {/* (upright the box is as tall as its words: no two-line floor under a one-line line; the hidden rest of the line already holds
+          the box at its full height while it types) */}
+      <p className={`sp-text ${narrator ? 'narr' : ''}`} style={wide ? undefined : { minHeight: 0 }}>
+        {lyrics(text.slice(0, shown))}
+        <span className="opacity-0">{lyrics(text.slice(shown))}</span>
       </p>
-      {panel.tip && done && (
+      {panel.tip && done && lastPage && (
         <p className="sp-tip">
           <Icon name="bulb" size={16} /> {panel.tip}
         </p>
@@ -394,7 +449,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
             </button>
           )}
           {!hold && <button type="button" className="sp-next" onClick={(e) => { e.stopPropagation(); next(); }}>
-            {last && done ? (
+            {last && done && lastPage ? (
               <>
                 {finishLabel} <Icon name={finishIcon} size={15} />
               </>
@@ -411,16 +466,12 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
 
   return (
     <div ref={rootRef} className="fixed inset-0 z-50 bg-[#070d09] text-white select-none font-game overflow-hidden flex flex-col">
-      {wide ? (
-        <canvas ref={canvasRef} onClick={next} className="absolute inset-0 w-full h-full cursor-pointer" />
-      ) : (
-        <div className="relative shrink-0">
-          <canvas ref={canvasRef} onClick={next} className="block w-full cursor-pointer" style={{ height: uprightH(view) }} />
-          {/* (the picture melts into the words panel instead of stopping at a hard edge) */}
-          <div className="absolute inset-x-0 bottom-0 h-10 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(7,13,9,1), rgba(7,13,9,0))' }} />
-        </div>
-      )}
-      {wide && <div className="absolute inset-x-0 bottom-0 h-[44%] pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' }} />}
+      <canvas ref={canvasRef} onClick={next} className="absolute inset-0 w-full h-full cursor-pointer" />
+      {/* (upright the fade is deeper and nearly solid behind the box: the painting's bottom edge, raised clear of the words, melts away) */}
+      <div
+        className={`absolute inset-x-0 bottom-0 ${wide ? 'h-[44%]' : 'h-[42%]'} pointer-events-none`}
+        style={{ background: wide ? 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' : 'linear-gradient(to top, rgba(6,12,8,1) 0%, rgba(6,12,8,.94) 40%, rgba(6,12,8,0) 100%)' }}
+      />
 
       {/* (above the world's title card, which used to dim Skip into the dark: UI-12) */}
       <div className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
@@ -430,16 +481,14 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
         </button>
       </div>
 
-      {/* (a steady height for six lines of words, so the picture above stays put from one panel to the next; a longer line still grows it) */}
-      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: UPRIGHT_WORDS + 60 }}>{!cardUp && !panel.closing && box}</div>}
-      {wide && !cardUp && !panel.closing && (
+      {!cardUp && !panel.closing && (
         <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
           {box}
         </div>
       )}
 
       {hold && (
-        <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(uprightH(view) * 0.42) }}>
+        <div className={`sp-hold ${wide ? 'sp-hold-wide' : ''} ${showPrompt ? '' : 'sp-hold-off'}`} aria-live="polite" style={wide ? undefined : { top: Math.round(view.h * 0.32) }}>
           <div className="sp-hold-thumbs" aria-hidden="true">
             <span className={`sp-thumb gx-token ${thumbs >= 1 ? 'on' : ''}`}><Icon name="paw" size={17} /></span>
             <span className={`sp-thumb gx-token ${thumbs >= 2 ? 'on' : ''} ${phase === 'lift' ? 'lift' : ''}`}><Icon name="paw" size={17} /></span>
