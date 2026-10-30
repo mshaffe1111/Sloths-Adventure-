@@ -11,6 +11,7 @@
  * Code adds only small touches: a soft glow behind what is lit, a pulse, the pennant's flutter and a short bounce when it is reached.
  */
 import { trackAtlas } from './atlasLoader.ts';
+import { viewRect, type ViewRect } from './artKit.ts';
 import { GATE_FRAMES, PIT_WATER, STAGE_ART_FRAMES, type ArtFrame, type StageArtName } from './stageArtData.ts';
 
 export const STAGE_ART_URL = new URL('../assets/props/stage-art.webp', import.meta.url).href;
@@ -128,6 +129,8 @@ function piece(n: StageArtName): [HTMLImageElement, ArtFrame] | null {
 // ───────────────────────────── the checkpoint ─────────────────────────────
 /** how tall the checkpoint post stands (world px; Pokey is about 86) */
 export const FLAG_H = 122;
+/** the view, kept for the checkpoint's cull */
+const flagView: ViewRect = { x0: 0, y0: 0, x1: 0, y1: 0 };
 /** when each checkpoint was first seen reached (by its x), for its bounce */
 const reachedAt = new Map<number, number>();
 
@@ -138,6 +141,9 @@ const reachedAt = new Map<number, number>();
 export function drawCheckpointArt(ctx: CanvasRenderingContext2D, x: number, ground: number, reached: boolean, t: number): boolean {
   const p = piece(reached ? 'flagLit' : 'flagUnlit');
   if (!p) return false;
+  // off the view (above or below it: an ascent's checkpoints stand one over another, and each is ~25 slices): nothing to draw
+  const v = viewRect(ctx, flagView, 90);
+  if (ground < v.y0 || ground - FLAG_H > v.y1 || x + FLAG_H < v.x0 || x - FLAG_H > v.x1) return true;
   const [img, f] = p;
   const k = FLAG_H / f.h;
   let bounce = 0;

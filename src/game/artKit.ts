@@ -111,6 +111,31 @@ export function keptGradient(owner: object, key: number, make: () => CanvasGradi
 }
 const keptGrads = new WeakMap<object, Map<number, CanvasGradient>>();
 
+/** a world rectangle (what the canvas shows: viewRect) */
+export interface ViewRect {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+/**
+ * The world rectangle the canvas shows under ctx's current transform, grown by `margin`, written into `out` (kept by the caller, so
+ * nothing is made per frame). A rotated or skewed transform (a shake, a lean) leaves `out` as everything, so nothing is culled by mistake.
+ */
+export function viewRect(ctx: CanvasRenderingContext2D, out: ViewRect, margin = 0): ViewRect {
+  const m = typeof ctx.getTransform === 'function' ? ctx.getTransform() : null;
+  if (!m || m.b !== 0 || m.c !== 0 || m.a <= 0 || m.d <= 0) {
+    out.x0 = out.y0 = -Infinity;
+    out.x1 = out.y1 = Infinity;
+    return out;
+  }
+  out.x0 = -m.e / m.a - margin;
+  out.x1 = (ctx.canvas.width - m.e) / m.a + margin;
+  out.y0 = -m.f / m.d - margin;
+  out.y1 = (ctx.canvas.height - m.f) / m.d + margin;
+  return out;
+}
+
 export function tau(n: number) {
   return n * Math.PI * 2;
 }
