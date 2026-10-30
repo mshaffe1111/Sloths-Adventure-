@@ -28,6 +28,8 @@ interface WorldMapProps {
   resumeId?: string;
   onSaveLoaded: () => void;
   onOpenTrophies?: () => void;
+  /** Pokey's satchel: the finds, his journal, the story scenes */
+  onOpenSatchel?: () => void;
   /** the card has rested on a stage that can be played: its picture sheets can be got ready (stagePreload.ts) */
   onPick?: (level: LevelConfig) => void;
 }
@@ -91,6 +93,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   resumeId,
   onSaveLoaded,
   onOpenTrophies,
+  onOpenSatchel,
   onPick,
 }) => {
   const [activeWorldId, setActiveWorldId] = useState<number>(selectedWorldId);
@@ -229,6 +232,11 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           {onOpenTrophies && (
             <button type="button" className="ui-chip ui-chip-btn" onClick={onOpenTrophies} aria-label="Trophy Room">
               <Icon name="trophy" size={17} />
+            </button>
+          )}
+          {onOpenSatchel && (
+            <button type="button" className="ui-chip ui-chip-btn" onClick={onOpenSatchel} aria-label="Pokey's satchel">
+              <Icon name="book" size={17} />
             </button>
           )}
           <span className="ui-chip" aria-label={`${totalStars} of ${allStars} stars`}>

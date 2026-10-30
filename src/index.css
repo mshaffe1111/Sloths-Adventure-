@@ -266,6 +266,11 @@
 .sp-thumb.gx-token.lift { transform: translateY(-14px); animation: none; }
 .sp-hold-say.kit-plaque { font-size: clamp(15px, 2.4vh + 6px, 22px); }
 @keyframes sp-thumb-bob { 0%, 100% { transform: none; } 50% { transform: translateY(-3px); } }
+.sp-close { position: absolute; inset: 0; z-index: 25; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; cursor: pointer; background: #050907; animation: sp-close-dark 1.2s ease both; }
+@keyframes sp-close-dark { from { background: rgba(5, 9, 7, 0); } to { background: rgba(5, 9, 7, 1); } }
+/* (the beat of silence: the dark holds for a moment before the plaque comes up) */
+.sp-close-plaque.kit-plaque { font-size: clamp(22px, min(5vh + 12px, 7.4vw), 46px); max-width: calc(100vw - 32px); opacity: 0; animation: sp-card-up 1.4s 2s ease both; }
+.sp-close-hint { opacity: 0; animation: sp-card-up 1s 4s ease both; }
 .sp-card-hint { margin-top: 10px; font-family: var(--font-ui); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.45); }
 @keyframes sp-card-up { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
 @keyframes sp-card-rule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -555,6 +560,9 @@
 .fr-label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; opacity: .65; font-weight: 700; font-family: system-ui, sans-serif; }
 .fr-title { margin: 4px 0 10px; font-size: 21px; line-height: 1.2; font-family: var(--font-fun); }
 .fr-text p { margin: 0 0 9px; font-style: italic; font-size: 16px; line-height: 1.45; white-space: pre-line; }
+.fr-said { margin: 6px 0 2px; font-size: 15px; line-height: 1.4; font-style: italic; }
+.fr-said b { font-style: normal; color: #2f9d6a; margin-right: 6px; }
+.fr-keep .fr-dot { position: relative; flex: none; }
 .fr-text .fr-struck { text-decoration: line-through; text-decoration-thickness: 2px; opacity: 0.7; }
 .fr-paper-leaf { background: linear-gradient(160deg, #e8f1cf, #cfe1a7); }
 .fr-paper-journal { background: repeating-linear-gradient(180deg, #e8d5a6 0 25px, #dcc592 25px 26px); border-left: 12px solid #7c4f2a; }
@@ -597,6 +605,11 @@
 .tr-find .tr-cpic { height: 104px; }
 .tr-find .tr-item { object-fit: contain; background: #efd5a0; }
 @media (max-height: 480px) { .fr-item { width: 100px !important; height: 85px !important; } }
+/* the Notch: a tall painted twig cut out on its own, so it stands as it is (never cropped into the keepsake frame) */
+.fr-notch { display: block; flex: 0 0 auto; height: 128px; width: auto; object-fit: contain; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .35)); }
+@media (max-height: 480px) { .fr-notch { height: 100px; } }
+/* the snail on his card: a little bigger than in the satchel's grid */
+.fr-snail { width: 112px; height: 57px; flex: 0 0 auto; align-self: center; }
 @media (max-height: 480px) { .fr-saved.done { display: block; } }
 
 /* ---------- How to play ---------- */
@@ -1474,6 +1487,35 @@
 /* the skill-learned card lifts in like every panel */
 
 @media (prefers-reduced-motion: reduce) { .sk-card { animation: none; } }
+
+/* ───────── Pokey's satchel (Satchel.tsx): a keepsake's page, and his journal in the game's hand-lettered face ───────── */
+.sc-page { display: flex; gap: 14px; align-items: flex-start; margin: 4px 0 10px; padding: 12px 14px; border-radius: 14px; background: #f4e6c4; color: #3a2510; box-shadow: 0 4px 10px rgba(0, 0, 0, .3); }
+.sc-pic { width: 76px; height: 64px; object-fit: contain; flex: none; }
+.sc-words { min-width: 0; }
+.sc-t { font-family: var(--font-fun); font-size: 18px; color: #6b3d12; margin-bottom: 4px; }
+.sc-t span { font-family: var(--font-ui); font-size: 12px; color: #8b6a44; margin-left: 6px; }
+.sc-l { margin: 3px 0; font-family: var(--font-read); font-size: 14.5px; line-height: 1.38; font-style: italic; }
+.sc-l b { font-style: normal; color: #8a4b18; margin-right: 6px; }
+.sc-n { color: #5c4630; }
+.sc-read { margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 9px; border: 1.5px solid #b98a52; background: transparent; color: #6b3d12; font: 600 12.5px var(--font-ui); cursor: pointer; }
+.sc-sel { outline: 3px solid #ffd56e; outline-offset: 1px; }
+.sc-journal { --rule: 34px; margin-top: 8px; padding: calc(var(--rule) / 2) 16px; border-radius: 14px; color: #3a2a18; box-shadow: 0 4px 12px rgba(0, 0, 0, .35);
+  /* (the rules sit under every line of writing: each line is exactly one rule tall, the page starts half a rule down) */
+  background: #f6ead0 repeating-linear-gradient(transparent 0 calc(var(--rule) - 1px), #d9c6a0 calc(var(--rule) - 1px) var(--rule)) 0 calc(var(--rule) / 2) / 100% var(--rule) local; }
+.sc-entry { display: grid; grid-template-columns: 70px 1fr; gap: 8px; align-items: baseline; }
+.sc-w { font: 700 10.5px/var(--rule) var(--font-ui); color: #9a7a50; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+.sc-hand { min-height: var(--rule); font-family: var(--font-fun); font-size: 17px; line-height: var(--rule); color: #2e3a6a; }
+@media (max-width: 480px) { .sc-journal { --rule: 31px; } .sc-hand { font-size: 15.5px; } .sc-entry { grid-template-columns: 62px 1fr; } }
+
+/* the snail's card in the satchel: the stretched frame of his two (story-art's strip, 512 x 130) */
+.sc-snail {
+  display: block;
+  width: 84px;
+  height: 43px;
+  background-size: 200% 100%;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
 
 /* "New look coming soon" (Worlds 8-10, newLookSoon.ts): a small tag beside "World 8 of 10", in the plaque's lettering and cream */
 .map-soon { display: inline-block; vertical-align: 1px; margin-left: 8px; padding: 0 9px 1px; text-transform: none; border-radius: 99px; font-family: var(--font-fun); font-weight: 400; font-size: 13px; letter-spacing: 0.02em; line-height: 1.35; color: #fff3c4; background: rgba(42, 24, 10, 0.72); border: 1.5px solid rgba(255, 214, 110, 0.55); text-shadow: 0 1px 0 rgba(20, 36, 22, 0.9); white-space: nowrap; }

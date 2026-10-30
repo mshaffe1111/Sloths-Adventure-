@@ -13,8 +13,9 @@
  */
 import { chapter, D, FL, GF, GM, M, N, OFF, P, pan, say, type Beat } from './storyDsl.ts';
 import { LULLABY } from './storyMemories.ts';
-import { allFound } from './finds.ts';
+import { allFound, allOf, POCKET_FINDS, RUINS_NOTE, SNAIL_FINDS } from './finds.ts';
 import type { StoryPanel } from './story.ts';
+import { END_CARDS } from './endCardsData.ts';
 
 const VF = say('Venom Fang');
 const CROCUS = say('Crocus Rex');
@@ -33,6 +34,9 @@ const WALL = Array.from({ length: 10 }, (_, i) => `B${i + 1}@${wallX(i + 1).toFi
 const OUT = { plate: undefined as string | undefined };
 const zoomOn = (x: number) => ({ ...OUT, zoom: 2.4, focusX: x, focusY: 0.66 });
 
+/** the Drake's cave on the lava road: Pokey with the tea, the Drake sitting across from him (and Dot, about the sock) */
+const DRAKE_CAVE = 'P:happy@.28*.95 B9@.7*.75<';
+const DRAKE_CAVE_DOT = 'P:happy@.28*.95 B9@.7*.75< D:puzzled@.46^.42';
 /** at the tea table: Pokey, Meeca, Dot, and the General in the chair at the head of the table, the one the Queen dusted every morning */
 const TEA = 'P:happy@.2*.9 M:happy@.42*.9 GV:sit@.72*1.12 D@.5^.5*.9';
 /** the same table a minute earlier: the General has his cup and is looking at that chair */
@@ -100,10 +104,39 @@ export const FINALE_KEEPSAKES = ['w4_keepsake', 'w1_keepsake', 'w10_keepsake'] a
 /** the keepsakes that open from the satchel instead (the seeds are planted on the hill) */
 export const SATCHEL_KEEPSAKES = ['w2_keepsake', 'w3_keepsake', 'w5_keepsake', 'w6_keepsake', 'w7_keepsake', 'w9_keepsake'] as const;
 
-/** the short scene after the end: the stopwatch, if the player found it */
-export function endTagPanels(found: string[] = []): StoryPanel[] {
-  if (!found.includes('w9_keepsake')) return [];
-  return chapter({ name: 'AFTER THE END · THE STOPWATCH', w: 2, m: 'day', cue: 'tender', i: 0.4, base: { particles: 'sparkles' } }, KEEPSAKE_LINES.w9_keepsake!);
+const TB = say('Thornbark');
+
+/**
+ * After the end (Matt, 2026-10-30: the sequel hint, A + B, after the stopwatch so the ending itself stays whole and happy):
+ *   the stopwatch, if it was found;
+ *   B, only if Thornbark was freed: the thorns were never Iron-Claw's, and one comes up by Pokey's branch;
+ *   A, always: the storm comes back for Pokey, and this time Meeca goes. Dot's one short line, on purpose: the one time she doesn't run on.
+ * (The storm-night pictures are the old nest's plates and the story cels until Matt's Gemini cards come: the scarf on the thorn, the thorn
+ * coming up, and Meeca holding the scarf are the three still waiting on their art.)
+ */
+export function endTagPanels(found: string[] = [], thornHeart = false): StoryPanel[] {
+  const out: StoryPanel[] = [];
+  if (found.includes('w9_keepsake')) {
+    out.push(...chapter({ name: 'AFTER THE END · THE STOPWATCH', w: 2, m: 'day', cue: 'tender', i: 0.4, base: { particles: 'sparkles' } }, KEEPSAKE_LINES.w9_keepsake!));
+  }
+  if (thornHeart) {
+    out.push(...chapter({ name: 'AFTER THE END · THE HOLLOW', w: 7, m: 'night', cue: 'dread', i: 0.3, base: { particles: 'none' } }, [
+      N('Far away, in his hollow, Thornbark\'s roots were trembling.', 'T@.6', { p: { zoom: 1.3, focusX: 0.6, fx: [{ kind: 'shake', at: 0.4, dur: 1.2, amount: 2 }] } }),
+      TB('The thorns did not come from Iron-Claw. They came from the east, with the storm. And they are growing back.', 'T@.6', { p: { zoom: 1.5, focusX: 0.6 } }),
+      N('By Pokey\'s branch, in the dark, a single black thorn pushed up out of the bark.', '', { m: 'storm', p: { plate: 'nest-night', zoom: 1.35, focusX: 0.5, particles: 'rain' } }),
+    ]));
+  }
+  out.push(...chapter({ name: 'AFTER THE END · MONTHS LATER', w: 1, m: 'storm', cue: 'dread', i: 0.35, base: { particles: 'rain' } }, [
+    N('Months later, the storm came back from the east. It came at night.', '', { p: { plate: 'nest-storm', zoom: 1.1 } }),
+    N('Pokey was asleep on his branch. The end of the scarf hung down off it, most of the way to the ground.', 'P:sleep@.5', { p: { plate: 'nest-night', zoom: 1.3, focusX: 0.5 } }),
+    N('In the morning the branch was empty.', '', { m: 'day', cue: 'sorrow', i: 0.3, p: { plate: 'nest-morning', particles: 'none', zoom: 1.2 } }),
+    N('The scarf was still there. It hung from a black thorn that had not been there the night before.', '', { p: { plate: 'nest-morning', particles: 'none', zoom: 1.6, focusX: 0.55 } }),
+    M('Dot. How fast can you fly?', 'MS:scarf_hug@.44*.85 D@.64^.42<', { cue: 'tender', i: 0.4, p: { plate: 'nest-morning', particles: 'none' } }),
+    D('Faster than him.', 'MS:scarf_hug@.44*.85 D:hover@.64^.42<', { p: { plate: 'nest-morning', particles: 'none' } }),
+    M('Good. This time, I\'m the one coming.', 'MS:scarf_go@.46*.85', { cue: 'finale', i: 0.6, sting: 'bloom', p: { plate: 'nest-morning', particles: 'none', zoom: 1.4, focusX: 0.48 } }),
+    N('To be continued.', '', { closing: true, cue: 'hush', i: 0, p: { plate: 'nest-morning', particles: 'none', zoom: 1.2 } }),
+  ]));
+  return out;
 }
 
 export function finalePanels(found: string[] = []): StoryPanel[] {
@@ -211,6 +244,8 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     P('I thought you came around because you liked me.', 'P:idle@.22 GV:sit@.62*1.12 D:perch@.22^.32', { cue: 'tender', i: 0.3, p: { zoom: 1.3, focusX: 0.3 } }),
     // Pokey answers her, to her face (2026-10-29 story report): he counted the times help came anyway
     D('I did! I do! It was both. I came because I owed you, and I stayed because... I stayed. You\'re mine, Pokey. You\'ve been mine since you were this big and couldn\'t reach the low branch.', '=', { cue: 'sorrow', i: 0.4 }),
+    // (all six things from her lost pocket found: she says the rest of it)
+    ...when(allOf(POCKET_FINDS, found), [D('I kept your map. I kept all of it. I\'ve had you in my pocket the whole time.', '=', { cue: 'sorrow', i: 0.4 })]),
     P('You were late every time, you know.', '=', { cue: 'tender', i: 0.3 }),
     D('I know.', 'P:idle@.22 GV:sit@.62*1.12 D:sad@.22^.32', { cue: 'sorrow', i: 0.3 }),
     P('And you came back every time. I was counting.', 'P:idle@.22 GV:sit@.62*1.12 D:perch@.22^.32', { cue: 'tender', i: 0.45 }),
@@ -228,14 +263,37 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     FL('I\'m staying, if that\'s all right.', 'M:happy@.3*.9 D@.6^.42 FL:talk@.42^.5 LP:sew_table@.8*.8', { cue: 'tender', i: 0.45, p: VIL }),
     D('He\'s all right. Don\'t tell him.', 'M:happy@.3*.9 D@.6^.42 FL@.42^.5 LP:sew_table@.8*.8', { p: VIL }),
     FL('I\'m right here.', 'M:laugh@.3*.9 D:flinch@.6^.42 FL:smug@.42^.5 LP:sew_table@.8*.8', { sting: 'laugh', p: VIL }),
+    // the Drake's two cups (Matt approved the teacup ending, 2026-10-30): his "Bring tea. Two cups." comes true, and Pokey's
+    // "Maybe. If you tidy." comes back as the answer
+    N('On the first cold morning, Pokey walked the lava road with a pot of tea and two cups.', 'P:walk@.3', { w: 9, m: 'day', cue: 'comedy', i: 0.4, p: { ...OUT, zoom: 1.15 } }),
+    N('The Drake had tidied. Everything he owned was in one corner of the cave, and a large rock had been rolled in front of the corner.', DRAKE_CAVE, { p: OUT }),
+    DRAKE('You came.', DRAKE_CAVE, { p: OUT }),
+    P('You asked.', '=', { p: OUT }),
+    DRAKE('There is nothing behind the rock.', '=', { p: OUT }),
+    D('There\'s a sock behind the rock, I can see it from here, it\'s an enormous sock, I\'m not going to ask about the sock, I\'m asking, why is there a sock.', DRAKE_CAVE_DOT, { sting: 'laugh', p: OUT }),
+    DRAKE('It is a tea cosy. I made it. It did not go well.', '=', { p: OUT }),
+    N('Pokey poured. The Drake held his cup in both claws and looked at it for a long time.', DRAKE_CAVE, { cue: 'tender', i: 0.4, p: { ...OUT, zoom: 1.35, focusX: 0.62 } }),
+    DRAKE('It is too hot.', '=', { p: OUT }),
+    P('You breathe fire.', '=', { p: OUT }),
+    DRAKE('Not any more. A visitor put it out.', '=', { p: OUT }),
+    N('He drank it anyway, and held the cup out, very carefully, for another.', DRAKE_CAVE, { cue: 'mercy', i: 0.45, p: OUT }),
+    DRAKE('Wednesday?', '=', { p: OUT }),
+    P('If you tidy.', '=', { sting: 'laugh', p: OUT }),
+    N('The Drake looked at the rock for a while.', '=', { p: { ...OUT, zoom: 1.2 } }),
     N('On the first fine afternoon, at four o\'clock exactly, the Tarantula Queen poured the tea. The General looked at the chair at the head of the table, the one she had dusted every morning for nine years.',
-      `${TEA_UP} B5@.92^.84*.45<`, { cue: 'tender', i: 0.4, p: VIL }),
+      `${TEA_UP} B5@.92^.84*.45<`, { w: 1, cue: 'tender', i: 0.4, p: VIL }),
     N('He sat down in it, put his feet up, and finished the whole cup.', `${TEA} B5@.92^.84*.45<`, { cue: 'mercy', i: 0.5, p: VIL }),
     D('It\'s a trap with cookies. I\'ve had four.', `${TEA} B5@.92^.84*.45<`, { sting: 'laugh', p: VIL }),
     N('Meeca had finished the scarf. It went around Pokey four times and still dragged on the ground. He was wearing it.', TEA, { cue: 'comedy', i: 0.4, p: VIL }),
     M('Was it a nice bush?', TEA, { p: VIL }),
     D('It was the best bush, it was a really excellent bush, I\'ve been back, I sit in it sometimes, it\'s very calming.', TEA, { p: VIL }),
     N('She also gave him the letters from under her pillow, all of them, every one saying she was fine. He read them one at a time. The handwriting never wobbled once.', TEA, { cue: 'tender', i: 0.45, p: VIL }),
+    // (Pokey's own note from Under the Ruins, the one going the other way: SECRET-LEVELS.md)
+    ...when(has(RUINS_NOTE.id), [
+      M('You crossed out "I\'m fine."', TEA, { cue: 'tender', i: 0.4, p: VIL }),
+      P('It wasn\'t true.', '=', { p: VIL }),
+      M('Mine wasn\'t either.', '=', { p: VIL }),
+    ]),
     // three keepsakes, in this order, the bell always last; the other six are in the satchel (KEEPSAKE_LINES) and the seeds go to the hill
     ...FINALE_KEEPSAKES.flatMap((id) => [
       ...when(has(id), KEEPSAKE_LINES[id]!),
@@ -247,7 +305,8 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     N('Far off in the east, the last of the storm said something. Pokey was holding a teacup in one hand. He went on holding it in one hand.', TEA, { cue: 'tender', i: 0.4, p: { ...VIL, zoom: 1.4, focusX: 0.3 } }),
     OFF('Shall I tell the General, sir?', `${TEA} LP:cap_in_hand@.92*.75`, { cue: 'comedy', i: 0.4, p: VIL }),
     GF('Tell him he has retired.', `${TEA} LP:salute_nervous@.92*.75`, { sting: 'laugh', p: VIL }),
-    N('That spring he went down to the Sunlit Riverbank, to the place where the bank had washed away, and planted a tree. The next day he went back and planted another. He took his time.', 'GV:walk_a@.5*1.12', { w: 2, cue: 'tender', i: 0.45, p: { zoom: 1.15 } }),
+    // S-7: the ending cards, one a character, the line under each (endCards.ts; the soldiers' and the squirrels' weeks after are theirs)
+    ...END_CARDS.map(([card, line], k) => N(line, '', { ...(k === 0 ? { cue: 'tender' as const, i: 0.45 } : {}), p: { card } })),
   ]);
 
   // ───────────── THE END ─────────────
@@ -260,6 +319,10 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     N('Home was exactly the way they\'d left it, except that the Heartbloom was open, and a snail who had set off across the garden path on the morning they took Meeca was half an inch from the finish line.', 'PH:arm_around@.34*1.1 H:epic@.68^.8', { cue: 'tender', i: 0.5, p: { zoom: 1.2 } }),
     P('He\'s gonna make it. He trained for it.', 'PH:cheek_glad@.34*1.1 H:epic@.68^.8', { sting: 'laugh' }),
     N('Meeca sat down on the garden path beside the snail. After a while, Pokey sat down too.', 'PH:sit_hug@.4*1.1 H:epic@.7^.8', { cue: 'finale', i: 0.8, sting: 'bloom', p: { zoom: 1.2 } }),
+    // SR-36: her prologue snacks, and her "early for something, once": the game ends on a laugh, and on Dot healed
+    N('Dot went to get snacks. She was back before they\'d finished sitting down.', 'PH:sit_hug@.4*1.1 H:epic@.7^.8 D:cheer@.62^.46', { sting: 'laugh', p: { zoom: 1.15 } }),
+    // (every snail found, one in each world: SNAIL_FINDS)
+    ...when(allOf(SNAIL_FINDS, found), [P('I saw him every day, you know. He never once stopped for tea.', 'PH:sit_hug@.4*1.1 H:epic@.7^.8', { cue: 'tender', i: 0.5 })]),
   ]);
 
   return [...tower, ...seam, ...morning, ...end];

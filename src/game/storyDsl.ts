@@ -17,6 +17,7 @@
  *      walk, run, hurt, ko)
  *   G  General Iron-Claw (the world-10 painted boss).   B<n>  the guardian of world n (B3 = Shadow Prowler)
  *   D  Dot the hummingbird, :pose is what she does (hover, perch, yelp, flinch, dizzy, cheer, puzzled, sad, gasp, sleep).
+ *   SO a soldier, :clip is one of his painted clips (idle_a, idle_b, turn_a, hold_b, march_a...; _a dark fur, _b cinnamon with a blanket)
  *   FL Flicker the firefly, :clip is one of his clips (blink, talk, glow, happy, sad, doze, smug, startled, worried, shrug, lead), or :stutter
  *      (talking, his light going off and on: his tell when he is not telling the whole truth).   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
  *   The story sheets (storyCels.ts has every pose; a bad pose name throws, so the tests catch it):
@@ -32,6 +33,7 @@ import { CEL_CAST, celPoses, celTrack, isCelCode } from './storyCels.ts';
 import type { SceneActor, SceneMood, ScenePhoto, StoryCue, StoryPanel, StoryScene, StorySting } from './story.ts';
 import { PLATES, isPlate } from './plateData.ts';
 import { FLICKER_SEQ } from './flickerAnimData.ts';
+import { SOLDIER_SEQ } from './soldierAnimData.ts';
 
 export interface Beat {
   /** who speaks ('Narrator' for the storyteller) */
@@ -59,6 +61,12 @@ export interface Beat {
   hold?: { both: string; lift: string; reach: string; p?: Partial<StoryScene> };
   /** read only on a screen that could not play the picture before it */
   narratedOnly?: boolean;
+  /** shown only when the player has found this find */
+  ifFound?: string;
+  /** said instead once the player has fallen: {N} is the count, in words */
+  withFalls?: string;
+  /** the closing card: dark, a beat of silence, then the words on the menu kit's plaque (StoryPlayer) */
+  closing?: boolean;
 }
 
 export interface ChapterSpec {
@@ -190,6 +198,13 @@ function actor(tok: string): SceneActor {
       if (m.mood && m.mood !== 'hover') a.dotPose = m.mood as DotPose;
       return a;
     }
+    case 'SO': {
+      const clip = m.mood ?? 'idle_a';
+      if (!SOLDIER_SEQ[clip]) throw new Error(`cast "${tok}": ${clip} is not a soldier clip`);
+      const a: SceneActor = { kind: 'soldier', x: m.x ?? 0.7, scale, facing: m.face ?? -1, clip };
+      if (m.y !== undefined) a.y = m.y;
+      return a;
+    }
     case 'FL': {
       const stutter = m.mood === 'stutter';
       const clip = stutter ? 'talk' : m.mood ?? 'blink';
@@ -239,6 +254,7 @@ function speaks(a: SceneActor, speaker: string): boolean {
     case 'Meeca': return a.kind === 'daisy' || a.kind === 'daisy_wave';
     case 'Dot': return a.kind === 'dot';
     case 'Flicker': return a.kind === 'flicker';
+    case 'Soldier': return a.kind === 'soldier';
     case 'Thornbark': return a.kind === 'thornbark';
     default: {
       const w = GUARDIAN_WORLD[speaker];
@@ -298,6 +314,9 @@ export function chapter(spec: ChapterSpec, beats: Beat[]): StoryPanel[] {
     if (intensity !== undefined) panel.intensity = intensity;
     if (b.sting) panel.sting = b.sting;
     if (b.narratedOnly) panel.narratedOnly = true;
+    if (b.ifFound) panel.ifFound = b.ifFound;
+    if (b.withFalls) panel.withFalls = b.withFalls;
+    if (b.closing) panel.closing = true;
     if (b.hold) {
       let reach: SceneActor[];
       try {
