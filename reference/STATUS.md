@@ -10,6 +10,8 @@ MATT'S CALLS ~8:10 PM ET: Build 1's 8 items rebuilt here (polish-c: AN-1/2/3, SN
 
 MATT'S FINISH PLAN (his checklist, tick items there as they reach the test link): https://claude.ai/artifact/7LZN3UfpNBtBYM9dVjFX7H (Claude Docs). Update it at every check-in.
 
+DONE (Matt 2026-10-29, agreed): web 1.0 = all 10 worlds + bosses passed by Matt on the phone, story start to finish, every "you check" item passed; then the Play Store app; the project is complete when the app is submitted. Matt took all the lead's suggestions (fewer starts, plan the General now, stop chasing W3-4 numbers, smaller releases). NEW 8:08 PM ET: gen2-ascent (session_01FhBbYMDDjPk6FfkvEhLm21), gen2's upward flow for the 9 old-generator ascents in W7-10, proven on 9-2/9-7 first. W9 target lowered by the lead to median 43-44, floor 40.
+
 How the lead runs it: a check-in every 30 min (send_later, re-armed each time). Each check-in: list_sessions; read every report; review against LEAD-PLAYBOOK §4; merge what passes (fetch first, one gate per batch); send back what doesn't; nudge anything idle or stuck with no report for 60+ min; update this board; tell Matt only decisions and finished things. Test link cutoff 10:40 PM ET, link 11 PM ET.
 
 Track A, finish the game (owner, next milestone):
