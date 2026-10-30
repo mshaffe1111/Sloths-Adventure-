@@ -13,6 +13,7 @@ mkdirSync(out, { recursive: true });
 const LEDGE = `const ledge = (x, y = -1e9) => { const ps = e.platforms.filter((p) => !p.broken && p.x < x && p.x + p.width > x && p.y >= y).sort((a, b) => a.y - b.y); return ps[0]; };`;
 const ZONE = (kind, dx = 0) => `const z = e.currentStage.zones.find((q) => q.kind === '${kind}'); const x = (z.x0 + z.x1) / 2 + ${dx};
   const pl = ledge(x, (z.baseY ?? z.top ?? 0) - 300); Object.assign(e.player, { x, y: pl ? pl.y : z.baseY, vx: 0, vy: 0 });`;
+const HOLD = `setInterval(() => { e.player.invincibleTimer = 9; }, 100);`;
 const SCENES = {
   // World 2: the river's current and the foam where the logs ride (2-1)
   river: { stage: '2-1', setup: `const r = e.currentStage.rivers[0]; const x = r.x0 - 60; const pl = ledge(x, r.surfaceY - 400) ?? ledge(r.x0 - 120);
@@ -38,6 +39,13 @@ const SCENES = {
   settle: { stage: '4-6', setup: `const s = e.proto.w4.patience.find((q) => q.kind === 'mist'); Object.assign(e.player, { x: s.x0 - 120, y: s.y, vx: 0, vy: 0 });` },
   // the Sky Sovereign's fight (4-10): her drop warnings, the stones, her shadow
   boss: { stage: '4-10', setup: ``, wait: 9000 },
+  // the other bosses' attacks (round 3): lava columns (9-10), falling rocks and ground shocks (7-10), thrown clubs (10-10), the mud
+  // shock and spear thrust (6-10), slash waves (8-10). Pokey kept from harm so the fight runs on
+  boss9: { stage: '9-10', setup: HOLD, wait: 9000 },
+  boss7: { stage: '7-10', setup: HOLD, wait: 9000 },
+  boss10: { stage: '10-10', setup: HOLD, wait: 9000 },
+  boss6: { stage: '6-10', setup: HOLD, wait: 9000 },
+  boss8: { stage: '8-10', setup: HOLD, wait: 9000 },
 };
 
 const b = await chromium.launch();
