@@ -1,4 +1,6 @@
 import { buzz } from './haptics.ts';
+import { nativeApp } from './appShell.ts';
+import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
 import { SlowWatch } from './slowTip.ts';
 import { drawW7Chairs } from './w7ChairsArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
@@ -1061,6 +1063,11 @@ export class GameEngine {
     this.lastRenderTime = this.lastTime;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     const cfg = this.currentStage.config;
+    // the Android app, after the phone cut the last run of this stage off: start at the flag it had reached (flagResume.ts). Not in the
+    // stages with their own runs (a slide, Dot's flight, a rising tide), which keep their own flags.
+    const back = !this.flagTried && nativeApp() && !this.slideRun && !this.dotRun && !this.tide ? flagFor(cfg.id) : null;
+    this.flagTried = true;
+    if (back) this.startAtFlag(back);
     if (coachWanted(cfg.id, cfg.secret)) {
       this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), markCoachDone);
       markCoachDone(); // once per device: leaving halfway does not bring it back
@@ -1136,6 +1143,8 @@ export class GameEngine {
   private graceMoves = -1;
 
   public stop() {
+    // the stage ended the normal way (cleared, restarted, left): nothing to come back to
+    clearFlag();
     // (the banner goes back to its usual place for whatever comes next)
     if (typeof document !== 'undefined') {
       delete document.documentElement.dataset.wayLow;
@@ -2407,7 +2416,11 @@ export class GameEngine {
           recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
           const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
-          if (further) this.checkpoint = { x: cp.x, y: cp.y };
+          if (further) {
+            this.checkpoint = { x: cp.x, y: cp.y };
+            // the Android app keeps it, so a run cut off by the phone comes back here (flagResume.ts)
+            if (nativeApp()) saveFlag(this.currentStage.config.id, cp.x, cp.y);
+          }
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
           sound.playCheckpoint();
@@ -4858,6 +4871,22 @@ export class GameEngine {
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
     return true;
+  }
+
+  private flagTried = false;
+  /** start the stage at a flag from a run the phone cut off: the flags up to it count as reached, and he appears there as after a fall */
+  private startAtFlag(at: { x: number; y: number }) {
+    const cps = this.currentStage.checkpoints ?? [];
+    const flag = cps.find((cp) => Math.abs(cp.x - at.x) < 2 && Math.abs(cp.y - at.y) < 2);
+    if (!flag) return; // the stage changed since (a new build): start at the beginning
+    const ascent = this.currentStage.config.objectiveType === 'ascent';
+    const descent = !!this.proto?.w4?.descent;
+    for (const cp of cps) if (ascent ? cp.y >= flag.y : descent ? cp.y <= flag.y : cp.x <= flag.x) cp.reached = true;
+    this.checkpoint = { x: flag.x, y: flag.y };
+    this.respawnAtCheckpoint('pit');
+    const p = this.player;
+    this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
+    this.addFloatingText('Back at your flag', p.x, p.y - 74, '#fde68a', 1.6);
   }
 
   private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {

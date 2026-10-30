@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
 import { browserStore, buildSave, parseSave, applySave, saveFileName, type SaveFile } from '../game/saveFile.ts';
 import { Icon } from './icons/index.tsx';
+import { nativeApp } from '../game/appShell.ts';
 
 /**
  * Save and load a whole game as a file. Only ever mounted by the title screen and the world map, so it cannot be
@@ -33,7 +34,28 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
     }
   })();
 
+  // the Android app: the WebView cannot download, so the file is written to the app's cache and handed to the share sheet
+  // (Drive, Files, email, a message), which is where a phone keeps a file anyway
+  const doShareFile = async () => {
+    try {
+      const name = saveFileName();
+      const text = JSON.stringify(buildSave(browserStore()), null, 2);
+      const [{ Filesystem, Directory, Encoding }, { Share }] = await Promise.all([import('@capacitor/filesystem'), import('@capacitor/share')]);
+      const { uri } = await Filesystem.writeFile({ path: name, data: text, directory: Directory.Cache, encoding: Encoding.UTF8 });
+      await Share.share({ title: 'Sloths Rainforest Adventures save', files: [uri], dialogTitle: 'Keep your save file' });
+      setNote({ kind: 'ok', text: `Made ${name}. Keep it somewhere safe.` });
+    } catch (e) {
+      // closing the share sheet without picking anything is not a failure
+      if (/cancel/i.test(String((e as { message?: string })?.message ?? e))) return;
+      setNote({ kind: 'bad', text: 'Could not make the file here. Try "Copy save code" instead.' });
+    }
+  };
+
   const doDownload = () => {
+    if (nativeApp()) {
+      void doShareFile();
+      return;
+    }
     try {
       const save = buildSave(browserStore());
       const blob = new Blob([JSON.stringify(save, null, 2)], { type: 'application/json' });

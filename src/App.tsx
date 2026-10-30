@@ -58,6 +58,8 @@ import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { READY_MS, readyBuiltStage } from './game/stageReady.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
+import { keepScreenOn, nativeApp } from './game/appShell.ts';
+import { LeaveDialog } from './components/LeaveDialog.tsx';
 import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -500,6 +502,68 @@ export default function App() {
 
   // when the Game Over card came up (its tap guard)
   const gameOverAt = useRef(0);
+  // The Android app (reference/PLAY-STORE.md): the phone's Back button, and the app going to the background or a call coming in.
+  // Back closes the open window first (its X), then: play pauses, the pause menu resumes, the end cards go to the map, the map goes to the
+  // title, the title asks "Leave the game?", and every other screen gets an Escape (a story skips, the start menu closes).
+  const [askLeave, setAskLeave] = useState(false);
+  const androidBack = useRef<() => void>(() => {});
+  androidBack.current = () => {
+    const xs = Array.from(document.querySelectorAll<HTMLElement>('.ui-x')).filter((el) => el.offsetParent !== null);
+    if (xs.length) {
+      xs[xs.length - 1].click();
+      return;
+    }
+    const esc = () => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+    if (screen === 'playing') pauseGame();
+    else if (screen === 'paused') resumeGame();
+    else if (screen === 'victory' || screen === 'game_over') {
+      if (screen === 'victory' && newSkills.length > 0) setNewSkills((q) => q.slice(1));
+      else {
+        engineRef.current?.stop();
+        setScreen('world_map');
+      }
+    } else if (screen === 'world_map') setScreen('title');
+    else if (screen === 'title' && !document.querySelector('.pm-scrim, .ui-scrim')) setAskLeave(true);
+    else esc();
+  };
+  // the Android app keeps the screen on only while a stage is played; a menu, the map or a story lets the phone sleep (KeepAwakePlugin.java)
+  useEffect(() => {
+    keepScreenOn(screen === 'playing');
+  }, [screen]);
+  const androidAway = useRef<() => void>(() => {});
+  androidAway.current = () => {
+    if (screen === 'playing') pauseGame();
+  };
+  useEffect(() => {
+    if (!nativeApp()) return;
+    let gone = false;
+    const subs: { remove: () => Promise<void> }[] = [];
+    void import('@capacitor/app').then(async ({ App: CapApp }) => {
+      const add = [
+        await CapApp.addListener('backButton', () => androidBack.current()),
+        await CapApp.addListener('pause', () => {
+          sound.appHidden(true);
+          androidAway.current();
+        }),
+        await CapApp.addListener('resume', () => sound.appHidden(false)),
+      ];
+      if (gone) add.forEach((h) => void h.remove());
+      else subs.push(...add);
+    });
+    // (sent by MainActivity.java: 'lost' when a call rings, an alarm sounds or another app plays; 'duck' when another app speaks for a
+    // moment, like directions; 'back' when the sound is ours again)
+    const onFocus = (e: Event) => {
+      const state = (e as Event & { state?: string }).state;
+      sound.appHidden(state === 'lost', 'focus');
+      sound.appDucked(state === 'duck');
+    };
+    window.addEventListener('sloth-audio-focus', onFocus);
+    return () => {
+      gone = true;
+      subs.forEach((h) => void h.remove());
+      window.removeEventListener('sloth-audio-focus', onFocus);
+    };
+  }, []);
   useEffect(() => {
     if (screen === 'game_over') gameOverAt.current = performance.now();
   }, [screen]);
@@ -1373,6 +1437,9 @@ export default function App() {
         </>
       )}
 
+      {askLeave && screen === 'title' && (
+        <LeaveDialog onStay={() => setAskLeave(false)} onLeave={() => void import('@capacitor/app').then((m) => m.App.exitApp())} />
+      )}
       {/* Status Modals: Paused, Victory, Game Over, Boss Intro, Story Ending */}
       {(screen === 'paused' ||
         (screen === 'victory' && newSkills.length === 0) ||

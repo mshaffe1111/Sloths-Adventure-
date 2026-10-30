@@ -126,6 +126,17 @@ class SoundEngine {
     this.c.setAmbient(type);
   }
   /** Dot's bubble opens in play: a soft chirp, once per line, and the music dips a moment (SN-7) */
+  /** the Android app went to the background, or lost Android's audio focus (a call ringing, an alarm), or got it back: no sound while either holds */
+  private away = new Set<'background' | 'focus'>();
+  appHidden(away: boolean, why: 'background' | 'focus' = 'background') {
+    if (away) this.away.add(why);
+    else this.away.delete(why);
+    this.c.appHidden(this.away.size > 0);
+  }
+  /** another app talks over the Android app for a moment: the game plays on, quieter */
+  appDucked(on: boolean) {
+    this.c.setDucked(on);
+  }
   dotChirp() {
     this.c.dotChirp();
   }
