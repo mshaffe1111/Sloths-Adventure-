@@ -54,6 +54,8 @@ export interface GeneratedStage {
   trees: TreeStructure[];
   platforms: Platform[];
   vines: Vine[];
+  /** an old-generator stage's dressing (Worlds 8-10: protoStage.ts addDress; a built stage keeps its own in proto.dress) */
+  dress?: import('./dressArt.ts').DressPiece[];
   /** shimmy ropes across gaps (the engine only lets Pokey use them once he has the skill) */
   ropes?: Rope[];
   enemies: Enemy[];
@@ -2870,7 +2872,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)
   const acceptedIds = lastAccepted && lastAccepted.key === `${config.id}@${attempt}` && config.id !== SECRET_GATE_LEVEL ? lastAccepted.ids : undefined;
   lastAccepted = null;
-  return finishStage(stage, acceptedIds ?? validateStage(stage).reachableIds);
+  const done = finishStage(stage, acceptedIds ?? validateStage(stage).reachableIds);
+  // (Worlds 8-10's dressing sets, Matt's props-made pieces: artDress.ts dressSets)
+  addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
+  return done;
 }
 
 /** the passes every generated stage gets after its layout is checked (the old generator's and gen2's alike) */

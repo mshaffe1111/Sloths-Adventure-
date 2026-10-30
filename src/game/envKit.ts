@@ -9,6 +9,7 @@
  * A world with no kit here keeps the shared jungle undergrowth (see scenery.buildNear).
  */
 import { drawGroundFlora, groundFlora } from './paintedScenery.ts';
+import { drawW8Stones } from './w810FaceArt.ts';
 import { tone, mix, rgba, lighten, darken, rng, type RNG, type Tone } from './artKit.ts';
 import { fernFrond } from './flora.ts';
 import { leaf } from './rainforest.ts';
@@ -533,33 +534,6 @@ function mossCushion(ctx: CanvasRenderingContext2D, x: number, y: number, s: num
   }
 }
 
-function stalagmite(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, look: Look, r: RNG) {
-  const t = tone(mix('#efe6cf', look.ground.stone, 0.3), '#2a2018');
-  const n = 1 + ((r() * 3) | 0);
-  for (let k = 0; k < n; k++) {
-    const bx = x + (k - (n - 1) / 2) * s * 0.5;
-    const h = s * (0.8 + r() * 0.9);
-    const w = s * 0.22;
-    ctx.fillStyle = t.light;
-    ctx.strokeStyle = look.ground.outline;
-    ctx.lineWidth = 1.3;
-    ctx.beginPath();
-    ctx.moveTo(bx - w, y);
-    ctx.quadraticCurveTo(bx - w * 0.5, y - h * 0.6, bx, y - h);
-    ctx.quadraticCurveTo(bx + w * 0.5, y - h * 0.6, bx + w, y);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = rgba(t.dark, 0.5);
-    ctx.beginPath();
-    ctx.moveTo(bx, y - h);
-    ctx.quadraticCurveTo(bx + w * 0.5, y - h * 0.6, bx + w, y);
-    ctx.lineTo(bx + w * 0.2, y);
-    ctx.closePath();
-    ctx.fill();
-  }
-}
-
 /** one ground-edge slot: draw this world's plant here and return true, or return false to keep the shared decoration */
 export function paintDecorAt(ctx: CanvasRenderingContext2D, world: number, look: Look, px: number, py: number, r: RNG): boolean {
   const kit = ENV[world];
@@ -574,6 +548,8 @@ export function paintDecorAt(ctx: CanvasRenderingContext2D, world: number, look:
     const size = kind === 'flower' ? 22 + r() * 8 : 28 + r() * 12;
     return drawGroundFlora(ctx, kind, num, px, py + 2, size, r() < 0.5);
   }
+  // World 8's painted mossy stones (w810FaceArt.ts; they replace the code-drawn white stalagmites, which read as thorns on a safe ledge)
+  if (name === 'w8stones') return drawW8Stones(ctx, px, py + 2, 56 + r() * 14, r() < 0.5, r());
   const def = PLANTS[name];
   if (!def) return false;
   const size = def.decor[0] + r() * (def.decor[1] - def.decor[0]);
@@ -917,7 +893,6 @@ const PLANTS: Record<string, PlantDef> = {
   parkia: { draw: parkia, near: 1.6, decor: [30, 38] },
   moonflower: { draw: moonflower, near: 1.5, decor: [22, 30] },
   foxfire: { draw: foxfireLog, near: 1.4, decor: [22, 32] },
-  stalagmite: { draw: stalagmite, near: 1, decor: [14, 22] },
   karstpebbles: { draw: (c, x, y, s, l) => pebbleStack(c, x, y, s, tone(mix(l.ground.stone, '#8a8f9a', 0.3), '#1a2030'), l.ground.outline), near: 1, decor: [9, 15] },
 };
 
@@ -956,7 +931,7 @@ ENV[7] = {
 };
 ENV[8] = {
   near: [['jadevine', 3], ['parkia', 2], ['moonflower', 3], ['foxfire', 2]],
-  decor: [['foxfire', 26], ['pflower', 20], ['ferncrown', 14], ['pplant', 14], ['stalagmite', 12], ['parkia', 6], ['karstpebbles', 8]],
+  decor: [['foxfire', 26], ['pflower', 20], ['ferncrown', 14], ['pplant', 14], ['w8stones', 20], ['parkia', 6], ['karstpebbles', 8]],
   sway: 'jadevine', front: 'fern',
 };
 ENV[9] = {

@@ -6,9 +6,10 @@ import { Icon, type IconName } from './icons/index.tsx';
 import { useExitGhost } from './fx/exitGhost.ts';
 
 /**
- * The menu's frame, shared by the start menu and the pause menu (2026-10-28): a parchment card in a wooden frame. Upright, one column:
- * the header plaque, the big green board, the picture tiles two by two, the skills on a dark wood shelf, then the settings ledger.
- * Sideways, two columns: the tiles and the skills on the left, the settings on the right, each scrolling on its own if it must.
+ * The in-game Settings card (the pause card, 2026-10-28; option A, Matt 2026-10-30): the painted card. Upright, one column: the header
+ * plaque, the big green board, the quick tiles two by two, the skills on a dark wood shelf, then the options behind painted tab chips
+ * (Sound, Game, Trophies: the same chips as the title's Settings). Sideways, two columns: the tiles and the skills on the left, the
+ * options on the right, each scrolling on its own if it must.
  */
 export const MenuFrame: React.FC<{
   label: string;
@@ -26,8 +27,17 @@ export const MenuFrame: React.FC<{
   skills: Set<SkillId>;
   sound: React.ReactNode;
   settings: React.ReactNode;
-}> = ({ label, title, sub, subChip, onScrim, go, notice, tiles, skills, sound, settings }) => {
+  /** the Trophies tab's tiles (trophies, jungle cards) */
+  trophies?: React.ReactNode;
+}> = ({ label, title, sub, subChip, onScrim, go, notice, tiles, skills, sound, settings, trophies }) => {
   const ref = React.useRef<HTMLDivElement>(null);
+  // the options under the quick tiles, one section at a time behind the same painted tab chips as the title's Settings
+  const [tab, setTab] = React.useState<'sound' | 'game' | 'trophies'>('sound');
+  const tabs: { id: typeof tab; icon: IconName; name: string }[] = [
+    { id: 'sound', icon: 'speaker', name: 'Sound' },
+    { id: 'game', icon: 'gear', name: 'Game' },
+    ...(trophies ? [{ id: 'trophies' as const, icon: 'trophy' as IconName, name: 'Trophies' }] : []),
+  ];
   useExitGhost(ref);
   return (
     <div ref={ref} className="pm-scrim select-none" onClick={onScrim}>
@@ -65,13 +75,18 @@ export const MenuFrame: React.FC<{
             </div>
           </div>
           <div className="pm-side">
-            <div className="pm-sec-h">
-              <Icon name="gear" size={20} />
-              Options
+            <div className="st-tabs pm-tabs" role="tablist" aria-label="Options" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
+              {tabs.map((t) => (
+                <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} aria-label={t.name} className={`st-tab${tab === t.id ? ' on' : ''}`} onClick={() => setTab(t.id)}>
+                  <Icon name={t.icon} size={24} />
+                  <span>{t.name}</span>
+                </button>
+              ))}
             </div>
-            <div className="pm-settings">
-              {sound}
-              {settings}
+            <div role="tabpanel" aria-label={tabs.find((t) => t.id === tab)?.name}>
+              {tab === 'sound' && <div className="pm-settings">{sound}</div>}
+              {tab === 'game' && <div className="pm-settings">{settings}</div>}
+              {tab === 'trophies' && <div className="pm-tiles">{trophies}</div>}
             </div>
           </div>
         </div>

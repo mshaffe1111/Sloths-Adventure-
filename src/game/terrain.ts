@@ -28,7 +28,7 @@ import { drawGroundBody, drawGroundCap } from './groundArt.ts';
 import { bankPainted, drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
-import { drawBadWater } from './badWaterArt.ts';
+import { drawBadWater, setBadWaterWorld } from './badWaterArt.ts';
 import { drawPitWater } from './stageArt.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
@@ -1489,6 +1489,7 @@ function waterGradient(ctx: CanvasRenderingContext2D, look: Look, waterY: number
 export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: number, x1: number, waterY: number, bottom: number, time: number) {
   // Worlds 6-10: Matt's painted dirty, fast water (badWaterArt.ts); Worlds 1, 3, 4 and 5: their painted pit water (stageArt.ts, VI-9).
   // The drawn version below is World 2's pit water (its rivers are painted: riverArt.ts) and the stand-in while a sheet loads.
+  if (worldId >= 6) setBadWaterWorld(worldId);
   if (worldId >= 6 && drawBadWater(ctx, x0, x1, waterY, bottom, time)) return;
   if (drawPitWater(ctx, worldId, x0, x1, waterY, bottom, time)) return;
   const look = lookFor(worldId);

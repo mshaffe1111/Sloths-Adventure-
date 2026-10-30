@@ -46,7 +46,7 @@ function lowDecoder(): BaseAudioContext | null {
   return decoder;
 }
 
-async function decode(core: AudioCore, bytes: ArrayBuffer): Promise<AudioBuffer> {
+export async function decode(core: AudioCore, bytes: ArrayBuffer): Promise<AudioBuffer> {
   const low = core.ctx.sampleRate > RATE ? lowDecoder() : null;
   if (low) {
     try {

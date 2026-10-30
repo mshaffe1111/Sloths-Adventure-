@@ -52,3 +52,21 @@ def depurple(im, lum_max=120, edge_only=0):
     a[..., 1] = np.where(p, lum * 0.98, g)
     a[..., 2] = np.where(p, lum * 0.8, b)
     return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'RGBA')
+
+
+def gkey(img, d0=40, d1=110, speck=60):
+    """the green key (bank ends redone 2026-10-30: the magenta key bled into the paint): alpha from how far green stands over red and
+    blue, the green spill taken out of the fringe, only the largest piece kept"""
+    a = np.asarray(img.convert('RGB'), np.float32)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    gr = g - np.maximum(r, b)
+    al = np.clip((d1 - gr) / max(1, d1 - d0), 0, 1)
+    out = a.copy()
+    out[..., 1] = np.minimum(g, np.maximum(r, b) + 6)
+    solid = al > 0.5
+    lab, n = ndimage.label(solid)
+    if n:
+        sizes = ndimage.sum(solid, lab, range(1, n + 1))
+        keepm = lab == 1 + int(np.argmax(sizes))
+        al = np.where(ndimage.binary_dilation(keepm, iterations=3), al, 0)
+    return Image.fromarray(np.dstack([np.clip(out, 0, 255), al * 255]).astype(np.uint8), 'RGBA')

@@ -18,7 +18,8 @@ import { LoopPlayer } from './loops.ts';
 import { recordingFor } from './recordings.ts';
 import { SFX, runFx } from './sfx.ts';
 import { playRec, recFor, recForPuzzle, type Surface } from './sfxRec.ts';
-import { speechBlip } from './speech.ts';
+import { playSyllable, voiceReady } from './voiceBank.ts';
+import { Speech, voiceOf, type Tone } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { CALM, type MusicState } from './adaptive.ts';
 import { CUE_DUCK, CUE_NAMES, cuePlan, playCue, type CueName } from './cues.ts';
@@ -338,6 +339,23 @@ export class Conductor {
     return this.loops?.key() ?? DEFAULT_KEY;
   }
 
+  /**
+   * The story's hand on the music under a picture (storyDirect.ts): `silence` fades it right out (about a second), `under` to half,
+   * `keep` and `swell` back to full (a swell also lifts the piece a step fuller). Any other screen puts it back to full.
+   */
+  storyMusic(move: 'keep' | 'under' | 'silence' | 'swell') {
+    const core = this.core;
+    if (!core) return;
+    const g = core.storyLevel.gain;
+    const t = core.ctx.currentTime;
+    const to = move === 'silence' ? 0 : move === 'under' ? 0.5 : 1;
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(g.value, t);
+    // (out over about a second; back in a little slower, so the music finds its way back rather than snapping on)
+    g.setTargetAtTime(to, t, to < g.value ? 0.35 : 0.6);
+    if (move === 'swell') this.setIntensity(this.intensity + 0.2);
+  }
+
   /** dip the music to `level` for `hold` seconds, then ease back */
   duck(level: number, hold: number, release = 1.0) {
     const core = this.core;
@@ -419,21 +437,43 @@ export class Conductor {
     return dur;
   }
 
-  speak(speaker: string, ch: string, index: number) {
+  /** the voices of a story's speakers, fetched as the story opens (a voice not yet arrived is silent) */
+  warmVoices(speakers: Iterable<string>) {
     const core = this.core;
-    if (!core || this.muted || core.ctx.state !== 'running') return;
-    this.speechDip();
-    speechBlip(core, speaker, ch, index);
+    if (!core) return;
+    const slugs = new Set<string>();
+    for (const s of speakers) {
+      const v = voiceOf(s);
+      if (v) slugs.add(v.slug);
+    }
+    void import('./voice.ts').then((m) => m.loadVoices(core, slugs)).catch(() => {});
   }
 
-  /** a soft chirp from Dot as her bubble opens, once per line (SN-7: her lines in play had no sound at all) */
+  private speech = new Speech();
+  /** letter `index` of a story line has just appeared: its speaker's voice says a syllable if one is due (voiceLine.ts) */
+  speak(speaker: string, text: string, index: number, tone?: Tone) {
+    const core = this.core;
+    if (!core || this.muted || core.ctx.state !== 'running') return;
+    const v = voiceOf(speaker);
+    if (!v) return;
+    if (!voiceReady(v.slug)) void import('./voice.ts').then((m) => m.loadVoices(core, [v.slug])).catch(() => {});
+    const now = core.ctx.currentTime;
+    const due = this.speech.next(speaker, text, index, now, tone);
+    if (due && playSyllable(core, due.slug, due.syl) > 0) {
+      this.speech.played(text, index, now);
+      this.speechDip();
+    }
+  }
+
+  /** a soft chirp from Dot as her bubble opens, once per line (SN-7: her lines in play had no sound at all): two of her syllables, "chirrup" */
   dotChirp() {
     const core = this.core;
     if (!core || this.muted || core.ctx.state !== 'running') return;
-    // (two of her blips, a hop apart: "chirrup")
-    speechBlip(core, 'Dot', 'd', 0);
-    window.setTimeout(() => this.core && speechBlip(this.core, 'Dot', 'o', 2), 70);
-    this.speechDip(0.5);
+    if (!voiceReady('dot')) void import('./voice.ts').then((m) => m.loadVoices(core, ['dot'])).catch(() => {});
+    if (playSyllable(core, 'dot', { take: 0, semis: 0, db: -3 }) > 0) {
+      window.setTimeout(() => this.core && playSyllable(this.core, 'dot', { take: 2, semis: 2, db: -4 }), 80);
+      this.speechDip(0.5);
+    }
   }
 
   /**

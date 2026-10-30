@@ -11,6 +11,8 @@
  */
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
+import { w810FaceReady } from './w810FaceArt.ts';
+import { FACE810_URL } from './w810FaceData.ts';
 import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
 import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
 import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
@@ -45,7 +47,7 @@ import { warmBounce } from './bounceArt.ts';
 import { BOUNCE_URL } from './bounceAtlasData.ts';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
-import { BAD_WATER_URL, badWaterReady } from './badWaterArt.ts';
+import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterArt.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
@@ -100,12 +102,15 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'dress') {
       dressReady();
       urls.push(DRESS_URL);
+    } else if (k === 'faces810') {
+      w810FaceReady();
+      urls.push(FACE810_URL);
     } else if (k === 'water-signs') {
       warmWaterSigns();
       urls.push(WATER_SIGN_URL);
     } else if (k === 'bad-water') {
       badWaterReady();
-      urls.push(BAD_WATER_URL);
+      urls.push(currentBadWaterUrl());
     } else if (k === 'sentry') {
       sentryReady();
       urls.push(...SENTRY_URLS);
@@ -221,6 +226,8 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   if (pending?.id === id) return pending.done;
   // (a stage in another world: the last world's sheets go first, as starting the stage would do)
   enterWorld(cfg.worldIndex);
+  // (the dirty water's sheet is the world's own from World 8 on: badWaterArt.ts)
+  if (cfg.worldIndex >= 6) setBadWaterWorld(cfg.worldIndex);
   if (mix && !live()) releaseCtestFoes(ctestMixDraws(mix).foes);
   // (and what every stage shows, and for the control test what its mix's built stage holds: stageManifest.ts; the rest of a stage's
   // built contents are got in once it is built, stageReady.ts)

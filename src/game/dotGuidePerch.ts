@@ -20,6 +20,11 @@ export interface SafeArea {
   rect: Rect;
   /** parts of it still off limits: the HUD's pieces, the thumb corners */
   keepOut: Rect[];
+  /**
+   * HUD pieces a bubble may never cover, nor tuck its name tag under (the lives medallion, the counter, the Menu): only Pokey himself
+   * weighs more (the lead, 2026-10-30: sideways it sat over the lives medallion with Dot's tag under its edge, 1-7 and 3-7)
+   */
+  never?: Rect[];
 }
 
 // ───────────────────────────── the screen's safe area ─────────────────────────────
@@ -331,6 +336,8 @@ export function placeBubble(
   // (his painting reaches past his body box, his feet most of all: more room under a hard box than over it)
   for (const k of hard) spots.push(['above', k.y0 - 16 - h, null], ['below', k.y1 + 24 + tag, null]);
   spots.push(['above', r.y0, null]);
+  // (clear of each HUD piece it may never cover: just under it, or beside it at her height)
+  for (const k of safe.never ?? []) spots.push(['below', k.y1 + tag + 6, null], ['above', null, k.x1 + 6], ['above', null, k.x0 - 6 - w]);
   if (body) {
     const my = (body.y0 + body.y1) / 2 - h / 2;
     spots.push(['left', my, body.x0 - 10 - w], ['right', my, body.x1 + 10], ['below', body.y1 + 24 + tag, body.x0 - 10 - w], ['below', body.y1 + 24 + tag, body.x1 + 10]);
@@ -348,6 +355,7 @@ export function placeBubble(
     for (const k of safe.keepOut) cost += overlap(box, k) * 3;
     for (const a of avoid) cost += overlap(box, a) * 2;
     for (const a of hard) cost += overlap(box, a) * 12;
+    for (const k of safe.never ?? []) if (overlap(box, k) > 0) cost += 1e7 + overlap(box, k) * 100;
     // (on Pokey: worse than anything else it could do)
     const onHim = body ? overlap(box, body) : 0;
     if (onHim > 0) cost += 1e8 + onHim * 100;
@@ -527,6 +535,7 @@ export function cornerBubble(v: GuideView, w: number, h: number, safe: SafeArea,
     let cost = 0;
     for (const k of safe.keepOut) cost += overlap(box, k) * 3;
     for (const k of hard) cost += overlap(box, k) * 12;
+    for (const k of safe.never ?? []) if (overlap(box, k) > 0) cost += 1e7 + overlap(box, k) * 100;
     // her spot: under (or over) the bubble's inner corner; if that is on Pokey, the outer corner
     const inner = s.x === r.x0 ? s.x + w - 24 : s.x + 24;
     const outer = s.x === r.x0 ? s.x + 24 : s.x + w - 24;

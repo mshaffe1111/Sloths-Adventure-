@@ -1,11 +1,6 @@
-/**
- * Dialogue "voices": every character gets a short, soft blip per spoken letter while their line types out
- * (the way Animal Crossing and Undertale do it). Pitch hops around a small scale so it sounds like speech
- * melody instead of a beep, and each character has their own timbre and register.
- */
-import { AudioCore } from './core.ts';
-import { midiHz } from './theory.ts';
-
+// the game's old story voice (src/audio/speech.ts before story-delivery): an oscillator blip on every other letter. Kept here only so the
+// sample page can play the old and the new side by side.
+const midiHz = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 interface Voice {
   base: number;
   /** semitone offsets the pitch hops between */
@@ -49,14 +44,12 @@ const VOICES: Record<string, Voice> = {
 };
 const FALLBACK: Voice = { base: 48, hop: PENT, type: 'triangle', dec: 0.08, peak: 0.12, lp: 1400, glide: 0.98 };
 
-/** one blip for a spoken character */
-export function speechBlip(core: AudioCore, speaker: string, ch: string, index: number) {
+
+export function oldBlip(c: AudioContext, dst: AudioNode, speaker: string, ch: string, index: number) {
   if (!/[A-Za-z0-9]/.test(ch)) return;
-  if (index % 2 === 1) return; // every other letter: a calm rhythm
+  if (index % 2 === 1) return;
   const v = VOICES[speaker] ?? FALLBACK;
-  const c = core.ctx;
   const t = c.currentTime + 0.005;
-  // the letter picks the hop so the same word sounds the same every time
   const code = ch.toLowerCase().charCodeAt(0);
   const semis = v.hop[(code * 7 + index) % v.hop.length] + ((code % 3) - 1 === 1 ? 12 : 0);
   const hz = midiHz(v.base + semis) * (1 + (Math.random() - 0.5) * 0.02);
@@ -73,22 +66,7 @@ export function speechBlip(core: AudioCore, speaker: string, ch: string, index: 
   g.gain.exponentialRampToValueAtTime(0.0001, t + v.dec);
   os.connect(lp);
   lp.connect(g);
-  const dst = core.withReverb(core.sfx, 0.05);
   g.connect(dst);
   os.start(t);
   os.stop(t + v.dec + 0.03);
-  if (v.breath) {
-    const n = core.noiseSource(t, v.dec + 0.03, true);
-    const bp = c.createBiquadFilter();
-    bp.type = 'bandpass';
-    bp.frequency.value = Math.min(6000, hz * 4);
-    bp.Q.value = 1.2;
-    const ng = c.createGain();
-    ng.gain.setValueAtTime(0.0001, t);
-    ng.gain.linearRampToValueAtTime(v.peak * 0.8 * v.breath, t + 0.01);
-    ng.gain.exponentialRampToValueAtTime(0.0001, t + v.dec);
-    n.connect(bp);
-    bp.connect(ng);
-    ng.connect(dst);
-  }
 }

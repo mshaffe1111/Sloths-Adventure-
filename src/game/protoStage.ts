@@ -349,12 +349,18 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   return out;
 }
 
-/** Worlds 1, 2 and 5: the dressing sets (artDress.ts dressSets), on any of their built stages (hand-built, World 2's, the new generator's) */
+/**
+ * Worlds 1, 2, 5 and 8-10: the dressing sets (artDress.ts dressSets), on any of their stages (hand-built, World 2's, the new
+ * generator's, and Worlds 8-10's old-generator stages, which have no `proto`: theirs go on the stage's own `dress`)
+ */
 export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { rooms: RoomSpec[] } }, seed: number) {
   const c = st.config;
-  if (!st.proto || !DRESS_WORLDS.includes(c.worldIndex as 1 | 2 | 5) || c.objectiveType === 'boss_lair') return;
+  if (!DRESS_WORLDS.includes(c.worldIndex as 1 | 2 | 5 | 8 | 9 | 10) || c.objectiveType === 'boss_lair') return;
+  if (!st.proto && c.worldIndex < 8) return;
   const ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
-  if (ds.length) st.proto.dress = ds;
+  if (!ds.length) return;
+  if (st.proto) st.proto.dress = ds;
+  else st.dress = ds;
 }
 
 /** `easy`: built for Easy (only the control test's long jumps differ, gaps; the rest of Easy is easyMode.ts on the built stage) */

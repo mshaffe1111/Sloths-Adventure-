@@ -560,6 +560,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       if (safeCache && t - safeAt < 400) return safeCache;
       const base = guideSafeArea(v.cssW, v.cssH);
       const keepOut = base.keepOut.slice();
+      const never: Rect[] = [];
       stageKo.length = 0;
       document.querySelectorAll('.hud-glass, [data-hud-keepout]').forEach((el) => {
         const r = el.getBoundingClientRect();
@@ -567,8 +568,10 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const k = { x0: r.left - 6, y0: r.top - 6, x1: r.right + 6, y1: r.bottom + 6 };
         keepOut.push(k);
         if (el.getAttribute('data-hud-keepout') === 'stage') stageKo.push(k);
+        // (the HUD's own pieces: never under a bubble or its name tag)
+        else never.push(k);
       });
-      safeCache = { rect: base.rect, keepOut };
+      safeCache = { rect: base.rect, keepOut, never };
       safeAt = t;
       return safeCache;
     };
@@ -1260,7 +1263,15 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           // Matt's approved words for it (a cut line is not said: it counts as said, so it does not come back)
           const sw = swapLine(due.line.text);
           if (sw?.text === null) markShown(run.world, run.mini, due.flag);
-          else run.say({ key: storyKey(due.flag), text: sw?.text ?? due.line.text, kind: due.flag === 'F' ? 'info' : 'story', who: due.line.who, source: 'story', waitMs: due.flag === 'H' ? 9000 : 60000 });
+          else {
+            // (an exchange, wayside.ts `more`: each reply is its own bubble, said once the one before it has been read)
+            const reply = (i: number): GuideLine | undefined => {
+              const m = due.line.more?.[i];
+              if (!m) return undefined;
+              return { key: `${storyKey(due.flag)}:${i + 1}`, text: swapLine(m.text)?.text ?? m.text, kind: 'story', who: m.who, source: 'story', waitMs: 60000, next: reply(i + 1) };
+            };
+            run.say({ key: storyKey(due.flag), text: sw?.text ?? due.line.text, kind: due.flag === 'F' ? 'info' : 'story', who: due.line.who, source: 'story', waitMs: due.flag === 'H' ? 9000 : 60000, next: reply(0) });
+          }
         }
       }
 
@@ -1322,7 +1333,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         >
           {art && <canvas ref={bubArt} className="dg-bub-art" aria-hidden="true" />}
           {art ? <span ref={tailRef} className="dg-ptail" aria-hidden="true" style={pieceStyle('tail', TAIL_W)} /> : <span className="dg-tail b" />}
-          {tag && <span className={`dg-tag ${tag === 'Pokey' ? 'pokey' : ''}`}>{tag}</span>}
+          {tag && <span className={`dg-tag ${tag === 'Pokey' ? 'pokey' : tag === 'Flicker' ? 'flicker' : ''}`}>{tag}</span>}
           <div className="dg-bub-body">
             <p>{l.counted && props.count ? countedText(l.text, props.count.target - props.count.cur) : l.text}</p>
             {run.skipN === show!.n && (
