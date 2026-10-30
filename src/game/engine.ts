@@ -2250,7 +2250,8 @@ export class GameEngine {
       // World 5, by touch: jumping into a face carries him on into it until he is over its top, unless the thumb steers away. One thumb
       // steers to the face, lifts and flicks: the face stopped him dead, and with the thumb off the glass he rose past its top and came
       // straight back down beside it (QA v198: the same flick worked one try and not the next, by whether the thumb was still on).
-      if (wallSide !== 0 && this.stepHelp && this.touchHelp() !== 'off') {
+      // Always on for touch, whatever the Jump help setting: it fixes that misread, it is not an extra (Matt, 2026-10-30: the options start off)
+      if (wallSide !== 0 && this.stepHelp && this.input.source === 'gesture') {
         const steerNow = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
         if (steerNow !== -wallSide && !this.input.state.down) this.airDrive = { drive: wallSide as -1 | 1, lean: true };
       }
@@ -5705,17 +5706,16 @@ export class GameEngine {
     // a standing flick that leaned 35 degrees or more carries him that way at LEAN_SPEED of a run, Jump help or not (Matt, 2026-10-29,
     // polish report CT-27: it went straight up and down)
     const slant = this.input.source === 'gesture' && !second && steer === 0 ? inp.jumpSlant ?? 0 : 0;
-    if (help === 'off') {
-      this.airDrive = slant ? { drive: slant, lean: true } : newAirDrive();
-      if (slant) this.player.facing = slant;
-      return;
+    if (help === 'off') this.airDrive = newAirDrive();
+    else {
+      const kind = this.currentStage.config.objectiveType;
+      airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
     }
-    const kind = this.currentStage.config.objectiveType;
-    airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
     // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
     // to flick, so he jumped straight up beside the step and came down where he began: in the soft pits' dips QA's one-thumb player
     // stayed stuck, and only an up-and-right flick now and then got out (v198, 2026-10-26). A one-step ledge takes one ordinary jump.
-    if (!second && steer === 0 && this.stepHelp) {
+    // (every touch jump, Jump help or not: it fixes that misread, it is not an extra; Matt, 2026-10-30: the options start off)
+    if (!second && steer === 0 && this.stepHelp && this.input.source === 'gesture') {
       const lean = inp.jumpLean ?? 0;
       const face: -1 | 1 = this.player.facing >= 0 ? 1 : -1;
       // (the way the flick leaned first; then, with no step that way, the way he faces. A thumb's flick leans 20 to 40 degrees either
