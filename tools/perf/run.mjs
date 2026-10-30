@@ -68,10 +68,11 @@ async function playOne(browser, scen, orient) {
   await page.clock.pauseAt(T0 + 1000);
   const url = `http://127.0.0.1:${port}/?layout=1&lessons=off${scen.q ? '&' + scen.q : ''}`;
   await page.goto(url, { timeout: 180000 });
-  for (let i = 0; i < 120; i++) {
+  // (the first load of a worktree compiles ~800 modules: allow it minutes of real time)
+  for (let t0 = Date.now(); Date.now() - t0 < 300000; ) {
     await page.clock.runFor(200);
     if (await page.evaluate(() => typeof window.__play === 'function')) break;
-    await sleep(250);
+    await sleep(1000);
   }
   await page.evaluate((id) => window.__play(id), scen.stage);
   // load: the sheets arrive on the real clock, the game moves on the fake one
@@ -204,8 +205,11 @@ try {
   for (const scen of SCENARIOS) for (const orient of ORIENTS) {
     const t = Date.now();
     try {
-      results.push(await playOne(browser, scen, orient));
-      const r = results[results.length - 1];
+      let r = await playOne(browser, scen, orient).catch((e) => ({ scenario: scen.id, orient: orient.id, error: e.message.slice(0, 500) }));
+      // (one retry: a cold dev server can miss the first page)
+      if (r.error) { log(scen.id, orient.id, 'retrying after', r.error.slice(0, 120)); r = await playOne(browser, scen, orient); }
+      results.push(r);
+
       log(scen.id, orient.id, `${((Date.now() - t) / 1000).toFixed(0)}s`, r.error || `${r.spots.length} spots, ${r.frames.length} counted frames, ${r.sites.length} sites`, r.errors.length ? `errors: ${r.errors.slice(0, 2).join(' / ')}` : '');
     } catch (e) {
       log(scen.id, orient.id, 'FAILED', e.message.slice(0, 300));
