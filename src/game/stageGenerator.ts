@@ -1,5 +1,8 @@
+import { w4Normal } from './w4Normal.ts';
+import { groundToFloor } from './groundFloor.ts';
+import { teachWater } from './waterTeach.ts';
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
-import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
+import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { capFlagSpans, heartBy } from './easyMode.ts';
 import { dipWayOut } from './dipWayOut.ts';
@@ -68,6 +71,14 @@ export interface GeneratedStage {
   checkpoints?: Array<{ x: number; y: number; reached: boolean }>;
   /** y of the water/pit surface; falling below it costs a life */
   waterY?: number;
+  /**
+   * water taught before it costs a life (waterTeach.ts, LV-8), on hand-built and old-generator stages: the painted warning sign at the
+   * first water (the foot of its post), teaching pools (water under the floor there costs no life: a splash and back to backX, backY),
+   * and Dot's warning (said once he passes x, gone once he is past passX) on a stage with no hand-built hints to carry it
+   */
+  waterSigns?: Array<{ x: number; y: number }>;
+  safeWater?: Array<{ x0: number; x1: number; backX: number; backY: number }>;
+  waterHint?: { x: number; text: string; passX: number; shown?: boolean };
   /** World 2: rivers with drifting logs (their water, and the surface that is fatal) */
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
@@ -2606,7 +2617,7 @@ function buildBoss(gen: Gen): GeneratedStage {
     id: 1, type: 'boss', x: def.startDx !== undefined ? left + def.startDx : right - Math.max(160, def.w / 2 + 40), y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
     facing: -1, patrolMinX: left, patrolMaxX: right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
-    specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',
+    specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote,
     ai: newBrain(),
   };
   if (perchList.length) {
@@ -2778,6 +2789,9 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
   return found;
 }
 
+/** how much longer the first animal of each kind on an old-generator World 1-5 stage takes to strike (LV-14: a safe first meeting) */
+export const FIRST_TELL = 1.5;
+
 /**
  * The stage the game plays for a level. `difficulty` matters only for the stages the new generator builds (gen2/game.ts: Easy is
  * laid by the pipeline itself, the same stage under Easy's rules); every other stage is built once and made gentler by
@@ -2798,9 +2812,17 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
   if (config.id === MEECA_STAGE_ID) return meecaGeneratedStage(config, layoutVariant ?? 1);
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
   // (no more than 4000 px between flags on a hand-built stage: easyMode.ts capFlagSpans, LV-9)
-  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+  // (World 4 a little sharper on Normal, Normal only: w4Normal.ts, LV-2)
+  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) {
+    const st = flagsCapped(buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]));
+    return difficulty === 'normal' ? w4Normal(st) : st;
+  }
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
-  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) return flagsCapped(buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]));
+  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) {
+    const st = flagsCapped(buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]));
+    addDress(st, layoutVariant ?? 1);
+    return st;
+  }
   // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below
   if (isGen2Stage(config)) {
     const stage = buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
@@ -2811,7 +2833,10 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
     let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
     [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
-    return finishStage(stage, validateStage(stage).reachableIds);
+    const done = finishStage(stage, validateStage(stage).reachableIds);
+    // (World 5's dressing sets, once the pickups are all placed, so none is covered: artDress.ts dressSets)
+    addDress(done as Parameters<typeof addDress>[0], layoutVariant ?? 1);
+    return done;
   }
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {
@@ -2825,6 +2850,19 @@ export function generateStage(config: LevelConfig, difficulty: Difficulty = 'nor
     if (a >= 0) attempt = a; // if no fresh layout passes (never seen in testing), fall back to the designed one
   }
   const stage = buildStage(config, attempt);
+  // (a ground block hung over water reaches the floor it is drawn down to: groundFloor.ts, 5-6's wall he walked through into the water)
+  groundToFloor(stage);
+  // (water taught before it costs a life: waterTeach.ts, LV-8)
+  if (!config.secret && config.worldIndex <= 5) teachWater(stage);
+  // (LV-14: the first animal of each kind on the stage shows a longer tell, a safe first meeting: 5-8's first ocelot pounced 8 s in)
+  if (!config.secret && config.worldIndex <= 5) {
+    const seen = new Set<string>();
+    for (const e of [...stage.enemies].sort((a, b) => a.x - b.x)) {
+      if (seen.has(e.type)) continue;
+      seen.add(e.type);
+      e.attackCooldown = Math.max(e.attackCooldown, 0) * FIRST_TELL;
+    }
+  }
   // (5-8's floor under its first stairs gets a short climb out wherever no way back up is near: dipWayOut.ts, LV-11)
   if (config.id === '5-8' && !config.secret) dipWayOut(stage);
   // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)

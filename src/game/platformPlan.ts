@@ -154,7 +154,9 @@ function altWeights(world: number, from: ThinLook): Array<[ThinLook, number]> {
 
 /** the whole plan for the thin platforms of one stage */
 function planThin(platforms: readonly Platform[], world: number, out: StagePlan) {
-  const thin = platforms.filter(isThin).sort((a, b) => sortX(a) - sortX(b) || a.id - b.id);
+  // (World 7's crumbling tiles are drawn from Matt's painted crumble frames, crumbleArt.ts, not from the kit's looks: they take no
+  // part in the mix; until the frames load they fall back to their base look, the carved ruin)
+  const thin = platforms.filter((p) => isThin(p) && p.crumbleAfter === undefined).sort((a, b) => sortX(a) - sortX(b) || a.id - b.id);
   const looks: ThinLook[] = thin.map(baseLook);
   const n = thin.length;
   // fragile platforms (and bounce plants) take turns among their faces, so a run of them is never one repeated shape
@@ -172,19 +174,6 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
   rotate('toadstool', BOUNCE_LOOKS, 29);
   rotate('raft', RAFT_LOOKS, 31);
   rotate('drift', DRIFT_LOOKS, 37);
-  // World 7's crumbling tiles come in long trails: carved slabs broken up with lashed and sliced timber, every one of them
-  // cracked and shaking the same way, so the trail still reads as one hazard but is never one repeated shape
-  const CRUMBLE_FAMILY: Array<[ThinLook, number]> = [['ruin', 1.7], ['lashed', 1], ['slices', 1]];
-  for (let i = 0; i < n; i++) {
-    if (thin[i].type !== 'fragile' || thin[i].crumbleAfter === undefined || looks[i] !== 'ruin') continue;
-    const opts = CRUMBLE_FAMILY.filter(([k]) => !(i >= 2 && looks[i - 1] === k && looks[i - 2] === k) && (k === 'ruin' || looks[i - 1] !== k));
-    const total = opts.reduce((s, [, w]) => s + w, 0);
-    let t = h01(thin[i].id, world, 43) * total;
-    for (const [k, w] of opts) {
-      t -= w;
-      if (t <= 0) { looks[i] = k; break; }
-    }
-  }
   // the world's own material takes its share of the ordinary stepping platforms (chosen by hash, so it never changes between visits)
   const sig = SIGNATURE[world];
   if (sig) {

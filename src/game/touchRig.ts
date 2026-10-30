@@ -79,7 +79,7 @@ export class TouchRig {
     const sink: GestureSink = {
       move: (d) => (say('move', d), inp.triggerTouchMove(d)),
       duck: (on) => (say('duck', on), inp.triggerTouchDuck(on)),
-      jumpPress: (lean) => (say('jump', lean ?? 0), inp.triggerTouchUp(lean ?? 0)),
+      jumpPress: (lean, slant) => (say('jump', lean ?? 0), inp.triggerTouchUp(lean ?? 0, undefined, slant ?? 0)),
       jumpRelease: () => (say('jumpUp'), inp.releaseTouchUp()),
       punch: (hold) => (say('punch'), inp.triggerTouchPunch(hold)),
       punchCancel: () => (say('punchCancel'), inp.triggerTouchPunchCancel()),

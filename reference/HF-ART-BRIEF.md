@@ -34,7 +34,6 @@ check" section.
 
 ## Repo rules
 - Your own worktree and branch (named in your brief), made from ccr-0d59a91c-oy3imz. Push it (git push -u origin <branch>). No PR.
-- Before committing: git checkout -- dev-dist; rm -f dev-dist/registerSW.js.
 - If your brief says to wire the art in: replace the code-drawn look outright (no on/off switch, the old path deleted), and run the gate:
   npx tsc --noEmit -p . ; npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts
   src/components/*.test.ts src/components/**/*.test.ts tools/inspect/*.test.ts tools/gen2/*.test.ts ; npx vite build. Screenshots of the

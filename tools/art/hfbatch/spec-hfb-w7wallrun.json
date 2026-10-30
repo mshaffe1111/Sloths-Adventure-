@@ -1,0 +1,48 @@
+{
+ "note": "World 7's temple wall as one wide built wall, from make_wallrun.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "border, frame, edge, horizon, sky, grass, highlight band, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, face, statue, columns, pillars, vertical stripes, repeated identical blocks, ghosting, double image",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/07e562029994d8fa6fbef29f4b9c80958e4ce55b/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "kind": "strip",
+   "name": "w7wallrun-s55",
+   "start": "start-w7wallrun.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide flat front-on texture for a side-scrolling platform game: the face of an old ruined jungle temple wall, weathered grey-green stone blocks of mixed sizes laid in long level courses with dark mortar joints, every block its own shape, a few carved key-pattern meander bands running the whole width, cracks and chipped corners, soft green moss creeping down over some block edges. Soft cel shading, thin dark outline, evenly lit, flat even light, no highlight band, no shadow band, the same all the way across, must tile seamlessly left to right",
+   "neg": "border, frame, edge, horizon, sky, grass, highlight band, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, face, statue, columns, pillars, vertical stripes, repeated identical blocks, ghosting, double image",
+   "s1": 0.55,
+   "seed": 17,
+   "s2": 0.52,
+   "seeds2": [
+    3,
+    5
+   ],
+   "w": 2048,
+   "h": 1024,
+   "band": 110
+  },
+  {
+   "kind": "strip",
+   "name": "w7wallrun-s65",
+   "start": "start-w7wallrun.webp",
+   "prompt": "slothadv style, painted storybook illustration, a wide flat front-on texture for a side-scrolling platform game: the face of an old ruined jungle temple wall, weathered grey-green stone blocks of mixed sizes laid in long level courses with dark mortar joints, every block its own shape, a few carved key-pattern meander bands running the whole width, cracks and chipped corners, soft green moss creeping down over some block edges. Soft cel shading, thin dark outline, evenly lit, flat even light, no highlight band, no shadow band, the same all the way across, must tile seamlessly left to right",
+   "neg": "border, frame, edge, horizon, sky, grass, highlight band, bright band, vignette, gradient, seam, text, letters, watermark, perspective, 3d render, photo, blurry, sloth, animal, face, statue, columns, pillars, vertical stripes, repeated identical blocks, ghosting, double image",
+   "s1": 0.65,
+   "seed": 17,
+   "s2": 0.52,
+   "seeds2": [
+    3,
+    5
+   ],
+   "w": 2048,
+   "h": 1024,
+   "band": 110
+  }
+ ]
+}

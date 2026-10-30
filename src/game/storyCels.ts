@@ -8,19 +8,23 @@
  * a short timed performance made of several frames (the General's war look melting into the plain sloth). Pure parts here are testable without a canvas.
  */
 import { trackAtlas } from './atlasLoader.ts';
-import { CELS, CEL_ATLAS_SIZES, type CelFrame } from './storyCelData.ts';
+import { CELS, CEL_ATLAS_SIZES, CEL_HD, type CelFrame } from './storyCelData.ts';
 import type { PoseKey } from './storyShots.ts';
 
-export { CELS, CEL_ATLAS_SIZES };
+export { CELS, CEL_ATLAS_SIZES, CEL_HD };
 export type { CelFrame };
 
-export const CEL_ATLAS_URLS = [
-  new URL('../assets/characters/cels-pokey.webp', import.meta.url).href,
-  new URL('../assets/characters/cels-pair.webp', import.meta.url).href,
-  new URL('../assets/characters/cels-folk.webp', import.meta.url).href,
-] as const;
+// (under the test runner there is no bundler and so no glob: the call throws and there are no pictures, as paintedBackdrops.ts)
+let pageFiles: Record<string, string> = {};
+try {
+  pageFiles = import.meta.glob('../assets/characters/cels-*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+} catch {
+  pageFiles = {};
+}
+/** the cel pages, in order (src/assets/characters/cels-<n>.webp) */
+export const CEL_ATLAS_URLS: string[] = CEL_ATLAS_SIZES.map((_, i) => pageFiles[`../assets/characters/cels-${i}.webp`]);
 
-/** canvas pixels per atlas pixel for a figure drawn at scale 1: a standing Pokey is 205 atlas pixels, and 270 canvas pixels (90 world units x 3) tall in the picture */
+/** canvas pixels per pixel of the old sheets for a figure drawn at scale 1: a standing Pokey was 205 sheet pixels, and is 270 canvas pixels (90 world units x 3) tall in the picture (the repainted pages are CEL_HD times that) */
 export const CEL_K = 270 / 205;
 
 // ───────────── the cast ─────────────
@@ -165,16 +169,16 @@ export const HEADS: Record<string, HeadSpec> = {
 
 // ───────────── loading and drawing ─────────────
 
-const atlas: Array<HTMLImageElement | null> = [null, null, null];
-const ready: boolean[] = [false, false, false];
+const atlas: Array<HTMLImageElement | null> = CEL_ATLAS_SIZES.map(() => null);
+const ready: boolean[] = CEL_ATLAS_SIZES.map(() => false);
 function load(i: number) {
-  if (atlas[i] || typeof Image === 'undefined') return;
+  if (atlas[i] || typeof Image === 'undefined' || !CEL_ATLAS_URLS[i]) return;
   const img = new Image();
   atlas[i] = img;
   trackAtlas(img, CEL_ATLAS_URLS[i], () => { ready[i] = true; }, () => { atlas[i] = null; ready[i] = false; });
 }
-/** start fetching the atlases (cheap to call again); with no argument, all three */
-export function warmCels(which: number[] = [0, 1, 2]) {
+/** start fetching the pages (cheap to call again); with no argument, all of them */
+export function warmCels(which: number[] = CEL_ATLAS_SIZES.map((_, i) => i)) {
   for (const i of which) load(i);
 }
 export function celReady(i: number): boolean {
@@ -213,8 +217,8 @@ function faded(key: string, c: CelFrame, img: HTMLImageElement): CanvasImageSour
 }
 
 /**
- * Draw one frame with the middle of its bottom edge at (x, y); `k` is canvas pixels per atlas pixel, `face` which way the figure should look (-1 left, 1 right).
- * A frame is mirrored only when it looks one way in the sheet and has to look the other. False when the atlas is not loaded or the frame does not exist.
+ * Draw one frame with the middle of its bottom edge at (x, y); `k` is canvas pixels per pixel of the old sheets, `face` which way the figure should look (-1 left,
+ * 1 right). A frame is mirrored only when it looks one way in the sheet and has to look the other. False when the page is not loaded or the frame does not exist.
  */
 export function drawCel(ctx: CanvasRenderingContext2D, key: string, x: number, y: number, k: number, face: -1 | 1, alpha = 1): boolean {
   const c = CELS[key];
@@ -227,21 +231,33 @@ export function drawCel(ctx: CanvasRenderingContext2D, key: string, x: number, y
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   if (alpha < 1) ctx.globalAlpha *= alpha;
-  const dw = c.w * k;
-  const dh = c.h * k;
+  const kk = k / CEL_HD;
+  const dw = c.w * kk;
+  const dh = c.h * kk;
+  // (the painting is the old rect grown by m all round: its bottom-middle sits m below the feet)
+  const oy = -dh + c.m * kk;
   if (c.c === 'raw') {
     const r = Math.min(dw, dh) * 0.05;
     ctx.beginPath();
-    ctx.roundRect(-dw / 2, -dh, dw, dh, r);
+    ctx.roundRect(-dw / 2, oy, dw, dh, r);
     ctx.clip();
-    ctx.drawImage(img, c.x, c.y, c.w, c.h, -dw / 2, -dh, dw, dh);
+    ctx.drawImage(img, c.x, c.y, c.w, c.h, -dw / 2, oy, dw, dh);
   } else if (c.c === 'b') {
     const src = faded(key, c, img);
-    if (src) ctx.drawImage(src, 0, 0, c.w, c.h, -dw / 2, -dh, dw, dh);
-    else ctx.drawImage(img, c.x, c.y, c.w, c.h, -dw / 2, -dh, dw, dh);
+    if (src) ctx.drawImage(src, 0, 0, c.w, c.h, -dw / 2, oy, dw, dh);
+    else ctx.drawImage(img, c.x, c.y, c.w, c.h, -dw / 2, oy, dw, dh);
   } else {
-    ctx.drawImage(img, c.x, c.y, c.w, c.h, -dw / 2, -dh, dw, dh);
+    ctx.drawImage(img, c.x, c.y, c.w, c.h, -dw / 2, oy, dw, dh);
   }
   ctx.restore();
   return true;
+}
+
+/** a story has closed: let the cel pages go (they load again for the next one; a stage that draws cels warms its own) */
+export function releaseCels() {
+  for (let i = 0; i < atlas.length; i++) {
+    atlas[i] = null;
+    ready[i] = false;
+  }
+  fade.clear();
 }

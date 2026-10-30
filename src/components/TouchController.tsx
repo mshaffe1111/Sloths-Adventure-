@@ -39,7 +39,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, w
         // each decision also goes to the control-test recorder (it does nothing unless the test is running)
         move: (d) => { recorder.intent('move', d); inputEngine.triggerTouchMove(d); },
         duck: (on) => { recorder.intent('duck', on ? 1 : 0); inputEngine.triggerTouchDuck(on); },
-        jumpPress: (lean) => { recorder.intent('jump'); inputEngine.triggerTouchUp(lean ?? 0); },
+        jumpPress: (lean, slant) => { recorder.intent('jump'); inputEngine.triggerTouchUp(lean ?? 0, undefined, slant ?? 0); },
         jumpRelease: () => { recorder.intent('jumpUp'); inputEngine.releaseTouchUp(); },
         punch: (hold) => { recorder.intent('punch'); inputEngine.triggerTouchPunch(hold); },
         punchCancel: () => { recorder.intent('punchCancel'); inputEngine.triggerTouchPunchCancel(); marks.current.takeBack('punch'); },

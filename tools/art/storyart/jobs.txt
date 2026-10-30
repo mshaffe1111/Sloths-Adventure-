@@ -1,0 +1,36 @@
+story-art (2026-10-29, branch story-art, cap $15): repainted story plates and cels. Starts tools/art/storyart/starts.py (force-added under
+tools/art/hfbatch/starts/storyart/), specs make_spec.py, GPU storygpu.py (Qwen-Image img2img/inpaint + Qwen-Image-Edit-2509), results in
+the bucket mshaffe111/w5-xfer under storyart/out/. Cost: run time x ~$2.75/h (rtx-pro-6000).
+storyart-calib 6ae39e25ad9610e5cb31649c 19:27Z-19:35Z (~8 min incl. model download, ~$0.37): Pokey 4 frames x strengths 0.35/0.5,
+  General 3 frames x 0.55/0.7, courtyard extended (inpaint) + tiled 2560 pass, W1 ground from the old branch.
+  Verdicts: Pokey 0.5 clean but still soft (upscaled blur carried through); General 0.7 unchanged (no coat: the war-look model wins,
+  needs the edit model); courtyard tiled 2560 pass looks right, but the inpainted top is a different place (a second tower) with a seam;
+  ground from the old branch is flat and dull (thrown; next from each world's own near-backdrop floor).
+running total ~$0.37
+storyart-round2 6ae3a03fad9610e5cb316757 19:36Z-~19:53Z (~17 min, ~$0.78): sharpened Pokey starts 0.5/0.62, PN/PX cels, Meeca, Grandma,
+  the General through Qwen-Image-Edit (greatcoat, real fur, old face: works; it drops pose on the fallen frame), courtyard outpaint by the
+  edit model (seed 6 keeps the old plate's layout and paints the tower up to a pointed roof; seed 2 re-lays the plate). Verdicts: Pokey on
+  model at 0.55; General design = edit ready_a-3 (war) and gv-3 (plain) as the references; plates by edit outpaint + tiled 2560 pass.
+storyart-figs1 6ae3a2214403c6b5065dd64f from 19:44Z: all 82 Pokey + 59 Meeca + 26 Dot story frames at 0.55 on their models.
+storyart-r3a 6ae3a3be0e0338d1bb7c1b59 from 19:51Z: the General (31 frames: edit with the design reference, then 0.3 on his models) and
+  13 plates x 2 seeds (edit outpaint, then the tiled 2560 pass).
+storyart-r3b 6ae3a3f2c78863f9c62dc7a5 from 19:52Z: 10 ground strips x 2 strengths, 93 story-sheet cels (folk, Meeca, Pokey, the pairs).
+storyart-r3a CANCELLED 19:51Z-~20:00Z (~9 min, ~$0.41, wasted): the two-picture edit (old frame + the design picture) copied the design
+  picture instead of redrawing the frame (every General frame came back as ready_a-3, eyes and pose lost). Replaced by r3a2 and r3c.
+storyart-r3a2 6ae3a56dc78863f9c62dc974 from 19:58Z: the General's 31 frames from one written look per state (war, plain, young), seed 3
+  (the fallen card also seed 8), then 0.3 on his models; Pokey's wall grip and reach (edit of his from-behind frame, 2 seeds each).
+storyart-r3c 6ae3a5710e0338d1bb7c1d41 from 19:58Z: 13 plates x seeds 2/6: the edit model paints the room above, then the tiled 2560 pass.
+results: figs1 19:44Z-20:24Z (40 min, ~$1.83): all 167 frames on model; 9 Pokey frames drifted expression (alarm, crossed, impatient,
+  point_a/b, tired, wipe, slump, worried) -> redone in r4a. r3b 19:52Z-20:20Z (28 min, ~$1.28): 10 ground strips, 93 cels; the pair cels
+  (da/db/hug) mixed the two characters at 0.55. r3a2 19:58Z-20:35Z (37 min, ~$1.70): the General's look holds (greatcoat, real fur, old
+  face, red eyes), but frame to frame the war-look frames lost the pauldron/cape on some -> eyes redone from one picture in r4a; the
+  plain and young grandfather are consistent. Wall grip + reach: on brief (strap screen-left to bag screen-right from behind).
+storyart-r4a 6ae3aeb9c78863f9c62dd558 20:38Z-20:53Z (~15 min, ~$0.69): 9 Pokey redos at 0.42 with the expression named (all pass),
+  the General's six eye states as eye-only edits of gen-gn.glare (consistent: the act no longer jumps), both story cards with the
+  crimson cape and pauldron, grip/reach at 0.45 on Pokey's model, pairs at 0.4 (her headband back, but the old pair sheets drew Pokey in
+  her running kit: the first concept -> r4b).
+storyart-r4b 6ae3b3a00e0338d1bb7c2dcc from 20:59Z: the parents plate (two grown sloths going out along the branch), the empty nest,
+  the courtyard with wet steps, and the pair cels with Pokey out of her running kit (edit, then 0.28 on both models).
+running total ~$11.7 of $15 (r3c ~$3.4 when it ends, r4b ~$1.3 estimated).
+r4c 6ae3b8680e0338d1bb7c3352 grandma-door lit (edit + tiled)
+r4d 6ae3cd640e0338d1bb7c45c8 last four pair cels inpainted on the character models

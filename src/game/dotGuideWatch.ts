@@ -113,14 +113,16 @@ export interface StruggleHelp {
   /** what got him, for a death */
   cause?: DeathCause;
 }
-export type DeathCause = 'fall' | 'foe' | 'other';
+export type DeathCause = 'fall' | 'foe' | 'other' | 'water' | 'crumble' | 'gapWide' | 'vine' | 'pushLog';
 
 export const STRUGGLE = {
   /** two deaths this close together count as the same spot (px) */
   spotDx: 180,
   spotDy: 240,
-  /** no progress for this long while a thumb is on the glass (ms of play) */
-  stuckMs: 15000,
+  /** stuck is back and forth with no progress (STAGE-RULES §3, DOT-11), never a clock: this many turns of direction in a row */
+  turns: 6,
+  /** a turn counts once he has gone this far the one way (px): a twitch of the thumb is not a turn */
+  turnPx: 40,
   /** progress: this far further right, or this far higher, than his best so far */
   progressDx: 60,
   progressDy: 80,
@@ -131,44 +133,60 @@ export const STRUGGLE = {
 } as const;
 
 /** the help lines: Matt's approved words (dotLines.ts, the help.* lines) */
-export const STRUGGLE_LINES: Record<StruggleKind | `death-${DeathCause}` | 'stuck2', string> = {
+export const STRUGGLE_LINES: Record<StruggleKind | `death-${DeathCause}`, string> = {
   'death-fall': dotText('help.twice.gap', 'Flick up a little before the edge.'),
   'death-foe': dotText('help.twice.foe', 'Tap to punch it before it gets close.'),
   'death-other': dotText('help.twice.generic', 'That spot again. Slow down and look first.'),
+  'death-water': dotText('help.twice.water', 'Wait for the log, then flick up.'),
+  'death-crumble': dotText('help.twice.crumble', 'Shaky branches drop. Keep moving!'),
+  'death-gapWide': dotText('help.twice.gapWide', 'Flick up again midair for the far side.'),
+  'death-vine': dotText('help.twice.vine', 'Slide straight up. It always climbs.'),
+  'death-pushLog': dotText('help.pushLog', 'Slide into the log and keep holding.'),
   death: dotText('help.twice.generic', 'That spot again. Slow down and look first.'),
   stuck: dotText('help.stuck15', 'This way, Pokey! Try over here.'),
-  stuck2: dotText('help.stuck30', 'Still stuck? Follow my arrow.'),
   kicks: dotText('help.kickAir', 'Kicking the air? Slide your thumb to run.'),
 };
+/**
+ * The help after a second death in one spot, by what got him (DOT-10). On Tips the plain three (a fall, an animal, anything else); on
+ * Help the specific line for the cause, the log first (Easy players lost the most lives at "Push the log").
+ */
+export function deathLine(cause: DeathCause, specific: boolean): string {
+  if (!specific) return STRUGGLE_LINES[cause === 'fall' ? 'death-fall' : cause === 'foe' ? 'death-foe' : 'death-other'];
+  return STRUGGLE_LINES[`death-${cause}`];
+}
 
 export class StruggleWatch {
   private deaths: { x: number; y: number }[] = [];
   private helpedSpots: { x: number; y: number }[] = [];
   private bestX = -Infinity;
   private bestY = Infinity;
-  private stillMs = 0;
   private lastStuckAt = -Infinity;
   private clock = 0;
   private airKicks = 0;
-  private stuckTimes = 0;
+  /** back and forth: the way he last went, where he turned last, and the turns in a row with no progress */
+  private dir = 0;
+  private turnX = NaN;
+  private turns = 0;
 
   /** a new run of the stage, or a respawn: progress counts from here */
   restart(x: number, y: number): void {
     this.bestX = x;
     this.bestY = y;
-    this.stillMs = 0;
     this.airKicks = 0;
+    this.turns = 0;
+    this.dir = 0;
+    this.turnX = x;
   }
 
   /** he lost a life at (x, y) */
-  death(x: number, y: number, cause: DeathCause): StruggleHelp | null {
+  death(x: number, y: number, cause: DeathCause, specific = false): StruggleHelp | null {
     const same = this.deaths.some((d) => Math.abs(d.x - x) < STRUGGLE.spotDx && Math.abs(d.y - y) < STRUGGLE.spotDy);
     this.deaths.push({ x, y });
     if (!same) return null;
     // once per spot
     if (this.helpedSpots.some((d) => Math.abs(d.x - x) < STRUGGLE.spotDx && Math.abs(d.y - y) < STRUGGLE.spotDy)) return null;
     this.helpedSpots.push({ x, y });
-    return { kind: 'death', cause, key: `struggle:death:${Math.round(x / 100)}`, text: STRUGGLE_LINES[`death-${cause}`] };
+    return { kind: 'death', cause, key: `struggle:death:${Math.round(x / 100)}`, text: deathLine(cause, specific) };
   }
 
   /** a kick: three in a row with nothing in reach is a thumb that meant to run */
@@ -188,25 +206,34 @@ export class StruggleWatch {
     this.airKicks = 0;
   }
 
-  /** a frame of play: is he getting anywhere? `touching`: a thumb is on the glass (he is trying, not putting the phone down) */
-  step(dtMs: number, x: number, y: number, touching: boolean): StruggleHelp | null {
+  /**
+   * A frame of play: is he getting anywhere? Stuck is going back and forth with no progress (STRUGGLE.turns turns of direction), never
+   * time alone: a player standing still to think is not stuck (DOT-11).
+   */
+  step(dtMs: number, x: number, y: number): StruggleHelp | null {
     this.clock += dtMs;
     if (x > this.bestX + STRUGGLE.progressDx || y < this.bestY - STRUGGLE.progressDy) {
       this.bestX = Math.max(this.bestX, x);
       this.bestY = Math.min(this.bestY, y);
-      this.stillMs = 0;
-      this.stuckTimes = 0;
+      this.turns = 0;
       return null;
     }
-    if (!touching) return null;
-    this.stillMs += dtMs;
-    // (the second help comes 15 s after the first if he is still stuck; after that, at most every 45 s)
-    if (this.stillMs < STRUGGLE.stuckMs || (this.stuckTimes !== 1 && this.clock - this.lastStuckAt < STRUGGLE.stuckEveryMs)) return null;
-    // (the second time in a row without getting anywhere, she says to follow her arrow)
-    const again = this.stuckTimes === 1;
-    this.stuckTimes++;
+    if (Number.isNaN(this.turnX)) this.turnX = x;
+    // (turnX: the far point of his run this way; a turn is turnPx back the other way from it)
+    if (this.dir === 0) {
+      if (Math.abs(x - this.turnX) >= STRUGGLE.turnPx) {
+        this.dir = x > this.turnX ? 1 : -1;
+        this.turnX = x;
+      }
+    } else if ((x - this.turnX) * this.dir > 0) this.turnX = x;
+    else if ((this.turnX - x) * this.dir >= STRUGGLE.turnPx) {
+      this.turns++;
+      this.dir = -this.dir;
+      this.turnX = x;
+    }
+    if (this.turns < STRUGGLE.turns || this.clock - this.lastStuckAt < STRUGGLE.stuckEveryMs) return null;
+    this.turns = 0;
     this.lastStuckAt = this.clock;
-    this.stillMs = 0;
-    return { kind: 'stuck', key: `struggle:stuck:${Math.round(this.clock / 1000)}`, text: again ? STRUGGLE_LINES.stuck2 : STRUGGLE_LINES.stuck };
+    return { kind: 'stuck', key: `struggle:stuck:${Math.round(this.clock / 1000)}`, text: STRUGGLE_LINES.stuck };
   }
 }

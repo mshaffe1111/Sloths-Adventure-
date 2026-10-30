@@ -725,9 +725,10 @@ ENV[6] = {
   decor: [['pegs', 3], ['pflower', 2], ['pplant', 2], ['bogfern', 2], ['kneeroot', 2], ['mudbubble', 2]],
   sway: 'bogmoss', front: 'reed',
 };
+// (no figroot: its pale code-drawn roots on every ledge read as ribs, QA 2026-10-29; Matt's painted fig roots, w7c, are to be wired in)
 ENV[7] = {
-  near: [['idolhead', 1], ['blockpile', 3], ['figroot', 3], ['fernclump', 2]],
-  decor: [['blockpile', 3], ['figroot', 2], ['idolhead', 1.2], ['fernclump', 2.5], ['pplant', 2], ['pflower', 1.5]],
+  near: [['idolhead', 1], ['blockpile', 3], ['fernclump', 3]],
+  decor: [['blockpile', 3], ['idolhead', 1.2], ['fernclump', 3], ['pplant', 2], ['pflower', 1.5]],
   sway: 'aerial', front: 'rock',
 };
 ENV[8] = {

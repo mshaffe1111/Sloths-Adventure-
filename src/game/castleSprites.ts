@@ -100,10 +100,10 @@ export function castlePainted(n: number): boolean {
 }
 
 /**
- * paints castle `n` over a w x h picture (it overscans the bottom so a lifted picture never shows a gap). `t` drifts it very slowly.
+ * paints castle `n` over a w x h picture, and `top` more above it upright (it overscans the bottom so a lifted picture never shows a gap). `t` drifts it very slowly.
  * Returns false when the painted castle is off or not loaded yet.
  */
-export function drawCastleBackdrop(ctx: CanvasRenderingContext2D, n: number, w: number, h: number, t: number): boolean {
+export function drawCastleBackdrop(ctx: CanvasRenderingContext2D, n: number, w: number, h: number, t: number, top = 0): boolean {
   if (!castlePainted(n)) return false;
   const b = built[n]!;
   const info = CASTLES[n] ?? { name: '', x: 0.5 };
@@ -111,9 +111,10 @@ export function drawCastleBackdrop(ctx: CanvasRenderingContext2D, n: number, w: 
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   // the filler covers everything, with room for the camera's zoom and lift
-  ctx.drawImage(b.bg, -w * 0.5, -h * 0.3, w * 2, h * 1.8);
-  // the painting: the picture's height, castle centred at 0.64 of the width, with a slow push
-  const sc = (h * 0.95) / b.h * (1 + 0.012 * Math.sin(t * 0.12));
+  ctx.drawImage(b.bg, -w * 0.5, -h * 0.3 - top, w * 2, h * 1.8 + top);
+  // the painting: the picture's height (upright, with the room above it: `top`, storyArt.ts drawStoryScene, or its top edge showed as a
+  // hard line across the sky), castle centred at 0.64 of the width, with a slow push
+  const sc = (top > 0 ? (h * 1.02 + top) * 1.02 : h * 0.95) / b.h * (1 + 0.012 * Math.sin(t * 0.12));
   const dw = b.w * sc;
   const dh = b.h * sc;
   const x0 = w * 0.64 - info.x * dw + Math.sin(t * 0.09) * 6;

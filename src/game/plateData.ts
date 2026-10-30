@@ -11,6 +11,8 @@ export interface PlateInfo {
   ground: number;
   /** what the picture is, for the scene notes */
   what: string;
+  /** where its light falls from, a direction out of the picture toward it (the figures' rim light, storyArt.ts drawFigures) */
+  light?: [number, number];
 }
 
 export const PLATES: Record<string, PlateInfo> = {
@@ -19,7 +21,9 @@ export const PLATES: Record<string, PlateInfo> = {
   warroom: { ground: 0.88, what: "the General's war room: the round table, the pin map with three forks in it, the empty chair" },
   door: { ground: 0.86, what: "the corridor outside Meeca's door: lanterns, a stool, a line of lamplight under the wood" },
   courtyard: { ground: 0.86, what: 'the courtyard after the storm turns: her window lit in the tower, thorn vines going slack' },
-  'nest-storm': { ground: 0.74, what: 'the old nest on the branch in the storm, two sloths going away along it (the cub sits in the nest)' },
+  'nest-storm': { ground: 0.74, what: "the old nest on the branch in the storm, the sky turning, Pokey's mother and father out on the far branch (the singing-storm memory)" },
+  'nest-night': { ground: 0.74, what: 'the same nest in the same storm, nobody on the branch (the singing-storm memory, the cub and Meeca in the nest)' },
+  steps: { ground: 0.86, what: "the courtyard after the storm turns, the wet stone steps down from the tower's door (Pokey and Meeca sit on them)" },
   'nest-morning': { ground: 0.74, what: 'the same nest the morning after: washed light, nobody on the branch' },
   council: { ground: 0.84, what: 'the clearing with the council fire and the seats of the ten' },
   gates: { ground: 0.85, what: 'the fortress from the foot of the thousand steps: the gates standing open, ten green lights along the wall tops, rain and a lightning fork' },
