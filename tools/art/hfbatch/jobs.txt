@@ -235,3 +235,12 @@ hfzones1      6ae407e90e0338d1bb7c769b rtx-pro-6000 02:58:49Z-03:05Z (~6 min, ~$
   zonecut.py (packed into boss-fx). KEPT zones-s72-23 (vents cool and hot, three lava fountain frames, rods dark and lit, scorch).
   THROWN: s72-7 (lava like dripping wax), s84-23 (pale columns), s84-7 (the rod fell over). The bolt is boss-fx's painted one.
 running spend of the $80: ~$1.04
+── round of 2026-10-30 afternoon (hf-art-bosses, Matt: "get what we need now to finish the game"; cap $15 this round) ──
+hfdrake1      6ae4d3a50e0338d1bb7cc62f rtx-pro-6000 from 17:28Z: the Drake teacup ending (tools/art/hfdrake: teastarts.py,
+  make_spec_drake1.py, story-art's storygpu.py): his grey sitting pose as edits of his idle still (Qwen-Image-Edit-2509), his tea things
+  (tin mugs, his huge mug, the battered pot, his good china) at 0.55/0.68. Early look: the sit poses are right but "like a tired old
+  dog" in the prompt gave him a dog's head (off model) -> redone in hfboss910a with his lizard head and plate scales named.
+hfboss910a    6ae4d430c78863f9c62e9983 rtx-pro-6000 from 17:30Z: the teacup sit again (drake-tea: on model) and the new 9-10/10-10
+  poses as edits of their stills: Drake breath-down, winded, wall cling; Iron-Claw about-face, chair lift, throw, peek, paw.
+hfboss910b    6ae4d4e0c78863f9c62e99ad rtx-pro-6000 from 17:33Z: the 9-10/10-10 set pieces from boss910starts.py (hoard shelves, ribs,
+  crust, lava strip, table, chairs, netting, hedge, rubble) and the council hall (wide, tall) and wall break as edits of the warroom plate.
