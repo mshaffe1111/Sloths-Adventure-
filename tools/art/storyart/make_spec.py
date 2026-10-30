@@ -642,6 +642,34 @@ def round6(commit):
             'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
 
 
+FIX = {'magma-drake': 'two used china teacups with saucers standing on a flat dark rock beside the dragon, lit warm orange by the lava glow, a ring of tea in each, thin steam rising, painted at the same scale as the scene',
+       'squirrels': 'a hand-made wooden sign board on a post with a carved and painted acorn symbol in the middle, rough painted wood grain',
+       'pell': 'a crooked hanging wooden shop sign on two ropes with a painted needle and red thread symbol, rough painted wood grain'}
+
+
+def round7(commit):
+    """the lead's last three fixes: the Drake's cups painted into the scene, the two signs carry a painted symbol (no fake writing), and
+    the snail painted the way the game's creatures are (outline, shading, a face), two frames"""
+    it = []
+    for k, words in FIX.items():
+        for st, sd in (((0.72, 4), (0.84, 9)) if k == 'magma-drake' else ((0.58, 4), (0.68, 9))):
+            it.append({'name': f'card-{k}-v{round(st * 100)}', 'start': f'fix-{k}.png', 'mask': f'cardmask-{k}.png', 'strength': st, 'seed': sd,
+                       'w': 1920, 'h': 1080, 'loras': [['style', 0.9]],
+                       'prompt': f'slothadv style, painted storybook illustration, {words}, crisp clean outlines, rich painted detail',
+                       'neg': 'text, letters, words, writing, zigzag, signature, watermark, flat clip art, vector, photo, 3d render, blurry'})
+    for f in ('stretch', 'bunch'):
+        for st, sd in ((0.5, 3), (0.6, 6)):
+            it.append({'name': f'snail-{f}-v{round(st * 100)}', 'start': f'snail-{f}.png', 'strength': st, 'seed': sd, 'w': 768, 'h': 512, 'loras': [['style', 1.0]],
+                       'prompt': ('slothadv style, painted storybook illustration of one small friendly garden snail seen from the side facing right, a '
+                                  'soft garden brown spiral shell with painted shading and highlights, a pale tan body ' + ('stretched out long as it creeps'
+                                  if f == 'stretch' else 'bunched up short as it creeps') + ', two eye stalks with shiny eyes, a small content smile, '
+                                  'crisp clean dark outlines, soft cel shading, plain flat grey background'),
+                       'neg': 'text, background scenery, ground, floor, shadow, slime trail, blurry, flat vector, clip art, extra eyes, two snails'})
+    base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfbatch/starts/storyart/'
+    return {'tag': 'r7', 'loras': {'style': LORAS['style']}, 'base': base, 'items': it, 'q': 90,
+            'repo': f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/', 'keep': [x['name'] for x in it]}
+
+
 def args(name, commit):
     raw = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/storyart'
     get = (f'mkdir -p /out/storyart/jobs && curl -fsSL {raw}/storygpu.py -o /out/storyart/jobs/storygpu.py && '
