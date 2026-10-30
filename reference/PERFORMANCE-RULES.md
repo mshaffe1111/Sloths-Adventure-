@@ -161,9 +161,9 @@ Measured with the control test (`#ctest`; QA reads it with `tools/playtesters/`)
 |---|---|---|
 | Matt's Pixel 11 Pro Ultra, Chrome and the APK | Imagination PowerVR (Tensor) | where tonight's walls were; every Pixel from the 10 on |
 | Matt's other Android (Chrome) | different GPU | the held-30 baseline |
-| A Samsung Galaxy (Exynos/Snapdragon) | Mali or Adreno | most of the Android market |
+| Matt's Samsung Galaxy | Mali or Adreno | most of the Android market (Matt has one, 2026-10-30) |
 | An iPhone, Safari, Low Power Mode on and off | Apple | the iPhone testers (Kelsinator, Sally, Age) |
-| One three-to-four-year-old mid-range Android | any | the "cheap phone" floor a paid game must still run on |
+| Matt's older OnePlus | Adreno (likely) | the "older phone" floor a paid game must still run on (Matt, 2026-10-30) |
 
 A stage passes only if it meets §1 on all of them in both orientations.
 
