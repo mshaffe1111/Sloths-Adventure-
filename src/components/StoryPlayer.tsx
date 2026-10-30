@@ -312,7 +312,9 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     const sw = Math.max(720, Math.min(1500, sh * (cssW / cssH)));
     const sc = canvas.width / sw;
     const top = Math.max(0, canvas.height / sc - sh);
-    const lift = wide ? 0.09 : 0;
+    // (a close shot the direction frames chest-up is not raised to keep feet above the words box: storyDirect.ts noLift)
+    const chestUp = wide && !!dir.noLift && !hold;
+    const lift = wide && !chestUp ? 0.09 : 0;
     const t0 = performance.now();
     let raf = 0;
     let last = 0;
@@ -323,7 +325,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       // (while the player holds on, every roll of thunder shakes the picture a little, and the one that breaks shakes it hard)
       const sk = hold ? thunderShake(now - t0, breakAt.current ? now - breakAt.current : null) : { dx: 0, dy: 0, flash: 0 };
       ctx.setTransform(sc, 0, 0, sc, sk.dx * sc, (top + sk.dy) * sc);
-      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, feetRef.current, top);
+      drawStoryScene(ctx, scene, (now - t0) / 1000, sw, sh, lift, chestUp ? 1.5 : feetRef.current, top);
       if (sk.flash > 0) {
         ctx.fillStyle = `rgba(235,240,255,${sk.flash})`;
         ctx.fillRect(-20, -top - 20, sw + 40, sh + top + 40);
@@ -338,8 +340,13 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [scene, hold, wide, view.w, view.h, cardUp]);
+  }, [scene, hold, wide, view.w, view.h, cardUp, dir.noLift]);
 
+  // (a line that has just finished typing is not left by the same quick double tap that finished it: it gets a moment to be read)
+  const doneAt = useRef(0);
+  useEffect(() => {
+    if (done) doneAt.current = performance.now();
+  }, [done, idx, page]);
   const next = useCallback(() => {
     // (a played picture moves on when it is played, not on a tap)
     if (hold) return;
@@ -352,6 +359,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels: script, onFini
       setShown(text.length);
       return;
     }
+    if (performance.now() - doneAt.current < 350) return;
     if (!lastPage) setPageAt({ idx, n: page + 1 });
     else if (last) onFinish();
     else setIdx((i) => i + 1);

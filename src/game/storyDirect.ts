@@ -18,6 +18,7 @@ import type { SceneActor, StoryCue, StoryPanel, StoryScene } from './story.ts';
 import type { Cam, CameraMove } from './storyShots.ts';
 import { typeMs } from '../audio/voiceLine.ts';
 import { CEL_CAST } from './storyCels.ts';
+import { PLATES } from './plateData.ts';
 
 export type Enter = 'dip' | 'soft' | 'cut';
 export type Shot = 'authored' | 'single' | 'push' | 'slowPush' | 'reveal' | 'drift' | 'still';
@@ -39,6 +40,11 @@ export interface Direction {
   music: MusicMove;
   /** why, for the direction sheet */
   why: string[];
+  /**
+   * sideways, the picture is not raised to keep feet above the words box: a close shot on a tall figure (the General, a guardian) frames
+   * them from the chest up, as a close-up should, instead of being lifted until their head leaves the top of the screen
+   */
+  noLift?: boolean;
 }
 
 /** a big line's own delivery, by hand: matched by `speaker|start of the line` */
@@ -81,6 +87,22 @@ export function speakerX(scene: StoryScene, speaker: string): number | null {
   }
   return null;
 }
+
+/** how tall the one speaking stands, as a share of the scene's height (roughly: for keeping a head in a close shot) */
+function speakerHeight(scene: StoryScene, speaker: string): number {
+  let h = 0;
+  for (const a of scene.actors) {
+    const sc = a.scale ?? (a.kind === 'cel' && a.cel ? CEL_CAST[a.cel]?.scale ?? 1 : 1);
+    const k = a.kind;
+    const tall = k === 'cel' || k === 'boss' ? 0.45 : k === 'thornbark' ? 0.6 : k === 'dot' || k === 'flicker' ? 0.1 : 0.26;
+    if (speakerX({ ...scene, actors: [a] }, speaker) !== null) h = Math.max(h, tall * sc);
+  }
+  return h;
+}
+
+/** the scene player's sideways framing, roughly: where the feet may come down to (the words box), and the least the picture is raised */
+const FEET_MAX = 0.66;
+const WIDE_LIFT = 0.09;
 
 /** what makes two pictures one setup (a cut between them) rather than a new place (a dip) */
 function setup(s: StoryScene): string {
@@ -266,6 +288,16 @@ export function directScene(panels: StoryPanel[]): Direction[] {
         camera = null;
     }
     lastEnd = camera ? camera.to : null;
+    // a close shot whose lift (feet above the words box) would push the speaker's head off the top: framed chest-up instead
+    let noLift: boolean | undefined;
+    const end = camera?.to ?? { zoom: z0 * 1.04, fx: f0.fx, fy: f0.fy };
+    const hgt = speakerHeight(scene, p.speaker);
+    if (hgt > 0 && end.zoom >= 1.2) {
+      const g = scene.ground ?? (scene.plate ? PLATES[scene.plate]?.ground : undefined) ?? 0.8;
+      const view = (y: number) => (y - end.fy) * end.zoom + 0.5;
+      const lift = Math.max(WIDE_LIFT, view(g) - FEET_MAX);
+      if (view(g - hgt) - lift < 0.04) (noLift = true), why.push('framed chest-up: lifting the feet clear would cut off the head');
+    }
 
     // the voice
     const tone = { semis: 0, db: 0, silent: p.text.includes('♪') || undefined };
@@ -280,7 +312,7 @@ export function directScene(panels: StoryPanel[]): Direction[] {
     if (o?.music) music = o.music;
     // (a hand-directed line gives its own reason; the rules' reasons are for the lines they direct alone)
     if (o) why.splice(0, why.length, o.note, ...why.filter((w) => w.includes('pages')));
-    out.push({ enter, beat, typeMs: ms, pages, shot, camera, tone, music, why });
+    out.push({ enter, beat, typeMs: ms, pages, shot, camera, tone, music, why, noLift });
   }
   return out;
 }
