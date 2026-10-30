@@ -15,6 +15,7 @@ import { leaf } from './rainforest.ts';
 import { hangingBat } from './territoryTrees.ts';
 import { EXTRA_PLANTS, SWAYS, plantGlow, plantGradient, type PlantDef, type SwayFn } from './envPlants.ts';
 import type { Look } from './scenery.ts';
+import { canvasLost } from './canvasLost.ts';
 
 const TAU = Math.PI * 2;
 
@@ -611,8 +612,19 @@ interface DecorJob {
 }
 const decorPics = new Map<string, DecorPic>();
 const decorQueue = new Map<string, DecorJob>();
-/** at most this many plant pictures are kept (the oldest let go first); about 10 to 60 KB each */
-const DECOR_PICS_MAX = 900;
+/** the plant pictures kept for a stage, at most (the oldest let go first; each 10 to 60 KB): they are let go when the next stage gets ready */
+const DECOR_BYTES_MAX = 4 * 1024 * 1024;
+let decorBytes = 0;
+/** a plant is only painted in idle time that has this long left (ms): painting one takes about that on a slow phone */
+const IDLE_BAKE_MS = 8;
+/**
+ * The last frame's gap (ms), from when the first plant of each frame is drawn, and its recent average: the half-second fallback only paints
+ * after a frame no worse than 1.5 times the average (not on a stall). A phone always slower than 30 fps still gets its pictures, one paint
+ * of a few ms every half second, each one taking about as much off every frame after it.
+ */
+let frameAt = 0;
+let frameGap = 0;
+let frameAvg = 0;
 const lookIds = new WeakMap<object, number>();
 let lookCount = 0;
 let bakeCanvas: HTMLCanvasElement | null = null;
@@ -625,12 +637,30 @@ function stampDecor(ctx: CanvasRenderingContext2D, world: number, look: Look, na
   if (!(k > 0)) return false;
   let lid = lookIds.get(look);
   if (lid === undefined) lookIds.set(look, (lid = ++lookCount));
+  const now = performance.now();
+  if (now - frameAt > 8) {
+    if (frameAt) {
+      frameGap = now - frameAt;
+      // (a gap over a second is a pause, a menu or a hidden tab: not a frame)
+      if (frameGap < 1000) frameAvg = frameAvg ? frameAvg * 0.9 + frameGap * 0.1 : frameGap;
+    }
+    frameAt = now;
+  }
+  // (painted at the screen's scale rounded up to a step of 1/16 of a doubling, about 4%: the camera eases its zoom at a stage's start,
+  // and one picture per step, stamped up to 4% smaller, stands for every scale in the step)
+  const step = Math.ceil(Math.log2(k) * 16);
+  const kb = 2 ** (step / 16);
   const s0 = r.state();
-  const key = world + '|' + lid + '|' + name + '|' + s0 + '|' + size + '|' + Math.round(k * 64);
-  const pic = decorPics.get(key);
+  const key = world + '|' + lid + '|' + name + '|' + s0 + '|' + size + '|' + step;
+  let pic = decorPics.get(key);
+  if (pic?.cv && canvasLost(pic.cv, 'decor plant')) {
+    // (its picture was taken back by the phone: drawn as paths again, and painted again in idle time)
+    dropPic(key, pic);
+    pic = undefined;
+  }
   if (!pic) {
     if (!decorQueue.has(key)) {
-      decorQueue.set(key, { key, def, look, px, py, size, k, s0 });
+      decorQueue.set(key, { key, def, look, px, py, size, k: kb, s0 });
       askIdle();
     }
     return false;
@@ -641,8 +671,8 @@ function stampDecor(ctx: CanvasRenderingContext2D, world: number, look: Look, na
   const h = pic.cv.height / pic.k;
   let x = px + pic.ox / pic.k;
   let y = py + pic.oy / pic.k;
-  if (m.b === 0 && m.c === 0 && Math.abs(m.a - pic.k) < 1e-6 && Math.abs(m.d - pic.k) < 1e-6) {
-    // (on whole device pixels, as the paths were drawn into it, so the picture is as sharp as the paths)
+  if (m.b === 0 && m.c === 0) {
+    // (its corner on a whole device pixel, as the paths were drawn into it, so the picture is as sharp as the paths)
     x = (Math.round(m.a * x + m.e) - m.e) / m.a;
     y = (Math.round(m.d * y + m.f) - m.f) / m.d;
   }
@@ -658,19 +688,35 @@ function runDecorQueue(more: () => boolean) {
     const dice = rng(0);
     dice.seek!(job.s0);
     const pic = bakeDecor(job.def, job.look, job.px, job.py, job.size, dice, job.k, job.s0);
-    if (decorPics.size >= DECOR_PICS_MAX) {
+    const bytes = pic.cv ? pic.cv.width * pic.cv.height * 4 : 0;
+    while (decorBytes + bytes > DECOR_BYTES_MAX && decorPics.size) {
       const first = decorPics.keys().next().value as string;
-      const old = decorPics.get(first);
-      if (old?.cv) old.cv.width = old.cv.height = 0;
-      decorPics.delete(first);
+      dropPic(first, decorPics.get(first)!);
     }
     decorPics.set(job.key, pic);
+    decorBytes += bytes;
   }
 }
 
+function dropPic(key: string, pic: DecorPic) {
+  if (pic.cv) {
+    decorBytes -= pic.cv.width * pic.cv.height * 4;
+    pic.cv.width = pic.cv.height = 0;
+  }
+  decorPics.delete(key);
+}
+
+/** let every plant picture go, and the queue (a new stage getting ready: stageReady.ts) */
+export function releaseDecorPics() {
+  for (const [key, pic] of decorPics) dropPic(key, pic);
+  decorPics.clear();
+  decorQueue.clear();
+  decorBytes = 0;
+}
+
 /**
- * The queue painted in the browser's idle time after a frame. A phone too busy to have any idle time paints one plant (a few ms) between
- * frames every half second instead, so a busy screen still gets its pictures, slowly, without a frame ever holding more than one.
+ * The queue painted in the browser's idle time after a frame, only where that idle time covers a painting. A phone too busy to have any
+ * paints one plant (a few ms) between frames every half second instead, and only after a frame no slower than usual (not a stall).
  */
 function askIdle() {
   if (idleAsked) return;
@@ -679,13 +725,14 @@ function askIdle() {
   const w = typeof window !== 'undefined' ? (window as Window & { requestIdleCallback?: (cb: (d: Idle) => void, o?: { timeout: number }) => number }) : null;
   const go = (d: Idle) => {
     idleAsked = false;
-    let one = !!d.didTimeout;
+    // (idle time that covers a painting; on a phone with none, one plant at most, and only after a frame no slower than usual)
+    let one = !!d.didTimeout && frameGap > 0 && frameAvg > 0 && frameGap <= frameAvg * 1.5;
     runDecorQueue(() => {
       if (one) {
         one = false;
         return true;
       }
-      return d.timeRemaining() > 1;
+      return !d.didTimeout && d.timeRemaining() >= IDLE_BAKE_MS;
     });
     if (decorQueue.size) askIdle();
   };
