@@ -37,6 +37,9 @@ let curWorld = 1;
 let curRig: Rig | null = null;
 let curL = 0;
 let curR = 0;
+/** the view's top and bottom (world y) this frame, for culling what grows on the ledges up and down (renderWorldObjects) */
+let curT = -Infinity;
+let curB = Infinity;
 const RICH_GROUND = (_look: Look) => isRich(curWorld);
 
 interface Cam {
@@ -383,6 +386,12 @@ function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG
     if (sway) ctx.restore();
   };
   if (plan && entry !== undefined && plan.entry === entry && plan.x === p.x && plan.w === p.width && r.seek) {
+    // (a ledge above or below the view: nothing it grows can show; 400 covers the tallest plant, 40 what hangs over its lip. A tall
+    // stage drew every ledge's ferns, up to 1000 path fills a frame in 2-6, PERF-B 2026-10-30)
+    if (p.y + 40 < curT || p.y - 400 > curB) {
+      r.seek((entry + plan.total) | 0);
+      return;
+    }
     for (const it of plan.items) {
       if (it.x < curL - 150 || it.x > curR + 150) continue;
       r.seek((entry + it.d) | 0);
@@ -1322,6 +1331,8 @@ export function renderWorldObjects(
   curRig = polishEnabled() && polishTier() < 2 ? rigFor(look, worldId, getSceneSeed()) : null;
   curL = left;
   curR = right;
+  curT = cam.y - 60;
+  curB = cam.y + cam.viewportHeight + 60;
   const bottom = cam.y + cam.viewportHeight + 60;
 
   for (const t of trees) {
@@ -1416,6 +1427,9 @@ export function renderWorldObjects(
     }
     ctx.restore();
   }
+  // (anything drawn outside this frame's world pass, a bake or a menu picture, culls nothing up or down)
+  curT = -Infinity;
+  curB = Infinity;
 }
 
 const planCache = new WeakMap<object, { n: number; world: number; seed: number; plan: StagePlan }>();
