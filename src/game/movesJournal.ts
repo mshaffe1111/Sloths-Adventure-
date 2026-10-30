@@ -324,7 +324,7 @@ export const PAGES: JournalPage[] = [
   {
     id: 'finds', chapter: 'finding', title: 'Dot\'s finds', demo: 'finds', pose: 'stand', open: { lesson: ['idol'], found: (f) => f.length > 0 },
     where: 'Found in World 1', riddle: 'Something shiny, far away...',
-    intro: 'Each world hides a note from Meeca, a keepsake and a photo book. Look high up and in out-of-the-way places. You can read them in the Library.',
+    intro: 'Each world hides a note from Meeca, a keepsake and a photo book. Look high up and in out-of-the-way places. You can read them again in Pokey\'s satchel.',
     lines: same([{ how: 'Touch the glowing flower', what: 'Take the find' }]),
   },
   {

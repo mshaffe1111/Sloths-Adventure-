@@ -14,6 +14,7 @@ const ICONS: Record<string, IconName> = {
   Petal: 'flower',
   Squirrel: 'paw',
   Flicker: 'sparkle',
+  Soldier: 'shield',
 };
 
 /** the speakers painted on the story sheets: their face sits beside the name (CelHead.tsx) */

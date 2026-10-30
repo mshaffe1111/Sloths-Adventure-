@@ -23,7 +23,19 @@ export interface AudioCoreOptions {
   hallSeconds?: number;
   /** a phone: one light room built from short delays instead of the two big convolution rooms (see makeLightRoom) */
   lightRoom?: boolean;
+  /**
+   * The game: the music comes recorded (loops.ts), with its hall, its echo and its tone already in it, so the music bus goes straight
+   * from its ducks and its pause filter to the master, and no music hall is built. (The recorder, tools/music, builds the core without it.)
+   */
+  recorded?: boolean;
 }
+
+/**
+ * The effects bus level (before the player's effects volume). 0.9 until 2026-10-30; then +3 dB: against the recorded music loops (PERF-D)
+ * the effects sat about 6 LU under the music in real play (tools/audio/sfxv1/capture.cjs, 1-2), so pickups and petals could get lost; now
+ * about 3 LU under, still below the music (SN-2).
+ */
+export const SFX_BUS = 1.27;
 
 export class AudioCore {
   readonly ctx: BaseAudioContext;
@@ -34,6 +46,8 @@ export class AudioCore {
   readonly musicDuck: GainNode;
   /** after musicDuck: dips the music a few dB under speech (SN-7), on its own so a sting's deeper duck is never undone by a line */
   readonly speechDuck: GainNode;
+  /** the story's own hand on the music (story-delivery): 1 as written, a half under a hush, nothing under the big silences */
+  readonly storyLevel: GainNode;
   readonly amb: GainNode;
   /** low-pass on the music bus: closes when the game is paused (a muffled "underwater" feel) */
   readonly musicFilter: BiquadFilterNode;
@@ -109,21 +123,26 @@ export class AudioCore {
     this.musicBody.gain.value = 4.5;
     // levels: music sits under the effects so pickups and hits stay readable
     this.music.gain.value = 0.32;
-    this.sfx.gain.value = 0.9;
+    this.sfx.gain.value = SFX_BUS;
     this.amb.gain.value = 0.6;
     this.sfx.connect(this.master);
     this.speechDuck = c.createGain();
+    this.storyLevel = c.createGain();
     this.music.connect(this.musicDuck);
-    this.musicDuck.connect(this.speechDuck);
+    this.musicDuck.connect(this.storyLevel);
+    this.storyLevel.connect(this.speechDuck);
     this.speechDuck.connect(this.musicFilter);
     // nothing below ~40 Hz can be heard on any speaker, but it uses up the compressor's headroom and makes the whole mix pump
-    const musicHp = c.createBiquadFilter();
-    musicHp.type = 'highpass';
-    musicHp.frequency.value = 40;
-    musicHp.Q.value = 0.5;
-    this.musicFilter.connect(musicHp);
-    musicHp.connect(this.musicBody);
-    this.musicBody.connect(this.master);
+    if (opts.recorded) this.musicFilter.connect(this.master);
+    else {
+      const musicHp = c.createBiquadFilter();
+      musicHp.type = 'highpass';
+      musicHp.frequency.value = 40;
+      musicHp.Q.value = 0.5;
+      this.musicFilter.connect(musicHp);
+      musicHp.connect(this.musicBody);
+      this.musicBody.connect(this.master);
+    }
     this.amb.connect(this.master);
 
     // ---- reverb
@@ -173,7 +192,9 @@ export class AudioCore {
     // the music has a hall of its own: a longer, darker room with the first reflections in it, so the orchestra sits on a stage instead of in a box.
     // A phone shares the light room instead: the two long convolution rooms were the heaviest work in the mix, and on a busy iPhone the whole sound
     // came through only in short bursts as each effect started, with near silence between (a tester's climb on 1-1, 2026-10-28)
-    if (opts.lightRoom) {
+    if (opts.recorded) {
+      // (no music plays live: nothing is sent to a music hall)
+    } else if (opts.lightRoom) {
       const hallOut = c.createGain();
       hallOut.gain.value = 0.85;
       this.sends.music.connect(hallOut);

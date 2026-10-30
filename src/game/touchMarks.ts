@@ -3,7 +3,7 @@
  * never give a web page. Now a faint ring sits where the steering thumb is anchored, with a chevron the way he runs, and every move
  * the touch made flashes at the finger for a moment with its name (Jump, Punch, Kick, Mega, Duck). TouchFeedback.tsx draws it.
  *
- * "Show touches" is kept on the device: Auto (on for World 1, where the controls are new), On, or Off.
+ * "Show touches" is kept on the device: Auto (on for World 1, where the controls are new), On, or Off (the default).
  */
 export type ShowTouches = 'auto' | 'on' | 'off';
 export type MarkKind = 'jump' | 'duck' | 'punch' | 'kick' | 'mega';
@@ -20,7 +20,8 @@ export function showTouches(): ShowTouches {
     } catch {
       /* storage blocked */
     }
-    pref = v === 'on' || v === 'off' ? v : 'auto';
+    // off unless the player picks Auto or On (Matt, 2026-10-30: the special options start off)
+    pref = v === 'on' || v === 'auto' ? v : 'off';
   }
   return pref;
 }

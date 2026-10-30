@@ -1,0 +1,253 @@
+{
+ "note": "hfui1: store icon and the painted menu kit, 2026-10-30",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/5252cdea433f0899be518345bf9db74721d8b2d5/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "kit-buttons-s50-7",
+   "start": "start-kit-buttons.webp",
+   "prompt": "slothadv style, a sheet of separate painted wooden game buttons with no writing on them: long horizontal planks of carved wood with softly rounded ends, a lighter worn top edge, a darker lower edge, visible wood grain and two little iron nails near the ends; in warm brown wood, leaf-green painted wood and golden-orange painted wood, and some shorter planks of the same woods. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "kit-buttons-s50-23",
+   "start": "start-kit-buttons.webp",
+   "prompt": "slothadv style, a sheet of separate painted wooden game buttons with no writing on them: long horizontal planks of carved wood with softly rounded ends, a lighter worn top edge, a darker lower edge, visible wood grain and two little iron nails near the ends; in warm brown wood, leaf-green painted wood and golden-orange painted wood, and some shorter planks of the same woods. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "kit-buttons-s62-7",
+   "start": "start-kit-buttons.webp",
+   "prompt": "slothadv style, a sheet of separate painted wooden game buttons with no writing on them: long horizontal planks of carved wood with softly rounded ends, a lighter worn top edge, a darker lower edge, visible wood grain and two little iron nails near the ends; in warm brown wood, leaf-green painted wood and golden-orange painted wood, and some shorter planks of the same woods. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "kit-buttons-s62-23",
+   "start": "start-kit-buttons.webp",
+   "prompt": "slothadv style, a sheet of separate painted wooden game buttons with no writing on them: long horizontal planks of carved wood with softly rounded ends, a lighter worn top edge, a darker lower edge, visible wood grain and two little iron nails near the ends; in warm brown wood, leaf-green painted wood and golden-orange painted wood, and some shorter planks of the same woods. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "kit-panels-s50-7",
+   "start": "start-kit-panels.webp",
+   "prompt": "slothadv style, a sheet of separate painted game menu pieces with no writing: a big blank sheet of cream parchment paper held in a carved brown wooden frame; a wide dark green-black text box framed in bark with a few small leaves along its top; a small dark wooden tile; a carved wooden slider groove with a green fill and a round orange wooden knob; a round wooden badge with a golden padlock; an empty dark carved wooden star and a shiny golden star. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "kit-panels-s50-23",
+   "start": "start-kit-panels.webp",
+   "prompt": "slothadv style, a sheet of separate painted game menu pieces with no writing: a big blank sheet of cream parchment paper held in a carved brown wooden frame; a wide dark green-black text box framed in bark with a few small leaves along its top; a small dark wooden tile; a carved wooden slider groove with a green fill and a round orange wooden knob; a round wooden badge with a golden padlock; an empty dark carved wooden star and a shiny golden star. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "kit-panels-s62-7",
+   "start": "start-kit-panels.webp",
+   "prompt": "slothadv style, a sheet of separate painted game menu pieces with no writing: a big blank sheet of cream parchment paper held in a carved brown wooden frame; a wide dark green-black text box framed in bark with a few small leaves along its top; a small dark wooden tile; a carved wooden slider groove with a green fill and a round orange wooden knob; a round wooden badge with a golden padlock; an empty dark carved wooden star and a shiny golden star. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "kit-panels-s62-23",
+   "start": "start-kit-panels.webp",
+   "prompt": "slothadv style, a sheet of separate painted game menu pieces with no writing: a big blank sheet of cream parchment paper held in a carved brown wooden frame; a wide dark green-black text box framed in bark with a few small leaves along its top; a small dark wooden tile; a carved wooden slider groove with a green fill and a round orange wooden knob; a round wooden badge with a golden padlock; an empty dark carved wooden star and a shiny golden star. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024
+  },
+  {
+   "name": "kit-icons-s40-7",
+   "start": "start-kit-icons.webp",
+   "prompt": "slothadv style, a sheet of twenty-four separate painted game icons in a neat grid, each keeping exactly the shape and colours in the picture: play, restart, map, trophy, cards, book, save, gear, speaker, mute, close, arrow, tick, padlock, star, heart, medal, scroll, leaf, light bulb, paw, crossed swords, expand, sloth face. Chunky painted cartoon icons with a thin dark brown outline, soft shading and a small highlight. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.4,
+   "seed": 7,
+   "w": 2048,
+   "h": 1376
+  },
+  {
+   "name": "kit-icons-s40-23",
+   "start": "start-kit-icons.webp",
+   "prompt": "slothadv style, a sheet of twenty-four separate painted game icons in a neat grid, each keeping exactly the shape and colours in the picture: play, restart, map, trophy, cards, book, save, gear, speaker, mute, close, arrow, tick, padlock, star, heart, medal, scroll, leaf, light bulb, paw, crossed swords, expand, sloth face. Chunky painted cartoon icons with a thin dark brown outline, soft shading and a small highlight. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.4,
+   "seed": 23,
+   "w": 2048,
+   "h": 1376
+  },
+  {
+   "name": "kit-icons-s52-7",
+   "start": "start-kit-icons.webp",
+   "prompt": "slothadv style, a sheet of twenty-four separate painted game icons in a neat grid, each keeping exactly the shape and colours in the picture: play, restart, map, trophy, cards, book, save, gear, speaker, mute, close, arrow, tick, padlock, star, heart, medal, scroll, leaf, light bulb, paw, crossed swords, expand, sloth face. Chunky painted cartoon icons with a thin dark brown outline, soft shading and a small highlight. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.52,
+   "seed": 7,
+   "w": 2048,
+   "h": 1376
+  },
+  {
+   "name": "kit-icons-s52-23",
+   "start": "start-kit-icons.webp",
+   "prompt": "slothadv style, a sheet of twenty-four separate painted game icons in a neat grid, each keeping exactly the shape and colours in the picture: play, restart, map, trophy, cards, book, save, gear, speaker, mute, close, arrow, tick, padlock, star, heart, medal, scroll, leaf, light bulb, paw, crossed swords, expand, sloth face. Chunky painted cartoon icons with a thin dark brown outline, soft shading and a small highlight. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style. Evenly lit, every piece separate on one flat plain pure magenta background, no shadow, no text, no letters.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.52,
+   "seed": 23,
+   "w": 2048,
+   "h": 1376
+  },
+  {
+   "name": "icon-full-s30-7",
+   "start": "start-icon-full.webp",
+   "prompt": "slothadv style, a mobile game app icon: the head and shoulders of a friendly cartoon brown three-toed sloth, smiling with his mouth closed, big dark eye patches, a thin brown leather satchel strap across his chest, in front of a softly glowing rainforest with sunlight through the leaves. Centred, bold and clear, painted storybook illustration, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "extra limbs, extra arms, extra eyes, different face, open mouth, teeth, text, letters, watermark, photo, 3d render, blurry, two sloths, backpack",
+   "strength": 0.3,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-full-s30-23",
+   "start": "start-icon-full.webp",
+   "prompt": "slothadv style, a mobile game app icon: the head and shoulders of a friendly cartoon brown three-toed sloth, smiling with his mouth closed, big dark eye patches, a thin brown leather satchel strap across his chest, in front of a softly glowing rainforest with sunlight through the leaves. Centred, bold and clear, painted storybook illustration, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "extra limbs, extra arms, extra eyes, different face, open mouth, teeth, text, letters, watermark, photo, 3d render, blurry, two sloths, backpack",
+   "strength": 0.3,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-full-s42-7",
+   "start": "start-icon-full.webp",
+   "prompt": "slothadv style, a mobile game app icon: the head and shoulders of a friendly cartoon brown three-toed sloth, smiling with his mouth closed, big dark eye patches, a thin brown leather satchel strap across his chest, in front of a softly glowing rainforest with sunlight through the leaves. Centred, bold and clear, painted storybook illustration, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "extra limbs, extra arms, extra eyes, different face, open mouth, teeth, text, letters, watermark, photo, 3d render, blurry, two sloths, backpack",
+   "strength": 0.42,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-full-s42-23",
+   "start": "start-icon-full.webp",
+   "prompt": "slothadv style, a mobile game app icon: the head and shoulders of a friendly cartoon brown three-toed sloth, smiling with his mouth closed, big dark eye patches, a thin brown leather satchel strap across his chest, in front of a softly glowing rainforest with sunlight through the leaves. Centred, bold and clear, painted storybook illustration, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "extra limbs, extra arms, extra eyes, different face, open mouth, teeth, text, letters, watermark, photo, 3d render, blurry, two sloths, backpack",
+   "strength": 0.42,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-fg-s25-7",
+   "start": "start-icon-fg.webp",
+   "prompt": "slothadv style, the head and shoulders of a friendly cartoon brown three-toed sloth, smiling with his mouth closed, big dark eye patches, a thin brown leather satchel strap across his chest, on one flat plain pure magenta background, no shadow, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "extra limbs, extra arms, extra eyes, different face, open mouth, teeth, text, letters, watermark, photo, 3d render, blurry, two sloths, backpack",
+   "strength": 0.25,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-fg-s25-23",
+   "start": "start-icon-fg.webp",
+   "prompt": "slothadv style, the head and shoulders of a friendly cartoon brown three-toed sloth, smiling with his mouth closed, big dark eye patches, a thin brown leather satchel strap across his chest, on one flat plain pure magenta background, no shadow, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "extra limbs, extra arms, extra eyes, different face, open mouth, teeth, text, letters, watermark, photo, 3d render, blurry, two sloths, backpack",
+   "strength": 0.25,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-fg-s35-7",
+   "start": "start-icon-fg.webp",
+   "prompt": "slothadv style, the head and shoulders of a friendly cartoon brown three-toed sloth, smiling with his mouth closed, big dark eye patches, a thin brown leather satchel strap across his chest, on one flat plain pure magenta background, no shadow, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "extra limbs, extra arms, extra eyes, different face, open mouth, teeth, text, letters, watermark, photo, 3d render, blurry, two sloths, backpack",
+   "strength": 0.35,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-fg-s35-23",
+   "start": "start-icon-fg.webp",
+   "prompt": "slothadv style, the head and shoulders of a friendly cartoon brown three-toed sloth, smiling with his mouth closed, big dark eye patches, a thin brown leather satchel strap across his chest, on one flat plain pure magenta background, no shadow, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "extra limbs, extra arms, extra eyes, different face, open mouth, teeth, text, letters, watermark, photo, 3d render, blurry, two sloths, backpack",
+   "strength": 0.35,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-bg-s45-7",
+   "start": "start-icon-bg.webp",
+   "prompt": "slothadv style, a soft painted rainforest canopy backdrop, warm morning light glowing through the leaves, a misty valley, tall mossy trunks at the sides, no characters, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-bg-s45-23",
+   "start": "start-icon-bg.webp",
+   "prompt": "slothadv style, a soft painted rainforest canopy backdrop, warm morning light glowing through the leaves, a misty valley, tall mossy trunks at the sides, no characters, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.45,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-bg-s60-7",
+   "start": "start-icon-bg.webp",
+   "prompt": "slothadv style, a soft painted rainforest canopy backdrop, warm morning light glowing through the leaves, a misty valley, tall mossy trunks at the sides, no characters, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "icon-bg-s60-23",
+   "start": "start-icon-bg.webp",
+   "prompt": "slothadv style, a soft painted rainforest canopy backdrop, warm morning light glowing through the leaves, a misty valley, tall mossy trunks at the sides, no characters, no text. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style.",
+   "neg": "text, letters, numbers, words, watermark, frame, photo, 3d render, blurry, gradient background, scenery, cast shadow, people",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

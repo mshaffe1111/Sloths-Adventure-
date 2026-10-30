@@ -5,7 +5,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import './gameUi.css';
 import { StoryPlayer } from './components/StoryPlayer.tsx';
 import { INTRO_PANELS, WORLD_STORIES, WORLD_MID, WORLD_GATE, bossPanels, thornbarkPanels, ENDING_PANELS, type StoryPanel } from './game/story.ts';
 import { AFTER_BOSS, MEMORIES, endTagPanels, finalePanels } from './game/storyChapters.ts';
@@ -37,7 +36,7 @@ function build(): Piece[] {
   const everything = [...FINDS.map((f) => f.id), BONUS_FIND.id];
   out.push({ id: 'ending', group: 'The ending', title: 'The ending, no finds collected', panels: ENDING_PANELS });
   out.push({ id: 'ending-full', group: 'The ending', title: 'The ending, every find collected', panels: finalePanels(everything) });
-  out.push({ id: 'ending-tag', group: 'The ending', title: 'After the end: the stopwatch (if found)', panels: endTagPanels(everything) });
+  out.push({ id: 'ending-tag', group: 'The ending', title: 'After the end: the stopwatch (if found), Thornbark (if freed), months later', panels: endTagPanels(everything, true) });
   return out;
 }
 

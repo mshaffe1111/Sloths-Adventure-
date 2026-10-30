@@ -10,6 +10,22 @@ import { trackAtlas } from './atlasLoader.ts';
 import { bakeStep } from './artKit.ts';
 
 export const BAD_WATER_URL = new URL('../assets/props/w6-water.webp', import.meta.url).href;
+/**
+ * Worlds 8-10's own (hf-art-ground 2026-10-30, the W8-10 inventory: all three still showed World 6's muddy water): World 8's moonlit
+ * blackwater, World 9's magma pit, World 10's grey storm surge, each with its floating bits and its streaks, in World 6's layout
+ * (tools/art/hfground/packwater810.py). Worlds 6 and 7 keep World 6's.
+ */
+const WORLD_URLS: Record<number, string> = {
+  8: new URL('../assets/props/w8-water.webp', import.meta.url).href,
+  9: new URL('../assets/props/w9-water.webp', import.meta.url).href,
+  10: new URL('../assets/props/w10-water.webp', import.meta.url).href,
+};
+/** each world's deep water under the strip (its bottom rows) */
+const WORLD_DEEP: Record<number, string> = { 8: '#1d2235', 9: '#4b1e0a', 10: '#2d2f34' };
+/** the sheet the current world's water is drawn from (setBadWaterWorld) */
+export const currentBadWaterUrl = (): string => badWaterUrl(world);
+/** the sheet a world's water is drawn from */
+export const badWaterUrl = (world: number): string => WORLD_URLS[world] ?? BAD_WATER_URL;
 // (hf-art-ground 2026-10-29, polish report VI-18: the strip was 183 px wide; repainted on Hugging Face at 1024 from Matt's, the same
 // three parts, tools/art/hfground/packwater.py)
 const FRAMES = {
@@ -24,26 +40,46 @@ const TILE = 300;
 /** how far down the choppy strip its surface line sits */
 const SURFACE = 0.178;
 
+/** the world whose water is drawn (setBadWaterWorld): its sheet, loaded when first asked for */
+let world = 6;
+const sheets = new Map<string, { img: HTMLImageElement | null; ready: boolean }>();
 let img: HTMLImageElement | null = null;
 let ready = false;
+/** draw this world's water from here on (each caller that knows the world sets it; the sheet starts loading) */
+export function setBadWaterWorld(w: number): void {
+  if (w === world) return;
+  world = w;
+  load();
+}
 function load() {
-  if (img || typeof Image === 'undefined') return;
-  const im = new Image();
-  img = im;
-  trackAtlas(
-    im,
-    BAD_WATER_URL,
-    () => {
-      ready = true;
-    },
-    () => {
-      img = null;
-    },
-    () => {
-      img = null;
-      ready = false;
-    },
-  );
+  const url = badWaterUrl(world);
+  let st = sheets.get(url);
+  if (!st) {
+    st = { img: null, ready: false };
+    sheets.set(url, st);
+  }
+  const s = st;
+  if (!s.img && typeof Image !== 'undefined') {
+    const im = new Image();
+    s.img = im;
+    trackAtlas(
+      im,
+      url,
+      () => {
+        s.ready = true;
+        if (badWaterUrl(world) === url) ready = true;
+      },
+      () => {
+        s.img = null;
+      },
+      () => {
+        s.img = null;
+        s.ready = false;
+      },
+    );
+  }
+  img = s.img;
+  ready = s.ready;
 }
 /**
  * Bake the pieces for a view drawn at `scale` device px a world unit, before play (stageReady, for a stage with this water): a bake costs
@@ -135,7 +171,7 @@ export function drawBadWater(ctx: CanvasRenderingContext2D, x0: number, x1: numb
   ctx.beginPath();
   ctx.rect(x0, top - 4, x1 - x0, bottom - top + 4);
   ctx.clip();
-  ctx.fillStyle = DEEP;
+  ctx.fillStyle = WORLD_DEEP[world] ?? DEEP;
   ctx.fillRect(x0, top + th - 2, x1 - x0, Math.max(0, bottom - (top + th - 2)));
   // the choppy strip rushing along the current
   tiled(ctx, 'chop', x0, x1, top, th, time * 60 * dir);

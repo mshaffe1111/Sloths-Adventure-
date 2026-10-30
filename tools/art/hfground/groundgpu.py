@@ -8,6 +8,7 @@ Item kinds (env SPEC = the spec's bucket path; {"loras", "base", "items"}):
          of them lays next to any other with no seam -> <name>-v<seed>
   strip  the same, periodic left to right only (seam.wrap_x), on the key colour -> <name>-base, <name>-v<seed>
   plain  one img2img (strength, seed) -> <name>
+  vary / varystrip  pass 2 only, on the start itself (a texture already in the game): <name>-v<seed>, keeping the start's edges
 The token reaches the job only as the secret HF_TOKEN.
 """
 import io, json, os, sys, time, urllib.request
@@ -91,6 +92,13 @@ for it in SPEC['items']:
         neg = it.get('neg', NEG)
         if kind == 'plain':
             keep(it['name'], run(start(it['start']), it['prompt'], neg, it['strength'], it['seed'], w, h))
+        elif kind in ('vary', 'varystrip'):
+            # (more variants of a texture already in the game: its own picture is the base, so each new one keeps its edges and lays
+            # next to the old ones with no seam; 'varystrip' keeps only the left and right edges)
+            base = start(it['start']).convert('RGB').resize((w, h), Image.LANCZOS)
+            for sd in it['seeds2']:
+                p2 = run(base, it['prompt'], neg, it['s2'], sd, w, h)
+                keep(f"{it['name']}-v{sd}", seam.keep_border(base, p2, it.get('band', 72), x_only=(kind == 'varystrip')))
         else:
             p1 = run(start(it['start']), it['prompt'], neg, it['s1'], it['seed'], w, h)
             base = seam.brick(p1) if kind == 'tile' else seam.wrap_x(p1)

@@ -7,7 +7,7 @@
 
 **What this is.** You said the effects are "pings everywhere... like pinball", the falling rocks worst of all, and that the classic set
 is crap too. This folder has old-versus-new pairs of a whole new effect set. Every new sound is cut from real recordings that people
-made and gave away free with no strings (the CC0 licence; LICENCES.md lists all 148). Each one was picked by what its recordist called
+made and gave away free with no strings (the CC0 licence; LICENCES.md lists all 147). Each one was picked by what its recordist called
 it: "stonehit1", "RockFall1b", "Walk Stone", "Wood Steps", a marimba recorded note by note, "Tiger Growl", "Río Cadí" (a waterfall).
 Nothing is wired into the game yet. You listen first; only after your OK does it go in, and then the old synth effects are deleted.
 
@@ -75,11 +75,17 @@ how often it plays per minute in ten stages and a boss, and what replaces it.
 
 ## What's honest to know
 
-- **Most source recordings stop at about 8 kHz** (they come from a 16 kHz archive). That suits a dull, non-pinging top; rustles,
-  splashes and birds have a little less air than a full-band recording would.
+- **Full bandwidth now (2026-10-30).** The first set came from an archive whose copies stop at 8 kHz; every effect is now rebuilt from
+  its recording's 48 kHz original. So nothing hisses on a phone speaker, any take with more than 6% of its energy above 6 kHz has
+  that top turned down (backgrounds may keep 10%: crickets, birds and rain live up there). The `-new` files here are still the 8 kHz
+  set from 2026-10-29, except the ten `bed-w*` pairs.
 - **Creature voices are real animals**, not made for a cartoon: a house cat's cry stands in for the ocelot, a tiger's growl for the
-  jaguar, a lion for the bosses, a pig's grunt pitched down for the caiman (no usable crocodile was in the free archive), a rat's squeak
+  jaguar, a lion for the bosses, a real alligator's growl for the caiman ("Alligator Growls 02"), a rat's squeak
   for the tayra. If one doesn't fit, I can replace it with Stable Audio Open once you press "Agree" on its Hugging Face page (it's gated).
+- **Pokey's footsteps (2026-10-30)** are Matt's pick F from the footstep page (../footsteps-v2/): a creature's paws on earth with a
+  muffled real footstep on top, and a padded step on wood. They sound on every other footfall of his run frames.
+- **Against the new recorded music** (PERF-D) the effects sit about 6 LU under it in 30 s of 1-2 (4 LU at their loudest moments);
+  against the old synth music they were level with it.
 - **The mixes come from a bot's run.** It jumps and swings more than a person; a third of its punches were kept.
 - **Not built yet**: the predator warnings (ocelot, jaguar, boa, caiman and tayra calls before they pounce) and each boss's own roar,
   which Build 1 owns (SN-4). They'll use the same animal recordings as the knock-outs.

@@ -173,6 +173,7 @@ A stage passes only if it meets §1 on all of them in both orientations.
 2. **Find what, timed honestly.** Our JS timer can't see GPU time: Chrome records our calls and runs them on the GPU later, so a slow "draw" is often the GPU or a decode that the timer only catches when the frame flushes.
    - In the debug timing (test link only), force a flush after each layer group (`getImageData(0, 0, 1, 1)` on the main canvas, made with `willReadFrequently: false` stated outright), so each layer's time includes its GPU work.
    - Log it per layer: backdrop far/mid/near, ground, props, creatures, effects, HUD.
+   - **Never judge speed or feel from a profiled run** (`gpuprof=1`). The flushes themselves wreck the frame rate: on Matt's Pixel, 2026-10-30, the same build ran 4-13 fps with it on and a steady 30 fps without it. Use it only in separate runs, labelled as profiled, for the ranking of the layers, not their milliseconds. The ctest link given to Matt for frame rate never carries it.
    - Then strip or swap one thing at a time (smoothing low vs high, `ImageBitmap` vs `<img>`, one layer off) and compare at the same spot.
 3. **The tools on a real phone:**
    - **Chrome/Edge on Android:** `chrome://inspect` on a desktop with USB debugging, then the Performance panel on the device.
@@ -207,7 +208,7 @@ Canvas 2D with baked layers can hold 30 fps for a game our size. If, after the �
 
 The rules above say how to draw well; this section keeps them holding (Duet's second look, 2026-10-30, agreed by the lead).
 
-1. **An automatic draw check on every gate (to build):** a headless run of the control test and one stage per world, with every canvas call counted per frame. It fails when the per-frame path:
+1. **An automatic draw check on every gate (built 2026-10-30: `node tools/perf/drawcheck.mjs`, limits and allowlist in `tools/perf/limits.json`):** a headless run of the control test and one stage per world, with every canvas call counted per frame. It fails when the per-frame path:
    - creates gradients;
    - sets `shadowBlur` or `filter`;
    - uses an advanced blend;
@@ -216,7 +217,7 @@ The rules above say how to draw well; this section keeps them holding (Duet's se
    - draws any sheet shrunk more than 2.5x at q0.
 
    It runs with the gate (`tools/inspect`), not only at deploy, so a helper finds out before reporting.
-2. **An art size gate in the build and in the art packers (to build):** fail on any of these:
+2. **An art size gate in the build and in the art packers (first rule built 2026-10-30: `node tools/perf/artcheck.mjs`; the other two are still to build):** fail on any of these:
    - a sheet over 4096 px on a side;
    - a creature clip sheet more than about 2x its on-screen size at q0;
    - a world whose decoded sheets add up to more than its budget (§2.13).

@@ -1,0 +1,366 @@
+{
+ "note": "hf-art-ground: green-key bank ends, W8 stones, W10 faces, 2026-10-30 afternoon",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ca781d262dbd9462d16b6bedfd7042f8191886c2/tools/art/hfground/starts/",
+ "items": [
+  {
+   "kind": "plain",
+   "name": "gend-w1-s51",
+   "start": "gend-w1.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of soft green moss and short grass with small ferns and tiny pink flowers rounding over the corner, below it the soil face of rich warm brown forest soil with tangled thin pale roots, small grey pebbles and earthy clumps sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w1-s53",
+   "start": "gend-w1.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of soft green moss and short grass with small ferns and tiny pink flowers rounding over the corner, below it the soil face of rich warm brown forest soil with tangled thin pale roots, small grey pebbles and earthy clumps sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w2-s51",
+   "start": "gend-w2.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of yellow-green riverside grass and moss with a few small pebbles rounding over the corner, below it the soil face of riverbank earth in soft ochre, orange and tan layers, thin dark roots and small smooth pebbles sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w2-s53",
+   "start": "gend-w2.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of yellow-green riverside grass and moss with a few small pebbles rounding over the corner, below it the soil face of riverbank earth in soft ochre, orange and tan layers, thin dark roots and small smooth pebbles sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w3-s51",
+   "start": "gend-w3.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of dark green grotto moss with a few tiny pale glowing mushrooms rounding over the corner, below it the soil face of cool teal-grey grotto stone with soft moss in the cracks and a few thin faint glowing blue-green water seeps sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w3-s53",
+   "start": "gend-w3.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of dark green grotto moss with a few tiny pale glowing mushrooms rounding over the corner, below it the soil face of cool teal-grey grotto stone with soft moss in the cracks and a few thin faint glowing blue-green water seeps sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w4-s51",
+   "start": "gend-w4.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of blue-green mountain grass tufts and moss rounding over the corner, below it the soil face of blue-grey slate cliff rock with deep long cracks, a few small patches of moss sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w4-s53",
+   "start": "gend-w4.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of blue-green mountain grass tufts and moss rounding over the corner, below it the soil face of blue-grey slate cliff rock with deep long cracks, a few small patches of moss sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w5-s51",
+   "start": "gend-w5.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of fresh green moss with small ferns and tiny white petals rounding over the corner, below it the soil face of rich warm brown garden soil, thin pale tangled roots, scattered grey-brown pebbles and small stones sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w5-s53",
+   "start": "gend-w5.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of fresh green moss with small ferns and tiny white petals rounding over the corner, below it the soil face of rich warm brown garden soil, thin pale tangled roots, scattered grey-brown pebbles and small stones sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w6-s51",
+   "start": "gend-w6.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of dark swamp grass and moss tufts rounding over the corner, below it the soil face of dark brown swamp soil packed with thick tangled brown mangrove roots, small stones sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w6-s53",
+   "start": "gend-w6.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of dark swamp grass and moss tufts rounding over the corner, below it the soil face of dark brown swamp soil packed with thick tangled brown mangrove roots, small stones sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w7-s51",
+   "start": "gend-w7.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of a worn mossy grey stone ledge edge with fallen orange leaves rounding over the corner, below it the soil face of old weathered grey-green temple stone blocks with worn carved key-pattern bands, thick brown tree roots growing over them sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w7-s53",
+   "start": "gend-w7.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of a worn mossy grey stone ledge edge with fallen orange leaves rounding over the corner, below it the soil face of old weathered grey-green temple stone blocks with worn carved key-pattern bands, thick brown tree roots growing over them sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w8-s51",
+   "start": "gend-w8.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of dark blue-green night moss with tiny pale flowers rounding over the corner, below it the soil face of deep blue night-forest rock like old bark, long dark cracks, small specks of green moss sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w8-s53",
+   "start": "gend-w8.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of dark blue-green night moss with tiny pale flowers rounding over the corner, below it the soil face of deep blue night-forest rock like old bark, long dark cracks, small specks of green moss sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w9-s51",
+   "start": "gend-w9.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of a worn grey stone top with a few small round red flowers and thin green leaves rounding over the corner, below it the soil face of dark grey basalt rock in tall six-sided columns packed side by side, worn tops and fine cracks sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w9-s53",
+   "start": "gend-w9.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of a worn grey stone top with a few small round red flowers and thin green leaves rounding over the corner, below it the soil face of dark grey basalt rock in tall six-sided columns packed side by side, worn tops and fine cracks sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w10-s51",
+   "start": "gend-w10.webp",
+   "strength": 0.55,
+   "seed": 51,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of a dusty rust-brown ash crust edge with small pebbles rounding over the corner, below it the soil face of broken dark grey-brown volcanic rock, irregular angular chunks wider than tall, deep dark jagged cracks, a few dull rusty patches sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "gend-w10-s53",
+   "start": "gend-w10.webp",
+   "strength": 0.55,
+   "seed": 53,
+   "w": 384,
+   "h": 576,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple",
+   "prompt": "slothadv style, painted storybook illustration, a game piece for a side-scrolling platform game: the right-hand end of a ground bank where it drops away, seen from the side, the top lip of a dusty rust-brown ash crust edge with small pebbles rounding over the corner, below it the soil face of broken dark grey-brown volcanic rock, irregular angular chunks wider than tall, deep dark jagged cracks, a few dull rusty patches sloping back in with roots hanging down, on one flat plain pure bright green background, thin dark outline, soft cel shading, evenly lit, flat even light, no highlight band, no shadow band, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "stones-w8-60-s61",
+   "start": "stones-w8.webp",
+   "strength": 0.6,
+   "seed": 61,
+   "w": 512,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, spikes, thorns, sharp points, crystals",
+   "prompt": "slothadv style, painted storybook illustration, a small game prop for a night-time rainforest platform game, seen from the side: a low cluster of three smooth rounded slate-blue river stones with soft glowing teal moss on their tops and a few tiny pale blue moss flowers, sitting on the ground, on one flat plain pure bright green background, thin dark outline, soft cel shading, moonlit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "stones-w8-60-s63",
+   "start": "stones-w8.webp",
+   "strength": 0.6,
+   "seed": 63,
+   "w": 512,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, spikes, thorns, sharp points, crystals",
+   "prompt": "slothadv style, painted storybook illustration, a small game prop for a night-time rainforest platform game, seen from the side: a low cluster of three smooth rounded slate-blue river stones with soft glowing teal moss on their tops and a few tiny pale blue moss flowers, sitting on the ground, on one flat plain pure bright green background, thin dark outline, soft cel shading, moonlit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "stones-w8-72-s61",
+   "start": "stones-w8.webp",
+   "strength": 0.72,
+   "seed": 61,
+   "w": 512,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, spikes, thorns, sharp points, crystals",
+   "prompt": "slothadv style, painted storybook illustration, a small game prop for a night-time rainforest platform game, seen from the side: a low cluster of three smooth rounded slate-blue river stones with soft glowing teal moss on their tops and a few tiny pale blue moss flowers, sitting on the ground, on one flat plain pure bright green background, thin dark outline, soft cel shading, moonlit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "stones-w8-72-s63",
+   "start": "stones-w8.webp",
+   "strength": 0.72,
+   "seed": 63,
+   "w": 512,
+   "h": 384,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, spikes, thorns, sharp points, crystals",
+   "prompt": "slothadv style, painted storybook illustration, a small game prop for a night-time rainforest platform game, seen from the side: a low cluster of three smooth rounded slate-blue river stones with soft glowing teal moss on their tops and a few tiny pale blue moss flowers, sitting on the ground, on one flat plain pure bright green background, thin dark outline, soft cel shading, moonlit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face3-w10-0-s15",
+   "start": "face-w10.webp",
+   "strength": 0.86,
+   "seed": 15,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, bricks, masonry, square blocks, grass",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a big rusted iron ring bolted into a cracked boulder set in the rocky earth wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face3-w10-0-s17",
+   "start": "face-w10.webp",
+   "strength": 0.86,
+   "seed": 17,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, bricks, masonry, square blocks, grass",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a big rusted iron ring bolted into a cracked boulder set in the rocky earth wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face3-w10-1-s15",
+   "start": "face-w10.webp",
+   "strength": 0.86,
+   "seed": 15,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, bricks, masonry, square blocks, grass",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a heavy rusted iron chain looping out of the rocky earth wall and back in, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face3-w10-1-s17",
+   "start": "face-w10.webp",
+   "strength": 0.86,
+   "seed": 17,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, bricks, masonry, square blocks, grass",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a heavy rusted iron chain looping out of the rocky earth wall and back in, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face3-w10-2-s15",
+   "start": "face-w10.webp",
+   "strength": 0.86,
+   "seed": 15,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, bricks, masonry, square blocks, grass",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a round rusted iron porthole grate set into the rocky earth wall with darkness behind it, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face3-w10-2-s17",
+   "start": "face-w10.webp",
+   "strength": 0.86,
+   "seed": 17,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, bricks, masonry, square blocks, grass",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: a round rusted iron porthole grate set into the rocky earth wall with darkness behind it, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face3-w10-3-s15",
+   "start": "face-w10.webp",
+   "strength": 0.86,
+   "seed": 15,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, bricks, masonry, square blocks, grass",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: an old dented round iron shield half buried in the rocky earth wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "face3-w10-3-s17",
+   "start": "face-w10.webp",
+   "strength": 0.86,
+   "seed": 17,
+   "w": 512,
+   "h": 512,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, magenta, pink, purple, bricks, masonry, square blocks, grass",
+   "prompt": "slothadv style, painted storybook illustration, a cross-section of the ground under a side-scrolling platform game level, seen from the side: an old dented round iron shield half buried in the rocky earth wall, large and clear in the middle of the picture, thin dark outline, soft cel shading, evenly lit, no text"
+  }
+ ]
+}

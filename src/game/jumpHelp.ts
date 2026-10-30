@@ -9,6 +9,11 @@
  */
 export type JumpHelp = 'off' | 'keep' | 'forward';
 
+/**
+ * On + forward. Every stage is playable with On or Off too (Matt, 2026-10-30: "We need to fix bugs that require that on"): a flick at a
+ * one-jump step, a jump into a face and a second flick beside a face it climbs carry him onto it whatever this says (engine takeOff,
+ * faceBeside), and the touch fairness tests pass in all three. The forward push on every second jump is the extra this setting adds.
+ */
 export const DEFAULT_JUMP_HELP: JumpHelp = 'forward';
 
 const KEY = 'sloth_jump_help';

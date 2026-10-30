@@ -13,8 +13,11 @@
  *   - some lines plant something a later scene pays off (Dot's pouch, her tail feathers, the joke she is saving, the badly tied cages),
  *     and some answer a scene we have already seen
  *   - who can speak follows the story: Dot is with Pokey in worlds 1-5, in world 6 until the Last Note scene (she flies away after stage 5),
- *     is gone through world 7, comes back bleeding at the start of world 8, stays through world 9, and is in the net in world 10.
- *     When Dot is gone the aside is Pokey's own thought (first person) or the petal's (third person, a narrator)
+ *     is gone through world 7, comes back bleeding at the start of world 8, stays through world 9, goes off alone at the foot of the
+ *     mountain (the World 10 arrival) and comes back at its halfway scene, after 10-5. Flicker is with Pokey from the Last Note on.
+ *     When Dot is gone the aside is Pokey's own thought (first person), the petal's (third person, a narrator) or Flicker's
+ *   - a stage line can be a short exchange (`more`): two to four bubbles in turn, each with its speaker (Dot and Flicker, World 8 on)
+ *   - the story-gaps map (reference/story-gaps/GAP-MAP.md) keeps a beat at least every three stages: change a line, check the map
  *   - each line shows once ever (per stage), so a replay is quiet
  */
 
@@ -24,13 +27,15 @@ import { ctestEnabled } from './playRecorder.ts';
 export type WayAt = 'start' | 'half' | 'near';
 /** which line of a stage: L its scripted line, H the aside after the first fall, F the hint that a Hush Fern is hiding something here */
 export type WayFlag = 'L' | 'H' | 'F';
-export type WayWho = 'Dot' | 'Pokey' | 'Petal';
+export type WayWho = 'Dot' | 'Pokey' | 'Petal' | 'Flicker';
 export interface WayLine {
   who: WayWho;
   text: string;
 }
 interface StageWay extends WayLine {
   at: WayAt;
+  /** an exchange: said after this line, one bubble each, in turn */
+  more?: WayLine[];
 }
 interface HurtWay extends WayLine {
   /** the stages (1-9) of the world this line suits; unset = all of them */
@@ -45,9 +50,13 @@ interface WorldWay {
 const dot = (at: WayAt, text: string): StageWay => ({ at, who: 'Dot', text });
 const pokey = (at: WayAt, text: string): StageWay => ({ at, who: 'Pokey', text });
 const petal = (at: WayAt, text: string): StageWay => ({ at, who: 'Petal', text });
+const flicker = (at: WayAt, text: string): StageWay => ({ at, who: 'Flicker', text });
+/** a stage line and the replies that follow it */
+const talk = (first: StageWay, ...more: [WayWho, string][]): StageWay => ({ ...first, more: more.map(([who, text]) => ({ who, text })) });
 const hDot = (text: string, from?: number, to?: number): HurtWay => ({ who: 'Dot', text, from, to });
 const hPokey = (text: string, from?: number, to?: number): HurtWay => ({ who: 'Pokey', text, from, to });
 const hPetal = (text: string, from?: number, to?: number): HurtWay => ({ who: 'Petal', text, from, to });
+const hFlicker = (text: string, from?: number, to?: number): HurtWay => ({ who: 'Flicker', text, from, to });
 
 export const WAYSIDE: Record<number, WorldWay> = {
   // ── ACT I · THE TRAIL: Dot is chatty, two days late, and sure she is fast ──
@@ -58,7 +67,8 @@ export const WAYSIDE: Record<number, WorldWay> = {
       3: dot('half', 'You said "excuse me" just before that punch. I heard it. So did he.'),
       5: petal('start', 'These petals are fresher. She came this way not long ago.'),
       6: pokey('half', 'Meeca used to cross these twice before I\'d finished one. She\'d wait at the end with a snack.'),
-      7: dot('start', 'Quiet stage. Quiet\'s easy. I\'ll just hum softly the whole way.'),
+      // (the bush the stage is named for: Meeca's 1-2 note says she saw her in it; the tea pays it off, "Was it a nice bush?")
+      7: dot('start', 'Low, like me in my bush, Meeca says she saw me, fibs.'),
       8: pokey('half', 'Dot has flown to the end of this branch and back four times. I\'m still on my first.'),
       9: dot('start', 'I\'m too small to be worth the chase. Best thing about me, honestly.'),
     },
@@ -75,9 +85,11 @@ export const WAYSIDE: Record<number, WorldWay> = {
       2: dot('start', 'A sloth watched me pick a flower and said, "Oh." That was ten minutes ago. He\'s still saying it.'),
       3: dot('half', 'Reeds, reeds, a cage, more reeds. I\'ve looked at so many reeds today. Some of them on purpose.'),
       4: pokey('half', 'I could watch this river all day... Not now. Swing, Pokey.'),
-      5: pokey('half', 'The sign said PLEASE BE PATIENT. I\'m doing my best, but this one keeps lunging.'),
+      // (Gruntlewick comes back twice in play, and finishes his warning in the weeks after: storyFinale.ts)
+      5: petal('half', 'Up on the bank, Gruntlewick\'s flood warning has reached the word "however."'),
       6: pokey('half', 'Every house in the bank has a round door, and every door says PLEASE BE PATIENT. I\'m climbing past them very patiently.'),
       7: dot('half', 'I asked the mailman for the time. He said, "Soon." I\'m going to hold him to that.'),
+      8: petal('start', 'The river\'s rising. Gruntlewick, up on the bank, just reached that part.'),
       9: pokey('start', 'Meeca came through here first. I bet she admired the whole river out loud.'),
     },
     hurt: [
@@ -94,7 +106,9 @@ export const WAYSIDE: Record<number, WorldWay> = {
       3: petal('half', 'Dot pats the little pouch at her side again. She does it every time the dark gets close.'),
       4: petal('half', 'A glowworm lights his next handhold. He thanks it. It glows a little brighter and pretends not to.'),
       5: pokey('start', 'I used to be good at quiet. In here, quiet is a thing that listens back.'),
-      7: dot('half', 'I\'ve apologized to twelve ferns so far. None of them was the one.'),
+      // (he is picking up Grandma's things here, the bell among them: the garden memory's supper line and the finale's bell answer these)
+      6: pokey('start', 'Grandma rang a bell when somebody was coming home. Mostly me.'),
+      7: dot('half', 'Find the bell, don\'t ring it, it\'s for coming home, not now.'),
       8: dot('start', 'Old vines only watch for things in a hurry. So don\'t hurry. You\'re very good at that.'),
       9: pokey('half', 'Seems to me a ring is just a road that forgot where it was going.'),
     },
@@ -146,9 +160,10 @@ export const WAYSIDE: Record<number, WorldWay> = {
       2: dot('start', 'I\'m not afraid of black water. I\'m afraid of what lives in it and has opinions.'),
       3: dot('half', 'From up here the water looks like a mirror. It looks back, mostly.'),
       5: dot('start', 'I\'m saving a joke for the halfway. A real one. Don\'t let me forget it.'),
-      6: pokey('start', 'Meeca said never meet the Reaver at noon. I\'m fairly sure it\'s noon somewhere. Probably here.'),
+      // (Flicker lights the roots from here on: STORY-REVIEW-2026-10-27.md item 6, word for word)
+      6: flicker('start', 'Don\'t look at me. Look where I\'m lighting.'),
       7: petal('half', 'The sealed note sits in the satchel. He doesn\'t touch it. He knows exactly where it is.'),
-      8: petal('near', 'Near the top he stops, and leaves room on the root beside him. Out of habit.'),
+      8: petal('near', 'He saves Dot\'s spot. Flicker takes it. Roomy, for a firefly.'),
       9: pokey('start', 'Blackwater. Dot would have a name for it. Something rude. I\'m trying to think of one for her.'),
     },
     hurt: [
@@ -166,14 +181,17 @@ export const WAYSIDE: Record<number, WorldWay> = {
       // (7-4 is the slide: its line comes at the start, in the temple hall, before the floor gives way)
       4: petal('start', 'Every statue faces the temple, as if waiting for somebody to finish a sentence.'),
       5: pokey('start', 'I\'m the loudest thing in these ruins. That has never happened before.'),
+      // (his tell: his light stutters when he isn't telling the whole truth; the night before the mountain says why)
+      6: pokey('start', 'Flicker\'s quiet. When I say Meeca\'s name, his light goes funny.'),
       7: pokey('half', 'There\'s a ledge about Dot\'s size, made for sitting on and complaining from. I check it anyway.'),
       8: petal('near', 'The steps were cut for someone much bigger. He climbs each one like a small wall, and doesn\'t mind.'),
       9: pokey('start', 'Nobody in these ruins is in a hurry. It\'s the first place I\'ve ever felt like the youngest.'),
     },
     hurt: [
-      hPetal('He says "I\'m fine" to the empty ruins, out of habit. The ruins don\'t argue.'),
+      hPetal('He tells the ruins "I\'m fine." Nobody argues. Flicker blinks.'),
       hPetal('A stone face watched him fall. It has seen slower.'),
       hPokey('Don\'t tell Dot. She\'d have so much to say about it. Tell her anyway.'),
+      hFlicker('Dot would know what to say. I don\'t. Are you all right?'),
     ],
   },
 
@@ -183,8 +201,10 @@ export const WAYSIDE: Record<number, WorldWay> = {
     stages: {
       2: dot('start', 'I had a joke saved for you in the mangrove. Three days of flying and it\'s gone. It had a bird in it.'),
       4: pokey('start', 'Sneaking\'s the one thing I\'ve always done at full speed.'),
+      // (Dot and Flicker: she bosses, he holds his ground; STORY-REVIEW-2026-10-27.md item 9, word for word)
+      3: talk(dot('start', 'Flicker, go see if that branch is safe.'), ['Flicker', 'You\'re faster.'], ['Dot', 'I\'m resting.'], ['Flicker', 'You\'re hovering.']),
       5: pokey('start', 'I tell myself, "Next branch, then the one after." That\'s all a long way is.'),
-      6: petal('half', 'Fireflies blink on along the branch ahead, one by one, like a lamp left lit just in case.'),
+      6: petal('half', 'Flicker\'s family blinks on along the branch ahead, one by one.'),
       7: pokey('near', 'I\'m climbing slowly so Dot can rest. Turns out I\'ve been training for this my whole life.'),
       8: dot('near', 'Those hunters left a net behind, tied shut with a bow. A bow, Pokey. With loops.'),
     },
@@ -201,10 +221,17 @@ export const WAYSIDE: Record<number, WorldWay> = {
       2: dot('start', 'It\'s hot. I\'m a small bird in a large oven. Somebody should write that down.'),
       3: pokey('half', 'It\'s so hot Dot has stopped glowing and started sweating. I didn\'t know birds could do that.'),
       4: dot('start', 'When he says "Visitor," don\'t answer. When he says "Intruder," really don\'t answer.'),
+      // (she mothers him, and catches herself: the confession at the foot of the mountain explains it)
+      5: dot('start', 'Leaf up, I didn\'t raise you to wobble. I didn\'t raise you.'),
       6: dot('half', 'I\'m not touching the pouch. Look. Hands off. Wings off. I\'m a bird.'),
       7: pokey('half', 'It\'s boiling out, and I\'d still wear Meeca\'s scarf. All of it. Right now.'),
       8: dot('half', 'More thread. Either the lieutenant is very careless, or he wants us to find him.'),
-      9: dot('start', 'Plan for the Drake: you say something dry, I panic, he gets confused. It\'s worked eight times.'),
+      9: talk(
+        dot('start', 'Plan for the Drake: you say something dry, I panic, he gets confused. It\'s worked eight times.'),
+        ['Flicker', 'What do I do?'],
+        ['Dot', 'Glow quietly.'],
+        ['Flicker', 'I don\'t have a quiet setting.'],
+      ),
     },
     hurt: [
       hDot('You\'re smoking. Slightly. Pat it out gently and panic a little.'),
@@ -212,13 +239,15 @@ export const WAYSIDE: Record<number, WorldWay> = {
       hDot('Walk it off. Not on the lava. Around the lava.'),
     ],
   },
-  // the storm: Dot has gone into the net, Pokey climbs alone, and the flowers turn toward the tower
+  // the storm: Dot has gone off alone after her confession, Flicker keeps his light up for her, and she comes back halfway up
   // 2 The Thousand Steps · 3 Thunder · 4 Holding On · 5 Halfway Up · 6 The Iron Netting · 7 The Walls · 8 The Last Steps · 9 The Fortress Gate
   10: {
     stages: {
       2: petal('start', 'Even here, in the rain, a few flowers have turned to face the tower.'),
+      3: flicker('start', 'Hold on. I\'m keeping my light up, so she can find us.'),
       4: petal('half', 'Lightning shows him every step of the climb. He takes them one at a time.'),
-      6: petal('half', 'Between swings he checks the netting for a small green shape. Nothing yet.'),
+      // (Dot is back from the halfway scene: she and Flicker guide him together, the jealousy done)
+      6: talk(dot('half', 'Left vine, Flicker, I said left, the left one.'), ['Flicker', 'His left.'], ['Dot', 'Fine. His left.']),
       7: pokey('half', 'I\'ve been humming Meeca\'s song. About a third of it\'s right. She\'ll know which third.'),
       5: petal('half', 'He counts the steps that are left. Then he stops counting, and just climbs.'),
       8: petal('near', 'Someone has sewn a hole in the netting shut, very badly. Every stitch is in the wrong place.'),
@@ -242,7 +271,7 @@ export function waysideApplies(level: { worldIndex: number; miniIndex: number; s
   return !!WAYSIDE[level.worldIndex];
 }
 
-export function stageLine(world: number, mini: number): (WayLine & { at: WayAt }) | undefined {
+export function stageLine(world: number, mini: number): (WayLine & { at: WayAt; more?: WayLine[] }) | undefined {
   return WAYSIDE[world]?.stages[mini];
 }
 
@@ -254,15 +283,21 @@ export function hurtLine(world: number, mini: number): WayLine | undefined {
   return { who: h.who, text: h.text };
 }
 
-/** is Dot with Pokey at this point of the story? She is away from the second half of world 6 (after the Last Note), all of world 7, and in the net in world 10 */
+/**
+ * is Dot with Pokey at this point of the story? She is away from the second half of world 6 (after the Last Note), all of world 7, and
+ * the first half of world 10 (after her confession); she is back from its halfway scene (10-6 to 10-9) and goes around at the gate
+ */
 export function dotPresent(world: number, mini: number): boolean {
-  return !(world === 6 && mini >= 6) && world !== 7 && world !== 10;
+  return !(world === 6 && mini >= 6) && world !== 7 && !(world === 10 && (mini <= 5 || mini >= 10));
 }
 
-/** does this stage hide a find in a Hush Fern (a keepsake in stage 5 (3 in World 4), a book in stage 8)? */
+/**
+ * does this stage hide a find in a Hush Fern (a keepsake in stage 5 (3 in World 4), a book in stage 8, Dot's lost pocket in stage 6 of
+ * Worlds 4-9, the Notch in 1-4)? A note hangs in Meeca's bell and the snail is out in the open: neither is in a fern.
+ */
 export function hidesFern(world: number, mini: number): boolean {
   const f = findForStage(world, mini);
-  return !!f && f.kind !== 'note';
+  return !!f && f.kind !== 'note' && f.kind !== 'snail';
 }
 
 /**
@@ -314,7 +349,7 @@ export interface WayProbe {
 }
 
 /** which line (if any) is due right now. A fall is answered first; the scripted line waits its turn. */
-export function dueLine(p: WayProbe): { flag: WayFlag; line: WayLine } | null {
+export function dueLine(p: WayProbe): { flag: WayFlag; line: WayLine & { more?: WayLine[] } } | null {
   // the fern's hint comes first, at the very start, and only while the fern is still waiting to be found
   if (p.fernOpen && !p.shownF && p.playedMs >= START_AFTER_MS) {
     const line = fernLine(p.world, p.mini);
@@ -327,7 +362,7 @@ export function dueLine(p: WayProbe): { flag: WayFlag; line: WayLine } | null {
   const s = stageLine(p.world, p.mini);
   if (s && !p.shownL) {
     const ready = s.at === 'start' ? p.playedMs >= START_AFTER_MS : s.at === 'half' ? p.ratio >= HALF_AT : p.ratio >= NEAR_AT;
-    if (ready) return { flag: 'L', line: { who: s.who, text: s.text } };
+    if (ready) return { flag: 'L', line: { who: s.who, text: s.text, ...(s.more ? { more: s.more } : {}) } };
   }
   return null;
 }

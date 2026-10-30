@@ -1,12 +1,12 @@
 /**
- * When each letter appears. 26 ms a letter, plus a breath where a person would take one: a beat after a sentence ends (so a punchline
+ * When each letter appears. `ms` a letter (each speaker types at their own pace: voiceLine.ts typeMs; 26 when not given), plus a breath where a person would take one: a beat after a sentence ends (so a punchline
  * or a hard truth gets its moment before the next sentence starts) and a longer one after "..." (a hesitation). Tapping still skips ahead.
  */
-export function typeSchedule(text: string): number[] {
+export function typeSchedule(text: string, ms = 26): number[] {
   const at: number[] = new Array(text.length);
   let t = 0;
   for (let i = 0; i < text.length; i++) {
-    t += 26;
+    t += ms;
     at[i] = t;
     const c = text[i];
     const next = text[i + 1];

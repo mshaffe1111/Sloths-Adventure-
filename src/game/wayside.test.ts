@@ -29,8 +29,8 @@ const memStore = () => {
   };
 };
 
-/** is Dot in the story at this point? Away from the second half of world 6 (after the Last Note), through world 7, and in the net in world 10 */
-const dotHere = (world: number, mini: number) => !(world === 6 && mini >= 6) && world !== 7 && world !== 10;
+/** is Dot in the story at this point? Away from the second half of world 6 (after the Last Note), through world 7, and in world 10 until its halfway scene */
+const dotHere = (world: number, mini: number) => !(world === 6 && mini >= 6) && world !== 7 && !(world === 10 && mini <= 5);
 
 test('every world has lines, in the right places and the right lengths', () => {
   for (let w = 1; w <= 10; w++) {
@@ -90,10 +90,10 @@ test('the first stage, the guardians and the hidden Hollow stay quiet; the rest 
 test('the lines know which stage they are in: flowers, cages, sneaking', () => {
   // (each world's stages follow its chapter, stagePlan.ts)
   assert.match(stageLine(1, 2)!.text, /petals/);
-  assert.match(stageLine(1, 7)!.text, /[Qq]uiet/);
+  assert.match(stageLine(1, 7)!.text, /bush/, '1-7 is A Very Good Bush');
   assert.match(stageLine(2, 3)!.text, /cage/, '2-3 is a rescue');
   assert.match(stageLine(5, 5)!.text, /silk|threads/, '5-5 frees creatures caught in silk');
-  assert.match(stageLine(3, 7)!.text, /ferns/, '3-7 is the search among the ferns');
+  assert.match(stageLine(3, 7)!.text, /bell/, '3-7 is the search for Grandma\'s things, the bell among them');
   assert.equal(hurtLine(6, 3)!.who, 'Dot');
   assert.equal(hurtLine(6, 8)!.who, 'Petal');
   assert.equal(hurtLine(8, 9)!.who, 'Dot');
@@ -123,7 +123,7 @@ test('a scripted line waits for its moment', () => {
   assert.equal(dueLine({ ...base, ratio: 0.3, playedMs: 30_000 }), null);
   const half = dueLine({ ...base, ratio: 0.5 });
   assert.equal(half?.flag, 'L');
-  assert.match(half!.line.text, /PLEASE BE PATIENT/);
+  assert.match(half!.line.text, /Gruntlewick/);
   assert.equal(dueLine({ ...base, ratio: 0.9, shownL: true }), null, 'once heard, never again');
   // a "start" line (world 1 stage 2) comes a couple of seconds in, not at once
   const start = { world: 1, mini: 2, ratio: 0, shownL: false, shownH: false };
@@ -198,11 +198,11 @@ test('a saved game carries what was heard, but the switch stays on the device', 
 // ---- the Hush Fern hint ----
 import { dotPresent, fernLine, hidesFern } from './wayside.ts';
 
-test('only the stages that hide a fern (a keepsake in 5, or 3 in World 4; a book in 8) get the hint, and it never says where', () => {
+test('only the stages that hide a fern (a keepsake in 5, or 3 in World 4; a book in 8; Dot\'s pocket in 6 of Worlds 4-9; the Notch in 1-4) get the hint, and it never says where', () => {
   for (let w = 1; w <= 10; w++) {
     for (let m = 1; m <= 9; m++) {
       const line = fernLine(w, m);
-      const fern = m === (w === 4 ? 3 : 5) || m === 8;
+      const fern = m === (w === 4 ? 3 : 5) || m === 8 || (m === 6 && w >= 4 && w <= 9) || (w === 1 && m === 4);
       assert.equal(!!line, fern, `${w}-${m}`);
       assert.equal(hidesFern(w, m), fern);
       if (line) {

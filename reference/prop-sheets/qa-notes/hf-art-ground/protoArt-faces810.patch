@@ -1,0 +1,21 @@
+diff --git a/src/game/protoArt.ts b/src/game/protoArt.ts
+index 3ffb5296..db7fd050 100644
+--- a/src/game/protoArt.ts
++++ b/src/game/protoArt.ts
+@@ -8,6 +8,7 @@
+ import { drawCrumbleTile } from './crumbleArt.ts';
+ import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
+ import { drawW7Face } from './w7FaceArt.ts';
++import { drawW810Face } from './w810FaceArt.ts';
+ import { shakeOffset } from './spanArt.ts';
+ import { drawFallsPillar } from './w4FallsArt.ts';
+ import type { Collectible, Platform } from './types.ts';
+@@ -579,6 +580,8 @@ export function drawBankArt(
+   // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
+   // w7FaceArt.ts)
+   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
++  // (Worlds 8-10: pieces painted into their own soil, set into the face: w810FaceArt.ts)
++  if (w >= 8 && view) drawW810Face(ctx, w, p, bottom, view);
+   ctx.restore();
+   // (a World 7 high ledge is faced with the old temple's carved wall to its own edge, w7TempleArt.ts; the painted end then wraps its
+   // soil round the wall's corner, over the stone, where the soil's outline slopes back in: inside that outline the corner showed the

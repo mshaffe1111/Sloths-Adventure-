@@ -1,0 +1,76 @@
+{
+ "note": "hfui2: the start screen pieces, 2026-10-30",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/f3167c1f188dc5e710938fc2ef395cc8ffba5309/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "kit2-s70-7",
+   "start": "start-kit2.webp",
+   "prompt": "slothadv style, hand-painted game interface pieces for a cozy rainforest adventure game, each separate on a flat magenta background: a big blank wooden trail sign board of warm honey-coloured planks hanging from two twisted green jungle vines, three smaller blank wooden signs each hanging from two short vines, a blank round wooden token with a carved rim, a round token made of one big glossy green jungle leaf, a long thin hanging jungle vine with small leaves, and a small blank wooden tag hanging from a string. No text, no letters. Rich painted wood grain, soft shading, thick dark outline, slothadv style.",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, words, numbers, watermark, photo, 3d render, blurry"
+  },
+  {
+   "name": "kit2-s70-23",
+   "start": "start-kit2.webp",
+   "prompt": "slothadv style, hand-painted game interface pieces for a cozy rainforest adventure game, each separate on a flat magenta background: a big blank wooden trail sign board of warm honey-coloured planks hanging from two twisted green jungle vines, three smaller blank wooden signs each hanging from two short vines, a blank round wooden token with a carved rim, a round token made of one big glossy green jungle leaf, a long thin hanging jungle vine with small leaves, and a small blank wooden tag hanging from a string. No text, no letters. Rich painted wood grain, soft shading, thick dark outline, slothadv style.",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, words, numbers, watermark, photo, 3d render, blurry"
+  },
+  {
+   "name": "kit2-s80-7",
+   "start": "start-kit2.webp",
+   "prompt": "slothadv style, hand-painted game interface pieces for a cozy rainforest adventure game, each separate on a flat magenta background: a big blank wooden trail sign board of warm honey-coloured planks hanging from two twisted green jungle vines, three smaller blank wooden signs each hanging from two short vines, a blank round wooden token with a carved rim, a round token made of one big glossy green jungle leaf, a long thin hanging jungle vine with small leaves, and a small blank wooden tag hanging from a string. No text, no letters. Rich painted wood grain, soft shading, thick dark outline, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, words, numbers, watermark, photo, 3d render, blurry"
+  },
+  {
+   "name": "kit2-s80-23",
+   "start": "start-kit2.webp",
+   "prompt": "slothadv style, hand-painted game interface pieces for a cozy rainforest adventure game, each separate on a flat magenta background: a big blank wooden trail sign board of warm honey-coloured planks hanging from two twisted green jungle vines, three smaller blank wooden signs each hanging from two short vines, a blank round wooden token with a carved rim, a round token made of one big glossy green jungle leaf, a long thin hanging jungle vine with small leaves, and a small blank wooden tag hanging from a string. No text, no letters. Rich painted wood grain, soft shading, thick dark outline, slothadv style.",
+   "strength": 0.8,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "neg": "text, letters, words, numbers, watermark, photo, 3d render, blurry"
+  }
+ ]
+}

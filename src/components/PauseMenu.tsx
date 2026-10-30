@@ -18,7 +18,11 @@ interface PauseMenuProps {
   onRestart: () => void;
   onOpenTrophies: () => void;
   onOpenCards: () => void;
+  /** Pokey's satchel: what he has found, and his journal */
+  onOpenSatchel: () => void;
   onOpenMap: () => void;
+  /** leave the stage for the start screen (its place kept as leaving for the map keeps it) */
+  onOpenTitle: () => void;
   trophyCount: number;
   trophyTotal: number;
   /** the skills Pokey has learned so far */
@@ -147,11 +151,11 @@ export const Sliders: React.FC = () => {
   );
 };
 
-/** The pause menu: opens when the player taps Menu (the game is paused behind it). */
-export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenMap, trophyCount, trophyTotal, skills, onAskHint }) => (
+/** Settings, the pause card: opens when the player taps Settings (the game is paused behind it). */
+export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenSatchel, onOpenMap, onOpenTitle, trophyCount, trophyTotal, skills, onAskHint }) => (
   <MenuFrame
-    label="Menu"
-    title="Paused"
+    label="Settings"
+    title="Settings"
     sub={`${levelConfig.secret ? 'Secret stage' : `Stage ${levelConfig.id}`} · ${levelConfig.name}`}
     subChip={<ModeChip />}
     notice={<UpdateRow />}
@@ -161,10 +165,16 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
       <>
         {onAskHint && <HintTile ask={onAskHint} />}
         <MenuTile icon="restart" name="Restart" line="Start this stage over" onClick={onRestart} title={COARSE ? undefined : 'R'} />
+        <MenuTile icon="book" name="Satchel" line="His finds and his journal" onClick={onOpenSatchel} />
+        <MenuTile icon="map" name="World Map" line="Leave this stage" onClick={onOpenMap} />
+        <MenuTile icon="sloth" name="Start Screen" line="Back to the title" onClick={onOpenTitle} />
+        <HowToTile />
+      </>
+    }
+    trophies={
+      <>
         <MenuTile icon="trophy" name="Trophies" line={`${trophyCount} of ${trophyTotal} earned`} onClick={onOpenTrophies} />
         <MenuTile icon="cards" name="Jungle Cards" line="Meet every creature" onClick={onOpenCards} />
-        <MenuTile icon="map" name="World Map" line="Leave this stage" onClick={onOpenMap} />
-        <HowToTile />
       </>
     }
     sound={<SoundSetting isMuted={isMuted} onToggleMute={onToggleMute} keyTitle={COARSE ? undefined : 'M'} sliders={<Sliders />} />}

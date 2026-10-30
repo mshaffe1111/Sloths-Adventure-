@@ -18,7 +18,8 @@ armFullscreen();
 // app that is only resumed never looks for news, so look on resume, every few minutes, and whenever the title shows. A second, plainer check
 // (the published version file, game/updates.ts) does not depend on the service worker. The app reloads into the new build at the title or the
 // map (App.tsx), never in the middle of a stage; the pause menu and the title carry a button for it.
-if (import.meta.env.PROD) {
+// (not in the Play Store app: Google Play delivers its updates, and it makes no network calls of its own)
+if (import.meta.env.PROD && import.meta.env.VITE_STORE_BUILD !== '1') {
   let lastCheck = Date.now();
   const check = () => {
     lastCheck = Date.now();

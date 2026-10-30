@@ -1,0 +1,388 @@
+{
+ "tag": "r5d",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors"
+  ],
+  "meeca": [
+   "mshaffe111/meeca-qwen-lora",
+   "meeca_qwen_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/709d450afa7aefda3289e303a3aee6dce0f479b2/tools/art/hfbatch/starts/storyart/",
+ "items": [
+  {
+   "name": "card-crocus-rex-u50",
+   "start": "card-crocus-rex.png",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big crocodile with a crooked little crown swimming gently across the calm blue river like a ferry, three small villagers clearly riding on his back, a little sloth, a sloth mail carrier and an old marmoset, the tree village on the far bank, sunny, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-crocus-rex-u60",
+   "start": "card-crocus-rex.png",
+   "strength": 0.6,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big crocodile with a crooked little crown swimming gently across the calm blue river like a ferry, three small villagers clearly riding on his back, a little sloth, a sloth mail carrier and an old marmoset, the tree village on the far bank, sunny, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-magma-drake-u50",
+   "start": "card-magma-drake.png",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ],
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a red dragon by the volcano with two young sloths visiting, a girl sloth in a pink headband and a boy sloth with a satchel, in the front two used teacups on saucers with a ring of tea in each and steam rising, his cave swept tidy, warm glow, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-magma-drake-u60",
+   "start": "card-magma-drake.png",
+   "strength": 0.6,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ],
+    [
+     "pokey",
+     0.35
+    ],
+    [
+     "meeca",
+     0.35
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a red dragon by the volcano with two young sloths visiting, a girl sloth in a pink headband and a boy sloth with a satchel, in the front two used teacups on saucers with a ring of tea in each and steam rising, his cave swept tidy, warm glow, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-night-wing-monarch-u50",
+   "start": "card-night-wing-monarch.png",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ],
+    [
+     "pokey",
+     0.35
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a huge night butterfly monarch resting on a mossy branch under the moon writing in a little book, a young sloth beside her telling her how a dream ended, fireflies, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-night-wing-monarch-u60",
+   "start": "card-night-wing-monarch.png",
+   "strength": 0.6,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ],
+    [
+     "pokey",
+     0.35
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a huge night butterfly monarch resting on a mossy branch under the moon writing in a little book, a young sloth beside her telling her how a dream ended, fireflies, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-squirrels-u50",
+   "start": "card-squirrels.png",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a family of red squirrels under the old vine proudly pointing at their new hand-made wooden sign on a post, the sign painted with rough hand lettering, little kids cheering, sunny rainforest, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-squirrels-u60",
+   "start": "card-squirrels.png",
+   "strength": 0.6,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a family of red squirrels under the old vine proudly pointing at their new hand-made wooden sign on a post, the sign painted with rough hand lettering, little kids cheering, sunny rainforest, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-flicker-u42",
+   "start": "card-flicker.png",
+   "strength": 0.42,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a small firefly glowing bright warm yellow over a wooden shop counter at night, his glow the only light, a warm steady pool of golden light on the counter, the rest of the shop dark and cosy, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-flicker-u52",
+   "start": "card-flicker.png",
+   "strength": 0.52,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a small firefly glowing bright warm yellow over a wooden shop counter at night, his glow the only light, a warm steady pool of golden light on the counter, the rest of the shop dark and cosy, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-mailman-u50",
+   "start": "card-mailman.png",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a sloth mail carrier with a cap and a mail bag walking slowly along a forest road carrying a parcel very carefully and seriously in both arms, taking his time, morning light, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-mailman-u60",
+   "start": "card-mailman.png",
+   "strength": 0.6,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a sloth mail carrier with a cap and a mail bag walking slowly along a forest road carrying a parcel very carefully and seriously in both arms, taking his time, morning light, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-pell-u50",
+   "start": "card-pell.png",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a sloth lieutenant in his own little tailor shop sewing at the counter, a crooked wooden shop sign hanging askew above him, customers waiting happily, warm daylight, a busy friendly shop, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-pell-u60",
+   "start": "card-pell.png",
+   "strength": 0.6,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a sloth lieutenant in his own little tailor shop sewing at the counter, a crooked wooden shop sign hanging askew above him, customers waiting happily, warm daylight, a busy friendly shop, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-stone-golem-u50",
+   "start": "card-stone-golem.png",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a mossy stone golem speaking slowly at a council in the ancient ruins, the other forest guardians sitting on the stone chairs around him listening patiently, a tarantula queen, a red dragon, a black panther and a green snake with a crown, sun through the trees, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-stone-golem-u60",
+   "start": "card-stone-golem.png",
+   "strength": 0.6,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a mossy stone golem speaking slowly at a council in the ancient ruins, the other forest guardians sitting on the stone chairs around him listening patiently, a tarantula queen, a red dragon, a black panther and a green snake with a crown, sun through the trees, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-marsh-reaver-u40",
+   "start": "card-marsh-reaver.png",
+   "strength": 0.4,
+   "seed": 5,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big marsh creature sitting contentedly on a mangrove root beside a forest path at bright noon, half of his lunch left on a leaf on the root facing the path for a passer-by, sunlight through the mangroves, clean clear water, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "card-marsh-reaver-u48",
+   "start": "card-marsh-reaver.png",
+   "strength": 0.48,
+   "seed": 8,
+   "w": 1920,
+   "h": 1080,
+   "loras": [
+    [
+     "style",
+     0.9
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration, a big marsh creature sitting contentedly on a mangrove root beside a forest path at bright noon, half of his lunch left on a leaf on the root facing the path for a passer-by, sunlight through the mangroves, clean clear water, warm and gentle, crisp clean outlines, rich painted detail",
+   "neg": "readable text, words, signature, watermark, frame, border, photo, 3d render, blurry, extra limbs, deformed, humans, people, white outline, sticker, bee, wasp"
+  },
+  {
+   "name": "notch-u32",
+   "start": "notch.png",
+   "strength": 0.32,
+   "seed": 3,
+   "w": 768,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of a single small crooked brown twig standing upright with two little leaves, rough bark, small uneven notches cut into its sides one above another showing pale wood, tiny fern drawings scratched beside the higher notches, crisp clean dark outlines, soft cel shading, plain flat grey background",
+   "neg": "text, letters, numbers, ladder, rungs, hand, person, animal, background scenery, table, floor, shadow, blurry"
+  },
+  {
+   "name": "notch-u42",
+   "start": "notch.png",
+   "strength": 0.42,
+   "seed": 6,
+   "w": 768,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "prompt": "slothadv style, painted storybook illustration of a single small crooked brown twig standing upright with two little leaves, rough bark, small uneven notches cut into its sides one above another showing pale wood, tiny fern drawings scratched beside the higher notches, crisp clean dark outlines, soft cel shading, plain flat grey background",
+   "neg": "text, letters, numbers, ladder, rungs, hand, person, animal, background scenery, table, floor, shadow, blurry"
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/709d450afa7aefda3289e303a3aee6dce0f479b2/",
+ "keep": [
+  "card-crocus-rex-u50",
+  "card-crocus-rex-u60",
+  "card-magma-drake-u50",
+  "card-magma-drake-u60",
+  "card-night-wing-monarch-u50",
+  "card-night-wing-monarch-u60",
+  "card-squirrels-u50",
+  "card-squirrels-u60",
+  "card-flicker-u42",
+  "card-flicker-u52",
+  "card-mailman-u50",
+  "card-mailman-u60",
+  "card-pell-u50",
+  "card-pell-u60",
+  "card-stone-golem-u50",
+  "card-stone-golem-u60",
+  "card-marsh-reaver-u40",
+  "card-marsh-reaver-u48",
+  "notch-u32",
+  "notch-u42"
+ ]
+}

@@ -8,6 +8,7 @@
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
+import { drawW810Face } from './w810FaceArt.ts';
 import { shakeOffset } from './spanArt.ts';
 import { drawFallsPillar } from './w4FallsArt.ts';
 import type { Collectible, Platform } from './types.ts';
@@ -16,8 +17,9 @@ import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
-import { DEPTH_DARK, drawEnd, drawLip, drawSoil, endFace, warmGround } from './groundPaint.ts';
+import { DEPTH_DARK, drawEnd, drawLip, drawSoil, endFace, warmGround, type DepthAt } from './groundPaint.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
+import { canvasLost } from './canvasLost.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -574,10 +576,12 @@ export function drawBankArt(
   }
   // (its darkening with depth is the bank's own: from about where the middle of the view is when he stands on it to full dark where the
   // bottom of that view is, so the soil looks the same however the view is placed and can be painted once: groundChunks)
-  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, p.y + DEPTH_BELOW * depthView, p.y - DEPTH_ABOVE * depthView);
+  drawSoil(ctx, w, x0, x1, soilTop, bottom + 2, p.y + DEPTH_BELOW * depthView, p.y - DEPTH_ABOVE * depthView, true, groundDepth ?? undefined);
   // (World 7, inside the soil's outline: a bank other than a high ledge with Matt's painted roots and statues set into its soil,
   // w7FaceArt.ts)
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
+  // (Worlds 8-10: pieces painted into their own soil, set into the face: w810FaceArt.ts)
+  if (w >= 8 && view) drawW810Face(ctx, w, p, bottom, view);
   ctx.restore();
   // (a World 7 high ledge is faced with the old temple's carved wall to its own edge, w7TempleArt.ts; the painted end then wraps its
   // soil round the wall's corner, over the stone, where the soil's outline slopes back in: inside that outline the corner showed the
@@ -675,13 +679,13 @@ function drawWallChunks(
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
-      if (c.tiles.has(k)) continue;
+      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'bank square')) continue;
       if (budget-- <= 0) {
         missing = true;
         continue;
       }
+      if (!c.tiles.has(k)) c.order.push(k);
       c.tiles.set(k, paintWallTile(wall, cx, cy, scale));
-      c.order.push(k);
     }
   const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
   const keep = Math.max(8, Math.floor(CHUNK_BYTES / 2 / (side * side * 4)));
@@ -909,6 +913,32 @@ const DEPTH_BELOW = 0.45;
 export function setDepthView(vh: number) {
   if (vh > 0) depthView = vh;
 }
+/** how far either side of a spot the ground line takes in (world units): the darkening's line eases from one bank's top to the next over this */
+const LINE_REACH = 240;
+/**
+ * The line the soil's darkening is laid out from along the ground (paintTile sets it while it paints a square): at each x, the tops of the banks
+ * within LINE_REACH, each weighed by how much of that reach it covers, so the line eases across a pit or a step instead of jumping at a
+ * bank's edge (a pit's floor darkened from its own, lower top was a lighter column between the banks: the W3 bands, 2026-10-30).
+ */
+let groundDepth: DepthAt | null = null;
+function groundLine(banks: Platform[]): DepthAt {
+  const tops = banks.filter((q) => !q.soil);
+  return (x) => {
+    let sum = 0, wt = 0, near = Infinity, nearY = 0;
+    for (const q of tops) {
+      const o = Math.min(x + LINE_REACH, q.x + q.width) - Math.max(x - LINE_REACH, q.x);
+      if (o > 0) {
+        sum += q.y * o;
+        wt += o;
+      } else {
+        const d = Math.max(q.x - x, x - q.x - q.width);
+        if (d < near) { near = d; nearY = q.y; }
+      }
+    }
+    const y = wt > 0 ? sum / wt : nearY;
+    return [y - DEPTH_ABOVE * depthView, y + DEPTH_BELOW * depthView];
+  };
+}
 
 /**
  * The ground: the pits' shade and every bank of earth (its soil cut to its outline, its lip and its ends) that `view` takes in.
@@ -1032,13 +1062,14 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
-      if (c.tiles.has(k)) continue;
+      // (a square the phone took back is painted again)
+      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'ground square')) continue;
       if (budget-- <= 0) {
         missing = true;
         continue;
       }
+      if (!c.tiles.has(k)) c.order.push(k);
       c.tiles.set(k, paintTile(platforms, banks, cx, cy, scale));
-      c.order.push(k);
     }
   // (the oldest squares out of view go once too many are kept)
   const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
@@ -1083,7 +1114,11 @@ function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: num
   g.imageSmoothingEnabled = true;
   g.imageSmoothingQuality = 'high';
   g.setTransform(scale, 0, 0, scale, -(x - CHUNK_PAD) * scale, -(y - CHUNK_PAD) * scale);
+  // (the soil's darkening follows the ground line only here, painted once into the square: drawn live, a frame whose squares are not
+  // all painted yet keeps one gradient a bank, PERFORMANCE-RULES §8's per-frame limit)
+  groundDepth = groundLine(banks);
   drawGround(g, platforms, banks, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300, y0: y - CHUNK_PAD, y1: y + CHUNK + CHUNK_PAD + 4 });
+  groundDepth = null;
   return cv;
 }
 

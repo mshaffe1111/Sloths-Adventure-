@@ -8,6 +8,7 @@
  * and the player can do it from a button (the title, the pause menu), since a stage in progress is never interrupted without being asked.
  */
 import { BUILD_TIME } from './version.ts';
+import { storeBuild } from './appShell.ts';
 
 /** true when the published stamp is a different one from this copy's own (an empty stamp on either side means "cannot tell") */
 export function versionDiffers(remote: unknown, local: string): boolean {
@@ -41,7 +42,8 @@ export type UpdateCheck = 'new' | 'same' | 'unknown';
 /** asks the server which build is current. 'unknown' when offline, in a preview, or in a build with no stamp. */
 export async function checkForUpdate(): Promise<UpdateCheck> {
   if (available) return 'new';
-  if (!BUILD_TIME || typeof fetch === 'undefined') return 'unknown';
+  // the store app updates through Google Play, so it never asks
+  if (storeBuild() || !BUILD_TIME || typeof fetch === 'undefined') return 'unknown';
   try {
     const base = (import.meta as unknown as { env?: { BASE_URL?: string } }).env?.BASE_URL ?? '/';
     const res = await fetch(`${base}version.json?t=${Date.now()}`, { cache: 'no-store' });

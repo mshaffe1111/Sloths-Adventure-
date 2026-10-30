@@ -7,8 +7,9 @@
  *   sfx.ts         layered sound effects
  *   stingers.ts    short written fanfares
  *   ambience.ts    the sound of each world
- *   speech.ts      dialogue blips for the story
+ *   voice.ts       the story's voices: each character's babble (voiceLine.ts says when a syllable is due)
  */
+import type { Tone } from '../audio/voiceLine.ts';
 import { Conductor, type SceneOptions } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
 import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
@@ -80,6 +81,7 @@ class SoundEngine {
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
   screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string) {
     this.held = null;
+    this.c.storyMusic('keep');
     // the stage's state (a dark zone, a danger, a boss phase) belongs to that stage: any other screen, or another stage, starts calm
     const stage = screen === 'playing' || screen === 'paused' ? levelId : '';
     if (stage !== this.stateStage) this.c.setMusicState(CALM);
@@ -99,6 +101,10 @@ class SoundEngine {
     // the storm belongs to the storm panels only: the quiet scenes after it must not keep the thunder
     this.c.setAmbient(panel.chapter.toUpperCase().startsWith('THE STORM') ? 'thunderstorm' : 'gentle_breeze');
     this.c.warmStoryStings();
+  }
+  /** the story's hand on the music under a picture: keep, under (half), silence, swell (storyDirect.ts) */
+  storyMusic(move: 'keep' | 'under' | 'silence' | 'swell') {
+    this.c.storyMusic(move);
   }
   /** the short sting a story panel asks for, played once as its picture appears (see StoryPlayer) */
   storySting(name: string) {
@@ -126,11 +132,27 @@ class SoundEngine {
     this.c.setAmbient(type);
   }
   /** Dot's bubble opens in play: a soft chirp, once per line, and the music dips a moment (SN-7) */
+  /** the Android app went to the background, or lost Android's audio focus (a call ringing, an alarm), or got it back: no sound while either holds */
+  private away = new Set<'background' | 'focus'>();
+  appHidden(away: boolean, why: 'background' | 'focus' = 'background') {
+    if (away) this.away.add(why);
+    else this.away.delete(why);
+    this.c.appHidden(this.away.size > 0);
+  }
+  /** another app talks over the Android app for a moment: the game plays on, quieter */
+  appDucked(on: boolean) {
+    this.c.setDucked(on);
+  }
   dotChirp() {
     this.c.dotChirp();
   }
-  speak(speaker: string, ch: string, index: number) {
-    this.c.speak(speaker, ch, index);
+  /** letter `index` of a story line has appeared: its speaker's voice says a syllable when one is due */
+  speak(speaker: string, text: string, index: number, tone?: Tone) {
+    this.c.speak(speaker, text, index, tone);
+  }
+  /** fetch the voices of these speakers (a story's cast, as it opens) */
+  warmVoices(speakers: Iterable<string>) {
+    this.c.warmVoices(speakers);
   }
 
   // ------------------------------------------------------------------ the old API (same names, new sounds)
@@ -211,6 +233,12 @@ class SoundEngine {
   playWindChime() { this.c.fx('windChime'); }
   /** a mushroom or a springy pad throwing him up (it used to be the jump) */
   playBounce() { this.c.fx('bounce'); }
+  /** a pushed log starting to roll (a wooden knock; the bark scrape that follows is the climb's) */
+  playLog() { this.c.fx('log'); }
+  /** World 3's thorn vines lashing (they used to whoosh) */
+  playThorns() { this.c.fx('thorns'); }
+  /** a wooden gate swinging open (the secret thorn gate; the puzzle gates play it through playPuzzle) */
+  playGate() { this.c.fx('gate'); }
   /** a crumbling ledge giving way (it used to be a heavy hit) */
   playCrumble() { this.c.fx('crumble'); }
   /** a guardian's tell, the wind-up before its attack (SN-4): its own sound, `world` 1..10, 11 Thornbark */

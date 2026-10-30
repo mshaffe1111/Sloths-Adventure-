@@ -9,7 +9,7 @@ import { CHAPTERS, PAGES, PAGE_BY_ID, chapterPages, isNew, markLooked, openPages
 import { lessonInputMode, type InputMode, type LessonLine } from '../game/lessons.ts';
 
 /**
- * How to Play is Pokey's Journal (Matt, 2026-10-24): a book that fills in as you play. Chapters by kind of move; each page is one move
+ * How to Play (once called Pokey's Journal; Matt, 2026-10-24): a book that fills in as you play. Chapters by kind of move; each page is one move
  * or idea with Pokey doing it on a loop and the moves for this player's own controls; pages still to come are mystery pages. The pages
  * and their unlock rules are in game/movesJournal.ts, the scenes in game/journalScenes.ts. Stars, lives and saving keep a short section
  * of their own at the back.
@@ -163,9 +163,9 @@ const Extras: React.FC = () => (
       <p className="ui-copy ui-warn">New Game erases your progress. It offers a backup first, so use it.</p>
     </section>
     <section className="htp-sec">
-      <h3 className="ui-label">The Menu</h3>
+      <h3 className="ui-label">Settings</h3>
       <p className="ui-copy">
-        In a stage, <b>Menu</b> at the top pauses the game. It has Resume, Restart, Trophies, the World Map, this journal, how you control the game, and the sound.
+        In a stage, <b>Settings</b> (the leaf at the top) pauses the game. It has Resume, Restart, Trophies, the World Map, the start screen, this journal, how you control the game, and the sound.
       </p>
       <p className="ui-copy">
         The phone's <b>Back</b> swipe pauses the game too, instead of leaving it. Keep your thumbs <b>a finger's width in from the edges</b>: the phone keeps swipes that start at the very edge for itself.
@@ -210,7 +210,7 @@ const Intro: React.FC<{ mode: InputMode; onGo: () => void; onMore: () => void }>
           </div>
         }
       />
-      <p className="jr-foot-note">Every new move you meet gets its own page in Pokey's Journal. Find it in the Menu.</p>
+      <p className="jr-foot-note">Every new move you meet gets its own page here.</p>
     </>
   );
 };
@@ -284,7 +284,7 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
   );
 
   return (
-    <div className="ui-scrim select-none" role="dialog" aria-modal="true" aria-label="Pokey's Journal" onClick={onClose}>
+    <div className="ui-scrim select-none" role="dialog" aria-modal="true" aria-label="How to Play" onClick={onClose}>
       <GhostOnExit />
       <div className={`ui-panel jr${short ? ' jr-short' : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="jr-head">
@@ -298,7 +298,7 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
             </span>
           )}
           <div className="jr-head-txt">
-            <div className="ui-kicker">{short ? 'Before you start' : "Pokey's Journal"}</div>
+            <div className="ui-kicker">{short ? 'Before you start' : 'How to Play'}</div>
             <h2 className="ui-h2">{page && !short ? `Page ${at + 1} of ${list.length}` : title}</h2>
           </div>
           {!short && (
@@ -398,7 +398,7 @@ export function markHowToSeen() {
   }
 }
 
-/** how many pages are NEW (for a badge on the Menu's journal tile) */
+/** how many pages are NEW (for a badge on the journal tile in Settings) */
 export function journalNewCount(): number {
   const open = openPages();
   return PAGES.filter((p) => isNew(p.id, open)).length;

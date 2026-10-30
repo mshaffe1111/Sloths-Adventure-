@@ -17,23 +17,23 @@ test('SN-7: speech dips the music 4-6 dB, in 80 ms, back over 400 ms after the l
   const fakeCore = new Proxy({}, {
     get: (_t, k) => (k === 'speechDuck' ? { gain: param } : k === 'ctx' ? { currentTime: 10, state: 'running' } : k === 'withReverb' ? () => ({ connect() {} }) : undefined),
   });
-  const c = new Conductor() as unknown as { core: unknown; muted: boolean; speak: (s: string, ch: string, i: number) => void };
+  // (each syllable a voice says dips the music: story-delivery's voices need a real audio graph, so the dip is called as they call it)
+  const c = new Conductor() as unknown as { core: unknown; muted: boolean; speechDip: () => void };
   c.core = fakeCore;
   c.muted = false;
-  try {
-    c.speak('Narrator', 'a', 0);
-  } catch {
-    /* the blip itself needs a real audio graph: the dip is scheduled before it */
-  }
+  c.speechDip();
   const db = 20 * Math.log10(SPEECH_DUCK);
   assert.ok(db <= -4 && db >= -6, `${db.toFixed(1)} dB`);
   const down = calls.find((x) => x[0] === 'target' && x[1] === SPEECH_DUCK);
   const up = calls.find((x) => x[0] === 'target' && x[1] === 1);
   assert.ok(down && Math.abs(down[2] - 10) < 1e-9 && Math.abs(down[3]! - SPEECH_ATTACK / 3) < 1e-9, 'down at once, 80 ms');
   assert.ok(up && up[2] > 10 && Math.abs(up[3]! - SPEECH_RELEASE / 3) < 1e-9, 'back over 400 ms, after the letter');
-  // its own gain, after the sting's duck
+  // its own gain, after the sting's duck (and the story's hand on the music between them: storyDirect.ts)
   const core = readFileSync(new URL('./core.ts', import.meta.url), 'utf8');
-  assert.match(core, /this\.musicDuck\.connect\(this\.speechDuck\);\n\s*this\.speechDuck\.connect\(this\.musicFilter\);/);
+  assert.match(core, /this\.musicDuck\.connect\(this\.storyLevel\);\n\s*this\.storyLevel\.connect\(this\.speechDuck\);/);
+  assert.match(core, /this\.speechDuck\.connect\(this\.musicFilter\);/);
+  const cond = readFileSync(new URL('./conductor.ts', import.meta.url), 'utf8');
+  assert.match(cond, /if \(due && playSyllable\(core, due\.slug, due\.syl\) > 0\) \{\n\s*this\.speech\.played\(text, index, now\);\n\s*this\.speechDip\(\);/);
 });
 
 test('SN-7: Dot chirps once per line, when her bubble goes up', () => {

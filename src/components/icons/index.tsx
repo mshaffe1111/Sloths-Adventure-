@@ -9,8 +9,14 @@
  * `arrow`, `check` and `cross` are interface glyphs: they draw in the surrounding text colour (currentColor) so they sit
  * on a gold button as well as on a green one. `rotate` turns any icon (an arrow pointing left is `rotate={180}`).
  * The painted creature crests live in ./Crest.tsx, and which glyph goes with which stage type in ./stageTypes.ts.
+ *
+ * Painted (menu kit option A, Matt 2026-10-30): every icon that has a painted version in the kit (src/assets/ui/ui-kit.webp, Hugging
+ * Face takes in the style of the game's art) draws that instead of the vector glyph, so the start screen, Settings, Stage Cleared
+ * and the map are one set. It is still an <svg> of the asked size (its viewBox is the icon's square in the kit sheet), so every rule
+ * that sizes or shades `.ic` or `svg` keeps working. arrow, check and cross stay vector: they take the colour of the text around them.
  */
 import React from 'react';
+import { UI_KIT, UI_KIT_SIZE } from '../../game/uiKitData.ts';
 
 export type IconName =
   // the general set
@@ -433,10 +439,50 @@ const ART: Record<IconName, React.ReactNode> = {
 export const ICON_NAMES = Object.keys(ART) as IconName[];
 
 /** a 24x24 icon from the game's own set; see the notes at the top of this file */
+export const UI_KIT_URL = new URL('../../assets/ui/ui-kit.webp', import.meta.url).href;
+/** the icons drawn from the painted kit (the name in the kit is `icon-<name>`) */
+export const PAINTED_ICONS: ReadonlySet<IconName> = new Set<IconName>(
+  Object.keys(UI_KIT)
+    .filter((k) => k.startsWith('icon-'))
+    .map((k) => k.slice(5) as IconName)
+    .filter((n) => n !== 'arrow' && n !== 'check' && n !== 'cross'),
+);
+
+/** one piece of the painted kit sheet as an <svg> (the lock badge and the star slots are drawn the same way) */
+export const KitPiece: React.FC<{ piece: string; width: number | string; height?: number | string; className?: string; style?: React.CSSProperties; label?: string }> = ({ piece, width, height, className, style, label }) => {
+  const f = UI_KIT[piece];
+  // (a square the size of the piece's longer side, the piece in its middle, clipped to the piece so nothing of its neighbours in the
+  // sheet shows; a clip path, not a nested svg, so rules that size `svg` inside a button or a row leave it alone)
+  const id = React.useId();
+  if (!f) return null;
+  const m = Math.max(f.w, f.h);
+  const ox = (m - f.w) / 2 - f.x;
+  const oy = (m - f.h) / 2 - f.y;
+  return (
+    <svg
+      viewBox={`0 0 ${m} ${m}`}
+      width={width}
+      height={height ?? width}
+      className={className}
+      style={style}
+      role={label ? 'img' : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
+      focusable="false"
+    >
+      <clipPath id={id}>
+        <rect x={(m - f.w) / 2} y={(m - f.h) / 2} width={f.w} height={f.h} />
+      </clipPath>
+      <image href={UI_KIT_URL} x={ox} y={oy} width={UI_KIT_SIZE.w} height={UI_KIT_SIZE.h} clipPath={`url(#${id})`} />
+    </svg>
+  );
+};
+
 export const Icon: React.FC<IconProps> = ({ name, size = 24, label, className, style, rotate }) => {
+  const s: React.CSSProperties | undefined = rotate ? { ...style, transform: `${style?.transform ?? ''} rotate(${rotate}deg)`.trim() } : style;
+  if (PAINTED_ICONS.has(name)) return <KitPiece piece={`icon-${name}`} width={size} className={className ? `ic ${className}` : 'ic'} style={s} label={label} />;
   const art = ART[name];
   if (!art) return null;
-  const s: React.CSSProperties | undefined = rotate ? { ...style, transform: `${style?.transform ?? ''} rotate(${rotate}deg)`.trim() } : style;
   return (
     <svg
       viewBox="0 0 24 24"

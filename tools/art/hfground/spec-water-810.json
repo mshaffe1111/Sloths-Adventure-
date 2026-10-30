@@ -1,0 +1,176 @@
+{
+ "note": "hf-art-ground: Worlds 8-10 pit water, 2026-10-30",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/995d1df925c9dade495ffd642a701a067cfde972/tools/art/hfground/starts/",
+ "items": [
+  {
+   "kind": "strip",
+   "name": "water-w8-chop-a",
+   "start": "water-w8-chop.webp",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "s1": 0.62,
+   "seed": 7,
+   "s2": 0.38,
+   "seeds2": [
+    11
+   ],
+   "w": 1024,
+   "h": 528,
+   "band": 96,
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, a side view of dangerous deep water filling a pit: dark still moonlit swamp blackwater, deep navy and black, thin silver moonlight glints and soft ripples along the top, the water fills the strip below its top edge, on one flat plain pure magenta background above it, the left and right ends continue seamlessly, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "strip",
+   "name": "water-w8-chop-b",
+   "start": "water-w8-chop.webp",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "s1": 0.7,
+   "seed": 7,
+   "s2": 0.38,
+   "seeds2": [
+    11
+   ],
+   "w": 1024,
+   "h": 528,
+   "band": 96,
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, a side view of dangerous deep water filling a pit: dark still moonlit swamp blackwater, deep navy and black, thin silver moonlight glints and soft ripples along the top, the water fills the strip below its top edge, on one flat plain pure magenta background above it, the left and right ends continue seamlessly, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "water-w8-bits-s5",
+   "start": "water-w8-bits.webp",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 512,
+   "h": 224,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a small raft of floating pale silver moon-lily petals and dark leaves, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "water-w8-bits-s9",
+   "start": "water-w8-bits.webp",
+   "strength": 0.7,
+   "seed": 9,
+   "w": 512,
+   "h": 224,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a small raft of floating pale silver moon-lily petals and dark leaves, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "strip",
+   "name": "water-w9-chop-a",
+   "start": "water-w9-chop.webp",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "s1": 0.74,
+   "seed": 7,
+   "s2": 0.38,
+   "seeds2": [
+    11
+   ],
+   "w": 1024,
+   "h": 528,
+   "band": 96,
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, a side view of dangerous deep water filling a pit: a pit of glowing molten lava, bright orange and yellow magma with floating dark cooled crust plates and glowing cracks, a bubbling rim along the top, the water fills the strip below its top edge, on one flat plain pure magenta background above it, the left and right ends continue seamlessly, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "strip",
+   "name": "water-w9-chop-b",
+   "start": "water-w9-chop.webp",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "s1": 0.82,
+   "seed": 7,
+   "s2": 0.38,
+   "seeds2": [
+    11
+   ],
+   "w": 1024,
+   "h": 528,
+   "band": 96,
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, a side view of dangerous deep water filling a pit: a pit of glowing molten lava, bright orange and yellow magma with floating dark cooled crust plates and glowing cracks, a bubbling rim along the top, the water fills the strip below its top edge, on one flat plain pure magenta background above it, the left and right ends continue seamlessly, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "water-w9-bits-s5",
+   "start": "water-w9-bits.webp",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 512,
+   "h": 224,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a floating chunk of cooled black volcanic crust with glowing orange cracks, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "water-w9-bits-s9",
+   "start": "water-w9-bits.webp",
+   "strength": 0.7,
+   "seed": 9,
+   "w": 512,
+   "h": 224,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a floating chunk of cooled black volcanic crust with glowing orange cracks, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "strip",
+   "name": "water-w10-chop-a",
+   "start": "water-w10-chop.webp",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "s1": 0.62,
+   "seed": 7,
+   "s2": 0.38,
+   "seeds2": [
+    11
+   ],
+   "w": 1024,
+   "h": 528,
+   "band": 96,
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, a side view of dangerous deep water filling a pit: a cold grey stormy surge of rough water, slate grey and dark teal, white foam crests and spray along the top, the water fills the strip below its top edge, on one flat plain pure magenta background above it, the left and right ends continue seamlessly, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "strip",
+   "name": "water-w10-chop-b",
+   "start": "water-w10-chop.webp",
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "s1": 0.7,
+   "seed": 7,
+   "s2": 0.38,
+   "seeds2": [
+    11
+   ],
+   "w": 1024,
+   "h": 528,
+   "band": 96,
+   "prompt": "slothadv style, painted storybook illustration, a long horizontal strip for a side-scrolling platform game, a side view of dangerous deep water filling a pit: a cold grey stormy surge of rough water, slate grey and dark teal, white foam crests and spray along the top, the water fills the strip below its top edge, on one flat plain pure magenta background above it, the left and right ends continue seamlessly, soft cel shading, evenly lit, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "water-w10-bits-s5",
+   "start": "water-w10-bits.webp",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 512,
+   "h": 224,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a tangle of floating broken grey driftwood planks and frayed rope, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  },
+  {
+   "kind": "plain",
+   "name": "water-w10-bits-s9",
+   "start": "water-w10-bits.webp",
+   "strength": 0.7,
+   "seed": 9,
+   "w": 512,
+   "h": 224,
+   "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, sloth, animal, people, boat, island, plants, trees",
+   "prompt": "slothadv style, painted storybook illustration, a game prop for a side-scrolling platform game, side-on: a tangle of floating broken grey driftwood planks and frayed rope, thin dark outline, soft cel shading, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text"
+  }
+ ]
+}

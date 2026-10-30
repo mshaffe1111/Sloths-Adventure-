@@ -1,0 +1,132 @@
+{
+ "note": "hftrails1: the ten world-map trails, 2026-10-30",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/df744f10f010d040b0f1d41a2cb7979b242063d6/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "trails-a-s70-7",
+   "start": "start-trails-a.webp",
+   "prompt": "slothadv style, five rows of trail pieces for a jungle adventure map, four pieces per row: row 1 thick twisted green jungle vine rope; row 2 smooth wet grey river stepping stones; row 3 gnarled brown tree roots dotted with tiny glowing green glowworms; row 4 fluffy white cloud puffs; row 5 green orchid stems with leaves and a pink orchid flower. Hand-painted storybook game art, rich painted texture and soft shading, thick dark outline, each piece separate on a flat magenta background, side view, slothadv style.",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "trails-a-s70-23",
+   "start": "start-trails-a.webp",
+   "prompt": "slothadv style, five rows of trail pieces for a jungle adventure map, four pieces per row: row 1 thick twisted green jungle vine rope; row 2 smooth wet grey river stepping stones; row 3 gnarled brown tree roots dotted with tiny glowing green glowworms; row 4 fluffy white cloud puffs; row 5 green orchid stems with leaves and a pink orchid flower. Hand-painted storybook game art, rich painted texture and soft shading, thick dark outline, each piece separate on a flat magenta background, side view, slothadv style.",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "trails-a-s80-7",
+   "start": "start-trails-a.webp",
+   "prompt": "slothadv style, five rows of trail pieces for a jungle adventure map, four pieces per row: row 1 thick twisted green jungle vine rope; row 2 smooth wet grey river stepping stones; row 3 gnarled brown tree roots dotted with tiny glowing green glowworms; row 4 fluffy white cloud puffs; row 5 green orchid stems with leaves and a pink orchid flower. Hand-painted storybook game art, rich painted texture and soft shading, thick dark outline, each piece separate on a flat magenta background, side view, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "trails-a-s80-23",
+   "start": "start-trails-a.webp",
+   "prompt": "slothadv style, five rows of trail pieces for a jungle adventure map, four pieces per row: row 1 thick twisted green jungle vine rope; row 2 smooth wet grey river stepping stones; row 3 gnarled brown tree roots dotted with tiny glowing green glowworms; row 4 fluffy white cloud puffs; row 5 green orchid stems with leaves and a pink orchid flower. Hand-painted storybook game art, rich painted texture and soft shading, thick dark outline, each piece separate on a flat magenta background, side view, slothadv style.",
+   "strength": 0.8,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "trails-b-s70-7",
+   "start": "start-trails-b.webp",
+   "prompt": "slothadv style, five rows of trail pieces for a jungle adventure map, four pieces per row: row 1 old wooden boardwalk planks with nails; row 2 ancient carved sandstone temple steps with moss; row 3 dark blue moonlit tree roots with a silver sheen; row 4 cooled black lava stones with glowing orange cracks; row 5 heavy dark iron chain links. Hand-painted storybook game art, rich painted texture and soft shading, thick dark outline, each piece separate on a flat magenta background, side view, slothadv style.",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "trails-b-s70-23",
+   "start": "start-trails-b.webp",
+   "prompt": "slothadv style, five rows of trail pieces for a jungle adventure map, four pieces per row: row 1 old wooden boardwalk planks with nails; row 2 ancient carved sandstone temple steps with moss; row 3 dark blue moonlit tree roots with a silver sheen; row 4 cooled black lava stones with glowing orange cracks; row 5 heavy dark iron chain links. Hand-painted storybook game art, rich painted texture and soft shading, thick dark outline, each piece separate on a flat magenta background, side view, slothadv style.",
+   "strength": 0.7,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "trails-b-s80-7",
+   "start": "start-trails-b.webp",
+   "prompt": "slothadv style, five rows of trail pieces for a jungle adventure map, four pieces per row: row 1 old wooden boardwalk planks with nails; row 2 ancient carved sandstone temple steps with moss; row 3 dark blue moonlit tree roots with a silver sheen; row 4 cooled black lava stones with glowing orange cracks; row 5 heavy dark iron chain links. Hand-painted storybook game art, rich painted texture and soft shading, thick dark outline, each piece separate on a flat magenta background, side view, slothadv style.",
+   "strength": 0.8,
+   "seed": 7,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "trails-b-s80-23",
+   "start": "start-trails-b.webp",
+   "prompt": "slothadv style, five rows of trail pieces for a jungle adventure map, four pieces per row: row 1 old wooden boardwalk planks with nails; row 2 ancient carved sandstone temple steps with moss; row 3 dark blue moonlit tree roots with a silver sheen; row 4 cooled black lava stones with glowing orange cracks; row 5 heavy dark iron chain links. Hand-painted storybook game art, rich painted texture and soft shading, thick dark outline, each piece separate on a flat magenta background, side view, slothadv style.",
+   "strength": 0.8,
+   "seed": 23,
+   "w": 2048,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ]
+  }
+ ]
+}
