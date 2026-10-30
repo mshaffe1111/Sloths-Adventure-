@@ -7303,6 +7303,7 @@ export class GameEngine {
       float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
       passTip: (text) => this.callbacks.onGuide?.(text, 0, true),
       freeCage: (c) => this.freeCritter(c),
+      puff: (x, y, size, vx) => this.emit({ x, y, vx, vy: -10, color: '', size, life: 0.42, maxLife: 0.42, type: 'puff' }),
       stuck: (room) => this.mc?.stuck(room),
       glowAt: () => this.mc?.flickerAt() ?? null,
       sfx: (kind) => {

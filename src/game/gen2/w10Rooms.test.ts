@@ -173,6 +173,9 @@ function cantJump(sim: RealPlay, x0: number, x: number, what: string) {
   assert.ok(sim.p.x < x, `${what} (${sim.p.x.toFixed(0)})`);
 }
 
+/** the painted dust puffs the engine is drawing either side of a plate at `x` (the plate puffs from its frame's sides) */
+const pressDust = (sim: RealPlay, x: number) => (sim.e as unknown as { particles: Array<{ type: string; x: number }> }).particles.filter((p) => p.type === 'puff' && Math.abs(Math.abs(p.x - x) - 60) < 40).length;
+
 const SCREENS = [['sideways', 844, 390], ['upright', 390, 844]] as const;
 
 for (const d of ['normal', 'easy'] as const) {
@@ -283,9 +286,16 @@ for (const d of ['normal', 'easy'] as const) {
         walkTo(sim, at(st, 'plate') - 40);
         face(sim, 1);
         tap(sim);
-        sim.wait(0.6);
+        // (pressed, dust breathes out of the frame's sides: the lead's review, so the press reads on a phone)
+        let dust = 0;
+        for (let i = 0; i < 18; i++) {
+          sim.frame();
+          dust = Math.max(dust, pressDust(sim, r.plates[0].x));
+        }
+        sim.wait(0.3);
         assert.ok(!kit.holding);
         assert.equal(r.plates[0].down, true, 'the stone is on the plate');
+        assert.ok(dust >= 2, `dust from the plate as it went down (${dust})`);
         assert.equal(door.open, false, 'the plate alone: still shut');
       }
       // up the crates to the lever (from the plate's side: back onto the crate, then on up to the scaffold)
