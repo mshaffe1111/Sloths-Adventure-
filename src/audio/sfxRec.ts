@@ -60,6 +60,7 @@ export const RULES: Readonly<Record<string, Partial<Rule>>> = {
   relic: { pitch: 0, gain: 0 },
   oneUp: { pitch: 0, gain: 0 },
   bossSlam: { gap: 1, cap: 1, pitch: 0, gain: 0 },
+  bossTell: { gap: 0.3, cap: 1, pitch: 0.02, gain: 0.5 },
 };
 /**
  * The mix on top of each take's level (dB): the sounds that fire all the time (footsteps, landings, jumps, petals: 150-200 a minute in a
@@ -129,6 +130,9 @@ export function recFor(name: string, arg: number | undefined, surface: Surface =
       return { fx: 'pz_solved' };
     case 'bossAppear':
       return { fx: 'bossSlam' };
+    case 'bossTell':
+      // each guardian's own tell before an attack (SN-4): world 1..10, 11 Thornbark
+      return { fx: 'bossTell', takes: [Math.max(1, Math.min(11, Math.round(a))) - 1] };
     case 'glide':
       return { fx: 'glide', takes: Math.round(a) === 0 ? [0] : Math.round(a) === 2 ? [4] : [1, 2, 3] };
     case 'power':

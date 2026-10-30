@@ -6,6 +6,7 @@
  */
 export const TAKE_DB: Readonly<Record<string, readonly number[]>> = {
   bossSlam: [-2.8, -2.76],
+  bossTell: [-3.41, 3.95, -0.19, -3.59, -2.69, 7.47, 1.91, -3.69, 1.83, 12.03, 0.67],
   bounce: [-5.32, -2.62, -3.08],
   checkpoint: [2.76, 2.66, 2.7],
   climb: [-4.1, -2.56, -3.82, -2.9, -5.66],

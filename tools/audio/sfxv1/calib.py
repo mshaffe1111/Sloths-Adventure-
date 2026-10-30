@@ -30,6 +30,7 @@ MAP = {
     'landing':    ('landing', [0.2, 0.2, 0.5, 0.5, 0.95, 0.95], 'per-take', 0),   # (polish-audio's landing, which replaces 'land')
     'glide':      ('glide', [0, 1, 1, 1, 2], 'per-take', 0),
     'bossSlam':   ('bossAppear', [1], None, -2),
+    'bossTell':   ('jaguarCall', [0], None, 0),   # (every guardian's tell was the jaguar's warning)
     'leaf':       ('leaf', [None], None, -2),
     'fruit':      ('fruit', [None], None, -2),
     'heart':      ('heart', [None], None, -1),

@@ -77,7 +77,8 @@ def loudest(x, dur, hop=0.02, at=False):
     n, h = int(dur * SR), int(hop * SR)
     if len(x) <= n:
         return (x, 0) if at else x
-    e = np.convolve(x.astype(np.float64) ** 2, np.ones(n), 'valid')[::h]
+    c = np.concatenate([[0.0], np.cumsum(x.astype(np.float64) ** 2)])
+    e = (c[n:] - c[:-n])[::h]   # (a running sum: the energy of every n-sample window, in one pass)
     i = int(np.argmax(e)) * h
     return (x[i: i + n], i) if at else x[i: i + n]
 
@@ -370,6 +371,31 @@ def knockouts():
     return out
 
 
+def bossTell():
+    """each guardian's tell (the wind-up before an attack: SN-4, every one used to be the jaguar's): one take per world 1..10, 11 Thornbark.
+    0.3-0.6 s, an "it's coming" cue that differs from its roar"""
+    def cut(fid, dur, r=1.0, lo=80, hi=5000, rev=False):
+        x = loudest(hp(src(fid), lo), dur)
+        x = rate(x, r)
+        if rev:
+            x = x[::-1].copy()
+        return fade(lp(x, hi), 0.02 if rev else 0.005, 0.08)
+    takes = [
+        mix((cut(343927, 0.45, 1.0, 300, 5000), 0, 0), (cut(343928, 0.45, 0.9, 300, 5000), 0.08, -4)),   # 1 snake: "hiss2" and "hiss3" (553374 "Snake Hiss" is too short and faint)
+        mix((cut(536746, 0.5, 0.7, 60, 2500), 0, 0), (cut(SPLASH[1], 0.5, 0.8, 80, 3000), 0.05, -8)),   # 2 croc: a deep grunt ("Pig", pitched down) and a water swell
+        cut(496131, 0.55, 0.85, 60, 3500),                                        # 3 prowler: "Tiger Growl", low
+        cut(583615, 0.45, 1.0, 300, 5500, rev=True),                              # 4 Sovereign: "Eagle" scream, reversed: a screech drawn in
+        cut(134791, 0.4, 0.8, 300, 5000),                                         # 5 Queen: "Rats" squeak, lowered: a chitter
+        cut(530617, 0.5, 0.8, 60, 3000),                                          # 6 Marsh Reaver: "Slime" (mud), lowered: a gurgle
+        mix((cut(ROCK_FALL[0], 0.55, 0.75, 60, 3000), 0, 0), (cut(DIG[0], 0.3, 0.7, 200, 3500), 0.1, -6)),   # 7 Golem: "RockFall1b" and "dig6", slowed: stone grinding
+        cut(536753, 0.4, 0.75, 300, 5000),                                        # 8 Night-Wing: "Rat" squeak, lowered: a shriek
+        mix((cut(17808, 0.5, 1.0, 100, 4000), 0, 0), (stroke(2, 0.8, 0.5, 150, 3000)[::-1].copy(), 0, -4)),   # 9 Magma Drake: "Foc" (fire) with a gust drawn in
+        mix((cut(390838, 0.35, 0.7, 60, 3000), 0, 0), (cut(KNOCK[2], 0.2, 0.7, 80, 2500), 0.12, -3)),   # 10 Iron-Claw: "RockBang02" and a heavy knock, slowed: a clank
+        cut(CREAK[1], 0.55, 0.9, 100, 3500),                                      # 11 Thornbark: "Wood Creak"
+    ]
+    return level([fade(t, 0.002, 0.1) for t in takes], -21)
+
+
 def bossSlam():
     """the boss card's name landing (SN-10): a huge low impact, wood slamming, and a far roll of thunder"""
     out = []
@@ -588,7 +614,7 @@ def shots():
 
 
 EFFECTS = {f.__name__: f for f in [rock, rockWarn, flower, stepMoss, stepWood, stepStone, stepWater, jump, doubleJump, glide, landing, vine, swish,
-                                   splash, checkpoint, windChime, bossSlam]}
+                                   splash, checkpoint, windChime, bossSlam, bossTell]}
 
 
 def seed(name):

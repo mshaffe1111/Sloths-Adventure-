@@ -21,6 +21,7 @@ test('every effect the game asks for has recorded takes, and every take its leve
     ['critter', undefined], ['hurt', undefined], ['eagle', undefined], ['climb', undefined], ['checkpoint', undefined], ['oneUp', undefined],
     ['uiTap', undefined], ['uiConfirm', undefined], ['uiBack', undefined], ['pauseIn', undefined], ['pauseOut', undefined], ['respawn', undefined],
     ['vine', undefined], ['shrine', undefined], ['bossAppear', 1], ['rock', undefined], ['rockWarn', undefined], ['windChime', undefined],
+    ...Array.from({ length: 11 }, (_, i) => ['bossTell', i + 1] as [string, number]),
     ['bounce', undefined], ['log', undefined], ['crumble', undefined], ['thorns', undefined], ['gate', undefined],
     ...[0, 1, 2].map((a) => ['glide', a] as [string, number]), ...[0, 1, 2].map((a) => ['power', a] as [string, number]),
     ...[0, 1, 2].map((a) => ['star', a] as [string, number]), ...[0, 1, 2].map((a) => ['splash', a] as [string, number]),

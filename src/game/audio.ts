@@ -213,6 +213,8 @@ class SoundEngine {
   playBounce() { this.c.fx('bounce'); }
   /** a crumbling ledge giving way (it used to be a heavy hit) */
   playCrumble() { this.c.fx('crumble'); }
+  /** a guardian's tell, the wind-up before its attack (SN-4): its own sound, `world` 1..10, 11 Thornbark */
+  playBossTell(world: number) { this.c.fx('bossTell', world); }
   /** the boss card's name landing (SN-10) */
   playBossSlam() { this.c.fx('bossSlam'); }
   /** what he walks on, for the footsteps (sfxRec.ts WORLD_SURFACE) */
