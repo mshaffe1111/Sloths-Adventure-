@@ -1,4 +1,4 @@
-# Frame cost by build: v6 (192cd165), v7 (412f54f), merged (9a76f161 (the merge, 12:20 ET))
+# Frame cost by build: v6 (192cd165), v7 (412f54f), today (913677f), merged (9a76f161 (the merge, 12:20 ET))
 
 Measured 2026-10-30 by the perf harness (`tools/perf/`). Headless Chromium (SwiftShader), deviceScaleFactor 3, picture held at q0 (canvas at 2x CSS). Every number is per frame on the main canvas unless it says otherwise, averaged over every counted frame of every spot.
 
@@ -6,47 +6,47 @@ Measured 2026-10-30 by the perf harness (`tools/perf/`). Headless Chromium (Swif
 
 ## 1. Per-frame totals
 
-| per frame | v6 | v7 | merged |
-|---|---:|---:|---:|
-| frames counted | 1072 | 1072 | 1072 |
-| drawImage calls | 220 | 237 | 109 |
-| drawImage visible area (screens) | 6.39 | 12.3 | 5.64 |
-| fill/fillRect calls | 364 | 429 | 293 |
-| fill area, bbox (screens) | 4.26 | 2.41 | 0.49 |
-| area drawn with a non-source-over blend (screens) | 0.28 | 0.28 | 0.28 |
-| clip() calls | 10.8 | 11.8 | 1.35 |
-|   of them curved/polygon (not a plain rect) | 3.72 | 3.98 | 0.10 |
-| gradients created | 17.9 | 16.3 | 0.58 |
-| patterns created | 0.00 | 0.00 | 0.00 |
-| save() | 154 | 173 | 80.8 |
-| shadowBlur>0 sets | 0.00 | 0.00 | 0.00 |
-| filter sets | 0.00 | 0.00 | 0.00 |
-| globalCompositeOperation sets (not source-over) | 1.98 | 1.98 | 1.98 |
-| getImageData/putImageData | 0.00 | 0.00 | 0.00 |
-| canvases created | 0.00 | 0.00 | 0.02 |
+| per frame | v6 | v7 | today | merged |
+|---|---:|---:|---:|---:|
+| frames counted | 1072 | 1072 | 1072 | 1072 |
+| drawImage calls | 220 | 237 | 237 | 109 |
+| drawImage visible area (screens) | 6.39 | 12.3 | 12.3 | 5.64 |
+| fill/fillRect calls | 364 | 429 | 427 | 293 |
+| fill area, bbox (screens) | 4.26 | 2.41 | 2.40 | 0.49 |
+| area drawn with a non-source-over blend (screens) | 0.28 | 0.28 | 0.28 | 0.28 |
+| clip() calls | 10.8 | 11.8 | 11.7 | 1.35 |
+|   of them curved/polygon (not a plain rect) | 3.72 | 3.98 | 3.95 | 0.10 |
+| gradients created | 17.9 | 16.3 | 16.3 | 0.58 |
+| patterns created | 0.00 | 0.00 | 0.00 | 0.00 |
+| save() | 154 | 173 | 173 | 80.8 |
+| shadowBlur>0 sets | 0.00 | 0.00 | 0.00 | 0.00 |
+| filter sets | 0.00 | 0.00 | 0.00 | 0.00 |
+| globalCompositeOperation sets (not source-over) | 1.98 | 1.98 | 1.98 | 1.98 |
+| getImageData/putImageData | 0.00 | 0.00 | 0.00 | 0.00 |
+| canvases created | 0.00 | 0.00 | 0.00 | 0.02 |
 
 ## 2. Per run (scenario x orientation)
 
 `img` = drawImage calls / visible screens; `clip` = all / curved-or-polygon; `ms` = render() CPU median (p90), `+flush` = render plus a 1-pixel read that waits for the raster, median.
 
-| run | v6 img | v6 clip | v6 grad | v6 ms | v6 +flush | v7 img | v7 clip | v7 grad | v7 ms | v7 +flush | merged img | merged clip | merged grad | merged ms | merged +flush |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1-1 port | 61.4 / 6.00 | 7.01 / 3.00 | 16.5 | 63.6 (87.3) | 80.1 | 72.8 / 10.0 | 8.69 / 3.34 | 13.6 | 43.0 (61.0) | 50.8 | 56.7 / 5.25 | 1.00 / 0.00 | 0.25 | 46.6 (69.7) | 57.8 |
-| 1-1 land | 107 / 6.30 | 13.6 / 6.06 | 28.7 | 61.2 (86.6) | 86.6 | 127 / 14.0 | 14.9 / 6.93 | 22.0 | 51.2 (77.0) | 59.8 | 101 / 5.98 | 1.00 / 0.00 | 0.24 | 38.7 (65.1) | 50.3 |
-| 1-3 port | 293 / 6.02 | 8.33 / 4.22 | 16.7 | 64.5 (92.8) | 83.6 | 305 / 10.1 | 9.55 / 3.78 | 14.1 | 42.0 (57.2) | 50.2 | 67.3 / 5.35 | 1.00 / 0.00 | 0.36 | 50.4 (82.7) | 63.2 |
-| 1-3 land | 337 / 6.28 | 14.2 / 7.28 | 28.4 | 53.7 (78.6) | 74.4 | 357 / 14.9 | 14.5 / 6.76 | 21.5 | 49.7 (71.0) | 58.5 | 112 / 6.00 | 0.88 / 0.00 | 0.36 | 46.1 (82.4) | 60.2 |
-| 2-1 port | 55.3 / 6.33 | 9.27 / 2.85 | 9.70 | 45.2 (63.2) | 72.4 | 70.8 / 9.83 | 6.42 / 2.48 | 4.21 | 38.6 (53.2) | 47.5 | 56.1 / 5.11 | 1.52 / 0.00 | 0.76 | 40.9 (72.5) | 53.3 |
-| 2-1 land | 93.6 / 6.21 | 15.8 / 4.12 | 13.7 | 46.6 (66.3) | 68.2 | 140 / 11.2 | 11.7 / 4.13 | 6.61 | 33.8 (46.1) | 40.5 | 121 / 5.79 | 3.52 / 0.00 | 1.76 | 43.1 (68.6) | 57.0 |
-| 3-2 port | 79.9 / 6.69 | 10.3 / 3.58 | 18.0 | 54.4 (77.0) | 80.3 | 78.7 / 11.0 | 8.27 / 3.51 | 15.6 | 48.0 (63.7) | 56.7 | 73.8 / 6.89 | 3.28 / 1.01 | 2.48 | 38.9 (78.6) | 48.8 |
-| 3-2 land | 120 / 6.71 | 16.1 / 5.31 | 29.0 | 57.9 (83.0) | 80.7 | 118 / 13.1 | 12.4 / 5.34 | 25.3 | 47.6 (66.9) | 56.3 | 110 / 6.16 | 1.22 / 0.00 | 1.31 | 41.4 (87.0) | 57.7 |
-| 4-1 port | 711 / 6.58 | 7.36 / 1.00 | 2.18 | 52.0 (72.7) | 79.6 | 837 / 5.59 | 7.28 / 1.00 | 2.67 | 32.2 (43.7) | 41.3 | 231 / 5.30 | 1.61 / 0.19 | 0.31 | 41.9 (73.6) | 53.3 |
-| 4-1 land | 896 / 6.60 | 11.6 / 1.00 | 4.37 | 50.9 (73.2) | 71.1 | 1038 / 5.99 | 11.7 / 1.00 | 3.76 | 34.4 (47.8) | 42.5 | 325 / 5.76 | 1.72 / 0.00 | 0.12 | 38.6 (70.3) | 56.2 |
-| 5-1 port | 64.6 / 6.03 | 6.22 / 2.97 | 11.7 | 54.5 (76.6) | 87.9 | 84.4 / 8.60 | 5.10 / 2.61 | 11.1 | 42.1 (57.5) | 66.1 | 71.6 / 4.96 | 0.13 / 0.13 | 0.51 | 43.9 (75.9) | 81.7 |
-| 5-1 land | 113 / 6.24 | 7.90 / 3.72 | 13.7 | 57.0 (79.1) | 92.3 | 124 / 10.0 | 6.42 / 3.33 | 12.5 | 45.7 (62.8) | 67.9 | 113 / 5.75 | 0.27 / 0.27 | 0.78 | 44.9 (85.7) | 82.6 |
-| 6-1 port | 128 / 6.52 | 11.1 / 3.63 | 31.1 | 46.6 (63.2) | 73.8 | 73.2 / 10.1 | 8.57 / 3.15 | 28.0 | 41.9 (79.9) | 49.1 | 60.4 / 5.17 | 1.24 / 0.00 | 0.00 | 48.5 (76.3) | 57.2 |
-| 6-1 land | 226 / 6.83 | 20.3 / 7.10 | 50.9 | 56.7 (81.6) | 80.7 | 129 / 14.4 | 13.9 / 6.33 | 44.0 | 51.8 (75.8) | 60.6 | 104 / 5.94 | 1.24 / 0.00 | 0.00 | 41.8 (70.3) | 55.6 |
-| 7-1 port | 82.3 / 6.25 | 4.99 / 1.39 | 4.28 | 47.7 (69.0) | 77.0 | 81.8 / 19.8 | 17.5 / 3.01 | 14.1 | 39.5 (63.0) | 50.5 | 52.2 / 5.21 | 1.00 / 0.00 | 0.00 | 38.9 (60.3) | 50.3 |
-| 7-1 land | 153 / 6.71 | 9.37 / 2.25 | 6.87 | 87.6 (147) | 128 | 151 / 28.6 | 32.1 / 6.91 | 22.2 | 56.4 (78.5) | 64.2 | 90.3 / 5.66 | 1.00 / 0.00 | 0.00 | 26.2 (40.8) | 41.2 |
+| run | v6 img | v6 clip | v6 grad | v6 ms | v6 +flush | v7 img | v7 clip | v7 grad | v7 ms | v7 +flush | today img | today clip | today grad | today ms | today +flush | merged img | merged clip | merged grad | merged ms | merged +flush |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1-1 port | 61.4 / 6.00 | 7.01 / 3.00 | 16.5 | 63.6 (87.3) | 80.1 | 72.8 / 10.0 | 8.69 / 3.34 | 13.6 | 43.0 (61.0) | 50.8 | 73.1 / 10.1 | 8.72 / 3.36 | 13.7 | 67.5 (110) | 82.3 | 56.7 / 5.25 | 1.00 / 0.00 | 0.25 | 46.6 (69.7) | 57.8 |
+| 1-1 land | 107 / 6.30 | 13.6 / 6.06 | 28.7 | 61.2 (86.6) | 86.6 | 127 / 14.0 | 14.9 / 6.93 | 22.0 | 51.2 (77.0) | 59.8 | 128 / 13.9 | 14.7 / 6.87 | 22.1 | 58.5 (91.6) | 66.4 | 101 / 5.98 | 1.00 / 0.00 | 0.24 | 38.7 (65.1) | 50.3 |
+| 1-3 port | 293 / 6.02 | 8.33 / 4.22 | 16.7 | 64.5 (92.8) | 83.6 | 305 / 10.1 | 9.55 / 3.78 | 14.1 | 42.0 (57.2) | 50.2 | 304 / 10.1 | 9.43 / 3.72 | 13.9 | 42.1 (62.5) | 49.3 | 67.3 / 5.35 | 1.00 / 0.00 | 0.36 | 50.4 (82.7) | 63.2 |
+| 1-3 land | 337 / 6.28 | 14.2 / 7.28 | 28.4 | 53.7 (78.6) | 74.4 | 357 / 14.9 | 14.5 / 6.76 | 21.5 | 49.7 (71.0) | 58.5 | 359 / 14.7 | 14.3 / 6.67 | 21.2 | 47.6 (60.9) | 56.6 | 112 / 6.00 | 0.88 / 0.00 | 0.36 | 46.1 (82.4) | 60.2 |
+| 2-1 port | 55.3 / 6.33 | 9.27 / 2.85 | 9.70 | 45.2 (63.2) | 72.4 | 70.8 / 9.83 | 6.42 / 2.48 | 4.21 | 38.6 (53.2) | 47.5 | 70.6 / 9.84 | 6.42 / 2.48 | 4.21 | 39.1 (52.3) | 48.1 | 56.1 / 5.11 | 1.52 / 0.00 | 0.76 | 40.9 (72.5) | 53.3 |
+| 2-1 land | 93.6 / 6.21 | 15.8 / 4.12 | 13.7 | 46.6 (66.3) | 68.2 | 140 / 11.2 | 11.7 / 4.13 | 6.61 | 33.8 (46.1) | 40.5 | 139 / 11.2 | 11.7 / 4.13 | 6.61 | 34.2 (47.0) | 41.7 | 121 / 5.79 | 3.52 / 0.00 | 1.76 | 43.1 (68.6) | 57.0 |
+| 3-2 port | 79.9 / 6.69 | 10.3 / 3.58 | 18.0 | 54.4 (77.0) | 80.3 | 78.7 / 11.0 | 8.27 / 3.51 | 15.6 | 48.0 (63.7) | 56.7 | 78.7 / 11.0 | 8.27 / 3.51 | 15.6 | 44.9 (69.5) | 54.2 | 73.8 / 6.89 | 3.28 / 1.01 | 2.48 | 38.9 (78.6) | 48.8 |
+| 3-2 land | 120 / 6.71 | 16.1 / 5.31 | 29.0 | 57.9 (83.0) | 80.7 | 118 / 13.1 | 12.4 / 5.34 | 25.3 | 47.6 (66.9) | 56.3 | 119 / 13.1 | 12.4 / 5.34 | 25.3 | 46.1 (67.7) | 55.4 | 110 / 6.16 | 1.22 / 0.00 | 1.31 | 41.4 (87.0) | 57.7 |
+| 4-1 port | 711 / 6.58 | 7.36 / 1.00 | 2.18 | 52.0 (72.7) | 79.6 | 837 / 5.59 | 7.28 / 1.00 | 2.67 | 32.2 (43.7) | 41.3 | 839 / 5.59 | 7.28 / 1.00 | 2.67 | 30.8 (42.8) | 39.4 | 231 / 5.30 | 1.61 / 0.19 | 0.31 | 41.9 (73.6) | 53.3 |
+| 4-1 land | 896 / 6.60 | 11.6 / 1.00 | 4.37 | 50.9 (73.2) | 71.1 | 1038 / 5.99 | 11.7 / 1.00 | 3.76 | 34.4 (47.8) | 42.5 | 1038 / 5.95 | 11.8 / 1.00 | 3.73 | 33.1 (45.1) | 40.4 | 325 / 5.76 | 1.72 / 0.00 | 0.12 | 38.6 (70.3) | 56.2 |
+| 5-1 port | 64.6 / 6.03 | 6.22 / 2.97 | 11.7 | 54.5 (76.6) | 87.9 | 84.4 / 8.60 | 5.10 / 2.61 | 11.1 | 42.1 (57.5) | 66.1 | 84.4 / 8.60 | 5.10 / 2.61 | 11.1 | 37.9 (51.5) | 59.3 | 71.6 / 4.96 | 0.13 / 0.13 | 0.51 | 43.9 (75.9) | 81.7 |
+| 5-1 land | 113 / 6.24 | 7.90 / 3.72 | 13.7 | 57.0 (79.1) | 92.3 | 124 / 10.0 | 6.42 / 3.33 | 12.5 | 45.7 (62.8) | 67.9 | 124 / 10.0 | 6.42 / 3.33 | 12.4 | 44.1 (60.5) | 63.8 | 113 / 5.75 | 0.27 / 0.27 | 0.78 | 44.9 (85.7) | 82.6 |
+| 6-1 port | 128 / 6.52 | 11.1 / 3.63 | 31.1 | 46.6 (63.2) | 73.8 | 73.2 / 10.1 | 8.57 / 3.15 | 28.0 | 41.9 (79.9) | 49.1 | 72.1 / 9.87 | 8.36 / 3.06 | 27.7 | 39.0 (53.0) | 46.3 | 60.4 / 5.17 | 1.24 / 0.00 | 0.00 | 48.5 (76.3) | 57.2 |
+| 6-1 land | 226 / 6.83 | 20.3 / 7.10 | 50.9 | 56.7 (81.6) | 80.7 | 129 / 14.4 | 13.9 / 6.33 | 44.0 | 51.8 (75.8) | 60.6 | 128 / 14.4 | 13.9 / 6.33 | 44.5 | 48.6 (70.1) | 56.9 | 104 / 5.94 | 1.24 / 0.00 | 0.00 | 41.8 (70.3) | 55.6 |
+| 7-1 port | 82.3 / 6.25 | 4.99 / 1.39 | 4.28 | 47.7 (69.0) | 77.0 | 81.8 / 19.8 | 17.5 / 3.01 | 14.1 | 39.5 (63.0) | 50.5 | 80.9 / 19.5 | 17.3 / 2.97 | 13.9 | 37.6 (50.8) | 47.0 | 52.2 / 5.21 | 1.00 / 0.00 | 0.00 | 38.9 (60.3) | 50.3 |
+| 7-1 land | 153 / 6.71 | 9.37 / 2.25 | 6.87 | 87.6 (147) | 128 | 151 / 28.6 | 32.1 / 6.91 | 22.2 | 56.4 (78.5) | 64.2 | 149 / 28.5 | 31.8 / 6.82 | 21.9 | 53.0 (72.4) | 59.9 | 90.3 / 5.66 | 1.00 / 0.00 | 0.00 | 26.2 (40.8) | 41.2 |
 
 ## 3. By layer (the line of Engine.render each call came from)
 
@@ -103,6 +103,33 @@ Measured 2026-10-30 by the perf harness (`tools/perf/`). Headless Chromium (Swif
 | `src/game/engine.ts:5772` `drawAura(ctx, 'take', world.id, pl.width * 0.55, 30, this.gameTime, pl` | 0.20 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.00 | 0.00 |
 | `src/game/engine.ts:6069` `if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.` | 0.15 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.25 | 0.00 |
 | `src/game/engine.ts:5891` `drawRopes(ctx, this.ropes, this.gameTime, { load: this.ropeLoad.amt > ` | 92.3 | 0.00 | 2.00 | 0.00 | 0.00 (0.00) | 0.00 | 73.8 | 0.00 |
+
+### today
+
+| layer (engine.ts line) | drawImage | img screens | fills | fill screens | clips (curved) | gradients | save | blended/filtered/shadowed draws |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `src/game/engine.ts:5819` `if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.curren` | 39.2 | 7.49 | 46.2 | 0.39 | 10.5 (3.93) | 7.31 | 14.6 | 0.00 |
+| `src/game/engine.ts:5743` `if (!ownScene) renderScenery(ctx, world.id, this.camera.x - shakeX, th` | 11.5 | 3.26 | 2.00 | 1.53 | 0.25 (0.00) | 0.50 | 0.38 | 0.00 |
+| `src/game/engine.ts:6158` `else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportW` | 11.9 | 1.17 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 7.37 | 2.63 |
+| `src/game/engine.ts:6160` `this.w5?.drawLight(ctx, this.camera.viewportWidth, this.camera.viewpor` | 0.00 | 0.00 | 0.63 | 0.40 | 0.00 (0.00) | 0.63 | 0.13 | 0.50 |
+| `src/game/engine.ts:5766` `this.drawWaterAndFlags(ctx, world);` | 21.3 | 0.13 | 2.57 | 0.04 | 0.63 (0.00) | 0.14 | 1.29 | 0.00 |
+| `src/game/engine.ts:5904` `this.collectibles.forEach((item) => {` | 21.7 | 0.11 | 0.76 | 0.00 | 0.00 (0.00) | 0.03 | 11.3 | 0.00 |
+| `src/game/engine.ts:5790` `else renderWorldObjects(` | 8.60 | 0.02 | 372 | 0.04 | 0.02 (0.02) | 7.47 | 30.2 | 1.46 |
+| `src/game/engine.ts:6193` `drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeigh` | 0.03 | 0.03 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.03 | 0.00 |
+| `src/game/engine.ts:6074` `} else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);` | 1.00 | 0.02 | 0.06 | 0.00 | 0.00 (0.00) | 0.00 | 1.05 | 0.00 |
+| `src/game/engine.ts:5769` `this.drawRivers(ctx, world, false);` | 1.77 | 0.01 | 0.15 | 0.00 | 0.15 (0.00) | 0.00 | 1.66 | 0.00 |
+| `src/game/engine.ts:5815` `this.drawRivers(ctx, world, true);` | 1.02 | 0.00 | 0.15 | 0.01 | 0.15 (0.00) | 0.15 | 1.17 | 0.00 |
+| `src/game/engine.ts:5849` `if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.` | 0.24 | 0.01 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.23 | 0.00 |
+| `src/game/engine.ts:5874` `this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.ca` | 21.1 | 0.01 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 21.6 | 0.00 |
+| `src/game/engine.ts:5785` `if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0:` | 0.11 | 0.01 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.11 | 0.00 |
+| `src/game/engine.ts:5802` `for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken` | 0.33 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.18 | 0.00 |
+| `src/game/engine.ts:5854` `if (this.proto?.dress) drawDress(ctx, this.proto.dress, { x0: this.cam` | 0.43 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.43 | 0.00 |
+| `src/game/engine.ts:5962` `this.enemies.forEach((enemy) => {` | 0.60 | 0.00 | 0.20 | 0.00 | 0.00 (0.00) | 0.00 | 0.40 | 0.00 |
+| `src/game/engine.ts:5875` `this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.ca` | 0.34 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.34 | 0.00 |
+| `src/game/engine.ts:5850` `if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.cam` | 0.08 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.05 | 0.00 |
+| `src/game/engine.ts:5780` `drawAura(ctx, 'take', world.id, pl.width * 0.55, 30, this.gameTime, pl` | 0.21 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.00 | 0.00 |
+| `src/game/engine.ts:6081` `if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.` | 0.15 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | 0.25 | 0.00 |
+| `src/game/engine.ts:5900` `drawRopes(ctx, this.ropes, this.gameTime, { load: this.ropeLoad.amt > ` | 92.3 | 0.00 | 2.00 | 0.00 | 0.00 (0.00) | 0.00 | 73.8 | 0.00 |
 
 ### merged
 
@@ -193,6 +220,36 @@ Measured 2026-10-30 by the perf harness (`tools/perf/`). Headless Chromium (Swif
 | `src/game/envPlants.ts:158` (pegs) | main | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 3.46 |  |
 | `src/game/readable.ts:85` (drawAura) | main | 6.29 | 0.06 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 96x96 |
 
+### today
+
+| site | target | drawImage | img Mpx | fills | fill Mpx | clips (curved) | grad | other |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| `src/game/groundPaint.ts:126` (drawSoil) | main | 5.26 | 6.23 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 128x128 |
+| `src/game/scenery.ts:1780` (drawStrip) | main | 4.81 | 3.29 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 3520x1736 |
+| `src/game/groundPaint.ts:120` (drawSoil) | main | 10.9 | 3.27 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 2048x2048 |
+| `src/game/protoArt.ts:568` (drawBankArt) | main | 0.00 | 0.00 | 0.00 | 0.00 | 7.73 (3.86) | 0.00 |  |
+| `src/game/scenery.ts:1952` (renderScenery) | main | 0.00 | 0.00 | 1.00 | 1.41 | 0.00 (0.00) | 0.00 |  |
+| `src/game/scenery.ts:2011` (drawVignette) | main | 1.00 | 1.41 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 82x179 |
+| `src/game/scenery.ts:1826` (renderSky) | main | 0.00 | 0.00 | 0.50 | 0.70 | 0.00 (0.00) | 0.00 |  |
+| `src/game/scenery.ts:1792` (drawStrip) | main | 4.73 | 0.64 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 3520x1736 |
+| `src/game/groundPaint.ts:157` (drawLip) | main | 5.71 | 0.56 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 2048x2048 |
+| `src/game/scenery.ts:1505` (lanePool) | main | 1.00 | 0.49 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 160x160 |
+| `src/game/groundPaint.ts:139` (drawSoil) | main | 0.00 | 0.00 | 4.95 | 0.46 | 0.00 (0.00) | 0.00 |  |
+| `src/game/w5Look.ts:1428` (drawW5Light) | main | 0.00 | 0.00 | 0.25 | 0.35 | 0.00 (0.00) | 0.00 | special 0.13 (fillRect@screen 0.13) |
+| `src/game/groundPaint.ts:234` (drawEnd) | main | 2.29 | 0.24 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 384x576 |
+| `src/game/w5Look.ts:1457` (drawW5Light) | main | 0.00 | 0.00 | 0.38 | 0.21 | 0.00 (0.00) | 0.00 | special 0.38 (fill@lighter 0.38) |
+| `src/game/scenery.ts:2150` (renderWeather) | main | 2.63 | 0.01 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | special 2.63 (drawImage@lighter 2.63); src 64x64 |
+| `src/game/scenery.ts:1491` (mistDrift) | main | 0.63 | 0.12 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 128x128 |
+| `src/game/scenery.ts:1684` (drawTile) | main | 1.15 | 0.12 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 2880x864 |
+| `src/game/stageArt.ts:311` (row) | main | 2.32 | 0.11 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 1024x516 |
+| `src/game/life.ts:808` (renderSwayLeaves) | main | 2.24 | 0.11 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 360x360 |
+| `src/game/groundPaint.ts:133` (drawSoil) | main | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 4.95 |  |
+| `src/game/groundPaint.ts:235` (drawEnd) | main | 0.97 | 0.09 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 2048x2048 |
+| `src/game/w7TempleArt.ts:150` (drawW7TempleWall) | main | 0.13 | 0.09 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 2048x2048 |
+| `src/game/envPlants.ts:46` (glowDot) | main | 0.00 | 0.00 | 1.46 | 0.00 | 0.00 (0.00) | 0.00 | special 1.46 (fillRect@lighter 1.46) |
+| `src/game/envPlants.ts:158` (pegs) | main | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 (0.00) | 3.51 |  |
+| `src/game/readable.ts:85` (drawAura) | main | 6.31 | 0.06 | 0.00 | 0.00 | 0.00 (0.00) | 0.00 | src 96x96 |
+
 ### merged
 
 | site | target | drawImage | img Mpx | fills | fill Mpx | clips (curved) | grad | other |
@@ -245,6 +302,25 @@ Ranked by the growth in device megapixels touched per frame (drawImage + fill ar
 | 14 | `src/game/zoneArt.ts:774` (drawDarkness) | **new** | 0.03 | 0.04 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `ctx.drawImage(darkCanvas, 0, 0, cw, ch, 0, 0, vw, vh);`; src up to 323x711; scaled up to 3.9x |
 | 15 | `src/game/w7TempleArt.ts:144` (drawW7TempleWall) | **new** | 0.00 | 0.00 | 0.00 / 0.00 | 1.46 (0.06; 4.48) | 0.00 | 0.00 | `ctx.clip();`; clip: rect/polygon-concave |
 
+## 6. What today made heavier than v7 (top 10)
+
+| # | call site (today) | v7→today | drawImage /frame | img Mpx /frame | fills / fill Mpx | clips /frame (curved; pts) | gradients | blend/shadow/filter | notes |
+|---:|---|---|---:|---:|---:|---:|---:|---:|---|
+| 1 | `src/game/groundPaint.ts:235` (drawEnd) | heavier | 0.97→0.97 | 0.09→0.09 | 0.00→0.00 / 0.00→0.00 | 0.00→0.00 (0.00; 0.00) | 0.00→0.00 | 0.00 | `else ctx.drawImage(s.img, e.x, e.y, e.w, e.h, -e.cx * ew, top, ew, END_H);`; src up to 2048x2048 |
+
+## 7. What today made lighter than v7 (top 10)
+
+| site (v7) | weight v7→today | drawImage v7→today | img Mpx v7→today | clips v7→today |
+|---|---:|---:|---:|---:|
+| `src/game/groundPaint.ts:126` (drawSoil) | 6.28→6.23 | 5.31→5.26 | 6.28→6.23 | 0.00→0.00 |
+| `src/game/groundPaint.ts:120` (drawSoil) | 3.30→3.27 | 10.9→10.9 | 3.30→3.27 | 0.00→0.00 |
+| `src/game/protoArt.ts:568` (drawBankArt) | 1.42→1.41 | 0.00→0.00 | 0.00→0.00 | 7.78→7.73 |
+| `src/game/groundPaint.ts:157` (drawLip) | 0.56→0.56 | 5.74→5.71 | 0.56→0.56 | 0.00→0.00 |
+| `src/game/groundPaint.ts:234` (drawEnd) | 0.24→0.24 | 2.31→2.29 | 0.24→0.24 | 0.00→0.00 |
+| `src/game/scenery.ts:1853` (renderSky) | 0.05→0.05 | 0.00→0.00 | 0.00→0.00 | 0.00→0.00 |
+| `src/game/scenery.ts:1684` (drawTile) | 0.12→0.12 | 1.16→1.15 | 0.12→0.12 | 0.00→0.00 |
+| `src/game/w7TempleArt.ts:150` (drawW7TempleWall) | 0.09→0.09 | 0.14→0.13 | 0.09→0.09 | 0.00→0.00 |
+
 ## merged against v6
 
 ### Heavier in merged than v6 (top 10)
@@ -278,4 +354,38 @@ Ranked by the growth in device megapixels touched per frame (drawImage + fill ar
 | `src/game/protoArt.ts:578` (drawBankArt) | 0.27→gone | 8.42→0 | 0.27→0 | 0.00→0 | 0.00→0 |
 | `src/game/scenery.ts:1740` (renderSky) | 0.13→gone | 0.00→0 | 0.00→0 | 0.00→0 | 0.00→0 |
 | `src/game/groundArt.ts:91` (fillCap) | 0.12→0.00 | 0.00→0.00 | 0.00→0.00 | 0.00→0.00 | 0.00→0.00 |
+
+## merged against today
+
+### Heavier in merged than today (top 10)
+
+| # | call site (merged) | today→merged | drawImage /frame | img Mpx /frame | fills / fill Mpx | clips /frame (curved; pts) | gradients | blend/shadow/filter | notes |
+|---:|---|---|---:|---:|---:|---:|---:|---:|---|
+| 1 | `src/game/scenery.ts:1967` (drawFitted) | **new** | 4.80 | 3.33 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `if (sw > 0 && sh2 > 0) ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0`; src up to 3441x1805 |
+| 2 | `src/game/protoArt.ts:1068` (drawGroundChunks) | **new** | 10.4 | 1.04 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `if (cv) ctx.drawImage(cv, pad, pad, px, px, cx * CHUNK, cy * CHUNK, CHUNK, CHUNK`; src up to 509x509 |
+| 3 | `src/game/scenery.ts:1971` (drawFitted) | **new** | 4.73 | 0.64 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `if (gap > 0) ctx.drawImage(cv, 0, f.oy + f.d - rows, bw, rows, px, top + dh - 1 `; src up to 3441x1805; scaled up to 16.0x |
+| 4 | `src/game/scenery.ts:1714` (drawTile) | **new** | 1.16 | 0.12 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `for (const [a, b] of fb.rows) ctx.drawImage(fb.cv, 0, a, fb.cv.width, b - a, dx `; src up to 5868x1761 |
+| 5 | `src/game/stageArt.ts:380` (pitRow) | **new** | 2.00 | 0.11 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `else ctx.drawImage(src, x, y, TILE, h);`; src up to 840x210 |
+| 6 | `src/game/envPlants.ts:69` (glowDot) | **new** | 1.46 | 0.00 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 1.46 | `ctx.drawImage(pic, x - rad, y - rad, rad * 2, rad * 2);`; src up to 128x128 |
+| 7 | `src/game/badWaterArt.ts:113` (blit) | **new** | 3.51 | 0.05 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `ctx.drawImage(c, x, y, w, h);`; src up to 600x310 |
+| 8 | `src/game/sheetBake.ts:118` (drawSheet) | **new** | 8.45 | 0.03 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `} else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);`; src up to 1536x1831; scaled up to 1.6x |
+| 9 | `src/game/protoArt.ts:569` (drawBankArt) | **new** | 0.00 | 0.00 | 0.00 / 0.00 | 0.18 (0.09; 9.74) | 0.00 | 0.00 | `ctx.clip();`; clip: polygon-convex/polygon-concave/rect; bakes into 509x509 every frame |
+| 10 | `src/game/groundPaint.ts:126` (drawSoil) | **new** | 0.09 | 0.01 | 0.00 / 0.00 | 0.00 (0.00; 0.00) | 0.00 | 0.00 | `for (let bx = Math.floor(x0 / BLOB_PERIOD) * BLOB_PERIOD; bx < x1; bx += BLOB_PE`; src up to 128x128; scaled up to 45.8x; bakes into 509x509 every frame |
+
+### Lighter in merged than today (top 12)
+
+| site (today) | weight | drawImage | img Mpx | clips | gradients |
+|---|---:|---:|---:|---:|---:|
+| `src/game/groundPaint.ts:126` (drawSoil) | 6.23→0.07 | 5.26→0.08 | 6.23→0.07 | 0.00→0.00 | 0.00→0.00 |
+| `src/game/scenery.ts:1780` (drawStrip) | 3.29→gone | 4.81→0 | 3.29→0 | 0.00→0 | 0.00→0 |
+| `src/game/groundPaint.ts:120` (drawSoil) | 3.27→0.06 | 10.9→0.18 | 3.27→0.06 | 0.00→0.00 | 0.00→0.00 |
+| `src/game/scenery.ts:1952` (renderScenery) | 1.41→gone | 0.00→0 | 0.00→0 | 0.00→0 | 0.00→0 |
+| `src/game/protoArt.ts:568` (drawBankArt) | 1.41→0.03 | 0.00→0.00 | 0.00→0.00 | 7.73→0.15 | 0.00→0.00 |
+| `src/game/scenery.ts:1826` (renderSky) | 0.70→gone | 0.00→0 | 0.00→0 | 0.00→0 | 0.00→0 |
+| `src/game/scenery.ts:1792` (drawStrip) | 0.64→gone | 4.73→0 | 0.64→0 | 0.00→0 | 0.00→0 |
+| `src/game/groundPaint.ts:157` (drawLip) | 0.56→0.01 | 5.71→0.12 | 0.56→0.01 | 0.00→0.00 | 0.00→0.00 |
+| `src/game/groundPaint.ts:139` (drawSoil) | 0.46→0.01 | 0.00→0.00 | 0.00→0.00 | 0.00→0.00 | 0.00→0.00 |
+| `src/game/groundPaint.ts:234` (drawEnd) | 0.24→0.00 | 2.29→0.02 | 0.24→0.00 | 0.00→0.00 | 0.00→0.00 |
+| `src/game/scenery.ts:1684` (drawTile) | 0.12→gone | 1.15→0 | 0.12→0 | 0.00→0 | 0.00→0 |
+| `src/game/stageArt.ts:311` (row) | 0.11→gone | 2.32→0 | 0.11→0 | 0.00→0 | 0.00→0 |
 

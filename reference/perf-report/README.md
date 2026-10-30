@@ -47,11 +47,10 @@ Measured by the perf harness in `tools/perf/` (PERF-B, for the frame-rate regres
 |---|---|---|
 | [ctest-q0](ctest-q0/report.md) | control test, mix 14 and mix 8, both orientations, q0. Holds the **top 15 sites v7 added** (§5) | v6, v7, today, ccrground, merged |
 | [ctest-q2](ctest-q2/report.md) | the same at q2 | v6, today, merged |
-| [stages-q0](stages-q0/report.md) | 8 stages, both orientations, q0 | v6, v7, today*, merged |
+| [stages-q0](stages-q0/report.md) | 8 stages, both orientations, q0 | v6, v7, today, merged |
 | [stages-q2](stages-q2/report.md) | 8 stages, both orientations, q2 | merged |
 | [four-stages-q0](four-stages-q0/report.md) | 1-4, 2-6, 3-4, 7-3, q0 | today, ccrnow, merged |
 
-\* today's stage run was added last; see the folder's report for whether it is in.
 
 ## Findings
 
