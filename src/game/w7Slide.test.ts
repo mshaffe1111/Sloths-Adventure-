@@ -4,6 +4,7 @@ import { buildCourse, buildSlideStage, checkSlide, CRUMBLE_X0, CRUMBLE_X1, KINDS
 import type { LevelConfig } from './types.ts';
 import { buildScene, lightAt, POKEY_MIN } from './w7SlideScene.ts';
 import { pokeyLight } from './w7SlideArt.ts';
+import { measure } from '../../tools/art/slide74/jumps.ts';
 
 const cfg: LevelConfig = {
   worldIndex: 7, miniIndex: 4, id: '7-4', name: 'The Way Down', objectiveType: 'ascent', targetCount: 1, timeLimit: 0, levelWidth: 8000,
@@ -141,5 +142,19 @@ test('the dark under the temple: every obstacle has its own light, well above th
     // the colour script: torch-lit, then the fungus cavern, then the narrow dark, then the way out
     assert.deepEqual([...new Set(sc.beats.map((b) => b.beat))], ['torch', 'fungus', 'dark', 'end']);
     for (let z = 0; z < c.length; z += 2) for (const k of pokeyLight(sc, 0, 0.6, z)) assert.ok(k >= POKEY_MIN - 1e-9);
+  }
+});
+
+test('every jump is makeable by a real thumb (Matt, 2026-10-29: "Couldn\'t make it thru... let\'s make sure it\'s possible")', () => {
+  // each jump's frame-exact window, from the real SlideSim at 30 fps, against the house thumb plus judgement noise: the adult on Normal
+  // clears every one at least 90% of the time (the house bar is 70%), the kid on Easy at least 85%; and every one is readable on screen
+  // at least 0.8 s to react + 0.6 s to act before the last good press (tools/art/slide74/jumps.ts)
+  for (const easy of [false, true]) {
+    const rows = measure(buildCourse(1, easy));
+    assert.ok(rows.length >= 15);
+    for (const r of rows) {
+      assert.ok(r.read >= 1.4, `${easy ? 'Easy' : 'Normal'} ${r.kind} at ${r.t.toFixed(1)} s: readable only ${r.read.toFixed(2)} s`);
+      assert.ok(r.thumb >= (easy ? 0.85 : 0.9), `${easy ? 'Easy' : 'Normal'} ${r.kind} at ${r.t.toFixed(1)} s: the thumb makes it ${(r.thumb * 100).toFixed(0)}%`);
+    }
   }
 });
