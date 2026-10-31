@@ -1594,5 +1594,281 @@
   "owner": "w1-4 builders (W1 grab bag)",
   "world": "W1",
   "why": "painted by Matt, never cut or packed"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#squirrel-haul",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#squirrel-sit",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#squirrel-tip",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#root-gate-open",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#root-gate-shut",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#squirrel-wave",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#squirrel-run",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#hollowlog-moss",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#hollowlog-plain",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w1-new.json#vine-rope",
+  "owner": "gen2 W1 builder",
+  "world": "W1",
+  "why": "new W1 art made ahead of the gen2 rebuild (qa-notes/w1/GRAB-BAG.md); drawn when W1 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#net-full",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#net-empty",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#reed-gate-shut",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#reed-gate-open",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#reed-isle-a",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#reed-isle-b",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#barrel-up",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#crate-down",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#crate-up",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#barrel-down",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#lily-half",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#lily-under",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w2-new.json#waterline",
+  "owner": "gen2 W2 builder",
+  "world": "W2",
+  "why": "new W2 art made ahead of the gen2 rebuild (qa-notes/w2/GRAB-BAG.md); drawn when W2 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#stalactite-hang",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#bat-stir",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#bat-asleep",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#bat-flap1",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#shelf-long",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#stalactite-fall",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#root-basket",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#shelf-short",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#stalactite-shards",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#crack-cracking",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#crack-whole",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#counterweight",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w3-new.json#crack-gone",
+  "owner": "gen2 W3 builder",
+  "world": "W3",
+  "why": "new W3 art made ahead of the gen2 rebuild (qa-notes/w3/GRAB-BAG.md); drawn when W3 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#updraft-2",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#updraft-3",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#updraft-1",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#veil-parting",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#veil-closed",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#slung-log",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#rope-anchor",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#ledge-whole",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#ledge-cracking",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
+ },
+ {
+  "id": "src/assets/w1to4art/w4-new.json#ledge-gone",
+  "owner": "gen2 W4 builder",
+  "world": "W4",
+  "why": "new W4 art made ahead of the gen2 rebuild (qa-notes/w4/GRAB-BAG.md); drawn when W4 moves to gen2"
  }
 ]
