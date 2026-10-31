@@ -1,0 +1,7 @@
+World 1-4 kit batches (2026-10-31, branch w1-4-sheets; lead's go ~1:45 PM ET, cap $10 of $30). Each job: hfdrake/storygpu.py (unchanged)
+fetched with its spec from GitHub raw at 8edfc6b3, Qwen-Image img2img + the style model (0.8), one canvas per world kit, 2 strengths x
+2 seeds. Results in the bucket mshaffe111/w5-xfer under w1to4/w<N>r1/out/ (PNGs, sheet-*.jpg, carrier-*.png). rtx-pro-6000 ~$2.75/h.
+w1to4-w1r1  6ae628e60e0338d1bb7d37f6  17:44Z  8 takes (w1-props, w1-squirrels)
+w1to4-w2r1  6ae62906c78863f9c62f3a65  17:44Z  12 takes (w2-props, w2-net on green, w2-water on black)
+w1to4-w3r1  6ae6290a0e0338d1bb7d3801  17:44Z  12 takes (w3-props, w3-bats, w3-fx on black)
+w1to4-w4r1  6ae6290cc78863f9c62f3a67  17:44Z  8 takes (w4-props, w4-fx on black)

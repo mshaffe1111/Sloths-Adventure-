@@ -1,0 +1,1598 @@
+[
+ {
+  "id": "src/game/boss1010Data.ts#netS",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#netM",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#netL",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#wallCrack",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#tableWall",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#battlement",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#chairHead",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#hedgeTile",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#chairTumble",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#hedgeEnd",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#chairWreck",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss1010Data.ts#tableBroken",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#potTin",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#mugBig",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#potChina",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#mug5",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#mug0",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#mug2",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#mug4",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust20",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust32",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust40",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#mug1",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust12",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust21",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust22",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust42",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust01",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust41",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust02",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#mug3",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust31",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust10",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust11",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust30",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/boss910Data.ts#crust00",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/caimanAtlasData.ts#retreat",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/crocAtlasData.ts#jawsnap",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/crocAtlasData.ts#clawswipe",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/crocAtlasData.ts#tailbite",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/crocAtlasData.ts#blast",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/crocAtlasData.ts#rampage",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/crocAtlasData.ts#ambush",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/crocAtlasData.ts#eruptslam",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/dotPropsData.ts#panelTorn",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/drakeAtlasData.ts#jawsnap",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/eagleAtlasData.ts#glide_a",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/eagleAtlasData.ts#glide_b",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/eagleAtlasData.ts#bank_c",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/golemAtlasData.ts#mudwave",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/golemAtlasData.ts#tpout",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/golemAtlasData.ts#tpin",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/harpyAtlasData.ts#walkA",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/heroStudiesData.ts#s3_11",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/heroStudiesData.ts#s3_12",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/hudAtlasData.ts#ringDashed",
+  "owner": "lead (UI)",
+  "world": "ui",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/ironclawAtlasData.ts#jumpup",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#2.buttress",
+  "owner": "w1-4 builders (W2 grab bag)",
+  "world": "W2",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#2.bankEnd",
+  "owner": "w1-4 builders (W2 grab bag)",
+  "world": "W2",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#3.bankEnd",
+  "owner": "w1-4 builders (W3 grab bag)",
+  "world": "W3",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#3.buttress",
+  "owner": "w1-4 builders (W3 grab bag)",
+  "world": "W3",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#4.buttress",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#4.bankEnd",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#5.bankEnd",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#5.buttress",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#6.buttress",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#6.bankEnd",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#7.buttress",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#7.bankEnd",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#8.buttress",
+  "owner": "w8-merge helper",
+  "world": "W8",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#8.bankEnd",
+  "owner": "w8-merge helper",
+  "world": "W8",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#9.bankEnd",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#9.buttress",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#10.buttress",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/kitAtlasData.ts#10.bankEnd",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#green_A03_0",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#green_A09_0",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#green_A09_1",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#big_B05_0",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#big_B10_0",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#big_B12_0",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#big_B13_0",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#big_B15_0",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#big_C03_1",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/leafAtlasData.ts#big_C11_2",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/mantisAtlasData.ts#disguise",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/meecaNightData.ts#bu6",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/meecaNightData.ts#bu7",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/meecaNightData.ts#troughPour",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/meecaNightData.ts#trayTipped",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/proto2AtlasData.ts#trunkPlain",
+  "owner": "w1-4 builders (W1 grab bag)",
+  "world": "W1",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/proto3AtlasData.ts#chaseDebris",
+  "owner": "w1-4 builders (W1 grab bag)",
+  "world": "W1",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/protoAtlasData.ts#bankEnd",
+  "owner": "w1-4 builders (W1 grab bag)",
+  "world": "W1",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/protoAtlasData.ts#buttress",
+  "owner": "w1-4 builders (W1 grab bag)",
+  "world": "W1",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/puzzleAtlasData.ts#b4",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/puzzleAtlasData.ts#b9",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/puzzleAtlasData.ts#b14",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/reaverAtlasData.ts#ultprep",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/tayraAtlasData.ts#dead_back",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/tayraAtlasData.ts#dead_curl",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/turtleAtlasData.ts#scurry",
+  "owner": "lead (creature placement)",
+  "world": "creatures",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#tailslam",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#seismic",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_rear",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_hiss",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_strike",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_bite",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_lunge",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_lunge2",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_tail",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_tail2",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_tail3",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_coil",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_ring",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_ball",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_flat",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_low",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_glide",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_wave",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/venomAtlasData.ts#n_wave2",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w3PropsData.ts#hollowLog",
+  "owner": "w1-4 builders (W3 grab bag)",
+  "world": "W3",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w3PropsData.ts#pawStrip",
+  "owner": "w1-4 builders (W3 grab bag)",
+  "world": "W3",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w3PropsData.ts#rootBridge",
+  "owner": "w1-4 builders (W3 grab bag)",
+  "world": "W3",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w3PropsData.ts#rootLadder",
+  "owner": "w1-4 builders (W3 grab bag)",
+  "world": "W3",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#boulderBig",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#boulderSmall",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#brokenLog",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#capNest",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#caveFall",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#coverHollow",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#coverRustle",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#fallCliff",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#fallLedge",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#fallSmall",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#floatLedge",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#fruitBare",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#fruitCliff",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#grassCliff",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#ledgeA",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#ledgeB",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#ledgeTrickle",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#logJam",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#nestPillar",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#nestTorn",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#ribbonFlag",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#ribbonLog",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#wetSteps",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w4PropsData.ts#wetSteps2",
+  "owner": "w1-4 builders (W4 grab bag)",
+  "world": "W4",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w5PropsData.ts#cakeCherry",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w5PropsData.ts#cakeSponge",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w5PropsData.ts#doilyLong",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w5PropsData.ts#fernStump",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w5PropsData.ts#silkSpan",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w5PropsData.ts#totemDark",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w5PropsData.ts#wrappedArmchair",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w6PropsData.ts#gauge-post",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w6PropsData.ts#lily-pads",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/waterSignData.ts#sign-w5-rattle",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/waterSignData.ts#sign-jungle-rattle",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/props/dot-bridges.json#far1-shadow",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/props/dot-bridges.json#far2-shadow",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w4/falls.json#fall-narrow",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w4/falls.json#fall-medium",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w4/falls.json#fall-wide",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/general-armour-off.json#hand-on-heart",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/grandma-things.json#wool",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/queen-collar-off.json#look-up",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/queen-collar-off.json#look-back",
+  "owner": "boss art owner / lead",
+  "world": "bosses",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/river-king-peek.json#proud",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/river-king-peek.json#flustered",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-cracks.json#floor-crack",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-cracks.json#floor-broken",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-cracks.json#wall-crack",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-cracks.json#wall-net",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-roots-glow-water.json#root-hanger",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-roots-glow-water.json#root-net",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-roots-glow-water.json#flooded-strip",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-roots-glow-water.json#sunk-stone",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-tunnel-kit.json#tunnel-floor",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-tunnel-kit.json#tunnel-ledge",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-tunnel-kit.json#tunnel-wall",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-tunnel-kit.json#stump-pillar",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/secret-tunnel-kit.json#wall-shelf",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/story18-squirrels.json#shocked",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/story18-squirrels.json#laughing",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/story18-squirrels.json#hammering",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/story21-dot-flour.json#sneeze",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/story21-dot-flour.json#sulk",
+  "owner": "story owner / lead",
+  "world": "story/characters",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/w10c-set-dressing.json#weapon-rack",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/w10c-set-dressing.json#spout",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/w6b-water-room-take2.json#gauge-post",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/w6b-water-room-take2.json#lily-pads",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/w9w10-bridges.json#plank-ring",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/w9w10-bridges.json#plank-hanging",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/gemini/w9w10-bridges.json#charred-log",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10alt.json#banner-b",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10alt.json#weapon-rack-b",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10alt.json#brazier-b",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10alt.json#spout-b",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10b.json#scaffold",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10b.json#crate",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10b.json#balcony",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10b.json#hanging-iron",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10b.json#iron-stair",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10var.json#bank-b",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10var.json#perch-b",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w10var.json#fill-b",
+  "owner": "w10-pieces helper",
+  "world": "W10",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5a-b.json#mossy-log",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5a-b.json#bromeliad",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5a.json#mossy-log",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5a.json#bromeliad",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5var.json#bank-b",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5var.json#fill-b",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5var.json#mossStrip-b",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5var.json#bankEnd-b",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w5web.json#billow",
+  "owner": "w5-pieces helper",
+  "world": "W5",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w6balt.json#raft-b",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w6balt.json#gauge-post-b",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w6d.json#root-hide",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w6var.json#snapL-b",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w6var.json#bank-b",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w6var.json#perch-b",
+  "owner": "lead (W6)",
+  "world": "W6",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7b.json#bridge-span",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7b.json#hanging-platform",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7b.json#capital",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7b.json#cracked-ledge",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7b.json#push-block",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7c-b.json#sloth-statue",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7c-b.json#fallen-column",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7c-b.json#fig-roots",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7c.json#sloth-statue",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7c.json#fallen-column",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7c.json#fig-roots",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7var.json#bank-b",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7var.json#perch-b",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w7var.json#snapL-b",
+  "owner": "lead (W7)",
+  "world": "W7",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w8b.json#bouncy-leaf",
+  "owner": "w8-merge helper",
+  "world": "W8",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w8var.json#bank-b",
+  "owner": "w8-merge helper",
+  "world": "W8",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w8var.json#perch-b",
+  "owner": "w8-merge helper",
+  "world": "W8",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w8var.json#fill-b",
+  "owner": "w8-merge helper",
+  "world": "W8",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9b.json#pumice-raft",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9b.json#hex-column",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9b.json#hot-platform",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9b.json#scorched-bridge",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9b.json#vent-rock",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9c-b.json#young-tree",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9c-b.json#smoke-crack",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9c-b.json#charred-log",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9c-b.json#ash-fern",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9c.json#young-tree",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9c.json#smoke-crack",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9c.json#charred-log",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9c.json#ash-fern",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9var.json#bank-b",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9var.json#snapL-b",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9var.json#perch-b",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/props-made/w9var.json#fill-b",
+  "owner": "w9-pieces helper",
+  "world": "W9",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/slide/pokey-slide-back.json#slideA",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w6to10/slide/pokey-slide-back.json#slideB",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w7/vine-anchors.json#liana-a1",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w7/vine-anchors.json#liana-a2",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w7/vine-anchors.json#liana-a3",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/assets/w7/vine-anchors.json#liana-a4",
+  "owner": "lead (shared art)",
+  "world": "shared",
+  "why": "unused on 2026-10-31 (start of the gate)"
+ },
+ {
+  "id": "src/game/w2PropsData.ts#cageA",
+  "owner": "w1-4 builders (W2 grab bag)",
+  "world": "W2",
+  "why": "the dome cageB stands in for it (riverArt.ts ~410); no draw call names cageA"
+ },
+ {
+  "id": "asset:assets/w6to10/gemini/river-king-peek.webp",
+  "owner": "w1-4 builders (W2 grab bag)",
+  "world": "W2",
+  "why": "loaded with the gemini glob, never drawn (ART-TO-GET.md:13 wants it at the end of 2-2)"
+ },
+ {
+  "id": "sheet:w1-props-1-puzzle-and-secrets.jpg#hollowLogVariants",
+  "owner": "w1-4 builders (W1 grab bag)",
+  "world": "W1",
+  "why": "painted by Matt, never cut or packed"
+ }
+]
