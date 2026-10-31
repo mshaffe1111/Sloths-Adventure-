@@ -8,7 +8,7 @@ import { KIT_FRAMES } from './kitAtlasData.ts';
 import { LANTERN_FRAMES, POKEY_JAR_FRAMES, type LanternFrame } from './w8LanternAtlas.ts';
 import type { StdFrame } from './heroStandardData.ts';
 import { TREE_CROWN, TREE_H } from './w8Lantern.ts';
-import { jarAt, LANTERN, lanternRadius, newLantern, setbackTo, stepLantern, takeoff, type LanternEvent, type LanternPlan, type LanternSetting, type LanternState } from './lantern.ts';
+import { jarAt, LANTERN, lanternRadius, newLantern, setbackTo, stepLantern, type LanternEvent, type LanternPlan, type LanternSetting, type LanternState } from './lantern.ts';
 
 /** how full the jar is as the stage starts: half, so the first flower (just ahead) fills it before anything can go wrong */
 export const START_LEVEL = 0.5;
@@ -92,11 +92,6 @@ export interface LanternPlayer {
 export class LanternRun {
   readonly set: LanternSetting;
   readonly st: LanternState;
-  /** the last take-off: was the far side lit (a fall costs a life on Normal), and the bough to set him back on */
-  private leap: { lit: boolean; x: number; y: number } | null = null;
-  private wasUp = true;
-  /** where he last stood still on a bough (a soft fall puts him back there) */
-  private stood: { x: number; y: number } = { x: 0, y: 0 };
   /** the swarm: seconds since he opened the jar under the firefly tree (-1: not yet) */
   swarm = -1;
   /** where the jar was as he opened it (the swarm streams from there up into the tree) */
@@ -127,14 +122,6 @@ export class LanternRun {
   }
 
   step(dt: number, p: LanternPlayer, punch: boolean): LanternEvent | 'swarm' {
-    const up = p.grounded || p.climbing || !!p.isVineSwinging;
-    if (p.grounded && !p.climbing) this.stood = { x: p.x, y: p.y };
-    // leaving a bough or a liana: was the far side lit?
-    if (this.wasUp && !up) {
-      const t = takeoff(this.plan, this.set, this.st.level, p.x, p.y, p.facing);
-      this.leap = { lit: !!t?.lit, x: this.stood.x, y: this.stood.y };
-    }
-    this.wasUp = up;
     if (this.swarm >= 0) {
       this.swarm += dt;
       this.st.level = 1;
@@ -150,13 +137,15 @@ export class LanternRun {
     return ev;
   }
 
-  /** a fall past the bottom: soft (back on the bough) on Easy, or when the far side was dark as he left; else it costs a life */
-  fallIsSoft(): boolean {
-    return this.easy || !this.leap?.lit;
-  }
-  /** where a soft fall puts him back */
-  backTo(): { x: number; y: number } {
-    return this.leap ? { x: this.leap.x, y: this.leap.y } : this.stood;
+  /**
+   * a fall past the bottom (Matt, 2026-10-30: every fall in 8-4 is soft): back at the last flower he filled at, the jar full again. The
+   * dark costs time and moths, never a life
+   */
+  fallBack(): { x: number; y: number } {
+    this.st.level = 1;
+    this.st.target = 1;
+    this.st.dark = 0;
+    return this.setbackAt();
   }
   /** where the dark's setback puts him: the last flower he filled at */
   setbackAt(): { x: number; y: number } {
@@ -173,7 +162,6 @@ export class LanternRun {
       m.x = m.home.x;
       m.y = m.home.y;
     }
-    this.leap = null;
   }
 
   /** the glowing flowers (behind him): World 8's painted bloom, its glow, and the burst as it fills the jar */
@@ -337,15 +325,26 @@ function drawMoth(ctx: CanvasRenderingContext2D, x: number, y: number, beat: num
 
 /** the HUD's jar gauge (screen px, its top-left at x, y): the painted jar on the HUD's wooden plate, hung on its tendril (Hugging Face,
  *  in the painted HUD's style); the lit jar fades out over the empty one as the light goes, and blinks when low */
+/** the jar gauge's height on screen (px) */
+export const GAUGE_H = 68;
+
 export function drawJarMeter(ctx: CanvasRenderingContext2D, x: number, y: number, level: number, t: number, low: number): void {
   const img = pieces();
   if (!img) return;
   const f = LANTERN_FRAMES.gaugeLit, fd = LANTERN_FRAMES.gaugeDim;
-  const s = 52 / f.h;
+  // (audit WIP-17: at least 64 px tall, so it reads at a glance on a phone; under `low`, 35%, it pulses: a slow swell about its middle
+  // and a warm glow behind, never a fast flicker)
+  const pulse = level < low ? 0.5 - 0.5 * Math.cos(t * Math.PI * 2 * 1.4) : 0;
+  const s = (GAUGE_H / f.h) * (1 + 0.08 * pulse);
+  const px = x - (f.w * s - f.w * (GAUGE_H / f.h)) / 2, py = y - (f.h * s - GAUGE_H) / 2;
   ctx.save();
-  blitPiece(ctx, img, fd, x + f.ax * s, y + f.ay * s, s);
-  const blink = level < low ? 0.55 + 0.45 * Math.sin(t * 10) : 1;
-  ctx.globalAlpha = Math.max(0, Math.min(1, level)) * blink;
-  blitPiece(ctx, img, f, x + f.ax * s, y + f.ay * s, s);
+  if (pulse > 0) {
+    ctx.globalAlpha = 0.55 * pulse;
+    ctx.drawImage(glowPic('#ffc861'), x + (f.w * GAUGE_H) / f.h / 2 - 54, y + GAUGE_H / 2 - 54, 108, 108);
+    ctx.globalAlpha = 1;
+  }
+  blitPiece(ctx, img, fd, px + f.ax * s, py + f.ay * s, s);
+  ctx.globalAlpha = Math.max(0, Math.min(1, level)) * (1 - 0.3 * pulse);
+  blitPiece(ctx, img, f, px + f.ax * s, py + f.ay * s, s);
   ctx.restore();
 }

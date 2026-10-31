@@ -13,9 +13,9 @@
  *   6. TWIST    the long dark: flowers further apart (about 10 s), lianas and moths: hurry.
  *   7. FINISH   the firefly tree: he opens the jar, the fireflies rise into the tree and light the whole canopy; the shrine.
  *
- * Falls (World 8's rule, the lantern deciding what is lit: lantern.ts takeoff): under every gap is the long drop to the canopy floor. On
- * Normal a fall costs a life when the far side was lit as he left the bough; from an unlit take-off (the jar too dim to show the far
- * side, no flower near) it is soft, back on the bough. Easy's are all soft. Nothing crumbles; straight up a trunk always climbs.
+ * Falls (Matt, 2026-10-30): under every gap is the long drop to the canopy floor, and every fall is soft, on Normal and Easy: back at
+ * the last flower he filled at, the jar full again. The dark costs time and moths, never a life. Nothing crumbles; straight up a trunk
+ * always climbs.
  */
 import { fixPickups } from './flowerReach.ts';
 import { heartsAtFlags, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
@@ -33,11 +33,12 @@ export const LANTERN_G = 1060;
 export const LANTERN_H = 1800;
 
 /**
- * the night outside the jar's ring (the lead's review of the mock-up: near black broke the lighting rule): a deep moonlit blue, not
- * black, over the scene at most `alpha`, so the boughs, trunks and the canopy edge still read as faint cool shapes and the next bough
- * is never a black void; the jar shows the colour and the detail, the moon only the shape (zoneArt.ts drawDarkness)
+ * the night outside the jar's ring (the lead's review of the mock-up: near black broke the lighting rule; audit WIP-17: at 0.74 the dark
+ * did not read as dark and the jar was decoration): a deep moonlit blue, not black, over the scene at `depth`, so the boughs and trunks
+ * are faint cool shapes and never a black void, while the jar's shaped `ring` (zoneArt.ts holePic) is the only place colour and detail
+ * show (zoneArt.ts drawDarkness)
  */
-export const LANTERN_NIGHT = { ink: 'rgb(8, 16, 44)', depth: 0.74 } as const;
+export const LANTERN_NIGHT = { ink: 'rgb(8, 16, 44)', depth: 0.88, ring: true } as const;
 /** the firefly tree as drawn (w8LanternRun.ts): its height over its foot, and the middle of its crown over its foot (world px) */
 export const TREE_H = 700;
 export const TREE_CROWN = 520;
@@ -56,8 +57,6 @@ export const LANTERN_LINES = {
   setback: 'Too dark. Back to the last flower.',
   /** the first moth, in the flower's light */
   moths: 'Moths! They want your light.',
-  /** the first lit drop on Normal (World 8's line) */
-  drop: "Careful! It's a long way down.",
   /** the firefly tree */
   swarm: 'Let them go, Pokey. Look up!',
 } as const;
@@ -125,7 +124,7 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
   const moth = (at: number) => moths.push({ id: mid++, x: r(cur.x + cur.width * at), y: r(cur.y - j(120, 170)) });
   const flag = (at = 0.5) => checkpoints.push({ x: r(cur.x + cur.width * at), y: cur.y, reached: false });
   /** a hop over `gap` to a bough `dy` lower (negative: up) and `w` wide; a petal in its arc shows the way */
-  const hop = (gap: number, dy: number, w: number, soft = false) => {
+  const hop = (gap: number, dy: number, w: number) => {
     runOn();
     // (the way drifts back toward the boughs' resting height after a climb or a liana: a hurry sideways, never a climb up high)
     dy = Math.max(-60, Math.min(140, dy + r((LANTERN_G - cur.y) * 0.45)));
@@ -137,7 +136,7 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     const from = end();
     const y0 = cur.y;
     cur = bough(from + gap, from + gap + w, y0 + dy);
-    gaps.push({ x0: from, x1: cur.x, y0, y1: cur.y, ...(soft ? { soft: true } : {}) });
+    gaps.push({ x0: from, x1: cur.x, y0, y1: cur.y });
     petal(from + gap / 2, Math.min(y0, cur.y) - 80);
     arrive('hop');
   };
@@ -166,7 +165,7 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
     cur = bough(cur.x + near, cur.x + near + w, cur.y - raise);
     // (a missed let-go is soft: back on the bough it swings from. The first-timer lost most of its Normal lives at lianas, as 6-8's did
     // before its catches; the retry still costs the jar's light)
-    gaps.push({ x0, x1: cur.x, y0, y1: cur.y, soft: true });
+    gaps.push({ x0, x1: cur.x, y0, y1: cur.y });
     lianas.push({ vine: vine.id, from: fromId, to: cur.id });
     // (a petal in the leap off the liana, on the way to the perch: Meeca's petals mark the way, never filler)
     petal((vx + cur.x) / 2, cur.y - 110);
@@ -213,15 +212,11 @@ export function buildLanternRun(config: LevelConfig, seed: number): GeneratedSta
 
   // 2. LEARN: hops between flowers about 8 s apart (a quick player)
   section('Learn: flower to flower', () => {
-    // (the first three hops are soft whatever the jar shows, and short: the stage's first jumps are learned, never a life)
-    hop(j(120, 140), j(-20, 20), j(500, 580), true);
-    hop(j(130, 150), j(-20, 30), j(460, 520), true);
-    hop(j(130, 150), j(-30, 0), 560, true);
+    // (the first three hops are short: the stage's first jumps are learned)
+    hop(j(120, 140), j(-20, 20), j(500, 580));
+    hop(j(130, 150), j(-20, 30), j(460, 520));
+    hop(j(130, 150), j(-30, 0), 560);
     flower(0.6);
-    // (Dot's drop line on the far end of this bough, about 10 s after her first; the first flag waits for the next flower, so her
-    // lines keep their gaps: STAGE-RULES §1)
-    // (at this bough's near end: the base's own gap tip at the first hop comes first, and a line at the far end was dropped behind it)
-    hint(cur.x + 60, LANTERN_LINES.drop, end());
     hop(j(150, 175), j(0, 50), j(360, 440));
     hop(j(170, 195), j(-50, -20), j(380, 460));
     hop(j(150, 180), j(0, 40), j(360, 440));

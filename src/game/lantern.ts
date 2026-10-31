@@ -67,8 +67,6 @@ export interface LanternGap {
   /** the far bough's top (the near one's is `y0`) */
   y0: number;
   y1: number;
-  /** a soft gap whatever the light (the stage's first hops) */
-  soft?: boolean;
 }
 
 export interface LanternPlan {
@@ -131,24 +129,6 @@ export function lanternRadius(set: LanternSetting, level: number, t = 0): number
 /** the jar's light point (world px): in his arms, about chest high */
 export const jarAt = (x: number, feet: number) => ({ x, y: feet - 38 });
 
-/** is the point lit (inside the jar's ring from `from`, or a flower's light)? */
-export function litAt(plan: LanternPlan, set: LanternSetting, level: number, from: { x: number; y: number }, x: number, y: number): boolean {
-  if (Math.hypot(x - from.x, y - from.y) <= lanternRadius(set, level) * 0.9) return true;
-  return plan.flowers.some((f) => Math.hypot(x - f.x, y - (f.y - 40)) <= f.r * 0.9);
-}
-
-/**
- * Leaving a bough at x (feet `feet`, facing `dir`): the gap ahead of him, and whether its far lip is lit (a fall into it then costs a
- * life on Normal). No gap within 140 px ahead: null (a jump on a bough, or off its back end).
- */
-export function takeoff(plan: LanternPlan, set: LanternSetting, level: number, x: number, feet: number, dir: number): { gap: LanternGap; lit: boolean } | null {
-  const ahead = plan.gaps.filter((g) => (dir >= 0 ? g.x0 - x > -60 && g.x0 - x < 140 : x - g.x1 > -60 && x - g.x1 < 140));
-  if (!ahead.length) return null;
-  const gap = ahead.sort((a, b) => Math.abs((dir >= 0 ? a.x0 : a.x1) - x) - Math.abs((dir >= 0 ? b.x0 : b.x1) - x))[0];
-  const lip = dir >= 0 ? { x: gap.x1 + 10, y: gap.y1 } : { x: gap.x0 - 10, y: gap.y0 };
-  return { gap, lit: !gap.soft && litAt(plan, set, level, jarAt(x, feet), lip.x, lip.y) };
-}
-
 export type LanternEvent = 'filled' | 'low' | 'empty' | 'setback' | 'stolen' | null;
 
 /**
@@ -207,7 +187,8 @@ export function stepLantern(s: LanternState, plan: LanternPlan, set: LanternSett
       if (d > set.sense * 1.5 || s.level <= 0.05) {
         m.mode = 'rest';
       } else if (d < 34) {
-        s.level = Math.max(0, s.level - set.steal);
+        // (audit WIP-17: a moth never takes the jar below the warning level; under it already, it takes nothing)
+        s.level = Math.max(Math.min(s.level, set.low), s.level - set.steal);
         s.target = 0;
         m.mode = 'flee';
         m.t = set.flee;

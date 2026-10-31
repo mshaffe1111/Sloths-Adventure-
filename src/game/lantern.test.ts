@@ -1,12 +1,12 @@
 /**
  * 8-4 Lantern Run: the jar (lantern.ts) and the stage (w8Lantern.ts), pure. The rules: the jar drains in its time and a flower fills it;
  * empty, the dark closes in only after its grace, and the setback is soft (back to the last flower); a moth steals light, a punch
- * scatters it; a fall is deadly on Normal only when the far side was lit; a careful player (half again as slow as the quick one) always
+ * scatters it; every fall is soft (back to the last flower, the jar refilled); a careful player (half again as slow as the quick one) always
  * reaches the next flower before the dark closes in; the stage is at least 2 minutes and sideways, not up high.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { LANTERN, lanternRadius, newLantern, stepLantern, takeoff, type LanternPlan } from './lantern.ts';
+import { LANTERN, lanternRadius, newLantern, stepLantern, type LanternPlan } from './lantern.ts';
 import { buildLanternRun, LANTERN_G, LANTERN_H } from './w8Lantern.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -81,14 +81,6 @@ test('a moth steals light on a touch and flutters off; a punch scatters it first
   assert.ok(!stolen, 'a punch as it comes in scatters it');
 });
 
-test('a fall is deadly on Normal only when the far side was lit as he left the bough', () => {
-  const set = LANTERN.normal;
-  const p = plan({ flowers: [], gaps: [{ x0: 1000, x1: 1180, y0: 700, y1: 700 }] });
-  assert.equal(takeoff(p, set, 1, 990, 700, 1)?.lit, true, 'a bright jar shows the far side');
-  assert.equal(takeoff(p, set, 0.05, 990, 700, 1)?.lit, false, 'a dim jar does not: the fall is soft');
-  assert.equal(takeoff(p, set, 1, 500, 700, 1), null, 'no gap ahead');
-});
-
 test('8-4: sideways, at least 2 minutes, flowers close enough for a careful player, void under every gap', () => {
   for (const seed of [1, 2, 3, 7, 11]) {
     const st = buildLanternRun(CFG, seed);
@@ -115,19 +107,10 @@ test('8-4: sideways, at least 2 minutes, flowers close enough for a careful play
   }
 });
 
-test('8-4: the first hops and every liana are soft; Dot warns of the drop before the first that is not; each trunk stands clear of its wall', () => {
+test('8-4: no line warns of a deadly drop (every fall is soft); each trunk stands clear of its wall', () => {
   for (const seed of [1, 2, 3]) {
     const st = buildLanternRun(CFG, seed);
-    const l = st.lantern84;
-    const gaps = [...l.plan.gaps].sort((a, b) => a.x0 - b.x0);
-    assert.ok(gaps.slice(0, 3).every((g) => g.soft), `${seed}: the first three hops are soft`);
-    for (const li of l.lianas) {
-      const to = st.platforms.find((p) => p.id === li.to)!;
-      assert.ok(gaps.find((g) => g.x1 === to.x)?.soft, `${seed}: the liana onto ${to.id} is soft`);
-    }
-    const firstHard = gaps.find((g) => !g.soft)!;
-    const drop = st.proto.hints.find((h) => h.text === "Careful! It's a long way down.");
-    assert.ok(drop && drop.x < firstHard.x0, `${seed}: the drop line comes before the first deadly gap`);
+    assert.ok(!st.proto.hints.some((h) => h.text === "Careful! It's a long way down."), `${seed}: no drop line`);
     for (const v of st.vines.filter((q) => q.vineType === 'tree_climb')) {
       const up = st.platforms.find((p) => Math.abs(p.y - (v.topY + 2)) < 4 && p.x > v.x)!;
       const low = st.platforms.filter((p) => Math.abs(p.y - (v.bottomY + 6)) < 4 && p.x < v.x).sort((a, b) => b.x - a.x)[0];
@@ -146,5 +129,38 @@ test("8-4: Meeca's petal is the only scattered pickup, in trails that mark the w
     // (the widest view, sideways zoomed out at the firefly tree, is about 1700 px of world)
     for (let i = 0; i < xs.length; i++) assert.ok(xs.filter((x) => x >= xs[i] && x < xs[i] + 1700).length <= 6, `${seed}: crowded at ${xs[i]}`);
     assert.equal(st.proto.movedPickups, 0, `${seed}: every petal where he can get it`);
+  }
+});
+
+test('8-4: every fall is soft (Matt, 2026-10-30): back at the last flower he filled at, the jar full again, on Normal and Easy', async () => {
+  const { LanternRun } = await import('./w8LanternRun.ts');
+  const p = plan({ flowers: [{ id: 1, x: 300, y: 700, r: 190 }, { id: 2, x: 2000, y: 680, r: 190 }] });
+  for (const easy of [false, true]) {
+    const lr = new LanternRun(p, easy);
+    lr.st.last = 2;
+    lr.st.level = 0.1;
+    lr.st.target = 0.1;
+    const at = lr.fallBack();
+    assert.deepEqual(at, { x: 1950, y: 680 }, 'by the last flower');
+    assert.equal(lr.st.level, 1, 'the jar full again');
+  }
+});
+
+test('a moth never takes the jar below the warning level (audit WIP-17)', () => {
+  for (const set of [LANTERN.normal, LANTERN.easy]) {
+    for (const start of [1, 0.5, 0.4, 0.2]) {
+      const p = plan({ flowers: [], moths: [{ id: 1, x: 5000, y: 662 }] });
+      const s = newLantern(p);
+      s.level = start;
+      s.target = start;
+      let stolen = false;
+      let before = s.level;
+      for (let t = 0; t < 2 && !stolen; t += 1 / 30) {
+        before = s.level;
+        stolen = stepLantern(s, p, set, 1 / 30, 5000, 700) === 'stolen';
+      }
+      assert.ok(stolen, `${start}: the moth reached the jar`);
+      assert.ok(s.level >= Math.min(before, set.low) - 1 / 30 / set.drain - 1e-9, `${start}: ${before} -> ${s.level}`);
+    }
   }
 });

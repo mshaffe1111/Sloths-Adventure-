@@ -6946,15 +6946,9 @@ export class GameEngine {
     if (this.revealZoom !== prev) this.applyZoom();
   }
 
-  /** 8-4: a fall past the bottom: soft (back on the bough he left) on Easy or from an unlit take-off, else a life (lantern.ts) */
+  /** 8-4: a fall past the bottom is always soft: back at the last flower, the jar full again (w8LanternRun.ts fallBack) */
   private lanternFall() {
-    const lr = this.lanternRun!;
-    if (!lr.fallIsSoft()) {
-      sound.playPlayerHurt();
-      this.loseLife('pit');
-      return;
-    }
-    const at = lr.backTo();
+    const at = this.lanternRun!.fallBack();
     recorder.event('softFall', Math.round(this.player.x));
     this.lanternSetBack(at.x, at.y);
   }
