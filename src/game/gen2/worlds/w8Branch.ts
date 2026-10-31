@@ -43,8 +43,9 @@ const branch = (s: Omit<SectionTemplate, 'entry' | 'exit' | 'exitDy' | 'archetyp
 
 /** a moon flower (World 8's bounce plant, bounceArt.ts cap-w8) standing at a bough's end, its cap `up` px over it */
 const flower = (key: string, on: string, at: W = [0.78, 0.84], up: W = [22, 28]): SectionPiece => ({ key, shape: 'bouncy', w: [80, 90], place: { kind: 'over', on, at, dy: typeof up === 'number' ? -up : [-up[1], -up[0]] }, main: true });
-/** the high bough past it: out of the jump's and the second jump's reach (DOUBLE_RISE ~185), inside the bounce's with the second jump (~240) */
-const FLOWER_HI = 215;
+/** the high bough past it, inside the bounce's own reach (~181: the first-timer bot never found bounce-then-second-jump to 215, 2026-10-31);
+ *  the second jump can scrape up too, the flower is the easy way */
+const FLOWER_HI = 170;
 const high = (key: string, on: string, w: W): SectionPiece => bank(key, w, { kind: 'over', on, at: 1, dy: -FLOWER_HI }, { main: true });
 const BOUNCE = W8_LESSON.bounce;
 const tip = (mechanic: string, on: string, t: Socket['t'] = 0.25): Socket => ({ id: `tip-${mechanic}`, role: 'tip', on, t, allow: [mechanic] });

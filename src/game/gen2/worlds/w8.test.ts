@@ -29,7 +29,7 @@ test('the manifest: ids unique, every socket asks for something the world has, e
   assert.ok(ids(W8_PROPS) && ids(W8_CREATURES) && ids(ALL));
   assert.deepEqual([...W8_GEN2_STAGES], [...W8_GAME_STAGES]);
   assert.deepEqual(W8_MANIFEST.handBuilt, ['8-4', '8-7', '8-10']);
-  // (a fall from a lit bough costs a life on Normal: the world's pit is 'void'; the dark's, second-jump, glide and start gaps stay soft)
+  // (a fall from a lit bough costs a life on Normal: the world's pit is 'void'; the dark's, second-jump and start gaps stay soft; a glide's is a heart fall)
   assert.equal(W8_MANIFEST.pit, 'void');
   for (const t of ALL.map(w8Falls)) {
     const keys = t.pieces.map((p) => p.key);
@@ -39,7 +39,9 @@ test('the manifest: ids unique, every socket asks for something the world has, e
       const pl = p.place as { kind: string; soft?: boolean; jump?: string };
       if (!['jump', 'double', 'pit', 'land'].includes(pl.kind)) return;
       if (from >= 0 && to >= 0 && i > from && i <= to) assert.equal(pl.soft, true, `${t.id}.${p.key}: a gap in the dark is soft`);
-      if (pl.kind === 'double' || pl.jump === 'double' || pl.jump === 'glide') assert.equal(pl.soft, true, `${t.id}.${p.key}: a second-jump or glide gap is soft`);
+      if (pl.kind === 'double' || pl.jump === 'double') assert.equal(pl.soft, true, `${t.id}.${p.key}: a second-jump gap is soft`);
+      // (a glide's gap is a heart fall on Normal, outside the dark and the start: w8Heart.test.ts)
+      if (pl.jump === 'glide' && !(from >= 0 && to >= 0 && i > from && i <= to) && !t.phases.includes('start')) assert.notEqual(pl.soft, true, `${t.id}.${p.key}: a glide gap is a heart fall, not a soft pit`);
       if (t.phases.includes('start')) assert.equal(pl.soft, true, `${t.id}.${p.key}: a start's gap is soft`);
     });
   }

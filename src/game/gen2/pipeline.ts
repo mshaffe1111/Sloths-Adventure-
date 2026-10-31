@@ -670,6 +670,8 @@ export interface Laid {
   gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
+  /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them */
+  heartFalls: Array<{ x0: number; x1: number }>;
   spawn: { x: number; y: number; piece: Platform };
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
@@ -766,6 +768,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const vines: Vine[] = [];
   const ropes: Rope[] = [];
   const zones: Zone[] = [];
+  const heartFalls: Laid['heartFalls'] = [];
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
@@ -986,7 +989,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         gaps.push(g0);
         if (g.pit && !g.water) {
           const before = platforms.length;
-          if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
+          // (a world with `heartFalls` (World 8, Matt 2026-10-31): on Normal a missed swing or glide (a gap with `back`: under a liana or a
+          // glide) costs a heart and sets him back on the ledge he left, no pit under it; Easy's stay soft pits, the dark's stay soft)
+          if (g.back && M.heartFalls && budget.pit !== 'soft' && !g.soft) heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1) });
+          else if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
           else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
           // (a soft pit under a row of rafts or logs (World 9, BOB; Easy's falls are soft): its crust floor gets a basalt knob in each
           // opening between them, never under one, so the walk along the floor is hops, not a quiet stretch, 9-1's Easy rolls)
@@ -1078,6 +1084,23 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (tpl.teaches) taught.add(tpl.teaches);
       const exitP = pieceOf(L.exit.piece);
       cur = { x: ox + L.exit.x, y: oy + L.exit.y, kind: L.exit.kind, piece: exitP };
+      // (a safe start, M.safeStart: the runway and the start section's ground, unbroken from the spawn; a plain bank after the start
+      // for what they leave short, so the next section's first gap or animal is past it)
+      if (n.phase === 'start' && M.safeStart && cur.kind === 'ground') {
+        let reach = SPAWN_X;
+        for (const p of platforms.filter((q) => q.type !== 'fragile' && q.type !== 'bouncy' && q.y >= runway.y - 400 && q.y <= runway.y + 60).sort((a, b) => a.x - b.x)) {
+          if (p.x > reach + 1) break;
+          reach = Math.max(reach, p.x + p.width);
+        }
+        const short = SPAWN_X + M.safeStart + 40 - cur.x;
+        if (reach >= cur.x - 1 && short > 0) {
+          const fill = mk(cur.x, cur.y, short, 'bank', 0);
+          placed.x1 = Math.max(placed.x1, fill.x + fill.width);
+          cur = { x: fill.x + fill.width, y: fill.y, kind: 'ground', piece: fill };
+          secs += short / budget.walkSpeed;
+          placed.seconds += short / budget.walkSpeed;
+        }
+      }
       if (n.phase === 'start' || n.phase === 'goal') break;
     }
   }
@@ -1096,6 +1119,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     vines,
     ropes,
     zones,
+    heartFalls,
     width: R(shrine.x + shrine.width + 40),
     bottom: baseline,
     nextId: pid,
@@ -1792,6 +1816,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
     ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
+    ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
     meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },
