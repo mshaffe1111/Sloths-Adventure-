@@ -24,6 +24,7 @@ import type { W3Decor } from './w3Art.ts';
 import type { Collectible, Platform } from './types.ts';
 import type { RoomSpec } from './puzzleKit.ts';
 import { dressSize, type AnyDress as DressName, type DressPiece } from './dressArt.ts';
+import { DRESS_NEW_LOOKS } from './dressNewLooks.ts';
 
 export interface DressInput {
   world: number;
@@ -176,7 +177,7 @@ function bridges(d: DressInput, out: KitDecor[], inRoom: (x: number, pad: number
  *   clutter  small things lying along the long floors
  * Pictures only, like the rest of this file: never a platform or a pickup, and no draw from the stage's own random stream.
  */
-export const DRESS_SETS: Record<DressWorld, Record<'bank' | 'hang' | 'clutter', DressName[][]>> = {
+const FIRST_SETS: Partial<Record<DressWorld, Record<'bank' | 'hang' | 'clutter', DressName[][]>>> = {
   1: {
     bank: [['w1Fern', 'w1Mushroom', 'w1Pebble'], ['w1Stump', 'w1Acorns', 'w1Sprig']],
     hang: [['w1Hang1', 'w1Hang2'], ['w1Hang2', 'w1Hang1']],
@@ -210,6 +211,19 @@ export const DRESS_SETS: Record<DressWorld, Record<'bank' | 'hang' | 'clutter', 
     clutter: [['w10Crates', 'w10Banner', 'w10Crate'], ['w10Cage', 'w10Brazier', 'w10Rack']],
   },
 };
+/**
+ * hf-props (2026-10-31; reference/prop-sheets/qa-notes/hf-props/AUDIT.md: "one 3-piece set per job, so 2-3 pieces repeat bank after
+ * bank"): Worlds 1-7 each get three new looks per job from their own new sheet (dressNewData.ts DRESS_NEW_LOOKS), added after the first
+ * sheet's looks; Worlds 3, 4, 6 and 7 are dressed this way for the first time.
+ */
+export const DRESS_SETS = Object.fromEntries(
+  Array.from({ length: 10 }, (_, i) => i + 1).map((w) => {
+    const a = FIRST_SETS[w as DressWorld];
+    const b = DRESS_NEW_LOOKS[w] ?? {};
+    const job = (j: 'bank' | 'hang' | 'clutter'): DressName[][] => [...(a?.[j] ?? []), ...(b[j] ?? [])];
+    return [w, { bank: job('bank'), hang: job('hang'), clutter: job('clutter') }];
+  }),
+) as Record<DressWorld, Record<'bank' | 'hang' | 'clutter', DressName[][]>>;
 /** the worlds dressed this way (Worlds 3, 4, 6 and 7 from hf-props, 2026-10-31: their new sheets only) */
 export const DRESS_WORLDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 export type DressWorld = (typeof DRESS_WORLDS)[number];
@@ -228,7 +242,7 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
     const { w, h } = dressSize(n);
     return !d.platforms.some((q) => q !== on && q.x < x + w / 2 + 12 && q.x + q.width > x - w / 2 - 12 && q.y < b - 4 && q.y + q.height > b - h - 12);
   };
-  const pick = (job: 'bank' | 'hang' | 'clutter', salt: number) => rollLook(sets[job], d.stage, d.seed, salt + d.world * 11);
+  const pick = (job: 'bank' | 'hang' | 'clutter', salt: number): DressName[] => (sets[job].length ? rollLook(sets[job], d.stage, d.seed, salt + d.world * 11) : []);
   // (each set laid in a turned order, so the same three in the same order do not come round bank after bank)
   const turn = (set: DressName[], k: number) => {
     const i = Math.floor(lookHash(d.seed + k, 41) * set.length);
