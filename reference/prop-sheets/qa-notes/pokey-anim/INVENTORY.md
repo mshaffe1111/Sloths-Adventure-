@@ -12,7 +12,7 @@ Ranked by how often a player sees it (my estimate from the stages: seconds on sc
 | 5 | Turn / skid / run start | new tonight: front-view turn, painted brace skid + 2 puffs, lean | Crisp, physics unchanged | Nothing |
 | 6 | Walk (slow steer) | 8 painted (standard sheet, second take) | Steppy next to the 15-frame video run; visible on every gentle steer | **A video walk (the move-walk slot exists, never filled): one Wan job, ~$0.50** |
 | 7 | Double jump flip | painted roll, 5 poses + up to ~80 degrees of code turn (new) | Reads as a forward roll; still a little code-spun | Wan can't roll him (2 seeds failed). A Qwen-Edit pass on his tuck at 90 and 270 degrees would close the gaps |
-| 8 | Punch combo (jab, cross, hook) | 6 / 7 / 7 video | Fine but short; the jab wind-up is 1-2 frames, so it pops | Re-cut from a longer clip with a held wind-up and recover (frames exist in a-punch-2) |
+| 8 | Punch combo (jab, cross, hook) | 6 / 7 / 7 video | Short sheets (6-7 frames for wind-up, hit and recover); not checked frame by frame tonight | Look first; likely re-cut from a-punch-2 with a held wind-up and recover |
 | 9 | Climb (trunk, vine) | 8 painted (first-round sheet), one frame per 12 px; climb-down plays the same cycle backward | Choppy at speed, no settle at the top | **A video climb (the move-climb slot exists, never filled); a top-out settle.** Don't touch climb physics (build1-play) |
 | 10 | Kick (two kicks take turns) | 10 + 10 video | Good | Nothing |
 | 11 | Hurt | 3 painted + the 41-frame "ouch" clip when standing | Good | Nothing |
