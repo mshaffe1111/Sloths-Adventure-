@@ -39,3 +39,4 @@ pokey-anim6   6ae5f9bac78863f9c62f2905  launched 10:22 AM ET  spec-anim6.json @ 
               Qwen drew stripped) -> hero-vine.webp (5 pictures). THROWN 7-4 slide-slide s1/s2 (drew a chute, turned him diagonal).
 pokey-anim7   6ae5fc360e0338d1bb7d2d45  launched 10:33 AM ET  spec-anim7.json: the 7-4 slide poses again with no chute in the words (seeds 4-6)
               KEPT slide2-slide-s6 (ride), slide2-leanR-s6 (leanR2), slide2-leanL-s6 -> flume-pokey.webp (tools/art/pokeyanim/slidepack.py)
+Round 3 spend: anim5 13:43-14:30Z 47.1 min ~$2.16; anim6 14:22-14:32Z 10.0 min ~$0.46; anim7 14:33-14:43Z 10.0 min ~$0.46. Today ~$3.08 of $15.
