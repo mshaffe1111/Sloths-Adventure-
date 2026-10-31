@@ -181,25 +181,63 @@ Honest expectation: the engine pieces (riser, drop gate, trapdoor, spout push, b
 (to 10 PM ET) I expect A, B, D, F and the on-hand pieces built and checked; C, E, K, L and the Winch House may run into the next session,
 and curation will not start tonight. I'll say so in NEXT.md rather than start curating early.
 
-## 8. Status (updated as pieces are built; branch w10-pieces)
+## 8. Status (updated as pieces are built; branch w10-pieces; 2026-10-31 ~3:45 PM ET)
 
-| Piece | Sections (stage) | Status | Checked alone (pieceCheck, 8 rolls) |
+| Piece | Sections (stage) | Status | Checked alone (pieceCheck, 6-8 rolls) |
 |---|---|---|---|
-| A chain lifts | - | waits on World 9's riser (the lead, 2:20 PM) | - |
-| B counterweights | - | waits on the riser | - |
-| C gear lifts | - | waits on the riser | - |
+| A chain lifts | w10-lift-first, -pair, -row (10-1, 10-6), -rods (10-1) | BUILT on World 9's riser (gen2 place 'raft', bob 'raft'); style w10_lift: two chains up to the pulley block, the iron-banded plank | 6/6 each; kid 0.92+, adult 0.97+ |
+| B counterweights | w10-cw-first, -row (10-3, 10-6), -storm (10-3) | BUILT; w10_cw: one chain over the cog wheel, the weight on the other side; pairs ride half a cycle apart (w10Game decorate) | first 6/6, storm 4/6, row 4/6; kid 0.93+ |
+| C gear lifts | w10-gear-first, -pair (10-6, 10-9), -guard (10-9) | BUILT; w10_gear: bag 'rack' block on its toothed rack, the cog set in the bank face below the walk | guard 5/6; first/pair: see NEXT.md (waiting on the piston reads as quiet on Normal; the pair got an animal on its middle ledge) |
 | D drop gates | w10-drop-first, -row, -yard, -high (10-7) | BUILT | pass; kid 0.97+ |
-| E gutter spouts | w10-spout-first, -gap, -pair (10-6, 10-9), -guard (10-9) | BUILT | pass 8/8; kid 0.97+ |
+| E gutter spouts | w10-spout-first, -gap, -pair (10-6, 10-9), -guard (10-9) | BUILT; the spout now stands on a wall stub (w10var 'bank-b'), its mouth about 182 px up (the lead's review) | pass 8/8; kid 0.97+ |
 | F trapdoor grates | w10-trap-first, -row, -guard, -spikes (10-9) | BUILT (soft pit under every grate) | pass 8/8; kid 0.96+ |
-| G/H towers | w10-iron-stair, -balcony-climb, -tower-run (10-7) | BUILT (never mirrored) | pass; kid 0.85+ |
+| G/H towers | w10-iron-stair, -balcony-climb, -tower-run (10-7) | BUILT (never mirrored); the stair's stringer stub is gone (the lead's review) | pass; kid 0.85+ |
 | I perch posts | w10-perch-run, -climb, -rods (10-1) | BUILT | pass; kid 0.90+ |
 | J chain bridges | w10-bridge-fight, -pair, -rods (10-7) | BUILT | pass 8/8; kid 0.97+ |
-| K rolling barrels | w10-barrel-first, -run, -steps, -yard (10-7) | BUILT | pass where laid; kid 0.96+ |
-| L lantern sweeps | w10-lantern-wall, -steps, -guard (10-3) | BUILT | wall 8/8, guard 6/8, steps 4/8 (Normal dead time over a fifth: stealth's waiting; weight 1) |
-| Winch House | - | NOT BUILT: the room set is one required room per stage (W10_ROOM_REQUIRED); a second room needs "one of" in `required` or a seed switch. NEXT.md | - |
-| 10-6 themes | w10-net-gate-chains, -spouts | BUILT (10-6 had no themes) | - |
+| K rolling barrels | w10-barrel-first, -run, -steps, -yard (10-7) | BUILT; a TRUE ROLL now: the HF barrel end (round lid, hoop, bung; hfb-w10bag-r2, ~$0.15) turns its distance over its radius (the lead: "a wobble isn't a roll"); a tipped barrel ('barrel-tip') leans on the stack | pass where laid; kid 0.96+ |
+| L lantern sweeps | w10-lantern-wall, -steps, -guard (10-3) | BUILT; every other tower its own beam painting (beam-1 / beam-2) | wall 8/8, guard 6/8, steps 4/8 (weight 1) |
+| Winch House | 10-7's second room (`required.oneOf`, rolled against the gatehouse) | BUILT | w10Rooms.test 19/19 (real engine: Normal throw, Easy taps) |
+| 10-6 themes | w10-net-gate-chains, -spouts, -lifts, -counterweights, -gearlifts | BUILT | - |
 
-Themes per stage now: 10-1 5 (rods, spikes, ramparts, gusts, perches) + lifts when A lands; 10-3 5 (rods, spikes, ramparts, gusts, lanterns)
-+ counterweights when B lands; 10-6 2 (chains, spouts) + lifts, counterweights, gear lifts when A/B/C land; 10-7 6 (rods, spikes,
-towers, bridges, drops, barrels); 10-9 6 (rods, spikes, ramparts, gusts, trapdoors, spouts). 10-6 is the one stage still short of 5 until
-the riser.
+Themes per stage now: 10-1 6 (rods, spikes, ramparts, gusts, perches, lifts); 10-3 6 (rods, spikes, ramparts, gusts, lanterns,
+counterweights); 10-6 5 (chains, spouts, lifts, counterweights, gear lifts); 10-7 6 (rods, spikes, towers, bridges, drops, barrels); 10-9 7
+(rods, spikes, ramparts, gusts, trapdoors, spouts, gear lifts). Every stage clears 5.
+
+The inspector (shared, tools/inspect/beats.ts): boarding a moving plank (lift.ts `bob`, World 9's and World 10's), or passing under one on
+a soft pit's floor, is a timed beat starting a step short of it. Before, a row of planks a step apart read as plain walking on Easy: World
+9's own raft pair and raft row went from 0/4 to 4/4 with it.
+
+## 9. Placed from unused (Matt: "We need to use all the art we create")
+
+Every World 10 painting that sat unused before this pass, and where it is now:
+
+| Art | Was | Now |
+|---|---|---|
+| w10b balcony, scaffold, iron-stair | unused | H balconies, the scaffold walk, G iron stairs (w10PieceArt) |
+| w10b hanging-iron | unused | the chains of A/B (drawW10Chain) and the puzzle rooms |
+| w10b crate | unused | the puzzle rooms' crate block (w10Rooms) |
+| w10var perch-b | unused | I perch posts |
+| w10var branch-b (an iron grate) | unused | F trapdoor grates, shut |
+| w10var bank-b | unused | E the spout's wall stub |
+| w10alt spout-b | unused | E the spout block |
+| gemini w9w10-bridges chain-bridge | unused | J chain bridges |
+| gemini w9w10-bridges plank-ring | unused | (drawW10Plank, A/B's planks) |
+| bag barrel-tip | cut, unused | K: leaning on the barrel stack |
+| bag beam-2 | cut, unused | L: every other lantern tower's beam |
+
+Still unused, with a place for each (curation pass, no new art):
+- **w10var stump-b** (a rubble mound) and **fill-b** (a crag face): World 10 dressing, rubble at the foot of a wall and the face under
+  a high road. They are the HF "b" looks of World 8's own stump and fill, so they go in with a check that World 8's pieces never stand
+  next to them.
+- **w10var buttress-b** (a crag ledge with a sand top): a ledge style for 10-6's netting (the swing helper's lane).
+- **w9w10-bridges plank-hanging** (a plank hung from one chain): a swinging plank, a pendulum the swing builder can carry (10-6).
+- **bag winch-jam** (the winch with a stone wedged in its teeth): the Winch House's jammed state before the stone is thrown (the lead's
+  "the stone on the jammed winch"); today the winch draws its kit stone in its teeth once filled.
+- **bag rope-bridge, ember-slab, charred-log** are World 9's.
+
+## 10. For curation and later (the lead's notes)
+
+- **Variety:** one gatehouse painting (bag 'gatehouse') is both the drop gate's gatehouse (D) and the lantern tower (L). Where a stage
+  holds both, a second tower painting would keep them apart; a later HF batch, not now.
+- **10-9 first-timer falls:** 20+ falls on Normal, plus pit rescues on Easy in the swing sections. This is a band and curation item: the
+  first-timer bot does not yet wait for World 10's timed hazards (NEXT.md), and 10-9's swing sections need their own look in curation.

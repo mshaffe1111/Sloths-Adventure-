@@ -163,8 +163,9 @@ export function drawW10Bob(ctx: CanvasRenderingContext2D, p: Platform, t: number
     const f = W10_BAG_FRAMES.rack;
     const s = (p.width + 30) / f.w;
     drawW10Bag(ctx, 'rack', cx, p.y - 6 * s + f.h * s, f.h * s);
+    // (the cog is set in the bank's face below the walk, its rim just under the top: never a thing on the walk to trip on)
     ctx.save();
-    ctx.translate(p.x - 34, l.bottom + 10);
+    ctx.translate(p.x - 30, l.bottom + 58);
     ctx.rotate(-(p.y - l.bottom) / 40);
     const ok = drawW10Bag(ctx, 'cog', 0, 45, 90);
     ctx.restore();

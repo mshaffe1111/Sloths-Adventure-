@@ -71,8 +71,8 @@ for (const id of STAGES) {
         assert.ok(!st.platforms.some((p) => p.type === 'fragile' && mine.some((s) => p.x >= s.x0 && p.x < s.x1)), `${at}: a crumbling piece in a swing or a room`);
         const rooms = st.gen2.sections.map((s) => s.template).filter((t) => t in W10R_STAGE);
         const own = Object.entries(W10R_STAGE).filter(([, s]) => s === id).map(([t]) => t);
-        // (one room a roll: a stage with two, 10-7's gatehouse and Winch House, holds one of them, the roll's pick)
-        assert.ok(rooms.length === 1 && own.includes(rooms[0]), `${at}: rooms ${rooms}`);
+        // (one room a roll on a stage with a room (none on 10-6 and 10-9): a stage with two, 10-7's gatehouse and Winch House, holds one of them, the roll's pick)
+        assert.ok(own.length ? rooms.length === 1 && own.includes(rooms[0]) : rooms.length === 0, `${at}: rooms ${rooms}`);
         // (every liana is swung on the quick route, and takes one of its section's looks)
         const route = pickRoute(cfg10(id).objectiveType, st).used.route;
         assert.notEqual(route.traced, 'failed', at);

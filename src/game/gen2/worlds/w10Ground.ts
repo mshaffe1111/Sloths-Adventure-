@@ -1585,7 +1585,7 @@ const liftFirst = section({
   extraSeconds: LIFT_WAIT * 2,
   pieces: [bank('a', [320, 360]), chainLift('r', 'a', [160, 180], [0.45, 0.55], true), offLift('b', 'r', [300, 340], [0.45, 0.55], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
   last: 'c',
-  sockets: [flag('a', 0.6), tip(LIFT, 'a', 0.2), petals('r', 'r', 0.5, 1), petals('k', 'k', 0.5, 1)],
+  sockets: [flag('a', 0.3), tip(LIFT, 'a', 0.15), petals('r', 'r', 0.5, 1), petals('k', 'k', 0.5, 1)],
   mirrorable: false,
 });
 const liftPair = section({
@@ -1642,7 +1642,7 @@ const cwFirst = section({
   extraSeconds: LIFT_WAIT * 2,
   pieces: [bank('a', [320, 360]), chainLift('r1', 'a', [150, 170], [0.45, 0.55], true, 'w10_cw'), chainLift('r2', 'r1', [150, 170], [0.45, 0.55], true, 'w10_cw'), offLift('b', 'r2', [300, 340], [0.45, 0.55], true), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
   last: 'c',
-  sockets: [flag('a', 0.6), tip(CWEIGHT, 'a', 0.2), petals('r1', 'r1', 0.5, 1), petals('r2', 'r2', 0.5, 1), petals('k', 'k', 0.5, 1)],
+  sockets: [flag('a', 0.3), tip(CWEIGHT, 'a', 0.15), petals('r1', 'r1', 0.5, 1), petals('r2', 'r2', 0.5, 1), petals('k', 'k', 0.5, 1)],
   mirrorable: false,
 });
 /** a counterweight pair to a watched wall (10-3: the planks, then hide from the storm) */
@@ -1669,9 +1669,10 @@ const cwRow = section({
   difficulty: 6,
   uses: [W10_THEME.counterweights, CWEIGHT],
   extraSeconds: LIFT_WAIT * 4,
-  pieces: [bank('a', [240, 280]), chainLift('r1', 'a', [140, 160], [0.55, 0.7], false, 'w10_cw'), chainLift('r2', 'r1', [140, 160], [0.55, 0.7], false, 'w10_cw'), offLift('p', 'r2', [180, 220]), chainLift('r3', 'p', [140, 160], [0.55, 0.7], false, 'w10_cw'), chainLift('r4', 'r3', [140, 160], [0.55, 0.7], false, 'w10_cw'), offLift('b', 'r4', [260, 300])],
+  pieces: [bank('a', [200, 240]), chainLift('r1', 'a', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r2', 'r1', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('p', 'r2', [160, 190]), chainLift('r3', 'p', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r4', 'r3', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('b', 'r4', [220, 260])],
   last: 'b',
-  sockets: [flag('a', 0.5), petals('r2', 'r2', 0.5, 1), petals('p', 'p', 0.5, 1), petals('r3', 'r3', 0.5, 1)],
+  // (no flag: every bank of it stands beside a gap)
+  sockets: [petals('r2', 'r2', 0.5, 1), petals('p', 'p', 0.5, 1), petals('r3', 'r3', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -1687,21 +1688,27 @@ const gearFirst = section({
   extraSeconds: GEAR_RIDE,
   pieces: [bank('a', [300, 340]), gearLift('g', 'a'), up('t', 'g', 0, [260, 300]), down('s', 't', 100, [140, 160]), down('c', 's', 110, [220, 260])],
   last: 'c',
-  sockets: [flag('a', 0.55), tip(GEAR, 'a', 0.2), petals('t', 't', 0.3, 1), petals('s', 's', 0.5, 1)],
+  sockets: [flag('a', 0.3), tip(GEAR, 'a', 0.15), petals('t', 't', 0.3, 1), petals('s', 's', 0.5, 1)],
   mirrorable: false,
 });
-/** two gear lifts: up one to a ledge, along it, up the next, then down the steps */
-const gearPair = section({
-  id: 'w10-gear-pair',
-  name: 'two gear lifts',
+/** a gear lift up to an animal's ledge, then a leap across a soft gap to the far wall and the steps down (one lift: the wait for a piston is
+ *  the slow part, so a section carries one and something to do after it) */
+const gearLeap = section({
+  id: 'w10-gear-leap',
+  name: 'a gear lift and a leap',
   archetypes: ['gauntlet', 'vine_runner'],
   phases: LIVE,
   difficulty: 6,
+  weight: 0.8,
   uses: [W10_THEME.gearlifts, GEAR],
-  extraSeconds: GEAR_RIDE * 2,
-  pieces: [bank('a', [260, 300]), gearLift('g1', 'a'), up('t1', 'g1', 0, [220, 260]), gearLift('g2', 't1'), up('t2', 'g2', 0, [240, 280]), down('s1', 't2', 110, [140, 160]), down('s2', 's1', 110, [140, 160]), down('s3', 's2', 100, [140, 160]), down('c', 's3', 100, [200, 240])],
+  extraSeconds: GEAR_RIDE,
+  pieces: [
+    bank('a', [260, 300]), gearLift('g', 'a'), up('t', 'g', 0, [300, 340]),
+    bank('f', [260, 300], { kind: 'jump', after: 't', dy: [10, 30], share: [0.55, 0.7], soft: true }, { landing: true }),
+    down('s1', 'f', 110, [140, 160]), down('c', 's1', 100, [200, 240]),
+  ],
   last: 'c',
-  sockets: [flag('a', 0.5), petals('t1', 't1', 0.5, 1), petals('s1', 's1', 0.5, 1), petals('s3', 's3', 0.5, 1)],
+  sockets: [flag('a', 0.3), foe('f1', 't', [0.45, 0.55], SMALL, 2), petals('f', 'f', 0.5, 1), petals('s1', 's1', 0.5, 1)],
   mirrorable: false,
 });
 /** a gear lift up to a guard's high walk (the gauntlet's) */
@@ -1715,10 +1722,10 @@ const gearGuard = section({
   extraSeconds: GEAR_RIDE,
   pieces: [bank('a', [260, 300]), gearLift('g', 'a'), up('t', 'g', 0, [420, 460]), down('s', 't', 110, [140, 160]), down('c', 's', 110, [220, 260])],
   last: 'c',
-  sockets: [flag('a', 0.5), foe('g1', 't', [0.55, 0.65], GUARDS, 3), petals('s', 's', 0.5, 1)],
+  sockets: [flag('a', 0.3), foe('g1', 't', [0.55, 0.65], GUARDS, 3), petals('s', 's', 0.5, 1)],
   mirrorable: false,
 });
-const W10_RISER_SECTIONS: SectionTemplate[] = [liftFirst, liftPair, liftRow, liftRods, cwFirst, cwStorm, cwRow, gearFirst, gearPair, gearGuard];
+const W10_RISER_SECTIONS: SectionTemplate[] = [liftFirst, liftPair, liftRow, liftRods, cwFirst, cwStorm, cwRow, gearFirst, gearLeap, gearGuard];
 const W10_BAG_SECTIONS: SectionTemplate[] = [...W10_RISER_SECTIONS, barrelFirst, barrelRun, barrelSteps, barrelYard, lanternWall, lanternSteps, lanternGuard, ...netGates, spoutFirst, spoutGap, spoutPair, spoutGuard, trapFirst, trapRow, trapGuard, trapSpikes, perchRun, perchClimb, perchRods, ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh];
 
 // ───────────────────────────── the list ─────────────────────────────
@@ -1809,7 +1816,7 @@ export const W10_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   [liftRods.id]: [1],
   ...Object.fromEntries([cwFirst, cwRow].map((s) => [s.id, [3, 6]] as const)),
   [cwStorm.id]: [3],
-  ...Object.fromEntries([gearFirst, gearPair].map((s) => [s.id, [6, 9]] as const)),
+  ...Object.fromEntries([gearFirst, gearLeap].map((s) => [s.id, [6, 9]] as const)),
   [gearGuard.id]: [9],
   ...Object.fromEntries([trapFirst, trapRow, trapGuard, trapSpikes].map((s) => [s.id, [9]] as const)),
   // (the grab bag's themes: the perches are 10-1's, the towers and bridges 10-7's; no other stage opens them)

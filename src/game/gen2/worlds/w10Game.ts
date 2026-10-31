@@ -39,8 +39,11 @@ function devForced(stage: number, sections: SectionTemplate[]): WorldManifest['r
   if (!sec) return null;
   const type = ({ 1: 'sprint', 3: 'stealth', 6: 'vine_runner', 7: 'purge', 9: 'gauntlet' } as Record<number, string>)[stage];
   const gates = (sec.uses ?? []).flatMap((u) => sections.filter((g) => g.teaches === u && g.phases.includes('start') && (g.archetypes === 'any' || (g.archetypes as string[]).includes(type))).slice(0, 1));
+  // (and the section that teaches each of its other lessons, the barrels' first barrel before a barrel run)
+  const taught = new Set(gates.map((g) => g.teaches));
+  const firsts = (sec.uses ?? []).filter((u) => !taught.has(u) && sec.teaches !== u).flatMap((u) => sections.filter((t) => t.teaches === u && !t.phases.includes('start') && (t.archetypes === 'any' || (t.archetypes as string[]).includes(type))).slice(0, 1));
   const key = `10-${stage}`;
-  return { ...W10_REQUIRED, [key]: [...gates.map((g) => ({ section: g.id, phase: 'start' as const })), ...(W10_REQUIRED[key] ?? []), { section: sec.id }] };
+  return { ...W10_REQUIRED, [key]: [...gates.map((g) => ({ section: g.id, phase: 'start' as const })), ...(W10_REQUIRED[key] ?? []), ...firsts.map((t) => ({ section: t.id })), { section: sec.id }] };
 }
 
 /** which stage holds which sections (STAGE-RULES §2 "Sameness"): w10Ground's W10_STAGE_ONLY, the rest by archetype and theme */

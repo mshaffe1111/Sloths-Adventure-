@@ -42,6 +42,7 @@ const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { zoneState, type Zone } from '../../src/game/zones.ts';
+import { trapState } from '../../src/game/trapdoor.ts';
 import { liftRisingIn, liftTopLeft } from '../../src/game/lift.ts';
 import { findRoute } from './route.ts';
 import { buildRoll } from './eraRoll.ts';
@@ -1139,12 +1140,31 @@ export class FirstTimerRun {
     // he waits short of one that is warning or firing, or due before he could be across, as a person does; only these looks, so the bands
     // measured on the other worlds' geysers and bolts stay as they were)
     if (p.grounded && dir !== 0) {
-      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => z.look && z.kind === 'geyser' && p.y > z.top - 160 && p.y <= z.bottom
+      // (and World 10's drop gates and gutter gushes, 'bolt' columns with a look: the gate shudders, the gutter spills first)
+      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => ((z.look && z.kind === 'geyser') || (z.kind === 'bolt' && (z.look === 'portcullis' || z.look === 'gush'))) && p.y > z.top - 160 && p.y <= z.bottom
         && (dir > 0 ? z.x0 - p.x > 0 && z.x0 - p.x < 70 : p.x - z.x1 > 0 && p.x - z.x1 < 70));
       if (ahead) {
         const st = zoneState(ahead, e.gameTime ?? this.t);
         const cross = (ahead.x1 - ahead.x0 + 60) / 250 + who.stopReact;
         if (st.phase !== 'idle' || st.untilActive < cross) {
+          this.blockedT = 0;
+          this.pending = null;
+          return {};
+        }
+      }
+    }
+    // (World 10's trapdoor grates, trapdoor.ts: he sees one shudder and hang open, so on the ground short of one he waits while it is open
+    // or shuddering, or due to open before he could be across; never on the grate itself, where the way out is forward)
+    if (p.grounded && dir !== 0) {
+      const now = e.gameTime ?? this.t;
+      const grate = e.currentStage.platforms.find((q: Platform) => q.trap && Math.abs(q.y - p.y) < 40
+        && (dir > 0 ? q.x - p.x > -4 && q.x - p.x < 70 : p.x - (q.x + q.width) > -4 && p.x - (q.x + q.width) < 70));
+      if (grate?.trap) {
+        const tr = grate.trap;
+        const st = trapState(tr, now);
+        const u = (((now + tr.offset) % tr.period) + tr.period) % tr.period;
+        const untilOpen = tr.period - tr.open - u;
+        if (st.open || st.shake > 0 || untilOpen < (grate.width + 40) / 250 + who.stopReact) {
           this.blockedT = 0;
           this.pending = null;
           return {};

@@ -312,11 +312,12 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   }
   // (a moving plank, lift.ts `bob` (World 9's rafts, logs, pistons and sinking slabs, World 10's chain lifts, counterweights and gear
   // lifts): boarding one is timed, at its top stop, so each is a beat even where the gap to it is only a step; on a soft pit's floor
-  // under it (Easy's way through) the plank comes down to head height, so passing under it is timed too)
+  // under it (Easy's way through) the plank comes down to head height, so passing under it is timed too; the beat starts a step short
+  // of it, where he stands and waits)
   for (const p of stage.platforms) {
     const l = p.lift;
     if (!l?.bob) continue;
-    span({ x0: p.x, x1: p.x + p.width, y0: l.top - 120, y1: l.bottom + 130 }, 1e9, 'Z', l.bob === 'sink' ? 'sinking slab: keep moving' : `${l.bob === 'piston' ? 'piston' : 'moving plank'}: board it at the top`, Math.min(1.2, l.wait + 0.4), 'moving planks');
+    span({ x0: p.x - 60, x1: p.x + p.width, y0: l.top - 120, y1: l.bottom + 130 }, 1e9, 'Z', l.bob === 'sink' ? 'sinking slab: keep moving' : l.bob === 'piston' ? 'piston: step on at the bottom' : 'moving plank: board it at the top', Math.min(1.2, l.wait + 0.4), 'moving planks');
   }
   for (const w of stage.proto?.watch ?? []) {
     const cycle = (w.calm[0] + w.calm[1]) / 2 + WATCH.warn + WATCH.pass;

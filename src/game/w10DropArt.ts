@@ -184,7 +184,9 @@ export function drawW10LanternSweep(ctx: CanvasRenderingContext2D, z: { x0: numb
   }
   if (at !== null) {
     // (the beam's painting turned about its point so its foot lands on the wall at `at`)
-    const f = W10_BAG_FRAMES['beam-1'];
+    // (every other tower its own painting of the beam, beam-1 or beam-2: two lanterns in one view never shine alike)
+    const beam = Math.round(cx / 97) % 2 ? 'beam-2' : 'beam-1';
+    const f = W10_BAG_FRAMES[beam];
     const len = Math.hypot(at - lx, base - ly);
     const k = len / (BEAM.fy - BEAM.py);
     const own = Math.atan2(BEAM.fx - BEAM.px, BEAM.fy - BEAM.py);
@@ -196,7 +198,7 @@ export function drawW10LanternSweep(ctx: CanvasRenderingContext2D, z: { x0: numb
     ctx.translate(lx, ly);
     ctx.rotate(own - want);
     ctx.globalAlpha = Math.min(1, 0.25 + 0.75 * u) * flick;
-    drawW10BagPart(ctx, 'beam-1', 0, 0, f.w, f.h, -BEAM.px * k, -BEAM.py * k, f.w * k, f.h * k);
+    drawW10BagPart(ctx, beam, 0, 0, f.w, f.h, -BEAM.px * k, -BEAM.py * k, f.w * k, f.h * k);
   }
   ctx.restore();
   return true;
@@ -214,6 +216,10 @@ export function drawW10BarrelStack(ctx: CanvasRenderingContext2D, z: Zone, st: Z
   const sx = z.dir === 1 ? z.x0 - 34 : z.x1 + 34;
   if (!drawW10Bag(ctx, 'barrel', sx - BARREL_W * 0.52, z.baseY + 3, h)) return false;
   drawW10Bag(ctx, 'barrel', sx + BARREL_W * 0.52, z.baseY + 3, h);
+  // (a tipped barrel (bag 'barrel-tip') leaning on the stack's back, away from the lane)
+  const tip = W10_BAG_FRAMES['barrel-tip'];
+  const th = h * (tip.h / f.h) * 0.95;
+  drawW10Bag(ctx, 'barrel-tip', sx - z.dir * BARREL_W * 1.25, z.baseY + 3, th);
   const rock = st.phase === 'warn' ? Math.sin(t * 30) * 0.12 * st.u : 0;
   ctx.save();
   ctx.translate(sx, z.baseY + 3 - h * 0.95);
