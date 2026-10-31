@@ -22,6 +22,7 @@
  *                  stage's are rolled with it, so it gets every creature its world's generator can place (GEN_FOES), and a boss lair
  *                  the minions its boss calls in (BOSS_MINIONS)
  *   dress          Worlds 1, 2 and 5's dressing sets (dressArt.ts, artDress.ts dressSets), for a built stage
+ *   dress:N        World N's (1-7) new dressing sheet (hf-props: dressNewData.ts), for a built stage
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
@@ -43,6 +44,7 @@
  * stage on rolls 1-3 and fails when a sheet it draws is not in its list.) The engine still asks for the built stage's own creatures
  * as it starts (sheetWarm.ts warmStageSheets), for a roll that holds something these lists did not foresee.
  */
+import { DRESS_NEW_URLS } from './dressNewData.ts';
 import { buildProtoStage, HAND_STAGES, W3_PUZZLES } from './protoStage.ts';
 import { stageAnims, stageExtras } from './sheetWarm.ts';
 import { builtStageKeys } from './stageManifest.ts';
@@ -190,6 +192,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
   // (Worlds 1, 2 and 5 on their built stages, and Worlds 8-10 on every stage: the dressing sets' sheet, artDress.ts dressSets)
   if (((built && (w === 1 || w === 2 || w === 5)) || w >= 8) && cfg.objectiveType !== 'boss_lair') out.push('dress');
+  // (Worlds 1-7 on their built stages: the world's new dressing sheet, hf-props: artDress.ts dressSets, dressNewData.ts)
+  if (built && w <= 7 && DRESS_NEW_URLS[w] !== undefined && cfg.objectiveType !== 'boss_lair') out.push(`dress:${w}`);
   // (Worlds 8-10: the pieces set into their banks' faces, w810FaceArt.ts)
   if (w >= 8 && cfg.objectiveType !== 'boss_lair') out.push('faces810');
   // (World 8's fungus steps and knot perches: 8-2's and 8-5's steps, 8-3's perches)

@@ -63,7 +63,7 @@ import { BOSS_FX_URL, warmBossFx } from './bossFx.ts';
 import { BOSS_ATK_URL, bossAtkReady } from './bossAtk.ts';
 import { perfNote } from './perfLog.ts';
 import { groundUrl, hasGround, warmGround } from './groundPaint.ts';
-import { DRESS_URL, dressReady } from './dressArt.ts';
+import { DRESS_URL, dressNewReady, dressNewUrl, dressReady } from './dressArt.ts';
 import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stageArtReady } from './stageArt.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -104,6 +104,13 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'dress') {
       dressReady();
       urls.push(DRESS_URL);
+    } else if (k.startsWith('dress:')) {
+      const w = Number(k.slice(6));
+      const url = dressNewUrl(w);
+      if (url) {
+        dressNewReady(w);
+        urls.push(url);
+      }
     } else if (k === 'faces810') {
       w810FaceReady();
       urls.push(FACE810_URL);

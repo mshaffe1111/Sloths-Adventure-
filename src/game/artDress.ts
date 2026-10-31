@@ -23,8 +23,7 @@ import type { KitArtName } from './puzzleAtlasData.ts';
 import type { W3Decor } from './w3Art.ts';
 import type { Collectible, Platform } from './types.ts';
 import type { RoomSpec } from './puzzleKit.ts';
-import { dressSize, type DressPiece } from './dressArt.ts';
-import type { DressName } from './dressAtlasData.ts';
+import { dressSize, type AnyDress as DressName, type DressPiece } from './dressArt.ts';
 
 export interface DressInput {
   world: number;
@@ -177,7 +176,7 @@ function bridges(d: DressInput, out: KitDecor[], inRoom: (x: number, pad: number
  *   clutter  small things lying along the long floors
  * Pictures only, like the rest of this file: never a platform or a pickup, and no draw from the stage's own random stream.
  */
-export const DRESS_SETS: Record<1 | 2 | 5 | 8 | 9 | 10, Record<'bank' | 'hang' | 'clutter', DressName[][]>> = {
+export const DRESS_SETS: Record<DressWorld, Record<'bank' | 'hang' | 'clutter', DressName[][]>> = {
   1: {
     bank: [['w1Fern', 'w1Mushroom', 'w1Pebble'], ['w1Stump', 'w1Acorns', 'w1Sprig']],
     hang: [['w1Hang1', 'w1Hang2'], ['w1Hang2', 'w1Hang1']],
@@ -211,12 +210,13 @@ export const DRESS_SETS: Record<1 | 2 | 5 | 8 | 9 | 10, Record<'bank' | 'hang' |
     clutter: [['w10Crates', 'w10Banner', 'w10Crate'], ['w10Cage', 'w10Brazier', 'w10Rack']],
   },
 };
-/** the worlds dressed this way */
-export const DRESS_WORLDS = [1, 2, 5, 8, 9, 10] as const;
+/** the worlds dressed this way (Worlds 3, 4, 6 and 7 from hf-props, 2026-10-31: their new sheets only) */
+export const DRESS_WORLDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
+export type DressWorld = (typeof DRESS_WORLDS)[number];
 
 /** the dressing sets laid in a stage of World 1, 2 or 5 (empty for any other world) */
 export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }[] }): DressPiece[] {
-  const sets = DRESS_SETS[d.world as 1 | 2 | 5 | 8 | 9 | 10];
+  const sets = DRESS_SETS[d.world as DressWorld];
   if (!sets) return [];
   const out: DressPiece[] = [];
   const boxes: Box[] = d.rooms.map((r) => roomBox(r, d.platforms));

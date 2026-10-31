@@ -367,7 +367,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
  */
 export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { rooms: RoomSpec[] } }, seed: number) {
   const c = st.config;
-  if (!DRESS_WORLDS.includes(c.worldIndex as 1 | 2 | 5 | 8 | 9 | 10) || c.objectiveType === 'boss_lair') return;
+  if (!DRESS_WORLDS.includes(c.worldIndex as (typeof DRESS_WORLDS)[number]) || c.objectiveType === 'boss_lair') return;
   if (!st.proto && c.worldIndex < 8) return;
   const ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
   if (!ds.length) return;

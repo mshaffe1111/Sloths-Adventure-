@@ -2,3 +2,8 @@ hf-props jobs (2026-10-31, branch hf-props; HF cap $14). Each job: tools/art/hfd
 GitHub raw at a pinned commit; Qwen-Image img2img + the style model (0.8); starts reference/prop-sheets/qa-notes/hf-props/starts/.
 Bucket mshaffe111/w5-xfer under hfprops/<tag>/out/. rtx-pro-6000 ~$2.75/h.
 w6p   6ae65b200e0338d1bb7d436f  21:18Z  W6 probe, 2 takes (s82, s90, seed 5), spec at c589fcbd
+     RESULT: the rough boxes stayed boxes at 0.82 (and the anchors moved cells). Grid-canvas approach dropped.
+t6    6ae65ba50e0338d1bb7d4386  21:20Z  W6 single pieces from plain magenta at strength 1.0, 10 takes, spec at 29f19269
+     RESULT: clean single pieces, but flatter and more cartoon than the game; key drifts to a darker pink and bleeds into the
+     subject (the crab's legs); a stone base under some pieces.
+t6a   6ae65c590e0338d1bb7d43b7  21:23Z  probe: 3 W6 pieces x (anchor canvas: an approved piece beside, 0.88 | plain, 0.88), spec at 80530e93
