@@ -80,6 +80,8 @@ export interface MeecaControls {
   circle?: number;
   /** a finger held still on the glass (TouchController.tsx): carves only after HOLD_AFTER_TRIES tries that did not */
   touchHold?: boolean;
+  /** tries at the carving that carved nothing since the last frame (TouchController.tsx) */
+  carveTry?: number;
 }
 
 const near = (a: number, b: number, d: number) => Math.abs(a - b) <= d;
@@ -112,10 +114,10 @@ export const PAST = 120;
 export const WALL_PAD = 14;
 /** more than this in one frame is her being put somewhere (a flag, a test), not a move into the wall (px; her run is ~10 a frame) */
 export const WALL_STEP = 48;
-/** tries at a trunk that carved nothing (a tap, a poke, a flick) before a still finger held down carves too (the accessible way) */
+/** tries at a trunk that carved nothing (a still tap, or a finger held still: TouchController.tsx) before a still finger held down carves too (the accessible way) */
 export const HOLD_AFTER_TRIES = 3;
-/** a tap at the trunk is a try once this long has passed with no jump, flick or circle after it (s) */
-const TRY_SETTLE = 0.3;
+/** at a trunk, a slide walks her only after this long (s): long enough for a circle to show it is one */
+export const STEER_WAIT = 0.35;
 /** how long the "done" moment shows (the M glowing, Flicker happy) */
 export const DONE_S = 1.6;
 /** at a trunk, the ring's middle stays at least this far in from the left edge of the view (world px: the ring, its glow, Flicker) */
@@ -196,14 +198,14 @@ export class MeecaPlay {
   /** at the trunk to cut now: the tries that carved nothing (a tap, a poke, a flick), and when the last was */
   tries = 0;
   private tryAt = -99;
-  /** a tap or poke at the trunk, waiting to see if it stays one (TRY_SETTLE) */
-  private pendTry = -1;
   /** the still-finger way of carving is open (after HOLD_AFTER_TRIES tries) */
   holdOk = false;
   /** the last trunk cut, and when (the "done" moment: its M glows, Flicker is glad) */
   doneTrunk = -1;
   doneAt = -99;
   private steer: -1 | 0 | 1 = 0;
+  /** when the steer last changed */
+  private steerAt = -99;
   private camX = NaN;
   private camY = NaN;
   /** Flicker's hints asked for, by room, and in all (the medal counts them) */
@@ -358,15 +360,13 @@ export class MeecaPlay {
     this.touchHold = !!s.touchHold;
     this.circle = Math.abs(s.circle ?? 0);
     s.circle = 0;
-    // (a try at the trunk that carved nothing: a tap or a poke while she stands there and nothing is being cut. Counted only once it has
-    // stayed one for a moment: the touch controls start every right-hand touch as a tap and take it back if it turns into a flick, a
-    // jump or a kick, which are trying the way on, not the carving)
-    if (this.carveSpot && !this.carvingNow && this.circle <= 0 && (s.punchPressed || s.megaPunchPressed) && this.pendTry < 0) this.pendTry = this.t;
-    if (s.jumpPressed || s.kickPressed || this.circle > 0 || !this.carveSpot) this.pendTry = -1;
-    if (this.pendTry >= 0 && this.t - this.pendTry >= TRY_SETTLE && this.host.player.grounded) {
-      this.pendTry = -1;
+    // a try at the trunk that carved nothing: the touch controls say (a still tap, or a finger held still, there; never a slide, a flick
+    // or a circle). QA 2026-10-31: guessed here from taps, every flick at the trunk counted, since a touch starts as a tap
+    const tried = s.carveTry ?? 0;
+    s.carveTry = 0;
+    if (tried > 0 && this.carveSpot && !this.carvingNow) {
       this.tryAt = this.t;
-      this.tries++;
+      this.tries += tried;
       if (this.tries >= HOLD_AFTER_TRIES && !this.holdOk) {
         this.holdOk = true;
         this.saidAt.push({ id: MEECA_SAY.carveHoldOk.id, t: this.t, x: this.host.player.x });
@@ -378,7 +378,12 @@ export class MeecaPlay {
     if (s.megaPunchPressed && this.carveSpot) this.pokeAt = this.t;
     if (this.circle > 0) this.pokeAt = -1;
     s.megaPunchPressed = false;
-    this.steer = s.left ? -1 : s.right ? 1 : 0;
+    const steer = s.left ? -1 : s.right ? 1 : 0;
+    if (steer !== this.steer) this.steerAt = this.t;
+    this.steer = steer;
+    // at a trunk, a new slide waits a moment before it walks her: a circle starts as a slide until it has turned enough to be one, and
+    // that start walked her off the carving spot (QA 2026-10-31, the real app: 180 px before the circle took). Walking away still works
+    if (this.carveSpot && steer !== 0 && this.t - this.steerAt < STEER_WAIT) s.left = s.right = false;
     const locked = this.phase !== 'play' && this.phase !== 'last';
     if (locked) {
       s.left = s.right = s.up = s.down = s.jumpPressed = s.jumpHeld = false;

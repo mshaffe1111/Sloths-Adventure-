@@ -128,7 +128,7 @@ test('5-M: three tries that carve nothing open the slow way: a still finger held
   s.frame();
   for (let i = 0; i < 30; i++) s.frame({ touchHold: true });
   assert.equal(mc.cut[0], 0, 'a held finger carves nothing at first');
-  // (a flick at the wall starts as a tap in the touch controls, then jumps: trying the way on, not a try at the carving)
+  // (jumps and punches at the wall are trying the way on, not the carving: only the touch controls' still taps and holds are tries)
   for (let k = 0; k < 4; k++) {
     s.frame({ punch: true });
     s.frame({ jump: true, press: true });
@@ -136,7 +136,7 @@ test('5-M: three tries that carve nothing open the slow way: a still finger held
   }
   assert.equal(mc.tries, 0, 'jumps are not tries');
   for (let k = 0; k < 3; k++) {
-    s.frame({ punch: true });
+    s.frame({ carveTry: 1 });
     for (let i = 0; i < 20; i++) s.frame();
   }
   assert.equal(mc.holdOk, true);

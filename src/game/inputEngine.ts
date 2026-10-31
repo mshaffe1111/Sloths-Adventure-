@@ -89,6 +89,10 @@ export class InputEngine {
     if (on) this.fresh();
     this.state.touchHold = on;
   }
+  /** a tap or a still hold at the carving spot that was not a circle (state.carveTry: meecaPlay.ts counts them) */
+  public noteCarveTry() {
+    this.state.carveTry = (this.state.carveTry ?? 0) + 1;
+  }
   /** who is holding (state.hold is any of them) */
   private holds = { touch: false, keys: false, pad: false, gamepad: false };
   /** a hold, from one of the ways of playing (a still thumb, the hold key, the Pad's button, a pad's bumper) */

@@ -41,6 +41,8 @@ export interface Pad {
   circle?: number;
   /** a finger held still on the glass (Meeca's carving, after a few tries: meecaPlay.ts HOLD_AFTER_TRIES) */
   touchHold?: boolean;
+  /** tries at the carving (a still tap or hold at the trunk, as the touch controls report them) */
+  carveTry?: number;
 }
 
 /** the pad, with the real input's jump buffer: a press waits 0.16 s to be used (inputEngine.ts) */
@@ -265,6 +267,7 @@ export class RealPlay {
     s.hold = !!pad.hold;
     s.circle = (s.circle ?? 0) + (pad.circle ?? 0);
     s.touchHold = !!pad.touchHold;
+    s.carveTry = (s.carveTry ?? 0) + (pad.carveTry ?? 0);
     if (pad.press) {
       s.jumpPressed = true;
       this.input.jumpBuffer = 0.16;

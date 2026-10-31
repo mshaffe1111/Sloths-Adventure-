@@ -529,6 +529,11 @@ export interface InputState {
    * (meecaPlay.ts HOLD_AFTER_TRIES, the accessible way). Unset = not held.
    */
   touchHold?: boolean;
+  /**
+   * tries at Meeca's carving that carved nothing, since the engine last took them (TouchController.tsx: a short still tap, or a finger
+   * held still, at the carving spot; never a slide, a flick or a circle)
+   */
+  carveTry?: number;
 }
 
 export interface MissionProgress {
