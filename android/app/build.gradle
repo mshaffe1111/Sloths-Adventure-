@@ -20,6 +20,15 @@ android {
     // the upload key: never in the repo. CI writes it from the GitHub secrets (ANDROID_KEYSTORE_BASE64 and the passwords) to a file and
     // passes its path here; without them the release build is left unsigned (reference/PLAY-STORE.md, "Release build")
     signingConfigs {
+        // the sideload (debug) APK on the Releases page: ONE fixed key, kept in the repo, so each new APK installs over the last one.
+        // (Without it every CI run made a fresh debug key and Android refused the update: "conflicts with an already installed app",
+        // Matt 2026-10-31.) This is not the Play upload key; that one never goes in the repo (see release below).
+        debug {
+            storeFile file('sideload-debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
         release {
             def ks = System.getenv("ANDROID_KEYSTORE_FILE")
             if (ks) {
