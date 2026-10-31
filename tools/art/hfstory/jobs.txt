@@ -31,3 +31,7 @@ live-b 6ae667040e0338d1bb7d467c created 22:09Z: spec-live-b.json, clips of the n
 wp-redov 6ae66701 FAILED at once: spec written with a placeholder commit (404); ~$0.03
 wp-redov2 6ae667e5c78863f9c62f51dc created 22:12Z: the same round 5, fixed urls
 round 5 verdicts: KEPT 10-storm v62 (castle on its crag low in the frame; the stretched top sky patched after), 5-dusk v62. THROWN 9-dusk v62/v72 (floor all lava), 5-dusk v72 (no floor), 10-storm v72 (a white streak in the sky); 9-night not used (W9 keeps its scenery)
+wp-full5 6ae6692ac78863f9c62f525b created 22:18Z: full pass 10-storm v62, 5-dusk v62
+  live w4-day THROWN: Wan barely moved it (stray blobs only)
+  live w1-storm THROWN: barely moved (5%)
+in-game round 4: KEPT w10-storm (v62, top-sky streak painted out; upright shows the castle, sideways it sits behind the words box), w5-dusk (v62)
