@@ -642,15 +642,40 @@ let darkCanvas: HTMLCanvasElement | null = null;
 const DARK_RES = 0.5;
 
 /**
+ * The light holes cut in the dark, baked once (WIP-17: no gradient built per light per frame): `soft` falls off from a hot middle, as the
+ * old per-frame gradient did; `ring` stays clear to near its edge and then closes in fast, so the lantern's light reads as a shaped ring
+ * with real dark outside it (8-4's jar).
+ */
+const holePics: Partial<Record<'soft' | 'ring', HTMLCanvasElement>> = {};
+function holePic(kind: 'soft' | 'ring'): HTMLCanvasElement | null {
+  const have = holePics[kind];
+  if (have) return have;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 128;
+  const g = cv.getContext('2d');
+  if (!g) return null;
+  const gr = g.createRadialGradient(64, 64, kind === 'soft' ? 6.4 : 0, 64, 64, 64);
+  const stops: Array<[number, number]> = kind === 'soft' ? [[0, 1], [0.55, 0.75], [1, 0]] : [[0, 1], [0.72, 1], [0.86, 0.55], [1, 0]];
+  for (const [at, a] of stops) gr.addColorStop(at, `rgba(0,0,0,${a})`);
+  g.fillStyle = gr;
+  g.fillRect(0, 0, 128, 128);
+  holePics[kind] = cv;
+  return cv;
+}
+
+/**
  * The dark itself, drawn over the finished scene in screen space: a near-black veil with soft holes cut out for Pokey's lantern
  * and every firefly. `level` fades it in and out at the edges of a dark stretch.
  */
 export function drawDarkness(
   ctx: CanvasRenderingContext2D, vw: number, vh: number, level: number,
   hero: { x: number; y: number }, lights: ReadonlyArray<{ x: number; y: number; r: number }>, t: number,
-  opts: { heroR?: number; ink?: string; fireflies?: boolean; depth?: number } = {},
+  opts: { heroR?: number; ink?: string; fireflies?: boolean; depth?: number; ring?: boolean } = {},
 ) {
   if (level <= 0.01 || typeof document === 'undefined') return;
+  const soft = holePic('soft');
+  const ring = opts.ring ? holePic('ring') : soft;
+  if (!soft || !ring) return;
   if (!darkCanvas) darkCanvas = document.createElement('canvas');
   // the veil is all soft edges, so it is painted at half the CSS resolution and stretched over the screen: a phone used to fill, cut and
   // blend a canvas the size of the whole screen every frame (PF-1)
@@ -666,23 +691,18 @@ export function drawDarkness(
   d.fillStyle = opts.ink ?? 'rgb(3, 6, 22)';
   d.fillRect(0, 0, vw, vh);
   d.globalCompositeOperation = 'destination-out';
-  const hole = (x: number, y: number, r: number, a: number) => {
-    const g = d.createRadialGradient(x, y, r * 0.1, x, y, r);
-    g.addColorStop(0, `rgba(0,0,0,${a})`);
-    g.addColorStop(0.55, `rgba(0,0,0,${a * 0.75})`);
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    d.fillStyle = g;
-    d.beginPath();
-    d.arc(x, y, r, 0, Math.PI * 2);
-    d.fill();
+  const hole = (pic: HTMLCanvasElement, x: number, y: number, r: number, a: number) => {
+    d.globalAlpha = a;
+    d.drawImage(pic, x - r, y - r, r * 2, r * 2);
   };
   // Pokey's lantern
-  hole(hero.x, hero.y, (opts.heroR ?? 210) + Math.sin(t * 3) * 6, 1);
+  hole(ring, hero.x, hero.y, (opts.heroR ?? 210) + Math.sin(t * 3) * 6, 1);
   for (let i = 0; i < lights.length; i++) {
     const l = lights[i];
     const bob = Math.sin(t * 1.7 + i * 2.1);
-    hole(l.x + Math.cos(t * 0.9 + i) * 8, l.y + bob * 6, l.r * (0.94 + 0.06 * Math.sin(t * 4 + i)), 0.97);
+    hole(soft, l.x + Math.cos(t * 0.9 + i) * 8, l.y + bob * 6, l.r * (0.94 + 0.06 * Math.sin(t * 4 + i)), 0.97);
   }
+  d.globalAlpha = 1;
   d.globalCompositeOperation = 'source-over';
   ctx.save();
   ctx.globalAlpha = (opts.depth ?? 0.9) * level;

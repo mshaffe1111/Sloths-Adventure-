@@ -108,7 +108,8 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('sprint', 'As the Light Goes', 'Keep going as the light goes. The fireflies will show the way.'),
     S('harvest', 'Night Blooms', 'Gather {n} pale night blooms by firefly light.'),
     S('vine_runner', 'Long Swings', 'Swing through the dark treetops.'),
-    S('stealth', 'Bat Roosts', 'Creep past the roosts without waking them.'),
+    // 8-4 is the special stage, the Firefly Lantern Run (w8Lantern.ts; Matt's pick and the lead's approved name and goal, 2026-10-29)
+    S('sprint', 'Lantern Run', 'Carry the firefly jar through the dark treetops.'),
     S('vine_runner', 'Next Branch', 'Next branch, then the one after.'),
     S('sprint', 'Glide by Moonlight', 'Glide from tree to tree by moonlight.'),
     S('ascent', 'The Tallest Tree', 'Climb the tallest tree to see the way ahead.'),
