@@ -544,7 +544,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   }
   /** soft chairs along the path (they tug), with wrapped ones (the guests who sat) between */
   function chairWalk(n: number, wrapped: number) {
-    if (n) fresh('chair', 80);
+    if (n) fresh('chair', -150);
     const x0 = x;
     const live: number[] = [];
     for (let i = 0; i < n; i++) {
@@ -896,8 +896,11 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       // the first cake on its own, with room to try a hop over it, and the pair after (QA, 5-2, 2026-10-26: the line was followed at
       // once by two cakes). Plain stumps in the room before each: no line of their own
       stumps(2);
+      // (a plain stretch before each: upright, the view ahead is short, and a cake met just off a stump or a landing is seen too late)
+      rest(R.r(240, 300), false);
       cakeRow(1);
       gap();
+      rest(R.r(140, 180), false);
       cakeRow(2);
       flag();
       stumps(2);
