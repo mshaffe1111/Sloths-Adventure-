@@ -17,6 +17,21 @@
 | N11 smoke cover | **deferred**: a timed hide reads as the same watcher beat as the spires (no variety), so 9-4 took N6 and N9 instead | | | |
 | N12 raft lock room | **waiting** on the lead (alternate vs 4th room; as built from the kit it plays close to 9-5's plates room) | | HF obsidian chunk cut, ready | |
 
+Dot's new lines for Matt (all under 10 words; in the game as written, `w9.ts W9_TIPS`; each said once, the first time):
+
+| Piece | Stage that teaches it | Line |
+|---|---|---|
+| rafts | 9-1 | "Those rafts rise and sink. Watch them." |
+| hot ash wind | 9-1 | "Hot wind! It'll push you back." |
+| flare slabs | 9-1 | "Those slabs flare up when they glow." |
+| ash caps | 9-1 | "Ash caps! Bounce up to the high rock." |
+| sinking slabs | 9-3 | "Ember slabs sink when you stand on them." |
+| lavafalls | 9-4 | "Lava pours from up there. Watch the drips." |
+| lava surges | 9-4 | "Lava surges down the channel. Listen!" |
+| pistons | 9-8 | "These stone columns rise and fall." |
+(The logs ride like the rafts and the ropes are World 1's shimmy: no new line. The burnt-bridge, smoke and raft-lock lines of §3 are not in
+the game.)
+
 Themes now: 9-1 6 (vents, chasms, rafts, gusts, flares, caps), 9-3 5 (chains, climbs, crust, sinkers, ropes), 9-4 5 (spires, ferns, coils,
 lavafalls, surges), 9-5 5 (glides, bursts, logs, flares, gusts), 9-6 6 (cats, prowl, lavafalls, surges, sinkers, caps), 9-8 5 (ledges,
 channels, pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls, sinkers). Neighbour pairs share no new theme. Lessons: flares and
