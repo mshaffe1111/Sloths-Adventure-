@@ -71,17 +71,20 @@ export function drawRoost(ctx: CanvasRenderingContext2D, x: number, groundY: num
 
 /** a sleeper's tell: a slow "z" drifting up from (x, y), one at a time, fading out (the roost's, 8-1's dozing boa) */
 export function drawDozeZ(ctx: CanvasRenderingContext2D, x: number, y: number, t: number, phase = 0): void {
-  const u = (t * 0.45 + phase) % 1;
-  const zx = x + 18 * Math.sin(u * 5);
-  const zy = y - 60 * u;
+  // (two z's half a drift apart, so one always reads clearly on a phone: a single fading z was easy to miss in the stills)
   ctx.save();
-  ctx.globalAlpha = Math.sin(u * Math.PI) * 0.85;
   ctx.fillStyle = '#e9e3ff';
   ctx.strokeStyle = 'rgba(30, 20, 60, 0.9)';
   ctx.lineWidth = 3;
-  ctx.font = `bold ${Math.round(16 + 10 * u)}px sans-serif`;
-  ctx.strokeText('z', zx, zy);
-  ctx.fillText('z', zx, zy);
+  for (const k of [0, 0.5]) {
+    const u = (t * 0.45 + phase + k) % 1;
+    ctx.globalAlpha = Math.min(1, Math.sin(u * Math.PI) * 1.3);
+    ctx.font = `bold ${Math.round(20 + 12 * u)}px sans-serif`;
+    const zx = x + 18 * Math.sin(u * 5);
+    const zy = y - 60 * u;
+    ctx.strokeText('z', zx, zy);
+    ctx.fillText('z', zx, zy);
+  }
   ctx.restore();
 }
 
