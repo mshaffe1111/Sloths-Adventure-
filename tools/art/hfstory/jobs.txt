@@ -16,3 +16,5 @@ live verdicts: courtyard, nest-night, gates KEPT (8 MB decoded cap, 12-frame cro
   tea THROWN: the moving parts are fine web threads and the table, which the soft loop would blur
   village THROWN: motion fell on the rope bridges and huts (detail the soft loop would blur). Rule learned: whole-plate clips only for skies, weather, mist
 round 3/4 verdicts: KEPT 4-day t62 (a creature grew from the start's feather: painted out by hand after the full pass), 6-dusk t62, 8-night t72, 2-day u62. THROWN: 4-day t72 (creature), 6-dusk t72 (flat), 9-dusk t62 (abstract texture), 6-day t62/t72 (floor is water; W6 day keeps its scenery, 9 panels)
+wp-full3 6ae6641c0e0338d1bb7d4565 created 21:56Z: full pass for 4-day t62, 6-dusk t62, 8-night t72, 2-day u62
+KEPT 9-dusk t72, 1-dusk u72
