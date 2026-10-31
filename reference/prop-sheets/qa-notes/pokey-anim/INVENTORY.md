@@ -10,7 +10,7 @@ Ranked by how often a player sees it (my estimate from the stages: seconds on sc
 | 3 | Standing / idle | idle + blink painted, breathing bob; 5 idle clips (49 frames each) after 4 s | Good | Nothing |
 | 4 | Landing | land/recover painted, 3 on a hard drop (new) | Good; the engine's own landing dust is very big next to him | Smaller landing dust (engine.ts, needs an owner) |
 | 5 | Turn / skid / run start | new tonight: front-view turn, painted brace skid + 2 puffs, lean | Crisp, physics unchanged | Nothing |
-| 6 | Walk (slow steer) | 8 painted (standard sheet, second take) | Steppy next to the 15-frame video run; visible on every gentle steer | **A video walk (the move-walk slot exists, never filled): one Wan job, ~$0.50** |
+| 6 | Walk | 17 video (new tonight, seamless loop) | Only seen for a frame or two as he speeds up or slows down, and in the sleepy fog: there is no slow steer (my first ranking was wrong) | Nothing |
 | 7 | Double jump flip | painted roll, 5 poses + up to ~80 degrees of code turn (new) | Reads as a forward roll; still a little code-spun | Wan can't roll him (2 seeds failed). A Qwen-Edit pass on his tuck at 90 and 270 degrees would close the gaps |
 | 8 | Punch combo (jab, cross, hook) | 6 / 7 / 7 video | Snappy reach (good); the jab's way back popped to a twisted pose, fixed tonight by reordering its own frames | 4 Wan punches failed tonight (off-model wraps, lost face, back turned). A cross/hook-matched re-roll from the cross's own frame as the start |
 | 9 | Climb (trunk, vine) | 21 video (new tonight), hugging the trunk; down plays it backward | Smooth | A top-out settle (no clip yet); a real climb-down (the Wan try hardly moved) |
@@ -28,5 +28,5 @@ Ranked by how often a player sees it (my estimate from the stages: seconds on sc
 | 21 | Cheer, knocked out | 30 video / 1 painted | Fine | Nothing |
 | 22 | Slide (7-4) | none for Pokey yet | n/a | A belly-dive slide clip is on file (pa-slide-s3, a clean loop) if 7-4 wants it |
 
-**My order for tomorrow:** the walk (seen constantly, cheap, the slot is ready), then the rope shimmy with the rope drawn into the start
-(Matt's own complaint), then a cross/hook-matched punch re-roll, the flip's last gaps and the vine swing.
+**My order for tomorrow:** the rope shimmy (Matt's own complaint; Wan has now failed it 9 times, so a different route: Qwen-Edit in-betweens
+of his 7 cells, or a 12-cell sheet), then a cross/hook-matched punch re-roll, a top-out settle for the climb, the flip's last gaps and the vine swing.

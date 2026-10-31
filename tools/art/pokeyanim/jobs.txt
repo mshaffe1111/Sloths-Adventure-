@@ -26,3 +26,5 @@ pokey-anim3   6ae5583dc78863f9c62eee59  launched 10:53 PM ET  spec-anim3.json @ 
               him back and front every punch. The punches keep their sheets.
 Spend: pokey-anim2 02:20-02:53Z (32.7 min) ~ $1.50; pokey-anim3 02:53-03:03Z (10.0 min) ~ $0.46.
 Tonight's total: ~$3.57 of the $20 cap (anim1 $1.61 + anim2 $1.50 + anim3 $0.46).
+pokey-anim4   6ae55c38c78863f9c62eefc0  launched 11:10 PM ET  spec-anim4.json @ 20914f6: the walk on the spot, seeds 3, 11 (the most-seen move still on painted frames)
+              KEPT pa-walk-s3 frames 13-29 (a seamless 17-frame loop, outline difference 0.02 at the seam) -> move-walk.webp. 0-8 wave an arm.
