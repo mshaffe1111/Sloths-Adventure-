@@ -5,6 +5,7 @@
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
  */
+import { drawW9Chain, loadW9Irons } from './w9SwingArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
@@ -266,7 +267,7 @@ export function setLianaTops(on: boolean) {
   lianaTops = on;
 }
 /** worlds whose own painted liana is not a single hanging vine to swing on (see drawSwingLianaArt) */
-const SWING_LIANA_FROM_W1 = new Set([2, 9]);
+const SWING_LIANA_FROM_W1 = new Set([2]);
 /** how thick a swing liana's strand is drawn, in world units */
 const LIANA_THICK = 15;
 
@@ -277,10 +278,15 @@ const LIANA_THICK = 15;
  */
 export function drawSwingLianaArt(ctx: CanvasRenderingContext2D, v: { x: number; topY: number; bottomY: number; id: number }, ang: number): boolean {
   if (!protoArtReady()) return false;
+  // World 9 swings on iron chains from eye bolts (its own painted irons: w9SwingArt.ts; its kit's painted rope is a swing seat on two
+  // ropes); the game's liana stands in until they load
+  if (kitWorld === 9) {
+    loadW9Irons();
+    return drawW9Chain(ctx, v, ang);
+  }
   // (World 7: a stone lintel with its own knotted liana, not the leafy clump: w7TempleArt.ts)
   if (kitWorld === 7 && drawW7SwingLiana(ctx, v, ang)) return true;
-  // World 2's painted rope (a coil at the top and a loop at the bottom) read as a noose, and World 9's is a swing seat on two ropes:
-  // those worlds swing on World 1's jungle liana instead
+  // World 2's painted rope (a coil at the top and a loop at the bottom) read as a noose: it swings on World 1's jungle liana instead
   const borrow = SWING_LIANA_FROM_W1.has(kitWorld);
   const { img, f } = borrow ? { img: imgs.get(1)!, f: PROTO_FRAMES.liana } : frameOf('liana');
   const own = !borrow && kitWorld !== 1 && !!KIT_FRAMES[kitWorld]?.liana && img === imgs.get(kitWorld);

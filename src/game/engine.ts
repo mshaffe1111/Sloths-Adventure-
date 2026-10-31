@@ -2,6 +2,7 @@ import { buzz } from './haptics.ts';
 import { nativeApp } from './appShell.ts';
 import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
 import { SlowWatch } from './slowTip.ts';
+import { drawLavaSplash, drawW9Bush, drawW9Scenery, type W9SceneryItem } from './w9Art.ts';
 import { drawW7Chairs } from './w7ChairsArt.ts';
 import { drawSentrySprite } from './sentrySprite.ts';
 import { lastSheet } from './atlasLoader.ts';
@@ -432,6 +433,8 @@ export class GameEngine {
   private kitSteer = 0;
   private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
+  /** World 9: where and when Pokey last fell into the lava (its painted splash and steam play there: w9Art.ts drawLavaSplash) */
+  private lavaSplashAt: { x: number; y: number; t: number } | null = null;
   /** when he came within reach of each water sign (its index), so it rattles for a moment (waterSign.ts signRattle) */
   private signNear = new Map<number, number>();
   private pushSoundT = 0;
@@ -2436,9 +2439,12 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
-        this.spawnWaterSplash(p.x, waterY);
+        // (World 9's water line is lava: its painted splash and steam, no words in the world, w9Art.ts)
+        const lava = this.currentStage.config.worldIndex === 9;
+        if (lava) this.lavaSplashAt = { x: p.x, y: waterY, t: this.gameTime };
+        else this.spawnWaterSplash(p.x, waterY);
         sound.playSplash(0);
-        this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
+        if (!lava) this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (this.lanternRun) this.lanternFall();
@@ -5105,6 +5111,8 @@ export class GameEngine {
     if (waterY !== undefined) {
       const bottom = this.camera.y + this.camera.viewportHeight + 40;
       drawWater(ctx, world.id, x0, x1, waterY, bottom, t);
+      // (World 9: the painted splash and steam where he fell into the lava)
+      if (this.lavaSplashAt) drawLavaSplash(ctx, this.lavaSplashAt.x, this.lavaSplashAt.y, this.gameTime - this.lavaSplashAt.t);
     }
     for (const cp of this.currentStage.checkpoints ?? []) {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
@@ -5951,6 +5959,12 @@ export class GameEngine {
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
+    // World 9's set dressing on gen2 (Matt's w9c sheets: w9Art.ts), behind the basalt's front lip
+    const w9x = (this.proto?.gen2 as { w9?: { decor?: W9SceneryItem[]; scenery?: W9SceneryItem[] } } | undefined)?.w9;
+    if (w9x) {
+      drawW9Scenery(ctx, w9x.decor, this.camera.x, this.camera.x + this.camera.viewportWidth);
+      drawW9Scenery(ctx, w9x.scenery, this.camera.x, this.camera.x + this.camera.viewportWidth);
+    }
     // 7-3's ring of stone chairs, behind the courtyard's floor (w7ChairsArt.ts)
     const w7chairs = (this.proto?.gen2 as { w7?: { chairs?: Array<{ x: number; b: number }> } } | undefined)?.w7?.chairs;
     if (w7chairs) drawW7Chairs(ctx, w7chairs, this.camera.x, this.camera.x + this.camera.viewportWidth);
@@ -7828,6 +7842,7 @@ export class GameEngine {
       // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)
       const w8look = w8Hides?.find((h) => h.x === b.x && h.y === b.y)?.look;
       if (w8look && drawW8Hide(ctx, b, w8look, inside)) continue;
+      if (b.look && drawW9Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });

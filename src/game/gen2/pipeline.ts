@@ -1365,7 +1365,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // only (the teaching rule); Easy at every water gap once WATER_WARN.every seconds of walking passed since the last warning.
   // (a deep chasm, a world's `void` falls on Normal, costs a life the same way: it shows the world's dirty water far below as its line,
   // painted, and is warned the same way; World 8's treetops have no water: its drop is warned by its own line, w8.ts)
-  const wet = laid.gaps.filter((g) => budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || g.water);
+  // (a soft gap in a deadly world, World 9's crust chasms, lands soft: no warning, no sign)
+  const wet = laid.gaps.filter((g) => g.water || ((budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8)) && !g.soft));
   if (wet.length) {
     const every = WATER_WARN.every * budget.walkSpeed;
     const text = M.tips?.water ?? WATER_LINE;

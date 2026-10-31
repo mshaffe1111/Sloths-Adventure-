@@ -1,0 +1,50 @@
+{
+ "note": "World 9's hazard art by img2img from tools/art/w9/lavastart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal, grass, trees",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bd60911927f8f164b1d834d754d543f7fb142c8c/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w9splash-s72-7",
+   "start": "start-w9splash.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta, a splash in a pool of molten lava in three moments: 1) the lava bursting up in a crown of glowing orange splashes and drops; 2) the crown falling back into the lava with a puff of pale grey steam rising; 3) only the steam left, rising and thinning, a few glowing embers in it. Liquid, glowing, splashing. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.72,
+   "seed": 7,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9splash-s72-23",
+   "start": "start-w9splash.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta, a splash in a pool of molten lava in three moments: 1) the lava bursting up in a crown of glowing orange splashes and drops; 2) the crown falling back into the lava with a puff of pale grey steam rising; 3) only the steam left, rising and thinning, a few glowing embers in it. Liquid, glowing, splashing. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.72,
+   "seed": 23,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9splash-s86-7",
+   "start": "start-w9splash.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta, a splash in a pool of molten lava in three moments: 1) the lava bursting up in a crown of glowing orange splashes and drops; 2) the crown falling back into the lava with a puff of pale grey steam rising; 3) only the steam left, rising and thinning, a few glowing embers in it. Liquid, glowing, splashing. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.86,
+   "seed": 7,
+   "w": 1536,
+   "h": 512
+  },
+  {
+   "name": "w9splash-s86-23",
+   "start": "start-w9splash.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game effect sprites in a row on magenta, a splash in a pool of molten lava in three moments: 1) the lava bursting up in a crown of glowing orange splashes and drops; 2) the crown falling back into the lava with a puff of pale grey steam rising; 3) only the steam left, rising and thinning, a few glowing embers in it. Liquid, glowing, splashing. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.86,
+   "seed": 23,
+   "w": 1536,
+   "h": 512
+  }
+ ]
+}

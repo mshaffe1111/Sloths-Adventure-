@@ -21,6 +21,8 @@ import { w5Kit } from './worlds/w5.ts';
 import { w5ArenaKit } from './worlds/w5Arena.ts';
 import { w6Finish } from './worlds/w6.ts';
 import { W6_GAME_STAGES, w6GameKit } from './worlds/w6Game.ts';
+import { w9Finish } from './worlds/w9.ts';
+import { W9_GAME_STAGES, w9GameKit } from './worlds/w9Game.ts';
 import { W7_GAME_STAGES, w7GameKit } from './worlds/w7Game.ts';
 import { w7Finish } from './worlds/w7.ts';
 import { w8Finish } from './worlds/w8.ts';
@@ -54,6 +56,8 @@ const w6Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
   ...o,
 });
 
+/** World 9's stages (w9Game.ts): the ground, the geysers and the lava in one kit, on the difficulty played */
+const w9Entry = (stage: number): Gen2Entry => ({ kit: (d) => w9GameKit(stage, d ?? 'normal'), kitName: `w9Game.ts:w9GameKit(${stage})`, finish: w9Finish });
 /** World 7's stages (w7Game.ts): its sections and the stage's room in one kit, on the difficulty played; w7Finish puts Pokey's line
  *  before 7-5's first Stone Sentry (the other animals were taught in earlier worlds) */
 const w7Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
@@ -82,6 +86,7 @@ export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   // (5-9 Easy: the kid beat 5, 5, 9, 10, 10 and 10 spiders on seeds 1-3 before the shrine: the median, 9)
   '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', kidRuns: KID_RUNS_59, easyGoal: kidMedian(KID_RUNS_59) },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
+  ...Object.fromEntries(W9_GAME_STAGES.map((id) => [id, w9Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W7_GAME_STAGES.map((id) => [id, w7Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W8_GAME_STAGES.map((id) => [id, w8Entry(Number(id.split('-')[1]))])),
 };

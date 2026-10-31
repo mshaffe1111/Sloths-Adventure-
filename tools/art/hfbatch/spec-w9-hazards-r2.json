@@ -1,0 +1,86 @@
+{
+ "note": "World 9's hazard art by img2img from tools/art/w9/lavastart.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "perspective, three-quarter view, isometric, seen from above, top-down, text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, sky, cast shadow, people, sloth, animal, grass, trees",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/839bb93507923056e538d6d0036142cbec4268e8/tools/art/hfbatch/starts/",
+ "items": [
+  {
+   "name": "w9burst-s72-7",
+   "start": "start-w9burst.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game sprites in a row on magenta, a lava geyser erupting from the ground in three moments: 1) a short wide burst of molten lava and fire just leaving the ground; 2) a tall fountain of molten lava shooting straight up, white-hot yellow core, orange skin, curling over at the top, glowing drops raining off both sides; 3) the fountain collapsing, broken streams and drops of lava falling back. Liquid, glowing, splashing, not solid. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.72,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9burst-s72-23",
+   "start": "start-w9burst.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game sprites in a row on magenta, a lava geyser erupting from the ground in three moments: 1) a short wide burst of molten lava and fire just leaving the ground; 2) a tall fountain of molten lava shooting straight up, white-hot yellow core, orange skin, curling over at the top, glowing drops raining off both sides; 3) the fountain collapsing, broken streams and drops of lava falling back. Liquid, glowing, splashing, not solid. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.72,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9burst-s86-7",
+   "start": "start-w9burst.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game sprites in a row on magenta, a lava geyser erupting from the ground in three moments: 1) a short wide burst of molten lava and fire just leaving the ground; 2) a tall fountain of molten lava shooting straight up, white-hot yellow core, orange skin, curling over at the top, glowing drops raining off both sides; 3) the fountain collapsing, broken streams and drops of lava falling back. Liquid, glowing, splashing, not solid. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.86,
+   "seed": 7,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9burst-s86-23",
+   "start": "start-w9burst.webp",
+   "prompt": "slothadv style, painted storybook illustration, three side-on game sprites in a row on magenta, a lava geyser erupting from the ground in three moments: 1) a short wide burst of molten lava and fire just leaving the ground; 2) a tall fountain of molten lava shooting straight up, white-hot yellow core, orange skin, curling over at the top, glowing drops raining off both sides; 3) the fountain collapsing, broken streams and drops of lava falling back. Liquid, glowing, splashing, not solid. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.86,
+   "seed": 23,
+   "w": 1536,
+   "h": 768
+  },
+  {
+   "name": "w9haze2-s75-7",
+   "start": "start-w9haze2.webp",
+   "prompt": "slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six separate soft curling wisps of pale grey heat haze and thin smoke rising, each a different shape, wispy translucent painted edges, a tiny glowing ember near the top of each. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9haze2-s75-23",
+   "start": "start-w9haze2.webp",
+   "prompt": "slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six separate soft curling wisps of pale grey heat haze and thin smoke rising, each a different shape, wispy translucent painted edges, a tiny glowing ember near the top of each. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9haze2-s88-7",
+   "start": "start-w9haze2.webp",
+   "prompt": "slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six separate soft curling wisps of pale grey heat haze and thin smoke rising, each a different shape, wispy translucent painted edges, a tiny glowing ember near the top of each. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.88,
+   "seed": 7,
+   "w": 1536,
+   "h": 416
+  },
+  {
+   "name": "w9haze2-s88-23",
+   "start": "start-w9haze2.webp",
+   "prompt": "slothadv style, painted storybook illustration, side-on game effect sprites on magenta: six separate soft curling wisps of pale grey heat haze and thin smoke rising, each a different shape, wispy translucent painted edges, a tiny glowing ember near the top of each. Soft cel shading, thin dark outline, light from the upper left, on one flat plain pure magenta background, no sky, no text",
+   "strength": 0.88,
+   "seed": 23,
+   "w": 1536,
+   "h": 416
+  }
+ ]
+}

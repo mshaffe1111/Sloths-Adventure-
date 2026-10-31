@@ -50,6 +50,7 @@ import { BOUNCE_URL } from './bounceAtlasData.ts';
 import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterArt.ts';
+import { W9_ART_URLS, w9ArtReady } from './w9Art.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
@@ -116,6 +117,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'bad-water') {
       badWaterReady();
       urls.push(currentBadWaterUrl());
+    } else if (k === 'w9-art') {
+      w9ArtReady();
+      urls.push(...W9_ART_URLS);
     } else if (k === 'sentry') {
       sentryReady();
       urls.push(...SENTRY_URLS);

@@ -8,6 +8,7 @@
 import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
+import { drawW9Crumble, drawW9Eruption, drawW9Vent } from './w9Art.ts';
 import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
 import { drawW5Box, w5ArtReady } from './w5Art.ts';
@@ -295,6 +296,8 @@ function glowAt(ctx: CanvasRenderingContext2D, col: string, x: number, y: number
  * cool one and the whole vent shivers; erupting, it is all hot. Nothing is drawn while the sheet loads.
  */
 function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  // (World 9's painted vent rock: w9Art.ts; the shapes below while its sheet loads)
+  if (drawW9Vent(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const w = (z.x1 - z.x0) * 2.1;
   const heat = st.phase === 'warn' ? 0.35 + 0.65 * st.u : st.phase === 'active' ? 1 : 0.12 + 0.08 * Math.sin(t * 2 + cx);
@@ -310,6 +313,7 @@ function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
  * mouth, a heat glow round it and painted sparks thrown up and out.
  */
 function drawEruption(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  if (drawW9Eruption(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const w = z.x1 - z.x0;
   const full = z.baseY - z.top;
@@ -591,6 +595,11 @@ export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly 
   for (const p of plats) {
     if (p.crumbleAfter === undefined) continue;
     if (p.x + p.width < cam.x - 40 || p.x > cam.x + cam.w + 40) continue;
+    // (World 9's cracked basalt is its kit's painted slab: w9Art.ts)
+    if (p.art === 'basalt') {
+      if (!p.broken) drawW9Crumble(ctx, p, t);
+      continue;
+    }
     painted ??= crumbleArtReady();
     // (a tile just broken: its painted pieces fall, crumbleArt.ts; the painted slab carries its own cracks, so only the dust is drawn here)
     if (p.broken) {

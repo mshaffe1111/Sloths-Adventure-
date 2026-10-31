@@ -1,0 +1,9 @@
+World 9 swings and rooms art on Hugging Face (2026-10-29, branch gen2-w9-swing, cap $6). rtx-pro-6000 at ~$2.75/h.
+Results in the bucket mshaffe111/w5-xfer under hfbatch/w9swing/props/ (takes, sheet, carrier); brought back with hf_fs attach and
+tools/art/w5/unpack_carrier.py.
+
+w9-chains 6ae3bb180e0338d1bb7c355c rtx-pro-6000 21:31:04Z-21:32:59Z (1.9 min, ~$0.09): spec-w9chains.json, s55/s70 x seeds 11/29 from
+  starts/start-w9chains.webp (chainstart.py). Picks (cut.py PICKS): chainA = s55-29's heavy interlinked chain, chainB = s70-11's
+  heavy chain, chainC = s55-29's round-link chain; bucket, pulley, eye bolt = s70-11 (its bucket a riveted plate, the clearest at game
+  size). s70-29 not used (its chains turned muddy at the links); s55-11 not used (bucket lid warped). Graded from lilac to charcoal.
+running total ~$0.09. Review: reference/prop-sheets/qa-notes/w9-swing/irons-review.jpg

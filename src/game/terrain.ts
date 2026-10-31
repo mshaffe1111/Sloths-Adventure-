@@ -26,9 +26,11 @@ import './shelfArt.ts';
 import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
 import { bankPainted, drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
+import { drawW9SwingFrames } from './w9SwingArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
 import { drawBadWater, setBadWaterWorld } from './badWaterArt.ts';
+import { drawLava } from './w9Art.ts';
 import { drawPitWater } from './stageArt.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
@@ -1341,6 +1343,8 @@ export function renderWorldObjects(
     drawGameTree(ctx, t, look, time);
     ctx.restore();
   }
+  // (World 9: each swing chain's basalt posts and charred beam, behind the ground, so the posts stand behind the ledges' fronts)
+  if (worldId === 9 && paintedKitEnabled()) drawW9SwingFrames(ctx, platforms, vines, left, right);
   for (const v of vines) {
     if (v.x < left || v.x > right) continue;
     drawGameVine(ctx, v, look, time);
@@ -1489,6 +1493,8 @@ function waterGradient(ctx: CanvasRenderingContext2D, look: Look, waterY: number
 export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: number, x1: number, waterY: number, bottom: number, time: number) {
   // Worlds 6-10: Matt's painted dirty, fast water (badWaterArt.ts); Worlds 1, 3, 4 and 5: their painted pit water (stageArt.ts, VI-9).
   // The drawn version below is World 2's pit water (its rivers are painted: riverArt.ts) and the stand-in while a sheet loads.
+  // (World 9's chasms are lava: w9Art.ts; until its sheet is in, and on its stages off gen2, the bad water)
+  if (worldId === 9 && drawLava(ctx, x0, x1, waterY, bottom, time)) return;
   if (worldId >= 6) setBadWaterWorld(worldId);
   if (worldId >= 6 && drawBadWater(ctx, x0, x1, waterY, bottom, time)) return;
   if (drawPitWater(ctx, worldId, x0, x1, waterY, bottom, time)) return;

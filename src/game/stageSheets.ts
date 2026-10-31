@@ -24,6 +24,7 @@
  *   dress          Worlds 1, 2 and 5's dressing sets (dressArt.ts, artDress.ts dressSets), for a built stage
  *   water-signs    the painted warning signs at the water's edge (waterSign.ts), for a gen2 stage with water and every other stage's first water
  *   bad-water      Worlds 6-10's dirty, fast water (badWaterArt.ts), for a gen2 stage with water, and 6-8's rising tide
+ *   w9-art         World 9's painted lava, geysers, heat haze, scenery and hiding places (w9Art.ts), for a World 9 gen2 stage
  *   w6-stilt       World 6's ledge set, hides and arches and props (w6StiltArt.ts), for 6-8 Stilt Climb's ledges and shelves
  *   sentry         World 7's Stone Sentry (sentrySprite.ts), for 7-5 Stone Sentries
  *   chairs         7-3 Ten Chairs' ring of stone chairs (w7ChairsArt.ts)
@@ -220,8 +221,10 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)
   if (isGen2Stage(cfg) ? gen2Water(cfg.id) : cfg.objectiveType !== 'boss_lair' && [1, 2, 3, 5].includes(w)) out.push('water-signs');
   // (World 6 on: its creeks and its tide are the dirty, fast water; Worlds 9-10's every stage, whose pits are their own painted water;
-  // World 8 on gen2 is treetops with no water at all, soft falls)
-  if ((isGen2Stage(cfg) && w >= 6 && (w !== 8 || gen2Water(cfg.id))) || (w >= 8 && !(w === 8 && isGen2Stage(cfg)) && cfg.objectiveType !== 'boss_lair')) out.push('bad-water');
+  // World 8 on gen2 is treetops with no water at all, soft falls; World 9 on gen2's chasms are lava, its geysers, haze and scenery
+  // painted: w9Art.ts)
+  if ((isGen2Stage(cfg) && w >= 6 && w !== 9 && (w !== 8 || gen2Water(cfg.id))) || (w >= 8 && !((w === 8 || w === 9) && isGen2Stage(cfg)) && cfg.objectiveType !== 'boss_lair')) out.push('bad-water');
+  if (isGen2Stage(cfg) && w === 9) out.push('w9-art');
   if (w === 7 && cfg.objectiveType !== 'boss_lair' && !cfg.secret) out.push('crumble');
   if (isGen2Stage(cfg) && cfg.id === `7-${W7_SENTRY_STAGE}`) out.push('sentry');
   if (isGen2Stage(cfg) && cfg.id === '7-3') out.push('chairs');
