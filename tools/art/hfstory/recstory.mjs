@@ -12,7 +12,7 @@ for (const [o, w, h] of [['up', 390, 844], ['side', 844, 390]]) {
   const dir = `${out}/.f-${tag}-${o}`;
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
-  const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1.5, hasTouch: true, isMobile: true });
+  const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
   await p.goto(`http://127.0.0.1:${port}/?lessons=off&storyAt=${n}`);
   await p.waitForTimeout(3000);
   await p.evaluate(([i, s]) => (s === 'memory' ? window.__memory(i) : window.__story(i, s)), [id, scr]);
@@ -24,7 +24,7 @@ for (const [o, w, h] of [['up', 390, 844], ['side', 844, 390]]) {
   let k = 0;
   while (Date.now() - t0 < +secs * 1000) {
     const f = `${dir}/${String(k++).padStart(4, '0')}.jpg`;
-    await p.screenshot({ path: f, type: 'jpeg', quality: 85 });
+    await p.screenshot({ path: f, type: 'jpeg', quality: 70, animations: "allow", caret: "initial" });
     list.push([f, Date.now()]);
   }
   const lines = list.map(([f, t], i) => `file '${f}'\nduration ${(((list[i + 1]?.[1] ?? t + 100) - t) / 1000).toFixed(3)}`);
