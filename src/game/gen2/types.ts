@@ -151,7 +151,7 @@ export interface WorldManifest {
 // ───────────────────────────── a section ─────────────────────────────
 
 /** a platform, or one of the two hanging pieces: a `liana` (a swing, placed by `swing`) and a `vine` (a climb, placed by `climb`) */
-export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine' | 'rope';
+export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine';
 
 /**
  * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back
@@ -185,6 +185,10 @@ export interface LianaSwing {
  *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
  *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
+ *   rope                 a ledge `gap` px past `after` at its height, a shimmy rope hung across between them (rope.ts: ROPE_RISE over the
+ *                        ledges, ROPE_OVERLAP over each): a gap past every jump and glide, so the rope is the way over (World 9's burnt
+ *                        bridges, GRAB-BAG.md N8; World 8's rope blooms). Its gap is a liana's: a soft pit climbing back to `after` where
+ *                        the world's falls are soft or `soft` says so, World 8 Normal's heart fall where the world asks for them
  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
  * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
  * A gap rule with `soft: true` has a soft pit under it whatever the world's falls (World 8: in a world whose falls cost a life, its gaps in
@@ -200,11 +204,7 @@ export type PlaceRule =
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range }
-  // (a shimmy rope (shape 'rope') from `after`'s end, `span` px across (at least rope.ts ROPE_MIN_GAP: wider than any jump, so it is the
-  // way over), hung ROPE_RISE over the ledge; and `cross`, the ledge at its far end, level with `after`. The gap under it is a liana's:
-  // a soft pit climbing back to `after`, or World 8 Normal's heart fall. Needs the 'rope' move; never mirrored)
-  | { kind: 'rope'; after: string; span: Range }
-  | { kind: 'cross'; after: string; soft?: boolean };
+  | { kind: 'rope'; after: string; gap: Range; soft?: boolean };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */

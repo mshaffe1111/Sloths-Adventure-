@@ -961,9 +961,8 @@ const bloomLeap = section({
   mirrorable: true,
 });
 
-/** a shimmy rope from `after`'s end, `span` across, and the ledge at its far end (pipeline 'rope' and 'cross': wider than any jump) */
-const rope = (key: string, after: string, span: W): SectionPiece => ({ key, shape: 'rope', w: 0, place: { kind: 'rope', after, span } });
-const cross = (key: string, rope: string, w: W): SectionPiece => bank(key, w, { kind: 'cross', after: rope }, { landing: true });
+/** the ledge `gap` px past `after`, a shimmy rope hung across between them (pipeline 'rope', World 9's: a gap past every jump and glide) */
+const roped = (key: string, after: string, gap: W, w: W): SectionPiece => bank(key, w, { kind: 'rope', after, gap }, { landing: true });
 
 /** rope blooms (8-2's fifth theme, wave 2): one rope over a gap no jump crosses, blooms on the far bough and a knot past it */
 const bloomRope = section({
@@ -974,7 +973,7 @@ const bloomRope = section({
   difficulty: 4,
   weight: 2,
   uses: [W8_THEME.ropeBlooms],
-  pieces: [bank('a', [240, 280]), rope('r', 'a', [390, 430]), cross('b', 'r', [260, 300]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [180, 220])],
+  pieces: [bank('a', [240, 280]), roped('b', 'a', [470, 510], [260, 300]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [180, 220])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 2, 90), petals('b', 'b', 0.5, 3, 70), petals('k', 'k', 0.5, 1), scenery('fungus', 'c', [0.4, 0.6], 0.6)],
   mirrorable: false,
@@ -989,7 +988,7 @@ const bloomRopePair = section({
   difficulty: 5,
   weight: 2,
   uses: [W8_THEME.ropeBlooms],
-  pieces: [bank('a', [220, 260]), rope('r1', 'a', [390, 420]), cross('b', 'r1', [220, 260]), rope('r2', 'b', [400, 440]), cross('c', 'r2', [240, 280])],
+  pieces: [bank('a', [220, 260]), roped('b', 'a', [470, 500], [220, 260]), roped('c', 'b', [470, 510], [240, 280])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 3, 60), petals('c', 'c', 0.5, 2, 80)],
   mirrorable: false,
@@ -1004,7 +1003,7 @@ const bloomRopeHunter = section({
   difficulty: 6,
   weight: 2,
   uses: [W8_THEME.ropeBlooms],
-  pieces: [bank('a', [220, 260]), rope('r', 'a', [430, 470]), cross('b', 'r', [320, 360]), down('c', 'b', 30, [180, 220])],
+  pieces: [bank('a', [220, 260]), roped('b', 'a', [510, 550], [320, 360]), flat('c', 'b', [180, 220])],
   last: 'c',
   sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.25, 2, 70), foe('foe', 'b', [0.6, 0.7], SMALL, 3, { phases: LIVE }), petals('c', 'c', 0.5, 2, 80)],
   mirrorable: false,
