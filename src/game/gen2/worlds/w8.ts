@@ -26,7 +26,7 @@ import { G } from '../../protoStage.ts';
 import type { StageHint } from '../../protoStage.ts';
 import type { Enemy, Platform } from '../../types.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
-import type { CreatureDef, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
+import type { CreatureDef, Difficulty, FilledSocket, PropDef, PropEmitter, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W6S_EMIT, W6S_PROPS } from './w6Swing.ts';
 import { watchCalm } from './w6.ts';
 
@@ -151,7 +151,7 @@ export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.harpy]: 'A harpy! It slides, then stomps. Jump clear.',
   [W8_LESSON.drop]: "Careful! It's a long way down.", // (new, needs Matt's approval)
   [W8_LESSON.batRun]: 'Sleeping bats. Nowhere to hide: go while they doze.', // (new, needs Matt's approval)
-  [W8_LESSON.bounce]: 'A moon flower! Bounce, then jump again up top.', // (new, needs Matt's approval)
+  [W8_LESSON.bounce]: 'Moon flower! Bounce on it to get up high.', // (Matt approved 'A moon flower! ...', 2026-10-31; the 'A' dropped for the under-10-words rule, to confirm)
   [W8_LESSON.doze]: 'A sleeping boa. Hop right over it!', // (new, needs Matt's approval)
 };
 /** the lines that are new in World 8 (the report lists them for Matt) */
@@ -295,8 +295,16 @@ export function w8Decorate(stage: number): NonNullable<WorldKit['decorate']> {
 }
 
 /** every animal kept on its patch (never off a bough into a gap), facing a rolled way; each harpy noted for w8Finish */
-export function w8Spawn(stage = 1): NonNullable<WorldKit['spawn']> {
+export function w8Spawn(stage = 1, difficulty: Difficulty = 'normal'): NonNullable<WorldKit['spawn']> {
+  // (Easy's fight stages, 8-8 and 8-9: every hunter a hit softer and slower to strike again; the first-timer and kid bots scored Easy at
+  // or over Normal there, 2026-10-31. Its numbers only: the layout is Normal's)
+  const soft = difficulty === 'easy' && (stage === 8 || stage === 9);
   return (e: Enemy, c: CreatureDef, out: StageSink) => {
+    if (soft) {
+      e.hp = Math.max(1, e.hp - 1);
+      e.maxHp = e.hp;
+      e.attackCooldown = Math.max(e.attackCooldown, 2.4);
+    }
     e.edgeMinX = e.patrolMinX;
     e.edgeMaxX = e.patrolMaxX;
     e.facing = hash01(e.x, 12) < 0.5 ? -1 : 1;
@@ -308,10 +316,10 @@ export function w8Spawn(stage = 1): NonNullable<WorldKit['spawn']> {
 export const W8_MEET_LEAD = 520;
 
 /** World 8's base kit for one stage (the sections are added by w8Game.ts) */
-export function w8Kit(stage: number): WorldKit {
+export function w8Kit(stage: number, difficulty: Difficulty = 'normal'): WorldKit {
   const own = W8_STAGE_FOES[stage];
   const creatures = own ? W8_CREATURES.filter((c) => own.includes(c.id)) : W8_CREATURES.filter((c) => c.id !== W8_CREATURE.harpy);
-  return { manifest: { ...W8_MANIFEST, creatures }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage) };
+  return { manifest: { ...W8_MANIFEST, creatures }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage, difficulty) };
 }
 
 /** Dot's warning comes this far before the first deadly drop's lip (px), as the water's (types.ts WATER_WARN.lead) */

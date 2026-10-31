@@ -85,7 +85,7 @@ export function w8Falls(t: SectionTemplate): SectionTemplate {
 
 /** World 8's kit for one stage as the game plays it on `difficulty` */
 export function w8GameKit(stage: number, difficulty: Difficulty = 'normal'): WorldKit {
-  const k = w8Kit(stage);
+  const k = w8Kit(stage, difficulty);
   const sections = [...W8_SECTIONS, ...W8_SWING_SECTIONS, ...W8_BRANCH_SECTIONS].filter((s) => forStage(stage, s)).map(w8Falls);
   return { ...k, manifest: { ...k.manifest, sections: [...sections, ...w8RoomsFor(stage, difficulty).map(w8Falls)], required: W8_REQUIRED } };
 }
