@@ -183,3 +183,21 @@ P2 = {
         ('scroll', 'clutter', 40, 'an old rolled up parchment scroll'),
         ('idolHead', 'clutter', 42, 'a small fallen stone idol head')],
 }
+
+# round 3 (2026-10-31 evening): the worlds whose bank sets run out first (W6 9 kept, W7 12), and W4's hanging pieces
+P3 = {
+    4: [('ivyBeard', 'hang', 44, 'a long beard of green hanging moss'),
+        ('fernCurtain', 'hang', 48, 'a small curtain of hanging ferns')],
+    6: [('heronNight', 'bank', 58, 'a grey night heron standing hunched'),
+        ('mossStump', 'bank', 60, 'a short mossy mangrove stump with little mushrooms'),
+        ('rootTangle', 'bank', 72, 'a low tangle of arching mangrove roots'),
+        ('lilyClump', 'bank', 50, 'a clump of tall swamp irises with purple flowers'),
+        ('basket', 'bank', 46, 'an old woven fishing basket tipped on its side'),
+        ('snakeCoil', 'bank', 44, 'a sleeping green tree snake coiled on a root')],
+    7: [('obelisk', 'bank', 40, 'a short carved stone obelisk with vines'),
+        ('stoneSnake', 'bank', 66, 'a carved stone serpent head statue'),
+        ('fallenBlock', 'bank', 60, 'a fallen carved stone block with moss'),
+        ('toucanStone', 'bank', 50, 'a toucan perched on a carved stone post'),
+        ('stepRuin', 'bank', 70, 'three crumbling stone steps with ferns'),
+        ('mossyBrazier', 'bank', 44, 'a cold mossy stone brazier bowl on a short stand')],
+}

@@ -130,12 +130,12 @@ def main():
         print(dst, sheet.size, len(pieces))
     # the three new looks per job per world (lead, 2026-10-31: three looks per job), from the pieces kept, in pieces.py order
     sys.path.insert(0, str(HERE))
-    from pieces import P, P2
+    from pieces import P, P2, P3
     looks = {}
     for world, pp in picks.items():
         w = int(world)
         nm = lambda n: f'w{w}{n[0].upper()}{n[1:]}'
-        allp = P[w]['pieces'] + P2.get(w, [])
+        allp = P[w]['pieces'] + P2.get(w, []) + P3.get(w, [])
         by = {job: [nm(n) for (n, j, _u, _d) in allp if j == job and n in pp] for job in ('bank', 'hang', 'clutter')}
         # (a pick under a name of its own, not in the list: a take that came out as something else worth keeping, by its `job`)
         known = {n for (n, *_r) in allp}
