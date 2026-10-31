@@ -380,7 +380,7 @@ export function generateAllLevels(): LevelConfig[] {
         levelWidth,
         levelHeight,
         description: spec?.desc
-          ? spec.desc.replace('{n}', String(targetCount))
+          ? spec.desc.replace('{n}', String(spec.goal ?? targetCount))
           : `Face ${world.bossName}. Watch for the warning before each attack, then hit back.`,
         unlocked,
         completed,

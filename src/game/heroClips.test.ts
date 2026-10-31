@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clipPick, edgeClip, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, RUN_FOOTFALLS } from './heroClips.ts';
+import { clipPick, edgeClip, flipU, MOVE_ORDER, moveFrame, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
 import { HERO_CLIPS } from './heroClipsData.ts';
 import type { PlayerState } from './types.ts';
 
@@ -64,4 +64,20 @@ test('footsteps land on the run frames\' footfalls: three a loop, none twice, no
   assert.equal(k, footfallsBetween(0, c));
   // at a full run (285 px/s) about 6.5 footfalls a second: every other one is the 3.3 a second Matt's calmer steps want
   assert.ok(Math.abs(k / 10 - 6.5) < 0.2, `${k / 10} a second`);
+});
+
+test('the painted flip runs through its sheet once, eased, and holds its last frame (AN-13)', () => {
+  assert.equal(flipU(0), 0);
+  assert.ok(flipU(Math.PI) > 0.49 && flipU(Math.PI) < 0.51);
+  assert.ok(flipU(Math.PI * 0.2) < 0.1, 'a gentle start');
+  assert.equal(flipU(Math.PI * 2), 0.999);
+  assert.equal(flipU(40), 0.999, 'the engine may keep counting: the flip stays done');
+  assert.equal(moveIndex(12, flipU(40)), 11);
+});
+
+
+test('the jab comes back from full reach through its own wind-up pose, and every reordered frame is on its sheet', () => {
+  assert.deepEqual([0, 0.2, 0.35, 0.55, 0.7, 0.9].map((u) => moveFrame('move-jab', HERO_CLIPS['move-jab'].n, u)), [0, 1, 2, 3, 0, 5]);
+  for (const [sheet, order] of Object.entries(MOVE_ORDER)) for (const i of order) assert.ok(i < HERO_CLIPS[sheet].n, `${sheet} frame ${i}`);
+  assert.equal(moveFrame('move-cross', 7, 0.5), moveIndex(7, 0.5), 'a sheet with no order plays in its own');
 });

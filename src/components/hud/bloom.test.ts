@@ -222,7 +222,9 @@ test("the goal card's words fit the stage", () => {
   assert.deepEqual(petals.icon, { kind: 'pickup', name: 'petal' });
   assert.equal(goalInfo(cfg({ worldIndex: 3, miniIndex: 6, objectiveType: 'relic_hunt', targetCount: 1 })).line, 'This stage: find 1 keepsake');
   assert.deepEqual(goalInfo(cfg({ worldIndex: 3, miniIndex: 6, objectiveType: 'relic_hunt', targetCount: 4 })).slotIcon(1), { kind: 'pickup', name: 'rattle' });
-  assert.equal(goalInfo(cfg({ worldIndex: 2, objectiveType: 'harvest' })).icon.kind, 'flower');
+  // (one pickup, Meeca's petal, everywhere but World 8, whose harvests gather its night blooms: petals.ts)
+  assert.deepEqual(goalInfo(cfg({ worldIndex: 2, objectiveType: 'harvest' })).icon, { kind: 'pickup', name: 'petal' });
+  assert.equal(goalInfo(cfg({ worldIndex: 8, objectiveType: 'harvest' })).icon.kind, 'flower');
   assert.equal(goalInfo(cfg({ objectiveType: 'sprint' })).line, 'This stage: reach the shrine');
   assert.equal(goalInfo(cfg({ objectiveType: 'sprint' })).kind, 'distance');
   assert.equal(goalInfo(cfg({ objectiveType: 'boss_lair' })).kind, 'boss');

@@ -9,7 +9,8 @@
  *   W7 overgrown temple: a half-buried idol face, fallen carved blocks, fig roots, aerial roots.
  *   W9 volcanic regrowth: ohia with red lehua flowers, steam vents, uluhe ferns in the cracks, lichen, obsidian.
  *   W10 the mountain above the trees (the story: "after that the rain had nothing to hit but rock"): wet slate rocks, wind-bent wire grass,
- *      fallen iron thorns from the General's netting, rain puddles, chains on the way up. (The old war-camp props stay for the lair.)
+ *      rain puddles, chains on the way up (no iron thorns on safe ground: thorns hurt in World 10, WIP-16). (The old war-camp props
+ *      stay for the lair.)
  *   W1 lowland rainforest (the snake): shed skin, hollow logs, heliconia.
  */
 import { tone, mix, lighten, darken, rgba, type RNG, type Tone } from './artKit.ts';
@@ -1004,39 +1005,6 @@ const wiregrass: PlantFn = (ctx, x, y, s, _look, r) => {
   }
 };
 
-/** one of the General's iron thorns, broken off the netting and lying in the rock, rusting */
-const ironthorn: PlantFn = (ctx, x, y, s, look, r) => {
-  const dir = r() > 0.5 ? 1 : -1;
-  ctx.save();
-  ctx.translate(x, y + 2);
-  ctx.rotate(dir * (0.35 + r() * 0.3));
-  ctx.fillStyle = '#2a2830';
-  ctx.strokeStyle = look.ground.outline;
-  ctx.lineWidth = 1.4;
-  ctx.beginPath();
-  ctx.moveTo(-s * 0.08, 0);
-  ctx.quadraticCurveTo(-s * 0.12, -s * 0.5, dir * s * 0.15, -s * 0.95);
-  ctx.quadraticCurveTo(s * 0.02, -s * 0.45, s * 0.08, 0);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-  // rust streaks
-  ctx.strokeStyle = 'rgba(150,80,40,0.7)';
-  ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.moveTo(-s * 0.03, -s * 0.15);
-  ctx.lineTo(-s * 0.02, -s * 0.45);
-  ctx.stroke();
-  ctx.restore();
-  // the stub of the netting it broke from
-  ctx.strokeStyle = '#3a3846';
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.moveTo(x - s * 0.3, y + 1);
-  ctx.lineTo(x + s * 0.25, y - s * 0.08);
-  ctx.stroke();
-};
-
 /** rain pooled in a hollow of the rock */
 const puddle: PlantFn = (ctx, x, y, s, _look, r) => {
   const w = s * (0.8 + r() * 0.5);
@@ -1479,7 +1447,6 @@ export const EXTRA_PLANTS: Record<string, PlantDef> = {
   hollowlog: { draw: hollowlog, near: 1.4, decor: [26, 34] },
   slaterock: { draw: slaterock, near: 1.4, decor: [22, 32] },
   wiregrass: { draw: wiregrass, near: 1.4, decor: [22, 32] },
-  ironthorn: { draw: ironthorn, near: 1.3, decor: [24, 34] },
   puddle: { draw: puddle, near: 1, decor: [16, 24] },
 };
 

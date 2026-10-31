@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   AIR_KICK_STAGES, AIR_PUNCH_STAGES, CLIMB_CYCLE, DEFAULT_STANDARD, KICK_STAGES, MEGA_STAGES, PUNCH_STAGES, RUN_CYCLE, WALK_CYCLE, WALK_MAX,
-  standardEnabled, stdAirFrame, stdAlias, stdBounceFrame, stdDiveFrame, stdFlipFrame, stdHangFrame, stdPick, stdPunchFrame, stdSwingFrame, stdUi,
+  standardEnabled, stdAirFrame, stdAlias, stdBounceFrame, stdDiveFrame, stdFlip, stdHangFrame, stdPick, stdPunchFrame, stdSwingFrame, stdUi,
 } from './heroStandard.ts';
 import { STD_FRAMES, STD_STAND_H } from './heroStandardData.ts';
 import { HERO_FRAMES } from './heroAtlasData.ts';
@@ -22,7 +22,7 @@ test('every frame the loops and stages name is in the atlas', () => {
     assert.ok(STD_FRAMES[n], `${n} is in the atlas`);
   }
   for (let vy = -800; vy <= 1000; vy += 20) assert.ok(STD_FRAMES[stdAirFrame(vy)], `air frame at vy ${vy}`);
-  for (let u = 0; u <= 1; u += 0.05) assert.ok(STD_FRAMES[stdFlipFrame(u)], `flip frame at ${u}`);
+  for (let u = 0; u <= 1; u += 0.05) assert.ok(STD_FRAMES[stdFlip(u * Math.PI * 2, u).name], `flip frame at ${u}`);
   for (let vy = 0; vy <= 1000; vy += 50) assert.ok(STD_FRAMES[stdDiveFrame(vy)], `dive frame at vy ${vy}`);
   for (const k of ['stomp', 'big', 'spring'] as const) {
     for (let t = 0; t < 1.7; t += 0.02) {
@@ -56,8 +56,23 @@ test('every state the hero can be in draws a frame that exists', () => {
   assert.ok(hurt && STD_FRAMES[hurt.name]);
   const land = stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, hurtUntil: 0 });
   assert.equal(land?.name, 'land');
-  const roll = stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, isHardLanding: () => true, hurtUntil: 0 });
-  assert.equal(roll?.name, 'tumble');
+  // the hardest drop squashes deep, lands and recovers (AN-13; it used to roll out in the somersault frame)
+  const hard = (u: number) => stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, isHardLanding: () => true, landPhase: () => u, hurtUntil: 0 })?.name;
+  assert.deepEqual([hard(0), hard(0.5), hard(0.9)], ['spring_squash', 'land', 'recover']);
+  const soft = (u: number) => stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, landPhase: () => u, hurtUntil: 0 })?.name;
+  assert.deepEqual([soft(0), soft(0.8)], ['land', 'recover']);
+});
+
+test('the turn faces us squeezed and opens out, then his new side view settles; a skid faces the way he slides (AN-13)', () => {
+  const ev = (o: object) => ({ isHurt: () => false, isLanding: () => false, hurtUntil: 0, ...o });
+  const t0 = stdPick(player(), 1, ev({ turnPhase: () => 0 }));
+  assert.equal(t0?.name, 'turn');
+  assert.ok(Math.abs((t0?.sx ?? 1) - 0.55) < 1e-9, 'squeezed to 55% across (15% showed as a sliver for a whole frame)');
+  assert.notEqual(stdPick(player(), 1, ev({ turnPhase: () => 0.8 }))?.name, 'turn');
+  const sk = stdPick(player(), 1, ev({ isSkidding: () => true, skidDir: -1 }));
+  assert.equal(sk?.name, 'skid');
+  assert.equal(sk?.face, -1);
+  assert.ok(STD_FRAMES.turn && STD_FRAMES.skid);
 });
 
 test('he walks slowly and runs fast, and stands still with a blink', () => {
@@ -74,7 +89,11 @@ test('the run cycle steps through all of its frames as the stride turns', () => 
 });
 
 test('the flip tucks in the middle and the vine swing turns the body about the feet', () => {
-  assert.equal(stdFlipFrame(0.5), 'tuck');
+  // the painted roll: curled, the somersault, upside down, curled, opening out; the code only turns him what the paint leaves over
+  const names = [0.3, 1.5, 3.2, 5.0, 5.9].map((a) => stdFlip(a, 0.5).name);
+  assert.deepEqual(names, ['tuck', 'tumble', 'flip_inv', 'tuck', 'fall_a']);
+  for (let a = 0; a <= Math.PI * 2; a += 0.05) assert.ok(Math.abs(stdFlip(a, 0.5).rot) < 1.6, `at most ~90 degrees of code turn at ${a}`);
+  for (const a of [0.3, 1.5, 3.2, 5.0]) assert.equal(stdFlip(-a, 0.5).rot, -stdFlip(a, 0.5).rot, 'turned the way he turns');
   const c = stdPick(player({ grounded: false, isDoubleJumping: true, somersaultAngle: 3 }), 1, calm)!;
   assert.equal(c.centred, true);
   assert.ok(typeof c.rot === 'number' && c.rot !== 0);

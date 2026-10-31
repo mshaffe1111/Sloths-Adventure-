@@ -21,6 +21,7 @@ import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validat
 import { EASY_HOLD } from './physics.ts';
 import { easyGoalFor, goalHave } from './goals.ts';
 import { floorWater } from './waterTeach.ts';
+import { CLUMP_GAP, isPetal } from './petals.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
 /** a drop is this deep (or has no floor at all) before a far jump over it gets a stone */
@@ -461,8 +462,9 @@ export function easyStage(stage: Stage): Stage {
     }
     for (const e of stage.enemies) e.attackCooldown = Math.max(e.attackCooldown, 0) * 1.5;
   } else if ((kind === 'purge' || kind === 'gauntlet') && stage.enemies.length) {
-    // (gen2 laid a fight's animals for its Easy bar, budget.quota.check (0.6 of the designed goal): never more is asked)
-    const target = Math.max(1, Math.min(stage.config.targetCount, stage.gen2!.budget.quota.check, stage.enemies.length));
+    // (Easy's goal as goals.ts gen2EasyGoal set it: 65% of the animals it holds, capped at what the kid bot reaches, LV-24; else gen2's
+    // own Easy bar, budget.quota.check)
+    const target = stage.easyGoal ?? Math.max(1, Math.min(stage.config.targetCount, stage.gen2!.budget.quota.check, stage.enemies.length));
     stage.config = { ...stage.config, targetCount: target };
   }
   if (gen2) {
@@ -471,9 +473,19 @@ export function easyStage(stage: Stage): Stage {
   }
 
   // a pickup a piece Easy added now stands in sits on its top instead (a step built over a flower, 2026-10-29: 'flower inside platform')
+  const lifted = new Set<Collectible>();
   for (const c of stage.collectibles) {
     const q = stage.platforms.find((p) => p.id >= firstAdded && c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2);
-    if (q) c.y = q.y - 34;
+    if (q) {
+      c.y = q.y - 34;
+      lifted.add(c);
+    }
+  }
+  // (a petal lifted onto another's spot goes: no clumps, petals.ts)
+  if (lifted.size) {
+    const petals = stage.collectibles.filter((c) => isPetal(c, stage));
+    const gone = new Set([...lifted].filter((l) => isPetal(l, stage) && petals.some((c) => c !== l && Math.hypot(c.x - l.x, c.y - l.y) < CLUMP_GAP)));
+    if (gone.size) stage.collectibles = stage.collectibles.filter((c) => !gone.has(c));
   }
 
   // flags, and a heart at every flag

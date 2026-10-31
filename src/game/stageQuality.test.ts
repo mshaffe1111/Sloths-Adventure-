@@ -257,7 +257,10 @@ test('a row or an arc of flowers is one species', () => {
       }
     }
   }
-  assert.ok(pairs > 200, `${pairs} neighbouring flowers in rows`);
+  // (the sample guard: enough neighbours in rows for the share below to mean something. The petal pass breaks solid rows and clumps
+  // up, every other petal of a row going (petals.ts rowExtras, clumpExtras; Matt 2026-10-29), so fewer neighbours sit in rows than the
+  // 200+ of before: 150 still samples rows on every early stage)
+  assert.ok(pairs > 150, `${pairs} neighbouring flowers in rows`);
   assert.ok(mixed / pairs < 0.03, `${mixed} of ${pairs} neighbours in a row differ in species`);
 });
 

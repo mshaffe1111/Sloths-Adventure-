@@ -25,6 +25,6 @@ export default defineConfig({
     outDir: 'tools/testlink/dist',
     emptyOutDir: true,
     // (fonts stay files: index.html preloads them by path, and an inlined one left its preload pointing at nothing)
-    assetsInlineLimit: (file: string, content: Buffer) => !/\.woff2?$/.test(file) && content.length < 24 * 1024,
+    assetsInlineLimit: (file: string, content: Buffer) => !/\.woff2?$/.test(file) && content.length < 32 * 1024,
   },
 });

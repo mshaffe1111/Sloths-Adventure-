@@ -16,47 +16,52 @@ export interface StageSpec {
   type: Exclude<ObjectiveType, 'boss_lair'>;
   /** the stage's story name, shown on the map and the stage card */
   name: string;
-  /** the line under it; {n} is the stage's quota. Unset = the mission's usual description */
+  /**
+   * the line under it. Unset = the mission's usual description. {n} is `goal`, and only a stage that holds the same count on every
+   * layout roll names one (UI-22: the plan's guesses read "Free 3" where 2-3 holds 5); the HUD's goal card gives the exact count
+   */
   desc?: string;
+  /** the count {n} names: what the engine's goal is on every roll (stagePlanGoals.test.ts checks it) */
+  goal?: number;
 }
 
-const S = (type: StageSpec['type'], name: string, desc?: string): StageSpec => ({ type, name, desc });
+const S = (type: StageSpec['type'], name: string, desc?: string, goal?: number): StageSpec => ({ type, name, desc, goal });
 
 /** stages 1-9 of each world (the tenth is the guardian's lair) */
 export const STAGE_PLAN: Record<number, StageSpec[]> = {
   // ACT I · THE TRAIL
   1: [
     S('sprint', 'Into the Canopy', 'Run the high branches of the kapok trees and reach the shrine.'),
-    S('harvest', 'The Petal Trail', 'Meeca left a trail of petals. Gather {n} of them.'),
-    S('purge', 'Branch Snakes', 'Clear {n} snakes off the branches with your Claw Punches.'),
+    S('harvest', 'The Petal Trail', 'Meeca left a trail of petals. Follow it and gather them.'),
+    S('purge', 'Branch Snakes', 'Clear the snakes off the branches with your Claw Punches.'),
     S('ascent', 'Up the Kapok', 'Climb the giant kapok to the very top.'),
-    S('harvest', 'Where She Walked', 'The petals go on. Gather {n} more.'),
+    S('harvest', 'Where She Walked', 'The petals go on. Gather more.'),
     S('vine_runner', 'First Lianas', 'Swing on the hanging lianas across the gaps in the canopy.'),
     S('stealth', 'A Very Good Bush', 'Eagles are watching. Duck under the leaves the way Dot hid from the soldiers.'),
     S('sprint', 'The Long Branch', 'Race the long branch to the shrine.'),
-    S('gauntlet', "The Boa's Branches", "Fight through the boa's guards. Defeat {n} and reach the shrine."),
+    S('gauntlet', "The Boa's Branches", "Fight through the boa's guards and reach the shrine."),
   ],
   2: [
     S('sprint', 'Down to the River', 'Hop the drifting logs down to the riverbank village.'),
-    S('harvest', 'Petals for the Crown', 'The river king wants admiring. Gather {n} flowers for his crown.'),
-    S('rescue', 'Stuck in the Reeds', 'Free {n} little ones caught in the reed cages.'),
+    S('harvest', 'Petals for the Crown', 'The river king wants admiring. Gather flowers for his crown.'),
+    S('rescue', 'Stuck in the Reeds', 'Free {n} little ones caught in the reed cages.', 5),
     S('vine_runner', 'Over the Water', 'Swing across the river on the hanging vines.'),
-    S('purge', 'River Snappers', 'Chase off {n} snappers along the bank.'),
+    S('purge', 'River Snappers', 'Chase the snappers off the bank.'),
     S('ascent', 'Up the Bank Houses', 'Climb up through the village houses dug into the bank.'),
     S('sprint', "The Mailman's Route", 'Take the long way round the river, past every door marked PLEASE BE PATIENT.'),
-    S('rescue', 'Before the Water Rises', 'Free {n} more little ones before the water rises.'),
-    S('gauntlet', "The River King's Court", "Fight through the river king's court. Defeat {n} and reach the shrine."),
+    S('rescue', 'Before the Water Rises', 'Free more little ones before the water rises.'),
+    S('gauntlet', "The River King's Court", "Fight through the river king's court and reach the shrine."),
   ],
   3: [
     S('sprint', 'Into the Grotto', 'Follow the glowworm light down into the grotto.'),
     S('stealth', 'Glowworm Path', 'Something is watching. Keep low and keep moving.'),
-    S('purge', 'Footprints in a Circle', 'Drive off {n} prowlers circling in the dark.'),
+    S('purge', 'Footprints in a Circle', 'Drive off the prowlers circling in the dark.'),
     S('ascent', 'The Sinkhole', 'Climb the sinkhole wall toward the moonlight.'),
     S('stealth', 'Sleeping Vines', 'The old thorn vines are asleep. Do not wake them.'),
-    S('relic_hunt', "Grandma's Things", "Dot hid Grandma's things in the ferns. Find {n} of them."),
-    S('relic_hunt', 'Which Fern?', 'All ferns look alike. Find {n} more of Grandma\'s things.'),
+    S('relic_hunt', "Grandma's Things", "Dot hid Grandma's things in the ferns. Find {n} of them.", 5),
+    S('relic_hunt', 'Which Fern?', 'All ferns look alike. Find {n} more of Grandma\'s things.', 6),
     S('vine_runner', 'Thorn Vine Swing', 'Swing past the thorn vines without touching the thorns.'),
-    S('gauntlet', "The Prowler's Ring", "Break out of the Prowler's ring. Defeat {n} and reach the shrine."),
+    S('gauntlet', "The Prowler's Ring", "Break out of the Prowler's ring and reach the shrine."),
   ],
   // ACT II · THE COST
   4: [
@@ -67,53 +72,53 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('stealth', "The Sovereign's Dive", 'The Sky Sovereign is hunting. Stay under cover.'),
     S('ascent', 'Above the Mist', 'Climb above the mist to the eagle nests.'),
     S('sprint', 'The Long Drop', 'Glide down the long drops to the shrine.'),
-    S('rescue', 'Nests on the Cliff', 'Free {n} little ones caught on the cliff.'),
-    S('gauntlet', 'The Aerie', "Fight through the Sovereign's aerie. Defeat {n} and reach the shrine."),
+    S('rescue', 'Nests on the Cliff', 'Free the little ones caught on the cliff.'),
+    S('gauntlet', 'The Aerie', "Fight through the Sovereign's aerie and reach the shrine."),
   ],
   5: [
     S('sprint', 'The Loveliest Place', 'Run through the loveliest place on the road. Do not stop.'),
     S('stealth', "Don't Sit", 'POKEY. DON\'T SIT. Stay hidden and keep moving.'),
-    S('harvest', 'Closing Orchids', 'The orchids are closing early. Gather {n} before they do.'),
+    S('harvest', 'Closing Orchids', 'The orchids are closing early. Gather them before they do.'),
     S('vine_runner', 'Silk Bridges', 'Swing across on the silk, and do not admire it.'),
-    S('rescue', 'Caught in Silk', 'Free {n} creatures wrapped in the silk.'),
+    S('rescue', 'Caught in Silk', 'Free the creatures wrapped in the silk.'),
     S('relic_hunt', 'Where She Ran', 'She got away from them here, for one night. Follow where she ran.'),
     S('stealth', "Don't Touch the Silk", 'Every thread hums. Keep out of sight.'),
     S('ascent', 'Up the Bloom Trees', 'Climb the bloom trees above the webs.'),
-    S('gauntlet', "The Queen's Garden", "Fight through the Queen's garden. Defeat {n} and reach the shrine."),
+    S('gauntlet', "The Queen's Garden", "Fight through the Queen's garden and reach the shrine."),
   ],
   6: [
     S('vine_runner', 'The Root Maze', 'Swing root to root over the black water.'),
     S('stealth', 'Flat Water', 'Water that flat has something under it. Stay hidden.'),
     S('vine_runner', 'Root to Root', 'Keep swinging. The water is watching.'),
     S('sprint', 'Low Tide', 'Cross the mudflats while the tide is out.'),
-    S('purge', 'The Spear', 'Chase off {n} hunters in the mangrove.'),
+    S('purge', 'The Spear', 'Chase the hunters out of the mangrove.'),
     S('sprint', 'Lights in the Roots', 'The roots go dark. Let the firefly light the way.'),
     S('vine_runner', 'Through the Roots', 'Raise the water, lower the water, and find what Dot left you.'),
     S('ascent', 'Stilt Climb', 'Climb the stilt roots up out of the swamp.'),
-    S('gauntlet', 'Blackwater', 'Fight through the blackwater. Defeat {n} and reach the shrine.'),
+    S('gauntlet', 'Blackwater', 'Fight through the blackwater and reach the shrine.'),
   ],
   7: [
     S('sprint', 'The Open Door', 'The temple door stands open. Go in.'),
     S('ascent', 'Brown Vines', 'Climb the old walls where the vines have gone brown.'),
-    S('relic_hunt', 'Ten Chairs', 'Search the courtyard of the ten stone chairs. Find {n} relics.'),
+    S('relic_hunt', 'Ten Chairs', 'Search the courtyard of the ten stone chairs. Find {n} relics.', 4),
     S('ascent', 'The Way Up', 'Climb up through the temple. Nobody here will tell you the way.'),
-    S('purge', 'Stone Sentries', 'Clear {n} guards out of the halls.'),
+    S('purge', 'Stone Sentries', 'Clear the guards out of the halls.'),
     S('sprint', 'Falling Floors', 'Run before the old floors crumble.'),
-    S('relic_hunt', 'The Photograph', 'Search the ruins. Something here was left for Meeca\'s family. Find {n} relics.'),
+    S('relic_hunt', 'The Photograph', 'Search the ruins. Something here was left for Meeca\'s family. Find {n} relics.', 4),
     S('ascent', 'The Upper Temple', 'Climb to the top of the temple.'),
-    S('gauntlet', "The Golem's Hall", "Fight through the Golem's hall. Defeat {n} and reach the shrine."),
+    S('gauntlet', "The Golem's Hall", "Fight through the Golem's hall and reach the shrine."),
   ],
   // ACT III · THE IRON ROAD
   8: [
     S('sprint', 'As the Light Goes', 'Keep going as the light goes. The fireflies will show the way.'),
-    S('harvest', 'Night Blooms', 'Gather {n} pale night blooms by firefly light.'),
+    S('harvest', 'Night Blooms', 'Gather the pale night blooms by firefly light.'),
     S('vine_runner', 'Long Swings', 'Swing through the dark treetops.'),
     S('stealth', 'Bat Roosts', 'Creep past the roosts without waking them.'),
     S('vine_runner', 'Next Branch', 'Next branch, then the one after.'),
     S('sprint', 'Glide by Moonlight', 'Glide from tree to tree by moonlight.'),
     S('ascent', 'The Tallest Tree', 'Climb the tallest tree to see the way ahead.'),
-    S('purge', 'Night Hunters', 'Drive off {n} night hunters.'),
-    S('gauntlet', "Monarch's Wood", "Fight through the Monarch's wood. Defeat {n} and reach the shrine."),
+    S('purge', 'Night Hunters', 'Drive off the night hunters.'),
+    S('gauntlet', "Monarch's Wood", "Fight through the Monarch's wood and reach the shrine."),
   ],
   9: [
     S('sprint', 'Pepper Air', 'Run through the hot, peppery air of the volcanic jungle.'),
@@ -121,10 +126,10 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('vine_runner', 'Ember Canopy', 'Swing over the glowing rock.'),
     S('stealth', "The Drake's Doorstep", 'First he says, "Visitor." Then he says, "Intruder." Stay out of sight.'),
     S('sprint', 'Vent Riding', 'Open your leaf over the vents and ride the hot air.'),
-    S('purge', 'Ash Fields', 'Clear {n} hunters off the ash fields.'),
+    S('purge', 'Ash Fields', 'Clear the hunters off the ash fields.'),
     S('ascent', 'Lava Steps', 'Climb the cooled lava steps.'),
-    S('relic_hunt', "Pell's Thread", 'The lieutenant keeps dropping bits of his thread. Find {n} of them.'),
-    S('gauntlet', "The Drake's Hoard", "Fight through the Drake's hoard. Defeat {n} and reach the shrine."),
+    S('relic_hunt', "Pell's Thread", 'The lieutenant keeps dropping bits of his thread. Find {n} of them.', 4),
+    S('gauntlet', "The Drake's Hoard", "Fight through the Drake's hoard and reach the shrine."),
   ],
   10: [
     S('sprint', 'The Door Made for Him', 'Go through the door in the netting. It is exactly your width.'),
@@ -133,9 +138,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('ascent', 'Holding On', 'Keep climbing. Hold on when the thunder comes.'),
     S('ascent', 'Halfway Up', 'Climb halfway up the mountain. Listen.'),
     S('vine_runner', 'The Iron Netting', 'Swing along the iron netting.'),
-    S('purge', 'The Walls', 'Clear {n} guards off the walls.'),
+    S('purge', 'The Walls', 'Clear the guards off the walls.'),
     S('ascent', 'The Last Steps', 'The last of the thousand steps.'),
-    S('gauntlet', 'The Fortress Gate', 'Fight through the fortress gate. Defeat {n} and reach the shrine.'),
+    S('gauntlet', 'The Fortress Gate', 'Fight through the fortress gate and reach the shrine.'),
   ],
 };
 
@@ -145,7 +150,8 @@ export function stageSpec(world: number, mini: number): StageSpec | null {
 }
 
 /** World 1's harvests gather Meeca's petals, not flowers */
-export const isPetalStage = (world: number, mini: number) => world === 1 && stageSpec(world, mini)?.type === 'harvest';
+/** Meeca's petal is every stage's pickup (petals.ts, Matt 2026-10-29), but World 8's harvests: their night blooms are the goal's own */
+export const isPetalStage = (world: number, mini: number) => !(world === 8 && stageSpec(world, mini)?.type === 'harvest');
 
 /** what a search (relic hunt) turns up in a world: one of the painted keepsakes (items/<name>.webp), or the golden idol (null) */
 export function relicArt(world: number, k: number): string | null {
@@ -174,7 +180,7 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
 }
 function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
   if (type === 'harvest') {
-    const [one, many] = world === 1 ? ['petal', 'petals'] : world === 8 ? ['night bloom', 'night blooms'] : ['flower', 'flowers'];
+    const [one, many] = world === 8 ? ['night bloom', 'night blooms'] : ['petal', 'petals'];
     return { verb: 'Collect', one, many };
   }
   if (type === 'relic_hunt') {

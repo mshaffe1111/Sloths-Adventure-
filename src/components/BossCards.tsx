@@ -9,6 +9,7 @@ import { Crest } from './icons/Crest.tsx';
 import { crestName } from './icons/crests.ts';
 import { countValue, easeOut } from './fx/countUp.ts';
 import { sound } from '../game/audio.ts';
+import { dotPresent } from '../game/wayside.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -32,12 +33,30 @@ export const BOSS_DOT_LINE: Record<number, string> = {
 };
 
 /**
+ * Pokey's own line where Dot is away (UI-16: the second half of World 6, World 7 with Thornbark, World 10's gate; wayside.ts dotPresent):
+ * his thought, first person, the same one thing to watch for.
+ */
+export const BOSS_POKEY_LINE: Record<number, string> = {
+  6: 'Low sweep, I jump. High swipe, I duck.',
+  7: 'Jump the hammer. Then hit what glows.',
+  10: 'My last giant. Hit whatever glows!',
+  11: 'He copies me. Wait for the red glow.',
+};
+
+/** who speaks on a guardian's card, and the line: Dot where she is with Pokey, Pokey himself where she is not (UI-16) */
+export function bossSpeaker(levelConfig: Pick<LevelConfig, 'worldIndex' | 'miniIndex' | 'secret'>): { who: 'dot' | 'pokey'; line: string } {
+  const key = levelConfig.secret ? 11 : levelConfig.worldIndex;
+  if (dotPresent(levelConfig.worldIndex, levelConfig.miniIndex)) return { who: 'dot', line: BOSS_DOT_LINE[key] ?? 'Watch for the red glow, Pokey.' };
+  return { who: 'pokey', line: BOSS_POKEY_LINE[key] ?? 'Watch for the red glow. Then hit back.' };
+}
+
+/**
  * Before a guardian fight, after its painted scene: the same wooden card as Stage Cleared, with the guardian's painted portrait,
- * its name carved on the plaque, one line from Dot, and Let's go.
+ * its name carved on the plaque, one line from Dot (or from Pokey, where she is away: bossSpeaker), and Let's go.
  */
 export const BossIntroCard: React.FC<{ levelConfig: LevelConfig; onGo: () => void }> = ({ levelConfig, onGo }) => {
   const key = levelConfig.secret ? 'thornbark' : levelConfig.worldIndex;
-  const line = BOSS_DOT_LINE[levelConfig.secret ? 11 : levelConfig.worldIndex] ?? 'Watch for the red glow, Pokey.';
+  const { who, line } = bossSpeaker(levelConfig);
   const short = typeof window !== 'undefined' && window.innerHeight <= 520;
   // the guardian's name lands with a slam (SN-10: the card used to open in silence)
   React.useEffect(() => {
@@ -58,9 +77,13 @@ export const BossIntroCard: React.FC<{ levelConfig: LevelConfig; onGo: () => voi
           </div>
           <h3 className="boss-card-name">{levelConfig.name}</h3>
           <div className="boss-card-dot">
-            <DotPerched size={short ? 46 : 56} className="boss-card-dotpic" facing="right" />
+            {who === 'dot' ? (
+              <DotPerched size={short ? 46 : 56} className="boss-card-dotpic" facing="right" />
+            ) : (
+              <HeroPose frame="idle_a" height={short ? 52 : 64} maxWidth={short ? 46 : 56} className="boss-card-dotpic" label="Pokey" />
+            )}
             <p className="boss-card-line">
-              <b>Dot</b>
+              <b>{who === 'dot' ? 'Dot' : 'Pokey'}</b>
               {line}
             </p>
           </div>
