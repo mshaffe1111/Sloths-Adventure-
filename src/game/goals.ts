@@ -85,9 +85,15 @@ export function easyFloor(have: number): number {
   return Math.max(1, Math.min(have, Math.round(have * EASY_SHARE)));
 }
 
+/** the median of the kid bot's recorded runs (the lower middle of an even count): 5, 5, 9, 10, 10, 10 gives 9 */
+export function kidMedian(runs: readonly number[]): number {
+  const r = [...runs].sort((a, b) => a - b);
+  return r[Math.floor((r.length - 1) / 2)];
+}
+
 /**
- * A gen2 stage's Easy goal (LV-24, lead 2026-10-30): the 65% floor, but never more than the kid first-timer bot reliably reaches where it
- * was measured (gen2/game.ts easyGoal: 5-9's kid beat 5, 5, 9, 10, 10 and 10 spiders, so 5). Hand-built stages keep LV-6's rule.
+ * A gen2 stage's Easy goal (LV-24, lead 2026-10-30): the 65% floor, but never more than the kid first-timer bot's median where its runs
+ * were recorded (gen2/game.ts kidRuns: 5-9's kid beat 5, 5, 9, 10, 10 and 10 spiders, so 9). Hand-built stages keep LV-6's rule.
  */
 export function gen2EasyGoal(have: number, kidReach?: number): number {
   return Math.max(1, Math.min(easyFloor(have), kidReach ?? Infinity));
