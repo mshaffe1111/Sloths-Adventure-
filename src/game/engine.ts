@@ -6988,7 +6988,9 @@ export class GameEngine {
     const zs = this.currentStage.heartFalls;
     const p = this.player;
     const cx = p.x + p.width / 2;
-    const z = this.softAt ? zs?.find((h) => cx > h.x0 - 160 && cx < h.x1 + 160) : undefined;
+    // (the gap he fell at, or the one he jumped for from the ledge before it: a glide carries him on past the gap's end as he sinks)
+    const from = this.softAt?.x ?? -Infinity;
+    const z = this.softAt ? zs?.find((h) => (cx > h.x0 - 160 && cx < h.x1 + 160) || (from > h.x0 - 420 && from <= h.x0 + 20 && cx > h.x0 - 160)) : undefined;
     if (!z || !this.softAt) return false;
     if (z.free) {
       this.lanternSetBack(this.softAt.x, this.softAt.y);

@@ -139,13 +139,14 @@ export const W8_DECOR: WorldManifest['decor'] = [
 // ───────────────────────────── the lines ─────────────────────────────
 
 /**
- * Dot's lines (under 10 words). New ones need Matt's approval (STAGE-RULES §1 "Story"); the glide line is World 4's (dotLinesData
- * hint.4-7.far) and the harpy's World 6's (w6.ts W6_TIPS).
+ * Dot's lines (under 10 words). New ones need Matt's approval (STAGE-RULES §1 "Story"); the harpy's is World 6's (w6.ts W6_TIPS). The
+ * glide line is World 8's own on Normal, where a glide gap needs the second jump first (Matt approved, 2026-10-31: World 4's "Flick up
+ * and hold" fell short of every Normal 8-6 gap); Easy keeps World 4's (dotLinesData hint.4-7.far), one jump being enough there (W8_EASY_TIPS).
  */
 export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.dark]: 'Dark ahead. Stay near the fireflies.', // (new, needs Matt's approval)
   [W8_LESSON.roost]: "Bats! Hide while they're looking. Go when they sleep.", // (new, needs Matt's approval)
-  [W8_LESSON.glide]: 'Too far! Flick up and hold to glide.',
+  [W8_LESSON.glide]: 'Too far! Jump twice, then hold to glide.', // (Matt approved, 2026-10-31)
   [W8_LESSON.hunt]: "The shrine's shut. Drive the hunters off first!", // (new, needs Matt's approval)
   [W8_LESSON.fight]: "The shrine's shut. Fight through to open it.", // (new for World 8: World 6's line, needs Matt's approval there)
   [W8_LESSON.harpy]: 'A harpy! It slides, then stomps. Jump clear.',
@@ -154,9 +155,11 @@ export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.bounce]: 'Moon flower! Bounce on it to get up high.', // (Matt approved 'A moon flower! ...', 2026-10-31; the 'A' dropped for the under-10-words rule, to confirm)
   [W8_LESSON.doze]: 'A sleeping boa. Hop right over it!', // (new, needs Matt's approval)
 };
+/** Easy's lines: World 4's glide line, one flick and a glide crossing Easy's shorter glide gaps */
+export const W8_EASY_TIPS: Record<string, string> = { ...W8_TIPS, [W8_LESSON.glide]: 'Too far! Flick up and hold to glide.' };
 /** the lines that are new in World 8 (the report lists them for Matt) */
 // (the roosts moved from 8-4, now the hand-built Lantern Run, to 8-2's roost blooms)
-export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop], W8_TIPS[W8_LESSON.batRun], W8_TIPS[W8_LESSON.bounce], W8_TIPS[W8_LESSON.doze]];
+export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.glide], W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop], W8_TIPS[W8_LESSON.batRun], W8_TIPS[W8_LESSON.bounce], W8_TIPS[W8_LESSON.doze]];
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -323,7 +326,7 @@ export const W8_MEET_LEAD = 520;
 export function w8Kit(stage: number, difficulty: Difficulty = 'normal'): WorldKit {
   const own = W8_STAGE_FOES[stage];
   const creatures = own ? W8_CREATURES.filter((c) => own.includes(c.id)) : W8_CREATURES.filter((c) => c.id !== W8_CREATURE.harpy);
-  return { manifest: { ...W8_MANIFEST, creatures }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage, difficulty) };
+  return { manifest: { ...W8_MANIFEST, creatures, ...(difficulty === 'easy' ? { tips: W8_EASY_TIPS } : {}) }, emit: w8Emitters(stage), decorate: w8Decorate(stage), spawn: w8Spawn(stage, difficulty) };
 }
 
 /** Dot's warning comes this far before the first deadly drop's lip (px), as the water's (types.ts WATER_WARN.lead) */
