@@ -584,7 +584,7 @@ export interface SwayBloom {
   w: number;
 }
 /** a swaying orchid's beat: how far its head swings either way (px) and its period (s) */
-export const SWAY = { range: 52, period: 3.4 } as const;
+export const SWAY = { range: 52, period: 3.4, w: 96 } as const;
 
 export interface Orchid {
   x: number;
@@ -808,7 +808,7 @@ export const W5_TEACH = {
   hummed: 'It hummed! Here come the spiders',
   sheet: 'Lovely silk. Don\'t stop to look at it. It takes it as a compliment. Slide right on past',
   orchid: 'The big orchids close on a beat. When one shivers, it\'s about to shut. Flick up onto it while it\'s open',
-  sway: 'This orchid sways on its stem. Wait till it swings close, then flick up onto it',
+  sway: 'This orchid sways. Jump when it swings close.',
   cocoon: 'Somebody\'s wrapped up in that cocoon! Tap to punch it open and set them free',
   silk: 'A silk line, like a vine. Flick up into it to swing',
   spider: 'A jumping spider! It crouches before it rushes. Tap to punch it, or jump on it',

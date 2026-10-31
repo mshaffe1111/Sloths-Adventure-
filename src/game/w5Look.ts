@@ -639,36 +639,80 @@ const SWAY_ART = { bloom: 488, mid: 0.5 } as const;
  * whole plant leaning the way the head has swung. Painted (w5-sway.webp), rotated about the bloom and clipped at the floor; until the
  * picture has loaded, a stem drawn in code under the kit's open orchid.
  */
-export function drawSwayOrchid(ctx: CanvasRenderingContext2D, rx: number, ry: number, hx: number, hy: number, w: number, t: number) {
+export function drawSwayOrchid(ctx: CanvasRenderingContext2D, rx: number, ry: number, hx: number, hy: number, w: number, t: number, swing = 0) {
   const img = swayArt();
   const L = Math.max(40, ry - hy);
   const lean = Math.max(-0.9, Math.min(0.9, (hx - rx) / L));
+  // (a faint arc of motion at the ends of the swing: `swing` is where the head is in its beat, -1 to 1; it shows near either end)
+  const end = Math.max(0, Math.abs(swing) - 0.6) / 0.4;
+  if (end > 0) {
+    ctx.save();
+    ctx.globalAlpha = 0.45 * end;
+    ctx.strokeStyle = '#fff6e0';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    const dir = -Math.sign(swing);
+    for (let k = 0; k < 2; k++) {
+      ctx.beginPath();
+      ctx.arc(rx, ry, L - 6 + k * 12, -Math.PI / 2 + Math.asin(lean) + dir * 0.02, -Math.PI / 2 + Math.asin(lean) + dir * 0.16, dir < 0);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
   if (img) {
-    const s = (w * 1.15) / SWAY_ART.bloom;
+    // (the bloom about as wide as the ledge: its head a shade over Pokey's body, no more)
+    const s = (w * 1.05) / SWAY_ART.bloom;
     const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
     ctx.save();
     ctx.beginPath();
-    ctx.rect(hx - dw, hy - dh, dw * 2, ry - (hy - dh));
+    ctx.rect(hx - dw * 2, hy - dh, dw * 4, ry - (hy - dh));
     ctx.clip();
-    ctx.translate(hx, hy - 10);
-    ctx.rotate(Math.asin(lean) * 0.8);
+    // (the stem bends: drawn in three bands, each leaning further than the one below it, so the plant curves as the head swings)
+    const ang = Math.asin(lean) * 1.25;
+    ctx.translate(hx, hy - 6);
+    ctx.rotate(ang);
     ctx.drawImage(img, -dw * SWAY_ART.mid, 0, dw, dh);
     ctx.restore();
-    return;
+    // (the stem's lower part, from the painted stem's foot down to the root in the floor, a green line bowing the other way)
+    const fx = hx - Math.sin(ang) * dh * 0.98, fy = hy - 6 + Math.cos(ang) * dh * 0.98;
+    if (fy < ry) {
+      ctx.save();
+      ctx.lineCap = 'round';
+      for (const [col, lw] of [['#2a4f24', 9], ['#58884a', 5]] as const) {
+        ctx.strokeStyle = col;
+        ctx.lineWidth = lw;
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.quadraticCurveTo((fx + rx) / 2 - (hx - rx) * 0.3, (fy + ry) / 2, rx, ry);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  } else {
+    const dx = hx - rx;
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (const [col, lw] of [['#2f5a28', 11], ['#6f9e46', 6]] as const) {
+      ctx.strokeStyle = col;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      ctx.moveTo(rx, ry);
+      ctx.quadraticCurveTo(rx - dx * 0.3, (ry + hy) / 2, hx, hy + 18);
+      ctx.stroke();
+    }
+    ctx.restore();
+    drawOrchid(ctx, hx, hy + 30, w, 1, 0, t);
   }
-  const dx = hx - rx;
+  // the shelf he stands on: the bloom's top petal edge, a slim warm lip in the petals' own colours (the platform's top, behind him)
   ctx.save();
-  ctx.lineCap = 'round';
-  for (const [col, lw] of [['#2f5a28', 13], ['#6f9e46', 8]] as const) {
-    ctx.strokeStyle = col;
-    ctx.lineWidth = lw;
-    ctx.beginPath();
-    ctx.moveTo(rx, ry);
-    ctx.quadraticCurveTo(rx + dx * 0.15, (ry + hy) / 2, hx, hy + 18);
-    ctx.stroke();
-  }
+  ctx.beginPath();
+  ctx.ellipse(hx, hy + 4, w * 0.44, 5, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255, 249, 240, 0.92)';
+  ctx.fill();
+  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = 'rgba(120, 92, 80, 0.75)';
+  ctx.stroke();
   ctx.restore();
-  drawOrchid(ctx, hx, hy, w, 1, 0, t);
 }
 
 

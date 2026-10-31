@@ -592,7 +592,9 @@ export class W5Play {
     // the swaying orchids: the stem from its root to the ledge, leaning as the head swings, and the open bloom on top
     for (const { b, pl } of this.swayPlat) {
       if (!vis(b.x)) continue;
-      drawSwayOrchid(ctx, b.x, b.rootY, pl.x + pl.width / 2, pl.y, b.w, t);
+      // (where the head is in its swing, -1 to 1, for the motion arcs at its ends)
+      const swing = pl.moveRange ? (pl.x - (pl.baseX ?? pl.x)) / pl.moveRange : 0;
+      drawSwayOrchid(ctx, b.x, b.rootY, pl.x + pl.width / 2, pl.y, b.w, t, swing);
     }
     (w5.orchids ?? []).forEach((o) => {
       if (!vis(o.x)) return;

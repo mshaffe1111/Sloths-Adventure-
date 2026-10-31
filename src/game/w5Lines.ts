@@ -124,7 +124,7 @@ const TEACH_ROWS: DotLineRow[] = [
   ['w5.hummed', '', 'guide', 'info', T.hummed, 'It hummed! Spiders coming!', null, null, 'spider'],
   ['w5.sheet', '', 'guide', 'info', T.sheet, 'The silk sheets catch whoever looks.', null, null, 'silk sheet'],
   ['w5.orchid', '', 'guide', 'info', T.orchid, 'Orchids! They close, then open again.', null, null, 'orchid'],
-  ['w5.sway', '', 'guide', 'info', T.sway, 'This orchid sways. Hop on as it swings near.', null, null, 'orchid'],
+  ['w5.sway', '', 'guide', 'info', T.sway, 'This orchid sways. Jump when it swings close.', null, null, 'orchid'],
   ['w5.cocoon', '', 'guide', 'info', T.cocoon, 'Somebody\'s in there!', null, null, 'cocoon'],
   ['w5.silk', '', 'guide', 'move', T.silk, 'Flick up into the silk to swing.', 'Then flick up and forward to let go.', 'flick-up', 'vine'],
   ['w5.spider', '', 'guide', 'info', T.spider, 'Spiders! These ones are soft.', null, null, 'spider'],

@@ -8,7 +8,7 @@ const { chromium } = createRequire(import.meta.url)('playwright');
 const [port = '4301', out = 'tools/art/eshots/w5', only] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const at = (pick, dx = -140) => `const t = (${pick})(e); if (!t) return 'none'; const pl = e.platforms.filter((p) => p.x <= t.x + ${dx} && p.x + p.width >= t.x + ${dx} && p.y >= (t.y ?? 580) - 5).sort((a, b) => a.y - b.y)[0];
-  Object.assign(e.player, { x: t.x + ${dx}, y: pl ? pl.y : 580, vx: 0, vy: 0, facing: 1, invincibleTimer: 99 }); return t.x;`;
+  Object.assign(e.player, { x: t.x + ${dx}, y: pl ? pl.y : 580, vx: 0, vy: 0, facing: 1, invincibleTimer: 0 }); return t.x;`;
 const SCENES = {
   pot: { stage: '5-3', setup: at(`(e) => e.proto.w5.pots[0]`, -150), waits: [0.2, 1.4, 2.4, 3.2, 4.0] },
   sheet: { stage: '5-5', setup: at(`(e) => { const s = (e.proto.w5.sheets ?? [])[0]; return s && { x: s.x0, y: 580 }; }`, -120), waits: [0.3] },
@@ -18,7 +18,7 @@ const SCENES = {
   start55: { stage: '5-5', setup: `return 0;`, waits: [3] },
   pit54: { stage: '5-4', setup: at(`(e) => { const v = e.vines[0]; return v && { x: v.x - 900, y: 580 }; }`, 0), waits: [0.3] },
   // 5-3's swaying orchid: layout 6 deals the swaying style; the first one (its lesson), stills over one beat, and a short video
-  sway: { stage: '5-3', layout: 6, video: true, setup: at(`(e) => { const b = e.proto.w5.sways[0]; return b && { x: b.x, y: 580 }; }`, -230), waits: [0.3, 1.1, 1.9, 2.7, 3.5] },
+  sway: { stage: '5-3', layout: 6, video: true, setup: at(`(e) => { const b = e.proto.w5.sways[0]; return b && { x: b.x, y: 580 }; }`, -190), waits: [0.3, 0.9, 1.5, 2.1, 2.7] },
   spider51: { stage: '5-1', setup: at(`(e) => e.enemies[2]`, -260), waits: [0.3, 1.0] },
 };
 const b = await chromium.launch();

@@ -759,9 +759,11 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     fresh('sway', 560 - 220);
     run(R.r(180, 240));
     const edge = x;
-    const w = W5_ORCHID.w;
+    // (ledge-sized: Pokey's body about 1.3x the bloom's head, the lead 2026-10-31: at the closing orchids' 124 px it read as a big
+    // foreground flower, not a thing to stand on)
+    const w = SWAY.w;
     const top = G - 30;
-    const step = w + R.r(100, 120);
+    const step = w + R.r(110, 130);
     const speed = Math.round(((2 * Math.PI) / SWAY.period) * 1000) / 1000;
     const phase0 = R.r(0, 2 * Math.PI);
     let cx = edge + R.r(64, 76) + w / 2;
