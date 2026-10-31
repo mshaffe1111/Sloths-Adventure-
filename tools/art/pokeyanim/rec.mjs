@@ -27,10 +27,10 @@ if (SCENE === 'climbtop') {
   SCRIPT.push([10, 'down ArrowUp'], [70, 'up ArrowUp']);
   N = 90;
 }
-// SCENE=vine: in the air beside the stage's first swinging liana, steering right to grab it, swinging, then a jump off (STAGE= a stage with one)
+// SCENE=vine: in the air at the stage's first swinging liana (1-6), up to grab it, steering right to pump it, swinging, then a jump off (STAGE= a stage with one)
 if (SCENE === 'vine') {
   SCRIPT.length = 0;
-  SCRIPT.push([2, 'down ArrowRight'], [40, 'up ArrowRight'], [55, 'down ArrowRight'], [75, 'up ArrowRight'], [100, 'down Space'], [103, 'up Space']);
+  SCRIPT.push([1, 'down ArrowUp'], [4, 'up ArrowUp'], [6, 'down ArrowRight'], [40, 'up ArrowRight'], [55, 'down ArrowRight'], [75, 'up ArrowRight'], [100, 'down Space'], [103, 'up Space']);
   N = 125;
 }
 if (SCENE === 'climb') {
@@ -59,8 +59,8 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   await p.evaluate((sc) => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
     Object.assign(pl, { vx: 0, vy: 0, facing: 1 });
     if (sc === 'vine') {
-      const v = e.vines.find((q) => q.vineType !== 'tree_climb' && !q.off);
-      Object.assign(pl, { x: v.x - 20, y: (v.topY + v.bottomY) / 2 + 40, grounded: false, vx: 0, vy: 0 });
+      const v = e.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off);
+      Object.assign(pl, { x: v.x - 200 });
     }
     if (sc === 'climb' || sc === 'climbtop') {
       const v = e.vines.find((q) => q.vineType === 'tree_climb' && !q.off);
@@ -75,6 +75,10 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   mkdirSync(dir);
   // take over the loop: from here every frame is one update(1/30) and one render, then a screenshot (as hfpokey/edgeclip.mjs)
   await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e(); e.isRunning = false; cancelAnimationFrame(e.animFrameId); });
+  // (the liana is reached in the air, so he is put there once the loop is ours: in the settle before it he would fall to the ground)
+  if (SCENE === 'vine') await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e();
+    const v = e.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off);
+    Object.assign(e.player, { x: v.x, y: v.topY + 90, grounded: false, vx: 0, vy: 0 }); });
   const trace = [];
   const box = [];
   for (let i = 0; i < N; i++) {
