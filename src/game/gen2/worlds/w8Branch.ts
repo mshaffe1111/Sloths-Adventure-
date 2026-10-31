@@ -41,6 +41,74 @@ const branch = (s: Omit<SectionTemplate, 'entry' | 'exit' | 'exitDy' | 'archetyp
   return { archetypes: ['vine_runner'], ...rest, entry: { piece: first, kind: 'ground' }, exit: { piece: last, kind: 'ground' }, exitDy: 0, mirrorable: false };
 };
 
+/** a moon flower (World 8's bounce plant, bounceArt.ts cap-w8) standing at a bough's end, its cap `up` px over it */
+const flower = (key: string, on: string, at: W = [0.78, 0.84], up: W = [22, 28]): SectionPiece => ({ key, shape: 'bouncy', w: [80, 90], place: { kind: 'over', on, at, dy: typeof up === 'number' ? -up : [-up[1], -up[0]] }, main: true });
+/** the high bough past it: out of the jump's and the second jump's reach (DOUBLE_RISE ~185), inside the bounce's with the second jump (~240) */
+const FLOWER_HI = 215;
+const high = (key: string, on: string, w: W): SectionPiece => bank(key, w, { kind: 'over', on, at: 1, dy: -FLOWER_HI }, { main: true });
+const BOUNCE = W8_LESSON.bounce;
+const tip = (mechanic: string, on: string, t: Socket['t'] = 0.25): Socket => ({ id: `tip-${mechanic}`, role: 'tip', on, t, allow: [mechanic] });
+
+/**
+ * 8-5's moon flowers (GRAB-BAG.md D, its own theme): a bounce plant at a bough's end throws him up, and the second jump at the top lands him
+ * on the high bough a trunk would have taken a climb to reach. A climb skipped: 8-5's rolls with flowers play faster and read apart from
+ * its climbing rolls. The first is taught (Dot)
+ */
+const bounceFirst = branch({
+  id: 'w8b-bounce-first',
+  name: 'the first moon flower',
+  phases: ['ki', 'sho'],
+  difficulty: 4,
+  teaches: BOUNCE,
+  uses: [W8_THEME.bounces],
+  maxPerStage: 1,
+  pieces: [bank('a', [320, 360]), flower('f', 'a'), high('hi', 'a', [260, 300]), down('b', 'hi', FLOWER_HI, [240, 280])],
+  first: 'a',
+  last: 'b',
+  sockets: [tip(BOUNCE, 'a'), petals('a', 'a', 0.35, 1), petals('hi', 'hi', 0.5, 2, 100), petals('b', 'b', 0.5, 1), scenery('nest', 'b', [0.5, 0.8], 0.5), flag('b', 0.6)],
+});
+
+/** two flowers, each up onto its own high bough, a hunter between */
+const bouncePair = branch({
+  id: 'w8b-bounce-pair',
+  name: 'moon flower, hunter, moon flower',
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [BOUNCE, W8_THEME.bounces],
+  pieces: [bank('a', [240, 280]), flower('f', 'a'), high('hi', 'a', [220, 260]), down('b', 'hi', FLOWER_HI, [320, 360]), flower('f2', 'b'), high('hi2', 'b', [220, 260]), down('c', 'hi2', FLOWER_HI, [220, 260])],
+  first: 'a',
+  last: 'c',
+  sockets: [petals('hi', 'hi', 0.5, 2, 90), foe('foe', 'b', [0.3, 0.4], HUNTERS, 3, { chance: 0.7 }), petals('hi2', 'hi2', 0.5, 2, 90), petals('c', 'c', 0.5, 1)],
+});
+
+/** a flower up to the high bough, and a glide off it over a gap down onto the far one */
+const bounceGlide = branch({
+  id: 'w8b-bounce-glide',
+  name: 'moon flower, then glide down',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [BOUNCE, W8_THEME.bounces],
+  pieces: [bank('a', [260, 300]), flower('f', 'a'), high('hi', 'a', [220, 260]), glide('g', 'hi', [240, 280], [0.7, 0.8]), down('b', 'g', FLOWER_HI, [240, 280])],
+  first: 'a',
+  last: 'b',
+  sockets: [petals('a', 'a', 0.4, 1), petals('hi', 'hi', 0.5, 1), petals('g', 'g', 0.5, 2, 90), petals('b', 'b', 0.5, 1)],
+});
+
+/** a trunk and a flower side by side: climb one, bounce the next (the theme's climbing stays in it) */
+const bounceTrunk = branch({
+  id: 'w8b-bounce-trunk',
+  name: 'up the trunk, down, and up the moon flower',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  uses: [BOUNCE, W8_THEME.bounces],
+  pieces: [bank('a', [260, 300]), ...climbWall('v', 'a', 'wall', 220, [200, 230]), down('b', 'wall', 220, [300, 340]), flower('f', 'b'), high('hi', 'b', [220, 260]), down('c', 'hi', FLOWER_HI, [220, 260])],
+  first: 'a',
+  last: 'c',
+  sockets: [petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'b', [0.3, 0.4], HUNTERS, 3, { chance: 0.5 }), petals('hi', 'hi', 0.5, 2, 90), petals('c', 'c', 0.5, 1)],
+});
+
 /** 8-5's opening: a hunter at the foot of the first trunk, up it, down the far side, and a knot on (no liana yet: 8-3 taught them, and
  *  8-5's stretches are trunks first) */
 const trunkHunter = branch({
@@ -49,6 +117,7 @@ const trunkHunter = branch({
   phases: ['ki', 'sho'],
   difficulty: 4,
   weight: 2,
+  uses: [W8_THEME.climbers],
   pieces: [bank('a', [320, 360]), ...climbWall('v', 'a', 'wall', 240, [220, 250]), down('b', 'wall', 240, [240, 280]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [200, 240])],
   first: 'a',
   last: 'c',
@@ -156,4 +225,4 @@ const darkBranch = branch({
 });
 
 /** 8-5's own sections (w8Game.ts adds them to 8-5 alone) */
-export const W8_BRANCH_SECTIONS: readonly SectionTemplate[] = [trunkHunter, climbSwing, trunkPair, climbHunterSwing, trunkLeap, trunkGlide, darkBranch];
+export const W8_BRANCH_SECTIONS: readonly SectionTemplate[] = [trunkHunter, climbSwing, trunkPair, climbHunterSwing, trunkLeap, trunkGlide, darkBranch, bounceFirst, bouncePair, bounceGlide, bounceTrunk];

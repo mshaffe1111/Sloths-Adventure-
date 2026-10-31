@@ -7191,7 +7191,13 @@ export class GameEngine {
       // the words are Dot's, in her bubble (no words floating in the world, the Dot rework 2026-10-29)
       this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
       this.input.triggerHaptic(120);
-      if (!tipHeard(id, 'watch:hide')) {
+      if (zone?.setback !== undefined) {
+        // (the bat run has nowhere to hide: Dot says to wait it out, once a stage)
+        if (!tipHeard(id, 'watch:batrun')) {
+          markTipHeard(id, 'watch:batrun');
+          this.guide('They\'re stirring! Wait till they doze off again', 3);
+        }
+      } else if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
         const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
         this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
@@ -7219,7 +7225,13 @@ export class GameEngine {
       // the strike: unless he made it into a bush (or behind the water) in time
       if (this.watch.seen && before < WATCH.dive && this.watch.diveT >= WATCH.dive) {
         if (water || hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
-        else if (harmlessPass(this.watch)) {
+        else if (zone?.setback !== undefined) {
+          // (8-1's sleeping-bat run: the bats flutter out round him and he scrambles back to the bough's start; no heart lost)
+          this.addFloatingText('SHOO!', p.x, p.y - 80, '#fbbf24');
+          p.x = zone.setback;
+          p.vx = 0;
+          this.watchCaught = true;
+        } else if (harmlessPass(this.watch)) {
           // (the first pass only warns: it pulls up short of him)
           this.addFloatingText('TOO CLOSE!', p.x, p.y - 80, '#fbbf24');
           this.watchCaught = true;

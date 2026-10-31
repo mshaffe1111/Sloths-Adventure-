@@ -297,7 +297,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   }
   for (const w of stage.proto?.watch ?? []) {
     const cycle = (w.calm[0] + w.calm[1]) / 2 + WATCH.warn + WATCH.pass;
-    span({ x0: w.x0, x1: w.x1, y0: -1e9, y1: 1e9 }, cycle, 'Z', 'eagle sweep: duck into a bush', 1.5, 'watched stretches');
+    span({ x0: w.x0, x1: w.x1, y0: -1e9, y1: 1e9 }, cycle, 'Z', w.setback !== undefined ? 'sleeping bats: time the run' : 'eagle sweep: duck into a bush', 1.5, 'watched stretches');
   }
   for (const r of stage.rivers ?? []) {
     span({ x0: r.x0, x1: r.x1, y0: -1e9, y1: 1e9 }, 1e9, 'Z', 'river crossing: read the logs', 1.0, 'rivers');

@@ -20,6 +20,7 @@ import { PROTO3_FRAMES } from './proto3AtlasData.ts';
 import { DEPTH_DARK, drawEnd, drawLip, drawSoil, endFace, warmGround, type DepthAt } from './groundPaint.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
+import { drawW8Fungus } from './w8FungusArt.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -1175,6 +1176,8 @@ export function drawProtoScene(
   const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
   for (const p of platforms) {
     if (!vis(p) || p.push || p.art || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
+    // (World 8's fungus steps and knot perches: the painted brackets, w8FungusArt.ts)
+    if (p.style === 'fungus_shelf' && drawW8Fungus(ctx, p)) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
     if (trunk && p.width <= 220) {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);

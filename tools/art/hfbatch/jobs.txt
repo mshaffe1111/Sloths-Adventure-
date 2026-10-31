@@ -314,3 +314,13 @@ hfb-w8lantern-r3  6ae3bcf4c78863f9c62de5b5 rtx-pro-6000 21:39:00Z-~21:44Z (~5 mi
   crown stayed flat circles), tuck-s62 (the jar melted into his paws). Review: reference/prop-sheets/qa-notes/8-4-art/review-pieces.jpg,
   review-pokey-jar.jpg
 running total ~$0.62 of $8.
+
+World 8 fungus steps (2026-10-31, overnight W8 helper, cap $15 tonight), branch w8-merge: starts fungusstarts.py, spec make_fungus_spec.py,
+GPU fungusgpu.py (lanterngpu.py + each take printed as B64 in the log), cut funguscut.py. Run through the Hugging Face connector's jobs tool
+(the token is passed by the connector; none in the container). Takes in the bucket under hfbatch/w8fungus/props/.
+hfb-w8fungus-r1   6ae57fe50e0338d1bb7d0eff rtx-pro-6000 05:43Z cancelled while scheduling (nothing ran, $0)
+hfb-w8fungus-r1b  6ae57ff80e0338d1bb7d0f04 rtx-pro-6000 05:43:20Z-05:45:05Z (~1.75 min, ~$0.08): 8 takes, a plain bracket and one with
+  moss and two glow mushrooms, 0.62 and 0.76, seeds 5 and 17. KEPT: bracket-s62-17 (plain), bracket-moss-s62-17 (moss). THROWN: the 0.76
+  takes (drippy bowls, a lumpy underside), s62-5s (the rim split from the top). Packed as src/assets/w6to10/props-made/w8fungus.webp.
+  Note: the log redacts every env value (TAG "f1", "/out"), which broke the B64 lines; hf_fs attach of the bucket PNGs is the way back.
+running total tonight ~$0.08 of $15.

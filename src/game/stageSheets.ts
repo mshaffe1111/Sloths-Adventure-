@@ -192,6 +192,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (((built && (w === 1 || w === 2 || w === 5)) || w >= 8) && cfg.objectiveType !== 'boss_lair') out.push('dress');
   // (Worlds 8-10: the pieces set into their banks' faces, w810FaceArt.ts)
   if (w >= 8 && cfg.objectiveType !== 'boss_lair') out.push('faces810');
+  // (World 8's fungus steps and knot perches: 8-2's and 8-5's steps, 8-3's perches)
+  if (w === 8 && isGen2Stage(cfg) && ['8-2', '8-3', '8-5'].includes(cfg.id)) out.push('w8-fungus');
   if (built && W4_FALL_STAGES.has(cfg.id)) out.push('w4-falls');
   // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');

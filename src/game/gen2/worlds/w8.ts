@@ -64,6 +64,10 @@ export const W8_LESSON = {
   fight: 'w8:fight',
   /** the night harpy, taught where first laid in 8-8 and 8-9 (w8Finish) */
   harpy: 'harpy',
+  /** 8-5's moon flowers (GRAB-BAG.md D): bounce, then the second jump at the top, up onto a bough no jump reaches */
+  bounce: 'w8:bounce',
+  /** 8-1's sleeping-bat run (GRAB-BAG.md E): no hides, time the run for the doze */
+  batRun: 'w8:batrun',
   /** the first deadly drop from a lit bough (Normal: w8Finish says it before the first) */
   drop: 'w8:drop',
 } as const;
@@ -141,10 +145,12 @@ export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.fight]: "The shrine's shut. Fight through to open it.", // (new for World 8: World 6's line, needs Matt's approval there)
   [W8_LESSON.harpy]: 'A harpy! It slides, then stomps. Jump clear.',
   [W8_LESSON.drop]: "Careful! It's a long way down.", // (new, needs Matt's approval)
+  [W8_LESSON.batRun]: 'Sleeping bats. Nowhere to hide: go while they doze.', // (new, needs Matt's approval)
+  [W8_LESSON.bounce]: 'A moon flower! Bounce, then jump again up top.', // (new, needs Matt's approval)
 };
 /** the lines that are new in World 8 (the report lists them for Matt) */
 // (the roosts moved from 8-4, now the hand-built Lantern Run, to 8-2's roost blooms)
-export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop]];
+export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop], W8_TIPS[W8_LESSON.batRun], W8_TIPS[W8_LESSON.bounce]];
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -171,7 +177,7 @@ export const W8_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['8-4', '8-7', '8-10'],
   // (the dark is 8-1's, the roosts 8-2's (8-4 is hand-built now), the moonlight glides 8-6's; the shut shrine is said in each fight stage's own gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-2', [W8_LESSON.glide]: '8-6' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-2', [W8_LESSON.glide]: '8-6', [W8_LESSON.batRun]: '8-1', [W8_LESSON.bounce]: '8-5' },
   tips: W8_TIPS,
 };
 
@@ -233,6 +239,8 @@ export function clipRoosts(out: StageSink): void {
   const bushes = out.proto.bushes ?? [];
   out.proto.watch = zones.flatMap((z) => {
     const inside = bushes.filter((b) => b.x + b.w > z.x0 && b.x < z.x1);
+    // (a bat run has no hides by design: it stays whole)
+    if (z.setback !== undefined) return [z];
     if (!inside.length) return [];
     return [{ ...z, x1: R(Math.min(z.x1, Math.max(...inside.map((b) => b.x + b.w)) + ROOST_PAST)) }];
   });
@@ -253,13 +261,16 @@ export function w8Emitters(stage: number): Record<string, PropEmitter> {
     hollowHide: hide('wide'),
     curtainHide: hide('tall'),
     roost: (f, _p, out) => {
-      const own = f.socket.startsWith('roostHere') ? pieceAt(out, f.x, f.y) : undefined;
+      const bats = f.socket.startsWith('batRun');
+      const own = f.socket.startsWith('roostHere') || bats ? pieceAt(out, f.x, f.y) : undefined;
       const run = own ? [own.x, own.x + own.width] : roostRun(out, f.x, f.y) ?? [f.x - 300, f.x + 300];
-      const z: WatchZone = { x0: R(run[0] + 40), x1: R(run[1] - 40), calm: calm(f.socket === 'roostLesson') };
+      // (8-1's sleeping-bat run, GRAB-BAG.md E: no hides on its bough, a scare back to its start instead of a hit; its first is taught slow)
+      const z: WatchZone = { x0: R(run[0] + 40), x1: R(run[1] - 40), calm: calm(f.socket === 'roostLesson' || f.socket === 'batRunLesson'), ...(bats ? { setback: R(run[0] + 20) } : {}) };
       const zones = (out.proto.watch ??= []);
       if (!zones.some((q) => q.x0 < z.x1 && z.x0 < q.x1)) {
         zones.push(z);
-        (w8Of(out, stage).roosts ??= []).push({ x: R(run[0] + 60), y: f.y });
+        // (a bat run's row hangs lower, over the bough he runs: sideways the usual height put it under the HUD's progress bar)
+        (w8Of(out, stage).roosts ??= []).push({ x: R(run[0] + 60), y: f.y + (bats ? 40 : 0) });
       }
     },
     fungus: (f, p, out) => void (w8Of(out, stage).scenery ??= []).push({ n: look(p, f.x, 3), x: f.x, b: f.y, w: R(90 + 40 * hash01(f.x, 4)) }),
