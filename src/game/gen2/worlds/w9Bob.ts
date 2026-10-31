@@ -208,7 +208,93 @@ const pistonChasm = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-3 and 9-9: the sinking ember slabs ─────────────────────────────
+
+const SINK = W9_LESSON.sink;
+/** an ember slab past `after` that sinks while he stands on it, over a soft channel (the crust under it and its steps out are the long way:
+ *  the slabs are never needed, STAGE-RULES §1) */
+const slab = (key: string, after: string, w: W = [130, 150]): SectionPiece => ({ key, shape: 'raft', w, place: { kind: 'raft', after, bob: 'sink', share: [0.3, 0.42], soft: true }, landing: true });
+const offSoft = (key: string, after: string, w: W) => off(key, after, w, [0.3, 0.42], true);
+
+/** 9-3's gate for the slabs (its start is always a gate: w9Game themed), the canopy's plain basalt run */
+const sinkGate3: SectionTemplate = section({
+  id: 'w9s-gate-sinkers',
+  name: 'ember canopy: the sinking slabs (gate)',
+  archetypes: ['vine_runner'],
+  phases: ['start'],
+  difficulty: 1,
+  teaches: W9_THEME.sinkers,
+  weight: 6,
+  pieces: [bank('a', [220, 260]), up('k1', 'a', 30, [130, 160]), down('f1', 'k1', 30, [220, 260]), up('k2', 'f1', 30, [130, 160]), down('c', 'k2', 30, [200, 240])],
+  last: 'c',
+  sockets: [petals('k1', 'k1', 0.5, 1), petals('f1', 'f1', 0.5, 2, 80), petals('k2', 'k2', 0.5, 1), scenery('log', 'a', [0.5, 0.6], 0.9)],
+  mirrorable: false,
+});
+
+/** the first slabs (every sinkers roll): two over a soft channel, Dot's line on the way in */
+const firstSink = section({
+  id: 'w9-first-sinker',
+  name: 'the first sinking slabs',
+  archetypes: ['vine_runner', 'gauntlet'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: SINK,
+  uses: [W9_THEME.sinkers],
+  maxPerStage: 1,
+  extraSeconds: 1,
+  pieces: [bank('a', [300, 340]), slab('s1', 'a'), slab('s2', 's1'), offSoft('b', 's2', [280, 320]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  last: 'c',
+  sockets: [tip(SINK, 'a', 0.2), petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('b', 'b', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** a run of three slabs: hurry across */
+const sinkRun = section({
+  id: 'w9-sinker-run',
+  name: 'a run of sinking slabs',
+  archetypes: ['vine_runner', 'gauntlet'],
+  phases: LIVE,
+  difficulty: 5,
+  uses: [W9_THEME.sinkers, SINK],
+  extraSeconds: 1,
+  pieces: [bank('a', [260, 300]), slab('s1', 'a'), slab('s2', 's1'), slab('s3', 's2'), offSoft('b', 's3', [300, 340]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
+  last: 'c',
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('s3', 's3', 0.5, 1), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** two runs of slabs with a basalt knob between */
+const sinkTwin = section({
+  id: 'w9-sinker-twin',
+  name: 'two runs of sinking slabs',
+  archetypes: ['vine_runner', 'gauntlet'],
+  phases: MID,
+  difficulty: 6,
+  uses: [W9_THEME.sinkers, SINK],
+  extraSeconds: 2,
+  pieces: [bank('a', [240, 280]), slab('s1', 'a'), slab('s2', 's1'), offSoft('m', 's2', [220, 260]), slab('t1', 'm'), slab('t2', 't1'), offSoft('b', 't2', [260, 300])],
+  last: 'b',
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('m', 'm', 0.5, 1), petals('t2', 't2', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** 9-9: slabs to a guard's landing */
+const sinkHoard = section({
+  id: 'w9-sinker-hoard',
+  name: 'sinking slabs to the guard',
+  archetypes: ['gauntlet'],
+  phases: LIVE,
+  difficulty: 7,
+  uses: [W9_THEME.sinkers, SINK],
+  extraSeconds: 1,
+  pieces: [bank('a', [260, 300]), slab('s1', 'a'), slab('s2', 's1'), offSoft('b', 's2', [420, 460]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
+  last: 'c',
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), foe('foe', 'b', [0.6, 0.7], ANY, 3.5, { chance: 0.9 }), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
+  sinkGate3, W9_BOB_GATES.sinkers9, firstSink, sinkRun, sinkTwin, sinkHoard,
   W9_BOB_GATES.rafts, firstRaft, raftPair, raftRow, raftGeyser,
   W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, logBridge, logPair, logGlide, logHoard,
   W9_BOB_GATES.pistons, firstPiston, pistonPair, pistonChasm,
@@ -218,5 +304,6 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
   [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logBridge.id]: [5, 9], [logPair.id]: [5, 9],
+  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [firstSink.id]: [3, 9], [sinkRun.id]: [3, 9], [sinkTwin.id]: [3, 9], [sinkHoard.id]: [9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],
 };

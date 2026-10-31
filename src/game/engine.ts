@@ -1,4 +1,6 @@
 import { drawW9Bob } from './w9BobArt.ts';
+/** World 9's sinking slab rises back at this once he is off (px a second: gen2 pipeline BOB.sinkRise) */
+const SINK_RISE = 60;
 import { buzz } from './haptics.ts';
 import { nativeApp } from './appShell.ts';
 import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
@@ -1484,7 +1486,12 @@ export class GameEngine {
       if (plat.type !== 'moving' || plat.broken) continue;
       if (plat.lift) {
         // World 2's basket lift rides up and down, and carries whoever stands in it
-        const ny = liftY(plat.lift, this.gameTime);
+        // (World 9's sinking ember slab, lift.ts `sink`: down while he stands on it, back up once he is off, between its stops; its
+        // speed is its sinking, SINK_RISE its rising)
+        const on = p.grounded && this.standingOnId === plat.id;
+        const ny = plat.lift.bob === 'sink'
+          ? Math.max(plat.lift.top, Math.min(plat.lift.bottom, plat.y + (on ? plat.lift.speed : -SINK_RISE) * dt))
+          : liftY(plat.lift, this.gameTime);
         const dy = ny - plat.y;
         plat.y = ny;
         // (World 9's moving logs: how far it rose this frame, so it catches feet it rises past, below)

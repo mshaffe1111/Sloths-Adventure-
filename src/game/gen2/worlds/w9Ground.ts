@@ -69,6 +69,8 @@ export const W9_THEME = {
   surges: 'w9:t-surges',
   /** 9-1 / 9-5: the hot ash wind (N7: w9Heat.ts) */
   gusts: 'w9:t-gusts',
+  /** 9-3 / 9-9: the sinking ember slabs over the soft channels (N4: w9Bob.ts) */
+  sinkers: 'w9:t-sinkers',
 } as const;
 export type W9Theme = (typeof W9_THEME)[keyof typeof W9_THEME];
 
@@ -956,7 +958,7 @@ const burstRow = section({
 // ───────────────────────────── 9-6 Ash Fields (purge), 9-9 The Drake's Hoard (gauntlet) ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
-const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls' | 'surges', line: 'hunt' | 'fight'): SectionTemplate => {
+const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls' | 'surges' | 'sinkers', line: 'hunt' | 'fight'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   // (the hoard's gate climbs a basalt stair to the Drake's door and down again, the ash fields' crosses two knobs: the two fight stages
   // never open alike)
@@ -1362,6 +1364,7 @@ export const W9_BOB_GATES = {
   logs5: ventGate('logs', 'the logs'),
   logs9: huntGate('logs', 'fight'),
   pistons: threadGate('pistons'),
+  sinkers9: huntGate('sinkers', 'fight'),
 } as const;
 
 /** the heat hazards' gates (w9Heat.ts): the flares on 9-5 and 9-8, the lavafalls on 9-6 and 9-9 */

@@ -3,6 +3,7 @@
  *   raft    the pumice raft of the W9 props sheet (props-made/w9b 'pumice-raft'), riding the lava's heat draught (the haze frames under it)
  *   log     the charred log of the W9/W10 bridges sheet, longer and slower, the same draught under it
  *   piston  the hex column of the W9 props sheet, its glowing cap the top he stands on, its shaft running down into its well
+ *   sink    the cooled ember slab of the W9/W10 bridges sheet, sinking while he stands on it (GRAB-BAG.md N4)
  * Each is drawn where the engine has it now (the platform's y moves with lift.ts liftY); nothing is drawn in code but the draught's fade.
  * Until the sheets load, the platform is drawn as a plain slab so the stage stays playable (and never unseen).
  */
@@ -62,6 +63,16 @@ export function drawW9Bob(ctx: CanvasRenderingContext2D, pl: Platform, t: number
       const h = Math.min(tile, foot - y);
       ctx.drawImage(im, COLUMN.x, COLUMN.y + COLUMN.cap, COLUMN.w, h / s, x, y, w, h);
     }
+    return;
+  }
+  if (l.bob === 'sink') {
+    // (the ember slab of the bridges sheet, its glowing underside toward the lava; no draught: it rides on nothing but its own weight)
+    const imS = load(BRIDGES_URL);
+    const c = W9_BRIDGE_CELLS.emberSlab;
+    const w = pl.width + 24;
+    const h = (c.h * w) / c.w;
+    if (!imS) return void slab(ctx, pl, '#3a2a28', pl.y + pl.height);
+    ctx.drawImage(imS, c.x, c.y, c.w, c.h, cx - w / 2, pl.y - h * 0.18, w, h);
     return;
   }
   const raft = l.bob === 'raft';

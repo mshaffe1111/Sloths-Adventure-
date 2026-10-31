@@ -68,7 +68,7 @@ function themed(stage: number, s: SectionTemplate): SectionTemplate | null {
 
 /** World 9's kit for one stage as the game plays it on `difficulty` */
 export function w9GameKit(stage: number, _difficulty: Difficulty = 'normal'): WorldKit {
-  const k = w9Kit(stage);
+  const k = w9Kit(stage, _difficulty === 'easy');
   const sections = W9_GROUND_SECTIONS.filter((s) => forStage(stage, s.id))
     .map((s) => themed(stage, s))
     .filter((s): s is SectionTemplate => !!s)

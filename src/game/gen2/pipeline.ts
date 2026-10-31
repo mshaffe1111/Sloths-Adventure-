@@ -527,7 +527,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
         const gap = Math.max(60, R(shareFor(pl.share) * Math.max(60, maxGap(-dy, false, budget.margin))));
         x = a.x + a.w + gap;
         y = a.y + dy;
-        const depth = soft ? BOB.depth.soft : roll(rng, BOB.depth[pl.bob]);
+        // (a sinking slab always stops on its channel's crust: its pit is soft, the section's `off` says so)
+        const depth = pl.bob === 'sink' ? roll(rng, BOB.depth.sink) : soft ? BOB.depth.soft : roll(rng, BOB.depth[pl.bob]);
         const cycle = 2 * (depth / speed + wait);
         const from = a.bob && a.bob.kind !== 'piston' ? a.bob.from : a.x + a.w;
         bob = { kind: pl.bob, depth, speed, wait, phase: R(rng() * cycle * 10) / 10, from };
@@ -988,7 +989,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           // (World 9: a lava surge down the channel floor `on`: a geyser zone laid along it, the walk across fitting in its quiet spell)
           const ch = pieceOf(z.on);
           const x0 = ch.x + SURGE.inset, x1 = ch.x + ch.width - SURGE.inset;
-          const idle = Math.max(z.lesson ? SURGE.lessonIdle : SURGE.idle, R(((x1 - x0) / SURGE.cross + 0.9) * 10) / 10);
+          const idle = Math.max(z.lesson ? SURGE.lessonIdle : SURGE.idle, R(((x1 - x0) / SURGE.cross + 0.9) * 10) / 10) + (budget.difficulty === 'easy' ? SURGE.easyCalm : 0);
           const period = idle + SURGE.warn + SURGE.active;
           zones.push({ kind: 'geyser', look: 'surge', x0, x1, top: ch.y - SURGE.h, bottom: ch.y + 14, baseY: ch.y, dir: 1, period, warn: SURGE.warn, active: SURGE.active, offset: R(srng() * period * 10) / 10, force: 0 });
           placed.beats.push({ x: ch.x, letter: 'S' });
@@ -1075,21 +1076,25 @@ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 }
  * a timing"). Each rides lift.ts's cycle: a still spell at the bottom, the ride up, a still spell at the top, the ride down.
  *   depth   how far a raft or a log sinks under its top stop (px). Normal's is past the double jump's 185 (physics DOUBLE_RISE), so the jump
  *           off waits for the top; over a soft pit (Easy) it stays over the crust floor (pitDepth 110), a shallow bob
- *   speed   px a second while it rides; wait: its still spell at each stop (s). Easy is slower with longer spells (STAGE-RULES §1b)
+ *   speed   px a second while it rides; wait: its still spell at each stop (s), long enough at the top for a jump's whole flight (0.65 s at
+ *           a raft's 0.65 the raft sank away under the jump: 9-1's adult bot). Easy is slower with longer spells (STAGE-RULES §1b). A sinking
+ *           slab's speed is how fast it sinks under him (it has no cycle: engine.ts)
  *   rise    a piston's climb out of its well (px), past the double jump, so it is the only way up to its ledge
  *   h       the piece's thickness
  */
 /** World 9's lava surge (SectionZone 'surge', GRAB-BAG.md N6): its zone's inset from the channel's ends and height over the floor, the
  *  geyser's warning, a firing under the check's 1.2 s, and a quiet spell of at least `idle` s and long enough to walk the floor (`cross`
  *  px a second, a careful walk) with time to spare */
-export const SURGE = { inset: 12, h: 70, warn: 1.4, active: 1.1, idle: 2.6, lessonIdle: 4.0, cross: 220 } as const;
+export const SURGE = { inset: 12, h: 70, warn: 1.4, active: 1.1, idle: 2.6, lessonIdle: 4.0, cross: 220, easyCalm: 1.2 } as const;
 
 export const BOB = {
-  depth: { raft: [195, 220] as const, log: [205, 235] as const, soft: 70 },
-  speed: { normal: { raft: 230, log: 170, piston: 120 }, easy: { raft: 150, log: 120, piston: 95 } },
-  wait: { normal: { raft: 0.65, log: 0.9, piston: 0.8 }, easy: { raft: 1.1, log: 1.3, piston: 1.2 } },
+  depth: { raft: [195, 220] as const, log: [205, 235] as const, sink: [70, 78] as const, soft: 70 },
+  speed: { normal: { raft: 180, log: 150, piston: 120, sink: 95 }, easy: { raft: 150, log: 120, piston: 95, sink: 65 } },
+  wait: { normal: { raft: 1.0, log: 1.2, piston: 0.8, sink: 0 }, easy: { raft: 1.4, log: 1.6, piston: 1.2, sink: 0 } },
+  /** a sinking slab (`sink`): it goes down at `speed` while he stands on it, comes back up at this (px a second) once he is off */
+  sinkRise: 60,
   rise: [205, 240] as const,
-  h: { raft: 26, log: 30, piston: 40 },
+  h: { raft: 26, log: 30, piston: 40, sink: 24 },
 } as const;
 
 /**

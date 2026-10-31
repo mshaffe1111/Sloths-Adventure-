@@ -255,7 +255,7 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     if (k === 'hop') dt += TIME.hopSec * K;
     else if (k === 'jump' || k === 'glide' || k === 'presumed') dt += 0.5 + Math.max(0, -rise) / 900;
     else if (k === 'bounce') dt += TIME.bounceExtra;
-    else if (k === 'timedHop') dt += 0.4 + (B.lift?.bob ? liftCycle(B.lift) * 0.3 : 0);
+    else if (k === 'timedHop') dt += 0.4 + (B.lift?.bob && B.lift.bob !== 'sink' ? liftCycle(B.lift) * 0.3 : 0);
     else if (k === 'lift') dt += Math.abs(rise) / 120 + TIME.movingExtra;
     else if (k === 'swing') dt = gap / SWING_PACE + 1.2;
     else if (k === 'rope') dt = gap / ROPE_SPEED + TIME.ropeOverhead * K;

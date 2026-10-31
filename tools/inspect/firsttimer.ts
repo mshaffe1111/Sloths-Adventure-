@@ -41,6 +41,8 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
+import { zoneState, type Zone } from '../../src/game/zones.ts';
+import { liftRisingIn, liftTopLeft } from '../../src/game/lift.ts';
 import { findRoute } from './route.ts';
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
@@ -643,6 +645,12 @@ export function freshPhone(setting: FirstTimer['setting']) {
   setDifficulty(setting);
 }
 
+/** a moving log he waits for (World 9, lift.ts `bob`): a raft, a log or a piston, never a sinking slab (a hurry: standing on it sinks it) */
+const timed = (q: Platform | null | undefined): boolean => !!q?.lift?.bob && q.lift.bob !== 'sink';
+/** a raft or a log he jumps for: resting at the top with most of its still spell left, or nearly up (he sees it arrive, so he goes as it
+ *  comes, not as it is about to sink) */
+const raftReady = (q: Platform, t: number): boolean => !!q.lift && (liftTopLeft(q.lift, t) >= q.lift.wait * 0.55 || liftRisingIn(q.lift, t) < 0.25);
+
 export class FirstTimerRun {
   readonly sim: RealPlay;
   readonly e: Eng;
@@ -1127,15 +1135,31 @@ export class FirstTimerRun {
         return { right: true };
       }
     }
+    // (World 9's flares, lavafalls and surges, zones.ts Zone `look`: he sees the glow, the drips, the surge's front coming, so on the ground
+    // he waits short of one that is warning or firing, or due before he could be across, as a person does; only these looks, so the bands
+    // measured on the other worlds' geysers and bolts stay as they were)
+    if (p.grounded && dir !== 0) {
+      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => z.look && z.kind === 'geyser' && p.y > z.top - 160 && p.y <= z.bottom
+        && (dir > 0 ? z.x0 - p.x > 0 && z.x0 - p.x < 70 : p.x - z.x1 > 0 && p.x - z.x1 < 70));
+      if (ahead) {
+        const st = zoneState(ahead, e.gameTime ?? this.t);
+        const cross = (ahead.x1 - ahead.x0 + 60) / 250 + who.stopReact;
+        if (st.phase !== 'idle' || st.untilActive < cross) {
+          this.blockedT = 0;
+          this.pending = null;
+          return {};
+        }
+      }
+    }
     if (p.grounded && dir !== 0) {
       const on = this.floorAt(p.x, p.y, 6);
-      let notReady = !!on?.lift?.bob && on.y > on.lift.top + 6;
+      let notReady = timed(on) && on!.y > on!.lift!.top + 6;
       if (on && !on.lift) {
         const edgeX = dir > 0 ? on.x + on.width : on.x;
         const toEdge = (edgeX - p.x) * dir;
         if (toEdge < 26 + who.edgeAim + 60) {
-          const bob = this.sim.platforms.find((q) => q.lift?.bob && !q.broken && (dir > 0 ? q.x - edgeX > -10 && q.x - edgeX < 280 : edgeX - (q.x + q.width) > -10 && edgeX - (q.x + q.width) < 280));
-          if (bob?.lift) notReady = bob.lift.bob === 'piston' ? bob.y < bob.lift.bottom - 6 : bob.y > bob.lift.top + 12;
+          const bob = this.sim.platforms.find((q) => timed(q) && !q.broken && (dir > 0 ? q.x - edgeX > -10 && q.x - edgeX < 280 : edgeX - (q.x + q.width) > -10 && edgeX - (q.x + q.width) < 280));
+          if (bob?.lift) notReady = bob.lift.bob === 'piston' ? bob.y < bob.lift.bottom - 6 : !raftReady(bob, e.gameTime ?? t);
         }
       }
       if (notReady) {
@@ -1269,7 +1293,7 @@ export class FirstTimerRun {
     // it rise, so he waits as a person waits, up to 10 s; a press already on its way still comes)
     {
       const on = this.floorAt(p.x, p.y, 6);
-      if (on?.lift?.bob && on.y > on.lift.top + 6 && !this.pending) {
+      if (timed(on) && on!.y > on!.lift!.top + 6 && !this.pending) {
         if (this.bobWait < 0) this.bobWait = t;
         if (t - this.bobWait < 10) return {};
       }
@@ -1317,6 +1341,9 @@ export class FirstTimerRun {
         this.stops.push({ x: p.x, y: p.y, h: face, t });
         this.nextStop = this.stops.length - 1;
       }
+      // (World 9: standing still to wait for a raft or a surge is not being stopped by a face: with no face ahead he walks on, never a
+      // plain jump from the middle of the ground into the next gap; the other worlds keep the old habit their bands were measured with)
+      if (face === null && this.id.startsWith('9-')) return side(dir);
       return this.decide(fdir, this.mem.plan(p.x, p.y), false, side(dir));
     }
     // the way goes up right here (a ledge over him): jump for it
@@ -1324,11 +1351,11 @@ export class FirstTimerRun {
     if (dir !== 0) {
       // (up at its top stop on a moving log: the wait is over)
       const rideOn = this.floorAt(p.x, p.y, 6);
-      if (rideOn?.lift?.bob && rideOn.y <= rideOn.lift.top + 6) this.bobWait = -1;
+      if (timed(rideOn) && rideOn!.y <= rideOn!.lift!.top + 6) this.bobWait = -1;
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
       let ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
       // (a moving log past a gap is never the floor going on: he jumps for it, or waits for it, below)
-      if (ahead?.lift?.bob && ahead !== rideOn && !(ahead.lift.bob === 'piston' && ahead.y >= ahead.lift.bottom - 6)) ahead = null;
+      if (timed(ahead) && ahead !== rideOn && !(ahead!.lift!.bob === 'piston' && ahead!.y >= ahead!.lift!.bottom - 6)) ahead = null;
       if (!ahead) {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
@@ -1341,15 +1368,15 @@ export class FirstTimerRun {
         // feet, so he steps on and rides it up)
         if (here && !here.lift) {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
-          const bob = this.sim.platforms.find((q) => q.lift?.bob && !q.broken && (dir > 0 ? q.x - edgeX > -10 && q.x - edgeX < 280 : edgeX - (q.x + q.width) > -10 && edgeX - (q.x + q.width) < 280));
+          const bob = this.sim.platforms.find((q) => timed(q) && !q.broken && (dir > 0 ? q.x - edgeX > -10 && q.x - edgeX < 280 : edgeX - (q.x + q.width) > -10 && edgeX - (q.x + q.width) < 280));
           if (bob?.lift) {
-            const ready = bob.lift.bob === 'piston' ? bob.y >= bob.lift.bottom - 6 : bob.y <= bob.lift.top + 12;
+            const ready = bob.lift.bob === 'piston' ? bob.y >= bob.lift.bottom - 6 : raftReady(bob, e.gameTime ?? t);
             if (!ready) {
               if (this.bobWait < 0) this.bobWait = t;
               if (t - this.bobWait < 10) return {};
             }
           }
-          if (!bob || (bob.lift?.bob === 'piston' ? bob.y >= bob.lift.bottom - 6 : bob.y <= bob.lift!.top + 12)) this.bobWait = -1;
+          if (!bob || (bob.lift?.bob === 'piston' ? bob.y >= bob.lift.bottom - 6 : raftReady(bob, e.gameTime ?? t))) this.bobWait = -1;
         }
         if (!drops && here && here.type !== 'drift' && here.type !== 'moving') {
           const edgeX = dir > 0 ? here.x + here.width : here.x;

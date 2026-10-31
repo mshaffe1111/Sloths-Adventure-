@@ -89,6 +89,8 @@ export const W9_LESSON = {
   surge: 'w9:surge',
   /** the hot ash wind (9-1 teaches it as a headwind; 9-5's carries the glides) */
   gust: 'w9:gust',
+  /** the sinking ember slabs (9-3 teaches them; 9-9 again) */
+  sink: 'w9:sink',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -157,9 +159,10 @@ export const W9_TIPS: Record<string, string> = {
   [W9_LESSON.lavafall]: 'Lava pours from up there. Watch the drips.', // (new, needs Matt's approval: GRAB-BAG.md N9)
   [W9_LESSON.surge]: 'Lava surges down the channel. Listen!', // (new, needs Matt's approval: GRAB-BAG.md N6)
   [W9_LESSON.gust]: "Hot wind! It'll push you back.", // (new, needs Matt's approval: GRAB-BAG.md N7)
+  [W9_LESSON.sink]: 'Ember slabs sink when you stand on them.', // (new, needs Matt's approval: GRAB-BAG.md N4)
 };
 /** the lines that are new in World 9 (the report lists them for the lead) */
-export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston, W9_LESSON.flare, W9_LESSON.lavafall, W9_LESSON.surge, W9_LESSON.gust].map((k) => W9_TIPS[k]);
+export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston, W9_LESSON.flare, W9_LESSON.lavafall, W9_LESSON.surge, W9_LESSON.gust, W9_LESSON.sink].map((k) => W9_TIPS[k]);
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -184,7 +187,7 @@ export const W9_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['9-2', '9-7', '9-10'],
   // (the geysers are 9-1's, the warm air 9-5's, the doorstep's eye 9-4's; the shut shrine is said in each gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8', [W9_LESSON.flare]: '9-5', [W9_LESSON.lavafall]: '9-6', [W9_LESSON.surge]: '9-6', [W9_LESSON.gust]: '9-1' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8', [W9_LESSON.flare]: '9-5', [W9_LESSON.lavafall]: '9-6', [W9_LESSON.surge]: '9-6', [W9_LESSON.gust]: '9-1', [W9_LESSON.sink]: '9-3' },
   tips: W9_TIPS,
 };
 
@@ -235,6 +238,8 @@ export const VENT = { w: 80, h: 70, warn: 1.3, idle: 3.2, active: 0.9 } as const
 export const FLARE = { w: 160, h: 64, warn: 1.3, idle: 2.6, active: 1.0 } as const;
 /** a lavafall (N9): a column from far above the frame to the ground (no jump clears it: wait it out), drips first */
 export const LAVAFALL = { w: 74, h: 900, warn: 1.4, idle: 2.4, active: 1.0 } as const;
+/** the longer rest Easy gives the flares, lavafalls and surges between bursts (s) */
+export const EASY_HEAT_CALM = 1.2;
 
 /** the longest a watched stretch runs (px): a section's run of basalt, not the stage */
 const WATCH_MAX = 1400;
@@ -259,7 +264,9 @@ export function ventFloor(platforms: readonly Platform[], x: number, lipY: numbe
 }
 
 /** the emitters, for a stage of World 9 (its number sets the geysers' beat, the watcher's calm and the light) */
-export function w9Emitters(stage: number): Record<W9PropId, PropEmitter> {
+export function w9Emitters(stage: number, easy = false): Record<W9PropId, PropEmitter> {
+  // (Easy's heat hazards rest longer between bursts: softened, never removed, STAGE-RULES §1b)
+  const calmer = easy ? EASY_HEAT_CALM : 0;
   const hide = (kind: Bush['kind']): PropEmitter => (f, p, out) => {
     const w = W9_HIDE_W[p.id as keyof typeof W9_HIDE_W] ?? 150;
     const b: Bush = { x: R(f.x - w / 2), w, y: f.y, kind, look: look(p, f.x, 1) };
@@ -297,7 +304,7 @@ export function w9Emitters(stage: number): Record<W9PropId, PropEmitter> {
     },
     flare: (f, _p, out) => {
       const lesson = f.socket === 'flareLesson';
-      const idle = lesson ? GEYSER.lessonIdle : FLARE.idle;
+      const idle = (lesson ? GEYSER.lessonIdle : FLARE.idle) + calmer;
       const period = idle + FLARE.warn + FLARE.active;
       out.zones.push({
         kind: 'geyser', look: 'flare', x0: R(f.x - FLARE.w / 2), x1: R(f.x + FLARE.w / 2), top: f.y - FLARE.h, bottom: f.y + 14, baseY: f.y, dir: 1,
@@ -306,7 +313,7 @@ export function w9Emitters(stage: number): Record<W9PropId, PropEmitter> {
     },
     lavafall: (f, _p, out) => {
       const lesson = f.socket === 'lavafallLesson';
-      const idle = lesson ? GEYSER.lessonIdle : LAVAFALL.idle;
+      const idle = (lesson ? GEYSER.lessonIdle : LAVAFALL.idle) + calmer;
       const period = idle + LAVAFALL.warn + LAVAFALL.active;
       out.zones.push({
         kind: 'geyser', look: 'lavafall', x0: R(f.x - LAVAFALL.w / 2), x1: R(f.x + LAVAFALL.w / 2), top: f.y - LAVAFALL.h, bottom: f.y + 14, baseY: f.y, dir: 1,
@@ -368,10 +375,10 @@ export function w9Falls(t: SectionTemplate): SectionTemplate {
 }
 
 /** World 9's base kit for one stage (the sections are added by w9Game.ts) */
-export function w9Kit(stage: number): WorldKit {
+export function w9Kit(stage: number, easy = false): WorldKit {
   // (9-3 Ember Canopy's danger is the chains over the lava: no animals, so no stretch of it plays like 9-6's hunt)
   const creatures = stage === 3 ? [] : W9_HARPY_STAGES.includes(stage) ? W9_CREATURES : W9_CREATURES.filter((c) => c.id !== W9_CREATURE.harpy);
-  return { manifest: { ...W9_MANIFEST, creatures }, emit: w9Emitters(stage), decorate: w9Decorate(stage), spawn: w9Spawn() };
+  return { manifest: { ...W9_MANIFEST, creatures }, emit: w9Emitters(stage, easy), decorate: w9Decorate(stage), spawn: w9Spawn() };
 }
 
 /** how far a climbing vine stands out in front of the ledge it leads up to (px): Pokey's half-width (21) and a little (World 8's) */

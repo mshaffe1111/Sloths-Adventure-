@@ -148,8 +148,9 @@ export interface WorldManifest {
 export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine' | 'raft';
 
 /** what rides up and down on a beat (place `raft`, World 9: Matt's moving logs, GRAB-BAG.md N1-N3): a raft and a log bob on the lava's heat
- * draught (time the jump off at the top), a piston column rises out of its well (ride it up to a ledge no jump reaches) */
-export type BobKind = 'raft' | 'log' | 'piston';
+ * draught (time the jump off at the top), a piston column rises out of its well (ride it up to a ledge no jump reaches), an ember slab
+ * sinks while he stands on it and floats back up when he is off (a hurry over a soft channel: never needed, GRAB-BAG.md N4) */
+export type BobKind = 'raft' | 'log' | 'piston' | 'sink';
 
 /**
  * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back

@@ -17,8 +17,8 @@ export interface LiftInfo {
   /** the crane stands on the right of the shaft (the upper ground is to the right: a lift going up) */
   postRight?: boolean;
   /** World 9's moving logs (gen2 place `raft`, GRAB-BAG.md N1-N3): a pumice raft or a charred log bobbing on the lava's heat draught, or a
-   *  hex piston column; drawn by w9BobArt.ts, not as a basket lift, and read by the inspector as a timed hop (a raft, a log) or a ride (a piston) */
-  bob?: 'raft' | 'log' | 'piston';
+   *  hex piston column, or an ember slab that sinks while he stands on it (`sink`: its own motion, engine.ts, not this cycle); drawn by w9BobArt.ts, not as a basket lift, and read by the inspector as a timed hop (a raft, a log) or a ride (a piston) */
+  bob?: 'raft' | 'log' | 'piston' | 'sink';
 }
 
 /** seconds for one round trip: wait at the bottom, ride up, wait at the top, ride down */
@@ -34,6 +34,23 @@ export function liftY(l: LiftInfo, t: number): number {
   if (u < l.wait + ride) return l.bottom - (l.bottom - l.top) * ease((u - l.wait) / ride);
   if (u < 2 * l.wait + ride) return l.top;
   return l.top + (l.bottom - l.top) * ease((u - 2 * l.wait - ride) / ride);
+}
+
+/** seconds left of its still spell at the top stop (0 when it is not resting there): a moving log a jump can still land on in time */
+export function liftTopLeft(l: LiftInfo, t: number): number {
+  const ride = (l.bottom - l.top) / l.speed;
+  const T = liftCycle(l);
+  const u = (((t + l.phase) % T) + T) % T;
+  const a = l.wait + ride;
+  return u >= a && u < a + l.wait ? a + l.wait - u : 0;
+}
+
+/** rising, and this close to its top stop (s): on its way up to where a jump lands on it */
+export function liftRisingIn(l: LiftInfo, t: number): number {
+  const ride = (l.bottom - l.top) / l.speed;
+  const T = liftCycle(l);
+  const u = (((t + l.phase) % T) + T) % T;
+  return u >= l.wait && u < l.wait + ride ? l.wait + ride - u : Infinity;
 }
 
 /** the basket is resting at a stop (0 = moving, 1 = at the top, -1 = at the bottom) */
