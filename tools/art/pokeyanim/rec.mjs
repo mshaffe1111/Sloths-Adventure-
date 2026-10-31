@@ -19,7 +19,14 @@ const SCRIPT = [
   [125, 'drop'], // a hard landing
   [170, 'down Space'], [180, 'up Space'], [182, 'down Space'], [192, 'up Space'], // a held jump, and the flip off its top
 ];
-const N = 235;
+let N = 235;
+// SCENE=climb: at the foot of the stage's first climbable trunk, up for about 0.9 s, a pause, then down (STAGE= picks the stage, default 1-1)
+const SCENE = process.env.SCENE ?? 'moves';
+if (SCENE === 'climb') {
+  SCRIPT.length = 0;
+  SCRIPT.push([10, 'down ArrowUp'], [38, 'up ArrowUp'], [48, 'down ArrowDown'], [80, 'up ArrowDown']);
+  N = 125;
+}
 
 const b = await chromium.launch();
 for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) => !process.env.ORI || process.env.ORI === o)) {
@@ -27,17 +34,21 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   p.on('pageerror', (er) => console.log('ERR', er.message));
   await p.goto(`http://127.0.0.1:${port}/?nodemo=1&lessons=off&clips=0`);
   await p.waitForTimeout(2500);
-  await p.evaluate(() => window.__play('1-1'));
+  await p.evaluate(([st, lay]) => window.__play(st, lay), [process.env.STAGE ?? '1-1', process.env.LAYOUT ? Number(process.env.LAYOUT) : undefined]);
   await p.waitForTimeout(6000);
   for (let i = 0; i < 4; i++) { const g = p.getByText('Skip tips'); if (await g.count()) { await g.first().click(); await p.waitForTimeout(300); } else break; }
   // a flat open stretch of 1-1's first ground, Pokey stood still facing right
-  await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
+  await p.evaluate((sc) => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
     Object.assign(pl, { vx: 0, vy: 0, facing: 1 });
     // nothing to pick up or bump into on the stretch he runs (no sparkles or hits over the moves being judged)
     const far = (o) => Math.abs((o.x ?? 0) - pl.x) > 900;
-    e.collectibles = e.collectibles.filter(far); e.enemies = e.enemies.filter(far); });
+    e.collectibles = e.collectibles.filter(far); e.enemies = e.enemies.filter(far);
+    if (sc === 'climb') {
+      const v = e.vines.find((q) => q.vineType === 'tree_climb' && !q.off);
+      Object.assign(pl, { x: v.x, y: v.bottomY - 30 });
+    } }, SCENE);
   await p.waitForTimeout(1500);
-  const dir = join(out, `${tag}-${ori}-frames`);
+  const dir = join(out, `${tag}-${ori}-frames`.replace(`${tag}-`, `${tag}${SCENE === 'moves' ? '' : '-' + SCENE}-`));
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir);
   // take over the loop: from here every frame is one update(1/30) and one render, then a screenshot (as hfpokey/edgeclip.mjs)
@@ -61,9 +72,9 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
     await p.screenshot({ path: join(dir, `f${String(i).padStart(5, '0')}.png`) });
   }
   await p.close();
-  writeFileSync(join(out, `${tag}-${ori}-trace.json`), JSON.stringify(trace));
-  writeFileSync(join(out, `${tag}-${ori}-cam.json`), JSON.stringify(box));
-  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-framerate', '30', '-i', join(dir, 'f%05d.png'), '-c:v', 'libx264', '-crf', '24', '-pix_fmt', 'yuv420p', '-vf', 'scale=trunc(iw/4)*2:trunc(ih/4)*2', join(out, `${tag}-${ori}.mp4`)]);
+  writeFileSync(join(out, `${tag}${SCENE === 'moves' ? '' : '-' + SCENE}-${ori}-trace.json`), JSON.stringify(trace));
+  writeFileSync(join(out, `${tag}${SCENE === 'moves' ? '' : '-' + SCENE}-${ori}-cam.json`), JSON.stringify(box));
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-framerate', '30', '-i', join(dir, 'f%05d.png'), '-c:v', 'libx264', '-crf', '24', '-pix_fmt', 'yuv420p', '-vf', 'scale=trunc(iw/4)*2:trunc(ih/4)*2', join(out, `${tag}${SCENE === 'moves' ? '' : '-' + SCENE}-${ori}.mp4`)]);
   console.log(ori, N, 'frames');
 }
 await b.close();
