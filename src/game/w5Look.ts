@@ -703,15 +703,16 @@ export function drawSwayOrchid(ctx: CanvasRenderingContext2D, rx: number, ry: nu
     ctx.restore();
     drawOrchid(ctx, hx, hy + 30, w, 1, 0, t);
   }
-  // the shelf he stands on: the bloom's top petal edge, a slim warm lip in the petals' own colours (the platform's top, behind him)
+  // the standing line: no plate of its own, the top petals' edge is the ledge; a faint warm glow along it so it reads (soft ends, the
+  // petals' own tint, behind him)
   ctx.save();
+  const g = ctx.createRadialGradient(hx, hy + 2, 0, hx, hy + 2, w * 0.5);
+  g.addColorStop(0, 'rgba(255, 226, 170, 0.38)');
+  g.addColorStop(1, 'rgba(255, 226, 170, 0)');
+  ctx.fillStyle = g;
   ctx.beginPath();
-  ctx.ellipse(hx, hy + 4, w * 0.44, 5, 0, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255, 249, 240, 0.92)';
+  ctx.ellipse(hx, hy + 2, w * 0.5, 7, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.lineWidth = 1.5;
-  ctx.strokeStyle = 'rgba(120, 92, 80, 0.75)';
-  ctx.stroke();
   ctx.restore();
 }
 
