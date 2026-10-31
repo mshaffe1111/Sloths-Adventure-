@@ -126,3 +126,14 @@ test('the landing goes down and back up, three frames from the hardest drop', ()
   assert.equal(ev.landPhase(1.03), 0);
   assert.ok(ev.landPhase(1.03 + LAND_TIME_HARD / 2) > 0.45 && ev.landPhase(1.03 + LAND_TIME_HARD / 2) < 0.55);
 });
+
+test('ducking down and standing up pass through the half crouch for two frames', () => {
+  const ev = new HeroEvents();
+  ev.track({ hp: 3, grounded: true, vy: 0, ducking: false }, 1);
+  ev.track({ hp: 3, grounded: true, vy: 0, ducking: true }, 1.033);
+  assert.ok(ev.isDuckEasing(1.05, true));
+  assert.equal(ev.isDuckEasing(1.2, true), false);
+  ev.track({ hp: 3, grounded: true, vy: 0, ducking: false }, 1.3);
+  assert.ok(ev.isDuckEasing(1.31, false));
+  assert.equal(ev.isDuckEasing(1.4, false), false);
+});

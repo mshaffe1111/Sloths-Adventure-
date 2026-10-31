@@ -18,6 +18,8 @@ export const SKID_SPEED = 160;
 export const SKID_MIN = 0.1;
 /** the lean as he sets off from standing (AN-13) */
 export const START_LEAN_TIME = 0.1;
+/** ducking down and standing back up pass through his half crouch for this long (seconds, two frames) */
+export const DUCK_EASE = 0.067;
 /** the dust a skid kicks up lives this long (seconds) */
 export const PUFF_LIFE = 0.34;
 
@@ -33,6 +35,7 @@ export interface HeroEventState {
   x?: number;
   y?: number;
   facing?: 1 | -1;
+  ducking?: boolean;
 }
 
 /** a puff of dust from a skid, at his feet, drifting the way he was sliding */
@@ -74,6 +77,10 @@ export class HeroEvents {
   startAt = -1;
   puffs: SkidPuff[] = [];
   private lastSpeed = 0;
+  /** when he last ducked down, and stood back up (-1: not yet) */
+  duckFrom = -1;
+  duckEnd = -1;
+  private wasDucking = false;
 
   reset() {
     this.lastHp = -1;
@@ -90,6 +97,9 @@ export class HeroEvents {
     this.startAt = -1;
     this.puffs = [];
     this.lastSpeed = 0;
+    this.duckFrom = -1;
+    this.duckEnd = -1;
+    this.wasDucking = false;
   }
 
   /** busy: on a trunk, a vine or a rope, attacking, ducking or down: no turn, skid or lean is drawn then */
@@ -109,6 +119,10 @@ export class HeroEvents {
     }
     if (p.grounded) this.fallSpeed = 0;
     this.wasGrounded = p.grounded;
+    const ducking = !!p.ducking && p.grounded;
+    if (ducking && !this.wasDucking) this.duckFrom = time;
+    if (!ducking && this.wasDucking && p.grounded) this.duckEnd = time;
+    this.wasDucking = ducking;
     this.trackMoves(p, time, busy);
     const creeping = !!p.hanging && Math.abs(p.vx ?? 0) > 10;
     if (creeping && !this.ropeMoving) this.ropeFrom = p.walkCycle ?? 0;
@@ -157,6 +171,11 @@ export class HeroEvents {
     this.lastSpeed = speed;
   }
 
+  /** passing through the half crouch on the way down into a duck or back up out of it */
+  isDuckEasing(time: number, ducking: boolean) {
+    const from = ducking ? this.duckFrom : this.duckEnd;
+    return from >= 0 && time >= from && time - from < DUCK_EASE;
+  }
   isSkidding(time: number) {
     return time < this.skidUntil;
   }

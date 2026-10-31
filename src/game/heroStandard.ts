@@ -191,7 +191,7 @@ export function stdPick(
   p: PlayerState,
   time: number,
   ev: Pick<HeroEvents, 'isHurt' | 'isLanding' | 'hurtUntil'> &
-    Partial<Pick<HeroEvents, 'isHardLanding' | 'landPhase' | 'isSkidding' | 'skidDir' | 'turnPhase' | 'startPhase'>>,
+    Partial<Pick<HeroEvents, 'isHardLanding' | 'landPhase' | 'isSkidding' | 'skidDir' | 'turnPhase' | 'startPhase' | 'isDuckEasing'>>,
 ): StdChoice | null {
   const has = (n: string) => !!STD_FRAMES[n];
   const out = (c: StdChoice): StdChoice | null => (has(c.name) ? c : null);
@@ -215,7 +215,8 @@ export function stdPick(
     const into = (time - (ev.hurtUntil - HURT_TIME)) / HURT_TIME;
     return out({ name: !p.grounded ? 'hurt_c' : into < 0.5 ? 'hurt_a' : 'hurt_b', bob: 0 });
   }
-  if (p.ducking) return out({ name: 'duck', bob: 0 });
+  // (down into the duck and back up through his half crouch, two frames each way: AN-13)
+  if (p.ducking) return out({ name: ev.isDuckEasing?.(time, true) && has('recover') ? 'recover' : 'duck', bob: 0 });
   if (p.kicking) {
     const st = attackStage(p.swingCock ?? 0, p.swingReach ?? 0);
     return out({ name: (p.grounded ? KICK_STAGES : AIR_KICK_STAGES)[st], bob: 0 });
@@ -239,6 +240,7 @@ export function stdPick(
     // the painted frames already lean into the jump, so the code's lean is only a hint
     return out({ name: stdAirFrame(p.vy), bob: 0, rot: airLean(p.vy) * 0.5 });
   }
+  if (p.grounded && ev.isDuckEasing?.(time, false) && has('recover')) return out({ name: 'recover', bob: 0 });
   // reversing at a run: feet braced, leaning back, still facing the way he slides (AN-13)
   if (ev.isSkidding?.(time) && has('skid')) return out({ name: 'skid', bob: 0, face: ev.skidDir });
   // landing: down into the crouch and back up (a hard drop squashes deeper first); the turn's squeeze rides on it
