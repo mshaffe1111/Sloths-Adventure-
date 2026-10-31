@@ -809,10 +809,11 @@ const bloomGaps = section({
   archetypes: ['harvest'],
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
+  // (no roost on the gap blooms, 2026-10-31: with one they read 0.27 from the roost blooms on the variety measure)
   uses: [W8_THEME.gapBlooms],
   pieces: [bank('a', [220, 260]), wide('b', 'a', [200, 240]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [160, 190]), wide('d', 'c', [320, 350]), up('k2', 'd', 30, [130, 150]), down('e', 'k2', 30, [150, 170])],
   last: 'e',
-  sockets: [roost('a', 0.03, 'roostHere1'), hideAt('h1', 'a', 0.45), petals('a', 'a', 0.75, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1), foe('foe', 'd', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.7 }), petals('d', 'd', 0.85, 1)],
+  sockets: [petals('a', 'a', 0.75, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1), foe('foe', 'd', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.7 }), petals('d', 'd', 0.85, 1)],
   mirrorable: true,
 });
 
@@ -827,7 +828,7 @@ const bloomLeap = section({
   uses: [W8_THEME.gapBlooms],
   pieces: [bank('a', [220, 260]), leap('b', 'a', [320, 350]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [160, 190]), hop('d', 'c', [200, 240])],
   last: 'd',
-  sockets: [roost('a', 0.03, 'roostHere1'), hideAt('h1', 'a', 0.45), petals('a', 'a', 0.8, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.2, 2, 80), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
+  sockets: [petals('a', 'a', 0.8, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.2, 2, 80), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
   mirrorable: true,
 });
 
