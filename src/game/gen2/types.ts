@@ -351,6 +351,8 @@ export interface SectionTemplate {
   uses?: string[];
   /** at most this many in one stage (a puzzle room: 1) */
   maxPerStage?: number;
+  /** a lesson's ground: a purge's or gauntlet's top-up lays no animal on it (World 9's first-of-a-piece sections) */
+  calm?: boolean;
   pieces: SectionPiece[];
   entry: { piece: string; kind: PortKind };
   exit: { piece: string; kind: PortKind };

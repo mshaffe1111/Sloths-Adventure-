@@ -1626,8 +1626,9 @@ function topUpFoes(
   if (!kinds.length) return [];
   const bag = new ShuffleBag<CreatureDef>(rngFor(seed, 37), kinds);
   const flags = safe.slice(1, -1);
+  const calm = new Set(M.sections.filter((t) => t.calm).map((t) => t.id));
   const pieces = laid.sections
-    .filter((s) => s.phase !== 'start' && s.phase !== 'rest' && s.phase !== 'goal' && !s.room)
+    .filter((s) => s.phase !== 'start' && s.phase !== 'rest' && s.phase !== 'goal' && !s.room && !calm.has(s.template))
     .flatMap((s) => s.pieces.filter((p) => p.main).map((p) => ({ s, p: p.platform })))
     .sort((a, b) => b.p.width - a.p.width || a.p.x - b.p.x);
   // (where an animal may walk on each piece: clear of the jumps on and off it)
