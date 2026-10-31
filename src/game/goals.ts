@@ -81,11 +81,24 @@ export function normalGoal(st: Stage): number | null {
 }
 
 /**
+ * A stage's own Easy goal (a gen2 stage's, as the kid bot measured it: gen2/game.ts easyGoal) never asks under 65% of what the stage
+ * holds (LV-24: 5-9's Easy asked for 5 of 18), nor more than it holds.
+ */
+export function ownEasyGoal(own: number, have: number): number {
+  return Math.max(1, Math.min(have, Math.max(own, Math.round(have * EASY_SHARE))));
+}
+
+/**
  * Set a built stage's goal: Normal's share (normalGoal), and Easy's (`easyGoal`: easyGoalFor). Changes the stage and returns it; a stage
- * already set (a gen2 stage whose Easy goal the kid bot measured: gen2/game.ts easyGoal) is left as it is.
+ * whose own Easy goal is already set (gen2/game.ts easyGoal) keeps it, raised to the floor (ownEasyGoal, LV-24).
  */
 export function withGoals<T extends GeneratedStage>(st: T): T {
-  if (st.easyGoal !== undefined || st.boss) return st;
+  if (st.boss) return st;
+  if (st.easyGoal !== undefined) {
+    const have = goalHave(st as Stage);
+    if (have) st.easyGoal = ownEasyGoal(st.easyGoal, have);
+    return st;
+  }
   const g = normalGoal(st as Stage);
   if (g === null) return st;
   // (today's Easy goal, the floor: the stage's own quota, at most 80% of Normal's)
