@@ -380,7 +380,41 @@ const watchFallPair = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-9's own lavafalls: the hoard's guards under them ─────────────────────────────
+
+const HOARD = ['harpy', 'boa'];
+/** 9-9: a lavafall, then one of the hoard's guards on the flat past it */
+const fallHoard = section({
+  id: 'w9-lavafall-hoard',
+  name: 'lavafall before the guard',
+  archetypes: ['gauntlet'],
+  phases: W9H.ALL,
+  difficulty: 7,
+  uses: [W9_THEME.lavafalls],
+  extraSeconds: WAIT,
+  pieces: [bank('a', [360, 400]), up('k', 'a', 40, [150, 170]), down('f', 'k', 40, [420, 460]), up('k2', 'f', 30, [140, 160]), down('b', 'k2', 30, [200, 240])],
+  last: 'b',
+  sockets: [lavafall('lf', 'a', 0.5), petals('k', 'k', 0.5, 1), foe('foe', 'f', [0.5, 0.6], HOARD, 3.5, { chance: 1 }), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** 9-9: two lavafalls on the hoard's stair, a guard at its top */
+const fallHoardPair = section({
+  id: 'w9-lavafall-hoard-stair',
+  name: 'lavafalls up the hoard stair',
+  archetypes: ['gauntlet'],
+  phases: LIVE,
+  difficulty: 8,
+  uses: [W9_THEME.lavafalls],
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [300, 340]), up('s1', 'a', 40, [300, 340]), up('top', 's1', 40, [420, 460]), down('d', 'top', 80, [240, 280])],
+  last: 'd',
+  sockets: [lavafall('lf1', 'a', 0.5), lavafall('lf2', 's1', 0.5), foe('foe', 'top', [0.55, 0.65], HOARD, 3.5, { chance: 1 }), petals('d', 'd', 0.5, 1)],
+  mirrorable: false,
+});
+
 export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
+  fallHoard, fallHoardPair,
   W9_HEAT_GATES.lavafalls4, W9_HEAT_GATES.surges4, watchFall, watchSurge, watchFallPair,
   W9_HEAT_GATES.gusts1, W9_HEAT_GATES.gusts5, firstGust, gustGap, gustPair, gustGlide, gustTwin,
   W9_HEAT_GATES.surges6, firstSurge, surgeRun, surgeTwin, surgeChasm,
@@ -394,5 +428,5 @@ export const W9_HEAT_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_HEAT_GATES.gusts1.id]: [1], [firstGust.id]: [1], [gustGap.id]: [1], [gustPair.id]: [1], [W9_HEAT_GATES.gusts5.id]: [5], [gustGlide.id]: [5], [gustTwin.id]: [5],
   [W9_HEAT_GATES.lavafalls4.id]: [4], [W9_HEAT_GATES.surges4.id]: [4], [watchFall.id]: [4], [watchSurge.id]: [4], [watchFallPair.id]: [4],
   [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [4, 6], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
-  [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [4, 6, 9], [fallPair.id]: [6, 9], [fallGuard.id]: [6, 9], [fallChasm.id]: [6, 9],
+  [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [4, 6], [fallPair.id]: [6], [fallGuard.id]: [6], [fallChasm.id]: [6], [fallHoard.id]: [9], [fallHoardPair.id]: [9],
 };

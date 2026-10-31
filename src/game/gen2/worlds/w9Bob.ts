@@ -27,6 +27,9 @@ const off = (key: string, after: string, w: W, share: W = [0.55, 0.7], soft = fa
 /** a piston column in its well past `after`, rising past every jump to its top stop */
 const piston = (key: string, after: string, w: W = [100, 120]): SectionPiece => ({ key, shape: 'raft', w, place: { kind: 'raft', after, bob: 'piston' } });
 
+/** the Drake's hoard's own guards (9-9: no other stage has the harpies; the boas coil only on 9-4's doorstep), so its moving logs and slabs
+ *  never read like another stage's on the look-alike measure (curation's 1-in-5 cap dropped half of 9-9's rolls) */
+const HOARD = ['harpy', 'boa'];
 const RAFT = W9_LESSON.raft;
 const PISTON = W9_LESSON.piston;
 /** the time model's wait at a moving log: about a third of its cycle (pipeline BOB: ~3 s Normal, ~4.6 s Easy) */
@@ -155,7 +158,7 @@ const logHoard = section({
   extraSeconds: BOB_WAIT * 1.5,
   pieces: [bank('a', [260, 300]), bob('l', 'a', 'log', [250, 280]), off('b', 'l', [420, 460]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
   last: 'c',
-  sockets: [petals('l', 'l', 0.5, 1), foe('foe', 'b', [0.6, 0.7], ANY, 3.5, { chance: 0.9 }), petals('k', 'k', 0.5, 1)],
+  sockets: [petals('l', 'l', 0.5, 1), foe('foe', 'b', [0.6, 0.7], HOARD, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -289,7 +292,7 @@ const sinkHoard = section({
   extraSeconds: 1,
   pieces: [bank('a', [260, 300]), slab('s1', 'a'), slab('s2', 's1'), offSoft('b', 's2', [420, 460]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
   last: 'c',
-  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), foe('foe', 'b', [0.6, 0.7], ANY, 3.5, { chance: 0.9 }), petals('k', 'k', 0.5, 1)],
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), foe('foe', 'b', [0.6, 0.7], HOARD, 3.5, { chance: 1 }), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -483,7 +486,40 @@ const capChasm = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-9's own: the hoard's guards with its logs and slabs ─────────────────────────────
+
+/** 9-9: two logs, a guard on the landing between them */
+const logGuards = section({
+  id: 'w9-log-guards',
+  name: 'logs between the guards',
+  archetypes: ['gauntlet'],
+  phases: W9H.ALL,
+  difficulty: 7,
+  uses: [W9_THEME.logs],
+  extraSeconds: BOB_WAIT * 3,
+  pieces: [bank('a', [260, 300]), bob('l1', 'a', 'log', [240, 270]), off('m', 'l1', [400, 440]), bob('l2', 'm', 'log', [240, 270]), off('b', 'l2', [280, 320])],
+  last: 'b',
+  sockets: [petals('l1', 'l1', 0.5, 1), foe('foe', 'm', [0.5, 0.6], HOARD, 3.5, { chance: 1 }), petals('l2', 'l2', 0.5, 1), petals('b', 'b', 0.5, 1)],
+  mirrorable: true,
+});
+
+/** 9-9: slabs, a guard, slabs */
+const sinkGuards = section({
+  id: 'w9-sinker-guards',
+  name: 'slabs between the guards',
+  archetypes: ['gauntlet'],
+  phases: W9H.ALL,
+  difficulty: 7,
+  uses: [W9_THEME.sinkers, SINK],
+  extraSeconds: 2,
+  pieces: [bank('a', [240, 280]), slab('s1', 'a'), slab('s2', 's1'), offSoft('m', 's2', [400, 440]), slab('t1', 'm'), slab('t2', 't1'), offSoft('b', 't2', [260, 300])],
+  last: 'b',
+  sockets: [petals('s1', 's1', 0.5, 1), foe('foe', 'm', [0.5, 0.6], HOARD, 3.5, { chance: 1 }), petals('t2', 't2', 0.5, 1)],
+  mirrorable: true,
+});
+
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
+  logGuards, sinkGuards,
   W9_BOB_GATES.caps1, W9_BOB_GATES.caps6, firstCap, capPair, capChasm,
   ropeChain, chainRope, sinkChain, chainSink,
   ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
@@ -496,9 +532,9 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
 /** which stages hold which (STAGE-RULES §2 "Sameness": neighbours in play share none; GRAB-BAG.md §4) */
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
-  [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logBridge.id]: [5, 9], [logPair.id]: [5, 9],
+  [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], [logBridge.id]: [5], [logPair.id]: [5],
   [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1, 6], [capPair.id]: [1, 6], [capChasm.id]: [1, 6],
   [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
-  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3, 6, 9], [sinkRun.id]: [6, 9], [sinkTwin.id]: [6, 9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [6, 9],
+  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3, 6], [sinkRun.id]: [6], [sinkTwin.id]: [6], [sinkGuards.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],
 };
