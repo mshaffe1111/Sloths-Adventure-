@@ -10,3 +10,9 @@ draft verdicts: KEPT 1-day s64, 1-storm s64, 5-day s64, 5-dusk s64, 7-day s64, 1
   THROWN: 2-day s64 (game's water band, teal frond kept), 2-day r72 (garbled lettering), 2-day r62 (lily pond where the cast stand),
   3-night s64 (moths, a flat dark slab), 6-dusk s64 (floor is water), 8-night s64 (blotchy bokeh), 9-dusk s64 (floor is lava),
   1-dusk s64 (flat, muddy), 4-day s64 (sideways the cast stand over the mist pool: redone with a rock ledge)
+wp-full1 6ae66312c78863f9c62f4f59 + wp-full2 6ae66316c78863f9c62f4f5d created 21:52Z: the 9 kept drafts painted again tile by tile at 2560x2720 (strength 0.28)
+live verdicts: courtyard, nest-night, gates KEPT (8 MB decoded cap, 12-frame crossfade loop). gorge THROWN: with Pokey and Dot kept sharp only a vine ghost and small falls moved
+  drake-cave THROWN: the lava crack stays still, only the gold shimmered
+  tea THROWN: the moving parts are fine web threads and the table, which the soft loop would blur
+  village THROWN: motion fell on the rope bridges and huts (detail the soft loop would blur). Rule learned: whole-plate clips only for skies, weather, mist
+round 3/4 verdicts: KEPT 4-day t62 (a creature grew from the start's feather: painted out by hand after the full pass), 6-dusk t62, 8-night t72, 2-day u62. THROWN: 4-day t72 (creature), 6-dusk t72 (flat), 9-dusk t62 (abstract texture), 6-day t62/t72 (floor is water; W6 day keeps its scenery, 9 panels)

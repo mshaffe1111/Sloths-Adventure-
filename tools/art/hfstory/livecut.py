@@ -21,6 +21,8 @@ GAME = Path(__file__).resolve().parents[3]
 plate, src = sys.argv[1], Path(sys.argv[2])
 first = int(sys.argv[3]) if len(sys.argv) > 3 else 1
 budget = float(sys.argv[4]) if len(sys.argv) > 4 else 8.0
+# a box (shares of the picture: x0,y0,x1,y1) that never moves: a painted figure stays the sharp painting, never the soft clip
+keep = [float(v) for v in sys.argv[5].split(',')] if len(sys.argv) > 5 else None
 N, STEP, FPS, COLS = 12, 2, 8, 4
 
 P = Image.open(GAME / f'src/assets/story/plates/{plate}.webp').convert('RGB')
@@ -46,6 +48,11 @@ move = A.mean(axis=3).std(axis=0)
 mask = ndimage.binary_opening(move > 2.5, iterations=1).astype(np.float32)
 dens = ndimage.gaussian_filter(mask, 22)
 soft = np.clip((dens - 0.08) / 0.17, 0, 1)
+if keep:
+    kx0, ky0, kx1, ky1 = keep
+    hold = np.zeros_like(soft)
+    hold[round(ky0 * h):round(ky1 * h), round(kx0 * w):round(kx1 * w)] = 1
+    soft = soft * (1 - np.clip(ndimage.gaussian_filter(hold, 6) * 2, 0, 1))
 soft = ndimage.gaussian_filter(soft, 6)
 cover = (soft > 0.03).mean()
 ys, xs = np.where(soft > 0.03)
