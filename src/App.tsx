@@ -1051,7 +1051,9 @@ export default function App() {
       className="relative w-full h-full overflow-hidden bg-black select-none"
       onClickCapture={(e) => {
         // a soft tick on every menu button (not on the in-game touch controls)
-        if (screen !== 'playing' && (e.target as HTMLElement).closest?.('button')) sound.playUiTap();
+        // (a Back or Close button says so: uiBack; every other button taps, SN-13)
+        const btn = (e.target as HTMLElement).closest?.('button');
+        if (screen !== 'playing' && btn) sound.playUiButton(btn);
       }}
     >
       {/* Isolated Canvas Container */}
