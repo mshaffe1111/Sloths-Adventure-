@@ -1,0 +1,58 @@
+{
+ "tag": "wpf6",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dcb58b94db79d9dd03f76567be58c30b741ced0c/tools/art/hfstory/",
+ "items": [
+  {
+   "name": "wp-raft-x62-full",
+   "start": "bucket:hfcut/out/wp-raft-x62.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a sloth village on the muddy bank of a slow brown river in warm afternoon light: little round wooden doors dug into the bank, thatched huts, a big shady tree; on the bank in front a raft barely started, two logs lashed together with green vine rope, a pile of logs waiting beside it, a coil of vine rope, a stone hammer on a stump, wood shavings. A broad flat sandy bank across the bottom where characters will stand. No characters, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "tile": [
+    1280,
+    256
+   ]
+  },
+  {
+   "name": "wp-9-dusk-x62-full",
+   "start": "bucket:hfcut/out/wp-9-dusk-x62.png",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outlines, rich clear colour, crisp detail, a wide establishing background with nobody in it, a volcanic jungle at dusk: a smoking volcano far behind charred trees, thin glowing lava streams only far away on the volcano, embers drifting, a red-orange sky. In the foreground across the whole bottom of the picture a broad flat ledge of cool grey basalt rock with a little dry moss, in sharp focus, solid and safe, no lava near it. No characters, no text.",
+   "neg": "characters, people, animals, sloths, birds, creatures, text, letters, watermark, frame, border, photo, 3d render, blurry, hazy, washed out, foggy grey, low contrast, flat colour, vignette, lava in the foreground",
+   "strength": 0.28,
+   "seed": 5,
+   "w": 2560,
+   "h": 2720,
+   "loras": [
+    [
+     "style",
+     1.0
+    ]
+   ],
+   "tile": [
+    1280,
+    256
+   ]
+  }
+ ],
+ "q": 90,
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dcb58b94db79d9dd03f76567be58c30b741ced0c/tools/art/hfstory/",
+ "keep": [
+  "wp-raft-x62-full",
+  "wp-9-dusk-x62-full"
+ ]
+}

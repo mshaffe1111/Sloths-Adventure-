@@ -37,3 +37,4 @@ wp-full5 6ae6692ac78863f9c62f525b created 22:18Z: full pass 10-storm v62, 5-dusk
 in-game round 4: KEPT w10-storm (v62, top-sky streak painted out; upright shows the castle, sideways it sits behind the words box), w5-dusk (v62)
   live w3-storm THROWN: rain moved only in blotches
 tier3 6ae66b01c78863f9c62f52da created 22:26Z: raft repaint, W9 dusk/night third try, W6 day
+tier3 verdicts: KEPT raft x62 (repaint of the unused raft plate), 9-dusk x62 (volcano behind, basalt ground). THROWN 6-day x60/x70 (water floor again: W6 day keeps its scenery), 9-night (not reviewed further: mem-gates keeps its scenery)
