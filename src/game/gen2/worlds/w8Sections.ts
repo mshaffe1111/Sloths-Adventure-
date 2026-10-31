@@ -1357,7 +1357,7 @@ const huntBatPair = section({
 });
 
 /** 8-9's moon flowers (8-5's, taught there): a bounce up to the high bough a jaguar or a boa holds */
-const MFLOWER_HI = 215;
+const MFLOWER_HI = 170;
 const mflower = (key: string, on: string): SectionPiece => ({ key, shape: 'bouncy', w: [80, 90], place: { kind: 'over', on, at: [0.78, 0.84], dy: [-28, -22] }, main: true });
 const mhigh = (key: string, on: string, w: W): SectionPiece => bank(key, w, { kind: 'over', on, at: 1, dy: -MFLOWER_HI }, { main: true });
 const monarchFlower = section({
