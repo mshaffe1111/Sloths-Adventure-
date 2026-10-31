@@ -1113,6 +1113,20 @@ export class FirstTimerRun {
     // (World 9's moving logs, lift.ts `bob`: he can see a raft, a log or a piston column rise and sink, so on the ground he waits for it as
     // a person waits, up to 10 s, and lets go of a press he meant: riding one, until it is up at its top stop; at a bank's edge with one
     // past the gap, until a raft or a log is up level with him, or a piston is down at his feet)
+    // (a piston column standing against the bank he is on, the way on up at its top: he walks to it, waits for it down at his feet, steps on
+    // and rides; the route's point is its top, so without this he jumped at the ledge over it again and again)
+    if (p.grounded) {
+      const on = this.floorAt(p.x, p.y, 6);
+      const pist = on && !on.lift ? this.sim.platforms.find((q) => q.lift?.bob === 'piston' && Math.abs(q.lift.bottom - on.y) < 12 && Math.abs(q.x - (on.x + on.width)) < 12 && q.x - p.x < 420 && q.x - p.x > -40) : undefined;
+      if (pist?.lift && (tgt?.y ?? p.y) < p.y - 60) {
+        const ready = pist.y >= pist.lift.bottom - 6;
+        const toEdge = pist.x - p.x;
+        this.blockedT = 0;
+        this.pending = null;
+        if (!ready && toEdge < 70) return {};
+        return { right: true };
+      }
+    }
     if (p.grounded && dir !== 0) {
       const on = this.floorAt(p.x, p.y, 6);
       let notReady = !!on?.lift?.bob && on.y > on.lift.top + 6;
@@ -1314,7 +1328,7 @@ export class FirstTimerRun {
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
       let ahead = this.floorAt(p.x + dir * (22 + who.edgeAim), p.y, 40);
       // (a moving log past a gap is never the floor going on: he jumps for it, or waits for it, below)
-      if (ahead?.lift?.bob && ahead !== rideOn) ahead = null;
+      if (ahead?.lift?.bob && ahead !== rideOn && !(ahead.lift.bob === 'piston' && ahead.y >= ahead.lift.bottom - 6)) ahead = null;
       if (!ahead) {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid

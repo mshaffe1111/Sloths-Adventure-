@@ -514,10 +514,11 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       h = BOB.h[pl.bob];
       if (pl.bob === 'piston') {
         const rise = Math.max(DOUBLE_RISE + 15, -roll(rng, pl.dy ?? [-BOB.rise[1], -BOB.rise[0]]));
-        x = a.x + a.w + roll(rng, BOB.well);
+        // (flush against the bank: at its bottom stop he walks straight on; its well is soft on every setting, so stepping off the bank
+        // while it is up is a fall to the crust and a step back out, never a life)
+        x = a.x + a.w;
         y = a.y - rise;
-        // (its well: the gap from the bank under the whole column, lava on Normal as every chasm)
-        gaps.push({ x0: a.x + a.w, x1: x + w, y: a.y, pit: true });
+        gaps.push({ x0: x, x1: x + w, y: a.y, pit: true, soft: true });
         const depth = rise;
         const cycle = 2 * (depth / speed + wait);
         bob = { kind: 'piston', depth, speed, wait, phase: R(rng() * cycle * 10) / 10, from: a.x + a.w };
@@ -1067,7 +1068,7 @@ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 }
  *   depth   how far a raft or a log sinks under its top stop (px). Normal's is past the double jump's 185 (physics DOUBLE_RISE), so the jump
  *           off waits for the top; over a soft pit (Easy) it stays over the crust floor (pitDepth 110), a shallow bob
  *   speed   px a second while it rides; wait: its still spell at each stop (s). Easy is slower with longer spells (STAGE-RULES §1b)
- *   rise    a piston's climb out of its well (px), past the double jump, so it is the only way up to its ledge; well: its gap from the bank
+ *   rise    a piston's climb out of its well (px), past the double jump, so it is the only way up to its ledge
  *   h       the piece's thickness
  */
 export const BOB = {
@@ -1075,7 +1076,6 @@ export const BOB = {
   speed: { normal: { raft: 230, log: 170, piston: 120 }, easy: { raft: 150, log: 120, piston: 95 } },
   wait: { normal: { raft: 0.65, log: 0.9, piston: 0.8 }, easy: { raft: 1.1, log: 1.3, piston: 1.2 } },
   rise: [205, 240] as const,
-  well: [26, 40] as const,
   h: { raft: 26, log: 30, piston: 40 },
 } as const;
 

@@ -186,7 +186,7 @@ export interface LianaSwing {
  *   raft                 a piece (shape 'raft') that rides up and down on a beat (lift.ts LiftInfo with `bob`, pipeline BOB): a `raft` or
  *                        `log` a plain jump past `after` at its top stop (`share` of the jump, `dy` from `after`'s top), sinking deeper than
  *                        any jump climbs out of on Normal (the jump off waits for the top; Easy's sink is shallow, over its soft floor);
- *                        a `piston` stands in a narrow well right past `after`, its bottom stop level with `after`, rising `dy` px (a
+ *                        a `piston` stands in its well flush against `after`, its bottom stop level with `after`, rising `dy` px (a
  *                        negative range: up) to its top stop, where the next piece walks on. The gap under a raft runs from the bank before
  *                        it to the piece that jumps on from it (a row of rafts is one gap)
  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
