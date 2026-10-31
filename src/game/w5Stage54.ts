@@ -253,9 +253,11 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
     const v = line(vx, top, G - 46);
     info.firstLine = { vine: v.id, x: r(vx) };
     arc(vx - 150, vx + 260, G - 165, 5);
-    run(R.r(460, 520));
+    run(R.r(300, 340));
     garden(vx - 300, x);
-    expert += 900 / RUN + 1.5;
+    expert += 720 / RUN + 1.5;
+    // (a plain stump past it, then on: the lesson's stretch was 6 s of plain walk for a player who walks under the line)
+    stump();
   }
 
   /**
@@ -386,8 +388,8 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
       info.seamSheet = sheets.length - 1;
       run(110);
     }
-    run(R.r(200, 250));
-    row(x - 200, x - 80, G - 34, 2, 'hibiscus');
+    run(R.r(150, 190));
+    row(x - 170, x - 70, G - 34, 2, 'hibiscus');
     garden(x - 180, x);
     expert += (x - x0) / RUN;
   }
@@ -471,7 +473,7 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
     hint(60, W5_HINTS.s54start);
     // (room for the goal card and her line before the first silk line comes into view, for a player who runs from the first moment;
     // plain pits and stumps in it, which carry no line: it was 11 s of plain walk)
-    rest(R.r(800, 900));
+    rest(R.r(700, 760));
     room(R.r(1350, 1400));
   });
   beat('Learn: the first silk line, over solid ground; then one over a pit', () => {
@@ -509,14 +511,14 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
   beat('Finish', () => {
     // (the roll's theme: two of these come back, two more come once; each uses only what this stage has taught)
     const next = deck([
-      () => { spiderRun(R.r(620, 720)); chain(R.chance(0.5) ? 2 : 3, { ledge: true }); },
+      () => { spiderRun(R.r(540, 620)); chain(R.chance(0.5) ? 2 : 3, { ledge: true }); },
       () => { sheetWalk(); highBridge(R.chance(0.5) ? 2 : 3); },
-      () => { chain(3, { ledge: true }); spiderRun(R.r(620, 720)); },
+      () => { chain(3, { ledge: true }); spiderRun(R.r(540, 620)); },
       () => { sheetWalk(); chain(2); },
       // two spiders, a soft pit between
-      () => { spiderRun(R.r(600, 680)); hopPit(); spiderRun(R.r(600, 680)); },
+      () => { spiderRun(R.r(540, 600)); hopPit(); spiderRun(R.r(540, 600)); },
       // the high bridge, then a spider beyond it
-      () => { highBridge(R.chance(0.5) ? 2 : 3); spiderRun(R.r(600, 680)); },
+      () => { highBridge(R.chance(0.5) ? 2 : 3); spiderRun(R.r(540, 600)); },
       // two silk lines over a pit, then a sheet
       () => { chain(2, { easy: true }); sheetWalk(); },
       // stumps, then a long chain
@@ -524,7 +526,7 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
       // stumps, then the high bridge
       () => { stump(); stump(); highBridge(3); },
       // a spider, then a sheet, then a soft pit
-      () => { spiderRun(R.r(600, 680)); rest(R.r(120, 160)); sheetWalk(); hopPit(); },
+      () => { spiderRun(R.r(540, 600)); rest(R.r(120, 160)); sheetWalk(); hopPit(); },
     ], 2, 2);
     let n = 0;
     while (expert < stageSeconds('5-4') - 6 && n < 30) {
