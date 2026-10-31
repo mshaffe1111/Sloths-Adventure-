@@ -157,10 +157,19 @@ export const HERO_CLIPS: Record<string, HeroClip> = {
  "move-jump": {
   "n": 10,
   "cols": 8,
-  "w": 227,
-  "h": 293,
-  "ax": 107.6,
-  "ay": 290.8,
+  "w": 235,
+  "h": 301,
+  "ax": 111.6,
+  "ay": 294.8,
+  "fps": 16
+ },
+ "move-climb": {
+  "n": 21,
+  "cols": 8,
+  "w": 145,
+  "h": 271,
+  "ax": 64.0,
+  "ay": 265.3,
   "fps": 16
  }
 };
