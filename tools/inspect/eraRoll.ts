@@ -181,7 +181,7 @@ export function pickRoute(type: string, st: Stage) {
   return { quick, used: usePick ? pickups : quick };
 }
 
-function silkLight(st: Stage): ((d: Dead) => number) | undefined {
+export function silkLight(st: Stage): ((d: Dead) => number) | undefined {
   const w5 = st.proto?.w5;
   if (!w5) return undefined;
   const rest = w5.rest;

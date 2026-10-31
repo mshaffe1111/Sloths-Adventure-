@@ -1,0 +1,29 @@
+{
+ "frames": {
+  "slack": {
+   "x": 0,
+   "y": 0,
+   "w": 873,
+   "h": 648,
+   "ax": 436.5,
+   "ay": 648
+  },
+  "billow": {
+   "x": 881,
+   "y": 0,
+   "w": 873,
+   "h": 648,
+   "ax": 436.5,
+   "ay": 648
+  },
+  "snap": {
+   "x": 1762,
+   "y": 0,
+   "w": 873,
+   "h": 648,
+   "ax": 436.5,
+   "ay": 648
+  }
+ },
+ "note": "W5 billowing web (GRAB-BAG item 12): slack, billow (a gust from the left), snap back. HF hfg-w5web/hfg-w5web2, 2026-10-31. Not wired in yet."
+}
