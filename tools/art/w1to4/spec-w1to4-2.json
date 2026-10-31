@@ -1,0 +1,662 @@
+{
+ "note": "World 1-4 round 2 (squirrels on the story model, cave bats on the W8 bat, knots, reed gate, veil, mist, shadow)",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/9ec6d4d4782a2d25441492f58ae94ac14e16f2b9/reference/prop-sheets/qa-notes/w1-4-art/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "sq-sit-2",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: sitting calmly upright on his haunches, paws together at his chest, tail curled up behind. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-sit-2p",
+   "then": "sq-sit-2",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-sit-6",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: sitting calmly upright on his haunches, paws together at his chest, tail curled up behind. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-sit-6p",
+   "then": "sq-sit-6",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-wave-2",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: standing on his hind legs, waving one front paw high above his head, smiling. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-wave-2p",
+   "then": "sq-wave-2",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-wave-6",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: standing on his hind legs, waving one front paw high above his head, smiling. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-wave-6p",
+   "then": "sq-wave-6",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-haul-2",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: pulling down hard with both front paws on a thick vertical rope that hangs from above, leaning back. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-haul-2p",
+   "then": "sq-haul-2",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-haul-6",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: pulling down hard with both front paws on a thick vertical rope that hangs from above, leaning back. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-haul-6p",
+   "then": "sq-haul-6",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-tip-2",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: pushing a big brown acorn forward with both front paws, leaning into it. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-tip-2p",
+   "then": "sq-tip-2",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-tip-6",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: pushing a big brown acorn forward with both front paws, leaning into it. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-tip-6p",
+   "then": "sq-tip-6",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-run-2",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: running fast on all four legs, side view, tail streaming out behind. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-run-2p",
+   "then": "sq-run-2",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "sq-run-6",
+   "start": "w1-squirrel-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same squirrel character: the same chubby red-brown squirrel with a cream belly, big fluffy tail, round head, small ears and friendly face, same colours and proportions, drawn as a clean game sprite seen from the side. Change only his pose: running fast on all four legs, side view, tail streaming out behind. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two squirrels, extra limbs, scenery, background"
+  },
+  {
+   "name": "sq-run-6p",
+   "then": "sq-run-6",
+   "strength": 0.32,
+   "seed": 7,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "prompt": "slothadv style, a chubby red-brown squirrel with a cream belly and a big fluffy tail, game sprite, thin dark ink outline, soft cel shading, on a flat magenta background."
+  },
+  {
+   "name": "w1-knots-s62-5",
+   "start": "w1-knots.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two bark shelf fungi that stick out of a rainforest tree trunk like little steps, flat mossy tops, warm browns, and a mossy tree stump. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-knots-s62-17",
+   "start": "w1-knots.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two bark shelf fungi that stick out of a rainforest tree trunk like little steps, flat mossy tops, warm browns, and a mossy tree stump. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-knots-s74-5",
+   "start": "w1-knots.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two bark shelf fungi that stick out of a rainforest tree trunk like little steps, flat mossy tops, warm browns, and a mossy tree stump. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 5,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w1-knots-s74-17",
+   "start": "w1-knots.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two bark shelf fungi that stick out of a rainforest tree trunk like little steps, flat mossy tops, warm browns, and a mossy tree stump. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 17,
+   "w": 1024,
+   "h": 512,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-gate-s62-5",
+   "start": "w2-gate.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a gate of lashed tan dry reeds tied with rope in a weathered wooden frame, shut, and the same wooden frame open and empty, and a cattail reed clump. Riverside fishing village. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure green #00FF00 background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 768,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-gate-s62-17",
+   "start": "w2-gate.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a gate of lashed tan dry reeds tied with rope in a weathered wooden frame, shut, and the same wooden frame open and empty, and a cattail reed clump. Riverside fishing village. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure green #00FF00 background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1024,
+   "h": 768,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-gate-s74-5",
+   "start": "w2-gate.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a gate of lashed tan dry reeds tied with rope in a weathered wooden frame, shut, and the same wooden frame open and empty, and a cattail reed clump. Riverside fishing village. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure green #00FF00 background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 5,
+   "w": 1024,
+   "h": 768,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-gate-s74-17",
+   "start": "w2-gate.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a gate of lashed tan dry reeds tied with rope in a weathered wooden frame, shut, and the same wooden frame open and empty, and a cattail reed clump. Riverside fishing village. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure green #00FF00 background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 17,
+   "w": 1024,
+   "h": 768,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "bat-asleep-2",
+   "start": "w3-bat-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same painted style. Show it hanging upside down by its feet, asleep, wings wrapped round its body, eyes shut. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two bats, sloth, mask, scenery, background"
+  },
+  {
+   "name": "bat-asleep-6",
+   "start": "w3-bat-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same painted style. Show it hanging upside down by its feet, asleep, wings wrapped round its body, eyes shut. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two bats, sloth, mask, scenery, background"
+  },
+  {
+   "name": "bat-stir-2",
+   "start": "w3-bat-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same painted style. Show it hanging upside down by its feet, just woken, eyes wide open, wings starting to unfold. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two bats, sloth, mask, scenery, background"
+  },
+  {
+   "name": "bat-stir-6",
+   "start": "w3-bat-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same painted style. Show it hanging upside down by its feet, just woken, eyes wide open, wings starting to unfold. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two bats, sloth, mask, scenery, background"
+  },
+  {
+   "name": "bat-flap1-2",
+   "start": "w3-bat-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same painted style. Show it flying, seen from the side, both wings raised high. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two bats, sloth, mask, scenery, background"
+  },
+  {
+   "name": "bat-flap1-6",
+   "start": "w3-bat-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same painted style. Show it flying, seen from the side, both wings raised high. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two bats, sloth, mask, scenery, background"
+  },
+  {
+   "name": "bat-flap2-2",
+   "start": "w3-bat-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same painted style. Show it flying, seen from the side, both wings swept down. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 2,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two bats, sloth, mask, scenery, background"
+  },
+  {
+   "name": "bat-flap2-6",
+   "start": "w3-bat-ref.png",
+   "edit": true,
+   "prompt": "Keep this exact same small brown fruit bat, same fur colours, leathery dark brown wings, big ears and short fox-like snout, same painted style. Show it flying, seen from the side, both wings swept down. The whole body fully in the picture with space all round. Solid flat pure bright magenta (#FF00FF) background, nothing else.",
+   "seed": 6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "text, watermark, two bats, sloth, mask, scenery, background"
+  },
+  {
+   "name": "w4-veil-s50-5",
+   "start": "w4-veil.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two thin falling waterfall curtains of white and pale aqua water, the second one parted in the middle so you can see through it. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes"
+  },
+  {
+   "name": "w4-veil-s50-17",
+   "start": "w4-veil.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two thin falling waterfall curtains of white and pale aqua water, the second one parted in the middle so you can see through it. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.5,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes"
+  },
+  {
+   "name": "w4-veil-s62-5",
+   "start": "w4-veil.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two thin falling waterfall curtains of white and pale aqua water, the second one parted in the middle so you can see through it. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes"
+  },
+  {
+   "name": "w4-veil-s62-17",
+   "start": "w4-veil.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, two thin falling waterfall curtains of white and pale aqua water, the second one parted in the middle so you can see through it. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes"
+  },
+  {
+   "name": "w4-mist-s45-5",
+   "start": "w4-mist.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three soft drifting banks of white mountain mist, thick in the middle and feathered at the edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.45,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes"
+  },
+  {
+   "name": "w4-mist-s45-17",
+   "start": "w4-mist.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three soft drifting banks of white mountain mist, thick in the middle and feathered at the edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.45,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes"
+  },
+  {
+   "name": "w4-mist-s60-5",
+   "start": "w4-mist.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three soft drifting banks of white mountain mist, thick in the middle and feathered at the edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes"
+  },
+  {
+   "name": "w4-mist-s60-17",
+   "start": "w4-mist.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three soft drifting banks of white mountain mist, thick in the middle and feathered at the edges. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.6,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, solid shapes"
+  },
+  {
+   "name": "w4-shadow-s35-5",
+   "start": "w4-shadow.png",
+   "prompt": "slothadv style, the soft blurred dark blue-grey shadow of a huge eagle with spread wings, seen from below, a shadow only, no bird. Soft painted shadow on a plain pure white background, no text.",
+   "strength": 0.35,
+   "seed": 5,
+   "w": 1536,
+   "h": 640,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w4-shadow-s35-17",
+   "start": "w4-shadow.png",
+   "prompt": "slothadv style, the soft blurred dark blue-grey shadow of a huge eagle with spread wings, seen from below, a shadow only, no bird. Soft painted shadow on a plain pure white background, no text.",
+   "strength": 0.35,
+   "seed": 17,
+   "w": 1536,
+   "h": 640,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w4-shadow-s50-5",
+   "start": "w4-shadow.png",
+   "prompt": "slothadv style, the soft blurred dark blue-grey shadow of a huge eagle with spread wings, seen from below, a shadow only, no bird. Soft painted shadow on a plain pure white background, no text.",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1536,
+   "h": 640,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w4-shadow-s50-17",
+   "start": "w4-shadow.png",
+   "prompt": "slothadv style, the soft blurred dark blue-grey shadow of a huge eagle with spread wings, seen from below, a shadow only, no bird. Soft painted shadow on a plain pure white background, no text.",
+   "strength": 0.5,
+   "seed": 17,
+   "w": 1536,
+   "h": 640,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  }
+ ]
+}

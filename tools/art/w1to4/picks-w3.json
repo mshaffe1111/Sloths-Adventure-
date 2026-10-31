@@ -1,0 +1,32 @@
+{
+ "w3-props": {
+  "*": "w3-props-s74-17",
+  "stalactite-shards": "w3-props-s74-5",
+  "crack-gone": null,
+  "stalactite-hang": null
+ },
+ "w3-fx": {
+  "spore-0": "w3-fx-s70-17",
+  "spore-1": "w3-fx-s70-17",
+  "spore-2": null
+ },
+ "single": [
+  [
+   "bat-asleep",
+   "bat-asleep-2"
+  ],
+  [
+   "bat-stir",
+   "bat-stir-2"
+  ],
+  [
+   "bat-flap1",
+   "bat-flap1-6"
+  ],
+  [
+   "bat-flap2",
+   "bat-flap2-2"
+  ]
+ ],
+ "w3-burst": "w3-burst-s50-23"
+}
