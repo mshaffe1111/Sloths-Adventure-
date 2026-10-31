@@ -6,6 +6,114 @@
  */
 export interface DressNewFrame { x: number; y: number; w: number; h: number; units: number; world: number; hang?: boolean }
 export const DRESS_NEW_FRAMES = {
+ "w2Heron": {
+  "x": 0,
+  "y": 0,
+  "w": 248,
+  "h": 359,
+  "units": 62,
+  "world": 2
+ },
+ "w2CattailFly": {
+  "x": 252,
+  "y": 0,
+  "w": 208,
+  "h": 346,
+  "units": 52,
+  "world": 2
+ },
+ "w2Driftwood": {
+  "x": 464,
+  "y": 0,
+  "w": 280,
+  "h": 317,
+  "units": 70,
+  "world": 2
+ },
+ "w2NetHang": {
+  "x": 748,
+  "y": 0,
+  "w": 200,
+  "h": 306,
+  "units": 50,
+  "world": 2,
+  "hang": true
+ },
+ "w2SignPost": {
+  "x": 0,
+  "y": 363,
+  "w": 192,
+  "h": 290,
+  "units": 48,
+  "world": 2
+ },
+ "w2BasketHang": {
+  "x": 196,
+  "y": 363,
+  "w": 184,
+  "h": 262,
+  "units": 46,
+  "world": 2,
+  "hang": true
+ },
+ "w2GourdHang": {
+  "x": 384,
+  "y": 363,
+  "w": 176,
+  "h": 258,
+  "units": 44,
+  "world": 2,
+  "hang": true
+ },
+ "w2Raft": {
+  "x": 564,
+  "y": 363,
+  "w": 320,
+  "h": 235,
+  "units": 80,
+  "world": 2
+ },
+ "w2MossDrip": {
+  "x": 888,
+  "y": 363,
+  "w": 136,
+  "h": 234,
+  "units": 34,
+  "world": 2,
+  "hang": true
+ },
+ "w2FishTrap": {
+  "x": 0,
+  "y": 657,
+  "w": 264,
+  "h": 161,
+  "units": 66,
+  "world": 2
+ },
+ "w2WaterJar": {
+  "x": 268,
+  "y": 657,
+  "w": 160,
+  "h": 123,
+  "units": 40,
+  "world": 2
+ },
+ "w2Crab": {
+  "x": 432,
+  "y": 657,
+  "w": 184,
+  "h": 113,
+  "units": 46,
+  "world": 2
+ },
+ "w2Frog": {
+  "x": 620,
+  "y": 657,
+  "w": 168,
+  "h": 112,
+  "units": 42,
+  "world": 2
+ },
  "w6OrchidSpray": {
   "x": 0,
   "y": 0,
@@ -97,10 +205,119 @@ export const DRESS_NEW_FRAMES = {
   "h": 70,
   "units": 50,
   "world": 6
+ },
+ "w7BellVine": {
+  "x": 0,
+  "y": 0,
+  "w": 176,
+  "h": 389,
+  "units": 44,
+  "world": 7,
+  "hang": true
+ },
+ "w7PillarStub": {
+  "x": 180,
+  "y": 0,
+  "w": 216,
+  "h": 319,
+  "units": 54,
+  "world": 7
+ },
+ "w7Banner": {
+  "x": 400,
+  "y": 0,
+  "w": 184,
+  "h": 317,
+  "units": 46,
+  "world": 7,
+  "hang": true
+ },
+ "w7Censer": {
+  "x": 588,
+  "y": 0,
+  "w": 144,
+  "h": 304,
+  "units": 36,
+  "world": 7,
+  "hang": true
+ },
+ "w7LizardBlock": {
+  "x": 736,
+  "y": 0,
+  "w": 264,
+  "h": 256,
+  "units": 66,
+  "world": 7
+ },
+ "w7Macaw": {
+  "x": 0,
+  "y": 393,
+  "w": 224,
+  "h": 247,
+  "units": 56,
+  "world": 7
+ },
+ "w7Shards": {
+  "x": 228,
+  "y": 393,
+  "w": 208,
+  "h": 209,
+  "units": 52,
+  "world": 7
+ },
+ "w7StoneLantern": {
+  "x": 440,
+  "y": 393,
+  "w": 176,
+  "h": 198,
+  "units": 44,
+  "world": 7
+ },
+ "w7Tablet": {
+  "x": 620,
+  "y": 393,
+  "w": 216,
+  "h": 197,
+  "units": 54,
+  "world": 7
+ },
+ "w7Offering": {
+  "x": 840,
+  "y": 393,
+  "w": 176,
+  "h": 196,
+  "units": 44,
+  "world": 7
+ },
+ "w7StoneBall": {
+  "x": 0,
+  "y": 644,
+  "w": 152,
+  "h": 156,
+  "units": 38,
+  "world": 7
+ },
+ "w7FrogIdol": {
+  "x": 156,
+  "y": 644,
+  "w": 160,
+  "h": 145,
+  "units": 40,
+  "world": 7
+ },
+ "w7Coins": {
+  "x": 320,
+  "y": 644,
+  "w": 176,
+  "h": 115,
+  "units": 44,
+  "world": 7
  }
 } satisfies Record<string, DressNewFrame>;
 export type DressNewName = keyof typeof DRESS_NEW_FRAMES;
 /** each world's sheet */
 export const DRESS_NEW_URLS: Record<number, string> = typeof URL === 'undefined' ? {} : {
+  2: new URL('../assets/props/dressnew-w2.webp', import.meta.url).href,
   6: new URL('../assets/props/dressnew-w6.webp', import.meta.url).href,
+  7: new URL('../assets/props/dressnew-w7.webp', import.meta.url).href,
 };

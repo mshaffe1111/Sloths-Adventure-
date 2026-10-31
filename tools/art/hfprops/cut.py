@@ -30,8 +30,11 @@ def key_own(img):
     bg0 = np.median(ring, 0)
     # (the vignette: the background darkens toward the corners; a heavily smoothed copy where the picture is near the key stands in)
     near = np.linalg.norm(a - bg0, axis=-1) < 70
-    w = ndimage.gaussian_filter(near.astype(np.float32), 40)
-    bgm = np.dstack([ndimage.gaussian_filter(np.where(near, a[..., c], 0), 40) for c in range(3)]) / np.maximum(w[..., None], 1e-3)
+    # (worked at 1/8 size, then scaled back: the background varies slowly)
+    sm = lambda x: np.asarray(Image.fromarray(ndimage.gaussian_filter(
+        np.asarray(Image.fromarray(x).resize((max(1, W // 8), max(1, H // 8)), Image.BILINEAR)), 5)).resize((W, H), Image.BILINEAR))
+    w = sm(near.astype(np.float32))
+    bgm = np.dstack([sm(np.where(near, a[..., c], 0).astype(np.float32)) for c in range(3)]) / np.maximum(w[..., None], 1e-3)
     bgm = np.where(w[..., None] > 0.02, bgm, bg0)
     d = np.linalg.norm(a - bgm, axis=-1)
     alpha = np.clip((d - 34) / 80, 0, 1)

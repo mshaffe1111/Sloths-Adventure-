@@ -86,5 +86,199 @@
    ],
    "job": "hang"
   }
+ },
+ "7": {
+  "pillarStub": {
+   "take": "w7-pillarStub-5",
+   "units": 54,
+   "cropBottom": 0.06,
+   "box": [
+    0.26,
+    0.0,
+    0.8,
+    1.0
+   ]
+  },
+  "macaw": {
+   "take": "w7-macaw-5",
+   "units": 56,
+   "cropBottom": 0.1,
+   "box": [
+    0.15,
+    0.05,
+    0.9,
+    1.0
+   ]
+  },
+  "tablet": {
+   "take": "w7-tablet-17",
+   "units": 54,
+   "cropBottom": 0.14
+  },
+  "lizardBlock": {
+   "take": "w7-lizardBlock-5",
+   "units": 66,
+   "cropBottom": 0.16
+  },
+  "frogIdol": {
+   "take": "w7-frogIdol-17",
+   "units": 40,
+   "cropBottom": 0.08
+  },
+  "stoneLantern": {
+   "take": "w7-stoneLantern-17",
+   "units": 44,
+   "cropBottom": 0.05
+  },
+  "censer": {
+   "take": "w7-censer-5",
+   "units": 36,
+   "hang": true,
+   "box": [
+    0.36,
+    0.18,
+    0.68,
+    0.76
+   ]
+  },
+  "bellVine": {
+   "take": "w7-bellVine-17",
+   "units": 44,
+   "hang": true,
+   "box": [
+    0.36,
+    0.16,
+    0.66,
+    0.84
+   ]
+  },
+  "banner": {
+   "take": "w7-banner-5",
+   "units": 46,
+   "hang": true,
+   "box": [
+    0.3,
+    0.12,
+    0.7,
+    0.88
+   ]
+  },
+  "shards": {
+   "take": "w7-shards-5",
+   "units": 52,
+   "cropBottom": 0.17
+  },
+  "offering": {
+   "take": "w7-offering-17",
+   "units": 44,
+   "cropBottom": 0.14
+  },
+  "coins": {
+   "take": "w7-coins-17",
+   "units": 44,
+   "cropBottom": 0.13
+  },
+  "stoneBall": {
+   "take": "w7-stoneBall-5",
+   "units": 38,
+   "cropBottom": 0.17
+  }
+ },
+ "2": {
+  "heron": {
+   "take": "w2-heron-17",
+   "units": 62,
+   "cropBottom": 0.1
+  },
+  "driftwood": {
+   "take": "w2-driftwood-5",
+   "units": 70,
+   "cropBottom": 0.1
+  },
+  "cattailFly": {
+   "take": "w2-cattailFly-17",
+   "units": 52,
+   "cropBottom": 0.1
+  },
+  "fishTrap": {
+   "take": "w2-fishTrap-17",
+   "units": 66,
+   "cropBottom": 0.05
+  },
+  "raft": {
+   "take": "w2-raft-17",
+   "units": 80,
+   "cropBottom": 0.2
+  },
+  "signPost": {
+   "take": "w2-signPost-17",
+   "units": 48,
+   "cropBottom": 0.07
+  },
+  "mossDrip": {
+   "take": "w2-mossDrip-17",
+   "units": 34,
+   "hang": true,
+   "box": [
+    0.32,
+    0.25,
+    0.68,
+    0.92
+   ]
+  },
+  "basketHang": {
+   "take": "w2-basketHang-5",
+   "units": 46,
+   "hang": true,
+   "box": [
+    0.25,
+    0.2,
+    0.75,
+    0.82
+   ]
+  },
+  "netHang": {
+   "take": "w2-netHang-5",
+   "units": 50,
+   "hang": true,
+   "box": [
+    0.25,
+    0.18,
+    0.72,
+    0.92
+   ]
+  },
+  "gourdHang": {
+   "take": "w2-gourdHang-17",
+   "units": 44,
+   "hang": true,
+   "box": [
+    0.28,
+    0.25,
+    0.75,
+    0.84
+   ]
+  },
+  "crab": {
+   "take": "w2-crab-17",
+   "units": 46,
+   "cropBottom": 0.17,
+   "box": [
+    0.12,
+    0.3,
+    0.92,
+    0.96
+   ]
+  },
+  "frog": {
+   "take": "w2-frog-17",
+   "units": 42,
+   "cropBottom": 0.17
+  },
+  "waterJar": {
+   "take": "w2-waterJar-5",
+   "units": 40,
+   "cropBottom": 0.17
+  }
  }
 }

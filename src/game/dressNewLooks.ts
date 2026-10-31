@@ -51,5 +51,102 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w6Pods"
    ]
   ]
+ },
+ "7": {
+  "bank": [
+   [
+    "w7PillarStub",
+    "w7Macaw",
+    "w7Tablet"
+   ],
+   [
+    "w7LizardBlock",
+    "w7FrogIdol",
+    "w7StoneLantern"
+   ],
+   [
+    "w7Macaw",
+    "w7LizardBlock",
+    "w7StoneLantern"
+   ]
+  ],
+  "hang": [
+   [
+    "w7Censer",
+    "w7BellVine"
+   ],
+   [
+    "w7Banner",
+    "w7Censer"
+   ],
+   [
+    "w7BellVine",
+    "w7Banner"
+   ]
+  ],
+  "clutter": [
+   [
+    "w7Shards",
+    "w7Offering",
+    "w7Coins"
+   ],
+   [
+    "w7StoneBall",
+    "w7Shards"
+   ],
+   [
+    "w7Offering",
+    "w7StoneBall",
+    "w7Shards"
+   ]
+  ]
+ },
+ "2": {
+  "bank": [
+   [
+    "w2Heron",
+    "w2Driftwood",
+    "w2CattailFly"
+   ],
+   [
+    "w2FishTrap",
+    "w2Raft",
+    "w2SignPost"
+   ],
+   [
+    "w2Driftwood",
+    "w2FishTrap",
+    "w2SignPost"
+   ]
+  ],
+  "hang": [
+   [
+    "w2MossDrip",
+    "w2BasketHang"
+   ],
+   [
+    "w2NetHang",
+    "w2GourdHang"
+   ],
+   [
+    "w2BasketHang",
+    "w2NetHang"
+   ]
+  ],
+  "clutter": [
+   [
+    "w2Crab",
+    "w2Frog",
+    "w2WaterJar"
+   ],
+   [
+    "w2Crab",
+    "w2Frog"
+   ],
+   [
+    "w2Frog",
+    "w2Crab"
+   ]
+  ]
  }
 };
