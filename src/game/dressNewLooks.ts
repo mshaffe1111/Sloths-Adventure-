@@ -14,12 +14,13 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
    ],
    [
     "w6StakeLantern",
-    "w6OysterRoot",
-    "w6Pitchers"
+    "w6BromeliadRoot",
+    "w6SwampFerns"
    ],
    [
     "w6Pitchers",
-    "w6StakeLantern"
+    "w6StakeLantern",
+    "w6SwampFerns"
    ]
   ],
   "hang": [
@@ -43,8 +44,14 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w6MudLilies"
    ],
    [
-    "w6SnailRock",
+    "w6DriftRoot",
+    "w6WetLeaves",
     "w6Pods"
+   ],
+   [
+    "w6SnailRock",
+    "w6DriftRoot",
+    "w6WetLeaves"
    ]
   ]
  },
@@ -64,6 +71,26 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w7Macaw",
     "w7LizardBlock",
     "w7StoneLantern"
+   ],
+   [
+    "w7MonkeyStatue",
+    "w7UrnTall",
+    "w7JaguarHead"
+   ],
+   [
+    "w7Capuchin",
+    "w7Altar",
+    "w7PillarStub"
+   ],
+   [
+    "w7MonkeyStatue",
+    "w7Capuchin",
+    "w7Tablet"
+   ],
+   [
+    "w7JaguarHead",
+    "w7PillarStub",
+    "w7FrogIdol"
    ]
   ],
   "hang": [
@@ -88,12 +115,13 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
    ],
    [
     "w7StoneBall",
+    "w7IdolHead",
     "w7Shards"
    ],
    [
     "w7Offering",
     "w7StoneBall",
-    "w7Shards"
+    "w7IdolHead"
    ]
   ]
  },
@@ -113,6 +141,26 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w2Driftwood",
     "w2FishTrap",
     "w2SignPost"
+   ],
+   [
+    "w2Otter",
+    "w2Canoe",
+    "w2LilyBucket"
+   ],
+   [
+    "w2ReedBundle",
+    "w2Turtle",
+    "w2KingfisherPost"
+   ],
+   [
+    "w2Otter",
+    "w2ReedBundle",
+    "w2CattailFly"
+   ],
+   [
+    "w2LilyBucket",
+    "w2KingfisherPost",
+    "w2Raft"
    ]
   ],
   "hang": [
@@ -157,6 +205,26 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w1MossBoulder",
     "w1Toucan",
     "w1Heliconia"
+   ],
+   [
+    "w1FallenLog",
+    "w1MushroomTall",
+    "w1TreeFrog"
+   ],
+   [
+    "w1WoodStump",
+    "w1Coati",
+    "w1FlowerBush"
+   ],
+   [
+    "w1FallenLog",
+    "w1WoodStump",
+    "w1Termites"
+   ],
+   [
+    "w1TreeFrog",
+    "w1FlowerBush",
+    "w1TrailPost"
    ]
   ],
   "hang": [
@@ -188,6 +256,11 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w1SeedPods",
     "w1Morpho",
     "w1NutPod"
+   ],
+   [
+    "w1Beetle",
+    "w1LeafLitter",
+    "w1Snail"
    ]
   ]
  },
@@ -201,12 +274,22 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
    [
     "w3OldNest",
     "w3GlowStalks",
-    "w3Crystals"
+    "w3Stalagmites"
    ],
    [
     "w3RootBoulder",
     "w3OldNest",
+    "w3Stalagmites"
+   ],
+   [
+    "w3Cricket",
+    "w3Geode",
     "w3Crystals"
+   ],
+   [
+    "w3Cricket",
+    "w3RootBoulder",
+    "w3GlowStone"
    ]
   ],
   "hang": [
@@ -238,6 +321,11 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w3GlowShrooms",
     "w3Pebbles",
     "w3ShardsGlow"
+   ],
+   [
+    "w3GlowWorms",
+    "w3Fossil",
+    "w3GlowMoss"
    ]
   ]
  },
@@ -251,12 +339,27 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
    [
     "w4Lizard",
     "w4RopePost",
-    "w4Cairn"
+    "w4Totem"
    ],
    [
     "w4WindShrub",
     "w4Lizard",
-    "w4Cairn"
+    "w4Totem"
+   ],
+   [
+    "w4BoulderMoss",
+    "w4Thistle",
+    "w4Marmot"
+   ],
+   [
+    "w4BoulderMoss",
+    "w4Cairn",
+    "w4Feather"
+   ],
+   [
+    "w4Marmot",
+    "w4Feather",
+    "w4RopePost"
    ]
   ],
   "hang": [
@@ -300,12 +403,32 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
    [
     "w5FernPot",
     "w5Spool",
-    "w5WateringCan"
+    "w5BookStack"
    ],
    [
     "w5Pots",
     "w5FernPot",
-    "w5WateringCan"
+    "w5BookStack"
+   ],
+   [
+    "w5Birdbath",
+    "w5Wheelbarrow",
+    "w5ButterflyBush"
+   ],
+   [
+    "w5Ladybug",
+    "w5WateringCan",
+    "w5Pots"
+   ],
+   [
+    "w5Birdbath",
+    "w5Ladybug",
+    "w5Bench"
+   ],
+   [
+    "w5ButterflyBush",
+    "w5Pots",
+    "w5Spool"
    ]
   ],
   "hang": [
@@ -337,6 +460,16 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w5Sugar",
     "w5Thimbles",
     "w5TeaTin"
+   ],
+   [
+    "w5Ribbon",
+    "w5Buttons",
+    "w5Petals"
+   ],
+   [
+    "w5Buttons",
+    "w5Ribbon",
+    "w5Thimbles"
    ]
   ]
  }

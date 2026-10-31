@@ -67,6 +67,8 @@ def key_own(img, solo=False):
     return im.crop(im.getbbox()) if im.getbbox() else im
 
 PX_PER_UNIT = 4
+# (the stills showed the pieces reading small beside Pokey, 66 units: every piece is drawn 1.3x its listed width)
+SCALE = 1.3
 BACK = {1: 'w1-near', 2: 'w2-near', 3: 'w3-near', 4: 'w4-near', 5: 'w5-near', 6: 'w6-near', 7: 'w7-near'}
 
 
@@ -114,7 +116,7 @@ def main():
             if p.get('cropBottom'):  # (a base slab the model put under it: the bottom fraction cut off)
                 im = im.crop((0, 0, im.width, round(im.height * (1 - p['cropBottom']))))
                 im = im.crop(im.getbbox())
-            tw = round(p['units'] * PX_PER_UNIT)
+            tw = round(p['units'] * SCALE * PX_PER_UNIT)
             s = tw / im.width
             im = im.resize((tw, max(1, round(im.height * s))), Image.LANCZOS)
             pieces.append((n, im))
@@ -123,7 +125,7 @@ def main():
         sheet.save(dst, 'WEBP', quality=88, method=6)
         for n, (x, y, ww, hh) in pos.items():
             name = f'w{w}{n[0].upper()}{n[1:]}'
-            frames[name] = {'x': x, 'y': y, 'w': ww, 'h': hh, 'units': pp[n]['units'], 'world': w, **({'hang': True} if pp[n].get('hang') else {})}
+            frames[name] = {'x': x, 'y': y, 'w': ww, 'h': hh, 'units': round(pp[n]['units'] * SCALE), 'world': w, **({'hang': True} if pp[n].get('hang') else {})}
         review(pieces, w, ROOT / f'reference/prop-sheets/qa-notes/hf-props/w{w}-pieces.jpg')
         print(dst, sheet.size, len(pieces))
     # the three new looks per job per world (lead, 2026-10-31: three looks per job), from the pieces kept, in pieces.py order

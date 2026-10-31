@@ -21,7 +21,9 @@ for (const [tag, w, h] of [['up', 390, 844], ['side', 844, 390]]) {
       const ps = e.platforms.filter((q) => q.type === 'solid' || q.type === undefined);
       const xs = e.platforms.map((q) => q.x + q.width);
       const end = Math.max(...xs);
-      const tx = end * f;
+      // (f >= 10: the new dressing piece at that index in the stage's dressing, by world-sheet pieces only; Pokey set 120 left of it)
+      const dress = (e.proto?.dress ?? e.currentStage.dress ?? []).filter((d) => /^w[1-7][A-Z]/.test(d.n) && !/^w[125](Acorns|Fern|Fiddle|Hang[12]|Mushroom|MushroomDim|Pebble|Pinecone|Sprig|Stones|Stump|Log|ReedLean|ReedShort|ReedTall|RiverStone|Stone)$|^w5(Bank|Clut|Hang)/.test(d.n));
+      const tx = f >= 10 ? (dress[Math.min(dress.length - 1, Math.floor((f - 10) * dress.length))]?.x ?? end / 2) - 120 : end * f;
       const under = ps.filter((q) => q.x < tx && q.x + q.width > tx).sort((a, b) => a.y - b.y);
       const pl = e.player;
       if (under.length) { pl.x = tx; pl.y = under[under.length - 1].y - pl.height; for (const q of under) if (q.y > 200) { pl.y = q.y - pl.height; break; } }

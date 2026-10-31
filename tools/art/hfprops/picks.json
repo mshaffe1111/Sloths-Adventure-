@@ -85,6 +85,27 @@
     0.8
    ],
    "job": "hang"
+  },
+  "bromeliadRoot": {
+   "take": "w6-bromeliadRoot-5",
+   "units": 52,
+   "cropBottom": 0.1
+  },
+  "swampFerns": {
+   "take": "w6-swampFerns-5",
+   "units": 58,
+   "cropBottom": 0.12,
+   "solo": true
+  },
+  "driftRoot": {
+   "take": "w6-driftRoot-5",
+   "units": 50,
+   "cropBottom": 0.1
+  },
+  "wetLeaves": {
+   "take": "w6-wetLeaves-17",
+   "units": 40,
+   "cropBottom": 0.12
   }
  },
  "7": {
@@ -182,6 +203,36 @@
    "take": "w7-stoneBall-5",
    "units": 38,
    "cropBottom": 0.17
+  },
+  "monkeyStatue": {
+   "take": "w7-monkeyStatue-5",
+   "units": 48,
+   "cropBottom": 0.14
+  },
+  "urnTall": {
+   "take": "w7-urnTall-5",
+   "units": 42,
+   "cropBottom": 0.12
+  },
+  "jaguarHead": {
+   "take": "w7-jaguarHead-5",
+   "units": 58,
+   "cropBottom": 0.12
+  },
+  "capuchin": {
+   "take": "w7-capuchin-5",
+   "units": 50,
+   "cropBottom": 0.12
+  },
+  "altar": {
+   "take": "w7-altar-5",
+   "units": 54,
+   "cropBottom": 0.12
+  },
+  "idolHead": {
+   "take": "w7-idolHead-5",
+   "units": 40,
+   "cropBottom": 0.12
   }
  },
  "2": {
@@ -279,6 +330,36 @@
    "take": "w2-waterJar-5",
    "units": 40,
    "cropBottom": 0.17
+  },
+  "otter": {
+   "take": "w2-otter-5",
+   "units": 48,
+   "cropBottom": 0.14
+  },
+  "canoe": {
+   "take": "w2-canoe-17",
+   "units": 96,
+   "cropBottom": 0.14
+  },
+  "lilyBucket": {
+   "take": "w2-lilyBucket-5",
+   "units": 42,
+   "cropBottom": 0.12
+  },
+  "reedBundle": {
+   "take": "w2-reedBundle-17",
+   "units": 44,
+   "cropBottom": 0.1
+  },
+  "turtle": {
+   "take": "w2-turtle-17",
+   "units": 56,
+   "cropBottom": 0.12
+  },
+  "kingfisherPost": {
+   "take": "w2-kingfisherPost-17",
+   "units": 46,
+   "cropBottom": 0.1
   }
  },
  "1": {
@@ -409,6 +490,69 @@
    "take": "w1-nutPod-5",
    "units": 40,
    "cropBottom": 0.1
+  },
+  "fallenLog": {
+   "take": "w1-fallenLog-5",
+   "units": 72,
+   "cropBottom": 0.06
+  },
+  "mushroomTall": {
+   "take": "w1-mushroomTall-17",
+   "units": 50,
+   "cropBottom": 0.14
+  },
+  "treeFrog": {
+   "take": "w1-treeFrog-17",
+   "units": 44,
+   "cropBottom": 0.18,
+   "box": [
+    0.2,
+    0.3,
+    0.9,
+    1.0
+   ],
+   "solo": true
+  },
+  "woodStump": {
+   "take": "w1-woodStump-5",
+   "units": 54,
+   "cropBottom": 0.1
+  },
+  "coati": {
+   "take": "w1-coati-17",
+   "units": 62,
+   "cropBottom": 0.14,
+   "box": [
+    0.15,
+    0.15,
+    0.95,
+    1.0
+   ],
+   "solo": true
+  },
+  "flowerBush": {
+   "take": "w1-flowerBush-17",
+   "units": 58,
+   "cropBottom": 0.14,
+   "box": [
+    0.2,
+    0.25,
+    0.85,
+    1.0
+   ],
+   "solo": true
+  },
+  "beetle": {
+   "take": "w1-beetle-17",
+   "units": 34,
+   "cropBottom": 0.16,
+   "box": [
+    0.2,
+    0.3,
+    0.9,
+    1.0
+   ],
+   "solo": true
   }
  },
  "3": {
@@ -506,6 +650,34 @@
    "take": "w3-shardsGlow-5",
    "units": 44,
    "cropBottom": 0.14
+  },
+  "stalagmites": {
+   "take": "w3-stalagmites-5",
+   "units": 56,
+   "cropBottom": 0.14
+  },
+  "cricket": {
+   "take": "w3-cricket-17",
+   "units": 44,
+   "cropBottom": 0.2,
+   "box": [
+    0.2,
+    0.18,
+    0.85,
+    1.0
+   ],
+   "solo": true
+  },
+  "geode": {
+   "take": "w3-geode-5",
+   "units": 48,
+   "cropBottom": 0.14,
+   "solo": true
+  },
+  "glowWorms": {
+   "take": "w3-glowWorms-5",
+   "units": 50,
+   "cropBottom": 0.1
   }
  },
  "4": {
@@ -605,6 +777,42 @@
    "take": "w4-seedGrass-5",
    "units": 46,
    "cropBottom": 0.06
+  },
+  "totem": {
+   "take": "w4-totem-5",
+   "units": 54,
+   "cropBottom": 0.08,
+   "box": [
+    0.1,
+    0.12,
+    0.7,
+    1.0
+   ],
+   "solo": true
+  },
+  "boulderMoss": {
+   "take": "w4-boulderMoss-17",
+   "units": 62,
+   "cropBottom": 0.12,
+   "solo": true
+  },
+  "thistle": {
+   "take": "w4-thistle-17",
+   "units": 44,
+   "cropBottom": 0.14,
+   "solo": true
+  },
+  "marmot": {
+   "take": "w4-marmot-5",
+   "units": 44,
+   "cropBottom": 0.14,
+   "box": [
+    0.15,
+    0.12,
+    0.85,
+    1.0
+   ],
+   "solo": true
   }
  },
  "5": {
@@ -700,6 +908,41 @@
   "teaTin": {
    "take": "w5-teaTin-5",
    "units": 40,
+   "cropBottom": 0.12
+  },
+  "bookStack": {
+   "take": "w5-bookStack-5",
+   "units": 46,
+   "cropBottom": 0.14
+  },
+  "birdbath": {
+   "take": "w5-birdbath-17",
+   "units": 50,
+   "cropBottom": 0.12
+  },
+  "wheelbarrow": {
+   "take": "w5-wheelbarrow-5",
+   "units": 66,
+   "cropBottom": 0.14
+  },
+  "butterflyBush": {
+   "take": "w5-butterflyBush-5",
+   "units": 56,
+   "cropBottom": 0.14
+  },
+  "ladybug": {
+   "take": "w5-ladybug-5",
+   "units": 36,
+   "cropBottom": 0.14
+  },
+  "ribbon": {
+   "take": "w5-ribbon-5",
+   "units": 42,
+   "cropBottom": 0.14
+  },
+  "buttons": {
+   "take": "w5-buttons-5",
+   "units": 44,
    "cropBottom": 0.12
   }
  }
