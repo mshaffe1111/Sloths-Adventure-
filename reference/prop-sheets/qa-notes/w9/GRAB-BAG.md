@@ -1,6 +1,6 @@
 # World 9 grab bag: every piece, built before curation (2026-10-31, ~2:00 PM ET, branch w9-pieces)
 
-## Status (updated 2026-10-31 ~5:10 PM ET)
+## Status (updated 2026-10-31 ~5:50 PM ET)
 
 | Piece | Built | Where | Art | Bots on raw rolls |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@
 | N7 hot ash gusts | yes (wind zone, look 'ash') | 9-1 only (headwind; taken off 9-5, see look-alike below) | HF ash streaks | (not run yet) |
 | N8 ropes over the lava | yes (gen2 place 'rope') | 9-3 (between chains), 9-8 | the game's painted rope | both 0 lives |
 | N9 lavafalls | yes (geyser zone, look; the w9c lava pool marks its foot, brightening as it warns) | 9-4 (taught), 9-6, 9-9 | HF pour loop + painted lava pool | kid 0-1 |
-| N10 ash caps | yes (gen2 'bouncy', World 8's pattern; the steam-vent idea became World 9's own painted ash cap) | 9-1 (taught), 9-6 | painted (bounceArt cap-w9) | kid 0, adult 0-1 |
+| N10 ash caps | yes (gen2 'bouncy', World 8's pattern; the steam-vent idea became World 9's own painted ash cap) | 9-1, 9-6, and 9-4's coils (an ash cap over the coiled boa: first-coil-cap, boa-cap, boa-cap-pair, in place of the boas between geysers) | painted (bounceArt cap-w9) | kid 0, adult 0-1 |
 | N11 smoke cover | **deferred**: a timed hide reads as the same watcher beat as the spires (no variety), so 9-4 took N6 and N9 instead | | | |
 | N12 raft lock room | **held for the Drake pass** (the lead, 5:00 PM ET): it must be placed then; its HF obsidian chunk is on the art-use list for that pass | | HF obsidian chunk cut, ready | |
 
@@ -22,6 +22,7 @@ Dot's new lines for Matt (all under 10 words; in the game as written, `w9.ts W9_
 | Piece | Stage that teaches it | Line |
 |---|---|---|
 | rafts | 9-1 | "Those rafts rise and sink. Watch them." |
+| charred logs (new, 5:40 PM) | 9-5, 9-9 | "Those logs rise and sink. Watch them." |
 | hot ash wind | 9-1 | "Hot wind! It'll push you back." |
 | flare slabs | 9-3 | "Those slabs flare up when they glow." |
 | ash caps | 9-1 | "Ash caps! Bounce up to the high rock." |
@@ -32,11 +33,21 @@ Dot's new lines for Matt (all under 10 words; in the game as written, `w9.ts W9_
 (The logs ride like the rafts and the ropes are World 1's shimmy: no new line. The burnt-bridge, smoke and raft-lock lines of §3 are not in
 the game.)
 
+**Teaching (5:40 PM ET).** A stage's themes come by the roll, so a piece "taught on 9-3" was only taught in 9-3's flares rolls; a
+player whose 9-3 had chains met the flares cold on 9-5. Now the new pieces' lessons are in no stage's taught-by list: every stage that
+has a piece teaches it itself, its first section (a wide quiet spell, Dot's line, no top-up animals: SectionTemplate.calm) opening each
+roll that has it. On 420 rolls (7 stages, 30 seeds, Normal and Easy) no piece is used before it is taught, and each teaching section
+says its line. Dot may say a line again on a later stage for a player who heard it before (tips are per stage, as in every world).
+The logs got their own lesson and line (they had none: a 9-5 log met by a player with no rafts on 9-1).
+
+**9-4's coils (5:45 PM ET, the lead: fix the look-alike with a piece).** Its boas between geysers read as 9-1's vents (3/16 rolls); the
+coils now cross an ash cap over a coiled boa instead (caps are on 9-1 and 9-6, neither 9-4's neighbour; 9-4 teaches them itself).
+9-4 vs 9-1: 0/16. Bots on coils rolls: kid 0 lives, adult 1-2, both reach the shrine (about 150 s).
+
 Themes now (gates in the game): 9-1 5 (vents, chasms, rafts, gusts, caps), 9-3 6 (chains, climbs, crust, sinkers, ropes, flares),
 9-4 5 (spires, ferns, coils, lavafalls, surges), 9-5 5 (glides, bursts, logs-with-glides, pistons-with-glides, flares), 9-6 6 (cats,
 prowl, lavafalls, surges, sinkers, caps), 9-8 5 (ledges, channels, pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls,
-sinkers). Neighbour pairs share no theme. Lessons: rafts, gusts and caps on 9-1; slabs and flares on 9-3; lavafalls and surges on 9-4;
-pistons on 9-5. Creatures split: 9-6 keeps the cats (ocelot, jaguar, tayra), 9-9 keeps harpy and boa only.
+sinkers). Neighbour pairs share no theme. Lessons: each stage teaches its own (see Teaching above). Creatures split: 9-6 keeps the cats (ocelot, jaguar, tayra), 9-9 keeps harpy and boa only.
 
 Look-alike fixes (worst stretch shared with another stage, out of 16 rolls): 9-3 vs 9-1 10 -> 2 (geysers off the 9-3 crust gaps);
 9-9 vs 9-6 13 -> 0 (creature split); 9-5 vs 9-1 11 -> 3 (gusts off 9-5, 9-5's logs and pistons always ride with a glide).
