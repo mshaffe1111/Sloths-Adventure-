@@ -8,7 +8,7 @@
   ]
  },
  "neg": "text, letters, watermark, frame, border, photo, 3d render, blurry, sky, sloth, animal, people, spider, insect, ground, grass, background scenery",
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/b9424c2772e20026887fa1e24e70b01e0ec7cb1f/tools/art/hfground/starts/w5pieces/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/bf3cb544a339ab3da10544f0233a129c2433cc8e/tools/art/hfground/starts/w5pieces/",
  "items": [
   {
    "kind": "plain",
