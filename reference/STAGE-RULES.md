@@ -544,6 +544,9 @@ plan); never ship the rough version as finished.
     or set down from it (Easy); thrown from the floor, the plank leaves without him and the post resets it.
   - *A post is whole tiles of a jointed column, never one picture stretched* (World 6's grey pipes again, in the first chain frames): the
     hex column's shaft tiled up from the ground reads as basalt (`w9SwingArt.ts drawW9Post`).
+  - *Every theme needs its own opener*: when 9-3's shared lava drop became one theme's, the other themes' rolls had nothing for their Ki
+    slots and threw ("no section fits node n2 (ki)"). Give each theme a section that fits the early phases, and keep one plain filler
+    every roll may hold. With three themes (chain runs, wall climbs, crust runs) and the start always a gate, 9-3 went from 0.23 to 0.41.
   - *Hugging Face results reach a cloud session through `hf_fs attach`*: huggingface.co is blocked by the session's proxy, but attach saves
     the exact bytes in the session's tool-results folder; unpack the carrier from there (`tools/art/w5/unpack_carrier.py`).
 - **World 9 on gen2: what the volcano taught** (2026-10-29/30, gen2-w9):

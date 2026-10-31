@@ -16,7 +16,7 @@ import { generateAllLevels } from '../worldsData.ts';
 import type { LevelConfig } from '../types.ts';
 import { w9Finish, w9Kit } from './worlds/w9.ts';
 import { w9GameKit } from './worlds/w9Game.ts';
-import { RAISE, W9_SWING_SECTIONS } from './worlds/w9Swing.ts';
+import { RAISE, W9_SWING_SECTIONS, W9S_THEME } from './worlds/w9Swing.ts';
 import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
 
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
@@ -34,7 +34,8 @@ test('the chain sections: laid in their own space (600-1700 px, 370 more a chain
       for (let r = 1; r <= 30; r++) {
         const L = layLocal(s, budget, rngFor(r));
         const chains = L.pieces.filter((p) => p.shape === 'liana').length;
-        assert.ok(chains >= 1, s.id);
+        // (every section but the gates and the wall climbs swings at least once)
+        if (!s.phases.includes('start') && !['w9s-wall-climb', 'w9s-twin-climb'].includes(s.id)) assert.ok(chains >= 1, s.id);
         assert.ok(L.width >= 600 && L.width <= 1700 + 370 * chains, `${s.id} ${d}: ${L.width} px`);
         assert.ok(Math.abs(L.exit.y - s.exitDy) <= 25, `${s.id} ${d}: exitDy ${s.exitDy}, laid ${L.exit.y}`);
         const swung = (g: { x0: number; x1: number }) => L.pieces.some((p) => p.shape === 'liana' && p.x >= g.x0 - 1 && p.x <= g.x1 + 1);
@@ -88,4 +89,23 @@ test('9-3 on 20 raw rolls, Normal and Easy: levelCheck (its bucket room solved, 
   }
   // (every section is laid somewhere in the 40 rolls)
   for (const s of W9_SWING_SECTIONS) assert.ok(seen.has(s.id), `${s.id} never laid`);
+});
+
+test("9-3's themes: every roll starts at one of the swing builder's gates, and holds no other theme's sections; each theme comes up", () => {
+  const byTheme = new Map(W9_SWING_SECTIONS.flatMap((t) => (t.uses ?? []).filter((u) => Object.values(W9S_THEME).includes(u as never)).map((u) => [t.id, u] as const)));
+  const seen = new Set<string>();
+  for (const difficulty of ['normal', 'easy'] as const) {
+    for (const seed of SEEDS) {
+      const st = build(seed, difficulty);
+      const first = st.gen2.sections[0].template;
+      assert.ok(first.startsWith('w9s-gate-'), `9-3 seed ${seed} (${difficulty}) starts at ${first}`);
+      const theme = W9S_THEME[first.slice('w9s-gate-'.length) as keyof typeof W9S_THEME];
+      seen.add(theme);
+      for (const s of st.gen2.sections) {
+        const t = byTheme.get(s.template);
+        if (t) assert.equal(t, theme, `9-3 seed ${seed} (${difficulty}): ${s.template} in a ${theme} roll`);
+      }
+    }
+  }
+  assert.deepEqual([...seen].sort(), Object.values(W9S_THEME).sort());
 });

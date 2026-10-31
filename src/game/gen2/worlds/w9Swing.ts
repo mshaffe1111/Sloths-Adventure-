@@ -28,6 +28,16 @@ type W = SectionPiece['w'];
 export const W9S_TAG = { small: 'small', hunter: 'hunter', scenery: 'scenery' } as const;
 const LIVE: Phase[] = ['sho', 'ten', 'ketsu'];
 
+/**
+ * 9-3's two themes (STAGE-RULES §6: rolls differ by the kind of action, not its order; the builder's 300-roll curation read 0.30 diversity
+ * with every chain section open on every roll): a roll's gate (its start) opens one, and then only that theme's sections come, with the
+ * first chain and the bucket room on every roll. `chains`: long runs of swings over the lava; `climbs`: the basalt walls, climbed by
+ * their burnt vines, with a chain now and then; `crust`: quick hops over the cooled crust between single chains (w9Game.ts gives each
+ * theme some of w9Ground's 9-3 ground too, and 9-3's start is always one of these gates).
+ */
+export const W9S_THEME = { chains: 'w9:t-chain-runs', climbs: 'w9:t-wall-climbs', crust: 'w9:t-crust-runs' } as const;
+const inTheme = (t: SectionTemplate, theme: string): SectionTemplate => ({ ...t, uses: [...(t.uses ?? []), theme] });
+
 const petals = (id: string, on: string, t: Socket['t'], count = 2, span = 120): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span });
 const foe = (id: string, on: string, t: Socket['t'], kinds: string[], max: number, o: Partial<Socket> = {}): Socket => ({ id, role: 'enemy', on, t, allow: kinds, maxThreat: max, easy: 'soften', ...o });
 const scenery = (id: string, on: string, t: Socket['t'], chance = 0.6): Socket => ({ id, role: 'prop', on, t, allow: [W9S_TAG.scenery], chance });
@@ -73,7 +83,7 @@ const firstChain = swingSection({
 const chainPair = swingSection({
   id: 'w9s-chain-pair',
   name: 'two chains, a perch between',
-  phases: ['sho', 'ten', 'ketsu'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   weight: 2,
   // (a hop over the crust after the second perch: 3.8 s quiet on Easy without it)
@@ -140,7 +150,7 @@ const chainHunter = swingSection({
 const crustChain = swingSection({
   id: 'w9s-crust-chain',
   name: 'crust hops, then a chain',
-  phases: ['sho', 'ten'],
+  phases: ['ki', 'sho', 'ten'],
   difficulty: 5,
   weight: 2,
   pieces: [bank('a', [150, 180]), hop('k1', 'a', [150, 180]), hop('k2', 'k1', [170, 200]), chain('l1', 'k2'), perch('b', 'l1', [240, 270]), down('b2', 'b', 35 - RAISE, [130, 160]), up('c', 'b2', 35, [200, 240])],
@@ -207,6 +217,90 @@ const chainDropClimb = swingSection({
 });
 
 /** World 9's chain sections (the vine stage: w9Game.ts) */
+// ───────────────────────────── the climbs (9-3's walls theme) ─────────────────────────────
+
+/** a basalt wall, its burnt vine climbed, the top run, and down off it over a hop (no chain: the climb is the beat) */
+const wallClimb = swingSection({
+  id: 'w9s-wall-climb',
+  name: 'climb the basalt wall',
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 5,
+  weight: 2,
+  pieces: [bank('a', [220, 260]), ...climbWall('v', 'a', 'wall', 240, [260, 300]), down('c', 'wall', 240, [160, 190]), hop('d', 'c', [200, 240])],
+  first: 'a',
+  last: 'd',
+  sockets: [petals('a', 'a', 0.4, 1), petals('wall', 'wall', 0.5, 2, 100), petals('c', 'c', 0.5, 1), scenery('rock', 'd', [0.5, 0.8], 0.4)],
+});
+
+/** two walls: climb one, drop to a shelf between, climb the next, and down */
+const twinClimb = swingSection({
+  id: 'w9s-twin-climb',
+  name: 'two basalt walls',
+  phases: ['ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  pieces: [
+    bank('a', [200, 230]),
+    ...climbWall('v1', 'a', 'w1', 220, [200, 230]),
+    down('m', 'w1', 120, [200, 230]),
+    ...climbWall('v2', 'm', 'w2', 210, [200, 230]),
+    down('c', 'w2', 310, [160, 190]),
+    hop('d', 'c', [200, 240]),
+  ],
+  first: 'a',
+  last: 'd',
+  sockets: [petals('w1', 'w1', 0.5, 1), petals('m', 'm', 0.5, 1), petals('w2', 'w2', 0.5, 2, 90), flag('d', 0.6)],
+});
+
+/** up a wall, a chain off its top over the lava, the perch, and down the far side */
+const climbChain = swingSection({
+  id: 'w9s-climb-chain',
+  name: 'climb, then a chain off the top',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  pieces: [
+    bank('a', [200, 240]),
+    ...climbWall('v', 'a', 'wall', 200, [220, 250]),
+    chain('l1', 'wall'),
+    perch('b', 'l1', [220, 260]),
+    down('c', 'b', 200 - RAISE, [160, 190]),
+    hop('d', 'c', [200, 240]),
+  ],
+  first: 'a',
+  last: 'd',
+  sockets: [petals('wall', 'wall', 0.5, 1), petals('b', 'b', 0.5, 2, 80), petals('c', 'c', 0.5, 1), flag('d', 0.6)],
+});
+
+// ───────────────────────────── 9-3's gates (its start: the roll's theme opens) ─────────────────────────────
+
+/** a plain basalt run over two knobs, nothing that can hurt, and the roll's theme opens (w9Ground's landing, with a theme) */
+const gate = (theme: keyof typeof W9S_THEME, name: string, extra: Socket[]): SectionTemplate => ({
+  id: `w9s-gate-${theme}`,
+  name: `ember canopy: ${name} (gate)`,
+  archetypes: ['vine_runner'],
+  phases: ['start'],
+  difficulty: 1,
+  teaches: W9S_THEME[theme],
+  weight: 6,
+  pieces: [bank('a', [220, 260]), up('k1', 'a', 30, [130, 160]), down('f1', 'k1', 30, [220, 260]), up('k2', 'f1', 30, [130, 160]), down('c', 'k2', 30, [200, 240])],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('k1', 'k1', 0.5, 1), petals('f1', 'f1', 0.5, 2, 80), petals('k2', 'k2', 0.5, 1), ...extra],
+  mirrorable: false,
+});
+export const W9S_GATES: readonly SectionTemplate[] = [
+  gate('chains', 'the chain runs', [scenery('ohia', 'a', [0.5, 0.6], 0.9)]),
+  gate('climbs', 'the basalt walls', [scenery('rock', 'a', [0.5, 0.6], 0.9)]),
+  gate('crust', 'the crust runs', [scenery('smoke', 'a', [0.5, 0.6], 0.9)]),
+];
+
+/** World 9's chain sections (the vine stage: w9Game.ts): its gates, the first chain (every roll), and each theme's own */
 export const W9_SWING_SECTIONS: readonly SectionTemplate[] = [
-  firstChain, chainPair, chainRun3, chainClimb, chainHunter, crustChain, chainRun, chainDrop, chainDropClimb,
+  ...W9S_GATES,
+  firstChain,
+  ...[chainPair, chainRun3, chainDrop, chainHunter].map((t) => inTheme(t, W9S_THEME.chains)),
+  ...[crustChain, chainRun].map((t) => inTheme(t, W9S_THEME.crust)),
+  ...[chainClimb, chainDropClimb, wallClimb, twinClimb, climbChain].map((t) => inTheme(t, W9S_THEME.climbs)),
 ];
