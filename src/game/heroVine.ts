@@ -40,10 +40,17 @@ const K = VINE_HANG / VINE_BODY_PX;
 
 /** which picture for this moment of the swing */
 export function vinePose(angle: number, omega: number, facing: 1 | -1): keyof typeof VINE_FRAMES {
-  // through the bottom of the swing he hangs straight; out at the ends his legs kick ahead going forward, and trail coming back
-  if (Math.abs(angle) < 0.3) return 'still';
-  return omega * facing > 0 || (Math.abs(omega) < 0.3 && angle * facing > 0) ? 'forward' : 'back';
+  // through the bottom of the swing he hangs straight; out at the ends his legs kick ahead going forward, and trail coming back, passing
+  // through the in-between on the way (it jumped straight from hanging to the full kick at 0.3 rad: pokey-anim, 2026-10-31)
+  const a = Math.abs(angle);
+  if (a < VINE_STILL) return 'still';
+  const fwd = omega * facing > 0 || (Math.abs(omega) < 0.3 && angle * facing > 0);
+  if (a < VINE_FULL) return fwd ? 'stillfwd' : 'stillback';
+  return fwd ? 'forward' : 'back';
 }
+/** out to here (radians) he hangs straight; beyond VINE_FULL he is in the full kick or trail; between, the in-between */
+export const VINE_STILL = 0.15;
+export const VINE_FULL = 0.4;
 /** how far the body swings in under the hands, from how the picture drew it (1 = straight under them, 0 = as drawn) */
 const SETTLE = 0.5;
 /**
