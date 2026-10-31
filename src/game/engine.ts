@@ -2397,8 +2397,8 @@ export class GameEngine {
       // calm water (swim.ts): in deep enough, he swims; it never costs a life
       this.swimCheck(dt);
 
-      // (Easy's soft falls: the last still ground he stood on)
-      if (this.softOn && p.grounded && !p.climbing) {
+      // (Easy's soft falls: the last still ground he stood on; World 8 Normal's heart falls set him back there too)
+      if ((this.softOn || this.currentStage.heartFalls?.length) && p.grounded && !p.climbing) {
         const g = this.platforms.find((q) => q.id === this.standingOnId);
         if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y };
       }
@@ -2442,7 +2442,7 @@ export class GameEngine {
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
         if (this.lanternRun) this.lanternFall();
-        else if (!this.softFall()) {
+        else if (!this.heartFall() && !this.softFall()) {
           sound.playPlayerHurt();
           this.loseLife('pit');
         }
@@ -6977,6 +6977,31 @@ export class GameEngine {
     const at = this.lanternRun!.fallBack();
     recorder.event('softFall', Math.round(this.player.x));
     this.lanternSetBack(at.x, at.y);
+  }
+
+  /**
+   * World 8 Normal's swings and glides (gen2 heartFalls; Matt, 2026-10-31: "hurt, then cost a life"): a fall at one costs a heart, not a
+   * life, and sets him back on the ledge he left (the last still ground he stood on), hurt and blinking; his last heart is a life lost as
+   * any fall. False when he did not fall at one
+   */
+  private heartFall(): boolean {
+    const zs = this.currentStage.heartFalls;
+    const p = this.player;
+    const cx = p.x + p.width / 2;
+    if (!zs?.length || !this.softAt || !zs.some((h) => cx > h.x0 - 160 && cx < h.x1 + 160)) return false;
+    const hp = p.hp - 1;
+    this.statHeartsLost += 1;
+    recorder.event('hurt', hp);
+    sound.playPlayerHurt();
+    this.input.triggerHaptic(80);
+    if (hp <= 0) {
+      this.loseLife('pit');
+      return true;
+    }
+    this.lanternSetBack(this.softAt.x, this.softAt.y);
+    p.hp = hp;
+    p.invincibleTimer = Math.max(p.invincibleTimer, 1.6);
+    return true;
   }
 
   /** 8-4: set him down at (x, feet) as Easy's soft falls do, nothing lost */

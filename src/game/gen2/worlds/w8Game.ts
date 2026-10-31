@@ -62,9 +62,9 @@ function forStage(stage: number, s: SectionTemplate): boolean {
 /**
  * World 8's falls (the lead, 2026-10-29: "on Normal, a fall from a LIT bough costs a life"): the world's pit is 'void' (the canopy floor far
  * below; Easy's are all soft, as the pipeline has it), and these gaps keep a soft pit (`soft`): every gap inside a dark stretch (between a
- * section's darkFrom and darkTo pieces: a deadly fall in the dark would be a blind jump), and every second-jump and glide gap (STAGE-RULES
- * §6: the first-timer drowns at second-jump gaps over a deadly fall; a glide's pit climbs back anyway), a start section's gaps, and the
- * first swing's (w8s-first-swing)
+ * section's darkFrom and darkTo pieces: a deadly fall in the dark would be a blind jump), every second-jump gap (STAGE-RULES
+ * §6: the first-timer drowns at second-jump gaps over a deadly fall) and a start section's gaps. A glide's gap and a liana's are heart
+ * falls on Normal instead (w8.ts heartFalls: a heart, back on the ledge he left, Matt 2026-10-31)
  */
 export function w8Falls(t: SectionTemplate): SectionTemplate {
   const keys = t.pieces.map((p) => p.key);
@@ -76,9 +76,9 @@ export function w8Falls(t: SectionTemplate): SectionTemplate {
     const pl = p.place;
     if (pl.kind !== 'jump' && pl.kind !== 'double' && pl.kind !== 'pit' && pl.kind !== 'land') return p;
     // (and a start's gaps: nothing can hurt in a stage's opening seconds, STAGE-RULES §2)
-    // (and the first swing's: the vine stages' first liana is where a first-timer learns the let-go, and on Normal each miss there cost a
-    // life; the first-timer bot lost every life at 8-3's first swings, 10 game-overs in a run, 2026-10-31)
-    const soft = dark(i) || t.phases.includes('start') || t.id === 'w8s-first-swing' || pl.kind === 'double' || (pl.kind === 'pit' && pl.jump !== 'jump');
+    // (a glide's and a liana's gaps are World 8's heart falls on Normal, w8.ts heartFalls: a miss costs a heart and sets him back, Matt
+    // 2026-10-31; no soft pit for them here)
+    const soft = dark(i) || t.phases.includes('start') || pl.kind === 'double' || (pl.kind === 'pit' && pl.jump === 'double');
     if (!soft || pl.water) return p;
     changed = true;
     return { ...p, place: { ...pl, soft: true } };
