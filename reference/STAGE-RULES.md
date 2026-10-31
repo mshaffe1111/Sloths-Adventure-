@@ -57,6 +57,23 @@ Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
   middle, or below the previous world's), is a bug. Gemini's floor still holds for every stage: the Normal bot clears each jump at
   least 70% of the time in Worlds 1-5 and 50% in Worlds 6-10; the Easy kid at least 85% everywhere.
 
+## 1c. Pieces first, curate once (Matt, 2026-10-31: "Lets make the pieces ahead of time. Be prepared since more is better anyways. Lets not go into this bare minimum and have to make more and do redundant rework")
+
+World 8 took ~13 hours of re-curating because pieces kept being added after curation started. From World 9 on, a generated world goes in
+this order, and curation does not start until step 3 is done:
+1. **Bring the branch up to date first** (merge the base branch in before any new work; never build on a branch hundreds of commits behind).
+2. **Grab-bag plan** (`qa-notes/wN/GRAB-BAG.md`): every theme and section type the world will use, what each one plays like (its beat
+   letters), its art (existing, or Hugging Face with a cost), its teaching and its Dot line. Target: at least 5 themes per stage and at
+   least 14 distinct section types per world, including at least 3 timing beats (moving logs, swings, steam, sleepers...), so variety
+   lands well past 0.45 without rerolls. Show it to the lead before building.
+3. **Build every piece and its art up front**, each one checked alone before curation: fair upright and sideways, Jump help Off/On/On+forward,
+   taught on first sight, first-timer and kid bots through it (too-long glides and too-high boughs are caught here, not after curation),
+   the safe start (nothing hurts, no ground ends, in the first 1,300 px), platform styles mixed (no style over 60%), Easy clearly easier
+   than Normal, stills that pass the polish bar.
+4. **Curate once**, in neighbour order (each stage against its already-final neighbours), with the full CLAUDE.md test globs green
+   after every stage's seeds, not just the world's own tests.
+5. Puzzle room, special stage and boss pieces are part of step 2-3, not add-ons after curation.
+
 ## 2. The numbers a stage must meet (from the Gemini research, tuned for us)
 
 | What | Rule | How it is checked |
