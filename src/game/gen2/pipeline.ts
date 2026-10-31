@@ -736,13 +736,24 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
+    // (the banks either side of the pit reach down past its floor: a glide's back pit climbs in steps and on low ground its floor lay under
+    // the banks' foot, so a jump off the floor passed under a bank's edge and fell through, 9-5's first-timer bot; World 9's fix,
+    // w9-pieces 621554b8, the lead 2026-10-31: every world, a bug in shared code is fixed for all; gen2Pits.test.ts scans every shipped stage)
+    const deepen = (floor: number) => {
+      // (World 9 fills every bank down past the floor (its lava is drawn under it); elsewhere only a bank whose foot leaves a hole he
+      // fits through (48 px, his height) is filled, so the shipped stages build as curated (five 8-6 Normal rolls change: their dark
+      // glide floors ran 51-85 px under a bank's foot); a thin perch or branch beside the pit is never stretched into a column)
+      for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor && q.height >= 40 && (budget.world === 9 || floor - (q.y + q.height) > 48)) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
+    };
     if (back) {
       const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
+      deepen(out.floor);
       mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
       for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
       return;
     }
     const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, hop);
+    deepen(out.floor);
     mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
   };
@@ -1678,7 +1689,14 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const platforms = laid.platforms;
   if (rooms.length) addKitPlatforms(platforms, { rooms });
   sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
-  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(laid.bottom + 120)) };
+  // (a floor at or under the death line (the water's 40 px under bobFoot, or the fall line 240 px under it) pulls the line down under it,
+  // only for a floor it would kill on, so the shipped stages' water and views stay as curated: World 9's fix, gen2Pits.test.ts)
+  const bobLow = laid.bottom;
+  const floors = laid.platforms.filter((p) => !p.lift && p.type === 'solid').map((p) => p.y);
+  const watery = budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water);
+  const kills = (y: number) => (watery ? y >= bobLow + 36 : y >= Math.max(req.config.levelHeight, R(bobLow + 120)) + 116);
+  const bobFoot = Math.max(bobLow, ...floors.filter((y) => budget.world === 9 || kills(y)).map((y) => y + 30));
+  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
   const meta: Gen2Meta = {
     seed,
     plan: laid.plan,
@@ -1710,7 +1728,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     exitTotemY: laid.exit.y,
     checkpoints: filled.checkpoints,
     // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
-    ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
+    ...(watery ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(laid.heartFalls.length ? { heartFalls: laid.heartFalls } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
