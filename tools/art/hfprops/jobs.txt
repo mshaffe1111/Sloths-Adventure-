@@ -23,3 +23,7 @@ b5    6ae65db9c78863f9c62f4d9c  21:29Z  W5 30 takes (green key)
      salamander in its cave. Kept 96 pieces across W1-7.
 r2a   6ae666e50e0338d1bb7d4654  22:08Z  round 2, W1-4, 8 more pieces each x seeds 5,17 (64 takes), spec at f6c80a4d
 r2b   6ae666e7c78863f9c62f5143  22:08Z  round 2, W5-7 (48 takes)
+     RESULTS r2a/r2b (done 22:24Z / 22:29Z, ~16 and ~20 min): ~$1.65. Thrown: takes with a sloth (twigs, pinecones, a turtle with a
+     sloth face, a lantern string), oar and river pebble (odd), the cave snail, goat kid, lichen stones (painted inside a scene that
+     would not key), salamander. Kept 38 more.
+SPEND: probes w6p+t6+t6a ~$0.45, b1-b7 ~$3.2, r2a+r2b ~$1.65 = ~$5.3 of the $14 cap.
