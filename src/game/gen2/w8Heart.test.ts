@@ -10,6 +10,7 @@ import '../headlessDom.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
 import { RealPlay } from '../realPlay.ts';
+import { setDifficulty } from '../difficulty.ts';
 
 const build = (id: string, layout: number, diff: 'normal' | 'easy') => {
   const cfg = generateAllLevels().find((l) => l.id === id)!;
@@ -21,7 +22,7 @@ const build = (id: string, layout: number, diff: 'normal' | 'easy') => {
   }
 };
 
-test("World 8 Normal: every swing's and glide's gap outside the dark is a heart fall with no pit under it; Easy has none", () => {
+test("World 8: every swing's and glide's gap outside the dark is a heart fall with no pit under it; Easy's are free", () => {
   for (const id of ['8-3', '8-6']) {
     for (const layout of [0, 1, 2]) {
       const st = build(id, layout, 'normal');
@@ -38,7 +39,9 @@ test("World 8 Normal: every swing's and glide's gap outside the dark is a heart 
         const floor = st.platforms.filter((p) => p.x > h.x0 + 4 && p.x + p.width < h.x1 - 4 && p.y > 0);
         assert.deepEqual(floor.map((p) => [Math.round(p.x), Math.round(p.y)]), [], `${id} layout ${layout}: a pit floor under the heart fall ${h.x0}-${h.x1}`);
       }
-      assert.equal(build(id, layout, 'easy').heartFalls, undefined, `${id} layout ${layout}: Easy has heart falls`);
+      const easy = build(id, layout, 'easy').heartFalls ?? [];
+      assert.ok(easy.length >= 3 && easy.every((h) => h.free), `${id} layout ${layout}: Easy's swing and glide falls set him back for free`);
+      assert.ok(hearts.every((h) => !h.free), `${id} layout ${layout}: Normal's cost a heart`);
     }
   }
 });
@@ -66,4 +69,25 @@ test('World 8 Normal in the real engine: a fall at a glide costs a heart and set
   r.p.hp = 1;
   fall();
   assert.equal(r.died, true, 'his last heart: a life lost');
+});
+
+test('World 8 Easy in the real engine: a fall at a glide sets him back on his ledge for free', () => {
+  setDifficulty('easy');
+  try {
+    const r = new RealPlay('8-6', 0);
+    const h = r.stage.heartFalls![0];
+    assert.equal(h.free, true);
+    for (let i = 0; i < 30; i++) r.frame();
+    const start = { x: r.p.x, y: r.p.y, hp: r.p.hp };
+    r.p.x = (h.x0 + h.x1) / 2;
+    r.p.y = r.stage.config.levelHeight + 200;
+    r.p.vy = 400;
+    r.p.grounded = false;
+    r.frame();
+    assert.equal(r.died, false);
+    assert.equal(r.p.hp, start.hp, 'no heart taken');
+    assert.ok(Math.abs(r.p.x - start.x) < 40 && Math.abs(r.p.y - start.y) < 120, 'set back on the ledge he left');
+  } finally {
+    setDifficulty('normal');
+  }
 });

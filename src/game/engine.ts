@@ -6980,15 +6980,20 @@ export class GameEngine {
   }
 
   /**
-   * World 8 Normal's swings and glides (gen2 heartFalls; Matt, 2026-10-31: "hurt, then cost a life"): a fall at one costs a heart, not a
-   * life, and sets him back on the ledge he left (the last still ground he stood on), hurt and blinking; his last heart is a life lost as
-   * any fall. False when he did not fall at one
+   * World 8's swings and glides (gen2 heartFalls; Matt, 2026-10-31: "hurt, then cost a life"): a fall at one sets him back on the ledge he
+   * left (the last still ground he stood on). On Normal it costs a heart, not a life, hurt and blinking, and his last heart is a life lost
+   * as any fall; on Easy (`free`) it costs nothing. False when he did not fall at one
    */
   private heartFall(): boolean {
     const zs = this.currentStage.heartFalls;
     const p = this.player;
     const cx = p.x + p.width / 2;
-    if (!zs?.length || !this.softAt || !zs.some((h) => cx > h.x0 - 160 && cx < h.x1 + 160)) return false;
+    const z = this.softAt ? zs?.find((h) => cx > h.x0 - 160 && cx < h.x1 + 160) : undefined;
+    if (!z || !this.softAt) return false;
+    if (z.free) {
+      this.lanternSetBack(this.softAt.x, this.softAt.y);
+      return true;
+    }
     const hp = p.hp - 1;
     this.statHeartsLost += 1;
     recorder.event('hurt', hp);

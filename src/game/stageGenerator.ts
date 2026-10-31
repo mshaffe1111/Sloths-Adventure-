@@ -86,8 +86,8 @@ export interface GeneratedStage {
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
   zones?: import('./zones.ts').Zone[];
-  /** World 8 Normal's swing and glide gaps (gen2 heartFalls): a fall there costs a heart and sets him back on the ledge he left */
-  heartFalls?: Array<{ x0: number; x1: number }>;
+  /** World 8's swing and glide gaps (gen2 heartFalls): a fall there sets him back on the ledge he left, a heart on Normal (`free` on Easy) */
+  heartFalls?: Array<{ x0: number; x1: number; free?: boolean }>;
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
   /**

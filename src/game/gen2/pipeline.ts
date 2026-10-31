@@ -623,8 +623,9 @@ export interface Laid {
   gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean; soft?: boolean }>;
   /** the zones the sections lay (a tide, darkness) */
   zones: Zone[];
-  /** the gaps a fall into costs a heart, not a life (WorldManifest.heartFalls: World 8 Normal's swings and glides), no pit under them */
-  heartFalls: Array<{ x0: number; x1: number }>;
+  /** the gaps a fall into costs a heart, not a life, and sets him back (WorldManifest.heartFalls: World 8's swings and glides), no pit
+   *  under them; `free` (Easy): the set-back costs nothing */
+  heartFalls: Array<{ x0: number; x1: number; free?: boolean }>;
   spawn: { x: number; y: number; piece: Platform };
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
@@ -917,9 +918,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         gaps.push(g0);
         if (g.pit && !g.water) {
           const before = platforms.length;
-          // (a world with `heartFalls` (World 8, Matt 2026-10-31): on Normal a missed swing or glide (a gap with `back`: under a liana or a
-          // glide) costs a heart and sets him back on the ledge he left, no pit under it; Easy's stay soft pits, the dark's stay soft)
-          if (g.back && M.heartFalls && budget.pit !== 'soft' && !g.soft) heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1) });
+          // (a world with `heartFalls` (World 8, Matt 2026-10-31): a missed swing or glide (a gap with `back`: under a liana or a glide)
+          // sets him back on the ledge he left, no pit under it; on Normal it costs a heart, on Easy nothing (the lead, 2026-10-31: the
+          // soft pit's climb back out among the hunters made Easy busier than Normal); the dark's gaps keep their soft pits)
+          if (g.back && M.heartFalls && !g.soft) heartFalls.push({ x0: R(g0.x0), x1: R(g0.x1), ...(budget.pit === 'soft' ? { free: true } : {}) });
           else if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true, g.soft);
           else pitUnder(g0.x0, g0.x1, g0.y, g0.y, false, g.soft);
           placed.seam.push(...platforms.slice(before));
