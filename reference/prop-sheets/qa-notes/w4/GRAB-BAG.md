@@ -7,6 +7,28 @@ Beat letters are as in `tools/inspect/beats.ts`. Today World 4's Z is all wind, 
 platform, no crumble and no fight on 4-2, 4-3, 4-4 or 4-7, and puzzle rooms only on 4-1, 4-6 and 4-8. **25 painted w4-props pieces
 are packed and never drawn**: this bag uses all of them.
 
+## 0. Unused art placed first
+
+Lead review 2026-10-31 ~1:45 PM ET: **approved**. Matt (1:40 PM ET): "We need to use all the art we create. Its a waste otherwise. I want a fun unique game." So this world's unused art (from `tools/art/artuse.mjs`, `reference/prop-sheets/qa-notes/art-use/UNUSED.md`) is placed FIRST, below, before any new art.
+
+All 24 undrawn `w4-props` pieces, plus the kit's two, have a section (the art column below names each one):
+
+| Unused piece(s) | Where |
+|---|---|
+| `ledgeA`, `ledgeB`, `grassCliff`, `fallLedge` | #1 cliff ledges |
+| `floatLedge`, `ledgeTrickle` | #5/#23 glide landings |
+| `wetSteps`, `wetSteps2` | #8 wet steps |
+| `boulderBig`, `boulderSmall` | #10 plug the fall; #2 the rock that lands |
+| `logJam`, `brokenLog` | #11 pool log; #13 swinging log bridge (the anchor end) |
+| `capNest` | #12 the thief's nest (where the fruit goes) |
+| `coverHollow`, `coverRustle` | #16 cover row (a hollow, and the rustle as the watcher passes) |
+| `fruitBare`, `fruitCliff` | #18 lookouts (a picked tree; a tree on a cliff) |
+| `nestPillar`, `nestTorn` | #20 eaglet nests |
+| `caveFall`, `cave2` | #24 cave drop |
+| `fallCliff`, `fallSmall` | #9 fall surge (the small fall is Easy's surge) |
+| `ribbonFlag`, `ribbonLog` | the keepsake spots in 4-3 and 4-9 |
+| kit `buttress`, `bankEnd` | 4-1 and 4-6 ascents: the wall foot and ledge ends |
+
 ## 1. Section types (26; 9 timing beats)
 
 | # | Section | Beats | Plays like | Art (existing / NEW) | First taught | Dot line (proposed, Matt approves) |
@@ -79,3 +101,12 @@ The keepsake ribbon (`ribbonFlag`, `ribbonLog`, undrawn) dresses 4-3's and 4-9's
   (World 8's grab bag plans the same `SectionZone 'wind'`, so it's shared work for the lead to order).
 - The capuchin clips are the riskiest art in the batch: if the edits drift off model, the static poses with the code bob stay, and I'll
   say so.
+
+## 5. Dot lines for Matt (one review, via the lead)
+
+| Section | Line (under 10 words) | When |
+|---|---|---|
+| #7 Updraft lane | "Glide into the wind. It lifts you." | first updraft, 4-2 |
+| #13 Swinging log bridge | "Hop on when the log swings close." | first bridge, 4-3/4-4 |
+| #22 Cracked ledge | (1-5's crumble line, already approved) | 4-6 |
+

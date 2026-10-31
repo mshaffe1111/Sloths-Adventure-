@@ -136,6 +136,8 @@ def main():
     picks = json.loads((HERE / f'picks-w{world}.json').read_text())
     pieces = []
     for canvas, pick in picks.items():
+        if canvas == 'extra':
+            continue
         info = cells[canvas]
         for pname, box in info['cells'].items():
             take = pick if isinstance(pick, str) else pick.get(pname, pick.get('*'))
@@ -149,6 +151,12 @@ def main():
                 im = edge_clean(im)
             pieces.append((pname, im))
             print(canvas, pname, im.size, take)
+    # pieces cut straight from Matt's own sheets (never packed before; no HF): {"extra": [[name, sheet, [x, y, w, h]], ...]}
+    for pname, sheet, box in picks.get('extra', []) if isinstance(picks.get('extra'), list) else []:
+        im, _ = cut_piece(Image.open(ROOT / sheet).convert('RGB'), box, [255, 0, 255])
+        im = im.resize((im.width * 2, im.height * 2), Image.LANCZOS)  # Matt's 1024 sheets are half the props atlas's scale
+        pieces.append((pname, edge_clean(im)))
+        print('matt', pname, im.size)
     OUTD.mkdir(parents=True, exist_ok=True)
     sheet, pos = pack(pieces)
     dst = OUTD / f'w{world}-new.webp'

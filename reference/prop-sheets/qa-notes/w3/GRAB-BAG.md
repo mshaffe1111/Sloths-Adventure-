@@ -10,6 +10,20 @@ Beat letters are as in `tools/inspect/beats.ts` (W, h, J, V, C, Z, P). World 3's
 thorn vines. The bag adds Z beats with their own rhythms and V/P beats that the grotto lacks: drips, stalactites, bats, root lifts and a
 boulder push.
 
+## 0. Unused art placed first
+
+Lead review 2026-10-31 ~1:45 PM ET: **approved**. Matt (1:40 PM ET): "We need to use all the art we create. Its a waste otherwise. I want a fun unique game." So this world's unused art (from `tools/art/artuse.mjs`, `reference/prop-sheets/qa-notes/art-use/UNUSED.md`) is placed FIRST, below, before any new art.
+
+| Unused piece | File | Where it goes in this bag |
+|---|---|---|
+| `hollowLog` | `w3PropsData.ts` | #7 hollow-log hide |
+| `rootLadder` | `w3PropsData.ts` | #11 root climb (the ladder look) and 3-4's ascent |
+| `rootBridge` | `w3PropsData.ts` | #12 root bridge |
+| `pawStrip` | `w3PropsData.ts` | #24 the ring's floor, and the tracks before 3-3's first prowler (the tell) |
+| `catEyes` (drawn only in the ring's leap-in) | `w3PropsData.ts` | #6 the eyes watcher, replacing its code gradients (`engine.ts:6349`) |
+| kit `buttress`, `bankEnd` | `kitAtlasData.ts` (W3) | 3-4's ascent: root feet and the ledge ends |
+| W8's fruit bat (`fruitbat-w8`) | `w6to10/creatures/` | the cave bats (#17) are drawn ON this model (edits), so the two bats are one design |
+
 ## 1. Section types (24; 7 timing beats)
 
 | # | Section | Beats | Plays like | Art (existing / NEW) | First taught | Dot line (proposed, Matt approves) |
@@ -68,9 +82,9 @@ boulder push.
 |---|---|---|---|---|
 | 1 | Grotto stepping stones, with damp lit rims and a little glow moss | 3 | ~300 x 170 | #1, #2 |
 | 2 | Limestone shelves (standable, side view) | 2 (short, long) | 420 / 640 x 140 | #9 |
-| 3 | Cracked limestone shelf | whole, cracking, gone (rubble) | 520 x 150 | #22 |
+| 3 | Cracked limestone shelf (glowing cracks) | whole, cracking (the gone state is the stalactite shards, #4) | 520 x 150 | #22 |
 | 4 | Stalactite drop | hanging-shaking, falling, shattered | 160 x 360 | #14 |
-| 5 | Cave bats (small, grey-brown, big ears) | asleep (hanging), stir, flutter ×2 | 192 x 192 | #17 |
+| 5 | Cave bats, edits of World 8's painted fruit bat (round 1's bats had sloth faces: thrown) | asleep (hanging), stir, flutter ×2 | 192 x 192 | #17 |
 | 6 | Root lift: a root-woven basket and its counterweight stone | 2 | 260 x 220 | #13 |
 | 7 | Spore puff (lavender, painted glow) | swell, burst, fade | 256 x 256 | #3, #4 (now code discs; the code glow stays on top) |
 
@@ -82,3 +96,15 @@ boulder push.
 - New gen2 pieces: the timed root lift (reuses the lift), falling stalactites (like World 4's rocks: `beats.ts:231`), the bat roost
   (W8's watcher with a setback), and the crumbling shelf (World 7's crumble tiles). The W3 builder owns them; the art comes first.
 - perf: 3-3 is the `drawImageScreens` worst case (7.22 of 7.5). New W3 decor must replace code draws, not add layers.
+
+## 5. Dot lines for Matt (one review, via the lead)
+
+| Section | Line (under 10 words) | When |
+|---|---|---|
+| #4 Fast and slow spores | "Two beds. Wait till both are quiet." | first double bed |
+| #7 Hollow-log hide | "Logs hide you too." | first log under the eyes, 3-2 |
+| #13 Root lift | "Step on when the roots come down." | first lift, 3-4 |
+| #14 Falling stalactites | "Dripping stone falls. Wait for it." | first stalactite, 3-4 |
+| #17 Bat roost | "Bats are light sleepers. Go when still." | first roost, 3-6 |
+| #21 Boulder push | "Push the boulder in. Make a step." | first push, 3-6 |
+

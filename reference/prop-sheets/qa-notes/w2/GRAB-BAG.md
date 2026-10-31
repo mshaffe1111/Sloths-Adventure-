@@ -10,6 +10,18 @@ Beat letters are as in `tools/inspect/beats.ts` (W 0.2, h 0.5, J 1, V 2, C 2.2, 
 reads J (`route.ts:244`), so the pond, stone and channel hops all read alike. Their only Z is "river". The look-alike risk today is J+Z
 everywhere, so the new pieces add V, Z and P beats that are NOT a river crossing (current, rising water, bobbing, bask).
 
+## 0. Unused art placed first
+
+Lead review 2026-10-31 ~1:45 PM ET: **approved**. Matt (1:40 PM ET): "We need to use all the art we create. Its a waste otherwise. I want a fun unique game." So this world's unused art (from `tools/art/artuse.mjs`, `reference/prop-sheets/qa-notes/art-use/UNUSED.md`) is placed FIRST, below, before any new art.
+
+| Unused piece | File | Where it goes in this bag |
+|---|---|---|
+| `cageA` (round reed cage, packed, never drawn) | `w2PropsData.ts` | #19 a second cage look for 2-3's and 2-8's cage rooms (rollLook). The HF round cage (`cage-whole`) is kept as a candidate if Matt still wants the redraw |
+| `river-king-peek` (proud, flustered, surprised; loaded, never drawn) | `w6to10/gemini/river-king-peek.webp` | the end of 2-2 (ART-TO-GET.md:13), and the River King watching from his dais in 2-9's court themes |
+| `caiman-atlas`, `frog-atlas` (drawn code exists, never placed in W2) | `src/assets/enemies/` | #12 and #13, as **gentle** pieces (below) |
+| kit `buttress`, `bankEnd` | `kitAtlasData.ts` (W2) | the post feet on 2-6's ascent and the bank ends at the river's edge |
+| puzzle-kit `net`/`netFull` (drawn only in W4; lost its colour on magenta) | `puzzleAtlasData.ts` | #21, repainted on green (this batch) |
+
 ## 1. Section types (22; 8 timing beats)
 
 | # | Section | Beats | Plays like | Art (existing / NEW) | First taught | Dot line (proposed, Matt approves) |
@@ -17,7 +29,7 @@ everywhere, so the new pieces add V, Z and P beats that are NOT a river crossing
 | 1 | Drifting log crossing (timing) | J Z | Hop onto logs drifting across the river, with or against the current | existing `logShort`/`logLong`, `water` | 2-1 (`w2S:341`) | (existing) |
 | 2 | Stepping stones | J Z | Painted river stones over deep water, heights mixed | NEW river-stone set ×3 (now generic moss_stone) | 2-1 | (existing) |
 | 3 | Lily pond | J Z | Still pond, a lily pad chain | existing `lily`, `lilyCarpet` | 2-2 (`w2S:579`) | (existing) |
-| 4 | **Sinking lily pads** (timing) | J Z | Big pads sink 1.2 s after Pokey lands and come back up; keep moving. A sunk pad drops him in shallow water (a splash, a step back), never deep. | existing `lily`; NEW pad sinking frames (half-under, under-ripple) | 2-2, after the plain pads | "Big pads sink. Keep hopping." |
+| 4 | **Sinking lily pads** (timing) | J Z | Big pads sink 1.2 s after Pokey lands and come back up; keep moving. A sunk pad drops him in shallow water (a splash, a step back), never deep. | existing `lily`, sunk in code under the river's own surface (the HF sinking frames came back with violet ripples: thrown) | 2-2, after the plain pads | "Big pads sink. Keep hopping." |
 | 5 | Reed channels | J Z | Reed islands, each with its own little stream | NEW reed-island tops ×2 (now moss_stone) | 2-1 | - |
 | 6 | Sandbar | J Z h | Two rivers either side of a sandbar, with a rest in the middle | NEW sandbar bank piece | 2-1 | - |
 | 7 | Mooring post climb | V | Climb a roped post, drop off its shelf onto the next bank | existing `pole` (now decor only); NEW climbable mooring post with rope wraps and a shelf | 2-1 (upstream, `w2S:381`) | (existing) |
@@ -25,8 +37,8 @@ everywhere, so the new pieces add V, Z and P beats that are NOT a river crossing
 | 9 | **Pushing current** (timing) | Z J | A fast stretch pushes Pokey downstream while he wades the shallows; stones break it up. Pulses on a rhythm (foam surge first, 1 s warning). | NEW current foam streak (3 frames, loops) and shallows strip | 2-4 (gentle; the strongest pulse only from 2-8) | "The water pushes. Wait for the calm." |
 | 10 | Snake bank | C | Snakes on the reed bank | existing snake atlases | (1-3) | (existing) |
 | 11 | Snapper bank | C | Snappers in rows of 2-4; stomp, or kick a shell to bowl a row | existing turtle atlas and anim | 2-5 (`w2S:873`) | (existing) |
-| 12 | **Basking caiman** (timing) | C Z | A caiman sunbathes across the path. Its eyes open on a rhythm; cross its back while they're shut, or wait. It lunges only when awake. | existing `caiman-atlas` (bask, stalk, lunge; never placed in W2) | 2-5 (after the snappers) | "Cross while his eyes are shut." |
-| 13 | **Frog hops** (timing) | C J | Frogs hop between lily pads on a rhythm; land between their hops | existing `frog-atlas` (idle, hop, tongue; never placed in W2) | 2-3 | "Frogs bump. Land between their hops." |
+| 12 | **Basking caiman** (timing; gentle) | Z | A caiman asleep in the sun across the path: hop over it, or wait and it slides into the water (and back out later). **It never chases or bites** (lead, 2026-10-31: real fights stay in later worlds). Taught on first sight. | existing `caiman-atlas` (bask, walk/slide; never placed in W2) | 2-5 (after the snappers) | "He's asleep. Hop over, or wait." |
+| 13 | **Frog hops** (timing; gentle) | Z J | Frogs hop between lily pads on a beat: a timing obstacle (a bump nudges Pokey back, no life lost), or a frog to bounce off. Taught on first sight. | existing `frog-atlas` (idle, hop; never placed in W2) | 2-3 | "Frogs hop on a beat. Time it." |
 | 14 | Porch run | J h | Village porches and stairs along the bank | existing `porch`, `steps`, `door`, `window`, `jetty` | 2-6 / 2-7 | - |
 | 15 | **Basket lift** (timing) | V | The village basket lift runs on a rhythm | existing `lift`, puzzle-kit `basket2` | 2-7 (`dotTips:38`) | (existing) |
 | 16 | **Rising water** (timing) | Z J V | The river rises in 3 steps; climb the posts and porches ahead of it | existing flood, `w2-props` posts; NEW painted waterline foam strip | 2-8 (`w2S:1017`) | (existing) |
@@ -64,14 +76,12 @@ Climbs B for 2-6, *Up the Bank Houses*, the generated ascent: 7, 14, 15 and 17 p
 | 2 | Reed islands: a tuft of reeds on a muddy island top, standable | 2 | ~420 x 200 | #5 |
 | 3 | Sandbar: a pale sand bank with pebbles, both ends tapered | 1 | 640 x 160 | #6 |
 | 4 | Mooring post: a tall roped post with a plank shelf, climbable | 1 | 220 x 640 | #7, 2-6 |
-| 5 | Lily pad sinking: half-under, ripple only | 2 | 300 x 120 | #4 |
 | 6 | Current foam streak, loops left to right | 3 | 512 x 96 | #9 |
 | 7 | Rising waterline foam strip, tiling | 1 tile | 512 x 64 | #16 |
 | 8 | Barrel and crate floating, with a waterline | 2 + 2 | 220 x 200 | #17 |
 | 9 | Reed gate: lashed reed wall in a frame | shut, open | 320 x 460 | #22 (now code) |
 | 10 | Fishing net, repainted on GREEN (it's pinkish; magenta ate it) | empty, full | as `net` | #21 |
 | 11 | cageA redraw: the whole round reed cage | whole, cracked | as `cageB` | #19 (ART-TO-GET.md:12) |
-| 12 | W2 pit water strip (teal-brown) | 1 | 1024 x 516 | the stage pits |
 
 From what exists without HF: `river-king-peek.webp` (packed, never drawn) is drawn at 2-2's end (ART-TO-GET.md:13), and
 `caiman-atlas` and `frog-atlas` get placed in W2.
@@ -83,3 +93,14 @@ From what exists without HF: `river-king-peek.webp` (packed, never drawn) is dra
 - Current, sinking pads, barrels and the caiman's bask are new gen2 engine pieces (the plan's "river pieces in the pipeline"). They
   belong to the W2 builder; the art comes first.
 - Every W2 Z is still water-shaped. That's the world, and the caiman, the frogs and the net add C and P beats so the rolls part.
+
+## 5. Dot lines for Matt (one review, via the lead)
+
+| Section | Line (under 10 words) | When |
+|---|---|---|
+| #9 Pushing current | "The water pushes. Wait for the calm." | first current, 2-4 |
+| #12 Basking caiman | "He's asleep. Hop over, or wait." | first caiman, 2-5 |
+| #13 Frog hops | "Frogs hop on a beat. Time it." | first frogs, 2-3 |
+| #17 Bobbing barrels | "Hop when the barrel bobs up." | first barrel, 2-7 |
+| #21 Net room | "Pull the net up. Let the logs through." | 2-7's net |
+

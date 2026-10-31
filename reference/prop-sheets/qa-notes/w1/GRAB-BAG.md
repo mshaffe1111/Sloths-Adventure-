@@ -10,6 +10,21 @@ is made up front, and curation runs once. Matt's World 1-4 calls:
 World 1 is the first impression and the gentlest world (band D_base 10). Every new beat here is soft: nothing new hurts on first sight,
 the timing windows are the widest in the game, and Easy widens them again.
 
+## 0. Unused art placed first
+
+Lead review 2026-10-31 ~1:45 PM ET: **approved**. Matt (1:40 PM ET): "We need to use all the art we create. Its a waste otherwise. I want a fun unique game." So this world's unused art (from `tools/art/artuse.mjs`, `reference/prop-sheets/qa-notes/art-use/UNUSED.md`) is placed FIRST, below, before any new art.
+
+| Unused piece | File | Where it goes in this bag |
+|---|---|---|
+| `stump` (Matt's painted stump, drawn only in the journal) | `protoAtlasData.ts` | #1 stepping stumps, at three widths. **Replaces the new stump-top art** (the HF stumps were softer than Matt's: thrown) |
+| `branch` (drawn today) | `protoAtlasData.ts` | #6 the bobbing bough is Matt's branch tilted and bobbed in code (a small code touch). **Replaces the new bough art** (thrown, same reason) |
+| `trunkPlain` | `proto2AtlasData.ts` | #13 the knot-step trunk |
+| `buttress` | `protoAtlasData.ts` | #10 the foot of a 1-4 trunk, on the climbs theme |
+| `bankEnd` | `protoAtlasData.ts` | the bank end where a 1-4 climb ledge stops (the painted ground has no end piece on climbs) |
+| `chaseDebris` | `proto3AtlasData.ts` | 1-8's acorn pattern, the debris falling after the crack |
+| 3 hollow-log variants (never packed) | `w1-props-1-puzzle-and-secrets.jpg` | #19 eagle hides (cut and packed with the batch) |
+| story squirrels `shocked`, `laughing`, `hammering` (never drawn) | `w6to10/gemini/story18-squirrels.webp` | the squirrels' design: the lift crew (#12) is drawn ON this model; `hammering` dresses 1-4's lift room (they built it), `laughing` at the top of a lift, `shocked` beside the first rolling acorn |
+
 ## 1. Beat letters (`tools/inspect/beats.ts:20-21`)
 
 | Letter | Weight | What makes it |
@@ -41,7 +56,7 @@ the plan's §5).
 | 6 | **Bobbing bough** (timing) | J (timedHop) | A springy bough dips under Pokey's weight and rises on a 2.4 s rhythm. Hop on when it's up; a dip only means a lower landing, never a fall. | NEW bobbing bough (up, down) | 1-2, soft (moss below) | "Wait till the branch comes back up." |
 | 7 | Snake branches | C | Sleeping snake first, then an awake one on a wide branch | existing `snake-atlas`, `snake2-atlas` | 1-3 (`dotTips` snake) | (existing) |
 | 8 | Rope guard | C V | A snake on the far end of a rope run | existing rope-kit ends; NEW vine-rope span tile | 1-3 | (existing) |
-| 9 | **Rolling acorns** (timing) | Z | Acorns roll down a sloping branch in a rhythm (a squirrel tips them from the top). Bumped = pushed back to the branch foot, no life lost. Go between them. | existing puzzle-kit `acorn`, `acornPile`; NEW squirrel (tipping pose), sloping acorn branch | 1-3 (taught with a slow single acorn first) | "Acorns roll. Go between them." |
+| 9 | **Rolling acorns** (timing) | Z | Acorns roll down a sloping branch in a rhythm; the squirrel tipping each one at the top is the tell. A **setback only** (lead, 2026-10-31): bumped = nudged back to the branch foot, never a life. Go between them. | existing puzzle-kit `acorn`, `acornPile`; NEW squirrel (tipping pose), sloping acorn branch | 1-3 (taught with a slow single acorn first) | "Acorns roll. Go between them." |
 | 10 | Trunk climb | V | Grab a trunk, climb, step off onto a perch | existing `trunk`, `wall` | 1-4 | (existing) |
 | 11 | Rope shimmy | V | Hand over hand under a vine rope between two trunks | existing `hero-rope` frames; NEW vine-rope span tile | 1-4 (shimmy required from 1-4, `skills.ts:38`) | (existing) |
 | 12 | **Squirrel basket lift** (timing) | V P | Ride the squirrels' basket; they haul on a rhythm, so step on when it's down | existing `pulley`, `basket`, `liftPlank`; NEW squirrels (hauling, waving) | 1-4 | "The squirrels will pull you up." |
@@ -86,12 +101,10 @@ on anything Pokey stands on, and flat magenta (the squirrels too; none of these 
 
 | # | Piece | Frames | Size (atlas px) | For |
 |---|---|---|---|---|
-| 1 | Bobbing bough: a springy horizontal bough with a leafy tip, standable top | up, dipped | 600 x 190 each | #6 |
-| 2 | Squirrels (the 1-4 lift crew; red-brown, white belly, big tail) | sit, wave, haul rope, tip acorn, run | 256 x 256 each | #9, #12, 1-4's story |
+| 2 | Squirrels (the 1-4 lift crew), as edits of the story squirrel (`story18-squirrels`, on model) | sit, wave, haul rope, tip acorn, run | 256 x 256 each | #9, #12, 1-4's story |
 | 3 | Sloping acorn branch: a branch angled about 15 degrees with an acorn stash at its high end | 1 | 700 x 260 | #9 |
 | 4 | Vine-rope span: a twisted green vine rope, tiling left to right | 1 tile | 256 x 48 | #8, #11 (now code) |
 | 5 | Root gate: a lattice of living roots in a mossy frame | shut, open | 320 x 420 each | #21, #22 (now an earth block) |
-| 6 | Stump tops: three short mossy stumps of different widths, flat tops | 3 | ~260 x 200 each | #1 (now moss_stone blocks) |
 | 7 | Knot steps: two bark knots / shelf fungi that stick out of a trunk | 2 | 140 x 90 each | #13 |
 | 8 | Fallen-log hide: a big fallen log with a leafy gap under it to crouch in | 1 | 520 x 240 | #19 |
 
@@ -115,3 +128,14 @@ on the style model. The props are 3 canvases, each with the W1 approved pieces p
 - The bobbing bough and rolling acorns need two small engine pieces in gen2: a timed platform (`timedHop` exists on W2's logs) and a
   rolling hazard with a setback, the way World 8's sleeping bats push back. The World 1 builder owns them; the art is ready first.
 - 1-8 stays a set piece. Its 6 patterns come from the same pieces, so it varies by pattern, not by curation.
+
+## 7. Dot lines for Matt (one review, via the lead)
+
+| Section | Line (under 10 words) | When |
+|---|---|---|
+| #6 Bobbing bough | "Wait till the branch comes back up." | first bough, 1-2 |
+| #9 Rolling acorns | "Acorns roll. Go between them." | first acorn, 1-3 (the squirrel tips one slowly first) |
+| #12 Squirrel lift | "The squirrels will pull you up." | first lift, 1-4 |
+| #21 Stone and plate gate | "A stone on the plate holds the gate." | first plate, 1-5 |
+| #22 Snake ring lock | "Clear the snakes. The roots will open." | 1-9's ring (Dot explains the locked exit) |
+
