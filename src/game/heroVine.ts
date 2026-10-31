@@ -46,6 +46,17 @@ export function vinePose(angle: number, omega: number, facing: 1 | -1): keyof ty
 }
 /** how far the body swings in under the hands, from how the picture drew it (1 = straight under them, 0 = as drawn) */
 const SETTLE = 0.5;
+/**
+ * The body trails behind the swing, turning about his hands (radians per rad/s of swing, and the most it trails): a hanging body lags
+ * the vine it holds, so his legs sweep after it and catch up at the ends (the lead's list, 2026-10-31: "a body that follows the arc").
+ * Positive omega carries his feet to the right, so they lag to the left: a positive (clockwise) turn about the grip.
+ */
+export const VINE_TRAIL = 0.11;
+export const VINE_TRAIL_MAX = 0.22;
+/** pure: how far the body trails behind the swing (radians, world sense: positive swings his feet left) */
+export function vineTrail(omega: number): number {
+  return Math.max(-VINE_TRAIL_MAX, Math.min(VINE_TRAIL_MAX, omega * VINE_TRAIL));
+}
 
 /**
  * Draw him hanging from the vine. The swing puts his feet at the end of `swingLength` along the vine (p.x, p.y); his hands are a body's
@@ -62,7 +73,7 @@ export function drawVineHang(ctx: CanvasRenderingContext2D, p: PlayerState, alph
   ctx.translate(gx, gy);
   // the picture's vine leans phi; turned by (phi - a) it lies along the real vine (mirrored, by (-phi - a)). Then the body swings part
   // of the way in under the hands, the way a hanging body does (the pictures drew it leaning out to one side of the vine)
-  ctx.rotate(p.facing * (f.phi + SETTLE * (f.psi - f.phi)) - a);
+  ctx.rotate(p.facing * (f.phi + SETTLE * (f.psi - f.phi)) - a + vineTrail(p.swingAngularVelocity ?? 0));
   ctx.scale(p.facing, 1);
   // the hurt blink, on the game's clock like every other pose (heroSprite.ts): it ran on the wall clock here, so it kept flickering
   // under a pause or a lesson and fell out of step with the 30 fps frames, and a still frame could catch him half see-through on the vine
