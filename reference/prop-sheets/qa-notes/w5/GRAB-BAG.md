@@ -100,14 +100,20 @@ first appearance taught); the reminders come from w5Play's own first-sight lines
     strand while it billows throws him up (a free second jump) or, mistimed, back. Beat **Z J**. Art: NEW (brief below), engine: World
     4's wind zone.
 
-## 5. Hugging Face briefs for the NEW art (no jobs run tonight: $0 spent)
+## 5. Hugging Face art (Matt, ~1:15 AM: "Make hugging face tonight if needed")
+
+Made tonight for 12 (the billowing web): `src/assets/w6to10/props-made/w5web.webp` (+ .json), three frames (slack, billow, snap back),
+img2img from `props-made/w5a`'s never-used web with the style model, on magenta. Two jobs, ~7 min on rtx-pro-6000, **~$0.32** (logged in
+`tools/art/hfground/jobs.txt`). The first billow barely moved and was dropped; the retake from a bent start reads as a gust. **Not wired
+in**, and not polish-ready yet: some anchor strands break into dashes after the key, the silk has a pink cast, the billow frame a faint
+dark fringe. Fix when wiring: draw the anchor strands as code silk lines (a small code touch), re-key the billow.
+
+### The other brief (not made tonight)
 
 All painted to World 5's kit (storybook painted, dark outlines, soft cel shading; dusk golds turning violet; img2img from
 `props-made/w5a.webp` for the style), on flat magenta #FF00FF, cut with the HF batch cutter, packed into `props-made/` with a .json.
 
-1. **Billowing web (for 12).** A large orb web strung between two mossy trunks, 3 frames: slack, bellied by wind, snapping back;
-   1536 x 512.
-2. **Teapot on a mossy stump (for 8, optional: the w5Look pot works without it).** The sanctuary's warm teapot sitting on a stump,
+1. **Teapot on a mossy stump (for 8, optional: the w5Look pot works without it).** The sanctuary's warm teapot sitting on a stump,
    steam curling, 2 frames (lid down, lid rattling); 512 x 256.
 
 Budget: about $1-2 on rtx-pro-6000, well inside the reserve.

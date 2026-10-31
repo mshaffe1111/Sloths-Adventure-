@@ -15,3 +15,10 @@ hfg-art5 6ae3a7b30e0338d1bb7c1ff3 rtx-pro-6000 created 20:08:19Z: spec-art5.json
 finished: hfg-art5 20:09:57Z (1.6 min, ~$0.07); running total ~45.0 min = ~$2.06
 hfg-art6 6ae3b5490e0338d1bb7c2fc4 rtx-pro-6000 created 21:06:17Z: spec-art6.json (each world its bounce plant: caps x10 x2 seeds, stalks x10)
 finished: hfg-art6 21:10:58Z (4.7 min, ~$0.22); running total ~49.7 min = ~$2.28
+hfg-w5web 6ae579d80e0338d1bb7d0e47 rtx-pro-6000 created 2026-10-31 05:17:12Z (1:17 AM ET): spec-w5web.json (W5 billowing web, GRAB-BAG item 12: slack/billow/snap x seeds 11, 23, start props-made/w5a web on magenta)
+finished: hfg-w5web ~05:21Z (~4 min, ~$0.2); results hfground/w5web (carrier-w5web-0.png). Seed 23 the better look (mossy posts). The billow frames barely move: dropped.
+hfg-w5web2 6ae57ac80e0338d1bb7d0e70 rtx-pro-6000 created 05:21:12Z: spec-w5web2.json (the billow retaken from a bent start, starts/w5pieces/web-bent.webp)
+finished: hfg-w5web2 ~05:24Z (~3 min, ~$0.14); results hfground/w5web2. KEPT billow2-s23 (0.55, the later of the two s23s: the web pushed right).
+  Packed slack-s23, billow2-s23, snap-s23 -> src/assets/w6to10/props-made/w5web.webp (+ .json), key d0=150 d1=225 speck=20 + depurple.
+  NOT wired in. Rough spots: some anchor strands still break into dashes after the key (draw them as code silk lines when wired, a
+  small code touch), a pink cast on the silk, a faint dark fringe on the billow. Running total tonight ~7 min = ~$0.32.
