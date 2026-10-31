@@ -24,3 +24,5 @@ pokey-anim3   6ae5583dc78863f9c62eee59  launched 10:53 PM ET  spec-anim3.json @ 
               THROWN pa-punch-s5 (his head turns away, no face through the punch) and pa-punch-s7: s7 is clean (plain wraps, profile
               face) but turns his back to the camera through the reach, belly hidden, while the cross and hook face us: a combo would flip
               him back and front every punch. The punches keep their sheets.
+Spend: pokey-anim2 02:20-02:53Z (32.7 min) ~ $1.50; pokey-anim3 02:53-03:03Z (10.0 min) ~ $0.46.
+Tonight's total: ~$3.57 of the $20 cap (anim1 $1.61 + anim2 $1.50 + anim3 $0.46).
