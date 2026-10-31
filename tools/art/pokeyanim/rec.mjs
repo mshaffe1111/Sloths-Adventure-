@@ -32,7 +32,7 @@ const b = await chromium.launch();
 for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) => !process.env.ORI || process.env.ORI === o)) {
   const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
   p.on('pageerror', (er) => console.log('ERR', er.message));
-  await p.goto(`http://127.0.0.1:${port}/?nodemo=1&lessons=off&clips=0`);
+  await p.goto(`http://127.0.0.1:${port}/?nodemo=1&lessons=off`);
   await p.waitForTimeout(2500);
   await p.evaluate(([st, lay]) => window.__play(st, lay), [process.env.STAGE ?? '1-1', process.env.LAYOUT ? Number(process.env.LAYOUT) : undefined]);
   await p.waitForTimeout(6000);
@@ -40,13 +40,13 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   // a flat open stretch of 1-1's first ground, Pokey stood still facing right
   await p.evaluate((sc) => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
     Object.assign(pl, { vx: 0, vy: 0, facing: 1 });
-    // nothing to pick up or bump into on the stretch he runs (no sparkles or hits over the moves being judged)
-    const far = (o) => Math.abs((o.x ?? 0) - pl.x) > 900;
-    e.collectibles = e.collectibles.filter(far); e.enemies = e.enemies.filter(far);
     if (sc === 'climb') {
       const v = e.vines.find((q) => q.vineType === 'tree_climb' && !q.off);
       Object.assign(pl, { x: v.x, y: v.bottomY - 30 });
-    } }, SCENE);
+    }
+    // nothing to pick up or bump into where he moves (no sparkles or hits over the moves being judged)
+    const far = (o) => Math.abs((o.x ?? 0) - pl.x) > 900;
+    e.collectibles = e.collectibles.filter(far); e.enemies = e.enemies.filter(far); }, SCENE);
   await p.waitForTimeout(1500);
   const dir = join(out, `${tag}-${ori}-frames`.replace(`${tag}-`, `${tag}${SCENE === 'moves' ? '' : '-' + SCENE}-`));
   rmSync(dir, { recursive: true, force: true });
