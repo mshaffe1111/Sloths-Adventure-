@@ -306,7 +306,7 @@ export interface LessonScene {
   enemies: { type: string; x: number; y: number; defeated: boolean; stompable?: boolean }[];
   collectibles: { type: string; x: number; y: number; collected: boolean; hidden?: boolean }[];
   vines: { x: number; topY: number; bottomY: number; vineType?: string }[];
-  platforms: { x: number; y: number; width: number; type: string; broken?: boolean }[];
+  platforms: { x: number; y: number; width: number; type: string; broken?: boolean; lift?: { bob?: string } }[];
   /** the flags; `reached` once he has run past one (the checkpoint card comes on the flag, not on the way to it) */
   checkpoints: { x: number; y: number; reached?: boolean }[];
   rivers: { x0: number; x1: number }[];
@@ -422,7 +422,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
     const cx = p.x + p.width / 2;
     if (p.type === 'bouncy' && want('bounce') && near(cx, p.y, NEAR.thing)) return 'bounce';
     if (p.type === 'fragile' && want('crumble') && near(cx, p.y, NEAR.thing)) return 'crumble';
-    if (p.type === 'moving' && want('moving') && near(cx, p.y, NEAR.thing)) return 'moving';
+    // (World 9's moving logs rise and sink instead of sliding: their own line teaches them, Dot's raft and piston tips, gen2/worlds/w9.ts)
+    if (p.type === 'moving' && !p.lift?.bob && want('moving') && near(cx, p.y, NEAR.thing)) return 'moving';
   }
   if (want('water') && s.rivers.some((r) => (r.x0 <= s.px + NEAR.thing && r.x1 >= s.px - 40) && s.py >= 0 && Math.abs(r.x0 - s.px) <= 500)) return 'water';
   const col = (types: string[]) => s.collectibles.find((c) => !c.collected && types.includes(c.type) && near(c.x, c.y, NEAR.thing));

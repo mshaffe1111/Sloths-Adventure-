@@ -1126,11 +1126,18 @@ export class FirstTimerRun {
       }
       if (notReady) {
         if (this.bobWait < 0) this.bobWait = t;
+        // (standing to wait is not being stopped by a face: no plain jump for it when he moves on)
+        this.blockedT = 0;
         if (t - this.bobWait < 10) {
           this.pending = null;
           return {};
         }
-      } else this.bobWait = -1;
+      } else if (this.bobWait >= 0) {
+        // (it is ready: he goes, a jump from where he waited at the edge, or off the log he rode up)
+        this.bobWait = -1;
+        this.blockedT = 0;
+        if (!this.pending && on && !this.floorAt(p.x + dir * 40, p.y, 40)) return this.decide(dir, 'single', false, side(dir));
+      }
     }
     // a press he has decided on comes when his thumb gets there (the reaction noise)
     if (this.pending && t >= this.pending.at && !this.jump) {
