@@ -37,3 +37,4 @@ pokey-anim6   6ae5f9bac78863f9c62f2905  launched 10:22 AM ET  spec-anim6.json @ 
               KEPT rope in-betweens tw-rope-f2f3-s2, f3f4-s3, f4f5-s2, f5f6-s3 (rope above his paws cut away) -> hero-rope.webp (10-frame cycle);
               f1f2 and f6f1 came out in a heavier-outlined style (not used). KEPT vine tw-vine-stillforward-s2 and stillback-s1 (the thin vine
               Qwen drew stripped) -> hero-vine.webp (5 pictures). THROWN 7-4 slide-slide s1/s2 (drew a chute, turned him diagonal).
+pokey-anim7   6ae5fc360e0338d1bb7d2d45  launched 10:33 AM ET  spec-anim7.json: the 7-4 slide poses again with no chute in the words (seeds 4-6)
