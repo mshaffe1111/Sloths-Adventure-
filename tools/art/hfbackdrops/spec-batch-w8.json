@@ -1,0 +1,158 @@
+{
+ "tag": "hfbd-w8",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "neg": "sky, clouds, fog, haze, gradient background, scenery behind, horizon, perspective, text, letters, watermark, frame, border, photo, 3d render, blurry, people, animals, sloth, magenta objects, pink plants",
+ "items": [
+  {
+   "name": "w8sunset-mid-s60-7",
+   "start": "start-w8sunset-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy: great round treetops on huge branches, hanging lianas, a giant flowering tree, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8sunset-mid-s60-23",
+   "start": "start-w8sunset-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy: great round treetops on huge branches, hanging lianas, a giant flowering tree, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8sunset-mid-s66-7",
+   "start": "start-w8sunset-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy: great round treetops on huge branches, hanging lianas, a giant flowering tree, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8sunset-mid-s66-23",
+   "start": "start-w8sunset-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy: great round treetops on huge branches, hanging lianas, a giant flowering tree, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8sunset-near-s60-7",
+   "start": "start-w8sunset-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of broad leaves, branch ends and night flowers along the bottom of the picture, uneven top edge, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w8sunset-near-s60-23",
+   "start": "start-w8sunset-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of broad leaves, branch ends and night flowers along the bottom of the picture, uneven top edge, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w8sunset-near-s66-7",
+   "start": "start-w8sunset-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of broad leaves, branch ends and night flowers along the bottom of the picture, uneven top edge, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w8sunset-near-s66-23",
+   "start": "start-w8sunset-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of broad leaves, branch ends and night flowers along the bottom of the picture, uneven top edge, violet and orange sunset light, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w8night-mid-s60-7",
+   "start": "start-w8night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy at night: great dark treetops on huge branches, hanging lianas, pale glowing night flowers, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8night-mid-s60-23",
+   "start": "start-w8night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy at night: great dark treetops on huge branches, hanging lianas, pale glowing night flowers, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8night-mid-s66-7",
+   "start": "start-w8night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy at night: great dark treetops on huge branches, hanging lianas, pale glowing night flowers, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8night-mid-s66-23",
+   "start": "start-w8night-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game background layer of the middle distance seen straight from the side, the high jungle canopy at night: great dark treetops on huge branches, hanging lianas, pale glowing night flowers, standing on a low strip of ground along the bottom edge, every tree crown and every top whole and rounded inside the picture with flat magenta above it, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no clouds, no fog, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1104
+  },
+  {
+   "name": "w8night-near-s60-7",
+   "start": "start-w8night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of broad dark leaves and pale night flowers, a few fireflies along the bottom of the picture, uneven top edge, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w8night-near-s60-23",
+   "start": "start-w8night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of broad dark leaves and pale night flowers, a few fireflies along the bottom of the picture, uneven top edge, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.6,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w8night-near-s66-7",
+   "start": "start-w8night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of broad dark leaves and pale night flowers, a few fireflies along the bottom of the picture, uneven top edge, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 7,
+   "w": 2048,
+   "h": 1072
+  },
+  {
+   "name": "w8night-near-s66-23",
+   "start": "start-w8night-near.webp",
+   "prompt": "slothadv style, painted storybook illustration, soft cel shading, thin dark outline, a very wide side-scrolling game foreground layer seen straight from the side, a low band of broad dark leaves and pale night flowers, a few fireflies along the bottom of the picture, uneven top edge, silver moonlight, rich painted texture like a storybook. On one flat plain pure magenta background, no sky, no text, no characters",
+   "strength": 0.66,
+   "seed": 23,
+   "w": 2048,
+   "h": 1072
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/319d75e67b7b3947e4199f3a9daacfe9c53644a9/reference/prop-sheets/qa-notes/hf-backdrops/starts/"
+}

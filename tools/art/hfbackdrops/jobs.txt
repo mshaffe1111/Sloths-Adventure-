@@ -1,0 +1,25 @@
+hf-backdrops (2026-10-31, Matt: "We still have 110 on hugging face... Better cut scenes, more props or redoing background"). Cap $28.
+GPU rtx-pro-6000 at about $2.75 an hour. Times UTC. Bucket mshaffe111/w5-xfer under hfbackdrops/.
+hfbd-pilot  6ae65aeac78863f9c62f4c64 rtx-pro-6000 21:17:30Z-~21:20:30Z (~3 min, ~$0.14, cancelled): text to image on magenta, 2048x896.
+  THROWN: the key is not kept (w1kapok on a pink sky with rain and clouds, w10b a full storm sky, w7dusk on flat green) and the
+  paint is flatter than the game's strips. Strips are img2img from paste-ups from now on (starts.py).
+hfbd-pilot2 6ae65c130e0338d1bb7d43aa rtx-pro-6000 21:22:27Z-~21:31Z (~9 min, ~$0.41): img2img (w6to10/img2imggpu.py) from starts.py
+  paste-ups of the world's own middle strip, 2048x1104, s60/s72, seed 7: w7dusk, w1kapok, w10after, w3cavern, w6dusk middle strips.
+  KEY KEPT clean magenta at both strengths. s60: new layouts in the game's paint (w7dusk-mid-s60-7 cut, graded with haze.py and shot
+  in 7-8: mock-7-8-before-after.jpg). s72 finishes the tree crowns (the upright fix) but turns loose pieces of the start into
+  floating junk (a hanging root, an upside-down palm, a creature-like plant): starts.py now drops every shape not joined to the ground.
+running total ~$0.55 of $28
+--- batch A+B (lead's OK 6:30 PM ET; cap now $40): one job per world, 16 takes each (mid + near x 2 moods x s60/s66 x seeds 7/23) ---
+hfbd-w1  6ae65e0b0e0338d1bb7d442e  hfbd-w2 6ae65e0ec78863f9c62f4dec  hfbd-w3 6ae65e120e0338d1bb7d4430  hfbd-w4 6ae65e16c78863f9c62f4dee
+hfbd-w6  6ae65e19c78863f9c62f4df0  hfbd-w7 6ae65e1dc78863f9c62f4df4  hfbd-w8 6ae65e200e0338d1bb7d4437  hfbd-w9 6ae65e240e0338d1bb7d443a
+hfbd-w10 6ae65e26c78863f9c62f4dfa   all rtx-pro-6000, started 21:30:51Z-21:31:19Z
+batch A+B finished 21:40-21:41Z (each ~9-10 min incl. model load; 9 x ~9.5 min = ~86 min = ~$3.95). Picks: picks.json (26, then 24:
+  w9dawn-mid and w6dawn-mid dropped after keying, a half-faded floating column at the join / a squared block). Not used tonight:
+  every W8 middle (the old strip's flat faded canopy came back as a hard band), the W4 terraces and W6 dawn near strips and both
+  W2 near strips (squared notches where paste-up pieces met; pink river water from the key), every W3 sinkhole take (a straight
+  vertical cut down a pillar), the W10 after-storm takes (held with w10after).
+--- native-resolution pass (striphdgpu.py, s25, Real-ESRGAN first, on grey) ---
+hfbd-hd-a 6ae66200c78863f9c62f4f04  hfbd-hd-b 6ae66203c78863f9c62f4f06  hfbd-hd-c 6ae66206c78863f9c62f4f08  started 21:47:44Z, 8 strips each
+running total ~$4.70 (before the HD pass)
+hd-a/b/c finished 21:53-21:54Z (~6.5 min each, ~20 min = ~$0.90). Cut + edges + haze: process.py finish (mix5).
+running total ~$5.60 of $40

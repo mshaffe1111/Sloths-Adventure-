@@ -15,6 +15,11 @@ test('backdrops: Worlds 1-4 go through the day (W1 sunrise, the world\'s own, th
     '4-1': 'w4terraces', '4-3': 'w4terraces', '4-5': null, '4-7': 'w4mist', '4-9': 'w4mist',
     '5-1': 'w5', '5-4': 'w5dusk2',
     '6-1': 'w6dawn', '6-3': 'w6dawn', '6-4': null, '6-6': null, '6-7': 'w6dusk', '6-9': 'w6dusk', '6-10': null,
+    // (Worlds 7-10, hf-backdrops 2026-10-31: their painted moods, by each world's story light)
+    '7-1': 'w7dawn', '7-3': 'w7dawn', '7-5': null, '7-7': 'w7dusk', '7-9': 'w7dusk', '7-10': null,
+    '8-1': 'w8sunset', '8-2': 'w8sunset', '8-3': null, '8-6': null, '8-7': 'w8night', '8-9': 'w8night', '8-10': null,
+    '9-1': 'w9dawn', '9-3': 'w9dawn', '9-5': null, '9-7': 'w9night', '9-9': 'w9night', '9-10': null,
+    '10-1': 'w10dusk', '10-3': 'w10dusk', '10-5': null, '10-7': null, '10-9': null, '10-10': null,
   };
   for (const [id, stem] of Object.entries(want)) assert.equal(stageBackdropStem(id), stem, id);
   // (under the test runner there are no strips to find, so the engine's own pick falls back on the world's set: no picture is assumed)
@@ -22,7 +27,7 @@ test('backdrops: Worlds 1-4 go through the day (W1 sunrise, the world\'s own, th
 });
 
 test('backdrops: each new far strip is there at the far layers\' height (1302, native resolution: X-16; seamless: VI-4), well under the size limit; and the sinkhole is Matt\'s redo', () => {
-  assert.deepEqual([...FAR_ONLY].sort(), ['w1kapok', 'w1sunrise', 'w2evening', 'w2rapids', 'w3cavern', 'w3sinkhole', 'w4mist', 'w4terraces', 'w6dawn', 'w6dusk']);
+  assert.deepEqual([...FAR_ONLY].sort(), ['w10dusk', 'w1kapok', 'w1sunrise', 'w2evening', 'w2rapids', 'w3cavern', 'w3sinkhole', 'w4mist', 'w4terraces', 'w6dawn', 'w6dusk', 'w7dawn', 'w7dusk', 'w8night', 'w8sunset', 'w9dawn', 'w9night']);
   for (const stem of FAR_ONLY) {
     const f = new URL(`../assets/backdrops/${stem}-far.webp`, import.meta.url);
     const buf = fs.readFileSync(f);
