@@ -227,7 +227,8 @@ test('platforms come in at least four styles per stage and no style is over 40% 
 });
 
 test('a harvest stage holds about 1.6 times its quota in flowers: the quota is on the shared ground, the surplus on the lanes', () => {
-  for (const l of horizontal.filter((x) => x.objectiveType === 'harvest')) {
+  // (the old generator's lanes: a gen2 harvest lays 1.5x its quota on its own route, held by src/game/gen2's tests)
+  for (const l of oldGen.filter((x) => x.objectiveType === 'harvest')) {
     for (const v of VARIANTS) {
       const s = stage(l, v);
       const lane = new Set<number>();

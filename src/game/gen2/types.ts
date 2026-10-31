@@ -165,6 +165,8 @@ export interface LianaSwing {
  *   jump | double        a gap from the jump envelope: `share` (0..1) of the widest gap the difficulty allows for that rise
  *                        (pipeline maxGap: Easy 0.65, Normal 0.82 of the physical reach, never past what levelCheck accepts)
  *   pit                  a gap at the same height with a pit under it (soft: a floor and a step out); the jump kind decides its width
+ *                        (`glide`: the leaf glide's reach, pipeline glideGap; Normal's is past the double jump, so the leaf is the way over;
+ *                        its soft pit climbs back to the take-off, as a liana's does, so walking down and out the far side is no way over)
  *   on                   an obstacle standing on `on`'s top, `at` (0..1) along it, `h` px tall (a stump, a block)
  *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top (over a
  *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
@@ -179,16 +181,18 @@ export interface LianaSwing {
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
  * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
+ * A gap rule with `soft: true` has a soft pit under it whatever the world's falls (World 8: in a world whose falls cost a life, its gaps in
+ * the dark keep a soft floor, so no jump in the dark is blind)
  */
 export type PlaceRule =
   | { kind: 'start' }
   | { kind: 'walk'; after: string; dy?: Range }
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double'; share?: Range; water?: boolean }
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double' | 'glide'; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
-  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean }
+  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range };
 
 export interface SectionPiece {
@@ -266,7 +270,8 @@ export interface LocalAnchor {
 }
 /** every anchor of a piece (its `at`, a sapling's `to`, a teapot's `trough` points) on the section's pieces by key */
 type LocalField<T> = T extends Anchor ? LocalAnchor : T extends readonly Anchor[] ? LocalAnchor[] : T;
-type Localize<P> = P extends unknown ? { [K in keyof P]: LocalField<P[K]> } : never;
+/** (and a piece's `vine` names the section's vine piece by key: placeRoom puts the laid vine's id in) */
+type Localize<P> = P extends unknown ? { [K in keyof P]: K extends 'vine' ? string : LocalField<P[K]> } : never;
 export type LocalPieceSpec = Localize<PieceSpec>;
 export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond' | 'ground' | 'pieces'> {
   left: LocalAnchor;
@@ -282,9 +287,15 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
  *          start at its ends); the water rises on a timer and sweeps him back toward where he came from. `low` is the low spell (s,
  *          default TIDE.low), never shorter than the walk across the mud takes (zones.ts tideCrossTime: the pipeline lengthens it);
  *          `warn` (>= 0.9 s), `active` (<= 3 s) and `force` (px/s) default to TIDE's. Its beat on the clock is rolled per use
+ *   wind   a gust over the gap a section lays before the piece `on` (World 8's night gusts over the glides): zones.ts's wind, its box from
+ *          the take-off lip to the landing with a pad on each side, blowing `dir` (a tailwind, +1, by default: it carries a glide further,
+ *          and levelCheck's headwind rule would refuse a glide's gap); `idle` the lull between gusts (s, never under 2), `force` px/s
+ *          (<= 160, levelCheck). Its beat is the gust (beats.ts 'wind gust')
  * Nothing stands or flies inside a zone (no animal, no flag: levelCheck), so creature sockets and flags inside one stay empty.
  */
-export type SectionZone = { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number };
+export type SectionZone =
+  | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
+  | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number };
 
 /** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
 export const TIDE = { low: [5.6, 7.0], warn: 1.8, active: 2.2, force: 190 } as const;

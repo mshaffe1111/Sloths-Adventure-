@@ -931,7 +931,8 @@ ENV[7] = {
 };
 ENV[8] = {
   near: [['jadevine', 3], ['parkia', 2], ['moonflower', 3], ['foxfire', 2]],
-  decor: [['foxfire', 26], ['pflower', 20], ['ferncrown', 14], ['pplant', 14], ['w8stones', 20], ['parkia', 6], ['karstpebbles', 8]],
+  // (no grey karst pebbles: grey spikes in the treetops read as a hazard where there is none, polish bar item 3; the painted stones stay)
+  decor: [['foxfire', 26], ['pflower', 20], ['ferncrown', 14], ['pplant', 14], ['w8stones', 20], ['parkia', 6], ['mosscushion', 8]],
   sway: 'jadevine', front: 'fern',
 };
 ENV[9] = {

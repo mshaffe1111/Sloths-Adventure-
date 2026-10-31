@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage, type CheckGraph } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds, VINE } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, CLIMB_CLEAR, chooseVersions, difficultyScore, glideGap, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap, lianaSeconds, VINE } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
@@ -687,9 +687,9 @@ test('a liana swings by itself and its perch is sized from the release window (E
       assert.ok(placed.every((s) => !s.mirrored), `${what}: a swing is never flipped`);
       for (const l of lianas) assert.equal(st.vines.find((v) => v.id === l.vine)?.vineType, 'swing_liana');
       swings += placed.length;
-      // every climb's high ledge is reached, and only a climb gets that high
+      // every climb's high ledge is reached (the vine stands CLIMB_CLEAR px out in front of its face: clearClimbs), and only a climb gets that high
       for (const v of st.vines.filter((x) => x.vineType === 'tree_climb')) {
-        const top = st.platforms.find((p) => p.y === v.topY && (p.x === v.x || p.x + p.width === v.x))!;
+        const top = st.platforms.find((p) => p.y === v.topY && (p.x - CLIMB_CLEAR === v.x || p.x + p.width + CLIMB_CLEAR === v.x))!;
         assert.ok(top && res.reachableIds.includes(top.id), `${what}: the ledge over the vine at ${v.x}`);
         assert.ok(v.bottomY - v.topY > DOUBLE_RISE, `${what}: a ${v.bottomY - v.topY} px climb a double jump could make`);
         climbs++;
@@ -898,4 +898,58 @@ test("a stage's required sections come up on every roll (placed by the plan, nev
   // a required section that fits no node of the stage is named
   const bad: WorldKit = { ...k, manifest: { ...k.manifest, required: { '5-7': [{ section: 'toy-rare', phase: 'ketsu' }] } } };
   assert.throws(() => buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: bad, seed: 1, difficulty: 'normal' }), /required section toy-rare fits no node/);
+});
+
+test('a glide gap (World 8): past the double jump on Normal, never past what levelCheck links, laid within it on both settings', () => {
+  for (const d of ['normal', 'easy'] as const) {
+    const margin = MARGIN[d];
+    for (const dy of [0, -60, 40]) {
+      const g = glideGap(dy, { margin, world: 8, stage: 6 });
+      assert.ok(g >= maxGap(dy, true, margin), `${d} ${dy}: ${g} under the double jump's envelope`);
+      assert.ok(g <= jumpLinkGap(dy, 8, 6), `${d} ${dy}: ${g} past what levelCheck links`);
+    }
+  }
+  // (Normal's flat glide is past a double jump's physical reach: the leaf is the way over)
+  assert.ok(glideGap(0, { margin: MARGIN.normal, world: 8, stage: 6 }) > physics.reachJump(0, true));
+  // (a section's `pit` with `jump: 'glide'` lays its gap from glideGap)
+  const tpl: SectionTemplate = {
+    id: 'glide-test', name: 'glide', archetypes: 'any', phases: ['ki'], difficulty: 3, exitDy: 0, sockets: [], mirrorable: false,
+    pieces: [{ key: 'a', shape: 'bank', w: 300, place: { kind: 'start' } }, { key: 'b', shape: 'bank', w: 300, place: { kind: 'pit', after: 'a', jump: 'glide', share: 0.9 } }],
+    entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'b', kind: 'ground' },
+  };
+  const c8 = { ...cfg('8-6', 'sprint'), worldIndex: 8, miniIndex: 6 };
+  const b = planBudget(c8, { ...manifest, moves: ['double', 'glide'] }, 'normal');
+  const L = layLocal(tpl, b, rngFor(1));
+  const gap = L.gaps[0].x1 - L.gaps[0].x0;
+  assert.ok(Math.abs(gap - 0.9 * glideGap(0, b)) <= 1, `${gap} px`);
+  // (its soft pit climbs back to the take-off, never out on the far side: the leaf is the only way over)
+  assert.deepEqual(L.gaps[0].back?.lips, [0, 0]);
+});
+
+test("a soft gap (World 8's dark): in a world whose falls cost a life, a gap rule with `soft` keeps a soft pit; the others stay deadly", () => {
+  const tpl: SectionTemplate = {
+    id: 'soft-test', name: 'soft', archetypes: 'any', phases: ['ki'], difficulty: 3, exitDy: 0, sockets: [], mirrorable: false,
+    pieces: [
+      { key: 'a', shape: 'bank', w: 300, place: { kind: 'start' } },
+      { key: 'b', shape: 'bank', w: 300, place: { kind: 'pit', after: 'a', jump: 'jump', share: 0.8, soft: true } },
+      { key: 'c', shape: 'bank', w: 300, place: { kind: 'pit', after: 'b', jump: 'jump', share: 0.8 } },
+    ],
+    entry: { piece: 'a', kind: 'ground' }, exit: { piece: 'c', kind: 'ground' },
+  };
+  const voidWorld = { ...manifest, pit: 'void' as const };
+  const b = planBudget(cfg('8-1', 'sprint'), voidWorld, 'normal');
+  assert.equal(b.pit, 'void');
+  const L = layLocal(tpl, b, rngFor(1));
+  assert.equal(L.gaps[0].soft, true);
+  assert.ok(!L.gaps[1].soft);
+  // (laid in a stage: the soft gap has a floor and reads soft; the other falls through and reads void)
+  const st = buildGen2Stage({ config: cfg('8-1', 'sprint'), kit: { ...kit, manifest: { ...voidWorld, sections: [...voidWorld.sections, tpl], required: { '8-1': [{ section: 'soft-test' }] } } }, seed: 3, difficulty: 'normal' });
+  const placed = st.gen2.sections.find((s) => s.template === 'soft-test')!;
+  const falls = (st.gen2.falls ?? []).filter((f) => f.x0 >= placed.x0 - 1 && f.x1 <= placed.x1 + 1);
+  assert.deepEqual(falls.map((f) => f.kind), ['soft', 'void']);
+  const under = (f: { x0: number; x1: number; y: number }) => st.platforms.some((p) => p.x < f.x1 && p.x + p.width > f.x0 && p.y > f.y);
+  assert.ok(under(falls[0]), 'a floor under the soft gap');
+  assert.ok(!under(falls[1]), 'nothing under the deadly one');
+  // (Easy's falls are all soft, as ever)
+  assert.equal(planBudget(cfg('8-1', 'sprint'), voidWorld, 'easy').pit, 'soft');
 });
