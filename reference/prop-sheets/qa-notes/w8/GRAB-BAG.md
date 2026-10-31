@@ -116,7 +116,33 @@ cutter, packed into `props-made/` with a .json like w8roost's.
 
 Budget: about $1-2 on rtx-pro-6000 at ~$2.75/h, well inside the reserve.
 
-## 6. Order
+## 6. The target: more pieces, not the minimum (Matt, 2026-10-30 ~10:50 PM ET)
+
+"I'd rather have more pieces and have that variety than trying to just barely squeak past something." Aim at 0.45+ on every World 8
+stage, with as many new section types as the world can carry. The way to get there is the same each time: each stage carries three or
+more lit themes, at least one of them built on a beat no other theme of that stage has, so rolls fall into clearly different kinds.
+
+Built tonight (A): the night wind. 8-6 gets the 'gusts' theme (a tailwind carrying the glides); 8-1 gets its own (a headwind on plain
+gaps to wait out). Measured on 24 raw rolls each: 8-6 0.081 -> 0.395, 8-1 0.168 -> 0.467.
+
+More pieces, on hand art first (each its own theme on the stages named):
+- **H. Knot-perch hops** (8-3, 8-6): a run of the tiny `w8b` knot perches over a gap, short precise hops (h J h J); a moveKind of its own.
+- **I. Lantern swing** (8-3): a liana with a firefly lantern hung on it; swinging carries the light through a dark stretch (the swing
+  lights its own way). Art: the 8-4 jar on the liana.
+- **J. Shelf-fungus steps** (8-5, 8-2): `w8b` shelf fungus up a trunk's face as steps instead of a climb (h h h up the trunk): 8-5's
+  rolls with fungus stairs read apart from its climbing rolls.
+- **K. Branch-fork drops** (8-2, 8-9): `w8b` branch fork as a one-way drop through the canopy to a lower route (a fall that is the way on).
+- B to G as above.
+
+Per stage, the plan for three or more themes (now -> next):
+- 8-1: leapers, night, gusts (built) -> + E sleeping bats or F moths
+- 8-2: high blooms, gap blooms, roost blooms -> + J fungus steps, K fork drops (it sits at 0.325)
+- 8-3: prowlers, chains -> + H knot perches, I lantern swing (0.332)
+- 8-5: climbers -> + C rope bridges, D bouncy leaves, J fungus steps (0.288; it has one theme only, the biggest gap)
+- 8-6: prowlers, leapers, gusts (built) -> + H knot perches, G the fallen pup
+- 8-8, 8-9 (0.42, 0.47): a third theme each later (B seed pods, K fork drops)
+
+## 7. Order
 
 Tonight: A for 8-6 (on-hand art), then re-curate 8-6. Next: E and F for 8-1, C and D for 8-5 (all on-hand art), each in its own lit
 theme, then re-curate 8-1 and 8-5. Then G once the pup is painted. Every new section is validated on all three Jump help settings.
