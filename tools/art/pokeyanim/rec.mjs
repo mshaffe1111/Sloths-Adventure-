@@ -27,6 +27,12 @@ if (SCENE === 'climbtop') {
   SCRIPT.push([10, 'down ArrowUp'], [70, 'up ArrowUp']);
   N = 90;
 }
+// SCENE=vine: in the air beside the stage's first swinging liana, steering right to grab it, swinging, then a jump off (STAGE= a stage with one)
+if (SCENE === 'vine') {
+  SCRIPT.length = 0;
+  SCRIPT.push([2, 'down ArrowRight'], [40, 'up ArrowRight'], [55, 'down ArrowRight'], [75, 'up ArrowRight'], [100, 'down Space'], [103, 'up Space']);
+  N = 125;
+}
 if (SCENE === 'climb') {
   SCRIPT.length = 0;
   SCRIPT.push([10, 'down ArrowUp'], [38, 'up ArrowUp'], [48, 'down ArrowDown'], [80, 'up ArrowDown']);
@@ -52,6 +58,10 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   // a flat open stretch of 1-1's first ground, Pokey stood still facing right
   await p.evaluate((sc) => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
     Object.assign(pl, { vx: 0, vy: 0, facing: 1 });
+    if (sc === 'vine') {
+      const v = e.vines.find((q) => q.vineType !== 'tree_climb' && !q.off);
+      Object.assign(pl, { x: v.x - 20, y: (v.topY + v.bottomY) / 2 + 40, grounded: false, vx: 0, vy: 0 });
+    }
     if (sc === 'climb' || sc === 'climbtop') {
       const v = e.vines.find((q) => q.vineType === 'tree_climb' && !q.off);
       Object.assign(pl, { x: v.x, y: v.bottomY - 30 });
