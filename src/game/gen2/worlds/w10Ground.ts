@@ -1568,7 +1568,9 @@ const chainLift = (key: string, after: string, w: W, share: W = [0.55, 0.7], sof
   ({ key, shape: 'raft', style, w, place: { kind: 'raft', after, bob: 'raft', share, ...(soft ? { soft: true } : {}) }, landing: true });
 const offLift = (key: string, after: string, w: W, share: W = [0.55, 0.7], soft = false): SectionPiece =>
   bank(key, w, { kind: 'pit', after, jump: 'jump', share, ...(soft ? { soft: true } : {}) }, { landing: true });
-const gearLift = (key: string, after: string, w: W = [110, 130]): SectionPiece => ({ key, shape: 'raft', style: 'w10_gear', w, place: { kind: 'raft', after, bob: 'piston' } });
+/** a gear lift's rise, fixed (World 9's pistons roll 205-240): every gear section comes back down to where it started (exitDy 0) */
+const GEAR_RISE = 210;
+const gearLift = (key: string, after: string, w: W = [110, 130]): SectionPiece => ({ key, shape: 'raft', style: 'w10_gear', w, place: { kind: 'raft', after, bob: 'piston', dy: [-GEAR_RISE, -GEAR_RISE] } });
 /** the time model's wait at a moving plank (about a third of its cycle) and a gear lift's ride */
 const LIFT_WAIT = 1.2;
 const GEAR_RIDE = 2.4;
@@ -1669,11 +1671,11 @@ const cwRow = section({
   difficulty: 6,
   uses: [W10_THEME.counterweights, CWEIGHT],
   extraSeconds: LIFT_WAIT * 4,
-  pieces: [bank('a', [200, 240]), chainLift('r1', 'a', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r2', 'r1', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('p', 'r2', [160, 190]), chainLift('r3', 'p', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r4', 'r3', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('b', 'r4', [220, 260])],
+  pieces: [bank('a', [220, 250]), chainLift('r1', 'a', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r2', 'r1', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('p', 'r2', [160, 190]), chainLift('r3', 'p', [130, 150], [0.55, 0.7], false, 'w10_cw'), chainLift('r4', 'r3', [130, 150], [0.55, 0.7], false, 'w10_cw'), offLift('b', 'r4', [220, 260])],
   last: 'b',
-  // (no flag: every bank of it stands beside a gap)
-  sockets: [petals('r2', 'r2', 0.5, 1), petals('p', 'p', 0.5, 1), petals('r3', 'r3', 0.5, 1)],
-  mirrorable: true,
+  // (its flag well back from the first gap (the section's own flag finder does not see a lift's gap); never mirrored, so it stays there)
+  sockets: [flag('a', 0.25), petals('r2', 'r2', 0.5, 1), petals('p', 'p', 0.5, 1), petals('r3', 'r3', 0.5, 1)],
+  mirrorable: false,
 });
 
 const gearFirst = section({
@@ -1686,13 +1688,14 @@ const gearFirst = section({
   uses: [W10_THEME.gearlifts],
   maxPerStage: 1,
   extraSeconds: GEAR_RIDE,
-  pieces: [bank('a', [300, 340]), gearLift('g', 'a'), up('t', 'g', 0, [260, 300]), down('s', 't', 100, [140, 160]), down('c', 's', 110, [220, 260])],
+  // (a short ledge off the lift: a long one is a double jump the quick route takes over it, off the lift's top)
+  pieces: [bank('a', [300, 340]), gearLift('g', 'a'), up('t', 'g', 0, [150, 180]), down('s', 't', 100, [140, 160]), down('c', 's', 110, [220, 260])],
   last: 'c',
   sockets: [flag('a', 0.3), tip(GEAR, 'a', 0.15), petals('t', 't', 0.3, 1), petals('s', 's', 0.5, 1)],
   mirrorable: false,
 });
-/** a gear lift up to an animal's ledge, then a leap across a soft gap to the far wall and the steps down (one lift: the wait for a piston is
- *  the slow part, so a section carries one and something to do after it) */
+/** a gear lift up to a ledge, then a leap across a soft gap to the far wall and the steps down (one lift: the wait for a piston is the
+ *  slow part, so a section carries one and something to do after it; no animal on the ledge: the bots leapt it from the lift, a double) */
 const gearLeap = section({
   id: 'w10-gear-leap',
   name: 'a gear lift and a leap',
@@ -1703,12 +1706,12 @@ const gearLeap = section({
   uses: [W10_THEME.gearlifts, GEAR],
   extraSeconds: GEAR_RIDE,
   pieces: [
-    bank('a', [260, 300]), gearLift('g', 'a'), up('t', 'g', 0, [300, 340]),
-    bank('f', [260, 300], { kind: 'jump', after: 't', dy: [10, 30], share: [0.55, 0.7], soft: true }, { landing: true }),
+    bank('a', [260, 300]), gearLift('g', 'a'), up('t', 'g', 0, [150, 180]),
+    bank('f', [260, 300], { kind: 'jump', after: 't', dy: [0, 0], share: [0.45, 0.55], soft: true }, { landing: true }),
     down('s1', 'f', 110, [140, 160]), down('c', 's1', 100, [200, 240]),
   ],
   last: 'c',
-  sockets: [flag('a', 0.3), foe('f1', 't', [0.45, 0.55], SMALL, 2), petals('f', 'f', 0.5, 1), petals('s1', 's1', 0.5, 1)],
+  sockets: [flag('a', 0.3), petals('t', 't', 0.5, 1), petals('f', 'f', 0.5, 1), petals('s1', 's1', 0.5, 1)],
   mirrorable: false,
 });
 /** a gear lift up to a guard's high walk (the gauntlet's) */
@@ -1720,7 +1723,7 @@ const gearGuard = section({
   difficulty: 6,
   uses: [W10_THEME.gearlifts, GEAR],
   extraSeconds: GEAR_RIDE,
-  pieces: [bank('a', [260, 300]), gearLift('g', 'a'), up('t', 'g', 0, [420, 460]), down('s', 't', 110, [140, 160]), down('c', 's', 110, [220, 260])],
+  pieces: [bank('a', [260, 300]), gearLift('g', 'a'), up('t', 'g', 0, [420, 460]), down('s', 't', 110, [140, 160]), down('c', 's', 100, [160, 200])],
   last: 'c',
   sockets: [flag('a', 0.3), foe('g1', 't', [0.55, 0.65], GUARDS, 3), petals('s', 's', 0.5, 1)],
   mirrorable: false,

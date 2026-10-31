@@ -49,6 +49,9 @@ function devForced(stage: number, sections: SectionTemplate[]): WorldManifest['r
 /** which stage holds which sections (STAGE-RULES §2 "Sameness"): w10Ground's W10_STAGE_ONLY, the rest by archetype and theme */
 const forStage = (stage: number, id: string): boolean => !W10_STAGE_ONLY[id] || W10_STAGE_ONLY[id].includes(stage);
 
+/** the gear lifts' speed, px a second (World 9's pistons: 120 Normal, 95 Easy) */
+export const W10_GEAR_SPEED = { normal: 170, easy: 130 } as const;
+
 /** World 10's kit for one stage as the game plays it on `difficulty` */
 export function w10GameKit(stage: number, difficulty: Difficulty = 'normal'): WorldKit {
   // (the swing builder's swings over the iron netting and the stage's room, Easy's version on Easy: w10Swing.ts, w10Rooms.ts)
@@ -61,6 +64,9 @@ export function w10GameKit(stage: number, difficulty: Difficulty = 'normal'): Wo
     out.platforms.filter((p) => p.style === 'w10_trap').sort((a, b) => a.x - b.x).forEach((p, i) => {
       p.trap = { ...beat, offset: Math.round(((i % 2) * 0.5 + ((p.x * 0.0007) % 0.25)) * beat.period * 100) / 100 };
     });
+    // (the gear lifts (GRAB-BAG C) are geared, quicker than World 9's pistons (pipeline BOB): the wait for one, and the ride, are the slow
+    // part of a gear section, and a stone block on a rack has no reason to crawl)
+    for (const p of out.platforms) if (p.style === 'w10_gear' && p.lift) p.lift.speed = difficulty === 'easy' ? W10_GEAR_SPEED.easy : W10_GEAR_SPEED.normal;
     // (the counterweight planks (GRAB-BAG B) ride in pairs on one chain: the second half a cycle behind the first, so one is up as the
     // other is down)
     const cws = out.platforms.filter((p) => p.style === 'w10_cw' && p.lift).sort((a, b) => a.x - b.x);

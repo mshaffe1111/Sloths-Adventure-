@@ -4,26 +4,26 @@ Written by the W10 pieces helper, 2026-10-31. STAGE-RULES §1c order: merge up (
 below), then curate once (not started: no World 10 seeds yet, so every test that builds 10-x through the game fails "ships no curated
 rolls" until curation; that is expected).
 
-## Done (each checked alone: `npx tsx tools/gen2/pieceCheck.ts --stage 10-N --sections <ids> --rolls 8`)
+## Done (each checked alone: `npx tsx tools/gen2/pieceCheck.ts --stage 10-N --sections <ids> --rolls 6`)
 
-See GRAB-BAG.md §8 for the table. In short: D drop gates, E gutter spouts, F trapdoor grates, G/H towers, I perch posts, J chain
-bridges, K rolling barrels, L lantern sweeps, the Winch House (10-7's second room, `required.oneOf`), 10-6's gates; one HF batch
-($0.17, src/assets/w10/bag.webp). Stills: qa-notes/w10/pieces/.
+See GRAB-BAG.md §8 for the table, §9 for the art placed from unused, §10 for the lead's curation notes. In short: A chain lifts, B
+counterweight planks, C gear lifts (World 9's riser merged in from origin/w9-pieces; World 10's look in w10 files only: w10PieceArt
+drawW10Bob), D drop gates, E gutter spouts (on a wall stub now), F trapdoor grates, G/H towers (stair stub fixed), I perch posts, J chain
+bridges, K rolling barrels (a true roll: the HF barrel end turning), L lantern sweeps, the Winch House (10-7's second room,
+`required.oneOf`), 10-6's gates (now 5 themes). Two HF batches: $0.17 + about $0.15. Stills: qa-notes/w10/pieces/ and pieces/riser/.
 
 ## Not done
 
-1. **A chain lifts, B counterweight planks, C gear lifts** (Matt's moving platforms): wait on World 9's riser (origin/w9-pieces b598ce85
-   'raft' place on the engine's lift, pistons; refined in 0e911330, cbb40516). Asked the lead whether to merge w9-pieces or wait for ccr.
-   Once in: A = the 'raft' place with the plank-ring look (gemini w9w10-bridges + the hanging-iron chain + bag 'pulley'), taught 10-1
-   over a soft pit; B = two rafts a half cycle apart with bag 'pulley' + 'weight'; C = a piston column with bag 'rack' + 'cog'
-   (10-9 taught; 10-6 if C proves out there). Then 10-6 reaches 5 themes (chains, spouts, lifts, counterweights, gear lifts).
-2. **The first-timer bot and World 10's timed hazards**: it runs through drop gates, barrels, gushes and grates without waiting (World
-   9's helper taught it to wait for World 9's flares and lavafalls, "World 9 only"). Extend that to World 10's 'bolt' looks
-   (portcullis, gush, barrel) and trap platforms after the W9 merge, before curation, or the bands will read 10-7/10-9 as harder than
-   they are.
-3. **Curate once** (neighbour order 10-1, 10-3, 10-6, 10-7, 10-9; W10-NEXT.md's command with --apart-near --apart-cap 0.2; the full
-   CLAUDE.md suite green after each stage's seeds).
-4. Lines for Matt (the lead has them): drop gate, trapdoors, spouts, barrels, lantern, the Winch House's three and its two hints.
+1. **Curate once** (neighbour order 10-1, 10-3, 10-6, 10-7, 10-9; W10-NEXT.md's command with --apart-near --apart-cap 0.2; the full
+   CLAUDE.md suite green after each stage's seeds). Not started, by the brief.
+2. **The gear lifts (C) on a stage full of them**: pieceCheck forces a theme for the whole stage, so a gear roll is mostly pistons, and
+   the wait for each piston plus its ride reads as dead time on Normal. World 10's gear lifts now run faster than World 9's pistons
+   (w10Game W10_GEAR_SPEED, 170/130 px a second; World 9's own untouched), the pair became one lift and a leap with an animal on the
+   ledge. See the last pieceCheck in the progress report; if still short, weight them low in curation so 10-9 mixes them with its
+   other six themes.
+3. **First-timer bot**: it now waits for drop gates, gutter gushes and trapdoor grates (tools/inspect/firsttimer.ts, shared). Rolling
+   barrels are left out on purpose (the lane is longer than one quiet window: he would stand forever); he jumps them or takes the hit.
+4. **Unused art with a place but not yet placed** (GRAB-BAG §9): w10var stump-b, fill-b, buttress-b; bridges plank-hanging. (bag winch-jam is a duplicate of 'winch': GRAB-BAG §9.)
 
 ## Checks on the final state
 

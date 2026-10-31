@@ -231,9 +231,10 @@ Still unused, with a place for each (curation pass, no new art):
   next to them.
 - **w10var buttress-b** (a crag ledge with a sand top): a ledge style for 10-6's netting (the swing helper's lane).
 - **w9w10-bridges plank-hanging** (a plank hung from one chain): a swinging plank, a pendulum the swing builder can carry (10-6).
-- **bag winch-jam** (the winch with a stone wedged in its teeth): the Winch House's jammed state before the stone is thrown (the lead's
-  "the stone on the jammed winch"); today the winch draws its kit stone in its teeth once filled.
-- **bag rope-bridge, ember-slab, charred-log** are World 9's.
+- **bag winch-jam**: no place, and none possible. The round-1 take (w10bag-a-s62-23, cell 9) never painted a stone in the winch's teeth:
+  its cut is the same winch as 'winch', plus the edge of the cog from the cell above. The jammed look stays the winch with the kit stone
+  in its teeth. Drop it from the atlas at the next recut.
+- **w9w10-bridges rope-bridge, ember-slab, charred-log** are World 9's.
 
 ## 10. For curation and later (the lead's notes)
 

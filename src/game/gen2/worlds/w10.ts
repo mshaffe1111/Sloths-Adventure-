@@ -146,8 +146,8 @@ export const W10_PROPS: PropDef[] = [
  *  hangs in the air: STAGE-RULES §6, nothing floats) */
 export const W10_DECOR: WorldManifest['decor'] = [
   { id: 'w10-banners', job: 'bank', items: [{ n: 'banner', w: [50, 66] }, { n: 'brazier', w: [56, 70] }, { n: 'crates', w: [110, 140] }], every: [260, 400] },
-  { id: 'w10-armoury', job: 'bank', items: [{ n: 'rack', w: [96, 120] }, { n: 'crates', w: [110, 140] }, { n: 'banner', w: [50, 66] }], every: [280, 420] },
-  { id: 'w10-cages', job: 'bank', items: [{ n: 'cage', w: [76, 92] }, { n: 'brazier', w: [56, 70] }, { n: 'rack', w: [96, 120] }], every: [300, 440] },
+  { id: 'w10-armoury', job: 'bank', items: [{ n: 'rack', w: [96, 120] }, { n: 'crates', w: [110, 140] }, { n: 'banner', w: [50, 66] }, { n: 'rubble', w: [96, 124] }], every: [280, 420] },
+  { id: 'w10-cages', job: 'bank', items: [{ n: 'cage', w: [76, 92] }, { n: 'brazier', w: [56, 70] }, { n: 'rack', w: [96, 120] }, { n: 'rubble', w: [96, 124] }], every: [300, 440] },
   { id: 'w10-braziers', job: 'bank', items: [{ n: 'brazier', w: [56, 70] }, { n: 'banner', w: [50, 66] }, { n: 'cage', w: [76, 92] }], every: [280, 420] },
 ];
 
