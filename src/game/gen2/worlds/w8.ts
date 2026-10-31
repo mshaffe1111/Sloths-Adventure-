@@ -35,7 +35,7 @@ export const W8_GROUND = { y: G, bankH: 90, pitDepth: 120 } as const;
 
 // ───────────────────────────── the ids ─────────────────────────────
 
-export const W8_CREATURE = { ocelot: 'ocelot', jaguar: 'jaguar', boa: 'boa', tayra: 'tayra', harpy: 'harpy' } as const;
+export const W8_CREATURE = { ocelot: 'ocelot', jaguar: 'jaguar', boa: 'boa', tayra: 'tayra', harpy: 'harpy', boaDoze: 'boaDoze' } as const;
 export type W8CreatureId = (typeof W8_CREATURE)[keyof typeof W8_CREATURE];
 
 export const W8_PROP = {
@@ -66,6 +66,8 @@ export const W8_LESSON = {
   harpy: 'harpy',
   /** 8-5's moon flowers (GRAB-BAG.md D): bounce, then the second jump at the top, up onto a bough no jump reaches */
   bounce: 'w8:bounce',
+  /** 8-1's dozing boa: hop over it (Matt, 2026-10-31) */
+  doze: 'w8:doze',
   /** 8-1's sleeping-bat run (GRAB-BAG.md E): no hides, time the run for the doze */
   batRun: 'w8:batrun',
   /** the first deadly drop from a lit bough (Normal: w8Finish says it before the first) */
@@ -82,6 +84,9 @@ export const W8_CREATURES: CreatureDef[] = [
   // (the coiled guard: it holds its spot and strikes, 1-9's lesson; never walks)
   { id: W8_CREATURE.boa, enemy: 'boa', threat: 3, terrain: 'flat', minGround: 200, w: 58, h: 26, hp: 3, footY: 16, extra: { speed: 1 }, tags: ['boa', 'still', 'topup'] },
   { id: W8_CREATURE.tayra, enemy: 'tayra', threat: 2.5, terrain: 'flat', minGround: 200, w: 46, h: 24, hp: 1, footY: 15, tags: ['tayra', 'hunter', 'small', 'quick', 'topup'] },
+  // (8-1's dozing boa, Matt 2026-10-31: asleep until he walks right into it, a hop over never wakes it; cheap, so 8-1's gentle budget
+  // pays for it, and only the 'dozers' theme's sockets ask for it)
+  { id: W8_CREATURE.boaDoze, enemy: 'boa', threat: 0.4, terrain: 'flat', minGround: 200, w: 58, h: 26, hp: 3, footY: 16, extra: { speed: 1, asleep: true }, tags: ['dozer'] },
   // (the night harpy: crouches, slides, then leaps and stomps; 8-8 and 8-9 only: w8Manifest)
   { id: W8_CREATURE.harpy, enemy: 'harpy', threat: 4, terrain: 'flat', minGround: 260, w: 48, h: 36, hp: 2, footY: 16, tags: ['harpy', 'hunter', 'big', 'night', 'topup'] },
 ];
@@ -147,10 +152,11 @@ export const W8_TIPS: Record<string, string> = {
   [W8_LESSON.drop]: "Careful! It's a long way down.", // (new, needs Matt's approval)
   [W8_LESSON.batRun]: 'Sleeping bats. Nowhere to hide: go while they doze.', // (new, needs Matt's approval)
   [W8_LESSON.bounce]: 'A moon flower! Bounce, then jump again up top.', // (new, needs Matt's approval)
+  [W8_LESSON.doze]: 'A sleeping boa. Hop right over it!', // (new, needs Matt's approval)
 };
 /** the lines that are new in World 8 (the report lists them for Matt) */
 // (the roosts moved from 8-4, now the hand-built Lantern Run, to 8-2's roost blooms)
-export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop], W8_TIPS[W8_LESSON.batRun], W8_TIPS[W8_LESSON.bounce]];
+export const W8_NEW_LINES: readonly string[] = [W8_TIPS[W8_LESSON.dark], W8_TIPS[W8_LESSON.roost], W8_TIPS[W8_LESSON.hunt], W8_TIPS[W8_LESSON.drop], W8_TIPS[W8_LESSON.batRun], W8_TIPS[W8_LESSON.bounce], W8_TIPS[W8_LESSON.doze]];
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -177,7 +183,7 @@ export const W8_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['8-4', '8-7', '8-10'],
   // (the dark is 8-1's, the roosts 8-2's (8-4 is hand-built now), the moonlight glides 8-6's; the shut shrine is said in each fight stage's own gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-2', [W8_LESSON.glide]: '8-6', [W8_LESSON.batRun]: '8-1', [W8_LESSON.bounce]: '8-5' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '8-8', [W8_LESSON.dark]: '8-1', [W8_LESSON.roost]: '8-2', [W8_LESSON.glide]: '8-6', [W8_LESSON.batRun]: '8-1', [W8_LESSON.bounce]: '8-5', [W8_LESSON.doze]: '8-1' },
   tips: W8_TIPS,
 };
 

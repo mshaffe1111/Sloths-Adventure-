@@ -65,21 +65,24 @@ export function drawRoost(ctx: CanvasRenderingContext2D, x: number, groundY: num
     ctx.restore();
   }
   // (asleep: a slow "z" drifting up from the roost, one at a time, fading out)
-  if (waking <= 0) {
-    const u = (t * 0.45 + hash01(x, 40)) % 1;
-    const zx = mid + 20 + 18 * Math.sin(u * 5);
-    const zy = y - 20 - 60 * u;
-    ctx.save();
-    ctx.globalAlpha = Math.sin(u * Math.PI) * 0.85;
-    ctx.fillStyle = '#e9e3ff';
-    ctx.strokeStyle = 'rgba(30, 20, 60, 0.9)';
-    ctx.lineWidth = 3;
-    ctx.font = `bold ${Math.round(16 + 10 * u)}px sans-serif`;
-    ctx.strokeText('z', zx, zy);
-    ctx.fillText('z', zx, zy);
-    ctx.restore();
-  }
+  if (waking <= 0) drawDozeZ(ctx, mid + 20, y - 20, t, hash01(x, 40));
   return true;
+}
+
+/** a sleeper's tell: a slow "z" drifting up from (x, y), one at a time, fading out (the roost's, 8-1's dozing boa) */
+export function drawDozeZ(ctx: CanvasRenderingContext2D, x: number, y: number, t: number, phase = 0): void {
+  const u = (t * 0.45 + phase) % 1;
+  const zx = x + 18 * Math.sin(u * 5);
+  const zy = y - 60 * u;
+  ctx.save();
+  ctx.globalAlpha = Math.sin(u * Math.PI) * 0.85;
+  ctx.fillStyle = '#e9e3ff';
+  ctx.strokeStyle = 'rgba(30, 20, 60, 0.9)';
+  ctx.lineWidth = 3;
+  ctx.font = `bold ${Math.round(16 + 10 * u)}px sans-serif`;
+  ctx.strokeText('z', zx, zy);
+  ctx.fillText('z', zx, zy);
+  ctx.restore();
 }
 
 /** the roost branch's walkable top, as a share of its frame's height (the moss on the log's top: 8-1's roost loft stands on it) */

@@ -62,7 +62,7 @@ import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShad
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
-import { drawBatSweep, drawRoost, drawW8Hide } from './batArt.ts';
+import { drawBatSweep, drawDozeZ, drawRoost, drawW8Hide } from './batArt.ts';
 /**
  * World 8's dark (the Twilight Treetops at night): a violet ink a little lighter than the default, so the painted soil and bark under the
  * boughs still shows faintly (polish bar item 4: dark, never a flat void); the lantern and the fireflies are still the only real light
@@ -6111,6 +6111,8 @@ export class GameEngine {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'boa') {
           if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
+          // (8-1's dozing boa: a slow "z" drifting up while it sleeps, batArt's roost tell)
+          if (enemy.state === 'sleep') drawDozeZ(ctx, enemy.x, enemy.y - 30, this.gameTime);
         } else if (enemy.type === 'caiman') {
           if (!drawCaimanSprite(ctx, enemy, this.gameTime)) drawCaiman(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'tayra') {
