@@ -16,3 +16,7 @@ pokey-anim2   6ae55070c78863f9c62eea58  launched 10:20 PM ET  spec-anim2.json @ 
               KEPT pa-climb-s3 frames 12-32 (one full hand-over-hand cycle, him hugging the trunk) -> move-climb.webp. pa-climb-s11 not
               reviewed (s3 passed). THROWN pa-climbdown-s3 (hardly moves: paws held together by his face, never looks down); climbing down
               plays the climb cycle backward.
+              THROWN pa-rope-s3 (faces the camera and waves his arms in a Y; no travel along a line) and pa-rope-s11 (turns his back
+              mid-cycle, ends facing the camera). With no rope in the picture Wan does not know what his paws hold. The rope keeps Matt's
+              7 cells; next try: Wan with the game's painted rope drawn into the start (and cut back out, as tools/art/rope/cutclip.py
+              does), or Qwen-Edit in-betweens of the cells.
