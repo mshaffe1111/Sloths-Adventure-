@@ -809,8 +809,9 @@ function drawDust(ctx: CanvasRenderingContext2D, v: View, sim: SlideSim) {
     const u = age / DUST_LIFE;
     const q = P(v, d.x + d.side * 0.5 * age, 0.02 + 0.25 * age, d.z);
     if (!q) continue;
-    const w = (0.32 + 0.3 * u + 0.25 * d.big) * q[2];
-    drawFx(ctx, fxFrame('dust', Math.min(0.99, 0.2 + 0.8 * u)), q[0], q[1], w, { ay: 0.85, alpha: (1 - u) * (0.45 + 0.25 * d.big), recolor: '#c9a27a', flipX: d.side < 0 });
+    // (small, and the dark of the cave's wood: lit like the boards, not like a lamp; a bright tan first try glowed in the dark)
+    const w = (0.22 + 0.22 * u + 0.12 * d.big) * q[2];
+    drawFx(ctx, fxFrame('dust', Math.min(0.99, 0.2 + 0.8 * u)), q[0], q[1], w, { ay: 0.85, alpha: (1 - u) * (0.32 + 0.12 * d.big), recolor: '#5e4a36', flipX: d.side < 0 });
   }
 }
 
