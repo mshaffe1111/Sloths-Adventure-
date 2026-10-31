@@ -74,9 +74,9 @@ function frameFor(n: string, x: number): { s: Sheet; f: AnimFrame } | null {
 }
 
 /** pieces that hang in the canopy over the bank they were laid on, and how far above its top their top hangs (px) */
-const HANG: Record<string, number> = { 'rope-bridge': 300, 'leaf-hammock': 280, 'twist-vine': 430, 'branch-b': 340 };
+const HANG: Record<string, number> = { 'rope-bridge': 380, 'leaf-hammock': 340, 'twist-vine': 470, 'branch-b': 420 };
 /** how much a hanging piece shows (the canopy's depth) */
-const HANG_ALPHA = 0.62;
+const HANG_ALPHA = 0.45;
 /** how far under the bank's top a standing piece's foot goes (the bank's lip covers the cut) */
 const SINK = 8;
 /** the buttress corners at a bank's end: how much of the picture's width stands behind the bank (the rest, its branch, reaches out) */
@@ -110,8 +110,11 @@ export function drawW8Decor(ctx: CanvasRenderingContext2D, set: W8DecorSet, plat
         // (hung by its top: the foot it is drawn by is its height under the hanging point)
         // (dimmed: far back in the canopy, so a bridge or a bough up there never reads as one he could reach)
         const h = (d.w * fr.f.h) / fr.f.w;
+        const top = d.b - hang - Math.round(60 * hash01(d.x, 22));
+        // (and never beside a raised bough he can reach: a bridge hung next to 8-1's loft read as the way on)
+        if (platforms.some((q) => q.y < d.b - 60 && q.x < d.x + d.w / 2 + 160 && q.x + q.width > d.x - d.w / 2 - 160 && q.y > top - 160 && q.y < top + h + 200)) continue;
         ctx.globalAlpha = HANG_ALPHA;
-        piece(ctx, img, fr.f, d.x, d.b - hang - Math.round(60 * hash01(d.x, 22)) + h, d.w, !!d.flip);
+        piece(ctx, img, fr.f, d.x, top + h, d.w, !!d.flip);
         ctx.globalAlpha = 1;
       } else piece(ctx, img, fr.f, d.x, d.b + SINK + (d.n === 'shelf-fungus' ? 14 : 0), d.w, !!d.flip);
     }
