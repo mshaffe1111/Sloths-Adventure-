@@ -239,6 +239,8 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   }
   const w5 = stage.proto?.w5;
   for (const c of w5?.chairs ?? []) {
+    // (a wrapped chair is the scenery of a guest who sat: it never pulls, w5Play.ts, so it is not something to do)
+    if (c.wrapped) continue;
     const i = firstIn(samples, { x0: c.x - CHAIR.reach, x1: c.x + CHAIR.reach, y0: c.y - 90, y1: c.y + 40 });
     if (i < 0) off('chairs'); else add(i, 'P', 'soft chair pulls (keep moving)');
   }
