@@ -4851,7 +4851,9 @@ export class GameEngine {
     this.maxLives = startingLives(); // picks up extra lives switched on from the Game Over card
     this.lives = this.maxLives;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
-    this.respawnAtCheckpoint('hurt');
+    // the lives coming back are the sound here, not the respawn take (SN-13)
+    this.respawnAtCheckpoint('hurt', false);
+    sound.playOneUp();
     return true;
   }
 
@@ -4902,7 +4904,7 @@ export class GameEngine {
     this.addFloatingText('Back at your flag', p.x, p.y - 74, '#fde68a', 1.6);
   }
 
-  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {
+  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true) {
     const p = this.player;
     // the rising rivers go back down: he comes back to water at its starting level
     this.floodAt.clear();
@@ -4945,6 +4947,8 @@ export class GameEngine {
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
     this.irisOpen = IRIS_OPEN_SECS;
+    // the respawn take starts with the iris opening, not before it (SN-13): the lost life's two-part sound, the hurt then this
+    if (respawnTake) sound.playRespawn();
     // what he was carrying goes back to its source
     this.kit?.onRespawn();
     this.inputGrace = 0.35;
