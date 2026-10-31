@@ -8,3 +8,7 @@ Clips come back with hf_fs attach on hfpokey/clips/<name>.carrier.png, then tool
               THROWN pa-flip-s3 (mid-turn he is a faceless brown ball for 25 frames, ends facing the camera) and pa-flip-s11 (no turn: he
               tilts upside down and back, ends in a T-pose facing the camera). Wan cannot roll him; the double jump is his own painted roll
               (tuck, v14 somersault, first-round slide sheet 6 upside down) with the leftover turned by code (heroStandard stdFlip).
+              NOT USED pa-slide-s3: a clean belly-first dive slide (frames 4-34, a good loop) and him getting up (35-48), not the sit-slide asked
+              for; nothing in the game uses a belly slide today (ducking only brakes him), so it is kept in the bucket for 7-4 or a future slide
+              move. pa-skid-s3 not needed: the skid is Matt's painted brake pose (first-round slide sheet 1).
+              Job ran 01:12-01:47Z (35.2 min) ~ $1.61. Tonight's total: ~$1.61 of the $20 cap.
