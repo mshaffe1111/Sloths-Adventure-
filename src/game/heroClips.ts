@@ -112,18 +112,7 @@ export function heroClipsAreLive(): boolean {
   return live;
 }
 /** forget everything (a new stage, a respawn) */
-/** the fastest he has risen (px/s, negative) since he last left the ground: a hop that never rose faster than SMALL_HOP keeps the painted frames */
-let airRise = 0;
-/** a hop rising slower than this (px/s) is too small for the video jump's big arms-up leap: the vault over a trunk's top (190), a step
- * off a ledge (0) */
-export const SMALL_HOP = 300;
-/** pure: the fastest rise of this time in the air, after this frame (0 on the ground or holding on) */
-export function nextAirRise(prev: number, p: Pick<PlayerState, 'grounded' | 'climbing' | 'hanging' | 'isVineSwinging' | 'vy'>): number {
-  return p.grounded || p.climbing || p.hanging || p.isVineSwinging ? 0 : Math.min(prev, p.vy);
-}
-
 export function resetHeroClips() {
-  airRise = 0;
   playing = null;
   stillSince = -1;
   lastTime = -1;
@@ -155,18 +144,12 @@ export function isCalm(p: PlayerState, time: number, ev: ClipCalm): boolean {
  */
 export const MOVE_SHEETS: Record<string, string> = {
   run: 'move-run', walk: 'move-walk', jab: 'move-jab', cross: 'move-cross', hook: 'move-hook', kick: 'move-kick', kick2: 'move-kick2', mega: 'move-mega',
-  climb: 'move-climb', swing: 'move-swing', jump: 'move-jump', flip: 'move-flip',
+  climb: 'move-climb', swing: 'move-swing', flip: 'move-flip',
 };
 /** the climb sheet is one full hand-over-hand cycle (left reach, right reach) over this much height */
 export const CLIMB_CYCLE_PX = 110;
 /** the swing sheet runs from the back of the swing to the front; this angle (radians) or more is the end of the sheet */
 export const SWING_REACH = 1.0;
-/**
- * the jump sheet runs from just after take-off to the bottom of the fall, by vertical speed from this (rising, px/s) to this (falling).
- * Rising faster than the first, the painted take-off stretch (the standard hero's `launch`) shows instead: the clip's own take-off frames
- * turn him toward the camera.
- */
-export const JUMP_VY: [number, number] = [-580, 620];
 /** strides per turn of walkCycle (the same rate as the standard hero's cycle, so the feet keep pace with the ground) */
 const STRIDE_RATE = 0.6;
 const WALK_MAX = 90;
@@ -203,10 +186,6 @@ export function flipU(somersaultAngle: number): number {
   // eased as the code-turned flip was (heroSprite flipPose): a quick middle, a gentle start and finish
   return Math.min(0.999, u * u * (3 - 2 * u));
 }
-/** pure: how far through the jump sheet (0 take-off .. 1 falling fast) a vertical speed is */
-export function jumpU(vy: number): number {
-  return Math.max(0, Math.min(1, (vy - JUMP_VY[0]) / (JUMP_VY[1] - JUMP_VY[0])));
-}
 
 /** the redrawn frame for a move or the run/walk, or null when he is doing something else or the sheet is not there */
 export function movePick(p: PlayerState): ClipFrame | null {
@@ -237,12 +216,6 @@ export function movePick(p: PlayerState): ClipFrame | null {
     if (!hasClip(sheet)) return null;
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, flipU(p.somersaultAngle)));
   }
-  // an ordinary jump (not a dive or a bounce, which keep their own frames): take-off, the top, the fall, by vertical speed
-  if (!p.grounded && !p.hanging) {
-    const sheet = MOVE_SHEETS.jump;
-    if (p.isDoubleJumping || p.diving || p.bounce || p.vy < JUMP_VY[0] || airRise > -SMALL_HOP || !hasClip(sheet)) return null;
-    return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, jumpU(p.vy)));
-  }
   if (!p.grounded || p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.pushing) return null;
   const speed = Math.abs(p.vx);
   if (speed <= 10) return null;
@@ -262,7 +235,6 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
     const c = HERO_CLIPS.cheer;
     return frameOf('cheer', Math.floor((time - p.cheerAt) * c.fps), Math.min(1, (time - p.cheerAt) / CLIP_FADE));
   }
-  airRise = nextAirRise(airRise, p);
   // the redrawn run, walk and fight moves (only while hurt is not showing: the flinch keeps its own frames)
   if (!ev.isHurt(time)) {
     const mv = movePick(p);

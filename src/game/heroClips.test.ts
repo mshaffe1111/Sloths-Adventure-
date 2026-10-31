@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clipPick, edgeClip, flipU, nextAirRise, SMALL_HOP, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
+import { clipPick, edgeClip, flipU, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
 import { HERO_CLIPS } from './heroClipsData.ts';
 import type { PlayerState } from './types.ts';
 
@@ -76,13 +76,3 @@ test('the painted flip runs through its sheet once, eased, and holds its last fr
 });
 
 
-test('a small hop (the vault over a trunk top, a step off a ledge) keeps the painted frames; a real jump gets the video leap', () => {
-  const air = { grounded: false, climbing: false, hanging: false, isVineSwinging: false };
-  let r = 0;
-  for (const vy of [-190, -60, 30, 150]) r = nextAirRise(r, { ...air, vy });
-  assert.ok(r > -SMALL_HOP, 'the vault hop stays small');
-  r = 0;
-  for (const vy of [-576, -400, 0, 300]) r = nextAirRise(r, { ...air, vy });
-  assert.ok(r <= -SMALL_HOP, 'a jump is a jump all the way down');
-  assert.equal(nextAirRise(-576, { ...air, grounded: true, vy: 0 }), 0, 'landing resets it');
-});
