@@ -112,18 +112,7 @@ export function heroClipsAreLive(): boolean {
   return live;
 }
 /** forget everything (a new stage, a respawn) */
-/** on a trunk: where he was last frame, and whether he is on his way down (the engine moves him by y alone, vy stays 0) */
-let climbY = NaN;
-let climbingDown = false;
-/** pure: which way a climb is going, from his height now and last frame (screen y grows downward); a pause keeps the last way */
-export function climbWay(prevY: number, y: number, wasDown: boolean): boolean {
-  if (!(Math.abs(y - prevY) > 0.5)) return wasDown;
-  return y > prevY;
-}
-
 export function resetHeroClips() {
-  climbY = NaN;
-  climbingDown = false;
   playing = null;
   stillSince = -1;
   lastTime = -1;
@@ -155,7 +144,7 @@ export function isCalm(p: PlayerState, time: number, ev: ClipCalm): boolean {
  */
 export const MOVE_SHEETS: Record<string, string> = {
   run: 'move-run', walk: 'move-walk', jab: 'move-jab', cross: 'move-cross', hook: 'move-hook', kick: 'move-kick', kick2: 'move-kick2', mega: 'move-mega',
-  climb: 'move-climb', climbdown: 'move-climbdown', swing: 'move-swing', jump: 'move-jump', flip: 'move-flip',
+  climb: 'move-climb', swing: 'move-swing', jump: 'move-jump', flip: 'move-flip',
 };
 /** the climb sheet is one full hand-over-hand cycle (left reach, right reach) over this much height */
 export const CLIMB_CYCLE_PX = 110;
@@ -218,14 +207,9 @@ export function movePick(p: PlayerState): ClipFrame | null {
   }
   // the climb: the frame follows the height he has climbed, so his paws keep pace with the trunk
   if (p.climbing) {
-    // (on the way down, his own climb-down cycle when it exists: looking down, a foot reaching first, AN-13)
-    const sheet = climbingDown && hasClip(MOVE_SHEETS.climbdown) ? MOVE_SHEETS.climbdown : MOVE_SHEETS.climb;
+    // (climbing down plays the cycle backward: the clip made for a climb down, pa-climbdown-s3, hardly moved)
+    const sheet = MOVE_SHEETS.climb;
     if (!hasClip(sheet)) return null;
-    if (sheet === MOVE_SHEETS.climbdown) {
-      // the down sheet plays forward as he goes down
-      const d = ((((p.y / CLIMB_CYCLE_PX) % 1) + 1) % 1);
-      return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, d));
-    }
     const u = ((((-p.y / CLIMB_CYCLE_PX) % 1) + 1) % 1);
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, u));
   }
@@ -266,13 +250,6 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
   if (p.cheerAt !== undefined && hasClip('cheer')) {
     const c = HERO_CLIPS.cheer;
     return frameOf('cheer', Math.floor((time - p.cheerAt) * c.fps), Math.min(1, (time - p.cheerAt) / CLIP_FADE));
-  }
-  if (p.climbing) {
-    climbingDown = Number.isNaN(climbY) ? false : climbWay(climbY, p.y, climbingDown);
-    climbY = p.y;
-  } else {
-    climbY = NaN;
-    climbingDown = false;
   }
   // the redrawn run, walk and fight moves (only while hurt is not showing: the flinch keeps its own frames)
   if (!ev.isHurt(time)) {

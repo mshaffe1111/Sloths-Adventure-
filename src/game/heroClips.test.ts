@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { climbWay, clipPick, edgeClip, flipU, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
+import { clipPick, edgeClip, flipU, footfallsBetween, heroClipsLive, isCalm, IDLE_CLIPS, moveIndex, RUN_FOOTFALLS } from './heroClips.ts';
 import { HERO_CLIPS } from './heroClipsData.ts';
 import type { PlayerState } from './types.ts';
 
@@ -75,9 +75,3 @@ test('the painted flip runs through its sheet once, eased, and holds its last fr
   assert.equal(moveIndex(12, flipU(40)), 11);
 });
 
-test('a climb knows which way it is going from his height alone, and a pause keeps the last way', () => {
-  assert.equal(climbWay(500, 492.7, false), false, 'going up');
-  assert.equal(climbWay(500, 507.3, false), true, 'going down');
-  assert.equal(climbWay(500, 500, true), true, 'still: keeps going down');
-  assert.equal(climbWay(500, 500, false), false, 'still: keeps going up');
-});
