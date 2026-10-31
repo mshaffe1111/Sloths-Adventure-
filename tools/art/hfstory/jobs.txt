@@ -38,3 +38,6 @@ in-game round 4: KEPT w10-storm (v62, top-sky streak painted out; upright shows 
   live w3-storm THROWN: rain moved only in blotches
 tier3 6ae66b01c78863f9c62f52da created 22:26Z: raft repaint, W9 dusk/night third try, W6 day
 tier3 verdicts: KEPT raft x62 (repaint of the unused raft plate), 9-dusk x62 (volcano behind, basalt ground). THROWN 6-day x60/x70 (water floor again: W6 day keeps its scenery), 9-night (not reviewed further: mem-gates keeps its scenery)
+wp-full6 6ae66d290e0338d1bb7d47bc created 22:35Z: full pass raft x62, 9-dusk x62
+  live w6-dusk THROWN: 3% moved, one corner. live-b total ~22 min ~$1.0
+KEPT raft x62 full: replaces the unused flat raft plate; wired to W2 mid beats 1 and 13 (the raft lines)

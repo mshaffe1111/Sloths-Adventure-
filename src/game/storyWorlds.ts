@@ -116,7 +116,7 @@ const W2 = chapter({ name: C2, w: 2, m: 'day', cue: 'comedy', i: 0.4, base: { pa
 
 // ART HOOK: the village building Pokey's raft, one log at a time (reference/ART-TO-GET.md)
 const W2_MID = chapter({ name: MID[2], w: 2, m: 'day', cue: 'comedy', i: 0.4, base: { particles: 'sparkles' } }, [
-  N('The village had promised Pokey a raft. They started building it the morning he arrived. By the afternoon, they had agreed on what kind of wood.', 'P:idle@.24 PO:carry_stand@.66*.9 TC:point_bell@.86*.9', { sting: 'laugh' }),
+  N('The village had promised Pokey a raft. They started building it the morning he arrived. By the afternoon, they had agreed on what kind of wood.', 'P:idle@.24 PO:carry_stand@.66*.9 TC:point_bell@.86*.9', { sting: 'laugh', p: { plate: 'raft' } }),
   N('Pokey sat on the bank and watched them.', 'P:tired@.3 D@.6^.4'),
   D('Pokey. Your foot\'s tapping.', 'P:tired@.3 D:puzzled@.6^.4'),
   P('It is not.', 'P:talk@.3 D@.6^.4'),
@@ -129,7 +129,7 @@ const W2_MID = chapter({ name: MID[2], w: 2, m: 'day', cue: 'comedy', i: 0.4, ba
     'P:worried@.3 D@.6^.4', { cue: 'reveal', i: 0.35 }),
   P('The snake kept scratching at his. I thought he had fleas.', 'P:talk@.3 D@.6^.4'),
   D('Snakes don\'t get fleas, Pokey.', '=', { cue: 'dread', i: 0.35 }),
-  N('Down on the bank, a sloth carefully fitted the first log of the raft into place, stepped back, and looked at it until lunch.', 'P:idle@.24 PO:carry_stand@.66*.9', { cue: 'comedy', i: 0.3 }),
+  N('Down on the bank, a sloth carefully fitted the first log of the raft into place, stepped back, and looked at it until lunch.', 'P:idle@.24 PO:carry_stand@.66*.9', { cue: 'comedy', i: 0.3, p: { plate: 'raft' } }),
   P('She wants me to be nice to the snake.', 'P:talk@.3 D@.6^.4', { cue: 'tender', i: 0.4 }),
   D('She was nice to a wasp once. Now it visits. It brings friends.', '=', { sting: 'laugh' }),
   P('What\'s in the pouch?', 'P:talk@.3 D@.6^.4', { cue: 'sorrow', i: 0.3 }),
