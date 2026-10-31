@@ -177,7 +177,7 @@ export const W8_MANIFEST: WorldManifest = {
   pitDepth: W8_GROUND.pitDepth,
   // (the first 1,300 px from the spawn one unbroken ground: safeStart.test.ts, stageGenerator SAFE_START)
   safeStart: 1300,
-  // (a missed swing or glide sets him back on his ledge: a heart on Normal, not a life (Matt), nothing on Easy (the lead), 2026-10-31)
+  // (on Normal a missed swing or glide costs a heart, not a life: Matt, 2026-10-31)
   heartFalls: true,
   corridor: { top: G - 180, bottom: G + 80, soft: 60 },
   creatures: W8_CREATURES,
