@@ -434,12 +434,15 @@ export const TitleScene = React.forwardRef<
     hold?: number;
     /** the box the layout keeps clear for the pair */
     stageSelector: string;
+    /** sideways: the block sitting on the log under the pair (the version and the update buttons); the pair stand just above it and
+     * the log grows to carry it, so nothing covers Pokey and Meeca (Matt, 2026-10-31) */
+    floorSelector?: string;
     /** a menu is open over the scene: it draws less often */
     dim?: boolean;
     /** behind a menu screen (the Trophy Room, the map): the same painting, depth, air and drift, without the pair and the reveal */
     backdrop?: boolean;
   }
->(({ worlds, hold = 13, stageSelector, dim = false, backdrop = false }, ref) => {
+>(({ worlds, hold = 13, stageSelector, floorSelector, dim = false, backdrop = false }, ref) => {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const dimRef = useRef(dim);
   dimRef.current = dim;
@@ -494,6 +497,7 @@ export const TitleScene = React.forwardRef<
     const shade = document.createElement('canvas');
 
     let box: DOMRect | null = null;
+    let floor: DOMRect | null = null;
     let boxAt = 0;
     let raf = 0;
     let last = 0;
@@ -531,6 +535,7 @@ export const TitleScene = React.forwardRef<
       }
       if (!backdrop && (!box || now - boxAt > 600)) {
         box = document.querySelector(stageSelector)?.getBoundingClientRect() ?? null;
+        floor = floorSelector ? (document.querySelector(floorSelector)?.getBoundingClientRect() ?? null) : null;
         boxAt = now;
       }
       const c = cv.getContext('2d');
@@ -564,10 +569,17 @@ export const TitleScene = React.forwardRef<
       // (never drawn more than about twice the size of their painted frames)
       const sharp = (POKEY_CAST.height * 2.1) / dpr;
       // (sideways the box runs to the bottom of the screen: the pair stand on the log with a band of its face showing under them)
-      const H = Math.min(sharp, b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : Math.min(b.height / 1.3, b.width * 0.6)) : h * 0.3);
+      // (sideways with the version block on the log: the pair stand just above the block, and the log is made wide and deep enough that
+      // the block sits on its face, never over the pair)
+      const fl = b && !portrait && floor && floor.height > 4 && floor.top > b.top + 40 ? floor : null;
+      const H = Math.min(
+        sharp,
+        b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : fl ? Math.min((fl.top - 4 - b.top) * 0.97, b.width * 0.6) : Math.min(b.height / 1.3, b.width * 0.6)) : h * 0.3,
+      );
       const cx = b ? b.left + b.width / 2 : w / 2;
-      const logW = H * 1.95;
-      const feet = b ? b.bottom - (portrait ? H * 0.05 : logW * 0.457 * 0.45) : h * 0.7;
+      // (the log face runs from the feet to about 0.32 of its width below them)
+      const logW = fl ? Math.min(H * 2.7, Math.max(H * 1.95, (fl.bottom + 8 - (fl.top - 4)) / 0.3, fl.width + 24)) : H * 1.95;
+      const feet = b ? (fl ? fl.top - 4 : b.bottom - (portrait ? H * 0.05 : logW * 0.457 * 0.45)) : h * 0.7;
       const logH = logImg && logImg.naturalWidth ? (logW * logImg.naturalHeight) / logImg.naturalWidth : logW * 0.46;
       const logTop = feet - logH * LOG_TOP;
       const logX = cx - logW / 2;
