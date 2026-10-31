@@ -80,6 +80,88 @@ def spec4(commit):
     print(len(cl), 'clips')
 
 
+TWEEN = ('Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: {what}. Draw '
+         'this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn '
+         'animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, {grip}. Keep '
+         'everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage '
+         'wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same '
+         'soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.')
+TWEEN_NEG = ('extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, '
+             'missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view')
+
+
+def spec5(commit):
+    """round 3: Qwen-Edit in-betweens of the rope cells and of the vine poses, and the punch from the cross's own frame"""
+    st = f'gh:{commit}:reference/prop-sheets/qa-notes/pokey-anim/starts/'
+    rope = ('hanging from a rope just above his head and moving along it hand over hand to the right', 'his paws at the very top, '
+            'where the rope runs, at the same height as in both pictures')
+    vine = ('hanging by his paws from a vine and swinging on it', 'his top paw gripping at exactly the same point as in both pictures')
+    ed = []
+    cyc = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6']
+    for a, b in zip(cyc, cyc[1:] + cyc[:1]):
+        ed.append({'name': f'tw-rope-{a}{b}', 'src': st + f'rope_{a}.png', 'refs': [st + f'rope_{b}.png'], 'w': 768, 'h': 768,
+                   'prompt': TWEEN.format(what=rope[0], grip=rope[1]), 'neg': TWEEN_NEG, 'seeds': [1, 2, 3], 'lora': 0.6})
+    for a, b in (('still', 'forward'), ('still', 'back')):
+        ed.append({'name': f'tw-vine-{a}{b}', 'src': st + f'vine_{a}.png', 'refs': [st + f'vine_{b}.png'], 'w': 768, 'h': 768,
+                   'prompt': TWEEN.format(what=vine[0], grip=vine[1]), 'neg': TWEEN_NEG, 'seeds': [1, 2, 3], 'lora': 0.6})
+    what = ('stands facing right in a ready guard, throws one quick straight jab forward with his near arm, the fist shooting straight out '
+            'to the right at shoulder height, then pulls it straight back into the guard; his body and face stay turned toward us the whole '
+            'time, his plain cream bandage wrist wraps and brown fur exactly as in the picture, feet planted in the same spot')
+    neg = NEG + ', red stripes, striped wraps, back view, turning away, facing away, turning his back'
+    cl = [{'name': f'pa-jab-s{sd}', 'src': st + 'punch_cross.png', 'prompt': M + what, 'neg': neg, 'seed': sd, 'w': 832, 'h': 480}
+          for sd in (3, 5, 11)]
+    (H / 'spec-anim5.json').write_text(json.dumps({'tag': 'pokey-anim5', 'edits': ed, 'motion': MOTION, 'clips': cl}, indent=1))
+    print(len(ed), 'edit items,', len(cl), 'clips')
+
+
+SLIDE_KEEP = ('Keep him seen exactly from behind as in Picture 1, sitting on his bottom with his legs stretched out in front of him so '
+              'only the soles of his feet show below him, the same brown fur seen from the back, the same pale bandage wrist wraps, the '
+              'same thin brown satchel strap running from his left shoulder down to the small brown bag on his right hip, the same thin '
+              'dark outline, the same soft painted cartoon style, the same size and the same flat plain grey background. Nothing else in '
+              'the picture.')
+SLIDE_NEG = ('face, front view, side view, standing, extra limbs, extra arms, extra sloth, chute, floor, background scenery, photo, '
+             '3d render, text, watermark, blurry, bag on the left hip, two bags')
+
+
+def spec6(commit):
+    """7-4's slide from behind: his grip pose (arms hanging) given a real slide's balance and lean (Qwen-Edit, Pokey model 0.4)"""
+    st = f'gh:{commit}:reference/prop-sheets/qa-notes/pokey-anim/starts/'
+    poses = {
+        'slide': 'The sloth in Picture 1 is sliding fast down a smooth chute away from us, sitting the way the sloth in Picture 2 sits: '
+                 'he leans back a little and holds both arms out low to the sides for balance, paws open, elbows slightly bent.',
+        'leanR': 'The sloth in Picture 1 is sliding fast down a smooth chute away from us and leaning his whole body over to the right into '
+                 'a curve: his head and back tip to the right, his right arm reaches out low to the right for balance, his left arm is '
+                 'raised up and out to the left.',
+        'leanL': 'The sloth in Picture 1 is sliding fast down a smooth chute away from us and leaning his whole body over to the left into '
+                 'a curve: his head and back tip to the left, his left arm reaches out low to the left for balance, his right arm is '
+                 'raised up and out to the right.',
+    }
+    ed = [{'name': f'slide-{n}', 'src': st + 'slide_grip.png', 'refs': [st + 'slide_ref9.png'] if n == 'slide' else [], 'w': 768, 'h': 768,
+           'prompt': t + ' ' + SLIDE_KEEP, 'neg': SLIDE_NEG, 'seeds': [1, 2, 3], 'lora': 0.4} for n, t in poses.items()]
+    (H / 'spec-anim6.json').write_text(json.dumps({'tag': 'pokey-anim6', 'edits': ed}, indent=1))
+    print(len(ed), 'edit items')
+
+
+def spec7(commit):
+    """7-4's slide poses again with no chute in the words (anim6 drew one under him, and turned the leans diagonal)"""
+    st = f'gh:{commit}:reference/prop-sheets/qa-notes/pokey-anim/starts/'
+    poses = {
+        'slide': 'The sloth in Picture 1, still seen exactly from behind, leans back a little and holds both arms out low to the sides '
+                 'for balance, paws open, elbows slightly bent, as if riding fast.',
+        'leanR': 'The sloth in Picture 1, still seen exactly from behind and still sitting, leans his whole body over to the right: his '
+                 'head and back tip about fifteen degrees to the right, his right arm reaches out low to the right for balance, his left '
+                 'arm is raised up and out to the left.',
+        'leanL': 'The sloth in Picture 1, still seen exactly from behind and still sitting, leans his whole body over to the left: his '
+                 'head and back tip about fifteen degrees to the left, his left arm reaches out low to the left for balance, his right '
+                 'arm is raised up and out to the right.',
+    }
+    neg = SLIDE_NEG + ', slide, chute, ramp, track, rails, slope, diagonal view, three-quarter view, motion lines'
+    ed = [{'name': f'slide2-{n}', 'src': st + 'slide_grip.png', 'refs': [st + 'slide_ref9.png'] if n == 'slide' else [], 'w': 768, 'h': 768,
+           'prompt': t + ' ' + SLIDE_KEEP, 'neg': neg, 'seeds': [4, 5, 6], 'lora': 0.4} for n, t in poses.items()]
+    (H / 'spec-anim7.json').write_text(json.dumps({'tag': 'pokey-anim7', 'edits': ed}, indent=1))
+    print(len(ed), 'edit items')
+
+
 def spec2(commit):
     cl = []
     for mv, (what, w, h) in CLIPS2.items():
@@ -91,4 +173,4 @@ def spec2(commit):
 
 
 if __name__ == '__main__':
-    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4}.get(sys.argv[1], spec)(sys.argv[2])
+    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4, 'spec5': spec5, 'spec6': spec6, 'spec7': spec7}.get(sys.argv[1], spec)(sys.argv[2])
