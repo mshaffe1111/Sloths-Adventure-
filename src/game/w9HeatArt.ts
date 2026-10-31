@@ -138,3 +138,21 @@ export function drawW9Surge(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneStat
     ctx.drawImage(pc, f.x, f.y, f.w, f.h, front - w * 0.8, z.baseY - h + 8, w, h);
   }
 }
+
+/** one of World 9's painted ash streaks (w9/pieces.webp 'gust0'..'3', the hot wind's look 'ash'), `len` long, its middle at (x, y). False
+ *  while the sheet loads (the game's own painted gust strip stands in) */
+export function drawW9AshStreak(ctx: CanvasRenderingContext2D, i: number, x: number, y: number, len: number, alpha: number, flip: boolean): boolean {
+  const pc = piecesImg();
+  const f = PF_[`gust${((i % 4) + 4) % 4}`];
+  if (!pc || !f) return false;
+  const h = (f.h * len) / f.w;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  if (flip) {
+    ctx.translate(x * 2, 0);
+    ctx.scale(-1, 1);
+  }
+  ctx.drawImage(pc, f.x, f.y, f.w, f.h, x - len / 2, y - h / 2, len, h);
+  ctx.restore();
+  return true;
+}

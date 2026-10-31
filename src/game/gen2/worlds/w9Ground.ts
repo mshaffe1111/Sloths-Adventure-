@@ -67,6 +67,8 @@ export const W9_THEME = {
   lavafalls: 'w9:t-lavafalls',
   /** 9-6: the lava surges down the cooled channels (N6: w9Heat.ts) */
   surges: 'w9:t-surges',
+  /** 9-1 / 9-5: the hot ash wind (N7: w9Heat.ts) */
+  gusts: 'w9:t-gusts',
 } as const;
 export type W9Theme = (typeof W9_THEME)[keyof typeof W9_THEME];
 
@@ -617,7 +619,7 @@ const hunterBrink = section({
 // ───────────────────────────── 9-1 Pepper Air's gates and themes ─────────────────────────────
 
 /** a sprint gate (9-1): a plain run, nothing that can hurt, and the roll's theme opens */
-const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts', name: string, extra: Socket[] = []): SectionTemplate => {
+const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts' | 'gusts', name: string, extra: Socket[] = []): SectionTemplate => {
   const k = knobs('', 'a', 2, [200, 240]);
   return section({
     id: `w9-pepper-gate-${theme}`,
@@ -877,7 +879,7 @@ const fernLong = section({
 // ───────────────────────────── 9-5 Vent Riding (sprint) ─────────────────────────────
 
 /** a vent-riding gate (9-5): Dot's line about the warm air, a first glide over a vent (a soft chasm), and the roll's theme opens */
-const ventGate = (theme: 'glides' | 'bursts' | 'logs' | 'flares', name: string): SectionTemplate =>
+const ventGate = (theme: 'glides' | 'bursts' | 'logs' | 'flares' | 'gusts', name: string): SectionTemplate =>
   section({
     id: `w9-vent-gate-${theme}`,
     name: `vent riding: ${name} (gate)`,
@@ -1369,6 +1371,8 @@ export const W9_HEAT_GATES = {
   lavafalls6: huntGate('lavafalls', 'hunt'),
   lavafalls9: huntGate('lavafalls', 'fight'),
   surges6: huntGate('surges', 'hunt'),
+  gusts1: sprintGate('gusts', 'the hot wind', [scenery('smoke', 'a', [0.5, 0.6], 0.9)]),
+  gusts5: ventGate('gusts', 'the hot wind'),
 } as const;
 
 /** the helpers w9Bob.ts builds its sections with (the same as this file's) */

@@ -306,7 +306,7 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
  */
 export type SectionZone =
   | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
-  | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number }
+  | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number; look?: 'ash' }
   // (World 9's lava surge down a cooled channel, GRAB-BAG.md N6: the piece `on` is the channel's floor; the surge burns whoever is on it
   // while it runs (a geyser zone, look 'surge'), its quiet spell always long enough to cross the floor: pipeline SURGE)
   | { kind: 'surge'; on: string; lesson?: boolean };

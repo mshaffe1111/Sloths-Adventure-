@@ -13,6 +13,7 @@ import { W9_LESSON } from './w9.ts';
 import { W9_HEAT_GATES, W9_THEME, W9H } from './w9Ground.ts';
 
 const { bank, up, down, petals, prop, tip, foe, thread, section, LIVE, MID, ANY, SMALL, CATS } = W9H;
+const ALL5 = W9H.ALL;
 type T = Socket['t'];
 
 /** a flare slab on `on`, `t` along it (Easy keeps it: it is the theme's beat, softened by its beat, never removed) */
@@ -241,7 +242,97 @@ const surgeChasm = section({
   mirrorable: true,
 });
 
+// ───────────────────────────── the hot ash wind (9-1, 9-5) ─────────────────────────────
+
+const GUST = W9_LESSON.gust;
+/** the gust over the gap before `on`: a headwind (blowing back at him, 9-1: wait for the lull) or a tailwind (9-5: it carries the glide) */
+const head = (on: string, idle: SectionPiece['w'] = [2.8, 3.4]) => ({ kind: 'wind' as const, on, dir: -1 as const, idle, force: 110, look: 'ash' as const });
+const tail = (on: string) => ({ kind: 'wind' as const, on, dir: 1 as const, idle: [2.6, 3.2] as const, force: 100, look: 'ash' as const });
+
+/** the first gust (every gusts roll of 9-1): a headwind over a wide crust chasm (soft on every setting), a long lull, Dot's line on the way in */
+const firstGust = section({
+  id: 'w9-first-gust',
+  name: 'the first hot wind',
+  archetypes: ['sprint'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: GUST,
+  uses: [W9_THEME.gusts],
+  maxPerStage: 1,
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [340, 380]), W9H.wide('b', 'a', [320, 360], [0.6, 0.7]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  last: 'c',
+  zones: [head('b', [3.8, 4.2])],
+  sockets: [tip(GUST, 'a', 0.2), petals('a', 'a', 0.6, 1), petals('b', 'b', 0.4, 2, 80), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** a lava chasm with a headwind across it */
+const gustGap = section({
+  id: 'w9-gust-gap',
+  name: 'hot wind over the chasm',
+  archetypes: ['sprint'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W9_THEME.gusts, GUST],
+  extraSeconds: WAIT,
+  pieces: [bank('a', [320, 360]), W9H.lava('b', 'a', [320, 360], [0.55, 0.7]), up('k', 'b', 32, [140, 160]), down('c', 'k', 32, [200, 240])],
+  last: 'c',
+  zones: [head('b')],
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** two chasms, each with its own wind, out of step */
+const gustPair = section({
+  id: 'w9-gust-pair',
+  name: 'two hot winds',
+  archetypes: ['sprint'],
+  phases: MID,
+  difficulty: 7,
+  uses: [W9_THEME.gusts, GUST],
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [300, 340]), W9H.lava('b', 'a', [380, 420], [0.55, 0.7]), W9H.lava('c', 'b', [300, 340], [0.55, 0.7])],
+  last: 'c',
+  zones: [head('b'), head('c')],
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 80), petals('c', 'c', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-5: a tailwind carrying a glide over the vents' chasm (it only helps: the leaf crosses without it) */
+const gustGlide = section({
+  id: 'w9-gust-glide',
+  name: 'hot wind behind the leaf',
+  archetypes: ['sprint'],
+  phases: ALL5,
+  difficulty: 5,
+  uses: [W9_THEME.gusts],
+  extraSeconds: WAIT,
+  pieces: [bank('a', [300, 340]), W9H.glide('b', 'a', [320, 360], [0.6, 0.72]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  last: 'c',
+  zones: [tail('b')],
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-5: two glides, a tailwind over each */
+const gustTwin = section({
+  id: 'w9-gust-twin',
+  name: 'two glides on the hot wind',
+  archetypes: ['sprint'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W9_THEME.gusts],
+  extraSeconds: WAIT * 2,
+  pieces: [bank('a', [300, 340]), W9H.glide('b', 'a', [360, 400], [0.6, 0.72]), W9H.glide('c', 'b', [300, 340], [0.6, 0.72])],
+  last: 'c',
+  zones: [tail('b'), tail('c')],
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 80), petals('c', 'c', 0.5, 1)],
+  mirrorable: false,
+});
+
 export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
+  W9_HEAT_GATES.gusts1, W9_HEAT_GATES.gusts5, firstGust, gustGap, gustPair, gustGlide, gustTwin,
   W9_HEAT_GATES.surges6, firstSurge, surgeRun, surgeTwin, surgeChasm,
   W9_HEAT_GATES.flares5, W9_HEAT_GATES.flares8, firstFlare, flarePair, flareChasm, flareGlide, flareLedge,
   W9_HEAT_GATES.lavafalls6, W9_HEAT_GATES.lavafalls9, firstFall, fallPair, fallGuard, fallChasm,
@@ -250,6 +341,7 @@ export const W9_HEAT_SECTIONS: readonly SectionTemplate[] = [
 /** which stages hold which (GRAB-BAG.md §4: neighbours in play share none) */
 export const W9_HEAT_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_HEAT_GATES.flares5.id]: [5], [W9_HEAT_GATES.flares8.id]: [8], [firstFlare.id]: [5, 8], [flarePair.id]: [5, 8], [flareChasm.id]: [5, 8], [flareGlide.id]: [5], [flareLedge.id]: [8],
+  [W9_HEAT_GATES.gusts1.id]: [1], [firstGust.id]: [1], [gustGap.id]: [1], [gustPair.id]: [1], [W9_HEAT_GATES.gusts5.id]: [5], [gustGlide.id]: [5], [gustTwin.id]: [5],
   [W9_HEAT_GATES.surges6.id]: [6], [firstSurge.id]: [6], [surgeRun.id]: [6], [surgeTwin.id]: [6], [surgeChasm.id]: [6],
   [W9_HEAT_GATES.lavafalls6.id]: [6], [W9_HEAT_GATES.lavafalls9.id]: [9], [firstFall.id]: [6, 9], [fallPair.id]: [6, 9], [fallGuard.id]: [6, 9], [fallChasm.id]: [6, 9],
 };

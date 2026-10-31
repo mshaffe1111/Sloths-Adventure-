@@ -1006,7 +1006,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
             const [x0, x1] = mirrored ? [land.x + land.width, after.x] : [after.x + after.width, land.x];
             // (the way he travels, mirrored or not: a mirrored section is still played left to right)
             const dir = z.dir ?? 1;
-            zones.push({ kind: 'wind', x0: R(Math.min(x0, x1) - 140), x1: R(Math.max(x0, x1) + 140), top: lipY - 260, bottom: lipY + 80, baseY: lipY, dir, period, warn, active, offset: R(srng() * period * 10) / 10, force: Math.min(160, z.force ?? 110) });
+            zones.push({ kind: 'wind', ...(z.look ? { look: z.look } : {}), x0: R(Math.min(x0, x1) - 140), x1: R(Math.max(x0, x1) + 140), top: lipY - 260, bottom: lipY + 80, baseY: lipY, dir, period, warn, active, offset: R(srng() * period * 10) / 10, force: Math.min(160, z.force ?? 110) });
           }
         }
       }

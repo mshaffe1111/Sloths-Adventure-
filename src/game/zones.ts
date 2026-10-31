@@ -57,9 +57,10 @@ export interface Zone {
   /**
    * World 9's hazards on the geyser's and the tide's rhythm, each drawn and read as its own thing (GRAB-BAG.md): a `flare` slab on the
    * route whose cracks glow and flare (a low geyser zone, N5), a `lavafall` pouring from above (a geyser zone from the sky, N9), a lava
-   * `surge` down a cooled channel (a tide, N6). They hurt and are checked as their kind; the inspector names them by their look
+   * `surge` down a cooled channel (a low geyser zone along its floor, N6), the hot `ash` wind (a wind zone, N7). They act and are checked as
+   * their kind; the inspector names the geyser ones by their look
    */
-  look?: 'flare' | 'lavafall' | 'surge';
+  look?: 'flare' | 'lavafall' | 'surge' | 'ash';
 }
 
 export type ZonePhase = 'idle' | 'warn' | 'active';

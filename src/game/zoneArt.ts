@@ -9,7 +9,7 @@ import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { drawW9Crumble, drawW9Eruption, drawW9Vent } from './w9Art.ts';
-import { drawW9Flare, drawW9FlareBurst, drawW9Lavafall, drawW9Surge } from './w9HeatArt.ts';
+import { drawW9AshStreak, drawW9Flare, drawW9FlareBurst, drawW9Lavafall, drawW9Surge } from './w9HeatArt.ts';
 import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
 import { drawW5Box, w5ArtReady } from './w5Art.ts';
@@ -244,10 +244,12 @@ function drawGust(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof 
     const y = band.top + 14 + sy * (h - 28) + Math.sin(t * 2 + i) * 4;
     const fade = Math.sin(Math.PI * Math.min(1, Math.max(0, (y - band.top) / h))) * Math.min(1, travel / 90, (w + 260 - travel) / 90);
     const a = level * fade * (0.45 + sy * 0.4);
+    // (World 9's hot wind: its painted ash streaks, flakes and embers carried in them)
+    if (z.look === 'ash' && drawW9AshStreak(ctx, i, x, y, len * 1.3, Math.min(1, a * 1.4), z.dir === -1)) continue;
     drawFx(ctx, 'gust', x, y, len, { h: len * 0.16, alpha: a, flipX: z.dir === -1 });
   }
   // painted leaves tumbling with it
-  const leaves = level > 0 ? Math.round(w / 90) + 2 : 0;
+  const leaves = level > 0 && z.look !== 'ash' ? Math.round(w / 90) + 2 : 0;
   for (let i = 0; i < leaves; i++) {
     const sx = hash(i * 9.9 + z.x0 * 0.02);
     const sy = hash(i * 3.7 + z.x1 * 0.02);
