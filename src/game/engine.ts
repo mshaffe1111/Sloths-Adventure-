@@ -62,6 +62,12 @@ import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShad
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
+import { drawBatSweep, drawRoost, drawW8Hide } from './batArt.ts';
+/**
+ * World 8's dark (the Twilight Treetops at night): a violet ink a little lighter than the default, so the painted soil and bark under the
+ * boughs still shows faintly (polish bar item 4: dark, never a flat void); the lantern and the fireflies are still the only real light
+ */
+const W8_DARK = { ink: 'rgb(12, 9, 34)', depth: 0.84 } as const;
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
@@ -6169,6 +6175,8 @@ export class GameEngine {
     heroClipsLive(false);
     profMark(ctx, 'hero');
     if (this.proto?.bushes) this.drawBushes(ctx);
+    // (World 8's bat roosts hang in front of the roost tree's hollows: after the hides)
+    if (this.proto?.watch && this.currentStage.config.worldIndex === 8) this.drawRoosts(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
@@ -6271,7 +6279,7 @@ export class GameEngine {
         }
       }
       // the puzzle kit's glowing things (World 3's mushroom), carried or set down
-      for (const l of this.kit?.lights() ?? []) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
+      for (const l of [...(this.kit?.lights() ?? []), ...(this.kit?.decorLights() ?? [])]) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
       // every flower and leaf glows a little, so a reward is never lost in the dark
       for (const c of this.collectibles) {
         if (c.collected || (c.type !== 'flower' && c.type !== 'leaf')) continue;
@@ -6281,7 +6289,7 @@ export class GameEngine {
       // World 3 has no lantern: Pokey is dim, but steady (a small glow of his own), and the grotto's dark is green-black
       const grotto = this.currentStage.config.worldIndex === 3;
       if (this.watchShadowAt) lights.push({ x: this.watchShadowAt.x - cx0, y: this.player.y - 40 - cy0, r: 150 * this.watchShadowAt.a * 2 });
-      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : undefined);
+      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : this.currentStage.config.worldIndex === 8 ? W8_DARK : undefined);
     }
     if (this.watchEyes) {
       // World 3's watcher: two amber eyes, over the darkness so they always show
@@ -7225,8 +7233,20 @@ export class GameEngine {
     ctx.translate(e.x, e.y);
     ctx.scale(scale, scale);
     ctx.translate(-e.x, -e.y);
-    if (!(this.currentStage.config.worldIndex === 4 && this.drawSovereignWatch(ctx, e)) && !drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+    const bat = this.currentStage.config.worldIndex === 8 && drawBatSweep(ctx, e.x, e.y, e.facing, this.gameTime);
+    if (!bat && !(this.currentStage.config.worldIndex === 4 && this.drawSovereignWatch(ctx, e)) && !drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
     ctx.restore();
+  }
+
+  /**
+   * World 8's bat roosts (batArt.ts): the bats hanging over the start of each watched stretch on screen, still while the roost is calm,
+   * fluttering as it wakes (the watcher's warning) and while it sweeps
+   */
+  private drawRoosts(ctx: CanvasRenderingContext2D) {
+    const roosts = (this.proto?.gen2 as { w8?: { roosts?: Array<{ x: number; y: number }> } } | undefined)?.w8?.roosts ?? [];
+    const w = this.watch;
+    const waking = w.phase === 'warn' ? Math.min(1, w.t / WATCH.warn) : w.phase === 'calm' ? 0 : 1;
+    for (const r of roosts) if (this.onScreen(r.x + 120, r.y - 185, 400)) drawRoost(ctx, r.x, r.y, waking, this.gameTime);
   }
 
   /**
@@ -7678,12 +7698,16 @@ export class GameEngine {
   private drawBushes(ctx: CanvasRenderingContext2D) {
     const p = this.player;
     const bushes = this.proto?.bushes ?? [];
+    const w8Hides = (this.proto?.gen2 as { w8?: { hides?: Array<{ x: number; y: number; look: string }> } } | undefined)?.w8?.hides;
     for (let i = 0; i < bushes.length; i++) {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
       // (World 4 has its own painted cover: w4Art.ts)
       if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)
+      const w8look = w8Hides?.find((h) => h.x === b.x && h.y === b.y)?.look;
+      if (w8look && drawW8Hide(ctx, b, w8look, inside)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });

@@ -57,6 +57,7 @@ import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import { W6_ROOM_STAGES } from './gen2/worlds/w6.ts';
 import { W7_ROOM_STAGES, W7_SENTRY_STAGE } from './gen2/worlds/w7.ts';
 import { W6_SWIM_STAGES } from './gen2/worlds/w6Rooms.ts';
+import { W8_ROOM_STAGES } from './gen2/worlds/w8Rooms.ts';
 import type { LevelConfig } from './types.ts';
 
 /**
@@ -147,8 +148,9 @@ export function genFoes(world: number): string[] {
 /** the minions a world's boss calls into its lair mid-fight (bossDefs.ts spawnMinion / dropMinion) */
 const BOSS_MINIONS: Record<number, readonly string[]> = { 1: ['goldsnake'], 5: ['spider'], 6: ['tayra'], 10: ['ocelot'] };
 
-/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms; 7-3 and 7-7's) */
-const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W6_ROOM_STAGES, ...W7_ROOM_STAGES]);
+/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room; 6-3, 6-6 and 6-7's rooms; 7-3 and 7-7's; 8-1,
+ *  8-2 and 8-5's) */
+const GEN2_ROOMS: ReadonlySet<string> = new Set<string>([...W5_ROOM_STAGES, ...W6_ROOM_STAGES, ...W7_ROOM_STAGES, ...W8_ROOM_STAGES]);
 
 /** World 4's stages with waterfalls (w4Play.ts: the painted waterfall set, w4FallsArt.ts) */
 export const W4_FALL_STAGES: ReadonlySet<string> = new Set(['4-3', '4-5', '4-8', '4-9']);
@@ -215,8 +217,9 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
   // (and every other stage of Worlds 1-3 and 5, whose floors run over water: its first water has the sign, waterTeach.ts, LV-8)
   if (isGen2Stage(cfg) ? gen2Water(cfg.id) : cfg.objectiveType !== 'boss_lair' && [1, 2, 3, 5].includes(w)) out.push('water-signs');
-  // (World 6 on: its creeks and its tide are the dirty, fast water; Worlds 8-10's every stage, whose pits are their own painted water)
-  if ((isGen2Stage(cfg) && w >= 6) || (w >= 8 && cfg.objectiveType !== 'boss_lair')) out.push('bad-water');
+  // (World 6 on: its creeks and its tide are the dirty, fast water; Worlds 9-10's every stage, whose pits are their own painted water;
+  // World 8 on gen2 is treetops with no water at all, soft falls)
+  if ((isGen2Stage(cfg) && w >= 6 && (w !== 8 || gen2Water(cfg.id))) || (w >= 8 && !(w === 8 && isGen2Stage(cfg)) && cfg.objectiveType !== 'boss_lair')) out.push('bad-water');
   if (w === 7 && cfg.objectiveType !== 'boss_lair' && !cfg.secret) out.push('crumble');
   if (isGen2Stage(cfg) && cfg.id === `7-${W7_SENTRY_STAGE}`) out.push('sentry');
   if (isGen2Stage(cfg) && cfg.id === '7-3') out.push('chairs');
