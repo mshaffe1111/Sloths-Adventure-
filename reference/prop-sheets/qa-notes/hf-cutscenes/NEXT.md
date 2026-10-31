@@ -21,7 +21,7 @@ world's painted plate. Its cast stays on the same ground line (0.8). No story te
 | w5-dusk | 13 | `after/compare-w10-w5dusk.jpg` |
 | w6-dusk | 47 | `after/compare-w5dusk-w6-w7.jpg` |
 | w7-day | 11 | `after/compare-w5dusk-w6-w7.jpg` |
-| w8-night | 81 | `after/compare-w8-w2.jpg` |
+| w8-night | 81 | `after/compare-w8-sharp.jpg` (sharp redo, lead 6:20 PM rule) |
 | w10-storm | 55 | `after/compare-w10-w5dusk.jpg` |
 
 About 470 of the 580 scenery panels now stand in a painted plate.
@@ -61,10 +61,10 @@ Videos: `after/live-*-up.mp4`, `after/live-*-side.mp4`.
 
 ## Left, and the plan for the rest of the $28
 
-- **Spend:** about $7.5 of the $28, 16 GPU jobs, about 160 minutes on rtx-pro-6000 (`jobs.txt`). About $20 left.
+- **Spend:** about $7.9 of the $28, 19 GPU jobs, about 170 minutes on rtx-pro-6000 (`jobs.txt`). About $20 left.
 - **W9 dusk and W9 night (48 panels):** paint the volcano as a cut-out over a plate whose floor is said outright, instead of hoping one
   img2img keeps both. About $1.
-- **W8 night (81 panels):** wired, but soft sideways. A crisper repaint is worth about $0.40.
+- **W8 night:** the sharp redo is wired. Sideways, the moon falls outside the frame.
 - **Fine motion** (lanterns, fire, steam, webs) needs small painted flicker sprites or clips of cropped regions at full resolution,
   not whole-plate clips. About $3 for cookhouse, grandma-door, cell, door, warroom and tea.
 - **Sky and water motion for the new world plates:** clips of cropped regions (W10 storm clouds, W2 river), about $2. Whole-plate

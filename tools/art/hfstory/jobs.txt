@@ -45,3 +45,5 @@ KEPT raft x62 full: replaces the unused flat raft plate; wired to W2 mid beats 1
 TOTAL (22:47Z): 16 GPU jobs, ~160 min on rtx-pro-6000 = ~$7.5 of the $28 cap
 wp-w8 6ae66f190e0338d1bb7d4800 created 22:43Z: W8 night sharp redo (2 strengths x 2 seeds); W8 unwired until it passes
 wp-w8 verdicts: KEPT y70-31 (crisp outlines, moon, flower bank). y60s soft/muddy.
+w8 full y70: KEPT and rewired (sharp both ways; the moon only shows upright). w1z takes THROWN (fog/rain, petals painted in): W1 day keeps the regrade.
+TOTAL (22:55Z): 19 GPU jobs, ~170 min = ~$7.9 of $28

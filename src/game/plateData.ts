@@ -47,9 +47,9 @@ export const PLATES: Record<string, PlateInfo> = {
   'w6-dusk': { ground: 0.8, what: "World 6's story place, dusk: the deep mangrove (hf-cutscenes, from the world's own story scenery)" },
   'w7-day': { ground: 0.8, what: "World 7's story place, day: the ancient ruins (hf-cutscenes, from the world's own story scenery)" },
   'w2-day': { ground: 0.8, what: "World 2's story place, day: the sunlit riverbank and its village (hf-cutscenes, from the world's own story scenery)" },
-  'w8-night': { ground: 0.8, what: "World 8's story place, night: the twilight treetops (hf-cutscenes, from the world's own story scenery)" },
   'w10-storm': { ground: 0.8, what: "World 10's story place, storm: the stormy highlands and the fortress (hf-cutscenes, from the world's own story scenery)" },
   'w5-dusk': { ground: 0.8, what: "World 5's story place, dusk: the orchid sanctuary (hf-cutscenes, from the world's own story scenery)" },
+  'w8-night': { ground: 0.8, what: "World 8's story place, night: the twilight treetops (hf-cutscenes, from the world's own story scenery)" },
 };
 
 export function isPlate(key: string | undefined): key is string {
@@ -75,6 +75,7 @@ export const WORLD_PLATES: Record<string, string> = {
   '2-day': 'w2-day',
   '10-storm': 'w10-storm',
   '5-dusk': 'w5-dusk',
+  '8-night': 'w8-night',
 };
 
 /** the scene as drawn: its own plate, or its world's plate for this mood when there is one (the cast keep their ground line) */
