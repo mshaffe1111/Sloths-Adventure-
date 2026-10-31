@@ -15,6 +15,8 @@ import { w810FaceReady } from './w810FaceArt.ts';
 import { FACE810_URL } from './w810FaceData.ts';
 import { w8FungusReady } from './w8FungusArt.ts';
 import { W8_FUNGUS_URL } from './w8FungusData.ts';
+import { loadW8Decor } from './w8DecorArt.ts';
+import { W8B_URL, W8C_A_URL, W8C_B_URL, W8VAR_URL } from './w8DecorData.ts';
 import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
 import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
 import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
@@ -110,6 +112,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w8-fungus') {
       w8FungusReady();
       urls.push(W8_FUNGUS_URL);
+    } else if (k === 'w8-decor') {
+      loadW8Decor();
+      urls.push(W8B_URL, W8C_A_URL, W8C_B_URL, W8VAR_URL);
     } else if (k === 'water-signs') {
       warmWaterSigns();
       urls.push(WATER_SIGN_URL);
