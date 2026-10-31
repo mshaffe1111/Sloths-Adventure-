@@ -28,3 +28,4 @@ live-a1 6ae65e6d finished ~21:59Z (cookhouse, grandma-door, steps... ~27 min ~$1
 GPU so far (22:09Z): ~112 min on rtx-pro-6000 = ~$5.1
 wp-redov 6ae667010e0338d1bb7d4678 created 22:09Z: W10 storm, W9 dusk/night, W5 dusk from starts3 (landmark pushed low for sideways), 0.66/0.76
 live-b 6ae667040e0338d1bb7d467c created 22:09Z: spec-live-b.json, clips of the new w4-day, w1-storm, w3-storm, w6-dusk plates
+wp-redov 6ae66701 FAILED at once: spec written with a placeholder commit (404); ~$0.03

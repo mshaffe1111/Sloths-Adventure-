@@ -6,7 +6,7 @@
    "slothadv_style_v1.safetensors"
   ]
  },
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/X/tools/art/hfstory/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/cfa09fbb9a2d30b2655134da36eac04d608fb88d/tools/art/hfstory/",
  "items": [
   {
    "name": "wp-10-storm-v62",
@@ -138,7 +138,7 @@
   }
  ],
  "q": 90,
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/X/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/cfa09fbb9a2d30b2655134da36eac04d608fb88d/",
  "keep": [
   "wp-10-storm-v62",
   "wp-10-storm-v72",
