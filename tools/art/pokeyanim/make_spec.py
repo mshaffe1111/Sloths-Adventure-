@@ -142,6 +142,26 @@ def spec6(commit):
     print(len(ed), 'edit items')
 
 
+def spec7(commit):
+    """7-4's slide poses again with no chute in the words (anim6 drew one under him, and turned the leans diagonal)"""
+    st = f'gh:{commit}:reference/prop-sheets/qa-notes/pokey-anim/starts/'
+    poses = {
+        'slide': 'The sloth in Picture 1, still seen exactly from behind, leans back a little and holds both arms out low to the sides '
+                 'for balance, paws open, elbows slightly bent, as if riding fast.',
+        'leanR': 'The sloth in Picture 1, still seen exactly from behind and still sitting, leans his whole body over to the right: his '
+                 'head and back tip about fifteen degrees to the right, his right arm reaches out low to the right for balance, his left '
+                 'arm is raised up and out to the left.',
+        'leanL': 'The sloth in Picture 1, still seen exactly from behind and still sitting, leans his whole body over to the left: his '
+                 'head and back tip about fifteen degrees to the left, his left arm reaches out low to the left for balance, his right '
+                 'arm is raised up and out to the right.',
+    }
+    neg = SLIDE_NEG + ', slide, chute, ramp, track, rails, slope, diagonal view, three-quarter view, motion lines'
+    ed = [{'name': f'slide2-{n}', 'src': st + 'slide_grip.png', 'refs': [st + 'slide_ref9.png'] if n == 'slide' else [], 'w': 768, 'h': 768,
+           'prompt': t + ' ' + SLIDE_KEEP, 'neg': neg, 'seeds': [4, 5, 6], 'lora': 0.4} for n, t in poses.items()]
+    (H / 'spec-anim7.json').write_text(json.dumps({'tag': 'pokey-anim7', 'edits': ed}, indent=1))
+    print(len(ed), 'edit items')
+
+
 def spec2(commit):
     cl = []
     for mv, (what, w, h) in CLIPS2.items():
@@ -153,4 +173,4 @@ def spec2(commit):
 
 
 if __name__ == '__main__':
-    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4, 'spec5': spec5, 'spec6': spec6}.get(sys.argv[1], spec)(sys.argv[2])
+    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4, 'spec5': spec5, 'spec6': spec6, 'spec7': spec7}.get(sys.argv[1], spec)(sys.argv[2])
