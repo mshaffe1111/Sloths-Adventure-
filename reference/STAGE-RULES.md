@@ -125,8 +125,11 @@ this order, and curation does not start until step 3 is done:
   its own light or a lit rim and reads at least 1 s ahead on Normal (1.6 s Easy); Pokey never vanishes (a warm key from the light he passes,
   a cool rim, a contact shadow, never under ~60% brightness). Props are painted evenly lit so the game can light them; light sources are
   painted bright and separate so they can glow. Code glow (pre-rendered radial light sprites, additive) is a small touch and allowed.
-- **Use what Matt made.** Every prop, state frame and backdrop from his sheets has a place in the game. A piece packed but never
-  drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
+- **Use ALL the art we make (Matt, 2026-10-31: "We need to use all the art we create. Its a waste otherwise. I want a fun unique game.").**
+  Every prop, state frame, creature clip and backdrop, from Matt's sheets or Hugging Face, has a place in the game. A piece packed but
+  never drawn is a bug, and so is art made and never packed. `tools/art/artuse.mjs` lists every atlas frame and art file with no draw
+  site; its gate test fails on anything not in its short, reasoned allow-list. Every grab bag starts by placing the world's unused
+  art before asking for new art.
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.
 - **Rotate looks by the roll:** where a world has several props or decor sets for one job, the layout roll picks among them (a retry
   keeps the look, a fresh roll changes it), with a cooldown so the same set isn't used in two stages in a row. `artRoll.ts`
