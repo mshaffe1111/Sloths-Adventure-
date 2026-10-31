@@ -145,7 +145,11 @@ export interface WorldManifest {
 // ───────────────────────────── a section ─────────────────────────────
 
 /** a platform, or one of the two hanging pieces: a `liana` (a swing, placed by `swing`) and a `vine` (a climb, placed by `climb`) */
-export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine';
+export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine' | 'raft';
+
+/** what rides up and down on a beat (place `raft`, World 9: Matt's moving logs, GRAB-BAG.md N1-N3): a raft and a log bob on the lava's heat
+ * draught (time the jump off at the top), a piston column rises out of its well (ride it up to a ledge no jump reaches) */
+export type BobKind = 'raft' | 'log' | 'piston';
 
 /**
  * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back
@@ -179,6 +183,12 @@ export interface LianaSwing {
  *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
  *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
+ *   raft                 a piece (shape 'raft') that rides up and down on a beat (lift.ts LiftInfo with `bob`, pipeline BOB): a `raft` or
+ *                        `log` a plain jump past `after` at its top stop (`share` of the jump, `dy` from `after`'s top), sinking deeper than
+ *                        any jump climbs out of on Normal (the jump off waits for the top; Easy's sink is shallow, over its soft floor);
+ *                        a `piston` stands in a narrow well right past `after`, its bottom stop level with `after`, rising `dy` px (a
+ *                        negative range: up) to its top stop, where the next piece walks on. The gap under a raft runs from the bank before
+ *                        it to the piece that jumps on from it (a row of rafts is one gap)
  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
  * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
  * A gap rule with `soft: true` has a soft pit under it whatever the world's falls (World 8: in a world whose falls cost a life, its gaps in
@@ -193,7 +203,8 @@ export type PlaceRule =
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
-  | { kind: 'climb'; on: string; at: Range; h: Range };
+  | { kind: 'climb'; on: string; at: Range; h: Range }
+  | { kind: 'raft'; after: string; bob: BobKind; share?: Range; dy?: Range; soft?: boolean };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */

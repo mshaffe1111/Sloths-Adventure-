@@ -1,3 +1,4 @@
+import { drawW9Bob } from './w9BobArt.ts';
 import { buzz } from './haptics.ts';
 import { nativeApp } from './appShell.ts';
 import { clearFlag, flagFor, saveFlag } from './flagResume.ts';
@@ -517,6 +518,8 @@ export class GameEngine {
   private hitstopTimer: number = 0;
   private gameTime: number = 0;
   private standingOnId: number = -1;
+  /** World 9's moving logs: how far each rose this frame (lift.ts `bob`), so one rising into his feet catches them */
+  private bobRise = new Map<number, number>();
   private riverHinted = false;
   /** World 3: how drowsy the spore cloud makes him right now, 0 (awake) to 1 (in the thick of it); it follows the cloud and ends with it. And how strongly the screen shows it */
   private drowsy = 0;
@@ -1484,6 +1487,8 @@ export class GameEngine {
         const ny = liftY(plat.lift, this.gameTime);
         const dy = ny - plat.y;
         plat.y = ny;
+        // (World 9's moving logs: how far it rose this frame, so it catches feet it rises past, below)
+        if (plat.lift.bob) this.bobRise.set(plat.id, Math.max(0, -dy));
         if (p.grounded && this.standingOnId === plat.id) p.y += dy;
         continue;
       }
@@ -2333,6 +2338,10 @@ export class GameEngine {
         }
         // Check landing from above
         if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) return true;
+        // (World 9's moving logs, lift.ts `bob`: one rising into his feet catches them, however he is moving, as long as they were over its
+        // top before it rose (a raft overtaking him near the top of his jump let him drop through it: the adult bot's lives on 9-1)
+        const rose = plat.lift?.bob ? this.bobRise.get(plat.id) ?? 0 : 0;
+        if (rose > 0 && playerFeet >= plat.y && playerPrevFeet <= plat.y + rose + catchDrop && playerFeet - p.vy * dt <= plat.y + rose + catchDrop) return true;
         // Meeca's stage: a thin log (no face to hoist up, LIP_CATCH) caught at the top of a jump with her feet just under its top and her
         // middle over it. QA 2026-10-31, the blind tester sideways: "level with the top of the log, then dropped through it", twice
         return !!this.mc && plat.height < 50 && plat.type === 'solid' && !p.climbing && p.vy >= -LIP_CATCH.v && playerFeet > plat.y && playerFeet <= plat.y + LIP_CATCH.px && p.x > plat.x + LIP_CATCH.inside && p.x < plat.x + plat.width - LIP_CATCH.inside;
@@ -5990,7 +5999,12 @@ export class GameEngine {
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
-    for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
+    // (World 9's moving logs, lift.ts `bob`: the pumice rafts, charred logs and piston columns, w9BobArt.ts)
+    for (const pl of this.platforms) {
+      if (!pl.lift || !this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) continue;
+      if (pl.lift.bob) drawW9Bob(ctx, pl, this.gameTime);
+      else drawW2Lift(ctx, pl, !!pl.lift.postRight);
+    }
     // 2-6: the village's ladders where the climbs are
     if (this.proto?.ladders) {
       for (const v of this.vines) if (v.vineType === 'tree_climb' && this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) drawLadder(ctx, v.x, v.topY, v.bottomY);

@@ -55,6 +55,12 @@ export const W9_THEME = {
   ledges: 'w9:t-ledges',
   /** 9-8: the cooled channels */
   channels: 'w9:t-channels',
+  /** 9-1: the pumice rafts bobbing on the lava's heat draught (Matt's moving logs, GRAB-BAG.md N1: w9Bob.ts) */
+  rafts: 'w9:t-rafts',
+  /** 9-5 / 9-9: the long charred logs, slower (N2: w9Bob.ts) */
+  logs: 'w9:t-logs',
+  /** 9-8: the piston columns up to the high ledges (N3: w9Bob.ts) */
+  pistons: 'w9:t-pistons',
 } as const;
 export type W9Theme = (typeof W9_THEME)[keyof typeof W9_THEME];
 
@@ -605,7 +611,7 @@ const hunterBrink = section({
 // ───────────────────────────── 9-1 Pepper Air's gates and themes ─────────────────────────────
 
 /** a sprint gate (9-1): a plain run, nothing that can hurt, and the roll's theme opens */
-const sprintGate = (theme: 'vents' | 'chasms' | 'basalt', name: string, extra: Socket[] = []): SectionTemplate => {
+const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts', name: string, extra: Socket[] = []): SectionTemplate => {
   const k = knobs('', 'a', 2, [200, 240]);
   return section({
     id: `w9-pepper-gate-${theme}`,
@@ -865,7 +871,7 @@ const fernLong = section({
 // ───────────────────────────── 9-5 Vent Riding (sprint) ─────────────────────────────
 
 /** a vent-riding gate (9-5): Dot's line about the warm air, a first glide over a vent (a soft chasm), and the roll's theme opens */
-const ventGate = (theme: 'glides' | 'bursts', name: string): SectionTemplate =>
+const ventGate = (theme: 'glides' | 'bursts' | 'logs', name: string): SectionTemplate =>
   section({
     id: `w9-vent-gate-${theme}`,
     name: `vent riding: ${name} (gate)`,
@@ -942,7 +948,7 @@ const burstRow = section({
 // ───────────────────────────── 9-6 Ash Fields (purge), 9-9 The Drake's Hoard (gauntlet) ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
-const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas', line: 'hunt' | 'fight'): SectionTemplate => {
+const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs', line: 'hunt' | 'fight'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   // (the hoard's gate climbs a basalt stair to the Drake's door and down again, the ash fields' crosses two knobs: the two fight stages
   // never open alike)
@@ -1136,7 +1142,7 @@ const boaChasm = section({
 // ───────────────────────────── 9-8 Pell's Thread (search) ─────────────────────────────
 
 /** a search gate: Dot explains the shut shrine (Pell's threads), and the roll's theme opens */
-const threadGate = (theme: 'ledges' | 'channels'): SectionTemplate => {
+const threadGate = (theme: 'ledges' | 'channels' | 'pistons'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   return section({
     id: `w9-thread-gate-${theme}`,
@@ -1339,3 +1345,16 @@ export const W9_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = Object
   [restAsh.id, [6]] as const,
   [restHoard.id, [9]] as const,
 ]);
+
+// ───────────────────────────── for w9Bob.ts (the moving logs: GRAB-BAG.md N1-N3) ─────────────────────────────
+
+/** the moving-log themes' gates, each its stage's kind of gate (the gates' ids follow their stage's: w9-pepper-gate-rafts, ...) */
+export const W9_BOB_GATES = {
+  rafts: sprintGate('rafts', 'the rafts', [scenery('smoke', 'a', [0.5, 0.6], 0.9)]),
+  logs5: ventGate('logs', 'the logs'),
+  logs9: huntGate('logs', 'fight'),
+  pistons: threadGate('pistons'),
+} as const;
+
+/** the helpers w9Bob.ts builds its sections with (the same as this file's) */
+export const W9H = { bank, up, down, lava, wide, glide, knobs, petals, geyser, scenery, flag, tip, foe, thread, section, ALL, MID, LIVE, HOT, SHARED, ANY, SMALL, CATS, GEYSER, GEYSER_WAIT } as const;

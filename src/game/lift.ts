@@ -16,6 +16,9 @@ export interface LiftInfo {
   phase: number;
   /** the crane stands on the right of the shaft (the upper ground is to the right: a lift going up) */
   postRight?: boolean;
+  /** World 9's moving logs (gen2 place `raft`, GRAB-BAG.md N1-N3): a pumice raft or a charred log bobbing on the lava's heat draught, or a
+   *  hex piston column; drawn by w9BobArt.ts, not as a basket lift, and read by the inspector as a timed hop (a raft, a log) or a ride (a piston) */
+  bob?: 'raft' | 'log' | 'piston';
 }
 
 /** seconds for one round trip: wait at the bottom, ride up, wait at the top, ride down */

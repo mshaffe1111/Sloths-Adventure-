@@ -256,3 +256,18 @@ export function drawLavaSplash(ctx: CanvasRenderingContext2D, x: number, surface
   ctx.restore();
   return true;
 }
+
+/**
+ * the heat draught a moving log bobs on (World 9, w9BobArt.ts): the painted haze frames standing in a column from `bottomY` up to `topY`,
+ * `w` wide, cycling slowly, faint (it is the air shimmering, not a hazard)
+ */
+export function drawW9Draught(ctx: CanvasRenderingContext2D, cx: number, topY: number, bottomY: number, w: number, t: number): boolean {
+  const im = load(HAZARDS_URL);
+  const f = HZ[`haze${Math.floor(t * 5) % 6}`];
+  if (!im || !f || bottomY <= topY) return false;
+  ctx.save();
+  ctx.globalAlpha = 0.42;
+  blit(ctx, im, f, cx - w / 2, topY, w, bottomY - topY);
+  ctx.restore();
+  return true;
+}

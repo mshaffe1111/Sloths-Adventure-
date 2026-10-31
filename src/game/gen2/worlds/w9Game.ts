@@ -12,6 +12,7 @@ import { w9Falls, w9Kit } from './w9.ts';
 import { W9_GROUND_SECTIONS, W9_STAGE_ONLY, W9_THEME, type W9Theme } from './w9Ground.ts';
 import { W9_ROOM_SECTIONS, W9R_STAGE, w9RoomsFor } from './w9Rooms.ts';
 import { W9_SWING_SECTIONS, W9S_THEME } from './w9Swing.ts';
+import { W9_BOB_SECTIONS, W9_BOB_STAGE } from './w9Bob.ts';
 
 /** the stages of World 9 the game builds with gen2 */
 export const W9_GAME_STAGES = ['9-1', '9-3', '9-4', '9-5', '9-6', '9-8', '9-9'] as const;
@@ -30,6 +31,8 @@ export const W9_SWING_STAGES: readonly number[] = [3];
 
 /** which stage holds which sections (STAGE-RULES §2 "Sameness"): w9Ground's W9_STAGE_ONLY, the rest by archetype; the first geyser is 9-1's */
 const forStage = (stage: number, id: string): boolean => (id === 'w9-first-geyser' ? stage === 1 : !W9_STAGE_ONLY[id] || W9_STAGE_ONLY[id].includes(stage));
+/** the moving logs' sections (w9Bob.ts): each on its own stages */
+const bobsFor = (stage: number): SectionTemplate[] => W9_BOB_SECTIONS.filter((s) => (W9_BOB_STAGE[s.id] ?? []).includes(stage));
 
 /**
  * Each themed stage's own shared sections, given to one of its themes (STAGE-RULES §6: "a different mix of actions, not a different
@@ -70,5 +73,6 @@ export function w9GameKit(stage: number, _difficulty: Difficulty = 'normal'): Wo
     .filter((s): s is SectionTemplate => !!s)
     .map(w9Falls);
   const swings = W9_SWING_STAGES.includes(stage) ? W9_SWING_SECTIONS.map(w9Falls) : [];
-  return { ...k, manifest: { ...k.manifest, sections: [...sections, ...swings, ...w9RoomsFor(stage, _difficulty)], required: W9_REQUIRED } };
+  const bobs = bobsFor(stage).map(w9Falls);
+  return { ...k, manifest: { ...k.manifest, sections: [...sections, ...swings, ...bobs, ...w9RoomsFor(stage, _difficulty)], required: W9_REQUIRED } };
 }

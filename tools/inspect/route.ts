@@ -7,6 +7,7 @@
  * Times are for a brisk player who holds run: Pokey's top run speed (PHYS.maxRun), climbs at the engine's 220 px/s, swings at about
  * 430 px/s, shimmies at ROPE_SPEED, with stageTime.ts's overheads scaled to its quick player.
  */
+import { liftCycle } from '../../src/game/lift.ts';
 import { validateStage, jumpOK, type CheckGraph } from '../../src/game/levelCheck.ts';
 import { PHYS, JUMP_RISE } from '../../src/game/physics.ts';
 import { ROPE_SPEED } from '../../src/game/rope.ts';
@@ -236,6 +237,9 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     if (kind === 'presumed') { k = 'presumed'; penalty = 4; }
     else if (kind === 'rope' || byRope) k = 'rope';
     else if (A.type === 'bouncy') k = 'bounce';
+    // (World 9's moving logs, lift.ts `bob`: onto or between rafts and logs is a timed hop; onto a piston a ride; off a piston's top a step)
+    else if (B.type === 'moving' && B.lift?.bob) k = B.lift.bob === 'piston' ? 'lift' : 'timedHop';
+    else if (A.type === 'moving' && A.lift?.bob && B.type !== 'moving') k = A.lift.bob === 'piston' ? (gap <= 10 && rise <= 16 ? 'walk' : 'hop') : 'timedHop';
     else if (A.type === 'drift' || B.type === 'drift' || A.type === 'moving' || B.type === 'moving') k = A.lift || B.lift ? 'lift' : 'timedHop';
     else if (gap <= 10 && rise <= 16) k = rise < -40 ? 'drop' : 'walk';
     else if (jumpOK(A, B, false).ok || jumpOK(A, B, true).ok) {
@@ -251,7 +255,7 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     if (k === 'hop') dt += TIME.hopSec * K;
     else if (k === 'jump' || k === 'glide' || k === 'presumed') dt += 0.5 + Math.max(0, -rise) / 900;
     else if (k === 'bounce') dt += TIME.bounceExtra;
-    else if (k === 'timedHop') dt += 0.4;
+    else if (k === 'timedHop') dt += 0.4 + (B.lift?.bob ? liftCycle(B.lift) * 0.3 : 0);
     else if (k === 'lift') dt += Math.abs(rise) / 120 + TIME.movingExtra;
     else if (k === 'swing') dt = gap / SWING_PACE + 1.2;
     else if (k === 'rope') dt = gap / ROPE_SPEED + TIME.ropeOverhead * K;

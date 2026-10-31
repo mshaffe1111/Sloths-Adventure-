@@ -51,6 +51,7 @@ import { warmWaterSigns } from './waterSign.ts';
 import { WATER_SIGN_URL } from './waterSignData.ts';
 import { badWaterReady, currentBadWaterUrl, setBadWaterWorld } from './badWaterArt.ts';
 import { W9_ART_URLS, w9ArtReady } from './w9Art.ts';
+import { loadW9Bobs, W9_BOB_URLS } from './w9BobArt.ts';
 import { W4_FALLS_URL, fallsArtReady } from './w4FallsArt.ts';
 import { STILT_ART_URLS, stiltArtReady } from './w6StiltArt.ts';
 import { CALM_WATER_URL, calmWaterReady } from './calmWaterArt.ts';
@@ -119,7 +120,8 @@ export function start(keys: readonly string[]): string[] {
       urls.push(currentBadWaterUrl());
     } else if (k === 'w9-art') {
       w9ArtReady();
-      urls.push(...W9_ART_URLS);
+      loadW9Bobs();
+      urls.push(...W9_ART_URLS, ...W9_BOB_URLS);
     } else if (k === 'sentry') {
       sentryReady();
       urls.push(...SENTRY_URLS);

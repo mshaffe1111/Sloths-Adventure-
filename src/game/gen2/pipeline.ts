@@ -36,6 +36,7 @@ import {
   versionKey,
   WATER_LINE,
   WATER_WARN,
+  type BobKind,
   type PitKind,
   type SectionPiece,
   type Archetype,
@@ -354,6 +355,8 @@ interface LocalPiece {
   crumble?: boolean;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
+  /** a moving log (place `raft`): its stops relative to its own top (y is the top stop), its ride and the gap's start under it */
+  bob?: { kind: BobKind; depth: number; speed: number; wait: number; phase: number; from: number };
 }
 interface LocalGap {
   x0: number;
@@ -472,6 +475,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     let y = 0;
     let h = pc.h ?? 24;
     let hang: LocalPiece['hang'];
+    let bob: LocalPiece['bob'];
     const pl = pc.place;
     const ref = (k: string) => by.get(k)!;
     if (pl.kind === 'start') {
@@ -493,9 +497,40 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const gap = Math.max(60, R(share * (g > 0 ? g : 60)));
       x = a.x + a.w + gap;
       y = a.y + dy;
+      // (from a raft or a log: the gap runs from the bank before the row, under every raft of it, to here)
+      const g0 = a.bob && a.bob.kind !== 'piston' ? a.bob.from : a.x + a.w;
       // (a glide's soft pit climbs back to its take-off, as a liana's does: with steps out on the far side the leaf would be optional)
       const back = glide && !pl.water ? { back: { lips: [a.y, y] as [number, number] } } : {};
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
+      gaps.push({ x0: g0, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' || !!pl.soft || !!a.bob, ...(pl.water ? { water: true } : {}), ...(pl.soft && !pl.water ? { soft: true } : {}), ...back });
+    } else if (pl.kind === 'raft') {
+      // a moving log (World 9, BOB): a raft or a log a plain jump out at its top stop, or a piston in a narrow well rising to a ledge
+      const a = ref(pl.after);
+      if (pc.shape !== 'raft') throw new Error(`gen2 section ${tpl.id}: ${pc.key} rides up and down, so its shape is 'raft'`);
+      const ez = budget.difficulty === 'easy' ? 'easy' : 'normal';
+      // (over a soft pit, the world's or the section's (a lesson's raft): a shallow bob that stays over the crust floor)
+      const soft = budget.pit === 'soft' || !!pl.soft;
+      const speed = BOB.speed[ez][pl.bob];
+      const wait = BOB.wait[ez][pl.bob];
+      h = BOB.h[pl.bob];
+      if (pl.bob === 'piston') {
+        const rise = Math.max(DOUBLE_RISE + 15, -roll(rng, pl.dy ?? [-BOB.rise[1], -BOB.rise[0]]));
+        x = a.x + a.w + roll(rng, BOB.well);
+        y = a.y - rise;
+        // (its well: the gap from the bank under the whole column, lava on Normal as every chasm)
+        gaps.push({ x0: a.x + a.w, x1: x + w, y: a.y, pit: true });
+        const depth = rise;
+        const cycle = 2 * (depth / speed + wait);
+        bob = { kind: 'piston', depth, speed, wait, phase: R(rng() * cycle * 10) / 10, from: a.x + a.w };
+      } else {
+        const dy = pl.dy === undefined ? 0 : Math.max(-riseLimit(false, budget.riseShare) * 0.6, roll(rng, pl.dy));
+        const gap = Math.max(60, R(shareFor(pl.share) * Math.max(60, maxGap(-dy, false, budget.margin))));
+        x = a.x + a.w + gap;
+        y = a.y + dy;
+        const depth = soft ? BOB.depth.soft : roll(rng, BOB.depth[pl.bob]);
+        const cycle = 2 * (depth / speed + wait);
+        const from = a.bob && a.bob.kind !== 'piston' ? a.bob.from : a.x + a.w;
+        bob = { kind: pl.bob, depth, speed, wait, phase: R(rng() * cycle * 10) / 10, from };
+      }
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -578,7 +613,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(bob ? { bob } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -900,6 +935,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           continue;
         }
         const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style, !!lp.crumble);
+        if (lp.bob) {
+          // (a moving log: the engine's lift (lift.ts), its top stop where it was laid; a piston's bottom stop is its bank's top)
+          const b = lp.bob;
+          Object.assign(p, { type: 'moving', art: 'bob', height: lp.h, lift: { top: p.y, bottom: p.y + R(b.depth), speed: b.speed, wait: b.wait, phase: b.phase, bob: b.kind } });
+        }
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
       }
       const pieceOf = (k: string) => {
@@ -1020,6 +1060,24 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
  * or jumps out forward to the perch: the swing stays the way over.
  */
 export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 } as const;
+
+/**
+ * World 9's moving logs (place `raft`, GRAB-BAG.md N1-N3; Matt, 2026-10-31: "the logs that you run on actually move up and down, and it's
+ * a timing"). Each rides lift.ts's cycle: a still spell at the bottom, the ride up, a still spell at the top, the ride down.
+ *   depth   how far a raft or a log sinks under its top stop (px). Normal's is past the double jump's 185 (physics DOUBLE_RISE), so the jump
+ *           off waits for the top; over a soft pit (Easy) it stays over the crust floor (pitDepth 110), a shallow bob
+ *   speed   px a second while it rides; wait: its still spell at each stop (s). Easy is slower with longer spells (STAGE-RULES §1b)
+ *   rise    a piston's climb out of its well (px), past the double jump, so it is the only way up to its ledge; well: its gap from the bank
+ *   h       the piece's thickness
+ */
+export const BOB = {
+  depth: { raft: [195, 220] as const, log: [205, 235] as const, soft: 70 },
+  speed: { normal: { raft: 230, log: 170, piston: 120 }, easy: { raft: 150, log: 120, piston: 95 } },
+  wait: { normal: { raft: 0.65, log: 0.9, piston: 0.8 }, easy: { raft: 1.1, log: 1.3, piston: 1.2 } },
+  rise: [205, 240] as const,
+  well: [26, 40] as const,
+  h: { raft: 26, log: 30, piston: 40 },
+} as const;
 
 /**
  * Where a soft pit's floor and its steps go, for a gap [x0, x1] between a near lip at `lipY` and a far lip at `farY` (world y, down):

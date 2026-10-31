@@ -119,7 +119,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
       case 'climb': if (s.note === 'grab') raw.push({ ...at, letter: 'V', what: 'grab a trunk or vine and climb' }); break;
       case 'swing': raw.push({ ...at, letter: 'V', what: s.note === 'added' && !s.from ? 'swing on to the next liana' : 'swing on a liana' }); break;
       case 'rope': raw.push({ ...at, letter: 'V', what: 'shimmy along a rope' }); break;
-      case 'lift': raw.push({ ...at, letter: 'V', what: 'ride the basket lift' }); break;
+      case 'lift': raw.push({ ...at, letter: 'V', what: s.plat?.lift?.bob === 'piston' ? 'ride the piston column' : 'ride the basket lift' }); break;
       case 'draft': raw.push({ ...at, letter: 'V', what: 'ride the warm air' }); break;
       default: break;
     }

@@ -75,6 +75,9 @@ export const W9_LESSON = {
   hunt: 'w9:hunt',
   fight: 'w9:fight',
   threads: 'w9:threads',
+  /** the moving logs: the pumice rafts (9-1 teaches them; the logs of 9-5 and 9-9 ride the same way) and the piston columns (9-8) */
+  raft: 'w9:raft',
+  piston: 'w9:piston',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -134,9 +137,11 @@ export const W9_TIPS: Record<string, string> = {
   [W9_LESSON.hunt]: "The shrine's shut. Drive the hunters off first!", // (World 8's line)
   [W9_LESSON.fight]: "The shrine's shut. Fight through to open it.", // (World 6's line)
   [W9_LESSON.threads]: "The shrine's shut. Find Pell's threads first.", // (new, needs the lead's approval)
+  [W9_LESSON.raft]: 'Those rafts rise and sink. Watch them.', // (new, needs Matt's approval: GRAB-BAG.md N1)
+  [W9_LESSON.piston]: 'These stone columns rise and fall.', // (new, needs Matt's approval: GRAB-BAG.md N3)
 };
 /** the lines that are new in World 9 (the report lists them for the lead) */
-export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads].map((k) => W9_TIPS[k]);
+export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston].map((k) => W9_TIPS[k]);
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -161,7 +166,7 @@ export const W9_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['9-2', '9-7', '9-10'],
   // (the geysers are 9-1's, the warm air 9-5's, the doorstep's eye 9-4's; the shut shrine is said in each gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8' },
   tips: W9_TIPS,
 };
 
