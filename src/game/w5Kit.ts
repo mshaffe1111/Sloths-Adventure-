@@ -571,6 +571,21 @@ export const laced = (silk: number): number => Math.max(silk, Math.min(SEAMSTRES
  * closing (the warning: it shivers and folds, still standable) for ORCHID.tell, shut, then opening again. Shut, its bloom is no ledge
  * (platformId: it is broken) and the petals in its cup (petalIds) cannot be picked.
  */
+/**
+ * A swaying orchid (5-3, Matt 2026-10-31): a big open bloom on a long stem rooted in the soft pit's floor, its head swinging to and fro
+ * on a beat. Its ledge is the platform `platformId` (type 'moving': engine.ts slides it on a sine and carries him); the stem is drawn
+ * from the root to the ledge. It never closes: the timing is the jump, when it swings close.
+ */
+export interface SwayBloom {
+  platformId: number;
+  /** the stem's root (the middle of the sway) */
+  x: number;
+  rootY: number;
+  w: number;
+}
+/** a swaying orchid's beat: how far its head swings either way (px) and its period (s) */
+export const SWAY = { range: 52, period: 3.4 } as const;
+
 export interface Orchid {
   x: number;
   y: number;
@@ -744,6 +759,8 @@ export interface W5Extras {
   threads?: Thread[];
   sheets?: SilkSheet[];
   orchids?: Orchid[];
+  /** 5-3's swaying orchids: a bloom on a long stem that sways to and fro (a 'moving' platform), timed, never closing */
+  sways?: SwayBloom[];
   cocoons?: Cocoon[];
   carvings?: Carving[];
   spiders?: W5Spider[];
@@ -791,6 +808,7 @@ export const W5_TEACH = {
   hummed: 'It hummed! Here come the spiders',
   sheet: 'Lovely silk. Don\'t stop to look at it. It takes it as a compliment. Slide right on past',
   orchid: 'The big orchids close on a beat. When one shivers, it\'s about to shut. Flick up onto it while it\'s open',
+  sway: 'This orchid sways on its stem. Wait till it swings close, then flick up onto it',
   cocoon: 'Somebody\'s wrapped up in that cocoon! Tap to punch it open and set them free',
   silk: 'A silk line, like a vine. Flick up into it to swing',
   spider: 'A jumping spider! It crouches before it rushes. Tap to punch it, or jump on it',

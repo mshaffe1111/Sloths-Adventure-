@@ -17,17 +17,21 @@ const SCENES = {
   start53: { stage: '5-3', setup: `return 0;`, waits: [3] },
   start55: { stage: '5-5', setup: `return 0;`, waits: [3] },
   pit54: { stage: '5-4', setup: at(`(e) => { const v = e.vines[0]; return v && { x: v.x - 900, y: 580 }; }`, 0), waits: [0.3] },
+  // 5-3's swaying orchid: layout 6 deals the swaying style; the first one (its lesson), stills over one beat, and a short video
+  sway: { stage: '5-3', layout: 6, video: true, setup: at(`(e) => { const b = e.proto.w5.sways[0]; return b && { x: b.x, y: 580 }; }`, -230), waits: [0.3, 1.1, 1.9, 2.7, 3.5] },
   spider51: { stage: '5-1', setup: at(`(e) => e.enemies[2]`, -260), waits: [0.3, 1.0] },
 };
 const b = await chromium.launch();
 for (const [name, sc] of Object.entries(SCENES)) {
   if (only && !only.split(',').includes(name)) continue;
   for (const [ori, w, h] of [['up', 390, 844], ['side', 844, 390]]) {
-    const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
+    const ctxOpts = { viewport: { width: w, height: h }, deviceScaleFactor: 2, ...(sc.video ? { recordVideo: { dir: join(out, 'video'), size: { width: w, height: h } } } : {}) };
+    const bctx = await b.newContext(ctxOpts);
+    const p = await bctx.newPage();
     p.on('pageerror', (er) => console.log('ERR', er.message));
     await p.goto(`http://127.0.0.1:${port}/?nodemo=1&lessons=off`);
     await p.waitForTimeout(2500);
-    await p.evaluate((s) => window.__play(s), sc.stage);
+    await p.evaluate(([s, l]) => window.__play(s, l), [sc.stage, sc.layout]);
     await p.waitForTimeout(6000);
     for (let i = 0; i < 4; i++) { const g = p.getByText('Skip tips'); if (await g.count()) { await g.first().click(); await p.waitForTimeout(300); } else break; }
     const r = await p.evaluate(`(() => { let e = window.__engine; if (typeof e === 'function') e = e(); ${sc.setup} })()`);
@@ -39,6 +43,8 @@ for (const [name, sc] of Object.entries(SCENES)) {
     }
     console.log(name, ori, r);
     await p.close();
+    if (sc.video) console.log('video', await p.video().path());
+    await bctx.close();
   }
 }
 await b.close();

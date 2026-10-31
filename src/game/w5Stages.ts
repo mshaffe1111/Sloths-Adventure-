@@ -46,7 +46,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import { findForStage } from './finds.ts';
 import { reachJump } from './physics.ts';
 import { PAST_SHRINE } from './rules.ts';
-import { newTeapot, orchidTiming, TABLE_CARD, W5_TEACH, type Teapot, type SilkSheet, type Butler, type Cake, type Carving, type Chair, type Orchid, type TeaTable, type Thread, type W5Decor, type W5Extras, type W5Spider } from './w5Kit.ts';
+import { newTeapot, orchidTiming, SWAY, TABLE_CARD, W5_TEACH, type Teapot, type SilkSheet, type SwayBloom, type Butler, type Cake, type Carving, type Chair, type Orchid, type TeaTable, type Thread, type W5Decor, type W5Extras, type W5Spider } from './w5Kit.ts';
 import { W5_HINTS, type W5Hint } from './w5Lines.ts';
 import { silkLine, type Cocoon, type RestBranch } from './w5Kit.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
@@ -210,6 +210,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   const decor: W5Decor[] = [];
   const orchids: Orchid[] = [];
   const pots: Teapot[] = [];
+  const sways: SwayBloom[] = [];
   const sheets: SilkSheet[] = [];
   const info: W5Info = { plan, flagSeconds: [0], gaps: [], highRoads: [], spiders: [], stumps: [], orchids: [], rows: [], cupFlowers: [] };
   /** has the second jump been taught? (in 5-1, at its first wide gap; 5-2 comes after 5-1, and reminds at its first) */
@@ -373,6 +374,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   /** where the last flag (or the spawn) stands */
   let lastFlag = 140;
   const flag = () => {
+    // (never two flags on one spot: a finish may ask for one between a piece's parts and again after it)
+    if (checkpoints.length && x - 80 - lastFlag < 300) return;
     // a little more garden first if a spider's patch reaches too near where the flag would stand
     const reach = Math.max(-1e9, ...E.map((e) => e.patrolMaxX));
     if (x - 80 - reach < SAFE_GAP) {
@@ -544,7 +547,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   }
   /** soft chairs along the path (they tug), with wrapped ones (the guests who sat) between */
   function chairWalk(n: number, wrapped: number) {
-    if (n) fresh('chair', -150);
+    if (n) fresh('chair', -400);
     const x0 = x;
     const live: number[] = [];
     for (let i = 0; i < n; i++) {
@@ -740,6 +743,43 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     run(R.r(180, 240));
     // (the wait for the first to open, and a hop on each)
     expert += (far - edge) / RUN + 0.45 * n + 1.4 + 200 / RUN;
+  }
+
+  /**
+   * Swaying orchids over a soft pit (5-3, Matt 2026-10-31: "a new moving bloom"): `n` open blooms on long stems rooted in the pit's
+   * floor, each head swinging SWAY.range px either way on SWAY.period, the next one half a beat behind, so the gaps open and close in
+   * turn: wait till the next swings close, then hop. From the bank to the first, bloom to bloom and off the last, a plain hop at the
+   * nearest (40 px or less) and never more than a second jump at the farthest; a miss is a drop to the soft floor. They never close.
+   */
+  function swayRow(n: number) {
+    // (its first: Dot's line as it comes into view, with room of its own before it, w5Play.ts)
+    fresh('sway', 560 - 220);
+    run(R.r(180, 240));
+    const edge = x;
+    const w = W5_ORCHID.w;
+    const top = G - 30;
+    const step = w + R.r(100, 120);
+    const speed = Math.round(((2 * Math.PI) / SWAY.period) * 1000) / 1000;
+    const phase0 = R.r(0, 2 * Math.PI);
+    let cx = edge + R.r(64, 76) + w / 2;
+    for (let i = 0; i < n; i++) {
+      const pl: Platform = {
+        id: pid++, x: r(cx - w / 2), y: top, width: w, height: 22, type: 'moving', style: 'branch', art: 'orchid',
+        moveRange: SWAY.range, moveSpeed: speed, baseX: r(cx - w / 2), swayOffset: Math.round(((phase0 + i * Math.PI) % (2 * Math.PI)) * 1000) / 1000,
+      };
+      P.push(pl);
+      sways.push({ platformId: pl.id, x: r(cx), rootY: HOLLOW_Y, w });
+      if (i < n - 1) cx += step;
+    }
+    const far = r(cx + w / 2 + R.r(64, 76));
+    close();
+    softPit(edge, far);
+    arc(edge + 10, far - 10, G - 150, 2);
+    open(far);
+    run(R.r(160, 220));
+    garden(edge, x);
+    // (the wait for each to swing close, and a hop on each)
+    expert += (far - edge) / RUN + (SWAY.period / 2) * n + 1;
   }
 
   // ───────────────────────────── 5-1 The Loveliest Place ─────────────────────────────
@@ -1043,20 +1083,28 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
         () => { stepRise = Math.round(R.r(108, 122)); rowShape = 'tall'; if (R.chance(0.4)) orchidSteps(3); else orchidRow(R.pick([3, 4])); },
         () => { rowShape = 'level'; orchidRow(R.pick([1, 2])); isle('pot'); orchidRow(R.pick([1, 2])); isle('pot'); orchidRow(R.pick([1, 2])); },
         () => { rowShape = 'zig'; orchidRow(R.pick([1, 2])); isle('spider'); orchidRow(R.pick([1, 2])); isle('spider'); orchidRow(R.pick([1, 2])); },
+        // the swaying orchids: a lone one first (its lesson), then rows of two or three, a closing row between
+        // (and a closing row or flight after each: the quota is in the closing orchids' cups, which the swaying ones have none of)
+        () => { swayRow(sways.length ? R.pick([2, 3]) : 1); rowShape = 'level'; if (R.chance(0.5)) orchidRow(R.pick([2, 3])); else orchidSteps(3); },
       ];
       // (one style the whole play: a play of tall orchids and a play of teapot islands share little; a mix of two made every play alike)
-      const one = R.pick([0, 1, 2, 3]);
+      const one = R.pick([0, 1, 2, 3, 4]);
+      // (and in half the plays of the other styles, the swaying orchids every other time)
       const mine = [one, one];
       // (the cakes and the guests who sat, once each, at rolled places: the stage's own idea, never in the same spot)
       const cakeAt = new Set([R.pick([0, 1]), R.pick([3, 4, 5])]);
-      const guestsAt = R.pick([2, 3, 4, 5, 6]);
+      // (early enough that their line is never held behind the late "still n petals" nag)
+      const guestsAt = R.pick([1, 2, 3]);
+      const flagDue = () => { if (expert - info.flagSeconds[info.flagSeconds.length - 1] > 20) flag(); };
       // (and what comes between the orchids, one of these a play)
       const season = R.pick([() => gap(), () => stumps(2), () => highRoad(R.r(440, 520)), () => potWalk(1), () => spiderRun(1, R.r(720, 820)), () => { gap(); gap(); }]);
       let k = 0;
       const next = () => {
         if (R.chance(0.65)) season();
+        flagDue();
         if (cakeAt.has(k)) cakeRow(1);
         styles[mine[k % 2]]();
+        flagDue();
         if (k === guestsAt) chairWalk(1, 2);
         k++;
       };
@@ -1071,6 +1119,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
         if (n % 2 === 1 || expert - info.flagSeconds[info.flagSeconds.length - 1] > 20) flag();
         n++;
       }
+      if (expert - info.flagSeconds[info.flagSeconds.length - 1] > 12) flag();
       // (whatever the theme drew, the stage keeps its own idea: rows of orchids, three awake spiders, a cake or two, the guests who sat)
       if (n <= soonerAt) hint(x + 60, W5_HINTS.s53sooner);
       const cakesNow = () => cakes.length;
@@ -1431,7 +1480,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   if (plan === '5-5') cfg.targetCount = COCOON_GOAL_55;
   const w5: W5Extras = {
     mood: 'gold', petals: true, ...(plan === '5-1' ? { gentle: true } : {}),
-    chairs, tables, cakes, butlers, threads, carvings, spiders, decor, ...(orchids.length ? { orchids } : {}), ...(pots.length ? { pots } : {}), ...(sheets.length ? { sheets } : {}),
+    chairs, tables, cakes, butlers, threads, carvings, spiders, decor, ...(orchids.length ? { orchids } : {}), ...(pots.length ? { pots } : {}), ...(sheets.length ? { sheets } : {}), ...(sways.length ? { sways } : {}),
   };
   // 5-5: the dusk (the other take from 5-4's, w5Backdrop.ts), the cocoons and the rest branch
   if (plan === '5-5') Object.assign(w5, { mood: 'dusk', petals: false, cocoons: cocoons55, rest: rest55 } satisfies Partial<W5Extras>);

@@ -22,3 +22,5 @@ finished: hfg-w5web2 ~05:24Z (~3 min, ~$0.14); results hfground/w5web2. KEPT bil
   Packed slack-s23, billow2-s23, snap-s23 -> src/assets/w6to10/props-made/w5web.webp (+ .json), key d0=150 d1=225 speck=20 + depurple.
   NOT wired in. Rough spots: some anchor strands still break into dashes after the key (draw them as code silk lines when wired, a
   small code touch), a pink cast on the silk, a faint dark fringe on the billow. Running total tonight ~7 min = ~$0.32.
+hfg-w5sway 6ae5f776c78863f9c62f282c rtx-pro-6000 created 2026-10-31 14:13:10Z (10:13 AM ET): spec-w5sway.json (5-3's moving bloom, Matt 10:15 AM: a swaying orchid on its stem; 2 seeds x strengths 0.45/0.6, start starts/w5pieces/sway-orchid.webp)
+finished: hfg-w5sway ~14:14:44Z (~1.6 min, ~$0.07); results hfground/w5sway (4 takes). KEPT s11 at 0.60 (the stem came out painted and shaded); keyed and cut at the pit floor -> src/assets/props/w5-sway.webp (wired in: w5Look.ts drawSwayOrchid). Running total today ~$0.07.

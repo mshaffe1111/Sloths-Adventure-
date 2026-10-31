@@ -256,6 +256,11 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     const i = firstIn(samples, { x0: p.x - 130, x1: p.x + 130, y0: p.y - 160, y1: p.y + 60 });
     if (i < 0) off('teapots'); else add(i, 'Z', 'teapot steam: go between puffs', 1.0);
   }
+  // (a swaying orchid: the hop onto it is timed to its swing, as a puff is: the route reads the ledge as a moving platform)
+  for (const b of w5?.sways ?? []) {
+    const i = firstIn(samples, { x0: b.x - 130, x1: b.x + 130, y0: b.rootY - 400, y1: b.rootY + 40 });
+    if (i < 0) off('swaying orchids'); else add(i, 'Z', 'swaying orchid: hop on as it swings near', 1.0);
+  }
   for (const th of w5?.threads ?? []) {
     const i = firstIn(samples, { x0: th.x0 - 20, x1: th.x1 + 20, y0: th.y - 110, y1: th.y + 60 });
     if (i < 0) off('humming threads'); else add(i, 'Z', 'humming thread: jump it');

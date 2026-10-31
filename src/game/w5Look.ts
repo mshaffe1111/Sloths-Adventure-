@@ -619,6 +619,59 @@ export function drawCarving(ctx: CanvasRenderingContext2D, c: Carving, seed: num
 
 // ───────────────────────────── orchids ─────────────────────────────
 
+/** 5-3's swaying orchid, painted on Hugging Face from the kit's orchid (tools/art/hfground/spec-w5sway.json, take s11 at 0.60): one bloom on
+ * its stem, keyed, the stem cut where it meets the pit floor */
+const SWAY_URL = new URL('../assets/props/w5-sway.webp', import.meta.url).href;
+let swayImg: HTMLImageElement | null = null;
+const swayArt = (): HTMLImageElement | null => {
+  if (typeof Image === 'undefined') return null;
+  if (!swayImg) {
+    swayImg = new Image();
+    swayImg.src = SWAY_URL;
+  }
+  return swayImg.complete && swayImg.naturalWidth ? swayImg : null;
+};
+/** the painted piece's bloom across the sheet (its width in the art's own pixels) and its bloom's middle (share of the width) */
+const SWAY_ART = { bloom: 488, mid: 0.5 } as const;
+
+/**
+ * A swaying orchid (5-3): the bloom's top petals are the ledge at (hx, hy), its stem down to the root (rx, ry) in the pit floor, the
+ * whole plant leaning the way the head has swung. Painted (w5-sway.webp), rotated about the bloom and clipped at the floor; until the
+ * picture has loaded, a stem drawn in code under the kit's open orchid.
+ */
+export function drawSwayOrchid(ctx: CanvasRenderingContext2D, rx: number, ry: number, hx: number, hy: number, w: number, t: number) {
+  const img = swayArt();
+  const L = Math.max(40, ry - hy);
+  const lean = Math.max(-0.9, Math.min(0.9, (hx - rx) / L));
+  if (img) {
+    const s = (w * 1.15) / SWAY_ART.bloom;
+    const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(hx - dw, hy - dh, dw * 2, ry - (hy - dh));
+    ctx.clip();
+    ctx.translate(hx, hy - 10);
+    ctx.rotate(Math.asin(lean) * 0.8);
+    ctx.drawImage(img, -dw * SWAY_ART.mid, 0, dw, dh);
+    ctx.restore();
+    return;
+  }
+  const dx = hx - rx;
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (const [col, lw] of [['#2f5a28', 13], ['#6f9e46', 8]] as const) {
+    ctx.strokeStyle = col;
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.moveTo(rx, ry);
+    ctx.quadraticCurveTo(rx + dx * 0.15, (ry + hy) / 2, hx, hy + 18);
+    ctx.stroke();
+  }
+  ctx.restore();
+  drawOrchid(ctx, hx, hy, w, 1, 0, t);
+}
+
+
 /** a big orchid, its bloom's top at (x, y), `w` wide; `open` 1 open (a ledge), 0 shut (a bud); `shiver` while it is about to close */
 export function drawOrchid(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, open: number, shiver: number, t: number, stemTo?: number) {
   const n: W5Piece = open > 0.7 ? 'orchidOpen' : open > 0.25 ? 'orchidHalf' : 'orchidClosed';

@@ -14,13 +14,13 @@ import {
   touchesCake, trayAt, W5_TEACH, onScreen, SPIDER5, laced, newSeam, SEAMSTRESS, stepSeam, type ButlerState, type CocoonState,
   type GateState, type SeamState, type SitState, type ViewBox, type W5Extras, WOBBLE,
 } from './w5Kit.ts';
-import { cocoonStop, onRest } from './w5Kit.ts';
+import { cocoonStop, onRest, type SwayBloom } from './w5Kit.ts';
 import { W5_POUCH } from './w5Lines.ts';
 import { readMs } from './dotGuide.ts';
 import {
   carvingBox, drawBlossom, drawButler, drawCake, drawCard, drawCarving, drawChair, drawCocoon, drawDoily, drawFern, drawFlyingTray, drawOrchid,
   drawPennant, drawPiece, drawPinkBell, drawShrineArt, drawSilkOnPokey, drawSilkSheet, drawSleepyOnPokey, drawSteam, drawTeaTable, drawTeapot, drawThread,
-  drawW5Light, drawWrappedChair, takeAt,
+  drawSwayOrchid, drawW5Light, drawWrappedChair, takeAt,
 } from './w5Look.ts';
 import { w5ArtReady, w5Height, type W5Piece as ArtPiece } from './w5Art.ts';
 import { drawSeamstress, drawW5Spider, seamHeadDx, seamTop, warmW5Butler, warmW5Seamstress, warmW5Spider, type ButlerPose } from './w5Creatures.ts';
@@ -151,6 +151,9 @@ export class W5Play {
    */
   readonly guideThings: Array<{ kind: 'cocoon' | 'orchid' | 'seamstress'; x: number; y: number; done?: boolean }> = [];
 
+  /** 5-3's swaying orchids and their ledges (moved by engine.ts each frame) */
+  private readonly swayPlat: Array<{ b: SwayBloom; pl: Platform }> = [];
+
   constructor(private readonly w5: W5Extras, platforms: Platform[], vines: Vine[]) {
     this.silkLines = vines.filter((v) => v.silk);
     this.seams = (w5.seamstresses ?? []).map(() => newSeam());
@@ -166,6 +169,10 @@ export class W5Play {
     for (const o of w5.orchids ?? []) this.guideThings.push({ kind: 'orchid', x: o.x, y: Math.round(o.y + w5Height('orchidOpen', o.w) * 0.4) });
     // (and the Seamstress, her middle: Dot's line about her rings her, QA v200: "saw only a webbed chair and a lace cloth")
     for (const sm of w5.seamstresses ?? []) this.guideThings.push({ kind: 'seamstress', x: sm.x, y: Math.round(sm.y - SEAMSTRESS.h / 2) });
+    for (const b of w5.sways ?? []) {
+      const pl = platforms.find((q) => q.id === b.platformId);
+      if (pl) this.swayPlat.push({ b, pl });
+    }
     (w5.orchids ?? []).forEach((o, i) => {
       for (const id of o.petalIds ?? []) this.orchidOf.set(id, i);
       const pl = o.platformId !== undefined ? platforms.find((q) => q.id === o.platformId) : undefined;
@@ -271,6 +278,9 @@ export class W5Play {
       // "Quick! Flick up before the orchid shuts!" came while the silk had him behind a stump, and it shut before he was free)
       if (o.lesson && p.x > o.x - SEE - 40 && p.x < o.x + o.w / 2 + 80 && Math.abs(p.y - o.y) < 300) this.grace = Math.max(this.grace, 0.2);
     });
+
+    // the swaying orchids: Dot's line as the first comes into view (they never close: the timing is the jump)
+    for (const { pl } of this.swayPlat) if (ahead(pl.x + pl.width / 2, pl.y)) h.tip(said(W5_TEACH.sway), W5_TEACH.sway, 4);
 
     // the soft chairs tug him toward them as he passes; sitting in one brings the silk on faster
     let pull = 0;
@@ -578,6 +588,11 @@ export class W5Play {
       // a warm wisp always (it is always warm), a thick billow on the puff
       const a = ph.phase === 'puff' ? Math.min(1, ph.u * 6, (1 - ph.u) * 4) : 0.2;
       drawSteam(ctx, s.x, s.y, ph.phase === 'puff' ? TEAPOT.rise : 50, a, t, ph.phase === 'puff' ? 1.6 : 0.5);
+    }
+    // the swaying orchids: the stem from its root to the ledge, leaning as the head swings, and the open bloom on top
+    for (const { b, pl } of this.swayPlat) {
+      if (!vis(b.x)) continue;
+      drawSwayOrchid(ctx, b.x, b.rootY, pl.x + pl.width / 2, pl.y, b.w, t);
     }
     (w5.orchids ?? []).forEach((o) => {
       if (!vis(o.x)) return;
