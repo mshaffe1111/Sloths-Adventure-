@@ -310,15 +310,20 @@ function candidates(stage: GeneratedStage, a: number, b: number, r: () => number
       hi = Math.min(hi, b - 120 - step * (len - 1));
     }
     if (hi < lo) continue;
-    const x0 = lo + r() * (hi - lo);
-    const t = Array.from({ length: len }, (_, i) => ({ x: x0 + i * step, y: p.y - FLOAT }));
-    if (!t.some(inGap)) continue;
     const raised = p.y < ground - 120;
     // (the walking floor: solid ground at the start's height or a checkpoint's)
     const floors = [stage.spawnY, ...(stage.checkpoints ?? []).map((c) => c.y)];
-    if (p.height >= 50 && floors.some((y) => Math.abs(p.y - y) <= 40)) floor.push(t);
+    const onFloor = p.height >= 50 && floors.some((y) => Math.abs(p.y - y) <= 40);
     const byGoal = stage.collectibles.some((c) => GOALISH.has(c.type) && Math.abs(c.x - (p.x + p.width / 2)) < p.width / 2 + 300 && Math.abs(c.y - p.y) < 260);
-    if (!floor.includes(t)) (raised || byGoal ? ledges : plain).push(t);
+    // (a few spots along a long ledge, from where the layout's number says: one may sit under a stepping stone or by a heart)
+    const tries = Math.max(1, Math.min(4, Math.floor((hi - lo) / 300) + 1));
+    const k0 = r();
+    for (let k = 0; k < tries; k++) {
+      const x0 = lo + ((k0 + k / tries) % 1) * (hi - lo);
+      const t = Array.from({ length: len }, (_, i) => ({ x: x0 + i * step, y: p.y - FLOAT }));
+      if (!t.some(inGap)) continue;
+      (onFloor ? floor : raised || byGoal ? ledges : plain).push(t);
+    }
   }
   FLOOR.splice(0, FLOOR.length, ...floor);
   return [climbs, jumps, ledges, floor, plain];
