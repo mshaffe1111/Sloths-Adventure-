@@ -7,3 +7,12 @@ t6    6ae65ba50e0338d1bb7d4386  21:20Z  W6 single pieces from plain magenta at s
      RESULT: clean single pieces, but flatter and more cartoon than the game; key drifts to a darker pink and bleeds into the
      subject (the crab's legs); a stone base under some pieces.
 t6a   6ae65c590e0338d1bb7d43b7  21:23Z  probe: 3 W6 pieces x (anchor canvas: an approved piece beside, 0.88 | plain, 0.88), spec at 80530e93
+     RESULT t6a: the anchor canvas brought junk (a "#New" text, the anchor repainted see-through); plain key at 0.88 paints nothing.
+     DECISION: one piece per picture from plain key at strength 1.0; the cutter measures each take's own background (key_own).
+b6    6ae65d2fc78863f9c62f4d6f  21:27Z  W6 15 pieces x seeds 5,17 (30 takes), spec at 97862527
+b7    6ae65da7c78863f9c62f4d94  21:29Z  W7 30 takes, spec at f39a4243
+b2    6ae65dabc78863f9c62f4d96  21:29Z  W2 30 takes
+b1    6ae65dafc78863f9c62f4d98  21:29Z  W1 30 takes
+b3    6ae65db2c78863f9c62f4d9a  21:29Z  W3 30 takes
+b4    6ae65db60e0338d1bb7d4411  21:29Z  W4 30 takes
+b5    6ae65db9c78863f9c62f4d9c  21:29Z  W5 30 takes (green key)
