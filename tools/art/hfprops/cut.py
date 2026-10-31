@@ -20,7 +20,7 @@ import numpy as np  # noqa: E402
 from scipy import ndimage  # noqa: E402
 
 
-def key_own(img):
+def key_own(img, solo=False):
     """the take's own background: the model drifts off the asked-for key (a darker pink, a soft vignette), so the key is measured
     from the picture: a smooth background map from the border ring (row and column medians blended), alpha from each pixel's colour
     distance to it, the background un-mixed from the edge pixels, only what is not connected to the border by background kept"""
@@ -41,12 +41,28 @@ def key_own(img):
     if bg0[1] < bg0[0] and bg0[1] < bg0[2]:
         # (a magenta key: light beams, glows and moons the model painted in the key's own hue are background too; no piece on a
         # magenta-key world is painted magenta or pink, World 5's pink pieces are on green)
-        pink = np.minimum(a[..., 0], a[..., 2]) - a[..., 1]
-        alpha = np.minimum(alpha, np.clip(1 - (pink - 40) / 40, 0, 1))
+        # by hue: within ~22 degrees of the key's own hue and not grey (a purple mushroom or bellflower, ~60 degrees off, stays)
+        def hue(x):
+            r, g, b = x[..., 0] / 255, x[..., 1] / 255, x[..., 2] / 255
+            mx, mn = np.maximum(np.maximum(r, g), b), np.minimum(np.minimum(r, g), b)
+            d = np.maximum(mx - mn, 1e-6)
+            h = np.where(mx == r, ((g - b) / d) % 6, np.where(mx == g, (b - r) / d + 2, (r - g) / d + 4)) * 60
+            return h, (mx - mn) / np.maximum(mx, 1e-6)
+        h, sat = hue(a)
+        hk, _ = hue(bg0[None, None, :])
+        dh = np.abs((h - hk[0, 0] + 180) % 360 - 180)
+        keyish = np.clip(1 - (22 - dh) / 10, 0, 1)  # 0 within 12 degrees, 1 beyond 22
+        keyish = np.maximum(keyish, np.clip((0.16 - sat) / 0.06, 0, 1))  # near-grey: left to the distance key
+        alpha = np.minimum(alpha, keyish)
     al = alpha[..., None]
     paint = np.where(al > 0.02, (a - (1 - al) * bgm) / np.maximum(al, 0.02), 0)
     rgb = np.where(al < 0.999, paint, a).clip(0, 255)
     al8 = keep_blobs(alpha * 255)
+    if solo:  # (only the biggest blob: a stray scrap of light beam or mist beside the piece)
+        lab, n = ndimage.label(al8 > 40)
+        if n > 1:
+            sizes = ndimage.sum(np.ones_like(al8), lab, range(1, n + 1))
+            al8 = np.where(ndimage.binary_dilation(lab == 1 + int(np.argmax(sizes)), iterations=3), al8, 0)
     im = Image.fromarray(np.dstack([rgb, al8]).astype(np.uint8), 'RGBA')
     return im.crop(im.getbbox()) if im.getbbox() else im
 
@@ -94,7 +110,7 @@ def main():
             if p.get('box'):  # (the piece's own box in the take, as fractions: a hanging piece painted inside a tree scene)
                 bx = p['box']
                 img = img.crop((round(bx[0] * img.width), round(bx[1] * img.height), round(bx[2] * img.width), round(bx[3] * img.height)))
-            im = edge_clean(key_own(img))
+            im = edge_clean(key_own(img, p.get('solo', False)))
             if p.get('cropBottom'):  # (a base slab the model put under it: the bottom fraction cut off)
                 im = im.crop((0, 0, im.width, round(im.height * (1 - p['cropBottom']))))
                 im = im.crop(im.getbbox())
@@ -112,18 +128,22 @@ def main():
         print(dst, sheet.size, len(pieces))
     # the three new looks per job per world (lead, 2026-10-31: three looks per job), from the pieces kept, in pieces.py order
     sys.path.insert(0, str(HERE))
-    from pieces import P
+    from pieces import P, P2
     looks = {}
     for world, pp in picks.items():
         w = int(world)
         nm = lambda n: f'w{w}{n[0].upper()}{n[1:]}'
-        by = {job: [nm(n) for (n, j, _u, _d) in P[w]['pieces'] if j == job and n in pp] for job in ('bank', 'hang', 'clutter')}
+        allp = P[w]['pieces'] + P2.get(w, [])
+        by = {job: [nm(n) for (n, j, _u, _d) in allp if j == job and n in pp] for job in ('bank', 'hang', 'clutter')}
         # (a pick under a name of its own, not in the list: a take that came out as something else worth keeping, by its `job`)
-        known = {n for (n, *_r) in P[w]['pieces']}
+        known = {n for (n, *_r) in allp}
         for n, v in pp.items():
             if n not in known:
                 by[v['job']].append(nm(n))
-        pat = {'bank': [[0, 1, 2], [3, 4, 5], [1, 3, 5]], 'hang': [[0, 1], [2, 3], [1, 2]], 'clutter': [[0, 1, 2], [3, 4, 0], [1, 3, 4]]}
+        # (three looks per job from round 1's pieces; round 2's add looks of their own, in threes)
+        pat = {'bank': [[0, 1, 2], [3, 4, 5], [1, 3, 5], [6, 7, 8], [9, 10, 11], [6, 9, 2], [8, 11, 4]], 'hang': [[0, 1], [2, 3], [1, 2]],
+               'clutter': [[0, 1, 2], [3, 4, 0], [1, 3, 4], [5, 6, 2], [6, 5, 3]]}
+        pat = {j: [ix for ix in v if ix[0] < max(3, len(by[j]))] for j, v in pat.items()}
         looks[w] = {}
         for job, ns in by.items():
             if not ns:

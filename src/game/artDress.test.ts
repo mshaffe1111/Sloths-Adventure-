@@ -120,7 +120,9 @@ test('Worlds 1 and 5: their stages wear dressing sets, two stages in a row never
       const plain = buildProtoStage(cfg(id), 1, HAND_STAGES[id]);
       assert.deepEqual(plain.platforms, st.platforms, `${id}: platforms unchanged`);
       for (const d of ds) assert.ok(DRESS_FRAMES[d.n], `${id}: ${d.n}`);
-      return ds.filter((d) => /Bank|Fern$|Stump|Reed|Log/.test(d.n)).map((d) => d.n).sort().join();
+      // (the stage's first bank set: within a stage the looks now take turns, hf-props 2026-10-31, so two stages differ by where they start)
+      const bank = new Set(DRESS_SETS[+id[0] as 1 | 5].bank.flat());
+      return ds.filter((d) => bank.has(d.n)).slice(0, 3).map((d) => d.n).sort().join();
     });
     assert.notEqual(looks[0], looks[1], `${ids.join(' and ')} wear different bank sets`);
   }

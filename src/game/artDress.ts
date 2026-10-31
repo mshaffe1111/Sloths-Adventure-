@@ -244,13 +244,13 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   };
   const pick = (job: 'bank' | 'hang' | 'clutter', salt: number): DressName[] => (sets[job].length ? rollLook(sets[job], d.stage, d.seed, salt + d.world * 11) : []);
   // (hf-props, 2026-10-31: one look per job for a whole stage put the same three pieces at every bank, AUDIT.md. The roll picks the
-  // stage's first look; each set after it takes the next of the world's looks, up to three in a stage, so neighbouring banks differ
+  // stage's first look; each set after it takes the next of the world's looks (all of them in Worlds 1-7, up to three in 8-10), so neighbouring banks differ
   // and the next stage, starting elsewhere, still looks different)
   const cycle = (job: 'bank' | 'hang' | 'clutter', salt: number) => {
     const all = sets[job];
     const first = pick(job, salt);
     const i0 = Math.max(0, all.indexOf(first));
-    const run = Array.from({ length: Math.min(3, all.length) }, (_, k) => all[(i0 + k) % all.length]);
+    const run = Array.from({ length: Math.min(d.world <= 7 ? all.length : 3, all.length) }, (_, k) => all[(i0 + k) % all.length]);
     return (k: number): DressName[] => run[k % run.length] ?? [];
   };
   // (each set laid in a turned order, so the same three in the same order do not come round bank after bank)
@@ -261,17 +261,31 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   const banks = d.platforms.filter((p) => p.type === 'solid' && p.height >= 90 && !p.art && !p.push).sort((a, b) => a.x - b.x);
   const touches = (p: Platform, right: boolean) =>
     banks.some((q) => q !== p && q.y <= p.y + 2 && (right ? Math.abs(p.x + p.width - q.x) < 2 : Math.abs(q.x + q.width - p.x) < 2));
+  // (hf-props, 2026-10-31: Worlds 1-7 are dressed denser, AUDIT.md "the ground at Pokey's feet is mostly bare": sets closer together,
+  // on narrower banks and shorter floors, more of them, and a set of two where a third does not fit; Worlds 8-10 as they were)
+  const dense = d.world <= 7;
+  const K = dense
+    ? { bankW: 180, cap: 42, edgeGap: 420, setGap: 360, floorW: 300, off: 140, endPad: 180, step: 520, clutCap: 16, back: 300, ahead: 460 }
+    : { bankW: 240, cap: 18, edgeGap: 700, setGap: 600, floorW: 420, off: 200, endPad: 260, step: 820, clutCap: 8, back: 440, ahead: 700 };
+  // (and no piece over-used in one stage: a creature, which the eye picks out, at most 3 times; anything else at most 8)
+  const used = new Map<string, number>();
+  const CREATURE = /Macaw|Heron|Toucan|Lizard|Mudskipper|Frog|Crab|Fiddler|Kingfisher|Salamander|Snail|Morpho|Caterpillar/;
+  const over = (n: string) => dense && (used.get(n) ?? 0) >= (CREATURE.test(n) ? 3 : 8);
+  const count = (laid: DressPiece[]) => {
+    for (const q of laid) used.set(q.n, (used.get(q.n) ?? 0) + 1);
+  };
+  const enough = (laid: unknown[], set: unknown[]) => laid.length > 0 && (laid.length === set.length || (dense && laid.length >= 2));
   // bank: a set of three along the lip by each end that drops away, laid inward from the edge
   const bankAt = cycle('bank', 51);
   let bankK = 0;
   let lastBank = -Infinity;
   let lastSet = -Infinity;
   for (const p of banks) {
-    if (p.width < 240) continue;
+    if (p.width < K.bankW) continue;
     for (const right of [false, true]) {
-      if (touches(p, right) || out.length >= 18) continue;
+      if (touches(p, right) || out.length >= K.cap) continue;
       const edge = right ? p.x + p.width : p.x;
-      if (Math.abs(edge - lastBank) < 700) continue;
+      if (Math.abs(edge - lastBank) < K.edgeGap) continue;
       // (none at the stage's start, where he stands as it opens: a set there piled up round him, W8-10's first screens)
       if (edge < 300) continue;
       const dir = right ? -1 : 1;
@@ -279,6 +293,7 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
       const laid: DressPiece[] = [];
       const bankSet = bankAt(bankK);
       for (const n of turn(bankSet, out.length + Math.round(edge))) {
+        if (over(n)) continue;
         const w = dressSize(n).w;
         const x = at + (dir * w) / 2;
         if (!clear(x, w) || !free(n, x, p.y + 5, p)) break;
@@ -288,8 +303,9 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
       // (and 600 or more clear of the last set: sets laid inward from two edges facing each other met in the middle, the same piece
       // twice side by side)
       const near = Math.min(...laid.map((q) => q.x));
-      if (laid.length === bankSet.length && laid.length && near - lastSet >= 600) {
+      if (enough(laid, bankSet) && near - lastSet >= K.setGap) {
         out.push(...laid);
+        count(laid);
         bankK++;
         lastBank = edge;
         lastSet = Math.max(...laid.map((q) => q.x));
@@ -329,21 +345,23 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   const bankXs = out.map((q) => q.x);
   let sets3 = 0;
   for (const p of banks) {
-    if (p.width < 420) continue;
-    for (let x = p.x + 200 + lookHash(d.seed + Math.round(p.x), 29) * 200; x < p.x + p.width - 260 && sets3 < 8; x += 820) {
-      if (bankXs.some((bx) => bx > x - 440 && bx < x + 700)) continue;
+    if (p.width < K.floorW) continue;
+    for (let x = p.x + K.off + lookHash(d.seed + Math.round(p.x), 29) * 200; x < p.x + p.width - K.endPad && sets3 < K.clutCap; x += K.step) {
+      if (bankXs.some((bx) => bx > x - K.back && bx < x + K.ahead)) continue;
       let at = x;
       const laid: DressPiece[] = [];
       const clutSet = clutAt(sets3);
       for (const n of turn(clutSet, sets3 + Math.round(x))) {
+        if (over(n)) continue;
         const w = dressSize(n).w;
         const cx = at + w / 2;
         if (!clear(cx, w) || !free(n, cx, p.y + 6, p)) break;
         laid.push({ n, x: cx, b: p.y + 6, flip: lookHash(d.seed + Math.round(cx), 31) < 0.5 });
         at += w + 26 + lookHash(d.seed + Math.round(cx), 37) * 40;
       }
-      if (laid.length === clutSet.length && laid.length) {
+      if (enough(laid, clutSet)) {
         out.push(...laid);
+        count(laid);
         sets3++;
       }
     }

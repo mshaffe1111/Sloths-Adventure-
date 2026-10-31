@@ -6,50 +6,183 @@
  */
 export interface DressNewFrame { x: number; y: number; w: number; h: number; units: number; world: number; hang?: boolean }
 export const DRESS_NEW_FRAMES = {
- "w2Heron": {
+ "w1BerryHang": {
   "x": 0,
   "y": 0,
+  "w": 136,
+  "h": 423,
+  "units": 34,
+  "world": 1,
+  "hang": true
+ },
+ "w1Heliconia": {
+  "x": 140,
+  "y": 0,
+  "w": 224,
+  "h": 402,
+  "units": 56,
+  "world": 1
+ },
+ "w1Bromeliad": {
+  "x": 368,
+  "y": 0,
+  "w": 256,
+  "h": 335,
+  "units": 64,
+  "world": 1
+ },
+ "w1OrchidHang": {
+  "x": 628,
+  "y": 0,
+  "w": 176,
+  "h": 335,
+  "units": 44,
+  "world": 1,
+  "hang": true
+ },
+ "w1FernHang": {
+  "x": 808,
+  "y": 0,
+  "w": 184,
+  "h": 318,
+  "units": 46,
+  "world": 1,
+  "hang": true
+ },
+ "w1Termites": {
+  "x": 0,
+  "y": 427,
   "w": 248,
-  "h": 359,
+  "h": 256,
+  "units": 62,
+  "world": 1
+ },
+ "w1Toucan": {
+  "x": 252,
+  "y": 427,
+  "w": 232,
+  "h": 233,
+  "units": 58,
+  "world": 1
+ },
+ "w1TrailPost": {
+  "x": 488,
+  "y": 427,
+  "w": 168,
+  "h": 200,
+  "units": 42,
+  "world": 1
+ },
+ "w1MossBoulder": {
+  "x": 660,
+  "y": 427,
+  "w": 280,
+  "h": 185,
+  "units": 70,
+  "world": 1
+ },
+ "w1NestHang": {
+  "x": 0,
+  "y": 687,
+  "w": 160,
+  "h": 174,
+  "units": 40,
+  "world": 1,
+  "hang": true
+ },
+ "w1Morpho": {
+  "x": 164,
+  "y": 687,
+  "w": 144,
+  "h": 169,
+  "units": 36,
+  "world": 1
+ },
+ "w1NutPod": {
+  "x": 312,
+  "y": 687,
+  "w": 160,
+  "h": 150,
+  "units": 40,
+  "world": 1
+ },
+ "w1LeafLitter": {
+  "x": 476,
+  "y": 687,
+  "w": 176,
+  "h": 140,
+  "units": 44,
+  "world": 1
+ },
+ "w1Snail": {
+  "x": 656,
+  "y": 687,
+  "w": 200,
+  "h": 131,
+  "units": 50,
+  "world": 1
+ },
+ "w1SeedPods": {
+  "x": 0,
+  "y": 865,
+  "w": 176,
+  "h": 120,
+  "units": 44,
+  "world": 1
+ },
+ "w2MossDrip": {
+  "x": 0,
+  "y": 0,
+  "w": 136,
+  "h": 510,
+  "units": 34,
+  "world": 2,
+  "hang": true
+ },
+ "w2Heron": {
+  "x": 140,
+  "y": 0,
+  "w": 248,
+  "h": 363,
   "units": 62,
   "world": 2
  },
  "w2CattailFly": {
-  "x": 252,
+  "x": 392,
   "y": 0,
   "w": 208,
-  "h": 346,
+  "h": 351,
   "units": 52,
   "world": 2
  },
  "w2Driftwood": {
-  "x": 464,
+  "x": 604,
   "y": 0,
   "w": 280,
-  "h": 317,
+  "h": 319,
   "units": 70,
   "world": 2
  },
  "w2NetHang": {
-  "x": 748,
-  "y": 0,
+  "x": 0,
+  "y": 514,
   "w": 200,
-  "h": 306,
+  "h": 307,
   "units": 50,
   "world": 2,
   "hang": true
  },
  "w2SignPost": {
-  "x": 0,
-  "y": 363,
+  "x": 204,
+  "y": 514,
   "w": 192,
-  "h": 290,
+  "h": 292,
   "units": 48,
   "world": 2
  },
  "w2BasketHang": {
-  "x": 196,
-  "y": 363,
+  "x": 400,
+  "y": 514,
   "w": 184,
   "h": 262,
   "units": 46,
@@ -57,68 +190,390 @@ export const DRESS_NEW_FRAMES = {
   "hang": true
  },
  "w2GourdHang": {
-  "x": 384,
-  "y": 363,
+  "x": 588,
+  "y": 514,
   "w": 176,
-  "h": 258,
+  "h": 259,
   "units": 44,
   "world": 2,
   "hang": true
  },
  "w2Raft": {
-  "x": 564,
-  "y": 363,
+  "x": 0,
+  "y": 825,
   "w": 320,
-  "h": 235,
+  "h": 213,
   "units": 80,
   "world": 2
  },
- "w2MossDrip": {
-  "x": 888,
-  "y": 363,
-  "w": 136,
-  "h": 234,
-  "units": 34,
-  "world": 2,
-  "hang": true
- },
  "w2FishTrap": {
-  "x": 0,
-  "y": 657,
+  "x": 324,
+  "y": 825,
   "w": 264,
   "h": 161,
   "units": 66,
   "world": 2
  },
  "w2WaterJar": {
-  "x": 268,
-  "y": 657,
+  "x": 592,
+  "y": 825,
   "w": 160,
-  "h": 123,
+  "h": 115,
   "units": 40,
   "world": 2
  },
  "w2Crab": {
-  "x": 432,
-  "y": 657,
+  "x": 756,
+  "y": 825,
   "w": 184,
-  "h": 113,
+  "h": 111,
   "units": 46,
   "world": 2
  },
  "w2Frog": {
-  "x": 620,
-  "y": 657,
+  "x": 0,
+  "y": 1042,
   "w": 168,
-  "h": 112,
+  "h": 105,
   "units": 42,
   "world": 2
+ },
+ "w3RootGlow": {
+  "x": 0,
+  "y": 0,
+  "w": 176,
+  "h": 486,
+  "units": 44,
+  "world": 3,
+  "hang": true
+ },
+ "w3BeadMoss": {
+  "x": 180,
+  "y": 0,
+  "w": 176,
+  "h": 378,
+  "units": 44,
+  "world": 3,
+  "hang": true
+ },
+ "w3OldNest": {
+  "x": 360,
+  "y": 0,
+  "w": 256,
+  "h": 311,
+  "units": 64,
+  "world": 3
+ },
+ "w3CrystalDrip": {
+  "x": 620,
+  "y": 0,
+  "w": 160,
+  "h": 309,
+  "units": 40,
+  "world": 3,
+  "hang": true
+ },
+ "w3GlowStalks": {
+  "x": 784,
+  "y": 0,
+  "w": 176,
+  "h": 253,
+  "units": 44,
+  "world": 3
+ },
+ "w3Crystals": {
+  "x": 0,
+  "y": 490,
+  "w": 240,
+  "h": 233,
+  "units": 60,
+  "world": 3
+ },
+ "w3GlowStone": {
+  "x": 244,
+  "y": 490,
+  "w": 232,
+  "h": 222,
+  "units": 58,
+  "world": 3
+ },
+ "w3RootBoulder": {
+  "x": 480,
+  "y": 490,
+  "w": 288,
+  "h": 218,
+  "units": 72,
+  "world": 3
+ },
+ "w3Fossil": {
+  "x": 772,
+  "y": 490,
+  "w": 184,
+  "h": 189,
+  "units": 46,
+  "world": 3
+ },
+ "w3ShardsGlow": {
+  "x": 0,
+  "y": 727,
+  "w": 176,
+  "h": 158,
+  "units": 44,
+  "world": 3
+ },
+ "w3Pebbles": {
+  "x": 180,
+  "y": 727,
+  "w": 184,
+  "h": 135,
+  "units": 46,
+  "world": 3
+ },
+ "w3GlowMoss": {
+  "x": 368,
+  "y": 727,
+  "w": 240,
+  "h": 125,
+  "units": 60,
+  "world": 3
+ },
+ "w3GlowShrooms": {
+  "x": 612,
+  "y": 727,
+  "w": 144,
+  "h": 102,
+  "units": 36,
+  "world": 3
+ },
+ "w4VineHang": {
+  "x": 0,
+  "y": 0,
+  "w": 136,
+  "h": 646,
+  "units": 34,
+  "world": 4,
+  "hang": true
+ },
+ "w4LeafHang": {
+  "x": 140,
+  "y": 0,
+  "w": 136,
+  "h": 326,
+  "units": 34,
+  "world": 4,
+  "hang": true
+ },
+ "w4BellHang": {
+  "x": 280,
+  "y": 0,
+  "w": 120,
+  "h": 321,
+  "units": 30,
+  "world": 4,
+  "hang": true
+ },
+ "w4BellOne": {
+  "x": 404,
+  "y": 0,
+  "w": 120,
+  "h": 224,
+  "units": 30,
+  "world": 4,
+  "hang": true
+ },
+ "w4SeedGrass": {
+  "x": 528,
+  "y": 0,
+  "w": 184,
+  "h": 206,
+  "units": 46,
+  "world": 4
+ },
+ "w4WindShrub": {
+  "x": 716,
+  "y": 0,
+  "w": 224,
+  "h": 203,
+  "units": 56,
+  "world": 4
+ },
+ "w4Cairn": {
+  "x": 0,
+  "y": 650,
+  "w": 192,
+  "h": 191,
+  "units": 48,
+  "world": 4
+ },
+ "w4Feather": {
+  "x": 196,
+  "y": 650,
+  "w": 160,
+  "h": 186,
+  "units": 40,
+  "world": 4
+ },
+ "w4MossStones": {
+  "x": 360,
+  "y": 650,
+  "w": 200,
+  "h": 184,
+  "units": 50,
+  "world": 4
+ },
+ "w4SlateChips": {
+  "x": 564,
+  "y": 650,
+  "w": 200,
+  "h": 179,
+  "units": 50,
+  "world": 4
+ },
+ "w4RopePost": {
+  "x": 768,
+  "y": 650,
+  "w": 160,
+  "h": 176,
+  "units": 40,
+  "world": 4
+ },
+ "w4FernTuft": {
+  "x": 0,
+  "y": 845,
+  "w": 184,
+  "h": 167,
+  "units": 46,
+  "world": 4
+ },
+ "w4Lizard": {
+  "x": 188,
+  "y": 845,
+  "w": 200,
+  "h": 144,
+  "units": 50,
+  "world": 4
+ },
+ "w5Bench": {
+  "x": 0,
+  "y": 0,
+  "w": 256,
+  "h": 248,
+  "units": 64,
+  "world": 5
+ },
+ "w5Pots": {
+  "x": 260,
+  "y": 0,
+  "w": 176,
+  "h": 237,
+  "units": 44,
+  "world": 5
+ },
+ "w5CupChime": {
+  "x": 440,
+  "y": 0,
+  "w": 176,
+  "h": 228,
+  "units": 44,
+  "world": 5,
+  "hang": true
+ },
+ "w5OrchidBasket": {
+  "x": 620,
+  "y": 0,
+  "w": 184,
+  "h": 228,
+  "units": 46,
+  "world": 5,
+  "hang": true
+ },
+ "w5FernPot": {
+  "x": 808,
+  "y": 0,
+  "w": 216,
+  "h": 217,
+  "units": 54,
+  "world": 5
+ },
+ "w5Lanterns": {
+  "x": 0,
+  "y": 252,
+  "w": 264,
+  "h": 209,
+  "units": 66,
+  "world": 5,
+  "hang": true
+ },
+ "w5Petals": {
+  "x": 268,
+  "y": 252,
+  "w": 192,
+  "h": 179,
+  "units": 48,
+  "world": 5
+ },
+ "w5WateringCan": {
+  "x": 464,
+  "y": 252,
+  "w": 200,
+  "h": 172,
+  "units": 50,
+  "world": 5
+ },
+ "w5Cocoons": {
+  "x": 668,
+  "y": 252,
+  "w": 176,
+  "h": 170,
+  "units": 44,
+  "world": 5,
+  "hang": true
+ },
+ "w5Thimbles": {
+  "x": 0,
+  "y": 465,
+  "w": 200,
+  "h": 147,
+  "units": 50,
+  "world": 5
+ },
+ "w5Sugar": {
+  "x": 204,
+  "y": 465,
+  "w": 160,
+  "h": 143,
+  "units": 40,
+  "world": 5
+ },
+ "w5TeaTin": {
+  "x": 368,
+  "y": 465,
+  "w": 160,
+  "h": 142,
+  "units": 40,
+  "world": 5
+ },
+ "w5Teacups": {
+  "x": 532,
+  "y": 465,
+  "w": 232,
+  "h": 140,
+  "units": 58,
+  "world": 5
+ },
+ "w5Spool": {
+  "x": 768,
+  "y": 465,
+  "w": 152,
+  "h": 125,
+  "units": 38,
+  "world": 5
  },
  "w6OrchidSpray": {
   "x": 0,
   "y": 0,
   "w": 200,
-  "h": 461,
+  "h": 458,
   "units": 50,
   "world": 6,
   "hang": true
@@ -127,7 +582,7 @@ export const DRESS_NEW_FRAMES = {
   "x": 204,
   "y": 0,
   "w": 312,
-  "h": 323,
+  "h": 322,
   "units": 78,
   "world": 6
  },
@@ -135,7 +590,7 @@ export const DRESS_NEW_FRAMES = {
   "x": 520,
   "y": 0,
   "w": 200,
-  "h": 313,
+  "h": 305,
   "units": 50,
   "world": 6,
   "hang": true
@@ -150,7 +605,7 @@ export const DRESS_NEW_FRAMES = {
  },
  "w6WeaverNest": {
   "x": 0,
-  "y": 465,
+  "y": 462,
   "w": 168,
   "h": 248,
   "units": 42,
@@ -159,48 +614,48 @@ export const DRESS_NEW_FRAMES = {
  },
  "w6StakeLantern": {
   "x": 172,
-  "y": 465,
+  "y": 462,
   "w": 184,
   "h": 244,
   "units": 46,
   "world": 6
  },
- "w6NestBasket": {
+ "w6SnailRock": {
   "x": 360,
-  "y": 465,
+  "y": 462,
+  "w": 184,
+  "h": 210,
+  "units": 46,
+  "world": 6
+ },
+ "w6NestBasket": {
+  "x": 548,
+  "y": 462,
   "w": 176,
-  "h": 214,
+  "h": 203,
   "units": 44,
   "world": 6,
   "hang": true
  },
- "w6SnailRock": {
-  "x": 540,
-  "y": 465,
-  "w": 184,
-  "h": 211,
-  "units": 46,
-  "world": 6
- },
  "w6MudLilies": {
   "x": 728,
-  "y": 465,
+  "y": 462,
   "w": 200,
-  "h": 192,
+  "h": 196,
   "units": 50,
   "world": 6
  },
  "w6Mudskipper": {
   "x": 0,
-  "y": 717,
+  "y": 714,
   "w": 184,
-  "h": 130,
+  "h": 126,
   "units": 46,
   "world": 6
  },
  "w6Pods": {
   "x": 188,
-  "y": 717,
+  "y": 714,
   "w": 200,
   "h": 70,
   "units": 50,
@@ -210,7 +665,7 @@ export const DRESS_NEW_FRAMES = {
   "x": 0,
   "y": 0,
   "w": 176,
-  "h": 389,
+  "h": 387,
   "units": 44,
   "world": 7,
   "hang": true
@@ -219,7 +674,7 @@ export const DRESS_NEW_FRAMES = {
   "x": 180,
   "y": 0,
   "w": 216,
-  "h": 319,
+  "h": 317,
   "units": 54,
   "world": 7
  },
@@ -236,7 +691,7 @@ export const DRESS_NEW_FRAMES = {
   "x": 588,
   "y": 0,
   "w": 144,
-  "h": 304,
+  "h": 306,
   "units": 36,
   "world": 7,
   "hang": true
@@ -245,13 +700,13 @@ export const DRESS_NEW_FRAMES = {
   "x": 736,
   "y": 0,
   "w": 264,
-  "h": 256,
+  "h": 260,
   "units": 66,
   "world": 7
  },
  "w7Macaw": {
   "x": 0,
-  "y": 393,
+  "y": 391,
   "w": 224,
   "h": 247,
   "units": 56,
@@ -259,57 +714,57 @@ export const DRESS_NEW_FRAMES = {
  },
  "w7Shards": {
   "x": 228,
-  "y": 393,
+  "y": 391,
   "w": 208,
-  "h": 209,
+  "h": 227,
   "units": 52,
   "world": 7
  },
- "w7StoneLantern": {
+ "w7Offering": {
   "x": 440,
-  "y": 393,
+  "y": 391,
   "w": 176,
-  "h": 198,
+  "h": 205,
   "units": 44,
   "world": 7
  },
  "w7Tablet": {
   "x": 620,
-  "y": 393,
+  "y": 391,
   "w": 216,
-  "h": 197,
+  "h": 203,
   "units": 54,
   "world": 7
  },
- "w7Offering": {
+ "w7StoneLantern": {
   "x": 840,
-  "y": 393,
+  "y": 391,
   "w": 176,
-  "h": 196,
+  "h": 198,
   "units": 44,
   "world": 7
  },
- "w7StoneBall": {
+ "w7FrogIdol": {
   "x": 0,
-  "y": 644,
+  "y": 642,
+  "w": 160,
+  "h": 166,
+  "units": 40,
+  "world": 7
+ },
+ "w7StoneBall": {
+  "x": 164,
+  "y": 642,
   "w": 152,
   "h": 156,
   "units": 38,
   "world": 7
  },
- "w7FrogIdol": {
-  "x": 156,
-  "y": 644,
-  "w": 160,
-  "h": 145,
-  "units": 40,
-  "world": 7
- },
  "w7Coins": {
   "x": 320,
-  "y": 644,
+  "y": 642,
   "w": 176,
-  "h": 115,
+  "h": 116,
   "units": 44,
   "world": 7
  }
@@ -317,7 +772,11 @@ export const DRESS_NEW_FRAMES = {
 export type DressNewName = keyof typeof DRESS_NEW_FRAMES;
 /** each world's sheet */
 export const DRESS_NEW_URLS: Record<number, string> = typeof URL === 'undefined' ? {} : {
+  1: new URL('../assets/props/dressnew-w1.webp', import.meta.url).href,
   2: new URL('../assets/props/dressnew-w2.webp', import.meta.url).href,
+  3: new URL('../assets/props/dressnew-w3.webp', import.meta.url).href,
+  4: new URL('../assets/props/dressnew-w4.webp', import.meta.url).href,
+  5: new URL('../assets/props/dressnew-w5.webp', import.meta.url).href,
   6: new URL('../assets/props/dressnew-w6.webp', import.meta.url).href,
   7: new URL('../assets/props/dressnew-w7.webp', import.meta.url).href,
 };

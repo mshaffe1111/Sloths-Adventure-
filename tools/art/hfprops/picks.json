@@ -280,5 +280,427 @@
    "units": 40,
    "cropBottom": 0.17
   }
+ },
+ "1": {
+  "bromeliad": {
+   "take": "w1-bromeliad-17",
+   "units": 64,
+   "cropBottom": 0.14,
+   "box": [
+    0.2,
+    0.15,
+    0.85,
+    1.0
+   ]
+  },
+  "mossBoulder": {
+   "take": "w1-mossBoulder-5",
+   "units": 70,
+   "cropBottom": 0.12
+  },
+  "termites": {
+   "take": "w1-termites-5",
+   "units": 62,
+   "cropBottom": 0.1
+  },
+  "toucan": {
+   "take": "w1-toucan-17",
+   "units": 58,
+   "cropBottom": 0.14,
+   "box": [
+    0.15,
+    0.3,
+    0.95,
+    1.0
+   ]
+  },
+  "trailPost": {
+   "take": "w1-trailPost-5",
+   "units": 42,
+   "cropBottom": 0.08
+  },
+  "heliconia": {
+   "take": "w1-heliconia-17",
+   "units": 56,
+   "cropBottom": 0.1,
+   "box": [
+    0.2,
+    0.2,
+    0.8,
+    1.0
+   ]
+  },
+  "orchidHang": {
+   "take": "w1-orchidHang-17",
+   "units": 44,
+   "hang": true,
+   "box": [
+    0.3,
+    0.25,
+    0.7,
+    0.92
+   ]
+  },
+  "nestHang": {
+   "take": "w1-nestHang-5",
+   "units": 40,
+   "hang": true,
+   "box": [
+    0.3,
+    0.3,
+    0.72,
+    0.75
+   ]
+  },
+  "fernHang": {
+   "take": "w1-fernHang-5",
+   "units": 46,
+   "hang": true,
+   "box": [
+    0.3,
+    0.22,
+    0.72,
+    0.9
+   ]
+  },
+  "berryHang": {
+   "take": "w1-berryHang-5",
+   "units": 34,
+   "hang": true,
+   "box": [
+    0.38,
+    0.25,
+    0.68,
+    0.95
+   ]
+  },
+  "leafLitter": {
+   "take": "w1-leafLitter-5",
+   "units": 44
+  },
+  "seedPods": {
+   "take": "w1-seedPods-5",
+   "units": 44,
+   "cropBottom": 0.02
+  },
+  "snail": {
+   "take": "w1-snail-17",
+   "units": 50,
+   "cropBottom": 0.15,
+   "box": [
+    0.25,
+    0.3,
+    0.95,
+    0.9
+   ]
+  },
+  "morpho": {
+   "take": "w1-morpho-17",
+   "units": 36,
+   "cropBottom": 0.15,
+   "box": [
+    0.2,
+    0.2,
+    0.85,
+    1.0
+   ]
+  },
+  "nutPod": {
+   "take": "w1-nutPod-5",
+   "units": 40,
+   "cropBottom": 0.1
+  }
+ },
+ "3": {
+  "crystals": {
+   "take": "w3-crystals-5",
+   "units": 60,
+   "cropBottom": 0.16
+  },
+  "rootBoulder": {
+   "take": "w3-rootBoulder-5",
+   "units": 72,
+   "cropBottom": 0.12
+  },
+  "glowStone": {
+   "take": "w3-glowStone-17",
+   "units": 58,
+   "cropBottom": 0.14
+  },
+  "oldNest": {
+   "take": "w3-oldNest-5",
+   "units": 64,
+   "cropBottom": 0.08
+  },
+  "glowStalks": {
+   "take": "w3-glowStalks-17",
+   "units": 44,
+   "cropBottom": 0.14,
+   "box": [
+    0.2,
+    0.08,
+    0.8,
+    1.0
+   ]
+  },
+  "rootGlow": {
+   "take": "w3-rootGlow-17",
+   "units": 44,
+   "hang": true,
+   "box": [
+    0.33,
+    0.22,
+    0.67,
+    0.95
+   ]
+  },
+  "crystalDrip": {
+   "take": "w3-crystalDrip-17",
+   "units": 40,
+   "hang": true,
+   "box": [
+    0.3,
+    0.25,
+    0.72,
+    0.85
+   ]
+  },
+  "beadMoss": {
+   "take": "w3-beadMoss-17",
+   "units": 44,
+   "hang": true,
+   "box": [
+    0.32,
+    0.28,
+    0.68,
+    0.98
+   ]
+  },
+  "fossil": {
+   "take": "w3-fossil-17",
+   "units": 46,
+   "cropBottom": 0.14
+  },
+  "glowShrooms": {
+   "take": "w3-glowShrooms-17",
+   "units": 36,
+   "cropBottom": 0.18,
+   "box": [
+    0.2,
+    0.3,
+    0.8,
+    1.0
+   ]
+  },
+  "glowMoss": {
+   "take": "w3-glowMoss-5",
+   "units": 60,
+   "cropBottom": 0.1
+  },
+  "pebbles": {
+   "take": "w3-pebbles-5",
+   "units": 46,
+   "cropBottom": 0.12
+  },
+  "shardsGlow": {
+   "take": "w3-shardsGlow-5",
+   "units": 44,
+   "cropBottom": 0.14
+  }
+ },
+ "4": {
+  "cairn": {
+   "take": "w4-cairn-17",
+   "units": 48,
+   "cropBottom": 0.14,
+   "solo": true
+  },
+  "windShrub": {
+   "take": "w4-windShrub-17",
+   "units": 56,
+   "cropBottom": 0.1,
+   "solo": true
+  },
+  "feather": {
+   "take": "w4-feather-5",
+   "units": 40,
+   "cropBottom": 0.08,
+   "solo": true
+  },
+  "lizard": {
+   "take": "w4-lizard-5",
+   "units": 50,
+   "cropBottom": 0.12,
+   "solo": true
+  },
+  "ropePost": {
+   "take": "w4-ropePost-5",
+   "units": 40,
+   "cropBottom": 0.06
+  },
+  "bellHang": {
+   "take": "w4-bellHang-17",
+   "units": 30,
+   "hang": true,
+   "box": [
+    0.3,
+    0.22,
+    0.68,
+    0.98
+   ]
+  },
+  "vineHang": {
+   "take": "w4-vineHang-17",
+   "units": 34,
+   "hang": true,
+   "box": [
+    0.33,
+    0.23,
+    0.66,
+    1.0
+   ]
+  },
+  "bellOne": {
+   "take": "w4-bellHang-5",
+   "units": 30,
+   "hang": true,
+   "job": "hang",
+   "box": [
+    0.3,
+    0.2,
+    0.65,
+    0.9
+   ]
+  },
+  "leafHang": {
+   "take": "w4-vineHang-5",
+   "units": 34,
+   "hang": true,
+   "job": "hang",
+   "box": [
+    0.38,
+    0.2,
+    0.65,
+    0.85
+   ]
+  },
+  "slateChips": {
+   "take": "w4-slateChips-17",
+   "units": 50,
+   "cropBottom": 0.12,
+   "solo": true
+  },
+  "mossStones": {
+   "take": "w4-mossStones-5",
+   "units": 50,
+   "cropBottom": 0.2,
+   "solo": true
+  },
+  "fernTuft": {
+   "take": "w4-fernTuft-5",
+   "units": 46,
+   "cropBottom": 0.12
+  },
+  "seedGrass": {
+   "take": "w4-seedGrass-5",
+   "units": 46,
+   "cropBottom": 0.06
+  }
+ },
+ "5": {
+  "wateringCan": {
+   "take": "w5-wateringCan-5",
+   "units": 50,
+   "cropBottom": 0.12
+  },
+  "pots": {
+   "take": "w5-pots-5",
+   "units": 44,
+   "cropBottom": 0.1
+  },
+  "bench": {
+   "take": "w5-bench-17",
+   "units": 64,
+   "cropBottom": 0.12
+  },
+  "fernPot": {
+   "take": "w5-fernPot-5",
+   "units": 54,
+   "cropBottom": 0.12
+  },
+  "spool": {
+   "take": "w5-spool-5",
+   "units": 38,
+   "cropBottom": 0.08
+  },
+  "cocoons": {
+   "take": "w5-cocoons-17",
+   "units": 44,
+   "hang": true,
+   "box": [
+    0.2,
+    0.2,
+    0.8,
+    0.8
+   ]
+  },
+  "lanterns": {
+   "take": "w5-lanterns-5",
+   "units": 66,
+   "hang": true,
+   "box": [
+    0.15,
+    0.25,
+    0.9,
+    0.85
+   ]
+  },
+  "cupChime": {
+   "take": "w5-cupChime-5",
+   "units": 44,
+   "hang": true,
+   "box": [
+    0.2,
+    0.2,
+    0.75,
+    0.95
+   ]
+  },
+  "orchidBasket": {
+   "take": "w5-orchidBasket-5",
+   "units": 46,
+   "hang": true,
+   "box": [
+    0.2,
+    0.12,
+    0.75,
+    0.95
+   ]
+  },
+  "teacups": {
+   "take": "w5-teacups-5",
+   "units": 58,
+   "cropBottom": 0.12
+  },
+  "sugar": {
+   "take": "w5-sugar-5",
+   "units": 40,
+   "cropBottom": 0.15
+  },
+  "petals": {
+   "take": "w5-petals-5",
+   "units": 48,
+   "cropBottom": 0.1
+  },
+  "thimbles": {
+   "take": "w5-thimbles-5",
+   "units": 50,
+   "cropBottom": 0.12
+  },
+  "teaTin": {
+   "take": "w5-teaTin-5",
+   "units": 40,
+   "cropBottom": 0.12
+  }
  }
 }

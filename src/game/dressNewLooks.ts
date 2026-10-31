@@ -43,10 +43,6 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w6MudLilies"
    ],
    [
-    "w6Pods",
-    "w6SnailRock"
-   ],
-   [
     "w6SnailRock",
     "w6Pods"
    ]
@@ -140,12 +136,207 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
     "w2WaterJar"
    ],
    [
-    "w2Crab",
-    "w2Frog"
-   ],
-   [
     "w2Frog",
     "w2Crab"
+   ]
+  ]
+ },
+ "1": {
+  "bank": [
+   [
+    "w1Bromeliad",
+    "w1MossBoulder",
+    "w1Termites"
+   ],
+   [
+    "w1Toucan",
+    "w1TrailPost",
+    "w1Heliconia"
+   ],
+   [
+    "w1MossBoulder",
+    "w1Toucan",
+    "w1Heliconia"
+   ]
+  ],
+  "hang": [
+   [
+    "w1OrchidHang",
+    "w1NestHang"
+   ],
+   [
+    "w1FernHang",
+    "w1BerryHang"
+   ],
+   [
+    "w1NestHang",
+    "w1FernHang"
+   ]
+  ],
+  "clutter": [
+   [
+    "w1LeafLitter",
+    "w1SeedPods",
+    "w1Snail"
+   ],
+   [
+    "w1Morpho",
+    "w1NutPod",
+    "w1LeafLitter"
+   ],
+   [
+    "w1SeedPods",
+    "w1Morpho",
+    "w1NutPod"
+   ]
+  ]
+ },
+ "3": {
+  "bank": [
+   [
+    "w3Crystals",
+    "w3RootBoulder",
+    "w3GlowStone"
+   ],
+   [
+    "w3OldNest",
+    "w3GlowStalks",
+    "w3Crystals"
+   ],
+   [
+    "w3RootBoulder",
+    "w3OldNest",
+    "w3Crystals"
+   ]
+  ],
+  "hang": [
+   [
+    "w3RootGlow",
+    "w3CrystalDrip"
+   ],
+   [
+    "w3BeadMoss",
+    "w3RootGlow"
+   ],
+   [
+    "w3CrystalDrip",
+    "w3BeadMoss"
+   ]
+  ],
+  "clutter": [
+   [
+    "w3Fossil",
+    "w3GlowShrooms",
+    "w3GlowMoss"
+   ],
+   [
+    "w3Pebbles",
+    "w3ShardsGlow",
+    "w3Fossil"
+   ],
+   [
+    "w3GlowShrooms",
+    "w3Pebbles",
+    "w3ShardsGlow"
+   ]
+  ]
+ },
+ "4": {
+  "bank": [
+   [
+    "w4Cairn",
+    "w4WindShrub",
+    "w4Feather"
+   ],
+   [
+    "w4Lizard",
+    "w4RopePost",
+    "w4Cairn"
+   ],
+   [
+    "w4WindShrub",
+    "w4Lizard",
+    "w4Cairn"
+   ]
+  ],
+  "hang": [
+   [
+    "w4BellHang",
+    "w4VineHang"
+   ],
+   [
+    "w4BellOne",
+    "w4LeafHang"
+   ],
+   [
+    "w4VineHang",
+    "w4BellOne"
+   ]
+  ],
+  "clutter": [
+   [
+    "w4SlateChips",
+    "w4MossStones",
+    "w4FernTuft"
+   ],
+   [
+    "w4SeedGrass",
+    "w4SlateChips"
+   ],
+   [
+    "w4MossStones",
+    "w4SeedGrass",
+    "w4SlateChips"
+   ]
+  ]
+ },
+ "5": {
+  "bank": [
+   [
+    "w5WateringCan",
+    "w5Pots",
+    "w5Bench"
+   ],
+   [
+    "w5FernPot",
+    "w5Spool",
+    "w5WateringCan"
+   ],
+   [
+    "w5Pots",
+    "w5FernPot",
+    "w5WateringCan"
+   ]
+  ],
+  "hang": [
+   [
+    "w5Cocoons",
+    "w5Lanterns"
+   ],
+   [
+    "w5CupChime",
+    "w5OrchidBasket"
+   ],
+   [
+    "w5Lanterns",
+    "w5CupChime"
+   ]
+  ],
+  "clutter": [
+   [
+    "w5Teacups",
+    "w5Sugar",
+    "w5Petals"
+   ],
+   [
+    "w5Thimbles",
+    "w5TeaTin",
+    "w5Teacups"
+   ],
+   [
+    "w5Sugar",
+    "w5Thimbles",
+    "w5TeaTin"
    ]
   ]
  }

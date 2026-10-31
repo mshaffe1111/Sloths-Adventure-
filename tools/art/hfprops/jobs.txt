@@ -16,3 +16,10 @@ b1    6ae65dafc78863f9c62f4d98  21:29Z  W1 30 takes
 b3    6ae65db2c78863f9c62f4d9a  21:29Z  W3 30 takes
 b4    6ae65db60e0338d1bb7d4411  21:29Z  W4 30 takes
 b5    6ae65db9c78863f9c62f4d9c  21:29Z  W5 30 takes (green key)
+     RESULTS b1-b7 (all done 21:39Z, ~10 min each, ~$3.2 for the seven): painted well; most standing pieces came on a puddle or slab
+     (cropped off at the cut), most hanging pieces inside a tree or cave scene (cut by a box); light beams in the key's hue (taken
+     out by hue at the cut). Thrown: takes with a sloth in them (a rope coil, shells, pebbles, a caterpillar, the flower vine), the
+     isometric tiles, floating rocks that would read as ledges (W4 ivy, drip roots), the kingfisher on a purple moon, the W3
+     salamander in its cave. Kept 96 pieces across W1-7.
+r2a   6ae666e50e0338d1bb7d4654  22:08Z  round 2, W1-4, 8 more pieces each x seeds 5,17 (64 takes), spec at f6c80a4d
+r2b   6ae666e7c78863f9c62f5143  22:08Z  round 2, W5-7 (48 takes)
