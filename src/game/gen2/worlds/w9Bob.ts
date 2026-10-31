@@ -293,7 +293,75 @@ const sinkHoard = section({
   mirrorable: true,
 });
 
+// ───────────────────────────── 9-3 and 9-8: the ropes over the lava (the burnt bridges) ─────────────────────────────
+
+/** a ledge past a gap no jump or glide clears, a shimmy rope across (World 1's shimmy, known by World 9: no new line) */
+const rope = (key: string, after: string, w: W, gap: W = [460, 520]): SectionPiece => bank(key, w, { kind: 'rope', after, gap });
+/** the time model's crossing: the rope at ROPE_SPEED (120 px a second) */
+const ROPE_T = 4.5;
+
+/** 9-3's gate for the ropes */
+const ropeGate3: SectionTemplate = section({
+  id: 'w9s-gate-bridges',
+  name: 'ember canopy: the ropes over the lava (gate)',
+  archetypes: ['vine_runner'],
+  phases: ['start'],
+  difficulty: 1,
+  teaches: W9_THEME.bridges,
+  weight: 6,
+  pieces: [bank('a', [220, 260]), up('k1', 'a', 30, [130, 160]), down('f1', 'k1', 30, [220, 260]), up('k2', 'f1', 30, [130, 160]), down('c', 'k2', 30, [200, 240])],
+  last: 'c',
+  sockets: [petals('k1', 'k1', 0.5, 1), petals('f1', 'f1', 0.5, 2, 80), petals('k2', 'k2', 0.5, 1), scenery('smoke', 'a', [0.5, 0.6], 0.9)],
+  mirrorable: false,
+});
+
+/** one rope over a lava chasm */
+const ropeCross = section({
+  id: 'w9-rope-cross',
+  name: 'rope over the lava',
+  archetypes: ['vine_runner', 'relic_hunt'],
+  phases: ALL,
+  difficulty: 5,
+  uses: [W9_THEME.bridges],
+  extraSeconds: ROPE_T,
+  pieces: [bank('a', [280, 320]), rope('b', 'a', [280, 320]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [200, 240])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1), thread('r', 'b', 0.6)],
+  mirrorable: true,
+});
+
+/** two ropes, a basalt ledge between them */
+const ropeTwin = section({
+  id: 'w9-rope-twin',
+  name: 'two ropes over the lava',
+  archetypes: ['vine_runner', 'relic_hunt'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W9_THEME.bridges],
+  extraSeconds: ROPE_T * 2,
+  pieces: [bank('a', [260, 300]), rope('b', 'a', [220, 260], [440, 500]), rope('c', 'b', [280, 320], [440, 500])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), thread('r', 'b', 0.5)],
+  mirrorable: true,
+});
+
+/** a rope, then a lava chasm jumped and a knob */
+const ropeChasm = section({
+  id: 'w9-rope-chasm',
+  name: 'rope, then the chasm',
+  archetypes: ['vine_runner', 'relic_hunt'],
+  phases: MID,
+  difficulty: 6,
+  uses: [W9_THEME.bridges],
+  extraSeconds: ROPE_T,
+  pieces: [bank('a', [260, 300]), rope('b', 'a', [300, 340]), W9H.lava('c', 'b', [300, 340]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [200, 240])],
+  last: 'd',
+  sockets: [petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('k', 'k', 0.5, 1), thread('r', 'd', 0.5)],
+  mirrorable: true,
+});
+
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
+  ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
   sinkGate3, W9_BOB_GATES.sinkers9, firstSink, sinkRun, sinkTwin, sinkHoard,
   W9_BOB_GATES.rafts, firstRaft, raftPair, raftRow, raftGeyser,
   W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, logBridge, logPair, logGlide, logHoard,
@@ -304,6 +372,7 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
   [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logBridge.id]: [5, 9], [logPair.id]: [5, 9],
+  [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [3, 8], [ropeTwin.id]: [3, 8], [ropeChasm.id]: [3, 8],
   [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [firstSink.id]: [3, 9], [sinkRun.id]: [3, 9], [sinkTwin.id]: [3, 9], [sinkHoard.id]: [9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],
 };

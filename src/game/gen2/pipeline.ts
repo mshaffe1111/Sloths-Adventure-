@@ -23,7 +23,8 @@ import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire 
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
-import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
+import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
+import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import {
@@ -357,6 +358,8 @@ interface LocalPiece {
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
   /** a moving log (place `raft`): its stops relative to its own top (y is the top stop), its ride and the gap's start under it */
   bob?: { kind: BobKind; depth: number; speed: number; wait: number; phase: number; from: number };
+  /** a ledge a rope crosses to (place `rope`): the piece the rope hangs from */
+  ropeFrom?: string;
 }
 interface LocalGap {
   x0: number;
@@ -533,6 +536,13 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
         const from = a.bob && a.bob.kind !== 'piston' ? a.bob.from : a.x + a.w;
         bob = { kind: pl.bob, depth, speed, wait, phase: R(rng() * cycle * 10) / 10, from };
       }
+    } else if (pl.kind === 'rope') {
+      // a ledge past a gap no jump or glide clears, a shimmy rope across (rope.ts; the rope itself is hung once both are placed: layStage)
+      const a = ref(pl.after);
+      const gap = Math.max(ROPE_MIN_GAP + 90, roll(rng, pl.gap));
+      x = a.x + a.w + gap;
+      y = a.y;
+      gaps.push({ x0: a.x + a.w, x1: x, y: a.y, pit: true });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -615,7 +625,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on',
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(bob ? { bob } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(bob ? { bob } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -664,6 +674,8 @@ export interface Laid {
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
   vines: Vine[];
+  /** the shimmy ropes (place `rope`) */
+  ropes: Rope[];
   width: number;
   bottom: number;
   nextId: number;
@@ -752,6 +764,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
   const gaps: Laid['gaps'] = [];
   const vines: Vine[] = [];
+  const ropes: Rope[] = [];
   const zones: Zone[] = [];
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false, soft = false) => {
     if ((budget.pit !== 'soft' && !soft) || x1 - x0 < 20) return;
@@ -949,6 +962,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (!q) throw new Error(`gen2 section ${tpl.id}: nothing named ${k} is laid (versions ${JSON.stringify(L.versions)})`);
         return q.platform;
       };
+      // (each rope (place `rope`) across between its two ledges, whichever way the section lies)
+      for (const lp of L.pieces) {
+        if (!lp.ropeFrom) continue;
+        const p1 = pieceOf(lp.ropeFrom), p2 = pieceOf(lp.key);
+        const [l, r] = p1.x < p2.x ? [p1, p2] : [p2, p1];
+        ropes.push({ id: ropes.length + 1, x0: R(l.x + l.width - ROPE_OVERLAP), x1: R(r.x + ROPE_OVERLAP), y: R(Math.min(l.y, r.y) - ROPE_RISE), g0: l.y, g1: r.y, required: true });
+        placed.beats.push({ x: l.x + l.width, letter: 'V' });
+      }
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       for (const g of L.gaps) {
@@ -1054,6 +1075,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     spawn: { x: SPAWN_X, y: runway.y, piece: runway },
     exit: { x: exitX, y: shrine.y, piece: shrine },
     vines,
+    ropes,
     zones,
     width: R(shrine.x + shrine.width + 40),
     bottom: baseline,
@@ -1732,7 +1754,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     trees: [],
     platforms,
     vines: laid.vines,
-    ropes: [],
+    ropes: laid.ropes,
     enemies: filled.enemies,
     boss: null,
     collectibles: sink.collectibles,

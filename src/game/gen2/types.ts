@@ -190,6 +190,9 @@ export interface LianaSwing {
  *                        a `piston` stands in its well flush against `after`, its bottom stop level with `after`, rising `dy` px (a
  *                        negative range: up) to its top stop, where the next piece walks on. The gap under a raft runs from the bank before
  *                        it to the piece that jumps on from it (a row of rafts is one gap)
+ *   rope                 a ledge `gap` px past `after` at its height, a shimmy rope hung across between them (rope.ts: ROPE_RISE over the
+ *                        ledges, ROPE_OVERLAP over each): a gap past every jump and glide, so the rope is the way over (World 9's burnt
+ *                        bridges, GRAB-BAG.md N8)
  * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
  * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
  * A gap rule with `soft: true` has a soft pit under it whatever the world's falls (World 8: in a world whose falls cost a life, its gaps in
@@ -205,7 +208,8 @@ export type PlaceRule =
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range }
-  | { kind: 'raft'; after: string; bob: BobKind; share?: Range; dy?: Range; soft?: boolean };
+  | { kind: 'raft'; after: string; bob: BobKind; share?: Range; dy?: Range; soft?: boolean }
+  | { kind: 'rope'; after: string; gap: Range };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */

@@ -71,6 +71,8 @@ export const W9_THEME = {
   gusts: 'w9:t-gusts',
   /** 9-3 / 9-9: the sinking ember slabs over the soft channels (N4: w9Bob.ts) */
   sinkers: 'w9:t-sinkers',
+  /** 9-3 / 9-8: the shimmy ropes over the lava, the burnt bridges' ropes (N8: w9Bob.ts) */
+  bridges: 'w9:t-bridges',
 } as const;
 export type W9Theme = (typeof W9_THEME)[keyof typeof W9_THEME];
 
@@ -1152,7 +1154,7 @@ const boaChasm = section({
 // ───────────────────────────── 9-8 Pell's Thread (search) ─────────────────────────────
 
 /** a search gate: Dot explains the shut shrine (Pell's threads), and the roll's theme opens */
-const threadGate = (theme: 'ledges' | 'channels' | 'pistons' | 'flares'): SectionTemplate => {
+const threadGate = (theme: 'ledges' | 'channels' | 'pistons' | 'flares' | 'bridges'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   return section({
     id: `w9-thread-gate-${theme}`,
@@ -1365,6 +1367,7 @@ export const W9_BOB_GATES = {
   logs9: huntGate('logs', 'fight'),
   pistons: threadGate('pistons'),
   sinkers9: huntGate('sinkers', 'fight'),
+  bridges8: threadGate('bridges'),
 } as const;
 
 /** the heat hazards' gates (w9Heat.ts): the flares on 9-5 and 9-8, the lavafalls on 9-6 and 9-9 */
