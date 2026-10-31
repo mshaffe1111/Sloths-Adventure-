@@ -20,8 +20,13 @@ const SCRIPT = [
   [170, 'down Space'], [180, 'up Space'], [182, 'down Space'], [192, 'up Space'], // a held jump, and the flip off its top
 ];
 let N = 235;
-// SCENE=climb: at the foot of the stage's first climbable trunk, up for about 0.9 s, a pause, then down (STAGE= picks the stage, default 1-1)
+// SCENE=climbtop: the same trunk all the way up and over the top. SCENE=climb: at the foot of the stage's first climbable trunk, up for about 0.9 s, a pause, then down (STAGE= picks the stage, default 1-1)
 const SCENE = process.env.SCENE ?? 'moves';
+if (SCENE === 'climbtop') {
+  SCRIPT.length = 0;
+  SCRIPT.push([10, 'down ArrowUp'], [70, 'up ArrowUp']);
+  N = 90;
+}
 if (SCENE === 'climb') {
   SCRIPT.length = 0;
   SCRIPT.push([10, 'down ArrowUp'], [38, 'up ArrowUp'], [48, 'down ArrowDown'], [80, 'up ArrowDown']);
@@ -47,7 +52,7 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   // a flat open stretch of 1-1's first ground, Pokey stood still facing right
   await p.evaluate((sc) => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
     Object.assign(pl, { vx: 0, vy: 0, facing: 1 });
-    if (sc === 'climb') {
+    if (sc === 'climb' || sc === 'climbtop') {
       const v = e.vines.find((q) => q.vineType === 'tree_climb' && !q.off);
       Object.assign(pl, { x: v.x, y: v.bottomY - 30 });
     }

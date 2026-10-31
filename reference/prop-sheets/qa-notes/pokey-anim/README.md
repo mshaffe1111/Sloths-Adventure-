@@ -51,6 +51,12 @@ One job, `pokey-anim1` (6ae5407cc78863f9c62ee1cf), 35 min of rtx-pro-6000, about
 ball, or a tilt and a T-pose). Not needed: the runs (the game already has a 15-frame video run), the skid (Matt's painted pose is better).
 On file for later: a clean belly-dive slide (`pa-slide-s3`), nothing uses it yet.
 
+## Over the top of a trunk
+
+The engine's vault onto the branch is a small hop, so the new landing (land, recover) is the settle at the top: `climb-top-side.jpg`
+(`SCENE=climbtop`, identical traces). Rough spot, named: during that hop the video jump's big arms-up leap shows, a bit much for so
+small a hop. A fix would pick the painted apex for a hop under ~200 px/s of rise; not done tonight.
+
 ## Tried and thrown tonight (round 2, the lead's 9:30 list)
 
 - Climb down: the Wan climb-down clip hardly moved; climbing down plays the new climb backward.
