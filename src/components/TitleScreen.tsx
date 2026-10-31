@@ -5,11 +5,12 @@ import { homeScreenTipDue, markHomeScreenTip } from '../game/fullscreen.ts';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
 import { TitleSettings } from './TitleSettings.tsx';
+import { TitleUpdate } from './UpdateControls.tsx';
 import { HowToPlay, howToSeen, markHowToSeen } from './HowToPlay.tsx';
 import { ModePick } from './ModePick.tsx';
 import { nextStartStep } from './startFlow.ts';
 import { modeChosen } from '../game/difficulty.ts';
-import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
+import { APP_VERSION, BUILD_TIME, formatBuildDay, formatBuildTime } from '../game/version.ts';
 import { sound } from '../game/audio.ts';
 import { Icon, UI_KIT_URL } from './icons/index.tsx';
 import type { SkillId } from '../game/skills.ts';
@@ -184,7 +185,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
   return (
     <div className={`gx2 select-none gx2-${phase}${cold ? '' : ' gx2-back'}${named ? ' gx2-named' : ''}${covered ? ' gx2-covered' : ''}`}>
-      <TitleScene ref={scene} worlds={SHOWCASE} hold={13} stageSelector=".gx2-stage" dim={covered} />
+      <TitleScene ref={scene} worlds={SHOWCASE} hold={13} stageSelector=".gx2-stage" floorSelector=".ttl-ver-side .ttl-ver" dim={covered} />
 
       <div className="gx2-ui">
         {/* the corner: sound and Settings, small and out of the way (layout B, Matt 2026-10-30) */}
@@ -210,10 +211,18 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           <span className="gx2-glint g2" aria-hidden="true" />
           <span className="gx2-glint g3" aria-hidden="true" />
         </div>
-        <div className="gx2-stage" aria-hidden="true" />
+        <div className="gx2-stage">
+          <div className="ttl-ver-side">
+            <TitleUpdate version={APP_VERSION} day={formatBuildDay(BUILD_TIME)} />
+          </div>
+        </div>
 
         {/* one big trail sign to play, and under it, tucked close as one group, three leaf tokens */}
         <div className="gx2-post">
+          {/* upright: on the log, just above the sign (the pair stand higher on it) */}
+          <div className="ttl-ver-up">
+            <TitleUpdate version={APP_VERSION} day={formatBuildDay(BUILD_TIME)} />
+          </div>
           <button type="button" data-start="true" onClick={start} className="ttl-play" style={{ ['--i' as string]: 0 }}>
             <span className="ttl-play-t">
               <Icon name="play" size={30} />
@@ -246,7 +255,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             </button>
           </div>
         </div>
-        {creditMsg && (
+        {creditMsg && !menuOpen && (
           <span className="fixed left-1/2 top-14 z-[70] -translate-x-1/2 whitespace-nowrap rounded-full bg-black/70 px-4 py-1.5 text-sm text-amber-200" role="status">
             {creditMsg}
           </span>
@@ -286,6 +295,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           onInstallDesktop={onInstallDesktop}
           isInstalled={isInstalled}
           onTapShaffer={tapShaffer}
+          creditMsg={creditMsg}
         />
       )}
       {howOpen && <HowToPlay onClose={() => setHowOpen(false)} />}

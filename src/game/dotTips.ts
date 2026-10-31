@@ -108,6 +108,13 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   "The roots go dark. Stay in the firefly's light.": 'firefly',
   'Too high. Stay close to the firefly, Pokey.': 'firefly',
   'High water swells that root door shut.': 'w6water',
+  // World 8's special, 8-4 Lantern Run (w8Lantern.ts LANTERN_LINES: no rows, keyed by their words; the lead approved them, 2026-10-29)
+  'Your jar is fading. That flower glows!': 'lanternJar',
+  "The jar's nearly out. Find a flower!": 'lanternLow',
+  'Too dark. Back to the last flower.': 'lanternDark',
+  'Moths! They want your light.': 'moth',
+  "Careful! It's a long way down.": 'w8drop',
+  'Let them go, Pokey. Look up!': 'fireflyTree',
   // (the zones' first lines, engine.ts ZONE_LINE: the same things the stage hints teach, so each is said once)
   'Sticky webs! They slow you down.': 'web',
   'The tide rises and falls.': 'tide',

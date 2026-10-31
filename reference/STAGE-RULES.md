@@ -57,6 +57,23 @@ Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
   middle, or below the previous world's), is a bug. Gemini's floor still holds for every stage: the Normal bot clears each jump at
   least 70% of the time in Worlds 1-5 and 50% in Worlds 6-10; the Easy kid at least 85% everywhere.
 
+## 1c. Pieces first, curate once (Matt, 2026-10-31: "Lets make the pieces ahead of time. Be prepared since more is better anyways. Lets not go into this bare minimum and have to make more and do redundant rework")
+
+World 8 took ~13 hours of re-curating because pieces kept being added after curation started. From World 9 on, a generated world goes in
+this order, and curation does not start until step 3 is done:
+1. **Bring the branch up to date first** (merge the base branch in before any new work; never build on a branch hundreds of commits behind).
+2. **Grab-bag plan** (`qa-notes/wN/GRAB-BAG.md`): every theme and section type the world will use, what each one plays like (its beat
+   letters), its art (existing, or Hugging Face with a cost), its teaching and its Dot line. Target: at least 5 themes per stage and at
+   least 14 distinct section types per world, including at least 3 timing beats (moving logs, swings, steam, sleepers...), so variety
+   lands well past 0.45 without rerolls. Show it to the lead before building.
+3. **Build every piece and its art up front**, each one checked alone before curation: fair upright and sideways, Jump help Off/On/On+forward,
+   taught on first sight, first-timer and kid bots through it (too-long glides and too-high boughs are caught here, not after curation),
+   the safe start (nothing hurts, no ground ends, in the first 1,300 px), platform styles mixed (no style over 60%), Easy clearly easier
+   than Normal, stills that pass the polish bar.
+4. **Curate once**, in neighbour order (each stage against its already-final neighbours), with the full CLAUDE.md test globs green
+   after every stage's seeds, not just the world's own tests.
+5. Puzzle room, special stage and boss pieces are part of step 2-3, not add-ons after curation.
+
 ## 2. The numbers a stage must meet (from the Gemini research, tuned for us)
 
 | What | Rule | How it is checked |
@@ -66,7 +83,8 @@ Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
 | Pacing | Gemini's density table (Part 2 §4), per difficulty. Action density 0.75-1.15 actions/s Normal, 0.35-0.55 Easy, 1.1-1.4 a chase; bursts (rhythm groups) 10-14 s with 8-12 actions Normal, 6-8 s with 3-4 Easy, 15-20 s a chase; rest pads between bursts 1.0-1.2 s Normal, 2.0-2.5 s Easy, 0.8 s a chase; no walk with no action over 2.0 s Normal, 3.0 s Easy, 1.2 s a chase. | inspector `pacing.ts` (each card's pacing block) |
 | Tension | Aim: a sawtooth across the stage (Part 1 §4): build, a breather in the middle, the climax near the end, an easy walk out. Not flat, not front-loaded. | inspector `pacing.ts` (tension in 9 parts) |
 | Difficulty bands | §1b, measured: a 0-100 score per stage and setting (first-timer lives lost a minute, the noisy bot's hardest jumps, peak stress, the narrowest input window, dead time, length); each world's spread is its band. | inspector `bands.ts` (the band chart) |
-| Sameness | No two stages of a world alike: cosine of weighted action 3-grams under ~0.78, and no matching 20-second stretch. | inspector `similar` |
+| Sameness | No two stages of a world alike: cosine of weighted action 3-grams under ~0.78, and no 20-second stretch that plays alike. A stretch is compared beat by beat by what each beat is, not only its letter: a jump's size, height and what is under it (a floor, water, a pit), a liana against a climb or a rope, which animal, which hazard or mechanic, which puzzle (the look-alike measure, `tools/inspect/lookalike.ts`, 2026-10-29). Two stretches closer than 0.30 play alike (set by judgement on 20 calibration pairs of Worlds 1-6: `reference/prop-sheets/qa-notes/lookalike/`). | `tools/inspect/era.ts` (look-alikes), curation `--apart`; inspector `similar` still on the letters |
+| Sameness, for now (Matt, 2026-10-29 6:25 PM ET) | Until each stage of a world has a signature in every stretch, a stage ships with no 20-second stretch alike its neighbours in play (the gen2 stages of its world just before and after it, a hand-built stage between skipped), and at most 1 roll in 5 of its shipped set sharing such a stretch with any other stage of the world. The full rule above (no stretch alike any stage) stays the goal: World 8's next round. | curation `--apart-near` (`--apart-cap 0.2`), `tools/gen2/curate.ts` |
 | Variety across rolls | Two rolls of the same stage must really differ: diversity (mean 1 - cosine between rolls) about 0.35 or more. Today most hand stages are 0.87-1.00 alike between rolls: that is the next big job. Set pieces with no variety target (the lead, 2026-10-28): 4-3 Waterfall Steps and 4-7 The Long Drop; every other rule still holds for them. Accepted below the target (the lead, 2026-10-29): 4-6 Mist Kapok at about 0.20 (its mist, nest and pinwheel lessons are a fixed spine, and most wide ledges sit in the mist or by a flag or a nest, so a flavour has little room of its own) and 4-9 The Aerie at about 0.27 (World 4's finale reprises every idea, each taught part on every roll, so about half the stage is shared); the taught spine stays. | `tools/inspect/era.ts` over 200 rolls |
 | Opening seconds | Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches. | first-timer bot |
 | Plain walk | No step, lip or dip that stops a plain walk dead; every dip has a one-jump way out; a jump into a face carries over its lip. | first-timer bot, kid bot |
@@ -107,8 +125,11 @@ Last updated 2026-10-29 (6-8's lessons: the climb with water, nothing floats).
   its own light or a lit rim and reads at least 1 s ahead on Normal (1.6 s Easy); Pokey never vanishes (a warm key from the light he passes,
   a cool rim, a contact shadow, never under ~60% brightness). Props are painted evenly lit so the game can light them; light sources are
   painted bright and separate so they can glow. Code glow (pre-rendered radial light sprites, additive) is a small touch and allowed.
-- **Use what Matt made.** Every prop, state frame and backdrop from his sheets has a place in the game. A piece packed but never
-  drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
+- **Use ALL the art we make (Matt, 2026-10-31: "We need to use all the art we create. Its a waste otherwise. I want a fun unique game.").**
+  Every prop, state frame, creature clip and backdrop, from Matt's sheets or Hugging Face, has a place in the game. A piece packed but
+  never drawn is a bug, and so is art made and never packed. `tools/art/artuse.mjs` lists every atlas frame and art file with no draw
+  site; its gate test fails on anything not in its short, reasoned allow-list. Every grab bag starts by placing the world's unused
+  art before asking for new art.
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.
 - **Rotate looks by the roll:** where a world has several props or decor sets for one job, the layout roll picks among them (a retry
   keeps the look, a fresh roll changes it), with a cooldown so the same set isn't used in two stages in a row. `artRoll.ts`
@@ -255,6 +276,20 @@ plan); never ship the rough version as finished.
   versions of a section that use the same moves (hops and the dark, in another order) read 90-95% alike. A version has to lean on a move
   the others don't (lianas or roots, real jumps, prowlers, the eyes), and the roll's sections should lean the same way (a theme), or the
   stage still reads ~0.7 alike. A fixed piece in every roll (a climax, a teaching room) pulls the rolls back together.
+- **A look-alike measure has to see what a player sees: what each move is, not only its letter** (2026-10-29, Matt: "build a better
+  measure"). The 20 s window rule compared the seven action letters, so a liana and a climb were both V, the dark and the tide both Z,
+  a jump over water and a jump onto a floor both J: World 6 could not meet `--apart` (6-3 matched 6-1 on every roll, 6-4 matched
+  every stage of the world, the swing stages included). The measure now gives each beat a kind (`tools/inspect/lookalike.ts`: a
+  jump's size, height and what is under it, liana / climb / rope, which animal, hazard or puzzle) and swaps letters by Gemini's
+  matrix; era.ts and curate.ts import the one function. The threshold (0.30) was set by judging 20 window pairs by eye and in the game
+  (`reference/prop-sheets/qa-notes/lookalike/`). It cut the old false alarms: on World 6's raw rolls, matches on stretches made of
+  entirely different sections fell from 37% of roll pairs to 4%; on era, stage pairs flagged per roll fell about two thirds in every
+  world (Worlds 1-5 4,520 -> 1,394, World 6 784 -> 252) and no stage flags more than before. **But a better measure can't separate
+  stages built from the same sections.** Under `--apart` 6-2 now keeps 161 of 400 rolls and 6-4 56 (both 0 before); 6-1, 6-3, 6-6
+  and 6-7 still keep none (they all draw on the same swing sections, and a liana chain is a liana chain to any player), nor do 6-5 and
+  6-9 (w6-cat-banks, w6-prowl-knees and w6-tayra-banks in both). Two stages stay apart only if their sections do: decide it per
+  stage in the world's game kit (`forStage`), and give each swing stage its own kind of swing stretch. And stages that play apart can
+  still *look* alike (one art kit per world: 6-2 and 6-4 are the same root banks), which is the art's job, not this measure's.
 - **A climb detour is invisible**: a tree to climb up and back down beside the path was walked past by the quick route (quiet stretches,
   short stages). Climbing counts only where the way on goes up it (a root up a wall too high to jump, `rootClimb`).
 - **A high way the floor walks under is scenery** (Meeca's stage, 2026-10-28, Matt: "climbing is unneeded because you can just run
@@ -403,6 +438,41 @@ plan); never ship the rough version as finished.
     seam.wrap_x's blend. A plinth step (under 60 px) ends cut clean at the lower bank's top, never faded into the air.
   - *Line shots: one fresh page per line* (`tools/art/w7/lines.mjs`): hints are said once a device, a line due while another is up is used
     up unseen, and hints are not stored in x order (w7Finish now sorts them). Teleporting between spots in one page loses most of them.
+- **World 8 on gen2: what the Twilight Treetops taught** (2026-10-29, branch gen2-w8; the checklist is DESIGN.md B12):
+  - *Lit stages need a theme too* (8-1, 8-3, 8-5, 8-6 have no stage gate of their own). With the fillers drawn by weight, 8-1's rolls
+    read 0.17-0.24 alike; a start gate per roll (`w8-gate-*`) that opens one theme, each leaning on its own move (climbers: trunks, V;
+    leapers: wide and second-jump gaps, J; night: dark stretch after dark stretch, Z), moved it to 0.40.
+  - *A theme the stage can't pay for reads like no theme*. 8-1 sits at the bottom of the band (threat 2.3 a section), under every World 8
+    animal's cost (2.5-5), so its "prowlers" laid no animal and read like the hop theme (0.07 apart). Pick each stage's themes from what
+    its budget can buy.
+  - *Neighbouring fight stages can't share their arenas* (8-8 then 8-9). Curation's `--max-shared` (0.7) dropped every 8-9 roll: both
+    drew the same arena sections. Split each theme's sections between the two (`W8_STAGE_ONLY`) and give the later one its own required
+    dark (`w8-monarch-dark`).
+  - *The world's mechanic on every roll is `required`, not weight*. World 8 is dark: each stage requires one dark section
+    (`W8_DARK_REQUIRED`), unthemed (a required section that uses a theme can't be laid on the other themes' rolls: the build throws).
+  - *A room can wait for its lesson*. 8-1's dark hollow room was placed before the first dark stretch (its dark untaught); `uses:
+    [the dark]` on the room makes the plan place it after the first section that teaches it.
+  - *Dead time: a beat every 2 s*. Plain flats of 400+ px, a flat with an animal that Easy (or the roll) left out, and a watcher right
+    after a climb (a wait with nothing to do: 3.5 s) put whole themes over a fifth dead. Flats 350 px at most, a knot after every animal's
+    flat, no roost on top of a climb.
+  - *A harpy needs 500 px of flat* (its 260 plus JUMP_CLEAR each side); on a shorter flat it is dropped without a word and the flat goes
+    quiet. And a fight theme with no long flats leaves its top-up nowhere to stand: the length loop grew 8-9's guards rolls to 8 minutes
+    (470-490 s) until the theme got its guard posts (three 340-370 px flats).
+  - *A glide gap* (8-6 Glide by Moonlight): the pipeline's `pit` rule takes `jump: 'glide'` (`pipeline.ts` `glideGap`): Normal 445 px on
+    the flat, past the double jump's 230, so the leaf is the way over; Easy 353. Easy's 70% hold still crosses (`easyHoldCheck`, 10 rolls
+    a stage). Curation's filters do not run `easyHoldCheck` (game.test.ts does, on the shipped rolls): check it while authoring.
+  - *Size the sections against the test before curating*. Five World 8 sections ran 1,800-2,500 px on their widest rolls (a dark
+    stretch with a guard's flat at each lit end); a size test written after the first curation run cost a second run.
+- **World 8's lianas over soft pits** (2026-10-29, the World 8 swing builder; proof `w8Swing.test.ts`, every liana swung on 40 raw rolls of
+  8-3 and 8-5). World 6 kept black water under its lianas; World 8's falls are soft, and soft back pits set two traps:
+  - *A dark stretch dropped below its lit bough floats the boughs.* The back pit's floor lies a double jump plus 40 px under the perch;
+    with the swing's bough 30 px down and the perch 80 px over it, the floor (G+175) sank past where every bough ends (the baseline,
+    G+170). Keep a dark stretch level with its lit boughs.
+  - *levelCheck's jump links pass through walls.* From the pit's floor it "jumps" through a narrow perch's trunk onto the lower bough
+    behind it (pit floor to pit floor in a chain, or to the step down after a perch), so the quick route walks under the liana: 74
+    lianas never swung in 80 rolls with 130-150 px chain perches. A perch with a lower bough behind it is 190 px or more. (The real
+    engine blocks the wall; the check and the inspector's route do not.)
+
 
 ## 7. Where things are
 

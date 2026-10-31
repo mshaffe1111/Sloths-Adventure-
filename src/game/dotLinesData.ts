@@ -459,7 +459,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.8-3.b", "8-3", "wayside", "story", "You're faster.", "You're faster.", null, null, null],
   ["way.8-3.c", "8-3", "wayside", "story", "I'm resting.", "I'm resting.", null, null, null],
   ["way.8-3.d", "8-3", "wayside", "story", "You're hovering.", "You're hovering.", null, null, null],
-  ["way.8-4", "8-4", "wayside", "story", "Sneaking's the one thing I've always done at full speed.", "Sneaking's the one thing I've always done at full speed.", null, null, null],
+  ["way.8-4", "8-4", "wayside", "story", "Turns out I'm brave exactly as far as the jar reaches.", "Brave as far as the jar reaches.", null, null, null],
   ["way.8-5", "8-5", "wayside", "story", "I tell myself, \"Next branch, then the one after.\" That's all a long way is.", "\"Next branch, then the one after.\"", null, null, null],
   ["way.8-6", "8-6", "wayside", "story", "Flicker's family blinks on along the branch ahead, one by one.", "Flicker's family blinks on along the branch ahead, one by one.", null, null, null],
   ["way.8-7", "8-7", "wayside", "story", "I'm climbing slowly so Dot can rest. Turns out I've been training for this my whole life.", "Climbing slow so Dot can rest. Trained my whole life for this.", null, null, null],

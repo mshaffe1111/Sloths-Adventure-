@@ -1,6 +1,6 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import { Icon } from './icons/index.tsx';
-import { applyUpdate, checkForUpdate, subscribeUpdate, updateAvailable } from '../game/updates.ts';
+import { applyUpdate, checkForUpdate, hardRefresh, subscribeUpdate, updateAvailable } from '../game/updates.ts';
 import { storeBuild } from '../game/appShell.ts';
 
 /** true once a newer build of the game has been found (the page that is open is an old one) */
@@ -54,6 +54,51 @@ export const UpdateRow: React.FC = () => {
       <button type="button" className="pm-mute" onClick={() => void applyUpdate()}>
         Refresh now
       </button>
+    </div>
+  );
+};
+
+/**
+ * On the title, in the middle of the log under Pokey and Meeca (Matt, 2026-10-31: "people aren't getting the updates and they don't know
+ * where to refresh"; "bigger, in the middle of the log, so it pops out"): the version number and date, and two big buttons. A newer build
+ * turns them into one big gold "New version ready: tap to refresh". "Refresh game" always does a full refresh (drops the old copy and its
+ * caches, hardRefresh), so a stuck phone has a sure way out from the first screen. The store app hides the buttons (Google Play updates it)
+ * but keeps the version.
+ */
+export const TitleUpdate: React.FC<{ version?: string; day?: string }> = ({ version, day }) => {
+  const ready = useUpdateAvailable();
+  const [state, setState] = useState<'idle' | 'checking' | 'same' | 'unknown'>('idle');
+  const label = [version && `Version ${version}`, day].filter(Boolean).join('  ·  ');
+  const run = async () => {
+    setState('checking');
+    const r = await checkForUpdate();
+    setState(r === 'new' ? 'idle' : r);
+    if (r !== 'new') window.setTimeout(() => setState('idle'), 4000);
+  };
+  return (
+    <div className="ttl-ver">
+      {label && <div className="ttl-ver-l">{label}</div>}
+      {!storeBuild() &&
+        (ready ? (
+          <button type="button" className="ttl-ver-b ttl-ver-ready" onClick={() => void applyUpdate()}>
+            <Icon name="restart" size={20} />
+            New version ready: tap to refresh
+          </button>
+        ) : (
+          <div className="ttl-ver-row">
+            <button type="button" className="ttl-ver-b" onClick={() => void run()} disabled={state === 'checking'}>
+              {state === 'checking' ? 'Checking…' : state === 'same' ? (
+                <>
+                  Up to date <Icon name="check" size={16} />
+                </>
+              ) : state === 'unknown' ? 'Offline? Try again' : 'Check for updates'}
+            </button>
+            <button type="button" className="ttl-ver-b" onClick={() => void hardRefresh()}>
+              <Icon name="restart" size={18} />
+              Refresh game
+            </button>
+          </div>
+        ))}
     </div>
   );
 };

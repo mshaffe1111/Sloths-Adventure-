@@ -11,9 +11,9 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import '../headlessDom.ts';
 import { buildGen2Stage, checkStage } from './pipeline.ts';
-import { closingSections, curateStage, distance, failsOf, pickSpread, plainReason, renderReport, renderTable, resolveStage, sharedWith, toEntry, type RollMeasure, type SideMeasure } from '../../../tools/gen2/curate.ts';
+import { apartCapper, closingSections, curateStage, distance, failsOf, pickSpread, plainReason, playNeighbours, renderReport, renderTable, resolveStage, sharedWith, toEntry, type RollMeasure, type SideMeasure } from '../../../tools/gen2/curate.ts';
 
-const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, nearJumps: 0, ...o });
+const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, nearJumps: 0, unswung: 0, ...o });
 const roll = (seed: number, prof: Record<string, number>, quality = 0.5, plan: string[] = []): RollMeasure => ({
   seed, layoutSeed: seed, rerolls: 0, swaps: 0, plan, normal: side(), easy: side(), action: '', prof: new Map(Object.entries(prof)), wins: [], fails: [], quality,
 });
@@ -30,6 +30,9 @@ test('the filters name every number a roll misses, and a waiver lifts only its o
   const near = failsOf({ normal: side(), easy: side({ nearJumps: 2 }) }, floor, ['quiet', 'dead']);
   assert.deepEqual(near, ['easy: an animal by a jump']);
   assert.match(plainReason(near[0]), /^Easy: an animal within 120 px of a take-off or a landing$/);
+  // (a liana the quick route never swings: World 6's and World 8's full-suite rule, never waived)
+  const unswung = failsOf({ normal: side({ unswung: 1 }), easy: side() }, floor, ['quiet', 'dead']);
+  assert.deepEqual(unswung, ['normal: a liana never swung']);
 });
 
 test('the pick is greedy max-min: the best roll first, then the farthest, and a refused roll is skipped', () => {
@@ -89,4 +92,18 @@ test('a small run on the toy world ships rolls that pass levelCheck on both sett
   assert.equal(md.split('\n').filter((l) => /^\| \d+ \| \d+ \|/.test(l)).length, r.picks.length);
   for (const k of Object.keys(r.dropped)) assert.ok(md.includes(plainReason(k)), k);
   assert.equal(plainReason('easy: quiet over 4 s'), 'Easy: a stretch of more than 4 seconds with nothing to do');
+});
+
+test("Matt's look-alike rule for now (--apart-near, 2026-10-29): a stage's neighbours in play, and at most 1 in 5 shipped alike any other stage", async () => {
+  // (the gen2 stages of the world just before and after it; World 8's hand-built 8-4 is skipped, so 8-3 and 8-5 are neighbours)
+  assert.deepEqual(await playNeighbours('8-3'), ['8-2', '8-5']);
+  assert.deepEqual(await playNeighbours('8-1'), ['8-2']);
+  assert.deepEqual(await playNeighbours('8-9'), ['8-8']);
+  const rolls = Array.from({ length: 6 }, (_, i) => ({ seed: i }) as unknown as RollMeasure);
+  const alike = new Map<RollMeasure, string[]>(rolls.map((m, i) => [m, i < 4 ? ['8-6'] : []]));
+  // (16 shipped: 3 may share a stretch with 8-6, the 4th may not; a roll alike nothing always fits)
+  const cap = apartCapper(alike, 0.2, 16);
+  for (const m of rolls.slice(0, 3)) { assert.ok(cap.fits(m)); cap.take(m); }
+  assert.equal(cap.fits(rolls[3]), false);
+  assert.ok(cap.fits(rolls[4]));
 });

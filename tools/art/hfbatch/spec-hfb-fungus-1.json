@@ -1,0 +1,86 @@
+{
+ "note": "World 8 fungus steps, round 1, 2026-10-31",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w8-merge/tools/art/hfbatch/starts/w8fungus/",
+ "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, tree trunk, wall, perspective, seen from above, top-down, several fungi, stack",
+ "items": [
+  {
+   "name": "bracket-s62-5",
+   "start": "bracket.png",
+   "prompt": "slothadv style, painted storybook illustration, a single shelf bracket fungus seen exactly from the side for a side-scrolling platform game, a flat top surface to stand on, a rounded underside with soft layered growth rings in cream, rust brown and dusky violet, a few small softly glowing pale blue spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "bracket-s62-17",
+   "start": "bracket.png",
+   "prompt": "slothadv style, painted storybook illustration, a single shelf bracket fungus seen exactly from the side for a side-scrolling platform game, a flat top surface to stand on, a rounded underside with soft layered growth rings in cream, rust brown and dusky violet, a few small softly glowing pale blue spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "bracket-s76-5",
+   "start": "bracket.png",
+   "prompt": "slothadv style, painted storybook illustration, a single shelf bracket fungus seen exactly from the side for a side-scrolling platform game, a flat top surface to stand on, a rounded underside with soft layered growth rings in cream, rust brown and dusky violet, a few small softly glowing pale blue spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.76,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "bracket-s76-17",
+   "start": "bracket.png",
+   "prompt": "slothadv style, painted storybook illustration, a single shelf bracket fungus seen exactly from the side for a side-scrolling platform game, a flat top surface to stand on, a rounded underside with soft layered growth rings in cream, rust brown and dusky violet, a few small softly glowing pale blue spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.76,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "bracket-moss-s62-5",
+   "start": "bracket-moss.png",
+   "prompt": "slothadv style, painted storybook illustration, a single shelf bracket fungus seen exactly from the side for a side-scrolling platform game, a flat top surface to stand on with a thin edge of dark green moss and two tiny glowing blue mushrooms on it, a rounded underside with soft layered growth rings in cream, rust brown and dusky violet, a few small softly glowing pale blue spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "bracket-moss-s62-17",
+   "start": "bracket-moss.png",
+   "prompt": "slothadv style, painted storybook illustration, a single shelf bracket fungus seen exactly from the side for a side-scrolling platform game, a flat top surface to stand on with a thin edge of dark green moss and two tiny glowing blue mushrooms on it, a rounded underside with soft layered growth rings in cream, rust brown and dusky violet, a few small softly glowing pale blue spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "bracket-moss-s76-5",
+   "start": "bracket-moss.png",
+   "prompt": "slothadv style, painted storybook illustration, a single shelf bracket fungus seen exactly from the side for a side-scrolling platform game, a flat top surface to stand on with a thin edge of dark green moss and two tiny glowing blue mushrooms on it, a rounded underside with soft layered growth rings in cream, rust brown and dusky violet, a few small softly glowing pale blue spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.76,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "bracket-moss-s76-17",
+   "start": "bracket-moss.png",
+   "prompt": "slothadv style, painted storybook illustration, a single shelf bracket fungus seen exactly from the side for a side-scrolling platform game, a flat top surface to stand on with a thin edge of dark green moss and two tiny glowing blue mushrooms on it, a rounded underside with soft layered growth rings in cream, rust brown and dusky violet, a few small softly glowing pale blue spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.76,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  }
+ ]
+}

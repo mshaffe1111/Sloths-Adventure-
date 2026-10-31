@@ -1,0 +1,187 @@
+{
+ "note": "8-4 Lantern Run art, round 1, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w8-lantern/tools/art/hfbatch/starts/w8lantern/",
+ "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, extra arms, extra limbs, extra fingers, two jars, lantern, candle, flame, fire",
+ "items": [
+  {
+   "name": "jar-s60-5",
+   "start": "jar.png",
+   "prompt": "slothadv style, painted storybook illustration, a small round glass jar full of glowing yellow fireflies, a cork stopper, brown twine tied round the neck and a twine loop handle, the fireflies glowing warm golden yellow inside the clear glass, a soft highlight on the glass, side view. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "jar-s60-17",
+   "start": "jar.png",
+   "prompt": "slothadv style, painted storybook illustration, a small round glass jar full of glowing yellow fireflies, a cork stopper, brown twine tied round the neck and a twine loop handle, the fireflies glowing warm golden yellow inside the clear glass, a soft highlight on the glass, side view. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "jar-s75-5",
+   "start": "jar.png",
+   "prompt": "slothadv style, painted storybook illustration, a small round glass jar full of glowing yellow fireflies, a cork stopper, brown twine tied round the neck and a twine loop handle, the fireflies glowing warm golden yellow inside the clear glass, a soft highlight on the glass, side view. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.75,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "jar-s75-17",
+   "start": "jar.png",
+   "prompt": "slothadv style, painted storybook illustration, a small round glass jar full of glowing yellow fireflies, a cork stopper, brown twine tied round the neck and a twine loop handle, the fireflies glowing warm golden yellow inside the clear glass, a soft highlight on the glass, side view. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.75,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "jardim-s70-5",
+   "start": "jar-dim.png",
+   "prompt": "slothadv style, painted storybook illustration, a small round empty glass jar, only two faint fireflies left glowing dimly inside, a cork stopper, brown twine tied round the neck and a twine loop handle, clear pale blue glass, side view. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "jardim-s70-17",
+   "start": "jar-dim.png",
+   "prompt": "slothadv style, painted storybook illustration, a small round empty glass jar, only two faint fireflies left glowing dimly inside, a cork stopper, brown twine tied round the neck and a twine loop handle, clear pale blue glass, side view. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "moth-open-s72-5",
+   "start": "moth-open.png",
+   "prompt": "slothadv style, painted storybook illustration, a pale night moth seen from above, soft fuzzy cream and lilac wings spread wide with darker veins and a round eye spot on each forewing, a fuzzy brown body, feathery antennae, a cute storybook forest creature. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.72,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "moth-open-s72-17",
+   "start": "moth-open.png",
+   "prompt": "slothadv style, painted storybook illustration, a pale night moth seen from above, soft fuzzy cream and lilac wings spread wide with darker veins and a round eye spot on each forewing, a fuzzy brown body, feathery antennae, a cute storybook forest creature. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.72,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "moth-up-s72-5",
+   "start": "moth-up.png",
+   "prompt": "slothadv style, painted storybook illustration, a pale night moth in flight, its soft fuzzy cream and lilac wings raised high above its body mid flap, darker veins and a round eye spot on each forewing, a fuzzy brown body, feathery antennae, a cute storybook forest creature. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.72,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "moth-up-s72-17",
+   "start": "moth-up.png",
+   "prompt": "slothadv style, painted storybook illustration, a pale night moth in flight, its soft fuzzy cream and lilac wings raised high above its body mid flap, darker veins and a round eye spot on each forewing, a fuzzy brown body, feathery antennae, a cute storybook forest creature. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.72,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "pokey-idle-s45",
+   "start": "pokey-idle.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "pokey-idle-s60",
+   "start": "pokey-idle.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "pokey-run_1-s45",
+   "start": "pokey-run_1.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "pokey-run_1-s60",
+   "start": "pokey-run_1.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "pokey-apex-s45",
+   "start": "pokey-apex.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "pokey-apex-s60",
+   "start": "pokey-apex.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  }
+ ]
+}

@@ -23,6 +23,8 @@ import { w6Finish } from './worlds/w6.ts';
 import { W6_GAME_STAGES, w6GameKit } from './worlds/w6Game.ts';
 import { W7_GAME_STAGES, w7GameKit } from './worlds/w7Game.ts';
 import { w7Finish } from './worlds/w7.ts';
+import { w8Finish } from './worlds/w8.ts';
+import { W8_GAME_STAGES, w8GameKit } from './worlds/w8Game.ts';
 
 export interface Gen2Entry {
   /**
@@ -61,6 +63,14 @@ const w7Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
   ...o,
 });
 
+/** World 8's stages (w8Game.ts): the boughs, the dark, the lianas and the stage's room in one kit, on the difficulty played */
+const w8Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
+  kit: (d) => w8GameKit(stage, d ?? 'normal'),
+  kitName: `w8Game.ts:w8GameKit(${stage})`,
+  finish: w8Finish,
+  ...o,
+});
+
 /**
  * The stages gen2 builds, each with its kit (the per-stage chooser). 5-8 stays hand-built (Matt, 2026-10-28): it is still the old
  * generator's until its own build lands; 6-8 Stilt Climb is hand-built later.
@@ -73,6 +83,7 @@ export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', kidRuns: KID_RUNS_59, easyGoal: kidMedian(KID_RUNS_59) },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W7_GAME_STAGES.map((id) => [id, w7Entry(Number(id.split('-')[1]))])),
+  ...Object.fromEntries(W8_GAME_STAGES.map((id) => [id, w8Entry(Number(id.split('-')[1]))])),
 };
 
 /** is this stage built by gen2 (a secret stage of the same number never is) */
@@ -85,7 +96,8 @@ export const isGen2Stage = (cfg: Pick<LevelConfig, 'id' | 'secret'>): boolean =>
 export function gen2Water(id: string): boolean {
   const M = GEN2_STAGES[id]?.kit('normal').manifest;
   if (!M) return false;
-  return M.pit === 'water' || M.pit === 'void' || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
+  // (a deadly chasm shows water far below, World 7; World 8's treetops have none: pipeline.ts assemble)
+  return M.pit === 'water' || (M.pit === 'void' && !id.startsWith('8-')) || M.sections.some((s) => s.pieces.some((p) => 'water' in p.place && !!p.place.water));
 }
 
 /** the creature sheets a gen2 stage's world can lay (its manifest's animals, by clip-sheet name: a snake draws the golden snake's) */
