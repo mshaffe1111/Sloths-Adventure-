@@ -299,6 +299,19 @@ const plainRest = (theme: 'bats' | 'loft') =>
     mirrorable: true,
   });
 const themedRests = [nightRest, plainRest('bats'), plainRest('loft')];
+/** 8-2's own rest (2026-10-31: the shared knot rests made its stretches read as its neighbour 8-1's): a glade of blooms on a long low bough */
+const bloomRest = section({
+  id: 'w8-bloom-rest',
+  name: 'a glade of night blooms (pickups)',
+  archetypes: ['harvest'],
+  phases: ['rest', 'goal'],
+  difficulty: 1,
+  weight: 4,
+  pieces: [bank('a', [280, 320]), down('b', 'a', 20, [240, 280]), up('c', 'b', 20, [180, 210])],
+  last: 'c',
+  sockets: [petals('a', 'a', 0.5, 3, 160), petals('b', 'b', 0.5, 2, 120), scenery('nest', 'c', [0.4, 0.6], 0.7)],
+  mirrorable: true,
+});
 
 // ───────────────────────────── every stage: Ki to Ketsu on the lit boughs ─────────────────────────────
 
@@ -324,9 +337,9 @@ const boughGap = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [W8_THEME.leapers],
-  pieces: [bank('near', [240, 280]), wide('far', 'near', [320, 350]), up('k', 'far', 36, [140, 160]), down('far2', 'k', 36, [180, 210])],
+  pieces: [bank('near', [240, 280]), wide('far', 'near', [320, 350]), wide('far2', 'far', [200, 230], [0.55, 0.66])],
   last: 'far2',
-  sockets: [petals('near', 'near', 0.5, 2, 90), foe('foe', 'far', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 }), petals('k', 'k', 0.5, 1), scenery('fungus', 'far2', [0.5, 0.7])],
+  sockets: [petals('near', 'near', 0.5, 2, 90), foe('foe', 'far', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 }), petals('far', 'far', 0.9, 1), scenery('fungus', 'far2', [0.5, 0.7])],
   mirrorable: true,
 });
 
@@ -525,7 +538,7 @@ const fungusGlide = section({
   mirrorable: true,
 });
 
-/** a gap only the second jump crosses, a knot after it, a cat waiting */
+/** a gap only the second jump crosses, a wide gap after it, a cat waiting (no knots, 2026-10-31: the leapers lead with jumps) */
 const doubleGap = section({
   id: 'w8-double-gap',
   name: 'second-jump gap',
@@ -534,9 +547,9 @@ const doubleGap = section({
   difficulty: 7,
   needs: ['double'],
   uses: [W8_THEME.leapers],
-  pieces: [bank('near', [220, 260]), leap('far', 'near', [200, 240]), up('m', 'far', 36, [140, 160]), down('b', 'm', 36, [320, 350]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [150, 180])],
+  pieces: [bank('near', [220, 260]), leap('far', 'near', [200, 240]), wide('b', 'far', [320, 350], [0.55, 0.66]), hop('c', 'b', [160, 190])],
   last: 'c',
-  sockets: [petals('near', 'near', 0.5, 2, 90), petals('m', 'm', 0.5, 1), foe('foe', 'b', [0.5, 0.6], [...CATS, 'tayra'], 5, { phases: HOT, chance: 0.7 }), petals('k', 'k', 0.5, 1)],
+  sockets: [petals('near', 'near', 0.5, 2, 90), petals('far', 'far', 0.5, 1), foe('foe', 'b', [0.5, 0.6], [...CATS, 'tayra'], 5, { phases: HOT, chance: 0.7 }), petals('c', 'c', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -561,6 +574,8 @@ const rise = section({
   archetypes: 'any',
   phases: ['ki', 'sho', 'ten'],
   difficulty: 4,
+  // (few, 2026-10-31: its knots are hops, and the leapers lead with jumps: hop-dense stretches read as the neighbours')
+  weight: 0.2,
   uses: [W8_THEME.leapers],
   pieces: [bank('a', [200, 240]), up('b', 'a', 50, [180, 220]), up('k', 'b', 30, [140, 160]), down('b2', 'k', 30, [160, 190]), hop('c', 'b2', [320, 350]), up('k2', 'c', 30, [130, 150]), down('d', 'k2', 30, [150, 170])],
   last: 'd',
@@ -665,13 +680,12 @@ const darkGap = section({
     bank('in', [180, 210]),
     down('a', 'in', 30, [200, 240]),
     wide('b', 'a', [200, 240]),
-    up('k', 'b', 40, [130, 150]),
-    down('c', 'k', 40, [160, 190]),
+    hop('c', 'b', [160, 190]),
     wide('d', 'c', [180, 220]),
     up('out', 'd', 30, [200, 230]),
   ],
   last: 'out',
-  sockets: [darkTip('in'), ...darkEnds('a', 'd'), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.4, 2, 80)],
+  sockets: [darkTip('in'), ...darkEnds('a', 'd'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.4, 2, 80)],
   mirrorable: false,
 });
 
@@ -858,11 +872,12 @@ const bloomGaps = section({
   archetypes: ['harvest'],
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
+  // (their hunters on every roll, 2026-10-31: without them the gap blooms' stretches read as 8-1's leapers', its neighbour)
   // (no roost on the gap blooms, 2026-10-31: with one they read 0.27 from the roost blooms on the variety measure)
   uses: [W8_THEME.gapBlooms],
   pieces: [bank('a', [220, 260]), wide('b', 'a', [200, 240]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [160, 190]), wide('d', 'c', [320, 350]), up('k2', 'd', 30, [130, 150]), down('e', 'k2', 30, [150, 170])],
   last: 'e',
-  sockets: [petals('a', 'a', 0.75, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1), foe('foe', 'd', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.7 }), petals('d', 'd', 0.85, 1)],
+  sockets: [petals('a', 'a', 0.75, 1), petals('b', 'b', 0.5, 2, 80), petals('k', 'k', 0.5, 1), foe('foe0', 'a', [0.3, 0.4], SMALL, 3), foe('foe', 'd', [0.5, 0.6], SMALL, 3, { phases: LIVE }), petals('d', 'd', 0.85, 1)],
   mirrorable: true,
 });
 
@@ -877,7 +892,7 @@ const bloomLeap = section({
   uses: [W8_THEME.gapBlooms],
   pieces: [bank('a', [220, 260]), leap('b', 'a', [320, 350]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [160, 190]), hop('d', 'c', [200, 240])],
   last: 'd',
-  sockets: [petals('a', 'a', 0.8, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.2, 2, 80), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
+  sockets: [petals('a', 'a', 0.8, 1), foe('foe', 'b', [0.55, 0.65], [...CATS, 'tayra'], 5, { phases: LIVE }), petals('b', 'b', 0.2, 2, 80), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 2, 80)],
   mirrorable: true,
 });
 
@@ -1579,7 +1594,7 @@ const monarchGuards: SectionTemplate = { ...nightOf(darkBoughs, 'w8-monarch-guar
 // ───────────────────────────── the list, and which stage holds which ─────────────────────────────
 
 export const W8_SECTIONS: SectionTemplate[] = [
-  ...litGates, restBough, restFork, restTrunk, restTrunkKnot, restGlide, restGlideFork, ...themedRests,
+  ...litGates, restBough, restFork, restTrunk, restTrunkKnot, restGlide, restGlideFork, ...themedRests, bloomRest,
   knotHops, boughGap, doubleGap, trunkClimb, rise, drop, climbRun, prowlBough,
   darkBoughs, darkGap, darkClimb, darkLong, ...nightSections, ...loftSections,
   ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms,
@@ -1602,8 +1617,10 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   // shared between them read alike on the look-alike measure, STAGE-RULES §6 "Sameness")
   ...Object.fromEntries(FILLERS.map((id) => [id, [1]])),
   // (each stage's rests: 8-5's at a trunk, 8-6's with a glide, the plain boughs' the others')
-  'w8-rest-bough': [1, 2, 3, 8, 9],
-  'w8-rest-fork': [1, 2, 3, 8, 9],
+  // (8-2 rests in its own glade, w8-bloom-rest)
+  'w8-rest-bough': [1, 3, 8, 9],
+  'w8-rest-fork': [1, 3, 8, 9],
+  'w8-bloom-rest': [2],
   'w8-rest-trunk': [5],
   'w8-night-rest': [1],
   'w8-bats-rest': [1],
