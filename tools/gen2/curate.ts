@@ -656,6 +656,11 @@ async function main() {
     results.push(r);
     existing[key] = toEntry(r, opt, date);
     report(r, opt.keep, log);
+    // (the table after each stage, so a long run's finished stages can ship before the rest are done)
+    if (!opt.toy) {
+      fs.writeFileSync(opt.out, shippedTable(existing));
+      log(`wrote ${path.relative(root, opt.out)} (${key})`);
+    }
   }
   const text = opt.toy ? renderTable(tableName, existing, HEADER_TOY, '../../src/game/gen2/seeds.ts') : shippedTable(existing);
   fs.writeFileSync(opt.out, text);
