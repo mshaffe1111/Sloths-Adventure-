@@ -52,6 +52,8 @@ export const W8_THEME = {
   chains: 'w8:chains',
   /** 8-1: the night comes on: dark stretch after dark stretch (8-1 has too little threat for the prowlers: its heat is the world's lowest) */
   night: 'w8:night',
+  /** 8-6: the night wind: gusts through the canopy's gaps carry the glides (GRAB-BAG.md A: a timed beat 8-6's other themes lack) */
+  gusts: 'w8:gusts',
 } as const;
 
 /** the themes each lit stage's gate may open (the themed stages' gates are their own: blooms, roosts, hunts) */
@@ -59,7 +61,7 @@ export const W8_LIT_THEMES: Readonly<Record<number, ReadonlyArray<keyof typeof W
   // (8-1's climbs are its dark trunks only: the lit trunks are 8-5's stretches, the look-alike measure)
   1: ['leapers', 'night'],
   // (8-6's trunks went to 8-5: a trunk, a glide and a trunk read as 8-5's climbing on the look-alike measure)
-  6: ['prowlers', 'leapers'],
+  6: ['prowlers', 'leapers', 'gusts'],
   // (the vine stages apart, STAGE-RULES §6 "Sameness": 8-3's lianas chain over the gaps, 8-5's lead to trunks to climb)
   3: ['prowlers', 'chains'],
   5: ['climbers'],
@@ -164,7 +166,7 @@ const landingK = knots('', 'a', 2, [160, 190]);
  * The lit stages' gates (8-1, 8-3, 8-5, 8-6): the start, nothing that can hurt, which opens the roll's theme (W8_LIT_THEMES): the climbers'
  * gate has a short trunk, the leapers' a wide gap over soft moss, the prowlers' and the chains' two knots
  */
-const litGate = (theme: 'climbers' | 'prowlers' | 'leapers' | 'chains' | 'night'): SectionTemplate =>
+const litGate = (theme: 'climbers' | 'prowlers' | 'leapers' | 'chains' | 'night' | 'gusts'): SectionTemplate =>
   section({
     id: `w8-gate-${theme}`,
     name: `landing bough: ${theme}`,
@@ -183,7 +185,7 @@ const litGate = (theme: 'climbers' | 'prowlers' | 'leapers' | 'chains' | 'night'
     sockets: [scenery('nest', 'a', [0.3, 0.5], 0.8), petals('a2', 'a', 0.8, 1)],
     mirrorable: false,
   });
-const litGates = (['climbers', 'prowlers', 'leapers', 'chains', 'night'] as const).map(litGate);
+const litGates = (['climbers', 'prowlers', 'leapers', 'chains', 'night', 'gusts'] as const).map(litGate);
 
 const restK = knots('', 'a', 2, [160, 190]);
 /** a broad bough over two knots: petals, a flag, fungus on the bark */
@@ -917,6 +919,55 @@ const glideProwl = section({
   mirrorable: true,
 });
 
+/**
+ * 8-6's night wind (GRAB-BAG.md A): a gust blows through the gap on a rhythm, the painted wind racing along it (zoneArt.ts drawGust)
+ * after its warning; it blows the way he glides, so a glide on the gust carries further (the far petals), and a glide in the lull still
+ * lands. Its own theme, so a roll has the wind or it doesn't
+ */
+const glideGust = section({
+  id: 'w8-glide-gust',
+  name: 'glide on the night wind (run)',
+  archetypes: ['sprint'],
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  uses: [GLIDE, W8_THEME.gusts],
+  pieces: [bank('a', [260, 300]), glide('b', 'a', [220, 260]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [180, 220])],
+  last: 'c',
+  zones: [{ kind: 'wind', on: 'b' }],
+  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.7, 2, 80), petals('k', 'k', 0.5, 1), scenery('fungus', 'c', [0.5, 0.7], 0.5)],
+  mirrorable: true,
+});
+
+/** two gusty gaps with a knotted bough between, the second gust on its own beat */
+const glideGustPair = section({
+  id: 'w8-glide-gust-pair',
+  name: 'two glides on the night wind (run)',
+  archetypes: ['sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  uses: [GLIDE, W8_THEME.gusts],
+  pieces: [bank('a', [240, 280]), glide('b', 'a', [200, 240]), up('k', 'b', 36, [140, 160]), down('c', 'k', 36, [200, 240]), glide('d', 'c', [240, 280])],
+  last: 'd',
+  zones: [{ kind: 'wind', on: 'b' }, { kind: 'wind', on: 'd', idle: [3, 3.6] }],
+  sockets: [petals('a', 'a', 0.5, 1), petals('k', 'k', 0.5, 1), petals('c', 'c', 0.4, 1), petals('d', 'd', 0.6, 2, 80)],
+  mirrorable: true,
+});
+
+/** the wind and a hunter: a gust over the gap onto the hunter's long bough */
+const glideGustHunter = section({
+  id: 'w8-glide-gust-hunter',
+  name: 'on the wind to the hunter\'s bough (run)',
+  archetypes: ['sprint'],
+  phases: ['ten', 'ketsu'],
+  difficulty: 7,
+  uses: [GLIDE, W8_THEME.gusts],
+  pieces: [bank('a', [240, 280]), glide('b', 'a', [420, 460]), up('k', 'b', 30, [130, 150]), down('c', 'k', 30, [170, 200])],
+  last: 'c',
+  zones: [{ kind: 'wind', on: 'b' }],
+  sockets: [petals('a', 'a', 0.5, 1), foe('foe', 'b', [0.6, 0.7], SMALL, 3, { phases: LIVE }), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+
 // ───────────────────────────── 8-8 Night Hunters and 8-9 Monarch's Wood: the hunters' boughs ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
@@ -1206,6 +1257,7 @@ export const W8_SECTIONS: SectionTemplate[] = [
   ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms,
   ...roostGates, roostHollows, roostHollowGap, roostCurtains, roostCurtainGaps, roostCurtainLeap, roostProwl, roostClimb, roostTrunks, roostDark, roostLong,
   glideFirst, glidePair, glideTrunk, glideHunter, glideDark, glideLeap, glideProwl,
+  glideGust, glideGustPair, glideGustHunter,
   ...huntGates, hunterBough, sunkenFork, catBoughs, catTrunks, jaguarHigh, harpyBough, harpyGaps, harpyLeap, boaKnots, guardDark, guardNight, guardKnots,
   monarchDark, monarchCats, monarchHarpies, monarchGuards, monarchGuardPosts,
 ];
@@ -1248,7 +1300,7 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   'w8-monarch-harpies': [],
   'w8-monarch-guard-dark': [],
   // (the moonlight glides are 8-6's: Glide by Moonlight)
-  ...Object.fromEntries(['w8-glide-first', 'w8-glide-pair', 'w8-glide-trunk', 'w8-glide-hunter', 'w8-glide-dark', 'w8-glide-leap', 'w8-glide-prowl'].map((id) => [id, [6]])),
+  ...Object.fromEntries(['w8-glide-first', 'w8-glide-pair', 'w8-glide-trunk', 'w8-glide-hunter', 'w8-glide-dark', 'w8-glide-leap', 'w8-glide-prowl', 'w8-glide-gust', 'w8-glide-gust-pair', 'w8-glide-gust-hunter'].map((id) => [id, [6]])),
   ...Object.fromEntries(nightSections.map((t) => [t.id, [1]])),
-  ...Object.fromEntries((['climbers', 'prowlers', 'leapers', 'chains', 'night'] as const).map((t) => [`w8-gate-${t}`, Object.keys(W8_LIT_THEMES).map(Number).filter((st) => W8_LIT_THEMES[st].includes(t))])),
+  ...Object.fromEntries((['climbers', 'prowlers', 'leapers', 'chains', 'night', 'gusts'] as const).map((t) => [`w8-gate-${t}`, Object.keys(W8_LIT_THEMES).map(Number).filter((st) => W8_LIT_THEMES[st].includes(t))])),
 };

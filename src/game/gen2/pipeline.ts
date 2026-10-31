@@ -938,6 +938,22 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           const period = low + warn + active;
           zones.push({ kind: 'tide', x0: mud.x, x1: mud.x + mud.width, top: mud.y - 210, bottom: mud.y + 14, baseY: mud.y, dir: -1, period, warn, active, offset: R(srng() * period * 10) / 10, force: z.force ?? TIDE.force });
           placed.beats.push({ x: mud.x, letter: 'S' });
+        } else if (z.kind === 'wind') {
+          // (the gap before `on`: from the piece it is laid after to `on` itself, a pad over each lip as the old generator's gusts)
+          const spec = tpl.pieces.find((pc) => pc.key === z.on);
+          const after = spec && 'after' in spec.place ? pieceOf(spec.place.after) : null;
+          const land = pieceOf(z.on);
+          if (after) {
+            const lipY = Math.min(after.y, land.y);
+            const active = Math.min(2.4, z.active ?? 2.2);
+            const idle = Math.max(2, roll(srng, z.idle ?? [2.6, 3.2]));
+            const warn = 1.1;
+            const period = idle + warn + active;
+            const [x0, x1] = mirrored ? [land.x + land.width, after.x] : [after.x + after.width, land.x];
+            // (the way he travels, mirrored or not: a mirrored section is still played left to right)
+            const dir = z.dir ?? 1;
+            zones.push({ kind: 'wind', x0: R(Math.min(x0, x1) - 140), x1: R(Math.max(x0, x1) + 140), top: lipY - 260, bottom: lipY + 80, baseY: lipY, dir, period, warn, active, offset: R(srng() * period * 10) / 10, force: Math.min(160, z.force ?? 110) });
+          }
         }
       }
       // (its crumbling tiles, one crumble zone over them: levelCheck's tile rules hold inside it, and nothing stands in it; it ends at

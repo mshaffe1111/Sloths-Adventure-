@@ -286,9 +286,15 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
  *          start at its ends); the water rises on a timer and sweeps him back toward where he came from. `low` is the low spell (s,
  *          default TIDE.low), never shorter than the walk across the mud takes (zones.ts tideCrossTime: the pipeline lengthens it);
  *          `warn` (>= 0.9 s), `active` (<= 3 s) and `force` (px/s) default to TIDE's. Its beat on the clock is rolled per use
+ *   wind   a gust over the gap a section lays before the piece `on` (World 8's night gusts over the glides): zones.ts's wind, its box from
+ *          the take-off lip to the landing with a pad on each side, blowing `dir` (a tailwind, +1, by default: it carries a glide further,
+ *          and levelCheck's headwind rule would refuse a glide's gap); `idle` the lull between gusts (s, never under 2), `force` px/s
+ *          (<= 160, levelCheck). Its beat is the gust (beats.ts 'wind gust')
  * Nothing stands or flies inside a zone (no animal, no flag: levelCheck), so creature sockets and flags inside one stay empty.
  */
-export type SectionZone = { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number };
+export type SectionZone =
+  | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
+  | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number };
 
 /** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
 export const TIDE = { low: [5.6, 7.0], warn: 1.8, active: 2.2, force: 190 } as const;

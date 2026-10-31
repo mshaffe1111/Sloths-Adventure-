@@ -873,7 +873,10 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
       const gap = under[i].x - reach;
       reach = Math.max(reach, under[i].x + under[i].width);
       if (gap <= 24) continue;
-      if (gap > SAFE.gap1) errors.push(`${at}: a ${Math.round(gap)}px gap is wider than a plain jump`);
+      // (a tailwind over a glide gap, World 8's night gusts: from the stage the glide is guaranteed, the gust can only carry a forward
+      // glide further, so the gap is the glide's to cross, not a plain jump's)
+      const glideGap = z.kind === 'wind' && z.dir === 1 && allowGlide && gap <= reachGlide(under[i - 1].y - under[i].y, true);
+      if (gap > SAFE.gap1 && !glideGap) errors.push(`${at}: a ${Math.round(gap)}px gap is wider than a plain jump`);
       if (z.kind === 'wind' && z.dir === -1 && gap + z.force * 0.7 > SAFE.gap2) errors.push(`${at}: a headwind of ${z.force} makes the ${Math.round(gap)}px gap too far even for a double jump`);
     }
   }
