@@ -774,9 +774,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const hop = riseLimit(false, budget.riseShare) * PIT.hop;
     // (the banks either side of the pit reach down past its floor: a glide's back pit climbs in steps and on low ground its floor lay under
     // the banks' foot, so a jump off the floor passed under a bank's edge and fell through, 9-5's first-timer bot)
-    // (World 9's for now: the curated worlds' banks stay as their seeds were checked with; the lead decides on the rest)
+    // (every world: the lead, 2026-10-31, a bug in shared code is fixed for all; gen2Pits.test.ts scans every shipped stage for it)
     const deepen = (floor: number) => {
-      if (budget.world !== 9) return;
       for (const q of platforms) if ((Math.abs(q.x + q.width - x0) < 3 || Math.abs(q.x - x1) < 3) && q.y < floor) q.height = Math.max(q.height, floor + M.ground.bankH - q.y);
     };
     if (back) {
@@ -1781,7 +1780,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   // (World 9's rafts and logs sink deeper than the banks' foot: the lava lies under their lowest stop, BOB, as levelCheck's waterline asks)
   // (and under the deepest soft floor: a glide's soft pit climbs back to its take-off in steps, and on low ground its floor lay under the
   // lava line, so standing on the soft floor was a death: 9-5's glides, the first-timer bot's 19 lives)
-  const bobFoot = Math.max(laid.bottom, ...laid.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston').map((p) => p.lift!.bottom + 26), ...(budget.world === 9 ? laid.platforms.filter((p) => !p.lift).map((p) => p.y + 30) : []));
+  const bobFoot = Math.max(laid.bottom, ...laid.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston').map((p) => p.lift!.bottom + 26), ...laid.platforms.filter((p) => !p.lift).map((p) => p.y + 30));
   const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
   const meta: Gen2Meta = {
     seed,

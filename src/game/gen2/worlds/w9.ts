@@ -138,6 +138,8 @@ export const W9_PROPS: PropDef[] = [
 export const W9_DECOR: WorldManifest['decor'] = [
   { id: 'w9-ohia', job: 'bank', items: [{ n: 'young-tree', w: [70, 100] }, { n: 'ash-fern', w: [90, 120] }], every: [260, 420] },
   { id: 'w9-cinder', job: 'bank', items: [{ n: 'obsidian', w: [60, 90] }, { n: 'smoke-crack', w: [120, 160] }], every: [300, 460] },
+  // (the W9 props sheet's vent rock, lava dome and scorched bridge: painted, and drawn nowhere until now (Matt: use all the art))
+  { id: 'w9-ruin', job: 'bank', items: [{ n: 'vent-rock', w: [100, 130] }, { n: 'scorched-bridge', w: [130, 160] }, { n: 'lava-dome', w: [90, 120] }], every: [320, 480] },
 ];
 
 // ───────────────────────────── the lines ─────────────────────────────

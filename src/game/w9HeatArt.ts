@@ -7,7 +7,7 @@
  *             the pour down to the ground, landing in its own splash
  */
 import type { Zone, ZoneState } from './zones.ts';
-import { drawLava, drawW9Hazard } from './w9Art.ts';
+import { drawLava, drawW9Hazard, drawW9Piece } from './w9Art.ts';
 import { W9_PIECE_FRAMES } from './w9PiecesData.ts';
 
 const W9B_URL = new URL('../assets/w6to10/props-made/w9b.webp', import.meta.url).href;
@@ -80,6 +80,14 @@ export function drawW9FlareBurst(ctx: CanvasRenderingContext2D, z: Zone, st: Zon
 
 /** the lavafall: a thin trickle of the painted pour as it warns, the pour itself (its three frames looping) while it is active, its own
  *  splash at the foot; the hazards sheet's fountain, upside down, while the pieces sheet loads */
+/** where a lavafall lands, the painted lava pool (w9c 'lava-pool'), lying in the ground: dull while it is quiet, brightening as the drips
+ *  warn, full while it pours, a spot a kid learns to read before the fall comes (drawn with the zone bases, under him) */
+export function drawW9LavafallPool(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState): void {
+  const w = (z.x1 - z.x0) * 1.9;
+  const glow = st.phase === 'idle' ? 0.45 : st.phase === 'warn' ? 0.45 + 0.55 * st.u : 1;
+  drawW9Piece(ctx, 'lava-pool', (z.x0 + z.x1) / 2, z.baseY + w * 0.14, w, false, glow);
+}
+
 export function drawW9Lavafall(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number): void {
   if (st.phase === 'idle') return;
   const cx = (z.x0 + z.x1) / 2;
@@ -124,6 +132,10 @@ export function drawW9Surge(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneStat
     if (!pc || !f) return;
     const k = 0.3 + 0.4 * st.u;
     ctx.save();
+    // (clipped at the channel's walls: the painted frame's cut tail sits on the wall's face, so the surge reads as pouring out of it)
+    ctx.beginPath();
+    ctx.rect(z.x0 - 12, z.baseY - f.h * k - 10, z.x1 - z.x0 + 24, f.h * k + 30);
+    ctx.clip();
     ctx.globalAlpha = 0.5 + 0.5 * st.u;
     ctx.drawImage(pc, f.x, f.y, f.w, f.h, z.x0 - f.w * k * 0.6, z.baseY - f.h * k + 4, f.w * k, f.h * k);
     ctx.restore();
@@ -133,7 +145,20 @@ export function drawW9Surge(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneStat
   const a = z.x0 - 12, b = z.x1 + 12;
   const front = a + (b - a) * Math.min(1, st.u * 3);
   const depth = 30 * Math.min(1, st.strength * 1.4);
-  drawLava(ctx, a, front, z.baseY - depth + 4, z.baseY + 14, t);
+  // (its ends taper: the surface rounds down into the wall and into the front, a bead of lava, not a cut-off slab)
+  const top = z.baseY - depth - 6, bot = z.baseY + 14, r = Math.min(26, (front - a) / 2);
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(a, bot);
+  ctx.lineTo(a, top + depth * 0.9);
+  ctx.quadraticCurveTo(a, top, a + r, top);
+  ctx.lineTo(front - r, top);
+  ctx.quadraticCurveTo(front, top, front, top + depth * 0.9);
+  ctx.lineTo(front, bot);
+  ctx.closePath();
+  ctx.clip();
+  drawLava(ctx, a, front, z.baseY - depth + 4, bot, t);
+  ctx.restore();
   if (pc && f && st.u < 0.45) {
     const h = 90;
     const w = (f.w * h) / f.h;
