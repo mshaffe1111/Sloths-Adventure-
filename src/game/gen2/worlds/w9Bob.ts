@@ -360,7 +360,78 @@ const ropeChasm = section({
   mirrorable: true,
 });
 
+// ───────────────────────────── 9-3: its ropes and slabs between the chains (the vine stage swings on every roll) ─────────────────────────────
+
+/** a chain past `after` (w9Swing.ts's: its anchor 400-420 px over the ledge) and the perch it swings to, 80 px up, then a step down */
+const chainTo = (p: string, after: string, perchW: W = [220, 260]): SectionPiece[] => [
+  { key: `${p}l`, shape: 'liana', w: 0, place: { kind: 'swing', after, top: [400, 420] } },
+  bank(`${p}p`, perchW, { kind: 'land', after: `${p}l`, dy: -80 }, { landing: true }),
+  bank(`${p}d`, [140, 170], { kind: 'walk', after: `${p}p`, dy: 80 }),
+];
+const CHAIN_T = 2.5;
+
+/** a rope over the lava, then a chain */
+const ropeChain = section({
+  id: 'w9-rope-chain',
+  name: 'rope, then a chain',
+  archetypes: ['vine_runner'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.bridges],
+  extraSeconds: ROPE_T + CHAIN_T,
+  pieces: [bank('a', [240, 280]), rope('b', 'a', [220, 260]), ...chainTo('c', 'b')],
+  last: 'cd',
+  sockets: [petals('b', 'b', 0.5, 1), petals('cp', 'cp', 0.4, 2, 90), petals('cd', 'cd', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** a chain, then a rope over the lava */
+const chainRope = section({
+  id: 'w9-chain-rope',
+  name: 'a chain, then a rope',
+  archetypes: ['vine_runner'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.bridges],
+  extraSeconds: ROPE_T + CHAIN_T,
+  pieces: [bank('a', [220, 260]), ...chainTo('c', 'a'), rope('e', 'cd', [260, 300]), up('k', 'e', 30, [140, 160]), down('f', 'k', 30, [200, 240])],
+  last: 'f',
+  sockets: [petals('cp', 'cp', 0.4, 2, 90), petals('e', 'e', 0.5, 1), petals('k', 'k', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** sinking slabs over a soft channel, then a chain */
+const sinkChain = section({
+  id: 'w9-sinker-chain',
+  name: 'sinking slabs, then a chain',
+  archetypes: ['vine_runner'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.sinkers, SINK],
+  extraSeconds: 1 + CHAIN_T,
+  pieces: [bank('a', [240, 280]), slab('s1', 'a'), slab('s2', 's1'), offSoft('b', 's2', [220, 260]), ...chainTo('c', 'b')],
+  last: 'cd',
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.5, 1), petals('cp', 'cp', 0.4, 2, 90)],
+  mirrorable: false,
+});
+
+/** a chain, then sinking slabs */
+const chainSink = section({
+  id: 'w9-chain-sinker',
+  name: 'a chain, then sinking slabs',
+  archetypes: ['vine_runner'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.sinkers, SINK],
+  extraSeconds: 1 + CHAIN_T,
+  pieces: [bank('a', [220, 260]), ...chainTo('c', 'a'), slab('s1', 'cd'), slab('s2', 's1'), slab('s3', 's2'), offSoft('f', 's3', [240, 280])],
+  last: 'f',
+  sockets: [petals('cp', 'cp', 0.4, 2, 90), petals('s2', 's2', 0.5, 1), petals('f', 'f', 0.5, 1)],
+  mirrorable: false,
+});
+
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
+  ropeChain, chainRope, sinkChain, chainSink,
   ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
   sinkGate3, W9_BOB_GATES.sinkers9, firstSink, sinkRun, sinkTwin, sinkHoard,
   W9_BOB_GATES.rafts, firstRaft, raftPair, raftRow, raftGeyser,
@@ -372,7 +443,7 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
   [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logBridge.id]: [5, 9], [logPair.id]: [5, 9],
-  [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [3, 8], [ropeTwin.id]: [3, 8], [ropeChasm.id]: [3, 8],
-  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [firstSink.id]: [3, 9], [sinkRun.id]: [3, 9], [sinkTwin.id]: [3, 9], [sinkHoard.id]: [9],
+  [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
+  [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [firstSink.id]: [3, 9], [sinkRun.id]: [9], [sinkTwin.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],
 };
