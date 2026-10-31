@@ -190,7 +190,23 @@ function landingPack(v: Vine, platforms: Platform[]): LandingPack {
 const NO_LANDING = -2147483647;
 const hitBuf = new Int32Array(100);
 
+/**
+ * swingLandingsIn's answers, by everything a flight reads (the ledge's edge and height, the vine, the way, the water, the pack): the
+ * physics keeps no state, so the same flight always lands the same, and lianaBand and the petal pass ask the same flights again and
+ * again (8-5: one flight asked about five times over, 2026-10-31, the lead's idea). Bounded; each answer handed out as a copy
+ */
+const FLIGHTS = new Map<string, Map<number, number>>();
+const FLIGHTS_MAX = 4000;
 function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number): Map<number, number> {
+  const key = `${a.x},${a.y},${a.width}|${JSON.stringify(v)}|${dir}|${waterY}|${pack.n},${pack.maxTop}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.order.join(',')}|${pack.id.join(',')}`;
+  const hit = FLIGHTS.get(key);
+  if (hit) return new Map(hit);
+  const out = flightLandings(a, v, dir, pack, waterY);
+  if (FLIGHTS.size >= FLIGHTS_MAX) FLIGHTS.clear();
+  FLIGHTS.set(key, new Map(out));
+  return out;
+}
+function flightLandings(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number): Map<number, number> {
   const out = new Map<number, number>();
   const dt = SIM_DTS[0];
   const edge = dir === 1 ? a.x + a.width : a.x;
