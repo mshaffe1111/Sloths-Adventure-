@@ -11,6 +11,7 @@
  * of the stage's shipped rolls, `seeds[variant % n]`: a retry keeps the roll, a fresh entry changes it, and every roll that can be
  * played was checked by the curation tool (tools/gen2/curate.ts) and is guarded by seeds.test.ts / game.test.ts.
  */
+import { kidMedian } from '../goals.ts';
 import type { Difficulty } from '../difficulty.ts';
 import type { LevelConfig } from '../types.ts';
 import { buildGen2Stage } from './pipeline.ts';
@@ -34,9 +35,12 @@ export interface Gen2Entry {
   /** the kit's name as the curation tool writes it in seeds.ts (`kit`): the shipped rolls were checked on this kit */
   kitName: string;
   /**
-   * Easy's goal for a fight stage, when set: the highest the first-timer kid bot opens the shrine with in at least 5 of its 6 Easy runs
-   * (seeds 1-3, two trials each: the lead's rule, 2026-10-28). Normal keeps its share of what the stage holds (goals.ts)
+   * the first-timer kid bot's recorded Easy runs on a fight stage (seeds 1-3, two trials each): how many animals it beat before the shrine.
+   * Easy's goal is the median of them under the 65% floor (goals.ts kidMedian, gen2EasyGoal: the lead, 2026-10-30). Normal keeps its
+   * share of what the stage holds (goals.ts)
    */
+  kidRuns?: readonly number[];
+  /** Easy's goal for a fight stage, from `kidRuns` (kidMedian) */
   easyGoal?: number;
 }
 
@@ -61,10 +65,12 @@ const w7Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
  * The stages gen2 builds, each with its kit (the per-stage chooser). 5-8 stays hand-built (Matt, 2026-10-28): it is still the old
  * generator's until its own build lands; 6-8 Stilt Climb is hand-built later.
  */
+const KID_RUNS_59 = [5, 5, 9, 10, 10, 10] as const;
+
 export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   '5-7': { kit: () => w5Kit(7), kitName: 'w5.ts:w5Kit(7)' },
-  // (5-9 Easy: the kid beat 5, 5, 9, 10, 10 and 10 spiders on seeds 1-3 before the shrine; 5 opens it in all six)
-  '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', easyGoal: 5 },
+  // (5-9 Easy: the kid beat 5, 5, 9, 10, 10 and 10 spiders on seeds 1-3 before the shrine: the median, 9)
+  '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', kidRuns: KID_RUNS_59, easyGoal: kidMedian(KID_RUNS_59) },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W7_GAME_STAGES.map((id) => [id, w7Entry(Number(id.split('-')[1]))])),
 };
