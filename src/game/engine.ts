@@ -170,6 +170,7 @@ import { releaseDecorPics } from './envKit.ts';
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDepthView, setGroundPaint, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawSoldierSprite } from './soldierSprite.ts';
+import { trapState } from './trapdoor.ts';
 import { drawW10Dressing, drawW10Hide, type W10Dressing } from './w10Art.ts';
 import { drawW10SkyBolt, setW10Stage } from './w10HazardArt.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
@@ -1493,6 +1494,9 @@ export class GameEngine {
       plat.x = nx;
       if (p.grounded && this.standingOnId === plat.id) p.x += dx;
     }
+
+    // --- World 10's trapdoor grates (trapdoor.ts): gone while they hang open, on their beat ---
+    for (const plat of this.platforms) if (plat.trap) plat.broken = trapState(plat.trap, this.gameTime).open;
 
     // --- Drifting logs (World 2 rivers): slide with the current, carry whoever rides them, hand a rider over to the bank ---
     for (const plat of this.platforms) {

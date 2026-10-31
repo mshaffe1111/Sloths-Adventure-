@@ -298,7 +298,9 @@ export interface Platform {
    *  'fungus_shelf': a bracket of the world's fungus, a set piece (World 8's fungus steps and knot perches): its look is never swapped.
    *  'w10_*': World 10's grab-bag pieces (perch post, balcony, iron stair tread, scaffold walkway, chain bridge), w10PieceArt.ts: never swapped */
   style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge' | 'fungus_shelf' | 'roost_branch'
-    | 'w10_perch' | 'w10_balcony' | 'w10_stair' | 'w10_scaffold' | 'w10_bridge';
+    | 'w10_perch' | 'w10_balcony' | 'w10_stair' | 'w10_scaffold' | 'w10_bridge' | 'w10_trap';
+  /** World 10's trapdoor grate (trapdoor.ts): open on its beat (the engine sets `broken` while it hangs open) */
+  trap?: import('./trapdoor.ts').TrapInfo;
   /** a hollow log Pokey pushes by walking into it (protoStage.ts): it slides between these x bounds */
   push?: { min: number; max: number };
   /** a section of 1-8's long branch: it falls when the collapse passes (chase.ts), drawn from Matt's long-branch sheet; `chaseTip`: the end */

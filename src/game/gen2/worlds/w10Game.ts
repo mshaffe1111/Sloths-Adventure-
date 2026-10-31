@@ -12,6 +12,7 @@ import { w10Kit } from './w10.ts';
 import { W10_LESSON_SECTIONS, W10_STAGE_ONLY } from './w10Ground.ts';
 import { W10_ROOM_REQUIRED, withW10Rooms } from './w10Rooms.ts';
 import { withW10Swing } from './w10Swing.ts';
+import { TRAP } from '../../trapdoor.ts';
 
 /** the stages of World 10 the game builds with gen2 */
 export const W10_GAME_STAGES = ['10-1', '10-3', '10-6', '10-7', '10-9'] as const;
@@ -26,11 +27,13 @@ for (const [id, rs] of Object.entries(W10_ROOM_REQUIRED)) W10_REQUIRED[id] = [..
 /**
  * Development only (a dev build's screenshots of one grab-bag piece, STAGE-RULES §1c step 3): `window.__w10force = 'w10-perch-run'`
  * before `__play` puts that section, and the gate that opens its theme, into every roll of its stage. A production build drops this
- * (import.meta.env.DEV is false there), and node never sets it.
+ * (import.meta.env.DEV is false there, and it has no `process`); in node the env W10_FORCE does the same.
  */
 function devForced(stage: number, sections: SectionTemplate[]): WorldManifest['required'] | null {
   const env = (import.meta as unknown as { env?: { DEV?: boolean } }).env;
-  const id = env?.DEV ? (globalThis as { __w10force?: string }).__w10force : undefined;
+  // (node's piece checks pass it as W10_FORCE: tools/inspect --firsttimer builds stages through the game)
+  const nodeForce = typeof process !== 'undefined' ? process.env?.W10_FORCE : undefined;
+  const id = env?.DEV ? (globalThis as { __w10force?: string }).__w10force : nodeForce;
   const sec = id ? sections.find((s) => s.id === id) : undefined;
   if (!sec) return null;
   const gates = (sec.uses ?? []).flatMap((u) => sections.filter((g) => g.teaches === u && g.phases.includes('start')).slice(0, 1));
@@ -46,5 +49,13 @@ export function w10GameKit(stage: number, difficulty: Difficulty = 'normal'): Wo
   // (the swing builder's swings over the iron netting and the stage's room, Easy's version on Easy: w10Swing.ts, w10Rooms.ts)
   const k = withW10Swing(withW10Rooms(w10Kit(stage), stage, difficulty), stage, difficulty);
   const sections = k.manifest.sections.filter((s) => forStage(stage, s.id));
-  return { ...k, manifest: { ...k.manifest, sections, required: devForced(stage, sections) ?? W10_REQUIRED } };
+  // (the trapdoor grates' beats, by the difficulty played: trapdoor.ts TRAP; neighbours half a cycle apart, so a row is never all open)
+  const decorate: WorldKit['decorate'] = (items, out) => {
+    k.decorate?.(items, out);
+    const beat = TRAP[difficulty === 'easy' ? 'easy' : 'normal'];
+    out.platforms.filter((p) => p.style === 'w10_trap').sort((a, b) => a.x - b.x).forEach((p, i) => {
+      p.trap = { ...beat, offset: Math.round(((i % 2) * 0.5 + ((p.x * 0.0007) % 0.25)) * beat.period * 100) / 100 };
+    });
+  };
+  return { ...k, decorate, manifest: { ...k.manifest, sections, required: devForced(stage, sections) ?? W10_REQUIRED } };
 }

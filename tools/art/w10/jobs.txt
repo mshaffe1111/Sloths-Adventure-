@@ -31,3 +31,8 @@ w10-props2 verdicts:
   and anchor are identical in all three states.
 TOTAL ~32.4 min on rtx-pro-6000 = ~$1.49 of the $10 cap: w10-props 6.6 min $0.30, w10-props2 3.2 min $0.15, w10-soldier-0/1 22.6 min
   $1.04 (cancelled when item 6 was dropped; nothing from them is used).
+
+World 10 grab bag (2026-10-31, branch w10-pieces, helper for the lead's W10 pieces pass; lead's cap $9, one batch):
+hfb-w10bag-r1  6ae63048c78863f9c62f3cd9 rtx-pro-6000 18:15:36Z-~18:19:10Z (~3.6 min incl. load, ~$0.17): hfbatch/fungusgpu.py @8a6b525d on
+  spec-w10-bag.json (bagstarts.py: canvas a 3x3 props on magenta 1536^2, canvas b beams + gush on black 1536x512; s50/s62 (b s50/s65) x
+  seeds 7/23 = 8 takes). Takes in the bucket hfbatch/w10bag/props/, brought back with hf_fs attach of carrier-w10bag-0.png.

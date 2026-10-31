@@ -305,7 +305,7 @@ export type SectionZone =
 export const BOLT = { w: 56, height: 560, warn: 1.4, warnEasy: 1.9, active: 0.9, period: [4.4, 5.4], easySlower: 1.2 } as const;
 /** a drop gate's column (World 10, GRAB-BAG D): the portcullis in its gatehouse; it rattles for `warn` s, stays down `active` s, and is up
  *  the rest (levelCheck's bolt rules: >= 1.1 s warning, <= 1.2 s down, >= 2 s up, 110 px to the next column) */
-export const DROP = { w: 128, height: 240, warn: 1.2, warnEasy: 1.6, active: 1.1, period: [4.6, 5.4], easySlower: 1.0 } as const;
+export const DROP = { w: 116, height: 240, warn: 1.2, warnEasy: 1.6, active: 1.1, period: [4.6, 5.4], easySlower: 1.0 } as const;
 /** a gust lane (World 10's storm): under levelCheck's 160 px/s, long quiet spells to jump in */
 export const WIND = { pad: 170, warn: 1.4, active: 2.4, period: [6.2, 7.4], force: 130, forceEasy: 90 } as const;
 

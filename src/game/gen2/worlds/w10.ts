@@ -93,6 +93,8 @@ export const W10_LESSON = {
   drop: 'drop',
   /** the drop gates (GRAB-BAG D: 10-7, its first one gentle) */
   dropgate: 'dropgate',
+  /** the trapdoor grates (GRAB-BAG F: 10-9, its first over a soft pit) */
+  trap: 'trap',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -154,6 +156,7 @@ export const W10_TIPS: Record<string, string> = {
   [W10_LESSON.drop]: 'No ledge under that one.',
   // (GRAB-BAG lines: new, need Matt's approval; said in Dot's bubble where she is back, 10-6 to 10-9: wayside.ts dotPresent)
   [W10_LESSON.dropgate]: "It drops on a count. Run when it's up!",
+  [W10_LESSON.trap]: "Those grates open. Cross when they're shut.",
   water: 'No ledge under that one.',
 };
 export const W10_NEW_LINES: readonly string[] = [...new Set(Object.values(W10_TIPS))];
@@ -181,7 +184,7 @@ export const W10_MANIFEST: WorldManifest = {
   handBuilt: ['10-2', '10-4', '10-5', '10-8', '10-10'],
   // (the cats were met in World 3, the tayra and the harpy in World 6, the gusts in World 4 and the crumbling floors in World 7; the
   // rods, the spikes, the ramparts and the gusts are 10-1's (his line there on first meeting), the storm's watch 10-3's)
-  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3', [W10_LESSON.dropgate]: '10-7' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3', [W10_LESSON.dropgate]: '10-7', [W10_LESSON.trap]: '10-9' },
   tips: W10_TIPS,
 };
 
@@ -290,6 +293,15 @@ export function w10Decorate(stage: number): NonNullable<WorldKit['decorate']> {
 /** every animal kept on its patch (never off a wall into a gap), facing a rolled way; the soldiers are noted for w10Finish's line */
 export function w10Spawn(stage = 1): NonNullable<WorldKit['spawn']> {
   return (e: Enemy, c: CreatureDef, out: StageSink) => {
+    // (an animal's patch stops short of a drop gate's column: no fight under a portcullis, GRAB-BAG D)
+    for (const z of out.zones) {
+      if (z.kind !== 'bolt' || z.look !== 'portcullis' || Math.abs(z.baseY - (e.y + e.height / 2)) > 60) continue;
+      const lo = z.x0 - 60, hi = z.x1 + 60;
+      if (e.patrolMaxX < lo || e.patrolMinX > hi) continue;
+      if (e.x < (lo + hi) / 2) e.patrolMaxX = Math.min(e.patrolMaxX, lo);
+      else e.patrolMinX = Math.max(e.patrolMinX, hi);
+      e.x = Math.max(e.patrolMinX, Math.min(e.patrolMaxX, e.x));
+    }
     e.edgeMinX = e.patrolMinX;
     e.edgeMaxX = e.patrolMaxX;
     e.facing = hash01(e.x, 12) < 0.5 ? -1 : 1;
@@ -307,7 +319,7 @@ export function w10Kit(stage = 1): WorldKit {
 
 /** Pokey's lesson lines, by the thing each teaches (said once per save where the guide supports it) */
 export const W10_FIRST_OF: Readonly<Record<string, string>> = Object.fromEntries(
-  ([W10_LESSON.bolt, W10_LESSON.spikes, W10_LESSON.rampart, W10_LESSON.wind, W10_LESSON.storm, W10_LESSON.soldier, W10_LESSON.dropgate] as string[]).map((k) => [W10_TIPS[k], `w10.${k}`]),
+  ([W10_LESSON.bolt, W10_LESSON.spikes, W10_LESSON.rampart, W10_LESSON.wind, W10_LESSON.storm, W10_LESSON.soldier, W10_LESSON.dropgate, W10_LESSON.trap] as string[]).map((k) => [W10_TIPS[k], `w10.${k}`]),
 );
 
 /**

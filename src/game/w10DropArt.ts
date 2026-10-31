@@ -1,20 +1,20 @@
 /**
- * w10DropArt — World 10's drop gate (GRAB-BAG D: a 'bolt' zone with look 'portcullis'): the gatehouse over the wall-walk, Matt's portcullis
- * in its stone arch (props-made/w10a 'portcullis-up', the gate raised into the wall: drawn behind Pokey), and the gate's bars (the
+ * w10DropArt — World 10's drop gate (GRAB-BAG D: a 'bolt' zone with look 'portcullis'): the gatehouse over the wall-walk, a battlemented
+ * stone arch (the grab bag's HF sheet, w10BagArt 'gatehouse': drawn behind Pokey), and the gate's bars (Matt's w10a
  * 'portcullis-down' painting's own bars with the dark between them cut away, w10/dropgate.webp: drawn in front of him), which shudder as
  * it warns and slam down while it is down. Both return false until their sheet has loaded.
  */
 import { trackAtlas } from './atlasLoader.ts';
-import { drawW10Piece } from './w10PuzzleArt.ts';
+import { drawW10Bag, W10_BAG_FRAMES } from './w10BagArt.ts';
 import type { Zone, ZoneState } from './zones.ts';
 
 const BARS_URL = new URL('../assets/w10/dropgate.webp', import.meta.url).href;
 export const W10_DROP_URLS: readonly string[] = [BARS_URL];
-/** the gatehouse's drawn height over the walk (world px) and its painting's frame (w10a 'portcullis-*': 374 x 434) */
-export const GATE_H = 240;
-const FRAME = { w: 374, h: 434 };
-/** the doorway in the painting (where the bars run), in its px */
-const OPENING = { x0: 66, x1: 308, y0: 52, y1: 434 };
+/** the gatehouse's drawn height over the walk (world px) and its painting's frame (w10BagArt 'gatehouse') */
+export const GATE_H = 250;
+const FRAME = W10_BAG_FRAMES.gatehouse;
+/** the doorway in the painting (where the bars run), in its px (measured on the cut: bagcut.py) */
+const OPENING = { x0: 62, x1: 258, y0: 146, y1: 396 };
 
 let bars: HTMLImageElement | null = null;
 let barsReady = false;
@@ -38,7 +38,7 @@ function dropOf(st: ZoneState, t: number): { down: number; shake: number } {
 
 /** the gatehouse, behind him (the arch, the dark doorway, the gate's spikes just showing under its lintel) */
 export function drawW10Gatehouse(ctx: CanvasRenderingContext2D, z: Zone): boolean {
-  return drawW10Piece(ctx, 'portcullis-up', (z.x0 + z.x1) / 2, z.baseY + 6, GATE_H);
+  return drawW10Bag(ctx, 'gatehouse', (z.x0 + z.x1) / 2, z.baseY + 6, GATE_H);
 }
 
 /** the bars, in front of him: up in the wall at rest, shuddering as it warns, down while it is down */
@@ -47,7 +47,7 @@ export function drawW10DropBars(ctx: CanvasRenderingContext2D, z: Zone, st: Zone
   if (!img) return false;
   const s = GATE_H / FRAME.h;
   const cx = (z.x0 + z.x1) / 2;
-  const left = cx - (FRAME.w / 2) * s + OPENING.x0 * s;
+  const left = cx - FRAME.ax * s + OPENING.x0 * s;
   const top = z.baseY + 6 - GATE_H + OPENING.y0 * s;
   const w = (OPENING.x1 - OPENING.x0) * s;
   const h = (OPENING.y1 - OPENING.y0) * s;

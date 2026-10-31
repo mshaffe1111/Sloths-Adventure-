@@ -6,15 +6,19 @@
  *   'w10_balcony'  a stone balcony on its two corbels, jutting from a tower (props-made/w10b 'balcony')
  *   'w10_stair'    one tread of the iron stair bolted to a tower face (props-made/w10b 'iron-stair', its top tread and post)
  *   'w10_scaffold' the iron walkway with its rail (props-made/w10b 'scaffold')
+ *   'w10_trap'     a trapdoor grate (trapdoor.ts): shut, w10var's iron grate (its sheet names it 'branch-b'), shuddering as it warns; open,
+ *                  the grab bag's HF grate (w10BagArt 'grate') hanging from its hinge
  *   'w10_bridge'   the chain bridge slung across a chasm (gemini/w9w10-bridges 'chain-bridge'), stretched by its ends, never its middle
  * Each draw puts the painted walking surface on the collider's top (STAGE-RULES §5b: nobody stands in the air or sinks into a ledge).
  * Every draw returns false until its sheet has loaded (the kit's own look stands in).
  */
 import { trackAtlas } from './atlasLoader.ts';
 import type { Platform } from './types.ts';
+import { trapState } from './trapdoor.ts';
+import { drawW10Bag } from './w10BagArt.ts';
 
-export type W10PieceStyle = 'w10_perch' | 'w10_balcony' | 'w10_stair' | 'w10_scaffold' | 'w10_bridge';
-export const W10_PIECE_STYLES: readonly W10PieceStyle[] = ['w10_perch', 'w10_balcony', 'w10_stair', 'w10_scaffold', 'w10_bridge'];
+export type W10PieceStyle = 'w10_perch' | 'w10_balcony' | 'w10_stair' | 'w10_scaffold' | 'w10_bridge' | 'w10_trap';
+export const W10_PIECE_STYLES: readonly W10PieceStyle[] = ['w10_perch', 'w10_balcony', 'w10_stair', 'w10_scaffold', 'w10_bridge', 'w10_trap'];
 export const isW10Piece = (p: Pick<Platform, 'style'>): boolean => !!p.style && (W10_PIECE_STYLES as readonly string[]).includes(p.style);
 
 const URLS = {
@@ -39,6 +43,8 @@ const LOOK: Record<W10PieceStyle, Look> = {
   w10_stair: { sheet: 'b', x: 1604 + 240, y: 0, w: 153, h: 302, top: 28, x0: 7, x1: 92 },
   // the walkway's grate (the rail stands above it)
   w10_scaffold: { sheet: 'b', x: 0, y: 0, w: 467, h: 128, top: 75, x0: 0, x1: 467 },
+  // the iron grate (w10var 'branch-b', a little perspective: its middle is the floor)
+  w10_trap: { sheet: 'v', x: 1552, y: 0, w: 438, h: 83, top: 24, x0: 8, x1: 430 },
   // the chain bridge's deck (its posts at either end)
   w10_bridge: { sheet: 'br', x: 563, y: 0, w: 307, h: 118, top: 34, x0: 8, x1: 299 },
 };
@@ -60,12 +66,23 @@ export function w10PiecesReady(): boolean {
 }
 
 /** a grab-bag piece in its painting (false: not one of them, or its sheet is still loading) */
-export function drawW10PieceArt(ctx: CanvasRenderingContext2D, p: Platform): boolean {
+export function drawW10PieceArt(ctx: CanvasRenderingContext2D, p: Platform, t = 0): boolean {
   if (!isW10Piece(p)) return false;
   const L = LOOK[p.style as W10PieceStyle];
   const img = sheet(L.sheet);
   if (!img) return false;
   const s = p.width / (L.x1 - L.x0);
+  if (p.trap) {
+    const st = trapState(p.trap, t);
+    if (st.open) {
+      // (hanging from its hinge at the near end: the HF open grate, drawn the grate's length down from the hinge, flipped for a far hinge)
+      const h = p.width * 1.05;
+      return drawW10Bag(ctx, 'grate', p.x + 40 + (1 - st.swing) * p.width * 0.35, p.y + h * (0.55 + 0.45 * st.swing) - 6, h * (0.6 + 0.4 * st.swing));
+    }
+    const dy = st.shake ? Math.sin(t * 52) * 2.4 * st.shake : 0;
+    ctx.drawImage(img, L.x, L.y, L.w, L.h, p.x - L.x0 * s, p.y - L.top * s + dy, L.w * s, L.h * s);
+    return true;
+  }
   if (p.style === 'w10_bridge') {
     // (at 0.6 of its painting, a deck about 70 px deep under the walk: the two end posts keep their width and the deck's middle repeats
     // between them, offset by where the span stands so two bridges never line up plank for plank)

@@ -299,8 +299,15 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     else {
       const every = Math.max(2, z.period);
       const wait = Math.min(TIME.zoneExtra[z.kind] ?? 0.7, idleTime(z));
-      span(b, every, 'Z', z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : `${z.kind} zone`, wait, `${z.kind} zones`);
+      // (World 10's drop gate is a bolt column felt and drawn as a portcullis: its own beat for the look-alike measure)
+      const what = z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : z.look === 'portcullis' ? 'drop gate' : `${z.kind} zone`;
+      span(b, every, 'Z', what, wait, z.look === 'portcullis' ? 'drop gates' : `${z.kind} zones`);
     }
+  }
+  // (World 10's trapdoor grates, trapdoor.ts: crossing one is timed, a beat on each)
+  for (const p of stage.platforms) {
+    if (!p.trap) continue;
+    span({ x0: p.x, x1: p.x + p.width, y0: p.y - 120, y1: p.y + 30 }, 1e9, 'Z', 'trapdoor grate: cross while it is shut', Math.min(1.2, p.trap.open), 'trapdoors');
   }
   for (const w of stage.proto?.watch ?? []) {
     const cycle = (w.calm[0] + w.calm[1]) / 2 + WATCH.warn + WATCH.pass;

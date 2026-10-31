@@ -1186,7 +1186,7 @@ export function drawProtoScene(
     if (p.style === 'fungus_shelf' && drawW8Fungus(ctx, p)) continue;
     if (p.style === 'roost_branch' && drawRoostBough(ctx, p)) continue;
     // (World 10's grab-bag pieces: the perch post, balcony, iron stair, scaffold walkway and chain bridge, w10PieceArt.ts)
-    if (p.style?.startsWith('w10_') && drawW10PieceArt(ctx, p)) continue;
+    if (p.style?.startsWith('w10_') && drawW10PieceArt(ctx, p, t)) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
     if (trunk && p.width <= 220) {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);

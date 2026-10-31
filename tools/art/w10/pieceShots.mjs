@@ -20,7 +20,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
     await p.waitForFunction(() => typeof window.__play === "function" && typeof window.__engine === "function", null, { timeout: 30000 });
     await p.waitForTimeout(800);
     await p.evaluate(([stage, sec]) => { window.__w10force = sec; window.__play(stage, 0); }, [stage, sec]);
-    await p.waitForTimeout(6000);
+    await p.waitForTimeout(9500);
     const spots = await p.evaluate((sec) => {
       const e = window.__engine();
       const st = e.currentStage;

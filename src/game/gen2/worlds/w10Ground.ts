@@ -51,6 +51,8 @@ export const W10_THEME = {
   bridges: 'w10:bridges',
   /** drop gates over the wall-walk, a portcullis on a beat (GRAB-BAG D: 10-7) */
   drops: 'w10:drops',
+  /** trapdoor grates over the chasms, open on a beat (GRAB-BAG F: 10-9) */
+  trapdoors: 'w10:trapdoors',
 } as const;
 export type W10Theme = keyof typeof W10_THEME;
 const THEMES = Object.keys(W10_THEME) as W10Theme[];
@@ -62,6 +64,7 @@ const RAMPART = 'rampart';
 const WIND = 'wind';
 const STORM = 'storm';
 const DROPGATE = 'dropgate';
+const TRAP = 'trap';
 
 /** the weight of a section every roll may hold (the theme's weigh 1) */
 const SHARED = 0.3;
@@ -1089,7 +1092,8 @@ const perchRods = section({
 /**
  * G, H. The watchtowers (10-7's own theme): the iron stair bolted up a tower face (w10b 'iron-stair', a run of hops up), the stone balconies
  * jutting from it (w10b 'balcony', jumps up), and the iron scaffold walkway along its top (w10b 'scaffold') where a guard walks. Every
- * floor under them is soft (a miss is a climb back: STAGE-RULES §6, falls in climbs).
+ * floor under them is soft (a miss is a climb back: STAGE-RULES §6, falls in climbs). Never mirrored: flipped, the climb runs down, and
+ * on Easy the soft pits' steps turn a descent into a quiet walk (pieceCheck, 2026-10-31).
  */
 const tread = (key: string, after: string, dy: number): SectionPiece => ({ key, shape: 'branch', style: 'w10_stair', w: [88, 100], place: { kind: 'jump', after, dy, share: [0.3, 0.4], soft: true } });
 const treads = (p: string, after: string, rise: number[]): { pieces: SectionPiece[]; last: string; total: number } => {
@@ -1118,7 +1122,7 @@ const ironStair = section({
   pieces: [bank('a', [300, 340]), ...st1.pieces, walkway('hi', st1.last, -36, [300, 340]), down('b', 'hi', st1.total + 36, [300, 340])],
   last: 'b',
   sockets: [flag('a', 0.5), petals('s2', 's2', 0.5, 1, 0), foe('g', 'hi', [0.55, 0.65], GUARDS, 3), petals('b', 'b', 0.5, 1), scenery('brazier', 'a', [0.2, 0.3], 0.6)],
-  mirrorable: true,
+  mirrorable: false,
 });
 /** balconies up the tower face, the top of the tower, and a drop to the wall past it */
 const balconyClimb = section({
@@ -1131,7 +1135,7 @@ const balconyClimb = section({
   pieces: [bank('a', [220, 260]), balcony('l1', 'a', -60), balcony('l2', 'l1', -54), balcony('l3', 'l2', -50), perchLand('hi', 'l3', -12, [180, 210]), tread('d1', 'hi', 56), tread('d2', 'd1', 56), bank('c', [220, 260], { kind: 'jump', after: 'd2', dy: 64, share: [0.3, 0.4], soft: true }, { landing: true })],
   last: 'c',
   sockets: [flag('hi', 0.5), petals('l1', 'l1', 0.5, 1, 0), petals('l3', 'l3', 0.5, 1, 0), petals('d1', 'd1', 0.5, 1, 0), foe('g', 'c', [0.6, 0.7], ['soldier', 'harpy'], 4, { phases: HOT, chance: 0.6 })],
-  mirrorable: true,
+  mirrorable: false,
 });
 const st2 = treads('s', 'k', [40, 42]);
 /** a guard's flat, the iron stair up to two walkways with a balcony between, and down */
@@ -1145,7 +1149,7 @@ const towerRun = section({
   pieces: [bank('a', [300, 340]), up('k', 'a', 30, [120, 140]), ...st2.pieces, walkway('w1', st2.last, -30, [200, 230]), balcony('l', 'w1', -40, [0.4, 0.5]), walkway('w2', 'l', 30, [250, 280]), down('b', 'w2', st2.total + 30 + 40 - 30 + 30, [200, 240])],
   last: 'b',
   sockets: [flag('b', 0.25), foe('g1', 'a', [0.45, 0.55], GUARDS, 3), petals('l', 'l', 0.5, 1, 0), foe('g2', 'w2', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 }), petals('b', 'b', 0.5, 1)],
-  mirrorable: true,
+  mirrorable: false,
 });
 
 /**
@@ -1176,9 +1180,9 @@ const bridgePair = section({
   difficulty: 7,
   maxPerStage: 2,
   uses: [W10_THEME.bridges],
-  pieces: [bank('a', [200, 240]), span('br1', 'a', [360, 400]), offSpan('t', 'br1', [150, 170]), up('k', 't', 32, [120, 140]), down('t2', 'k', 32, [140, 160]), span('br2', 't2', [380, 420]), offSpan('b', 'br2', [220, 250])],
+  pieces: [bank('a', [300, 340]), span('br1', 'a', [340, 380]), offSpan('t', 'br1', [200, 240]), span('br2', 't', [360, 400]), offSpan('b', 'br2', [200, 240])],
   last: 'b',
-  sockets: [flag('k', 0.5), foe('g1', 'br1', [0.5, 0.6], GUARDS, 3), foe('g2', 'br2', [0.45, 0.55], [...GUARDS, 'tayra'], 3, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.5, 1)],
+  sockets: [flag('a', 0.5), foe('g1', 'br1', [0.5, 0.6], GUARDS, 3), foe('g2', 'br2', [0.45, 0.55], [...GUARDS, 'tayra'], 3, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.5, 1)],
   mirrorable: true,
 });
 /** a bridge to a rod's wall: the bolt on the far bank is the beat, the guard on the span the fight */
@@ -1217,7 +1221,8 @@ const dropFirst = section({
   sockets: [flag('a', 0.6), tip(DROPGATE, 'a', 0.2), petals('k', 'k', 0.5, 1), petals('b', 'b', 0.85, 1)],
   mirrorable: false,
 });
-/** two gates on one long wall, out of step: through the first, wait in the pocket, through the second; a guard past them */
+/** two gates on one long wall, out of step: through the first, wait in the pocket, through the second; a guard past them (no animal
+ *  is topped up between the gates: `main: false`) */
 const dropRow = section({
   id: 'w10-drop-row',
   name: 'drop gates in a row',
@@ -1225,7 +1230,7 @@ const dropRow = section({
   phases: LIVE,
   difficulty: 6,
   uses: [W10_THEME.drops, DROPGATE],
-  pieces: [bank('a', [560, 600]), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [400, 440])],
+  pieces: [bank('a', [560, 600], { kind: 'start' }, { main: false }), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [400, 440])],
   zones: [dropGate('a', [0.24, 0.28]), dropGate('a', [0.72, 0.76])],
   last: 'b',
   sockets: [flag('k', 0.5), petals('a', 'a', 0.5, 1), foe('g', 'b', [0.55, 0.65], GUARDS, 3)],
@@ -1262,7 +1267,71 @@ const dropHigh = (() => {
     mirrorable: true,
   });
 })();
-const W10_BAG_SECTIONS: SectionTemplate[] = [perchRun, perchClimb, perchRods, ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh];
+/**
+ * F. Trapdoor grates (10-9's own theme): an iron grate laid flush over a chasm a double jump wide (w10_trap; trapdoor.ts): it shudders, swings
+ * open on its beat and clangs shut. Walk it while it's shut, or take the double jump: both ways over are fair. The pit under it is soft. The grate overlaps both lips by 10 px whatever the gap rolls (its near end at the near bank's end less 10 px, its width
+ * the widest double-jump gap, 230 px, plus 20), so there is never a crack to slip through.
+ */
+const TRAP_BANK = 320;
+const grate = (key: string, on: string): SectionPiece => ({ key, shape: 'branch', style: 'w10_trap', w: 250, h: 30, place: { kind: 'over', on, at: (TRAP_BANK - 10) / TRAP_BANK, dy: 0 }, main: true });
+// (the pit under a grate is soft on both settings: a grate that opens under him is a fall of one step and a climb back, never a life;
+// the first-timer bot, which does not read the shudder, lost lives over and over at void-floored grates on Normal, 2026-10-31)
+const trapGap = (key: string, after: string, w: W): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'double', share: [0.86, 0.9], soft: true }, { landing: true });
+const trapFirst = section({
+  id: 'w10-trap-first',
+  name: 'the first trapdoor grate',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: TRAP,
+  uses: [W10_THEME.trapdoors],
+  maxPerStage: 1,
+  pieces: [bank('a', TRAP_BANK), grate('g', 'a'), trapGap('b', 'a', [300, 340])],
+  last: 'b',
+  sockets: [flag('a', 0.4), tip(TRAP, 'a', 0.15), petals('b', 'b', 0.5, 2, 80)],
+  mirrorable: false,
+});
+/** two grates out of step with a stone pocket between: cross one, wait in the pocket, cross the next (no animal is topped up onto the
+ *  pocket: `main: false`, pipeline topUpFoes) */
+const trapRow = section({
+  id: 'w10-trap-row',
+  name: 'trapdoor grates in a row',
+  archetypes: ['gauntlet'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W10_THEME.trapdoors, TRAP],
+  pieces: [bank('a', TRAP_BANK), grate('g1', 'a'), { ...trapGap('p', 'a', TRAP_BANK), main: false }, grate('g2', 'p'), trapGap('b', 'p', [300, 340])],
+  last: 'b',
+  sockets: [flag('a', 0.4), petals('p', 'p', 0.5, 1), petals('b', 'b', 0.4, 1), foe('g', 'b', [0.65, 0.75], GUARDS, 3, { phases: HOT, chance: 0.6 })],
+  mirrorable: true,
+});
+/** a grate to a guard's wall: across, and the fight is on the far side */
+const trapGuard = section({
+  id: 'w10-trap-guard',
+  name: 'trapdoor grate to the guard arena',
+  archetypes: ['gauntlet'],
+  phases: MID,
+  difficulty: 5,
+  uses: [W10_THEME.trapdoors, TRAP],
+  pieces: [bank('a', TRAP_BANK), grate('g', 'a'), trapGap('b', 'a', [460, 500]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [220, 260])],
+  last: 'c',
+  sockets: [flag('a', 0.4), foe('g1', 'b', [0.55, 0.65], GUARDS, 3), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+/** a grate, then spikes: across on the beat, then jump the bed (Ten, Ketsu) */
+const trapSpikes = section({
+  id: 'w10-trap-spikes',
+  name: 'trapdoor grate then the spike bed',
+  archetypes: ['gauntlet'],
+  phases: HOT,
+  difficulty: 7,
+  uses: [W10_THEME.trapdoors, TRAP, SPIKES],
+  pieces: [bank('a', TRAP_BANK), grate('g', 'a'), trapGap('b', 'a', [300, 340]), spikes('c', 'b', [300, 340]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [220, 260])],
+  last: 'd',
+  sockets: [flag('a', 0.4), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1)],
+  mirrorable: true,
+});
+const W10_BAG_SECTIONS: SectionTemplate[] = [trapFirst, trapRow, trapGuard, trapSpikes, perchRun, perchClimb, perchRods, ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh];
 
 // ───────────────────────────── the list ─────────────────────────────
 
@@ -1342,6 +1411,7 @@ export const W10_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   ...Object.fromEntries([guardRods, guardGusts, guardRampart, portcullisYard, gatehouseRun, drawbridge, gateApproach].map((s) => [s.id, [9]] as const)),
   // (the purge opens rods or spikes; the gauntlet any of the four: each gate's theme has its own arenas there)
   ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-hunt-gate-') && !/rods|spikes|towers|bridges|drops/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
+  ...Object.fromEntries([trapFirst, trapRow, trapGuard, trapSpikes].map((s) => [s.id, [9]] as const)),
   // (the grab bag's themes: the perches are 10-1's, the towers and bridges 10-7's; no other stage opens them)
   ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-fight-gate-') && /perches|towers|bridges|drops/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
   ...Object.fromEntries([perchRun, perchClimb, perchRods].map((s) => [s.id, [1]] as const)),
