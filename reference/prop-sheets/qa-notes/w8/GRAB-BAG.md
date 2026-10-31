@@ -122,6 +122,12 @@ Budget: about $1-2 on rtx-pro-6000 at ~$2.75/h, well inside the reserve.
 stage, with as many new section types as the world can carry. The way to get there is the same each time: each stage carries three or
 more lit themes, at least one of them built on a beat no other theme of that stage has, so rolls fall into clearly different kinds.
 
+Status at 12:15 AM ET: A is built (gen2 'wind' zones, levelCheck's tailwind-glide rule, the gusts gate and five sections), but HELD
+from 8-1's and 8-6's theme lists. Curated, 8-6 with gusts shipped 16 at 0.294 once and only 11 of 16 on the next run: 250+ of its
+passing rolls share a 20 s stretch with 8-1's set (1-in-5 cap). Tonight's two-wave curation ran 8-1 and 8-6 side by side, so neither
+had been checked against the other; the overlap is old, not the gusts'. Next: find which 8-6 stretch reads as 8-1's (most likely the
+dark glide and the rests against 8-1's dark gaps), give it its own shape, then re-enable gusts and curate 8-1 and 8-6 one after the other.
+
 Built tonight (A): the night wind. 8-6 gets the 'gusts' theme (a tailwind carrying the glides); 8-1 gets its own (a headwind on plain
 gaps to wait out). Measured on 24 raw rolls each: 8-6 0.081 -> 0.395, 8-1 0.168 -> 0.467.
 

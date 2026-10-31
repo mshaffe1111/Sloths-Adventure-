@@ -59,9 +59,10 @@ export const W8_THEME = {
 /** the themes each lit stage's gate may open (the themed stages' gates are their own: blooms, roosts, hunts) */
 export const W8_LIT_THEMES: Readonly<Record<number, ReadonlyArray<keyof typeof W8_THEME>>> = {
   // (8-1's climbs are its dark trunks only: the lit trunks are 8-5's stretches, the look-alike measure)
-  1: ['leapers', 'night', 'gusts'],
+  // (gusts held back from 8-1 and 8-6, 2026-10-31: their rolls read alike each other on the look-alike measure; GRAB-BAG.md)
+  1: ['leapers', 'night'],
   // (8-6's trunks went to 8-5: a trunk, a glide and a trunk read as 8-5's climbing on the look-alike measure)
-  6: ['prowlers', 'leapers', 'gusts'],
+  6: ['prowlers', 'leapers'],
   // (the vine stages apart, STAGE-RULES §6 "Sameness": 8-3's lianas chain over the gaps, 8-5's lead to trunks to climb)
   3: ['prowlers', 'chains'],
   5: ['climbers'],
