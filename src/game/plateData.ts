@@ -73,7 +73,6 @@ export const WORLD_PLATES: Record<string, string> = {
   '6-dusk': 'w6-dusk',
   '7-day': 'w7-day',
   '2-day': 'w2-day',
-  '8-night': 'w8-night',
   '10-storm': 'w10-storm',
   '5-dusk': 'w5-dusk',
 };
