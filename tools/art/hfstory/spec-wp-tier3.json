@@ -6,7 +6,7 @@
    "slothadv_style_v1.safetensors"
   ]
  },
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/COMMIT/tools/art/hfstory/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dcb58b94db79d9dd03f76567be58c30b741ced0c/tools/art/hfstory/",
  "items": [
   {
    "name": "wp-raft-x50",
@@ -138,7 +138,7 @@
   }
  ],
  "q": 90,
- "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/COMMIT/tools/art/hfstory/",
+ "repo": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/dcb58b94db79d9dd03f76567be58c30b741ced0c/tools/art/hfstory/",
  "keep": [
   "wp-raft-x50",
   "wp-raft-x62",
