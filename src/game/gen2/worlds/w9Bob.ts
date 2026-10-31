@@ -430,7 +430,61 @@ const chainSink = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-1 and 9-6: the ash caps (World 9's bounce plant) ─────────────────────────────
+
+const CAP = W9_LESSON.cap;
+/** an ash cap (bounceArt.ts cap-w9) standing at a bank's end, its cap a little over it (World 8's moon flower, w8Branch.ts) */
+const cap = (key: string, on: string): SectionPiece => ({ key, shape: 'bouncy', w: [80, 90], place: { kind: 'over', on, at: [0.78, 0.84], dy: [-28, -22] }, main: true });
+/** the high rock past it, inside the bounce's reach (~181): World 8's 170 */
+const CAP_HI = 170;
+const high = (key: string, on: string, w: W): SectionPiece => bank(key, w, { kind: 'over', on, at: 1, dy: -CAP_HI }, { main: true });
+
+/** the first ash cap (every caps roll): up onto the high rock and down, Dot's line on the way in */
+const firstCap = section({
+  id: 'w9-first-cap',
+  name: 'the first ash cap',
+  archetypes: ['sprint', 'purge'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: CAP,
+  uses: [W9_THEME.caps],
+  maxPerStage: 1,
+  pieces: [bank('a', [320, 360]), cap('f', 'a'), high('hi', 'a', [260, 300]), down('b', 'hi', CAP_HI, [240, 280])],
+  last: 'b',
+  sockets: [tip(CAP, 'a', 0.2), petals('a', 'a', 0.35, 1), petals('hi', 'hi', 0.5, 2, 100), petals('b', 'b', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** two caps, each up onto its own high rock, a lava chasm between */
+const capPair = section({
+  id: 'w9-cap-pair',
+  name: 'two ash caps',
+  archetypes: ['sprint', 'purge'],
+  phases: LIVE,
+  difficulty: 5,
+  uses: [W9_THEME.caps, CAP],
+  pieces: [bank('a', [300, 340]), cap('f1', 'a'), high('h1', 'a', [220, 260]), down('m', 'h1', CAP_HI, [300, 340]), cap('f2', 'm'), high('h2', 'm', [220, 260]), down('b', 'h2', CAP_HI, [220, 260])],
+  last: 'b',
+  sockets: [petals('h1', 'h1', 0.5, 2, 90), petals('m', 'm', 0.4, 1), petals('h2', 'h2', 0.5, 2, 90)],
+  mirrorable: false,
+});
+
+/** a cap up to the high rock, a lava chasm off its far end, a hunter past it (9-6) */
+const capChasm = section({
+  id: 'w9-cap-chasm',
+  name: 'ash cap, then the chasm',
+  archetypes: ['sprint', 'purge'],
+  phases: MID,
+  difficulty: 6,
+  uses: [W9_THEME.caps, CAP],
+  pieces: [bank('a', [300, 340]), cap('f', 'a'), high('hi', 'a', [260, 300]), W9H.lava('c', 'hi', [320, 360], [0.55, 0.7]), down('d', 'c', 60, [200, 240]), down('e', 'd', 110, [240, 280])],
+  last: 'e',
+  sockets: [petals('hi', 'hi', 0.5, 2, 90), petals('c', 'c', 0.5, 1), foe('foe', 'e', [0.55, 0.65], SMALL, 2.5, { phases: LIVE, chance: 0.7 })],
+  mirrorable: false,
+});
+
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
+  W9_BOB_GATES.caps1, W9_BOB_GATES.caps6, firstCap, capPair, capChasm,
   ropeChain, chainRope, sinkChain, chainSink,
   ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
   sinkGate3, W9_BOB_GATES.sinkers9, W9_BOB_GATES.sinkers6, firstSink, sinkRun, sinkTwin, sinkHoard,
@@ -443,6 +497,7 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
   [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logBridge.id]: [5, 9], [logPair.id]: [5, 9],
+  [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1, 6], [capPair.id]: [1, 6], [capChasm.id]: [1, 6],
   [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
   [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3, 6, 9], [sinkRun.id]: [6, 9], [sinkTwin.id]: [6, 9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [6, 9],
   [W9_BOB_GATES.pistons.id]: [8], [firstPiston.id]: [8], [pistonPair.id]: [8], [pistonChasm.id]: [8],

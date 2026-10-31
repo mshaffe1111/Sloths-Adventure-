@@ -73,6 +73,8 @@ export const W9_THEME = {
   sinkers: 'w9:t-sinkers',
   /** 9-3 / 9-8: the shimmy ropes over the lava, the burnt bridges' ropes (N8: w9Bob.ts) */
   bridges: 'w9:t-bridges',
+  /** 9-1 / 9-6: the ash caps, bounce plants up to the high rock (N10: w9Bob.ts) */
+  caps: 'w9:t-caps',
 } as const;
 export type W9Theme = (typeof W9_THEME)[keyof typeof W9_THEME];
 
@@ -623,7 +625,7 @@ const hunterBrink = section({
 // ───────────────────────────── 9-1 Pepper Air's gates and themes ─────────────────────────────
 
 /** a sprint gate (9-1): a plain run, nothing that can hurt, and the roll's theme opens */
-const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts' | 'gusts' | 'flares', name: string, extra: Socket[] = []): SectionTemplate => {
+const sprintGate = (theme: 'vents' | 'chasms' | 'basalt' | 'rafts' | 'gusts' | 'flares' | 'caps', name: string, extra: Socket[] = []): SectionTemplate => {
   const k = knobs('', 'a', 2, [200, 240]);
   return section({
     id: `w9-pepper-gate-${theme}`,
@@ -960,7 +962,7 @@ const burstRow = section({
 // ───────────────────────────── 9-6 Ash Fields (purge), 9-9 The Drake's Hoard (gauntlet) ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
-const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls' | 'surges' | 'sinkers', line: 'hunt' | 'fight'): SectionTemplate => {
+const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls' | 'surges' | 'sinkers' | 'caps', line: 'hunt' | 'fight'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   // (the hoard's gate climbs a basalt stair to the Drake's door and down again, the ash fields' crosses two knobs: the two fight stages
   // never open alike)
@@ -1369,6 +1371,8 @@ export const W9_BOB_GATES = {
   sinkers9: huntGate('sinkers', 'fight'),
   bridges8: threadGate('bridges'),
   sinkers6: huntGate('sinkers', 'hunt'),
+  caps1: sprintGate('caps', 'the ash caps', [scenery('ohia', 'a', [0.5, 0.6], 0.9)]),
+  caps6: huntGate('caps', 'hunt'),
 } as const;
 
 /** the heat hazards' gates (w9Heat.ts): the flares on 9-5 and 9-8, the lavafalls on 9-6 and 9-9 */

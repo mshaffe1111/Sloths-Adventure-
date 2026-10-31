@@ -91,6 +91,8 @@ export const W9_LESSON = {
   gust: 'w9:gust',
   /** the sinking ember slabs (9-3 teaches them; 9-9 again) */
   sink: 'w9:sink',
+  /** the ash caps, World 9's bounce plant (bounceArt.ts cap-w9; 9-1 teaches them, 9-6 again) */
+  cap: 'w9:cap',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -160,9 +162,10 @@ export const W9_TIPS: Record<string, string> = {
   [W9_LESSON.surge]: 'Lava surges down the channel. Listen!', // (new, needs Matt's approval: GRAB-BAG.md N6)
   [W9_LESSON.gust]: "Hot wind! It'll push you back.", // (new, needs Matt's approval: GRAB-BAG.md N7)
   [W9_LESSON.sink]: 'Ember slabs sink when you stand on them.', // (new, needs Matt's approval: GRAB-BAG.md N4)
+  [W9_LESSON.cap]: 'Ash caps! Bounce up to the high rock.', // (new, needs Matt's approval: GRAB-BAG.md N10)
 };
 /** the lines that are new in World 9 (the report lists them for the lead) */
-export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston, W9_LESSON.flare, W9_LESSON.lavafall, W9_LESSON.surge, W9_LESSON.gust, W9_LESSON.sink].map((k) => W9_TIPS[k]);
+export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston, W9_LESSON.flare, W9_LESSON.lavafall, W9_LESSON.surge, W9_LESSON.gust, W9_LESSON.sink, W9_LESSON.cap].map((k) => W9_TIPS[k]);
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -187,7 +190,7 @@ export const W9_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['9-2', '9-7', '9-10'],
   // (the geysers are 9-1's, the warm air 9-5's, the doorstep's eye 9-4's; the shut shrine is said in each gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8', [W9_LESSON.flare]: '9-1', [W9_LESSON.lavafall]: '9-4', [W9_LESSON.surge]: '9-4', [W9_LESSON.gust]: '9-1', [W9_LESSON.sink]: '9-3' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8', [W9_LESSON.flare]: '9-1', [W9_LESSON.lavafall]: '9-4', [W9_LESSON.surge]: '9-4', [W9_LESSON.gust]: '9-1', [W9_LESSON.sink]: '9-3', [W9_LESSON.cap]: '9-1' },
   tips: W9_TIPS,
 };
 
