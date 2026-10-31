@@ -130,8 +130,8 @@ export const W8_PROPS: PropDef[] = [
 export const W8_DECOR: WorldManifest['decor'] = [
   // along the boughs (w8b, w8var, the kit; w8DecorArt.ts draws them): knot perches and forks, stumps, the kit's mossy post and the
   // trunk with its leafy branch; or fungus and night flowers
-  { id: 'w8-knots', job: 'bank', items: [{ n: 'knot-perch', w: [70, 100] }, { n: 'branch-fork', w: [120, 160] }, { n: 'stump-b', w: [80, 110] }, { n: 'mossy-post', w: [50, 70] }, { n: 'perch-b', w: [80, 110] }], every: [180, 300] },
-  { id: 'w8-fungus', job: 'bank', items: [{ n: 'shelf-fungus', w: [80, 120] }, { n: 'bark-fungus', w: [90, 130] }, { n: 'night-flowers', w: [60, 90] }], every: [170, 280] },
+  { id: 'w8-knots', job: 'bank', items: [{ n: 'knot-perch', w: [70, 100] }, { n: 'branch-fork', w: [120, 160] }, { n: 'stump-b', w: [80, 110] }, { n: 'mossy-post', w: [50, 70] }, { n: 'perch-b', w: [80, 110] }, { n: 'fill-b', w: [50, 70] }], every: [180, 300] },
+  { id: 'w8-fungus', job: 'bank', items: [{ n: 'shelf-fungus', w: [80, 120] }, { n: 'bark-fungus', w: [90, 130] }, { n: 'night-flowers', w: [60, 90] }, { n: 'bank-b', w: [180, 240] }], every: [170, 280] },
   // above them, hung in the canopy: the kit's twisted vine and w8var's high bough, or the rope bridge and leaf hammock (w8b)
   // (the buttress corners stand at the banks' ends over a gap instead: w8DecorArt.ts)
   { id: 'w8-vines', job: 'hanging', items: [{ n: 'twist-vine', w: [40, 60] }, { n: 'branch-b', w: [160, 220] }], every: [500, 800] },

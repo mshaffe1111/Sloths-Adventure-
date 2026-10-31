@@ -118,7 +118,11 @@ export function drawW8Decor(ctx: CanvasRenderingContext2D, set: W8DecorSet, plat
         ctx.globalAlpha = HANG_ALPHA;
         piece(ctx, img, fr.f, d.x, top + h, d.w, !!d.flip);
         ctx.globalAlpha = 1;
-      } else piece(ctx, img, fr.f, d.x, d.b + SINK + (d.n === 'shelf-fungus' ? 14 : 0), d.w, !!d.flip);
+      } else {
+        // (w8var's bank piece sunk behind the bough to its mossy top, a far ledge line: shown whole it read as a ledge to stand on)
+        const sink = d.n === 'shelf-fungus' ? 14 : d.n === 'bank-b' ? Math.round(((d.w * fr.f.h) / fr.f.w) * 0.72) : 0;
+        piece(ctx, img, fr.f, d.x, d.b + SINK + sink, d.w, !!d.flip);
+      }
     }
   }
   // the buttress corners: a bank (a tall piece) whose end has no ground on at its height, every other one, from the two paintings
