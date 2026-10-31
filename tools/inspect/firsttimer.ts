@@ -1139,7 +1139,7 @@ export class FirstTimerRun {
     // he waits short of one that is warning or firing, or due before he could be across, as a person does; only these looks, so the bands
     // measured on the other worlds' geysers and bolts stay as they were)
     if (p.grounded && dir !== 0) {
-      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => z.look && z.kind === 'geyser' && p.y > z.top - 160 && p.y <= z.bottom
+      const ahead = (e.currentStage.zones ?? []).find((z: Zone) => (z.look === 'flare' || z.look === 'lavafall' || z.look === 'surge') && z.kind === 'geyser' && p.y > z.top - 160 && p.y <= z.bottom
         && (dir > 0 ? z.x0 - p.x > 0 && z.x0 - p.x < 70 : p.x - z.x1 > 0 && p.x - z.x1 < 70));
       if (ahead) {
         const st = zoneState(ahead, e.gameTime ?? this.t);

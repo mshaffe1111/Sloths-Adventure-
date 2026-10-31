@@ -105,34 +105,8 @@ const raftGeyser = section({
 // ───────────────────────────── 9-5 and 9-9: the charred logs ─────────────────────────────
 
 /** one long log across a wide chasm: run it while it is up */
-const logBridge = section({
-  id: 'w9-log-bridge',
-  name: 'the log bridge',
-  archetypes: ['sprint', 'gauntlet'],
-  phases: ALL,
-  difficulty: 5,
-  uses: [W9_THEME.logs],
-  extraSeconds: BOB_WAIT * 1.5,
-  pieces: [bank('a', [280, 320]), bob('l', 'a', 'log', [260, 300], [0.5, 0.62]), off('b', 'l', [300, 340], [0.5, 0.62]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
-  last: 'c',
-  sockets: [petals('l', 'l', 0.5, 2, 120), petals('b', 'b', 0.5, 1), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
-  mirrorable: true,
-});
 
 /** two logs out of step, a knob between the banks */
-const logPair = section({
-  id: 'w9-log-pair',
-  name: 'two logs',
-  archetypes: ['sprint', 'gauntlet'],
-  phases: LIVE,
-  difficulty: 6,
-  uses: [W9_THEME.logs],
-  extraSeconds: BOB_WAIT * 3,
-  pieces: [bank('a', [260, 300]), bob('l1', 'a', 'log', [240, 270]), bob('l2', 'l1', 'log', [240, 270]), off('b', 'l2', [320, 360]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [180, 220])],
-  last: 'c',
-  sockets: [petals('l1', 'l1', 0.5, 1), petals('l2', 'l2', 0.5, 1), petals('b', 'b', 0.5, 1), thread('r', 'c', 0.5)],
-  mirrorable: true,
-});
 
 /** 9-5: ride the log up, then open the leaf over the vent's chasm (the glide's soft pit climbs back) */
 const logGlide = section({
@@ -549,7 +523,72 @@ const capCatsPair = section({
   mirrorable: false,
 });
 
+// ───────────────────────────── 9-5's own: the logs and the pistons always with the leaf (9-5's signature) ─────────────────────────────
+
+/** 9-5: the first piston (every pistons roll of 9-5, which teaches them): ride it up, then open the leaf off the high rock */
+const firstPiston5 = section({
+  id: 'w9-first-piston-glide',
+  name: 'the first piston, then the leaf',
+  archetypes: ['sprint'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: PISTON,
+  uses: [W9_THEME.pistons],
+  maxPerStage: 1,
+  extraSeconds: PISTON_RIDE,
+  pieces: [bank('a', [300, 340]), piston('p', 'a'), up('t', 'p', 0, [220, 260]), W9H.glide('g', 't', [300, 340], [0.55, 0.65]), down('c', 'g', 120, [220, 260])],
+  last: 'c',
+  sockets: [tip(PISTON, 'a', 0.2), petals('t', 't', 0.5, 1), petals('g', 'g', 0.5, 2, 80)],
+  mirrorable: false,
+});
+
+/** 9-5: two pistons, a glide off the second */
+const pistonGlide = section({
+  id: 'w9-piston-glide',
+  name: 'pistons, then the leaf',
+  archetypes: ['sprint'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.pistons, PISTON],
+  extraSeconds: PISTON_RIDE * 2,
+  pieces: [bank('a', [260, 300]), piston('p1', 'a'), up('t1', 'p1', 0, [200, 240]), piston('p2', 't1'), up('t2', 'p2', 0, [200, 240]), W9H.glide('g', 't2', [300, 340], [0.55, 0.65]), down('c', 'g', 120, [220, 260])],
+  last: 'c',
+  sockets: [petals('t1', 't1', 0.5, 1), petals('t2', 't2', 0.5, 1), petals('g', 'g', 0.5, 2, 80)],
+  mirrorable: false,
+});
+
+/** 9-5: a glide down onto a log's landing, the log, and on */
+const glideLog = section({
+  id: 'w9-glide-log',
+  name: 'the leaf, then a log',
+  archetypes: ['sprint'],
+  phases: W9H.ALL,
+  difficulty: 6,
+  uses: [W9_THEME.logs],
+  extraSeconds: BOB_WAIT * 1.5,
+  pieces: [bank('a', [280, 320]), W9H.glide('b', 'a', [260, 300], [0.55, 0.65]), bob('l', 'b', 'log', [240, 270]), off('c', 'l', [260, 300]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [200, 240])],
+  last: 'd',
+  sockets: [petals('b', 'b', 0.5, 1), petals('l', 'l', 0.5, 1), petals('c', 'c', 0.5, 1)],
+  mirrorable: false,
+});
+
+/** 9-5: a log, the leaf, a log */
+const logGlideLog = section({
+  id: 'w9-log-glide-log',
+  name: 'log, leaf, log',
+  archetypes: ['sprint'],
+  phases: LIVE,
+  difficulty: 7,
+  uses: [W9_THEME.logs],
+  extraSeconds: BOB_WAIT * 3,
+  pieces: [bank('a', [260, 300]), bob('l1', 'a', 'log', [240, 270]), off('b', 'l1', [260, 300]), W9H.glide('c', 'b', [260, 300], [0.55, 0.65]), bob('l2', 'c', 'log', [240, 270]), off('d', 'l2', [240, 280])],
+  last: 'd',
+  sockets: [petals('l1', 'l1', 0.5, 1), petals('c', 'c', 0.5, 1), petals('l2', 'l2', 0.5, 1)],
+  mirrorable: false,
+});
+
 export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
+  W9_BOB_GATES.pistons5, firstPiston5, pistonGlide, glideLog, logGlideLog,
   capCats, capCatsPair,
   logGuards, sinkGuards,
   W9_BOB_GATES.caps1, W9_BOB_GATES.caps6, firstCap, capPair, capChasm,
@@ -557,14 +596,14 @@ export const W9_BOB_SECTIONS: readonly SectionTemplate[] = [
   ropeGate3, W9_BOB_GATES.bridges8, ropeCross, ropeTwin, ropeChasm,
   sinkGate3, W9_BOB_GATES.sinkers9, W9_BOB_GATES.sinkers6, firstSink, sinkRun, sinkTwin, sinkHoard,
   W9_BOB_GATES.rafts, firstRaft, raftPair, raftRow, raftGeyser,
-  W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, logBridge, logPair, logGlide, logHoard,
+  W9_BOB_GATES.logs5, W9_BOB_GATES.logs9, logGlide, logHoard,
   W9_BOB_GATES.pistons, firstPiston, pistonPair, pistonChasm,
 ];
 
 /** which stages hold which (STAGE-RULES §2 "Sameness": neighbours in play share none; GRAB-BAG.md §4) */
 export const W9_BOB_STAGE: Readonly<Record<string, readonly number[]>> = {
   [W9_BOB_GATES.rafts.id]: [1], [firstRaft.id]: [1], [raftPair.id]: [1], [raftRow.id]: [1], [raftGeyser.id]: [1],
-  [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], [logBridge.id]: [5], [logPair.id]: [5],
+  [W9_BOB_GATES.logs5.id]: [5], [logGlide.id]: [5], [glideLog.id]: [5], [logGlideLog.id]: [5], [W9_BOB_GATES.pistons5.id]: [5], [firstPiston5.id]: [5], [pistonGlide.id]: [5], [W9_BOB_GATES.logs9.id]: [9], [logHoard.id]: [9], [logGuards.id]: [9], 
   [W9_BOB_GATES.caps1.id]: [1], [W9_BOB_GATES.caps6.id]: [6], [firstCap.id]: [1], [capPair.id]: [1], [capChasm.id]: [1], [capCats.id]: [6], [capCatsPair.id]: [6],
   [ropeGate3.id]: [3], [W9_BOB_GATES.bridges8.id]: [8], [ropeCross.id]: [8], [ropeTwin.id]: [8], [ropeChasm.id]: [8], [ropeChain.id]: [3], [chainRope.id]: [3],
   [sinkGate3.id]: [3], [W9_BOB_GATES.sinkers9.id]: [9], [W9_BOB_GATES.sinkers6.id]: [6], [firstSink.id]: [3], [sinkRun.id]: [6], [sinkTwin.id]: [6], [sinkGuards.id]: [9], [sinkChain.id]: [3], [chainSink.id]: [3], [sinkHoard.id]: [9],

@@ -1587,7 +1587,7 @@ export class GameEngine {
         const hk = z.look ?? z.kind;
         if (this.zoneHinted[hk] || p.x < z.x0 - 420 || p.x > z.x1) continue;
         this.zoneHinted[hk] = true;
-        if (z.look) continue;
+        if (z.look && z.look !== 'vent') continue;
         // (said in Dot's bubble, or Pokey's thought when she is away, once a stage: no words floating in the world, the Dot rework
         // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
         const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;

@@ -886,7 +886,7 @@ const fernLong = section({
 // ───────────────────────────── 9-5 Vent Riding (sprint) ─────────────────────────────
 
 /** a vent-riding gate (9-5): Dot's line about the warm air, a first glide over a vent (a soft chasm), and the roll's theme opens */
-const ventGate = (theme: 'glides' | 'bursts' | 'logs' | 'flares' | 'gusts', name: string): SectionTemplate =>
+const ventGate = (theme: 'glides' | 'bursts' | 'logs' | 'flares' | 'pistons', name: string): SectionTemplate =>
   section({
     id: `w9-vent-gate-${theme}`,
     name: `vent riding: ${name} (gate)`,
@@ -1369,6 +1369,7 @@ export const W9_BOB_GATES = {
   logs5: ventGate('logs', 'the logs'),
   logs9: huntGate('logs', 'fight'),
   pistons: threadGate('pistons'),
+  pistons5: ventGate('pistons', 'the piston columns'),
   sinkers9: huntGate('sinkers', 'fight'),
   bridges8: threadGate('bridges'),
   sinkers6: huntGate('sinkers', 'hunt'),
@@ -1384,7 +1385,6 @@ export const W9_HEAT_GATES = {
   lavafalls9: huntGate('lavafalls', 'fight'),
   surges6: huntGate('surges', 'hunt'),
   gusts1: sprintGate('gusts', 'the hot wind', [scenery('smoke', 'a', [0.5, 0.6], 0.9)]),
-  gusts5: ventGate('gusts', 'the hot wind'),
   lavafalls4: watchGate('lavafalls', 'the lavafalls', [scenery('smoke', 'a', [0.5, 0.6], 0.8)]),
   surges4: watchGate('surges', 'the surge channels', [scenery('log', 'a', [0.5, 0.6], 0.8)]),
 } as const;
