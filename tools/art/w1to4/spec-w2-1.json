@@ -1,0 +1,204 @@
+{
+ "note": "World 2 kit batch, round 1, 2026-10-31 (w1-4-sheets)",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w1-4-sheets/reference/prop-sheets/qa-notes/w1-4-art/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w2-props-s62-5",
+   "start": "w2-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a riverside fishing village: a wooden jetty and tall cattail reeds (top left), three flat wet river stones with moss on top, two muddy reed islands with cattails, a pale sandy sandbar with pebbles, a weathered wooden mooring post with a plank shelf and rope wraps, a lily pad cluster half sunk in teal water, the same pads almost under water, a floating wooden barrel upright and tilted, a wooden crate upright and tilted, a gate of lashed reeds in a wooden frame shut and the frame open, a round woven reed cage tied with rope. Weathered grey-brown wood, tan rope lashings, olive reeds. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-props-s62-17",
+   "start": "w2-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a riverside fishing village: a wooden jetty and tall cattail reeds (top left), three flat wet river stones with moss on top, two muddy reed islands with cattails, a pale sandy sandbar with pebbles, a weathered wooden mooring post with a plank shelf and rope wraps, a lily pad cluster half sunk in teal water, the same pads almost under water, a floating wooden barrel upright and tilted, a wooden crate upright and tilted, a gate of lashed reeds in a wooden frame shut and the frame open, a round woven reed cage tied with rope. Weathered grey-brown wood, tan rope lashings, olive reeds. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-props-s74-5",
+   "start": "w2-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a riverside fishing village: a wooden jetty and tall cattail reeds (top left), three flat wet river stones with moss on top, two muddy reed islands with cattails, a pale sandy sandbar with pebbles, a weathered wooden mooring post with a plank shelf and rope wraps, a lily pad cluster half sunk in teal water, the same pads almost under water, a floating wooden barrel upright and tilted, a wooden crate upright and tilted, a gate of lashed reeds in a wooden frame shut and the frame open, a round woven reed cage tied with rope. Weathered grey-brown wood, tan rope lashings, olive reeds. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-props-s74-17",
+   "start": "w2-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a riverside fishing village: a wooden jetty and tall cattail reeds (top left), three flat wet river stones with moss on top, two muddy reed islands with cattails, a pale sandy sandbar with pebbles, a weathered wooden mooring post with a plank shelf and rope wraps, a lily pad cluster half sunk in teal water, the same pads almost under water, a floating wooden barrel upright and tilted, a wooden crate upright and tilted, a gate of lashed reeds in a wooden frame shut and the frame open, a round woven reed cage tied with rope. Weathered grey-brown wood, tan rope lashings, olive reeds. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-net-s62-5",
+   "start": "w2-net.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a fishing net made of knotted tan and rose-pink cord hanging from a pole, empty, and the same net full of river stones and fish. Riverside fishing village. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure green #00FF00 background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-net-s62-17",
+   "start": "w2-net.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a fishing net made of knotted tan and rose-pink cord hanging from a pole, empty, and the same net full of river stones and fish. Riverside fishing village. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure green #00FF00 background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-net-s74-5",
+   "start": "w2-net.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a fishing net made of knotted tan and rose-pink cord hanging from a pole, empty, and the same net full of river stones and fish. Riverside fishing village. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure green #00FF00 background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-net-s74-17",
+   "start": "w2-net.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, a fishing net made of knotted tan and rose-pink cord hanging from a pole, empty, and the same net full of river stones and fish. Riverside fishing village. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure green #00FF00 background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w2-water-s55-5",
+   "start": "w2-water.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, four horizontal streaks of white river foam and spray on fast teal water currents, painted brushy foam. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w2-water-s55-17",
+   "start": "w2-water.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, four horizontal streaks of white river foam and spray on fast teal water currents, painted brushy foam. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w2-water-s70-5",
+   "start": "w2-water.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, four horizontal streaks of white river foam and spray on fast teal water currents, painted brushy foam. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w2-water-s70-17",
+   "start": "w2-water.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, four horizontal streaks of white river foam and spray on fast teal water currents, painted brushy foam. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  }
+ ]
+}

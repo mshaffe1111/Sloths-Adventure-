@@ -1,0 +1,204 @@
+{
+ "note": "World 3 kit batch, round 1, 2026-10-31 (w1-4-sheets)",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w1-4-sheets/reference/prop-sheets/qa-notes/w1-4-art/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors"
+  ]
+ },
+ "items": [
+  {
+   "name": "w3-props-s62-5",
+   "start": "w3-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, an underground glowworm grotto, evenly lit: a mossy cave mouth and a fern (top left), three cool grey-green stepping stones with damp rims lit by a thin cyan glow, two flat limestone shelves with ferns, a mossy stone ledge whole, the same ledge cracking, the same ledge broken to rubble, a hanging stalactite, the stalactite falling, stalactite shards, a basket woven from roots on a rope, and a round mossy counterweight boulder. Cool grey-green stone, deep moss greens, teal glow. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-props-s62-17",
+   "start": "w3-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, an underground glowworm grotto, evenly lit: a mossy cave mouth and a fern (top left), three cool grey-green stepping stones with damp rims lit by a thin cyan glow, two flat limestone shelves with ferns, a mossy stone ledge whole, the same ledge cracking, the same ledge broken to rubble, a hanging stalactite, the stalactite falling, stalactite shards, a basket woven from roots on a rope, and a round mossy counterweight boulder. Cool grey-green stone, deep moss greens, teal glow. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.62,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-props-s74-5",
+   "start": "w3-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, an underground glowworm grotto, evenly lit: a mossy cave mouth and a fern (top left), three cool grey-green stepping stones with damp rims lit by a thin cyan glow, two flat limestone shelves with ferns, a mossy stone ledge whole, the same ledge cracking, the same ledge broken to rubble, a hanging stalactite, the stalactite falling, stalactite shards, a basket woven from roots on a rope, and a round mossy counterweight boulder. Cool grey-green stone, deep moss greens, teal glow. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-props-s74-17",
+   "start": "w3-props.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, an underground glowworm grotto, evenly lit: a mossy cave mouth and a fern (top left), three cool grey-green stepping stones with damp rims lit by a thin cyan glow, two flat limestone shelves with ferns, a mossy stone ledge whole, the same ledge cracking, the same ledge broken to rubble, a hanging stalactite, the stalactite falling, stalactite shards, a basket woven from roots on a rope, and a round mossy counterweight boulder. Cool grey-green stone, deep moss greens, teal glow. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.74,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-bats-s80-5",
+   "start": "w3-bats.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, the same small cute cave bat drawn four times: hanging upside down asleep with wings wrapped, hanging and waking with open glowing eyes, flying with wings up, flying with wings down; grey-brown fur, big ears, leathery dark wings; a hollow mossy log and a stalactite also on the sheet. Underground, evenly lit. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.8,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-bats-s80-17",
+   "start": "w3-bats.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, the same small cute cave bat drawn four times: hanging upside down asleep with wings wrapped, hanging and waking with open glowing eyes, flying with wings up, flying with wings down; grey-brown fur, big ears, leathery dark wings; a hollow mossy log and a stalactite also on the sheet. Underground, evenly lit. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.8,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-bats-s88-5",
+   "start": "w3-bats.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, the same small cute cave bat drawn four times: hanging upside down asleep with wings wrapped, hanging and waking with open glowing eyes, flying with wings up, flying with wings down; grey-brown fur, big ears, leathery dark wings; a hollow mossy log and a stalactite also on the sheet. Underground, evenly lit. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.88,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-bats-s88-17",
+   "start": "w3-bats.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, the same small cute cave bat drawn four times: hanging upside down asleep with wings wrapped, hanging and waking with open glowing eyes, flying with wings up, flying with wings down; grey-brown fur, big ears, leathery dark wings; a hollow mossy log and a stalactite also on the sheet. Underground, evenly lit. Soft cel shading, thin dark ink outline, light from the upper left on every piece, each piece seen exactly from the side for a side-scrolling platform game, every piece separate with space round it, on one flat plain pure magenta #FF00FF background, no cast shadow, no ground line, no text.",
+   "strength": 0.88,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery"
+  },
+  {
+   "name": "w3-fx-s55-5",
+   "start": "w3-fx.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three soft lavender spore clouds: a small swelling puff, a big bursting puff, a thin fading puff, glowing purple spores. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w3-fx-s55-17",
+   "start": "w3-fx.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three soft lavender spore clouds: a small swelling puff, a big bursting puff, a thin fading puff, glowing purple spores. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w3-fx-s70-5",
+   "start": "w3-fx.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three soft lavender spore clouds: a small swelling puff, a big bursting puff, a thin fading puff, glowing purple spores. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  },
+  {
+   "name": "w3-fx-s70-17",
+   "start": "w3-fx.png",
+   "prompt": "slothadv style, a sheet of separate game props painted in one consistent storybook style, three soft lavender spore clouds: a small swelling puff, a big bursting puff, a thin fading puff, glowing purple spores. Painted soft glowing translucent effects only, each separate, on a pure black background, no outlines, no scenery, no text.",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024,
+   "loras": [
+    [
+     "style",
+     0.8
+    ]
+   ],
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, perspective, three-quarter view, seen from above, merged pieces, scenery, outline, magenta, solid shapes"
+  }
+ ]
+}
