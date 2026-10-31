@@ -10,9 +10,12 @@
 .mp-choice:focus-visible { outline: 4px solid rgba(253, 230, 138, .9); outline-offset: 2px; }
 .mp-pose { display: flex; align-items: flex-end; justify-content: center; height: 116px; width: 100%; border-radius: 50% 50% 14px 14px / 40% 40% 14px 14px;
   background: radial-gradient(ellipse at 50% 70%, rgba(255, 238, 190, .55), rgba(255, 238, 190, 0) 70%); filter: drop-shadow(0 3px 3px rgba(40, 20, 5, .45)); }
-.mp-who { font-size: 21px; line-height: 1.1; text-align: center; }
+.mp-who { display: flex; align-items: center; justify-content: center; min-height: 2.2em; font-size: 21px; line-height: 1.1; text-align: center; }
+/* (both names get the same two-line room, so the two plaques' pills line up when one name wraps on a narrow phone) */
 .mp-name { margin-top: 2px; padding: 1px 12px; border-radius: 999px; font-size: 16px; background: rgba(40, 20, 5, .35); }
+/* (each its own colour, neither one lit: there is no default) */
 .mp-easy .mp-name { background: linear-gradient(180deg, #6cc04f, #3a8a2e); text-shadow: 0 1px 0 #1d4a1b; }
+.mp-normal .mp-name { background: linear-gradient(180deg, #e59a3c, #b05f1c); text-shadow: 0 1px 0 #5a2c0a; }
 .mp-line { font: 700 14px var(--font-ui); color: #ffe9bf; text-shadow: 0 1px 0 #3a200c; }
 .mp-note { margin: 2px 0 0; font: 600 14px var(--font-ui); color: var(--gx-ink-soft); text-align: center; }
 /* a phone on its side: the card keeps to the height; Pokey a little smaller */
@@ -21,5 +24,5 @@
   .mp-choice { min-height: 0; padding: 6px 6px 8px; }
   .mp-pose { height: 96px; }
   .mp-pose > span { transform: scale(.84); transform-origin: 50% 100%; }
-  .mp-who { font-size: 19px; }
+  .mp-who { font-size: 19px; min-height: 0; }
 }
