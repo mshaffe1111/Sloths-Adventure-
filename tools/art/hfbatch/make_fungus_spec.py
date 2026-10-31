@@ -20,6 +20,13 @@ items = []
 if rnd == '1':
     items += [{'name': f'{k}-s{round(s * 100)}-{sd}', 'start': f'{k}.png', 'prompt': BRACKET if k == 'bracket' else MOSS, 'strength': s,
                'seed': sd, 'w': 512, 'h': 512} for k in ('bracket', 'bracket-moss') for s in (0.62, 0.76) for sd in (5, 17)]
+if rnd == 'g1':
+    # the glow-mushroom cluster (the 'glow-mushrooms' look of World 8's fungus scenery had no frame, 2026-10-31)
+    GLOW = (STYLE + 'a small cluster of three glowing blue mushrooms of different heights on a little mossy clump of root, seen exactly '
+            'from the side for a side-scrolling platform game, pale stems, round caps softly glowing pale blue with tiny bright spots, a '
+            'twilight forest at night. ' + TAIL)
+    items += [{'name': f'glowcaps-s{round(s * 100)}-{sd}', 'start': 'glowcaps.png', 'prompt': GLOW, 'strength': s, 'seed': sd, 'w': 512,
+               'h': 512} for s in (0.6, 0.72) for sd in (5, 17)]
 spec = {'note': f'World 8 fungus steps, round {rnd}, 2026-10-31',
         'loras': {'style': ['mshaffe111/slothadv-style-lora', 'slothadv_style_v1.safetensors', 0.8]},
         'base': 'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w8-merge/tools/art/hfbatch/starts/w8fungus/',

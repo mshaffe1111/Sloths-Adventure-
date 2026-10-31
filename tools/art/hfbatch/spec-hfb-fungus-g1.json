@@ -1,0 +1,50 @@
+{
+ "note": "World 8 fungus steps, round g1, 2026-10-31",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w8-merge/tools/art/hfbatch/starts/w8fungus/",
+ "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, tree trunk, wall, perspective, seen from above, top-down, several fungi, stack",
+ "items": [
+  {
+   "name": "glowcaps-s60-5",
+   "start": "glowcaps.png",
+   "prompt": "slothadv style, painted storybook illustration, a small cluster of three glowing blue mushrooms of different heights on a little mossy clump of root, seen exactly from the side for a side-scrolling platform game, pale stems, round caps softly glowing pale blue with tiny bright spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "glowcaps-s60-17",
+   "start": "glowcaps.png",
+   "prompt": "slothadv style, painted storybook illustration, a small cluster of three glowing blue mushrooms of different heights on a little mossy clump of root, seen exactly from the side for a side-scrolling platform game, pale stems, round caps softly glowing pale blue with tiny bright spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "glowcaps-s72-5",
+   "start": "glowcaps.png",
+   "prompt": "slothadv style, painted storybook illustration, a small cluster of three glowing blue mushrooms of different heights on a little mossy clump of root, seen exactly from the side for a side-scrolling platform game, pale stems, round caps softly glowing pale blue with tiny bright spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.72,
+   "seed": 5,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "name": "glowcaps-s72-17",
+   "start": "glowcaps.png",
+   "prompt": "slothadv style, painted storybook illustration, a small cluster of three glowing blue mushrooms of different heights on a little mossy clump of root, seen exactly from the side for a side-scrolling platform game, pale stems, round caps softly glowing pale blue with tiny bright spots, a twilight forest at night. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.72,
+   "seed": 17,
+   "w": 512,
+   "h": 512
+  }
+ ]
+}
