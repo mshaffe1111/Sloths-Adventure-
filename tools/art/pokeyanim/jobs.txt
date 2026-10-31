@@ -20,3 +20,7 @@ pokey-anim2   6ae55070c78863f9c62eea58  launched 10:20 PM ET  spec-anim2.json @ 
               mid-cycle, ends facing the camera). With no rope in the picture Wan does not know what his paws hold. The rope keeps Matt's
               7 cells; next try: Wan with the game's painted rope drawn into the start (and cut back out, as tools/art/rope/cutclip.py
               does), or Qwen-Edit in-betweens of the cells.
+pokey-anim3   6ae5583dc78863f9c62eee59  launched 10:53 PM ET  spec-anim3.json @ bbb01c0: the punch re-rolled (seeds 5, 7): pa-punch-s3 striped his wraps red (off model), pa-punch-s11 turned his back
+              THROWN pa-punch-s5 (his head turns away, no face through the punch) and pa-punch-s7: s7 is clean (plain wraps, profile
+              face) but turns his back to the camera through the reach, belly hidden, while the cross and hook face us: a combo would flip
+              him back and front every punch. The punches keep their sheets.
