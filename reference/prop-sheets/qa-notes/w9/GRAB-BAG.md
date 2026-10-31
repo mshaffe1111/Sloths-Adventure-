@@ -1,26 +1,27 @@
 # World 9 grab bag: every piece, built before curation (2026-10-31, ~2:00 PM ET, branch w9-pieces)
 
-## Status (updated 2026-10-31 ~3:15 PM ET)
+## Status (updated 2026-10-31 ~3:35 PM ET)
 
 | Piece | Built | Where | Art | Bots on raw rolls |
 |---|---|---|---|---|
 | N1 rafts | yes (w9Bob.ts) | 9-1 | painted (w9b pumice raft) | kid 0 lives; adult 1-5 lives near rafts on ~26 rafts a roll |
 | N2 logs | yes | 9-5, 9-9 | painted (bridges charred log) | kid 0 |
 | N3 pistons | yes (flush, soft well) | 9-8 | painted (w9b hex column) | both reach the shrine, 0 lives near pistons |
-| N4 sinking slabs | yes (engine `sink`) | 9-3, 9-9 | painted (bridges ember slab) | kid 0, adult 2 (none at the slabs) |
-| N5 flare slabs | yes (geyser zone, look) | 9-5, 9-8 | painted + HF cool frame | kid 0; adult hits 2-9 |
-| N6 lava surges | yes (SectionZone 'surge') | **9-4**, 9-6 | HF surge front + lava strip | adult lives ~ the 9-6 baseline; hits above it (being watched) |
+| N4 sinking slabs | yes (engine `sink`, shallow, knobs under) | 9-3 (between chains), 6, 9 | painted (bridges ember slab) | kid 0, adult 2 (none at the slabs) |
+| N5 flare slabs | yes (geyser zone, look) | 9-1 (taught), 9-5, 9-8 | painted + HF cool frame | kid 0; adult hits 2-9 |
+| N6 lava surges | yes (SectionZone 'surge') | 9-4 (taught), 9-6 | HF surge front + lava strip | adult lives ~ the 9-6 baseline; hits above it (watched) |
 | N7 hot ash gusts | yes (wind zone, look 'ash') | 9-1 headwind, 9-5 tailwind | HF ash streaks | (not run yet) |
-| N8 ropes over the lava | yes (gen2 place 'rope') | 9-3, 9-8 | the game's painted rope (the scorched bridge sheet is not used: a rope reads as what he does) | both 0 lives |
-| N9 lavafalls | yes (geyser zone, look) | **9-4**, 9-6, 9-9 | HF pour loop | kid 0-1 |
-| N10 steam vents | **waiting** on the w8-merge question (needs gen2 'bouncy') | 9-1, 9-6 planned | HF steam frames cut, ready | |
+| N8 ropes over the lava | yes (gen2 place 'rope') | 9-3 (between chains), 9-8 | the game's painted rope | both 0 lives |
+| N9 lavafalls | yes (geyser zone, look) | 9-4 (taught), 9-6, 9-9 | HF pour loop | kid 0-1 |
+| N10 ash caps | yes (gen2 'bouncy', World 8's pattern; the steam-vent idea became World 9's own painted ash cap) | 9-1 (taught), 9-6 | painted (bounceArt cap-w9) | kid 0, adult 0-1 |
 | N11 smoke cover | **deferred**: a timed hide reads as the same watcher beat as the spires (no variety), so 9-4 took N6 and N9 instead | | | |
-| N12 raft lock room | next | 9-5 (alternate) | HF obsidian chunk cut, ready | |
+| N12 raft lock room | **waiting** on the lead (alternate vs 4th room; as built from the kit it plays close to 9-5's plates room) | | HF obsidian chunk cut, ready | |
 
-Themes now: 9-1 4 (vents, chasms, rafts, gusts; +steam), 9-3 5 (chains, climbs, crust, sinkers, ropes), 9-4 5 (spires, ferns, coils,
-lavafalls, surges), 9-5 5 (glides, bursts, logs, flares, gusts), 9-6 4 (cats, prowl, lavafalls, surges; +steam), 9-8 5 (ledges, channels,
-pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls, sinkers). Neighbour pairs share no new theme. Lessons moved: lavafalls and
-surges are taught on 9-4 (it comes before 9-6). HF spent: ~$0.30 (job 6ae633040e0338d1bb7d39e3).
+Themes now: 9-1 6 (vents, chasms, rafts, gusts, flares, caps), 9-3 5 (chains, climbs, crust, sinkers, ropes), 9-4 5 (spires, ferns, coils,
+lavafalls, surges), 9-5 5 (glides, bursts, logs, flares, gusts), 9-6 6 (cats, prowl, lavafalls, surges, sinkers, caps), 9-8 5 (ledges,
+channels, pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls, sinkers). Neighbour pairs share no new theme. Lessons: flares and
+caps on 9-1, lavafalls and surges on 9-4, slabs on 9-3, pistons on 9-8. Variety on 60 raw rolls (before the latest themes): 9-4 0.49, 9-5 0.60,
+9-6 0.50, 9-8 0.53; 9-1 0.38 and 9-3 0.28 being re-measured with their new themes. HF spent: ~$0.30 (job 6ae633040e0338d1bb7d39e3).
 
 
 Matt, 1:20 PM ET Oct 31: "Lets make the pieces ahead of time. Be prepared since more is better anyways. Lets not go into this bare
