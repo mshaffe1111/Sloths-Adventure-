@@ -196,7 +196,7 @@ def prompt(world):
 
 
 if __name__ == '__main__':
-    worlds = [int(a) for a in sys.argv[1:]] or list(W)
+    worlds = [int(a) for a in sys.argv[1:] if a.isdigit()] or list(W)
     p = OUT / 'cells.json'
     allc = json.loads(p.read_text()) if p.exists() else {}
     for w in worlds:
@@ -204,3 +204,19 @@ if __name__ == '__main__':
         allc[f'w{w}']['prompt'] = prompt(w)
         print('w', w)
     p.write_text(json.dumps(allc, indent=1))
+
+
+def anchor_canvas(world):
+    """1536 x 1024: the world's first approved piece on the left third (the style anchor, painted with the new piece in one pass and
+    thrown away), flat key on the right two thirds where the new piece is painted"""
+    spec = W[world]
+    can = Image.new('RGBA', (1536, 1024), spec['key'] + (255,))
+    im = fit(spec['anchors'][0](), 420, 700)
+    can.alpha_composite(im, ((512 - im.width) // 2, 900 - im.height))
+    OUT.mkdir(parents=True, exist_ok=True)
+    can.convert('RGB').save(OUT / f'anchor-w{world}.png')
+
+
+if __name__ == '__main__' and '--anchors' in sys.argv:
+    for w in W:
+        anchor_canvas(w)

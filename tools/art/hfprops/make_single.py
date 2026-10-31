@@ -14,15 +14,27 @@ from starts import W, GRN  # noqa: E402
 RAW = 'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/'
 NEG = ('text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, floor, ground, '
        'grass ground strip, landscape, scenery, background, perspective, three-quarter view, seen from above, two objects, cropped, '
-       'cut off, vignette')
+       'cut off, vignette, pedestal, plinth, base slab, stone base, platform under it, display stand')
+
+
+ANCHOR = '--anchor' in sys.argv
+STRENGTH = next((float(a[11:]) for a in sys.argv if a.startswith('--strength=')), 1.0)
+sys.argv = [a for a in sys.argv if not a.startswith('--')]
 
 
 def prompt(world, desc, hang):
     spec = W[world]
     key = 'green #00FF00' if spec['key'] == GRN else 'magenta #FF00FF'
-    where = 'hanging down from the top edge of the picture' if hang else 'standing on its own, its base flat at the bottom'
-    return (f"slothadv style, one single game prop for a side-scrolling platform game: {desc}, {where}, for {spec['look']}. Painted "
-            f"storybook game art, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the "
+    where = ('hanging straight down from a short broken-off stub at its top' if hang else
+             'standing on its own, nothing under it: no base, no pedestal, no ground slab')
+    if ANCHOR:
+        return (f"slothadv style, two separate game props side by side for a side-scrolling platform game, for {spec['look']}. On the "
+                f"left, the existing prop, kept as it is. On the right, a new prop painted in exactly the same hand-painted storybook "
+                f"style, same ink line, same painted texture, same light from the upper left: {desc}, {where}. Seen exactly from the "
+                f"side, each prop whole with space all round, on one flat plain pure {key} background, nothing else, no cast shadow, "
+                f"no ground, no text, no {key.split()[0]} on the props.")
+    return (f"slothadv style, one single game prop for a side-scrolling platform game: {desc}, {where}, for {spec['look']}. Hand-painted "
+            f"storybook game art with painted texture, soft cel shading, thin dark ink outline, light from the upper left, seen exactly from the side, the "
             f"whole object fully in the picture with space all round, on one flat plain pure {key} background, nothing else, no cast "
             f"shadow, no ground, no text.")
 
@@ -36,8 +48,10 @@ for w in worlds:
         if only and n not in only:
             continue
         for sd in seeds:
-            items.append({'name': f'w{w}-{n}-{sd}', 'start': 'plain-grn.png' if W[w]['key'] == GRN else 'plain-mag.png',
-                          'prompt': prompt(w, desc, shape == 'hang'), 'strength': 1.0, 'seed': sd, 'w': 1024, 'h': 1024, 'steps': 26,
+            start = f'anchor-w{w}.png' if ANCHOR else 'plain-grn.png' if W[w]['key'] == GRN else 'plain-mag.png'
+            items.append({'name': f'w{w}-{n}-{sd}' + ('a' if ANCHOR else ''), 'start': start,
+                          'prompt': prompt(w, desc, shape == 'hang'), 'strength': STRENGTH, 'seed': sd,
+                          'w': 1536 if ANCHOR else 1024, 'h': 1024, 'steps': 26,
                           'loras': [['style', 0.8]], 'neg': NEG})
 spec = {'note': f'hf-props single-piece batch {tag}, 2026-10-31', 'q': 92,
         'base': f'{RAW}{sha}/reference/prop-sheets/qa-notes/hf-props/starts/',
