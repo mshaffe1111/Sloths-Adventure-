@@ -180,3 +180,26 @@ Build order (each checked alone, §1c step 3, before the next):
 Honest expectation: the engine pieces (riser, drop gate, trapdoor, spout push, barrels, sweeping lantern) are most of the work. Tonight
 (to 10 PM ET) I expect A, B, D, F and the on-hand pieces built and checked; C, E, K, L and the Winch House may run into the next session,
 and curation will not start tonight. I'll say so in NEXT.md rather than start curating early.
+
+## 8. Status (updated as pieces are built; branch w10-pieces)
+
+| Piece | Sections (stage) | Status | Checked alone (pieceCheck, 8 rolls) |
+|---|---|---|---|
+| A chain lifts | - | waits on World 9's riser (the lead, 2:20 PM) | - |
+| B counterweights | - | waits on the riser | - |
+| C gear lifts | - | waits on the riser | - |
+| D drop gates | w10-drop-first, -row, -yard, -high (10-7) | BUILT | pass; kid 0.97+ |
+| E gutter spouts | w10-spout-first, -gap, -pair (10-6, 10-9), -guard (10-9) | BUILT | pass 8/8; kid 0.97+ |
+| F trapdoor grates | w10-trap-first, -row, -guard, -spikes (10-9) | BUILT (soft pit under every grate) | pass 8/8; kid 0.96+ |
+| G/H towers | w10-iron-stair, -balcony-climb, -tower-run (10-7) | BUILT (never mirrored) | pass; kid 0.85+ |
+| I perch posts | w10-perch-run, -climb, -rods (10-1) | BUILT | pass; kid 0.90+ |
+| J chain bridges | w10-bridge-fight, -pair, -rods (10-7) | BUILT | pass 8/8; kid 0.97+ |
+| K rolling barrels | w10-barrel-first, -run, -steps, -yard (10-7) | BUILT | pass where laid; kid 0.96+ |
+| L lantern sweeps | w10-lantern-wall, -steps, -guard (10-3) | BUILT | wall 8/8, guard 6/8, steps 4/8 (Normal dead time over a fifth: stealth's waiting; weight 1) |
+| Winch House | - | NOT BUILT: the room set is one required room per stage (W10_ROOM_REQUIRED); a second room needs "one of" in `required` or a seed switch. NEXT.md | - |
+| 10-6 themes | w10-net-gate-chains, -spouts | BUILT (10-6 had no themes) | - |
+
+Themes per stage now: 10-1 5 (rods, spikes, ramparts, gusts, perches) + lifts when A lands; 10-3 5 (rods, spikes, ramparts, gusts, lanterns)
++ counterweights when B lands; 10-6 2 (chains, spouts) + lifts, counterweights, gear lifts when A/B/C land; 10-7 6 (rods, spikes,
+towers, bridges, drops, barrels); 10-9 6 (rods, spikes, ramparts, gusts, trapdoors, spouts). 10-6 is the one stage still short of 5 until
+the riser.

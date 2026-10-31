@@ -297,7 +297,7 @@ export type SectionZone =
   | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
   | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number }
   /** World 10: a lightning rod standing on `on`, `at` along it; its bolt strikes the column on a beat (BOLT) */
-  | { kind: 'bolt'; on: string; at: Range; period?: Range; look?: 'portcullis'; gentle?: boolean }
+  | { kind: 'bolt'; on: string; at: Range; period?: Range; look?: 'portcullis' | 'gush' | 'barrel'; gentle?: boolean; dir?: 1 | -1 }
   /** World 10: a gust lane over the gap between `from` and `to`, blowing `dir` (+1 right) on a beat (WIND); mirrored with the section */
   | { kind: 'gust'; from: string; to: string; dir: 1 | -1 };
 
@@ -306,6 +306,12 @@ export const BOLT = { w: 56, height: 560, warn: 1.4, warnEasy: 1.9, active: 0.9,
 /** a drop gate's column (World 10, GRAB-BAG D): the portcullis in its gatehouse; it rattles for `warn` s, stays down `active` s, and is up
  *  the rest (levelCheck's bolt rules: >= 1.1 s warning, <= 1.2 s down, >= 2 s up, 110 px to the next column) */
 export const DROP = { w: 116, height: 240, warn: 1.2, warnEasy: 1.6, active: 1.1, period: [4.6, 5.4], easySlower: 1.0 } as const;
+/** a gutter spout's gush (World 10, GRAB-BAG E): storm water pouring from a spout high on a pillar; it gurgles and drips for `warn` s,
+ *  pours `active` s (levelCheck's bolt rules hold) */
+export const GUSH = { w: 60, height: 210, warn: 1.2, warnEasy: 1.5, active: 1.2, period: [4.6, 5.4], easySlower: 1.0 } as const;
+/** a barrel lane (World 10, GRAB-BAG K): the length of the piece `on` (less `pad` at each end); a barrel rumbles in the stack for `warn` s,
+ *  then rolls the lane in `active` s (fast: levelCheck holds a damaging zone to 1.2 s), then the lane is clear */
+export const BARREL_LANE = { pad: 30, height: 120, warn: 1.3, warnEasy: 1.7, active: 1.2, period: [4.4, 5.2], easySlower: 1.2 } as const;
 /** a gust lane (World 10's storm): under levelCheck's 160 px/s, long quiet spells to jump in */
 export const WIND = { pad: 170, warn: 1.4, active: 2.4, period: [6.2, 7.4], force: 130, forceEasy: 90 } as const;
 

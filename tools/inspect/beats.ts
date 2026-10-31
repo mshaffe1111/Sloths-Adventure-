@@ -300,8 +300,8 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
       const every = Math.max(2, z.period);
       const wait = Math.min(TIME.zoneExtra[z.kind] ?? 0.7, idleTime(z));
       // (World 10's drop gate is a bolt column felt and drawn as a portcullis: its own beat for the look-alike measure)
-      const what = z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : z.look === 'portcullis' ? 'drop gate' : `${z.kind} zone`;
-      span(b, every, 'Z', what, wait, z.look === 'portcullis' ? 'drop gates' : `${z.kind} zones`);
+      const what = z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : z.look === 'portcullis' ? 'drop gate' : z.look === 'gush' ? 'gutter gush' : z.look === 'barrel' ? 'rolling barrel' : `${z.kind} zone`;
+      span(b, every, 'Z', what, wait, z.look ? `${what}s` : `${z.kind} zones`);
     }
   }
   // (World 10's trapdoor grates, trapdoor.ts: crossing one is timed, a beat on each)
@@ -311,7 +311,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   }
   for (const w of stage.proto?.watch ?? []) {
     const cycle = (w.calm[0] + w.calm[1]) / 2 + WATCH.warn + WATCH.pass;
-    span({ x0: w.x0, x1: w.x1, y0: -1e9, y1: 1e9 }, cycle, 'Z', w.setback !== undefined ? 'sleeping bats: time the run' : 'eagle sweep: duck into a bush', 1.5, 'watched stretches');
+    span({ x0: w.x0, x1: w.x1, y0: -1e9, y1: 1e9 }, cycle, 'Z', w.setback !== undefined ? 'sleeping bats: time the run' : w.look === 'lantern' ? 'lantern sweep: hide behind the crates' : 'eagle sweep: duck into a bush', 1.5, 'watched stretches');
   }
   for (const r of stage.rivers ?? []) {
     span({ x0: r.x0, x1: r.x1, y0: -1e9, y1: 1e9 }, 1e9, 'Z', 'river crossing: read the logs', 1.0, 'rivers');

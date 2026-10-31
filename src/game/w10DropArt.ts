@@ -5,7 +5,7 @@
  * it warns and slam down while it is down. Both return false until their sheet has loaded.
  */
 import { trackAtlas } from './atlasLoader.ts';
-import { drawW10Bag, W10_BAG_FRAMES } from './w10BagArt.ts';
+import { drawW10Bag, drawW10BagPart, W10_BAG_FRAMES } from './w10BagArt.ts';
 import type { Zone, ZoneState } from './zones.ts';
 
 const BARS_URL = new URL('../assets/w10/dropgate.webp', import.meta.url).href;
@@ -27,7 +27,7 @@ function barsImg(): HTMLImageElement | null {
   }
   return barsReady ? bars : null;
 }
-export const w10DropReady = (): boolean => !!barsImg();
+export const w10DropReady = (): boolean => !!barsImg() && !!spoutImg();
 
 /** how far down the gate is, 0 (up in the wall) .. 1 (on the walk), and its shudder (px) */
 function dropOf(st: ZoneState, t: number): { down: number; shake: number } {
@@ -62,4 +62,150 @@ export function drawW10DropBars(ctx: CanvasRenderingContext2D, z: Zone, st: Zone
   ctx.drawImage(img, left, y, w, h);
   ctx.restore();
   return true;
+}
+
+// ───────────────────────────── the gutter spout (GRAB-BAG E: a 'bolt' zone with look 'gush') ─────────────────────────────
+
+const SPOUT_URL = new URL('../assets/w6to10/props-made/w10alt.webp', import.meta.url).href;
+/** the spout block (w10alt 'spout-b'): a stone block with an iron gutter pipe pointing left, its mouth at (22, 150) of 398 x 416 */
+const SPOUT = { x: 0, y: 433, w: 398, h: 416, ax: 278, ay: 416, mouthX: 22, mouthY: 150 };
+/** the block's drawn height (world px): the mouth stands 192 px over the walk, higher than a single jump clears */
+export const SPOUT_H = 300;
+/** each gush frame's water: its mouth's and its foot's x in the frame (bagcut's frames, measured), the water from row 84 to the foot */
+const GUSH_X: Record<string, [number, number]> = { 'gush-1': [111, 161], 'gush-2': [152, 196], 'gush-3': [107, 161] };
+const GUSH_TOP = 84;
+let spout: HTMLImageElement | null = null;
+let spoutReady = false;
+function spoutImg(): HTMLImageElement | null {
+  if (typeof Image === 'undefined') return null;
+  if (!spout) {
+    const im = new Image();
+    spout = im;
+    trackAtlas(im, SPOUT_URL, () => (spoutReady = true), () => (spout = null), () => ((spout = null), (spoutReady = false)));
+  }
+  return spoutReady ? spout : null;
+}
+const sb = SPOUT_H / SPOUT.h;
+/** where the gush's mouth is for a column whose water lands at cx */
+function mouthOf(z: Zone): { x: number; y: number; blockX: number } {
+  const cx = (z.x0 + z.x1) / 2;
+  const mouthH = (SPOUT.h - SPOUT.mouthY) * sb;
+  // (the water drifts ~50 frame px off the mouth as it falls, flipped: the foot lands that much left of the mouth, scaled)
+  const k = mouthH / (494 - GUSH_TOP);
+  const mx = cx + 50 * k;
+  return { x: mx, y: z.baseY - mouthH, blockX: mx + (SPOUT.ax - SPOUT.mouthX) * sb };
+}
+
+/** the spout block standing on the walk behind him, its pipe over the column */
+export function drawW10Spout(ctx: CanvasRenderingContext2D, z: Zone): boolean {
+  const im = spoutImg();
+  if (!im) return false;
+  const m = mouthOf(z);
+  ctx.drawImage(im, SPOUT.x, SPOUT.y, SPOUT.w, SPOUT.h, m.blockX - SPOUT.ax * sb, z.baseY + 4 - SPOUT.h * sb, SPOUT.w * sb, SPOUT.h * sb);
+  return true;
+}
+
+/** the water: a trickle at rest, a gurgling stream growing as it warns, the full gush (3 painted frames, 10 fps) while it pours */
+export function drawW10Gush(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number): boolean {
+  const m = mouthOf(z);
+  const len = z.baseY + 6 - m.y;
+  const reach = st.phase === 'active' ? 1 : st.phase === 'warn' ? 0.25 + 0.5 * st.u : 0.12;
+  const alpha = st.phase === 'active' ? Math.max(0.55, st.strength) : st.phase === 'warn' ? 0.45 + 0.3 * st.u : 0.35;
+  const n = (['gush-1', 'gush-2', 'gush-3'] as const)[Math.floor(t * 10 + z.x0 * 0.01) % 3];
+  const f = W10_BAG_FRAMES[n];
+  const [mx0] = GUSH_X[n];
+  const k = len / (f.h - GUSH_TOP);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  ctx.rect(m.x - 200, m.y - 4, 400, len * reach + 4);
+  ctx.clip();
+  // (flipped: the pipe points left, so the water bends away to the left as it falls)
+  ctx.translate(m.x, m.y);
+  ctx.scale(-1, 1);
+  const ok = drawW10BagPart(ctx, n, 0, GUSH_TOP, f.w, f.h - GUSH_TOP, -mx0 * k, 0, f.w * k, len);
+  ctx.restore();
+  return ok;
+}
+
+// ───────────────────────────── the lantern sweep (GRAB-BAG L: a watch zone with look 'lantern') ─────────────────────────────
+
+/** the watchtower's drawn height (the grab bag's gatehouse, stood up as a tower at the watched stretch's middle) and its lantern */
+const TOWER_H = 270;
+/** the beam's painting: its point (the lantern) at (50, 18) of the frame, the middle of its foot at (110, 404) */
+const BEAM = { px: 50, py: 18, fx: 110, fy: 404 };
+
+/**
+ * The tower behind the watched wall, its lantern glowing on the battlement; the beam from it to `at` (world x on the wall) while it warns
+ * (dim, at the stretch's edge) and sweeps (bright), drawn additively; nothing but the tower and a dim lantern while calm (`at` null).
+ */
+export function drawW10LanternSweep(ctx: CanvasRenderingContext2D, z: { x0: number; x1: number }, at: number | null, u: number, wallY: number, t: number): boolean {
+  const cx = (z.x0 + z.x1) / 2;
+  const base = wallY + 6;
+  if (!drawW10Bag(ctx, 'gatehouse', cx, base, TOWER_H)) return false;
+  const lx = cx;
+  const ly = base - TOWER_H + 22;
+  // (the lantern itself: a warm glow on the battlement, a light source; flickering)
+  const flick = 0.85 + 0.15 * Math.sin(t * 17) * Math.sin(t * 5.3);
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(lx, ly, 2, lx, ly, 46);
+  g.addColorStop(0, `rgba(255, 214, 140, ${0.8 * flick})`);
+  g.addColorStop(1, 'rgba(255, 180, 90, 0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(lx - 46, ly - 46, 92, 92);
+  if (at !== null) {
+    // (the beam's painting turned about its point so its foot lands on the wall at `at`)
+    const f = W10_BAG_FRAMES['beam-1'];
+    const len = Math.hypot(at - lx, base - ly);
+    const k = len / (BEAM.fy - BEAM.py);
+    const own = Math.atan2(BEAM.fx - BEAM.px, BEAM.fy - BEAM.py);
+    const want = Math.atan2(at - lx, base - ly);
+    // (the light stops on the wall's top: nothing lit inside the stone under it)
+    ctx.beginPath();
+    ctx.rect(Math.min(lx, at) - 400, ly - 40, Math.abs(at - lx) + 800, base - 2 - (ly - 40));
+    ctx.clip();
+    ctx.translate(lx, ly);
+    ctx.rotate(own - want);
+    ctx.globalAlpha = Math.min(1, 0.25 + 0.75 * u) * flick;
+    drawW10BagPart(ctx, 'beam-1', 0, 0, f.w, f.h, -BEAM.px * k, -BEAM.py * k, f.w * k, f.h * k);
+  }
+  ctx.restore();
+  return true;
+}
+
+// ───────────────────────────── the rolling barrels (GRAB-BAG K: a 'bolt' zone with look 'barrel') ─────────────────────────────
+
+/** a barrel's drawn width (its painting on its side, w10BagArt 'barrel', 198 x 145) */
+const BARREL_W = 58;
+/** the stack at the lane's start the barrels roll out of: two barrels on their sides and one stood on end over them; the top one rocks
+ *  as a barrel is about to go */
+export function drawW10BarrelStack(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number): boolean {
+  const f = W10_BAG_FRAMES.barrel;
+  const h = (BARREL_W * f.h) / f.w;
+  const sx = z.dir === 1 ? z.x0 - 34 : z.x1 + 34;
+  if (!drawW10Bag(ctx, 'barrel', sx - BARREL_W * 0.52, z.baseY + 3, h)) return false;
+  drawW10Bag(ctx, 'barrel', sx + BARREL_W * 0.52, z.baseY + 3, h);
+  const rock = st.phase === 'warn' ? Math.sin(t * 30) * 0.12 * st.u : 0;
+  ctx.save();
+  ctx.translate(sx, z.baseY + 3 - h * 0.95);
+  ctx.rotate(rock);
+  drawW10Bag(ctx, 'barrel', 0, 0, h);
+  ctx.restore();
+  return true;
+}
+
+/** the barrel rolling down its lane: it bobs on the stones and wobbles as it rolls (it is drawn on its side, as it rolls) */
+export function drawW10Barrel(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState): boolean {
+  if (st.phase !== 'active') return true;
+  const bx = z.dir === 1 ? z.x0 + st.u * (z.x1 - z.x0) : z.x1 - st.u * (z.x1 - z.x0);
+  const f = W10_BAG_FRAMES.barrel;
+  const h = (BARREL_W * f.h) / f.w;
+  const d = st.u * (z.x1 - z.x0);
+  ctx.save();
+  ctx.translate(bx, z.baseY + 2 - Math.abs(Math.sin(d * 0.06)) * 3);
+  ctx.rotate(Math.sin(d * 0.045) * 0.09 * z.dir);
+  const ok = drawW10Bag(ctx, 'barrel', 0, 0, h);
+  ctx.restore();
+  return ok;
 }

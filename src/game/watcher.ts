@@ -40,6 +40,10 @@ export interface WatchZone {
    * back to this x (the bough's start), no heart lost. Time the run for the doze
    */
   setback?: number;
+  /** World 10's lantern sweep (GRAB-BAG L): the same sweep, seen as a soldier's lantern beam from a watchtower instead of the storm's flash */
+  look?: 'lantern';
+  /** the wall's top under it (world y; the lantern's tower stands on it) */
+  y?: number;
 }
 
 export const WATCH = {

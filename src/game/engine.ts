@@ -173,6 +173,8 @@ import { drawSoldierSprite } from './soldierSprite.ts';
 import { trapState } from './trapdoor.ts';
 import { drawW10Dressing, drawW10Hide, type W10Dressing } from './w10Art.ts';
 import { drawW10SkyBolt, setW10Stage } from './w10HazardArt.ts';
+import { drawW10LanternSweep } from './w10DropArt.ts';
+import { W10_TIPS } from './gen2/worlds/w10.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
@@ -1569,15 +1571,23 @@ export class GameEngine {
       }
       // lava geysers and lightning (Worlds 9 and 10): a firing column burns whoever stands in it
       const hot = columnHit(zones, p.x - 14, p.y - 64, 28, 64, this.gameTime);
-      if (hot?.look === 'portcullis') {
-        // (World 10's drop gate, GRAB-BAG D: caught under it, he is shoved back out the side he came in; a heart on Normal only, and
-        // never where it is taught)
-        const back = p.x < (hot.x0 + hot.x1) / 2 ? -1 : 1;
-        p.x = back < 0 ? hot.x0 - 20 : hot.x1 + 20;
-        p.vx = back * 140;
+      if (hot?.look === 'barrel') {
+        // (World 10's rolling barrel, GRAB-BAG K: it bowls him over the way it rolls; a heart on Normal, a push on Easy)
+        p.vx = hot.dir * 260;
+        p.vy = Math.min(p.vy, -260);
         this.camera.trauma = Math.min(1, this.camera.trauma + 0.25);
         this.input.triggerHaptic(80);
         if (!hot.gentle && !isEasy() && p.invincibleTimer <= 0) this.damagePlayer(1);
+      } else if (hot?.look === 'portcullis' || hot?.look === 'gush') {
+        // (World 10's drop gate, GRAB-BAG D: caught under it, he is shoved back out the side he came in; a heart on Normal only, and
+        // never where it is taught. Its gutter spout's gush, E: the same shove, never a heart, and in the air it knocks him down)
+        const back = p.x < (hot.x0 + hot.x1) / 2 ? -1 : 1;
+        p.x = back < 0 ? hot.x0 - 20 : hot.x1 + 20;
+        p.vx = back * 140;
+        if (hot.look === 'gush' && !p.grounded) p.vy = Math.max(p.vy, 320);
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.25);
+        this.input.triggerHaptic(80);
+        if (hot.look === 'portcullis' && !hot.gentle && !isEasy() && p.invincibleTimer <= 0) this.damagePlayer(1);
       } else if (hot && p.invincibleTimer <= 0) {
         this.damagePlayer(1);
         this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
@@ -7226,6 +7236,8 @@ export class GameEngine {
     const water = !!this.w4?.behindFall(p.x, p.y);
     // World 10's watcher is the storm (10-3 Thunder): no cry, the strike's crack when it finds him; crate stacks to hide behind
     const storm = this.currentStage.config.worldIndex === 10;
+    // (and its lantern sweeps, GRAB-BAG L: a soldier's beam from a watchtower; the same sweep, its own first line)
+    const lantern = storm && zone?.look === 'lantern';
     const cry = (phase: 0 | 2) => (storm ? phase === 2 && sound.playHitImpact(true, 'armor') : grotto ? sound.playPredator('jaguar', phase) : sound.playEagleScreech());
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
@@ -7240,7 +7252,10 @@ export class GameEngine {
           markTipHeard(id, 'watch:batrun');
           this.guide('They\'re stirring! Wait till they doze off again', 3);
         }
-      } else if (!tipHeard(id, 'watch:hide')) {
+      } else if (lantern && !tipHeard(id, 'watch:lantern')) {
+        markTipHeard(id, 'watch:lantern');
+        this.guide(W10_TIPS.lantern, 3);
+      } else if (!lantern && !tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
         const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
         // (Pokey's own line in the storm: the danger, not the move; the move only once it has caught him, below)
@@ -7331,6 +7346,18 @@ export class GameEngine {
       // then the flash sweeps across the wall, a bolt over it (pass): anyone out in the open where it lights is seen, and the next bolt
       // finds him (the dive). Painted bolts (w10HazardArt.ts); the light on the wall is a code glow (a light source)
       const cam = this.camera;
+      // (every lantern tower in view stands there whatever he does: only the one over him sweeps)
+      for (const lz of this.proto?.watch ?? []) {
+        if (lz.look !== 'lantern' || lz === zone || lz.y === undefined || !this.onScreen((lz.x0 + lz.x1) / 2, lz.y - 200, 400)) continue;
+        drawW10LanternSweep(ctx, lz, null, 1, lz.y, this.gameTime);
+      }
+      if (zone?.look === 'lantern') {
+        // (the lantern sweep, GRAB-BAG L: the beam swings along the wall from its tower; on him, it holds there while the crossbow comes)
+        const sx = this.shadowX(w, cam.x, cam.viewportWidth);
+        const at = w.phase === 'pass' ? (w.seen ? this.player.x + (harmlessPass(w) ? 90 * w.dir : 0) : sx) : w.phase === 'warn' ? (w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30) : null;
+        drawW10LanternSweep(ctx, zone, at, w.phase === 'warn' ? w.t / WATCH.warn : 1, zone.y ?? this.player.y, this.gameTime);
+        return;
+      }
       if (w.phase === 'calm') return;
       if (w.phase === 'warn') {
         const u = w.t / WATCH.warn;

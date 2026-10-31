@@ -57,8 +57,10 @@ export interface Zone {
   bridge?: boolean;
   /** a 'bolt' column drawn and felt as World 10's drop gate (a portcullis over the wall-walk, w10DropArt.ts): caught under it, he is
    *  shoved back out the side he came in, and it costs a heart on Normal only */
-  look?: 'portcullis';
-  /** a drop gate where it is taught: it shoves him out and never hurts, on either setting */
+  look?: 'portcullis' | 'gush' | 'barrel';
+  /** ('barrel': World 10's rolling barrel, GRAB-BAG K: the zone is the barrel's lane along a wall; while it is active one barrel rolls the
+   *  lane's length, `dir` the way, and only the barrel itself hurts: barrelX) ('gush': World 10's gutter spout, GRAB-BAG E: a column of storm water that knocks him back out and down while it pours, never a
+   *  heart) a drop gate where it is taught: it shoves him out and never hurts, on either setting */
   gentle?: boolean;
 }
 
@@ -132,11 +134,26 @@ export const isDamaging = (z: Pick<Zone, 'kind'>) => z.kind === 'geyser' || z.ki
 /** a column is dangerous once it is at least this far into its burst (so the first instant of the ramp is a grace) */
 export const COLUMN_HOT = 0.5;
 
+/** a rolling barrel's size (World 10, GRAB-BAG K): its half width and its height over the lane */
+export const BARREL = { half: 22, h: 40 } as const;
+/** where a barrel lane's barrel is at time t (world x of its middle), or null while none is rolling */
+export function barrelX(z: Zone, t: number): number | null {
+  const st = zoneState(z, t);
+  if (st.phase !== 'active') return null;
+  return z.dir === 1 ? z.x0 + st.u * (z.x1 - z.x0) : z.x1 - st.u * (z.x1 - z.x0);
+}
+
 /** the firing damaging zone that overlaps the box, if any */
 export function columnHit(zones: readonly Zone[] | undefined, x: number, y: number, w: number, h: number, t: number): Zone | null {
   if (!zones) return null;
   for (const z of zones) {
     if (!isDamaging(z) || x + w < z.x0 || x > z.x1 || y + h < z.top || y > z.bottom) continue;
+    if (z.look === 'barrel') {
+      // (only the barrel hurts: over it, or beside it, he is fine)
+      const bx = barrelX(z, t);
+      if (bx === null || x + w < bx - BARREL.half || x > bx + BARREL.half || y + h < z.baseY - BARREL.h) continue;
+      return z;
+    }
     if (zoneState(z, t).strength >= COLUMN_HOT) return z;
   }
   return null;

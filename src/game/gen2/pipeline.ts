@@ -35,6 +35,8 @@ import {
   TIDE,
   BOLT,
   DROP,
+  GUSH,
+  BARREL_LANE,
   WIND,
   versionKey,
   WATER_LINE,
@@ -980,10 +982,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           const cx = p.x + (mirrored ? 1 - t0 : t0) * p.width;
           const easy = budget.difficulty === 'easy';
           // (a drop gate, GRAB-BAG D: the same beat, the portcullis's own numbers and look)
-          const K = z.look === 'portcullis' ? DROP : BOLT;
+          const K = z.look === 'portcullis' ? DROP : z.look === 'gush' ? GUSH : z.look === 'barrel' ? { ...BARREL_LANE, w: p.width - 2 * BARREL_LANE.pad } : BOLT;
           const warn = easy ? K.warnEasy : K.warn;
           const period = roll(srng, z.period ?? K.period) + (easy ? K.easySlower : 0);
-          zones.push({ kind: 'bolt', x0: R(cx - K.w / 2), x1: R(cx + K.w / 2), top: p.y - K.height, bottom: p.y + 14, baseY: p.y, dir: 1, period, warn, active: K.active, offset: R(srng() * period * 10) / 10, force: 0, ...(z.look ? { look: z.look } : {}), ...(z.gentle ? { gentle: true } : {}) });
+          // (a barrel lane runs the piece's length, rolling `dir` the way the section reads: flipped with it)
+          const [bx0, bx1] = z.look === 'barrel' ? [p.x + BARREL_LANE.pad, p.x + p.width - BARREL_LANE.pad] : [cx - K.w / 2, cx + K.w / 2];
+          const bdir = (z.look === 'barrel' ? (mirrored ? -(z.dir ?? -1) : z.dir ?? -1) : 1) as 1 | -1;
+          zones.push({ kind: 'bolt', x0: R(bx0), x1: R(bx1), top: p.y - K.height, bottom: p.y + 14, baseY: p.y, dir: bdir, period, warn, active: K.active, offset: R(srng() * period * 10) / 10, force: 0, ...(z.look ? { look: z.look } : {}), ...(z.gentle ? { gentle: true } : {}) });
           placed.beats.push({ x: R(cx), letter: 'S' });
         } else if (z.kind === 'gust') {
           // a gust lane over the gap from `from` to `to` (World 10's storm, World 4's gusts): it blows on a beat, helping or hindering the jump

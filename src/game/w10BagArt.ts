@@ -40,3 +40,12 @@ export function drawW10Bag(ctx: CanvasRenderingContext2D, n: W10BagName, x: numb
   ctx.drawImage(im, f.x, f.y, f.w, f.h, x - f.ax * s, y - f.ay * s, f.w * s, f.h * s);
   return true;
 }
+
+/** part of a frame (sx, sy, sw, sh in the frame's own px) into a box; false until the sheet has loaded */
+export function drawW10BagPart(ctx: CanvasRenderingContext2D, n: W10BagName, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): boolean {
+  const im = sheet();
+  if (!im) return false;
+  const f: W10BagFrame = W10_BAG_FRAMES[n];
+  ctx.drawImage(im, f.x + sx, f.y + sy, sw, sh, dx, dy, dw, dh);
+  return true;
+}

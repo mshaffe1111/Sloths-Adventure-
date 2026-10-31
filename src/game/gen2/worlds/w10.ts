@@ -50,6 +50,8 @@ export const W10_PROP = {
   barrels: 'barrels',
   /** the storm watching a stretch of wall: the lightning finds anyone out in the open (watcher.ts WatchZone over the piece) */
   storm: 'storm',
+  /** a soldier's lantern on a watchtower sweeping a stretch of wall (GRAB-BAG L: the storm's watch, its own look) */
+  lantern: 'lantern',
   /** scenery along the wall walks */
   banner: 'banner',
   brazier: 'brazier',
@@ -95,6 +97,12 @@ export const W10_LESSON = {
   dropgate: 'dropgate',
   /** the trapdoor grates (GRAB-BAG F: 10-9, its first over a soft pit) */
   trap: 'trap',
+  /** the gutter spouts (GRAB-BAG E: 10-6) */
+  gush: 'gush',
+  /** the lantern sweeps (GRAB-BAG L: 10-3) */
+  lantern: 'lantern',
+  /** the rolling barrels (GRAB-BAG K: 10-7, the first gentle) */
+  barrel: 'barrel',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -121,6 +129,7 @@ export const W10_PROPS: PropDef[] = [
   { id: W10_PROP.barrels, tags: [W10_TAG.hide, W10_TAG.cover], w: W10_HIDE_W.barrels, minApart: 260, looks: ['crates'] },
   // (the storm is the beat: its passes are what he waits out, behind the crates)
   { id: W10_PROP.storm, tags: [W10_TAG.storm], w: 120, minApart: 500, hazard: true, beat: true },
+  { id: W10_PROP.lantern, tags: ['lantern'], w: 120, minApart: 500, hazard: true, beat: true },
   { id: W10_PROP.banner, tags: [W10_TAG.scenery], w: 60, minApart: 400, looks: ['banner'] },
   { id: W10_PROP.brazier, tags: [W10_TAG.scenery], w: 70, minApart: 450, looks: ['brazier'] },
   { id: W10_PROP.rack, tags: [W10_TAG.scenery], w: 120, minApart: 500, looks: ['rack'] },
@@ -132,10 +141,10 @@ export const W10_PROPS: PropDef[] = [
 /** Matt's World 10 set dressing (w10alt, w10c), rotated by the roll (artRoll.ts rollLook): all of it stands on the walls (nothing
  *  hangs in the air: STAGE-RULES §6, nothing floats) */
 export const W10_DECOR: WorldManifest['decor'] = [
-  { id: 'w10-banners', job: 'bank', items: [{ n: 'banner', w: [50, 66] }, { n: 'brazier', w: [56, 70] }, { n: 'crates', w: [110, 140] }], every: [280, 420] },
-  { id: 'w10-armoury', job: 'bank', items: [{ n: 'rack', w: [96, 120] }, { n: 'crates', w: [110, 140] }, { n: 'banner', w: [50, 66] }], every: [300, 440] },
-  { id: 'w10-cages', job: 'bank', items: [{ n: 'cage', w: [76, 92] }, { n: 'brazier', w: [56, 70] }, { n: 'rack', w: [96, 120] }], every: [320, 460] },
-  { id: 'w10-braziers', job: 'bank', items: [{ n: 'brazier', w: [56, 70] }, { n: 'banner', w: [50, 66] }, { n: 'cage', w: [76, 92] }], every: [300, 440] },
+  { id: 'w10-banners', job: 'bank', items: [{ n: 'banner', w: [50, 66] }, { n: 'brazier', w: [56, 70] }, { n: 'crates', w: [110, 140] }], every: [260, 400] },
+  { id: 'w10-armoury', job: 'bank', items: [{ n: 'rack', w: [96, 120] }, { n: 'crates', w: [110, 140] }, { n: 'banner', w: [50, 66] }], every: [280, 420] },
+  { id: 'w10-cages', job: 'bank', items: [{ n: 'cage', w: [76, 92] }, { n: 'brazier', w: [56, 70] }, { n: 'rack', w: [96, 120] }], every: [300, 440] },
+  { id: 'w10-braziers', job: 'bank', items: [{ n: 'brazier', w: [56, 70] }, { n: 'banner', w: [50, 66] }, { n: 'cage', w: [76, 92] }], every: [280, 420] },
 ];
 
 // ───────────────────────────── Pokey's lines ─────────────────────────────
@@ -157,6 +166,9 @@ export const W10_TIPS: Record<string, string> = {
   // (GRAB-BAG lines: new, need Matt's approval; said in Dot's bubble where she is back, 10-6 to 10-9: wayside.ts dotPresent)
   [W10_LESSON.dropgate]: "It drops on a count. Run when it's up!",
   [W10_LESSON.trap]: "Those grates open. Cross when they're shut.",
+  [W10_LESSON.gush]: 'The gutters overflow. Wait for the gush to stop.',
+  [W10_LESSON.lantern]: 'A lantern sweep. Stay behind something.',
+  [W10_LESSON.barrel]: 'Barrels! Jump them, or wait up on the step.',
   water: 'No ledge under that one.',
 };
 export const W10_NEW_LINES: readonly string[] = [...new Set(Object.values(W10_TIPS))];
@@ -184,7 +196,7 @@ export const W10_MANIFEST: WorldManifest = {
   handBuilt: ['10-2', '10-4', '10-5', '10-8', '10-10'],
   // (the cats were met in World 3, the tayra and the harpy in World 6, the gusts in World 4 and the crumbling floors in World 7; the
   // rods, the spikes, the ramparts and the gusts are 10-1's (his line there on first meeting), the storm's watch 10-3's)
-  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3', [W10_LESSON.dropgate]: '10-7', [W10_LESSON.trap]: '10-9' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3', [W10_LESSON.dropgate]: '10-7', [W10_LESSON.trap]: '10-9', [W10_LESSON.gush]: '10-6', [W10_LESSON.barrel]: '10-7' },
   tips: W10_TIPS,
 };
 
@@ -266,6 +278,14 @@ export function w10Emitters(stage: number): Record<W10PropId, PropEmitter> {
       const zones = (out.proto.watch ??= []);
       if (!zones.some((q) => q.x0 < z.x1 && z.x0 < q.x1)) zones.push(z);
     },
+    // (the lantern sweep: the storm's watch with its own look; its first pass over each stretch only warns)
+    lantern: (f, _p, out) => {
+      const own = pieceAt(out, f.x, f.y);
+      const run = own ? [own.x, own.x + own.width] : [f.x - 300, f.x + 300];
+      const z: WatchZone = { x0: R(run[0] + 40), x1: R(run[1] - 40), calm: stormCalm(stage, false), freeFirst: true, look: 'lantern', y: f.y };
+      const zones = (out.proto.watch ??= []);
+      if (!zones.some((q) => q.x0 < z.x1 && z.x0 < q.x1)) zones.push(z);
+    },
     banner: scen(3, 50, 20),
     brazier: scen(5, 60, 20),
     rack: scen(7, 110, 30),
@@ -319,7 +339,7 @@ export function w10Kit(stage = 1): WorldKit {
 
 /** Pokey's lesson lines, by the thing each teaches (said once per save where the guide supports it) */
 export const W10_FIRST_OF: Readonly<Record<string, string>> = Object.fromEntries(
-  ([W10_LESSON.bolt, W10_LESSON.spikes, W10_LESSON.rampart, W10_LESSON.wind, W10_LESSON.storm, W10_LESSON.soldier, W10_LESSON.dropgate, W10_LESSON.trap] as string[]).map((k) => [W10_TIPS[k], `w10.${k}`]),
+  ([W10_LESSON.bolt, W10_LESSON.spikes, W10_LESSON.rampart, W10_LESSON.wind, W10_LESSON.storm, W10_LESSON.soldier, W10_LESSON.dropgate, W10_LESSON.trap, W10_LESSON.gush, W10_LESSON.barrel] as string[]).map((k) => [W10_TIPS[k], `w10.${k}`]),
 );
 
 /**

@@ -53,6 +53,14 @@ export const W10_THEME = {
   drops: 'w10:drops',
   /** trapdoor grates over the chasms, open on a beat (GRAB-BAG F: 10-9) */
   trapdoors: 'w10:trapdoors',
+  /** gutter spouts gushing storm water across the walk and the gaps on a beat (GRAB-BAG E: 10-6 taught, 10-9) */
+  spouts: 'w10:spouts',
+  /** 10-6's plain theme: the iron netting's chains alone (the swing builder's sections, no grab-bag piece) */
+  chains: 'w10:chains',
+  /** soldiers' lanterns sweeping the watched walls from their towers (GRAB-BAG L: 10-3) */
+  lanterns: 'w10:lanterns',
+  /** barrels rolled down the wall-walks from the towers (GRAB-BAG K: 10-7) */
+  barrels: 'w10:barrels',
 } as const;
 export type W10Theme = keyof typeof W10_THEME;
 const THEMES = Object.keys(W10_THEME) as W10Theme[];
@@ -65,6 +73,8 @@ const WIND = 'wind';
 const STORM = 'storm';
 const DROPGATE = 'dropgate';
 const TRAP = 'trap';
+const GUSH = 'gush';
+const BARREL = 'barrel';
 
 /** the weight of a section every roll may hold (the theme's weigh 1) */
 const SHARED = 0.3;
@@ -665,6 +675,7 @@ const stormGates: SectionTemplate[] = [
   stormGate('spikes'),
   stormGate('ramparts', [scenery('brazier', 'a', [0.5, 0.6], 0.8)]),
   stormGate('gusts', [scenery('rack', 'a', [0.5, 0.6], 0.8)]),
+  stormGate('lanterns', [scenery('cage', 'a', [0.5, 0.6], 0.8)]),
 ];
 
 /** a watched wall with crates at each end and in the middle, a guard at the far end */
@@ -1132,9 +1143,9 @@ const balconyClimb = section({
   phases: LIVE,
   difficulty: 6,
   uses: [W10_THEME.towers],
-  pieces: [bank('a', [220, 260]), balcony('l1', 'a', -60), balcony('l2', 'l1', -54), balcony('l3', 'l2', -50), perchLand('hi', 'l3', -12, [180, 210]), tread('d1', 'hi', 56), tread('d2', 'd1', 56), bank('c', [220, 260], { kind: 'jump', after: 'd2', dy: 64, share: [0.3, 0.4], soft: true }, { landing: true })],
+  pieces: [bank('a', [220, 260]), balcony('l1', 'a', -60), balcony('l2', 'l1', -54), balcony('l3', 'l2', -50), perchLand('hi', 'l3', -12, [180, 210]), bank('c', [200, 230], { kind: 'jump', after: 'hi', dy: 176, share: [0.55, 0.7], soft: true }, { landing: true })],
   last: 'c',
-  sockets: [flag('hi', 0.5), petals('l1', 'l1', 0.5, 1, 0), petals('l3', 'l3', 0.5, 1, 0), petals('d1', 'd1', 0.5, 1, 0), foe('g', 'c', [0.6, 0.7], ['soldier', 'harpy'], 4, { phases: HOT, chance: 0.6 })],
+  sockets: [flag('hi', 0.5), petals('l1', 'l1', 0.5, 1, 0), petals('l3', 'l3', 0.5, 1, 0), foe('g', 'c', [0.6, 0.7], ['soldier', 'harpy'], 4, { phases: HOT, chance: 0.6, easy: 'keep' })],
   mirrorable: false,
 });
 const st2 = treads('s', 'k', [40, 42]);
@@ -1302,7 +1313,7 @@ const trapRow = section({
   uses: [W10_THEME.trapdoors, TRAP],
   pieces: [bank('a', TRAP_BANK), grate('g1', 'a'), { ...trapGap('p', 'a', TRAP_BANK), main: false }, grate('g2', 'p'), trapGap('b', 'p', [300, 340])],
   last: 'b',
-  sockets: [flag('a', 0.4), petals('p', 'p', 0.5, 1), petals('b', 'b', 0.4, 1), foe('g', 'b', [0.65, 0.75], GUARDS, 3, { phases: HOT, chance: 0.6 })],
+  sockets: [flag('p', 0.5), petals('b', 'b', 0.4, 1), foe('g', 'b', [0.65, 0.75], GUARDS, 3, { phases: HOT, chance: 0.6 })],
   mirrorable: true,
 });
 /** a grate to a guard's wall: across, and the fight is on the far side */
@@ -1315,7 +1326,7 @@ const trapGuard = section({
   uses: [W10_THEME.trapdoors, TRAP],
   pieces: [bank('a', TRAP_BANK), grate('g', 'a'), trapGap('b', 'a', [460, 500]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [220, 260])],
   last: 'c',
-  sockets: [flag('a', 0.4), foe('g1', 'b', [0.55, 0.65], GUARDS, 3), petals('k', 'k', 0.5, 1)],
+  sockets: [flag('k', 0.5), foe('g1', 'b', [0.55, 0.65], GUARDS, 3)],
   mirrorable: true,
 });
 /** a grate, then spikes: across on the beat, then jump the bed (Ten, Ketsu) */
@@ -1328,10 +1339,208 @@ const trapSpikes = section({
   uses: [W10_THEME.trapdoors, TRAP, SPIKES],
   pieces: [bank('a', TRAP_BANK), grate('g', 'a'), trapGap('b', 'a', [300, 340]), spikes('c', 'b', [300, 340]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [220, 260])],
   last: 'd',
-  sockets: [flag('a', 0.4), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1)],
+  sockets: [flag('k', 0.5), petals('b', 'b', 0.5, 1)],
   mirrorable: true,
 });
-const W10_BAG_SECTIONS: SectionTemplate[] = [trapFirst, trapRow, trapGuard, trapSpikes, perchRun, perchClimb, perchRods, ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh];
+/**
+ * 10-6's gates (the Iron Netting, a vine runner): each roll opens one theme, as the other stages' gates do: the chains alone, or the
+ * gutter spouts among the swings (and, once World 9's riser lands, the chain lifts and counterweights: GRAB-BAG A, B).
+ */
+const netGate = (theme: W10Theme, extra: Socket[]): SectionTemplate => {
+  const m = merlons('', 'a', 2, [200, 240]);
+  return section({
+    id: `w10-net-gate-${theme}`,
+    name: `the iron netting: ${theme}`,
+    archetypes: ['vine_runner'],
+    phases: ['start'],
+    difficulty: 1,
+    teaches: W10_THEME[theme],
+    weight: 6,
+    pieces: [bank('a', [220, 260]), ...m.pieces],
+    last: m.last,
+    sockets: [petals('k1', 'k1', 0.5, 1), petals('f1', 'f1', 0.5, 2, 80), petals('k2', 'k2', 0.5, 1), ...extra],
+    mirrorable: false,
+  });
+};
+const netGates: SectionTemplate[] = [netGate('chains', [scenery('cage', 'a', [0.5, 0.6], 0.9)]), netGate('spouts', [scenery('brazier', 'a', [0.5, 0.6], 0.9)])];
+
+/**
+ * E. Gutter spouts (10-6's theme, and 10-9's): a stone spout block on the walk, its iron pipe pouring storm water on a beat (zones.ts
+ * 'bolt', look 'gush'; GUSH; w10DropArt.ts). It gurgles and drips first; caught in the gush he is knocked back out, and down if he was
+ * jumping: never a heart. Wait on the lip for it to stop. The first one pours over a flat walk, with the line before it.
+ */
+const gush = (on: string, at: [number, number]): SectionZone => ({ kind: 'bolt', on, at, look: 'gush' });
+const spoutFirst = section({
+  id: 'w10-spout-first',
+  name: 'the first gutter spout',
+  archetypes: 'any',
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: GUSH,
+  uses: [W10_THEME.spouts],
+  maxPerStage: 1,
+  pieces: [bank('a', [300, 340]), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [480, 520])],
+  zones: [gush('b', [0.42, 0.46])],
+  last: 'b',
+  sockets: [flag('a', 0.6), tip(GUSH, 'a', 0.2), petals('k', 'k', 0.5, 1), petals('b', 'b', 0.85, 1)],
+  mirrorable: false,
+});
+/** a spout at the lip of a chasm: it pours where he takes off; wait for it to stop, then jump */
+const spoutGap = section({
+  id: 'w10-spout-gap',
+  name: 'gutter spout at the chasm',
+  archetypes: 'any',
+  phases: LIVE,
+  difficulty: 5,
+  uses: [W10_THEME.spouts, GUSH],
+  pieces: [bank('a', [380, 420]), { ...chasm('b', 'a', [300, 340], [0.6, 0.72]), place: { kind: 'pit', after: 'a', jump: 'jump', share: [0.6, 0.72], soft: true } }, up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [220, 260])],
+  zones: [gush('a', [0.86, 0.88])],
+  last: 'c',
+  sockets: [flag('k', 0.5), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1)],
+  mirrorable: true,
+});
+/** two spouts on one wall, out of step: through one in its lull, wait between, through the next */
+const spoutPair = section({
+  id: 'w10-spout-pair',
+  name: 'two gutter spouts',
+  archetypes: 'any',
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W10_THEME.spouts, GUSH],
+  pieces: [bank('a', [600, 640], { kind: 'start' }, { main: false }), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [300, 340])],
+  zones: [gush('a', [0.28, 0.3]), gush('a', [0.74, 0.76])],
+  last: 'b',
+  sockets: [flag('k', 0.5), petals('a', 'a', 0.52, 1), petals('b', 'b', 0.5, 1)],
+  mirrorable: true,
+});
+/** a spout, then a guard on the far wall (the gauntlet's) */
+const spoutGuard = section({
+  id: 'w10-spout-guard',
+  name: 'gutter spout to the guard arena',
+  archetypes: ['gauntlet'],
+  phases: MID,
+  difficulty: 6,
+  uses: [W10_THEME.spouts, GUSH],
+  pieces: [bank('a', [380, 420]), { ...chasm('b', 'a', [460, 500], [0.6, 0.72]), place: { kind: 'pit', after: 'a', jump: 'jump', share: [0.6, 0.72], soft: true } }, up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [220, 260])],
+  zones: [gush('a', [0.86, 0.88])],
+  last: 'c',
+  sockets: [flag('k', 0.5), foe('g', 'b', [0.55, 0.65], GUARDS, 3)],
+  mirrorable: true,
+});
+/**
+ * L. Lantern sweeps (10-3's own theme): a soldier's lantern on a watchtower sweeps its stretch of wall (watcher.ts, look 'lantern':
+ * the storm's watch and its numbers, drawn as a beam from the tower, w10DropArt.ts): get behind the crates as it passes. Its first pass
+ * over each stretch only warns; his own line the first time.
+ */
+const lanternAt = (on: string) => prop('lantern', on, 0.05, ['lantern']);
+const lanternWall = section({
+  id: 'w10-lantern-wall',
+  name: 'lantern-swept wall cover',
+  archetypes: ['stealth'],
+  phases: MID,
+  difficulty: 5,
+  weight: 2,
+  uses: [W10_THEME.lanterns],
+  pieces: [bank('a', [260, 300]), up('k', 'a', 30, [140, 160]), down('wall', 'k', 30, [640, 680]), up('k2', 'wall', 30, [140, 160]), down('b', 'k2', 30, [280, 320])],
+  last: 'b',
+  sockets: [lanternAt('wall'), hideAt('h1', 'wall', 0.14), petals('w', 'wall', 0.33, 1), hideAt('h2', 'wall', 0.52), hideAt('h3', 'wall', 0.88), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: true,
+});
+/** a swept wall, then a chasm to a guard's wall: hide, cross, fight */
+const lanternSteps = section({
+  id: 'w10-lantern-steps',
+  name: 'lantern-swept wall over a chasm cover',
+  archetypes: ['stealth'],
+  phases: LIVE,
+  difficulty: 6,
+  weight: 1,
+  uses: [W10_THEME.lanterns],
+  pieces: [bank('a', [220, 260]), up('k', 'a', 30, [140, 160]), down('w1', 'k', 30, [400, 440]), chasm('w2', 'w1', [400, 440], [0.66, 0.78]), up('k2', 'w2', 30, [140, 160]), down('b', 'k2', 30, [220, 260])],
+  last: 'b',
+  sockets: [prop('lanternA', 'w1', 0.05, ['lantern']), hideAt('h1', 'w1', 0.6), petals('k', 'k', 0.5, 1), foe('g', 'w2', [0.55, 0.65], GUARDS, 3, { chance: 0.8 }), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: true,
+});
+/** a swept wall with a guard patrolling the far end: hide from the beam, then the fight */
+const lanternGuard = section({
+  id: 'w10-lantern-guard',
+  name: 'lantern-swept wall and a guard cover',
+  archetypes: ['stealth'],
+  phases: HOT,
+  difficulty: 7,
+  weight: 2,
+  uses: [W10_THEME.lanterns],
+  pieces: [bank('a', [200, 220]), up('k', 'a', 30, [120, 140]), down('wall', 'k', 30, [500, 540]), chasm('b', 'wall', [360, 400]), up('k2', 'b', 30, [120, 140]), down('c', 'k2', 30, [200, 220])],
+  last: 'c',
+  sockets: [lanternAt('wall'), hideAt('h1', 'wall', 0.2), hideAt('h2', 'wall', 0.62), petals('w', 'wall', 0.42, 1), foe('g', 'b', [0.5, 0.6], GUARDS, 3, { chance: 0.8 }), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: true,
+});
+/**
+ * K. Rolling barrels (10-7's own theme): a stack of barrels at the far end of a wall-walk; one rocks (the warning), then rolls the walk's
+ * length toward him in 1.2 s (zones.ts 'bolt', look 'barrel'; BARREL_LANE; w10DropArt.ts). Jump it, or be off the walk when it comes. A
+ * hit is a heart on Normal and a push on Easy, and never where it is taught. No animal stands on a lane (levelCheck: none in a zone).
+ */
+const barrels = (on: string, gentle = false): SectionZone => ({ kind: 'bolt', on, at: [0.5, 0.5], look: 'barrel', dir: -1, ...(gentle ? { gentle: true } : {}) });
+const barrelFirst = section({
+  id: 'w10-barrel-first',
+  name: 'the first rolling barrels',
+  archetypes: ['purge'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: BARREL,
+  uses: [W10_THEME.barrels],
+  maxPerStage: 1,
+  pieces: [bank('a', [300, 340]), up('k', 'a', 30, [140, 160]), down('lane', 'k', 30, [520, 560]), up('k2', 'lane', 30, [140, 160]), down('b', 'k2', 30, [240, 280])],
+  zones: [barrels('lane', true)],
+  last: 'b',
+  sockets: [flag('a', 0.6), tip(BARREL, 'a', 0.2), petals('k', 'k', 0.5, 1), petals('k2', 'k2', 0.5, 1)],
+  mirrorable: false,
+});
+/** a long walk with barrels down it, a guard past it */
+const barrelRun = section({
+  id: 'w10-barrel-run',
+  name: 'barrels down the wall-walk',
+  archetypes: ['purge'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W10_THEME.barrels, BARREL],
+  pieces: [bank('a', [240, 280]), up('k', 'a', 30, [140, 160]), down('lane', 'k', 30, [620, 660]), up('k2', 'lane', 30, [140, 160]), down('b', 'k2', 30, [400, 440])],
+  zones: [barrels('lane')],
+  last: 'b',
+  sockets: [flag('k', 0.5), petals('lane', 'lane', 0.5, 1), foe('g', 'b', [0.55, 0.65], GUARDS, 3)],
+  mirrorable: true,
+});
+/** two walks a battlement apart, each with its own barrels out of step */
+const barrelSteps = (() => {
+  const m = merlons('', 'a', 2, [420, 460]);
+  return section({
+    id: 'w10-barrel-steps',
+    name: 'barrels on two walks',
+    archetypes: ['purge'],
+    phases: HOT,
+    difficulty: 7,
+    uses: [W10_THEME.barrels, BARREL],
+    pieces: [bank('a', [260, 300]), ...m.pieces],
+    zones: [barrels('f1'), barrels('f2')],
+    last: m.last,
+    sockets: [flag('k1', 0.5), petals('k2', 'k2', 0.5, 1)],
+    mirrorable: true,
+  });
+})();
+/** barrels down to a guard's yard: off the lane, the fight */
+const barrelYard = section({
+  id: 'w10-barrel-yard',
+  name: 'barrels to the guard yard arena',
+  archetypes: ['purge'],
+  phases: MID,
+  difficulty: 6,
+  uses: [W10_THEME.barrels, BARREL],
+  pieces: [bank('a', [220, 240]), up('k', 'a', 30, [120, 140]), down('lane', 'k', 30, [460, 500]), down('s', 'lane', 40, [120, 140]), down('yard', 's', 40, [440, 480]), up('s2', 'yard', 40, [120, 140]), up('b', 's2', 40, [200, 220])],
+  zones: [barrels('lane')],
+  last: 'b',
+  sockets: [flag('k', 0.5), foe('g1', 'yard', [0.45, 0.55], GUARDS, 3), foe('g2', 'yard', [0.8, 0.86], [...GUARDS, ...CATS], 5, { phases: HOT, chance: 0.6 })],
+  mirrorable: true,
+});
+const W10_BAG_SECTIONS: SectionTemplate[] = [barrelFirst, barrelRun, barrelSteps, barrelYard, lanternWall, lanternSteps, lanternGuard, ...netGates, spoutFirst, spoutGap, spoutPair, spoutGuard, trapFirst, trapRow, trapGuard, trapSpikes, perchRun, perchClimb, perchRods, ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh];
 
 // ───────────────────────────── the list ─────────────────────────────
 
@@ -1410,10 +1619,15 @@ export const W10_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   ...Object.fromEntries([guardWall, guardYard, spikeYard, harpyWall, wallPatrol, towerSteps].map((s) => [s.id, [7]] as const)),
   ...Object.fromEntries([guardRods, guardGusts, guardRampart, portcullisYard, gatehouseRun, drawbridge, gateApproach].map((s) => [s.id, [9]] as const)),
   // (the purge opens rods or spikes; the gauntlet any of the four: each gate's theme has its own arenas there)
-  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-hunt-gate-') && !/rods|spikes|towers|bridges|drops/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
+  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-hunt-gate-') && !/rods|spikes|towers|bridges|drops|barrels/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
+  ...Object.fromEntries(netGates.map((s) => [s.id, [6]] as const)),
+  ...Object.fromEntries([spoutFirst, spoutGap, spoutPair].map((s) => [s.id, [6, 9]] as const)),
+  [spoutGuard.id]: [9],
+  ...Object.fromEntries([lanternWall, lanternSteps, lanternGuard].map((s) => [s.id, [3]] as const)),
+  ...Object.fromEntries([barrelFirst, barrelRun, barrelSteps, barrelYard].map((s) => [s.id, [7]] as const)),
   ...Object.fromEntries([trapFirst, trapRow, trapGuard, trapSpikes].map((s) => [s.id, [9]] as const)),
   // (the grab bag's themes: the perches are 10-1's, the towers and bridges 10-7's; no other stage opens them)
-  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-fight-gate-') && /perches|towers|bridges|drops/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
+  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-fight-gate-') && /perches|towers|bridges|drops|chains|lanterns|barrels/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
   ...Object.fromEntries([perchRun, perchClimb, perchRods].map((s) => [s.id, [1]] as const)),
   ...Object.fromEntries([ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh].map((s) => [s.id, [7]] as const)),
 };

@@ -36,7 +36,8 @@ function devForced(stage: number, sections: SectionTemplate[]): WorldManifest['r
   const id = env?.DEV ? (globalThis as { __w10force?: string }).__w10force : nodeForce;
   const sec = id ? sections.find((s) => s.id === id) : undefined;
   if (!sec) return null;
-  const gates = (sec.uses ?? []).flatMap((u) => sections.filter((g) => g.teaches === u && g.phases.includes('start')).slice(0, 1));
+  const type = ({ 1: 'sprint', 3: 'stealth', 6: 'vine_runner', 7: 'purge', 9: 'gauntlet' } as Record<number, string>)[stage];
+  const gates = (sec.uses ?? []).flatMap((u) => sections.filter((g) => g.teaches === u && g.phases.includes('start') && (g.archetypes === 'any' || (g.archetypes as string[]).includes(type))).slice(0, 1));
   const key = `10-${stage}`;
   return { ...W10_REQUIRED, [key]: [...gates.map((g) => ({ section: g.id, phase: 'start' as const })), ...(W10_REQUIRED[key] ?? []), { section: sec.id }] };
 }

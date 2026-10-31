@@ -18,7 +18,7 @@ import { BOSS_FX } from './bossFxData.ts';
 import { drawLeafBit } from './leafSprites.ts';
 import { glowPic } from './glow.ts';
 import { drawSoftShadow } from './w4Grit.ts';
-import { drawW10DropBars, drawW10Gatehouse } from './w10DropArt.ts';
+import { drawW10Barrel, drawW10BarrelStack, drawW10DropBars, drawW10Gatehouse, drawW10Gush, drawW10Spout } from './w10DropArt.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -61,6 +61,8 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
     if (z.kind === 'geyser') { drawVent(ctx, z, zoneState(z, t), t); continue; }
     // (World 10's drop gate, w10DropArt.ts: a bolt column drawn as the gatehouse over the walk)
     if (z.kind === 'bolt' && z.look === 'portcullis') { drawW10Gatehouse(ctx, z); continue; }
+    if (z.kind === 'bolt' && z.look === 'gush') { drawW10Spout(ctx, z); continue; }
+    if (z.kind === 'bolt' && z.look === 'barrel') { drawW10BarrelStack(ctx, z, zoneState(z, t), t); continue; }
     if (z.kind === 'bolt') { drawRod(ctx, z, zoneState(z, t), t); continue; }
     // (an iron spike bed: painted only, w10HazardArt.ts; nothing is drawn for the moment its sheet loads)
     if (z.kind === 'spikes') { drawW10Spikes(ctx, z); continue; }
@@ -163,6 +165,8 @@ export function drawZoneEffects(ctx: CanvasRenderingContext2D, zones: readonly Z
     else if (z.kind === 'wind') drawGust(ctx, z, st, t);
     else if (z.kind === 'geyser') drawEruption(ctx, z, st, t);
     else if (z.kind === 'bolt' && z.look === 'portcullis') drawW10DropBars(ctx, z, st, t);
+    else if (z.kind === 'bolt' && z.look === 'gush') drawW10Gush(ctx, z, st, t);
+    else if (z.kind === 'bolt' && z.look === 'barrel') drawW10Barrel(ctx, z, st);
     else if (z.kind === 'bolt') drawBolt(ctx, z, st, t);
     else if (z.kind === 'web') drawWeb(ctx, z, t);
     else if (z.kind === 'tide') drawTide(ctx, z, st, t);
