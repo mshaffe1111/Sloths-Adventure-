@@ -15,7 +15,7 @@ const SCRIPT = [
   [15, 'down ArrowLeft'], [17, 'up ArrowLeft'], // a turn standing still
   [35, 'down ArrowRight'], // the run start
   [58, 'up ArrowRight'], [58, 'down ArrowLeft'], // reversing at a run: the skid, then the turn
-  [88, 'up ArrowLeft'],
+  [70, 'up ArrowLeft'],
   [125, 'drop'], // a hard landing
   [170, 'down Space'], [180, 'up Space'], [182, 'down Space'], [192, 'up Space'], // a held jump, and the flip off its top
 ];

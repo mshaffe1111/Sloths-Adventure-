@@ -19,7 +19,7 @@ MOMENTS = {
     'doublejump': range(181, 201),
 }
 # a wider crop where he leaves the ground a long way (css px round him)
-WIDE = {'doublejump': 95, 'hardland': 70}
+WIDE = {'doublejump': 62, 'hardland': 62}
 DPR = 2
 HALF = 55  # css px round him
 for name, rng in MOMENTS.items():
@@ -30,7 +30,7 @@ for name, rng in MOMENTS.items():
         for i in rng:
             x, y, *_r = cam[t][i]
             cx, cy = cam[t][i][6], cam[t][i][7]
-            sx, sy = (x - cx) * zoom, (y - cy) * zoom - (40 if half == HALF else half * 0.9 / zoom) * zoom
+            sx, sy = (x - cx) * zoom, (y - cy) * zoom - 42 * zoom
             im = Image.open(rec / f'{t}-{ori}-frames' / f'f{i:05d}.png')
             box = [round((sx - half) * DPR), round((sy - half) * DPR), round((sx + half) * DPR), round((sy + half) * DPR)]
             row.append(im.crop(box).resize((HALF * 2 * DPR, HALF * 2 * DPR)))
