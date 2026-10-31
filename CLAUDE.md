@@ -31,6 +31,7 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
   - the loop is locked at 30 fps on purpose.
 - **Lead session: after a restart or a memory compression, read `reference/STATUS.md` (the live board: helpers running, open decisions, QA batches, what is live) and `reference/LEAD-PLAYBOOK.md` (how to brief, check and merge) first, and keep STATUS.md current every time something starts, reports or is decided.**
 - **Building or checking a stage, puzzle room or generator rule: read `reference/STAGE-RULES.md` first** (Matt's rules, the numbers every stage must meet from his Gemini research `reference/GEMINI-PCG-RESEARCH.md`, with every recommendation's status in `reference/GEMINI-LEDGER.md`, puzzle-room rules, using all the art, the checks in order, and the mistakes we already paid for). Pass it on in every helper brief.
+- **Variety comes from more pieces (Matt, 2026-10-30): "I'd rather have more pieces and have that variety than trying to just barely squeak past something... that should be the roll forward. And if we need to go back and fix some stuff, then we need to do it that way."** Every generated world gets a generous grab bag: as many distinct section types (new beats, new art via Hugging Face) as it takes to clear the variety bar comfortably, never by rerolling the same pieces until a stage scrapes past. Worlds already shipped that only scrape past get the same treatment.
 - **Stage rules**:
   - crumbling platforms are never required;
   - straight up/down on a vine always climbs;
