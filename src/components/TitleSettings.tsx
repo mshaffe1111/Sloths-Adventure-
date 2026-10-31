@@ -32,6 +32,9 @@ interface TitleSettingsProps {
   isInstalled?: boolean;
   /** the credit's tester switch (ten taps on the name) */
   onTapShaffer: () => void;
+  /** what the ten taps just did ("4 more…", "All stages and worlds unlocked"): shown on the credit itself, inside this card,
+   * because a message behind the card can't be seen (Matt, 2026-10-31: the unlock "got lost" when the menu was redone) */
+  creditMsg?: string | null;
 }
 
 /** a stage cleared or a star earned on this device: New Game asks before it wipes them */
@@ -126,7 +129,19 @@ export const TitleSettings: React.FC<TitleSettingsProps> = (p) => {
                   <button type="button" onClick={p.onTapShaffer} className="title-credit-btn" aria-label="Shaffer">
                     Shaffer
                   </button>
+                  {p.creditMsg && (
+                    <span className="st-credit-msg" role="status">
+                      {p.creditMsg}
+                    </span>
+                  )}
                 </small>
+              </span>
+            </div>
+            <div className="st-row">
+              <Icon name="heart" size={28} />
+              <span className="st-row-t">
+                Special thanks
+                <small>Stephanie Roberts, Jen Shaffer and Sally Rotolo</small>
               </span>
             </div>
             <div className="st-row">
