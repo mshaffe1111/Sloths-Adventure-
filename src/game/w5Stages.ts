@@ -148,11 +148,11 @@ const WEB_UP = 205;
 const MOST: Record<W5Plan, { spiders: number; threads: number; sheets: number }> = {
   '5-1': { spiders: 14, threads: 0, sheets: 0 },
   '5-2': { spiders: 22, threads: 15, sheets: 0 },
-  '5-3': { spiders: 9, threads: 0, sheets: 0 },
+  '5-3': { spiders: 12, threads: 0, sheets: 0 },
   '5-5': { spiders: 18, threads: 9, sheets: 5 },
 };
 /** the most warm teapots a hand stage holds (5-3: a few, a seasoning among its orchids) */
-const POTS_MAX = 8;
+const POTS_MAX = 12;
 /** the story aside's return (px from the last line said): it starts once her lines have been quiet 8 s, and is clear this far on */
 const ASIDE = { after: 3000, clear: 5600 } as const;
 /** room for a first-time line after the one before it: about 4 s at a full run */
@@ -590,7 +590,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   /** tiny cakes floating among the petals on the path: they look like a treat (jump over them) */
   function cakeRow(n: number) {
     // (a little more room than its line's own reach: it was read just as he came to the cake)
-    fresh('cake', 0);
+    fresh('cake', -150);
     run(R.r(140, 190));
     const x0 = x;
     for (let i = 0; i < n; i++) {
@@ -630,7 +630,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       const pot = newTeapot(r(x), G, R.chance(0.5) ? 1 : -1);
       pot.offset = Math.round(R.r(0, pot.idle + pot.warn + pot.puff) * 100) / 100;
       pots.push(pot);
-      lineAt(x + 60, 'steam');
+      // (a breath of steam: its line reads while he is sleepy and slow, so it holds the screen well past the pot)
+      lineAt(x + 700, 'steam');
       run(R.r(360, 440));
     }
     run(R.r(140, 200));
@@ -696,7 +697,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     grassOrchid();
     let cx = x + W5_ORCHID.w / 2;
     for (let i = 0; i < n; i++) {
-      orchid(cx, G - W5_GRASS_ORCHID - 62 * i, G, openS, base - i * W5_ORCHID.lag, i === n - 1 ? 3 : 2, 'steps', W5_ORCHID.w, period);
+      orchid(cx, G - W5_GRASS_ORCHID - (early ? 62 : stepRise) * i, G, openS, base - i * W5_ORCHID.lag, i === n - 1 ? 3 : 2, 'steps', W5_ORCHID.w, period);
       if (i < n - 1) cx += W5_ORCHID.w + R.r(40, 60);
     }
     x = r(cx + W5_ORCHID.w / 2);
@@ -706,7 +707,9 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   }
   /** a row of orchids strung across a soft pit, each a plain hop from the last (and from the banks), closing one after another */
   /** the roll's shape for its rows of orchids: level, a zigzag, climbing bloom to bloom, or down into a dip and up (5-3 sets it a play) */
-  let rowShape: 'zig' | 'level' | 'climb' | 'dip' = 'zig';
+  let rowShape: 'zig' | 'level' | 'climb' | 'dip' | 'tall' = 'zig';
+  /** how far each orchid of a flight of steps stands above the one below: a plain hop, or (5-3's tall plays) one the second jump climbs */
+  let stepRise = 62;
   function orchidRow(n: number, early = false) {
     run(R.r(180, 240));
     const edge = x;
@@ -722,6 +725,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       const lift = early || rowShape === 'zig' ? (i % 2 ? R.r(0, 24) : 0)
         : rowShape === 'level' ? 0
         : rowShape === 'climb' ? Math.min(i, 2) * R.r(34, 42)
+        // (every other bloom a second jump up, 104 to 118 px, under the second jump's safe reach: the row asks for the double jump)
+        : rowShape === 'tall' ? (i % 2 ? R.r(104, 118) : 0)
         : (i === 0 || i === n - 1 ? R.r(30, 40) : -R.r(10, 20));
       ids.push(orchid(cx, top - lift, HOLLOW_Y, openS, base - i * W5_ORCHID.lag, R.chance(0.5) ? 2 : 1, 'row', W5_ORCHID.w, period));
       // (bloom to bloom: a short hop, so upright, standing on one, the whole of the next is in view: the view shows about 290 px ahead)
@@ -1012,27 +1017,46 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       // animal; none a thread, a Butler or a sleeper, 5-2's things)
       // (the roll's own row: two, three or four blooms long, and its shape. Rows are most of the stage, so what they share sets how a play feels)
       const rowN = R.pick([2, 3, 4]);
-      rowShape = R.pick(['zig', 'level', 'climb', 'dip'] as const);
       const rowNear = () => Math.max(2, Math.min(4, rowN + (R.chance(0.3) ? (R.chance(0.5) ? 1 : -1) : 0)));
-      // (and its seasoning: what comes between the orchids, two of these a play, so one play is teapots and spiders, the next soft pits
-      // and climbs. Matt, 2026-10-31: 5-3 was orchids and nothing else)
-      const seasonings: Array<Array<() => void>> = [
-        [() => potWalk(1), () => potWalk(2), () => { potWalk(1); gap(); }],
-        [() => spiderRun(1, R.r(720, 820)), () => spiderRun(2, R.r(900, 1000)), () => { spiderRun(1, R.r(720, 820)); gap(); }],
-        [() => stumps(2), () => highRoad(R.r(480, 600)), () => { stumps(1); highRoad(R.r(440, 520)); }],
-        [() => gap(), () => { gap(); gap(); }, () => { gap(); stumps(1); }],
+      // (how the orchids are reached, two of four styles a play, each with its own pattern: plain hops up steps and along rows, tall ones
+      // the second jump climbs, rows broken by islands with a warm teapot on each (wait out its puff between the blooms), or with a jumping
+      // spider on each. Matt, 2026-10-31: 5-3 is "boring"; the lead: change how the orchids are reached, not how many)
+      const isle = (what: 'pot' | 'spider') => {
+        if (what === 'pot' && pots.length < POTS_MAX) {
+          run(R.r(40, 70));
+          const pot = newTeapot(r(x), G, 1);
+          pot.offset = Math.round(R.r(0, pot.idle + pot.warn + pot.puff) * 100) / 100;
+          pots.push(pot);
+          lineAt(x + 700, 'steam');
+          run(R.r(200, 240));
+          expert += 260 / RUN + 1.6;
+        } else if (what === 'spider' && info.spiders.length < MOST['5-3'].spiders) {
+          fresh('spider', 1300 - 200);
+          run(R.r(380, 440));
+          spider(x - 200, x - 330, x - 60);
+          chaseTo(x);
+          expert += 400 / RUN + 1.4;
+        } else gap();
+      };
+      const styles: Array<() => void> = [
+        () => { stepRise = 62; rowShape = R.pick(['zig', 'level', 'climb', 'dip'] as const); if (R.chance(0.4)) orchidSteps(3); else orchidRow(rowNear()); },
+        () => { stepRise = Math.round(R.r(108, 122)); rowShape = 'tall'; if (R.chance(0.4)) orchidSteps(3); else orchidRow(R.pick([3, 4])); },
+        () => { rowShape = 'level'; orchidRow(R.pick([1, 2])); isle('pot'); orchidRow(R.pick([1, 2])); isle('pot'); orchidRow(R.pick([1, 2])); },
+        () => { rowShape = 'zig'; orchidRow(R.pick([1, 2])); isle('spider'); orchidRow(R.pick([1, 2])); isle('spider'); orchidRow(R.pick([1, 2])); },
       ];
-      const mine = R.shuffle([0, 1, 2, 3]).slice(0, 2);
-      const stepsShare = R.pick([0.15, 0.3, 0.45]);
+      // (one style the whole play: a play of tall orchids and a play of teapot islands share little; a mix of two made every play alike)
+      const one = R.pick([0, 1, 2, 3]);
+      const mine = [one, one];
       // (the cakes and the guests who sat, once each, at rolled places: the stage's own idea, never in the same spot)
       const cakeAt = new Set([R.pick([0, 1]), R.pick([3, 4, 5])]);
       const guestsAt = R.pick([2, 3, 4, 5, 6]);
+      // (and what comes between the orchids, one of these a play)
+      const season = R.pick([() => gap(), () => stumps(2), () => highRoad(R.r(440, 520)), () => potWalk(1), () => spiderRun(1, R.r(720, 820)), () => { gap(); gap(); }]);
       let k = 0;
       const next = () => {
-        R.pick(seasonings[mine[k % 2]])();
+        if (R.chance(0.65)) season();
         if (cakeAt.has(k)) cakeRow(1);
-        if (R.chance(stepsShare)) orchidSteps(R.chance(0.5) ? 2 : 3);
-        else orchidRow(rowNear());
+        styles[mine[k % 2]]();
         if (k === guestsAt) chairWalk(1, 2);
         k++;
       };
@@ -1044,13 +1068,14 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
           rest(R.r(380, 440));
         }
         next();
-        if (n % 2 === 1 || expert - info.flagSeconds[info.flagSeconds.length - 1] > 28) flag();
+        if (n % 2 === 1 || expert - info.flagSeconds[info.flagSeconds.length - 1] > 20) flag();
         n++;
       }
       // (whatever the theme drew, the stage keeps its own idea: rows of orchids, three awake spiders, a cake or two, the guests who sat)
       if (n <= soonerAt) hint(x + 60, W5_HINTS.s53sooner);
       const cakesNow = () => cakes.length;
       if (!chairs.some((c) => !c.wrapped) || chairs.filter((c) => c.wrapped).length < 2) chairWalk(1, 2);
+      rowShape = 'zig';
       while (info.rows.length < 6 || orchids.length < 22) orchidRow(Math.max(3, rowN));
       while (info.spiders.length < 3) spiderRun(1, R.r(720, 820));
       while (cakesNow() < 2) { rest(R.r(700, 760)); cakeRow(1); }
