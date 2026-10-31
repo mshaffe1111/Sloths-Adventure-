@@ -44,3 +44,4 @@ KEPT raft x62 full: replaces the unused flat raft plate; wired to W2 mid beats 1
   9-dusk x62 full: DROPPED in-game (sideways the lava volcano the line describes is lost again; upright was better). W9 keeps its scenery.
 TOTAL (22:47Z): 16 GPU jobs, ~160 min on rtx-pro-6000 = ~$7.5 of the $28 cap
 wp-w8 6ae66f190e0338d1bb7d4800 created 22:43Z: W8 night sharp redo (2 strengths x 2 seeds); W8 unwired until it passes
+wp-w8 verdicts: KEPT y70-31 (crisp outlines, moon, flower bank). y60s soft/muddy.
