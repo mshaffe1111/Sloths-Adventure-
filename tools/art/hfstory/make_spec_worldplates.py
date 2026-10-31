@@ -102,7 +102,7 @@ def full(commit, names):
     base = f'https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/{commit}/tools/art/hfstory/picks/'
     it = []
     for n in names:
-        k = re.sub(r'-[srtu]\d+$', '', n[3:])
+        k = re.sub(r'-[srtuv]\d+$', '', n[3:])
         it.append({'name': f'{n}-full', 'start': f'bucket:hfcut/out/{n}.png', 'prompt': STYLE + P[k] + FLOOR.get(k.split('-')[0], '') + TAIL, 'neg': NEG + EXTRA_NEG.get(k.split('-')[0], ''),
                    'strength': 0.28, 'seed': 5, 'w': 2560, 'h': 2720, 'tile': [1280, 256], 'loras': [['style', 1.0]]})
     return {'tag': 'wpf', 'loras': LORAS, 'base': base, 'items': it, 'q': 90,
