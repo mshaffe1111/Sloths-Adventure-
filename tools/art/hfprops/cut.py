@@ -35,6 +35,11 @@ def key_own(img):
     bgm = np.where(w[..., None] > 0.02, bgm, bg0)
     d = np.linalg.norm(a - bgm, axis=-1)
     alpha = np.clip((d - 34) / 80, 0, 1)
+    if bg0[1] < bg0[0] and bg0[1] < bg0[2]:
+        # (a magenta key: light beams, glows and moons the model painted in the key's own hue are background too; no piece on a
+        # magenta-key world is painted magenta or pink, World 5's pink pieces are on green)
+        pink = np.minimum(a[..., 0], a[..., 2]) - a[..., 1]
+        alpha = np.minimum(alpha, np.clip(1 - (pink - 40) / 40, 0, 1))
     al = alpha[..., None]
     paint = np.where(al > 0.02, (a - (1 - al) * bgm) / np.maximum(al, 0.02), 0)
     rgb = np.where(al < 0.999, paint, a).clip(0, 255)
@@ -83,6 +88,9 @@ def main():
         pieces = []
         for n, p in pp.items():
             img = Image.open(next(takes.glob(f"{p['take']}.*"))).convert('RGB')
+            if p.get('box'):  # (the piece's own box in the take, as fractions: a hanging piece painted inside a tree scene)
+                bx = p['box']
+                img = img.crop((round(bx[0] * img.width), round(bx[1] * img.height), round(bx[2] * img.width), round(bx[3] * img.height)))
             im = edge_clean(key_own(img))
             if p.get('cropBottom'):  # (a base slab the model put under it: the bottom fraction cut off)
                 im = im.crop((0, 0, im.width, round(im.height * (1 - p['cropBottom']))))
@@ -107,6 +115,11 @@ def main():
         w = int(world)
         nm = lambda n: f'w{w}{n[0].upper()}{n[1:]}'
         by = {job: [nm(n) for (n, j, _u, _d) in P[w]['pieces'] if j == job and n in pp] for job in ('bank', 'hang', 'clutter')}
+        # (a pick under a name of its own, not in the list: a take that came out as something else worth keeping, by its `job`)
+        known = {n for (n, *_r) in P[w]['pieces']}
+        for n, v in pp.items():
+            if n not in known:
+                by[v['job']].append(nm(n))
         pat = {'bank': [[0, 1, 2], [3, 4, 5], [1, 3, 5]], 'hang': [[0, 1], [2, 3], [1, 2]], 'clutter': [[0, 1, 2], [3, 4, 0], [1, 3, 4]]}
         looks[w] = {}
         for job, ns in by.items():

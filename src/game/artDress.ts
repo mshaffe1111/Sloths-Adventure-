@@ -243,6 +243,16 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
     return !d.platforms.some((q) => q !== on && q.x < x + w / 2 + 12 && q.x + q.width > x - w / 2 - 12 && q.y < b - 4 && q.y + q.height > b - h - 12);
   };
   const pick = (job: 'bank' | 'hang' | 'clutter', salt: number): DressName[] => (sets[job].length ? rollLook(sets[job], d.stage, d.seed, salt + d.world * 11) : []);
+  // (hf-props, 2026-10-31: one look per job for a whole stage put the same three pieces at every bank, AUDIT.md. The roll picks the
+  // stage's first look; each set after it takes the next of the world's looks, up to three in a stage, so neighbouring banks differ
+  // and the next stage, starting elsewhere, still looks different)
+  const cycle = (job: 'bank' | 'hang' | 'clutter', salt: number) => {
+    const all = sets[job];
+    const first = pick(job, salt);
+    const i0 = Math.max(0, all.indexOf(first));
+    const run = Array.from({ length: Math.min(3, all.length) }, (_, k) => all[(i0 + k) % all.length]);
+    return (k: number): DressName[] => run[k % run.length] ?? [];
+  };
   // (each set laid in a turned order, so the same three in the same order do not come round bank after bank)
   const turn = (set: DressName[], k: number) => {
     const i = Math.floor(lookHash(d.seed + k, 41) * set.length);
@@ -252,7 +262,8 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
   const touches = (p: Platform, right: boolean) =>
     banks.some((q) => q !== p && q.y <= p.y + 2 && (right ? Math.abs(p.x + p.width - q.x) < 2 : Math.abs(q.x + q.width - p.x) < 2));
   // bank: a set of three along the lip by each end that drops away, laid inward from the edge
-  const bankSet = pick('bank', 51);
+  const bankAt = cycle('bank', 51);
+  let bankK = 0;
   let lastBank = -Infinity;
   let lastSet = -Infinity;
   for (const p of banks) {
@@ -266,6 +277,7 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
       const dir = right ? -1 : 1;
       let at = edge + dir * 34;
       const laid: DressPiece[] = [];
+      const bankSet = bankAt(bankK);
       for (const n of turn(bankSet, out.length + Math.round(edge))) {
         const w = dressSize(n).w;
         const x = at + (dir * w) / 2;
@@ -276,15 +288,17 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
       // (and 600 or more clear of the last set: sets laid inward from two edges facing each other met in the middle, the same piece
       // twice side by side)
       const near = Math.min(...laid.map((q) => q.x));
-      if (laid.length === bankSet.length && near - lastSet >= 600) {
+      if (laid.length === bankSet.length && laid.length && near - lastSet >= 600) {
         out.push(...laid);
+        bankK++;
         lastBank = edge;
         lastSet = Math.max(...laid.map((q) => q.x));
       }
     }
   }
   // hang: under a thin ledge with clear air below it (the nearest ground at least 230 units down)
-  const hangSet = pick('hang', 53);
+  const hangAt = cycle('hang', 53);
+  const hangSet = [...new Set([0, 1, 2].flatMap((k) => hangAt(k)))];
   let lastHang = -Infinity;
   let hangs = 0;
   const ledges = d.platforms
@@ -311,7 +325,7 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
     hangs++;
   }
   // clutter: a small set lying along each long floor, every 820 or so, away from its ends and the bank sets
-  const clutSet = pick('clutter', 57);
+  const clutAt = cycle('clutter', 57);
   const bankXs = out.map((q) => q.x);
   let sets3 = 0;
   for (const p of banks) {
@@ -320,6 +334,7 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
       if (bankXs.some((bx) => bx > x - 440 && bx < x + 700)) continue;
       let at = x;
       const laid: DressPiece[] = [];
+      const clutSet = clutAt(sets3);
       for (const n of turn(clutSet, sets3 + Math.round(x))) {
         const w = dressSize(n).w;
         const cx = at + w / 2;
@@ -327,7 +342,7 @@ export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }
         laid.push({ n, x: cx, b: p.y + 6, flip: lookHash(d.seed + Math.round(cx), 31) < 0.5 });
         at += w + 26 + lookHash(d.seed + Math.round(cx), 37) * 40;
       }
-      if (laid.length === clutSet.length) {
+      if (laid.length === clutSet.length && laid.length) {
         out.push(...laid);
         sets3++;
       }

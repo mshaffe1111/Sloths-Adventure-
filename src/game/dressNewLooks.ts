@@ -9,13 +9,46 @@ export const DRESS_NEW_LOOKS: Record<number, Partial<Record<'bank' | 'hang' | 'c
   "bank": [
    [
     "w6OysterRoot",
-    "w6Kingfisher",
+    "w6Pitchers",
     "w6Mudskipper"
    ],
    [
-    "w6Kingfisher",
+    "w6StakeLantern",
     "w6OysterRoot",
-    "w6Mudskipper"
+    "w6Pitchers"
+   ],
+   [
+    "w6Pitchers",
+    "w6StakeLantern"
+   ]
+  ],
+  "hang": [
+   [
+    "w6OrchidSpray",
+    "w6AirPlants"
+   ],
+   [
+    "w6WeaverNest",
+    "w6NestBasket"
+   ],
+   [
+    "w6AirPlants",
+    "w6WeaverNest"
+   ]
+  ],
+  "clutter": [
+   [
+    "w6Pods",
+    "w6SnailRock",
+    "w6MudLilies"
+   ],
+   [
+    "w6Pods",
+    "w6SnailRock"
+   ],
+   [
+    "w6SnailRock",
+    "w6Pods"
    ]
   ]
  }

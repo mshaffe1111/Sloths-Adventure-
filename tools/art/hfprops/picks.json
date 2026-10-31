@@ -1,1 +1,90 @@
-{"6": {"oysterRoot": {"take": "w6-oysterRoot-5", "units": 78}, "kingfisher": {"take": "w6-kingfisher-5", "units": 54}, "mudskipper": {"take": "w6-mudskipper-5", "units": 44}}}
+{
+ "6": {
+  "oysterRoot": {
+   "take": "w6-oysterRoot-5",
+   "units": 78,
+   "cropBottom": 0.12
+  },
+  "pitchers": {
+   "take": "w6-pitchers-5",
+   "units": 54,
+   "cropBottom": 0.1,
+   "box": [
+    0.27,
+    0.16,
+    0.86,
+    1.0
+   ]
+  },
+  "mudskipper": {
+   "take": "w6-mudskipper-5",
+   "units": 46,
+   "cropBottom": 0.08
+  },
+  "stakeLantern": {
+   "take": "w6-stakeLantern-17",
+   "units": 46,
+   "cropBottom": 0.06
+  },
+  "orchidSpray": {
+   "take": "w6-orchidSpray-17",
+   "units": 50,
+   "hang": true,
+   "box": [
+    0.38,
+    0.22,
+    0.64,
+    0.84
+   ]
+  },
+  "airPlants": {
+   "take": "w6-airPlants-17",
+   "units": 50,
+   "hang": true,
+   "box": [
+    0.36,
+    0.3,
+    0.68,
+    0.8
+   ]
+  },
+  "weaverNest": {
+   "take": "w6-weaverNest-5",
+   "units": 42,
+   "hang": true,
+   "box": [
+    0.3,
+    0.24,
+    0.72,
+    0.84
+   ]
+  },
+  "pods": {
+   "take": "w6-pods-5",
+   "units": 50,
+   "cropBottom": 0.04
+  },
+  "snailRock": {
+   "take": "w6-snailRock-5",
+   "units": 46,
+   "cropBottom": 0.18
+  },
+  "mudLilies": {
+   "take": "w6-mudLilies-5",
+   "units": 50,
+   "cropBottom": 0.03
+  },
+  "nestBasket": {
+   "take": "w6-weaverNest-17",
+   "units": 44,
+   "hang": true,
+   "box": [
+    0.3,
+    0.28,
+    0.72,
+    0.8
+   ],
+   "job": "hang"
+  }
+ }
+}

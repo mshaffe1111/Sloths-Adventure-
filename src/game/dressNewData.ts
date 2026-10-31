@@ -6,28 +6,96 @@
  */
 export interface DressNewFrame { x: number; y: number; w: number; h: number; units: number; world: number; hang?: boolean }
 export const DRESS_NEW_FRAMES = {
- "w6OysterRoot": {
+ "w6OrchidSpray": {
   "x": 0,
   "y": 0,
+  "w": 200,
+  "h": 461,
+  "units": 50,
+  "world": 6,
+  "hang": true
+ },
+ "w6OysterRoot": {
+  "x": 204,
+  "y": 0,
   "w": 312,
-  "h": 406,
+  "h": 323,
   "units": 78,
   "world": 6
  },
- "w6Kingfisher": {
-  "x": 316,
+ "w6AirPlants": {
+  "x": 520,
+  "y": 0,
+  "w": 200,
+  "h": 313,
+  "units": 50,
+  "world": 6,
+  "hang": true
+ },
+ "w6Pitchers": {
+  "x": 724,
   "y": 0,
   "w": 216,
-  "h": 285,
+  "h": 254,
   "units": 54,
   "world": 6
  },
- "w6Mudskipper": {
-  "x": 536,
-  "y": 0,
+ "w6WeaverNest": {
+  "x": 0,
+  "y": 465,
+  "w": 168,
+  "h": 248,
+  "units": 42,
+  "world": 6,
+  "hang": true
+ },
+ "w6StakeLantern": {
+  "x": 172,
+  "y": 465,
+  "w": 184,
+  "h": 244,
+  "units": 46,
+  "world": 6
+ },
+ "w6NestBasket": {
+  "x": 360,
+  "y": 465,
   "w": 176,
-  "h": 117,
+  "h": 214,
   "units": 44,
+  "world": 6,
+  "hang": true
+ },
+ "w6SnailRock": {
+  "x": 540,
+  "y": 465,
+  "w": 184,
+  "h": 211,
+  "units": 46,
+  "world": 6
+ },
+ "w6MudLilies": {
+  "x": 728,
+  "y": 465,
+  "w": 200,
+  "h": 192,
+  "units": 50,
+  "world": 6
+ },
+ "w6Mudskipper": {
+  "x": 0,
+  "y": 717,
+  "w": 184,
+  "h": 130,
+  "units": 46,
+  "world": 6
+ },
+ "w6Pods": {
+  "x": 188,
+  "y": 717,
+  "w": 200,
+  "h": 70,
+  "units": 50,
   "world": 6
  }
 } satisfies Record<string, DressNewFrame>;
