@@ -36,6 +36,13 @@ SETS = {
         'steps': 'A castle courtyard after the storm at night: the storm clouds drift slowly apart, the puddles ripple softly and '
                  'reflect the warm doorway light, a few last raindrops fall.',
     },
+    # round 2 (the new world plates; only soft motion: water, mist, rain)
+    'b': {
+        'w4-day': 'Misty cascades: the waterfalls pour and shimmer steadily, white mist rolls slowly at their feet and drifts between the cliffs, the pool ripples.',
+        'w1-storm': 'A rainforest in a storm: heavy rain slants down steadily, the dark green-grey clouds churn slowly through the gaps in the canopy.',
+        'w3-storm': 'A grotto mouth in the rain at night: rain falls steadily, drops splash on the rocks, the glowing blue mushrooms pulse softly.',
+        'w6-dusk': 'A mangrove swamp at dusk: soft mist drifts slowly over the still water, the water ripples gently, the light glimmers.',
+    },
 }
 
 
