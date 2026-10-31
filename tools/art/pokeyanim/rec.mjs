@@ -32,7 +32,10 @@ for (const [ori, w, h] of [['side', 844, 390], ['up', 390, 844]].filter(([o]) =>
   for (let i = 0; i < 4; i++) { const g = p.getByText('Skip tips'); if (await g.count()) { await g.first().click(); await p.waitForTimeout(300); } else break; }
   // a flat open stretch of 1-1's first ground, Pokey stood still facing right
   await p.evaluate(() => { let e = window.__engine; if (typeof e === 'function') e = e(); const pl = e.player;
-    Object.assign(pl, { vx: 0, vy: 0, facing: 1, invincibleTimer: 99 }); setInterval(() => { pl.invincibleTimer = 99; }, 200); });
+    Object.assign(pl, { vx: 0, vy: 0, facing: 1 });
+    // nothing to pick up or bump into on the stretch he runs (no sparkles or hits over the moves being judged)
+    const far = (o) => Math.abs((o.x ?? 0) - pl.x) > 900;
+    e.collectibles = e.collectibles.filter(far); e.enemies = e.enemies.filter(far); });
   await p.waitForTimeout(1500);
   const dir = join(out, `${tag}-${ori}-frames`);
   rmSync(dir, { recursive: true, force: true });

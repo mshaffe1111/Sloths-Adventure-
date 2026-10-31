@@ -275,7 +275,8 @@ function drawSkidPuffs(ctx: CanvasRenderingContext2D, time: number) {
     const age = time - f.t0;
     if (age < 0 || age >= PUFF_LIFE) continue;
     const u = age / PUFF_LIFE;
-    drawFx(ctx, fxFrame('dust', u), f.x + f.dir * 70 * age, f.y + 2, 30 + 14 * u, { ay: 0.9, alpha: Math.min(1, (1 - u) * 3) * 0.85, flipX: f.dir < 0 });
+    // small and soft, lifting off the ground as it thins, so it reads as dust kicked up and never as a stone on the path
+    drawFx(ctx, fxFrame('dust', Math.min(0.99, 0.25 + u * 0.75)), f.x + f.dir * 80 * age, f.y + 2 - 26 * age, 20 + 16 * u, { ay: 0.9, alpha: Math.min(1, (1 - u) * 2.5) * 0.6, flipX: f.dir < 0 });
   }
 }
 

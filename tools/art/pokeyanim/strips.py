@@ -18,19 +18,22 @@ MOMENTS = {
     'hardland': range(land - 1, land + 8),
     'doublejump': range(182, 196, 1),
 }
+# a wider crop where he leaves the ground a long way (css px round him)
+WIDE = {'doublejump': 95, 'hardland': 70}
 DPR = 2
-HALF = 80  # css px round him
+HALF = 55  # css px round him
 for name, rng in MOMENTS.items():
+    half = WIDE.get(name, HALF)
     cells = []
     for t in ('before', 'after'):
         row = []
         for i in rng:
             x, y, *_r = cam[t][i]
             cx, cy = cam[t][i][6], cam[t][i][7]
-            sx, sy = (x - cx) * zoom, (y - cy) * zoom - 40 * zoom
+            sx, sy = (x - cx) * zoom, (y - cy) * zoom - (40 if half == HALF else half * 0.9 / zoom) * zoom
             im = Image.open(rec / f'{t}-{ori}-frames' / f'f{i:05d}.png')
-            box = [round((sx - HALF) * DPR), round((sy - HALF) * DPR), round((sx + HALF) * DPR), round((sy + HALF) * DPR)]
-            row.append(im.crop(box))
+            box = [round((sx - half) * DPR), round((sy - half) * DPR), round((sx + half) * DPR), round((sy + half) * DPR)]
+            row.append(im.crop(box).resize((HALF * 2 * DPR, HALF * 2 * DPR)))
         cells.append(row)
     n = len(cells[0]); c = HALF * 2 * DPR
     sheet = Image.new('RGB', (n * c, 2 * c + 40), (30, 30, 30))
