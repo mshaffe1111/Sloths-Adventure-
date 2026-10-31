@@ -146,12 +146,26 @@ export const MOVE_SHEETS: Record<string, string> = {
   run: 'move-run', walk: 'move-walk', jab: 'move-jab', cross: 'move-cross', hook: 'move-hook', kick: 'move-kick', kick2: 'move-kick2', mega: 'move-mega',
   climb: 'move-climb', swing: 'move-swing', jump: 'move-jump', flip: 'move-flip',
 };
+/**
+ * A sheet's frames in the order a move plays them, when that is not the sheet's own order. The jab came back from full reach in one
+ * frame to a pose twisted toward the camera; its own wind-up (the arm drawn in, the same stance) now carries the way back (AN-13).
+ */
+export const MOVE_ORDER: Record<string, readonly number[]> = { 'move-jab': [0, 1, 2, 3, 0, 5] };
+/** pure: the sheet frame a move at progress u (0..1) shows, through MOVE_ORDER when the sheet has one */
+export function moveFrame(sheet: string, n: number, u: number): number {
+  const order = MOVE_ORDER[sheet];
+  return order ? order[moveIndex(order.length, u)] : moveIndex(n, u);
+}
 /** the climb sheet is one full hand-over-hand cycle (left reach, right reach) over this much height */
 export const CLIMB_CYCLE_PX = 110;
 /** the swing sheet runs from the back of the swing to the front; this angle (radians) or more is the end of the sheet */
 export const SWING_REACH = 1.0;
-/** the jump sheet runs from take-off to the bottom of the fall, by vertical speed from this (rising, px/s) to this (falling) */
-export const JUMP_VY: [number, number] = [-720, 620];
+/**
+ * the jump sheet runs from just after take-off to the bottom of the fall, by vertical speed from this (rising, px/s) to this (falling).
+ * Rising faster than the first, the painted take-off stretch (the standard hero's `launch`) shows instead: the clip's own take-off frames
+ * turn him toward the camera.
+ */
+export const JUMP_VY: [number, number] = [-580, 620];
 /** strides per turn of walkCycle (the same rate as the standard hero's cycle, so the feet keep pace with the ground) */
 const STRIDE_RATE = 0.6;
 const WALK_MAX = 90;
@@ -199,10 +213,11 @@ export function movePick(p: PlayerState): ClipFrame | null {
     if (!p.grounded && p.attackMove !== 'mega') return null; // the air attacks keep their own frames
     const sheet = MOVE_SHEETS[p.attackMove];
     if (!sheet || !hasClip(sheet)) return null;
-    return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, p.attackU));
+    return frameOf(sheet, moveFrame(sheet, HERO_CLIPS[sheet].n, p.attackU));
   }
   // the climb: the frame follows the height he has climbed, so his paws keep pace with the trunk
   if (p.climbing) {
+    // (climbing down plays the cycle backward: the clip made for a climb down, pa-climbdown-s3, hardly moved)
     const sheet = MOVE_SHEETS.climb;
     if (!hasClip(sheet)) return null;
     const u = ((((-p.y / CLIMB_CYCLE_PX) % 1) + 1) % 1);
@@ -224,7 +239,7 @@ export function movePick(p: PlayerState): ClipFrame | null {
   // an ordinary jump (not a dive or a bounce, which keep their own frames): take-off, the top, the fall, by vertical speed
   if (!p.grounded && !p.hanging) {
     const sheet = MOVE_SHEETS.jump;
-    if (p.isDoubleJumping || p.diving || p.bounce || !hasClip(sheet)) return null;
+    if (p.isDoubleJumping || p.diving || p.bounce || p.vy < JUMP_VY[0] || !hasClip(sheet)) return null;
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, jumpU(p.vy)));
   }
   if (!p.grounded || p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.pushing) return null;

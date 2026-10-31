@@ -1,0 +1,34 @@
+{
+ "tag": "pokey-anim3",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "pa-punch-s5",
+   "src": "gh:4b04c85a37e79f9515b795c4deb27e3967f4d5bd:reference/prop-sheets/qa-notes/pokey-anim/starts/punch.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, throws one strong forward punch, his plain cream bandage wrist wraps and brown fur exactly as in the picture: he winds up, turning his shoulders and pulling his far fist back by his cheek, then punches straight forward to the right with his arm fully stretched, holds it a moment, then pulls back into a ready guard, feet planted in the same spot",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall, red stripes, striped wraps, red wraps, back view, turning away, facing away",
+   "seed": 5,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "pa-punch-s7",
+   "src": "gh:4b04c85a37e79f9515b795c4deb27e3967f4d5bd:reference/prop-sheets/qa-notes/pokey-anim/starts/punch.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps, side view facing right, throws one strong forward punch, his plain cream bandage wrist wraps and brown fur exactly as in the picture: he winds up, turning his shoulders and pulling his far fist back by his cheek, then punches straight forward to the right with his arm fully stretched, holds it a moment, then pulls back into a ready guard, feet planted in the same spot",
+   "neg": "extra limbs, extra arms, extra sloth, turning around, facing left, facing the camera, background scenery, ground, floor line, shadow, text, watermark, blurry, photo, 3d render, camera movement, zoom, motion blur, smear, tree, trunk, pole, rope, branch, ladder, wall, red stripes, striped wraps, red wraps, back view, turning away, facing away",
+   "seed": 7,
+   "w": 832,
+   "h": 480
+  }
+ ]
+}
