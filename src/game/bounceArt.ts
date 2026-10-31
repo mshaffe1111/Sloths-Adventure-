@@ -10,6 +10,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { BOUNCE_FRAMES, BOUNCE_URL, type BounceFrame } from './bounceAtlasData.ts';
 import type { Platform } from './types.ts';
 import { viewRect, type ViewRect } from './artKit.ts';
+import { drawW8BounceLeaf } from './w8DecorArt.ts';
 
 /** the view, kept for the stalk's cull */
 const stalkView: ViewRect = { x0: 0, y0: 0, x1: 0, y1: 0 };
@@ -71,7 +72,9 @@ export function drawBounce(ctx: CanvasRenderingContext2D, p: Platform, world: nu
   const sp = BOUNCE_FRAMES[`cap-w${world}`] ? `w${world}` : 'w1';
   const cf = BOUNCE_FRAMES[`cap-${sp}`];
   const sf = BOUNCE_FRAMES[`stalk-${sp}`];
-  if (cf && sf && warmBounce()) {
+  // (World 8: every other moon flower is the bouncy leaf of Matt's w8b sheet, w8DecorArt.ts)
+  const leaf = world === 8 && p.id % 2 === 1 && drawW8BounceLeaf(ctx, p, time, part, bottomY);
+  if (!leaf && cf && sf && warmBounce()) {
     const k = (p.width * (cf.span ?? 1.1)) / (cf.w * (cf.cw ?? 1));
     const cw = cf.w * k, ch = cf.h * k;
     const x0 = cxp - (cf.cx ?? 0.5) * cw;

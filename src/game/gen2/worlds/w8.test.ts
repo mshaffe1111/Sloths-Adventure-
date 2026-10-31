@@ -71,7 +71,7 @@ test('the manifest: ids unique, every socket asks for something the world has, e
   for (const l of [...Object.values(W8_TIPS), ...W8_NEW_LINES, ...W8R_NEW_LINES]) assert.ok(words(l) < 10, l);
 });
 
-test('the sections lay in their own space, 600-1800 px (+370 a liana), level at their ends, on Normal and Easy', () => {
+test('the sections lay in their own space, 600-1800 px (+370 a liana, +300 a rope), level at their ends, on Normal and Easy', () => {
   for (const d of ['normal', 'easy'] as const) {
     const budget = planBudget(cfgOf('8-5'), W8_MANIFEST, d);
     for (const s of ALL) {
@@ -81,7 +81,9 @@ test('the sections lay in their own space, 600-1800 px (+370 a liana), level at 
         // (a liana's gap lies past the glide, 370 px more; a moonlight glide's past the double jump, 250 px more)
         const lianas = L.pieces.filter((p) => p.shape === 'liana').length;
         const glides = s.pieces.filter((p) => p.place.kind === 'pit' && p.place.jump === 'glide').length;
-        assert.ok(L.width >= 600 && L.width <= 1800 + 370 * lianas + 250 * glides, `${s.id} ${d}: ${L.width} px`);
+        // (and a rope's past every jump and glide, 460 px or more: 300 px more)
+        const ropes = s.pieces.filter((p) => p.place.kind === 'rope').length;
+        assert.ok(L.width >= 600 && L.width <= 1800 + 370 * lianas + 250 * glides + 300 * ropes, `${s.id} ${d}: ${L.width} px`);
         assert.ok(Math.abs(L.exit.y - s.exitDy) <= 25, `${s.id}: exitDy ${s.exitDy}, laid ${L.exit.y}`);
       }
     }

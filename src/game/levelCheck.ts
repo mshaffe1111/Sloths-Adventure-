@@ -190,7 +190,23 @@ function landingPack(v: Vine, platforms: Platform[]): LandingPack {
 const NO_LANDING = -2147483647;
 const hitBuf = new Int32Array(100);
 
+/**
+ * swingLandingsIn's answers, by everything a flight reads (the ledge's edge and height, the vine, the way, the water, the pack): the
+ * physics keeps no state, so the same flight always lands the same, and lianaBand and the petal pass ask the same flights again and
+ * again (8-5: one flight asked about five times over, 2026-10-31, the lead's idea). Bounded; each answer handed out as a copy
+ */
+const FLIGHTS = new Map<string, Map<number, number>>();
+const FLIGHTS_MAX = 4000;
 function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number): Map<number, number> {
+  const key = `${a.x},${a.y},${a.width}|${JSON.stringify(v)}|${dir}|${waterY}|${pack.n},${pack.maxTop}|${pack.y.join(',')}|${pack.lx.join(',')}|${pack.rx.join(',')}|${pack.order.join(',')}|${pack.id.join(',')}`;
+  const hit = FLIGHTS.get(key);
+  if (hit) return new Map(hit);
+  const out = flightLandings(a, v, dir, pack, waterY);
+  if (FLIGHTS.size >= FLIGHTS_MAX) FLIGHTS.clear();
+  FLIGHTS.set(key, new Map(out));
+  return out;
+}
+function flightLandings(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number): Map<number, number> {
   const out = new Map<number, number>();
   const dt = SIM_DTS[0];
   const edge = dir === 1 ? a.x + a.width : a.x;
@@ -278,6 +294,12 @@ export interface CheckOptions {
    * full-hold jump anywhere (easyHoldCheck). Unset: the full jump, as on Normal
    */
   hold?: number;
+  /**
+   * false: a stage's puzzle rooms are walked solved (kitSolved) but not each solved on its own (puzzleCheck checkRooms). For a caller
+   * that reads only the reach (petalPass.ts judgeReach: which pickups are out of reach, whether the exit is): every room error is named
+   * by its room, so none is a reach error, and the room solver was most of a room stage's build (8-3 about 0.9 s of 1.1 s, 2026-10-31)
+   */
+  rooms?: boolean;
 }
 
 /** the graph a check walked: every piece of ground (a platform, less what a boulder or pouring water covers), the links, what was reached */
@@ -332,6 +354,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   // each room is checked on its own, symbolically, that it can be solved (puzzleCheck.ts), on this graph with its gates shut as walls
   if (stage.kit?.rooms.length && !opts.walls) {
     const res = validateStage(kitSolved(stage), { ...opts, walls: [] });
+    if (opts.rooms === false) return res;
     const graphFor = (platforms: GeneratedStage['platforms'], walls: readonly KitWall[], vines?: GeneratedStage['vines']) => {
       let g: CheckGraph | null = null;
       validateStage({ ...stage, platforms, ...(vines ? { vines } : {}), kit: undefined }, { walls, inspect: (x) => { g = x; } });
