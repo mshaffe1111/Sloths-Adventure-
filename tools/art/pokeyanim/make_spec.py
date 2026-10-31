@@ -68,6 +68,18 @@ def spec3(commit):
     print(len(cl), 'clips')
 
 
+def spec4(commit):
+    """the walk (the most-seen move still on painted frames): a slow relaxed walk on the spot, two seeds"""
+    what = ('walks slowly and calmly on the spot, a relaxed easy-going cartoon walk cycle, gentle steps, arms swinging softly, his plain '
+            'cream bandage wrist wraps and brown fur exactly as in the picture, his body staying in the same place in the middle of the '
+            'frame, a smooth repeating loop')
+    neg = NEG + ', running, red stripes, back view, turning away, facing away'
+    cl = [{'name': f'pa-walk-s{sd}', 'src': f'gh:{commit}:reference/prop-sheets/qa-notes/pokey-anim/starts/walk.png', 'prompt': M + what,
+           'neg': neg, 'seed': sd, 'w': 832, 'h': 480} for sd in (3, 11)]
+    (H / 'spec-anim4.json').write_text(json.dumps({'tag': 'pokey-anim4', 'motion': MOTION, 'clips': cl}, indent=1))
+    print(len(cl), 'clips')
+
+
 def spec2(commit):
     cl = []
     for mv, (what, w, h) in CLIPS2.items():
@@ -79,4 +91,4 @@ def spec2(commit):
 
 
 if __name__ == '__main__':
-    {'spec2': spec2, 'spec3': spec3}.get(sys.argv[1], spec)(sys.argv[2])
+    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4}.get(sys.argv[1], spec)(sys.argv[2])

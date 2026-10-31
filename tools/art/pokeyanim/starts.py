@@ -24,6 +24,7 @@ STARTS = {
     'climbdown': ('climb_4', 704, 704, 300, 0.85, 0.5),
     'rope': ('rope:f1', 704, 704, 300, 0.9, 0.5),
     'punch': ('punch_0', 832, 480, 330, 0.92, 0.4),
+    'walk': ('walk_0', 832, 480, 330, 0.92, 0.45),
 }
 ROPE = (ROOT / 'src/game/heroRopeData.ts').read_text()
 ROPE_ATLAS = Image.open(ROOT / 'src/assets/hero/hero-rope.webp').convert('RGBA')
