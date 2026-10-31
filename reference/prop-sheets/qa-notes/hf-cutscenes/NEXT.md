@@ -26,6 +26,8 @@ world's painted plate. Its cast stays on the same ground line (0.8). No story te
 
 About 470 of the 580 scenery panels now stand in a painted plate.
 
+**The raft plate** is repainted (the old one was flat and pale and unused) and wired to W2 mid's two raft lines (`after/compare-raft.jpg`).
+
 **The gorge plate** is wired to W4's six "the vine held" panels, which had shown no Pokey at all.
 
 **Moving plates** (`src/assets/story/live/`, `livePlateData.ts`, cut by `tools/art/hfstory/livecut.py`):
@@ -48,25 +50,25 @@ Videos: `after/live-*-up.mp4`, `after/live-*-side.mp4`.
 
 - **Plates:**
   - W3 glow, W9 night: muddy.
-  - W9 dusk: the floor came out as lava, and sideways the volcano was lost.
-  - W6 day: the floor is water.
+  - W9 dusk (three tries): the floor came out as lava, or the volcano was lost sideways
+    (`after/compare-w4-w1dusk-w9.jpg`; the third try is in the bucket as `wp-9-dusk-x62-full.png`).
+  - W6 day (twice): the floor is water.
 - **Clips:**
   - gorge, tea, village, drake-cave, cookhouse, grandma-door: the motion falls on fine detail, which a soft overlay blurs.
-  - W4 day, W1 storm: barely moved.
+  - W4 day, W1 storm, W6 dusk: barely moved.
   - W3 storm: the rain moved only in blotches.
 - **Lesson:** a whole-plate Wan clip only works for skies, weather, mist and water.
 
 ## Left, and the plan for the rest of the $28
 
-- Spend so far about $6.5 (see `jobs.txt`). About $21 left.
-- **Tier 3, running at the stop:** raft repaint (the W2 mid raft beat; the old raft plate is flat and pale), W9 dusk and night with a
-  basalt floor, W6 day with a mud bank. Review each in the game the same way; wire what passes (raft: `plate: 'raft'` on W2 mid beats 1
-  and 13 goes to the lead, since it changes the scene's place).
-- **W8 night:** sideways it is soft. A redo at a crisper strength is worth about $0.30.
-- **Fine motion** (lanterns, fire, steam, webs): not a whole-plate clip. Use small painted flicker sprites over the plate, or
-  clips of cropped regions at full resolution. About $3 for cookhouse, grandma-door, cell, door and warroom.
-- **Boss-scene backgrounds:** the 10 boss intro and defeat stories mostly stand in the world plates now. A boss arena plate per world
-  (about $0.40 each) would set them apart.
-- **Moving clips for the new world plates' skies and water:** use region crops (W2 river, W6 mist, W10 clouds), about $2.
-- **Art-use:** `council.webp` (plate and live) is still drawn by no story. It needs a beat that is the council (a lead and Matt call:
-  story text).
+- **Spend:** about $7.5 of the $28, 16 GPU jobs, about 160 minutes on rtx-pro-6000 (`jobs.txt`). About $20 left.
+- **W9 dusk and W9 night (48 panels):** paint the volcano as a cut-out over a plate whose floor is said outright, instead of hoping one
+  img2img keeps both. About $1.
+- **W8 night (81 panels):** wired, but soft sideways. A crisper repaint is worth about $0.40.
+- **Fine motion** (lanterns, fire, steam, webs) needs small painted flicker sprites or clips of cropped regions at full resolution,
+  not whole-plate clips. About $3 for cookhouse, grandma-door, cell, door, warroom and tea.
+- **Sky and water motion for the new world plates:** clips of cropped regions (W10 storm clouds, W2 river), about $2. Whole-plate
+  clips of them barely moved.
+- **Boss arena plates:** one per world for the boss intros and defeats, about $0.40 each.
+- **Council:** `council.webp` (plate and live clip) is still drawn by no story. It needs a beat set at the council; that is story
+  text, so it is a call for the lead and Matt.

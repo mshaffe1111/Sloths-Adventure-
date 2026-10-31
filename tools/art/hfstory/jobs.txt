@@ -41,3 +41,5 @@ tier3 verdicts: KEPT raft x62 (repaint of the unused raft plate), 9-dusk x62 (vo
 wp-full6 6ae66d290e0338d1bb7d47bc created 22:35Z: full pass raft x62, 9-dusk x62
   live w6-dusk THROWN: 3% moved, one corner. live-b total ~22 min ~$1.0
 KEPT raft x62 full: replaces the unused flat raft plate; wired to W2 mid beats 1 and 13 (the raft lines)
+  9-dusk x62 full: DROPPED in-game (sideways the lava volcano the line describes is lost again; upright was better). W9 keeps its scenery.
+TOTAL (22:47Z): 16 GPU jobs, ~160 min on rtx-pro-6000 = ~$7.5 of the $28 cap
