@@ -278,6 +278,28 @@ const restGlideFork = section({
   mirrorable: true,
 });
 
+/**
+ * 8-1's themed rests (2026-10-31: the shared rests are all knots, and their hops ran 8-1's themes together on the variety measure): the
+ * night rests on a low trunk (a climb), the bats' and the loft's rolls on a long plain bough with nothing on it but petals (a breather);
+ * the leapers keep the knots. Weighted over the shared rests, so a themed roll mostly rests its own way
+ */
+const nightRest = { ...restTrunk, id: 'w8-night-rest', uses: [W8_THEME.night], weight: 5 };
+const plainRest = (theme: 'bats' | 'loft') =>
+  section({
+    id: `w8-${theme}-rest`,
+    name: 'a long quiet bough',
+    archetypes: 'any',
+    phases: ['rest', 'goal'],
+    difficulty: 1,
+    weight: 5,
+    uses: [W8_THEME[theme]],
+    pieces: [bank('a', [300, 340]), down('b', 'a', 24, [200, 230]), up('c', 'b', 24, [160, 190])],
+    last: 'c',
+    sockets: [petals('a', 'a', 0.4, 2, 120), scenery('fungus', 'b', [0.4, 0.6], 0.7), petals('c', 'c', 0.5, 1)],
+    mirrorable: true,
+  });
+const themedRests = [nightRest, plainRest('bats'), plainRest('loft')];
+
 // ───────────────────────────── every stage: Ki to Ketsu on the lit boughs ─────────────────────────────
 
 /** knots and short gaps, a small hunter past them */
@@ -707,7 +729,34 @@ const darkLong = section({
 
 /** the night theme's dark stretches (8-1): the dark sections again, for the roll that leans on the dark */
 const nightOf = (t: SectionTemplate, id: string): SectionTemplate => ({ ...t, id, name: t.name.replace('the dark', 'the night'), uses: [W8_THEME.night], weight: 3 });
-const nightSections = [nightOf(darkBoughs, 'w8-night-boughs'), nightOf(darkGap, 'w8-night-gap'), nightOf(darkClimb, 'w8-night-climb')];
+/**
+ * The night's own stretch (2026-10-31, the lead: 8-1's leapers and night read alike, 0.24 on the variety measure; more pieces, not rerolls):
+ * two trunks in the dark, one after the other, no gap between: up the first in the fireflies' light, down its far side, straight up the
+ * next. The night's rolls climb where the leapers' jump
+ */
+const nightTrunks = section({
+  id: 'w8-night-trunks',
+  name: 'two trunks in the night (run)',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  teaches: DARK,
+  weight: 4,
+  uses: [W8_THEME.night],
+  pieces: [
+    bank('in', [180, 210]),
+    down('a', 'in', 30, [200, 230]),
+    ...climbWall('v', 'a', 'w1', 190, [180, 210]),
+    down('b', 'w1', 190, [200, 230]),
+    ...climbWall('v2', 'b', 'w2', 210, [180, 210]),
+    down('c', 'w2', 210, [180, 210]),
+    up('out', 'c', 30, [200, 230]),
+  ],
+  last: 'out',
+  sockets: [darkTip('in'), ...darkEnds('a', 'c'), petals('w1', 'w1', 0.5, 2, 90), petals('b', 'b', 0.5, 1), petals('w2', 'w2', 0.5, 2, 90)],
+  mirrorable: false,
+});
+const nightSections = [nightOf(darkBoughs, 'w8-night-boughs'), nightOf(darkGap, 'w8-night-gap'), nightOf(darkClimb, 'w8-night-climb'), nightTrunks];
 /** the loft theme's stretches (8-1, round its puzzle room) */
 const loftOf = (t: SectionTemplate, id: string): SectionTemplate => ({ ...t, id, uses: [W8_THEME.loft] });
 // (the loft's roll is its room, the bats' runs and a dark trunk: apart from the night's dark and the bats' own runs on the variety measure)
@@ -1530,7 +1579,7 @@ const monarchGuards: SectionTemplate = { ...nightOf(darkBoughs, 'w8-monarch-guar
 // ───────────────────────────── the list, and which stage holds which ─────────────────────────────
 
 export const W8_SECTIONS: SectionTemplate[] = [
-  ...litGates, restBough, restFork, restTrunk, restTrunkKnot, restGlide, restGlideFork,
+  ...litGates, restBough, restFork, restTrunk, restTrunkKnot, restGlide, restGlideFork, ...themedRests,
   knotHops, boughGap, doubleGap, trunkClimb, rise, drop, climbRun, prowlBough,
   darkBoughs, darkGap, darkClimb, darkLong, ...nightSections, ...loftSections,
   ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms,
@@ -1556,6 +1605,9 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   'w8-rest-bough': [1, 2, 3, 8, 9],
   'w8-rest-fork': [1, 2, 3, 8, 9],
   'w8-rest-trunk': [5],
+  'w8-night-rest': [1],
+  'w8-bats-rest': [1],
+  'w8-loft-rest': [1],
   'w8-rest-trunk-knot': [5],
   'w8-rest-glide': [6],
   // (8-1's sleeping-bat runs: its own)

@@ -1820,7 +1820,7 @@ export class KitPlay {
         // (World 7: Matt's stone lever, w7PuzzleArt.ts)
         if (this.look.world === 7 && drawW7Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 78)) continue;
         // (World 8: the branch-lever stump of Matt's W8 sheet, its branch pulled down while on)
-        if (this.look.world === 8 && drawW8Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 84)) continue;
+        if (this.look.world === 8 && drawW8Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 84, this.t)) continue;
         if (!drawKitArt(ctx, l.show > 0.5 ? 'leverOn' : 'leverOff', l.x, l.y + 4)) {
           ctx.strokeStyle = '#6b4a2b';
           ctx.lineWidth = 6;
