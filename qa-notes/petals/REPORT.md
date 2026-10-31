@@ -70,9 +70,12 @@ quotas (1-2 72 (was 80), 1-5 77 (was 90), 2-2 the lower of 80 and its petals / 1
   pickups; the petal pass removed them, so the guard began judging 1-2, and on 6 sampled rolls the check stops short of the exit. The
   same 6 rolls fail the check on today's game too: worth a look by whoever owns 1-2.
 
+## Checks (11:25 PM ET)
+
+tsc clean; full suite 1873 pass, 0 fail (4-3's known TODO aside); vite build; artcheck PASS; drawcheck PASS (384 s).
+
 ## Not done / to watch
 
 - Stage build cost: the pass adds two to five level checks per stage build (about 50 ms per stage on desktop); worth a look on
   Matt's Pixel.
 - 1-7's liana stretch; 2-8, 8-4, 8-8 and 9-1 still have one stretch of 1.8-2 k px.
-- drawcheck not run yet (petals are the same sprite, just placed differently).
