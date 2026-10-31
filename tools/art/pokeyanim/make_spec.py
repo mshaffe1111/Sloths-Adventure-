@@ -80,6 +80,40 @@ def spec4(commit):
     print(len(cl), 'clips')
 
 
+TWEEN = ('Picture 1 and Picture 2 show the same friendly brown three-toed sloth at two moments of one smooth movement: {what}. Draw '
+         'this same sloth in the pose exactly halfway between Picture 1 and Picture 2, as the in-between drawing of a hand-drawn '
+         'animation: every limb halfway along its way from where it is in Picture 1 to where it is in Picture 2, {grip}. Keep '
+         'everything else exactly as in Picture 1: the same face and eyes, the same brown fur and cream belly, the same pale bandage '
+         'wrist wraps, the same thin brown satchel strap across his chest and the small brown bag, the same thin dark outline, the same '
+         'soft painted cartoon style, the same size, and the same flat plain grey background. Nothing else in the picture.')
+TWEEN_NEG = ('extra limbs, extra arms, extra paws, extra sloth, two sloths, rope, vine, branch, pole, changed face, different eyes, '
+             'missing wrist wraps, red stripes, background scenery, photo, 3d render, text, watermark, blurry, back view')
+
+
+def spec5(commit):
+    """round 3: Qwen-Edit in-betweens of the rope cells and of the vine poses, and the punch from the cross's own frame"""
+    st = f'gh:{commit}:reference/prop-sheets/qa-notes/pokey-anim/starts/'
+    rope = ('hanging from a rope just above his head and moving along it hand over hand to the right', 'his paws at the very top, '
+            'where the rope runs, at the same height as in both pictures')
+    vine = ('hanging by his paws from a vine and swinging on it', 'his top paw gripping at exactly the same point as in both pictures')
+    ed = []
+    cyc = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6']
+    for a, b in zip(cyc, cyc[1:] + cyc[:1]):
+        ed.append({'name': f'tw-rope-{a}{b}', 'src': st + f'rope_{a}.png', 'refs': [st + f'rope_{b}.png'], 'w': 768, 'h': 768,
+                   'prompt': TWEEN.format(what=rope[0], grip=rope[1]), 'neg': TWEEN_NEG, 'seeds': [1, 2, 3], 'lora': 0.6})
+    for a, b in (('still', 'forward'), ('still', 'back')):
+        ed.append({'name': f'tw-vine-{a}{b}', 'src': st + f'vine_{a}.png', 'refs': [st + f'vine_{b}.png'], 'w': 768, 'h': 768,
+                   'prompt': TWEEN.format(what=vine[0], grip=vine[1]), 'neg': TWEEN_NEG, 'seeds': [1, 2, 3], 'lora': 0.6})
+    what = ('stands facing right in a ready guard, throws one quick straight jab forward with his near arm, the fist shooting straight out '
+            'to the right at shoulder height, then pulls it straight back into the guard; his body and face stay turned toward us the whole '
+            'time, his plain cream bandage wrist wraps and brown fur exactly as in the picture, feet planted in the same spot')
+    neg = NEG + ', red stripes, striped wraps, back view, turning away, facing away, turning his back'
+    cl = [{'name': f'pa-jab-s{sd}', 'src': st + 'punch_cross.png', 'prompt': M + what, 'neg': neg, 'seed': sd, 'w': 832, 'h': 480}
+          for sd in (3, 5, 11)]
+    (H / 'spec-anim5.json').write_text(json.dumps({'tag': 'pokey-anim5', 'edits': ed, 'motion': MOTION, 'clips': cl}, indent=1))
+    print(len(ed), 'edit items,', len(cl), 'clips')
+
+
 def spec2(commit):
     cl = []
     for mv, (what, w, h) in CLIPS2.items():
@@ -91,4 +125,4 @@ def spec2(commit):
 
 
 if __name__ == '__main__':
-    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4}.get(sys.argv[1], spec)(sys.argv[2])
+    {'spec2': spec2, 'spec3': spec3, 'spec4': spec4, 'spec5': spec5}.get(sys.argv[1], spec)(sys.argv[2])
