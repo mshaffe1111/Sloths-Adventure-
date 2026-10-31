@@ -61,6 +61,10 @@ export const W9_THEME = {
   logs: 'w9:t-logs',
   /** 9-8: the piston columns up to the high ledges (N3: w9Bob.ts) */
   pistons: 'w9:t-pistons',
+  /** 9-5 / 9-8: the flare slabs on the route (N5: w9Heat.ts) */
+  flares: 'w9:t-flares',
+  /** 9-6 / 9-9: the lavafalls pouring from above (N9: w9Heat.ts) */
+  lavafalls: 'w9:t-lavafalls',
 } as const;
 export type W9Theme = (typeof W9_THEME)[keyof typeof W9_THEME];
 
@@ -871,7 +875,7 @@ const fernLong = section({
 // ───────────────────────────── 9-5 Vent Riding (sprint) ─────────────────────────────
 
 /** a vent-riding gate (9-5): Dot's line about the warm air, a first glide over a vent (a soft chasm), and the roll's theme opens */
-const ventGate = (theme: 'glides' | 'bursts' | 'logs', name: string): SectionTemplate =>
+const ventGate = (theme: 'glides' | 'bursts' | 'logs' | 'flares', name: string): SectionTemplate =>
   section({
     id: `w9-vent-gate-${theme}`,
     name: `vent riding: ${name} (gate)`,
@@ -948,7 +952,7 @@ const burstRow = section({
 // ───────────────────────────── 9-6 Ash Fields (purge), 9-9 The Drake's Hoard (gauntlet) ─────────────────────────────
 
 /** a hunt gate: Dot explains the shut shrine before any animal, and the roll's theme opens */
-const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs', line: 'hunt' | 'fight'): SectionTemplate => {
+const huntGate = (theme: 'cats' | 'prowl' | 'harpies' | 'boas' | 'logs' | 'lavafalls', line: 'hunt' | 'fight'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   // (the hoard's gate climbs a basalt stair to the Drake's door and down again, the ash fields' crosses two knobs: the two fight stages
   // never open alike)
@@ -1142,7 +1146,7 @@ const boaChasm = section({
 // ───────────────────────────── 9-8 Pell's Thread (search) ─────────────────────────────
 
 /** a search gate: Dot explains the shut shrine (Pell's threads), and the roll's theme opens */
-const threadGate = (theme: 'ledges' | 'channels' | 'pistons'): SectionTemplate => {
+const threadGate = (theme: 'ledges' | 'channels' | 'pistons' | 'flares'): SectionTemplate => {
   const k = knobs('', 'a', 2, [220, 260]);
   return section({
     id: `w9-thread-gate-${theme}`,
@@ -1356,5 +1360,13 @@ export const W9_BOB_GATES = {
   pistons: threadGate('pistons'),
 } as const;
 
+/** the heat hazards' gates (w9Heat.ts): the flares on 9-5 and 9-8, the lavafalls on 9-6 and 9-9 */
+export const W9_HEAT_GATES = {
+  flares5: ventGate('flares', 'the flare slabs'),
+  flares8: threadGate('flares'),
+  lavafalls6: huntGate('lavafalls', 'hunt'),
+  lavafalls9: huntGate('lavafalls', 'fight'),
+} as const;
+
 /** the helpers w9Bob.ts builds its sections with (the same as this file's) */
-export const W9H = { bank, up, down, lava, wide, glide, knobs, petals, geyser, scenery, flag, tip, foe, thread, section, ALL, MID, LIVE, HOT, SHARED, ANY, SMALL, CATS, GEYSER, GEYSER_WAIT } as const;
+export const W9H = { bank, up, down, lava, wide, glide, knobs, petals, geyser, prop, scenery, flag, tip, foe, thread, section, ALL, MID, LIVE, HOT, SHARED, ANY, SMALL, CATS, GEYSER, GEYSER_WAIT } as const;

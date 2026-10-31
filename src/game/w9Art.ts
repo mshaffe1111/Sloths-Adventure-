@@ -271,3 +271,20 @@ export function drawW9Draught(ctx: CanvasRenderingContext2D, cx: number, topY: n
   ctx.restore();
   return true;
 }
+
+/** one frame of World 9's hazards sheet (w9/hazards.json: lava, vent, warn, burst0-2, haze0-5, splash0-2) into the box, flipped upside
+ *  down if asked (a lavafall is the fountain poured from above: w9HeatArt.ts). False while the sheet loads */
+export function drawW9Hazard(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, w: number, h: number, flip = false): boolean {
+  const im = load(HAZARDS_URL);
+  const f = HZ[name];
+  if (!im || !f) return false;
+  if (!flip) blit(ctx, im, f, x, y, w, h);
+  else {
+    ctx.save();
+    ctx.translate(0, y * 2 + h);
+    ctx.scale(1, -1);
+    blit(ctx, im, f, x, y, w, h);
+    ctx.restore();
+  }
+  return true;
+}

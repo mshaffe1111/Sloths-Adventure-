@@ -299,7 +299,7 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     else {
       const every = Math.max(2, z.period);
       const wait = Math.min(TIME.zoneExtra[z.kind] ?? 0.7, idleTime(z));
-      span(b, every, 'Z', z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : `${z.kind} zone`, wait, `${z.kind} zones`);
+      span(b, every, 'Z', z.kind === 'wind' ? 'wind gust' : z.kind === 'spore' ? 'spore cloud' : `${z.look ?? z.kind} zone`, wait, `${z.look ?? z.kind} zones`);
     }
   }
   for (const w of stage.proto?.watch ?? []) {

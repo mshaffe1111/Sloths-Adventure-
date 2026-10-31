@@ -9,6 +9,7 @@ import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { drawW9Crumble, drawW9Eruption, drawW9Vent } from './w9Art.ts';
+import { drawW9Flare, drawW9FlareBurst, drawW9Lavafall } from './w9HeatArt.ts';
 import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
 import { drawW3Piece, w3ArtReady } from './w3Art.ts';
 import { drawW5Box, w5ArtReady } from './w5Art.ts';
@@ -297,6 +298,8 @@ function glowAt(ctx: CanvasRenderingContext2D, col: string, x: number, y: number
  */
 function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
   // (World 9's painted vent rock: w9Art.ts; the shapes below while its sheet loads)
+  if (z.look === 'flare') return void drawW9Flare(ctx, z, st, t);
+  if (z.look === 'lavafall') return;
   if (drawW9Vent(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const w = (z.x1 - z.x0) * 2.1;
@@ -313,6 +316,8 @@ function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
  * mouth, a heat glow round it and painted sparks thrown up and out.
  */
 function drawEruption(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  if (z.look === 'flare') return void drawW9FlareBurst(ctx, z, st);
+  if (z.look === 'lavafall') return void drawW9Lavafall(ctx, z, st, t);
   if (drawW9Eruption(ctx, z, st, t)) return;
   const cx = (z.x0 + z.x1) / 2;
   const w = z.x1 - z.x0;

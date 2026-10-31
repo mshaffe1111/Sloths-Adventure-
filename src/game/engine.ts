@@ -1575,8 +1575,12 @@ export class GameEngine {
       }
       // the first time a zone of each kind is close, say what it is (once a session)
       for (const z of zones) {
-        if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
-        this.zoneHinted[z.kind] = true;
+        // (World 9's flares, lavafalls and surges are their own things, taught by their stage's own tips (gen2/worlds/w9.ts): not the
+        // geyser's or the tide's line)
+        const hk = z.look ?? z.kind;
+        if (this.zoneHinted[hk] || p.x < z.x0 - 420 || p.x > z.x1) continue;
+        this.zoneHinted[hk] = true;
+        if (z.look) continue;
         // (said in Dot's bubble, or Pokey's thought when she is away, once a stage: no words floating in the world, the Dot rework
         // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
         const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;

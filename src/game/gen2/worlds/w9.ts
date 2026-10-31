@@ -55,11 +55,15 @@ export const W9_PROP = {
   ohia: 'ohia',
   log: 'log',
   smoke: 'smoke',
+  /** a flare slab on the route (GRAB-BAG.md N5): its cracks glow, then flare (a low geyser zone, w9HeatArt.ts) */
+  flare: 'flare',
+  /** a lavafall pouring from above (N9): drips, then the column (a geyser zone from the sky, w9HeatArt.ts) */
+  lavafall: 'lavafall',
 } as const;
 export type W9PropId = (typeof W9_PROP)[keyof typeof W9_PROP];
 
 /** the tags sockets ask for (Socket.allow) */
-export const W9_TAG = { geyser: 'geyser', vent: 'vent', hide: 'hide', cover: 'cover', watch: 'watch', scenery: 'scenery', hunter: 'hunter', big: 'big', small: 'small', still: 'still', quick: 'quick' } as const;
+export const W9_TAG = { flare: 'flare', lavafall: 'lavafall', geyser: 'geyser', vent: 'vent', hide: 'hide', cover: 'cover', watch: 'watch', scenery: 'scenery', hunter: 'hunter', big: 'big', small: 'small', still: 'still', quick: 'quick' } as const;
 
 /** the mechanics World 9 teaches, as `teaches` / `uses` keys and Dot's tip keys */
 export const W9_LESSON = {
@@ -78,6 +82,9 @@ export const W9_LESSON = {
   /** the moving logs: the pumice rafts (9-1 teaches them; the logs of 9-5 and 9-9 ride the same way) and the piston columns (9-8) */
   raft: 'w9:raft',
   piston: 'w9:piston',
+  /** the flare slabs (9-5 teaches them; 9-8 again) and the lavafalls (9-6 teaches them; 9-9 again) */
+  flare: 'w9:flare',
+  lavafall: 'w9:lavafall',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -112,6 +119,9 @@ export const W9_PROPS: PropDef[] = [
   { id: W9_PROP.ohia, tags: [W9_TAG.scenery], w: 90, minApart: 400, looks: ['young-tree'] },
   { id: W9_PROP.log, tags: [W9_TAG.scenery], w: 140, minApart: 500, looks: ['charred-log'] },
   { id: W9_PROP.smoke, tags: [W9_TAG.scenery], w: 140, minApart: 500, looks: ['smoke-crack'] },
+  // (the slab is the flat it lies on, nearly: animals and other props keep off it; two on one flat stand apart, the check's pocket)
+  { id: W9_PROP.flare, tags: [W9_TAG.flare], w: 180, minApart: 290, hazard: true, beat: true },
+  { id: W9_PROP.lavafall, tags: [W9_TAG.lavafall], w: 150, minApart: 220, hazard: true, beat: true },
 ];
 
 // ───────────────────────────── the decor ─────────────────────────────
@@ -139,9 +149,11 @@ export const W9_TIPS: Record<string, string> = {
   [W9_LESSON.threads]: "The shrine's shut. Find Pell's threads first.", // (new, needs the lead's approval)
   [W9_LESSON.raft]: 'Those rafts rise and sink. Watch them.', // (new, needs Matt's approval: GRAB-BAG.md N1)
   [W9_LESSON.piston]: 'These stone columns rise and fall.', // (new, needs Matt's approval: GRAB-BAG.md N3)
+  [W9_LESSON.flare]: 'Those slabs flare up when they glow.', // (new, needs Matt's approval: GRAB-BAG.md N5)
+  [W9_LESSON.lavafall]: 'Lava pours from up there. Watch the drips.', // (new, needs Matt's approval: GRAB-BAG.md N9)
 };
 /** the lines that are new in World 9 (the report lists them for the lead) */
-export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston].map((k) => W9_TIPS[k]);
+export const W9_NEW_LINES: readonly string[] = ['water', W9_LESSON.geyser, W9_LESSON.vent, W9_LESSON.basalt, W9_LESSON.watch, W9_LESSON.threads, W9_LESSON.raft, W9_LESSON.piston, W9_LESSON.flare, W9_LESSON.lavafall].map((k) => W9_TIPS[k]);
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
@@ -166,7 +178,7 @@ export const W9_MANIFEST: WorldManifest = {
   sections: [],
   handBuilt: ['9-2', '9-7', '9-10'],
   // (the geysers are 9-1's, the warm air 9-5's, the doorstep's eye 9-4's; the shut shrine is said in each gate)
-  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', boa: '1-9', tayra: '6-2', harpy: '6-5', [W9_LESSON.geyser]: '9-1', [W9_LESSON.vent]: '9-5', [W9_LESSON.watch]: '9-4', [W9_LESSON.raft]: '9-1', [W9_LESSON.piston]: '9-8', [W9_LESSON.flare]: '9-5', [W9_LESSON.lavafall]: '9-6' },
   tips: W9_TIPS,
 };
 
@@ -213,6 +225,10 @@ export function geyserBeat(stage: number, lesson: boolean): { idle: number; acti
 }
 /** a vent in a chasm: a short column (its top under the lip, so the eruption never reaches the route) on a slow, lazy beat */
 export const VENT = { w: 80, h: 70, warn: 1.3, idle: 3.2, active: 0.9 } as const;
+/** a flare slab (N5): a zone as wide as the slab and low (a jump clears it), the geyser's warning, a slower beat (it lies on the route) */
+export const FLARE = { w: 160, h: 64, warn: 1.3, idle: 2.6, active: 1.0 } as const;
+/** a lavafall (N9): a column from far above the frame to the ground (no jump clears it: wait it out), drips first */
+export const LAVAFALL = { w: 74, h: 900, warn: 1.4, idle: 2.4, active: 1.0 } as const;
 
 /** the longest a watched stretch runs (px): a section's run of basalt, not the stage */
 const WATCH_MAX = 1400;
@@ -271,6 +287,24 @@ export function w9Emitters(stage: number): Record<W9PropId, PropEmitter> {
       out.zones.push({
         kind: 'geyser', x0: R(x - VENT.w / 2), x1: R(x + VENT.w / 2), top: y - VENT.h, bottom: y + 14, baseY: y, dir: 1,
         period, warn: VENT.warn, active: VENT.active, offset: Math.round(hash01(f.x, 23) * period * 10) / 10, force: 0,
+      });
+    },
+    flare: (f, _p, out) => {
+      const lesson = f.socket === 'flareLesson';
+      const idle = lesson ? GEYSER.lessonIdle : FLARE.idle;
+      const period = idle + FLARE.warn + FLARE.active;
+      out.zones.push({
+        kind: 'geyser', look: 'flare', x0: R(f.x - FLARE.w / 2), x1: R(f.x + FLARE.w / 2), top: f.y - FLARE.h, bottom: f.y + 14, baseY: f.y, dir: 1,
+        period, warn: FLARE.warn, active: FLARE.active, offset: Math.round(hash01(f.x, 25) * period * 10) / 10, force: 0,
+      });
+    },
+    lavafall: (f, _p, out) => {
+      const lesson = f.socket === 'lavafallLesson';
+      const idle = lesson ? GEYSER.lessonIdle : LAVAFALL.idle;
+      const period = idle + LAVAFALL.warn + LAVAFALL.active;
+      out.zones.push({
+        kind: 'geyser', look: 'lavafall', x0: R(f.x - LAVAFALL.w / 2), x1: R(f.x + LAVAFALL.w / 2), top: f.y - LAVAFALL.h, bottom: f.y + 14, baseY: f.y, dir: 1,
+        period, warn: LAVAFALL.warn, active: LAVAFALL.active, offset: Math.round(hash01(f.x, 27) * period * 10) / 10, force: 0,
       });
     },
     rockHide: hide('wide'),

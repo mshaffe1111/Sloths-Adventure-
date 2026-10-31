@@ -1690,7 +1690,9 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   const platforms = laid.platforms;
   if (rooms.length) addKitPlatforms(platforms, { rooms });
   sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
-  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(laid.bottom + 120)) };
+  // (World 9's rafts and logs sink deeper than the banks' foot: the lava lies under their lowest stop, BOB, as levelCheck's waterline asks)
+  const bobFoot = Math.max(laid.bottom, ...laid.platforms.filter((p) => p.lift?.bob && p.lift.bob !== 'piston').map((p) => p.lift!.bottom + 26));
+  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(bobFoot + 120)) };
   const meta: Gen2Meta = {
     seed,
     plan: laid.plan,
@@ -1722,7 +1724,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     exitTotemY: laid.exit.y,
     checkpoints: filled.checkpoints,
     // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
-    ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
+    ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: Math.max(laid.bottom, bobFoot) + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
