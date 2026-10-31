@@ -21,6 +21,7 @@ import { DEPTH_DARK, drawEnd, drawLip, drawSoil, endFace, warmGround, type Depth
 import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
+import { drawRoostBough } from './batArt.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -1178,6 +1179,7 @@ export function drawProtoScene(
     if (!vis(p) || p.push || p.art || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
     // (World 8's fungus steps and knot perches: the painted brackets, w8FungusArt.ts)
     if (p.style === 'fungus_shelf' && drawW8Fungus(ctx, p)) continue;
+    if (p.style === 'roost_branch' && drawRoostBough(ctx, p)) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
     if (trunk && p.width <= 220) {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);

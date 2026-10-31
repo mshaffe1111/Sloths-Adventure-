@@ -82,6 +82,43 @@ export function drawRoost(ctx: CanvasRenderingContext2D, x: number, groundY: num
   return true;
 }
 
+/** the roost branch's walkable top, as a share of its frame's height (the moss on the log's top: 8-1's roost loft stands on it) */
+const BOUGH_TOP = 0.2;
+/** 8-1's roost loft (w8Rooms.ts loftRoom: a platform of style 'roost_branch'): Matt's painted roost branch as the bough itself, a little
+ *  wider than the platform, its mossy top on the platform's top; false while the sheet loads (the kit's branch stands in) */
+export function drawRoostBough(ctx: CanvasRenderingContext2D, p: { x: number; y: number; width: number; id: number }): boolean {
+  if (!BRANCH.ready()) return false;
+  const f = W8ROOST['roost-branch'];
+  const k = (p.width * 1.12) / f.w;
+  ctx.save();
+  ctx.translate(Math.round(p.x + p.width / 2), Math.round(p.y + f.h * k * (1 - BOUGH_TOP)));
+  if (p.id % 2) ctx.scale(-1, 1);
+  BRANCH.draw(ctx, 'roost-branch', k);
+  ctx.restore();
+  return true;
+}
+
+/** 8-1's loft room's pebbles are World 8's seed pods (the roost sheet): one carried or flying, about 34 px long */
+export function drawSeedPod(ctx: CanvasRenderingContext2D, x: number, y: number, rot: number, scale = 1): boolean {
+  if (!BRANCH.ready()) return false;
+  ctx.save();
+  ctx.translate(x, y + 2);
+  if (rot) ctx.rotate(rot);
+  BRANCH.draw(ctx, 'seed-pod', (34 / 397) * scale);
+  ctx.restore();
+  return true;
+}
+
+/** the pile they come from (the roost sheet's small seed pile), its foot on the ground at (x, y) */
+export function drawSeedPile(ctx: CanvasRenderingContext2D, x: number, y: number): boolean {
+  if (!BRANCH.ready()) return false;
+  ctx.save();
+  ctx.translate(x - 30, y + 3);
+  BRANCH.draw(ctx, 'seed-pile-small', 0.24);
+  ctx.restore();
+  return true;
+}
+
 /** the flying bat at (x, y), facing `dir`; false while its sheet loads (the eagle stands in) */
 export function drawBatSweep(ctx: CanvasRenderingContext2D, x: number, y: number, dir: number, t: number): boolean {
   if (!FLY.ready()) return false;

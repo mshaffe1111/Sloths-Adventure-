@@ -13,6 +13,7 @@ import {
 } from './puzzleKit.ts';
 import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
 import { drawW8Hammock, drawW8Piece, loadW8RoomArt } from './w8RoomArt.ts';
+import { drawSeedPile, drawSeedPod } from './batArt.ts';
 import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
 import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
@@ -1931,6 +1932,8 @@ export class KitPlay {
   }
 
   private drawItem(ctx: CanvasRenderingContext2D, it: ItemRun, x: number, y: number, rot: number, scale = 1) {
+    // (World 8's pebbles are its seed pods: 8-1's roost loft, batArt.ts)
+    if (this.look.world === 8 && it.variant === 'pebble' && drawSeedPod(ctx, x, y, rot, scale)) return;
     if (drawKitArt(ctx, this.artOf(it.variant), x, y + 2, { rot, scale })) return;
     ctx.save();
     ctx.fillStyle = it.variant === 'cake' ? '#f9a8d4' : it.variant === 'stone' ? '#94a3b8' : '#92400e';
@@ -1943,6 +1946,7 @@ export class KitPlay {
   private drawSource(ctx: CanvasRenderingContext2D, room: RoomRun, s: SourceRun) {
     // (a fresh one drops out of the canopy above onto the pile at the tree's foot: the forest painted behind is its tree)
     void room;
+    if (this.look.world === 8 && s.spec.variant === 'pebble' && drawSeedPile(ctx, s.x, s.y)) return;
     const pile = PILE_OF[s.spec.variant];
     if (s.spec.look === 'tree' && s.spec.variant === 'acorn' && kitArtReady()) {
       // World 1's painted trunk and leafy branch, its leaves over the spot a fresh acorn falls to, two acorns hanging in them

@@ -399,7 +399,7 @@ export const loftRoom: SectionTemplate = {
   extraSeconds: 16,
   pieces: [
     bank('floor', LOFT.floor, { kind: 'start' }),
-    { key: 'loft', shape: 'branch', w: LOFT.w, place: { kind: 'over', on: 'floor', at: LOFT.x / LOFT.floor, dy: -LOFT.up }, main: false },
+    { key: 'loft', shape: 'branch', style: 'roost_branch', w: LOFT.w, place: { kind: 'over', on: 'floor', at: LOFT.x / LOFT.floor, dy: -LOFT.up }, main: false },
     { key: 'ladderV', shape: 'vine', w: 0, place: { kind: 'climb', on: 'floor', at: LOFT.ladderX / LOFT.floor, h: LOFT.up + 6 } },
     bank('floorB', LOFT.floorB, { kind: 'walk', after: 'floor', dy: 0 }),
   ],
