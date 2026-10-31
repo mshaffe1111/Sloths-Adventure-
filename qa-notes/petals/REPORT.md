@@ -52,10 +52,27 @@ along-the-ledge pass did not move it and was dropped.
 - `stageGenerator.ts` finishStage's call to petalPass came in with the polish-levels merge (2 lines, from 0e4feb1c): flagging it
   since build1-play owns the file tonight.
 
+## Goals (Matt, 10:45-10:55 PM ET)
+
+Matt: goals are a share of however many petals the stage holds, never a hard count, and he keeps 87.5% (goals.ts GOAL_SHARE.collect,
+unchanged). That is already how the game sets every collection goal on Normal (withGoals, from the reachable petals). The hand-built
+quotas (1-2 72 (was 80), 1-5 77 (was 90), 2-2 the lower of 80 and its petals / 1.5, 5-3 62% of what is kept) only feed Easy's floor
+(goals.ts: today = min(own quota, 80% of Normal)); changed only so their own tests hold the new petal counts.
+
+## Fixed along the way
+
+- 5-3: the clump rule took petals out of the orchid cups (a TypeError in its test); cups are kept whole now (petals.ts KEEP) and the
+  spread adds nothing to 5-3's path, so the cups are still what its quota needs.
+- World 8 harvests: the spread was adding flowers there, which count as night blooms (8-2 had 189); none now.
+- 4-6 mist, 5-5's silk-line web, orchids, hidden ledges: no new petal there.
+- The screen cap thins the lowest petals first, so a high double-jump line (1-5's test) survives.
+- rollGuard 1-2: marked not judged by the level check (eraRoll.ts NOT_JUDGED). Its tested roll used to fail the check on unreachable
+  pickups; the petal pass removed them, so the guard began judging 1-2, and on 6 sampled rolls the check stops short of the exit. The
+  same 6 rolls fail the check on today's game too: worth a look by whoever owns 1-2.
+
 ## Not done / to watch
 
-- Goals: harvest targets are shares of the petals a stage holds (goals.ts), so they follow the new counts; the test checks a harvest
-  holds at least its goal on Normal and Easy. I have not read the new gen2 Easy goals (after 11:45 PM ET).
-- Stage build cost: the pass adds two to four level checks per stage build (about 50 ms per stage on desktop); worth a look on
+- Stage build cost: the pass adds two to five level checks per stage build (about 50 ms per stage on desktop); worth a look on
   Matt's Pixel.
 - 1-7's liana stretch; 2-8, 8-4, 8-8 and 9-1 still have one stretch of 1.8-2 k px.
+- drawcheck not run yet (petals are the same sprite, just placed differently).
