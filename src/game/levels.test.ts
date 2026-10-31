@@ -63,9 +63,9 @@ test('every level has a flag every ~1500px (never more than 2300 apart) and a li
     }
     // (a gen2 stage of a world whose pits are soft has no water but its sections' own creeks (World 6's water gaps): a fall lands in a
     // mossy pit with a step out, gen2/DESIGN.md B1 and B11; nor does one whose pits are the void, World 8's canopy: a fall from a lit
-    // bough is past the stage's foot, a life)
+    // bough is past the stage's foot, a life; World 7's void chasms show the dirty water far below, so they carry the water line)
     const g2 = (s as { gen2?: { budget: { pit: string }; falls?: Array<{ kind: string }> } }).gen2;
-    const soft = isGen2Stage(l) && (g2?.budget.pit === 'soft' || g2?.budget.pit === 'void') && !(g2.falls ?? []).some((f) => f.kind === 'water');
+    const soft = isGen2Stage(l) && (g2?.budget.pit === 'soft' || (g2?.budget.pit === 'void' && l.worldIndex === 8)) && !(g2.falls ?? []).some((f) => f.kind === 'water');
     if (soft) assert.equal(s.waterY, undefined, `${l.id}: soft or void pits, no water`);
     else assert.ok(s.waterY !== undefined && s.waterY > s.spawnY, `${l.id} has water below the spawn`);
   }
