@@ -33,7 +33,7 @@ for (const [size, [w, h]] of Object.entries(SIZES)) {
       const z = (e.currentStage.zones ?? []).filter((q) => q.look === look).sort((a, c) => a.x0 - c.x0)[nth];
       if (!z) return null;
       const x = z.x0 - 170;
-      const under = plats.filter((q) => x >= q.x && x <= q.x + q.width && q.y > z.baseY - 80).sort((a, c) => a.y - c.y)[0];
+      const under = plats.filter((q) => !q.lift && x >= q.x && x <= q.x + q.width && q.y > z.baseY - 200).sort((a, c) => a.y - c.y)[0];
       Object.assign(e.player, { x, y: under ? under.y : z.baseY, vx: 0, vy: 0, grounded: true, climbing: false, facing: 1 });
       return { x: Math.round(x), y: Math.round(z.baseY), kind: look };
     }

@@ -129,9 +129,11 @@ export function drawW9Surge(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneStat
     ctx.restore();
     return;
   }
-  const front = z.x0 + (z.x1 - z.x0) * Math.min(1, st.u * 3);
+  // (the flood runs wall to wall: the zone is inset from the channel's ends by pipeline SURGE.inset, the lava is not)
+  const a = z.x0 - 12, b = z.x1 + 12;
+  const front = a + (b - a) * Math.min(1, st.u * 3);
   const depth = 30 * Math.min(1, st.strength * 1.4);
-  drawLava(ctx, z.x0, front, z.baseY - depth + 4, z.baseY + 14, t);
+  drawLava(ctx, a, front, z.baseY - depth + 4, z.baseY + 14, t);
   if (pc && f && st.u < 0.45) {
     const h = 90;
     const w = (f.w * h) / f.h;
