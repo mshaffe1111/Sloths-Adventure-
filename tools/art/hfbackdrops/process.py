@@ -34,6 +34,24 @@ def key(take, stem, part):
     done.write_text(before)  # (a working file, not a game strip: it is not listed as made seamless)
 
 
+def keyfull(take, stem, part):
+    """key at the take's full width, no margin cut: for a take whose ends are already clear (the paste-up left open ground at the
+    ends), so it tiles with no join at all and keeps its width (backdrop-strip.py's margin cut left some strips 1272-1571 px wide,
+    which repeat twice across a sideways screen)"""
+    import numpy as np
+    from PIL import Image
+    bs = mod(ROOT / 'scripts/backdrop-strip.py', 'bs')
+    a = np.asarray(Image.open(take).convert('RGB')).astype(float)
+    rgb, al = bs.key_out(a, bs.key_colour(a))
+    # (no margin cut: the ends are joined over a 256 px band at the full width, so the strip keeps ~1790 of its 2048 px)
+    rgba = np.concatenate([rgb, al[..., None]], axis=-1)
+    o = bs.seamless(rgba, 256)
+    KEYED.mkdir(parents=True, exist_ok=True)
+    out = KEYED / f'{stem}-{part}.webp'
+    Image.fromarray(np.dstack([np.clip(o[..., :3], 0, 255), np.clip(o[..., 3] * 255, 0, 255)]).astype(np.uint8), 'RGBA').save(out, 'WEBP', quality=88, method=6)
+    print(out.name, 'full width', a.shape[1], '->', o.shape[1])
+
+
 def hdspec(out, commit, names):
     sys.path.insert(0, str(H))
     from make_spec import MOODS, S
@@ -73,4 +91,4 @@ def finish(stem, part, hd, mode='mix5'):
 
 if __name__ == '__main__':
     c, a = sys.argv[1], sys.argv[2:]
-    {'key': lambda: key(*a), 'hdspec': lambda: hdspec(a[0], a[1], a[2:]), 'finish': lambda: finish(*a)}[c]()
+    {'key': lambda: key(*a), 'keyfull': lambda: keyfull(*a), 'hdspec': lambda: hdspec(a[0], a[1], a[2:]), 'finish': lambda: finish(*a)}[c]()
