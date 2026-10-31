@@ -293,7 +293,7 @@ const plainRest = (theme: 'bats' | 'loft') =>
     difficulty: 1,
     weight: 5,
     uses: [W8_THEME[theme]],
-    pieces: [bank('a', [300, 340]), down('b', 'a', 24, [200, 230]), up('c', 'b', 24, [160, 190])],
+    pieces: [bank('a', [190, 220]), down('b', 'a', 24, [150, 170]), up('c', 'b', 24, [130, 150])],
     last: 'c',
     sockets: [petals('a', 'a', 0.4, 2, 120), scenery('fungus', 'b', [0.4, 0.6], 0.7), petals('c', 'c', 0.5, 1)],
     mirrorable: true,
@@ -307,9 +307,9 @@ const bloomRest = section({
   phases: ['rest', 'goal'],
   difficulty: 1,
   weight: 4,
-  pieces: [bank('a', [280, 320]), down('b', 'a', 20, [240, 280]), up('c', 'b', 20, [180, 210])],
+  pieces: [bank('a', [190, 220]), down('b', 'a', 20, [160, 180]), up('c', 'b', 20, [130, 150])],
   last: 'c',
-  sockets: [petals('a', 'a', 0.5, 3, 160), petals('b', 'b', 0.5, 2, 120), scenery('nest', 'c', [0.4, 0.6], 0.7)],
+  sockets: [petals('a', 'a', 0.5, 3, 120), petals('b', 'b', 0.5, 2, 90), scenery('nest', 'c', [0.4, 0.6], 0.7)],
   mirrorable: true,
 });
 
