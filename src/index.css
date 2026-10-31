@@ -70,6 +70,9 @@
 
 /* the credit line under the title: a generous tap target without changing how the line looks */
 .title-credit { margin-top: 2px; line-height: 1; }
+.ttl-update { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 14px; margin-top: 12px; font-size: 13px; color: rgba(255, 244, 214, .82); text-shadow: 0 1px 2px rgba(0, 0, 0, .7); }
+.ttl-update button { font: inherit; font-weight: 700; color: #ffe08a; background: none; border: 0; padding: 8px 4px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; -webkit-tap-highlight-color: transparent; }
+.ttl-update-ready { display: inline-flex; gap: 8px; align-items: center; margin-top: 14px; padding: 10px 18px; border-radius: 999px; border: 2px solid #7a4a12; background: linear-gradient(#ffd56a, #e9a830); color: #3b2206; font-weight: 800; font-size: 15px; text-shadow: none; box-shadow: 0 3px 0 #7a4a12, 0 6px 14px rgba(0, 0, 0, .45); animation: chip-wait 1.6s ease-in-out infinite; cursor: pointer; }
 .st-credit-msg { display: block; margin-top: 4px; font-weight: 700; color: #b45309; }
 .title-credit-btn { display: inline-block; padding: 10px 6px; margin: -10px -6px; font: inherit; color: inherit; font-weight: 600; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 

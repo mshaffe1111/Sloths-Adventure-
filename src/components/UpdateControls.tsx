@@ -1,6 +1,6 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import { Icon } from './icons/index.tsx';
-import { applyUpdate, checkForUpdate, subscribeUpdate, updateAvailable } from '../game/updates.ts';
+import { applyUpdate, checkForUpdate, hardRefresh, subscribeUpdate, updateAvailable } from '../game/updates.ts';
 import { storeBuild } from '../game/appShell.ts';
 
 /** true once a newer build of the game has been found (the page that is open is an old one) */
@@ -53,6 +53,51 @@ export const UpdateRow: React.FC = () => {
       </div>
       <button type="button" className="pm-mute" onClick={() => void applyUpdate()}>
         Refresh now
+      </button>
+    </div>
+  );
+};
+
+/**
+ * On the title itself, under the big buttons (Matt, 2026-10-31: "people aren't getting the updates and they don't know where to refresh"):
+ * the build's date, and one tap to check. A newer build turns it into a big gold "New version ready: Refresh". "Refresh game" always does a
+ * full refresh (drops the old copy and its caches, hardRefresh), so a stuck phone has a sure way out from the first screen.
+ */
+export const TitleUpdate: React.FC<{ updated?: string }> = ({ updated }) => {
+  const ready = useUpdateAvailable();
+  const [state, setState] = useState<'idle' | 'checking' | 'same' | 'unknown'>('idle');
+  if (storeBuild()) return null;
+  if (ready) {
+    return (
+      <button type="button" className="ttl-update ttl-update-ready" onClick={() => void applyUpdate()}>
+        <Icon name="restart" size={18} />
+        New version ready: tap to refresh
+      </button>
+    );
+  }
+  const run = async () => {
+    setState('checking');
+    const r = await checkForUpdate();
+    setState(r === 'new' ? 'idle' : r);
+  };
+  return (
+    <div className="ttl-update">
+      {updated && <span>Version: {updated}</span>}
+      {state === 'checking' ? (
+        <span>Checking…</span>
+      ) : state === 'same' ? (
+        <span>
+          Up to date <Icon name="check" size={12} />
+        </span>
+      ) : state === 'unknown' ? (
+        <span>Could not check (offline?)</span>
+      ) : (
+        <button type="button" onClick={() => void run()}>
+          Check for updates
+        </button>
+      )}
+      <button type="button" onClick={() => void hardRefresh()}>
+        Refresh game
       </button>
     </div>
   );

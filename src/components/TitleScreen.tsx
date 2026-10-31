@@ -5,6 +5,7 @@ import { homeScreenTipDue, markHomeScreenTip } from '../game/fullscreen.ts';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
 import { TitleSettings } from './TitleSettings.tsx';
+import { TitleUpdate } from './UpdateControls.tsx';
 import { HowToPlay, howToSeen, markHowToSeen } from './HowToPlay.tsx';
 import { ModePick } from './ModePick.tsx';
 import { nextStartStep } from './startFlow.ts';
@@ -245,6 +246,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               How to Play
             </button>
           </div>
+          <TitleUpdate updated={updated} />
         </div>
         {creditMsg && !menuOpen && (
           <span className="fixed left-1/2 top-14 z-[70] -translate-x-1/2 whitespace-nowrap rounded-full bg-black/70 px-4 py-1.5 text-sm text-amber-200" role="status">
