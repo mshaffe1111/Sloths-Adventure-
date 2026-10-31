@@ -1,0 +1,25 @@
+/* LV-19, ModePick.tsx: who's exploring, on the title Settings' painted card; two big wood plaques, each with Pokey on it */
+.mp-scrim { z-index: 65; }
+.mp-card { max-width: 480px; padding: 34px 8px 8px; align-items: center; }
+.mp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.mp-choice { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 196px; padding: 10px 6px 12px; cursor: pointer; color: #fff4d8;
+  font-family: var(--font-fun); text-shadow: 0 2px 0 #3a200c, 1px 0 0 #3a200c, -1px 0 0 #3a200c; border: 3px solid #3a200c; border-radius: 16px 20px 17px 14px;
+  background: var(--gx-wood-grain), linear-gradient(180deg, #c99256, #9b6331 52%, #74461f); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .45), 0 4px 0 #24130a;
+  -webkit-tap-highlight-color: transparent; transition: transform .12s ease-out; }
+.mp-choice:active { transform: translateY(3px) scale(.98); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .4), 0 1px 0 #24130a; }
+.mp-choice:focus-visible { outline: 4px solid rgba(253, 230, 138, .9); outline-offset: 2px; }
+.mp-pose { display: flex; align-items: flex-end; justify-content: center; height: 116px; width: 100%; border-radius: 50% 50% 14px 14px / 40% 40% 14px 14px;
+  background: radial-gradient(ellipse at 50% 70%, rgba(255, 238, 190, .55), rgba(255, 238, 190, 0) 70%); filter: drop-shadow(0 3px 3px rgba(40, 20, 5, .45)); }
+.mp-who { font-size: 21px; line-height: 1.1; text-align: center; }
+.mp-name { margin-top: 2px; padding: 1px 12px; border-radius: 999px; font-size: 16px; background: rgba(40, 20, 5, .35); }
+.mp-easy .mp-name { background: linear-gradient(180deg, #6cc04f, #3a8a2e); text-shadow: 0 1px 0 #1d4a1b; }
+.mp-line { font: 700 14px var(--font-ui); color: #ffe9bf; text-shadow: 0 1px 0 #3a200c; }
+.mp-note { margin: 2px 0 0; font: 600 14px var(--font-ui); color: var(--gx-ink-soft); text-align: center; }
+/* a phone on its side: the card keeps to the height; Pokey a little smaller */
+@media (max-height: 430px) and (orientation: landscape) {
+  .mp-card { padding-top: 30px; }
+  .mp-choice { min-height: 0; padding: 6px 6px 8px; }
+  .mp-pose { height: 96px; }
+  .mp-pose > span { transform: scale(.84); transform-origin: 50% 100%; }
+  .mp-who { font-size: 19px; }
+}

@@ -6,6 +6,9 @@ import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
 import { TitleSettings } from './TitleSettings.tsx';
 import { HowToPlay, howToSeen, markHowToSeen } from './HowToPlay.tsx';
+import { ModePick } from './ModePick.tsx';
+import { nextStartStep } from './startFlow.ts';
+import { modeChosen } from '../game/difficulty.ts';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
 import { sound } from '../game/audio.ts';
 import { Icon, UI_KIT_URL } from './icons/index.tsx';
@@ -95,6 +98,8 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   const [howOpen, setHowOpen] = useState(false);
   /** a brand-new player gets the short how-to once, right before the first stage */
   const [intro, setIntro] = useState(false);
+  /** LV-19: a fresh game with no mode kept asks Easy or Normal; where to go once picked (the story, or the map) */
+  const [pickThen, setPickThen] = useState<null | (() => void)>(null);
   const updated = formatBuildTime(BUILD_TIME);
 
   // ---- the entrance ----
@@ -165,13 +170,17 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
   // on an iPhone in the browser there is no full screen: say once how to get it (add the game to the Home Screen)
   const [fsTip, setFsTip] = useState(() => homeScreenTipDue());
-  const start = () => {
-    if (!resume && !howToSeen()) {
+  /** go on to the story / 1-1 (or the map): the how-to first for a brand-new player, then the mode card until a mode is kept (LV-19) */
+  const goOn = (then: () => void, toMap = false) => {
+    const step = nextStartStep({ hasProgress: !!resume, howToSeen: howToSeen(), modeChosen: modeChosen(), toMap });
+    if (step === 'howto') {
       markHowToSeen();
       setIntro(true);
-    } else leave(onStartGame);
+    } else if (step === 'pick') setPickThen(() => then);
+    else leave(then);
   };
-  const covered = saveOpen || newOpen || menuOpen || howOpen || intro;
+  const start = () => goOn(onStartGame);
+  const covered = saveOpen || newOpen || menuOpen || howOpen || intro || !!pickThen;
 
   return (
     <div className={`gx2 select-none gx2-${phase}${cold ? '' : ' gx2-back'}${named ? ' gx2-named' : ''}${covered ? ' gx2-covered' : ''}`}>
@@ -217,7 +226,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             )}
           </button>
           <div className="ttl-leaves">
-            <button type="button" onClick={() => leave(onOpenMap)} className="ttl-leaf" style={{ ['--i' as string]: 1 }}>
+            <button type="button" onClick={() => goOn(onOpenMap, true)} className="ttl-leaf" style={{ ['--i' as string]: 1 }}>
               <span className="ttl-leaf-ic">
                 <Icon name="map" size={30} />
               </span>
@@ -285,7 +294,17 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           intro
           onClose={() => {
             setIntro(false);
-            leave(onStartGame);
+            goOn(onStartGame);
+          }}
+        />
+      )}
+      {pickThen && (
+        <ModePick
+          onClose={() => setPickThen(null)}
+          onPicked={() => {
+            const then = pickThen;
+            setPickThen(null);
+            leave(then);
           }}
         />
       )}
