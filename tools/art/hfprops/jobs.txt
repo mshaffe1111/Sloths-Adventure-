@@ -1,0 +1,4 @@
+hf-props jobs (2026-10-31, branch hf-props; HF cap $14). Each job: tools/art/hfdrake/storygpu.py (unchanged) + the spec, fetched from
+GitHub raw at a pinned commit; Qwen-Image img2img + the style model (0.8); starts reference/prop-sheets/qa-notes/hf-props/starts/.
+Bucket mshaffe111/w5-xfer under hfprops/<tag>/out/. rtx-pro-6000 ~$2.75/h.
+w6p   6ae65b200e0338d1bb7d436f  21:18Z  W6 probe, 2 takes (s82, s90, seed 5), spec at c589fcbd
