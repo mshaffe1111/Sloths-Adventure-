@@ -6,7 +6,9 @@ const [out, ...ids] = process.argv.slice(2);
 const stages = ids.length ? ids : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].flatMap((w) => [2, 5, 8].map((s) => `${w}-${s}`));
 mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
-for (const [w, h, tag] of [[390, 844, 'up'], [844, 390, 'side']].filter((o) => !process.env.ORIENT || o[2] === process.env.ORIENT)) {
+// SIZES=412x915,915x412,360x800 for the lead's check sizes (tag = the size); default upright 390x844 and sideways 844x390
+const sizes = process.env.SIZES ? process.env.SIZES.split(',').map((t) => { const [w, h] = t.split('x').map(Number); return [w, h, t]; }) : [[390, 844, 'up'], [844, 390, 'side']];
+for (const [w, h, tag] of sizes.filter((o) => !process.env.ORIENT || o[2] === process.env.ORIENT)) {
   const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
   p.on('pageerror', (e) => console.log('ERR', e.message));
   await p.goto(`http://127.0.0.1:${process.env.PORT ?? 4301}/?lessons=off`);

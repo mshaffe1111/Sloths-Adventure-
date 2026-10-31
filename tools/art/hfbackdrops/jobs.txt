@@ -13,3 +13,11 @@ running total ~$0.55 of $28
 hfbd-w1  6ae65e0b0e0338d1bb7d442e  hfbd-w2 6ae65e0ec78863f9c62f4dec  hfbd-w3 6ae65e120e0338d1bb7d4430  hfbd-w4 6ae65e16c78863f9c62f4dee
 hfbd-w6  6ae65e19c78863f9c62f4df0  hfbd-w7 6ae65e1dc78863f9c62f4df4  hfbd-w8 6ae65e200e0338d1bb7d4437  hfbd-w9 6ae65e240e0338d1bb7d443a
 hfbd-w10 6ae65e26c78863f9c62f4dfa   all rtx-pro-6000, started 21:30:51Z-21:31:19Z
+batch A+B finished 21:40-21:41Z (each ~9-10 min incl. model load; 9 x ~9.5 min = ~86 min = ~$3.95). Picks: picks.json (26, then 24:
+  w9dawn-mid and w6dawn-mid dropped after keying, a half-faded floating column at the join / a squared block). Not used tonight:
+  every W8 middle (the old strip's flat faded canopy came back as a hard band), the W4 terraces and W6 dawn near strips and both
+  W2 near strips (squared notches where paste-up pieces met; pink river water from the key), every W3 sinkhole take (a straight
+  vertical cut down a pillar), the W10 after-storm takes (held with w10after).
+--- native-resolution pass (striphdgpu.py, s25, Real-ESRGAN first, on grey) ---
+hfbd-hd-a 6ae66200c78863f9c62f4f04  hfbd-hd-b 6ae66203c78863f9c62f4f06  hfbd-hd-c 6ae66206c78863f9c62f4f08  started 21:47:44Z, 8 strips each
+running total ~$4.70 (before the HD pass)
