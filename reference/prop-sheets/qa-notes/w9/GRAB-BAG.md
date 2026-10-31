@@ -1,16 +1,16 @@
 # World 9 grab bag: every piece, built before curation (2026-10-31, ~2:00 PM ET, branch w9-pieces)
 
-## Status (updated 2026-10-31 ~3:35 PM ET)
+## Status (updated 2026-10-31 ~4:40 PM ET)
 
 | Piece | Built | Where | Art | Bots on raw rolls |
 |---|---|---|---|---|
 | N1 rafts | yes (w9Bob.ts) | 9-1 | painted (w9b pumice raft) | kid 0 lives; adult 1-5 lives near rafts on ~26 rafts a roll |
-| N2 logs | yes | 9-5, 9-9 | painted (bridges charred log) | kid 0 |
-| N3 pistons | yes (flush, soft well) | 9-8 | painted (w9b hex column) | both reach the shrine, 0 lives near pistons |
+| N2 logs | yes | 9-5 (always paired with a glide: glide-log, log-glide-log), 9-9 | painted (bridges charred log) | kid 0 |
+| N3 pistons | yes (flush, soft well) | 9-5 (taught, paired with a glide), 9-8 | painted (w9b hex column) | both reach the shrine, 0 lives near pistons |
 | N4 sinking slabs | yes (engine `sink`, shallow, knobs under) | 9-3 (between chains), 6, 9 | painted (bridges ember slab) | kid 0, adult 2 (none at the slabs) |
-| N5 flare slabs | yes (geyser zone, look) | 9-1 (taught), 9-5, 9-8 | painted + HF cool frame | kid 0; adult hits 2-9 |
+| N5 flare slabs | yes (geyser zone, look) | 9-5 (taught), 9-8 | painted + HF cool frame | kid 0; adult hits 2-9 |
 | N6 lava surges | yes (SectionZone 'surge') | 9-4 (taught), 9-6 | HF surge front + lava strip | adult lives ~ the 9-6 baseline; hits above it (watched) |
-| N7 hot ash gusts | yes (wind zone, look 'ash') | 9-1 headwind, 9-5 tailwind | HF ash streaks | (not run yet) |
+| N7 hot ash gusts | yes (wind zone, look 'ash') | 9-1 only (headwind; taken off 9-5, see look-alike below) | HF ash streaks | (not run yet) |
 | N8 ropes over the lava | yes (gen2 place 'rope') | 9-3 (between chains), 9-8 | the game's painted rope | both 0 lives |
 | N9 lavafalls | yes (geyser zone, look) | 9-4 (taught), 9-6, 9-9 | HF pour loop | kid 0-1 |
 | N10 ash caps | yes (gen2 'bouncy', World 8's pattern; the steam-vent idea became World 9's own painted ash cap) | 9-1 (taught), 9-6 | painted (bounceArt cap-w9) | kid 0, adult 0-1 |
@@ -23,20 +23,24 @@ Dot's new lines for Matt (all under 10 words; in the game as written, `w9.ts W9_
 |---|---|---|
 | rafts | 9-1 | "Those rafts rise and sink. Watch them." |
 | hot ash wind | 9-1 | "Hot wind! It'll push you back." |
-| flare slabs | 9-1 | "Those slabs flare up when they glow." |
+| flare slabs | 9-5 | "Those slabs flare up when they glow." |
 | ash caps | 9-1 | "Ash caps! Bounce up to the high rock." |
 | sinking slabs | 9-3 | "Ember slabs sink when you stand on them." |
 | lavafalls | 9-4 | "Lava pours from up there. Watch the drips." |
 | lava surges | 9-4 | "Lava surges down the channel. Listen!" |
-| pistons | 9-8 | "These stone columns rise and fall." |
+| pistons | 9-5 | "These stone columns rise and fall." |
 (The logs ride like the rafts and the ropes are World 1's shimmy: no new line. The burnt-bridge, smoke and raft-lock lines of §3 are not in
 the game.)
 
-Themes now: 9-1 6 (vents, chasms, rafts, gusts, flares, caps), 9-3 5 (chains, climbs, crust, sinkers, ropes), 9-4 5 (spires, ferns, coils,
-lavafalls, surges), 9-5 5 (glides, bursts, logs, flares, gusts), 9-6 6 (cats, prowl, lavafalls, surges, sinkers, caps), 9-8 5 (ledges,
-channels, pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls, sinkers). Neighbour pairs share no new theme. Lessons: flares and
-caps on 9-1, lavafalls and surges on 9-4, slabs on 9-3, pistons on 9-8. Variety on 60 raw rolls (before the latest themes): 9-4 0.49, 9-5 0.60,
-9-6 0.50, 9-8 0.53; 9-1 0.38 and 9-3 0.28 being re-measured with their new themes. HF spent: ~$0.30 (job 6ae633040e0338d1bb7d39e3).
+Themes now (gates in the game): 9-1 5 (vents, chasms, rafts, gusts, caps), 9-3 5 (chains, climbs, crust, sinkers, ropes), 9-4 5
+(spires, ferns, coils, lavafalls, surges), 9-5 5 (glides, bursts, logs-with-glides, pistons-with-glides, flares), 9-6 6 (cats, prowl,
+lavafalls, surges, sinkers, caps), 9-8 5 (ledges, channels, pistons, flares, ropes), 9-9 5 (harpies, boas, logs, lavafalls, sinkers).
+Neighbour pairs share no theme. Lessons: rafts, gusts and caps on 9-1; slabs on 9-3; lavafalls and surges on 9-4; flares and pistons on
+9-5. Creatures split: 9-6 keeps the cats (ocelot, jaguar, tayra), 9-9 keeps harpy and boa only.
+
+Look-alike fixes (worst stretch shared with another stage, out of 16 rolls): 9-3 vs 9-1 10 -> 2 (geysers off the 9-3 crust gaps);
+9-9 vs 9-6 13 -> 0 (creature split); 9-5 vs 9-1 11 -> 3 (gusts off 9-5, 9-5's logs and pistons always ride with a glide, so they read
+as their own beat, not as 9-1's rafts). HF spent: ~$0.30 (job 6ae633040e0338d1bb7d39e3).
 
 
 Matt, 1:20 PM ET Oct 31: "Lets make the pieces ahead of time. Be prepared since more is better anyways. Lets not go into this bare
