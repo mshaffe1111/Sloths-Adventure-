@@ -42,7 +42,7 @@ import type {
 import { WORLDS_DATA } from './worldsData.ts';
 import type { StageStats } from './badges.ts';
 import { loadCosmetic } from './badgeStore.ts';
-import { setHeroCoat } from './heroSprite.ts';
+import { setHeroCoat, setJarHero } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
@@ -62,6 +62,12 @@ import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShad
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
+import { drawBatSweep, drawDozeZ, drawRoost, drawW8Hide } from './batArt.ts';
+/**
+ * World 8's dark (the Twilight Treetops at night): a violet ink a little lighter than the default, so the painted soil and bark under the
+ * boughs still shows faintly (polish bar item 4: dark, never a flat void); the lantern and the fireflies are still the only real light
+ */
+const W8_DARK = { ink: 'rgb(12, 9, 34)', depth: 0.84 } as const;
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
@@ -98,6 +104,8 @@ import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { SlideRun } from './w7SlideRun.ts';
+import { drawJarMeter, jarFrame, jarHeroImage, LanternRun } from './w8LanternRun.ts';
+import { LANTERN_LINES, LANTERN_NIGHT, LANTERN_VIEW, TREE_CROWN } from './w8Lantern.ts';
 import { MeecaPlay, MEECA_REACH, type MeecaControls } from './meecaPlay.ts';
 import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, meecaArtReady, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { tipText } from './puzzleKit.ts';
@@ -641,6 +649,8 @@ export class GameEngine {
   private chaseNext = 0;
   /** 6-8's rising tide (risingTide.ts): its state, its setting, and the flag Dot warned under (Infinity: not yet; once a stage) */
   private tide: TideState | null = null;
+  /** 8-4's jar of fireflies (w8LanternRun.ts): its light, the glowing flowers, the moths, the firefly tree */
+  private lanternRun: LanternRun | null = null;
   private tideSet: TideSetting = TIDE.normal;
   private tideWarned = Infinity;
   private tideChurn = 0;
@@ -836,6 +846,10 @@ export class GameEngine {
     this.chaseSlowDone = false;
     this.chaseNext = 0;
     this.tide = this.proto?.tide ? newTide(this.proto.tide) : null;
+    this.lanternRun = this.proto?.lantern ? new LanternRun(this.proto.lantern, isEasy()) : null;
+    // (8-4: Pokey carries the jar in his paws; every other stage, his plain frames)
+    const jarImg = this.lanternRun ? jarHeroImage() : null;
+    setJarHero(jarImg ? { img: jarImg, frame: jarFrame } : null);
     this.revealZoom = 1;
     this.revealHeard = false;
     setReveal(0, null);
@@ -1559,7 +1573,8 @@ export class GameEngine {
         // 2026-10-29. Tips says each the first time on a save, dotTips.ts)
         const kind = z.kind === 'dark' && z.lights?.some((l) => l.sleep) ? 'darkStill' : z.kind;
         const zid = this.currentStage.config.id;
-        if (ZONE_LINE[kind] && !tipHeard(zid, `zone:${kind}`)) {
+        // (8-4's whole stage is its dark, taught by its own jar lines: w8Lantern.ts LANTERN_LINES)
+        if (ZONE_LINE[kind] && !this.lanternRun && !tipHeard(zid, `zone:${kind}`)) {
           markTipHeard(zid, `zone:${kind}`);
           this.guide(ZONE_LINE[kind], 3.6);
         }
@@ -1578,6 +1593,7 @@ export class GameEngine {
         const out = Math.max(z.x0 - p.x, p.x - z.x1, 0);
         want = Math.max(want, Math.max(0, 1 - out / 220));
       }
+      if (this.lanternRun) want = this.lanternRun.night();
       this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
       this.stepGlowworms(dt, zones);
       if (this.proto?.thorns) this.stepThornVines();
@@ -1586,6 +1602,7 @@ export class GameEngine {
       if (this.kit) this.stepKit(dt);
       // (Meeca's stage: on tiptoe through the camp)
       if (this.mc) this.dragSpeed *= this.mc.speedK();
+      if (this.lanternRun) this.stepLanternRun(dt);
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -2380,8 +2397,8 @@ export class GameEngine {
       // calm water (swim.ts): in deep enough, he swims; it never costs a life
       this.swimCheck(dt);
 
-      // (Easy's soft falls: the last still ground he stood on)
-      if (this.softOn && p.grounded && !p.climbing) {
+      // (Easy's soft falls: the last still ground he stood on; World 8 Normal's heart falls set him back there too)
+      if ((this.softOn || this.currentStage.heartFalls?.length) && p.grounded && !p.climbing) {
         const g = this.platforms.find((q) => q.id === this.standingOnId);
         if (g && g.type === 'solid' && !g.broken && !g.push && !g.chase && g.width >= 60) this.softAt = { x: Math.max(g.x + 30, Math.min(g.x + g.width - 30, p.x)), y: g.y };
       }
@@ -2424,7 +2441,8 @@ export class GameEngine {
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
-        if (!this.softFall()) {
+        if (this.lanternRun) this.lanternFall();
+        else if (!this.heartFall() && !this.softFall()) {
           sound.playPlayerHurt();
           this.loseLife('pit');
         }
@@ -4935,6 +4953,7 @@ export class GameEngine {
     this.dragSpeed = 1;
     this.dragJump = 1;
     // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
+    this.lanternRun?.restart();
     // 6-8: the tide starts again under his flag, waiting a moment (risingTide.ts)
     if (this.tide) {
       restartTide(this.tide, this.proto!.tide!, this.tideSet, this.checkpoint.y);
@@ -5269,6 +5288,13 @@ export class GameEngine {
     // (not up the last root: there the view is the reveal's)
     const revealing = !!this.proto?.reveal && p.y < this.proto.reveal.from;
     if (this.tide?.on && !revealing) this.camera.targetY = Math.max(this.camera.targetY, this.tide.y - vh * 0.86);
+    // 8-4, upright: his feet low on the screen, the canopy above and the bough ahead in view instead of the drop under him (w8Lantern.ts)
+    if (this.lanternRun && this.viewCssH > this.viewCssW && Number.isFinite(this.camAnchorY)) this.camera.targetY = Math.min(this.camera.targetY, this.camAnchorY - vh * LANTERN_VIEW.uprightFeetAt);
+    // (and at the firefly tree, the view rises to its crown, as far as keeps his feet in the bottom of the view)
+    if (this.lanternRun && this.lanternRun.swarm >= 0) {
+      const crown = this.lanternRun.plan.swarmTree.y - TREE_CROWN;
+      this.camera.targetY = Math.min(this.camera.targetY, Math.max(crown - vh * 0.22, p.y - vh * 0.9));
+    }
 
     // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
     // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
@@ -5988,6 +6014,7 @@ export class GameEngine {
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     this.drawCalmWater(ctx, false);
+    this.lanternRun?.drawBack(ctx, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime);
     this.kit?.drawBack(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.markKeepOuts();
@@ -6097,6 +6124,8 @@ export class GameEngine {
           if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'boa') {
           if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
+          // (8-1's dozing boa: a slow "z" drifting up while it sleeps, batArt's roost tell)
+          if (enemy.state === 'sleep') drawDozeZ(ctx, enemy.x, enemy.y - 30, this.gameTime);
         } else if (enemy.type === 'caiman') {
           if (!drawCaimanSprite(ctx, enemy, this.gameTime)) drawCaiman(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'tayra') {
@@ -6192,10 +6221,13 @@ export class GameEngine {
     heroClipsLive(false);
     profMark(ctx, 'hero');
     if (this.proto?.bushes) this.drawBushes(ctx);
+    // (World 8's bat roosts hang in front of the roost tree's hollows: after the hides)
+    if (this.proto?.watch && this.currentStage.config.worldIndex === 8) this.drawRoosts(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     this.w4?.drawFront(ctx, this.platforms, this.gameTime);
+    this.lanternRun?.drawFront(ctx, { ...this.player, attacking: !!this.atk }, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime);
     if (this.mc) drawMeecaFront(ctx, this.mc, this.player, this.gameTime);
     this.w5?.drawFront(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight, zoom: this.zoom, hud: this.camera.y + (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom });
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
@@ -6294,7 +6326,7 @@ export class GameEngine {
         }
       }
       // the puzzle kit's glowing things (World 3's mushroom), carried or set down
-      for (const l of this.kit?.lights() ?? []) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
+      for (const l of [...(this.kit?.lights() ?? []), ...(this.kit?.decorLights() ?? [])]) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
       // every flower and leaf glows a little, so a reward is never lost in the dark
       for (const c of this.collectibles) {
         if (c.collected || (c.type !== 'flower' && c.type !== 'leaf')) continue;
@@ -6304,7 +6336,17 @@ export class GameEngine {
       // World 3 has no lantern: Pokey is dim, but steady (a small glow of his own), and the grotto's dark is green-black
       const grotto = this.currentStage.config.worldIndex === 3;
       if (this.watchShadowAt) lights.push({ x: this.watchShadowAt.x - cx0, y: this.player.y - 40 - cy0, r: 150 * this.watchShadowAt.a * 2 });
-      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : undefined);
+      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : this.lanternRun ? { heroR: this.lanternRun.radius(), ...LANTERN_NIGHT } : this.currentStage.config.worldIndex === 8 ? W8_DARK : undefined);
+      if (this.lanternRun) {
+        this.lanternRun.drawOver(ctx, cx0, cy0, this.gameTime);
+        // (the jar gauge under the lives, in screen px)
+        ctx.save();
+        ctx.scale(1 / this.zoom, 1 / this.zoom);
+        // (hung from the lives plate's underside, as the plate hangs from the vine)
+        const up = (this.viewCssH || 400) > (this.viewCssW || 400);
+        drawJarMeter(ctx, up ? 17 : 46, up ? 80 : 78, this.lanternRun.st.level, this.gameTime, this.lanternRun.set.low);
+        ctx.restore();
+      }
     }
     if (this.watchEyes) {
       // World 3's watcher: two amber eyes, over the darkness so they always show
@@ -6895,6 +6937,86 @@ export class GameEngine {
     if ((caught(ch, p.x) && !p.isVineSwinging) || off) this.chaseCaught();
   }
 
+  /** step 8-4's jar (w8LanternRun.ts): its light, the moths, Dot's lines, the dark's setback, the firefly tree */
+  private stepLanternRun(dt: number) {
+    const lr = this.lanternRun!;
+    const p = this.player;
+    const id = this.currentStage.config.id;
+    const ev = lr.step(dt, p, !!this.atk);
+    this.dragSpeed *= lr.speed();
+    if (ev === 'filled') {
+      sound.playFlowerPickup(2);
+      this.spawnSparkBurst(p.x, p.y - 40, '#fde047');
+    } else if (ev === 'low' && !tipHeard(id, 'lantern:low')) {
+      markTipHeard(id, 'lantern:low');
+      this.guide(LANTERN_LINES.low, 3);
+    } else if (ev === 'stolen') {
+      // (a puff of the jar's light scattering, no words in the world: the Dot rework, 2026-10-29)
+      sound.playWhoosh();
+      this.spawnSparkBurst(p.x + p.facing * 12, p.y - 52, '#fde68a');
+    } else if (ev === 'setback') {
+      const at = lr.setbackAt();
+      this.lanternSetBack(at.x, at.y);
+      if (!tipHeard(id, 'lantern:setback')) {
+        markTipHeard(id, 'lantern:setback');
+        this.guide(LANTERN_LINES.setback, 3.5);
+      }
+    } else if (ev === 'swarm') {
+      sound.playShrineUnlocked();
+    }
+    // the firefly tree: as the swarm rises the view pulls back to take in the tree and its crown (6-8's reveal does the same)
+    const want = lr.swarm >= 0 ? (this.viewCssH > this.viewCssW ? 0.86 : 0.7) : 1;
+    const prev = this.revealZoom;
+    this.revealZoom += (want - this.revealZoom) * Math.min(1, dt * 1.2);
+    if (Math.abs(want - this.revealZoom) < 0.002) this.revealZoom = want;
+    if (this.revealZoom !== prev) this.applyZoom();
+  }
+
+  /** 8-4: a fall past the bottom is always soft: back at the last flower, the jar full again (w8LanternRun.ts fallBack) */
+  private lanternFall() {
+    const at = this.lanternRun!.fallBack();
+    recorder.event('softFall', Math.round(this.player.x));
+    this.lanternSetBack(at.x, at.y);
+  }
+
+  /**
+   * World 8 Normal's swings and glides (gen2 heartFalls; Matt, 2026-10-31: "hurt, then cost a life"): a fall at one costs a heart, not a
+   * life, and sets him back on the ledge he left (the last still ground he stood on), hurt and blinking; his last heart is a life lost as
+   * any fall. False when he did not fall at one
+   */
+  private heartFall(): boolean {
+    const zs = this.currentStage.heartFalls;
+    const p = this.player;
+    const cx = p.x + p.width / 2;
+    // (the gap he fell at, or the one he jumped for from the ledge before it: a glide carries him on past the gap's end as he sinks)
+    const from = this.softAt?.x ?? -Infinity;
+    const z = this.softAt ? zs?.find((h) => (cx > h.x0 - 160 && cx < h.x1 + 160) || (from > h.x0 - 420 && from <= h.x0 + 20 && cx > h.x0 - 160)) : undefined;
+    if (!z || !this.softAt) return false;
+    const hp = p.hp - 1;
+    this.statHeartsLost += 1;
+    recorder.event('hurt', hp);
+    sound.playPlayerHurt();
+    this.input.triggerHaptic(80);
+    if (hp <= 0) {
+      this.loseLife('pit');
+      return true;
+    }
+    this.lanternSetBack(this.softAt.x, this.softAt.y);
+    p.hp = hp;
+    p.invincibleTimer = Math.max(p.invincibleTimer, 1.6);
+    return true;
+  }
+
+  /** 8-4: set him down at (x, feet) as Easy's soft falls do, nothing lost */
+  private lanternSetBack(x: number, y: number) {
+    const was = { softOn: this.softOn, softAt: this.softAt };
+    this.softOn = true;
+    this.softAt = { x, y };
+    this.softFall();
+    this.softOn = was.softOn;
+    this.softAt = was.softAt;
+  }
+
   /**
    * step 6-8's tide: it turns once he is up the first root (a churn, a rumble, Dot's line), then rises under him, holding while he stands
    * at a flag or on a held shelf. The water line is the stage's (drawn with the painted dirty water; under it costs a life as any water)
@@ -7113,7 +7235,13 @@ export class GameEngine {
       // the words are Dot's, in her bubble (no words floating in the world, the Dot rework 2026-10-29)
       this.addFloatingText('!', p.x, p.y - 96, '#fbbf24');
       this.input.triggerHaptic(120);
-      if (!tipHeard(id, 'watch:hide')) {
+      if (zone?.setback !== undefined) {
+        // (the bat run has nowhere to hide: Dot says to wait it out, once a stage)
+        if (!tipHeard(id, 'watch:batrun')) {
+          markTipHeard(id, 'watch:batrun');
+          this.guide('They\'re stirring! Wait till they doze off again', 3);
+        }
+      } else if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
         const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
         this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
@@ -7141,7 +7269,13 @@ export class GameEngine {
       // the strike: unless he made it into a bush (or behind the water) in time
       if (this.watch.seen && before < WATCH.dive && this.watch.diveT >= WATCH.dive) {
         if (water || hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
-        else if (harmlessPass(this.watch)) {
+        else if (zone?.setback !== undefined) {
+          // (8-1's sleeping-bat run: the bats flutter out round him and he scrambles back to the bough's start; no heart lost)
+          this.addFloatingText('SHOO!', p.x, p.y - 80, '#fbbf24');
+          p.x = zone.setback;
+          p.vx = 0;
+          this.watchCaught = true;
+        } else if (harmlessPass(this.watch)) {
           // (the first pass only warns: it pulls up short of him)
           this.addFloatingText('TOO CLOSE!', p.x, p.y - 80, '#fbbf24');
           this.watchCaught = true;
@@ -7249,8 +7383,20 @@ export class GameEngine {
     ctx.translate(e.x, e.y);
     ctx.scale(scale, scale);
     ctx.translate(-e.x, -e.y);
-    if (!(this.currentStage.config.worldIndex === 4 && this.drawSovereignWatch(ctx, e)) && !drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+    const bat = this.currentStage.config.worldIndex === 8 && drawBatSweep(ctx, e.x, e.y, e.facing, this.gameTime);
+    if (!bat && !(this.currentStage.config.worldIndex === 4 && this.drawSovereignWatch(ctx, e)) && !drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
     ctx.restore();
+  }
+
+  /**
+   * World 8's bat roosts (batArt.ts): the bats hanging over the start of each watched stretch on screen, still while the roost is calm,
+   * fluttering as it wakes (the watcher's warning) and while it sweeps
+   */
+  private drawRoosts(ctx: CanvasRenderingContext2D) {
+    const roosts = (this.proto?.gen2 as { w8?: { roosts?: Array<{ x: number; y: number }> } } | undefined)?.w8?.roosts ?? [];
+    const w = this.watch;
+    const waking = w.phase === 'warn' ? Math.min(1, w.t / WATCH.warn) : w.phase === 'calm' ? 0 : 1;
+    for (const r of roosts) if (this.onScreen(r.x + 120, r.y - 185, 400)) drawRoost(ctx, r.x, r.y, waking, this.gameTime);
   }
 
   /**
@@ -7702,12 +7848,16 @@ export class GameEngine {
   private drawBushes(ctx: CanvasRenderingContext2D) {
     const p = this.player;
     const bushes = this.proto?.bushes ?? [];
+    const w8Hides = (this.proto?.gen2 as { w8?: { hides?: Array<{ x: number; y: number; look: string }> } } | undefined)?.w8?.hides;
     for (let i = 0; i < bushes.length; i++) {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
       // (World 4 has its own painted cover: w4Art.ts)
       if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      // (World 8's roost hides: the tree hollow and the leaf curtain, batArt.ts)
+      const w8look = w8Hides?.find((h) => h.x === b.x && h.y === b.y)?.look;
+      if (w8look && drawW8Hide(ctx, b, w8look, inside)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });

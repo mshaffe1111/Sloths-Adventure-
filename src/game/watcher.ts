@@ -35,6 +35,11 @@ export interface WatchZone {
   /** this stretch's warning and sweep (s), when not WATCH's (World 4 on Normal, w4Normal.ts) */
   warn?: number;
   pass?: number;
+  /**
+   * a sleeping-bat run (World 8's 8-1, GRAB-BAG.md E): no hiding place on this bough; bats that wake on him flutter out and scare him
+   * back to this x (the bough's start), no heart lost. Time the run for the doze
+   */
+  setback?: number;
 }
 
 export const WATCH = {

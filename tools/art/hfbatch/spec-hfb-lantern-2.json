@@ -1,0 +1,175 @@
+{
+ "note": "8-4 Lantern Run art, round 2, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors",
+   1.0
+  ]
+ },
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w8-lantern/tools/art/hfbatch/starts/w8lantern/",
+ "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, cast shadow, extra arms, extra limbs, extra fingers, two jars, lantern, candle, flame, fire",
+ "items": [
+  {
+   "name": "carry-p3-s45",
+   "start": "carry-p3.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p3-s60",
+   "start": "carry-p3.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p5-s45",
+   "start": "carry-p5.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p5-s60",
+   "start": "carry-p5.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p6-s45",
+   "start": "carry-p6.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p6-s60",
+   "start": "carry-p6.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p7-s45",
+   "start": "carry-p7.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p7-s60",
+   "start": "carry-p7.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p8-s45",
+   "start": "carry-p8.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.45,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "carry-p8-s60",
+   "start": "carry-p8.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.6,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "air-p3-s70-7",
+   "start": "carry-p3.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, jumping up in the air, his legs tucked up under him, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.7,
+   "seed": 7,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  },
+  {
+   "name": "air-p3-s70-19",
+   "start": "carry-p3.png",
+   "prompt": "slothadv style, pokeysloth, a cute brown three-toed sloth cub with a cream belly and a dark eye mask, a brown leather satchel on a strap across his body, cream wrist wraps, side view facing right, jumping up in the air, his legs tucked up under him, carefully hugging a small glowing glass jar of fireflies against his belly with both arms, both paws wrapped round the jar, nothing else in his paws. Soft cel shading, thin dark outline, light from the upper left, evenly lit, on one flat plain pure magenta background, no shadow, no text",
+   "strength": 0.7,
+   "seed": 19,
+   "w": 768,
+   "h": 768,
+   "loras": [
+    "style",
+    "pokey"
+   ]
+  }
+ ]
+}

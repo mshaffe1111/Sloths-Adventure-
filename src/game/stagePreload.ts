@@ -13,6 +13,8 @@ import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
 import { W7_FACE_URLS, w7FaceReady } from './w7FaceArt.ts';
 import { w810FaceReady } from './w810FaceArt.ts';
 import { FACE810_URL } from './w810FaceData.ts';
+import { w8FungusReady } from './w8FungusArt.ts';
+import { W8_FUNGUS_URL } from './w8FungusData.ts';
 import { W7_PUZZLE_URLS, w7PuzzleReady } from './w7PuzzleArt.ts';
 import { SENTRY_URLS, sentryReady } from './sentrySprite.ts';
 import { W7_CHAIRS_URL, w7ChairsReady } from './w7ChairsArt.ts';
@@ -105,6 +107,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'faces810') {
       w810FaceReady();
       urls.push(FACE810_URL);
+    } else if (k === 'w8-fungus') {
+      w8FungusReady();
+      urls.push(W8_FUNGUS_URL);
     } else if (k === 'water-signs') {
       warmWaterSigns();
       urls.push(WATER_SIGN_URL);

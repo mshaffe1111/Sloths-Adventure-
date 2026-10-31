@@ -281,6 +281,15 @@ function drawSkidPuffs(ctx: CanvasRenderingContext2D, time: number) {
 }
 
 /** returns true if it drew the hero */
+/**
+ * 8-4 Lantern Run: Pokey with the jar of fireflies (w8LanternRun.ts sets it while the stage runs): for each standard pose he can carry
+ * it in, the jar frame drawn in its place (w8LanternAtlas.ts POKEY_JAR_FRAMES); undefined: the standard frame. null: the plain hero.
+ */
+let jarHero: { img: HTMLImageElement; frame: (name: string) => StdFrame | undefined } | null = null;
+export function setJarHero(h: { img: HTMLImageElement; frame: (name: string) => StdFrame | undefined } | null): void {
+  jarHero = h;
+}
+
 export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, time: number): boolean {
   if (!heroSpriteEnabled()) return false;
   load();
@@ -296,8 +305,11 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   const stdImg = standardAtlas();
   // a moving clip (heroClips.ts, test): when one fits this moment it draws in the standard hero's place
   const ch = stdImg ? stdPick(p, time, events) : null;
-  // (the turn and the skid are painted frames of their own: for their moment they take the place of the redrawn run, AN-13)
-  const clip = stdImg && !(ch && (ch.name === 'turn' || ch.name === 'skid')) ? clipPick(p, time, events) : null;
+  // (with the jar no idle clip plays: they have empty paws; the turn and the skid are painted frames of their own: for their moment
+  // they take the place of the redrawn run, AN-13)
+  const clip = stdImg && !jarHero && !(ch && (ch.name === 'turn' || ch.name === 'skid')) ? clipPick(p, time, events) : null;
+  const jarF = jarHero && ch && jarHero.img.complete && jarHero.img.naturalWidth ? jarHero.frame(ch.name) : undefined;
+  if (jarF && drawStandard(ctx, p, time, ch!, jarHero!.img, jarF)) return true;
   if (clip) {
     // at each end of a clip the ordinary pose shows through, so the change of pose melts instead of popping
     if (clip.blend < 1 && ch && stdFrame(ch.name)) {

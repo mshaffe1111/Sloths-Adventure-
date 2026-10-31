@@ -12,6 +12,8 @@ import {
   type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind, type Wire, wireIds,
 } from './puzzleKit.ts';
 import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
+import { drawW8Hammock, drawW8Piece, loadW8RoomArt } from './w8RoomArt.ts';
+import { drawSeedPile, drawSeedPod } from './batArt.ts';
 import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
 import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
@@ -330,6 +332,8 @@ export class KitPlay {
       // World 2's thrown stones: Matt's river stone or the round grey one, by the roll (never the same look two stages running)
       stone: w === 2 ? rollLook(['riverStone', 'stone'] as const, world.stage ?? 1, roll, 2) : 'stone',
     };
+    // (World 8: Matt's W8 sheet for its lever stump, glow pads and bark doors)
+    if (w === 8) loadW8RoomArt();
     this.extraZones = (world.zones ?? []).filter((z) => z.kind === 'wind');
     // (stuck is back and forth with nothing changing, or two failed tries: never a clock, STAGE-RULES §3)
     this.noClock = world.noClock ?? true;
@@ -593,6 +597,23 @@ export class KitPlay {
       }
       for (const g of room.glows) if (g.on) out.push({ x: g.x, y: g.y, r: g.spec.r });
       for (const m of room.moons) if (m.show > 0.02) out.push({ x: m.x, y: m.y - 40, r: m.spec.r * m.show });
+    }
+    return out;
+  }
+
+  /**
+   * World 8's room pieces as light sources, for the darkness's drawing only (STAGE-RULES §4: in the dark every obstacle carries its own
+   * light): each glow-mushroom pad glows (dimmer held down, sunk into the bark), a lamp hangs by each bark door, and a shut moonflower bud gleams faintly.
+   * Never part of lights(): they light no hidden ledge and open no moonflower, so the rooms play as the checker proves them.
+   */
+  decorLights(): Array<{ x: number; y: number; r: number }> {
+    const out: Array<{ x: number; y: number; r: number }> = [];
+    if (this.look.world !== 8) return out;
+    for (const room of this.rooms) {
+      for (const pl of room.plates) out.push({ x: pl.x, y: pl.y - 16 + 8 * pl.show, r: 95 - 40 * pl.show });
+      for (const g of room.gates) out.push({ x: g.x, y: g.y - KIT.doorH * 0.6, r: 150 });
+      for (const m of room.moons) if (m.show < 0.98) out.push({ x: m.x, y: m.y - 40, r: 70 });
+      for (const s of room.sources) out.push({ x: s.x, y: s.y - 20, r: 80 });
     }
     return out;
   }
@@ -1770,8 +1791,11 @@ export class KitPlay {
           drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + 6, { w: pw * 1.5, h: ph * 0.7 });
           if (pl.show > 0.02) drawGlow(ctx, pl.x, pl.y - 6, 58, 'rgba(255, 222, 130, A)', 0.75 * pl.show);
         }
-        // (World 7: Matt's carved stone plate, w7PuzzleArt.ts)
+        // (World 7: Matt's carved stone plate, w7PuzzleArt.ts; World 8: the glow-mushroom pad of Matt's W8 sheet: held down, it sinks into
+        // the bark and its glow dims, so it never reads as a bounce pad)
         const drew = this.look.world === 7 && drawW7Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + pl.show * 3, pw * 1.25)
+          ? true
+          : this.look.world === 8 && drawW8Piece(ctx, pl.show > 0.5 ? 'plate-down' : 'plate-up', pl.x, pl.y + 6 + 7 * pl.show, 52 - 8 * pl.show)
           ? true
           : stoneP
           ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
@@ -1795,6 +1819,8 @@ export class KitPlay {
         if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
         // (World 7: Matt's stone lever, w7PuzzleArt.ts)
         if (this.look.world === 7 && drawW7Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 78)) continue;
+        // (World 8: the branch-lever stump of Matt's W8 sheet, its branch pulled down while on)
+        if (this.look.world === 8 && drawW8Piece(ctx, l.show > 0.5 ? 'lever-down' : 'lever-up', l.x, l.y + 4, 84, this.t)) continue;
         if (!drawKitArt(ctx, l.show > 0.5 ? 'leverOn' : 'leverOff', l.x, l.y + 4)) {
           ctx.strokeStyle = '#6b4a2b';
           ctx.lineWidth = 6;
@@ -1906,6 +1932,8 @@ export class KitPlay {
   }
 
   private drawItem(ctx: CanvasRenderingContext2D, it: ItemRun, x: number, y: number, rot: number, scale = 1) {
+    // (World 8's pebbles are its seed pods: 8-1's roost loft, batArt.ts)
+    if (this.look.world === 8 && it.variant === 'pebble' && drawSeedPod(ctx, x, y, rot, scale)) return;
     if (drawKitArt(ctx, this.artOf(it.variant), x, y + 2, { rot, scale })) return;
     ctx.save();
     ctx.fillStyle = it.variant === 'cake' ? '#f9a8d4' : it.variant === 'stone' ? '#94a3b8' : '#92400e';
@@ -1918,6 +1946,7 @@ export class KitPlay {
   private drawSource(ctx: CanvasRenderingContext2D, room: RoomRun, s: SourceRun) {
     // (a fresh one drops out of the canopy above onto the pile at the tree's foot: the forest painted behind is its tree)
     void room;
+    if (this.look.world === 8 && s.spec.variant === 'pebble' && drawSeedPile(ctx, s.x, s.y)) return;
     const pile = PILE_OF[s.spec.variant];
     if (s.spec.look === 'tree' && s.spec.variant === 'acorn' && kitArtReady()) {
       // World 1's painted trunk and leafy branch, its leaves over the spot a fresh acorn falls to, two acorns hanging in them
@@ -1989,8 +2018,10 @@ export class KitPlay {
     const gw = KIT.gateW + 50;
     // World 1: Matt's branch gate, drawn up out of the way as it opens; World 3: Grandma's fern stone door, rolled aside
     const lw = this.look.world;
-    // (World 7: Matt's stone door, shut and open, w7PuzzleArt.ts)
+    // (World 7: Matt's stone door, shut and open, w7PuzzleArt.ts; World 8: the bark door of Matt's W8 sheet, in its own piece of trunk)
     const drew = !g.spec.look && lw === 7 && drawW7Piece(ctx, g.show > 0.5 ? 'door-open' : 'door-closed', g.x, g.y + 6, gw + 30, KIT.doorH + 16)
+      ? true
+      : lw === 8 && drawW8Piece(ctx, g.show > 0.5 ? 'door-open' : 'door-closed', g.x, g.y + 4, 180)
       ? true
       : !g.spec.look && lw === 1
       ? g.show > 0.98 || drawKitArt(ctx, 'branchGate', g.x, g.y + 4 - g.show * (KIT.doorH + 20), { w: gw + 20, h: KIT.doorH + 14, alpha: 1 - g.show * 0.85 })
@@ -2155,10 +2186,12 @@ export class KitPlay {
     } else drawKitArt(ctx, 'cageLifted', cx, floor + 30);
   }
 
-  /** a lift's plank: World 4's is the plank of Matt's rope lift, every other world's the plank of World 1's swing */
+  /** a lift's plank: World 4's is the plank of Matt's rope lift, World 8's a leaf hammock, every other world's the plank of World 1's swing */
   private drawPlank(ctx: CanvasRenderingContext2D, pl: Platform): boolean {
     const cx = pl.x + pl.width / 2;
     if (this.look.world === 4) return drawKitArt(ctx, 'ropeLift', cx, pl.y + 20, { w: pl.width + 16, h: 34 });
+    // (World 8: the leaf hammock of Matt's W8 props sheet, its sag where he stands)
+    if (this.look.world === 8 && drawW8Hammock(ctx, cx, pl.y + 14, pl.width + 70)) return true;
     return drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 });
   }
 

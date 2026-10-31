@@ -17,11 +17,12 @@ import { stageSheets } from '../stageSheets.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import type { LevelConfig } from '../types.ts';
 import { GEN2_STAGES, gen2SeedFor, gen2SeedIndex, gen2Water, isGen2Stage } from './game.ts';
-import { buildGen2Stage, FLAG_SPAN } from './pipeline.ts';
+import { buildGen2Stage, CLIMB_CLEAR, FLAG_SPAN } from './pipeline.ts';
 import { GEN2_SEEDS } from './seeds.ts';
 import type { Gen2Stage } from './types.ts';
 import { W6_ROOM_STAGES } from './worlds/w6.ts';
 import { W7_ROOM_STAGES } from './worlds/w7.ts';
+import { W8_ROOM_STAGES } from './worlds/w8Rooms.ts';
 
 const levels = generateAllLevels();
 const lv = (id: string): LevelConfig => ({ ...levels.find((l) => l.id === id)!, unlocked: true });
@@ -38,9 +39,9 @@ function played(id: string, variant: number, easy: boolean): Played {
   }
 }
 
-test('gen2 builds 5-7, 5-9, World 6 but 6-8, and World 7 but its ascents (7-2, 7-4, 7-8), each from the kit its 16 shipped rolls were curated on', () => {
-  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '7-1', '7-3', '7-5', '7-6', '7-7', '7-9']);
-  for (const id of ['5-8', '6-8', '7-2', '7-4', '7-8', '7-10']) assert.equal(isGen2Stage(lv(id)), false, id);
+test('gen2 builds 5-7, 5-9, World 6 but 6-8, World 7 but its ascents (7-2, 7-4, 7-8), and World 8 but 8-4, 8-7 and 8-10, each from the kit its 16 shipped rolls were curated on', () => {
+  assert.deepEqual(Object.keys(GEN2_STAGES).sort(), ['5-7', '5-9', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9', '7-1', '7-3', '7-5', '7-6', '7-7', '7-9', '8-1', '8-2', '8-3', '8-5', '8-6', '8-8', '8-9']);
+  for (const id of ['5-8', '6-8', '7-2', '7-4', '7-8', '7-10', '8-4', '8-7']) assert.equal(isGen2Stage(lv(id)), false, id);
   for (const id of Object.keys(GEN2_STAGES)) {
     const e = GEN2_SEEDS[id];
     assert.ok(e, `${id}: no curated rolls in seeds.ts`);
@@ -80,6 +81,7 @@ test('every shipped roll, Normal and Easy, as the game plays it: the checker pas
         if (st.config.worldIndex === 7) assert.ok((st.proto?.gen2 as { w7?: unknown } | undefined)?.w7, `${at}: World 7's extras reach the engine`);
         // (7-7 hides the Thorn Gate on a ledge over the start, reached by a mushroom behind him: stageGenerator addSecrets)
         if (id === '7-7') assert.ok(st.collectibles.some((c) => c.type === 'thorn_gate' && c.x < st.spawnX + 400), `${at}: the secret gate`);
+        if (st.config.worldIndex === 8) assert.ok((st.proto?.gen2 as { w8?: unknown } | undefined)?.w8, `${at}: World 8's extras reach the engine`);
         // (a gauntlet's goal: Normal's share of what the stage holds, Easy's lower; every animal it counts stands before the shrine)
         if (st.config.objectiveType === 'gauntlet') {
           const before = st.enemies.filter((e) => e.x <= st.exitTotemX + 35).length;
@@ -173,6 +175,17 @@ test("a World 7 gen2 stage loads World 7's kit, the kit pieces for its room, and
   }
 });
 
+test("a World 8 gen2 stage loads World 8's kit, the world's animals, and the kit pieces exactly for its room (8-1, 8-2, 8-5); no water", () => {
+  const on = { hand: true, paint: true, ctest: false };
+  for (const id of Object.keys(GEN2_STAGES).filter((k) => k.startsWith('8-'))) {
+    const sheets = stageSheets(lv(id), on);
+    assert.deepEqual(sheets.slice(0, 2), ['kit:1', 'kit:8'], id);
+    assert.equal(sheets.includes('kit-pieces'), (W8_ROOM_STAGES as readonly string[]).includes(id), `${id}: the kit pieces exactly when it has a room`);
+    assert.ok(!sheets.includes('water-signs') && !sheets.includes('bad-water') && !gen2Water(id), `${id}: no water in the treetops`);
+    for (const f of ['ocelot', 'jaguar', 'boa', 'tayra', 'harpy']) assert.ok(sheets.includes(`foe:${f}`), `${id}: foe:${f}`);
+  }
+});
+
 test('every shipped roll holds the clip-sheet animals its sheet list loads, and a water sign exactly where there is water', () => {
   const on = { hand: true, paint: true, ctest: false };
   for (const id of Object.keys(GEN2_STAGES)) {
@@ -184,7 +197,8 @@ test('every shipped roll holds the clip-sheet animals its sheet list loads, and 
       for (const a of anims) assert.ok(st.enemies.some((e) => e.type === a), `${id} roll ${i}: no ${a} for its sheet`);
       // (World 5's pits are soft: no water. World 6's creeks: a sign at the first, Dot's line before it)
       // (a deep chasm, World 7's on Normal, shows the dirty water far below and is warned and signed like a creek)
-      const water = (st.gen2?.falls ?? []).some((f) => f.kind === 'water' || f.kind === 'void');
+      // (World 8's deadly falls drop into the dark treetops: no water)
+      const water = (st.gen2?.falls ?? []).some((f) => f.kind === 'water' || (f.kind === 'void' && !id.startsWith('8-')));
       assert.equal(st.waterY !== undefined, water, `${id} roll ${i}: the water line`);
       assert.equal((st.proto?.gen2?.waterWarnings?.length ?? 0) > 0, water, `${id} roll ${i}: the water signs`);
     }
@@ -202,4 +216,22 @@ test('the pipeline\'s flags: on 30 raw rolls of each gen2 stage, Normal and Easy
       }
     }
   }
+});
+
+test("every climbing vine on every shipped roll of Worlds 5-8, Normal and Easy, stands in front of a bough, never inside or on its face (the pipeline's clearClimbs)", () => {
+  const near = CLIMB_CLEAR / 2;
+  const bad: string[] = [];
+  for (const id of Object.keys(GEN2_STAGES).filter((id) => Number(id.split('-')[0]) >= 5 && Number(id.split('-')[0]) <= 8)) {
+    for (let i = 0; i < (GEN2_SEEDS[id]?.seeds.length ?? 0); i++) {
+      for (const easy of [false, true]) {
+        const st = played(id, i, easy);
+        for (const v of st.vines) {
+          if (v.vineType !== 'tree_climb') continue;
+          const p = st.platforms.find((q) => q.type === 'solid' && v.x >= q.x - near && v.x <= q.x + q.width + near && v.topY >= q.y - 2 && v.topY < q.y + q.height);
+          if (p) bad.push(`${id} roll ${i}${easy ? ' Easy' : ''}: the vine at ${Math.round(v.x)} tops out in the bough ${Math.round(p.x)}-${Math.round(p.x + p.width)}`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(bad, []);
 });

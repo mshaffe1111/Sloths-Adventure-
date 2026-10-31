@@ -1050,6 +1050,8 @@ export class FirstTimerRun {
       if (/\b(punch|tap)\b/.test(t)) this.learned.add('punch');
       if (/\bkick\b/.test(t)) this.learned.add('kick');
       if (/\b(glide|leaf)\b/.test(t)) this.learned.add('glide');
+      // (World 8's glide line, "Jump twice, then hold to glide": the second jump first, then the glide, at a gap one jump does not cross)
+      if (/\bjump twice\b/.test(t)) this.learned.add('double');
       if (/\b(stand still|stay still|keep still|wait (here|for|under|on)|stand (on|under|here))\b/.test(t)) this.learned.add('still');
     }
   }
