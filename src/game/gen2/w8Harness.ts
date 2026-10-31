@@ -7,7 +7,7 @@ import { walkSpeed, MODEL_TYPICAL } from '../stageTime.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { FLAG_SPAN } from './pipeline.ts';
 import type { Gen2Stage } from './types.ts';
-import { W8_LESSON, W8_TIPS } from './worlds/w8.ts';
+import { W8_EASY_TIPS, W8_LESSON, W8_TIPS } from './worlds/w8.ts';
 import { W8_REQUIRED } from './worlds/w8Game.ts';
 import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
 
@@ -67,7 +67,8 @@ export function checkW8Roll(st: Played, at: string, id: string): void {
   }
   if (id === '8-6') {
     const glides = st.gen2!.sections.filter((s) => s.template.startsWith('w8-glide-')).map((s) => s.x0);
-    const tip = said(st, W8_TIPS[W8_LESSON.glide]);
+    // (Easy's glide line is World 4's one-flick line, Normal's World 8's "Jump twice": W8_EASY_TIPS)
+    const tip = said(st, (st.gen2!.budget.difficulty === 'easy' ? W8_EASY_TIPS : W8_TIPS)[W8_LESSON.glide]);
     assert.ok(tip.length === 1 && tip[0] < Math.min(...glides) + 400, `${at}: the glide is not taught first`);
   }
   for (const v of st.vines.filter((x) => x.vineType !== 'swing_liana')) assert.equal(v.vineType, 'tree_climb', `${at}: a vine at ${v.x} that is neither a liana nor a climb`);
