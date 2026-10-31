@@ -118,11 +118,11 @@ test('a liana climbed up is climbed back down to its full length, never let go o
         r.clear();
         r.run(100);
         holdUp(r, way, 1500);
-        const up = r.p.swingLength;
+        const up = r.p.swingLength ?? 0;
         assert.ok(r.p.isVineSwinging && up < full - 80, `${help}/${way}@${width}: climbed up the liana (${up.toFixed(0)} of ${full})`);
         holdDown(r, way, 2500);
         assert.ok(r.p.isVineSwinging, `${help}/${way}@${width}: still on the liana`);
-        assert.ok(r.p.swingLength > up + 60, `${help}/${way}@${width}: climbed back down (${up.toFixed(0)} -> ${r.p.swingLength.toFixed(0)})`);
+        assert.ok((r.p.swingLength ?? 0) > up + 60, `${help}/${way}@${width}: climbed back down (${up.toFixed(0)} -> ${(r.p.swingLength ?? 0).toFixed(0)})`);
       }
     }
   } finally {
