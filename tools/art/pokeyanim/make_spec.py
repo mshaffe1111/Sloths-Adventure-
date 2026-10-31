@@ -57,6 +57,17 @@ def spec(commit):
     print(len(cl), 'clips')
 
 
+def spec3(commit):
+    """the punch re-rolled (pa-punch-s3 striped his wrist wraps red, pa-punch-s11 turned his back): his plain wraps spelled out"""
+    what = CLIPS2['punch'][0].replace('throws one strong forward punch', 'throws one strong forward punch, his plain cream bandage wrist wraps '
+                                      'and brown fur exactly as in the picture')
+    neg = NEG2 + ', red stripes, striped wraps, red wraps, back view, turning away, facing away'
+    cl = [{'name': f'pa-punch-s{sd}', 'src': f'gh:{commit}:reference/prop-sheets/qa-notes/pokey-anim/starts/punch.png', 'prompt': M + what,
+           'neg': neg, 'seed': sd, 'w': 832, 'h': 480} for sd in (5, 7)]
+    (H / 'spec-anim3.json').write_text(json.dumps({'tag': 'pokey-anim3', 'motion': MOTION, 'clips': cl}, indent=1))
+    print(len(cl), 'clips')
+
+
 def spec2(commit):
     cl = []
     for mv, (what, w, h) in CLIPS2.items():
@@ -68,4 +79,4 @@ def spec2(commit):
 
 
 if __name__ == '__main__':
-    (spec2 if sys.argv[1] == 'spec2' else spec)(sys.argv[2])
+    {'spec2': spec2, 'spec3': spec3}.get(sys.argv[1], spec)(sys.argv[2])
