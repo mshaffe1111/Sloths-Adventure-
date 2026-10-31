@@ -44,8 +44,10 @@ def key_alpha(a, key):
         cast = np.clip(np.minimum(out[..., 0], out[..., 2]) - out[..., 1], 0, None)
         out[..., 0] -= np.where(near, cast * 0.8, 0); out[..., 2] -= np.where(near, cast * 0.8, 0)
     else:
-        cast = np.clip(out[..., 1] - np.maximum(out[..., 0], out[..., 2]), 0, None)
-        out[..., 1] -= np.where(near, cast * 0.8, 0)
+        # green key: the cast shows between thin strands (reeds, cords) anywhere in the piece, so it comes out everywhere; none of the
+        # green-key pieces (net, reed gate) has green paint of its own
+        cast = np.clip(out[..., 1] - np.maximum(out[..., 0], out[..., 2]) + 6, 0, None)
+        out[..., 1] -= cast
     return out.clip(0, 255), alpha * 255
 
 
@@ -60,7 +62,7 @@ def keep_blobs(alpha):
     return np.where(mask, alpha, 0)
 
 
-def cut_piece(img, box, key):
+def cut_piece(img, box, key, boost=1.0):
     x, y, w, h = box
     W, H = img.size
     c = img.crop((max(0, x - MARGIN), max(0, y - MARGIN), min(W, x + w + MARGIN), min(H, y + h + MARGIN)))
@@ -81,6 +83,7 @@ def cut_piece(img, box, key):
         fx = np.minimum(np.arange(w), np.arange(w)[::-1]) / (0.12 * w)
         fade = np.clip(np.minimum.outer(fy, fx), 0, 1)
         al = np.clip((lum - floor) / max(1, 255 - floor) * 255, 0, 255) * fade
+        al = 255 * (al / 255) ** (1 / boost)  # boost > 1: a faint effect made stronger (the updrafts on the bright W4 sky)
         a = np.clip(a - floor * 0.9, 0, 255)
         rgb = np.where(al[..., None] > 0, a * 255 / np.maximum(al[..., None], 1), 0)
         im = Image.fromarray(np.dstack([rgb.clip(0, 255), np.where(al < 12, 0, al)]).astype(np.uint8), 'RGBA')
@@ -161,7 +164,7 @@ def main():
             img = Image.open(takes / f'{take}.png').convert('RGB')
             sx, sy = img.width / info['size'][0], img.height / info['size'][1]
             b = [round(box[0] * sx), round(box[1] * sy), round(box[2] * sx), round(box[3] * sy)]
-            im, solid = cut_piece(img, b, info['key'])
+            im, solid = cut_piece(img, b, info['key'], boost=2.2 if pname.startswith('updraft') else 1.0)
             if solid:
                 im = edge_clean(im)
             pieces.append((pname, im))
