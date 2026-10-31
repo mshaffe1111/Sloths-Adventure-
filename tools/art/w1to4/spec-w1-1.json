@@ -1,6 +1,6 @@
 {
  "note": "World 1 kit batch, round 1, 2026-10-31 (w1-4-sheets)",
- "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/w1-4-sheets/reference/prop-sheets/qa-notes/w1-4-art/starts/",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/1dbb0f77da33e72aafef850838c44ed9eb0f573b/reference/prop-sheets/qa-notes/w1-4-art/starts/",
  "loras": {
   "style": [
    "mshaffe111/slothadv-style-lora",
