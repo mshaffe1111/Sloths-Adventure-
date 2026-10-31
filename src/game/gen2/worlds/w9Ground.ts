@@ -386,7 +386,8 @@ const crustGaps = section({
   weight: SHARED,
   pieces: [bank('a', [260, 300]), wide('b', 'a', [300, 340]), leap('c', 'b', [300, 340]), up('k', 'c', 32, [140, 160]), down('d', 'k', 32, [160, 200])],
   last: 'd',
-  sockets: [petals('a', 'a', 0.5, 1), geyser('gh', 'b', 0.5, { phases: HOT }), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 }), petals('k', 'k', 0.5, 1), thread('r', 'd', 0.5)],
+  // (no geyser: these are 9-3's alone, and a geyser is 9-1's beat: with one, 9-3's stretches read as 9-1's on the look-alike measure)
+  sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), foe('foe', 'c', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 }), petals('k', 'k', 0.5, 1), thread('r', 'd', 0.5)],
   mirrorable: true,
 });
 
@@ -401,7 +402,7 @@ const lavaDrop = section({
   pieces: [bank('a', [220, 260]), down('b', 'a', 48, [200, 240]), up('k', 'b', 32, [140, 160]), down('b2', 'k', 32, [380, 420]), lava('c', 'b2', [380, 420])],
   last: 'c',
   exitDy: 48,
-  sockets: [petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), geyser('gh', 'b2', 0.25, { phases: HOT }), foe('foe', 'b2', [0.68, 0.75], SMALL, 3, { phases: LIVE, chance: 0.8 }), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
+  sockets: [petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('b2', 'b2', 0.25, 1), foe('foe', 'b2', [0.68, 0.75], SMALL, 3, { phases: LIVE, chance: 0.8 }), scenery('log', 'c', [0.4, 0.6], 0.5), thread('r', 'c', 0.5)],
   mirrorable: false,
 });
 
