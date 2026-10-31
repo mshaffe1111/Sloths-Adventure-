@@ -1639,7 +1639,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     exitTotemX: laid.exit.x,
     exitTotemY: laid.exit.y,
     checkpoints: filled.checkpoints,
-    ...(budget.pit === 'water' || budget.pit === 'void' || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
+    // (a deadly chasm shows the dirty water far below, World 7; World 8's treetops have none: its deadly falls drop into the dark)
+    ...(budget.pit === 'water' || (budget.pit === 'void' && budget.world !== 8) || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
     ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
