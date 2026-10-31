@@ -52,14 +52,14 @@ export const W8_THEME = {
   chains: 'w8:chains',
   /** 8-1: the night comes on: dark stretch after dark stretch (8-1 has too little threat for the prowlers: its heat is the world's lowest) */
   night: 'w8:night',
-  /** 8-6: the night wind: gusts through the canopy's gaps carry the glides (GRAB-BAG.md A: a timed beat 8-6's other themes lack) */
+  /** 8-6 and 8-1: the night wind (GRAB-BAG.md A): 8-6's gusts carry its glides; 8-1's blow across its plain gaps, a headwind to wait out */
   gusts: 'w8:gusts',
 } as const;
 
 /** the themes each lit stage's gate may open (the themed stages' gates are their own: blooms, roosts, hunts) */
 export const W8_LIT_THEMES: Readonly<Record<number, ReadonlyArray<keyof typeof W8_THEME>>> = {
   // (8-1's climbs are its dark trunks only: the lit trunks are 8-5's stretches, the look-alike measure)
-  1: ['leapers', 'night'],
+  1: ['leapers', 'night', 'gusts'],
   // (8-6's trunks went to 8-5: a trunk, a glide and a trunk read as 8-5's climbing on the look-alike measure)
   6: ['prowlers', 'leapers', 'gusts'],
   // (the vine stages apart, STAGE-RULES §6 "Sameness": 8-3's lianas chain over the gaps, 8-5's lead to trunks to climb)
@@ -291,6 +291,41 @@ const boughGap = section({
   pieces: [bank('near', [240, 280]), wide('far', 'near', [320, 350]), up('k', 'far', 36, [140, 160]), down('far2', 'k', 36, [180, 210])],
   last: 'far2',
   sockets: [petals('near', 'near', 0.5, 2, 90), foe('foe', 'far', [0.5, 0.6], SMALL, 3, { phases: LIVE, chance: 0.8 }), petals('k', 'k', 0.5, 1), scenery('fungus', 'far2', [0.5, 0.7])],
+  mirrorable: true,
+});
+
+/**
+ * 8-1's night wind (GRAB-BAG.md A): a headwind across a plain gap on a rhythm, World 4's gust (zones.ts wind; levelCheck: a plain jump
+ * crosses it, and the double jump still does in the gust): wait on the lip for the lull, or jump into it with the second jump
+ */
+const gustGap = section({
+  id: 'w8-gust-gap',
+  name: 'a gap in the night wind',
+  archetypes: 'any',
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 5,
+  weight: 2,
+  uses: [W8_THEME.gusts],
+  pieces: [bank('near', [260, 300]), wide('far', 'near', [240, 280], [0.55, 0.68]), up('k', 'far', 34, [140, 160]), down('far2', 'k', 34, [180, 210])],
+  last: 'far2',
+  zones: [{ kind: 'wind', on: 'far', dir: -1, force: 90 }],
+  sockets: [petals('near', 'near', 0.35, 2, 80), petals('k', 'k', 0.5, 1), scenery('fungus', 'far2', [0.5, 0.7])],
+  mirrorable: true,
+});
+
+/** two gaps in the wind: the first gust at his back, the second in his face, on their own beats */
+const gustPair = section({
+  id: 'w8-gust-pair',
+  name: 'two gaps in the night wind',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  uses: [W8_THEME.gusts],
+  pieces: [bank('a', [240, 280]), wide('b', 'a', [200, 240], [0.6, 0.72]), up('k', 'b', 34, [140, 160]), down('c', 'k', 34, [220, 260]), wide('d', 'c', [220, 260], [0.55, 0.66])],
+  last: 'd',
+  zones: [{ kind: 'wind', on: 'b', dir: 1, force: 100 }, { kind: 'wind', on: 'd', dir: -1, force: 90, idle: [3, 3.6] }],
+  sockets: [petals('a', 'a', 0.5, 1), petals('k', 'k', 0.5, 1), petals('c', 'c', 0.4, 1), petals('d', 'd', 0.6, 2, 80)],
   mirrorable: true,
 });
 
@@ -1257,7 +1292,7 @@ export const W8_SECTIONS: SectionTemplate[] = [
   ...bloomGates, bloomClimb, bloomHigh, bloomDark, bloomGaps, bloomLeap, ...roostBlooms,
   ...roostGates, roostHollows, roostHollowGap, roostCurtains, roostCurtainGaps, roostCurtainLeap, roostProwl, roostClimb, roostTrunks, roostDark, roostLong,
   glideFirst, glidePair, glideTrunk, glideHunter, glideDark, glideLeap, glideProwl,
-  glideGust, glideGustPair, glideGustHunter,
+  glideGust, glideGustPair, glideGustHunter, gustGap, gustPair,
   ...huntGates, hunterBough, sunkenFork, catBoughs, catTrunks, jaguarHigh, harpyBough, harpyGaps, harpyLeap, boaKnots, guardDark, guardNight, guardKnots,
   monarchDark, monarchCats, monarchHarpies, monarchGuards, monarchGuardPosts,
 ];
@@ -1278,6 +1313,9 @@ export const W8_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   'w8-rest-trunk': [5],
   'w8-rest-trunk-knot': [5],
   'w8-rest-glide': [6],
+  // (8-1's night wind: its own gaps)
+  'w8-gust-gap': [1],
+  'w8-gust-pair': [1],
   'w8-rest-glide-fork': [6],
   ...Object.fromEntries(DARKS.map((id) => [id, [1]])),
   // (the long dark is 8-1's; each lit gate its stages')
