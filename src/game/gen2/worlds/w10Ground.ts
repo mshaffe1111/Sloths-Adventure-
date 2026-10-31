@@ -43,6 +43,14 @@ export const W10_THEME = {
   ramparts: 'w10:ramparts',
   /** gusts across the gaps between the walls */
   gusts: 'w10:gusts',
+  /** timber perch posts up out of a chasm (GRAB-BAG I: 10-1) */
+  perches: 'w10:perches',
+  /** the watchtowers' iron stairs, balconies and scaffold walkways (GRAB-BAG G, H: 10-7) */
+  towers: 'w10:towers',
+  /** chain bridges over the chasms, guards on them (GRAB-BAG J: 10-7) */
+  bridges: 'w10:bridges',
+  /** drop gates over the wall-walk, a portcullis on a beat (GRAB-BAG D: 10-7) */
+  drops: 'w10:drops',
 } as const;
 export type W10Theme = keyof typeof W10_THEME;
 const THEMES = Object.keys(W10_THEME) as W10Theme[];
@@ -53,6 +61,7 @@ const SPIKES = 'spikes';
 const RAMPART = 'rampart';
 const WIND = 'wind';
 const STORM = 'storm';
+const DROPGATE = 'dropgate';
 
 /** the weight of a section every roll may hold (the theme's weigh 1) */
 const SHARED = 0.3;
@@ -355,6 +364,7 @@ const sprintGate = (theme: W10Theme, extra: Socket[]): SectionTemplate => {
   });
 };
 const sprintGates: SectionTemplate[] = [
+  sprintGate('perches', [scenery('rack', 'a', [0.5, 0.6], 0.9)]),
   sprintGate('rods', [scenery('banner', 'a', [0.5, 0.6], 0.9)]),
   sprintGate('spikes', [scenery('rack', 'a', [0.5, 0.6], 0.9)]),
   sprintGate('ramparts', [scenery('cage', 'f1', [0.4, 0.5], 0.9)]),
@@ -464,7 +474,7 @@ const spikeChasm = section({
   phases: HOT,
   difficulty: 7,
   uses: [W10_THEME.spikes, SPIKES],
-  pieces: [bank('a', [320, 360]), spikes('b', 'a', [380, 420], [0.84, 0.94]), wide('c', 'b', [380, 420]), up('k', 'c', 32, [140, 160]), down('d', 'k', 32, [220, 260])],
+  pieces: [bank('a', [260, 300]), spikes('b', 'a', [380, 420], [0.84, 0.94]), wide('c', 'b', [380, 420]), up('k', 'c', 32, [140, 160]), down('d', 'k', 32, [220, 260])],
   last: 'd',
   sockets: [petals('a', 'a', 0.5, 1), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
@@ -1028,6 +1038,232 @@ const drawbridge = section({
   mirrorable: true,
 });
 
+// ───────────────────────────── the grab bag's pieces on hand (GRAB-BAG.md G, H, I, J; w10PieceArt.ts) ─────────────────────────────
+
+/**
+ * I. Perch posts (10-1's own theme): timber posts with a plank on a bracket, stuck up out of a chasm (w10var 'perch-b'): a run of short
+ * precise hops over a soft floor (a slip costs a climb back, never a life: World 8's knot perches' numbers). Up, down, up.
+ */
+const perchPost = (key: string, after: string, dy: number, share: W = [0.4, 0.55]): SectionPiece => ({ key, shape: 'branch', style: 'w10_perch', w: [84, 98], place: { kind: 'jump', after, dy, share, soft: true } });
+const perchLand = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'jump', after, dy, share: [0.4, 0.55], soft: true }, { landing: true });
+const perchRun = section({
+  id: 'w10-perch-run',
+  name: 'perch posts over the chasm',
+  archetypes: 'any',
+  phases: MID,
+  difficulty: 5,
+  uses: [W10_THEME.perches],
+  pieces: [bank('a', [300, 340]), perchPost('p1', 'a', -30), perchPost('p2', 'p1', 18), perchPost('p3', 'p2', -24), perchLand('b', 'p3', 36, [260, 300])],
+  last: 'b',
+  sockets: [flag('a', 0.5), petals('a', 'a', 0.4, 1), petals('p1', 'p1', 0.5, 1, 0), petals('p3', 'p3', 0.5, 1, 0), petals('b', 'b', 0.5, 2, 80), foe('foe', 'b', [0.7, 0.8], SMALL, 3, { phases: HOT, chance: 0.4 })],
+  mirrorable: true,
+});
+/** four posts rising to a high battlement, and down off it */
+const perchClimb = section({
+  id: 'w10-perch-climb',
+  name: 'up the perch posts',
+  archetypes: 'any',
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W10_THEME.perches],
+  pieces: [bank('a', [240, 280]), perchPost('p1', 'a', -34), perchPost('p2', 'p1', -28), perchPost('p3', 'p2', 12), perchPost('p4', 'p3', -30), perchLand('hi', 'p4', -10, [220, 260]), down('b', 'hi', 90, [260, 300])],
+  last: 'b',
+  sockets: [flag('hi', 0.5), petals('p2', 'p2', 0.5, 1, 0), petals('p4', 'p4', 0.5, 1, 0), petals('hi', 'hi', 0.5, 2, 80), petals('b', 'b', 0.5, 1)],
+  mirrorable: true,
+});
+/** posts either side of a rod: wait out the bolt on the bank, then hop the posts */
+const perchRods = section({
+  id: 'w10-perch-rods',
+  name: 'perch posts by a rod',
+  archetypes: 'any',
+  phases: HOT,
+  difficulty: 7,
+  uses: [W10_THEME.perches, BOLT],
+  pieces: [bank('a', [380, 420]), perchPost('p1', 'a', -26), perchPost('p2', 'p1', 20), perchLand('b', 'p2', 6, [300, 340]), perchPost('p3', 'b', -30), perchLand('c', 'p3', 30, [260, 300])],
+  zones: [rod('a', [0.68, 0.72]), rod('b', [0.5, 0.55])],
+  last: 'c',
+  sockets: [flag('c', 0.3), petals('p1', 'p1', 0.5, 1, 0), petals('p2', 'p2', 0.5, 1, 0), petals('p3', 'p3', 0.5, 1, 0), petals('c', 'c', 0.5, 1)],
+  mirrorable: true,
+});
+
+/**
+ * G, H. The watchtowers (10-7's own theme): the iron stair bolted up a tower face (w10b 'iron-stair', a run of hops up), the stone balconies
+ * jutting from it (w10b 'balcony', jumps up), and the iron scaffold walkway along its top (w10b 'scaffold') where a guard walks. Every
+ * floor under them is soft (a miss is a climb back: STAGE-RULES §6, falls in climbs).
+ */
+const tread = (key: string, after: string, dy: number): SectionPiece => ({ key, shape: 'branch', style: 'w10_stair', w: [88, 100], place: { kind: 'jump', after, dy, share: [0.3, 0.4], soft: true } });
+const treads = (p: string, after: string, rise: number[]): { pieces: SectionPiece[]; last: string; total: number } => {
+  const out: SectionPiece[] = [];
+  let prev = after;
+  let total = 0;
+  rise.forEach((r, i) => {
+    out.push(tread(`${p}${i + 1}`, prev, -r));
+    total += r;
+    prev = `${p}${i + 1}`;
+  });
+  return { pieces: out, last: prev, total };
+};
+const balcony = (key: string, after: string, dy: number, share: W = [0.42, 0.56]): SectionPiece => ({ key, shape: 'branch', style: 'w10_balcony', w: [120, 140], place: { kind: 'jump', after, dy, share, soft: true }, landing: true });
+const walkway = (key: string, after: string, dy: number, w: W): SectionPiece => ({ key, shape: 'branch', style: 'w10_scaffold', w, place: { kind: 'jump', after, dy, share: [0.3, 0.42], soft: true }, landing: true });
+
+const st1 = treads('s', 'a', [42, 40, 44]);
+/** up the iron stair to the scaffold walkway, a guard on it, and down the far side */
+const ironStair = section({
+  id: 'w10-iron-stair',
+  name: 'iron stair to the scaffold arena',
+  archetypes: ['purge'],
+  phases: MID,
+  difficulty: 5,
+  uses: [W10_THEME.towers],
+  pieces: [bank('a', [300, 340]), ...st1.pieces, walkway('hi', st1.last, -36, [300, 340]), down('b', 'hi', st1.total + 36, [300, 340])],
+  last: 'b',
+  sockets: [flag('a', 0.5), petals('s2', 's2', 0.5, 1, 0), foe('g', 'hi', [0.55, 0.65], GUARDS, 3), petals('b', 'b', 0.5, 1), scenery('brazier', 'a', [0.2, 0.3], 0.6)],
+  mirrorable: true,
+});
+/** balconies up the tower face, the top of the tower, and a drop to the wall past it */
+const balconyClimb = section({
+  id: 'w10-balcony-climb',
+  name: 'tower balconies',
+  archetypes: ['purge'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W10_THEME.towers],
+  pieces: [bank('a', [220, 260]), balcony('l1', 'a', -60), balcony('l2', 'l1', -54), balcony('l3', 'l2', -50), perchLand('hi', 'l3', -12, [180, 210]), tread('d1', 'hi', 56), tread('d2', 'd1', 56), bank('c', [220, 260], { kind: 'jump', after: 'd2', dy: 64, share: [0.3, 0.4], soft: true }, { landing: true })],
+  last: 'c',
+  sockets: [flag('hi', 0.5), petals('l1', 'l1', 0.5, 1, 0), petals('l3', 'l3', 0.5, 1, 0), petals('d1', 'd1', 0.5, 1, 0), foe('g', 'c', [0.6, 0.7], ['soldier', 'harpy'], 4, { phases: HOT, chance: 0.6 })],
+  mirrorable: true,
+});
+const st2 = treads('s', 'k', [40, 42]);
+/** a guard's flat, the iron stair up to two walkways with a balcony between, and down */
+const towerRun = section({
+  id: 'w10-tower-run',
+  name: 'stair, walkway and balcony arena',
+  archetypes: ['purge'],
+  phases: HOT,
+  difficulty: 7,
+  uses: [W10_THEME.towers],
+  pieces: [bank('a', [300, 340]), up('k', 'a', 30, [120, 140]), ...st2.pieces, walkway('w1', st2.last, -30, [200, 230]), balcony('l', 'w1', -40, [0.4, 0.5]), walkway('w2', 'l', 30, [250, 280]), down('b', 'w2', st2.total + 30 + 40 - 30 + 30, [200, 240])],
+  last: 'b',
+  sockets: [flag('b', 0.25), foe('g1', 'a', [0.45, 0.55], GUARDS, 3), petals('l', 'l', 0.5, 1, 0), foe('g2', 'w2', [0.5, 0.6], SMALL, 3, { phases: HOT, chance: 0.6 }), petals('b', 'b', 0.5, 1)],
+  mirrorable: true,
+});
+
+/**
+ * J. Chain bridges (10-7's own theme): the painted chain bridge slung across a chasm (gemini w9w10-bridges 'chain-bridge'), a hop on
+ * and off at its ends, a guard on its span: a fight on a narrow bridge. The floor under every bridge is soft (a knock off it is a climb
+ * back, never a life).
+ */
+const span = (key: string, after: string, w: W): SectionPiece => ({ key, shape: 'branch', style: 'w10_bridge', w, place: { kind: 'jump', after, dy: [-6, 6], share: [0.14, 0.22], soft: true }, landing: true });
+const offSpan = (key: string, after: string, w: W): SectionPiece => bank(key, w, { kind: 'jump', after, dy: [-6, 6], share: [0.14, 0.22], soft: true }, { landing: true });
+const bridgeFight = section({
+  id: 'w10-bridge-fight',
+  name: 'guard on the chain bridge arena',
+  archetypes: ['purge'],
+  phases: MID,
+  difficulty: 5,
+  uses: [W10_THEME.bridges],
+  pieces: [bank('a', [300, 340]), span('br', 'a', [440, 480]), offSpan('b', 'br', [300, 340])],
+  last: 'b',
+  sockets: [flag('a', 0.5), petals('a', 'a', 0.5, 1), foe('g', 'br', [0.5, 0.6], GUARDS, 3), petals('b', 'b', 0.4, 2, 80)],
+  mirrorable: true,
+});
+/** two bridges with a battlement tower between them, a guard on each span */
+const bridgePair = section({
+  id: 'w10-bridge-pair',
+  name: 'two chain bridges arena',
+  archetypes: ['purge'],
+  phases: LIVE,
+  difficulty: 7,
+  maxPerStage: 2,
+  uses: [W10_THEME.bridges],
+  pieces: [bank('a', [200, 240]), span('br1', 'a', [360, 400]), offSpan('t', 'br1', [150, 170]), up('k', 't', 32, [120, 140]), down('t2', 'k', 32, [140, 160]), span('br2', 't2', [380, 420]), offSpan('b', 'br2', [220, 250])],
+  last: 'b',
+  sockets: [flag('k', 0.5), foe('g1', 'br1', [0.5, 0.6], GUARDS, 3), foe('g2', 'br2', [0.45, 0.55], [...GUARDS, 'tayra'], 3, { phases: HOT, chance: 0.7 }), petals('b', 'b', 0.5, 1)],
+  mirrorable: true,
+});
+/** a bridge to a rod's wall: the bolt on the far bank is the beat, the guard on the span the fight */
+const bridgeRods = section({
+  id: 'w10-bridge-rods',
+  name: 'chain bridge to the rod arena',
+  archetypes: ['purge'],
+  phases: HOT,
+  difficulty: 7,
+  uses: [W10_THEME.bridges, BOLT],
+  pieces: [bank('a', [240, 280]), span('br', 'a', [440, 480]), offSpan('b', 'br', [440, 480]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [220, 260])],
+  zones: [rod('b', [0.3, 0.34])],
+  last: 'c',
+  sockets: [flag('k', 0.5), foe('g', 'br', [0.45, 0.55], GUARDS, 3), petals('b', 'b', 0.7, 1)],
+  mirrorable: true,
+});
+
+/**
+ * D. Drop gates (10-7's own theme): a gatehouse over the wall-walk whose portcullis drops on a beat (zones.ts 'bolt', look 'portcullis':
+ * it rattles 1.2 s, stays down 1.1 s, is up 3.3 s or more; w10DropArt.ts). Run under while it's up. Caught, he is shoved back out the side
+ * he came in (a heart on Normal). The first one is taught where a miss costs nothing (`gentle`), with his line before it.
+ */
+const dropGate = (on: string, at: [number, number], gentle = false): SectionZone => ({ kind: 'bolt', on, at, look: 'portcullis', ...(gentle ? { gentle: true } : {}) });
+const dropFirst = section({
+  id: 'w10-drop-first',
+  name: 'the first drop gate',
+  archetypes: ['purge'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  teaches: DROPGATE,
+  uses: [W10_THEME.drops],
+  maxPerStage: 1,
+  pieces: [bank('a', [300, 340]), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [460, 500])],
+  zones: [dropGate('b', [0.5, 0.55], true)],
+  last: 'b',
+  sockets: [flag('a', 0.6), tip(DROPGATE, 'a', 0.2), petals('k', 'k', 0.5, 1), petals('b', 'b', 0.85, 1)],
+  mirrorable: false,
+});
+/** two gates on one long wall, out of step: through the first, wait in the pocket, through the second; a guard past them */
+const dropRow = section({
+  id: 'w10-drop-row',
+  name: 'drop gates in a row',
+  archetypes: ['purge'],
+  phases: LIVE,
+  difficulty: 6,
+  uses: [W10_THEME.drops, DROPGATE],
+  pieces: [bank('a', [560, 600]), up('k', 'a', 30, [140, 160]), down('b', 'k', 30, [400, 440])],
+  zones: [dropGate('a', [0.24, 0.28]), dropGate('a', [0.72, 0.76])],
+  last: 'b',
+  sockets: [flag('k', 0.5), petals('a', 'a', 0.5, 1), foe('g', 'b', [0.55, 0.65], GUARDS, 3)],
+  mirrorable: true,
+});
+/** a drop gate into a guard's yard: through it, and the fight is on the far side */
+const dropYard = section({
+  id: 'w10-drop-yard',
+  name: 'drop gate to the guard yard arena',
+  archetypes: ['purge'],
+  phases: MID,
+  difficulty: 5,
+  uses: [W10_THEME.drops, DROPGATE],
+  pieces: [bank('a', [360, 400]), down('s', 'a', 40, [140, 160]), down('yard', 's', 40, [560, 600]), up('s2', 'yard', 40, [140, 160]), up('b', 's2', 40, [240, 280])],
+  zones: [dropGate('a', [0.5, 0.55])],
+  last: 'b',
+  sockets: [flag('s2', 0.5), petals('a', 'a', 0.15, 1), foe('g1', 'yard', [0.5, 0.56], GUARDS, 3), foe('g2', 'yard', [0.8, 0.86], [...GUARDS, ...CATS], 5, { phases: HOT, chance: 0.6 }), petals('s2', 's2', 0.5, 1)],
+  mirrorable: true,
+});
+/** up the battlements to a gate on the high walk, a chasm off its far end (Ten, Ketsu) */
+const dropHigh = (() => {
+  const m = merlons('', 'a', 2, [340, 380]);
+  return section({
+    id: 'w10-drop-high',
+    name: 'drop gate on the high walk',
+    archetypes: ['purge'],
+    phases: HOT,
+    difficulty: 7,
+    uses: [W10_THEME.drops, DROPGATE],
+    pieces: [bank('a', [240, 280]), ...m.pieces, chasm('c', m.last, [300, 340])],
+    zones: [dropGate('f2', [0.45, 0.5])],
+    last: 'c',
+    sockets: [flag('k1', 0.5), petals('k1', 'k1', 0.5, 1), petals('k2', 'k2', 0.5, 1), foe('g', 'c', [0.5, 0.6], SMALL, 3, { chance: 0.6 })],
+    mirrorable: true,
+  });
+})();
+const W10_BAG_SECTIONS: SectionTemplate[] = [perchRun, perchClimb, perchRods, ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh];
+
 // ───────────────────────────── the list ─────────────────────────────
 
 export const W10_GROUND_SECTIONS: SectionTemplate[] = [
@@ -1082,6 +1318,7 @@ export const W10_GROUND_SECTIONS: SectionTemplate[] = [
   gatehouseRun,
   drawbridge,
   gateApproach,
+  ...W10_BAG_SECTIONS,
 ];
 
 /** the ids of the required lessons (w10Game.ts W10_REQUIRED) */
@@ -1104,5 +1341,9 @@ export const W10_STAGE_ONLY: Readonly<Record<string, readonly number[]>> = {
   ...Object.fromEntries([guardWall, guardYard, spikeYard, harpyWall, wallPatrol, towerSteps].map((s) => [s.id, [7]] as const)),
   ...Object.fromEntries([guardRods, guardGusts, guardRampart, portcullisYard, gatehouseRun, drawbridge, gateApproach].map((s) => [s.id, [9]] as const)),
   // (the purge opens rods or spikes; the gauntlet any of the four: each gate's theme has its own arenas there)
-  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-hunt-gate-') && !/rods|spikes/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
+  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-hunt-gate-') && !/rods|spikes|towers|bridges|drops/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
+  // (the grab bag's themes: the perches are 10-1's, the towers and bridges 10-7's; no other stage opens them)
+  ...Object.fromEntries(huntGates.filter((g) => g.id.startsWith('w10-fight-gate-') && /perches|towers|bridges|drops/.test(g.id)).map((g) => [g.id, [] as number[]] as const)),
+  ...Object.fromEntries([perchRun, perchClimb, perchRods].map((s) => [s.id, [1]] as const)),
+  ...Object.fromEntries([ironStair, balconyClimb, towerRun, bridgeFight, bridgePair, bridgeRods, dropFirst, dropRow, dropYard, dropHigh].map((s) => [s.id, [7]] as const)),
 };

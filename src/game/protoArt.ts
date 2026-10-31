@@ -23,6 +23,7 @@ import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
 import { drawRoostBough } from './batArt.ts';
+import { drawW10PieceArt } from './w10PieceArt.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -1184,6 +1185,8 @@ export function drawProtoScene(
     // (World 8's fungus steps and knot perches: the painted brackets, w8FungusArt.ts)
     if (p.style === 'fungus_shelf' && drawW8Fungus(ctx, p)) continue;
     if (p.style === 'roost_branch' && drawRoostBough(ctx, p)) continue;
+    // (World 10's grab-bag pieces: the perch post, balcony, iron stair, scaffold walkway and chain bridge, w10PieceArt.ts)
+    if (p.style?.startsWith('w10_') && drawW10PieceArt(ctx, p)) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
     if (trunk && p.width <= 220) {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);

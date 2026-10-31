@@ -295,8 +295,10 @@ export interface Platform {
   /** 'drift' platforms: a log carried across a river (see river.ts) */
   drift?: import('./river.ts').DriftInfo;
   /** 'roost_branch': World 8's painted roost branch as the bough (8-1's roost loft, batArt.ts drawRoostBough).
-   *  'fungus_shelf': a bracket of the world's fungus, a set piece (World 8's fungus steps and knot perches): its look is never swapped */
-  style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge' | 'fungus_shelf' | 'roost_branch';
+   *  'fungus_shelf': a bracket of the world's fungus, a set piece (World 8's fungus steps and knot perches): its look is never swapped.
+   *  'w10_*': World 10's grab-bag pieces (perch post, balcony, iron stair tread, scaffold walkway, chain bridge), w10PieceArt.ts: never swapped */
+  style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge' | 'fungus_shelf' | 'roost_branch'
+    | 'w10_perch' | 'w10_balcony' | 'w10_stair' | 'w10_scaffold' | 'w10_bridge';
   /** a hollow log Pokey pushes by walking into it (protoStage.ts): it slides between these x bounds */
   push?: { min: number; max: number };
   /** a section of 1-8's long branch: it falls when the collapse passes (chase.ts), drawn from Matt's long-branch sheet; `chaseTip`: the end */

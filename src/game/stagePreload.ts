@@ -10,6 +10,8 @@
  * first and two worlds' sheets are never held at once; only the one stage's sheets are asked for.
  */
 import { W10_ART_URLS, w10ArtReady } from './w10Art.ts';
+import { W10_PIECE_URLS, w10PiecesReady } from './w10PieceArt.ts';
+import { W10_DROP_URLS, w10DropReady } from './w10DropArt.ts';
 import { W10_HAZARD_URLS, w10HazardsReady } from './w10HazardArt.ts';
 import { SOLDIER_URLS, soldierReady } from './soldierSprite.ts';
 import { CRUMBLE_ART_URL, crumbleArtReady } from './crumbleArt.ts';
@@ -122,7 +124,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w10') {
       w10ArtReady();
       soldierReady();
-      urls.push(...W10_ART_URLS, ...SOLDIER_URLS);
+      w10PiecesReady();
+      w10DropReady();
+      urls.push(...W10_ART_URLS, ...SOLDIER_URLS, ...W10_PIECE_URLS, ...W10_DROP_URLS);
     } else if (k === 'w10-hazards') {
       w10HazardsReady();
       urls.push(...Object.values(W10_HAZARD_URLS));

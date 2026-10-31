@@ -91,6 +91,8 @@ export const W10_LESSON = {
   fight: 'fight',
   /** the first deadly drop (Normal: falls off the walls cost a life) */
   drop: 'drop',
+  /** the drop gates (GRAB-BAG D: 10-7, its first one gentle) */
+  dropgate: 'dropgate',
 } as const;
 
 // ───────────────────────────── the creatures ─────────────────────────────
@@ -150,6 +152,8 @@ export const W10_TIPS: Record<string, string> = {
   [W10_LESSON.hunt]: "Gate's shut. The guards have to go.",
   [W10_LESSON.fight]: 'Shut again. More guards, then.',
   [W10_LESSON.drop]: 'No ledge under that one.',
+  // (GRAB-BAG lines: new, need Matt's approval; said in Dot's bubble where she is back, 10-6 to 10-9: wayside.ts dotPresent)
+  [W10_LESSON.dropgate]: "It drops on a count. Run when it's up!",
   water: 'No ledge under that one.',
 };
 export const W10_NEW_LINES: readonly string[] = [...new Set(Object.values(W10_TIPS))];
@@ -177,7 +181,7 @@ export const W10_MANIFEST: WorldManifest = {
   handBuilt: ['10-2', '10-4', '10-5', '10-8', '10-10'],
   // (the cats were met in World 3, the tayra and the harpy in World 6, the gusts in World 4 and the crumbling floors in World 7; the
   // rods, the spikes, the ramparts and the gusts are 10-1's (his line there on first meeting), the storm's watch 10-3's)
-  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3' },
+  lessons: { ocelot: '3-9', jaguar: '3-9', tayra: '6-2', harpy: '6-5', [W10_LESSON.bolt]: '10-1', [W10_LESSON.spikes]: '10-1', [W10_LESSON.rampart]: '10-1', [W10_LESSON.wind]: '10-1', [W10_LESSON.storm]: '10-3', [W10_LESSON.dropgate]: '10-7' },
   tips: W10_TIPS,
 };
 
@@ -273,8 +277,11 @@ export function w10Decorate(stage: number): NonNullable<WorldKit['decorate']> {
     const decor = (w10Of(out, stage).decor ??= []);
     // (clear of the hazards and the cover: nothing stands in a rod's column, a gust lane or behind a crate stack, so each reads alone)
     const busy = [...out.zones.map((z) => [z.x0 - 50, z.x1 + 50]), ...(out.proto.bushes ?? []).map((b) => [b.x - 40, b.x + b.w + 40])];
+    // (nor on the grab bag's thin pieces: a perch, a balcony, a stair tread, a walkway or a bridge is walked and fought on, not dressed)
+    const thin = out.platforms.filter((p) => p.style?.startsWith('w10_'));
     for (const it of items) {
       if (busy.some(([a, c]) => it.x + it.w / 2 > a && it.x - it.w / 2 < c)) continue;
+      if (thin.some((p) => Math.abs(p.y - it.y) < 4 && it.x + it.w / 2 > p.x && it.x - it.w / 2 < p.x + p.width)) continue;
       decor.push({ n: it.n, x: it.x, b: it.y, w: it.w, ...(hash01(it.x, 11) < 0.5 ? { flip: true } : {}) });
     }
   };
@@ -300,7 +307,7 @@ export function w10Kit(stage = 1): WorldKit {
 
 /** Pokey's lesson lines, by the thing each teaches (said once per save where the guide supports it) */
 export const W10_FIRST_OF: Readonly<Record<string, string>> = Object.fromEntries(
-  ([W10_LESSON.bolt, W10_LESSON.spikes, W10_LESSON.rampart, W10_LESSON.wind, W10_LESSON.storm, W10_LESSON.soldier] as string[]).map((k) => [W10_TIPS[k], `w10.${k}`]),
+  ([W10_LESSON.bolt, W10_LESSON.spikes, W10_LESSON.rampart, W10_LESSON.wind, W10_LESSON.storm, W10_LESSON.soldier, W10_LESSON.dropgate] as string[]).map((k) => [W10_TIPS[k], `w10.${k}`]),
 );
 
 /**

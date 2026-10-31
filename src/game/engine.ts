@@ -1565,7 +1565,16 @@ export class GameEngine {
       }
       // lava geysers and lightning (Worlds 9 and 10): a firing column burns whoever stands in it
       const hot = columnHit(zones, p.x - 14, p.y - 64, 28, 64, this.gameTime);
-      if (hot && p.invincibleTimer <= 0) {
+      if (hot?.look === 'portcullis') {
+        // (World 10's drop gate, GRAB-BAG D: caught under it, he is shoved back out the side he came in; a heart on Normal only, and
+        // never where it is taught)
+        const back = p.x < (hot.x0 + hot.x1) / 2 ? -1 : 1;
+        p.x = back < 0 ? hot.x0 - 20 : hot.x1 + 20;
+        p.vx = back * 140;
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.25);
+        this.input.triggerHaptic(80);
+        if (!hot.gentle && !isEasy() && p.invincibleTimer <= 0) this.damagePlayer(1);
+      } else if (hot && p.invincibleTimer <= 0) {
         this.damagePlayer(1);
         this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
       }

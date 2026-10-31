@@ -179,12 +179,12 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
   const sig = SIGNATURE[world];
   if (sig) {
     for (let i = 0; i < n; i++) {
-      if (thin[i].type !== 'solid' || !SWAPPABLE.has(looks[i]) || thin[i].width < 44 || thin[i].style === 'fungus_shelf' || thin[i].style === 'roost_branch') continue;
+      if (thin[i].type !== 'solid' || !SWAPPABLE.has(looks[i]) || thin[i].width < 44 || thin[i].style === 'fungus_shelf' || thin[i].style === 'roost_branch' || !!thin[i].style?.startsWith('w10_')) continue;
       if (h01(thin[i].id, world, 61) < sig.share) looks[i] = sig.look;
     }
   }
   const count = (k: ThinLook) => looks.filter((l) => l === k).length;
-  const swappable = (i: number) => thin[i].type === 'solid' && SWAPPABLE.has(looks[i]) && thin[i].width >= 44 && thin[i].style !== 'fungus_shelf' && thin[i].style !== 'roost_branch';
+  const swappable = (i: number) => thin[i].type === 'solid' && SWAPPABLE.has(looks[i]) && thin[i].width >= 44 && thin[i].style !== 'fungus_shelf' && thin[i].style !== 'roost_branch' && !thin[i].style?.startsWith('w10_');
   const tripleAt = (i: number, k: ThinLook) => {
     const a = (j: number) => (j === i ? k : looks[j]);
     for (let s = Math.max(0, i - 2); s <= Math.min(n - 3, i); s++) if (a(s) === a(s + 1) && a(s + 1) === a(s + 2)) return true;

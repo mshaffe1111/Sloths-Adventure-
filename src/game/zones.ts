@@ -55,6 +55,11 @@ export interface Zone {
   shut?: boolean;
   /** webs: a web bridge strung over a gap (painted as the silk bridge, zoneArt.ts), not a patch on the ground */
   bridge?: boolean;
+  /** a 'bolt' column drawn and felt as World 10's drop gate (a portcullis over the wall-walk, w10DropArt.ts): caught under it, he is
+   *  shoved back out the side he came in, and it costs a heart on Normal only */
+  look?: 'portcullis';
+  /** a drop gate where it is taught: it shoves him out and never hurts, on either setting */
+  gentle?: boolean;
 }
 
 export type ZonePhase = 'idle' | 'warn' | 'active';

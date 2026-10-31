@@ -87,9 +87,8 @@ export function drawSoldierSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, t
   ctx.beginPath();
   ctx.ellipse(0, 1, 26, 5, 0, 0, Math.PI * 2);
   ctx.fill();
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
+  // (the hurt flash is the engine's, around every animal: drawWithReaction's hurtFlash.ts patch, AN-6; no canvas filter here)
   ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
-  ctx.filter = 'none';
   ctx.restore();
   return true;
 }
